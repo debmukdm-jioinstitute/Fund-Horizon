@@ -91,26 +91,26 @@ export default async function FundDetailPage({ params }: PageProps) {
         <div className="grid grid-cols-2 gap-3 border-t border-navy-100 pt-3 sm:grid-cols-4">
           <div className="rounded-lg bg-navy-50 p-2.5">
             <p className="text-xs text-navy-700">1Y Return</p>
-            <p className="text-lg font-bold text-navy-950">
+            <p className="text-lg font-bold text-navy-950" data-testid="analytics-cagr-1y">
               {ret.cagr_1y !== null ? pct(ret.cagr_1y) : "—"}
             </p>
           </div>
           <div className="rounded-lg bg-navy-50 p-2.5">
             <p className="text-xs text-navy-700">3Y CAGR</p>
-            <p className="text-lg font-bold text-navy-950">
+            <p className="text-lg font-bold text-navy-950" data-testid="analytics-cagr-3y">
               {ret.cagr_3y !== null ? pct(ret.cagr_3y) : "—"}
             </p>
           </div>
           <div className="rounded-lg bg-navy-50 p-2.5">
             <p className="text-xs text-navy-700">5Y CAGR</p>
-            <p className="text-lg font-bold text-navy-950">
+            <p className="text-lg font-bold text-navy-950" data-testid="analytics-cagr-5y">
               {ret.cagr_5y !== null ? pct(ret.cagr_5y) : "—"}
             </p>
           </div>
           <div className="rounded-lg bg-teal-50 p-2.5">
-            <p className="text-xs text-teal-800">3Y SIP XIRR</p>
-            <p className="text-lg font-bold text-teal-900">
-              {ret.sip_xirr_3y !== null ? pct(ret.sip_xirr_3y) : "—"}
+            <p className="text-xs text-teal-800">SIP XIRR</p>
+            <p className="text-lg font-bold text-teal-900" data-testid="analytics-sip-xirr">
+              {ret.sip_xirr !== null ? pct(ret.sip_xirr) : "—"}
             </p>
           </div>
         </div>
@@ -147,8 +147,8 @@ export default async function FundDetailPage({ params }: PageProps) {
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between border-b border-navy-100 py-1.5">
               <dt className="text-navy-700">Annualized Volatility (3Y)</dt>
-              <dd className="font-semibold text-navy-950">
-                {risk.volatility_3y !== null ? pct(risk.volatility_3y) : "—"}
+              <dd className="font-semibold text-navy-950" data-testid="analytics-vol-3y">
+                {risk.annualized_volatility_3y !== null ? pct(risk.annualized_volatility_3y) : "—"}
               </dd>
             </div>
             <div className="flex justify-between border-b border-navy-100 py-1.5">
@@ -171,11 +171,9 @@ export default async function FundDetailPage({ params }: PageProps) {
             </div>
             {dd && (
               <div className="flex justify-between py-1.5">
-                <dt className="text-navy-700">Recovery Duration</dt>
-                <dd className="font-medium text-navy-900">
-                  {dd.days_recovery !== null
-                    ? `${dd.days_recovery} days to recover`
-                    : "Not yet recovered"}
+                <dt className="text-navy-700">Longest underwater period</dt>
+                <dd className="font-medium text-navy-900" data-testid="analytics-underwater">
+                  {dd.longest_underwater_months} months
                 </dd>
               </div>
             )}
@@ -189,8 +187,8 @@ export default async function FundDetailPage({ params }: PageProps) {
             Measures participation in up vs down months relative to the category median.
           </p>
           <CaptureRatioBarChart
-            upCapture={analytics.capture_ratios.up_market_capture}
-            downCapture={analytics.capture_ratios.down_market_capture}
+            upCapture={analytics.capture_ratios.upside_capture}
+            downCapture={analytics.capture_ratios.downside_capture}
           />
         </section>
       </div>

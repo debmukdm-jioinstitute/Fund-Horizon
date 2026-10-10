@@ -156,21 +156,19 @@ export interface FundDetail {
 }
 
 export interface RollingStats {
-  mean: number | null;
   median: number | null;
   min: number | null;
   max: number | null;
   pct_positive: number | null;
-  count: number;
+  dispersion: number | null;
+  n: number;
 }
 
 export interface DrawdownDuration {
+  longest_underwater_months: number;
   max_drawdown: number;
-  peak_date: string;
-  trough_date: string;
-  recovery_date: string | null;
-  days_peak_to_trough: number;
-  days_recovery: number | null;
+  peak_date: string | null;
+  trough_date: string | null;
 }
 
 export interface FundAnalytics {
@@ -184,7 +182,7 @@ export interface FundAnalytics {
     cagr_1y: number | null;
     cagr_3y: number | null;
     cagr_5y: number | null;
-    sip_xirr_3y: number | null;
+    sip_xirr: number | null;
   };
   rolling_returns: {
     "1y": RollingStats;
@@ -192,17 +190,18 @@ export interface FundAnalytics {
     "5y": RollingStats;
   };
   risk: {
-    volatility_3y: number | null;
+    annualized_volatility_3y: number | null;
     sharpe_3y: number | null;
     sortino_3y: number | null;
     max_drawdown: number | null;
     drawdown_duration: DrawdownDuration | null;
   };
   capture_ratios: {
-    up_market_capture: number | null;
-    down_market_capture: number | null;
-    capture_ratio: number | null;
-    benchmark: string;
+    upside_capture: number | null;
+    downside_capture: number | null;
+    up_periods?: number;
+    down_periods?: number;
+    common_periods?: number;
   };
   disclaimer: string;
 }

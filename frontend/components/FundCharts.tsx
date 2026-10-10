@@ -145,16 +145,17 @@ export function CaptureRatioBarChart({
     return <p className="text-sm text-navy-700">Capture ratio data is unavailable.</p>;
   }
 
+  // API capture_ratios are already in percent (100 = in line with the category median).
   const data = [
     {
       metric: "Up-Market Capture",
-      value: upCapture !== null ? Number((upCapture * 100).toFixed(1)) : 0,
+      value: upCapture !== null ? Number(upCapture.toFixed(1)) : 0,
       description: "Higher is better (participates in category gains)",
       color: "#0E7C74",
     },
     {
       metric: "Down-Market Capture",
-      value: downCapture !== null ? Number((downCapture * 100).toFixed(1)) : 0,
+      value: downCapture !== null ? Number(downCapture.toFixed(1)) : 0,
       description: "Lower is better (protects during category drops)",
       color: "#B45309",
     },
@@ -162,7 +163,12 @@ export function CaptureRatioBarChart({
 
   return (
     <div className="space-y-2">
-      <div className="h-44" role="img" aria-label="Up and down market capture ratios vs category benchmark">
+      <div
+        className="h-44"
+        role="img"
+        aria-label="Up and down market capture ratios vs category benchmark"
+        data-testid="capture-chart"
+      >
         <ResponsiveContainer>
           <BarChart data={data} layout="vertical" margin={{ left: 20, right: 30, top: 10, bottom: 10 }}>
             <CartesianGrid stroke="#DCE6F2" horizontal={false} />

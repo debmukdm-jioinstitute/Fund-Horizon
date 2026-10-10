@@ -27,9 +27,18 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from app.config.disclosures import FIRM, SHORTLIST_HEADING, TAX_INFO, all_disclosures
+from app.config.disclosures import (
+    ALLOCATION_HEADING,
+    FIRM,
+    SCHEME_DOCS_NOTE,
+    SHORTLIST_HEADING,
+    SUCCESS_PROB_NOTE,
+    TAX_INFO,
+    TAX_PER_GOAL_NOTE,
+    all_disclosures,
+)
 from app.report import charts
-from app.report.fmt import inr, pct, short_inr
+from app.report.fmt import inr, pct, short_inr, sized_status, xml_escape
 
 NAVY, TEAL = colors.HexColor("#0B2545"), colors.HexColor("#13A89E")
 LIGHT = colors.HexColor("#EEF6F6")
@@ -76,7 +85,7 @@ def _img(png: bytes, width_mm: float) -> Image:
 
 
 def _P(text, style=CELL):
-    return Paragraph(str(text), style)
+    return Paragraph(xml_escape(text), style)
 
 
 def build_pdf(first_name: str, r: dict) -> bytes:
@@ -94,21 +103,21 @@ def build_pdf(first_name: str, r: dict) -> bytes:
         canvas.setFont("DV-B", 12)
         canvas.drawString(15 * mm, h - 10.5 * mm, FIRM)
         canvas.setFont("DV", 8)
-        canvas.drawRightString(w - 15 * mm, h - 10.5 * mm, f"Illustrative plan for {first_name}  |  {today}")
+        canvas.drawRightString(w - 15 * mm, h - 10.5 * mm, f"Illustrative plan for {xml_escape(first_name)}  |  {today}")
         canvas.setFillColor(TEAL)
         canvas.rect(0, h - 17 * mm, w, 1 * mm, stroke=0, fill=1)
         canvas.setFillColor(colors.HexColor("#444444"))
         canvas.setFont("DV", 5.8)
-        y = 17 * mm
+        y = 24 * mm
         for line in disc["lines"]:
-            for part in _wrap(line, 150):
+            for part in _wrap(line, 145):
                 canvas.drawString(15 * mm, y, part)
-                y -= 2.6 * mm
+                y -= 2.4 * mm
         canvas.drawRightString(w - 15 * mm, 6 * mm, f"Page {doc.page}")
         canvas.restoreState()
 
     doc = BaseDocTemplate(buf, pagesize=A4, leftMargin=15 * mm, rightMargin=15 * mm, topMargin=22 * mm,
-                          bottomMargin=34 * mm, title=f"{FIRM} illustrative plan", author=FIRM)
+                          bottomMargin=42 * mm, title=f"{FIRM} illustrative plan", author=FIRM)
     frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="f")
     doc.addPageTemplates([PageTemplate(id="p", frames=[frame], onPage=decorate)])
     W = doc.width
@@ -117,34 +126,38 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     story: list = []
 
     # 1. Summary
-    story += [Paragraph(f"Your illustrative plan, {first_name}", H1)]
+    story += [Paragraph(f"Your illustrative plan, {xml_escape(first_name)}", H1)]
     story += [Paragraph(
-        f"Risk profile: <b>{prof['band']}</b> (score {prof['final_score']:.0f}/100). Data as of {r['data_asof']}. "
+        f"Risk profile: <b>{xml_escape(prof['band'])}</b> (score {prof['final_score']:.0f}/100). Data as of {r['data_asof']}. "
         "All projections use the editable assumptions listed on the last page.", BODY)]
     if prof["priority_actions"]:
         story += [Paragraph("Priority actions", H2)]
-        story += [Paragraph(f"• {a}", BODY) for a in prof["priority_actions"]]
+        story += [Paragraph(f"• {xml_escape(a)}", BODY) for a in prof["priority_actions"]]
     cf, tot = plan["cashflow"], plan["totals"]
     story += [Paragraph("Cash flow snapshot", H2), _tbl([
         ["Monthly income", "Monthly outgo", "Monthly surplus", "Savings rate", "Total SIP needed"],
         [inr(cf["monthly_income"]), inr(cf["monthly_outgo"]), inr(cf["monthly_surplus"]),
          pct(cf["savings_rate"]), inr(tot["required_sip"])]], [W / 5] * 5)]
-    rows = [["Goal", "Years", "Future cost", "SIP needed", "SIP funded", "Status", "Chance*"]]
+    rows = [["Goal", "Yrs", "Future cost", "SIP needed", "SIP allocated", "Sized?*", "P(success)*", "SIP ~80%"]]
     for g in plan["goals"]:
-        rows.append([_P(g["name"]), g["years"], short_inr(g["future_cost"]), inr(g["required_sip"]),
-                     inr(g["allocated_sip"]), g["status"].replace("_", " "), pct(g["monte_carlo"]["success_prob"], 0)])
-    story += [Paragraph("Goals at a glance", H2), _tbl(rows, [W * x for x in (.27, .07, .15, .15, .15, .13, .08)]),
-              Paragraph("*Probability of reaching the inflated goal with the funded SIP, from 5,000 simulated "
-                        "return paths. Simulations are illustrations, not guarantees.", SMALL), PageBreak()]
+        mc = g["monte_carlo"]
+        rows.append([
+            _P(g["name"]), g["years"], short_inr(g["future_cost"]), inr(g["required_sip"]),
+            inr(g["allocated_sip"]), _P(sized_status(g["status"])), pct(mc["success_prob"], 0),
+            inr(mc["sip_for_target_success"]),
+        ])
+    story += [Paragraph("Goals at a glance", H2),
+              _tbl(rows, [W * x for x in (.18, .06, .12, .12, .12, .16, .12, .12)]),
+              Paragraph(SUCCESS_PROB_NOTE, SMALL), PageBreak()]
 
     # 2. Profile
     story += [Paragraph("Your risk profile", H1)]
     cap = prof["capacity"]
     story += [Paragraph(
         f"Capacity to take risk <b>{cap['score']:.0f}</b> &nbsp;|&nbsp; Comfort with risk <b>{prof['tolerance']:.0f}</b> "
-        f"&nbsp;|&nbsp; Final (lower of the two) <b>{prof['final_score']:.0f}</b> &rarr; <b>{prof['band']}</b>", BODY)]
+        f"&nbsp;|&nbsp; Final (lower of the two) <b>{prof['final_score']:.0f}</b> &rarr; <b>{xml_escape(prof['band'])}</b>", BODY)]
     for n in prof["notes"]:
-        story += [Paragraph(n, BODY)]
+        story += [Paragraph(xml_escape(n), BODY)]
     rows = [["Factor", "Your value", "Score", "Weight", "Contribution"]]
     for f in cap["factors"]:
         v = f["value"]
@@ -156,7 +169,7 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     story += [Spacer(1, 4), _tbl(rows, [W * x for x in (.28, .42, .08, .10, .12)]), PageBreak()]
 
     # 3. Allocation
-    story += [Paragraph("Suggested allocation", H1),
+    story += [Paragraph(ALLOCATION_HEADING, H1),
               _img(charts.donut(alloc["by_category"]), 120)]
     ac = alloc["by_asset_class"]
     story += [Paragraph(
@@ -180,7 +193,8 @@ def build_pdf(first_name: str, r: dict) -> bytes:
                      f"{f['score']:.2f}", _P("; ".join(f["explain"][:3]))])
     story += [_tbl(rows, [W * x for x in (.20, .10, .06, .06, .06, .06, .07, .06, .33)]),
               Paragraph("Direct plans carry lower expense ratios than the Regular plans shown. CAGR is "
-                        "annualised, pre-tax, NAV-based. Past performance may or may not be sustained.", SMALL)]
+                        "annualised, pre-tax, NAV-based. Past performance may or may not be sustained.", SMALL),
+              Paragraph(SCHEME_DOCS_NOTE, SMALL)]
     if any(f["merged_from"] for f in r["funds"]):
         story += [Paragraph("Small positions are merged into the nearest fund so the list stays at 8 funds or fewer.", SMALL)]
     story += [PageBreak()]
@@ -190,7 +204,7 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     story += [_tbl([
         ["Feb-Mar 2020 fall", "Worst peak-to-trough", "Worst rolling 12 months"],
         [pct(stress["crash_2020_drawdown"]), pct(stress["worst_peak_to_trough"]), pct(stress["worst_rolling_12m"])]],
-        [W / 3] * 3), Paragraph(stress["note"] + " Funds without history for a period use the category median "
+        [W / 3] * 3), Paragraph(xml_escape(stress["note"]) + " Funds without history for a period use the category median "
                                 "return for that period." + (" Some funds here were substituted." if stress["any_substituted"] else ""), SMALL)]
     story += [PageBreak()]
 
@@ -199,17 +213,19 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     for i, g in enumerate(plan["goals"]):
         mc = g["monte_carlo"]
         if mc["p90"] <= 0:
-            fan = Paragraph("No SIP is funded for this goal in the current plan, so no projection chart is shown.", SMALL)
+            fan = Paragraph("No SIP is allocated for this goal in the current plan, so no projection chart is shown.", SMALL)
         else:
             fan = _img(charts.fan_chart(mc["fan"], g["future_cost"], f"{g['name']}: projected value"), 80)
         facts = [
-            Paragraph(f"<b>{g['name']}</b> ({g['years']} years, priority {g['priority']})", BODY),
+            Paragraph(f"<b>{xml_escape(g['name'])}</b> ({g['years']} years, priority {g['priority']})", BODY),
             Paragraph(f"Future cost: <b>{short_inr(g['future_cost'])}</b> (inflation {g['inflation']:.0%})<br/>"
                       f"Expected return used: {g['expected_return']:.1%} a year<br/>"
-                      f"SIP needed: <b>{inr(g['required_sip'])}</b>/month; funded {inr(g['allocated_sip'])}<br/>"
-                      f"Chance of reaching goal with funded SIP: <b>{pct(mc['success_prob'], 0)}</b><br/>"
+                      f"SIP needed: <b>{inr(g['required_sip'])}</b>/month; allocated {inr(g['allocated_sip'])}<br/>"
+                      f"Sized?: <b>{xml_escape(sized_status(g['status']))}</b> — not the same as likely to succeed<br/>"
+                      f"P(success) with allocated SIP: <b>{pct(mc['success_prob'], 0)}</b><br/>"
                       f"P10 / P50 / P90 end value: {short_inr(mc['p10'])} / {short_inr(mc['p50'])} / {short_inr(mc['p90'])}<br/>"
-                      f"SIP for about {mc['target_success']:.0%} chance: {inr(mc['sip_for_target_success'])}", BODY)]
+                      f"SIP for about {mc['target_success']:.0%} chance: {inr(mc['sip_for_target_success'])}", BODY),
+            Paragraph(TAX_PER_GOAL_NOTE, SMALL)]
         lv = g.get("levers")
         if lv:
             txt = []
@@ -230,7 +246,7 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     story += [Paragraph("Emergency fund and insurance", H1), _tbl([
         ["Emergency fund target", "Current", "Gap", "Months to close"],
         [f"{inr(ef['target'])} ({ef['target_months']} months)", inr(ef["current"]), inr(ef["gap"]),
-         "-" if ef["months_to_close"] is None else ef["months_to_close"]]], [W / 4] * 4)]
+         "-" if ef["months_to_close"] is None else str(ef["months_to_close"])]], [W / 4] * 4)]
     t = ins["term"]
     story += [Spacer(1, 6), _tbl([
         ["Cover", "Illustrative need", "Existing", "Gap"],
@@ -240,8 +256,9 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     ref = t["reference"]
     story += [Paragraph(f"Term need is a human-life-value estimate. Simple income rules for reference: "
                         f"15x income {inr(ref['15x_income'])}, 20x income {inr(ref['20x_income'])}.", SMALL)]
-    story += [Paragraph("Rebalancing rules", H2)] + [Paragraph(f"• {x}", BODY) for x in plan["rebalancing"]]
-    story += [Paragraph("Tax", H2), Paragraph(TAX_INFO, BODY), Paragraph("Assumptions used", H2)]
+    story += [Paragraph("Rebalancing rules", H2)] + [Paragraph(f"• {xml_escape(x)}", BODY) for x in plan["rebalancing"]]
+    story += [Paragraph("Tax", H2), Paragraph(TAX_INFO, BODY), Paragraph(SCHEME_DOCS_NOTE, SMALL)]
+    story += [Paragraph("Assumptions used", H2)]
     a = r["assumptions"]
     rows = [["Assumption", "Value"],
             ["Expected returns (equity / debt / gold / liquid)",
@@ -252,8 +269,9 @@ def build_pdf(first_name: str, r: dict) -> bytes:
              f"{a['retirement']['post_retirement_return']:.1%}; {a['retirement']['life_expectancy']} years"],
             ["Simulation (mean return / volatility: equity)",
              f"{a['monte_carlo']['asset_mean']['equity']:.0%} / {a['monte_carlo']['asset_vol']['equity']:.0%}, {a['monte_carlo']['sims']:,} paths"],
-            ["Rebalance band", f"{a['rebalancing']['drift_band_pp']} percentage points, reviewed annually"]]
-    story += [_tbl(rows, [W * .55, W * .45])]
+            ["Rebalance band", f"{a['rebalancing']['drift_band_pp']} percentage points, reviewed annually"],
+            ["Non-equity pre-tax haircut", "0% unless configured (SIPs are pre-tax illustrations)"]]
+    story += [_tbl(rows, [W * .55, W * .45]), Paragraph(SUCCESS_PROB_NOTE, SMALL)]
 
     doc.build(story)
     return buf.getvalue()

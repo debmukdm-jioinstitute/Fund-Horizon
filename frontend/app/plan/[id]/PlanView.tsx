@@ -4,7 +4,8 @@
 
 import { useCallback, useState } from "react";
 import {
-  EmergencyCard, FundTable, GoalCard, InsuranceCard, ProfileCard, SectionTitle,
+  CashflowCard, EmergencyCard, FundTable, GoalCard, InsuranceCard, PlanLinkCard, ProfileCard,
+  SanityBanner, SectionTitle, unusedSurplus,
 } from "@/components/Results";
 import { Donut, StressChart } from "@/components/charts";
 import { getPlan, reportUrl } from "@/lib/api";
@@ -29,6 +30,9 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
 
   const { profile, allocation, planning, stress_test: st, disclosures } = plan;
   const perGoal = allocation.per_goal;
+  const surplus = planning.cashflow?.monthly_surplus ?? planning.totals.monthly_surplus;
+  const leftover = unusedSurplus(planning);
+  const hideBuyList = surplus <= 0;
 
   return (
     <div className="space-y-10">
@@ -41,74 +45,108 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Your illustrative plan</h1>
-          <p className="text-navy-700">Fund data as of {plan.data_asof}. Figures use the assumptions shown below.</p>
+          <p className="text-navy-700">Fund data as of {plan.data_asof}. SIPs are sized at assumed planning returns, not as a forecast.</p>
         </div>
         <a href={reportUrl(plan.id)} className="btn-accent" download>Download PDF report</a>
       </header>
 
-      <section aria-labelledby="profile"><SectionTitle id="profile">Risk profile</SectionTitle>
-        <ProfileCard profile={profile} />
-      </section>
-
-      <section aria-labelledby="allocation">
-        <SectionTitle id="allocation">{disclosures.allocation_heading}</SectionTitle>
-        <div className="grid gap-5 lg:grid-cols-2">
-          <div className="card">
-            <p className="mb-3 text-sm text-navy-700">
-              Band: <strong>{allocation.band}</strong>. Shorter goals hold less equity, so the overall mix is a goal-weighted average.
-            </p>
-            <Donut data={allocation.by_category} />
-          </div>
-          <div className="card overflow-x-auto">
-            <h3 className="mb-2 font-semibold">Allocation by goal</h3>
-            <table className="w-full text-left">
-              <thead><tr><th className="th">Goal</th><th className="th">Years</th><th className="th">Equity</th><th className="th">Debt</th><th className="th">Gold</th><th className="th">Liquid</th></tr></thead>
-              <tbody>
-                {perGoal.map((g) => (
-                  <tr key={g.name} className="border-t border-navy-100">
-                    <td className="td font-medium">{g.name}</td><td className="td">{g.years}</td>
-                    {(["equity", "debt", "gold", "liquid"] as const).map((k) => (
-                      <td key={k} className="td">{g.by_asset_class[k].toFixed(0)}%</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="mt-3 text-sm text-navy-700">
-              Overall: equity {allocation.by_asset_class.equity.toFixed(1)}%, debt {allocation.by_asset_class.debt.toFixed(1)}%,
-              gold {allocation.by_asset_class.gold.toFixed(1)}%, liquid {allocation.by_asset_class.liquid.toFixed(1)}%.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="funds">
-        <SectionTitle id="funds">{disclosures.shortlist_heading}</SectionTitle>
-        <FundTable funds={plan.funds} />
-        <p className="mt-2 text-sm text-navy-700">
-          Regular plans only. Direct plans with lower expense ratios are available. Funds are keyed by scheme code; check the scheme documents before investing.
+      <div className="rounded-xl border border-navy-200 bg-navy-50 p-4 text-sm" role="note">
+        <p>
+          A goal marked “sized at assumed return” is on the central path only — often near a 50% chance in the simulation.
+          Chance figures use a constant mix (no glide path) and do not model tax. Work emergency fund, then insurance, then goals.
         </p>
+      </div>
+
+      <SanityBanner planning={planning} />
+
+      <PlanLinkCard id={id} />
+
+      {hideBuyList && (
+        <section aria-labelledby="cashflow">
+          <SectionTitle id="cashflow">Cashflow first</SectionTitle>
+          <CashflowCard planning={planning} first />
+        </section>
+      )}
+
+      <section aria-labelledby="profile"><SectionTitle id="profile">Risk profile</SectionTitle>
+        <ProfileCard profile={profile} planning={planning} />
       </section>
 
-      <section aria-labelledby="stress">
-        <SectionTitle id="stress">Stress test on past data</SectionTitle>
-        <div className="card">
-          <p className="mb-2 text-sm text-navy-700">Illustrative ₹10 lakh invested in the suggested mix, replayed on past NAVs.</p>
-          <StressChart path={st.path} />
-          <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
-            <Stat k="Feb–Mar 2020 fall" v={pct(st.crash_2020_drawdown)} />
-            <Stat k="Worst peak-to-trough" v={pct(st.worst_peak_to_trough)} />
-            <Stat k="Worst rolling 12 months" v={pct(st.worst_rolling_12m)} />
-          </dl>
-          <p className="mt-2 text-xs text-navy-700">{st.note}{st.any_substituted ? " Funds with short history use their category median for earlier periods." : ""}</p>
-        </div>
-      </section>
+      {!hideBuyList && (
+        <section aria-labelledby="cashflow">
+          <SectionTitle id="cashflow">Monthly cashflow</SectionTitle>
+          <CashflowCard planning={planning} />
+        </section>
+      )}
+
+      {!hideBuyList && (
+        <section aria-labelledby="allocation">
+          <SectionTitle id="allocation">{disclosures.allocation_heading}</SectionTitle>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="card">
+              <p className="mb-3 text-sm text-navy-700">
+                Band: <strong>{allocation.band}</strong>. Shorter goals hold less equity, so the overall mix is a goal-weighted average. This is an illustration, not a buy list.
+              </p>
+              <Donut data={allocation.by_category} />
+            </div>
+            <div className="card overflow-x-auto">
+              <h3 className="mb-2 font-semibold">Allocation by goal</h3>
+              <p className="mb-2 text-xs text-navy-700">Swipe sideways to see every column.</p>
+              <table className="w-full min-w-[520px] text-left">
+                <thead><tr><th className="th">Goal</th><th className="th">Years</th><th className="th">Equity</th><th className="th">Debt</th><th className="th">Gold</th><th className="th">Liquid</th></tr></thead>
+                <tbody>
+                  {perGoal.map((g) => (
+                    <tr key={g.name} className="border-t border-navy-100">
+                      <td className="td font-medium">{g.name}</td><td className="td">{g.years}</td>
+                      {(["equity", "debt", "gold", "liquid"] as const).map((k) => (
+                        <td key={k} className="td">{g.by_asset_class[k].toFixed(0)}%</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="mt-3 text-sm text-navy-700">
+                Overall: equity {allocation.by_asset_class.equity.toFixed(1)}%, debt {allocation.by_asset_class.debt.toFixed(1)}%,
+                gold {allocation.by_asset_class.gold.toFixed(1)}%, liquid {allocation.by_asset_class.liquid.toFixed(1)}%.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {!hideBuyList && (
+        <section aria-labelledby="funds">
+          <SectionTitle id="funds">{disclosures.shortlist_heading}</SectionTitle>
+          <FundTable funds={plan.funds} />
+          <p className="mt-2 text-sm text-navy-700">
+            Regular plans only. Direct plans with lower expense ratios are available. Funds are keyed by scheme code; check the scheme documents before investing.
+          </p>
+        </section>
+      )}
+
+      {!hideBuyList && (
+        <section aria-labelledby="stress">
+          <SectionTitle id="stress">Stress test on past data</SectionTitle>
+          <div className="card">
+            <p className="mb-2 text-sm text-navy-700">Illustrative ₹10 lakh invested in this mix, replayed on past NAVs.</p>
+            <StressChart path={st.path} />
+            <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
+              <Stat k="Feb–Mar 2020 fall" v={pct(st.crash_2020_drawdown)} />
+              <Stat k="Worst peak-to-trough" v={pct(st.worst_peak_to_trough)} />
+              <Stat k="Worst rolling 12 months" v={pct(st.worst_rolling_12m)} />
+            </dl>
+            <p className="mt-2 text-xs text-navy-700">{st.note}{st.any_substituted ? " Funds with short history use their category median for earlier periods." : ""}</p>
+          </div>
+        </section>
+      )}
 
       <section aria-labelledby="goals">
         <SectionTitle id="goals">Goal-by-goal plan</SectionTitle>
         <div className="card mb-4 flex flex-wrap items-center justify-between gap-4">
           <div className="text-sm">
-            <p>Monthly surplus <strong>{inr(planning.totals.monthly_surplus)}</strong> · SIP needed for all goals <strong>{inr(planning.totals.required_sip)}</strong> · SIP funded <strong>{inr(planning.totals.allocated_sip)}</strong></p>
+            <p>Monthly surplus <strong>{inr(planning.totals.monthly_surplus)}</strong> · SIP needed for all goals <strong>{inr(planning.totals.required_sip)}</strong> · SIP funded <strong>{inr(planning.totals.allocated_sip)}</strong>
+              {leftover >= 1 ? <> · unused surplus <strong>{inr(leftover)}</strong></> : null}
+            </p>
           </div>
           <fieldset className="flex items-center gap-2" disabled={busy}>
             <legend className="sr-only">Yearly SIP step-up</legend>

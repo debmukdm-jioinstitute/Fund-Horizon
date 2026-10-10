@@ -142,7 +142,8 @@ test("wizard warns on huge targets and does not persist money fields", async ({ 
 
 test("home page offers plan retrieval and execution-only wording", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText(/execution-only/)).toBeVisible();
+  // Hero (WS4) and footer disclosure line (WS5) both include the phrase.
+  await expect(page.getByText(/execution-only/)).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "Already have a plan?" })).toBeVisible();
   await page.getByLabel("Plan link or ID").fill("not-a-plan");
   await page.getByRole("button", { name: "Open plan" }).click();

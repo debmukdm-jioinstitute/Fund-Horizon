@@ -5,7 +5,7 @@ from pathlib import Path
 from app.config import disclosures as d
 
 APP = Path(__file__).resolve().parents[1] / "app"
-BANNED = re.compile(r"\b(best|guaranteed|advice|advisory|recommend you buy)\b", re.I)
+BANNED = re.compile(r"\b(best|guaranteed|advice|advisory|recommend you buy)\b", re.IGNORECASE)
 
 
 def literals(path: Path):

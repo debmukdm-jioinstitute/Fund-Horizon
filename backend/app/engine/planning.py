@@ -173,7 +173,7 @@ def add_monte_carlo(g: dict, a: dict) -> dict:
 def rebalancing_rules(a: dict) -> list[str]:
     band = a["rebalancing"]["drift_band_pp"]
     return [  # TODO(owner-compliance-review): user-facing copy
-        f"Review the portfolio once a year.",
+        "Review the portfolio once a year.",
         f"Rebalance if any asset class drifts more than {band} percentage points from its target.",
         "Prefer directing new SIPs to the under-weight asset class before selling anything.",
     ]

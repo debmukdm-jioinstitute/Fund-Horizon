@@ -47,10 +47,10 @@ _CATEGORY_RULES: list[tuple[str, str]] = [
     ("sectoral_thematic", r"sectoral|thematic"),
 ]
 _COMPILED = [(k, re.compile(p)) for k, p in _CATEGORY_RULES]
-_GOLD_NAME = re.compile(r"\bgold\b", re.I)
-_ETF_NAME = re.compile(r"\betf\b|exchange traded", re.I)
-_FOF_NAME = re.compile(r"fund of fund|\bfof\b", re.I)
-_INDEX_DEBT_NAME = re.compile(r"gilt|bond|g-sec|sdl|debt|liquid|maturity", re.I)
+_GOLD_NAME = re.compile(r"\bgold\b", re.IGNORECASE)
+_ETF_NAME = re.compile(r"\betf\b|exchange traded", re.IGNORECASE)
+_FOF_NAME = re.compile(r"fund of fund|\bfof\b", re.IGNORECASE)
+_INDEX_DEBT_NAME = re.compile(r"gilt|bond|g-sec|sdl|debt|liquid|maturity", re.IGNORECASE)
 
 
 def normalise_category(category: str, scheme_name: str = "") -> str:

@@ -12,7 +12,7 @@ def make(**kw):
     return Client(**base)
 
 
-ANS_ALL = lambda i: {f"q{n}": i for n in range(1, 11)}  # noqa: E731
+ANS_ALL = lambda i: {f"q{n}": i for n in range(1, 11)}
 
 
 def test_weights_sum_to_one():

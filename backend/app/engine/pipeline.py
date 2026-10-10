@@ -5,7 +5,7 @@ import pandas as pd
 
 from app.config import load_assumptions
 from app.config.disclosures import all_disclosures
-from app.engine.allocation import goal_allocation, to_asset_classes, weighted_allocation
+from app.engine.allocation import to_asset_classes, weighted_allocation
 from app.engine.funds import select_funds
 from app.engine.planning import build_plan
 from app.engine.profiling import build_profile
@@ -45,4 +45,13 @@ def build_full_plan(req: PlanRequest, eligible: pd.DataFrame) -> dict:
         "planning": planning,
         "disclosures": all_disclosures(),
         "data_asof": a["data_asof"],
+        "assumptions": {
+            "asset_returns": a["asset_returns"],
+            "inflation": a["inflation"],
+            "retirement": a["retirement"],
+            "emergency_months": a["emergency"]["months"],
+            "insurance_personal_share": a["insurance"]["personal_share"],
+            "monte_carlo": {k: a["montecarlo"][k] for k in ("sims", "asset_mean", "asset_vol", "target_success")},
+            "rebalancing": a["rebalancing"],
+        },
     }

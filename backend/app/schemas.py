@@ -44,7 +44,7 @@ class Client(BaseModel):
     retirement_age: int = Field(default=60, ge=40, le=80)
 
     @model_validator(mode="after")
-    def _retire_after_now(self) -> "Client":
+    def _retire_after_now(self) -> Client:
         if self.retirement_age < self.age and self.employment_type != EmploymentType.retired_none:
             raise ValueError("Retirement age cannot be lower than current age")
         return self

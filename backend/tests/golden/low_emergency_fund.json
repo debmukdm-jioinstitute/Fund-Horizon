@@ -5,78 +5,80 @@
     "band": "Moderate",
     "priority_actions": [
       "Build emergency fund first",
-      "Insurance first"
+      "Close the term cover gap",
+      "Close the health cover gap"
     ],
     "capacity": 53.75,
     "mismatch": true
   },
   "asset_class": {
-    "equity": 49.62,
-    "debt": 33.13,
-    "gold": 9.92,
-    "liquid": 7.32
+    "equity": 25.0,
+    "debt": 41.5,
+    "gold": 5.0,
+    "liquid": 28.5
   },
   "funds": [
     [
-      "108466",
-      19.85
-    ],
-    [
-      "105503",
-      14.89
-    ],
-    [
-      "148989",
-      14.89
-    ],
-    [
-      "150229",
-      13.1
-    ],
-    [
       "101317",
-      10.2
-    ],
-    [
-      "116796",
-      9.92
-    ],
-    [
-      "129006",
-      9.83
+      29.95
     ],
     [
       "100546",
-      7.32
+      28.5
+    ],
+    [
+      "150229",
+      11.55
+    ],
+    [
+      "108466",
+      10.0
+    ],
+    [
+      "105503",
+      7.5
+    ],
+    [
+      "148989",
+      7.5
+    ],
+    [
+      "116796",
+      5.0
     ]
   ],
   "goals": [
     {
       "name": "Emergency corpus",
       "years": 2,
-      "future_cost": 449440,
-      "required_sip": 17570,
-      "allocated_sip": 17570,
-      "status": "funded",
+      "future_cost": 603000,
+      "required_sip": 21367,
+      "allocated_sip": 11500,
+      "status": "partially_funded",
       "equity": 0.0,
-      "success_prob": 0.494,
-      "sip_for_80": 17716
+      "success_prob": 0.0,
+      "sip_for_80": 21572
     },
     {
       "name": "Retirement",
       "years": 29,
       "future_cost": 59180305,
       "required_sip": 39214,
-      "allocated_sip": 5430,
+      "allocated_sip": 11500,
       "status": "partially_funded",
       "equity": 50.0,
       "success_prob": 0.0,
       "sip_for_80": 49252
     }
   ],
+  "totals": {
+    "allocated_sip": 23000,
+    "unused_surplus": 0,
+    "emergency_reserved": 11500
+  },
   "stress": {
-    "crash_2020_drawdown": -0.1259,
-    "worst_peak_to_trough": -0.1259,
-    "worst_rolling_12m": -0.0514
+    "crash_2020_drawdown": -0.0594,
+    "worst_peak_to_trough": -0.0594,
+    "worst_rolling_12m": 0.0092
   }
 }

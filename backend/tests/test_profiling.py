@@ -118,8 +118,36 @@ def test_emergency_cap_binds_on_high_scores():
     assert any("capped at Moderate" in n for n in res["notes"])
 
 
-def test_insurance_first_action():
-    c = make(dependents=2, term_cover=0)
-    assert "Insurance first" in p.build_profile(c, ANS_ALL(2))["priority_actions"]
-    c2 = make(dependents=0, term_cover=0)
-    assert "Insurance first" not in p.build_profile(c2, ANS_ALL(2))["priority_actions"]
+def test_insurance_actions_follow_actual_gaps():
+    # Zero dependents and zero cover still has a term need — action must fire.
+    uncovered = make(dependents=0, term_cover=0, health_cover=1_000_000)
+    actions = p.build_profile(uncovered, ANS_ALL(2))["priority_actions"]
+    assert p.ACTION_TERM_GAP in actions
+    assert p.ACTION_HEALTH_GAP not in actions
+
+    # Assets already above HLV: no term action even with dependents and zero cover.
+    rich = make(dependents=1, term_cover=0, health_cover=0, investments=500_000_000)
+    actions = p.build_profile(rich, ANS_ALL(2))["priority_actions"]
+    assert p.ACTION_TERM_GAP not in actions
+    assert p.ACTION_HEALTH_GAP in actions
+
+
+def test_zero_income_retiree_is_not_max_debt_burden():
+    c = make(age=80, employment_type="retired_none", monthly_income=0, monthly_expenses=70000,
+             monthly_emi=0, liquid_assets=5_000_000, investments=5_500_000, liabilities=0,
+             term_cover=0, health_cover=500_000, retirement_age=80)
+    cap = p.risk_capacity(c)
+    by = {f["factor"]: f for f in cap["factors"]}
+    assert by["savings_rate"]["score"] == 30 and by["savings_rate"]["value"] == 0.0
+    assert by["debt_burden"]["score"] == 100 and by["debt_burden"]["value"] == 0.0
+    assert by["net_worth"]["score"] == 100  # ~12.5 years of expenses
+    assert cap["score"] > 50
+
+
+def test_zero_income_with_emi_scores_debt_against_assets():
+    c = make(monthly_income=0, monthly_expenses=20000, monthly_emi=10000,
+             liquid_assets=200000, investments=800000)
+    by = {f["factor"]: f for f in p.risk_capacity(c)["factors"]}
+    # annual EMI / assets = 120000 / 1000000 = 0.12 → 80
+    assert by["debt_burden"]["score"] == 80
+    assert by["savings_rate"]["score"] == 10

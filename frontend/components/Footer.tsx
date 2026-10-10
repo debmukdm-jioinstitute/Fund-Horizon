@@ -6,7 +6,7 @@ export default async function Footer() {
   const meta = await getMetaServer();
   return (
     <footer className="border-t border-navy-100 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-navy-700">
+      <div className="mx-auto max-w-6xl px-4 py-8 text-xs leading-relaxed text-navy-700">
         {meta ? (
           <ul className="space-y-1" aria-label="Important disclosures">
             {meta.disclosures.lines.map((l) => (

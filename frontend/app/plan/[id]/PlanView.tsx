@@ -4,8 +4,9 @@
 
 import { useCallback, useState } from "react";
 import {
-  CashflowCard, EmergencyCard, FundTable, GoalCard, InsuranceCard, PlanLinkCard, ProfileCard,
-  SanityBanner, SectionTitle, unusedSurplus,
+  CashflowCard, EmergencyCard, FALLBACK_SCHEME_DOCS, FALLBACK_SUCCESS_NOTE, FundTable, GoalCard,
+  InsuranceCard, PlanLinkCard, ProfileCard, SanityBanner, SectionTitle, extraDisclosures, safeHeading,
+  unusedSurplus,
 } from "@/components/Results";
 import { Donut, StressChart } from "@/components/charts";
 import { getPlan, reportUrl } from "@/lib/api";
@@ -33,6 +34,12 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
   const surplus = planning.cashflow?.monthly_surplus ?? planning.totals.monthly_surplus;
   const leftover = unusedSurplus(planning);
   const hideBuyList = surplus <= 0;
+  const extra = extraDisclosures(disclosures);
+  const allocationTitle = safeHeading(disclosures.allocation_heading, "Illustrative allocation");
+  const shortlistTitle = safeHeading(
+    disclosures.shortlist_heading,
+    "Illustrative shortlist (ranked by past-performance composite; not a recommendation)",
+  );
 
   return (
     <div className="space-y-10">
@@ -51,10 +58,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
       </header>
 
       <div className="rounded-xl border border-navy-200 bg-navy-50 p-4 text-sm" role="note">
-        <p>
-          A goal marked “sized at assumed return” is on the central path only — often near a 50% chance in the simulation.
-          Chance figures use a constant mix (no glide path) and do not model tax. Work emergency fund, then insurance, then goals.
-        </p>
+        <p>{extra.success_prob_note || FALLBACK_SUCCESS_NOTE}</p>
       </div>
 
       <SanityBanner planning={planning} />
@@ -81,7 +85,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
 
       {!hideBuyList && (
         <section aria-labelledby="allocation">
-          <SectionTitle id="allocation">{disclosures.allocation_heading}</SectionTitle>
+          <SectionTitle id="allocation">{allocationTitle}</SectionTitle>
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="card">
               <p className="mb-3 text-sm text-navy-700">
@@ -116,11 +120,12 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
 
       {!hideBuyList && (
         <section aria-labelledby="funds">
-          <SectionTitle id="funds">{disclosures.shortlist_heading}</SectionTitle>
-          <FundTable funds={plan.funds} />
+          <SectionTitle id="funds">{shortlistTitle}</SectionTitle>
+          <FundTable funds={plan.funds} disclosures={disclosures} />
           <p className="mt-2 text-sm text-navy-700">
-            Regular plans only. Direct plans with lower expense ratios are available. Funds are keyed by scheme code; check the scheme documents before investing.
+            Regular plans only. Direct plans with lower expense ratios are available. Funds are keyed by scheme code.
           </p>
+          <p className="mt-1 text-sm text-navy-700">{extra.scheme_docs_note || FALLBACK_SCHEME_DOCS}</p>
         </section>
       )}
 
@@ -160,7 +165,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
           </fieldset>
         </div>
         <div className="space-y-5" aria-busy={busy}>
-          {planning.goals.map((g) => <GoalCard key={g.name} goal={g} />)}
+          {planning.goals.map((g) => <GoalCard key={g.name} goal={g} disclosures={disclosures} />)}
         </div>
         <ul className="card mt-5 list-disc space-y-1 pl-9 text-sm">
           <li className="-ml-4 list-none font-semibold">Rebalancing rules</li>

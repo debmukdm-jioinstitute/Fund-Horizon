@@ -6,7 +6,56 @@ import { useState } from "react";
 import Link from "next/link";
 import { FanChart, Gauge } from "@/components/charts";
 import { CATEGORY_LABELS, inr, pct, shortInr } from "@/lib/format";
-import type { FundPick, GoalPlan, Plan, Profile } from "@/lib/types";
+import type { Disclosures, FundPick, GoalPlan, Plan, Profile } from "@/lib/types";
+
+/** Extra /api/meta keys from WS5. Absent on older payloads. */
+export type ExtraDisclosures = Disclosures & {
+  tax_per_goal_note?: string;
+  success_prob_note?: string;
+  scheme_docs_note?: string;
+  sized_status_labels?: Partial<Record<GoalPlan["status"], string>>;
+  ranking_disclaimer?: string;
+};
+
+export function extraDisclosures(raw?: Disclosures): Pick<ExtraDisclosures, "tax_per_goal_note" | "success_prob_note" | "scheme_docs_note" | "sized_status_labels" | "ranking_disclaimer"> {
+  const d = (raw ?? {}) as ExtraDisclosures;
+  const labels = d.sized_status_labels;
+  return {
+    tax_per_goal_note: typeof d.tax_per_goal_note === "string" ? d.tax_per_goal_note : undefined,
+    success_prob_note: typeof d.success_prob_note === "string" ? d.success_prob_note : undefined,
+    scheme_docs_note: typeof d.scheme_docs_note === "string" ? d.scheme_docs_note : undefined,
+    ranking_disclaimer: typeof d.ranking_disclaimer === "string" ? d.ranking_disclaimer : undefined,
+    sized_status_labels: labels && typeof labels === "object" ? {
+      funded: typeof labels.funded === "string" ? labels.funded : undefined,
+      partially_funded: typeof labels.partially_funded === "string" ? labels.partially_funded : undefined,
+      unfunded: typeof labels.unfunded === "string" ? labels.unfunded : undefined,
+    } : undefined,
+  };
+}
+
+/** Replace older API headings that still use allocation-as-instruction tone. */
+export function safeHeading(raw: string | undefined, fallback: string): string {
+  if (typeof raw !== "string" || !raw.trim() || /suggest/i.test(raw)) return fallback;
+  return raw;
+}
+
+const FALLBACK_SIZED_LABELS: Record<GoalPlan["status"], string> = {
+  funded: "Sized at assumed return (central path)",
+  partially_funded: "Partly sized at assumed return",
+  unfunded: "Not sized yet",
+};
+
+export const FALLBACK_SUCCESS_NOTE =
+  "A goal marked “sized at assumed return” is on the central path only — often near a 50% chance in the simulation. Chance figures use a constant mix (no glide path) and do not model tax. Work emergency fund, then insurance, then goals.";
+
+export const FALLBACK_TAX_PER_GOAL =
+  "Pre-tax illustration: the SIP, future cost and chance figures for this goal ignore tax. They do not mean the SIP is enough after tax.";
+
+export const FALLBACK_SCHEME_DOCS =
+  "Before investing, read the scheme documents (SID and KIM) on the AMC website or via AMFI. This illustration does not show per-scheme riskometer images.";
+
+export const FALLBACK_SHORTLIST_LINE =
+  "Ranked by a past-performance composite (return, rolling median, Sharpe and drawdown) — not a consistency-first score, and not a recommendation. Past figures may not continue.";
 
 export function SectionTitle({ id, children }: { id: string; children: React.ReactNode }) {
   return <h2 id={id} className="mb-3 text-xl font-bold">{children}</h2>;
@@ -120,8 +169,10 @@ export function ProfileCard({ profile, planning }: { profile: Profile; planning?
   );
 }
 
-export function FundTable({ funds }: { funds: FundPick[] }) {
+export function FundTable({ funds, disclosures }: { funds: FundPick[]; disclosures?: Disclosures }) {
+  const extra = extraDisclosures(disclosures);
   const compareCodes = funds.map((f) => f.scheme_code).join(",");
+  const line = extra.ranking_disclaimer || FALLBACK_SHORTLIST_LINE;
   return (
     <div
       className="card overflow-x-auto p-0"
@@ -130,9 +181,7 @@ export function FundTable({ funds }: { funds: FundPick[] }) {
       aria-label="Illustrative fund shortlist. Scroll sideways on a small screen to see every column."
     >
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-navy-100 bg-navy-50 p-3">
-        <span className="text-xs font-medium text-navy-700">
-          Ranked by a past-performance composite (return, rolling median, Sharpe and drawdown) — not a consistency-first score, and not a recommendation. Past figures may not continue.
-        </span>
+        <span className="text-xs font-medium text-navy-700">{line}</span>
         {funds.length >= 2 && (
           <Link
             href={`/funds/compare?codes=${compareCodes}`}
@@ -190,7 +239,7 @@ export function FundTable({ funds }: { funds: FundPick[] }) {
 
 const SUCCESS_GREEN = 0.6;
 
-export function fundingBadge(goal: GoalPlan): { label: string; tone: string; extra: string } {
+export function fundingBadge(goal: GoalPlan, labels?: Partial<Record<GoalPlan["status"], string>>): { label: string; tone: string; extra: string } {
   const mc = goal.monte_carlo;
   const p = mc?.success_prob;
   const sip80 = mc?.sip_for_target_success;
@@ -201,25 +250,27 @@ export function fundingBadge(goal: GoalPlan): { label: string; tone: string; ext
     typeof sip80 === "number" ? `SIP for ~${Math.round(target * 100)}% ${inr(sip80)}` : null,
   ].filter(Boolean);
   const extra = extraBits.join(" · ");
+  const label = labels?.[goal.status] || FALLBACK_SIZED_LABELS[goal.status];
 
   if (goal.status === "unfunded") {
-    return { label: "Not funded yet", tone: "bg-rose-100 text-rose-700", extra };
+    return { label, tone: "bg-rose-100 text-rose-700", extra };
   }
   if (goal.status === "partially_funded") {
-    return { label: "Partly sized at assumed return", tone: "bg-amber-100 text-amber-600", extra };
+    return { label, tone: "bg-amber-100 text-amber-600", extra };
   }
   const canGreen = typeof p === "number" && p >= SUCCESS_GREEN;
   return {
-    label: "Sized at assumed return (central path)",
+    label,
     tone: canGreen ? "bg-teal-100 text-teal-700" : "bg-amber-100 text-amber-600",
     extra,
   };
 }
 
-export function GoalCard({ goal: g }: { goal: GoalPlan }) {
+export function GoalCard({ goal: g, disclosures }: { goal: GoalPlan; disclosures?: Disclosures }) {
+  const extra = extraDisclosures(disclosures);
   const mc = g.monte_carlo;
   const lv = g.levers;
-  const badge = fundingBadge(g);
+  const badge = fundingBadge(g, extra.sized_status_labels);
   return (
     <article className="card" aria-label={g.name}>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -245,8 +296,9 @@ export function GoalCard({ goal: g }: { goal: GoalPlan }) {
             <p>Chance of reaching the goal with the funded SIP, from simulated paths. P10 / P50 / P90: {shortInr(mc?.p10)} / {shortInr(mc?.p50)} / {shortInr(mc?.p90)}.</p>
           </div>
           <p className="text-xs text-navy-700">
-            This chance uses a constant-mix illustration (same allocation every year, rebalanced annually). It is not a glide path and does not model tax or withdrawals after the goal date. A goal sized at the assumed return is often near a 50% chance.
+            This chance uses a constant-mix illustration (same allocation every year, rebalanced annually). It is not a glide path and does not model withdrawals after the goal date. A goal sized at the assumed return is often near a 50% chance.
           </p>
+          <p className="text-xs text-navy-700">{extra.tax_per_goal_note || FALLBACK_TAX_PER_GOAL}</p>
           {lv && (
             <div className="rounded-lg bg-navy-50 p-3">
               <p className="font-semibold">Ways to close the gap</p>

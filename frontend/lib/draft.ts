@@ -150,9 +150,9 @@ export function toRequest(d: Draft): PlanRequest {
     },
     goals,
     answers: synced.answers,
-    consent: synced.consent,
+    // WS3 persists this server-side. Always send the checkbox value (true only after the user ticks it).
+    consent: synced.consent === true,
   };
-  // WS3 may start requiring consent; extra keys are ignored if the API is still on the old schema.
   return body as PlanRequest;
 }
 

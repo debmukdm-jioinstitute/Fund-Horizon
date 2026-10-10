@@ -76,7 +76,10 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   await page.getByRole("button", { name: "Show my plan" }).click();
   await expect(page.getByText("Please tick the consent box to continue.")).toBeVisible();
   await page.getByRole("checkbox").check();
+  const createReq = page.waitForRequest((r) => r.url().includes("/api/plans") && r.method() === "POST");
   await page.getByRole("button", { name: "Show my plan" }).click();
+  const posted = await createReq;
+  expect(posted.postDataJSON().consent).toBe(true);
 
   await page.waitForURL(/\/plan\/[0-9a-f-]{36}$/);
   await expect(page.getByRole("heading", { name: "Your illustrative plan" })).toBeVisible();
@@ -85,7 +88,7 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   await expect(page.getByText("Aggressive", { exact: false }).first()).toBeVisible();
 
   // Finding 4 / 10 / 15 / retrieval / sequenced actions
-  await expect(page.getByText("Sized at assumed return (central path)").first()).toBeVisible();
+  await expect(page.getByText(/Sized.*(central path)/).first()).toBeVisible();
   await expect(page.getByText(/P\(success\)/).first()).toBeVisible();
   await expect(page.getByText(/SIP for ~80%/).first()).toBeVisible();
   await expect(page.getByText("Funded", { exact: true })).toHaveCount(0);
@@ -93,11 +96,13 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   await expect(page.getByText(/past-performance composite \(return, rolling median/)).toBeVisible();
   await expect(page.getByText("Swipe sideways to see every column in the shortlist.")).toBeVisible();
   await expect(page.getByText("What to do first")).toBeVisible();
-  await expect(page.getByText("Then goals")).toBeVisible();
+  await expect(page.locator("ol").getByText(/Then goals/)).toBeVisible();
   await expect(page.getByText(/Unused surplus/)).toBeVisible();
   await expect(page.getByText("Save this plan link")).toBeVisible();
   await expect(page.getByRole("button", { name: "Copy plan link" })).toBeVisible();
-  await expect(page.getByText(/constant-mix/)).toBeVisible();
+  await expect(page.getByText(/constant-mix/).first()).toBeVisible();
+  await expect(page.getByText(/Pre-tax illustration/).first()).toBeVisible();
+  await expect(page.getByText(/SID and KIM/).first()).toBeVisible();
 
   // Step-up toggle recalculates
   await page.getByRole("button", { name: "10%" }).click();

@@ -128,7 +128,7 @@ export default function NewPlan() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      const plan = await createPlan(toRequest(draft));
+      const plan = await createPlan(toRequest({ ...draft, consent: true }));
       try {
         sessionStorage.removeItem(DRAFT_STORAGE_KEY);
         sessionStorage.removeItem(DRAFT_STORAGE_LEGACY_KEY);

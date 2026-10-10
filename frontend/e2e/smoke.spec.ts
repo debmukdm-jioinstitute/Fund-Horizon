@@ -202,6 +202,11 @@ test("fund analytics deep page renders metrics, rolling returns, and capture cha
   await expect(page.getByText("Risk & Volatility Profile")).toBeVisible();
   await expect(page.getByText("Market Capture vs Category")).toBeVisible();
   await expect(page.getByText("ARN 345439").first()).toBeVisible();
+  await expect(page.getByTestId("analytics-cagr-3y")).toHaveText(/\d+\.\d+%/);
+  await expect(page.getByTestId("analytics-sip-xirr")).toHaveText(/\d+\.\d+%/);
+  await expect(page.getByTestId("analytics-vol-3y")).toHaveText(/\d+\.\d+%/);
+  await expect(page.getByTestId("analytics-underwater")).toHaveText(/\d+ months/);
+  await expect(page.getByTestId("capture-chart")).toBeVisible();
 });
 
 test("fund comparison page renders side-by-side comparison and correlation matrix", async ({ page }) => {
@@ -211,5 +216,17 @@ test("fund comparison page renders side-by-side comparison and correlation matri
   await expect(page.getByText("3Y Volatility")).toBeVisible();
   await expect(page.getByText("Return Correlation & Overlap Proxy")).toBeVisible();
   await expect(page.getByText("return-correlation overlap, not holdings overlap")).toBeVisible();
+  await expect(page.getByTestId("compare-fund-count")).toContainText("2 scheme");
+  await expect(page.getByTestId("compare-cagr-3y-128628")).toHaveText(/\d+\.\d+%/);
+  await expect(page.getByTestId("compare-cagr-3y-148535")).toHaveText(/\d+\.\d+%/);
+});
+
+test("compare page with one code pre-fills a same-category peer", async ({ page }) => {
+  await page.goto("/funds/compare?codes=128628");
+  await expect(page.getByRole("heading", { name: "Side-by-Side Scheme Comparison" })).toBeVisible();
+  await expect(page.getByTestId("compare-fund-count")).toContainText("2 scheme");
+  await expect(page.getByTestId("compare-empty")).toHaveCount(0);
+  await expect(page.getByTestId("compare-cagr-3y-128628")).toHaveText(/\d+\.\d+%/);
+  await expect(page.locator("[data-testid^='compare-cagr-3y-']")).toHaveCount(2);
 });
 

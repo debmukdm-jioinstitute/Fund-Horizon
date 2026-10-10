@@ -4,7 +4,7 @@
     "final_score": 30.0,
     "band": "Moderately Conservative",
     "priority_actions": [
-      "Insurance first"
+      "Close the health cover gap"
     ],
     "capacity": 84.0,
     "mismatch": true
@@ -49,6 +49,11 @@
       "sip_for_80": 220549
     }
   ],
+  "totals": {
+    "allocated_sip": 110000,
+    "unused_surplus": 0,
+    "emergency_reserved": 0
+  },
   "stress": {
     "crash_2020_drawdown": 0.0,
     "worst_peak_to_trough": 0.0,

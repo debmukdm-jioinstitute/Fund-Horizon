@@ -96,10 +96,11 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   await expect(page.getByText(/past-performance composite/).first()).toBeVisible();
   await expect(page.getByText("Swipe sideways to see every column in the shortlist.")).toBeVisible();
   await expect(page.getByText("What to do first")).toBeVisible();
-  await expect(page.locator("ol").getByText("Emergency fund")).toBeVisible();
-  await expect(page.locator("ol").getByText("Term cover")).toBeVisible();
-  await expect(page.locator("ol").getByText("Health cover")).toBeVisible();
-  await expect(page.locator("ol").getByText(/Then goals/)).toBeVisible();
+  const sequenceTitles = page.locator("ol p.font-semibold");
+  await expect(sequenceTitles.filter({ hasText: "Emergency fund" })).toBeVisible();
+  await expect(sequenceTitles.filter({ hasText: "Term cover" })).toBeVisible();
+  await expect(sequenceTitles.filter({ hasText: "Health cover" })).toBeVisible();
+  await expect(sequenceTitles.filter({ hasText: "Then goals" })).toBeVisible();
   await expect(page.getByText(/Unused surplus/)).toBeVisible();
   await expect(page.getByText("Save this plan link")).toBeVisible();
   await expect(page.getByRole("button", { name: "Copy plan link" })).toBeVisible();

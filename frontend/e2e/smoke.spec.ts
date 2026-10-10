@@ -68,3 +68,47 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   expect(bytes.length).toBeGreaterThan(20_000);
   expect(bytes.subarray(0, 4).toString()).toBe("%PDF");
 });
+
+test("unknown plan renders real 404 page", async ({ page }) => {
+  const response = await page.goto("/plan/00000000-0000-0000-0000-000000000000");
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole("heading", { name: "Plan not found" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Start a new plan" })).toBeVisible();
+});
+
+test("home page renders exactly one disclosure block in the footer", async ({ page }) => {
+  await page.goto("/");
+  const footerDisclosures = page.getByRole("list", { name: "Important disclosures" });
+  await expect(footerDisclosures).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Please note" })).toHaveCount(0);
+  await expect(page.getByText("ARN 345439")).toHaveCount(1);
+});
+
+test("security headers are present on responses", async ({ page }) => {
+  const res = await page.goto("/");
+  expect(res?.headers()["x-frame-options"]).toBe("DENY");
+  expect(res?.headers()["x-content-type-options"]).toBe("nosniff");
+  expect(res?.headers()["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+  expect(res?.headers()["permissions-policy"]).toContain("camera=()");
+  expect(res?.headers()["x-powered-by"]).toBeUndefined();
+});
+
+test("fund analytics deep page renders metrics, rolling returns, and capture chart", async ({ page }) => {
+  await page.goto("/funds/128628");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByText("NAV History")).toBeVisible();
+  await expect(page.getByText("Rolling Returns Consistency")).toBeVisible();
+  await expect(page.getByText("Risk & Volatility Profile")).toBeVisible();
+  await expect(page.getByText("Market Capture vs Category")).toBeVisible();
+  await expect(page.getByText("ARN 345439").first()).toBeVisible();
+});
+
+test("fund comparison page renders side-by-side comparison and correlation matrix", async ({ page }) => {
+  await page.goto("/funds/compare?codes=128628,148535");
+  await expect(page.getByRole("heading", { name: "Side-by-Side Scheme Comparison" })).toBeVisible();
+  await expect(page.getByText("3Y CAGR")).toBeVisible();
+  await expect(page.getByText("3Y Volatility")).toBeVisible();
+  await expect(page.getByText("Return Correlation & Overlap Proxy")).toBeVisible();
+  await expect(page.getByText("return-correlation overlap, not holdings overlap")).toBeVisible();
+});
+

@@ -22,6 +22,22 @@ def _metric_series(df: pd.DataFrame, key: str) -> pd.Series:
         return -df["max_drawdown_3y"].abs()
     if key == "neg_vol_3y":
         return -df["vol_3y"]
+    if key == "roll3y_pct_positive":
+        return df["roll3y_pct_positive"] if "roll3y_pct_positive" in df else pd.Series(np.nan, index=df.index)
+    if key == "roll1y_pct_positive":
+        return df["roll1y_pct_positive"] if "roll1y_pct_positive" in df else pd.Series(np.nan, index=df.index)
+    if key == "neg_roll3y_dispersion":
+        if "roll3y_max" in df and "roll3y_min" in df:
+            return -(df["roll3y_max"] - df["roll3y_min"])
+        return pd.Series(np.nan, index=df.index)
+    if key == "neg_roll1y_dispersion":
+        if "roll1y_max" in df and "roll1y_min" in df:
+            return -(df["roll1y_max"] - df["roll1y_min"])
+        return pd.Series(np.nan, index=df.index)
+    if key == "sortino_3y":
+        return df["sortino_3y"] if "sortino_3y" in df else pd.Series(np.nan, index=df.index)
+    if key == "neg_downside_capture":
+        return -df["downside_capture"] if "downside_capture" in df else pd.Series(np.nan, index=df.index)
     return df[key]
 
 
@@ -35,10 +51,13 @@ def min_history(cat: str, a: dict | None = None) -> float:
     return a["min_history_years"]["equity" if asset == "equity" else "other"]
 
 
-def score_pool(pool: pd.DataFrame, cat: str) -> pd.DataFrame:
+def score_pool(pool: pd.DataFrame, cat: str, custom_weights: dict | None = None) -> pd.DataFrame:
     """Pool with `score` (0-1) plus `_top_*` columns (rank as 'top N%'); unscored rows dropped."""
     sc = load_scoring()
-    weights = sc["income"] if is_income_category(cat) else sc["growth"]
+    if custom_weights is not None:
+        weights = custom_weights
+    else:
+        weights = sc["income"] if is_income_category(cat) else sc["growth"]
     out = pool.copy()
     num = pd.Series(0.0, index=out.index)
     den = pd.Series(0.0, index=out.index)
@@ -57,12 +76,25 @@ def score_pool(pool: pd.DataFrame, cat: str) -> pd.DataFrame:
     return out.sort_values(["score", "scheme_code"], ascending=[False, True])
 
 
-def candidate_pool(df: pd.DataFrame, cat: str, a: dict | None = None) -> pd.DataFrame:
-    """Eligible funds of a canonical category passing history and demat rules, scored."""
-    pool = df[(df["cat"] == cat) & (~df["needs_demat"]) & (df["history_years"] >= min_history(cat, a))]
+def candidate_pool(
+    df: pd.DataFrame, cat: str, a: dict | None = None, custom_weights: dict | None = None
+) -> pd.DataFrame:
+    """Eligible funds of a canonical category passing history, demat and data quality rules, scored."""
+    dq_cond = (
+        df["data_quality"].isin(["ok", "split_adjusted"])
+        if "data_quality" in df.columns
+        else pd.Series(True, index=df.index)
+    )
+    pool = df[
+        (df["cat"] == cat)
+        & (~df["needs_demat"])
+        & dq_cond
+        & (df["history_years"] >= min_history(cat, a))
+    ]
     if not len(pool):
         return pool.assign(score=pd.Series(dtype=float))
-    return score_pool(pool, cat)
+    return score_pool(pool, cat, custom_weights)
+
 
 
 def _pct(v: float, digits: int = 1) -> str:
@@ -178,3 +210,21 @@ def _merge_small(picks: list[dict], sel: dict) -> list[dict]:
         target["merged_from"].append({"cat": victim["cat"], "weight_pct": victim["weight_pct"]})
         picks = rest
     return sorted(picks, key=lambda p: (-p["weight_pct"], p["scheme_code"]))
+
+
+def rank_category_funds(cat: str, df: pd.DataFrame | None = None) -> list[dict]:
+    """Rank all clean schemes in a category using composite score with consistency and risk."""
+    from app.data.loader import eligible_funds
+
+    base = eligible_funds() if df is None else df
+    sc = load_scoring()
+    ranking_weights = sc.get("category_ranking", {})
+    weights = ranking_weights.get("income" if is_income_category(cat) else "growth")
+    pool = candidate_pool(base, cat, custom_weights=weights)
+    out: list[dict] = []
+    for rank, (_, row) in enumerate(pool.iterrows(), start=1):
+        d = _pick_to_dict(row, cat, 0.0, "")
+        d["rank"] = rank
+        out.append(d)
+    return out
+

@@ -113,3 +113,40 @@ def test_no_nan_in_json(client):
 def test_cors_header(client):
     r = client.get("/api/meta", headers={"Origin": "http://localhost:3000"})
     assert r.headers["access-control-allow-origin"] == "http://localhost:3000"
+
+
+def test_security_headers(client):
+    r = client.get("/healthz")
+    assert r.headers.get("x-content-type-options") == "nosniff"
+    assert r.headers.get("x-frame-options") == "DENY"
+    assert "max-age=63072000" in r.headers.get("strict-transport-security", "")
+    assert r.headers.get("referrer-policy") == "strict-origin-when-cross-origin"
+    assert "camera=()" in r.headers.get("permissions-policy", "")
+    assert r.headers.get("content-security-policy") == "default-src 'none'; frame-ancestors 'none'"
+
+
+def test_docs_enabled_toggle(monkeypatch):
+    monkeypatch.setenv("FH_ENABLE_DOCS", "false")
+    app_no_docs = create_app()
+    with TestClient(app_no_docs) as c:
+        assert c.get("/docs").status_code == 404
+        assert c.get("/openapi.json").status_code == 404
+
+
+def test_fund_detail_direct_and_ineligible(client):
+    # Direct plan: informative message with regular equivalent
+    r_direct = client.get("/api/funds/135762")
+    assert r_direct.status_code == 404
+    assert "Direct plans are not offered" in r_direct.json()["detail"]
+    assert "Regular equivalent 135759" in r_direct.json()["detail"]
+
+    # Ineligible plan due to data quality (nav_shock)
+    r_inel = client.get("/api/funds/133867")
+    assert r_inel.status_code == 404
+    assert "ineligible" in r_inel.json()["detail"]
+
+    # Non-existent scheme code
+    r_none = client.get("/api/funds/0000")
+    assert r_none.status_code == 404
+    assert r_none.json()["detail"] == "Scheme not found"
+

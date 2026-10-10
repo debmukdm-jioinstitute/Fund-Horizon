@@ -137,3 +137,102 @@ export interface Plan {
   disclosures: Disclosures;
   data_asof: string;
 }
+
+export interface FundNavPoint {
+  date: string;
+  nav: number;
+}
+
+export interface FundDetail {
+  scheme_code: string;
+  scheme_name: string;
+  amc: string;
+  category: string;
+  cat: string;
+  plan: string;
+  option: string;
+  eligible_for_shortlist?: boolean;
+  nav_monthly: FundNavPoint[];
+}
+
+export interface RollingStats {
+  mean: number | null;
+  median: number | null;
+  min: number | null;
+  max: number | null;
+  pct_positive: number | null;
+  count: number;
+}
+
+export interface DrawdownDuration {
+  max_drawdown: number;
+  peak_date: string;
+  trough_date: string;
+  recovery_date: string | null;
+  days_peak_to_trough: number;
+  days_recovery: number | null;
+}
+
+export interface FundAnalytics {
+  scheme_code: string;
+  scheme_name: string;
+  category: string;
+  cat: string;
+  amc: string;
+  last_nav_date: string;
+  returns: {
+    cagr_1y: number | null;
+    cagr_3y: number | null;
+    cagr_5y: number | null;
+    sip_xirr_3y: number | null;
+  };
+  rolling_returns: {
+    "1y": RollingStats;
+    "3y": RollingStats;
+    "5y": RollingStats;
+  };
+  risk: {
+    volatility_3y: number | null;
+    sharpe_3y: number | null;
+    sortino_3y: number | null;
+    max_drawdown: number | null;
+    drawdown_duration: DrawdownDuration | null;
+  };
+  capture_ratios: {
+    up_market_capture: number | null;
+    down_market_capture: number | null;
+    capture_ratio: number | null;
+    benchmark: string;
+  };
+  disclaimer: string;
+}
+
+export interface CompareFundItem {
+  scheme_code: string;
+  scheme_name: string;
+  category: string;
+  amc: string;
+  cagr_3y: number | null;
+  cagr_5y: number | null;
+  vol_3y: number | null;
+  sharpe_3y: number | null;
+  max_drawdown_3y: number | null;
+}
+
+export interface CorrelationMatrix {
+  codes: string[];
+  matrix: number[][];
+  flagged_pairs: {
+    scheme_1: string;
+    scheme_2: string;
+    correlation: number;
+    note: string;
+  }[];
+  label: string;
+}
+
+export interface CompareResponse {
+  funds: CompareFundItem[];
+  correlation: CorrelationMatrix;
+  disclaimer: string;
+}

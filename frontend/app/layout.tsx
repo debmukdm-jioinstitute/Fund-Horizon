@@ -4,9 +4,25 @@ import Link from "next/link";
 import "./globals.css";
 import Footer from "@/components/Footer";
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://web-production-a0cf3.up.railway.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "Fund Horizon Planner",
   description: "Illustrative financial planning for your goals, from Fund Horizon.",
+  openGraph: {
+    title: "Fund Horizon Planner",
+    description: "Illustrative financial planning for your goals, from Fund Horizon.",
+    url: "/",
+    siteName: "Fund Horizon",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fund Horizon Planner",
+    description: "Illustrative financial planning for your goals, from Fund Horizon.",
+  },
 };
 
 export const dynamic = "force-dynamic";

@@ -1,6 +1,5 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 import Link from "next/link";
-import { getMetaServer } from "@/lib/api";
 
 const STEPS = [
   { t: "About you", d: "Age, income, expenses and what you already have." },
@@ -9,8 +8,7 @@ const STEPS = [
   { t: "Your plan", d: "A suggested allocation, an illustrative shortlist, SIP amounts and a PDF." },
 ];
 
-export default async function Home() {
-  const meta = await getMetaServer();
+export default function Home() {
   return (
     <div className="space-y-12">
       <section className="rounded-2xl bg-navy-900 px-6 py-12 text-white md:px-12">
@@ -45,14 +43,6 @@ export default async function Home() {
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="card" aria-labelledby="note">
-        <h2 id="note" className="text-lg font-bold">Please note</h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-navy-700">
-          {meta ? meta.disclosures.lines.map((l) => <li key={l}>{l}</li>) : <li>Disclosures are temporarily unavailable.</li>}
-          {meta && <li>{meta.disclosures.tax_info}</li>}
-        </ul>
       </section>
     </div>
   );

@@ -51,3 +51,9 @@ def load_scoring() -> dict:
 def load_questionnaire() -> dict:
     with open(CONFIG_DIR / "questionnaire.json", encoding="utf-8") as f:
         return json.load(f)
+
+
+@lru_cache(maxsize=1)
+def load_analytics() -> dict:
+    return _load_yaml("analytics.yaml")
+

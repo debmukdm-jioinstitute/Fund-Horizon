@@ -76,3 +76,14 @@ class PlanRequest(BaseModel):
         if any(i < 0 for i in v.values()):
             raise ValueError("Answer indexes must be zero or positive")
         return v
+
+
+class PortfolioHolding(BaseModel):
+    scheme_code: str = Field(min_length=1)
+    weight_pct: float = Field(gt=0.0, le=100.0)
+
+
+class PortfolioAnalyzeRequest(BaseModel):
+    holdings: list[PortfolioHolding] = Field(min_length=1, max_length=20)
+    correlation_threshold: float = Field(default=0.80, ge=0.1, le=0.99)
+

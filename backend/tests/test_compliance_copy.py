@@ -28,8 +28,19 @@ def test_no_banned_words_in_user_facing_strings():
         for lit in literals(path):
             if BANNED.search(lit):
                 offenders.append((path.name, lit[:60]))
-    for s in [*d.DISCLOSURE_LINES, d.SHORTLIST_HEADING, d.TAX_INFO, d.CONSENT_TEXT, d.ALLOCATION_HEADING]:
+    for s in [
+        *d.DISCLOSURE_LINES,
+        d.SHORTLIST_HEADING,
+        d.TAX_INFO,
+        d.CONSENT_TEXT,
+        d.ALLOCATION_HEADING,
+        d.ANALYTICS_DISCLAIMER,
+        d.COMPARE_DISCLAIMER,
+        d.RANKING_DISCLAIMER,
+        d.PORTFOLIO_DISCLAIMER,
+    ]:
         assert not BANNED.search(s), s
+
     for q in (APP / "config" / "questionnaire.json").read_text().splitlines():
         assert not BANNED.search(q)
     assert not offenders, offenders

@@ -32,6 +32,22 @@ CONSENT_TEXT = (
 
 ALLOCATION_HEADING = "Suggested allocation"  # TODO(owner-compliance-review)
 
+ANALYTICS_DISCLAIMER = (
+    "All figures are historical illustrations and do not assure future performance."
+)  # TODO(owner-compliance-review)
+
+COMPARE_DISCLAIMER = (
+    "Illustrative comparison; not an investment recommendation."
+)  # TODO(owner-compliance-review)
+
+RANKING_DISCLAIMER = (
+    "Ranked by past-performance composite score; illustrative and not a recommendation."
+)  # TODO(owner-compliance-review)
+
+PORTFOLIO_DISCLAIMER = (
+    "Illustrative portfolio analysis; does not constitute an investment recommendation."
+)  # TODO(owner-compliance-review)
+
 BANNED_WORDS = ["best", "guaranteed", "advice", "advisory", "recommend you buy"]
 
 
@@ -44,4 +60,9 @@ def all_disclosures() -> dict:
         "tax_info": TAX_INFO,
         "consent_text": CONSENT_TEXT,
         "allocation_heading": ALLOCATION_HEADING,
+        "analytics_disclaimer": ANALYTICS_DISCLAIMER,
+        "compare_disclaimer": COMPARE_DISCLAIMER,
+        "ranking_disclaimer": RANKING_DISCLAIMER,
+        "portfolio_disclaimer": PORTFOLIO_DISCLAIMER,
     }
+

@@ -1,7 +1,8 @@
 """Vectorised Monte Carlo for goal success. Fixed seed => reproducible; common random numbers
 across SIP levels => success probability is monotone non-decreasing in SIP.
 
-Annual returns: correlated multivariate lognormal per asset class (equity, debt, gold, liquid).
+Annual returns: correlated multivariate lognormal per asset class (equity, debt, gold, liquid)
+by default, with optional historical bootstrap resampling.
 For mean m and vol s of the simple return: sigma^2 = ln(1 + s^2/(1+m)^2), mu = ln(1+m) - sigma^2/2.
 """
 from __future__ import annotations
@@ -21,9 +22,25 @@ def _corr_matrix(c: dict) -> np.ndarray:
     return m
 
 
-def draw_returns(years: int, mc: dict) -> np.ndarray:
-    """Simple annual returns, shape (sims, years, 4). Deterministic given mc['seed']."""
+def draw_returns(
+    years: int,
+    mc: dict,
+    method: str = "lognormal",
+    historical_returns: np.ndarray | None = None,
+) -> np.ndarray:
+    """Simple annual returns, shape (sims, years, 4). Deterministic given mc['seed'].
+
+    Supports 'lognormal' (default, theoretical calibrated distribution) or 'bootstrap'
+    (resampling from historical return observations).
+    """
     rng = np.random.default_rng(mc["seed"])
+
+    if method == "bootstrap" and historical_returns is not None and len(historical_returns) >= 3:
+        # Bootstrap: resample historical 4-asset annual returns with replacement
+        idx = rng.choice(len(historical_returns), size=(mc["sims"], years), replace=True)
+        return historical_returns[idx]
+
+    # Default lognormal
     mean = np.array([mc["asset_mean"][a] for a in ASSETS])
     vol = np.array([mc["asset_vol"][a] for a in ASSETS])
     sig2 = np.log(1.0 + (vol / (1.0 + mean)) ** 2)
@@ -34,13 +51,21 @@ def draw_returns(years: int, mc: dict) -> np.ndarray:
 
 
 def simulate(
-    mix_pct: dict[str, float], years: int, initial: float, sip: float, step_up: float,
-    target: float, mc: dict, draws: np.ndarray | None = None,
+    mix_pct: dict[str, float],
+    years: int,
+    initial: float,
+    sip: float,
+    step_up: float,
+    target: float,
+    mc: dict,
+    draws: np.ndarray | None = None,
+    method: str = "lognormal",
+    historical_returns: np.ndarray | None = None,
 ) -> dict:
     """Simulate a goal. Returns probability of reaching `target`, P10/P50/P90 end values and the
     year-by-year percentile fan (length years+1, including year 0)."""
     if draws is None:
-        draws = draw_returns(years, mc)
+        draws = draw_returns(years, mc, method=method, historical_returns=historical_returns)
     w = np.array([mix_pct.get(a, 0.0) for a in ASSETS]) / 100.0
     port = draws[:, :years, :] @ w                      # (sims, years)
     v = np.full(port.shape[0], float(initial))
@@ -62,12 +87,19 @@ def simulate(
 
 
 def sip_for_success(
-    mix_pct: dict[str, float], years: int, initial: float, step_up: float, target: float,
-    mc: dict, goal_prob: float | None = None,
+    mix_pct: dict[str, float],
+    years: int,
+    initial: float,
+    step_up: float,
+    target: float,
+    mc: dict,
+    goal_prob: float | None = None,
+    method: str = "lognormal",
+    historical_returns: np.ndarray | None = None,
 ) -> int:
     """Smallest monthly SIP (rupees) with success >= goal_prob (default config), by bisection."""
     p = goal_prob if goal_prob is not None else mc["target_success"]
-    draws = draw_returns(years, mc)
+    draws = draw_returns(years, mc, method=method, historical_returns=historical_returns)
 
     def ok(s: float) -> bool:
         return simulate(mix_pct, years, initial, s, step_up, target, mc, draws)["success_prob"] >= p

@@ -2,6 +2,7 @@
 
 // TODO(owner-compliance-review): this file contains user-facing copy.
 
+import Link from "next/link";
 import { FanChart, Gauge } from "@/components/charts";
 import { CATEGORY_LABELS, STATUS_LABELS, inr, pct, shortInr } from "@/lib/format";
 import type { FundPick, GoalPlan, Plan, Profile } from "@/lib/types";
@@ -49,8 +50,22 @@ export function ProfileCard({ profile }: { profile: Profile }) {
 }
 
 export function FundTable({ funds }: { funds: FundPick[] }) {
+  const compareCodes = funds.map((f) => f.scheme_code).join(",");
   return (
     <div className="card overflow-x-auto p-0">
+      <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-navy-50 border-b border-navy-100">
+        <span className="text-xs font-medium text-navy-700">
+          Ranked shortlist based on historical consistency and downside protection.
+        </span>
+        {funds.length >= 2 && (
+          <Link
+            href={`/funds/compare?codes=${compareCodes}`}
+            className="rounded-md bg-teal-700 px-3 py-1 text-xs font-semibold text-white hover:bg-teal-800 transition-colors"
+          >
+            Compare All Shortlisted Schemes →
+          </Link>
+        )}
+      </div>
       <table className="w-full min-w-[820px] text-left">
         <caption className="sr-only">Illustrative fund shortlist ranked by a past-performance composite</caption>
         <thead className="bg-navy-50">
@@ -63,7 +78,19 @@ export function FundTable({ funds }: { funds: FundPick[] }) {
         <tbody>
           {funds.map((f) => (
             <tr key={f.scheme_code} className="border-t border-navy-100">
-              <td className="td"><span className="font-medium">{f.scheme_name}</span><br /><span className="text-xs text-navy-700">Code {f.scheme_code}</span></td>
+              <td className="td">
+                <span className="font-medium">{f.scheme_name}</span>
+                <br />
+                <span className="text-xs text-navy-700">Code {f.scheme_code}</span>
+                <div className="mt-1">
+                  <Link
+                    href={`/funds/${f.scheme_code}`}
+                    className="text-xs font-semibold text-teal-700 hover:underline"
+                  >
+                    Deep Analytics →
+                  </Link>
+                </div>
+              </td>
               <td className="td">{CATEGORY_LABELS[f.cat] ?? f.cat}</td>
               <td className="td">{f.weight_pct.toFixed(1)}%</td>
               <td className="td">{pct(f.metrics.cagr_3y)}</td>

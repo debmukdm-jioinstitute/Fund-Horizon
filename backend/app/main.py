@@ -2,13 +2,16 @@
 from __future__ import annotations
 
 import os
+import time
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
+from threading import Lock
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from app.api.routes import router
 from app.data.loader import eligible_funds, load_metrics
@@ -16,10 +19,65 @@ from app.data.loader import eligible_funds, load_metrics
 load_dotenv()
 
 
+def _flag(name: str, default: str) -> bool:
+    return os.environ.get(name, default).lower() in ("true", "1", "yes")
+
+
+def _int_env(name: str, default: int) -> int:
+    try:
+        return int(os.environ.get(name, str(default)))
+    except ValueError:
+        return default
+
+
 def _readable(err: dict) -> str:
     loc = ".".join(str(p) for p in err["loc"] if p not in ("body",))
     msg = err["msg"].removeprefix("Value error, ")
     return f"{loc}: {msg}" if loc else msg
+
+
+def _client_ip(request: Request) -> str:
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip() or "unknown"
+    return request.client.host if request.client else "unknown"
+
+
+class InProcessRateLimiter:
+    """Sliding-window limiter. No extra process or paid service."""
+
+    def __init__(self) -> None:
+        self._hits: dict[tuple[str, str], deque[float]] = defaultdict(deque)
+        self._lock = Lock()
+        self._last_prune = time.monotonic()
+
+    def allow(self, bucket: str, key: str, *, max_requests: int, window_s: float) -> bool:
+        now = time.monotonic()
+        with self._lock:
+            q = self._hits[(bucket, key)]
+            cutoff = now - window_s
+            while q and q[0] <= cutoff:
+                q.popleft()
+            if len(q) >= max_requests:
+                return False
+            q.append(now)
+            if now - self._last_prune > 60:
+                stale = [k for k, hits in self._hits.items() if not hits or hits[-1] < now - 3600]
+                for k in stale:
+                    del self._hits[k]
+                self._last_prune = now
+            return True
+
+
+def _plan_post(path: str) -> bool:
+    return path.rstrip("/") == "/api/plans"
+
+
+def _plan_get_recompute(path: str, request: Request) -> bool:
+    if request.query_params.get("step_up") is None:
+        return False
+    parts = path.rstrip("/").split("/")
+    return len(parts) == 4 and parts[1:3] == ["api", "plans"]
 
 
 @asynccontextmanager
@@ -30,7 +88,7 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
-    docs_enabled = os.environ.get("FH_ENABLE_DOCS", "true").lower() in ("true", "1", "yes")
+    docs_enabled = _flag("FH_ENABLE_DOCS", "false")
     app = FastAPI(
         title="Fund Horizon Planner",
         lifespan=lifespan,
@@ -40,9 +98,34 @@ def create_app() -> FastAPI:
     )
     origins = [o.strip() for o in os.environ.get("FH_CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
+    limiter = InProcessRateLimiter()
+    app.state.rate_limiter = limiter
 
     @app.middleware("http")
-    async def security_headers_middleware(request: Request, call_next):
+    async def hardening_middleware(request: Request, call_next):
+        is_head = request.method == "HEAD"
+        if is_head:
+            request.scope["method"] = "GET"
+
+        if _flag("FH_RATE_LIMIT", "true"):
+            path = request.url.path
+            window = max(_int_env("FH_RATE_WINDOW_SECONDS", 60), 1)
+            bucket = None
+            cap = 0
+            if request.method == "POST" and _plan_post(path):
+                bucket, cap = "plan_post", max(_int_env("FH_PLAN_POST_RATE", 10), 1)
+            elif request.method == "GET" and _plan_get_recompute(path, request):
+                bucket, cap = "plan_get", max(_int_env("FH_PLAN_GET_RATE", 20), 1)
+            if bucket and not limiter.allow(bucket, _client_ip(request), max_requests=cap, window_s=window):
+                limited = JSONResponse(
+                    status_code=429,
+                    content={"detail": "Too many requests. Please try again shortly."},
+                    headers={"Retry-After": str(window)},
+                )
+                if is_head:
+                    return Response(status_code=429, headers=dict(limited.headers))
+                return limited
+
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
@@ -51,6 +134,8 @@ def create_app() -> FastAPI:
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
         if not request.url.path.startswith(("/docs", "/redoc", "/openapi.json")):
             response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+        if is_head:
+            return Response(status_code=response.status_code, headers=dict(response.headers))
         return response
 
     @app.exception_handler(RequestValidationError)

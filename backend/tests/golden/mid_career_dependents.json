@@ -3,32 +3,35 @@
     "tolerance": 57.5,
     "final_score": 57.5,
     "band": "Moderate",
-    "priority_actions": [],
+    "priority_actions": [
+      "Close the term cover gap",
+      "Close the health cover gap"
+    ],
     "capacity": 69.75,
     "mismatch": false
   },
   "asset_class": {
-    "equity": 49.88,
-    "debt": 33.1,
+    "equity": 50.0,
+    "debt": 33.0,
     "gold": 10.0,
-    "liquid": 7.02
+    "liquid": 7.0
   },
   "funds": [
     [
       "108466",
-      19.95
+      20.0
     ],
     [
       "101762",
-      14.96
+      15.0
     ],
     [
       "105758",
-      14.96
+      15.0
     ],
     [
       "150229",
-      13.24
+      13.2
     ],
     [
       "150715",
@@ -36,15 +39,15 @@
     ],
     [
       "101317",
-      9.93
+      9.9
     ],
     [
       "126939",
-      9.93
+      9.9
     ],
     [
       "100546",
-      7.02
+      7.0
     ]
   ],
   "goals": [
@@ -93,9 +96,14 @@
       "sip_for_80": 9415
     }
   ],
+  "totals": {
+    "allocated_sip": 75000,
+    "unused_surplus": 0,
+    "emergency_reserved": 0
+  },
   "stress": {
-    "crash_2020_drawdown": -0.1391,
-    "worst_peak_to_trough": -0.1391,
-    "worst_rolling_12m": -0.0953
+    "crash_2020_drawdown": -0.1395,
+    "worst_peak_to_trough": -0.1395,
+    "worst_rolling_12m": -0.0958
   }
 }

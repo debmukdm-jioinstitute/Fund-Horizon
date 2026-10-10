@@ -1,0 +1,57 @@
+{
+  "profile": {
+    "tolerance": 30.0,
+    "final_score": 30.0,
+    "band": "Moderately Conservative",
+    "priority_actions": [
+      "Insurance first"
+    ],
+    "capacity": 84.0,
+    "mismatch": true
+  },
+  "asset_class": {
+    "equity": 0.0,
+    "debt": 50.0,
+    "gold": 0.0,
+    "liquid": 50.0
+  },
+  "funds": [
+    [
+      "100546",
+      50.0
+    ],
+    [
+      "101317",
+      50.0
+    ]
+  ],
+  "goals": [
+    {
+      "name": "Daughter wedding",
+      "years": 2,
+      "future_cost": 2862250,
+      "required_sip": 111894,
+      "allocated_sip": 110000,
+      "status": "partially_funded",
+      "equity": 0.0,
+      "success_prob": 0.045,
+      "sip_for_80": 112822
+    },
+    {
+      "name": "Retirement",
+      "years": 2,
+      "future_cost": 15619035,
+      "required_sip": 213404,
+      "allocated_sip": 0,
+      "status": "unfunded",
+      "equity": 0.0,
+      "success_prob": 0.0,
+      "sip_for_80": 220549
+    }
+  ],
+  "stress": {
+    "crash_2020_drawdown": 0.0,
+    "worst_peak_to_trough": 0.0,
+    "worst_rolling_12m": 0.0357
+  }
+}

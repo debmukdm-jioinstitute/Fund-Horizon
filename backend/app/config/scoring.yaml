@@ -1,0 +1,11 @@
+# Composite score weights (percentile ranks within category)
+growth:   # equity / hybrid / gold
+  cagr_5y_or_3y: 0.35
+  roll3y_median: 0.25
+  sharpe_3y: 0.20
+  neg_abs_max_drawdown_3y: 0.20
+income:   # liquid / overnight / money market / short duration
+  cagr_3y: 0.40
+  roll1y_median: 0.30
+  neg_vol_3y: 0.30
+income_categories: [liquid, overnight, money_market, short_duration]

@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+node_modules/
+.next/
+*.db
+.env
+playwright-report/
+test-results/
+# Unused parts of the RAG dataset (kept locally only)
+data/fundhorizon_mf_rag_dataset/schemes_md/
+data/fundhorizon_mf_rag_dataset/schemes_json/
+data/fundhorizon_mf_rag_dataset/amcs/
+data/fundhorizon_mf_rag_dataset/categories/
+data/fundhorizon_mf_rag_dataset/amfi_navall_raw.txt
+data/fundhorizon_mf_rag_dataset/all_schemes_master.csv
+data/fundhorizon_mf_rag_dataset/ingest_example.py

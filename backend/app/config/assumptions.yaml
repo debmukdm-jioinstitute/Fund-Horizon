@@ -1,0 +1,67 @@
+# Forward-looking planning assumptions. Editable by the owner. Rates are annual decimals.
+data_asof: "2026-10-09"
+stale_days: 10
+min_history_years: {equity: 5, other: 3}
+
+asset_returns: {equity: 0.11, debt: 0.065, gold: 0.075, liquid: 0.06}
+
+inflation:
+  education: 0.09
+  child_education: 0.09
+  child_marriage: 0.07
+  home: 0.06
+  vehicle: 0.06
+  travel: 0.06
+  retirement: 0.06
+  emergency: 0.06
+  custom: 0.06
+
+retirement:
+  post_retirement_return: 0.065
+  life_expectancy: 85
+  spend_ratio_if_unspecified: 0.70   # share of current household expenses assumed in retirement
+
+emergency:
+  months: 6
+  months_variable_income: 9
+  surplus_share_for_gap: 0.5
+
+insurance:
+  personal_share: 0.30
+  min_real_rate: 0.02
+  debt_return_for_discount: 0.065
+  inflation: 0.06
+  cap_income_multiple: 25
+  reference_multiples: [15, 20]
+  adequacy_threshold: 0.80
+  health_base: 1000000
+  health_extra: 500000
+  health_extra_age: 40
+  health_extra_dependents: 3
+
+planning:
+  step_up_default: 0.0
+  step_up_options: [0.0, 0.05, 0.10]
+  extend_horizon_max_years: 10
+
+montecarlo:
+  sims: 5000
+  seed: 20261009
+  target_success: 0.80
+  asset_mean: {equity: 0.12, debt: 0.065, gold: 0.08, liquid: 0.06}
+  asset_vol: {equity: 0.17, debt: 0.025, gold: 0.14, liquid: 0.005}
+  correlations:
+    equity_debt: 0.10
+    equity_gold: 0.05
+    debt_gold: 0.10
+
+rebalancing:
+  drift_band_pp: 5
+  review: annual
+
+stress:
+  window_years: 15
+  illustration_amount: 1000000
+  crash_peak: "2020-01-31"      # month-end NAV before the Feb-Mar 2020 fall
+  crash_end: "2020-03-31"
+  min_funds_for_category_median: 3

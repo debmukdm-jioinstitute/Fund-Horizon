@@ -1,0 +1,71 @@
+{
+  "profile": {
+    "tolerance": 90.0,
+    "final_score": 87.75,
+    "band": "Aggressive",
+    "priority_actions": [],
+    "capacity": 87.75,
+    "mismatch": false
+  },
+  "asset_class": {
+    "equity": 84.03,
+    "debt": 7.75,
+    "gold": 6.0,
+    "liquid": 2.22
+  },
+  "funds": [
+    [
+      "101762",
+      25.21
+    ],
+    [
+      "105758",
+      21.01
+    ],
+    [
+      "108466",
+      21.01
+    ],
+    [
+      "147944",
+      16.81
+    ],
+    [
+      "150229",
+      9.97
+    ],
+    [
+      "150715",
+      6.0
+    ]
+  ],
+  "goals": [
+    {
+      "name": "Retirement",
+      "years": 34,
+      "future_cost": 57597525,
+      "required_sip": 17046,
+      "allocated_sip": 17046,
+      "status": "funded",
+      "equity": 85.0,
+      "success_prob": 0.496,
+      "sip_for_80": 27996
+    },
+    {
+      "name": "Home down payment",
+      "years": 8,
+      "future_cost": 3984620,
+      "required_sip": 27928,
+      "allocated_sip": 27928,
+      "status": "funded",
+      "equity": 70.0,
+      "success_prob": 0.529,
+      "sip_for_80": 32566
+    }
+  ],
+  "stress": {
+    "crash_2020_drawdown": -0.2215,
+    "worst_peak_to_trough": -0.2215,
+    "worst_rolling_12m": -0.197
+  }
+}

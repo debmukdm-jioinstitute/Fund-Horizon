@@ -1,0 +1,73 @@
+# Strategic allocation (%) by risk band: equity / debt / gold / liquid
+bands:
+  - {name: Conservative,          min: 0,  max: 20,  equity: 15, debt: 65, gold: 5,  liquid: 15}
+  - {name: Moderately Conservative, min: 20, max: 40, equity: 30, debt: 52, gold: 8,  liquid: 10}
+  - {name: Moderate,              min: 40, max: 60,  equity: 50, debt: 33, gold: 10, liquid: 7}
+  - {name: Moderately Aggressive, min: 60, max: 80,  equity: 70, debt: 18, gold: 8,  liquid: 4}
+  - {name: Aggressive,            min: 80, max: 100, equity: 85, debt: 7,  gold: 6,  liquid: 2}
+
+# Max equity % by goal horizon (years). First row whose upper bound > years applies.
+horizon_equity_cap:
+  - {lt_years: 3,  cap: 0}
+  - {lt_years: 5,  cap: 30}
+  - {lt_years: 7,  cap: 50}
+  - {lt_years: 10, cap: 70}
+  - {lt_years: 999, cap: 100}
+
+# Equity sleeve split (large / flexi / mid / small), % of equity
+equity_split:
+  Conservative:             {large_cap: 70, flexi_cap: 30, mid_cap: 0,  small_cap: 0}
+  Moderately Conservative:  {large_cap: 55, flexi_cap: 30, mid_cap: 15, small_cap: 0}
+  Moderate:                 {large_cap: 40, flexi_cap: 30, mid_cap: 20, small_cap: 10}
+  Moderately Aggressive:    {large_cap: 30, flexi_cap: 30, mid_cap: 25, small_cap: 15}
+  Aggressive:               {large_cap: 25, flexi_cap: 30, mid_cap: 25, small_cap: 20}
+
+# Debt sleeve for goals >= 3y
+debt_split: {corporate_bond: 40, banking_psu: 30, short_duration: 30}
+# Goals < 3y: no equity, no gold; the non-equity money is split as below
+short_goal_split: {liquid: 50, short_duration: 50}
+# When a horizon cap trims equity, the freed % goes to these classes in the band's own
+# proportions. Spec text says debt/gold/liquid; gold is excluded by default because the
+# literal rule pushes e.g. a 4y goal in the Aggressive band to 28% gold. Add `gold` to restore.
+freed_equity_targets: [debt, liquid]
+gold_category: gold
+liquid_category: liquid
+
+# Category -> asset class used for return/volatility assumptions
+asset_class:
+  large_cap: equity
+  flexi_cap: equity
+  mid_cap: equity
+  small_cap: equity
+  corporate_bond: debt
+  banking_psu: debt
+  short_duration: debt
+  gold: gold
+  liquid: liquid
+
+selection:
+  max_funds: 8
+  min_weight_pct: 5
+  max_per_amc: 2
+  sleeve_of:
+    large_cap: equity
+    flexi_cap: equity
+    mid_cap: equity
+    small_cap: equity
+    corporate_bond: debt
+    banking_psu: debt
+    short_duration: debt
+    gold: gold
+    liquid: liquid
+  # When a small position is merged, prefer the nearest category (in this order) still selected.
+  merge_prefer:
+    small_cap: [mid_cap, flexi_cap, large_cap]
+    mid_cap: [flexi_cap, small_cap, large_cap]
+    flexi_cap: [large_cap, mid_cap, small_cap]
+    large_cap: [flexi_cap, mid_cap, small_cap]
+    corporate_bond: [banking_psu, short_duration]
+    banking_psu: [corporate_bond, short_duration]
+    short_duration: [banking_psu, corporate_bond, liquid]
+    liquid: [short_duration, banking_psu, corporate_bond]
+    gold: [short_duration, banking_psu, corporate_bond]
+  merge_fallback: {liquid: debt, gold: debt, equity: debt, debt: liquid}

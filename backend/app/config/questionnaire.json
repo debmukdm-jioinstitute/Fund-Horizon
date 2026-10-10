@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {"id": "q1", "text": "Your investing experience", "options": [
+      {"text": "None", "score": 1}, {"text": "Only FDs and savings", "score": 2},
+      {"text": "Mutual funds for less than 3 years", "score": 3},
+      {"text": "Mutual funds and stocks for more than 3 years", "score": 4},
+      {"text": "Derivatives or advanced products", "score": 5}]},
+    {"id": "q2", "text": "Your main objective", "options": [
+      {"text": "Protect capital", "score": 1}, {"text": "Regular income", "score": 2},
+      {"text": "Balanced growth", "score": 3}, {"text": "Long-term growth", "score": 4},
+      {"text": "Maximise returns", "score": 5}]},
+    {"id": "q3", "text": "Your portfolio falls 20% in 3 months. You:", "options": [
+      {"text": "Sell everything", "score": 1}, {"text": "Sell some", "score": 2},
+      {"text": "Do nothing", "score": 3}, {"text": "Invest a little more", "score": 4},
+      {"text": "Invest significantly more", "score": 5}]},
+    {"id": "q4", "text": "Largest one-year loss you could accept", "options": [
+      {"text": "0%", "score": 1}, {"text": "Up to 5%", "score": 2}, {"text": "Up to 10%", "score": 3},
+      {"text": "Up to 20%", "score": 4}, {"text": "30% or more", "score": 5}]},
+    {"id": "q5", "text": "Which one would you pick?", "options": [
+      {"text": "Certain +6%", "score": 1},
+      {"text": "50% chance of +12%, 50% chance of 0%", "score": 2},
+      {"text": "50% chance of +18%, 50% chance of -6%", "score": 4},
+      {"text": "50% chance of +25%, 50% chance of -12%", "score": 5}]},
+    {"id": "q6", "text": "In a past market crash (for example 2020) you:", "options": [
+      {"text": "Panic-sold", "score": 1}, {"text": "Stopped SIPs", "score": 2},
+      {"text": "Was not invested", "score": 3}, {"text": "Continued SIPs", "score": 4},
+      {"text": "Invested more", "score": 5}]},
+    {"id": "q7", "text": "How much would portfolio swings affect your sleep?", "options": [
+      {"text": "A great deal", "score": 1}, {"text": "Quite a lot", "score": 2},
+      {"text": "Somewhat", "score": 3}, {"text": "Little", "score": 4}, {"text": "Not at all", "score": 5}]},
+    {"id": "q8", "text": "Return you expect per year", "options": [
+      {"text": "5-6%", "score": 1}, {"text": "7-8%", "score": 2}, {"text": "9-11%", "score": 3},
+      {"text": "12-14%", "score": 4}, {"text": "15% or more", "score": 5}]},
+    {"id": "q9", "text": "Which is true of a diversified equity fund?", "options": [
+      {"text": "Returns are fixed", "score": 1},
+      {"text": "It can lose money for 1-2 years but usually recovers over long periods", "score": 5},
+      {"text": "It cannot lose money over 3 years", "score": 1},
+      {"text": "Not sure", "score": 2}]},
+    {"id": "q10", "text": "Markets rise 30% in 6 months. You:", "options": [
+      {"text": "Book all profit", "score": 1}, {"text": "Book most", "score": 2},
+      {"text": "Hold", "score": 3}, {"text": "Add a little", "score": 4},
+      {"text": "Add significantly", "score": 5}]}
+  ]
+}

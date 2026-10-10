@@ -1,0 +1,197 @@
+{
+  "young_aggressive": {
+    "client": {
+      "first_name": "Rohan",
+      "age": 26,
+      "employment_type": "salaried_private",
+      "dependents": 0,
+      "monthly_income": 120000,
+      "monthly_expenses": 40000,
+      "monthly_emi": 0,
+      "liquid_assets": 600000,
+      "investments": 300000,
+      "liabilities": 0,
+      "term_cover": 10000000,
+      "health_cover": 500000,
+      "retirement_age": 60
+    },
+    "goals": [
+      {
+        "name": "Retirement",
+        "type": "retirement",
+        "target_amount_today": 0,
+        "years_to_goal": 34,
+        "priority": 2
+      },
+      {
+        "name": "Home down payment",
+        "type": "home",
+        "target_amount_today": 2500000,
+        "years_to_goal": 8,
+        "priority": 1
+      }
+    ],
+    "answers": {
+      "q1": 3,
+      "q2": 4,
+      "q3": 4,
+      "q4": 4,
+      "q5": 3,
+      "q6": 3,
+      "q7": 4,
+      "q8": 3,
+      "q9": 1,
+      "q10": 3
+    }
+  },
+  "mid_career_dependents": {
+    "client": {
+      "first_name": "Asha",
+      "age": 38,
+      "employment_type": "salaried_private",
+      "dependents": 3,
+      "monthly_income": 200000,
+      "monthly_expenses": 90000,
+      "monthly_emi": 35000,
+      "liquid_assets": 800000,
+      "investments": 2500000,
+      "liabilities": 4000000,
+      "term_cover": 10000000,
+      "health_cover": 1000000,
+      "retirement_age": 60
+    },
+    "goals": [
+      {
+        "name": "Child education",
+        "type": "child_education",
+        "target_amount_today": 3000000,
+        "years_to_goal": 12,
+        "priority": 1
+      },
+      {
+        "name": "Child marriage",
+        "type": "child_marriage",
+        "target_amount_today": 2000000,
+        "years_to_goal": 20,
+        "priority": 2
+      },
+      {
+        "name": "Retirement",
+        "type": "retirement",
+        "target_amount_today": 0,
+        "years_to_goal": 22,
+        "priority": 1
+      },
+      {
+        "name": "Family travel",
+        "type": "travel",
+        "target_amount_today": 400000,
+        "years_to_goal": 4,
+        "priority": 3
+      }
+    ],
+    "answers": {
+      "q1": 2,
+      "q2": 2,
+      "q3": 2,
+      "q4": 2,
+      "q5": 2,
+      "q6": 2,
+      "q7": 2,
+      "q8": 2,
+      "q9": 1,
+      "q10": 2
+    }
+  },
+  "near_retirement": {
+    "client": {
+      "first_name": "Suresh",
+      "age": 58,
+      "employment_type": "govt_psu",
+      "dependents": 1,
+      "monthly_income": 180000,
+      "monthly_expenses": 70000,
+      "monthly_emi": 0,
+      "liquid_assets": 1500000,
+      "investments": 9000000,
+      "liabilities": 0,
+      "term_cover": 0,
+      "health_cover": 500000,
+      "retirement_age": 60
+    },
+    "goals": [
+      {
+        "name": "Daughter wedding",
+        "type": "child_marriage",
+        "target_amount_today": 2500000,
+        "years_to_goal": 2,
+        "priority": 1
+      },
+      {
+        "name": "Retirement",
+        "type": "retirement",
+        "target_amount_today": 0,
+        "years_to_goal": 2,
+        "priority": 1,
+        "existing_investment_earmarked": 9000000
+      }
+    ],
+    "answers": {
+      "q1": 1,
+      "q2": 1,
+      "q3": 1,
+      "q4": 1,
+      "q5": 0,
+      "q6": 1,
+      "q7": 1,
+      "q8": 1,
+      "q9": 1,
+      "q10": 1
+    }
+  },
+  "low_emergency_fund": {
+    "client": {
+      "first_name": "Meera",
+      "age": 31,
+      "employment_type": "freelance_variable",
+      "dependents": 1,
+      "monthly_income": 90000,
+      "monthly_expenses": 55000,
+      "monthly_emi": 12000,
+      "liquid_assets": 50000,
+      "investments": 150000,
+      "liabilities": 800000,
+      "term_cover": 0,
+      "health_cover": 0,
+      "retirement_age": 60
+    },
+    "goals": [
+      {
+        "name": "Emergency corpus",
+        "type": "emergency",
+        "target_amount_today": 400000,
+        "years_to_goal": 2,
+        "priority": 1
+      },
+      {
+        "name": "Retirement",
+        "type": "retirement",
+        "target_amount_today": 0,
+        "years_to_goal": 29,
+        "priority": 3
+      }
+    ],
+    "answers": {
+      "q1": 3,
+      "q2": 4,
+      "q3": 4,
+      "q4": 4,
+      "q5": 3,
+      "q6": 4,
+      "q7": 4,
+      "q8": 4,
+      "q9": 1,
+      "q10": 4
+    }
+  }
+}

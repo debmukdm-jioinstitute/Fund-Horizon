@@ -1,0 +1,101 @@
+{
+  "profile": {
+    "tolerance": 57.5,
+    "final_score": 57.5,
+    "band": "Moderate",
+    "priority_actions": [],
+    "capacity": 69.75,
+    "mismatch": false
+  },
+  "asset_class": {
+    "equity": 49.88,
+    "debt": 33.1,
+    "gold": 10.0,
+    "liquid": 7.02
+  },
+  "funds": [
+    [
+      "108466",
+      19.95
+    ],
+    [
+      "101762",
+      14.96
+    ],
+    [
+      "105758",
+      14.96
+    ],
+    [
+      "150229",
+      13.24
+    ],
+    [
+      "150715",
+      10.0
+    ],
+    [
+      "101317",
+      9.93
+    ],
+    [
+      "126939",
+      9.93
+    ],
+    [
+      "100546",
+      7.02
+    ]
+  ],
+  "goals": [
+    {
+      "name": "Child education",
+      "years": 12,
+      "future_cost": 8437994,
+      "required_sip": 33712,
+      "allocated_sip": 33712,
+      "status": "funded",
+      "equity": 50.0,
+      "success_prob": 0.541,
+      "sip_for_80": 38458
+    },
+    {
+      "name": "Child marriage",
+      "years": 20,
+      "future_cost": 7739369,
+      "required_sip": 12292,
+      "allocated_sip": 0,
+      "status": "unfunded",
+      "equity": 50.0,
+      "success_prob": 0.0,
+      "sip_for_80": 14653
+    },
+    {
+      "name": "Retirement",
+      "years": 22,
+      "future_cost": 64404462,
+      "required_sip": 83447,
+      "allocated_sip": 41288,
+      "status": "partially_funded",
+      "equity": 50.0,
+      "success_prob": 0.006,
+      "sip_for_80": 100934
+    },
+    {
+      "name": "Family travel",
+      "years": 4,
+      "future_cost": 504991,
+      "required_sip": 8974,
+      "allocated_sip": 0,
+      "status": "unfunded",
+      "equity": 30.0,
+      "success_prob": 0.0,
+      "sip_for_80": 9415
+    }
+  ],
+  "stress": {
+    "crash_2020_drawdown": -0.1391,
+    "worst_peak_to_trough": -0.1391,
+    "worst_rolling_12m": -0.0953
+  }
+}

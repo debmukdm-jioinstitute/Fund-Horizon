@@ -1,0 +1,82 @@
+{
+  "profile": {
+    "tolerance": 97.5,
+    "final_score": 53.75,
+    "band": "Moderate",
+    "priority_actions": [
+      "Build emergency fund first",
+      "Insurance first"
+    ],
+    "capacity": 53.75,
+    "mismatch": true
+  },
+  "asset_class": {
+    "equity": 49.62,
+    "debt": 33.13,
+    "gold": 9.92,
+    "liquid": 7.32
+  },
+  "funds": [
+    [
+      "108466",
+      19.85
+    ],
+    [
+      "101762",
+      14.89
+    ],
+    [
+      "105758",
+      14.89
+    ],
+    [
+      "150229",
+      13.1
+    ],
+    [
+      "101317",
+      10.2
+    ],
+    [
+      "150715",
+      9.92
+    ],
+    [
+      "126939",
+      9.83
+    ],
+    [
+      "100546",
+      7.32
+    ]
+  ],
+  "goals": [
+    {
+      "name": "Emergency corpus",
+      "years": 2,
+      "future_cost": 449440,
+      "required_sip": 17570,
+      "allocated_sip": 17570,
+      "status": "funded",
+      "equity": 0.0,
+      "success_prob": 0.494,
+      "sip_for_80": 17716
+    },
+    {
+      "name": "Retirement",
+      "years": 29,
+      "future_cost": 59180305,
+      "required_sip": 39214,
+      "allocated_sip": 5430,
+      "status": "partially_funded",
+      "equity": 50.0,
+      "success_prob": 0.0,
+      "sip_for_80": 49252
+    }
+  ],
+  "stress": {
+    "crash_2020_drawdown": -0.1384,
+    "worst_peak_to_trough": -0.1384,
+    "worst_rolling_12m": -0.0945
+  }
+}

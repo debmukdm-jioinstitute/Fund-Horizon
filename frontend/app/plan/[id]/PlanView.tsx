@@ -5,8 +5,8 @@
 import { useCallback, useState } from "react";
 import {
   CashflowCard, EmergencyCard, FALLBACK_SCHEME_DOCS, FALLBACK_SUCCESS_NOTE, FundTable, GoalCard,
-  InsuranceCard, PlanLinkCard, ProfileCard, SanityBanner, SectionTitle, extraDisclosures, safeHeading,
-  unusedSurplus,
+  InsuranceCard, PlanLinkCard, ProfileCard, SanityBanner, SectionTitle, emergencyReserved,
+  extraDisclosures, isShortlistOmitted, safeHeading, unusedSurplus,
 } from "@/components/Results";
 import { Donut, StressChart } from "@/components/charts";
 import { getPlan, reportUrl } from "@/lib/api";
@@ -33,7 +33,8 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
   const perGoal = allocation.per_goal;
   const surplus = planning.cashflow?.monthly_surplus ?? planning.totals.monthly_surplus;
   const leftover = unusedSurplus(planning);
-  const hideBuyList = surplus <= 0;
+  const reserved = emergencyReserved(planning);
+  const hideBuyList = isShortlistOmitted(plan) || surplus <= 0;
   const extra = extraDisclosures(disclosures);
   const allocationTitle = safeHeading(disclosures.allocation_heading, "Illustrative allocation");
   const shortlistTitle = safeHeading(
@@ -150,6 +151,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
         <div className="card mb-4 flex flex-wrap items-center justify-between gap-4">
           <div className="text-sm">
             <p>Monthly surplus <strong>{inr(planning.totals.monthly_surplus)}</strong> · SIP needed for all goals <strong>{inr(planning.totals.required_sip)}</strong> · SIP funded <strong>{inr(planning.totals.allocated_sip)}</strong>
+              {reserved > 0 ? <> · emergency reserve <strong>{inr(reserved)}</strong></> : null}
               {leftover >= 1 ? <> · unused surplus <strong>{inr(leftover)}</strong></> : null}
             </p>
           </div>
@@ -176,7 +178,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
       <section aria-labelledby="safety">
         <SectionTitle id="safety">Emergency fund and insurance</SectionTitle>
         <div className="grid gap-5 md:grid-cols-2">
-          <EmergencyCard ef={planning.emergency_fund} />
+          <EmergencyCard ef={planning.emergency_fund} reserved={reserved} />
           <InsuranceCard ins={planning.insurance} />
         </div>
         <p className="mt-3 text-sm text-navy-700">{disclosures.tax_info}</p>

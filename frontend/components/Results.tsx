@@ -46,7 +46,7 @@ const FALLBACK_SIZED_LABELS: Record<GoalPlan["status"], string> = {
 };
 
 export const FALLBACK_SUCCESS_NOTE =
-  "A goal marked “sized at assumed return” is on the central path only — often near a 50% chance in the simulation. Chance figures use a constant mix (no glide path) and do not model tax. Work emergency fund, then insurance, then goals.";
+  "A goal marked “sized at assumed return” is on the central path only — often near a 50% chance in the simulation. Chance figures use a constant mix (no glide path) and do not model tax. Work emergency fund, then term cover, then health cover, then goals.";
 
 export const FALLBACK_TAX_PER_GOAL =
   "Pre-tax illustration: the SIP, future cost and chance figures for this goal ignore tax. They do not mean the SIP is enough after tax.";
@@ -74,42 +74,104 @@ function Bar({ label, value, tone }: { label: string; value: number; tone: strin
 
 type SequencedStep = { title: string; detail: string; done: boolean };
 
-/** Emergency fund, then insurance, then goals — built from gaps when present. */
+export type ExtraTotals = Plan["planning"]["totals"] & {
+  unused_surplus?: number;
+  emergency_reserved?: number;
+};
+
+export function extraTotals(planning: Plan["planning"]): ExtraTotals {
+  const t = planning.totals as ExtraTotals;
+  return {
+    ...t,
+    unused_surplus: typeof t.unused_surplus === "number" ? t.unused_surplus : undefined,
+    emergency_reserved: typeof t.emergency_reserved === "number" ? t.emergency_reserved : undefined,
+  };
+}
+
+export function unusedSurplus(planning: Plan["planning"]): number {
+  const t = extraTotals(planning);
+  if (typeof t.unused_surplus === "number" && Number.isFinite(t.unused_surplus)) return t.unused_surplus;
+  return (t.monthly_surplus ?? 0) - (t.allocated_sip ?? 0);
+}
+
+export function emergencyReserved(planning: Plan["planning"]): number {
+  const t = extraTotals(planning);
+  if (typeof t.emergency_reserved === "number" && Number.isFinite(t.emergency_reserved)) {
+    return t.emergency_reserved;
+  }
+  const ef = planning.emergency_fund;
+  if (ef && ef.gap > 0 && typeof ef.monthly_allocation === "number") return ef.monthly_allocation;
+  return 0;
+}
+
+export function isShortlistOmitted(plan: Plan): boolean {
+  const flag = (plan as Plan & { shortlist_omitted?: boolean }).shortlist_omitted;
+  if (typeof flag === "boolean") return flag;
+  const surplus = plan.planning.cashflow?.monthly_surplus ?? plan.planning.totals.monthly_surplus;
+  return surplus <= 0 || (plan.planning.totals.allocated_sip ?? 0) <= 0;
+}
+
+export type TermNeedRange = { low: number; high: number; hlv?: number; ref15?: number; ref20?: number };
+
+export function termNeedRange(ins: Plan["planning"]["insurance"]): TermNeedRange | null {
+  const raw = (ins.term as { need_range?: Record<string, number> }).need_range;
+  if (raw && typeof raw.low === "number" && typeof raw.high === "number") {
+    return {
+      low: raw.low,
+      high: raw.high,
+      hlv: typeof raw.hlv === "number" ? raw.hlv : undefined,
+      ref15: typeof raw["15x_income"] === "number" ? raw["15x_income"] : ins.term.reference?.["15x_income"],
+      ref20: typeof raw["20x_income"] === "number" ? raw["20x_income"] : ins.term.reference?.["20x_income"],
+    };
+  }
+  return null;
+}
+
+/** Emergency fund, then term, then health, then goals — uses WS1 action strings when present. */
 export function buildSequencedActions(profile: Profile, planning?: Plan["planning"]): SequencedStep[] {
   const ef = planning?.emergency_fund;
   const ins = planning?.insurance;
   const totals = planning?.totals;
   const backend = profile.priority_actions ?? [];
+  const efAction = backend.find((a) => /emergency/i.test(a));
+  const termAction = backend.find((a) => /term cover/i.test(a));
+  const healthAction = backend.find((a) => /health cover/i.test(a));
+  const legacyIns = backend.find((a) => /insurance first/i.test(a));
 
   const efGap = typeof ef?.gap === "number" ? ef.gap : null;
   const termGap = typeof ins?.term?.gap === "number" ? ins.term.gap : null;
   const healthGap = typeof ins?.health?.gap === "number" ? ins.health.gap : null;
+  const reserved = planning ? emergencyReserved(planning) : 0;
 
   let efDetail: string;
   if (ef && efGap != null) {
     if (efGap <= 0) {
       efDetail = "Target already met.";
     } else if (ef.months_to_close == null) {
-      efDetail = `Gap ${inr(efGap)} (${ef.target_months} months of expenses and EMIs). No monthly surplus to close this yet.`;
+      efDetail = `${efAction ?? "Build emergency fund first"}. Gap ${inr(efGap)} (${ef.target_months} months of expenses and EMIs). No monthly surplus to close this yet.`;
     } else {
-      efDetail = `Gap ${inr(efGap)} (${ef.target_months} months). Setting aside ${inr(ef.monthly_allocation)} a month would take about ${ef.months_to_close} months.`;
+      efDetail = `${efAction ?? "Build emergency fund first"}. Gap ${inr(efGap)} (${ef.target_months} months). ${reserved > 0 ? `${inr(reserved)} a month is reserved from surplus. ` : ""}Setting aside ${inr(ef.monthly_allocation)} a month would take about ${ef.months_to_close} months.`;
     }
   } else {
-    efDetail = backend.find((a) => /emergency/i.test(a)) ?? "Hold several months of expenses in cash or liquid funds before locking money into goals.";
+    efDetail = efAction ?? "Hold several months of expenses in cash or liquid funds before locking money into goals.";
   }
 
-  let insDetail: string;
-  if (ins && (termGap != null || healthGap != null)) {
-    const bits = [
-      termGap != null && termGap > 0 ? `Term gap ${shortInr(termGap)}` : null,
-      healthGap != null && healthGap > 0 ? `Health gap ${shortInr(healthGap)}` : null,
-    ].filter(Boolean);
-    insDetail = bits.length
-      ? `${bits.join(". ")}.`
-      : "No calculated term or health gap on the figures you entered.";
+  let termDetail: string;
+  if (ins && termGap != null) {
+    termDetail = termGap > 0
+      ? `${termAction ?? "Close the term cover gap"}. Gap ${shortInr(termGap)}.`
+      : "No calculated term gap on the figures you entered.";
   } else {
-    insDetail = backend.find((a) => /insurance|term|health/i.test(a))
-      ?? "Check term and health cover against your need before putting leftover surplus into goals.";
+    termDetail = termAction ?? legacyIns ?? "Check term cover against your need before putting leftover surplus into goals.";
+  }
+
+  let healthDetail: string;
+  if (ins && healthGap != null) {
+    healthDetail = healthGap > 0
+      ? `${healthAction ?? "Close the health cover gap"}. Gap ${shortInr(healthGap)}.`
+      : "No calculated health gap on the figures you entered.";
+  } else {
+    healthDetail = healthAction ?? "Check family health cover against the illustrative target.";
   }
 
   let goalDetail: string;
@@ -120,8 +182,9 @@ export function buildSequencedActions(profile: Profile, planning?: Plan["plannin
   }
 
   return [
-    { title: "Emergency fund", detail: efDetail, done: efGap != null ? efGap <= 0 : !backend.some((a) => /emergency/i.test(a)) },
-    { title: "Insurance", detail: insDetail, done: (termGap != null || healthGap != null) ? (termGap ?? 0) <= 0 && (healthGap ?? 0) <= 0 : !backend.some((a) => /insurance|term|health/i.test(a)) },
+    { title: "Emergency fund", detail: efDetail, done: efGap != null ? efGap <= 0 : !efAction },
+    { title: "Term cover", detail: termDetail, done: termGap != null ? termGap <= 0 : !termAction && !legacyIns },
+    { title: "Health cover", detail: healthDetail, done: healthGap != null ? healthGap <= 0 : !healthAction },
     { title: "Then goals", detail: goalDetail, done: totals ? totals.shortfall <= 0 && totals.allocated_sip > 0 : false },
   ];
 }
@@ -131,7 +194,7 @@ export function SequencedActions({ profile, planning }: { profile: Profile; plan
   return (
     <div className="rounded-xl border border-amber-600 bg-amber-100 p-4" role="note">
       <h3 className="font-bold text-amber-600">What to do first</h3>
-      <p className="mt-1 text-sm text-navy-900">Work in this order: cash reserve, then cover, then goals.</p>
+      <p className="mt-1 text-sm text-navy-900">Work in this order: emergency fund, then term cover, then health cover, then goals.</p>
       <ol className="mt-3 space-y-2">
         {steps.map((s, i) => (
           <li key={s.title} className="flex gap-3 text-navy-900">
@@ -322,14 +385,6 @@ function Item({ k, v }: { k: string; v: string }) {
   return <div><dt className="text-navy-700">{k}</dt><dd className="text-base font-bold">{v}</dd></div>;
 }
 
-export function unusedSurplus(planning: Plan["planning"]): number {
-  const totals = planning.totals as Plan["planning"]["totals"] & { unused_surplus?: number };
-  if (typeof totals.unused_surplus === "number" && Number.isFinite(totals.unused_surplus)) {
-    return totals.unused_surplus;
-  }
-  return (totals.monthly_surplus ?? 0) - (totals.allocated_sip ?? 0);
-}
-
 export function hasHugeGoal(planning: Plan["planning"]): boolean {
   const HUGE_FUTURE = 1_000_000_000;
   const HUGE_SIP = 10_000_000;
@@ -340,6 +395,7 @@ export function CashflowCard({ planning, first }: { planning: Plan["planning"]; 
   const cf = planning.cashflow;
   const surplus = cf?.monthly_surplus ?? planning.totals.monthly_surplus;
   const leftover = unusedSurplus(planning);
+  const reserved = emergencyReserved(planning);
   return (
     <div className={`card text-sm ${first && surplus <= 0 ? "border-rose-300" : ""}`}>
       <h3 className="mb-2 text-lg font-bold">Monthly cashflow</h3>
@@ -355,22 +411,31 @@ export function CashflowCard({ planning, first }: { planning: Plan["planning"]; 
           There is no monthly surplus to put toward goals. The fund shortlist is hidden until cashflow is positive. Start with expenses, EMIs and the emergency reserve — not a buy list.
         </p>
       )}
+      {reserved > 0 && (
+        <p className="mt-3 rounded-lg bg-navy-50 p-3" role="status">
+          Emergency reserve: <strong>{inr(reserved)}</strong> a month is set aside to close the emergency-fund gap before other goals.
+        </p>
+      )}
       {surplus > 0 && leftover >= 1 && (
         <p className="mt-3 rounded-lg bg-navy-50 p-3" role="status">
-          Unused surplus: <strong>{inr(leftover)}</strong> a month is not allocated to a goal SIP.
+          Unused surplus: <strong>{inr(leftover)}</strong> a month is not allocated to a goal SIP
+          {reserved > 0 ? " after the emergency reserve" : ""}.
         </p>
       )}
     </div>
   );
 }
 
-export function EmergencyCard({ ef }: { ef: Plan["planning"]["emergency_fund"] }) {
+export function EmergencyCard({ ef, reserved }: { ef: Plan["planning"]["emergency_fund"]; reserved?: number }) {
   return (
     <div className="card text-sm">
       <h3 className="mb-2 text-lg font-bold">Emergency fund</h3>
       <p>Target: <strong>{inr(ef.target)}</strong> ({ef.target_months} months of expenses and EMIs)</p>
       <p>You hold: <strong>{inr(ef.current)}</strong></p>
       <p>Gap: <strong>{inr(ef.gap)}</strong></p>
+      {typeof reserved === "number" && reserved > 0 && (
+        <p>Reserved from surplus: <strong>{inr(reserved)}</strong> / month</p>
+      )}
       <p className="mt-1 text-navy-700">
         {ef.gap === 0 ? "Your emergency fund meets the target."
           : ef.months_to_close === null ? "There is no monthly surplus to build this from yet."
@@ -381,18 +446,24 @@ export function EmergencyCard({ ef }: { ef: Plan["planning"]["emergency_fund"] }
 }
 
 export function InsuranceCard({ ins }: { ins: Plan["planning"]["insurance"] }) {
+  const range = termNeedRange(ins);
+  const needCell = range
+    ? `${shortInr(ins.term.need)} (${shortInr(range.low)}–${shortInr(range.high)})`
+    : shortInr(ins.term.need);
   return (
     <div className="card text-sm">
       <h3 className="mb-2 text-lg font-bold">Insurance cover</h3>
       <table className="w-full">
         <thead><tr><th className="th">Cover</th><th className="th">Illustrative need</th><th className="th">You have</th><th className="th">Gap</th></tr></thead>
         <tbody>
-          <tr className="border-t border-navy-100"><td className="td">Term life</td><td className="td">{shortInr(ins.term.need)}</td><td className="td">{shortInr(ins.term.cover)}</td><td className="td font-semibold">{shortInr(ins.term.gap)}</td></tr>
+          <tr className="border-t border-navy-100"><td className="td">Term life</td><td className="td">{needCell}</td><td className="td">{shortInr(ins.term.cover)}</td><td className="td font-semibold">{shortInr(ins.term.gap)}</td></tr>
           <tr className="border-t border-navy-100"><td className="td">Health (family)</td><td className="td">{shortInr(ins.health.target)}</td><td className="td">{shortInr(ins.health.cover)}</td><td className="td font-semibold">{shortInr(ins.health.gap)}</td></tr>
         </tbody>
       </table>
       <p className="mt-2 text-xs text-navy-700">
-        Term need is a human-life-value estimate. For reference, 15x income is {shortInr(ins.term.reference["15x_income"])} and 20x income is {shortInr(ins.term.reference["20x_income"])}.
+        {range
+          ? `Term need is a range, not a single figure: ${shortInr(range.low)} to ${shortInr(range.high)} (HLV ${shortInr(range.hlv ?? ins.term.need)}; 15× ${shortInr(range.ref15 ?? ins.term.reference["15x_income"])}; 20× ${shortInr(range.ref20 ?? ins.term.reference["20x_income"])}).`
+          : `Term need is a human-life-value estimate. For reference, 15x income is ${shortInr(ins.term.reference["15x_income"])} and 20x income is ${shortInr(ins.term.reference["20x_income"])}.`}
       </p>
     </div>
   );

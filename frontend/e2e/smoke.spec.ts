@@ -93,9 +93,12 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   await expect(page.getByText(/SIP for ~80%/).first()).toBeVisible();
   await expect(page.getByText("Funded", { exact: true })).toHaveCount(0);
   await expect(page.getByText(/historical consistency and downside protection/)).toHaveCount(0);
-  await expect(page.getByText(/past-performance composite \(return, rolling median/)).toBeVisible();
+  await expect(page.getByText(/past-performance composite/).first()).toBeVisible();
   await expect(page.getByText("Swipe sideways to see every column in the shortlist.")).toBeVisible();
   await expect(page.getByText("What to do first")).toBeVisible();
+  await expect(page.locator("ol").getByText("Emergency fund")).toBeVisible();
+  await expect(page.locator("ol").getByText("Term cover")).toBeVisible();
+  await expect(page.locator("ol").getByText("Health cover")).toBeVisible();
   await expect(page.locator("ol").getByText(/Then goals/)).toBeVisible();
   await expect(page.getByText(/Unused surplus/)).toBeVisible();
   await expect(page.getByText("Save this plan link")).toBeVisible();

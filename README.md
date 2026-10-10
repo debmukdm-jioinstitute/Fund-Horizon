@@ -54,3 +54,10 @@ Replace `all_schemes_metrics.csv`, `category_summary.csv` and `nav_monthly/` wit
 ## Out of scope
 Chat/LLM features, authentication, payments or orders, KYC, CAS upload, tax optimisation, international
 funds, Direct-plan recommendations, deployment config. Extension points are marked `# EXTENSION:`.
+
+## Deploy (Railway)
+Two services built from the repo root with the Dockerfiles in `deploy/`:
+`api` (`RAILWAY_DOCKERFILE_PATH=deploy/api.Dockerfile`, volume at `/data`, `FH_DB_PATH=/data/plans.db`,
+`FH_CORS_ORIGINS=<web URL>`) and `web` (`deploy/web.Dockerfile`, `NEXT_PUBLIC_API_URL` and
+`API_INTERNAL_URL` set to the api URL; `NEXT_PUBLIC_API_URL` is baked in at build time).
+Deploy with `railway up --service api --ci` and `railway up --service web --ci`.

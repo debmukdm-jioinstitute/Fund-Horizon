@@ -1,9 +1,13 @@
 import json
+import os
+import sqlite3
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
+from app.db import sqlite
 from app.main import create_app
 
 RAW = json.loads((Path(__file__).parent / "fixtures" / "personas.json").read_text())
@@ -11,8 +15,9 @@ RAW = json.loads((Path(__file__).parent / "fixtures" / "personas.json").read_tex
 
 @pytest.fixture(scope="module")
 def client(tmp_path_factory):
-    import os
     os.environ["FH_DB_PATH"] = str(tmp_path_factory.mktemp("db") / "t.db")
+    os.environ["FH_RATE_LIMIT"] = "false"
+    os.environ["FH_ALLOW_ASSUMPTION_OVERRIDES"] = "true"
     with TestClient(create_app()) as c:
         yield c
 
@@ -42,11 +47,15 @@ def test_happy_path_create_and_fetch(client):
     r = client.post("/api/plans", json=body())
     assert r.status_code == 200, r.text
     d = r.json()
-    for key in ("id", "profile", "allocation", "funds", "stress_test", "planning", "disclosures"):
+    for key in ("id", "profile", "allocation", "funds", "stress_test", "planning", "disclosures",
+                "created_at", "expires_at"):
         assert key in d
     got = client.get(f"/api/plans/{d['id']}").json()
     assert got["profile"]["band"] == d["profile"]["band"]
+    assert got["created_at"] == d["created_at"] and got["expires_at"] == d["expires_at"]
     assert len(d["funds"]) <= 8
+    stored = sqlite.get_plan(d["id"])
+    assert stored["request"]["consent"] is True
 
 
 def test_recompute_with_step_up_changes_sip(client):
@@ -60,6 +69,7 @@ def test_recompute_with_step_up_changes_sip(client):
 def test_unknown_plan_404(client):
     assert client.get("/api/plans/does-not-exist").status_code == 404
     assert client.get("/api/plans/does-not-exist/report.pdf").status_code == 404
+    assert client.delete("/api/plans/does-not-exist").status_code == 404
 
 
 @pytest.mark.parametrize("mutate,needle", [
@@ -70,8 +80,17 @@ def test_unknown_plan_404(client):
     (lambda b: b["goals"][0].update(years_to_goal=0), "years_to_goal"),
     (lambda b: b["goals"][0].update(years_to_goal=41), "years_to_goal"),
     (lambda b: b["goals"][0].update(target_amount_today=-1), "target_amount_today"),
+    (lambda b: b["goals"][0].update(target_amount_today=10**15), "target_amount_today"),
     (lambda b: b["client"].update(monthly_income=-5), "monthly_income"),
+    (lambda b: b["client"].update(monthly_income=10**15), "monthly_income"),
     (lambda b: b["client"].update(retirement_age=45, age=50), "etirement"),
+    (lambda b: b["goals"][0].update(years_to_goal=5), "years_to_goal"),
+    (lambda b: b["goals"][1].update(existing_investment_earmarked=50_000_000), "earmarked"),
+    (lambda b: b.update(consent=False), "onsent"),
+    (lambda b: b.update(assumption_overrides={"asset_returns": {"equity": 0.50}}), "equity"),
+    (lambda b: b.update(assumption_overrides={"montecarlo": {"sims": 50}}), "sims"),
+    (lambda b: b.update(assumption_overrides={"montecarlo": {"sims": 999_999}}), "sims"),
+    (lambda b: b.update(assumption_overrides={"planning": {"step_up_default": 0.1}}), "assumption_overrides"),
 ])
 def test_validation_errors_are_readable_422(client, mutate, needle):
     b = body()
@@ -96,6 +115,58 @@ def test_assumption_overrides_apply(client):
     base = client.post("/api/plans", json=body()).json()
     hi = client.post("/api/plans", json=body(assumption_overrides={"asset_returns": {"equity": 0.15}})).json()
     assert hi["planning"]["goals"][0]["required_sip"] < base["planning"]["goals"][0]["required_sip"]
+
+
+def test_assumption_overrides_rejected_when_disabled(tmp_path, monkeypatch):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "t.db"))
+    monkeypatch.setenv("FH_RATE_LIMIT", "false")
+    monkeypatch.setenv("FH_ALLOW_ASSUMPTION_OVERRIDES", "false")
+    with TestClient(create_app()) as c:
+        r = c.post("/api/plans", json=body(assumption_overrides={"asset_returns": {"equity": 0.15}}))
+        assert r.status_code == 422
+        assert "assumption_overrides" in r.json()["detail"]
+
+
+def test_delete_plan(client):
+    d = client.post("/api/plans", json=body()).json()
+    assert client.delete(f"/api/plans/{d['id']}").status_code == 204
+    assert client.get(f"/api/plans/{d['id']}").status_code == 404
+    assert client.get(f"/api/plans/{d['id']}/report.pdf").status_code == 404
+    assert client.delete(f"/api/plans/{d['id']}").status_code == 404
+
+
+def test_expired_plan_is_gone(client):
+    d = client.post("/api/plans", json=body()).json()
+    old = (datetime.now(UTC) - timedelta(days=40)).isoformat()
+    with sqlite3.connect(sqlite.db_path()) as c:
+        c.execute("UPDATE plans SET created_at=? WHERE id=?", (old, d["id"]))
+    assert client.get(f"/api/plans/{d['id']}").status_code == 404
+    assert client.get(f"/api/plans/{d['id']}/report.pdf").status_code == 404
+
+
+def test_head_healthz(client):
+    r = client.head("/healthz")
+    assert r.status_code == 200
+    assert r.content == b""
+    assert r.headers.get("x-content-type-options") == "nosniff"
+
+
+def test_rate_limit_plan_post_and_step_up_get(tmp_path, monkeypatch):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "t.db"))
+    monkeypatch.setenv("FH_RATE_LIMIT", "true")
+    monkeypatch.setenv("FH_PLAN_POST_RATE", "2")
+    monkeypatch.setenv("FH_PLAN_GET_RATE", "2")
+    monkeypatch.setenv("FH_RATE_WINDOW_SECONDS", "60")
+    with TestClient(create_app()) as c:
+        assert c.post("/api/plans", json={}).status_code == 422
+        assert c.post("/api/plans", json={}).status_code == 422
+        limited = c.post("/api/plans", json={})
+        assert limited.status_code == 429
+        assert "Retry-After" in limited.headers
+        assert c.get("/api/plans/missing", params={"step_up": 0.1}).status_code == 404
+        assert c.get("/api/plans/missing", params={"step_up": 0.1}).status_code == 404
+        assert c.get("/api/plans/missing", params={"step_up": 0.1}).status_code == 429
+        assert c.get("/api/plans/missing").status_code == 404
 
 
 def test_fund_detail(client):
@@ -125,12 +196,23 @@ def test_security_headers(client):
     assert r.headers.get("content-security-policy") == "default-src 'none'; frame-ancestors 'none'"
 
 
+def test_docs_off_by_default(monkeypatch):
+    monkeypatch.delenv("FH_ENABLE_DOCS", raising=False)
+    with TestClient(create_app()) as c:
+        assert c.get("/docs").status_code == 404
+        assert c.get("/redoc").status_code == 404
+        assert c.get("/openapi.json").status_code == 404
+
+
 def test_docs_enabled_toggle(monkeypatch):
     monkeypatch.setenv("FH_ENABLE_DOCS", "false")
-    app_no_docs = create_app()
-    with TestClient(app_no_docs) as c:
+    with TestClient(create_app()) as c:
         assert c.get("/docs").status_code == 404
         assert c.get("/openapi.json").status_code == 404
+    monkeypatch.setenv("FH_ENABLE_DOCS", "true")
+    with TestClient(create_app()) as c:
+        assert c.get("/openapi.json").status_code == 200
+        assert c.get("/docs").status_code == 200
 
 
 def test_fund_detail_direct_and_ineligible(client):
@@ -149,4 +231,3 @@ def test_fund_detail_direct_and_ineligible(client):
     r_none = client.get("/api/funds/0000")
     assert r_none.status_code == 404
     assert r_none.json()["detail"] == "Scheme not found"
-

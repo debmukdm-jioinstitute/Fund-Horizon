@@ -59,14 +59,29 @@ def stress_test(funds: list[dict], df: pd.DataFrame, a: dict | None = None) -> d
     if p0 in series.index and p1 in series.index:
         seg = series.loc[p0:p1]
         crash = float(seg.min() / seg.iloc[0] - 1.0)
+    any_sub = any(v > 0 for v in substituted.values())
+    notes = ["Based on month-end NAVs; intra-month falls are not captured."]
+    equity_w = sum(float(f.get("weight_pct") or 0) for f in funds if f.get("sleeve") == "equity")
+    if crash is None:
+        notes.append("The 2020 crash window is not in the available month-end series for this mix.")
+    elif crash > -0.005 and equity_w < 1:
+        notes.append(
+            "The 2020 crash-window return is near zero because this mix has no equity sleeve "
+            "in that window, not because the portfolio is safe."
+        )
+    if any_sub:
+        notes.append(
+            "One or more funds lack history in part of the window; those months use the "
+            "category-median return (flagged as substituted)."
+        )
     return {
         "crash_2020_drawdown": crash,
         "worst_peak_to_trough": worst_dd,
         "worst_rolling_12m": float(roll12.min()) if roll12.notna().any() else None,
-        "window_start": str(series.index[0].date()),
-        "window_end": str(series.index[-1].date()),
+        "window_start": str(series.index[0].date()) if len(series) else None,
+        "window_end": str(series.index[-1].date()) if len(series) else None,
         "substituted_share": {k: round(v, 4) for k, v in substituted.items()},
-        "any_substituted": any(v > 0 for v in substituted.values()),
+        "any_substituted": any_sub,
         "path": [{"date": str(d.date()), "value": round(float(v))} for d, v in series.items()],
-        "note": "Based on month-end NAVs; intra-month falls are not captured.",
+        "note": " ".join(notes),
     }

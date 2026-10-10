@@ -1,44 +1,109 @@
 """Fund scoring and shortlist selection. Pure given a metrics DataFrame.
 
 Score = weighted mean of within-category percentile ranks (weights in config/scoring.yaml).
+The plan shortlist uses the consistency-first `category_ranking` mix (rolling % positive,
+dispersion, Sharpe, drawdown) — not a single-period CAGR beauty contest.
 Weights of missing metrics are dropped and the rest renormalised; <2 usable metrics => unscored.
+Gold and fee-stacked FoF recent-return inputs are capped; FoF-over-ETF names are dropped when
+a same-category alternative exists.
 # EXTENSION: add AUM / TER metrics to scoring.yaml and `_metric_series` once the data has them.
 """
 from __future__ import annotations
 
 import math
+import re
 
 import numpy as np
 import pandas as pd
 
 from app.config import load_allocation, load_assumptions, load_scoring
 
+_FEE_STACKED_FOF = re.compile(
+    r"(?:etf.+(?:fof|fund of fund)|(?:fof|fund of fund).+etf|passive fund of fund)",
+    re.IGNORECASE,
+)
+_FOF_NAME = re.compile(r"fund of fund|\bfof\b", re.IGNORECASE)
+_CAPPED_RETURN_KEYS = frozenset(
+    {"cagr_5y_or_3y", "cagr_3y", "roll3y_median", "roll1y_median"}
+)
 
-def _metric_series(df: pd.DataFrame, key: str) -> pd.Series:
+
+def is_fee_stacked_fof(name: str) -> bool:
+    """True for FoF-over-ETF (or named passive FoF) schemes whose expenses stack."""
+    return bool(_FEE_STACKED_FOF.search(name or ""))
+
+
+def is_fof(name: str) -> bool:
+    return bool(_FOF_NAME.search(name or ""))
+
+
+def _weights_for(cat: str, custom_weights: dict | None = None) -> dict:
+    if custom_weights is not None:
+        return custom_weights
+    sc = load_scoring()
+    key = "income" if is_income_category(cat) else "growth"
+    ranking = sc.get("category_ranking") or {}
+    return ranking.get(key) or sc[key]
+
+
+def _cagr_cap_for_row(cat: str, name: str) -> float | None:
+    caps = (load_scoring().get("cagr_cap") or {})
+    gold_cap = caps.get("gold")
+    fof_cap = caps.get("fee_stacked_fof")
+    chosen: list[float] = []
+    if cat == "gold" and gold_cap is not None:
+        chosen.append(float(gold_cap))
+    if fof_cap is not None and is_fee_stacked_fof(name):
+        chosen.append(float(fof_cap))
+    return min(chosen) if chosen else None
+
+
+def _apply_return_caps(s: pd.Series, df: pd.DataFrame, cat: str) -> pd.Series:
+    """Winsorise recent-return metrics for gold and fee-stacked FoFs."""
+    if "scheme_name" not in df.columns:
+        if cat == "gold":
+            cap = (load_scoring().get("cagr_cap") or {}).get("gold")
+            return s.clip(upper=float(cap)) if cap is not None else s
+        return s
+    out = s.astype(float).copy()
+    for idx in out.index:
+        cap = _cagr_cap_for_row(cat, str(df.loc[idx, "scheme_name"]))
+        if cap is not None and pd.notna(out.loc[idx]):
+            out.loc[idx] = min(float(out.loc[idx]), cap)
+    return out
+
+
+def _metric_series(df: pd.DataFrame, key: str, cat: str = "") -> pd.Series:
     """Higher-is-better series for a scoring metric key."""
     if key == "cagr_5y_or_3y":
-        return df["cagr_5y"].fillna(df["cagr_3y"])
-    if key == "neg_abs_max_drawdown_3y":
-        return -df["max_drawdown_3y"].abs()
-    if key == "neg_vol_3y":
-        return -df["vol_3y"]
-    if key == "roll3y_pct_positive":
-        return df["roll3y_pct_positive"] if "roll3y_pct_positive" in df else pd.Series(np.nan, index=df.index)
-    if key == "roll1y_pct_positive":
-        return df["roll1y_pct_positive"] if "roll1y_pct_positive" in df else pd.Series(np.nan, index=df.index)
-    if key == "neg_roll3y_dispersion":
+        s = df["cagr_5y"].fillna(df["cagr_3y"])
+    elif key == "neg_abs_max_drawdown_3y":
+        s = -df["max_drawdown_3y"].abs()
+    elif key == "neg_vol_3y":
+        s = -df["vol_3y"]
+    elif key == "roll3y_pct_positive":
+        s = df["roll3y_pct_positive"] if "roll3y_pct_positive" in df else pd.Series(np.nan, index=df.index)
+    elif key == "roll1y_pct_positive":
+        s = df["roll1y_pct_positive"] if "roll1y_pct_positive" in df else pd.Series(np.nan, index=df.index)
+    elif key == "neg_roll3y_dispersion":
         if "roll3y_max" in df and "roll3y_min" in df:
-            return -(df["roll3y_max"] - df["roll3y_min"])
-        return pd.Series(np.nan, index=df.index)
-    if key == "neg_roll1y_dispersion":
+            s = -(df["roll3y_max"] - df["roll3y_min"])
+        else:
+            s = pd.Series(np.nan, index=df.index)
+    elif key == "neg_roll1y_dispersion":
         if "roll1y_max" in df and "roll1y_min" in df:
-            return -(df["roll1y_max"] - df["roll1y_min"])
-        return pd.Series(np.nan, index=df.index)
-    if key == "sortino_3y":
-        return df["sortino_3y"] if "sortino_3y" in df else pd.Series(np.nan, index=df.index)
-    if key == "neg_downside_capture":
-        return -df["downside_capture"] if "downside_capture" in df else pd.Series(np.nan, index=df.index)
-    return df[key]
+            s = -(df["roll1y_max"] - df["roll1y_min"])
+        else:
+            s = pd.Series(np.nan, index=df.index)
+    elif key == "sortino_3y":
+        s = df["sortino_3y"] if "sortino_3y" in df else pd.Series(np.nan, index=df.index)
+    elif key == "neg_downside_capture":
+        s = -df["downside_capture"] if "downside_capture" in df else pd.Series(np.nan, index=df.index)
+    else:
+        s = df[key]
+    if key in _CAPPED_RETURN_KEYS:
+        s = _apply_return_caps(s, df, cat)
+    return s
 
 
 def is_income_category(cat: str) -> bool:
@@ -51,19 +116,26 @@ def min_history(cat: str, a: dict | None = None) -> float:
     return a["min_history_years"]["equity" if asset == "equity" else "other"]
 
 
+def _drop_fee_stacked_if_alternative(pool: pd.DataFrame) -> pd.DataFrame:
+    """Prefer non-ETF-FoF schemes when the category still has a viable alternative."""
+    if not load_scoring().get("avoid_fee_stacked_fof", True):
+        return pool
+    if pool.empty or "scheme_name" not in pool.columns:
+        return pool
+    stacked = pool["scheme_name"].astype(str).map(is_fee_stacked_fof)
+    kept = pool.loc[~stacked]
+    return kept if len(kept) else pool
+
+
 def score_pool(pool: pd.DataFrame, cat: str, custom_weights: dict | None = None) -> pd.DataFrame:
     """Pool with `score` (0-1) plus `_top_*` columns (rank as 'top N%'); unscored rows dropped."""
-    sc = load_scoring()
-    if custom_weights is not None:
-        weights = custom_weights
-    else:
-        weights = sc["income"] if is_income_category(cat) else sc["growth"]
+    weights = _weights_for(cat, custom_weights)
     out = pool.copy()
     num = pd.Series(0.0, index=out.index)
     den = pd.Series(0.0, index=out.index)
     used = pd.Series(0, index=out.index)
     for key, w in weights.items():
-        s = _metric_series(out, key)
+        s = _metric_series(out, key, cat)
         pct = s.rank(pct=True, method="average")
         n_valid = int(s.notna().sum())
         out[f"_top_{key}"] = np.ceil(100.0 * s.rank(ascending=False, method="min") / max(n_valid, 1))
@@ -91,6 +163,7 @@ def candidate_pool(
         & dq_cond
         & (df["history_years"] >= min_history(cat, a))
     ]
+    pool = _drop_fee_stacked_if_alternative(pool)
     if not len(pool):
         return pool.assign(score=pd.Series(dtype=float))
     return score_pool(pool, cat, custom_weights)
@@ -101,30 +174,63 @@ def _pct(v: float, digits: int = 1) -> str:
     return f"{v * 100:.{digits}f}%"
 
 
+def _top_label(row: pd.Series, key: str, suffix: str = " in category") -> str:
+    v = row.get(f"_top_{key}")
+    if v is None or (isinstance(v, float) and math.isnan(v)):
+        return ""
+    return f" (top {int(v)}%{suffix})"
+
+
 def explain_fund(row: pd.Series, cat: str) -> list[str]:
-    """Template-generated reasons from the numbers (no LLM)."""
+    """Template-generated reasons from the numbers (no LLM). Matches the consistency-first score."""
     out: list[str] = []
+    name = str(row.get("scheme_name") or "")
+    if cat == "gold":
+        out.append(
+            "Ranked on historical consistency within gold; recent metal-rally CAGR is capped in the "
+            "score and is not a forecast."
+        )
+    if is_fee_stacked_fof(name):
+        out.append("Fund-of-fund over an ETF: Regular, FoF and underlying ETF expenses stack.")
+    elif is_fof(name) and cat == "gold":
+        out.append(
+            "Gold sleeve uses a fund-of-fund (exchange-traded gold units need demat and are excluded)."
+        )
     if is_income_category(cat):
         if pd.notna(row.get("cagr_3y")):
-            out.append(f"3Y CAGR {_pct(row['cagr_3y'])} (top {int(row['_top_cagr_3y'])}% in category)")
+            out.append(f"3Y CAGR {_pct(row['cagr_3y'])}{_top_label(row, 'cagr_3y')}")
         if pd.notna(row.get("roll1y_median")):
             out.append(
-                f"Median rolling 1Y return {_pct(row['roll1y_median'])} "
-                f"(top {int(row['_top_roll1y_median'])}%)"
+                f"Median rolling 1Y return {_pct(row['roll1y_median'])}"
+                f"{_top_label(row, 'roll1y_median', '')}"
+            )
+        if pd.notna(row.get("roll1y_pct_positive")):
+            out.append(
+                f"Rolling 1Y periods positive {_pct(row['roll1y_pct_positive'], 0)}"
+                f"{_top_label(row, 'roll1y_pct_positive', '')}"
             )
         if pd.notna(row.get("vol_3y")):
-            out.append(f"3Y volatility {_pct(row['vol_3y'])} (top {int(row['_top_neg_vol_3y'])}% lowest)")
+            out.append(f"3Y volatility {_pct(row['vol_3y'])}{_top_label(row, 'neg_vol_3y', ' lowest')}")
         return out
     label, col = ("5Y", "cagr_5y") if pd.notna(row.get("cagr_5y")) else ("3Y", "cagr_3y")
-    out.append(f"{label} CAGR {_pct(row[col])} (top {int(row['_top_cagr_5y_or_3y'])}% in category)")
+    if pd.notna(row.get(col)):
+        cap_note = " (capped for ranking so a recent rally does not dominate)" if cat == "gold" else _top_label(row, "cagr_5y_or_3y")
+        out.append(f"{label} CAGR {_pct(row[col])}{cap_note}")
     if pd.notna(row.get("roll3y_median")):
-        out.append(f"Median rolling 3Y return {_pct(row['roll3y_median'])} (top {int(row['_top_roll3y_median'])}%)")
+        out.append(
+            f"Median rolling 3Y return {_pct(row['roll3y_median'])}{_top_label(row, 'roll3y_median', '')}"
+        )
+    if pd.notna(row.get("roll3y_pct_positive")):
+        out.append(
+            f"Rolling 3Y periods positive {_pct(row['roll3y_pct_positive'], 0)}"
+            f"{_top_label(row, 'roll3y_pct_positive', '')}"
+        )
     if pd.notna(row.get("sharpe_3y")):
-        out.append(f"3Y Sharpe {row['sharpe_3y']:.2f} (top {int(row['_top_sharpe_3y'])}%)")
+        out.append(f"3Y Sharpe {row['sharpe_3y']:.2f}{_top_label(row, 'sharpe_3y', '')}")
     if pd.notna(row.get("max_drawdown_3y")):
         out.append(
-            f"3Y max drawdown {_pct(row['max_drawdown_3y'])} "
-            f"(top {int(row['_top_neg_abs_max_drawdown_3y'])}% shallowest)"
+            f"3Y max drawdown {_pct(row['max_drawdown_3y'])}"
+            f"{_top_label(row, 'neg_abs_max_drawdown_3y', ' shallowest')}"
         )
     return out
 
@@ -160,6 +266,7 @@ def select_funds(category_weights: dict[str, float], df: pd.DataFrame, a: dict |
 
     Categories are processed by weight (desc) so heavier sleeves get first pick of AMCs.
     Small positions are merged into the largest same-sleeve fund (fallback sleeve per config).
+    Scoring uses the consistency-first category_ranking weights.
     """
     sel = load_allocation()["selection"]
     picks: list[dict] = []
@@ -213,18 +320,14 @@ def _merge_small(picks: list[dict], sel: dict) -> list[dict]:
 
 
 def rank_category_funds(cat: str, df: pd.DataFrame | None = None) -> list[dict]:
-    """Rank all clean schemes in a category using composite score with consistency and risk."""
+    """Rank all clean schemes in a category using the same consistency-first composite as the plan."""
     from app.data.loader import eligible_funds
 
     base = eligible_funds() if df is None else df
-    sc = load_scoring()
-    ranking_weights = sc.get("category_ranking", {})
-    weights = ranking_weights.get("income" if is_income_category(cat) else "growth")
-    pool = candidate_pool(base, cat, custom_weights=weights)
+    pool = candidate_pool(base, cat)
     out: list[dict] = []
     for rank, (_, row) in enumerate(pool.iterrows(), start=1):
         d = _pick_to_dict(row, cat, 0.0, "")
         d["rank"] = rank
         out.append(d)
     return out
-

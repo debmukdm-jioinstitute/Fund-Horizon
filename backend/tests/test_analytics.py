@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -195,6 +197,124 @@ def test_api_category_ranking(client):
     assert data["total_schemes"] > 5
     assert data["rankings"][0]["rank"] == 1
     assert "score" in data["rankings"][0]
+
+
+def test_nav_at_and_trailing_edge_cases():
+    empty = pd.Series(dtype=float)
+    assert math.isnan(an.nav_at(empty, pd.Timestamp("2020-01-31")))
+    dates = pd.date_range("2020-01-31", periods=13, freq="ME")
+    s = pd.Series(np.linspace(10, 11, 13), index=dates)
+    assert math.isnan(an.nav_at(s, pd.Timestamp("2019-01-01")))
+    assert an.nav_at(s, dates[0]) == 10.0
+    assert an.trailing_return(empty, years=1) is None
+    assert an.trailing_return(s) is None
+    r6 = an.trailing_return(s, months=6)
+    assert r6 is not None and r6 > 0
+    assert an.trailing_return(s, years=5) is None
+    assert an.cagr(empty) is None
+    assert an.cagr(s.iloc[:2]) is None
+    short = pd.Series([10.0, 11.0], index=pd.date_range("2020-01-31", periods=2, freq="ME"))
+    assert an.cagr(short) is None
+    bad = pd.Series([0.0, 10.0], index=dates[:2])
+    assert an.cagr(bad) is None
+
+
+def test_rolling_and_risk_edge_cases():
+    empty = pd.Series(dtype=float)
+    assert an.rolling_returns(empty).empty
+    short = pd.Series([10.0, 11.0], index=pd.date_range("2020-01-31", periods=2, freq="ME"))
+    assert an.rolling_returns(short, 1).empty
+    stats = an.rolling_return_stats(empty, 1)
+    assert stats["n"] == 0 and stats["median"] is None
+    assert an.annualized_volatility(short) == 0.0
+    assert an.sharpe_ratio(0.1, 0.0) is None
+    assert an.sharpe_ratio(None, 0.2) is None
+    assert an.sortino_ratio(short, 0.1) is None
+    assert an.sortino_ratio(short, None) is None
+    dates = pd.date_range("2020-01-31", periods=12, freq="ME")
+    up_only = pd.Series(np.linspace(10, 20, 12), index=dates)
+    assert an.sortino_ratio(up_only, 0.2) is None
+    assert an.max_drawdown(short) == 0.0
+    dur = an.max_drawdown_duration(short)
+    assert dur["longest_underwater_months"] == 0
+
+
+def test_sip_xirr_cash_flows_and_failures():
+    dates = pd.date_range("2021-01-31", periods=24, freq="ME")
+    navs = 10.0 * ((1.10) ** (np.arange(24) / 12.0))
+    s = pd.Series(navs, index=dates)
+    x3 = an.sip_xirr(s, years=2)
+    assert x3 is not None and 0.05 < x3 < 0.16
+    assert an.sip_xirr(s.iloc[:2]) is None
+    zero = s.copy()
+    zero.iloc[3] = 0.0
+    assert an.sip_xirr(zero) is None
+    flows = [(dates[0], -1000.0), (dates[-1], 1500.0)]
+    irr = an.sip_xirr(s, cash_flows=flows)
+    assert irr is not None and irr > 0
+    assert an.sip_xirr(s, cash_flows=[(dates[0], -1000.0)]) is None
+    bad_flows = [(dates[0], 1000.0), (dates[-1], 1000.0)]
+    assert an.sip_xirr(s, cash_flows=bad_flows) is None
+
+
+def test_capture_accepts_category_median_returns():
+    dates = pd.date_range("2020-01-31", periods=24, freq="ME")
+    b_ret = np.array([0.02, -0.02] * 12)
+    f_ret = np.array([0.03, -0.01] * 12)
+    bench_nav = pd.Series(100.0 * np.cumprod(1.0 + b_ret), index=dates)
+    fund = pd.Series(100.0 * np.cumprod(1.0 + f_ret), index=dates)
+    bench_rets = bench_nav.pct_change().fillna(0.0)
+    via_nav = an.capture_ratios(fund, bench_nav)
+    via_rets = an.capture_ratios(fund, bench_rets)
+    assert via_nav["upside_capture"] is not None and via_rets["upside_capture"] is not None
+    assert abs(via_nav["upside_capture"] - via_rets["upside_capture"]) < 5.0
+    assert via_nav["downside_capture"] is not None and via_nav["downside_capture"] < 100.0
+
+    tiny = pd.Series(dtype=float)
+    assert an.capture_ratios(tiny, tiny)["upside_capture"] is None
+    short_f = fund.iloc[:5]
+    assert an.capture_ratios(short_f, bench_nav)["common_periods"] < 12
+
+    # Opposite-sign down months (fund up while bench down) -> None, not a negative ratio
+    opp_f = pd.Series(100.0 * np.cumprod(1.0 + np.array([0.02, 0.01] * 12)), index=dates)
+    opp = an.capture_ratios(opp_f, bench_nav)
+    assert opp["downside_capture"] is None
+
+
+def test_correlation_and_optimize_edge_cases():
+    one = an.return_correlation_matrix({"A": pd.Series([1.0, 1.1], index=pd.date_range("2020-01-31", periods=2, freq="ME"))})
+    assert one["codes"] == ["A"] and one["flagged_pairs"] == []
+    empty = an.return_correlation_matrix({})
+    assert empty["matrix"] == []
+    dates = pd.date_range("2020-01-31", periods=3, freq="ME")
+    short = {"A": pd.Series([10.0, 11.0, 12.0], index=dates), "B": pd.Series([10.0, 10.5, 11.0], index=dates)}
+    few = an.return_correlation_matrix(short)
+    assert few["matrix"] == [] or few["codes"]
+    opt = an.optimize_portfolio_weights({"A": short["A"]})
+    assert opt["max_sharpe"] is None
+    opt2 = an.optimize_portfolio_weights(short)
+    assert opt2["max_sharpe"] is None
+    # Force the exception path with a singular / empty aligned frame of constants
+    dates_ok = pd.date_range("2020-01-31", periods=14, freq="ME")
+    const = pd.Series(np.full(14, 10.0), index=dates_ok)
+    opt3 = an.optimize_portfolio_weights({"A": const, "B": const})
+    assert "disclaimer" in opt3
+
+
+def test_live_debt_fund_capture_is_sane():
+    """Regression: 128628 used to return downside_capture ≈ -38.9 from double pct_change."""
+    from app.engine.stress import category_median_series
+
+    nav = load_nav("128628")
+    el = eligible_funds()
+    row = el[el["scheme_code"] == "128628"]
+    cat = str(row.iloc[0]["cat"]) if len(row) else "banking_psu"
+    med = category_median_series(el, cat, 3)
+    cap = an.capture_ratios(nav, med)
+    assert cap["upside_capture"] is None or cap["upside_capture"] > 1.0
+    if cap["downside_capture"] is not None:
+        assert cap["downside_capture"] > 0
+        assert cap["downside_capture"] < 400
 
 
 def test_api_portfolio_analyze(client):

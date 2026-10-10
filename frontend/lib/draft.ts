@@ -1,3 +1,4 @@
+// TODO(owner-compliance-review): this file contains user-facing copy.
 import type { ClientInput, GoalInput, GoalType, PlanRequest } from "./types";
 
 /** Wizard form state. Numbers are kept as digit strings so typing feels natural. */

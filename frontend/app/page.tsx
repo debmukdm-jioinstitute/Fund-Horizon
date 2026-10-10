@@ -1,3 +1,4 @@
+// TODO(owner-compliance-review): this file contains user-facing copy.
 import Link from "next/link";
 import { getMetaServer } from "@/lib/api";
 

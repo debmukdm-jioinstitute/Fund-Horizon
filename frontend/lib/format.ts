@@ -1,3 +1,4 @@
+// TODO(owner-compliance-review): this file contains user-facing copy.
 /** Indian digit grouping: 1234567 -> ₹12,34,567 */
 export function inr(v: number | null | undefined): string {
   if (v === null || v === undefined || Number.isNaN(v)) return "–";

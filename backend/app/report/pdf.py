@@ -1,6 +1,7 @@
 """Client-ready PDF (A4) built with ReportLab; charts via matplotlib. Fully offline."""
 from __future__ import annotations
 
+# TODO(owner-compliance-review): this module contains user-facing report copy.
 import io
 from datetime import date
 from pathlib import Path

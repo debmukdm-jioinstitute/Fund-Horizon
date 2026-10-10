@@ -1,5 +1,7 @@
 "use client";
 
+// TODO(owner-compliance-review): this file contains user-facing copy.
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { NumberField, SelectField, TextField } from "@/components/Field";

@@ -1,5 +1,7 @@
 "use client";
 
+// TODO(owner-compliance-review): this file contains user-facing copy.
+
 import { FanChart, Gauge } from "@/components/charts";
 import { CATEGORY_LABELS, STATUS_LABELS, inr, pct, shortInr } from "@/lib/format";
 import type { FundPick, GoalPlan, Plan, Profile } from "@/lib/types";

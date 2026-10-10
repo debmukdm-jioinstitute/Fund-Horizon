@@ -1,3 +1,4 @@
+// TODO(owner-compliance-review): this file contains user-facing copy.
 import { getMetaServer } from "@/lib/api";
 
 /** Global compliance footer. Copy comes from the API (config/disclosures.py) so UI and PDF match. */

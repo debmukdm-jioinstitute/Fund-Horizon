@@ -4,6 +4,7 @@ All pure functions of (client, goals, band, assumptions). No I/O.
 """
 from __future__ import annotations
 
+# TODO(owner-compliance-review): rebalancing text below is user-facing copy.
 import math
 
 from app.config import load_assumptions

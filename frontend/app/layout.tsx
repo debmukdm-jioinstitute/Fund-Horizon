@@ -1,3 +1,4 @@
+// TODO(owner-compliance-review): this file contains user-facing copy.
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";

@@ -80,8 +80,8 @@ PORTFOLIO_DISCLAIMER = (
 
 # Engine status -> wording that does not read "funded" as "likely to succeed".
 SIZED_STATUS_LABELS = {
-    "funded": "Sized at assumed return",
-    "partially_funded": "Partly sized at assumed return",
+    "funded": "Sized (central path)",
+    "partially_funded": "Partly sized (central path)",
     "unfunded": "Not sized",
 }  # TODO(owner-compliance-review)
 

@@ -32,8 +32,13 @@ def pct(v: float | None, digits: int = 1) -> str:
 
 
 def xml_escape(text: object) -> str:
-    """Escape user-supplied text for ReportLab Paragraph and drawString."""
+    """Escape user-supplied text for ReportLab Paragraph (XML markup)."""
     return _xml_escape("" if text is None else str(text))
+
+
+def canvas_text(text: object) -> str:
+    """Neutralise markup for canvas.drawString without showing XML entities."""
+    return ("" if text is None else str(text)).replace("<", "‹").replace(">", "›")
 
 
 def sized_status(status: str) -> str:

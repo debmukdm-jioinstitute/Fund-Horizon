@@ -92,7 +92,7 @@ def test_required_disclosure_wording():
     assert payload["tax_per_goal_note"] == d.TAX_PER_GOAL_NOTE
     assert payload["success_prob_note"] == d.SUCCESS_PROB_NOTE
     assert payload["scheme_docs_note"] == d.SCHEME_DOCS_NOTE
-    assert payload["sized_status_labels"]["funded"] == "Sized at assumed return"
+    assert payload["sized_status_labels"]["funded"] == "Sized (central path)"
 
 
 def test_new_copy_keeps_compliance_review_marker():

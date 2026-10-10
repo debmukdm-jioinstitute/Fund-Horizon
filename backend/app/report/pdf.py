@@ -38,7 +38,7 @@ from app.config.disclosures import (
     all_disclosures,
 )
 from app.report import charts
-from app.report.fmt import inr, pct, short_inr, sized_status, xml_escape
+from app.report.fmt import canvas_text, inr, pct, short_inr, sized_status, xml_escape
 
 NAVY, TEAL = colors.HexColor("#0B2545"), colors.HexColor("#13A89E")
 LIGHT = colors.HexColor("#EEF6F6")
@@ -103,7 +103,7 @@ def build_pdf(first_name: str, r: dict) -> bytes:
         canvas.setFont("DV-B", 12)
         canvas.drawString(15 * mm, h - 10.5 * mm, FIRM)
         canvas.setFont("DV", 8)
-        canvas.drawRightString(w - 15 * mm, h - 10.5 * mm, f"Illustrative plan for {xml_escape(first_name)}  |  {today}")
+        canvas.drawRightString(w - 15 * mm, h - 10.5 * mm, f"Illustrative plan for {canvas_text(first_name)}  |  {today}")
         canvas.setFillColor(TEAL)
         canvas.rect(0, h - 17 * mm, w, 1 * mm, stroke=0, fill=1)
         canvas.setFillColor(colors.HexColor("#444444"))

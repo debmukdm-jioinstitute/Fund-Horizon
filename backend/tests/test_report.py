@@ -17,7 +17,7 @@ from app.config.disclosures import (
 )
 from app.engine.pipeline import build_full_plan
 from app.main import create_app
-from app.report.fmt import pct, short_inr, sized_status, xml_escape
+from app.report.fmt import canvas_text, pct, short_inr, sized_status, xml_escape
 from app.report.pdf import build_pdf
 from app.schemas import PlanRequest
 
@@ -67,8 +67,9 @@ def test_formatters():
     assert pct(-0.00001) == "0.0%" and pct(0.123) == "12.3%" and pct(None) == "-"
     assert xml_escape("<font color='red'>HACK</font>") == "&lt;font color='red'&gt;HACK&lt;/font&gt;"
     assert xml_escape(None) == ""
-    assert sized_status("funded") == "Sized at assumed return"
-    assert sized_status("partially_funded") == "Partly sized at assumed return"
+    assert canvas_text("<font color='red'>HACK</font>") == "‹font color='red'›HACK‹/font›"
+    assert sized_status("funded") == "Sized (central path)"
+    assert sized_status("partially_funded") == "Partly sized (central path)"
     assert sized_status("unfunded") == "Not sized"
 
 
@@ -99,6 +100,6 @@ def test_pdf_page1_success_probability_and_tax_copy(eligible, monkeypatch):
     assert TAX_PER_GOAL_NOTE in blob
     assert TAX_INFO in blob
     assert SCHEME_DOCS_NOTE in blob
-    assert "Sized at assumed return" in blob
+    assert "Sized (central path)" in blob
     assert blob.count(TAX_PER_GOAL_NOTE) == len(r["planning"]["goals"])
     assert "partially funded" not in blob

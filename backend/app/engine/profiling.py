@@ -6,7 +6,7 @@ final_score = min(capacity, tolerance). Band edges: lower bound inclusive, upper
 from __future__ import annotations
 
 from app.config import load_allocation, load_assumptions, load_questionnaire
-from app.engine.insurance import term_need
+from app.engine.insurance import health_target, term_need
 from app.schemas import Client, EmploymentType
 
 WEIGHTS = {
@@ -19,6 +19,10 @@ STABILITY = {
     EmploymentType.retired_none: 25,
 }
 MISMATCH_GAP = 25.0
+
+ACTION_EMERGENCY = "Build emergency fund first"
+ACTION_TERM_GAP = "Close the term cover gap"
+ACTION_HEALTH_GAP = "Close the health cover gap"
 
 
 def _step(value: float, table: list[tuple[float, int]], floor: int) -> int:
@@ -93,19 +97,43 @@ def band_for(score: float) -> dict:
     return bands[-1]
 
 
+def _zero_income_metrics(client: Client, outgo: float, nw: float) -> tuple[float, float, float]:
+    """Savings rate, NW multiple and debt burden when monthly income is 0.
+
+    Retirees and other zero-income clients are not treated as 100% debt-burdened.
+    Net worth is scored as years of outgo (absolute wealth vs spending), and EMI is
+    scored against assets when present.
+    """
+    savings_rate = 0.0 if client.monthly_emi == 0 else -1.0
+    if outgo > 0:
+        nw_multiple = nw / (12.0 * outgo)
+    else:
+        nw_multiple = 5.0 if nw >= 0 else -1.0
+    if client.monthly_emi == 0:
+        debt = 0.0
+    else:
+        assets = client.liquid_assets + client.investments
+        debt = (client.monthly_emi * 12.0) / assets if assets > 0 else 1.0
+    return savings_rate, nw_multiple, debt
+
+
 def risk_capacity(client: Client, assumptions: dict | None = None) -> dict:
     """Weighted capacity score with a per-factor breakdown."""
     a = assumptions or load_assumptions()
     income = client.monthly_income
     outgo = client.monthly_expenses + client.monthly_emi
-    savings_rate = (income - outgo) / income if income > 0 else -1.0
-    ef_months = client.liquid_assets / outgo if outgo > 0 else 99.0
     nw = client.liquid_assets + client.investments - client.liabilities
-    nw_multiple = nw / (12 * income) if income > 0 else (0.0 if nw >= 0 else -1.0)
-    debt = client.monthly_emi / income if income > 0 else 1.0
+    if income > 0:
+        savings_rate = (income - outgo) / income
+        nw_multiple = nw / (12 * income)
+        debt = client.monthly_emi / income
+    else:
+        savings_rate, nw_multiple, debt = _zero_income_metrics(client, outgo, nw)
+    ef_months = client.liquid_assets / outgo if outgo > 0 else 99.0
     need = term_need(
         client.age, client.retirement_age, income, client.investments,
         client.liquid_assets, client.liabilities, a["insurance"],
+        dependents=client.dependents,
     )["need"]
     raw = {
         "age": (score_age(client.age), client.age),
@@ -178,13 +206,23 @@ def build_profile(client: Client, answers: dict[str, int], assumptions: dict | N
 
     if cap["emergency_months"] < 3:
         # TODO(owner-compliance-review): user-facing copy
-        actions.append("Build emergency fund first")
+        actions.append(ACTION_EMERGENCY)
         moderate = next(b for b in bands if b["name"] == "Moderate")
         if bands.index(band) > bands.index(moderate):
             band = moderate
             notes.append("Band capped at Moderate until the emergency fund covers 3 months.")
-    if client.dependents > 0 and client.term_cover == 0:
-        actions.append("Insurance first")  # TODO(owner-compliance-review)
+
+    ins = a["insurance"]
+    term = term_need(
+        client.age, client.retirement_age, client.monthly_income, client.investments,
+        client.liquid_assets, client.liabilities, ins, dependents=client.dependents,
+    )
+    term_gap = max(term["need"] - client.term_cover, 0)
+    h_gap = max(health_target(client.age, client.dependents, ins) - client.health_cover, 0)
+    if term_gap > 0:
+        actions.append(ACTION_TERM_GAP)
+    if h_gap > 0:
+        actions.append(ACTION_HEALTH_GAP)
 
     return {
         "capacity": cap,

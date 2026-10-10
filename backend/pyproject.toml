@@ -15,3 +15,4 @@ pythonpath = ["."]
 line-length = 120
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "B"]
+ignore = ["E501", "B905", "B007", "E731"]

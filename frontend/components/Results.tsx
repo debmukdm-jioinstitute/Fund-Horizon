@@ -6,7 +6,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { FanChart, Gauge } from "@/components/charts";
 import { CATEGORY_LABELS, inr, pct, shortInr } from "@/lib/format";
-import type { Disclosures, FundPick, GoalPlan, Plan, Profile } from "@/lib/types";
+import type {
+  Disclosures, FundPick, GoalPlan, InsuranceBlock, InsuranceSuggestions as InsuranceSuggestionsData,
+  Plan, Profile,
+} from "@/lib/types";
 
 /** Extra /api/meta keys from WS5. Absent on older payloads. */
 export type ExtraDisclosures = Disclosures & {
@@ -472,6 +475,157 @@ export function InsuranceCard({ ins }: { ins: Plan["planning"]["insurance"] }) {
           ? `Term need is a range, not a single figure: ${shortInr(range.low)} to ${shortInr(range.high)} (HLV ${shortInr(range.hlv ?? ins.term.need)}; 15× ${shortInr(range.ref15 ?? ins.term.reference["15x_income"])}; 20× ${shortInr(range.ref20 ?? ins.term.reference["20x_income"])}).`
           : `Term need is a human-life-value estimate. For reference, 15x income is ${shortInr(ins.term.reference["15x_income"])} and 20x income is ${shortInr(ins.term.reference["20x_income"])}.`}
       </p>
+    </div>
+  );
+}
+
+function MarkedBadge() {
+  return (
+    <span className="ml-2 inline-block rounded-full bg-teal-700 px-2 py-0.5 align-middle text-xs font-bold text-white">
+      Marked pick
+    </span>
+  );
+}
+
+function CoverBlock({ block, title }: { block: InsuranceBlock; title: string }) {
+  const pick = block.plans.find((p) => p.marked_pick) ?? block.plans[0];
+  return (
+    <section aria-label={`${title} illustrative shortlist`} className="border-t border-navy-100 pt-4 first:border-t-0 first:pt-0">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h4 className="font-bold">{title} — illustrative shortlist</h4>
+        <p className="text-sm text-navy-700">Gap {shortInr(block.gap)} · researched {block.researched_on}</p>
+      </div>
+
+      <div className="mt-3 rounded-xl border-2 border-teal-600 bg-teal-50 p-4">
+        <p className="font-bold">
+          <span className="mr-2 inline-block rounded-full bg-teal-700 px-2 py-0.5 align-middle text-xs font-bold text-white">Marked pick</span>
+          {pick.insurer} — {pick.plan}
+        </p>
+        <dl className="mt-2 grid gap-2 text-sm sm:grid-cols-3">
+          <div><dt className="text-navy-700">Claim settlement</dt><dd className="font-semibold">{pick.claim_settlement}</dd></div>
+          {pick.solvency && <div><dt className="text-navy-700">Solvency ratio</dt><dd className="font-semibold">{pick.solvency}</dd></div>}
+          <div><dt className="text-navy-700">Sum insured</dt><dd className="font-semibold">{pick.sum_insured}</dd></div>
+        </dl>
+        <ul className="mt-2 list-disc pl-5 text-sm">
+          {pick.features.map((f) => <li key={f}>{f}</li>)}
+        </ul>
+        <p className="mt-3 text-sm font-semibold">Why this one is marked</p>
+        <ul className="list-disc pl-5 text-sm">
+          {block.pick_reason.map((r) => <li key={r}>{r}</li>)}
+        </ul>
+      </div>
+
+      <div className="mt-3 overflow-x-auto" tabIndex={0} role="region" aria-label={`${title} plan comparison. Scroll sideways on a small screen.`}>
+        <table className="w-full min-w-[720px] text-left text-sm">
+          <thead className="bg-navy-50">
+            <tr>
+              {["Insurer", "Plan", "Claim settlement", "Solvency", "Sum insured", "Key features"].map((h) => (
+                <th key={h} scope="col" className="th">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {block.plans.map((p) => (
+              <tr key={`${p.insurer}-${p.plan}`} className={`border-t border-navy-100 ${p.marked_pick ? "bg-teal-50" : ""}`}>
+                <td className="td font-medium">{p.insurer}{p.marked_pick && <MarkedBadge />}</td>
+                <td className="td">{p.plan}</td>
+                <td className="td">{p.claim_settlement}</td>
+                <td className="td">{p.solvency ?? "–"}</td>
+                <td className="td">{p.sum_insured}</td>
+                <td className="td"><ul className="list-disc pl-4 text-xs">{p.features.map((f) => <li key={f}>{f}</li>)}</ul></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-2 text-xs text-navy-700">{block.note}</p>
+    </section>
+  );
+}
+
+export function InsuranceSuggestions({ data }: { data: InsuranceSuggestionsData }) {
+  if (!data.term && !data.health) return null;
+  return (
+    <div className="card" aria-label="Cover plans worth researching">
+      <h3 className="text-lg font-bold">Cover plans worth researching</h3>
+      <p className="mt-1 text-sm text-navy-700">
+        For each cover gap above, here is an illustrative shortlist from our October 2026 research,
+        with one plan marked for you to compare first. It is a starting point for your own
+        research — not a recommendation.
+      </p>
+      <div className="mt-4 space-y-6">
+        {data.term && <CoverBlock block={data.term} title="Term cover" />}
+        {data.health && <CoverBlock block={data.health} title="Health cover" />}
+      </div>
+    </div>
+  );
+}
+
+function FundCompareCard({ fund: f }: { fund: FundPick }) {
+  const alts = f.alternatives ?? [];
+  const cols = [f, ...alts];
+  const codes = cols.map((c) => c.scheme_code).join(",");
+  return (
+    <details className="card">
+      <summary className="cursor-pointer font-semibold">
+        {CATEGORY_LABELS[f.cat] ?? f.cat} — {f.scheme_name}
+        <MarkedBadge />
+      </summary>
+      <div className="mt-3 overflow-x-auto" tabIndex={0} role="region"
+        aria-label={`${CATEGORY_LABELS[f.cat] ?? f.cat} fund comparison. Scroll sideways on a small screen.`}>
+        <table className="w-full min-w-[780px] text-left text-sm">
+          <thead className="bg-navy-50">
+            <tr>
+              {["Fund", "AMC", "3Y CAGR", "5Y CAGR", "3Y volatility", "Max drawdown (3Y)", "3Y Sharpe", "Score"].map((h) => (
+                <th key={h} scope="col" className="th">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {cols.map((c, i) => (
+              <tr key={c.scheme_code} className={`border-t border-navy-100 ${i === 0 ? "bg-teal-50" : ""}`}>
+                <td className="td font-medium">{c.scheme_name}{i === 0 && <MarkedBadge />}</td>
+                <td className="td">{c.amc}</td>
+                <td className="td">{pct(c.metrics.cagr_3y)}</td>
+                <td className="td">{pct(c.metrics.cagr_5y)}</td>
+                <td className="td">{pct(c.metrics.vol_3y)}</td>
+                <td className="td">{pct(c.metrics.max_drawdown_3y)}</td>
+                <td className="td">{c.metrics.sharpe_3y == null ? "–" : Number(c.metrics.sharpe_3y).toFixed(2)}</td>
+                <td className="td">{Number(c.score).toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-3 rounded-lg bg-navy-50 p-3">
+        <p className="text-sm font-semibold">Why this one is marked</p>
+        <ul className="list-disc pl-5 text-sm">
+          {f.explain.map((e) => <li key={e}>{e}</li>)}
+        </ul>
+      </div>
+      <Link
+        href={`/funds/compare?codes=${codes}`}
+        className="mt-3 inline-block text-sm font-semibold text-teal-700 hover:underline"
+      >
+        Open full comparison →
+      </Link>
+    </details>
+  );
+}
+
+export function FundComparisons({ funds }: { funds: FundPick[] }) {
+  const rows = funds.filter((f) => f.alternatives && f.alternatives.length > 0);
+  if (!rows.length) return null;
+  return (
+    <div className="mt-6">
+      <h3 className="mb-1 text-lg font-bold">Fund-by-fund comparison with marked pick</h3>
+      <p className="mb-3 text-sm text-navy-700">
+        Each shortlisted fund is the top-ranked scheme in its category by the past-performance
+        composite. Expand a category to compare it side by side with the next three ranked schemes.
+      </p>
+      <div className="space-y-3">
+        {rows.map((f) => <FundCompareCard key={f.scheme_code} fund={f} />)}
+      </div>
     </div>
   );
 }

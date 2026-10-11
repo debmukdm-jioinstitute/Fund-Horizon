@@ -1,9 +1,15 @@
 import { ImageResponse } from "next/og";
+import fs from "node:fs";
+import path from "node:path";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
 export default function Icon() {
+  const emblemPath = path.join(process.cwd(), "public/images/logo-emblem.png");
+  const base64 = fs.readFileSync(emblemPath).toString("base64");
+  const dataUri = `data:image/png;base64,${base64}`;
+
   return new ImageResponse(
     (
       <div
@@ -11,32 +17,15 @@ export default function Icon() {
           width: "100%",
           height: "100%",
           display: "flex",
-          position: "relative",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #0B2545 0%, #06172C 100%)",
-          borderRadius: "8px",
-          border: "1px solid rgba(19, 168, 158, 0.4)",
-          color: "#13A89E",
-          fontFamily: "system-ui, sans-serif",
-          fontWeight: 900,
-          fontSize: "14px",
-          letterSpacing: "-0.05em",
+          backgroundColor: "#FFFFFF",
+          borderRadius: "6px",
+          padding: "2px",
         }}
       >
-        <span>FH</span>
-        <div
-          style={{
-            position: "absolute",
-            top: "2px",
-            right: "2px",
-            width: "6px",
-            height: "6px",
-            borderRadius: "50%",
-            backgroundColor: "#2DD4BF",
-            boxShadow: "0 0 6px #13A89E",
-          }}
-        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={dataUri} alt="" style={{ width: "28px", height: "auto" }} />
       </div>
     ),
     { ...size }

@@ -65,10 +65,28 @@ Replace `all_schemes_metrics.csv`, `category_summary.csv` and `nav_monthly/` wit
 Chat/LLM features, authentication, payments or orders, KYC, CAS upload, tax optimisation, international
 funds, Direct-plan recommendations, deployment config. Extension points are marked `# EXTENSION:`.
 
+## Database & Persistence
+By default, Fund Horizon uses local SQLite (`plans.db`). For persistent multi-instance or serverless deployments, PostgreSQL is supported via SQLAlchemy 2.0 with connection pooling (e.g. Supabase or Neon free tiers):
+
+1. Set `DATABASE_URL` in environment (e.g., in `backend/.env` or deployment variables):
+   - **Supabase (Transaction Pooler port 6543):**
+     `DATABASE_URL=postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres`
+   - **Neon Serverless PostgreSQL:**
+     `DATABASE_URL=postgresql://[user]:[password]@[endpoint].neon.tech/neondb?sslmode=require`
+2. Run database migrations:
+   ```bash
+   cd backend && .venv/bin/alembic upgrade head
+   ```
+3. Daily data synchronization:
+   ```bash
+   cd backend && .venv/bin/python scripts/refresh_data.py
+   ```
+
 ## Deploy (Railway)
 Two services built from the repo root with the Dockerfiles in `deploy/`:
-`api` (`RAILWAY_DOCKERFILE_PATH=deploy/api.Dockerfile`, volume at `/data`, `FH_DB_PATH=/data/plans.db`,
+`api` (`RAILWAY_DOCKERFILE_PATH=deploy/api.Dockerfile`, volume at `/data`, `FH_DB_PATH=/data/plans.db` or `DATABASE_URL=<postgres connection string>`,
 `FH_CORS_ORIGINS=https://fundhorizon.up.railway.app`) and `web` (`deploy/web.Dockerfile`,
 `NEXT_PUBLIC_API_URL` and `API_INTERNAL_URL` set to the api URL; `NEXT_PUBLIC_SITE_URL` defaults to
 `https://fundhorizon.up.railway.app` for sitemap / robots / Open Graph). `NEXT_PUBLIC_*` values are
 baked in at build time. Railway auto-deploys from `main`.
+

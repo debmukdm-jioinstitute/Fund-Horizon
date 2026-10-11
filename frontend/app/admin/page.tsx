@@ -48,7 +48,7 @@ export default function AdminPage() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-8">
         {loading && !stats ? (
           <div className="p-16 text-center space-y-3">
             <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
@@ -119,7 +119,7 @@ export default function AdminPage() {
             </>
           )
         )}
-      </main>
+      </div>
 
       {/* Slide-over Plan Drawer */}
       {inspectedPlan && (

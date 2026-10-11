@@ -137,6 +137,7 @@ Limits: tax figures come from public secondary sources and are not CA-reviewed (
 | Test suite wrote into the committed ChromaDB | Tests use a temp copy; hook artifacts under `.claude-flow/` untracked |
 | Engine coverage gate failed (84%, `cas.py` 54%) | 28 tests for the CAS text parser, category and name helpers; gate now passes at 91.65% |
 | "Explain plan" said the risk *capacity* was a band | Fallback now reports the capacity score out of 100 (regression test) |
+| Admin page nested a second `<main>` inside the layout's `<main>` (two main landmarks) | Inner element is now a `div` |
 | 404 page for any URL said only "Plan not found" | Wording covers pages too, with links home, to /learn and to a new plan |
 
 Results: 629 backend tests passed, engine coverage 91.65% (floor 85%), ruff, eslint, tsc and the copy scan clean, 17 e2e tests passed. A fuzz run of 4,000 random tax inputs found no negative tax, no tax above income, no non-monotonic tax and no crash.

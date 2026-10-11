@@ -99,11 +99,30 @@ def build_pdf(first_name: str, r: dict) -> bytes:
         w, h = A4
         canvas.setFillColor(NAVY)
         canvas.rect(0, h - 16 * mm, w, 16 * mm, stroke=0, fill=1)
+
+        # Official Logo in header
+        logo_dark_path = Path(__file__).parent / "assets" / "logo-header-dark.png"
+        if logo_dark_path.exists():
+            canvas.drawImage(
+                str(logo_dark_path),
+                15 * mm,
+                h - 14.5 * mm,
+                height=12 * mm,
+                preserveAspectRatio=True,
+                mask="auto",
+            )
+        else:
+            canvas.setFillColor(colors.white)
+            canvas.setFont("DV-B", 12)
+            canvas.drawString(15 * mm, h - 10.5 * mm, FIRM)
+
         canvas.setFillColor(colors.white)
-        canvas.setFont("DV-B", 12)
-        canvas.drawString(15 * mm, h - 10.5 * mm, FIRM)
-        canvas.setFont("DV", 8)
-        canvas.drawRightString(w - 15 * mm, h - 10.5 * mm, f"Illustrative plan for {canvas_text(first_name)}  |  {today}")
+        canvas.setFont("DV", 7.5)
+        canvas.drawRightString(w - 15 * mm, h - 9.5 * mm, f"Illustrative plan for {canvas_text(first_name)}")
+        canvas.setFillColor(colors.HexColor("#A0AEC0"))
+        canvas.setFont("DV", 6)
+        canvas.drawRightString(w - 15 * mm, h - 13 * mm, f"AMFI ARN 345439  ·  {today}")
+
         canvas.setFillColor(TEAL)
         canvas.rect(0, h - 17 * mm, w, 1 * mm, stroke=0, fill=1)
         canvas.setFillColor(colors.HexColor("#444444"))
@@ -126,6 +145,10 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     story: list = []
 
     # 1. Summary
+    full_logo_path = Path(__file__).parent / "assets" / "logo-full.png"
+    if full_logo_path.exists():
+        with open(full_logo_path, "rb") as f:
+            story += [_img(f.read(), width_mm=42), Spacer(1, 2 * mm)]
     story += [Paragraph(f"Your illustrative plan, {xml_escape(first_name)}", H1)]
     story += [Paragraph(
         f"Risk profile: <b>{xml_escape(prof['band'])}</b> (score {prof['final_score']:.0f}/100). Data as of {r['data_asof']}. "

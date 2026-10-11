@@ -22,9 +22,11 @@ function formatCurrency(val: number): string {
   }).format(val);
 }
 
-function formatPercent(val: number | null | undefined): string {
+function formatPercent(val: number | null | undefined, showPlus = true): string {
   if (val === null || val === undefined) return "N/A";
-  return `${(val * 100).toFixed(2)}%`;
+  const num = val * 100;
+  const prefix = showPlus && num > 0 ? "+" : "";
+  return `${prefix}${num.toFixed(2)}%`;
 }
 
 export default function CasUpload() {
@@ -206,22 +208,44 @@ export default function CasUpload() {
           </div>
 
           {/* Metric Cards */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
             <div className="card">
               <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Total Portfolio Value</span>
               <p className="mt-1 text-2xl font-bold text-navy-950">{formatCurrency(result.total_value)}</p>
             </div>
             <div className="card">
-              <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Portfolio XIRR</span>
-              <p className="mt-1 text-2xl font-bold text-teal-700">{formatPercent(result.overall_xirr)}</p>
+              <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Total Invested</span>
+              <p className="mt-1 text-2xl font-bold text-navy-950">
+                {result.total_invested ? formatCurrency(result.total_invested) : "—"}
+              </p>
             </div>
             <div className="card">
-              <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Folios</span>
-              <p className="mt-1 text-2xl font-bold text-navy-950">{result.folios_count}</p>
+              <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Total Gain / P&amp;L</span>
+              <p
+                className={`mt-1 text-2xl font-bold ${
+                  result.total_gain && result.total_gain >= 0
+                    ? "text-emerald-600"
+                    : result.total_gain && result.total_gain < 0
+                    ? "text-rose-600"
+                    : "text-navy-950"
+                }`}
+              >
+                {result.total_gain !== null && result.total_gain !== undefined
+                  ? `${result.total_gain >= 0 ? "+" : ""}${formatCurrency(result.total_gain)}`
+                  : "—"}
+              </p>
             </div>
             <div className="card">
-              <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Holdings</span>
-              <p className="mt-1 text-2xl font-bold text-navy-950">{result.holdings_count}</p>
+              <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Portfolio Returns</span>
+              <p className="mt-1 text-2xl font-bold text-teal-700">
+                {result.overall_xirr !== null ? `${formatPercent(result.overall_xirr)} XIRR` : "N/A"}
+              </p>
+            </div>
+            <div className="card">
+              <span className="text-xs font-semibold uppercase tracking-wider text-navy-600">Folios / Schemes</span>
+              <p className="mt-1 text-2xl font-bold text-navy-950">
+                {result.folios_count} <span className="text-sm font-normal text-navy-600">/ {result.holdings_count}</span>
+              </p>
             </div>
           </div>
 
@@ -307,48 +331,134 @@ export default function CasUpload() {
 
           {/* Holdings Breakdown */}
           <div className="card space-y-4">
-            <h3 className="text-lg font-bold text-navy-950">Folios & Scheme Holdings</h3>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 className="text-lg font-bold text-navy-950">Folios &amp; Scheme Holdings</h3>
+                <p className="text-xs text-navy-600">Complete breakdown with verified AMFI scheme codes, NAVs, and annualized returns</p>
+              </div>
+              <span className="rounded-full bg-navy-100 px-3 py-1 text-xs font-medium text-navy-800">
+                {result.holdings.length} {result.holdings.length === 1 ? "Holding" : "Holdings"}
+              </span>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-navy-200 text-xs uppercase tracking-wider text-navy-600">
-                    <th className="py-2">Scheme Name</th>
-                    <th className="py-2">Folio</th>
-                    <th className="py-2">Category</th>
-                    <th className="py-2">Plan</th>
-                    <th className="py-2 text-right">Units</th>
-                    <th className="py-2 text-right">NAV</th>
-                    <th className="py-2 text-right">Valuation</th>
-                    <th className="py-2 text-right">XIRR</th>
+                    <th className="py-3 px-2">Scheme Name &amp; Code</th>
+                    <th className="py-3 px-2">Folio / Demat</th>
+                    <th className="py-3 px-2">Category</th>
+                    <th className="py-3 px-2">Plan</th>
+                    <th className="py-3 px-2 text-right">Units</th>
+                    <th className="py-3 px-2 text-right">NAV</th>
+                    <th className="py-3 px-2 text-right">Invested Value</th>
+                    <th className="py-3 px-2 text-right">Current Valuation</th>
+                    <th className="py-3 px-2 text-right">Returns (XIRR / CAGR)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-navy-100">
-                  {result.holdings.map((h, i) => (
-                    <tr key={`${h.folio}-${h.isin || i}`}>
-                      <td className="py-2 font-medium text-navy-950">{h.scheme_name}</td>
-                      <td className="py-2 text-navy-600 text-xs">{h.folio}</td>
-                      <td className="py-2 text-navy-700">{h.category || "Unclassified"}</td>
-                      <td className="py-2">
-                        <span
-                          className={`rounded px-1.5 py-0.5 text-xs font-semibold ${
-                            h.is_direct
-                              ? "bg-teal-100 text-teal-800"
-                              : "bg-navy-100 text-navy-800"
-                          }`}
-                        >
-                          {h.plan}
-                        </span>
-                      </td>
-                      <td className="py-2 text-right text-navy-700">{h.units.toFixed(3)}</td>
-                      <td className="py-2 text-right text-navy-700">
-                        {h.nav !== null ? `₹${h.nav.toFixed(2)}` : "—"}
-                      </td>
-                      <td className="py-2 text-right font-medium text-navy-900">{formatCurrency(h.current_value)}</td>
-                      <td className="py-2 text-right font-semibold text-teal-700">
-                        {formatPercent(h.xirr)}
-                      </td>
-                    </tr>
-                  ))}
+                  {result.holdings.map((h, i) => {
+                    const isZeroHolding = h.units === 0 && h.current_value === 0;
+                    return (
+                      <tr
+                        key={`${h.folio}-${h.isin || i}`}
+                        className={`hover:bg-navy-50/50 transition-colors ${isZeroHolding ? "opacity-60" : ""}`}
+                      >
+                        <td className="py-3 px-2">
+                          <div className="space-y-1">
+                            <span className="font-semibold text-navy-950 block leading-snug">
+                              {h.scheme_name}
+                            </span>
+                            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                              {h.scheme_code && (
+                                <span className="inline-flex items-center rounded bg-teal-50 px-1.5 py-0.5 text-[11px] font-semibold text-teal-800 border border-teal-200">
+                                  AMFI: {h.scheme_code}
+                                </span>
+                              )}
+                              {h.isin && (
+                                <span className="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-mono text-slate-700 border border-slate-200">
+                                  ISIN: {h.isin}
+                                </span>
+                              )}
+                              {h.asset_class && (
+                                <span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-700 border border-blue-200 capitalize">
+                                  {h.asset_class}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-2 whitespace-nowrap">
+                          <span className="inline-flex items-center rounded-md bg-navy-50 px-2 py-1 text-xs font-mono font-medium text-navy-700 border border-navy-200">
+                            {h.folio}
+                          </span>
+                        </td>
+                        <td className="py-3 px-2 whitespace-nowrap">
+                          <span className="text-xs font-medium text-navy-800 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                            {h.category || "Unclassified"}
+                          </span>
+                        </td>
+                        <td className="py-3 px-2 whitespace-nowrap">
+                          <span
+                            className={`rounded px-2 py-0.5 text-xs font-semibold border ${
+                              h.is_direct
+                                ? "bg-teal-50 text-teal-800 border-teal-200"
+                                : "bg-navy-50 text-navy-800 border-navy-200"
+                            }`}
+                          >
+                            {h.plan}
+                          </span>
+                        </td>
+                        <td className="py-3 px-2 text-right font-mono text-xs text-navy-800 whitespace-nowrap">
+                          {h.units.toLocaleString("en-IN", { minimumFractionDigits: 3, maximumFractionDigits: 4 })}
+                        </td>
+                        <td className="py-3 px-2 text-right font-mono text-xs text-navy-800 whitespace-nowrap">
+                          {h.nav !== null ? `₹${h.nav.toFixed(2)}` : "—"}
+                        </td>
+                        <td className="py-3 px-2 text-right font-mono text-xs text-navy-800 whitespace-nowrap">
+                          {h.invested_value ? formatCurrency(h.invested_value) : "—"}
+                        </td>
+                        <td className="py-3 px-2 text-right whitespace-nowrap">
+                          <div className="font-semibold text-navy-950 font-mono text-sm">
+                            {formatCurrency(h.current_value)}
+                          </div>
+                          {h.weight_pct > 0 && (
+                            <span className="text-[11px] text-navy-500 font-sans block">
+                              {h.weight_pct.toFixed(1)}% weight
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-2 text-right whitespace-nowrap">
+                          {h.xirr !== null && h.xirr !== undefined ? (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold border ${
+                                h.xirr >= 0
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                  : "bg-rose-50 text-rose-700 border-rose-200"
+                              }`}
+                            >
+                              {formatPercent(h.xirr)} XIRR
+                            </span>
+                          ) : h.cagr !== null && h.cagr !== undefined ? (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold border ${
+                                h.cagr >= 0
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                  : "bg-rose-50 text-rose-700 border-rose-200"
+                              }`}
+                            >
+                              {formatPercent(h.cagr)} CAGR
+                            </span>
+                          ) : h.cagr_3y !== null && h.cagr_3y !== undefined ? (
+                            <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700 border border-teal-200">
+                              {formatPercent(h.cagr_3y)} 3Y
+                            </span>
+                          ) : (
+                            <span className="text-xs text-navy-400">N/A</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -249,9 +249,14 @@ export interface CasHoldingItem {
   asset_class: string;
   units: number;
   nav: number | null;
+  invested_value?: number | null;
   current_value: number;
   valuation_date: string | null;
+  cagr?: number | null;
   xirr: number | null;
+  ret_1y?: number | null;
+  cagr_3y?: number | null;
+  cagr_5y?: number | null;
   tx_count: number;
   weight_pct: number;
 }
@@ -281,6 +286,8 @@ export interface CasAnalysisResult {
   cas_type?: string;
   file_type?: string;
   total_value: number;
+  total_invested?: number | null;
+  total_gain?: number | null;
   overall_xirr: number | null;
   folios_count: number;
   holdings_count: number;

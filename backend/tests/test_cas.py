@@ -303,3 +303,72 @@ def test_analyze_cas_data_with_demat_account():
     assert res["holdings_count"] == 1
     assert res["holdings"][0]["asset_class"] == "debt"
 
+
+def test_tabular_demat_row_token_extraction_and_resolution():
+    metrics_df = load_metrics()
+    raw_statement = {
+        "statement_period": {"from": "2023-01-01", "to": "2026-10-09"},
+        "investor_info": {"name": "Debabrata Mukherjee", "pan": "ABCDE1234F"},
+        "file_type": "CDSL",
+        "accounts": [
+            {
+                "name": "CDSL Depository Participant",
+                "dp_id": "/s",
+                "client_id": "s",
+                "mutual_funds": [
+                    {
+                        "name": "INF109K01ED5 0.000 34.8642 0.00 0.00% 0.00",
+                        "isin": "INF109K01ED5",
+                        "balance": 0.0,
+                        "nav": 0.0,
+                        "value": 0.0,
+                    },
+                    {
+                        "name": "INF109K013K9 25,670.185 60.0662 14,50,000.00 6.34% 15,41,910.47",
+                        "isin": "INF109K013K9",
+                        "balance": 0.0,
+                        "nav": 0.0,
+                        "value": 0.0,
+                    },
+                ],
+            }
+        ],
+    }
+
+    norm = cas.normalize_cas_dict(raw_statement)
+    # Ensure folio is never '/s'
+    assert norm["folios"][0]["folio"] == "Demat-1"
+
+    res = cas.analyze_cas_data(norm, metrics_df=metrics_df, target_band="Moderate")
+    assert res["holdings_count"] == 2
+    assert res["total_value"] == 1541910.47
+    assert res["total_invested"] == 1450000.0
+    assert res["total_gain"] == 91910.47
+    assert res["overall_xirr"] == 0.0634
+
+    h0 = res["holdings"][0]
+    assert h0["isin"] == "INF109K01ED5"
+    assert h0["scheme_code"] == "101143"
+    assert "ICICI Prudential Multi-Asset Fund" in h0["scheme_name"]
+    assert h0["plan"] == "Regular"
+    assert h0["category"] == "Multi Asset Allocation"
+    assert h0["units"] == 0.0
+    assert h0["nav"] == 34.8642
+    assert h0["current_value"] == 0.0
+
+    h1 = res["holdings"][1]
+    assert h1["isin"] == "INF109K013K9"
+    assert h1["scheme_code"] == "120335"
+    assert "ICICI Prudential Multi-Asset Fund" in h1["scheme_name"]
+    assert "Direct" in h1["scheme_name"]
+    assert h1["plan"] == "Direct"
+    assert h1["category"] == "Multi Asset Allocation"
+    assert h1["units"] == 25670.185
+    assert h1["nav"] == 60.0662
+    assert h1["invested_value"] == 1450000.0
+    assert h1["current_value"] == 1541910.47
+    assert h1["xirr"] == 0.0634
+    assert h1["cagr"] == 0.0634
+    assert h1["folio"] == "Demat-1"
+
+

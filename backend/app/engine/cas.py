@@ -188,7 +188,16 @@ def normalize_cas_dict(parsed: Any) -> dict[str, Any]:
             dp_name = str(acc.get("name") or "Demat Holding Account").strip()
             dp_id = str(acc.get("dp_id") or "").strip()
             client_id = str(acc.get("client_id") or "").strip()
-            folio_id = f"{dp_id}/{client_id}" if dp_id and client_id else (client_id or dp_id or f"Demat-{a_idx+1}")
+            clean_dp = dp_id if dp_id.lower() not in ("/s", "s", "na", "/", "-", "none") and not dp_id.startswith("/") else ""
+            clean_cl = client_id if client_id.lower() not in ("/s", "s", "na", "/", "-", "none") and not client_id.startswith("/") else ""
+            if clean_dp and clean_cl:
+                folio_id = f"{clean_dp}/{clean_cl}"
+            elif clean_cl:
+                folio_id = clean_cl
+            elif clean_dp:
+                folio_id = clean_dp
+            else:
+                folio_id = f"Demat-{a_idx+1}"
 
             schemes = []
             for mf in acc.get("mutual_funds", []):
@@ -198,14 +207,38 @@ def normalize_cas_dict(parsed: Any) -> dict[str, Any]:
                 balance = float(mf.get("balance", 0.0) or 0.0)
                 nav = float(mf.get("nav", 0.0) or 0.0)
                 val = float(mf.get("value", 0.0) or 0.0)
+                cost = float(mf.get("total_cost", 0.0) or mf.get("avg_cost", 0.0) or 0.0)
+                ret_pct = float(mf.get("return_", 0.0) or 0.0)
+
+                # If balance/nav are 0 and s_name contains table row numbers, extract them
+                if (balance == 0.0 or nav == 0.0 or val == 0.0) and ("INF" in s_name or len(re.findall(r"\d+\.\d+", s_name)) >= 2):
+                    clean_s = re.sub(r"\bINF[A-Z0-9]{9}\b", "", s_name).strip() if "INF" in s_name else s_name
+                    tokens = re.findall(r"([0-9,]+(?:\.[0-9]+)?%?)", clean_s)
+                    if len(tokens) >= 5:
+                        try:
+                            if balance == 0.0:
+                                balance = float(tokens[0].replace(",", ""))
+                            if nav == 0.0:
+                                nav = float(tokens[1].replace(",", ""))
+                            if cost == 0.0:
+                                cost = float(tokens[2].replace(",", ""))
+                            if ret_pct == 0.0 and "%" in tokens[3]:
+                                ret_pct = float(tokens[3].replace("%", "").strip()) / 100.0
+                            if val == 0.0:
+                                val = float(tokens[4].replace(",", "").replace("%", ""))
+                        except Exception:
+                            pass
+
                 if val <= 0.0 and balance > 0 and nav > 0:
-                    val = balance * nav
+                    val = round(balance * nav, 2)
 
                 schemes.append({
                     "scheme": s_name,
                     "isin": isin,
                     "amfi": amfi,
                     "close": balance,
+                    "invested_value": cost,
+                    "return_pct": ret_pct,
                     "valuation": {
                         "date": str(period.get("to") if isinstance(period, dict) else "") or None,
                         "nav": nav,
@@ -235,8 +268,11 @@ def normalize_cas_dict(parsed: Any) -> dict[str, Any]:
                 })
 
             if schemes:
+                clean_folio = folio_id
+                if clean_folio.lower() in ("/s", "s", "na", "/", "-", "none", "null") or clean_folio.startswith("/"):
+                    clean_folio = "Demat Holding"
                 folios.append({
-                    "folio": folio_id,
+                    "folio": clean_folio,
                     "amc": dp_name,
                     "PAN": str(data.get("investor_info", {}).get("pan", "") or ""),
                     "schemes": schemes,
@@ -245,6 +281,99 @@ def normalize_cas_dict(parsed: Any) -> dict[str, Any]:
         data["folios"] = folios
 
     return data
+
+
+def resolve_isin_metadata(isin: str) -> dict[str, str] | None:
+    """Resolve canonical scheme name, amfi code, and asset type from casparser_isin."""
+    if not isin:
+        return None
+    try:
+        from casparser_isin import MFISINDb
+
+        with MFISINDb() as db:
+            rows = db.direct_isin_lookup(isin)
+            if rows:
+                return rows[0]
+    except Exception:
+        pass
+    return None
+
+
+def format_scheme_name(raw_name: str) -> str:
+    """Format all-uppercase scheme names into clean, readable title casing preserving acronyms."""
+    if not raw_name:
+        return ""
+    if raw_name.isupper():
+        words = raw_name.split()
+        fixed = []
+        for w in words:
+            if w.upper() in ("ICICI", "HDFC", "SBI", "UTI", "DSP", "NPS", "AMC", "ETF", "IDCW", "NAV", "FOF", "PSU"):
+                fixed.append(w.upper())
+            elif "-" in w:
+                fixed.append(
+                    "-".join(
+                        p.capitalize() if p.upper() not in ("IDCW", "PSU", "ETF", "FOF") else p.upper()
+                        for p in w.split("-")
+                    )
+                )
+            else:
+                fixed.append(w.capitalize())
+        return " ".join(fixed)
+    return raw_name
+
+
+def infer_scheme_category(name: str, default_type: str | None = None) -> str:
+    """Infer standardized AMFI category from scheme name or asset type."""
+    n = name.lower()
+    if "multi-asset" in n or "multi asset" in n:
+        return "Multi Asset Allocation"
+    if "large & mid" in n or "large and mid" in n:
+        return "Large & Mid Cap Fund"
+    if "large cap" in n or "bluechip" in n or "top 100" in n:
+        return "Large Cap Fund"
+    if "mid cap" in n or "midcap" in n:
+        return "Mid Cap Fund"
+    if "small cap" in n or "smallcap" in n:
+        return "Small Cap Fund"
+    if "flexi cap" in n or "flexicap" in n:
+        return "Flexi Cap Fund"
+    if "focused" in n:
+        return "Focused Fund"
+    if "elss" in n or "tax saver" in n:
+        return "ELSS"
+    if "arbitrage" in n:
+        return "Arbitrage Fund"
+    if "balanced advantage" in n or "dynamic asset" in n:
+        return "Balanced Advantage Fund"
+    if "aggressive hybrid" in n or "equity hybrid" in n:
+        return "Aggressive Hybrid Fund"
+    if "conservative hybrid" in n or "debt hybrid" in n:
+        return "Conservative Hybrid Fund"
+    if "liquid" in n:
+        return "Liquid Fund"
+    if "overnight" in n:
+        return "Overnight Fund"
+    if "money market" in n:
+        return "Money Market Fund"
+    if "corporate bond" in n:
+        return "Corporate Bond Fund"
+    if "banking and psu" in n or "banking & psu" in n:
+        return "Banking and PSU Fund"
+    if "gilt" in n:
+        return "Gilt Fund"
+    if "gold" in n:
+        return "Gold ETF / Fund"
+    if "silver" in n:
+        return "Silver ETF / Fund"
+    if default_type:
+        t = default_type.upper()
+        if "EQUITY" in t:
+            return "Equity Fund"
+        if "DEBT" in t:
+            return "Debt Fund"
+        if "HYBRID" in t:
+            return "Hybrid Fund"
+    return "Other"
 
 
 def extract_cas_via_text_fallback(pdf_bytes: bytes, password: str) -> dict[str, Any]:
@@ -277,8 +406,11 @@ def extract_cas_via_text_fallback(pdf_bytes: bytes, password: str) -> dict[str, 
         statement_period["from"] = m_period.group(1).strip()
         statement_period["to"] = m_period.group(2).strip()
 
+    bo_match = re.search(r"(?:BO\s*ID|Client\s*ID|Demat\s*Account(?:\s*No)?)\s*[:\-]?\s*([0-9A-Za-z]{8,16})", full_text, re.I)
+    default_demat_folio = bo_match.group(1).strip() if bo_match else "Demat Account"
+
     isin_pattern = re.compile(r"\b(INF[A-Z0-9]{9})\b")
-    current_folio_num = "Folio-1"
+    current_folio_num = default_demat_folio
     current_amc = "Mutual Fund Portfolio"
 
     schemes: list[dict[str, Any]] = []
@@ -293,7 +425,9 @@ def extract_cas_via_text_fallback(pdf_bytes: bytes, password: str) -> dict[str, 
 
             folio_match = re.search(r"(?:Folio\s*(?:No\.?|Number)?\s*[:\-]?\s*)([A-Za-z0-9/\-_]+)", line, re.I)
             if folio_match:
-                current_folio_num = folio_match.group(1).strip()
+                cand = folio_match.group(1).strip()
+                if cand.lower() not in ("/s", "s", "na", "/", "-", "none", "null") and not cand.startswith("/"):
+                    current_folio_num = cand
 
             isin_match = isin_pattern.search(line)
             if isin_match:
@@ -302,36 +436,78 @@ def extract_cas_via_text_fallback(pdf_bytes: bytes, password: str) -> dict[str, 
                     continue
                 seen_isins.add(isin)
 
-                scheme_name = line
-                if len(line.replace(isin, "").strip()) < 5 and idx > 0:
-                    scheme_name = lines[idx - 1]
+                rest = line.replace(isin, "").strip()
+                tokens = re.findall(r"([0-9,]+(?:\.[0-9]+)?%?)", rest)
 
-                window = " ".join(lines[max(0, idx - 2):min(len(lines), idx + 6)])
-
-                nav = 0.0
-                val = 0.0
                 units = 0.0
+                nav = 0.0
+                cost = 0.0
+                ret_pct = 0.0
+                val = 0.0
 
-                m_nav = re.search(r"NAV\s*[:\-]?\s*(?:INR|Rs\.?)?\s*([0-9]+(?:\.[0-9]+)?)", window, re.I)
-                if m_nav:
-                    nav = float(m_nav.group(1))
+                if len(tokens) >= 5:
+                    units = float(tokens[0].replace(",", ""))
+                    nav = float(tokens[1].replace(",", ""))
+                    cost = float(tokens[2].replace(",", ""))
+                    if "%" in tokens[3]:
+                        try:
+                            ret_pct = float(tokens[3].replace("%", "").strip()) / 100.0
+                        except ValueError:
+                            ret_pct = 0.0
+                    val = float(tokens[4].replace(",", "").replace("%", ""))
+                elif len(tokens) == 4:
+                    units = float(tokens[0].replace(",", ""))
+                    nav = float(tokens[1].replace(",", ""))
+                    cost = float(tokens[2].replace(",", ""))
+                    val = float(tokens[3].replace(",", "").replace("%", ""))
+                elif len(tokens) == 3:
+                    units = float(tokens[0].replace(",", ""))
+                    nav = float(tokens[1].replace(",", ""))
+                    val = float(tokens[2].replace(",", ""))
+                elif len(tokens) == 2:
+                    units = float(tokens[0].replace(",", ""))
+                    nav = float(tokens[1].replace(",", ""))
+                    val = round(units * nav, 2)
+                else:
+                    window = " ".join(lines[max(0, idx - 2):min(len(lines), idx + 6)])
+                    m_nav = re.search(r"NAV\s*[:\-]?\s*(?:INR|Rs\.?)?\s*([0-9]+(?:\.[0-9]+)?)", window, re.I)
+                    if m_nav:
+                        nav = float(m_nav.group(1))
 
-                m_val = re.search(r"(?:Value|Market\s*Value)\s*[:\-]?\s*(?:INR|Rs\.?)?\s*([0-9,]+(?:\.[0-9]+)?)", window, re.I)
-                if m_val:
-                    val = float(m_val.group(1).replace(",", ""))
+                    m_val = re.search(r"(?:Value|Market\s*Value)\s*[:\-]?\s*(?:INR|Rs\.?)?\s*([0-9,]+(?:\.[0-9]+)?)", window, re.I)
+                    if m_val:
+                        val = float(m_val.group(1).replace(",", ""))
 
-                m_units = re.search(r"(?:Units|Balance)\s*[:\-]?\s*([0-9,]+(?:\.[0-9]+)?)", window, re.I)
-                if m_units:
-                    units = float(m_units.group(1).replace(",", ""))
+                    m_units = re.search(r"(?:Units|Balance)\s*[:\-]?\s*([0-9,]+(?:\.[0-9]+)?)", window, re.I)
+                    if m_units:
+                        units = float(m_units.group(1).replace(",", ""))
 
                 if val <= 0.0 and units > 0 and nav > 0:
-                    val = units * nav
+                    val = round(units * nav, 2)
+
+                meta = resolve_isin_metadata(isin)
+                if meta:
+                    scheme_name = format_scheme_name(meta.get("name", ""))
+                    amfi = meta.get("amfi_code", "")
+                else:
+                    amfi = ""
+                    scheme_name = ""
+                    for back_i in range(1, 4):
+                        if idx - back_i >= 0:
+                            prev_l = lines[idx - back_i]
+                            if not prev_l.startswith("INF") and not any(k in prev_l.lower() for k in ["total", "subtotal", "as on", "statement", "holding"]):
+                                scheme_name = format_scheme_name(prev_l)
+                                break
+                    if not scheme_name:
+                        scheme_name = isin
 
                 schemes.append({
                     "scheme": scheme_name,
                     "isin": isin,
-                    "amfi": "",
+                    "amfi": amfi,
                     "close": units,
+                    "invested_value": cost,
+                    "return_pct": ret_pct,
                     "valuation": {
                         "date": statement_period["to"],
                         "nav": nav,
@@ -342,8 +518,11 @@ def extract_cas_via_text_fallback(pdf_bytes: bytes, password: str) -> dict[str, 
 
     folios: list[dict[str, Any]] = []
     if schemes:
+        clean_f = current_folio_num
+        if clean_f.lower() in ("/s", "s", "na", "/", "-", "none", "null") or clean_f.startswith("/"):
+            clean_f = default_demat_folio
         folios.append({
-            "folio": current_folio_num,
+            "folio": clean_f,
             "amc": current_amc,
             "PAN": "",
             "schemes": schemes,
@@ -517,13 +696,19 @@ def analyze_cas_data(
     portfolio_cash_flows: list[tuple[date | pd.Timestamp, float]] = []
 
     total_portfolio_value = 0.0
+    total_invested_value = 0.0
     direct_value = 0.0
     regular_value = 0.0
 
     folios_summary: list[dict[str, Any]] = []
 
     for f_idx, folio in enumerate(folios_raw):
-        folio_num = str(folio.get("folio", f"Folio-{f_idx+1}")).strip()
+        raw_f_num = str(folio.get("folio", f"Folio-{f_idx+1}")).strip()
+        clean_folio_num = (
+            raw_f_num
+            if raw_f_num.lower() not in ("/s", "s", "na", "/", "-", "none", "null") and not raw_f_num.startswith("/")
+            else "Demat Holding"
+        )
         amc = str(folio.get("amc", "")).strip()
         pan = str(folio.get("PAN", "")).strip()
 
@@ -536,13 +721,47 @@ def analyze_cas_data(
             isin = str(scheme.get("isin", "")).strip().upper()
             amfi = str(scheme.get("amfi", "")).strip()
             units = float(scheme.get("close", 0.0) or 0.0)
+            invested_val = float(scheme.get("invested_value", 0.0) or 0.0)
+            return_pct = float(scheme.get("return_pct", 0.0) or 0.0)
 
             val_dict = scheme.get("valuation", {}) or {}
             val_date_str = val_dict.get("date")
             nav = float(val_dict.get("nav", 0.0) or 0.0)
             cur_val = float(val_dict.get("value", 0.0) or 0.0)
+
+            # If units, nav, or cur_val are missing, extract from s_name if it was a raw tabular row
+            if (units == 0.0 or nav == 0.0 or cur_val == 0.0) and ("INF" in s_name or len(re.findall(r"\d+\.\d+", s_name)) >= 2):
+                clean_s = re.sub(r"\bINF[A-Z0-9]{9}\b", "", s_name).strip() if "INF" in s_name else s_name
+                tokens = re.findall(r"([0-9,]+(?:\.[0-9]+)?%?)", clean_s)
+                if len(tokens) >= 5:
+                    try:
+                        if units == 0.0:
+                            units = float(tokens[0].replace(",", ""))
+                        if nav == 0.0:
+                            nav = float(tokens[1].replace(",", ""))
+                        if invested_val == 0.0:
+                            invested_val = float(tokens[2].replace(",", ""))
+                        if return_pct == 0.0 and "%" in tokens[3]:
+                            return_pct = float(tokens[3].replace("%", "").strip()) / 100.0
+                        if cur_val == 0.0:
+                            cur_val = float(tokens[4].replace(",", "").replace("%", ""))
+                    except Exception:
+                        pass
+                elif len(tokens) == 4:
+                    try:
+                        if units == 0.0:
+                            units = float(tokens[0].replace(",", ""))
+                        if nav == 0.0:
+                            nav = float(tokens[1].replace(",", ""))
+                        if invested_val == 0.0:
+                            invested_val = float(tokens[2].replace(",", ""))
+                        if cur_val == 0.0:
+                            cur_val = float(tokens[3].replace(",", "").replace("%", ""))
+                    except Exception:
+                        pass
+
             if cur_val <= 0.0 and units > 0 and nav > 0:
-                cur_val = units * nav
+                cur_val = round(units * nav, 2)
 
             # Match against metrics database
             matched = lookup.get(isin)
@@ -551,9 +770,24 @@ def analyze_cas_data(
                 if not amfi_rows.empty:
                     matched = amfi_rows.iloc[0].to_dict()
 
+            # Metadata resolution fallback from canonical database
+            resolved_meta = resolve_isin_metadata(isin)
+            if resolved_meta:
+                # If s_name is missing, raw ISIN line, or full table row, override with canonical clean name
+                if not s_name or s_name.startswith("INF") or "INF" in s_name or len(re.findall(r"\d+\.\d+", s_name)) >= 2 or s_name == isin:
+                    s_name = format_scheme_name(resolved_meta.get("name", ""))
+                if not amfi:
+                    amfi = resolved_meta.get("amfi_code", "")
+            elif matched and matched.get("scheme_name") and (not s_name or s_name.startswith("INF") or len(re.findall(r"\d+\.\d+", s_name)) >= 2):
+                s_name = str(matched["scheme_name"])
+
+            # Scheme code: prefer matched scheme_code, else amfi
+            scheme_code = str(matched.get("scheme_code")) if matched else (amfi if amfi else None)
+
             is_direct = "direct" in s_name.lower() or (matched and matched.get("plan") == "Direct")
             canonical_cat = matched.get("cat") if matched else None
-            asset_class = infer_asset_class(canonical_cat, s_name)
+            category = matched.get("category") if matched else infer_scheme_category(s_name, resolved_meta.get("type") if resolved_meta else None)
+            asset_class = infer_asset_class(canonical_cat or category, s_name)
 
             # Build transaction cash flows for XIRR
             scheme_cash_flows: list[tuple[date | pd.Timestamp, float]] = []
@@ -565,7 +799,6 @@ def analyze_cas_data(
                     continue
 
                 tx_d = pd.to_datetime(tx_date_raw).date()
-                # Investments/purchases are negative cash outflows from investor
                 if any(k in tx_type for k in ["PURCHASE", "SIP", "SWITCH IN", "REINVEST"]):
                     flow = -abs(tx_amt)
                 elif any(k in tx_type for k in ["REDEMPTION", "SWITCH OUT", "PAYOUT", "DIVIDEND"]):
@@ -575,48 +808,76 @@ def analyze_cas_data(
 
                 scheme_cash_flows.append((tx_d, flow))
 
-            # Terminal valuation is a positive cash inflow to the investor
             if cur_val > 0 and val_date_str:
-                terminal_d = pd.to_datetime(val_date_str).date()
-                scheme_cash_flows.append((terminal_d, cur_val))
+                try:
+                    terminal_d = pd.to_datetime(val_date_str).date()
+                    scheme_cash_flows.append((terminal_d, cur_val))
+                except Exception:
+                    pass
 
             scheme_xirr = an.xirr(scheme_cash_flows) if len(scheme_cash_flows) >= 2 else None
 
-            # Accumulate into folio cash flows
+            # If no transaction cash flows exist, use holding return from CAS or cost
+            if scheme_xirr is None:
+                if return_pct > 0:
+                    scheme_xirr = return_pct
+                elif cur_val > 0 and invested_val > 0:
+                    scheme_xirr = round((cur_val - invested_val) / invested_val, 4)
+
+            # Holding CAGR / benchmark returns
+            scheme_cagr = scheme_xirr
+            if scheme_cagr is None and matched and pd.notna(matched.get("cagr_3y")):
+                scheme_cagr = float(matched.get("cagr_3y"))
+
+            # Accumulate
             folio_cash_flows.extend(scheme_cash_flows)
             portfolio_cash_flows.extend(scheme_cash_flows)
 
             folio_value += cur_val
             total_portfolio_value += cur_val
+            total_invested_value += invested_val
+
             if is_direct:
                 direct_value += cur_val
             else:
                 regular_value += cur_val
 
             holding_item = {
-                "folio": folio_num,
+                "folio": clean_folio_num,
                 "scheme_name": s_name,
                 "isin": isin,
-                "scheme_code": matched.get("scheme_code") if matched else None,
+                "scheme_code": scheme_code,
                 "is_mapped": bool(matched),
                 "is_direct": bool(is_direct),
                 "plan": "Direct" if is_direct else "Regular",
-                "category": matched.get("category", "Other") if matched else "Other",
-                "cat": canonical_cat,
+                "category": category,
+                "cat": canonical_cat or category,
                 "asset_class": asset_class,
                 "units": round(units, 4),
                 "nav": round(nav, 4) if nav > 0 else None,
+                "invested_value": round(invested_val, 2) if invested_val > 0 else None,
                 "current_value": round(cur_val, 2),
                 "valuation_date": val_date_str,
+                "cagr": round(scheme_cagr, 4) if scheme_cagr is not None else None,
                 "xirr": round(scheme_xirr, 4) if scheme_xirr is not None else None,
+                "ret_1y": round(float(matched.get("ret_1y")), 4) if matched and pd.notna(matched.get("ret_1y")) else None,
+                "cagr_3y": round(float(matched.get("cagr_3y")), 4) if matched and pd.notna(matched.get("cagr_3y")) else None,
+                "cagr_5y": round(float(matched.get("cagr_5y")), 4) if matched and pd.notna(matched.get("cagr_5y")) else None,
                 "tx_count": len(scheme.get("transactions", [])),
             }
             parsed_holdings.append(holding_item)
             folio_schemes.append(holding_item)
 
         folio_xirr = an.xirr(folio_cash_flows) if len(folio_cash_flows) >= 2 else None
+        if folio_xirr is None:
+            f_invested = sum(h.get("invested_value", 0.0) or 0.0 for h in folio_schemes)
+            if folio_value > 0 and f_invested > 0:
+                folio_xirr = round((folio_value - f_invested) / f_invested, 4)
+            elif folio_schemes and folio_schemes[0].get("xirr") is not None:
+                folio_xirr = folio_schemes[0]["xirr"]
+
         folios_summary.append({
-            "folio": folio_num,
+            "folio": clean_folio_num,
             "amc": amc,
             "pan": pan,
             "current_value": round(folio_value, 2),
@@ -627,6 +888,14 @@ def analyze_cas_data(
 
     # Portfolio-wide XIRR
     overall_xirr = an.xirr(portfolio_cash_flows) if len(portfolio_cash_flows) >= 2 else None
+    if overall_xirr is None:
+        if total_portfolio_value > 0 and total_invested_value > 0:
+            overall_xirr = round((total_portfolio_value - total_invested_value) / total_invested_value, 4)
+        else:
+            valid_xirrs = [h["xirr"] for h in parsed_holdings if h.get("xirr") is not None and h["current_value"] > 0]
+            if valid_xirrs and total_portfolio_value > 0:
+                weighted_xirr = sum(h["xirr"] * h["current_value"] for h in parsed_holdings if h.get("xirr") is not None) / total_portfolio_value
+                overall_xirr = round(weighted_xirr, 4)
 
     # Calculate weight percentages for each holding
     for h in parsed_holdings:
@@ -715,6 +984,8 @@ def analyze_cas_data(
         "cas_type": cas_dict.get("cas_type"),
         "file_type": cas_dict.get("file_type"),
         "total_value": round(total_portfolio_value, 2),
+        "total_invested": round(total_invested_value, 2) if total_invested_value > 0 else None,
+        "total_gain": round(total_portfolio_value - total_invested_value, 2) if total_invested_value > 0 else None,
         "overall_xirr": round(overall_xirr, 4) if overall_xirr is not None else None,
         "folios_count": len(folios_raw),
         "holdings_count": len(parsed_holdings),

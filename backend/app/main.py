@@ -13,6 +13,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 
+from app.api.portal import router as portal_router
 from app.api.routes import router
 from app.data.loader import eligible_funds, load_metrics
 
@@ -149,6 +150,7 @@ def create_app() -> FastAPI:
     from app.api.admin import admin_router
 
     app.include_router(router)
+    app.include_router(portal_router)
     app.include_router(admin_router)
     return app
 

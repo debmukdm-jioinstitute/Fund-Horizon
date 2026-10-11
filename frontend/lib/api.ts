@@ -9,6 +9,10 @@ import type {
   Meta,
   Plan,
   PlanRequest,
+  PortalAnalytics,
+  PortalDashboard,
+  PortalHealth,
+  PortalPlanPatch,
   Questionnaire,
   RagAnswerResult,
   TaxCalcResult,
@@ -55,6 +59,19 @@ export const getPlan = (id: string, stepUp?: number, tax?: Partial<TaxSwitches>)
   return request<Plan>(`${API_URL}/api/plans/${id}${qs ? `?${qs}` : ""}`);
 };
 export const reportUrl = (id: string) => `${API_URL}/api/plans/${id}/report.pdf`;
+
+/** Customer portal v1: dashboard payload for a plan. */
+export const getPortalDashboard = (id: string) =>
+  request<PortalDashboard>(`${API_URL}/api/plans/${id}/dashboard`);
+/** Customer portal v1: patch the plan in place (goals / client / answers edits). */
+export const patchPortalPlan = (id: string, patch: PortalPlanPatch) =>
+  request<Plan>(`${API_URL}/api/plans/${id}`, { method: "PATCH", body: JSON.stringify(patch) });
+/** Customer portal v1: financial-health score payload for a plan. */
+export const getPortalHealth = (id: string) =>
+  request<PortalHealth>(`${API_URL}/api/plans/${id}/health`);
+/** Customer portal v1: analytics payload for a plan. */
+export const getPortalAnalytics = (id: string) =>
+  request<PortalAnalytics>(`${API_URL}/api/plans/${id}/analytics`);
 
 export const getFundDetail = (code: string) => request<FundDetail>(`${API_URL}/api/funds/${code}`);
 export const getFundAnalytics = (code: string) =>

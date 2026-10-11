@@ -88,11 +88,6 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
 
       <section aria-labelledby="profile"><SectionTitle id="profile">Risk profile</SectionTitle>
         <ProfileCard profile={profile} planning={planning} />
-        {plan.insurance_suggestions && (plan.insurance_suggestions.term || plan.insurance_suggestions.health) && (
-          <div className="mt-5">
-            <InsuranceSuggestions data={plan.insurance_suggestions} />
-          </div>
-        )}
       </section>
 
       {!hideBuyList && (
@@ -230,6 +225,11 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
           <EmergencyCard ef={planning.emergency_fund} reserved={reserved} />
           <InsuranceCard ins={planning.insurance} />
         </div>
+        {plan.insurance_suggestions && (plan.insurance_suggestions.term || plan.insurance_suggestions.health) && (
+          <div className="mt-6">
+            <InsuranceSuggestions data={plan.insurance_suggestions} />
+          </div>
+        )}
         <p className="mt-3 text-sm text-navy-700">{disclosures.tax_info}</p>
       </section>
 

@@ -97,3 +97,38 @@ def test_pipeline_omits_term_block_without_gap(personas, eligible, monkeypatch):
     sugg = r["insurance_suggestions"]
     assert sugg["term"] is None  # term need is 0 for this persona
     assert sugg["health"] is not None
+
+
+def test_insurance_document_generation_pdf():
+    from app.report.insurance_doc import build_insurance_plan_pdf
+
+    sample_plan = ip.TERM_PLANS[0]
+    pdf_bytes = build_insurance_plan_pdf(sample_plan)
+    assert isinstance(pdf_bytes, bytes)
+    assert len(pdf_bytes) > 500
+    assert pdf_bytes.startswith(b"%PDF")
+
+
+def test_insurance_document_endpoint():
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    client = TestClient(create_app())
+    # Test PDF download
+    res = client.get("/api/insurance/document/smart-term-plan-plus")
+    assert res.status_code == 200
+    assert res.headers["content-type"] == "application/pdf"
+    assert "attachment" in res.headers["content-disposition"]
+    assert "Smart_Term_Plan_Plus" in res.headers["content-disposition"]
+    assert res.content.startswith(b"%PDF")
+
+    # Test web redirect
+    res_web = client.get("/api/insurance/document/smart-term-plan-plus?action=web", follow_redirects=False)
+    assert res_web.status_code in (302, 307)
+    assert "maxlifeinsurance.com" in res_web.headers["location"]
+
+    # Test 404 for unknown plan
+    res_404 = client.get("/api/insurance/document/non-existent-plan")
+    assert res_404.status_code == 404
+

@@ -25,6 +25,10 @@ TERM_PLANS: list[dict] = [
             "Option to raise cover at life milestones",
         ],
         "why_included": "Highest claim-settlement record in this shortlist; solvency above the IRDAI 1.5x minimum.",
+        "insurer_key": "axis_max_life",
+        "slug": "smart-term-plan-plus",
+        "document_url": "https://www.maxlifeinsurance.com/term-insurance-plans/smart-term-plan",
+        "document_name": "Axis_Max_Life_Smart_Term_Plan_Plus_Brochure.pdf",
     },
     {
         "insurer": "HDFC Life",
@@ -38,6 +42,10 @@ TERM_PLANS: list[dict] = [
             "Critical illness cover for 60 conditions",
         ],
         "why_included": "Claim-settlement record within 0.02 pp of the leader; low complaint volume.",
+        "insurer_key": "hdfc_life",
+        "slug": "click-2-protect-super",
+        "document_url": "https://www.hdfclife.com/term-insurance-plans/click-2-protect-super",
+        "document_name": "HDFC_Life_Click_2_Protect_Super_Brochure.pdf",
     },
     {
         "insurer": "Tata AIA",
@@ -51,6 +59,10 @@ TERM_PLANS: list[dict] = [
             "Whole-life cover variant available",
         ],
         "why_included": "Strongest solvency buffer in this shortlist.",
+        "insurer_key": "tata_aia",
+        "slug": "sampoorna-raksha-promise",
+        "document_url": "https://www.tataaia.com/life-insurance-plans/term-plans/sampoorna-raksha-promise.html",
+        "document_name": "Tata_AIA_Sampoorna_Raksha_Promise_Brochure.pdf",
     },
     {
         "insurer": "ICICI Prudential",
@@ -64,6 +76,10 @@ TERM_PLANS: list[dict] = [
             "Terminal illness payout option",
         ],
         "why_included": "Solid claim-settlement record with a wide rider menu.",
+        "insurer_key": "icici_prudential",
+        "slug": "iprotect-smart-plus",
+        "document_url": "https://www.iciciprulife.com/term-insurance-plans/iprotect-smart-term-insurance-calculator.html",
+        "document_name": "ICICI_Prudential_iProtect_Smart_Plus_Brochure.pdf",
     },
 ]
 
@@ -80,6 +96,10 @@ HEALTH_PLANS: list[dict] = [
             "Large cashless hospital network",
         ],
         "why_included": "Highest reported claim-settlement record in this shortlist.",
+        "insurer_key": "aditya_birla",
+        "slug": "activ-one",
+        "document_url": "https://www.adityabirlacapital.com/healthinsurance/activ-one",
+        "document_name": "Aditya_Birla_Activ_One_Policy_Brochure.pdf",
     },
     {
         "insurer": "Care Health",
@@ -93,6 +113,10 @@ HEALTH_PLANS: list[dict] = [
             "No premium loading for pre-existing conditions (per insurer)",
         ],
         "why_included": "Restore benefit with no room-rent sub-limits.",
+        "insurer_key": "care_health",
+        "slug": "care-supreme",
+        "document_url": "https://www.careinsurance.com/health-insurance-plans/care-supreme",
+        "document_name": "Care_Health_Care_Supreme_Brochure.pdf",
     },
     {
         "insurer": "HDFC ERGO",
@@ -106,6 +130,10 @@ HEALTH_PLANS: list[dict] = [
             "No room-rent limits",
         ],
         "why_included": "Day-one doubled cover with a restore benefit.",
+        "insurer_key": "hdfc_ergo",
+        "slug": "optima-secure",
+        "document_url": "https://www.hdfcergo.com/health-insurance/optima-secure",
+        "document_name": "HDFC_ERGO_Optima_Secure_Policy_Brochure.pdf",
     },
     {
         "insurer": "Niva Bupa",
@@ -119,6 +147,10 @@ HEALTH_PLANS: list[dict] = [
             "High sum-insured ceiling for families",
         ],
         "why_included": "Large network and a high sum-insured ceiling.",
+        "insurer_key": "niva_bupa",
+        "slug": "reassure-2-0",
+        "document_url": "https://www.nivabupa.com/health-insurance-plans/reassure-2-0.html",
+        "document_name": "Niva_Bupa_ReAssure_2.0_Brochure.pdf",
     },
 ]
 

@@ -86,6 +86,10 @@ export interface InsurancePlanEntry {
   features: string[];
   why_included: string;
   marked_pick: boolean;
+  insurer_key?: string;
+  slug?: string;
+  document_url?: string;
+  document_name?: string;
 }
 export interface InsuranceBlock {
   kind: "term" | "health";

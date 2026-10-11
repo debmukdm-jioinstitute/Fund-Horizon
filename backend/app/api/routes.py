@@ -451,6 +451,29 @@ def ai_explain_cas(req: ExplainCasRequest):
     return explain_cas(req.cas_data)
 
 
+@router.get("/api/insurance/document/{slug}")
+def get_insurance_document(
+    slug: str,
+    action: str = Query("download", description="'download' for PDF brochure or 'web' to redirect to insurer portal"),
+):
+    """Access or download official insurance plan specifications and brochure document."""
+    from fastapi.responses import RedirectResponse, Response
 
+    from app.data.insurance_plans import HEALTH_PLANS, TERM_PLANS
+    from app.report.insurance_doc import build_insurance_plan_pdf
 
+    all_plans = TERM_PLANS + HEALTH_PLANS
+    matched = next((p for p in all_plans if p.get("slug") == slug), None)
+    if not matched:
+        raise HTTPException(404, f"Insurance plan '{slug}' not found")
 
+    if action == "web" and matched.get("document_url"):
+        return RedirectResponse(url=matched["document_url"])
+
+    pdf_bytes = build_insurance_plan_pdf(matched)
+    filename = matched.get("document_name", f"{slug}.pdf")
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )

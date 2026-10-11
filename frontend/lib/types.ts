@@ -262,3 +262,102 @@ export interface CompareResponse {
   correlation: CorrelationMatrix;
   disclaimer: string;
 }
+
+export interface CasHoldingItem {
+  folio: string;
+  scheme_name: string;
+  isin: string;
+  scheme_code: string | null;
+  is_mapped: boolean;
+  is_direct: boolean;
+  plan: string;
+  category: string;
+  cat: string | null;
+  asset_class: string;
+  units: number;
+  nav: number | null;
+  invested_value?: number | null;
+  current_value: number;
+  valuation_date: string | null;
+  cagr?: number | null;
+  xirr: number | null;
+  ret_1y?: number | null;
+  cagr_3y?: number | null;
+  cagr_5y?: number | null;
+  tx_count: number;
+  weight_pct: number;
+}
+
+export interface CasFolioItem {
+  folio: string;
+  amc: string;
+  pan: string;
+  current_value: number;
+  schemes_count: number;
+  xirr: number | null;
+  schemes: CasHoldingItem[];
+}
+
+export interface CasBandComparisonRow {
+  asset_class: string;
+  target_pct: number;
+  actual_pct: number;
+  gap_pct: number;
+  status: "overweight" | "underweight" | "aligned";
+}
+
+export interface CasAnalysisResult {
+  statement_period?: { from: string; to: string };
+  investor_name?: string;
+  email?: string;
+  cas_type?: string;
+  file_type?: string;
+  total_value: number;
+  total_invested?: number | null;
+  total_gain?: number | null;
+  overall_xirr: number | null;
+  folios_count: number;
+  holdings_count: number;
+  holdings: CasHoldingItem[];
+  folios: CasFolioItem[];
+  asset_allocation: Record<string, { value: number; pct: number; count: number }>;
+  category_allocation: Record<string, { value: number; pct: number; count: number }>;
+  plan_breakdown: {
+    direct: { value: number; pct: number };
+    regular: { value: number; pct: number };
+    notice: string;
+  };
+  band_comparison?: {
+    target_band: string;
+    comparison: CasBandComparisonRow[];
+  } | null;
+  privacy_notice: string;
+  disclaimer: string;
+}
+
+export interface RagSourceItem {
+  scheme_code: string;
+  scheme_name: string;
+  amc: string;
+  category: string;
+  plan: string;
+  data_quality: string;
+}
+
+export interface RagAnswerResult {
+  query: string;
+  answer: string;
+  sources: RagSourceItem[];
+  as_of: string;
+  disclaimer: string;
+}
+
+export interface ExplainResponse {
+  kind: "plan" | "fund" | "cas";
+  explanation: string;
+  ai_generated: boolean;
+  provider: string;
+}
+
+
+

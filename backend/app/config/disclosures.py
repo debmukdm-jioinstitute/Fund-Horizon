@@ -78,6 +78,14 @@ PORTFOLIO_DISCLAIMER = (
     "Illustrative portfolio analysis; does not constitute an investment recommendation."
 )  # TODO(owner-compliance-review)
 
+INSURANCE_SHORTLIST_NOTE = (
+    "Illustrative research shortlist, compiled October 2026 from the IRDAI Annual Report "
+    "2024-25 and insurer public disclosures. Not a recommendation. Claim-settlement ratios "
+    "describe past years and can change. Premiums vary by age, health, occupation, city and "
+    "sum insured — take a personalised quote from the insurer. Read the policy wording "
+    "before buying."
+)  # TODO(owner-compliance-review)
+
 # Engine status -> wording that does not read "funded" as "likely to succeed".
 SIZED_STATUS_LABELS = {
     "funded": "Sized (central path)",
@@ -114,4 +122,5 @@ def all_disclosures() -> dict:
         "compare_disclaimer": COMPARE_DISCLAIMER,
         "ranking_disclaimer": RANKING_DISCLAIMER,
         "portfolio_disclaimer": PORTFOLIO_DISCLAIMER,
+        "insurance_shortlist_note": INSURANCE_SHORTLIST_NOTE,
     }

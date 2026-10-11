@@ -199,6 +199,28 @@ def funnel():
     return wob(d)
 
 
+# 7. old vs new regime fork
+def taxfork():
+    d = ground(120, 1500, 800)
+    # two roads diverging from the character
+    d += path("M 800 640 C 800 520 600 470 470 400", K, 4, arrow=True)
+    d += path("M 800 640 C 800 520 1000 470 1130 400", K, 4, arrow=True)
+    # left signboard: old regime
+    d += box(230, 250, 330, 150, K, 12) + t(395, 305, "old regime", K, 42)
+    for i, tag in enumerate(["80C", "NPS", "80D", "HRA"]):
+        d += box(255 + i * 76, 330, 66, 44, O, 8, "#fff", 3) + t(288 + i * 76, 361, tag, O, 26)
+    d += t(395, 450, "more deductions", B, 32) + t(395, 488, "higher slab rates", B, 32)
+    # right signboard: new regime
+    d += box(1040, 250, 330, 150, K, 12) + t(1205, 305, "new regime", K, 42)
+    d += box(1070, 330, 270, 44, O, 8, "#fff", 3) + t(1205, 361, "nil tax up to 12.75 L", O, 25)
+    d += t(1205, 450, "fewer deductions", B, 32) + t(1205, 488, "lower slab rates", B, 32)
+    d += xh(800, 800, 1.15, (0, -3), "o")
+    d += t(800, 150, "work out both, then choose", R, 54) + path("M 430 172 Q 800 195 1170 172", R, 4)
+    d += t(800, 215, "the code does the sums; you pick", O, 32)
+    d += t(395, 575, "example: ₹3.11 L", K, 30) + t(1205, 575, "example: ₹2.05 L", K, 30)
+    return wob(d)
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     save("01-overview.svg", hero())
@@ -207,4 +229,5 @@ if __name__ == "__main__":
     save("04-pure-engine.svg", engine())
     save("05-stress-test.svg", stress())
     save("06-shortlist-funnel.svg", funnel())
+    save("07-tax-fork.svg", taxfork())
     print("ok")

@@ -37,7 +37,7 @@ every number it writes is checked against the engine's output.
 [What you get](#what-you-get) · [How it fits together](#how-it-fits-together) ·
 [The plan pipeline](#the-plan-pipeline) · [Risk profile](#risk-profile-final--the-lower-score) ·
 [Allocation and glide path](#allocation-and-the-glide-path) · [Fund shortlist](#fund-shortlist-filter-first-rank-second) ·
-[Goals and Monte Carlo](#goal-planning-and-monte-carlo) · [Stress test](#stress-test-on-past-data) ·
+[Goals and Monte Carlo](#goal-planning-and-monte-carlo) · [Stress test](#stress-test-on-past-data) · [Tax planning](#smart-tax-planning) ·
 [Beyond the plan](#beyond-the-plan) · [Quick start](#quick-start) · [Configure](#configure-assumptions) ·
 [Database](#database-and-persistence) · [API](#api) · [Deploy](#deploy-railway) · [Quality](#quality-and-compliance) ·
 [Credits](#credits)
@@ -52,6 +52,7 @@ every number it writes is checked against the engine's output.
 | **2. Allocate** | A suggested mix per goal (shorter goals hold less equity) and a goal-weighted portfolio mix. **Simple** view shows four buckets (equity, debt, gold, liquid); **Detailed** shows all nine categories. |
 | **3. Shortlist** | An illustrative list of at most 8 Regular-plan funds ranked on past performance, each with a plain-English "why it ranked" and its next three ranked alternatives side by side. |
 | **4. Stress test** | The suggested mix replayed on past NAVs, including the Feb-Mar 2020 fall. |
+| **4b. Tax** | Old vs new regime for FY 2026-27, ranked saving ideas with on/off switches, an after-tax view of every goal, and a plain-English tax note on each shortlisted fund. |
 | **5. Plan goals** | Future cost, SIP needed, funded or not, chance of success, and ways to close any gap. |
 | **6. Safety net** | Emergency-fund target and gap, term and health cover gaps. When there is a gap, an illustrative shortlist of researched cover plans appears (curated October 2026; not a recommendation). |
 | **7. PDF** | A branded report with the disclosures on every page. |
@@ -65,11 +66,11 @@ flowchart LR
     end
     subgraph API["FastAPI service"]
       R["routes + validation<br/>Pydantic v2"]
-      E["engine/<br/>pure functions<br/>profile, allocate, plan, analytics, CAS"]
+      E["engine/<br/>pure functions<br/>profile, allocate, plan, tax, analytics, CAS"]
       AI["ai/<br/>optional explanations<br/>LiteLLM + guardrails"]
       RAG["rag/<br/>fund Q&A<br/>ChromaDB"]
       P["report/<br/>ReportLab + matplotlib"]
-      C["config/<br/>assumptions, allocation,<br/>scoring, disclosures"]
+      C["config/<br/>assumptions, allocation, scoring,<br/>tax rules + catalog, disclosures"]
     end
     D[("Dataset in memory<br/>3,638 schemes<br/>month-end NAVs")]
     S[("Plans, CAS sessions,<br/>scheme directory<br/>SQLite or PostgreSQL")]
@@ -99,13 +100,16 @@ output and may only rephrase it.
 
 ```mermaid
 flowchart LR
-    A["Client + goals<br/>+ 10 answers"] --> B["Profile<br/>capacity, comfort, band"]
+    A["Client + goals<br/>+ tax details<br/>+ 10 answers"] --> B["Profile<br/>capacity, comfort, band"]
+    A --> T["Tax<br/>old vs new regime<br/>saving ideas, marginal rate"]
+    T -- "after-tax switch,<br/>reinvested saving" --> C
     B --> C["Per-goal plan<br/>allocation by horizon<br/>future cost, SIP"]
     C --> D["Funding by priority<br/>surplus split across goals<br/>levers for any gap"]
     D --> E["Monte Carlo<br/>5,000 paths per goal"]
     C --> F["Portfolio mix<br/>weighted across goals"]
     F --> G["Fund shortlist<br/>filter, score, pick"]
     G --> H["Stress test<br/>on past NAVs"]
+    T --> I
     E --> I(["Plan JSON<br/>+ PDF"])
     H --> I
     D --> I
@@ -130,6 +134,10 @@ sequenceDiagram
     U->>W: Toggle 5% yearly step-up
     W->>A: GET /api/plans/{id}?step_up=0.05
     A->>E: Recompute from the stored inputs
+    A-->>W: Updated plan (not saved)
+    U->>W: Flip Old regime, apply an idea, Show after tax
+    W->>A: GET /api/plans/{id}?regime=old&apply=sec_80c&tax_view=post
+    A->>E: Recompute with the tax switches
     A-->>W: Updated plan (not saved)
     U->>W: Ask for a plain-English explanation
     W->>A: POST /api/ai/explain/plan
@@ -239,6 +247,42 @@ the SIP for about 80% next to the funded label. Planning figures are pre-tax; se
 The suggested mix is replayed on month-end NAVs: the Feb-Mar 2020 fall, the worst peak-to-trough, and the worst
 rolling 12 months. Funds without enough history borrow their category's median return and are flagged.
 
+## Smart tax planning
+
+The planner asks for your tax regime, income and bracket in two skippable wizard steps, then compares the old and
+new regimes for FY 2026-27, ranks saving ideas by estimated rupees, and can size every goal on after-tax returns.
+All of it is deterministic Python; the explainer may rephrase results but cannot change a number.
+
+<p align="center">
+<img src="docs/images/07-tax-fork.png" alt="Hand-drawn illustration: a small black character at a fork; the old regime sign lists 80C, NPS, 80D and HRA deductions with higher slab rates, the new regime sign says nil tax up to 12.75 lakh with fewer deductions and lower slab rates; the note says the code does the sums and you pick" width="760">
+</p>
+
+```mermaid
+flowchart TD
+    Q["Tax steps in the wizard<br/>regime, income or bracket,<br/>deductions, gains, preferences"] --> M{"Mode"}
+    M -- "Work it out" --> R["Compare old vs new regime<br/>slabs, 87A rebate, surcharge, cess"]
+    M -- "I know my bracket" --> B["Marginal rate from the bracket"]
+    M -- "Skip" --> X["Tax features off"]
+    R --> N["14 rules rank saving ideas<br/>80C, NPS, employer NPS, 80D, HRA,<br/>gain harvesting, FD vs funds, seniors"]
+    B --> N
+    N --> S["Switches<br/>Regime auto / old / new<br/>Apply an idea<br/>Show after tax<br/>Reinvest the tax I save"]
+    S --> P["Plan recomputed<br/>(nothing stored)"]
+```
+
+| You get | How |
+|---|---|
+| **Regime comparison** | Tax, taxable income, deductions counted, break-even deductions, and whether using every old-regime limit would change the answer |
+| **Saving ideas with switches** | Each idea shows its yearly saving, effort, lock-in and which regime it needs; **Apply** counts it in your tax and plan |
+| **After-tax view** | Goals sized on returns after tax for their own horizon; a table shows the extra SIP needed |
+| **Reinvest** | The monthly tax saved by applied ideas is added to your SIPs |
+| **Every scheme explained** | `/learn` covers 24 options (PPF, EPF/VPF, NPS, ELSS, SSY, SCSS, NSC, FDs, bonds, insurance, equity, debt, gold and more): who it suits, lock-in, risk and how it is taxed |
+| **Fund tax notes** | A tax chip on each shortlisted fund (equity-oriented, debt-oriented, 24-month rule, gold) |
+| **Calculator** | `/tax` compares the regimes with no plan and nothing saved |
+
+**Status of the rules:** compiled in October 2026 from public sources and **not yet reviewed by a chartered
+accountant**; the UI, API and PDF say so. Sources, simplifications, the review checklist and the yearly update
+steps are in [`docs/TAX_RULES.md`](docs/TAX_RULES.md). Scope is resident individuals.
+
 ## Beyond the plan
 
 | Feature | Where | Notes |
@@ -287,6 +331,9 @@ PHASE_*_REPORT.md, ADMIN_PANEL_REPORT.md                what each build phase ch
 | `backend/app/config/allocation.yaml` | band tables, horizon equity caps, category split, fund-count rules |
 | `backend/app/config/scoring.yaml` | ranking weights |
 | `backend/app/config/analytics.yaml` | fund analytics settings |
+| `backend/app/config/tax_rules.yaml` | tax slabs, limits, capital gains, small-savings rates, sources, review status |
+| `backend/app/config/tax_catalog.yaml` | the 24 explained options |
+| `backend/app/config/mf_tax_classes.yaml` | how each fund category is taxed |
 | `backend/app/config/ai.yaml` | explanation providers, guardrails, system prompt |
 | `backend/app/config/questionnaire.json` | the ten risk questions |
 | `backend/app/config/disclosures.py` | all compliance copy |
@@ -338,10 +385,13 @@ Plans **expire after `FH_PLAN_TTL_DAYS` (default 30)** and can be deleted by id.
 | GET | `/api/questionnaire` | the ten questions |
 | GET | `/api/meta` | disclosures, assumptions summary, data date, bands |
 | POST | `/api/plans` | compute and save a plan, returns it with an `id` |
-| GET | `/api/plans/{id}` | stored plan; `?step_up=0.05` recomputes without saving |
+| GET | `/api/plans/{id}` | stored plan; `?step_up=`, `?regime=old`, `?tax_view=post`, `?apply=sec_80c,nps_1b`, `?reinvest=true` recompute without saving |
 | DELETE | `/api/plans/{id}` | delete a plan |
 | GET | `/api/plans/{id}/report.pdf` | client-ready PDF |
-| GET | `/api/funds/{scheme_code}` | metrics and month-end NAV |
+| GET | `/api/tax/rules` | the tax rules, sources and review status |
+| GET | `/api/tax/catalog[/{id}]` | the explained options (`?q=` search, `?kind=` filter) |
+| POST | `/api/tax/calc` | stateless tax calculator |
+| GET | `/api/funds/{scheme_code}` | metrics and month-end NAV, with a tax note |
 | GET | `/api/funds/{scheme_code}/analytics` | deterministic fund analytics |
 | GET | `/api/funds/compare` | side-by-side comparison |
 | GET | `/api/categories/{cat}/ranking` | ranking inside a category |
@@ -349,7 +399,7 @@ Plans **expire after `FH_PLAN_TTL_DAYS` (default 30)** and can be deleted by id.
 | POST | `/api/cas/upload` | parse a CAS PDF in memory |
 | GET, POST | `/api/rag/ask` | ask about a fund |
 | POST | `/api/rag/ingest` | build the knowledge base |
-| POST | `/api/ai/explain/{plan,fund,cas}` | optional plain-English explanation |
+| POST | `/api/ai/explain/{plan,fund,cas,tax}` | optional plain-English explanation |
 | — | `/api/admin/*` | admin control center (set `FH_ADMIN_KEY`) |
 
 Validation errors return `422` with a readable message.
@@ -385,18 +435,19 @@ Two services built from the repo root with the Dockerfiles in `deploy/`:
 | SIP anchors | ₹10,000 a month at 1% a month for 120 months = ₹23,00,387 (ordinary) and ₹23,23,391 (due) |
 | Allocation | rows sum to 100 for every band and every horizon from 1 to 40 years |
 | End to end | Playwright drives the wizard, the plan view and the PDF download |
-| Wording | tests and `frontend/scripts/check-copy.mjs` block "best", "guaranteed", "advice", "advisory" in code and UI copy |
+| Tax maths | hand-computed cases: new regime nil at 12.75 L salaried, 97,500 at 15 L, surcharge marginal relief, old regime 10 L; persona numbers verified by hand |
+| Wording | tests (including the tax YAML) and `frontend/scripts/check-copy.mjs` block "best", "guaranteed", "advice", "advisory" in code and UI copy |
 | Privacy | no PAN, phone, email or address fields in the planner; first name and age only; consent checkbox; CAS files are never stored |
 
 Per-phase results are in the `PHASE_*_REPORT.md` files and [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
 Decisions made where the brief was ambiguous are in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-**Out of scope:** payments or orders, KYC, tax optimisation, international funds, Direct-plan recommendations.
+**Out of scope:** payments or orders, KYC, filing returns, tax for NRIs and HUFs, international funds, Direct-plan recommendations.
 Extension points are marked `# EXTENSION:`.
 
 ## Credits
 
-The hand-drawn illustrations in [`docs/images/`](docs/images) were drawn for this project in the style of
+The hand-drawn illustrations (seven) in [`docs/images/`](docs/images) were drawn for this project in the style of
 [**Ian Xiaohei Illustrations**](https://github.com/helloianneo/ian-xiaohei-illustrations) by Ian
 ([@helloianneo](https://github.com/helloianneo), MIT licence): white background, thin wobbly line, the small
 black character "小黑" (Xiaohei), and sparse red, orange and blue notes. Xiaohei is part of Ian's visual

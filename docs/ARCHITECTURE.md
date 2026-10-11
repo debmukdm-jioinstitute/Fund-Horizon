@@ -55,6 +55,23 @@ Next.js 14 (App Router, TS, Tailwind, Recharts)  --HTTP/JSON-->  FastAPI (Pydant
     cost-comparison feature).
 14. **Python**: pinned to 3.13 in the venv (`uv venv --python 3.13`); the code also runs on 3.11+.
 
+## Tax engine decisions
+15. **Tax rules are data, dated and flagged.** `config/tax_rules.yaml` carries `fy`, `as_of`, sources and
+    `verified: false` until a chartered accountant signs off; the UI, API and PDF repeat that status.
+16. **Pre-tax stays the default.** Existing plans, goldens and numbers do not change. "Show after tax" is a
+    per-view switch recomputed on the server (`GET /api/plans/{id}?tax_view=post`), never stored.
+17. **Tax answers live in `Client.tax`, not `questionnaire.json`.** That file feeds risk scoring and is fixed at
+    ten questions. Every tax field is optional, so stored plans, fixtures and the admin panel keep working.
+18. **Three tax modes**: detailed (exact regime comparison), bracket only (rough savings from the slab rate) and
+    skip (tax features off).
+19. **Nudges are computed, not written.** Each saving is the difference between two tax runs, which is what
+    lets the explainer quote numbers without inventing any; the explainer's number-consistency guard still applies.
+20. **Switches are stateless.** Regime, apply-idea, reinvest and after-tax travel as query parameters and rebuild
+    the plan from the stored inputs, like the step-up toggle.
+21. **Section numbers**: legacy labels first; Income-tax Act 2025 numbers only where sources agree.
+22. **Fixed**: `/api/ai/explain/plan` returned 500 when given only a plan id (`row["plan"]`), and its fallback read
+    keys the real plan result does not have.
+
 ## Extension points (`# EXTENSION:` comments)
 AUM / TER filters and scoring (`data/loader.py`, `engine/funds.py`), a chat layer on top of
 `/api/plans`, CAS import, and authentication (`db/sqlite.py` user_id column).

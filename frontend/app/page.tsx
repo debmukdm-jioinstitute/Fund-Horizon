@@ -335,6 +335,33 @@ export default function Home({ searchParams }: { searchParams?: { retrieve?: str
             </p>
           </Link>
 
+          {/* Tax tools */}
+          <Link
+            href="/tax"
+            className="card-3d group bg-white/80 p-6 backdrop-blur-md transition-all hover:border-teal-500/40"
+          >
+            <span className="text-2xl">🧾</span>
+            <h3 className="mt-3 text-lg font-bold text-navy-950 group-hover:text-teal-700 transition-colors">
+              Tax Calculator →
+            </h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+              Compare the old and new regimes for FY 2026-27 and see which deductions and saving ideas may apply to you.
+            </p>
+          </Link>
+
+          <Link
+            href="/learn"
+            className="card-3d group bg-white/80 p-6 backdrop-blur-md transition-all hover:border-teal-500/40"
+          >
+            <span className="text-2xl">📚</span>
+            <h3 className="mt-3 text-lg font-bold text-navy-950 group-hover:text-teal-700 transition-colors">
+              Schemes Explained →
+            </h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+              PPF, NPS, ELSS, SSY, SCSS, FDs, funds and more: who each suits, lock-in, risk and how it is taxed.
+            </p>
+          </Link>
+
           {/* Tool 3 */}
           <Link
             href="/funds/ask"

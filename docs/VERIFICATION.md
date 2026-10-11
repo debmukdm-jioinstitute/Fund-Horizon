@@ -98,3 +98,32 @@ surplus, age 80.
   a forecast.
 - SQLite file `backend/plans.db` is created on first plan; there is no cleanup job or authentication.
 - Playwright smoke test needs both servers; `playwright.config.ts` starts them if they are not running.
+
+## Tax engine (added 2026-10-11)
+| Check | Command | Result |
+|---|---|---|
+| Backend tests | `cd backend && .venv/bin/python -m pytest tests -q` | **595 passed** (507 existing + 88 new: tax maths, nudges, pipeline, API, PDF, copy scan) |
+| Tax module coverage | `--cov=app/engine` | `tax.py` 99%, `tax_nudges.py` 98%, `tax_plan.py` 100% |
+| Engine coverage overall | same | 84%: below the 85% floor because `engine/cas.py` is at 54% (already so before this work; the baseline was 80.8%) |
+| Backend lint | `ruff check app tests` | passed |
+| Frontend | `npm run lint`, `npx tsc --noEmit`, `node scripts/check-copy.mjs`, `npm run build` | all passed; new routes `/learn`, `/learn/[id]`, `/tax` |
+| End to end | `npx playwright test` | **17 passed** (14 existing, 3 new: tax skip, `/learn`, `/tax`; the main flow now fills the tax steps and flips the plan's tax switches) |
+
+Hand-checked tax values (see `backend/tests/test_tax.py`): new regime, salaried, 12.75 lakh = nil (taxable 12 lakh, rebate
+60,000); 15 lakh = 97,500; 15.75 lakh = 1,09,200; 13 lakh = 26,000 (marginal relief); old regime 10 lakh = 1,06,600;
+10 lakh with 1.5 lakh of 80C = 75,400; new regime 60 lakh = 15,52,980 (10% surcharge); surcharge 35,000 after marginal
+relief on 10,95,000 of tax at 50.5 lakh.
+
+Tax personas (`backend/tests/fixtures/tax_personas.json`):
+- **Salaried, 20 lakh, old regime now:** old regime 3,11,064 vs new 2,04,880 (both verified by hand); the plan says
+  "Switch to the new regime" and shows that even using every old-regime limit the old regime costs 54,080 more.
+  Applying 80C + NPS in the old regime cuts tax by 34,320 a year (2,860 a month); after-tax sizing raises the
+  retirement SIP from 49,439 to 63,261.
+- **Retired, 66, 6 lakh pension + 4 lakh FD interest:** old regime 85,280 vs new regime nil; the plan points to the
+  new regime and to Form 15H.
+
+Also checked in the browser: the plan's Tax planning section, every switch, `/learn` (24 options), `/tax`, and the
+375 px layout (no horizontal scroll on `/learn`, `/tax`, `/learn/[id]` or the plan page).
+
+Limits: tax figures come from public secondary sources and are not CA-reviewed (`verified: false`); see
+[TAX_RULES.md](TAX_RULES.md). The after-tax view ignores the 1.25 lakh equity exemption.

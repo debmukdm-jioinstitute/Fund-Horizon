@@ -98,16 +98,10 @@ Planning SIPs, future costs and success probabilities are **pre-tax illustration
 the SIP is enough after tax. Debt-fund gains are typically taxed at the investor's income-tax slab
 (post 1 April 2023). Equity-oriented funds follow a different regime. Confirm with a tax professional.
 
-### Configurable pre-tax haircut (not applied in the engine yet)
-A simple haircut on non-equity sleeves can be configured when wired through `assumptions.yaml`. Until
-the engine reads this key, SIPs are sized on the full `asset_returns` figures. Short-horizon 0% equity
-goals (liquid / short-duration) are the most overstated.
-
-| Proposed key | Default | Meaning |
-|---|---|---|
-| `tax.non_equity_pre_tax_haircut` | `0.00` | Fraction subtracted from debt / gold / liquid planning returns before SIP sizing. Example: `0.20` turns a 6.5% debt return into 5.2%. |
-| `tax.apply_haircut` | `false` | Set true only after the engine implements the key. |
-
-Owner: choose a non-zero haircut (for example 0.10–0.25 on debt and liquid for goals under 3 years)
-once the engine reads this key. Do not treat a sized SIP as sufficient after tax.
+### After-tax view (implemented)
+SIPs and success figures are **pre-tax by default**. Switching on **Show after tax** in the plan's tax section
+sizes each goal on after-tax returns for its own horizon, at the customer's marginal tax rate. Equity pays
+12.5% plus cess after 12 months (20% sooner); debt and liquid funds pay the slab rate; gold follows the
+24-month rule. The 1.25 lakh equity exemption is ignored (equity slightly understated). Rules, sources and the
+review checklist are in [TAX_RULES.md](TAX_RULES.md). With no tax details the switch changes nothing.
 TODO(owner-compliance-review)

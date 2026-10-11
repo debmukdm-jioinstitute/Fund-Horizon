@@ -57,3 +57,21 @@ def load_questionnaire() -> dict:
 def load_analytics() -> dict:
     return _load_yaml("analytics.yaml")
 
+
+
+@lru_cache(maxsize=1)
+def load_tax_rules() -> dict:
+    """FY-dated Indian income-tax rules (tax_rules.yaml). Owner/CA edits once a year."""
+    return _load_yaml("tax_rules.yaml")
+
+
+@lru_cache(maxsize=1)
+def load_tax_catalog() -> dict:
+    """Plain-English catalog of savings and investment instruments (tax_catalog.yaml)."""
+    return _load_yaml("tax_catalog.yaml")
+
+
+@lru_cache(maxsize=1)
+def load_mf_tax_classes() -> dict:
+    """How each canonical fund category is taxed (mf_tax_classes.yaml)."""
+    return _load_yaml("mf_tax_classes.yaml")

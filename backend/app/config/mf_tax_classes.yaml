@@ -1,0 +1,95 @@
+# How each canonical mutual-fund category is taxed in FY 2026-27 (Finance Act 2026), for resident
+# individuals. Source: AMC tax reckoner snapshot listed in tax_rules.yaml.
+# TODO(owner-ca-review): classes for hybrid, multi-asset and solution-oriented funds depend on the
+# scheme's actual equity / debt split in its factsheet; those entries carry check_factsheet: true.
+as_of: "2026-10"
+
+classes:
+  equity:
+    label: "Equity-oriented fund"
+    ltcg_months: 12
+    ltcg_rate: 0.125
+    stcg_rate: 0.20
+    ltcg_exemption: 125000
+    slab_always: false
+    note: "Gains held more than 12 months are taxed at 12.5% above 1.25 lakh a year; sold sooner, 20%."
+  specified_debt:
+    label: "Debt-oriented fund"
+    ltcg_months: null
+    ltcg_rate: null
+    stcg_rate: null
+    ltcg_exemption: 0
+    slab_always: true
+    note: "Units bought on or after 1 April 2023 are taxed at your slab rate, however long you hold them."
+  other_24m:
+    label: "Non-equity fund (24-month rule)"
+    ltcg_months: 24
+    ltcg_rate: 0.125
+    stcg_rate: null
+    ltcg_exemption: 0
+    slab_always: false
+    note: "Held more than 24 months: 12.5% with no exemption. Sold sooner: slab rate."
+  gold_fof:
+    label: "Gold fund of funds"
+    ltcg_months: 24
+    ltcg_rate: 0.125
+    stcg_rate: null
+    ltcg_exemption: 0
+    slab_always: false
+    note: "Held more than 24 months: 12.5% with no exemption. Sold sooner: slab rate. Gold ETFs use 12 months."
+  international:
+    label: "International fund"
+    ltcg_months: 24
+    ltcg_rate: 0.125
+    stcg_rate: null
+    ltcg_exemption: 0
+    slab_always: false
+    note: "Held more than 24 months: 12.5% with no exemption. Sold sooner: slab rate."
+
+categories:
+  # equity-oriented
+  large_cap: {class: equity}
+  large_mid_cap: {class: equity}
+  mid_cap: {class: equity}
+  small_cap: {class: equity}
+  flexi_cap: {class: equity}
+  multi_cap: {class: equity}
+  focused: {class: equity}
+  value: {class: equity}
+  contra: {class: equity}
+  dividend_yield: {class: equity}
+  sectoral_thematic: {class: equity}
+  elss: {class: equity}
+  index_equity: {class: equity}
+  arbitrage: {class: equity}
+  # hybrids: depends on factsheet
+  aggressive_hybrid: {class: equity, check_factsheet: true}
+  balanced_advantage: {class: equity, check_factsheet: true}
+  equity_savings: {class: equity, check_factsheet: true}
+  balanced_hybrid: {class: other_24m, check_factsheet: true}
+  conservative_hybrid: {class: specified_debt, check_factsheet: true}
+  multi_asset: {class: other_24m, check_factsheet: true}
+  index_hybrid: {class: other_24m, check_factsheet: true}
+  solution_retirement: {class: other_24m, check_factsheet: true}
+  solution_children: {class: other_24m, check_factsheet: true}
+  # debt-oriented
+  overnight: {class: specified_debt}
+  liquid: {class: specified_debt}
+  money_market: {class: specified_debt}
+  short_duration: {class: specified_debt}
+  corporate_bond: {class: specified_debt}
+  banking_psu: {class: specified_debt}
+  gilt: {class: specified_debt}
+  credit_risk: {class: specified_debt}
+  dynamic_bond: {class: specified_debt}
+  medium_long_duration: {class: specified_debt}
+  floater: {class: specified_debt}
+  fixed_term: {class: specified_debt}
+  other_debt: {class: specified_debt}
+  index_debt: {class: specified_debt}
+  # others
+  gold: {class: gold_fof}
+  international: {class: international}
+  fof_domestic: {class: other_24m, check_factsheet: true}
+  etf_other: {class: equity, check_factsheet: true}
+  other: {class: other_24m, check_factsheet: true}

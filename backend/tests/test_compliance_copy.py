@@ -14,6 +14,10 @@ COPY_STRINGS = [
     d.SHORTLIST_HEADING,
     d.TAX_INFO,
     d.TAX_PER_GOAL_NOTE,
+    d.TAX_RULES_NOTE,
+    d.TAX_NUDGE_NOTE,
+    d.POST_TAX_NOTE,
+    d.TAX_SCOPE_NOTE,
     d.SUCCESS_PROB_NOTE,
     d.SCHEME_DOCS_NOTE,
     d.CONSENT_TEXT,
@@ -65,6 +69,11 @@ def test_no_banned_words_in_user_facing_strings():
 
     for q in (APP / "config" / "questionnaire.json").read_text().splitlines():
         assert not BANNED.search(q)
+    for name in ("tax_catalog.yaml", "tax_rules.yaml", "mf_tax_classes.yaml"):
+        for n, line in enumerate((APP / "config" / name).read_text().splitlines(), 1):
+            if line.lstrip().startswith("#") or "url:" in line:   # comments and source links
+                continue
+            assert not BANNED.search(line), f"{name}:{n}: {line.strip()[:80]}"
     assert not offenders, offenders
 
 
@@ -109,6 +118,10 @@ def test_new_copy_keeps_compliance_review_marker():
         "SIZED_STATUS_LABELS",
         "ALLOCATION_HEADING",
         "TAX_INFO",
+        "TAX_RULES_NOTE",
+        "TAX_NUDGE_NOTE",
+        "POST_TAX_NOTE",
+        "TAX_SCOPE_NOTE",
         "DISCLOSURE_LINES",
     ):
         block = src.split(f"{name} =", 1)[1].split("\n\n", 1)[0]

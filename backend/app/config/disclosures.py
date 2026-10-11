@@ -29,15 +29,38 @@ TAX_INFO = (
     "All SIP amounts, future costs and success figures are pre-tax illustrations. "
     "They do not imply the SIP is enough after tax. Tax treatment varies by fund type and "
     "current law; debt-fund gains are typically taxed at the investor's slab after April 2023. "
-    "A configurable pre-tax haircut on non-equity sleeves is documented in the planning "
-    "assumptions and is not applied unless that haircut is configured. Confirm with a tax "
-    "professional."
+    "Switch on 'Show after tax' in the tax section to size SIPs on after-tax returns. "
+    "Confirm with a tax professional."
 )  # TODO(owner-compliance-review)
 
 TAX_PER_GOAL_NOTE = (
     "Pre-tax illustration: the SIP, future cost and chance figures for this goal ignore tax. "
     "Debt and liquid sleeves are especially affected on short horizons. This is not an "
     "after-tax sufficiency statement."
+)  # TODO(owner-compliance-review)
+
+TAX_RULES_NOTE = (
+    "Tax figures follow the rules for FY 2026-27 for resident individuals, compiled in October 2026 "
+    "from public sources and not yet reviewed by a chartered accountant. They are illustrations "
+    "from the details you entered, not a tax filing or a professional tax opinion. Confirm with a "
+    "tax professional before acting."
+)  # TODO(owner-compliance-review) TODO(owner-ca-review)
+
+TAX_NUDGE_NOTE = (
+    "Each saving shown is an estimate of what may be possible if you are eligible and the details "
+    "you entered are right. Lock-ins and market risk apply to some options. Nothing here is an "
+    "offer to buy any product."
+)  # TODO(owner-compliance-review)
+
+POST_TAX_NOTE = (
+    "After-tax view: SIPs are sized on returns after capital gains or slab tax at your estimated "
+    "tax rate, applied once at the end of each goal. The 1.25 lakh equity exemption is ignored, so "
+    "equity is slightly understated."
+)  # TODO(owner-compliance-review)
+
+TAX_SCOPE_NOTE = (
+    "Tax features cover resident individuals. NRIs, HUFs, businesses and people with foreign "
+    "income need a tax professional."
 )  # TODO(owner-compliance-review)
 
 SUCCESS_PROB_NOTE = (
@@ -136,6 +159,10 @@ def all_disclosures() -> dict:
         "shortlist_heading": SHORTLIST_HEADING,
         "tax_info": TAX_INFO,
         "tax_per_goal_note": TAX_PER_GOAL_NOTE,
+        "tax_rules_note": TAX_RULES_NOTE,
+        "tax_nudge_note": TAX_NUDGE_NOTE,
+        "post_tax_note": POST_TAX_NOTE,
+        "tax_scope_note": TAX_SCOPE_NOTE,
         "success_prob_note": SUCCESS_PROB_NOTE,
         "scheme_docs_note": SCHEME_DOCS_NOTE,
         "consent_text": CONSENT_TEXT,

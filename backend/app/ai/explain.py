@@ -32,10 +32,12 @@ def explain_plan(plan_data: dict[str, Any]) -> dict[str, Any]:
     # Deterministic fallback template
     profile = plan_data.get("profile", {})
     band = profile.get("band", "Moderate")
-    capacity = profile.get("capacity_band", "Moderate")
-    goals = plan_data.get("goals", [])
-    sip_total = plan_data.get("total_monthly_sip", 0)
-    surplus = profile.get("monthly_surplus", 0)
+    capacity = profile.get("capacity_band") or band
+    planning = plan_data.get("planning") or {}
+    totals = planning.get("totals") or {}
+    goals = plan_data.get("goals") or planning.get("goals") or []
+    sip_total = plan_data.get("total_monthly_sip", totals.get("allocated_sip", 0))
+    surplus = profile.get("monthly_surplus", totals.get("monthly_surplus", 0))
 
     fallback_lines = [
         f"### Summary of Your Financial Plan ({band} Profile)",
@@ -46,9 +48,9 @@ def explain_plan(plan_data: dict[str, Any]) -> dict[str, Any]:
     ]
     for g in goals:
         name = g.get("name", "Goal")
-        amt = g.get("target_future_rupees", 0)
-        sip = g.get("monthly_sip", 0)
-        prob = g.get("success_probability_base", 0.5)
+        amt = g.get("target_future_rupees", g.get("future_cost", 0))
+        sip = g.get("monthly_sip", g.get("allocated_sip", 0))
+        prob = g.get("success_probability_base", (g.get("monte_carlo") or {}).get("success_prob", 0.5))
         fallback_lines.append(
             f"  - **{name}:** Projected target ₹{amt:,} with a target SIP of ₹{sip:,} (historical base success rate: {prob*100:.0f}%)."
         )
@@ -188,5 +190,58 @@ def explain_cas(cas_data: dict[str, Any]) -> dict[str, Any]:
         "ai_generated": ai_generated,
         "provider": provider if ai_generated else "deterministic_template",
     }
+    _EXPLANATION_CACHE[ck] = res
+    return res
+
+
+def _inr(v: float) -> str:
+    from app.engine.finmath import indian_format
+    return indian_format(v)
+
+
+def explain_tax(tax_data: dict[str, Any], nudge_id: str | None = None) -> dict[str, Any]:
+    """Explain the tax section (or one nudge) in plain English.
+
+    The deterministic template is built only from numbers already in `tax_data`. An optional language
+    model may rephrase it, but its output is used only if every number and all wording pass the
+    same guardrails as the other explainers.
+    """
+    nudges = tax_data.get("nudges") or []
+    if nudge_id:
+        nudges = [n for n in nudges if n.get("id") == nudge_id]
+    else:
+        nudges = nudges[:3]
+    payload = {**{k: tax_data.get(k) for k in ("fy", "mode", "regime_in_force", "recommended_regime", "marginal_rate")},
+               "regimes": tax_data.get("regimes"), "nudges": nudges}
+    ck = _cache_key("tax", payload)
+    if ck in _EXPLANATION_CACHE:
+        return _EXPLANATION_CACHE[ck]
+
+    lines = ["### Your tax picture", ""]
+    reg = tax_data.get("regimes")
+    if reg:
+        lines.append(
+            f"- Estimated tax for FY {tax_data.get('fy')}: **{_inr(reg['old']['total_tax'])}** under the old regime and "
+            f"**{_inr(reg['new']['total_tax'])}** under the new regime, so the **{reg['better']}** regime costs less "
+            f"by about **{_inr(reg['saving'])}**."
+        )
+    marg = tax_data.get("marginal_rate")
+    if marg:
+        lines.append(f"- Each extra rupee of income is taxed at about **{marg * 100:.1f}%** (slab rate with cess).")
+    for n in nudges:
+        lines.append(f"- **{n.get('title')}:** {n.get('summary')}")
+    lines += ["", "These are illustrations from the details you entered, not tax filings."]
+    fallback = append_statutory_disclosures("\n".join(lines))
+
+    clean_data = scrub_pii(payload)
+    llm_out, provider = call_llm(
+        "Please explain these tax figures simply. Use only the numbers provided:\n" + json.dumps(clean_data, default=str))
+    final_text, ai_generated = fallback, False
+    if llm_out:
+        ok_nums = verify_number_consistency(llm_out, extract_numbers_from_payload(clean_data))
+        if ok_nums and scan_banned_wording(llm_out):
+            final_text, ai_generated = append_statutory_disclosures(llm_out), True
+    res = {"kind": "tax", "explanation": final_text, "ai_generated": ai_generated,
+           "provider": provider if ai_generated else "deterministic_template"}
     _EXPLANATION_CACHE[ck] = res
     return res

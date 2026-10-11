@@ -1,0 +1,28 @@
+{
+  "salaried_deductions": {
+    "client": {"first_name": "Neha", "age": 38, "employment_type": "salaried_private", "dependents": 2,
+      "monthly_income": 150000, "monthly_expenses": 60000, "monthly_emi": 25000, "liquid_assets": 600000,
+      "investments": 1800000, "liabilities": 3500000, "term_cover": 10000000, "health_cover": 1000000, "retirement_age": 60,
+      "tax": {"mode": "detailed", "regime_current": "old", "gross_income_annual": 2000000, "basic_annual": 800000,
+        "hra_received": 300000, "rent_paid_monthly": 30000, "metro": true, "ded_80c_used": 90000,
+        "nps_self_annual": 0, "health_premium_self": 18000, "health_premium_parents": 0, "parents_senior": true,
+        "home_loan_interest": 0, "fd_interest_annual": 60000, "unrealised_equity_gain": 350000,
+        "employer_offers_nps": true, "lock_in_comfort": "5y", "spouse_income_band": "lower"}},
+    "goals": [
+      {"name": "Retirement", "type": "retirement", "target_amount_today": 0, "years_to_goal": 22, "priority": 1},
+      {"name": "Child education", "type": "child_education", "target_amount_today": 3000000, "years_to_goal": 12, "priority": 1},
+      {"name": "Car", "type": "vehicle", "target_amount_today": 800000, "years_to_goal": 2, "priority": 3}],
+    "answers": {"q1": 2, "q2": 3, "q3": 2, "q4": 2, "q5": 2, "q6": 3, "q7": 2, "q8": 2, "q9": 1, "q10": 2}
+  },
+  "senior_income": {
+    "client": {"first_name": "Ravi", "age": 66, "employment_type": "retired_none", "dependents": 0,
+      "monthly_income": 60000, "monthly_expenses": 35000, "monthly_emi": 0, "liquid_assets": 2000000,
+      "investments": 6000000, "liabilities": 0, "term_cover": 0, "health_cover": 500000, "retirement_age": 66,
+      "tax": {"mode": "detailed", "regime_current": "old", "gross_income_annual": 600000, "fd_interest_annual": 400000,
+        "health_premium_self": 40000, "lock_in_comfort": "5y", "govt_backed_pref": true}},
+    "goals": [
+      {"name": "Travel", "type": "travel", "target_amount_today": 500000, "years_to_goal": 3, "priority": 2},
+      {"name": "Medical buffer", "type": "emergency", "target_amount_today": 600000, "years_to_goal": 2, "priority": 1}],
+    "answers": {"q1": 2, "q2": 1, "q3": 1, "q4": 1, "q5": 0, "q6": 1, "q7": 1, "q8": 1, "q9": 1, "q10": 1}
+  }
+}

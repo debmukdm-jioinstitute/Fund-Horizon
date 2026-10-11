@@ -11,6 +11,8 @@ from app.engine.insurance_suggest import suggest_cover_plans
 from app.engine.planning import build_plan
 from app.engine.profiling import build_profile
 from app.engine.stress import stress_test
+from app.engine.tax import tax_tag_for_category
+from app.engine.tax_plan import build_tax_section
 from app.schemas import PlanRequest
 
 _EMPTY_ASSET = {"equity": 0.0, "debt": 0.0, "gold": 0.0, "liquid": 0.0}
@@ -88,7 +90,22 @@ def build_full_plan(req: PlanRequest, eligible: pd.DataFrame) -> dict:
     """profile -> goal plan -> portfolio allocation -> fund shortlist -> stress test."""
     a = load_assumptions(req.assumption_overrides)
     profile = build_profile(req.client, req.answers, a)
-    planning = build_plan(req.client, req.goals, profile["band"], a, req.step_up)
+    switches = req.tax_switches.model_dump()
+    tax = build_tax_section(
+        req.client.age, req.client.employment_type.value,
+        req.client.tax.model_dump() if req.client.tax else None,
+        [{"name": g.name, "type": g.type.value, "years": g.years_to_goal} for g in req.goals], switches,
+    )
+    post_marginal, reinvest = tax.pop("_post_tax_marginal"), tax.pop("_reinvest_monthly")
+    planning = build_plan(req.client, req.goals, profile["band"], a, req.step_up,
+                          post_tax_marginal=post_marginal, extra_surplus=reinvest)
+    if post_marginal is not None:
+        pre = build_plan(req.client, req.goals, profile["band"], a, req.step_up, extra_surplus=reinvest)
+        tax["post_tax_goal_delta"] = [
+            {"name": g["name"], "required_sip_pre_tax": p["required_sip"], "required_sip_post_tax": g["required_sip"],
+             "extra_sip_needed": g["required_sip"] - p["required_sip"]}
+            for g, p in zip(planning["goals"], pre["goals"])
+        ]
 
     items = [
         (g["allocation"], float(g["allocated_sip"]))
@@ -104,6 +121,8 @@ def build_full_plan(req: PlanRequest, eligible: pd.DataFrame) -> dict:
         portfolio = weighted_allocation(items)
         funds = select_funds(portfolio, eligible, a)
         assign_goal_sips(funds, planning["goals"])
+        for f in funds:
+            f["tax_tag"] = tax_tag_for_category(f["cat"], bool(f.get("needs_demat")))
         stress = stress_test(funds, eligible, a)
 
     return {
@@ -122,6 +141,7 @@ def build_full_plan(req: PlanRequest, eligible: pd.DataFrame) -> dict:
         "funds": funds,
         "shortlist_omitted": shortlist_omitted,
         "insurance_suggestions": suggest_cover_plans(req.client, planning["insurance"]),
+        "tax": tax,
         "stress_test": stress,
         "planning": planning,
         "disclosures": all_disclosures(),

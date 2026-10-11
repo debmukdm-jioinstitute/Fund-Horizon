@@ -9,6 +9,7 @@ import math
 
 from app.config import load_assumptions
 from app.engine import finmath as fm
+from app.engine import tax as tx
 from app.engine.allocation import goal_allocation, to_asset_classes
 from app.engine.insurance import health_target, term_need
 from app.engine.montecarlo import simulate, sip_for_success
@@ -260,25 +261,33 @@ def _split_fund(base: list[dict], reserved: int, other_budget: int, a: dict) -> 
 
 
 def build_plan(client: Client, goals: list[Goal], band: str, assumptions: dict | None = None,
-               step_up: float = 0.0) -> dict:
+               step_up: float = 0.0, post_tax_marginal: float | None = None, extra_surplus: int = 0) -> dict:
     """Assemble the complete planning section (without fund selection).
 
     When the emergency-fund gap is positive, `surplus_share_for_gap` is reserved before
     other goals are funded. Emergency-type goals are unified with that calculator and
     funded from the reserved share. Earmarks are capped at declared investments.
+
+    post_tax_marginal: when set, each goal is sized on after-tax asset returns for its own horizon
+    (engine/tax.py::apply_post_tax). extra_surplus: monthly rupees added to the non-emergency budget
+    (tax saved and reinvested).
     """
     a = assumptions or load_assumptions()
+    goal_a = [
+        tx.apply_post_tax(a, g.years_to_goal, post_tax_marginal) if post_tax_marginal is not None else a
+        for g in goals
+    ]
     cf = cashflow(client)
     ef = emergency_fund(client, a)
     reserved = ef["monthly_allocation"] if ef["gap"] > 0 else 0
-    other_budget = max(int(cf["monthly_surplus"]) - reserved, 0)
+    other_budget = max(int(cf["monthly_surplus"]) - reserved, 0) + max(int(extra_surplus), 0)
     earmarks = cap_earmarks([g.existing_investment_earmarked for g in goals], client.investments)
     base = [
-        goal_base(g, client, band, a, step_up, earmarked=e, emergency=ef)
-        for g, e in zip(goals, earmarks)
+        goal_base(g, client, band, ga, step_up, earmarked=e, emergency=ef)
+        for g, e, ga in zip(goals, earmarks, goal_a)
     ]
     funded = _split_fund(base, reserved, other_budget, a)
-    with_mc = [add_monte_carlo(g, a) for g in funded]
+    with_mc = [add_monte_carlo(g, ga) for g, ga in zip(funded, goal_a)]
     total_req = sum(g["required_sip"] for g in with_mc)
     allocated = sum(g["allocated_sip"] for g in with_mc)
     surplus = int(cf["monthly_surplus"])
@@ -295,7 +304,8 @@ def build_plan(client: Client, goals: list[Goal], band: str, assumptions: dict |
             "monthly_surplus": surplus,
             "shortfall": sum(g["shortfall"] for g in with_mc),
             "emergency_reserved": int(reserved),
-            "unused_surplus": surplus - allocated - leftover_reserved,
+            "unused_surplus": surplus + max(int(extra_surplus), 0) - allocated - leftover_reserved,
+            "tax_reinvested": max(int(extra_surplus), 0),
         },
         "rebalancing": rebalancing_rules(a),
         "step_up": step_up,

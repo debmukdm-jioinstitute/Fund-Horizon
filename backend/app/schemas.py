@@ -34,6 +34,65 @@ class GoalType(str, Enum):
 Rupees = int  # alias for readability
 
 
+class TaxProfile(BaseModel):
+    """Optional tax details (resident individuals). Every field is optional so older requests still validate.
+
+    mode "detailed" uses the income and deduction fields; "bracket_only" uses `bracket_pct` alone;
+    "skip" turns tax features off for this plan.
+    """
+    model_config = ConfigDict(extra="forbid")
+
+    mode: str = Field(default="detailed", pattern="^(detailed|bracket_only|skip)$")
+    regime_current: str = Field(default="unsure", pattern="^(old|new|unsure)$")
+    bracket_pct: int | None = Field(default=None, description="Top slab rate you pay, in percent")
+    gross_income_annual: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    other_income_annual: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    basic_annual: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    hra_received: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    rent_paid_monthly: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    metro: bool = False
+    employer_nps_pct: float = Field(default=0.0, ge=0.0, le=14.0, description="Employer NPS as % of basic")
+    ded_80c_used: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    nps_self_annual: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    health_premium_self: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    health_premium_parents: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    parents_senior: bool = False
+    home_loan_interest: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    edu_loan_interest: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    fd_interest_annual: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    realised_stcg: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    realised_ltcg: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    unrealised_equity_gain: int = Field(default=0, ge=0, le=MAX_MONEY_RUPEES)
+    spouse_income_band: str = Field(default="unknown", pattern="^(none|lower|similar|higher|unknown)$")
+    lock_in_comfort: str = Field(default="3y", pattern="^(none|3y|5y|15y)$")
+    govt_backed_pref: bool = False
+    employer_offers_nps: bool = False
+    employer_offers_vpf: bool = False
+
+    @field_validator("bracket_pct")
+    @classmethod
+    def _bracket_valid(cls, v: int | None) -> int | None:
+        if v is not None and v not in (0, 5, 10, 15, 20, 25, 30):
+            raise ValueError("Tax bracket must be one of 0, 5, 10, 15, 20, 25 or 30 percent")
+        return v
+
+    @model_validator(mode="after")
+    def _bracket_needed(self) -> TaxProfile:
+        if self.mode == "bracket_only" and self.bracket_pct is None:
+            raise ValueError("Choose your tax bracket, or switch to detailed or skip")
+        return self
+
+
+class TaxSwitches(BaseModel):
+    """What the customer has switched on in the tax section. All defaults leave the plan unchanged."""
+    model_config = ConfigDict(extra="forbid")
+
+    regime: str = Field(default="auto", pattern="^(auto|old|new)$")
+    tax_view: str = Field(default="pre", pattern="^(pre|post)$")
+    apply: list[str] = Field(default_factory=list, max_length=20)
+    reinvest: bool = False
+
+
 class Client(BaseModel):
     first_name: str = Field(min_length=1, max_length=40)
     age: int = Field(ge=18, le=80, description="Age must be between 18 and 80")
@@ -48,6 +107,7 @@ class Client(BaseModel):
     term_cover: int = Field(ge=0, le=MAX_MONEY_RUPEES)
     health_cover: int = Field(ge=0, le=MAX_MONEY_RUPEES)
     retirement_age: int = Field(default=60, ge=40, le=80)
+    tax: TaxProfile | None = None
 
     @model_validator(mode="after")
     def _retire_after_now(self) -> Client:
@@ -100,6 +160,7 @@ class PlanRequest(BaseModel):
     assumption_overrides: dict | None = None
     step_up: float = Field(default=0.0, ge=0.0, le=0.2)
     consent: bool = True
+    tax_switches: TaxSwitches = Field(default_factory=TaxSwitches)
 
     @field_validator("answers")
     @classmethod
@@ -167,3 +228,23 @@ class ExplainFundRequest(BaseModel):
 class ExplainCasRequest(BaseModel):
     cas_data: dict[str, Any]
 
+
+
+class ExplainTaxRequest(BaseModel):
+    plan_id: str | None = None
+    tax_data: dict[str, Any] | None = None
+    nudge_id: str | None = Field(default=None, max_length=40)
+
+
+class TaxCalcGoal(BaseModel):
+    type: GoalType = GoalType.custom
+    years: int = Field(default=5, ge=1, le=40)
+
+
+class TaxCalcRequest(BaseModel):
+    """Stateless tax calculator: nothing is saved."""
+    age: int = Field(ge=18, le=100)
+    employment_type: EmploymentType = EmploymentType.salaried_private
+    tax: TaxProfile
+    goals: list[TaxCalcGoal] = Field(default_factory=list, max_length=6)
+    switches: TaxSwitches = Field(default_factory=TaxSwitches)

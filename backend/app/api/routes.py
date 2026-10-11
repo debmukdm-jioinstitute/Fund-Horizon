@@ -16,6 +16,7 @@ from app.config.disclosures import (
     COMPARE_DISCLAIMER,
     PORTFOLIO_DISCLAIMER,
     RANKING_DISCLAIMER,
+    TAX_RULES_NOTE,
     all_disclosures,
 )
 from app.data.loader import load_nav
@@ -25,13 +26,16 @@ from app.engine import cas
 from app.engine.funds import rank_category_funds
 from app.engine.pipeline import build_full_plan
 from app.engine.stress import category_median_series
+from app.engine.tax import tax_tag_for_category
 from app.schemas import (
     ExplainCasRequest,
     ExplainFundRequest,
     ExplainPlanRequest,
+    ExplainTaxRequest,
     PlanRequest,
     PortfolioAnalyzeRequest,
     RagAskRequest,
+    TaxCalcRequest,
 )
 
 router = APIRouter()
@@ -90,14 +94,35 @@ def create_plan(req: PlanRequest, request: Request):
 
 
 @router.get("/api/plans/{plan_id}")
-def get_plan(plan_id: str, request: Request, step_up: float | None = Query(default=None, ge=0, le=0.2)):
-    """Stored plan. With ?step_up=, recompute from the stored inputs (not persisted)."""
+def get_plan(
+    plan_id: str,
+    request: Request,
+    step_up: float | None = Query(default=None, ge=0, le=0.2),
+    regime: str | None = Query(default=None, pattern="^(auto|old|new)$"),
+    tax_view: str | None = Query(default=None, pattern="^(pre|post)$"),
+    apply: str | None = Query(default=None, max_length=300, description="Comma-separated nudge ids to switch on"),
+    reinvest: bool | None = None,
+):
+    """Stored plan. With any of step_up, regime, tax_view, apply or reinvest, recompute from the
+    stored inputs (not persisted)."""
     row = sqlite.get_plan(plan_id)
     if not row:
         raise HTTPException(404, "Plan not found")
-    if step_up is None:
+    if all(v is None for v in (step_up, regime, tax_view, apply, reinvest)):
         return plan_payload(plan_id, row["result"], created_at=row["created_at"], expires_at=row["expires_at"])
-    req = PlanRequest(**{**row["request"], "step_up": step_up})
+    switches = dict(row["request"].get("tax_switches") or {})
+    if regime is not None:
+        switches["regime"] = regime
+    if tax_view is not None:
+        switches["tax_view"] = tax_view
+    if apply is not None:
+        switches["apply"] = [a.strip() for a in apply.split(",") if a.strip()]
+    if reinvest is not None:
+        switches["reinvest"] = reinvest
+    body = {**row["request"], "tax_switches": switches}
+    if step_up is not None:
+        body["step_up"] = step_up
+    req = PlanRequest(**body)
     return plan_payload(plan_id, _compute(req, request), created_at=row["created_at"], expires_at=row["expires_at"])
 
 
@@ -202,6 +227,7 @@ def fund_detail(scheme_code: str, request: Request):
     return clean({
         **{k: row[k] for k in keep},
         "eligible_for_shortlist": True,
+        "tax_tag": tax_tag_for_category(str(row["cat"]), bool(row.get("needs_demat", False))),
         "nav_monthly": [{"date": str(d.date()), "nav": float(v)} for d, v in nav.items()],
     })
 
@@ -417,7 +443,7 @@ def ai_explain_plan(req: ExplainPlanRequest):
         row = sqlite.get_plan(req.plan_id)
         if not row:
             raise HTTPException(404, "Plan not found")
-        plan_data = row["plan"]
+        plan_data = row["result"]
 
     if not plan_data:
         raise HTTPException(400, "Either plan_id or plan_data must be provided")
@@ -477,3 +503,78 @@ def get_insurance_document(
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@router.get("/api/tax/rules")
+def tax_rules():
+    """The tax rules the planner uses, with their sources and review status."""
+    from app.config import load_tax_rules
+
+    r = load_tax_rules()
+    keep = ("fy", "ay", "as_of", "verified", "cess", "sources", "new_regime", "old_regime", "limits",
+            "capital_gains", "tds", "small_savings", "section_labels")
+    return {**{k: r[k] for k in keep}, "disclosure": TAX_RULES_NOTE}
+
+
+@router.get("/api/tax/catalog")
+def tax_catalog(q: str | None = Query(default=None, max_length=60), kind: str | None = Query(default=None, max_length=30)):
+    """Instruments catalog: what each is, who it suits, lock-in and tax treatment."""
+    from app.config import load_tax_catalog
+
+    cat = load_tax_catalog()
+    items = cat["instruments"]
+    if kind:
+        items = [i for i in items if i["kind"] == kind]
+    if q:
+        needle = q.lower()
+        items = [i for i in items if needle in (i["name"] + " " + i["summary"] + " " + i["who_for"]).lower()]
+    return {"as_of": cat["as_of"], "fy": cat["fy"], "kinds": cat["kinds"], "instruments": items,
+            "disclosure": TAX_RULES_NOTE}
+
+
+@router.get("/api/tax/catalog/{instrument_id}")
+def tax_catalog_item(instrument_id: str):
+    from app.config import load_tax_catalog
+
+    cat = load_tax_catalog()
+    for i in cat["instruments"]:
+        if i["id"] == instrument_id:
+            return {"as_of": cat["as_of"], "fy": cat["fy"], "instrument": i, "disclosure": TAX_RULES_NOTE}
+    raise HTTPException(404, "Instrument not found")
+
+
+@router.post("/api/tax/calc")
+def tax_calc(req: TaxCalcRequest):
+    """Stateless calculator: both regimes, marginal rate, nudges and after-tax returns. Nothing is saved."""
+    from app.engine import tax as tx
+    from app.engine.tax_plan import build_tax_section
+
+    sw = req.switches.model_dump()
+    goals = [{"name": f"Goal {n}", "type": g.type.value, "years": g.years} for n, g in enumerate(req.goals, 1)]
+    section = build_tax_section(req.age, req.employment_type.value, req.tax.model_dump(), goals, sw)
+    section.pop("_post_tax_marginal", None)
+    section.pop("_reinvest_monthly", None)
+    marg = section.get("marginal_rate") or 0.0
+    a = load_assumptions()
+    section["after_tax_returns"] = [
+        {"years": y, **{k: round(v, 4) for k, v in tx.post_tax_returns(a["asset_returns"], y, marg).items()}}
+        for y in (1, 3, 5, 10, 15)
+    ]
+    section["pre_tax_returns"] = a["asset_returns"]
+    return {**clean(section), "disclosure": TAX_RULES_NOTE}
+
+
+@router.post("/api/ai/explain/tax")
+def ai_explain_tax(req: ExplainTaxRequest):
+    """Explain the tax section or one nudge, with guardrails and a deterministic fallback."""
+    from app.ai.explain import explain_tax
+
+    tax_data = req.tax_data
+    if not tax_data and req.plan_id:
+        row = sqlite.get_plan(req.plan_id)
+        if not row:
+            raise HTTPException(404, "Plan not found")
+        tax_data = (row["result"] or {}).get("tax")
+    if not tax_data or not tax_data.get("enabled", True):
+        raise HTTPException(400, "No tax details to explain. Add tax details to the plan first.")
+    return explain_tax(tax_data, req.nudge_id)

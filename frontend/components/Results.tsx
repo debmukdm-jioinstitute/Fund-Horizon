@@ -2,6 +2,7 @@
 
 // TODO(owner-compliance-review): this file contains user-facing copy.
 
+import { AmcName, InsurerLogo } from "@/components/BrandLogo";
 import { useState } from "react";
 import Link from "next/link";
 import { FanChart, Gauge } from "@/components/charts";
@@ -494,104 +495,6 @@ function MarkedBadge() {
   );
 }
 
-export function InsurerLogo({ insurer, className = "h-8 w-8" }: { insurer: string; className?: string }) {
-  const norm = insurer.toLowerCase();
-  if (norm.includes("max") || norm.includes("axis")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#97144D] to-[#67002C] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="Axis Max Life">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <path d="M7 24L16 8L25 24H19.5L16 17.5L12.5 24H7Z" fill="white" />
-          <path d="M16 11.5L21 21H18.5L16 16.5L13.5 21H11L16 11.5Z" fill="#FCE7F3" />
-        </svg>
-      </div>
-    );
-  }
-  if (norm.includes("hdfc ergo")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#ED1C24] to-[#B00E14] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="HDFC ERGO">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <rect x="5" y="5" width="22" height="22" rx="4" fill="white" />
-          <rect x="7" y="7" width="18" height="18" rx="2" fill="#004C8F" />
-          <path d="M10 11H13V15H19V11H22V21H19V17H13V21H10V11Z" fill="#ED1C24" />
-        </svg>
-      </div>
-    );
-  }
-  if (norm.includes("hdfc")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#ED1C24] to-[#B00E14] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="HDFC Life">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <rect x="5" y="5" width="22" height="22" rx="4" fill="white" />
-          <rect x="7" y="7" width="8" height="8" fill="#ED1C24" />
-          <rect x="17" y="7" width="8" height="8" fill="#004C8F" />
-          <rect x="7" y="17" width="8" height="8" fill="#004C8F" />
-          <rect x="17" y="17" width="8" height="8" fill="#ED1C24" />
-          <circle cx="16" cy="16" r="3" fill="white" />
-        </svg>
-      </div>
-    );
-  }
-  if (norm.includes("tata")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#0072BC] to-[#004B80] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="Tata AIA">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <ellipse cx="16" cy="16" rx="11" ry="11" stroke="white" strokeWidth="2" fill="none" />
-          <path d="M10 12H22M16 12V22" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="21" cy="20" r="2" fill="#D31145" />
-        </svg>
-      </div>
-    );
-  }
-  if (norm.includes("icici")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#85141B] to-[#E05A10] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="ICICI Prudential">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <circle cx="16" cy="16" r="11" fill="white" />
-          <circle cx="16" cy="11" r="2.2" fill="#85141B" />
-          <path d="M14 15H17.5V22H14V15Z" fill="#E05A10" />
-          <path d="M13 22H19" stroke="#85141B" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      </div>
-    );
-  }
-  if (norm.includes("aditya") || norm.includes("birla")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#B41B18] to-[#F39200] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="Aditya Birla Capital">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <path d="M16 6L18.5 12H24.5L20 16L22 22L16 18.5L10 22L12 16L7.5 12H13.5L16 6Z" fill="#FDE047" />
-          <circle cx="16" cy="16" r="4.5" fill="#B41B18" />
-        </svg>
-      </div>
-    );
-  }
-  if (norm.includes("care")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#00A599] to-[#0D9488] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="Care Health">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <path d="M16 6C16 6 8 8 8 15C8 21 13 25 16 26C19 25 24 21 24 15C24 8 16 6 16 6Z" fill="white" />
-          <path d="M14 16H18M16 14V18" stroke="#00A599" strokeWidth="2.5" strokeLinecap="round" />
-        </svg>
-      </div>
-    );
-  }
-  if (norm.includes("niva") || norm.includes("bupa")) {
-    return (
-      <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-br from-[#00A3E0] to-[#78BE20] text-white shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`} title="Niva Bupa">
-        <svg viewBox="0 0 32 32" fill="none" className="h-5 w-5">
-          <circle cx="16" cy="16" r="11" fill="white" />
-          <path d="M9 16H12L14 11L18 21L20 16H23" stroke="#00A3E0" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          <circle cx="21" cy="12" r="1.5" fill="#78BE20" />
-        </svg>
-      </div>
-    );
-  }
-  return (
-    <div className={`relative flex items-center justify-center rounded-xl bg-navy-900 text-white font-bold text-xs shadow-sm flex-shrink-0 ${className}`} title={insurer}>
-      {insurer.slice(0, 2).toUpperCase()}
-    </div>
-  );
-}
-
 function CoverBlock({ block, title }: { block: InsuranceBlock; title: string }) {
   const pick = block.plans.find((p) => p.marked_pick) ?? block.plans[0];
   const pickSlug = pick.slug || pick.plan.toLowerCase().replace(/[^a-z0-9]+/g, "-");
@@ -608,7 +511,7 @@ function CoverBlock({ block, title }: { block: InsuranceBlock; title: string }) 
       <div className="mt-3.5 rounded-2xl border-2 border-teal-500/80 bg-gradient-to-br from-teal-50/80 via-white to-teal-50/40 p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <InsurerLogo insurer={pick.insurer} className="h-11 w-11 text-base shadow-md" />
+            <InsurerLogo insurer={pick.insurer} className="h-12 min-w-12 text-base shadow-md" />
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-teal-800 px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">
@@ -705,7 +608,7 @@ function CoverBlock({ block, title }: { block: InsuranceBlock; title: string }) 
                 <tr key={`${p.insurer}-${p.plan}`} className={`hover:bg-navy-50/40 transition-colors ${p.marked_pick ? "bg-teal-50/60" : ""}`}>
                   <td className="td py-3 px-3 font-medium whitespace-nowrap">
                     <div className="flex items-center gap-2.5">
-                      <InsurerLogo insurer={p.insurer} className="h-7 w-7" />
+                      <InsurerLogo insurer={p.insurer} className="h-10 min-w-10" />
                       <div>
                         <span className="font-bold text-navy-950 block">{p.insurer}</span>
                         {p.marked_pick && <MarkedBadge />}
@@ -796,7 +699,7 @@ function FundCompareCard({ fund: f }: { fund: FundPick }) {
             {cols.map((c, i) => (
               <tr key={c.scheme_code} className={`border-t border-navy-100 ${i === 0 ? "bg-teal-50" : ""}`}>
                 <td className="td font-medium">{c.scheme_name}{i === 0 && <MarkedBadge />}</td>
-                <td className="td">{c.amc}</td>
+                <td className="td"><AmcName amc={c.amc} /></td>
                 <td className="td">{pct(c.metrics.cagr_3y)}</td>
                 <td className="td">{pct(c.metrics.cagr_5y)}</td>
                 <td className="td">{pct(c.metrics.vol_3y)}</td>

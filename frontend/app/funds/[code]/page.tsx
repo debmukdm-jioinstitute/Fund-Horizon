@@ -1,4 +1,5 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
+import { AmcName } from "@/components/BrandLogo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -76,7 +77,7 @@ export default async function FundDetailPage({ params }: PageProps) {
               {detail.scheme_name}
             </h1>
             <p className="mt-1 text-sm text-navy-700">
-              AMC: <span className="font-medium text-navy-900">{detail.amc}</span> · Data as of{" "}
+              AMC: <AmcName amc={detail.amc} className="h-10 min-w-10" /> · Data as of{" "}
               {analytics.last_nav_date}
             </p>
           </div>

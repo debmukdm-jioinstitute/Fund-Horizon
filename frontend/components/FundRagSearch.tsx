@@ -1,6 +1,7 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
+import { AmcName } from "@/components/BrandLogo";
 import { useState } from "react";
 import Link from "next/link";
 import { askFundRag } from "@/lib/api";
@@ -149,7 +150,7 @@ export default function FundRagSearch() {
                       <div>
                         <p className="font-semibold text-navy-900">{s.scheme_name}</p>
                         <p className="text-navy-600">
-                          Code: {s.scheme_code} · {s.amc}
+                          Code: {s.scheme_code} · <AmcName amc={s.amc} className="h-6 min-w-6" />
                         </p>
                       </div>
                       <Link

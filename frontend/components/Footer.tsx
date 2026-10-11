@@ -37,6 +37,9 @@ export default async function Footer() {
               Disclosures are temporarily unavailable. Please contact Fund Horizon before relying on any figures shown.
             </p>
           )}
+          <p className="mt-3 text-[11px] text-slate-500">
+            Company names and logos belong to their owners. They appear only to identify the insurer or fund house, and do not mean the company has reviewed or endorsed this site.
+          </p>
         </div>
       </div>
     </footer>

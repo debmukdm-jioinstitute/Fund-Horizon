@@ -1,6 +1,7 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
+import { AmcName } from "@/components/BrandLogo";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -146,7 +147,7 @@ export function CompareView({ initialData }: Props) {
             <tr>
               <td className="p-3 font-medium text-navy-700">AMC</td>
               {funds.map((f) => (
-                <td key={f.scheme_code} className="p-3 text-xs">{f.amc}</td>
+                <td key={f.scheme_code} className="p-3 text-xs"><AmcName amc={f.amc} /></td>
               ))}
             </tr>
             <tr>

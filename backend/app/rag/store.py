@@ -48,6 +48,9 @@ def get_collection() -> chromadb.Collection:
     )
 
 
+get_vector_store = get_collection
+
+
 def parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
     """Extract YAML frontmatter fields from markdown text."""
     meta: dict[str, Any] = {}

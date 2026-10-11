@@ -42,13 +42,13 @@ def admin_health(x_admin_key: str | None = Header(None, alias="X-Admin-Key")):
     # ChromaDB check
     rag_info = {"status": "uninitialized"}
     try:
-        from app.rag.store import get_vector_store
+        from app.rag.store import get_collection
 
-        store = get_vector_store()
+        coll = get_collection()
         rag_info = {
             "status": "ready",
-            "collection": store.collection_name,
-            "count": store.count(),
+            "collection": coll.name,
+            "count": coll.count(),
         }
     except Exception as e:
         rag_info = {"status": "error", "error": str(e)}

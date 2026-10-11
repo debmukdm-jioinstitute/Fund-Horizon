@@ -12,7 +12,7 @@ const FEATURES = [
   { t: "Personalised planning", d: "Built around your goals and cash flow.", c: "bg-emerald-100 text-emerald-700", i: "M12 12a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0" },
   { t: "Transparent method", d: "Every number comes from a stated formula.", c: "bg-sky-100 text-sky-700", i: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zm-3 9l2 2 4-4" },
   { t: "Goal-based investing", d: "Separate SIPs for each goal and horizon.", c: "bg-teal-100 text-teal-700", i: "M12 21a9 9 0 100-18 9 9 0 000 18zm0-5a4 4 0 100-8 4 4 0 000 8z" },
-  { t: "Private by design", d: "No PAN, phone or email needed.", c: "bg-indigo-100 text-indigo-700", i: "M7 11V8a5 5 0 0110 0v3m-12 0h14v10H5V11z" },
+  { t: "Private by design", d: "Account signup needs name, email and mobile. The plan-link flow needs nothing.", c: "bg-indigo-100 text-indigo-700", i: "M7 11V8a5 5 0 0110 0v3m-12 0h14v10H5V11z" },
 ];
 
 export function FeatureStrip() {

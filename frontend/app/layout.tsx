@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import { siteUrl } from "@/lib/site";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://web-production-a0cf3.up.railway.app";
+const baseUrl = siteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

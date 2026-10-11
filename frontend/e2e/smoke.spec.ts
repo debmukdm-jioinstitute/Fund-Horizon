@@ -23,6 +23,26 @@ async function fillFinances(page: Page, opts?: { income?: string; expenses?: str
   await page.getByRole("button", { name: "Continue" }).click();
 }
 
+async function skipTax(page: Page) {
+  await page.getByRole("radio", { name: /Skip tax for now/ }).check();
+  await page.getByRole("button", { name: "Continue" }).click();
+}
+
+async function fillTax(page: Page) {
+  // basics: income is required for "Work it out for me"
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText("Enter your yearly income before tax (0 if none).")).toBeVisible();
+  await page.getByLabel("Tax regime you use now").selectOption("old");
+  await page.getByLabel("Yearly income before tax").fill("1800000");
+  await page.getByRole("button", { name: "Continue" }).click();
+  // details
+  await expect(page.getByRole("heading", { name: "Deductions, gains and preferences" })).toBeVisible();
+  await page.getByLabel("Section 80C used so far").fill("50000");
+  await page.getByLabel("My employer offers corporate NPS").check();
+  await page.getByLabel("Gain you could still sell after 12 months").fill("300000");
+  await page.getByRole("button", { name: "Continue" }).click();
+}
+
 async function answerRiskPages(page: Page) {
   let offset = 0;
   for (const count of Q_GROUPS) {
@@ -59,11 +79,17 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   await page.getByLabel("Priority").nth(1).selectOption("1");
   await page.getByRole("button", { name: "Continue" }).click();
 
-  // 4 Questionnaire, three grouped screens
+  // 4 Tax: two steps
+  await expect(page.getByRole("heading", { name: "Your tax picture" })).toBeVisible();
+  await fillTax(page);
+
+  // 5 Questionnaire, three grouped screens
   await answerRiskPages(page);
 
-  // 5 Review lists the fields the old checklist omitted
+  // 6 Review lists the fields the old checklist omitted
   await expect(page.getByText("Dependents")).toBeVisible();
+  await expect(page.getByText("Yearly income before tax")).toBeVisible();
+  await expect(page.getByText("Regime used now")).toBeVisible();
   await expect(page.getByText("Source of income")).toBeVisible();
   await expect(page.getByText("Monthly EMIs")).toBeVisible();
   await expect(page.getByText("Outstanding loans")).toBeVisible();
@@ -107,6 +133,19 @@ test("complete the wizard and download the PDF", async ({ page }) => {
   await expect(page.getByText(/constant-mix/).first()).toBeVisible();
   await expect(page.getByText(/Pre-tax illustration/).first()).toBeVisible();
   await expect(page.getByText(/SID and KIM/).first()).toBeVisible();
+
+  // Tax planning: regime comparison, switches and ranked saving ideas
+  await expect(page.getByRole("heading", { name: "Tax planning" })).toBeVisible();
+  await expect(page.getByText("Old regime or new regime")).toBeVisible();
+  await expect(page.getByText(/not yet reviewed by a chartered accountant/).first()).toBeVisible();
+  await expect(page.locator("article[data-nudge]").first()).toBeVisible();
+  await page.getByRole("button", { name: "Old", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Old", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.locator("#apply-sec_80c").click();
+  await expect(page.getByText(/Applied ideas:/)).toBeVisible();
+  await page.getByRole("switch", { name: "Show after tax" }).click();
+  await expect(page.getByText("What after-tax sizing changes")).toBeVisible();
+  await page.getByRole("switch", { name: "Show after tax" }).click();
 
   // Step-up toggle recalculates
   await page.getByRole("button", { name: "10%" }).click();
@@ -160,6 +199,7 @@ test("negative surplus hides the buy-list and leads with cashflow", async ({ pag
   await page.getByLabel("Type").first().selectOption("retirement");
   await expect(page.getByLabel("Years to goal")).toHaveValue("28");
   await page.getByRole("button", { name: "Continue" }).click();
+  await skipTax(page);
   await answerRiskPages(page);
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Show my plan" }).click();
@@ -291,3 +331,45 @@ test("admin control center renders overview, tabs, metrics, and catalog", async 
 
 
 
+
+
+test("tax skip mode jumps past the details step", async ({ page }) => {
+  await page.goto("/plan/new");
+  await fillAbout(page);
+  await fillFinances(page);
+  await page.getByLabel("Type").first().selectOption("retirement");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await skipTax(page);
+  await expect(page.getByText(/Questions 1–4 of 10/)).toBeVisible();
+  await page.getByRole("button", { name: "Back" }).click();
+  await expect(page.getByRole("heading", { name: "Your tax picture" })).toBeVisible();
+});
+
+test("learn catalog lists schemes, filters and opens a detail page", async ({ page }) => {
+  await page.goto("/learn");
+  await expect(page.getByRole("heading", { name: /Savings and tax-saving options, explained/ })).toBeVisible();
+  await expect(page.getByText(/chartered accountant/).first()).toBeVisible();
+  await expect(page.locator("[data-instrument]").first()).toBeVisible();
+  const all = await page.locator("[data-instrument]").count();
+  expect(all).toBeGreaterThanOrEqual(20);
+  await page.getByLabel("Search").fill("provident");
+  await expect(page.locator("[data-instrument]").first()).toBeVisible();
+  expect(await page.locator("[data-instrument]").count()).toBeLessThan(all);
+  await page.locator('[data-instrument="ppf"]').click();
+  await expect(page.getByRole("heading", { name: /Public Provident Fund/ })).toBeVisible();
+  await expect(page.getByText("When you put money in")).toBeVisible();
+  await expect(page.getByText("Watch out for")).toBeVisible();
+  await page.goto("/learn/not-real");
+  await expect(page.getByText("We could not find that option.")).toBeVisible();
+});
+
+test("tax calculator compares regimes without a plan", async ({ page }) => {
+  await page.goto("/tax");
+  await page.getByRole("button", { name: "Compare regimes" }).click();
+  await expect(page.getByText("Enter your age and your yearly income before tax.")).toBeVisible();
+  await page.getByLabel("Yearly income before tax").fill("1500000");
+  await page.getByRole("button", { name: "Compare regimes" }).click();
+  await expect(page.getByRole("heading", { name: /regime costs about/ })).toBeVisible();
+  await expect(page.getByText("What tax does to returns")).toBeVisible();
+  await expect(page.getByText(/chartered accountant/).first()).toBeVisible();
+});

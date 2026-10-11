@@ -6,24 +6,27 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { NumberField, SelectField, TextField } from "@/components/Field";
 import { ApiError, createPlan, getMeta, getQuestionnaire } from "@/lib/api";
+import { TaxBasicsStep, TaxDetailsStep } from "@/components/TaxSteps";
 import {
-  DRAFT_STORAGE_KEY, DRAFT_STORAGE_LEGACY_KEY, Draft, EMPLOYMENT, Errors, GOAL_TYPES, GoalDraft,
+  DRAFT_STORAGE_KEY, DRAFT_STORAGE_LEGACY_KEY, Draft, EMPLOYMENT, Errors, GOAL_TYPES, GoalDraft, TaxDraft,
   draftHasHugeTarget, emptyDraft, emptyGoal, employmentLabel, readStoredWizard, retirementHorizonYears,
-  syncRetirementYears, toRequest, validateAbout, validateFinances, validateGoals, writeStoredWizard,
+  syncRetirementYears, toRequest, validateAbout, validateFinances, validateGoals, validateTax, writeStoredWizard,
 } from "@/lib/draft";
 import { inr } from "@/lib/format";
 import type { Questionnaire } from "@/lib/types";
 
-// 0 About, 1 Finances, 2 Goals, 3–5 grouped risk questions, 6 Review
-const Q_START = 3;
+// 0 About, 1 Finances, 2 Goals, 3 Tax basics, 4 Tax details, 5–7 grouped risk questions, 8 Review
+const TAX_BASICS = 3;
+const TAX_DETAILS = 4;
+const Q_START = 5;
 const Q_PAGES = 3;
 const QUESTIONS = 10;
 const REVIEW = Q_START + Q_PAGES;
 const TOTAL = REVIEW + 1;
 const Q_GROUPS = [4, 3, 3];
 
-const SECTION = (s: number) => (s === 0 ? 1 : s === 1 ? 2 : s === 2 ? 3 : s < REVIEW ? 4 : 5);
-const SECTION_NAMES = ["About you", "Income and finances", "Goals", "Comfort with risk", "Review and consent"];
+const SECTION = (s: number) => (s <= 2 ? s + 1 : s <= TAX_DETAILS ? 4 : s < REVIEW ? 5 : 6);
+const SECTION_NAMES = ["About you", "Income and finances", "Goals", "Tax", "Comfort with risk", "Review and consent"];
 
 function groupBounds(page: number): { start: number; end: number } {
   let start = 0;
@@ -38,6 +41,7 @@ export default function NewPlan() {
   const [errors, setErrors] = useState<Errors>({});
   const [quiz, setQuiz] = useState<Questionnaire | null>(null);
   const [consentText, setConsentText] = useState("");
+  const [scopeNote, setScopeNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [hydrated, setHydrated] = useState(false);
@@ -57,7 +61,7 @@ export default function NewPlan() {
     }
     setHydrated(true);
     getQuestionnaire().then(setQuiz).catch(() => setSubmitError("Could not load the questionnaire. Is the API running?"));
-    getMeta().then((m) => setConsentText(m.disclosures.consent_text)).catch(() => undefined);
+    getMeta().then((m) => { setConsentText(m.disclosures.consent_text); setScopeNote(m.disclosures.tax_scope_note ?? ""); }).catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -78,6 +82,8 @@ export default function NewPlan() {
   const setGoal = (i: number, patch: Partial<GoalDraft>) =>
     setDraft((d) => syncRetirementYears({ ...d, goals: d.goals.map((g, j) => (j === i ? { ...g, ...patch } : g)) }));
 
+  const patchTax = (p: Partial<TaxDraft>) => setDraft((d) => ({ ...d, tax: { ...d.tax, ...p } }));
+  const salaried = ["govt_psu", "salaried_private", "retired_none"].includes(draft.employment_type);
   const qPage = step - Q_START;
   const qBounds = qPage >= 0 && qPage < Q_PAGES ? groupBounds(qPage) : null;
   const qSlice = quiz && qBounds ? quiz.questions.slice(qBounds.start, qBounds.end) : [];
@@ -89,6 +95,7 @@ export default function NewPlan() {
     if (step === 0) return validateAbout(draft);
     if (step === 1) return validateFinances(draft);
     if (step === 2) return validateGoals(draft);
+    if (step === TAX_BASICS || step === TAX_DETAILS) return validateTax(draft);
     if (qPage >= 0 && qPage < Q_PAGES) {
       if (!quiz) return { answer: "Questions are still loading. Please wait a moment." };
       const { start, end } = groupBounds(qPage);
@@ -101,17 +108,19 @@ export default function NewPlan() {
   const next = () => {
     const e = validate();
     setErrors(e);
-    if (Object.keys(e).length === 0) setStep((s) => Math.min(s + 1, REVIEW));
+    if (Object.keys(e).length === 0) {
+      setStep((s) => (s === TAX_BASICS && draft.tax.mode === "skip" ? Q_START : Math.min(s + 1, REVIEW)));
+    }
   };
   const back = () => {
     setErrors({});
-    setStep((s) => Math.max(s - 1, 0));
+    setStep((s) => (s === Q_START && draft.tax.mode === "skip" ? TAX_BASICS : Math.max(s - 1, 0)));
   };
 
   const answered = useMemo(() => Object.keys(draft.answers).length, [draft.answers]);
 
   const submit = async () => {
-    const e = { ...validateAbout(draft), ...validateFinances(draft), ...validateGoals(draft) };
+    const e = { ...validateAbout(draft), ...validateFinances(draft), ...validateGoals(draft), ...validateTax(draft) };
     if (Object.keys(e).length) {
       setErrors(e);
       setSubmitError("Some answers need attention. Please go back and fix them.");
@@ -284,6 +293,15 @@ export default function NewPlan() {
           </>
         )}
 
+        {step === TAX_BASICS && (
+          <TaxBasicsStep tax={draft.tax} patch={patchTax} errors={errors} monthlyIncome={draft.monthly_income}
+            scopeNote={scopeNote} headingRef={headingRef} />
+        )}
+
+        {step === TAX_DETAILS && (
+          <TaxDetailsStep tax={draft.tax} patch={patchTax} errors={errors} salaried={salaried} headingRef={headingRef} />
+        )}
+
         {qPage >= 0 && qPage < Q_PAGES && (
           <fieldset>
             <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 border border-teal-200/50">
@@ -362,6 +380,17 @@ export default function NewPlan() {
                   One or more targets is over ₹100 Cr. The plan will still run, but treat the SIP as a scale check.
                 </p>
               )}
+            </div>
+
+            <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm">
+              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-teal-800">Tax</h2>
+              <dl className="grid gap-x-6 gap-y-2 text-sm md:grid-cols-2">
+                <Row k="Tax handling" v={draft.tax.mode === "detailed" ? "Work it out for me" : draft.tax.mode === "bracket_only" ? "I know my bracket" : "Skipped"} />
+                {draft.tax.mode !== "skip" && <Row k="Regime used now" v={draft.tax.regime_current === "unsure" ? "Not sure" : draft.tax.regime_current === "new" ? "New regime" : "Old regime"} />}
+                {draft.tax.mode === "detailed" && <Row k="Yearly income before tax" v={inr(Number(draft.tax.gross_income))} />}
+                {draft.tax.mode === "bracket_only" && <Row k="Highest slab rate" v={`${draft.tax.bracket_pct}%`} />}
+                {draft.tax.mode !== "skip" && <Row k="80C used so far" v={inr(Number(draft.tax.ded_80c))} />}
+              </dl>
             </div>
 
             <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm">

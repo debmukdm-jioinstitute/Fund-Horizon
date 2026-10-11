@@ -283,6 +283,13 @@ export function FundTable({ funds, disclosures }: { funds: FundPick[]; disclosur
                 <span className="font-medium">{f.scheme_name}</span>
                 <br />
                 <span className="text-xs text-navy-700">Code {f.scheme_code}</span>
+                {f.tax_tag && (
+                  <span className="mt-1 block">
+                    <span title={f.tax_tag.note} className="inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-200">
+                      Tax: {f.tax_tag.label}{f.tax_tag.check_factsheet ? " (check factsheet)" : ""}
+                    </span>
+                  </span>
+                )}
                 <div className="mt-1">
                   <Link
                     href={`/funds/${f.scheme_code}`}

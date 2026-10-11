@@ -10,9 +10,10 @@ import {
 } from "@/components/Results";
 import { Donut, StressChart } from "@/components/charts";
 import ExplainModal from "@/components/ExplainModal";
+import TaxSection from "@/components/TaxSection";
 import { getPlan, reportUrl } from "@/lib/api";
 import { ASSET_CLASS_LABELS, CATEGORY_LABELS, inr, pct } from "@/lib/format";
-import type { Plan } from "@/lib/types";
+import type { Plan, TaxSwitches } from "@/lib/types";
 
 export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: string }) {
   const [plan, setPlan] = useState<Plan>(initialPlan);
@@ -20,16 +21,21 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
   const [busy, setBusy] = useState(false);
   const [allocView, setAllocView] = useState<"simple" | "detailed">("simple");
 
-  const setStepUp = useCallback(async (s: number) => {
+  /** Recompute from the stored inputs with the current step-up and tax switches (nothing is saved). */
+  const recalc = useCallback(async (stepUp: number, tax?: Partial<TaxSwitches>) => {
     setBusy(true);
     try {
-      setPlan(await getPlan(id, s));
+      setPlan(await getPlan(id, stepUp, tax));
+      setError("");
     } catch {
       setError("Could not recalculate. Please try again.");
     } finally {
       setBusy(false);
     }
   }, [id]);
+  const setStepUp = (s: number) => recalc(s, plan.tax?.switches);
+  const setTaxSwitch = (p: Partial<TaxSwitches>) =>
+    recalc(plan.planning.step_up, { ...(plan.tax?.switches ?? {}), ...p });
 
   const { profile, allocation, planning, stress_test: st, disclosures } = plan;
   const perGoal = allocation.per_goal;
@@ -217,6 +223,11 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
           <li className="-ml-4 list-none font-semibold">Rebalancing rules</li>
           {planning.rebalancing.map((r) => <li key={r}>{r}</li>)}
         </ul>
+      </section>
+
+      <section aria-labelledby="tax">
+        <SectionTitle id="tax">Tax planning</SectionTitle>
+        <TaxSection plan={plan} busy={busy} onSwitch={setTaxSwitch} />
       </section>
 
       <section aria-labelledby="safety">

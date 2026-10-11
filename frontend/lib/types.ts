@@ -17,6 +17,43 @@ export interface ClientInput {
   term_cover: number;
   health_cover: number;
   retirement_age: number;
+  tax?: TaxProfileInput;
+}
+export type TaxMode = "detailed" | "bracket_only" | "skip";
+export type RegimeChoice = "old" | "new" | "unsure";
+export interface TaxProfileInput {
+  mode: TaxMode;
+  regime_current?: RegimeChoice;
+  bracket_pct?: number | null;
+  gross_income_annual?: number;
+  other_income_annual?: number;
+  basic_annual?: number;
+  hra_received?: number;
+  rent_paid_monthly?: number;
+  metro?: boolean;
+  employer_nps_pct?: number;
+  ded_80c_used?: number;
+  nps_self_annual?: number;
+  health_premium_self?: number;
+  health_premium_parents?: number;
+  parents_senior?: boolean;
+  home_loan_interest?: number;
+  edu_loan_interest?: number;
+  fd_interest_annual?: number;
+  realised_stcg?: number;
+  realised_ltcg?: number;
+  unrealised_equity_gain?: number;
+  spouse_income_band?: "none" | "lower" | "similar" | "higher" | "unknown";
+  lock_in_comfort?: "none" | "3y" | "5y" | "15y";
+  govt_backed_pref?: boolean;
+  employer_offers_nps?: boolean;
+  employer_offers_vpf?: boolean;
+}
+export interface TaxSwitches {
+  regime: "auto" | "old" | "new";
+  tax_view: "pre" | "post";
+  apply: string[];
+  reinvest: boolean;
 }
 export interface GoalInput {
   name: string;
@@ -31,6 +68,7 @@ export interface PlanRequest {
   goals: GoalInput[];
   answers: Record<string, number>;
   step_up?: number;
+  tax_switches?: TaxSwitches;
 }
 
 export interface Questionnaire {
@@ -44,6 +82,10 @@ export interface Disclosures {
   tax_info: string;
   consent_text: string;
   allocation_heading: string;
+  tax_rules_note?: string;
+  tax_nudge_note?: string;
+  post_tax_note?: string;
+  tax_scope_note?: string;
 }
 export interface Meta {
   disclosures: Disclosures;
@@ -74,6 +116,7 @@ export interface FundPick {
   explain: string[];
   merged_from: { cat: string; weight_pct: number }[];
   suggested_monthly_sip: number;
+  tax_tag?: TaxTag;
   /** Next-ranked schemes in the same category (rank order after this pick). */
   alternatives?: FundPick[];
 }
@@ -129,6 +172,114 @@ export interface GoalPlan {
     sip_for_target_success: number; target_success: number;
   };
 }
+export interface TaxTag {
+  class: string;
+  label: string;
+  ltcg_months: number | null;
+  ltcg_rate: number | null;
+  stcg_rate: number | null;
+  ltcg_exemption: number;
+  slab_always: boolean;
+  note: string;
+  check_factsheet: boolean;
+}
+export interface TaxNudge {
+  id: string;
+  rank: number;
+  kind: string;
+  title: string;
+  summary: string;
+  est_saving_year: number | null;
+  regime: "old" | "new" | "both";
+  effort: "low" | "medium" | "high";
+  lock_in: string | null;
+  amount: number | null;
+  why: string[];
+  steps: string[];
+  watch_outs: string[];
+  section_label: string | null;
+  catalog_ids: string[];
+  catalog_links?: { id: string; name: string }[];
+  switchable: boolean;
+  timing: "this_year" | "future";
+}
+export interface RegimeResult {
+  regime: "old" | "new";
+  gross_income: number;
+  deductions: Record<string, number>;
+  total_deductions: number;
+  taxable_income: number;
+  slab_tax: number;
+  rebate: number;
+  surcharge: number;
+  cess: number;
+  total_tax: number;
+  effective_rate: number;
+  age_band: string;
+}
+export interface RegimeComparison {
+  old: RegimeResult;
+  new: RegimeResult;
+  better: "old" | "new";
+  saving: number;
+  breakeven_extra_deductions: number | null;
+  capital_gains_tax: number;
+  old_if_maxed: { total_tax: number; extra_deductions: number; beats_new: boolean; saving_vs_new: number };
+}
+export interface TaxSection {
+  enabled: boolean;
+  mode: TaxMode;
+  fy: string;
+  as_of: string;
+  verified: boolean;
+  sources: { name: string; url: string }[];
+  switches: TaxSwitches;
+  regime_in_force?: "old" | "new" | null;
+  recommended_regime?: "old" | "new" | null;
+  regimes?: RegimeComparison | null;
+  in_force?: RegimeResult;
+  marginal_rate?: number;
+  nudges?: TaxNudge[];
+  applied?: {
+    applied: string[]; tax_before: number; tax_after: number; tax_saved_year: number; tax_saved_month: number;
+  } | null;
+  post_tax_goal_delta?: {
+    name: string; required_sip_pre_tax: number; required_sip_post_tax: number; extra_sip_needed: number;
+  }[];
+}
+export interface CatalogInstrument {
+  id: string;
+  name: string;
+  kind: string;
+  summary: string;
+  who_for: string;
+  lock_in: string;
+  risk: string;
+  liquidity: string;
+  return_note: string;
+  tax_in: string;
+  tax_on_growth: string;
+  tax_on_exit: string;
+  tax_label: string;
+  regime_benefit: "old" | "new" | "both" | "none";
+  section: string | null;
+  min_horizon_years: number;
+  goal_types: string[];
+  watch_outs: string[];
+}
+export interface CatalogResponse {
+  as_of: string;
+  fy: string;
+  kinds: Record<string, string>;
+  instruments: CatalogInstrument[];
+  disclosure: string;
+}
+export interface TaxCalcResult extends Omit<TaxSection, "switches"> {
+  after_tax_returns: { years: number; equity: number; debt: number; gold: number; liquid: number }[];
+  pre_tax_returns: Record<string, number>;
+  disclosure: string;
+}
+
 export interface Plan {
   id: string;
   profile: Profile;
@@ -142,6 +293,7 @@ export interface Plan {
   shortlist_omitted?: boolean;
   /** Illustrative insurance-plan research shortlists (present when a cover gap exists). */
   insurance_suggestions?: InsuranceSuggestions | null;
+  tax?: TaxSection | null;
   stress_test: {
     crash_2020_drawdown: number | null;
     worst_peak_to_trough: number;
@@ -161,7 +313,7 @@ export interface Plan {
       health: { target: number; cover: number; gap: number };
     };
     goals: GoalPlan[];
-    totals: { required_sip: number; allocated_sip: number; monthly_surplus: number; shortfall: number };
+    totals: { required_sip: number; allocated_sip: number; monthly_surplus: number; shortfall: number; tax_reinvested?: number };
     rebalancing: string[];
     step_up: number;
   };

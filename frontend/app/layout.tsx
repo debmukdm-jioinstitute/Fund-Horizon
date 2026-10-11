@@ -76,6 +76,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Plan
                 </Link>
                 <Link
+                  href="/tax"
+                  className="px-3 py-1.5 rounded-xl hover:text-navy-950 hover:bg-slate-100/70 transition"
+                >
+                  Tax
+                </Link>
+                <Link
+                  href="/learn"
+                  className="px-3 py-1.5 rounded-xl hover:text-navy-950 hover:bg-slate-100/70 transition"
+                >
+                  Learn
+                </Link>
+                <Link
                   href="/funds/compare"
                   className="px-3 py-1.5 rounded-xl hover:text-navy-950 hover:bg-slate-100/70 transition"
                 >

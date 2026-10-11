@@ -59,7 +59,7 @@ def test_pdf_pages_and_offline(name, eligible, monkeypatch):
     r = clean(build_full_plan(PlanRequest(**RAW[name]), eligible))
     pdf = build_pdf(RAW[name]["client"]["first_name"], r)
     assert len(pdf) > 20_000
-    assert 6 <= pages(pdf) <= 9
+    assert 6 <= pages(pdf) <= 10
 
 
 def test_formatters():
@@ -92,7 +92,7 @@ def test_pdf_page1_success_probability_and_tax_copy(eligible, monkeypatch):
     seen = capture_paragraphs(monkeypatch)
     r = clean(build_full_plan(PlanRequest(**RAW["young_aggressive"]), eligible))
     pdf = build_pdf(RAW["young_aggressive"]["client"]["first_name"], r)
-    assert 6 <= pages(pdf) <= 9
+    assert 6 <= pages(pdf) <= 10
     blob = "\n".join(seen)
     assert SUCCESS_PROB_NOTE in blob
     assert "not the same as likely to succeed" in blob
@@ -103,3 +103,19 @@ def test_pdf_page1_success_probability_and_tax_copy(eligible, monkeypatch):
     assert "Sized (central path)" in blob
     assert blob.count(TAX_PER_GOAL_NOTE) == len(r["planning"]["goals"])
     assert "partially funded" not in blob
+
+
+def test_pdf_has_tax_page_when_tax_details_given(eligible):
+    raw = json.loads((Path(__file__).parent / "fixtures" / "tax_personas.json").read_text())["salaried_deductions"]
+    raw["tax_switches"] = {"regime": "old", "tax_view": "post", "apply": ["sec_80c"], "reinvest": True}
+    r = clean(build_full_plan(PlanRequest(**raw), eligible))
+    pdf = build_pdf("Neha", r)
+    assert 7 <= pages(pdf) <= 11
+    assert b"%PDF" == pdf[:4]
+    assert r["tax"]["enabled"] and r["tax"]["post_tax_goal_delta"]
+
+
+def test_pdf_without_tax_details_still_renders(eligible):
+    r = clean(build_full_plan(PlanRequest(**RAW["young_aggressive"]), eligible))
+    assert r["tax"]["enabled"] is False
+    assert len(build_pdf("Rohan", r)) > 20_000

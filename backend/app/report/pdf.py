@@ -30,11 +30,14 @@ from reportlab.platypus import (
 from app.config.disclosures import (
     ALLOCATION_HEADING,
     FIRM,
+    POST_TAX_NOTE,
     SCHEME_DOCS_NOTE,
     SHORTLIST_HEADING,
     SUCCESS_PROB_NOTE,
     TAX_INFO,
+    TAX_NUDGE_NOTE,
     TAX_PER_GOAL_NOTE,
+    TAX_RULES_NOTE,
     all_disclosures,
 )
 from app.report import charts
@@ -86,6 +89,83 @@ def _img(png: bytes, width_mm: float) -> Image:
 
 def _P(text, style=CELL):
     return Paragraph(xml_escape(text), style)
+
+
+_DED_LABELS = {
+    "std": "Standard deduction", "hra": "HRA exemption", "80c": "Section 80C", "80ccd1b": "NPS 80CCD(1B)",
+    "80ccd2": "Employer NPS 80CCD(2)", "80d": "Health insurance 80D", "24b": "Home loan interest",
+    "80e": "Education loan interest", "80tt": "Senior interest 80TTB",
+}
+
+
+def _tax_story(r: dict, W: float) -> list:
+    """Tax planning page: regime comparison, ranked saving ideas, fund tax tags, after-tax sizing."""
+    tax = r.get("tax") or {}
+    out: list = [Paragraph("Tax planning", H1)]
+    if not tax.get("enabled"):
+        return out + [Paragraph("This plan was built without tax details, so no regime comparison or saving ideas are shown. "
+                                "Start a new plan and choose a tax option to add them.", BODY),
+                      Paragraph(xml_escape(TAX_RULES_NOTE), SMALL)]
+    out.append(Paragraph(xml_escape(TAX_RULES_NOTE), SMALL))
+    reg = tax.get("regimes")
+    marg = tax.get("marginal_rate") or 0.0
+    if reg:
+        o, n = reg["old"], reg["new"]
+        rows = [["", "Old regime", "New regime"],
+                ["Taxable income", inr(o["taxable_income"]), inr(n["taxable_income"])],
+                ["Deductions counted", inr(o["total_deductions"]), inr(n["total_deductions"])],
+                ["Tax on slabs", inr(o["slab_tax"]), inr(n["slab_tax"])],
+                ["Rebate (87A)", ("-" + inr(o["rebate"])) if o["rebate"] else inr(0), ("-" + inr(n["rebate"])) if n["rebate"] else inr(0)],
+                ["Surcharge and cess", inr(o["surcharge"] + o["cess"]), inr(n["surcharge"] + n["cess"])],
+                ["Total tax for the year", inr(o["total_tax"]), inr(n["total_tax"])]]
+        out += [Paragraph(f"FY {tax['fy']}: the {reg['better']} regime costs about {inr(reg['saving'])} less. "
+                          f"Regime shown in this plan: {tax.get('regime_in_force')}. Marginal rate about {marg * 100:.1f}% (with cess).", BODY),
+                Spacer(1, 4), _tbl(rows, [W * 0.4, W * 0.3, W * 0.3])]
+        om = reg["old_if_maxed"]
+        out.append(Paragraph(
+            ("Using every old-regime limit (80C, NPS, 80D) would make the old regime " + inr(om["saving_vs_new"]) + " cheaper."
+             if om["beats_new"] else
+             "Even using every old-regime limit (80C, NPS, 80D), the old regime would cost " + inr(-om["saving_vs_new"]) + " more."), SMALL))
+        ded = [(k, v) for k, v in (o["deductions"] if tax.get("regime_in_force") == "old" else n["deductions"]).items() if v > 0]
+        if ded:
+            out.append(Paragraph("Deductions counted in the regime shown: " + "; ".join(
+                f"{_DED_LABELS.get(k, k)} {inr(v)}" for k, v in ded) + ".", SMALL))
+    else:
+        out.append(Paragraph(f"Based on the bracket entered, each extra rupee of income is taxed at about {marg * 100:.1f}% (with cess).", BODY))
+    ap = tax.get("applied")
+    if ap and ap.get("applied"):
+        out.append(Paragraph(f"Ideas applied: tax falls from {inr(ap['tax_before'])} to {inr(ap['tax_after'])}, a saving of "
+                             f"{inr(ap['tax_saved_year'])} a year ({inr(ap['tax_saved_month'])} a month).", BODY))
+    nudges = (tax.get("nudges") or [])[:6]
+    if nudges:
+        out += [Paragraph("Saving ideas, ranked by estimated impact", H2)]
+        rows = [["#", "Idea", "Estimated saving", "Notes"]]
+        for nd in nudges:
+            notes = [("Old regime only" if nd["regime"] == "old" else "Both regimes" if nd["regime"] == "both" else "New regime only")]
+            if nd.get("lock_in"):
+                notes.append("Lock-in: " + nd["lock_in"])
+            notes.append("this year" if nd["timing"] == "this_year" else "later")
+            rows.append([nd["rank"], Paragraph(f"<b>{xml_escape(nd['title'])}</b><br/>{xml_escape(nd['summary'])}", CELL),
+                         "-" if nd["est_saving_year"] is None else "up to " + inr(nd["est_saving_year"]),
+                         _P("; ".join(notes))])
+        out += [_tbl(rows, [W * 0.05, W * 0.55, W * 0.15, W * 0.25]), Paragraph(xml_escape(TAX_NUDGE_NOTE), SMALL)]
+    funds = [f for f in (r.get("funds") or []) if f.get("tax_tag")]
+    if funds:
+        out += [Paragraph("How each shortlisted fund is taxed", H2)]
+        rows = [["Fund", "Tax class", "How gains are taxed"]]
+        for f in funds:
+            t = f["tax_tag"]
+            rows.append([_P(f["scheme_name"]), _P(t["label"] + (" (check factsheet)" if t["check_factsheet"] else "")),
+                         _P(t["note"])])
+        out.append(_tbl(rows, [W * 0.38, W * 0.2, W * 0.42]))
+    delta = tax.get("post_tax_goal_delta")
+    if delta:
+        out += [Paragraph("After-tax sizing", H2), Paragraph(xml_escape(POST_TAX_NOTE), SMALL)]
+        rows = [["Goal", "SIP before tax", "SIP after tax", "Extra needed"]] + [
+            [_P(d["name"]), inr(d["required_sip_pre_tax"]), inr(d["required_sip_post_tax"]), inr(d["extra_sip_needed"])]
+            for d in delta]
+        out.append(_tbl(rows, [W * 0.4, W * 0.2, W * 0.2, W * 0.2]))
+    return out
 
 
 def build_pdf(first_name: str, r: dict) -> bytes:
@@ -266,6 +346,8 @@ def build_pdf(first_name: str, r: dict) -> bytes:
 
     # 7. Insurance, emergency fund, assumptions
     ef, ins = plan["emergency_fund"], plan["insurance"]
+    story += _tax_story(r, W) + [PageBreak()]
+
     story += [Paragraph("Emergency fund and insurance", H1), _tbl([
         ["Emergency fund target", "Current", "Gap", "Months to close"],
         [f"{inr(ef['target'])} ({ef['target_months']} months)", inr(ef["current"]), inr(ef["gap"]),

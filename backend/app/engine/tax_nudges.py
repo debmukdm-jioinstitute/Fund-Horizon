@@ -99,7 +99,7 @@ def build_nudges(i: TaxInputs, profile: dict, goals: list[dict], regime: str, co
                    "Self-employed taxpayers choose when filing; the choice can be changed only in limited cases."],
             watch_outs=["Figures use the details you entered; deductions you forgot to enter favour the old regime.",
                         "Check your own numbers with a chartered accountant."],
-            section_label="Section 115BAC (new regime)", catalog_ids=[]))
+            section_label="New regime (default)", catalog_ids=[]))
 
     # 2. 80C headroom (old regime) --------------------------------------------------------
     if regime == "old":
@@ -304,9 +304,18 @@ def build_nudges(i: TaxInputs, profile: dict, goals: list[dict], regime: str, co
                         "Talk to a chartered accountant before restructuring ownership."],
             catalog_ids=[]))
 
+    return rank_nudges(out)
+
+
+def rank_nudges(out: list[dict]) -> list[dict]:
+    """Sort by estimated saving, number the nudges and attach display names for the learn links."""
+    from app.config import load_tax_catalog
+
+    names = {i["id"]: i["name"] for i in load_tax_catalog()["instruments"]}
     out.sort(key=lambda n: (-(n["est_saving_year"] or 0), n["id"]))
     for rank, n in enumerate(out, 1):
         n["rank"] = rank
+        n["catalog_links"] = [{"id": c, "name": names[c]} for c in n["catalog_ids"] if c in names]
     return out
 
 

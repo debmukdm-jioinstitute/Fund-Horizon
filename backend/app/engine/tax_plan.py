@@ -72,10 +72,7 @@ def _bracket_nudges(age: int, tp: dict, goals: list[dict], rules: dict) -> tuple
                 title="Use your yearly 1.25 lakh equity gain exemption",
                 summary=f"Selling and re-buying about {nd._inr(amt)} of long-held equity gains before 31 March resets your cost price and avoids about {nd._inr(fut)} of tax later.",
                 catalog_ids=["equity_fund"], watch_outs=["Securities transaction tax and exit loads apply."]))
-    out.sort(key=lambda n: (-(n["est_saving_year"] or 0), n["id"]))
-    for rank, n in enumerate(out, 1):
-        n["rank"] = rank
-    return out, marg
+    return nd.rank_nudges(out), marg
 
 
 def build_tax_section(age: int, employment_type: str, tax_profile: dict | None, goals: list[dict],

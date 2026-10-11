@@ -2,13 +2,14 @@
 "use client";
 
 import { useState } from "react";
-import { explainCas, explainFund, explainPlan } from "@/lib/api";
+import { explainCas, explainFund, explainPlan, explainTax } from "@/lib/api";
 import type { ExplainResponse } from "@/lib/types";
 
 interface ExplainModalProps {
   buttonLabel?: string;
-  kind: "plan" | "fund" | "cas";
+  kind: "plan" | "fund" | "cas" | "tax";
   planId?: string;
+  nudgeId?: string;
   planData?: Record<string, unknown>;
   schemeCode?: string;
   casData?: Record<string, unknown>;
@@ -19,6 +20,7 @@ export default function ExplainModal({
   buttonLabel = "Explain with AI",
   kind,
   planId,
+  nudgeId,
   planData,
   schemeCode,
   casData,
@@ -38,6 +40,9 @@ export default function ExplainModal({
         let res: ExplainResponse;
         if (kind === "plan") {
           res = await explainPlan(planId, planData);
+        } else if (kind === "tax") {
+          if (!planId) throw new Error("Plan id is required");
+          res = await explainTax(planId, nudgeId);
         } else if (kind === "fund") {
           if (!schemeCode) throw new Error("Scheme code is required");
           res = await explainFund(schemeCode);

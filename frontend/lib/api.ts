@@ -1,5 +1,7 @@
 import type {
   CasAnalysisResult,
+  CatalogInstrument,
+  CatalogResponse,
   CompareResponse,
   ExplainResponse,
   FundAnalytics,
@@ -9,6 +11,9 @@ import type {
   PlanRequest,
   Questionnaire,
   RagAnswerResult,
+  TaxCalcResult,
+  TaxProfileInput,
+  TaxSwitches,
 } from "./types";
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -39,8 +44,16 @@ export const getMeta = () => request<Meta>(`${API_URL}/api/meta`);
 export const getQuestionnaire = () => request<Questionnaire>(`${API_URL}/api/questionnaire`);
 export const createPlan = (body: PlanRequest) =>
   request<Plan>(`${API_URL}/api/plans`, { method: "POST", body: JSON.stringify(body) });
-export const getPlan = (id: string, stepUp?: number) =>
-  request<Plan>(`${API_URL}/api/plans/${id}${stepUp !== undefined ? `?step_up=${stepUp}` : ""}`);
+export const getPlan = (id: string, stepUp?: number, tax?: Partial<TaxSwitches>) => {
+  const q = new URLSearchParams();
+  if (stepUp !== undefined) q.set("step_up", String(stepUp));
+  if (tax?.regime) q.set("regime", tax.regime);
+  if (tax?.tax_view) q.set("tax_view", tax.tax_view);
+  if (tax?.apply) q.set("apply", tax.apply.join(","));
+  if (tax?.reinvest !== undefined) q.set("reinvest", String(tax.reinvest));
+  const qs = q.toString();
+  return request<Plan>(`${API_URL}/api/plans/${id}${qs ? `?${qs}` : ""}`);
+};
 export const reportUrl = (id: string) => `${API_URL}/api/plans/${id}/report.pdf`;
 
 export const getFundDetail = (code: string) => request<FundDetail>(`${API_URL}/api/funds/${code}`);
@@ -180,3 +193,22 @@ export async function explainCas(casData: Record<string, unknown>): Promise<Expl
 
 
 
+
+export const getTaxCatalog = (params?: { q?: string; kind?: string }) => {
+  const q = new URLSearchParams();
+  if (params?.q) q.set("q", params.q);
+  if (params?.kind) q.set("kind", params.kind);
+  const qs = q.toString();
+  return request<CatalogResponse>(`${API_URL}/api/tax/catalog${qs ? `?${qs}` : ""}`);
+};
+export const getTaxInstrument = (id: string) =>
+  request<{ instrument: CatalogInstrument; as_of: string; fy: string; disclosure: string }>(`${API_URL}/api/tax/catalog/${id}`);
+export const calcTax = (body: {
+  age: number; employment_type: string; tax: TaxProfileInput; goals?: { type: string; years: number }[];
+  switches?: Partial<TaxSwitches>;
+}) => request<TaxCalcResult>(`${API_URL}/api/tax/calc`, { method: "POST", body: JSON.stringify(body) });
+export const explainTax = (planId: string, nudgeId?: string) =>
+  request<ExplainResponse>(`${API_URL}/api/ai/explain/tax`, {
+    method: "POST",
+    body: JSON.stringify({ plan_id: planId, nudge_id: nudgeId ?? null }),
+  });

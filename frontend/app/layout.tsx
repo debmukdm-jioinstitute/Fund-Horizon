@@ -5,6 +5,7 @@ import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Logo from "@/components/Logo";
+import CustomerLogin from "@/components/CustomerLogin";
 import { siteUrl } from "@/lib/site";
 
 const sans = Plus_Jakarta_Sans({
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 >
                   CAS Analysis
                 </Link>
+                <CustomerLogin />
                 <Link
                   href="/admin"
                   className="ml-1 px-2.5 py-1 rounded-xl text-teal-800 bg-teal-50/80 border border-teal-200/80 hover:bg-teal-100/80 hover:border-teal-300 transition flex items-center gap-1.5 shadow-sm"

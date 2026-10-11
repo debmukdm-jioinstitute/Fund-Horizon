@@ -11,18 +11,30 @@ export default function Icon() {
           width: "100%",
           height: "100%",
           display: "flex",
+          position: "relative",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#0B2545",
+          background: "linear-gradient(135deg, #0B2545 0%, #06172C 100%)",
           borderRadius: "8px",
+          border: "1px solid rgba(19, 168, 158, 0.4)",
+          color: "#13A89E",
+          fontFamily: "system-ui, sans-serif",
+          fontWeight: 900,
+          fontSize: "14px",
+          letterSpacing: "-0.05em",
         }}
       >
+        <span>FH</span>
         <div
           style={{
-            width: "14px",
-            height: "14px",
+            position: "absolute",
+            top: "2px",
+            right: "2px",
+            width: "6px",
+            height: "6px",
             borderRadius: "50%",
-            backgroundColor: "#13A89E",
+            backgroundColor: "#2DD4BF",
+            boxShadow: "0 0 6px #13A89E",
           }}
         />
       </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import Logo from "@/components/Logo";
 import { siteUrl } from "@/lib/site";
 
 const sans = Plus_Jakarta_Sans({
@@ -64,13 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Translucent Frosted Glass Sticky Header */}
         <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-[0_4px_20px_-4px_rgba(11,37,69,0.03)] transition-all">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-            <Link href="/" className="group flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-navy-950 transition">
-              <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-navy-900 to-teal-600 text-white shadow-md shadow-teal-500/20 group-hover:scale-105 transition-transform duration-300">
-                <span className="text-xs font-black tracking-tighter">FH</span>
-                <span aria-hidden className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-teal-400 ring-2 ring-white animate-pulse" />
-              </div>
-              <span className="bg-gradient-to-r from-navy-950 via-navy-900 to-teal-800 bg-clip-text text-transparent">Fund Horizon</span>
-            </Link>
+            <Logo size="md" showSubtitle />
 
             <div className="flex items-center gap-2 sm:gap-4">
               <nav aria-label="Main Navigation" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-semibold text-slate-600">

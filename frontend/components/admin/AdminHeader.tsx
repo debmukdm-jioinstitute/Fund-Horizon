@@ -3,6 +3,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 export type AdminTab = "overview" | "plans" | "cas" | "funds" | "config" | "operations";
 
@@ -36,9 +37,7 @@ export default function AdminHeader({
         {/* Top Control Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400/20 to-teal-500/10 border border-teal-500/40 text-teal-400 font-bold text-lg shadow-glow-teal">
-              FH
-            </span>
+            <Logo size="md" variant="dark" showText={false} href="/admin" />
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold tracking-tight text-white">Control Center</h1>

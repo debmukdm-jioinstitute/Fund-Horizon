@@ -99,10 +99,36 @@ def build_pdf(first_name: str, r: dict) -> bytes:
         w, h = A4
         canvas.setFillColor(NAVY)
         canvas.rect(0, h - 16 * mm, w, 16 * mm, stroke=0, fill=1)
+
+        # 3D Brand Logo Emblem (rounded badge with FH monogram and glowing beacon)
+        logo_x = 15 * mm
+        logo_y = h - 13.5 * mm
+        logo_size = 9 * mm
+
+        canvas.setFillColor(colors.HexColor("#06172C"))
+        canvas.setStrokeColor(TEAL)
+        canvas.setLineWidth(0.8)
+        canvas.roundRect(logo_x, logo_y, logo_size, logo_size, 2 * mm, stroke=1, fill=1)
+
+        canvas.setFillColor(TEAL)
+        canvas.setFont("DV-B", 7.5)
+        canvas.drawCentredString(logo_x + logo_size / 2, logo_y + 2.5 * mm, "FH")
+
+        # Horizon glowing beacon dot
+        canvas.setFillColor(colors.HexColor("#2DD4BF"))
+        canvas.circle(logo_x + logo_size - 1.2 * mm, logo_y + logo_size - 1.2 * mm, 0.9 * mm, stroke=0, fill=1)
+
+        # Brand Name & Subtitle
         canvas.setFillColor(colors.white)
-        canvas.setFont("DV-B", 12)
-        canvas.drawString(15 * mm, h - 10.5 * mm, FIRM)
-        canvas.setFont("DV", 8)
+        canvas.setFont("DV-B", 11)
+        canvas.drawString(logo_x + logo_size + 3.5 * mm, h - 9.2 * mm, FIRM)
+
+        canvas.setFillColor(colors.HexColor("#8DA4C4"))
+        canvas.setFont("DV", 5.5)
+        canvas.drawString(logo_x + logo_size + 3.5 * mm, h - 13 * mm, "MUTUAL FUND DISTRIBUTOR  ·  ARN 345439")
+
+        canvas.setFillColor(colors.white)
+        canvas.setFont("DV", 7.5)
         canvas.drawRightString(w - 15 * mm, h - 10.5 * mm, f"Illustrative plan for {canvas_text(first_name)}  |  {today}")
         canvas.setFillColor(TEAL)
         canvas.rect(0, h - 17 * mm, w, 1 * mm, stroke=0, fill=1)

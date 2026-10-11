@@ -65,6 +65,10 @@ const config: Config = {
           "0%, 100%": { opacity: "1", transform: "scale(1)" },
           "50%": { opacity: "0.85", transform: "scale(1.02)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
@@ -75,6 +79,7 @@ const config: Config = {
         "float-slow": "float-slow 7s ease-in-out infinite",
         "pulse-subtle": "pulse-subtle 3s ease-in-out infinite",
         shimmer: "shimmer 3s ease-in-out infinite",
+        marquee: "marquee 40s linear infinite",
       },
     },
   },

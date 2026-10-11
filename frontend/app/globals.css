@@ -213,3 +213,8 @@ body {
   z-index: 0;
   opacity: 0.55;
 }
+
+.marquee:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee, .animate-float { animation: none !important; }
+}

@@ -39,6 +39,10 @@ export const CATEGORY_LABELS: Record<string, string> = {
   gold: "Gold", liquid: "Liquid",
 };
 
+export const ASSET_CLASS_LABELS: Record<string, string> = {
+  equity: "Equity", debt: "Debt", gold: "Gold", liquid: "Liquid",
+};
+
 export const STATUS_LABELS: Record<string, string> = {
   funded: "Funded", partially_funded: "Partly funded", unfunded: "Not funded yet",
 };

@@ -7,6 +7,15 @@ with a PDF report. FastAPI + Next.js. All numbers come from deterministic Python
 Fund Horizon (ARN 345439) distributes Regular plans only. All user-facing wording and the disclosures
 are in `backend/app/config/disclosures.py` and carry `TODO(owner-compliance-review)` markers.
 
+The plan view shows:
+- **Simple / Detailed allocation** — the nine fund categories can be viewed as four buckets
+  (equity, debt, gold, liquid); Simple is the suggested default, Detailed shows every category.
+- **Cover plans worth researching** — when the "What to do first" card shows a term or health
+  cover gap, an illustrative shortlist of researched insurance plans appears in the Risk profile
+  section, with one plan marked for comparison first (curated October 2026; not a recommendation).
+- **Fund-by-fund comparison** — every shortlisted fund carries its next three ranked
+  alternatives in the same category, shown side by side with the marked pick.
+
 ## Setup (about 10 minutes)
 Requirements: Python 3.11+ (3.13 used here), [uv](https://docs.astral.sh/uv/), Node 20+.
 

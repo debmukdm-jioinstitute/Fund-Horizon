@@ -1,7 +1,7 @@
 """Relationship-manager routes: view assigned customers and their plans."""
 from __future__ import annotations
 
-from typing import Any
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
@@ -13,9 +13,9 @@ rm_router = APIRouter(prefix="/api/rm", tags=["rm"])
 
 @rm_router.get("/customers")
 def rm_list_customers(
+    customer: Annotated[dict, Depends(require_role("rm", "admin"))],
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    customer: dict = Depends(require_role("rm", "admin")),
 ):
     """Customers assigned to the signed-in RM. Admins see everyone."""
     repo = get_repository()
@@ -28,9 +28,9 @@ def rm_list_customers(
 @rm_router.get("/customers/{customer_id}/plans")
 def rm_customer_plans(
     customer_id: str,
+    customer: Annotated[dict, Depends(require_role("rm", "admin"))],
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    customer: dict = Depends(require_role("rm", "admin")),
 ):
     """Plans of one customer. RMs may only view customers assigned to them."""
     repo = get_repository()

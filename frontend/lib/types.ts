@@ -515,5 +515,93 @@ export interface ExplainResponse {
   provider: string;
 }
 
+/* ---------- Fund Horizon customer portal v1 ---------- */
+
+export interface PortalGoal {
+  name: string;
+  type: string;
+  target_date: string;
+  target_amount: number;
+  monthly_sip: number;
+  required_sip: number;
+  status: string;
+  status_label: string;
+  success_prob: number | null;
+  progress_pct: number;
+}
+
+export interface PortalNextStep {
+  kind: "emergency" | "term" | "health" | "goal";
+  title: string;
+  detail: string;
+  disclaimer: string;
+}
+
+export interface PortalAlert {
+  kind: string;
+  text: string;
+}
+
+export interface PortalAllocation {
+  equity: number;
+  debt: number;
+  gold: number;
+  liquid: number;
+}
+
+export interface PortalDashboard {
+  plan_id: string;
+  client_name: string;
+  as_of: string;
+  declared_invested: number;
+  declared_liquid: number;
+  declared_portfolio_value: number;
+  declared_label: string;
+  monthly_sip_commitment: number;
+  active_fund_count: number;
+  risk_band: string;
+  risk_score: number | null;
+  allocation: PortalAllocation;
+  goals: PortalGoal[];
+  goal_inputs: Record<string, unknown>[];
+  next_step: PortalNextStep;
+  alerts: PortalAlert[];
+}
+
+export interface PortalHealthScore {
+  goal_readiness: number;
+  risk_alignment: number;
+  diversification: number;
+  sip_adequacy: number;
+  emergency_readiness: number;
+  overall: number;
+}
+
+export interface PortalImprovement {
+  title: string;
+  detail: string;
+  disclaimer: string;
+}
+
+export interface PortalHealth {
+  scores: PortalHealthScore;
+  improvements: PortalImprovement[];
+}
+
+export interface PortalAnalytics {
+  allocation: PortalAllocation;
+  category_mix: { category: string; pct: number; sip: number }[];
+  amc_mix: { amc: string; pct: number }[];
+  fund_count: number;
+  risk_band: string;
+  top_category_pct: number;
+}
+
+export interface PortalPlanPatch {
+  client?: Record<string, unknown>;
+  goals?: Record<string, unknown>[];
+  answers?: Record<string, number>;
+}
+
 
 

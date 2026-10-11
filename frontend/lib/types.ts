@@ -605,3 +605,32 @@ export interface PortalPlanPatch {
 
 
 
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  role: "customer" | "rm" | "admin";
+}
+
+export interface SignupCustomerBody {
+  name: string;
+  email: string;
+  mobile: string;
+  password: string;
+  consent: boolean;
+}
+
+export interface LoginCustomerBody {
+  email: string;
+  password: string;
+}
+
+export interface MyPlan {
+  id: string;
+  created_at: string;
+  goal_count?: number;
+  risk_band?: string;
+  [key: string]: unknown;
+}

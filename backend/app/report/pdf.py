@@ -256,6 +256,26 @@ def build_pdf(first_name: str, r: dict) -> bytes:
     ref = t["reference"]
     story += [Paragraph(f"Term need is a human-life-value estimate. Simple income rules for reference: "
                         f"15x income {inr(ref['15x_income'])}, 20x income {inr(ref['20x_income'])}.", SMALL)]
+    sugg = r.get("insurance_suggestions") or {}
+    blocks = [b for b in (sugg.get("term"), sugg.get("health")) if b]
+    if blocks:
+        story += [Spacer(1, 6), Paragraph("Cover plans worth researching (illustrative shortlist)", H2)]
+        for b in blocks:
+            title = "Term cover" if b["kind"] == "term" else "Health cover"
+            pick = next((p for p in b["plans"] if p["marked_pick"]), b["plans"][0])
+            story += [Paragraph(
+                f"{title}: gap {inr(b['gap'])}. Marked pick — {xml_escape(pick['insurer'])} "
+                f"{xml_escape(pick['plan'])} (claim settlement {xml_escape(pick['claim_settlement'])}).", BODY)]
+            rows = [["Insurer", "Plan", "Claim settlement", "Key features"]]
+            for p in b["plans"]:
+                rows.append([
+                    _P(("★ " if p["marked_pick"] else "") + p["insurer"]),
+                    _P(p["plan"]),
+                    _P(p["claim_settlement"]),
+                    _P("; ".join(p["features"])),
+                ])
+            story += [_tbl(rows, [W * x for x in (.22, .24, .22, .32)])]
+        story += [Paragraph(xml_escape(blocks[0]["note"]), SMALL)]
     story += [Paragraph("Rebalancing rules", H2)] + [Paragraph(f"• {xml_escape(x)}", BODY) for x in plan["rebalancing"]]
     story += [Paragraph("Tax", H2), Paragraph(TAX_INFO, BODY), Paragraph(SCHEME_DOCS_NOTE, SMALL)]
     story += [Paragraph("Assumptions used", H2)]

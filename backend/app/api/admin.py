@@ -8,7 +8,7 @@ from __future__ import annotations
 import hmac
 import logging
 import os
-from typing import Any
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from pydantic import BaseModel
@@ -280,9 +280,9 @@ class CustomerUpdate(BaseModel):
 
 @admin_router.get("/customers")
 def admin_list_customers(
+    customer: Annotated[dict, Depends(require_role("admin"))],
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    customer: dict = Depends(require_role("admin")),
 ):
     """List customer accounts with plan counts. Session-role auth; never exposes password hashes."""
     repo = get_repository()
@@ -299,7 +299,7 @@ def admin_list_customers(
 def admin_update_customer(
     customer_id: str,
     body: CustomerUpdate,
-    customer: dict = Depends(require_role("admin")),
+    customer: Annotated[dict, Depends(require_role("admin"))],
 ):
     """Update a customer's role or RM assignment. An admin cannot change their own role."""
     repo = get_repository()

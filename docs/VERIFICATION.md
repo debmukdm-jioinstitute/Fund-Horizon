@@ -102,7 +102,7 @@ surplus, age 80.
 ## Tax engine (added 2026-10-11)
 | Check | Command | Result |
 |---|---|---|
-| Backend tests | `cd backend && .venv/bin/python -m pytest tests -q` | **595 passed** (507 existing + 88 new: tax maths, nudges, pipeline, API, PDF, copy scan) |
+| Backend tests | `cd backend && .venv/bin/python -m pytest tests -q` | **597 passed** (507 existing + 88 new tax tests: maths, nudges, pipeline, API, PDF, copy scan; +2 from a concurrent insurance commit) |
 | Tax module coverage | `--cov=app/engine` | `tax.py` 99%, `tax_nudges.py` 98%, `tax_plan.py` 100% |
 | Engine coverage overall | same | 84%: below the 85% floor because `engine/cas.py` is at 54% (already so before this work; the baseline was 80.8%) |
 | Backend lint | `ruff check app tests` | passed |

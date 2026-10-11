@@ -25,3 +25,14 @@ def test_short_history_funds_flagged_as_substituted(eligible):
     assert set(s["substituted_share"]) == {p["scheme_code"] for p in picks}
     assert all(0 <= v <= 1 for v in s["substituted_share"].values())
     assert s["any_substituted"] == any(v > 0 for v in s["substituted_share"].values())
+    if s["any_substituted"]:
+        assert "substituted" in s["note"].lower()
+
+
+def test_no_equity_crash_note_is_honest(eligible):
+    picks = fu.select_funds(al.goal_allocation("Conservative", 2), eligible)
+    s = stress_test(picks, eligible)
+    assert s["crash_2020_drawdown"] is not None
+    assert s["crash_2020_drawdown"] > -0.005
+    assert "no equity sleeve" in s["note"]
+    assert "month-end" in s["note"]

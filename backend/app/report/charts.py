@@ -47,7 +47,7 @@ def stress_chart(path: list[dict]) -> bytes:
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: short_inr(v)))
     ax.tick_params(axis="y", labelsize=8)
     ax.spines[["top", "right"]].set_visible(False)
-    ax.set_title("Illustrative ₹10 lakh invested in the suggested mix (past data)", fontsize=9, color=NAVY)
+    ax.set_title("Illustrative ₹10 lakh invested in this mix (past data)", fontsize=9, color=NAVY)
     return _png(fig)
 
 

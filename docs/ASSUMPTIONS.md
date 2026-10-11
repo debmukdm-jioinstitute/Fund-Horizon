@@ -25,6 +25,22 @@ Correlations: equity-debt 0.10, equity-gold 0.05, debt-gold 0.10, liquid uncorre
 correlated lognormal; the portfolio is rebalanced each year; SIPs are annuity-due, monthly. Target
 success level for the "SIP for ~80% chance" figure: 80%.
 
+### Monte Carlo limitations
+- Constant-mix lognormal with annual rebalance; there is no glide path inside the simulation.
+- A bootstrap path exists in code and is unused; every plan uses the parametric lognormal.
+- Planning equity return is 11% while the MC equity mean is 12%. A goal that is fully sized at the
+  planning return therefore shows about 50% success — that is expected, not a green outcome.
+- Debt volatility 2.5% is optimistic versus 2022 gilt moves. Liquid is modelled as uncorrelated at
+  0.5% volatility.
+- There is no sequence-of-returns on retirement *withdrawal*; retirement is a lump-sum corpus target.
+- Life expectancy 85: a retire-at-80 corpus is only 5 years in force.
+- Simulations are illustrations, not forecasts.
+
+### Funded is not likely
+A goal marked funded / sized means the allocated SIP reaches the inflated target on the **central
+path** at the planning return. It is not a statement that the goal is likely to succeed. Read
+P(success) and the SIP for ~80% chance next to the sized label. The PDF page-1 table prints both.
+
 ## Emergency fund and insurance
 | Assumption | Default |
 |---|---|
@@ -50,7 +66,21 @@ success level for the "SIP for ~80% chance" figure: 80%.
 | Moderately Aggressive | 70 | 18 | 8 | 4 |
 | Aggressive | 85 | 7 | 6 | 2 |
 
-Horizon cap on equity: under 3 years 0%, 3-5 years 30%, 5-7 years 50%, 7-10 years 70%, 10+ no cap.
+Horizon cap on equity uses **integer years, inclusive of both ends of each band**, matching
+`horizon_equity_cap` in `allocation.yaml` (first row whose `lt_years` is **strictly greater** than
+the goal years applies):
+
+| Goal years (inclusive) | Equity cap | `lt_years` bound in code |
+|---|---|---|
+| &lt; 3 (1–2) | 0% (no gold either; 50% liquid / 50% short-duration) | years &lt; 3 |
+| 3–4 | 30% | 3 ≤ years &lt; 5 |
+| 5–6 | 50% | 5 ≤ years &lt; 7 |
+| 7–9 | 70% | 7 ≤ years &lt; 10 |
+| ≥ 10 | no cap (band equity) | years ≥ 10 |
+
+Year **5 is 50%**, not 30%. Year **7 is 70%**, not 50%. The older “5–7 years 50%, 7–10 years 70%”
+wording was ambiguous about the endpoints.
+
 Equity split large/flexi/mid/small by band and the debt split 40/30/30 are in `allocation.yaml`.
 
 ## Fund selection
@@ -62,4 +92,22 @@ Equity split large/flexi/mid/small by band and the debt split 40/30/30 are in `a
 
 ## Rebalancing and tax
 Annual review; rebalance when an asset class drifts more than 5 percentage points; direct new SIPs to the
-under-weight class first. Tax optimisation is out of scope (info card only).
+under-weight class first.
+
+Planning SIPs, future costs and success probabilities are **pre-tax illustrations**. They do not imply
+the SIP is enough after tax. Debt-fund gains are typically taxed at the investor's income-tax slab
+(post 1 April 2023). Equity-oriented funds follow a different regime. Confirm with a tax professional.
+
+### Configurable pre-tax haircut (not applied in the engine yet)
+A simple haircut on non-equity sleeves can be configured when wired through `assumptions.yaml`. Until
+the engine reads this key, SIPs are sized on the full `asset_returns` figures. Short-horizon 0% equity
+goals (liquid / short-duration) are the most overstated.
+
+| Proposed key | Default | Meaning |
+|---|---|---|
+| `tax.non_equity_pre_tax_haircut` | `0.00` | Fraction subtracted from debt / gold / liquid planning returns before SIP sizing. Example: `0.20` turns a 6.5% debt return into 5.2%. |
+| `tax.apply_haircut` | `false` | Set true only after the engine implements the key. |
+
+Owner: choose a non-zero haircut (for example 0.10–0.25 on debt and liquid for goals under 3 years)
+once the engine reads this key. Do not treat a sized SIP as sufficient after tax.
+TODO(owner-compliance-review)

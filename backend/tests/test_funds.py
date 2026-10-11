@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from app.config import load_allocation
+from app.config import load_allocation, load_scoring
 from app.engine import allocation as al
 from app.engine import funds as fu
 
@@ -86,3 +86,111 @@ def test_missing_metrics_renormalise(eligible):
 def test_no_pool_raises(eligible):
     with pytest.raises(ValueError):
         fu.select_funds({"large_cap": 50, "not_a_category": 50}, eligible)
+
+
+def test_plan_uses_category_ranking_weights(eligible):
+    sc = load_scoring()
+    expected = sc["category_ranking"]["growth"]
+    assert fu._weights_for("large_cap") == expected
+    assert "roll3y_pct_positive" in expected
+    assert expected["cagr_5y_or_3y"] < 0.35
+
+
+def test_gold_recent_cagr_is_capped_in_score():
+    rally = dict(
+        scheme_code="G1",
+        scheme_name="Axis Gold Fund - Regular Plan - Growth",
+        amc="AMC1",
+        category="gold",
+        cat="gold",
+        needs_demat=False,
+        history_years=8,
+        cagr_3y=0.36,
+        cagr_5y=0.36,
+        roll3y_median=0.34,
+        roll3y_pct_positive=0.55,
+        roll3y_max=0.50,
+        roll3y_min=0.05,
+        sharpe_3y=1.0,
+        max_drawdown_3y=-0.20,
+        roll1y_median=0.1,
+        vol_3y=0.12,
+        ret_1y=0.1,
+        cagr_10y=0.1,
+        last_nav_date="2026-10-09",
+    )
+    steady = dict(
+        rally,
+        scheme_code="G2",
+        scheme_name="Quiet Gold Fund - Regular Plan - Growth",
+        amc="AMC2",
+        cagr_3y=0.10,
+        cagr_5y=0.10,
+        roll3y_median=0.11,
+        roll3y_pct_positive=0.95,
+        roll3y_max=0.13,
+        roll3y_min=0.09,
+        max_drawdown_3y=-0.08,
+    )
+    df = pd.DataFrame([rally, steady])
+    capped = fu._metric_series(df, "cagr_5y_or_3y", "gold")
+    assert float(capped.iloc[0]) == pytest.approx(0.12)
+    assert float(capped.iloc[1]) == pytest.approx(0.10)
+    uncapped = df["cagr_5y"].fillna(df["cagr_3y"])
+    assert float(uncapped.iloc[0]) == pytest.approx(0.36)
+    # After the cap, a metal-rally 36% no longer outranks a 10% peer on that input alone.
+    assert float(capped.iloc[0]) < float(uncapped.iloc[0])
+
+
+def test_fee_stacked_fof_dropped_when_alternative_exists():
+    rows = []
+    for code, name, amc in (
+        ("ETF1", "UTI Gold ETF Fund of Fund - Regular Plan - Growth", "UTI"),
+        ("PLAIN", "SBI GOLD FUND - Regular Plan - Growth", "SBI"),
+    ):
+        rows.append(
+            dict(
+                scheme_code=code,
+                scheme_name=name,
+                amc=amc,
+                category="gold",
+                cat="gold",
+                needs_demat=False,
+                history_years=8,
+                data_quality="ok",
+                cagr_3y=0.20,
+                cagr_5y=0.18,
+                roll3y_median=0.18,
+                roll3y_pct_positive=0.9,
+                roll3y_max=0.22,
+                roll3y_min=0.10,
+                sharpe_3y=1.0,
+                max_drawdown_3y=-0.15,
+                roll1y_median=0.1,
+                vol_3y=0.12,
+                ret_1y=0.1,
+                cagr_10y=0.1,
+                last_nav_date="2026-10-09",
+            )
+        )
+    df = pd.DataFrame(rows)
+    pool = fu.candidate_pool(df, "gold")
+    assert "ETF1" not in set(pool["scheme_code"])
+    assert "PLAIN" in set(pool["scheme_code"])
+    assert fu.is_fee_stacked_fof("UTI Gold ETF Fund of Fund - Regular Plan - Growth")
+    assert not fu.is_fee_stacked_fof("SBI GOLD FUND - Regular Plan - Growth")
+
+
+def test_gold_explain_is_honest_about_cap_and_fof(eligible):
+    gold = fu.select_funds({"gold": 100.0}, eligible)[0]
+    blob = " ".join(gold["explain"])
+    assert "capped" in blob.lower() or "consistency" in blob.lower()
+    assert "forecast" in blob.lower() or "fund-of-fund" in blob.lower() or "fund of fund" in blob.lower()
+    assert not fu.is_fee_stacked_fof(gold["scheme_name"])
+
+
+def test_select_and_rank_share_weights(eligible):
+    pick = fu.select_funds({"large_cap": 100.0}, eligible)[0]
+    ranked = fu.rank_category_funds("large_cap", eligible)
+    assert ranked[0]["scheme_code"] == pick["scheme_code"]
+    assert "roll3y_pct_positive" in fu._weights_for("large_cap")

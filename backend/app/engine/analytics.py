@@ -187,12 +187,16 @@ def max_drawdown_duration(s: pd.Series) -> dict[str, Any]:
 
 
 def sip_xirr(
-    s: pd.Series, pmt: float = 1000.0, cash_flows: list[tuple[date | pd.Timestamp, float]] | None = None
+    s: pd.Series,
+    pmt: float = 1000.0,
+    cash_flows: list[tuple[date | pd.Timestamp, float]] | None = None,
+    years: float | None = None,
 ) -> float | None:
     """Calculate annualised XIRR for a regular monthly SIP (or arbitrary cash flows).
 
     If cash_flows is provided, solves for the internal rate of return of those dated flows.
     Otherwise, simulates investing `pmt` at each date in `s`, redeeming at final NAV.
+    `years` restricts the SIP window to the trailing period ending at the last NAV.
     """
     if cash_flows is not None:
         if len(cash_flows) < 2:
@@ -210,6 +214,9 @@ def sip_xirr(
         except Exception:
             return None
 
+    if years is not None and len(s) >= 2:
+        start = s.index[-1] - pd.DateOffset(years=years)
+        s = s.loc[s.index >= start]
     if len(s) < 3:
         return None
     dates = s.index
@@ -242,15 +249,54 @@ def xirr(cash_flows: list[tuple[date | pd.Timestamp, float]]) -> float | None:
     return sip_xirr(pd.Series(dtype=float), cash_flows=cash_flows)
 
 
+_RETURN_LIKE_ABS = 1.0
+_RETURN_LIKE_SHARE = 0.90
+_MIN_BENCH_MOVE = 1e-4
+
+
+def _as_periodic_returns(s: pd.Series) -> pd.Series:
+    """NAV levels -> pct_change; already-return series (category medians) left as-is.
+
+    `stress.category_median_series` is a monthly return series. Passing it through
+    `pct_change` again (the live fund-page bug) produced ~0 upside and negative
+    downside capture on debt funds.
+    """
+    sample = s.dropna()
+    if sample.empty:
+        return sample
+    share_small = float((sample.abs() < _RETURN_LIKE_ABS).mean())
+    if share_small >= _RETURN_LIKE_SHARE and float(sample.max()) < 2.0:
+        return sample
+    return sample.pct_change().dropna()
+
+
+def _compounded_capture(fund_rets: pd.Series, bench_rets: pd.Series) -> float | None:
+    """Geometric capture in percent, or None when the ratio is not meaningful."""
+    f_c = float(np.prod(1.0 + fund_rets) - 1.0)
+    b_c = float(np.prod(1.0 + bench_rets) - 1.0)
+    if abs(b_c) < _MIN_BENCH_MOVE:
+        return None
+    # Opposite signs (fund up while the benchmark is down, or vice versa) on a
+    # low-vol debt/category-median series are noise, not a useful capture ratio.
+    if f_c * b_c < 0:
+        return None
+    return float((f_c / b_c) * 100.0)
+
 
 def capture_ratios(fund_series: pd.Series, benchmark_series: pd.Series) -> dict[str, float | None]:
-    """Compute upside and downside capture ratio of fund vs benchmark series over common dates."""
+    """Compute upside and downside capture ratio of fund vs benchmark over common dates.
+
+    Accepts NAV levels or already-computed periodic returns for either series.
+    Ratios are in percent (100 = in line with the benchmark). Negative or
+    opposite-sign compounded moves are returned as None rather than a
+    nonsensical figure.
+    """
     common_idx = fund_series.index.intersection(benchmark_series.index)
     if len(common_idx) < 12:
         return {"upside_capture": None, "downside_capture": None, "common_periods": len(common_idx)}
 
-    f_ret = fund_series.loc[common_idx].pct_change().dropna()
-    b_ret = benchmark_series.loc[common_idx].pct_change().dropna()
+    f_ret = _as_periodic_returns(fund_series.loc[common_idx])
+    b_ret = _as_periodic_returns(benchmark_series.loc[common_idx])
     aligned_idx = f_ret.index.intersection(b_ret.index)
     if len(aligned_idx) < 6:
         return {"upside_capture": None, "downside_capture": None, "common_periods": len(aligned_idx)}
@@ -258,25 +304,17 @@ def capture_ratios(fund_series: pd.Series, benchmark_series: pd.Series) -> dict[
     f = f_ret.loc[aligned_idx]
     b = b_ret.loc[aligned_idx]
 
-    # Up periods: where benchmark return > 0
     up_mask = b > 0
     up_count = int(up_mask.sum())
     upside_ratio: float | None = None
     if up_count >= 3:
-        f_up = float(np.prod(1.0 + f[up_mask]) - 1.0)
-        b_up = float(np.prod(1.0 + b[up_mask]) - 1.0)
-        if abs(b_up) > 1e-6:
-            upside_ratio = float((f_up / b_up) * 100.0)
+        upside_ratio = _compounded_capture(f[up_mask], b[up_mask])
 
-    # Down periods: where benchmark return < 0
     down_mask = b < 0
     down_count = int(down_mask.sum())
     downside_ratio: float | None = None
     if down_count >= 3:
-        f_down = float(np.prod(1.0 + f[down_mask]) - 1.0)
-        b_down = float(np.prod(1.0 + b[down_mask]) - 1.0)
-        if abs(b_down) > 1e-6:
-            downside_ratio = float((f_down / b_down) * 100.0)
+        downside_ratio = _compounded_capture(f[down_mask], b[down_mask])
 
     return {
         "upside_capture": upside_ratio,

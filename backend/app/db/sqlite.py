@@ -2,6 +2,9 @@
 
 Provides fast, zero-dependency local storage for development and unit testing.
 Implements DatabaseRepository interface.
+Plans expire after FH_PLAN_TTL_DAYS (default 30) and can be deleted by id.
+
+# EXTENSION: add a user_id column once authentication exists.
 """
 from __future__ import annotations
 
@@ -9,7 +12,7 @@ import json
 import os
 import sqlite3
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +23,7 @@ def get_default_db_path() -> Path:
     return Path(os.environ.get("FH_DB_PATH", Path(__file__).resolve().parents[2] / "plans.db"))
 
 
+<<<<<<< HEAD
 def db_path() -> Path:
     return get_default_db_path()
 
@@ -405,11 +409,50 @@ class SQLiteRepository(DatabaseRepository):
         }
 
 
+def ttl_days() -> int:
+    raw = os.environ.get("FH_PLAN_TTL_DAYS", "30")
+    try:
+        days = int(raw)
+    except ValueError:
+        days = 30
+    return max(days, 0)
+
+
+def _parse_dt(value: str) -> datetime:
+    dt = datetime.fromisoformat(value)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=UTC)
+    return dt
+
+
+def expires_at(created_at: str) -> str:
+    return (_parse_dt(created_at) + timedelta(days=ttl_days())).isoformat()
+
+
+def _is_expired(created_at: str) -> bool:
+    return datetime.now(UTC) >= _parse_dt(created_at) + timedelta(days=ttl_days())
+
+
 # Module-level convenience functions ensuring full backwards compatibility
-def save_plan(request: dict, result: dict) -> str:
+def purge_expired() -> int:
     from app.db import get_repository
 
-    return get_repository().save_plan(request, result)
+    repo = get_repository()
+    if hasattr(repo, "purge_expired"):
+        return repo.purge_expired()
+    return 0
+
+
+def save_plan(request: dict, result: dict) -> dict:
+    from app.db import get_repository
+
+    repo = get_repository()
+    if hasattr(repo, "purge_expired"):
+        repo.purge_expired()
+    plan_id = str(uuid.uuid4())
+    created = datetime.now(UTC).isoformat()
+    repo.save_plan(request, result, plan_id=plan_id)
+    return {"id": plan_id, "created_at": created, "expires_at": expires_at(created)}
 
 
 def get_plan(plan_id: str) -> dict | None:
@@ -452,7 +495,6 @@ def get_db_info() -> dict[str, Any]:
     from app.db import get_repository
 
     return get_repository().get_db_info()
-
 
 
 def save_cas_session(

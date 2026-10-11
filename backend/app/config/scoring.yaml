@@ -1,16 +1,21 @@
-# Composite score weights (percentile ranks within category)
+# Composite score = weighted mean of within-category percentile ranks.
+# Plan shortlist and category ranking share these consistency-first weights
+# (rolling % positive and dispersion over a single-period CAGR beauty contest).
 growth:   # equity / hybrid / gold
-  cagr_5y_or_3y: 0.35
-  roll3y_median: 0.25
-  sharpe_3y: 0.20
-  neg_abs_max_drawdown_3y: 0.20
+  cagr_5y_or_3y: 0.25
+  roll3y_median: 0.20
+  roll3y_pct_positive: 0.15
+  neg_roll3y_dispersion: 0.15
+  sharpe_3y: 0.15
+  neg_abs_max_drawdown_3y: 0.10
 income:   # liquid / overnight / money market / short duration
-  cagr_3y: 0.40
-  roll1y_median: 0.30
-  neg_vol_3y: 0.30
+  cagr_3y: 0.30
+  roll1y_median: 0.25
+  roll1y_pct_positive: 0.25
+  neg_vol_3y: 0.20
 income_categories: [liquid, overnight, money_market, short_duration]
 
-# Category ranking weights incorporating consistency (rolling % positive, dispersion)
+# Same weights under the historical key so rank_category_funds and select_funds stay aligned.
 category_ranking:
   growth:
     cagr_5y_or_3y: 0.25
@@ -24,3 +29,12 @@ category_ranking:
     roll1y_median: 0.25
     roll1y_pct_positive: 0.25
     neg_vol_3y: 0.20
+
+# Winsorise recent-return inputs (decimal CAGR / rolling median) so a metal or FoF
+# rally cannot dominate the composite. Not a forecast cap.
+cagr_cap:
+  gold: 0.12
+  fee_stacked_fof: 0.12
+
+# Drop FoF-over-ETF names when a same-category alternative exists (fee stack).
+avoid_fee_stacked_fof: true

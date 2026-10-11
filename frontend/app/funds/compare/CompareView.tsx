@@ -53,13 +53,25 @@ export function CompareView({ initialData }: Props) {
     setNewCode("");
   };
 
+  if (!data || funds.length < 2) {
+    return (
+      <div className="card space-y-2" data-testid="compare-empty">
+        <h2 className="text-base font-bold text-navy-950">Need two schemes to compare</h2>
+        <p className="text-sm text-navy-700">
+          Comparison requires 2 to 8 scheme codes. Open a scheme page and use Compare Scheme,
+          or add a second code below.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Add Scheme Form */}
       <div className="card flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-base font-bold text-navy-950">Add Scheme to Comparison</h2>
-          <p className="text-xs text-navy-700">
+          <p className="text-xs text-navy-700" data-testid="compare-fund-count">
             Compare 2 to 8 schemes side-by-side. Currently comparing {funds.length} scheme(s).
           </p>
         </div>
@@ -143,7 +155,10 @@ export function CompareView({ initialData }: Props) {
                 const isTop = f.cagr_3y !== null && f.cagr_3y === maxCagr3y && funds.length > 1;
                 return (
                   <td key={f.scheme_code} className="p-3">
-                    <span className={`inline-block rounded px-1.5 py-0.5 font-bold ${isTop ? "bg-teal-100 text-teal-800" : "text-navy-950"}`}>
+                    <span
+                      data-testid={`compare-cagr-3y-${f.scheme_code}`}
+                      className={`inline-block rounded px-1.5 py-0.5 font-bold ${isTop ? "bg-teal-100 text-teal-800" : "text-navy-950"}`}
+                    >
                       {f.cagr_3y !== null ? pct(f.cagr_3y) : "—"}
                     </span>
                     {isTop && <span className="ml-1 text-xs text-teal-700 font-semibold">(Highest)</span>}

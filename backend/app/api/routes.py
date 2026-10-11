@@ -1,6 +1,7 @@
 """HTTP routes. Engine functions are pure; this layer only validates, persists and serialises."""
 from __future__ import annotations
 
+import os
 import re
 from typing import Annotated
 
@@ -8,7 +9,7 @@ import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import Response
 
-from app.api.serialize import clean
+from app.api.serialize import clean, plan_payload
 from app.config import load_allocation, load_assumptions, load_questionnaire
 from app.config.disclosures import (
     ANALYTICS_DISCLAIMER,
@@ -66,7 +67,13 @@ def meta():
     }
 
 
+def _overrides_allowed() -> bool:
+    return os.environ.get("FH_ALLOW_ASSUMPTION_OVERRIDES", "true").lower() in ("true", "1", "yes")
+
+
 def _compute(req: PlanRequest, request: Request) -> dict:
+    if req.assumption_overrides and not _overrides_allowed():
+        req = req.model_copy(update={"assumption_overrides": None})
     try:
         return clean(build_full_plan(req, request.app.state.eligible))
     except ValueError as e:
@@ -75,9 +82,11 @@ def _compute(req: PlanRequest, request: Request) -> dict:
 
 @router.post("/api/plans")
 def create_plan(req: PlanRequest, request: Request):
+    if req.assumption_overrides and not _overrides_allowed():
+        raise HTTPException(422, detail="assumption_overrides are not accepted")
     result = _compute(req, request)
-    plan_id = sqlite.save_plan(req.model_dump(mode="json"), result)
-    return {"id": plan_id, **result}
+    saved = sqlite.save_plan(req.model_dump(mode="json"), result)
+    return plan_payload(saved["id"], result, created_at=saved["created_at"], expires_at=saved["expires_at"])
 
 
 @router.get("/api/plans/{plan_id}")
@@ -87,9 +96,18 @@ def get_plan(plan_id: str, request: Request, step_up: float | None = Query(defau
     if not row:
         raise HTTPException(404, "Plan not found")
     if step_up is None:
-        return {"id": plan_id, **row["result"]}
+        return plan_payload(plan_id, row["result"], created_at=row["created_at"], expires_at=row["expires_at"])
     req = PlanRequest(**{**row["request"], "step_up": step_up})
-    return {"id": plan_id, **_compute(req, request)}
+    return plan_payload(plan_id, _compute(req, request), created_at=row["created_at"], expires_at=row["expires_at"])
+
+
+@router.delete("/api/plans/{plan_id}")
+def delete_plan(plan_id: str):
+    row = sqlite.get_plan(plan_id)
+    if not row:
+        raise HTTPException(404, "Plan not found")
+    sqlite.delete_plan(plan_id)
+    return Response(status_code=204)
 
 
 @router.get("/api/plans/{plan_id}/report.pdf")

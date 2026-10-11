@@ -292,7 +292,7 @@ steps are in [`docs/TAX_RULES.md`](docs/TAX_RULES.md). Scope is resident individ
 | **Ask about any fund** | `/funds/ask` | Retrieval over a fund knowledge base (ChromaDB, `bge-small-en-v1.5` embeddings); answers are built from templates and live analytics. |
 | **CAS upload and portfolio analysis** | `/cas` | CAMS / KFintech CAS PDFs are parsed **in memory**; the raw PDF and password are never written to disk or the database. |
 | **Plain-English explanations** | "Explain" on plan, fund, CAS | Optional. A LiteLLM fallback chain (Groq, Gemini, OpenRouter, local Ollama, set in `config/ai.yaml`) rephrases engine output. Guardrails require every number to come from the payload, scan for banned wording, scrub personal data and append the disclosures. With no API keys configured the rest of the app still works. |
-| **Admin Control Center** | `/admin` | Plan inspection, CAS session audit, scheme directory, assumptions view, data sync. **Set `FH_ADMIN_KEY` in production**: if it is unset the admin API is open (a dev convenience). |
+| **Admin Control Center** | `/admin` | Plan inspection, CAS session audit, scheme directory, assumptions view, data sync. The admin API **fails closed**: every call is refused until `FH_ADMIN_KEY` is set, and the admin page asks for the key. For local development only, `FH_ADMIN_OPEN=true` opens it. |
 | **Daily data refresh** | `.github/workflows/daily-refresh.yml` | Weekdays 18:30 UTC (midnight IST) after AMFI publishes NAVs; `scripts/refresh_data.py` supports `--dry-run`. |
 
 ---
@@ -420,7 +420,7 @@ Two services built from the repo root with the Dockerfiles in `deploy/`:
 
 | Service | Dockerfile | Variables |
 |---|---|---|
-| `api` | `deploy/api.Dockerfile` | `RAILWAY_DOCKERFILE_PATH`, `FH_DB_PATH=/data/plans.db` (volume at `/data`) **or** `DATABASE_URL`, `FH_CORS_ORIGINS=https://fundhorizon.up.railway.app`, `FH_ADMIN_KEY`, optional AI provider keys |
+| `api` | `deploy/api.Dockerfile` | `RAILWAY_DOCKERFILE_PATH`, `FH_DB_PATH=/data/plans.db` (volume at `/data`) **or** `DATABASE_URL`, `FH_CORS_ORIGINS=https://fundhorizon.up.railway.app`, `FH_ADMIN_KEY` (required to use `/admin`), optional AI provider keys |
 | `web` | `deploy/web.Dockerfile` | `RAILWAY_DOCKERFILE_PATH`, `NEXT_PUBLIC_API_URL` and `API_INTERNAL_URL` set to the api URL, `NEXT_PUBLIC_SITE_URL` |
 
 `NEXT_PUBLIC_*` values are baked in at build time, so redeploy `web` when they change. Railway auto-deploys from

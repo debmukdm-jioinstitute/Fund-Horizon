@@ -15,4 +15,4 @@ ENV FH_ALLOW_ASSUMPTION_OVERRIDES=false
 ENV FH_PLAN_TTL_DAYS=30
 ENV FH_RATE_LIMIT=true
 WORKDIR /srv/backend
-CMD ["sh", "-c", "alembic upgrade head || true; uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "if [ -n \"$DATABASE_URL\" ]; then alembic upgrade head || echo WARNING: alembic migration failed; fi; uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

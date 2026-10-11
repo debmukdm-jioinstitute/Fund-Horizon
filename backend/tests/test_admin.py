@@ -4,7 +4,16 @@ from __future__ import annotations
 import os
 from unittest.mock import patch
 
+import pytest
+
 from app.db import get_repository
+
+
+@pytest.fixture(autouse=True)
+def _admin_open_for_tests(monkeypatch):
+    """Existing tests exercise the routes without a key; production fails closed (see tests below)."""
+    monkeypatch.delenv("FH_ADMIN_KEY", raising=False)
+    monkeypatch.setenv("FH_ADMIN_OPEN", "true")
 
 
 def test_admin_health(client):
@@ -158,3 +167,28 @@ def test_admin_api_key_auth(client):
         # Valid key succeeds
         res_good_key = client.get("/api/admin/stats", headers={"X-Admin-Key": "supersecretkey"})
         assert res_good_key.status_code == 200
+
+
+def test_admin_fails_closed_without_key(client, monkeypatch):
+    monkeypatch.delenv("FH_ADMIN_KEY", raising=False)
+    monkeypatch.delenv("FH_ADMIN_OPEN", raising=False)
+    for path in ("/api/admin/stats", "/api/admin/plans", "/api/admin/health", "/api/admin/schemes", "/api/admin/config"):
+        assert client.get(path).status_code == 403, path
+    assert client.delete("/api/admin/plans/anything").status_code == 403
+    assert client.post("/api/admin/refresh", json={"dry_run": True}).status_code == 403
+    assert client.get("/api/admin/stats", headers={"X-Admin-Key": ""}).status_code == 403
+
+
+def test_admin_open_flag_is_explicit_opt_in(client, monkeypatch):
+    monkeypatch.delenv("FH_ADMIN_KEY", raising=False)
+    monkeypatch.setenv("FH_ADMIN_OPEN", "false")
+    assert client.get("/api/admin/stats").status_code == 403
+    monkeypatch.setenv("FH_ADMIN_OPEN", "true")
+    assert client.get("/api/admin/stats").status_code == 200
+
+
+def test_admin_key_wins_over_open_flag(client, monkeypatch):
+    monkeypatch.setenv("FH_ADMIN_KEY", "k3y")
+    monkeypatch.setenv("FH_ADMIN_OPEN", "true")
+    assert client.get("/api/admin/stats").status_code == 403
+    assert client.get("/api/admin/stats", headers={"X-Admin-Key": "k3y"}).status_code == 200

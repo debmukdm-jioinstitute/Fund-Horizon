@@ -136,3 +136,15 @@ def test_api_explain_endpoints(client):
     assert cas_data["kind"] == "cas"
     assert "14.20%" in cas_data["explanation"]
     assert "ARN 345439" in cas_data["explanation"]
+
+
+def test_explain_plan_real_result_shape_uses_capacity_score_not_band():
+    plan = {
+        "profile": {"band": "Moderate", "capacity": {"score": 69.5}},
+        "planning": {"totals": {"allocated_sip": 30000, "monthly_surplus": 50000},
+                     "goals": [{"name": "Home", "future_cost": 4000000, "allocated_sip": 30000,
+                                "monte_carlo": {"success_prob": 0.5}}]},
+    }
+    text = explain_plan(plan)["explanation"]
+    assert "70 out of 100" in text and "Moderate" in text
+    assert "₹4,000,000" in text and "₹30,000" in text

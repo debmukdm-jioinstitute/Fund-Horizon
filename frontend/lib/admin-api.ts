@@ -87,11 +87,33 @@ export interface AdminHealthResponse {
   cors_origins: string;
 }
 
+const ADMIN_KEY_STORAGE = "fh_admin_key";
+
+/** The admin key lives in sessionStorage only, so it ends with the browser tab. */
+export function readAdminKey(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return sessionStorage.getItem(ADMIN_KEY_STORAGE) || "";
+  } catch {
+    return "";
+  }
+}
+
+export function saveAdminKey(key: string): void {
+  try {
+    if (key) sessionStorage.setItem(ADMIN_KEY_STORAGE, key);
+    else sessionStorage.removeItem(ADMIN_KEY_STORAGE);
+    localStorage.removeItem(ADMIN_KEY_STORAGE); // drop any key stored by an older version
+  } catch {
+    /* storage may be unavailable */
+  }
+}
+
 function getHeaders(adminKey?: string): HeadersInit {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  const key = adminKey || (typeof window !== "undefined" ? localStorage.getItem("fh_admin_key") || "" : "");
+  const key = adminKey || readAdminKey();
   if (key) {
     headers["X-Admin-Key"] = key;
   }

@@ -32,7 +32,13 @@ def explain_plan(plan_data: dict[str, Any]) -> dict[str, Any]:
     # Deterministic fallback template
     profile = plan_data.get("profile", {})
     band = profile.get("band", "Moderate")
-    capacity = profile.get("capacity_band") or band
+    cap = profile.get("capacity")
+    if profile.get("capacity_band"):
+        capacity = profile["capacity_band"]
+    elif isinstance(cap, dict) and cap.get("score") is not None:
+        capacity = f"{cap['score']:.0f} out of 100"
+    else:
+        capacity = band
     planning = plan_data.get("planning") or {}
     totals = planning.get("totals") or {}
     goals = plan_data.get("goals") or planning.get("goals") or []

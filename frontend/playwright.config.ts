@@ -6,7 +6,7 @@ export default defineConfig({
   use: { baseURL: "http://localhost:3000", trace: "retain-on-failure" },
   webServer: [
     {
-      command: "cd ../backend && .venv/bin/uvicorn app.main:app --port 8000",
+      command: "cd ../backend && FH_ADMIN_OPEN=true FH_RATE_LIMIT=false .venv/bin/uvicorn app.main:app --port 8000",
       url: "http://localhost:8000/healthz",
       reuseExistingServer: true,
       timeout: 60_000,

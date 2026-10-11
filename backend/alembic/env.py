@@ -1,8 +1,14 @@
 import os
+import sys
 from logging.config import fileConfig
+from pathlib import Path
+
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+
+# The alembic CLI does not put the backend directory on sys.path, so `app` would not import.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.db.models import Base
 from app.db.postgres import normalize_postgres_url

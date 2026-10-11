@@ -127,3 +127,16 @@ Also checked in the browser: the plan's Tax planning section, every switch, `/le
 
 Limits: tax figures come from public secondary sources and are not CA-reviewed (`verified: false`); see
 [TAX_RULES.md](TAX_RULES.md). The after-tax view ignores the 1.25 lakh equity exemption.
+
+## Bug-fix pass (2026-10-11)
+| Bug | Fix |
+|---|---|
+| **Admin API open on the live site**: with no `FH_ADMIN_KEY`, `/api/admin/plans` returned every customer's plan (names, income, tax details) | Fails closed (403 until a key is set; `FH_ADMIN_OPEN=true` is an explicit dev opt-in), constant-time key compare, key prompt on `/admin`, key kept in sessionStorage; key set on Railway; 3 new tests |
+| Google Fonts `@import` blocked by the site's own CSP, so every page logged a console error and loaded a pointless external stylesheet | Removed the import (fonts already ship through `next/font`) |
+| Migrations never ran in the container (`ModuleNotFoundError: No module named 'app'`, hidden by `\|\| true`) | `alembic/env.py` adds the backend to `sys.path`; the container runs migrations only when `DATABASE_URL` is set and logs failures |
+| Test suite wrote into the committed ChromaDB | Tests use a temp copy; hook artifacts under `.claude-flow/` untracked |
+| Engine coverage gate failed (84%, `cas.py` 54%) | 28 tests for the CAS text parser, category and name helpers; gate now passes at 91.65% |
+| "Explain plan" said the risk *capacity* was a band | Fallback now reports the capacity score out of 100 (regression test) |
+| 404 page for any URL said only "Plan not found" | Wording covers pages too, with links home, to /learn and to a new plan |
+
+Results: 629 backend tests passed, engine coverage 91.65% (floor 85%), ruff, eslint, tsc and the copy scan clean, 17 e2e tests passed. A fuzz run of 4,000 random tax inputs found no negative tax, no tax above income, no non-monotonic tax and no crash.

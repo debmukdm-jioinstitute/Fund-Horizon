@@ -1,5 +1,7 @@
 import json
 import os
+import shutil
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -8,6 +10,15 @@ from fastapi.testclient import TestClient
 from app.data.loader import eligible_funds, load_metrics
 from app.main import create_app
 from app.schemas import PlanRequest
+
+# The suite must never write into the committed ChromaDB or the repo's data: point the RAG store at a
+# throwaway copy before any app module opens it.
+_SRC_CHROMA = Path(__file__).resolve().parents[1] / "chroma_db"
+if "FH_CHROMA_DIR" not in os.environ:
+    _tmp = Path(tempfile.mkdtemp(prefix="fh-chroma-test-"))
+    if _SRC_CHROMA.exists():
+        shutil.copytree(_SRC_CHROMA, _tmp, dirs_exist_ok=True)
+    os.environ["FH_CHROMA_DIR"] = str(_tmp)
 
 FIX = Path(__file__).parent / "fixtures"
 

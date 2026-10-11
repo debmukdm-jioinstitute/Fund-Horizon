@@ -5,6 +5,7 @@ search, assumptions view, and data synchronization controls.
 """
 from __future__ import annotations
 
+import hmac
 import logging
 import os
 from typing import Any
@@ -23,11 +24,15 @@ admin_router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 
 def _verify_admin_key(x_admin_key: str | None = None) -> bool:
-    """Validate optional admin key from headers. If FH_ADMIN_KEY is unset, allow open dev access."""
-    expected_key = os.environ.get("FH_ADMIN_KEY", "").strip()
-    if not expected_key:
-        return True
-    return x_admin_key == expected_key
+    """Validate the admin key from the X-Admin-Key header. Fails closed.
+
+    With FH_ADMIN_KEY unset the admin API is disabled (every call is refused). Local development can
+    opt in to open access with FH_ADMIN_OPEN=true; never set that in production.
+    """
+    expected = os.environ.get("FH_ADMIN_KEY", "").strip()
+    if not expected:
+        return os.environ.get("FH_ADMIN_OPEN", "").strip().lower() in ("1", "true", "yes")
+    return hmac.compare_digest((x_admin_key or "").encode(), expected.encode())
 
 
 @admin_router.get("/health")

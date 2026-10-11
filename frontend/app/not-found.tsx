@@ -10,9 +10,15 @@ export default function NotFound() {
         </span>
         <h1 className="text-2xl font-bold">Plan not found</h1>
         <p className="text-navy-700">
-          We could not find the requested plan. It may have expired, or the link may be incomplete.
+          We could not find the requested plan or page. A plan may have expired, or the link may be incomplete.
         </p>
-        <div className="pt-2">
+        <div className="flex flex-wrap justify-center gap-3 pt-2">
+          <Link href="/" className="btn-secondary">
+            Go to the home page
+          </Link>
+          <Link href="/learn" className="btn-secondary">
+            Explore schemes
+          </Link>
           <Link href="/plan/new" className="btn-primary">
             Start a new plan
           </Link>

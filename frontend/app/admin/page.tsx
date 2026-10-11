@@ -10,7 +10,7 @@ import AdminFundsTab from "@/components/admin/AdminFundsTab";
 import AdminConfigTab from "@/components/admin/AdminConfigTab";
 import AdminOperationsTab from "@/components/admin/AdminOperationsTab";
 import PlanDrawer from "@/components/admin/PlanDrawer";
-import { AdminStats, AdminPlanSummary, fetchAdminStats } from "@/lib/admin-api";
+import { AdminStats, AdminPlanSummary, fetchAdminStats, saveAdminKey } from "@/lib/admin-api";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
@@ -18,6 +18,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [inspectedPlan, setInspectedPlan] = useState<AdminPlanSummary | null>(null);
+  const [keyInput, setKeyInput] = useState("");
 
   const loadStats = async () => {
     setLoading(true);
@@ -53,6 +54,30 @@ export default function AdminPage() {
             <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
             <p className="text-xs text-navy-600 font-medium">Loading control center diagnostics...</p>
           </div>
+        ) : error && !stats && error.includes("(403)") ? (
+          <form
+            className="p-8 max-w-md mx-auto bg-white rounded-2xl border border-navy-200 space-y-4 shadow-sm"
+            onSubmit={(e) => {
+              e.preventDefault();
+              saveAdminKey(keyInput.trim());
+              setKeyInput("");
+              loadStats();
+            }}
+          >
+            <h2 className="text-base font-bold text-navy-950">Admin key required</h2>
+            <p className="text-xs text-navy-600">
+              This area holds customer plans, so it is locked. Enter the admin key to continue. It is kept only for this browser tab.
+            </p>
+            <div>
+              <label htmlFor="admin-key" className="label">Admin key</label>
+              <input id="admin-key" type="password" autoComplete="off" className="input" value={keyInput}
+                onChange={(e) => setKeyInput(e.target.value)} />
+            </div>
+            <button type="submit" disabled={!keyInput.trim()}
+              className="px-4 py-2 bg-navy-900 hover:bg-navy-800 disabled:opacity-50 text-white text-xs font-semibold rounded-xl transition">
+              Unlock
+            </button>
+          </form>
         ) : error && !stats ? (
           <div className="p-8 max-w-md mx-auto bg-white rounded-2xl border border-rose-200 text-center space-y-4 shadow-sm">
             <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">

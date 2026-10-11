@@ -12,6 +12,17 @@ const INSURERS: Record<string, string> = {
 };
 
 const AMCS: Record<string, string> = {
+  "aditya birla sun life": "aditya-birla-sun-life.png",
+  "bank of india": "bank-of-india.png",
+  "franklin templeton": "franklin-templeton.png",
+  navi: "navi.svg",
+  sbi: "sbi.svg",
+  shriram: "shriram.webp",
+  sundaram: "sundaram.svg",
+  tata: "tata.svg",
+  trust: "trust.svg",
+  unifi: "unifi.svg",
+  uti: "uti.webp",
   "360 one": "360-one.png",
   axis: "axis.png",
   bandhan: "bandhan.png",

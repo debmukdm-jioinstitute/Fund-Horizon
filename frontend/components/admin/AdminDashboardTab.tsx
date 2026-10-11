@@ -21,17 +21,17 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
       {/* 4 Stat KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Plans KPI */}
-        <div className="p-5 rounded-2xl bg-white border border-navy-100 shadow-sm hover:shadow-md transition">
+        <div className="card-3d p-6 bg-white/75 backdrop-blur-md">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-navy-500">Client Plans</span>
-            <span className="p-2 rounded-xl bg-teal-50 text-teal-600 text-sm">📋</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Client Plans</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 border border-teal-200/50 text-teal-700 text-sm shadow-sm">📋</span>
           </div>
-          <p className="text-3xl font-extrabold text-navy-950 mt-3">{stats.total_plans}</p>
+          <p className="text-3xl md:text-4xl font-extrabold text-navy-950 mt-3">{stats.total_plans}</p>
           <div className="mt-3 flex items-center justify-between text-xs">
-            <span className="text-navy-600 font-medium">Saved in repository</span>
+            <span className="text-slate-500 font-medium">Saved in repository</span>
             <button
               onClick={() => onTabChange("plans")}
-              className="text-teal-700 hover:text-teal-800 font-semibold"
+              className="text-teal-700 hover:text-teal-800 font-bold"
             >
               Browse →
             </button>
@@ -39,17 +39,17 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
         </div>
 
         {/* CAS Statements KPI */}
-        <div className="p-5 rounded-2xl bg-white border border-navy-100 shadow-sm hover:shadow-md transition">
+        <div className="card-3d p-6 bg-white/75 backdrop-blur-md">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-navy-500">CAS Statements</span>
-            <span className="p-2 rounded-xl bg-teal-50 text-teal-600 text-sm">📑</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">CAS Statements</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 border border-teal-200/50 text-teal-700 text-sm shadow-sm">📑</span>
           </div>
-          <p className="text-3xl font-extrabold text-navy-950 mt-3">{stats.total_cas_sessions}</p>
+          <p className="text-3xl md:text-4xl font-extrabold text-navy-950 mt-3">{stats.total_cas_sessions}</p>
           <div className="mt-3 flex items-center justify-between text-xs">
-            <span className="text-navy-600 font-medium">In-memory parsed</span>
+            <span className="text-slate-500 font-medium">In-memory parsed</span>
             <button
               onClick={() => onTabChange("cas")}
-              className="text-teal-700 hover:text-teal-800 font-semibold"
+              className="text-teal-700 hover:text-teal-800 font-bold"
             >
               View →
             </button>
@@ -57,19 +57,19 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
         </div>
 
         {/* Schemes Catalog KPI */}
-        <div className="p-5 rounded-2xl bg-white border border-navy-100 shadow-sm hover:shadow-md transition">
+        <div className="card-3d p-6 bg-white/75 backdrop-blur-md">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-navy-500">Mutual Fund Schemes</span>
-            <span className="p-2 rounded-xl bg-teal-50 text-teal-600 text-sm">📈</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Mutual Fund Schemes</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 border border-teal-200/50 text-teal-700 text-sm shadow-sm">📈</span>
           </div>
-          <p className="text-3xl font-extrabold text-navy-950 mt-3">{stats.total_schemes.toLocaleString()}</p>
+          <p className="text-3xl md:text-4xl font-extrabold text-navy-950 mt-3">{stats.total_schemes.toLocaleString()}</p>
           <div className="mt-3 flex items-center justify-between text-xs">
-            <span className="text-navy-600 font-medium">
+            <span className="text-slate-500 font-medium">
               {stats.total_amcs} AMCs · {stats.total_categories} Categories
             </span>
             <button
               onClick={() => onTabChange("funds")}
-              className="text-teal-700 hover:text-teal-800 font-semibold"
+              className="text-teal-700 hover:text-teal-800 font-bold"
             >
               Catalog →
             </button>
@@ -77,22 +77,22 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
         </div>
 
         {/* Database Backend KPI */}
-        <div className="p-5 rounded-2xl bg-white border border-navy-100 shadow-sm hover:shadow-md transition">
+        <div className="card-3d p-6 bg-white/75 backdrop-blur-md">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-navy-500">Storage Backend</span>
-            <span className="p-2 rounded-xl bg-teal-50 text-teal-600 text-sm">🗄️</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Storage Backend</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 border border-teal-200/50 text-teal-700 text-sm shadow-sm">🗄️</span>
           </div>
           <div className="flex items-center gap-2 mt-3">
-            <span className="text-2xl font-extrabold text-navy-950">{db.provider}</span>
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-teal-500 animate-pulse" />
+            <span className="text-2xl md:text-3xl font-extrabold text-navy-950">{db.provider}</span>
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-teal-500 animate-pulse shadow-glow-teal" />
           </div>
           <div className="mt-3 flex items-center justify-between text-xs">
-            <span className="text-navy-600 truncate max-w-[150px]" title={db.path || db.dialect || "Active"}>
+            <span className="text-slate-500 truncate max-w-[150px]" title={db.path || db.dialect || "Active"}>
               {db.dialect || db.path ? String(db.dialect || db.path).split("/").pop() : "Connected"}
             </span>
             <button
               onClick={() => onTabChange("operations")}
-              className="text-teal-700 hover:text-teal-800 font-semibold"
+              className="text-teal-700 hover:text-teal-800 font-bold"
             >
               Diagnostics →
             </button>
@@ -102,34 +102,34 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
 
       {/* Architecture & Engine Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl border border-navy-100 bg-white flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-teal-50 text-teal-700 font-bold text-xs mt-0.5">MATH</div>
+        <div className="p-5 rounded-2xl border border-white/80 bg-white/70 shadow-glass backdrop-blur-md flex items-start gap-3.5">
+          <div className="p-2.5 rounded-xl bg-teal-50 border border-teal-200/60 text-teal-800 font-bold text-xs mt-0.5">MATH</div>
           <div>
             <h3 className="text-sm font-bold text-navy-950">Deterministic Math Engine</h3>
-            <p className="text-xs text-navy-600 mt-0.5">100% Python analytics (Monte Carlo, XIRR, Glidepath)</p>
-            <span className="inline-block mt-2 text-[11px] font-semibold text-teal-800 bg-teal-50 px-2 py-0.5 rounded">
+            <p className="text-xs text-slate-600 mt-0.5">100% Python analytics (Monte Carlo, XIRR, Glidepath)</p>
+            <span className="inline-block mt-2.5 text-[11px] font-bold text-teal-800 bg-teal-50/80 border border-teal-200/50 px-2.5 py-0.5 rounded-full">
               Floor 85% coverage passing
             </span>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-navy-100 bg-white flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-navy-50 text-navy-800 font-bold text-xs mt-0.5">RAG</div>
+        <div className="p-5 rounded-2xl border border-white/80 bg-white/70 shadow-glass backdrop-blur-md flex items-start gap-3.5">
+          <div className="p-2.5 rounded-xl bg-navy-50 border border-navy-200/60 text-navy-800 font-bold text-xs mt-0.5">RAG</div>
           <div>
             <h3 className="text-sm font-bold text-navy-950">Vector Knowledge Base</h3>
-            <p className="text-xs text-navy-600 mt-0.5">ChromaDB + ONNX FastEmbed (bge-small-en-v1.5)</p>
-            <span className="inline-block mt-2 text-[11px] font-semibold text-navy-800 bg-navy-100 px-2 py-0.5 rounded">
+            <p className="text-xs text-slate-600 mt-0.5">ChromaDB + ONNX FastEmbed (bge-small-en-v1.5)</p>
+            <span className="inline-block mt-2.5 text-[11px] font-bold text-navy-800 bg-navy-100/80 border border-navy-200/50 px-2.5 py-0.5 rounded-full">
               3,638 schemes indexed
             </span>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-navy-100 bg-white flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-teal-50 text-teal-700 font-bold text-xs mt-0.5">AI</div>
+        <div className="p-5 rounded-2xl border border-white/80 bg-white/70 shadow-glass backdrop-blur-md flex items-start gap-3.5">
+          <div className="p-2.5 rounded-xl bg-teal-50 border border-teal-200/60 text-teal-800 font-bold text-xs mt-0.5">AI</div>
           <div>
             <h3 className="text-sm font-bold text-navy-950">Explanation & Guardrails</h3>
-            <p className="text-xs text-navy-600 mt-0.5">LiteLLM fallback (Groq → Gemini → OpenRouter → Ollama)</p>
-            <span className="inline-block mt-2 text-[11px] font-semibold text-teal-800 bg-teal-50 px-2 py-0.5 rounded">
+            <p className="text-xs text-slate-600 mt-0.5">LiteLLM fallback (Groq → Gemini → OpenRouter → Ollama)</p>
+            <span className="inline-block mt-2.5 text-[11px] font-bold text-teal-800 bg-teal-50/80 border border-teal-200/50 px-2.5 py-0.5 rounded-full">
               PII & compliance scanner active
             </span>
           </div>

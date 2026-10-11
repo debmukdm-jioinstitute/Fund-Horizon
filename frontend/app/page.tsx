@@ -29,58 +29,131 @@ export default function Home({ searchParams }: { searchParams?: { retrieve?: str
   const retrieveError = searchParams?.retrieve === "invalid";
   return (
     <div className="space-y-12">
-      <section className="rounded-2xl bg-navy-900 px-6 py-12 text-white md:px-12">
-        <p className="text-sm font-semibold uppercase tracking-widest text-teal-500">Fund Horizon Planner</p>
-        <h1 className="mt-3 max-w-2xl text-3xl font-bold leading-tight md:text-5xl">
-          See how much to invest each month for the goals that matter.
-        </h1>
-        <p className="mt-4 max-w-2xl text-lg text-navy-100">
-          Answer a few questions in about five minutes. You get an illustrative allocation matched to your capacity and
-          comfort with risk, a past-performance fund shortlist, a stress test on past data, and a goal-by-goal SIP plan.
-        </p>
-        <p className="mt-3 max-w-2xl text-sm text-navy-100">
-          Fund Horizon is an AMFI-registered mutual fund distributor (execution-only). This planner is an illustration, not a personalised recommendation.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/plan/new" className="btn bg-teal-500 text-navy-950 hover:bg-teal-100">
-            Start your plan
-          </Link>
-          <Link href="/cas" className="btn border border-teal-400 bg-transparent text-white hover:bg-navy-800">
-            Analyze CAS statement
-          </Link>
+      {/* Hero Section: 3D Frosted Glass Container with Radial Lighting */}
+      <section className="relative overflow-hidden rounded-3xl border border-white/60 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-950 px-7 py-14 text-white shadow-2xl shadow-navy-950/20 md:px-14 md:py-20">
+        {/* Ambient 3D glow circles inside hero */}
+        <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-teal-500/20 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-indigo-500/15 blur-3xl" />
+
+        <div className="relative z-10 max-w-3xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-950/60 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-teal-400 backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-teal-400 animate-pulse" />
+            Fund Horizon Planner
+          </div>
+
+          <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
+            See how much to invest each month for the goals that matter.
+          </h1>
+
+          <p className="mt-5 text-base leading-relaxed text-slate-200 md:text-lg">
+            Answer a few questions in about five minutes. You get an illustrative allocation matched to your capacity and
+            comfort with risk, a past-performance fund shortlist, a stress test on past data, and a goal-by-goal SIP plan.
+          </p>
+
+          <p className="mt-3 text-xs leading-relaxed text-slate-300">
+            Fund Horizon is an AMFI-registered mutual fund distributor (execution-only). This planner is an illustration, not a personalised recommendation.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Link
+              href="/plan/new"
+              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-teal-400 to-teal-500 px-6 py-3.5 text-sm font-extrabold text-navy-950 shadow-lg shadow-teal-500/25 transition-all hover:scale-105 hover:shadow-teal-500/40 active:scale-95"
+            >
+              Start your plan →
+            </Link>
+            <Link
+              href="/cas"
+              className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition-all hover:bg-white/20 hover:border-white/30"
+            >
+              Analyze CAS statement
+            </Link>
+          </div>
+
+          <div className="mt-6 flex items-center gap-2 text-xs text-slate-300">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-400" />
+            <span>
+              No PAN, phone or email needed. Only your first name and age. Takes about five minutes.
+              Keep the plan link — if you lose it, we cannot recover it.
+            </span>
+          </div>
         </div>
-        <p className="mt-4 text-sm text-navy-100">
-          No PAN, phone or email needed. Only your first name and age. Takes about five minutes.
-          Keep the plan link — if you lose it, we cannot recover it.
-        </p>
       </section>
 
-      <section aria-labelledby="retrieve" className="card max-w-2xl">
-        <h2 id="retrieve" className="text-xl font-bold">Already have a plan?</h2>
-        <p className="mt-1 text-sm text-navy-700">
-          Paste the plan link or the ID from the results page. We never ask for a phone or email, so this is the only way back.
-        </p>
-        <form action={openSavedPlan} className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <label className="sr-only" htmlFor="plan_id">Plan link or ID</label>
-          <input id="plan_id" name="plan_id" className="input flex-1" placeholder="Plan link or ID"
-            autoComplete="off" spellCheck={false} required />
-          <button type="submit" className="btn-primary">Open plan</button>
+      {/* Retrieve Plan Section: Frosted Glass Card with 3D Input */}
+      <section
+        aria-labelledby="retrieve"
+        className="glass-card max-w-2xl p-7 transition-all hover:border-teal-500/30"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy-900 text-teal-400 shadow-md">
+            🔑
+          </div>
+          <div>
+            <h2 id="retrieve" className="text-xl font-extrabold text-navy-950">
+              Already have a plan?
+            </h2>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Paste the plan link or the ID from the results page. We never ask for a phone or email, so this is the only way back.
+            </p>
+          </div>
+        </div>
+
+        <form action={openSavedPlan} className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <label className="sr-only" htmlFor="plan_id">
+            Plan link or ID
+          </label>
+          <input
+            id="plan_id"
+            name="plan_id"
+            className="input flex-1 bg-white/90 focus:bg-white text-sm"
+            placeholder="Plan link or ID (e.g. 8af0fac6-a8f4-456a...)"
+            autoComplete="off"
+            spellCheck={false}
+            required
+          />
+          <button type="submit" className="btn-primary sm:px-6">
+            Open plan
+          </button>
         </form>
+
         {retrieveError && (
-          <p className="err mt-3" role="alert">That did not look like a plan link. Paste the full address or the 36-character ID.</p>
+          <p className="err mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200" role="alert">
+            That did not look like a plan link. Paste the full address or the 36-character ID.
+          </p>
         )}
       </section>
 
-      <section aria-labelledby="how">
-        <h2 id="how" className="text-2xl font-bold">How it works</h2>
-        <ol className="mt-4 grid gap-4 md:grid-cols-4">
+      {/* How it works: 4 Elevated Glass Cards with 3D numbered badges */}
+      <section aria-labelledby="how" className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 id="how" className="text-2xl font-black tracking-tight text-navy-950">
+              How it works
+            </h2>
+            <p className="text-xs text-slate-600 font-medium">Four simple steps to your goal illustration</p>
+          </div>
+        </div>
+
+        <ol className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
           {STEPS.map((s, i) => (
-            <li key={s.t} className="card">
-              <span className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-teal-100 font-bold text-teal-700">
-                {i + 1}
-              </span>
-              <h3 className="font-semibold">{s.t}</h3>
-              <p className="mt-1 text-sm text-navy-700">{s.d}</p>
+            <li
+              key={s.t}
+              className="glass-card group p-6 hover:shadow-xl hover:border-teal-500/40 transition-all duration-300"
+            >
+              <div className="flex items-center justify-between">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-teal-500 to-teal-400 font-extrabold text-navy-950 shadow-md shadow-teal-500/20 group-hover:scale-110 transition-transform">
+                  {i + 1}
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+                  STEP 0{i + 1}
+                </span>
+              </div>
+              <h3 className="mt-4 font-bold text-navy-950 text-base group-hover:text-teal-700 transition-colors">
+                {s.t}
+              </h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+                {s.d}
+              </p>
             </li>
           ))}
         </ol>

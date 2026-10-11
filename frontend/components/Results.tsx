@@ -58,15 +58,19 @@ export const FALLBACK_SHORTLIST_LINE =
   "Ranked by a past-performance composite (return, rolling median, Sharpe and drawdown) — not a consistency-first score, and not a recommendation. Past figures may not continue.";
 
 export function SectionTitle({ id, children }: { id: string; children: React.ReactNode }) {
-  return <h2 id={id} className="mb-3 text-xl font-bold">{children}</h2>;
+  return (
+    <h2 id={id} className="mb-4 text-2xl font-bold tracking-tight text-navy-950">
+      {children}
+    </h2>
+  );
 }
 
 function Bar({ label, value, tone }: { label: string; value: number; tone: string }) {
   return (
     <div>
-      <div className="flex justify-between text-sm"><span>{label}</span><span className="font-semibold">{value.toFixed(0)} / 100</span></div>
-      <div className="mt-1 h-3 rounded-full bg-navy-100" role="img" aria-label={`${label} ${value.toFixed(0)} out of 100`}>
-        <div className={`h-3 rounded-full ${tone}`} style={{ width: `${Math.max(2, value)}%` }} />
+      <div className="flex justify-between text-sm"><span className="text-slate-600 font-medium">{label}</span><span className="font-bold text-navy-950">{value.toFixed(0)} / 100</span></div>
+      <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-slate-200/70 p-0.5 shadow-inner" role="img" aria-label={`${label} ${value.toFixed(0)} out of 100`}>
+        <div className={`h-full rounded-full ${tone} transition-all duration-500`} style={{ width: `${Math.max(2, value)}%` }} />
       </div>
     </div>
   );
@@ -192,18 +196,21 @@ export function buildSequencedActions(profile: Profile, planning?: Plan["plannin
 export function SequencedActions({ profile, planning }: { profile: Profile; planning?: Plan["planning"] }) {
   const steps = buildSequencedActions(profile, planning);
   return (
-    <div className="rounded-xl border border-amber-600 bg-amber-100 p-4" role="note">
-      <h3 className="font-bold text-amber-600">What to do first</h3>
-      <p className="mt-1 text-sm text-navy-900">Work in this order: emergency fund, then term cover, then health cover, then goals.</p>
-      <ol className="mt-3 space-y-2">
+    <div className="rounded-2xl border border-amber-300/80 bg-gradient-to-br from-amber-50/90 to-amber-100/50 p-5 shadow-glass backdrop-blur-md" role="note">
+      <h3 className="font-bold text-amber-900 text-base flex items-center gap-2">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[11px] text-white">⚡</span>
+        What to do first
+      </h3>
+      <p className="mt-1 text-sm text-amber-950/80">Work in this order: emergency fund, then term cover, then health cover, then goals.</p>
+      <ol className="mt-4 space-y-3">
         {steps.map((s, i) => (
-          <li key={s.title} className="flex gap-3 text-navy-900">
-            <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${s.done ? "bg-navy-900 text-white" : "bg-white text-navy-900"}`} aria-hidden>
-              {i + 1}
+          <li key={s.title} className="flex gap-3 text-navy-900 items-start">
+            <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-sm ${s.done ? "bg-teal-600 text-white" : "bg-white text-navy-900 border border-slate-200"}`} aria-hidden>
+              {s.done ? "✓" : i + 1}
             </span>
             <div>
-              <p className="font-semibold">{s.title}{s.done ? " — in place" : ""}</p>
-              <p className="text-sm">{s.detail}</p>
+              <p className="font-semibold text-sm">{s.title}{s.done ? " — in place" : ""}</p>
+              <p className="text-sm text-slate-700 leading-relaxed">{s.detail}</p>
             </div>
           </li>
         ))}
@@ -216,16 +223,16 @@ export function ProfileCard({ profile, planning }: { profile: Profile; planning?
   return (
     <div className="space-y-4">
       <SequencedActions profile={profile} planning={planning} />
-      <div className="card grid gap-5 md:grid-cols-[1fr_1.4fr]">
+      <div className="card-3d bg-white/80 p-6 backdrop-blur-md grid gap-6 md:grid-cols-[1fr_1.4fr]">
         <div>
-          <p className="text-sm text-navy-700">Illustrative risk band</p>
-          <p className="text-3xl font-bold text-teal-700">{profile.band}</p>
-          <p className="mt-1 text-sm text-navy-700">Final score {profile.final_score.toFixed(0)} / 100, the lower of capacity and comfort.</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Illustrative risk band</p>
+          <p className="text-3xl md:text-4xl font-extrabold text-teal-700 mt-1">{profile.band}</p>
+          <p className="mt-2 text-sm text-slate-600 leading-relaxed">Final score <strong className="text-navy-950">{profile.final_score.toFixed(0)} / 100</strong>, the lower of capacity and comfort.</p>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <Bar label="Capacity to take risk" value={profile.capacity.score} tone="bg-navy-900" />
-          <Bar label="Comfort with risk" value={profile.tolerance} tone="bg-teal-600" />
-          {profile.notes.map((n) => <p key={n} className="text-sm text-navy-700">{n}</p>)}
+          <Bar label="Comfort with risk" value={profile.tolerance} tone="bg-gradient-to-r from-teal-500 to-teal-400 shadow-glow-teal" />
+          {profile.notes.map((n) => <p key={n} className="text-xs text-slate-600 leading-relaxed">{n}</p>)}
         </div>
       </div>
     </div>
@@ -472,13 +479,15 @@ export function InsuranceCard({ ins }: { ins: Plan["planning"]["insurance"] }) {
 export function PlanLinkCard({ id }: { id: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-navy-200 bg-white p-4 text-sm" role="note">
+    <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-white/80 bg-white/70 p-5 text-sm shadow-glass backdrop-blur-md" role="note">
       <div className="max-w-2xl">
-        <p className="font-semibold">Save this plan link</p>
-        <p className="mt-1 text-navy-700">
+        <p className="font-bold text-navy-950 text-base flex items-center gap-2">
+          <span>🔖</span> Save this plan link
+        </p>
+        <p className="mt-1 text-slate-600 text-sm">
           We do not ask for a phone or email, so we cannot send this plan back to you. Bookmark this page or copy the link. If you lose it, the plan is gone.
         </p>
-        <p className="mt-2 break-all font-mono text-xs text-navy-900" data-testid="plan-id">{id}</p>
+        <p className="mt-2.5 break-all font-mono text-xs font-semibold text-teal-800 rounded-lg bg-teal-50/70 border border-teal-200/50 p-2 inline-block" data-testid="plan-id">{id}</p>
       </div>
       <button
         type="button"

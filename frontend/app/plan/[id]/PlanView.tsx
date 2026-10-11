@@ -51,12 +51,16 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
         </div>
       )}
 
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Your illustrative plan</h1>
-          <p className="text-navy-700">Fund data as of {plan.data_asof}. SIPs are sized at assumed planning returns, not as a forecast.</p>
+      <header className="flex flex-wrap items-end justify-between gap-4 rounded-3xl border border-white/80 bg-white/70 p-6 md:p-8 shadow-glass backdrop-blur-xl relative overflow-hidden">
+        <div className="absolute -top-12 -right-12 h-44 w-44 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 border border-teal-200/50 mb-3">
+            Financial Blueprint
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-navy-950">Your illustrative plan</h1>
+          <p className="mt-1 text-sm text-slate-600">Fund data as of {plan.data_asof}. SIPs are sized at assumed planning returns, not as a forecast.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="relative z-10 flex flex-wrap items-center gap-3">
           <ExplainModal
             buttonLabel="Explain Plan with AI"
             kind="plan"
@@ -66,7 +70,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
         </div>
       </header>
 
-      <div className="rounded-xl border border-navy-200 bg-navy-50 p-4 text-sm" role="note">
+      <div className="rounded-2xl border border-teal-200/70 bg-teal-50/60 p-4 text-sm text-navy-900 backdrop-blur-sm shadow-sm" role="note">
         <p>{extra.success_prob_note || FALLBACK_SUCCESS_NOTE}</p>
       </div>
 

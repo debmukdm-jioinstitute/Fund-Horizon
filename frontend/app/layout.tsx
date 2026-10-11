@@ -1,9 +1,24 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { siteUrl } from "@/lib/site";
+
+const sans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const display = Outfit({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+  weight: ["500", "600", "700", "800"],
+});
 
 const baseUrl = siteUrl();
 
@@ -30,43 +45,76 @@ export const dynamic = "force-dynamic";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN">
-      <body className="flex min-h-screen flex-col">
-        <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:p-3">
+    <html lang="en-IN" className={`${sans.variable} ${display.variable}`}>
+      <body className="flex min-h-screen flex-col font-sans relative overflow-x-hidden selection:bg-teal-500 selection:text-white">
+        {/* Ambient 3D Frosted Glow Lights */}
+        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+          <div className="floating-orb -top-24 -left-24 h-96 w-96 bg-teal-400/20" />
+          <div className="floating-orb top-1/3 -right-28 h-[30rem] w-[30rem] bg-indigo-400/15" />
+          <div className="floating-orb -bottom-24 left-1/4 h-96 w-96 bg-teal-300/15" />
+        </div>
+
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-xl focus:bg-white focus:p-3 focus:shadow-xl focus:ring-2 focus:ring-teal-500"
+        >
           Skip to content
         </a>
-        <header className="bg-navy-900 text-white">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-            <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight">
-              <span aria-hidden className="inline-block h-3 w-3 rounded-full bg-teal-500" />
-              Fund Horizon
+
+        {/* Translucent Frosted Glass Sticky Header */}
+        <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-[0_4px_20px_-4px_rgba(11,37,69,0.03)] transition-all">
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+            <Link href="/" className="group flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-navy-950 transition">
+              <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-navy-900 to-teal-600 text-white shadow-md shadow-teal-500/20 group-hover:scale-105 transition-transform duration-300">
+                <span className="text-xs font-black tracking-tighter">FH</span>
+                <span aria-hidden className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-teal-400 ring-2 ring-white animate-pulse" />
+              </div>
+              <span className="bg-gradient-to-r from-navy-950 via-navy-900 to-teal-800 bg-clip-text text-transparent">Fund Horizon</span>
             </Link>
-            <div className="flex items-center gap-6">
-              <nav aria-label="Main Navigation" className="flex items-center gap-4 text-sm font-medium">
-                <Link href="/plan/new" className="text-navy-100 hover:text-white">
+
+            <div className="flex items-center gap-2 sm:gap-4">
+              <nav aria-label="Main Navigation" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-semibold text-slate-600">
+                <Link
+                  href="/plan/new"
+                  className="px-3 py-1.5 rounded-xl hover:text-navy-950 hover:bg-slate-100/70 transition"
+                >
                   Plan
                 </Link>
-                <Link href="/funds/compare" className="text-navy-100 hover:text-white">
+                <Link
+                  href="/funds/compare"
+                  className="px-3 py-1.5 rounded-xl hover:text-navy-950 hover:bg-slate-100/70 transition"
+                >
                   Compare
                 </Link>
-                <Link href="/funds/ask" className="text-navy-100 hover:text-white">
+                <Link
+                  href="/funds/ask"
+                  className="px-3 py-1.5 rounded-xl hover:text-navy-950 hover:bg-slate-100/70 transition"
+                >
                   Ask Funds
                 </Link>
-                <Link href="/cas" className="text-navy-100 hover:text-white">
+                <Link
+                  href="/cas"
+                  className="px-3 py-1.5 rounded-xl hover:text-navy-950 hover:bg-slate-100/70 transition"
+                >
                   CAS Analysis
                 </Link>
-                <Link href="/admin" className="text-navy-100 hover:text-white flex items-center gap-1 font-semibold">
-                  <span className="text-[11px] bg-teal-800/80 text-teal-300 border border-teal-600/50 px-2 py-0.5 rounded font-mono">Admin</span>
+                <Link
+                  href="/admin"
+                  className="ml-1 px-2.5 py-1 rounded-xl text-teal-800 bg-teal-50/80 border border-teal-200/80 hover:bg-teal-100/80 hover:border-teal-300 transition flex items-center gap-1.5 shadow-sm"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-ping" />
+                  <span className="text-xs font-mono font-bold">Admin</span>
                 </Link>
               </nav>
-
             </div>
           </div>
-          <div className="h-1 bg-teal-500" />
+          <div className="h-[2px] bg-gradient-to-r from-transparent via-teal-500/50 to-transparent" />
         </header>
+
         <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
           {children}
         </main>
+
         <Footer />
       </body>
     </html>

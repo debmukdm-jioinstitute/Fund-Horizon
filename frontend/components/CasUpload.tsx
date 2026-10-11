@@ -172,7 +172,7 @@ export default function CasUpload() {
           <button
             type="submit"
             disabled={loading}
-            className="btn w-full bg-teal-500 text-navy-950 hover:bg-teal-400 disabled:opacity-50"
+            className="btn-accent w-full disabled:opacity-50 py-3.5 text-base"
           >
             {loading ? "Parsing Statement in Memory..." : "Analyze Portfolio"}
           </button>

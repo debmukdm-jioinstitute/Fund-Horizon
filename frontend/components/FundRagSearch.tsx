@@ -82,7 +82,7 @@ export default function FundRagSearch() {
             type="button"
             onClick={() => handleSearch()}
             disabled={loading}
-            className="btn bg-teal-500 text-navy-950 hover:bg-teal-400 disabled:opacity-50"
+            className="btn-accent px-6 disabled:opacity-50"
           >
             {loading ? "Searching..." : "Search"}
           </button>

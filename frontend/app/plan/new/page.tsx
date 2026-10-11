@@ -144,22 +144,28 @@ export default function NewPlan() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6">
-        <div className="mb-1 flex justify-between text-sm font-medium">
-          <span>Step {SECTION(step)} of 5: {SECTION_NAMES[SECTION(step) - 1]}</span>
-          <span>{progress}%</span>
+      {/* Progress Header */}
+      <div className="mb-6 rounded-2xl border border-white/80 bg-white/60 p-4 shadow-glass backdrop-blur-md">
+        <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-navy-800">
+          <span className="flex items-center gap-2">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-600 text-[10px] text-white">
+              {SECTION(step)}
+            </span>
+            <span>Step {SECTION(step)} of 5: {SECTION_NAMES[SECTION(step) - 1]}</span>
+          </span>
+          <span className="font-mono text-teal-700">{progress}%</span>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-navy-100" role="progressbar" aria-valuenow={progress}
+        <div className="h-2.5 overflow-hidden rounded-full bg-slate-200/70 p-0.5 shadow-inner" role="progressbar" aria-valuenow={progress}
           aria-valuemin={0} aria-valuemax={100} aria-label="Plan progress">
-          <div className="h-full bg-teal-600 transition-all" style={{ width: `${progress}%` }} />
+          <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-teal-400 shadow-glow-teal transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
-      <section className="card" aria-live="polite">
+      <section className="glass-card p-6 md:p-8" aria-live="polite">
         {step === 0 && (
           <>
-            <h1 ref={headingRef} tabIndex={-1} className="mb-4 text-2xl font-bold">About you</h1>
-            <p className="mb-4 text-sm text-navy-700">
+            <h1 ref={headingRef} tabIndex={-1} className="mb-2 text-2xl font-bold tracking-tight text-navy-950">About you</h1>
+            <p className="mb-5 text-sm text-slate-600">
               Years on a retirement goal are locked to planned retirement age minus your age, so the SIP horizon and term-cover horizon match.
             </p>
             <div className="grid gap-4 md:grid-cols-2">
@@ -180,8 +186,8 @@ export default function NewPlan() {
 
         {step === 1 && (
           <>
-            <h1 ref={headingRef} tabIndex={-1} className="mb-1 text-2xl font-bold">Income and finances</h1>
-            <p className="mb-4 text-sm text-navy-700">Approximate figures in rupees are fine. These amounts are not saved in this browser if you refresh.</p>
+            <h1 ref={headingRef} tabIndex={-1} className="mb-2 text-2xl font-bold tracking-tight text-navy-950">Income and finances</h1>
+            <p className="mb-5 text-sm text-slate-600">Approximate figures in rupees are fine. These amounts are not saved in this browser if you refresh.</p>
             <div className="grid gap-4 md:grid-cols-2">
               <NumberField id="monthly_income" label="Monthly take-home income" money value={draft.monthly_income}
                 onChange={(v) => set("monthly_income", v)} error={errors.monthly_income} />
@@ -206,11 +212,11 @@ export default function NewPlan() {
 
         {step === 2 && (
           <>
-            <h1 ref={headingRef} tabIndex={-1} className="mb-1 text-2xl font-bold">Your goals</h1>
-            <p className="mb-4 text-sm text-navy-700">Add up to six goals. Priority 1 goals are funded first.</p>
-            {errors.goals && <p className="err mb-2" role="alert">{errors.goals}</p>}
+            <h1 ref={headingRef} tabIndex={-1} className="mb-2 text-2xl font-bold tracking-tight text-navy-950">Your goals</h1>
+            <p className="mb-5 text-sm text-slate-600">Add up to six goals. Priority 1 goals are funded first.</p>
+            {errors.goals && <p className="err mb-3" role="alert">{errors.goals}</p>}
             {hugeTarget && (
-              <p className="mb-4 rounded-lg border border-amber-600 bg-amber-100 p-3 text-sm" role="status">
+              <p className="mb-4 rounded-xl border border-amber-300 bg-amber-50/80 p-3.5 text-sm text-amber-900 shadow-sm backdrop-blur-sm" role="status">
                 One or more targets is over ₹100 Cr. Please check the figure — very large targets produce SIPs that no household surplus can fund.
               </p>
             )}
@@ -219,9 +225,9 @@ export default function NewPlan() {
                 const retirementLocked = g.type === "retirement" && lockedRetirementYears != null;
                 const yearsValue = retirementLocked ? String(lockedRetirementYears) : g.years;
                 return (
-                  <fieldset key={i} className="rounded-lg border border-navy-100 p-4">
-                    <legend className="px-1 text-sm font-semibold">Goal {i + 1}</legend>
-                    <div className="grid gap-4 md:grid-cols-2">
+                  <fieldset key={i} className="card-3d bg-white/70 p-5 backdrop-blur-sm transition-all hover:border-teal-500/30">
+                    <legend className="rounded-full bg-teal-50 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-teal-800 border border-teal-200/50">Goal {i + 1}</legend>
+                    <div className="grid gap-4 md:grid-cols-2 mt-2">
                       <SelectField id={`g${i}-type`} label="Type" value={g.type}
                         onChange={(v) => {
                           const t = GOAL_TYPES.find((x) => x.value === v)!;
@@ -255,12 +261,12 @@ export default function NewPlan() {
                         value={g.earmarked} onChange={(v) => setGoal(i, { earmarked: v })} />
                     </div>
                     {g.type === "retirement" && lockedRetirementYears == null && (
-                      <p className="mt-3 text-sm text-amber-600" role="status">
+                      <p className="mt-3 text-sm text-amber-700" role="status">
                         Years to retirement cannot be locked because planned retirement age minus age is not between 1 and 40.
                       </p>
                     )}
                     {draft.goals.length > 1 && (
-                      <button type="button" className="mt-3 text-sm font-medium text-rose-700 underline"
+                      <button type="button" className="mt-3 text-sm font-semibold text-rose-600 hover:text-rose-700 underline"
                         onClick={() => set("goals", draft.goals.filter((_, j) => j !== i))}>
                         Remove goal {i + 1}
                       </button>
@@ -270,9 +276,9 @@ export default function NewPlan() {
               })}
             </div>
             {draft.goals.length < 6 && (
-              <button type="button" className="btn-secondary mt-4"
+              <button type="button" className="btn-secondary mt-5"
                 onClick={() => set("goals", [...draft.goals, emptyGoal()])}>
-                Add another goal
+                + Add another goal
               </button>
             )}
           </>
@@ -280,26 +286,26 @@ export default function NewPlan() {
 
         {qPage >= 0 && qPage < Q_PAGES && (
           <fieldset>
-            <legend className="mb-1 text-sm font-medium text-navy-700">
+            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 border border-teal-200/50">
               Questions {groupBounds(qPage).start + 1}–{groupBounds(qPage).end} of {QUESTIONS}
-            </legend>
-            <h1 ref={headingRef} tabIndex={-1} className="mb-4 text-xl font-bold">Comfort with risk</h1>
-            {qSlice.length === 0 && <p>Loading questions…</p>}
-            <div className="space-y-8">
+            </div>
+            <h1 ref={headingRef} tabIndex={-1} className="mb-5 text-2xl font-bold tracking-tight text-navy-950">Comfort with risk</h1>
+            {qSlice.length === 0 && <p className="text-slate-500">Loading questions…</p>}
+            <div className="space-y-6">
               {qSlice.map((question, qi) => {
                 const absolute = groupBounds(qPage).start + qi;
                 return (
-                  <fieldset key={question.id} className="rounded-lg border border-navy-100 p-3">
-                    <legend className="px-1 text-sm font-semibold">Question {absolute + 1}. {question.text}</legend>
-                    <div className="mt-2 space-y-2">
+                  <fieldset key={question.id} className="card-3d bg-white/70 p-5 backdrop-blur-sm">
+                    <legend className="font-semibold text-navy-950 text-base">Question {absolute + 1}. {question.text}</legend>
+                    <div className="mt-3 space-y-2.5">
                       {question.options.map((o, idx) => {
                         const checked = draft.answers[question.id] === idx;
                         return (
                           <label key={idx}
-                            className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 ${checked ? "border-teal-600 bg-teal-50" : "border-navy-100 hover:bg-navy-50"}`}>
+                            className={`flex cursor-pointer items-start gap-3.5 rounded-xl border p-3.5 transition-all duration-200 ${checked ? "border-teal-500 bg-teal-50/80 shadow-glow-teal ring-2 ring-teal-500/20 text-navy-950 font-medium" : "border-slate-200/80 bg-white/50 hover:bg-white hover:border-slate-300 text-slate-700"}`}>
                             <input type="radio" name={question.id} className="mt-1 h-4 w-4 accent-teal-600" checked={checked}
                               onChange={() => { set("answers", { ...draft.answers, [question.id]: idx }); setErrors({}); }} />
-                            <span>{o.text}</span>
+                            <span className="text-sm leading-relaxed">{o.text}</span>
                           </label>
                         );
                       })}
@@ -314,61 +320,74 @@ export default function NewPlan() {
 
         {step === REVIEW && (
           <>
-            <h1 ref={headingRef} tabIndex={-1} className="mb-4 text-2xl font-bold">Review and consent</h1>
-            <h2 className="mb-1 font-semibold">About you</h2>
-            <dl className="grid gap-x-6 gap-y-2 text-sm md:grid-cols-2">
-              <Row k="Name" v={draft.first_name} />
-              <Row k="Age" v={draft.age} />
-              <Row k="Source of income" v={employmentLabel(draft.employment_type)} />
-              <Row k="Dependents" v={draft.dependents} />
-              <Row k="Planned retirement age" v={draft.retirement_age} />
-            </dl>
-            <h2 className="mb-1 mt-4 font-semibold">Income and finances</h2>
-            <dl className="grid gap-x-6 gap-y-2 text-sm md:grid-cols-2">
-              <Row k="Monthly income" v={inr(Number(draft.monthly_income))} />
-              <Row k="Monthly household expenses" v={inr(Number(draft.monthly_expenses))} />
-              <Row k="Monthly EMIs" v={inr(Number(draft.monthly_emi))} />
-              <Row k="Savings and liquid funds" v={inr(Number(draft.liquid_assets))} />
-              <Row k="Investments" v={inr(Number(draft.investments))} />
-              <Row k="Outstanding loans" v={inr(Number(draft.liabilities))} />
-              <Row k="Term life cover" v={inr(Number(draft.term_cover))} />
-              <Row k="Family health cover" v={inr(Number(draft.health_cover))} />
-            </dl>
-            <h2 className="mb-1 mt-4 font-semibold">Goals</h2>
-            <ul className="list-disc pl-5 text-sm">
-              {draft.goals.map((g, i) => {
-                const y = g.type === "retirement" && lockedRetirementYears != null ? lockedRetirementYears : g.years;
-                return (
-                  <li key={i}>{g.name}: {g.type === "retirement" && !Number(g.target) ? "default retirement spending" : inr(Number(g.target))} in {y} years (priority {g.priority})</li>
-                );
-              })}
-            </ul>
-            {hugeTarget && (
-              <p className="mt-3 rounded-lg border border-amber-600 bg-amber-100 p-3 text-sm" role="status">
-                One or more targets is over ₹100 Cr. The plan will still run, but treat the SIP as a scale check.
-              </p>
-            )}
-            <h2 className="mb-1 mt-4 font-semibold">Risk answers</h2>
-            <p className="text-sm">Answered {answered} of {QUESTIONS}.</p>
-            <dl className="mt-2 space-y-2 text-sm">
-              {(quiz?.questions ?? []).map((q, i) => (
-                <Row key={q.id} k={`Q${i + 1}. ${q.text}`} v={q.options[draft.answers[q.id]]?.text ?? "Not answered"} />
-              ))}
-            </dl>
-            <div className="mt-5 rounded-lg bg-navy-50 p-4">
-              <label className="flex items-start gap-3 text-sm">
-                <input type="checkbox" className="mt-1 h-5 w-5 accent-teal-600" checked={draft.consent}
+            <h1 ref={headingRef} tabIndex={-1} className="mb-5 text-2xl font-bold tracking-tight text-navy-950">Review and consent</h1>
+            
+            <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm">
+              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-teal-800">About you</h2>
+              <dl className="grid gap-x-6 gap-y-2 text-sm md:grid-cols-2">
+                <Row k="Name" v={draft.first_name} />
+                <Row k="Age" v={draft.age} />
+                <Row k="Source of income" v={employmentLabel(draft.employment_type)} />
+                <Row k="Dependents" v={draft.dependents} />
+                <Row k="Planned retirement age" v={draft.retirement_age} />
+              </dl>
+            </div>
+
+            <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm">
+              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-teal-800">Income and finances</h2>
+              <dl className="grid gap-x-6 gap-y-2 text-sm md:grid-cols-2">
+                <Row k="Monthly income" v={inr(Number(draft.monthly_income))} />
+                <Row k="Monthly household expenses" v={inr(Number(draft.monthly_expenses))} />
+                <Row k="Monthly EMIs" v={inr(Number(draft.monthly_emi))} />
+                <Row k="Savings and liquid funds" v={inr(Number(draft.liquid_assets))} />
+                <Row k="Investments" v={inr(Number(draft.investments))} />
+                <Row k="Outstanding loans" v={inr(Number(draft.liabilities))} />
+                <Row k="Term life cover" v={inr(Number(draft.term_cover))} />
+                <Row k="Family health cover" v={inr(Number(draft.health_cover))} />
+              </dl>
+            </div>
+
+            <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm">
+              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-teal-800">Goals</h2>
+              <ul className="list-disc pl-5 text-sm space-y-1 text-slate-700">
+                {draft.goals.map((g, i) => {
+                  const y = g.type === "retirement" && lockedRetirementYears != null ? lockedRetirementYears : g.years;
+                  return (
+                    <li key={i}><span className="font-semibold text-navy-950">{g.name}:</span> {g.type === "retirement" && !Number(g.target) ? "default retirement spending" : inr(Number(g.target))} in {y} years (priority {g.priority})</li>
+                  );
+                })}
+              </ul>
+              {hugeTarget && (
+                <p className="mt-3 rounded-xl border border-amber-300 bg-amber-50/80 p-3 text-sm text-amber-900" role="status">
+                  One or more targets is over ₹100 Cr. The plan will still run, but treat the SIP as a scale check.
+                </p>
+              )}
+            </div>
+
+            <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-sm backdrop-blur-sm">
+              <h2 className="mb-1 text-xs font-bold uppercase tracking-wider text-teal-800">Risk answers</h2>
+              <p className="text-xs text-slate-500 mb-3">Answered {answered} of {QUESTIONS}.</p>
+              <dl className="space-y-2 text-sm">
+                {(quiz?.questions ?? []).map((q, i) => (
+                  <Row key={q.id} k={`Q${i + 1}. ${q.text}`} v={q.options[draft.answers[q.id]]?.text ?? "Not answered"} />
+                ))}
+              </dl>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-teal-200/70 bg-teal-50/60 p-5 backdrop-blur-sm shadow-glass">
+              <label className="flex items-start gap-3.5 text-sm font-medium text-navy-950 cursor-pointer">
+                <input type="checkbox" className="mt-1 h-5 w-5 rounded accent-teal-600" checked={draft.consent}
                   onChange={(e) => set("consent", e.target.checked)} />
-                <span>{consentText || "I consent to my entries being used to generate an illustrative plan."}</span>
+                <span className="leading-relaxed">{consentText || "I consent to my entries being used to generate an illustrative plan."}</span>
               </label>
-              {errors.consent && <p className="err" role="alert">{errors.consent}</p>}
+              {errors.consent && <p className="err mt-2" role="alert">{errors.consent}</p>}
             </div>
           </>
         )}
 
         {submitError && <p className="err mt-4" role="alert">{submitError}</p>}
 
-        <div className="mt-6 flex items-center justify-between">
+        <div className="mt-8 flex items-center justify-between pt-4 border-t border-slate-200/60">
           <button type="button" className="btn-secondary" onClick={back} disabled={step === 0}>Back</button>
           {step < REVIEW ? (
             <button type="button" className="btn-primary" onClick={next}>Continue</button>

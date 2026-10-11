@@ -31,12 +31,12 @@ export default function AdminHeader({
   ];
 
   return (
-    <div className="bg-navy-950 text-white border-b border-navy-800 shadow-md">
+    <div className="bg-navy-950/90 backdrop-blur-xl text-white border-b border-navy-850/80 shadow-md sticky top-0 z-30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top Control Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-400 font-bold text-lg">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400/20 to-teal-500/10 border border-teal-500/40 text-teal-400 font-bold text-lg shadow-glow-teal">
               FH
             </span>
             <div>
@@ -52,15 +52,15 @@ export default function AdminHeader({
 
           <div className="flex items-center gap-3">
             {/* DB status pill */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-navy-900 border border-navy-800 text-xs text-navy-200">
-              <span className={`inline-block h-2 w-2 rounded-full ${isDbConnected ? "bg-teal-400 animate-pulse" : "bg-rose-400"}`} />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-navy-900/90 border border-navy-800 text-xs text-navy-200 backdrop-blur-sm">
+              <span className={`inline-block h-2 w-2 rounded-full ${isDbConnected ? "bg-teal-400 animate-pulse shadow-glow-teal" : "bg-rose-400"}`} />
               <span className="font-semibold text-white">{databaseProvider}</span>
               <span className="text-navy-400">({isDbConnected ? "Active" : "Offline"})</span>
             </div>
 
             <Link
               href="/"
-              className="px-3 py-1.5 rounded-lg bg-navy-800 hover:bg-navy-700 text-xs text-navy-100 hover:text-white font-medium transition inline-flex items-center gap-1.5 border border-navy-700"
+              className="px-3.5 py-1.5 rounded-xl bg-navy-850 hover:bg-navy-800 text-xs text-navy-100 hover:text-white font-semibold transition inline-flex items-center gap-1.5 border border-navy-700 shadow-sm"
             >
               <span>Client Portal</span>
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,17 +71,17 @@ export default function AdminHeader({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex overflow-x-auto space-x-1 border-t border-navy-900/80 pt-2 pb-1 scrollbar-none">
+        <div className="flex overflow-x-auto space-x-1.5 border-t border-navy-900/80 pt-2 pb-2 scrollbar-none">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-lg transition whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition whitespace-nowrap ${
                   isActive
-                    ? "bg-teal-600 text-white shadow-sm"
-                    : "text-navy-300 hover:bg-navy-900 hover:text-white"
+                    ? "bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-3d-btn-accent"
+                    : "text-navy-300 hover:bg-navy-900/80 hover:text-white"
                 }`}
               >
                 <span>{tab.icon}</span>

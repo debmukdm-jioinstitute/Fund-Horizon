@@ -10,9 +10,10 @@ import logging
 import os
 from typing import Any
 
-from fastapi import APIRouter, Header, HTTPException, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from pydantic import BaseModel
 
+from app.api.auth import require_role
 from app.api.serialize import clean
 from app.config import load_allocation, load_assumptions, load_scoring
 from app.data.loader import load_metrics
@@ -270,6 +271,58 @@ def admin_get_config(x_admin_key: str | None = Header(None, alias="X-Admin-Key")
 
 class RefreshRequest(BaseModel):
     dry_run: bool = False
+
+
+class CustomerUpdate(BaseModel):
+    role: str | None = None
+    assigned_rm_id: str | None = None
+
+
+@admin_router.get("/customers")
+def admin_list_customers(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    customer: dict = Depends(require_role("admin")),
+):
+    """List customer accounts with plan counts. Session-role auth; never exposes password hashes."""
+    repo = get_repository()
+    customers = repo.list_customers(limit=limit, offset=offset)
+    return {
+        "customers": customers,
+        "total": repo.count_customers(),
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@admin_router.patch("/customers/{customer_id}")
+def admin_update_customer(
+    customer_id: str,
+    body: CustomerUpdate,
+    customer: dict = Depends(require_role("admin")),
+):
+    """Update a customer's role or RM assignment. An admin cannot change their own role."""
+    repo = get_repository()
+    target = repo.get_customer_by_id(customer_id)
+    if not target:
+        raise HTTPException(404, "Customer not found")
+    fields: dict[str, Any] = {}
+    if "role" in body.model_fields_set:
+        if body.role not in ("customer", "rm", "admin"):
+            raise HTTPException(422, "role must be one of: customer, rm, admin")
+        if customer_id == customer["id"]:
+            raise HTTPException(422, "You cannot change your own role.")
+        fields["role"] = body.role
+    if "assigned_rm_id" in body.model_fields_set:
+        if body.assigned_rm_id is not None:
+            rm = repo.get_customer_by_id(body.assigned_rm_id)
+            if not rm or rm["role"] != "rm":
+                raise HTTPException(422, "assigned_rm_id must reference an existing RM account.")
+        fields["assigned_rm_id"] = body.assigned_rm_id
+    updated = repo.update_customer(customer_id, fields)
+    if not updated:
+        raise HTTPException(404, "Customer not found")
+    return {"customer": updated}
 
 
 @admin_router.post("/refresh")

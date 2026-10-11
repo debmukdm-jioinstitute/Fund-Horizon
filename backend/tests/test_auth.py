@@ -38,8 +38,11 @@ def _signup(client, email=None, mobile=None, password="password123", name="Test 
     return r
 
 
-def _signup_pair(client, **kw):
-    email, mobile = _unique()
+def _signup_pair(client, email=None, mobile=None, **kw):
+    if email is None or mobile is None:
+        u_email, u_mobile = _unique()
+        email = email or u_email
+        mobile = mobile or u_mobile
     return _signup(client, email=email, mobile=mobile, **kw), email, mobile
 
 

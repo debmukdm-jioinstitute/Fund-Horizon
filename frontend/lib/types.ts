@@ -74,6 +74,30 @@ export interface FundPick {
   explain: string[];
   merged_from: { cat: string; weight_pct: number }[];
   suggested_monthly_sip: number;
+  /** Next-ranked schemes in the same category (rank order after this pick). */
+  alternatives?: FundPick[];
+}
+export interface InsurancePlanEntry {
+  insurer: string;
+  plan: string;
+  claim_settlement: string;
+  solvency: string | null;
+  sum_insured: string;
+  features: string[];
+  why_included: string;
+  marked_pick: boolean;
+}
+export interface InsuranceBlock {
+  kind: "term" | "health";
+  gap: number;
+  researched_on: string;
+  note: string;
+  plans: InsurancePlanEntry[];
+  pick_reason: string[];
+}
+export interface InsuranceSuggestions {
+  term: InsuranceBlock | null;
+  health: InsuranceBlock | null;
 }
 export interface FanPoint { year: number; p10: number; p50: number; p90: number }
 export interface Levers {
@@ -111,6 +135,9 @@ export interface Plan {
     per_goal: { name: string; years: number; by_category: Record<string, number>; by_asset_class: Record<string, number> }[];
   };
   funds: FundPick[];
+  shortlist_omitted?: boolean;
+  /** Illustrative insurance-plan research shortlists (present when a cover gap exists). */
+  insurance_suggestions?: InsuranceSuggestions | null;
   stress_test: {
     crash_2020_drawdown: number | null;
     worst_peak_to_trough: number;

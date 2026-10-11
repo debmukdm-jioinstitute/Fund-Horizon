@@ -173,3 +173,133 @@ def test_api_cas_upload_handles_bad_pdf_bytes(client):
         files={"file": ("corrupt.pdf", b"%PDF-1.4 corrupt junk bytes", "application/pdf")},
     )
     assert res.status_code in (400, 422)
+
+
+def test_resilient_detect_file_type_heuristics():
+    from casparser.enums import FileType
+
+    class MockDoc:
+        def __init__(self, text: str):
+            self._text = text
+
+        def __len__(self):
+            return 1
+
+        def __getitem__(self, idx):
+            class MockPage:
+                def __init__(self, text):
+                    self._text = text
+
+                def get_textpage(self):
+                    class MockTP:
+                        def __init__(self, text):
+                            self._text = text
+
+                        def get_text_bounded(self):
+                            return self._text
+
+                    return MockTP(self._text)
+
+            return MockPage(self._text)
+
+    # 1. CAMS Mailback without CAMSCASWS
+    cams_doc = MockDoc("Computer Age Management Services Ltd\nConsolidated Account Statement\nFolio: 12345/67")
+    assert cas.resilient_detect_file_type("dummy.pdf", "pass", _doc=cams_doc) == FileType.CAMS
+
+    # 2. Spaced CAMS
+    spaced_cams = MockDoc("C A M S Consolidated Statement\nPeriod: 01-Jan-2023 to 01-Jan-2026")
+    assert cas.resilient_detect_file_type("dummy.pdf", "pass", _doc=spaced_cams) == FileType.CAMS
+
+    # 3. KFintech / Karvy without KFINCASWS
+    kfin_doc = MockDoc("Karvy Computershare Pvt Ltd / KFin Technologies\nMutual Fund Statement")
+    assert cas.resilient_detect_file_type("dummy.pdf", "pass", _doc=kfin_doc) == FileType.KFINTECH
+
+    # 4. CDSL e-CAS
+    cdsl_doc = MockDoc("Central Depository Services\nCDSL e-CAS Statement\nBO ID: 1208160012345678")
+    assert cas.resilient_detect_file_type("dummy.pdf", "pass", _doc=cdsl_doc) == FileType.CDSL
+
+    # 5. NSDL e-CAS
+    nsdl_doc = MockDoc("National Securities Depository Limited\nCAS - NSDL\nDP ID: IN300000")
+    assert cas.resilient_detect_file_type("dummy.pdf", "pass", _doc=nsdl_doc) == FileType.NSDL
+
+    # 6. Generic Mutual Fund Folio layout fallback
+    folio_doc = MockDoc("Consolidated Portfolio Statement\nFolio No: 54321/98\nOpening Unit Balance: 500.0\nNAV: 25.5")
+    assert cas.resilient_detect_file_type("dummy.pdf", "pass", _doc=folio_doc) == FileType.CAMS
+
+
+def test_normalize_cas_dict_demat_accounts():
+    raw_demat = {
+        "statement_period": {"from": "2023-01-01", "to": "2026-10-09"},
+        "investor_info": {"name": "Priya Sharma", "pan": "ABCDE1234F"},
+        "file_type": "CDSL",
+        "accounts": [
+            {
+                "name": "Zerodha Broking Limited",
+                "dp_id": "12081600",
+                "client_id": "00987654",
+                "mutual_funds": [
+                    {
+                        "name": "Parag Parikh Flexi Cap Fund - Direct Plan - Growth",
+                        "isin": "INF879O01018",
+                        "amfi": "122639",
+                        "balance": 1000.0,
+                        "nav": 75.0,
+                        "value": 75000.0,
+                    }
+                ],
+                "equities": [
+                    {
+                        "name": "Infosys Limited",
+                        "isin": "INE009A01021",
+                        "balance": 50.0,
+                        "value": 75000.0,
+                    }
+                ],
+            }
+        ],
+    }
+
+    norm = cas.normalize_cas_dict(raw_demat)
+    assert "folios" in norm
+    assert len(norm["folios"]) == 1
+    f0 = norm["folios"][0]
+    assert f0["folio"] == "12081600/00987654"
+    assert f0["amc"] == "Zerodha Broking Limited"
+    assert len(f0["schemes"]) == 2
+    assert f0["schemes"][0]["scheme"] == "Parag Parikh Flexi Cap Fund - Direct Plan - Growth"
+    assert f0["schemes"][0]["valuation"]["value"] == 75000.0
+    assert f0["schemes"][1]["scheme"] == "Infosys Limited"
+    assert f0["schemes"][1]["valuation"]["value"] == 75000.0
+
+
+def test_analyze_cas_data_with_demat_account():
+    metrics_df = load_metrics()
+    raw_demat = {
+        "statement_period": {"from": "2023-01-01", "to": "2026-10-09"},
+        "investor_info": {"name": "Priya Sharma", "pan": "ABCDE1234F"},
+        "file_type": "CDSL",
+        "accounts": [
+            {
+                "name": "Zerodha Broking Limited",
+                "dp_id": "12081600",
+                "client_id": "00987654",
+                "mutual_funds": [
+                    {
+                        "name": "HDFC Banking and PSU Debt Fund - Regular Plan - Growth",
+                        "isin": "INF179KA1JC4",
+                        "amfi": "128628",
+                        "balance": 2500.0,
+                        "nav": 20.0,
+                        "value": 50000.0,
+                    }
+                ],
+            }
+        ],
+    }
+
+    res = cas.analyze_cas_data(raw_demat, metrics_df=metrics_df, target_band="Moderate")
+    assert res["investor_name"] == "Priya Sharma"
+    assert res["total_value"] == 50000.0
+    assert res["holdings_count"] == 1
+    assert res["holdings"][0]["asset_class"] == "debt"
+

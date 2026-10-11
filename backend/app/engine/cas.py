@@ -7,6 +7,7 @@ Numbers are deterministic Python; no LLM and no runtime network calls.
 from __future__ import annotations
 
 import io
+import re
 from datetime import date
 from typing import Any
 
@@ -31,6 +32,336 @@ class CASParsingError(Exception):
     """Raised when casparser fails to parse the document structure."""
 
 
+def _get_doc_text_samples(doc: Any, max_pages: int = 15) -> str:
+    """Extract bounded text from up to max_pages of a pypdfium2 document."""
+    samples = []
+    try:
+        page_count = len(doc)
+    except Exception:
+        page_count = 0
+
+    for i in range(min(max_pages, page_count)):
+        try:
+            tp = doc[i].get_textpage()
+            text = tp.get_text_bounded()
+            if text:
+                samples.append(text)
+        except Exception:
+            continue
+    return "\n".join(samples)
+
+
+def resilient_detect_file_type(
+    pdf_path: Any,
+    password: str,
+    *,
+    _doc: Any = None,
+) -> Any:
+    """Identify the CAS issuer with deep heuristic fallback for diverse statement formats."""
+    from casparser.enums import FileType
+    from casparser.parsers.detect import _open_document
+
+    doc = _doc if _doc is not None else _open_document(pdf_path, password)
+    text = _get_doc_text_samples(doc, max_pages=15)
+
+    # 1. Standard exact casparser signatures
+    if "CAMSCASWS" in text:
+        return FileType.CAMS
+    if "KFINCASWS" in text:
+        return FileType.KFINTECH
+    if "NSDL Consolidated Account Statement" in text or "About NSDL" in text:
+        return FileType.NSDL
+    if "Central Depository Services (India) Limited" in text:
+        return FileType.CDSL
+
+    # 2. Text normalization for tolerant matching
+    text_upper = text.upper()
+    text_collapsed = re.sub(r"[\s\-_.:/]+", "", text_upper)
+
+    # CAMS patterns (mailback, online portal, aggregator)
+    cams_patterns = [
+        "CAMSCAS", "CAMSONLINE", "COMPUTERAGEMANAGEMENT", "CAMS_CAS",
+        "CAMSCONSOLIDATED", "CAMSEMAIL", "CAMSMAILBACK", "CAMSINDIA",
+    ]
+    if any(p in text_collapsed for p in cams_patterns) or re.search(r"\bC\s*A\s*M\s*S\b", text, re.I):
+        return FileType.CAMS
+
+    # KFintech patterns (Karvy, KFin, portal)
+    kfin_patterns = [
+        "KFINCAS", "KFINTECH", "KFINTECHNOLOGIES", "KARVYCOMPUTERSHARE",
+        "KARVYFINTECH", "KARVY", "KFIN", "KFINTECH.COM",
+    ]
+    if any(p in text_collapsed for p in kfin_patterns) or re.search(r"\bK\s*F\s*I\s*N(?:\s*T\s*E\s*C\s*H)?\b", text, re.I):
+        return FileType.KFINTECH
+
+    # NSDL patterns
+    nsdl_patterns = [
+        "NATIONALSECURITIESDEPOSITORY", "NSDLCONSOLIDATED", "NSDLECAS",
+        "NSDLCAS", "NSDL.CO.IN", "NSDLINDIA", "CASNSDL",
+    ]
+    if any(p in text_collapsed for p in nsdl_patterns) or re.search(r"\bN\s*S\s*D\s*L\b", text, re.I):
+        return FileType.NSDL
+
+    # CDSL patterns
+    cdsl_patterns = [
+        "CENTRALDEPOSITORYSERVICES", "CDSLCONSOLIDATED", "CDSLECAS",
+        "CDSLCAS", "CDSLINDIA", "CDSLVENTURES", "CASCDSL",
+    ]
+    if any(p in text_collapsed for p in cdsl_patterns) or re.search(r"\bC\s*D\s*S\s*L\b", text, re.I):
+        return FileType.CDSL
+
+    # 3. Structural Demat signatures
+    if any(k in text_collapsed for k in ["BENEFICIARYOWNER", "BOID", "12081600"]):
+        return FileType.CDSL
+    if any(k in text_collapsed for k in ["DEPOSITORYPARTICIPANT", "DPID", "IN30"]):
+        return FileType.NSDL
+
+    # 4. Structural Mutual Fund / RTA signatures (CAMS / KFintech table layouts)
+    rta_markers = [
+        "FOLIONO", "FOLIONUMBER", "OPENINGUNITBALANCE", "CLOSINGUNITBALANCE",
+        "TRANSACTIONDESCRIPTION", "NAVON", "VALUATIONON", "MUTUALFUND",
+        "REGISTRAR", "PURCHASE/SIP", "TOTALCOSTVALUE",
+    ]
+    if any(m in text_collapsed for m in rta_markers) or "FOLIO" in text_upper:
+        return FileType.CAMS
+
+    # 5. Default fallback to CAMS (the most universal RTA parser) rather than failing
+    return FileType.CAMS
+
+
+def resilient_detect_cas_type(
+    pdf_path: Any,
+    password: str,
+    *,
+    _doc: Any = None,
+) -> Any:
+    """Identify whether statement is SUMMARY or DETAILED without failing on cover pages."""
+    from casparser.enums import CASFileType
+    from casparser.parsers.detect import _open_document
+
+    doc = _doc if _doc is not None else _open_document(pdf_path, password)
+    text = _get_doc_text_samples(doc, max_pages=6).lower()
+
+    if "summary" in text and "statement" not in text and "detailed" not in text:
+        return CASFileType.SUMMARY
+    return CASFileType.DETAILED
+
+
+def _apply_casparser_patches() -> None:
+    """Safely monkeypatch casparser's issuer detectors to handle real-world CAS PDFs."""
+    try:
+        import casparser.parsers as _c_parsers
+        import casparser.parsers.detect as _c_detect
+
+        _c_detect.detect_file_type = resilient_detect_file_type
+        _c_parsers.detect_file_type = resilient_detect_file_type
+        _c_detect.detect_cas_type = resilient_detect_cas_type
+        _c_parsers.detect_cas_type = resilient_detect_cas_type
+    except Exception:
+        pass
+
+
+_apply_casparser_patches()
+
+
+def normalize_cas_dict(parsed: Any) -> dict[str, Any]:
+    """Ensure parsed CAS data is a python dictionary and normalize Demat accounts into standard folios."""
+    if hasattr(parsed, "model_dump"):
+        data = parsed.model_dump(by_alias=True)
+    elif hasattr(parsed, "dict"):
+        data = parsed.dict()
+    elif isinstance(parsed, dict):
+        data = dict(parsed)
+    else:
+        data = {"folios": []}
+
+    period = data.get("statement_period")
+    if isinstance(period, dict):
+        for k, v in period.items():
+            if hasattr(v, "isoformat"):
+                period[k] = v.isoformat()
+
+    # Convert Demat accounts (from NSDL/CDSL statements) to folios if folios is empty
+    if not data.get("folios") and data.get("accounts"):
+        folios = []
+        for a_idx, acc in enumerate(data.get("accounts", [])):
+            dp_name = str(acc.get("name") or "Demat Holding Account").strip()
+            dp_id = str(acc.get("dp_id") or "").strip()
+            client_id = str(acc.get("client_id") or "").strip()
+            folio_id = f"{dp_id}/{client_id}" if dp_id and client_id else (client_id or dp_id or f"Demat-{a_idx+1}")
+
+            schemes = []
+            for mf in acc.get("mutual_funds", []):
+                s_name = str(mf.get("name") or "Mutual Fund Scheme").strip()
+                isin = str(mf.get("isin") or "").strip().upper()
+                amfi = str(mf.get("amfi") or "").strip()
+                balance = float(mf.get("balance", 0.0) or 0.0)
+                nav = float(mf.get("nav", 0.0) or 0.0)
+                val = float(mf.get("value", 0.0) or 0.0)
+                if val <= 0.0 and balance > 0 and nav > 0:
+                    val = balance * nav
+
+                schemes.append({
+                    "scheme": s_name,
+                    "isin": isin,
+                    "amfi": amfi,
+                    "close": balance,
+                    "valuation": {
+                        "date": str(period.get("to") if isinstance(period, dict) else "") or None,
+                        "nav": nav,
+                        "value": val,
+                    },
+                    "transactions": [],
+                })
+
+            for eq in acc.get("equities", []):
+                eq_name = str(eq.get("name") or "Equity Share").strip()
+                isin = str(eq.get("isin") or "").strip().upper()
+                balance = float(eq.get("balance", 0.0) or 0.0)
+                val = float(eq.get("value", 0.0) or 0.0)
+                nav = round(val / balance, 2) if balance > 0 and val > 0 else 0.0
+
+                schemes.append({
+                    "scheme": eq_name,
+                    "isin": isin,
+                    "amfi": "",
+                    "close": balance,
+                    "valuation": {
+                        "date": str(period.get("to") if isinstance(period, dict) else "") or None,
+                        "nav": nav,
+                        "value": val,
+                    },
+                    "transactions": [],
+                })
+
+            if schemes:
+                folios.append({
+                    "folio": folio_id,
+                    "amc": dp_name,
+                    "PAN": str(data.get("investor_info", {}).get("pan", "") or ""),
+                    "schemes": schemes,
+                })
+
+        data["folios"] = folios
+
+    return data
+
+
+def extract_cas_via_text_fallback(pdf_bytes: bytes, password: str) -> dict[str, Any]:
+    """Fallback in-memory text extractor for custom, aggregator, or non-standard CAS PDFs."""
+    import pypdfium2 as pdfium
+
+    doc = pdfium.PdfDocument(io.BytesIO(pdf_bytes), password=password)
+    pages_text: list[str] = []
+    for page in doc:
+        tp = page.get_textpage()
+        pages_text.append(tp.get_text_bounded())
+    doc.close()
+
+    full_text = "\n".join(pages_text)
+
+    investor_name = "Valued Investor"
+    m_name = re.search(r"(?:Name|Investor(?:\s*Name)?)\s*[:\-]\s*([A-Za-z\s.]{3,40})", full_text, re.I)
+    if m_name:
+        investor_name = m_name.group(1).strip()
+    elif pages_text:
+        lines = [line_txt.strip() for line_txt in pages_text[0].splitlines() if line_txt.strip()]
+        for line_txt in lines[:5]:
+            if len(line_txt) > 3 and not any(k in line_txt.lower() for k in ["statement", "cas", "cams", "kfin", "nsdl", "cdsl", "portfolio", "folio"]):
+                investor_name = line_txt
+                break
+
+    statement_period: dict[str, str | None] = {"from": None, "to": None}
+    m_period = re.search(r"(?:Period|Statement\s*Period)\s*[:\-]?\s*(?:From\s*)?([0-9A-Za-z\-/]+)\s*(?:To|to|-)\s*([0-9A-Za-z\-/]+)", full_text, re.I)
+    if m_period:
+        statement_period["from"] = m_period.group(1).strip()
+        statement_period["to"] = m_period.group(2).strip()
+
+    isin_pattern = re.compile(r"\b(INF[A-Z0-9]{9})\b")
+    current_folio_num = "Folio-1"
+    current_amc = "Mutual Fund Portfolio"
+
+    schemes: list[dict[str, Any]] = []
+    seen_isins: set[str] = set()
+
+    for page_text in pages_text:
+        lines = [line_txt.strip() for line_txt in page_text.splitlines() if line_txt.strip()]
+        for idx, line in enumerate(lines):
+            amc_match = re.search(r"([A-Za-z\s]+(?:Mutual\s*Fund|Asset\s*Management))", line, re.I)
+            if amc_match:
+                current_amc = amc_match.group(1).strip()
+
+            folio_match = re.search(r"(?:Folio\s*(?:No\.?|Number)?\s*[:\-]?\s*)([A-Za-z0-9/\-_]+)", line, re.I)
+            if folio_match:
+                current_folio_num = folio_match.group(1).strip()
+
+            isin_match = isin_pattern.search(line)
+            if isin_match:
+                isin = isin_match.group(1).upper()
+                if isin in seen_isins:
+                    continue
+                seen_isins.add(isin)
+
+                scheme_name = line
+                if len(line.replace(isin, "").strip()) < 5 and idx > 0:
+                    scheme_name = lines[idx - 1]
+
+                window = " ".join(lines[max(0, idx - 2):min(len(lines), idx + 6)])
+
+                nav = 0.0
+                val = 0.0
+                units = 0.0
+
+                m_nav = re.search(r"NAV\s*[:\-]?\s*(?:INR|Rs\.?)?\s*([0-9]+(?:\.[0-9]+)?)", window, re.I)
+                if m_nav:
+                    nav = float(m_nav.group(1))
+
+                m_val = re.search(r"(?:Value|Market\s*Value)\s*[:\-]?\s*(?:INR|Rs\.?)?\s*([0-9,]+(?:\.[0-9]+)?)", window, re.I)
+                if m_val:
+                    val = float(m_val.group(1).replace(",", ""))
+
+                m_units = re.search(r"(?:Units|Balance)\s*[:\-]?\s*([0-9,]+(?:\.[0-9]+)?)", window, re.I)
+                if m_units:
+                    units = float(m_units.group(1).replace(",", ""))
+
+                if val <= 0.0 and units > 0 and nav > 0:
+                    val = units * nav
+
+                schemes.append({
+                    "scheme": scheme_name,
+                    "isin": isin,
+                    "amfi": "",
+                    "close": units,
+                    "valuation": {
+                        "date": statement_period["to"],
+                        "nav": nav,
+                        "value": val,
+                    },
+                    "transactions": [],
+                })
+
+    folios: list[dict[str, Any]] = []
+    if schemes:
+        folios.append({
+            "folio": current_folio_num,
+            "amc": current_amc,
+            "PAN": "",
+            "schemes": schemes,
+        })
+
+    return {
+        "statement_period": statement_period,
+        "investor_info": {
+            "name": investor_name,
+            "email": "",
+            "mobile": "",
+        },
+        "file_type": "CAMS",
+        "cas_type": "DETAILED",
+        "folios": folios,
+    }
+
+
 def parse_cas_pdf_bytes(
     pdf_bytes: bytes,
     password: str,
@@ -38,7 +369,7 @@ def parse_cas_pdf_bytes(
 ) -> dict[str, Any]:
     """Parse a CAS PDF strictly in memory.
 
-    Validates size limit and %PDF magic bytes before invoking casparser.
+    Validates size limit and %PDF magic bytes before invoking multi-strategy parsing.
     Returns the parsed dictionary. Never writes bytes or password to disk.
     """
     if not pdf_bytes:
@@ -53,19 +384,83 @@ def parse_cas_pdf_bytes(
     if not pdf_bytes.startswith(b"%PDF"):
         raise CASValidationError("Uploaded file is not a valid PDF document (missing %PDF signature).")
 
-    try:
-        import casparser
-        from casparser.exceptions import IncorrectPasswordError, ParserException
+    # Ensure resilient patches are active
+    _apply_casparser_patches()
 
+    clean_pass = password.strip()
+
+    # Pre-verify password using pypdfium2 to return clear, immediate feedback on password errors
+    try:
+        import pypdfium2 as pdfium
+        from pypdfium2._helpers.misc import PdfiumError
+
+        test_doc = pdfium.PdfDocument(io.BytesIO(pdf_bytes), password=clean_pass)
+        test_doc.close()
+    except PdfiumError as pe:
+        msg = str(pe)
+        if "PASSWORD" in msg.upper() or "password" in msg:
+            raise CASPasswordError("Incorrect password for CAS statement. Please verify and try again.") from pe
+        raise CASValidationError(f"Unable to read PDF document: {pe}") from pe
+    except Exception as e:
+        if "password" in str(e).lower():
+            raise CASPasswordError("Incorrect password for CAS statement. Please verify and try again.") from e
+
+    import casparser
+    from casparser.enums import FileType
+    from casparser.exceptions import IncorrectPasswordError
+
+    last_err: Exception | None = None
+
+    # Strategy 1: Standard casparser dispatcher with resilient detection
+    try:
         f = io.BytesIO(pdf_bytes)
-        parsed = casparser.read_cas_pdf(f, password=password.strip(), output="dict")
-        return parsed
+        parsed = casparser.read_cas_pdf(f, password=clean_pass, output="dict")
+        return normalize_cas_dict(parsed)
     except IncorrectPasswordError as e:
         raise CASPasswordError("Incorrect password for CAS statement. Please verify and try again.") from e
-    except ParserException as e:
-        raise CASParsingError(f"Failed to parse CAS statement structure: {e}") from e
     except Exception as e:
-        raise CASParsingError(f"Unexpected error while parsing CAS statement: {e}") from e
+        last_err = e
+
+    # Strategy 2: Direct targeted parser invocations
+    try:
+        from casparser.parsers import cams_detailed
+        parsed = cams_detailed.parse(io.BytesIO(pdf_bytes), clean_pass, file_type=FileType.CAMS)
+        return normalize_cas_dict(parsed)
+    except Exception:
+        pass
+
+    try:
+        from casparser.parsers import cdsl
+        parsed = cdsl.parse_cdsl(io.BytesIO(pdf_bytes), clean_pass, file_type=FileType.CDSL)
+        return normalize_cas_dict(parsed)
+    except Exception:
+        pass
+
+    try:
+        from casparser.parsers import nsdl
+        parsed = nsdl.parse_nsdl(io.BytesIO(pdf_bytes), clean_pass, file_type=FileType.NSDL)
+        return normalize_cas_dict(parsed)
+    except Exception:
+        pass
+
+    try:
+        from casparser.parsers import cams_summary
+        parsed = cams_summary.parse(io.BytesIO(pdf_bytes), clean_pass, file_type=FileType.CAMS)
+        return normalize_cas_dict(parsed)
+    except Exception:
+        pass
+
+    # Strategy 3: Text-based holding extraction fallback
+    try:
+        fallback_res = extract_cas_via_text_fallback(pdf_bytes, clean_pass)
+        if fallback_res and fallback_res.get("folios") and fallback_res["folios"][0].get("schemes"):
+            return normalize_cas_dict(fallback_res)
+    except Exception:
+        pass
+
+    if last_err:
+        raise CASParsingError(f"Failed to parse CAS statement structure: {last_err}")
+    raise CASParsingError("Unable to extract portfolio holdings from this CAS PDF format.")
 
 
 def build_isin_lookup(metrics_df: pd.DataFrame) -> dict[str, dict[str, Any]]:
@@ -114,6 +509,7 @@ def analyze_cas_data(
 
     Compares current allocation against target_band if specified.
     """
+    cas_dict = normalize_cas_dict(cas_dict)
     lookup = build_isin_lookup(metrics_df)
     folios_raw = cas_dict.get("folios", [])
 

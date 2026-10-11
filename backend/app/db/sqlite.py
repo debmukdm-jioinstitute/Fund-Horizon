@@ -137,6 +137,30 @@ class SQLiteRepository(DatabaseRepository):
         finally:
             conn.close()
 
+    def update_plan(
+        self,
+        plan_id: str,
+        request: dict[str, Any],
+        result: dict[str, Any],
+    ) -> None:
+        """Replace the stored request/result for a plan, preserving created_at."""
+        now = datetime.now(UTC).isoformat()
+        conn = self._get_connection()
+        try:
+            with conn:
+                conn.execute(
+                    """
+                    INSERT INTO plans (id, created_at, request, result)
+                    VALUES (?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        request=excluded.request,
+                        result=excluded.result
+                    """,
+                    (plan_id, now, json.dumps(request), json.dumps(result)),
+                )
+        finally:
+            conn.close()
+
     def get_plan(self, plan_id: str) -> dict[str, Any] | None:
         conn = self._get_connection()
         try:
@@ -474,6 +498,12 @@ def save_plan(request: dict, result: dict) -> dict:
     created = datetime.now(UTC).isoformat()
     repo.save_plan(request, result, plan_id=plan_id, created_at=created)
     return {"id": plan_id, "created_at": created, "expires_at": expires_at(created)}
+
+
+def update_plan(plan_id: str, request: dict, result: dict) -> None:
+    from app.db import get_repository
+
+    get_repository().update_plan(plan_id, request, result)
 
 
 def get_plan(plan_id: str) -> dict | None:

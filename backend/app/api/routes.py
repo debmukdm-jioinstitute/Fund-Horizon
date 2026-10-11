@@ -9,8 +9,8 @@ import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import Response
 
-from app.api.serialize import clean, plan_payload
 from app.api.auth import get_optional_customer
+from app.api.serialize import clean, plan_payload
 from app.config import load_allocation, load_assumptions, load_questionnaire
 from app.config.disclosures import (
     ANALYTICS_DISCLAIMER,

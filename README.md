@@ -18,7 +18,8 @@ make lint      # ruff, eslint, tsc, banned-wording scan
 ```
 
 Optional: copy `backend/.env.example` to `backend/.env` (CORS origins, DB path, data dir) and set
-`NEXT_PUBLIC_API_URL` for the frontend if the API is not on `localhost:8000`.
+`NEXT_PUBLIC_API_URL` for the frontend if the API is not on `localhost:8000`. Public site links
+(sitemap, robots, Open Graph) use `NEXT_PUBLIC_SITE_URL` (default `https://fundhorizon.up.railway.app`).
 
 ## Layout
 ```

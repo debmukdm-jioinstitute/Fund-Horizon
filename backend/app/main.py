@@ -61,8 +61,12 @@ def create_app() -> FastAPI:
             content={"detail": "; ".join(e["message"] for e in errors), "errors": errors},
         )
 
+    from app.api.admin import admin_router
+
     app.include_router(router)
+    app.include_router(admin_router)
     return app
+
 
 
 app = create_app()

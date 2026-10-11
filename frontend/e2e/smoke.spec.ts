@@ -112,3 +112,48 @@ test("fund comparison page renders side-by-side comparison and correlation matri
   await expect(page.getByText("return-correlation overlap, not holdings overlap")).toBeVisible();
 });
 
+test("cas upload page renders upload form, consent, and privacy notice", async ({ page }) => {
+  await page.goto("/cas");
+  await expect(page.getByRole("heading", { name: "Consolidated Account Statement (CAS) Analysis" })).toBeVisible();
+  await expect(page.getByText("Statutory Privacy & In-Memory Processing Guarantee")).toBeVisible();
+  await expect(page.getByLabel("CAS PDF Document")).toBeVisible();
+  await expect(page.getByLabel(/PDF Password/i)).toBeVisible();
+  await expect(page.getByLabel(/Target Asset Allocation Profile/i)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Analyze Portfolio" })).toBeVisible();
+  await expect(page.getByText("ARN 345439").first()).toBeVisible();
+});
+
+test("fund ask knowledge base page renders search input, suggestions, and disclaimers", async ({ page }) => {
+  await page.goto("/funds/ask");
+  await expect(page.getByRole("heading", { name: "Mutual Fund Scheme Knowledge Base" })).toBeVisible();
+  await expect(page.getByLabel("Ask or Search Knowledge Base")).toBeVisible();
+  await expect(page.getByLabel("Plan Option")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Search" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "HDFC Banking and PSU Debt" })).toBeVisible();
+  await expect(page.getByText("ARN 345439").first()).toBeVisible();
+});
+
+test("admin control center renders overview, tabs, metrics, and catalog", async ({ page }) => {
+  await page.goto("/admin");
+  await expect(page.getByRole("heading", { name: "Control Center" })).toBeVisible();
+  await expect(page.getByText("Mutual Fund Schemes").first()).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("Client Plans").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /Executive Overview/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Client Plans/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Fund Catalog/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Assumptions & Rules/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Operations & Sync/i })).toBeVisible();
+
+  // Switch to Fund Catalog tab
+  await page.getByRole("button", { name: /Fund Catalog/i }).click();
+  await expect(page.getByRole("heading", { name: "Mutual Fund Master Catalog" })).toBeVisible();
+  await expect(page.getByPlaceholder("Search scheme name or code...")).toBeVisible();
+
+  // Switch to Assumptions tab
+  await page.getByRole("button", { name: /Assumptions & Rules/i }).click();
+  await expect(page.getByRole("heading", { name: /Deterministic Model Assumptions/i })).toBeVisible();
+  await expect(page.getByText("Asset Class Expected Returns")).toBeVisible();
+});
+
+
+

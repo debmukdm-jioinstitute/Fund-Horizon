@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -86,4 +87,27 @@ class PortfolioHolding(BaseModel):
 class PortfolioAnalyzeRequest(BaseModel):
     holdings: list[PortfolioHolding] = Field(min_length=1, max_length=20)
     correlation_threshold: float = Field(default=0.80, ge=0.1, le=0.99)
+
+
+class RagAskRequest(BaseModel):
+    query: str = Field(min_length=2, max_length=500)
+    category: str | None = None
+    plan: str | None = None
+    amc: str | None = None
+    top_k: int = Field(default=4, ge=1, le=20)
+
+
+class ExplainPlanRequest(BaseModel):
+    plan_id: str | None = None
+    plan_data: dict[str, Any] | None = None
+
+
+class ExplainFundRequest(BaseModel):
+    scheme_code: str = Field(min_length=1)
+
+
+class ExplainCasRequest(BaseModel):
+    cas_data: dict[str, Any]
+
+
 

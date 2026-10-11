@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getFundAnalyticsServer, getFundDetailServer } from "@/lib/api";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
+import ExplainModal from "@/components/ExplainModal";
 import {
   CaptureRatioBarChart,
   NavChart,
@@ -79,12 +80,19 @@ export default async function FundDetailPage({ params }: PageProps) {
               {analytics.last_nav_date}
             </p>
           </div>
-          <Link
-            href={`/funds/compare?codes=${detail.scheme_code}`}
-            className="rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-navy-800 transition-colors"
-          >
-            Compare Scheme →
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <ExplainModal
+              buttonLabel="Explain Metrics"
+              kind="fund"
+              schemeCode={detail.scheme_code}
+            />
+            <Link
+              href={`/funds/compare?codes=${detail.scheme_code}`}
+              className="rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-navy-800 transition-colors"
+            >
+              Compare Scheme →
+            </Link>
+          </div>
         </div>
 
         {/* Quick Returns Grid */}

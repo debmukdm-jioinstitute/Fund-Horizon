@@ -7,6 +7,7 @@ import {
   EmergencyCard, FundTable, GoalCard, InsuranceCard, ProfileCard, SectionTitle,
 } from "@/components/Results";
 import { Donut, StressChart } from "@/components/charts";
+import ExplainModal from "@/components/ExplainModal";
 import { getPlan, reportUrl } from "@/lib/api";
 import { CATEGORY_LABELS, inr, pct } from "@/lib/format";
 import type { Plan } from "@/lib/types";
@@ -43,7 +44,14 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
           <h1 className="text-3xl font-bold">Your illustrative plan</h1>
           <p className="text-navy-700">Fund data as of {plan.data_asof}. Figures use the assumptions shown below.</p>
         </div>
-        <a href={reportUrl(plan.id)} className="btn-accent" download>Download PDF report</a>
+        <div className="flex flex-wrap items-center gap-3">
+          <ExplainModal
+            buttonLabel="Explain Plan with AI"
+            kind="plan"
+            planId={plan.id}
+          />
+          <a href={reportUrl(plan.id)} className="btn-accent" download>Download PDF report</a>
+        </div>
       </header>
 
       <section aria-labelledby="profile"><SectionTitle id="profile">Risk profile</SectionTitle>

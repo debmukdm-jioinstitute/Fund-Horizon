@@ -38,6 +38,10 @@ def test_no_banned_words_in_user_facing_strings():
         d.COMPARE_DISCLAIMER,
         d.RANKING_DISCLAIMER,
         d.PORTFOLIO_DISCLAIMER,
+        d.CAS_PRIVACY_NOTICE,
+        d.CAS_CONSENT_TEXT,
+        d.CAS_DISCLAIMER,
+        d.RAG_DISCLAIMER,
     ]:
         assert not BANNED.search(s), s
 

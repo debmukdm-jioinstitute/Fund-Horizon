@@ -233,6 +233,16 @@ def sip_xirr(
         return None
 
 
+def xirr(cash_flows: list[tuple[date | pd.Timestamp, float]]) -> float | None:
+    """Calculate annualised internal rate of return for arbitrary dated cash flows.
+
+    Cash flows must be a list of (date, amount). Outflows (investments) should be negative,
+    inflows (redemptions, terminal value) should be positive. Returns None if unable to solve.
+    """
+    return sip_xirr(pd.Series(dtype=float), cash_flows=cash_flows)
+
+
+
 def capture_ratios(fund_series: pd.Series, benchmark_series: pd.Series) -> dict[str, float | None]:
     """Compute upside and downside capture ratio of fund vs benchmark series over common dates."""
     common_idx = fund_series.index.intersection(benchmark_series.index)

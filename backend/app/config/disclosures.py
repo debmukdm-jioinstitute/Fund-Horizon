@@ -48,6 +48,29 @@ PORTFOLIO_DISCLAIMER = (
     "Illustrative portfolio analysis; does not constitute an investment recommendation."
 )  # TODO(owner-compliance-review)
 
+CAS_PRIVACY_NOTICE = (
+    "Your Consolidated Account Statement (CAS) is processed in memory for illustrative portfolio analysis. "
+    "The PDF file and password are never stored on any server or disk. "
+    "Portfolio data is deleted immediately after processing unless you choose to save it to an illustrative plan."
+)  # TODO(owner-compliance-review)
+
+CAS_CONSENT_TEXT = (
+    "I consent to Fund Horizon temporarily parsing my Consolidated Account Statement (CAS) in memory to "
+    "extract my portfolio holdings for illustrative analysis. I understand my PDF and password will not be stored."
+)  # TODO(owner-compliance-review)
+
+CAS_DISCLAIMER = (
+    "Portfolio analysis from Consolidated Account Statement (CAS) is purely illustrative. "
+    "Fund Horizon distributes Regular plans only under ARN 345439. "
+    "Mutual fund investments are subject to market risks; read all scheme related documents carefully."
+)  # TODO(owner-compliance-review)
+
+RAG_DISCLAIMER = (
+    "Descriptive performance metrics computed from AMFI scheme master and mfapi.in NAV histories. "
+    "Illustrative information; not an investment recommendation. Past performance may or may not be sustained. "
+    "Regular mutual fund plans distributed under ARN 345439."
+)  # TODO(owner-compliance-review)
+
 BANNED_WORDS = ["best", "guaranteed", "advice", "advisory", "recommend you buy"]
 
 
@@ -64,5 +87,10 @@ def all_disclosures() -> dict:
         "compare_disclaimer": COMPARE_DISCLAIMER,
         "ranking_disclaimer": RANKING_DISCLAIMER,
         "portfolio_disclaimer": PORTFOLIO_DISCLAIMER,
+        "cas_privacy_notice": CAS_PRIVACY_NOTICE,
+        "cas_consent_text": CAS_CONSENT_TEXT,
+        "cas_disclaimer": CAS_DISCLAIMER,
+        "rag_disclaimer": RAG_DISCLAIMER,
     }
+
 

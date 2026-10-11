@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import re
+from typing import Annotated
 
 import pandas as pd
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import Response
 
 from app.api.serialize import clean
@@ -19,10 +20,18 @@ from app.config.disclosures import (
 from app.data.loader import load_nav
 from app.db import sqlite
 from app.engine import analytics as an
+from app.engine import cas
 from app.engine.funds import rank_category_funds
 from app.engine.pipeline import build_full_plan
 from app.engine.stress import category_median_series
-from app.schemas import PlanRequest, PortfolioAnalyzeRequest
+from app.schemas import (
+    ExplainCasRequest,
+    ExplainFundRequest,
+    ExplainPlanRequest,
+    PlanRequest,
+    PortfolioAnalyzeRequest,
+    RagAskRequest,
+)
 
 router = APIRouter()
 
@@ -293,5 +302,137 @@ def analyze_portfolio(req: PortfolioAnalyzeRequest, request: Request):
         "alternative_weights": alt_weights,
         "disclaimer": PORTFOLIO_DISCLAIMER,
     })
+
+
+@router.post("/api/cas/upload")
+async def upload_cas(
+    file: Annotated[UploadFile, File(description="CAMS or KFintech CAS PDF")],
+    password: Annotated[str, Form(description="PDF password (typically PAN or email)")],
+    consent: Annotated[bool, Form(description="Explicit consent to parse statement in memory")],
+    target_band: Annotated[str | None, Form(description="Optional target risk band to compare allocation against")] = None,
+):
+    """Parse a CAS statement PDF in memory, computing holdings, XIRR, and allocation."""
+    if not consent:
+        raise HTTPException(400, "Consent to process CAS statement in memory is required.")
+
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(400, "Uploaded file must be a PDF document.")
+
+    pdf_bytes = await file.read()
+    try:
+        parsed_cas = cas.parse_cas_pdf_bytes(pdf_bytes, password=password)
+    except cas.CASValidationError as e:
+        raise HTTPException(400, str(e)) from e
+    except cas.CASPasswordError as e:
+        raise HTTPException(400, str(e)) from e
+    except cas.CASParsingError as e:
+        raise HTTPException(422, str(e)) from e
+    finally:
+        del pdf_bytes
+        del password
+
+    from app.data.loader import load_metrics
+
+    metrics_df = load_metrics()
+    analysis = cas.analyze_cas_data(parsed_cas, metrics_df=metrics_df, target_band=target_band)
+    return clean(analysis)
+
+
+@router.get("/api/rag/ask")
+def rag_ask_get(
+    query: str = Query(..., min_length=2, description="Search query or question about mutual funds"),
+    category: str | None = Query(None, description="Optional category filter"),
+    plan: str | None = Query(None, description="Optional plan filter (Regular or Direct)"),
+    amc: str | None = Query(None, description="Optional AMC filter"),
+    top_k: int = Query(4, ge=1, le=20),
+):
+    """Retrieve schemes and synthesize a verifiable descriptive answer."""
+    from app.rag import answer_query
+
+    filters = {}
+    if category:
+        filters["category"] = category
+    if plan:
+        filters["plan"] = plan
+    if amc:
+        filters["amc"] = amc
+    return answer_query(query, filters=filters or None, top_k=top_k)
+
+
+@router.post("/api/rag/ask")
+def rag_ask_post(req: RagAskRequest):
+    """POST variant of mutual fund question-answering with structured payload."""
+    from app.rag import answer_query
+
+    filters = {}
+    if req.category:
+        filters["category"] = req.category
+    if req.plan:
+        filters["plan"] = req.plan
+    if req.amc:
+        filters["amc"] = req.amc
+    return answer_query(req.query, filters=filters or None, top_k=req.top_k)
+
+
+@router.post("/api/rag/ingest")
+def rag_ingest(limit: int = Query(0, description="Limit files ingested; 0 for all")):
+    """Ingest markdown documents from knowledge base into ChromaDB."""
+    from pathlib import Path
+
+    from app.rag import ingest_documents
+    from app.rag.store import get_chroma_dir
+
+    docs_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "fundhorizon_mf_rag_dataset" / "schemes_md"
+    if not docs_dir.exists():
+        docs_dir = Path("data/fundhorizon_mf_rag_dataset/schemes_md")
+    count = ingest_documents(docs_dir, limit=limit if limit > 0 else None)
+    return {"ingested": count, "chroma_dir": get_chroma_dir()}
+
+
+@router.post("/api/ai/explain/plan")
+def ai_explain_plan(req: ExplainPlanRequest):
+    """Explain a financial plan using AI guardrails with deterministic fallback."""
+    from app.ai.explain import explain_plan
+
+    plan_data = req.plan_data
+    if not plan_data and req.plan_id:
+        row = sqlite.get_plan(req.plan_id)
+        if not row:
+            raise HTTPException(404, "Plan not found")
+        plan_data = row["plan"]
+
+    if not plan_data:
+        raise HTTPException(400, "Either plan_id or plan_data must be provided")
+
+    return explain_plan(plan_data)
+
+
+@router.post("/api/ai/explain/fund")
+def ai_explain_fund(req: ExplainFundRequest):
+    """Explain a mutual fund scheme's metrics using AI guardrails with deterministic fallback."""
+    from app.ai.explain import explain_fund
+    from app.data.loader import load_metrics
+
+    df = load_metrics()
+    sub = df[df["scheme_code"].astype(str) == str(req.scheme_code)]
+    if sub.empty:
+        raise HTTPException(404, "Scheme not found")
+
+    fund_dict = sub.iloc[0].to_dict()
+    return explain_fund(fund_dict)
+
+
+@router.post("/api/ai/explain/cas")
+def ai_explain_cas(req: ExplainCasRequest):
+    """Explain CAS portfolio analysis using AI guardrails with deterministic fallback."""
+    from app.ai.explain import explain_cas
+
+    if not req.cas_data:
+        raise HTTPException(400, "cas_data is required")
+
+    return explain_cas(req.cas_data)
+
+
+
 
 

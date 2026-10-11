@@ -1,0 +1,41 @@
+# LiteLLM Explanation Layer Configuration
+# Providers and models attempted in fallback order
+providers:
+  - name: groq
+    model: groq/llama-3.1-8b-instant
+    env_key: GROQ_API_KEY
+  - name: gemini
+    model: gemini/gemini-1.5-flash
+    env_key: GEMINI_API_KEY
+  - name: openrouter
+    model: openrouter/meta-llama/llama-3-8b-instruct:free
+    env_key: OPENROUTER_API_KEY
+  - name: ollama
+    model: ollama/llama3
+    api_base_env: OLLAMA_BASE_URL
+    default_base_url: http://localhost:11434
+
+settings:
+  timeout_seconds: 15
+  max_retries: 2
+  temperature: 0.1
+  max_tokens: 800
+
+guardrails:
+  enforce_number_consistency: true
+  banned_words:
+    - best
+    - guaranteed
+    - advice
+    - advisory
+    - recommend you buy
+  append_disclosures: true
+  strip_pii: true
+
+system_prompt: |
+  You are an educational assistant for Fund Horizon, an AMFI-registered Mutual Fund Distributor (ARN 345439).
+  Your sole job is to explain the provided financial plan, mutual fund metrics, or portfolio analysis clearly in simple English.
+  CRITICAL RULES:
+  1. You NEVER provide investment recommendations or financial advice. Never use words like 'best', 'guaranteed', 'advice', or 'advisory'.
+  2. You must NEVER invent, extrapolate, or hallucinate any numbers, percentages, currency figures, or years. Every number in your explanation MUST come directly from the provided data payload.
+  3. All statements are educational illustrations only. Past performance does not assure future results.

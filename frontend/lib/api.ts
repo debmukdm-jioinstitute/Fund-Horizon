@@ -1,11 +1,14 @@
 import type {
+  CasAnalysisResult,
   CompareResponse,
+  ExplainResponse,
   FundAnalytics,
   FundDetail,
   Meta,
   Plan,
   PlanRequest,
   Questionnaire,
+  RagAnswerResult,
 } from "./types";
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -100,5 +103,80 @@ export async function compareFundsServer(codes: string[]): Promise<CompareRespon
     return null;
   }
 }
+
+/** Upload and parse CAS statement PDF in memory. */
+export async function uploadCas(
+  file: File,
+  password: string,
+  consent: boolean,
+  targetBand?: string,
+): Promise<CasAnalysisResult> {
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("password", password);
+  fd.append("consent", consent ? "true" : "false");
+  if (targetBand) fd.append("target_band", targetBand);
+
+  const res = await fetch(`${API_URL}/api/cas/upload`, {
+    method: "POST",
+    body: fd,
+  });
+  if (!res.ok) {
+    let msg = `CAS upload failed (${res.status})`;
+    try {
+      const j = await res.json();
+      if (typeof j.detail === "string") msg = j.detail;
+    } catch {
+      /* fallback */
+    }
+    throw new ApiError(msg, res.status);
+  }
+  return res.json() as Promise<CasAnalysisResult>;
+}
+
+export async function askFundRag(
+  query: string,
+  filters?: { category?: string; plan?: string; amc?: string },
+  top_k = 4,
+): Promise<RagAnswerResult> {
+  return request<RagAnswerResult>("/api/rag/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query,
+      category: filters?.category || null,
+      plan: filters?.plan || null,
+      amc: filters?.amc || null,
+      top_k,
+    }),
+  });
+}
+
+export async function explainPlan(planId?: string, planData?: Record<string, unknown>): Promise<ExplainResponse> {
+  return request<ExplainResponse>("/api/ai/explain/plan", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ plan_id: planId || null, plan_data: planData || null }),
+  });
+}
+
+export async function explainFund(schemeCode: string): Promise<ExplainResponse> {
+  return request<ExplainResponse>("/api/ai/explain/fund", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ scheme_code: schemeCode }),
+  });
+}
+
+export async function explainCas(casData: Record<string, unknown>): Promise<ExplainResponse> {
+  return request<ExplainResponse>("/api/ai/explain/cas", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cas_data: casData }),
+  });
+}
+
+
+
 
 

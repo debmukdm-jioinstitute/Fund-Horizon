@@ -24,6 +24,9 @@ export default function Home() {
           <Link href="/plan/new" className="btn bg-teal-500 text-navy-950 hover:bg-teal-100">
             Start your plan
           </Link>
+          <Link href="/cas" className="btn border border-teal-400 bg-transparent text-white hover:bg-navy-800">
+            Analyze CAS statement
+          </Link>
         </div>
         <p className="mt-4 text-sm text-navy-100">
           No PAN, phone or email needed. Only your first name and age. Takes about five minutes.

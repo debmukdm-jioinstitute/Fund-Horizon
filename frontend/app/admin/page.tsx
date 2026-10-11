@@ -1,0 +1,105 @@
+// TODO(owner-compliance-review): this file contains user-facing copy.
+"use client";
+
+import React, { useState, useEffect } from "react";
+import AdminHeader, { AdminTab } from "@/components/admin/AdminHeader";
+import AdminDashboardTab from "@/components/admin/AdminDashboardTab";
+import AdminPlansTab from "@/components/admin/AdminPlansTab";
+import AdminCasTab from "@/components/admin/AdminCasTab";
+import AdminFundsTab from "@/components/admin/AdminFundsTab";
+import AdminConfigTab from "@/components/admin/AdminConfigTab";
+import AdminOperationsTab from "@/components/admin/AdminOperationsTab";
+import PlanDrawer from "@/components/admin/PlanDrawer";
+import { AdminStats, AdminPlanSummary, fetchAdminStats } from "@/lib/admin-api";
+
+export default function AdminPage() {
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [inspectedPlan, setInspectedPlan] = useState<AdminPlanSummary | null>(null);
+
+  const loadStats = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchAdminStats();
+      setStats(data);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to connect to administrative API");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-navy-50/40 flex flex-col">
+      {/* Top Header */}
+      <AdminHeader
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        databaseProvider={stats?.database?.provider || "SQLite"}
+        isDbConnected={stats?.database?.connected ?? true}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-8">
+        {loading && !stats ? (
+          <div className="p-16 text-center space-y-3">
+            <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
+            <p className="text-xs text-navy-600 font-medium">Loading control center diagnostics...</p>
+          </div>
+        ) : error && !stats ? (
+          <div className="p-8 max-w-md mx-auto bg-white rounded-2xl border border-rose-200 text-center space-y-4 shadow-sm">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">
+              !
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-navy-950">Administrative Connection Error</h2>
+              <p className="text-xs text-navy-600 mt-1">{error}</p>
+            </div>
+            <button
+              onClick={loadStats}
+              className="px-4 py-2 bg-navy-900 hover:bg-navy-800 text-white text-xs font-semibold rounded-xl transition"
+            >
+              Retry Connection
+            </button>
+          </div>
+        ) : (
+          stats && (
+            <>
+              {activeTab === "overview" && (
+                <AdminDashboardTab
+                  stats={stats}
+                  onTabChange={setActiveTab}
+                  onInspectPlan={setInspectedPlan}
+                />
+              )}
+
+              {activeTab === "plans" && (
+                <AdminPlansTab onInspectPlan={setInspectedPlan} />
+              )}
+
+              {activeTab === "cas" && <AdminCasTab />}
+
+              {activeTab === "funds" && <AdminFundsTab />}
+
+              {activeTab === "config" && <AdminConfigTab />}
+
+              {activeTab === "operations" && <AdminOperationsTab />}
+            </>
+          )
+        )}
+      </main>
+
+      {/* Slide-over Plan Drawer */}
+      {inspectedPlan && (
+        <PlanDrawer plan={inspectedPlan} onClose={() => setInspectedPlan(null)} />
+      )}
+    </div>
+  );
+}

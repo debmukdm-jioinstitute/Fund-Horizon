@@ -40,7 +40,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span aria-hidden className="inline-block h-3 w-3 rounded-full bg-teal-500" />
               Fund Horizon
             </Link>
-            <span className="text-sm text-navy-100">Planner</span>
+            <div className="flex items-center gap-6">
+              <nav aria-label="Main Navigation" className="flex items-center gap-4 text-sm font-medium">
+                <Link href="/plan/new" className="text-navy-100 hover:text-white">
+                  Plan
+                </Link>
+                <Link href="/funds/compare" className="text-navy-100 hover:text-white">
+                  Compare
+                </Link>
+                <Link href="/funds/ask" className="text-navy-100 hover:text-white">
+                  Ask Funds
+                </Link>
+                <Link href="/cas" className="text-navy-100 hover:text-white">
+                  CAS Analysis
+                </Link>
+                <Link href="/admin" className="text-navy-100 hover:text-white flex items-center gap-1 font-semibold">
+                  <span className="text-[11px] bg-teal-800/80 text-teal-300 border border-teal-600/50 px-2 py-0.5 rounded font-mono">Admin</span>
+                </Link>
+              </nav>
+
+            </div>
           </div>
           <div className="h-1 bg-teal-500" />
         </header>

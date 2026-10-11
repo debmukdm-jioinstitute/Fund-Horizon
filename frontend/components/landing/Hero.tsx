@@ -86,7 +86,10 @@ export default function Hero({ funds, houses }: { funds: number | null; houses: 
     <section ref={ref} className="relative isolate overflow-hidden rounded-3xl border border-white/70 shadow-glass-lg">
       <motion.div aria-hidden style={{ y: bgY }} className="absolute inset-0 -z-10 scale-110">
         <Mountains />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/photos/hero.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-[60%_40%]" fetchPriority="high" />
       </motion.div>
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-white/95 via-white/75 to-white/10 max-lg:from-white/90 max-lg:via-white/80 max-lg:to-white/60" />
       <div aria-hidden className="absolute -right-20 -top-20 -z-10 h-80 w-80 rounded-full bg-emerald-300/25 blur-3xl" />
 
       <div className="grid gap-10 px-6 py-12 md:px-12 md:py-16 lg:grid-cols-12 lg:items-center">

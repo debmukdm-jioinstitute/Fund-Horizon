@@ -37,10 +37,10 @@ export function FeatureStrip() {
 
 /* ---------- Goal cards ---------- */
 const GOALS = [
-  { t: "Buy a Home", d: "Build your down payment with a clear plan.", from: "from-sky-100", to: "to-sky-50", icon: "M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z", c: "text-sky-700 bg-sky-200/70" },
-  { t: "Child's Education", d: "Give them the opportunities you want to.", from: "from-violet-100", to: "to-violet-50", icon: "M12 3L2 8l10 5 10-5-10-5zm-6 8v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5", c: "text-violet-700 bg-violet-200/70" },
-  { t: "Retirement", d: "A relaxed and worry-free tomorrow.", from: "from-emerald-100", to: "to-emerald-50", icon: "M12 2a5 5 0 015 5c0 3-2 4-2 7h-6c0-3-2-4-2-7a5 5 0 015-5zm-3 16h6m-5 3h4", c: "text-emerald-700 bg-emerald-200/70" },
-  { t: "Dream Vacation", d: "Explore the world on your terms.", from: "from-amber-100", to: "to-amber-50", icon: "M2 16l20-8-6 14-4-6-6 2-4-2zm8-2l8-6", c: "text-amber-700 bg-amber-200/70" },
+  { photo: "home", t: "Buy a Home", d: "Build your down payment with a clear plan.", from: "from-sky-100", to: "to-sky-50", icon: "M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z", c: "text-sky-700 bg-sky-200/70" },
+  { photo: "education", t: "Child's Education", d: "Give them the opportunities you want to.", from: "from-violet-100", to: "to-violet-50", icon: "M12 3L2 8l10 5 10-5-10-5zm-6 8v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5", c: "text-violet-700 bg-violet-200/70" },
+  { photo: "retirement", t: "Retirement", d: "A relaxed and worry-free tomorrow.", from: "from-emerald-100", to: "to-emerald-50", icon: "M12 2a5 5 0 015 5c0 3-2 4-2 7h-6c0-3-2-4-2-7a5 5 0 015-5zm-3 16h6m-5 3h4", c: "text-emerald-700 bg-emerald-200/70" },
+  { photo: "vacation", t: "Dream Vacation", d: "Explore the world on your terms.", from: "from-amber-100", to: "to-amber-50", icon: "M2 16l20-8-6 14-4-6-6 2-4-2zm8-2l8-6", c: "text-amber-700 bg-amber-200/70" },
 ];
 
 export function GoalCards() {
@@ -57,17 +57,24 @@ export function GoalCards() {
           <StaggerItem key={g.t}>
             <Link
               href="/plan/new"
-              className={`group relative block h-full overflow-hidden rounded-3xl border border-white/80 bg-gradient-to-br ${g.from} ${g.to} p-5 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl`}
+              className={`group relative block h-full min-h-[10.5rem] overflow-hidden rounded-3xl border border-white/80 bg-gradient-to-br ${g.from} ${g.to} p-5 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl`}
             >
-              <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${g.c} transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6`}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/photos/${g.photo}.webp`}
+                alt=""
+                loading="lazy"
+                className="pointer-events-none absolute inset-y-0 right-0 h-full w-1/2 object-cover transition-transform duration-700 [mask-image:linear-gradient(to_right,transparent,black_50%)] group-hover:scale-110"
+              />
+              <span className={`relative flex h-11 w-11 items-center justify-center rounded-2xl ${g.c} transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6`}>
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d={g.icon} />
                 </svg>
               </span>
-              <h3 className="mt-4 text-lg font-extrabold text-navy-950">{g.t}</h3>
-              <p className="mt-1 max-w-[14rem] text-xs leading-relaxed text-slate-600">{g.d}</p>
+              <h3 className="relative mt-4 text-lg font-extrabold text-navy-950">{g.t}</h3>
+              <p className="relative mt-1 max-w-[9rem] text-xs leading-relaxed text-slate-700">{g.d}</p>
               <span aria-hidden className="absolute bottom-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-sm text-navy-900 shadow transition group-hover:translate-x-1 group-hover:bg-emerald-600 group-hover:text-white">→</span>
-              <span aria-hidden className="pointer-events-none absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-white/50 blur-xl transition-transform duration-500 group-hover:scale-125" />
+              
             </Link>
           </StaggerItem>
         ))}

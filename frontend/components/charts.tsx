@@ -9,9 +9,9 @@ import type { FanPoint } from "@/lib/types";
 
 export const PALETTE = ["#0B2545", "#0E7C74", "#B45309", "#4F7CAC", "#8E5572", "#6B7A8F", "#13A89E", "#98C1D9", "#C9A227"];
 
-export function Donut({ data }: { data: Record<string, number> }) {
+export function Donut({ data, labels }: { data: Record<string, number>; labels?: Record<string, string> }) {
   const rows = Object.entries(data).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1])
-    .map(([k, v]) => ({ key: k, name: CATEGORY_LABELS[k] ?? k, value: Number(v.toFixed(2)) }));
+    .map(([k, v]) => ({ key: k, name: labels?.[k] ?? CATEGORY_LABELS[k] ?? k, value: Number(v.toFixed(2)) }));
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row">
       <div className="h-56 w-56 shrink-0" role="img"

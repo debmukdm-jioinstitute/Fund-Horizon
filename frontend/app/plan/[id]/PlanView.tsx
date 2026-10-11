@@ -4,20 +4,21 @@
 
 import { useCallback, useState } from "react";
 import {
-  CashflowCard, EmergencyCard, FALLBACK_SCHEME_DOCS, FALLBACK_SUCCESS_NOTE, FundTable, GoalCard,
-  InsuranceCard, PlanLinkCard, ProfileCard, SanityBanner, SectionTitle, emergencyReserved,
+  CashflowCard, EmergencyCard, FALLBACK_SCHEME_DOCS, FALLBACK_SUCCESS_NOTE, FundComparisons, FundTable, GoalCard,
+  InsuranceCard, InsuranceSuggestions, PlanLinkCard, ProfileCard, SanityBanner, SectionTitle, emergencyReserved,
   extraDisclosures, isShortlistOmitted, safeHeading, unusedSurplus,
 } from "@/components/Results";
 import { Donut, StressChart } from "@/components/charts";
 import ExplainModal from "@/components/ExplainModal";
 import { getPlan, reportUrl } from "@/lib/api";
-import { CATEGORY_LABELS, inr, pct } from "@/lib/format";
+import { ASSET_CLASS_LABELS, CATEGORY_LABELS, inr, pct } from "@/lib/format";
 import type { Plan } from "@/lib/types";
 
 export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: string }) {
   const [plan, setPlan] = useState<Plan>(initialPlan);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [allocView, setAllocView] = useState<"simple" | "detailed">("simple");
 
   const setStepUp = useCallback(async (s: number) => {
     setBusy(true);
@@ -87,6 +88,11 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
 
       <section aria-labelledby="profile"><SectionTitle id="profile">Risk profile</SectionTitle>
         <ProfileCard profile={profile} planning={planning} />
+        {plan.insurance_suggestions && (plan.insurance_suggestions.term || plan.insurance_suggestions.health) && (
+          <div className="mt-5">
+            <InsuranceSuggestions data={plan.insurance_suggestions} />
+          </div>
+        )}
       </section>
 
       {!hideBuyList && (
@@ -99,12 +105,42 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
       {!hideBuyList && (
         <section aria-labelledby="allocation">
           <SectionTitle id="allocation">{allocationTitle}</SectionTitle>
+          <div className="card mb-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="inline-flex rounded-lg border border-navy-200 bg-navy-50 p-1" role="group" aria-label="Allocation view">
+                {(["simple", "detailed"] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    aria-pressed={allocView === v}
+                    onClick={() => setAllocView(v)}
+                    className={`rounded-md px-3 py-1.5 text-sm font-semibold ${allocView === v ? "bg-navy-900 text-white" : "text-navy-900"}`}
+                  >
+                    {v === "simple" ? "Simple" : "Detailed"}
+                    {v === "simple" && (
+                      <span className={`ml-2 rounded-full px-2 py-0.5 text-xs font-bold ${allocView === v ? "bg-teal-600 text-white" : "bg-teal-100 text-teal-700"}`}>
+                        Suggested
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              <p className="max-w-md text-xs text-navy-700">
+                {allocView === "simple"
+                  ? "Simple view groups the nine fund categories into four buckets — equity, debt, gold and liquid. The plan maths underneath is unchanged."
+                  : "Detailed view shows all nine fund categories used to build the shortlist."}
+              </p>
+            </div>
+          </div>
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="card">
               <p className="mb-3 text-sm text-navy-700">
                 Band: <strong>{allocation.band}</strong>. Shorter goals hold less equity, so the overall mix is a goal-weighted average. This is an illustration, not a buy list.
               </p>
-              <Donut data={allocation.by_category} />
+              <Donut
+                data={allocView === "simple" ? allocation.by_asset_class : allocation.by_category}
+                labels={allocView === "simple" ? ASSET_CLASS_LABELS : undefined}
+              />
             </div>
             <div className="card overflow-x-auto">
               <h3 className="mb-2 font-semibold">Allocation by goal</h3>
@@ -135,6 +171,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
         <section aria-labelledby="funds">
           <SectionTitle id="funds">{shortlistTitle}</SectionTitle>
           <FundTable funds={plan.funds} disclosures={disclosures} />
+          <FundComparisons funds={plan.funds} />
           <p className="mt-2 text-sm text-navy-700">
             Regular plans only. Direct plans with lower expense ratios are available. Funds are keyed by scheme code.
           </p>

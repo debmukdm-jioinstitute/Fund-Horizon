@@ -12,6 +12,16 @@ const INSURERS: Record<string, string> = {
 };
 
 const AMCS: Record<string, string> = {
+  abakkus: "abakkus.png",
+  alphagrep: "alphagrep.png",
+  ask: "ask.svg",
+  capitalmind: "capitalmind.png",
+  choice: "choice.png",
+  "jm financial": "jm-financial.png",
+  lakshya: "lakshya.png",
+  "motilal oswal": "motilal-oswal.png",
+  nj: "nj.png",
+  "the wealth company": "the-wealth-company.png",
   "aditya birla sun life": "aditya-birla-sun-life.png",
   "bank of india": "bank-of-india.png",
   "franklin templeton": "franklin-templeton.png",

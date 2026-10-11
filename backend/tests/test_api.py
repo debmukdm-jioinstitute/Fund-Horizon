@@ -18,6 +18,7 @@ def client(tmp_path_factory):
     os.environ["FH_DB_PATH"] = str(tmp_path_factory.mktemp("db") / "t.db")
     os.environ["FH_RATE_LIMIT"] = "false"
     os.environ["FH_ALLOW_ASSUMPTION_OVERRIDES"] = "true"
+    os.environ["DATABASE_URL"] = ""
     with TestClient(create_app()) as c:
         yield c
 

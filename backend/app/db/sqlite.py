@@ -23,7 +23,6 @@ def get_default_db_path() -> Path:
     return Path(os.environ.get("FH_DB_PATH", Path(__file__).resolve().parents[2] / "plans.db"))
 
 
-<<<<<<< HEAD
 def db_path() -> Path:
     return get_default_db_path()
 
@@ -107,9 +106,26 @@ class SQLiteRepository(DatabaseRepository):
         finally:
             conn.close()
 
-    def save_plan(self, request: dict[str, Any], result: dict[str, Any], plan_id: str | None = None) -> str:
+    def purge_expired(self) -> int:
+        cutoff = (datetime.now(UTC) - timedelta(days=ttl_days())).isoformat()
+        conn = self._get_connection()
+        try:
+            with conn:
+                cur = conn.execute("DELETE FROM plans WHERE created_at < ?", (cutoff,))
+                return cur.rowcount
+        finally:
+            conn.close()
+
+    def save_plan(
+        self,
+        request: dict[str, Any],
+        result: dict[str, Any],
+        plan_id: str | None = None,
+        created_at: str | None = None,
+    ) -> str:
+        self.purge_expired()
         pid = plan_id or str(uuid.uuid4())
-        now = datetime.now(UTC).isoformat()
+        now = created_at or datetime.now(UTC).isoformat()
         conn = self._get_connection()
         try:
             with conn:
@@ -130,9 +146,14 @@ class SQLiteRepository(DatabaseRepository):
             ).fetchone()
             if not row:
                 return None
+            if _is_expired(row["created_at"]):
+                with conn:
+                    conn.execute("DELETE FROM plans WHERE id = ?", (plan_id,))
+                return None
             return {
                 "id": row["id"],
                 "created_at": row["created_at"],
+                "expires_at": expires_at(row["created_at"]),
                 "request": json.loads(row["request"]),
                 "result": json.loads(row["result"]),
             }
@@ -451,7 +472,7 @@ def save_plan(request: dict, result: dict) -> dict:
         repo.purge_expired()
     plan_id = str(uuid.uuid4())
     created = datetime.now(UTC).isoformat()
-    repo.save_plan(request, result, plan_id=plan_id)
+    repo.save_plan(request, result, plan_id=plan_id, created_at=created)
     return {"id": plan_id, "created_at": created, "expires_at": expires_at(created)}
 
 

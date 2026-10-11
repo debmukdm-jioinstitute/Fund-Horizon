@@ -31,6 +31,14 @@ def personas():
 @pytest.fixture
 def client(tmp_path):
     os.environ["FH_DB_PATH"] = str(tmp_path / "test.db")
-    with TestClient(create_app()) as c:
-        yield c
+    old_db_url = os.environ.get("DATABASE_URL")
+    os.environ["DATABASE_URL"] = ""
+    try:
+        with TestClient(create_app()) as c:
+            yield c
+    finally:
+        if old_db_url is not None:
+            os.environ["DATABASE_URL"] = old_db_url
+        else:
+            os.environ.pop("DATABASE_URL", None)
 

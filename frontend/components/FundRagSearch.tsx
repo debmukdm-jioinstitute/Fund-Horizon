@@ -88,9 +88,9 @@ export default function FundRagSearch() {
           </button>
         </div>
 
-        {/* Suggested Queries */}
+        {/* Example Queries */}
         <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-navy-700">
-          <span className="font-semibold text-navy-800">Suggested:</span>
+          <span className="font-semibold text-navy-800">Examples:</span>
           {SAMPLE_QUERIES.map((sq) => (
             <button
               key={sq}

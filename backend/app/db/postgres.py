@@ -52,9 +52,15 @@ class PostgresRepository(DatabaseRepository):
     def get_session(self) -> Session:
         return self.session_factory()
 
-    def save_plan(self, request: dict[str, Any], result: dict[str, Any], plan_id: str | None = None) -> str:
+    def save_plan(
+        self,
+        request: dict[str, Any],
+        result: dict[str, Any],
+        plan_id: str | None = None,
+        created_at: str | None = None,
+    ) -> str:
         pid = plan_id or str(uuid.uuid4())
-        now = datetime.now(UTC).isoformat()
+        now = created_at or datetime.now(UTC).isoformat()
         with self.get_session() as session:
             with session.begin():
                 plan = PlanModel(
@@ -67,6 +73,8 @@ class PostgresRepository(DatabaseRepository):
         return pid
 
     def get_plan(self, plan_id: str) -> dict[str, Any] | None:
+        from app.db.sqlite import expires_at
+
         with self.get_session() as session:
             stmt = select(PlanModel).where(PlanModel.id == plan_id)
             plan = session.scalars(stmt).first()
@@ -75,6 +83,7 @@ class PostgresRepository(DatabaseRepository):
             return {
                 "id": plan.id,
                 "created_at": plan.created_at,
+                "expires_at": expires_at(plan.created_at),
                 "request": json.loads(plan.request),
                 "result": json.loads(plan.result),
             }

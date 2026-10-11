@@ -13,7 +13,13 @@ class DatabaseRepository(ABC):
     """Abstract persistence interface for Fund Horizon."""
 
     @abstractmethod
-    def save_plan(self, request: dict[str, Any], result: dict[str, Any], plan_id: str | None = None) -> str:
+    def save_plan(
+        self,
+        request: dict[str, Any],
+        result: dict[str, Any],
+        plan_id: str | None = None,
+        created_at: str | None = None,
+    ) -> str:
         """Persist a planning calculation request and response."""
         ...
 

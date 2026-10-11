@@ -267,6 +267,9 @@ def select_funds(category_weights: dict[str, float], df: pd.DataFrame, a: dict |
     Categories are processed by weight (desc) so heavier sleeves get first pick of AMCs.
     Small positions are merged into the largest same-sleeve fund (fallback sleeve per config).
     Scoring uses the consistency-first category_ranking weights.
+    Each pick also carries `alternatives`: the next 3 ranked schemes in the same
+    category (by the same composite), so the UI can show a per-category comparison
+    with the marked pick.
     """
     sel = load_allocation()["selection"]
     picks: list[dict] = []
@@ -283,7 +286,12 @@ def select_funds(category_weights: dict[str, float], df: pd.DataFrame, a: dict |
             if amc_count.get(row["amc"], 0) < sel["max_per_amc"] and code not in chosen:
                 amc_count[row["amc"]] = amc_count.get(row["amc"], 0) + 1
                 chosen.add(code)
-                picks.append(_pick_to_dict(row, cat, w, sel["sleeve_of"][cat]))
+                pick = _pick_to_dict(row, cat, w, sel["sleeve_of"][cat])
+                alts = pool[pool["scheme_code"].astype(str) != code].head(3)
+                pick["alternatives"] = [
+                    _pick_to_dict(r, cat, 0.0, sel["sleeve_of"][cat]) for _, r in alts.iterrows()
+                ]
+                picks.append(pick)
                 break
         else:
             raise ValueError(f"No eligible funds for category '{cat}' within AMC limits")

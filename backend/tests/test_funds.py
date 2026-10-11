@@ -194,3 +194,20 @@ def test_select_and_rank_share_weights(eligible):
     ranked = fu.rank_category_funds("large_cap", eligible)
     assert ranked[0]["scheme_code"] == pick["scheme_code"]
     assert "roll3y_pct_positive" in fu._weights_for("large_cap")
+
+
+def test_picks_carry_ranked_alternatives(eligible):
+    picks = fu.select_funds({"large_cap": 30, "flexi_cap": 25, "corporate_bond": 25, "liquid": 20}, eligible)
+    assert picks, "expected some picks"
+    for p in picks:
+        alts = p["alternatives"]
+        assert len(alts) <= 3
+        codes = {a["scheme_code"] for a in alts}
+        assert p["scheme_code"] not in codes
+        assert len(codes) == len(alts)
+        scores = [p["score"]] + [a["score"] for a in alts]
+        assert scores == sorted(scores, reverse=True), "alternatives follow the pick in rank order"
+        for a in alts:
+            assert a["cat"] == p["cat"]
+            assert a["explain"], "alternatives carry explanations for the comparison table"
+            assert set(a["metrics"]) >= {"cagr_3y", "cagr_5y", "vol_3y", "sharpe_3y", "max_drawdown_3y"}

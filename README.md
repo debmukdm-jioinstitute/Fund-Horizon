@@ -18,7 +18,8 @@ make lint      # ruff, eslint, tsc, banned-wording scan
 ```
 
 Optional: copy `backend/.env.example` to `backend/.env` (CORS origins, DB path, data dir) and set
-`NEXT_PUBLIC_API_URL` for the frontend if the API is not on `localhost:8000`.
+`NEXT_PUBLIC_API_URL` for the frontend if the API is not on `localhost:8000`. Public site links
+(sitemap, robots, Open Graph) use `NEXT_PUBLIC_SITE_URL` (default `https://fundhorizon.up.railway.app`).
 
 ## Layout
 ```
@@ -58,6 +59,7 @@ funds, Direct-plan recommendations, deployment config. Extension points are mark
 ## Deploy (Railway)
 Two services built from the repo root with the Dockerfiles in `deploy/`:
 `api` (`RAILWAY_DOCKERFILE_PATH=deploy/api.Dockerfile`, volume at `/data`, `FH_DB_PATH=/data/plans.db`,
-`FH_CORS_ORIGINS=<web URL>`) and `web` (`deploy/web.Dockerfile`, `NEXT_PUBLIC_API_URL` and
-`API_INTERNAL_URL` set to the api URL; `NEXT_PUBLIC_API_URL` is baked in at build time).
-Deploy with `railway up --service api --ci` and `railway up --service web --ci`.
+`FH_CORS_ORIGINS=https://fundhorizon.up.railway.app`) and `web` (`deploy/web.Dockerfile`,
+`NEXT_PUBLIC_API_URL` and `API_INTERNAL_URL` set to the api URL; `NEXT_PUBLIC_SITE_URL` defaults to
+`https://fundhorizon.up.railway.app` for sitemap / robots / Open Graph). `NEXT_PUBLIC_*` values are
+baked in at build time. Railway auto-deploys from `main`.

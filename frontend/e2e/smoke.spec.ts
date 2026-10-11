@@ -178,6 +178,21 @@ test("unknown plan renders real 404 page", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Start a new plan" })).toBeVisible();
 });
 
+test("sitemap and robots use the public site URL", async ({ request }) => {
+  const sitemap = await request.get("/sitemap.xml");
+  expect(sitemap.ok()).toBeTruthy();
+  const sitemapXml = await sitemap.text();
+  expect(sitemapXml).toContain("https://fundhorizon.up.railway.app");
+  expect(sitemapXml).toContain("https://fundhorizon.up.railway.app/plan/new");
+  expect(sitemapXml).not.toContain("web-production-a0cf3");
+
+  const robots = await request.get("/robots.txt");
+  expect(robots.ok()).toBeTruthy();
+  const robotsTxt = await robots.text();
+  expect(robotsTxt).toContain("https://fundhorizon.up.railway.app/sitemap.xml");
+  expect(robotsTxt).not.toContain("web-production-a0cf3");
+});
+
 test("home page renders exactly one disclosure block in the footer", async ({ page }) => {
   await page.goto("/");
   const footerDisclosures = page.getByRole("list", { name: "Important disclosures" });

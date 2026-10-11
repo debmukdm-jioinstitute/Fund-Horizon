@@ -5,5 +5,7 @@ RUN npm ci
 COPY frontend/ ./
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_SITE_URL=https://fundhorizon.up.railway.app
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 RUN npm run build
 CMD ["sh", "-c", "npx next start -p ${PORT:-3000}"]

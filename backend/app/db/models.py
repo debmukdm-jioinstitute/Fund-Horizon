@@ -16,6 +16,29 @@ class PlanModel(Base):
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
     request: Mapped[str] = mapped_column(Text, nullable=False)
     result: Mapped[str] = mapped_column(Text, nullable=False)
+    customer_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+
+
+class CustomerModel(Base):
+    __tablename__ = "customers"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    mobile: Mapped[str] = mapped_column(String(16), nullable=False, unique=True)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    role: Mapped[str] = mapped_column(String(16), nullable=False, default="customer")
+    assigned_rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+
+class AuthSessionModel(Base):
+    __tablename__ = "sessions"
+
+    token_sha256: Mapped[str] = mapped_column(String(64), primary_key=True)
+    customer_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    expires_at: Mapped[str] = mapped_column(String(50), nullable=False)
 
 
 class FundModel(Base):

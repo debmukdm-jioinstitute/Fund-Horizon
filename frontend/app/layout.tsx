@@ -6,6 +6,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import Logo from "@/components/Logo";
 import CustomerLogin from "@/components/CustomerLogin";
+import { AuthProvider } from "@/components/AuthContext";
 import { siteUrl } from "@/lib/site";
 
 const sans = Plus_Jakarta_Sans({
@@ -121,7 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
 
         <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
-          {children}
+          <AuthProvider>{children}</AuthProvider>
         </main>
 
         <Footer />

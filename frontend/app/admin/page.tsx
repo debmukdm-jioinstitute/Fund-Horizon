@@ -10,6 +10,8 @@ import AdminFundsTab from "@/components/admin/AdminFundsTab";
 import AdminConfigTab from "@/components/admin/AdminConfigTab";
 import AdminOperationsTab from "@/components/admin/AdminOperationsTab";
 import PlanDrawer from "@/components/admin/PlanDrawer";
+import AdminCustomersTab from "@/components/admin/AdminCustomersTab";
+import { MeUser, fetchMe } from "@/components/admin/account-api";
 import { AdminStats, AdminPlanSummary, fetchAdminStats, saveAdminKey } from "@/lib/admin-api";
 
 export default function AdminPage() {
@@ -19,6 +21,15 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [inspectedPlan, setInspectedPlan] = useState<AdminPlanSummary | null>(null);
   const [keyInput, setKeyInput] = useState("");
+  const [me, setMe] = useState<MeUser | null>(null);
+  const [meLoading, setMeLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMe()
+      .then(setMe)
+      .catch(() => setMe(null))
+      .finally(() => setMeLoading(false));
+  }, []);
 
   const loadStats = async () => {
     setLoading(true);
@@ -49,7 +60,10 @@ export default function AdminPage() {
 
       {/* Main Content Area */}
       <div className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-8">
-        {loading && !stats ? (
+        {activeTab === "customers" ? (
+          // Cookie-authed section: works for signed-in admins/RMs even without the legacy admin key
+          <AdminCustomersTab me={me} meLoading={meLoading} />
+        ) : loading && !stats ? (
           <div className="p-16 text-center space-y-3">
             <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
             <p className="text-xs text-navy-600 font-medium">Loading control center diagnostics...</p>

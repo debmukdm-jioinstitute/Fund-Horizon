@@ -753,7 +753,7 @@ export function PlanLinkCard({ id }: { id: string }) {
           <span>🔖</span> Save this plan link
         </p>
         <p className="mt-1 text-slate-600 text-sm">
-          We do not ask for a phone or email, so we cannot send this plan back to you. Bookmark this page or copy the link. If you lose it, the plan is gone.
+          This plan was created without an account, so we have no phone or email to send it back to. Bookmark this page or copy the link. If you lose it, the plan is gone.
         </p>
         <p className="mt-2.5 break-all font-mono text-xs font-semibold text-teal-800 rounded-lg bg-teal-50/70 border border-teal-200/50 p-2 inline-block" data-testid="plan-id">{id}</p>
       </div>

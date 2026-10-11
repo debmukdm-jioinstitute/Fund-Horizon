@@ -11,12 +11,13 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import Engine, create_engine, delete, func, or_, select
+from sqlalchemy import Engine, create_engine, delete, func, or_, select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.db.base import DatabaseRepository
-from app.db.models import Base, CasSessionModel, FundModel, MetricModel, PlanModel
+from app.db.models import AuthSessionModel, Base, CasSessionModel, CustomerModel, FundModel, MetricModel, PlanModel
 
 
 def normalize_postgres_url(url: str) -> str:
@@ -28,8 +29,54 @@ def normalize_postgres_url(url: str) -> str:
     return url
 
 
+def _orm_plan_summary(p: PlanModel) -> dict[str, Any]:
+    """Shared plan-list summary shape used by list_plans and list_customer_plans."""
+    req = json.loads(p.request)
+    res = json.loads(p.result)
+    client = req.get("client", {})
+    first_name = client.get("first_name", "Anonymous")
+    last_name = client.get("last_name", "")
+    name = f"{first_name} {last_name}".strip()
+    return {
+        "id": p.id,
+        "created_at": p.created_at,
+        "client_name": name or "Anonymous",
+        "age": client.get("age"),
+        "risk_band": res.get("profile", {}).get("band"),
+        "risk_score": res.get("profile", {}).get("score"),
+        "target_corpus": sum(g.get("future_cost", 0) for g in res.get("goals", [])),
+        "total_sip": res.get("sip", {}).get("total_monthly_sip"),
+        "goals_count": len(res.get("goals", [])),
+        "request": req,
+        "result": res,
+    }
+
+
+def _orm_customer_full(c: CustomerModel) -> dict[str, Any]:
+    return {
+        "id": c.id,
+        "name": c.name,
+        "email": c.email,
+        "mobile": c.mobile,
+        "password_hash": c.password_hash,
+        "role": c.role,
+        "assigned_rm_id": c.assigned_rm_id,
+        "created_at": c.created_at,
+    }
+
+
+def _orm_customer_public(c: CustomerModel) -> dict[str, Any]:
+    rec = _orm_customer_full(c)
+    rec.pop("password_hash", None)
+    return rec
+
+
 class PostgresRepository(DatabaseRepository):
     """PostgreSQL implementation of DatabaseRepository using SQLAlchemy 2.0."""
+
+    # One-time guard: ensure plans.customer_id exists on databases created
+    # before the customer-accounts migration (create_all only adds tables).
+    _plans_customer_id_migrated = False
 
     def __init__(self, db_url: str, engine: Engine | None = None) -> None:
         if engine is not None:
@@ -44,6 +91,15 @@ class PostgresRepository(DatabaseRepository):
                 pool_recycle=300,
             )
         self.session_factory = sessionmaker(bind=self.engine, expire_on_commit=False)
+        if self.engine.dialect.name == "postgresql" and not PostgresRepository._plans_customer_id_migrated:
+            try:
+                with self.engine.begin() as conn:
+                    conn.execute(
+                        text("ALTER TABLE plans ADD COLUMN IF NOT EXISTS customer_id TEXT")
+                    )
+                PostgresRepository._plans_customer_id_migrated = True
+            except Exception:
+                pass
 
     def init_schema(self) -> None:
         """Create tables if they do not exist (useful for testing or initial setup)."""
@@ -58,6 +114,7 @@ class PostgresRepository(DatabaseRepository):
         result: dict[str, Any],
         plan_id: str | None = None,
         created_at: str | None = None,
+        customer_id: str | None = None,
     ) -> str:
         pid = plan_id or str(uuid.uuid4())
         now = created_at or datetime.now(UTC).isoformat()
@@ -68,6 +125,7 @@ class PostgresRepository(DatabaseRepository):
                     created_at=now,
                     request=json.dumps(request),
                     result=json.dumps(result),
+                    customer_id=customer_id,
                 )
                 session.add(plan)
         return pid
@@ -136,28 +194,7 @@ class PostgresRepository(DatabaseRepository):
                 stmt = stmt.where(or_(PlanModel.id.ilike(pattern), PlanModel.request.ilike(pattern)))
             stmt = stmt.limit(limit).offset(offset)
             plans_orm = session.scalars(stmt).all()
-            plans = []
-            for p in plans_orm:
-                req = json.loads(p.request)
-                res = json.loads(p.result)
-                client = req.get("client", {})
-                first_name = client.get("first_name", "Anonymous")
-                last_name = client.get("last_name", "")
-                name = f"{first_name} {last_name}".strip()
-                plans.append({
-                    "id": p.id,
-                    "created_at": p.created_at,
-                    "client_name": name or "Anonymous",
-                    "age": client.get("age"),
-                    "risk_band": res.get("profile", {}).get("band"),
-                    "risk_score": res.get("profile", {}).get("score"),
-                    "target_corpus": sum(g.get("future_cost", 0) for g in res.get("goals", [])),
-                    "total_sip": res.get("sip", {}).get("total_monthly_sip"),
-                    "goals_count": len(res.get("goals", [])),
-                    "request": req,
-                    "result": res,
-                })
-            return plans
+            return [_orm_plan_summary(p) for p in plans_orm]
 
     def count_plans(self) -> int:
         with self.get_session() as session:
@@ -169,6 +206,152 @@ class PostgresRepository(DatabaseRepository):
                 stmt = delete(PlanModel).where(PlanModel.id == plan_id)
                 res = session.execute(stmt)
                 return (res.rowcount or 0) > 0
+
+    def list_customer_plans(self, customer_id: str, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+        with self.get_session() as session:
+            stmt = (
+                select(PlanModel)
+                .where(PlanModel.customer_id == customer_id)
+                .order_by(PlanModel.created_at.desc())
+                .limit(limit)
+                .offset(offset)
+            )
+            return [_orm_plan_summary(p) for p in session.scalars(stmt).all()]
+
+    def count_customer_plans(self, customer_id: str) -> int:
+        with self.get_session() as session:
+            return session.scalar(
+                select(func.count(PlanModel.id)).where(PlanModel.customer_id == customer_id)
+            ) or 0
+
+    def create_customer(
+        self,
+        name: str,
+        email: str,
+        mobile: str,
+        password_hash: str,
+        role: str = "customer",
+        assigned_rm_id: str | None = None,
+    ) -> dict[str, Any]:
+        cid = str(uuid.uuid4())
+        now = datetime.now(UTC).isoformat()
+        try:
+            with self.get_session() as session:
+                with session.begin():
+                    session.add(CustomerModel(
+                        id=cid,
+                        name=name,
+                        email=email,
+                        mobile=mobile,
+                        password_hash=password_hash,
+                        role=role,
+                        assigned_rm_id=assigned_rm_id,
+                        created_at=now,
+                    ))
+        except IntegrityError as e:
+            raise ValueError("An account with these details already exists") from e
+        return {
+            "id": cid,
+            "name": name,
+            "email": email,
+            "mobile": mobile,
+            "role": role,
+            "assigned_rm_id": assigned_rm_id,
+            "created_at": now,
+        }
+
+    def get_customer_by_id(self, customer_id: str) -> dict[str, Any] | None:
+        with self.get_session() as session:
+            c = session.get(CustomerModel, customer_id)
+            return _orm_customer_full(c) if c else None
+
+    def get_customer_by_email(self, email: str) -> dict[str, Any] | None:
+        with self.get_session() as session:
+            c = session.scalars(select(CustomerModel).where(CustomerModel.email == email)).first()
+            return _orm_customer_full(c) if c else None
+
+    def get_customer_by_mobile(self, mobile: str) -> dict[str, Any] | None:
+        with self.get_session() as session:
+            c = session.scalars(select(CustomerModel).where(CustomerModel.mobile == mobile)).first()
+            return _orm_customer_full(c) if c else None
+
+    def list_customers(
+        self,
+        limit: int = 50,
+        offset: int = 0,
+        assigned_rm_id: str | None = None,
+    ) -> list[dict[str, Any]]:
+        with self.get_session() as session:
+            stmt = (
+                select(CustomerModel, func.count(PlanModel.id).label("plan_count"))
+                .outerjoin(PlanModel, PlanModel.customer_id == CustomerModel.id)
+                .group_by(CustomerModel.id)
+                .order_by(CustomerModel.created_at.desc())
+            )
+            if assigned_rm_id is not None:
+                stmt = stmt.where(CustomerModel.assigned_rm_id == assigned_rm_id)
+            stmt = stmt.limit(limit).offset(offset)
+            out = []
+            for c, plan_count in session.execute(stmt).all():
+                rec = _orm_customer_public(c)
+                rec["plan_count"] = int(plan_count or 0)
+                out.append(rec)
+            return out
+
+    def count_customers(self, assigned_rm_id: str | None = None) -> int:
+        with self.get_session() as session:
+            stmt = select(func.count(CustomerModel.id))
+            if assigned_rm_id is not None:
+                stmt = stmt.where(CustomerModel.assigned_rm_id == assigned_rm_id)
+            return session.scalar(stmt) or 0
+
+    def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
+        updates = {k: v for k, v in fields.items() if k in ("role", "assigned_rm_id")}
+        with self.get_session() as session:
+            with session.begin():
+                c = session.get(CustomerModel, customer_id)
+                if not c:
+                    return None
+                for k, v in updates.items():
+                    setattr(c, k, v)
+                session.flush()
+                return _orm_customer_public(c)
+
+    def create_auth_session(self, customer_id: str, token_sha256: str, expires_at: str) -> None:
+        now = datetime.now(UTC).isoformat()
+        with self.get_session() as session:
+            with session.begin():
+                session.add(AuthSessionModel(
+                    token_sha256=token_sha256,
+                    customer_id=customer_id,
+                    created_at=now,
+                    expires_at=expires_at,
+                ))
+
+    def get_auth_session(self, token_sha256: str) -> dict[str, Any] | None:
+        with self.get_session() as session:
+            s = session.get(AuthSessionModel, token_sha256)
+            if not s:
+                return None
+            return {
+                "token_sha256": s.token_sha256,
+                "customer_id": s.customer_id,
+                "created_at": s.created_at,
+                "expires_at": s.expires_at,
+            }
+
+    def delete_auth_session(self, token_sha256: str) -> bool:
+        with self.get_session() as session:
+            with session.begin():
+                res = session.execute(delete(AuthSessionModel).where(AuthSessionModel.token_sha256 == token_sha256))
+                return (res.rowcount or 0) > 0
+
+    def purge_expired_auth_sessions(self) -> int:
+        now = datetime.now(UTC).isoformat()
+        with self.get_session() as session:
+            with session.begin():
+                res = session.execute(delete(AuthSessionModel).where(AuthSessionModel.expires_at < now))
+                return res.rowcount or 0
 
 
     def save_cas_session(

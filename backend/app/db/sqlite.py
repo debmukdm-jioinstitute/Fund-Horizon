@@ -54,6 +54,33 @@ class SQLiteRepository(DatabaseRepository):
                     )
                     """
                 )
+                cols = [r["name"] for r in conn.execute("PRAGMA table_info(plans)").fetchall()]
+                if "customer_id" not in cols:
+                    conn.execute("ALTER TABLE plans ADD COLUMN customer_id TEXT")
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS customers (
+                        id TEXT PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        email TEXT NOT NULL UNIQUE,
+                        mobile TEXT NOT NULL UNIQUE,
+                        password_hash TEXT NOT NULL,
+                        role TEXT NOT NULL DEFAULT 'customer',
+                        assigned_rm_id TEXT,
+                        created_at TEXT NOT NULL
+                    )
+                    """
+                )
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS sessions (
+                        token_sha256 TEXT PRIMARY KEY,
+                        customer_id TEXT NOT NULL,
+                        created_at TEXT NOT NULL,
+                        expires_at TEXT NOT NULL
+                    )
+                    """
+                )
                 conn.execute(
                     """
                     CREATE TABLE IF NOT EXISTS cas_sessions (
@@ -122,6 +149,7 @@ class SQLiteRepository(DatabaseRepository):
         result: dict[str, Any],
         plan_id: str | None = None,
         created_at: str | None = None,
+        customer_id: str | None = None,
     ) -> str:
         self.purge_expired()
         pid = plan_id or str(uuid.uuid4())
@@ -130,8 +158,8 @@ class SQLiteRepository(DatabaseRepository):
         try:
             with conn:
                 conn.execute(
-                    "INSERT INTO plans (id, created_at, request, result) VALUES (?, ?, ?, ?)",
-                    (pid, now, json.dumps(request), json.dumps(result)),
+                    "INSERT INTO plans (id, created_at, request, result, customer_id) VALUES (?, ?, ?, ?, ?)",
+                    (pid, now, json.dumps(request), json.dumps(result), customer_id),
                 )
             return pid
         finally:
@@ -198,28 +226,7 @@ class SQLiteRepository(DatabaseRepository):
                     "SELECT id, created_at, request, result FROM plans ORDER BY created_at DESC LIMIT ? OFFSET ?",
                     (limit, offset),
                 ).fetchall()
-            plans = []
-            for r in rows:
-                req = json.loads(r["request"])
-                res = json.loads(r["result"])
-                client = req.get("client", {})
-                first_name = client.get("first_name", "Anonymous")
-                last_name = client.get("last_name", "")
-                name = f"{first_name} {last_name}".strip()
-                plans.append({
-                    "id": r["id"],
-                    "created_at": r["created_at"],
-                    "client_name": name or "Anonymous",
-                    "age": client.get("age"),
-                    "risk_band": res.get("profile", {}).get("band"),
-                    "risk_score": res.get("profile", {}).get("score"),
-                    "target_corpus": sum(g.get("future_cost", 0) for g in res.get("goals", [])),
-                    "total_sip": res.get("sip", {}).get("total_monthly_sip"),
-                    "goals_count": len(res.get("goals", [])),
-                    "request": req,
-                    "result": res,
-                })
-            return plans
+            return [_plan_summary(r) for r in rows]
         finally:
             conn.close()
 
@@ -237,6 +244,183 @@ class SQLiteRepository(DatabaseRepository):
             with conn:
                 cur = conn.execute("DELETE FROM plans WHERE id = ?", (plan_id,))
                 return cur.rowcount > 0
+        finally:
+            conn.close()
+
+    def list_customer_plans(self, customer_id: str, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+        conn = self._get_connection()
+        try:
+            rows = conn.execute(
+                "SELECT id, created_at, request, result FROM plans WHERE customer_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
+                (customer_id, limit, offset),
+            ).fetchall()
+            return [_plan_summary(r) for r in rows]
+        finally:
+            conn.close()
+
+    def count_customer_plans(self, customer_id: str) -> int:
+        conn = self._get_connection()
+        try:
+            row = conn.execute("SELECT COUNT(*) AS c FROM plans WHERE customer_id = ?", (customer_id,)).fetchone()
+            return int(row["c"]) if row else 0
+        finally:
+            conn.close()
+
+    def create_customer(
+        self,
+        name: str,
+        email: str,
+        mobile: str,
+        password_hash: str,
+        role: str = "customer",
+        assigned_rm_id: str | None = None,
+    ) -> dict[str, Any]:
+        cid = str(uuid.uuid4())
+        now = datetime.now(UTC).isoformat()
+        conn = self._get_connection()
+        try:
+            with conn:
+                try:
+                    conn.execute(
+                        """
+                        INSERT INTO customers (id, name, email, mobile, password_hash, role, assigned_rm_id, created_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        (cid, name, email, mobile, password_hash, role, assigned_rm_id, now),
+                    )
+                except sqlite3.IntegrityError as e:
+                    raise ValueError("An account with these details already exists") from e
+            return {
+                "id": cid,
+                "name": name,
+                "email": email,
+                "mobile": mobile,
+                "role": role,
+                "assigned_rm_id": assigned_rm_id,
+                "created_at": now,
+            }
+        finally:
+            conn.close()
+
+    def get_customer_by_id(self, customer_id: str) -> dict[str, Any] | None:
+        conn = self._get_connection()
+        try:
+            row = conn.execute("SELECT * FROM customers WHERE id = ?", (customer_id,)).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def get_customer_by_email(self, email: str) -> dict[str, Any] | None:
+        conn = self._get_connection()
+        try:
+            row = conn.execute("SELECT * FROM customers WHERE email = ?", (email,)).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def get_customer_by_mobile(self, mobile: str) -> dict[str, Any] | None:
+        conn = self._get_connection()
+        try:
+            row = conn.execute("SELECT * FROM customers WHERE mobile = ?", (mobile,)).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def list_customers(
+        self,
+        limit: int = 50,
+        offset: int = 0,
+        assigned_rm_id: str | None = None,
+    ) -> list[dict[str, Any]]:
+        conn = self._get_connection()
+        try:
+            where = "WHERE c.assigned_rm_id = ?" if assigned_rm_id is not None else ""
+            params: list[Any] = [assigned_rm_id] if assigned_rm_id is not None else []
+            rows = conn.execute(
+                f"""
+                SELECT c.id, c.name, c.email, c.mobile, c.role, c.assigned_rm_id, c.created_at,
+                       COUNT(p.id) AS plan_count
+                FROM customers c LEFT JOIN plans p ON p.customer_id = c.id
+                {where}
+                GROUP BY c.id ORDER BY c.created_at DESC LIMIT ? OFFSET ?
+                """,
+                (*params, limit, offset),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def count_customers(self, assigned_rm_id: str | None = None) -> int:
+        conn = self._get_connection()
+        try:
+            if assigned_rm_id is not None:
+                row = conn.execute(
+                    "SELECT COUNT(*) AS c FROM customers WHERE assigned_rm_id = ?", (assigned_rm_id,)
+                ).fetchone()
+            else:
+                row = conn.execute("SELECT COUNT(*) AS c FROM customers").fetchone()
+            return int(row["c"]) if row else 0
+        finally:
+            conn.close()
+
+    def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
+        updates = {k: v for k, v in fields.items() if k in ("role", "assigned_rm_id")}
+        conn = self._get_connection()
+        try:
+            with conn:
+                if updates:
+                    set_clause = ", ".join(f"{k} = ?" for k in updates)
+                    conn.execute(
+                        f"UPDATE customers SET {set_clause} WHERE id = ?",
+                        (*updates.values(), customer_id),
+                    )
+            row = conn.execute(
+                "SELECT id, name, email, mobile, role, assigned_rm_id, created_at FROM customers WHERE id = ?",
+                (customer_id,),
+            ).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def create_auth_session(self, customer_id: str, token_sha256: str, expires_at: str) -> None:
+        now = datetime.now(UTC).isoformat()
+        conn = self._get_connection()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT INTO sessions (token_sha256, customer_id, created_at, expires_at) VALUES (?, ?, ?, ?)",
+                    (token_sha256, customer_id, now, expires_at),
+                )
+        finally:
+            conn.close()
+
+    def get_auth_session(self, token_sha256: str) -> dict[str, Any] | None:
+        conn = self._get_connection()
+        try:
+            row = conn.execute(
+                "SELECT token_sha256, customer_id, created_at, expires_at FROM sessions WHERE token_sha256 = ?",
+                (token_sha256,),
+            ).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def delete_auth_session(self, token_sha256: str) -> bool:
+        conn = self._get_connection()
+        try:
+            with conn:
+                cur = conn.execute("DELETE FROM sessions WHERE token_sha256 = ?", (token_sha256,))
+                return cur.rowcount > 0
+        finally:
+            conn.close()
+
+    def purge_expired_auth_sessions(self) -> int:
+        now = datetime.now(UTC).isoformat()
+        conn = self._get_connection()
+        try:
+            with conn:
+                cur = conn.execute("DELETE FROM sessions WHERE expires_at < ?", (now,))
+                return cur.rowcount
         finally:
             conn.close()
 
@@ -470,6 +654,29 @@ def _parse_dt(value: str) -> datetime:
     return dt
 
 
+def _plan_summary(row: sqlite3.Row) -> dict[str, Any]:
+    """Shared plan-list summary shape used by list_plans and list_customer_plans."""
+    req = json.loads(row["request"])
+    res = json.loads(row["result"])
+    client = req.get("client", {})
+    first_name = client.get("first_name", "Anonymous")
+    last_name = client.get("last_name", "")
+    name = f"{first_name} {last_name}".strip()
+    return {
+        "id": row["id"],
+        "created_at": row["created_at"],
+        "client_name": name or "Anonymous",
+        "age": client.get("age"),
+        "risk_band": res.get("profile", {}).get("band"),
+        "risk_score": res.get("profile", {}).get("score"),
+        "target_corpus": sum(g.get("future_cost", 0) for g in res.get("goals", [])),
+        "total_sip": res.get("sip", {}).get("total_monthly_sip"),
+        "goals_count": len(res.get("goals", [])),
+        "request": req,
+        "result": res,
+    }
+
+
 def expires_at(created_at: str) -> str:
     return (_parse_dt(created_at) + timedelta(days=ttl_days())).isoformat()
 
@@ -488,7 +695,7 @@ def purge_expired() -> int:
     return 0
 
 
-def save_plan(request: dict, result: dict) -> dict:
+def save_plan(request: dict, result: dict, customer_id: str | None = None) -> dict:
     from app.db import get_repository
 
     repo = get_repository()
@@ -496,7 +703,7 @@ def save_plan(request: dict, result: dict) -> dict:
         repo.purge_expired()
     plan_id = str(uuid.uuid4())
     created = datetime.now(UTC).isoformat()
-    repo.save_plan(request, result, plan_id=plan_id, created_at=created)
+    repo.save_plan(request, result, plan_id=plan_id, created_at=created, customer_id=customer_id)
     return {"id": plan_id, "created_at": created, "expires_at": expires_at(created)}
 
 
@@ -570,4 +777,100 @@ def get_cas_session(session_id: str) -> dict | None:
     from app.db import get_repository
 
     return get_repository().get_cas_session(session_id)
+
+
+def list_customer_plans(customer_id: str, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+    from app.db import get_repository
+
+    return get_repository().list_customer_plans(customer_id, limit=limit, offset=offset)
+
+
+def count_customer_plans(customer_id: str) -> int:
+    from app.db import get_repository
+
+    return get_repository().count_customer_plans(customer_id)
+
+
+def create_customer(
+    name: str,
+    email: str,
+    mobile: str,
+    password_hash: str,
+    role: str = "customer",
+    assigned_rm_id: str | None = None,
+) -> dict[str, Any]:
+    from app.db import get_repository
+
+    return get_repository().create_customer(
+        name=name,
+        email=email,
+        mobile=mobile,
+        password_hash=password_hash,
+        role=role,
+        assigned_rm_id=assigned_rm_id,
+    )
+
+
+def get_customer_by_id(customer_id: str) -> dict | None:
+    from app.db import get_repository
+
+    return get_repository().get_customer_by_id(customer_id)
+
+
+def get_customer_by_email(email: str) -> dict | None:
+    from app.db import get_repository
+
+    return get_repository().get_customer_by_email(email)
+
+
+def get_customer_by_mobile(mobile: str) -> dict | None:
+    from app.db import get_repository
+
+    return get_repository().get_customer_by_mobile(mobile)
+
+
+def list_customers(
+    limit: int = 50,
+    offset: int = 0,
+    assigned_rm_id: str | None = None,
+) -> list[dict[str, Any]]:
+    from app.db import get_repository
+
+    return get_repository().list_customers(limit=limit, offset=offset, assigned_rm_id=assigned_rm_id)
+
+
+def count_customers(assigned_rm_id: str | None = None) -> int:
+    from app.db import get_repository
+
+    return get_repository().count_customers(assigned_rm_id=assigned_rm_id)
+
+
+def update_customer(customer_id: str, fields: dict[str, Any]) -> dict | None:
+    from app.db import get_repository
+
+    return get_repository().update_customer(customer_id, fields)
+
+
+def create_auth_session(customer_id: str, token_sha256: str, expires_at: str) -> None:
+    from app.db import get_repository
+
+    get_repository().create_auth_session(customer_id, token_sha256, expires_at)
+
+
+def get_auth_session(token_sha256: str) -> dict | None:
+    from app.db import get_repository
+
+    return get_repository().get_auth_session(token_sha256)
+
+
+def delete_auth_session(token_sha256: str) -> bool:
+    from app.db import get_repository
+
+    return get_repository().delete_auth_session(token_sha256)
+
+
+def purge_expired_auth_sessions() -> int:
+    from app.db import get_repository
+
+    return get_repository().purge_expired_auth_sessions()
 

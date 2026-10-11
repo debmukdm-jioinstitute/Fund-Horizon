@@ -3,10 +3,13 @@ import type {
   CatalogInstrument,
   CatalogResponse,
   CompareResponse,
+  Customer,
   ExplainResponse,
   FundAnalytics,
   FundDetail,
+  LoginCustomerBody,
   Meta,
+  MyPlan,
   Plan,
   PlanRequest,
   PortalAnalytics,
@@ -15,6 +18,7 @@ import type {
   PortalPlanPatch,
   Questionnaire,
   RagAnswerResult,
+  SignupCustomerBody,
   TaxCalcResult,
   TaxProfileInput,
   TaxSwitches,
@@ -229,3 +233,30 @@ export const explainTax = (planId: string, nudgeId?: string) =>
     method: "POST",
     body: JSON.stringify({ plan_id: planId, nudge_id: nudgeId ?? null }),
   });
+
+/* ---- Customer accounts (cookie-auth: session cookie set by the backend) ---- */
+
+async function authedRequest<T>(url: string, init?: RequestInit): Promise<T> {
+  // `credentials: "include"` is required so the browser sends the fh_session
+  // httpOnly cookie on the cross-site (frontend domain -> API domain) call.
+  return request<T>(url, { ...init, credentials: "include" });
+}
+
+export const signupCustomer = (body: SignupCustomerBody) =>
+  authedRequest<{ customer: Customer }>(`${API_URL}/api/auth/signup`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+export const loginCustomer = (body: LoginCustomerBody) =>
+  authedRequest<{ customer: Customer }>(`${API_URL}/api/auth/login`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+export const logoutCustomer = () =>
+  authedRequest<{ ok: boolean }>(`${API_URL}/api/auth/logout`, { method: "POST" });
+
+export const getMe = () => authedRequest<Customer>(`${API_URL}/api/auth/me`);
+
+export const getMyPlans = () => authedRequest<MyPlan[]>(`${API_URL}/api/auth/me/plans`);

@@ -1,127 +1,105 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getPlan } from "@/lib/api";
+import { useAuth } from "@/components/AuthContext";
 
-const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
-
-/** Customer log-in for the plan-link portal (no accounts — the plan link is the key).
- * Paste a plan link or ID → validated against the API → opened in the portal. */
+/** Header auth entry point.
+ * Logged out → a "Log in" link-button to /login (plan-link access lives on the login page).
+ * Logged in  → the customer's first name with a small menu: My plans + Log out. */
 export default function CustomerLogin({ className = "" }: { className?: string }) {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { customer, loading, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  function close() {
-    setOpen(false);
-    setError(null);
-    setLoading(false);
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onDocClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
+  if (loading) {
+    return (
+      <span className={`ml-1 rounded-xl bg-navy-900/10 px-4 py-1.5 text-sm font-semibold text-navy-400 ${className}`} aria-hidden>
+        …
+      </span>
+    );
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const m = UUID_RE.exec(value.trim());
-    if (!m) {
-      setError("That doesn't look like a plan link. Paste the full link or the 36-character ID from your results page.");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      await getPlan(m[0]);
-      close();
-      router.push(`/portal/${m[0]}`);
-    } catch {
-      setError("We couldn't find a plan with that link. Check it and try again — plan links expire after 30 days.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
+  if (!customer) {
+    return (
+      <Link
+        href="/login"
         className={`ml-1 rounded-xl bg-navy-900 px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800 ${className}`}
       >
         Log in
+      </Link>
+    );
+  }
+
+  const firstName = customer.name.trim().split(/\s+/)[0] || "Account";
+
+  async function handleLogout() {
+    setMenuOpen(false);
+    await logout();
+    router.push("/");
+    router.refresh();
+  }
+
+  return (
+    <div ref={menuRef} className={`relative ml-1 ${className}`}>
+      <button
+        type="button"
+        onClick={() => setMenuOpen((v) => !v)}
+        aria-haspopup="menu"
+        aria-expanded={menuOpen}
+        className="flex items-center gap-1.5 rounded-xl bg-navy-900 px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
+      >
+        <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-500 text-[11px] font-bold text-navy-950">
+          {firstName.charAt(0).toUpperCase()}
+        </span>
+        {firstName}
+        <svg className={`h-3.5 w-3.5 transition-transform ${menuOpen ? "rotate-180" : ""}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
       </button>
 
-      {open && (
+      {menuOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/60 p-4 backdrop-blur-sm"
-          onClick={close}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Log in to your portal"
+          role="menu"
+          className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl border border-navy-100 bg-white py-1 shadow-xl"
         >
-          <div
-            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+          <Link
+            href="/account/plans"
+            role="menuitem"
+            onClick={() => setMenuOpen(false)}
+            className="block px-4 py-2 text-sm font-medium text-navy-900 hover:bg-navy-50"
           >
-            <div className="flex items-center justify-between border-b border-navy-100 pb-3">
-              <h3 className="text-lg font-bold text-navy-950">Log in to your portal</h3>
-              <button
-                type="button"
-                onClick={close}
-                aria-label="Close"
-                className="rounded p-1.5 text-navy-400 hover:bg-navy-50 hover:text-navy-700"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="mt-4 space-y-3">
-              <p className="text-sm text-navy-700">
-                Paste your plan link or the 36-character ID from your results page to open your dashboard.
-              </p>
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="https://fundhorizon.up.railway.app/plan/…"
-                autoComplete="off"
-                spellCheck={false}
-                className="w-full rounded-xl border border-navy-200 px-3 py-2 text-sm text-navy-950 placeholder:text-navy-300 focus:border-teal-500 focus:outline-none"
-              />
-              {error && (
-                <p role="alert" className="text-sm text-red-700">
-                  {error}
-                </p>
-              )}
-              <button
-                type="submit"
-                disabled={loading || value.trim().length === 0}
-                className="w-full rounded-xl bg-navy-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-navy-800 disabled:opacity-50"
-              >
-                {loading ? "Finding your plan…" : "Open my dashboard"}
-              </button>
-            </form>
-
-            <div className="mt-4 border-t border-navy-100 pt-4 text-center text-sm text-navy-700">
-              New to Fund Horizon?{" "}
-              <Link href="/plan/new" className="font-semibold text-teal-700 hover:text-teal-800" onClick={close}>
-                Create your free plan
-              </Link>
-            </div>
-            <p className="mt-2 text-center text-xs text-navy-500">
-              No password needed — your plan link is your key. We never ask for your phone or email.
-            </p>
-          </div>
+            My plans
+          </Link>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={handleLogout}
+            className="block w-full px-4 py-2 text-left text-sm font-medium text-navy-900 hover:bg-navy-50"
+          >
+            Log out
+          </button>
         </div>
       )}
-    </>
+    </div>
   );
 }

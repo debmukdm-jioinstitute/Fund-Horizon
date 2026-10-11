@@ -19,8 +19,92 @@ class DatabaseRepository(ABC):
         result: dict[str, Any],
         plan_id: str | None = None,
         created_at: str | None = None,
+        customer_id: str | None = None,
     ) -> str:
         """Persist a planning calculation request and response."""
+        ...
+
+    @abstractmethod
+    def list_customer_plans(
+        self, customer_id: str, limit: int = 50, offset: int = 0
+    ) -> list[dict[str, Any]]:
+        """List plan summaries belonging to one customer."""
+        ...
+
+    @abstractmethod
+    def count_customer_plans(self, customer_id: str) -> int:
+        """Return the number of plans belonging to one customer."""
+        ...
+
+    @abstractmethod
+    def create_customer(
+        self,
+        name: str,
+        email: str,
+        mobile: str,
+        password_hash: str,
+        role: str = "customer",
+        assigned_rm_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a customer account. Returns the public customer record (no password hash).
+
+        Raises ValueError if the email or mobile is already registered.
+        """
+        ...
+
+    @abstractmethod
+    def get_customer_by_id(self, customer_id: str) -> dict[str, Any] | None:
+        """Retrieve a customer by id, including the password hash (internal use)."""
+        ...
+
+    @abstractmethod
+    def get_customer_by_email(self, email: str) -> dict[str, Any] | None:
+        """Retrieve a customer by lowercased email, including the password hash (internal use)."""
+        ...
+
+    @abstractmethod
+    def get_customer_by_mobile(self, mobile: str) -> dict[str, Any] | None:
+        """Retrieve a customer by digits-only mobile, including the password hash (internal use)."""
+        ...
+
+    @abstractmethod
+    def list_customers(
+        self,
+        limit: int = 50,
+        offset: int = 0,
+        assigned_rm_id: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """List public customer records with plan counts, optionally filtered by assigned RM."""
+        ...
+
+    @abstractmethod
+    def count_customers(self, assigned_rm_id: str | None = None) -> int:
+        """Return total customer count, optionally filtered by assigned RM."""
+        ...
+
+    @abstractmethod
+    def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
+        """Update allowed customer fields (role, assigned_rm_id). Returns the public record."""
+        ...
+
+    @abstractmethod
+    def create_auth_session(self, customer_id: str, token_sha256: str, expires_at: str) -> None:
+        """Persist a login session keyed by the SHA-256 of the bearer token."""
+        ...
+
+    @abstractmethod
+    def get_auth_session(self, token_sha256: str) -> dict[str, Any] | None:
+        """Retrieve a login session by token hash."""
+        ...
+
+    @abstractmethod
+    def delete_auth_session(self, token_sha256: str) -> bool:
+        """Delete a login session. Returns True if one was removed."""
+        ...
+
+    @abstractmethod
+    def purge_expired_auth_sessions(self) -> int:
+        """Delete expired login sessions. Returns the number removed."""
         ...
 
     @abstractmethod

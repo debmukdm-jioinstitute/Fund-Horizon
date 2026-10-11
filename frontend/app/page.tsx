@@ -35,7 +35,7 @@ const PILLARS = [
   {
     icon: "🔒",
     title: "Zero Data Retention",
-    desc: "No phone number, email, or PAN requested. CAS statements are parsed strictly in volatile RAM.",
+    desc: "We never collect PAN. Creating an account needs your name, email and mobile number; the plan-link flow needs nothing. CAS statements are parsed strictly in volatile RAM.",
   },
   {
     icon: "🎯",
@@ -51,8 +51,8 @@ const PILLARS = [
 
 const FAQS = [
   {
-    q: "Why do you not ask for my phone number or email?",
-    a: "We believe financial planning should be private and free of marketing calls. You receive a unique 36-character plan link. Bookmark or copy it — we cannot recover lost plans.",
+    q: "Do I need to share my phone number or email to use Fund Horizon?",
+    a: "Only when you create an account — signup asks for your name, email and mobile number. The plan-link flow needs nothing: no PAN, no phone, no email. You receive a unique 36-character plan link. Bookmark or copy it — we cannot recover lost plans.",
   },
   {
     q: "What does an AMFI mutual fund distributor do?",
@@ -111,7 +111,7 @@ export default async function Home({ searchParams }: { searchParams?: { retrieve
               Already have a plan?
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
-              Paste the plan link or the ID from the results page. We never ask for a phone or email, so this is the only way back.
+              Paste the plan link or the ID from the results page. A plan made without an account never asks for a phone or email, so this link is the only way back.
             </p>
           </div>
         </div>

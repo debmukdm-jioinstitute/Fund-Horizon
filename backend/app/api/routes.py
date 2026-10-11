@@ -9,6 +9,7 @@ import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import Response
 
+from app.api.auth import get_optional_customer
 from app.api.serialize import clean, plan_payload
 from app.config import load_allocation, load_assumptions, load_questionnaire
 from app.config.disclosures import (
@@ -89,7 +90,12 @@ def create_plan(req: PlanRequest, request: Request):
     if req.assumption_overrides and not _overrides_allowed():
         raise HTTPException(422, detail="assumption_overrides are not accepted")
     result = _compute(req, request)
-    saved = sqlite.save_plan(req.model_dump(mode="json"), result)
+    # Attach the plan to the signed-in customer when one exists; anonymous
+    # plan-link flow keeps working with customer_id=None.
+    current = get_optional_customer(request)
+    saved = sqlite.save_plan(
+        req.model_dump(mode="json"), result, customer_id=current["id"] if current else None
+    )
     return plan_payload(saved["id"], result, created_at=saved["created_at"], expires_at=saved["expires_at"])
 
 

@@ -98,7 +98,13 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json" if docs_enabled else None,
     )
     origins = [o.strip() for o in os.environ.get("FH_CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
-    app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     limiter = InProcessRateLimiter()
     app.state.rate_limiter = limiter
 
@@ -148,10 +154,14 @@ def create_app() -> FastAPI:
         )
 
     from app.api.admin import admin_router
+    from app.api.auth import auth_router
+    from app.api.rm import rm_router
 
     app.include_router(router)
     app.include_router(portal_router)
     app.include_router(admin_router)
+    app.include_router(auth_router)
+    app.include_router(rm_router)
     return app
 
 

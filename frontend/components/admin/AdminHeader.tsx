@@ -5,7 +5,7 @@ import React from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 
-export type AdminTab = "overview" | "plans" | "cas" | "funds" | "config" | "operations";
+export type AdminTab = "overview" | "plans" | "cas" | "funds" | "config" | "operations" | "customers";
 
 interface AdminHeaderProps {
   activeTab: AdminTab;
@@ -29,6 +29,7 @@ export default function AdminHeader({
     { id: "funds", label: "Fund Catalog", icon: "📈" },
     { id: "config", label: "Assumptions & Rules", icon: "⚙️" },
     { id: "operations", label: "Operations & Sync", icon: "🛠️" },
+    { id: "customers", label: "Customers", icon: "👥" },
   ];
 
   return (

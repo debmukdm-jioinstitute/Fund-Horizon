@@ -7,6 +7,7 @@ from app.config import load_allocation, load_assumptions
 from app.config.disclosures import all_disclosures
 from app.engine.allocation import to_asset_classes, weighted_allocation
 from app.engine.funds import select_funds
+from app.engine.insurance_suggest import suggest_cover_plans
 from app.engine.planning import build_plan
 from app.engine.profiling import build_profile
 from app.engine.stress import stress_test
@@ -120,6 +121,7 @@ def build_full_plan(req: PlanRequest, eligible: pd.DataFrame) -> dict:
         },
         "funds": funds,
         "shortlist_omitted": shortlist_omitted,
+        "insurance_suggestions": suggest_cover_plans(req.client, planning["insurance"]),
         "stress_test": stress,
         "planning": planning,
         "disclosures": all_disclosures(),

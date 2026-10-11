@@ -72,6 +72,46 @@ class PostgresRepository(DatabaseRepository):
                 session.add(plan)
         return pid
 
+    def update_plan(
+        self,
+        plan_id: str,
+        request: dict[str, Any],
+        result: dict[str, Any],
+    ) -> None:
+        """Replace the stored request/result for a plan, preserving created_at."""
+        now = datetime.now(UTC).isoformat()
+        request_json = json.dumps(request)
+        result_json = json.dumps(result)
+        with self.get_session() as session:
+            with session.begin():
+                if self.engine.dialect.name == "postgresql":
+                    insert_stmt = pg_insert(PlanModel).values(
+                        id=plan_id,
+                        created_at=now,
+                        request=request_json,
+                        result=result_json,
+                    )
+                    upsert_stmt = insert_stmt.on_conflict_do_update(
+                        index_elements=[PlanModel.id],
+                        set_={
+                            "request": insert_stmt.excluded.request,
+                            "result": insert_stmt.excluded.result,
+                        },
+                    )
+                    session.execute(upsert_stmt)
+                else:
+                    existing = session.get(PlanModel, plan_id)
+                    if existing is None:
+                        session.add(PlanModel(
+                            id=plan_id,
+                            created_at=now,
+                            request=request_json,
+                            result=result_json,
+                        ))
+                    else:
+                        existing.request = request_json
+                        existing.result = result_json
+
     def get_plan(self, plan_id: str) -> dict[str, Any] | None:
         from app.db.sqlite import expires_at
 

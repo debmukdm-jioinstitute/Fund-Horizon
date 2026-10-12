@@ -7,7 +7,7 @@ export default async function Footer() {
   const meta = await getMetaServer();
   return (
     <footer className="mt-auto border-t border-slate-200/70 bg-white/75 backdrop-blur-xl">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200/60">
           <div className="flex items-center gap-3">
             <Logo size="sm" showSubtitle={false} href="/" />

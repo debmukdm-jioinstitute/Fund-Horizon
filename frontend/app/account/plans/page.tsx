@@ -47,14 +47,14 @@ export default function MyPlansPage() {
 
   if (authLoading || !customer) {
     return (
-      <div className="mx-auto max-w-3xl py-16 text-center text-navy-600">
+      <div className="w-full py-16 text-center text-navy-600">
         <p>Loading…</p>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-3xl py-8">
+    <div className="w-full py-8">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-navy-950">My plans</h1>

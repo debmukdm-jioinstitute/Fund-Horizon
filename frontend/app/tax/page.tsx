@@ -56,7 +56,7 @@ export default function TaxCalculator() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="w-full space-y-6">
       <header>
         <h1 className="text-3xl font-extrabold tracking-tight text-navy-950">Tax calculator</h1>
         <p className="mt-1 text-slate-600">Compare the old and new regimes for FY 2026-27 and see saving ideas. Nothing is saved.</p>

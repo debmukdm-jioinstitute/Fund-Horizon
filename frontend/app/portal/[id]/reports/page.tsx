@@ -8,7 +8,7 @@ export default function PortalReportsPage({ params }: { params: { id: string } }
   const { id } = params;
 
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-4 px-4 py-6">
+    <main className="w-full space-y-4 px-4 py-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-navy-950">Reports</h1>
         <Link href={`/plan/${id}`} className="text-xs font-semibold text-teal-700 hover:underline">

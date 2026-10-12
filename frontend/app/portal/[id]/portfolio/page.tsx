@@ -112,7 +112,7 @@ export default function PortfolioPage({ params }: { params: { id: string } }) {
   );
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-6">
+    <main className="w-full px-4 py-6">
       <Link href={`/portal/${id}`} className="text-sm font-medium text-teal-700 underline-offset-2 hover:underline">
         &larr; Back to portal
       </Link>

@@ -100,7 +100,7 @@ export default async function Home({ searchParams }: { searchParams?: { retrieve
       {/* Retrieve Plan Section: Frosted Glass Card with 3D Input */}
       <Reveal><section
         aria-labelledby="retrieve"
-        className="glass-card max-w-2xl p-7 transition-all hover:border-teal-500/30"
+        className="glass-card w-full max-w-3xl p-7 transition-all hover:border-teal-500/30"
       >
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy-900 text-teal-400 shadow-md">

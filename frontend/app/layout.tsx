@@ -66,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Translucent Frosted Glass Sticky Header */}
         <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-[0_4px_20px_-4px_rgba(11,37,69,0.03)] transition-all">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-y-2 px-4 py-3 sm:px-6">
+          <div className="flex w-full flex-wrap items-center justify-between gap-y-2 px-4 py-3 sm:px-6 lg:px-8 xl:px-12">
             <Logo size="md" showSubtitle />
 
             <div className="flex flex-wrap items-center gap-2 sm:gap-4">
@@ -121,7 +121,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="h-[2px] bg-gradient-to-r from-transparent via-teal-500/50 to-transparent" />
         </header>
 
-        <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        <main id="main" className="w-full flex-1 px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
           <AuthProvider>{children}</AuthProvider>
         </main>
 

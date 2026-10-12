@@ -82,7 +82,7 @@ export default function PortalAnalyticsPage({ params }: { params: { id: string }
   const topCategoryPct = analytics?.top_category_pct;
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6">
+    <main className="w-full space-y-4 px-4 py-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-navy-950">Analytics & Financial Health</h1>
         <Link href={`/plan/${id}`} className="text-xs font-semibold text-teal-700 hover:underline">

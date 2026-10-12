@@ -46,7 +46,7 @@ export default function InstrumentPage({ params }: { params: { id: string } }) {
   if (!item) return <p role="status">Loading…</p>;
 
   return (
-    <article className="mx-auto max-w-3xl space-y-6">
+    <article className="w-full space-y-6">
       <nav aria-label="Breadcrumb" className="text-sm"><Link href="/learn" className="font-semibold text-teal-800 underline">All options</Link></nav>
       <header>
         <h1 className="text-3xl font-extrabold tracking-tight text-navy-950">{item.name}</h1>

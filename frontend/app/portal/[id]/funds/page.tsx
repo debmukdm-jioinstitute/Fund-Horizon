@@ -367,7 +367,7 @@ function FundsInner({ id }: { id: string }) {
   };
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6">
+    <main className="w-full space-y-4 px-4 py-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-navy-950">Explore & Compare Funds</h1>
         <Link href={`/plan/${id}`} className="text-xs font-semibold text-teal-700 hover:underline">
@@ -401,7 +401,7 @@ function FundsInner({ id }: { id: string }) {
 
 export default function PortalFundsPage({ params }: { params: { id: string } }) {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-5xl px-4 py-6"><div className="card p-6 text-center text-xs text-navy-500">Loading…</div></main>}>
+    <Suspense fallback={<main className="w-full px-4 py-6"><div className="card p-6 text-center text-xs text-navy-500">Loading…</div></main>}>
       <FundsInner id={params.id} />
     </Suspense>
   );

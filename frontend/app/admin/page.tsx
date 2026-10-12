@@ -49,7 +49,7 @@ export default function AdminPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-navy-50/40 flex flex-col">
+    <div className="min-h-screen bg-navy-50/40 flex flex-col -mx-4 sm:-mx-6 lg:-mx-8 xl:-mx-12 -my-8">
       {/* Top Header */}
       <AdminHeader
         activeTab={activeTab}
@@ -59,7 +59,7 @@ export default function AdminPage() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
         {activeTab === "customers" ? (
           // Cookie-authed section: works for signed-in admins/RMs even without the legacy admin key
           <AdminCustomersTab me={me} meLoading={meLoading} />

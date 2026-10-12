@@ -34,7 +34,7 @@ export default function AdminHeader({
 
   return (
     <div className="bg-navy-950/90 backdrop-blur-xl text-white border-b border-navy-850/80 shadow-md sticky top-0 z-30">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
         {/* Top Control Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-4">
           <div className="flex items-center gap-3">

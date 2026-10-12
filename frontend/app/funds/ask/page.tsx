@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function FundAskPage() {
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="w-full space-y-6">
       <nav aria-label="Breadcrumb">
         <ol className="flex items-center gap-2 text-xs text-navy-700">
           <li>

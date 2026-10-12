@@ -156,12 +156,16 @@ def create_app() -> FastAPI:
     from app.api.admin import admin_router
     from app.api.auth import auth_router
     from app.api.rm import rm_router
+    from app.api.crm_core import router as crm_core_router
+    from app.api.crm_products import router as crm_products_router
 
     app.include_router(router)
     app.include_router(portal_router)
     app.include_router(admin_router)
     app.include_router(auth_router)
     app.include_router(rm_router)
+    app.include_router(crm_core_router)
+    app.include_router(crm_products_router)
     return app
 
 

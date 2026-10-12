@@ -130,6 +130,14 @@ class SQLiteRepository(DatabaseRepository):
                     )
                     """
                 )
+                # CRM tables (each init fn is idempotent CREATE TABLE IF NOT EXISTS).
+                # Imported here (not at module top): app.db_crm_products imports
+                # from app.db.sqlite, so top-level imports would be circular.
+                from app.db_crm_core import init_crm_core_schema
+                from app.db_crm_products import init_crm_products_schema
+
+                init_crm_core_schema(conn)
+                init_crm_products_schema(conn)
         finally:
             conn.close()
 

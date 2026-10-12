@@ -11,8 +11,21 @@ import AdminConfigTab from "@/components/admin/AdminConfigTab";
 import AdminOperationsTab from "@/components/admin/AdminOperationsTab";
 import PlanDrawer from "@/components/admin/PlanDrawer";
 import AdminCustomersTab from "@/components/admin/AdminCustomersTab";
+import CrmHome from "@/components/crm/CrmHome";
+import HouseholdsTab from "@/components/crm/HouseholdsTab";
+import LeadsTab from "@/components/crm/LeadsTab";
+import PipelinesTab from "@/components/crm/PipelinesTab";
+import ActivitiesTab from "@/components/crm/ActivitiesTab";
+import CasesTab from "@/components/crm/CasesTab";
+import ComplianceTab from "@/components/crm/ComplianceTab";
+import ImportTab from "@/components/crm/ImportTab";
 import { MeUser, fetchMe } from "@/components/admin/account-api";
 import { AdminStats, AdminPlanSummary, fetchAdminStats, saveAdminKey } from "@/lib/admin-api";
+
+const CRM_TABS: AdminTab[] = ["crm-home", "households", "leads", "pipelines", "activities", "cases", "compliance", "import"];
+function isCrmTab(tab: AdminTab): boolean {
+  return CRM_TABS.includes(tab);
+}
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
@@ -63,6 +76,18 @@ export default function AdminPage() {
         {activeTab === "customers" ? (
           // Cookie-authed section: works for signed-in admins/RMs even without the legacy admin key
           <AdminCustomersTab me={me} meLoading={meLoading} />
+        ) : isCrmTab(activeTab) ? (
+          // CRM sections: cookie-authed via /api/auth/me session, no legacy admin key needed
+          <>
+            {activeTab === "crm-home" && <CrmHome onNavigate={(tab) => setActiveTab(tab as AdminTab)} />}
+            {activeTab === "households" && <HouseholdsTab />}
+            {activeTab === "leads" && <LeadsTab />}
+            {activeTab === "pipelines" && <PipelinesTab />}
+            {activeTab === "activities" && <ActivitiesTab />}
+            {activeTab === "cases" && <CasesTab />}
+            {activeTab === "compliance" && <ComplianceTab />}
+            {activeTab === "import" && <ImportTab />}
+          </>
         ) : loading && !stats ? (
           <div className="p-16 text-center space-y-3">
             <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />

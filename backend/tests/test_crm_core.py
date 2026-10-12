@@ -456,7 +456,7 @@ def test_dashboard_kpis(client, admin, rm):
 def _create_w2_policy_table(db_path):
     conn = sqlite3.connect(db_path)
     conn.execute(
-        """CREATE TABLE insurance_policies (
+        """CREATE TABLE IF NOT EXISTS insurance_policies (
             id TEXT PRIMARY KEY, household_id TEXT, customer_id TEXT,
             policy_type TEXT NOT NULL, insurer TEXT, policy_no TEXT,
             premium_amount INTEGER, premium_due_date TEXT, renewal_date TEXT,
@@ -472,10 +472,11 @@ def test_generate_tasks_idempotent(client, admin, rm, tmp_path):
     h = client.post("/api/crm/households", json={"name": "Policy Fam", "rm_id": rm["id"]}).json()
     renewal = (datetime.now(UTC) + timedelta(days=10)).date().isoformat()
     conn = sqlite3.connect(db_path)
+    now = datetime.now(UTC).isoformat()
     conn.execute(
         "INSERT INTO insurance_policies (id, household_id, policy_type, insurer, policy_no,"
-        " premium_amount, renewal_date, status) VALUES (?,?,?,?,?,?,?,?)",
-        ("pol1", h["id"], "term", "LIC", "P-001", 5000000, renewal, "active"),
+        " premium_amount, renewal_date, status, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
+        ("pol1", h["id"], "term", "LIC", "P-001", 5000000, renewal, "active", now, now),
     )
     conn.commit()
     conn.close()

@@ -81,10 +81,10 @@ export default function DataHealthPage() {
   }
 
   async function handleCommit() {
-    if (!previewJob?.id) return;
+    if (!previewJob) return;
     setCommitting(true);
     try {
-      const res = await commitImport(previewJob.id);
+      const res = await commitImport(previewJob);
       setCommitMessage(`Successfully committed ${res.committed_rows} rows inside an atomic transaction.`);
       setPreviewJob(null);
       setFileContent("");

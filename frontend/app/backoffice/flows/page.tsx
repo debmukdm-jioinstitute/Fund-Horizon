@@ -32,9 +32,9 @@ export default function FlowsPage() {
       r.report_date,
       r.category,
       r.segment,
-      r.buy_paise ? (r.buy_paise / 1e9).toFixed(1) : "",
-      r.sell_paise ? (r.sell_paise / 1e9).toFixed(1) : "",
-      (r.net_paise / 1e9).toFixed(1),
+      r.buy_crore !== undefined ? r.buy_crore.toFixed(1) : "",
+      r.sell_crore !== undefined ? r.sell_crore.toFixed(1) : "",
+      r.net_crore !== undefined ? r.net_crore.toFixed(1) : "",
       r.provisional ? "Provisional" : "Final",
     ]);
     const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
@@ -165,9 +165,9 @@ export default function FlowsPage() {
             <tbody>
               {flows.daily && flows.daily.length > 0 ? (
                 flows.daily.map((row, idx) => {
-                  const buyCr = row.buy_paise ? (row.buy_paise / 1e9).toFixed(1) : "—";
-                  const sellCr = row.sell_paise ? (row.sell_paise / 1e9).toFixed(1) : "—";
-                  const netCr = row.net_paise / 1e9;
+                  const buyCr = row.buy_crore !== undefined ? row.buy_crore.toFixed(1) : "—";
+                  const sellCr = row.sell_crore !== undefined ? row.sell_crore.toFixed(1) : "—";
+                  const netCr = row.net_crore;
                   return (
                     <tr key={idx}>
                       <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">

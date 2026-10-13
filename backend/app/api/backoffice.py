@@ -6,11 +6,12 @@ import io
 import re
 import secrets
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Annotated, Any
 
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 
 from app.api.auth import (
     get_current_customer,
@@ -21,7 +22,9 @@ from app.api.auth import (
     _hash_password,
 )
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
-from app.backoffice.collectors import refresh_source
+from app.backoffice.collectors import factsheet_archive_dir, refresh_source
+from app.backoffice.fh_recommended import FH_RECOMMENDED_MF_CODES, MF_FACTSHEET_SOURCE, PMS_FACTSHEET_SOURCE
+from app.backoffice.providers import factsheets as factsheets_provider
 from app.backoffice.providers import apmi as apmi_provider
 from app.backoffice.providers.nse import NseError
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
@@ -378,6 +381,42 @@ def backoffice_micro_issuer(symbol: str, staff: Annotated[dict, Depends(require_
 # Mutual Fund Tracker
 # ---------------------------------------------------------------------------
 
+@router.get("/factsheets")
+def backoffice_factsheets(
+    staff: Annotated[dict, Depends(require_staff)],
+    kind: str = Query(..., pattern="^(mf|pms)$"),
+    id: str = Query(..., pattern="^[0-9]{1,8}$"),
+):
+    """Official factsheets (newest first) for a curated mutual fund (AMFI code) or PMS strategy (APMI id)."""
+    key = (MF_FACTSHEET_SOURCE if kind == "mf" else PMS_FACTSHEET_SOURCE).get(id)
+    if key is None:
+        return {"data": {"source": None, "items": []}, "availability": "unavailable"}
+    items = []
+    for r in _REPO.list_factsheets(key):
+        archived = bool(r["archived_path"]) and Path(r["archived_path"]).is_file()
+        items.append({
+            "id": r["id"], "period": r["period"], "title": r["title"], "size_bytes": r["size_bytes"],
+            "first_seen_at": r["first_seen_at"],
+            # An overwritten-in-place source only keeps its old versions in our archive.
+            "url": f"/api/backoffice/factsheets/{r['id']}/file" if archived else r["url"],
+            "official_url": r["url"],
+        })
+    return {
+        "data": {"source": factsheets_provider.SOURCES[key].label, "items": items},
+        "availability": "ready" if items else "unavailable",
+        "as_of": items[0]["period"] if items else None,
+    }
+
+
+@router.get("/factsheets/{factsheet_id}/file")
+def backoffice_factsheet_file(factsheet_id: int, staff: Annotated[dict, Depends(require_staff)]):
+    row = _REPO.get_factsheet(factsheet_id)
+    path = Path(row["archived_path"]) if row and row["archived_path"] else None
+    if path is None or not path.is_file() or not path.resolve().is_relative_to(factsheet_archive_dir().resolve()):
+        raise HTTPException(404, "Factsheet file not archived")
+    return FileResponse(path, media_type="application/pdf", filename=f"{row['source_key']}-{row['period']}.pdf")
+
+
 _PCT_METRICS = (
     "ret_1m", "ret_3m", "ret_6m", "ret_1y", "cagr_3y", "cagr_5y", "cagr_7y", "cagr_10y",
     "cagr_since_inception", "vol_3y", "max_drawdown_3y", "max_drawdown_all",
@@ -445,6 +484,7 @@ def backoffice_mf_tracker(
     amc: str | None = Query(None),
     category: str | None = Query(None),
     plan: str | None = Query(None),
+    recommended: bool = Query(False),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
 ):
@@ -452,10 +492,12 @@ def backoffice_mf_tracker(
     plan_norm = plan.strip().title() if plan else None
     if plan_norm and plan_norm not in {"Direct", "Regular"}:
         plan_norm = None
-    funds = _REPO.search_mf_schemes(search, amc, category, limit, offset, plan=plan_norm)
-    total = _REPO.count_mf_schemes(search, amc, category, plan=plan_norm)
+    codes = FH_RECOMMENDED_MF_CODES.keys() if recommended else None
+    funds = _REPO.search_mf_schemes(search, amc, category, limit, offset, plan=plan_norm, codes=codes)
+    total = _REPO.count_mf_schemes(search, amc, category, plan=plan_norm, codes=codes)
     facets = _REPO.mf_scheme_facets()
     for f in funds:
+        f["is_fh_recommended"] = f.get("scheme_code") in FH_RECOMMENDED_MF_CODES
         # Alias both names so older and newer clients can read the NAV date.
         nav_date = f.get("nav_date") or f.get("latest_nav_date")
         f["nav_date"] = nav_date
@@ -473,6 +515,7 @@ def backoffice_mf_tracker(
         "limit": limit,
         "offset": offset,
         "as_of": facets.get("as_of"),
+        "recommended_count": len(FH_RECOMMENDED_MF_CODES),
         "facets": {
             "amcs": facets.get("amcs") or [],
             "categories": facets.get("categories") or [],

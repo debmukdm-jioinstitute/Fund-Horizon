@@ -5,6 +5,7 @@ import json
 import time
 import uuid
 from datetime import UTC, datetime
+from collections.abc import Collection
 from typing import Any
 
 from app.backoffice.db import ensure_backoffice_schema
@@ -13,6 +14,20 @@ from app.db import sqlite as _sqlite
 
 
 _LIVE_TABLES_SQL = """
+CREATE TABLE IF NOT EXISTS factsheets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_key TEXT NOT NULL,
+    period TEXT NOT NULL,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL,
+    size_bytes INTEGER,
+    sha256 TEXT,
+    archived_path TEXT,
+    first_seen_at TEXT NOT NULL,
+    verified_at TEXT NOT NULL,
+    UNIQUE (source_key, period)
+);
+CREATE INDEX IF NOT EXISTS ix_factsheets_source ON factsheets(source_key, period DESC);
 CREATE TABLE IF NOT EXISTS mf_schemes (
     scheme_code TEXT PRIMARY KEY,
     scheme_name TEXT NOT NULL,
@@ -485,9 +500,13 @@ class BackofficeRepository:
             conn.close()
 
     def _mf_where(
-        self, search: str | None, amc: str | None, category: str | None, plan: str | None
+        self, search: str | None, amc: str | None, category: str | None, plan: str | None,
+        codes: Collection[str] | None = None,
     ) -> tuple[str, list[Any]]:
         clauses, params = [], []  # type: list[str], list[Any]
+        if codes is not None:
+            clauses.append(f"s.scheme_code IN ({','.join('?' for _ in codes)})")
+            params += list(codes)
         if search:
             like = f"%{search.strip()}%"
             clauses.append(
@@ -514,8 +533,9 @@ class BackofficeRepository:
         limit: int,
         offset: int,
         plan: str | None = None,
+        codes: Collection[str] | None = None,
     ) -> list[dict[str, Any]]:
-        where, params = self._mf_where(search, amc, category, plan)
+        where, params = self._mf_where(search, amc, category, plan, codes)
         conn = self._conn()
         try:
             rows = conn.execute(
@@ -534,8 +554,11 @@ class BackofficeRepository:
         finally:
             conn.close()
 
-    def count_mf_schemes(self, search: str | None, amc: str | None, category: str | None, plan: str | None = None) -> int:
-        where, params = self._mf_where(search, amc, category, plan)
+    def count_mf_schemes(
+        self, search: str | None, amc: str | None, category: str | None, plan: str | None = None,
+        codes: Collection[str] | None = None,
+    ) -> int:
+        where, params = self._mf_where(search, amc, category, plan, codes)
         conn = self._conn()
         try:
             row = conn.execute(f"SELECT COUNT(*) AS n FROM mf_schemes s {where}", params).fetchone()
@@ -676,6 +699,48 @@ class BackofficeRepository:
         conn = self._conn()
         try:
             return {r[0] for r in conn.execute("SELECT DISTINCT as_on FROM pms_apmi_strategies").fetchall()}
+        finally:
+            conn.close()
+
+    # --- Factsheets ---
+
+    def upsert_factsheet(self, source_key: str, f: Any) -> bool:
+        """Insert a newly seen factsheet (True) or just refresh verified_at on a known one (False)."""
+        now = _utcnow()
+        conn = self._conn()
+        try:
+            with conn:
+                cur = conn.execute("UPDATE factsheets SET verified_at = ?, url = ? WHERE source_key = ? AND period = ?", (now, f.url, source_key, f.period))
+                if cur.rowcount:
+                    return False
+                conn.execute(
+                    "INSERT INTO factsheets (source_key, period, title, url, size_bytes, sha256, archived_path, first_seen_at, verified_at) VALUES (?,?,?,?,?,?,?,?,?)",
+                    (source_key, f.period, f.title, f.url, f.size_bytes, f.sha256, f.archived_path, now, now),
+                )
+                return True
+        finally:
+            conn.close()
+
+    def factsheet_periods(self, source_key: str) -> set[str]:
+        conn = self._conn()
+        try:
+            return {r[0] for r in conn.execute("SELECT period FROM factsheets WHERE source_key = ?", (source_key,)).fetchall()}
+        finally:
+            conn.close()
+
+    def list_factsheets(self, source_key: str) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute("SELECT * FROM factsheets WHERE source_key = ? ORDER BY period DESC", (source_key,)).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def get_factsheet(self, factsheet_id: int) -> dict[str, Any] | None:
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT * FROM factsheets WHERE id = ?", (factsheet_id,)).fetchone()
+            return dict(row) if row else None
         finally:
             conn.close()
 

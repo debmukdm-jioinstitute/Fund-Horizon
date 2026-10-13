@@ -254,7 +254,30 @@ export interface MutualFundItem {
   isin_growth?: string;
   isin_div?: string;
   ter_as_of?: string;
+  is_fh_recommended?: boolean;
 }
+
+export interface FactsheetItem {
+  id: number;
+  period: string;
+  title: string;
+  url: string;
+}
+
+export interface FactsheetResult {
+  source?: string;
+  items: FactsheetItem[];
+}
+
+/** Official factsheets for a curated fund (kind "mf", AMFI code) or PMS strategy (kind "pms", APMI id). */
+export const getFactsheets = async (kind: "mf" | "pms", id: string): Promise<FactsheetResult> => {
+  const raw = await boFetch<Json>(`/api/backoffice/factsheets?kind=${kind}&id=${encodeURIComponent(id)}`);
+  const d = obj(raw.data);
+  return {
+    source: str(d.source),
+    items: arr(d.items).flatMap((i) => (num(i.id) !== undefined && str(i.url) ? [{ id: num(i.id) as number, period: str(i.period) ?? "", title: str(i.title) ?? "Factsheet", url: str(i.url) as string }] : [])),
+  };
+};
 
 export interface MfPerformance {
   metrics: Record<string, number | string | undefined>;
@@ -301,6 +324,7 @@ export const getMfNavPairCheck = async (limit = 50): Promise<MfNavPair[]> => {
 };
 
 export interface MutualFundsTrackerResult extends BackofficeEnvelope<MutualFundItem[]> {
+  recommended_count: number;
   total: number;
   limit: number;
   offset: number;
@@ -679,6 +703,7 @@ export const getMutualFundsTracker = async (opts?: {
   amc?: string;
   category?: string;
   plan?: string;
+  recommended?: boolean;
   limit?: number;
   offset?: number;
   signal?: AbortSignal;
@@ -688,6 +713,7 @@ export const getMutualFundsTracker = async (opts?: {
   if (opts?.amc) q.set("amc", opts.amc);
   if (opts?.category) q.set("category", opts.category);
   if (opts?.plan) q.set("plan", opts.plan);
+  if (opts?.recommended) q.set("recommended", "true");
   q.set("limit", String(opts?.limit ?? 50));
   q.set("offset", String(opts?.offset ?? 0));
   const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/tracker?${q.toString()}`, {
@@ -706,6 +732,7 @@ export const getMutualFundsTracker = async (opts?: {
     isin_div: str(f.isin_reinvest) ?? str(f.isin_div),
     ter_pct: num(f.ter_pct),
     ter_as_of: str(f.ter_as_of),
+    is_fh_recommended: f.is_fh_recommended === true,
   }));
   const facets = obj(raw.facets);
   const planCountsRaw = obj(facets.plan_counts);
@@ -718,6 +745,7 @@ export const getMutualFundsTracker = async (opts?: {
   env.as_of = str(raw.as_of) ?? env.as_of;
   return {
     ...env,
+    recommended_count: num(raw.recommended_count) ?? 0,
     total: num(raw.total) ?? data.length,
     limit: num(raw.limit) ?? (opts?.limit ?? 50),
     offset: num(raw.offset) ?? (opts?.offset ?? 0),

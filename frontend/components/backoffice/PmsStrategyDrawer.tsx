@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { getPmsStrategyDetail, PmsStrategyDetail, PmsStrategyItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
+import FactsheetList from "@/components/backoffice/FactsheetList";
 import { formatCrore, formatISTDate } from "@/lib/terminal-format";
 import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBenchmark } from "@/lib/backoffice-display";
 
@@ -350,6 +351,8 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                 </div>
               </div>
             )}
+
+            {strategy.is_fh_recommended && <FactsheetList kind="pms" id={strategy.ia_id} />}
 
             {/* Same provider's other strategies */}
             {detail && detail.siblings.length > 0 && (

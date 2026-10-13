@@ -25,6 +25,8 @@ export default function MutualFundsTrackerPage() {
   const [amc, setAmc] = useState("");
   const [category, setCategory] = useState("");
   const [plan, setPlan] = useState("");
+  const [recommended, setRecommended] = useState(false);
+  const [recommendedCount, setRecommendedCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const [schemes, setSchemes] = useState<MutualFundItem[]>([]);
   const [total, setTotal] = useState(0);
@@ -46,7 +48,7 @@ export default function MutualFundsTrackerPage() {
 
   useEffect(() => {
     setOffset(0);
-  }, [debouncedQuery, amc, category, plan]);
+  }, [debouncedQuery, amc, category, plan, recommended]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -60,6 +62,7 @@ export default function MutualFundsTrackerPage() {
           amc: amc || undefined,
           category: category || undefined,
           plan: plan || undefined,
+          recommended,
           limit: PAGE_SIZE,
           offset,
           signal: controller.signal,
@@ -71,6 +74,7 @@ export default function MutualFundsTrackerPage() {
         setCategories(res.facets.categories);
         setPlanCounts(res.facets.plan_counts || {});
         setAsOf(res.as_of);
+        setRecommendedCount(res.recommended_count);
       } catch (err: unknown) {
         // Aborted requests are superseded by a newer page/filter change — not an error.
         if (controller.signal.aborted || cancelled) return;
@@ -84,9 +88,9 @@ export default function MutualFundsTrackerPage() {
       cancelled = true;
       controller.abort();
     };
-  }, [debouncedQuery, amc, category, plan, offset, retryTick]);
+  }, [debouncedQuery, amc, category, plan, recommended, offset, retryTick]);
 
-  const filtersActive = Boolean(query.trim() || amc || category || plan);
+  const filtersActive = Boolean(query.trim() || amc || category || plan || recommended);
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const page = Math.floor(offset / PAGE_SIZE);
   const from = total === 0 ? 0 : offset + 1;
@@ -180,6 +184,14 @@ export default function MutualFundsTrackerPage() {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            aria-pressed={recommended}
+            onClick={() => setRecommended((v) => !v)}
+            className={recommended ? "terminal-btn-accent text-[12px] py-1 px-3" : "terminal-btn text-[12px] py-1 px-3"}
+          >
+            ★ FH Recommended{recommendedCount ? ` (${recommendedCount})` : ""}
+          </button>
           <select value={amc} onChange={(e) => setAmc(e.target.value)} className="terminal-input text-[12px] py-1 px-2.5 max-w-xs">
             <option value="">All AMCs</option>
             {amcs.map((name) => (
@@ -210,6 +222,7 @@ export default function MutualFundsTrackerPage() {
                 setAmc("");
                 setCategory("");
                 setPlan("");
+                setRecommended(false);
               }}
             >
               Clear filters
@@ -311,6 +324,9 @@ export default function MutualFundsTrackerPage() {
                           className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
                         >
                           <span className="group-hover:opacity-90">{s.scheme_name}</span>
+                          {s.is_fh_recommended && (
+                            <span className="ml-2 text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] align-middle">★ FH</span>
+                          )}
                         </button>
                         <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
                           {s.amc_name || s.category || "—"}

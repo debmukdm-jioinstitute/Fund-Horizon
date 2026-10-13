@@ -10,9 +10,10 @@ import asyncio
 import logging
 import os
 import time
+from pathlib import Path
 from typing import Any
 
-from app.backoffice.providers import amfi_ter, apmi, rss
+from app.backoffice.providers import amfi_ter, apmi, factsheets, rss
 from app.backoffice.providers.amfi import AmfiProvider, classify_plan_option
 from app.backoffice.providers.base import FetchResult
 from app.backoffice.providers.cboe import CboeProvider
@@ -42,6 +43,7 @@ REFRESH_INTERVALS: dict[str, int] = {
     "SRC_IN_YIELDS": 1800,
     "SRC_RSS": 600,
     "SRC_APMI": 12 * 3600,
+    "SRC_FACTSHEETS": 6 * 3600,
 }
 _LAST_RUN: dict[str, float] = {}
 
@@ -118,6 +120,44 @@ def _backfill_apmi_history() -> int:
             _REPO.replace_pms_universe(snap.as_on, snap.providers, snap.strategies)
             done += 1
     return done
+
+
+FACTSHEET_BACKFILL_MONTHS = 36  # first run per source; afterwards only the newest months are re-checked
+FACTSHEET_RECENT_MONTHS = 4
+
+
+def factsheet_archive_dir() -> Path:
+    from app.db import sqlite
+
+    return Path(os.environ.get("FH_FACTSHEET_DIR") or Path(sqlite.get_default_db_path()).parent / "factsheets")
+
+
+def refresh_factsheets() -> dict[str, Any]:
+    """Look for newly released official factsheets for every curated source and record the ones that verify."""
+    source_id = "SRC_FACTSHEETS"
+    new, failed = 0, []
+    with factsheets.new_client() as client:
+        for src in factsheets.SOURCES.values():
+            have = _REPO.factsheet_periods(src.key)
+            try:
+                if src.templates:
+                    count = FACTSHEET_RECENT_MONTHS if have else FACTSHEET_BACKFILL_MONTHS
+                    months = [(y, m) for y, m in factsheets.recent_months(count) if f"{y}-{m:02d}" not in have]
+                    found = factsheets.discover_templates(client, src, months)
+                elif src.listing_url:
+                    found = factsheets.discover_listing(client, src)
+                else:
+                    found = factsheets.discover_fixed(client, src, factsheet_archive_dir(), have)
+            except Exception as e:  # one broken publisher must not stop the others
+                logger.warning("factsheets %s failed: %s", src.key, e)
+                failed.append(src.key)
+                continue
+            new += sum(_REPO.upsert_factsheet(src.key, f) for f in found)
+    if failed and len(failed) == len(factsheets.SOURCES):
+        _REPO.update_source_health(source_id, "unavailable", error_message="all factsheet sources failed", success=False)
+        return {"status": "unavailable", "source_id": source_id, "error": "all factsheet sources failed"}
+    _REPO.update_source_health(source_id, "ready", error_message=("failed: " + ", ".join(failed)) if failed else None, success=True)
+    return {"status": "success", "source_id": source_id, "records_ingested": new, "failed_sources": failed}
 
 
 def refresh_rss() -> dict[str, Any]:
@@ -204,6 +244,8 @@ async def _refresh_source(source_id: str) -> dict[str, Any]:
             return await loop.run_in_executor(None, refresh_apmi)
         if source_id == "SRC_RSS":
             return await loop.run_in_executor(None, refresh_rss)
+        if source_id == "SRC_FACTSHEETS":
+            return await loop.run_in_executor(None, refresh_factsheets)
 
         providers = {
             "SRC_IN_YIELDS": IndiaYieldsProvider,

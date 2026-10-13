@@ -325,3 +325,20 @@ def test_backoffice_mf_performance_api(client):
     assert "ret_1y" in body["data"]["metrics"]
     assert client.get("/api/backoffice/mutual-funds/1/performance").json()["availability"] == "unavailable"
     assert client.get("/api/backoffice/mutual-funds/abc/performance").status_code == 404
+
+
+def test_backoffice_mf_tracker_fh_recommended_filter(client):
+    from app.backoffice.fh_recommended import FH_RECOMMENDED_MF_CODES
+    from app.data.loader import load_metrics
+
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    r = client.get("/api/backoffice/mutual-funds/tracker?recommended=true&limit=200")
+    assert r.status_code == 200
+    body = r.json()
+    assert {f["scheme_code"] for f in body["data"]} <= set(FH_RECOMMENDED_MF_CODES)
+    assert all(f["is_fh_recommended"] for f in body["data"])
+    # Every curated code must exist in the performance dataset as a Regular Growth scheme.
+    df = load_metrics().set_index("scheme_code")
+    for code in FH_RECOMMENDED_MF_CODES:
+        assert code in df.index and (df.loc[code, "plan"], df.loc[code, "option"]) == ("Regular", "Growth"), code

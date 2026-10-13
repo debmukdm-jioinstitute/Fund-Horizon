@@ -7,6 +7,7 @@ from app.backoffice.fh_recommended import (
     FH_RECOMMENDED_MF_CODES,
     MF_FACTSHEET_SOURCE,
     PMS_FACTSHEET_SOURCE,
+    PMS_NO_PUBLIC_FACTSHEET,
 )
 from app.backoffice.providers import factsheets as fs
 from tests.test_backoffice_api import _create_staff, _login_staff
@@ -51,7 +52,7 @@ def test_every_mapped_pick_points_at_a_known_source():
     assert all(fs.SOURCES[k].kind == "pms" for k in PMS_FACTSHEET_SOURCE.values())
 
 
-def test_factsheets_api_lists_newest_first_and_flags_unmapped_picks(client):
+def test_factsheets_api_lists_newest_first_and_reports_empty_sources(client):
     from app.backoffice.repository import BackofficeRepository
 
     repo = BackofficeRepository()
@@ -64,7 +65,28 @@ def test_factsheets_api_lists_newest_first_and_flags_unmapped_picks(client):
     assert body["data"]["items"][0]["url"] == "https://example.test/2026-08.pdf"
     assert body["data"]["source"] == "DSP Mutual Fund"
 
-    unmapped = client.get("/api/backoffice/factsheets?kind=mf&id=150799").json()  # WhiteOak: no source yet
-    assert unmapped["availability"] == "unavailable" and unmapped["data"]["items"] == []
+    nothing_yet = client.get("/api/backoffice/factsheets?kind=mf&id=108466").json()  # ICICI: connected, nothing recorded
+    assert nothing_yet["availability"] == "unavailable" and nothing_yet["data"]["items"] == []
     assert client.get("/api/backoffice/factsheets?kind=mf&id=abc").status_code == 422
     assert client.get("/api/backoffice/factsheets/999999/file").status_code == 404
+
+
+def test_numeric_period_names_and_links_file_ingest():
+    assert fs.period_from_name("Buoyant-Factsheet-2022-09.pdf") == "2022-09"
+    assert fs.period_from_name("Quick-Insights-September-2025.pdf") == "2025-09"
+    data = {"whiteoak": [
+        {"period": "2026-09", "title": "WhiteOak factsheet 2026-09", "url": "https://content.whiteoakamc.com/x.pdf"},
+        {"period": "bad", "url": "https://content.whiteoakamc.com/y.pdf"},  # malformed period is dropped
+        {"period": "2026-08", "url": "http://insecure.example/z.pdf"},  # non-https is dropped
+    ]}
+    found = fs.discover_links_file(fs.SOURCES["whiteoak"], data)
+    assert [f.period for f in found] == ["2026-09"]
+    assert fs.discover_links_file(fs.SOURCES["helios"], data) == []
+
+
+def test_pms_without_public_factsheet_is_flagged_not_blank(client):
+    _login_staff(client, _create_staff("analyst"))
+    body = client.get("/api/backoffice/factsheets?kind=pms&id=731").json()  # 360 ONE Multicap
+    assert body["data"]["no_public"] is True and body["data"]["items"] == []
+    assert not set(PMS_FACTSHEET_SOURCE) & PMS_NO_PUBLIC_FACTSHEET
+    assert client.get("/api/backoffice/factsheets?kind=mf&id=150799").json()["data"]["source"] == "WhiteOak Capital Mutual Fund"

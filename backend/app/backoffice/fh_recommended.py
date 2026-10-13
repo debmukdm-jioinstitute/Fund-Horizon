@@ -47,7 +47,7 @@ FH_RECOMMENDED_MF_CODES: dict[str, str] = {
 }
 
 # Which publisher's factsheet source covers each curated pick. A pick missing here has no automated source yet
-# (its publisher's factsheet page needs a browser to read); the UI says so instead of showing nothing.
+# (360 ONE and Sundaram publish no public factsheet download); the UI says so instead of showing nothing.
 MF_FACTSHEET_SOURCE: dict[str, str] = {
     **dict.fromkeys(("108466", "100349", "106823"), "icici_mf"),
     **dict.fromkeys(("101635", "152208", "152053", "108202"), "dsp"),
@@ -57,5 +57,15 @@ MF_FACTSHEET_SOURCE: dict[str, str] = {
     "148987": "hdfc",
     "152065": "kotak",
     **dict.fromkeys(("146193", "152095", "140355"), "edelweiss"),
+    **dict.fromkeys(("150799", "150583", "152072", "150347", "151746"), "whiteoak"),
+    **dict.fromkeys(("108596", "152856"), "bandhan"),
+    **dict.fromkeys(("153909", "152136"), "helios"),
+    "151812": "mirae",
 }
-PMS_FACTSHEET_SOURCE: dict[str, str] = {"174": "stallion", "2512": "abakkus_pms"}  # keyed by APMI strategy id
+PMS_FACTSHEET_SOURCE: dict[str, str] = {
+    "174": "stallion", "2512": "abakkus_pms", "1193": "carnelian_compounder", "781": "icici_pms_value", "606": "buoyant",
+}  # keyed by APMI strategy id
+
+# Checked in a real browser: these publishers offer no public factsheet download for the strategy
+# (360 ONE and Sundaram show performance on-page only). Distinct from "source not connected yet".
+PMS_NO_PUBLIC_FACTSHEET: frozenset[str] = frozenset({"731", "325", "324", "327"})

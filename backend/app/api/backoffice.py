@@ -23,7 +23,7 @@ from app.api.auth import (
 )
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import factsheet_archive_dir, refresh_source
-from app.backoffice.fh_recommended import FH_RECOMMENDED_MF_CODES, MF_FACTSHEET_SOURCE, PMS_FACTSHEET_SOURCE
+from app.backoffice.fh_recommended import FH_RECOMMENDED_MF_CODES, MF_FACTSHEET_SOURCE, PMS_FACTSHEET_SOURCE, PMS_NO_PUBLIC_FACTSHEET
 from app.backoffice.providers import factsheets as factsheets_provider
 from app.backoffice.providers import apmi as apmi_provider
 from app.backoffice.providers.nse import NseError
@@ -390,7 +390,10 @@ def backoffice_factsheets(
     """Official factsheets (newest first) for a curated mutual fund (AMFI code) or PMS strategy (APMI id)."""
     key = (MF_FACTSHEET_SOURCE if kind == "mf" else PMS_FACTSHEET_SOURCE).get(id)
     if key is None:
-        return {"data": {"source": None, "items": []}, "availability": "unavailable"}
+        return {
+            "data": {"source": None, "items": [], "no_public": kind == "pms" and id in PMS_NO_PUBLIC_FACTSHEET},
+            "availability": "unavailable",
+        }
     items = []
     for r in _REPO.list_factsheets(key):
         archived = bool(r["archived_path"]) and Path(r["archived_path"]).is_file()

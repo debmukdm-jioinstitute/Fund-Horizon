@@ -266,6 +266,7 @@ export interface FactsheetItem {
 
 export interface FactsheetResult {
   source?: string;
+  noPublic?: boolean;
   items: FactsheetItem[];
 }
 
@@ -275,6 +276,7 @@ export const getFactsheets = async (kind: "mf" | "pms", id: string): Promise<Fac
   const d = obj(raw.data);
   return {
     source: str(d.source),
+    noPublic: d.no_public === true,
     items: arr(d.items).flatMap((i) => (num(i.id) !== undefined && str(i.url) ? [{ id: num(i.id) as number, period: str(i.period) ?? "", title: str(i.title) ?? "Factsheet", url: str(i.url) as string }] : [])),
   };
 };

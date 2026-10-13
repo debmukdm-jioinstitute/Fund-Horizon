@@ -32,7 +32,9 @@ export default function FactsheetList({ kind, id }: { kind: "mf" | "pms"; id?: s
         <div className={`p-3 ${muted}`}>
           {data.source
             ? "Source is connected; no factsheet has been recorded yet."
-            : "Automatic factsheet pulling is not set up for this publisher yet: its factsheet page needs a browser to read."}
+            : data.noPublic
+              ? "This publisher offers no public factsheet download for the strategy; its website shows performance on the page only."
+              : "Automatic factsheet pulling is not set up for this publisher yet."}
         </div>
       )}
       {data && data.items.length > 0 && (

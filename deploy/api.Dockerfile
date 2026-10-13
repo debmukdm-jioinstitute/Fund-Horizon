@@ -12,6 +12,7 @@ COPY backend/alembic.ini backend/alembic.ini
 COPY backend/scripts backend/scripts
 COPY data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv
 COPY data/fundhorizon_mf_rag_dataset/nav_monthly data/fundhorizon_mf_rag_dataset/nav_monthly
+COPY data/factsheet_links data/factsheet_links
 
 ENV FH_DATA_DIR=/srv/data/fundhorizon_mf_rag_dataset
 ENV FH_INTERNAL_ONLY=true

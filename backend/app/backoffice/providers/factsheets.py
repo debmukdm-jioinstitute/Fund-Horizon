@@ -39,6 +39,8 @@ class Source:
     listing_url: str | None = None
     listing_pattern: str | None = None  # regex with one group: the PDF href
     fixed_url: str | None = None
+    links_file: bool = False  # links come from the CI browser scraper (data/factsheet_links/browser.json)
+    doc_label: str = "factsheet"
     notes: str = ""
 
 
@@ -71,6 +73,16 @@ SOURCES: dict[str, Source] = {s.key: s for s in (
     Source("icici_mf", "ICICI Prudential Mutual Fund", "mf",
            fixed_url="https://www.icicipruamc.com/blob/knowledgecentre/factsheet-complete/Complete.pdf",
            notes="Fixed URL overwritten monthly; each new version is archived."),
+    Source("mirae", "Mirae Asset Mutual Fund", "mf", templates=(
+        "https://www.miraeassetmf.co.in/docs/default-source/fachsheet/active-factsheet---{lmonth}-{y}.pdf",)),
+    Source("whiteoak", "WhiteOak Capital Mutual Fund", "mf", links_file=True),
+    Source("helios", "Helios Mutual Fund", "mf", links_file=True),
+    Source("bandhan", "Bandhan Mutual Fund", "mf", links_file=True),
+    Source("carnelian_compounder", "Carnelian Capital Compounder Strategy", "pms", links_file=True),
+    Source("icici_pms_value", "ICICI Prudential PMS Value Strategy", "pms", links_file=True, doc_label="monthly presentation"),
+    Source("buoyant", "Buoyant Capital", "pms", doc_label="monthly update",
+           listing_url="https://www.buoyantcap.com/insights/",
+           listing_pattern=r"""(https://www\.buoyantcap\.com/wp-content/uploads/\d{4}/\d{2}/[^"'\s<>]*(?:[Ff]actsheet|Quick-Insights)[^"'\s<>]*\.pdf)"""),
     Source("stallion", "Stallion Asset", "pms", templates=(
         "https://www.stallionasset.com/regulatory/Stallion_Asset_Factsheet_{ab}_{y}.pdf",
         "https://www.stallionasset.com/regulatory/Stallion_Asset_Factsheet__{ab}_{y}.pdf",
@@ -121,15 +133,19 @@ def discover_templates(client: httpx.Client, src: Source, months: list[tuple[int
             r = _probe(client, url)
             if r is not None:
                 size = r.headers.get("content-length")
-                found.append(Found(f"{y}-{m:02d}", f"{src.label} factsheet {calendar.month_name[m]} {y}", url, int(size) if size and size.isdigit() else None))
+                found.append(Found(f"{y}-{m:02d}", f"{src.label} {src.doc_label} {calendar.month_name[m]} {y}", url, int(size) if size and size.isdigit() else None))
                 break
     return found
+
+
+_NUMERIC_PERIOD_RE = re.compile(r"(?<!\d)(20\d\d)[-_](0[1-9]|1[0-2])(?!\d)")
 
 
 def period_from_name(name: str) -> str | None:
     m = _PERIOD_RE.search(name)
     if not m:
-        return None
+        n = _NUMERIC_PERIOD_RE.search(name)
+        return f"{n.group(1)}-{n.group(2)}" if n else None
     mon = MONTHS.get(m.group(1).lower()[:3] if m.group(1).lower() != "sept" else "sep")
     return f"{m.group(2)}-{mon:02d}" if mon else None
 
@@ -142,13 +158,22 @@ def discover_listing(client: httpx.Client, src: Source) -> list[Found]:
         logger.warning("factsheet listing %s failed: %s", src.key, e)
         return []
     best: dict[str, Found] = {}
-    for href in dict.fromkeys(re.findall(src.listing_pattern, page.text)):
+    for href in dict.fromkeys(re.findall(src.listing_pattern, page.text.replace("\\/", "/"))):
         url = urljoin(src.listing_url, href.replace("\\/", "/")).replace(" ", "%20")
         period = period_from_name(href.rsplit("/", 1)[-1])
         if period and period not in best:
             y, m = period.split("-")
-            best[period] = Found(period, f"{src.label} factsheet {calendar.month_name[int(m)]} {y}", url)
+            best[period] = Found(period, f"{src.label} {src.doc_label} {calendar.month_name[int(m)]} {y}", url)
     return list(best.values())
+
+
+def discover_links_file(src: Source, data: dict) -> list[Found]:
+    """Links the CI browser scraper recorded from the publisher's own page."""
+    out = []
+    for e in data.get(src.key, []):
+        if isinstance(e, dict) and re.fullmatch(r"20\d\d-(0[1-9]|1[0-2])", str(e.get("period", ""))) and str(e.get("url", "")).startswith("https://"):
+            out.append(Found(e["period"], e.get("title") or f"{src.label} {src.doc_label} {e['period']}", e["url"]))
+    return out
 
 
 def discover_fixed(client: httpx.Client, src: Source, archive_dir: Path, already: set[str]) -> list[Found]:

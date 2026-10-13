@@ -7,6 +7,7 @@ Request handlers can also call ``refresh_source`` for an on-demand refresh.
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import os
 import time
@@ -132,15 +133,27 @@ def factsheet_archive_dir() -> Path:
     return Path(os.environ.get("FH_FACTSHEET_DIR") or Path(sqlite.get_default_db_path()).parent / "factsheets")
 
 
+def factsheet_links_file() -> Path:
+    from app.data.loader import data_dir
+
+    return data_dir().parent / "factsheet_links" / "browser.json"
+
+
 def refresh_factsheets() -> dict[str, Any]:
     """Look for newly released official factsheets for every curated source and record the ones that verify."""
     source_id = "SRC_FACTSHEETS"
     new, failed = 0, []
+    try:
+        browser_links = json.loads(factsheet_links_file().read_text())
+    except (OSError, ValueError):
+        browser_links = {}  # file absent or unreadable: browser-only sources simply keep what they already have
     with factsheets.new_client() as client:
         for src in factsheets.SOURCES.values():
             have = _REPO.factsheet_periods(src.key)
             try:
-                if src.templates:
+                if src.links_file:
+                    found = factsheets.discover_links_file(src, browser_links)
+                elif src.templates:
                     count = FACTSHEET_RECENT_MONTHS if have else FACTSHEET_BACKFILL_MONTHS
                     months = [(y, m) for y, m in factsheets.recent_months(count) if f"{y}-{m:02d}" not in have]
                     found = factsheets.discover_templates(client, src, months)

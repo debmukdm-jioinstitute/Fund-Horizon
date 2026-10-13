@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   getPmsStrategies,
   getPmsAccountTracker,
@@ -8,34 +8,114 @@ import {
   PmsAccountTrackerData,
   FH_RECOMMENDED_BENCHMARK,
 } from "@/lib/backoffice";
-import { formatCurrencyPaiseToINR } from "@/lib/terminal-format";
+import { ApiError } from "@/lib/api";
+import { formatCurrencyPaiseToINR, formatCrore, formatISTDate } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
 import PmsStrategyDrawer from "@/components/backoffice/PmsStrategyDrawer";
+import {
+  approachesMatch,
+  isMissingNumber,
+  normalizeApproach,
+  normalizeProviderName,
+  pmsReturnWarning,
+  sourceBenchmark,
+} from "@/lib/backoffice-display";
+
+type SortKey = "aum" | "return_1m" | "return_1y" | "return_3y" | "name";
+const PAGE_SIZE = 50;
+
+function ReturnCell({
+  value,
+  warning,
+}: {
+  value?: number | null;
+  warning?: string | null;
+}) {
+  if (isMissingNumber(value)) {
+    return (
+      <span className="text-[#536176] dark:text-[#A8B4C4] font-normal" title="No data">
+        —
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center justify-end gap-1">
+      <SignedValue value={value} unit="%" />
+      {warning && (
+        <span
+          className="text-[11px] text-[#B45309] dark:text-[#FBBF24]"
+          title={warning}
+          aria-label={warning}
+        >
+          ⚠
+        </span>
+      )}
+    </span>
+  );
+}
+
+function SortHeader({
+  label,
+  column,
+  sortKey,
+  sortDir,
+  align = "left",
+  onSort,
+}: {
+  label: string;
+  column: SortKey;
+  sortKey: SortKey;
+  sortDir: "asc" | "desc";
+  align?: "left" | "right";
+  onSort: (key: SortKey) => void;
+}) {
+  const active = sortKey === column;
+  return (
+    <th className={align === "right" ? "text-right" : undefined} aria-sort={active ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+      <button
+        type="button"
+        onClick={() => onSort(column)}
+        className={`inline-flex items-center gap-1 uppercase tracking-wider ${align === "right" ? "ml-auto" : ""} text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]`}
+      >
+        <span>{label}</span>
+        <span className="font-mono text-[10px]" aria-hidden>
+          {active ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+        </span>
+      </button>
+    </th>
+  );
+}
 
 export default function PmsTrackerPage() {
   const [tab, setTab] = useState<"strategies" | "accounts">("strategies");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
+  const [asOf, setAsOf] = useState<string | undefined>();
   const [selectedStrategy, setSelectedStrategy] = useState<PmsStrategyItem | null>(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
   const [accountTracker, setAccountTracker] = useState<PmsAccountTrackerData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [strategiesLoading, setStrategiesLoading] = useState(true);
+  const [accountLoading, setAccountLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [accountHint, setAccountHint] = useState<string | null>(null);
 
-  // Strategy filters & search
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [fhSubTab, setFhSubTab] = useState<"returns" | "details">("returns");
   const [search, setSearch] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("aum");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     async function load() {
       try {
-        setLoading(true);
+        setStrategiesLoading(true);
         const res = await getPmsStrategies();
         setStrategies(res.data || []);
+        setAsOf(res.as_of);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load PMS data");
       } finally {
-        setLoading(false);
+        setStrategiesLoading(false);
       }
     }
     load();
@@ -44,39 +124,112 @@ export default function PmsTrackerPage() {
   async function handleLoadAccount(accId: string) {
     if (!accId.trim()) return;
     try {
-      setLoading(true);
+      setAccountLoading(true);
       setError(null);
+      setAccountHint(null);
       const res = await getPmsAccountTracker(accId.trim());
       setAccountTracker(res.data);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to load account tracker");
       setAccountTracker(null);
+      if (err instanceof ApiError && err.status === 404) {
+        setAccountHint(
+          "No PMS account was found for that id. Check the spelling, or confirm the account exists in the client ledger."
+        );
+        setError(null);
+      } else {
+        setError(err instanceof Error ? err.message : "Failed to load account tracker");
+      }
     } finally {
-      setLoading(false);
+      setAccountLoading(false);
     }
   }
 
   const isRecommended = categoryFilter === "fh-recommended";
-  const fhRecCount = strategies.filter((s) => s.is_fh_recommended).length || 11;
+  const fhRecCount = strategies.filter((s) => s.is_fh_recommended).length;
 
-  const filteredStrategies = strategies.filter((s) => {
-    if (isRecommended) {
-      if (!s.is_fh_recommended) return false;
-    } else if (categoryFilter !== "all") {
-      const matchesCat = s.investment_approach?.toLowerCase().includes(categoryFilter.toLowerCase());
-      if (!matchesCat) return false;
+  const approachOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const s of strategies) {
+      const label = normalizeApproach(s.investment_approach || s.strategy_type);
+      if (label) set.add(label);
     }
-    const matchesSearch =
-      !search ||
-      s.strategy_name?.toLowerCase().includes(search.toLowerCase()) ||
-      s.provider_name?.toLowerCase().includes(search.toLowerCase()) ||
-      (s.principal_officer && s.principal_officer.toLowerCase().includes(search.toLowerCase()));
-    return matchesSearch;
-  });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [strategies]);
+
+  const filtersActive = Boolean(search.trim()) || categoryFilter !== "all" || sortKey !== "aum" || sortDir !== "desc";
+
+  const filteredStrategies = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const rows = strategies.filter((s) => {
+      if (isRecommended) {
+        if (!s.is_fh_recommended) return false;
+      } else if (categoryFilter !== "all") {
+        if (!approachesMatch(s.investment_approach || s.strategy_type, categoryFilter)) return false;
+      }
+      if (!q) return true;
+      const provider = normalizeProviderName(s.provider_name).toLowerCase();
+      return (
+        (s.strategy_name || "").toLowerCase().includes(q) ||
+        (s.provider_name || "").toLowerCase().includes(q) ||
+        provider.includes(q) ||
+        (s.principal_officer || "").toLowerCase().includes(q)
+      );
+    });
+
+    const dir = sortDir === "asc" ? 1 : -1;
+    const numVal = (s: PmsStrategyItem) => {
+      if (sortKey === "aum") return s.aum_crore;
+      if (sortKey === "return_1m") return s.return_1m_pct;
+      if (sortKey === "return_1y") return s.return_1y_pct;
+      if (sortKey === "return_3y") return s.return_3y_cagr_pct;
+      return undefined;
+    };
+    rows.sort((a, b) => {
+      if (sortKey === "name") {
+        return dir * (a.strategy_name || "").localeCompare(b.strategy_name || "");
+      }
+      const av = numVal(a);
+      const bv = numVal(b);
+      const aMissing = isMissingNumber(av);
+      const bMissing = isMissingNumber(bv);
+      if (aMissing && bMissing) return (a.strategy_name || "").localeCompare(b.strategy_name || "");
+      if (aMissing) return 1;
+      if (bMissing) return -1;
+      return dir * ((av as number) - (bv as number));
+    });
+    return rows;
+  }, [strategies, isRecommended, categoryFilter, search, sortKey, sortDir]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [categoryFilter, search, sortKey, sortDir, isRecommended]);
+
+  const pageCount = Math.max(1, Math.ceil(filteredStrategies.length / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount - 1);
+  const pageRows = filteredStrategies.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE);
+  const from = filteredStrategies.length === 0 ? 0 : safePage * PAGE_SIZE + 1;
+  const to = Math.min(filteredStrategies.length, (safePage + 1) * PAGE_SIZE);
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
+      setSortKey(key);
+      setSortDir(key === "name" ? "asc" : "desc");
+    }
+  }
+
+  function clearFilters() {
+    setSearch("");
+    setCategoryFilter("all");
+    setSortKey("aum");
+    setSortDir("desc");
+    setPage(0);
+  }
+
+  const colSpan = isRecommended ? 9 : 7;
 
   return (
     <div className="space-y-4">
-      {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
@@ -92,25 +245,18 @@ export default function PmsTrackerPage() {
           </p>
         </div>
 
-        {/* Tab Switcher */}
         <div className="flex items-center gap-1.5 self-start sm:self-auto">
           <button
+            type="button"
             onClick={() => setTab("strategies")}
-            className={`terminal-btn text-[12px] py-1 px-3 ${
-              tab === "strategies"
-                ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
-                : ""
-            }`}
+            className={tab === "strategies" ? "terminal-btn-accent text-[12px] py-1 px-3" : "terminal-btn text-[12px] py-1 px-3"}
           >
             Strategy Research ({strategies.length})
           </button>
           <button
+            type="button"
             onClick={() => setTab("accounts")}
-            className={`terminal-btn text-[12px] py-1 px-3 ${
-              tab === "accounts"
-                ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
-                : ""
-            }`}
+            className={tab === "accounts" ? "terminal-btn-accent text-[12px] py-1 px-3" : "terminal-btn text-[12px] py-1 px-3"}
           >
             Client Accounts
           </button>
@@ -118,9 +264,7 @@ export default function PmsTrackerPage() {
       </div>
 
       {tab === "strategies" ? (
-        /* STRATEGY RESEARCH VIEW */
         <div className="space-y-3">
-          {/* Filter Toolbar */}
           <div className="terminal-panel p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="flex flex-wrap items-center gap-2 flex-1">
               <input
@@ -137,31 +281,41 @@ export default function PmsTrackerPage() {
               >
                 <option value="all">All Approaches</option>
                 <option value="fh-recommended">★ FH Recommended ({fhRecCount})</option>
-                <option value="equity">Equity</option>
-                <option value="multi-asset">Multi-Asset</option>
-                <option value="debt">Debt</option>
+                {approachOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
               </select>
 
-              {/* Quick filter toggle for FH Recommended */}
               <button
                 type="button"
                 onClick={() => setCategoryFilter(categoryFilter === "fh-recommended" ? "all" : "fh-recommended")}
-                className={`terminal-btn text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer ${
-                  categoryFilter === "fh-recommended"
-                    ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE]"
-                    : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#006F64] dark:text-[#75E1CE] border-[#006F64]/40 hover:border-[#006F64]"
+                className={`text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer ${
+                  categoryFilter === "fh-recommended" ? "terminal-btn-accent" : "terminal-btn text-[#006F64] dark:text-[#75E1CE]"
                 }`}
               >
                 <span className="text-[12px]">★</span>
                 <span>FH Recommended ({fhRecCount})</span>
               </button>
+
+              {filtersActive && (
+                <button type="button" onClick={clearFilters} className="terminal-btn text-[12px] py-1 px-3">
+                  Clear filters
+                </button>
+              )}
             </div>
-            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono shrink-0">
-              Source: <a href="https://www.apmiindia.org" target="_blank" rel="noreferrer" className="underline hover:text-[#172033] dark:hover:text-[#EDF2F7]">APMI Disclosures</a>
+            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono shrink-0 text-right">
+              {asOf ? <div>As of {formatISTDate(asOf)}</div> : <div>As-of date not in this APMI snapshot</div>}
+              <div>
+                Source:{" "}
+                <a href="https://www.apmiindia.org" target="_blank" rel="noreferrer" className="underline hover:text-[#172033] dark:hover:text-[#EDF2F7]">
+                  APMI Disclosures
+                </a>
+              </div>
             </div>
           </div>
 
-          {/* Sub-view toggle when FH Recommended is active */}
           {isRecommended && (
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
               <div className="flex items-center gap-1 bg-[#F0F3F6] dark:bg-[#202936] p-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]">
@@ -194,8 +348,34 @@ export default function PmsTrackerPage() {
             </div>
           )}
 
-          {/* Strategy Table */}
           <div className="terminal-panel overflow-hidden">
+            <div className="px-3 py-2 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono flex flex-wrap items-center justify-between gap-2">
+              <span>
+                Showing {from}–{to} of {filteredStrategies.length.toLocaleString("en-IN")}
+                {filteredStrategies.length !== strategies.length ? ` matching · ${strategies.length.toLocaleString("en-IN")} total` : " strategies"}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  className="terminal-btn text-[11px] py-0.5 px-2"
+                  disabled={safePage <= 0}
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                >
+                  Previous
+                </button>
+                <span>
+                  Page {safePage + 1} / {pageCount}
+                </span>
+                <button
+                  type="button"
+                  className="terminal-btn text-[11px] py-0.5 px-2"
+                  disabled={safePage >= pageCount - 1}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="terminal-table">
                 <thead>
@@ -203,149 +383,162 @@ export default function PmsTrackerPage() {
                     fhSubTab === "returns" ? (
                       <tr>
                         <th className="w-[5%] text-center">SR</th>
-                        <th className="w-[30%]">PMS</th>
-                        <th className="w-[9%] text-right">1M</th>
-                        <th className="w-[9%] text-right">3M</th>
-                        <th className="w-[9%] text-right">6M</th>
-                        <th className="w-[9%] text-right">1Y</th>
-                        <th className="w-[9%] text-right">3Y</th>
-                        <th className="w-[9%] text-right">5Y</th>
-                        <th className="w-[11%] text-right">Since Inception</th>
+                        <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                        <SortHeader label="1M" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                        <th className="text-right">3M</th>
+                        <th className="text-right">6M</th>
+                        <SortHeader label="1Y" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                        <SortHeader label="3Y" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                        <th className="text-right">5Y</th>
+                        <th className="text-right">Since Inception</th>
                       </tr>
                     ) : (
                       <tr>
                         <th className="w-[5%] text-center">SR</th>
-                        <th className="w-[28%]">PMS</th>
-                        <th className="w-[14%]">Type</th>
-                        <th className="w-[10%] text-right">AUM</th>
-                        <th className="w-[12%] text-right">Min Investment</th>
-                        <th className="w-[11%]">Inception</th>
-                        <th className="w-[12%]">Principal Officer</th>
-                        <th className="w-[8%]">Benchmark</th>
+                        <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                        <th>Type</th>
+                        <SortHeader label="AUM" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                        <th className="text-right">Min Investment</th>
+                        <th>Inception</th>
+                        <th>Principal Officer</th>
+                        <th>Benchmark</th>
                       </tr>
                     )
                   ) : (
                     <tr>
-                      <th className="w-[30%]">Provider / Strategy</th>
-                      <th className="w-[14%]">Approach</th>
-                      <th className="w-[12%] text-right">AUM (₹ Cr)</th>
-                      <th className="w-[10%] text-right">1M Return</th>
-                      <th className="w-[10%] text-right">1Y Return</th>
-                      <th className="w-[12%] text-right">3Y CAGR</th>
-                      <th className="w-[12%]">Benchmark</th>
+                      <SortHeader label="Provider / Strategy" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                      <th>Approach</th>
+                      <SortHeader label="AUM (₹ Cr)" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                      <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                      <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                      <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                      <th>Benchmark</th>
                     </tr>
                   )}
                 </thead>
                 <tbody>
-                  {loading ? (
+                  {strategiesLoading ? (
                     <tr>
-                      <td colSpan={isRecommended ? 9 : 7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      <td colSpan={colSpan} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
                         Loading PMS strategies…
                       </td>
                     </tr>
                   ) : filteredStrategies.length === 0 ? (
                     <tr>
-                      <td colSpan={isRecommended ? 9 : 7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      <td colSpan={colSpan} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
                         No PMS strategies found matching query.
                       </td>
                     </tr>
                   ) : (
                     <>
-                      {filteredStrategies.map((s, idx) => (
-                        <tr key={idx}>
-                          {isRecommended && (
-                            <td className="text-center font-mono text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-                              {idx + 1}
+                      {pageRows.map((s, idx) => {
+                        const warning = pmsReturnWarning(s);
+                        const approach = normalizeApproach(s.investment_approach || s.strategy_type) || "—";
+                        const benchmark = sourceBenchmark(s.benchmark_name);
+                        const rowKey = `${s.ia_id || s.strategy_name}-${s.provider_name}-${s.service_type || ""}-${idx}`;
+                        return (
+                          <tr
+                            key={rowKey}
+                            className="cursor-pointer"
+                            onClick={() => setSelectedStrategy(s)}
+                          >
+                            {isRecommended && (
+                              <td className="text-center font-mono text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                                {safePage * PAGE_SIZE + idx + 1}
+                              </td>
+                            )}
+
+                            <td>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedStrategy(s);
+                                }}
+                                className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
+                              >
+                                <span className="group-hover:opacity-90">{s.strategy_name}</span>
+                              </button>
+                              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                <span>{normalizeProviderName(s.provider_name) || s.provider_name}</span>
+                                {s.is_fh_recommended && !isRecommended && (
+                                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#006F64]/10 text-[#006F64] dark:bg-[#75E1CE]/15 dark:text-[#75E1CE] font-medium border border-[#006F64]/20">
+                                    ★ FH Rec
+                                  </span>
+                                )}
+                                {warning && (
+                                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#B45309]/10 text-[#B45309] dark:text-[#FBBF24] border border-[#B45309]/20" title={warning}>
+                                    Outlier
+                                  </span>
+                                )}
+                              </div>
                             </td>
-                          )}
 
-                          <td>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedStrategy(s)}
-                              className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
-                            >
-                              <span className="group-hover:opacity-90">{s.strategy_name}</span>
-                            </button>
-                            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
-                              <span>{s.provider_name}</span>
-                              {s.is_fh_recommended && !isRecommended && (
-                                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#006F64]/10 text-[#006F64] dark:bg-[#75E1CE]/15 dark:text-[#75E1CE] font-medium border border-[#006F64]/20">
-                                  ★ FH Rec
-                                </span>
-                              )}
-                            </div>
-                          </td>
-
-                          {isRecommended ? (
-                            fhSubTab === "returns" ? (
-                              <>
-                                <td className="text-right">
-                                  <SignedValue value={s.return_1m_pct} unit="%" />
-                                </td>
-                                <td className="text-right">
-                                  <SignedValue value={s.return_3m_pct} unit="%" />
-                                </td>
-                                <td className="text-right">
-                                  <SignedValue value={s.return_6m_pct} unit="%" />
-                                </td>
-                                <td className="text-right">
-                                  <SignedValue value={s.return_1y_pct} unit="%" />
-                                </td>
-                                <td className="text-right">
-                                  <SignedValue value={s.return_3y_cagr_pct} unit="%" />
-                                </td>
-                                <td className="text-right">
-                                  <SignedValue value={s.return_5y_cagr_pct} unit="%" />
-                                </td>
-                                <td className="text-right font-medium">
-                                  <SignedValue value={s.return_since_inception_pct} unit="%" />
-                                </td>
-                              </>
+                            {isRecommended ? (
+                              fhSubTab === "returns" ? (
+                                <>
+                                  <td className="text-right">
+                                    <ReturnCell value={s.return_1m_pct} />
+                                  </td>
+                                  <td className="text-right">
+                                    <ReturnCell value={s.return_3m_pct} />
+                                  </td>
+                                  <td className="text-right">
+                                    <ReturnCell value={s.return_6m_pct} />
+                                  </td>
+                                  <td className="text-right">
+                                    <ReturnCell value={s.return_1y_pct} />
+                                  </td>
+                                  <td className="text-right">
+                                    <ReturnCell value={s.return_3y_cagr_pct} warning={warning} />
+                                  </td>
+                                  <td className="text-right">
+                                    <ReturnCell value={s.return_5y_cagr_pct} />
+                                  </td>
+                                  <td className="text-right font-medium">
+                                    <ReturnCell value={s.return_since_inception_pct} />
+                                  </td>
+                                </>
+                              ) : (
+                                <>
+                                  <td className="text-[#536176] dark:text-[#A8B4C4]">{approach}</td>
+                                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7] font-mono">
+                                    {formatCrore(s.aum_crore)}
+                                  </td>
+                                  <td className="text-right text-[#536176] dark:text-[#A8B4C4] font-mono">
+                                    {s.min_investment || "—"}
+                                  </td>
+                                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                                    {s.inception_date || "—"}
+                                  </td>
+                                  <td className="text-[12px] text-[#172033] dark:text-[#EDF2F7]">
+                                    {s.principal_officer || "—"}
+                                  </td>
+                                  <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
+                                </>
+                              )
                             ) : (
                               <>
-                                <td className="text-[#536176] dark:text-[#A8B4C4]">
-                                  {s.investment_approach || s.strategy_type || "Multicap & Flexicap"}
-                                </td>
+                                <td className="text-[#536176] dark:text-[#A8B4C4]">{approach}</td>
                                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7] font-mono">
-                                  {s.aum_crore ? `₹${s.aum_crore.toLocaleString()} Cr` : "—"}
+                                  {formatCrore(s.aum_crore)}
                                 </td>
-                                <td className="text-right text-[#536176] dark:text-[#A8B4C4] font-mono">
-                                  {s.min_investment || "₹50,00,000"}
+                                <td className="text-right">
+                                  <ReturnCell value={s.return_1m_pct} />
                                 </td>
-                                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                                  {s.inception_date || "—"}
+                                <td className="text-right">
+                                  <ReturnCell value={s.return_1y_pct} />
                                 </td>
-                                <td className="text-[12px] text-[#172033] dark:text-[#EDF2F7]">
-                                  {s.principal_officer || "—"}
+                                <td className="text-right">
+                                  <ReturnCell value={s.return_3y_cagr_pct} warning={warning} />
                                 </td>
-                                <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-                                  {s.benchmark_name || "S&P BSE 500 TRI"}
-                                </td>
+                                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
                               </>
-                            )
-                          ) : (
-                            <>
-                              <td className="text-[#536176] dark:text-[#A8B4C4]">{s.investment_approach || "Equity"}</td>
-                              <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                                {s.aum_crore ? `₹${s.aum_crore.toLocaleString()} Cr` : "—"}
-                              </td>
-                              <td className="text-right">
-                                <SignedValue value={s.return_1m_pct} unit="%" />
-                              </td>
-                              <td className="text-right">
-                                <SignedValue value={s.return_1y_pct} unit="%" />
-                              </td>
-                              <td className="text-right">
-                                <SignedValue value={s.return_3y_cagr_pct} unit="%" />
-                              </td>
-                              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{s.benchmark_name || "NIFTY 50 TRI"}</td>
-                            </>
-                          )}
-                        </tr>
-                      ))}
+                            )}
+                          </tr>
+                        );
+                      })}
 
-                      {/* Benchmark comparison row when viewing FH Recommended in Returns mode */}
                       {isRecommended && fhSubTab === "returns" && (
                         <tr className="bg-[#FAF3E0] dark:bg-[#2A2315] font-medium border-t-2 border-[#D97706]/60">
                           <td className="text-center font-mono text-[11px] text-[#92400E] dark:text-[#FBBF24]">★</td>
@@ -388,24 +581,32 @@ export default function PmsTrackerPage() {
           </div>
         </div>
       ) : (
-        /* CLIENT ACCOUNT TRACKER VIEW */
         <div className="space-y-3">
-          {/* Account Selector Toolbar */}
-          <div className="terminal-panel p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-            <input
-              type="text"
-              value={selectedAccountId}
-              onChange={(e) => setSelectedAccountId(e.target.value)}
-              placeholder="Enter client PMS Account ID (e.g. acc_pms_01)"
-              className="terminal-input flex-1 text-[12px] py-1 px-2.5 font-mono"
-            />
-            <button
-              onClick={() => handleLoadAccount(selectedAccountId)}
-              disabled={loading || !selectedAccountId.trim()}
-              className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
-            >
-              {loading ? "Loading…" : "Track Account"}
-            </button>
+          <div className="terminal-panel p-2.5 space-y-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <input
+                type="text"
+                value={selectedAccountId}
+                onChange={(e) => setSelectedAccountId(e.target.value)}
+                placeholder="e.g. acc_pms_01"
+                className="terminal-input flex-1 text-[12px] py-1 px-2.5 font-mono"
+                aria-describedby="pms-account-id-hint"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleLoadAccount(selectedAccountId);
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => handleLoadAccount(selectedAccountId)}
+                disabled={accountLoading || !selectedAccountId.trim()}
+                className="terminal-btn-accent text-[12px] py-1 px-3"
+              >
+                {accountLoading ? "Loading…" : "Track Account"}
+              </button>
+            </div>
+            <p id="pms-account-id-hint" className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              Use the internal account id from the client ledger (for example <span className="font-mono">acc_pms_01</span>). Matching is exact and case-sensitive.
+            </p>
           </div>
 
           {error && (
@@ -414,9 +615,14 @@ export default function PmsTrackerPage() {
             </div>
           )}
 
+          {accountHint && (
+            <div className="terminal-panel p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              {accountHint}
+            </div>
+          )}
+
           {accountTracker && (
             <div className="space-y-3">
-              {/* Account Metrics Flat Table */}
               <div className="terminal-panel overflow-hidden">
                 <table className="terminal-table">
                   <thead>
@@ -479,7 +685,6 @@ export default function PmsTrackerPage() {
                 </table>
               </div>
 
-              {/* Positions List */}
               {accountTracker.positions && accountTracker.positions.length > 0 && (
                 <div className="terminal-panel overflow-hidden">
                   <div className="p-2 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
@@ -501,7 +706,7 @@ export default function PmsTrackerPage() {
                           <tr key={pIdx}>
                             <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{pos.asset_name || pos.symbol || "Asset"}</td>
                             <td className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">{pos.symbol || pos.asset_class || "—"}</td>
-                            <td className="text-right font-mono">{pos.quantity !== undefined ? pos.quantity.toLocaleString() : "—"}</td>
+                            <td className="text-right font-mono">{pos.quantity !== undefined ? pos.quantity.toLocaleString("en-IN") : "—"}</td>
                             <td className="text-right font-medium font-mono">
                               {formatCurrencyPaiseToINR(pos.market_value_paise)}
                             </td>
@@ -518,7 +723,6 @@ export default function PmsTrackerPage() {
         </div>
       )}
 
-      {/* Slide-over Inspection Drawer for PMS Strategy */}
       <PmsStrategyDrawer
         strategy={selectedStrategy}
         onClose={() => setSelectedStrategy(null)}

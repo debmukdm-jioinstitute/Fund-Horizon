@@ -226,3 +226,61 @@ def test_admin_staff_provisioning_api(client):
         headers={"sec-fetch-site": "same-origin"},
     )
     assert forbidden_r.status_code == 403
+
+
+def test_mutual_fund_tracker_pagination_dates_and_plan_filter(client):
+    from app.backoffice.repository import BackofficeRepository
+
+    repo = BackofficeRepository()
+    repo.replace_mf_schemes(
+        [
+            {
+                "scheme_code": "100001",
+                "scheme_name": "Alpha Debt Fund",
+                "amc": "Alpha AMC",
+                "category": "Debt",
+                "plan": "Direct",
+                "option": "Growth",
+                "isin": "INFALPHA1",
+                "latest_nav": 2184.771,
+                "latest_nav_date": "2026-10-12",
+            },
+            {
+                "scheme_code": "100002",
+                "scheme_name": "Alpha Debt Fund",
+                "amc": "Alpha AMC",
+                "category": "Debt",
+                "plan": "Regular",
+                "option": "IDCW",
+                "isin": "-",
+                "latest_nav": 10.5,
+                "latest_nav_date": "2026-10-12",
+            },
+            {
+                "scheme_code": "200001",
+                "scheme_name": "Beta Flexi Cap",
+                "amc": "Beta AMC",
+                "category": "Equity",
+                "plan": "Regular",
+                "option": "Growth",
+                "isin": "INFBETA1",
+                "latest_nav": 50.0,
+                "latest_nav_date": "2026-10-12",
+            },
+        ]
+    )
+    _login_staff(client, _create_staff("analyst"))
+    page = client.get("/api/backoffice/mutual-funds/tracker", params={"limit": 1, "offset": 0, "search": "Alpha"})
+    assert page.status_code == 200
+    body = page.json()
+    assert body["total"] == 2 and body["count"] == 1
+    assert body["as_of"] == "2026-10-12"
+    row = body["data"][0]
+    assert row["nav_date"] == "2026-10-12" and row["latest_nav_date"] == "2026-10-12"
+    assert "Alpha AMC" in body["facets"]["amcs"]
+
+    direct = client.get("/api/backoffice/mutual-funds/tracker", params={"plan": "Direct", "search": "Alpha"}).json()
+    assert direct["total"] == 1 and direct["data"][0]["plan"] == "Direct" and direct["data"][0]["option"] == "Growth"
+
+    missing_isin = client.get("/api/backoffice/mutual-funds/tracker", params={"search": "100002"}).json()["data"][0]
+    assert missing_isin["isin"] is None

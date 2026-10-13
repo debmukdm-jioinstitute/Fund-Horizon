@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from app.backoffice.providers.amfi import AmfiProvider, parse_amfi_date
+from app.backoffice.providers.amfi import AmfiProvider, classify_plan_option
 from app.backoffice.providers.cboe import CboeProvider, parse_cboe_date
 from app.backoffice.providers.ecb import EcbProvider, compute_cross_rates
 from app.backoffice.providers.fred import FredProvider
@@ -28,6 +28,42 @@ Scheme Code;Scheme Name;Plan;Option;ISIN Div Payout/ ISIN Growth;Net Asset Value
     assert obs1.value_numeric == 428.12
     assert obs1.observed_at == "2026-10-09"
     assert obs1.provenance == "AMFI"
+    schemes = res.metadata["schemes"]
+    assert schemes[0]["plan"] == "Direct" and schemes[0]["option"] == "Growth"
+    assert schemes[1]["plan"] == "Regular" and schemes[1]["option"] == "Growth"
+    assert schemes[0]["latest_nav_date"] == "2026-10-09"
+
+
+def test_amfi_live_navall_plan_option_and_missing_isin():
+    provider = AmfiProvider()
+    content = """Scheme Code;ISIN Div Payout/ ISIN Growth;ISIN Div Reinvestment;Scheme Name;Plan;Option;Net Asset Value;Date
+
+Open Ended Schemes(Debt Scheme - Banking and PSU Fund)
+
+Franklin Templeton Mutual Fund
+
+129008;INF090I01KR8;-;Franklin India Banking & PSU Debt Fund;Direct Plan;Growth;25.3336;12-Oct-2026
+129007;INF090I01KP2;INF090I01KQ0;Franklin India Banking & PSU Debt Fund;Regular Plan;IDCW;10.8459;12-Oct-2026
+129006;-;-;No Date Fund;Regular Plan;Growth;10.0;
+"""
+    res = provider.parse_content(content)
+    assert res.success is True
+    by_code = {s["scheme_code"]: s for s in res.metadata["schemes"]}
+    direct = by_code["129008"]
+    regular = by_code["129007"]
+    assert direct["plan"] == "Direct" and direct["option"] == "Growth"
+    assert direct["latest_nav_date"] == "2026-10-12"
+    assert direct["isin"] == "INF090I01KR8" and direct["isin_reinvest"] is None
+    assert regular["plan"] == "Regular" and regular["option"] == "IDCW"
+    assert regular["isin_reinvest"] == "INF090I01KQ0"
+    assert "129006" not in by_code  # no NAV date → skip
+
+
+def test_classify_plan_option_from_name_and_columns():
+    assert classify_plan_option("Axis Children's Fund", "Direct Plan", "Growth Option") == ("Direct", "Growth")
+    assert classify_plan_option("Axis Children's Fund", "Regular Plan", "IDCW Option") == ("Regular", "IDCW")
+    assert classify_plan_option("HDFC Flexi Cap Fund - Direct Plan - Growth") == ("Direct", "Growth")
+    assert classify_plan_option("Unknown Scheme") == (None, None)
 
 
 def test_amfi_historical_header_and_invalid_rows():

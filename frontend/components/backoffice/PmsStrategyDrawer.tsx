@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { getPmsStrategyDetail, PmsStrategyDetail, PmsStrategyItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
+import { formatCrore } from "@/lib/terminal-format";
+import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBenchmark } from "@/lib/backoffice-display";
 
 interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
@@ -51,11 +53,11 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
     if (!strategy) return;
     const text = [
       `Strategy: ${strategy.strategy_name}`,
-      `Provider: ${strategy.provider_name}`,
-      `Approach: ${strategy.investment_approach || strategy.strategy_type || "Equity"}`,
-      `Service Type: ${strategy.service_type || "Discretionary"}`,
-      `Benchmark: ${strategy.benchmark_name || detail?.profile?.benchmark || "—"}`,
-      `AUM: ${strategy.aum_crore ? `₹${strategy.aum_crore} Cr` : "N/A"}`,
+      `Provider: ${normalizeProviderName(strategy.provider_name) || strategy.provider_name}`,
+      `Approach: ${normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}`,
+      `Service Type: ${strategy.service_type || "—"}`,
+      `Benchmark: ${sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || "—"}`,
+      `AUM: ${strategy.aum_crore != null ? formatCrore(strategy.aum_crore) : "N/A"}`,
       `1M Return: ${strategy.return_1m_pct !== undefined ? `${strategy.return_1m_pct}%` : "—"}`,
       `1Y Return: ${strategy.return_1y_pct !== undefined ? `${strategy.return_1y_pct}%` : "—"}`,
       `3Y CAGR: ${strategy.return_3y_cagr_pct !== undefined ? `${strategy.return_3y_cagr_pct}%` : "—"}`,
@@ -110,7 +112,7 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                   PMS Strategy
                 </span>
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]">
-                  {strategy.investment_approach || strategy.strategy_type || "Equity"}
+                  {normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}
                 </span>
                 {strategy.service_type && (
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]">
@@ -125,7 +127,7 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                 {strategy.strategy_name}
               </h2>
               <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 font-medium">
-                {strategy.provider_name}
+                {normalizeProviderName(strategy.provider_name) || strategy.provider_name}
               </p>
             </div>
             <button
@@ -142,19 +144,24 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
 
           {/* Scrollable Body */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+            {pmsReturnWarning(strategy) && (
+              <div className="terminal-panel p-3 text-[12px] text-[#B45309] dark:text-[#FBBF24] bg-[#B45309]/5 border border-[#B45309]/20">
+                ⚠ {pmsReturnWarning(strategy)}
+              </div>
+            )}
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-2.5">
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">AUM (₹ Crore)</div>
                 <div className="text-[16px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
-                  {strategy.aum_crore ? `₹${strategy.aum_crore.toLocaleString()} Cr` : "Not Disclosed"}
+                  {strategy.aum_crore != null ? formatCrore(strategy.aum_crore) : "Not Disclosed"}
                 </div>
               </div>
 
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Benchmark</div>
-                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.benchmark_name || detail?.profile?.benchmark || "—"}>
-                  {strategy.benchmark_name || detail?.profile?.benchmark || (detailLoading ? "Loading…" : "—")}
+                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || "—"}>
+                  {sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || (detailLoading ? "Loading…" : "—")}
                 </div>
               </div>
 
@@ -200,8 +207,8 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
 
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Approach / Category</div>
-                <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.investment_approach || strategy.strategy_type || "Registered"}>
-                  {strategy.investment_approach || strategy.strategy_type || "Registered Strategy"}
+                <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}>
+                  {normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}
                 </div>
               </div>
             </div>
@@ -323,7 +330,7 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                       {detail.history.slice(0, 12).map((h) => (
                         <tr key={h.as_on}>
                           <td className="font-mono">{h.as_on}</td>
-                          <td className="text-right font-mono">{h.aum_crore !== undefined ? h.aum_crore.toLocaleString("en-IN") : "—"}</td>
+                          <td className="text-right font-mono">{formatCrore(h.aum_crore)}</td>
                           <td className="text-right"><SignedValue value={h.r1m} unit="%" /></td>
                           <td className="text-right"><SignedValue value={h.r1y} unit="%" /></td>
                           <td className="text-right"><SignedValue value={h.r3y} unit="%" /></td>
@@ -346,7 +353,7 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                     <li key={`${x.strategy_name}-${i}`} className="p-3 text-[12px]">
                       <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{x.strategy_name}</div>
                       <div className="font-mono text-[#536176] dark:text-[#A8B4C4]">
-                        {x.aum_crore !== undefined ? `₹${x.aum_crore.toLocaleString("en-IN")} Cr` : "—"} · 1Y{" "}
+                        {formatCrore(x.aum_crore)} · 1Y{" "}
                         <SignedValue value={x.r1y} unit="%" /> · 3Y <SignedValue value={x.r3y} unit="%" />
                       </div>
                     </li>

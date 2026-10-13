@@ -71,6 +71,12 @@ def test_universe_roundtrip_and_api(client):
     assert body["count"] == 3 and body["reporting_count"] == 2
     strat = client.get("/api/backoffice/pms/strategies").json()
     assert strat["as_on"] == "2026-09-30" and any(s["strategy_name"] == "360 ONE Multicap PMS" for s in strat["data"])
+    by_strategy = {s["strategy_name"]: s for s in strat["data"]}
+    missing = by_strategy["1729 Fundamental value Investing"]
+    assert missing["return_1y"] is None and missing["aum_crore"] is None
+    assert missing.get("benchmark") in (None, "")
+    assert missing.get("benchmark_name") in (None, "")
+    assert strat["as_of"] == "2026-09-30"
 
 
 DETAIL_HTML = """

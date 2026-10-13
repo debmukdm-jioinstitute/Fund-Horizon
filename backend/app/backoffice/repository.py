@@ -18,7 +18,9 @@ CREATE TABLE IF NOT EXISTS mf_schemes (
     amc TEXT,
     category TEXT,
     plan TEXT,
+    scheme_option TEXT,
     isin TEXT,
+    isin_reinvest TEXT,
     latest_nav REAL,
     nav_date TEXT,
     base_key TEXT,
@@ -100,6 +102,10 @@ class BackofficeRepository:
                 cols = {r["name"] for r in conn.execute("PRAGMA table_info(mf_schemes)").fetchall()}
                 if "base_key" not in cols:
                     conn.execute("ALTER TABLE mf_schemes ADD COLUMN base_key TEXT")
+                if "scheme_option" not in cols:
+                    conn.execute("ALTER TABLE mf_schemes ADD COLUMN scheme_option TEXT")
+                if "isin_reinvest" not in cols:
+                    conn.execute("ALTER TABLE mf_schemes ADD COLUMN isin_reinvest TEXT")
             _LIVE_TABLES_READY.add(key)
         return conn
 
@@ -437,17 +443,20 @@ class BackofficeRepository:
             with conn:
                 conn.executemany(
                     """
-                    INSERT INTO mf_schemes (scheme_code, scheme_name, amc, category, plan, isin, latest_nav, nav_date, base_key, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO mf_schemes (scheme_code, scheme_name, amc, category, plan, scheme_option, isin, isin_reinvest, latest_nav, nav_date, base_key, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ON CONFLICT(scheme_code) DO UPDATE SET
                         scheme_name=excluded.scheme_name, amc=excluded.amc, category=excluded.category,
-                        plan=excluded.plan, isin=excluded.isin, latest_nav=excluded.latest_nav,
+                        plan=excluded.plan, scheme_option=excluded.scheme_option, isin=excluded.isin,
+                        isin_reinvest=excluded.isin_reinvest, latest_nav=excluded.latest_nav,
                         nav_date=excluded.nav_date, base_key=excluded.base_key, updated_at=excluded.updated_at
                     """,
                     [
                         (
                             s["scheme_code"], s["scheme_name"], s.get("amc"), s.get("category"), s.get("plan"),
-                            s.get("isin"), s.get("latest_nav"), s.get("latest_nav_date"), mf_base_key(s["scheme_name"]), now,
+                            s.get("option") or s.get("scheme_option"), s.get("isin"), s.get("isin_reinvest"),
+                            s.get("latest_nav"), s.get("latest_nav_date") or s.get("nav_date"),
+                            mf_base_key(s["scheme_name"]), now,
                         )
                         for s in schemes
                     ],
@@ -456,24 +465,45 @@ class BackofficeRepository:
         finally:
             conn.close()
 
-    def search_mf_schemes(self, search: str | None, amc: str | None, category: str | None, limit: int, offset: int) -> list[dict[str, Any]]:
+    def _mf_where(
+        self, search: str | None, amc: str | None, category: str | None, plan: str | None
+    ) -> tuple[str, list[Any]]:
         clauses, params = [], []  # type: list[str], list[Any]
         if search:
             like = f"%{search.strip()}%"
-            clauses.append("(s.scheme_name LIKE ? OR s.scheme_code LIKE ? OR s.amc LIKE ? OR s.isin LIKE ?)")
-            params += [like, like, like, like]
+            clauses.append(
+                "(s.scheme_name LIKE ? OR s.scheme_code LIKE ? OR s.amc LIKE ? OR s.isin LIKE ? OR IFNULL(s.isin_reinvest,'') LIKE ?)"
+            )
+            params += [like, like, like, like, like]
         if amc:
             clauses.append("s.amc = ?")
             params.append(amc)
         if category:
             clauses.append("s.category = ?")
             params.append(category)
+        if plan:
+            clauses.append("s.plan = ?")
+            params.append(plan)
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        return where, params
+
+    def search_mf_schemes(
+        self,
+        search: str | None,
+        amc: str | None,
+        category: str | None,
+        limit: int,
+        offset: int,
+        plan: str | None = None,
+    ) -> list[dict[str, Any]]:
+        where, params = self._mf_where(search, amc, category, plan)
         conn = self._conn()
         try:
             rows = conn.execute(
                 f"""
                 SELECT s.*,
+                       s.scheme_option AS "option",
+                       s.nav_date AS latest_nav_date,
                        CASE WHEN s.plan = 'Direct' THEN t.direct_ter_pct ELSE t.regular_ter_pct END AS ter_pct,
                        t.as_of AS ter_as_of
                 FROM mf_schemes s LEFT JOIN mf_ter t ON t.base_key = s.base_key
@@ -482,6 +512,35 @@ class BackofficeRepository:
                 (*params, limit, offset),
             ).fetchall()
             return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def count_mf_schemes(self, search: str | None, amc: str | None, category: str | None, plan: str | None = None) -> int:
+        where, params = self._mf_where(search, amc, category, plan)
+        conn = self._conn()
+        try:
+            row = conn.execute(f"SELECT COUNT(*) AS n FROM mf_schemes s {where}", params).fetchone()
+            return int(row["n"] if row else 0)
+        finally:
+            conn.close()
+
+    def mf_scheme_facets(self) -> dict[str, Any]:
+        conn = self._conn()
+        try:
+            amcs = [
+                r["amc"]
+                for r in conn.execute(
+                    "SELECT DISTINCT amc FROM mf_schemes WHERE amc IS NOT NULL AND TRIM(amc) != '' ORDER BY amc"
+                ).fetchall()
+            ]
+            categories = [
+                r["category"]
+                for r in conn.execute(
+                    "SELECT DISTINCT category FROM mf_schemes WHERE category IS NOT NULL AND TRIM(category) != '' ORDER BY category"
+                ).fetchall()
+            ]
+            as_of_row = conn.execute("SELECT MAX(nav_date) AS m FROM mf_schemes").fetchone()
+            return {"amcs": amcs, "categories": categories, "as_of": as_of_row["m"] if as_of_row else None}
         finally:
             conn.close()
 
@@ -551,6 +610,24 @@ class BackofficeRepository:
             return row["m"] if row and row["m"] else None
         finally:
             conn.close()
+
+    def list_pms_cached_benchmarks(self) -> dict[str, str]:
+        """ia_id -> benchmark name from cached APMI strategy pages (only where a source name exists)."""
+        conn = self._conn()
+        try:
+            rows = conn.execute("SELECT ia_id, detail_json FROM pms_strategy_details").fetchall()
+        finally:
+            conn.close()
+        out: dict[str, str] = {}
+        for row in rows:
+            try:
+                detail = json.loads(row["detail_json"])
+            except (TypeError, ValueError):
+                continue
+            benchmark = (detail.get("benchmark") or "").strip() if isinstance(detail, dict) else ""
+            if benchmark and benchmark.upper() not in {"NA", "N/A", "NIL", "-"}:
+                out[str(row["ia_id"])] = benchmark
+        return out
 
     def list_pms_universe_strategies(self, as_on: str | None = None) -> list[dict[str, Any]]:
         as_on = as_on or self.latest_pms_as_on()

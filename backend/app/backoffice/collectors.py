@@ -12,9 +12,9 @@ import os
 import time
 from typing import Any
 
-from app.backoffice.providers.amfi import AmfiProvider
-from app.backoffice.providers.base import FetchResult
 from app.backoffice.providers import amfi_ter, apmi, rss
+from app.backoffice.providers.amfi import AmfiProvider, classify_plan_option
+from app.backoffice.providers.base import FetchResult
 from app.backoffice.providers.cboe import CboeProvider
 from app.backoffice.providers.ecb import EcbProvider
 from app.backoffice.providers.fred import FredProvider
@@ -53,19 +53,16 @@ NSE_INDEX_SERIES = {
 }
 
 
-def _plan_of(scheme_name: str) -> str:
-    return "Direct" if "direct" in scheme_name.lower() else "Regular"
-
-
 def _ingest(source_id: str, res: FetchResult) -> dict[str, Any]:
     if not res.success:
         _REPO.update_source_health(source_id, res.status, error_message=res.error_message, success=False)
         return {"status": res.status, "source_id": source_id, "error": res.error_message}
     saved = _REPO.upsert_observations(res.observations)
     if source_id == "SRC_AMFI":
-        schemes = [
-            {**s, "plan": _plan_of(s.get("scheme_name", ""))} for s in (res.metadata or {}).get("schemes", [])
-        ]
+        schemes = []
+        for s in (res.metadata or {}).get("schemes", []):
+            plan, option = classify_plan_option(s.get("scheme_name") or "", s.get("plan"), s.get("option"))
+            schemes.append({**s, "plan": plan, "option": option})
         _REPO.replace_mf_schemes(schemes)
     _REPO.update_source_health(source_id, "ready", success=True)
     return {"status": "success", "source_id": source_id, "records_ingested": saved}

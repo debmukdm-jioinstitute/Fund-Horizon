@@ -111,3 +111,10 @@ def test_missing_data_passes_flagged_and_drops_are_explained():
     off = apply_funnel(rows[:1], filters={"include_missing": False})
     assert off["counts"]["zeroed_stage"] == "s1"
     assert off["counts"]["missing_by_stage"]["s1"]["manager_name"] == 1
+
+
+def test_uncomputable_metrics_drop_as_insufficient_history_even_when_missing_included():
+    young = _dummy_row("9", sharpe=None, quartile_2y=None)
+    res = apply_funnel([young, _dummy_row("1")], cat_median_ters={"large_cap": 2.0})
+    assert [r["scheme_code"] for r in res["action"]] == ["1"]
+    assert res["dropped"][0]["drop_reason"].startswith("insufficient history")

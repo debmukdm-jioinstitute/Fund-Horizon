@@ -4,6 +4,9 @@ from __future__ import annotations
 import math
 from typing import Any
 
+# Gaps in these come from imports/feeds and are flagged `needs_data`. Any other gap is a metric that could not be
+# computed (history shorter than its window), so the fund cannot be ranked: it is dropped as insufficient history.
+IMPORTED_FIELDS = {"manager_name", "manager_tenure_years", "tenure_ratio", "expense_ratio", "cat_median_ter"}
 DEFAULT_WEIGHTS = {"sharpe": 1.0, "sortino": 1.0, "capture_spread": 1.0, "roll_consistency": 1.0}
 
 
@@ -95,6 +98,10 @@ def apply_funnel(
         funds_missing[stage] += 1
         for f in miss:
             missing_by_stage[stage][f] = missing_by_stage[stage].get(f, 0) + 1
+        short = [f for f in miss if f not in IMPORTED_FIELDS]
+        if short:
+            drop(r, stage, "insufficient history: " + ", ".join(short))
+            return True
         if include_missing:
             r["needs_data"] = sorted(set(r.get("needs_data", [])) | set(miss))
             return False

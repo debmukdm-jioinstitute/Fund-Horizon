@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { MutualFundItem } from "@/lib/backoffice";
-import { formatISTDate } from "@/lib/terminal-format";
+import { formatISTDate, formatNumber } from "@/lib/terminal-format";
+import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 
 interface MutualFundDrawerProps {
   scheme: MutualFundItem | null;
@@ -31,17 +32,20 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
 
   async function handleCopy() {
     if (!scheme) return;
+    const classified = classifyPlanOption(scheme.scheme_name, scheme.plan, scheme.option);
+    const nav = scheme.latest_nav != null && scheme.latest_nav !== "" ? `₹${formatNumber(Number(scheme.latest_nav), 4)}` : "—";
     const text = [
       `Scheme: ${scheme.scheme_name}`,
       `Code: ${scheme.scheme_code}`,
       `AMC: ${scheme.amc_name || "—"}`,
-      `Category: ${scheme.category || "Equity"}`,
-      `Plan: ${scheme.plan || "Regular"}`,
-      `Latest NAV: ₹${scheme.latest_nav ? Number(scheme.latest_nav).toFixed(4) : "—"}`,
+      `Category: ${scheme.category || "—"}`,
+      `Plan: ${classified.plan || "—"}`,
+      `Option: ${classified.option || "—"}`,
+      `Latest NAV: ${nav}`,
       `NAV Date: ${formatISTDate(scheme.nav_date)}`,
       `TER: ${scheme.ter_pct ? `${Number(scheme.ter_pct).toFixed(2)}%` : "—"}`,
-      `ISIN Growth: ${scheme.isin_growth || "—"}`,
-      `ISIN Div: ${scheme.isin_div || "—"}`,
+      `ISIN Growth: ${blankDash(scheme.isin_growth)}`,
+      `ISIN Div: ${blankDash(scheme.isin_div)}`,
       `Source: AMFI NAVAll.txt Feed`,
     ].join("\n");
 
@@ -54,7 +58,13 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
     }
   }
 
-  const isDirect = (scheme.plan || "").toLowerCase().includes("direct");
+  const classified = classifyPlanOption(scheme.scheme_name, scheme.plan, scheme.option);
+  const isDirect = classified.plan === "Direct";
+  const stale = isNavStale(scheme.nav_date);
+  const navLabel =
+    scheme.latest_nav != null && scheme.latest_nav !== "" && Number.isFinite(Number(scheme.latest_nav))
+      ? `₹${formatNumber(Number(scheme.latest_nav), 4)}`
+      : "—";
 
   return (
     <div
@@ -81,11 +91,17 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                     ? "bg-[#2170E4]/10 text-[#2170E4] dark:text-[#68A2FF] border-[#2170E4]/20"
                     : "bg-[#087744]/10 text-[#087744] dark:text-[#58D6A0] border-[#087744]/20"
                 }`}>
-                  {scheme.plan || "Regular"} Plan
+                  {classified.plan || "—"}
+                  {classified.option ? ` · ${classified.option}` : ""}
                 </span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]">
                   {scheme.category || "Mutual Fund"}
                 </span>
+                {stale && (
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#B45309]/10 text-[#B45309] dark:text-[#FBBF24] border border-[#B45309]/20">
+                    Stale NAV
+                  </span>
+                )}
               </div>
               <h2
                 id="mf-drawer-title"
@@ -116,7 +132,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Latest NAV</div>
                 <div className="text-[17px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
-                  {scheme.latest_nav ? `₹${Number(scheme.latest_nav).toFixed(4)}` : "—"}
+                  {navLabel}
                 </div>
               </div>
 
@@ -124,6 +140,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">NAV Date</div>
                 <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5">
                   {formatISTDate(scheme.nav_date)}
+                  {stale ? " · stale" : ""}
                 </div>
               </div>
 
@@ -142,7 +159,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Plan Type</div>
                 <div className="text-[14px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
-                  {scheme.plan || "Regular"}
+                  {classified.plan || "—"}
+                  {classified.option ? ` · ${classified.option}` : ""}
                 </div>
               </div>
             </div>
@@ -160,7 +178,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 <div className="p-3 flex items-center justify-between">
                   <span className="text-[#536176] dark:text-[#A8B4C4]">ISIN Growth</span>
                   <span className="font-mono font-medium text-[#172033] dark:text-[#EDF2F7]">
-                    {scheme.isin_growth || "—"}
+                    {blankDash(scheme.isin_growth)}
                   </span>
                 </div>
                 {scheme.isin_div && (
@@ -177,7 +195,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 </div>
                 <div className="p-3 flex items-center justify-between">
                   <span className="text-[#536176] dark:text-[#A8B4C4]">SEBI Categorization</span>
-                  <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">{scheme.category || "Equity"}</span>
+                  <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">{scheme.category || "—"}</span>
                 </div>
               </div>
             </div>

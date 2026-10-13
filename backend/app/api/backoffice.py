@@ -152,6 +152,12 @@ def backoffice_pms_strategies(
     universe = _REPO.list_pms_universe_strategies(as_on)
     if provider:
         universe = [s for s in universe if s["provider"] == provider]
+    cached_benchmarks = _REPO.list_pms_cached_benchmarks()
+    for row in universe:
+        if not row.get("benchmark") and not row.get("benchmark_name"):
+            ia = row.get("ia_id")
+            if ia and cached_benchmarks.get(str(ia)):
+                row["benchmark"] = cached_benchmarks[str(ia)]
     manual = [
         {
             "provider": m["provider"],
@@ -162,6 +168,8 @@ def backoffice_pms_strategies(
             "aum_crore": m.get("aum_crore"),
             "return_1m": m.get("return_1m"), "return_3m": m.get("return_3m"), "return_6m": m.get("return_6m"),
             "return_1y": m.get("return_1y"), "return_3y": m.get("cagr_3y"), "return_5y": m.get("cagr_5y"),
+            "benchmark": m.get("benchmark_name") or None,
+            "benchmark_name": m.get("benchmark_name") or None,
             "source": m.get("source") or "manual",
         }
         for m in _REPO.list_pms_strategies(provider=provider)
@@ -171,6 +179,7 @@ def backoffice_pms_strategies(
         "data": universe + manual,
         "count": len(universe) + len(manual),
         "as_on": as_on,
+        "as_of": as_on,
         "source": "APMI",
         "availability": "ready" if (universe or manual) else "unavailable",
         "freshness": "current" if universe else "stale",
@@ -355,17 +364,37 @@ def backoffice_mf_tracker(
     search: str | None = Query(None),
     amc: str | None = Query(None),
     category: str | None = Query(None),
+    plan: str | None = Query(None),
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
 ):
     """Search and compare mutual fund schemes with AMFI daily NAV values and metrics."""
-    funds = _REPO.search_mf_schemes(search, amc, category, limit, offset)
+    plan_norm = plan.strip().title() if plan else None
+    if plan_norm and plan_norm not in {"Direct", "Regular"}:
+        plan_norm = None
+    funds = _REPO.search_mf_schemes(search, amc, category, limit, offset, plan=plan_norm)
+    total = _REPO.count_mf_schemes(search, amc, category, plan=plan_norm)
+    facets = _REPO.mf_scheme_facets()
+    for f in funds:
+        # Alias both names so older and newer clients can read the NAV date.
+        nav_date = f.get("nav_date") or f.get("latest_nav_date")
+        f["nav_date"] = nav_date
+        f["latest_nav_date"] = nav_date
+        option = f.get("option") or f.get("scheme_option")
+        f["option"] = option
+        if not f.get("isin") or str(f.get("isin")).strip() in {"-", "--"}:
+            f["isin"] = None
+        if not f.get("isin_reinvest") or str(f.get("isin_reinvest")).strip() in {"-", "--"}:
+            f["isin_reinvest"] = None
     return {
         "data": funds,
         "count": len(funds),
+        "total": total,
         "limit": limit,
         "offset": offset,
-        "availability": "ready" if funds else "unavailable",
+        "as_of": facets.get("as_of"),
+        "facets": {"amcs": facets.get("amcs") or [], "categories": facets.get("categories") or []},
+        "availability": "ready" if total else "unavailable",
     }
 
 

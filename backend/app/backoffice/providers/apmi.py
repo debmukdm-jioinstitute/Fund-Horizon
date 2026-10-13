@@ -50,8 +50,13 @@ def _text(fragment: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(_TAG_RE.sub("", _COMMENT_RE.sub("", fragment)))).strip()
 
 
+_MISSING_NUM = {"", "-", "--", "na", "n.a.", "n/a", "nil", "*"}
+
+
 def _num(raw: str) -> float | None:
     cleaned = raw.replace("₹", "").replace(",", "").strip()
+    if cleaned.lower() in _MISSING_NUM:
+        return None
     try:
         return float(cleaned)
     except ValueError:

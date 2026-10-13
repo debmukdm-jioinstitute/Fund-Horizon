@@ -475,12 +475,20 @@ export interface MutualFundItem {
   amc_name?: string;
   category?: string;
   plan?: string;
+  option?: string;
   latest_nav?: number | string;
   nav_date?: string;
   ter_pct?: number | string;
   isin_growth?: string;
   isin_div?: string;
   ter_as_of?: string;
+}
+
+export interface MutualFundsTrackerResult extends BackofficeEnvelope<MutualFundItem[]> {
+  total: number;
+  limit: number;
+  offset: number;
+  facets: { amcs: string[]; categories: string[] };
 }
 
 export interface NewsItem {
@@ -766,6 +774,7 @@ export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategy
       return_3y_cagr_pct: num(r.return_3y),
       return_5y_cagr_pct: num(r.return_5y),
       return_since_inception_pct: num(r.return_since_inception),
+      benchmark_name: str(r.benchmark) ?? str(r.benchmark_name),
       report_month: str(r.as_on) ?? asOn,
     }));
   } catch {
@@ -787,9 +796,21 @@ export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategy
     if (rec) {
       matchedRecs.add(key);
       merged.push({
-        ...item,
         ...rec,
+        ...item,
         is_fh_recommended: true,
+        ia_id: item.ia_id || rec.ia_id,
+        min_investment: rec.min_investment || item.min_investment,
+        inception_date: rec.inception_date || item.inception_date,
+        principal_officer: rec.principal_officer || item.principal_officer,
+        benchmark_name: item.benchmark_name || rec.benchmark_name,
+        return_1m_pct: item.return_1m_pct ?? rec.return_1m_pct,
+        return_3m_pct: item.return_3m_pct ?? rec.return_3m_pct,
+        return_6m_pct: item.return_6m_pct ?? rec.return_6m_pct,
+        return_1y_pct: item.return_1y_pct ?? rec.return_1y_pct,
+        return_3y_cagr_pct: item.return_3y_cagr_pct ?? rec.return_3y_cagr_pct,
+        return_5y_cagr_pct: item.return_5y_cagr_pct ?? rec.return_5y_cagr_pct,
+        return_since_inception_pct: item.return_since_inception_pct ?? rec.return_since_inception_pct,
       });
     } else {
       merged.push(item);
@@ -852,22 +873,51 @@ export const getPmsAccountTracker = async (id: string): Promise<BackofficeEnvelo
   return envelope(raw, data);
 };
 
-export const getMutualFundsTracker = async (q?: string): Promise<BackofficeEnvelope<MutualFundItem[]>> => {
-  const qs = q ? `?search=${encodeURIComponent(q)}` : "";
-  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/tracker${qs}`);
+export const getMutualFundsTracker = async (opts?: {
+  search?: string;
+  amc?: string;
+  category?: string;
+  plan?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<MutualFundsTrackerResult> => {
+  const q = new URLSearchParams();
+  if (opts?.search) q.set("search", opts.search);
+  if (opts?.amc) q.set("amc", opts.amc);
+  if (opts?.category) q.set("category", opts.category);
+  if (opts?.plan) q.set("plan", opts.plan);
+  q.set("limit", String(opts?.limit ?? 50));
+  q.set("offset", String(opts?.offset ?? 0));
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/tracker?${q.toString()}`);
   const data = arr(raw.data).map<MutualFundItem>((f) => ({
     scheme_code: String(f.scheme_code ?? ""),
     scheme_name: str(f.scheme_name) ?? "—",
-    amc_name: str(f.amc),
+    amc_name: str(f.amc) ?? str(f.amc_name),
     category: str(f.category),
     plan: str(f.plan),
+    option: str(f.option) ?? str(f.scheme_option),
     latest_nav: num(f.latest_nav),
-    nav_date: str(f.latest_nav_date),
+    nav_date: str(f.nav_date) ?? str(f.latest_nav_date),
     isin_growth: str(f.isin),
+    isin_div: str(f.isin_reinvest) ?? str(f.isin_div),
     ter_pct: num(f.ter_pct),
     ter_as_of: str(f.ter_as_of),
   }));
-  return envelope(raw, data);
+  const facets = obj(raw.facets);
+  const env = envelope(raw, data);
+  env.as_of = str(raw.as_of) ?? env.as_of;
+  return {
+    ...env,
+    total: num(raw.total) ?? data.length,
+    limit: num(raw.limit) ?? (opts?.limit ?? 50),
+    offset: num(raw.offset) ?? (opts?.offset ?? 0),
+    facets: {
+      amcs: Array.isArray(facets.amcs) ? (facets.amcs as unknown[]).filter((x): x is string => typeof x === "string") : [],
+      categories: Array.isArray(facets.categories)
+        ? (facets.categories as unknown[]).filter((x): x is string => typeof x === "string")
+        : [],
+    },
+  };
 };
 
 export const getMicroIssuer = async (id: string): Promise<BackofficeEnvelope<MicroIssuerData | null>> => {

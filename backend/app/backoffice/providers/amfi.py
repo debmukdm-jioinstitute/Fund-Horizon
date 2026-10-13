@@ -9,10 +9,9 @@ Parses official AMFI NAV bulk text file (NAVAll.txt), supporting both:
 """
 from __future__ import annotations
 
-import csv
-import io
 import logging
-from datetime import UTC, datetime
+import re
+from datetime import datetime
 from typing import Any
 
 from app.backoffice.providers.base import (
@@ -36,6 +35,48 @@ def parse_amfi_date(raw_date: str) -> str:
         except ValueError:
             pass
     raise ValueError(f"Invalid AMFI date format: {raw_date}")
+
+
+_MISSING_TOKENS = {"", "-", "--", "na", "n.a.", "n/a", "nil", "null", "none"}
+
+
+def _clean_isin(raw: str | None) -> str | None:
+    value = (raw or "").strip()
+    return None if value.lower() in _MISSING_TOKENS else value
+
+
+def _cell(indices: dict[str, int], row: list[str], key: str) -> str:
+    idx = indices.get(key)
+    if idx is None or idx >= len(row):
+        return ""
+    return row[idx].strip()
+
+
+def classify_plan_option(
+    scheme_name: str = "",
+    plan_raw: str | None = None,
+    option_raw: str | None = None,
+) -> tuple[str | None, str | None]:
+    """Derive Direct/Regular and Growth/IDCW/Bonus from AMFI plan/option columns or the scheme name.
+
+    Returns ``(None, None)`` when the feed does not say; callers must not invent Regular/Growth.
+    """
+    plan_src = f"{plan_raw or ''} {scheme_name or ''}".lower()
+    option_src = f"{option_raw or ''} {scheme_name or ''}".lower()
+    plan: str | None = None
+    if re.search(r"\bdirect\b", plan_src):
+        plan = "Direct"
+    elif re.search(r"\bregular\b", plan_src):
+        plan = "Regular"
+
+    option: str | None = None
+    if re.search(r"\bbonus\b", option_src):
+        option = "Bonus"
+    elif re.search(r"\bgrowth\b", option_src):
+        option = "Growth"
+    elif re.search(r"\b(idcw|dividend|payout|reinvest)\b", option_src):
+        option = "IDCW"
+    return plan, option
 
 
 class AmfiProvider(BaseProvider):
@@ -114,6 +155,8 @@ class AmfiProvider(BaseProvider):
                         header_indices["nav"] = idx
                     elif "date" in col:
                         header_indices["date"] = idx
+                    elif "reinvest" in col:
+                        header_indices["isin_reinvest"] = idx
                     elif "growth" in col or "isin" in col:
                         header_indices.setdefault("isin", idx)
                     elif "plan" in col:
@@ -148,16 +191,22 @@ class AmfiProvider(BaseProvider):
                     continue
 
                 date_str = parts[date_idx].strip() if date_idx is not None and date_idx < len(parts) else ""
+                if not date_str:
+                    continue
                 try:
-                    obs_date = parse_amfi_date(date_str) if date_str else datetime.now(UTC).strftime("%Y-%m-%d")
+                    obs_date = parse_amfi_date(date_str)
                 except ValueError:
                     continue
 
                 if sample_source_date is None:
                     sample_source_date = obs_date
 
-                scheme_name = parts[header_indices["name"]].strip() if "name" in header_indices and header_indices["name"] < len(parts) else ""
-                isin = parts[header_indices["isin"]].strip() if "isin" in header_indices and header_indices["isin"] < len(parts) else None
+                scheme_name = _cell(header_indices, parts, "name")
+                plan_raw = _cell(header_indices, parts, "plan") or None
+                option_raw = _cell(header_indices, parts, "option") or None
+                plan, option = classify_plan_option(scheme_name, plan_raw, option_raw)
+                isin = _clean_isin(_cell(header_indices, parts, "isin"))
+                isin_reinvest = _clean_isin(_cell(header_indices, parts, "isin_reinvest"))
 
                 obs = NormalizedObservation(
                     instrument_id=f"MF:{scheme_code}",
@@ -174,7 +223,10 @@ class AmfiProvider(BaseProvider):
                     "scheme_name": scheme_name,
                     "amc": current_amc,
                     "category": current_category,
+                    "plan": plan,
+                    "option": option,
                     "isin": isin,
+                    "isin_reinvest": isin_reinvest,
                     "latest_nav": nav_val,
                     "latest_nav_date": obs_date,
                 })

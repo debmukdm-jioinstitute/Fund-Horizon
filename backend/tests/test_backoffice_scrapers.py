@@ -90,3 +90,6 @@ def test_news_and_mf_ter_repository_roundtrip(client):
     repo.replace_mf_ter([{"base_key": amfi_ter.base_key("Zed Fund"), "scheme_name": "Zed Fund", "regular_ter_pct": 2.0, "direct_ter_pct": 0.6, "as_of": "2026-10-12"}])
     found = [f for f in repo.search_mf_schemes("Zed Fund", None, None, 10, 0) if f["scheme_code"] == "999001"][0]
     assert found["ter_pct"] == 0.6  # Direct plan picks the direct TER
+    assert found["nav_date"] == "2026-10-12" and found["latest_nav_date"] == "2026-10-12"
+    assert repo.count_mf_schemes("Zed Fund", None, None) >= 1
+    assert "Zed" in repo.mf_scheme_facets()["amcs"]

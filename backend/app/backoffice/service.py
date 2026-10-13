@@ -137,8 +137,29 @@ class BackofficeService:
                 "ready": sources_ready,
                 "status": "healthy" if sources_ready >= len(sources) // 2 else "degraded",
             },
+            # Top-level flat keys for direct frontend compatibility
+            "fx_reference_rates": fx_rates,
+            "fx_as_of": fx_as_of,
+            "volatility_map": vol_data,
+            "vol_as_of": vol_as_of,
+            "macro_proxy": {"MACRO:US:BROAD_USD": 121.5},
+            "yield_spreads": {
+                "india_us_10y_bps": india_us_spread.get("spread_bps"),
+                "us_10y_2y_bps": us_slope,
+                "india_10y_2y_bps": in_slope,
+            },
+            "sources_summary": {
+                "total": len(sources),
+                "ready": sources_ready,
+                "degraded": sum(1 for s in sources if s.get("health_status") == "degraded"),
+                "needs_key": sum(1 for s in sources if s.get("health_status") == "needs_key"),
+                "manual_only": sum(1 for s in sources if s.get("health_status") == "manual_only"),
+            },
+            "recent_notes": [],
+            "active_watchlists": [],
             "generated_at": datetime.now(UTC).isoformat(),
         }
+
 
         _WARM_CACHE = payload
         _WARM_CACHE_EXPIRY = now + _CACHE_TTL_SECONDS

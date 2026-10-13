@@ -18,24 +18,36 @@ export interface BackofficeEnvelope<T> {
 }
 
 export interface MarketOverviewData {
-  fx_reference_rates: Record<string, number>;
+  fx?: { rates?: Record<string, number>; as_of?: string; status?: string };
+  fx_reference_rates?: Record<string, number>;
   fx_as_of?: string;
-  volatility: Record<string, number>;
+  volatility?: Record<string, number> | { vix?: number; india_vix?: number; as_of?: string; status?: string };
   vol_as_of?: string;
-  macro_proxy: Record<string, number>;
-  yield_spreads: {
+  yields?: {
+    in_10y?: number;
+    in_2y?: number;
+    us_10y?: number;
+    us_2y?: number;
+    india_us_spread_bps?: number;
+    india_slope_bps?: number;
+    us_slope_bps?: number;
+    as_of?: string;
+  };
+  macro_proxy?: Record<string, number>;
+  yield_spreads?: {
     india_us_10y_bps?: number;
     us_10y_2y_bps?: number;
     india_10y_2y_bps?: number;
   };
-  sources_summary: {
+  sources_summary?: {
     total: number;
     ready: number;
     degraded: number;
     needs_key: number;
     manual_only: number;
   };
-  recent_notes: Array<{
+  sources_health?: { total: number; ready: number; status: string };
+  recent_notes?: Array<{
     id: string;
     author_name: string;
     target_type: string;
@@ -44,13 +56,13 @@ export interface MarketOverviewData {
     content: string;
     created_at: string;
   }>;
-  active_watchlists: Array<{
+  active_watchlists?: Array<{
     id: string;
     name: string;
     item_type: string;
     item_id: string;
   }>;
-  generated_at: string;
+  generated_at?: string;
 }
 
 export interface YieldsBoardData {

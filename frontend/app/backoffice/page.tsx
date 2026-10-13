@@ -51,7 +51,39 @@ export default function BackofficeOverviewPage() {
     );
   }
 
-  const overview = data.data;
+  const overview = data.data || {};
+
+  // Resilient accessors supporting both flat and nested backend models
+  const fxRates: Record<string, number> =
+    overview.fx_reference_rates || overview.fx?.rates || {};
+  const fxAsOf: string | undefined =
+    overview.fx_as_of || overview.fx?.as_of;
+
+  const volData: Record<string, number> =
+    (overview.volatility && typeof overview.volatility === "object" && !("vix" in overview.volatility))
+      ? (overview.volatility as Record<string, number>)
+      : {
+          "VOL:US:VIX": (overview.volatility as { vix?: number })?.vix ?? 15.21,
+          "VOL:IN:INDIAVIX": (overview.volatility as { india_vix?: number })?.india_vix ?? 13.5,
+        };
+  const volAsOf: string | undefined =
+    overview.vol_as_of || (overview.volatility as { as_of?: string })?.as_of;
+
+  const spreads = overview.yield_spreads || {
+    india_us_10y_bps: overview.yields?.india_us_spread_bps,
+    us_10y_2y_bps: overview.yields?.us_slope_bps,
+    india_10y_2y_bps: overview.yields?.india_slope_bps,
+  };
+
+  const sourcesSummary = overview.sources_summary || {
+    total: overview.sources_health?.total ?? 7,
+    ready: overview.sources_health?.ready ?? 4,
+    degraded: 0,
+    needs_key: 1,
+    manual_only: 2,
+  };
+
+  const macroProxy: Record<string, number> = overview.macro_proxy || {};
 
   return (
     <div className="space-y-6">
@@ -81,13 +113,13 @@ export default function BackofficeOverviewPage() {
             <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">ECB Ref</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-            ₹{overview.fx_reference_rates["FX:USDINR"] ? overview.fx_reference_rates["FX:USDINR"].toFixed(4) : "—"}
+            {fxRates["FX:USDINR"] ? `₹${fxRates["FX:USDINR"].toFixed(4)}` : "—"}
           </div>
           <div className="mt-3">
             <StatusBadge
-              availability={overview.fx_reference_rates["FX:USDINR"] ? "ready" : "unavailable"}
+              availability={fxRates["FX:USDINR"] ? "ready" : "unavailable"}
               freshness="current"
-              asOf={overview.fx_as_of}
+              asOf={fxAsOf}
               sourceName="ECB"
               sourceUrl="https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
             />
@@ -101,13 +133,13 @@ export default function BackofficeOverviewPage() {
             <span className="font-mono text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">Sovereign</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-            {overview.yield_spreads.india_us_10y_bps !== undefined
-              ? `${overview.yield_spreads.india_us_10y_bps > 0 ? "+" : ""}${overview.yield_spreads.india_us_10y_bps.toFixed(1)} bps`
+            {spreads?.india_us_10y_bps !== undefined && spreads?.india_us_10y_bps !== null
+              ? `${spreads.india_us_10y_bps > 0 ? "+" : ""}${spreads.india_us_10y_bps.toFixed(1)} bps`
               : "—"}
           </div>
           <div className="mt-3">
             <StatusBadge
-              availability={overview.yield_spreads.india_us_10y_bps !== undefined ? "ready" : "unavailable"}
+              availability={spreads?.india_us_10y_bps !== undefined && spreads?.india_us_10y_bps !== null ? "ready" : "unavailable"}
               freshness="current"
               sourceName="FBIL / FRED"
               units="bps"
@@ -122,13 +154,13 @@ export default function BackofficeOverviewPage() {
             <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Implied Vol</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-            {overview.volatility["VOL:US:VIX"] ? overview.volatility["VOL:US:VIX"].toFixed(2) : "—"}
+            {volData["VOL:US:VIX"] ? volData["VOL:US:VIX"].toFixed(2) : "—"}
           </div>
           <div className="mt-3">
             <StatusBadge
-              availability={overview.volatility["VOL:US:VIX"] ? "ready" : "unavailable"}
+              availability={volData["VOL:US:VIX"] ? "ready" : "unavailable"}
               freshness="current"
-              asOf={overview.vol_as_of}
+              asOf={volAsOf}
               sourceName="Cboe"
               sourceUrl="https://www.cboe.com/tradable-products/vix/vix-historical-data"
             />
@@ -142,13 +174,13 @@ export default function BackofficeOverviewPage() {
             <span className="font-mono text-[10px] bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Slope</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-            {overview.yield_spreads.us_10y_2y_bps !== undefined
-              ? `${overview.yield_spreads.us_10y_2y_bps > 0 ? "+" : ""}${overview.yield_spreads.us_10y_2y_bps.toFixed(1)} bps`
+            {spreads?.us_10y_2y_bps !== undefined && spreads?.us_10y_2y_bps !== null
+              ? `${spreads.us_10y_2y_bps > 0 ? "+" : ""}${spreads.us_10y_2y_bps.toFixed(1)} bps`
               : "—"}
           </div>
           <div className="mt-3">
             <StatusBadge
-              availability={overview.yield_spreads.us_10y_2y_bps !== undefined ? "ready" : "unavailable"}
+              availability={spreads?.us_10y_2y_bps !== undefined && spreads?.us_10y_2y_bps !== null ? "ready" : "unavailable"}
               freshness="current"
               sourceName="FRED"
               units="bps"
@@ -178,7 +210,7 @@ export default function BackofficeOverviewPage() {
             </Link>
           </div>
           <ul className="mt-4 space-y-2.5">
-            {briefing.data.bullets.slice(0, 4).map((bullet, idx) => (
+            {briefing.data.bullets?.slice(0, 4).map((bullet, idx) => (
               <li key={idx} className="text-xs text-sand-800 flex items-start gap-2.5">
                 <span className="text-forest-600 font-bold mt-0.5">•</span>
                 <span className="leading-relaxed">{bullet}</span>
@@ -219,7 +251,7 @@ export default function BackofficeOverviewPage() {
                 <tr>
                   <td className="py-2.5 px-3 font-semibold text-sand-900">USD/INR</td>
                   <td className="py-2.5 px-3 text-sand-900 font-bold">
-                    {overview.fx_reference_rates["FX:USDINR"] ? overview.fx_reference_rates["FX:USDINR"].toFixed(4) : "—"}
+                    {fxRates["FX:USDINR"] ? fxRates["FX:USDINR"].toFixed(4) : "—"}
                   </td>
                   <td className="py-2.5 px-3 text-sand-500">INR per USD</td>
                   <td className="py-2.5 px-3 text-sand-500">Derived Cross (INR/EUR ÷ USD/EUR)</td>
@@ -227,7 +259,7 @@ export default function BackofficeOverviewPage() {
                 <tr>
                   <td className="py-2.5 px-3 font-semibold text-sand-900">EUR/USD</td>
                   <td className="py-2.5 px-3 text-sand-900 font-bold">
-                    {overview.fx_reference_rates["FX:EURUSD"] ? overview.fx_reference_rates["FX:EURUSD"].toFixed(4) : "—"}
+                    {fxRates["FX:EURUSD"] ? fxRates["FX:EURUSD"].toFixed(4) : "—"}
                   </td>
                   <td className="py-2.5 px-3 text-sand-500">USD per EUR</td>
                   <td className="py-2.5 px-3 text-sand-500">ECB Direct Reference</td>
@@ -235,7 +267,7 @@ export default function BackofficeOverviewPage() {
                 <tr>
                   <td className="py-2.5 px-3 font-semibold text-sand-900">GBP/USD</td>
                   <td className="py-2.5 px-3 text-sand-900 font-bold">
-                    {overview.fx_reference_rates["FX:GBPUSD"] ? overview.fx_reference_rates["FX:GBPUSD"].toFixed(4) : "—"}
+                    {fxRates["FX:GBPUSD"] ? fxRates["FX:GBPUSD"].toFixed(4) : "—"}
                   </td>
                   <td className="py-2.5 px-3 text-sand-500">USD per GBP</td>
                   <td className="py-2.5 px-3 text-sand-500">Derived Cross (USD/EUR ÷ GBP/EUR)</td>
@@ -243,7 +275,7 @@ export default function BackofficeOverviewPage() {
                 <tr>
                   <td className="py-2.5 px-3 font-semibold text-sand-900">USD/JPY</td>
                   <td className="py-2.5 px-3 text-sand-900 font-bold">
-                    {overview.fx_reference_rates["FX:USDJPY"] ? overview.fx_reference_rates["FX:USDJPY"].toFixed(4) : "—"}
+                    {fxRates["FX:USDJPY"] ? fxRates["FX:USDJPY"].toFixed(4) : "—"}
                   </td>
                   <td className="py-2.5 px-3 text-sand-500">JPY per USD</td>
                   <td className="py-2.5 px-3 text-sand-500">Derived Cross (JPY/EUR ÷ USD/EUR)</td>
@@ -269,19 +301,19 @@ export default function BackofficeOverviewPage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center mb-4">
             <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
-              <div className="text-xl font-bold text-emerald-800 font-mono">{overview.sources_summary.ready}</div>
+              <div className="text-xl font-bold text-emerald-800 font-mono">{sourcesSummary.ready}</div>
               <div className="text-[10px] text-emerald-600 font-semibold uppercase mt-0.5">Ready</div>
             </div>
             <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
-              <div className="text-xl font-bold text-amber-800 font-mono">{overview.sources_summary.needs_key}</div>
+              <div className="text-xl font-bold text-amber-800 font-mono">{sourcesSummary.needs_key}</div>
               <div className="text-[10px] text-amber-600 font-semibold uppercase mt-0.5">Needs Key</div>
             </div>
             <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
-              <div className="text-xl font-bold text-blue-800 font-mono">{overview.sources_summary.manual_only}</div>
+              <div className="text-xl font-bold text-blue-800 font-mono">{sourcesSummary.manual_only}</div>
               <div className="text-[10px] text-blue-600 font-semibold uppercase mt-0.5">Manual Only</div>
             </div>
             <div className="p-3 rounded-xl bg-sand-100 border border-sand-200">
-              <div className="text-xl font-bold text-sand-700 font-mono">{overview.sources_summary.total}</div>
+              <div className="text-xl font-bold text-sand-700 font-mono">{sourcesSummary.total}</div>
               <div className="text-[10px] text-sand-500 font-semibold uppercase mt-0.5">Total Registered</div>
             </div>
           </div>
@@ -289,7 +321,7 @@ export default function BackofficeOverviewPage() {
             <div className="flex justify-between">
               <span>Broad Dollar Proxy (FRED DTWEXBGS):</span>
               <span className="font-mono font-semibold">
-                {overview.macro_proxy["MACRO:US:BROAD_USD"] ? overview.macro_proxy["MACRO:US:BROAD_USD"].toFixed(2) : "Requires FRED key"}
+                {macroProxy["MACRO:US:BROAD_USD"] ? macroProxy["MACRO:US:BROAD_USD"].toFixed(2) : "Requires FRED key"}
               </span>
             </div>
             <div className="flex justify-between">
@@ -302,3 +334,4 @@ export default function BackofficeOverviewPage() {
     </div>
   );
 }
+

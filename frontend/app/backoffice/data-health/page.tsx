@@ -6,6 +6,7 @@ import {
   refreshSource,
   previewImport,
   commitImport,
+  importTemplateUrl,
   SourceHealthData,
   ImportJobData,
 } from "@/lib/backoffice";
@@ -81,10 +82,10 @@ export default function DataHealthPage() {
   }
 
   async function handleCommit() {
-    if (!previewJob?.id) return;
+    if (!previewJob || previewJob.fatal_error) return;
     setCommitting(true);
     try {
-      const res = await commitImport(previewJob.id);
+      const res = await commitImport(previewJob);
       setCommitMessage(`Successfully committed ${res.committed_rows} rows inside an atomic transaction.`);
       setPreviewJob(null);
       setFileContent("");
@@ -221,7 +222,7 @@ export default function DataHealthPage() {
                 </p>
               </div>
               <a
-                href={`/api/backoffice/imports/templates/${importType}`}
+                href={importTemplateUrl(importType)}
                 download={`${importType}_template.csv`}
                 className="px-3 py-1.5 text-xs text-forest-800 bg-forest-50 border border-forest-200 rounded-xl hover:bg-forest-100 font-medium self-start sm:self-auto"
               >
@@ -239,8 +240,7 @@ export default function DataHealthPage() {
                 >
                   <option value="pms_strategies">PMS Strategy Performance</option>
                   <option value="option_chain">Option Chain & PCR Contracts</option>
-                  <option value="flows">FII / DII Institutional Flows</option>
-                  <option value="fundamentals">Issuer Fundamentals & Ratios</option>
+                  <option value="fii_dii_flows">FII / DII Institutional Flows</option>
                 </select>
               </div>
 
@@ -292,12 +292,18 @@ export default function DataHealthPage() {
                   </div>
                   <button
                     onClick={handleCommit}
-                    disabled={committing || previewJob.valid_rows_count === 0}
+                    disabled={committing || previewJob.valid_rows_count === 0 || previewJob.error_rows_count > 0 || !!previewJob.fatal_error}
                     className="px-4 py-1.5 bg-forest-800 text-white rounded-xl text-xs font-semibold hover:bg-forest-900 disabled:opacity-50 shadow-xs"
                   >
                     {committing ? "Committing Transaction…" : `Commit ${previewJob.valid_rows_count} Rows to Database`}
                   </button>
                 </div>
+
+                {previewJob.fatal_error && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-rose-800 font-sans text-[11px]">
+                    {previewJob.fatal_error}
+                  </div>
+                )}
 
                 {previewJob.error_rows_count > 0 && (
                   <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-rose-800 font-sans space-y-1">

@@ -155,9 +155,9 @@ export default function FlowsPage() {
             <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
               {flows.daily && flows.daily.length > 0 ? (
                 flows.daily.map((row, idx) => {
-                  const buyCr = row.buy_paise ? (row.buy_paise / 1e9).toFixed(1) : "—";
-                  const sellCr = row.sell_paise ? (row.sell_paise / 1e9).toFixed(1) : "—";
-                  const netCr = (row.net_paise / 1e9);
+                  const buyCr = row.buy_crore !== undefined ? row.buy_crore.toFixed(1) : "—";
+                  const sellCr = row.sell_crore !== undefined ? row.sell_crore.toFixed(1) : "—";
+                  const netCr = row.net_crore;
                   return (
                     <tr key={idx} className="hover:bg-sand-50/60">
                       <td className="py-2.5 px-3 font-semibold text-sand-900">{row.report_date}</td>

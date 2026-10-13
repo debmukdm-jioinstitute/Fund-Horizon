@@ -87,7 +87,7 @@ export default function MicroFundamentalsPage() {
       ) : error || !issuerData ? (
         <div className="p-6 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-700">
           <div className="font-semibold mb-1">Fundamentals unavailable for {selectedIssuer}</div>
-          {error || "No quarterly statement uploaded yet. Import corporate financial statements via Data Health."}
+          {error || "Issuer fundamentals are not available yet: no free automated filings feed is wired up and manual issuer import is not enabled."}
         </div>
       ) : (
         <div className="space-y-6">

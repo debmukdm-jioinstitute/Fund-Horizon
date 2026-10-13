@@ -321,7 +321,9 @@ class BackofficeService:
         """Validate and atomically commit manual import rows into the repository."""
         preview = ManualImportValidator.preview(import_type, csv_content)
         if not preview["valid"]:
-            return {"success": False, "error": preview["error"], "errors": preview.get("errors", [])}
+            n_bad = preview.get("error_count", 0)
+            message = preview.get("error") or f"{n_bad} row(s) failed validation; fix the file and re-upload."
+            return {"success": False, "error": message, "errors": preview.get("errors", [])}
 
         reader = csv.DictReader(io.StringIO(csv_content))
         rows = list(reader)
@@ -416,11 +418,14 @@ class BackofficeService:
         yields_data = self.get_yields_board()
         flows_list = self.repo.list_flows()
         latest_flow = flows_list[0] if flows_list else {}
+        latest_date = latest_flow.get("report_date")
+        same_day = [f for f in flows_list if f.get("report_date") == latest_date]
+        net_of = lambda cat: next((f.get("net") for f in same_day if str(f.get("category", "")).upper() in cat), None)  # noqa: E731
         derivatives_data = self.get_derivatives_board("NIFTY")
 
         return generate_deterministic_briefing(
             market_observations=market_obs,
             macro_data={"yields": {"india_us_spread_bps": yields_data["india_us_10y_spread"].get("spread_bps"), "in_10y": 7.02, "us_10y": 4.05}},
-            flows_data={"fii_net_crore": latest_flow.get("net"), "dii_net_crore": 1850.5, "report_date": latest_flow.get("report_date", "recent")},
+            flows_data={"fii_net_crore": net_of(("FII", "FPI")), "dii_net_crore": net_of(("DII",)), "report_date": latest_date or "recent"},
             options_summary=derivatives_data.get("pcr") or {"status": derivatives_data.get("status")},
         )

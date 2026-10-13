@@ -182,6 +182,14 @@ export default function ImpactEnginePage() {
                   </div>
                 </div>
               </div>
+              {analysisResult.correlation === null && (
+                <div className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-2 font-sans">
+                  {analysisResult.message ||
+                    (analysisResult.status === "insufficient_data"
+                      ? "No overlapping observations for these series yet; ingest more history first."
+                      : "Not enough aligned observations to compute a reliable regression.")}
+                </div>
+              )}
               <div className="text-[11px] text-sand-600 font-sans leading-relaxed pt-1">
                 <span className="font-semibold">Mathematical Note:</span> Price series are transformed using continuous log returns ln(P_t / P_prev); yields use basis-point changes (Y_t - Y_prev) × 100.
               </div>

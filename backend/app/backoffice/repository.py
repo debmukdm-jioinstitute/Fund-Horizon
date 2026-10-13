@@ -539,6 +539,19 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    # --- Staff ---
+
+    def list_staff(self) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT id, name, email, mobile, role, status, is_staff FROM customers "
+                "WHERE is_staff = 1 OR role IN ('admin','analyst','rm','operations','read_only') ORDER BY name ASC"
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
     # --- Audit Events ---
 
     def log_audit(self, staff_id: str | None, action: str, target_type: str, target_id: str | None = None, details: dict[str, Any] | None = None, ip_address: str | None = None) -> None:

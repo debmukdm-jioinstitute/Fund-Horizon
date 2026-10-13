@@ -32,7 +32,11 @@ def sanitize_cell(value: Any) -> Any:
     if isinstance(value, str):
         v = value.strip()
         if v.startswith(("=", "+", "-", "@", "\t", "\r")):
-            return "'" + v
+            try:
+                float(v.replace(",", ""))  # plain signed numbers (e.g. net outflows "-1500") are safe
+                return v
+            except ValueError:
+                return "'" + v
         return v
     return value
 

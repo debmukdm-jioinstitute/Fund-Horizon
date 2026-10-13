@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import csv
 import io
+import secrets
+from datetime import UTC, datetime
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
@@ -16,6 +18,7 @@ from app.api.auth import (
     verify_csrf,
     _hash_password,
 )
+from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import refresh_source
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
 from app.backoffice.repository import BackofficeRepository
@@ -157,7 +160,76 @@ def backoffice_pms_account_tracker(
         if tracker.get("customer_id") != user_id and tracker.get("household_id") != user_id:
             raise HTTPException(403, "Access to this client account is restricted to assigned RM.")
 
-    return {"data": tracker}
+    return {"data": _enrich_pms_tracker(tracker), "availability": "ready", "freshness": "current"}
+
+
+def _enrich_pms_tracker(tracker: dict[str, Any]) -> dict[str, Any]:
+    """Attach valuation, XIRR, Modified Dietz and HWM fee estimates to a raw account ledger."""
+    valuations = tracker.get("valuations") or []  # newest first
+    cashflows = tracker.get("cashflows") or []  # oldest first
+    latest = valuations[0] if valuations else None
+    current_paise = int(latest["total_value_paise"]) if latest else sum(
+        int(p.get("market_value_paise") or 0) for p in tracker.get("positions") or []
+    )
+
+    # Investor view: contributions are outflows (negative), withdrawals are inflows (positive).
+    flows = [(c["flow_date"], c["amount_paise"] / 100.0) for c in cashflows if c.get("flow_date")]
+    xirr: dict[str, Any] = {"xirr_pct": None, "status": "insufficient_data"}
+    dietz: dict[str, Any] = {"return_pct": None}
+    if latest and flows:
+        try:
+            res = calculate_xirr(flows, terminal_value=current_paise / 100.0, terminal_date=latest["valuation_date"])
+            xirr = {
+                "xirr_pct": round(res["xirr"] * 100.0, 4) if res.get("xirr") is not None else None,
+                "status": res.get("status", "unknown"),
+            }
+            first_date = min(f[0] for f in flows)
+            # Dietz works on capital additions as positive values.
+            res_d = calculate_modified_dietz(0.0, current_paise / 100.0, [(d, -a) for d, a in flows], first_date, latest["valuation_date"])
+            dietz = {"return_pct": res_d.get("return_pct")}
+        except (ValueError, KeyError, TypeError):
+            xirr = {"xirr_pct": None, "status": "calculation_error"}
+
+    fee = estimate_hwm_fee(
+        current_paise,
+        int(tracker.get("high_water_mark") or 0),
+        tracker.get("fee_performance_pct"),
+        tracker.get("hurdle_pct") or 0.0,
+    )
+    positions = [
+        {
+            **p,
+            "symbol": p.get("symbol_or_isin"),
+            "asset_name": p.get("security_name"),
+            "asset_class": p.get("security_type"),
+        }
+        for p in tracker.get("positions") or []
+    ]
+    return {
+        **tracker,
+        "positions": positions,
+        "current_valuation_paise": current_paise,
+        "xirr": xirr,
+        "modified_dietz": dietz,
+        "hwm_fee": {"hwm_exceeded": fee.get("hwm_exceeded", False), "estimated_fee_paise": fee.get("estimated_fee_paise", 0)},
+        "holdings_coverage": {"total_coverage_pct": latest.get("holdings_coverage_pct", 100.0) if latest else 100.0},
+    }
+
+
+# ---------------------------------------------------------------------------
+# Micro / Issuer Fundamentals
+# ---------------------------------------------------------------------------
+
+@router.get("/micro/issuers/{symbol}")
+def backoffice_micro_issuer(symbol: str, staff: Annotated[dict, Depends(require_staff)]):
+    """Issuer fundamentals. Free automated filings are unavailable, so this is manual-import only."""
+    return {
+        "data": None,
+        "symbol": symbol.upper(),
+        "availability": "manual_only",
+        "freshness": "current",
+        "message": "No issuer statements imported yet. Upload issuer fundamentals via Data Health.",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -331,8 +403,18 @@ def backoffice_data_health(staff: Annotated[dict, Depends(require_staff)]):
     """Detailed data health, source statuses, quotas, and recent audit events."""
     sources = _REPO.list_sources()
     audits = _REPO.list_audit_events(limit=25)
+    def _count(status: str) -> int:
+        return sum(1 for src in sources if src.get("health_status") == status)
+
     return {
         "sources": sources,
+        "summary": {
+            "total": len(sources),
+            "ready": _count("ready"),
+            "degraded": _count("degraded"),
+            "needs_key": _count("needs_key"),
+            "manual_only": _count("manual_only"),
+        },
         "recent_audits": audits,
         "as_of": datetime.now(UTC).isoformat(),
     }
@@ -361,6 +443,12 @@ async def trigger_source_refresh(
 # Staff Provisioning (Admin Only)
 # ---------------------------------------------------------------------------
 
+@router.get("/staff")
+def list_staff_members(admin: Annotated[dict, Depends(require_role("admin"))]):
+    """Admin-only list of staff accounts."""
+    return {"data": _REPO.list_staff()}
+
+
 @router.post("/staff/provision", status_code=201)
 def provision_staff_member(
     body: StaffMemberCreateRequest,
@@ -372,7 +460,12 @@ def provision_staff_member(
     repo = get_repository()
     email = body.email.strip().lower()
     existing = repo.get_customer_by_email(email)
-    pwd_hash = _hash_password(body.password)
+    temporary_password = None
+    password = body.password
+    if not password:
+        temporary_password = secrets.token_urlsafe(9)
+        password = temporary_password
+    pwd_hash = _hash_password(password)
 
     if existing:
         updated = repo.update_customer(
@@ -383,11 +476,11 @@ def provision_staff_member(
                 "is_staff": 1,
                 "status": "active",
                 "password_hash": pwd_hash,
-                "must_change_password": 1 if body.temp_password else 0,
+                "must_change_password": 1 if (body.temp_password or temporary_password) else 0,
             },
         )
         _REPO.log_audit(admin["id"], "staff_promoted", "staff", existing["id"], {"email": email, "role": body.role})
-        return {"success": True, "action": "promoted", "staff": updated}
+        return {"success": True, "action": "promoted", "staff": updated, "staff_member": updated, "temporary_password": temporary_password}
     else:
         created = repo.create_customer(
             name=body.name,
@@ -401,8 +494,8 @@ def provision_staff_member(
             {
                 "is_staff": 1,
                 "status": "active",
-                "must_change_password": 1 if body.temp_password else 0,
+                "must_change_password": 1 if (body.temp_password or temporary_password) else 0,
             },
         )
         _REPO.log_audit(admin["id"], "staff_created", "staff", created["id"], {"email": email, "role": body.role})
-        return {"success": True, "action": "created", "staff": created}
+        return {"success": True, "action": "created", "staff": created, "staff_member": created, "temporary_password": temporary_password}

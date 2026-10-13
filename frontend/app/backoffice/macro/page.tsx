@@ -13,7 +13,7 @@ export default function MacroYieldsPage() {
     async function load() {
       try {
         setLoading(true);
-        const res = await getYieldsBoard("IN,US,UK,JP");
+        const res = await getYieldsBoard();
         setData(res);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load yields board");

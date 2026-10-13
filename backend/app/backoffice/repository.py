@@ -33,6 +33,25 @@ CREATE TABLE IF NOT EXISTS mf_ter (
     as_of TEXT,
     updated_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS pms_providers (
+    apmi_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS pms_apmi_strategies (
+    provider TEXT NOT NULL,
+    strategy_name TEXT NOT NULL,
+    strategy_type TEXT NOT NULL,
+    service_type TEXT NOT NULL,
+    as_on TEXT NOT NULL,
+    ia_id TEXT,
+    aum_crore REAL,
+    return_1m REAL, return_3m REAL, return_6m REAL, return_9m REAL, return_1y REAL,
+    return_2y REAL, return_3y REAL, return_4y REAL, return_5y REAL, return_since_inception REAL,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (provider, strategy_name, strategy_type, service_type, as_on)
+);
+CREATE INDEX IF NOT EXISTS ix_pms_apmi_as_on ON pms_apmi_strategies(as_on);
 CREATE TABLE IF NOT EXISTS news_items (
     id TEXT PRIMARY KEY,
     source_id TEXT NOT NULL,
@@ -479,6 +498,87 @@ class BackofficeRepository:
                     [(r["base_key"], r["scheme_name"], r["regular_ter_pct"], r["direct_ter_pct"], r["as_of"], now) for r in rows],
                 )
             return len(rows)
+        finally:
+            conn.close()
+
+    # --- PMS industry universe (APMI) ---
+
+    _PMS_RETURN_COLS = (
+        "return_1m", "return_3m", "return_6m", "return_9m", "return_1y",
+        "return_2y", "return_3y", "return_4y", "return_5y", "return_since_inception",
+    )
+
+    def replace_pms_universe(self, as_on: str, providers: list[dict[str, Any]], strategies: list[dict[str, Any]]) -> int:
+        """Replace the provider list and that month's strategy rows (older months are kept as history)."""
+        now = _utcnow()
+        cols = self._PMS_RETURN_COLS
+        conn = self._conn()
+        try:
+            with conn:
+                conn.execute("DELETE FROM pms_providers")
+                conn.executemany(
+                    "INSERT INTO pms_providers (apmi_id, name, updated_at) VALUES (?, ?, ?)",
+                    [(p["apmi_id"], p["name"], now) for p in providers],
+                )
+                conn.execute("DELETE FROM pms_apmi_strategies WHERE as_on = ?", (as_on,))
+                conn.executemany(
+                    f"""
+                    INSERT OR REPLACE INTO pms_apmi_strategies
+                    (provider, strategy_name, strategy_type, service_type, as_on, ia_id, aum_crore, {", ".join(cols)}, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, {", ".join("?" for _ in cols)}, ?)
+                    """,
+                    [
+                        (
+                            s["provider"], s["strategy_name"], s["strategy_type"], s["service_type"], as_on,
+                            s.get("ia_id"), s.get("aum_crore"), *(s.get(c) for c in cols), now,
+                        )
+                        for s in strategies
+                    ],
+                )
+            return len(strategies)
+        finally:
+            conn.close()
+
+    def latest_pms_as_on(self) -> str | None:
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT MAX(as_on) AS m FROM pms_apmi_strategies").fetchone()
+            return row["m"] if row and row["m"] else None
+        finally:
+            conn.close()
+
+    def list_pms_universe_strategies(self, as_on: str | None = None) -> list[dict[str, Any]]:
+        as_on = as_on or self.latest_pms_as_on()
+        if not as_on:
+            return []
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM pms_apmi_strategies WHERE as_on = ? ORDER BY aum_crore IS NULL, aum_crore DESC", (as_on,)
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def list_pms_providers(self, as_on: str | None = None) -> list[dict[str, Any]]:
+        """Every APMI provider with strategy count and total AUM for ``as_on`` (zero when it reported nothing)."""
+        as_on = as_on or self.latest_pms_as_on() or ""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT p.apmi_id, p.name,
+                       COUNT(s.strategy_name) AS strategy_count,
+                       COALESCE(SUM(s.aum_crore), 0) AS total_aum_crore,
+                       GROUP_CONCAT(DISTINCT s.strategy_type) AS strategy_types
+                FROM pms_providers p
+                LEFT JOIN pms_apmi_strategies s ON s.provider = p.name AND s.as_on = ?
+                GROUP BY p.apmi_id, p.name
+                ORDER BY total_aum_crore DESC, p.name ASC
+                """,
+                (as_on,),
+            ).fetchall()
+            return [dict(r) for r in rows]
         finally:
             conn.close()
 

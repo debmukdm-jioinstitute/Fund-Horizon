@@ -167,12 +167,27 @@ export interface PmsStrategyItem {
   provider_name: string;
   strategy_name: string;
   investment_approach?: string;
+  strategy_type?: string;
+  service_type?: string;
+  ia_id?: string;
   aum_crore?: number;
   return_1m_pct?: number;
+  return_3m_pct?: number;
+  return_6m_pct?: number;
   return_1y_pct?: number;
   return_3y_cagr_pct?: number;
+  return_5y_cagr_pct?: number;
+  return_since_inception_pct?: number;
   benchmark_name?: string;
   report_month?: string;
+}
+
+export interface PmsProviderItem {
+  apmi_id: string;
+  name: string;
+  strategy_count: number;
+  total_aum_crore: number;
+  strategy_types: string[];
 }
 
 export interface PmsPositionItem {
@@ -482,19 +497,41 @@ export const getFlows = async (start?: string, end?: string): Promise<Backoffice
 
 export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategyItem[]>> => {
   const raw = await boFetch<Json>("/api/backoffice/pms/strategies");
+  const asOn = str(raw.as_on);
   const data = arr(raw.data).map<PmsStrategyItem>((r) => ({
-    id: str(r.id),
     provider_name: str(r.provider) ?? "—",
     strategy_name: str(r.strategy_name) ?? "—",
-    investment_approach: str(r.approach) ?? str(r.category),
+    investment_approach: str(r.strategy_type),
+    strategy_type: str(r.strategy_type),
+    service_type: str(r.service_type),
+    ia_id: str(r.ia_id),
     aum_crore: num(r.aum_crore),
     return_1m_pct: num(r.return_1m),
+    return_3m_pct: num(r.return_3m),
+    return_6m_pct: num(r.return_6m),
     return_1y_pct: num(r.return_1y),
-    return_3y_cagr_pct: num(r.cagr_3y),
-    benchmark_name: str(r.benchmark_name),
-    report_month: str(r.report_month),
+    return_3y_cagr_pct: num(r.return_3y),
+    return_5y_cagr_pct: num(r.return_5y),
+    return_since_inception_pct: num(r.return_since_inception),
+    report_month: str(r.as_on) ?? asOn,
   }));
-  return envelope(raw, data, "manual_only");
+  const env = envelope(raw, data, "unavailable");
+  env.as_of = asOn;
+  return env;
+};
+
+export const getPmsProviders = async (): Promise<BackofficeEnvelope<PmsProviderItem[]>> => {
+  const raw = await boFetch<Json>("/api/backoffice/pms/providers");
+  const data = arr(raw.data).map<PmsProviderItem>((p) => ({
+    apmi_id: String(p.apmi_id ?? ""),
+    name: str(p.name) ?? "—",
+    strategy_count: num(p.strategy_count) ?? 0,
+    total_aum_crore: num(p.total_aum_crore) ?? 0,
+    strategy_types: (str(p.strategy_types) ?? "").split(",").filter(Boolean),
+  }));
+  const env = envelope(raw, data, "unavailable");
+  env.as_of = str(raw.as_on);
+  return env;
 };
 
 export const getPmsAccountTracker = async (id: string): Promise<BackofficeEnvelope<PmsAccountTrackerData>> => {

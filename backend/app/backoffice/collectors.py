@@ -14,7 +14,7 @@ from typing import Any
 
 from app.backoffice.providers.amfi import AmfiProvider
 from app.backoffice.providers.base import FetchResult
-from app.backoffice.providers import amfi_ter, rss
+from app.backoffice.providers import amfi_ter, apmi, rss
 from app.backoffice.providers.cboe import CboeProvider
 from app.backoffice.providers.ecb import EcbProvider
 from app.backoffice.providers.fred import FredProvider
@@ -41,6 +41,7 @@ REFRESH_INTERVALS: dict[str, int] = {
     "SRC_AMFI_TER": 24 * 3600,
     "SRC_IN_YIELDS": 1800,
     "SRC_RSS": 600,
+    "SRC_APMI": 12 * 3600,
 }
 _LAST_RUN: dict[str, float] = {}
 
@@ -79,6 +80,21 @@ def refresh_ter() -> dict[str, Any]:
     saved = _REPO.replace_mf_ter(rows)
     _REPO.update_source_health(source_id, "ready", success=True)
     return {"status": "success", "source_id": source_id, "records_ingested": saved}
+
+
+def refresh_apmi() -> dict[str, Any]:
+    source_id = "SRC_APMI"
+    try:
+        snap = apmi.fetch_snapshot()
+    except Exception as e:  # network/HTTP errors must not crash the loop
+        _REPO.update_source_health(source_id, "unavailable", error_message=str(e)[:300], success=False)
+        return {"status": "unavailable", "source_id": source_id, "error": str(e)}
+    if snap is None:
+        _REPO.update_source_health(source_id, "unavailable", error_message="APMI returned no providers or strategies", success=False)
+        return {"status": "unavailable", "source_id": source_id, "error": "APMI returned no data"}
+    saved = _REPO.replace_pms_universe(snap.as_on, snap.providers, snap.strategies)
+    _REPO.update_source_health(source_id, "ready", success=True)
+    return {"status": "success", "source_id": source_id, "records_ingested": saved, "as_on": snap.as_on}
 
 
 def refresh_rss() -> dict[str, Any]:
@@ -148,6 +164,8 @@ async def refresh_source(source_id: str) -> dict[str, Any]:
 
         if source_id == "SRC_AMFI_TER":
             return await loop.run_in_executor(None, refresh_ter)
+        if source_id == "SRC_APMI":
+            return await loop.run_in_executor(None, refresh_apmi)
         if source_id == "SRC_RSS":
             return await loop.run_in_executor(None, refresh_rss)
 

@@ -146,13 +146,48 @@ def backoffice_pms_strategies(
     staff: Annotated[dict, Depends(require_staff)],
     provider: str | None = Query(None),
 ):
-    """APMI published PMS strategy returns, AUM, benchmarks, and horizons."""
-    strategies = _REPO.list_pms_strategies(provider=provider)
+    """All APMI-reported PMS strategies (latest month) plus any manually imported strategy rows."""
+    as_on = _REPO.latest_pms_as_on()
+    universe = _REPO.list_pms_universe_strategies(as_on)
+    if provider:
+        universe = [s for s in universe if s["provider"] == provider]
+    manual = [
+        {
+            "provider": m["provider"],
+            "strategy_name": m["strategy_name"],
+            "strategy_type": m.get("approach") or m.get("category") or "Other",
+            "service_type": "Manual import",
+            "as_on": m.get("report_month"),
+            "aum_crore": m.get("aum_crore"),
+            "return_1m": m.get("return_1m"), "return_3m": m.get("return_3m"), "return_6m": m.get("return_6m"),
+            "return_1y": m.get("return_1y"), "return_3y": m.get("cagr_3y"), "return_5y": m.get("cagr_5y"),
+            "source": m.get("source") or "manual",
+        }
+        for m in _REPO.list_pms_strategies(provider=provider)
+        if m.get("source") != "APMI"
+    ]
     return {
-        "data": strategies,
-        "count": len(strategies),
+        "data": universe + manual,
+        "count": len(universe) + len(manual),
+        "as_on": as_on,
         "source": "APMI",
-        "availability": "ready" if strategies else "manual_only",
+        "availability": "ready" if (universe or manual) else "unavailable",
+        "freshness": "current" if universe else "stale",
+    }
+
+
+@router.get("/pms/providers")
+def backoffice_pms_providers(staff: Annotated[dict, Depends(require_staff)]):
+    """Every SEBI-registered portfolio manager listed by APMI, with reported strategy count and total AUM."""
+    as_on = _REPO.latest_pms_as_on()
+    providers = _REPO.list_pms_providers(as_on)
+    return {
+        "data": providers,
+        "count": len(providers),
+        "reporting_count": sum(1 for p in providers if p["strategy_count"]),
+        "as_on": as_on,
+        "availability": "ready" if providers else "unavailable",
+        "freshness": "current",
     }
 
 

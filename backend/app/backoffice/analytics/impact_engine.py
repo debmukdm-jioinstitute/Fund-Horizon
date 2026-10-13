@@ -15,6 +15,8 @@ import math
 from datetime import UTC, datetime
 from typing import Any
 
+from app.engine.finmath import indian_format
+
 
 def calculate_log_returns(dated_prices: list[tuple[str, float]]) -> list[tuple[str, float]]:
     """Compute log returns: ln(P_t / P_{t-1}) for sorted chronological prices."""
@@ -153,6 +155,11 @@ def compute_bond_price_sensitivity(
     }
 
 
+def _inr_group(n: float) -> str:
+    """Indian digit grouping without the rupee sign (OI is in contracts)."""
+    return indian_format(n).replace("₹", "")
+
+
 def generate_deterministic_briefing(
     market_observations: dict[str, Any],
     macro_data: dict[str, Any],
@@ -201,7 +208,7 @@ def generate_deterministic_briefing(
     if pcr is not None:
         bullet_points.append(
             f"{options_summary.get('underlying', 'NIFTY')} Put-Call Ratio (OI) stands at {pcr:.2f} "
-            f"(Total Call OI: {options_summary.get('total_call_oi', 0):,}, Total Put OI: {options_summary.get('total_put_oi', 0):,})."
+            f"(Total Call OI: {_inr_group(options_summary.get('total_call_oi', 0))}, Total Put OI: {_inr_group(options_summary.get('total_put_oi', 0))})."
         )
     elif options_summary.get("status") in ("manual_only", "unavailable"):
         bullet_points.append("NIFTY option chain is currently unavailable from NSE; PCR will appear once a snapshot is fetched.")

@@ -118,7 +118,7 @@ export default function ScreeningFundDrawer({
                       {fund.quartile_2y ? `Q${fund.quartile_2y}` : "Unavailable"}
                     </div>
                     <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">
-                      Source: {fund.quartile_source || "computed_nav"}
+                      Source: {fund.quartile_source || "computed"}
                     </div>
                   </div>
                 </div>

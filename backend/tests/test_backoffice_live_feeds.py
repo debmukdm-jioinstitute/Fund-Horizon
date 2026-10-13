@@ -90,6 +90,12 @@ def test_option_chain_skips_empty_expiry_and_parses_legs():
     assert chain["contracts"][0]["implied_vol"] == 12.5
 
 
+def test_option_chain_never_serves_expired_series():
+    client = _StubNse({"/api/option-chain-contract-info": {"expiryDates": ["13-Oct-2020", "14-Oct-2020"]}})
+    with pytest.raises(NseError, match="unexpired"):
+        client.fetch_option_chain("NIFTY")
+
+
 def test_option_chain_rejects_non_nse_underlying():
     with pytest.raises(NseError):
         _StubNse({}).fetch_option_chain("SENSEX")

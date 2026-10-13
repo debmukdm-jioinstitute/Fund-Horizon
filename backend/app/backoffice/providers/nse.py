@@ -11,6 +11,7 @@ import logging
 import threading
 import time
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from typing import Any
 
 import httpx
@@ -23,6 +24,7 @@ NSE_UA = (
     "Chrome/124.0 Safari/537.36"
 )
 SESSION_TTL_SECONDS = 600.0
+IST = ZoneInfo("Asia/Kolkata")
 
 # Index symbols whose derivatives are listed on NSE (BSE SENSEX derivatives are not served by this client).
 NSE_DERIVATIVE_UNDERLYINGS = {"NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"}
@@ -187,7 +189,12 @@ class NseClient:
         if not expiries:
             raise NseError(f"No listed expiries for {symbol}")
 
-        wanted = [expiry] if expiry else expiries[:4]
+        # NSE keeps listing an expiry until its next session; never serve a series that already expired (IST).
+        today = datetime.now(IST).strftime("%Y-%m-%d")
+        live = [e for e in expiries if parse_nse_date(e) >= today]
+        wanted = [expiry] if expiry else live[:4]
+        if not wanted:
+            raise NseError(f"No unexpired expiries for {symbol}")
         for exp in wanted:
             data = self.get_json(
                 "/api/option-chain-v3", {"type": "Indices", "symbol": symbol, "expiry": exp}, referer=referer

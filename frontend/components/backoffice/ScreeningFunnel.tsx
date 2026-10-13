@@ -7,12 +7,14 @@ export type FunnelStageKey = "all" | "s1" | "s2" | "s3" | "s4a" | "final" | "ret
 
 interface ScreeningFunnelProps {
   counts: ScreeningFunnelCounts | null;
+  stageAsOf?: { nav?: string | null; managers?: string | null; ter?: string | null };
   activeStage: FunnelStageKey;
   onSelectStage: (stage: FunnelStageKey) => void;
 }
 
 export default function ScreeningFunnel({
   counts,
+  stageAsOf,
   activeStage,
   onSelectStage,
 }: ScreeningFunnelProps) {
@@ -44,7 +46,7 @@ export default function ScreeningFunnel({
     {
       key: "s2",
       label: "S2 Ratios",
-      sublabel: "Bounded Peers",
+      sublabel: "Ratio bounds",
       count: counts.s2,
       insufficient: counts.insufficient_by_stage?.s2,
     },
@@ -82,6 +84,11 @@ export default function ScreeningFunnel({
           <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
             (Each stage ⊆ previous)
           </span>
+          {stageAsOf && (
+            <span className="text-[10px] font-mono text-[#536176] dark:text-[#A8B4C4]">
+              NAV {stageAsOf.nav ?? "—"} · Managers {stageAsOf.managers?.slice(0, 10) ?? "none"} · TER {stageAsOf.ter ?? "—"}
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-1.5 text-[11px]">
           <button
@@ -127,8 +134,8 @@ export default function ScreeningFunnel({
               <div className="flex items-center justify-between text-[10px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
                 <span>{st.sublabel}</span>
                 {st.insufficient !== undefined && st.insufficient > 0 && (
-                  <span className="text-[#C26200] dark:text-[#EAA847] tabular-nums" title="Insufficient data to pass stage">
-                    {st.insufficient} unavail
+                  <span className="text-[#C26200] dark:text-[#EAA847] tabular-nums" title="Funds with missing data at this stage">
+                    {st.insufficient} missing data
                   </span>
                 )}
               </div>

@@ -54,7 +54,7 @@ def test_funnel_sequential_subset_and_s1_drop():
     rows = [r1, r2, r3, r4, r5, r6, r7, r8]
     cat_median_ters = {"large_cap": 1.50}
 
-    res = apply_funnel(rows, cat_median_ters=cat_median_ters)
+    res = apply_funnel(rows, filters={"include_missing": False}, cat_median_ters=cat_median_ters)
     counts = res["counts"]
 
     # S0 universe = 8
@@ -95,6 +95,19 @@ def test_funnel_sequential_subset_and_s1_drop():
 def test_funnel_missing_ter_marked_insufficient():
     # Fund with missing TER
     r1 = _dummy_row("1", expense_ratio=None)
-    res = apply_funnel([r1], cat_median_ters={"large_cap": 1.50})
+    res = apply_funnel([r1], filters={"include_missing": False}, cat_median_ters={"large_cap": 1.50})
     assert res["counts"]["final"] == 0
     assert res["counts"]["insufficient_by_stage"]["s4c"] == 1
+
+
+def test_missing_data_passes_flagged_and_drops_are_explained():
+    rows = [_dummy_row("1", manager_name=None, manager_tenure_years=None, tenure_ratio=None),
+            _dummy_row("2", up_capture=1.0), _dummy_row("3", sharpe=0.5)]
+    res = apply_funnel(rows, cat_median_ters={"large_cap": 2.0})
+    assert [r["scheme_code"] for r in res["action"]] == ["1"]
+    assert res["action"][0]["needs_data"] == ["manager_name", "manager_tenure_years", "tenure_ratio"]
+    reasons = {d["scheme_code"]: (d["drop_stage"], d["drop_reason"]) for d in res["dropped"]}
+    assert reasons["2"][0] == "s3" and reasons["3"][0] == "s4a"  # up_capture == 1.0 fails strict >
+    off = apply_funnel(rows[:1], filters={"include_missing": False})
+    assert off["counts"]["zeroed_stage"] == "s1"
+    assert off["counts"]["missing_by_stage"]["s1"]["manager_name"] == 1

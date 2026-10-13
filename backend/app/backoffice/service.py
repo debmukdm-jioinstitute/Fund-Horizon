@@ -23,7 +23,7 @@ from app.backoffice.analytics.yields_math import (
     compute_yield_curve_summary,
 )
 from app.backoffice.providers.manual import ManualImportValidator
-from app.backoffice.providers.nse import NSE_DERIVATIVE_UNDERLYINGS, NseError, get_nse_client
+from app.backoffice.providers.nse import IST, NSE_DERIVATIVE_UNDERLYINGS, NseError, get_nse_client
 from app.backoffice.repository import BackofficeRepository
 
 # In-memory cached market overview for ultra-low latency (<50ms) warm queries
@@ -275,7 +275,7 @@ class BackofficeService:
         expiries = sorted(set(expiries) | set(_OPTION_EXPIRIES.get(underlying, [])))
         stored_expiries = sorted({c["expiry_date"] for c in contracts if "expiry_date" in c})
         # Prefer the nearest non-expired expiry; fall back to the nearest stored one.
-        today = datetime.now().date().isoformat()
+        today = datetime.now(IST).date().isoformat()
         live_expiries = [e for e in stored_expiries if e >= today]
         if expiry and expiry in stored_expiries:
             selected_expiry = expiry

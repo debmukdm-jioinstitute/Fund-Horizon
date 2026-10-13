@@ -30,10 +30,14 @@ export default function MutualFundsTrackerPage() {
   const [total, setTotal] = useState(0);
   const [amcs, setAmcs] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [planCounts, setPlanCounts] = useState<Record<string, number>>({});
   const [asOf, setAsOf] = useState<string | undefined>();
   const [selectedScheme, setSelectedScheme] = useState<MutualFundItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<"name" | "nav" | "nav_date" | "ter" | null>(null);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [retryTick, setRetryTick] = useState(0);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(query.trim()), 300);
@@ -45,6 +49,7 @@ export default function MutualFundsTrackerPage() {
   }, [debouncedQuery, amc, category, plan]);
 
   useEffect(() => {
+    const controller = new AbortController();
     let cancelled = false;
     async function search() {
       try {
@@ -57,14 +62,18 @@ export default function MutualFundsTrackerPage() {
           plan: plan || undefined,
           limit: PAGE_SIZE,
           offset,
+          signal: controller.signal,
         });
         if (cancelled) return;
         setSchemes(res.data || []);
         setTotal(res.total ?? (res.data || []).length);
         setAmcs(res.facets.amcs);
         setCategories(res.facets.categories);
+        setPlanCounts(res.facets.plan_counts || {});
         setAsOf(res.as_of);
       } catch (err: unknown) {
+        // Aborted requests are superseded by a newer page/filter change — not an error.
+        if (controller.signal.aborted || cancelled) return;
         if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load mutual funds tracker");
       } finally {
         if (!cancelled) setLoading(false);
@@ -73,14 +82,56 @@ export default function MutualFundsTrackerPage() {
     search();
     return () => {
       cancelled = true;
+      controller.abort();
     };
-  }, [debouncedQuery, amc, category, plan, offset]);
+  }, [debouncedQuery, amc, category, plan, offset, retryTick]);
 
   const filtersActive = Boolean(query.trim() || amc || category || plan);
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const page = Math.floor(offset / PAGE_SIZE);
   const from = total === 0 ? 0 : offset + 1;
   const to = Math.min(total, offset + schemes.length);
+
+  const sortedSchemes = useMemo(() => {
+    if (!sortKey) return schemes;
+    const dir = sortDir === "asc" ? 1 : -1;
+    return [...schemes].sort((a, b) => {
+      switch (sortKey) {
+        case "name":
+          return dir * (a.scheme_name || "").localeCompare(b.scheme_name || "");
+        case "nav":
+          return dir * ((Number(a.latest_nav) || 0) - (Number(b.latest_nav) || 0));
+        case "nav_date":
+          return dir * String(a.nav_date || "").localeCompare(String(b.nav_date || ""));
+        case "ter":
+          return dir * ((Number(a.ter_pct) || 0) - (Number(b.ter_pct) || 0));
+        default:
+          return 0;
+      }
+    });
+  }, [schemes, sortKey, sortDir]);
+
+  function toggleSort(key: "name" | "nav" | "nav_date" | "ter") {
+    if (sortKey !== key) {
+      setSortKey(key);
+      setSortDir(key === "name" ? "asc" : "desc");
+    } else {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    }
+  }
+
+  function sortIndicator(key: "name" | "nav" | "nav_date" | "ter") {
+    if (sortKey !== key) return <span className="opacity-30 ml-1">⇅</span>;
+    return <span className="ml-1">{sortDir === "asc" ? "▲" : "▼"}</span>;
+  }
+
+  const planBreakdown = useMemo(() => {
+    const direct = planCounts["Direct"] ?? 0;
+    const regular = planCounts["Regular"] ?? 0;
+    const unclassified = planCounts["Unclassified"] ?? 0;
+    if (!direct && !regular && !unclassified) return null;
+    return { direct, regular, unclassified };
+  }, [planCounts]);
 
   const showingLabel = useMemo(() => {
     const noun = total === 1 ? "scheme" : "schemes";
@@ -168,8 +219,23 @@ export default function MutualFundsTrackerPage() {
       </div>
 
       {error && (
-        <div className="terminal-panel p-3 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px]">
-          {error}
+        <div className="terminal-panel p-3 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px] flex flex-wrap items-center justify-between gap-2">
+          <span>{error}</span>
+          <button
+            type="button"
+            className="terminal-btn text-[12px] py-1 px-3"
+            onClick={() => setRetryTick((t) => t + 1)}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {planBreakdown && (
+        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+          Plan split: Direct {planBreakdown.direct.toLocaleString("en-IN")} · Regular{" "}
+          {planBreakdown.regular.toLocaleString("en-IN")} · Unclassified{" "}
+          {planBreakdown.unclassified.toLocaleString("en-IN")} · Total {total.toLocaleString("en-IN")}
         </div>
       )}
 
@@ -179,11 +245,27 @@ export default function MutualFundsTrackerPage() {
             <thead>
               <tr>
                 <th className="w-[10%]">Code</th>
-                <th className="w-[32%]">Scheme Name & Category</th>
+                <th className="w-[32%]">
+                  <button type="button" onClick={() => toggleSort("name")} className="hover:underline cursor-pointer" title="Sort by scheme name">
+                    Scheme Name & Category{sortIndicator("name")}
+                  </button>
+                </th>
                 <th className="w-[12%]">Plan / Option</th>
-                <th className="w-[12%] text-right">Latest NAV (₹)</th>
-                <th className="w-[12%]">NAV Date</th>
-                <th className="w-[10%] text-right">TER (%)</th>
+                <th className="w-[12%] text-right">
+                  <button type="button" onClick={() => toggleSort("nav")} className="hover:underline cursor-pointer" title="Sort by NAV">
+                    Latest NAV (₹){sortIndicator("nav")}
+                  </button>
+                </th>
+                <th className="w-[12%]">
+                  <button type="button" onClick={() => toggleSort("nav_date")} className="hover:underline cursor-pointer" title="Sort by NAV date">
+                    NAV Date{sortIndicator("nav_date")}
+                  </button>
+                </th>
+                <th className="w-[10%] text-right">
+                  <button type="button" onClick={() => toggleSort("ter")} className="hover:underline cursor-pointer" title="Sort by TER">
+                    TER (%){sortIndicator("ter")}
+                  </button>
+                </th>
                 <th className="w-[12%]">ISIN</th>
               </tr>
             </thead>
@@ -201,7 +283,7 @@ export default function MutualFundsTrackerPage() {
                   </td>
                 </tr>
               ) : (
-                schemes.map((s) => {
+                sortedSchemes.map((s) => {
                   const classified = schemeLabel(s);
                   const stale = isNavStale(s.nav_date);
                   return (

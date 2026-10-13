@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const googleSans = ["var(--font-google-sans)", "'Google Sans Variable'", "'Google Sans'", "sans-serif"];
+
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
@@ -23,24 +25,12 @@ const config: Config = {
         amber: { 600: "#B45309", 100: "#FEF3C7" },
         rose: { 700: "#B42318", 600: "#E11D48", 100: "#FEE4E2" },
       },
+      // Google Sans is the ONLY typeface. Every font utility resolves to it so no class can pick another family.
       fontFamily: {
-        sans: [
-          "var(--font-sans)",
-          "'Google Sans'",
-          "'Plus Jakarta Sans'",
-          "system-ui",
-          "-apple-system",
-          "Segoe UI",
-          "Roboto",
-          "sans-serif",
-        ],
-        display: [
-          "var(--font-display)",
-          "'Google Sans Display'",
-          "'Outfit'",
-          "'Plus Jakarta Sans'",
-          "sans-serif",
-        ],
+        sans: googleSans,
+        display: googleSans,
+        mono: googleSans,
+        serif: googleSans,
       },
       boxShadow: {
         glass: "0 8px 32px 0 rgba(11, 37, 69, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.8)",

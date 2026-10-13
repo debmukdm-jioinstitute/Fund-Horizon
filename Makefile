@@ -17,4 +17,4 @@ test:
 
 lint:
 	cd backend && .venv/bin/ruff check app tests
-	cd frontend && npm run lint && npx tsc --noEmit && node scripts/check-copy.mjs
+	cd frontend && npm run lint && npx tsc --noEmit && node scripts/check-copy.mjs && node scripts/check-fonts.mjs

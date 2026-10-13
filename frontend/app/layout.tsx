@@ -1,7 +1,8 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
+// Site-wide typeface: Google Sans, self-hosted (no CDN, CSP-safe). Do not add any other font.
+import "@fontsource-variable/google-sans";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Logo from "@/components/Logo";
@@ -9,20 +10,6 @@ import CustomerLogin from "@/components/CustomerLogin";
 import ThemeToggle from "@/components/ThemeToggle";
 import { AuthProvider } from "@/components/AuthContext";
 import { siteUrl } from "@/lib/site";
-
-const sans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
-
-const display = Outfit({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-  weight: ["500", "600", "700", "800"],
-});
 
 const baseUrl = siteUrl();
 
@@ -52,7 +39,7 @@ const THEME_BOOTSTRAP = `(function(){try{var s=localStorage.getItem('dark-mode-t
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
+    <html lang="en-IN" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
       </head>

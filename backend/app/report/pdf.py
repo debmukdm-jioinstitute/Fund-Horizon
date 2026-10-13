@@ -12,8 +12,6 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     BaseDocTemplate,
     Frame,
@@ -42,20 +40,17 @@ from app.config.disclosures import (
 )
 from app.report import charts
 from app.report.fmt import canvas_text, inr, pct, short_inr, sized_status, xml_escape
+from app.report.fonts import BODY_FONT, BOLD_FONT
 
 NAVY, TEAL = colors.HexColor("#0B2545"), colors.HexColor("#13A89E")
 LIGHT = colors.HexColor("#EEF6F6")
 
-_FONTS = Path(matplotlib.get_data_path()) / "fonts" / "ttf"
-pdfmetrics.registerFont(TTFont("DV", str(_FONTS / "DejaVuSans.ttf")))
-pdfmetrics.registerFont(TTFont("DV-B", str(_FONTS / "DejaVuSans-Bold.ttf")))
-pdfmetrics.registerFontFamily("DV", normal="DV", bold="DV-B", italic="DV", boldItalic="DV-B")
 
-BODY = ParagraphStyle("body", fontName="DV", fontSize=8.5, leading=11.5, alignment=TA_LEFT)
+BODY = ParagraphStyle("body", fontName=BODY_FONT, fontSize=8.5, leading=11.5, alignment=TA_LEFT)
 SMALL = ParagraphStyle("small", parent=BODY, fontSize=7, leading=9)
 CELL = ParagraphStyle("cell", parent=BODY, fontSize=7.2, leading=9)
-H1 = ParagraphStyle("h1", parent=BODY, fontName="DV-B", fontSize=15, leading=19, textColor=NAVY, spaceAfter=6)
-H2 = ParagraphStyle("h2", parent=BODY, fontName="DV-B", fontSize=10.5, leading=14, textColor=NAVY,
+H1 = ParagraphStyle("h1", parent=BODY, fontName=BOLD_FONT, fontSize=15, leading=19, textColor=NAVY, spaceAfter=6)
+H2 = ParagraphStyle("h2", parent=BODY, fontName=BOLD_FONT, fontSize=10.5, leading=14, textColor=NAVY,
                     spaceBefore=8, spaceAfter=4)
 
 LABELS = charts.LABELS
@@ -68,12 +63,12 @@ FACTOR_LABELS = {
 
 def _tbl(rows, widths, header=True, zebra=True):
     t = Table(rows, colWidths=widths, repeatRows=1 if header else 0)
-    style = [("FONT", (0, 0), (-1, -1), "DV", 7.2), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+    style = [("FONT", (0, 0), (-1, -1), BODY_FONT, 7.2), ("VALIGN", (0, 0), (-1, -1), "TOP"),
              ("LINEBELOW", (0, 0), (-1, -1), 0.25, colors.HexColor("#D5DCE4")),
              ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]
     if header:
         style += [("BACKGROUND", (0, 0), (-1, 0), NAVY), ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-                  ("FONT", (0, 0), (-1, 0), "DV-B", 7.2)]
+                  ("FONT", (0, 0), (-1, 0), BOLD_FONT, 7.2)]
     if zebra:
         style += [("ROWBACKGROUNDS", (0, 1 if header else 0), (-1, -1), [colors.white, LIGHT])]
     t.setStyle(TableStyle(style))
@@ -193,20 +188,20 @@ def build_pdf(first_name: str, r: dict) -> bytes:
             )
         else:
             canvas.setFillColor(colors.white)
-            canvas.setFont("DV-B", 12)
+            canvas.setFont(BOLD_FONT, 12)
             canvas.drawString(15 * mm, h - 10.5 * mm, FIRM)
 
         canvas.setFillColor(colors.white)
-        canvas.setFont("DV", 7.5)
+        canvas.setFont(BODY_FONT, 7.5)
         canvas.drawRightString(w - 15 * mm, h - 9.5 * mm, f"Illustrative plan for {canvas_text(first_name)}")
         canvas.setFillColor(colors.HexColor("#A0AEC0"))
-        canvas.setFont("DV", 6)
+        canvas.setFont(BODY_FONT, 6)
         canvas.drawRightString(w - 15 * mm, h - 13 * mm, f"AMFI ARN 345439  ·  {today}")
 
         canvas.setFillColor(TEAL)
         canvas.rect(0, h - 17 * mm, w, 1 * mm, stroke=0, fill=1)
         canvas.setFillColor(colors.HexColor("#444444"))
-        canvas.setFont("DV", 5.8)
+        canvas.setFont(BODY_FONT, 5.8)
         y = 24 * mm
         for line in disc["lines"]:
             for part in _wrap(line, 145):
@@ -374,7 +369,7 @@ def build_pdf(first_name: str, r: dict) -> bytes:
             rows = [["Insurer", "Plan", "Claim settlement", "Key features"]]
             for p in b["plans"]:
                 rows.append([
-                    _P(("★ " if p["marked_pick"] else "") + p["insurer"]),
+                    _P(("* " if p["marked_pick"] else "") + p["insurer"]),
                     _P(p["plan"]),
                     _P(p["claim_settlement"]),
                     _P("; ".join(p["features"])),

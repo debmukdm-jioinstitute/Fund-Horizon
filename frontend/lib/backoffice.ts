@@ -276,11 +276,35 @@ export const getMutualFundPerformance = async (code: string): Promise<MfPerforma
   };
 };
 
+export interface MfNavPair {
+  growth_code: string;
+  growth_name: string;
+  idcw_code: string;
+  idcw_name: string;
+  nav: number;
+  nav_date?: string;
+  amc?: string;
+}
+
+/** Growth/IDCW pairs sharing an identical latest NAV — data QA. */
+export const getMfNavPairCheck = async (limit = 50): Promise<MfNavPair[]> => {
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/nav-pair-check?limit=${limit}`);
+  return arr(raw.data).map((p) => ({
+    growth_code: String(p.growth_code ?? ""),
+    growth_name: str(p.growth_name) ?? "",
+    idcw_code: String(p.idcw_code ?? ""),
+    idcw_name: str(p.idcw_name) ?? "",
+    nav: num(p.nav) ?? 0,
+    nav_date: str(p.nav_date),
+    amc: str(p.amc),
+  }));
+};
+
 export interface MutualFundsTrackerResult extends BackofficeEnvelope<MutualFundItem[]> {
   total: number;
   limit: number;
   offset: number;
-  facets: { amcs: string[]; categories: string[] };
+  facets: { amcs: string[]; categories: string[]; plan_counts: Record<string, number> };
 }
 
 export interface NewsItem {
@@ -380,8 +404,11 @@ export interface StaffProvisionResponse {
 
 type Json = Record<string, unknown>;
 
-const num = (v: unknown): number | undefined =>
-  typeof v === "number" && Number.isFinite(v) ? v : undefined;
+const num = (v: unknown): number | undefined => {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "string" && v.trim() !== "" && Number.isFinite(Number(v))) return Number(v);
+  return undefined;
+};
 const str = (v: unknown): string | undefined => (typeof v === "string" && v ? v : undefined);
 const arr = (v: unknown): Json[] => (Array.isArray(v) ? (v as Json[]) : []);
 const obj = (v: unknown): Json => (v && typeof v === "object" && !Array.isArray(v) ? (v as Json) : {});
@@ -565,24 +592,32 @@ export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategy
   try {
     raw = await boFetch<Json>("/api/backoffice/pms/strategies");
     asOn = str(raw.as_on) || "";
-    apiItems = arr(raw.data).map<PmsStrategyItem>((r) => ({
-      provider_name: str(r.provider) ?? "—",
-      strategy_name: str(r.strategy_name) ?? "—",
-      investment_approach: str(r.strategy_type),
-      strategy_type: str(r.strategy_type),
-      service_type: str(r.service_type),
-      ia_id: str(r.ia_id),
-      aum_crore: num(r.aum_crore),
-      return_1m_pct: num(r.return_1m),
-      return_3m_pct: num(r.return_3m),
-      return_6m_pct: num(r.return_6m),
-      return_1y_pct: num(r.return_1y),
-      return_3y_cagr_pct: num(r.return_3y),
-      return_5y_cagr_pct: num(r.return_5y),
-      return_since_inception_pct: num(r.return_since_inception),
-      benchmark_name: str(r.benchmark) ?? str(r.benchmark_name),
-      report_month: str(r.as_on) ?? asOn,
-    }));
+    apiItems = arr(raw.data).map<PmsStrategyItem>((r) => {
+      const aum = num(r.aum_crore);
+      // APMI rows with no AUM often carry placeholder 0.00% returns — treat those as missing, not real zeros.
+      const ret = (v: unknown) => {
+        const n = num(v);
+        return n === 0 && !aum ? undefined : n;
+      };
+      return {
+        provider_name: str(r.provider) ?? "—",
+        strategy_name: str(r.strategy_name) ?? "—",
+        investment_approach: str(r.strategy_type),
+        strategy_type: str(r.strategy_type),
+        service_type: str(r.service_type),
+        ia_id: str(r.ia_id),
+        aum_crore: aum,
+        return_1m_pct: ret(r.return_1m),
+        return_3m_pct: ret(r.return_3m),
+        return_6m_pct: ret(r.return_6m),
+        return_1y_pct: ret(r.return_1y),
+        return_3y_cagr_pct: ret(r.return_3y),
+        return_5y_cagr_pct: ret(r.return_5y),
+        return_since_inception_pct: ret(r.return_since_inception),
+        benchmark_name: str(r.benchmark) ?? str(r.benchmark_name),
+        report_month: str(r.as_on) ?? asOn,
+      };
+    });
   } catch {
     // boFetch failure fallback
   }
@@ -646,6 +681,7 @@ export const getMutualFundsTracker = async (opts?: {
   plan?: string;
   limit?: number;
   offset?: number;
+  signal?: AbortSignal;
 }): Promise<MutualFundsTrackerResult> => {
   const q = new URLSearchParams();
   if (opts?.search) q.set("search", opts.search);
@@ -654,7 +690,9 @@ export const getMutualFundsTracker = async (opts?: {
   if (opts?.plan) q.set("plan", opts.plan);
   q.set("limit", String(opts?.limit ?? 50));
   q.set("offset", String(opts?.offset ?? 0));
-  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/tracker?${q.toString()}`);
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/tracker?${q.toString()}`, {
+    signal: opts?.signal,
+  });
   const data = arr(raw.data).map<MutualFundItem>((f) => ({
     scheme_code: String(f.scheme_code ?? ""),
     scheme_name: str(f.scheme_name) ?? "—",
@@ -670,6 +708,12 @@ export const getMutualFundsTracker = async (opts?: {
     ter_as_of: str(f.ter_as_of),
   }));
   const facets = obj(raw.facets);
+  const planCountsRaw = obj(facets.plan_counts);
+  const plan_counts: Record<string, number> = {};
+  for (const [k, v] of Object.entries(planCountsRaw)) {
+    const n = num(v);
+    if (n !== undefined) plan_counts[k] = n;
+  }
   const env = envelope(raw, data);
   env.as_of = str(raw.as_of) ?? env.as_of;
   return {
@@ -682,6 +726,7 @@ export const getMutualFundsTracker = async (opts?: {
       categories: Array.isArray(facets.categories)
         ? (facets.categories as unknown[]).filter((x): x is string => typeof x === "string")
         : [],
+      plan_counts,
     },
   };
 };

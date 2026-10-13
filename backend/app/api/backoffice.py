@@ -8,6 +8,7 @@ import secrets
 from datetime import UTC, datetime
 from typing import Annotated, Any
 
+import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import PlainTextResponse
 
@@ -36,6 +37,7 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice.service import BackofficeService
+from app.data.loader import load_metrics, load_nav
 from app.db import get_repository
 
 router = APIRouter(prefix="/api/backoffice", tags=["backoffice"])
@@ -375,6 +377,66 @@ def backoffice_micro_issuer(symbol: str, staff: Annotated[dict, Depends(require_
 # ---------------------------------------------------------------------------
 # Mutual Fund Tracker
 # ---------------------------------------------------------------------------
+
+_PCT_METRICS = (
+    "ret_1m", "ret_3m", "ret_6m", "ret_1y", "cagr_3y", "cagr_5y", "cagr_7y", "cagr_10y",
+    "cagr_since_inception", "vol_3y", "max_drawdown_3y", "max_drawdown_all",
+)
+
+
+def _num_or_none(v: Any, scale: float = 1.0) -> float | None:
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return None if f != f else round(f * scale, 4)  # NaN -> None
+
+
+@router.get("/mutual-funds/{scheme_code}/performance")
+def backoffice_mf_performance(scheme_code: str, staff: Annotated[dict, Depends(require_staff)]):
+    """Trailing returns, risk stats and month-end NAV history for one scheme, from the AMFI + mfapi.in dataset."""
+    if not scheme_code.isdigit() or len(scheme_code) > 8:
+        raise HTTPException(404, "Scheme not found")
+    df = load_metrics()
+    match = df[df["scheme_code"] == scheme_code]
+    if match.empty:
+        # Only Growth-option schemes are in the performance dataset (no IDCW/payout/closed-ended).
+        return {"data": None, "availability": "unavailable", "as_of": None}
+    row = match.iloc[0]
+    try:
+        nav = load_nav(scheme_code)
+    except FileNotFoundError:
+        nav = pd.Series(dtype=float)
+    last_nav_date = pd.Timestamp(row["last_nav_date"])
+    if len(nav) and nav.index[-1] > last_nav_date:
+        # The in-progress month is stored under its month-end label; show the real date of that NAV instead.
+        nav = nav.rename(index={nav.index[-1]: last_nav_date})
+    history = pd.DataFrame({
+        "nav": nav,
+        "r1m": nav.pct_change(1) * 100,
+        "r1y": nav.pct_change(12) * 100,
+        "r3y": ((nav / nav.shift(36)) ** (1 / 3) - 1) * 100,
+        "r5y": ((nav / nav.shift(60)) ** (1 / 5) - 1) * 100,
+    }).sort_index(ascending=False)
+    return {
+        "data": {
+            "scheme_code": scheme_code,
+            "metrics": {
+                **{k: _num_or_none(row.get(k), 100) for k in _PCT_METRICS},
+                "sharpe_3y": _num_or_none(row.get("sharpe_3y")),
+                "sortino_3y": _num_or_none(row.get("sortino_3y")),
+                "history_years": _num_or_none(row.get("history_years")),
+                "data_quality": str(row.get("data_quality")),
+            },
+            "history": [
+                {"date": str(d.date()), **{k: _num_or_none(v) for k, v in r.items()}}
+                for d, r in history.iterrows()
+            ],
+        },
+        "availability": "ready",
+        "as_of": str(row.get("last_nav_date")),
+    }
+
 
 @router.get("/mutual-funds/tracker")
 def backoffice_mf_tracker(

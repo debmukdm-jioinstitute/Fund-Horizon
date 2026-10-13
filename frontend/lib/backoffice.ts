@@ -256,6 +256,26 @@ export interface MutualFundItem {
   ter_as_of?: string;
 }
 
+export interface MfPerformance {
+  metrics: Record<string, number | string | undefined>;
+  history: Array<{ date: string; nav?: number; r1m?: number; r1y?: number; r3y?: number; r5y?: number }>;
+  as_of?: string;
+}
+
+/** Returns null for schemes outside the performance dataset (IDCW/payout options, closed-ended). */
+export const getMutualFundPerformance = async (code: string): Promise<MfPerformance | null> => {
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/${encodeURIComponent(code)}/performance`);
+  const d = obj(raw.data);
+  if (!raw.data) return null;
+  const metrics: MfPerformance["metrics"] = {};
+  for (const [k, v] of Object.entries(obj(d.metrics))) metrics[k] = typeof v === "number" || typeof v === "string" ? v : undefined;
+  return {
+    metrics,
+    history: arr(d.history).map((h) => ({ date: str(h.date) ?? "", nav: num(h.nav), r1m: num(h.r1m), r1y: num(h.r1y), r3y: num(h.r3y), r5y: num(h.r5y) })),
+    as_of: str(raw.as_of),
+  };
+};
+
 export interface MutualFundsTrackerResult extends BackofficeEnvelope<MutualFundItem[]> {
   total: number;
   limit: number;

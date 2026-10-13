@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { MutualFundItem } from "@/lib/backoffice";
+import { getMutualFundPerformance, MfPerformance, MutualFundItem } from "@/lib/backoffice";
+import SignedValue from "@/components/terminal/SignedValue";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 
@@ -13,6 +14,21 @@ interface MutualFundDrawerProps {
 
 export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerProps) {
   const [copied, setCopied] = useState(false);
+  const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined); // undefined = loading, null = no data
+  const [view, setView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
+  const code = scheme?.scheme_code;
+
+  useEffect(() => {
+    setPerf(undefined);
+    if (!code) return;
+    let cancelled = false;
+    getMutualFundPerformance(code)
+      .then((p) => !cancelled && setPerf(p))
+      .catch(() => !cancelled && setPerf(null));
+    return () => {
+      cancelled = true;
+    };
+  }, [code]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -164,6 +180,95 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 </div>
               </div>
             </div>
+
+            {/* Performance & history from the AMFI + mfapi.in dataset */}
+            {perf === undefined && <div className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Loading performance…</div>}
+            {perf === null && (
+              <div className="terminal-panel p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                No performance data for this scheme: the dataset covers Growth-option, open-ended schemes only.
+              </div>
+            )}
+            {perf && (
+              <>
+                <div className="terminal-panel overflow-hidden">
+                  <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex justify-between">
+                    <span>Performance Horizons</span>
+                    <span className="font-normal text-[#536176] dark:text-[#A8B4C4]">as of {perf.as_of ?? "—"} · {perf.metrics.history_years ?? "—"} yrs of history</span>
+                  </div>
+                  <table className="terminal-table">
+                    <thead>
+                      <tr><th>Horizon</th><th className="text-right">Return</th></tr>
+                    </thead>
+                    <tbody>
+                      {([["1 Month", "ret_1m"], ["3 Month", "ret_3m"], ["6 Month", "ret_6m"], ["1 Year", "ret_1y"], ["3 Year CAGR", "cagr_3y"], ["5 Year CAGR", "cagr_5y"], ["7 Year CAGR", "cagr_7y"], ["10 Year CAGR", "cagr_10y"], ["Since Inception CAGR", "cagr_since_inception"]] as const).map(([label, key]) => (
+                        <tr key={key}>
+                          <td className="font-medium">{label}</td>
+                          <td className="text-right"><SignedValue value={perf.metrics[key] as number | undefined} unit="%" /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {([["Volatility (3Y)", "vol_3y", "%"], ["Max Drawdown (3Y)", "max_drawdown_3y", "%"], ["Max Drawdown (All)", "max_drawdown_all", "%"], ["Sharpe (3Y)", "sharpe_3y", ""], ["Sortino (3Y)", "sortino_3y", ""]] as const).map(([label, key, unit]) => (
+                    <div key={key} className="terminal-panel p-3">
+                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">{label}</div>
+                      <div className="text-[14px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                        {typeof perf.metrics[key] === "number" ? `${(perf.metrics[key] as number).toFixed(2)}${unit}` : "—"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="terminal-panel overflow-hidden">
+                  <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
+                    <span>NAV History</span>
+                    <div className="flex gap-1">
+                      {(["monthly", "quarterly", "yearly"] as const).map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => setView(v)}
+                          className={view === v ? "terminal-btn-accent text-[11px] py-0.5 px-2 capitalize" : "terminal-btn text-[11px] py-0.5 px-2 capitalize"}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto max-h-[50vh]">
+                    <table className="terminal-table">
+                      <thead>
+                        <tr>
+                          <th>As on</th>
+                          <th className="text-right">NAV (₹)</th>
+                          <th className="text-right">1M</th>
+                          <th className="text-right">1Y</th>
+                          <th className="text-right">3Y</th>
+                          <th className="text-right">5Y</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {perf.history
+                          .filter((h, i) => {
+                            const m = Number(h.date.slice(5, 7));
+                            return i === 0 || view === "monthly" || (view === "quarterly" ? m % 3 === 0 : m === 3);
+                          })
+                          .map((h) => (
+                            <tr key={h.date}>
+                              <td className="font-mono">{h.date}</td>
+                              <td className="text-right font-mono">{h.nav?.toFixed(4) ?? "—"}</td>
+                              <td className="text-right"><SignedValue value={h.r1m} unit="%" /></td>
+                              <td className="text-right"><SignedValue value={h.r1y} unit="%" /></td>
+                              <td className="text-right"><SignedValue value={h.r3y} unit="%" /></td>
+                              <td className="text-right"><SignedValue value={h.r5y} unit="%" /></td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* ISIN & Identification Table */}
             <div className="terminal-panel overflow-hidden">

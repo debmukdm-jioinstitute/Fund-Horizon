@@ -307,3 +307,21 @@ def test_upsert_observations_keeps_dict_provenance():
     }])
     row = next(r for r in repo.get_observations_series("VOL:IN:INDIAVIX", start_date="2001-01-02", end_date="2001-01-02"))
     assert (row["provenance"], row["frequency"]) == ("NSE", "intraday")
+
+
+def test_backoffice_mf_performance_api(client):
+    from app.data.loader import load_metrics
+
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    code = str(load_metrics().iloc[0]["scheme_code"])
+    r = client.get(f"/api/backoffice/mutual-funds/{code}/performance")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["availability"] == "ready"
+    hist = body["data"]["history"]
+    assert hist and hist[0]["date"] <= body["as_of"]  # newest first, never dated after the last real NAV
+    assert hist == sorted(hist, key=lambda h: h["date"], reverse=True)
+    assert "ret_1y" in body["data"]["metrics"]
+    assert client.get("/api/backoffice/mutual-funds/1/performance").json()["availability"] == "unavailable"
+    assert client.get("/api/backoffice/mutual-funds/abc/performance").status_code == 404

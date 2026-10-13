@@ -6,6 +6,7 @@ import {
   refreshSource,
   previewImport,
   commitImport,
+  importTemplateUrl,
   SourceHealthData,
   ImportJobData,
 } from "@/lib/backoffice";
@@ -261,7 +262,7 @@ export default function DataHealthPage() {
                 </div>
               </div>
               <a
-                href={`/api/backoffice/imports/templates/${importType}`}
+                href={importTemplateUrl(importType)}
                 download={`${importType}_template.csv`}
                 className="terminal-btn text-[11px] py-1 px-2.5 self-start sm:self-auto"
               >

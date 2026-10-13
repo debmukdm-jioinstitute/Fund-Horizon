@@ -22,14 +22,14 @@ def get_repository() -> DatabaseRepository:
     db_url = os.environ.get("DATABASE_URL", "").strip()
     current_sqlite_path = os.environ.get("FH_DB_PATH", "").strip()
 
+    wants_postgres = db_url.startswith(("postgres://", "postgresql://"))
     if _CACHED_REPO is not None:
-        if not db_url and isinstance(_CACHED_REPO, SQLiteRepository):
-            if _CACHED_DB_PATH == current_sqlite_path:
-                return _CACHED_REPO
-        else:
+        # Reuse the cached repository only while it still matches the configured backend.
+        is_sqlite = isinstance(_CACHED_REPO, SQLiteRepository)
+        if wants_postgres != is_sqlite and (wants_postgres or _CACHED_DB_PATH == current_sqlite_path):
             return _CACHED_REPO
 
-    if db_url.startswith(("postgres://", "postgresql://")):
+    if wants_postgres:
         from app.db.postgres import PostgresRepository
 
         _CACHED_REPO = PostgresRepository(db_url)

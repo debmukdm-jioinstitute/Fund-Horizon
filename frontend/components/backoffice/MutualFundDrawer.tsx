@@ -331,6 +331,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               </div>
 
               <div className="space-y-1.5">
+                {perf?.publicPage && (
                 <a
                   href={`/funds/${scheme.scheme_code}`}
                   target="_blank"
@@ -343,6 +344,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   </div>
                   <span className="text-[#536176] dark:text-[#A8B4C4] group-hover:text-[#006F64] dark:group-hover:text-[#75E1CE]">↗</span>
                 </a>
+                )}
 
                 <a
                   href={`https://api.mfapi.in/mf/${scheme.scheme_code}`}
@@ -355,7 +357,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 </a>
 
                 <a
-                  href={`https://www.google.com/finance/quote/${encodeURIComponent(scheme.scheme_name)}:MUTF_IN`}
+                  // Google Finance quote URLs use Google's own fund ids (not derivable from AMFI data), so link a search that lands on the fund.
+                  href={`https://www.google.com/search?q=${encodeURIComponent([scheme.scheme_name, classified.plan, classified.option, "NAV google finance"].filter(Boolean).join(" "))}`}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-between p-2 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64] dark:hover:border-[#75E1CE] transition text-[12px] group"
@@ -398,6 +401,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               >
                 Research Note →
               </Link>
+              {perf?.publicPage && (
               <a
                 href={`/funds/${scheme.scheme_code}`}
                 target="_blank"
@@ -406,6 +410,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               >
                 Open Analytics ↗
               </a>
+              )}
             </div>
           </div></div>
         </div>

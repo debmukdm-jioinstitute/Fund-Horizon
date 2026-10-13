@@ -437,7 +437,7 @@ def _num_or_none(v: Any, scale: float = 1.0) -> float | None:
 
 
 @router.get("/mutual-funds/{scheme_code}/performance")
-def backoffice_mf_performance(scheme_code: str, staff: Annotated[dict, Depends(require_staff)]):
+def backoffice_mf_performance(scheme_code: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
     """Trailing returns, risk stats and month-end NAV history for one scheme, from the AMFI + mfapi.in dataset."""
     if not scheme_code.isdigit() or len(scheme_code) > 8:
         raise HTTPException(404, "Scheme not found")
@@ -465,6 +465,8 @@ def backoffice_mf_performance(scheme_code: str, staff: Annotated[dict, Depends(r
     return {
         "data": {
             "scheme_code": scheme_code,
+            # The public /funds/{code} page only exists for schemes eligible for shortlists (Regular, Growth, clean data).
+            "public_page": scheme_code in set(request.app.state.eligible["scheme_code"]),
             "metrics": {
                 **{k: _num_or_none(row.get(k), 100) for k in _PCT_METRICS},
                 "sharpe_3y": _num_or_none(row.get("sharpe_3y")),

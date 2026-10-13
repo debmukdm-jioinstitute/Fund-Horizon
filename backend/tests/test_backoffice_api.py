@@ -323,6 +323,8 @@ def test_backoffice_mf_performance_api(client):
     assert hist and hist[0]["date"] <= body["as_of"]  # newest first, never dated after the last real NAV
     assert hist == sorted(hist, key=lambda h: h["date"], reverse=True)
     assert "ret_1y" in body["data"]["metrics"]
+    eligible = set(client.app.state.eligible["scheme_code"])
+    assert body["data"]["public_page"] is (code in eligible)
     assert client.get("/api/backoffice/mutual-funds/1/performance").json()["availability"] == "unavailable"
     assert client.get("/api/backoffice/mutual-funds/abc/performance").status_code == 404
 

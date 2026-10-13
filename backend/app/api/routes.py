@@ -435,6 +435,9 @@ def rag_ingest(limit: int = Query(0, description="Limit files ingested; 0 for al
     docs_dir = Path(__file__).resolve().parent.parent.parent.parent / "data" / "fundhorizon_mf_rag_dataset" / "schemes_md"
     if not docs_dir.exists():
         docs_dir = Path("data/fundhorizon_mf_rag_dataset/schemes_md")
+    if not docs_dir.exists():
+        # The scheme markdown files are not shipped with deployments; say so instead of crashing with a 500.
+        raise HTTPException(503, "Knowledge base documents are not installed on this server")
     count = ingest_documents(docs_dir, limit=limit if limit > 0 else None)
     return {"ingested": count, "chroma_dir": get_chroma_dir()}
 

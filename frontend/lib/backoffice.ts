@@ -283,6 +283,7 @@ export const getFactsheets = async (kind: "mf" | "pms", id: string): Promise<Fac
 };
 
 export interface MfPerformance {
+  publicPage: boolean;
   metrics: Record<string, number | string | undefined>;
   history: Array<{ date: string; nav?: number; r1m?: number; r1y?: number; r3y?: number; r5y?: number }>;
   as_of?: string;
@@ -296,6 +297,7 @@ export const getMutualFundPerformance = async (code: string): Promise<MfPerforma
   const metrics: MfPerformance["metrics"] = {};
   for (const [k, v] of Object.entries(obj(d.metrics))) metrics[k] = typeof v === "number" || typeof v === "string" ? v : undefined;
   return {
+    publicPage: d.public_page === true,
     metrics,
     history: arr(d.history).map((h) => ({ date: str(h.date) ?? "", nav: num(h.nav), r1m: num(h.r1m), r1y: num(h.r1y), r3y: num(h.r3y), r5y: num(h.r5y) })),
     as_of: str(raw.as_of),

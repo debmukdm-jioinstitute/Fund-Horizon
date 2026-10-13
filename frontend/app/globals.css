@@ -218,3 +218,72 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .marquee, .animate-float { animation: none !important; }
 }
+
+/* ------------------------------------------------------------------ */
+/* Theme toggle (GoogleChromeLabs <dark-mode-toggle>) + dark theme     */
+/* ------------------------------------------------------------------ */
+
+/* Local icons: the component's default icons load from a CDN, which the site's CSP blocks. */
+dark-mode-toggle {
+  --dark-mode-toggle-icon-size: 1rem;
+  --dark-mode-toggle-light-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B45309' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E");
+  --dark-mode-toggle-dark-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231D4373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'/%3E%3C/svg%3E");
+  --dark-mode-toggle-label-font: 600 0.75rem/1 var(--font-sans), system-ui, sans-serif;
+  --dark-mode-toggle-active-mode-background-color: rgba(19, 168, 158, 0.16);
+  --dark-mode-toggle-color: #334155;
+  display: inline-block;
+  vertical-align: middle;
+}
+dark-mode-toggle::part(fieldset) {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.7);
+}
+dark-mode-toggle::part(legend) {
+  display: none;
+}
+dark-mode-toggle::part(lightLabel),
+dark-mode-toggle::part(darkLabel) {
+  padding: 0.3rem 0.65rem;
+  border-radius: 9999px;
+}
+dark-mode-toggle::part(aside) {
+  display: none;
+}
+
+/*
+ * Dark theme. The site's palette is hard-coded in thousands of utility classes, so instead of re-skinning each one
+ * the page is colour-inverted (90%) and hue-rotated back, which keeps brand hues and contrast ratios intact.
+ * Media, avatars and anything marked data-no-invert are inverted a second time so they look natural.
+ */
+html.dark {
+  background: #0b0f14;
+  filter: invert(0.9) hue-rotate(180deg);
+}
+html.dark img,
+html.dark video,
+html.dark picture,
+html.dark iframe,
+html.dark [data-no-invert] {
+  filter: invert(1) hue-rotate(180deg);
+}
+/* The wordmark is dark-on-transparent: let it follow the page inversion so it stays legible. */
+html.dark img[alt^="Fund Horizon"] {
+  filter: none;
+}
+/* Scrollbars are drawn by the browser, not the filtered page; keep them from glaring. */
+html.dark ::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+html.dark {
+  scrollbar-color: rgba(148, 163, 184, 0.5) transparent;
+}
+@media print {
+  html.dark {
+    filter: none;
+    background: #fff;
+  }
+}

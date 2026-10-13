@@ -6,6 +6,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import Logo from "@/components/Logo";
 import CustomerLogin from "@/components/CustomerLogin";
+import ThemeToggle from "@/components/ThemeToggle";
 import { AuthProvider } from "@/components/AuthContext";
 import { siteUrl } from "@/lib/site";
 
@@ -46,9 +47,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+// Runs before first paint so a returning visitor never sees a flash of the wrong theme.
+const THEME_BOOTSTRAP = `(function(){try{var s=localStorage.getItem('dark-mode-toggle');var d=s?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;var r=document.documentElement;if(d){r.classList.add('dark');}r.dataset.theme=d?'dark':'light';}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${sans.variable} ${display.variable}`}>
+    <html lang="en-IN" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+      </head>
       <body className="flex min-h-screen flex-col font-sans relative overflow-x-hidden selection:bg-teal-500 selection:text-white">
         <AuthProvider>
           {/* Ambient 3D Frosted Glow Lights */}
@@ -108,6 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   >
                     CAS Analysis
                   </Link>
+                  <ThemeToggle className="ml-1" />
                   <CustomerLogin />
                   <Link
                     href="/admin"

@@ -52,6 +52,11 @@ CREATE TABLE IF NOT EXISTS pms_apmi_strategies (
     PRIMARY KEY (provider, strategy_name, strategy_type, service_type, as_on)
 );
 CREATE INDEX IF NOT EXISTS ix_pms_apmi_as_on ON pms_apmi_strategies(as_on);
+CREATE TABLE IF NOT EXISTS pms_strategy_details (
+    ia_id TEXT PRIMARY KEY,
+    detail_json TEXT NOT NULL,
+    fetched_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS news_items (
     id TEXT PRIMARY KEY,
     source_id TEXT NOT NULL,
@@ -577,6 +582,56 @@ class BackofficeRepository:
                 ORDER BY total_aum_crore DESC, p.name ASC
                 """,
                 (as_on,),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def get_pms_strategy_detail_cache(self, ia_id: str) -> tuple[dict[str, Any], float] | None:
+        """Cached APMI strategy-page facts and their age in seconds."""
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT detail_json, fetched_at FROM pms_strategy_details WHERE ia_id = ?", (ia_id,)).fetchone()
+        finally:
+            conn.close()
+        if not row:
+            return None
+        try:
+            age = (datetime.now(UTC) - datetime.fromisoformat(row["fetched_at"])).total_seconds()
+            return json.loads(row["detail_json"]), age
+        except (ValueError, TypeError):
+            return None
+
+    def put_pms_strategy_detail_cache(self, ia_id: str, detail: dict[str, Any]) -> None:
+        conn = self._conn()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT INTO pms_strategy_details (ia_id, detail_json, fetched_at) VALUES (?, ?, ?) "
+                    "ON CONFLICT(ia_id) DO UPDATE SET detail_json=excluded.detail_json, fetched_at=excluded.fetched_at",
+                    (ia_id, json.dumps(detail), _utcnow()),
+                )
+        finally:
+            conn.close()
+
+    def list_pms_strategy_history(self, ia_id: str) -> list[dict[str, Any]]:
+        """Every stored monthly row for a strategy, newest first."""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM pms_apmi_strategies WHERE ia_id = ? ORDER BY as_on DESC, aum_crore DESC", (ia_id,)
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def list_provider_strategies(self, provider: str, as_on: str, exclude_ia_id: str | None = None) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM pms_apmi_strategies WHERE provider = ? AND as_on = ? AND COALESCE(ia_id,'') != ? "
+                "ORDER BY aum_crore IS NULL, aum_crore DESC",
+                (provider, as_on, exclude_ia_id or ""),
             ).fetchall()
             return [dict(r) for r in rows]
         finally:

@@ -154,3 +154,111 @@ def fetch_snapshot(months: list[str] | None = None) -> ApmiSnapshot | None:
             if strategies:
                 return ApmiSnapshot(as_on=as_on, providers=providers, strategies=strategies)
     return None
+
+
+# --- Strategy detail page (IaInsight.htm?IAID=...) ---------------------------------------------------------
+
+INSIGHT_URL = "https://www.apmiindia.org/apmi/IaInsight.htm"
+_SCRIPT_STYLE_RE = re.compile(r"<script.*?</script>|<style.*?</style>|<!--.*?-->", re.S)
+_MOJIBAKE = (("Ã?Â¢??", "\u2019"), ("â€™", "\u2019"), ("â€œ", "\u201c"), ("â€\x9d", "\u201d"), ("â€“", "\u2013"))
+
+
+def _clean_text(value: str) -> str:
+    for bad, good in _MOJIBAKE:
+        value = value.replace(bad, good)
+    value = re.sub(r"[\u00c3\u00c2]\??", "", value)  # stray mojibake lead bytes
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def _tokens(page_html: str) -> list[str]:
+    stripped = _SCRIPT_STYLE_RE.sub("", page_html)
+    parts = (html.unescape(p).replace("\xa0", " ").strip() for p in re.split(r"<[^>]+>", stripped))
+    return [t for t in parts if t]
+
+
+def _after(tokens: list[str], label: str, start: int = 0) -> tuple[str | None, int]:
+    """Value token following ``label`` (exact match), plus the label's index."""
+    for i in range(start, len(tokens)):
+        if tokens[i].rstrip(":").strip().lower() == label.lower():
+            return (tokens[i + 1] if i + 1 < len(tokens) else None), i
+    return None, -1
+
+
+def _na(value: str | None) -> str | None:
+    value = _clean_text(value or "")
+    return None if not value or value.upper() in {"NA", "N/A", "NIL", "-"} else value
+
+
+def parse_strategy_detail(page_html: str) -> dict[str, Any] | None:
+    """Facts shown on an APMI strategy page. Personal contact details of fund managers are deliberately not kept."""
+    tokens = _tokens(page_html)
+    if "Investment Approach Details" not in tokens:
+        return None
+    idx = tokens.index("Investment Approach Details")
+    title = next((t for t in reversed(tokens[:idx]) if t not in {"Export To PDF", "IA Insight REPORT", "IA Insight Report"}), None)
+
+    def val(label: str) -> str | None:
+        v, _ = _after(tokens, label, idx)
+        return _na(v)
+
+    aum_match = next((_num(t) for t in tokens[idx:idx + 6] if t.startswith("₹")), None)
+
+    # Purpose runs until the next section header.
+    purpose = None
+    _, p_i = _after(tokens, "Purpose", idx)
+    if p_i >= 0:
+        end = next((j for j in range(p_i + 1, len(tokens)) if tokens[j] == "Fund Manager Details"), len(tokens))
+        purpose = _na(" ".join(tokens[p_i + 1:end]))
+
+    manager = manager_exp = None
+    _, fm_i = _after(tokens, "Fund Manager Details", idx)
+    if fm_i >= 0:
+        nxt = tokens[fm_i + 1] if fm_i + 1 < len(tokens) else None
+        manager = _na(nxt) if nxt and nxt.lower() not in {"work exp.", "email id", "mobile no", "details"} else None
+        manager_exp = _na(_after(tokens, "Work Exp.", fm_i)[0])
+
+    turnover_as_on = None
+    for t in tokens:
+        m = re.match(r"Turnover Details As On (\d{2}/\d{2}/\d{4})", t)
+        if m:
+            turnover_as_on = datetime.strptime(m.group(1), "%d/%m/%Y").strftime("%Y-%m-%d")
+            break
+
+    inception = val("Date Of Inception")
+    if inception:
+        try:
+            inception = datetime.strptime(inception, "%d/%m/%Y").strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+
+    min_inv = val("Min. Inv. Amount")
+    return {
+        "strategy_name": _clean_text(title or ""),
+        "aum_crore": aum_match,
+        "provider": val("PMS Provider Name"),
+        "benchmark": val("Benchmark"),
+        "strategy_type": val("Strategy Name"),
+        "product_name": val("Product Name"),
+        "inception_date": inception,
+        "age": val("Age"),
+        "min_investment_inr": float(min_inv) if min_inv and re.fullmatch(r"[\d.]+", min_inv) else None,
+        "fixed_fees": val("Fixed Fees Structure"),
+        "variable_fees": val("Variable Fees Structure"),
+        "exit_load": val("Exit Load"),
+        "purpose": purpose,
+        "fund_manager": manager,
+        "fund_manager_experience": manager_exp,
+        "turnover_as_on": turnover_as_on,
+        "turnover_1m": _num(_after(tokens, "1 Month Turnover", idx)[0] or ""),
+        "turnover_1y": _num(_after(tokens, "1 Year Turnover", idx)[0] or ""),
+    }
+
+
+def fetch_strategy_detail(ia_id: str) -> dict[str, Any] | None:
+    """Fetch and parse one strategy page. Raises ``httpx.HTTPError`` on network problems; None if unparseable."""
+    if not re.fullmatch(r"\d{1,8}", ia_id):
+        raise ValueError("invalid IA id")
+    with httpx.Client(timeout=httpx.Timeout(45.0, connect=15.0), headers={"User-Agent": UA}, follow_redirects=True) as client:
+        res = client.get(INSIGHT_URL, params={"IAID": ia_id})
+        res.raise_for_status()
+        return parse_strategy_detail(res.content.decode("utf-8", errors="replace"))

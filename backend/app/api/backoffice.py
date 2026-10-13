@@ -20,6 +20,7 @@ from app.api.auth import (
 )
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import refresh_source
+from app.backoffice.providers import apmi as apmi_provider
 from app.backoffice.providers.nse import NseError
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
 from app.backoffice.repository import BackofficeRepository
@@ -173,6 +174,54 @@ def backoffice_pms_strategies(
         "source": "APMI",
         "availability": "ready" if (universe or manual) else "unavailable",
         "freshness": "current" if universe else "stale",
+    }
+
+
+_PMS_DETAIL_TTL_SECONDS = 24 * 3600.0
+
+
+@router.get("/pms/strategies/{ia_id}")
+def backoffice_pms_strategy_detail(ia_id: str, staff: Annotated[dict, Depends(require_staff)]):
+    """Everything known about one PMS strategy: monthly performance history, APMI profile, sibling strategies."""
+    if not ia_id.isdigit() or len(ia_id) > 8:
+        raise HTTPException(404, "Strategy not found")
+    history = _REPO.list_pms_strategy_history(ia_id)
+    if not history:
+        raise HTTPException(404, "Strategy not found")
+    latest = history[0]
+
+    detail: dict[str, Any] | None = None
+    detail_error: str | None = None
+    cached = _REPO.get_pms_strategy_detail_cache(ia_id)
+    if cached and cached[1] < _PMS_DETAIL_TTL_SECONDS:
+        detail = cached[0]
+    else:
+        try:
+            fresh = apmi_provider.fetch_strategy_detail(ia_id)
+            if fresh:
+                _REPO.put_pms_strategy_detail_cache(ia_id, fresh)
+                detail = fresh
+            else:
+                detail_error = "APMI strategy page could not be parsed."
+        except Exception as e:  # network/HTTP failure must not break the page
+            detail_error = f"APMI strategy page unavailable: {e.__class__.__name__}"
+        if detail is None and cached:
+            detail = cached[0]  # serve stale facts rather than nothing
+
+    siblings = _REPO.list_provider_strategies(latest["provider"], latest["as_on"], ia_id)
+    return {
+        "data": {
+            "ia_id": ia_id,
+            "latest": latest,
+            "history": history,
+            "detail": detail,
+            "detail_error": detail_error,
+            "siblings": siblings,
+            "source_url": f"https://www.apmiindia.org/apmi/IaInsight.htm?IAID={ia_id}",
+        },
+        "as_of": latest["as_on"],
+        "availability": "ready",
+        "freshness": "current" if detail_error is None else "stale",
     }
 
 

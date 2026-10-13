@@ -149,7 +149,20 @@ def refresh_nse() -> dict[str, Any]:
     return {"status": "success", "source_id": source_id, "records_ingested": ingested, "warnings": errors}
 
 
+RETRY_AFTER_FAILURE_SECONDS = 300
+
+
 async def refresh_source(source_id: str) -> dict[str, Any]:
+    """Run one source, then schedule the next automatic run (soon after a failure, a full interval after success)."""
+    result = await _refresh_source(source_id)
+    interval = REFRESH_INTERVALS.get(source_id)
+    if interval and result.get("status") not in ("success", "coalesced", "manual_only"):
+        # A network blip must not delay a daily/12-hourly feed by its whole interval.
+        _LAST_RUN[source_id] = time.monotonic() - interval + min(interval, RETRY_AFTER_FAILURE_SECONDS)
+    return result
+
+
+async def _refresh_source(source_id: str) -> dict[str, Any]:
     """Execute collection for a single source outside of request event loop."""
     async with _REFRESH_LOCK:
         if source_id in _IN_PROGRESS:

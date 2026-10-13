@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { PmsStrategyItem } from "@/lib/backoffice";
+import { getPmsStrategyDetail, PmsStrategyDetail, PmsStrategyItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
 
 interface PmsStrategyDrawerProps {
@@ -12,6 +12,24 @@ interface PmsStrategyDrawerProps {
 
 export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDrawerProps) {
   const [copied, setCopied] = useState(false);
+  const [detail, setDetail] = useState<PmsStrategyDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const iaId = strategy?.ia_id;
+
+  // Pull the full APMI profile (fees, manager, turnover, history) whenever a strategy is opened.
+  useEffect(() => {
+    setDetail(null);
+    if (!iaId) return;
+    let cancelled = false;
+    setDetailLoading(true);
+    getPmsStrategyDetail(iaId)
+      .then((d) => !cancelled && setDetail(d))
+      .catch(() => undefined)
+      .finally(() => !cancelled && setDetailLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [iaId]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -36,7 +54,7 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
       `Provider: ${strategy.provider_name}`,
       `Approach: ${strategy.investment_approach || strategy.strategy_type || "Equity"}`,
       `Service Type: ${strategy.service_type || "Discretionary"}`,
-      `Benchmark: ${strategy.benchmark_name || "NIFTY 50 TRI"}`,
+      `Benchmark: ${strategy.benchmark_name || detail?.profile?.benchmark || "—"}`,
       `AUM: ${strategy.aum_crore ? `₹${strategy.aum_crore} Cr` : "N/A"}`,
       `1M Return: ${strategy.return_1m_pct !== undefined ? `${strategy.return_1m_pct}%` : "—"}`,
       `1Y Return: ${strategy.return_1y_pct !== undefined ? `${strategy.return_1y_pct}%` : "—"}`,
@@ -135,34 +153,40 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
 
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Benchmark</div>
-                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.benchmark_name || "S&P BSE 500 TRI"}>
-                  {strategy.benchmark_name || "S&P BSE 500 TRI"}
+                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.benchmark_name || detail?.profile?.benchmark || "—"}>
+                  {strategy.benchmark_name || detail?.profile?.benchmark || (detailLoading ? "Loading…" : "—")}
                 </div>
               </div>
 
-              {strategy.min_investment && (
+              {(strategy.min_investment || detail?.profile?.min_investment_inr !== undefined) && (
                 <div className="terminal-panel p-3">
                   <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Min Investment</div>
                   <div className="text-[14px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
-                    {strategy.min_investment}
+                    {strategy.min_investment ?? `₹${(detail?.profile?.min_investment_inr ?? 0).toLocaleString("en-IN")}`}
                   </div>
                 </div>
               )}
 
-              {strategy.inception_date && (
+              {(strategy.inception_date || detail?.profile?.inception_date) && (
                 <div className="terminal-panel p-3">
                   <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Inception Date</div>
                   <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
-                    {strategy.inception_date}
+                    {strategy.inception_date ?? detail?.profile?.inception_date}
+                    {detail?.profile?.age ? ` · ${detail.profile.age}` : ""}
                   </div>
                 </div>
               )}
 
-              {strategy.principal_officer && (
+              {(strategy.principal_officer || detail?.profile?.fund_manager) && (
                 <div className="terminal-panel p-3 col-span-2">
-                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Principal Officer</div>
+                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">
+                    {strategy.principal_officer ? "Principal Officer" : "Fund Manager"}
+                  </div>
                   <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
-                    {strategy.principal_officer}
+                    {strategy.principal_officer ?? detail?.profile?.fund_manager}
+                    {!strategy.principal_officer && detail?.profile?.fund_manager_experience
+                      ? ` (${detail.profile.fund_manager_experience} experience)`
+                      : ""}
                   </div>
                 </div>
               )}
@@ -233,6 +257,104 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
               </table>
             </div>
 
+            {/* APMI profile: fees, turnover, approach (fetched per strategy) */}
+            {iaId && (
+              <div className="terminal-panel overflow-hidden">
+                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  Fees, Turnover &amp; Approach (APMI)
+                </div>
+                {detailLoading && !detail ? (
+                  <div className="p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">Loading APMI profile…</div>
+                ) : detail?.profile ? (
+                  <div className="p-3 space-y-3">
+                    <dl className="grid grid-cols-2 gap-x-3 gap-y-2.5 text-[12px]">
+                      {[
+                        ["Fixed fee", detail.profile.fixed_fees ?? "Not disclosed"],
+                        ["Variable fee", detail.profile.variable_fees ?? "Not disclosed"],
+                        ["Exit load", detail.profile.exit_load ?? "Not disclosed"],
+                        [
+                          `Turnover${detail.profile.turnover_as_on ? ` (${detail.profile.turnover_as_on})` : ""}`,
+                          detail.profile.turnover_1y !== undefined
+                            ? `1M ${detail.profile.turnover_1m ?? "—"}x · 1Y ${detail.profile.turnover_1y}x`
+                            : "—",
+                        ],
+                      ].map(([k, v]) => (
+                        <div key={k as string}>
+                          <dt className="text-[#536176] dark:text-[#A8B4C4]">{k}</dt>
+                          <dd className="font-medium text-[#172033] dark:text-[#EDF2F7] break-words">{v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    {detail.profile.purpose && (
+                      <div>
+                        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium mb-0.5">Investment approach</div>
+                        <p className="text-[12px] leading-relaxed text-[#172033] dark:text-[#EDF2F7] whitespace-pre-line">
+                          {detail.profile.purpose}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                    {detail?.profile_error ?? "APMI profile is not available right now."}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Monthly history from stored APMI snapshots */}
+            {detail && detail.history.length > 0 && (
+              <div className="terminal-panel overflow-hidden">
+                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  Monthly History
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="terminal-table">
+                    <thead>
+                      <tr>
+                        <th>As on</th>
+                        <th className="text-right">AUM (₹ Cr)</th>
+                        <th className="text-right">1M</th>
+                        <th className="text-right">1Y</th>
+                        <th className="text-right">3Y</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {detail.history.slice(0, 12).map((h) => (
+                        <tr key={h.as_on}>
+                          <td className="font-mono">{h.as_on}</td>
+                          <td className="text-right font-mono">{h.aum_crore !== undefined ? h.aum_crore.toLocaleString("en-IN") : "—"}</td>
+                          <td className="text-right"><SignedValue value={h.r1m} unit="%" /></td>
+                          <td className="text-right"><SignedValue value={h.r1y} unit="%" /></td>
+                          <td className="text-right"><SignedValue value={h.r3y} unit="%" /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Same provider's other strategies */}
+            {detail && detail.siblings.length > 0 && (
+              <div className="terminal-panel overflow-hidden">
+                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  More from this provider ({detail.siblings.length})
+                </div>
+                <ul className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644]">
+                  {detail.siblings.slice(0, 8).map((x, i) => (
+                    <li key={`${x.strategy_name}-${i}`} className="p-3 text-[12px]">
+                      <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{x.strategy_name}</div>
+                      <div className="font-mono text-[#536176] dark:text-[#A8B4C4]">
+                        {x.aum_crore !== undefined ? `₹${x.aum_crore.toLocaleString("en-IN")} Cr` : "—"} · 1Y{" "}
+                        <SignedValue value={x.r1y} unit="%" /> · 3Y <SignedValue value={x.r3y} unit="%" />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Regulatory & Methodology Note */}
             <div className="terminal-panel p-3 bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[11px] text-[#536176] dark:text-[#A8B4C4] space-y-1 leading-relaxed">
               <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">APMI Verification & Compliance</div>
@@ -274,7 +396,7 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                 Research Note →
               </Link>
               <a
-                href="https://www.apmiindia.org"
+                href={detail?.source_url ?? "https://www.apmiindia.org"}
                 target="_blank"
                 rel="noreferrer"
                 className="terminal-btn text-[12px] py-1.5 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"

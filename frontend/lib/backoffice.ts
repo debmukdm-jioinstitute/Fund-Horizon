@@ -1122,3 +1122,90 @@ export const getNews = async (opts: { limit?: number; category?: string } = {}):
     published_at: str(n.published_at),
   }));
 };
+
+export interface PmsHistoryRow {
+  as_on: string;
+  aum_crore?: number;
+  r1m?: number;
+  r3m?: number;
+  r6m?: number;
+  r1y?: number;
+  r3y?: number;
+  r5y?: number;
+  since_inception?: number;
+}
+
+export interface PmsStrategyDetail {
+  profile?: {
+    benchmark?: string;
+    inception_date?: string;
+    age?: string;
+    min_investment_inr?: number;
+    fixed_fees?: string;
+    variable_fees?: string;
+    exit_load?: string;
+    purpose?: string;
+    fund_manager?: string;
+    fund_manager_experience?: string;
+    turnover_as_on?: string;
+    turnover_1m?: number;
+    turnover_1y?: number;
+  };
+  profile_error?: string;
+  history: PmsHistoryRow[];
+  siblings: Array<{ strategy_name: string; strategy_type?: string; aum_crore?: number; r1y?: number; r3y?: number }>;
+  source_url: string;
+}
+
+/** Everything APMI publishes about one strategy (profile, fees, manager, turnover) plus our stored monthly history. */
+export const getPmsStrategyDetail = async (iaId: string): Promise<PmsStrategyDetail> => {
+  const raw = await boFetch<Json>(`/api/backoffice/pms/strategies/${encodeURIComponent(iaId)}`);
+  const d = obj(raw.data);
+  const p = d.detail ? obj(d.detail) : null;
+  // One row per month (a strategy can be listed under more than one service type; keep the largest AUM).
+  const byMonth = new Map<string, PmsHistoryRow>();
+  for (const h of arr(d.history)) {
+    const row: PmsHistoryRow = {
+      as_on: str(h.as_on) ?? "—",
+      aum_crore: num(h.aum_crore),
+      r1m: num(h.return_1m),
+      r3m: num(h.return_3m),
+      r6m: num(h.return_6m),
+      r1y: num(h.return_1y),
+      r3y: num(h.return_3y),
+      r5y: num(h.return_5y),
+      since_inception: num(h.return_since_inception),
+    };
+    const prior = byMonth.get(row.as_on);
+    if (!prior || (row.aum_crore ?? 0) > (prior.aum_crore ?? 0)) byMonth.set(row.as_on, row);
+  }
+  return {
+    profile: p
+      ? {
+          benchmark: str(p.benchmark),
+          inception_date: str(p.inception_date),
+          age: str(p.age),
+          min_investment_inr: num(p.min_investment_inr),
+          fixed_fees: str(p.fixed_fees),
+          variable_fees: str(p.variable_fees),
+          exit_load: str(p.exit_load),
+          purpose: str(p.purpose),
+          fund_manager: str(p.fund_manager),
+          fund_manager_experience: str(p.fund_manager_experience),
+          turnover_as_on: str(p.turnover_as_on),
+          turnover_1m: num(p.turnover_1m),
+          turnover_1y: num(p.turnover_1y),
+        }
+      : undefined,
+    profile_error: str(d.detail_error),
+    history: Array.from(byMonth.values()).sort((a, b) => b.as_on.localeCompare(a.as_on)),
+    siblings: arr(d.siblings).map((x) => ({
+      strategy_name: str(x.strategy_name) ?? "—",
+      strategy_type: str(x.strategy_type),
+      aum_crore: num(x.aum_crore),
+      r1y: num(x.return_1y),
+      r3y: num(x.return_3y),
+    })),
+    source_url: str(d.source_url) ?? `https://www.apmiindia.org/apmi/IaInsight.htm?IAID=${iaId}`,
+  };
+};

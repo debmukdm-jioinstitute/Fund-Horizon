@@ -9,6 +9,16 @@ import pandas as pd
 from app.engine import analytics as an
 
 
+def rolling_consistency(fund: pd.Series, bench: pd.Series | None) -> float | None:
+    """Share of rolling 1Y windows (monthly step, last 5Y) where the fund beat the benchmark."""
+    if bench is None or bench.empty:
+        return None
+    start = fund.index[-1] - pd.DateOffset(years=5)
+    m = pd.concat([fund, bench], axis=1, join="inner").loc[start:].resample("ME").last().dropna()
+    r = m.pct_change(12).dropna()
+    return float((r.iloc[:, 0] > r.iloc[:, 1]).mean()) if len(r) >= 12 else None
+
+
 def compute_scheme_metrics(
     scheme_code: str,
     fund_nav: pd.Series,
@@ -118,6 +128,7 @@ def compute_scheme_metrics(
         "cat_avg_3y": cat_medians_dict.get("3y"),
         "cat_avg_5y": cat_medians_dict.get("5y"),
         "cat_avg_si": cat_medians_dict.get("si"),
+        "roll_consistency": rolling_consistency(fund_nav, bench_nav),
         "quartile_2y": None,  # to be set by cascade
         "quartile_source": None,
         "rf_source": rf_source,

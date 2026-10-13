@@ -11,6 +11,7 @@ export interface ScreeningFiltersState {
   quartiles_action: number[];
   include_retain: boolean;
   filter_ter_median: boolean;
+  include_missing: boolean;
   cat?: string;
   amc?: string;
   q_search?: string;
@@ -68,6 +69,13 @@ export default function ScreeningFilters({
       },
     });
   }
+
+  // Capture ratios are stored as ratios (1.0) but entered and shown as percent (100).
+  const pct = (v: number | null | undefined) => (v === null || v === undefined ? 100 : Math.round(v * 10000) / 100);
+  function handleCaptureChange(key: string, boundType: "min" | "max", val: string) {
+    handleBoundChange(key, boundType, val.trim() === "" ? "" : String(parseFloat(val) / 100));
+  }
+  const currentPreset = presets.find((p) => p.id === currentPresetId);
 
   return (
     <div className="terminal-panel p-3.5 space-y-3">
@@ -128,10 +136,10 @@ export default function ScreeningFilters({
             ))}
           </select>
 
-          {currentPresetId && (
+          {currentPreset && !currentPreset.builtin && (
             <button
               type="button"
-              onClick={() => onDeletePreset(currentPresetId)}
+              onClick={() => onDeletePreset(currentPreset.id)}
               title="Delete selected preset"
               className="text-[#B42332] dark:text-[#FF7D86] text-[11px] hover:underline"
             >
@@ -169,7 +177,15 @@ export default function ScreeningFilters({
             <span className="font-semibold text-[#172033] dark:text-[#EDF2F7]">
               S1 Manager Tenure
             </span>
-            <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">Strict drop</span>
+            <label className="flex items-center gap-1 text-[10px] text-[#172033] dark:text-[#EDF2F7]">
+              <input
+                type="checkbox"
+                checked={filters.include_missing}
+                onChange={(e) => onChange({ ...filters, include_missing: e.target.checked })}
+                className="accent-[#006F64] dark:accent-[#75E1CE]"
+              />
+              Include funds with missing data
+            </label>
           </div>
           <div className="flex items-center gap-2">
             <label className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
@@ -188,7 +204,7 @@ export default function ScreeningFilters({
             <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">years</span>
           </div>
           <p className="text-[10px] text-[#536176] dark:text-[#A8B4C4] leading-tight">
-            Unknown manager or start date → insufficient.
+            Unknown manager or start date → kept and flagged needs data when the toggle is on.
           </p>
         </div>
 
@@ -210,7 +226,7 @@ export default function ScreeningFilters({
             {filters.columns.join(", ") || "None"}
           </div>
           <p className="text-[10px] text-[#536176] dark:text-[#A8B4C4] leading-tight">
-            Unbounded columns pass all S1 rows.
+            Columns without a min/max do not filter.
           </p>
         </div>
 
@@ -224,24 +240,24 @@ export default function ScreeningFilters({
           </div>
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Up &gt; 1.0</span>
+              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Up capture &gt; (%)</span>
               <input
                 type="number"
-                step="0.05"
-                placeholder="1.0"
-                value={filters.bounds.up_capture?.min ?? 1.0}
-                onChange={(e) => handleBoundChange("up_capture", "min", e.target.value)}
+                step="5"
+                placeholder="100"
+                value={pct(filters.bounds.up_capture?.min)}
+                onChange={(e) => handleCaptureChange("up_capture", "min", e.target.value)}
                 className="terminal-input w-full py-0.5 px-1.5 text-[11px] tabular-nums"
               />
             </div>
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Down &lt; 1.0</span>
+              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Down capture &lt; (%)</span>
               <input
                 type="number"
-                step="0.05"
-                placeholder="1.0"
-                value={filters.bounds.down_capture?.max ?? 1.0}
-                onChange={(e) => handleBoundChange("down_capture", "max", e.target.value)}
+                step="5"
+                placeholder="100"
+                value={pct(filters.bounds.down_capture?.max)}
+                onChange={(e) => handleCaptureChange("down_capture", "max", e.target.value)}
                 className="terminal-input w-full py-0.5 px-1.5 text-[11px] tabular-nums"
               />
             </div>

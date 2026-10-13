@@ -42,11 +42,15 @@ function formatIV(iv?: number | null): { text: string; warn: string | null } {
 /** Session status derived from data freshness — never hardcoded. */
 function sessionStatus(d: DerivativesData): { label: string; tone: "ok" | "warn" | "na" } {
   if (d.contracts.length === 0) return { label: "N/A", tone: "na" };
-  const today = new Date().toISOString().slice(0, 10);
-  if (d.expiry_date && d.expiry_date < today) return { label: "Expired", tone: "warn" };
+  if (d.expiry_date && d.expiry_date < istToday()) return { label: "Expired / stale", tone: "warn" };
   if (d.live_status === "live") return { label: "Active Session", tone: "ok" };
   if (d.live_status === "stale") return { label: "Stale", tone: "warn" };
   return { label: "N/A", tone: "na" };
+}
+
+/** Today's date in IST (en-CA gives YYYY-MM-DD). */
+function istToday(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 }
 
 function pcrLabel(pcr?: number | null): string {
@@ -70,7 +74,7 @@ export default function DerivativesPage() {
         setLoading(true);
         setError(null);
         const res = await getDerivatives(selectedIndex, undefined, controller.signal);
-        if (stale) return;
+        if (stale || (res.data?.underlying && res.data.underlying !== selectedIndex)) return;
         setData(res);
       } catch (err: unknown) {
         if (controller.signal.aborted || stale) return;
@@ -228,7 +232,7 @@ export default function DerivativesPage() {
                   <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Minimum aggregate option payoff level</td>
                   <td
                     className="text-[12px] text-[#536176] dark:text-[#A8B4C4]"
-                    title={hasContracts && d.expiry_date ? `Strike where option writers lose least, computed from OI across all strikes for expiry ${formatISTDate(d.expiry_date)}` : undefined}
+                    title={hasContracts && d.expiry_date ? `Strike where option writers lose least, computed from OI across all strikes for expiry ${formatISTDate(d.expiry_date)}${d.snapshot_timestamp ? `, as of ${formatISTDate(d.snapshot_timestamp.slice(0, 10))} ${d.snapshot_timestamp.slice(11, 16)} IST` : ""}` : undefined}
                   >
                     {hasContracts ? "Calculated" : "N/A"}
                   </td>
@@ -241,7 +245,7 @@ export default function DerivativesPage() {
                   <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Index underlying reference price</td>
                   <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
                     Expiry: {d.expiry_date ? formatISTDate(d.expiry_date) : "N/A"}
-                    {d.expiry_date && d.expiry_date < new Date().toISOString().slice(0, 10) && (
+                    {d.expiry_date && d.expiry_date < istToday() && (
                       <span className="ml-1 text-[#B45309] dark:text-[#FBBF24] font-medium">(expired)</span>
                     )}
                   </td>

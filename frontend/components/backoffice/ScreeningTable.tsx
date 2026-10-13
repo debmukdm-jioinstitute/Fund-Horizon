@@ -28,6 +28,9 @@ export default function ScreeningTable({
       return <span className="text-[#536176] dark:text-[#A8B4C4]">—</span>;
     }
 
+    if (colKey === "expense_ratio") {
+      return <span className="tabular-nums">{val.toFixed(2)}%</span>; // stored as percent already
+    }
     const meta = ratioMetaMap.get(colKey);
     const unit = meta?.unit || "decimal";
 
@@ -74,7 +77,7 @@ export default function ScreeningTable({
               <th className="w-[24%]">Scheme Name &amp; Category</th>
               <th className="w-[12%]">Manager &amp; Tenure</th>
               <th className="w-[8%] text-center">2Y Quartile</th>
-              <th className="w-[7%] text-right">Reg TER</th>
+              <th className="w-[6%] text-right" title="Z-scored Sharpe, Sortino, capture spread and rolling-return consistency">Score</th>
               {selectedColumns.map((colKey) => {
                 const meta = ratioMetaMap.get(colKey);
                 return (
@@ -91,7 +94,7 @@ export default function ScreeningTable({
             {rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={7 + selectedColumns.length}
+                  colSpan={6 + selectedColumns.length}
                   className="py-12 text-center text-[#536176] dark:text-[#A8B4C4] text-[12px]"
                 >
                   No funds match the current filter criteria and funnel thresholds.
@@ -139,6 +142,11 @@ export default function ScreeningTable({
                         {row.tenure_ratio !== null && row.tenure_ratio !== undefined && (
                           <span title="Tenure / 3Y Window"> ({row.tenure_ratio.toFixed(2)}x)</span>
                         )}
+                        {row.needs_data && row.needs_data.length > 0 && (
+                          <span className="ml-1 px-1 rounded bg-[#C26200]/10 text-[#C26200] dark:text-[#EAA847]" title={`Missing: ${row.needs_data.join(", ")}`}>
+                            needs data
+                          </span>
+                        )}
                       </div>
                     </td>
 
@@ -163,13 +171,9 @@ export default function ScreeningTable({
                       )}
                     </td>
 
-                    {/* Regular TER */}
+                    {/* Composite pick score */}
                     <td className="text-right tabular-nums text-[12px] font-mono">
-                      {row.expense_ratio !== null && row.expense_ratio !== undefined ? (
-                        <span>{row.expense_ratio.toFixed(2)}%</span>
-                      ) : (
-                        <span className="text-[#536176] dark:text-[#A8B4C4]">—</span>
-                      )}
+                      {row.score !== null && row.score !== undefined ? row.score.toFixed(2) : <span className="text-[#536176] dark:text-[#A8B4C4]">—</span>}
                     </td>
 
                     {/* Dynamic Selected Ratio Columns */}

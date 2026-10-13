@@ -86,6 +86,7 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
     for code in df_s0["scheme_code"]:
         try:
             s = load_nav(str(code))
+            s = s[s.index <= pd.Timestamp.now().normalize()]  # drop future-dated NAV rows
             if not s.empty and len(s) >= 2:
                 nav_cache[str(code)] = s
         except Exception:
@@ -219,6 +220,7 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
             "benchmark_source": b_src,
             "quartile_source": q_source,
             "cat_median_ter": cat_median_ters.get(cat),
+            "roll_consistency": m_row.get("roll_consistency"),  # shortcut: kept in provenance, no column; promote if filtered on
         }
         m_row["provenance_json"] = json.dumps(provenance)
         screening_rows.append(m_row)

@@ -71,9 +71,9 @@ bounds_defaults:
   sortino:
     min: 1.0
   up_capture:
-    min: 1.0000001
+    min: 1.0
   down_capture:
-    max: 0.999999
+    max: 1.0
   tenure_ratio:
     min: 1.0
 
@@ -81,3 +81,31 @@ quartiles:
   action: [2, 3]
   retain: 1
   min_peers: 8
+
+# Composite pick score weights (z-scored across funnel survivors)
+score_weights:
+  sharpe: 1.0
+  sortino: 1.0
+  capture_spread: 1.0
+  roll_consistency: 1.0
+
+presets:
+  - id: builtin-core-flexi-cap
+    name: "Core Flexi Cap"
+    filters:
+      cat: flexi_cap
+      include_missing: true
+      min_tenure_years: 3
+      quartiles_action: [2, 3]
+  - id: builtin-large-cap-defensive
+    name: "Large Cap Defensive"
+    filters:
+      cat: large_cap
+      include_missing: true
+      min_tenure_years: 3
+      quartiles_action: [2, 3]
+      bounds:
+        down_capture:
+          max: 0.95
+        max_drawdown:
+          min: -0.30

@@ -53,5 +53,5 @@ def resolve_quartile_cascade(
         source = external_source or "advisorkhoj"
         return external_q, source
     if computed_q is not None:
-        return computed_q, "computed_nav"
+        return computed_q, "computed"
     return None, "unavailable"

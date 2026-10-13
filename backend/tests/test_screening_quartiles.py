@@ -47,7 +47,7 @@ def test_quartile_cascade():
     # Computed fallback
     q, src = resolve_quartile_cascade("1", computed_q=3, external_q=None)
     assert q == 3
-    assert src == "computed_nav"
+    assert src == "computed"
 
     # None available
     q, src = resolve_quartile_cascade("1", computed_q=None, external_q=None)

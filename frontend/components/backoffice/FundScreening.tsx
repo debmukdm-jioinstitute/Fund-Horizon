@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   getScreeningMetrics,
   runScreening,
@@ -32,14 +32,40 @@ const DEFAULT_FILTERS: ScreeningFiltersState = {
   bounds: {
     sharpe: { min: 1.0 },
     sortino: { min: 1.0 },
-    up_capture: { min: 1.0000001 },
-    down_capture: { max: 0.999999 },
+    up_capture: { min: 1.0 },
+    down_capture: { max: 1.0 },
     expense_ratio: { max: null },
   },
   quartiles_action: [2, 3],
   include_retain: false,
   filter_ter_median: true,
+  include_missing: true,
 };
+
+const STAGE_LABEL: Record<string, string> = {
+  s1: "S1 Manager tenure",
+  s2: "S2 Ratio bounds",
+  s3: "S3 Capture & quartile",
+  s4a: "S4a Risk (Sharpe/Sortino/tenure)",
+  s4c: "S4c TER vs category median",
+};
+
+// One step looser for the stage that emptied the funnel.
+function relaxStage(f: ScreeningFiltersState, stage: string): ScreeningFiltersState {
+  const b = f.bounds;
+  switch (stage) {
+    case "s1":
+      return f.include_missing ? { ...f, min_tenure_years: Math.max(0, f.min_tenure_years - 1) } : { ...f, include_missing: true };
+    case "s2":
+      return { ...f, bounds: { ...b, ...Object.fromEntries(Object.keys(b).filter((k) => !["up_capture", "down_capture", "sharpe", "sortino"].includes(k)).map((k) => [k, {}])) } };
+    case "s3":
+      return { ...f, bounds: { ...b, up_capture: { min: (b.up_capture?.min ?? 1) - 0.05 }, down_capture: { max: (b.down_capture?.max ?? 1) + 0.05 } } };
+    case "s4a":
+      return { ...f, bounds: { ...b, sharpe: { min: (b.sharpe?.min ?? 1) - 0.25 }, sortino: { min: (b.sortino?.min ?? 1) - 0.25 } } };
+    default:
+      return { ...f, filter_ter_median: false };
+  }
+}
 
 export default function FundScreening() {
   const [metricsData, setMetricsData] = useState<ScreeningMetricsData | null>(null);
@@ -53,6 +79,7 @@ export default function FundScreening() {
   const [loading, setLoading] = useState(true);
   const [runningFunnel, setRunningFunnel] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const [availability, setAvailability] = useState<string>("ready");
 
   // Load metrics data and presets on mount
@@ -68,10 +95,6 @@ export default function FundScreening() {
         setMetricsData(mRes.data);
         setAvailability(mRes.availability || "ready");
         setPresets(pRes.data || []);
-
-        // Initial run with default filters
-        const runRes = await runScreening({ filters: DEFAULT_FILTERS });
-        setRunData(runRes.data);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load screening engine");
       } finally {
@@ -81,23 +104,33 @@ export default function FundScreening() {
     init();
   }, []);
 
-  // Handle Apply Funnel
+  // Run the funnel; a newer run cancels the one in flight so a stale response never lands.
   async function handleApplyFunnel() {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
     setRunningFunnel(true);
     setError(null);
     try {
-      const res = await runScreening({
-        preset_id: currentPresetId,
-        filters,
-      });
+      const res = await runScreening({ preset_id: currentPresetId, filters }, controller.signal);
       setRunData(res.data);
       setActiveStage("final");
     } catch (err: unknown) {
+      if (controller.signal.aborted) return;
       setError(err instanceof Error ? err.message : "Failed to execute screening funnel");
     } finally {
-      setRunningFunnel(false);
+      if (abortRef.current === controller) setRunningFunnel(false);
     }
   }
+
+  // Auto-apply 300ms after the last filter change (search box is client-side only, so it is left out).
+  const applyKey = JSON.stringify({ ...filters, q_search: undefined });
+  useEffect(() => {
+    const t = setTimeout(handleApplyFunnel, 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applyKey]);
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   // Handle Preset Save
   async function handleSavePreset(name: string) {
@@ -114,9 +147,11 @@ export default function FundScreening() {
   function handleSelectPreset(preset: ScreeningPresetItem) {
     setCurrentPresetId(preset.id);
     if (preset.filters) {
+      const pb = (preset.filters.bounds ?? {}) as ScreeningFiltersState["bounds"];
       setFilters({
         ...DEFAULT_FILTERS,
         ...preset.filters,
+        bounds: { ...DEFAULT_FILTERS.bounds, ...pb },
       });
     }
   }
@@ -185,9 +220,34 @@ export default function FundScreening() {
       {/* Funnel Stepper Banner */}
       <ScreeningFunnel
         counts={runData?.counts || null}
+        stageAsOf={metricsData?.stage_as_of}
         activeStage={activeStage}
         onSelectStage={setActiveStage}
       />
+
+      {/* Empty result: say which stage emptied it and why */}
+      {runData && !runningFunnel && runData.counts.final === 0 && runData.counts.zeroed_stage && (
+        <div className="terminal-panel p-3 border border-[#C26200]/30 bg-[#C26200]/5 text-[12px] text-[#172033] dark:text-[#EDF2F7] flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <strong>0 funds after {STAGE_LABEL[runData.counts.zeroed_stage]}.</strong>
+            {(() => {
+              const m = Object.entries(runData.counts.missing_by_stage?.[runData.counts.zeroed_stage] ?? {})
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+              return m.length > 0 ? (
+                <span> Most missing: {m.map(([k, n]) => `${k.replace(/_/g, " ")} (${n})`).join(", ")}.</span>
+              ) : null;
+            })()}
+          </div>
+          <button
+            type="button"
+            className="terminal-btn text-[11px] py-1 px-2.5"
+            onClick={() => setFilters(relaxStage(filters, runData.counts.zeroed_stage as string))}
+          >
+            Relax this filter
+          </button>
+        </div>
+      )}
 
       {/* Interactive Filters & Presets Toolbar */}
       <ScreeningFilters

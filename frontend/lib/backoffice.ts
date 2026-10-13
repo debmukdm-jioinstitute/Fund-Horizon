@@ -1154,6 +1154,8 @@ export interface MfScreeningRow {
   cat_avg_si?: number | null;
   quartile_2y?: number | null;
   quartile_source?: string | null;
+  needs_data?: string[];
+  score?: number | null;
   rf_source?: string | null;
   benchmark_source?: string | null;
   history_years?: number | null;
@@ -1166,6 +1168,7 @@ export interface MfScreeningRow {
 
 export interface ScreeningMetricsData {
   as_of?: string;
+  stage_as_of?: { nav?: string | null; managers?: string | null; ter?: string | null };
   rf: number;
   rf_source: string;
   benchmark_policy: string;
@@ -1185,6 +1188,17 @@ export interface ScreeningFunnelCounts {
   s4a: number;
   final: number;
   insufficient_by_stage: { s1: number; s2: number; s3: number; s4a: number; s4c: number };
+  needs_data?: number;
+  zeroed_stage?: "s1" | "s2" | "s3" | "s4a" | "s4c" | null;
+  missing_by_stage?: Record<string, Record<string, number>>;
+}
+
+export interface ScreeningDropped {
+  scheme_code: string;
+  scheme_name: string;
+  cat: string;
+  drop_stage: string;
+  drop_reason: string;
 }
 
 export interface ScreeningRunData {
@@ -1193,6 +1207,7 @@ export interface ScreeningRunData {
   counts: ScreeningFunnelCounts;
   action: MfScreeningRow[];
   retain: MfScreeningRow[];
+  dropped?: ScreeningDropped[];
 }
 
 export interface ScreeningFundDetail extends MfScreeningRow {
@@ -1227,6 +1242,7 @@ export interface ScreeningPresetItem {
   filters: Record<string, unknown>;
   created_at: string;
   updated_at: string;
+  builtin?: boolean;
 }
 
 export const getScreeningMetrics = async (params: {
@@ -1247,9 +1263,10 @@ export const getScreeningMetrics = async (params: {
 export const runScreening = async (payload: {
   preset_id?: string | null;
   filters: Record<string, unknown>;
-}): Promise<BackofficeEnvelope<ScreeningRunData>> => {
+}, signal?: AbortSignal): Promise<BackofficeEnvelope<ScreeningRunData>> => {
   return boFetch<BackofficeEnvelope<ScreeningRunData>>("/api/backoffice/screening/run", {
     method: "POST",
+    signal,
     body: JSON.stringify(payload),
   });
 };

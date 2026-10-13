@@ -62,7 +62,10 @@ class ScreeningService:
             all_cats = [r["cat"] for r in conn.execute("SELECT DISTINCT cat FROM mf_screening_metrics ORDER BY cat").fetchall() if r["cat"]]
             all_amcs = [r["amc"] for r in conn.execute("SELECT DISTINCT amc FROM mf_screening_metrics ORDER BY amc").fetchall() if r["amc"]]
 
-            max_as_of = rows[0]["as_of"] if rows else None
+            today = datetime.now(UTC).strftime("%Y-%m-%d")
+            max_as_of = max((r["as_of"] for r in rows if r["as_of"] <= today), default=None)
+            mgr_asof = conn.execute("SELECT MAX(updated_at) AS m FROM mf_managers").fetchone()["m"]
+            ter_asof = conn.execute("SELECT MAX(as_of) AS m FROM mf_ter").fetchone()["m"]
             rf_val = 0.065
             rf_src = "assumptions_fixed"
             if rows:
@@ -75,6 +78,7 @@ class ScreeningService:
 
             return {
                 "as_of": max_as_of,
+                "stage_as_of": {"nav": max_as_of, "managers": mgr_asof, "ter": ter_asof},
                 "rf": rf_val,
                 "rf_source": rf_src,
                 "benchmark_policy": "category_median",
@@ -95,7 +99,10 @@ class ScreeningService:
         """Execute screening funnel on S0 universe and attach PMS matches."""
         conn = self.repo._conn()
         try:
-            if preset_id and not filters:
+            builtin = {p["id"]: p["filters"] for p in self.cfg.get("presets", [])}
+            if preset_id in builtin and not filters:
+                filters = builtin[preset_id]
+            elif preset_id and not filters:
                 p_row = conn.execute(
                     "SELECT filters_json FROM screening_presets WHERE id = ? AND staff_id = ?",
                     (preset_id, staff_id),
@@ -107,6 +114,11 @@ class ScreeningService:
 
             # Load S0 metrics
             rows = [dict(r) for r in conn.execute("SELECT * FROM mf_screening_metrics").fetchall()]
+            for r in rows:
+                try:
+                    r["roll_consistency"] = json.loads(r.get("provenance_json") or "{}").get("roll_consistency")
+                except Exception:
+                    r["roll_consistency"] = None
 
             # Extract category median TERs
             cat_median_ters: dict[str, float] = {}
@@ -131,8 +143,11 @@ class ScreeningService:
                     mid = len(sorted_ters) // 2
                     cat_median_ters[cat] = (sorted_ters[mid] if len(sorted_ters) % 2 != 0 else (sorted_ters[mid - 1] + sorted_ters[mid]) / 2.0)
 
-            # Apply funnel
-            res = apply_funnel(rows, filters=filters, cat_median_ters=cat_median_ters)
+            # Apply funnel to the selected category / AMC only so stage counts match what the user sees
+            pool = [r for r in rows if (not filters.get("cat") or r["cat"] == filters["cat"])
+                    and (not filters.get("amc") or r["amc"] == filters["amc"])]
+            res = apply_funnel(pool, filters=filters, cat_median_ters=cat_median_ters,
+                               weights=self.cfg.get("score_weights"))
 
             # Match PMS manager names
             pms_strategies = conn.execute(
@@ -172,7 +187,8 @@ class ScreeningService:
                 ),
             )
 
-            as_of_val = rows[0]["as_of"] if rows else datetime.now(UTC).strftime("%Y-%m-%d")
+            today = datetime.now(UTC).strftime("%Y-%m-%d")
+            as_of_val = max((r["as_of"] for r in rows if r["as_of"] <= today), default=today)
 
             return {
                 "data": {
@@ -181,6 +197,7 @@ class ScreeningService:
                     "counts": res["counts"],
                     "action": res["action"],
                     "retain": res["retain"],
+                    "dropped": res["dropped"],
                 },
                 "availability": "ready" if rows else "unavailable",
                 "freshness": "current" if rows else "stale",
@@ -259,7 +276,9 @@ class ScreeningService:
                 "SELECT * FROM screening_presets WHERE staff_id = ? ORDER BY updated_at DESC",
                 (staff_id,),
             ).fetchall()
-            return [
+            builtin = [{"id": p["id"], "name": p["name"], "filters": p["filters"], "created_at": "", "updated_at": "", "builtin": True}
+                       for p in self.cfg.get("presets", [])]
+            return builtin + [
                 {
                     "id": r["id"],
                     "name": r["name"],
@@ -331,7 +350,7 @@ class ScreeningService:
             for c in selected_cols:
                 if c not in headers:
                     headers.append(c)
-            headers.extend(["ret_1y", "cagr_3y", "cagr_5y", "cagr_si", "quartile_source", "action_status"])
+            headers.extend(["score", "ret_1y", "cagr_3y", "cagr_5y", "cagr_si", "quartile_source", "action_status"])
 
             output = io.StringIO()
             writer = csv.writer(output)

@@ -94,9 +94,9 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
       aria-labelledby="pms-drawer-title"
       onClick={onClose}
     >
-      <div className="absolute inset-y-0 right-0 flex max-w-full pl-4 sm:pl-10">
+      <div className="absolute inset-0 flex">
         <div
-          className="w-screen max-w-lg bg-[#FFFFFF] dark:bg-[#10151C] border-l border-[#E4E9EF] dark:border-[#2B3644] flex flex-col shadow-2xl"
+          className="w-full h-full bg-[#FFFFFF] dark:bg-[#10151C] flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -133,17 +133,17 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
             <button
               type="button"
               onClick={onClose}
-              className="text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] p-1.5 rounded-md hover:bg-[#E4E9EF] dark:hover:bg-[#2B3644] transition shrink-0"
-              aria-label="Close drawer"
+              className="text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] p-2.5 rounded-md hover:bg-[#E4E9EF] dark:hover:bg-[#2B3644] transition shrink-0"
+              aria-label="Close"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {/* Scrollable Body */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+          <div className="flex-1 overflow-y-auto"><div className="mx-auto w-full max-w-5xl p-4 sm:p-8 space-y-4">
             {pmsReturnWarning(strategy) && (
               <div className="terminal-panel p-3 text-[12px] text-[#B45309] dark:text-[#FBBF24] bg-[#B45309]/5 border border-[#B45309]/20">
                 ⚠ {pmsReturnWarning(strategy)}
@@ -411,7 +411,7 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                 APMI Portal ↗
               </a>
             </div>
-          </div>
+          </div></div>
         </div>
       </div>
     </div>

@@ -28,6 +28,8 @@ ANCHORS = "els => els.map(a => ({h: a.href, t: (a.innerText || '').replace(/\\s+
 
 
 def goto(page: Page, url: str) -> list[dict]:
+    # Log blocked responses so a publisher firewall shows up in the CI log instead of as a silent empty result.
+    page.on("response", lambda r: print(f"  blocked {r.status} {r.url[:110]}") if r.status in (401, 403, 429) else None)
     page.goto(url, wait_until="networkidle", timeout=90_000)
     page.wait_for_timeout(2500)
     return page.eval_on_selector_all("a[href]", ANCHORS)

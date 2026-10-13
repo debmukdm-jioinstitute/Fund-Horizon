@@ -171,6 +171,9 @@ export interface PmsStrategyItem {
   service_type?: string;
   ia_id?: string;
   aum_crore?: number;
+  min_investment?: string;
+  inception_date?: string;
+  principal_officer?: string;
   return_1m_pct?: number;
   return_3m_pct?: number;
   return_6m_pct?: number;
@@ -180,7 +183,253 @@ export interface PmsStrategyItem {
   return_since_inception_pct?: number;
   benchmark_name?: string;
   report_month?: string;
+  is_fh_recommended?: boolean;
 }
+
+export const FH_RECOMMENDED_PMS: PmsStrategyItem[] = [
+  {
+    id: "fh-pms-1",
+    provider_name: "Stallion Asset Private Ltd",
+    strategy_name: "Stallion Asset Private Ltd - Core Fund",
+    investment_approach: "Multicap & Flexicap",
+    strategy_type: "Multicap & Flexicap",
+    service_type: "Discretionary",
+    aum_crore: 6992,
+    min_investment: "₹5,00,00,000",
+    inception_date: "22 October 2018",
+    principal_officer: "Mr. Amit Jeswani",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 17.67,
+    return_3m_pct: 5.07,
+    return_6m_pct: -2.21,
+    return_1y_pct: 15.31,
+    return_3y_cagr_pct: 39.14,
+    return_5y_cagr_pct: 25.90,
+    return_since_inception_pct: 21.25,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-2",
+    provider_name: "Emkay Investment Managers",
+    strategy_name: "Emkay Capital Builder Strategy",
+    investment_approach: "Multicap & Flexicap",
+    strategy_type: "Multicap & Flexicap",
+    service_type: "Discretionary",
+    aum_crore: 472,
+    min_investment: "₹50,00,000",
+    inception_date: "1 April 2013",
+    principal_officer: "Sachin Shah",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 7.17,
+    return_3m_pct: -6.14,
+    return_6m_pct: -6.90,
+    return_1y_pct: 5.78,
+    return_3y_cagr_pct: 17.24,
+    return_5y_cagr_pct: 17.10,
+    return_since_inception_pct: 8.85,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-3",
+    provider_name: "ICICI Prudential AMC",
+    strategy_name: "ICICI Prudential AMC - Value Strategy",
+    investment_approach: "Multicap & Flexicap",
+    strategy_type: "Multicap & Flexicap",
+    service_type: "Discretionary",
+    aum_crore: 1096,
+    min_investment: "₹50,00,000",
+    inception_date: "31 March 2007",
+    principal_officer: "Anand Shah",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 10.49,
+    return_3m_pct: 2.44,
+    return_6m_pct: 3.88,
+    return_1y_pct: 10.50,
+    return_3y_cagr_pct: 24.63,
+    return_5y_cagr_pct: 21.98,
+    return_since_inception_pct: 6.46,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-4",
+    provider_name: "Buoyant Capital",
+    strategy_name: "Buoyant Capital - Opportunities",
+    investment_approach: "Multicap & Flexicap",
+    strategy_type: "Multicap & Flexicap",
+    service_type: "Discretionary",
+    aum_crore: 10275,
+    min_investment: "₹50,00,000",
+    inception_date: "1 June 2016",
+    principal_officer: "Sachin Khivasara",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 9.87,
+    return_3m_pct: -0.55,
+    return_6m_pct: -0.25,
+    return_1y_pct: 8.11,
+    return_3y_cagr_pct: 18.92,
+    return_5y_cagr_pct: 20.92,
+    return_since_inception_pct: 12.03,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-5",
+    provider_name: "SageOne Investment Managers",
+    strategy_name: "SageOne Investment Managers - Large and Midcap",
+    investment_approach: "Large & Midcap",
+    strategy_type: "Large & Midcap",
+    service_type: "Discretionary",
+    aum_crore: 213,
+    min_investment: "₹50,00,000",
+    inception_date: "1 April 2022",
+    principal_officer: "Satish Kothari",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 10.20,
+    return_3m_pct: 1.40,
+    return_6m_pct: -8.60,
+    return_1y_pct: 0.78,
+    return_3y_cagr_pct: undefined,
+    return_5y_cagr_pct: undefined,
+    return_since_inception_pct: 8.41,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-6",
+    provider_name: "Carnelian AMA Pvt Ltd",
+    strategy_name: "Carnelian AMA Pvt Ltd - Capital Compounders",
+    investment_approach: "Multicap & Flexicap",
+    strategy_type: "Multicap & Flexicap",
+    service_type: "Discretionary",
+    aum_crore: 1731,
+    min_investment: "₹50,00,000",
+    inception_date: "15 May 2019",
+    principal_officer: "Kunal Shah",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 12.70,
+    return_3m_pct: 0.66,
+    return_6m_pct: -2.83,
+    return_1y_pct: 15.08,
+    return_3y_cagr_pct: 24.16,
+    return_5y_cagr_pct: 17.74,
+    return_since_inception_pct: 13.48,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-7",
+    provider_name: "Abakkus Asset Manager",
+    strategy_name: "Abakkus Asset Manager - Emerging Opportunities",
+    investment_approach: "Small & Midcap",
+    strategy_type: "Small & Midcap",
+    service_type: "Discretionary",
+    aum_crore: 5753,
+    min_investment: "₹50,00,000",
+    inception_date: "29 October 2020",
+    principal_officer: "Sunil Singhania",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 15.89,
+    return_3m_pct: 3.56,
+    return_6m_pct: -2.72,
+    return_1y_pct: -2.39,
+    return_3y_cagr_pct: 18.14,
+    return_5y_cagr_pct: 16.64,
+    return_since_inception_pct: 7.28,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-8",
+    provider_name: "360 ONE Asset Management",
+    strategy_name: "360 ONE Multicap PMS",
+    investment_approach: "Multicap & Flexicap",
+    strategy_type: "Multicap & Flexicap",
+    service_type: "Discretionary",
+    aum_crore: 3064,
+    min_investment: "₹50,00,000",
+    inception_date: "7 November 2013",
+    principal_officer: "Nishant Vass",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 12.04,
+    return_3m_pct: -1.65,
+    return_6m_pct: -4.57,
+    return_1y_pct: -3.95,
+    return_3y_cagr_pct: 10.85,
+    return_5y_cagr_pct: 10.38,
+    return_since_inception_pct: 1.96,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-9",
+    provider_name: "Sundaram Alternate Assets",
+    strategy_name: "Sundaram Alternate Assets - SELF Portfolio",
+    investment_approach: "Mid Cap",
+    strategy_type: "Mid Cap",
+    service_type: "Discretionary",
+    aum_crore: 924,
+    min_investment: "₹50,00,000",
+    inception_date: "1 June 2010",
+    principal_officer: "Mr Darshan Engineer",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 22.23,
+    return_3m_pct: 17.28,
+    return_6m_pct: 13.10,
+    return_1y_pct: 35.06,
+    return_3y_cagr_pct: 24.42,
+    return_5y_cagr_pct: 17.47,
+    return_since_inception_pct: 18.49,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-10",
+    provider_name: "Sundaram Alternate Assets",
+    strategy_name: "Sundaram Alternate Assets - SISOP",
+    investment_approach: "Multi Cap & Flexi Cap",
+    strategy_type: "Multi Cap & Flexi Cap",
+    service_type: "Discretionary",
+    aum_crore: 1628,
+    min_investment: "₹50,00,000",
+    inception_date: "1 February 2010",
+    principal_officer: "Mr Darshan Engineer",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 21.91,
+    return_3m_pct: 16.43,
+    return_6m_pct: 11.02,
+    return_1y_pct: 36.41,
+    return_3y_cagr_pct: 25.32,
+    return_5y_cagr_pct: 18.67,
+    return_since_inception_pct: 24.53,
+    is_fh_recommended: true,
+  },
+  {
+    id: "fh-pms-11",
+    provider_name: "Sundaram Alternate Assets",
+    strategy_name: "Sundaram Alternate Assets - Rising Stars",
+    investment_approach: "Small Cap",
+    strategy_type: "Small Cap",
+    service_type: "Discretionary",
+    aum_crore: 98.76,
+    min_investment: "₹50,00,000",
+    inception_date: "1 November 2009",
+    principal_officer: "Mr Darshan Engineer",
+    benchmark_name: "S&P BSE 500 TRI",
+    return_1m_pct: 22.20,
+    return_3m_pct: 19.55,
+    return_6m_pct: 14.50,
+    return_1y_pct: 42.31,
+    return_3y_cagr_pct: 18.44,
+    return_5y_cagr_pct: 17.38,
+    return_since_inception_pct: 16.79,
+    is_fh_recommended: true,
+  },
+];
+
+export const FH_RECOMMENDED_BENCHMARK = {
+  name: "Benchmark — S&P BSE 500 TRI",
+  return_1m_pct: 10.38,
+  return_3m_pct: -1.73,
+  return_6m_pct: -4.33,
+  return_1y_pct: 3.64,
+  return_3y_cagr_pct: 14.94,
+  return_5y_cagr_pct: 13.88,
+  return_since_inception_pct: 14.86,
+};
 
 export interface PmsProviderItem {
   apmi_id: string;
@@ -496,27 +745,65 @@ export const getFlows = async (start?: string, end?: string): Promise<Backoffice
 };
 
 export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategyItem[]>> => {
-  const raw = await boFetch<Json>("/api/backoffice/pms/strategies");
-  const asOn = str(raw.as_on);
-  const data = arr(raw.data).map<PmsStrategyItem>((r) => ({
-    provider_name: str(r.provider) ?? "—",
-    strategy_name: str(r.strategy_name) ?? "—",
-    investment_approach: str(r.strategy_type),
-    strategy_type: str(r.strategy_type),
-    service_type: str(r.service_type),
-    ia_id: str(r.ia_id),
-    aum_crore: num(r.aum_crore),
-    return_1m_pct: num(r.return_1m),
-    return_3m_pct: num(r.return_3m),
-    return_6m_pct: num(r.return_6m),
-    return_1y_pct: num(r.return_1y),
-    return_3y_cagr_pct: num(r.return_3y),
-    return_5y_cagr_pct: num(r.return_5y),
-    return_since_inception_pct: num(r.return_since_inception),
-    report_month: str(r.as_on) ?? asOn,
-  }));
-  const env = envelope(raw, data, "unavailable");
-  env.as_of = asOn;
+  let raw: Json = {};
+  let apiItems: PmsStrategyItem[] = [];
+  let asOn = "";
+  try {
+    raw = await boFetch<Json>("/api/backoffice/pms/strategies");
+    asOn = str(raw.as_on) || "";
+    apiItems = arr(raw.data).map<PmsStrategyItem>((r) => ({
+      provider_name: str(r.provider) ?? "—",
+      strategy_name: str(r.strategy_name) ?? "—",
+      investment_approach: str(r.strategy_type),
+      strategy_type: str(r.strategy_type),
+      service_type: str(r.service_type),
+      ia_id: str(r.ia_id),
+      aum_crore: num(r.aum_crore),
+      return_1m_pct: num(r.return_1m),
+      return_3m_pct: num(r.return_3m),
+      return_6m_pct: num(r.return_6m),
+      return_1y_pct: num(r.return_1y),
+      return_3y_cagr_pct: num(r.return_3y),
+      return_5y_cagr_pct: num(r.return_5y),
+      return_since_inception_pct: num(r.return_since_inception),
+      report_month: str(r.as_on) ?? asOn,
+    }));
+  } catch {
+    // boFetch failure fallback
+  }
+
+  // Merge with FH Recommended strategies
+  const recMap = new Map<string, PmsStrategyItem>();
+  FH_RECOMMENDED_PMS.forEach((rec) => {
+    recMap.set(rec.strategy_name.toLowerCase(), rec);
+  });
+
+  const merged: PmsStrategyItem[] = [];
+  const matchedRecs = new Set<string>();
+
+  for (const item of apiItems) {
+    const key = item.strategy_name.toLowerCase();
+    const rec = recMap.get(key);
+    if (rec) {
+      matchedRecs.add(key);
+      merged.push({
+        ...item,
+        ...rec,
+        is_fh_recommended: true,
+      });
+    } else {
+      merged.push(item);
+    }
+  }
+
+  for (const rec of FH_RECOMMENDED_PMS) {
+    if (!matchedRecs.has(rec.strategy_name.toLowerCase())) {
+      merged.unshift(rec);
+    }
+  }
+
+  const env = envelope(raw, merged, merged.length > 0 ? "ready" : "unavailable");
+  env.as_of = asOn || "Latest";
   return env;
 };
 

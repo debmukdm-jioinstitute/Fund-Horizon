@@ -6,6 +6,7 @@ import {
   getPmsAccountTracker,
   PmsStrategyItem,
   PmsAccountTrackerData,
+  FH_RECOMMENDED_BENCHMARK,
 } from "@/lib/backoffice";
 import { formatCurrencyPaiseToINR } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
@@ -22,6 +23,7 @@ export default function PmsTrackerPage() {
 
   // Strategy filters & search
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [fhSubTab, setFhSubTab] = useState<"returns" | "details">("returns");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -54,15 +56,22 @@ export default function PmsTrackerPage() {
     }
   }
 
+  const isRecommended = categoryFilter === "fh-recommended";
+  const fhRecCount = strategies.filter((s) => s.is_fh_recommended).length || 11;
+
   const filteredStrategies = strategies.filter((s) => {
-    const matchesCat =
-      categoryFilter === "all" ||
-      s.investment_approach?.toLowerCase().includes(categoryFilter.toLowerCase());
+    if (isRecommended) {
+      if (!s.is_fh_recommended) return false;
+    } else if (categoryFilter !== "all") {
+      const matchesCat = s.investment_approach?.toLowerCase().includes(categoryFilter.toLowerCase());
+      if (!matchesCat) return false;
+    }
     const matchesSearch =
       !search ||
       s.strategy_name?.toLowerCase().includes(search.toLowerCase()) ||
-      s.provider_name?.toLowerCase().includes(search.toLowerCase());
-    return matchesCat && matchesSearch;
+      s.provider_name?.toLowerCase().includes(search.toLowerCase()) ||
+      (s.principal_officer && s.principal_officer.toLowerCase().includes(search.toLowerCase()));
+    return matchesSearch;
   });
 
   return (
@@ -118,82 +127,260 @@ export default function PmsTrackerPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search PMS provider or strategy name…"
+                placeholder="Search PMS provider, strategy or manager…"
                 className="terminal-input w-full max-w-xs text-[12px] py-1 px-2.5"
               />
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="terminal-input text-[12px] py-1 px-2.5"
+                className="terminal-input text-[12px] py-1 px-2.5 font-medium"
               >
                 <option value="all">All Approaches</option>
+                <option value="fh-recommended">★ FH Recommended ({fhRecCount})</option>
                 <option value="equity">Equity</option>
                 <option value="multi-asset">Multi-Asset</option>
                 <option value="debt">Debt</option>
               </select>
+
+              {/* Quick filter toggle for FH Recommended */}
+              <button
+                type="button"
+                onClick={() => setCategoryFilter(categoryFilter === "fh-recommended" ? "all" : "fh-recommended")}
+                className={`terminal-btn text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer ${
+                  categoryFilter === "fh-recommended"
+                    ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE]"
+                    : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#006F64] dark:text-[#75E1CE] border-[#006F64]/40 hover:border-[#006F64]"
+                }`}
+              >
+                <span className="text-[12px]">★</span>
+                <span>FH Recommended ({fhRecCount})</span>
+              </button>
             </div>
             <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono shrink-0">
               Source: <a href="https://www.apmiindia.org" target="_blank" rel="noreferrer" className="underline hover:text-[#172033] dark:hover:text-[#EDF2F7]">APMI Disclosures</a>
             </div>
           </div>
 
+          {/* Sub-view toggle when FH Recommended is active */}
+          {isRecommended && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+              <div className="flex items-center gap-1 bg-[#F0F3F6] dark:bg-[#202936] p-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]">
+                <button
+                  type="button"
+                  onClick={() => setFhSubTab("returns")}
+                  className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${
+                    fhSubTab === "returns"
+                      ? "bg-white dark:bg-[#10151C] text-[#172033] dark:text-[#EDF2F7] shadow-sm"
+                      : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+                  }`}
+                >
+                  Returns Comparison vs Benchmark
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFhSubTab("details")}
+                  className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${
+                    fhSubTab === "details"
+                      ? "bg-white dark:bg-[#10151C] text-[#172033] dark:text-[#EDF2F7] shadow-sm"
+                      : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+                  }`}
+                >
+                  Fund Details &amp; Structure
+                </button>
+              </div>
+              <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+                Click any fund to inspect complete factsheet &amp; history
+              </span>
+            </div>
+          )}
+
           {/* Strategy Table */}
           <div className="terminal-panel overflow-hidden">
             <div className="overflow-x-auto">
               <table className="terminal-table">
                 <thead>
-                  <tr>
-                    <th className="w-[30%]">Provider / Strategy</th>
-                    <th className="w-[14%]">Approach</th>
-                    <th className="w-[12%] text-right">AUM (₹ Cr)</th>
-                    <th className="w-[10%] text-right">1M Return</th>
-                    <th className="w-[10%] text-right">1Y Return</th>
-                    <th className="w-[12%] text-right">3Y CAGR</th>
-                    <th className="w-[12%]">Benchmark</th>
-                  </tr>
+                  {isRecommended ? (
+                    fhSubTab === "returns" ? (
+                      <tr>
+                        <th className="w-[5%] text-center">SR</th>
+                        <th className="w-[30%]">PMS</th>
+                        <th className="w-[9%] text-right">1M</th>
+                        <th className="w-[9%] text-right">3M</th>
+                        <th className="w-[9%] text-right">6M</th>
+                        <th className="w-[9%] text-right">1Y</th>
+                        <th className="w-[9%] text-right">3Y</th>
+                        <th className="w-[9%] text-right">5Y</th>
+                        <th className="w-[11%] text-right">Since Inception</th>
+                      </tr>
+                    ) : (
+                      <tr>
+                        <th className="w-[5%] text-center">SR</th>
+                        <th className="w-[28%]">PMS</th>
+                        <th className="w-[14%]">Type</th>
+                        <th className="w-[10%] text-right">AUM</th>
+                        <th className="w-[12%] text-right">Min Investment</th>
+                        <th className="w-[11%]">Inception</th>
+                        <th className="w-[12%]">Principal Officer</th>
+                        <th className="w-[8%]">Benchmark</th>
+                      </tr>
+                    )
+                  ) : (
+                    <tr>
+                      <th className="w-[30%]">Provider / Strategy</th>
+                      <th className="w-[14%]">Approach</th>
+                      <th className="w-[12%] text-right">AUM (₹ Cr)</th>
+                      <th className="w-[10%] text-right">1M Return</th>
+                      <th className="w-[10%] text-right">1Y Return</th>
+                      <th className="w-[12%] text-right">3Y CAGR</th>
+                      <th className="w-[12%]">Benchmark</th>
+                    </tr>
+                  )}
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      <td colSpan={isRecommended ? 9 : 7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
                         Loading PMS strategies…
                       </td>
                     </tr>
                   ) : filteredStrategies.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      <td colSpan={isRecommended ? 9 : 7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
                         No PMS strategies found matching query.
                       </td>
                     </tr>
                   ) : (
-                    filteredStrategies.map((s, idx) => (
-                      <tr key={idx}>
-                        <td>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedStrategy(s)}
-                            className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
-                          >
-                            <span className="group-hover:opacity-90">{s.strategy_name}</span>
-                          </button>
-                          <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">{s.provider_name}</div>
-                        </td>
-                        <td className="text-[#536176] dark:text-[#A8B4C4]">{s.investment_approach || "Equity"}</td>
-                        <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                          {s.aum_crore ? `₹${s.aum_crore.toLocaleString()}` : "—"}
-                        </td>
-                        <td className="text-right">
-                          <SignedValue value={s.return_1m_pct} unit="%" />
-                        </td>
-                        <td className="text-right">
-                          <SignedValue value={s.return_1y_pct} unit="%" />
-                        </td>
-                        <td className="text-right">
-                          <SignedValue value={s.return_3y_cagr_pct} unit="%" />
-                        </td>
-                        <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{s.benchmark_name || "NIFTY 50 TRI"}</td>
-                      </tr>
-                    ))
+                    <>
+                      {filteredStrategies.map((s, idx) => (
+                        <tr key={idx}>
+                          {isRecommended && (
+                            <td className="text-center font-mono text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                              {idx + 1}
+                            </td>
+                          )}
+
+                          <td>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedStrategy(s)}
+                              className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
+                            >
+                              <span className="group-hover:opacity-90">{s.strategy_name}</span>
+                            </button>
+                            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
+                              <span>{s.provider_name}</span>
+                              {s.is_fh_recommended && !isRecommended && (
+                                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#006F64]/10 text-[#006F64] dark:bg-[#75E1CE]/15 dark:text-[#75E1CE] font-medium border border-[#006F64]/20">
+                                  ★ FH Rec
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          {isRecommended ? (
+                            fhSubTab === "returns" ? (
+                              <>
+                                <td className="text-right">
+                                  <SignedValue value={s.return_1m_pct} unit="%" />
+                                </td>
+                                <td className="text-right">
+                                  <SignedValue value={s.return_3m_pct} unit="%" />
+                                </td>
+                                <td className="text-right">
+                                  <SignedValue value={s.return_6m_pct} unit="%" />
+                                </td>
+                                <td className="text-right">
+                                  <SignedValue value={s.return_1y_pct} unit="%" />
+                                </td>
+                                <td className="text-right">
+                                  <SignedValue value={s.return_3y_cagr_pct} unit="%" />
+                                </td>
+                                <td className="text-right">
+                                  <SignedValue value={s.return_5y_cagr_pct} unit="%" />
+                                </td>
+                                <td className="text-right font-medium">
+                                  <SignedValue value={s.return_since_inception_pct} unit="%" />
+                                </td>
+                              </>
+                            ) : (
+                              <>
+                                <td className="text-[#536176] dark:text-[#A8B4C4]">
+                                  {s.investment_approach || s.strategy_type || "Multicap & Flexicap"}
+                                </td>
+                                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7] font-mono">
+                                  {s.aum_crore ? `₹${s.aum_crore.toLocaleString()} Cr` : "—"}
+                                </td>
+                                <td className="text-right text-[#536176] dark:text-[#A8B4C4] font-mono">
+                                  {s.min_investment || "₹50,00,000"}
+                                </td>
+                                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                                  {s.inception_date || "—"}
+                                </td>
+                                <td className="text-[12px] text-[#172033] dark:text-[#EDF2F7]">
+                                  {s.principal_officer || "—"}
+                                </td>
+                                <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                                  {s.benchmark_name || "S&P BSE 500 TRI"}
+                                </td>
+                              </>
+                            )
+                          ) : (
+                            <>
+                              <td className="text-[#536176] dark:text-[#A8B4C4]">{s.investment_approach || "Equity"}</td>
+                              <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                                {s.aum_crore ? `₹${s.aum_crore.toLocaleString()} Cr` : "—"}
+                              </td>
+                              <td className="text-right">
+                                <SignedValue value={s.return_1m_pct} unit="%" />
+                              </td>
+                              <td className="text-right">
+                                <SignedValue value={s.return_1y_pct} unit="%" />
+                              </td>
+                              <td className="text-right">
+                                <SignedValue value={s.return_3y_cagr_pct} unit="%" />
+                              </td>
+                              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{s.benchmark_name || "NIFTY 50 TRI"}</td>
+                            </>
+                          )}
+                        </tr>
+                      ))}
+
+                      {/* Benchmark comparison row when viewing FH Recommended in Returns mode */}
+                      {isRecommended && fhSubTab === "returns" && (
+                        <tr className="bg-[#FAF3E0] dark:bg-[#2A2315] font-medium border-t-2 border-[#D97706]/60">
+                          <td className="text-center font-mono text-[11px] text-[#92400E] dark:text-[#FBBF24]">★</td>
+                          <td>
+                            <div className="font-semibold text-[#92400E] dark:text-[#FBBF24]">
+                              {FH_RECOMMENDED_BENCHMARK.name}
+                            </div>
+                            <div className="text-[11px] text-[#92400E]/80 dark:text-[#FBBF24]/80">
+                              Official Benchmark Index Comparison
+                            </div>
+                          </td>
+                          <td className="text-right font-medium">
+                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_1m_pct} unit="%" />
+                          </td>
+                          <td className="text-right font-medium">
+                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_3m_pct} unit="%" />
+                          </td>
+                          <td className="text-right font-medium">
+                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_6m_pct} unit="%" />
+                          </td>
+                          <td className="text-right font-medium">
+                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_1y_pct} unit="%" />
+                          </td>
+                          <td className="text-right font-medium">
+                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_3y_cagr_pct} unit="%" />
+                          </td>
+                          <td className="text-right font-medium">
+                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_5y_cagr_pct} unit="%" />
+                          </td>
+                          <td className="text-right font-medium">
+                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_since_inception_pct} unit="%" />
+                          </td>
+                        </tr>
+                      )}
+                    </>
                   )}
                 </tbody>
               </table>

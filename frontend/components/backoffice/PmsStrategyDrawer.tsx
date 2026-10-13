@@ -56,14 +56,14 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
     }
   }
 
-  const horizons: { label: string; period: string; val: number | undefined }[] = [
-    { label: "1 Month", period: "Short-term", val: strategy.return_1m_pct },
-    { label: "3 Month", period: "Quarterly", val: strategy.return_3m_pct },
-    { label: "6 Month", period: "Half-yearly", val: strategy.return_6m_pct },
-    { label: "1 Year", period: "Annual", val: strategy.return_1y_pct },
-    { label: "3 Year CAGR", period: "Annualized", val: strategy.return_3y_cagr_pct },
-    { label: "5 Year CAGR", period: "Annualized", val: strategy.return_5y_cagr_pct },
-    { label: "Since Inception", period: "Full Track Record", val: strategy.return_since_inception_pct },
+  const horizons: { label: string; period: string; val: number | undefined; bmk?: number }[] = [
+    { label: "1 Month", period: "Short-term", val: strategy.return_1m_pct, bmk: strategy.is_fh_recommended ? 10.38 : undefined },
+    { label: "3 Month", period: "Quarterly", val: strategy.return_3m_pct, bmk: strategy.is_fh_recommended ? -1.73 : undefined },
+    { label: "6 Month", period: "Half-yearly", val: strategy.return_6m_pct, bmk: strategy.is_fh_recommended ? -4.33 : undefined },
+    { label: "1 Year", period: "Annual", val: strategy.return_1y_pct, bmk: strategy.is_fh_recommended ? 3.64 : undefined },
+    { label: "3 Year CAGR", period: "Annualized", val: strategy.return_3y_cagr_pct, bmk: strategy.is_fh_recommended ? 14.94 : undefined },
+    { label: "5 Year CAGR", period: "Annualized", val: strategy.return_5y_cagr_pct, bmk: strategy.is_fh_recommended ? 13.88 : undefined },
+    { label: "Since Inception", period: "Full Track Record", val: strategy.return_since_inception_pct, bmk: strategy.is_fh_recommended ? 14.86 : undefined },
   ];
 
   return (
@@ -83,6 +83,11 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
           <div className="p-4 sm:p-5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F7F9FB] dark:bg-[#171E27]">
             <div>
               <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                {strategy.is_fh_recommended && (
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#006F64] text-white font-semibold dark:bg-[#75E1CE] dark:text-[#10151C]">
+                    ★ FH Recommended
+                  </span>
+                )}
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#006F64]/10 dark:bg-[#75E1CE]/15 text-[#006F64] dark:text-[#75E1CE] font-semibold border border-[#006F64]/20 dark:border-[#75E1CE]/30">
                   PMS Strategy
                 </span>
@@ -130,10 +135,37 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
 
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Benchmark</div>
-                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.benchmark_name || "NIFTY 50 TRI"}>
-                  {strategy.benchmark_name || "NIFTY 50 TRI"}
+                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.benchmark_name || "S&P BSE 500 TRI"}>
+                  {strategy.benchmark_name || "S&P BSE 500 TRI"}
                 </div>
               </div>
+
+              {strategy.min_investment && (
+                <div className="terminal-panel p-3">
+                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Min Investment</div>
+                  <div className="text-[14px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                    {strategy.min_investment}
+                  </div>
+                </div>
+              )}
+
+              {strategy.inception_date && (
+                <div className="terminal-panel p-3">
+                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Inception Date</div>
+                  <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                    {strategy.inception_date}
+                  </div>
+                </div>
+              )}
+
+              {strategy.principal_officer && (
+                <div className="terminal-panel p-3 col-span-2">
+                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Principal Officer</div>
+                  <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                    {strategy.principal_officer}
+                  </div>
+                </div>
+              )}
 
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Report As-Of Month</div>
@@ -143,9 +175,9 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
               </div>
 
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Approach / IA ID</div>
-                <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.ia_id || "Registered"}>
-                  {strategy.ia_id || "Registered Strategy"}
+                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Approach / Category</div>
+                <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={strategy.investment_approach || strategy.strategy_type || "Registered"}>
+                  {strategy.investment_approach || strategy.strategy_type || "Registered Strategy"}
                 </div>
               </div>
             </div>
@@ -166,18 +198,37 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                     <th>Horizon</th>
                     <th>Type</th>
                     <th className="text-right">Return</th>
+                    {strategy.is_fh_recommended && (
+                      <>
+                        <th className="text-right">Benchmark (BSE 500)</th>
+                        <th className="text-right">Alpha (Spread)</th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
-                  {horizons.map((h, i) => (
-                    <tr key={i}>
-                      <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{h.label}</td>
-                      <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">{h.period}</td>
-                      <td className="text-right font-medium">
-                        <SignedValue value={h.val} unit="%" />
-                      </td>
-                    </tr>
-                  ))}
+                  {horizons.map((h, i) => {
+                    const alpha = (h.val !== undefined && h.bmk !== undefined) ? (h.val - h.bmk) : undefined;
+                    return (
+                      <tr key={i}>
+                        <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{h.label}</td>
+                        <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">{h.period}</td>
+                        <td className="text-right font-medium">
+                          <SignedValue value={h.val} unit="%" />
+                        </td>
+                        {strategy.is_fh_recommended && (
+                          <>
+                            <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                              <SignedValue value={h.bmk} unit="%" />
+                            </td>
+                            <td className="text-right font-medium">
+                              <SignedValue value={alpha} unit="%" />
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

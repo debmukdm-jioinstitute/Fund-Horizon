@@ -37,7 +37,7 @@ export default function MutualFundsTrackerPage() {
           </p>
         </div>
         <StatusBadge
-          availability="ready"
+          availability={schemes.length > 0 ? "ready" : "unavailable"}
           freshness="current"
           frequency="daily"
           sourceName="AMFI Portal"
@@ -94,7 +94,7 @@ export default function MutualFundsTrackerPage() {
               ) : schemes.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-8 text-center text-sand-500 font-sans">
-                    No matching schemes found. All 8 AMFI columns are normalized from NAVAll.txt.
+                    No schemes loaded yet. The AMFI NAV file is fetched automatically; try again in a minute.
                   </td>
                 </tr>
               ) : (
@@ -103,7 +103,7 @@ export default function MutualFundsTrackerPage() {
                     <td className="py-3 px-4 font-bold text-forest-800">{s.scheme_code}</td>
                     <td className="py-3 px-4 font-sans max-w-md">
                       <div className="font-semibold text-sand-900 leading-snug">{s.scheme_name}</div>
-                      <div className="text-[11px] text-sand-500">{s.amc_name || s.category || "Equity"}</div>
+                      <div className="text-[11px] text-sand-500">{[s.amc_name, s.category].filter(Boolean).join(" • ") || "—"}</div>
                     </td>
                     <td className="py-3 px-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
@@ -111,7 +111,7 @@ export default function MutualFundsTrackerPage() {
                           ? "bg-purple-50 text-purple-700 border border-purple-200"
                           : "bg-blue-50 text-blue-700 border border-blue-200"
                       }`}>
-                        {s.plan || "Regular"}
+                        {s.plan || "—"}
                       </span>
                     </td>
                     <td className="py-3 px-3 font-bold text-sand-950">

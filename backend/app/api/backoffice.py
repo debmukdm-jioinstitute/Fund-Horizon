@@ -20,6 +20,7 @@ from app.api.auth import (
 )
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import refresh_source
+from app.backoffice.providers.nse import NseError
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
 from app.backoffice.repository import BackofficeRepository
 from app.backoffice.schemas import (
@@ -64,11 +65,12 @@ def backoffice_overview(staff: Annotated[dict, Depends(require_staff)]):
 
 @router.get("/yields")
 def backoffice_yields(staff: Annotated[dict, Depends(require_staff)]):
-    """Sovereign tenor curves and cross-country spreads (India, US)."""
+    """Sovereign tenor curves and cross-country spreads, from live-collected observations."""
+    board = _SERVICE.get_yields_board()
     return {
-        "data": _SERVICE.get_yields_board(),
-        "as_of": "2026-10-09",
-        "availability": "ready",
+        "data": board,
+        "as_of": board.get("as_of"),
+        "availability": board.get("status", "unavailable"),
         "freshness": "current",
     }
 
@@ -89,7 +91,7 @@ def backoffice_derivatives(
         "data": board,
         "as_of": board.get("snapshot_timestamp"),
         "availability": board.get("status", "ready"),
-        "freshness": "current" if board.get("status") == "ready" else "manual_only",
+        "freshness": "current" if board.get("live_status") == "live" else "stale",
     }
 
 
@@ -109,8 +111,8 @@ def backoffice_flows(
         "data": flows,
         "count": len(flows),
         "unit": "inr_crore",
-        "availability": "ready" if flows else "manual_only",
-        "freshness": "current" if flows else "manual_only",
+        "availability": "ready" if flows else "unavailable",
+        "freshness": "current" if flows else "stale",
     }
 
 
@@ -222,14 +224,20 @@ def _enrich_pms_tracker(tracker: dict[str, Any]) -> dict[str, Any]:
 
 @router.get("/micro/issuers/{symbol}")
 def backoffice_micro_issuer(symbol: str, staff: Annotated[dict, Depends(require_staff)]):
-    """Issuer fundamentals. Free automated filings are unavailable, so this is manual-import only."""
-    return {
-        "data": None,
-        "symbol": symbol.upper(),
-        "availability": "manual_only",
-        "freshness": "current",
-        "message": "No issuer statements imported yet. Upload issuer fundamentals via Data Health.",
-    }
+    """Latest quarterly results for a listed issuer, fetched live from NSE (cached six hours)."""
+    try:
+        data = _SERVICE.get_issuer_fundamentals(symbol)
+    except NseError as e:
+        return {"data": None, "symbol": symbol.upper(), "availability": e.status, "freshness": "stale", "message": str(e)}
+    if data is None:
+        return {
+            "data": None,
+            "symbol": symbol.upper(),
+            "availability": "unavailable",
+            "freshness": "current",
+            "message": f"NSE has no quarterly results for {symbol.upper()}.",
+        }
+    return {"data": data, "as_of": data["fiscal_period"], "availability": "ready", "freshness": "current", "frequency": "quarterly"}
 
 
 # ---------------------------------------------------------------------------
@@ -246,17 +254,14 @@ def backoffice_mf_tracker(
     offset: int = Query(0, ge=0),
 ):
     """Search and compare mutual fund schemes with AMFI daily NAV values and metrics."""
-    db_repo = get_repository()
-    funds = db_repo.list_funds(limit=limit, offset=offset)
-    if search:
-        s = search.lower()
-        funds = [f for f in funds if s in f.get("scheme_name", "").lower() or s in str(f.get("scheme_code", ""))]
-    if amc:
-        funds = [f for f in funds if f.get("amc") == amc]
-    if category:
-        funds = [f for f in funds if f.get("category") == category]
-
-    return {"data": funds, "count": len(funds), "limit": limit, "offset": offset}
+    funds = _REPO.search_mf_schemes(search, amc, category, limit, offset)
+    return {
+        "data": funds,
+        "count": len(funds),
+        "limit": limit,
+        "offset": offset,
+        "availability": "ready" if funds else "unavailable",
+    }
 
 
 # ---------------------------------------------------------------------------

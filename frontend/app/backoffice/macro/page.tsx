@@ -1,28 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getYieldsBoard, YieldsBoardData, BackofficeEnvelope } from "@/lib/backoffice";
 import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { usePolling } from "@/components/backoffice/usePolling";
 
 export default function MacroYieldsPage() {
   const [data, setData] = useState<BackofficeEnvelope<YieldsBoardData> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const res = await getYieldsBoard();
-        setData(res);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load yields board");
-      } finally {
-        setLoading(false);
-      }
+  usePolling(async (silent) => {
+    try {
+      if (!silent) setLoading(true);
+      setData(await getYieldsBoard());
+      setError(null);
+    } catch (err: unknown) {
+      if (!silent) setError(err instanceof Error ? err.message : "Failed to load yields board");
+    } finally {
+      if (!silent) setLoading(false);
     }
-    load();
-  }, []);
+  }, [], 300_000);
 
   if (loading) {
     return (
@@ -54,7 +52,7 @@ export default function MacroYieldsPage() {
         <div>
           <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Global Sovereign Yields & Macro Board</h1>
           <p className="text-xs text-sand-600 mt-0.5">
-            India, US, UK & Japan term structure, 10Y-2Y slope & canonical bps spreads ((Y_a - Y_b) × 100)
+            Live US Treasury par yield curve, 10Y-2Y slope & India-US spread in bps ((Y_a - Y_b) × 100)
           </p>
         </div>
         <StatusBadge
@@ -86,7 +84,7 @@ export default function MacroYieldsPage() {
             <StatusBadge
               availability={yieldsData.spreads.in_us_10y_bps !== undefined ? "ready" : "unavailable"}
               freshness="current"
-              sourceName="FBIL / FRED"
+              sourceName="US Treasury + India G-Sec feed"
               units="bps"
             />
           </div>
@@ -110,7 +108,7 @@ export default function MacroYieldsPage() {
             <StatusBadge
               availability={yieldsData.spreads.us_10y_2y_bps !== undefined ? "ready" : "unavailable"}
               freshness="current"
-              sourceName="FRED"
+              sourceName="US Treasury"
               units="bps"
             />
           </div>
@@ -151,7 +149,7 @@ export default function MacroYieldsPage() {
               <p className="text-[11px] text-sand-500">G-Sec valuation benchmarks • Annual compounding convention</p>
             </div>
             <StatusBadge
-              availability="ready"
+              availability={yieldsData.curves.IN && Object.keys(yieldsData.curves.IN).length > 0 ? "ready" : "unavailable"}
               freshness="current"
               frequency="daily"
               sourceName="FBIL G-Sec"
@@ -180,7 +178,7 @@ export default function MacroYieldsPage() {
               ) : (
                 <tr>
                   <td colSpan={4} className="py-4 text-center text-sand-500 font-sans">
-                    Awaiting next FBIL publication or manual curve import.
+                    {yieldsData.india_message || "India G-Sec yields are not available from a free official feed."}
                   </td>
                 </tr>
               )}
@@ -192,15 +190,15 @@ export default function MacroYieldsPage() {
         <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-sand-900">US Treasury Curve (FRED / Treasury)</h2>
-              <p className="text-[11px] text-sand-500">Constant maturity yields • Semi-annual compounding convention</p>
+              <h2 className="text-sm font-semibold text-sand-900">US Treasury Par Yield Curve</h2>
+              <p className="text-[11px] text-sand-500">Official daily par yields • U.S. Department of the Treasury</p>
             </div>
             <StatusBadge
-              availability={yieldsData.curves.US && Object.keys(yieldsData.curves.US).length > 0 ? "ready" : "needs_key"}
+              availability={yieldsData.curves.US && Object.keys(yieldsData.curves.US).length > 0 ? "ready" : "unavailable"}
               freshness="current"
               frequency="daily"
-              sourceName="FRED API"
-              sourceUrl="https://fred.stlouisfed.org"
+              sourceName="US Treasury"
+              sourceUrl="https://home.treasury.gov/resource-center/data-chart-center/interest-rates"
             />
           </div>
           <table className="w-full text-left text-xs">
@@ -209,7 +207,7 @@ export default function MacroYieldsPage() {
                 <th className="py-2 px-3 font-medium">Tenor</th>
                 <th className="py-2 px-3 font-medium">Yield (%)</th>
                 <th className="py-2 px-3 font-medium">Observed Date</th>
-                <th className="py-2 px-3 font-medium">Series ID</th>
+                <th className="py-2 px-3 font-medium">Source</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
@@ -225,7 +223,7 @@ export default function MacroYieldsPage() {
               ) : (
                 <tr>
                   <td colSpan={4} className="py-4 text-center text-sand-500 font-sans">
-                    Requires free FRED API registration key in FRED_API_KEY.
+                    US Treasury yields have not been fetched yet.
                   </td>
                 </tr>
               )}

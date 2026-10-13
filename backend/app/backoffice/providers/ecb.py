@@ -25,6 +25,7 @@ from app.backoffice.providers.base import (
 logger = logging.getLogger("backoffice.providers.ecb")
 
 ECB_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+ECB_HIST_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"
 
 
 def compute_cross_rates(raw_rates_per_eur: dict[str, float]) -> dict[str, float]:
@@ -70,7 +71,13 @@ class EcbProvider(BaseProvider):
         )
 
     def fetch(self, cursor: str | None = None) -> FetchResult:
+        """Fetch the last ~90 business days so the impact engine has history, not just today's fixing."""
         try:
+            res = self._http_get_with_retry(ECB_HIST_URL)
+            if res.status_code == 200:
+                hist = self.parse_history_xml(res.text)
+                if hist.success:
+                    return hist
             res = self._http_get_with_retry(ECB_URL)
             if res.status_code != 200:
                 return FetchResult(
@@ -86,6 +93,41 @@ class EcbProvider(BaseProvider):
                 status="unavailable",
                 error_message=str(e),
             )
+
+    def parse_history_xml(self, xml_content: str) -> FetchResult:
+        """Parse an ECB multi-day feed: one dated Cube per day, each holding that day's currency rates."""
+        try:
+            root = ET.fromstring(xml_content)
+        except ET.ParseError as e:
+            return FetchResult(success=False, status="schema_error", error_message=f"XML parse error: {e}")
+
+        observations: list[NormalizedObservation] = []
+        latest = ""
+        for day in root.iter():
+            if day.tag.split("}")[-1] != "Cube" or "time" not in day.attrib:
+                continue
+            raw: dict[str, float] = {}
+            for child in day:
+                try:
+                    rate = float(child.attrib["rate"])
+                    if rate > 0:
+                        raw[child.attrib["currency"].upper()] = rate
+                except (KeyError, ValueError):
+                    continue
+            for inst_id, val in compute_cross_rates(raw).items():
+                observations.append(
+                    NormalizedObservation(
+                        instrument_id=inst_id,
+                        observed_at=day.attrib["time"],
+                        value_numeric=round(val, 6),
+                        frequency="daily",
+                        provenance="ECB",
+                    )
+                )
+            latest = max(latest, day.attrib["time"])
+        if not observations:
+            return FetchResult(success=False, status="schema_error", error_message="No dated rates in ECB history")
+        return FetchResult(success=True, status="ready", observations=observations, source_timestamp=latest)
 
     def parse_xml(self, xml_content: str) -> FetchResult:
         try:

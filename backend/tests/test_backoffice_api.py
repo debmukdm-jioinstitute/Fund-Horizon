@@ -61,7 +61,8 @@ def test_backoffice_yields_api(client):
     assert "india_curve" in body
     assert "us_curve" in body
     assert "india_us_10y_spread" in body
-    assert body["india_us_10y_spread"]["spread_bps"] is not None
+    # No fabricated values: the spread only exists once both 10Y yields have been collected live.
+    assert "spread_bps" in body["india_us_10y_spread"]
 
 
 def test_backoffice_derivatives_api(client):

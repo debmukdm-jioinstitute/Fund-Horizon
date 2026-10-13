@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import io
+import threading
 import time
 from datetime import UTC, datetime
 from typing import Any
@@ -28,6 +29,7 @@ from app.backoffice.analytics.yields_math import (
     compute_yield_curve_summary,
 )
 from app.backoffice.providers.manual import ManualImportValidator
+from app.backoffice.providers.nse import NSE_DERIVATIVE_UNDERLYINGS, NseError, get_nse_client
 from app.backoffice.repository import BackofficeRepository
 
 # In-memory cached market overview for ultra-low latency (<50ms) warm queries
@@ -35,64 +37,67 @@ _WARM_CACHE: dict[str, Any] = {}
 _WARM_CACHE_EXPIRY: float = 0.0
 _CACHE_TTL_SECONDS = 60.0
 
+# Live option-chain polling: refetch when the stored snapshot is older than the TTL, back off after failures.
+_OPTION_TTL_SECONDS = 120.0
+_OPTION_FAILURE_BACKOFF_SECONDS = 60.0
+_OPTION_LOCK = threading.Lock()
+_OPTION_FAILURES: dict[str, tuple[float, str]] = {}
+_OPTION_EXPIRIES: dict[str, list[str]] = {}
+
+_ISSUER_TTL_SECONDS = 6 * 3600.0
+_ISSUER_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
+
 
 class BackofficeService:
     def __init__(self, repo: BackofficeRepository | None = None) -> None:
         self.repo = repo or BackofficeRepository()
 
+    # Latest observation helpers -------------------------------------------------------------------------
+
+    def _latest(self, instrument_ids: tuple[str, ...]) -> tuple[dict[str, float], str | None]:
+        """Latest numeric observation per instrument plus the newest observed_at among them."""
+        values: dict[str, float] = {}
+        as_of: str | None = None
+        for inst in instrument_ids:
+            obs = self.repo.get_latest_observation(inst)
+            if obs and obs.get("value_numeric") is not None:
+                values[inst] = obs["value_numeric"]
+                if as_of is None or (obs.get("observed_at") or "") > as_of:
+                    as_of = obs.get("observed_at")
+        return values, as_of
+
     def get_market_overview(self) -> dict[str, Any]:
-        """Aggregate shared market overview with in-memory caching."""
+        """Aggregate shared market overview from live-collected observations (no static fallbacks)."""
         global _WARM_CACHE, _WARM_CACHE_EXPIRY
         now = time.monotonic()
         if _WARM_CACHE and now < _WARM_CACHE_EXPIRY:
             return _WARM_CACHE
 
-        # Fetch latest FX
-        fx_rates: dict[str, float] = {}
-        fx_as_of = None
-        for pair_id in ("FX:USDINR", "FX:EURUSD", "FX:GBPUSD", "FX:USDJPY"):
-            obs = self.repo.get_latest_observation(pair_id)
-            if obs and obs.get("value_numeric") is not None:
-                fx_rates[pair_id] = obs["value_numeric"]
-                fx_as_of = obs.get("observed_at")
+        fx_rates, fx_as_of = self._latest(("FX:USDINR", "FX:EURUSD", "FX:GBPUSD", "FX:USDJPY"))
+        vol_data, vol_as_of = self._latest(("VOL:US:VIX", "VOL:IN:INDIAVIX"))
+        _, us_vix_as_of = self._latest(("VOL:US:VIX",))
+        _, in_vix_as_of = self._latest(("VOL:IN:INDIAVIX",))
+        indices, indices_as_of = self._latest(("INDEX:IN:NIFTY50", "INDEX:IN:NIFTYBANK"))
+        yield_data, yield_as_of = self._latest(("YIELD:US:10Y", "YIELD:US:2Y", "YIELD:IN:10Y", "YIELD:IN:2Y"))
+        macro_proxy, _ = self._latest(("MACRO:US:BROAD_USD",))
 
-        # Fetch latest Volatility
-        vol_data: dict[str, float] = {}
-        vol_as_of = None
-        for vol_id in ("VOL:US:VIX", "VOL:IN:INDIAVIX"):
-            obs = self.repo.get_latest_observation(vol_id)
-            if obs and obs.get("value_numeric") is not None:
-                vol_data[vol_id] = obs["value_numeric"]
-                vol_as_of = obs.get("observed_at")
-
-        # Fetch latest Sovereign Yields
-        yield_data: dict[str, float] = {}
-        yield_as_of = None
-        for y_id in ("YIELD:IN:10Y", "YIELD:IN:2Y", "YIELD:US:10Y", "YIELD:US:2Y"):
-            obs = self.repo.get_latest_observation(y_id)
-            if obs and obs.get("value_numeric") is not None:
-                yield_data[y_id] = obs["value_numeric"]
-                yield_as_of = obs.get("observed_at")
-
-        in_10y = yield_data.get("YIELD:IN:10Y", 7.02)
-        us_10y = yield_data.get("YIELD:US:10Y", 4.05)
-        in_2y = yield_data.get("YIELD:IN:2Y", 6.85)
-        us_2y = yield_data.get("YIELD:US:2Y", 3.95)
+        in_10y, in_2y = yield_data.get("YIELD:IN:10Y"), yield_data.get("YIELD:IN:2Y")
+        us_10y, us_2y = yield_data.get("YIELD:US:10Y"), yield_data.get("YIELD:US:2Y")
 
         india_us_spread = compute_cross_country_spread(in_10y, us_10y, "India", "US")
-        in_slope = calculate_spread_bps(in_10y, in_2y)
-        us_slope = calculate_spread_bps(us_10y, us_2y)
+        in_slope = calculate_spread_bps(in_10y, in_2y) if in_10y is not None and in_2y is not None else None
+        us_slope = calculate_spread_bps(us_10y, us_2y) if us_10y is not None and us_2y is not None else None
 
-        # Derivatives snapshot
         opt_snap = self.repo.get_latest_option_snapshot("NIFTY")
         pcr_oi = opt_snap.get("pcr_oi") if opt_snap else None
         pcr_vol = opt_snap.get("pcr_volume") if opt_snap else None
 
-        # Flows
         flows = self.repo.list_flows()
-        latest_flow = flows[0] if flows else None
+        latest_date = flows[0].get("report_date") if flows else None
+        same_day = [f for f in flows if f.get("report_date") == latest_date]
+        fii_net = next((f.get("net") for f in same_day if f.get("category") in ("FII", "FPI")), None)
+        dii_net = next((f.get("net") for f in same_day if f.get("category") == "DII"), None)
 
-        # Data health status
         sources = self.repo.list_sources()
         sources_ready = sum(1 for s in sources if s.get("health_status") == "ready")
 
@@ -105,9 +110,12 @@ class BackofficeService:
             "volatility": {
                 "vix": vol_data.get("VOL:US:VIX"),
                 "india_vix": vol_data.get("VOL:IN:INDIAVIX"),
+                "vix_as_of": us_vix_as_of,
+                "india_vix_as_of": in_vix_as_of,
                 "as_of": vol_as_of,
                 "status": "ready" if vol_data else "awaiting_ingestion",
             },
+            "indices": {**indices, "as_of": indices_as_of},
             "yields": {
                 "in_10y": in_10y,
                 "in_2y": in_2y,
@@ -117,20 +125,21 @@ class BackofficeService:
                 "india_slope_bps": in_slope,
                 "us_slope_bps": us_slope,
                 "as_of": yield_as_of,
-                "status": "ready",
+                "status": "ready" if us_10y is not None else "awaiting_ingestion",
             },
             "derivatives": {
                 "underlying": "NIFTY",
                 "pcr_oi": pcr_oi,
                 "pcr_volume": pcr_vol,
-                "status": "ready" if opt_snap else "manual_only",
-                "message": "Awaiting end-of-day options chain report upload" if not opt_snap else None,
+                "status": "ready" if opt_snap else "awaiting_ingestion",
+                "message": None if opt_snap else "Option chain not yet fetched from NSE",
             },
             "flows": {
-                "latest_date": latest_flow.get("report_date") if latest_flow else None,
-                "fii_net": latest_flow.get("net") if latest_flow and latest_flow.get("category") == "FII" else None,
+                "latest_date": latest_date,
+                "fii_net": fii_net,
+                "dii_net": dii_net,
                 "unit": "inr_crore",
-                "status": "ready" if latest_flow else "manual_only",
+                "status": "ready" if flows else "awaiting_ingestion",
             },
             "sources_health": {
                 "total": len(sources),
@@ -142,7 +151,7 @@ class BackofficeService:
             "fx_as_of": fx_as_of,
             "volatility_map": vol_data,
             "vol_as_of": vol_as_of,
-            "macro_proxy": {"MACRO:US:BROAD_USD": 121.5},
+            "macro_proxy": macro_proxy,
             "yield_spreads": {
                 "india_us_10y_bps": india_us_spread.get("spread_bps"),
                 "us_10y_2y_bps": us_slope,
@@ -160,18 +169,67 @@ class BackofficeService:
             "generated_at": datetime.now(UTC).isoformat(),
         }
 
-
         _WARM_CACHE = payload
         _WARM_CACHE_EXPIRY = now + _CACHE_TTL_SECONDS
         return payload
 
+    # Derivatives (live through to NSE) -------------------------------------------------------------------
+
+    def _refresh_option_chain(self, underlying: str, expiry: str | None) -> str | None:
+        """Fetch a live NSE chain into storage. Returns an error message on failure, else None."""
+        now = time.monotonic()
+        with _OPTION_LOCK:
+            failed_at, failed_msg = _OPTION_FAILURES.get(underlying, (0.0, ""))
+            if failed_msg and now - failed_at < _OPTION_FAILURE_BACKOFF_SECONDS:
+                return failed_msg
+            try:
+                chain = get_nse_client().fetch_option_chain(underlying, expiry)
+            except NseError as e:
+                _OPTION_FAILURES[underlying] = (now, str(e))
+                return str(e)
+            _OPTION_FAILURES.pop(underlying, None)
+            _OPTION_EXPIRIES[underlying] = chain["expiries"]
+            contracts = chain["contracts"]
+            pcr_res = calculate_pcr(contracts)
+            self.repo.save_option_snapshot(
+                {
+                    "exchange": "NSE",
+                    "underlying_symbol": underlying,
+                    "underlying_price": chain["underlying_price"],
+                    "snapshot_timestamp": chain["snapshot_timestamp"],
+                    "source": "nse_live",
+                    "pcr_oi": pcr_res.get("pcr_oi"),
+                    "pcr_volume": pcr_res.get("pcr_volume"),
+                    "total_call_oi": pcr_res.get("total_call_oi"),
+                    "total_put_oi": pcr_res.get("total_put_oi"),
+                    "total_call_volume": pcr_res.get("total_call_volume"),
+                    "total_put_volume": pcr_res.get("total_put_volume"),
+                },
+                contracts,
+            )
+            self.repo.prune_option_snapshots(underlying)
+            return None
+
     def get_derivatives_board(self, underlying: str = "NIFTY", expiry: str | None = None) -> dict[str, Any]:
+        live_error: str | None = None
+        if underlying in NSE_DERIVATIVE_UNDERLYINGS:
+            age = self.repo.option_snapshot_age_seconds(underlying)
+            if age is None or age > _OPTION_TTL_SECONDS:
+                live_error = self._refresh_option_chain(underlying, None)
+        else:
+            live_error = (
+                f"{underlying} has no listed derivatives on NSE; this feed is not integrated."
+                if underlying != "NIFTYNXT50"
+                else "NIFTY Next 50 is a cash index without listed index options."
+            )
+
         snap = self.repo.get_latest_option_snapshot(underlying)
         if not snap:
             return {
                 "underlying": underlying,
-                "status": "manual_only",
-                "message": f"No active option chain for {underlying}. Upload exchange EOD snapshot via Manual Imports.",
+                "status": "unavailable",
+                "live_status": "unavailable",
+                "message": live_error or f"No option chain stored for {underlying}.",
                 "expiries": [],
                 "contracts": [],
                 "pcr": None,
@@ -180,11 +238,12 @@ class BackofficeService:
 
         contracts = snap.get("contracts", [])
         expiries = sorted({c["expiry_date"] for c in contracts if "expiry_date" in c})
-        selected_expiry = expiry or (expiries[0] if expiries else None)
+        expiries = sorted(set(expiries) | set(_OPTION_EXPIRIES.get(underlying, [])))
+        stored_expiries = sorted({c["expiry_date"] for c in contracts if "expiry_date" in c})
+        selected_expiry = expiry if expiry in stored_expiries else (stored_expiries[0] if stored_expiries else None)
 
         pcr = calculate_pcr(contracts, expiry_filter=selected_expiry)
         max_pain = compute_max_pain(contracts, expiry_filter=selected_expiry)
-
         filtered_contracts = [c for c in contracts if not selected_expiry or c.get("expiry_date") == selected_expiry]
 
         return {
@@ -192,49 +251,77 @@ class BackofficeService:
             "underlying_price": snap.get("underlying_price"),
             "snapshot_timestamp": snap.get("snapshot_timestamp"),
             "status": "ready",
+            "live_status": "stale" if live_error else "live",
+            "message": live_error,
+            "source": snap.get("source"),
             "expiries": expiries,
             "selected_expiry": selected_expiry,
             "pcr": pcr,
             "max_pain": max_pain,
-            "contracts": filtered_contracts[:200],  # Bounded table limit
+            "contracts": filtered_contracts[:400],  # Bounded table limit
             "total_contracts": len(filtered_contracts),
         }
 
-    def get_yields_board(self) -> dict[str, Any]:
-        # India Curve
-        in_tenors = [
-            {"tenor": "3M", "yield_pct": 6.65},
-            {"tenor": "1Y", "yield_pct": 6.78},
-            {"tenor": "2Y", "yield_pct": 6.85},
-            {"tenor": "5Y", "yield_pct": 6.94},
-            {"tenor": "10Y", "yield_pct": 7.02},
-            {"tenor": "30Y", "yield_pct": 7.21},
-        ]
-        # US Curve
-        us_tenors = [
-            {"tenor": "1M", "yield_pct": 4.65},
-            {"tenor": "3M", "yield_pct": 4.50},
-            {"tenor": "6M", "yield_pct": 4.35},
-            {"tenor": "1Y", "yield_pct": 4.15},
-            {"tenor": "2Y", "yield_pct": 3.95},
-            {"tenor": "5Y", "yield_pct": 3.92},
-            {"tenor": "10Y", "yield_pct": 4.05},
-            {"tenor": "30Y", "yield_pct": 4.38},
-        ]
+    # Yields (US Treasury live; India has no free official feed) ------------------------------------------
 
-        in_summary = compute_yield_curve_summary(in_tenors)
-        us_summary = compute_yield_curve_summary(us_tenors)
-        cross_spread = compute_cross_country_spread(7.02, 4.05, "India", "US")
+    US_TENORS = ("1M", "2M", "3M", "4M", "6M", "1Y", "2Y", "3Y", "5Y", "7Y", "10Y", "20Y", "30Y")
+
+    def get_yields_board(self) -> dict[str, Any]:
+        us_curve: list[dict[str, Any]] = []
+        for tenor in self.US_TENORS:
+            obs = self.repo.get_latest_observation(f"YIELD:US:{tenor}")
+            if obs and obs.get("value_numeric") is not None:
+                us_curve.append({"tenor": tenor, "yield_pct": obs["value_numeric"], "observed_at": obs.get("observed_at")})
+
+        in_curve: list[dict[str, Any]] = []
+        for tenor in ("3M", "1Y", "2Y", "5Y", "10Y", "30Y"):
+            obs = self.repo.get_latest_observation(f"YIELD:IN:{tenor}")
+            if obs and obs.get("value_numeric") is not None:
+                in_curve.append({"tenor": tenor, "yield_pct": obs["value_numeric"], "observed_at": obs.get("observed_at")})
+
+        in_summary = compute_yield_curve_summary(in_curve)
+        us_summary = compute_yield_curve_summary(us_curve)
+        cross_spread = compute_cross_country_spread(
+            in_summary["curve"].get("10Y"), us_summary["curve"].get("10Y"), "India", "US"
+        )
+        as_of = max((r["observed_at"] for r in us_curve + in_curve if r.get("observed_at")), default=None)
 
         return {
-            "india_curve": in_tenors,
+            "india_curve": in_curve,
             "india_summary": in_summary,
-            "us_curve": us_tenors,
+            "india_status": "ready" if in_curve else "unavailable",
+            "india_message": None if in_curve else "No free official India G-Sec yield feed (FBIL requires authenticated access).",
+            "us_curve": us_curve,
             "us_summary": us_summary,
             "india_us_10y_spread": cross_spread,
-            "status": "ready",
-            "as_of": "2026-10-09",
+            "status": "ready" if us_curve else "unavailable",
+            "as_of": as_of,
         }
+
+    # Issuer fundamentals (NSE quarterly results) --------------------------------------------------------
+
+    def get_issuer_fundamentals(self, symbol: str) -> dict[str, Any] | None:
+        symbol = symbol.upper()
+        cached = _ISSUER_CACHE.get(symbol)
+        if cached and time.monotonic() - cached[0] < _ISSUER_TTL_SECONDS:
+            return cached[1]
+        quarters = get_nse_client().fetch_quarterly_results(symbol)
+        if not quarters:
+            return None
+        latest = quarters[0]
+        data = {
+            "symbol": symbol,
+            "reporting_scope": "As filed on NSE",
+            "fiscal_period": latest["period_end"],
+            "revenue_crore": latest["revenue_crore"],
+            "ebitda_crore": latest["ebitda_crore"],
+            "ebitda_margin_pct": latest["ebitda_margin_pct"],
+            "pat_crore": latest["pat_crore"],
+            "filing_id": latest["filing_id"],
+            "quarters": quarters,
+        }
+        _ISSUER_CACHE[symbol] = (time.monotonic(), data)
+        return data
 
     def analyze_impact(
         self,
@@ -414,18 +501,20 @@ class BackofficeService:
         return {"success": True, "rows_committed": saved_count, "import_type": import_type}
 
     def get_research_briefing(self) -> dict[str, Any]:
-        market_obs = self.get_market_overview()
-        yields_data = self.get_yields_board()
+        overview = self.get_market_overview()
         flows_list = self.repo.list_flows()
-        latest_flow = flows_list[0] if flows_list else {}
-        latest_date = latest_flow.get("report_date")
+        latest_date = flows_list[0].get("report_date") if flows_list else None
         same_day = [f for f in flows_list if f.get("report_date") == latest_date]
         net_of = lambda cat: next((f.get("net") for f in same_day if str(f.get("category", "")).upper() in cat), None)  # noqa: E731
-        derivatives_data = self.get_derivatives_board("NIFTY")
+        derivatives = self.get_derivatives_board("NIFTY")
+        yields = overview.get("yields", {})
 
         return generate_deterministic_briefing(
-            market_observations=market_obs,
-            macro_data={"yields": {"india_us_spread_bps": yields_data["india_us_10y_spread"].get("spread_bps"), "in_10y": 7.02, "us_10y": 4.05}},
+            market_observations={
+                "fx": {**overview.get("fx", {}).get("rates", {}), "as_of": overview.get("fx_as_of")},
+                "volatility": {**overview.get("volatility_map", {}), "as_of": overview.get("volatility", {}).get("vix_as_of")},
+            },
+            macro_data={"yields": yields},
             flows_data={"fii_net_crore": net_of(("FII", "FPI")), "dii_net_crore": net_of(("DII",)), "report_date": latest_date or "recent"},
-            options_summary=derivatives_data.get("pcr") or {"status": derivatives_data.get("status")},
+            options_summary={**(derivatives.get("pcr") or {}), "status": derivatives.get("status"), "underlying": "NIFTY"},
         )

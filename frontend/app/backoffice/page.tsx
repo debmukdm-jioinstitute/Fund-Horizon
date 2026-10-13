@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { getBackofficeOverview, getDeterministicBriefing, MarketOverviewData, DeterministicBriefingData, BackofficeEnvelope } from "@/lib/backoffice";
 import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { usePolling } from "@/components/backoffice/usePolling";
 
 export default function BackofficeOverviewPage() {
   const [data, setData] = useState<BackofficeEnvelope<MarketOverviewData> | null>(null);
@@ -11,23 +12,18 @@ export default function BackofficeOverviewPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const [overviewRes, briefingRes] = await Promise.all([
-          getBackofficeOverview(),
-          getDeterministicBriefing(),
-        ]);
-        setData(overviewRes);
-        setBriefing(briefingRes);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load market overview");
-      } finally {
-        setLoading(false);
-      }
+  usePolling(async (silent) => {
+    try {
+      if (!silent) setLoading(true);
+      const [overviewRes, briefingRes] = await Promise.all([getBackofficeOverview(), getDeterministicBriefing()]);
+      setData(overviewRes);
+      setBriefing(briefingRes);
+      setError(null);
+    } catch (err: unknown) {
+      if (!silent) setError(err instanceof Error ? err.message : "Failed to load market overview");
+    } finally {
+      if (!silent) setLoading(false);
     }
-    load();
   }, []);
 
   if (loading) {
@@ -59,15 +55,17 @@ export default function BackofficeOverviewPage() {
   const fxAsOf: string | undefined =
     overview.fx_as_of || overview.fx?.as_of;
 
-  const volData: Record<string, number> =
-    (overview.volatility && typeof overview.volatility === "object" && !("vix" in overview.volatility))
-      ? (overview.volatility as Record<string, number>)
-      : {
-          "VOL:US:VIX": (overview.volatility as { vix?: number })?.vix ?? 15.21,
-          "VOL:IN:INDIAVIX": (overview.volatility as { india_vix?: number })?.india_vix ?? 13.5,
-        };
-  const volAsOf: string | undefined =
-    overview.vol_as_of || (overview.volatility as { as_of?: string })?.as_of;
+  const vol = (overview.volatility ?? {}) as {
+    vix?: number | null;
+    india_vix?: number | null;
+    vix_as_of?: string | null;
+    india_vix_as_of?: string | null;
+    as_of?: string;
+  };
+  const volData: Record<string, number> = {};
+  if (typeof vol.vix === "number") volData["VOL:US:VIX"] = vol.vix;
+  const indiaVix = typeof vol.india_vix === "number" ? vol.india_vix : undefined;
+  const volAsOf: string | undefined = vol.vix_as_of ?? vol.as_of;
 
   const spreads = overview.yield_spreads || {
     india_us_10y_bps: overview.yields?.india_us_spread_bps,
@@ -75,13 +73,20 @@ export default function BackofficeOverviewPage() {
     india_10y_2y_bps: overview.yields?.india_slope_bps,
   };
 
-  const sourcesSummary = overview.sources_summary || {
-    total: overview.sources_health?.total ?? 7,
-    ready: overview.sources_health?.ready ?? 4,
+  const sourcesSummary = overview.sources_summary ?? {
+    total: overview.sources_health?.total ?? 0,
+    ready: overview.sources_health?.ready ?? 0,
     degraded: 0,
-    needs_key: 1,
-    manual_only: 2,
+    needs_key: 0,
+    manual_only: 0,
   };
+
+  const nifty = overview.indices?.["INDEX:IN:NIFTY50"];
+  const niftyBank = overview.indices?.["INDEX:IN:NIFTYBANK"];
+  const fiiNet = overview.flows?.fii_net;
+  const diiNet = overview.flows?.dii_net;
+  const signedCr = (v: number | null | undefined) =>
+    typeof v === "number" ? `${v >= 0 ? "+" : ""}${v.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr` : "—";
 
   const macroProxy: Record<string, number> = overview.macro_proxy || {};
 
@@ -92,7 +97,7 @@ export default function BackofficeOverviewPage() {
         <div>
           <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Market Overview & System Telemetry</h1>
           <p className="text-xs text-sand-600 mt-0.5">
-            Internal multi-asset research board • Cached memory snapshot (&lt;50ms response)
+            Live multi-asset board • auto-refreshes every 60s from NSE, US Treasury, ECB & Cboe
           </p>
         </div>
         <StatusBadge
@@ -141,7 +146,7 @@ export default function BackofficeOverviewPage() {
             <StatusBadge
               availability={spreads?.india_us_10y_bps !== undefined && spreads?.india_us_10y_bps !== null ? "ready" : "unavailable"}
               freshness="current"
-              sourceName="FBIL / FRED"
+              sourceName="US Treasury + India G-Sec feed"
               units="bps"
             />
           </div>
@@ -182,9 +187,51 @@ export default function BackofficeOverviewPage() {
             <StatusBadge
               availability={spreads?.us_10y_2y_bps !== undefined && spreads?.us_10y_2y_bps !== null ? "ready" : "unavailable"}
               freshness="current"
-              sourceName="FRED"
+              sourceName="US Treasury"
               units="bps"
             />
+          </div>
+        </div>
+      </div>
+
+      {/* Live Indian market tiles */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
+          <div className="text-xs text-sand-500 font-medium">NIFTY 50</div>
+          <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
+            {typeof nifty === "number" ? nifty.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—"}
+          </div>
+          <div className="mt-3">
+            <StatusBadge availability={typeof nifty === "number" ? "ready" : "unavailable"} freshness="current" asOf={overview.indices?.as_of ?? undefined} sourceName="NSE" />
+          </div>
+        </div>
+        <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
+          <div className="text-xs text-sand-500 font-medium">NIFTY Bank</div>
+          <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
+            {typeof niftyBank === "number" ? niftyBank.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—"}
+          </div>
+          <div className="mt-3">
+            <StatusBadge availability={typeof niftyBank === "number" ? "ready" : "unavailable"} freshness="current" asOf={overview.indices?.as_of ?? undefined} sourceName="NSE" />
+          </div>
+        </div>
+        <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
+          <div className="text-xs text-sand-500 font-medium">India VIX</div>
+          <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
+            {indiaVix !== undefined ? indiaVix.toFixed(2) : "—"}
+          </div>
+          <div className="mt-3">
+            <StatusBadge availability={indiaVix !== undefined ? "ready" : "unavailable"} freshness="current" asOf={vol.india_vix_as_of ?? undefined} sourceName="NSE" />
+          </div>
+        </div>
+        <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
+          <div className="text-xs text-sand-500 font-medium">FII / DII Net (latest session)</div>
+          <div className="mt-2 text-lg font-bold font-mono tabular-nums">
+            <span className={typeof fiiNet === "number" && fiiNet < 0 ? "text-rose-700" : "text-emerald-700"}>FII {signedCr(fiiNet)}</span>
+            <br />
+            <span className={typeof diiNet === "number" && diiNet < 0 ? "text-rose-700" : "text-emerald-700"}>DII {signedCr(diiNet)}</span>
+          </div>
+          <div className="mt-3">
+            <StatusBadge availability={typeof fiiNet === "number" ? "ready" : "unavailable"} freshness="current" asOf={overview.flows?.latest_date ?? undefined} sourceName="NSE" />
           </div>
         </div>
       </div>
@@ -321,7 +368,7 @@ export default function BackofficeOverviewPage() {
             <div className="flex justify-between">
               <span>Broad Dollar Proxy (FRED DTWEXBGS):</span>
               <span className="font-mono font-semibold">
-                {macroProxy["MACRO:US:BROAD_USD"] ? macroProxy["MACRO:US:BROAD_USD"].toFixed(2) : "Requires FRED key"}
+                {macroProxy["MACRO:US:BROAD_USD"] ? macroProxy["MACRO:US:BROAD_USD"].toFixed(2) : "Needs FRED_API_KEY"}
               </span>
             </div>
             <div className="flex justify-between">

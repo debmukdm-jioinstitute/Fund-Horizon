@@ -1,28 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getFlows, FlowsData, BackofficeEnvelope } from "@/lib/backoffice";
 import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { usePolling } from "@/components/backoffice/usePolling";
 
 export default function FlowsPage() {
   const [data, setData] = useState<BackofficeEnvelope<FlowsData> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        const res = await getFlows();
-        setData(res);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load institutional flows");
-      } finally {
-        setLoading(false);
-      }
+  usePolling(async (silent) => {
+    try {
+      if (!silent) setLoading(true);
+      setData(await getFlows());
+      setError(null);
+    } catch (err: unknown) {
+      if (!silent) setError(err instanceof Error ? err.message : "Failed to load institutional flows");
+    } finally {
+      if (!silent) setLoading(false);
     }
-    load();
-  }, []);
+  }, [], 120_000);
 
   if (loading) {
     return (
@@ -183,7 +181,7 @@ export default function FlowsPage() {
               ) : (
                 <tr>
                   <td colSpan={7} className="py-6 text-center text-sand-500 font-sans">
-                    Awaiting next official exchange session report or manual flow import.
+                    No FII / DII session fetched from NSE yet. This table fills automatically.
                   </td>
                 </tr>
               )}

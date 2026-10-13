@@ -4,6 +4,7 @@ Ensures schema exists idempotently and seeds the default source and instrument r
 """
 from __future__ import annotations
 
+import os
 import sqlite3
 from datetime import UTC, datetime
 
@@ -373,9 +374,16 @@ def _seed_default_registries(conn: sqlite3.Connection) -> None:
         ("SRC_CBOE", "Cboe Historical Volatility", "https://www.cboe.com/tradable-products/vix/vix-historical-data", "cboe_vix", "1.0.0", "Cboe VIX daily close histories.", "public_view_only", 1, 4, "America/Chicago", "daily", "ready"),
         ("SRC_FRED", "Federal Reserve Economic Data", "https://fred.stlouisfed.org/docs/api/fred/", "fred_macro", "1.0.0", "St. Louis Fed API. Requires free API key for automated pulls.", "public_view_only", 1, 120, "America/New_York", "daily", "ready"),
         ("SRC_APMI", "APMI PMS Disclosures", "https://www.apmiindia.org/", "apmi_pms", "1.0.0", "APMI monthly performance disclosures & manager statements.", "manual_only", 1, 10, "Asia/Kolkata", "monthly", "manual_only"),
-        ("SRC_NSE_FNO", "NSE Derivatives & Flows", "https://www.nseindia.com/reports/fii-dii", "nse_reports", "1.0.0", "Official daily EOD derivative and FII/DII flow reports.", "manual_only", 1, 10, "Asia/Kolkata", "daily", "manual_only"),
+        ("SRC_NSE_FNO", "NSE Indices, Derivatives & Flows", "https://www.nseindia.com/", "nse_live", "1.0.0", "NSE public website JSON (indices, India VIX, FII/DII, option chains). Subject to NSE terms; may rate-limit datacenter IPs.", "public_view_only", 1, 12, "Asia/Kolkata", "intraday", "ready"),
+        ("SRC_TREASURY", "US Treasury Par Yield Curve", "https://home.treasury.gov/resource-center/data-chart-center/interest-rates", "us_treasury", "1.0.0", "Official US Treasury daily par yield curve. No key required.", "public_view_only", 1, 4, "America/New_York", "daily", "ready"),
         ("SRC_CORP_FILINGS", "Corporate Fundamentals & Filings", "https://www.bseindia.com/corporates", "corp_filings", "1.0.0", "Quarterly financial results & disclosures.", "manual_only", 1, 10, "Asia/Kolkata", "quarterly", "manual_only"),
     ]
+
+    # FRED needs a free key; do not advertise it as ready when none is configured.
+    if not os.environ.get("FRED_API_KEY", "").strip():
+        sources = [
+            (*src[:11], "needs_key") if src[0] == "SRC_FRED" else src for src in sources
+        ]
 
     for s in sources:
         conn.execute(
@@ -388,6 +396,11 @@ def _seed_default_registries(conn: sqlite3.Connection) -> None:
             ON CONFLICT(id) DO UPDATE SET
                 name=excluded.name,
                 official_docs_url=excluded.official_docs_url,
+                adapter_id=excluded.adapter_id,
+                terms_notes=excluded.terms_notes,
+                configured_permissions=excluded.configured_permissions,
+                rate_budget=excluded.rate_budget,
+                supported_frequency=excluded.supported_frequency,
                 health_status=excluded.health_status,
                 updated_at=excluded.updated_at
             """,
@@ -430,8 +443,11 @@ def _seed_default_registries(conn: sqlite3.Connection) -> None:
         )
 
 
+_SEEDED_PATHS: set[str] = set()
+
+
 def ensure_backoffice_schema() -> None:
-    """Ensure SQLite backoffice and CRM products schemas are loaded."""
+    """Ensure SQLite backoffice and CRM products schemas are loaded and registries are current."""
     conn = _sqlite.get_default_connection()
     try:
         table_check = conn.execute(
@@ -446,6 +462,11 @@ def ensure_backoffice_schema() -> None:
 
                 init_crm_products_schema(conn)
                 init_backoffice_schema(conn)
+            _SEEDED_PATHS.add(str(_sqlite.get_default_db_path()))
+        elif str(_sqlite.get_default_db_path()) not in _SEEDED_PATHS:
+            # Existing volumes: refresh source/instrument registries once per process so new feeds appear.
+            with conn:
+                _seed_default_registries(conn)
+            _SEEDED_PATHS.add(str(_sqlite.get_default_db_path()))
     finally:
         conn.close()
-

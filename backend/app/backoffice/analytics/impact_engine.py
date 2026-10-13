@@ -186,6 +186,16 @@ def generate_deterministic_briefing(
     if vix:
         bullet_points.append(f"Cboe VIX closed at {vix:.2f} (as-of {vol.get('as_of', 'latest')}).")
 
+    india_vix = vol.get("VOL:IN:INDIAVIX")
+    if india_vix:
+        bullet_points.append(f"India VIX is at {india_vix:.2f}.")
+
+    us_10y = yields.get("us_10y")
+    if us_10y is not None and spread_10y is None:
+        us_slope = yields.get("us_slope_bps")
+        slope_txt = f", 10Y-2Y slope {us_slope:+.1f} bps" if us_slope is not None else ""
+        bullet_points.append(f"US 10Y Treasury par yield is {us_10y:.2f}%{slope_txt}.")
+
     # Derivatives / PCR
     pcr = options_summary.get("pcr_oi")
     if pcr is not None:
@@ -193,8 +203,8 @@ def generate_deterministic_briefing(
             f"{options_summary.get('underlying', 'NIFTY')} Put-Call Ratio (OI) stands at {pcr:.2f} "
             f"(Total Call OI: {options_summary.get('total_call_oi', 0):,}, Total Put OI: {options_summary.get('total_put_oi', 0):,})."
         )
-    elif options_summary.get("status") == "manual_only":
-        bullet_points.append("Derivatives option chain is in manual-import state; pending authorized EOD exchange upload.")
+    elif options_summary.get("status") in ("manual_only", "unavailable"):
+        bullet_points.append("NIFTY option chain is currently unavailable from NSE; PCR will appear once a snapshot is fetched.")
 
     # Flows
     fii_net = flows_data.get("fii_net_crore")
@@ -209,6 +219,6 @@ def generate_deterministic_briefing(
         "title": f"Fund Horizon Backoffice Daily Research Briefing — {datetime.now(UTC).strftime('%d %B %Y')}",
         "as_of": datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC"),
         "method_version": "Deterministic Template Engine 1.0 (Zero LLM)",
-        "bullets": bullet_points if bullet_points else ["All market feeds currently awaiting first ingestion cycle."],
-        "disclaimer": "All figures derived from verified primary source observations or verified manual imports. Not predictive trading advice.",
+        "bullets": bullet_points if bullet_points else ["Live feeds are still completing their first collection cycle."],
+        "disclaimer": "All figures are fetched live from public primary sources (NSE, US Treasury, ECB, Cboe) or verified manual imports. Descriptive data only; not a trading signal.",
     }

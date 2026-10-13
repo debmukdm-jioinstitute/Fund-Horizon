@@ -163,7 +163,7 @@ export default function PmsTrackerPage() {
                           <div className="font-semibold text-sand-900">{s.strategy_name}</div>
                           <div className="text-[11px] text-sand-500">{s.provider_name}</div>
                         </td>
-                        <td className="py-3 px-3 text-sand-700 font-sans">{s.investment_approach || "Equity"}</td>
+                        <td className="py-3 px-3 text-sand-700 font-sans">{s.investment_approach || "—"}</td>
                         <td className="py-3 px-3 font-semibold text-sand-900">
                           {s.aum_crore ? `₹${s.aum_crore.toLocaleString()}` : "—"}
                         </td>
@@ -176,8 +176,8 @@ export default function PmsTrackerPage() {
                         <td className={`py-3 px-3 font-semibold ${s.return_3y_cagr_pct !== undefined && s.return_3y_cagr_pct >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
                           {s.return_3y_cagr_pct !== undefined ? `${s.return_3y_cagr_pct > 0 ? "+" : ""}${s.return_3y_cagr_pct}%` : "—"}
                         </td>
-                        <td className="py-3 px-3 text-sand-600 font-sans text-[11px]">{s.benchmark_name || "NIFTY 50 TRI"}</td>
-                        <td className="py-3 px-3 text-sand-500 text-[11px]">{s.report_month || "2026-09"}</td>
+                        <td className="py-3 px-3 text-sand-600 font-sans text-[11px]">{s.benchmark_name || "—"}</td>
+                        <td className="py-3 px-3 text-sand-500 text-[11px]">{s.report_month || "—"}</td>
                       </tr>
                     ))
                   )}
@@ -271,7 +271,7 @@ export default function PmsTrackerPage() {
                   <div>
                     <h2 className="text-sm font-semibold text-sand-900">Current Portfolio Holdings</h2>
                     <p className="text-[11px] text-sand-500">
-                      Coverage: {accountTracker.holdings_coverage?.total_coverage_pct || 100}% of holdings priced
+                      Coverage: {accountTracker.holdings_coverage?.total_coverage_pct ?? "—"}% of holdings priced
                     </p>
                   </div>
                   <span className="text-xs font-mono bg-sand-100 text-sand-700 px-2.5 py-1 rounded-full">
@@ -296,7 +296,7 @@ export default function PmsTrackerPage() {
                         accountTracker.positions.map((pos: PmsPositionItem, idx: number) => (
                           <tr key={idx}>
                             <td className="py-2.5 px-3 font-sans font-semibold text-sand-900">{pos.asset_name || pos.symbol}</td>
-                            <td className="py-2.5 px-3 text-sand-600 font-sans">{pos.asset_class || "Equity"}</td>
+                            <td className="py-2.5 px-3 text-sand-600 font-sans">{pos.asset_class || "—"}</td>
                             <td className="py-2.5 px-3 text-sand-700">{pos.quantity ? pos.quantity.toLocaleString() : "—"}</td>
                             <td className="py-2.5 px-3 font-semibold text-sand-900">
                               ₹{(pos.market_value_paise / 100).toLocaleString("en-IN")}

@@ -10,6 +10,23 @@ from app.backoffice.db import ensure_backoffice_schema
 from app.db import sqlite as _sqlite
 
 
+_LIVE_TABLES_SQL = """
+CREATE TABLE IF NOT EXISTS mf_schemes (
+    scheme_code TEXT PRIMARY KEY,
+    scheme_name TEXT NOT NULL,
+    amc TEXT,
+    category TEXT,
+    plan TEXT,
+    isin TEXT,
+    latest_nav REAL,
+    nav_date TEXT,
+    updated_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_mf_schemes_name ON mf_schemes(scheme_name);
+"""
+_LIVE_TABLES_READY: set[str] = set()
+
+
 def _utcnow() -> str:
     return datetime.now(UTC).isoformat()
 
@@ -26,7 +43,16 @@ class BackofficeRepository:
 
     def _conn(self):
         ensure_backoffice_schema()
-        return _sqlite.get_default_connection()
+        conn = _sqlite.get_default_connection()
+        key = str(_sqlite.get_default_db_path())
+        if key not in _LIVE_TABLES_READY:
+            # Tables added after the 0005 migration are created lazily so existing volumes need no migration.
+            with conn:
+                for stmt in _LIVE_TABLES_SQL.strip().split(";"):
+                    if stmt.strip():
+                        conn.execute(stmt)
+            _LIVE_TABLES_READY.add(key)
+        return conn
 
     # --- Sources & Health ---
 
@@ -289,6 +315,22 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def replace_flows(self, flow_records: list[dict[str, Any]]) -> int:
+        """Idempotent flow upsert keyed on (report_date, category, segment): re-fetching a session overwrites it."""
+        if not flow_records:
+            return 0
+        conn = self._conn()
+        try:
+            with conn:
+                for f in flow_records:
+                    conn.execute(
+                        "DELETE FROM flows WHERE report_date = ? AND category = ? AND segment = ?",
+                        (f["report_date"], f["category"], f.get("segment", "equity_cash")),
+                    )
+            return self.upsert_flows(flow_records)
+        finally:
+            conn.close()
+
     def list_flows(self, start_date: str | None = None, end_date: str | None = None) -> list[dict[str, Any]]:
         conn = self._conn()
         try:
@@ -299,6 +341,90 @@ class BackofficeRepository:
                 params = [start_date, end_date]
             query += " ORDER BY report_date DESC LIMIT 100"
             rows = conn.execute(query, tuple(params)).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def prune_option_snapshots(self, underlying: str, keep: int = 3) -> None:
+        """Keep only the newest ``keep`` snapshots per underlying so live polling cannot grow the DB unbounded."""
+        conn = self._conn()
+        try:
+            with conn:
+                old = conn.execute(
+                    "SELECT id FROM option_snapshots WHERE underlying_symbol = ? ORDER BY snapshot_timestamp DESC LIMIT -1 OFFSET ?",
+                    (underlying, keep),
+                ).fetchall()
+                for row in old:
+                    conn.execute("DELETE FROM option_contracts WHERE snapshot_id = ?", (row["id"],))
+                    conn.execute("DELETE FROM option_snapshots WHERE id = ?", (row["id"],))
+        finally:
+            conn.close()
+
+    def option_snapshot_age_seconds(self, underlying: str) -> float | None:
+        """Seconds since the newest snapshot was fetched, or None when none exists."""
+        conn = self._conn()
+        try:
+            row = conn.execute(
+                "SELECT fetched_at FROM option_snapshots WHERE underlying_symbol = ? ORDER BY fetched_at DESC LIMIT 1",
+                (underlying,),
+            ).fetchone()
+        finally:
+            conn.close()
+        if not row or not row["fetched_at"]:
+            return None
+        try:
+            return (datetime.now(UTC) - datetime.fromisoformat(row["fetched_at"])).total_seconds()
+        except ValueError:
+            return None
+
+    # --- Mutual fund schemes (AMFI) ---
+
+    def replace_mf_schemes(self, schemes: list[dict[str, Any]]) -> int:
+        if not schemes:
+            return 0
+        now = _utcnow()
+        conn = self._conn()
+        try:
+            with conn:
+                conn.executemany(
+                    """
+                    INSERT INTO mf_schemes (scheme_code, scheme_name, amc, category, plan, isin, latest_nav, nav_date, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(scheme_code) DO UPDATE SET
+                        scheme_name=excluded.scheme_name, amc=excluded.amc, category=excluded.category,
+                        plan=excluded.plan, isin=excluded.isin, latest_nav=excluded.latest_nav,
+                        nav_date=excluded.nav_date, updated_at=excluded.updated_at
+                    """,
+                    [
+                        (
+                            s["scheme_code"], s["scheme_name"], s.get("amc"), s.get("category"), s.get("plan"),
+                            s.get("isin"), s.get("latest_nav"), s.get("latest_nav_date"), now,
+                        )
+                        for s in schemes
+                    ],
+                )
+            return len(schemes)
+        finally:
+            conn.close()
+
+    def search_mf_schemes(self, search: str | None, amc: str | None, category: str | None, limit: int, offset: int) -> list[dict[str, Any]]:
+        clauses, params = [], []  # type: list[str], list[Any]
+        if search:
+            like = f"%{search.strip()}%"
+            clauses.append("(scheme_name LIKE ? OR scheme_code LIKE ? OR amc LIKE ? OR isin LIKE ?)")
+            params += [like, like, like, like]
+        if amc:
+            clauses.append("amc = ?")
+            params.append(amc)
+        if category:
+            clauses.append("category = ?")
+            params.append(category)
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                f"SELECT * FROM mf_schemes {where} ORDER BY scheme_name LIMIT ? OFFSET ?", (*params, limit, offset)
+            ).fetchall()
             return [dict(r) for r in rows]
         finally:
             conn.close()

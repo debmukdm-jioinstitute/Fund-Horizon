@@ -60,7 +60,14 @@ def test_staff_list_and_provision_without_password(admin_client):
     assert any(s["email"] == "new.analyst@fundhorizon.internal" for s in listed.json()["data"])
 
 
-def test_micro_issuer_endpoint_is_manual_only(admin_client):
-    r = admin_client.get("/api/backoffice/micro/issuers/INFY")
+def test_micro_issuer_reports_unavailable_when_nse_unreachable(admin_client, monkeypatch):
+    from app.backoffice.providers.nse import NseClient, NseError
+
+    def _boom(self, symbol):
+        raise NseError("NSE blocked", status="blocked")
+
+    monkeypatch.setattr(NseClient, "fetch_quarterly_results", _boom)
+    r = admin_client.get("/api/backoffice/micro/issuers/NOSUCHSYM")
     assert r.status_code == 200
-    assert r.json()["availability"] == "manual_only"
+    body = r.json()
+    assert body["data"] is None and body["availability"] == "blocked"

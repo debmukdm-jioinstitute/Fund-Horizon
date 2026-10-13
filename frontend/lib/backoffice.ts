@@ -9,6 +9,7 @@ export interface BackofficeEnvelope<T> {
   availability: "ready" | "unavailable" | "blocked" | "needs_key" | "manual_only" | "schema_error";
   freshness: "current" | "stale" | "market_closed";
   quality_flags?: string[] | string;
+  message?: string;
   coverage?: {
     priced_positions_paise?: number;
     unpriced_positions_count?: number;
@@ -21,7 +22,16 @@ export interface MarketOverviewData {
   fx?: { rates?: Record<string, number>; as_of?: string; status?: string };
   fx_reference_rates?: Record<string, number>;
   fx_as_of?: string;
-  volatility?: Record<string, number> | { vix?: number; india_vix?: number; as_of?: string; status?: string };
+  volatility?: Record<string, number> | {
+    vix?: number | null;
+    india_vix?: number | null;
+    vix_as_of?: string | null;
+    india_vix_as_of?: string | null;
+    as_of?: string;
+    status?: string;
+  };
+  indices?: { "INDEX:IN:NIFTY50"?: number; "INDEX:IN:NIFTYBANK"?: number; as_of?: string | null };
+  flows?: { latest_date?: string | null; fii_net?: number | null; dii_net?: number | null; status?: string };
   vol_as_of?: string;
   yields?: {
     in_10y?: number;
@@ -66,6 +76,7 @@ export interface MarketOverviewData {
 }
 
 export interface YieldsBoardData {
+  india_message?: string;
   curves: Record<string, Record<string, { value: number; observed_at: string; source: string }>>;
   spreads: {
     in_us_10y_bps?: number;
@@ -76,6 +87,8 @@ export interface YieldsBoardData {
 }
 
 export interface DerivativesData {
+  live_status?: "live" | "stale" | "unavailable";
+  notice?: string;
   underlying: string;
   underlying_price?: number;
   expiry_date?: string;
@@ -218,6 +231,14 @@ export interface MicroIssuerData {
   debt_equity_ratio?: number;
   mf_lookthrough_weight_pct?: number;
   filing_id?: string;
+  quarters?: Array<{
+    period_end: string;
+    revenue_crore?: number;
+    ebitda_crore?: number;
+    ebitda_margin_pct?: number;
+    pat_crore?: number;
+    filing_id?: string;
+  }>;
 }
 
 export interface ImpactAnalysisData {
@@ -315,6 +336,7 @@ function envelope<T>(raw: Json, data: T, fallbackAvailability: Availability = "r
     freshness: freshnessOf(raw.freshness),
     quality_flags: typeof flags === "string" || Array.isArray(flags) ? (flags as string[] | string) : undefined,
     method_version: str(raw.method_version),
+    message: str(raw.message),
   };
 }
 
@@ -358,7 +380,7 @@ export const getYieldsBoard = async (): Promise<BackofficeEnvelope<YieldsBoardDa
     for (const r of arr(rows)) {
       const tenor = str(r.tenor);
       const value = num(r.yield_pct);
-      if (tenor && value !== undefined) curve[tenor] = { value, observed_at: asOf ?? "—", source };
+      if (tenor && value !== undefined) curve[tenor] = { value, observed_at: str(r.observed_at) ?? asOf ?? "—", source };
     }
     return curve;
   };
@@ -366,15 +388,16 @@ export const getYieldsBoard = async (): Promise<BackofficeEnvelope<YieldsBoardDa
   const usSummary = obj(d.us_summary);
   const cross = obj(d.india_us_10y_spread);
   const data: YieldsBoardData = {
-    curves: { IN: toCurve(d.india_curve, "FBIL"), US: toCurve(d.us_curve, "FRED") },
+    curves: { IN: toCurve(d.india_curve, "FBIL"), US: toCurve(d.us_curve, "US Treasury") },
     spreads: {
       in_us_10y_bps: num(cross.spread_bps),
       us_10y_2y_bps: num(usSummary.slope_10y_2y_bps),
       in_10y_2y_bps: num(inSummary.slope_10y_2y_bps),
     },
+    india_message: str(d.india_message),
     as_of: asOf,
   };
-  return envelope(raw, data);
+  return envelope(raw, data, "unavailable");
 };
 
 export const getDerivatives = async (underlying = "NIFTY", expiry?: string): Promise<BackofficeEnvelope<DerivativesData>> => {
@@ -398,14 +421,16 @@ export const getDerivatives = async (underlying = "NIFTY", expiry?: string): Pro
     underlying_price: num(d.underlying_price),
     expiry_date: selectedExpiry,
     pcr_oi: num(pcr.pcr_oi),
-    pcr_oi_reason: str(pcr.pcr_oi_reason) ?? str(d.message),
+    pcr_oi_reason: str(pcr.pcr_oi_reason),
+    live_status: (str(d.live_status) as DerivativesData["live_status"]) ?? undefined,
+    notice: str(d.message),
     pcr_volume: num(pcr.pcr_volume),
     max_pain_strike: num(d.max_pain),
     total_call_oi: num(pcr.total_call_oi) ?? 0,
     total_put_oi: num(pcr.total_put_oi) ?? 0,
     contracts,
   };
-  return envelope(raw, data, "manual_only");
+  return envelope(raw, data, "unavailable");
 };
 
 export const getFlows = async (start?: string, end?: string): Promise<BackofficeEnvelope<FlowsData>> => {
@@ -438,7 +463,7 @@ export const getFlows = async (start?: string, end?: string): Promise<Backoffice
       : undefined,
     as_of: daily[0]?.report_date,
   };
-  return envelope(raw, data, "manual_only");
+  return envelope(raw, data, "unavailable");
 };
 
 export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategyItem[]>> => {
@@ -507,8 +532,28 @@ export const getMutualFundsTracker = async (q?: string): Promise<BackofficeEnvel
 
 export const getMicroIssuer = async (id: string): Promise<BackofficeEnvelope<MicroIssuerData | null>> => {
   const raw = await boFetch<Json>(`/api/backoffice/micro/issuers/${encodeURIComponent(id)}`);
-  const d = raw.data ? (obj(raw.data) as unknown as MicroIssuerData) : null;
-  return envelope(raw, d, "manual_only");
+  const d = raw.data ? obj(raw.data) : null;
+  const data: MicroIssuerData | null = d
+    ? {
+        symbol: str(d.symbol) ?? id,
+        reporting_scope: str(d.reporting_scope),
+        fiscal_period: str(d.fiscal_period),
+        revenue_crore: num(d.revenue_crore),
+        ebitda_crore: num(d.ebitda_crore),
+        ebitda_margin_pct: num(d.ebitda_margin_pct),
+        pat_crore: num(d.pat_crore),
+        filing_id: str(d.filing_id),
+        quarters: arr(d.quarters).map((q) => ({
+          period_end: str(q.period_end) ?? "—",
+          revenue_crore: num(q.revenue_crore),
+          ebitda_crore: num(q.ebitda_crore),
+          ebitda_margin_pct: num(q.ebitda_margin_pct),
+          pat_crore: num(q.pat_crore),
+          filing_id: str(q.filing_id),
+        })),
+      }
+    : null;
+  return envelope(raw, data, "unavailable");
 };
 
 export const analyzeImpact = async (body: {

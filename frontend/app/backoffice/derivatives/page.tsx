@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { getDerivatives, DerivativesData, BackofficeEnvelope } from "@/lib/backoffice";
 import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { usePolling } from "@/components/backoffice/usePolling";
 
 const INDICES = [
   { id: "NIFTY", name: "NIFTY 50", type: "index_fno" },
@@ -20,23 +21,42 @@ export default function DerivativesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      try {
+  usePolling(async (silent) => {
+    try {
+      if (!silent) {
         setLoading(true);
         setError(null);
-        const res = await getDerivatives(selectedIndex);
-        setData(res);
-      } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load derivatives data");
-      } finally {
-        setLoading(false);
       }
+      setData(await getDerivatives(selectedIndex));
+    } catch (err: unknown) {
+      if (!silent) setError(err instanceof Error ? err.message : "Failed to load derivatives data");
+    } finally {
+      if (!silent) setLoading(false);
     }
-    load();
-  }, [selectedIndex]);
+  }, [selectedIndex], 30_000);
 
   const currentIndexMeta = INDICES.find((i) => i.id === selectedIndex);
+
+  // Merge CE/PE legs per strike and show a window of strikes around the money (full chains run to hundreds of rows).
+  const strikeRows = (() => {
+    const contracts = data?.data.contracts ?? [];
+    const byStrike = new Map<number, { strike: number; ce?: (typeof contracts)[number]; pe?: (typeof contracts)[number] }>();
+    for (const c of contracts) {
+      const row = byStrike.get(c.strike_price) ?? { strike: c.strike_price };
+      if (c.option_type === "CE") row.ce = c;
+      else row.pe = c;
+      byStrike.set(c.strike_price, row);
+    }
+    const sorted = Array.from(byStrike.values()).sort((a, b) => a.strike - b.strike);
+    const spot = data?.data.underlying_price;
+    if (!sorted.length || spot === undefined) return sorted.map((r) => ({ ...r, isAtm: false }));
+    let atmIdx = 0;
+    sorted.forEach((r, idx) => {
+      if (Math.abs(r.strike - spot) < Math.abs(sorted[atmIdx].strike - spot)) atmIdx = idx;
+    });
+    const window = sorted.slice(Math.max(0, atmIdx - 15), atmIdx + 16);
+    return window.map((r) => ({ ...r, isAtm: r.strike === sorted[atmIdx].strike }));
+  })();
 
   return (
     <div className="space-y-6">
@@ -45,7 +65,7 @@ export default function DerivativesPage() {
         <div>
           <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Indian Index Derivatives & Put-Call Ratio (PCR)</h1>
           <p className="text-xs text-sand-600 mt-0.5">
-            NSE / BSE derivative reports, Option Chain snapshots, Open Interest (OI), Volume & Max Pain analytics
+            Live NSE option chains (auto-refresh 30s) • Open Interest, Volume, Implied Volatility, PCR & Max Pain
           </p>
         </div>
         {data && (
@@ -87,6 +107,12 @@ export default function DerivativesPage() {
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800">
           <div className="font-semibold mb-0.5">Cash Index Level: Derivatives N/A</div>
           Cash index levels have no intrinsic traded volume or open interest. Traded volume is available strictly for listed derivative contracts or ETF constituent proxies.
+        </div>
+      )}
+
+      {data?.data.live_status === "stale" && data.data.notice && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800">
+          <span className="font-semibold">Showing last stored snapshot.</span> Live NSE refresh failed: {data.data.notice}
         </div>
       )}
 
@@ -170,30 +196,31 @@ export default function DerivativesPage() {
               <div>
                 <h2 className="text-sm font-semibold text-sand-900">Option Chain Contracts Matrix</h2>
                 <p className="text-[11px] text-sand-500">
-                  Call & Put strike layout with Open Interest, Volume & Implied Volatility
+                  31 strikes around the money • Open Interest, Volume & Implied Volatility
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <StatusBadge
                   availability={data.availability}
-                  freshness="current"
-                  sourceName="NSE Official Reports"
-                  sourceUrl="https://www.nseindia.com/all-reports-derivatives"
+                  freshness={data.freshness}
+                  sourceName="NSE option chain"
+                  sourceUrl="https://www.nseindia.com/option-chain"
                 />
               </div>
             </div>
 
             {data.data.contracts.length === 0 ? (
               <div className="py-12 text-center text-sand-500 text-xs bg-sand-50 rounded-xl border border-dashed border-sand-300">
-                <div className="font-semibold text-sand-700 mb-1">Manual Import / Permitted Source Required</div>
+                <div className="font-semibold text-sand-700 mb-1">Option chain unavailable</div>
                 <p className="max-w-md mx-auto mb-4">
-                  Free exchange-grade live intraday option chains are not available with zero spend without scraping. Upload verified EOD bhavcopy / derivative reports via Data Health.
+                  {data.data.notice ||
+                    "No option chain could be fetched from NSE right now. It will appear automatically once the feed responds."}
                 </p>
                 <Link
                   href="/backoffice/data-health"
                   className="inline-flex items-center px-3.5 py-1.5 bg-forest-700 text-white rounded-xl text-xs font-semibold hover:bg-forest-800 transition-colors"
                 >
-                  Go to Manual Import Hub →
+                  Check source health / manual import →
                 </Link>
               </div>
             ) : (
@@ -220,16 +247,18 @@ export default function DerivativesPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
-                    {/* Render contracts grouped by strike */}
-                    {data.data.contracts.map((c, idx) => (
-                      <tr key={idx} className="hover:bg-sand-50">
-                        <td className="py-2 px-3 text-sand-800 font-medium">{c.option_type === "CE" ? c.oi.toLocaleString() : "—"}</td>
-                        <td className="py-2 px-3 text-sand-600">{c.option_type === "CE" ? c.volume.toLocaleString() : "—"}</td>
-                        <td className="py-2 px-3 text-sand-500 border-r border-sand-200">{c.option_type === "CE" && c.implied_volatility ? `${c.implied_volatility}%` : "—"}</td>
-                        <td className="py-2 px-4 font-bold text-sand-950 bg-sand-50/80">{c.strike_price.toLocaleString()}</td>
-                        <td className="py-2 px-3 text-sand-500 border-l border-sand-200">{c.option_type === "PE" && c.implied_volatility ? `${c.implied_volatility}%` : "—"}</td>
-                        <td className="py-2 px-3 text-sand-600">{c.option_type === "PE" ? c.volume.toLocaleString() : "—"}</td>
-                        <td className="py-2 px-3 text-sand-800 font-medium">{c.option_type === "PE" ? c.oi.toLocaleString() : "—"}</td>
+                    {strikeRows.map((row) => (
+                      <tr key={row.strike} className={`hover:bg-sand-50 ${row.isAtm ? "bg-amber-50/60" : ""}`}>
+                        <td className="py-2 px-3 text-sand-800 font-medium">{row.ce ? row.ce.oi.toLocaleString("en-IN") : "—"}</td>
+                        <td className="py-2 px-3 text-sand-600">{row.ce ? row.ce.volume.toLocaleString("en-IN") : "—"}</td>
+                        <td className="py-2 px-3 text-sand-500 border-r border-sand-200">{row.ce?.implied_volatility ? `${row.ce.implied_volatility}%` : "—"}</td>
+                        <td className="py-2 px-4 font-bold text-sand-950 bg-sand-50/80">
+                          {row.strike.toLocaleString("en-IN")}
+                          {row.isAtm && <span className="ml-1.5 text-[9px] font-semibold text-amber-700">ATM</span>}
+                        </td>
+                        <td className="py-2 px-3 text-sand-500 border-l border-sand-200">{row.pe?.implied_volatility ? `${row.pe.implied_volatility}%` : "—"}</td>
+                        <td className="py-2 px-3 text-sand-600">{row.pe ? row.pe.volume.toLocaleString("en-IN") : "—"}</td>
+                        <td className="py-2 px-3 text-sand-800 font-medium">{row.pe ? row.pe.oi.toLocaleString("en-IN") : "—"}</td>
                       </tr>
                     ))}
                   </tbody>

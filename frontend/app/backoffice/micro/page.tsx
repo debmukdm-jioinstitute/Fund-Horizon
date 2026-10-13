@@ -4,11 +4,15 @@ import React, { useEffect, useState } from "react";
 import { getMicroIssuer, MicroIssuerData } from "@/lib/backoffice";
 import { StatusBadge } from "@/components/backoffice/StatusBadge";
 
+const fmtNum = (v?: number) => (v !== undefined ? v.toLocaleString("en-IN", { maximumFractionDigits: 1 }) : "—");
+const fmtCr = (v?: number) => (v !== undefined ? `₹${fmtNum(v)} Cr` : "—");
+
 export default function MicroFundamentalsPage() {
   const [selectedIssuer, setSelectedIssuer] = useState("INFY");
   const [issuerData, setIssuerData] = useState<MicroIssuerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     async function load(id: string) {
@@ -17,6 +21,7 @@ export default function MicroFundamentalsPage() {
         setError(null);
         const res = await getMicroIssuer(id);
         setIssuerData(res.data);
+        setNotice(res.data ? null : res.message ?? null);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load issuer fundamentals");
         setIssuerData(null);
@@ -34,16 +39,16 @@ export default function MicroFundamentalsPage() {
         <div>
           <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Micro & Issuer Fundamentals Hub</h1>
           <p className="text-xs text-sand-600 mt-0.5">
-            Issuer balance sheets, EBITDA, cash flow conversion, AMC portfolio look-through & filings coverage
+            Quarterly revenue, EBITDA and net profit from NSE-filed results (live, cached 6h)
           </p>
         </div>
         <StatusBadge
-          availability="manual_only"
+          availability={issuerData ? "ready" : "unavailable"}
           freshness="current"
           frequency="quarterly"
-          sourceName="Official Exchange Filings"
-          sourceUrl="https://www.bseindia.com/corporates/ann.html"
-          units="Normalized Standard"
+          sourceName="NSE corporate results"
+          sourceUrl="https://www.nseindia.com/companies-listing/corporate-filings-financial-results"
+          units="₹ Crore"
         />
       </div>
 
@@ -87,77 +92,67 @@ export default function MicroFundamentalsPage() {
       ) : error || !issuerData ? (
         <div className="p-6 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-700">
           <div className="font-semibold mb-1">Fundamentals unavailable for {selectedIssuer}</div>
-          {error || "Issuer fundamentals are not available yet: no free automated filings feed is wired up and manual issuer import is not enabled."}
+          {error || notice || "NSE returned no quarterly results for this symbol."}
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Key Metric Tiles */}
+          {/* Key Metric Tiles (latest reported quarter, from NSE results) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-              <div className="text-xs text-sand-500 font-medium">Revenue (Trailing 12M)</div>
+              <div className="text-xs text-sand-500 font-medium">Revenue (latest quarter)</div>
               <div className="mt-1 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-                {issuerData.revenue_crore ? `₹${issuerData.revenue_crore.toLocaleString()} Cr` : "—"}
+                {fmtCr(issuerData.revenue_crore)}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">
-                Scope: {issuerData.reporting_scope || "Consolidated"}
-              </div>
+              <div className="mt-2 text-[11px] text-sand-500 font-mono">Basis: {issuerData.reporting_scope || "—"}</div>
             </div>
 
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="text-xs text-sand-500 font-medium">Operating EBITDA Margin</div>
               <div className="mt-1 text-2xl font-bold font-mono tabular-nums text-emerald-700">
-                {issuerData.ebitda_margin_pct ? `${issuerData.ebitda_margin_pct}%` : "—"}
+                {issuerData.ebitda_margin_pct !== undefined ? `${issuerData.ebitda_margin_pct}%` : "—"}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">
-                FY Period: {issuerData.fiscal_period || "Q1 FY27"}
-              </div>
+              <div className="mt-2 text-[11px] text-sand-500 font-mono">PBT + interest + depreciation − other income</div>
             </div>
 
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-              <div className="text-xs text-sand-500 font-medium">Debt to Equity Ratio</div>
-              <div className="mt-1 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-                {issuerData.debt_equity_ratio !== undefined ? issuerData.debt_equity_ratio : "0.00"}
-              </div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">
-                Net Debt: {issuerData.net_debt_crore ? `₹${issuerData.net_debt_crore} Cr` : "Net Cash Positive"}
-              </div>
+              <div className="text-xs text-sand-500 font-medium">Net Profit (PAT)</div>
+              <div className="mt-1 text-2xl font-bold text-sand-950 font-mono tabular-nums">{fmtCr(issuerData.pat_crore)}</div>
+              <div className="mt-2 text-[11px] text-sand-500 font-mono">Latest reported quarter</div>
             </div>
 
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-              <div className="text-xs text-sand-500 font-medium">Mutual Fund Look-Through Weight</div>
-              <div className="mt-1 text-2xl font-bold font-mono tabular-nums text-forest-800">
-                {issuerData.mf_lookthrough_weight_pct ? `${issuerData.mf_lookthrough_weight_pct}%` : "Tracked"}
-              </div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">
-                AMC disclosures aggregated
-              </div>
+              <div className="text-xs text-sand-500 font-medium">Quarter Ended</div>
+              <div className="mt-1 text-2xl font-bold font-mono tabular-nums text-forest-800">{issuerData.fiscal_period || "—"}</div>
+              <div className="mt-2 text-[11px] text-sand-500 font-mono">Filing ref: {issuerData.filing_id || "—"}</div>
             </div>
           </div>
 
           {/* Quarterly Financials Ledger */}
           <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5">
-            <h2 className="text-sm font-semibold text-sand-950 mb-3">Quarterly Financial Statements & Filings</h2>
+            <h2 className="text-sm font-semibold text-sand-950 mb-3">Quarterly Results (NSE filings)</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-sand-50 text-sand-600 font-mono border-y border-sand-200">
                   <tr>
-                    <th className="py-2.5 px-3 font-medium">Fiscal Period</th>
-                    <th className="py-2.5 px-3 font-medium">Reporting Basis</th>
+                    <th className="py-2.5 px-3 font-medium">Quarter Ended</th>
                     <th className="py-2.5 px-3 font-medium">Revenue (₹ Cr)</th>
                     <th className="py-2.5 px-3 font-medium">EBITDA (₹ Cr)</th>
+                    <th className="py-2.5 px-3 font-medium">EBITDA Margin</th>
                     <th className="py-2.5 px-3 font-medium">PAT (₹ Cr)</th>
                     <th className="py-2.5 px-3 font-medium">Filing Reference</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
-                  <tr className="hover:bg-sand-50/60">
-                    <td className="py-2.5 px-3 font-semibold text-sand-900">{issuerData.fiscal_period || "Q1 FY27"}</td>
-                    <td className="py-2.5 px-3 text-sand-600 font-sans">Consolidated Ind AS</td>
-                    <td className="py-2.5 px-3 text-sand-900 font-semibold">{issuerData.revenue_crore ? `₹${issuerData.revenue_crore.toLocaleString()}` : "—"}</td>
-                    <td className="py-2.5 px-3 text-sand-900">{issuerData.ebitda_crore ? `₹${issuerData.ebitda_crore.toLocaleString()}` : "—"}</td>
-                    <td className="py-2.5 px-3 text-emerald-700 font-semibold">{issuerData.pat_crore ? `₹${issuerData.pat_crore.toLocaleString()}` : "—"}</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{issuerData.filing_id || "BSE_CORP_FILING_2026"}</td>
-                  </tr>
+                  {(issuerData.quarters ?? []).map((q) => (
+                    <tr key={q.period_end} className="hover:bg-sand-50/60">
+                      <td className="py-2.5 px-3 font-semibold text-sand-900">{q.period_end}</td>
+                      <td className="py-2.5 px-3 text-sand-900 font-semibold">{fmtNum(q.revenue_crore)}</td>
+                      <td className="py-2.5 px-3 text-sand-900">{fmtNum(q.ebitda_crore)}</td>
+                      <td className="py-2.5 px-3 text-sand-700">{q.ebitda_margin_pct !== undefined ? `${q.ebitda_margin_pct}%` : "—"}</td>
+                      <td className="py-2.5 px-3 text-emerald-700 font-semibold">{fmtNum(q.pat_crore)}</td>
+                      <td className="py-2.5 px-3 text-sand-500 text-[11px]">{q.filing_id || "—"}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

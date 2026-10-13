@@ -213,7 +213,7 @@ export default function DerivativesPage() {
                       : "No contracts for this underlying"}
                   </td>
                   <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]" title="PCR > 1.20 leans bullish · 0.80–1.20 neutral · < 0.80 leans bearish">
-                    {hasContracts ? pcrLabel(d.pcr_oi) : "N/A"}
+                    {hasContracts && status?.tone === "ok" ? pcrLabel(d.pcr_oi) : "N/A"}
                   </td>
                 </tr>
                 <tr>
@@ -225,7 +225,12 @@ export default function DerivativesPage() {
                   <td className={`text-[12px] font-medium ${statusTone}`}>{status?.label ?? "N/A"}</td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Max Pain Strike</td>
+                  <td
+                    className="font-medium text-[#172033] dark:text-[#EDF2F7]"
+                    title="Strike where option writers' total payout is lowest, computed from open interest across all strikes of the selected expiry"
+                  >
+                    Max Pain Strike
+                  </td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                     {hasContracts && d.max_pain_strike ? formatWhole(d.max_pain_strike) : "N/A"}
                   </td>
@@ -308,14 +313,14 @@ export default function DerivativesPage() {
                         <tr key={strike}>
                           <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{ce ? formatWhole(ce.oi) : "—"}</td>
                           <td className="text-right text-[#536176] dark:text-[#A8B4C4]">{ce ? formatWhole(ce.volume) : "—"}</td>
-                          <td className="text-right text-[#536176] dark:text-[#A8B4C4] border-r border-[#E4E9EF] dark:border-[#2B3644]" title={ceIV.warn ?? undefined}>
+                          <td className={`text-right border-r border-[#E4E9EF] dark:border-[#2B3644] ${ceIV.warn ? "text-[#B42332] dark:text-[#FF7D86] font-medium" : "text-[#536176] dark:text-[#A8B4C4]"}`} title={ceIV.warn ?? undefined}>
                             {ceIV.text}
                             {ceIV.warn && <span className="ml-1 text-[#B45309] dark:text-[#FBBF24]">⚠</span>}
                           </td>
                           <td className="text-center font-medium text-[#172033] dark:text-[#EDF2F7] bg-[#F7F9FB] dark:bg-[#171E27]">
                             {formatWhole(strike)}
                           </td>
-                          <td className="text-right text-[#536176] dark:text-[#A8B4C4] border-l border-[#E4E9EF] dark:border-[#2B3644]" title={peIV.warn ?? undefined}>
+                          <td className={`text-right border-l border-[#E4E9EF] dark:border-[#2B3644] ${peIV.warn ? "text-[#B42332] dark:text-[#FF7D86] font-medium" : "text-[#536176] dark:text-[#A8B4C4]"}`} title={peIV.warn ?? undefined}>
                             {peIV.text}
                             {peIV.warn && <span className="ml-1 text-[#B45309] dark:text-[#FBBF24]">⚠</span>}
                           </td>

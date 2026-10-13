@@ -297,6 +297,9 @@ def _due_sources() -> list[str]:
     for src, interval in REFRESH_INTERVALS.items():
         if src == "SRC_FRED" and not os.environ.get("FRED_API_KEY", "").strip():
             continue  # keyless deployments skip FRED instead of reporting a permanent failure
+        # Screening reads AMFI schemes and TER: wait for both, or it runs once on deploy with an empty TER table.
+        if src == "SRC_SCREENING" and not all(s in _LAST_RUN for s in ("SRC_AMFI", "SRC_AMFI_TER")):
+            continue
         if now - _LAST_RUN.get(src, float("-inf")) >= interval:
             due.append(src)
     return due

@@ -2,15 +2,11 @@
 from __future__ import annotations
 
 import io
-from pathlib import Path
 
-import matplotlib
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     BaseDocTemplate,
     Frame,
@@ -23,6 +19,7 @@ from reportlab.platypus import (
 
 from app.config.disclosures import ARN, FIRM, INSURANCE_SHORTLIST_NOTE
 from app.report.fmt import xml_escape
+from app.report.fonts import BODY_FONT, BOLD_FONT
 
 NAVY = colors.HexColor("#0B2545")
 TEAL = colors.HexColor("#0D9488")
@@ -30,18 +27,12 @@ LIGHT = colors.HexColor("#F0FDFA")
 BORDER_COLOR = colors.HexColor("#99F6E4")
 DARK_GRAY = colors.HexColor("#334155")
 
-_FONTS = Path(matplotlib.get_data_path()) / "fonts" / "ttf"
-try:
-    pdfmetrics.registerFont(TTFont("DV", str(_FONTS / "DejaVuSans.ttf")))
-    pdfmetrics.registerFont(TTFont("DV-B", str(_FONTS / "DejaVuSans-Bold.ttf")))
-except Exception:
-    pass
 
-BODY = ParagraphStyle("ins_body", fontName="DV", fontSize=9, leading=13, textColor=DARK_GRAY)
-TITLE = ParagraphStyle("ins_title", fontName="DV-B", fontSize=18, leading=22, textColor=NAVY)
-SUBTITLE = ParagraphStyle("ins_sub", fontName="DV", fontSize=11, leading=15, textColor=TEAL)
-H2 = ParagraphStyle("ins_h2", fontName="DV-B", fontSize=12, leading=16, textColor=NAVY, spaceBefore=10, spaceAfter=4)
-SMALL = ParagraphStyle("ins_small", fontName="DV", fontSize=7.5, leading=10, textColor=colors.HexColor("#64748B"))
+BODY = ParagraphStyle("ins_body", fontName=BODY_FONT, fontSize=9, leading=13, textColor=DARK_GRAY)
+TITLE = ParagraphStyle("ins_title", fontName=BOLD_FONT, fontSize=18, leading=22, textColor=NAVY)
+SUBTITLE = ParagraphStyle("ins_sub", fontName=BODY_FONT, fontSize=11, leading=15, textColor=TEAL)
+H2 = ParagraphStyle("ins_h2", fontName=BOLD_FONT, fontSize=12, leading=16, textColor=NAVY, spaceBefore=10, spaceAfter=4)
+SMALL = ParagraphStyle("ins_small", fontName=BODY_FONT, fontSize=7.5, leading=10, textColor=colors.HexColor("#64748B"))
 
 
 def build_insurance_plan_pdf(plan_info: dict) -> bytes:
@@ -88,8 +79,8 @@ def build_insurance_plan_pdf(plan_info: dict) -> bytes:
     t_metrics.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), LIGHT),
         ("TEXTCOLOR", (0, 0), (0, -1), NAVY),
-        ("FONTNAME", (0, 0), (0, -1), "DV-B"),
-        ("FONTNAME", (1, 0), (1, -1), "DV"),
+        ("FONTNAME", (0, 0), (0, -1), BOLD_FONT),
+        ("FONTNAME", (1, 0), (1, -1), BODY_FONT),
         ("FONTSIZE", (0, 0), (-1, -1), 8.5),
         ("INNERGRID", (0, 0), (-1, -1), 0.5, BORDER_COLOR),
         ("BOX", (0, 0), (-1, -1), 1, TEAL),

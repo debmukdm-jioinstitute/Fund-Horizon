@@ -9,6 +9,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
+import app.report.fonts  # noqa: F401  (sets Google Sans as the matplotlib default)
 from app.report.fmt import short_inr
 
 NAVY, TEAL, GREY = "#0B2545", "#13A89E", "#8D99AE"

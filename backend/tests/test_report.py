@@ -119,3 +119,19 @@ def test_pdf_without_tax_details_still_renders(eligible):
     r = clean(build_full_plan(PlanRequest(**RAW["young_aggressive"]), eligible))
     assert r["tax"]["enabled"] is False
     assert len(build_pdf("Rohan", r)) > 20_000
+
+
+def test_pdf_and_charts_use_google_sans_only(eligible, monkeypatch):
+    """Site-wide typeface rule: every font embedded in a generated PDF is Google Sans (no DejaVu/Helvetica)."""
+    import matplotlib
+
+    from app.report import fonts
+
+    name = next(iter(RAW))
+    r = clean(build_full_plan(PlanRequest(**RAW[name]), eligible))
+    pdf = build_pdf(RAW[name]["client"]["first_name"], r)
+    base_fonts = {m.decode() for m in re.findall(rb"/BaseFont\s*/(?:[A-Z]{6}\+)?([A-Za-z0-9_-]+)", pdf)}
+    assert base_fonts, "expected embedded fonts in the PDF"
+    assert all(f.startswith("GoogleSans") for f in base_fonts), base_fonts
+    assert matplotlib.rcParams["font.family"] == [fonts.MATPLOTLIB_FAMILY]
+    assert fonts.REGULAR_TTF.exists() and fonts.BOLD_TTF.exists()

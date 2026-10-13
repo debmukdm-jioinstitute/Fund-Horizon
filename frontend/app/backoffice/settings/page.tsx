@@ -99,7 +99,7 @@ export default function SettingsPage() {
       });
       setProvisionedCredentials({
         email: res.staff_member.email,
-        temp_pass: res.temporary_password,
+        temp_pass: res.temporary_password ?? "(account promoted - existing password unchanged)",
       });
       setStaffName("");
       setStaffEmail("");

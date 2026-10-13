@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const googleSans = ["var(--font-google-sans)", "'Google Sans Variable'", "'Google Sans'", "sans-serif"];
+
 const config: Config = {
   darkMode: "class",
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
@@ -35,23 +37,12 @@ const config: Config = {
         amber: { 600: "#B45309", 100: "#FEF3C7" },
         rose: { 700: "#B42318", 600: "#E11D48", 100: "#FEE4E2" },
       },
+      // Google Sans is the ONLY typeface. Every font utility resolves to it so no class can pick another family.
       fontFamily: {
-        sans: [
-          "'Google Sans'",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
-          "Roboto",
-          "Helvetica",
-          "Arial",
-          "sans-serif",
-        ],
-        display: [
-          "'Google Sans'",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "sans-serif",
-        ],
+        sans: googleSans,
+        display: googleSans,
+        mono: googleSans,
+        serif: googleSans,
       },
 
       boxShadow: {

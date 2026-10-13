@@ -110,7 +110,7 @@ async def lifespan(app: FastAPI):
     if _flag("FH_BACKOFFICE_COLLECTORS", "true"):
         from app.backoffice.collectors import run_collector_loop
 
-        collector_task = asyncio.create_task(run_collector_loop(interval_seconds=3600))
+        collector_task = asyncio.create_task(run_collector_loop())
 
     try:
         yield

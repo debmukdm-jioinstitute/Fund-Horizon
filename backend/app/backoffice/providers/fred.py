@@ -33,7 +33,13 @@ FRED_SERIES_MAP = {
     "DGS2": ("YIELD:US:2Y", "percent"),
     "DGS30": ("YIELD:US:30Y", "percent"),
     "DTWEXBGS": ("MACRO:US:BROAD_USD", "index_pts"),
+    # India (OECD via FRED, monthly): fallback when the daily scraped curve is unavailable.
+    "INDIRLTLT01STM": ("YIELD:IN:10Y", "percent"),
+    "INDIR3TIB01STM": ("YIELD:IN:3M", "percent"),
 }
+# Series collected on every FRED refresh (US yields come from the keyless Treasury feed instead).
+FRED_REFRESH_SERIES = ("DTWEXBGS", "INDIRLTLT01STM", "INDIR3TIB01STM")
+MONTHLY_SERIES = {"INDIRLTLT01STM", "INDIR3TIB01STM"}
 
 
 class FredProvider(BaseProvider):
@@ -64,6 +70,23 @@ class FredProvider(BaseProvider):
 
         series_id = cursor or "DGS10"
         return self.fetch_series(series_id)
+
+    def fetch_all(self) -> FetchResult:
+        """Fetch every series in ``FRED_REFRESH_SERIES``; succeeds if at least one series returns data."""
+        merged: list[NormalizedObservation] = []
+        last_error: FetchResult | None = None
+        for series_id in FRED_REFRESH_SERIES:
+            res = self.fetch_series(series_id)
+            if res.success:
+                merged.extend(res.observations)
+            else:
+                last_error = res
+                if res.status == "needs_key":
+                    return res
+        if not merged:
+            return last_error or FetchResult(success=False, status="unavailable", error_message="No FRED data")
+        latest = max(o.observed_at for o in merged)
+        return FetchResult(success=True, status="ready", observations=merged, source_timestamp=latest)
 
     def fetch_series(self, series_id: str, limit: int = 100) -> FetchResult:
         if not self.api_key:
@@ -112,7 +135,7 @@ class FredProvider(BaseProvider):
                             instrument_id=inst_id,
                             observed_at=obs_date,
                             value_numeric=val,
-                            frequency="daily",
+                            frequency="monthly" if series_id in MONTHLY_SERIES else "daily",
                             provenance="FRED",
                             quality_flags="ok",
                         )

@@ -2,34 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Sans Central Typography */
-@font-face {
-  font-family: 'Google Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/GoogleSans-400-Latin.woff2') format('woff2'),
-       url('/fonts/GoogleSans-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/GoogleSans-500-Latin.woff2') format('woff2'),
-       url('/fonts/GoogleSans-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/GoogleSans-Medium.ttf') format('truetype');
-}
-
 :root {
+  --font-google-sans: "Google Sans Variable", "Google Sans", sans-serif;
   color-scheme: light;
   --terminal-bg: #FFFFFF;
   --terminal-surface: #F7F9FB;
@@ -57,15 +31,36 @@ html.dark {
 
 html {
   scroll-behavior: smooth;
-  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-google-sans);
   font-feature-settings: 'tnum' 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Typeface lock: Google Sans everywhere, no exceptions (text, form controls, SVG chart labels, code/pre, pseudo
+ * elements, inline styles). `!important` is deliberate so no component or third-party style can introduce another font.
+ * Monospace-styled text keeps aligned figures through tabular numerals instead of a different family.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: var(--font-google-sans) !important;
+}
+
+.font-mono,
+code,
+kbd,
+samp,
+pre,
+table {
   font-variant-numeric: tabular-nums;
 }
 
 body {
   background-color: var(--terminal-bg);
   color: var(--terminal-text-primary);
-  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-google-sans);
   font-feature-settings: 'tnum' 1;
   font-variant-numeric: tabular-nums;
   min-height: 100vh;
@@ -81,7 +76,7 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--terminal-surface);
+  background: var(--terminal-bg);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--terminal-border);
@@ -91,74 +86,57 @@ body {
   background: var(--terminal-text-secondary);
 }
 
-:focus-visible {
-  outline: 2px solid var(--terminal-accent);
-  outline-offset: 1px;
-}
-
 @layer components {
-  /* Terminal Surface Card / Panel */
+  /* Terminal Flat Panel */
   .terminal-panel {
     background-color: var(--terminal-bg);
     border: 1px solid var(--terminal-border);
-    border-radius: 6px;
+    border-radius: 5px;
   }
 
-  .terminal-surface {
-    background-color: var(--terminal-surface);
-    border: 1px solid var(--terminal-border);
-    border-radius: 6px;
-  }
-
-  /* Compact Terminal Button (4-6px control corners) */
+  /* Compact Terminal Button */
   .terminal-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.375rem;
     height: 32px;
     padding: 0 0.75rem;
     font-size: 13px;
     font-weight: 500;
-    line-height: 1;
-    border-radius: 5px;
-    border: 1px solid var(--terminal-border);
-    background-color: var(--terminal-bg);
     color: var(--terminal-text-primary);
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    background-color: var(--terminal-surface);
+    border: 1px solid var(--terminal-border);
+    border-radius: 5px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
     cursor: pointer;
-    user-select: none;
     white-space: nowrap;
+    text-decoration: none;
   }
   .terminal-btn:hover {
-    background-color: var(--terminal-surface);
+    background-color: var(--terminal-bg);
     border-color: var(--terminal-text-secondary);
   }
-  .terminal-btn:active {
-    background-color: var(--terminal-border);
-  }
-
   .terminal-btn-accent {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.375rem;
     height: 32px;
     padding: 0 0.875rem;
     font-size: 13px;
     font-weight: 500;
-    line-height: 1;
-    border-radius: 5px;
-    border: 1px solid transparent;
-    background-color: var(--terminal-accent);
     color: #FFFFFF;
+    background-color: #006F64;
+    border: 1px solid #006F64;
+    border-radius: 5px;
     transition: opacity 0.15s ease;
     cursor: pointer;
-    user-select: none;
     white-space: nowrap;
+    text-decoration: none;
   }
   .dark .terminal-btn-accent {
     color: #10151C;
+    background-color: #75E1CE;
+    border-color: #75E1CE;
   }
   .terminal-btn-accent:hover {
     opacity: 0.9;

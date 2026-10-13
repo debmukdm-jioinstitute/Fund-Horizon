@@ -7,7 +7,65 @@ from datetime import UTC, datetime
 from typing import Any
 
 from app.backoffice.db import ensure_backoffice_schema
+from app.backoffice.providers.amfi_ter import base_key as mf_base_key
 from app.db import sqlite as _sqlite
+
+
+_LIVE_TABLES_SQL = """
+CREATE TABLE IF NOT EXISTS mf_schemes (
+    scheme_code TEXT PRIMARY KEY,
+    scheme_name TEXT NOT NULL,
+    amc TEXT,
+    category TEXT,
+    plan TEXT,
+    isin TEXT,
+    latest_nav REAL,
+    nav_date TEXT,
+    base_key TEXT,
+    updated_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_mf_schemes_name ON mf_schemes(scheme_name);
+CREATE TABLE IF NOT EXISTS mf_ter (
+    base_key TEXT PRIMARY KEY,
+    scheme_name TEXT NOT NULL,
+    regular_ter_pct REAL,
+    direct_ter_pct REAL,
+    as_of TEXT,
+    updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS pms_providers (
+    apmi_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS pms_apmi_strategies (
+    provider TEXT NOT NULL,
+    strategy_name TEXT NOT NULL,
+    strategy_type TEXT NOT NULL,
+    service_type TEXT NOT NULL,
+    as_on TEXT NOT NULL,
+    ia_id TEXT,
+    aum_crore REAL,
+    return_1m REAL, return_3m REAL, return_6m REAL, return_9m REAL, return_1y REAL,
+    return_2y REAL, return_3y REAL, return_4y REAL, return_5y REAL, return_since_inception REAL,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (provider, strategy_name, strategy_type, service_type, as_on)
+);
+CREATE INDEX IF NOT EXISTS ix_pms_apmi_as_on ON pms_apmi_strategies(as_on);
+CREATE TABLE IF NOT EXISTS news_items (
+    id TEXT PRIMARY KEY,
+    source_id TEXT NOT NULL,
+    source_name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    title TEXT NOT NULL,
+    link TEXT NOT NULL,
+    summary TEXT,
+    published_at TEXT,
+    fetched_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_news_published ON news_items(published_at);
+"""
+_LIVE_TABLES_READY: set[str] = set()
 
 
 def _utcnow() -> str:
@@ -26,7 +84,19 @@ class BackofficeRepository:
 
     def _conn(self):
         ensure_backoffice_schema()
-        return _sqlite.get_default_connection()
+        conn = _sqlite.get_default_connection()
+        key = str(_sqlite.get_default_db_path())
+        if key not in _LIVE_TABLES_READY:
+            # Tables added after the 0005 migration are created lazily so existing volumes need no migration.
+            with conn:
+                for stmt in _LIVE_TABLES_SQL.strip().split(";"):
+                    if stmt.strip():
+                        conn.execute(stmt)
+                cols = {r["name"] for r in conn.execute("PRAGMA table_info(mf_schemes)").fetchall()}
+                if "base_key" not in cols:
+                    conn.execute("ALTER TABLE mf_schemes ADD COLUMN base_key TEXT")
+            _LIVE_TABLES_READY.add(key)
+        return conn
 
     # --- Sources & Health ---
 
@@ -289,6 +359,22 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def replace_flows(self, flow_records: list[dict[str, Any]]) -> int:
+        """Idempotent flow upsert keyed on (report_date, category, segment): re-fetching a session overwrites it."""
+        if not flow_records:
+            return 0
+        conn = self._conn()
+        try:
+            with conn:
+                for f in flow_records:
+                    conn.execute(
+                        "DELETE FROM flows WHERE report_date = ? AND category = ? AND segment = ?",
+                        (f["report_date"], f["category"], f.get("segment", "equity_cash")),
+                    )
+            return self.upsert_flows(flow_records)
+        finally:
+            conn.close()
+
     def list_flows(self, start_date: str | None = None, end_date: str | None = None) -> list[dict[str, Any]]:
         conn = self._conn()
         try:
@@ -299,6 +385,246 @@ class BackofficeRepository:
                 params = [start_date, end_date]
             query += " ORDER BY report_date DESC LIMIT 100"
             rows = conn.execute(query, tuple(params)).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def prune_option_snapshots(self, underlying: str, keep: int = 3) -> None:
+        """Keep only the newest ``keep`` snapshots per underlying so live polling cannot grow the DB unbounded."""
+        conn = self._conn()
+        try:
+            with conn:
+                old = conn.execute(
+                    "SELECT id FROM option_snapshots WHERE underlying_symbol = ? ORDER BY snapshot_timestamp DESC LIMIT -1 OFFSET ?",
+                    (underlying, keep),
+                ).fetchall()
+                for row in old:
+                    conn.execute("DELETE FROM option_contracts WHERE snapshot_id = ?", (row["id"],))
+                    conn.execute("DELETE FROM option_snapshots WHERE id = ?", (row["id"],))
+        finally:
+            conn.close()
+
+    def option_snapshot_age_seconds(self, underlying: str) -> float | None:
+        """Seconds since the newest snapshot was fetched, or None when none exists."""
+        conn = self._conn()
+        try:
+            row = conn.execute(
+                "SELECT fetched_at FROM option_snapshots WHERE underlying_symbol = ? ORDER BY fetched_at DESC LIMIT 1",
+                (underlying,),
+            ).fetchone()
+        finally:
+            conn.close()
+        if not row or not row["fetched_at"]:
+            return None
+        try:
+            return (datetime.now(UTC) - datetime.fromisoformat(row["fetched_at"])).total_seconds()
+        except ValueError:
+            return None
+
+    # --- Mutual fund schemes (AMFI) ---
+
+    def replace_mf_schemes(self, schemes: list[dict[str, Any]]) -> int:
+        if not schemes:
+            return 0
+        now = _utcnow()
+        conn = self._conn()
+        try:
+            with conn:
+                conn.executemany(
+                    """
+                    INSERT INTO mf_schemes (scheme_code, scheme_name, amc, category, plan, isin, latest_nav, nav_date, base_key, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(scheme_code) DO UPDATE SET
+                        scheme_name=excluded.scheme_name, amc=excluded.amc, category=excluded.category,
+                        plan=excluded.plan, isin=excluded.isin, latest_nav=excluded.latest_nav,
+                        nav_date=excluded.nav_date, base_key=excluded.base_key, updated_at=excluded.updated_at
+                    """,
+                    [
+                        (
+                            s["scheme_code"], s["scheme_name"], s.get("amc"), s.get("category"), s.get("plan"),
+                            s.get("isin"), s.get("latest_nav"), s.get("latest_nav_date"), mf_base_key(s["scheme_name"]), now,
+                        )
+                        for s in schemes
+                    ],
+                )
+            return len(schemes)
+        finally:
+            conn.close()
+
+    def search_mf_schemes(self, search: str | None, amc: str | None, category: str | None, limit: int, offset: int) -> list[dict[str, Any]]:
+        clauses, params = [], []  # type: list[str], list[Any]
+        if search:
+            like = f"%{search.strip()}%"
+            clauses.append("(s.scheme_name LIKE ? OR s.scheme_code LIKE ? OR s.amc LIKE ? OR s.isin LIKE ?)")
+            params += [like, like, like, like]
+        if amc:
+            clauses.append("s.amc = ?")
+            params.append(amc)
+        if category:
+            clauses.append("s.category = ?")
+            params.append(category)
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                f"""
+                SELECT s.*,
+                       CASE WHEN s.plan = 'Direct' THEN t.direct_ter_pct ELSE t.regular_ter_pct END AS ter_pct,
+                       t.as_of AS ter_as_of
+                FROM mf_schemes s LEFT JOIN mf_ter t ON t.base_key = s.base_key
+                {where} ORDER BY s.scheme_name LIMIT ? OFFSET ?
+                """,
+                (*params, limit, offset),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def replace_mf_ter(self, rows: list[dict[str, Any]]) -> int:
+        if not rows:
+            return 0
+        now = _utcnow()
+        conn = self._conn()
+        try:
+            with conn:
+                conn.executemany(
+                    """
+                    INSERT INTO mf_ter (base_key, scheme_name, regular_ter_pct, direct_ter_pct, as_of, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(base_key) DO UPDATE SET
+                        scheme_name=excluded.scheme_name, regular_ter_pct=excluded.regular_ter_pct,
+                        direct_ter_pct=excluded.direct_ter_pct, as_of=excluded.as_of, updated_at=excluded.updated_at
+                    """,
+                    [(r["base_key"], r["scheme_name"], r["regular_ter_pct"], r["direct_ter_pct"], r["as_of"], now) for r in rows],
+                )
+            return len(rows)
+        finally:
+            conn.close()
+
+    # --- PMS industry universe (APMI) ---
+
+    _PMS_RETURN_COLS = (
+        "return_1m", "return_3m", "return_6m", "return_9m", "return_1y",
+        "return_2y", "return_3y", "return_4y", "return_5y", "return_since_inception",
+    )
+
+    def replace_pms_universe(self, as_on: str, providers: list[dict[str, Any]], strategies: list[dict[str, Any]]) -> int:
+        """Replace the provider list and that month's strategy rows (older months are kept as history)."""
+        now = _utcnow()
+        cols = self._PMS_RETURN_COLS
+        conn = self._conn()
+        try:
+            with conn:
+                conn.execute("DELETE FROM pms_providers")
+                conn.executemany(
+                    "INSERT INTO pms_providers (apmi_id, name, updated_at) VALUES (?, ?, ?)",
+                    [(p["apmi_id"], p["name"], now) for p in providers],
+                )
+                conn.execute("DELETE FROM pms_apmi_strategies WHERE as_on = ?", (as_on,))
+                conn.executemany(
+                    f"""
+                    INSERT OR REPLACE INTO pms_apmi_strategies
+                    (provider, strategy_name, strategy_type, service_type, as_on, ia_id, aum_crore, {", ".join(cols)}, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, {", ".join("?" for _ in cols)}, ?)
+                    """,
+                    [
+                        (
+                            s["provider"], s["strategy_name"], s["strategy_type"], s["service_type"], as_on,
+                            s.get("ia_id"), s.get("aum_crore"), *(s.get(c) for c in cols), now,
+                        )
+                        for s in strategies
+                    ],
+                )
+            return len(strategies)
+        finally:
+            conn.close()
+
+    def latest_pms_as_on(self) -> str | None:
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT MAX(as_on) AS m FROM pms_apmi_strategies").fetchone()
+            return row["m"] if row and row["m"] else None
+        finally:
+            conn.close()
+
+    def list_pms_universe_strategies(self, as_on: str | None = None) -> list[dict[str, Any]]:
+        as_on = as_on or self.latest_pms_as_on()
+        if not as_on:
+            return []
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM pms_apmi_strategies WHERE as_on = ? ORDER BY aum_crore IS NULL, aum_crore DESC", (as_on,)
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def list_pms_providers(self, as_on: str | None = None) -> list[dict[str, Any]]:
+        """Every APMI provider with strategy count and total AUM for ``as_on`` (zero when it reported nothing)."""
+        as_on = as_on or self.latest_pms_as_on() or ""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT p.apmi_id, p.name,
+                       COUNT(s.strategy_name) AS strategy_count,
+                       COALESCE(SUM(s.aum_crore), 0) AS total_aum_crore,
+                       GROUP_CONCAT(DISTINCT s.strategy_type) AS strategy_types
+                FROM pms_providers p
+                LEFT JOIN pms_apmi_strategies s ON s.provider = p.name AND s.as_on = ?
+                GROUP BY p.apmi_id, p.name
+                ORDER BY total_aum_crore DESC, p.name ASC
+                """,
+                (as_on,),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    # --- News (RSS) ---
+
+    def upsert_news(self, items: list[dict[str, Any]], keep: int = 600) -> int:
+        if not items:
+            return 0
+        now = _utcnow()
+        conn = self._conn()
+        try:
+            with conn:
+                conn.executemany(
+                    """
+                    INSERT INTO news_items (id, source_id, source_name, category, title, link, summary, published_at, fetched_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET title=excluded.title, summary=excluded.summary, fetched_at=excluded.fetched_at
+                    """,
+                    [
+                        (i["id"], i["source_id"], i["source_name"], i["category"], i["title"], i["link"], i.get("summary"), i.get("published_at"), now)
+                        for i in items
+                    ],
+                )
+                conn.execute(
+                    "DELETE FROM news_items WHERE id NOT IN (SELECT id FROM news_items ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT ?)",
+                    (keep,),
+                )
+            return len(items)
+        finally:
+            conn.close()
+
+    def list_news(self, limit: int = 40, category: str | None = None, source_id: str | None = None) -> list[dict[str, Any]]:
+        clauses, params = [], []  # type: list[str], list[Any]
+        if category:
+            clauses.append("category = ?")
+            params.append(category)
+        if source_id:
+            clauses.append("source_id = ?")
+            params.append(source_id)
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                f"SELECT * FROM news_items {where} ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT ?",
+                (*params, limit),
+            ).fetchall()
             return [dict(r) for r in rows]
         finally:
             conn.close()
@@ -536,6 +862,19 @@ class BackofficeRepository:
                 "entity_id": entity_id, "title": title, "content": content,
                 "tags": tags, "created_at": now, "updated_at": now
             }
+        finally:
+            conn.close()
+
+    # --- Staff ---
+
+    def list_staff(self) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT id, name, email, mobile, role, status, is_staff FROM customers "
+                "WHERE is_staff = 1 OR role IN ('admin','analyst','rm','operations','read_only') ORDER BY name ASC"
+            ).fetchall()
+            return [dict(r) for r in rows]
         finally:
             conn.close()
 

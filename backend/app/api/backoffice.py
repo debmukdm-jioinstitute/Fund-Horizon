@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import csv
 import io
+import secrets
+from datetime import UTC, datetime
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
@@ -16,7 +18,9 @@ from app.api.auth import (
     verify_csrf,
     _hash_password,
 )
+from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import refresh_source
+from app.backoffice.providers.nse import NseError
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
 from app.backoffice.repository import BackofficeRepository
 from app.backoffice.schemas import (
@@ -61,11 +65,12 @@ def backoffice_overview(staff: Annotated[dict, Depends(require_staff)]):
 
 @router.get("/yields")
 def backoffice_yields(staff: Annotated[dict, Depends(require_staff)]):
-    """Sovereign tenor curves and cross-country spreads (India, US)."""
+    """Sovereign tenor curves and cross-country spreads, from live-collected observations."""
+    board = _SERVICE.get_yields_board()
     return {
-        "data": _SERVICE.get_yields_board(),
-        "as_of": "2026-10-09",
-        "availability": "ready",
+        "data": board,
+        "as_of": board.get("as_of"),
+        "availability": board.get("status", "unavailable"),
         "freshness": "current",
     }
 
@@ -86,7 +91,28 @@ def backoffice_derivatives(
         "data": board,
         "as_of": board.get("snapshot_timestamp"),
         "availability": board.get("status", "ready"),
-        "freshness": "current" if board.get("status") == "ready" else "manual_only",
+        "freshness": "current" if board.get("live_status") == "live" else "stale",
+    }
+
+
+# ---------------------------------------------------------------------------
+# Live News (open RSS feeds)
+# ---------------------------------------------------------------------------
+
+@router.get("/news")
+def backoffice_news(
+    staff: Annotated[dict, Depends(require_staff)],
+    limit: int = Query(40, ge=1, le=200),
+    category: str | None = Query(None),
+    source: str | None = Query(None),
+):
+    """Latest headlines collected from open RSS feeds (RBI, SEBI, PIB and major Indian business outlets)."""
+    items = _REPO.list_news(limit=limit, category=category, source_id=source)
+    return {
+        "data": items,
+        "count": len(items),
+        "availability": "ready" if items else "unavailable",
+        "freshness": "current",
     }
 
 
@@ -106,8 +132,8 @@ def backoffice_flows(
         "data": flows,
         "count": len(flows),
         "unit": "inr_crore",
-        "availability": "ready" if flows else "manual_only",
-        "freshness": "current" if flows else "manual_only",
+        "availability": "ready" if flows else "unavailable",
+        "freshness": "current" if flows else "stale",
     }
 
 
@@ -120,13 +146,48 @@ def backoffice_pms_strategies(
     staff: Annotated[dict, Depends(require_staff)],
     provider: str | None = Query(None),
 ):
-    """APMI published PMS strategy returns, AUM, benchmarks, and horizons."""
-    strategies = _REPO.list_pms_strategies(provider=provider)
+    """All APMI-reported PMS strategies (latest month) plus any manually imported strategy rows."""
+    as_on = _REPO.latest_pms_as_on()
+    universe = _REPO.list_pms_universe_strategies(as_on)
+    if provider:
+        universe = [s for s in universe if s["provider"] == provider]
+    manual = [
+        {
+            "provider": m["provider"],
+            "strategy_name": m["strategy_name"],
+            "strategy_type": m.get("approach") or m.get("category") or "Other",
+            "service_type": "Manual import",
+            "as_on": m.get("report_month"),
+            "aum_crore": m.get("aum_crore"),
+            "return_1m": m.get("return_1m"), "return_3m": m.get("return_3m"), "return_6m": m.get("return_6m"),
+            "return_1y": m.get("return_1y"), "return_3y": m.get("cagr_3y"), "return_5y": m.get("cagr_5y"),
+            "source": m.get("source") or "manual",
+        }
+        for m in _REPO.list_pms_strategies(provider=provider)
+        if m.get("source") != "APMI"
+    ]
     return {
-        "data": strategies,
-        "count": len(strategies),
+        "data": universe + manual,
+        "count": len(universe) + len(manual),
+        "as_on": as_on,
         "source": "APMI",
-        "availability": "ready" if strategies else "manual_only",
+        "availability": "ready" if (universe or manual) else "unavailable",
+        "freshness": "current" if universe else "stale",
+    }
+
+
+@router.get("/pms/providers")
+def backoffice_pms_providers(staff: Annotated[dict, Depends(require_staff)]):
+    """Every SEBI-registered portfolio manager listed by APMI, with reported strategy count and total AUM."""
+    as_on = _REPO.latest_pms_as_on()
+    providers = _REPO.list_pms_providers(as_on)
+    return {
+        "data": providers,
+        "count": len(providers),
+        "reporting_count": sum(1 for p in providers if p["strategy_count"]),
+        "as_on": as_on,
+        "availability": "ready" if providers else "unavailable",
+        "freshness": "current",
     }
 
 
@@ -157,7 +218,82 @@ def backoffice_pms_account_tracker(
         if tracker.get("customer_id") != user_id and tracker.get("household_id") != user_id:
             raise HTTPException(403, "Access to this client account is restricted to assigned RM.")
 
-    return {"data": tracker}
+    return {"data": _enrich_pms_tracker(tracker), "availability": "ready", "freshness": "current"}
+
+
+def _enrich_pms_tracker(tracker: dict[str, Any]) -> dict[str, Any]:
+    """Attach valuation, XIRR, Modified Dietz and HWM fee estimates to a raw account ledger."""
+    valuations = tracker.get("valuations") or []  # newest first
+    cashflows = tracker.get("cashflows") or []  # oldest first
+    latest = valuations[0] if valuations else None
+    current_paise = int(latest["total_value_paise"]) if latest else sum(
+        int(p.get("market_value_paise") or 0) for p in tracker.get("positions") or []
+    )
+
+    # Investor view: contributions are outflows (negative), withdrawals are inflows (positive).
+    flows = [(c["flow_date"], c["amount_paise"] / 100.0) for c in cashflows if c.get("flow_date")]
+    xirr: dict[str, Any] = {"xirr_pct": None, "status": "insufficient_data"}
+    dietz: dict[str, Any] = {"return_pct": None}
+    if latest and flows:
+        try:
+            res = calculate_xirr(flows, terminal_value=current_paise / 100.0, terminal_date=latest["valuation_date"])
+            xirr = {
+                "xirr_pct": round(res["xirr"] * 100.0, 4) if res.get("xirr") is not None else None,
+                "status": res.get("status", "unknown"),
+            }
+            first_date = min(f[0] for f in flows)
+            # Dietz works on capital additions as positive values.
+            res_d = calculate_modified_dietz(0.0, current_paise / 100.0, [(d, -a) for d, a in flows], first_date, latest["valuation_date"])
+            dietz = {"return_pct": res_d.get("return_pct")}
+        except (ValueError, KeyError, TypeError):
+            xirr = {"xirr_pct": None, "status": "calculation_error"}
+
+    fee = estimate_hwm_fee(
+        current_paise,
+        int(tracker.get("high_water_mark") or 0),
+        tracker.get("fee_performance_pct"),
+        tracker.get("hurdle_pct") or 0.0,
+    )
+    positions = [
+        {
+            **p,
+            "symbol": p.get("symbol_or_isin"),
+            "asset_name": p.get("security_name"),
+            "asset_class": p.get("security_type"),
+        }
+        for p in tracker.get("positions") or []
+    ]
+    return {
+        **tracker,
+        "positions": positions,
+        "current_valuation_paise": current_paise,
+        "xirr": xirr,
+        "modified_dietz": dietz,
+        "hwm_fee": {"hwm_exceeded": fee.get("hwm_exceeded", False), "estimated_fee_paise": fee.get("estimated_fee_paise", 0)},
+        "holdings_coverage": {"total_coverage_pct": latest.get("holdings_coverage_pct", 100.0) if latest else 100.0},
+    }
+
+
+# ---------------------------------------------------------------------------
+# Micro / Issuer Fundamentals
+# ---------------------------------------------------------------------------
+
+@router.get("/micro/issuers/{symbol}")
+def backoffice_micro_issuer(symbol: str, staff: Annotated[dict, Depends(require_staff)]):
+    """Latest quarterly results for a listed issuer, fetched live from NSE (cached six hours)."""
+    try:
+        data = _SERVICE.get_issuer_fundamentals(symbol)
+    except NseError as e:
+        return {"data": None, "symbol": symbol.upper(), "availability": e.status, "freshness": "stale", "message": str(e)}
+    if data is None:
+        return {
+            "data": None,
+            "symbol": symbol.upper(),
+            "availability": "unavailable",
+            "freshness": "current",
+            "message": f"NSE has no quarterly results for {symbol.upper()}.",
+        }
+    return {"data": data, "as_of": data["fiscal_period"], "availability": "ready", "freshness": "current", "frequency": "quarterly"}
 
 
 # ---------------------------------------------------------------------------
@@ -174,17 +310,14 @@ def backoffice_mf_tracker(
     offset: int = Query(0, ge=0),
 ):
     """Search and compare mutual fund schemes with AMFI daily NAV values and metrics."""
-    db_repo = get_repository()
-    funds = db_repo.list_funds(limit=limit, offset=offset)
-    if search:
-        s = search.lower()
-        funds = [f for f in funds if s in f.get("scheme_name", "").lower() or s in str(f.get("scheme_code", ""))]
-    if amc:
-        funds = [f for f in funds if f.get("amc") == amc]
-    if category:
-        funds = [f for f in funds if f.get("category") == category]
-
-    return {"data": funds, "count": len(funds), "limit": limit, "offset": offset}
+    funds = _REPO.search_mf_schemes(search, amc, category, limit, offset)
+    return {
+        "data": funds,
+        "count": len(funds),
+        "limit": limit,
+        "offset": offset,
+        "availability": "ready" if funds else "unavailable",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -331,8 +464,18 @@ def backoffice_data_health(staff: Annotated[dict, Depends(require_staff)]):
     """Detailed data health, source statuses, quotas, and recent audit events."""
     sources = _REPO.list_sources()
     audits = _REPO.list_audit_events(limit=25)
+    def _count(status: str) -> int:
+        return sum(1 for src in sources if src.get("health_status") == status)
+
     return {
         "sources": sources,
+        "summary": {
+            "total": len(sources),
+            "ready": _count("ready"),
+            "degraded": _count("degraded"),
+            "needs_key": _count("needs_key"),
+            "manual_only": _count("manual_only"),
+        },
         "recent_audits": audits,
         "as_of": datetime.now(UTC).isoformat(),
     }
@@ -361,6 +504,12 @@ async def trigger_source_refresh(
 # Staff Provisioning (Admin Only)
 # ---------------------------------------------------------------------------
 
+@router.get("/staff")
+def list_staff_members(admin: Annotated[dict, Depends(require_role("admin"))]):
+    """Admin-only list of staff accounts."""
+    return {"data": _REPO.list_staff()}
+
+
 @router.post("/staff/provision", status_code=201)
 def provision_staff_member(
     body: StaffMemberCreateRequest,
@@ -372,7 +521,12 @@ def provision_staff_member(
     repo = get_repository()
     email = body.email.strip().lower()
     existing = repo.get_customer_by_email(email)
-    pwd_hash = _hash_password(body.password)
+    temporary_password = None
+    password = body.password
+    if not password:
+        temporary_password = secrets.token_urlsafe(9)
+        password = temporary_password
+    pwd_hash = _hash_password(password)
 
     if existing:
         updated = repo.update_customer(
@@ -383,11 +537,11 @@ def provision_staff_member(
                 "is_staff": 1,
                 "status": "active",
                 "password_hash": pwd_hash,
-                "must_change_password": 1 if body.temp_password else 0,
+                "must_change_password": 1 if (body.temp_password or temporary_password) else 0,
             },
         )
         _REPO.log_audit(admin["id"], "staff_promoted", "staff", existing["id"], {"email": email, "role": body.role})
-        return {"success": True, "action": "promoted", "staff": updated}
+        return {"success": True, "action": "promoted", "staff": updated, "staff_member": updated, "temporary_password": temporary_password}
     else:
         created = repo.create_customer(
             name=body.name,
@@ -401,8 +555,8 @@ def provision_staff_member(
             {
                 "is_staff": 1,
                 "status": "active",
-                "must_change_password": 1 if body.temp_password else 0,
+                "must_change_password": 1 if (body.temp_password or temporary_password) else 0,
             },
         )
         _REPO.log_audit(admin["id"], "staff_created", "staff", created["id"], {"email": email, "role": body.role})
-        return {"success": True, "action": "created", "staff": created}
+        return {"success": True, "action": "created", "staff": created, "staff_member": created, "temporary_password": temporary_password}

@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/check-fonts.mjs && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint && node scripts/check-fonts.mjs",
+    "lint:fonts": "node scripts/check-fonts.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/google-sans": "^5.3.2",
+    "dark-mode-toggle": "^0.18.0",
     "framer-motion": "^11.18.2",
     "next": "14.2.35",
     "react": "^18",

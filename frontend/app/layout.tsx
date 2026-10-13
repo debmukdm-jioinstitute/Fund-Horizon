@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "@fontsource-variable/google-sans";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthContext";
 import { ThemeProvider } from "@/components/terminal/ThemeContext";

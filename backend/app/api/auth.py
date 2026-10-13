@@ -107,16 +107,32 @@ def _new_session_token(customer_id: str) -> str:
     return token
 
 
-def _set_session_cookie(response: Response, token: str) -> None:
+def _cookie_settings() -> dict:
     secure = os.environ.get("FH_COOKIE_SECURE", "false").lower() in ("true", "1", "yes")
+    return {
+        "httponly": True,
+        "samesite": "none" if secure else "lax",
+        "secure": secure,
+    }
+
+
+def _set_session_cookie(response: Response, token: str) -> None:
+    settings = _cookie_settings()
     response.set_cookie(
         key=SESSION_COOKIE,
         value=token,
         max_age=SESSION_MAX_AGE,
         path="/",
-        httponly=True,
-        samesite="lax",
-        secure=secure,
+        **settings,
+    )
+
+
+def _clear_session_cookie(response: Response) -> None:
+    settings = _cookie_settings()
+    response.delete_cookie(
+        key=SESSION_COOKIE,
+        path="/",
+        **settings,
     )
 
 
@@ -263,7 +279,7 @@ def logout(request: Request, response: Response):
     token = _token_from_request(request)
     if token:
         sqlite.delete_auth_session(hashlib.sha256(token.encode("utf-8")).hexdigest())
-    response.delete_cookie(SESSION_COOKIE, path="/")
+    _clear_session_cookie(response)
     return {"success": True}
 
 

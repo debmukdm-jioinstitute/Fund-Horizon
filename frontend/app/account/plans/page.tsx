@@ -36,8 +36,8 @@ export default function MyPlansPage() {
     if (authLoading || !customer) return;
     (async () => {
       try {
-        const list = await getMyPlans();
-        setPlans(list);
+        const res = await getMyPlans();
+        setPlans(res?.plans ?? []);
       } catch (e) {
         setError(e instanceof ApiError ? e.message : "We couldn't load your plans. Please try again.");
         setPlans([]);

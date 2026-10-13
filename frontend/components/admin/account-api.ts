@@ -3,6 +3,8 @@
 // Uses direct fetch() with credentials: "include" (kept separate from lib/api,
 // which is owned by another worker).
 
+import { resolveApiUrl } from "@/lib/api";
+
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export type AccountRole = "customer" | "rm" | "admin";
@@ -40,7 +42,7 @@ async function readJson(res: Response, what: string): Promise<unknown> {
 
 /** Returns the logged-in user, or null when there is no session (401). */
 export async function fetchMe(): Promise<MeUser | null> {
-  const res = await fetch(`${API_URL}/api/auth/me`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/auth/me`), {
     credentials: "include",
     cache: "no-store",
   });
@@ -54,7 +56,7 @@ export async function fetchCustomers(
   offset: number,
 ): Promise<{ customers: CustomerRecord[]; total: number }> {
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
-  const res = await fetch(`${API_URL}/api/admin/customers?${params}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/customers?${params}`), {
     credentials: "include",
     cache: "no-store",
   });
@@ -70,7 +72,7 @@ export async function patchCustomer(
   id: string,
   body: { role?: AccountRole; assigned_rm_id?: string | null },
 ): Promise<CustomerRecord> {
-  const res = await fetch(`${API_URL}/api/admin/customers/${encodeURIComponent(id)}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/customers/${encodeURIComponent(id)}`), {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -81,7 +83,7 @@ export async function patchCustomer(
 
 /** RM (or admin) view: customers assigned to the logged-in RM. */
 export async function fetchRmCustomers(): Promise<CustomerRecord[]> {
-  const res = await fetch(`${API_URL}/api/rm/customers`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/rm/customers`), {
     credentials: "include",
     cache: "no-store",
   });
@@ -93,7 +95,7 @@ export async function fetchRmCustomers(): Promise<CustomerRecord[]> {
 
 /** Plans of one customer, for the assigned RM (or an admin). */
 export async function fetchRmCustomerPlans(customerId: string): Promise<RmCustomerPlan[]> {
-  const res = await fetch(`${API_URL}/api/rm/customers/${encodeURIComponent(customerId)}/plans`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/rm/customers/${encodeURIComponent(customerId)}/plans`), {
     credentials: "include",
     cache: "no-store",
   });

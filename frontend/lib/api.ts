@@ -27,6 +27,13 @@ import type {
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const SERVER_API_URL = process.env.API_INTERNAL_URL ?? API_URL;
 
+export function resolveApiUrl(url: string): string {
+  if (typeof window !== "undefined" && API_URL && url.startsWith(API_URL)) {
+    return url.slice(API_URL.length) || "/";
+  }
+  return url;
+}
+
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
     super(message);
@@ -34,7 +41,8 @@ export class ApiError extends Error {
 }
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, { ...init, headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) } });
+  const targetUrl = resolveApiUrl(url);
+  const res = await fetch(targetUrl, { ...init, headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) } });
   if (!res.ok) {
     let msg = `Request failed (${res.status})`;
     try {
@@ -62,7 +70,7 @@ export const getPlan = (id: string, stepUp?: number, tax?: Partial<TaxSwitches>)
   const qs = q.toString();
   return request<Plan>(`${API_URL}/api/plans/${id}${qs ? `?${qs}` : ""}`);
 };
-export const reportUrl = (id: string) => `${API_URL}/api/plans/${id}/report.pdf`;
+export const reportUrl = (id: string) => resolveApiUrl(`${API_URL}/api/plans/${id}/report.pdf`);
 
 /** Customer portal v1: dashboard payload for a plan. */
 export const getPortalDashboard = (id: string) =>
@@ -151,7 +159,7 @@ export async function uploadCas(
   fd.append("consent", consent ? "true" : "false");
   if (targetBand) fd.append("target_band", targetBand);
 
-  const res = await fetch(`${API_URL}/api/cas/upload`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/cas/upload`), {
     method: "POST",
     body: fd,
   });
@@ -259,4 +267,7 @@ export const logoutCustomer = () =>
 
 export const getMe = () => authedRequest<Customer>(`${API_URL}/api/auth/me`);
 
-export const getMyPlans = () => authedRequest<MyPlan[]>(`${API_URL}/api/auth/me/plans`);
+export const getMyPlans = () =>
+  authedRequest<{ plans: MyPlan[]; total: number; limit: number; offset: number }>(
+    `${API_URL}/api/auth/me/plans`,
+  );

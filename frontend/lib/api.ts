@@ -24,12 +24,15 @@ import type {
   TaxSwitches,
 } from "./types";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-const SERVER_API_URL = process.env.API_INTERNAL_URL ?? API_URL;
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/+$/, "");
+const SERVER_API_URL = (process.env.API_INTERNAL_URL ?? API_URL).replace(/\/+$/, "");
 
 export function resolveApiUrl(url: string): string {
-  if (typeof window !== "undefined" && API_URL && url.startsWith(API_URL)) {
-    return url.slice(API_URL.length) || "/";
+  if (typeof window !== "undefined") {
+    if (API_URL && url.startsWith(API_URL)) {
+      const rest = url.slice(API_URL.length);
+      return rest.startsWith("/") ? rest : `/${rest}`;
+    }
   }
   return url;
 }

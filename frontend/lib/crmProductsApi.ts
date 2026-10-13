@@ -4,10 +4,11 @@
 // opportunity / pipeline / activity / case helpers used by the pipeline,
 // agenda, and case tabs. No cross-worker imports: only ./api is reused.
 
-import { API_URL, ApiError } from "./api";
+import { API_URL, ApiError, resolveApiUrl } from "./api";
 
 async function crmRequest<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, {
+  const targetUrl = resolveApiUrl(url);
+  const res = await fetch(targetUrl, {
     ...init,
     credentials: "include", // backend sets the fh_session httpOnly cookie
     headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },

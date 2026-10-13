@@ -1,5 +1,5 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
-import { API_URL, ApiError } from "./api";
+import { resolveApiUrl, API_URL, ApiError } from "./api";
 
 /* Typed fetch helpers for the CRM (households, leads, opportunities, activities,
    cases, dashboard, renewals, maturities, task generation, client import).
@@ -178,7 +178,8 @@ export async function crmRaw<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 async function crmRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_URL}/api/crm${path}`, {
+  const targetUrl = resolveApiUrl(`${API_URL}/api/crm${path}`);
+  const res = await fetch(targetUrl, {
     ...init,
     credentials: "include",
     headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },

@@ -1,5 +1,5 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
-import { API_URL } from "./api";
+import { API_URL, resolveApiUrl } from "./api";
 
 export interface AdminStats {
   total_plans: number;
@@ -121,7 +121,7 @@ function getHeaders(adminKey?: string): HeadersInit {
 }
 
 export async function fetchAdminStats(key?: string): Promise<AdminStats> {
-  const res = await fetch(`${API_URL}/api/admin/stats`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/stats`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -130,7 +130,7 @@ export async function fetchAdminStats(key?: string): Promise<AdminStats> {
 }
 
 export async function fetchAdminHealth(key?: string): Promise<AdminHealthResponse> {
-  const res = await fetch(`${API_URL}/api/admin/health`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/health`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -147,7 +147,7 @@ export async function fetchAdminPlans(
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
   if (search) params.append("search", search);
 
-  const res = await fetch(`${API_URL}/api/admin/plans?${params}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/plans?${params}`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -156,7 +156,7 @@ export async function fetchAdminPlans(
 }
 
 export async function fetchAdminPlan(id: string, key?: string): Promise<Record<string, unknown>> {
-  const res = await fetch(`${API_URL}/api/admin/plans/${id}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/plans/${id}`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -165,7 +165,7 @@ export async function fetchAdminPlan(id: string, key?: string): Promise<Record<s
 }
 
 export async function deleteAdminPlan(id: string, key?: string): Promise<boolean> {
-  const res = await fetch(`${API_URL}/api/admin/plans/${id}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/plans/${id}`), {
     method: "DELETE",
     headers: getHeaders(key),
   });
@@ -179,7 +179,7 @@ export async function fetchAdminCasSessions(
   key?: string,
 ): Promise<{ total: number; limit: number; offset: number; sessions: AdminCasSummary[] }> {
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
-  const res = await fetch(`${API_URL}/api/admin/cas-sessions?${params}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/cas-sessions?${params}`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -188,7 +188,7 @@ export async function fetchAdminCasSessions(
 }
 
 export async function fetchAdminCasSession(id: string, key?: string): Promise<Record<string, unknown>> {
-  const res = await fetch(`${API_URL}/api/admin/cas-sessions/${id}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/cas-sessions/${id}`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -219,7 +219,7 @@ export async function fetchAdminSchemes(
   if (params.limit) query.append("limit", String(params.limit));
   if (params.offset) query.append("offset", String(params.offset));
 
-  const res = await fetch(`${API_URL}/api/admin/schemes?${query}`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/schemes?${query}`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -228,7 +228,7 @@ export async function fetchAdminSchemes(
 }
 
 export async function fetchAdminConfig(key?: string): Promise<AdminConfigResponse> {
-  const res = await fetch(`${API_URL}/api/admin/config`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/config`), {
     headers: getHeaders(key),
     cache: "no-store",
   });
@@ -240,7 +240,7 @@ export async function triggerAdminRefresh(
   dryRun = false,
   key?: string,
 ): Promise<{ success: boolean; dry_run: boolean; funds_processed: number; metrics_processed: number; message: string }> {
-  const res = await fetch(`${API_URL}/api/admin/refresh`, {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/admin/refresh`), {
     method: "POST",
     headers: getHeaders(key),
     body: JSON.stringify({ dry_run: dryRun }),

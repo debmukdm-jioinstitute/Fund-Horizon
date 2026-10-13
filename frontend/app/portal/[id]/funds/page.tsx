@@ -5,7 +5,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AmcName } from "@/components/BrandLogo";
-import { API_URL, compareFunds } from "@/lib/api";
+import { API_URL, compareFunds, resolveApiUrl } from "@/lib/api";
 import type { CompareResponse } from "@/lib/types";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
 
@@ -51,7 +51,7 @@ function ExploreTab({ id, selected, toggleSelect }: {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    fetch(`${API_URL}/api/categories/${encodeURIComponent(category)}/ranking`)
+    fetch(resolveApiUrl(`${API_URL}/api/categories/${encodeURIComponent(category)}/ranking`))
       .then((res) => {
         if (!res.ok) throw new Error(`Ranking request failed (${res.status})`);
         return res.json() as Promise<RankingResponse>;

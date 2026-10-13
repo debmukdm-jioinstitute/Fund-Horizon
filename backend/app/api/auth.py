@@ -163,6 +163,11 @@ def get_current_customer(request: Request) -> dict:
     if not customer:
         sqlite.delete_auth_session(token_sha)
         raise HTTPException(401, "Sign in required.")
+    admin_email = os.environ.get("FH_ADMIN_EMAIL", "").strip().lower()
+    if admin_email and customer.get("email") == admin_email and customer.get("role") != "admin":
+        updated = sqlite.update_customer(customer["id"], {"role": "admin"})
+        if updated:
+            customer = updated
     return _public_customer(customer)
 
 
@@ -270,6 +275,11 @@ def login(body: LoginRequest, request: Request, response: Response):
         ok = False
     if not ok or not customer:
         raise HTTPException(401, "Invalid email or password")
+    admin_email = os.environ.get("FH_ADMIN_EMAIL", "").strip().lower()
+    if admin_email and customer.get("email") == admin_email and customer.get("role") != "admin":
+        updated = sqlite.update_customer(customer["id"], {"role": "admin"})
+        if updated:
+            customer = updated
     _set_session_cookie(response, _new_session_token(customer["id"]))
     return {"customer": _public_customer(customer)}
 

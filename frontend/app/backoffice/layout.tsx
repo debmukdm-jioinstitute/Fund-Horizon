@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import Logo from "@/components/Logo";
 import { useAuth } from "@/components/AuthContext";
 
 const NAV_ITEMS = [
@@ -64,7 +63,9 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
     <div className="min-h-screen bg-[#f8f9fa] flex flex-col md:flex-row text-sand-900 font-sans antialiased">
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-sand-200">
-        <Logo />
+        <span className="text-xs font-semibold tracking-wider text-forest-800 uppercase bg-forest-50 px-2 py-0.5 rounded border border-forest-200">
+          Internal Backoffice
+        </span>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="p-2 rounded-lg text-sand-600 hover:bg-sand-100"
@@ -87,8 +88,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
         } md:flex flex-col w-full md:w-64 bg-white border-r border-sand-200 shrink-0 select-none`}
       >
         <div className="p-5 border-b border-sand-100 hidden md:block">
-          <Logo />
-          <div className="mt-2 flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <span className="text-xs font-semibold tracking-wider text-forest-800 uppercase bg-forest-50 px-2 py-0.5 rounded border border-forest-200">
               Internal Backoffice
             </span>

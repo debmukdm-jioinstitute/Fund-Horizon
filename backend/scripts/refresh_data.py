@@ -34,6 +34,8 @@ def refresh_fund_database(dry_run: bool = False) -> tuple[int, int]:
     total_rows = len(df)
     logger.info(f"Loaded {total_rows} schemes from dataset.")
 
+    asof = str(df["last_nav_date"].max())
+
     funds_payload: list[dict] = []
     metrics_payload: list[dict] = []
 
@@ -80,7 +82,7 @@ def refresh_fund_database(dry_run: bool = False) -> tuple[int, int]:
             "sortino_3y": _get_float("sortino_3y"),
             "max_drawdown_3y": _get_float("max_drawdown_3y"),
             "max_drawdown_all": _get_float("max_drawdown_all"),
-            "data_asof": str(row.get("data_asof", "2026-10-09")),
+            "data_asof": asof,
         }
         metrics_payload.append(metric_entry)
 

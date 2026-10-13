@@ -10,12 +10,14 @@ import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBench
 interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
   onClose: () => void;
+  onSelectSibling?: (strategyName: string) => void;
 }
 
-export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDrawerProps) {
+export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }: PmsStrategyDrawerProps) {
   const [copied, setCopied] = useState(false);
   const [detail, setDetail] = useState<PmsStrategyDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [historyView, setHistoryView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const iaId = strategy?.ia_id;
 
   // Pull the full APMI profile (fees, manager, turnover, history) whenever a strategy is opened.
@@ -75,6 +77,12 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
       // fallback
     }
   }
+
+  // Quarterly = calendar quarter-ends, yearly = March (Indian FY end); the latest month is always kept.
+  const historyRows = (detail?.history ?? []).filter((h, i) => {
+    const m = Number(h.as_on.slice(5, 7));
+    return i === 0 || historyView === "monthly" || (historyView === "quarterly" ? m % 3 === 0 : m === 3);
+  });
 
   const horizons: { label: string; period: string; val: number | undefined; bmk?: number }[] = [
     { label: "1 Month", period: "Short-term", val: strategy.return_1m_pct, bmk: strategy.is_fh_recommended ? 10.38 : undefined },
@@ -312,8 +320,20 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
             {/* Monthly history from stored APMI snapshots */}
             {detail && detail.history.length > 0 && (
               <div className="terminal-panel overflow-hidden">
-                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  Monthly History
+                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
+                  <span>History</span>
+                  <div className="flex gap-1">
+                    {(["monthly", "quarterly", "yearly"] as const).map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setHistoryView(v)}
+                        className={historyView === v ? "terminal-btn-accent text-[11px] py-0.5 px-2 capitalize" : "terminal-btn text-[11px] py-0.5 px-2 capitalize"}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="terminal-table">
@@ -322,18 +342,24 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                         <th>As on</th>
                         <th className="text-right">AUM (₹ Cr)</th>
                         <th className="text-right">1M</th>
+                        <th className="text-right">3M</th>
+                        <th className="text-right">6M</th>
                         <th className="text-right">1Y</th>
                         <th className="text-right">3Y</th>
+                        <th className="text-right">5Y</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {detail.history.slice(0, 12).map((h) => (
+                      {historyRows.map((h) => (
                         <tr key={h.as_on}>
                           <td className="font-mono">{h.as_on}</td>
                           <td className="text-right font-mono">{formatCrore(h.aum_crore)}</td>
                           <td className="text-right"><SignedValue value={h.r1m} unit="%" /></td>
+                          <td className="text-right"><SignedValue value={h.r3m} unit="%" /></td>
+                          <td className="text-right"><SignedValue value={h.r6m} unit="%" /></td>
                           <td className="text-right"><SignedValue value={h.r1y} unit="%" /></td>
                           <td className="text-right"><SignedValue value={h.r3y} unit="%" /></td>
+                          <td className="text-right"><SignedValue value={h.r5y} unit="%" /></td>
                         </tr>
                       ))}
                     </tbody>
@@ -350,12 +376,18 @@ export default function PmsStrategyDrawer({ strategy, onClose }: PmsStrategyDraw
                 </div>
                 <ul className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644]">
                   {detail.siblings.slice(0, 8).map((x, i) => (
-                    <li key={`${x.strategy_name}-${i}`} className="p-3 text-[12px]">
-                      <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{x.strategy_name}</div>
-                      <div className="font-mono text-[#536176] dark:text-[#A8B4C4]">
-                        {formatCrore(x.aum_crore)} · 1Y{" "}
-                        <SignedValue value={x.r1y} unit="%" /> · 3Y <SignedValue value={x.r3y} unit="%" />
-                      </div>
+                    <li key={`${x.strategy_name}-${i}`}>
+                      <button
+                        type="button"
+                        onClick={() => onSelectSibling?.(x.strategy_name)}
+                        className="w-full text-left p-3 text-[12px] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition"
+                      >
+                        <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{x.strategy_name}</div>
+                        <div className="font-mono text-[#536176] dark:text-[#A8B4C4]">
+                          {formatCrore(x.aum_crore)} · 1Y{" "}
+                          <SignedValue value={x.r1y} unit="%" /> · 3Y <SignedValue value={x.r3y} unit="%" />
+                        </div>
+                      </button>
                     </li>
                   ))}
                 </ul>

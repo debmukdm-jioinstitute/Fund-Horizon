@@ -90,8 +90,34 @@ def refresh_apmi() -> dict[str, Any]:
         _REPO.update_source_health(source_id, "unavailable", error_message="APMI returned no providers or strategies", success=False)
         return {"status": "unavailable", "source_id": source_id, "error": "APMI returned no data"}
     saved = _REPO.replace_pms_universe(snap.as_on, snap.providers, snap.strategies)
+    backfilled = _backfill_apmi_history()
     _REPO.update_source_health(source_id, "ready", success=True)
-    return {"status": "success", "source_id": source_id, "records_ingested": saved, "as_on": snap.as_on}
+    return {"status": "success", "source_id": source_id, "records_ingested": saved, "as_on": snap.as_on, "backfilled_months": backfilled}
+
+
+APMI_HISTORY_MONTHS = 48
+APMI_BACKFILL_PER_RUN = 12  # bounds one run; the 12-hourly loop finishes the rest
+
+
+def _backfill_apmi_history() -> int:
+    """Fill month-ends APMI has published but we never stored, so strategy history keeps growing without manual runs."""
+    have = _REPO.pms_as_on_months()
+    done = 0
+    for as_on in apmi.candidate_months(count=APMI_HISTORY_MONTHS):
+        if as_on in have:
+            continue
+        if done >= APMI_BACKFILL_PER_RUN:
+            break
+        try:
+            snap = apmi.fetch_snapshot([as_on])
+        except Exception as e:  # one bad month must not fail the whole refresh
+            logger.warning("APMI backfill %s failed: %s", as_on, e)
+            continue
+        # shortcut: months before APMI's first publication re-fetch every run (~2s each), cap this if the window grows
+        if snap:
+            _REPO.replace_pms_universe(snap.as_on, snap.providers, snap.strategies)
+            done += 1
+    return done
 
 
 def refresh_rss() -> dict[str, Any]:

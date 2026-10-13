@@ -12,6 +12,13 @@ on:
         default: 'false'
         type: boolean
 
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-refresh
+  cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
@@ -30,6 +37,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
+      - name: Rebuild mutual fund returns from AMFI + mfapi.in
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          pip install pandas numpy
+          python data/fundhorizon_mf_rag_dataset/build_dataset.py "$RUNNER_TEMP/mf" --workers 12
+          # Guard: a half-failed fetch must never replace the good dataset.
+          old=$(($(wc -l < data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv)))
+          new=$(($(wc -l < "$RUNNER_TEMP/mf/all_schemes_metrics.csv")))
+          if [ "$new" -lt $((old * 9 / 10)) ]; then echo "New dataset too small ($new vs $old rows)"; exit 1; fi
+          cp "$RUNNER_TEMP/mf/all_schemes_metrics.csv" "$RUNNER_TEMP/mf/category_summary.csv" data/fundhorizon_mf_rag_dataset/
+
       - name: Run data refresh orchestrator
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -39,3 +57,11 @@ jobs:
           else
             python backend/scripts/refresh_data.py
           fi
+
+      - name: Commit refreshed dataset so deploys pick it up
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          git config user.name "fh-data-bot"
+          git config user.email "fh-data-bot@users.noreply.github.com"
+          git add data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv data/fundhorizon_mf_rag_dataset/category_summary.csv
+          git diff --cached --quiet || (git commit -m "data: daily mutual fund metrics refresh" && git push)

@@ -603,6 +603,13 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def pms_as_on_months(self) -> set[str]:
+        conn = self._conn()
+        try:
+            return {r[0] for r in conn.execute("SELECT DISTINCT as_on FROM pms_apmi_strategies").fetchall()}
+        finally:
+            conn.close()
+
     def latest_pms_as_on(self) -> str | None:
         conn = self._conn()
         try:

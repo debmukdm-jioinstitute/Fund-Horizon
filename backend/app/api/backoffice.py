@@ -571,6 +571,7 @@ def backoffice_data_health(staff: Annotated[dict, Depends(require_staff)]):
             "degraded": _count("degraded"),
             "needs_key": _count("needs_key"),
             "manual_only": _count("manual_only"),
+            "pending": _count("pending"),
         },
         "recent_audits": audits,
         "as_of": datetime.now(UTC).isoformat(),

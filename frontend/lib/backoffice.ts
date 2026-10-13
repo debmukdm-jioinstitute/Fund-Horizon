@@ -33,6 +33,7 @@ export interface MarketOverviewData {
   indices?: { "INDEX:IN:NIFTY50"?: number; "INDEX:IN:NIFTYBANK"?: number; "INDEX:IN:SENSEX"?: number; as_of?: string | null };
   flows?: { latest_date?: string | null; fii_net?: number | null; dii_net?: number | null; status?: string };
   vol_as_of?: string;
+  series_meta?: Record<string, { as_of?: string | null; source?: string | null }>;
   yields?: {
     in_10y?: number;
     in_2y?: number;
@@ -122,6 +123,7 @@ export interface FlowsData {
   fii_net_crore?: number;
   dii_net_crore?: number;
   cumulative_7d_net_crore?: number;
+  sessions?: number;
   as_of?: string;
 }
 
@@ -145,7 +147,7 @@ export interface SourceItem {
   rate_budget: number;
   timezone: string;
   supported_frequency: string;
-  health_status: "ready" | "unavailable" | "blocked" | "needs_key" | "manual_only" | "schema_error";
+  health_status: "ready" | "pending" | "unavailable" | "blocked" | "needs_key" | "manual_only" | "schema_error";
   last_attempt_at?: string;
   last_success_at?: string;
   error_message?: string;
@@ -159,6 +161,7 @@ export interface SourceHealthData {
     degraded: number;
     needs_key: number;
     manual_only: number;
+    pending: number;
   };
 }
 
@@ -526,6 +529,7 @@ export const getFlows = async (start?: string, end?: string): Promise<Backoffice
     daily,
     fii_net_crore: latestOf("FII") ?? latestOf("FPI"),
     dii_net_crore: latestOf("DII"),
+    sessions: dates.length,
     cumulative_7d_net_crore: daily.length
       ? daily.filter((r) => dates.includes(r.report_date)).reduce((acc, r) => acc + r.net_crore, 0)
       : undefined,
@@ -820,6 +824,7 @@ export const getDataHealth = async (): Promise<SourceHealthData> => {
       degraded: num(summary.degraded) ?? count("degraded"),
       needs_key: num(summary.needs_key) ?? count("needs_key"),
       manual_only: num(summary.manual_only) ?? count("manual_only"),
+      pending: num(summary.pending) ?? count("pending"),
     },
   };
 };
@@ -945,7 +950,7 @@ export interface PmsStrategyDetail {
   };
   profile_error?: string;
   history: PmsHistoryRow[];
-  siblings: Array<{ strategy_name: string; strategy_type?: string; aum_crore?: number; r1y?: number; r3y?: number }>;
+  siblings: Array<{ ia_id?: string; strategy_name: string; strategy_type?: string; aum_crore?: number; r1y?: number; r3y?: number }>;
   source_url: string;
 }
 
@@ -992,6 +997,7 @@ export const getPmsStrategyDetail = async (iaId: string): Promise<PmsStrategyDet
     profile_error: str(d.detail_error),
     history: Array.from(byMonth.values()).sort((a, b) => b.as_on.localeCompare(a.as_on)),
     siblings: arr(d.siblings).map((x) => ({
+      ia_id: str(x.ia_id),
       strategy_name: str(x.strategy_name) ?? "—",
       strategy_type: str(x.strategy_type),
       aum_crore: num(x.aum_crore),

@@ -69,6 +69,7 @@ export default function FlowsPage() {
   }
 
   const flows = data?.data || { daily: [] };
+  const latestProvisional = flows.daily.filter((r) => r.report_date === flows.as_of).some((r) => r.provisional);
 
   return (
     <div className="space-y-4">
@@ -122,7 +123,7 @@ export default function FlowsPage() {
                 <SignedValue value={flows.fii_net_crore} unit="Cr" />
               </td>
               <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Foreign Portfolio Investors (Equity)</td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Reported</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{latestProvisional ? "Provisional" : "Final"}</td>
             </tr>
             <tr>
               <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">DII Net Cash Position</td>
@@ -130,14 +131,14 @@ export default function FlowsPage() {
                 <SignedValue value={flows.dii_net_crore} unit="Cr" />
               </td>
               <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Domestic Institutions (MFs, Insurance)</td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Reported</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{latestProvisional ? "Provisional" : "Final"}</td>
             </tr>
             <tr>
-              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">7-Day Cumulative Net Flow</td>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{flows.sessions ?? 0}-Session Cumulative Net Flow (FII + DII)</td>
               <td className="text-right">
                 <SignedValue value={flows.cumulative_7d_net_crore} unit="Cr" />
               </td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Rolling 7-day cumulative net flow</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Combined net over the sessions on record (max 7)</td>
               <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Aggregated</td>
             </tr>
           </tbody>

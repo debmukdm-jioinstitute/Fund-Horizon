@@ -14,6 +14,20 @@ const INDICES = [
   { id: "NIFTYNXT50", name: "NIFTY Next 50", type: "cash_only" },
 ];
 
+type Contract = DerivativesData["contracts"][number];
+
+// One row per strike with its call and put side by side (the API returns one record per contract).
+function chainByStrike(contracts: Contract[]) {
+  const rows = new Map<number, { strike: number; ce?: Contract; pe?: Contract }>();
+  for (const c of contracts) {
+    const row = rows.get(c.strike_price) ?? { strike: c.strike_price };
+    if (c.option_type === "CE") row.ce = c;
+    else row.pe = c;
+    rows.set(c.strike_price, row);
+  }
+  return Array.from(rows.values()).sort((x, y) => x.strike - y.strike);
+}
+
 export default function DerivativesPage() {
   const [selectedIndex, setSelectedIndex] = useState("NIFTY");
   const [data, setData] = useState<BackofficeEnvelope<DerivativesData> | null>(null);
@@ -210,29 +224,21 @@ export default function DerivativesPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.data.contracts.map((c, idx) => (
-                      <tr key={idx}>
-                        <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                          {c.option_type === "CE" ? formatNumber(c.oi) : "—"}
-                        </td>
-                        <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
-                          {c.option_type === "CE" ? formatNumber(c.volume) : "—"}
-                        </td>
+                    {chainByStrike(data.data.contracts).map(({ strike, ce, pe }) => (
+                      <tr key={strike}>
+                        <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{ce ? formatNumber(ce.oi) : "—"}</td>
+                        <td className="text-right text-[#536176] dark:text-[#A8B4C4]">{ce ? formatNumber(ce.volume) : "—"}</td>
                         <td className="text-right text-[#536176] dark:text-[#A8B4C4] border-r border-[#E4E9EF] dark:border-[#2B3644]">
-                          {c.option_type === "CE" && c.implied_volatility ? `${c.implied_volatility}%` : "—"}
+                          {ce?.implied_volatility ? `${ce.implied_volatility}%` : "—"}
                         </td>
                         <td className="text-center font-medium text-[#172033] dark:text-[#EDF2F7] bg-[#F7F9FB] dark:bg-[#171E27]">
-                          {formatNumber(c.strike_price)}
+                          {formatNumber(strike)}
                         </td>
                         <td className="text-right text-[#536176] dark:text-[#A8B4C4] border-l border-[#E4E9EF] dark:border-[#2B3644]">
-                          {c.option_type === "PE" && c.implied_volatility ? `${c.implied_volatility}%` : "—"}
+                          {pe?.implied_volatility ? `${pe.implied_volatility}%` : "—"}
                         </td>
-                        <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
-                          {c.option_type === "PE" ? formatNumber(c.volume) : "—"}
-                        </td>
-                        <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                          {c.option_type === "PE" ? formatNumber(c.oi) : "—"}
-                        </td>
+                        <td className="text-right text-[#536176] dark:text-[#A8B4C4]">{pe ? formatNumber(pe.volume) : "—"}</td>
+                        <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{pe ? formatNumber(pe.oi) : "—"}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -5,7 +5,7 @@ import csv
 import io
 import threading
 import time
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from app.backoffice.analytics.derivatives_math import calculate_pcr, compute_max_pain
@@ -48,6 +48,12 @@ _ISSUER_TTL_SECONDS = 6 * 3600.0
 _ISSUER_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 
 
+_OVERVIEW_SERIES = (
+    "FX:USDINR", "FX:EURINR", "FX:GBPINR", "FX:JPYINR", "VOL:US:VIX", "VOL:IN:INDIAVIX",
+    "YIELD:US:10Y", "YIELD:US:2Y", "YIELD:IN:10Y", "YIELD:IN:2Y",
+)
+
+
 class BackofficeService:
     def __init__(self, repo: BackofficeRepository | None = None) -> None:
         self.repo = repo or BackofficeRepository()
@@ -78,6 +84,19 @@ class BackofficeService:
             return False
         return abs((da - db).days) <= max_gap_days
 
+    def _paired_latest(self, a: str, b: str, window_days: int = 45) -> tuple[float, float, str] | None:
+        """Latest date on which BOTH series have an observation, as (value_a, value_b, date).
+
+        Cross-source spreads must subtract same-day values: the India feed is intraday while US Treasury lags a day.
+        """
+        start = (datetime.now(UTC) - timedelta(days=window_days)).strftime("%Y-%m-%d")
+        by_day = [
+            {(o["observed_at"] or "")[:10]: o["value_numeric"] for o in self.repo.get_observations_series(i, start_date=start) if o.get("value_numeric") is not None}
+            for i in (a, b)
+        ]
+        common = sorted(set(by_day[0]) & set(by_day[1]))
+        return (by_day[0][common[-1]], by_day[1][common[-1]], common[-1]) if common else None
+
     def get_market_overview(self) -> dict[str, Any]:
         """Aggregate shared market overview from live-collected observations (no static fallbacks)."""
         global _WARM_CACHE, _WARM_CACHE_EXPIRY
@@ -95,12 +114,11 @@ class BackofficeService:
 
         in_10y, in_2y = yield_data.get("YIELD:IN:10Y"), yield_data.get("YIELD:IN:2Y")
         us_10y, us_2y = yield_data.get("YIELD:US:10Y"), yield_data.get("YIELD:US:2Y")
-        if not self._same_period("YIELD:IN:10Y", "YIELD:US:10Y"):
-            in_10y = None  # never subtract yields from different periods (e.g. monthly fallback vs daily)
         if not self._same_period("YIELD:IN:2Y", "YIELD:IN:10Y"):
-            in_2y = None
+            in_2y = None  # never subtract yields from different periods (e.g. monthly fallback vs daily)
 
-        india_us_spread = compute_cross_country_spread(in_10y, us_10y, "India", "US")
+        paired = self._paired_latest("YIELD:IN:10Y", "YIELD:US:10Y")
+        india_us_spread = compute_cross_country_spread(paired[0] if paired else None, paired[1] if paired else None, "India", "US")
         in_slope = calculate_spread_bps(in_10y, in_2y) if in_10y is not None and in_2y is not None else None
         us_slope = calculate_spread_bps(us_10y, us_2y) if us_10y is not None and us_2y is not None else None
 
@@ -172,6 +190,12 @@ class BackofficeService:
                 "india_us_10y_bps": india_us_spread.get("spread_bps"),
                 "us_10y_2y_bps": us_slope,
                 "india_10y_2y_bps": in_slope,
+            },
+            # Each indicator's own latest date and provider, so the page never borrows another series' date.
+            "series_meta": {
+                inst: {"as_of": (o.get("observed_at") or "")[:10] or None, "source": o.get("provenance")}
+                for inst in _OVERVIEW_SERIES
+                if (o := self.repo.get_latest_observation(inst))
             },
             "sources_summary": {
                 "total": len(sources),
@@ -303,8 +327,8 @@ class BackofficeService:
         ]
         in_summary = compute_yield_curve_summary(fresh_in)
         us_summary = compute_yield_curve_summary(us_curve)
-        in_10y = in_summary["curve"].get("10Y") if self._same_period("YIELD:IN:10Y", "YIELD:US:10Y") else None
-        cross_spread = compute_cross_country_spread(in_10y, us_summary["curve"].get("10Y"), "India", "US")
+        paired = self._paired_latest("YIELD:IN:10Y", "YIELD:US:10Y")
+        cross_spread = compute_cross_country_spread(paired[0] if paired else None, paired[1] if paired else None, "India", "US")
         as_of = max((r["observed_at"] for r in us_curve + in_curve if r.get("observed_at")), default=None)
 
         return {

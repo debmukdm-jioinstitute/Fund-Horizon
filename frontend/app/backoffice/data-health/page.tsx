@@ -157,7 +157,12 @@ export default function DataHealthPage() {
                 <tr>
                   <td className="font-medium text-[#087744] dark:text-[#58D6A0]">Ready Adapters</td>
                   <td className="text-right font-medium text-[#087744] dark:text-[#58D6A0]">{health.summary.ready}</td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Active, schemas verified, and live connectivity confirmed</td>
+                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">At least one successful live pull recorded</td>
+                </tr>
+                <tr>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Awaiting First Run</td>
+                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{health.summary.pending}</td>
+                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Registered but no successful pull recorded yet</td>
                 </tr>
                 <tr>
                   <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Needs API Key</td>

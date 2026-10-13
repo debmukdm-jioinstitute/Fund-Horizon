@@ -295,3 +295,15 @@ def test_mutual_fund_tracker_pagination_dates_and_plan_filter(client):
 
     missing_isin = client.get("/api/backoffice/mutual-funds/tracker", params={"search": "100002"}).json()["data"][0]
     assert missing_isin["isin"] is None
+
+
+def test_upsert_observations_keeps_dict_provenance():
+    from app.backoffice.repository import BackofficeRepository
+
+    repo = BackofficeRepository()
+    repo.upsert_observations([{
+        "instrument_id": "VOL:IN:INDIAVIX", "observed_at": "2001-01-02", "value_numeric": 1.5,
+        "frequency": "intraday", "provenance": "NSE",
+    }])
+    row = next(r for r in repo.get_observations_series("VOL:IN:INDIAVIX", start_date="2001-01-02", end_date="2001-01-02"))
+    assert (row["provenance"], row["frequency"]) == ("NSE", "intraday")

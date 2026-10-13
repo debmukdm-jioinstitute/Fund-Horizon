@@ -704,9 +704,8 @@ export default function PmsTrackerPage() {
       <PmsStrategyDrawer
         strategy={selectedStrategy}
         onClose={() => setSelectedStrategy(null)}
-        onSelectSibling={(name) => {
-          // shortcut: matches the loaded list by name within the provider, upgrade if names ever collide
-          const next = strategies.find((s) => s.strategy_name === name && s.provider_name === selectedStrategy?.provider_name);
+        onSelectSibling={(iaId) => {
+          const next = strategies.find((s) => s.ia_id === iaId);
           if (next) setSelectedStrategy(next);
         }}
       />

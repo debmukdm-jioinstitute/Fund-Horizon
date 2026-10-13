@@ -66,4 +66,4 @@ jobs:
           git config user.name "fh-data-bot"
           git config user.email "fh-data-bot@users.noreply.github.com"
           git add data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv data/fundhorizon_mf_rag_dataset/category_summary.csv data/fundhorizon_mf_rag_dataset/nav_monthly
-          git diff --cached --quiet || (git commit -m "data: daily mutual fund metrics refresh" && git push)
+          git diff --cached --quiet || (git commit -m "data: daily mutual fund metrics refresh" && git pull --rebase origin main && git push)

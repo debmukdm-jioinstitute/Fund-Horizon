@@ -10,7 +10,7 @@ import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBench
 interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
   onClose: () => void;
-  onSelectSibling?: (strategyName: string) => void;
+  onSelectSibling?: (iaId: string) => void;
 }
 
 export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }: PmsStrategyDrawerProps) {
@@ -358,11 +358,11 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                   More from this provider ({detail.siblings.length})
                 </div>
                 <ul className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644]">
-                  {detail.siblings.slice(0, 8).map((x, i) => (
-                    <li key={`${x.strategy_name}-${i}`}>
+                  {detail.siblings.map((x, i) => (
+                    <li key={`${x.ia_id ?? x.strategy_name}-${i}`}>
                       <button
                         type="button"
-                        onClick={() => onSelectSibling?.(x.strategy_name)}
+                        onClick={() => x.ia_id && onSelectSibling?.(x.ia_id)}
                         className="w-full text-left p-3 text-[12px] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition"
                       >
                         <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{x.strategy_name}</div>

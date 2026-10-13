@@ -114,8 +114,12 @@ class BackofficeRepository:
     def list_sources(self) -> list[dict[str, Any]]:
         conn = self._conn()
         try:
-            rows = conn.execute("SELECT * FROM source_registry ORDER BY name ASC").fetchall()
-            return [dict(r) for r in rows]
+            rows = [dict(r) for r in conn.execute("SELECT * FROM source_registry ORDER BY name ASC").fetchall()]
+            for r in rows:
+                # "ready" is only earned by a successful run; a seeded default must not read as verified.
+                if r.get("health_status") == "ready" and not r.get("last_success_at"):
+                    r["health_status"] = "pending"
+            return rows
         finally:
             conn.close()
 
@@ -170,14 +174,16 @@ class BackofficeRepository:
         try:
             with conn:
                 for obs in observations:
-                    inst_id = obs.instrument_id if hasattr(obs, "instrument_id") else obs["instrument_id"]
-                    observed_at = obs.observed_at if hasattr(obs, "observed_at") else obs["observed_at"]
-                    val_num = obs.value_numeric if hasattr(obs, "value_numeric") else obs.get("value_numeric")
-                    val_txt = obs.value_text if hasattr(obs, "value_text") else obs.get("value_text")
-                    freq = getattr(obs, "frequency", "daily")
-                    vintage = getattr(obs, "vintage", "initial")
-                    prov = getattr(obs, "provenance", "automated")
-                    flags = getattr(obs, "quality_flags", "ok")
+                    # Collectors pass either NormalizedObservation objects or plain dicts (NSE); read both the same way.
+                    def field(name: str, default: Any = None, _o: Any = obs) -> Any:
+                        return _o.get(name, default) if isinstance(_o, dict) else getattr(_o, name, default)
+
+                    inst_id, observed_at = field("instrument_id"), field("observed_at")
+                    val_num, val_txt = field("value_numeric"), field("value_text")
+                    freq = field("frequency", "daily")
+                    vintage = field("vintage", "initial")
+                    prov = field("provenance", "automated")
+                    flags = field("quality_flags", "ok")
 
                     conn.execute(
                         """

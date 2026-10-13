@@ -59,16 +59,16 @@ export default function MacroYieldsPage() {
               Global Sovereign Yields & Macro Curve Matrix
             </h1>
             <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
-              FBIL • FRED • MoF
+              Trading Economics (India, indicative) • US Treasury
             </span>
           </div>
           <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
-            India, United States, UK & Japan term structure, canonical basis point spreads, and slope metrics
+            India and United States term structure, canonical basis point spreads, and slope metrics
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          {["ALL", "IN", "US", "UK", "JP"].map((code) => (
+          {["ALL", "IN", "US"].map((code) => (
             <button
               key={code}
               onClick={() => setSelectedCountry(code)}
@@ -104,24 +104,24 @@ export default function MacroYieldsPage() {
               <td className="text-right">
                 <SignedValue value={yieldsData.spreads?.in_us_10y_bps} unit="bps" />
               </td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">India 10Y G-Sec minus US 10Y DGS10</td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL / FRED</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">India 10Y minus US 10Y, same-date values only</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Trading Economics / US Treasury</td>
             </tr>
             <tr>
               <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">US 10Y – 2Y Term Structure Slope</td>
               <td className="text-right">
                 <SignedValue value={yieldsData.spreads?.us_10y_2y_bps} unit="bps" />
               </td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED DGS10 minus DGS2 Yield</td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED API</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">US 10Y minus 2Y constant-maturity yield</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">US Treasury</td>
             </tr>
             <tr>
               <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">India 10Y – 2Y G-Sec Term Slope</td>
               <td className="text-right">
                 <SignedValue value={yieldsData.spreads?.in_10y_2y_bps} unit="bps" />
               </td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL IN10Y minus IN2Y Sovereign</td>
-              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL / CCIL</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">India 10Y minus 2Y</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Trading Economics (indicative)</td>
             </tr>
           </tbody>
         </table>
@@ -138,11 +138,11 @@ export default function MacroYieldsPage() {
                   India Sovereign G-Sec Curve
                 </span>
                 <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] ml-2">
-                  (Annual Compounding)
+                  (Indicative quotes)
                 </span>
               </div>
-              <a href="https://www.fbil.org.in" target="_blank" rel="noreferrer" className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:underline">
-                FBIL Feed
+              <a href="https://tradingeconomics.com/india/government-bond-yield" target="_blank" rel="noreferrer" className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:underline">
+                Trading Economics (indicative)
               </a>
             </div>
             <table className="terminal-table">
@@ -169,7 +169,7 @@ export default function MacroYieldsPage() {
                 ) : (
                   <tr>
                     <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
-                      Awaiting next FBIL publication or manual curve import.
+                      India G-Sec yields have not been collected yet.
                     </td>
                   </tr>
                 )}
@@ -190,8 +190,8 @@ export default function MacroYieldsPage() {
                   (Semi-Annual Constant Maturity)
                 </span>
               </div>
-              <a href="https://fred.stlouisfed.org" target="_blank" rel="noreferrer" className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:underline">
-                FRED API
+              <a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve" target="_blank" rel="noreferrer" className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:underline">
+                US Treasury
               </a>
             </div>
             <table className="terminal-table">
@@ -200,7 +200,7 @@ export default function MacroYieldsPage() {
                   <th className="w-[25%]">Tenor</th>
                   <th className="w-[25%] text-right">Yield (%)</th>
                   <th className="w-[25%]">Observed Date</th>
-                  <th className="w-[25%]">Series ID</th>
+                  <th className="w-[25%]">Source</th>
                 </tr>
               </thead>
               <tbody>
@@ -218,7 +218,7 @@ export default function MacroYieldsPage() {
                 ) : (
                   <tr>
                     <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
-                      Configure FRED_API_KEY in environment for automated pull.
+                      US Treasury yields have not been collected yet.
                     </td>
                   </tr>
                 )}

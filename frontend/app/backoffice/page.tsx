@@ -136,7 +136,6 @@ export default function BackofficeOverviewPage() {
   // Resilient accessors supporting both flat and nested backend models
   const fxRates: Record<string, number> =
     overview.fx_reference_rates || overview.fx?.rates || {};
-  const fxAsOf: string | undefined = overview.fx_as_of || overview.fx?.as_of || undefined;
 
   // Only what the collectors actually stored: a missing value renders as "—", never a placeholder number.
   const vol = (overview.volatility ?? {}) as { vix?: number | null; india_vix?: number | null; vix_as_of?: string | null; india_vix_as_of?: string | null; as_of?: string };
@@ -144,9 +143,22 @@ export default function BackofficeOverviewPage() {
     "VOL:US:VIX": vol.vix ?? undefined,
     "VOL:IN:INDIAVIX": vol.india_vix ?? undefined,
   };
-  const volAsOf: string | undefined = overview.vol_as_of || vol.as_of || undefined;
 
   const spreads = overview.yield_spreads ?? {};
+
+  // Date and provider per indicator come from that series' own latest observation; a spread shows the older leg.
+  const meta = overview.series_meta ?? {};
+  const asOf = (key: string): string | undefined => {
+    const spec = IND[key];
+    const dates = [spec.a, spec.b].flatMap((id) => (id && meta[id]?.as_of ? [meta[id].as_of as string] : []));
+    return dates.length === (spec.b ? 2 : 1) ? dates.sort()[0] : undefined;
+  };
+  const SOURCE_LABEL: Record<string, string> = { TradingEconomics: "Trading Economics (indicative)" };
+  const source = (key: string): string => {
+    if (IND[key].b) return "Calculated";
+    const raw = meta[IND[key].a]?.source;
+    return raw ? SOURCE_LABEL[raw] ?? raw : "—";
+  };
   const flows = overview.flows;
   const sourcesSummary = overview.sources_health;
   const dash = (v: number | undefined | null, f: (n: number) => string) => (v === undefined || v === null ? "—" : f(v));
@@ -252,10 +264,8 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
                   —
                 </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                  <a href="https://www.ecb.europa.eu" target="_blank" rel="noreferrer" className="hover:underline">ECB</a>
-                </td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("usdinr"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usdinr")}</td>
               </tr>
               <tr {...rowProps("India 10Y Benchmark G-Sec")}>
                 <td className="font-medium">India 10Y Benchmark G-Sec</td>
@@ -263,8 +273,8 @@ export default function BackofficeOverviewPage() {
                   {dash(overview.yields?.in_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Trading Economics (indicative)</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("in10"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("in10")}</td>
               </tr>
               <tr {...rowProps("India 2Y Sovereign Bond")}>
                 <td className="font-medium">India 2Y Sovereign Bond</td>
@@ -272,8 +282,8 @@ export default function BackofficeOverviewPage() {
                   {dash(overview.yields?.in_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Trading Economics (indicative)</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("in2"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("in2")}</td>
               </tr>
               <tr {...rowProps("India 10Y - 2Y Curve Slope")}>
                 <td className="font-medium">India 10Y - 2Y Curve Slope</td>
@@ -281,8 +291,8 @@ export default function BackofficeOverviewPage() {
                   <SignedValue value={spreads.india_10y_2y_bps} unit="bps" />
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Calculated</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("inSlope"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inSlope")}</td>
               </tr>
               <tr {...rowProps("India - US 10Y Sovereign Spread")}>
                 <td className="font-medium">India - US 10Y Sovereign Spread</td>
@@ -290,8 +300,8 @@ export default function BackofficeOverviewPage() {
                   <SignedValue value={spreads.india_us_10y_bps} unit="bps" />
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Calculated</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("inUs"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inUs")}</td>
               </tr>
               <tr {...rowProps("India VIX (NSE Volatility Index)")}>
                 <td className="font-medium">India VIX (NSE Volatility Index)</td>
@@ -299,8 +309,8 @@ export default function BackofficeOverviewPage() {
                   {dash(volData["VOL:IN:INDIAVIX"], (n) => n.toFixed(2))}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate((vol.india_vix_as_of ?? volAsOf))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("inVix"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inVix")}</td>
               </tr>
 
               {/* Section 2: Global & Macro Benchmarks */}
@@ -315,8 +325,8 @@ export default function BackofficeOverviewPage() {
                   {dash(overview.yields?.us_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("us10"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("us10")}</td>
               </tr>
               <tr {...rowProps("US 2Y Treasury Yield")}>
                 <td className="font-medium">US 2Y Treasury Yield</td>
@@ -324,8 +334,8 @@ export default function BackofficeOverviewPage() {
                   {dash(overview.yields?.us_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("us2"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("us2")}</td>
               </tr>
               <tr {...rowProps("US 10Y - 2Y Curve Slope")}>
                 <td className="font-medium">US 10Y - 2Y Curve Slope</td>
@@ -333,8 +343,8 @@ export default function BackofficeOverviewPage() {
                   <SignedValue value={spreads.us_10y_2y_bps} unit="bps" />
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("usSlope"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usSlope")}</td>
               </tr>
               <tr {...rowProps("EUR / INR Reference Rate")}>
                 <td className="font-medium">EUR / INR Reference Rate</td>
@@ -342,8 +352,8 @@ export default function BackofficeOverviewPage() {
                   {dash(fxRates["FX:EURINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">ECB</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("eurinr"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("eurinr")}</td>
               </tr>
               <tr {...rowProps("GBP / INR Reference Rate")}>
                 <td className="font-medium">GBP / INR Reference Rate</td>
@@ -351,8 +361,8 @@ export default function BackofficeOverviewPage() {
                   {dash(fxRates["FX:GBPINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">ECB</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("gbpinr"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("gbpinr")}</td>
               </tr>
               <tr {...rowProps("JPY / INR Reference Rate (100 JPY)")}>
                 <td className="font-medium">JPY / INR Reference Rate (100 JPY)</td>
@@ -360,8 +370,8 @@ export default function BackofficeOverviewPage() {
                   {dash(fxRates["FX:JPYINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">ECB</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("jpyinr"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("jpyinr")}</td>
               </tr>
               <tr {...rowProps("Cboe US VIX")}>
                 <td className="font-medium">Cboe US VIX</td>
@@ -369,8 +379,8 @@ export default function BackofficeOverviewPage() {
                   {dash(volData["VOL:US:VIX"], (n) => n.toFixed(2))}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate((vol.vix_as_of ?? volAsOf))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Cboe</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("usVix"))}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usVix")}</td>
               </tr>
 
               {/* Section 3: Institutional Flows & Telemetry */}

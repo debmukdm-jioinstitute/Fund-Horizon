@@ -46,7 +46,9 @@ jobs:
           old=$(($(wc -l < data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv)))
           new=$(($(wc -l < "$RUNNER_TEMP/mf/all_schemes_metrics.csv")))
           if [ "$new" -lt $((old * 9 / 10)) ]; then echo "New dataset too small ($new vs $old rows)"; exit 1; fi
+          # nav_monthly must move together with the CSV: every scheme in it needs its NAV history file.
           cp "$RUNNER_TEMP/mf/all_schemes_metrics.csv" "$RUNNER_TEMP/mf/category_summary.csv" data/fundhorizon_mf_rag_dataset/
+          cp "$RUNNER_TEMP/mf/nav_monthly/"*.csv data/fundhorizon_mf_rag_dataset/nav_monthly/
 
       - name: Run data refresh orchestrator
         env:
@@ -63,5 +65,5 @@ jobs:
         run: |
           git config user.name "fh-data-bot"
           git config user.email "fh-data-bot@users.noreply.github.com"
-          git add data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv data/fundhorizon_mf_rag_dataset/category_summary.csv
+          git add data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv data/fundhorizon_mf_rag_dataset/category_summary.csv data/fundhorizon_mf_rag_dataset/nav_monthly
           git diff --cached --quiet || (git commit -m "data: daily mutual fund metrics refresh" && git push)

@@ -20,6 +20,9 @@ if "FH_CHROMA_DIR" not in os.environ:
         shutil.copytree(_SRC_CHROMA, _tmp, dirs_exist_ok=True)
     os.environ["FH_CHROMA_DIR"] = str(_tmp)
 
+# Tests must not poll live market feeds in the background (slow, flaky, and it blocks app shutdown).
+os.environ.setdefault("FH_BACKOFFICE_COLLECTORS", "false")
+
 FIX = Path(__file__).parent / "fixtures"
 
 

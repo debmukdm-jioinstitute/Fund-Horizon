@@ -84,7 +84,7 @@ export default function MacroYieldsPage() {
             <StatusBadge
               availability={yieldsData.spreads.in_us_10y_bps !== undefined ? "ready" : "unavailable"}
               freshness="current"
-              sourceName="US Treasury + India G-Sec feed"
+              sourceName="US Treasury + India G-Sec (scraped)"
               units="bps"
             />
           </div>
@@ -126,13 +126,13 @@ export default function MacroYieldsPage() {
               : "—"}
           </div>
           <div className="mt-2 text-[11px] text-sand-500">
-            FBIL IN10Y minus IN2Y annual compounding
+            India 10Y minus 2Y G-Sec yield
           </div>
           <div className="mt-3">
             <StatusBadge
               availability={yieldsData.spreads.in_10y_2y_bps !== undefined ? "ready" : "unavailable"}
               freshness="current"
-              sourceName="FBIL"
+              sourceName="India G-Sec (scraped)"
               units="bps"
             />
           </div>
@@ -145,15 +145,15 @@ export default function MacroYieldsPage() {
         <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-sand-900">India Sovereign Curve (FBIL / RBI)</h2>
-              <p className="text-[11px] text-sand-500">G-Sec valuation benchmarks • Annual compounding convention</p>
+              <h2 className="text-sm font-semibold text-sand-900">India G-Sec Curve</h2>
+              <p className="text-[11px] text-sand-500">Indicative OTC quotes (scraped, daily) • FRED/OECD monthly fallback</p>
             </div>
             <StatusBadge
               availability={yieldsData.curves.IN && Object.keys(yieldsData.curves.IN).length > 0 ? "ready" : "unavailable"}
               freshness="current"
               frequency="daily"
-              sourceName="FBIL G-Sec"
-              sourceUrl="https://www.fbil.org.in"
+              sourceName="Trading Economics (scraped)"
+              sourceUrl="https://tradingeconomics.com/india/government-bond-yield"
             />
           </div>
           <table className="w-full text-left text-xs">

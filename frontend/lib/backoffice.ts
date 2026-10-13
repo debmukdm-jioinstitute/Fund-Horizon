@@ -30,7 +30,7 @@ export interface MarketOverviewData {
     as_of?: string;
     status?: string;
   };
-  indices?: { "INDEX:IN:NIFTY50"?: number; "INDEX:IN:NIFTYBANK"?: number; as_of?: string | null };
+  indices?: { "INDEX:IN:NIFTY50"?: number; "INDEX:IN:NIFTYBANK"?: number; "INDEX:IN:SENSEX"?: number; as_of?: string | null };
   flows?: { latest_date?: string | null; fii_net?: number | null; dii_net?: number | null; status?: string };
   vol_as_of?: string;
   yields?: {
@@ -216,6 +216,18 @@ export interface MutualFundItem {
   ter_pct?: number | string;
   isin_growth?: string;
   isin_div?: string;
+  ter_as_of?: string;
+}
+
+export interface NewsItem {
+  id: string;
+  source_id: string;
+  source_name: string;
+  category: string;
+  title: string;
+  link: string;
+  summary: string;
+  published_at?: string;
 }
 
 export interface MicroIssuerData {
@@ -380,7 +392,9 @@ export const getYieldsBoard = async (): Promise<BackofficeEnvelope<YieldsBoardDa
     for (const r of arr(rows)) {
       const tenor = str(r.tenor);
       const value = num(r.yield_pct);
-      if (tenor && value !== undefined) curve[tenor] = { value, observed_at: str(r.observed_at) ?? asOf ?? "—", source };
+      if (tenor && value !== undefined) {
+        curve[tenor] = { value, observed_at: str(r.observed_at) ?? asOf ?? "—", source: str(r.source) ?? source };
+      }
     }
     return curve;
   };
@@ -388,7 +402,7 @@ export const getYieldsBoard = async (): Promise<BackofficeEnvelope<YieldsBoardDa
   const usSummary = obj(d.us_summary);
   const cross = obj(d.india_us_10y_spread);
   const data: YieldsBoardData = {
-    curves: { IN: toCurve(d.india_curve, "FBIL"), US: toCurve(d.us_curve, "US Treasury") },
+    curves: { IN: toCurve(d.india_curve, "India G-Sec"), US: toCurve(d.us_curve, "US Treasury") },
     spreads: {
       in_us_10y_bps: num(cross.spread_bps),
       us_10y_2y_bps: num(usSummary.slope_10y_2y_bps),
@@ -526,6 +540,8 @@ export const getMutualFundsTracker = async (q?: string): Promise<BackofficeEnvel
     latest_nav: num(f.latest_nav),
     nav_date: str(f.latest_nav_date),
     isin_growth: str(f.isin),
+    ter_pct: num(f.ter_pct),
+    ter_as_of: str(f.ter_as_of),
   }));
   return envelope(raw, data);
 };
@@ -765,4 +781,20 @@ export const createStaffMember = async (body: {
     },
     temporary_password: str(raw.temporary_password) ?? null,
   };
+};
+
+export const getNews = async (opts: { limit?: number; category?: string } = {}): Promise<NewsItem[]> => {
+  const q = new URLSearchParams({ limit: String(opts.limit ?? 40) });
+  if (opts.category) q.set("category", opts.category);
+  const raw = await boFetch<Json>(`/api/backoffice/news?${q.toString()}`);
+  return arr(raw.data).map((n) => ({
+    id: String(n.id ?? ""),
+    source_id: str(n.source_id) ?? "",
+    source_name: str(n.source_name) ?? "—",
+    category: str(n.category) ?? "markets",
+    title: str(n.title) ?? "",
+    link: str(n.link) ?? "#",
+    summary: str(n.summary) ?? "",
+    published_at: str(n.published_at),
+  }));
 };

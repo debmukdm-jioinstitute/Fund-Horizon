@@ -7,6 +7,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from app.backoffice.db import ensure_backoffice_schema
+from app.backoffice.providers.amfi_ter import base_key as mf_base_key
 from app.db import sqlite as _sqlite
 
 
@@ -20,9 +21,30 @@ CREATE TABLE IF NOT EXISTS mf_schemes (
     isin TEXT,
     latest_nav REAL,
     nav_date TEXT,
+    base_key TEXT,
     updated_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_mf_schemes_name ON mf_schemes(scheme_name);
+CREATE TABLE IF NOT EXISTS mf_ter (
+    base_key TEXT PRIMARY KEY,
+    scheme_name TEXT NOT NULL,
+    regular_ter_pct REAL,
+    direct_ter_pct REAL,
+    as_of TEXT,
+    updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS news_items (
+    id TEXT PRIMARY KEY,
+    source_id TEXT NOT NULL,
+    source_name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    title TEXT NOT NULL,
+    link TEXT NOT NULL,
+    summary TEXT,
+    published_at TEXT,
+    fetched_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_news_published ON news_items(published_at);
 """
 _LIVE_TABLES_READY: set[str] = set()
 
@@ -51,6 +73,9 @@ class BackofficeRepository:
                 for stmt in _LIVE_TABLES_SQL.strip().split(";"):
                     if stmt.strip():
                         conn.execute(stmt)
+                cols = {r["name"] for r in conn.execute("PRAGMA table_info(mf_schemes)").fetchall()}
+                if "base_key" not in cols:
+                    conn.execute("ALTER TABLE mf_schemes ADD COLUMN base_key TEXT")
             _LIVE_TABLES_READY.add(key)
         return conn
 
@@ -388,17 +413,17 @@ class BackofficeRepository:
             with conn:
                 conn.executemany(
                     """
-                    INSERT INTO mf_schemes (scheme_code, scheme_name, amc, category, plan, isin, latest_nav, nav_date, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO mf_schemes (scheme_code, scheme_name, amc, category, plan, isin, latest_nav, nav_date, base_key, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ON CONFLICT(scheme_code) DO UPDATE SET
                         scheme_name=excluded.scheme_name, amc=excluded.amc, category=excluded.category,
                         plan=excluded.plan, isin=excluded.isin, latest_nav=excluded.latest_nav,
-                        nav_date=excluded.nav_date, updated_at=excluded.updated_at
+                        nav_date=excluded.nav_date, base_key=excluded.base_key, updated_at=excluded.updated_at
                     """,
                     [
                         (
                             s["scheme_code"], s["scheme_name"], s.get("amc"), s.get("category"), s.get("plan"),
-                            s.get("isin"), s.get("latest_nav"), s.get("latest_nav_date"), now,
+                            s.get("isin"), s.get("latest_nav"), s.get("latest_nav_date"), mf_base_key(s["scheme_name"]), now,
                         )
                         for s in schemes
                     ],
@@ -411,19 +436,94 @@ class BackofficeRepository:
         clauses, params = [], []  # type: list[str], list[Any]
         if search:
             like = f"%{search.strip()}%"
-            clauses.append("(scheme_name LIKE ? OR scheme_code LIKE ? OR amc LIKE ? OR isin LIKE ?)")
+            clauses.append("(s.scheme_name LIKE ? OR s.scheme_code LIKE ? OR s.amc LIKE ? OR s.isin LIKE ?)")
             params += [like, like, like, like]
         if amc:
-            clauses.append("amc = ?")
+            clauses.append("s.amc = ?")
             params.append(amc)
         if category:
-            clauses.append("category = ?")
+            clauses.append("s.category = ?")
             params.append(category)
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
         conn = self._conn()
         try:
             rows = conn.execute(
-                f"SELECT * FROM mf_schemes {where} ORDER BY scheme_name LIMIT ? OFFSET ?", (*params, limit, offset)
+                f"""
+                SELECT s.*,
+                       CASE WHEN s.plan = 'Direct' THEN t.direct_ter_pct ELSE t.regular_ter_pct END AS ter_pct,
+                       t.as_of AS ter_as_of
+                FROM mf_schemes s LEFT JOIN mf_ter t ON t.base_key = s.base_key
+                {where} ORDER BY s.scheme_name LIMIT ? OFFSET ?
+                """,
+                (*params, limit, offset),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def replace_mf_ter(self, rows: list[dict[str, Any]]) -> int:
+        if not rows:
+            return 0
+        now = _utcnow()
+        conn = self._conn()
+        try:
+            with conn:
+                conn.executemany(
+                    """
+                    INSERT INTO mf_ter (base_key, scheme_name, regular_ter_pct, direct_ter_pct, as_of, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(base_key) DO UPDATE SET
+                        scheme_name=excluded.scheme_name, regular_ter_pct=excluded.regular_ter_pct,
+                        direct_ter_pct=excluded.direct_ter_pct, as_of=excluded.as_of, updated_at=excluded.updated_at
+                    """,
+                    [(r["base_key"], r["scheme_name"], r["regular_ter_pct"], r["direct_ter_pct"], r["as_of"], now) for r in rows],
+                )
+            return len(rows)
+        finally:
+            conn.close()
+
+    # --- News (RSS) ---
+
+    def upsert_news(self, items: list[dict[str, Any]], keep: int = 600) -> int:
+        if not items:
+            return 0
+        now = _utcnow()
+        conn = self._conn()
+        try:
+            with conn:
+                conn.executemany(
+                    """
+                    INSERT INTO news_items (id, source_id, source_name, category, title, link, summary, published_at, fetched_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET title=excluded.title, summary=excluded.summary, fetched_at=excluded.fetched_at
+                    """,
+                    [
+                        (i["id"], i["source_id"], i["source_name"], i["category"], i["title"], i["link"], i.get("summary"), i.get("published_at"), now)
+                        for i in items
+                    ],
+                )
+                conn.execute(
+                    "DELETE FROM news_items WHERE id NOT IN (SELECT id FROM news_items ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT ?)",
+                    (keep,),
+                )
+            return len(items)
+        finally:
+            conn.close()
+
+    def list_news(self, limit: int = 40, category: str | None = None, source_id: str | None = None) -> list[dict[str, Any]]:
+        clauses, params = [], []  # type: list[str], list[Any]
+        if category:
+            clauses.append("category = ?")
+            params.append(category)
+        if source_id:
+            clauses.append("source_id = ?")
+            params.append(source_id)
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                f"SELECT * FROM news_items {where} ORDER BY COALESCE(published_at, fetched_at) DESC LIMIT ?",
+                (*params, limit),
             ).fetchall()
             return [dict(r) for r in rows]
         finally:

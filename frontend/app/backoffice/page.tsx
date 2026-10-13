@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { getBackofficeOverview, getDeterministicBriefing, MarketOverviewData, DeterministicBriefingData, BackofficeEnvelope } from "@/lib/backoffice";
 import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { NewsFeed } from "@/components/backoffice/NewsFeed";
 import { usePolling } from "@/components/backoffice/usePolling";
 
 export default function BackofficeOverviewPage() {
@@ -83,6 +84,7 @@ export default function BackofficeOverviewPage() {
 
   const nifty = overview.indices?.["INDEX:IN:NIFTY50"];
   const niftyBank = overview.indices?.["INDEX:IN:NIFTYBANK"];
+  const sensex = overview.indices?.["INDEX:IN:SENSEX"];
   const fiiNet = overview.flows?.fii_net;
   const diiNet = overview.flows?.dii_net;
   const signedCr = (v: number | null | undefined) =>
@@ -146,7 +148,7 @@ export default function BackofficeOverviewPage() {
             <StatusBadge
               availability={spreads?.india_us_10y_bps !== undefined && spreads?.india_us_10y_bps !== null ? "ready" : "unavailable"}
               freshness="current"
-              sourceName="US Treasury + India G-Sec feed"
+              sourceName="US Treasury + India G-Sec (scraped)"
               units="bps"
             />
           </div>
@@ -195,7 +197,7 @@ export default function BackofficeOverviewPage() {
       </div>
 
       {/* Live Indian market tiles */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
           <div className="text-xs text-sand-500 font-medium">NIFTY 50</div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
@@ -212,6 +214,15 @@ export default function BackofficeOverviewPage() {
           </div>
           <div className="mt-3">
             <StatusBadge availability={typeof niftyBank === "number" ? "ready" : "unavailable"} freshness="current" asOf={overview.indices?.as_of ?? undefined} sourceName="NSE" />
+          </div>
+        </div>
+        <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
+          <div className="text-xs text-sand-500 font-medium">BSE SENSEX</div>
+          <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
+            {typeof sensex === "number" ? sensex.toLocaleString("en-IN", { maximumFractionDigits: 0 }) : "—"}
+          </div>
+          <div className="mt-3">
+            <StatusBadge availability={typeof sensex === "number" ? "ready" : "unavailable"} freshness="current" sourceName="Trading Economics (scraped)" />
           </div>
         </div>
         <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
@@ -266,6 +277,17 @@ export default function BackofficeOverviewPage() {
           </ul>
         </div>
       )}
+
+      {/* Latest headlines */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-sand-900">Latest Headlines</h2>
+          <Link href="/backoffice/research" className="text-xs font-medium text-forest-700 hover:text-forest-900">
+            All headlines →
+          </Link>
+        </div>
+        <NewsFeed limit={6} compact showFilters={false} />
+      </div>
 
       {/* FX Cross Rates & Volatility Matrix */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

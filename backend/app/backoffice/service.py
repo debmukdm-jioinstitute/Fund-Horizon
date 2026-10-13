@@ -66,6 +66,18 @@ class BackofficeService:
                     as_of = obs.get("observed_at")
         return values, as_of
 
+    def _same_period(self, a: str, b: str, max_gap_days: int = 10) -> bool:
+        """True when both series have observations within ``max_gap_days`` of each other."""
+        oa, ob = self.repo.get_latest_observation(a), self.repo.get_latest_observation(b)
+        if not oa or not ob or not oa.get("observed_at") or not ob.get("observed_at"):
+            return False
+        try:
+            da = datetime.strptime(oa["observed_at"][:10], "%Y-%m-%d")
+            db = datetime.strptime(ob["observed_at"][:10], "%Y-%m-%d")
+        except ValueError:
+            return False
+        return abs((da - db).days) <= max_gap_days
+
     def get_market_overview(self) -> dict[str, Any]:
         """Aggregate shared market overview from live-collected observations (no static fallbacks)."""
         global _WARM_CACHE, _WARM_CACHE_EXPIRY
@@ -77,12 +89,16 @@ class BackofficeService:
         vol_data, vol_as_of = self._latest(("VOL:US:VIX", "VOL:IN:INDIAVIX"))
         _, us_vix_as_of = self._latest(("VOL:US:VIX",))
         _, in_vix_as_of = self._latest(("VOL:IN:INDIAVIX",))
-        indices, indices_as_of = self._latest(("INDEX:IN:NIFTY50", "INDEX:IN:NIFTYBANK"))
+        indices, indices_as_of = self._latest(("INDEX:IN:NIFTY50", "INDEX:IN:NIFTYBANK", "INDEX:IN:SENSEX"))
         yield_data, yield_as_of = self._latest(("YIELD:US:10Y", "YIELD:US:2Y", "YIELD:IN:10Y", "YIELD:IN:2Y"))
         macro_proxy, _ = self._latest(("MACRO:US:BROAD_USD",))
 
         in_10y, in_2y = yield_data.get("YIELD:IN:10Y"), yield_data.get("YIELD:IN:2Y")
         us_10y, us_2y = yield_data.get("YIELD:US:10Y"), yield_data.get("YIELD:US:2Y")
+        if not self._same_period("YIELD:IN:10Y", "YIELD:US:10Y"):
+            in_10y = None  # never subtract yields from different periods (e.g. monthly fallback vs daily)
+        if not self._same_period("YIELD:IN:2Y", "YIELD:IN:10Y"):
+            in_2y = None
 
         india_us_spread = compute_cross_country_spread(in_10y, us_10y, "India", "US")
         in_slope = calculate_spread_bps(in_10y, in_2y) if in_10y is not None and in_2y is not None else None
@@ -218,7 +234,7 @@ class BackofficeService:
                 live_error = self._refresh_option_chain(underlying, None)
         else:
             live_error = (
-                f"{underlying} has no listed derivatives on NSE; this feed is not integrated."
+                f"{underlying} options trade on BSE, whose API blocks automated access; no feed is available."
                 if underlying != "NIFTYNXT50"
                 else "NIFTY Next 50 is a cash index without listed index options."
             )
@@ -271,26 +287,31 @@ class BackofficeService:
         for tenor in self.US_TENORS:
             obs = self.repo.get_latest_observation(f"YIELD:US:{tenor}")
             if obs and obs.get("value_numeric") is not None:
-                us_curve.append({"tenor": tenor, "yield_pct": obs["value_numeric"], "observed_at": obs.get("observed_at")})
+                us_curve.append({"tenor": tenor, "yield_pct": obs["value_numeric"], "observed_at": obs.get("observed_at"), "source": obs.get("provenance")})
 
         in_curve: list[dict[str, Any]] = []
-        for tenor in ("3M", "1Y", "2Y", "5Y", "10Y", "30Y"):
+        for tenor in ("3M", "6M", "1Y", "2Y", "3Y", "5Y", "7Y", "10Y", "30Y"):
             obs = self.repo.get_latest_observation(f"YIELD:IN:{tenor}")
             if obs and obs.get("value_numeric") is not None:
-                in_curve.append({"tenor": tenor, "yield_pct": obs["value_numeric"], "observed_at": obs.get("observed_at")})
+                in_curve.append({"tenor": tenor, "yield_pct": obs["value_numeric"], "observed_at": obs.get("observed_at"), "source": obs.get("provenance")})
 
-        in_summary = compute_yield_curve_summary(in_curve)
+        # Slope/spread math only uses points from the same period as the newest India observation.
+        newest_in = max((r["observed_at"] for r in in_curve if r.get("observed_at")), default=None)
+        fresh_in = [
+            r for r in in_curve
+            if newest_in and r.get("observed_at") and (datetime.strptime(newest_in[:10], "%Y-%m-%d") - datetime.strptime(r["observed_at"][:10], "%Y-%m-%d")).days <= 10
+        ]
+        in_summary = compute_yield_curve_summary(fresh_in)
         us_summary = compute_yield_curve_summary(us_curve)
-        cross_spread = compute_cross_country_spread(
-            in_summary["curve"].get("10Y"), us_summary["curve"].get("10Y"), "India", "US"
-        )
+        in_10y = in_summary["curve"].get("10Y") if self._same_period("YIELD:IN:10Y", "YIELD:US:10Y") else None
+        cross_spread = compute_cross_country_spread(in_10y, us_summary["curve"].get("10Y"), "India", "US")
         as_of = max((r["observed_at"] for r in us_curve + in_curve if r.get("observed_at")), default=None)
 
         return {
             "india_curve": in_curve,
             "india_summary": in_summary,
             "india_status": "ready" if in_curve else "unavailable",
-            "india_message": None if in_curve else "No free official India G-Sec yield feed (FBIL requires authenticated access).",
+            "india_message": None if in_curve else "India G-Sec yields have not been collected yet (scrape and FRED fallback both empty).",
             "us_curve": us_curve,
             "us_summary": us_summary,
             "india_us_10y_spread": cross_spread,

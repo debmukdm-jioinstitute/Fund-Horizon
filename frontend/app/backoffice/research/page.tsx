@@ -10,6 +10,7 @@ import {
   ResearchNoteItem,
 } from "@/lib/backoffice";
 import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { NewsFeed } from "@/components/backoffice/NewsFeed";
 
 export default function ResearchPage() {
   const [briefing, setBriefing] = useState<BackofficeEnvelope<DeterministicBriefingData> | null>(null);
@@ -221,6 +222,15 @@ export default function ResearchPage() {
           </div>
         </div>
       )}
+
+      {/* Live headlines from open RSS feeds */}
+      <div className="space-y-3">
+        <div>
+          <h2 className="text-sm font-semibold text-sand-900">Live Market & Regulatory Headlines</h2>
+          <p className="text-[11px] text-sand-500">RBI, SEBI, PIB, ET, Mint, Business Standard, BusinessLine, Moneycontrol • open RSS, refreshed every 10 min</p>
+        </div>
+        <NewsFeed limit={30} />
+      </div>
 
       {/* Research Notes Feed */}
       <div className="space-y-3">

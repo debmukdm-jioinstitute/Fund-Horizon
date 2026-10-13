@@ -96,6 +96,27 @@ def backoffice_derivatives(
 
 
 # ---------------------------------------------------------------------------
+# Live News (open RSS feeds)
+# ---------------------------------------------------------------------------
+
+@router.get("/news")
+def backoffice_news(
+    staff: Annotated[dict, Depends(require_staff)],
+    limit: int = Query(40, ge=1, le=200),
+    category: str | None = Query(None),
+    source: str | None = Query(None),
+):
+    """Latest headlines collected from open RSS feeds (RBI, SEBI, PIB and major Indian business outlets)."""
+    items = _REPO.list_news(limit=limit, category=category, source_id=source)
+    return {
+        "data": items,
+        "count": len(items),
+        "availability": "ready" if items else "unavailable",
+        "freshness": "current",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Institutional Flows (FII / DII)
 # ---------------------------------------------------------------------------
 

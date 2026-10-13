@@ -118,7 +118,7 @@ export default function MutualFundsTrackerPage() {
                       ₹{s.latest_nav ? Number(s.latest_nav).toFixed(4) : "—"}
                     </td>
                     <td className="py-3 px-3 text-sand-600 text-[11px]">{s.nav_date || "—"}</td>
-                    <td className="py-3 px-3 text-sand-700">{s.ter_pct ? `${s.ter_pct}%` : "—"}</td>
+                    <td className="py-3 px-3 text-sand-700" title={s.ter_as_of ? `AMFI TER as of ${s.ter_as_of}` : undefined}>{s.ter_pct !== undefined && s.ter_pct !== null ? `${Number(s.ter_pct).toFixed(2)}%` : "—"}</td>
                     <td className="py-3 px-3 text-[11px] text-sand-500 font-mono">
                       {s.isin_growth || s.isin_div || "—"}
                     </td>

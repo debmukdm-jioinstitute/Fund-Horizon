@@ -14,9 +14,11 @@ from typing import Any
 
 from app.backoffice.providers.amfi import AmfiProvider
 from app.backoffice.providers.base import FetchResult
+from app.backoffice.providers import amfi_ter, rss
 from app.backoffice.providers.cboe import CboeProvider
 from app.backoffice.providers.ecb import EcbProvider
 from app.backoffice.providers.fred import FredProvider
+from app.backoffice.providers.india_yields import IndiaYieldsProvider
 from app.backoffice.providers.nse import NseError, get_nse_client
 from app.backoffice.providers.treasury import TreasuryProvider
 from app.backoffice.repository import BackofficeRepository
@@ -36,6 +38,9 @@ REFRESH_INTERVALS: dict[str, int] = {
     "SRC_TREASURY": 3600,
     "SRC_FRED": 3600,
     "SRC_AMFI": 6 * 3600,
+    "SRC_AMFI_TER": 24 * 3600,
+    "SRC_IN_YIELDS": 1800,
+    "SRC_RSS": 600,
 }
 _LAST_RUN: dict[str, float] = {}
 
@@ -63,6 +68,30 @@ def _ingest(source_id: str, res: FetchResult) -> dict[str, Any]:
         _REPO.replace_mf_schemes(schemes)
     _REPO.update_source_health(source_id, "ready", success=True)
     return {"status": "success", "source_id": source_id, "records_ingested": saved}
+
+
+def refresh_ter() -> dict[str, Any]:
+    source_id = "SRC_AMFI_TER"
+    rows = amfi_ter.fetch_latest()
+    if not rows:
+        _REPO.update_source_health(source_id, "unavailable", error_message="AMFI TER API returned no rows", success=False)
+        return {"status": "unavailable", "source_id": source_id, "error": "AMFI TER API returned no rows"}
+    saved = _REPO.replace_mf_ter(rows)
+    _REPO.update_source_health(source_id, "ready", success=True)
+    return {"status": "success", "source_id": source_id, "records_ingested": saved}
+
+
+def refresh_rss() -> dict[str, Any]:
+    source_id = "SRC_RSS"
+    items, errors = rss.fetch_all()
+    if not items:
+        msg = "; ".join(f"{k}: {v}" for k, v in errors.items()) or "no items"
+        _REPO.update_source_health(source_id, "unavailable", error_message=msg[:500], success=False)
+        return {"status": "unavailable", "source_id": source_id, "error": msg}
+    saved = _REPO.upsert_news(items)
+    warn = "; ".join(f"{k}: {v}" for k, v in errors.items())[:500] or None
+    _REPO.update_source_health(source_id, "ready", error_message=warn, success=True)
+    return {"status": "success", "source_id": source_id, "records_ingested": saved, "feed_errors": errors}
 
 
 def refresh_nse() -> dict[str, Any]:
@@ -117,7 +146,13 @@ async def refresh_source(source_id: str) -> dict[str, Any]:
         if source_id == "SRC_NSE_FNO":
             return await loop.run_in_executor(None, refresh_nse)
 
+        if source_id == "SRC_AMFI_TER":
+            return await loop.run_in_executor(None, refresh_ter)
+        if source_id == "SRC_RSS":
+            return await loop.run_in_executor(None, refresh_rss)
+
         providers = {
+            "SRC_IN_YIELDS": IndiaYieldsProvider,
             "SRC_AMFI": AmfiProvider,
             "SRC_ECB": EcbProvider,
             "SRC_CBOE": CboeProvider,
@@ -128,9 +163,8 @@ async def refresh_source(source_id: str) -> dict[str, Any]:
             return await loop.run_in_executor(None, _ingest, source_id, res)
 
         if source_id == "SRC_FRED":
-            provider = FredProvider()
-            # Broad-dollar index is the only FRED series not available keyless elsewhere.
-            res = await loop.run_in_executor(None, provider.fetch, "DTWEXBGS")
+            # Broad-dollar index plus India monthly yields (fallback behind the daily scraped curve).
+            res = await loop.run_in_executor(None, FredProvider().fetch_all)
             return await loop.run_in_executor(None, _ingest, source_id, res)
 
         return {"status": "manual_only", "source_id": source_id, "message": "Manual import required for this source"}

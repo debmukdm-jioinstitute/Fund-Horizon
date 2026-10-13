@@ -11,11 +11,13 @@ import {
 import { formatCurrencyPaiseToINR } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
 import PmsStrategyDrawer from "@/components/backoffice/PmsStrategyDrawer";
+import PmsManagerDrawer from "@/components/backoffice/PmsManagerDrawer";
 
 export default function PmsTrackerPage() {
   const [tab, setTab] = useState<"strategies" | "accounts">("strategies");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
   const [selectedStrategy, setSelectedStrategy] = useState<PmsStrategyItem | null>(null);
+  const [selectedManager, setSelectedManager] = useState<string | null>(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
   const [accountTracker, setAccountTracker] = useState<PmsAccountTrackerData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -316,8 +318,19 @@ export default function PmsTrackerPage() {
                                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
                                   {s.inception_date || "—"}
                                 </td>
-                                <td className="text-[12px] text-[#172033] dark:text-[#EDF2F7]">
-                                  {s.principal_officer || "—"}
+                                <td className="text-[12px]">
+                                  {s.principal_officer ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedManager(s.principal_officer as string)}
+                                      className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition cursor-pointer"
+                                      title="Open manager profile"
+                                    >
+                                      {s.principal_officer}
+                                    </button>
+                                  ) : (
+                                    <span className="text-[#172033] dark:text-[#EDF2F7]">—</span>
+                                  )}
                                 </td>
                                 <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
                                   {s.benchmark_name || "S&P BSE 500 TRI"}
@@ -522,6 +535,17 @@ export default function PmsTrackerPage() {
       <PmsStrategyDrawer
         strategy={selectedStrategy}
         onClose={() => setSelectedStrategy(null)}
+      />
+
+      {/* Slide-over Manager Profile Drawer */}
+      <PmsManagerDrawer
+        managerName={selectedManager}
+        strategies={strategies}
+        onClose={() => setSelectedManager(null)}
+        onSelectStrategy={(st) => {
+          setSelectedManager(null);
+          setSelectedStrategy(st);
+        }}
       />
     </div>
   );

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import calendar
 import json
+import os
 import re
 import sys
 from datetime import UTC, datetime
@@ -84,7 +85,11 @@ def icici_pms(page: Page) -> list[dict]:
     ]
 
 
-SCRAPERS = {"whiteoak": whiteoak, "helios": helios, "bandhan": bandhan, "carnelian_compounder": carnelian, "icici_pms_value": icici_pms}
+SCRAPERS = {"helios": helios, "bandhan": bandhan, "carnelian_compounder": carnelian, "icici_pms_value": icici_pms}
+# WhiteOak's firewall returns 403 to CI/datacenter addresses, so it is opt-in (run from a normal connection with
+# FH_SCRAPE_WHITEOAK=1). Its previously collected links stay in browser.json untouched.
+if os.environ.get("FH_SCRAPE_WHITEOAK") == "1":
+    SCRAPERS["whiteoak"] = whiteoak
 
 
 def main() -> None:

@@ -18,6 +18,7 @@ import {
   normalizeApproach,
   normalizeProviderName,
   pmsReturnWarning,
+  pmsCellReturnWarning,
   sourceBenchmark,
 } from "@/lib/backoffice-display";
 
@@ -352,8 +353,10 @@ export default function PmsTrackerPage() {
           <div className="terminal-panel overflow-hidden">
             <div className="px-3 py-2 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono flex flex-wrap items-center justify-between gap-2">
               <span>
-                Showing {from}–{to} of {filteredStrategies.length.toLocaleString("en-IN")}
-                {filteredStrategies.length !== strategies.length ? ` matching · ${strategies.length.toLocaleString("en-IN")} total` : " strategies"}
+                {filteredStrategies.length === 0
+                  ? "No strategies match the current filters"
+                  : `Showing ${from}–${to} of ${filteredStrategies.length.toLocaleString("en-IN")}`}
+                {filteredStrategies.length !== strategies.length ? ` matching · ${strategies.length.toLocaleString("en-IN")} total` : filteredStrategies.length === 0 ? "" : " strategies"}
               </span>
               <div className="flex items-center gap-1.5">
                 <button
@@ -479,25 +482,25 @@ export default function PmsTrackerPage() {
                               fhSubTab === "returns" ? (
                                 <>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_1m_pct} />
+                                    <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_3m_pct} />
+                                    <ReturnCell value={s.return_3m_pct} warning={pmsCellReturnWarning("3m", s.return_3m_pct)} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_6m_pct} />
+                                    <ReturnCell value={s.return_6m_pct} warning={pmsCellReturnWarning("6m", s.return_6m_pct)} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_1y_pct} />
+                                    <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_3y_cagr_pct} warning={warning} />
+                                    <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_5y_cagr_pct} />
+                                    <ReturnCell value={s.return_5y_cagr_pct} warning={pmsCellReturnWarning("5y", s.return_5y_cagr_pct)} />
                                   </td>
                                   <td className="text-right font-medium">
-                                    <ReturnCell value={s.return_since_inception_pct} />
+                                    <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} />
                                   </td>
                                 </>
                               ) : (
@@ -536,13 +539,13 @@ export default function PmsTrackerPage() {
                                   {formatCrore(s.aum_crore)}
                                 </td>
                                 <td className="text-right">
-                                  <ReturnCell value={s.return_1m_pct} />
+                                  <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} />
                                 </td>
                                 <td className="text-right">
-                                  <ReturnCell value={s.return_1y_pct} />
+                                  <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} />
                                 </td>
                                 <td className="text-right">
-                                  <ReturnCell value={s.return_3y_cagr_pct} warning={warning} />
+                                  <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
                                 </td>
                                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
                               </>

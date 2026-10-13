@@ -40,6 +40,23 @@ export function normalizeProviderName(raw?: string | null): string {
   return value.replace(/\s+,/g, ",").trim();
 }
 
+/** Per-cell outlier warning for a single PMS return figure. Returns a message or null. */
+export function pmsCellReturnWarning(
+  horizon: "1m" | "3m" | "6m" | "1y" | "3y" | "5y" | "si",
+  value?: number | null,
+): string | null {
+  if (isMissingNumber(value)) return null;
+  const v = Math.abs(value as number);
+  const label =
+    horizon === "1m" ? "1M" : horizon === "3m" ? "3M" : horizon === "6m" ? "6M" : horizon === "1y" ? "1Y" : horizon === "3y" ? "3Y CAGR" : horizon === "5y" ? "5Y CAGR" : "Since-inception";
+  if (horizon === "1m" && v > 50) return `1M return above 50% is an outlier`;
+  if ((horizon === "3m" || horizon === "6m") && v > 75) return `${label} return above 75% is an outlier`;
+  if (horizon === "1y" && v > 75) return `1Y return beyond ±75% is an outlier versus typical PMS ranges`;
+  if ((horizon === "3y" || horizon === "5y") && v > 100)
+    return `${label} above 100% is an outlier versus typical PMS ranges`;
+  return null;
+}
+
 export function pmsReturnWarning(args: {
   return_1y_pct?: number;
   return_3y_cagr_pct?: number;
@@ -50,6 +67,10 @@ export function pmsReturnWarning(args: {
   const y3 = args.return_3y_cagr_pct;
   const y5 = args.return_5y_cagr_pct;
   const m1 = args.return_1m_pct;
+  const y1 = args.return_1y_pct;
+  if (!isMissingNumber(y1) && Math.abs(y1 as number) > 75) {
+    return "1Y return beyond ±75% is an outlier versus typical PMS ranges";
+  }
   if (!isMissingNumber(y3) && Math.abs(y3 as number) > 100 && y1Missing) {
     return "3Y CAGR above 100% while 1Y is missing — likely incomplete disclosure";
   }

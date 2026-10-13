@@ -473,9 +473,23 @@ def backoffice_mf_tracker(
         "limit": limit,
         "offset": offset,
         "as_of": facets.get("as_of"),
-        "facets": {"amcs": facets.get("amcs") or [], "categories": facets.get("categories") or []},
+        "facets": {
+            "amcs": facets.get("amcs") or [],
+            "categories": facets.get("categories") or [],
+            "plan_counts": facets.get("plan_counts") or {},
+        },
         "availability": "ready" if total else "unavailable",
     }
+
+
+@router.get("/mutual-funds/nav-pair-check")
+def backoffice_mf_nav_pair_check(
+    staff: Annotated[dict, Depends(require_staff)],
+    limit: int = Query(50, ge=1, le=200),
+):
+    """Growth/IDCW pairs sharing an identical latest NAV — data QA check."""
+    pairs = _REPO.mf_identical_nav_pairs(limit)
+    return {"data": pairs, "count": len(pairs), "availability": "ready"}
 
 
 # ---------------------------------------------------------------------------

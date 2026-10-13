@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { getPmsStrategyDetail, PmsStrategyDetail, PmsStrategyItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
-import { formatCrore } from "@/lib/terminal-format";
+import { formatCrore, formatISTDate } from "@/lib/terminal-format";
 import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBenchmark } from "@/lib/backoffice-display";
 
 interface PmsStrategyDrawerProps {
@@ -65,7 +65,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
       `3Y CAGR: ${strategy.return_3y_cagr_pct !== undefined ? `${strategy.return_3y_cagr_pct}%` : "—"}`,
       `5Y CAGR: ${strategy.return_5y_cagr_pct !== undefined ? `${strategy.return_5y_cagr_pct}%` : "—"}`,
       `Since Inception: ${strategy.return_since_inception_pct !== undefined ? `${strategy.return_since_inception_pct}%` : "—"}`,
-      `As Of: ${strategy.report_month || "Latest"}`,
+      `As Of: ${strategy.report_month ? formatISTDate(strategy.report_month) : "Latest"}`,
       `Source: APMI Disclosure`,
     ].join("\n");
 
@@ -209,7 +209,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Report As-Of Month</div>
                 <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5">
-                  {strategy.report_month || "Latest Disclosure"}
+                  {strategy.report_month ? formatISTDate(strategy.report_month) : "Latest Disclosure"}
                 </div>
               </div>
 
@@ -271,9 +271,9 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                         ["Variable fee", detail.profile.variable_fees ?? "Not disclosed"],
                         ["Exit load", detail.profile.exit_load ?? "Not disclosed"],
                         [
-                          `Turnover${detail.profile.turnover_as_on ? ` (${detail.profile.turnover_as_on})` : ""}`,
-                          detail.profile.turnover_1y !== undefined
-                            ? `1M ${detail.profile.turnover_1m ?? "—"}x · 1Y ${detail.profile.turnover_1y}x`
+                          `Turnover${detail.profile.turnover_as_on ? ` (${formatISTDate(detail.profile.turnover_as_on)})` : ""}`,
+                          detail.profile.turnover_1y !== undefined && detail.profile.turnover_1y !== null
+                            ? `1M ${detail.profile.turnover_1m ? `${detail.profile.turnover_1m}x` : "—"} · 1Y ${detail.profile.turnover_1y}x`
                             : "—",
                         ],
                       ].map(([k, v]) => (
@@ -335,7 +335,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                     <tbody>
                       {historyRows.map((h) => (
                         <tr key={h.as_on}>
-                          <td className="font-mono">{h.as_on}</td>
+                          <td className="font-mono">{formatISTDate(h.as_on)}</td>
                           <td className="text-right font-mono">{formatCrore(h.aum_crore)}</td>
                           <td className="text-right"><SignedValue value={h.r1m} unit="%" /></td>
                           <td className="text-right"><SignedValue value={h.r3m} unit="%" /></td>

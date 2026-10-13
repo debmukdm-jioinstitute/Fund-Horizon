@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { getMutualFundPerformance, MfPerformance, MutualFundItem } from "@/lib/backoffice";
+import { getMutualFundPerformance, getMfNavPairCheck, MfPerformance, MutualFundItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
@@ -16,15 +16,26 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
   const [copied, setCopied] = useState(false);
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined); // undefined = loading, null = no data
   const [view, setView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
+  const [navPairSiblings, setNavPairSiblings] = useState<string[]>([]);
   const code = scheme?.scheme_code;
 
   useEffect(() => {
     setPerf(undefined);
+    setNavPairSiblings([]);
     if (!code) return;
     let cancelled = false;
     getMutualFundPerformance(code)
       .then((p) => !cancelled && setPerf(p))
       .catch(() => !cancelled && setPerf(null));
+    getMfNavPairCheck(200)
+      .then((pairs) => {
+        if (cancelled) return;
+        const siblings = pairs
+          .filter((p) => p.growth_code === code || p.idcw_code === code)
+          .map((p) => (p.growth_code === code ? p.idcw_name : p.growth_name));
+        setNavPairSiblings(siblings);
+      })
+      .catch(() => !cancelled && setNavPairSiblings([]));
     return () => {
       cancelled = true;
     };
@@ -150,6 +161,11 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 <div className="text-[17px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
                   {navLabel}
                 </div>
+                {navPairSiblings.length > 0 && (
+                  <div className="text-[10px] text-[#B45309] dark:text-[#FBBF24] font-mono mt-1" title={`Shares an identical NAV with: ${navPairSiblings.join("; ")}`}>
+                    ⚠ Data check: identical NAV to {navPairSiblings.length === 1 ? "its Growth/IDCW pair" : `${navPairSiblings.length} sibling options`}
+                  </div>
+                )}
               </div>
 
               <div className="terminal-panel p-3">
@@ -255,7 +271,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                           })
                           .map((h) => (
                             <tr key={h.date}>
-                              <td className="font-mono">{h.date}</td>
+                              <td className="font-mono">{formatISTDate(h.date)}</td>
                               <td className="text-right font-mono">{h.nav?.toFixed(4) ?? "—"}</td>
                               <td className="text-right"><SignedValue value={h.r1m} unit="%" /></td>
                               <td className="text-right"><SignedValue value={h.r1y} unit="%" /></td>

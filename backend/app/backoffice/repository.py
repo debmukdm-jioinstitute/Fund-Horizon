@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import time
 import uuid
 from datetime import UTC, datetime
 from typing import Any
@@ -27,6 +28,10 @@ CREATE TABLE IF NOT EXISTS mf_schemes (
     updated_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_mf_schemes_name ON mf_schemes(scheme_name);
+CREATE INDEX IF NOT EXISTS ix_mf_schemes_plan ON mf_schemes(plan);
+CREATE INDEX IF NOT EXISTS ix_mf_schemes_amc ON mf_schemes(amc);
+CREATE INDEX IF NOT EXISTS ix_mf_schemes_category ON mf_schemes(category);
+CREATE INDEX IF NOT EXISTS ix_mf_schemes_nav_date ON mf_schemes(nav_date);
 CREATE TABLE IF NOT EXISTS mf_ter (
     base_key TEXT PRIMARY KEY,
     scheme_name TEXT NOT NULL,
@@ -86,8 +91,14 @@ def _new_id() -> str:
 class BackofficeRepository:
     """Repository handling all backoffice queries and transactions."""
 
+    # MF facet lists (AMCs, categories, plan counts) change only when the AMFI
+    # feed refreshes, so cache them briefly to avoid 3 heavy scans per request.
+    _MF_FACETS_TTL_SECONDS = 3600.0
+
     def __init__(self) -> None:
         ensure_backoffice_schema()
+        self._mf_facets_cache: dict[str, Any] | None = None
+        self._mf_facets_cached_at: float = 0.0
 
     def _conn(self):
         ensure_backoffice_schema()
@@ -467,6 +478,8 @@ class BackofficeRepository:
                         for s in schemes
                     ],
                 )
+            # New AMFI data invalidates the cached facet lists.
+            self._mf_facets_cache = None
             return len(schemes)
         finally:
             conn.close()
@@ -531,6 +544,12 @@ class BackofficeRepository:
             conn.close()
 
     def mf_scheme_facets(self) -> dict[str, Any]:
+        now = time.monotonic()
+        if (
+            self._mf_facets_cache is not None
+            and (now - self._mf_facets_cached_at) < self._MF_FACETS_TTL_SECONDS
+        ):
+            return self._mf_facets_cache
         conn = self._conn()
         try:
             amcs = [
@@ -546,7 +565,51 @@ class BackofficeRepository:
                 ).fetchall()
             ]
             as_of_row = conn.execute("SELECT MAX(nav_date) AS m FROM mf_schemes").fetchone()
-            return {"amcs": amcs, "categories": categories, "as_of": as_of_row["m"] if as_of_row else None}
+            plan_counts: dict[str, int] = {}
+            for r in conn.execute("SELECT plan, COUNT(*) AS n FROM mf_schemes GROUP BY plan").fetchall():
+                key = r["plan"] if r["plan"] else "Unclassified"
+                plan_counts[key] = int(r["n"])
+            result = {
+                "amcs": amcs,
+                "categories": categories,
+                "as_of": as_of_row["m"] if as_of_row else None,
+                "plan_counts": plan_counts,
+            }
+            self._mf_facets_cache = result
+            self._mf_facets_cached_at = now
+            return result
+        finally:
+            conn.close()
+
+    def mf_identical_nav_pairs(self, limit: int = 50) -> list[dict[str, Any]]:
+        """Growth/IDCW pairs (same base_key + plan) whose latest NAVs are identical.
+
+        Identical NAVs are suspicious after any IDCW payout (the IDCW NAV should
+        drop on distribution). Returns up to `limit` pairs for data QA.
+        """
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT g.scheme_code AS growth_code, g.scheme_name AS growth_name,
+                       d.scheme_code AS idcw_code, d.scheme_name AS idcw_name,
+                       g.latest_nav AS nav, g.nav_date AS nav_date, g.amc AS amc
+                FROM mf_schemes g
+                JOIN mf_schemes d
+                  ON d.base_key = g.base_key
+                 AND IFNULL(d.plan, '') = IFNULL(g.plan, '')
+                 AND d.scheme_code != g.scheme_code
+                WHERE g.scheme_option = 'Growth'
+                  AND d.scheme_option IN ('IDCW', 'Dividend')
+                  AND g.latest_nav IS NOT NULL
+                  AND g.latest_nav = d.latest_nav
+                  AND g.latest_nav > 0
+                ORDER BY g.scheme_name
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+            return [dict(r) for r in rows]
         finally:
             conn.close()
 

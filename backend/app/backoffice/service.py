@@ -280,7 +280,15 @@ class BackofficeService:
         expiries = sorted({c["expiry_date"] for c in contracts if "expiry_date" in c})
         expiries = sorted(set(expiries) | set(_OPTION_EXPIRIES.get(underlying, [])))
         stored_expiries = sorted({c["expiry_date"] for c in contracts if "expiry_date" in c})
-        selected_expiry = expiry if expiry in stored_expiries else (stored_expiries[0] if stored_expiries else None)
+        # Prefer the nearest non-expired expiry; fall back to the nearest stored one.
+        today = datetime.now().date().isoformat()
+        live_expiries = [e for e in stored_expiries if e >= today]
+        if expiry and expiry in stored_expiries:
+            selected_expiry = expiry
+        elif live_expiries:
+            selected_expiry = live_expiries[0]
+        else:
+            selected_expiry = stored_expiries[0] if stored_expiries else None
 
         pcr = calculate_pcr(contracts, expiry_filter=selected_expiry)
         max_pain = compute_max_pain(contracts, expiry_filter=selected_expiry)

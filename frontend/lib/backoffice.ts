@@ -93,6 +93,7 @@ export interface DerivativesData {
   underlying: string;
   underlying_price?: number;
   expiry_date?: string;
+  snapshot_timestamp?: string;
   pcr_oi?: number;
   pcr_oi_reason?: string;
   pcr_volume?: number;
@@ -544,10 +545,10 @@ export const getYieldsBoard = async (): Promise<BackofficeEnvelope<YieldsBoardDa
   return envelope(raw, data, "unavailable");
 };
 
-export const getDerivatives = async (underlying = "NIFTY", expiry?: string): Promise<BackofficeEnvelope<DerivativesData>> => {
+export const getDerivatives = async (underlying = "NIFTY", expiry?: string, signal?: AbortSignal): Promise<BackofficeEnvelope<DerivativesData>> => {
   const q = new URLSearchParams({ underlying });
   if (expiry) q.set("expiry", expiry);
-  const raw = await boFetch<Json>(`/api/backoffice/derivatives?${q.toString()}`);
+  const raw = await boFetch<Json>(`/api/backoffice/derivatives?${q.toString()}`, { signal });
   const d = obj(raw.data);
   const pcr = obj(d.pcr);
   const selectedExpiry = str(d.selected_expiry);
@@ -564,6 +565,7 @@ export const getDerivatives = async (underlying = "NIFTY", expiry?: string): Pro
     underlying: str(d.underlying) ?? underlying,
     underlying_price: num(d.underlying_price),
     expiry_date: selectedExpiry,
+    snapshot_timestamp: str(d.snapshot_timestamp),
     pcr_oi: num(pcr.pcr_oi),
     pcr_oi_reason: str(pcr.pcr_oi_reason),
     live_status: (str(d.live_status) as DerivativesData["live_status"]) ?? undefined,

@@ -159,7 +159,7 @@ export default function CasesTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold text-navy-950">
-          Grievance queue <span className="font-semibold text-navy-400">({openCount} open)</span>
+          Grievance queue <span className="font-semibold text-navy-600">({openCount} open)</span>
         </h2>
         <button
           onClick={() => setShowForm((v) => !v)}
@@ -243,7 +243,7 @@ export default function CasesTab() {
           <p className="text-xs text-navy-600 font-medium mt-3">Loading cases...</p>
         </div>
       ) : ordered.length === 0 ? (
-        <p className="text-xs text-navy-400 text-center py-8">No cases in the queue.</p>
+        <p className="text-xs text-navy-600 text-center py-8">No cases in the queue.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
           {ordered.map((c) => {
@@ -254,16 +254,16 @@ export default function CasesTab() {
             return (
               <div key={c.id} className="bg-white border border-navy-200 rounded-xl p-3 space-y-2 shadow-sm">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${statusChip(c.status)}`}>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase ${statusChip(c.status)}`}>
                     {c.status.replaceAll("_", " ")}
                   </span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${sla.cls}`}>{sla.label}</span>
-                  <span className="text-[10px] text-navy-500 ml-auto">{c.category}</span>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${sla.cls}`}>{sla.label}</span>
+                  <span className="text-xs text-navy-500 ml-auto">{c.category}</span>
                 </div>
                 <p className="text-xs font-semibold text-navy-950 leading-snug">{c.subject}</p>
-                {c.customer_name && <p className="text-[10px] text-navy-500">{c.customer_name}</p>}
-                {c.body && <p className="text-[11px] text-navy-600 whitespace-pre-wrap">{c.body}</p>}
-                <div className="text-[10px] text-navy-500 space-y-0.5">
+                {c.customer_name && <p className="text-xs text-navy-500">{c.customer_name}</p>}
+                {c.body && <p className="text-xs text-navy-600 whitespace-pre-wrap">{c.body}</p>}
+                <div className="text-xs text-navy-500 space-y-0.5">
                   <p>Raised: {new Date(c.created_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}</p>
                   {c.sla_due_at && !isResolved(c.status) && (
                     <p>SLA due: {new Date(c.sla_due_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}</p>
@@ -277,7 +277,7 @@ export default function CasesTab() {
                     <button
                       disabled={busy}
                       onClick={() => updateStatus(c, advanceTo)}
-                      className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
+                      className="text-xs font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
                     >
                       {advanceTo === "closed" ? "Close" : advanceTo === "resolved" ? "Resolve" : "Start work"} →
                     </button>
@@ -286,7 +286,7 @@ export default function CasesTab() {
                     <button
                       disabled={busy}
                       onClick={() => updateStatus(c, escalateTo)}
-                      className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-rose-100 text-rose-700 hover:bg-rose-200 disabled:opacity-50"
+                      className="text-xs font-semibold px-2 py-1 rounded-lg bg-rose-100 text-rose-700 hover:bg-rose-200 disabled:opacity-50"
                     >
                       Escalate{escalateTo === "escalated_scores" ? " to SCOREs" : ""}
                     </button>

@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </a>
 
           {/* Translucent Frosted Glass Sticky Header */}
-          <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-[0_4px_20px_-4px_rgba(11,37,69,0.03)] transition-all">
+          <header className="md:sticky md:top-0 z-40 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-[0_4px_20px_-4px_rgba(11,37,69,0.03)] transition-all">
             <div className="flex w-full flex-wrap items-center justify-between gap-y-2 px-4 py-3 sm:px-6 lg:px-8 xl:px-12">
               <Logo size="md" showSubtitle />
 

@@ -68,7 +68,7 @@ function Tile({ label, value, tone, delay }: { label: string; value: string; ton
         ₹
       </span>
       <div>
-        <p className="text-[11px] font-medium text-slate-500">{label}</p>
+        <p className="text-xs font-medium text-slate-500">{label}</p>
         <p className="text-sm font-extrabold text-navy-950">{value}</p>
       </div>
     </motion.div>
@@ -167,7 +167,7 @@ export default function Hero({ funds, houses }: { funds: number | null; houses: 
                 <dd className="text-2xl font-extrabold text-navy-950">
                   <CountUp to={x.v} suffix={x.s} />
                 </dd>
-                <p className="text-[11px] font-medium text-slate-600">{x.l}</p>
+                <p className="text-xs font-medium text-slate-600">{x.l}</p>
               </motion.div>
             ))}
           </dl>
@@ -183,17 +183,17 @@ export default function Hero({ funds, houses }: { funds: number | null; houses: 
             <div className="animate-float rounded-3xl border border-white/80 bg-white/70 p-5 shadow-2xl shadow-navy-900/10 backdrop-blur-xl">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[11px] font-medium text-slate-500">Sample portfolio value</p>
+                  <p className="text-xs font-medium text-slate-500">Sample portfolio value</p>
                   <p className="text-3xl font-extrabold text-navy-950">
                     <CountUp to={2475430} prefix="₹" duration={2} />
                   </p>
                 </div>
-                <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">▲ sample 12.4%</span>
+                <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">▲ sample 12.4%</span>
               </div>
               <div className="mt-3 grid gap-4 sm:grid-cols-5">
                 <div className="sm:col-span-3">
                   <SampleChart />
-                  <div className="mt-1 flex gap-1 text-[10px] font-semibold text-slate-500" aria-hidden>
+                  <div className="mt-1 flex gap-1 text-xs font-semibold text-slate-500" aria-hidden>
                     {["1M", "6M", "1Y", "3Y", "All"].map((t) => (
                       <span key={t} className={`rounded-md px-2 py-0.5 ${t === "1Y" ? "bg-emerald-600 text-white" : ""}`}>{t}</span>
                     ))}
@@ -205,7 +205,7 @@ export default function Hero({ funds, houses }: { funds: number | null; houses: 
                   <Tile label="Goals" value="₹2,15,230" tone="bg-amber-100 text-amber-700" delay={1.3} />
                 </div>
               </div>
-              <p className="mt-3 text-[10px] text-slate-500">Illustration with sample numbers. Not your data and not a forecast.</p>
+              <p className="mt-3 text-xs text-slate-500">Illustration with sample numbers. Not your data and not a forecast.</p>
             </div>
             <motion.span
               aria-hidden

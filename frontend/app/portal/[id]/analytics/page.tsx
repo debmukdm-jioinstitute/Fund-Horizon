@@ -45,7 +45,7 @@ function ScoreBar({ label, value, illustrative }: { label: string; value: number
       <div className="h-2.5 w-full overflow-hidden rounded-full bg-navy-100" role="img" aria-label={`${label}: ${value === null ? "not available" : Math.round(v) + " of 100"}`}>
         <div className={`h-full rounded-full ${barColor(v)}`} style={{ width: `${v}%` }} />
       </div>
-      {illustrative && <p className="mt-0.5 text-[11px] italic text-navy-500">Illustrative</p>}
+      {illustrative && <p className="mt-0.5 text-xs italic text-navy-500">Illustrative</p>}
     </div>
   );
 }
@@ -115,7 +115,7 @@ export default function PortalAnalyticsPage({ params }: { params: { id: string }
           <section className="card space-y-4">
             <div className="flex items-baseline justify-between">
               <h2 className="text-base font-bold text-navy-950">Dimension scores</h2>
-              <span className="text-[11px] italic text-navy-500">Illustrative</span>
+              <span className="text-xs italic text-navy-500">Illustrative</span>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {DIMENSIONS.map((d) => (
@@ -135,7 +135,7 @@ export default function PortalAnalyticsPage({ params }: { params: { id: string }
                   <li key={i} className="rounded-lg bg-navy-50 p-3">
                     <p className="text-sm font-semibold text-navy-950">{imp.title ?? `Improvement ${i + 1}`}</p>
                     {imp.detail && <p className="mt-1 text-xs text-navy-700">{imp.detail}</p>}
-                    {imp.disclaimer && <p className="mt-1 text-[11px] italic text-navy-500">{imp.disclaimer}</p>}
+                    {imp.disclaimer && <p className="mt-1 text-xs italic text-navy-500">{imp.disclaimer}</p>}
                   </li>
                 ))}
               </ul>

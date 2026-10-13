@@ -6,6 +6,11 @@ const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      // Raise the smallest text sizes: 12px was too small for dense tables and badges.
+      fontSize: {
+        xs: ["0.8125rem", { lineHeight: "1.2rem" }],
+        sm: ["0.9375rem", { lineHeight: "1.4rem" }],
+      },
       colors: {
         navy: {
           950: "#06172C",
@@ -20,6 +25,16 @@ const config: Config = {
           200: "#BAD0EC",
           100: "#DCE6F2",
           50: "#F3F6FA",
+        },
+        // Backoffice neutrals/accents. These MUST stay defined: classes like `bg-forest-700 text-white` and
+        // `text-sand-600` silently render nothing (white-on-white text) when the palette is missing.
+        sand: {
+          950: "#121210", 900: "#1F1E1B", 800: "#2F2E29", 700: "#46453D", 600: "#5C5A50", 500: "#6E6B5F",
+          400: "#8A8676", 300: "#CFCBBD", 200: "#E3E0D6", 100: "#F0EEE8", 50: "#F8F7F4",
+        },
+        forest: {
+          950: "#07211A", 900: "#0C3324", 800: "#114530", 700: "#17563A", 600: "#1F6B44", 500: "#2E8656",
+          400: "#4DA373", 300: "#7DC19A", 200: "#AEDABF", 100: "#D6EDDF", 50: "#EEF7F1",
         },
         teal: { 700: "#0A6B64", 600: "#0E7C74", 500: "#13A89E", 400: "#17c4b8", 100: "#D6F1EE", 50: "#EEF8F7" },
         amber: { 600: "#B45309", 100: "#FEF3C7" },

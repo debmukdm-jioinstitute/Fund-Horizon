@@ -50,7 +50,7 @@ export default function AdminHeader({
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold tracking-tight text-white">Control Center</h1>
-                <span className="rounded-full bg-teal-900/60 border border-teal-700/60 px-2.5 py-0.5 text-[11px] font-semibold text-teal-300">
+                <span className="rounded-full bg-teal-900/60 border border-teal-700/60 px-2.5 py-0.5 text-xs font-semibold text-teal-300">
                   ARN 345439
                 </span>
               </div>
@@ -63,7 +63,7 @@ export default function AdminHeader({
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-navy-900/90 border border-navy-800 text-xs text-navy-200 backdrop-blur-sm">
               <span className={`inline-block h-2 w-2 rounded-full ${isDbConnected ? "bg-teal-400 animate-pulse shadow-glow-teal" : "bg-rose-400"}`} />
               <span className="font-semibold text-white">{databaseProvider}</span>
-              <span className="text-navy-400">({isDbConnected ? "Active" : "Offline"})</span>
+              <span className="text-navy-600">({isDbConnected ? "Active" : "Offline"})</span>
             </div>
 
             <Link

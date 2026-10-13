@@ -25,7 +25,7 @@ function StatusChip({ status, label }: { status: string; label: string }) {
         ? "bg-amber-50 text-amber-800 ring-amber-200"
         : "bg-slate-100 text-slate-700 ring-slate-200";
   return (
-    <span className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 ${tone}`}>
+    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ring-1 ${tone}`}>
       {label || status}
     </span>
   );
@@ -97,7 +97,7 @@ function NextStepCard({ step, planId }: { step: PortalNextStep; planId: string }
           {glyph}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-teal-700">Next step</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Next step</p>
           <h2 className="mt-1 text-lg font-extrabold text-navy-950">{step.title}</h2>
           <p className="mt-2 text-sm leading-relaxed text-navy-800">{step.detail}</p>
           <p className="mt-3 rounded-lg bg-navy-50 p-3 text-xs leading-relaxed text-navy-600">
@@ -251,21 +251,21 @@ export default function PortalDashboardPage() {
         </div>
         <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-xl bg-navy-50 p-3">
-            <dt className="text-[11px] font-bold uppercase tracking-wider text-navy-500">Invested (declared)</dt>
+            <dt className="text-xs font-bold uppercase tracking-wider text-navy-500">Invested (declared)</dt>
             <dd className="mt-1 text-base font-extrabold text-navy-950">{shortInr(dash.declared_invested)}</dd>
           </div>
           <div className="rounded-xl bg-navy-50 p-3">
-            <dt className="text-[11px] font-bold uppercase tracking-wider text-navy-500">Liquid (declared)</dt>
+            <dt className="text-xs font-bold uppercase tracking-wider text-navy-500">Liquid (declared)</dt>
             <dd className="mt-1 text-base font-extrabold text-navy-950">{shortInr(dash.declared_liquid)}</dd>
           </div>
           <div className="rounded-xl bg-teal-50 p-3">
-            <dt className="text-[11px] font-bold uppercase tracking-wider text-teal-700">Monthly SIP</dt>
+            <dt className="text-xs font-bold uppercase tracking-wider text-teal-700">Monthly SIP</dt>
             <dd className="mt-1 text-base font-extrabold text-teal-900">
               {inr(dash.monthly_sip_commitment)}/mo
             </dd>
           </div>
           <div className="rounded-xl bg-navy-50 p-3">
-            <dt className="text-[11px] font-bold uppercase tracking-wider text-navy-500">Active funds</dt>
+            <dt className="text-xs font-bold uppercase tracking-wider text-navy-500">Active funds</dt>
             <dd className="mt-1 text-base font-extrabold text-navy-950">{dash.active_fund_count}</dd>
           </div>
         </dl>
@@ -293,7 +293,7 @@ export default function PortalDashboardPage() {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-[11px] text-navy-500">
+        <p className="mt-3 text-xs text-navy-500">
           As of {dash.as_of || "–"} · Planned mix for the investment corpus.
         </p>
       </section>

@@ -91,11 +91,11 @@ export default function ImpactEnginePage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold text-sand-900">Pair Relationship & Regression</h2>
-              <p className="text-[11px] text-sand-500">
+              <p className="text-xs text-sand-500">
                 Alphanumeric observation alignment (≥80% paired threshold, no forward filling)
               </p>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-sand-100 text-sand-700 px-2 py-0.5 rounded">
+            <span className="text-xs font-mono uppercase bg-sand-100 text-sand-700 px-2 py-0.5 rounded">
               OLS Beta
             </span>
           </div>
@@ -170,27 +170,27 @@ export default function ImpactEnginePage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Correlation (r)</div>
+                  <div className="text-xs text-sand-500 uppercase font-sans">Correlation (r)</div>
                   <div className="text-lg font-bold text-sand-950 mt-0.5">
                     {analysisResult.correlation !== null && analysisResult.correlation !== undefined ? analysisResult.correlation.toFixed(3) : "—"}
                   </div>
                 </div>
                 <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Sensitivity Beta (β)</div>
+                  <div className="text-xs text-sand-500 uppercase font-sans">Sensitivity Beta (β)</div>
                   <div className="text-lg font-bold text-sand-950 mt-0.5">
                     {analysisResult.beta !== null && analysisResult.beta !== undefined ? analysisResult.beta.toFixed(3) : "—"}
                   </div>
                 </div>
               </div>
               {analysisResult.correlation === null && (
-                <div className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-2 font-sans">
+                <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-2 font-sans">
                   {analysisResult.message ||
                     (analysisResult.status === "insufficient_data"
                       ? "No overlapping observations for these series yet; ingest more history first."
                       : "Not enough aligned observations to compute a reliable regression.")}
                 </div>
               )}
-              <div className="text-[11px] text-sand-600 font-sans leading-relaxed pt-1">
+              <div className="text-xs text-sand-600 font-sans leading-relaxed pt-1">
                 <span className="font-semibold">Mathematical Note:</span> Price series are transformed using continuous log returns ln(P_t / P_prev); yields use basis-point changes (Y_t - Y_prev) × 100.
               </div>
             </div>
@@ -202,11 +202,11 @@ export default function ImpactEnginePage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-semibold text-sand-900">Portfolio Sensitivity & Shock Sliders</h2>
-              <p className="text-[11px] text-sand-500">
+              <p className="text-xs text-sand-500">
                 Exact first-order Taylor bond shock: ΔP/P ≈ -Modified_Duration × (Δbps / 10000)
               </p>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+            <span className="text-xs font-mono uppercase bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
               Sensitivity
             </span>
           </div>
@@ -244,7 +244,7 @@ export default function ImpactEnginePage() {
                 onChange={(e) => setYieldShiftBps(Number(e.target.value))}
                 className="w-full accent-forest-700"
               />
-              <div className="text-[10px] text-sand-500 mt-0.5 font-mono">
+              <div className="text-xs text-sand-500 mt-0.5 font-mono">
                 Canonical rule: +25 bps shift corresponds to +0.0025 yield decimal (not 0.25).
               </div>
             </div>
@@ -282,7 +282,7 @@ export default function ImpactEnginePage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Bond Price Shock (ΔP/P)</div>
+                  <div className="text-xs text-sand-500 uppercase font-sans">Bond Price Shock (ΔP/P)</div>
                   <div className={`text-lg font-bold mt-0.5 ${
                     scenarioResult.estimated_price_change_pct >= 0 ? "text-emerald-700" : "text-rose-700"
                   }`}>
@@ -291,13 +291,13 @@ export default function ImpactEnginePage() {
                   </div>
                 </div>
                 <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Yield Decimal Shift</div>
+                  <div className="text-xs text-sand-500 uppercase font-sans">Yield Decimal Shift</div>
                   <div className="text-lg font-bold text-sand-950 mt-0.5">
                     {scenarioResult.delta_yield_decimal ? scenarioResult.delta_yield_decimal.toFixed(4) : "—"}
                   </div>
                 </div>
               </div>
-              <div className="text-[11px] text-sand-600 font-sans leading-relaxed">
+              <div className="text-xs text-sand-600 font-sans leading-relaxed">
                 Formula verified: <code className="bg-sand-200/80 px-1 py-0.5 rounded text-sand-800">{scenarioResult.formula || "ΔP/P ≈ -D_mod * (Δbps / 10000)"}</code>
               </div>
             </div>

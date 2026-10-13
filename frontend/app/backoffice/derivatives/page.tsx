@@ -95,7 +95,7 @@ export default function DerivativesPage() {
             >
               <span>{idx.name}</span>
               {idx.type === "cash_only" && (
-                <span className="ml-1.5 text-[10px] opacity-75 font-mono">(Cash Only)</span>
+                <span className="ml-1.5 text-xs opacity-75 font-mono">(Cash Only)</span>
               )}
             </button>
           );
@@ -137,12 +137,12 @@ export default function DerivativesPage() {
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
                 <span>PCR (Open Interest)</span>
-                <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Σ Put / Σ Call</span>
+                <span className="font-mono text-xs bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Σ Put / Σ Call</span>
               </div>
               <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
                 {data.data.pcr_oi !== null && data.data.pcr_oi !== undefined ? data.data.pcr_oi.toFixed(2) : "—"}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500">
+              <div className="mt-2 text-xs text-sand-500">
                 {data.data.pcr_oi_reason || `Call OI: ${data.data.total_call_oi.toLocaleString()} • Put OI: ${data.data.total_put_oi.toLocaleString()}`}
               </div>
             </div>
@@ -151,12 +151,12 @@ export default function DerivativesPage() {
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
                 <span>PCR (Volume)</span>
-                <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Volume Ratio</span>
+                <span className="font-mono text-xs bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Volume Ratio</span>
               </div>
               <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
                 {data.data.pcr_volume !== null && data.data.pcr_volume !== undefined ? data.data.pcr_volume.toFixed(2) : "—"}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500">
+              <div className="mt-2 text-xs text-sand-500">
                 Put Volume ÷ Call Volume on matching contracts
               </div>
             </div>
@@ -165,12 +165,12 @@ export default function DerivativesPage() {
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
                 <span>Max Pain Strike</span>
-                <span className="font-mono text-[10px] bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Descriptive</span>
+                <span className="font-mono text-xs bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Descriptive</span>
               </div>
               <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
                 {data.data.max_pain_strike ? data.data.max_pain_strike.toLocaleString() : "—"}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500">
+              <div className="mt-2 text-xs text-sand-500">
                 Minimum aggregate option buyer payoff
               </div>
             </div>
@@ -179,12 +179,12 @@ export default function DerivativesPage() {
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
                 <span>Underlying Reference Price</span>
-                <span className="font-mono text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded">Index Pts</span>
+                <span className="font-mono text-xs bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded">Index Pts</span>
               </div>
               <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
                 {data.data.underlying_price ? data.data.underlying_price.toLocaleString() : "—"}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500">
+              <div className="mt-2 text-xs text-sand-500">
                 Expiry: {data.data.expiry_date || "Nearest listed"}
               </div>
             </div>
@@ -195,7 +195,7 @@ export default function DerivativesPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
                 <h2 className="text-sm font-semibold text-sand-900">Option Chain Contracts Matrix</h2>
-                <p className="text-[11px] text-sand-500">
+                <p className="text-xs text-sand-500">
                   31 strikes around the money • Open Interest, Volume & Implied Volatility
                 </p>
               </div>
@@ -236,7 +236,7 @@ export default function DerivativesPage() {
                         PUTS (PE)
                       </th>
                     </tr>
-                    <tr className="border-t border-sand-200 text-[11px]">
+                    <tr className="border-t border-sand-200 text-xs">
                       <th className="py-1.5 px-3">OI</th>
                       <th className="py-1.5 px-3">Volume</th>
                       <th className="py-1.5 px-3 border-r border-sand-200">IV (%)</th>
@@ -254,7 +254,7 @@ export default function DerivativesPage() {
                         <td className="py-2 px-3 text-sand-500 border-r border-sand-200">{row.ce?.implied_volatility ? `${row.ce.implied_volatility}%` : "—"}</td>
                         <td className="py-2 px-4 font-bold text-sand-950 bg-sand-50/80">
                           {row.strike.toLocaleString("en-IN")}
-                          {row.isAtm && <span className="ml-1.5 text-[9px] font-semibold text-amber-700">ATM</span>}
+                          {row.isAtm && <span className="ml-1.5 text-xs font-semibold text-amber-700">ATM</span>}
                         </td>
                         <td className="py-2 px-3 text-sand-500 border-l border-sand-200">{row.pe?.implied_volatility ? `${row.pe.implied_volatility}%` : "—"}</td>
                         <td className="py-2 px-3 text-sand-600">{row.pe ? row.pe.volume.toLocaleString("en-IN") : "—"}</td>

@@ -89,7 +89,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
         <div className="p-5 border-b border-sand-100 hidden md:block">
           <Logo />
           <div className="mt-2 flex items-center gap-2">
-            <span className="text-[11px] font-semibold tracking-wider text-forest-800 uppercase bg-forest-50 px-2 py-0.5 rounded border border-forest-200">
+            <span className="text-xs font-semibold tracking-wider text-forest-800 uppercase bg-forest-50 px-2 py-0.5 rounded border border-forest-200">
               Internal Backoffice
             </span>
           </div>
@@ -100,9 +100,9 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
           <div className="flex items-center justify-between">
             <div className="truncate pr-2">
               <div className="text-xs font-semibold text-sand-900 truncate">{customer.name}</div>
-              <div className="text-[11px] text-sand-500 truncate">{customer.email}</div>
+              <div className="text-xs text-sand-500 truncate">{customer.email}</div>
             </div>
-            <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border font-medium ${roleBadgeColor}`}>
+            <span className={`text-xs font-mono uppercase px-2 py-0.5 rounded border font-medium ${roleBadgeColor}`}>
               {customer.role}
             </span>
           </div>
@@ -144,7 +144,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
             </svg>
             Sign Out
           </button>
-          <div className="mt-2 text-[10px] text-center text-sand-400 font-mono">
+          <div className="mt-2 text-xs text-center text-sand-500 font-mono">
             Zero-Spend Lean Stack • v1.0.0
           </div>
         </div>

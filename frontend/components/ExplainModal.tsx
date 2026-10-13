@@ -103,7 +103,7 @@ export default function ExplainModal({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded p-1.5 text-navy-400 hover:bg-navy-50 hover:text-navy-700"
+                className="rounded p-1.5 text-navy-600 hover:bg-navy-50 hover:text-navy-700"
               >
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path

@@ -134,18 +134,18 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
 
   const memberList = (ms: HouseholdMember[]) =>
     ms.length === 0 ? (
-      <p className="text-xs text-navy-400">No members linked yet.</p>
+      <p className="text-xs text-navy-600">No members linked yet.</p>
     ) : (
       <div className="divide-y divide-navy-100">
         {ms.map((m) => (
           <div key={m.customer_id} className="py-2.5 flex items-center justify-between gap-3">
             <div>
               <div className="text-xs font-bold text-navy-950">{m.name}</div>
-              <div className="text-[11px] text-navy-400">
+              <div className="text-xs text-navy-600">
                 {[m.email, m.mobile].filter(Boolean).join(" · ") || "No contact details"}
               </div>
             </div>
-            <span className="px-2 py-1 rounded-lg bg-navy-50 text-navy-700 text-[11px] font-semibold">
+            <span className="px-2 py-1 rounded-lg bg-navy-50 text-navy-700 text-xs font-semibold">
               {ROLE_LABELS[m.role] ?? m.role}
             </span>
           </div>
@@ -155,7 +155,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
 
   const oppList = (ops: Opportunity[]) =>
     ops.length === 0 ? (
-      <p className="text-xs text-navy-400">No opportunities for this household yet.</p>
+      <p className="text-xs text-navy-600">No opportunities for this household yet.</p>
     ) : (
       <div className="divide-y divide-navy-100">
         {ops.map((o) => (
@@ -166,7 +166,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
                 <div className="text-xs font-extrabold text-navy-950">{inr(o.amount / 100)}</div>
               )}
             </div>
-            <div className="text-[11px] text-navy-400 mt-0.5">
+            <div className="text-xs text-navy-600 mt-0.5">
               {o.product_line.replaceAll("_", " ")} · {o.stage.replaceAll("_", " ")} ·{" "}
               {o.probability}% probability
               {o.expected_close ? ` · closes ${formatDate(o.expected_close)}` : ""}
@@ -178,7 +178,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
 
   const timeline = (as: Activity[]) =>
     as.length === 0 ? (
-      <p className="text-xs text-navy-400">No activity recorded yet.</p>
+      <p className="text-xs text-navy-600">No activity recorded yet.</p>
     ) : (
       <ol className="relative border-l border-navy-100 ml-1.5 space-y-4">
         {as.map((a) => (
@@ -186,13 +186,13 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
             <span className="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-teal-500" />
             <div className="text-xs font-bold text-navy-950">
               {a.subject}
-              {a.done_at && <span className="ml-2 text-[10px] text-teal-700 font-semibold">Done</span>}
+              {a.done_at && <span className="ml-2 text-xs text-teal-700 font-semibold">Done</span>}
             </div>
-            <div className="text-[11px] text-navy-400">
+            <div className="text-xs text-navy-600">
               {a.kind} · {formatDate(a.created_at)}
               {a.due_at && !a.done_at ? ` · due ${formatDate(a.due_at)}` : ""}
             </div>
-            {a.body && <div className="text-[11px] text-navy-600 mt-1">{a.body}</div>}
+            {a.body && <div className="text-xs text-navy-600 mt-1">{a.body}</div>}
           </li>
         ))}
       </ol>
@@ -200,18 +200,18 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
 
   const caseList = (cs: CrmCase[]) =>
     cs.length === 0 ? (
-      <p className="text-xs text-navy-400">No open cases.</p>
+      <p className="text-xs text-navy-600">No open cases.</p>
     ) : (
       <div className="divide-y divide-navy-100">
         {cs.map((c) => (
           <div key={c.id} className="py-2.5">
             <div className="flex items-center justify-between gap-3">
               <div className="text-xs font-bold text-navy-950">{c.subject}</div>
-              <span className="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold">
+              <span className="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold">
                 {c.status.replaceAll("_", " ")}
               </span>
             </div>
-            <div className="text-[11px] text-navy-400 mt-0.5">
+            <div className="text-xs text-navy-600 mt-0.5">
               {c.category} · opened {formatDate(c.created_at)}
               {c.sla_due_at ? ` · SLA by ${formatDate(c.sla_due_at)}` : ""}
             </div>
@@ -226,7 +226,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
           <div>
             <h2 className="text-lg font-bold text-navy-950">{household.name}</h2>
-            <p className="text-[11px] text-navy-400">
+            <p className="text-xs text-navy-600">
               Created {formatDate(household.created_at)} · {members.length} member
               {members.length === 1 ? "" : "s"} · {opportunities.length} opportunit
               {opportunities.length === 1 ? "y" : "ies"}
@@ -235,18 +235,18 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
           </div>
           <form onSubmit={handleAddMember} className="flex flex-wrap items-end gap-2">
             <div>
-              <label className="block text-[11px] font-semibold text-navy-700 mb-1">
+              <label className="block text-xs font-semibold text-navy-700 mb-1">
                 Add member (customer ID)
               </label>
               <input
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
                 placeholder="Customer ID"
-                className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500 w-40"
+                className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500 w-40"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-navy-700 mb-1">Role</label>
+              <label className="block text-xs font-semibold text-navy-700 mb-1">Role</label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -284,7 +284,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <Section title="Insurance policies">
             {products.policies.length === 0 ? (
-              <p className="text-xs text-navy-400">No policies linked.</p>
+              <p className="text-xs text-navy-600">No policies linked.</p>
             ) : (
               <div className="divide-y divide-navy-100">
                 {products.policies.map((p) => (
@@ -292,7 +292,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
                     <div className="text-xs font-bold text-navy-950">
                       {p.insurer ?? "Policy"} · {p.policy_type?.replaceAll("_", " ") ?? "–"}
                     </div>
-                    <div className="text-[11px] text-navy-400">
+                    <div className="text-xs text-navy-600">
                       {p.policy_no ?? "No policy number"} · premium{" "}
                       {p.premium_amount != null ? inr(p.premium_amount / 100) : "–"} · renews{" "}
                       {formatDate(p.renewal_date)}
@@ -304,7 +304,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
           </Section>
           <Section title="Corporate FDs">
             {products.fds.length === 0 ? (
-              <p className="text-xs text-navy-400">No FDs linked.</p>
+              <p className="text-xs text-navy-600">No FDs linked.</p>
             ) : (
               <div className="divide-y divide-navy-100">
                 {products.fds.map((f) => (
@@ -312,7 +312,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
                     <div className="text-xs font-bold text-navy-950">
                       {f.company ?? "FD"} · {f.amount != null ? shortInr(f.amount / 100) : "–"}
                     </div>
-                    <div className="text-[11px] text-navy-400">
+                    <div className="text-xs text-navy-600">
                       matures {formatDate(f.maturity_date)} · {f.status}
                     </div>
                   </div>
@@ -322,7 +322,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
           </Section>
           <Section title="PMS accounts">
             {products.pms.length === 0 ? (
-              <p className="text-xs text-navy-400">No PMS accounts linked.</p>
+              <p className="text-xs text-navy-600">No PMS accounts linked.</p>
             ) : (
               <div className="divide-y divide-navy-100">
                 {products.pms.map((p) => (
@@ -330,7 +330,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
                     <div className="text-xs font-bold text-navy-950">
                       {p.provider ?? "PMS"} · {p.amount != null ? shortInr(p.amount / 100) : "–"}
                     </div>
-                    <div className="text-[11px] text-navy-400">{p.status}</div>
+                    <div className="text-xs text-navy-600">{p.status}</div>
                   </div>
                 ))}
               </div>
@@ -371,7 +371,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
                 {products.suitability.objectives}
               </div>
             )}
-            <div className="text-[11px] text-navy-400">
+            <div className="text-xs text-navy-600">
               Recorded {formatDate(products.suitability.recorded_at)}
             </div>
           </div>

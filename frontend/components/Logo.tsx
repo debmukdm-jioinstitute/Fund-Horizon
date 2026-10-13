@@ -53,7 +53,7 @@ export default function Logo({
       />
 
       {showBadge && (
-        <span className="rounded-full bg-teal-50 border border-teal-200/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal-800">
+        <span className="rounded-full bg-teal-50 border border-teal-200/70 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-teal-800">
           ARN 345439
         </span>
       )}

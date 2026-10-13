@@ -130,11 +130,11 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between pb-3 border-b border-sand-100">
             <div>
               <h2 className="text-sm font-semibold text-sand-950">Staff Account Management (Admin Scope)</h2>
-              <p className="text-[11px] text-sand-500">
+              <p className="text-xs text-sand-500">
                 Provision internal staff accounts. Zero external email dependency: temporary credentials displayed directly to operator.
               </p>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-200">
+            <span className="text-xs font-mono uppercase bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-200">
               Admin Exclusive
             </span>
           </div>
@@ -232,12 +232,12 @@ export default function SettingsPage() {
                     <td className="py-2.5 px-3 font-semibold text-sand-900 font-sans">{s.name}</td>
                     <td className="py-2.5 px-3 text-sand-700">{s.email}</td>
                     <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-sand-100 text-sand-700">
+                      <span className="px-2 py-0.5 rounded text-xs font-semibold uppercase bg-sand-100 text-sand-700">
                         {s.role}
                       </span>
                     </td>
                     <td className="py-2.5 px-3 text-emerald-700">{s.status || "active"}</td>
-                    <td className="py-2.5 px-3 text-sand-500 font-sans text-[11px]">
+                    <td className="py-2.5 px-3 text-sand-500 font-sans text-xs">
                       {s.is_staff ? "Yes (Staff)" : "Customer"}
                     </td>
                   </tr>
@@ -252,7 +252,7 @@ export default function SettingsPage() {
       <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5 space-y-4">
         <div className="pb-3 border-b border-sand-100">
           <h2 className="text-sm font-semibold text-sand-950">Active Watchlists</h2>
-          <p className="text-[11px] text-sand-500">
+          <p className="text-xs text-sand-500">
             Target instruments, strategies, or macro indicators pinned across research desks
           </p>
         </div>
@@ -326,13 +326,13 @@ export default function SettingsPage() {
                 watchlists.map((w) => (
                   <tr key={w.id} className="hover:bg-sand-50/60">
                     <td className="py-2.5 px-3 font-semibold text-sand-900 font-sans">{w.name}</td>
-                    <td className="py-2.5 px-3 uppercase text-[10px] text-sand-600">{w.item_type}</td>
+                    <td className="py-2.5 px-3 uppercase text-xs text-sand-600">{w.item_type}</td>
                     <td className="py-2.5 px-3 font-bold text-forest-800">{w.item_id}</td>
                     <td className="py-2.5 px-3 text-sand-500 font-sans">{w.scope || "shared"}</td>
                     <td className="py-2.5 px-3 text-right">
                       <button
                         onClick={() => handleDeleteWatchlist(w.id)}
-                        className="text-rose-600 hover:text-rose-800 font-medium text-[11px]"
+                        className="text-rose-600 hover:text-rose-800 font-medium text-xs"
                       >
                         Delete
                       </button>

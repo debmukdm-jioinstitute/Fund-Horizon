@@ -68,8 +68,8 @@ export function NewsFeed({ limit = 25, compact = false, showFilters = true }: { 
             <li key={n.id} className="p-3 hover:bg-sand-50/70">
               <a href={n.link} target="_blank" rel="noopener noreferrer" className="block">
                 <div className="text-xs font-semibold text-sand-900 leading-snug">{n.title}</div>
-                {!compact && n.summary && <p className="mt-1 text-[11px] text-sand-600 leading-relaxed line-clamp-2">{n.summary}</p>}
-                <div className="mt-1 text-[10px] font-mono text-sand-500">
+                {!compact && n.summary && <p className="mt-1 text-xs text-sand-600 leading-relaxed line-clamp-2">{n.summary}</p>}
+                <div className="mt-1 text-xs font-mono text-sand-500">
                   {n.source_name}
                   {n.published_at ? ` • ${ago(n.published_at)}` : ""}
                 </div>

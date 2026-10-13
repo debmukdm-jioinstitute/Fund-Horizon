@@ -130,22 +130,22 @@ export default function DataHealthPage() {
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="text-xs text-sand-500 font-medium">Ready Adapters</div>
               <div className="mt-1 text-2xl font-bold font-mono text-emerald-700">{health.summary.ready}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Passing verified schemas</div>
+              <div className="text-xs text-sand-500 mt-1">Passing verified schemas</div>
             </div>
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="text-xs text-sand-500 font-medium">Needs Key</div>
               <div className="mt-1 text-2xl font-bold font-mono text-amber-700">{health.summary.needs_key}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Free key registration required</div>
+              <div className="text-xs text-sand-500 mt-1">Free key registration required</div>
             </div>
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="text-xs text-sand-500 font-medium">Manual Import Only</div>
               <div className="mt-1 text-2xl font-bold font-mono text-blue-700">{health.summary.manual_only}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Private or unlicensed sources</div>
+              <div className="text-xs text-sand-500 mt-1">Private or unlicensed sources</div>
             </div>
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="text-xs text-sand-500 font-medium">Total Registered</div>
               <div className="mt-1 text-2xl font-bold font-mono text-sand-800">{health.summary.total}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Registered source adapters</div>
+              <div className="text-xs text-sand-500 mt-1">Registered source adapters</div>
             </div>
           </div>
 
@@ -154,7 +154,7 @@ export default function DataHealthPage() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-sm font-semibold text-sand-950">Source Adapters Registry</h2>
-                <p className="text-[11px] text-sand-500">Official documentation, license attribution & rate limits</p>
+                <p className="text-xs text-sand-500">Official documentation, license attribution & rate limits</p>
               </div>
             </div>
 
@@ -176,7 +176,7 @@ export default function DataHealthPage() {
                     <tr key={s.id} className="hover:bg-sand-50/60">
                       <td className="py-3 px-3">
                         <div className="font-semibold text-sand-900 font-sans">{s.name}</div>
-                        <div className="text-[11px] text-sand-500">
+                        <div className="text-xs text-sand-500">
                           {s.id} • v{s.adapter_version}
                         </div>
                       </td>
@@ -186,12 +186,12 @@ export default function DataHealthPage() {
                           freshness="current"
                         />
                       </td>
-                      <td className="py-3 px-3 text-sand-700 uppercase text-[10px]">{s.supported_frequency}</td>
+                      <td className="py-3 px-3 text-sand-700 uppercase text-xs">{s.supported_frequency}</td>
                       <td className="py-3 px-3 text-sand-700">{s.rate_budget}/hr</td>
-                      <td className="py-3 px-3 text-sand-500 text-[11px]">
+                      <td className="py-3 px-3 text-sand-500 text-xs">
                         {s.last_success_at ? s.last_success_at.slice(0, 16).replace("T", " ") : "Never"}
                       </td>
-                      <td className="py-3 px-3 max-w-xs truncate text-[11px] text-sand-600 font-sans" title={s.terms_notes}>
+                      <td className="py-3 px-3 max-w-xs truncate text-xs text-sand-600 font-sans" title={s.terms_notes}>
                         {s.terms_notes}
                       </td>
                       <td className="py-3 px-3 text-right">
@@ -199,7 +199,7 @@ export default function DataHealthPage() {
                           <button
                             onClick={() => handleRefresh(s.id)}
                             disabled={refreshingId === s.id}
-                            className="px-2.5 py-1 text-[11px] font-sans font-medium text-forest-700 hover:bg-forest-50 border border-forest-300 rounded-lg transition-colors disabled:opacity-50"
+                            className="px-2.5 py-1 text-xs font-sans font-medium text-forest-700 hover:bg-forest-50 border border-forest-300 rounded-lg transition-colors disabled:opacity-50"
                           >
                             {refreshingId === s.id ? "Fetching…" : "Trigger Sync"}
                           </button>
@@ -217,7 +217,7 @@ export default function DataHealthPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-sand-100">
               <div>
                 <h2 className="text-sm font-semibold text-sand-950">Validated CSV / XLSX Import Hub</h2>
-                <p className="text-[11px] text-sand-500">
+                <p className="text-xs text-sand-500">
                   Two-stage safe import: Preview with row-level validation → Atomic Commit. Defends against CSV formula injection.
                 </p>
               </div>
@@ -300,7 +300,7 @@ export default function DataHealthPage() {
                 </div>
 
                 {previewJob.fatal_error && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-rose-800 font-sans text-[11px]">
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-rose-800 font-sans text-xs">
                     {previewJob.fatal_error}
                   </div>
                 )}
@@ -309,7 +309,7 @@ export default function DataHealthPage() {
                   <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-rose-800 font-sans space-y-1">
                     <div className="font-semibold">Row Rejections:</div>
                     {previewJob.errors?.slice(0, 5).map((err: { row: number; error: string }, idx: number) => (
-                      <div key={idx} className="text-[11px] font-mono">
+                      <div key={idx} className="text-xs font-mono">
                         Row {err.row}: {err.error}
                       </div>
                     ))}

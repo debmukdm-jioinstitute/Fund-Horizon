@@ -41,18 +41,18 @@ function LeadCard({
   return (
     <div className="bg-white rounded-xl border border-navy-100 shadow-sm p-3.5 space-y-2">
       <div className="text-xs font-bold text-navy-950">{lead.name}</div>
-      <div className="text-[11px] text-navy-400">
+      <div className="text-xs text-navy-600">
         {[lead.email, lead.mobile].filter(Boolean).join(" · ") || "No contact details"}
       </div>
-      <div className="text-[11px] text-navy-500">
+      <div className="text-xs text-navy-500">
         Source: {lead.source.replaceAll("_", " ")}
       </div>
-      {lead.notes && <div className="text-[11px] text-navy-600">{lead.notes}</div>}
+      {lead.notes && <div className="text-xs text-navy-600">{lead.notes}</div>}
       <div className="flex items-center gap-2 pt-1">
         <select
           value={lead.status}
           onChange={(e) => onStatusChange(lead, e.target.value)}
-          className="text-[11px] font-semibold px-2 py-1 rounded-lg border border-navy-200 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="text-xs font-semibold px-2 py-1 rounded-lg border border-navy-200 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
         >
           {LEAD_STATUSES.map((s) => (
             <option key={s} value={s}>
@@ -64,7 +64,7 @@ function LeadCard({
           <button
             type="button"
             onClick={() => onConvert(lead)}
-            className="px-2.5 py-1 text-[11px] font-bold bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition"
+            className="px-2.5 py-1 text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition"
           >
             Convert
           </button>
@@ -192,20 +192,20 @@ export default function LeadsTab() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name *"
-            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             type="email"
-            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <input
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
             placeholder="Mobile"
-            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <select
             value={source}
@@ -230,7 +230,7 @@ export default function LeadsTab() {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Notes (optional)"
-          className="mt-3 w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="mt-3 w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         {createError && (
           <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
@@ -253,14 +253,14 @@ export default function LeadsTab() {
             <div key={status} className="bg-navy-50/60 rounded-2xl border border-navy-100 p-3 space-y-3">
               <div className="flex items-center justify-between px-1">
                 <span
-                  className={`px-2 py-1 rounded-lg border text-[11px] font-bold ${STATUS_STYLES[status]}`}
+                  className={`px-2 py-1 rounded-lg border text-xs font-bold ${STATUS_STYLES[status]}`}
                 >
                   {STATUS_LABELS[status]}
                 </span>
-                <span className="text-[11px] font-bold text-navy-500">{col.length}</span>
+                <span className="text-xs font-bold text-navy-500">{col.length}</span>
               </div>
               {col.length === 0 ? (
-                <div className="text-[11px] text-navy-400 text-center py-4">Empty</div>
+                <div className="text-xs text-navy-600 text-center py-4">Empty</div>
               ) : (
                 col.map((l) => (
                   <LeadCard
@@ -286,7 +286,7 @@ export default function LeadsTab() {
               <div className="space-y-3">
                 <div className="p-4 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900">
                   <div className="font-bold mb-1">Account and household created.</div>
-                  <div className="font-mono text-[11px] break-all">
+                  <div className="font-mono text-xs break-all">
                     Household ID: {convertResult.householdId}
                   </div>
                   {convertResult.tempPassword && (
@@ -295,7 +295,7 @@ export default function LeadsTab() {
                       <div className="font-mono font-bold text-sm break-all mt-1 select-all">
                         {convertResult.tempPassword}
                       </div>
-                      <div className="text-[11px] mt-1">
+                      <div className="text-xs mt-1">
                         The customer should set their own password after the first sign-in.
                       </div>
                     </div>
@@ -315,7 +315,7 @@ export default function LeadsTab() {
                   This creates a customer account, a household, and marks the lead as converted.
                 </p>
                 <div>
-                  <label className="block text-[11px] font-semibold text-navy-700 mb-1">
+                  <label className="block text-xs font-semibold text-navy-700 mb-1">
                     Household name
                   </label>
                   <input
@@ -325,8 +325,8 @@ export default function LeadsTab() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-navy-700 mb-1">
-                    Initial password <span className="font-normal text-navy-400">(optional — a temporary one is generated if left blank)</span>
+                  <label className="block text-xs font-semibold text-navy-700 mb-1">
+                    Initial password <span className="font-normal text-navy-600">(optional — a temporary one is generated if left blank)</span>
                   </label>
                   <input
                     value={password}

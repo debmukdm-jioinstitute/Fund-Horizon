@@ -56,7 +56,7 @@ export function StatusBadge({
     <div className={`flex flex-wrap items-center gap-2 text-xs font-mono ${className}`}>
       {/* Availability */}
       <span
-        className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-medium uppercase tracking-wider ${getAvailabilityColor(
+        className={`inline-flex items-center px-2 py-0.5 rounded-full border text-xs font-medium uppercase tracking-wider ${getAvailabilityColor(
           availability
         )}`}
       >
@@ -66,35 +66,35 @@ export function StatusBadge({
 
       {/* Freshness */}
       {freshness && (
-        <span className={`inline-flex items-center text-[11px] font-medium ${getFreshnessColor(freshness)}`}>
+        <span className={`inline-flex items-center text-xs font-medium ${getFreshnessColor(freshness)}`}>
           • {freshness.replace("_", " ")}
         </span>
       )}
 
       {/* Frequency */}
       {frequency && (
-        <span className="px-1.5 py-0.5 rounded bg-sand-100 text-sand-700 text-[10px] uppercase font-semibold">
+        <span className="px-1.5 py-0.5 rounded bg-sand-100 text-sand-700 text-xs uppercase font-semibold">
           {frequency}
         </span>
       )}
 
       {/* Units */}
       {units && (
-        <span className="text-sand-500 text-[11px]">
+        <span className="text-sand-500 text-xs">
           [{units}]
         </span>
       )}
 
       {/* Observation Time */}
       {asOf && (
-        <span className="text-sand-500 text-[11px]" title="Source observation time">
+        <span className="text-sand-500 text-xs" title="Source observation time">
           as-of: <span className="font-semibold text-sand-700">{asOf}</span>
         </span>
       )}
 
       {/* Source link */}
       {sourceName && (
-        <span className="text-sand-400 text-[11px]">
+        <span className="text-sand-500 text-xs">
           via{" "}
           {sourceUrl ? (
             <a

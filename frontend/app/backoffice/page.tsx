@@ -117,7 +117,7 @@ export default function BackofficeOverviewPage() {
         <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs hover:shadow-xs transition-shadow">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>USD / INR</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">ECB Ref</span>
+            <span className="font-mono text-xs bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">ECB Ref</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
             {fxRates["FX:USDINR"] ? `₹${fxRates["FX:USDINR"].toFixed(4)}` : "—"}
@@ -137,7 +137,7 @@ export default function BackofficeOverviewPage() {
         <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs hover:shadow-xs transition-shadow">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>IN - US 10Y Spread</span>
-            <span className="font-mono text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">Sovereign</span>
+            <span className="font-mono text-xs bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">Sovereign</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
             {spreads?.india_us_10y_bps !== undefined && spreads?.india_us_10y_bps !== null
@@ -158,7 +158,7 @@ export default function BackofficeOverviewPage() {
         <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs hover:shadow-xs transition-shadow">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>US VIX (Cboe)</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Implied Vol</span>
+            <span className="font-mono text-xs bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Implied Vol</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
             {volData["VOL:US:VIX"] ? volData["VOL:US:VIX"].toFixed(2) : "—"}
@@ -178,7 +178,7 @@ export default function BackofficeOverviewPage() {
         <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs hover:shadow-xs transition-shadow">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>US 10Y - 2Y Curve Slope</span>
-            <span className="font-mono text-[10px] bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Slope</span>
+            <span className="font-mono text-xs bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Slope</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
             {spreads?.us_10y_2y_bps !== undefined && spreads?.us_10y_2y_bps !== null
@@ -254,11 +254,11 @@ export default function BackofficeOverviewPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-semibold text-sand-900">{briefing.data.title}</h2>
-                <span className="px-2 py-0.5 text-[10px] font-mono bg-emerald-50 text-emerald-800 rounded border border-emerald-200">
+                <span className="px-2 py-0.5 text-xs font-mono bg-emerald-50 text-emerald-800 rounded border border-emerald-200">
                   Zero Paid AI
                 </span>
               </div>
-              <div className="text-[11px] text-sand-500 mt-0.5 font-mono">{briefing.data.method_version}</div>
+              <div className="text-xs text-sand-500 mt-0.5 font-mono">{briefing.data.method_version}</div>
             </div>
             <Link
               href="/backoffice/research"
@@ -296,7 +296,7 @@ export default function BackofficeOverviewPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-sand-900">Currency Reference Rates</h2>
-              <p className="text-[11px] text-sand-500">ECB official reference rates (daily fixing, not live executable quotes)</p>
+              <p className="text-xs text-sand-500">ECB official reference rates (daily fixing, not live executable quotes)</p>
             </div>
             <StatusBadge
               availability="ready"
@@ -359,7 +359,7 @@ export default function BackofficeOverviewPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-sand-900">Source Health & Quotas</h2>
-              <p className="text-[11px] text-sand-500">Registered primary adapters and availability state</p>
+              <p className="text-xs text-sand-500">Registered primary adapters and availability state</p>
             </div>
             <Link
               href="/backoffice/data-health"
@@ -371,19 +371,19 @@ export default function BackofficeOverviewPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center mb-4">
             <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
               <div className="text-xl font-bold text-emerald-800 font-mono">{sourcesSummary.ready}</div>
-              <div className="text-[10px] text-emerald-600 font-semibold uppercase mt-0.5">Ready</div>
+              <div className="text-xs text-emerald-600 font-semibold uppercase mt-0.5">Ready</div>
             </div>
             <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
               <div className="text-xl font-bold text-amber-800 font-mono">{sourcesSummary.needs_key}</div>
-              <div className="text-[10px] text-amber-600 font-semibold uppercase mt-0.5">Needs Key</div>
+              <div className="text-xs text-amber-600 font-semibold uppercase mt-0.5">Needs Key</div>
             </div>
             <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
               <div className="text-xl font-bold text-blue-800 font-mono">{sourcesSummary.manual_only}</div>
-              <div className="text-[10px] text-blue-600 font-semibold uppercase mt-0.5">Manual Only</div>
+              <div className="text-xs text-blue-600 font-semibold uppercase mt-0.5">Manual Only</div>
             </div>
             <div className="p-3 rounded-xl bg-sand-100 border border-sand-200">
               <div className="text-xl font-bold text-sand-700 font-mono">{sourcesSummary.total}</div>
-              <div className="text-[10px] text-sand-500 font-semibold uppercase mt-0.5">Total Registered</div>
+              <div className="text-xs text-sand-500 font-semibold uppercase mt-0.5">Total Registered</div>
             </div>
           </div>
           <div className="text-xs text-sand-600 space-y-1 bg-sand-50 p-3 rounded-xl border border-sand-200">

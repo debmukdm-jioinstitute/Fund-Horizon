@@ -182,7 +182,7 @@ export function RiskAndFunds({ funds, houses }: { funds: number | null; houses: 
             ))}
           </div>
         </div>
-        <p className="mt-3 text-[10px] text-slate-500">Company names and logos belong to their owners.</p>
+        <p className="mt-3 text-xs text-slate-500">Company names and logos belong to their owners.</p>
       </Reveal>
     </div>
   );
@@ -203,8 +203,8 @@ function Ring({ pct, label, sub, color, delay }: { pct: number; label: string; s
         />
       </svg>
       <p className="-mt-11 mb-6 text-sm font-extrabold text-navy-950"><CountUp to={pct} suffix="%" duration={1.3} /></p>
-      <p className="text-[11px] font-bold text-navy-900">{label}</p>
-      <p className="text-[10px] text-slate-500">{sub}</p>
+      <p className="text-xs font-bold text-navy-900">{label}</p>
+      <p className="text-xs text-slate-500">{sub}</p>
     </div>
   );
 }

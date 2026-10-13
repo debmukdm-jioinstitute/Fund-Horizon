@@ -103,10 +103,10 @@ export default function MutualFundsTrackerPage() {
                     <td className="py-3 px-4 font-bold text-forest-800">{s.scheme_code}</td>
                     <td className="py-3 px-4 font-sans max-w-md">
                       <div className="font-semibold text-sand-900 leading-snug">{s.scheme_name}</div>
-                      <div className="text-[11px] text-sand-500">{[s.amc_name, s.category].filter(Boolean).join(" • ") || "—"}</div>
+                      <div className="text-xs text-sand-500">{[s.amc_name, s.category].filter(Boolean).join(" • ") || "—"}</div>
                     </td>
                     <td className="py-3 px-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                      <span className={`px-2 py-0.5 rounded text-xs font-semibold uppercase ${
                         s.plan?.toLowerCase() === "direct"
                           ? "bg-purple-50 text-purple-700 border border-purple-200"
                           : "bg-blue-50 text-blue-700 border border-blue-200"
@@ -117,13 +117,13 @@ export default function MutualFundsTrackerPage() {
                     <td className="py-3 px-3 font-bold text-sand-950">
                       ₹{s.latest_nav ? Number(s.latest_nav).toFixed(4) : "—"}
                     </td>
-                    <td className="py-3 px-3 text-sand-600 text-[11px]">{s.nav_date || "—"}</td>
+                    <td className="py-3 px-3 text-sand-600 text-xs">{s.nav_date || "—"}</td>
                     <td className="py-3 px-3 text-sand-700" title={s.ter_as_of ? `AMFI TER as of ${s.ter_as_of}` : undefined}>{s.ter_pct !== undefined && s.ter_pct !== null ? `${Number(s.ter_pct).toFixed(2)}%` : "—"}</td>
-                    <td className="py-3 px-3 text-[11px] text-sand-500 font-mono">
+                    <td className="py-3 px-3 text-xs text-sand-500 font-mono">
                       {s.isin_growth || s.isin_div || "—"}
                     </td>
                     <td className="py-3 px-3">
-                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700">
+                      <span className="inline-flex items-center gap-1 text-xs text-emerald-700">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
                         Active
                       </span>

@@ -103,7 +103,7 @@ export default function MicroFundamentalsPage() {
               <div className="mt-1 text-2xl font-bold text-sand-950 font-mono tabular-nums">
                 {fmtCr(issuerData.revenue_crore)}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">Basis: {issuerData.reporting_scope || "—"}</div>
+              <div className="mt-2 text-xs text-sand-500 font-mono">Basis: {issuerData.reporting_scope || "—"}</div>
             </div>
 
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
@@ -111,19 +111,19 @@ export default function MicroFundamentalsPage() {
               <div className="mt-1 text-2xl font-bold font-mono tabular-nums text-emerald-700">
                 {issuerData.ebitda_margin_pct !== undefined ? `${issuerData.ebitda_margin_pct}%` : "—"}
               </div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">PBT + interest + depreciation − other income</div>
+              <div className="mt-2 text-xs text-sand-500 font-mono">PBT + interest + depreciation − other income</div>
             </div>
 
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="text-xs text-sand-500 font-medium">Net Profit (PAT)</div>
               <div className="mt-1 text-2xl font-bold text-sand-950 font-mono tabular-nums">{fmtCr(issuerData.pat_crore)}</div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">Latest reported quarter</div>
+              <div className="mt-2 text-xs text-sand-500 font-mono">Latest reported quarter</div>
             </div>
 
             <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
               <div className="text-xs text-sand-500 font-medium">Quarter Ended</div>
               <div className="mt-1 text-2xl font-bold font-mono tabular-nums text-forest-800">{issuerData.fiscal_period || "—"}</div>
-              <div className="mt-2 text-[11px] text-sand-500 font-mono">Filing ref: {issuerData.filing_id || "—"}</div>
+              <div className="mt-2 text-xs text-sand-500 font-mono">Filing ref: {issuerData.filing_id || "—"}</div>
             </div>
           </div>
 
@@ -150,7 +150,7 @@ export default function MicroFundamentalsPage() {
                       <td className="py-2.5 px-3 text-sand-900">{fmtNum(q.ebitda_crore)}</td>
                       <td className="py-2.5 px-3 text-sand-700">{q.ebitda_margin_pct !== undefined ? `${q.ebitda_margin_pct}%` : "—"}</td>
                       <td className="py-2.5 px-3 text-emerald-700 font-semibold">{fmtNum(q.pat_crore)}</td>
-                      <td className="py-2.5 px-3 text-sand-500 text-[11px]">{q.filing_id || "—"}</td>
+                      <td className="py-2.5 px-3 text-sand-500 text-xs">{q.filing_id || "—"}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -113,7 +113,7 @@ export default function ResearchPage() {
         <form onSubmit={handleCreateNote} className="p-5 bg-white rounded-2xl border border-sand-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-sand-100">
             <h2 className="text-xs font-semibold text-sand-900 uppercase tracking-wider">New Research Note</h2>
-            <span className="text-[10px] text-sand-500 font-mono">Staff Internal</span>
+            <span className="text-xs text-sand-500 font-mono">Staff Internal</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -192,11 +192,11 @@ export default function ResearchPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-semibold text-sand-900">{briefing.data.title}</h2>
-                <span className="px-2 py-0.5 text-[10px] font-mono bg-emerald-50 text-emerald-800 rounded border border-emerald-200">
+                <span className="px-2 py-0.5 text-xs font-mono bg-emerald-50 text-emerald-800 rounded border border-emerald-200">
                   Zero Paid LLM
                 </span>
               </div>
-              <div className="text-[11px] text-sand-500 mt-0.5 font-mono">
+              <div className="text-xs text-sand-500 mt-0.5 font-mono">
                 {briefing.data.method_version} • Generated {briefing.data.as_of}
               </div>
             </div>
@@ -217,7 +217,7 @@ export default function ResearchPage() {
             ))}
           </ul>
 
-          <div className="text-[11px] text-sand-500 pt-3 border-t border-sand-100 italic">
+          <div className="text-xs text-sand-500 pt-3 border-t border-sand-100 italic">
             {briefing.data.disclaimer}
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function ResearchPage() {
       <div className="space-y-3">
         <div>
           <h2 className="text-sm font-semibold text-sand-900">Live Market & Regulatory Headlines</h2>
-          <p className="text-[11px] text-sand-500">RBI, SEBI, PIB, ET, Mint, Business Standard, BusinessLine, Moneycontrol • open RSS, refreshed every 10 min</p>
+          <p className="text-xs text-sand-500">RBI, SEBI, PIB, ET, Mint, Business Standard, BusinessLine, Moneycontrol • open RSS, refreshed every 10 min</p>
         </div>
         <NewsFeed limit={30} />
       </div>
@@ -245,14 +245,14 @@ export default function ResearchPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-sand-900">{n.title}</span>
-                  <span className="text-[10px] font-mono uppercase bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">
+                  <span className="text-xs font-mono uppercase bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">
                     {n.target_type}: {n.target_id}
                   </span>
                 </div>
-                <span className="text-[11px] text-sand-500 font-mono">{n.created_at?.slice(0, 10)}</span>
+                <span className="text-xs text-sand-500 font-mono">{n.created_at?.slice(0, 10)}</span>
               </div>
               <p className="text-xs text-sand-700 leading-relaxed font-sans">{n.content}</p>
-              <div className="text-[10px] text-sand-400 font-mono">Author: {n.author_name || "Staff Analyst"}</div>
+              <div className="text-xs text-sand-500 font-mono">Author: {n.author_name || "Staff Analyst"}</div>
             </div>
           ))
         )}

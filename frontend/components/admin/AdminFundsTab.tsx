@@ -106,7 +106,7 @@ export default function AdminFundsTab() {
               className="w-full pl-9 pr-3 py-2 text-xs border border-navy-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-navy-900"
             />
             <svg
-              className="w-4 h-4 text-navy-400 absolute left-3 top-2.5"
+              className="w-4 h-4 text-navy-600 absolute left-3 top-2.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -182,7 +182,7 @@ export default function AdminFundsTab() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-[11px]">
+              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs">
                 <tr>
                   <th
                     onClick={() => handleSort("scheme_name")}
@@ -232,9 +232,9 @@ export default function AdminFundsTab() {
                       <div className="font-bold text-navy-950 truncate" title={s.scheme_name}>
                         {s.scheme_name}
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-navy-400 font-mono">
+                      <div className="flex items-center gap-2 mt-0.5 text-xs text-navy-600 font-mono">
                         <span>Code: {s.scheme_code}</span>
-                        <span className={`px-1.5 py-0.2 rounded font-semibold text-[10px] ${s.plan === "Direct" ? "bg-teal-50 text-teal-700" : "bg-navy-50 text-navy-700"}`}>
+                        <span className={`px-1.5 py-0.2 rounded font-semibold text-xs ${s.plan === "Direct" ? "bg-teal-50 text-teal-700" : "bg-navy-50 text-navy-700"}`}>
                           {s.plan}
                         </span>
                       </div>
@@ -244,7 +244,7 @@ export default function AdminFundsTab() {
                       <div className="text-navy-900 font-medium truncate" title={s.category}>
                         {s.category}
                       </div>
-                      <div className="text-[11px] text-navy-500 truncate" title={s.amc}>
+                      <div className="text-xs text-navy-500 truncate" title={s.amc}>
                         {s.amc}
                       </div>
                     </td>
@@ -259,7 +259,7 @@ export default function AdminFundsTab() {
                           {pct(s.ret_1y)}
                         </span>
                       ) : (
-                        <span className="text-navy-400">–</span>
+                        <span className="text-navy-600">–</span>
                       )}
                     </td>
 
@@ -269,7 +269,7 @@ export default function AdminFundsTab() {
                           {pct(s.cagr_3y)}
                         </span>
                       ) : (
-                        <span className="text-navy-400">–</span>
+                        <span className="text-navy-600">–</span>
                       )}
                     </td>
 
@@ -277,17 +277,17 @@ export default function AdminFundsTab() {
                       {s.cagr_5y !== undefined && s.cagr_5y !== null ? (
                         <span className="text-navy-900 font-semibold">{pct(s.cagr_5y)}</span>
                       ) : (
-                        <span className="text-navy-400">–</span>
+                        <span className="text-navy-600">–</span>
                       )}
                     </td>
 
                     <td className="px-3 py-3.5 text-right font-mono">
                       {s.sharpe_3y !== undefined && s.sharpe_3y !== null ? (
-                        <span className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${s.sharpe_3y > 1 ? "bg-teal-50 text-teal-800" : "bg-navy-50 text-navy-700"}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-xs font-semibold ${s.sharpe_3y > 1 ? "bg-teal-50 text-teal-800" : "bg-navy-50 text-navy-700"}`}>
                           {s.sharpe_3y.toFixed(2)}
                         </span>
                       ) : (
-                        <span className="text-navy-400">–</span>
+                        <span className="text-navy-600">–</span>
                       )}
                     </td>
 

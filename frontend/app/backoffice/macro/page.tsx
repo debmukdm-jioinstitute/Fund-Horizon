@@ -70,14 +70,14 @@ export default function MacroYieldsPage() {
         <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>India – US 10Y Spread</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Benchmark</span>
+            <span className="font-mono text-xs bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Benchmark</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
             {yieldsData.spreads.in_us_10y_bps !== undefined
               ? `${yieldsData.spreads.in_us_10y_bps > 0 ? "+" : ""}${yieldsData.spreads.in_us_10y_bps.toFixed(1)} bps`
               : "—"}
           </div>
-          <div className="mt-2 text-[11px] text-sand-500">
+          <div className="mt-2 text-xs text-sand-500">
             India 10Y G-Sec vs US 10Y Constant Maturity
           </div>
           <div className="mt-3">
@@ -94,14 +94,14 @@ export default function MacroYieldsPage() {
         <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>US 10Y – 2Y Slope</span>
-            <span className="font-mono text-[10px] bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Term Slope</span>
+            <span className="font-mono text-xs bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Term Slope</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
             {yieldsData.spreads.us_10y_2y_bps !== undefined
               ? `${yieldsData.spreads.us_10y_2y_bps > 0 ? "+" : ""}${yieldsData.spreads.us_10y_2y_bps.toFixed(1)} bps`
               : "—"}
           </div>
-          <div className="mt-2 text-[11px] text-sand-500">
+          <div className="mt-2 text-xs text-sand-500">
             DGS10 minus DGS2 constant maturity yields
           </div>
           <div className="mt-3">
@@ -118,14 +118,14 @@ export default function MacroYieldsPage() {
         <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>India 10Y – 2Y Slope</span>
-            <span className="font-mono text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded">G-Sec Term</span>
+            <span className="font-mono text-xs bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded">G-Sec Term</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
             {yieldsData.spreads.in_10y_2y_bps !== undefined
               ? `${yieldsData.spreads.in_10y_2y_bps > 0 ? "+" : ""}${yieldsData.spreads.in_10y_2y_bps.toFixed(1)} bps`
               : "—"}
           </div>
-          <div className="mt-2 text-[11px] text-sand-500">
+          <div className="mt-2 text-xs text-sand-500">
             India 10Y minus 2Y G-Sec yield
           </div>
           <div className="mt-3">
@@ -146,7 +146,7 @@ export default function MacroYieldsPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-sand-900">India G-Sec Curve</h2>
-              <p className="text-[11px] text-sand-500">Indicative OTC quotes (scraped, daily) • FRED/OECD monthly fallback</p>
+              <p className="text-xs text-sand-500">Indicative OTC quotes (scraped, daily) • FRED/OECD monthly fallback</p>
             </div>
             <StatusBadge
               availability={yieldsData.curves.IN && Object.keys(yieldsData.curves.IN).length > 0 ? "ready" : "unavailable"}
@@ -171,8 +171,8 @@ export default function MacroYieldsPage() {
                   <tr key={tenor}>
                     <td className="py-2.5 px-3 font-semibold text-sand-900">{tenor}</td>
                     <td className="py-2.5 px-3 text-sand-950 font-bold">{val.value.toFixed(2)}%</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.observed_at}</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.source}</td>
+                    <td className="py-2.5 px-3 text-sand-500 text-xs">{val.observed_at}</td>
+                    <td className="py-2.5 px-3 text-sand-500 text-xs">{val.source}</td>
                   </tr>
                 ))
               ) : (
@@ -191,7 +191,7 @@ export default function MacroYieldsPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-sand-900">US Treasury Par Yield Curve</h2>
-              <p className="text-[11px] text-sand-500">Official daily par yields • U.S. Department of the Treasury</p>
+              <p className="text-xs text-sand-500">Official daily par yields • U.S. Department of the Treasury</p>
             </div>
             <StatusBadge
               availability={yieldsData.curves.US && Object.keys(yieldsData.curves.US).length > 0 ? "ready" : "unavailable"}
@@ -216,8 +216,8 @@ export default function MacroYieldsPage() {
                   <tr key={tenor}>
                     <td className="py-2.5 px-3 font-semibold text-sand-900">{tenor}</td>
                     <td className="py-2.5 px-3 text-sand-950 font-bold">{val.value.toFixed(2)}%</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.observed_at}</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.source}</td>
+                    <td className="py-2.5 px-3 text-sand-500 text-xs">{val.observed_at}</td>
+                    <td className="py-2.5 px-3 text-sand-500 text-xs">{val.source}</td>
                   </tr>
                 ))
               ) : (

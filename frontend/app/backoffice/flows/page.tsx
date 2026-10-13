@@ -70,7 +70,7 @@ export default function FlowsPage() {
         <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>FII / FPI Net Flow</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Latest Session</span>
+            <span className="font-mono text-xs bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Latest Session</span>
           </div>
           <div className={`mt-2 text-2xl font-bold font-mono tabular-nums ${
             flows.fii_net_crore !== undefined && flows.fii_net_crore >= 0 ? "text-emerald-700" : "text-rose-700"
@@ -79,7 +79,7 @@ export default function FlowsPage() {
               ? `${flows.fii_net_crore >= 0 ? "+" : ""}${flows.fii_net_crore.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr`
               : "—"}
           </div>
-          <div className="mt-2 text-[11px] text-sand-500">
+          <div className="mt-2 text-xs text-sand-500">
             Foreign portfolio investment in cash market
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function FlowsPage() {
         <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>DII Net Flow</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Latest Session</span>
+            <span className="font-mono text-xs bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Latest Session</span>
           </div>
           <div className={`mt-2 text-2xl font-bold font-mono tabular-nums ${
             flows.dii_net_crore !== undefined && flows.dii_net_crore >= 0 ? "text-emerald-700" : "text-rose-700"
@@ -97,7 +97,7 @@ export default function FlowsPage() {
               ? `${flows.dii_net_crore >= 0 ? "+" : ""}${flows.dii_net_crore.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr`
               : "—"}
           </div>
-          <div className="mt-2 text-[11px] text-sand-500">
+          <div className="mt-2 text-xs text-sand-500">
             Domestic institutional investment (MFs, Insurance, Banks)
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function FlowsPage() {
         <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
             <span>7-Day Net Institutional Flow</span>
-            <span className="font-mono text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">Rolling Window</span>
+            <span className="font-mono text-xs bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">Rolling Window</span>
           </div>
           <div className={`mt-2 text-2xl font-bold font-mono tabular-nums ${
             flows.cumulative_7d_net_crore !== undefined && flows.cumulative_7d_net_crore >= 0 ? "text-emerald-700" : "text-rose-700"
@@ -115,7 +115,7 @@ export default function FlowsPage() {
               ? `${flows.cumulative_7d_net_crore >= 0 ? "+" : ""}${flows.cumulative_7d_net_crore.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr`
               : "—"}
           </div>
-          <div className="mt-2 text-[11px] text-sand-500">
+          <div className="mt-2 text-xs text-sand-500">
             Cumulative sum of consistent daily sessions
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function FlowsPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-sm font-semibold text-sand-950">Daily Institutional Activity Ledger</h2>
-            <p className="text-[11px] text-sand-500">Reported cash-market activity • Missing days are not zero flows</p>
+            <p className="text-xs text-sand-500">Reported cash-market activity • Missing days are not zero flows</p>
           </div>
           <StatusBadge
             availability="ready"
@@ -160,14 +160,14 @@ export default function FlowsPage() {
                     <tr key={idx} className="hover:bg-sand-50/60">
                       <td className="py-2.5 px-3 font-semibold text-sand-900">{row.report_date}</td>
                       <td className="py-2.5 px-3 text-sand-800 font-sans">{row.category}</td>
-                      <td className="py-2.5 px-3 text-sand-600 text-[11px]">{row.segment}</td>
+                      <td className="py-2.5 px-3 text-sand-600 text-xs">{row.segment}</td>
                       <td className="py-2.5 px-3 text-sand-700">{buyCr}</td>
                       <td className="py-2.5 px-3 text-sand-700">{sellCr}</td>
                       <td className={`py-2.5 px-3 font-bold ${netCr >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
                         {netCr >= 0 ? "+" : ""}{netCr.toFixed(1)} Cr
                       </td>
                       <td className="py-2.5 px-3">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                        <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
                           row.provisional
                             ? "bg-amber-50 text-amber-700 border border-amber-200"
                             : "bg-emerald-50 text-emerald-700 border border-emerald-200"

@@ -20,7 +20,7 @@ const PAGE = 100;
 const fmtAum = (v?: number) => (v !== undefined && v > 0 ? `₹${v.toLocaleString("en-IN", { maximumFractionDigits: 0 })}` : "—");
 
 function Pct({ v, bold = false }: { v?: number; bold?: boolean }) {
-  if (v === undefined) return <span className="text-sand-400">—</span>;
+  if (v === undefined) return <span className="text-sand-500">—</span>;
   return <span className={`${v >= 0 ? "text-emerald-700" : "text-rose-700"} ${bold ? "font-semibold" : ""}`}>{`${v > 0 ? "+" : ""}${v.toFixed(2)}%`}</span>;
 }
 
@@ -212,11 +212,11 @@ export default function PmsTrackerPage() {
                     ) : (
                       filteredProviders.slice(0, visible).map((p, idx) => (
                         <tr key={p.apmi_id} className="hover:bg-sand-50/60">
-                          <td className="py-2.5 px-3 text-sand-400">{idx + 1}</td>
+                          <td className="py-2.5 px-3 text-sand-500">{idx + 1}</td>
                           <td className="py-2.5 px-3 font-sans font-semibold text-sand-900">{p.name}</td>
                           <td className="py-2.5 px-3 text-sand-800">{p.strategy_count}</td>
                           <td className="py-2.5 px-3 text-sand-900">{fmtAum(p.total_aum_crore)}</td>
-                          <td className="py-2.5 px-3 font-sans text-[11px] text-sand-600">{p.strategy_types.join(", ") || "—"}</td>
+                          <td className="py-2.5 px-3 font-sans text-xs text-sand-600">{p.strategy_types.join(", ") || "—"}</td>
                           <td className="py-2.5 px-3 font-sans">
                             {p.strategy_count > 0 ? (
                               <button
@@ -225,12 +225,12 @@ export default function PmsTrackerPage() {
                                   setTab("strategies");
                                   setVisible(PAGE);
                                 }}
-                                className="text-forest-700 underline text-[11px] font-medium"
+                                className="text-forest-700 underline text-xs font-medium"
                               >
                                 View strategies →
                               </button>
                             ) : (
-                              <span className="text-[11px] text-sand-500">No strategies reported for {asOn ?? "this month"}</span>
+                              <span className="text-xs text-sand-500">No strategies reported for {asOn ?? "this month"}</span>
                             )}
                           </td>
                         </tr>
@@ -275,11 +275,11 @@ export default function PmsTrackerPage() {
                             ) : (
                               <span className="font-semibold text-sand-900">{s.strategy_name}</span>
                             )}
-                            <div className="text-[11px] text-sand-500">{s.provider_name}</div>
+                            <div className="text-xs text-sand-500">{s.provider_name}</div>
                           </td>
-                          <td className="py-2.5 px-3 font-sans text-[11px] text-sand-700">
+                          <td className="py-2.5 px-3 font-sans text-xs text-sand-700">
                             {s.strategy_type || "—"}
-                            <div className="text-sand-400">{s.service_type === "Non-Discretionary" ? "Non-disc." : s.service_type === "Discretionary" ? "Disc." : s.service_type}</div>
+                            <div className="text-sand-500">{s.service_type === "Non-Discretionary" ? "Non-disc." : s.service_type === "Discretionary" ? "Disc." : s.service_type}</div>
                           </td>
                           <td className="py-2.5 px-3 text-sand-900 font-semibold">{fmtAum(s.aum_crore)}</td>
                           <td className="py-2.5 px-3"><Pct v={s.return_1m_pct} /></td>
@@ -304,7 +304,7 @@ export default function PmsTrackerPage() {
               </div>
             )}
           </div>
-          <p className="text-[11px] text-sand-500">
+          <p className="text-xs text-sand-500">
             Returns are as reported by each provider to APMI (returns over 1 year are annualised). Past performance does not indicate future results.
           </p>
         </div>
@@ -328,7 +328,7 @@ export default function PmsTrackerPage() {
                 Track Client Account
               </button>
             </div>
-            <p className="text-[11px] text-sand-500 mt-2 font-sans">
+            <p className="text-xs text-sand-500 mt-2 font-sans">
               Role-based security: RMs can only inspect assigned clients. Operations and Analysts are scoped according to backoffice permissions.
             </p>
           </div>
@@ -348,7 +348,7 @@ export default function PmsTrackerPage() {
                   <div className="mt-1 text-2xl font-bold text-sand-950 font-mono tabular-nums">
                     ₹{accountTracker.current_valuation_paise ? (accountTracker.current_valuation_paise / 100).toLocaleString("en-IN") : "—"}
                   </div>
-                  <div className="mt-2 text-[11px] text-sand-500">
+                  <div className="mt-2 text-xs text-sand-500">
                     Latest dated portfolio valuation (not invested principal)
                   </div>
                 </div>
@@ -360,7 +360,7 @@ export default function PmsTrackerPage() {
                       ? `${accountTracker.xirr.xirr_pct > 0 ? "+" : ""}${accountTracker.xirr.xirr_pct.toFixed(2)}%`
                       : "Diagnostic"}
                   </div>
-                  <div className="mt-2 text-[11px] text-sand-500">
+                  <div className="mt-2 text-xs text-sand-500">
                     {accountTracker.xirr?.status || "Cashflow dates & terminal value"}
                   </div>
                 </div>
@@ -372,7 +372,7 @@ export default function PmsTrackerPage() {
                       ? `${accountTracker.modified_dietz.return_pct > 0 ? "+" : ""}${accountTracker.modified_dietz.return_pct.toFixed(2)}%`
                       : "—"}
                   </div>
-                  <div className="mt-2 text-[11px] text-sand-500">
+                  <div className="mt-2 text-xs text-sand-500">
                     Flow-weighted timing estimate
                   </div>
                 </div>
@@ -382,7 +382,7 @@ export default function PmsTrackerPage() {
                   <div className="mt-1 text-2xl font-bold font-mono tabular-nums text-sand-900">
                     ₹{accountTracker.hwm_fee?.estimated_fee_paise ? (accountTracker.hwm_fee.estimated_fee_paise / 100).toLocaleString("en-IN") : "0"}
                   </div>
-                  <div className="mt-2 text-[11px] text-sand-500">
+                  <div className="mt-2 text-xs text-sand-500">
                     {accountTracker.hwm_fee?.hwm_exceeded ? "HWM exceeded • Labeled estimate" : "Below High-Water Mark"}
                   </div>
                 </div>
@@ -393,7 +393,7 @@ export default function PmsTrackerPage() {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-sm font-semibold text-sand-900">Current Portfolio Holdings</h2>
-                    <p className="text-[11px] text-sand-500">
+                    <p className="text-xs text-sand-500">
                       Coverage: {accountTracker.holdings_coverage?.total_coverage_pct ?? "—"}% of holdings priced
                     </p>
                   </div>

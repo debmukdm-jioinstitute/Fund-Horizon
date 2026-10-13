@@ -370,17 +370,17 @@ export default function CasUpload() {
                             </span>
                             <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
                               {h.scheme_code && (
-                                <span className="inline-flex items-center rounded bg-teal-50 px-1.5 py-0.5 text-[11px] font-semibold text-teal-800 border border-teal-200">
+                                <span className="inline-flex items-center rounded bg-teal-50 px-1.5 py-0.5 text-xs font-semibold text-teal-800 border border-teal-200">
                                   AMFI: {h.scheme_code}
                                 </span>
                               )}
                               {h.isin && (
-                                <span className="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-mono text-slate-700 border border-slate-200">
+                                <span className="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-slate-700 border border-slate-200">
                                   ISIN: {h.isin}
                                 </span>
                               )}
                               {h.asset_class && (
-                                <span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-700 border border-blue-200 capitalize">
+                                <span className="inline-flex items-center rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 border border-blue-200 capitalize">
                                   {h.asset_class}
                                 </span>
                               )}
@@ -422,7 +422,7 @@ export default function CasUpload() {
                             {formatCurrency(h.current_value)}
                           </div>
                           {h.weight_pct > 0 && (
-                            <span className="text-[11px] text-navy-500 font-sans block">
+                            <span className="text-xs text-navy-500 font-sans block">
                               {h.weight_pct.toFixed(1)}% weight
                             </span>
                           )}
@@ -453,7 +453,7 @@ export default function CasUpload() {
                               {formatPercent(h.cagr_3y)} 3Y
                             </span>
                           ) : (
-                            <span className="text-xs text-navy-400">N/A</span>
+                            <span className="text-xs text-navy-600">N/A</span>
                           )}
                         </td>
                       </tr>

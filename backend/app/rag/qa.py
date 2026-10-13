@@ -9,10 +9,10 @@ import math
 from typing import Any
 
 from app.config.disclosures import RAG_DISCLAIMER
+from app.config import load_assumptions
 from app.data.loader import load_metrics
 from app.rag.store import search_schemes
 
-AS_OF_DATE = "2026-10-09"
 
 
 def fmt_pct(val: float | None) -> str:
@@ -84,7 +84,7 @@ def answer_query(
             "query": query,
             "answer": "No mutual fund schemes matched your query. Please search by scheme name, category, or AMC.",
             "sources": [],
-            "as_of": AS_OF_DATE,
+            "as_of": load_assumptions()["data_asof"],
             "disclaimer": RAG_DISCLAIMER,
         }
 
@@ -134,7 +134,7 @@ def answer_query(
     lines = [
         f"### Performance Overview for Query: \"{query}\"",
         "",
-        f"Found {len(schemes_data)} relevant scheme(s) based on your query and filters. All figures as of **{AS_OF_DATE}**:",
+        f"Found {len(schemes_data)} relevant scheme(s) based on your query and filters. All figures as of **{load_assumptions()["data_asof"]}**:",
         "",
     ]
 
@@ -159,6 +159,6 @@ def answer_query(
         "query": query,
         "answer": answer_text,
         "sources": sources,
-        "as_of": AS_OF_DATE,
+        "as_of": load_assumptions()["data_asof"],
         "disclaimer": RAG_DISCLAIMER,
     }

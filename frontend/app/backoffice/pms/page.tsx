@@ -6,7 +6,6 @@ import {
   getPmsAccountTracker,
   PmsStrategyItem,
   PmsAccountTrackerData,
-  FH_RECOMMENDED_BENCHMARK,
 } from "@/lib/backoffice";
 import { ApiError } from "@/lib/api";
 import { formatCurrencyPaiseToINR, formatCrore, formatISTDate } from "@/lib/terminal-format";
@@ -552,40 +551,6 @@ export default function PmsTrackerPage() {
                         );
                       })}
 
-                      {isRecommended && fhSubTab === "returns" && (
-                        <tr className="bg-[#FAF3E0] dark:bg-[#2A2315] font-medium border-t-2 border-[#D97706]/60">
-                          <td className="text-center font-mono text-[11px] text-[#92400E] dark:text-[#FBBF24]">★</td>
-                          <td>
-                            <div className="font-semibold text-[#92400E] dark:text-[#FBBF24]">
-                              {FH_RECOMMENDED_BENCHMARK.name}
-                            </div>
-                            <div className="text-[11px] text-[#92400E]/80 dark:text-[#FBBF24]/80">
-                              Official Benchmark Index Comparison
-                            </div>
-                          </td>
-                          <td className="text-right font-medium">
-                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_1m_pct} unit="%" />
-                          </td>
-                          <td className="text-right font-medium">
-                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_3m_pct} unit="%" />
-                          </td>
-                          <td className="text-right font-medium">
-                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_6m_pct} unit="%" />
-                          </td>
-                          <td className="text-right font-medium">
-                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_1y_pct} unit="%" />
-                          </td>
-                          <td className="text-right font-medium">
-                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_3y_cagr_pct} unit="%" />
-                          </td>
-                          <td className="text-right font-medium">
-                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_5y_cagr_pct} unit="%" />
-                          </td>
-                          <td className="text-right font-medium">
-                            <SignedValue value={FH_RECOMMENDED_BENCHMARK.return_since_inception_pct} unit="%" />
-                          </td>
-                        </tr>
-                      )}
                     </>
                   )}
                 </tbody>

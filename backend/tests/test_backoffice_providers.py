@@ -108,6 +108,11 @@ def test_ecb_all_four_cross_rates():
     expected_usdjpy = 163.20 / 1.0925
     assert abs(cross["FX:USDJPY"] - expected_usdjpy) < 1e-6
 
+    # 5. INR crosses straight from the euro quotes; JPY per 100 yen
+    assert cross["FX:EURINR"] == 91.85
+    assert abs(cross["FX:GBPINR"] - 91.85 / 0.8350) < 1e-6
+    assert abs(cross["FX:JPYINR"] - 91.85 / 163.20 * 100) < 1e-6
+
 
 def test_ecb_xml_parsing():
     provider = EcbProvider()
@@ -126,9 +131,9 @@ def test_ecb_xml_parsing():
     res = provider.parse_xml(xml_data)
     assert res.success is True
     assert res.status == "ready"
-    assert len(res.observations) == 4
+    assert len(res.observations) == 7
     inst_ids = {o.instrument_id for o in res.observations}
-    assert inst_ids == {"FX:EURUSD", "FX:USDINR", "FX:GBPUSD", "FX:USDJPY"}
+    assert inst_ids == {"FX:EURUSD", "FX:USDINR", "FX:GBPUSD", "FX:USDJPY", "FX:EURINR", "FX:GBPINR", "FX:JPYINR"}
 
 
 def test_cboe_vix_csv_parsing():

@@ -53,6 +53,14 @@ def compute_cross_rates(raw_rates_per_eur: dict[str, float]) -> dict[str, float]
     if jpy and usd and usd > 0:
         results["FX:USDJPY"] = jpy / usd
 
+    # INR crosses derived from the same ECB euro reference quotes (JPY quoted per 100 yen, the INR market convention).
+    if inr:
+        results["FX:EURINR"] = inr
+        if gbp and gbp > 0:
+            results["FX:GBPINR"] = inr / gbp
+        if jpy and jpy > 0:
+            results["FX:JPYINR"] = inr / jpy * 100
+
     return results
 
 

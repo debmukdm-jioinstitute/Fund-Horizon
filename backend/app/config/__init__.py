@@ -6,6 +6,7 @@ import json
 from functools import lru_cache
 from pathlib import Path
 
+import pandas as pd
 import yaml
 
 CONFIG_DIR = Path(__file__).parent
@@ -29,7 +30,14 @@ def deep_merge(base: dict, overrides: dict | None) -> dict:
 
 @lru_cache(maxsize=1)
 def _assumptions_default() -> dict:
-    return _load_yaml("assumptions.yaml")
+    data = _load_yaml("assumptions.yaml")
+    # The data date is whatever the dataset really contains (latest NAV date), never a typed-in constant.
+    from app.data.loader import load_metrics
+
+    latest = pd.to_datetime(load_metrics()["last_nav_date"], errors="coerce").max()
+    if pd.notna(latest):
+        data["data_asof"] = latest.strftime("%Y-%m-%d")
+    return data
 
 
 def load_assumptions(overrides: dict | None = None) -> dict:

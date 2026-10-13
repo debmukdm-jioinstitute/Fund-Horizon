@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import io
+import re
 import secrets
 from datetime import UTC, datetime
 from typing import Annotated, Any
@@ -57,6 +58,23 @@ def backoffice_overview(staff: Annotated[dict, Depends(require_staff)]):
         "availability": "ready",
         "freshness": "current",
         "method_version": "1.0.0",
+    }
+
+
+@router.get("/series/{instrument_id}")
+def backoffice_series(
+    instrument_id: str,
+    staff: Annotated[dict, Depends(require_staff)],
+    limit: int = Query(2000, ge=1, le=5000),
+):
+    """Stored observation history for one overview indicator (FX, yields, VIX), oldest first."""
+    if not re.fullmatch(r"(FX|VOL|YIELD):[A-Z]{2,6}(:[A-Z0-9]{2,8})?", instrument_id):
+        raise HTTPException(404, "Unknown series")
+    rows = _REPO.get_observations_series(instrument_id, limit=limit)
+    return {
+        "data": [{"observed_at": r["observed_at"], "value": r["value_numeric"]} for r in rows],
+        "as_of": rows[-1]["observed_at"] if rows else None,
+        "availability": "ready" if rows else "unavailable",
     }
 
 

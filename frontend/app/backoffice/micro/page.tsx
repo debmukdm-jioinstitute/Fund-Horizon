@@ -129,7 +129,7 @@ export default function MicroFundamentalsPage() {
                 <tr>
                   <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Debt-to-Equity Ratio</td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                    {issuerData.debt_equity_ratio !== undefined ? issuerData.debt_equity_ratio.toFixed(2) : "0.00"}
+                    {issuerData.debt_equity_ratio !== undefined ? issuerData.debt_equity_ratio.toFixed(2) : "—"}
                   </td>
                   <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
                     {issuerData.net_debt_crore ? `Net Debt: ${formatCrore(issuerData.net_debt_crore)}` : "Net Cash Positive"}

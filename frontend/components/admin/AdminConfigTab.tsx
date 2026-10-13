@@ -85,13 +85,13 @@ export default function AdminConfigTab() {
             <div className="py-2.5 flex items-center justify-between">
               <span className="text-navy-600 font-medium">Headline Inflation</span>
               <span className="font-bold text-navy-900 bg-navy-50 px-2 py-0.5 rounded font-mono">
-                {pct(inflation.headline || 0.06)}
+                {inflation.headline != null ? pct(inflation.headline) : "—"}
               </span>
             </div>
             <div className="py-2.5 flex items-center justify-between">
               <span className="text-navy-600 font-medium">Education Inflation</span>
               <span className="font-bold text-navy-900 bg-navy-50 px-2 py-0.5 rounded font-mono">
-                {pct(inflation.education || 0.08)}
+                {inflation.education != null ? pct(inflation.education) : "—"}
               </span>
             </div>
             <div className="py-2.5 flex items-center justify-between">

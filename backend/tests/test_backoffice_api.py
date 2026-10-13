@@ -52,6 +52,17 @@ def test_backoffice_overview_api(client):
     assert "derivatives" in data
 
 
+def test_backoffice_series_api(client):
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    r = client.get("/api/backoffice/series/FX:USDINR")
+    assert r.status_code == 200
+    body = r.json()
+    assert isinstance(body["data"], list)
+    assert body["availability"] in {"ready", "unavailable"}
+    assert client.get("/api/backoffice/series/MF:12345").status_code == 404
+
+
 def test_backoffice_yields_api(client):
     sid = _create_staff("analyst")
     _login_staff(client, sid)

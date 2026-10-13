@@ -1,3 +1,4 @@
+from app.config import load_assumptions
 
 from app.rag import answer_query, ingest_documents, search_schemes
 from app.rag.store import parse_frontmatter
@@ -27,7 +28,7 @@ Body text here.
 def test_rag_answer_query_templated():
     res = answer_query("Large Cap Funds", filters={"plan": "Regular"}, top_k=3)
     assert res["query"] == "Large Cap Funds"
-    assert "2026-10-09" in res["as_of"]
+    assert load_assumptions()["data_asof"] in res["as_of"]
     assert "ARN 345439" in res["disclaimer"]
     assert len(res["sources"]) > 0
     assert "Performance Overview" in res["answer"]
@@ -77,7 +78,7 @@ def test_rag_api_endpoints(client):
     assert "answer" in data
     assert "sources" in data
     assert len(data["sources"]) > 0
-    assert data["as_of"] == "2026-10-09"
+    assert data["as_of"] == load_assumptions()["data_asof"]
 
     # POST /api/rag/ask
     post_res = client.post(

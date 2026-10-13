@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   getBackofficeOverview,
   getDeterministicBriefing,
@@ -11,6 +12,43 @@ import {
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
+import IndicatorDrawer, { IndicatorSpec } from "@/components/backoffice/IndicatorDrawer";
+
+const IND: Record<string, IndicatorSpec> = {
+  usdinr: { title: "USD / INR Reference Rate", a: "FX:USDINR", unit: "", decimals: 4 },
+  eurinr: { title: "EUR / INR Reference Rate", a: "FX:EURINR", unit: "", decimals: 4 },
+  gbpinr: { title: "GBP / INR Reference Rate", a: "FX:GBPINR", unit: "", decimals: 4 },
+  jpyinr: { title: "JPY / INR Reference Rate (100 JPY)", a: "FX:JPYINR", unit: "", decimals: 4 },
+  in10: { title: "India 10Y Benchmark G-Sec", a: "YIELD:IN:10Y", unit: "%" },
+  in2: { title: "India 2Y Sovereign Bond", a: "YIELD:IN:2Y", unit: "%" },
+  us10: { title: "US 10Y Treasury Benchmark", a: "YIELD:US:10Y", unit: "%" },
+  us2: { title: "US 2Y Treasury Yield", a: "YIELD:US:2Y", unit: "%" },
+  inSlope: { title: "India 10Y - 2Y Curve Slope", a: "YIELD:IN:10Y", b: "YIELD:IN:2Y", scale: 100, unit: " bps", decimals: 0 },
+  usSlope: { title: "US 10Y - 2Y Curve Slope", a: "YIELD:US:10Y", b: "YIELD:US:2Y", scale: 100, unit: " bps", decimals: 0 },
+  inUs: { title: "India - US 10Y Sovereign Spread", a: "YIELD:IN:10Y", b: "YIELD:US:10Y", scale: 100, unit: " bps", decimals: 0 },
+  inVix: { title: "India VIX (NSE Volatility Index)", a: "VOL:IN:INDIAVIX", unit: "" },
+  usVix: { title: "Cboe US VIX", a: "VOL:US:VIX", unit: "" },
+};
+
+// Row label -> what a click opens: an indicator history, or another backoffice page.
+const ROW_TARGET: Record<string, keyof typeof IND | string> = {
+  "USD / INR Reference Rate": "usdinr",
+  "India 10Y Benchmark G-Sec": "in10",
+  "India 2Y Sovereign Bond": "in2",
+  "India 10Y - 2Y Curve Slope": "inSlope",
+  "India - US 10Y Sovereign Spread": "inUs",
+  "India VIX (NSE Volatility Index)": "inVix",
+  "US 10Y Treasury Benchmark": "us10",
+  "US 2Y Treasury Yield": "us2",
+  "US 10Y - 2Y Curve Slope": "usSlope",
+  "EUR / INR Reference Rate": "eurinr",
+  "GBP / INR Reference Rate": "gbpinr",
+  "JPY / INR Reference Rate (100 JPY)": "jpyinr",
+  "Cboe US VIX": "usVix",
+  "FII Net Equity Investment (Cr)": "/backoffice/flows",
+  "DII Net Equity Investment (Cr)": "/backoffice/flows",
+  "Upstream Feed Operational Health": "/backoffice/data-health",
+};
 
 export default function BackofficeOverviewPage() {
   const [data, setData] = useState<BackofficeEnvelope<MarketOverviewData> | null>(null);
@@ -19,6 +57,19 @@ export default function BackofficeOverviewPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefreshedAt, setLastRefreshedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [indicator, setIndicator] = useState<IndicatorSpec | null>(null);
+  const router = useRouter();
+
+  const rowProps = (label: string) => {
+    const target = ROW_TARGET[label];
+    const open = () => (target.startsWith("/") ? router.push(target) : setIndicator(IND[target]));
+    return {
+      onClick: open,
+      onKeyDown: (e: React.KeyboardEvent) => e.key === "Enter" && open(),
+      tabIndex: 0,
+      className: "cursor-pointer hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] focus:outline-none focus-visible:bg-[#F7F9FB] dark:focus-visible:bg-[#171E27]",
+    };
+  };
 
   const loadData = useCallback(async (isManualRefresh = false) => {
     try {
@@ -85,32 +136,20 @@ export default function BackofficeOverviewPage() {
   // Resilient accessors supporting both flat and nested backend models
   const fxRates: Record<string, number> =
     overview.fx_reference_rates || overview.fx?.rates || {};
-  const fxAsOf: string =
-    overview.fx_as_of || overview.fx?.as_of || "2026-10-13";
+  const fxAsOf: string | undefined = overview.fx_as_of || overview.fx?.as_of || undefined;
 
-  const volData: Record<string, number> =
-    overview.volatility && typeof overview.volatility === "object" && !("vix" in overview.volatility)
-      ? (overview.volatility as Record<string, number>)
-      : {
-          "VOL:US:VIX": (overview.volatility as { vix?: number })?.vix ?? 15.21,
-          "VOL:IN:INDIAVIX": (overview.volatility as { india_vix?: number })?.india_vix ?? 13.5,
-        };
-  const volAsOf: string =
-    overview.vol_as_of || (overview.volatility as { as_of?: string })?.as_of || "2026-10-13";
-
-  const spreads = overview.yield_spreads || {
-    india_us_10y_bps: overview.yields?.india_us_spread_bps ?? 280.0,
-    us_10y_2y_bps: overview.yields?.us_slope_bps ?? -34.0,
-    india_10y_2y_bps: overview.yields?.india_slope_bps ?? 13.0,
+  // Only what the collectors actually stored: a missing value renders as "—", never a placeholder number.
+  const vol = (overview.volatility ?? {}) as { vix?: number | null; india_vix?: number | null; vix_as_of?: string | null; india_vix_as_of?: string | null; as_of?: string };
+  const volData: Record<string, number | undefined> = {
+    "VOL:US:VIX": vol.vix ?? undefined,
+    "VOL:IN:INDIAVIX": vol.india_vix ?? undefined,
   };
+  const volAsOf: string | undefined = overview.vol_as_of || vol.as_of || undefined;
 
-  const sourcesSummary = overview.sources_summary || {
-    total: overview.sources_health?.total ?? 7,
-    ready: overview.sources_health?.ready ?? 4,
-    degraded: 0,
-    needs_key: 1,
-    manual_only: 2,
-  };
+  const spreads = overview.yield_spreads ?? {};
+  const flows = overview.flows;
+  const sourcesSummary = overview.sources_health;
+  const dash = (v: number | undefined | null, f: (n: number) => string) => (v === undefined || v === null ? "—" : f(v));
 
   const formattedObservationDate = formatISTDate(data?.as_of || overview.generated_at);
 
@@ -205,10 +244,10 @@ export default function BackofficeOverviewPage() {
                   Indian Markets & Sovereign Rates
                 </td>
               </tr>
-              <tr>
+              <tr {...rowProps("USD / INR Reference Rate")}>
                 <td className="font-medium">USD / INR Reference Rate</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {fxRates["FX:USDINR"] ? `₹${fxRates["FX:USDINR"].toFixed(4)}` : "—"}
+                  {dash(fxRates["FX:USDINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
                   —
@@ -218,53 +257,49 @@ export default function BackofficeOverviewPage() {
                   <a href="https://www.ecb.europa.eu" target="_blank" rel="noreferrer" className="hover:underline">ECB</a>
                 </td>
               </tr>
-              <tr>
+              <tr {...rowProps("India 10Y Benchmark G-Sec")}>
                 <td className="font-medium">India 10Y Benchmark G-Sec</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {overview.yields?.in_10y !== undefined ? `${overview.yields.in_10y.toFixed(2)}%` : "7.08%"}
+                  {dash(overview.yields?.in_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of || fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL / CCIL</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Trading Economics (indicative)</td>
               </tr>
-              <tr>
+              <tr {...rowProps("India 2Y Sovereign Bond")}>
                 <td className="font-medium">India 2Y Sovereign Bond</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {overview.yields?.in_2y !== undefined ? `${overview.yields.in_2y.toFixed(2)}%` : "6.95%"}
+                  {dash(overview.yields?.in_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of || fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL / CCIL</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Trading Economics (indicative)</td>
               </tr>
-              <tr>
+              <tr {...rowProps("India 10Y - 2Y Curve Slope")}>
                 <td className="font-medium">India 10Y - 2Y Curve Slope</td>
                 <td className="text-right">
                   <SignedValue value={spreads.india_10y_2y_bps} unit="bps" />
                 </td>
-                <td className="text-right">
-                  <SignedValue value={spreads.india_10y_2y_bps} unit="bps" />
-                </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
+                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Calculated</td>
               </tr>
-              <tr>
+              <tr {...rowProps("India - US 10Y Sovereign Spread")}>
                 <td className="font-medium">India - US 10Y Sovereign Spread</td>
                 <td className="text-right">
                   <SignedValue value={spreads.india_us_10y_bps} unit="bps" />
                 </td>
-                <td className="text-right">
-                  <SignedValue value={spreads.india_us_10y_bps} unit="bps" />
-                </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL / FRED</td>
+                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Calculated</td>
               </tr>
-              <tr>
+              <tr {...rowProps("India VIX (NSE Volatility Index)")}>
                 <td className="font-medium">India VIX (NSE Volatility Index)</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {volData["VOL:IN:INDIAVIX"] ? volData["VOL:IN:INDIAVIX"].toFixed(2) : "13.50"}
+                  {dash(volData["VOL:IN:INDIAVIX"], (n) => n.toFixed(2))}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(volAsOf)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate((vol.india_vix_as_of ?? volAsOf))}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
               </tr>
 
@@ -274,69 +309,67 @@ export default function BackofficeOverviewPage() {
                   Global & Macro Benchmarks
                 </td>
               </tr>
-              <tr>
+              <tr {...rowProps("US 10Y Treasury Benchmark")}>
                 <td className="font-medium">US 10Y Treasury Benchmark</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {overview.yields?.us_10y !== undefined ? `${overview.yields.us_10y.toFixed(2)}%` : "4.28%"}
+                  {dash(overview.yields?.us_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of || fxAsOf)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED</td>
               </tr>
-              <tr>
+              <tr {...rowProps("US 2Y Treasury Yield")}>
                 <td className="font-medium">US 2Y Treasury Yield</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {overview.yields?.us_2y !== undefined ? `${overview.yields.us_2y.toFixed(2)}%` : "4.62%"}
+                  {dash(overview.yields?.us_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of || fxAsOf)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED</td>
               </tr>
-              <tr>
+              <tr {...rowProps("US 10Y - 2Y Curve Slope")}>
                 <td className="font-medium">US 10Y - 2Y Curve Slope</td>
                 <td className="text-right">
                   <SignedValue value={spreads.us_10y_2y_bps} unit="bps" />
                 </td>
-                <td className="text-right">
-                  <SignedValue value={spreads.us_10y_2y_bps} unit="bps" />
-                </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
+                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(overview.yields?.as_of)}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED</td>
               </tr>
-              <tr>
+              <tr {...rowProps("EUR / INR Reference Rate")}>
                 <td className="font-medium">EUR / INR Reference Rate</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {fxRates["FX:EURINR"] ? `₹${fxRates["FX:EURINR"].toFixed(4)}` : "—"}
+                  {dash(fxRates["FX:EURINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">ECB</td>
               </tr>
-              <tr>
+              <tr {...rowProps("GBP / INR Reference Rate")}>
                 <td className="font-medium">GBP / INR Reference Rate</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {fxRates["FX:GBPINR"] ? `₹${fxRates["FX:GBPINR"].toFixed(4)}` : "—"}
+                  {dash(fxRates["FX:GBPINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">ECB</td>
               </tr>
-              <tr>
+              <tr {...rowProps("JPY / INR Reference Rate (100 JPY)")}>
                 <td className="font-medium">JPY / INR Reference Rate (100 JPY)</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {fxRates["FX:JPYINR"] ? `₹${fxRates["FX:JPYINR"].toFixed(4)}` : "—"}
+                  {dash(fxRates["FX:JPYINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">ECB</td>
               </tr>
-              <tr>
+              <tr {...rowProps("Cboe US VIX")}>
                 <td className="font-medium">Cboe US VIX</td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
-                  {volData["VOL:US:VIX"] ? volData["VOL:US:VIX"].toFixed(2) : "15.21"}
+                  {dash(volData["VOL:US:VIX"], (n) => n.toFixed(2))}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(volAsOf)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate((vol.vix_as_of ?? volAsOf))}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Cboe</td>
               </tr>
 
@@ -346,41 +379,33 @@ export default function BackofficeOverviewPage() {
                   Institutional Flows & System Telemetry
                 </td>
               </tr>
-              <tr>
-                <td className="font-medium">FII Net Equity Investment (Est. Cr)</td>
+              <tr {...rowProps("FII Net Equity Investment (Cr)")}>
+                <td className="font-medium">FII Net Equity Investment (Cr)</td>
                 <td className="text-right">
-                  <SignedValue value={-1245.5} unit="₹ Cr" />
+                  <SignedValue value={flows?.fii_net} unit="₹ Cr" />
                 </td>
-                <td className="text-right">
-                  <SignedValue value={-1245.5} unit="₹ Cr" />
-                </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                  <Link href="/backoffice/flows" className="hover:underline">NSE / NSDL</Link>
-                </td>
+                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
               </tr>
-              <tr>
-                <td className="font-medium">DII Net Equity Investment (Est. Cr)</td>
+              <tr {...rowProps("DII Net Equity Investment (Cr)")}>
+                <td className="font-medium">DII Net Equity Investment (Cr)</td>
                 <td className="text-right">
-                  <SignedValue value={2140.8} unit="₹ Cr" />
+                  <SignedValue value={flows?.dii_net} unit="₹ Cr" />
                 </td>
-                <td className="text-right">
-                  <SignedValue value={2140.8} unit="₹ Cr" />
-                </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(fxAsOf)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                  <Link href="/backoffice/flows" className="hover:underline">NSE</Link>
-                </td>
+                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
               </tr>
-              <tr>
+              <tr {...rowProps("Upstream Feed Operational Health")}>
                 <td className="font-medium">Upstream Feed Operational Health</td>
                 <td className="text-right font-medium text-[#087744] dark:text-[#58D6A0]">
-                  {sourcesSummary.ready} / {sourcesSummary.total} Ready
+                  {sourcesSummary ? `${sourcesSummary.ready} / ${sourcesSummary.total} Ready` : "—"}
                 </td>
                 <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
-                  {sourcesSummary.needs_key ? `${sourcesSummary.needs_key} Needs Key` : "Optimal"}
+                  {sourcesSummary ? (sourcesSummary.status === "healthy" ? "Healthy" : "Degraded") : "—"}
                 </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Active</td>
+                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formattedObservationDate}</td>
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
                   <Link href="/backoffice/data-health" className="hover:underline">Data Health →</Link>
                 </td>
@@ -389,6 +414,7 @@ export default function BackofficeOverviewPage() {
           </table>
         </div>
       </div>
+      <IndicatorDrawer spec={indicator} onClose={() => setIndicator(null)} />
     </div>
   );
 }

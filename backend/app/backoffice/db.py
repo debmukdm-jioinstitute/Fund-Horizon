@@ -416,6 +416,9 @@ def _seed_default_registries(conn: sqlite3.Connection) -> None:
         ("FX:EURUSD", "ECB", "EURUSD", "EUR/USD Reference Rate", "currency", "USD", "EUR", "USD", "usd_per_eur", "SRC_ECB", "EUR/USD", "spot_reference", "2000-01-01", None),
         ("FX:GBPUSD", "ECB", "GBPUSD", "GBP/USD Reference Rate", "currency", "USD", "GBP", "USD", "usd_per_gbp", "SRC_ECB", "GBP/USD", "spot_reference", "2000-01-01", None),
         ("FX:USDJPY", "ECB", "USDJPY", "USD/JPY Reference Rate", "currency", "JPY", "USD", "JPY", "jpy_per_usd", "SRC_ECB", "USD/JPY", "spot_reference", "2000-01-01", None),
+        ("FX:EURINR", "ECB", "EURINR", "EUR/INR Reference Rate", "currency", "INR", "EUR", "INR", "inr_per_eur", "SRC_ECB", "EUR/INR", "spot_reference", "2000-01-01", None),
+        ("FX:GBPINR", "ECB", "GBPINR", "GBP/INR Reference Rate", "currency", "INR", "GBP", "INR", "inr_per_gbp", "SRC_ECB", "GBP/INR", "spot_reference", "2000-01-01", None),
+        ("FX:JPYINR", "ECB", "JPYINR", "JPY/INR Reference Rate (100 JPY)", "currency", "INR", "JPY", "INR", "inr_per_100_jpy", "SRC_ECB", "JPY/INR", "spot_reference", "2000-01-01", None),
         # US yields
         ("YIELD:US:10Y", "FRED", "US10Y", "US 10-Year Treasury Yield", "fixed_income", "USD", None, None, "percent", "SRC_FRED", "DGS10", "constant_maturity", "1962-01-01", None),
         ("YIELD:US:2Y", "FRED", "US2Y", "US 2-Year Treasury Yield", "fixed_income", "USD", None, None, "percent", "SRC_FRED", "DGS2", "constant_maturity", "1976-01-01", None),

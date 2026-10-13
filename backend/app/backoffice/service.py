@@ -85,7 +85,7 @@ class BackofficeService:
         if _WARM_CACHE and now < _WARM_CACHE_EXPIRY:
             return _WARM_CACHE
 
-        fx_rates, fx_as_of = self._latest(("FX:USDINR", "FX:EURUSD", "FX:GBPUSD", "FX:USDJPY"))
+        fx_rates, fx_as_of = self._latest(("FX:USDINR", "FX:EURUSD", "FX:GBPUSD", "FX:USDJPY", "FX:EURINR", "FX:GBPINR", "FX:JPYINR"))
         vol_data, vol_as_of = self._latest(("VOL:US:VIX", "VOL:IN:INDIAVIX"))
         _, us_vix_as_of = self._latest(("VOL:US:VIX",))
         _, in_vix_as_of = self._latest(("VOL:IN:INDIAVIX",))

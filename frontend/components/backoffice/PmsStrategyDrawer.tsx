@@ -84,14 +84,14 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
     return i === 0 || historyView === "monthly" || (historyView === "quarterly" ? m % 3 === 0 : m === 3);
   });
 
-  const horizons: { label: string; period: string; val: number | undefined; bmk?: number }[] = [
-    { label: "1 Month", period: "Short-term", val: strategy.return_1m_pct, bmk: strategy.is_fh_recommended ? 10.38 : undefined },
-    { label: "3 Month", period: "Quarterly", val: strategy.return_3m_pct, bmk: strategy.is_fh_recommended ? -1.73 : undefined },
-    { label: "6 Month", period: "Half-yearly", val: strategy.return_6m_pct, bmk: strategy.is_fh_recommended ? -4.33 : undefined },
-    { label: "1 Year", period: "Annual", val: strategy.return_1y_pct, bmk: strategy.is_fh_recommended ? 3.64 : undefined },
-    { label: "3 Year CAGR", period: "Annualized", val: strategy.return_3y_cagr_pct, bmk: strategy.is_fh_recommended ? 14.94 : undefined },
-    { label: "5 Year CAGR", period: "Annualized", val: strategy.return_5y_cagr_pct, bmk: strategy.is_fh_recommended ? 13.88 : undefined },
-    { label: "Since Inception", period: "Full Track Record", val: strategy.return_since_inception_pct, bmk: strategy.is_fh_recommended ? 14.86 : undefined },
+  const horizons: { label: string; period: string; val: number | undefined }[] = [
+    { label: "1 Month", period: "Short-term", val: strategy.return_1m_pct },
+    { label: "3 Month", period: "Quarterly", val: strategy.return_3m_pct },
+    { label: "6 Month", period: "Half-yearly", val: strategy.return_6m_pct },
+    { label: "1 Year", period: "Annual", val: strategy.return_1y_pct },
+    { label: "3 Year CAGR", period: "Annualized", val: strategy.return_3y_cagr_pct },
+    { label: "5 Year CAGR", period: "Annualized", val: strategy.return_5y_cagr_pct },
+    { label: "Since Inception", period: "Full Track Record", val: strategy.return_since_inception_pct },
   ];
 
   return (
@@ -237,17 +237,10 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                     <th>Horizon</th>
                     <th>Type</th>
                     <th className="text-right">Return</th>
-                    {strategy.is_fh_recommended && (
-                      <>
-                        <th className="text-right">Benchmark (BSE 500)</th>
-                        <th className="text-right">Alpha (Spread)</th>
-                      </>
-                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {horizons.map((h, i) => {
-                    const alpha = (h.val !== undefined && h.bmk !== undefined) ? (h.val - h.bmk) : undefined;
                     return (
                       <tr key={i}>
                         <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{h.label}</td>
@@ -255,16 +248,6 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                         <td className="text-right font-medium">
                           <SignedValue value={h.val} unit="%" />
                         </td>
-                        {strategy.is_fh_recommended && (
-                          <>
-                            <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
-                              <SignedValue value={h.bmk} unit="%" />
-                            </td>
-                            <td className="text-right font-medium">
-                              <SignedValue value={alpha} unit="%" />
-                            </td>
-                          </>
-                        )}
                       </tr>
                     );
                   })}

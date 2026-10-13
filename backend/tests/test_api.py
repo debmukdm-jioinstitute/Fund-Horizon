@@ -5,6 +5,8 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
+
+from app.config import load_assumptions
 from fastapi.testclient import TestClient
 
 from app.db import sqlite
@@ -34,7 +36,7 @@ def test_health_and_meta(client):
     r = client.get("/healthz")
     assert r.status_code == 200 and r.json()["eligible_funds"] > 1000
     m = client.get("/api/meta").json()
-    assert m["data_asof"] == "2026-10-09"
+    assert m["data_asof"] == load_assumptions()["data_asof"]
     assert "ARN 345439" in m["disclosures"]["arn"]
     assert len(m["bands"]) == 5
 
@@ -221,7 +223,8 @@ def test_fund_detail_direct_and_ineligible(client):
     r_direct = client.get("/api/funds/135762")
     assert r_direct.status_code == 404
     assert "Direct plans are not offered" in r_direct.json()["detail"]
-    assert "Regular equivalent 135759" in r_direct.json()["detail"]
+    # AMFI lists two identical Regular twins for this scheme; either is a valid pointer.
+    assert any(f"Regular equivalent {c}" in r_direct.json()["detail"] for c in ("135759", "135766"))
 
     # Ineligible plan due to data quality (nav_shock)
     r_inel = client.get("/api/funds/133867")

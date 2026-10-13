@@ -29,6 +29,26 @@ class ScreeningService:
         self.repo = repo or BackofficeRepository()
         self.cfg = load_screening()
 
+    def _default_filters(self, **over: Any) -> dict[str, Any]:
+        """Funnel defaults straight from screening.yaml, so UI, presets and API agree."""
+        c = self.cfg
+        return {
+            "min_tenure_years": c.get("min_tenure_years", 3),
+            "bounds": {k: dict(v) for k, v in c.get("bounds_defaults", {}).items()},
+            "quartiles_action": c.get("quartiles", {}).get("action", [2, 3]),
+            "include_missing": True,
+            **over,
+        }
+
+    def _builtin_presets(self) -> list[dict[str, Any]]:
+        """Preset = yaml defaults overlaid with the preset's own settings (bounds merged per metric)."""
+        out = []
+        for p in self.cfg.get("presets", []):
+            f = dict(p["filters"])
+            bounds = {**self._default_filters()["bounds"], **f.pop("bounds", {})}
+            out.append({"id": p["id"], "name": p["name"], "filters": self._default_filters(**f, bounds=bounds)})
+        return out
+
     def get_screening_metrics(
         self,
         cat: str | None = None,
@@ -83,6 +103,7 @@ class ScreeningService:
                 "rf_source": rf_src,
                 "benchmark_policy": "category_median",
                 "ratios": self.cfg.get("ratios", []),
+                "defaults": self._default_filters(),
                 "rows": rows,
                 "facets": {"amcs": all_amcs, "cats": all_cats},
                 "total": len(rows),
@@ -99,7 +120,7 @@ class ScreeningService:
         """Execute screening funnel on S0 universe and attach PMS matches."""
         conn = self.repo._conn()
         try:
-            builtin = {p["id"]: p["filters"] for p in self.cfg.get("presets", [])}
+            builtin = {p["id"]: p["filters"] for p in self._builtin_presets()}
             if preset_id in builtin and not filters:
                 filters = builtin[preset_id]
             elif preset_id and not filters:
@@ -276,8 +297,7 @@ class ScreeningService:
                 "SELECT * FROM screening_presets WHERE staff_id = ? ORDER BY updated_at DESC",
                 (staff_id,),
             ).fetchall()
-            builtin = [{"id": p["id"], "name": p["name"], "filters": p["filters"], "created_at": "", "updated_at": "", "builtin": True}
-                       for p in self.cfg.get("presets", [])]
+            builtin = [{**p, "created_at": "", "updated_at": "", "builtin": True} for p in self._builtin_presets()]
             return builtin + [
                 {
                     "id": r["id"],

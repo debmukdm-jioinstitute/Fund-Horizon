@@ -277,23 +277,23 @@ export default function ScreeningFilters({
           </div>
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Sharpe ≥ 1</span>
+              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Sharpe ≥</span>
               <input
                 type="number"
                 step="0.1"
-                placeholder="1.0"
-                value={filters.bounds.sharpe?.min ?? 1.0}
+                placeholder="none"
+                value={filters.bounds.sharpe?.min ?? ""}
                 onChange={(e) => handleBoundChange("sharpe", "min", e.target.value)}
                 className="terminal-input w-full py-0.5 px-1.5 text-[11px] tabular-nums"
               />
             </div>
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Sortino ≥ 1</span>
+              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Sortino ≥</span>
               <input
                 type="number"
                 step="0.1"
-                placeholder="1.0"
-                value={filters.bounds.sortino?.min ?? 1.0}
+                placeholder="none"
+                value={filters.bounds.sortino?.min ?? ""}
                 onChange={(e) => handleBoundChange("sortino", "min", e.target.value)}
                 className="terminal-input w-full py-0.5 px-1.5 text-[11px] tabular-nums"
               />

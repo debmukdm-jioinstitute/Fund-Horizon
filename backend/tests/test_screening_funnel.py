@@ -118,3 +118,20 @@ def test_uncomputable_metrics_drop_as_insufficient_history_even_when_missing_inc
     res = apply_funnel([young, _dummy_row("1")], cat_median_ters={"large_cap": 2.0})
     assert [r["scheme_code"] for r in res["action"]] == ["1"]
     assert res["dropped"][0]["drop_reason"].startswith("insufficient history")
+
+
+def test_score_is_per_category_and_unscorable_rows_sort_last():
+    rows = [_dummy_row("a", cat="liquid", sharpe=6.0), _dummy_row("b", cat="liquid", sharpe=5.0),
+            _dummy_row("c", sharpe=1.3), _dummy_row("d", sharpe=1.1)]
+    res = apply_funnel(rows, cat_median_ters={"large_cap": 2.0, "liquid": 2.0})
+    by = {r["scheme_code"]: r["score"] for r in res["action"]}
+    assert by["a"] > by["b"] and by["c"] > by["d"]
+    assert abs(by["a"] - by["c"]) < 1e-9  # same relative standing in different categories -> same score
+
+
+def test_zero_threshold_is_honoured_and_zeroed_reasons_name_the_rule():
+    row = _dummy_row("1", sharpe=0.1)
+    ok = apply_funnel([row], filters={"bounds": {"sharpe": {"min": 0.0}}}, cat_median_ters={"large_cap": 2.0})
+    assert ok["counts"]["final"] == 1
+    bad = apply_funnel([row], cat_median_ters={"large_cap": 2.0})
+    assert bad["counts"]["zeroed_stage"] == "s4a" and bad["counts"]["zeroed_reasons"][0]["rule"] == "sharpe < 1"

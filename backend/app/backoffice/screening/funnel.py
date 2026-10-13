@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import math
+from collections import Counter
 from typing import Any
 
 # Gaps in these come from imports/feeds and are flagged `needs_data`. Any other gap is a metric that could not be
@@ -29,25 +30,35 @@ def _z(vals: list[float | None]) -> list[float]:
     return [0.0 if v is None or sd == 0 else (v - mu) / sd for v in vals]
 
 
-def _score(rows: list[dict[str, Any]], weights: dict[str, float]) -> None:
-    def spread(r):
-        u, d = r.get("up_capture"), r.get("down_capture")
-        return None if u is None or d is None else float(u) - float(d)
+CORE_METRICS = ("sharpe", "sortino", "up_capture", "down_capture")
 
+
+def _score(rows: list[dict[str, Any]], weights: dict[str, float]) -> list[dict[str, Any]]:
+    """Score rows, z-scored within each category. Rows missing a core metric get no score and sort last."""
     def num(r, k):
         v = r.get(k)
         return None if v is None else float(v)
 
-    cols = {
-        "sharpe": [num(r, "sharpe") for r in rows],
-        "sortino": [num(r, "sortino") for r in rows],
-        "capture_spread": [spread(r) for r in rows],
-        "roll_consistency": [num(r, "roll_consistency") for r in rows],
-    }
-    zs = {k: _z(v) for k, v in cols.items()}
-    for i, r in enumerate(rows):
-        r["score"] = round(sum(float(weights.get(k, 0.0)) * zs[k][i] for k in zs), 3)
-    rows.sort(key=lambda r: r["score"], reverse=True)
+    for r in rows:
+        r["score"] = None
+        if _missing(r, CORE_METRICS):
+            r["needs_data"] = sorted(set(r.get("needs_data", [])) | set(_missing(r, CORE_METRICS)))
+    by_cat: dict[str, list[dict[str, Any]]] = {}
+    for r in rows:
+        if r["score"] is None and not _missing(r, CORE_METRICS):
+            by_cat.setdefault(r.get("cat", ""), []).append(r)
+    for grp in by_cat.values():
+        cols = {
+            "sharpe": [num(r, "sharpe") for r in grp],
+            "sortino": [num(r, "sortino") for r in grp],
+            "capture_spread": [num(r, "up_capture") - num(r, "down_capture") for r in grp],
+            "roll_consistency": [num(r, "roll_consistency") for r in grp],
+        }
+        zs = {k: _z(v) for k, v in cols.items()}
+        for i, r in enumerate(grp):
+            r["score"] = round(sum(float(weights.get(k, 0.0)) * zs[k][i] for k in zs), 3)
+    rows.sort(key=lambda r: (r["score"] is None, -(r["score"] or 0.0)))
+    return rows
 
 
 def apply_funnel(
@@ -79,15 +90,19 @@ def apply_funnel(
 
     missing_by_stage: dict[str, dict[str, int]] = {s: {} for s in ("s1", "s2", "s3", "s4a", "s4c")}
     funds_missing = dict.fromkeys(missing_by_stage, 0)  # funds (not fields) with a gap, per stage
-    sharpe_min = float((bounds.get("sharpe") or {}).get("min") or 1.0)
-    sortino_min = float((bounds.get("sortino") or {}).get("min") or 1.0)
+    def bound(key: str, side: str, default: float) -> float:
+        v = (bounds.get(key) or {}).get(side)
+        return default if v is None else float(v)  # 0 is a valid threshold
+
+    sharpe_min = bound("sharpe", "min", 1.0)
+    sortino_min = bound("sortino", "min", 1.0)
     use_ter = bool(filters.get("filter_ter_median", True))
     dropped: list[dict[str, Any]] = []
 
-    def drop(r: dict[str, Any], stage: str, reason: str) -> None:
+    def drop(r: dict[str, Any], stage: str, rule: str, detail: str = "") -> None:
         dropped.append({
             "scheme_code": r.get("scheme_code"), "scheme_name": r.get("scheme_name"), "cat": r.get("cat"),
-            "drop_stage": stage, "drop_reason": reason,
+            "drop_stage": stage, "drop_rule": rule, "drop_reason": f"{rule} (fund: {detail})" if detail else rule,
         })
 
     def gap(r: dict[str, Any], stage: str, fields: tuple[str, ...]) -> bool:
@@ -117,7 +132,7 @@ def apply_funnel(
             continue
         t = r.get("manager_tenure_years")
         if t is not None and float(t) < min_tenure_years:
-            drop(r, "s1", f"manager tenure {float(t):.1f}y < {min_tenure_years:g}y")
+            drop(r, "s1", f"manager tenure < {min_tenure_years:g}y", f"{float(t):.1f}y")
             continue
         s1_pass.append(r)
 
@@ -133,36 +148,36 @@ def apply_funnel(
                 continue
             fval = float(r[k])
             if b.get("min") is not None and fval < float(b["min"]):
-                reason = f"{k} {fval:.2f} < {float(b['min']):g}"
+                reason = (f"{k} < {float(b['min']):g}", f"{fval:.2f}")
                 break
             if b.get("max") is not None and fval > float(b["max"]):
-                reason = f"{k} {fval:.2f} > {float(b['max']):g}"
+                reason = (f"{k} > {float(b['max']):g}", f"{fval:.2f}")
                 break
         if reason:
-            drop(r, "s2", reason)
+            drop(r, "s2", *reason)
         else:
             s2_pass.append(r)
 
     # S3: Capture + Quartile (subset of S2)
     s3_action: list[dict[str, Any]] = []
     s3_retain: list[dict[str, Any]] = []
-    up_bound = float((bounds.get("up_capture") or {}).get("min") or 1.0)
-    down_bound = float((bounds.get("down_capture") or {}).get("max") or 1.0)
+    up_bound = bound("up_capture", "min", 1.0)
+    down_bound = bound("down_capture", "max", 1.0)
 
     for r in s2_pass:
         if gap(r, "s3", ("up_capture", "down_capture", "quartile_2y")):
             continue
         up, down, q = r.get("up_capture"), r.get("down_capture"), r.get("quartile_2y")
         if up is not None and not float(up) > up_bound:
-            drop(r, "s3", f"up_capture {float(up):.2f} <= {up_bound:g}")
+            drop(r, "s3", f"up_capture <= {up_bound:g}", f"{float(up):.2f}")
         elif down is not None and not float(down) < down_bound:
-            drop(r, "s3", f"down_capture {float(down):.2f} >= {down_bound:g}")
+            drop(r, "s3", f"down_capture >= {down_bound:g}", f"{float(down):.2f}")
         elif q is not None and int(q) == 1:
             r["stage_flags"] = {"s1": True, "s2": True, "s3": True, "s4a": False, "s4c": False}
             r["action_status"] = "retain"
             s3_retain.append(r)
         elif q is not None and int(q) not in quartiles_action:
-            drop(r, "s3", f"quartile {int(q)} not in action set")
+            drop(r, "s3", "quartile not in action set", f"Q{int(q)}")
         else:
             s3_action.append(r)
 
@@ -172,9 +187,9 @@ def apply_funnel(
         if gap(r, "s4a", ("sharpe", "sortino", "tenure_ratio")):
             continue
         mins = {"sharpe": sharpe_min, "sortino": sortino_min, "tenure_ratio": 1.0}
-        fail = next((f"{k} {float(r[k]):.2f} < {m:g}" for k, m in mins.items() if r.get(k) is not None and float(r[k]) < m), None)
+        fail = next(((f"{k} < {m:g}", f"{float(r[k]):.2f}") for k, m in mins.items() if r.get(k) is not None and float(r[k]) < m), None)
         if fail:
-            drop(r, "s4a", fail)
+            drop(r, "s4a", *fail)
         else:
             s4a_pass.append(r)
 
@@ -193,13 +208,13 @@ def apply_funnel(
                     continue
                 r["needs_data"] = sorted(set(r.get("needs_data", [])) | set(miss))
             elif float(r["expense_ratio"]) > float(med_ter):
-                drop(r, "s4c", f"TER {float(r['expense_ratio']):.2f} > category median {float(med_ter):.2f}")
+                drop(r, "s4c", "TER > category median", f"{float(r['expense_ratio']):.2f} vs {float(med_ter):.2f}")
                 continue
         r["stage_flags"] = {"s1": True, "s2": True, "s3": True, "s4a": True, "s4c": True}
         r["action_status"] = "review"
         final_action.append(r)
 
-    _score(final_action, weights or DEFAULT_WEIGHTS)
+    final_action = _score(final_action, weights or DEFAULT_WEIGHTS)
 
     stage_n = {"s1": len(s1_pass), "s2": len(s2_pass), "s3": len(s3_action) + len(s3_retain),
                "s4a": len(s4a_pass), "s4c": len(final_action)}
@@ -221,6 +236,10 @@ def apply_funnel(
         "final": len(final_action),
         "needs_data": sum(1 for r in final_action + s3_retain if r.get("needs_data")),
         "zeroed_stage": zeroed,
+        "zeroed_reasons": [
+            {"rule": k, "count": n}
+            for k, n in Counter(d["drop_rule"] for d in dropped if d["drop_stage"] == zeroed).most_common(3)
+        ] if zeroed else [],
         "missing_by_stage": missing_by_stage,
         # kept for older saved runs / clients
         "insufficient_by_stage": funds_missing,

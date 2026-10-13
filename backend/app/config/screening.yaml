@@ -1,5 +1,7 @@
 # Fund Screening thresholds, windows, ratio catalog, and funnel defaults
 min_tenure_years: 3
+# Categories the job must cover >= 90% (see jobs.check_coverage); debt/liquid are scored but not gated
+equity_categories: [flexi_cap, large_cap, mid_cap, small_cap, large_mid_cap, multi_cap, focused, value, contra, dividend_yield, elss]
 risk_window_years: 3
 capture_window_years: 2
 quartile_window_years: 2
@@ -65,15 +67,17 @@ ratios:
     unit: pct
     description: "Regular plan Total Expense Ratio (%)"
 
+# Calibrated to the 3Y window ending Oct 2026: flexi-cap Sharpe medians ~0.3 (max ~0.6), so >= 1 selects nothing.
+# Capture bounds are vs the category-median benchmark, so >100% up / <100% down is almost only Q1 funds.
 bounds_defaults:
   sharpe:
-    min: 1.0
+    min: 0.2
   sortino:
-    min: 1.0
+    min: 0.2
   up_capture:
-    min: 1.0
+    min: 0.9
   down_capture:
-    max: 1.0
+    max: 1.1
   tenure_ratio:
     min: 1.0
 
@@ -94,18 +98,14 @@ presets:
     name: "Core Flexi Cap"
     filters:
       cat: flexi_cap
-      include_missing: true
-      min_tenure_years: 3
-      quartiles_action: [2, 3]
   - id: builtin-large-cap-defensive
     name: "Large Cap Defensive"
     filters:
       cat: large_cap
-      include_missing: true
-      min_tenure_years: 3
-      quartiles_action: [2, 3]
       bounds:
+        sharpe:
+          min: 0.0
+        sortino:
+          min: 0.0
         down_capture:
-          max: 0.95
-        max_drawdown:
-          min: -0.30
+          max: 1.0

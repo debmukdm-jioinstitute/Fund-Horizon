@@ -128,7 +128,7 @@ export default function AdminCustomersView() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-[11px]">
+              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs">
                 <tr>
                   <th className="px-5 py-3.5">Customer</th>
                   <th className="px-4 py-3.5">Contact</th>
@@ -143,18 +143,18 @@ export default function AdminCustomersView() {
                   <tr key={c.id} className="hover:bg-teal-50/20 transition">
                     <td className="px-5 py-4">
                       <div className="font-bold text-navy-950 text-sm">{c.name}</div>
-                      <div className="text-[11px] text-navy-400 font-mono mt-0.5">
+                      <div className="text-xs text-navy-600 font-mono mt-0.5">
                         {c.id.slice(0, 8)}...
                       </div>
                     </td>
                     <td className="px-4 py-4">
                       <div className="font-medium text-navy-900 break-all">{c.email}</div>
-                      <div className="text-[11px] text-navy-500 mt-0.5">{c.mobile}</div>
+                      <div className="text-xs text-navy-500 mt-0.5">{c.mobile}</div>
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`px-2 py-0.5 rounded-full font-semibold text-[11px] border ${ROLE_STYLES[c.role]}`}
+                          className={`px-2 py-0.5 rounded-full font-semibold text-xs border ${ROLE_STYLES[c.role]}`}
                         >
                           {ROLE_LABELS[c.role]}
                         </span>
@@ -163,7 +163,7 @@ export default function AdminCustomersView() {
                           value={c.role}
                           disabled={savingId === c.id}
                           onChange={(e) => handleRoleChange(c, e.target.value as AccountRole)}
-                          className="text-[11px] font-medium border border-navy-200 rounded-lg px-2 py-1 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50"
+                          className="text-xs font-medium border border-navy-200 rounded-lg px-2 py-1 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50"
                         >
                           <option value="customer">Customer</option>
                           <option value="rm">Relationship manager</option>
@@ -177,7 +177,7 @@ export default function AdminCustomersView() {
                         value={c.assigned_rm_id ?? ""}
                         disabled={savingId === c.id}
                         onChange={(e) => handleRmAssign(c, e.target.value)}
-                        className="text-[11px] font-medium border border-navy-200 rounded-lg px-2 py-1 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 max-w-[10rem]"
+                        className="text-xs font-medium border border-navy-200 rounded-lg px-2 py-1 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 max-w-[10rem]"
                       >
                         <option value="">Unassigned</option>
                         {rms.map((r) => (
@@ -187,15 +187,15 @@ export default function AdminCustomersView() {
                         ))}
                       </select>
                       {c.assigned_rm_id && (
-                        <div className="text-[11px] text-navy-500 mt-1">{rmName(c.assigned_rm_id)}</div>
+                        <div className="text-xs text-navy-500 mt-1">{rmName(c.assigned_rm_id)}</div>
                       )}
                     </td>
                     <td className="px-4 py-4">
-                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-[11px] font-medium">
+                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-xs font-medium">
                         {c.plan_count} {c.plan_count === 1 ? "plan" : "plans"}
                       </span>
                     </td>
-                    <td className="px-4 py-4 text-navy-500 text-[11px]">
+                    <td className="px-4 py-4 text-navy-500 text-xs">
                       {formatDate(c.created_at)}
                     </td>
                   </tr>

@@ -202,7 +202,7 @@ export function SequencedActions({ profile, planning }: { profile: Profile; plan
   return (
     <div className="rounded-2xl border border-amber-300/80 bg-gradient-to-br from-amber-50/90 to-amber-100/50 p-5 shadow-glass backdrop-blur-md" role="note">
       <h3 className="font-bold text-amber-900 text-base flex items-center gap-2">
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[11px] text-white">⚡</span>
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-xs text-white">⚡</span>
         What to do first
       </h3>
       <p className="mt-1 text-sm text-amber-950/80">Work in this order: emergency fund, then term cover, then health cover, then goals.</p>
@@ -286,7 +286,7 @@ export function FundTable({ funds, disclosures }: { funds: FundPick[]; disclosur
                 <span className="text-xs text-navy-700">Code {f.scheme_code}</span>
                 {f.tax_tag && (
                   <span className="mt-1 block">
-                    <span title={f.tax_tag.note} className="inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-200">
+                    <span title={f.tax_tag.note} className="inline-block rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-800 ring-1 ring-amber-200">
                       Tax: {f.tax_tag.label}{f.tax_tag.check_factsheet ? " (check factsheet)" : ""}
                     </span>
                   </span>
@@ -489,7 +489,7 @@ export function InsuranceCard({ ins }: { ins: Plan["planning"]["insurance"] }) {
 
 function MarkedBadge() {
   return (
-    <span className="ml-2 inline-block rounded-full bg-teal-800 px-2 py-0.5 align-middle text-[11px] font-bold text-white shadow-sm">
+    <span className="ml-2 inline-block rounded-full bg-teal-800 px-2 py-0.5 align-middle text-xs font-bold text-white shadow-sm">
       Marked pick
     </span>
   );

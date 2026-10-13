@@ -57,7 +57,7 @@ export default function AdminCasTab() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-[11px]">
+              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs">
                 <tr>
                   <th className="px-5 py-3.5">Investor</th>
                   <th className="px-4 py-3.5">Total Valuation</th>
@@ -73,7 +73,7 @@ export default function AdminCasTab() {
                   <tr key={s.session_id} className="hover:bg-teal-50/20 transition">
                     <td className="px-5 py-4">
                       <div className="font-bold text-navy-950 text-sm">{s.investor_name}</div>
-                      <div className="text-[11px] text-navy-400 font-mono mt-0.5">
+                      <div className="text-xs text-navy-600 font-mono mt-0.5">
                         {s.session_id.slice(0, 8)}...
                       </div>
                     </td>
@@ -88,19 +88,19 @@ export default function AdminCasTab() {
                           {pct(s.xirr)}
                         </span>
                       ) : (
-                        <span className="text-navy-400">n/a</span>
+                        <span className="text-navy-600">n/a</span>
                       )}
                     </td>
 
                     <td className="px-4 py-4">
-                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-[11px] font-medium">
+                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-xs font-medium">
                         {s.holdings_count} funds
                       </span>
                     </td>
 
                     <td className="px-4 py-4">
                       <div className="w-32">
-                        <div className="flex justify-between text-[10px] text-navy-600 mb-1">
+                        <div className="flex justify-between text-xs text-navy-600 mb-1">
                           <span>Dir: {s.direct_pct.toFixed(0)}%</span>
                           <span>Reg: {s.regular_pct.toFixed(0)}%</span>
                         </div>
@@ -119,7 +119,7 @@ export default function AdminCasTab() {
                       </div>
                     </td>
 
-                    <td className="px-4 py-4 text-navy-500 text-[11px]">
+                    <td className="px-4 py-4 text-navy-500 text-xs">
                       {new Date(s.created_at).toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",
@@ -150,7 +150,7 @@ export default function AdminCasTab() {
             <div className="p-5 border-b border-navy-100 flex items-center justify-between bg-navy-950 text-white rounded-t-2xl">
               <div>
                 <h3 className="font-bold text-lg">{inspectSession.investor_name} - Portfolio Breakdown</h3>
-                <span className="text-xs text-navy-400">Total Value: {inr(inspectSession.total_value)}</span>
+                <span className="text-xs text-navy-600">Total Value: {inr(inspectSession.total_value)}</span>
               </div>
               <button
                 onClick={() => setInspectSession(null)}
@@ -190,14 +190,14 @@ export default function AdminCasTab() {
                     <div key={i} className="p-3 border border-navy-100 rounded-lg flex justify-between items-center">
                       <div>
                         <p className="font-bold text-navy-950">{h.scheme_name || h.name}</p>
-                        <p className="text-[11px] text-navy-500">
+                        <p className="text-xs text-navy-500">
                           {h.category || "Mutual Fund"} · Units: {h.units?.toFixed(3) || "–"}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-navy-950">{inr(h.current_value || h.value)}</p>
                         {h.plan && (
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${h.plan === "Direct" ? "bg-teal-100 text-teal-800" : "bg-navy-100 text-navy-800"}`}>
+                          <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${h.plan === "Direct" ? "bg-teal-100 text-teal-800" : "bg-navy-100 text-navy-800"}`}>
                             {h.plan}
                           </span>
                         )}

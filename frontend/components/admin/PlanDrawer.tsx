@@ -48,7 +48,7 @@ export default function PlanDrawer({ plan, onClose }: PlanDrawerProps) {
                 <span className="text-xs uppercase tracking-wider font-semibold text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-800">
                   Plan Inspection
                 </span>
-                <span className="text-xs text-navy-400">ID: {String(plan.id || "").slice(0, 8)}...</span>
+                <span className="text-xs text-navy-600">ID: {String(plan.id || "").slice(0, 8)}...</span>
               </div>
               <h2 className="text-xl font-bold tracking-tight text-white mt-1">
                 {String(client.first_name || "")} {String(client.last_name || "")}
@@ -174,7 +174,7 @@ export default function PlanDrawer({ plan, onClose }: PlanDrawerProps) {
             {/* Raw JSON Accordion */}
             <details className="p-3.5 rounded-lg border border-navy-100 bg-navy-50/40 text-xs text-navy-700">
               <summary className="font-semibold text-navy-900 cursor-pointer">View Raw Calculation Payload</summary>
-              <pre className="mt-3 p-3 bg-navy-950 text-navy-100 rounded overflow-x-auto text-[11px] leading-relaxed">
+              <pre className="mt-3 p-3 bg-navy-950 text-navy-100 rounded overflow-x-auto text-xs leading-relaxed">
                 {JSON.stringify(plan, null, 2)}
               </pre>
             </details>

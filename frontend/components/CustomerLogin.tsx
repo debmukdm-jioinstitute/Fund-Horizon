@@ -77,7 +77,7 @@ export default function CustomerLogin({ className = "" }: { className?: string }
         aria-expanded={menuOpen}
         className="flex items-center gap-1.5 rounded-xl bg-navy-900 px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
       >
-        <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-500 text-[11px] font-bold text-navy-950">
+        <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-500 text-xs font-bold text-navy-950">
           {firstName.charAt(0).toUpperCase()}
         </span>
         {firstName}

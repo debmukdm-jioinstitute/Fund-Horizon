@@ -106,7 +106,7 @@ export default function HouseholdsTab() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name…"
-              className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500 w-full md:w-56"
+              className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500 w-full md:w-56"
             />
           </div>
 
@@ -133,17 +133,17 @@ export default function HouseholdsTab() {
                 >
                   <div>
                     <div className="text-sm font-bold text-navy-950">{h.name}</div>
-                    <div className="text-[11px] text-navy-400">
+                    <div className="text-xs text-navy-600">
                       Created {formatDate(h.created_at)}
                       {h.notes ? ` · ${h.notes.slice(0, 60)}` : ""}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="px-2 py-1 rounded-lg bg-navy-50 text-navy-700 text-[11px] font-semibold">
+                    <span className="px-2 py-1 rounded-lg bg-navy-50 text-navy-700 text-xs font-semibold">
                       {h.member_count} member{h.member_count === 1 ? "" : "s"}
                     </span>
                     {h.open_opportunities > 0 && (
-                      <span className="px-2 py-1 rounded-lg bg-teal-50 text-teal-800 text-[11px] font-semibold">
+                      <span className="px-2 py-1 rounded-lg bg-teal-50 text-teal-800 text-xs font-semibold">
                         {h.open_opportunities} open
                       </span>
                     )}
@@ -156,31 +156,31 @@ export default function HouseholdsTab() {
 
         <div className="bg-white p-5 rounded-2xl border border-navy-100 shadow-sm h-fit">
           <h3 className="text-sm font-bold text-navy-950 mb-1">New household</h3>
-          <p className="text-[11px] text-navy-400 mb-4">
+          <p className="text-xs text-navy-600 mb-4">
             One family, one record — members are added from the household view.
           </p>
           <form onSubmit={handleCreate} className="space-y-3">
             <div>
-              <label className="block text-[11px] font-semibold text-navy-700 mb-1">
+              <label className="block text-xs font-semibold text-navy-700 mb-1">
                 Household name
               </label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Sharma family"
-                className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-navy-700 mb-1">
-                Notes <span className="font-normal text-navy-400">(optional)</span>
+              <label className="block text-xs font-semibold text-navy-700 mb-1">
+                Notes <span className="font-normal text-navy-600">(optional)</span>
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
                 placeholder="Relationship context, preferences…"
-                className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
             {createError && (

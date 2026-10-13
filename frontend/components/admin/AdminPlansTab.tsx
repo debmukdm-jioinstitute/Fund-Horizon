@@ -79,7 +79,7 @@ export default function AdminPlansTab({ onInspectPlan }: AdminPlansTabProps) {
               className="w-full pl-9 pr-4 py-2 rounded-xl text-xs border border-navy-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-navy-900"
             />
             <svg
-              className="w-4 h-4 text-navy-400 absolute left-3 top-2.5"
+              className="w-4 h-4 text-navy-600 absolute left-3 top-2.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -131,7 +131,7 @@ export default function AdminPlansTab({ onInspectPlan }: AdminPlansTabProps) {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-[11px]">
+              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs">
                 <tr>
                   <th className="px-5 py-3.5">Client</th>
                   <th className="px-4 py-3.5">Risk Profile</th>
@@ -147,7 +147,7 @@ export default function AdminPlansTab({ onInspectPlan }: AdminPlansTabProps) {
                   <tr key={p.id} className="hover:bg-teal-50/20 transition">
                     <td className="px-5 py-4">
                       <div className="font-bold text-navy-950 text-sm">{p.client_name}</div>
-                      <div className="text-[11px] text-navy-400 font-mono mt-0.5">
+                      <div className="text-xs text-navy-600 font-mono mt-0.5">
                         {p.id.slice(0, 8)}... {p.age ? `(Age ${p.age})` : ""}
                       </div>
                     </td>
@@ -155,15 +155,15 @@ export default function AdminPlansTab({ onInspectPlan }: AdminPlansTabProps) {
                     <td className="px-4 py-4">
                       {p.risk_band ? (
                         <div className="flex items-center gap-1.5">
-                          <span className="px-2 py-0.5 rounded-full font-semibold text-[11px] bg-navy-100 text-navy-800">
+                          <span className="px-2 py-0.5 rounded-full font-semibold text-xs bg-navy-100 text-navy-800">
                             {p.risk_band}
                           </span>
                           {p.risk_score !== undefined && (
-                            <span className="text-[11px] text-navy-500 font-medium">({p.risk_score})</span>
+                            <span className="text-xs text-navy-500 font-medium">({p.risk_score})</span>
                           )}
                         </div>
                       ) : (
-                        <span className="text-navy-400">–</span>
+                        <span className="text-navy-600">–</span>
                       )}
                     </td>
 
@@ -176,12 +176,12 @@ export default function AdminPlansTab({ onInspectPlan }: AdminPlansTabProps) {
                     </td>
 
                     <td className="px-4 py-4">
-                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-[11px] font-medium">
+                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-xs font-medium">
                         {p.goals_count} {p.goals_count === 1 ? "goal" : "goals"}
                       </span>
                     </td>
 
-                    <td className="px-4 py-4 text-navy-500 text-[11px]">
+                    <td className="px-4 py-4 text-navy-500 text-xs">
                       {new Date(p.created_at).toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",

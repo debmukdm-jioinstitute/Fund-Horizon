@@ -123,7 +123,7 @@ export default function AdminConfigTab() {
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-navy-50 text-navy-700 uppercase font-semibold text-[11px]">
+              <thead className="bg-navy-50 text-navy-700 uppercase font-semibold text-xs">
                 <tr>
                   <th className="px-4 py-2.5">Band</th>
                   <th className="px-4 py-2.5">Target Equity %</th>
@@ -160,7 +160,7 @@ export default function AdminConfigTab() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
             {Object.entries(weights).map(([k, w]) => (
               <div key={k} className="p-3 rounded-xl border border-navy-100 bg-navy-50/40 text-center">
-                <span className="text-[11px] font-semibold text-navy-500 uppercase">{k.replace(/_/g, " ")}</span>
+                <span className="text-xs font-semibold text-navy-500 uppercase">{k.replace(/_/g, " ")}</span>
                 <p className="text-lg font-extrabold text-navy-950 mt-1 font-mono">
                   {typeof w === "number" ? `${(w * 100).toFixed(0)}%` : String(w)}
                 </p>

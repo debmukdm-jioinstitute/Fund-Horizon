@@ -31,7 +31,7 @@ export default function PortalReportsPage({ params }: { params: { id: string } }
         >
           <span aria-hidden="true">⤓</span> Download financial plan (PDF)
         </a>
-        <p className="text-[11px] text-navy-500">
+        <p className="text-xs text-navy-500">
           The report is generated from your plan data at download time. Mutual fund investments are
           subject to market risks; read all scheme related documents carefully.
         </p>

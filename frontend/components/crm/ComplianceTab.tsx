@@ -121,7 +121,7 @@ function ConsentsPanel() {
               <div key={p.value} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div>
                   <p className="text-xs font-semibold text-navy-950">{p.label}</p>
-                  <p className="text-[10px] text-navy-500">
+                  <p className="text-xs text-navy-500">
                     {granted === null
                       ? "No record yet"
                       : granted
@@ -133,14 +133,14 @@ function ConsentsPanel() {
                   <button
                     disabled={busyPurpose === p.value || granted === true}
                     onClick={() => setGrant(p.value, true)}
-                    className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-40"
+                    className="text-xs font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-40"
                   >
                     Grant
                   </button>
                   <button
                     disabled={busyPurpose === p.value || granted === false}
                     onClick={() => setGrant(p.value, false)}
-                    className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-40"
+                    className="text-xs font-semibold px-2 py-1 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-40"
                   >
                     Withdraw
                   </button>
@@ -150,7 +150,7 @@ function ConsentsPanel() {
           })}
         </div>
       )}
-      <p className="text-[10px] text-navy-400">
+      <p className="text-xs text-navy-600">
         Consent records are per customer and per purpose. Withdrawal is recorded with a timestamp; history is kept.
       </p>
     </div>
@@ -233,14 +233,14 @@ function SuitabilityPanel() {
 
       {latest && (
         <div className="bg-teal-50 border border-teal-600/20 rounded-2xl p-4">
-          <p className="text-[10px] font-bold uppercase text-teal-700 mb-2">Current record</p>
+          <p className="text-xs font-bold uppercase text-teal-700 mb-2">Current record</p>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
             <div><dt className="text-navy-500">Risk band</dt><dd className="font-semibold text-navy-950">{latest.risk_band ?? "—"}</dd></div>
             <div><dt className="text-navy-500">Financial status</dt><dd className="font-semibold text-navy-950">{latest.financial_status ?? "—"}</dd></div>
             <div><dt className="text-navy-500">Investment experience</dt><dd className="font-semibold text-navy-950">{latest.investment_experience ?? "—"}</dd></div>
             <div><dt className="text-navy-500">Objectives</dt><dd className="font-semibold text-navy-950">{latest.objectives ?? "—"}</dd></div>
           </dl>
-          <p className="text-[10px] text-navy-500 mt-2">
+          <p className="text-xs text-navy-500 mt-2">
             Recorded {new Date(latest.recorded_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
           </p>
         </div>
@@ -251,11 +251,11 @@ function SuitabilityPanel() {
           <p className="text-xs font-bold text-navy-950 mb-2">History ({records.length - 1} earlier)</p>
           <div className="space-y-2">
             {records.slice(1).map((r) => (
-              <div key={r.id} className="text-[11px] text-navy-600 border-l-2 border-navy-100 pl-3">
+              <div key={r.id} className="text-xs text-navy-600 border-l-2 border-navy-100 pl-3">
                 <span className="font-semibold text-navy-900">{r.risk_band ?? "No band"}</span>
                 {" — "}
                 {[r.financial_status, r.investment_experience, r.objectives].filter(Boolean).join(" · ")}
-                <span className="text-navy-400"> ({new Date(r.recorded_at).toLocaleDateString("en-IN")})</span>
+                <span className="text-navy-600"> ({new Date(r.recorded_at).toLocaleDateString("en-IN")})</span>
               </div>
             ))}
           </div>
@@ -399,7 +399,7 @@ function DisclosuresPanel() {
 
       <div className="space-y-2">
         {logs.length === 0 && !loading && (
-          <p className="text-[11px] text-navy-400">No disclosure logs yet for this filter.</p>
+          <p className="text-xs text-navy-600">No disclosure logs yet for this filter.</p>
         )}
         {logs.map((d) => (
           <div key={d.id} className="bg-white border border-navy-200 rounded-xl p-3 shadow-sm text-xs space-y-1">
@@ -407,12 +407,12 @@ function DisclosuresPanel() {
               <span className="font-semibold text-navy-950">
                 {parseSchemes(d.schemes_compared).join(", ") || "Disclosure logged"}
               </span>
-              <span className="text-[10px] text-navy-500">
+              <span className="text-xs text-navy-500">
                 {new Date(d.created_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
               </span>
             </div>
             {d.commissions_disclosed && <p className="text-navy-600">Commissions: {d.commissions_disclosed}</p>}
-            <p className="text-[10px] text-navy-500">
+            <p className="text-xs text-navy-500">
               Regular plan noted: {d.regular_plan_noted === 1 ? "Yes" : "No"}
               {d.opportunity_id ? ` · Opportunity ${d.opportunity_id.slice(0, 8)}` : ""}
             </p>
@@ -533,14 +533,14 @@ function KycPanel() {
       {record && (
         <div className="bg-white border border-navy-200 rounded-2xl p-4 shadow-sm">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${kraChip(record.kra_status)}`}>
+            <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase ${kraChip(record.kra_status)}`}>
               {record.kra_status.replaceAll("_", " ")}
             </span>
             <span className="text-xs font-mono font-semibold text-navy-950 tracking-widest">
               {record.pan_last4 ? `•••• ${record.pan_last4}` : "PAN not on file"}
             </span>
           </div>
-          <p className="text-[10px] text-navy-500 mt-2">
+          <p className="text-xs text-navy-500 mt-2">
             Only the last 4 characters of the PAN are stored. CKYC ID: {record.ckyc_id ?? "—"} ·
             Updated {new Date(record.updated_at).toLocaleDateString("en-IN")}
           </p>
@@ -664,20 +664,20 @@ function MandatesPanel() {
         {mandates.map((m) => (
           <div key={m.id} className="bg-white border border-navy-200 rounded-xl p-3 shadow-sm space-y-1">
             <div className="flex items-center justify-between">
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${statusChip(m.status)}`}>
+              <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase ${statusChip(m.status)}`}>
                 {m.status}
               </span>
               <span className="text-xs font-bold text-navy-950">{formatRupeesFromPaise(m.amount_cap)}</span>
             </div>
             <p className="text-xs font-semibold text-navy-900">{m.bank_name ?? "Bank not set"}</p>
-            {m.umrn && <p className="text-[10px] text-navy-500 font-mono">UMRN {m.umrn}</p>}
-            <p className="text-[10px] text-navy-400">
+            {m.umrn && <p className="text-xs text-navy-500 font-mono">UMRN {m.umrn}</p>}
+            <p className="text-xs text-navy-600">
               Created {new Date(m.created_at).toLocaleDateString("en-IN")}
             </p>
           </div>
         ))}
         {mandates.length === 0 && !loading && customerId.trim() && (
-          <p className="text-[11px] text-navy-400">No mandates on file for this customer.</p>
+          <p className="text-xs text-navy-600">No mandates on file for this customer.</p>
         )}
       </div>
 

@@ -73,7 +73,7 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
     <nav aria-label="Portal" className="space-y-6">
       {SECTIONS.map((s) => (
         <div key={s.title}>
-          <p className="mb-2 px-3 text-[11px] font-bold uppercase tracking-widest text-navy-500">{s.title}</p>
+          <p className="mb-2 px-3 text-xs font-bold uppercase tracking-widest text-navy-500">{s.title}</p>
           <ul className="space-y-1">
             {s.items.map((item) => {
               const href = item.href(id);
@@ -116,11 +116,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <p className="text-xs font-medium text-navy-500">Customer portal</p>
         </Link>
       </div>
-      <Suspense fallback={<div className="px-3 text-sm text-navy-400">Loading menu…</div>}>
+      <Suspense fallback={<div className="px-3 text-sm text-navy-600">Loading menu…</div>}>
         <Nav onNavigate={onNavigate} />
       </Suspense>
       <div className="mt-auto px-3 pt-6">
-        <p className="rounded-xl bg-navy-50 p-3 text-[11px] leading-relaxed text-navy-600">
+        <p className="rounded-xl bg-navy-50 p-3 text-xs leading-relaxed text-navy-600">
           Illustrations only — read scheme documents (SID/KIM) before investing.
         </p>
       </div>

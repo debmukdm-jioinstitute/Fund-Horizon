@@ -107,7 +107,7 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
           <div>
             <h3 className="text-sm font-bold text-navy-950">Deterministic Math Engine</h3>
             <p className="text-xs text-slate-600 mt-0.5">100% Python analytics (Monte Carlo, XIRR, Glidepath)</p>
-            <span className="inline-block mt-2.5 text-[11px] font-bold text-teal-800 bg-teal-50/80 border border-teal-200/50 px-2.5 py-0.5 rounded-full">
+            <span className="inline-block mt-2.5 text-xs font-bold text-teal-800 bg-teal-50/80 border border-teal-200/50 px-2.5 py-0.5 rounded-full">
               Floor 85% coverage passing
             </span>
           </div>
@@ -118,7 +118,7 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
           <div>
             <h3 className="text-sm font-bold text-navy-950">Vector Knowledge Base</h3>
             <p className="text-xs text-slate-600 mt-0.5">ChromaDB + ONNX FastEmbed (bge-small-en-v1.5)</p>
-            <span className="inline-block mt-2.5 text-[11px] font-bold text-navy-800 bg-navy-100/80 border border-navy-200/50 px-2.5 py-0.5 rounded-full">
+            <span className="inline-block mt-2.5 text-xs font-bold text-navy-800 bg-navy-100/80 border border-navy-200/50 px-2.5 py-0.5 rounded-full">
               3,638 schemes indexed
             </span>
           </div>
@@ -129,7 +129,7 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
           <div>
             <h3 className="text-sm font-bold text-navy-950">Explanation & Guardrails</h3>
             <p className="text-xs text-slate-600 mt-0.5">LiteLLM fallback (Groq → Gemini → OpenRouter → Ollama)</p>
-            <span className="inline-block mt-2.5 text-[11px] font-bold text-teal-800 bg-teal-50/80 border border-teal-200/50 px-2.5 py-0.5 rounded-full">
+            <span className="inline-block mt-2.5 text-xs font-bold text-teal-800 bg-teal-50/80 border border-teal-200/50 px-2.5 py-0.5 rounded-full">
               PII & compliance scanner active
             </span>
           </div>
@@ -168,7 +168,7 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-navy-950 truncate">{p.client_name}</span>
                       {p.risk_band && (
-                        <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-navy-100 text-navy-800">
+                        <span className="text-xs font-semibold uppercase px-2 py-0.5 rounded-full bg-navy-100 text-navy-800">
                           {p.risk_band}
                         </span>
                       )}
@@ -231,7 +231,7 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-navy-950 truncate">{s.investor_name}</span>
                       {s.xirr !== undefined && s.xirr !== null && (
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-100 text-teal-900">
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-teal-100 text-teal-900">
                           XIRR {pct(s.xirr)}
                         </span>
                       )}
@@ -242,7 +242,7 @@ export default function AdminDashboardTab({ stats, onTabChange, onInspectPlan }:
                       <span>Direct: {s.direct_pct.toFixed(0)}%</span>
                     </div>
                   </div>
-                  <span className="text-[11px] text-navy-400">
+                  <span className="text-xs text-navy-600">
                     {new Date(s.created_at).toLocaleDateString("en-IN")}
                   </span>
                 </div>

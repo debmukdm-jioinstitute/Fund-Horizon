@@ -129,7 +129,7 @@ export default function ImportTab() {
         <h2 className="text-lg font-bold text-navy-950 mb-1">Import clients</h2>
         <p className="text-xs text-navy-500 mb-4">
           Paste CSV rows or pick a file. Columns:{" "}
-          <span className="font-mono text-[11px]">{EXPECTED_COLUMNS.join(", ")}</span>. A header
+          <span className="font-mono text-xs">{EXPECTED_COLUMNS.join(", ")}</span>. A header
           row is optional. Rows with a duplicate email or missing name/email are skipped and
           reported — nothing is half-imported.
         </p>
@@ -139,7 +139,7 @@ export default function ImportTab() {
           onChange={(e) => setText(e.target.value)}
           rows={8}
           placeholder={"name,email,mobile,household_name,rm_email\nAarav Sharma,aarav@example.com,98200XXXXX,Sharma family,rm@fundhorizon.in"}
-          className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
 
         <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -182,7 +182,7 @@ export default function ImportTab() {
                 Preview — {preview.length} row{preview.length === 1 ? "" : "s"}
               </h3>
               {invalidCount > 0 && (
-                <p className="text-[11px] text-amber-700">
+                <p className="text-xs text-amber-700">
                   {invalidCount} row{invalidCount === 1 ? "" : "s"} missing a name or email — they
                   will be skipped.
                 </p>
@@ -200,7 +200,7 @@ export default function ImportTab() {
 
           <div className="overflow-x-auto max-h-72 overflow-y-auto rounded-xl border border-navy-100">
             <table className="w-full text-left text-xs">
-              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-[11px] sticky top-0">
+              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs sticky top-0">
                 <tr>
                   {EXPECTED_COLUMNS.map((c) => (
                     <th key={c} className="px-4 py-2.5 font-mono">
@@ -222,11 +222,11 @@ export default function ImportTab() {
                       <td className="px-4 py-2">{r.rm_email || "–"}</td>
                       <td className="px-4 py-2">
                         {bad ? (
-                          <span className="text-[11px] font-semibold text-amber-700">
+                          <span className="text-xs font-semibold text-amber-700">
                             Will be skipped
                           </span>
                         ) : (
-                          <span className="text-[11px] font-semibold text-teal-700">Ready</span>
+                          <span className="text-xs font-semibold text-teal-700">Ready</span>
                         )}
                       </td>
                     </tr>
@@ -236,7 +236,7 @@ export default function ImportTab() {
             </table>
           </div>
           {preview.length > 100 && (
-            <p className="text-[11px] text-navy-400 mt-2">
+            <p className="text-xs text-navy-600 mt-2">
               Showing the first 100 rows of {preview.length}.
             </p>
           )}
@@ -255,21 +255,21 @@ export default function ImportTab() {
           <div className="grid grid-cols-3 gap-3 mb-4">
             <div className="rounded-xl bg-teal-50 border border-teal-200 p-4 text-center">
               <div className="text-2xl font-extrabold text-teal-800">{result.created}</div>
-              <div className="text-[11px] font-semibold text-teal-700">Customers created</div>
+              <div className="text-xs font-semibold text-teal-700">Customers created</div>
             </div>
             <div className="rounded-xl bg-navy-50 border border-navy-200 p-4 text-center">
               <div className="text-2xl font-extrabold text-navy-900">{result.households_created}</div>
-              <div className="text-[11px] font-semibold text-navy-600">Households created</div>
+              <div className="text-xs font-semibold text-navy-600">Households created</div>
             </div>
             <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-center">
               <div className="text-2xl font-extrabold text-amber-800">{result.skipped.length}</div>
-              <div className="text-[11px] font-semibold text-amber-700">Rows skipped</div>
+              <div className="text-xs font-semibold text-amber-700">Rows skipped</div>
             </div>
           </div>
           {result.skipped.length > 0 && (
             <div className="rounded-xl border border-navy-100 overflow-hidden">
               <table className="w-full text-left text-xs">
-                <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-[11px]">
+                <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs">
                   <tr>
                     <th className="px-4 py-2.5">Email</th>
                     <th className="px-4 py-2.5">Reason</th>
@@ -278,7 +278,7 @@ export default function ImportTab() {
                 <tbody className="divide-y divide-navy-100 text-navy-800">
                   {result.skipped.map((s, i) => (
                     <tr key={i}>
-                      <td className="px-4 py-2 font-mono text-[11px]">{s.email || "–"}</td>
+                      <td className="px-4 py-2 font-mono text-xs">{s.email || "–"}</td>
                       <td className="px-4 py-2">{s.reason}</td>
                     </tr>
                   ))}

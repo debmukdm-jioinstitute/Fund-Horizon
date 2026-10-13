@@ -95,7 +95,7 @@ function ExploreTab({ id, selected, toggleSelect }: {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Scheme or AMC name"
-              className="w-full rounded-xl border border-navy-200 bg-white px-3 py-2 text-sm text-navy-950 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none"
+              className="w-full rounded-xl border border-navy-200 bg-white px-3 py-2 text-sm text-navy-950 placeholder:text-slate-500 focus:border-teal-600 focus:outline-none"
             />
           </label>
         </div>
@@ -151,7 +151,7 @@ function ExploreTab({ id, selected, toggleSelect }: {
                   <td className="p-3 text-xs font-bold text-navy-700">{r.rank ?? "–"}</td>
                   <td className="p-3">
                     <div className="text-xs font-semibold text-navy-950">{r.scheme_name ?? r.scheme_code}</div>
-                    <div className="mt-0.5 text-[11px] text-navy-500"><AmcName amc={r.amc ?? ""} /> · {r.scheme_code}</div>
+                    <div className="mt-0.5 text-xs text-navy-500"><AmcName amc={r.amc ?? ""} /> · {r.scheme_code}</div>
                   </td>
                   <td className="p-3 text-xs text-navy-900">{pct(metric(r, "cagr_3y"))}</td>
                   <td className="p-3 text-xs text-navy-900">{pct(metric(r, "cagr_5y"))}</td>
@@ -164,7 +164,7 @@ function ExploreTab({ id, selected, toggleSelect }: {
       </div>
 
       {data?.disclaimer && (
-        <p className="rounded-lg bg-navy-50 p-3 text-[11px] text-navy-700">{data.disclaimer}</p>
+        <p className="rounded-lg bg-navy-50 p-3 text-xs text-navy-700">{data.disclaimer}</p>
       )}
     </div>
   );
@@ -290,7 +290,7 @@ function CompareTab({ id, codes, setCodes }: {
                           <div className="max-w-[160px] truncate" title={f.scheme_name}>{f.scheme_name}</div>
                           <div className="mt-0.5 text-xs font-normal text-navy-500">Code: {f.scheme_code}</div>
                           {f.scheme_code === pickCode && (
-                            <span className="mt-1 inline-block rounded-full bg-teal-700 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                            <span className="mt-1 inline-block rounded-full bg-teal-700 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
                               Marked pick
                             </span>
                           )}
@@ -298,7 +298,7 @@ function CompareTab({ id, codes, setCodes }: {
                         <button
                           type="button"
                           onClick={() => remove(f.scheme_code)}
-                          className="rounded p-1 text-xs text-navy-400 hover:bg-navy-200 hover:text-rose-700"
+                          className="rounded p-1 text-xs text-navy-600 hover:bg-navy-200 hover:text-rose-700"
                           aria-label={`Remove ${f.scheme_name}`}
                         >
                           ✕
@@ -330,7 +330,7 @@ function CompareTab({ id, codes, setCodes }: {
               </tbody>
             </table>
           </div>
-          <p className="text-[11px] text-navy-500">
+          <p className="text-xs text-navy-500">
             Marked pick = the scheme with the highest 3Y Sharpe ratio in this set (falls back to highest 3Y CAGR when Sharpe is unavailable).
           </p>
           <footer className="card bg-navy-50 text-xs text-navy-700 space-y-2">

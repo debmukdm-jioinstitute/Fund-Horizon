@@ -123,7 +123,7 @@ export function CompareView({ initialData }: Props) {
                       <button
                         type="button"
                         onClick={() => handleRemove(f.scheme_code)}
-                        className="rounded p-1 text-xs text-navy-400 hover:bg-navy-200 hover:text-rose-700"
+                        className="rounded p-1 text-xs text-navy-600 hover:bg-navy-200 hover:text-rose-700"
                         title="Remove scheme"
                         aria-label={`Remove ${f.scheme_name}`}
                       >
@@ -281,7 +281,7 @@ export function CompareView({ initialData }: Props) {
                           key={colFund.scheme_code}
                           className={`p-2 font-mono font-medium ${
                             rowFund.scheme_code === colFund.scheme_code
-                              ? "bg-navy-50 text-navy-400"
+                              ? "bg-navy-50 text-navy-600"
                               : isHigh
                               ? "bg-amber-100 text-amber-900 font-bold"
                               : "text-navy-800"

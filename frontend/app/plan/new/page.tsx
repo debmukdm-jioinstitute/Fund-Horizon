@@ -157,7 +157,7 @@ export default function NewPlan() {
       <div className="mb-6 rounded-2xl border border-white/80 bg-white/60 p-4 shadow-glass backdrop-blur-md">
         <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-navy-800">
           <span className="flex items-center gap-2">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-600 text-[10px] text-white">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-600 text-xs text-white">
               {SECTION(step)}
             </span>
             <span>Step {SECTION(step)} of 5: {SECTION_NAMES[SECTION(step) - 1]}</span>

@@ -170,7 +170,7 @@ export default function AdminOperationsTab({ initialHealth }: AdminOperationsTab
             <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs text-teal-900 space-y-1">
               <p className="font-bold">Sync Completed!</p>
               <p>{refreshResult.message}</p>
-              <p className="text-[11px] text-teal-700">
+              <p className="text-xs text-teal-700">
                 Processed {refreshResult.funds_processed} funds and {refreshResult.metrics_processed} metric sets.
               </p>
             </div>

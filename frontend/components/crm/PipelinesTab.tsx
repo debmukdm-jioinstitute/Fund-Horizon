@@ -122,10 +122,10 @@ export default function PipelinesTab() {
               >
                 <div className="flex items-baseline justify-between">
                   <h3 className="text-xs font-bold text-navy-950">{stageLabel(stage)}</h3>
-                  <span className="text-[10px] text-navy-500 font-semibold">{cards.length}</span>
+                  <span className="text-xs text-navy-500 font-semibold">{cards.length}</span>
                 </div>
                 {!isLost && (
-                  <p className="text-[10px] text-navy-500">{formatRupeesFromPaise(columnValue(stage))}</p>
+                  <p className="text-xs text-navy-500">{formatRupeesFromPaise(columnValue(stage))}</p>
                 )}
                 <div className="space-y-2 max-h-[60vh] overflow-y-auto">
                   {cards.map((o) => {
@@ -137,21 +137,21 @@ export default function PipelinesTab() {
                       <div key={o.id} className="bg-white border border-navy-100 rounded-xl p-2.5 space-y-1.5 shadow-sm">
                         <p className="text-xs font-semibold text-navy-950 leading-snug">{o.title}</p>
                         {(o.household_name || o.customer_name) && (
-                          <p className="text-[10px] text-navy-500">{o.household_name || o.customer_name}</p>
+                          <p className="text-xs text-navy-500">{o.household_name || o.customer_name}</p>
                         )}
-                        <div className="flex items-center justify-between text-[10px] text-navy-600">
+                        <div className="flex items-center justify-between text-xs text-navy-600">
                           <span className="font-bold text-navy-900">{formatRupeesFromPaise(o.amount)}</span>
                           <span>{o.probability}% prob</span>
                         </div>
                         {o.expected_close && (
-                          <p className="text-[10px] text-navy-500">Expected close: {o.expected_close}</p>
+                          <p className="text-xs text-navy-500">Expected close: {o.expected_close}</p>
                         )}
                         <div className="flex gap-1 pt-1">
                           {isLost ? (
                             <button
                               disabled={busy}
                               onClick={() => move(o, STAGES_BY_LINE[line][0])}
-                              className="flex-1 text-[10px] font-semibold px-2 py-1 rounded-lg bg-navy-100 text-navy-800 hover:bg-navy-200 disabled:opacity-50"
+                              className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-navy-100 text-navy-800 hover:bg-navy-200 disabled:opacity-50"
                             >
                               Reopen
                             </button>
@@ -161,7 +161,7 @@ export default function PipelinesTab() {
                                 disabled={busy || !prev}
                                 onClick={() => prev && move(o, prev)}
                                 title={prev ? `Move back to ${stageLabel(prev)}` : "First stage"}
-                                className="flex-1 text-[10px] font-semibold px-2 py-1 rounded-lg bg-navy-50 text-navy-700 hover:bg-navy-100 disabled:opacity-40"
+                                className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-navy-50 text-navy-700 hover:bg-navy-100 disabled:opacity-40"
                               >
                                 ← Back
                               </button>
@@ -169,7 +169,7 @@ export default function PipelinesTab() {
                                 disabled={busy || !next}
                                 onClick={() => next && move(o, next)}
                                 title={next ? `Move to ${stageLabel(next)}` : "Final stage"}
-                                className="flex-1 text-[10px] font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-40"
+                                className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-40"
                               >
                                 Forward →
                               </button>
@@ -177,7 +177,7 @@ export default function PipelinesTab() {
                                 disabled={busy}
                                 onClick={() => move(o, "lost")}
                                 title="Mark as lost"
-                                className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-40"
+                                className="text-xs font-semibold px-2 py-1 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-40"
                               >
                                 Lost
                               </button>
@@ -188,7 +188,7 @@ export default function PipelinesTab() {
                     );
                   })}
                   {cards.length === 0 && (
-                    <p className="text-[10px] text-navy-400 text-center py-4">No opportunities here yet.</p>
+                    <p className="text-xs text-navy-600 text-center py-4">No opportunities here yet.</p>
                   )}
                 </div>
               </div>

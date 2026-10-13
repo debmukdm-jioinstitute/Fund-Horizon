@@ -35,9 +35,9 @@ function KpiCard({
       onClick={onClick}
       className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5 text-left hover:border-teal-300 hover:shadow transition w-full"
     >
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-navy-500">{label}</div>
+      <div className="text-xs font-semibold uppercase tracking-wider text-navy-500">{label}</div>
       <div className="text-2xl font-extrabold text-navy-950 mt-1.5">{value}</div>
-      {hint && <div className="text-[11px] text-navy-400 mt-1">{hint}</div>}
+      {hint && <div className="text-xs text-navy-600 mt-1">{hint}</div>}
     </button>
   );
 }
@@ -118,7 +118,7 @@ export default function CrmHome({ onNavigate }: CrmHomeProps) {
               {shortInr(pipelineTotal / 100)}
             </div>
           </div>
-          <p className="text-[11px] text-navy-400 mb-3">
+          <p className="text-xs text-navy-600 mb-3">
             Open opportunities, grouped by product line (excludes lost).
           </p>
           <div className="space-y-2">
@@ -149,7 +149,7 @@ export default function CrmHome({ onNavigate }: CrmHomeProps) {
 
         <div className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5">
           <h3 className="text-sm font-bold text-navy-950">Deadlines coming up</h3>
-          <p className="text-[11px] text-navy-400 mb-3">
+          <p className="text-xs text-navy-600 mb-3">
             Proactive reminders generated from stored policies and FDs.
           </p>
           <div className="space-y-2">
@@ -160,7 +160,7 @@ export default function CrmHome({ onNavigate }: CrmHomeProps) {
             >
               <div>
                 <div className="text-xs font-bold text-navy-950">Policy renewals</div>
-                <div className="text-[11px] text-navy-500">Due in the next 30 days</div>
+                <div className="text-xs text-navy-500">Due in the next 30 days</div>
               </div>
               <div className="text-xl font-extrabold text-amber-700">{data.renewals_due_30d}</div>
             </button>
@@ -171,13 +171,13 @@ export default function CrmHome({ onNavigate }: CrmHomeProps) {
             >
               <div>
                 <div className="text-xs font-bold text-navy-950">FD maturities</div>
-                <div className="text-[11px] text-navy-500">Maturing in the next 60 days</div>
+                <div className="text-xs text-navy-500">Maturing in the next 60 days</div>
               </div>
               <div className="text-xl font-extrabold text-sky-700">{data.fd_maturities_60d}</div>
             </button>
           </div>
           <div className="mt-4 pt-3 border-t border-navy-100">
-            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-navy-500 mb-2">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-navy-500 mb-2">
               Shortcuts
             </h4>
             <div className="flex flex-wrap gap-2">

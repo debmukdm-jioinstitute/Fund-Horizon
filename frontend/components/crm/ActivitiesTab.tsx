@@ -35,7 +35,7 @@ function kindChip(kind: ActivityKind) {
     review: "bg-rose-100 text-rose-700",
   };
   return (
-    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${tones[kind]}`}>{kind}</span>
+    <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase ${tones[kind]}`}>{kind}</span>
   );
 }
 
@@ -51,20 +51,20 @@ function ActivityCard({ a, busy, onDone, onReopen }: {
       <div className="flex items-center justify-between gap-2">
         {kindChip(a.kind)}
         {a.due_at && !done && (
-          <span className="text-[10px] text-navy-500">
+          <span className="text-xs text-navy-500">
             Due {new Date(a.due_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
           </span>
         )}
-        {done && <span className="text-[10px] text-teal-700 font-bold">Done</span>}
+        {done && <span className="text-xs text-teal-700 font-bold">Done</span>}
       </div>
       <p className={`text-xs font-semibold text-navy-950 ${done ? "line-through" : ""}`}>{a.subject}</p>
-      {a.body && <p className="text-[11px] text-navy-600 whitespace-pre-wrap">{a.body}</p>}
+      {a.body && <p className="text-xs text-navy-600 whitespace-pre-wrap">{a.body}</p>}
       <div className="pt-1">
         {done ? (
           <button
             disabled={busy}
             onClick={() => onReopen(a)}
-            className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-navy-50 text-navy-700 hover:bg-navy-100 disabled:opacity-50"
+            className="text-xs font-semibold px-2 py-1 rounded-lg bg-navy-50 text-navy-700 hover:bg-navy-100 disabled:opacity-50"
           >
             Reopen
           </button>
@@ -72,7 +72,7 @@ function ActivityCard({ a, busy, onDone, onReopen }: {
           <button
             disabled={busy}
             onClick={() => onDone(a)}
-            className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
+            className="text-xs font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
           >
             Mark done
           </button>
@@ -314,10 +314,10 @@ export default function ActivitiesTab() {
           {sections.map((s) => (
             <section key={s.title} className="space-y-2">
               <h3 className={`text-xs font-bold ${s.tone}`}>
-                {s.title} <span className="font-semibold text-navy-400">({s.items.length})</span>
+                {s.title} <span className="font-semibold text-navy-600">({s.items.length})</span>
               </h3>
               {s.items.length === 0 ? (
-                <p className="text-[11px] text-navy-400">{s.empty}</p>
+                <p className="text-xs text-navy-600">{s.empty}</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
                   {s.items.map((a) => (

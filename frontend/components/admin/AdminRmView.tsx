@@ -114,16 +114,16 @@ export default function AdminRmView({ me }: { me: MeUser }) {
                   >
                     <div className="min-w-0">
                       <div className="font-bold text-navy-950 text-sm truncate">{c.name}</div>
-                      <div className="text-[11px] text-navy-500 truncate">
+                      <div className="text-xs text-navy-500 truncate">
                         {c.email} · {c.mobile}
                       </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
-                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-[11px] font-medium">
+                      <span className="bg-navy-50 text-navy-700 px-2 py-0.5 rounded text-xs font-medium">
                         {c.plan_count} {c.plan_count === 1 ? "plan" : "plans"}
                       </span>
                       <span
-                        className={`text-navy-400 text-xs transition-transform ${expanded ? "rotate-180" : ""}`}
+                        className={`text-navy-600 text-xs transition-transform ${expanded ? "rotate-180" : ""}`}
                         aria-hidden
                       >
                         ▾
@@ -154,7 +154,7 @@ export default function AdminRmView({ me }: { me: MeUser }) {
                                     ? p.client_name
                                     : "Plan"}
                                 </div>
-                                <div className="text-[11px] text-navy-500 font-mono">
+                                <div className="text-xs text-navy-500 font-mono">
                                   {p.id.slice(0, 8)}... · {formatDate(p.created_at)}
                                 </div>
                               </div>

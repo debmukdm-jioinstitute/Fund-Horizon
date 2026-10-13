@@ -170,7 +170,7 @@ export default function PortalGoalsPage() {
                 </p>
               </div>
               <span
-                className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 ${
+                className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ring-1 ${
                   g.status === "funded"
                     ? "bg-teal-50 text-teal-800 ring-teal-200"
                     : g.status === "partially_funded"
@@ -195,11 +195,11 @@ export default function PortalGoalsPage() {
 
             <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
               <div>
-                <dt className="text-[11px] font-bold uppercase tracking-wider text-navy-500">Target</dt>
+                <dt className="text-xs font-bold uppercase tracking-wider text-navy-500">Target</dt>
                 <dd className="mt-0.5 font-extrabold text-navy-950">{inr(g.target_amount)}</dd>
               </div>
               <div>
-                <dt className="text-[11px] font-bold uppercase tracking-wider text-navy-500">
+                <dt className="text-xs font-bold uppercase tracking-wider text-navy-500">
                   SIP now / needed
                 </dt>
                 <dd className="mt-0.5 font-extrabold text-navy-950">
@@ -207,13 +207,13 @@ export default function PortalGoalsPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-[11px] font-bold uppercase tracking-wider text-navy-500">Chance</dt>
+                <dt className="text-xs font-bold uppercase tracking-wider text-navy-500">Chance</dt>
                 <dd className="mt-0.5 font-extrabold text-teal-800">
                   {g.success_prob == null ? "–" : pct(toFrac(g.success_prob), 0)}
                 </dd>
               </div>
               <div>
-                <dt className="text-[11px] font-bold uppercase tracking-wider text-navy-500">Progress</dt>
+                <dt className="text-xs font-bold uppercase tracking-wider text-navy-500">Progress</dt>
                 <dd className="mt-0.5 font-extrabold text-navy-950">{clamp100(g.progress_pct).toFixed(0)}%</dd>
               </div>
             </dl>

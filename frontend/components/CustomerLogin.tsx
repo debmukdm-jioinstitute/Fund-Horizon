@@ -33,20 +33,29 @@ export default function CustomerLogin({ className = "" }: { className?: string }
 
   if (loading) {
     return (
-      <span className={`ml-1 rounded-xl bg-navy-900/10 px-4 py-1.5 text-sm font-semibold text-navy-400 ${className}`} aria-hidden>
-        …
+      <span className={`ml-1 inline-flex items-center gap-1.5 ${className}`} aria-hidden>
+        <span className="h-7 w-12 rounded-xl bg-navy-900/10 animate-pulse" />
+        <span className="h-7 w-14 rounded-xl bg-navy-900/10 animate-pulse" />
       </span>
     );
   }
 
   if (!customer) {
     return (
-      <Link
-        href="/login"
-        className={`ml-1 rounded-xl bg-navy-900 px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800 ${className}`}
-      >
-        Log in
-      </Link>
+      <div className={`ml-1 flex items-center gap-1 sm:gap-1.5 ${className}`}>
+        <Link
+          href="/login"
+          className="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-navy-950 hover:bg-slate-100/70 transition"
+        >
+          Log in
+        </Link>
+        <Link
+          href="/signup"
+          className="rounded-xl bg-navy-900 px-3 sm:px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-white shadow-sm transition hover:bg-navy-800"
+        >
+          Sign up
+        </Link>
+      </div>
     );
   }
 

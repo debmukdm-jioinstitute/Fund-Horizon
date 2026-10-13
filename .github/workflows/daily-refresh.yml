@@ -41,7 +41,7 @@ jobs:
         if: ${{ inputs.dry_run != true }}
         run: |
           pip install pandas numpy
-          python data/fundhorizon_mf_rag_dataset/build_dataset.py "$RUNNER_TEMP/mf" --workers 12
+          python data/fundhorizon_mf_rag_dataset/build_dataset.py "$RUNNER_TEMP/mf" --workers 12 --include-direct
           # Guard: a half-failed fetch must never replace the good dataset.
           old=$(($(wc -l < data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv)))
           new=$(($(wc -l < "$RUNNER_TEMP/mf/all_schemes_metrics.csv")))

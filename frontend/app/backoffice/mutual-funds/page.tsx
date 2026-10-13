@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { getMutualFundsTracker, MutualFundItem } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
+import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
 
 export default function MutualFundsTrackerPage() {
   const [query, setQuery] = useState("");
   const [schemes, setSchemes] = useState<MutualFundItem[]>([]);
+  const [selectedScheme, setSelectedScheme] = useState<MutualFundItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -102,14 +104,25 @@ export default function MutualFundsTrackerPage() {
               ) : (
                 schemes.map((s, idx) => (
                   <tr key={idx}>
-                    <td className="font-mono text-[12px] text-[#006F64] dark:text-[#75E1CE] font-medium">
-                      {s.scheme_code}
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedScheme(s)}
+                        className="font-mono text-[12px] text-[#006F64] dark:text-[#75E1CE] font-medium hover:underline cursor-pointer"
+                        title={`Inspect scheme ${s.scheme_code}`}
+                      >
+                        {s.scheme_code}
+                      </button>
                     </td>
                     <td>
-                      <div className="font-medium text-[#172033] dark:text-[#EDF2F7] leading-snug">
-                        {s.scheme_name}
-                      </div>
-                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedScheme(s)}
+                        className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
+                      >
+                        <span className="group-hover:opacity-90">{s.scheme_name}</span>
+                      </button>
+                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
                         {s.amc_name || s.category || "Equity"}
                       </div>
                     </td>
@@ -137,6 +150,12 @@ export default function MutualFundsTrackerPage() {
           </table>
         </div>
       </div>
+
+      {/* Slide-over Inspection Drawer for Mutual Fund */}
+      <MutualFundDrawer
+        scheme={selectedScheme}
+        onClose={() => setSelectedScheme(null)}
+      />
     </div>
   );
 }

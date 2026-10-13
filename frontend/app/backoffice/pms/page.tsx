@@ -9,10 +9,12 @@ import {
 } from "@/lib/backoffice";
 import { formatCurrencyPaiseToINR } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
+import PmsStrategyDrawer from "@/components/backoffice/PmsStrategyDrawer";
 
 export default function PmsTrackerPage() {
   const [tab, setTab] = useState<"strategies" | "accounts">("strategies");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
+  const [selectedStrategy, setSelectedStrategy] = useState<PmsStrategyItem | null>(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
   const [accountTracker, setAccountTracker] = useState<PmsAccountTrackerData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -167,8 +169,14 @@ export default function PmsTrackerPage() {
                     filteredStrategies.map((s, idx) => (
                       <tr key={idx}>
                         <td>
-                          <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{s.strategy_name}</div>
-                          <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">{s.provider_name}</div>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedStrategy(s)}
+                            className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
+                          >
+                            <span className="group-hover:opacity-90">{s.strategy_name}</span>
+                          </button>
+                          <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">{s.provider_name}</div>
                         </td>
                         <td className="text-[#536176] dark:text-[#A8B4C4]">{s.investment_approach || "Equity"}</td>
                         <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
@@ -322,6 +330,12 @@ export default function PmsTrackerPage() {
           )}
         </div>
       )}
+
+      {/* Slide-over Inspection Drawer for PMS Strategy */}
+      <PmsStrategyDrawer
+        strategy={selectedStrategy}
+        onClose={() => setSelectedStrategy(null)}
+      />
     </div>
   );
 }

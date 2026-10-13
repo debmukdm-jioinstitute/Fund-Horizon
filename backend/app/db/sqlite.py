@@ -27,6 +27,14 @@ def db_path() -> Path:
     return get_default_db_path()
 
 
+def get_default_connection() -> sqlite3.Connection:
+    path = get_default_db_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(path)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
 class SQLiteRepository(DatabaseRepository):
     """SQLite implementation of DatabaseRepository."""
 
@@ -67,10 +75,23 @@ class SQLiteRepository(DatabaseRepository):
                         password_hash TEXT NOT NULL,
                         role TEXT NOT NULL DEFAULT 'customer',
                         assigned_rm_id TEXT,
+                        is_staff INTEGER NOT NULL DEFAULT 0,
+                        status TEXT NOT NULL DEFAULT 'active',
+                        must_change_password INTEGER NOT NULL DEFAULT 0,
+                        revoked_before TEXT,
                         created_at TEXT NOT NULL
                     )
                     """
                 )
+                cust_cols = [r["name"] for r in conn.execute("PRAGMA table_info(customers)").fetchall()]
+                for col_name, col_def in [
+                    ("is_staff", "INTEGER NOT NULL DEFAULT 0"),
+                    ("status", "TEXT NOT NULL DEFAULT 'active'"),
+                    ("must_change_password", "INTEGER NOT NULL DEFAULT 0"),
+                    ("revoked_before", "TEXT"),
+                ]:
+                    if col_name not in cust_cols:
+                        conn.execute(f"ALTER TABLE customers ADD COLUMN {col_name} {col_def}")
                 conn.execute(
                     """
                     CREATE TABLE IF NOT EXISTS sessions (
@@ -135,9 +156,11 @@ class SQLiteRepository(DatabaseRepository):
                 # from app.db.sqlite, so top-level imports would be circular.
                 from app.db_crm_core import init_crm_core_schema
                 from app.db_crm_products import init_crm_products_schema
+                from app.backoffice.db import init_backoffice_schema
 
                 init_crm_core_schema(conn)
                 init_crm_products_schema(conn)
+                init_backoffice_schema(conn)
         finally:
             conn.close()
 
@@ -372,7 +395,11 @@ class SQLiteRepository(DatabaseRepository):
             conn.close()
 
     def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
-        updates = {k: v for k, v in fields.items() if k in ("role", "assigned_rm_id")}
+        allowed = {
+            "name", "role", "assigned_rm_id", "password_hash",
+            "is_staff", "status", "must_change_password", "revoked_before"
+        }
+        updates = {k: v for k, v in fields.items() if k in allowed}
         conn = self._get_connection()
         try:
             with conn:
@@ -383,7 +410,7 @@ class SQLiteRepository(DatabaseRepository):
                         (*updates.values(), customer_id),
                     )
             row = conn.execute(
-                "SELECT id, name, email, mobile, role, assigned_rm_id, created_at FROM customers WHERE id = ?",
+                "SELECT * FROM customers WHERE id = ?",
                 (customer_id,),
             ).fetchone()
             return dict(row) if row else None

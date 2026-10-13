@@ -1,0 +1,65 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/api.Dockerfile
+      target: lean
+    restart: unless-stopped
+    environment:
+      - FH_INTERNAL_ONLY=true
+      - FH_COOKIE_SECURE=true
+      - FH_ADMIN_OPEN=false
+      - FH_ENABLE_DOCS=false
+      - FH_BACKOFFICE_COLLECTORS=true
+      - FH_AI_ENABLED=false
+      - FH_RAG_ENABLED=false
+      - FH_MARKET_MAX_CONCURRENCY=2
+      - FH_REQUIRE_PRODUCTION_MIGRATIONS=true
+      - FH_DB_PATH=/srv/data/fund_horizon.db
+      - FRED_API_KEY=${FRED_API_KEY:-}
+      - DATABASE_URL=${DATABASE_URL:-}
+    volumes:
+      - persistent_data:/srv/data
+    networks:
+      - internal_net
+    expose:
+      - "8000"
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/web.Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=
+        - NEXT_PUBLIC_SITE_URL=https://fundhorizon.internal
+    restart: unless-stopped
+    environment:
+      - API_INTERNAL_URL=http://api:8000
+      - NODE_ENV=production
+    networks:
+      - internal_net
+    expose:
+      - "3000"
+
+  proxy:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "8443:443"
+      - "8080:80"
+    volumes:
+      - ./nginx.internal.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - api
+      - web
+    networks:
+      - internal_net
+
+volumes:
+  persistent_data:
+    driver: local
+
+networks:
+  internal_net:
+    driver: bridge

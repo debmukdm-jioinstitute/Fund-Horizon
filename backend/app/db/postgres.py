@@ -61,6 +61,10 @@ def _orm_customer_full(c: CustomerModel) -> dict[str, Any]:
         "password_hash": c.password_hash,
         "role": c.role,
         "assigned_rm_id": c.assigned_rm_id,
+        "is_staff": getattr(c, "is_staff", 0),
+        "status": getattr(c, "status", "active"),
+        "must_change_password": getattr(c, "must_change_password", 0),
+        "revoked_before": getattr(c, "revoked_before", None),
         "created_at": c.created_at,
     }
 
@@ -306,7 +310,11 @@ class PostgresRepository(DatabaseRepository):
             return session.scalar(stmt) or 0
 
     def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
-        updates = {k: v for k, v in fields.items() if k in ("role", "assigned_rm_id")}
+        allowed = {
+            "name", "role", "assigned_rm_id", "password_hash",
+            "is_staff", "status", "must_change_password", "revoked_before"
+        }
+        updates = {k: v for k, v in fields.items() if k in allowed}
         with self.get_session() as session:
             with session.begin():
                 c = session.get(CustomerModel, customer_id)

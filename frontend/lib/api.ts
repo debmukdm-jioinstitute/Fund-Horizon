@@ -94,21 +94,33 @@ export const getFundAnalytics = (code: string) =>
 export const compareFunds = (codes: string[]) =>
   request<CompareResponse>(`${API_URL}/api/funds/compare?codes=${codes.join(",")}`);
 
+async function getServerHeaders(): Promise<Record<string, string>> {
+  try {
+    const { cookies } = await import("next/headers");
+    const cookieHeader = cookies().toString();
+    return cookieHeader ? { Cookie: cookieHeader } : {};
+  } catch {
+    return {};
+  }
+}
+
 /** Server-side fetch used by server components (landing page, footer). */
 export async function getMetaServer(): Promise<Meta | null> {
   try {
-    const res = await fetch(`${SERVER_API_URL}/api/meta`, { cache: "no-store" });
+    const headers = await getServerHeaders();
+    const res = await fetch(`${SERVER_API_URL}/api/meta`, { cache: "no-store", headers });
     return res.ok ? ((await res.json()) as Meta) : null;
   } catch {
     return null;
   }
 }
 
-/** Server-side plan fetch. Returns null on 404 so caller can trigger notFound(). */
+/** Server-side plan fetch with forwarded session cookies. Returns null on 404 so caller can trigger notFound(). */
 export async function getPlanServer(id: string, stepUp?: number): Promise<Plan | null> {
   try {
     const query = stepUp !== undefined ? `?step_up=${stepUp}` : "";
-    const res = await fetch(`${SERVER_API_URL}/api/plans/${id}${query}`, { cache: "no-store" });
+    const headers = await getServerHeaders();
+    const res = await fetch(`${SERVER_API_URL}/api/plans/${id}${query}`, { cache: "no-store", headers });
     if (res.status === 404) return null;
     return res.ok ? ((await res.json()) as Plan) : null;
   } catch {
@@ -116,10 +128,11 @@ export async function getPlanServer(id: string, stepUp?: number): Promise<Plan |
   }
 }
 
-/** Server-side fund detail fetch. */
+/** Server-side fund detail fetch with forwarded session cookies. */
 export async function getFundDetailServer(code: string): Promise<FundDetail | null> {
   try {
-    const res = await fetch(`${SERVER_API_URL}/api/funds/${code}`, { cache: "no-store" });
+    const headers = await getServerHeaders();
+    const res = await fetch(`${SERVER_API_URL}/api/funds/${code}`, { cache: "no-store", headers });
     if (res.status === 404) return null;
     return res.ok ? ((await res.json()) as FundDetail) : null;
   } catch {
@@ -127,10 +140,11 @@ export async function getFundDetailServer(code: string): Promise<FundDetail | nu
   }
 }
 
-/** Server-side fund analytics fetch. */
+/** Server-side fund analytics fetch with forwarded session cookies. */
 export async function getFundAnalyticsServer(code: string): Promise<FundAnalytics | null> {
   try {
-    const res = await fetch(`${SERVER_API_URL}/api/funds/${code}/analytics`, { cache: "no-store" });
+    const headers = await getServerHeaders();
+    const res = await fetch(`${SERVER_API_URL}/api/funds/${code}/analytics`, { cache: "no-store", headers });
     if (res.status === 404) return null;
     return res.ok ? ((await res.json()) as FundAnalytics) : null;
   } catch {
@@ -138,10 +152,11 @@ export async function getFundAnalyticsServer(code: string): Promise<FundAnalytic
   }
 }
 
-/** Server-side fund comparison fetch. */
+/** Server-side fund comparison fetch with forwarded session cookies. */
 export async function compareFundsServer(codes: string[]): Promise<CompareResponse | null> {
   try {
-    const res = await fetch(`${SERVER_API_URL}/api/funds/compare?codes=${codes.join(",")}`, { cache: "no-store" });
+    const headers = await getServerHeaders();
+    const res = await fetch(`${SERVER_API_URL}/api/funds/compare?codes=${codes.join(",")}`, { cache: "no-store", headers });
     if (!res.ok) return null;
     return (await res.json()) as CompareResponse;
   } catch {

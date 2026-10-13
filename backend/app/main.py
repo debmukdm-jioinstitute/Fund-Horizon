@@ -81,11 +81,46 @@ def _plan_get_recompute(path: str, request: Request) -> bool:
     return len(parts) == 4 and parts[1:3] == ["api", "plans"]
 
 
+import asyncio
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if _flag("FH_REQUIRE_PRODUCTION_MIGRATIONS", "false"):
+        from alembic.config import Config
+        from alembic.script import ScriptDirectory
+        from alembic.runtime.migration import MigrationContext
+        from app.db import get_repository
+
+        repo = get_repository()
+        engine = getattr(repo, "engine", None)
+        if engine:
+            with engine.connect() as conn:
+                context = MigrationContext.configure(conn)
+                current_rev = context.get_current_revision()
+                alembic_cfg = Config("alembic.ini")
+                script = ScriptDirectory.from_config(alembic_cfg)
+                head_rev = script.get_current_head()
+                if current_rev != head_rev:
+                    raise RuntimeError(f"Pending production migrations: current={current_rev}, head={head_rev}")
+
     load_metrics()
     app.state.eligible = eligible_funds()
-    yield
+
+    collector_task = None
+    if _flag("FH_BACKOFFICE_COLLECTORS", "true"):
+        from app.backoffice.collectors import run_collector_loop
+
+        collector_task = asyncio.create_task(run_collector_loop(interval_seconds=3600))
+
+    try:
+        yield
+    finally:
+        if collector_task:
+            collector_task.cancel()
+            try:
+                await collector_task
+            except (asyncio.CancelledError, Exception):
+                pass
 
 
 def create_app() -> FastAPI:
@@ -155,6 +190,7 @@ def create_app() -> FastAPI:
 
     from app.api.admin import admin_router
     from app.api.auth import auth_router
+    from app.api.backoffice import router as backoffice_router
     from app.api.crm_core import router as crm_core_router
     from app.api.crm_products import router as crm_products_router
     from app.api.rm import rm_router
@@ -166,6 +202,7 @@ def create_app() -> FastAPI:
     app.include_router(rm_router)
     app.include_router(crm_core_router)
     app.include_router(crm_products_router)
+    app.include_router(backoffice_router)
     return app
 
 

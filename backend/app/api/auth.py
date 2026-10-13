@@ -1,4 +1,4 @@
-"""Customer account authentication: signup, login, sessions, and role guards.
+"""Customer & staff authentication: sessions, roles, CSRF, and backoffice access guards.
 
 Session identity travels in the ``fh_session`` HttpOnly cookie (or an
 ``Authorization: Bearer`` header fallback). Only the SHA-256 of the token is
@@ -29,10 +29,11 @@ PBKDF2_ITERATIONS = 600_000
 AUTH_RATE_LIMIT = 10  # requests per minute per IP on signup + login
 AUTH_RATE_WINDOW_S = 60.0
 
+STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only")
+
 _EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 _MOBILE_RE = re.compile(r"^[6-9]\d{9}$")
 
-# In-memory sliding-window counters for the auth endpoints: {ip: [monotonic timestamps]}.
 _AUTH_ATTEMPTS: dict[str, list[float]] = {}
 
 
@@ -77,7 +78,6 @@ def _verify_password(password: str, stored: str) -> bool:
     return hmac.compare_digest(dk.hex(), hash_hex)
 
 
-# Precomputed dummy hash so unknown-email logins cost the same as wrong-password ones.
 _DUMMY_HASH = _hash_password(secrets.token_hex(16))
 
 
@@ -108,10 +108,11 @@ def _new_session_token(customer_id: str) -> str:
 
 
 def _cookie_settings() -> dict:
+    """Same-origin internal deployment: Secure + HttpOnly + SameSite=Lax."""
     secure = os.environ.get("FH_COOKIE_SECURE", "false").lower() in ("true", "1", "yes")
     return {
         "httponly": True,
-        "samesite": "none" if secure else "lax",
+        "samesite": "lax",
         "secure": secure,
     }
 
@@ -147,8 +148,29 @@ def _token_from_request(request: Request) -> str | None:
     return None
 
 
+def verify_csrf(request: Request) -> None:
+    """CSRF validation for cookie-authenticated mutation requests."""
+    if request.method in ("GET", "HEAD", "OPTIONS"):
+        return
+    # Only enforce if request is authenticated using browser session cookie
+    if not request.cookies.get(SESSION_COOKIE):
+        return
+
+    sec_fetch_site = (request.headers.get("sec-fetch-site") or "").lower()
+    if sec_fetch_site == "cross-site":
+        raise HTTPException(403, "CSRF validation failed: cross-site mutation refused.")
+
+    origin = request.headers.get("origin")
+    if origin:
+        host = request.headers.get("host")
+        allowed_origins = [o.strip() for o in os.environ.get("FH_CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
+        origin_host = origin.split("://")[-1].rstrip("/")
+        if host and origin_host != host and origin not in allowed_origins and not (host.startswith("localhost") or host.startswith("127.0.0.1")):
+            raise HTTPException(403, "CSRF validation failed: origin mismatch.")
+
+
 def get_current_customer(request: Request) -> dict:
-    """Return the signed-in customer's public record, or raise 401."""
+    """Return the signed-in customer/staff public record, or raise 401."""
     token = _token_from_request(request)
     if not token:
         raise HTTPException(401, "Sign in required.")
@@ -163,16 +185,19 @@ def get_current_customer(request: Request) -> dict:
     if not customer:
         sqlite.delete_auth_session(token_sha)
         raise HTTPException(401, "Sign in required.")
-    admin_email = os.environ.get("FH_ADMIN_EMAIL", "").strip().lower()
-    if admin_email and customer.get("email") == admin_email and customer.get("role") != "admin":
-        updated = sqlite.update_customer(customer["id"], {"role": "admin"})
-        if updated:
-            customer = updated
+
+    # Check session revocation timestamp
+    revoked_before = customer.get("revoked_before")
+    if revoked_before:
+        if _parse_dt(sess["created_at"]) < _parse_dt(revoked_before):
+            sqlite.delete_auth_session(token_sha)
+            raise HTTPException(401, "Session has been revoked. Please sign in again.")
+
     return _public_customer(customer)
 
 
 def get_optional_customer(request: Request) -> dict | None:
-    """Return the signed-in customer, or None for anonymous requests (never raises)."""
+    """Return the signed-in customer, or None for anonymous requests."""
     try:
         return get_current_customer(request)
     except HTTPException:
@@ -180,12 +205,32 @@ def get_optional_customer(request: Request) -> dict | None:
 
 
 def require_role(*roles: str):
-    """Dependency factory: allow only customers whose role is in ``roles``."""
-
+    """Dependency factory: allow only accounts whose role is in ``roles``."""
     def _require(customer: Annotated[dict, Depends(get_current_customer)]) -> dict:
         if customer["role"] not in roles:
             raise HTTPException(403, "You do not have permission to access this resource.")
         return customer
+
+    return _require
+
+
+def require_staff(customer: Annotated[dict, Depends(get_current_customer)]) -> dict:
+    """Dependency: require an active staff member."""
+    is_staff = customer.get("is_staff") or (customer.get("role") in STAFF_ROLES)
+    if not is_staff or customer.get("role") == "customer":
+        raise HTTPException(403, "Staff access required.")
+    if customer.get("status") in ("inactive", "suspended"):
+        raise HTTPException(403, "Staff account is suspended or inactive.")
+    return customer
+
+
+def require_backoffice_role(*roles: str):
+    """Dependency factory: require one of the specified backoffice roles."""
+    def _require(staff: Annotated[dict, Depends(require_staff)]) -> dict:
+        user_role = staff.get("role")
+        if user_role not in roles and "admin" not in user_role:
+            raise HTTPException(403, f"Insufficient staff permissions. Required role in {roles}, got {user_role}.")
+        return staff
 
     return _require
 
@@ -244,20 +289,27 @@ class LoginRequest(BaseModel):
 @auth_router.post("/signup", status_code=201)
 def signup(body: SignupRequest, request: Request, response: Response):
     _check_auth_rate_limit(request)
+    verify_csrf(request)
+
+    # In internal backoffice mode, public self-registration is disabled
+    internal_only = os.environ.get("FH_INTERNAL_ONLY", "false").lower() in ("true", "1", "yes")
+    if internal_only:
+        raise HTTPException(403, "Public registration is disabled. Please contact an administrator.")
+
     if sqlite.get_customer_by_email(body.email) or sqlite.get_customer_by_mobile(body.mobile):
         raise HTTPException(422, "An account with these details already exists")
-    admin_email = os.environ.get("FH_ADMIN_EMAIL", "").strip().lower()
-    role = "admin" if admin_email and body.email == admin_email else "customer"
+
     try:
         customer = sqlite.create_customer(
             name=body.name,
             email=body.email,
             mobile=body.mobile,
             password_hash=_hash_password(body.password),
-            role=role,
+            role="customer",
         )
     except ValueError as e:
         raise HTTPException(422, str(e)) from e
+
     _set_session_cookie(response, _new_session_token(customer["id"]))
     return {"customer": customer}
 
@@ -265,21 +317,19 @@ def signup(body: SignupRequest, request: Request, response: Response):
 @auth_router.post("/login")
 def login(body: LoginRequest, request: Request, response: Response):
     _check_auth_rate_limit(request)
+    verify_csrf(request)
     email = (body.email or "").strip().lower()
     customer = sqlite.get_customer_by_email(email)
     if customer:
         ok = _verify_password(body.password or "", customer["password_hash"])
     else:
-        # Same-cost dummy check so unknown emails don't answer faster.
         _verify_password(body.password or "", _DUMMY_HASH)
         ok = False
     if not ok or not customer:
         raise HTTPException(401, "Invalid email or password")
-    admin_email = os.environ.get("FH_ADMIN_EMAIL", "").strip().lower()
-    if admin_email and customer.get("email") == admin_email and customer.get("role") != "admin":
-        updated = sqlite.update_customer(customer["id"], {"role": "admin"})
-        if updated:
-            customer = updated
+    if customer.get("status") in ("inactive", "suspended"):
+        raise HTTPException(403, "Account is suspended or inactive.")
+
     _set_session_cookie(response, _new_session_token(customer["id"]))
     return {"customer": _public_customer(customer)}
 

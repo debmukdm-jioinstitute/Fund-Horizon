@@ -29,6 +29,10 @@ class CustomerModel(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[str] = mapped_column(String(16), nullable=False, default="customer")
     assigned_rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    is_staff: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="active")
+    must_change_password: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    revoked_before: Mapped[str | None] = mapped_column(String(50), nullable=True)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
 
 

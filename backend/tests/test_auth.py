@@ -181,18 +181,22 @@ def test_logout_revokes_session(client):
 
 
 def test_admin_bootstrap_via_env(client, monkeypatch):
-    monkeypatch.setenv("FH_ADMIN_EMAIL", "boss@example.com")
-    r, _, _ = _signup_pair(client, email="boss@example.com")
-    assert r.json()["customer"]["role"] == "admin"
-    r2, _, _ = _signup_pair(client, email="Boss2@Example.com".lower())
-    # different address -> not admin
-    assert r2.json()["customer"]["role"] == "customer"
+    monkeypatch.setenv("FH_ADMIN_EMAIL", "boss_test_env@example.com")
+    r, _, _ = _signup_pair(client, email="boss_test_env@example.com")
+    # Verified invariant: email string never confers admin role
+    assert r.json()["customer"]["role"] == "customer"
 
 
-def test_admin_customers_requires_admin(client, monkeypatch):
-    monkeypatch.setenv("FH_ADMIN_EMAIL", "boss@example.com")
-    admin_signup, _, _ = _signup_pair(client, email="boss@example.com")
-    assert admin_signup.status_code == 201
+def _create_admin(client):
+    r, _, _ = _signup_pair(client)
+    admin_id = r.json()["customer"]["id"]
+    sqlite.update_customer(admin_id, {"role": "admin", "is_staff": 1})
+    _login_as(client, admin_id)
+    return admin_id
+
+
+def test_admin_customers_requires_admin(client):
+    admin_id = _create_admin(client)
     r = client.get("/api/admin/customers")
     assert r.status_code == 200
     body = r.json()
@@ -212,10 +216,8 @@ def test_admin_customers_requires_admin(client, monkeypatch):
     assert client.get("/api/admin/customers").status_code == 401
 
 
-def test_admin_update_customer(client, monkeypatch):
-    monkeypatch.setenv("FH_ADMIN_EMAIL", "boss@example.com")
-    _signup_pair(client, email="boss@example.com")
-    admin_id = client.get("/api/auth/me").json()["id"]
+def test_admin_update_customer(client):
+    admin_id = _create_admin(client)
     _, _, _ = _signup_pair(client)  # plain customer; cookie now theirs
     target_id = client.get("/api/auth/me").json()["id"]
 
@@ -223,11 +225,7 @@ def test_admin_update_customer(client, monkeypatch):
     assert client.patch(f"/api/admin/customers/{target_id}", json={"role": "rm"}).status_code == 403
 
     # log back in as admin via fresh session
-    client.cookies.clear()
-    token = secrets.token_urlsafe(32)
-    sqlite.create_auth_session(admin_id, hashlib.sha256(token.encode()).hexdigest(),
-                               (datetime.now(UTC) + timedelta(days=30)).isoformat())
-    client.cookies.set("fh_session", token)
+    _login_as(client, admin_id)
 
     bad_role = client.patch(f"/api/admin/customers/{target_id}", json={"role": "superuser"})
     assert bad_role.status_code == 422
@@ -256,10 +254,8 @@ def _login_as(client, customer_id):
     client.cookies.set("fh_session", token)
 
 
-def test_rm_sees_only_assigned_customers(client, monkeypatch):
-    monkeypatch.setenv("FH_ADMIN_EMAIL", "boss@example.com")
-    _signup_pair(client, email="boss@example.com")
-    admin_id = client.get("/api/auth/me").json()["id"]
+def test_rm_sees_only_assigned_customers(client):
+    admin_id = _create_admin(client)
 
     _, _, _ = _signup_pair(client)
     rm_id = client.get("/api/auth/me").json()["id"]

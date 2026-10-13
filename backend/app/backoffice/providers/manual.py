@@ -17,11 +17,8 @@ from __future__ import annotations
 
 import csv
 import io
-import json
 import logging
 import re
-import uuid
-from datetime import UTC, datetime
 from typing import Any
 
 logger = logging.getLogger("backoffice.providers.manual")
@@ -99,6 +96,14 @@ IMPORT_TEMPLATES: dict[str, dict[str, Any]] = {
             "INE002A01018", "Reliance Industries Ltd", "Oil & Gas / Retail", "FY26-Q1",
             "235000.00", "42000.00", "19500.00", "315000.00", "185000.00", "consolidated"
         ],
+    },
+    "mf_managers": {
+        "headers": ["scheme_code", "manager_name", "manager_start", "source", "provenance"],
+        "example_row": ["119551", "Chirag Setalvad", "2019-01-01", "manual_import", "factsheet"],
+    },
+    "quartile": {
+        "headers": ["scheme_code", "sebi_category", "window_years", "quartile", "as_of", "source"],
+        "example_row": ["119551", "mid_cap", "2", "1", "2026-10-09", "manual_import"],
     },
 }
 
@@ -216,6 +221,27 @@ class ManualImportValidator:
             elif import_type == "issuer_fundamentals":
                 if not row.get("ISIN/Symbol"):
                     return "ISIN/Symbol is required"
+
+            elif import_type == "mf_managers":
+                if not row.get("scheme_code") or not row.get("manager_name"):
+                    return "scheme_code and manager_name are required"
+                start = row.get("manager_start")
+                if start and not re.match(r"^\d{4}-\d{2}-\d{2}$", str(start).strip()):
+                    return f"manager_start must be YYYY-MM-DD, got '{start}'"
+
+            elif import_type == "quartile":
+                if not row.get("scheme_code"):
+                    return "scheme_code is required"
+                q = row.get("quartile")
+                try:
+                    q_int = int(q)
+                    if not (1 <= q_int <= 4):
+                        return f"quartile must be between 1 and 4, got '{q}'"
+                except (ValueError, TypeError):
+                    return f"quartile must be an integer (1-4), got '{q}'"
+                as_of = row.get("as_of", "")
+                if not re.match(r"^\d{4}-\d{2}-\d{2}$", str(as_of).strip()):
+                    return f"as_of must be YYYY-MM-DD, got '{as_of}'"
 
             return None
         except ValueError as e:

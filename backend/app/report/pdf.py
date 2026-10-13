@@ -6,7 +6,6 @@ import io
 from datetime import date
 from pathlib import Path
 
-import matplotlib
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4

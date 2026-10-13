@@ -45,6 +45,7 @@ REFRESH_INTERVALS: dict[str, int] = {
     "SRC_RSS": 600,
     "SRC_APMI": 12 * 3600,
     "SRC_FACTSHEETS": 6 * 3600,
+    "SRC_SCREENING": 24 * 3600,
 }
 _LAST_RUN: dict[str, float] = {}
 
@@ -259,6 +260,9 @@ async def _refresh_source(source_id: str) -> dict[str, Any]:
             return await loop.run_in_executor(None, refresh_rss)
         if source_id == "SRC_FACTSHEETS":
             return await loop.run_in_executor(None, refresh_factsheets)
+        if source_id == "SRC_SCREENING":
+            from app.backoffice.screening.jobs import refresh_screening
+            return await loop.run_in_executor(None, refresh_screening)
 
         providers = {
             "SRC_IN_YIELDS": IndiaYieldsProvider,

@@ -9,7 +9,7 @@ from __future__ import annotations
 import csv
 import io
 import logging
-from datetime import UTC, datetime
+from datetime import datetime
 
 from app.backoffice.providers.base import (
     BaseProvider,

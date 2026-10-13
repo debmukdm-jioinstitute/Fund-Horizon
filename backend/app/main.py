@@ -83,12 +83,14 @@ def _plan_get_recompute(path: str, request: Request) -> bool:
 
 import asyncio
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if _flag("FH_REQUIRE_PRODUCTION_MIGRATIONS", "false"):
         from alembic.config import Config
-        from alembic.script import ScriptDirectory
         from alembic.runtime.migration import MigrationContext
+        from alembic.script import ScriptDirectory
+
         from app.db import get_repository
 
         repo = get_repository()

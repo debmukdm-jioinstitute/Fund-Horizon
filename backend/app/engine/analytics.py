@@ -436,3 +436,126 @@ def optimize_portfolio_weights(
         out["hrp"] = None
 
     return out
+
+
+def beta(fund_series: pd.Series, benchmark_series: pd.Series) -> float | None:
+    """Compute Beta of fund vs benchmark: cov(R_p, R_b) / var(R_b)."""
+    f_ret = _as_periodic_returns(fund_series)
+    b_ret = _as_periodic_returns(benchmark_series)
+    common_idx = f_ret.index.intersection(b_ret.index)
+    if len(common_idx) < 12:
+        return None
+    f = f_ret.loc[common_idx]
+    b = b_ret.loc[common_idx]
+    var_b = float(b.var())
+    if math.isnan(var_b) or var_b < 1e-12:
+        return None
+    cov_fb = float(f.cov(b))
+    if math.isnan(cov_fb):
+        return None
+    return float(cov_fb / var_b)
+
+
+def jensen_alpha(
+    cagr_p: float | None,
+    cagr_b: float | None,
+    beta_val: float | None,
+    rf: float = 0.065,
+) -> float | None:
+    """Jensen's Alpha: CAGR_p - [rf + beta * (CAGR_b - rf)]."""
+    if cagr_p is None or cagr_b is None or beta_val is None:
+        return None
+    return float(cagr_p - (rf + beta_val * (cagr_b - rf)))
+
+
+def r_squared(fund_series: pd.Series, benchmark_series: pd.Series) -> float | None:
+    """R-squared (coefficient of determination): corr(R_p, R_b)^2."""
+    f_ret = _as_periodic_returns(fund_series)
+    b_ret = _as_periodic_returns(benchmark_series)
+    common_idx = f_ret.index.intersection(b_ret.index)
+    if len(common_idx) < 12:
+        return None
+    f = f_ret.loc[common_idx]
+    b = b_ret.loc[common_idx]
+    std_f = float(f.std())
+    std_b = float(b.std())
+    if math.isnan(std_f) or math.isnan(std_b) or std_f < 1e-6 or std_b < 1e-6:
+        return None
+    corr = float(f.corr(b))
+    if math.isnan(corr):
+        return None
+    return float(corr ** 2)
+
+
+def tracking_error(
+    fund_series: pd.Series,
+    benchmark_series: pd.Series,
+    periods_per_year: int = 12,
+) -> float | None:
+    """Annualized tracking error: std(R_p - R_b) * sqrt(periods_per_year)."""
+    f_ret = _as_periodic_returns(fund_series)
+    b_ret = _as_periodic_returns(benchmark_series)
+    common_idx = f_ret.index.intersection(b_ret.index)
+    if len(common_idx) < 12:
+        return None
+    diff = f_ret.loc[common_idx] - b_ret.loc[common_idx]
+    std_diff = float(diff.std())
+    if math.isnan(std_diff):
+        return None
+    return float(std_diff * math.sqrt(periods_per_year))
+
+
+def information_ratio(
+    cagr_p: float | None,
+    cagr_b: float | None,
+    te: float | None,
+) -> float | None:
+    """Information ratio: (CAGR_p - CAGR_b) / tracking_error."""
+    if cagr_p is None or cagr_b is None or te is None or te < 1e-4:
+        return None
+    return float((cagr_p - cagr_b) / te)
+
+
+def treynor_ratio(
+    cagr_val: float | None,
+    beta_val: float | None,
+    rf: float = 0.065,
+) -> float | None:
+    """Treynor ratio: (CAGR_p - rf) / beta."""
+    if cagr_val is None or beta_val is None or abs(beta_val) < 1e-6:
+        return None
+    return float((cagr_val - rf) / beta_val)
+
+
+treynor = treynor_ratio
+
+
+def tenure_ratio(
+    manager_start: str | date | None,
+    as_of: str | date,
+    window_years: float = 3.0,
+    fund_first_date: str | date | None = None,
+) -> float | None:
+    """Ratio of manager tenure over measurement window (default 3Y or fund age if younger)."""
+    if manager_start is None:
+        return None
+    try:
+        d_start = pd.Timestamp(manager_start).date()
+        d_asof = pd.Timestamp(as_of).date()
+    except Exception:
+        return None
+    if d_start > d_asof:
+        return 0.0
+    manager_days = (d_asof - d_start).days
+    window_days = window_years * 365.25
+    if fund_first_date is not None:
+        try:
+            d_fund = pd.Timestamp(fund_first_date).date()
+            fund_days = (d_asof - d_fund).days
+            if fund_days < window_days:
+                window_days = max(1.0, float(fund_days))
+        except Exception:
+            pass
+    if window_days <= 0:
+        return None
+    return float(manager_days / window_days)

@@ -12,7 +12,7 @@ Covers:
 """
 from __future__ import annotations
 
-from sqlalchemy import Float, Integer, String, Text, UniqueConstraint, Index
+from sqlalchemy import Float, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.models import Base
@@ -312,3 +312,102 @@ class CollectorRunModel(Base):
     duration_ms: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     started_at: Mapped[str] = mapped_column(String(50), nullable=False)
     completed_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+
+
+class MfManagerModel(Base):
+    __tablename__ = "mf_managers"
+
+    scheme_code: Mapped[str] = mapped_column(String(64), primary_key=True)
+    manager_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    manager_start: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    source: Mapped[str] = mapped_column(String(64), nullable=False, default="manual_import")
+    provenance: Mapped[str] = mapped_column(String(64), nullable=False, default="manual")
+    updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+
+class MfQuartileExternalModel(Base):
+    __tablename__ = "mf_quartile_external"
+
+    scheme_code: Mapped[str] = mapped_column(String(64), primary_key=True)
+    window_years: Mapped[int] = mapped_column(Integer, primary_key=True, default=2)
+    as_of: Mapped[str] = mapped_column(String(20), primary_key=True)
+    quartile: Mapped[int] = mapped_column(Integer, nullable=False)
+    source: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    fetched_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+
+class MfBenchmarkNavModel(Base):
+    __tablename__ = "mf_benchmark_nav"
+
+    instrument_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    date: Mapped[str] = mapped_column(String(20), primary_key=True)
+    nav: Mapped[float] = mapped_column(Float, nullable=False)
+    provenance: Mapped[str] = mapped_column(String(64), nullable=False, default="imported")
+
+
+class MfScreeningMetricsModel(Base):
+    __tablename__ = "mf_screening_metrics"
+
+    scheme_code: Mapped[str] = mapped_column(String(64), primary_key=True)
+    as_of: Mapped[str] = mapped_column(String(20), nullable=False)
+    cat: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    amc: Mapped[str | None] = mapped_column(String(120), index=True, nullable=True)
+    scheme_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    manager_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    manager_tenure_years: Mapped[float | None] = mapped_column(Float, nullable=True)
+    tenure_ratio: Mapped[float | None] = mapped_column(Float, nullable=True)
+    alpha: Mapped[float | None] = mapped_column(Float, nullable=True)
+    beta: Mapped[float | None] = mapped_column(Float, nullable=True)
+    std_dev: Mapped[float | None] = mapped_column(Float, nullable=True)
+    r_squared: Mapped[float | None] = mapped_column(Float, nullable=True)
+    information_ratio: Mapped[float | None] = mapped_column(Float, nullable=True)
+    tracking_error: Mapped[float | None] = mapped_column(Float, nullable=True)
+    treynor: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sharpe: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sortino: Mapped[float | None] = mapped_column(Float, nullable=True)
+    up_capture: Mapped[float | None] = mapped_column(Float, nullable=True)
+    down_capture: Mapped[float | None] = mapped_column(Float, nullable=True)
+    max_drawdown: Mapped[float | None] = mapped_column(Float, nullable=True)
+    expense_ratio: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ret_1y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cagr_3y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cagr_5y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cagr_si: Mapped[float | None] = mapped_column(Float, nullable=True)
+    bench_1y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    bench_3y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    bench_5y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    bench_si: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cat_avg_1y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cat_avg_3y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cat_avg_5y: Mapped[float | None] = mapped_column(Float, nullable=True)
+    cat_avg_si: Mapped[float | None] = mapped_column(Float, nullable=True)
+    quartile_2y: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    quartile_source: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    rf_source: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    benchmark_source: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    history_years: Mapped[float | None] = mapped_column(Float, nullable=True)
+    quality_flags: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    provenance_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ScreeningPresetModel(Base):
+    __tablename__ = "screening_presets"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    staff_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    filters_json: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+
+class ScreeningRunModel(Base):
+    __tablename__ = "screening_runs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    staff_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
+    preset_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    filters_json: Mapped[str] = mapped_column(Text, nullable=False)
+    stage_counts_json: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[str] = mapped_column(String(50), nullable=False)

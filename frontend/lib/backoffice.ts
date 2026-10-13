@@ -1104,3 +1104,180 @@ export const getPmsStrategyDetail = async (iaId: string): Promise<PmsStrategyDet
     source_url: str(d.source_url) ?? `https://www.apmiindia.org/apmi/IaInsight.htm?IAID=${iaId}`,
   };
 };
+
+// ---------------------------------------------------------------------------
+// Fund Screening Types and Methods
+// ---------------------------------------------------------------------------
+
+export interface MfScreeningRatioMeta {
+  key: string;
+  label: string;
+  unit: "decimal" | "ratio" | "pct" | "years";
+  description?: string;
+}
+
+export interface MfScreeningRow {
+  scheme_code: string;
+  as_of: string;
+  cat: string;
+  amc?: string | null;
+  scheme_name: string;
+  manager_name?: string | null;
+  manager_tenure_years?: number | null;
+  tenure_ratio?: number | null;
+  alpha?: number | null;
+  beta?: number | null;
+  std_dev?: number | null;
+  r_squared?: number | null;
+  information_ratio?: number | null;
+  tracking_error?: number | null;
+  treynor?: number | null;
+  sharpe?: number | null;
+  sortino?: number | null;
+  up_capture?: number | null;
+  down_capture?: number | null;
+  max_drawdown?: number | null;
+  expense_ratio?: number | null;
+  ret_1y?: number | null;
+  cagr_3y?: number | null;
+  cagr_5y?: number | null;
+  cagr_si?: number | null;
+  bench_1y?: number | null;
+  bench_3y?: number | null;
+  bench_5y?: number | null;
+  bench_si?: number | null;
+  cat_avg_1y?: number | null;
+  cat_avg_3y?: number | null;
+  cat_avg_5y?: number | null;
+  cat_avg_si?: number | null;
+  quartile_2y?: number | null;
+  quartile_source?: string | null;
+  rf_source?: string | null;
+  benchmark_source?: string | null;
+  history_years?: number | null;
+  quality_flags?: string | null;
+  provenance_json?: string | null;
+  stage_flags?: { s1: boolean; s2: boolean; s3: boolean; s4a: boolean; s4c: boolean };
+  action_status?: "review" | "retain" | "excluded" | "insufficient";
+  pms_link?: { ia_id?: string; strategy_name: string; fund_manager?: string } | null;
+}
+
+export interface ScreeningMetricsData {
+  as_of?: string;
+  rf: number;
+  rf_source: string;
+  benchmark_policy: string;
+  ratios: MfScreeningRatioMeta[];
+  rows: MfScreeningRow[];
+  facets: { amcs: string[]; cats: string[] };
+  total: number;
+}
+
+export interface ScreeningFunnelCounts {
+  universe: number;
+  s1: number;
+  s2: number;
+  s3_action: number;
+  s3_retain: number;
+  s3_dropped: number;
+  s4a: number;
+  final: number;
+  insufficient_by_stage: { s1: number; s2: number; s3: number; s4a: number; s4c: number };
+}
+
+export interface ScreeningRunData {
+  run_id: string;
+  as_of: string;
+  counts: ScreeningFunnelCounts;
+  action: MfScreeningRow[];
+  retain: MfScreeningRow[];
+}
+
+export interface ScreeningFundDetail extends MfScreeningRow {
+  manager?: {
+    scheme_code: string;
+    manager_name: string;
+    manager_start?: string | null;
+    source?: string | null;
+    provenance?: string | null;
+  } | null;
+  pms_matches?: Array<{
+    ia_id: string;
+    strategy_name: string;
+    provider?: string | null;
+    fund_manager?: string | null;
+    normalized_manager?: string | null;
+    aum_crore?: number | null;
+    return_1y?: number | null;
+    return_3y?: number | null;
+  }>;
+  notes?: Array<{
+    id: string;
+    title: string;
+    content: string;
+    created_at?: string;
+  }>;
+}
+
+export interface ScreeningPresetItem {
+  id: string;
+  name: string;
+  filters: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export const getScreeningMetrics = async (params: {
+  cat?: string;
+  amc?: string;
+  q_search?: string;
+  as_of?: string;
+} = {}): Promise<BackofficeEnvelope<ScreeningMetricsData>> => {
+  const q = new URLSearchParams();
+  if (params.cat) q.set("cat", params.cat);
+  if (params.amc) q.set("amc", params.amc);
+  if (params.q_search) q.set("q_search", params.q_search);
+  if (params.as_of) q.set("as_of", params.as_of);
+  const qs = q.toString() ? `?${q.toString()}` : "";
+  return boFetch<BackofficeEnvelope<ScreeningMetricsData>>(`/api/backoffice/screening/metrics${qs}`);
+};
+
+export const runScreening = async (payload: {
+  preset_id?: string | null;
+  filters: Record<string, unknown>;
+}): Promise<BackofficeEnvelope<ScreeningRunData>> => {
+  return boFetch<BackofficeEnvelope<ScreeningRunData>>("/api/backoffice/screening/run", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+};
+
+export const getScreeningFund = async (schemeCode: string): Promise<BackofficeEnvelope<ScreeningFundDetail>> => {
+  return boFetch<BackofficeEnvelope<ScreeningFundDetail>>(`/api/backoffice/screening/funds/${encodeURIComponent(schemeCode)}`);
+};
+
+export const listScreeningPresets = async (): Promise<BackofficeEnvelope<ScreeningPresetItem[]>> => {
+  return boFetch<BackofficeEnvelope<ScreeningPresetItem[]>>("/api/backoffice/screening/presets");
+};
+
+export const saveScreeningPreset = async (
+  name: string,
+  filters: Record<string, unknown>
+): Promise<BackofficeEnvelope<ScreeningPresetItem>> => {
+  return boFetch<BackofficeEnvelope<ScreeningPresetItem>>("/api/backoffice/screening/presets", {
+    method: "POST",
+    body: JSON.stringify({ name, filters }),
+  });
+};
+
+export const deleteScreeningPreset = async (
+  presetId: string
+): Promise<BackofficeEnvelope<{ success: boolean }>> => {
+  return boFetch<BackofficeEnvelope<{ success: boolean }>>(`/api/backoffice/screening/presets/${encodeURIComponent(presetId)}`, {
+    method: "DELETE",
+  });
+};
+
+export const screeningExportUrl = (runId: string, includeRetain: boolean = false): string => {
+  return `${resolveApiUrl(`/api/backoffice/screening/export/${encodeURIComponent(runId)}.csv`)}?include_retain=${includeRetain}`;
+};

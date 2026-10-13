@@ -12,7 +12,6 @@ from app.backoffice.db import ensure_backoffice_schema
 from app.backoffice.providers.amfi_ter import base_key as mf_base_key
 from app.db import sqlite as _sqlite
 
-
 _LIVE_TABLES_SQL = """
 CREATE TABLE IF NOT EXISTS factsheets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -91,6 +90,93 @@ CREATE TABLE IF NOT EXISTS news_items (
     fetched_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_news_published ON news_items(published_at);
+CREATE TABLE IF NOT EXISTS mf_managers (
+    scheme_code TEXT PRIMARY KEY,
+    manager_name TEXT NOT NULL,
+    manager_start TEXT,
+    source TEXT NOT NULL,
+    provenance TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS mf_quartile_external (
+    scheme_code TEXT,
+    window_years INTEGER,
+    as_of TEXT,
+    quartile INTEGER,
+    source TEXT,
+    source_url TEXT,
+    fetched_at TEXT,
+    PRIMARY KEY (scheme_code, window_years, as_of)
+);
+CREATE TABLE IF NOT EXISTS mf_benchmark_nav (
+    instrument_id TEXT,
+    date TEXT,
+    nav REAL,
+    provenance TEXT,
+    PRIMARY KEY (instrument_id, date)
+);
+CREATE TABLE IF NOT EXISTS mf_screening_metrics (
+    scheme_code TEXT PRIMARY KEY,
+    as_of TEXT NOT NULL,
+    cat TEXT NOT NULL,
+    amc TEXT,
+    scheme_name TEXT NOT NULL,
+    manager_name TEXT,
+    manager_tenure_years REAL,
+    tenure_ratio REAL,
+    alpha REAL,
+    beta REAL,
+    std_dev REAL,
+    r_squared REAL,
+    information_ratio REAL,
+    tracking_error REAL,
+    treynor REAL,
+    sharpe REAL,
+    sortino REAL,
+    up_capture REAL,
+    down_capture REAL,
+    max_drawdown REAL,
+    expense_ratio REAL,
+    ret_1y REAL,
+    cagr_3y REAL,
+    cagr_5y REAL,
+    cagr_si REAL,
+    bench_1y REAL,
+    bench_3y REAL,
+    bench_5y REAL,
+    bench_si REAL,
+    cat_avg_1y REAL,
+    cat_avg_3y REAL,
+    cat_avg_5y REAL,
+    cat_avg_si REAL,
+    quartile_2y INTEGER,
+    quartile_source TEXT,
+    rf_source TEXT,
+    benchmark_source TEXT,
+    history_years REAL,
+    quality_flags TEXT,
+    provenance_json TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_mf_screening_cat ON mf_screening_metrics(cat);
+CREATE INDEX IF NOT EXISTS ix_mf_screening_amc ON mf_screening_metrics(amc);
+CREATE TABLE IF NOT EXISTS screening_presets (
+    id TEXT PRIMARY KEY,
+    staff_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    filters_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_screening_presets_staff ON screening_presets(staff_id);
+CREATE TABLE IF NOT EXISTS screening_runs (
+    id TEXT PRIMARY KEY,
+    staff_id TEXT NOT NULL,
+    preset_id TEXT,
+    filters_json TEXT NOT NULL,
+    stage_counts_json TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_screening_runs_staff ON screening_runs(staff_id);
 """
 _LIVE_TABLES_READY: set[str] = set()
 
@@ -917,6 +1003,94 @@ class BackofficeRepository:
                     "SELECT * FROM pms_strategy_observations ORDER BY report_month DESC, provider ASC",
                 ).fetchall()
             return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def list_mf_managers(self) -> dict[str, dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute("SELECT * FROM mf_managers").fetchall()
+            return {r["scheme_code"]: dict(r) for r in rows}
+        finally:
+            conn.close()
+
+    def upsert_mf_managers(self, managers: list[dict[str, Any]]) -> int:
+        conn = self._conn()
+        now = _utcnow()
+        count = 0
+        try:
+            with conn:
+                for m in managers:
+                    conn.execute(
+                        """
+                        INSERT INTO mf_managers (scheme_code, manager_name, manager_start, source, provenance, updated_at)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                        ON CONFLICT(scheme_code) DO UPDATE SET
+                            manager_name=excluded.manager_name,
+                            manager_start=excluded.manager_start,
+                            source=excluded.source,
+                            provenance=excluded.provenance,
+                            updated_at=excluded.updated_at
+                        """,
+                        (
+                            m["scheme_code"],
+                            m["manager_name"],
+                            m.get("manager_start"),
+                            m.get("source", "manual_import"),
+                            m.get("provenance", "manual"),
+                            now,
+                        ),
+                    )
+                    count += 1
+            return count
+        finally:
+            conn.close()
+
+    def list_external_quartiles(self, window_years: int = 2) -> dict[str, dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM mf_quartile_external WHERE window_years = ? ORDER BY as_of DESC",
+                (window_years,),
+            ).fetchall()
+            out: dict[str, dict[str, Any]] = {}
+            for r in rows:
+                code = r["scheme_code"]
+                if code not in out:
+                    out[code] = dict(r)
+            return out
+        finally:
+            conn.close()
+
+    def upsert_mf_quartiles(self, quartiles: list[dict[str, Any]]) -> int:
+        conn = self._conn()
+        now = _utcnow()
+        count = 0
+        try:
+            with conn:
+                for q in quartiles:
+                    conn.execute(
+                        """
+                        INSERT INTO mf_quartile_external (scheme_code, window_years, as_of, quartile, source, source_url, fetched_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        ON CONFLICT(scheme_code, window_years, as_of) DO UPDATE SET
+                            quartile=excluded.quartile,
+                            source=excluded.source,
+                            source_url=excluded.source_url,
+                            fetched_at=excluded.fetched_at
+                        """,
+                        (
+                            q["scheme_code"],
+                            int(q.get("window_years", 2)),
+                            q["as_of"],
+                            int(q["quartile"]),
+                            q.get("source", "manual_import"),
+                            q.get("source_url"),
+                            now,
+                        ),
+                    )
+                    count += 1
+            return count
         finally:
             conn.close()
 

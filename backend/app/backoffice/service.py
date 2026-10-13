@@ -17,12 +17,6 @@ from app.backoffice.analytics.impact_engine import (
     compute_correlation_and_beta,
     generate_deterministic_briefing,
 )
-from app.backoffice.analytics.pms_math import (
-    calculate_cagr,
-    calculate_modified_dietz,
-    calculate_xirr,
-    estimate_hwm_fee,
-)
 from app.backoffice.analytics.yields_math import (
     calculate_spread_bps,
     compute_cross_country_spread,
@@ -543,6 +537,31 @@ class BackofficeService:
                     contracts,
                 )
                 saved_count = len(contracts)
+
+        elif import_type == "mf_managers":
+            formatted = []
+            for r in rows:
+                formatted.append({
+                    "scheme_code": r["scheme_code"].strip(),
+                    "manager_name": r["manager_name"].strip(),
+                    "manager_start": r.get("manager_start", "").strip() or None,
+                    "source": r.get("source", "manual_import").strip(),
+                    "provenance": r.get("provenance", "manual").strip(),
+                })
+            saved_count = self.repo.upsert_mf_managers(formatted)
+
+        elif import_type == "quartile":
+            formatted = []
+            for r in rows:
+                formatted.append({
+                    "scheme_code": r["scheme_code"].strip(),
+                    "window_years": int(r.get("window_years", 2)),
+                    "as_of": r["as_of"].strip(),
+                    "quartile": int(r["quartile"]),
+                    "source": r.get("source", "manual_import").strip(),
+                    "source_url": r.get("source_url", "").strip() or None,
+                })
+            saved_count = self.repo.upsert_mf_quartiles(formatted)
 
         self.repo.log_audit(
             staff_id=staff_id,

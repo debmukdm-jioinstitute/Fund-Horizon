@@ -13,8 +13,8 @@ from matplotlib import font_manager
 from reportlab import rl_config
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
-from reportlab.platypus.tables import CellStyle
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus.tables import CellStyle
 
 FONT_DIR = Path(__file__).resolve().parent / "fonts"
 REGULAR_TTF = FONT_DIR / "GoogleSans-Regular.ttf"

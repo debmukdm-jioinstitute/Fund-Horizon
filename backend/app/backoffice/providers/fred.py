@@ -14,8 +14,6 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import UTC, datetime
-from typing import Any
 
 from app.backoffice.providers.base import (
     BaseProvider,

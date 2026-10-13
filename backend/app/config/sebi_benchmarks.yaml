@@ -1,0 +1,124 @@
+# SEBI category benchmark definitions
+large_cap:
+  name: "NIFTY 50 TRI"
+  instrument_id: "INDEX:IN:NIFTY50"
+mid_cap:
+  name: "NIFTY Midcap 150 TRI"
+  instrument_id: null
+small_cap:
+  name: "NIFTY Smallcap 250 TRI"
+  instrument_id: null
+large_mid_cap:
+  name: "NIFTY LargeMidcap 250 TRI"
+  instrument_id: null
+flexi_cap:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+multi_cap:
+  name: "NIFTY 500 Multicap 50:25:25 TRI"
+  instrument_id: null
+elss:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+focused:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+value:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+contra:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+dividend_yield:
+  name: "NIFTY Dividend Opportunities 50 TRI"
+  instrument_id: null
+sectoral_thematic:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+aggressive_hybrid:
+  name: "CRISIL Hybrid 35+65 Aggressive Index"
+  instrument_id: null
+conservative_hybrid:
+  name: "CRISIL Hybrid 85+15 Conservative Index"
+  instrument_id: null
+balanced_hybrid:
+  name: "CRISIL Hybrid 50+50 Moderate Index"
+  instrument_id: null
+balanced_advantage:
+  name: "NIFTY 50 Hybrid Composite Debt 50:50 Index"
+  instrument_id: null
+multi_asset:
+  name: "CRISIL Multi Asset Allocation Index"
+  instrument_id: null
+arbitrage:
+  name: "NIFTY 50 Arbitrage Index"
+  instrument_id: null
+equity_savings:
+  name: "NIFTY Equity Savings Index"
+  instrument_id: null
+liquid:
+  name: "CRISIL Liquid Fund Index"
+  instrument_id: null
+overnight:
+  name: "CRISIL Overnight Fund Index"
+  instrument_id: null
+money_market:
+  name: "CRISIL Money Market Index"
+  instrument_id: null
+short_duration:
+  name: "CRISIL Short Duration Debt Index"
+  instrument_id: null
+corporate_bond:
+  name: "CRISIL Corporate Bond Index"
+  instrument_id: null
+banking_psu:
+  name: "CRISIL Banking and PSU Debt Index"
+  instrument_id: null
+gilt:
+  name: "CRISIL 10 Year Gilt Index"
+  instrument_id: null
+credit_risk:
+  name: "CRISIL Credit Risk Debt Index"
+  instrument_id: null
+dynamic_bond:
+  name: "CRISIL Dynamic Bond Index"
+  instrument_id: null
+medium_long_duration:
+  name: "CRISIL Medium to Long Duration Debt Index"
+  instrument_id: null
+floater:
+  name: "CRISIL Short Term Bond Index"
+  instrument_id: null
+fixed_term:
+  name: "CRISIL Composite Bond Fund Index"
+  instrument_id: null
+other_debt:
+  name: "CRISIL Composite Bond Fund Index"
+  instrument_id: null
+index_equity:
+  name: "NIFTY 50 TRI"
+  instrument_id: null
+index_debt:
+  name: "CRISIL Composite Bond Fund Index"
+  instrument_id: null
+index_hybrid:
+  name: "CRISIL Hybrid 50+50 Moderate Index"
+  instrument_id: null
+solution_retirement:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+solution_children:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+international:
+  name: "MSCI World Index"
+  instrument_id: null
+fof_domestic:
+  name: "NIFTY 500 TRI"
+  instrument_id: null
+etf_other:
+  name: "NIFTY 50 TRI"
+  instrument_id: null
+gold:
+  name: "Domestic Price of Physical Gold"
+  instrument_id: null

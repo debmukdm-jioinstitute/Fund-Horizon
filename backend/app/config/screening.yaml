@@ -1,0 +1,83 @@
+# Fund Screening thresholds, windows, ratio catalog, and funnel defaults
+min_tenure_years: 3
+risk_window_years: 3
+capture_window_years: 2
+quartile_window_years: 2
+
+default_columns:
+  - sharpe
+  - sortino
+  - up_capture
+  - down_capture
+  - expense_ratio
+
+ratios:
+  - key: alpha
+    label: "Jensen's Alpha"
+    unit: pct
+    description: "Annualized excess return above CAPM expectation"
+  - key: beta
+    label: "Beta"
+    unit: decimal
+    description: "Sensitivity to category benchmark"
+  - key: std_dev
+    label: "Standard Deviation"
+    unit: pct
+    description: "Annualized return volatility"
+  - key: r_squared
+    label: "R-Squared"
+    unit: decimal
+    description: "Coefficient of determination vs benchmark"
+  - key: information_ratio
+    label: "Information Ratio"
+    unit: decimal
+    description: "Excess return per unit of tracking error"
+  - key: tracking_error
+    label: "Tracking Error"
+    unit: pct
+    description: "Annualized standard deviation of excess returns"
+  - key: treynor
+    label: "Treynor Ratio"
+    unit: decimal
+    description: "Excess return over risk-free rate per unit of beta"
+  - key: sharpe
+    label: "Sharpe Ratio"
+    unit: decimal
+    description: "Excess return over risk-free rate per unit of total risk"
+  - key: sortino
+    label: "Sortino Ratio"
+    unit: decimal
+    description: "Excess return over risk-free rate per unit of downside risk"
+  - key: up_capture
+    label: "Up Capture"
+    unit: ratio
+    description: "Performance in positive benchmark months (>1 means outperforming up market)"
+  - key: down_capture
+    label: "Down Capture"
+    unit: ratio
+    description: "Performance in negative benchmark months (<1 means protecting capital)"
+  - key: max_drawdown
+    label: "Max Drawdown"
+    unit: pct
+    description: "Worst peak-to-trough drop"
+  - key: expense_ratio
+    label: "Regular TER"
+    unit: pct
+    description: "Regular plan Total Expense Ratio (%)"
+
+bounds_defaults:
+  sharpe:
+    min: 1.0
+  sortino:
+    min: 1.0
+  up_capture:
+    min: 1.0000001
+  down_capture:
+    max: 0.999999
+  tenure_ratio:
+    min: 1.0
+
+quartiles:
+  action: [2, 3]
+  retain: 1
+  min_peers: 8

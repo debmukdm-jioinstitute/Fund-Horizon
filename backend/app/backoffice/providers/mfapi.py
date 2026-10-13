@@ -6,7 +6,7 @@ Fetches scheme NAV history and detects divergence against official AMFI latest o
 from __future__ import annotations
 
 import logging
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any
 
 from app.backoffice.providers.base import (

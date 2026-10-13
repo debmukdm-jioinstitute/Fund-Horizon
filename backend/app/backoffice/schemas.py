@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Any, Generic, TypeVar
+
 from pydantic import BaseModel, Field
 
 T = TypeVar("T")
@@ -75,3 +76,13 @@ class StaffMemberCreateRequest(BaseModel):
     role: str = "analyst"  # admin, analyst, rm, operations, read_only
     password: str | None = None  # omitted -> server generates a temporary password
     temp_password: bool = False
+
+
+class ScreeningRunRequest(BaseModel):
+    preset_id: str | None = None
+    filters: dict[str, Any] = Field(default_factory=dict)
+
+
+class ScreeningPresetCreateRequest(BaseModel):
+    name: str
+    filters: dict[str, Any] = Field(default_factory=dict)

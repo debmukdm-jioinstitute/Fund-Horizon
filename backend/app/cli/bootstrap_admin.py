@@ -14,7 +14,7 @@ import os
 import sys
 
 from app.api.auth import _hash_password
-from app.db import get_repository, sqlite
+from app.db import get_repository
 
 
 def main() -> None:

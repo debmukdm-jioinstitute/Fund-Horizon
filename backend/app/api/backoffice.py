@@ -14,20 +14,19 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse, PlainTextResponse
 
 from app.api.auth import (
-    get_current_customer,
+    _hash_password,
     require_backoffice_role,
     require_role,
     require_staff,
     verify_csrf,
-    _hash_password,
 )
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import factsheet_archive_dir, refresh_source
 from app.backoffice.fh_recommended import FH_RECOMMENDED_MF_CODES, MF_FACTSHEET_SOURCE, PMS_FACTSHEET_SOURCE, PMS_NO_PUBLIC_FACTSHEET
 from app.backoffice.providers import factsheets as factsheets_provider
 from app.backoffice.providers import apmi as apmi_provider
-from app.backoffice.providers.nse import NseError
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
+from app.backoffice.providers.nse import NseError
 from app.backoffice.repository import BackofficeRepository
 from app.backoffice.schemas import (
     ImpactAnalyzeRequest,
@@ -35,10 +34,12 @@ from app.backoffice.schemas import (
     ImportCommitRequest,
     ImportPreviewRequest,
     ResearchNoteCreateRequest,
-    ResearchNoteUpdateRequest,
+    ScreeningPresetCreateRequest,
+    ScreeningRunRequest,
     StaffMemberCreateRequest,
     WatchlistCreateRequest,
 )
+from app.backoffice.screening.service import ScreeningService
 from app.backoffice.service import BackofficeService
 from app.data.loader import load_metrics, load_nav
 from app.db import get_repository
@@ -47,6 +48,7 @@ router = APIRouter(prefix="/api/backoffice", tags=["backoffice"])
 
 _SERVICE = BackofficeService()
 _REPO = BackofficeRepository()
+_SCREENING_SERVICE = ScreeningService(_REPO)
 
 
 # ---------------------------------------------------------------------------
@@ -779,3 +781,113 @@ def provision_staff_member(
         )
         _REPO.log_audit(admin["id"], "staff_created", "staff", created["id"], {"email": email, "role": body.role})
         return {"success": True, "action": "created", "staff": created, "staff_member": created, "temporary_password": temporary_password}
+
+
+# ---------------------------------------------------------------------------
+# Fund Screening Funnel & Presets
+# ---------------------------------------------------------------------------
+
+@router.get("/screening/metrics")
+def backoffice_screening_metrics(
+    staff: Annotated[dict, Depends(require_staff)],
+    cat: str | None = Query(None),
+    amc: str | None = Query(None),
+    q_search: str | None = Query(None),
+    as_of: str | None = Query(None),
+):
+    """Retrieve precomputed screening metrics and facets for S0 universe."""
+    res = _SCREENING_SERVICE.get_screening_metrics(cat=cat, amc=amc, q_search=q_search, as_of=as_of)
+    return {
+        "data": res,
+        "as_of": res.get("as_of"),
+        "availability": "ready" if res.get("rows") else "unavailable",
+        "freshness": "current" if res.get("rows") else "stale",
+        "method_version": "1.0.0",
+    }
+
+
+@router.post("/screening/run")
+def backoffice_screening_run(
+    body: ScreeningRunRequest,
+    request: Request,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Execute sequential 5-stage screening funnel on precalculated metrics."""
+    verify_csrf(request)
+    return _SCREENING_SERVICE.run_screening(
+        staff_id=staff["id"],
+        preset_id=body.preset_id,
+        filters=body.filters,
+    )
+
+
+@router.get("/screening/runs/{run_id}")
+def backoffice_screening_run_details(
+    run_id: str,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Retrieve counts and filter metadata of a saved screening run."""
+    run = _SCREENING_SERVICE.get_screening_run(run_id, staff_id=staff["id"])
+    if not run:
+        raise HTTPException(404, "Screening run not found")
+    return {"data": run}
+
+
+@router.get("/screening/funds/{scheme_code}")
+def backoffice_screening_fund_details(
+    scheme_code: str,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Fetch scheme screening row, manager history, PMS cross-links, and research notes."""
+    fund = _SCREENING_SERVICE.get_screening_fund(scheme_code)
+    if not fund:
+        raise HTTPException(404, f"Scheme {scheme_code} not found in screening universe")
+    return {"data": fund}
+
+
+@router.get("/screening/presets")
+def backoffice_list_presets(staff: Annotated[dict, Depends(require_staff)]):
+    """List saved screening filter presets for current staff member."""
+    presets = _SCREENING_SERVICE.list_presets(staff["id"])
+    return {"data": presets}
+
+
+@router.post("/screening/presets")
+def backoffice_create_preset(
+    body: ScreeningPresetCreateRequest,
+    request: Request,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Save a new screening preset."""
+    verify_csrf(request)
+    created = _SCREENING_SERVICE.save_preset(staff["id"], body.name, body.filters)
+    return {"data": created}
+
+
+@router.delete("/screening/presets/{preset_id}")
+def backoffice_delete_preset(
+    preset_id: str,
+    request: Request,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Delete a screening preset owned by current staff member."""
+    verify_csrf(request)
+    success = _SCREENING_SERVICE.delete_preset(staff["id"], preset_id)
+    if not success:
+        raise HTTPException(404, "Preset not found")
+    return {"success": True}
+
+
+@router.get("/screening/export/{run_id}.csv")
+def backoffice_export_screening_csv(
+    run_id: str,
+    staff: Annotated[dict, Depends(require_staff)],
+    include_retain: bool = Query(False),
+):
+    """Export action (and optional retain) list to formula-sanitized CSV."""
+    csv_text = _SCREENING_SERVICE.export_csv(staff["id"], run_id, include_retain=include_retain)
+    return Response(
+        content=csv_text,
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="screening_action_{run_id}.csv"'},
+    )

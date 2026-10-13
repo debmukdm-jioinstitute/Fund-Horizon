@@ -83,3 +83,15 @@ def load_tax_catalog() -> dict:
 def load_mf_tax_classes() -> dict:
     """How each canonical fund category is taxed (mf_tax_classes.yaml)."""
     return _load_yaml("mf_tax_classes.yaml")
+
+
+@lru_cache(maxsize=1)
+def load_screening() -> dict:
+    """Fund screening thresholds and ratio catalog (screening.yaml)."""
+    return _load_yaml("screening.yaml")
+
+
+@lru_cache(maxsize=1)
+def load_sebi_benchmarks() -> dict:
+    """SEBI category benchmark definitions (sebi_benchmarks.yaml)."""
+    return _load_yaml("sebi_benchmarks.yaml")

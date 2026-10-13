@@ -381,6 +381,8 @@ def _seed_default_registries(conn: sqlite3.Connection) -> None:
         ("SRC_RSS", "Open RSS News Feeds", "https://www.rbi.org.in/", "rss_feeds", "1.0.0", "RBI, SEBI, PIB, ET, Mint, Business Standard, BusinessLine, Moneycontrol and Google News public RSS feeds. Headlines and links only.", "public_view_only", 1, 6, "Asia/Kolkata", "intraday", "ready"),
         ("SRC_TREASURY", "US Treasury Par Yield Curve", "https://home.treasury.gov/resource-center/data-chart-center/interest-rates", "us_treasury", "1.0.0", "Official US Treasury daily par yield curve. No key required.", "public_view_only", 1, 4, "America/New_York", "daily", "ready"),
         ("SRC_CORP_FILINGS", "Corporate Fundamentals & Filings", "https://www.bseindia.com/corporates", "corp_filings", "1.0.0", "Quarterly financial results & disclosures.", "manual_only", 1, 10, "Asia/Kolkata", "quarterly", "manual_only"),
+        ("SRC_SCREENING", "Fund Horizon Screening Engine", "https://fundhorizon.in/internal/screening", "screening_engine", "1.0.0", "Internal MF Regular Growth funnel metrics.", "public_view_only", 1, 1, "Asia/Kolkata", "daily", "ready"),
+        ("SRC_ADVISORKHOJ", "Advisorkhoj Public Research", "https://www.advisorkhoj.com/", "advisorkhoj", "1.0.0", "Public HTML fund quartile rankings under robots.txt Allow: /; fallback to computed.", "public_view_only", 1, 2, "Asia/Kolkata", "daily", "ready"),
     ]
 
     # FRED needs a free key; do not advertise it as ready when none is configured.

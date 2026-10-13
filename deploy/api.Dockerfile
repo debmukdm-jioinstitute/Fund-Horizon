@@ -26,4 +26,4 @@ ENV FH_REQUIRE_PRODUCTION_MIGRATIONS=true
 
 WORKDIR /srv/backend
 # Strictly fail startup if Alembic migrations fail:
-CMD ["sh", "-c", "if [ -n \"$DATABASE_URL\" ]; then alembic upgrade head || { echo 'CRITICAL: Alembic migration failed. Halting startup.'; exit 1; }; fi; uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "alembic upgrade head || { echo 'CRITICAL: Alembic migration failed. Halting startup.'; exit 1; }; uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

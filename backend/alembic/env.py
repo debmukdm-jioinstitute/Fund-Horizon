@@ -31,7 +31,11 @@ def get_url() -> str:
     db_url = os.environ.get("DATABASE_URL")
     if db_url:
         return normalize_postgres_url(db_url)
+    fh_db = os.environ.get("FH_DB_PATH")
+    if fh_db:
+        return f"sqlite:///{fh_db}"
     return cfg_url or "sqlite:///plans.db"
+
 
 
 

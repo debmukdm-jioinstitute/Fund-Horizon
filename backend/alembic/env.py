@@ -10,6 +10,9 @@ from alembic import context
 # The alembic CLI does not put the backend directory on sys.path, so `app` would not import.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from app.db.models import Base
 from app.db.postgres import normalize_postgres_url
 

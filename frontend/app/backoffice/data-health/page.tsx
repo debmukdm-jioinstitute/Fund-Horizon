@@ -9,7 +9,7 @@ import {
   SourceHealthData,
   ImportJobData,
 } from "@/lib/backoffice";
-import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { formatISTDateTime } from "@/lib/terminal-format";
 
 export default function DataHealthPage() {
   const [health, setHealth] = useState<SourceHealthData | null>(null);
@@ -97,110 +97,143 @@ export default function DataHealthPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-sand-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
-          <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Data Health & Source Registry</h1>
-          <p className="text-xs text-sand-600 mt-0.5">
-            Primary provider quotas, verified reachability, manual import hub & atomic rollback guarantees
+          <div className="flex items-center gap-2">
+            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+              Data Health &amp; Upstream Source Registry
+            </h1>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+              Diagnostics
+            </span>
+          </div>
+          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            Upstream provider quotas, verified reachability latency, and atomic CSV import hub
           </p>
         </div>
+
         <button
           onClick={loadHealth}
-          className="px-3 py-1.5 bg-sand-100 hover:bg-sand-200 text-sand-800 rounded-xl text-xs font-medium transition-colors border border-sand-300"
+          className="terminal-btn text-[12px] py-1 px-2.5 flex items-center gap-1.5"
         >
-          ↻ Refresh Diagnostics
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh Diagnostics
         </button>
       </div>
 
       {loading && !health ? (
-        <div className="p-8 text-center text-sand-500 font-mono text-xs">
-          Running provider diagnostics…
+        <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
+          <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          Running upstream provider telemetry…
         </div>
       ) : error ? (
-        <div className="p-6 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-700">
-          {error}
+        <div className="terminal-panel p-4 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[13px]">
+          <div className="font-medium mb-1">Failed to load data health diagnostics</div>
+          <div>{error}</div>
         </div>
       ) : health ? (
-        <div className="space-y-6">
-          {/* Telemetry Tiles */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-              <div className="text-xs text-sand-500 font-medium">Ready Adapters</div>
-              <div className="mt-1 text-2xl font-bold font-mono text-emerald-700">{health.summary.ready}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Passing verified schemas</div>
+        <div className="space-y-4">
+          {/* Telemetry Summary Flat Table */}
+          <div className="terminal-panel overflow-hidden">
+            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+              Upstream Adapters Health Telemetry
             </div>
-            <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-              <div className="text-xs text-sand-500 font-medium">Needs Key</div>
-              <div className="mt-1 text-2xl font-bold font-mono text-amber-700">{health.summary.needs_key}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Free key registration required</div>
-            </div>
-            <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-              <div className="text-xs text-sand-500 font-medium">Manual Import Only</div>
-              <div className="mt-1 text-2xl font-bold font-mono text-blue-700">{health.summary.manual_only}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Private or unlicensed sources</div>
-            </div>
-            <div className="p-4 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-              <div className="text-xs text-sand-500 font-medium">Total Registered</div>
-              <div className="mt-1 text-2xl font-bold font-mono text-sand-800">{health.summary.total}</div>
-              <div className="text-[10px] text-sand-400 mt-1">Registered source adapters</div>
-            </div>
+            <table className="terminal-table">
+              <thead>
+                <tr>
+                  <th className="w-[25%]">Adapter Status Category</th>
+                  <th className="w-[20%] text-right">Count</th>
+                  <th className="w-[55%]">System Condition</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="font-medium text-[#087744] dark:text-[#58D6A0]">Ready Adapters</td>
+                  <td className="text-right font-medium text-[#087744] dark:text-[#58D6A0]">{health.summary.ready}</td>
+                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Active, schemas verified, and live connectivity confirmed</td>
+                </tr>
+                <tr>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Needs API Key</td>
+                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{health.summary.needs_key}</td>
+                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Free registration key pending in environment (e.g. FRED_API_KEY)</td>
+                </tr>
+                <tr>
+                  <td className="font-medium text-[#536176] dark:text-[#A8B4C4]">Manual Import Only</td>
+                  <td className="text-right font-medium text-[#536176] dark:text-[#A8B4C4]">{health.summary.manual_only}</td>
+                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Manual CSV / XLSX ingest due to zero-scraping licensing constraint</td>
+                </tr>
+                <tr>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Total Registered Adapters</td>
+                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{health.summary.total}</td>
+                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Complete backoffice data adapter catalog</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          {/* Sources Table */}
-          <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-sm font-semibold text-sand-950">Source Adapters Registry</h2>
-                <p className="text-[11px] text-sand-500">Official documentation, license attribution & rate limits</p>
-              </div>
+          {/* Source Adapters Registry Table */}
+          <div className="terminal-panel overflow-hidden">
+            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+              Source Adapters Registry
             </div>
-
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-sand-50 text-sand-600 font-mono border-y border-sand-200">
+              <table className="terminal-table">
+                <thead>
                   <tr>
-                    <th className="py-2.5 px-3 font-medium">Source / Adapter</th>
-                    <th className="py-2.5 px-3 font-medium">Health Status</th>
-                    <th className="py-2.5 px-3 font-medium">Frequency</th>
-                    <th className="py-2.5 px-3 font-medium">Rate Budget</th>
-                    <th className="py-2.5 px-3 font-medium">Last Success</th>
-                    <th className="py-2.5 px-3 font-medium">Terms & Attribution</th>
-                    <th className="py-2.5 px-3 font-medium text-right">Actions</th>
+                    <th className="w-[22%]">Source / Adapter</th>
+                    <th className="w-[12%]">Status</th>
+                    <th className="w-[10%]">Frequency</th>
+                    <th className="w-[12%] text-right">Rate Budget</th>
+                    <th className="w-[16%]">Last Success</th>
+                    <th className="w-[18%]">Attribution Notes</th>
+                    <th className="w-[10%] text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
+                <tbody>
                   {health.sources.map((s) => (
-                    <tr key={s.id} className="hover:bg-sand-50/60">
-                      <td className="py-3 px-3">
-                        <div className="font-semibold text-sand-900 font-sans">{s.name}</div>
-                        <div className="text-[11px] text-sand-500">
+                    <tr key={s.id}>
+                      <td>
+                        <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{s.name}</div>
+                        <div className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
                           {s.id} • v{s.adapter_version}
                         </div>
                       </td>
-                      <td className="py-3 px-3">
-                        <StatusBadge
-                          availability={s.health_status}
-                          freshness="current"
-                        />
+                      <td>
+                        <span className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded ${
+                          s.health_status === "ready"
+                            ? "bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE]"
+                            : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]"
+                        }`}>
+                          {s.health_status.replace("_", " ")}
+                        </span>
                       </td>
-                      <td className="py-3 px-3 text-sand-700 uppercase text-[10px]">{s.supported_frequency}</td>
-                      <td className="py-3 px-3 text-sand-700">{s.rate_budget}/hr</td>
-                      <td className="py-3 px-3 text-sand-500 text-[11px]">
-                        {s.last_success_at ? s.last_success_at.slice(0, 16).replace("T", " ") : "Never"}
+                      <td className="text-[11px] font-mono uppercase text-[#536176] dark:text-[#A8B4C4]">
+                        {s.supported_frequency}
                       </td>
-                      <td className="py-3 px-3 max-w-xs truncate text-[11px] text-sand-600 font-sans" title={s.terms_notes}>
+                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                        {s.rate_budget}/hr
+                      </td>
+                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                        {s.last_success_at ? formatISTDateTime(s.last_success_at) : "Never"}
+                      </td>
+                      <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4] truncate max-w-xs" title={s.terms_notes}>
                         {s.terms_notes}
                       </td>
-                      <td className="py-3 px-3 text-right">
+                      <td className="text-right">
                         {s.health_status !== "manual_only" && (
                           <button
                             onClick={() => handleRefresh(s.id)}
                             disabled={refreshingId === s.id}
-                            className="px-2.5 py-1 text-[11px] font-sans font-medium text-forest-700 hover:bg-forest-50 border border-forest-300 rounded-lg transition-colors disabled:opacity-50"
+                            className="terminal-btn text-[11px] py-0.5 px-2 text-[#006F64] dark:text-[#75E1CE]"
                           >
-                            {refreshingId === s.id ? "Fetching…" : "Trigger Sync"}
+                            {refreshingId === s.id ? "Syncing…" : "Sync"}
                           </button>
                         )}
                       </td>
@@ -211,104 +244,86 @@ export default function DataHealthPage() {
             </div>
           </div>
 
-          {/* Manual Import Workflow */}
-          <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-sand-100">
+          {/* Validated CSV Import Hub */}
+          <div className="terminal-panel p-3.5 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
               <div>
-                <h2 className="text-sm font-semibold text-sand-950">Validated CSV / XLSX Import Hub</h2>
-                <p className="text-[11px] text-sand-500">
-                  Two-stage safe import: Preview with row-level validation → Atomic Commit. Defends against CSV formula injection.
-                </p>
+                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  Validated CSV / XLSX Ingestion Hub
+                </div>
+                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                  Two-stage safe import: Preview row-level validation → Atomic Commit with formula sanitization
+                </div>
               </div>
               <a
                 href={`/api/backoffice/imports/templates/${importType}`}
                 download={`${importType}_template.csv`}
-                className="px-3 py-1.5 text-xs text-forest-800 bg-forest-50 border border-forest-200 rounded-xl hover:bg-forest-100 font-medium self-start sm:self-auto"
+                className="terminal-btn text-[11px] py-1 px-2.5 self-start sm:self-auto"
               >
-                📥 Download Template CSV
+                Download CSV Template
               </a>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-xs font-medium text-sand-700 block mb-1">Import Dataset Type</label>
+                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                  Import Dataset
+                </label>
                 <select
                   value={importType}
                   onChange={(e) => setImportType(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-forest-600"
+                  className="terminal-input w-full text-[12px] py-1 px-2"
                 >
                   <option value="pms_strategies">PMS Strategy Performance</option>
-                  <option value="option_chain">Option Chain & PCR Contracts</option>
-                  <option value="flows">FII / DII Institutional Flows</option>
-                  <option value="fundamentals">Issuer Fundamentals & Ratios</option>
+                  <option value="issuer_fundamentals">Issuer Financial Statements</option>
+                  <option value="macro_yields">Macro Sovereign Yield Series</option>
+                  <option value="derivative_reports">Derivatives EOD Bhavcopy</option>
                 </select>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="text-xs font-medium text-sand-700 block mb-1">Upload CSV File</label>
+                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                  Select CSV File ({fileName})
+                </label>
                 <input
                   type="file"
                   accept=".csv,.txt"
                   onChange={handleFileSelect}
-                  className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 bg-sand-50 text-sand-700 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-forest-700 file:text-white hover:file:bg-forest-800"
+                  className="terminal-input w-full text-[12px] py-1 px-2"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Or Paste CSV Content Directly</label>
-              <textarea
-                value={fileContent}
-                onChange={(e) => setFileContent(e.target.value)}
-                rows={5}
-                placeholder="Paste CSV rows with headers here…"
-                className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-forest-600"
-              />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePreview}
+                disabled={previewing || !fileContent.trim()}
+                className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+              >
+                {previewing ? "Validating Rows…" : "Preview & Validate Ingest"}
+              </button>
             </div>
 
-            <button
-              onClick={handlePreview}
-              disabled={previewing || !fileContent.trim()}
-              className="px-4 py-2 bg-forest-700 text-white rounded-xl text-xs font-semibold hover:bg-forest-800 disabled:opacity-50 transition-colors shadow-xs"
-            >
-              {previewing ? "Validating Content…" : "Preview & Validate Mapping"}
-            </button>
-
             {commitMessage && (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 font-semibold">
+              <div className="terminal-panel p-2.5 border border-[#087744]/30 bg-[#087744]/5 text-[#087744] dark:text-[#58D6A0] text-[12px]">
                 {commitMessage}
               </div>
             )}
 
             {previewJob && (
-              <div className="p-4 bg-sand-50 rounded-xl border border-sand-200 space-y-3 font-mono text-xs">
-                <div className="flex items-center justify-between font-sans">
-                  <div>
-                    <span className="font-semibold text-sand-900">Preview Results: </span>
-                    <span className="text-emerald-700 font-bold">{previewJob.valid_rows_count} valid rows</span>
-                    {previewJob.error_rows_count > 0 && (
-                      <span className="text-rose-700 ml-2 font-bold">• {previewJob.error_rows_count} rejected rows</span>
-                    )}
-                  </div>
+              <div className="terminal-panel p-3 border border-[#E4E9EF] dark:border-[#2B3644] space-y-2.5">
+                <div className="flex items-center justify-between text-[12px]">
+                  <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    Preview Summary: {previewJob.valid_rows_count + previewJob.error_rows_count} total rows ({previewJob.valid_rows_count} valid, {previewJob.error_rows_count} errors)
+                  </span>
                   <button
                     onClick={handleCommit}
                     disabled={committing || previewJob.valid_rows_count === 0}
-                    className="px-4 py-1.5 bg-forest-800 text-white rounded-xl text-xs font-semibold hover:bg-forest-900 disabled:opacity-50 shadow-xs"
+                    className="terminal-btn text-[12px] py-1 px-3 bg-[#087744] text-white border-[#087744] dark:bg-[#58D6A0] dark:text-[#10151C] dark:border-[#58D6A0] font-medium"
                   >
-                    {committing ? "Committing Transaction…" : `Commit ${previewJob.valid_rows_count} Rows to Database`}
+                    {committing ? "Committing Transaction…" : `Commit ${previewJob.valid_rows_count} Rows Atomically`}
                   </button>
                 </div>
-
-                {previewJob.error_rows_count > 0 && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-rose-800 font-sans space-y-1">
-                    <div className="font-semibold">Row Rejections:</div>
-                    {previewJob.errors?.slice(0, 5).map((err: { row: number; error: string }, idx: number) => (
-                      <div key={idx} className="text-[11px] font-mono">
-                        Row {err.row}: {err.error}
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
           </div>

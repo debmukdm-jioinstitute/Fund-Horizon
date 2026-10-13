@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { getYieldsBoard, YieldsBoardData, BackofficeEnvelope } from "@/lib/backoffice";
-import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { formatISTDate } from "@/lib/terminal-format";
+import SignedValue from "@/components/terminal/SignedValue";
 
 export default function MacroYieldsPage() {
   const [data, setData] = useState<BackofficeEnvelope<YieldsBoardData> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string>("ALL");
 
   useEffect(() => {
     async function load() {
@@ -24,214 +26,206 @@ export default function MacroYieldsPage() {
     load();
   }, []);
 
-  if (loading) {
+  if (loading && !data) {
     return (
-      <div className="p-8 text-center text-sand-500 font-mono text-xs flex items-center justify-center gap-2">
-        <svg className="animate-spin h-4 w-4 text-forest-700" viewBox="0 0 24 24" fill="none">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
+        <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
         </svg>
-        Loading sovereign yield curves and cross-country spreads…
+        Loading sovereign yield curves and term structure…
       </div>
     );
   }
 
-  if (error || !data) {
+  if (error && !data) {
     return (
-      <div className="p-6 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-700">
-        <div className="font-semibold mb-1">Failed to load yields data</div>
-        {error}
+      <div className="terminal-panel p-4 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[13px]">
+        <div className="font-medium mb-1">Failed to load yields data</div>
+        <div>{error}</div>
       </div>
     );
   }
 
-  const yieldsData = data.data;
+  const yieldsData = data?.data || { curves: {}, spreads: {} };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-sand-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
-          <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Global Sovereign Yields & Macro Board</h1>
-          <p className="text-xs text-sand-600 mt-0.5">
-            India, US, UK & Japan term structure, 10Y-2Y slope & canonical bps spreads ((Y_a - Y_b) × 100)
+          <div className="flex items-center gap-2">
+            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+              Global Sovereign Yields & Macro Curve Matrix
+            </h1>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+              FBIL • FRED • MoF
+            </span>
+          </div>
+          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            India, United States, UK & Japan term structure, canonical basis point spreads, and slope metrics
           </p>
         </div>
-        <StatusBadge
-          availability={data.availability}
-          freshness={data.freshness}
-          frequency="daily"
-          asOf={yieldsData.as_of}
-          units="% Yield / bps Spread"
-        />
+
+        <div className="flex items-center gap-2">
+          {["ALL", "IN", "US", "UK", "JP"].map((code) => (
+            <button
+              key={code}
+              onClick={() => setSelectedCountry(code)}
+              className={`terminal-btn text-[12px] py-1 px-2.5 ${
+                selectedCountry === code
+                  ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                  : ""
+              }`}
+            >
+              {code === "ALL" ? "All Sovereign" : code}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Spreads Benchmark Highlight Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* India - US 10Y Spread */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
-            <span>India – US 10Y Spread</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Benchmark</span>
-          </div>
-          <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-            {yieldsData.spreads.in_us_10y_bps !== undefined
-              ? `${yieldsData.spreads.in_us_10y_bps > 0 ? "+" : ""}${yieldsData.spreads.in_us_10y_bps.toFixed(1)} bps`
-              : "—"}
-          </div>
-          <div className="mt-2 text-[11px] text-sand-500">
-            India 10Y G-Sec vs US 10Y Constant Maturity
-          </div>
-          <div className="mt-3">
-            <StatusBadge
-              availability={yieldsData.spreads.in_us_10y_bps !== undefined ? "ready" : "unavailable"}
-              freshness="current"
-              sourceName="FBIL / FRED"
-              units="bps"
-            />
-          </div>
+      {/* Benchmark Spreads Flat Table */}
+      <div className="terminal-panel overflow-hidden">
+        <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+          Canonical Sovereign Spreads & Term Slopes
         </div>
-
-        {/* US 10Y - 2Y Curve Slope */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
-            <span>US 10Y – 2Y Slope</span>
-            <span className="font-mono text-[10px] bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded">Term Slope</span>
-          </div>
-          <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-            {yieldsData.spreads.us_10y_2y_bps !== undefined
-              ? `${yieldsData.spreads.us_10y_2y_bps > 0 ? "+" : ""}${yieldsData.spreads.us_10y_2y_bps.toFixed(1)} bps`
-              : "—"}
-          </div>
-          <div className="mt-2 text-[11px] text-sand-500">
-            DGS10 minus DGS2 constant maturity yields
-          </div>
-          <div className="mt-3">
-            <StatusBadge
-              availability={yieldsData.spreads.us_10y_2y_bps !== undefined ? "ready" : "unavailable"}
-              freshness="current"
-              sourceName="FRED"
-              units="bps"
-            />
-          </div>
-        </div>
-
-        {/* India 10Y - 2Y Curve Slope */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
-            <span>India 10Y – 2Y Slope</span>
-            <span className="font-mono text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded">G-Sec Term</span>
-          </div>
-          <div className="mt-2 text-2xl font-bold text-sand-950 font-mono tabular-nums">
-            {yieldsData.spreads.in_10y_2y_bps !== undefined
-              ? `${yieldsData.spreads.in_10y_2y_bps > 0 ? "+" : ""}${yieldsData.spreads.in_10y_2y_bps.toFixed(1)} bps`
-              : "—"}
-          </div>
-          <div className="mt-2 text-[11px] text-sand-500">
-            FBIL IN10Y minus IN2Y annual compounding
-          </div>
-          <div className="mt-3">
-            <StatusBadge
-              availability={yieldsData.spreads.in_10y_2y_bps !== undefined ? "ready" : "unavailable"}
-              freshness="current"
-              sourceName="FBIL"
-              units="bps"
-            />
-          </div>
-        </div>
+        <table className="terminal-table">
+          <thead>
+            <tr>
+              <th className="w-[35%]">Spread Metric</th>
+              <th className="w-[20%] text-right">Spread (bps)</th>
+              <th className="w-[25%]">Formula / Series</th>
+              <th className="w-[20%]">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">India – US 10Y Sovereign Spread</td>
+              <td className="text-right">
+                <SignedValue value={yieldsData.spreads?.in_us_10y_bps} unit="bps" />
+              </td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">India 10Y G-Sec minus US 10Y DGS10</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL / FRED</td>
+            </tr>
+            <tr>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">US 10Y – 2Y Term Structure Slope</td>
+              <td className="text-right">
+                <SignedValue value={yieldsData.spreads?.us_10y_2y_bps} unit="bps" />
+              </td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED DGS10 minus DGS2 Yield</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FRED API</td>
+            </tr>
+            <tr>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">India 10Y – 2Y G-Sec Term Slope</td>
+              <td className="text-right">
+                <SignedValue value={yieldsData.spreads?.in_10y_2y_bps} unit="bps" />
+              </td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL IN10Y minus IN2Y Sovereign</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">FBIL / CCIL</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       {/* Tenor Term Structure Tables */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* India G-Sec Curve */}
-        <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-sm font-semibold text-sand-900">India Sovereign Curve (FBIL / RBI)</h2>
-              <p className="text-[11px] text-sand-500">G-Sec valuation benchmarks • Annual compounding convention</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* India Sovereign Curve */}
+        {(selectedCountry === "ALL" || selectedCountry === "IN") && (
+          <div className="terminal-panel overflow-hidden">
+            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center justify-between">
+              <div>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+                  India Sovereign G-Sec Curve
+                </span>
+                <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] ml-2">
+                  (Annual Compounding)
+                </span>
+              </div>
+              <a href="https://www.fbil.org.in" target="_blank" rel="noreferrer" className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:underline">
+                FBIL Feed
+              </a>
             </div>
-            <StatusBadge
-              availability="ready"
-              freshness="current"
-              frequency="daily"
-              sourceName="FBIL G-Sec"
-              sourceUrl="https://www.fbil.org.in"
-            />
-          </div>
-          <table className="w-full text-left text-xs">
-            <thead className="bg-sand-50 text-sand-600 font-mono border-y border-sand-200">
-              <tr>
-                <th className="py-2 px-3 font-medium">Tenor</th>
-                <th className="py-2 px-3 font-medium">Yield (%)</th>
-                <th className="py-2 px-3 font-medium">Observed Date</th>
-                <th className="py-2 px-3 font-medium">Source</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
-              {yieldsData.curves.IN && Object.keys(yieldsData.curves.IN).length > 0 ? (
-                Object.entries(yieldsData.curves.IN).map(([tenor, val]: [string, { value: number; observed_at: string; source: string }]) => (
-                  <tr key={tenor}>
-                    <td className="py-2.5 px-3 font-semibold text-sand-900">{tenor}</td>
-                    <td className="py-2.5 px-3 text-sand-950 font-bold">{val.value.toFixed(2)}%</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.observed_at}</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.source}</td>
-                  </tr>
-                ))
-              ) : (
+            <table className="terminal-table">
+              <thead>
                 <tr>
-                  <td colSpan={4} className="py-4 text-center text-sand-500 font-sans">
-                    Awaiting next FBIL publication or manual curve import.
-                  </td>
+                  <th className="w-[25%]">Tenor</th>
+                  <th className="w-[25%] text-right">Yield (%)</th>
+                  <th className="w-[25%]">Observed Date</th>
+                  <th className="w-[25%]">Source</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {yieldsData.curves?.IN && Object.keys(yieldsData.curves.IN).length > 0 ? (
+                  Object.entries(yieldsData.curves.IN).map(([tenor, val]: [string, { value: number; observed_at: string; source: string }]) => (
+                    <tr key={tenor}>
+                      <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{tenor}</td>
+                      <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                        {val.value.toFixed(2)}%
+                      </td>
+                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(val.observed_at)}</td>
+                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{val.source}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      Awaiting next FBIL publication or manual curve import.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* US Treasury Curve */}
-        <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-sm font-semibold text-sand-900">US Treasury Curve (FRED / Treasury)</h2>
-              <p className="text-[11px] text-sand-500">Constant maturity yields • Semi-annual compounding convention</p>
+        {(selectedCountry === "ALL" || selectedCountry === "US") && (
+          <div className="terminal-panel overflow-hidden">
+            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center justify-between">
+              <div>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+                  US Treasury Yield Curve
+                </span>
+                <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] ml-2">
+                  (Semi-Annual Constant Maturity)
+                </span>
+              </div>
+              <a href="https://fred.stlouisfed.org" target="_blank" rel="noreferrer" className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:underline">
+                FRED API
+              </a>
             </div>
-            <StatusBadge
-              availability={yieldsData.curves.US && Object.keys(yieldsData.curves.US).length > 0 ? "ready" : "needs_key"}
-              freshness="current"
-              frequency="daily"
-              sourceName="FRED API"
-              sourceUrl="https://fred.stlouisfed.org"
-            />
-          </div>
-          <table className="w-full text-left text-xs">
-            <thead className="bg-sand-50 text-sand-600 font-mono border-y border-sand-200">
-              <tr>
-                <th className="py-2 px-3 font-medium">Tenor</th>
-                <th className="py-2 px-3 font-medium">Yield (%)</th>
-                <th className="py-2 px-3 font-medium">Observed Date</th>
-                <th className="py-2 px-3 font-medium">Series ID</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
-              {yieldsData.curves.US && Object.keys(yieldsData.curves.US).length > 0 ? (
-                Object.entries(yieldsData.curves.US).map(([tenor, val]: [string, { value: number; observed_at: string; source: string }]) => (
-                  <tr key={tenor}>
-                    <td className="py-2.5 px-3 font-semibold text-sand-900">{tenor}</td>
-                    <td className="py-2.5 px-3 text-sand-950 font-bold">{val.value.toFixed(2)}%</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.observed_at}</td>
-                    <td className="py-2.5 px-3 text-sand-500 text-[11px]">{val.source}</td>
-                  </tr>
-                ))
-              ) : (
+            <table className="terminal-table">
+              <thead>
                 <tr>
-                  <td colSpan={4} className="py-4 text-center text-sand-500 font-sans">
-                    Requires free FRED API registration key in FRED_API_KEY.
-                  </td>
+                  <th className="w-[25%]">Tenor</th>
+                  <th className="w-[25%] text-right">Yield (%)</th>
+                  <th className="w-[25%]">Observed Date</th>
+                  <th className="w-[25%]">Series ID</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {yieldsData.curves?.US && Object.keys(yieldsData.curves.US).length > 0 ? (
+                  Object.entries(yieldsData.curves.US).map(([tenor, val]: [string, { value: number; observed_at: string; source: string }]) => (
+                    <tr key={tenor}>
+                      <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{tenor}</td>
+                      <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                        {val.value.toFixed(2)}%
+                      </td>
+                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(val.observed_at)}</td>
+                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{val.source}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      Configure FRED_API_KEY in environment for automated pull.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { getFlows, FlowsData, BackofficeEnvelope } from "@/lib/backoffice";
-import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { formatISTDate } from "@/lib/terminal-format";
+import SignedValue from "@/components/terminal/SignedValue";
 
 export default function FlowsPage() {
   const [data, setData] = useState<BackofficeEnvelope<FlowsData> | null>(null);
@@ -24,11 +25,33 @@ export default function FlowsPage() {
     load();
   }, []);
 
-  if (loading) {
+  function handleExportCSV() {
+    if (!data?.data.daily || data.data.daily.length === 0) return;
+    const headers = ["Report Date", "Category", "Segment", "Gross Buy (Cr)", "Gross Sell (Cr)", "Net Flow (Cr)", "Status"];
+    const rows = data.data.daily.map((r) => [
+      r.report_date,
+      r.category,
+      r.segment,
+      r.buy_paise ? (r.buy_paise / 1e9).toFixed(1) : "",
+      r.sell_paise ? (r.sell_paise / 1e9).toFixed(1) : "",
+      (r.net_paise / 1e9).toFixed(1),
+      r.provisional ? "Provisional" : "Final",
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `fii_dii_flows_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  if (loading && !data) {
     return (
-      <div className="p-8 text-center text-sand-500 font-mono text-xs flex items-center justify-center gap-2">
-        <svg className="animate-spin h-4 w-4 text-forest-700" viewBox="0 0 24 24" fill="none">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
+        <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
         </svg>
         Loading institutional FII / DII flows…
@@ -36,144 +59,129 @@ export default function FlowsPage() {
     );
   }
 
-  if (error || !data) {
+  if (error && !data) {
     return (
-      <div className="p-6 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-700">
-        <div className="font-semibold mb-1">Failed to load flows data</div>
-        {error}
+      <div className="terminal-panel p-4 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[13px]">
+        <div className="font-medium mb-1">Failed to load flows data</div>
+        <div>{error}</div>
       </div>
     );
   }
 
-  const flows = data.data;
+  const flows = data?.data || { daily: [] };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-sand-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
-          <h1 className="text-xl font-semibold text-sand-950 tracking-tight">FII / FPI & DII Institutional Flows</h1>
-          <p className="text-xs text-sand-600 mt-0.5">
-            Cash market gross buy, sell & net flows • Provisional vs final status tracking in ₹ Crore
+          <div className="flex items-center gap-2">
+            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+              Institutional FII / FPI & DII Capital Flows
+            </h1>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+              Cash Market
+            </span>
+          </div>
+          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            Foreign and domestic institutional cash market gross buy, sell, and net flows in ₹ Crore
           </p>
         </div>
-        <StatusBadge
-          availability={data.availability}
-          freshness={data.freshness}
-          frequency="daily"
-          asOf={flows.as_of}
-          units="₹ Crore"
-        />
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="terminal-btn text-[12px] py-1 px-2.5 flex items-center gap-1.5"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export CSV
+          </button>
+        </div>
       </div>
 
-      {/* Summary Highlight Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* FII Net */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
-            <span>FII / FPI Net Flow</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Latest Session</span>
-          </div>
-          <div className={`mt-2 text-2xl font-bold font-mono tabular-nums ${
-            flows.fii_net_crore !== undefined && flows.fii_net_crore >= 0 ? "text-emerald-700" : "text-rose-700"
-          }`}>
-            {flows.fii_net_crore !== undefined
-              ? `${flows.fii_net_crore >= 0 ? "+" : ""}${flows.fii_net_crore.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr`
-              : "—"}
-          </div>
-          <div className="mt-2 text-[11px] text-sand-500">
-            Foreign portfolio investment in cash market
-          </div>
+      {/* Summary Highlight Table */}
+      <div className="terminal-panel overflow-hidden">
+        <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+          Latest Session Institutional Net Positions
         </div>
-
-        {/* DII Net */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
-            <span>DII Net Flow</span>
-            <span className="font-mono text-[10px] bg-sand-100 text-sand-700 px-1.5 py-0.5 rounded">Latest Session</span>
-          </div>
-          <div className={`mt-2 text-2xl font-bold font-mono tabular-nums ${
-            flows.dii_net_crore !== undefined && flows.dii_net_crore >= 0 ? "text-emerald-700" : "text-rose-700"
-          }`}>
-            {flows.dii_net_crore !== undefined
-              ? `${flows.dii_net_crore >= 0 ? "+" : ""}${flows.dii_net_crore.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr`
-              : "—"}
-          </div>
-          <div className="mt-2 text-[11px] text-sand-500">
-            Domestic institutional investment (MFs, Insurance, Banks)
-          </div>
-        </div>
-
-        {/* Combined 7D Cumulative */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-sand-500 font-medium">
-            <span>7-Day Net Institutional Flow</span>
-            <span className="font-mono text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">Rolling Window</span>
-          </div>
-          <div className={`mt-2 text-2xl font-bold font-mono tabular-nums ${
-            flows.cumulative_7d_net_crore !== undefined && flows.cumulative_7d_net_crore >= 0 ? "text-emerald-700" : "text-rose-700"
-          }`}>
-            {flows.cumulative_7d_net_crore !== undefined
-              ? `${flows.cumulative_7d_net_crore >= 0 ? "+" : ""}${flows.cumulative_7d_net_crore.toLocaleString("en-IN", { maximumFractionDigits: 1 })} Cr`
-              : "—"}
-          </div>
-          <div className="mt-2 text-[11px] text-sand-500">
-            Cumulative sum of consistent daily sessions
-          </div>
-        </div>
+        <table className="terminal-table">
+          <thead>
+            <tr>
+              <th className="w-[30%]">Investor Class</th>
+              <th className="w-[25%] text-right">Net Flow (₹ Cr)</th>
+              <th className="w-[25%]">Market Segment</th>
+              <th className="w-[20%]">Reporting Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">FII / FPI Net Cash Position</td>
+              <td className="text-right">
+                <SignedValue value={flows.fii_net_crore} unit="Cr" />
+              </td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Foreign Portfolio Investors (Equity)</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Reported</td>
+            </tr>
+            <tr>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">DII Net Cash Position</td>
+              <td className="text-right">
+                <SignedValue value={flows.dii_net_crore} unit="Cr" />
+              </td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Domestic Institutions (MFs, Insurance)</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Reported</td>
+            </tr>
+            <tr>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">7-Day Cumulative Net Flow</td>
+              <td className="text-right">
+                <SignedValue value={flows.cumulative_7d_net_crore} unit="Cr" />
+              </td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Rolling 7-day cumulative net flow</td>
+              <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Aggregated</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       {/* Historical Flows Ledger */}
-      <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-sm font-semibold text-sand-950">Daily Institutional Activity Ledger</h2>
-            <p className="text-[11px] text-sand-500">Reported cash-market activity • Missing days are not zero flows</p>
-          </div>
-          <StatusBadge
-            availability="ready"
-            freshness="current"
-            frequency="daily"
-            sourceName="NSE FII/DII Reports"
-            sourceUrl="https://www.nseindia.com/reports/fii-dii"
-          />
+      <div className="terminal-panel overflow-hidden">
+        <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+          Daily Institutional Activity Ledger
         </div>
-
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-sand-50 text-sand-600 font-mono border-y border-sand-200">
+          <table className="terminal-table">
+            <thead>
               <tr>
-                <th className="py-2.5 px-3 font-medium">Report Date</th>
-                <th className="py-2.5 px-3 font-medium">Category</th>
-                <th className="py-2.5 px-3 font-medium">Segment</th>
-                <th className="py-2.5 px-3 font-medium">Gross Buy (₹ Cr)</th>
-                <th className="py-2.5 px-3 font-medium">Gross Sell (₹ Cr)</th>
-                <th className="py-2.5 px-3 font-medium">Net Flow (₹ Cr)</th>
-                <th className="py-2.5 px-3 font-medium">Status</th>
+                <th className="w-[15%]">Report Date</th>
+                <th className="w-[15%]">Category</th>
+                <th className="w-[15%]">Segment</th>
+                <th className="w-[15%] text-right">Gross Buy (₹ Cr)</th>
+                <th className="w-[15%] text-right">Gross Sell (₹ Cr)</th>
+                <th className="w-[15%] text-right">Net Flow (₹ Cr)</th>
+                <th className="w-[10%]">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
+            <tbody>
               {flows.daily && flows.daily.length > 0 ? (
                 flows.daily.map((row, idx) => {
                   const buyCr = row.buy_paise ? (row.buy_paise / 1e9).toFixed(1) : "—";
                   const sellCr = row.sell_paise ? (row.sell_paise / 1e9).toFixed(1) : "—";
-                  const netCr = (row.net_paise / 1e9);
+                  const netCr = row.net_paise / 1e9;
                   return (
-                    <tr key={idx} className="hover:bg-sand-50/60">
-                      <td className="py-2.5 px-3 font-semibold text-sand-900">{row.report_date}</td>
-                      <td className="py-2.5 px-3 text-sand-800 font-sans">{row.category}</td>
-                      <td className="py-2.5 px-3 text-sand-600 text-[11px]">{row.segment}</td>
-                      <td className="py-2.5 px-3 text-sand-700">{buyCr}</td>
-                      <td className="py-2.5 px-3 text-sand-700">{sellCr}</td>
-                      <td className={`py-2.5 px-3 font-bold ${netCr >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
-                        {netCr >= 0 ? "+" : ""}{netCr.toFixed(1)} Cr
+                    <tr key={idx}>
+                      <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                        {formatISTDate(row.report_date)}
                       </td>
-                      <td className="py-2.5 px-3">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                          row.provisional
-                            ? "bg-amber-50 text-amber-700 border border-amber-200"
-                            : "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        }`}>
+                      <td className="text-[#536176] dark:text-[#A8B4C4]">{row.category}</td>
+                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{row.segment}</td>
+                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">{buyCr}</td>
+                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">{sellCr}</td>
+                      <td className="text-right">
+                        <SignedValue value={netCr} unit="Cr" />
+                      </td>
+                      <td>
+                        <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
                           {row.provisional ? "Provisional" : "Final"}
                         </span>
                       </td>
@@ -182,7 +190,7 @@ export default function FlowsPage() {
                 })
               ) : (
                 <tr>
-                  <td colSpan={7} className="py-6 text-center text-sand-500 font-sans">
+                  <td colSpan={7} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
                     Awaiting next official exchange session report or manual flow import.
                   </td>
                 </tr>

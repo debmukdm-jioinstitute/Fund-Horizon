@@ -1,10 +1,22 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
+        terminal: {
+          bg: "var(--terminal-bg)",
+          surface: "var(--terminal-surface)",
+          primary: "var(--terminal-text-primary)",
+          secondary: "var(--terminal-text-secondary)",
+          border: "var(--terminal-border)",
+          accent: "var(--terminal-accent)",
+          accentBg: "var(--terminal-accent-bg)",
+          positive: "var(--terminal-positive)",
+          negative: "var(--terminal-negative)",
+        },
         navy: {
           950: "#06172C",
           900: "#0B2545",
@@ -25,23 +37,23 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
-          "var(--font-sans)",
           "'Google Sans'",
-          "'Plus Jakarta Sans'",
-          "system-ui",
           "-apple-system",
+          "BlinkMacSystemFont",
           "Segoe UI",
           "Roboto",
+          "Helvetica",
+          "Arial",
           "sans-serif",
         ],
         display: [
-          "var(--font-display)",
-          "'Google Sans Display'",
-          "'Outfit'",
-          "'Plus Jakarta Sans'",
+          "'Google Sans'",
+          "-apple-system",
+          "BlinkMacSystemFont",
           "sans-serif",
         ],
       },
+
       boxShadow: {
         glass: "0 8px 32px 0 rgba(11, 37, 69, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.8)",
         "glass-lg": "0 16px 40px -8px rgba(11, 37, 69, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.9)",

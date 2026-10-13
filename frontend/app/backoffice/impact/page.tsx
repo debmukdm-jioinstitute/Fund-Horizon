@@ -7,6 +7,7 @@ import {
   ImpactAnalysisData,
   ImpactScenarioData,
 } from "@/lib/backoffice";
+import SignedValue from "@/components/terminal/SignedValue";
 
 const PAIR_OPTIONS = [
   { id: "FX:USDINR", label: "USD/INR Reference Rate (ECB)", type: "fx" },
@@ -70,43 +71,51 @@ export default function ImpactEnginePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-sand-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
-          <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Explainable Impact & Sensitivity Engine</h1>
-          <p className="text-xs text-sand-600 mt-0.5">
-            Strict empirical math (log returns & bps changes) • Zero paid LLMs • Deterministic scenario shock modeling
+          <div className="flex items-center gap-2">
+            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+              Explainable Impact &amp; Sensitivity Engine
+            </h1>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+              Empirical Math • Zero LLM
+            </span>
+          </div>
+          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            Empirical regressions and scenario shocks are mathematical sensitivities, not observed facts or investment forecasts.
           </p>
-        </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-          <span>Formulaic & Deterministic</span>
         </div>
       </div>
 
-      {/* Grid: 2 Columns (Empirical Regression + Scenario Sensitivity) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Grid: 2 Columns for Empirical Regression & Scenario Shock */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Module 1: Empirical Cross-Asset Regression */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between">
+        <div className="terminal-panel p-3.5 space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
             <div>
-              <h2 className="text-sm font-semibold text-sand-900">Pair Relationship & Regression</h2>
-              <p className="text-[11px] text-sand-500">
-                Alphanumeric observation alignment (≥80% paired threshold, no forward filling)
-              </p>
+              <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                Pair Relationship &amp; Empirical Regression
+              </div>
+              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                Continuous log returns &amp; bps changes • ≥80% paired threshold
+              </div>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-sand-100 text-sand-700 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono uppercase bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]">
               OLS Beta
             </span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Asset A (Dependent Variable Y)</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                Asset A (Dependent Y)
+              </label>
               <select
                 value={pairA}
                 onChange={(e) => setPairA(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+                className="terminal-input w-full text-[12px] py-1 px-2"
               >
                 {PAIR_OPTIONS.map((p) => (
                   <option key={p.id} value={p.id}>{p.label}</option>
@@ -115,11 +124,13 @@ export default function ImpactEnginePage() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Asset B (Independent Driver X)</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                Asset B (Independent Driver X)
+              </label>
               <select
                 value={pairB}
                 onChange={(e) => setPairB(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+                className="terminal-input w-full text-[12px] py-1 px-2"
               >
                 {PAIR_OPTIONS.map((p) => (
                   <option key={p.id} value={p.id}>{p.label}</option>
@@ -128,17 +139,19 @@ export default function ImpactEnginePage() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Rolling Window</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                Rolling Observation Window
+              </label>
               <div className="flex gap-2">
                 {[20, 60, 120].map((w) => (
                   <button
                     key={w}
                     type="button"
                     onClick={() => setWindowSessions(w)}
-                    className={`flex-1 py-1.5 text-xs font-mono rounded-xl border transition-colors ${
+                    className={`flex-1 py-1 text-[12px] font-mono rounded border transition-colors ${
                       windowSessions === w
-                        ? "bg-forest-700 text-white border-forest-700 font-semibold"
-                        : "bg-sand-50 text-sand-700 border-sand-200 hover:bg-sand-100"
+                        ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                        : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644] hover:bg-[#FFFFFF] dark:hover:bg-[#10151C]"
                     }`}
                   >
                     {w} Sessions
@@ -150,65 +163,83 @@ export default function ImpactEnginePage() {
             <button
               onClick={handleRunAnalysis}
               disabled={analyzing || pairA === pairB}
-              className="w-full py-2.5 px-4 bg-forest-700 text-white rounded-xl text-xs font-semibold hover:bg-forest-800 disabled:opacity-50 transition-colors shadow-xs"
+              className="terminal-btn w-full text-[12px] py-1.5 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
             >
               {analyzing ? "Computing Regression…" : "Compute Rolling Relationship"}
             </button>
           </div>
 
           {analysisError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+            <div className="terminal-panel p-2.5 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px]">
               {analysisError}
             </div>
           )}
 
           {analysisResult && (
-            <div className="p-4 bg-sand-50 rounded-xl border border-sand-200 space-y-3 font-mono">
-              <div className="flex items-center justify-between text-xs pb-2 border-b border-sand-200">
-                <span className="font-sans text-sand-600">Sample Alignment:</span>
-                <span className="font-semibold text-sand-900">n = {analysisResult.sample_size} sessions ({analysisResult.paired_ratio_pct}%)</span>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Correlation (r)</div>
-                  <div className="text-lg font-bold text-sand-950 mt-0.5">
-                    {analysisResult.correlation !== null && analysisResult.correlation !== undefined ? analysisResult.correlation.toFixed(3) : "—"}
-                  </div>
-                </div>
-                <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Sensitivity Beta (β)</div>
-                  <div className="text-lg font-bold text-sand-950 mt-0.5">
-                    {analysisResult.beta !== null && analysisResult.beta !== undefined ? analysisResult.beta.toFixed(3) : "—"}
-                  </div>
-                </div>
-              </div>
-              <div className="text-[11px] text-sand-600 font-sans leading-relaxed pt-1">
-                <span className="font-semibold">Mathematical Note:</span> Price series are transformed using continuous log returns ln(P_t / P_prev); yields use basis-point changes (Y_t - Y_prev) × 100.
-              </div>
+            <div className="terminal-panel overflow-hidden mt-3">
+              <table className="terminal-table">
+                <thead>
+                  <tr>
+                    <th>Statistical Output</th>
+                    <th className="text-right">Estimate</th>
+                    <th>Specification</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Correlation (r)</td>
+                    <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      {analysisResult.correlation !== null && analysisResult.correlation !== undefined
+                        ? analysisResult.correlation.toFixed(3)
+                        : "—"}
+                    </td>
+                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Pearson linear correlation coefficient</td>
+                  </tr>
+                  <tr>
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Sensitivity Beta (β)</td>
+                    <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      {analysisResult.beta !== null && analysisResult.beta !== undefined
+                        ? analysisResult.beta.toFixed(3)
+                        : "—"}
+                    </td>
+                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">OLS Slope: Cov(Y,X) / Var(X)</td>
+                  </tr>
+                  <tr>
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Sample Alignment</td>
+                    <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      n = {analysisResult.sample_size}
+                    </td>
+                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                      {analysisResult.paired_ratio_pct}% concurrent session match
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
         </div>
 
         {/* Module 2: Deterministic Scenario Sensitivity Sliders */}
-        <div className="p-5 bg-white rounded-2xl border border-sand-200 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between">
+        <div className="terminal-panel p-3.5 space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
             <div>
-              <h2 className="text-sm font-semibold text-sand-900">Portfolio Sensitivity & Shock Sliders</h2>
-              <p className="text-[11px] text-sand-500">
-                Exact first-order Taylor bond shock: ΔP/P ≈ -Modified_Duration × (Δbps / 10000)
-              </p>
+              <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                Portfolio Sensitivity &amp; Shock Sliders
+              </div>
+              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                First-order Taylor shock: ΔP/P ≈ −D_mod × (Δbps / 10000)
+              </div>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono uppercase bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]">
               Sensitivity
             </span>
           </div>
 
-          <div className="space-y-4">
-            {/* Bond Duration Slider */}
+          <div className="space-y-3">
             <div>
-              <div className="flex justify-between text-xs font-medium text-sand-700 mb-1">
+              <div className="flex justify-between text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] mb-1">
                 <span>Fixed Income Modified Duration</span>
-                <span className="font-mono font-semibold text-forest-800">{bondDuration} yrs</span>
+                <span className="font-mono text-[#172033] dark:text-[#EDF2F7] font-semibold">{bondDuration} yrs</span>
               </div>
               <input
                 type="range"
@@ -217,15 +248,16 @@ export default function ImpactEnginePage() {
                 step="0.5"
                 value={bondDuration}
                 onChange={(e) => setBondDuration(Number(e.target.value))}
-                className="w-full accent-forest-700"
+                className="w-full accent-[#006F64] dark:accent-[#75E1CE]"
               />
             </div>
 
-            {/* Sovereign Yield Shock Slider */}
             <div>
-              <div className="flex justify-between text-xs font-medium text-sand-700 mb-1">
+              <div className="flex justify-between text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] mb-1">
                 <span>Sovereign Yield Shift (bps)</span>
-                <span className="font-mono font-semibold text-forest-800">{yieldShiftBps > 0 ? "+" : ""}{yieldShiftBps} bps</span>
+                <span className="font-mono text-[#172033] dark:text-[#EDF2F7] font-semibold">
+                  {yieldShiftBps > 0 ? "+" : ""}{yieldShiftBps} bps
+                </span>
               </div>
               <input
                 type="range"
@@ -234,18 +266,16 @@ export default function ImpactEnginePage() {
                 step="5"
                 value={yieldShiftBps}
                 onChange={(e) => setYieldShiftBps(Number(e.target.value))}
-                className="w-full accent-forest-700"
+                className="w-full accent-[#006F64] dark:accent-[#75E1CE]"
               />
-              <div className="text-[10px] text-sand-500 mt-0.5 font-mono">
-                Canonical rule: +25 bps shift corresponds to +0.0025 yield decimal (not 0.25).
-              </div>
             </div>
 
-            {/* Currency FX Shift Slider */}
             <div>
-              <div className="flex justify-between text-xs font-medium text-sand-700 mb-1">
-                <span>USD Depreciation / Appreciation Shift</span>
-                <span className="font-mono font-semibold text-forest-800">{fxShiftPct > 0 ? "+" : ""}{fxShiftPct}%</span>
+              <div className="flex justify-between text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] mb-1">
+                <span>USD Currency Shift (%)</span>
+                <span className="font-mono text-[#172033] dark:text-[#EDF2F7] font-semibold">
+                  {fxShiftPct > 0 ? "+" : ""}{fxShiftPct}%
+                </span>
               </div>
               <input
                 type="range"
@@ -254,44 +284,52 @@ export default function ImpactEnginePage() {
                 step="0.5"
                 value={fxShiftPct}
                 onChange={(e) => setFxShiftPct(Number(e.target.value))}
-                className="w-full accent-forest-700"
+                className="w-full accent-[#006F64] dark:accent-[#75E1CE]"
               />
             </div>
 
             <button
               onClick={handleRunScenario}
               disabled={simulating}
-              className="w-full py-2.5 px-4 bg-forest-700 text-white rounded-xl text-xs font-semibold hover:bg-forest-800 transition-colors shadow-xs"
+              className="terminal-btn w-full text-[12px] py-1.5 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
             >
               {simulating ? "Evaluating Sensitivity…" : "Simulate Scenario Impact"}
             </button>
           </div>
 
           {scenarioResult && (
-            <div className="p-4 bg-sand-50 rounded-xl border border-sand-200 space-y-3 font-mono">
-              <div className="text-xs font-semibold text-sand-900 font-sans pb-1 border-b border-sand-200">
-                First-Order Shock Results:
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Bond Price Shock (ΔP/P)</div>
-                  <div className={`text-lg font-bold mt-0.5 ${
-                    scenarioResult.estimated_price_change_pct >= 0 ? "text-emerald-700" : "text-rose-700"
-                  }`}>
-                    {scenarioResult.estimated_price_change_pct > 0 ? "+" : ""}
-                    {scenarioResult.estimated_price_change_pct.toFixed(2)}%
-                  </div>
-                </div>
-                <div className="p-2.5 bg-white rounded-lg border border-sand-200">
-                  <div className="text-[10px] text-sand-500 uppercase font-sans">Yield Decimal Shift</div>
-                  <div className="text-lg font-bold text-sand-950 mt-0.5">
-                    {scenarioResult.delta_yield_decimal ? scenarioResult.delta_yield_decimal.toFixed(4) : "—"}
-                  </div>
-                </div>
-              </div>
-              <div className="text-[11px] text-sand-600 font-sans leading-relaxed">
-                Formula verified: <code className="bg-sand-200/80 px-1 py-0.5 rounded text-sand-800">{scenarioResult.formula || "ΔP/P ≈ -D_mod * (Δbps / 10000)"}</code>
-              </div>
+            <div className="terminal-panel overflow-hidden mt-3">
+              <table className="terminal-table">
+                <thead>
+                  <tr>
+                    <th>Shock Derivative Output</th>
+                    <th className="text-right">Estimated Change</th>
+                    <th>Analytical Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Estimated Bond Price Shock (ΔP/P)</td>
+                    <td className="text-right">
+                      <SignedValue value={scenarioResult.estimated_price_change_pct} unit="%" />
+                    </td>
+                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                      Formula: {scenarioResult.formula || "ΔP/P ≈ −D_mod × (Δbps / 10000)"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Yield Decimal Equivalent Shift</td>
+                    <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      {scenarioResult.delta_yield_decimal !== undefined
+                        ? scenarioResult.delta_yield_decimal.toFixed(4)
+                        : "—"}
+                    </td>
+                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                      {yieldShiftBps} bps = {(yieldShiftBps / 10000).toFixed(4)} yield decimal
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
         </div>

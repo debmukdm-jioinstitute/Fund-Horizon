@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { getMutualFundsTracker, MutualFundItem } from "@/lib/backoffice";
-import { StatusBadge } from "@/components/backoffice/StatusBadge";
+import { formatISTDate } from "@/lib/terminal-format";
 
 export default function MutualFundsTrackerPage() {
   const [query, setQuery] = useState("");
@@ -27,106 +27,108 @@ export default function MutualFundsTrackerPage() {
   }, [query]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-sand-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
-          <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Mutual Fund Tracker & AMFI NAV Hub</h1>
-          <p className="text-xs text-sand-600 mt-0.5">
-            Official AMFI daily NAV feeds (8-column normalized parser), Direct/Regular plan distinctions & history reconciliation
+          <div className="flex items-center gap-2">
+            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+              Mutual Fund Tracker & AMFI NAV Hub
+            </h1>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+              AMFI NAVAll.txt Feed
+            </span>
+          </div>
+          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            Normalized 8-column AMFI master scheme registry, direct vs regular plan distinctions, and NAV valuations
           </p>
         </div>
-        <StatusBadge
-          availability="ready"
-          freshness="current"
-          frequency="daily"
-          sourceName="AMFI Portal"
-          sourceUrl="https://portal.amfiindia.com/spages/NAVAll.txt"
-          units="NAV ₹"
-        />
+
+        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+          Feed: <a href="https://portal.amfiindia.com/spages/NAVAll.txt" target="_blank" rel="noreferrer" className="underline hover:text-[#172033] dark:hover:text-[#EDF2F7]">portal.amfiindia.com</a>
+        </div>
       </div>
 
-      {/* Search & Filter Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-sand-200 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      {/* Search & Filter Toolbar */}
+      <div className="terminal-panel p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2 flex-1">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by scheme code, fund name, AMC, or ISIN (e.g. 119551, HDFC, Parag Parikh)…"
-            className="w-full max-w-lg px-3.5 py-2 text-xs rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+            className="terminal-input w-full max-w-md text-[12px] py-1 px-2.5"
           />
         </div>
-        <div className="text-xs text-sand-500 font-mono">
-          Showing {schemes.length} schemes
+        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono shrink-0">
+          {loading ? "Searching…" : `${schemes.length} schemes loaded`}
         </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+        <div className="terminal-panel p-3 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px]">
           {error}
         </div>
       )}
 
-      {/* Schemes Table */}
-      <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs overflow-hidden">
+      {/* Schemes Flat Table */}
+      <div className="terminal-panel overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-sand-50 text-sand-600 font-mono border-b border-sand-200">
+          <table className="terminal-table">
+            <thead>
               <tr>
-                <th className="py-2.5 px-4 font-medium">Scheme Code</th>
-                <th className="py-2.5 px-4 font-medium">Scheme Name & Category</th>
-                <th className="py-2.5 px-3 font-medium">Plan Type</th>
-                <th className="py-2.5 px-3 font-medium">Latest NAV</th>
-                <th className="py-2.5 px-3 font-medium">NAV Date</th>
-                <th className="py-2.5 px-3 font-medium">TER (%)</th>
-                <th className="py-2.5 px-3 font-medium">ISIN Growth / Div</th>
-                <th className="py-2.5 px-3 font-medium">Status</th>
+                <th className="w-[10%]">Code</th>
+                <th className="w-[32%]">Scheme Name & Category</th>
+                <th className="w-[10%]">Plan Type</th>
+                <th className="w-[12%] text-right">Latest NAV (₹)</th>
+                <th className="w-[12%]">NAV Date</th>
+                <th className="w-[10%] text-right">TER (%)</th>
+                <th className="w-[14%]">ISIN (Growth)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-sand-500 font-sans">
-                    Loading scheme universe…
+                  <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                    Loading scheme universe from AMFI registry…
                   </td>
                 </tr>
               ) : schemes.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-sand-500 font-sans">
-                    No matching schemes found. All 8 AMFI columns are normalized from NAVAll.txt.
+                  <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                    No schemes found matching &quot;{query}&quot;.
                   </td>
                 </tr>
               ) : (
                 schemes.map((s, idx) => (
-                  <tr key={idx} className="hover:bg-sand-50/60">
-                    <td className="py-3 px-4 font-bold text-forest-800">{s.scheme_code}</td>
-                    <td className="py-3 px-4 font-sans max-w-md">
-                      <div className="font-semibold text-sand-900 leading-snug">{s.scheme_name}</div>
-                      <div className="text-[11px] text-sand-500">{s.amc_name || s.category || "Equity"}</div>
+                  <tr key={idx}>
+                    <td className="font-mono text-[12px] text-[#006F64] dark:text-[#75E1CE] font-medium">
+                      {s.scheme_code}
                     </td>
-                    <td className="py-3 px-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        s.plan?.toLowerCase() === "direct"
-                          ? "bg-purple-50 text-purple-700 border border-purple-200"
-                          : "bg-blue-50 text-blue-700 border border-blue-200"
-                      }`}>
+                    <td>
+                      <div className="font-medium text-[#172033] dark:text-[#EDF2F7] leading-snug">
+                        {s.scheme_name}
+                      </div>
+                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                        {s.amc_name || s.category || "Equity"}
+                      </div>
+                    </td>
+                    <td>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
                         {s.plan || "Regular"}
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-bold text-sand-950">
-                      ₹{s.latest_nav ? Number(s.latest_nav).toFixed(4) : "—"}
+                    <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      {s.latest_nav ? `₹${Number(s.latest_nav).toFixed(4)}` : "—"}
                     </td>
-                    <td className="py-3 px-3 text-sand-600 text-[11px]">{s.nav_date || "—"}</td>
-                    <td className="py-3 px-3 text-sand-700">{s.ter_pct ? `${s.ter_pct}%` : "—"}</td>
-                    <td className="py-3 px-3 text-[11px] text-sand-500 font-mono">
+                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                      {formatISTDate(s.nav_date)}
+                    </td>
+                    <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                      {s.ter_pct ? `${Number(s.ter_pct).toFixed(2)}%` : "—"}
+                    </td>
+                    <td className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
                       {s.isin_growth || s.isin_div || "—"}
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                        Active
-                      </span>
                     </td>
                   </tr>
                 ))

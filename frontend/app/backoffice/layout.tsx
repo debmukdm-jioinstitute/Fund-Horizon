@@ -1,37 +1,189 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
 import { useAuth } from "@/components/AuthContext";
+import { useTheme } from "@/components/terminal/ThemeContext";
 
-const NAV_ITEMS = [
-  { href: "/backoffice", label: "Overview", icon: "📊" },
-  { href: "/backoffice/pms", label: "PMS Tracker", icon: "💼" },
-  { href: "/backoffice/mutual-funds", label: "Mutual Funds", icon: "📈" },
-  { href: "/backoffice/macro", label: "Macro & Yields", icon: "🌐" },
-  { href: "/backoffice/micro", label: "Micro & Fundamentals", icon: "🏢" },
-  { href: "/backoffice/derivatives", label: "Derivatives & PCR", icon: "⚡" },
-  { href: "/backoffice/flows", label: "FII / DII Flows", icon: "🌊" },
-  { href: "/backoffice/impact", label: "Impact Engine", icon: "🎯" },
-  { href: "/backoffice/research", label: "Daily Briefing & Notes", icon: "📑" },
-  { href: "/backoffice/data-health", label: "Data Health & Sources", icon: "🩺" },
-  { href: "/backoffice/settings", label: "Settings & Staff", icon: "⚙️" },
+interface NavItem {
+  href: string;
+  label: string;
+  description: string;
+  badge?: string;
+  icon: (props: { className?: string }) => React.JSX.Element;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    href: "/backoffice",
+    label: "Overview",
+    description: "Key market indicators, benchmark index levels, and macro rates",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/pms",
+    label: "PMS tracker",
+    description: "Portfolio management strategies, APMI performance, and high-water mark",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/mutual-funds",
+    label: "Mutual funds",
+    description: "AMFI scheme registry, daily NAV series, AUM, and return quartiles",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/macro",
+    label: "Macro & yields",
+    description: "RBI policy rates, G-Sec sovereign yield curve, global central bank benchmarks",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/micro",
+    label: "Fundamentals",
+    description: "Corporate earnings, EBITDA margins, net debt-to-equity, and debt look-through",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/derivatives",
+    label: "Derivatives & PCR",
+    description: "NIFTY/BANKNIFTY open interest, put-call ratio, strikes, and max pain",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/flows",
+    label: "Institutional flows",
+    description: "Daily FII and DII net equity and debt transactions in crores",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/impact",
+    label: "Impact engine",
+    description: "OLS macro sensitivity models, duration factor stress, and currency beta",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/research",
+    label: "Briefings",
+    description: "Institutional research notes, policy summaries, and market briefings",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/data-health",
+    label: "Data health",
+    description: "RBI, CCIL, AMFI, and NSE upstream feed health and diagnostic latency",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/backoffice/settings",
+    label: "Settings",
+    description: "Staff provisioning, RBAC roles, terminal preferences, and watchlists",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
 ];
 
 export default function BackofficeLayout({ children }: { children: React.ReactNode }) {
   const { customer, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [istTime, setIstTime] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Maintain Live IST Clock
+  useEffect(() => {
+    function updateClock() {
+      const now = new Date();
+      const formatted = new Intl.DateTimeFormat("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).format(now);
+      setIstTime(`${formatted} IST`);
+    }
+    updateClock();
+    const interval = setInterval(updateClock, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Global Keyboard Shortcut (cmd+k or /) for Quick Search
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && document.activeElement?.tagName !== "INPUT")) {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      } else if (e.key === "Escape") {
+        setSearchOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    if (searchOpen) {
+      setTimeout(() => searchInputRef.current?.focus(), 50);
+    }
+  }, [searchOpen]);
 
   useEffect(() => {
     if (!loading) {
       if (!customer) {
         router.replace("/login");
       } else if (!customer.is_staff) {
-        // Customer accounts cannot access the backoffice
         router.replace("/login");
       }
     }
@@ -39,123 +191,246 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
 
   if (loading || !customer || !customer.is_staff) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa]">
-        <div className="flex items-center gap-3 text-sand-600 font-medium text-sm">
-          <svg className="animate-spin h-5 w-5 text-forest-700" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] dark:bg-[#10151C] text-[#536176] dark:text-[#A8B4C4]">
+        <div className="flex items-center gap-2.5 text-[13px] font-medium">
+          <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
-          Verifying backoffice credentials…
+          Verifying terminal authentication credentials…
         </div>
       </div>
     );
   }
 
-  const roleBadgeMap: Record<string, string> = {
-    admin: "bg-purple-50 text-purple-700 border-purple-200",
-    analyst: "bg-blue-50 text-blue-700 border-blue-200",
-    rm: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    operations: "bg-amber-50 text-amber-700 border-amber-200",
-    read_only: "bg-sand-100 text-sand-700 border-sand-300",
-  };
-  const roleBadgeColor = roleBadgeMap[customer.role] || "bg-sand-100 text-sand-700 border-sand-300";
+  const filteredNavItems = NAV_ITEMS.filter((item) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return item.label.toLowerCase().includes(q) || item.description.toLowerCase().includes(q) || item.href.toLowerCase().includes(q);
+  });
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] flex flex-col md:flex-row text-sand-900 font-sans antialiased">
-      {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-sand-200">
-        <Logo />
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 rounded-lg text-sand-600 hover:bg-sand-100"
-          aria-label="Toggle Navigation"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {mobileMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
-      </div>
+    <div className="min-h-screen flex bg-[#FFFFFF] dark:bg-[#10151C] text-[#172033] dark:text-[#EDF2F7]">
+      {/* Mobile Drawer Backdrop */}
+      {mobileDrawerOpen && (
+        <div
+          role="presentation"
+          onClick={() => setMobileDrawerOpen(false)}
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs md:hidden"
+        />
+      )}
 
-      {/* Sidebar Navigation */}
+      {/* Sidebar (210px width) */}
       <aside
-        className={`${
-          mobileMenuOpen ? "block" : "hidden"
-        } md:flex flex-col w-full md:w-64 bg-white border-r border-sand-200 shrink-0 select-none`}
+        className={`fixed inset-y-0 left-0 z-50 w-[210px] md:static flex flex-col bg-[#FFFFFF] dark:bg-[#10151C] border-r border-[#E4E9EF] dark:border-[#2B3644] shrink-0 transition-transform duration-200 ease-in-out ${
+          mobileDrawerOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
       >
-        <div className="p-5 border-b border-sand-100 hidden md:block">
-          <Logo />
-          <div className="mt-2 flex items-center gap-2">
-            <span className="text-[11px] font-semibold tracking-wider text-forest-800 uppercase bg-forest-50 px-2 py-0.5 rounded border border-forest-200">
-              Internal Backoffice
+        {/* Sidebar Header: Single Logo + Terminal Badge */}
+        <div className="h-[52px] px-3.5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Logo size="sm" showSubtitle={false} href="/backoffice" />
+            <span className="text-[10px] font-semibold tracking-wider uppercase text-[#006F64] dark:text-[#75E1CE] bg-[#E7F5F2] dark:bg-[#1A3034] px-1 py-0.5 rounded">
+              Terminal
             </span>
           </div>
+          <button
+            onClick={() => setMobileDrawerOpen(false)}
+            aria-label="Close menu"
+            className="md:hidden p-1 text-[#536176] hover:text-[#172033] dark:text-[#A8B4C4] dark:hover:text-[#EDF2F7]"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        {/* User Card */}
-        <div className="p-4 border-b border-sand-100 bg-sand-50/60">
-          <div className="flex items-center justify-between">
-            <div className="truncate pr-2">
-              <div className="text-xs font-semibold text-sand-900 truncate">{customer.name}</div>
-              <div className="text-[11px] text-sand-500 truncate">{customer.email}</div>
-            </div>
-            <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border font-medium ${roleBadgeColor}`}>
-              {customer.role}
-            </span>
-          </div>
-        </div>
-
-        {/* Nav Links */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+        {/* Navigation Items (11 compact items) */}
+        <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto" aria-label="Terminal Navigation">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
+            const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                onClick={() => setMobileDrawerOpen(false)}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded text-[13px] transition-colors ${
                   isActive
-                    ? "bg-forest-50 text-forest-900 font-semibold border border-forest-200/60 shadow-xs"
-                    : "text-sand-700 hover:bg-sand-100 hover:text-sand-900"
+                    ? "bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE] font-medium"
+                    : "text-[#536176] dark:text-[#A8B4C4] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
                 }`}
               >
-                <span className="text-base">{item.icon}</span>
-                <span>{item.label}</span>
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#006F64] dark:text-[#75E1CE]" : "text-[#536176] dark:text-[#A8B4C4]"}`} />
+                <span className="truncate">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Footer info & Logout */}
-        <div className="p-3 border-t border-sand-100 bg-white">
+        {/* Sidebar Footer: Staff Card & Sign Out */}
+        <div className="p-2.5 border-t border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] space-y-2">
+          <div className="flex items-center justify-between text-[11px]">
+            <div className="truncate pr-1">
+              <div className="font-medium text-[#172033] dark:text-[#EDF2F7] truncate">{customer.name || customer.email}</div>
+              <div className="text-[#536176] dark:text-[#A8B4C4] truncate text-[10px]">{customer.email}</div>
+            </div>
+            <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#FFFFFF] dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] text-[#006F64] dark:text-[#75E1CE] shrink-0 font-medium">
+              {customer.role}
+            </span>
+          </div>
+
           <button
             onClick={async () => {
               await logout();
               router.replace("/login");
             }}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium text-rose-700 hover:bg-rose-50 rounded-xl transition-colors border border-transparent hover:border-rose-200"
+            className="w-full flex items-center justify-center gap-1.5 py-1 px-2 text-[12px] text-[#B42332] dark:text-[#FF7D86] hover:bg-[#FFFFFF] dark:hover:bg-[#10151C] rounded border border-transparent hover:border-[#E4E9EF] dark:hover:border-[#2B3644] transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Sign Out
           </button>
-          <div className="mt-2 text-[10px] text-center text-sand-400 font-mono">
-            Zero-Spend Lean Stack • v1.0.0
-          </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {children}
+      {/* Main Terminal Shell: Slim Top Bar + Content Area */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        {/* Slim 52px Top Bar */}
+        <header className="h-[52px] border-b border-[#E4E9EF] dark:border-[#2B3644] bg-[#FFFFFF] dark:bg-[#10151C] px-4 flex items-center justify-between shrink-0 sticky top-0 z-30 select-none">
+          {/* Left: Mobile hamburger & route breadcrumb / search trigger */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileDrawerOpen(true)}
+              aria-label="Open navigation drawer"
+              className="md:hidden p-1.5 rounded text-[#536176] dark:text-[#A8B4C4] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27]"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            {/* Quick Navigation Search Button */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="flex items-center gap-2 h-7 px-2.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4] text-[12px] hover:border-[#006F64] dark:hover:border-[#75E1CE] transition-colors"
+            >
+              <svg className="w-3.5 h-3.5 text-[#536176] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span className="hidden sm:inline">Search terminal modules…</span>
+              <span className="sm:hidden">Search…</span>
+              <kbd className="hidden sm:inline text-[10px] px-1 py-0.2 bg-[#FFFFFF] dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] rounded text-[#536176] dark:text-[#A8B4C4] font-mono">
+                ⌘K
+              </kbd>
+            </button>
+          </div>
+
+          {/* Right: Live IST Clock, Refresh indicator, Theme Toggle */}
+          <div className="flex items-center gap-3">
+            {istTime && (
+              <span className="text-[12px] font-mono text-[#536176] dark:text-[#A8B4C4] tabular-nums hidden sm:inline">
+                {istTime}
+              </span>
+            )}
+
+            {/* Theme Toggle Button */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              title={`Switch to ${theme === "dark" ? "Light" : "Dark"} theme`}
+              className="h-7 w-7 rounded flex items-center justify-center text-[#536176] dark:text-[#A8B4C4] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] transition-colors"
+            >
+              {theme === "dark" ? (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </header>
+
+        {/* Main Content View with 20-24px padding */}
+        <main className="flex-1 p-5 md:p-6 overflow-y-auto">
+          <div className="max-w-[1600px] mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
+
+      {/* Quick Search Dialog Modal */}
+      {searchOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Quick search modal"
+          className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/40 backdrop-blur-xs"
+          onClick={() => setSearchOpen(false)}
+        >
+          <div
+            className="w-full max-w-lg bg-[#FFFFFF] dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] rounded shadow-lg overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center gap-2">
+              <svg className="w-4 h-4 text-[#536176] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Jump to terminal module (Overview, PMS, Macro, PCR…)"
+                className="w-full text-[13px] bg-transparent text-[#172033] dark:text-[#EDF2F7] placeholder-[#536176] dark:placeholder-[#A8B4C4] focus:outline-none"
+              />
+              <button
+                onClick={() => setSearchOpen(false)}
+                className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] px-1.5 py-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]"
+              >
+                ESC
+              </button>
+            </div>
+
+            <div className="max-h-72 overflow-y-auto p-1 divide-y divide-[#E4E9EF]/60 dark:divide-[#2B3644]/60">
+              {filteredNavItems.length === 0 ? (
+                <div className="p-4 text-center text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                  No terminal modules matching &quot;{searchQuery}&quot;
+                </div>
+              ) : (
+                filteredNavItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => {
+                      setSearchOpen(false);
+                      setSearchQuery("");
+                    }}
+                    className="flex items-center justify-between p-2.5 rounded hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition-colors group"
+                  >
+                    <div>
+                      <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] group-hover:text-[#006F64] dark:group-hover:text-[#75E1CE]">
+                        {item.label}
+                      </div>
+                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                        {item.description}
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
+                      {item.href}
+                    </span>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
         </div>
-      </main>
+      )}
     </div>
   );
 }

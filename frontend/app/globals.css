@@ -1,220 +1,235 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Google Sans Central Typography */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/GoogleSans-400-Latin.woff2') format('woff2'),
+       url('/fonts/GoogleSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/GoogleSans-500-Latin.woff2') format('woff2'),
+       url('/fonts/GoogleSans-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/GoogleSans-Medium.ttf') format('truetype');
+}
+
 :root {
   color-scheme: light;
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --glass-shadow: 0 8px 32px 0 rgba(11, 37, 69, 0.05);
+  --terminal-bg: #FFFFFF;
+  --terminal-surface: #F7F9FB;
+  --terminal-text-primary: #172033;
+  --terminal-text-secondary: #536176;
+  --terminal-border: #E4E9EF;
+  --terminal-accent: #006F64;
+  --terminal-accent-bg: #E7F5F2;
+  --terminal-positive: #087744;
+  --terminal-negative: #B42332;
+}
+
+html.dark {
+  color-scheme: dark;
+  --terminal-bg: #10151C;
+  --terminal-surface: #171E27;
+  --terminal-text-primary: #EDF2F7;
+  --terminal-text-secondary: #A8B4C4;
+  --terminal-border: #2B3644;
+  --terminal-accent: #75E1CE;
+  --terminal-accent-bg: #1A3034;
+  --terminal-positive: #58D6A0;
+  --terminal-negative: #FF7D86;
 }
 
 html {
   scroll-behavior: smooth;
+  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-feature-settings: 'tnum' 1;
+  font-variant-numeric: tabular-nums;
 }
 
 body {
-  @apply text-navy-950 antialiased font-sans;
-  background-color: #F8FAFD;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(19, 168, 158, 0.07) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 45%),
-    radial-gradient(at 50% 100%, rgba(14, 124, 116, 0.06) 0px, transparent 55%),
-    radial-gradient(at 90% 85%, rgba(19, 168, 158, 0.04) 0px, transparent 40%);
-  background-attachment: fixed;
+  background-color: var(--terminal-bg);
+  color: var(--terminal-text-primary);
+  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-feature-settings: 'tnum' 1;
+  font-variant-numeric: tabular-nums;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom modern scrollbar */
+/* Slim Terminal Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(243, 246, 250, 0.6);
+  background: var(--terminal-surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
-  border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
+  background: var(--terminal-border);
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.6);
+  background: var(--terminal-text-secondary);
 }
 
 :focus-visible {
-  outline: 3px solid #13A89E;
-  outline-offset: 2px;
+  outline: 2px solid var(--terminal-accent);
+  outline-offset: 1px;
 }
 
 @layer components {
-  /* Translucent Glassmorphism Panels */
-  .glass {
-    background: rgba(255, 255, 255, 0.76);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.85);
-    box-shadow: 0 8px 32px 0 rgba(11, 37, 69, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  /* Terminal Surface Card / Panel */
+  .terminal-panel {
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 6px;
   }
 
-  .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.65) 100%);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 10px 30px -4px rgba(11, 37, 69, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 1);
-    border-radius: 1.25rem;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  .terminal-surface {
+    background-color: var(--terminal-surface);
+    border: 1px solid var(--terminal-border);
+    border-radius: 6px;
   }
 
-  .glass-card:hover {
-    transform: translateY(-3px) scale(1.002);
-    border-color: rgba(19, 168, 158, 0.3);
-    box-shadow: 0 20px 40px -10px rgba(19, 168, 158, 0.12), 0 12px 24px -6px rgba(11, 37, 69, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 1);
+  /* Compact Terminal Button (4-6px control corners) */
+  .terminal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    height: 32px;
+    padding: 0 0.75rem;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    border-radius: 5px;
+    border: 1px solid var(--terminal-border);
+    background-color: var(--terminal-bg);
+    color: var(--terminal-text-primary);
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .terminal-btn:hover {
+    background-color: var(--terminal-surface);
+    border-color: var(--terminal-text-secondary);
+  }
+  .terminal-btn:active {
+    background-color: var(--terminal-border);
   }
 
-  .glass-pill {
-    background: rgba(19, 168, 158, 0.08);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(19, 168, 158, 0.22);
-    color: #0A6B64;
+  .terminal-btn-accent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    height: 32px;
+    padding: 0 0.875rem;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    background-color: var(--terminal-accent);
+    color: #FFFFFF;
+    transition: opacity 0.15s ease;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .dark .terminal-btn-accent {
+    color: #10151C;
+  }
+  .terminal-btn-accent:hover {
+    opacity: 0.9;
   }
 
-  .glass-nav {
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid rgba(220, 230, 242, 0.7);
-    box-shadow: 0 4px 20px -2px rgba(11, 37, 69, 0.03);
+  /* Compact Terminal Input */
+  .terminal-input {
+    height: 32px;
+    padding: 0 0.625rem;
+    font-size: 13px;
+    color: var(--terminal-text-primary);
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 5px;
+    transition: border-color 0.15s ease;
+    font-feature-settings: 'tnum' 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .terminal-input:focus {
+    outline: none;
+    border-color: var(--terminal-accent);
   }
 
-  /* 3D Elevated Cards */
-  .card-3d {
-    background: #FFFFFF;
-    border: 1px solid rgba(220, 230, 242, 0.9);
-    border-radius: 1.25rem;
-    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.04), 0 10px 15px -3px rgba(15, 23, 42, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.95), inset 0 -2px 0 0 rgba(15, 23, 42, 0.03);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Compact Data Table */
+  .terminal-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+  }
+  .terminal-table th {
+    height: 32px;
+    padding: 0 0.75rem;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--terminal-text-secondary);
+    background-color: var(--terminal-surface);
+    border-bottom: 1px solid var(--terminal-border);
+    white-space: nowrap;
+  }
+  .terminal-table td {
+    height: 36px;
+    padding: 0 0.75rem;
+    border-bottom: 1px solid var(--terminal-border);
+    vertical-align: middle;
+    font-feature-settings: 'tnum' 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .terminal-table tr:hover td {
+    background-color: var(--terminal-surface);
   }
 
-  .card-3d:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 32px -4px rgba(15, 23, 42, 0.08), 0 8px 16px -2px rgba(19, 168, 158, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 1), inset 0 -2px 0 0 rgba(15, 23, 42, 0.04);
-  }
-
-  /* Standard Card (Upgraded with Glass / 3D feel) */
+  /* Backward-compatible utility classes */
   .card {
-    @apply rounded-2xl bg-white/90 p-6 transition-all;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(220, 230, 242, 0.85);
-    box-shadow: 0 6px 20px -4px rgba(11, 37, 69, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 1);
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 6px;
+    padding: 1rem;
   }
-
-  /* Tactile 3D Buttons */
   .btn {
-    @apply inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-all focus-visible:outline active:translate-y-0.5;
+    @apply terminal-btn;
   }
-
   .btn-primary {
-    @apply btn text-white;
-    background: linear-gradient(135deg, #0B2545 0%, #06172C 100%);
-    box-shadow: 0 4px 0 #030c17, 0 8px 20px rgba(11, 37, 69, 0.25);
+    @apply terminal-btn-accent;
   }
-  .btn-primary:hover {
-    background: linear-gradient(135deg, #13315C 0%, #0B2545 100%);
-    box-shadow: 0 5px 0 #030c17, 0 12px 24px rgba(11, 37, 69, 0.3);
-    transform: translateY(-1px);
-  }
-  .btn-primary:active {
-    box-shadow: 0 1px 0 #030c17, 0 4px 8px rgba(11, 37, 69, 0.2);
-    transform: translateY(3px);
-  }
-
-  .btn-accent {
-    @apply btn text-white;
-    background: linear-gradient(135deg, #13A89E 0%, #0A6B64 100%);
-    box-shadow: 0 4px 0 #064540, 0 8px 20px rgba(19, 168, 158, 0.35);
-  }
-  .btn-accent:hover {
-    background: linear-gradient(135deg, #17c4b8 0%, #0E7C74 100%);
-    box-shadow: 0 5px 0 #064540, 0 12px 26px rgba(19, 168, 158, 0.45);
-    transform: translateY(-1px);
-  }
-  .btn-accent:active {
-    box-shadow: 0 1px 0 #064540, 0 4px 10px rgba(19, 168, 158, 0.3);
-    transform: translateY(3px);
-  }
-
   .btn-secondary {
-    @apply btn text-navy-900 bg-white/90;
-    border: 1px solid rgba(203, 213, 225, 0.9);
-    box-shadow: 0 3px 0 rgba(203, 213, 225, 0.8), 0 6px 12px rgba(11, 37, 69, 0.04);
+    @apply terminal-btn;
   }
-  .btn-secondary:hover {
-    background: #FFFFFF;
-    border-color: rgba(148, 163, 184, 0.9);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 0 rgba(203, 213, 225, 0.9), 0 8px 16px rgba(11, 37, 69, 0.06);
-  }
-  .btn-secondary:active {
-    box-shadow: 0 1px 0 rgba(203, 213, 225, 0.8), 0 2px 4px rgba(11, 37, 69, 0.04);
-    transform: translateY(2px);
-  }
-
-  /* Ultra-Clean Modern Form Controls */
-  .label {
-    @apply mb-1.5 block text-xs font-bold uppercase tracking-wider text-navy-700;
-  }
-
   .input {
-    @apply w-full rounded-xl px-4 py-3 text-base text-navy-950 placeholder:text-slate-400 transition-all;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(203, 213, 225, 0.9);
-    box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.02), 0 1px 2px rgba(0, 0, 0, 0.02);
+    @apply terminal-input;
   }
-  .input:hover {
-    border-color: rgba(148, 163, 184, 1);
-  }
-  .input:focus {
-    background: #FFFFFF;
-    border-color: #13A89E;
-    box-shadow: 0 0 0 3px rgba(19, 168, 158, 0.2), 0 2px 4px rgba(0, 0, 0, 0.04);
-  }
-
-  .help {
-    @apply mt-1.5 text-xs text-slate-500 font-medium;
-  }
-
-  .err {
-    @apply mt-1.5 text-xs font-semibold text-rose-600;
-  }
-
-  .th {
-    @apply px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-navy-600;
-  }
-
-  .td {
-    @apply px-4 py-3.5 align-middle text-sm text-navy-900 border-t border-navy-50/80;
-  }
-}
-
-/* Ambient 3D floating effect helper */
-.floating-orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(60px);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.55;
-}
-
-.marquee:hover { animation-play-state: paused; }
-@media (prefers-reduced-motion: reduce) {
-  .marquee, .animate-float { animation: none !important; }
 }

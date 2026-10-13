@@ -113,74 +113,83 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-sand-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
-          <h1 className="text-xl font-semibold text-sand-950 tracking-tight">Settings, Watchlists & Staff Provisioning</h1>
-          <p className="text-xs text-sand-600 mt-0.5">
-            Internal role-based permissions, monitoring thresholds & operator account lifecycle
+          <div className="flex items-center gap-2">
+            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+              Settings, Watchlists &amp; Staff Administration
+            </h1>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+              Terminal Configuration
+            </span>
+          </div>
+          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            Role-based permissions (RBAC), operator account lifecycle, and custom asset watchlists
           </p>
         </div>
       </div>
 
       {/* Admin-only Staff Provisioning */}
       {isAdmin && (
-        <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-sand-100">
+        <div className="terminal-panel p-3.5 space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
             <div>
-              <h2 className="text-sm font-semibold text-sand-950">Staff Account Management (Admin Scope)</h2>
-              <p className="text-[11px] text-sand-500">
-                Provision internal staff accounts. Zero external email dependency: temporary credentials displayed directly to operator.
-              </p>
+              <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                Staff Account Management (Admin Scope)
+              </div>
+              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                Provision internal operator credentials with role-based permissions
+              </div>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-200">
+            <span className="text-[10px] font-mono uppercase bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE] px-1.5 py-0.5 rounded font-medium">
               Admin Exclusive
             </span>
           </div>
 
           {/* Provision Form */}
-          <form onSubmit={handleProvisionStaff} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <form onSubmit={handleProvisionStaff} className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
             <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Full Name</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Full Name</label>
               <input
                 type="text"
                 value={staffName}
                 onChange={(e) => setStaffName(e.target.value)}
                 placeholder="Staff Member Name"
-                className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+                className="terminal-input w-full text-[12px] py-1 px-2"
                 required
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Email Address</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Email Address</label>
               <input
                 type="email"
                 value={staffEmail}
                 onChange={(e) => setStaffEmail(e.target.value)}
                 placeholder="staff@fundhorizon.com"
-                className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+                className="terminal-input w-full text-[12px] py-1 px-2"
                 required
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Mobile (10 Digits)</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Mobile (10 Digits)</label>
               <input
                 type="text"
                 value={staffMobile}
                 onChange={(e) => setStaffMobile(e.target.value)}
                 placeholder="9876543210"
-                className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+                className="terminal-input w-full text-[12px] py-1 px-2"
                 required
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-sand-700 block mb-1">Role Permission</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Role Permission</label>
               <div className="flex gap-2">
                 <select
                   value={staffRole}
                   onChange={(e) => setStaffRole(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+                  className="terminal-input w-full text-[12px] py-1 px-2"
                 >
                   <option value="analyst">Analyst</option>
                   <option value="rm">Relationship Manager (RM)</option>
@@ -191,7 +200,7 @@ export default function SettingsPage() {
                 <button
                   type="submit"
                   disabled={savingStaff}
-                  className="px-3.5 py-1.5 bg-forest-700 text-white rounded-xl text-xs font-semibold hover:bg-forest-800 disabled:opacity-50 transition-colors shrink-0"
+                  className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium shrink-0"
                 >
                   {savingStaff ? "Adding…" : "+ Provision"}
                 </button>
@@ -201,45 +210,41 @@ export default function SettingsPage() {
 
           {/* Provisioned credentials alert */}
           {provisionedCredentials && (
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
-              <div className="text-xs font-semibold text-emerald-800">
+            <div className="terminal-panel p-2.5 border border-[#087744]/30 bg-[#087744]/5 text-[#087744] dark:text-[#58D6A0] text-[12px] space-y-1">
+              <div className="font-semibold">
                 Staff Account Provisioned Successfully
               </div>
-              <p className="text-xs text-emerald-700 font-sans">
+              <p className="text-[11px]">
                 Copy these temporary credentials and securely share them with the staff member:
               </p>
-              <div className="p-2.5 bg-white rounded-lg border border-emerald-200 font-mono text-xs text-sand-900 select-all">
-                Email: <span className="font-semibold">{provisionedCredentials.email}</span> • Temporary Password: <span className="font-semibold">{provisionedCredentials.temp_pass}</span>
+              <div className="p-2 bg-[#FFFFFF] dark:bg-[#10151C] border border-[#087744]/30 rounded font-mono text-[12px] text-[#172033] dark:text-[#EDF2F7] select-all">
+                Email: <span className="font-medium">{provisionedCredentials.email}</span> • Temporary Password: <span className="font-medium">{provisionedCredentials.temp_pass}</span>
               </div>
             </div>
           )}
 
           {/* Staff directory table */}
-          <div className="overflow-x-auto pt-2">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-sand-50 text-sand-600 font-mono border-y border-sand-200">
+          <div className="terminal-panel overflow-hidden mt-3">
+            <table className="terminal-table">
+              <thead>
                 <tr>
-                  <th className="py-2 px-3 font-medium">Name</th>
-                  <th className="py-2 px-3 font-medium">Email</th>
-                  <th className="py-2 px-3 font-medium">Role</th>
-                  <th className="py-2 px-3 font-medium">Status</th>
-                  <th className="py-2 px-3 font-medium">Staff Marker</th>
+                  <th className="w-[30%]">Staff Member</th>
+                  <th className="w-[30%]">Email</th>
+                  <th className="w-[20%]">Role</th>
+                  <th className="w-[20%]">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
+              <tbody>
                 {staffList.map((s) => (
                   <tr key={s.id}>
-                    <td className="py-2.5 px-3 font-semibold text-sand-900 font-sans">{s.name}</td>
-                    <td className="py-2.5 px-3 text-sand-700">{s.email}</td>
-                    <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-sand-100 text-sand-700">
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{s.name}</td>
+                    <td className="font-mono text-[12px] text-[#536176] dark:text-[#A8B4C4]">{s.email}</td>
+                    <td>
+                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#006F64] dark:text-[#75E1CE] font-medium">
                         {s.role}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-emerald-700">{s.status || "active"}</td>
-                    <td className="py-2.5 px-3 text-sand-500 font-sans text-[11px]">
-                      {s.is_staff ? "Yes (Staff)" : "Customer"}
-                    </td>
+                    <td className="text-[12px] text-[#087744] dark:text-[#58D6A0] font-medium">{s.status || "active"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -248,93 +253,96 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Watchlist Management */}
-      <div className="bg-white rounded-2xl border border-sand-200 shadow-2xs p-5 space-y-4">
-        <div className="pb-3 border-b border-sand-100">
-          <h2 className="text-sm font-semibold text-sand-950">Active Watchlists</h2>
-          <p className="text-[11px] text-sand-500">
-            Target instruments, strategies, or macro indicators pinned across research desks
-          </p>
+      {/* Watchlist Manager */}
+      <div className="terminal-panel p-3.5 space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+          <div>
+            <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              Watchlist Items ({watchlists.length})
+            </div>
+            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              Monitored mutual fund schemes, issuers, and PMS strategies
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleAddWatchlist} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+        {/* Add Watchlist Form */}
+        <form onSubmit={handleAddWatchlist} className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
           <div>
-            <label className="text-xs font-medium text-sand-700 block mb-1">Watchlist Group</label>
+            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Watchlist Group</label>
             <input
               type="text"
               value={wlName}
               onChange={(e) => setWlName(e.target.value)}
-              placeholder="e.g. Core Equity or Midcap Focus"
-              className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+              placeholder="e.g. Core Equity"
+              className="terminal-input w-full text-[12px] py-1 px-2"
               required
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-sand-700 block mb-1">Item Category</label>
+            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Item Type</label>
             <select
               value={wlType}
               onChange={(e) => setWlType(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-forest-600 font-sans"
+              className="terminal-input w-full text-[12px] py-1 px-2"
             >
               <option value="scheme">Mutual Fund Scheme</option>
+              <option value="issuer">Micro Issuer / Stock</option>
               <option value="strategy">PMS Strategy</option>
-              <option value="issuer">Micro Issuer</option>
-              <option value="macro">Macro Series</option>
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="text-xs font-medium text-sand-700 block mb-1">Target Identifier</label>
+            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Identifier</label>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={wlId}
                 onChange={(e) => setWlId(e.target.value)}
-                placeholder="e.g. 119551 or IN10Y"
-                className="w-full px-3 py-1.5 text-xs rounded-xl border border-sand-300 focus:outline-none focus:ring-2 focus:ring-forest-600 font-mono"
+                placeholder="Scheme Code or Symbol"
+                className="terminal-input w-full text-[12px] py-1 px-2 font-mono"
                 required
               />
               <button
                 type="submit"
                 disabled={savingWl}
-                className="px-4 py-1.5 bg-forest-700 text-white rounded-xl text-xs font-semibold hover:bg-forest-800 disabled:opacity-50 transition-colors shrink-0"
+                className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium shrink-0"
               >
-                {savingWl ? "Adding…" : "+ Pin Item"}
+                {savingWl ? "Adding…" : "+ Add"}
               </button>
             </div>
           </div>
         </form>
 
-        <div className="overflow-x-auto pt-2">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-sand-50 text-sand-600 font-mono border-y border-sand-200">
+        {/* Watchlist Table */}
+        <div className="terminal-panel overflow-hidden mt-3">
+          <table className="terminal-table">
+            <thead>
               <tr>
-                <th className="py-2 px-3 font-medium">Watchlist Name</th>
-                <th className="py-2 px-3 font-medium">Type</th>
-                <th className="py-2 px-3 font-medium">Target Identifier</th>
-                <th className="py-2 px-3 font-medium">Scope</th>
-                <th className="py-2 px-3 font-medium text-right">Actions</th>
+                <th className="w-[30%]">Group Name</th>
+                <th className="w-[30%]">Item Type</th>
+                <th className="w-[25%]">Identifier</th>
+                <th className="w-[15%] text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-sand-100 font-mono tabular-nums">
+            <tbody>
               {watchlists.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-6 text-center text-sand-500 font-sans">
-                    No active watchlists pinned. Add items above to pin them to the overview dashboard.
+                  <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                    No watchlists configured. Add an item above to track.
                   </td>
                 </tr>
               ) : (
                 watchlists.map((w) => (
-                  <tr key={w.id} className="hover:bg-sand-50/60">
-                    <td className="py-2.5 px-3 font-semibold text-sand-900 font-sans">{w.name}</td>
-                    <td className="py-2.5 px-3 uppercase text-[10px] text-sand-600">{w.item_type}</td>
-                    <td className="py-2.5 px-3 font-bold text-forest-800">{w.item_id}</td>
-                    <td className="py-2.5 px-3 text-sand-500 font-sans">{w.scope || "shared"}</td>
-                    <td className="py-2.5 px-3 text-right">
+                  <tr key={w.id}>
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{w.name}</td>
+                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{w.item_type}</td>
+                    <td className="font-mono text-[12px] text-[#006F64] dark:text-[#75E1CE] font-medium">{w.item_id}</td>
+                    <td className="text-right">
                       <button
                         onClick={() => handleDeleteWatchlist(w.id)}
-                        className="text-rose-600 hover:text-rose-800 font-medium text-[11px]"
+                        className="text-[11px] text-[#B42332] dark:text-[#FF7D86] hover:underline"
                       >
-                        Delete
+                        Remove
                       </button>
                     </td>
                   </tr>

@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
 import { useAuth } from "@/components/AuthContext";
-import { TextField } from "@/components/Field";
+import { useTheme } from "@/components/terminal/ThemeContext";
 import { getPlan } from "@/lib/api";
 
 const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
 export default function LoginPage() {
   const { customer, loading, login } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -70,10 +71,10 @@ export default function LoginPage() {
 
   if (loading || customer) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-sand-50">
-        <div className="flex items-center gap-3 text-sand-600 font-medium text-sm">
-          <svg className="animate-spin h-5 w-5 text-forest-700" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] dark:bg-[#10151C] text-[#536176] dark:text-[#A8B4C4]">
+        <div className="flex items-center gap-2.5 text-[13px] font-medium">
+          <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
           Loading session…
@@ -83,31 +84,61 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-sand-50 px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-2xl border border-sand-200 shadow-sm p-8">
-        <div className="flex justify-center mb-6">
-          <Logo />
-        </div>
-        <div className="text-center mb-6">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-forest-50 text-forest-800 border border-forest-200">
-            Internal Backoffice Access
-          </span>
-          <h1 className="text-2xl font-semibold text-sand-950 mt-3">Staff Sign In</h1>
-          <p className="text-xs text-sand-600 mt-1">Research, PMS tracking & operations backoffice</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#F7F9FB] dark:bg-[#10151C] px-4 py-12 relative select-none">
+      {/* Top Right Theme Toggle */}
+      <div className="absolute top-4 right-4">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          className="h-8 w-8 rounded flex items-center justify-center text-[#536176] dark:text-[#A8B4C4] hover:bg-[#FFFFFF] dark:hover:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] transition-colors"
+        >
+          {theme === "dark" ? (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      <div className="w-full max-w-sm terminal-panel p-6 shadow-sm space-y-5">
+        <div className="flex flex-col items-center text-center">
+          <Logo size="md" showSubtitle={false} href="/" />
+          <div className="mt-3 flex items-center gap-1.5">
+            <span className="text-[10px] font-semibold tracking-wider uppercase text-[#006F64] dark:text-[#75E1CE] bg-[#E7F5F2] dark:bg-[#1A3034] px-1.5 py-0.5 rounded">
+              Terminal Access
+            </span>
+          </div>
+          <h1 className="text-[18px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-2">
+            Staff Authentication
+          </h1>
+          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            Internal financial data terminal & operations
+          </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4" noValidate>
-          <TextField
-            id="email"
-            label="Staff Email"
-            value={email}
-            onChange={setEmail}
-            placeholder="analyst@fundhorizon.com"
-            autoComplete="email"
-            error={undefined}
-          />
+        <form onSubmit={handleLogin} className="space-y-3.5" noValidate>
           <div>
-            <label htmlFor="password" className="label text-xs font-medium text-sand-700 block mb-1">
+            <label htmlFor="email" className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+              Staff Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@fundhorizon.com"
+              autoComplete="email"
+              className="terminal-input w-full text-[13px] py-1.5 px-2.5"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
               Password
             </label>
             <input
@@ -116,50 +147,51 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              className="w-full rounded-xl border border-sand-300 px-3.5 py-2 text-sm text-sand-900 focus:outline-none focus:ring-2 focus:ring-forest-600 focus:border-transparent"
               placeholder="••••••••••••"
+              className="terminal-input w-full text-[13px] py-1.5 px-2.5"
             />
           </div>
+
           {error && (
-            <div role="alert" className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
+            <div role="alert" className="p-2.5 rounded bg-[#B42332]/5 border border-[#B42332]/30 text-[12px] text-[#B42332] dark:text-[#FF7D86]">
               {error}
             </div>
           )}
+
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-xl bg-forest-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-forest-800 disabled:opacity-50 shadow-sm"
+            className="w-full terminal-btn text-[13px] py-2 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
           >
-            {submitting ? "Signing In…" : "Sign In to Backoffice"}
+            {submitting ? "Authenticating…" : "Sign In to Terminal"}
           </button>
         </form>
 
-        <div className="mt-8 border-t border-sand-200 pt-6">
-          <h2 className="text-xs font-semibold text-sand-800 uppercase tracking-wider">Historical Plan Lookup</h2>
-          <p className="mt-1 text-xs text-sand-500">
-            Have a client plan UUID? Enter the ID to inspect the legacy plan record.
-          </p>
-          <form onSubmit={handlePlanLink} className="mt-3 space-y-2">
+        <div className="pt-4 border-t border-[#E4E9EF] dark:border-[#2B3644] space-y-2">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+            Historical Plan Lookup
+          </div>
+          <form onSubmit={handlePlanLink} className="space-y-2">
             <input
               type="text"
               value={planLink}
               onChange={(e) => setPlanLink(e.target.value)}
-              placeholder="00000000-0000-0000-0000-000000000000"
+              placeholder="Plan UUID (00000000-0000-…)"
               autoComplete="off"
               spellCheck={false}
-              className="w-full rounded-xl border border-sand-300 px-3 py-1.5 text-xs text-sand-900 focus:outline-none focus:ring-2 focus:ring-forest-600"
+              className="terminal-input w-full text-[11px] py-1 px-2 font-mono"
             />
             {planError && (
-              <p role="alert" className="text-xs text-red-700">
+              <p role="alert" className="text-[11px] text-[#B42332] dark:text-[#FF7D86]">
                 {planError}
               </p>
             )}
             <button
               type="submit"
               disabled={planLoading || planLink.trim().length === 0}
-              className="w-full rounded-xl border border-sand-300 bg-sand-50 px-3 py-1.5 text-xs font-medium text-sand-700 transition hover:bg-sand-100 disabled:opacity-50"
+              className="w-full terminal-btn text-[11px] py-1 px-2"
             >
-              {planLoading ? "Searching…" : "Open Plan"}
+              {planLoading ? "Searching…" : "Open Plan Record"}
             </button>
           </form>
         </div>

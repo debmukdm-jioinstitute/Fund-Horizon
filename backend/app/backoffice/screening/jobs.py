@@ -1,6 +1,7 @@
 """Nightly and on-demand screening refresh job."""
 from __future__ import annotations
 
+import csv
 import json
 import logging
 import time
@@ -17,10 +18,49 @@ from app.backoffice.screening.quartiles import (
     resolve_quartile_cascade,
 )
 from app.backoffice.screening.ratios import compute_scheme_metrics
-from app.data.loader import eligible_funds, load_nav
+from app.config import load_screening
+from app.data.loader import data_dir, eligible_funds, load_nav
 from app.engine import analytics as an
 
 logger = logging.getLogger("backoffice.screening.jobs")
+
+
+# metric -> minimum history (years) a scheme needs before the metric must exist
+COVERAGE_MIN_HISTORY = {
+    "ret_1y": 1.05, "cagr_3y": 3.1, "cagr_5y": 5.1, "cagr_si": 1.05,
+    "sharpe": 3.1, "sortino": 3.1, "up_capture": 3.1, "down_capture": 3.1, "quartile_2y": 3.1,
+}
+COVERAGE_FLOOR = 0.90
+
+
+def check_coverage(rows: list[dict[str, Any]], equity_cats: set[str]) -> dict[str, float]:
+    """Log per-field coverage over equity schemes with enough history; raise if any field is under the floor."""
+    eq = [r for r in rows if r["cat"] in equity_cats]
+    cov: dict[str, float] = {}
+    for field, min_years in COVERAGE_MIN_HISTORY.items():
+        elig = [r for r in eq if (r.get("history_years") or 0) >= min_years]
+        if elig:
+            cov[field] = sum(r.get(field) is not None for r in elig) / len(elig)
+    for field, c in cov.items():
+        logger.info("screening coverage %-12s %5.1f%%", field, c * 100)
+    bad = {f: round(c * 100, 1) for f, c in cov.items() if c < COVERAGE_FLOOR}
+    if bad:
+        raise RuntimeError(f"Screening coverage below {COVERAGE_FLOOR:.0%} for equity: {bad}")
+    return cov
+
+
+def seed_managers(repo: BackofficeRepository) -> int:
+    """Load data/mf_managers_seed.csv (scheme_code, manager_name, manager_start) when the table is empty."""
+    seed = data_dir().parent / "mf_managers_seed.csv"
+    if not seed.exists() or repo.list_mf_managers():
+        return 0
+    with seed.open(newline="") as f:
+        rows = [
+            {"scheme_code": r["scheme_code"].strip(), "manager_name": r["manager_name"].strip(),
+             "manager_start": (r.get("manager_start") or "").strip() or None, "source": "seed", "provenance": seed.name}
+            for r in csv.DictReader(f) if r.get("scheme_code") and r.get("manager_name")
+        ]
+    return repo.upsert_mf_managers(rows) if rows else 0
 
 
 def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any]:
@@ -42,6 +82,10 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
     if df_s0.empty:
         logger.warning("No eligible funds found for screening universe")
         return {"success": False, "records": 0, "error": "Empty S0 universe"}
+
+    seeded = seed_managers(repo)
+    if seeded:
+        logger.info("Seeded %d fund managers from data/mf_managers_seed.csv", seeded)
 
     conn = repo._conn()
     try:
@@ -224,6 +268,9 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
         }
         m_row["provenance_json"] = json.dumps(provenance)
         screening_rows.append(m_row)
+
+    # Fail before publishing: a half-computed table must not replace the last good one.
+    check_coverage(screening_rows, set(load_screening().get("equity_categories", [])))
 
     # Persist to mf_screening_metrics
     conn = repo._conn()

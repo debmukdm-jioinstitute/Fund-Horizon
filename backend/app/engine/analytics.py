@@ -142,6 +142,28 @@ def sortino_ratio(
     return float((cagr_val - rf) / down_vol)
 
 
+def _monthly_excess(s: pd.Series, rf: float) -> pd.Series:
+    """Monthly NAV returns minus the monthly risk-free rate (rf is an annual rate)."""
+    return s.pct_change().dropna() - ((1.0 + rf) ** (1.0 / 12.0) - 1.0)
+
+
+def sharpe_monthly(s: pd.Series, rf: float = 0.065) -> float | None:
+    """Annualised Sharpe: mean monthly excess return / its std, scaled by sqrt(12). Needs a month-end NAV series."""
+    ex = _monthly_excess(s, rf)
+    if len(ex) < 12 or ex.std() < 1e-6:
+        return None
+    return float(ex.mean() / ex.std() * math.sqrt(12))
+
+
+def sortino_monthly(s: pd.Series, rf: float = 0.065) -> float | None:
+    """Annualised Sortino: mean monthly excess / downside deviation (below rf), scaled by sqrt(12)."""
+    ex = _monthly_excess(s, rf)
+    dd = math.sqrt(float((ex.clip(upper=0.0) ** 2).mean())) if len(ex) else 0.0
+    if len(ex) < 12 or dd < 1e-6:
+        return None
+    return float(ex.mean() / dd * math.sqrt(12))
+
+
 def max_drawdown(s: pd.Series) -> float:
     """Maximum peak-to-trough decline (negative or 0.0)."""
     if len(s) < 2:

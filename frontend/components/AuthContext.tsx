@@ -2,7 +2,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getMe, loginCustomer, logoutCustomer } from "@/lib/api";
+import { ApiError, getMe, loginCustomer, logoutCustomer } from "@/lib/api";
 import type { Customer } from "@/lib/types";
 
 interface AuthState {
@@ -27,11 +27,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    try {
-      const me = await getMe();
-      setCustomer(me);
-    } catch {
-      setCustomer(null);
+    // Only a 401/403 means the session is gone. A 502 or network error (deploy, cold start) must not log staff out.
+    for (let attempt = 0; attempt < 4; attempt++) {
+      try {
+        setCustomer(await getMe());
+        return;
+      } catch (e) {
+        if (e instanceof ApiError && (e.status === 401 || e.status === 403)) {
+          setCustomer(null);
+          return;
+        }
+        if (attempt < 3) await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+      }
     }
   }, []);
 

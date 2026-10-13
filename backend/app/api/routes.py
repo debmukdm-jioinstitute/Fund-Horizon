@@ -262,8 +262,8 @@ def fund_analytics(scheme_code: str, request: Request):
     start_3y = nav.index[-1] - pd.DateOffset(years=3) if len(nav) > 1 else nav.index[0]
     nav_3y = nav.loc[nav.index >= start_3y]
     vol_3y = an.annualized_volatility(nav_3y)
-    sharpe = an.sharpe_ratio(cagr_3y, vol_3y, rf=0.065)
-    sortino = an.sortino_ratio(nav_3y, cagr_3y, rf=0.065)
+    sharpe = an.sharpe_monthly(nav_3y, rf=0.065)
+    sortino = an.sortino_monthly(nav_3y, rf=0.065)
     dd_dur = an.max_drawdown_duration(nav)
     sip_irr = an.sip_xirr(nav)
 

@@ -1168,6 +1168,12 @@ export interface MfScreeningRow {
 
 export interface ScreeningMetricsData {
   as_of?: string;
+  defaults?: {
+    min_tenure_years: number;
+    bounds: Record<string, { min?: number | null; max?: number | null }>;
+    quartiles_action: number[];
+    include_missing: boolean;
+  };
   stage_as_of?: { nav?: string | null; managers?: string | null; ter?: string | null };
   rf: number;
   rf_source: string;
@@ -1189,6 +1195,7 @@ export interface ScreeningFunnelCounts {
   final: number;
   insufficient_by_stage: { s1: number; s2: number; s3: number; s4a: number; s4c: number };
   needs_data?: number;
+  zeroed_reasons?: Array<{ rule: string; count: number }>;
   zeroed_stage?: "s1" | "s2" | "s3" | "s4a" | "s4c" | null;
   missing_by_stage?: Record<string, Record<string, number>>;
 }

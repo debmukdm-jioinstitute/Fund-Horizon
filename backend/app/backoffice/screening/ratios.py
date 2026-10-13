@@ -65,8 +65,8 @@ def compute_scheme_metrics(
     te_val = an.tracking_error(nav_3y, b_3y) if len(b_3y) >= 12 else None
     ir_val = an.information_ratio(cagr_3y, bench_3y, te_val)
     treynor_val = an.treynor_ratio(cagr_3y, beta_val, rf=rf)
-    sharpe_val = an.sharpe_ratio(cagr_3y, std_dev, rf=rf) if std_dev is not None else None
-    sortino_val = an.sortino_ratio(nav_3y, cagr_3y, rf=rf) if len(nav_3y) >= 12 else None
+    sharpe_val = an.sharpe_monthly(nav_3y, rf=rf)
+    sortino_val = an.sortino_monthly(nav_3y, rf=rf)
     mdd_val = an.max_drawdown(nav_3y) if len(nav_3y) >= 2 else None
 
     # Capture window: 2Y

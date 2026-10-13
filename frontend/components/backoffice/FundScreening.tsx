@@ -26,7 +26,9 @@ const DEFAULT_COLUMNS = [
   "expense_ratio",
 ];
 
+// Thresholds below are placeholders until metrics load; the real defaults come from screening.yaml via the API.
 const DEFAULT_FILTERS: ScreeningFiltersState = {
+  cat: "flexi_cap",
   min_tenure_years: 3,
   columns: DEFAULT_COLUMNS,
   bounds: {
@@ -93,6 +95,7 @@ export default function FundScreening() {
           listScreeningPresets(),
         ]);
         setMetricsData(mRes.data);
+        if (mRes.data.defaults) setFilters((f) => ({ ...f, ...mRes.data.defaults }));
         setAvailability(mRes.availability || "ready");
         setPresets(pRes.data || []);
       } catch (err: unknown) {
@@ -230,6 +233,9 @@ export default function FundScreening() {
         <div className="terminal-panel p-3 border border-[#C26200]/30 bg-[#C26200]/5 text-[12px] text-[#172033] dark:text-[#EDF2F7] flex flex-wrap items-center justify-between gap-2">
           <div>
             <strong>0 funds after {STAGE_LABEL[runData.counts.zeroed_stage]}.</strong>
+            {(runData.counts.zeroed_reasons?.length ?? 0) > 0 && (
+              <span> Dropped by: {runData.counts.zeroed_reasons!.map((x) => `${x.rule} (${x.count})`).join("; ")}.</span>
+            )}
             {(() => {
               const m = Object.entries(runData.counts.missing_by_stage?.[runData.counts.zeroed_stage] ?? {})
                 .sort((a, b) => b[1] - a[1])

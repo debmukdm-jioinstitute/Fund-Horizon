@@ -152,3 +152,24 @@ def test_sharpe_and_sortino_consistency():
         down = downside[downside < 0]
         down_vol = float(down.std() * math.sqrt(12))
         assert abs(so_rand - ((cagr_rand - 0.065) / down_vol)) < 1e-6
+
+
+def test_monthly_sharpe_sortino_and_coverage_gate():
+    import numpy as np
+    import pandas as pd
+    import pytest
+
+    from app.backoffice.screening.jobs import check_coverage
+
+    idx = pd.date_range("2022-01-31", periods=37, freq="ME")
+    rng = np.random.default_rng(1)
+    liquid = pd.Series(100 * np.cumprod(1 + 0.0058 + rng.normal(0, 0.0004, 37)), index=idx)
+    sh = an.sharpe_monthly(liquid, rf=0.065)
+    ex = liquid.pct_change().dropna() - (1.065 ** (1 / 12) - 1)
+    assert sh == pytest.approx(ex.mean() / ex.std() * 12**0.5)  # monthly excess return, not CAGR over daily-style vol
+    assert an.sharpe_monthly(pd.Series(100.0 + np.arange(37) * 0.0, index=idx)) is None  # flat NAV
+    assert an.sortino_monthly(liquid, rf=0.0) is None  # never below target
+    ok = [{"cat": "flexi_cap", "history_years": 4, **{f: 1.0 for f in ("ret_1y", "cagr_3y", "cagr_si", "sharpe", "sortino", "up_capture", "down_capture", "quartile_2y")}}]
+    assert check_coverage(ok, {"flexi_cap"})["sharpe"] == 1.0
+    with pytest.raises(RuntimeError, match="coverage"):
+        check_coverage([{**ok[0], "sharpe": None}], {"flexi_cap"})

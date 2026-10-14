@@ -43,3 +43,14 @@ def test_screener_recommended_flag(client):
     assert r.status_code == 200
     rows = r.json()["data"]
     assert rows and all(x["is_fh_recommended"] for x in rows)
+
+
+def test_screener_aum_stars_and_risk_columns(client):
+    _login_staff(client, _create_staff())
+    r = client.get("/api/backoffice/mutual-funds/screener?category=flexi_cap&plan=Direct&f=aum_cr:1000:&sort=aum_cr&limit=200")
+    assert r.status_code == 200
+    rows = r.json()["data"]
+    assert rows and all(x["aum_cr"] >= 1000 for x in rows)
+    assert all(x["stars"] in (None, 1, 2, 3, 4, 5) for x in rows)
+    assert any(x["alpha_3y"] is not None and x["beta_3y"] is not None and x["hi52"] for x in rows)
+    assert all(0 <= x["score"] <= 100 for x in rows if x["score"] is not None)

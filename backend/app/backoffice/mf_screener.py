@@ -1,7 +1,8 @@
-"""Trendlyne-style mutual fund screener: category groups, returns, risk and an FH checklist score.
+"""Trendlyne-style mutual fund screener: category groups, returns, risk, AUM, FH star rating and checklist score.
 
-Built from the shipped AMFI + mfapi.in dataset (Growth option, Direct and Regular). AUM, Morningstar rating,
-holdings, day/week change and benchmark alpha/beta are not in that dataset, so they are not shown.
+Built from the shipped AMFI + mfapi.in dataset (Growth option, Direct and Regular), rebuilt daily by
+data/fundhorizon_mf_rag_dataset/build_dataset.py. Alpha, beta and Treynor are measured against the median of the
+scheme's AMFI category and plan (no index data). The star rating is FH's own (risk-adjusted rank), not Morningstar's.
 """
 from __future__ import annotations
 
@@ -12,7 +13,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from app.data.loader import load_metrics, load_nav
+from app.data.loader import load_metrics
 
 # Trendlyne-style groups -> (canonical category key, label). Keys come from app.data.categories.
 CATEGORY_GROUPS: dict[str, list[tuple[str, str]]] = {
@@ -43,17 +44,22 @@ CATEGORY_GROUPS: dict[str, list[tuple[str, str]]] = {
     ],
 }
 
+_YEARS = (1, 3, 5, 10)
 # Dataset fraction columns -> output percent columns.
 _PCT = {
-    "ret_1m": "ret_1m", "ret_3m": "ret_3m", "ret_6m": "ret_6m", "ret_1y": "ret_1y", "cagr_3y": "cagr_3y",
-    "cagr_5y": "cagr_5y", "cagr_7y": "cagr_7y", "cagr_10y": "cagr_10y", "vol_3y": "vol_3y",
+    "ret_1m": "ret_1m", "ret_3m": "ret_3m", "ret_6m": "ret_6m", "ret_1y": "ret_1y", "cagr_2y": "ret_2y",
+    "cagr_3y": "cagr_3y", "cagr_5y": "cagr_5y", "cagr_7y": "cagr_7y", "cagr_10y": "cagr_10y",
     "max_drawdown_3y": "max_dd_3y", "max_drawdown_all": "max_dd_all", "cagr_since_inception": "cagr_si",
-    "roll1y_pct_positive": "roll1y_pos",
+    "roll1y_pct_positive": "roll1y_pos", "day_chg": "day_chg", "week_chg": "week_chg",
+    **{f"{m}_{y}y": f"{m}_{y}y" for y in _YEARS for m in ("vol", "alpha", "treynor")},
 }
-_AVG_COLS = ["ret_3m", "ret_1y", "cagr_3y", "cagr_5y", "cagr_10y"]
+# Unit-free ratios copied as is.
+_RAW = ["sharpe_{}y", "sortino_{}y", "beta_{}y"]
+_AVG_COLS = ["ret_3m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_10y"]
 NUMERIC_KEYS = (
-    ["score", "perf", "ops", "risk", "nav", "ter", "ret_2y", "sharpe_3y", "sortino_3y", "history_years"]
+    ["score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
     + list(_PCT.values())
+    + [t.format(y) for y in _YEARS for t in _RAW]
 )
 SORT_KEYS = set(NUMERIC_KEYS) | {"name"}
 
@@ -63,14 +69,16 @@ def _pillar(values: pd.Series, groups: pd.Series, higher_better: bool = True) ->
     return values.groupby(groups).rank(pct=True, ascending=higher_better)
 
 
-def _two_year_cagr(code: str) -> float | None:
-    try:
-        nav = load_nav(code)
-    except FileNotFoundError:
-        return None
-    if len(nav) < 25 or nav.iloc[-25] <= 0:
-        return None
-    return float(((nav.iloc[-1] / nav.iloc[-25]) ** 0.5 - 1) * 100)
+def _stars(df: pd.DataFrame, key: pd.Series) -> pd.Series:
+    """1-5 stars from the percentile of a Morningstar-style weighted Sharpe (3Y 20%, 5Y 30%, 10Y 50%) in category and plan."""
+    w = {"sharpe_3y": 0.2, "sharpe_5y": 0.3, "sharpe_10y": 0.5}
+    have = pd.concat([df[c].notna() * x for c, x in w.items()], axis=1).sum(axis=1)
+    raw = sum(df[c].fillna(0) * x for c, x in w.items()) / have.where(have > 0)
+    raw = raw.where(df["sharpe_3y"].notna())
+    size = raw.groupby(key).transform("count")
+    p = _pillar(raw, key)
+    stars = pd.Series(np.select([p > 0.9, p > 0.675, p > 0.325, p > 0.1], [5, 4, 3, 2], 1), index=df.index, dtype="float")
+    return stars.where(raw.notna() & (size >= 5))
 
 
 def _label(points: float, good: str, mid: str, weak: str) -> str:
@@ -83,12 +91,15 @@ def _base_frame() -> pd.DataFrame:
     df = pd.DataFrame({
         "code": src["scheme_code"], "name": src["scheme_name"], "amc": src["amc"], "plan": src["plan"],
         "cat": src["cat"], "nav": src["latest_nav"], "nav_date": src["latest_nav_date"],
-        "history_years": src["history_years"], "sharpe_3y": src["sharpe_3y"], "sortino_3y": src["sortino_3y"],
-        "isin": src["isin_growth_or_payout"], "quality": src["data_quality"],
+        "history_years": src["history_years"], "isin": src["isin_growth_or_payout"], "quality": src["data_quality"],
+        "aum_cr": src["aum_cr"], "hi52": src["hi52"], "lo52": src["lo52"],
+        "hi52_date": src["hi52_date"], "lo52_date": src["lo52_date"],
     })
     for raw, out in _PCT.items():
         df[out] = src[raw] * 100
-    df["ret_2y"] = [_two_year_cagr(c) for c in df["code"]]
+    for y in _YEARS:
+        for t in _RAW:
+            df[t.format(y)] = src[t.format(y)]
     key = df["cat"] + "|" + df["plan"]
     for col in _AVG_COLS + ["ret_2y"]:
         df[f"{col}_cat"] = df.groupby(key)[col].transform("mean")
@@ -106,12 +117,18 @@ def _scored(ter: dict[str, float]) -> pd.DataFrame:
     ], axis=1).mean(axis=1)
     cost = _pillar(df["ter"], key, higher_better=False)
     age = (df["history_years"].clip(upper=5) / 5).fillna(0)
+    # No holdings data, so the portfolio pillar is fund size (AUM) and 3Y alpha rank instead of stock-level quality.
+    port = pd.concat([_pillar(df["aum_cr"], key), _pillar(df["alpha_3y"], key)], axis=1).mean(axis=1)
     df["perf"] = (perf * 25).round()
     df["risk"] = (risk * 25).round()
+    df["port"] = (port * 25).round()
     df["ops"] = ((cost.fillna(0.5) * 0.6 + age * 0.4) * 25).round()
-    pillars = df[["perf", "risk", "ops"]]
-    # Portfolio pillar (holdings) is not in the dataset: scale the three available pillars to 100.
-    df["score"] = (pillars.sum(axis=1, min_count=3) * 100 / 75).round()
+    pillars = df[["perf", "port", "ops", "risk"]]
+    seen = pillars.notna().sum(axis=1)
+    # A fund missing one pillar (e.g. too young for alpha) is scored on the rest, scaled to 100.
+    df["score"] = (pillars.sum(axis=1) * 4 / seen).where(seen >= 3).round()
+    df["stars"] = _stars(df, key)
+    df["port_label"] = [_label(p, "HIGH RANK", "MEDIUM RANK", "WEAK RANK") for p in df["port"].fillna(0)]
     df["perf_label"] = [_label(p, "GOOD RETURNS", "AVERAGE RETURNS", "POOR RETURNS") for p in df["perf"].fillna(0)]
     df["risk_label"] = [_label(p, "GOOD RISK REWARD", "FAIR RISK REWARD", "POOR RISK REWARD") for p in df["risk"].fillna(0)]
     df["ops_label"] = [_label(p, "HIGH RANK", "MEDIUM RANK", "WEAK RANK") for p in df["ops"].fillna(0)]
@@ -170,10 +187,14 @@ def records(df: pd.DataFrame) -> list[dict[str, Any]]:
 def to_csv(df: pd.DataFrame) -> str:
     cols = {
         "code": "Scheme Code", "name": "Fund Name", "amc": "AMC", "plan": "Plan", "score": "FH Checklist Score",
-        "perf": "Performance /25", "ops": "Operations /25", "risk": "Risk vs Reward /25", "ter": "Net Expense Ratio %",
-        "nav": "NAV", "ret_1m": "1M %", "ret_3m": "3M %", "ret_6m": "6M %", "ret_1y": "1Y %", "ret_2y": "2Y CAGR %",
+        "perf": "Performance /25", "port": "Portfolio /25", "ops": "Operations /25", "risk": "Risk vs Reward /25",
+        "stars": "FH Star Rating", "aum_cr": "AUM Cr", "ter": "Net Expense Ratio %",
+        "nav": "NAV", "day_chg": "Day %", "week_chg": "Week %", "hi52": "52W High", "hi52_date": "52W High Date",
+        "lo52": "52W Low", "lo52_date": "52W Low Date", "ret_1m": "1M %", "ret_3m": "3M %", "ret_6m": "6M %", "ret_1y": "1Y %", "ret_2y": "2Y CAGR %",
         "cagr_3y": "3Y CAGR %", "cagr_5y": "5Y CAGR %", "cagr_7y": "7Y CAGR %", "cagr_10y": "10Y CAGR %",
-        "vol_3y": "Std Dev 3Y %", "sharpe_3y": "Sharpe 3Y", "sortino_3y": "Sortino 3Y",
+        **{f"{k}_{y}y": f"{lbl} {y}Y" for y in _YEARS for k, lbl in (
+            ("alpha", "Alpha %"), ("beta", "Beta"), ("sharpe", "Sharpe"), ("sortino", "Sortino"),
+            ("treynor", "Treynor %"), ("vol", "Std Dev %"))},
         "max_dd_3y": "Max Drawdown 3Y %", "max_dd_all": "Max Drawdown All %", "isin": "ISIN",
     }
     buf = io.StringIO()

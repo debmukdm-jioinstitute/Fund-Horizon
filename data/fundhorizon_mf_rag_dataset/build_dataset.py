@@ -161,6 +161,35 @@ def risk_stats(s, years=3, rf=0.065):
     return dict(vol_3y=ann_vol, sharpe_3y=sharpe, sortino_3y=sortino, max_drawdown_3y=dd)
 
 
+def risk_window(s, years, rf=0.065):
+    """Annualised vol, Sharpe, Sortino over the trailing window; empty when history is shorter than the window."""
+    start = s.index[-1] - pd.DateOffset(years=years)
+    if start < s.index[0]:
+        return {}
+    w = s[s.index >= start]
+    ret = w.pct_change().dropna()
+    if len(ret) < 20:
+        return {}
+    vol = ret.std() * math.sqrt(252)
+    cagr = (w.iloc[-1] / w.iloc[0]) ** (1 / years) - 1
+    dn = ret[ret < 0].std() * math.sqrt(252)
+    return {f"vol_{years}y": vol, f"sharpe_{years}y": (cagr - rf) / vol if vol else np.nan,
+            f"sortino_{years}y": (cagr - rf) / dn if dn and not math.isnan(dn) else np.nan}
+
+
+def short_moves(s):
+    """Day/week change and 52-week NAV range from the daily series."""
+    last = s.iloc[-1]
+    w = s[s.index >= s.index[-1] - pd.DateOffset(years=1)]
+    return dict(
+        day_chg=last / s.iloc[-2] - 1 if len(s) > 1 else np.nan,
+        week_chg=last / nav_at(s, s.index[-1] - pd.DateOffset(days=7)) - 1,
+        hi52=w.max(), hi52_date=w.idxmax().strftime("%Y-%m-%d"),
+        lo52=w.min(), lo52_date=w.idxmin().strftime("%Y-%m-%d"),
+        cagr_2y=trailing(s, years=2),
+    )
+
+
 def max_dd_all(s):
     return (s / s.cummax() - 1).min()
 
@@ -191,6 +220,9 @@ def metrics(s):
     yrs = (s.index[-1] - s.index[0]).days / 365.25
     m["cagr_since_inception"] = (s.iloc[-1] / s.iloc[0]) ** (1 / yrs) - 1 if yrs >= 1 else np.nan
     m.update(risk_stats(s))
+    m.update(short_moves(s))
+    for y in (1, 5, 10):
+        m.update(risk_window(s, y))
     for y in (1, 3, 5):
         rs = rolling_stats(s, y)
         for k in ("min", "median", "max", "pct_positive"):
@@ -233,9 +265,73 @@ def fetch_one(row, asof):
         m["nav_adjustments"] = "; ".join(adj)
         m["nav_shocks"] = "; ".join(shocks)
         monthly = s.resample("ME").last().dropna()
-        return code, m, (meta, monthly), None
+        daily = s.pct_change().dropna().astype("float32") if dq in ("ok", "split_adjusted") else None
+        return code, m, (meta, monthly, daily), None
     except Exception as e:  # noqa
         return code, None, None, f"err:{e}"
+
+
+def base_key(name):
+    """Scheme identity shared by NAV names and AUM names (drops the ' - Direct Plan - Growth' tail)."""
+    return re.sub(r"[^a-z0-9]+", "", re.split(r"\s+-\s+", name or "", maxsplit=1)[0].lower())
+
+
+AUM_API = "https://www.amfiindia.com/api/average-aum-schemewise?strType=Categorywise&fyId={}&periodId={}&MF_ID=0"
+
+
+def fetch_aum():
+    """Latest quarterly average AUM per AMFI scheme code (Rs crore), from AMFI. {} if unavailable."""
+    for fy in (1, 2):
+        for period in (1, 2, 3, 4):
+            try:
+                data = json.loads(http_get(AUM_API.format(fy, period), timeout=90)).get("data") or []
+            except Exception as e:  # noqa
+                print("AUM fetch failed", fy, period, e)
+                continue
+            out = {}
+            for g in data:
+                for sc in g.get("schemes", []):
+                    v = sc.get("AverageAumForTheMonth") or {}
+                    lakh = sum(x for x in v.values() if isinstance(x, (int, float)))
+                    if sc.get("AMFI_Code") and lakh:
+                        out[str(sc["AMFI_Code"])] = lakh / 100  # Rs lakh -> Rs crore
+            if out:
+                print("AUM period", fy, period, "schemes", len(out))
+                return out
+    return {}
+
+
+def add_benchmark_stats(results, dailies, rf=0.065, min_peers=5):
+    """Alpha, beta, Treynor vs the median daily return of the scheme's AMFI category and plan (no index data is used)."""
+    groups = {}
+    for r in results:
+        if r["scheme_code"] in dailies:
+            groups.setdefault((r["category"], r["plan"]), []).append(r["scheme_code"])
+    by_code = {r["scheme_code"]: r for r in results}
+    for codes in groups.values():
+        if len(codes) < min_peers:
+            continue
+        frame = pd.concat({c: dailies[c] for c in codes}, axis=1)
+        bench = frame.median(axis=1).where(frame.count(axis=1) >= min_peers).dropna()
+        for c in codes:
+            ret = dailies[c]
+            for y in (1, 3, 5, 10):
+                start = ret.index[-1] - pd.DateOffset(years=y)
+                if start < ret.index[0]:
+                    continue
+                w = pd.concat([ret[ret.index > start], bench], axis=1, join="inner").dropna()
+                if len(w) < 0.8 * 252 * y:
+                    continue
+                f, b = w.iloc[:, 0].astype(float), w.iloc[:, 1].astype(float)
+                if b.var() == 0:
+                    continue
+                beta = f.cov(b) / b.var()
+                fa = (1 + f).prod() ** (1 / y) - 1
+                ba = (1 + b).prod() ** (1 / y) - 1
+                row = by_code[c]
+                row[f"beta_{y}y"] = beta
+                row[f"alpha_{y}y"] = (fa - rf) - beta * (ba - rf)
+                row[f"treynor_{y}y"] = (fa - rf) / beta if abs(beta) > 0.05 else np.nan
 
 
 def pct(x, d=2):
@@ -350,7 +446,7 @@ def main():
     asof_ts = pd.to_datetime(master["latest_nav_date"], format="%d-%b-%Y", errors="coerce").max()
     asof = asof_ts.strftime("%Y-%m-%d")
     print("as-of date", asof)
-    results, fails = [], []
+    results, fails, dailies = [], [], {}
     t0 = time.time()
     with ThreadPoolExecutor(a.workers) as ex:
         futs = {ex.submit(fetch_one, r, asof_ts): r for r in sel.to_dict("records")}
@@ -359,7 +455,8 @@ def main():
             code, m, extra, err = f.result()
             if err:
                 fails.append((code, err)); continue
-            meta, monthly = extra
+            meta, monthly, daily = extra
+            if daily is not None: dailies[code] = daily
             base = f"{code}_{slug(r['scheme_name'])}"
             open(os.path.join(out, "schemes_md", base + ".md"), "w").write(scheme_md(r, m, meta, asof))
             flat = {**r, **{k: v for k, v in m.items() if k != "calendar_returns"}}
@@ -371,6 +468,15 @@ def main():
             if i % 250 == 0:
                 print(f"{i}/{len(sel)} done, {len(fails)} failed, {time.time()-t0:.0f}s", flush=True)
 
+    add_benchmark_stats(results, dailies)
+    aum = fetch_aum()
+    # AMFI reports AUM per plan/option; a scheme's AUM is the sum over its siblings (same AMC and base name).
+    scheme_aum = {}
+    for r in master.to_dict("records"):
+        scheme_aum[(r["amc"], base_key(r["scheme_name"]))] = scheme_aum.get((r["amc"], base_key(r["scheme_name"])), 0) + aum.get(r["scheme_code"], 0)
+    for r in results:
+        r["aum_cr"] = scheme_aum.get((r["amc"], base_key(r["scheme_name"]))) or np.nan
+    print("AUM matched", sum(1 for r in results if r["aum_cr"] == r["aum_cr"]), "of", len(results))
     df = pd.DataFrame(results)
     df.to_csv(os.path.join(out, "all_schemes_metrics.csv"), index=False)
     pd.DataFrame(fails, columns=["scheme_code", "reason"]).to_csv(os.path.join(out, "fetch_failures.csv"), index=False)

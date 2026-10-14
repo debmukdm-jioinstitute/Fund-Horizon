@@ -114,6 +114,14 @@ async def lifespan(app: FastAPI):
 
         collector_task = asyncio.create_task(run_collector_loop())
 
+        # Daily briefing: build on startup when today's row is missing
+        # (idempotent upsert; the scheduled loop keeps it fresh afterwards).
+        from app.backoffice.analytics.briefing_builder import briefing_missing_today
+        from app.backoffice.collectors import build_daily_briefing
+
+        if briefing_missing_today():
+            await asyncio.to_thread(build_daily_briefing)
+
     try:
         yield
     finally:

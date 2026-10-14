@@ -117,12 +117,13 @@ export interface DerivativesData {
 
 export interface FlowsData {
   daily: Array<{
+    id?: string;
     report_date: string;
     category: string;
     segment: string;
     buy_crore?: number;
     sell_crore?: number;
-    net_crore: number;
+    net_crore?: number;
     provisional: boolean;
   }>;
   fii_net_crore?: number;
@@ -130,6 +131,12 @@ export interface FlowsData {
   cumulative_7d_net_crore?: number;
   sessions?: number;
   as_of?: string;
+  fetched_at?: string;
+  is_stale?: boolean;
+  age_days?: number;
+  last_trading_day?: string;
+  error?: string;
+  availability?: string;
 }
 
 export interface BriefingItem {
@@ -700,34 +707,36 @@ export const getDerivatives = async (underlying = "NIFTY", expiry?: string, sign
 
 export const getFlows = async (start?: string, end?: string): Promise<BackofficeEnvelope<FlowsData>> => {
   const q = new URLSearchParams();
-  if (start && end) {
-    q.set("start_date", start);
-    q.set("end_date", end);
-  }
+  if (start) q.set("from", start);
+  if (end) q.set("to", end);
   const qs = q.toString();
   const raw = await boFetch<Json>(`/api/backoffice/flows${qs ? `?${qs}` : ""}`);
   const rows = Array.isArray(raw.data) ? arr(raw.data) : arr(obj(raw.data).daily);
   const daily: FlowsData["daily"] = rows.map((r) => ({
+    id: str(r.id),
     report_date: str(r.report_date) ?? "—",
     category: str(r.category) ?? "—",
     segment: str(r.segment) ?? "—",
     buy_crore: num(r.gross_buy),
     sell_crore: num(r.gross_sell),
-    net_crore: num(r.net) ?? 0,
+    net_crore: num(r.net),
     provisional: r.status !== "final",
   }));
   // Rows arrive newest first. "Latest session" = most recent date reported per category.
   const latestOf = (cat: string) => daily.find((r) => r.category.toUpperCase() === cat)?.net_crore;
-  const dates = Array.from(new Set(daily.map((r) => r.report_date))).slice(0, 7);
+  const dates = Array.from(new Set(daily.map((r) => r.report_date)));
   const data: FlowsData = {
     daily,
-    fii_net_crore: latestOf("FII") ?? latestOf("FPI"),
+    fii_net_crore: latestOf("FII"),
     dii_net_crore: latestOf("DII"),
     sessions: dates.length,
-    cumulative_7d_net_crore: daily.length
-      ? daily.filter((r) => dates.includes(r.report_date)).reduce((acc, r) => acc + r.net_crore, 0)
-      : undefined,
-    as_of: daily[0]?.report_date,
+    as_of: str(raw.as_of) || daily[0]?.report_date,
+    fetched_at: str(raw.fetched_at),
+    is_stale: Boolean(raw.is_stale) || raw.freshness === "stale",
+    age_days: num(raw.age_days),
+    last_trading_day: str(raw.last_trading_day),
+    error: str(raw.error),
+    availability: str(raw.availability),
   };
   return envelope(raw, data, "unavailable");
 };

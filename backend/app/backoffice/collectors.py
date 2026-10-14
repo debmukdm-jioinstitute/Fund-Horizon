@@ -14,6 +14,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from app.backoffice.providers import amfi_ter, apmi, factsheets, rss
 from app.backoffice.providers.amfi import AmfiProvider, classify_plan_option
@@ -187,7 +188,33 @@ def refresh_rss() -> dict[str, Any]:
     return {"status": "success", "source_id": source_id, "records_ingested": saved, "feed_errors": errors}
 
 
-def refresh_nse() -> dict[str, Any]:
+IST = ZoneInfo("Asia/Kolkata")
+_LAST_FLOW_FETCH: float = 0.0
+
+
+def should_fetch_flows(force: bool = False) -> tuple[bool, str]:
+    """Determine whether NSE FII/DII cash flows should be polled.
+
+    Weekdays only, 17:30-22:30 IST, every 15 minutes, stopping once today's row exists.
+    """
+    if force:
+        return True, "forced_manual_refresh"
+    now_ist = datetime.now(IST)
+    if now_ist.weekday() >= 5:
+        return False, "weekend"
+    hm = (now_ist.hour, now_ist.minute)
+    if not ((17, 30) <= hm <= (22, 30)):
+        return False, f"outside_window ({now_ist.strftime('%H:%M')} IST)"
+    today_iso = now_ist.strftime("%Y-%m-%d")
+    if _REPO.has_flow_for_date(today_iso):
+        return False, f"today_already_ingested ({today_iso})"
+    global _LAST_FLOW_FETCH
+    if time.monotonic() - _LAST_FLOW_FETCH < 900:
+        return False, "throttled_15min"
+    return True, "due"
+
+
+def refresh_nse(force_flows: bool = False) -> dict[str, Any]:
     """Pull India VIX / index levels and the latest FII-DII session from NSE (blocking; run in an executor)."""
     source_id = "SRC_NSE_FNO"
     client = get_nse_client()
@@ -213,11 +240,17 @@ def refresh_nse() -> dict[str, Any]:
         errors.append(f"indices: {e}")
         status = e.status
 
-    try:
-        ingested += _REPO.replace_flows(client.fetch_fii_dii())
-    except NseError as e:
-        errors.append(f"flows: {e}")
-        status = e.status
+    fetch_flows, flow_reason = should_fetch_flows(force=force_flows)
+    if fetch_flows:
+        try:
+            global _LAST_FLOW_FETCH
+            _LAST_FLOW_FETCH = time.monotonic()
+            ingested += _REPO.replace_flows(client.fetch_fii_dii())
+        except NseError as e:
+            errors.append(f"flows: {e}")
+            status = e.status
+    else:
+        logger.debug("Skipping NSE flows fetch: %s", flow_reason)
 
     if errors and not ingested:
         _REPO.update_source_health(source_id, status, error_message="; ".join(errors), success=False)
@@ -229,9 +262,12 @@ def refresh_nse() -> dict[str, Any]:
 RETRY_AFTER_FAILURE_SECONDS = 300
 
 
-async def refresh_source(source_id: str) -> dict[str, Any]:
+async def refresh_source(source_id: str, force: bool = False) -> dict[str, Any]:
     """Run one source, then schedule the next automatic run (soon after a failure, a full interval after success)."""
-    result = await _refresh_source(source_id)
+    try:
+        result = await _refresh_source(source_id, force=force)
+    except TypeError:
+        result = await _refresh_source(source_id)
     interval = REFRESH_INTERVALS.get(source_id)
     if interval and result.get("status") not in ("success", "coalesced", "manual_only"):
         # A network blip must not delay a daily/12-hourly feed by its whole interval.
@@ -239,7 +275,7 @@ async def refresh_source(source_id: str) -> dict[str, Any]:
     return result
 
 
-async def _refresh_source(source_id: str) -> dict[str, Any]:
+async def _refresh_source(source_id: str, force: bool = False) -> dict[str, Any]:
     """Execute collection for a single source outside of request event loop."""
     async with _REFRESH_LOCK:
         if source_id in _IN_PROGRESS:
@@ -250,7 +286,7 @@ async def _refresh_source(source_id: str) -> dict[str, Any]:
         loop = asyncio.get_running_loop()
 
         if source_id == "SRC_NSE_FNO":
-            return await loop.run_in_executor(None, refresh_nse)
+            return await loop.run_in_executor(None, refresh_nse, force)
 
         if source_id == "SRC_AMFI_TER":
             return await loop.run_in_executor(None, refresh_ter)

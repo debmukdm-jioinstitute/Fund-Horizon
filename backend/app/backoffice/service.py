@@ -487,17 +487,46 @@ class BackofficeService:
         elif import_type == "fii_dii_flows":
             formatted = []
             for r in rows:
+                raw_cat = str(r.get("Category", "")).strip().upper()
+                if raw_cat in ("FII", "FPI", "FII/FPI") or raw_cat.startswith("FII") or raw_cat.startswith("FPI"):
+                    category = "FII"
+                elif raw_cat.startswith("DII"):
+                    category = "DII"
+                else:
+                    raise ValueError(f"Unknown category: {raw_cat!r}. Expected FII/FPI or DII.")
+
+                raw_status = str(r.get("Status", "final")).strip().lower()
+                status = "provisional" if "prov" in raw_status else "final"
+
+                raw_date = str(r.get("Report Date", "")).strip()
+                try:
+                    iso_date = datetime.strptime(raw_date, "%Y-%m-%d").date().isoformat()
+                except ValueError:
+                    raise ValueError(f"Invalid date format: {raw_date!r}. Must be ISO format YYYY-MM-DD.")
+
+                raw_unit = str(r.get("Unit", "inr_crore")).strip().lower()
+                if raw_unit in ("inr_crore", "crore", "cr"):
+                    multiplier = 1.0
+                elif raw_unit in ("inr_lakh", "lakh", "lac", "lacs"):
+                    multiplier = 0.01
+                else:
+                    raise ValueError(f"Unknown unit: {raw_unit!r}. Expected crore or lakh.")
+
+                buy = round(float(r["Gross Buy"]) * multiplier, 2)
+                sell = round(float(r["Gross Sell"]) * multiplier, 2)
+                net = round(float(r["Net"]) * multiplier, 2)
+
                 formatted.append({
-                    "report_date": r["Report Date"].strip(),
-                    "category": r["Category"].strip().upper(),
-                    "segment": r.get("Segment", "equity_cash").strip(),
-                    "gross_buy": float(r["Gross Buy"]),
-                    "gross_sell": float(r["Gross Sell"]),
-                    "net": float(r["Net"]),
-                    "unit": r.get("Unit", "inr_crore").strip(),
-                    "status": r.get("Status", "final").strip(),
+                    "report_date": iso_date,
+                    "category": category,
+                    "segment": str(r.get("Segment", "equity_cash")).strip().lower(),
+                    "gross_buy": buy,
+                    "gross_sell": sell,
+                    "net": net,
+                    "unit": "inr_crore",
+                    "status": status,
                 })
-            saved_count = self.repo.upsert_flows(formatted)
+            saved_count = self.repo.replace_flows(formatted)
 
         elif import_type == "option_chain":
             if rows:

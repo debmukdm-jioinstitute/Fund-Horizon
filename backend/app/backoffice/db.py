@@ -151,6 +151,7 @@ def init_backoffice_schema(conn: sqlite3.Connection) -> None:
         """
     )
     conn.execute("CREATE INDEX IF NOT EXISTS ix_flows_date_cat ON flows(report_date, category)")
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS uq_flows_date_cat_seg ON flows(report_date, category, segment)")
 
     conn.execute(
         """
@@ -481,5 +482,28 @@ def ensure_backoffice_schema() -> None:
             with conn:
                 _seed_default_registries(conn)
             _SEEDED_PATHS.add(str(_sqlite.get_default_db_path()))
+
+        # Always guarantee unique index on flows(report_date, category, segment)
+        flows_check = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='flows'"
+        ).fetchone()
+        if flows_check:
+            with conn:
+                conn.execute(
+                    """
+                    DELETE FROM flows
+                    WHERE id NOT IN (
+                        SELECT id FROM (
+                            SELECT id, ROW_NUMBER() OVER (
+                                PARTITION BY report_date, category, segment
+                                ORDER BY created_at DESC, id DESC
+                            ) AS rn
+                            FROM flows
+                        ) t
+                        WHERE t.rn = 1
+                    )
+                    """
+                )
+                conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS uq_flows_date_cat_seg ON flows(report_date, category, segment)")
     finally:
         conn.close()

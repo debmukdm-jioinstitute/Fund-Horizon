@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import time
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from collections.abc import Collection
 from typing import Any
 
@@ -461,6 +461,8 @@ class BackofficeRepository:
     # --- Institutional Flows ---
 
     def upsert_flows(self, flow_records: list[dict[str, Any]]) -> int:
+        if not flow_records:
+            return 0
         conn = self._conn()
         now = _utcnow()
         count = 0
@@ -468,12 +470,24 @@ class BackofficeRepository:
             with conn:
                 for f in flow_records:
                     f_id = f.get("id") or _new_id()
+                    gross_buy = float(f["gross_buy"]) if f.get("gross_buy") is not None else None
+                    gross_sell = float(f["gross_sell"]) if f.get("gross_sell") is not None else None
+                    net = float(f["net"]) if f.get("net") is not None else None
                     conn.execute(
                         """
                         INSERT INTO flows (
                             id, source_id, report_date, category, segment,
                             gross_buy, gross_sell, net, unit, status, vintage, created_at
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ON CONFLICT(report_date, category, segment) DO UPDATE SET
+                            source_id = excluded.source_id,
+                            gross_buy = excluded.gross_buy,
+                            gross_sell = excluded.gross_sell,
+                            net = excluded.net,
+                            unit = excluded.unit,
+                            status = excluded.status,
+                            vintage = excluded.vintage,
+                            created_at = excluded.created_at
                         """,
                         (
                             f_id,
@@ -481,9 +495,9 @@ class BackofficeRepository:
                             f["report_date"],
                             f["category"],
                             f.get("segment", "equity_cash"),
-                            float(f["gross_buy"]),
-                            float(f["gross_sell"]),
-                            float(f["net"]),
+                            gross_buy,
+                            gross_sell,
+                            net,
                             f.get("unit", "inr_crore"),
                             f.get("status", "provisional"),
                             f.get("vintage", "initial"),
@@ -496,30 +510,50 @@ class BackofficeRepository:
             conn.close()
 
     def replace_flows(self, flow_records: list[dict[str, Any]]) -> int:
-        """Idempotent flow upsert keyed on (report_date, category, segment): re-fetching a session overwrites it."""
-        if not flow_records:
-            return 0
+        """Idempotent flow upsert keyed on (report_date, category, segment) in a single transaction."""
+        return self.upsert_flows(flow_records)
+
+    def has_flow_for_date(self, report_date: str) -> bool:
+        """Check if both FII and DII rows exist for given report_date."""
         conn = self._conn()
         try:
-            with conn:
-                for f in flow_records:
-                    conn.execute(
-                        "DELETE FROM flows WHERE report_date = ? AND category = ? AND segment = ?",
-                        (f["report_date"], f["category"], f.get("segment", "equity_cash")),
-                    )
-            return self.upsert_flows(flow_records)
+            row = conn.execute(
+                "SELECT COUNT(DISTINCT category) FROM flows WHERE report_date = ?",
+                (report_date,),
+            ).fetchone()
+            return (row[0] if row else 0) >= 2
         finally:
             conn.close()
 
-    def list_flows(self, start_date: str | None = None, end_date: str | None = None) -> list[dict[str, Any]]:
+    def list_flows(
+        self,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        limit: int = 2000,
+    ) -> list[dict[str, Any]]:
         conn = self._conn()
         try:
+            # Default to last 365 days if neither date is supplied
+            if not start_date and not end_date:
+                d365 = (datetime.now(UTC).date() - timedelta(days=365)).isoformat()
+                start_date = d365
+
             query = "SELECT * FROM flows"
             params: list[Any] = []
-            if start_date and end_date:
-                query += " WHERE report_date BETWEEN ? AND ?"
-                params = [start_date, end_date]
-            query += " ORDER BY report_date DESC LIMIT 100"
+            clauses: list[str] = []
+
+            if start_date:
+                clauses.append("report_date >= ?")
+                params.append(start_date)
+            if end_date:
+                clauses.append("report_date <= ?")
+                params.append(end_date)
+
+            if clauses:
+                query += " WHERE " + " AND ".join(clauses)
+
+            cap = min(max(1, limit), 2000)
+            query += f" ORDER BY report_date DESC, category ASC LIMIT {cap}"
             rows = conn.execute(query, tuple(params)).fetchall()
             return [dict(r) for r in rows]
         finally:

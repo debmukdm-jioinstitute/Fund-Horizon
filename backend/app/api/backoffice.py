@@ -4,7 +4,8 @@ from __future__ import annotations
 import json
 import re
 import secrets
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -159,22 +160,91 @@ def backoffice_news(
 # Institutional Flows (FII / DII)
 # ---------------------------------------------------------------------------
 
+NSE_HOLIDAYS_SET = {
+    # 2025
+    "2025-01-26", "2025-02-26", "2025-03-14", "2025-03-31", "2025-04-10", "2025-04-14",
+    "2025-04-18", "2025-05-01", "2025-08-15", "2025-08-27", "2025-10-02", "2025-10-21",
+    "2025-10-22", "2025-11-05", "2025-12-25",
+    # 2026
+    "2026-01-26", "2026-02-17", "2026-03-04", "2026-03-20", "2026-04-03", "2026-04-14",
+    "2026-04-17", "2026-04-20", "2026-05-01", "2026-05-27", "2026-06-25", "2026-08-15",
+    "2026-09-14", "2026-10-02", "2026-10-20", "2026-11-09", "2026-11-10", "2026-11-24",
+    "2026-12-25",
+    # 2027
+    "2027-01-26", "2027-03-22", "2027-03-26", "2027-04-14", "2027-05-01", "2027-08-15",
+    "2027-10-02", "2027-11-01", "2027-12-25",
+}
+
+
+def get_last_nse_trading_day(reference_dt: datetime | None = None) -> str:
+    """Return the most recent NSE trading session date (YYYY-MM-DD) in IST."""
+    now_ist = reference_dt or datetime.now(ZoneInfo("Asia/Kolkata"))
+    d = now_ist.date()
+    if now_ist.weekday() < 5 and (now_ist.hour, now_ist.minute) < (17, 30):
+        d -= timedelta(days=1)
+    elif now_ist.weekday() >= 5:
+        d -= timedelta(days=1)
+
+    while True:
+        iso = d.isoformat()
+        if d.weekday() < 5 and iso not in NSE_HOLIDAYS_SET:
+            return iso
+        d -= timedelta(days=1)
+
+
 @router.get("/flows")
 def backoffice_flows(
     staff: Annotated[dict, Depends(require_staff)],
     start_date: str | None = Query(None),
     end_date: str | None = Query(None),
+    from_date: str | None = Query(None, alias="from"),
+    to_date: str | None = Query(None, alias="to"),
 ):
     """Daily reported and provisional FII/DII gross buy, sell, and net flows."""
-    flows = _REPO.list_flows(start_date=start_date, end_date=end_date)
+    s_date = from_date or start_date
+    e_date = to_date or end_date
+    flows = _REPO.list_flows(start_date=s_date, end_date=e_date, limit=2000)
+
+    source = _REPO.get_source("SRC_NSE_FNO") or {}
+    source_health = source.get("health_status", "ready")
+    error_message = source.get("error_message")
+
+    latest_report_date = flows[0].get("report_date") if flows else None
+    latest_created_at = max((f.get("created_at") for f in flows if f.get("created_at")), default=None)
+
+    last_trading_day = get_last_nse_trading_day()
+    is_stale = bool(latest_report_date and latest_report_date < last_trading_day)
+
+    if not flows:
+        availability = "source_blocked" if source_health == "blocked" else "no_data"
+        freshness = "stale"
+    else:
+        availability = "source_blocked" if source_health == "blocked" else "ready"
+        freshness = "stale" if is_stale else "current"
+
+    age_days: int | None = None
+    if latest_report_date:
+        try:
+            rep_d = datetime.strptime(latest_report_date, "%Y-%m-%d").date()
+            today_d = datetime.now(ZoneInfo("Asia/Kolkata")).date()
+            age_days = max(0, (today_d - rep_d).days)
+        except Exception:
+            pass
+
     res = {
         "data": flows,
         "count": len(flows),
         "unit": "inr_crore",
-        "availability": "ready" if flows else "unavailable",
-        "freshness": "current" if flows else "stale",
+        "availability": availability,
+        "freshness": freshness,
+        "is_stale": is_stale,
+        "age_days": age_days,
+        "last_trading_day": last_trading_day,
+        "as_of": latest_report_date,
+        "fetched_at": latest_created_at,
+        "error": error_message if (availability != "ready" or is_stale) else None,
     }
-    return with_meta(res, "nse", flows[0].get("trade_date") if flows else None)
+    return with_meta(res, "nse", latest_report_date)
 
 
 # ---------------------------------------------------------------------------
@@ -855,7 +925,7 @@ async def trigger_source_refresh(
 ):
     """Manually trigger background refresh of an automated source."""
     verify_csrf(request)
-    res = await refresh_source(source_id)
+    res = await refresh_source(source_id, force=True)
     _REPO.log_audit(
         staff_id=staff["id"],
         action="source_refresh_triggered",

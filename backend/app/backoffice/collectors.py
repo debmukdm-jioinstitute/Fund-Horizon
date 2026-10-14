@@ -11,6 +11,7 @@ import json
 import logging
 import os
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -314,6 +315,11 @@ async def run_collector_loop(interval_seconds: int = TICK_SECONDS) -> None:
                 if result.get("status") not in ("success", "coalesced"):
                     logger.warning("Refresh %s -> %s", src, result)
                 await asyncio.sleep(1.0)  # rate pacing
+            # Daily briefing: once at/after 08:00 IST, after the prerequisite
+            # collectors ran today; idempotent so a repeat tick is a no-op.
+            if briefing_due():
+                built = await asyncio.to_thread(build_daily_briefing)
+                logger.info("Daily briefing built: %s", built)
         except asyncio.CancelledError:
             logger.info("Collector loop cancelled gracefully.")
             break
@@ -326,4 +332,45 @@ async def run_collector_loop(interval_seconds: int = TICK_SECONDS) -> None:
             break
 
 
-__all__ = ["refresh_source", "run_collector_loop", "refresh_nse"]
+__all__ = ["refresh_source", "run_collector_loop", "refresh_nse", "build_daily_briefing", "briefing_due"]
+
+
+# ---------------------------------------------------------------------------
+# Daily briefing job (08:00 IST, idempotent)
+# ---------------------------------------------------------------------------
+
+def briefing_due() -> bool:
+    """True when the daily briefing should be built now.
+
+    Conditions: IST time is at/after 08:00, today's briefing row is missing,
+    and the prerequisite collectors (AMFI, NSE, RSS, yields) have each logged a
+    successful run today. Synchronous and DB-light; safe to call every loop tick.
+    """
+    from zoneinfo import ZoneInfo
+
+    from app.backoffice.analytics.briefing_builder import (
+        BRIEFING_HOUR_IST,
+        BRIEFING_PREREQ_SOURCES,
+        ist_date_of,
+        ist_today,
+    )
+
+    now_ist = datetime.now(ZoneInfo("Asia/Kolkata"))
+    if now_ist.hour < BRIEFING_HOUR_IST:
+        return False
+    today = ist_today()
+    if _REPO.get_briefing_by_date(today) is not None:
+        return False
+    ready = set()
+    for s in _REPO.list_sources():
+        if s["id"] in BRIEFING_PREREQ_SOURCES and s.get("last_success_at"):
+            if ist_date_of(s["last_success_at"]) == today:
+                ready.add(s["id"])
+    return all(src in ready for src in BRIEFING_PREREQ_SOURCES)
+
+
+def build_daily_briefing(brief_date: str | None = None) -> dict[str, Any]:
+    """Build and store the daily briefing (idempotent upsert keyed by brief_date)."""
+    from app.backoffice.analytics.briefing_builder import build_daily_briefing as _build
+
+    return _build(_REPO, brief_date)

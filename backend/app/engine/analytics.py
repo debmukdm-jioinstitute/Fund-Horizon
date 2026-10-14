@@ -176,10 +176,22 @@ def max_drawdown(s: pd.Series) -> float:
 def max_drawdown_duration(s: pd.Series) -> dict[str, Any]:
     """Find the longest underwater period and the duration of the deepest drawdown.
 
-    Returns max duration in months and drawdown episode details.
+    Returns max duration in months, dates/NAVs for peak, trough, and recovery,
+    and detailed episode history.
     """
     if len(s) < 2:
-        return {"longest_underwater_months": 0, "max_drawdown": 0.0, "trough_date": None, "peak_date": None}
+        return {
+            "longest_underwater_months": 0,
+            "max_drawdown": 0.0,
+            "peak_date": None,
+            "peak_nav": None,
+            "trough_date": None,
+            "trough_nav": None,
+            "recovery_date": None,
+            "recovery_nav": None,
+            "longest_underwater": None,
+            "episodes": [],
+        }
     cum_max = s.cummax()
     dd = s / cum_max - 1.0
     worst_dd = float(dd.min())
@@ -187,24 +199,77 @@ def max_drawdown_duration(s: pd.Series) -> dict[str, Any]:
 
     # Find the peak date preceding the worst trough
     peak_date = s.loc[:worst_idx].idxmax()
+    rec_slice = s.loc[worst_idx:][s.loc[worst_idx:] >= s.loc[peak_date]]
+    recovery_date = rec_slice.index[0] if len(rec_slice) > 0 else None
 
-    # Calculate longest consecutive underwater period in months
+    # Track consecutive underwater periods in months
     underwater = dd < 0
-    longest_months = 0
+    episodes: list[dict[str, Any]] = []
     cur_streak = 0
-    for is_under in underwater:
+    cur_start = None
+    cur_peak = None
+    cur_trough = None
+    cur_min_dd = 0.0
+
+    for d, is_under in underwater.items():
         if is_under:
+            if cur_streak == 0:
+                cur_start = d
+                cur_peak = s.loc[:d].idxmax()
+                cur_trough = d
+                cur_min_dd = float(dd.loc[d])
+            else:
+                if float(dd.loc[d]) < cur_min_dd:
+                    cur_min_dd = float(dd.loc[d])
+                    cur_trough = d
             cur_streak += 1
-            if cur_streak > longest_months:
-                longest_months = cur_streak
         else:
-            cur_streak = 0
+            if cur_streak > 0 and cur_peak is not None and cur_start is not None and cur_trough is not None:
+                episodes.append({
+                    "peak_date": str(cur_peak.date()),
+                    "peak_nav": round(float(s.loc[cur_peak]), 4),
+                    "start_date": str(cur_start.date()),
+                    "trough_date": str(cur_trough.date()),
+                    "trough_nav": round(float(s.loc[cur_trough]), 4),
+                    "recovery_date": str(d.date()),
+                    "recovery_nav": round(float(s.loc[d]), 4),
+                    "max_drop": round(cur_min_dd, 4),
+                    "months": cur_streak,
+                    "recovered": True,
+                })
+                cur_streak = 0
+                cur_start = None
+                cur_peak = None
+                cur_trough = None
+
+    if cur_streak > 0 and cur_peak is not None and cur_start is not None and cur_trough is not None:
+        episodes.append({
+            "peak_date": str(cur_peak.date()),
+            "peak_nav": round(float(s.loc[cur_peak]), 4),
+            "start_date": str(cur_start.date()),
+            "trough_date": str(cur_trough.date()),
+            "trough_nav": round(float(s.loc[cur_trough]), 4),
+            "recovery_date": None,
+            "recovery_nav": None,
+            "max_drop": round(cur_min_dd, 4),
+            "months": cur_streak,
+            "recovered": False,
+        })
+
+    longest_ep = max(episodes, key=lambda x: x["months"]) if episodes else None
+    top_episodes = sorted(episodes, key=lambda x: (x["max_drop"], -x["months"]))[:5]
 
     return {
-        "longest_underwater_months": int(longest_months),
+        "longest_underwater_months": int(longest_ep["months"]) if longest_ep else 0,
         "max_drawdown": worst_dd,
         "peak_date": str(peak_date.date()) if peak_date is not None else None,
+        "peak_nav": round(float(s.loc[peak_date]), 4) if peak_date is not None else None,
         "trough_date": str(worst_idx.date()) if worst_idx is not None else None,
+        "trough_nav": round(float(s.loc[worst_idx]), 4) if worst_idx is not None else None,
+        "recovery_date": str(recovery_date.date()) if recovery_date is not None else None,
+        "recovery_nav": round(float(s.loc[recovery_date]), 4) if recovery_date is not None else None,
+        "longest_underwater": longest_ep,
+        "episodes": top_episodes,
     }
 
 

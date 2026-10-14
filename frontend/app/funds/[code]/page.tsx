@@ -8,9 +8,11 @@ import { CATEGORY_LABELS, pct } from "@/lib/format";
 import ExplainModal from "@/components/ExplainModal";
 import {
   CaptureRatioBarChart,
+  DrawdownEpisodesTable,
   NavChart,
   RollingDistributionCard,
 } from "@/components/FundCharts";
+import { computeDrawdownEpisodes } from "@/lib/drawdown";
 import InfoTip from "@/components/InfoTip";
 
 interface PageProps {
@@ -49,6 +51,15 @@ export default async function FundDetailPage({ params }: PageProps) {
     fetched_at: analytics.last_nav_date,
     source_url: "https://www.amfiindia.com",
   };
+
+  const rawEpisodes =
+    dd?.episodes && dd.episodes.length > 0
+      ? dd.episodes
+      : computeDrawdownEpisodes(detail.nav_monthly || []);
+  const episodesByDrop = [...rawEpisodes].sort((a, b) => a.max_drop - b.max_drop);
+  const episodesByDuration = [...rawEpisodes].sort((a, b) => b.months - a.months);
+  const maxDdEp = episodesByDrop[0];
+  const longestEp = dd?.longest_underwater || episodesByDuration[0];
 
   return (
     <div className="w-full space-y-6">
@@ -205,24 +216,72 @@ export default async function FundDetailPage({ params }: PageProps) {
                 {risk.sortino_3y !== null ? risk.sortino_3y.toFixed(2) : "—"}
               </dd>
             </div>
-            <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700 inline-flex items-center gap-1">
-                <span>Max Historical Drawdown</span>
-                <InfoTip metric="max_drawdown" meta={mfMeta} />
-              </dt>
-              <dd className="font-semibold text-rose-700">
-                {risk.max_drawdown !== null ? pct(risk.max_drawdown) : "—"}
-              </dd>
+            <div className="border-b border-navy-100 py-2">
+              <div className="flex justify-between items-center">
+                <dt className="text-navy-700 inline-flex items-center gap-1">
+                  <span>Max Historical Drawdown</span>
+                  <InfoTip metric="max_drawdown" meta={mfMeta} />
+                </dt>
+                <dd className="font-semibold text-rose-700">
+                  {risk.max_drawdown !== null ? pct(risk.max_drawdown) : "—"}
+                </dd>
+              </div>
+              {maxDdEp && (
+                <div className="mt-1.5 rounded border border-rose-100 bg-rose-50/50 p-2 text-xs space-y-0.5">
+                  <div className="flex justify-between">
+                    <span className="text-navy-600">Peak Date:</span>
+                    <span className="font-medium text-navy-900">{maxDdEp.peak_date} <span className="font-mono text-navy-500">(₹{maxDdEp.peak_nav.toFixed(2)})</span></span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-navy-600">Trough Date:</span>
+                    <span className="font-medium text-rose-700">{maxDdEp.trough_date} <span className="font-mono text-rose-500">(₹{maxDdEp.trough_nav.toFixed(2)})</span></span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-navy-600">Full Recovery:</span>
+                    <span className="font-medium text-teal-800">
+                      {maxDdEp.recovery_date ? (
+                        <>{maxDdEp.recovery_date} <span className="font-mono text-navy-500">(₹{maxDdEp.recovery_nav?.toFixed(2)})</span></>
+                      ) : (
+                        <span className="text-amber-700">Not yet recovered</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
             {dd && (
-              <div className="flex justify-between py-1.5">
-                <dt className="text-navy-700 inline-flex items-center gap-1">
-                  <span>Longest underwater period</span>
-                  <InfoTip metric="underwater_period" meta={mfMeta} />
-                </dt>
-                <dd className="font-medium text-navy-900" data-testid="analytics-underwater">
-                  {dd.longest_underwater_months} months
-                </dd>
+              <div className="py-2">
+                <div className="flex justify-between items-center">
+                  <dt className="text-navy-700 inline-flex items-center gap-1">
+                    <span>Longest underwater period</span>
+                    <InfoTip metric="underwater_period" meta={mfMeta} />
+                  </dt>
+                  <dd className="font-medium text-navy-900" data-testid="analytics-underwater">
+                    {dd.longest_underwater_months} months
+                  </dd>
+                </div>
+                {longestEp && (
+                  <div className="mt-1.5 rounded border border-navy-100 bg-navy-50/70 p-2 text-xs space-y-0.5">
+                    <div className="flex justify-between">
+                      <span className="text-navy-600">Peak prior to drop:</span>
+                      <span className="font-medium text-navy-900">{longestEp.peak_date} <span className="font-mono text-navy-500">(₹{longestEp.peak_nav.toFixed(2)})</span></span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-navy-600">Deepest Trough:</span>
+                      <span className="font-medium text-navy-900">{longestEp.trough_date} <span className="font-mono text-rose-600">({pct(longestEp.max_drop)})</span></span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-navy-600">Full Recovery:</span>
+                      <span className="font-medium text-teal-800">
+                        {longestEp.recovery_date ? (
+                          <>{longestEp.recovery_date} <span className="font-mono text-navy-500">(₹{longestEp.recovery_nav?.toFixed(2)})</span></>
+                        ) : (
+                          <span className="text-amber-700">Ongoing</span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </dl>
@@ -243,6 +302,25 @@ export default async function FundDetailPage({ params }: PageProps) {
           />
         </section>
       </div>
+
+      {/* Historical Drawdown & Underwater Episodes */}
+      {episodesByDrop.length > 0 && (
+        <section className="card space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-lg font-bold text-navy-950">Historical Drawdown & Underwater Episodes</h2>
+              <InfoTip metric="underwater_period" meta={mfMeta} />
+            </div>
+            <span className="rounded bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-700">
+              {episodesByDrop.length} episodes recorded
+            </span>
+          </div>
+          <p className="text-xs text-navy-700">
+            Chronological audit of peak-to-trough drawdowns and recovery periods computed directly from published NAV history.
+          </p>
+          <DrawdownEpisodesTable episodes={episodesByDrop.slice(0, 5)} />
+        </section>
+      )}
 
       {/* Statutory Disclaimers */}
       <footer className="card bg-navy-50 text-xs text-navy-700 space-y-2">

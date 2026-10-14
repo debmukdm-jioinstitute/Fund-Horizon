@@ -347,11 +347,30 @@ export interface RollingStats {
   n: number;
 }
 
+export interface DrawdownEpisode {
+  peak_date: string;
+  peak_nav: number;
+  start_date: string;
+  trough_date: string;
+  trough_nav: number;
+  recovery_date: string | null;
+  recovery_nav: number | null;
+  max_drop: number;
+  months: number;
+  recovered: boolean;
+}
+
 export interface DrawdownDuration {
   longest_underwater_months: number;
   max_drawdown: number;
   peak_date: string | null;
+  peak_nav?: number | null;
   trough_date: string | null;
+  trough_nav?: number | null;
+  recovery_date?: string | null;
+  recovery_nav?: number | null;
+  longest_underwater?: DrawdownEpisode | null;
+  episodes?: DrawdownEpisode[];
 }
 
 export interface FundAnalytics {

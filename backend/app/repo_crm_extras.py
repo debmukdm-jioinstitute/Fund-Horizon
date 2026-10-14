@@ -33,7 +33,10 @@ def digits(value: str | None) -> str:
 def _t(sql: str):
     """``text()`` that expands the ``:rms`` team list when the query uses it."""
     stmt = text(sql)
-    return stmt.bindparams(bindparam("rms", expanding=True)) if ":rms" in sql else stmt
+    for name in ("rms", "ids"):
+        if f":{name}" in sql:
+            stmt = stmt.bindparams(bindparam(name, expanding=True))
+    return stmt
 
 
 # ---------------------------------------------------------------------------
@@ -48,9 +51,15 @@ def list_owners() -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 # Contacts: customers that belong to a household, with their household
 # ---------------------------------------------------------------------------
-def list_contacts(viewer_rm_id: Any, page: Page, household_id: str | None = None) -> list[dict[str, Any]]:
+def list_contacts(
+    viewer_rm_id: Any, page: Page, household_id: str | None = None, ids: list[str] | None = None
+) -> list[dict[str, Any]]:
     where = ["1=1"]
     params: dict[str, Any] = {}
+    if ids is not None:
+        where.append("k.id IN :ids" if ids else "1=0")
+        if ids:
+            params["ids"] = ids
     if viewer_rm_id is not None:
         where.append("h.rm_id IN :rms")
         params["rms"] = rm_ids(viewer_rm_id)

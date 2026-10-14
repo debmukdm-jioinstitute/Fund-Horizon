@@ -316,6 +316,17 @@ def value_holdings(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
+def households_in_tier(viewer_rm: Any, tier: str) -> list[str]:
+    """Ids of the households (in the viewer's book) whose AUM falls in ``tier``."""
+    if tier not in {t for t, _ in TIERS}:
+        raise CrmCoreError("bad_tier", f"tier must be one of: {', '.join(t for t, _ in TIERS)}")
+    from app.repo_crm_core import get_crm_repository
+
+    ids = [h["id"] for h in get_crm_repository().list_households(rm_id=viewer_rm)]
+    aum = household_aum(ids)
+    return [i for i in ids if aum.get(i, {}).get("tier", "standard") == tier]
+
+
 def household_aum(household_ids: list[str]) -> dict[str, dict[str, Any]]:
     """Per-household roll-up of valued holdings, with the Direct-plan flag the distributor must watch."""
     if not household_ids:

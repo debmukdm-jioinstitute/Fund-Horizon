@@ -12,6 +12,7 @@ import CasesTab from "@/components/crm/CasesTab";
 import ComplianceTab from "@/components/crm/ComplianceTab";
 import ImportTab from "@/components/crm/ImportTab";
 import BookTab from "@/components/crm/BookTab";
+import DeadlinesTab from "@/components/crm/DeadlinesTab";
 import { CasesList, ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
 import NewOpportunityForm from "@/components/crm/NewOpportunityForm";
 import { useCanWrite } from "@/components/crm/useCanWrite";
@@ -68,7 +69,6 @@ function OpportunitiesTab() {
 }
 
 function CrmTabs() {
-  const router = useRouter();
   const tab = resolveTab(useSearchParams().get("tab")); // the tab lives in the URL: back, forward and refresh work
   return (
     <div className="space-y-4">
@@ -88,13 +88,14 @@ function CrmTabs() {
           </Link>
         ))}
       </nav>
-      {tab === "home" && <CrmHome onNavigate={(id) => router.push(tabHref(id))} />}
+      {tab === "home" && <CrmHome />}
       {tab === "households" && <HouseholdsTab />}
       {tab === "contacts" && <ContactsList />}
       {tab === "leads" && <TableOrBoard defaultView="table" boardLabel="Board & new lead" table={<LeadsList />} board={<LeadsTab />} />}
       {tab === "opportunities" && <OpportunitiesTab />}
       {tab === "activities" && <TableOrBoard defaultView="table" boardLabel="Agenda & new task" table={<TasksList />} board={<ActivitiesTab />} />}
       {tab === "cases" && <TableOrBoard defaultView="table" boardLabel="Queue & new grievance" table={<CasesList />} board={<CasesTab />} />}
+      {tab === "deadlines" && <DeadlinesTab />}
       {tab === "book" && <BookTab />}
       {tab === "compliance" && <ComplianceTab />}
       {tab === "import" && <ImportTab />}

@@ -17,10 +17,13 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from app import repo_crm_extras as extras
+from app import repo_crm_phase3 as p3
 from app.api.crm_core import (
     ACTIVE_LEAD_STATUSES,
     CASE_OPEN_STATUSES,
+    CLOSED_STAGES,
     LEAD_STATUSES,
+    WON_STAGE,
     Me,
     _check_enum,
     _get_visible,
@@ -34,7 +37,7 @@ from app.api.crm_core import (
     _visible_opportunity,
 )
 from app.api.crm_page import PageParams, guard, send_total
-from app.repo_crm_core import IST, Page, get_crm_repository, today_ist
+from app.repo_crm_core import IST, Page, get_crm_repository, month_start_utc, today_ist
 
 router = APIRouter(prefix="/api/crm", tags=["crm-phase2"])
 
@@ -96,9 +99,18 @@ def bulk_reassign(body: BulkReassign, me: Me):
 # ---------------------------------------------------------------------------
 # Contacts
 # ---------------------------------------------------------------------------
+def _gap_ids(me: dict) -> list[str]:
+    from app.api.crm_phase3 import gap_rows  # late import: crm_phase3 imports from this package
+
+    return [r["id"] for r in gap_rows(me)]
+
+
 @router.get("/contacts")
-def contacts(me: Me, response: Response, page: PageParams, household_id: str | None = Query(None)):
-    rows = guard(extras.list_contacts, _viewer(me), page, household_id)
+def contacts(
+    me: Me, response: Response, page: PageParams, household_id: str | None = Query(None),
+    gaps: bool = Query(False, description="Only contacts with a nominee/KYC/FATCA gap"),
+):
+    rows = guard(extras.list_contacts, _viewer(me), page, household_id, _gap_ids(me) if gaps else None)
     send_total(response, page)
     return rows
 
@@ -244,18 +256,21 @@ def _export_rows(entity: str, me: Me, qp: dict[str, str], page: Page) -> list[di
     viewer = _viewer(me)
     owner = _owner(me, qp.get("assigned_rm_id") or qp.get("rm_id"))
     if entity == "households":
-        return repo.list_households(rm_id=viewer or owner, page=page)
+        ids = p3.households_in_tier(viewer or owner, qp["tier"]) if qp.get("tier") else None
+        return repo.list_households(rm_id=viewer or owner, ids=ids, page=page)
     if entity == "contacts":
-        return extras.list_contacts(viewer, page, qp.get("household_id"))
+        return extras.list_contacts(viewer, page, qp.get("household_id"), _gap_ids(me) if qp.get("gaps") == "true" else None)
     if entity == "leads":
         statuses = tuple(x for x in qp.get("status", "").split(",") if x)
         for st in statuses:
             _check_enum(st, LEAD_STATUSES, "status")
         return repo.list_leads(statuses=statuses, assigned_rm_id=owner, viewer_rm_id=viewer, page=page)
     if entity == "opportunities":
+        won = qp.get("won_this_month") == "true"
         return repo.list_opportunities(
-            product_line=qp.get("product_line"), stage=qp.get("stage"), household_id=qp.get("household_id"),
+            product_line=qp.get("product_line"), stage=WON_STAGE if won else qp.get("stage"), household_id=qp.get("household_id"),
             assigned_rm_id=owner, viewer_rm_id=viewer, page=page,
+            exclude_stages=CLOSED_STAGES if qp.get("open") == "true" else (), closed_from=month_start_utc() if won else None,
         )
     if entity == "activities":
         overdue = qp.get("overdue") == "true"

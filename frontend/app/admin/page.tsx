@@ -79,7 +79,7 @@ export default function AdminPage() {
         ) : isCrmTab(activeTab) ? (
           // CRM sections: cookie-authed via /api/auth/me session, no legacy admin key needed
           <>
-            {activeTab === "crm-home" && <CrmHome onNavigate={(tab) => setActiveTab(tab as AdminTab)} />}
+            {activeTab === "crm-home" && <CrmHome />}
             {activeTab === "households" && <HouseholdsTab />}
             {activeTab === "leads" && <LeadsTab />}
             {activeTab === "pipelines" && <PipelinesTab />}

@@ -1,6 +1,7 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -83,7 +84,18 @@ export default function ListView<T extends { id: string }>({
   const [sort, setSort] = useState<string | undefined>();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(25);
-  const [filterValues, setFilterValues] = useState<Record<string, string>>({});
+  // Dashboard widgets deep-link here (?stage=…&open=true): URL filters seed the list and beat the default saved view.
+  const urlParams = useSearchParams();
+  const urlFilters = useMemo(() => {
+    const out: Record<string, string> = {};
+    for (const f of filters) {
+      const v = urlParams.get(f.key);
+      if (v) out[f.key] = v;
+    }
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const [filterValues, setFilterValues] = useState<Record<string, string>>(urlFilters);
   const [visibility, setVisibility] = useState<VisibilityState>(() =>
     Object.fromEntries(columns.filter((c) => c.hiddenByDefault).map((c) => [c.id, false])),
   );
@@ -97,7 +109,7 @@ export default function ListView<T extends { id: string }>({
   const [notice, setNotice] = useState<string | null>(null);
   const [colMenu, setColMenu] = useState(false);
 
-  const appliedDefault = useRef(false);
+  const appliedDefault = useRef(Object.keys(urlFilters).length > 0);
   const requestId = useRef(0);
   const bulkEntity = BULK_FIELD[entity];
 

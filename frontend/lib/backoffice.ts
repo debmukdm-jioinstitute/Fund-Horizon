@@ -150,6 +150,7 @@ export interface BriefingItem {
   source?: string;
   source_url?: string;
   link?: string;
+  stale?: boolean;
 }
 
 export interface BriefingSection {
@@ -1054,6 +1055,7 @@ const parseBriefingSection = (s: Json): BriefingSection => ({
     source: str(it.source),
     source_url: str(it.source_url),
     link: str(it.link),
+    stale: it.stale === true ? true : undefined,
   })),
 });
 

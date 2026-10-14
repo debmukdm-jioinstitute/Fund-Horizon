@@ -137,7 +137,7 @@ def test_brief_date_is_kolkata_calendar_day():
 
 def test_payload_contract_shape(repo):
     _seed_market(repo)
-    payload = bb.build_briefing_payload(repo, "2026-10-14")
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
     assert payload["brief_date"] == "2026-10-14"
     assert payload["version"] == 1
     assert payload["generated_at"].endswith("+05:30")
@@ -157,7 +157,7 @@ def test_payload_contract_shape(repo):
 
 def test_market_pulse_items_have_provenance_and_rules(repo):
     _seed_market(repo)
-    payload = bb.build_briefing_payload(repo, "2026-10-14")
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
     pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
     assert len(pulse["items"]) <= 8
     nifty = next(i for i in pulse["items"] if i["text"].startswith("NIFTY 50"))
@@ -219,7 +219,7 @@ def test_fund_movers_change_vs_previous_briefing(repo):
 
     payload = repo.get_briefing_by_date("2026-10-14")["payload"]
     movers = next(s for s in payload["sections"] if s["key"] == "fund_movers")
-    assert len(movers["items"]) == 10
+    assert len(movers["items"]) == 8  # top 4 + bottom 4 (advisor ≤8 cap)
     top = movers["items"][0]
     assert top["change_pct"] == pytest.approx(5.0)
     assert top["direction"] == "up"
@@ -329,11 +329,303 @@ def test_client_book_not_linked_when_empty(repo):
 
 def test_freshness_flags_stale_sources(repo):
     repo.update_source_health("SRC_AMFI", "ready", success=True)
-    payload = bb.build_briefing_payload(repo, "2026-10-14")
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
     amfi = next(f for f in payload["freshness"] if f["source"] == "AMFI India NAV")
     assert amfi["stale"] is False
     assert amfi["age_hours"] is not None and amfi["age_hours"] < 1
     assert amfi["last_ok"].endswith("+05:30")
+    # A source is stale when its age exceeds 2× its refresh interval.
+    assert amfi["interval_hours"] == 6.0
+    assert amfi["stale_after_hours"] == 12.0
     # Sources that never succeeded count as stale.
     pending = [f for f in payload["freshness"] if f["last_ok"] is None]
     assert pending and all(f["stale"] for f in pending)
+
+
+# ---------------------------------------------------------------------------
+# Fix Round 2
+# ---------------------------------------------------------------------------
+
+def test_pan_masked_in_regulatory_text(repo):
+    now = datetime.now(UTC)
+    repo.upsert_news([
+        {"id": "p1", "source_id": "sebi", "source_name": "SEBI",
+         "category": "regulator",
+         "title": "SEBI circular on mutual fund disclosure; PAN ABCDE1234F redacted",
+         "link": "https://sebi.gov.in/1", "published_at": (now - timedelta(hours=1)).isoformat()},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    news = next(s for s in payload["sections"] if s["key"] == "regulatory_news")
+    texts = [i["text"] for i in news["items"]]
+    assert texts, "regulatory item should survive"
+    assert "XXXXX1234X" in texts[0]
+    assert "ABCDE1234F" not in " ".join(texts)
+    assert bb.mask_pan("pan abcde1234f here") == "pan XXXXX1234X here"
+
+
+def test_future_items_excluded(repo):
+    repo.upsert_observations([
+        {"instrument_id": "INDEX:IN:NIFTY50", "observed_at": "2026-10-14T10:00:00+00:00", "value_numeric": 25000.0},
+        {"instrument_id": "INDEX:IN:NIFTY50", "observed_at": "2026-10-15T10:00:00+00:00", "value_numeric": 99999.0},
+    ])
+    now = datetime.now(UTC)
+    repo.upsert_news([
+        {"id": "f1", "source_id": "rbi_press", "source_name": "RBI Press Releases",
+         "category": "regulator", "title": "News from tomorrow",
+         "link": "https://rbi.org.in/f", "published_at": (now + timedelta(hours=5)).isoformat()},
+    ])
+    repo.upsert_flows([
+        {"report_date": "2026-10-14", "category": "FII", "segment": "equity_cash",
+         "gross_buy": 1.0, "gross_sell": 1.0, "net": -100.0},
+        {"report_date": "2026-10-15", "category": "FII", "segment": "equity_cash",
+         "gross_buy": 1.0, "gross_sell": 1.0, "net": -99999.0},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    blob = str(payload["sections"])
+    assert "99999" not in blob  # no future observation value leaks in
+    assert "-99999" not in blob  # no future flow value leaks in
+    pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
+    nifty = next(i for i in pulse["items"] if i["text"].startswith("NIFTY 50"))
+    assert nifty["value"] == "25,000.00"
+    news = next(s for s in payload["sections"] if s["key"] == "regulatory_news")
+    assert not any("tomorrow" in i["text"] for i in news["items"])
+
+
+def test_rss_rfc2822_parsed_as_real_timezone():
+    # RFC 2822 with a real offset converts to IST correctly.
+    iso = bb.to_ist_iso("Wed, 14 Oct 2026 10:00:00 +0000")
+    assert iso is not None and iso.startswith("2026-10-14T15:30") and iso.endswith("+05:30")
+    iso = bb.to_ist_iso("Wed, 14 Oct 2026 10:00:00 +0530")
+    assert iso is not None and iso.startswith("2026-10-14T10:00") and iso.endswith("+05:30")
+
+
+def test_pms_implausible_returns_rejected_and_flagged(repo):
+    repo.replace_pms_universe(
+        "2026-09-30", [{"apmi_id": "p1", "name": "Prov A"}],
+        [
+            {"provider": "Prov A", "strategy_name": "Sane Strat", "strategy_type": "t1",
+             "service_type": "s1", "as_on": "2026-09-30", "ia_id": "ia1",
+             "aum_crore": 100.0, "return_1m": 2.5},
+            {"provider": "Prov A", "strategy_name": "Ametra FactorShields", "strategy_type": "t1",
+             "service_type": "s1", "as_on": "2026-09-30", "ia_id": "ia2",
+             "aum_crore": 50.0, "return_1m": -101.08},
+            {"provider": "Prov A", "strategy_name": "Too Good", "strategy_type": "t1",
+             "service_type": "s1", "as_on": "2026-09-30", "ia_id": "ia3",
+             "aum_crore": 50.0, "return_1m": 150.0},
+        ],
+    )
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    pms = next(s for s in payload["sections"] if s["key"] == "pms")
+    texts = [i["text"] for i in pms["items"]]
+    assert not any("FactorShields" in t for t in texts)
+    assert not any("Too Good" in t for t in texts)
+    assert any("Sane Strat" in t for t in texts)
+    # Flagged in data health.
+    flags = payload["data_health"]
+    assert len(flags) == 2
+    assert {f["strategy"] for f in flags} == {"Ametra FactorShields", "Too Good"}
+    assert all(f["kind"] == "rejected_pms_return" for f in flags)
+    assert all("|1M return| > 100%" in f["reason"] for f in flags)
+    # Rejected strategy named in the PMS note.
+    assert "rejected" in (pms["note"] or "").lower()
+
+
+def test_pms_benchmark_column_hidden_when_none_on_file(repo):
+    repo.replace_pms_universe(
+        "2026-09-30", [{"apmi_id": "p1", "name": "Prov A"}],
+        [{"provider": "Prov A", "strategy_name": "Strat 1", "strategy_type": "t1",
+          "service_type": "s1", "as_on": "2026-09-30", "ia_id": "ia1",
+          "aum_crore": 100.0, "return_1m": 2.5}],
+    )
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    pms = next(s for s in payload["sections"] if s["key"] == "pms")
+    assert pms["items"], "expected PMS items"
+    assert all(i["benchmark"] is None for i in pms["items"])
+    assert not any("not on file" in i["text"] for i in pms["items"])
+    assert pms.get("benchmarks_hidden") is True
+
+
+def test_regulatory_duplicate_collapse_by_title_and_entity(repo):
+    now = datetime.now(UTC)
+    repo.upsert_news([
+        {"id": "d1", "source_id": "sebi", "source_name": "SEBI",
+         "category": "regulator", "title": "SEBI issues circular on mutual fund TER disclosure",
+         "link": "https://sebi.gov.in/a", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "d2", "source_id": "sebi", "source_name": "SEBI",
+         "category": "regulator", "title": "SEBI issues circular on mutual fund TER disclosure!",
+         "link": "https://sebi.gov.in/b", "published_at": (now - timedelta(hours=2)).isoformat()},
+        {"id": "d3", "source_id": "rbi_press", "source_name": "RBI Press Releases",
+         "category": "regulator", "title": "SEBI issues circular on mutual fund TER disclosure",
+         "link": "https://rbi.org.in/c", "published_at": (now - timedelta(hours=3)).isoformat()},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    news = next(s for s in payload["sections"] if s["key"] == "regulatory_news")
+    titles = [i["text"] for i in news["items"]]
+    assert sum("TER disclosure" in t for t in titles) == 1
+
+
+def test_regulatory_notice_filtering(repo):
+    now = datetime.now(UTC)
+    repo.upsert_news([
+        {"id": "x1", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Attachment order against XYZ Ltd for recovery of dues",
+         "link": "https://sebi.gov.in/x1", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "x2", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Demand notice issued to ABC Broking in adjudication proceedings",
+         "link": "https://sebi.gov.in/x2", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "x3", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Recovery proceedings against a mutual fund distributor for mis-selling",
+         "link": "https://sebi.gov.in/x3", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "x4", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Circular: framework for portfolio managers' fee disclosure",
+         "link": "https://sebi.gov.in/x4", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "x5", "source_id": "rbi_press", "source_name": "RBI Press Releases", "category": "regulator",
+         "title": "RBI keeps repo rate unchanged at 5.5%",
+         "link": "https://rbi.org.in/x5", "published_at": (now - timedelta(hours=1)).isoformat()},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    news = next(s for s in payload["sections"] if s["key"] == "regulatory_news")
+    titles = [i["text"] for i in news["items"]]
+    assert not any("Attachment order" in t for t in titles)  # SEBI notice, not MF/PMS
+    assert not any("Demand notice" in t for t in titles)  # adjudication appeal, not MF/PMS
+    assert any("mutual fund distributor" in t for t in titles)  # notice about intermediaries: kept
+    assert any("portfolio managers" in t for t in titles)  # circular: kept
+    assert any("repo rate" in t for t in titles)  # RBI policy: kept
+    assert len(news["items"]) <= 8
+
+
+def test_regulatory_text_trimmed_at_sentence_boundary():
+    long_title = ("SEBI has issued a new circular on disclosure norms for mutual funds. "
+                  "The circular requires AMCs to publish scheme-level TER every month. "
+                  "It also mandates portfolio disclosures twice a month for all schemes. "
+                  "Industry participants must comply within ninety days of issuance.")
+    trimmed = bb.trim_sentence(long_title, limit=160)
+    assert len(trimmed) <= 161
+    assert trimmed.endswith("…")
+    # Never cut mid-sentence: the text ends at a full stop.
+    assert trimmed[:-1].rstrip().endswith(".")
+    assert "…" not in trimmed[:-1]
+    # Short text passes through untouched.
+    assert bb.trim_sentence("RBI keeps repo rate unchanged.") == "RBI keeps repo rate unchanged."
+
+
+def test_single_india_10y_value_single_source(repo):
+    repo.upsert_observations([
+        {"instrument_id": "YIELD:IN:10Y", "observed_at": "2026-10-13T10:00:00+00:00", "value_numeric": 6.80},
+        {"instrument_id": "YIELD:IN:10Y", "observed_at": "2026-10-14T10:00:00+00:00", "value_numeric": 6.95},
+        {"instrument_id": "YIELD:IN:2Y", "observed_at": "2026-10-14T10:00:00+00:00", "value_numeric": 6.40},
+        {"instrument_id": "YIELD:US:10Y", "observed_at": "2026-10-14T10:00:00+00:00", "value_numeric": 4.10},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
+    curve = next(i for i in pulse["items"] if i["text"].startswith("India 10Y"))
+    spread = next(i for i in pulse["items"] if "India-US 10Y spread" in i["text"])
+    # One 10Y value, same source and date on both rows; spread reuses it.
+    assert "6.95%" in curve["text"] and "as of 2026-10-14" in curve["text"]
+    assert "6.80%" not in curve["text"] and "6.80%" not in spread["text"]
+    assert "as of 2026-10-14" in spread["text"]
+    assert "India 6.95%" in spread["text"]  # same 10Y figure as the curve row
+    assert "+285 bps" in spread["text"]
+    assert curve["source"] == "India G-Sec Yields (FBIL / india_yields)"
+    assert "AMFI" not in (curve["source"] or "")
+
+
+def test_fii_dii_mtd_lines(repo):
+    repo.upsert_flows([
+        {"report_date": "2026-10-01", "category": "FII", "segment": "equity_cash",
+         "gross_buy": 1.0, "gross_sell": 1.0, "net": 100.0},
+        {"report_date": "2026-10-01", "category": "DII", "segment": "equity_cash",
+         "gross_buy": 1.0, "gross_sell": 1.0, "net": 200.0},
+        {"report_date": "2026-10-14", "category": "FII", "segment": "equity_cash",
+         "gross_buy": 1.0, "gross_sell": 1.0, "net": -1200.0},
+        {"report_date": "2026-10-14", "category": "DII", "segment": "equity_cash",
+         "gross_buy": 1.0, "gross_sell": 1.0, "net": 1500.0},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
+    fii = next(i for i in pulse["items"] if "Institutional flows" in i["text"])
+    assert "FII net -1,200 Cr" in fii["text"] and "DII net +1,500 Cr" in fii["text"]
+    # MTD = Oct 1 + Oct 14 rows: FII -1100, DII +1700.
+    assert "MTD: FII net -1,100 Cr" in fii["text"]
+    assert "DII net +1,700 Cr" in fii["text"]
+
+
+def test_advisor_sections_capped_at_eight(repo):
+    _seed_market(repo)
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    for key in ("client_actions", "fund_movers", "cost_manager_changes", "regulatory_news", "market_pulse"):
+        section = next(s for s in payload["sections"] if s["key"] == key)
+        assert len(section["items"]) <= 8, key
+
+
+def test_items_carry_as_of_and_source_link(repo):
+    _seed_market(repo)
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    for section in payload["sections"]:
+        if section["key"] == "data_freshness":
+            continue
+        for item in section["items"]:
+            assert item["as_of"], (section["key"], item["text"][:40])
+            assert item["source"], (section["key"], item["text"][:40])
+
+
+def test_date_only_as_of_has_no_fake_midnight(repo):
+    repo.upsert_flows([
+        {"report_date": "2026-10-14", "category": "FII", "segment": "equity_cash",
+         "gross_buy": 1.0, "gross_sell": 1.0, "net": -100.0},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
+    fii = next(i for i in pulse["items"] if "Institutional flows" in i["text"])
+    assert fii["as_of"] == "2026-10-14"  # date-only, no fake 00:00 IST
+
+
+def test_screening_source_dead_link_backfilled(repo):
+    # The seeded SRC_SCREENING row used to point at a 404. Existing volumes
+    # must be migrated to the live route by the idempotent seed path.
+    from app.backoffice import db as backoffice_db
+
+    conn = repo._conn()
+    try:
+        conn.execute(
+            "UPDATE source_registry SET official_docs_url = 'https://fundhorizon.in/internal/screening' "
+            "WHERE id = 'SRC_SCREENING'"
+        )
+        with conn:
+            backoffice_db._seed_default_registries(conn)
+        row = conn.execute(
+            "SELECT official_docs_url FROM source_registry WHERE id = 'SRC_SCREENING'"
+        ).fetchone()
+        assert row["official_docs_url"] == "https://fundhorizon.in/backoffice/research?tab=screening"
+        assert "internal/screening" not in row["official_docs_url"]
+    finally:
+        conn.close()
+
+
+def test_no_dead_screening_links_anywhere():
+    # Both backend occurrences of the dead link must be gone.
+    from pathlib import Path
+
+    app_dir = Path(__file__).resolve().parents[1] / "app"
+    hits = [
+        str(p) for p in app_dir.rglob("*.py")
+        if "fundhorizon.in/internal/screening" in p.read_text()
+    ]
+    assert hits == []
+
+
+def test_fx_stale_flagged_after_one_trading_day(repo):
+    repo.upsert_observations([
+        {"instrument_id": "FX:USDINR", "observed_at": "2026-10-09T10:00:00+00:00", "value_numeric": 88.00},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
+    fx = next(i for i in pulse["items"] if i["text"].startswith("USD/INR"))
+    assert fx["stale"] is True  # 2026-10-09 (Fri) -> 2026-10-14 (Wed): 3 trading days
+    repo.upsert_observations([
+        {"instrument_id": "FX:USDINR", "observed_at": "2026-10-14T10:00:00+00:00", "value_numeric": 88.60},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
+    fx = next(i for i in pulse["items"] if i["text"].startswith("USD/INR"))
+    assert fx["stale"] is False

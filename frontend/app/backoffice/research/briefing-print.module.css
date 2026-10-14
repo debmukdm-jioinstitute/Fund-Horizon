@@ -3,7 +3,21 @@
    (sidebar aside, nav, top header) is hidden via a body.print-briefing
    guard in globals.css, toggled by the briefing tab. */
 
+/* Print-only header (generated_at in IST + view name); hidden on screen. */
+.printHeader {
+  display: none;
+}
+
 @media print {
+  /* Item 13: print header shows generated_at in IST (DD MMM YYYY, HH:mm IST)
+     and the view name. */
+  .printHeader {
+    display: block;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #999;
+  }
+
   /* Hide interactive controls inside the briefing view */
   .noPrint {
     display: none !important;
@@ -12,6 +26,12 @@
   /* Expand cards: no shadow, keep them whole on a page */
   .card {
     box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  /* Item 13: never split a section or an item across pages; no forced
+     blank gaps (no page-break-before/after anywhere). */
+  .item {
     break-inside: avoid;
   }
 }

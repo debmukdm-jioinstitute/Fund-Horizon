@@ -12,7 +12,7 @@ import {
 import { fieldErrors, pastDueWarning, taskSchema } from "../../lib/crmSchemas";
 import { ApiError } from "../../lib/api";
 
-const KINDS: ActivityKind[] = ["call", "meeting", "note", "followup", "email", "review"];
+const KINDS: ActivityKind[] = ["call", "meeting", "note", "followup", "email", "whatsapp", "review"];
 
 function startOfDay(d: Date): Date {
   const c = new Date(d);
@@ -34,6 +34,7 @@ function kindChip(kind: ActivityKind) {
     followup: "bg-amber-100 text-amber-600",
     email: "bg-navy-50 text-navy-700",
     review: "bg-rose-100 text-rose-700",
+    whatsapp: "bg-teal-50 text-teal-800",
   };
   return (
     <span className={`text-xs font-bold px-2 py-0.5 rounded-full uppercase ${tones[kind]}`}>{kind}</span>

@@ -32,6 +32,7 @@ from app import db_crm_products
 from app.api.auth import _hash_password, require_role
 from app.api.crm_page import PageParams, paginate_rows, send_total
 from app.repo_crm_core import ensure_products_hardening, get_crm_repository
+from app.repo_crm_extras import find_duplicates
 
 _EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -707,6 +708,12 @@ def import_clients(body: ImportIn, me: Me):
             continue
         if store.get_customer_by_email(email) is not None:
             skipped.append({"email": email, "reason": "duplicate email"})
+            continue
+        mobile_in = _normalize_mobile(row.mobile)
+        if mobile_in and any(
+            "mobile" in m["reasons"] for m in find_duplicates(name=None, email=None, mobile=mobile_in, pan_last4=None, viewer_rm_id=None)
+        ):
+            skipped.append({"email": email, "reason": "duplicate mobile"})
             continue
 
         rm_id: str | None = None

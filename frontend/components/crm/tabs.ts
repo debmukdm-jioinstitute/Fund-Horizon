@@ -2,8 +2,9 @@
 export const CRM_TABS = [
   ["home", "Home"],
   ["households", "Households"],
+  ["contacts", "Contacts"],
   ["leads", "Leads"],
-  ["pipelines", "Pipelines"],
+  ["opportunities", "Opportunities"],
   ["activities", "Tasks"],
   ["cases", "Grievances"],
   ["compliance", "Compliance"],
@@ -15,7 +16,8 @@ export type CrmTabId = (typeof CRM_TABS)[number][0];
 /** Names the Home cards use for their jump links, mapped to real tab ids. */
 const TAB_ALIASES: Record<string, CrmTabId> = {
   "crm-home": "home",
-  pipeline: "pipelines",
+  pipeline: "opportunities",
+  pipelines: "opportunities",
   renewals: "activities",
   maturities: "activities",
 };

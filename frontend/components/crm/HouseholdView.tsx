@@ -55,9 +55,12 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function HouseholdView({
   householdId,
   onNotFound,
+  showTitle = true,
 }: {
   householdId: string;
   onNotFound?: () => void;
+  /** The record page shows the name, notes and counts in its own header. */
+  showTitle?: boolean;
 }) {
   const [detail, setDetail] = useState<HouseholdDetail | null>(null);
   const [products, setProducts] = useState<ProductRows | null>(null);
@@ -237,6 +240,7 @@ export default function HouseholdView({
     <div className="space-y-4">
       <div className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+          {showTitle ? (
           <div>
             <h2 className="text-lg font-bold text-navy-950">{household.name}</h2>
             <p className="text-xs text-navy-600">
@@ -246,6 +250,9 @@ export default function HouseholdView({
             </p>
             {household.notes && <p className="text-xs text-navy-600 mt-2">{household.notes}</p>}
           </div>
+          ) : (
+            <h3 className="text-sm font-bold text-navy-950">Members</h3>
+          )}
           <form onSubmit={(e) => handleAddMember(e)} className="flex flex-wrap items-end gap-2">
             <div>
               <label className="block text-xs font-semibold text-navy-700 mb-1">

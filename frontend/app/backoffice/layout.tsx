@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
+import CommandPalette from "@/components/crm/CommandPalette";
 import { useAuth } from "@/components/AuthContext";
 import { useTheme } from "@/components/terminal/ThemeContext";
 
@@ -156,10 +157,8 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
   const { theme, toggleTheme } = useTheme();
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [istTime, setIstTime] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Maintain Live IST Clock
   useEffect(() => {
@@ -194,12 +193,6 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
   }, []);
 
   useEffect(() => {
-    if (searchOpen) {
-      setTimeout(() => searchInputRef.current?.focus(), 50);
-    }
-  }, [searchOpen]);
-
-  useEffect(() => {
     if (!loading) {
       if (!customer) {
         router.replace("/login");
@@ -222,12 +215,6 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       </div>
     );
   }
-
-  const filteredNavItems = NAV_ITEMS.filter((item) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return item.label.toLowerCase().includes(q) || item.description.toLowerCase().includes(q) || item.href.toLowerCase().includes(q);
-  });
 
   return (
     <div className="min-h-screen flex bg-[#FFFFFF] dark:bg-[#10151C] text-[#172033] dark:text-[#EDF2F7]">
@@ -384,73 +371,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
         </main>
       </div>
 
-      {/* Quick Search Dialog Modal */}
-      {searchOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Quick search modal"
-          className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/40 backdrop-blur-xs"
-          onClick={() => setSearchOpen(false)}
-        >
-          <div
-            className="w-full max-w-lg bg-[#FFFFFF] dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] rounded shadow-lg overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center gap-2">
-              <svg className="w-4 h-4 text-[#536176] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Jump to terminal module (Overview, PMS, Macro, PCR…)"
-                className="w-full text-[13px] bg-transparent text-[#172033] dark:text-[#EDF2F7] placeholder-[#536176] dark:placeholder-[#A8B4C4] focus:outline-none"
-              />
-              <button
-                onClick={() => setSearchOpen(false)}
-                className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] px-1.5 py-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]"
-              >
-                ESC
-              </button>
-            </div>
-
-            <div className="max-h-72 overflow-y-auto p-1 divide-y divide-[#E4E9EF]/60 dark:divide-[#2B3644]/60">
-              {filteredNavItems.length === 0 ? (
-                <div className="p-4 text-center text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                  No terminal modules matching &quot;{searchQuery}&quot;
-                </div>
-              ) : (
-                filteredNavItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => {
-                      setSearchOpen(false);
-                      setSearchQuery("");
-                    }}
-                    className="flex items-center justify-between p-2.5 rounded hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition-colors group"
-                  >
-                    <div>
-                      <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] group-hover:text-[#006F64] dark:group-hover:text-[#75E1CE]">
-                        {item.label}
-                      </div>
-                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-                        {item.description}
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
-                      {item.href}
-                    </span>
-                  </Link>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={NAV_ITEMS} />
     </div>
   );
 }

@@ -212,7 +212,7 @@ export interface PipelineSummary {
   closed?: Record<"won" | "lost", { count: number; value: number }>;
 }
 
-export type ActivityKind = "call" | "meeting" | "note" | "followup" | "email" | "review";
+export type ActivityKind = "call" | "meeting" | "note" | "followup" | "email" | "review" | "whatsapp";
 
 export interface Activity {
   id: string;

@@ -34,6 +34,7 @@ from app.models.crm_core import (
     ActivityModel,
     AuditLogModel,
     CaseModel,
+    CrmListViewModel,
     HouseholdMemberModel,
     HouseholdModel,
     LeadModel,
@@ -50,6 +51,7 @@ CRM_CORE_TABLES = [
     ActivityModel.__table__,
     CaseModel.__table__,
     AuditLogModel.__table__,
+    CrmListViewModel.__table__,
 ]
 
 # W2 product tables get audit columns + unique business keys once they exist.
@@ -257,6 +259,7 @@ def _activity_visible(rm_id: str):
         _scope_customers(ActivityModel.customer_id, rm_id),
         ActivityModel.opportunity_id.in_(select(OpportunityModel.id).where(_opp_visible(rm_id))),
         ActivityModel.case_id.in_(select(CaseModel.id).where(_case_visible(rm_id))),
+        ActivityModel.lead_id.in_(select(LeadModel.id).where(LeadModel.assigned_rm_id == rm_id)),
     )
 
 
@@ -478,6 +481,7 @@ class CrmCoreRepository:
         self,
         *,
         status: str | None = None,
+        statuses: tuple[str, ...] = (),
         assigned_rm_id: str | None = None,
         viewer_rm_id: str | None = None,
         page: Page | None = None,
@@ -486,6 +490,8 @@ class CrmCoreRepository:
             stmt = select(LeadModel).order_by(LeadModel.created_at.desc())
             if status is not None:
                 stmt = stmt.where(LeadModel.status == status)
+            if statuses:
+                stmt = stmt.where(LeadModel.status.in_(statuses))
             if assigned_rm_id is not None:
                 stmt = stmt.where(LeadModel.assigned_rm_id == assigned_rm_id)
             if viewer_rm_id is not None:  # RMs see only their own leads; the unassigned pool is admin-only
@@ -659,6 +665,7 @@ class CrmCoreRepository:
         customer_id: str | None = None,
         opportunity_id: str | None = None,
         case_id: str | None = None,
+        lead_id: str | None = None,
         policy_id: str | None = None,
         fd_id: str | None = None,
         due_at: str | None = None,
@@ -669,7 +676,7 @@ class CrmCoreRepository:
             return _create(
                 s, ActivityModel, "activity", actor_id,
                 kind=kind, subject=subject, body=body, household_id=household_id, customer_id=customer_id,
-                opportunity_id=opportunity_id, case_id=case_id, policy_id=policy_id, fd_id=fd_id, due_at=due_at,
+                opportunity_id=opportunity_id, case_id=case_id, lead_id=lead_id, policy_id=policy_id, fd_id=fd_id, due_at=due_at,
                 done_at=None, assigned_rm_id=assigned_rm_id,
             )
 
@@ -686,10 +693,12 @@ class CrmCoreRepository:
         customer_id: str | None = None,
         opportunity_id: str | None = None,
         case_id: str | None = None,
+        lead_id: str | None = None,
         policy_id: str | None = None,
         fd_id: str | None = None,
         done: bool | None = None,
         due_before: str | None = None,
+        overdue_before: str | None = None,
         viewer_rm_id: str | None = None,
         page: Page | None = None,
     ) -> list[dict[str, Any]]:
@@ -705,6 +714,8 @@ class CrmCoreRepository:
                 stmt = stmt.where(ActivityModel.opportunity_id == opportunity_id)
             if case_id is not None:
                 stmt = stmt.where(ActivityModel.case_id == case_id)
+            if lead_id is not None:
+                stmt = stmt.where(ActivityModel.lead_id == lead_id)
             if policy_id is not None:
                 stmt = stmt.where(ActivityModel.policy_id == policy_id)
             if fd_id is not None:
@@ -715,6 +726,8 @@ class CrmCoreRepository:
                 stmt = stmt.where(ActivityModel.done_at.is_(None))
             if due_before is not None:
                 stmt = stmt.where(ActivityModel.due_at.isnot(None), ActivityModel.due_at <= due_before)
+            if overdue_before is not None:  # strictly before this date: "due before today (IST)"
+                stmt = stmt.where(ActivityModel.due_at.isnot(None), ActivityModel.due_at < overdue_before)
             if viewer_rm_id is not None:
                 stmt = stmt.where(_activity_visible(viewer_rm_id))
             return [_row(a) for a in _page(s, stmt, ActivityModel, page, ("subject", "body", "kind"))]
@@ -769,6 +782,7 @@ class CrmCoreRepository:
         statuses: tuple[str, ...] = (),
         customer_id: str | None = None,
         customer_ids: set[str] | None = None,
+        sla_before: str | None = None,
         viewer_rm_id: str | None = None,
         page: Page | None = None,
     ) -> list[dict[str, Any]]:
@@ -782,6 +796,8 @@ class CrmCoreRepository:
                 stmt = stmt.where(CaseModel.customer_id == customer_id)
             if customer_ids is not None:
                 stmt = stmt.where(CaseModel.customer_id.in_(customer_ids or {""}))
+            if sla_before is not None:  # SLA date strictly before this date
+                stmt = stmt.where(CaseModel.sla_due_at.isnot(None), CaseModel.sla_due_at < sla_before)
             if viewer_rm_id is not None:
                 stmt = stmt.where(_case_visible(viewer_rm_id))
             return [_row(c) for c in _page(s, stmt, CaseModel, page, ("subject", "body", "category"))]

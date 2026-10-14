@@ -3,17 +3,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  convertLead,
-  createLead,
-  fetchHouseholds,
-  fetchLeads,
-  LEAD_STATUSES,
-  patchLead,
-  type Household,
-  type Lead,
-} from "../../lib/crmApi";
+import { createLead, fetchLeads, LEAD_STATUSES, patchLead, type Lead } from "../../lib/crmApi";
+import { checkDuplicates, type DuplicateMatch } from "../../lib/crmListApi";
 import { fieldErrors, leadSchema } from "../../lib/crmSchemas";
+import ConvertLeadDialog from "./ConvertLeadDialog";
+import DuplicateDialog from "./DuplicateDialog";
 
 const STATUS_LABELS: Record<string, string> = {
   new: "New",
@@ -96,15 +90,8 @@ export default function LeadsTab() {
   const [createError, setCreateError] = useState<string | null>(null);
 
   const [converting, setConverting] = useState<Lead | null>(null);
-  const [householdName, setHouseholdName] = useState("");
-  const [password, setPassword] = useState("");
-  const [invite, setInvite] = useState(false);
-  const [existingHousehold, setExistingHousehold] = useState("");
-  const [households, setHouseholds] = useState<Household[]>([]);
   const [fieldErrs, setFieldErrs] = useState<Record<string, string>>({});
-  const [convertError, setConvertError] = useState<string | null>(null);
-  const [convertResult, setConvertResult] = useState<{ householdId: string; tempPassword?: string } | null>(null);
-  const [convertBusy, setConvertBusy] = useState(false);
+  const [dupes, setDupes] = useState<{ matches: DuplicateMatch[]; blocking: boolean } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -122,11 +109,7 @@ export default function LeadsTab() {
     load();
   }, [load]);
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const errs = fieldErrors(leadSchema, { name, email, mobile });
-    setFieldErrs(errs ?? {});
-    if (errs) return;
+  const doCreate = async (allowDuplicates: boolean) => {
     setCreating(true);
     setCreateError(null);
     try {
@@ -136,6 +119,7 @@ export default function LeadsTab() {
         mobile: mobile.trim() || undefined,
         source,
         notes: notes.trim() || undefined,
+        allow_duplicates: allowDuplicates || undefined,
       });
       setLeads((prev) => [created, ...prev]);
       setName("");
@@ -143,11 +127,31 @@ export default function LeadsTab() {
       setMobile("");
       setNotes("");
       setSource("other");
+      setDupes(null);
     } catch (e) {
       setCreateError(e instanceof Error ? e.message : "Could not create the lead");
     } finally {
       setCreating(false);
     }
+  };
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errs = fieldErrors(leadSchema, { name, email, mobile });
+    setFieldErrs(errs ?? {});
+    if (errs) return;
+    setCreating(true);
+    try {
+      const d = await checkDuplicates({ name: name.trim(), email: email.trim() || undefined, mobile: mobile.trim() || undefined });
+      if (d.matches.length > 0) {
+        setDupes({ matches: d.matches, blocking: d.blocking });
+        setCreating(false);
+        return;
+      }
+    } catch {
+      /* the server enforces duplicates too; carry on */
+    }
+    await doCreate(false);
   };
 
   const handleStatusChange = async (lead: Lead, status: string) => {
@@ -160,40 +164,7 @@ export default function LeadsTab() {
     }
   };
 
-  const openConvert = (lead: Lead) => {
-    setConverting(lead);
-    setHouseholdName(`${lead.name.split(" ")[0] ?? lead.name} family`);
-    setPassword("");
-    setInvite(false);
-    setExistingHousehold("");
-    setConvertError(null);
-    setConvertResult(null);
-    fetchHouseholds().then(setHouseholds).catch(() => setHouseholds([]));
-  };
-
-  const handleConvert = async () => {
-    if (!converting) return;
-    setConvertBusy(true);
-    setConvertError(null);
-    try {
-      const res = await convertLead(converting.id, {
-        household_id: existingHousehold || undefined,
-        household_name: existingHousehold ? undefined : householdName.trim() || undefined,
-        invite_to_portal: invite,
-        password: invite ? password || undefined : undefined,
-      });
-      setConvertResult({ householdId: res.household_id, tempPassword: res.temp_password });
-      setLeads((prev) =>
-        prev.map((l) =>
-          l.id === converting.id ? { ...l, status: "converted", converted_household_id: res.household_id } : l,
-        ),
-      );
-    } catch (e) {
-      setConvertError(e instanceof Error ? e.message : "Could not convert the lead");
-    } finally {
-      setConvertBusy(false);
-    }
-  };
+  const openConvert = (lead: Lead) => setConverting(lead);
 
   const columns = LEAD_STATUSES.map((status) => ({
     status,
@@ -310,128 +281,23 @@ export default function LeadsTab() {
       )}
 
       {converting && (
-        <div className="fixed inset-0 z-50 bg-navy-950/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-md p-6 space-y-4">
-            <h3 className="text-base font-bold text-navy-950">
-              Convert lead: {converting.name}
-            </h3>
-            {convertResult ? (
-              <div className="space-y-3">
-                <div className="p-4 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900">
-                  <div className="font-bold mb-1">
-                    {existingHousehold ? "Added to the household." : "Customer and household created."}
-                  </div>
-                  <Link className="underline font-semibold" href={`/backoffice/crm/households/${convertResult.householdId}`}>
-                    Open household
-                  </Link>
-                  {convertResult.tempPassword ? (
-                    <div className="mt-2">
-                      <div className="font-semibold">Temporary password (share once):</div>
-                      <div className="font-mono font-bold text-sm break-all mt-1 select-all">
-                        {convertResult.tempPassword}
-                      </div>
-                      <div className="text-xs mt-1">
-                        The customer should set their own password after the first sign-in.
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="mt-2">No portal login was created.</div>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setConverting(null)}
-                  className="w-full px-3 py-2 text-xs font-bold bg-navy-900 hover:bg-navy-800 text-white rounded-xl transition"
-                >
-                  Done
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="text-xs text-navy-500">
-                  This creates the customer record and a household (or adds them to an existing one) and marks the lead
-                  as converted. Conversion cannot be undone. Only an email or a mobile number is needed.
-                </p>
-                <div>
-                  <label className="block text-xs font-semibold text-navy-700 mb-1" htmlFor="convert-household">
-                    Add to existing household <span className="font-normal text-navy-600">(optional)</span>
-                  </label>
-                  <select
-                    id="convert-household"
-                    value={existingHousehold}
-                    onChange={(e) => setExistingHousehold(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  >
-                    <option value="">Create a new household</option>
-                    {households.map((h) => (
-                      <option key={h.id} value={h.id}>
-                        {h.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {!existingHousehold && (
-                  <div>
-                    <label className="block text-xs font-semibold text-navy-700 mb-1">Household name</label>
-                    <input
-                      value={householdName}
-                      onChange={(e) => setHouseholdName(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                  </div>
-                )}
-                <label className="flex items-start gap-2 text-xs text-navy-800">
-                  <input
-                    type="checkbox"
-                    checked={invite}
-                    onChange={(e) => setInvite(e.target.checked)}
-                    className="mt-0.5"
-                  />
-                  <span>
-                    <span className="font-semibold">Invite to portal</span>
-                    <span className="block text-navy-600">Creates a login for the client. Leave unticked to keep them as a record only.</span>
-                  </span>
-                </label>
-                {invite && (
-                  <div>
-                    <label className="block text-xs font-semibold text-navy-700 mb-1">
-                      Initial password <span className="font-normal text-navy-600">(optional — a temporary one is generated if left blank)</span>
-                    </label>
-                    <input
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      type="password"
-                      autoComplete="new-password"
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                  </div>
-                )}
-                {convertError && (
-                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
-                    {convertError}
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setConverting(null)}
-                    className="flex-1 px-3 py-2 text-xs font-semibold bg-navy-50 hover:bg-navy-100 text-navy-700 rounded-xl transition"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleConvert}
-                    disabled={convertBusy}
-                    className="flex-1 px-3 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-xl transition"
-                  >
-                    {convertBusy ? "Converting…" : "Convert lead"}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <ConvertLeadDialog
+          lead={converting}
+          onClose={() => setConverting(null)}
+          onConverted={(res) =>
+            setLeads((prev) =>
+              prev.map((l) => (l.id === converting.id ? { ...l, status: "converted", converted_household_id: res.household_id } : l)),
+            )
+          }
+        />
+      )}
+      {dupes && (
+        <DuplicateDialog
+          matches={dupes.matches}
+          blocking={dupes.blocking}
+          onCancel={() => setDupes(null)}
+          onContinue={() => void doCreate(true)}
+        />
       )}
     </div>
   );

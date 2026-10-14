@@ -46,6 +46,7 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice.screening.service import ScreeningService
+from app.backoffice.compare import build_compare_payload
 from app.backoffice.service import BackofficeService
 from app.data.loader import data_dir, load_metrics, load_nav
 from app.db import get_repository
@@ -562,6 +563,19 @@ def backoffice_mf_manager_profile(name: Annotated[str, Query(min_length=2, max_l
         })
     funds.sort(key=lambda f: f["manager_start"] or "9999")
     return {"data": {"name": profile["name"] if profile else name, "profile": profile, "funds": funds}}
+
+
+@router.get("/compare")
+def backoffice_compare(
+    staff: Annotated[dict, Depends(require_staff)],
+    type: str = Query(..., pattern="^(pms|mf)$"),
+    ids: str = Query(..., description="Comma-separated ids (2–4)"),
+):
+    """Side-by-side compare for PMS strategies or MF schemes (staff only)."""
+    id_list = [i.strip() for i in ids.split(",") if i.strip()]
+    if len(id_list) < 2 or len(id_list) > 4:
+        raise HTTPException(422, "Provide between 2 and 4 ids to compare.")
+    return build_compare_payload(_REPO, type, id_list)  # type: ignore[arg-type]
 
 
 @router.get("/mutual-funds/tracker")

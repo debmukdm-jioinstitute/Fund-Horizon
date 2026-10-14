@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { METRICS, type MetricDef } from "@/lib/metrics/registry";
 import { SOURCES, type SourceKey } from "@/lib/metrics/sources";
 
@@ -48,8 +49,41 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
   const instanceId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const popRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number; maxH: number } | null>(null);
 
   const def: MetricDef | undefined = METRICS[metric];
+
+  // Fixed + portaled so table/overflow ancestors never clip it; clamp into viewport.
+  useLayoutEffect(() => {
+    if (!isOpen) {
+      setPos(null);
+      return;
+    }
+    function place() {
+      const btn = containerRef.current;
+      const pop = popRef.current;
+      if (!btn || !pop) return;
+      const r = btn.getBoundingClientRect();
+      const m = 8;
+      const w = pop.offsetWidth;
+      const h = pop.offsetHeight;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const left = Math.max(m, Math.min(r.left + r.width / 2 - w / 2, vw - w - m));
+      const above = r.top - m;
+      const below = vh - r.bottom - m;
+      const top = h <= above || above >= below ? Math.max(m, r.top - m - Math.min(h, above)) : r.bottom + m;
+      setPos({ top, left, maxH: Math.max(120, h <= above || above >= below ? above : below) - m });
+    }
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -68,7 +102,8 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
     }
 
     function handleOutsideClick(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const t = e.target as Node;
+      if (containerRef.current && !containerRef.current.contains(t) && !popRef.current?.contains(t)) {
         setIsOpen(false);
       }
     }
@@ -221,7 +256,11 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
           </div>
 
           {/* Desktop popover (>= sm) */}
-          <div className="hidden sm:block absolute z-50 left-1/2 -translate-x-1/2 bottom-full mb-2 w-80 rounded-xl bg-white dark:bg-navy-900 border border-navy-200 dark:border-navy-800 p-4 shadow-xl space-y-2.5 text-left text-xs leading-normal">
+          {createPortal(
+          <div
+            ref={popRef}
+            style={{ top: pos?.top ?? 0, left: pos?.left ?? 0, maxHeight: pos?.maxH, visibility: pos ? "visible" : "hidden" }}
+            className="hidden sm:block fixed overflow-y-auto z-50 w-80 rounded-xl bg-white dark:bg-navy-900 border border-navy-200 dark:border-navy-800 p-4 shadow-xl space-y-2.5 text-left text-xs leading-normal">
             {/* 1. Label (unit) */}
             <div className="flex items-center justify-between border-b border-navy-100 dark:border-navy-800 pb-1.5">
               <span className="font-bold text-navy-900 dark:text-white">
@@ -298,7 +337,9 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
                 )}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
+          )}
         </>
       )}
     </div>

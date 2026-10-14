@@ -10,18 +10,28 @@ Conventions:
   calendar date (``YYYY-MM-DD``).
 - Missing data renders as "—" plus a reason. Numeric checks always use
   ``is not None``; 0 is a legitimate value.
-- Every item carries ``as_of`` (ISO with offset) and ``source`` provenance.
+- Every item carries ``as_of`` (IST ISO when a time is known, else the bare
+  ``YYYY-MM-DD`` date — never a fabricated "00:00 IST") and ``source``
+  provenance. ``as_of`` is date-only when only a date is known.
 - Empty sections are still included with ``items: []`` and a ``note`` explaining
   why (the frontend collapses them). No top-level ``not_available`` list is used.
 - Change for market series is relative to the previous observation; change for
   fund NAVs / TER / managers is relative to the previous stored briefing
   (a strictly earlier ``brief_date``), so rebuilding the same date is idempotent.
+- Section keys are stable and selected by the frontend by key; see
+  ``build_briefing_payload`` for the contract. Advisor view order:
+  client_actions, fund_movers, cost_manager_changes, regulatory_news (max 8),
+  market_pulse (max 5 shown by the frontend); every advisor-relevant section is
+  capped at 8 items in the payload.
+- Number formatting is centralised in the ``fmt_*`` helpers below; the frontend
+  does display formatting, and backend values stay numeric where feasible.
 """
 from __future__ import annotations
 
 import math
 import re
 from datetime import UTC, datetime, timedelta
+from email.utils import parsedate_to_datetime
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -88,17 +98,26 @@ def to_ist_iso(raw: Any) -> str | None:
                 return datetime.strptime(text, "%Y-%m-%d").replace(tzinfo=IST).isoformat()
             except ValueError:
                 return None
-        for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%d %H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"):
-            try:
-                dt = datetime.strptime(text, fmt)
-                break
-            except ValueError:
-                continue
-        if dt is None:
-            try:
-                dt = datetime.fromisoformat(text)
-            except ValueError:
-                return None
+        # RSS feeds publish RFC 2822 dates ("Wed, 14 Oct 2026 10:00:00 +0530");
+        # parsedate_to_datetime keeps their real timezone.
+        try:
+            rfc = parsedate_to_datetime(text)
+        except (TypeError, ValueError, IndexError):
+            rfc = None
+        if rfc is not None:
+            dt = rfc
+        else:
+            for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%d %H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"):
+                try:
+                    dt = datetime.strptime(text, fmt)
+                    break
+                except ValueError:
+                    continue
+            if dt is None:
+                try:
+                    dt = datetime.fromisoformat(text)
+                except ValueError:
+                    return None
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=UTC)
     return dt.astimezone(IST).isoformat(timespec="seconds")
@@ -108,6 +127,133 @@ def ist_date_of(raw: Any) -> str | None:
     """IST calendar date (``YYYY-MM-DD``) of a stored timestamp, or None."""
     iso = to_ist_iso(raw)
     return iso[:10] if iso else None
+
+
+# ---------------------------------------------------------------------------
+# Number / money formatting — centralised here (the frontend does display
+# formatting; backend values stay numeric in the payload where feasible).
+# ---------------------------------------------------------------------------
+
+def fmt_pct(value: float | None, signed: bool = True) -> str:
+    """Percentages to 2 dp, e.g. ``+1.60%`` / ``-0.25%`` / ``0.00%``."""
+    if value is None:
+        return "—"
+    sign = "+" if signed and value > 0 else ""
+    return f"{sign}{value:,.2f}%"
+
+
+def fmt_bps(value: float | None) -> str:
+    """Basis points as integers, e.g. ``+285 bps``."""
+    if value is None:
+        return "—"
+    sign = "+" if value > 0 else ""
+    return f"{sign}{value:,.0f} bps"
+
+
+def fmt_number(value: float | None, digits: int = 2) -> str:
+    """Plain number to ``digits`` dp (FX 2 dp; USD/INR 4 dp)."""
+    if value is None:
+        return "—"
+    return f"{value:,.{digits}f}"
+
+
+def _indian_group(int_part: str) -> str:
+    """12,34,567-style grouping for the integer part of a number."""
+    neg = int_part.startswith("-")
+    digits = int_part[1:] if neg else int_part
+    if len(digits) <= 3:
+        return int_part
+    tail, head = digits[-3:], digits[:-3]
+    groups = []
+    while head:
+        groups.append(head[-2:])
+        head = head[:-2]
+    return ("-" if neg else "") + ",".join(reversed(groups)) + "," + tail
+
+
+def fmt_inr_crore(value: float | None, signed: bool = True) -> str:
+    """₹ Cr with Indian digit grouping, e.g. ``+1,23,456 Cr``."""
+    if value is None:
+        return "—"
+    sign = "+" if signed and value > 0 else ("-" if value < 0 else "")
+    return f"{sign}₹{_indian_group(f'{abs(value):,.0f}')} Cr"
+
+
+# ---------------------------------------------------------------------------
+# Timestamp helpers: real observation times, no fake "00:00 IST", future-guard
+# ---------------------------------------------------------------------------
+
+def _as_dt(raw: Any) -> datetime | None:
+    """Best-effort conversion of a stored timestamp to an aware IST datetime."""
+    if raw is None:
+        return None
+    if isinstance(raw, datetime):
+        dt = raw
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=UTC)
+        return dt.astimezone(IST)
+    iso = to_ist_iso(raw)
+    if not iso:
+        return None
+    try:
+        return datetime.fromisoformat(iso)
+    except ValueError:
+        return None
+
+
+def as_of_value(raw: Any) -> str | None:
+    """Item ``as_of``: the IST datetime when a time is known, else the bare
+    ``YYYY-MM-DD`` date — never a fabricated "00:00 IST"."""
+    if raw is None:
+        return None
+    text = str(raw).strip() if not isinstance(raw, datetime) else ""
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
+        return text
+    return to_ist_iso(raw)
+
+
+def _is_future(raw: Any, gen_dt: datetime | None) -> bool:
+    """True when the item's timestamp is after the briefing's ``generated_at``."""
+    if gen_dt is None:
+        return False
+    dt = _as_dt(raw)
+    return dt is not None and dt > gen_dt
+
+
+def _calendar_days_between(older: str, newer: str) -> int | None:
+    try:
+        d0 = datetime.strptime(older, "%Y-%m-%d").date()
+        d1 = datetime.strptime(newer, "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return None
+    return (d1 - d0).days
+
+
+def _trading_days_after(older: str, newer: str) -> int:
+    """Weekdays strictly after ``older`` up to and including ``newer``."""
+    try:
+        d0 = datetime.strptime(older, "%Y-%m-%d").date()
+        d1 = datetime.strptime(newer, "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return 0
+    n = 0
+    d = d0 + timedelta(days=1)
+    while d <= d1:
+        if d.weekday() < 5:
+            n += 1
+        d += timedelta(days=1)
+    return n
+
+
+def _stale_by_age(observed_at: Any, brief_date: str, rule: str, max_days: int) -> bool:
+    """Staleness flags: FX older than 1 trading day; screening/PMS older than 7 days."""
+    obs_day = ist_date_of(observed_at)
+    if not obs_day:
+        return False
+    if rule == "trading":
+        return _trading_days_after(obs_day, brief_date) > max_days
+    days = _calendar_days_between(obs_day, brief_date)
+    return days is not None and days > max_days
 
 
 # ---------------------------------------------------------------------------
@@ -139,6 +285,8 @@ def make_item(
     source: str | None = None,
     source_url: str | None = None,
     link: str | None = None,
+    stale: bool = False,
+    benchmark: str | None = None,
 ) -> dict[str, Any]:
     item: dict[str, Any] = {
         "text": text,
@@ -150,6 +298,8 @@ def make_item(
         "as_of": as_of,
         "source": source,
         "source_url": source_url,
+        "stale": stale,
+        "benchmark": benchmark,
     }
     if link is not None:
         item["link"] = link
@@ -206,40 +356,69 @@ def apply_so_what(metric_key: str, metrics: dict[str, Any]) -> str | None:
 # Repository access helpers (thin; SQL lives in BackofficeRepository)
 # ---------------------------------------------------------------------------
 
-def _latest_two(repo: Any, instrument_id: str) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
-    """Newest two observations with a numeric value, newest first."""
-    series = [o for o in repo.get_observations_series(instrument_id, limit=500) if o.get("value_numeric") is not None]
+def _latest_two(
+    repo: Any,
+    instrument_id: str,
+    not_after: datetime | None = None,
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    """Newest two observations with a numeric value, newest first.
+
+    ``not_after`` excludes observations timestamped after the briefing's
+    ``generated_at`` (no future-dated items in the brief).
+    """
+    series = [
+        o for o in repo.get_observations_series(instrument_id, limit=500)
+        if o.get("value_numeric") is not None
+        and not _is_future(o.get("observed_at"), not_after)
+    ]
     if not series:
         return None, None
     ordered = sorted(series, key=lambda o: str(o.get("observed_at") or ""), reverse=True)
     return ordered[0], (ordered[1] if len(ordered) > 1 else None)
 
 
-def _paired_same_day(repo: Any, a: str, b: str, window_days: int = 45) -> tuple[float, float, str] | None:
-    """Latest date on which BOTH series have an observation (never subtract across days)."""
-    start = (datetime.now(UTC) - timedelta(days=window_days)).strftime("%Y-%m-%d")
-    by_day = []
-    for inst in (a, b):
-        by_day.append(
-            {
-                (o.get("observed_at") or "")[:10]: o["value_numeric"]
-                for o in repo.get_observations_series(inst, start_date=start)
-                if o.get("value_numeric") is not None
-            }
-        )
-    common = sorted(set(by_day[0]) & set(by_day[1]))
-    if not common:
+def _obs_on_or_before(
+    repo: Any,
+    instrument_id: str,
+    day: str,
+    not_after: datetime | None = None,
+) -> dict[str, Any] | None:
+    """Latest non-future observation on or before IST calendar date ``day``."""
+    series = [
+        o for o in repo.get_observations_series(instrument_id, limit=500)
+        if o.get("value_numeric") is not None
+        and not _is_future(o.get("observed_at"), not_after)
+        and (ist_date_of(o.get("observed_at")) or "") <= day
+    ]
+    if not series:
         return None
-    day = common[-1]
-    return by_day[0][day], by_day[1][day], day
+    return sorted(series, key=lambda o: str(o.get("observed_at") or ""), reverse=True)[0]
+
+
+# (removed: _paired_same_day superseded by _obs_on_or_before, which reuses the
+# single India 10Y figure on the curve row for the spread row)
 
 
 def _source_lookup(repo: Any) -> dict[str, dict[str, Any]]:
     return {s["id"]: s for s in repo.list_sources()}
 
 
+# The instrument registry seed still maps the G-Sec yield curve to SRC_AMFI, but
+# the observations are written by SRC_IN_YIELDS (the india_yields collector).
+# Attribute the 10Y to FBIL / india_yields explicitly — never "AMFI NAV".
+_YIELD_SOURCE_OVERRIDE: dict[str, str] = {
+    "YIELD:IN:10Y": "SRC_IN_YIELDS",
+    "YIELD:IN:2Y": "SRC_IN_YIELDS",
+}
+_YIELD_SOURCE_LABEL = "India G-Sec Yields (FBIL / india_yields)"
+
+
 def _instrument_source(repo: Any, instrument_id: str, sources: dict[str, dict[str, Any]]) -> tuple[str | None, str | None]:
     """(source name, source url) for an instrument via the instrument registry."""
+    override = _YIELD_SOURCE_OVERRIDE.get(instrument_id)
+    if override is not None:
+        src = sources.get(override, {})
+        return _YIELD_SOURCE_LABEL, src.get("official_docs_url")
     try:
         instruments = {i["id"]: i for i in repo.list_instruments()}
     except Exception:  # noqa: BLE001 - registry read must never break the build
@@ -263,8 +442,11 @@ def _obs_item(
     metrics: dict[str, Any],
     digits: int = 2,
     pct_change: bool = True,
+    not_after: datetime | None = None,
+    stale_rule: tuple[str, int] | None = None,
+    brief_date: str | None = None,
 ) -> dict[str, Any] | None:
-    latest, prev = _latest_two(repo, instrument_id)
+    latest, prev = _latest_two(repo, instrument_id, not_after=not_after)
     if latest is None:
         return None
     value = float(latest["value_numeric"])
@@ -274,14 +456,21 @@ def _obs_item(
         change_pct = None
     src_name, src_url = _instrument_source(repo, instrument_id, sources)
     metrics[metric_key] = change_pct if pct_change else change
-    text = f"{label}: {value:,.{digits}f}{unit}"
+    stale = (
+        _stale_by_age(latest.get("observed_at"), brief_date, stale_rule[0], stale_rule[1])
+        if stale_rule and brief_date
+        else False
+    )
+    text = f"{label}: {fmt_number(value, digits)}{unit}"
     if change_pct is not None and pct_change:
-        text += f" ({change_pct:+.{digits}f}% day)"
+        text += f" ({fmt_pct(change_pct)} day)"
     elif change is not None and not pct_change:
-        text += f" ({change:+.{digits}f}{unit} day)"
+        # Item 14: keep the sign in the text (arrow + colour by sign on the UI).
+        chg_sign = "+" if change > 0 else ("−" if change < 0 else "")
+        text += f" ({chg_sign}{fmt_number(abs(change), digits)}{unit} day)"
     return make_item(
         text=text,
-        value=f"{value:,.{digits}f}{unit}",
+        value=f"{fmt_number(value, digits)}{unit}",
         change=change,
         change_pct=change_pct,
         direction=direction,
@@ -289,11 +478,23 @@ def _obs_item(
         as_of=to_ist_iso(latest.get("observed_at")),
         source=src_name,
         source_url=src_url,
+        stale=stale,
     )
 
 
-def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
-    """Max 8 items: indices, yields+slope, FX, VIX, FII/DII. Returns (items, missing labels)."""
+def build_market_pulse(
+    repo: Any,
+    generated_at: str | None = None,
+    brief_date: str | None = None,
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Max 8 items: indices, yields+slope, FX, VIX, FII/DII. Returns (items, missing labels).
+
+    Exactly ONE India 10Y value per brief: the latest non-future observation,
+    attributed to FBIL / india_yields (never "AMFI NAV"). The India-US spread
+    reuses that same 10Y figure against the latest US 10Y on or before its date.
+    """
+    brief_date = brief_date or ist_today()
+    gen_dt = _as_dt(generated_at) if generated_at else _as_dt(ist_now_iso())
     sources = _source_lookup(repo)
     metrics: dict[str, Any] = {}
     items: list[dict[str, Any]] = []
@@ -305,14 +506,18 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
         else:
             items.append(item)
     # Indices (day % change)
-    add(_obs_item(repo, sources, "INDEX:IN:NIFTY50", "NIFTY 50", "", "nifty_chg", metrics), "NIFTY 50")
-    add(_obs_item(repo, sources, "INDEX:IN:NIFTYBANK", "NIFTY Bank", "", "banknifty_chg", metrics), "NIFTY Bank")
-    add(_obs_item(repo, sources, "INDEX:IN:SENSEX", "SENSEX", "", "sensex_chg", metrics), "SENSEX")
+    add(_obs_item(repo, sources, "INDEX:IN:NIFTY50", "NIFTY 50", "", "nifty_chg", metrics,
+                  not_after=gen_dt, brief_date=brief_date), "NIFTY 50")
+    add(_obs_item(repo, sources, "INDEX:IN:NIFTYBANK", "NIFTY Bank", "", "banknifty_chg", metrics,
+                  not_after=gen_dt, brief_date=brief_date), "NIFTY Bank")
+    add(_obs_item(repo, sources, "INDEX:IN:SENSEX", "SENSEX", "", "sensex_chg", metrics,
+                  not_after=gen_dt, brief_date=brief_date), "SENSEX")
 
-    # India 10Y / 2Y with slope (day move in bps)
-    in10y = _latest_two(repo, "YIELD:IN:10Y")
-    in2y = _latest_two(repo, "YIELD:IN:2Y")
-    if in10y[0] is not None and in2y[0] is not None:
+    # India 10Y / 2Y with slope (day move in bps). ONE 10Y value per brief.
+    in10y = _latest_two(repo, "YIELD:IN:10Y", not_after=gen_dt)
+    in2y = _latest_two(repo, "YIELD:IN:2Y", not_after=gen_dt)
+    ten_y_date = ist_date_of(in10y[0].get("observed_at")) if in10y[0] is not None else None
+    if in10y[0] is not None and in2y[0] is not None and ten_y_date is not None:
         v10, v2 = float(in10y[0]["value_numeric"]), float(in2y[0]["value_numeric"])
         p10 = float(in10y[1]["value_numeric"]) if in10y[1] is not None else None
         p2 = float(in2y[1]["value_numeric"]) if in2y[1] is not None else None
@@ -327,9 +532,10 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
         d2 = (in2y[0].get("observed_at") or "")[:10]
         slope_bps = (v10 - v2) * 100.0 if d10 and d2 and abs((datetime.strptime(d10, "%Y-%m-%d") - datetime.strptime(d2, "%Y-%m-%d")).days) <= 10 else None
         metrics["slope_bps"] = slope_bps
-        slope_txt = f", 10Y-2Y slope {slope_bps:+.0f} bps" if slope_bps is not None else ", slope — (periods differ)"
-        move_txt = f"{move10_bps:+.0f}" if move10_bps is not None else "—"
-        text = f"India 10Y {v10:.2f}% / 2Y {v2:.2f}% ({move_txt} bps day){slope_txt}"
+        slope_txt = f", 10Y-2Y slope {fmt_bps(slope_bps)}" if slope_bps is not None else ", slope — (periods differ)"
+        move_txt = fmt_bps(move10_bps) if move10_bps is not None else "—"
+        d2y = ist_date_of(in2y[0].get("observed_at")) or "—"
+        text = f"India 10Y {v10:.2f}% (as of {ten_y_date}) / 2Y {v2:.2f}% (as of {d2y}) ({move_txt} day){slope_txt}"
         so = apply_so_what("in10y_move_bps", metrics) or apply_so_what("slope_bps", metrics) or apply_so_what("in2y_move_bps", metrics)
         src_name, src_url = _instrument_source(repo, "YIELD:IN:10Y", sources)
         items.append(make_item(
@@ -339,28 +545,36 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
         ))
     else:
         missing.append("India 10Y/2Y")
+        ten_y_date = None
 
-    # India-US 10Y spread from the same-date pair.
-    pair = _paired_same_day(repo, "YIELD:IN:10Y", "YIELD:US:10Y")
-    if pair is not None:
-        v_in, v_us, day = pair
-        spread_bps = (v_in - v_us) * 100.0
-        metrics["spread_bps"] = spread_bps
-        so = apply_so_what("spread_bps", metrics)
-        items.append(make_item(
-            text=f"India-US 10Y spread {spread_bps:+.0f} bps (India {v_in:.2f}% vs US {v_us:.2f}%, both as of {day})",
-            value=f"{spread_bps:+.0f} bps", change=None, change_pct=None, direction="flat",
-            so_what=so, as_of=to_ist_iso(day), source="US Treasury / India G-Sec feeds",
-            source_url="https://home.treasury.gov/resource-center/data-chart-center/interest-rates",
-        ))
-    else:
+    # India-US 10Y spread uses the SAME 10Y figure as the curve row above.
+    spread_done = False
+    if ten_y_date is not None:
+        us_obs = _obs_on_or_before(repo, "YIELD:US:10Y", ten_y_date, not_after=gen_dt)
+        if us_obs is not None:
+            v_in = float(in10y[0]["value_numeric"])
+            v_us = float(us_obs["value_numeric"])
+            us_date = ist_date_of(us_obs.get("observed_at")) or ten_y_date
+            spread_bps = (v_in - v_us) * 100.0
+            metrics["spread_bps"] = spread_bps
+            so = apply_so_what("spread_bps", metrics)
+            vs_txt = f"US {v_us:.2f}% (as of {us_date})" if us_date != ten_y_date else f"US {v_us:.2f}%"
+            items.append(make_item(
+                text=f"India-US 10Y spread {fmt_bps(spread_bps)} (India {v_in:.2f}% as of {ten_y_date} vs {vs_txt})",
+                value=f"{fmt_bps(spread_bps)}", change=None, change_pct=None, direction="flat",
+                so_what=so, as_of=ten_y_date, source="US Treasury / India G-Sec feeds",
+                source_url="https://home.treasury.gov/resource-center/data-chart-center/interest-rates",
+            ))
+            spread_done = True
+    if not spread_done:
         missing.append("India-US 10Y spread")
 
-    # FX
-    add(_obs_item(repo, sources, "FX:USDINR", "USD/INR", "", "usdinr_chg", metrics, digits=4), "USD/INR")
+    # FX (stale when older than 1 trading day)
+    add(_obs_item(repo, sources, "FX:USDINR", "USD/INR", "", "usdinr_chg", metrics, digits=4,
+                  not_after=gen_dt, stale_rule=("trading", 1), brief_date=brief_date), "USD/INR")
     # NRI FX: EUR and GBP vs INR combined into one item.
-    eur = _latest_two(repo, "FX:EURINR")
-    gbp = _latest_two(repo, "FX:GBPINR")
+    eur = _latest_two(repo, "FX:EURINR", not_after=gen_dt)
+    gbp = _latest_two(repo, "FX:GBPINR", not_after=gen_dt)
     nri_parts = []
     nri_chgs = []
     for obs_pair, label in ((eur, "EUR/INR"), (gbp, "GBP/INR")):
@@ -371,7 +585,7 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
         _, chg, _ = calc_change(v, pv)
         if chg is not None:
             nri_chgs.append(abs(chg))
-        nri_parts.append(f"{label} {v:.2f}" + (f" ({chg:+.2f}% day)" if chg is not None else ""))
+        nri_parts.append(f"{label} {v:.2f}" + (f" ({fmt_pct(chg)} day)" if chg is not None else ""))
     if nri_parts:
         metrics["nri_fx_chg"] = max(nri_chgs) if nri_chgs else 0.0
         src_name, src_url = _instrument_source(repo, "FX:EURINR", sources)
@@ -380,12 +594,13 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
             direction="flat", so_what=None,
             as_of=to_ist_iso((eur[0] or gbp[0] or {}).get("observed_at")),
             source=src_name, source_url=src_url,
+            stale=_stale_by_age((eur[0] or gbp[0] or {}).get("observed_at"), brief_date, "trading", 1),
         ))
     else:
         missing.append("EUR/INR, GBP/INR")
 
     # India VIX
-    vix_obs = _latest_two(repo, "VOL:IN:INDIAVIX")[0]
+    vix_obs = _latest_two(repo, "VOL:IN:INDIAVIX", not_after=gen_dt)[0]
     if vix_obs is not None:
         vix = float(vix_obs["value_numeric"])
         metrics["vix"] = vix
@@ -398,8 +613,8 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
     else:
         missing.append("India VIX")
 
-    # FII / DII net (exact category codes, latest report date).
-    flows = repo.list_flows()
+    # FII / DII net (exact category codes, latest report date) + MTD totals.
+    flows = [f for f in repo.list_flows() if (f.get("report_date") or "") <= brief_date]
     if flows:
         latest_date = flows[0].get("report_date")
         same_day = [f for f in flows if f.get("report_date") == latest_date]
@@ -409,6 +624,11 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
         prev_day = [f for f in flows if f.get("report_date") == (prev_dates[0] if prev_dates else None)]
         fii_prev = next((f.get("net") for f in prev_day if f.get("category") == FII_CATEGORY), None)
         dii_prev = next((f.get("net") for f in prev_day if f.get("category") == DII_CATEGORY), None)
+        # Month-to-date nets: sum from the 1st of the latest report month.
+        month_start = latest_date[:8] + "01" if latest_date else None
+        mtd = repo.list_flows(start_date=month_start, end_date=latest_date) if month_start else []
+        fii_mtd = sum(float(f["net"]) for f in mtd if f.get("category") == FII_CATEGORY and f.get("net") is not None)
+        dii_mtd = sum(float(f["net"]) for f in mtd if f.get("category") == DII_CATEGORY and f.get("net") is not None)
         if fii_net is not None or dii_net is not None:
             metrics["fii_net"] = fii_net
             metrics["dii_net"] = dii_net
@@ -417,12 +637,13 @@ def build_market_pulse(repo: Any) -> tuple[list[dict[str, Any]], list[str]]:
             _, fii_chg, _ = calc_change(fii_net, fii_prev)
             _, dii_chg, _ = calc_change(dii_net, dii_prev)
             items.append(make_item(
-                text=f"Institutional flows {latest_date}: FII net {fii_txt} Cr, DII net {dii_txt} Cr",
+                text=(f"Institutional flows {latest_date}: FII net {fii_txt} Cr, DII net {dii_txt} Cr"
+                      f" | MTD: FII net {fii_mtd:+,.0f} Cr, DII net {dii_mtd:+,.0f} Cr"),
                 value=f"FII {fii_txt} / DII {dii_txt} Cr",
                 change=fii_chg, change_pct=None,
                 direction="up" if (fii_net or 0) > 0 else "down" if (fii_net or 0) < 0 else "flat",
                 so_what=apply_so_what("fii_dii", metrics),
-                as_of=to_ist_iso(latest_date), source="NSE FII/DII",
+                as_of=as_of_value(latest_date), source="NSE FII/DII",
                 source_url="https://www.nseindia.com/reports/fii-dii",
             ))
         else:
@@ -505,25 +726,32 @@ def build_fund_movers(repo: Any, prev_history: dict[str, Any]) -> tuple[list[dic
     medians = {c: _median(v) for c, v in by_cat.items()}
 
     scored.sort(key=lambda s: s["change_pct"])
-    picks = scored[:5] + [s for s in scored[-5:] if s not in scored[:5]]
-    # Order: top 5 first (best first), then bottom 5 (worst first).
-    picks = sorted([s for s in picks if s["change_pct"] >= 0], key=lambda s: -s["change_pct"]) + \
-        sorted([s for s in picks if s["change_pct"] < 0], key=lambda s: s["change_pct"])
+    # Max 8 items: top 4 first (best first), then bottom 4 (worst first).
+    picks = scored[-4:][::-1] + scored[:4]
+    # De-duplicate while preserving order (small universes can overlap).
+    seen: set[str] = set()
+    ordered: list[dict[str, Any]] = []
+    for s in picks:
+        key = str(s.get("scheme_code"))
+        if key in seen:
+            continue
+        seen.add(key)
+        ordered.append(s)
 
     items: list[dict[str, Any]] = []
-    for s in picks[:10]:
+    for s in ordered[:8]:
         med = medians.get(s.get("category") or "—")
         gap = s["change_pct"] - med if med is not None else None
-        gap_txt = f", {gap:+.2f}pp vs {s.get('category')} median" if gap is not None else ""
+        gap_txt = f", {fmt_pct(gap)} vs {s.get('category')} median" if gap is not None else ""
         name = s.get("scheme_name") or s.get("scheme_code")
         items.append(make_item(
-            text=f"{name}: ₹{float(s['latest_nav']):,.2f} ({s['change_pct']:+.2f}% 1D{gap_txt})",
-            value=f"₹{float(s['latest_nav']):,.2f}",
+            text=f"{name}: ₹{fmt_number(float(s['latest_nav']))} ({fmt_pct(s['change_pct'])} 1D{gap_txt})",
+            value=f"₹{fmt_number(float(s['latest_nav']))}",
             change=s["change"],
             change_pct=round(s["change_pct"], 2),
             direction=s["direction"],
             so_what=None,
-            as_of=to_ist_iso(s.get("nav_date")),
+            as_of=as_of_value(s.get("nav_date")),
             source="AMFI India NAV",
             source_url="https://portal.amfiindia.com/spages/NAVAll.txt",
         ))
@@ -540,8 +768,13 @@ def build_fund_movers(repo: Any, prev_history: dict[str, Any]) -> tuple[list[dic
 # Section 3: Screening changes
 # ---------------------------------------------------------------------------
 
-def build_screening_changes(repo: Any) -> tuple[list[dict[str, Any]], str | None]:
+def build_screening_changes(
+    repo: Any,
+    generated_at: str | None = None,
+    brief_date: str | None = None,
+) -> tuple[list[dict[str, Any]], str | None]:
     """Funds whose quartile changed since the previous screening run."""
+    brief_date = brief_date or ist_today()
     try:
         current = repo.list_screening_quartiles()
     except Exception:  # noqa: BLE001
@@ -570,12 +803,13 @@ def build_screening_changes(repo: Any) -> tuple[list[dict[str, Any]], str | None
             items.append(make_item(
                 text=f"{name}: {'; '.join(reasons)}",
                 value=f"Q{q}", change=None, change_pct=None, direction="flat", so_what=None,
-                as_of=to_ist_iso(row.get("as_of")),
+                as_of=as_of_value(row.get("as_of")),
                 source="FH screening engine",
-                source_url="https://fundhorizon.in/internal/screening",
+                source_url="/backoffice/research?tab=screening",
+                stale=_stale_by_age(row.get("as_of"), brief_date, "calendar", 7),
             ))
     note = None if items else "No quartile changes since the previous screening run."
-    return items, note
+    return items[:8], note
 
 
 # ---------------------------------------------------------------------------
@@ -605,10 +839,10 @@ def build_cost_manager_changes(repo: Any, prev_history: dict[str, Any]) -> tuple
         delta_bps = (float(pct) - float(old)) * 100.0
         if abs(delta_bps) >= 5:
             items.append(make_item(
-                text=f"{r.get('scheme_name') or key}: Regular TER {float(old):.2f}% → {float(pct):.2f}% ({delta_bps:+.0f} bps). Trail commission moves with TER.",
+                text=f"{r.get('scheme_name') or key}: Regular TER {float(old):.2f}% → {float(pct):.2f}% ({fmt_bps(delta_bps)}). Trail commission moves with TER.",
                 value=f"{float(pct):.2f}%", change=delta_bps / 100.0, change_pct=None,
                 direction="up" if delta_bps > 0 else "down",
-                so_what=None, as_of=to_ist_iso(r.get("as_of")),
+                so_what=None, as_of=as_of_value(r.get("as_of")),
                 source="AMFI TER", source_url="https://www.amfiindia.com/ter-of-mf-schemes",
             ))
 
@@ -632,7 +866,7 @@ def build_cost_manager_changes(repo: Any, prev_history: dict[str, Any]) -> tuple
                 items.append(make_item(
                     text=f"Manager change ({code}): {old} → {name}.",
                     value=name, change=None, change_pct=None, direction="flat", so_what=None,
-                    as_of=to_ist_iso((m or {}).get("updated_at")),
+                    as_of=as_of_value((m or {}).get("updated_at")),
                     source=(m or {}).get("source") or "AMC factsheet",
                     source_url=(m or {}).get("provenance") or None,
                 ))
@@ -640,7 +874,7 @@ def build_cost_manager_changes(repo: Any, prev_history: dict[str, Any]) -> tuple
     note = managers_note
     if not items and not note:
         note = "No TER or manager changes since the last briefing."
-    return items, note, {"ter": ter_hist, "managers": mgr_hist}
+    return items[:8], note, {"ter": ter_hist, "managers": mgr_hist}
 
 
 # ---------------------------------------------------------------------------
@@ -651,17 +885,74 @@ def _norm_title(title: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9 ]", "", (title or "").lower())).strip()
 
 
-def build_regulatory_news(repo: Any) -> tuple[list[dict[str, Any]], str | None]:
+def _norm_entity(name: str | None) -> str:
+    return re.sub(r"\s+", " ", (name or "").lower()).strip()
+
+
+# SEBI notice/appeal patterns to EXCLUDE unless the item is about
+# MFs, PMS, AMCs or intermediaries (scope-keep below).
+_NOTICE_TYPE_RE = re.compile(
+    r"\b(attachment|recovery|demand\s+notice|notice\s+of\s+demand|adjudication|"
+    r"show\s*cause|appeal|interim\s+order\s+cum\s+show\s+cause)\b",
+    re.IGNORECASE,
+)
+_SCOPE_KEEP_RE = re.compile(
+    r"\b(mutual\s+funds?|portfolio\s+manag(?:er|ers?)|pms\b|asset\s+management\s+compan|"
+    r"\bamc\b|intermediar(?:y|ies)|alternative\s+investment\s+funds?|\baif\b)\b",
+    re.IGNORECASE,
+)
+
+# PAN: 5 letters + 4 digits + 1 letter. Masked as XXXXX1234X — never shown.
+_PAN_RE = re.compile(r"\b[A-Z]{5}[0-9]{4}[A-Z]\b", re.IGNORECASE)
+
+
+def mask_pan(text: str | None) -> str:
+    """Replace any PAN in text with the literal mask ``XXXXX1234X``."""
+    return _PAN_RE.sub("XXXXX1234X", text or "")
+
+
+_REG_TEXT_LIMIT = 240
+
+
+def trim_sentence(text: str, limit: int = _REG_TEXT_LIMIT) -> str:
+    """Trim to at most ``limit`` chars at a sentence boundary, appending "…"."""
+    text = (text or "").strip()
+    if len(text) <= limit:
+        return text
+    cut = max(text.rfind(". ", 0, limit), text.rfind("! ", 0, limit), text.rfind("? ", 0, limit))
+    if cut > 0:
+        return text[: cut + 1].rstrip() + "…"
+    cut = text.rfind(" ", 0, limit)
+    return (text[:cut] if cut > 0 else text[:limit]).rstrip() + "…"
+
+
+def _regulatory_keep(item: dict[str, Any]) -> bool:
+    """Drop SEBI attachment/recovery/demand notices and adjudication appeals
+    that are not about MFs, PMS, AMCs or intermediaries. Circulars, MF/PMS
+    regulations and RBI policy items are always kept."""
+    if (item.get("source_id") or "").lower() != "sebi":
+        return True
+    text = f"{item.get('title') or ''} {item.get('summary') or ''}"
+    if _NOTICE_TYPE_RE.search(text):
+        return bool(_SCOPE_KEEP_RE.search(text))
+    return True
+
+
+def build_regulatory_news(
+    repo: Any,
+    generated_at: str | None = None,
+) -> tuple[list[dict[str, Any]], str | None]:
     try:
         news = repo.list_news(limit=200)
     except Exception:  # noqa: BLE001
         news = []
-    cutoff = datetime.now(UTC) - timedelta(hours=24)
+    gen_dt = _as_dt(generated_at) if generated_at else _as_dt(ist_now_iso())
+    cutoff = (gen_dt - timedelta(hours=24)) if gen_dt else (datetime.now(UTC) - timedelta(hours=24))
     recent: list[dict[str, Any]] = []
     for n in news:
         ts = None
         for cand in (n.get("published_at"), n.get("fetched_at")):
-            iso = to_ist_iso(cand)
+            iso = to_ist_iso(cand)  # parses real RSS timezones (RFC 2822) -> IST
             if not iso:
                 continue
             try:
@@ -669,25 +960,43 @@ def build_regulatory_news(repo: Any) -> tuple[list[dict[str, Any]], str | None]:
                 break
             except ValueError:
                 continue
-        if ts is not None and ts >= cutoff.astimezone(IST):
+        if ts is not None and ts >= cutoff and not _is_future(ts, gen_dt):
             recent.append(n)
+    recent = [n for n in recent if _regulatory_keep(n)]
     regulator = [n for n in recent if n.get("source_id") in REGULATOR_FEED_IDS]
     others = [n for n in recent if n.get("source_id") not in REGULATOR_FEED_IDS]
-    seen: set[str] = set()
+    # Collapse near-duplicates by normalised title + entity. Exact title matches
+    # collapse across sources; substring ("near") matches only within one entity.
+    seen_titles: set[str] = set()
+    seen_pairs: set[tuple[str, str]] = set()
+    kept_titles: list[tuple[str, str]] = []  # (norm title, entity) for substring checks
     deduped: list[dict[str, Any]] = []
-    for n in others:
-        key = _norm_title(n.get("title") or "")
-        if not key or key in seen:
+    for n in regulator + others:
+        title = mask_pan(n.get("title") or "")
+        if not title:
             continue
-        seen.add(key)
+        norm = _norm_title(title)
+        entity = _norm_entity(n.get("source_name") or n.get("source_id"))
+        if not norm or norm in seen_titles or (norm, entity) in seen_pairs:
+            continue
+        if len(norm) > 25 and any(
+            (norm in kt or kt in norm) and ke == entity for kt, ke in kept_titles
+        ):
+            continue
+        seen_titles.add(norm)
+        seen_pairs.add((norm, entity))
+        kept_titles.append((norm, entity))
         deduped.append(n)
+    # Regulator items first, max 8 items per brief.
+    deduped.sort(key=lambda n: 0 if n.get("source_id") in REGULATOR_FEED_IDS else 1)
     items: list[dict[str, Any]] = []
-    for n in regulator + deduped[:5]:
+    for n in deduped[:8]:
         link = n.get("link")
         items.append(make_item(
-            text=n.get("title") or "—", value=None, change=None, change_pct=None,
+            text=trim_sentence(mask_pan(n.get("title") or "—")),
+            value=None, change=None, change_pct=None,
             direction="flat", so_what=None,
-            as_of=to_ist_iso(n.get("published_at") or n.get("fetched_at")),
+            as_of=as_of_value(n.get("published_at") or n.get("fetched_at")),
             source=n.get("source_name"), source_url=link, link=link,
         ))
     note = None if items else "No RBI/SEBI or market headlines in the last 24h."
@@ -698,19 +1007,52 @@ def build_regulatory_news(repo: Any) -> tuple[list[dict[str, Any]], str | None]:
 # Section 6: PMS
 # ---------------------------------------------------------------------------
 
-def build_pms(repo: Any, prev_history: dict[str, Any]) -> tuple[list[dict[str, Any]], str | None, dict[str, Any]]:
+def _sanity_filter_pms(
+    strategies: list[dict[str, Any]],
+    as_on: str | None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split strategies into (usable, rejected).
+
+    A 1M return outside −100%..+100% is implausible for a month (e.g. the
+    −101.08% published for Ametra FactorShields) — the value comes from APMI's
+    own table, so we reject it at build time and flag it in data health
+    instead of displaying it.
+    """
+    usable: list[dict[str, Any]] = []
+    rejected: list[dict[str, Any]] = []
+    for s in strategies:
+        r = s.get("return_1m")
+        if r is not None and abs(float(r)) > 100.0:
+            rejected.append(s)
+            continue
+        usable.append(s)
+    return usable, rejected
+
+
+def build_pms(
+    repo: Any,
+    prev_history: dict[str, Any],
+    generated_at: str | None = None,
+    brief_date: str | None = None,
+) -> tuple[list[dict[str, Any]], str | None, dict[str, Any], list[dict[str, Any]]]:
+    brief_date = brief_date or ist_today()
+    gen_dt = _as_dt(generated_at) if generated_at else _as_dt(ist_now_iso())
     as_on = repo.latest_pms_as_on()
     if not as_on:
-        return [], "No APMI data loaded yet.", {"pms_as_on": None}
+        return [], "No APMI data loaded yet.", {"pms_as_on": None}, []
+    if _is_future(as_on, gen_dt) or as_on > brief_date:
+        return [], f"APMI month {as_on} is dated after this brief; no PMS data yet.", {"pms_as_on": None}, []
     prev_as_on = (prev_history or {}).get("pms_as_on")
     if prev_as_on is not None and as_on <= prev_as_on:
-        return [], f"No new month from APMI (as of {as_on}); last briefed month {prev_as_on}.", {"pms_as_on": as_on}
+        return [], f"No new month from APMI (as of {as_on}); last briefed month {prev_as_on}.", {"pms_as_on": as_on}, []
     strategies = [s for s in repo.list_pms_universe_strategies(as_on) if s.get("return_1m") is not None]
-    if not strategies:
-        return [], f"APMI month {as_on} has no 1M returns on file.", {"pms_as_on": as_on}
+    usable, rejected = _sanity_filter_pms(strategies, as_on)
+    if not usable:
+        rej_note = f" {len(rejected)} strateg(ies) rejected (|1M return| > 100%); see Data freshness." if rejected else ""
+        return [], f"APMI month {as_on} has no usable 1M returns on file.{rej_note}", {"pms_as_on": as_on}, rejected
     benchmarks = repo.list_pms_cached_benchmarks()
-    strategies.sort(key=lambda s: float(s["return_1m"]))
-    picks = strategies[-5:][::-1] + strategies[:5]
+    usable.sort(key=lambda s: float(s["return_1m"]))
+    picks = usable[-4:][::-1] + usable[:4]
     # De-duplicate while preserving order (small universes can overlap).
     seen: set[str] = set()
     ordered: list[dict[str, Any]] = []
@@ -721,18 +1063,28 @@ def build_pms(repo: Any, prev_history: dict[str, Any]) -> tuple[list[dict[str, A
         seen.add(key)
         ordered.append(s)
     items: list[dict[str, Any]] = []
-    for s in ordered[:10]:
+    for s in ordered[:8]:
         r1m = float(s["return_1m"])
-        bench = benchmarks.get(str(s.get("ia_id") or "")) or "benchmark not on file"
+        bench = benchmarks.get(str(s.get("ia_id") or "")) or None
+        text = f"{s.get('strategy_name')} ({s.get('provider')}): {fmt_pct(r1m)} 1M"
+        if bench:
+            text += f" vs {bench}"
         items.append(make_item(
-            text=f"{s.get('strategy_name')} ({s.get('provider')}): {r1m:+.2f}% 1M vs {bench}",
-            value=f"{r1m:+.2f}%", change=None, change_pct=None,
+            text=text,
+            value=f"{fmt_pct(r1m)}", change=None, change_pct=None,
             direction="up" if r1m > 0 else "down" if r1m < 0 else "flat",
-            so_what=None, as_of=to_ist_iso(as_on),
+            so_what=None, as_of=as_of_value(as_on),
             source="APMI PMS performance", source_url="https://www.apmiindia.org/apmi/welcomeiaperformance.htm?action=PMSmenu",
+            stale=_stale_by_age(as_on, brief_date, "calendar", 7),
+            benchmark=bench,
         ))
-    note = f"APMI month {as_on}: top 5 / bottom 5 strategies by 1M return."
-    return items, note, {"pms_as_on": as_on}
+    note = f"APMI month {as_on}: top 4 / bottom 4 strategies by 1M return."
+    if rejected:
+        note += f" {len(rejected)} strateg(ies) rejected (|1M return| > 100%); see Data freshness."
+    # The frontend hides the benchmark column when none is on file for any row,
+    # instead of repeating "not on file" on every row.
+    section_extra = {"benchmarks_hidden": not any(i["benchmark"] for i in items)}
+    return items, note, {"pms_as_on": as_on, "_pms_section_extra": section_extra}, rejected
 
 
 # ---------------------------------------------------------------------------
@@ -793,8 +1145,8 @@ def build_client_actions(repo: Any, mover_schemes: list[dict[str, Any]]) -> tupl
         items.append(make_item(
             text=f"{len(names)} household(s) hold {code}: {shown}",
             value=str(len(names)), change=None, change_pct=None, direction="flat", so_what=None,
-            as_of=to_ist_iso(today), source="Client book (portfolio positions)",
-            source_url=None,
+            as_of=today, source="Client book (portfolio positions)",
+            source_url="/backoffice/crm", link="/backoffice/crm",
         ))
 
     # CRM follow-ups and cases due today (IST).
@@ -821,16 +1173,18 @@ def build_client_actions(repo: Any, mover_schemes: list[dict[str, Any]]) -> tupl
         items.append(make_item(
             text=f"{len(followups)} follow-up(s) due today: {subjects}",
             value=str(len(followups)), change=None, change_pct=None, direction="flat",
-            so_what=None, as_of=to_ist_iso(today), source="CRM activities", source_url=None,
+            so_what=None, as_of=today, source="CRM activities",
+            source_url="/backoffice/crm", link="/backoffice/crm",
         ))
     if cases:
         items.append(make_item(
             text=f"{len(cases)} open case(s) due: " + "; ".join(c.get("subject") or "case" for c in cases[:5]),
             value=str(len(cases)), change=None, change_pct=None, direction="flat",
-            so_what=None, as_of=to_ist_iso(today), source="CRM cases", source_url=None,
+            so_what=None, as_of=today, source="CRM cases",
+            source_url="/backoffice/crm", link="/backoffice/crm",
         ))
     note = None if items else "No client holdings overlap today's movers and no follow-ups due today."
-    return items, note
+    return items[:8], note
 
 
 # ---------------------------------------------------------------------------
@@ -850,13 +1204,13 @@ def build_data_freshness(repo: Any) -> list[dict[str, Any]]:
         last_ok = to_ist_iso(s.get("last_success_at"))
         age_hours: float | None = None
         stale = True
+        interval = REFRESH_INTERVALS.get(s["id"], default_interval)
         if s.get("last_success_at"):
             try:
                 dt = datetime.fromisoformat(str(s["last_success_at"]))
                 if dt.tzinfo is None:
                     dt = dt.replace(tzinfo=UTC)
                 age_hours = (now - dt).total_seconds() / 3600.0
-                interval = REFRESH_INTERVALS.get(s["id"], default_interval)
                 stale = age_hours > 2 * (interval / 3600.0)
             except (ValueError, TypeError):
                 stale = True
@@ -865,6 +1219,8 @@ def build_data_freshness(repo: Any) -> list[dict[str, Any]]:
             "last_ok": last_ok,
             "age_hours": round(age_hours, 1) if age_hours is not None else None,
             "stale": stale,
+            "interval_hours": round(interval / 3600.0, 1),
+            "stale_after_hours": round(2 * interval / 3600.0, 1),
         })
     out.sort(key=lambda r: (not r["stale"], r["age_hours"] is None, r["age_hours"] or 0.0))
     return out
@@ -884,19 +1240,46 @@ def _previous_briefing(repo: Any, brief_date: str) -> tuple[dict[str, Any] | Non
     return payload, (payload.get("_history") or {})
 
 
-def build_briefing_payload(repo: Any, brief_date: str | None = None) -> dict[str, Any]:
-    """Assemble the full briefing payload for ``brief_date`` (IST). Pure read path."""
+def build_briefing_payload(
+    repo: Any,
+    brief_date: str | None = None,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    """Assemble the full briefing payload for ``brief_date`` (IST). Pure read path.
+
+    Section keys (stable; the frontend selects by key):
+    ``market_pulse``, ``fund_movers``, ``screening_changes``,
+    ``cost_manager_changes``, ``regulatory_news``, ``pms``, ``client_actions``,
+    ``data_freshness``.
+
+    Advisor view order: client_actions, fund_movers, cost_manager_changes,
+    regulatory_news (max 8), market_pulse (max 5 shown by the frontend).
+    Every advisor-relevant section carries at most 8 items.
+
+    ``generated_at`` defaults to now (IST). Items timestamped after it are
+    excluded from the brief; tests can pin it for determinism.
+    """
     brief_date = brief_date or ist_today()
+    generated_at = generated_at or ist_now_iso()
     _prev_payload, prev_history = _previous_briefing(repo, brief_date)
 
     sections: list[dict[str, Any]] = []
     history: dict[str, Any] = dict(prev_history)  # carried forward unless rebuilt
+    health_flags: list[dict[str, Any]] = []
 
-    def add_section(key: str, title: str, items: list[dict[str, Any]], note: str | None = None) -> None:
+    def add_section(
+        key: str,
+        title: str,
+        items: list[dict[str, Any]],
+        note: str | None = None,
+        extra: dict[str, Any] | None = None,
+    ) -> None:
         section: dict[str, Any] = {"key": key, "title": title, "items": items, "note": note}
+        if extra:
+            section.update(extra)
         sections.append(section)
 
-    pulse_items, pulse_missing = build_market_pulse(repo)
+    pulse_items, pulse_missing = build_market_pulse(repo, generated_at=generated_at, brief_date=brief_date)
     pulse_note = None
     if pulse_missing:
         pulse_note = "Not available: " + ", ".join(pulse_missing) + " — no observation on file."
@@ -906,19 +1289,31 @@ def build_briefing_payload(repo: Any, brief_date: str | None = None) -> dict[str
     history.update(mover_hist)
     add_section("fund_movers", "Fund movers", mover_items, mover_note)
 
-    screen_items, screen_note = build_screening_changes(repo)
+    screen_items, screen_note = build_screening_changes(repo, generated_at=generated_at, brief_date=brief_date)
     add_section("screening_changes", "Screening changes", screen_items, screen_note)
 
     cost_items, cost_note, cost_hist = build_cost_manager_changes(repo, prev_history)
     history.update(cost_hist)
     add_section("cost_manager_changes", "Cost & manager changes", cost_items, cost_note)
 
-    news_items, news_note = build_regulatory_news(repo)
+    news_items, news_note = build_regulatory_news(repo, generated_at=generated_at)
     add_section("regulatory_news", "Regulatory & news", news_items, news_note)
 
-    pms_items, pms_note, pms_hist = build_pms(repo, prev_history)
+    pms_items, pms_note, pms_hist, pms_rejected = build_pms(
+        repo, prev_history, generated_at=generated_at, brief_date=brief_date
+    )
+    for s in pms_rejected:
+        health_flags.append({
+            "kind": "rejected_pms_return",
+            "strategy": s.get("strategy_name"),
+            "provider": s.get("provider"),
+            "return_1m": s.get("return_1m"),
+            "as_on": s.get("as_on"),
+            "reason": "Rejected: |1M return| > 100% — implausible for a month; excluded from the brief.",
+        })
+    pms_extra = pms_hist.pop("_pms_section_extra", None)
     history.update(pms_hist)
-    add_section("pms", "PMS", pms_items, pms_note)
+    add_section("pms", "PMS", pms_items, pms_note, extra=pms_extra)
 
     # Client actions need the underlying mover schemes; recover codes from the
     # stored history keys (fund_movers history holds every universe scheme).
@@ -927,20 +1322,32 @@ def build_briefing_payload(repo: Any, brief_date: str | None = None) -> dict[str
     add_section("client_actions", "Client actions", client_items, client_note)
 
     freshness = build_data_freshness(repo)
-    add_section("data_freshness", "Data freshness", [], None)
+    freshness_note = (
+        "A source is marked stale when its age exceeds 2× its refresh interval."
+    )
+    if health_flags:
+        freshness_note += (
+            f" {len(health_flags)} data-health flag(s): implausible values rejected from this brief."
+        )
+    add_section("data_freshness", "Data freshness", [], freshness_note)
 
     payload = {
         "brief_date": brief_date,
-        "generated_at": ist_now_iso(),
+        "generated_at": generated_at,
         "version": BRIEFING_VERSION,
         "sections": sections,
         "freshness": freshness,
+        "data_health": health_flags,
         "_history": history,
     }
     return payload
 
 
-def build_daily_briefing(repo: Any | None = None, brief_date: str | None = None) -> dict[str, Any]:
+def build_daily_briefing(
+    repo: Any | None = None,
+    brief_date: str | None = None,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
     """Build today's briefing and upsert it keyed by ``brief_date`` (idempotent).
 
     Change for fund-level series is measured against the previous stored
@@ -951,7 +1358,7 @@ def build_daily_briefing(repo: Any | None = None, brief_date: str | None = None)
 
     repo = repo or BackofficeRepository()
     brief_date = brief_date or ist_today()
-    payload = build_briefing_payload(repo, brief_date)
+    payload = build_briefing_payload(repo, brief_date, generated_at=generated_at)
     repo.upsert_briefing(brief_date, payload, BRIEFING_VERSION)
     return {"ok": True, "brief_date": brief_date}
 

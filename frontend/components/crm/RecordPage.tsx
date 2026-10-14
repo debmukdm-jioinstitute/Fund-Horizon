@@ -2,11 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
-import { useAuth } from "@/components/AuthContext";
-import { ApiError } from "../../lib/api";
+import { fetchPage } from "../../lib/crmListApi";
 import {
   fetchCase, fetchHouseholdDetail, fetchLead, fetchOpportunity, patchCase, patchHousehold, patchLead, patchOpportunity,
   type CrmCase, type HouseholdDetail, type Lead, type Opportunity,
@@ -17,103 +15,17 @@ import { fmtDate } from "./EntityLists";
 import ConvertLeadDialog from "./ConvertLeadDialog";
 import HouseholdView from "./HouseholdView";
 import InlineField from "./InlineField";
-import OwnerAvatar, { useOwners } from "./OwnerAvatar";
+import OwnerAvatar from "./OwnerAvatar";
+import { Layout, OwnerField, Skeleton, btn, card, useRecord, type Kind } from "./RecordShell";
 import PathBar from "./PathBar";
 import RelatedLists from "./RelatedLists";
 import Timeline, { type TimelineTarget } from "./Timeline";
-import { tabHref } from "./tabs";
+import ContactRecord from "./ContactRecord";
+import HoldingsCard from "./HouseholdAum";
+import AddContactForm from "./AddContactForm";
+import NewOpportunityForm from "./NewOpportunityForm";
+import { useCanWrite } from "./useCanWrite";
 
-type Kind = "households" | "leads" | "opportunities" | "cases";
-
-const KIND_LABEL: Record<Kind, { singular: string; plural: string; tab: string }> = {
-  households: { singular: "Household", plural: "Households", tab: "households" },
-  leads: { singular: "Lead", plural: "Leads", tab: "leads" },
-  opportunities: { singular: "Opportunity", plural: "Opportunities", tab: "opportunities" },
-  cases: { singular: "Grievance", plural: "Grievances", tab: "cases" },
-};
-
-const card = "rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-4";
-const muted = "text-[#536176] dark:text-[#A8B4C4]";
-const btn = "px-3 py-1.5 text-xs font-bold rounded bg-[#006F64] text-white hover:opacity-90 disabled:opacity-50";
-
-function Layout({ kind, title, chips, owner, actions, path, left, right }: {
-  kind: Kind; title: string; chips?: React.ReactNode; owner?: React.ReactNode; actions?: React.ReactNode;
-  path?: React.ReactNode; left: React.ReactNode; right: React.ReactNode;
-}) {
-  const { singular, plural, tab } = KIND_LABEL[kind];
-  return (
-    <div className="space-y-4">
-      <nav aria-label="Breadcrumb" className={`text-xs ${muted}`}>
-        <Link href="/backoffice/crm" className="hover:underline">CRM</Link>{" / "}
-        <Link href={tabHref(tab)} className="hover:underline">{plural}</Link>{" / "}
-        <span className="text-[#172033] dark:text-[#EDF2F7]">{singular}</span>
-      </nav>
-      <header className={`${card} space-y-3`}>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className={`text-[11px] font-semibold uppercase tracking-wide ${muted}`}>{singular}</p>
-            <h1 className="text-xl font-bold text-[#172033] dark:text-[#EDF2F7] break-words">{title}</h1>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">{chips}{owner && <span className={muted}>Owner: <span className="text-[#172033] dark:text-[#EDF2F7]">{owner}</span></span>}</div>
-          </div>
-          {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
-        </div>
-        {path}
-      </header>
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <div className="space-y-4 min-w-0">{left}</div>
-        <div className="min-w-0">{right}</div>
-      </div>
-    </div>
-  );
-}
-
-function Skeleton() {
-  return (
-    <div role="status" aria-busy="true" aria-label="Loading" className="max-w-2xl space-y-2">
-      <div className="h-6 w-1/2 rounded bg-[#E4E9EF]/70 dark:bg-[#2B3644]/70 animate-pulse" />
-      <div className="h-4 w-full rounded bg-[#E4E9EF]/70 dark:bg-[#2B3644]/70 animate-pulse" />
-      <div className="h-4 w-3/4 rounded bg-[#E4E9EF]/70 dark:bg-[#2B3644]/70 animate-pulse" />
-    </div>
-  );
-}
-
-/** Owner picker: admins can change it inline; RMs see it read-only (the API enforces the same rule). */
-function OwnerField({ value, onSave }: { value: string | null | undefined; onSave: (id: string | null) => Promise<void> }) {
-  const { customer } = useAuth();
-  const owners = useOwners();
-  return (
-    <InlineField
-      label="Owner" value={value ?? ""} type="select" readOnly={customer?.role !== "admin"}
-      display={<OwnerAvatar ownerId={value} />}
-      options={[{ value: "", label: "Unassigned" }, ...owners.map((o) => ({ value: o.id, label: o.name }))]}
-      onSave={(v) => onSave(v || null)}
-    />
-  );
-}
-
-/** Loads a record and maps a 404 to the generic not-found page. */
-function useRecord<T>(load: () => Promise<T>, deps: unknown[]) {
-  const [data, setData] = useState<T | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [missing, setMissing] = useState(false);
-  const [version, setVersion] = useState(0);
-  useEffect(() => {
-    let alive = true;
-    load()
-      .then((d) => alive && setData(d))
-      .catch((e) => {
-        if (!alive) return;
-        if (e instanceof ApiError && e.status === 404) setMissing(true);
-        else setError(e instanceof Error ? e.message : "Could not load this record");
-      });
-    return () => {
-      alive = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, version]);
-  if (missing) notFound();
-  return { data, setData, error, reload: () => setVersion((v) => v + 1) };
-}
 
 /* ------------------------------ Lead ------------------------------ */
 const LEAD_PATH = ["new", "contacted", "qualified", "converted", "lost"];
@@ -341,6 +253,42 @@ function CaseRecord({ id }: { id: string }) {
 }
 
 /* ----------------------------- Household ----------------------------- */
+function HouseholdPeople({ data, onChanged }: { data: HouseholdDetail; onChanged: () => void }) {
+  const canWrite = useCanWrite();
+  const [version, setVersion] = useState(0);
+  const [people, setPeople] = useState<{ id: string; name: string; relation: string; tax_status: string; gaps?: string[] }[] | null>(null);
+  useEffect(() => {
+    fetchPage<{ id: string; name: string; relation: string; tax_status: string; dob: string | null }>("contacts", { limit: 200, offset: 0, filters: { household_id: data.household.id } })
+      .then((r) => setPeople(r.rows))
+      .catch(() => setPeople([]));
+  }, [data.household.id, version]);
+  return (
+    <div className={card} aria-label="Contacts">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-sm font-bold text-[#172033] dark:text-[#EDF2F7]">Contacts</h2>
+        {canWrite && <NewOpportunityForm householdId={data.household.id} onCreated={onChanged} />}
+      </div>
+      {people === null ? <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">Loading contacts…</p> : (
+        <ul className="space-y-1 text-xs mb-3">
+          {people.map((p) => (
+            <li key={p.id} className="flex justify-between gap-2">
+              <Link className="font-semibold underline text-[#006F64] dark:text-[#75E1CE]" href={`/backoffice/crm/contacts/${p.id}`}>{p.name}</Link>
+              <span className="text-[#536176] dark:text-[#A8B4C4] capitalize">{p.relation} · {p.tax_status.toUpperCase()}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {canWrite && (
+        <AddContactForm
+          householdId={data.household.id}
+          guardians={(people ?? []).map((p) => ({ id: p.id, name: p.name }))}
+          onCreated={() => { setVersion((v) => v + 1); onChanged(); }}
+        />
+      )}
+    </div>
+  );
+}
+
 function HouseholdRecord({ id }: { id: string }) {
   const { data, setData, error } = useRecord<HouseholdDetail>(() => fetchHouseholdDetail(id), [id]);
   const [bump, setBump] = useState(0);
@@ -367,6 +315,8 @@ function HouseholdRecord({ id }: { id: string }) {
             <InlineField label="Notes" value={h.notes} type="textarea" onSave={(v) => save({ notes: v })} />
             <InlineField label="Created" value={fmtDate(h.created_at, true)} readOnly />
           </div>
+          <HoldingsCard householdId={h.id} />
+          <HouseholdPeople data={data} onChanged={() => setBump((b) => b + 1)} />
           <HouseholdView householdId={h.id} onNotFound={onNotFound} showTitle={false} />
           <RelatedLists members={data.members} />
         </>
@@ -378,6 +328,7 @@ function HouseholdRecord({ id }: { id: string }) {
 
 export default function RecordPage({ kind, id }: { kind: Kind; id: string }) {
   if (kind === "households") return <HouseholdRecord id={id} />;
+  if (kind === "contacts") return <ContactRecord id={id} />;
   if (kind === "leads") return <LeadRecord id={id} />;
   if (kind === "opportunities") return <OppRecord id={id} />;
   return <CaseRecord id={id} />;

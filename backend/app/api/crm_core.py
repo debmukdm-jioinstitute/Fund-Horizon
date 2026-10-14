@@ -817,9 +817,10 @@ def _suitability_for(body: OpportunityCreate, me: dict, repo) -> tuple[int | Non
     if not client and body.household_id:
         h = repo.get_household(body.household_id)
         client = (h or {}).get("primary_customer_id")
-        if not client:
+        if not client:  # the household's primary member, else the earliest-added one
             members = repo.list_household_members(body.household_id)
-            client = members[0]["customer_id"] if members else None
+            primary = next((m for m in members if m["role"] == "primary"), members[0] if members else None)
+            client = primary["customer_id"] if primary else None
     check = p3.suitability_check(riskometer, client)
     note = check["message"]
     if check["level"] == "block":

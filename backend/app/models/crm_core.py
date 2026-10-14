@@ -9,7 +9,7 @@ raw-SQLite DDL.
 
 from __future__ import annotations
 
-from sqlalchemy import Integer, String, Text, UniqueConstraint
+from sqlalchemy import BigInteger, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.models import Base
@@ -67,7 +67,7 @@ class OpportunityModel(Base):
     customer_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     product_line: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
-    amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    amount: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
     stage: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     probability: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     expected_close: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
@@ -77,7 +77,7 @@ class OpportunityModel(Base):
     updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
     lost_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     closed_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    won_amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    won_amount: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
     scheme_code: Mapped[str | None] = mapped_column(String(32), nullable=True)
     riskometer: Mapped[int | None] = mapped_column(Integer, nullable=True)  # 1 Low .. 6 Very High
     suitability_note: Mapped[str | None] = mapped_column(Text, nullable=True)

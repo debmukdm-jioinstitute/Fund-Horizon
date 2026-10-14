@@ -38,10 +38,23 @@ def _audit_cols():
     ]
 
 
+# Money is integer paise; Postgres INTEGER overflows at ~₹2.1 crore, which a PMS ticket or an FD easily exceeds.
+_WIDEN_TO_BIGINT = [
+    ("opportunities", "amount"), ("opportunities", "won_amount"), ("fixed_deposits", "amount"),
+    ("pms_accounts", "amount"), ("pms_accounts", "high_water_mark"), ("insurance_policies", "premium_amount"),
+    ("mandates", "amount_cap"),
+]
+
+
 def upgrade() -> None:
     bind = op.get_bind()
     insp = sa.inspect(bind)
     tables = set(insp.get_table_names())
+
+    if bind.dialect.name == "postgresql":  # SQLite integers are already 64-bit
+        for table, col in _WIDEN_TO_BIGINT:
+            if table in tables and col in {c["name"] for c in insp.get_columns(table)}:
+                op.alter_column(table, col, type_=sa.BigInteger(), existing_nullable=True)
 
     def create(name: str, *cols, indexes=()):
         if name in tables:

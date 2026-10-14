@@ -133,8 +133,8 @@ export default function HouseholdView({
   if (loading) {
     return (
       <div role="status" aria-busy="true" aria-label="Loading" className="space-y-2 p-5">
-        <div className="h-6 w-1/3 rounded bg-navy-100 animate-pulse" />
-        <div className="h-4 w-2/3 rounded bg-navy-100 animate-pulse" />
+        <div className="h-6 w-1/3 rounded bg-navy-100 dark:bg-[#2B3644] animate-pulse" />
+        <div className="h-4 w-2/3 rounded bg-navy-100 dark:bg-[#2B3644] animate-pulse" />
       </div>
     );
   }

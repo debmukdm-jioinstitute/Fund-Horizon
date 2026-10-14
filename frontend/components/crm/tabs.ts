@@ -7,6 +7,7 @@ export const CRM_TABS = [
   ["opportunities", "Opportunities"],
   ["activities", "Tasks"],
   ["cases", "Grievances"],
+  ["book", "Book"],
   ["compliance", "Compliance"],
   ["import", "Import"],
 ] as const;

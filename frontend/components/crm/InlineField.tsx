@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useCanWrite } from "./useCanWrite";
 
 type Props = {
   label: string;
@@ -19,7 +20,9 @@ const input =
   "w-full px-2 py-1 text-xs rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#172033] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]";
 
 /** Click-to-edit field: Enter saves, Escape cancels; errors stay on the field. */
-export default function InlineField({ label, value, display, onSave, type = "text", options, readOnly, validate }: Props) {
+export default function InlineField({ label, value, display, onSave, type = "text", options, readOnly: readOnlyProp, validate }: Props) {
+  const canWrite = useCanWrite();
+  const readOnly = readOnlyProp || !canWrite;
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value ?? "");
   const [error, setError] = useState<string | null>(null);

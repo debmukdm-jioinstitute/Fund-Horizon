@@ -3,6 +3,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { createActivity, patchActivity } from "../../lib/crmApi";
+import { useCanWrite } from "./useCanWrite";
 import { fetchTimeline, type TimelineItem } from "../../lib/crmListApi";
 import { fieldErrors, pastDueWarning, taskSchema } from "../../lib/crmSchemas";
 
@@ -39,6 +40,7 @@ function linkFor(t: TimelineTarget) {
 }
 
 export default function Timeline({ target, refreshKey = 0 }: { target: TimelineTarget; refreshKey?: number }) {
+  const canWrite = useCanWrite();
   const [items, setItems] = useState<TimelineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +108,7 @@ export default function Timeline({ target, refreshKey = 0 }: { target: TimelineT
 
   return (
     <section aria-label="Activity" className="rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-4 space-y-4">
-      <form onSubmit={submit} className="space-y-2">
+      {canWrite && <form onSubmit={submit} className="space-y-2">
         <div role="tablist" aria-label="Log an activity" className="flex flex-wrap gap-1">
           {COMPOSER.map((c) => (
             <button
@@ -145,7 +147,7 @@ export default function Timeline({ target, refreshKey = 0 }: { target: TimelineT
         {dueWarn && <p className="text-xs font-medium text-amber-700 dark:text-amber-300">{dueWarn}</p>}
         {warning && <p role="status" className="text-xs font-medium text-amber-700 dark:text-amber-300">Saved. {warning}</p>}
         {formError && <p role="alert" className="text-xs font-medium text-rose-700 dark:text-rose-300">{formError}</p>}
-      </form>
+      </form>}
 
       {error && <p role="alert" className="text-xs font-medium text-rose-700 dark:text-rose-300">{error}</p>}
       {loading ? (
@@ -169,7 +171,7 @@ export default function Timeline({ target, refreshKey = 0 }: { target: TimelineT
                   {i.type === "activity" && i.due_at && !i.done_at ? ` · due ${when(i.due_at)}` : ""}
                   {i.done_at ? " · done" : ""}
                 </p>
-                {i.type === "activity" && i.kind === "followup" && !i.done_at && (
+                {canWrite && i.type === "activity" && i.kind === "followup" && !i.done_at && (
                   <button type="button" onClick={() => markDone(i.id)} className="mt-1 text-[11px] font-semibold underline text-[#006F64] dark:text-[#75E1CE]">
                     Mark done
                   </button>

@@ -471,3 +471,16 @@ def test_team_lead_sees_and_edits_reports_books_but_not_peers(client, rm, rm2):
     assert client.put(f"/api/crm/teams/{rm['id']}", json={"lead_id": None}).status_code == 200
     _login_as(client, lead)
     assert {h["name"] for h in client.get("/api/crm/households").json()} == {"Lead book"}
+
+
+def test_household_without_primary_customer_is_assessed_on_its_primary_member(client, admin):
+    """Member order is arbitrary, so the suitability check must pick the primary member, not 'the first one'."""
+    seed_scheme("200001", "Gamma Small Cap", 10.0, category="Equity Scheme - Small Cap Fund")
+    hh = household(client)
+    primary = contact(client, hh, "Primary Pat", relation="self")
+    child = contact(client, hh, "Adult Child", relation="child")
+    client.post("/api/crm/suitability/assess", json={"customer_id": primary["customer_id"], "answers": answers("low")})
+    client.post("/api/crm/suitability/assess", json={"customer_id": child["customer_id"], "answers": answers("high")})
+    # the household's limit is the primary member's (Conservative -> 2), whatever the member row order is
+    r = client.post("/api/crm/opportunities", json={"product_line": "mutual_fund", "title": "x", "household_id": hh["id"], "scheme_code": "200001"})
+    assert r.status_code == 422 and "Suitability block" in r.json()["detail"]

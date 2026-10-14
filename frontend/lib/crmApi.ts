@@ -29,6 +29,9 @@ export interface Household {
   created_at: string;
   member_count: number;
   open_opportunities: number;
+  aum_paise?: number;
+  tier?: string;
+  has_direct_plan?: boolean;
 }
 
 export interface HouseholdMember {
@@ -56,6 +59,9 @@ export interface Opportunity {
   lost_reason?: string | null;
   closed_at?: string | null;
   won_amount?: number | null;
+  riskometer?: number | null;
+  scheme_code?: string | null;
+  suitability_note?: string | null;
   household_name?: string;
   customer_name?: string;
 }

@@ -5,9 +5,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createHousehold } from "../../lib/crmApi";
 import { HouseholdsList } from "./EntityLists";
+import { useCanWrite } from "./useCanWrite";
 
 export default function HouseholdsTab() {
   const router = useRouter();
+  const canWrite = useCanWrite();
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
   const [creating, setCreating] = useState(false);
@@ -35,14 +37,14 @@ export default function HouseholdsTab() {
           <h2 className="text-lg font-bold text-navy-950 dark:text-[#EDF2F7]">Households</h2>
           <p className="text-xs text-navy-500 dark:text-[#A8B4C4]">One family, one record. Members are added from the household page.</p>
         </div>
-        <button
+        {canWrite && <button
           type="button"
           onClick={() => setShowForm((s) => !s)}
           aria-expanded={showForm}
           className="px-3 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition"
         >
           {showForm ? "Close" : "New household"}
-        </button>
+        </button>}
       </div>
 
       {showForm && (

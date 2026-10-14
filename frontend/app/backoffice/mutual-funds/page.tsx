@@ -22,7 +22,7 @@ const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
 const DEFAULT_CATEGORIES = ["flexi_cap", "multi_cap"];
 const PLANS = ["Regular", "Direct"];
 
-type Kind = "pct" | "num" | "score" | "text";
+type Kind = "pct" | "num" | "score" | "stars" | "aum" | "text";
 interface Col {
   key: string;
   label: string;
@@ -30,16 +30,27 @@ interface Col {
   digits?: number;
   /** Category-average column shown beneath the value (Returns tab). */
   avg?: string;
+  /** Date column shown beneath the value (52-week range). */
+  date?: string;
+  /** Percent column that is not good/bad by sign (volatility). */
+  plain?: boolean;
 }
 
 const pct = (key: string, label: string, avg?: string): Col => ({ key, label, kind: "pct", digits: 2, avg });
 const num = (key: string, label: string, digits = 2): Col => ({ key, label, kind: "num", digits });
+const YEARS = [1, 3, 5, 10];
+const perYear = (key: string, label: string, kind: "pct" | "num", plain = false): Col[] =>
+  YEARS.map((y) => ({ key: `${key}_${y}y`, label: `${label} ${y}Yr`, kind, digits: 2, plain }));
 
 const COLUMNS: Record<Section, Col[]> = {
   Summary: [
     { key: "score", label: "FH Checklist Score / 100", kind: "score" },
+    { key: "stars", label: "FH Star Rating", kind: "stars" },
+    { key: "aum_cr", label: "AUM Cr", kind: "aum" },
     num("ter", "Net Expense Ratio"),
     num("nav", "Current NAV"),
+    pct("day_chg", "Day change %"),
+    pct("week_chg", "Week change %"),
     pct("ret_1m", "Month change %"),
     pct("ret_3m", "Returns 3M %"),
     pct("ret_1y", "Returns 1Yr %"),
@@ -50,6 +61,7 @@ const COLUMNS: Record<Section, Col[]> = {
   Checklist: [
     { key: "score", label: "FH Checklist Score / 100", kind: "score" },
     { key: "perf", label: "Performance / 25", kind: "score" },
+    { key: "port", label: "Portfolio / 25", kind: "score" },
     { key: "ops", label: "Operations / 25", kind: "score" },
     { key: "risk", label: "Risk vs Reward / 25", kind: "score" },
   ],
@@ -63,11 +75,16 @@ const COLUMNS: Record<Section, Col[]> = {
     pct("cagr_7y", "7Yr CAGR %"),
     pct("cagr_10y", "10Yr CAGR %", "cagr_10y_cat"),
     pct("cagr_si", "Since inception CAGR %"),
+    { key: "hi52", label: "NAV 52W High", kind: "num", digits: 2, date: "hi52_date" },
+    { key: "lo52", label: "NAV 52W Low", kind: "num", digits: 2, date: "lo52_date" },
   ],
   "Risk Vs Reward": [
-    pct("vol_3y", "Std Dev 3Yr %"),
-    num("sharpe_3y", "Sharpe Ratio 3Yr"),
-    num("sortino_3y", "Sortino Ratio 3Yr"),
+    ...perYear("alpha", "Alpha %", "pct"),
+    ...perYear("beta", "Beta", "num"),
+    ...perYear("sharpe", "Sharpe Ratio", "num"),
+    ...perYear("sortino", "Sortino Ratio", "num"),
+    ...perYear("treynor", "Treynor Ratio %", "pct"),
+    ...perYear("vol", "Std Dev %", "pct", true),
     pct("max_dd_3y", "Max Drawdown 3Yr %"),
     pct("max_dd_all", "Max Drawdown All %"),
     pct("roll1y_pos", "Rolling 1Yr positive %"),
@@ -76,6 +93,9 @@ const COLUMNS: Record<Section, Col[]> = {
 
 const FILTERABLE: { key: string; label: string }[] = [
   { key: "score", label: "FH Checklist Score" },
+  { key: "stars", label: "FH Star Rating" },
+  { key: "aum_cr", label: "AUM Cr" },
+  { key: "alpha_3y", label: "Alpha 3Yr %" },
   { key: "ter", label: "Net Expense Ratio %" },
   { key: "ret_1y", label: "1Yr return %" },
   { key: "cagr_3y", label: "3Yr CAGR %" },
@@ -465,8 +485,10 @@ function MutualFunds() {
       </div>
 
       <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-        FH checklist score = percentile rank inside the same category and plan across Performance (1Y/3Y/5Y returns), Operations (expense ratio and track record) and
-        Risk vs Reward (Sharpe, Sortino, drawdown, volatility), scaled to 100. Portfolio quality needs holdings data and is not included. Past performance is not a guide to future returns.
+        FH checklist score (out of 100) ranks each fund against its category and plan on Performance (1Y/3Y/5Y returns), Portfolio (fund size and 3Yr alpha, since
+        holdings are not in the dataset), Operations (expense ratio, track record) and Risk vs Reward (Sharpe, Sortino, drawdown, volatility). FH Star Rating is our own
+        risk-adjusted rank (3Y/5Y/10Y Sharpe within category), not Morningstar&apos;s. Alpha, Beta and Treynor are measured against the median of the fund&apos;s category and plan, not an index.
+        AUM is AMFI&apos;s latest quarterly average (all plans). Day, week and 52-week figures use the AMFI NAV history. Past performance is not a guide to future returns.
       </p>
 
       <CompareTray
@@ -492,7 +514,8 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
   const v = row[col.key];
   if (col.kind === "score") {
     const max = col.key === "score" ? 100 : 25;
-    const label = col.key === "perf" ? row.perf_label : col.key === "ops" ? row.ops_label : col.key === "risk" ? row.risk_label : null;
+    const label =
+      col.key === "perf" ? row.perf_label : col.key === "ops" ? row.ops_label : col.key === "risk" ? row.risk_label : col.key === "port" ? row.port_label : null;
     const w = typeof v === "number" ? Math.max(0, Math.min(100, (v / max) * 100)) : 0;
     return (
       <td className="text-right whitespace-nowrap">
@@ -504,11 +527,22 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
       </td>
     );
   }
+  if (col.kind === "stars") {
+    const n = typeof v === "number" ? v : 0;
+    return (
+      <td className="text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]" title={n ? `${n} of 5 (FH rating, not Morningstar)` : "Not rated"}>
+        {n ? "★".repeat(n) + "☆".repeat(5 - n) : <span className="text-[#536176] dark:text-[#A8B4C4]">-</span>}
+      </td>
+    );
+  }
+  if (col.kind === "aum") return <td className="text-right tabular-nums">{fmt(v, 0)}</td>;
   const avg = col.avg ? row[col.avg] : undefined;
+  const when = col.date ? row[col.date] : undefined;
   return (
-    <td className={`text-right tabular-nums ${col.kind === "pct" ? tone(v) : ""}`}>
+    <td className={`text-right tabular-nums ${col.kind === "pct" && !col.plain ? tone(v) : ""}`}>
       {fmt(v, col.digits)}
       {col.kind === "pct" && typeof v === "number" ? "%" : ""}
+      {typeof when === "string" && when && <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(when)}</div>}
       {col.avg && (
         <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">cat. {typeof avg === "number" ? `${fmt(avg)}%` : "-"}</div>
       )}

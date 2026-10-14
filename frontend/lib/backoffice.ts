@@ -132,12 +132,39 @@ export interface FlowsData {
   as_of?: string;
 }
 
-export interface DeterministicBriefingData {
+export interface BriefingItem {
+  text?: string;
+  value?: string;
+  change?: string;
+  change_pct?: number | null;
+  direction?: "up" | "down" | "flat";
+  so_what?: string;
+  as_of?: string;
+  source?: string;
+  source_url?: string;
+  link?: string;
+}
+
+export interface BriefingSection {
+  key: string;
   title: string;
-  as_of: string;
-  method_version: string;
-  bullets: string[];
-  disclaimer: string;
+  items: BriefingItem[];
+  note?: string;
+}
+
+export interface BriefingFreshness {
+  source?: string;
+  last_ok?: string;
+  age_hours?: number | null;
+  stale?: boolean;
+}
+
+export interface BriefingPayload {
+  brief_date: string;
+  generated_at: string;
+  version: number;
+  sections: BriefingSection[];
+  freshness: BriefingFreshness[];
 }
 
 export interface SourceItem {
@@ -998,16 +1025,54 @@ export const simulateScenario = async (body: {
   return envelope(raw, data);
 };
 
-export const getDeterministicBriefing = async (): Promise<BackofficeEnvelope<DeterministicBriefingData>> => {
-  const raw = await boFetch<Json>("/api/backoffice/briefing");
-  const data: DeterministicBriefingData = {
-    title: str(raw.title) ?? "Daily Research Briefing",
-    as_of: str(raw.as_of) ?? "",
-    method_version: str(raw.method_version) ?? "",
-    bullets: arr(raw.bullets) as unknown as string[],
-    disclaimer: str(raw.disclaimer) ?? "",
+const briefingDirection = (v: unknown): BriefingItem["direction"] => {
+  const d = str(v);
+  return d === "up" || d === "down" || d === "flat" ? d : undefined;
+};
+
+const parseBriefingSection = (s: Json): BriefingSection => ({
+  key: str(s.key) ?? "",
+  title: str(s.title) ?? "",
+  note: str(s.note),
+  items: arr(s.items).map((it) => ({
+    text: str(it.text),
+    value: str(it.value),
+    change: str(it.change),
+    change_pct: num(it.change_pct) ?? null,
+    direction: briefingDirection(it.direction),
+    so_what: str(it.so_what),
+    as_of: str(it.as_of),
+    source: str(it.source),
+    source_url: str(it.source_url),
+    link: str(it.link),
+  })),
+});
+
+export const getBriefing = async (date?: string): Promise<BriefingPayload> => {
+  const raw = await boFetch<Json>(`/api/backoffice/briefing${date ? `?date=${encodeURIComponent(date)}` : ""}`);
+  return {
+    brief_date: str(raw.brief_date) ?? "",
+    generated_at: str(raw.generated_at) ?? "",
+    version: num(raw.version) ?? 1,
+    sections: arr(raw.sections).map(parseBriefingSection),
+    freshness: arr(raw.freshness).map((f) => ({
+      source: str(f.source),
+      last_ok: str(f.last_ok),
+      age_hours: num(f.age_hours) ?? null,
+      stale: typeof f.stale === "boolean" ? f.stale : undefined,
+    })),
   };
-  return envelope(raw, data);
+};
+
+export const getBriefingDates = async (): Promise<string[]> => {
+  const raw = await boFetch<Json>("/api/backoffice/briefing/dates");
+  const dates: unknown = raw.dates;
+  return (Array.isArray(dates) ? dates : []).filter((d): d is string => typeof d === "string");
+};
+
+export const rebuildBriefing = async (): Promise<{ ok: boolean; brief_date: string }> => {
+  const raw = await boFetch<Json>("/api/backoffice/briefing/rebuild", { method: "POST" });
+  return { ok: raw.ok === true, brief_date: str(raw.brief_date) ?? "" };
 };
 
 export const getWatchlists = async (): Promise<WatchlistItem[]> => {

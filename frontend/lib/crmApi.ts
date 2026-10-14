@@ -17,7 +17,7 @@ export type ProductLine = (typeof PRODUCT_LINES)[number];
 export const LEAD_STATUSES = ["new", "contacted", "qualified", "converted", "lost"] as const;
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
-export const ACTIVITY_KINDS = ["call", "meeting", "note", "followup", "email", "review"] as const;
+export const ACTIVITY_KINDS = ["call", "meeting", "note", "followup", "email", "review", "whatsapp"] as const;
 export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
 
 export interface Household {
@@ -263,11 +263,12 @@ export const createLead = (body: {
   source?: string;
   notes?: string;
   assigned_rm_id?: string;
+  allow_duplicates?: boolean;
 }) => crmRequest<Lead>("/leads", { method: "POST", body: JSON.stringify(body) });
 
 export const patchLead = (
   id: string,
-  body: { status?: string; assigned_rm_id?: string | null; notes?: string },
+  body: { name?: string; email?: string | null; mobile?: string | null; status?: string; assigned_rm_id?: string | null; notes?: string },
 ) => crmRequest<Lead>(`/leads/${id}`, { method: "PATCH", body: JSON.stringify(body) });
 
 export const fetchLead = (id: string) => crmRequest<Lead>(`/leads/${id}`);
@@ -327,7 +328,8 @@ export const patchOpportunity = (
     amount?: number;
     expected_close?: string;
     notes?: string;
-    assigned_rm_id?: string;
+    assigned_rm_id?: string | null;
+    title?: string;
     lost_reason?: string;
     won_amount?: number;
   },
@@ -367,9 +369,10 @@ export const createActivity = (body: {
   customer_id?: string;
   opportunity_id?: string;
   case_id?: string;
+  lead_id?: string;
   due_at?: string;
   assigned_rm_id?: string;
-}) => crmRequest<Activity>("/activities", { method: "POST", body: JSON.stringify(body) });
+}) => crmRequest<Activity & { warnings?: string[] }>("/activities", { method: "POST", body: JSON.stringify(body) });
 
 export const patchActivity = (
   id: string,

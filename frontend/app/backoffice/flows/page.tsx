@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getFlows, FlowsData, BackofficeEnvelope } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
+import InfoTip from "@/components/InfoTip";
 
 export default function FlowsPage() {
   const [data, setData] = useState<BackofficeEnvelope<FlowsData> | null>(null);
@@ -118,7 +119,10 @@ export default function FlowsPage() {
           </thead>
           <tbody>
             <tr>
-              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">FII / FPI Net Cash Position</td>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                <span>FII / FPI Net Cash Position</span>
+                <InfoTip metric="fii_net_flow" meta={data?.meta?.fii_net_flow ?? data?.meta?._default} />
+              </td>
               <td className="text-right">
                 <SignedValue value={flows.fii_net_crore} unit="Cr" />
               </td>
@@ -126,7 +130,10 @@ export default function FlowsPage() {
               <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{latestProvisional ? "Provisional" : "Final"}</td>
             </tr>
             <tr>
-              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">DII Net Cash Position</td>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                <span>DII Net Cash Position</span>
+                <InfoTip metric="dii_net_flow" meta={data?.meta?.dii_net_flow ?? data?.meta?._default} />
+              </td>
               <td className="text-right">
                 <SignedValue value={flows.dii_net_crore} unit="Cr" />
               </td>
@@ -134,7 +141,10 @@ export default function FlowsPage() {
               <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{latestProvisional ? "Provisional" : "Final"}</td>
             </tr>
             <tr>
-              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{flows.sessions ?? 0}-Session Cumulative Net Flow (FII + DII)</td>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                <span>{flows.sessions ?? 0}-Session Cumulative Net Flow (FII + DII)</span>
+                <InfoTip metric="fii_dii_net" meta={data?.meta?.fii_dii_net ?? data?.meta?._default} />
+              </td>
               <td className="text-right">
                 <SignedValue value={flows.cumulative_7d_net_crore} unit="Cr" />
               </td>

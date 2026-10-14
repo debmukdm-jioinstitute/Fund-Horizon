@@ -3,6 +3,7 @@
 import React from "react";
 import { MfScreeningRatioMeta, MfScreeningRow } from "@/lib/backoffice";
 import { SignedValue } from "@/components/terminal/SignedValue";
+import InfoTip from "@/components/InfoTip";
 
 interface ScreeningTableProps {
   rows: MfScreeningRow[];
@@ -76,18 +77,44 @@ export default function ScreeningTable({
               <th className="w-[8%]">Code</th>
               <th className="w-[24%]">Scheme Name &amp; Category</th>
               <th className="w-[12%]">Manager &amp; Tenure</th>
-              <th className="w-[8%] text-center">2Y Quartile</th>
+              <th className="w-[8%] text-center">
+                <div className="inline-flex items-center justify-center gap-1">
+                  <span>2Y Quartile</span>
+                  <InfoTip metric="quartile_rank" />
+                </div>
+              </th>
               <th className="w-[6%] text-right" title="Z-scored Sharpe, Sortino, capture spread and rolling-return consistency">Score</th>
               {selectedColumns.map((colKey) => {
                 const meta = ratioMetaMap.get(colKey);
+                const metricKey =
+                  colKey === "expense_ratio"
+                    ? "expense_ratio"
+                    : colKey === "volatility"
+                    ? "vol_3y"
+                    : colKey === "max_drawdown"
+                    ? "max_drawdown_3y"
+                    : colKey;
                 return (
                   <th key={colKey} className="text-right whitespace-nowrap">
-                    {meta?.label || colKey}
+                    <div className="inline-flex items-center justify-end">
+                      <span>{meta?.label || colKey}</span>
+                      <InfoTip metric={metricKey} />
+                    </div>
                   </th>
                 );
               })}
-              <th className="w-[8%] text-right">1Y Return</th>
-              <th className="w-[8%] text-right">3Y CAGR</th>
+              <th className="w-[8%] text-right">
+                <div className="inline-flex items-center justify-end">
+                  <span>1Y Return</span>
+                  <InfoTip metric="ret_1y" />
+                </div>
+              </th>
+              <th className="w-[8%] text-right">
+                <div className="inline-flex items-center justify-end">
+                  <span>3Y CAGR</span>
+                  <InfoTip metric="cagr_3y" />
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>

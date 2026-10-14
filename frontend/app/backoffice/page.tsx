@@ -13,6 +13,7 @@ import {
 import { formatISTDate } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
 import IndicatorDrawer, { IndicatorSpec } from "@/components/backoffice/IndicatorDrawer";
+import InfoTip from "@/components/InfoTip";
 
 const IND: Record<string, IndicatorSpec> = {
   usdinr: { title: "USD / INR Reference Rate", a: "FX:USDINR", unit: "", decimals: 4 },
@@ -257,7 +258,10 @@ export default function BackofficeOverviewPage() {
                 </td>
               </tr>
               <tr {...rowProps("USD / INR Reference Rate")}>
-                <td className="font-medium">USD / INR Reference Rate</td>
+                <td className="font-medium flex items-center">
+                  <span>USD / INR Reference Rate</span>
+                  <InfoTip metric="inr_usd_fx" meta={data?.meta?.inr_usd_fx ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:USDINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
@@ -268,7 +272,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usdinr")}</td>
               </tr>
               <tr {...rowProps("India 10Y Benchmark G-Sec")}>
-                <td className="font-medium">India 10Y Benchmark G-Sec</td>
+                <td className="font-medium flex items-center">
+                  <span>India 10Y Benchmark G-Sec</span>
+                  <InfoTip metric="in_10y_yield" meta={data?.meta?.in_10y_yield ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.in_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
@@ -277,7 +284,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("in10")}</td>
               </tr>
               <tr {...rowProps("India 2Y Sovereign Bond")}>
-                <td className="font-medium">India 2Y Sovereign Bond</td>
+                <td className="font-medium flex items-center">
+                  <span>India 2Y Sovereign Bond</span>
+                  <InfoTip metric="in_10y_yield" meta={data?.meta?.in_10y_yield ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.in_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
@@ -286,7 +296,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("in2")}</td>
               </tr>
               <tr {...rowProps("India 10Y - 2Y Curve Slope")}>
-                <td className="font-medium">India 10Y - 2Y Curve Slope</td>
+                <td className="font-medium flex items-center">
+                  <span>India 10Y - 2Y Curve Slope</span>
+                  <InfoTip metric="us_yield_curve_slope" meta={data?.meta?.us_yield_curve_slope ?? data?.meta?._default} />
+                </td>
                 <td className="text-right">
                   <SignedValue value={spreads.india_10y_2y_bps} unit="bps" />
                 </td>
@@ -295,7 +308,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inSlope")}</td>
               </tr>
               <tr {...rowProps("India - US 10Y Sovereign Spread")}>
-                <td className="font-medium">India - US 10Y Sovereign Spread</td>
+                <td className="font-medium flex items-center">
+                  <span>India - US 10Y Sovereign Spread</span>
+                  <InfoTip metric="yield_spread_in_us" meta={data?.meta?.yield_spread_in_us ?? data?.meta?._default} />
+                </td>
                 <td className="text-right">
                   <SignedValue value={spreads.india_us_10y_bps} unit="bps" />
                 </td>
@@ -304,7 +320,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inUs")}</td>
               </tr>
               <tr {...rowProps("India VIX (NSE Volatility Index)")}>
-                <td className="font-medium">India VIX (NSE Volatility Index)</td>
+                <td className="font-medium flex items-center">
+                  <span>India VIX (NSE Volatility Index)</span>
+                  <InfoTip metric="india_vix" meta={data?.meta?.india_vix ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(volData["VOL:IN:INDIAVIX"], (n) => n.toFixed(2))}
                 </td>
@@ -320,7 +339,10 @@ export default function BackofficeOverviewPage() {
                 </td>
               </tr>
               <tr {...rowProps("US 10Y Treasury Benchmark")}>
-                <td className="font-medium">US 10Y Treasury Benchmark</td>
+                <td className="font-medium flex items-center">
+                  <span>US 10Y Treasury Benchmark</span>
+                  <InfoTip metric="us_10y_yield" meta={data?.meta?.us_10y_yield ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.us_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
@@ -329,7 +351,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("us10")}</td>
               </tr>
               <tr {...rowProps("US 2Y Treasury Yield")}>
-                <td className="font-medium">US 2Y Treasury Yield</td>
+                <td className="font-medium flex items-center">
+                  <span>US 2Y Treasury Yield</span>
+                  <InfoTip metric="us_2y_yield" meta={data?.meta?.us_2y_yield ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.us_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
@@ -338,7 +363,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("us2")}</td>
               </tr>
               <tr {...rowProps("US 10Y - 2Y Curve Slope")}>
-                <td className="font-medium">US 10Y - 2Y Curve Slope</td>
+                <td className="font-medium flex items-center">
+                  <span>US 10Y - 2Y Curve Slope</span>
+                  <InfoTip metric="us_yield_curve_slope" meta={data?.meta?.us_yield_curve_slope ?? data?.meta?._default} />
+                </td>
                 <td className="text-right">
                   <SignedValue value={spreads.us_10y_2y_bps} unit="bps" />
                 </td>
@@ -347,7 +375,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usSlope")}</td>
               </tr>
               <tr {...rowProps("EUR / INR Reference Rate")}>
-                <td className="font-medium">EUR / INR Reference Rate</td>
+                <td className="font-medium flex items-center">
+                  <span>EUR / INR Reference Rate</span>
+                  <InfoTip metric="fx_rate" meta={data?.meta?.fx_rate ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:EURINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
@@ -356,7 +387,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("eurinr")}</td>
               </tr>
               <tr {...rowProps("GBP / INR Reference Rate")}>
-                <td className="font-medium">GBP / INR Reference Rate</td>
+                <td className="font-medium flex items-center">
+                  <span>GBP / INR Reference Rate</span>
+                  <InfoTip metric="fx_rate" meta={data?.meta?.fx_rate ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:GBPINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
@@ -365,7 +399,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("gbpinr")}</td>
               </tr>
               <tr {...rowProps("JPY / INR Reference Rate (100 JPY)")}>
-                <td className="font-medium">JPY / INR Reference Rate (100 JPY)</td>
+                <td className="font-medium flex items-center">
+                  <span>JPY / INR Reference Rate (100 JPY)</span>
+                  <InfoTip metric="fx_rate" meta={data?.meta?.fx_rate ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:JPYINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
@@ -374,7 +411,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("jpyinr")}</td>
               </tr>
               <tr {...rowProps("Cboe US VIX")}>
-                <td className="font-medium">Cboe US VIX</td>
+                <td className="font-medium flex items-center">
+                  <span>Cboe US VIX</span>
+                  <InfoTip metric="vix" meta={data?.meta?.vix ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                   {dash(volData["VOL:US:VIX"], (n) => n.toFixed(2))}
                 </td>
@@ -390,7 +430,10 @@ export default function BackofficeOverviewPage() {
                 </td>
               </tr>
               <tr {...rowProps("FII Net Equity Investment (Cr)")}>
-                <td className="font-medium">FII Net Equity Investment (Cr)</td>
+                <td className="font-medium flex items-center">
+                  <span>FII Net Equity Investment (Cr)</span>
+                  <InfoTip metric="fii_net_flow" meta={data?.meta?.fii_net_flow ?? data?.meta?._default} />
+                </td>
                 <td className="text-right">
                   <SignedValue value={flows?.fii_net} unit="₹ Cr" />
                 </td>
@@ -399,7 +442,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
               </tr>
               <tr {...rowProps("DII Net Equity Investment (Cr)")}>
-                <td className="font-medium">DII Net Equity Investment (Cr)</td>
+                <td className="font-medium flex items-center">
+                  <span>DII Net Equity Investment (Cr)</span>
+                  <InfoTip metric="dii_net_flow" meta={data?.meta?.dii_net_flow ?? data?.meta?._default} />
+                </td>
                 <td className="text-right">
                   <SignedValue value={flows?.dii_net} unit="₹ Cr" />
                 </td>
@@ -408,7 +454,10 @@ export default function BackofficeOverviewPage() {
                 <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
               </tr>
               <tr {...rowProps("Upstream Feed Operational Health")}>
-                <td className="font-medium">Upstream Feed Operational Health</td>
+                <td className="font-medium flex items-center">
+                  <span>Upstream Feed Operational Health</span>
+                  <InfoTip metric="source_health" meta={data?.meta?.source_health ?? data?.meta?._default} />
+                </td>
                 <td className="text-right font-medium text-[#087744] dark:text-[#58D6A0]">
                   {sourcesSummary ? `${sourcesSummary.ready} / ${sourcesSummary.total} Ready` : "—"}
                 </td>

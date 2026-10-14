@@ -5,6 +5,7 @@ import { getMutualFundsTracker, MutualFundItem } from "@/lib/backoffice";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
+import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
 
 const PAGE_SIZE = 50;
 
@@ -34,6 +35,7 @@ export default function MutualFundsTrackerPage() {
   const [categories, setCategories] = useState<string[]>([]);
   const [planCounts, setPlanCounts] = useState<Record<string, number>>({});
   const [asOf, setAsOf] = useState<string | undefined>();
+  const [meta, setMeta] = useState<Record<string, InfoTipMeta> | undefined>();
   const [selectedScheme, setSelectedScheme] = useState<MutualFundItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +76,7 @@ export default function MutualFundsTrackerPage() {
         setCategories(res.facets.categories);
         setPlanCounts(res.facets.plan_counts || {});
         setAsOf(res.as_of);
+        setMeta(res.meta);
         setRecommendedCount(res.recommended_count);
       } catch (err: unknown) {
         // Aborted requests are superseded by a newer page/filter change — not an error.
@@ -265,9 +268,12 @@ export default function MutualFundsTrackerPage() {
                 </th>
                 <th className="w-[12%]">Plan / Option</th>
                 <th className="w-[12%] text-right">
-                  <button type="button" onClick={() => toggleSort("nav")} className="hover:underline cursor-pointer" title="Sort by NAV">
-                    Latest NAV (₹){sortIndicator("nav")}
-                  </button>
+                  <div className="inline-flex items-center justify-end">
+                    <button type="button" onClick={() => toggleSort("nav")} className="hover:underline cursor-pointer" title="Sort by NAV">
+                      Latest NAV (₹){sortIndicator("nav")}
+                    </button>
+                    <InfoTip metric="nav" meta={meta?.nav ?? meta?._default} />
+                  </div>
                 </th>
                 <th className="w-[12%]">
                   <button type="button" onClick={() => toggleSort("nav_date")} className="hover:underline cursor-pointer" title="Sort by NAV date">
@@ -275,9 +281,12 @@ export default function MutualFundsTrackerPage() {
                   </button>
                 </th>
                 <th className="w-[10%] text-right">
-                  <button type="button" onClick={() => toggleSort("ter")} className="hover:underline cursor-pointer" title="Sort by TER">
-                    TER (%){sortIndicator("ter")}
-                  </button>
+                  <div className="inline-flex items-center justify-end">
+                    <button type="button" onClick={() => toggleSort("ter")} className="hover:underline cursor-pointer" title="Sort by TER">
+                      TER (%){sortIndicator("ter")}
+                    </button>
+                    <InfoTip metric="ter" meta={meta?.ter ?? meta?._default} />
+                  </div>
                 </th>
                 <th className="w-[12%]">ISIN</th>
               </tr>

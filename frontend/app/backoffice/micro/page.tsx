@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { getMicroIssuer, MicroIssuerData } from "@/lib/backoffice";
 import { formatCrore, formatPercent } from "@/lib/terminal-format";
+import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
 
 export default function MicroFundamentalsPage() {
   const [selectedIssuer, setSelectedIssuer] = useState("INFY");
   const [issuerData, setIssuerData] = useState<MicroIssuerData | null>(null);
+  const [meta, setMeta] = useState<Record<string, InfoTipMeta> | undefined>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,6 +19,7 @@ export default function MicroFundamentalsPage() {
         setError(null);
         const res = await getMicroIssuer(id);
         setIssuerData(res.data);
+        setMeta(res.meta);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load issuer fundamentals");
         setIssuerData(null);
@@ -111,7 +114,12 @@ export default function MicroFundamentalsPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Revenue (TTM)</td>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <span className="inline-flex items-center gap-1">
+                      Revenue (TTM)
+                      <InfoTip metric="revenue" meta={meta?.revenue ?? meta?._default} />
+                    </span>
+                  </td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                     {issuerData.revenue_crore ? formatCrore(issuerData.revenue_crore) : "—"}
                   </td>
@@ -119,7 +127,12 @@ export default function MicroFundamentalsPage() {
                   <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{issuerData.fiscal_period || "Q1 FY27"}</td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Operating EBITDA Margin</td>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <span className="inline-flex items-center gap-1">
+                      Operating EBITDA Margin
+                      <InfoTip metric="operating_margin" meta={meta?.operating_margin ?? meta?._default} />
+                    </span>
+                  </td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                     {issuerData.ebitda_margin_pct ? formatPercent(issuerData.ebitda_margin_pct) : "—"}
                   </td>
@@ -127,7 +140,12 @@ export default function MicroFundamentalsPage() {
                   <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{issuerData.fiscal_period || "Q1 FY27"}</td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Debt-to-Equity Ratio</td>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <span className="inline-flex items-center gap-1">
+                      Debt-to-Equity Ratio
+                      <InfoTip metric="debt_to_equity" meta={meta?.debt_to_equity ?? meta?._default} />
+                    </span>
+                  </td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                     {issuerData.debt_equity_ratio !== undefined ? issuerData.debt_equity_ratio.toFixed(2) : "—"}
                   </td>
@@ -158,9 +176,24 @@ export default function MicroFundamentalsPage() {
                 <tr>
                   <th>Fiscal Period</th>
                   <th>Reporting Basis</th>
-                  <th className="text-right">Revenue</th>
-                  <th className="text-right">EBITDA</th>
-                  <th className="text-right">PAT</th>
+                  <th className="text-right">
+                    <div className="inline-flex items-center justify-end">
+                      <span>Revenue</span>
+                      <InfoTip metric="revenue" meta={meta?.revenue ?? meta?._default} />
+                    </div>
+                  </th>
+                  <th className="text-right">
+                    <div className="inline-flex items-center justify-end">
+                      <span>EBITDA</span>
+                      <InfoTip metric="ebitda" meta={meta?.ebitda ?? meta?._default} />
+                    </div>
+                  </th>
+                  <th className="text-right">
+                    <div className="inline-flex items-center justify-end">
+                      <span>PAT</span>
+                      <InfoTip metric="net_profit" meta={meta?.net_profit ?? meta?._default} />
+                    </div>
+                  </th>
                   <th>Filing Reference</th>
                 </tr>
               </thead>

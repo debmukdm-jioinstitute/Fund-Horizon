@@ -12,6 +12,7 @@ import { formatCurrencyPaiseToINR, formatCrore, formatISTDate } from "@/lib/term
 import SignedValue from "@/components/terminal/SignedValue";
 import PmsStrategyDrawer from "@/components/backoffice/PmsStrategyDrawer";
 import PmsManagerDrawer from "@/components/backoffice/PmsManagerDrawer";
+import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
 import {
   approachesMatch,
   isMissingNumber,
@@ -62,6 +63,8 @@ function SortHeader({
   sortDir,
   align = "left",
   onSort,
+  metric,
+  meta,
 }: {
   label: string;
   column: SortKey;
@@ -69,20 +72,25 @@ function SortHeader({
   sortDir: "asc" | "desc";
   align?: "left" | "right";
   onSort: (key: SortKey) => void;
+  metric?: string;
+  meta?: InfoTipMeta | null;
 }) {
   const active = sortKey === column;
   return (
     <th className={align === "right" ? "text-right" : undefined} aria-sort={active ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
-      <button
-        type="button"
-        onClick={() => onSort(column)}
-        className={`inline-flex items-center gap-1 uppercase tracking-wider ${align === "right" ? "ml-auto" : ""} text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]`}
-      >
-        <span>{label}</span>
-        <span className="font-mono text-[10px]" aria-hidden>
-          {active ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
-        </span>
-      </button>
+      <div className={`inline-flex items-center ${align === "right" ? "justify-end" : ""}`}>
+        <button
+          type="button"
+          onClick={() => onSort(column)}
+          className={`inline-flex items-center gap-1 uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]`}
+        >
+          <span>{label}</span>
+          <span className="font-mono text-[10px]" aria-hidden>
+            {active ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+          </span>
+        </button>
+        {metric && <InfoTip metric={metric} meta={meta} />}
+      </div>
     </th>
   );
 }
@@ -99,6 +107,7 @@ export default function PmsTrackerPage() {
   const [accountLoading, setAccountLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [accountHint, setAccountHint] = useState<string | null>(null);
+  const [meta, setMeta] = useState<Record<string, InfoTipMeta> | undefined>();
 
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [fhSubTab, setFhSubTab] = useState<"returns" | "details">("returns");
@@ -114,6 +123,7 @@ export default function PmsTrackerPage() {
         const res = await getPmsStrategies();
         setStrategies(res.data || []);
         setAsOf(res.as_of);
+        setMeta(res.meta);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load PMS data");
       } finally {
@@ -388,20 +398,40 @@ export default function PmsTrackerPage() {
                       <tr>
                         <th className="w-[5%] text-center">SR</th>
                         <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-                        <SortHeader label="1M" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                        <th className="text-right">3M</th>
-                        <th className="text-right">6M</th>
-                        <SortHeader label="1Y" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                        <SortHeader label="3Y" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                        <th className="text-right">5Y</th>
-                        <th className="text-right">Since Inception</th>
+                        <SortHeader label="1M" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
+                        <th className="text-right">
+                          <div className="inline-flex items-center justify-end">
+                            <span>3M</span>
+                            <InfoTip metric="ret_3m" meta={meta?.ret_3m ?? meta?._default} />
+                          </div>
+                        </th>
+                        <th className="text-right">
+                          <div className="inline-flex items-center justify-end">
+                            <span>6M</span>
+                            <InfoTip metric="ret_6m" meta={meta?.ret_6m ?? meta?._default} />
+                          </div>
+                        </th>
+                        <SortHeader label="1Y" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
+                        <SortHeader label="3Y" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
+                        <th className="text-right">
+                          <div className="inline-flex items-center justify-end">
+                            <span>5Y</span>
+                            <InfoTip metric="cagr_5y" meta={meta?.cagr_5y ?? meta?._default} />
+                          </div>
+                        </th>
+                        <th className="text-right">
+                          <div className="inline-flex items-center justify-end">
+                            <span>Since Inception</span>
+                            <InfoTip metric="ret_si" meta={meta?.ret_si ?? meta?._default} />
+                          </div>
+                        </th>
                       </tr>
                     ) : (
                       <tr>
                         <th className="w-[5%] text-center">SR</th>
                         <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                         <th>Type</th>
-                        <SortHeader label="AUM" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                        <SortHeader label="AUM" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="aum" meta={meta?.aum ?? meta?._default} />
                         <th className="text-right">Min Investment</th>
                         <th>Inception</th>
                         <th>Principal Officer</th>
@@ -412,10 +442,10 @@ export default function PmsTrackerPage() {
                     <tr>
                       <SortHeader label="Provider / Strategy" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                       <th>Approach</th>
-                      <SortHeader label="AUM (₹ Cr)" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                      <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                      <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                      <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                      <SortHeader label="AUM (₹ Cr)" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="aum" meta={meta?.aum ?? meta?._default} />
+                      <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
+                      <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
+                      <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
                       <th>Benchmark</th>
                     </tr>
                   )}
@@ -617,7 +647,12 @@ export default function PmsTrackerPage() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td className="font-medium">Portfolio Current Valuation</td>
+                      <td className="font-medium">
+                        <span className="inline-flex items-center gap-1">
+                          Portfolio Current Valuation
+                          <InfoTip metric="aum" />
+                        </span>
+                      </td>
                       <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                         {accountTracker.current_valuation_paise
                           ? formatCurrencyPaiseToINR(accountTracker.current_valuation_paise)
@@ -630,7 +665,12 @@ export default function PmsTrackerPage() {
                       <td className="text-[12px] text-[#087744] dark:text-[#58D6A0]">Audited</td>
                     </tr>
                     <tr>
-                      <td className="font-medium">Annualized XIRR Return</td>
+                      <td className="font-medium">
+                        <span className="inline-flex items-center gap-1">
+                          Annualized XIRR Return
+                          <InfoTip metric="xirr" />
+                        </span>
+                      </td>
                       <td className="text-right">
                         <SignedValue value={accountTracker.xirr?.xirr_pct} unit="%" />
                       </td>
@@ -641,7 +681,12 @@ export default function PmsTrackerPage() {
                       <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Audited</td>
                     </tr>
                     <tr>
-                      <td className="font-medium">Modified Dietz Return (CY)</td>
+                      <td className="font-medium">
+                        <span className="inline-flex items-center gap-1">
+                          Modified Dietz Return (CY)
+                          <InfoTip metric="dietz_return" />
+                        </span>
+                      </td>
                       <td className="text-right">
                         <SignedValue value={accountTracker.modified_dietz?.return_pct} unit="%" />
                       </td>
@@ -650,7 +695,12 @@ export default function PmsTrackerPage() {
                       <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Daily-weighted</td>
                     </tr>
                     <tr>
-                      <td className="font-medium">High Water Mark (HWM) Status</td>
+                      <td className="font-medium">
+                        <span className="inline-flex items-center gap-1">
+                          High Water Mark (HWM) Status
+                          <InfoTip metric="hwm" />
+                        </span>
+                      </td>
                       <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                         {accountTracker.hwm_fee?.hwm_exceeded ? "Above HWM (Fee Triggered)" : "Below HWM (No Performance Fee)"}
                       </td>

@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { getDerivatives, DerivativesData, BackofficeEnvelope } from "@/lib/backoffice";
 import { formatNumber, formatISTDate } from "@/lib/terminal-format";
+import InfoTip from "@/components/InfoTip";
 
 const INDICES = [
   { id: "NIFTY", name: "NIFTY 50", type: "index_fno" },
@@ -203,7 +204,10 @@ export default function DerivativesPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Put-Call Ratio (Open Interest)</td>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                    <span>Put-Call Ratio (Open Interest)</span>
+                    <InfoTip metric="pcr_oi" meta={data?.meta?.pcr_oi ?? data?.meta?._default} />
+                  </td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                     {hasContracts && d.pcr_oi != null ? d.pcr_oi.toFixed(2) : "N/A"}
                   </td>
@@ -217,7 +221,10 @@ export default function DerivativesPage() {
                   </td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Put-Call Ratio (Traded Volume)</td>
+                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                    <span>Put-Call Ratio (Traded Volume)</span>
+                    <InfoTip metric="pcr_volume" meta={data?.meta?.pcr_volume ?? data?.meta?._default} />
+                  </td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                     {hasContracts && d.pcr_volume != null ? d.pcr_volume.toFixed(2) : "N/A"}
                   </td>
@@ -226,10 +233,11 @@ export default function DerivativesPage() {
                 </tr>
                 <tr>
                   <td
-                    className="font-medium text-[#172033] dark:text-[#EDF2F7]"
+                    className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center"
                     title="Strike where option writers' total payout is lowest, computed from open interest across all strikes of the selected expiry"
                   >
-                    Max Pain Strike
+                    <span>Max Pain Strike</span>
+                    <InfoTip metric="max_pain" meta={data?.meta?.max_pain ?? data?.meta?._default} />
                   </td>
                   <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
                     {hasContracts && d.max_pain_strike ? formatWhole(d.max_pain_strike) : "N/A"}

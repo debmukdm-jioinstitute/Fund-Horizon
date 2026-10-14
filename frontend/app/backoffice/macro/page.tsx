@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getYieldsBoard, YieldsBoardData, BackofficeEnvelope } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
+import InfoTip from "@/components/InfoTip";
 
 export default function MacroYieldsPage() {
   const [data, setData] = useState<BackofficeEnvelope<YieldsBoardData> | null>(null);
@@ -100,7 +101,10 @@ export default function MacroYieldsPage() {
           </thead>
           <tbody>
             <tr>
-              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">India – US 10Y Sovereign Spread</td>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                <span>India – US 10Y Sovereign Spread</span>
+                <InfoTip metric="yield_spread_in_us" meta={data?.meta?.yield_spread_in_us ?? data?.meta?._default} />
+              </td>
               <td className="text-right">
                 <SignedValue value={yieldsData.spreads?.in_us_10y_bps} unit="bps" />
               </td>
@@ -108,7 +112,10 @@ export default function MacroYieldsPage() {
               <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Trading Economics / US Treasury</td>
             </tr>
             <tr>
-              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">US 10Y – 2Y Term Structure Slope</td>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                <span>US 10Y – 2Y Term Structure Slope</span>
+                <InfoTip metric="us_yield_curve_slope" meta={data?.meta?.us_yield_curve_slope ?? data?.meta?._default} />
+              </td>
               <td className="text-right">
                 <SignedValue value={yieldsData.spreads?.us_10y_2y_bps} unit="bps" />
               </td>
@@ -116,7 +123,10 @@ export default function MacroYieldsPage() {
               <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">US Treasury</td>
             </tr>
             <tr>
-              <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">India 10Y – 2Y G-Sec Term Slope</td>
+              <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                <span>India 10Y – 2Y G-Sec Term Slope</span>
+                <InfoTip metric="us_yield_curve_slope" meta={data?.meta?.us_yield_curve_slope ?? data?.meta?._default} />
+              </td>
               <td className="text-right">
                 <SignedValue value={yieldsData.spreads?.in_10y_2y_bps} unit="bps" />
               </td>

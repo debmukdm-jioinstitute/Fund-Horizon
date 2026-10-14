@@ -5,9 +5,6 @@ import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
 
-import pytest
-
-from app.backoffice.providers.manual import get_template_csv
 from app.db import sqlite
 
 
@@ -105,11 +102,48 @@ def test_backoffice_impact_simulation_apis(client):
 def test_backoffice_briefing_api(client):
     sid = _create_staff("analyst")
     _login_staff(client, sid)
+
+    # No briefing stored yet: 404, not 500.
+    r = client.get("/api/backoffice/briefing")
+    assert r.status_code == 404
+
+    # Seed a stored briefing through the builder (read-only API path afterwards).
+    from app.backoffice.analytics.briefing_builder import build_daily_briefing
+    from app.backoffice.repository import BackofficeRepository
+
+    repo = BackofficeRepository()
+    build_daily_briefing(repo, "2026-10-14")
+
     r = client.get("/api/backoffice/briefing")
     assert r.status_code == 200
     body = r.json()
-    assert "bullets" in body
-    assert len(body["bullets"]) > 0
+    assert body["brief_date"] == "2026-10-14"
+    assert body["version"] == 1
+    assert "generated_at" in body
+    assert [s["key"] for s in body["sections"]] == [
+        "market_pulse", "fund_movers", "screening_changes", "cost_manager_changes",
+        "regulatory_news", "pms", "client_actions", "data_freshness",
+    ]
+    for section in body["sections"]:
+        assert isinstance(section["items"], list) and "note" in section
+    assert isinstance(body["freshness"], list)
+
+    # Explicit date + archive dates.
+    r = client.get("/api/backoffice/briefing?date=2026-10-14")
+    assert r.status_code == 200 and r.json()["brief_date"] == "2026-10-14"
+    assert client.get("/api/backoffice/briefing?date=2020-01-01").status_code == 404
+    assert client.get("/api/backoffice/briefing?date=not-a-date").status_code == 404
+    r = client.get("/api/backoffice/briefing/dates")
+    assert r.status_code == 200 and r.json()["dates"] == ["2026-10-14"]
+
+    # Rebuild is admin-only.
+    r = client.post("/api/backoffice/briefing/rebuild", headers={"sec-fetch-site": "same-origin"})
+    assert r.status_code == 403
+    admin_sid = _create_staff("admin")
+    _login_staff(client, admin_sid)
+    r = client.post("/api/backoffice/briefing/rebuild", headers={"sec-fetch-site": "same-origin"})
+    assert r.status_code == 202
+    assert r.json()["ok"] is True and "brief_date" in r.json()
 
 
 def test_backoffice_watchlists_crud(client):

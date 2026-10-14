@@ -1,4 +1,5 @@
 import { ApiError, resolveApiUrl, API_URL } from "./api";
+import type { PmsManagerProfile } from "./pms-managers";
 
 export interface BackofficeEnvelope<T> {
   data: T;
@@ -301,6 +302,54 @@ export const getMutualFundPerformance = async (code: string): Promise<MfPerforma
     metrics,
     history: arr(d.history).map((h) => ({ date: str(h.date) ?? "", nav: num(h.nav), r1m: num(h.r1m), r1y: num(h.r1y), r3y: num(h.r3y), r5y: num(h.r5y) })),
     as_of: str(raw.as_of),
+  };
+};
+
+export interface MfManagerInfo {
+  manager_name: string;
+  manager_start?: string;
+  tenure_years?: number;
+}
+
+/** Null when no manager is on file for the scheme. */
+export const getMfManager = async (code: string): Promise<MfManagerInfo | null> => {
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/${encodeURIComponent(code)}/manager`);
+  const d = obj(raw.data);
+  const name = str(d.manager_name);
+  return name ? { manager_name: name, manager_start: str(d.manager_start), tenure_years: num(d.tenure_years) } : null;
+};
+
+export interface MfManagedFund {
+  scheme_code: string;
+  scheme_name: string;
+  category?: string;
+  manager_start?: string;
+  tenure_cagr?: number;
+  ret_1y?: number;
+  cagr_3y?: number;
+  cagr_5y?: number;
+  max_drawdown_3y?: number;
+  sharpe_3y?: number;
+}
+
+export const getMfManagerProfile = async (name: string): Promise<{ name: string; profile: PmsManagerProfile | null; funds: MfManagedFund[] }> => {
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-fund-managers/profile?name=${encodeURIComponent(name)}`);
+  const d = obj(raw.data);
+  return {
+    name: str(d.name) ?? name,
+    profile: d.profile ? (d.profile as unknown as PmsManagerProfile) : null,
+    funds: arr(d.funds).map((f) => ({
+      scheme_code: str(f.scheme_code) ?? "",
+      scheme_name: str(f.scheme_name) ?? "",
+      category: str(f.category),
+      manager_start: str(f.manager_start),
+      tenure_cagr: num(f.tenure_cagr),
+      ret_1y: num(f.ret_1y),
+      cagr_3y: num(f.cagr_3y),
+      cagr_5y: num(f.cagr_5y),
+      max_drawdown_3y: num(f.max_drawdown_3y),
+      sharpe_3y: num(f.sharpe_3y),
+    })),
   };
 };
 

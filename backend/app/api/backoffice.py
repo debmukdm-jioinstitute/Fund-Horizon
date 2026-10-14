@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import io
+import json
 import re
 import secrets
 from datetime import UTC, datetime
@@ -41,7 +42,7 @@ from app.backoffice.schemas import (
 )
 from app.backoffice.screening.service import ScreeningService
 from app.backoffice.service import BackofficeService
-from app.data.loader import load_metrics, load_nav
+from app.data.loader import data_dir, load_metrics, load_nav
 from app.db import get_repository
 
 router = APIRouter(prefix="/api/backoffice", tags=["backoffice"])
@@ -482,6 +483,65 @@ def backoffice_mf_performance(scheme_code: str, request: Request, staff: Annotat
         "availability": "ready",
         "as_of": str(row.get("last_nav_date")),
     }
+
+
+def _mgr_key(name: str | None) -> str:
+    return re.sub(r"^(mr|mrs|ms|dr)\.?\s+", "", (name or "").strip(), flags=re.I).lower()
+
+
+def _tenure_cagr(scheme_code: str, start: str | None) -> float | None:
+    """CAGR of the scheme's month-end NAV from the manager's start month (approximate: first month-end on/after start)."""
+    if not start:
+        return None
+    try:
+        nav = load_nav(scheme_code)
+        nav = nav[nav.index >= pd.Timestamp(start)]
+        years = (nav.index[-1] - nav.index[0]).days / 365.25
+        return _num_or_none(((nav.iloc[-1] / nav.iloc[0]) ** (1 / years) - 1) * 100) if len(nav) > 1 and years >= 1 else None
+    except (FileNotFoundError, ValueError, ZeroDivisionError):
+        return None
+
+
+@router.get("/mutual-funds/{scheme_code}/manager")
+def backoffice_mf_manager(scheme_code: str, staff: Annotated[dict, Depends(require_staff)]):
+    """Named fund manager of one scheme (from the mf_managers table), or null when none is on file."""
+    m = _REPO.list_mf_managers().get(scheme_code)
+    if not m:
+        return {"data": None}
+    start = m.get("manager_start")
+    tenure = None
+    if start:
+        try:
+            tenure = round((pd.Timestamp.now() - pd.Timestamp(start)).days / 365.25, 1)
+        except ValueError:
+            pass
+    return {"data": {"manager_name": m["manager_name"], "manager_start": start, "tenure_years": tenure, "source": m.get("source")}}
+
+
+@router.get("/mutual-fund-managers/profile")
+def backoffice_mf_manager_profile(name: Annotated[str, Query(min_length=2, max_length=120)], staff: Annotated[dict, Depends(require_staff)]):
+    """Bio (data/mf_manager_profiles.json, if curated) plus every scheme the manager runs, with performance."""
+    key = _mgr_key(name)
+    profile = None
+    path = data_dir().parent / "mf_manager_profiles.json"
+    if path.exists():
+        profile = next((p for p in json.loads(path.read_text()) if key in {_mgr_key(p.get("name")), *map(_mgr_key, p.get("aliases", []))}), None)
+    mets = load_metrics().set_index("scheme_code")
+    funds = []
+    for code, m in _REPO.list_mf_managers().items():
+        if _mgr_key(m["manager_name"]) != key:
+            continue
+        row = mets.loc[code] if code in mets.index else None
+        funds.append({
+            "scheme_code": code,
+            "scheme_name": str(row["scheme_name"]) if row is not None else code,
+            "category": str(row["category"]) if row is not None else None,
+            "manager_start": m.get("manager_start"),
+            "tenure_cagr": _tenure_cagr(code, m.get("manager_start")),
+            **({k: _num_or_none(row.get(k), 100) for k in ("ret_1y", "cagr_3y", "cagr_5y", "max_drawdown_3y")} | {"sharpe_3y": _num_or_none(row.get("sharpe_3y"))} if row is not None else {}),
+        })
+    funds.sort(key=lambda f: f["manager_start"] or "9999")
+    return {"data": {"name": profile["name"] if profile else name, "profile": profile, "funds": funds}}
 
 
 @router.get("/mutual-funds/tracker")

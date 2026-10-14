@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { getMutualFundPerformance, getMfNavPairCheck, MfPerformance, MutualFundItem } from "@/lib/backoffice";
+import { getMutualFundPerformance, getMfNavPairCheck, getMfManager, MfManagerInfo, MfPerformance, MutualFundItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
+import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
 import FactsheetList from "@/components/backoffice/FactsheetList";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
@@ -18,13 +19,20 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined); // undefined = loading, null = no data
   const [view, setView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const [navPairSiblings, setNavPairSiblings] = useState<string[]>([]);
+  const [manager, setManager] = useState<MfManagerInfo | null>(null);
+  const [managerOpen, setManagerOpen] = useState(false);
   const code = scheme?.scheme_code;
 
   useEffect(() => {
     setPerf(undefined);
     setNavPairSiblings([]);
+    setManager(null);
+    setManagerOpen(false);
     if (!code) return;
     let cancelled = false;
+    getMfManager(code)
+      .then((m) => !cancelled && setManager(m))
+      .catch(() => !cancelled && setManager(null));
     getMutualFundPerformance(code)
       .then((p) => !cancelled && setPerf(p))
       .catch(() => !cancelled && setPerf(null));
@@ -44,7 +52,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && !managerOpen) onClose();
     }
     if (scheme) {
       window.addEventListener("keydown", handleKeyDown);
@@ -54,7 +62,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset";
     };
-  }, [scheme, onClose]);
+  }, [scheme, onClose, managerOpen]);
 
   if (!scheme) return null;
 
@@ -195,6 +203,29 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   {classified.plan || "—"}
                   {classified.option ? ` · ${classified.option}` : ""}
                 </div>
+              </div>
+
+              <div className="terminal-panel p-3 col-span-2">
+                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Fund Manager</div>
+                {manager ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setManagerOpen(true)}
+                      className="text-[14px] font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline mt-0.5 text-left"
+                    >
+                      {manager.manager_name}
+                    </button>
+                    {manager.manager_start && (
+                      <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4] font-mono mt-0.5">
+                        Since {manager.manager_start}
+                        {manager.tenure_years != null ? ` · ${manager.tenure_years} yrs` : ""}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-[13px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">Not on file</div>
+                )}
               </div>
             </div>
 
@@ -415,6 +446,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
           </div></div>
         </div>
       </div>
+      {managerOpen && manager && <MfManagerDrawer manager={manager} onClose={() => setManagerOpen(false)} />}
     </div>
   );
 }

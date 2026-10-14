@@ -204,3 +204,14 @@ def test_screening_fund_details_endpoint(client, seeded_screening):
     assert d["manager_name"] == "Chirag Setalvad"
     assert "notes" in d
     assert "pms_matches" in d
+
+
+def test_mf_manager_endpoints(client, seeded_screening):
+    _login_staff(client, _create_staff())
+    r = client.get("/api/backoffice/mutual-funds/119551/manager").json()["data"]
+    assert r["manager_name"] == "Chirag Setalvad" and r["tenure_years"] > 5
+    assert client.get("/api/backoffice/mutual-funds/000001/manager").json()["data"] is None
+    d = client.get("/api/backoffice/mutual-fund-managers/profile", params={"name": "Mr Chirag Setalvad"}).json()["data"]
+    assert d["profile"]["firm"] == "HDFC Mutual Fund"  # from data/mf_manager_profiles.json
+    assert "119551" in [f["scheme_code"] for f in d["funds"]]
+    assert client.get("/api/backoffice/mutual-fund-managers/profile", params={"name": "Nobody Atall"}).json()["data"]["profile"] is None

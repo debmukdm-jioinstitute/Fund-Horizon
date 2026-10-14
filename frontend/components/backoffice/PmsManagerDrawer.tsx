@@ -16,7 +16,7 @@ interface PmsManagerDrawerProps {
   onSelectStrategy: (s: PmsStrategyItem) => void;
 }
 
-function initialsOf(name: string): string {
+export function initialsOf(name: string): string {
   const parts = name.replace(/^(mr|mrs|ms|dr)\.?\s+/i, "").trim().split(/\s+/);
   if (parts.length === 0) return "?";
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
@@ -32,7 +32,7 @@ const AVATAR_BG = [
   "bg-[#BE123C] dark:bg-[#FDA4AF]",
 ];
 
-function avatarBgFor(name: string): string {
+export function avatarBgFor(name: string): string {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
   return AVATAR_BG[h % AVATAR_BG.length];

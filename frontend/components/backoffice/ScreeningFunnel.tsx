@@ -18,6 +18,7 @@ export default function ScreeningFunnel({
   activeStage,
   onSelectStage,
 }: ScreeningFunnelProps) {
+  const [showHelp, setShowHelp] = React.useState(false);
   if (!counts) {
     return null;
   }
@@ -29,12 +30,14 @@ export default function ScreeningFunnel({
     count: number;
     insufficient?: number;
     badge?: string;
+    help: string;
   }> = [
     {
       key: "all",
       label: "S0 Universe",
       sublabel: "Regular Growth",
       count: counts.universe,
+      help: "Every Regular-plan, Growth-option fund in the category. Regular plans pay distributor commission, so cost more than Direct. Growth means profits are reinvested, not paid out. Everything starts here.",
     },
     {
       key: "s1",
@@ -42,6 +45,7 @@ export default function ScreeningFunnel({
       sublabel: "Tenure ≥ 3Y",
       count: counts.s1,
       insufficient: counts.insufficient_by_stage?.s1,
+      help: "The fund manager must have run the fund for 3 years or more. Past returns belong to the manager, so a new manager means the track record may not repeat.",
     },
     {
       key: "s2",
@@ -49,6 +53,7 @@ export default function ScreeningFunnel({
       sublabel: "Ratio bounds",
       count: counts.s2,
       insufficient: counts.insufficient_by_stage?.s2,
+      help: "Quality ratios (such as Sharpe, Sortino, Alpha, Beta) must sit inside the min/max bounds you set. With no bounds set, every fund passes this stage.",
     },
     {
       key: "s3",
@@ -57,6 +62,7 @@ export default function ScreeningFunnel({
       count: counts.s3_action,
       insufficient: counts.insufficient_by_stage?.s3,
       badge: `${counts.s3_retain} Retain`,
+      help: "Capture ratios compare the fund with its benchmark. Up capture above 1 means it gains more when markets rise. Down capture below 1 means it loses less when they fall. Funds in the top quartile (Q1, best 25% of peers) go straight to the Retain list. Q2 and Q3 funds continue to the next stage. The big number counts only the Q2/Q3 funds that continue.",
     },
     {
       key: "s4a",
@@ -64,6 +70,7 @@ export default function ScreeningFunnel({
       sublabel: "Sharpe/Sortino ≥ 1",
       count: counts.s4a,
       insufficient: counts.insufficient_by_stage?.s4a,
+      help: "Sharpe and Sortino measure return per unit of risk (Sortino counts only downside swings). Both must be 1 or higher, and the tenure ratio must be 1 or higher. Below 1 means the fund does not pay enough for the risk taken.",
     },
     {
       key: "final",
@@ -71,6 +78,7 @@ export default function ScreeningFunnel({
       sublabel: "TER ≤ Cat Median",
       count: counts.final,
       insufficient: counts.insufficient_by_stage?.s4c,
+      help: "Cost check. The fund yearly fee (TER, Total Expense Ratio) must not exceed the median TER of its category. These funds are the final review candidates.",
     },
   ];
 
@@ -92,6 +100,14 @@ export default function ScreeningFunnel({
         </div>
         <div className="flex items-center gap-1.5 text-[11px]">
           <button
+            type="button"
+            aria-expanded={showHelp}
+            onClick={() => setShowHelp((v) => !v)}
+            className="terminal-btn text-[11px] py-0.5 px-2"
+          >
+            {showHelp ? "Hide guide" : "How it works"}
+          </button>
+          <button
             onClick={() => onSelectStage(activeStage === "retain" ? "final" : "retain")}
             className={`terminal-btn text-[11px] py-0.5 px-2 ${
               activeStage === "retain"
@@ -104,6 +120,26 @@ export default function ScreeningFunnel({
         </div>
       </div>
 
+      {showHelp && (
+        <div className="mb-3 p-3 rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] text-[11px] text-[#172033] dark:text-[#EDF2F7] space-y-2">
+          <p>
+            Think of a sieve. Funds enter at S0 and each stage removes the ones that fail its test, so every stage is a subset of the one before.
+            A fund with missing data is not dropped by default. It passes and is flagged <span className="text-[#C26200] dark:text-[#EAA847]">missing data</span>, so treat that count as unverified.
+          </p>
+          <ol className="space-y-1.5">
+            {stages.map((st) => (
+              <li key={st.key}>
+                <span className="font-semibold">{st.label}:</span>{" "}
+                <span className="text-[#536176] dark:text-[#A8B4C4]">{st.help}</span>
+              </li>
+            ))}
+          </ol>
+          <p className="text-[#536176] dark:text-[#A8B4C4]">
+            Q1 Retain List: top-quartile funds that passed S1 to S3. They are kept without further cost or risk filtering, so this list can include funds that would fail the final stage.
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
         {stages.map((st) => {
           const isSelected = activeStage === st.key;
@@ -112,6 +148,7 @@ export default function ScreeningFunnel({
               key={st.key}
               type="button"
               onClick={() => onSelectStage(st.key)}
+              title={st.help}
               className={`p-2 rounded text-left border transition-all ${
                 isSelected
                   ? "bg-[#006F64]/10 dark:bg-[#75E1CE]/15 border-[#006F64] dark:border-[#75E1CE]"

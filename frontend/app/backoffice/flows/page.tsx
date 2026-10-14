@@ -7,6 +7,13 @@ import { formatISTDate, formatISTDateTime, formatNumber } from "@/lib/terminal-f
 import SignedValue from "@/components/terminal/SignedValue";
 import InfoTip from "@/components/InfoTip";
 
+// Item 17: gross buy/sell formatted as ₹ Cr with Indian digit grouping
+// (e.g. ₹1,23,456.7 Cr).
+function formatGrossCrore(v?: number): string {
+  if (v === undefined || v === null || isNaN(v)) return "—";
+  return formatNumber(v, 1, { prefix: "₹", suffix: " Cr" });
+}
+
 type SortColumn = "report_date" | "category" | "segment" | "buy_crore" | "sell_crore" | "net_crore" | "provisional";
 type SortDirection = "asc" | "desc";
 
@@ -453,8 +460,9 @@ function FlowsContent() {
               ) : sortedDaily.length > 0 ? (
                 sortedDaily.map((row) => {
                   const stableKey = row.id || `${row.report_date}_${row.category}_${row.segment}`;
-                  const buyDisplay = row.buy_crore != null ? formatNumber(row.buy_crore, 2) : "—";
-                  const sellDisplay = row.sell_crore != null ? formatNumber(row.sell_crore, 2) : "—";
+                  // Item 17: gross buy/sell as ₹ Cr with Indian grouping.
+                  const buyDisplay = formatGrossCrore(row.buy_crore);
+                  const sellDisplay = formatGrossCrore(row.sell_crore);
                   const segmentLabel = row.segment === "equity_cash" ? "Equity (Cash)" : row.segment;
 
                   return (

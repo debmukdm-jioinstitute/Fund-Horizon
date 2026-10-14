@@ -211,3 +211,14 @@ body {
     @apply terminal-input;
   }
 }
+
+/* Daily Briefing print view: hide backoffice chrome, print the briefing only.
+   The research page adds `print-briefing` to <body> while the briefing tab
+   is active and removes it on tab switch / unmount. */
+@media print {
+  body.print-briefing aside,
+  body.print-briefing nav,
+  body.print-briefing header {
+    display: none !important;
+  }
+}

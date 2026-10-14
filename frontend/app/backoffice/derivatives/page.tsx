@@ -10,8 +10,6 @@ const INDICES = [
   { id: "BANKNIFTY", name: "NIFTY Bank", type: "index_fno" },
   { id: "FINNIFTY", name: "NIFTY Financial", type: "index_fno" },
   { id: "MIDCPNIFTY", name: "NIFTY Midcap", type: "index_fno" },
-  { id: "SENSEX", name: "BSE SENSEX", type: "index_fno" },
-  { id: "NIFTYNXT50", name: "NIFTY Next 50", type: "cash_only" },
 ];
 
 type Contract = DerivativesData["contracts"][number];
@@ -150,21 +148,10 @@ export default function DerivativesPage() {
               aria-pressed={isSelected}
             >
               <span>{idx.name}</span>
-              {idx.type === "cash_only" && (
-                <span className="ml-1 text-[10px] opacity-75 font-mono">(Cash)</span>
-              )}
             </button>
           );
         })}
       </div>
-
-      {/* Cash-Only Notice */}
-      {currentIndexMeta?.type === "cash_only" && (
-        <div className="terminal-panel p-3 border border-[#E4E9EF] dark:border-[#2B3644] text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-          <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">Cash Index Notice: </span>
-          Cash index levels do not have intrinsic traded open interest. Traded volume is available strictly for listed derivative contracts.
-        </div>
-      )}
 
       {/* Feed notice (e.g. BSE blocking automated access) */}
       {!loading && d?.notice && (
@@ -281,11 +268,7 @@ export default function DerivativesPage() {
               <div className="p-8 text-center text-[12px] text-[#536176] dark:text-[#A8B4C4]">
                 <div className="font-medium mb-1 text-[#172033] dark:text-[#EDF2F7]">No option chain available</div>
                 <p className="max-w-md mx-auto">
-                  {selectedIndex === "SENSEX"
-                    ? "SENSEX options trade on BSE, whose API blocks automated access — no feed is available."
-                    : selectedIndex === "NIFTYNXT50"
-                      ? "NIFTY Next 50 is a cash index without listed index options."
-                      : "No contracts were returned for this underlying. The feed may be temporarily unavailable."}
+                  No contracts were returned for this underlying. The feed may be temporarily unavailable.
                 </p>
               </div>
             ) : (

@@ -97,7 +97,7 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/backoffice/research",
+    href: "/backoffice/research?tab=briefing",
     label: "Briefings",
     description: "Institutional research notes, policy summaries, and market briefings",
     icon: (p) => (
@@ -268,7 +268,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
         {/* Navigation Items (11 compact items) */}
         <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto" aria-label="Terminal Navigation">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || pathname === item.href.split("?")[0];
             const Icon = item.icon;
             return (
               <Link

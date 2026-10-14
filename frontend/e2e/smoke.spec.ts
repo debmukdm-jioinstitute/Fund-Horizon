@@ -189,7 +189,7 @@ test("home page offers plan retrieval and execution-only wording", async ({ page
   await expect(page.getByText(/did not look like a plan link/)).toBeVisible();
   await page.getByLabel("Plan link or ID").fill("00000000-0000-0000-0000-000000000000");
   await page.getByRole("button", { name: "Open plan" }).click();
-  await expect(page.getByRole("heading", { name: "Plan not found" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
 });
 
 test("negative surplus hides the buy-list and leads with cashflow", async ({ page }) => {
@@ -214,7 +214,7 @@ test("negative surplus hides the buy-list and leads with cashflow", async ({ pag
 test("unknown plan renders real 404 page", async ({ page }) => {
   const response = await page.goto("/plan/00000000-0000-0000-0000-000000000000");
   expect(response?.status()).toBe(404);
-  await expect(page.getByRole("heading", { name: "Plan not found" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Start a new plan" })).toBeVisible();
 });
 

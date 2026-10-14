@@ -16,8 +16,6 @@ import math
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from app.engine.finmath import indian_format
-
 import numpy as np
 import statsmodels.api as sm
 
@@ -570,78 +568,3 @@ def simulate_scenario(
         ),
     }
 
-
-def _inr_group(n: float) -> str:
-    """Indian digit grouping without the rupee sign (OI is in contracts)."""
-    return indian_format(n).replace("₹", "")
-
-
-def generate_deterministic_briefing(
-    market_observations: dict[str, Any],
-    macro_data: dict[str, Any],
-    flows_data: dict[str, Any],
-    options_summary: dict[str, Any],
-) -> dict[str, Any]:
-    """Generate a deterministic, evidence-based research briefing without paid AI calls."""
-    bullet_points: list[str] = []
-
-    # FX summary
-    fx = market_observations.get("fx", {})
-    usdinr = fx.get("FX:USDINR")
-    eurusd = fx.get("FX:EURUSD")
-    if usdinr:
-        bullet_points.append(f"USD/INR ECB reference rate is observed at {usdinr:.4f} (as-of {fx.get('as_of', 'latest')}).")
-    if eurusd:
-        bullet_points.append(f"EUR/USD reference rate is observed at {eurusd:.4f}.")
-
-    # Yields & Spreads
-    yields = macro_data.get("yields", {})
-    spread_10y = yields.get("india_us_spread_bps")
-    if spread_10y is not None:
-        bullet_points.append(
-            f"India-US 10Y sovereign yield spread is {spread_10y:+.1f} bps "
-            f"(India 10Y: {yields.get('in_10y', 'N/A')}%, US 10Y: {yields.get('us_10y', 'N/A')}%)."
-        )
-
-    # Volatility
-    vol = market_observations.get("volatility", {})
-    vix = vol.get("VOL:US:VIX")
-    if vix:
-        bullet_points.append(f"Cboe VIX closed at {vix:.2f} (as-of {vol.get('as_of', 'latest')}).")
-
-    india_vix = vol.get("VOL:IN:INDIAVIX")
-    if india_vix:
-        bullet_points.append(f"India VIX is at {india_vix:.2f}.")
-
-    us_10y = yields.get("us_10y")
-    if us_10y is not None and spread_10y is None:
-        us_slope = yields.get("us_slope_bps")
-        slope_txt = f", 10Y-2Y slope {us_slope:+.1f} bps" if us_slope is not None else ""
-        bullet_points.append(f"US 10Y Treasury par yield is {us_10y:.2f}%{slope_txt}.")
-
-    # Derivatives / PCR
-    pcr = options_summary.get("pcr_oi")
-    if pcr is not None:
-        bullet_points.append(
-            f"{options_summary.get('underlying', 'NIFTY')} Put-Call Ratio (OI) stands at {pcr:.2f} "
-            f"(Total Call OI: {_inr_group(options_summary.get('total_call_oi', 0))}, Total Put OI: {_inr_group(options_summary.get('total_put_oi', 0))})."
-        )
-    elif options_summary.get("status") in ("manual_only", "unavailable"):
-        bullet_points.append("NIFTY option chain is currently unavailable from NSE; PCR will appear once a snapshot is fetched.")
-
-    # Flows
-    fii_net = flows_data.get("fii_net_crore")
-    dii_net = flows_data.get("dii_net_crore")
-    flow_date = flows_data.get("report_date", "recent")
-    if fii_net is not None and dii_net is not None:
-        bullet_points.append(
-            f"Institutional flows for {flow_date}: FII Net {fii_net:+,.1f} Cr, DII Net {dii_net:+,.1f} Cr."
-        )
-
-    return {
-        "title": f"Fund Horizon Backoffice Daily Research Briefing — {datetime.now(UTC).strftime('%d %B %Y')}",
-        "as_of": datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "method_version": "Deterministic Template Engine 1.0 (Zero LLM)",
-        "bullets": bullet_points if bullet_points else ["Live feeds are still completing their first collection cycle."],
-        "disclaimer": "All figures are fetched live from public primary sources (NSE, US Treasury, ECB, Cboe) or verified manual imports. Descriptive data only; not a trading signal.",
-    }

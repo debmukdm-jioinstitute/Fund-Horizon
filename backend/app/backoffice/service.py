@@ -15,7 +15,6 @@ from app.backoffice.analytics.impact_engine import (
     calculate_log_returns,
     compute_bond_price_sensitivity,
     compute_correlation_and_beta,
-    generate_deterministic_briefing,
 )
 from app.backoffice.analytics.yields_math import (
     calculate_spread_bps,
@@ -572,21 +571,7 @@ class BackofficeService:
 
         return {"success": True, "rows_committed": saved_count, "import_type": import_type}
 
-    def get_research_briefing(self) -> dict[str, Any]:
-        overview = self.get_market_overview()
-        flows_list = self.repo.list_flows()
-        latest_date = flows_list[0].get("report_date") if flows_list else None
-        same_day = [f for f in flows_list if f.get("report_date") == latest_date]
-        net_of = lambda cat: next((f.get("net") for f in same_day if str(f.get("category", "")).upper() in cat), None)  # noqa: E731
-        derivatives = self.get_derivatives_board("NIFTY")
-        yields = overview.get("yields", {})
-
-        return generate_deterministic_briefing(
-            market_observations={
-                "fx": {**overview.get("fx", {}).get("rates", {}), "as_of": overview.get("fx_as_of")},
-                "volatility": {**overview.get("volatility_map", {}), "as_of": overview.get("volatility", {}).get("vix_as_of")},
-            },
-            macro_data={"yields": yields},
-            flows_data={"fii_net_crore": net_of(("FII", "FPI")), "dii_net_crore": net_of(("DII",)), "report_date": latest_date or "recent"},
-            options_summary={**(derivatives.get("pcr") or {}), "status": derivatives.get("status"), "underlying": "NIFTY"},
-        )
+    def get_research_briefing(self, date: str | None = None) -> dict[str, Any] | None:
+        """Stored daily briefing (read-only). Returns the payload dict, or None when absent."""
+        row = self.repo.get_briefing_by_date(date) if date else self.repo.get_latest_briefing()
+        return row["payload"] if row else None

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   getBackofficeOverview,
-  getDeterministicBriefing,
+  getBriefing,
   MarketOverviewData,
-  DeterministicBriefingData,
+  BriefingPayload,
   BackofficeEnvelope,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
@@ -53,7 +53,7 @@ const ROW_TARGET: Record<string, keyof typeof IND | string> = {
 
 export default function BackofficeOverviewPage() {
   const [data, setData] = useState<BackofficeEnvelope<MarketOverviewData> | null>(null);
-  const [briefing, setBriefing] = useState<BackofficeEnvelope<DeterministicBriefingData> | null>(null);
+  const [briefing, setBriefing] = useState<BriefingPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefreshedAt, setLastRefreshedAt] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export default function BackofficeOverviewPage() {
 
       const [overviewRes, briefingRes] = await Promise.all([
         getBackofficeOverview(),
-        getDeterministicBriefing(),
+        getBriefing(),
       ]);
       setData(overviewRes);
       setBriefing(briefingRes);
@@ -213,29 +213,38 @@ export default function BackofficeOverviewPage() {
         </div>
       </div>
 
-      {/* Compact Linked Daily Briefing Banner (Preserving existing briefing notes) */}
-      {briefing && briefing.data && (
-        <div className="terminal-panel p-3 border border-[#E4E9EF] dark:border-[#2B3644] flex flex-col md:flex-row md:items-center justify-between gap-2 text-[12px]">
-          <div className="flex items-center gap-2">
-            <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE] font-medium shrink-0">
-              Briefing
-            </span>
-            <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">
-              {briefing.data.title}
-            </span>
-            <span className="text-[#536176] dark:text-[#A8B4C4] hidden lg:inline">
-              — {briefing.data.bullets?.[0] || "System macro baseline generated deterministically."}
-            </span>
-          </div>
-          <Link
-            href="/backoffice/research"
-            className="text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium flex items-center gap-1 shrink-0 self-start md:self-auto"
-          >
-            <span>View Full Briefing & Notes</span>
-            <span>→</span>
-          </Link>
-        </div>
-      )}
+      {/* Compact Linked Daily Briefing Banner */}
+      {briefing &&
+        (() => {
+          const bannerSection = briefing.sections.find((s) => s.items.length > 0);
+          if (!bannerSection) return null;
+          const firstItem = bannerSection.items[0];
+          const bannerText = firstItem.text ?? firstItem.value;
+          return (
+            <div className="terminal-panel p-3 border border-[#E4E9EF] dark:border-[#2B3644] flex flex-col md:flex-row md:items-center justify-between gap-2 text-[12px]">
+              <div className="flex items-center gap-2">
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE] font-medium shrink-0">
+                  Briefing
+                </span>
+                <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  {bannerSection.title || formatISTDate(briefing.brief_date)}
+                </span>
+                {bannerText != null && (
+                  <span className="text-[#536176] dark:text-[#A8B4C4] hidden lg:inline">
+                    — {bannerText}
+                  </span>
+                )}
+              </div>
+              <Link
+                href="/backoffice/research?tab=briefing"
+                className="text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium flex items-center gap-1 shrink-0 self-start md:self-auto"
+              >
+                <span>View Full Briefing & Notes</span>
+                <span>→</span>
+              </Link>
+            </div>
+          );
+        })()}
 
       {/* Main Grouped Flat Indicator Table */}
       <div className="terminal-panel overflow-hidden">

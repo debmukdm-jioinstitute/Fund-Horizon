@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { API_URL, resolveApiUrl } from "@/lib/api";
 import {
   BANDS,
   ClientCapacityInputs,
@@ -17,6 +18,10 @@ export default function RiskProfilingPage() {
   // Client inputs
   const [client, setClient] = useState<ClientCapacityInputs>(PROFILING_PRESETS[1].client);
   const [answers, setAnswers] = useState<Record<string, number>>(PROFILING_PRESETS[1].answers);
+
+  // PDF report state
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   // CRM save state
   const [targetCustomerId, setTargetCustomerId] = useState("");
@@ -76,6 +81,68 @@ export default function RiskProfilingPage() {
     }
   };
 
+  const handleDownloadPdf = async () => {
+    setDownloadingPdf(true);
+    setPdfError(null);
+    try {
+      const payload = {
+        first_name: client.firstName || "Client",
+        age: client.age,
+        employment_type: client.employmentType,
+        dependents: client.dependents,
+        monthly_income: client.monthlyIncome,
+        monthly_expenses: client.monthlyExpenses,
+        monthly_emi: client.monthlyEmi,
+        liquid_assets: client.liquidAssets,
+        investments: client.investments,
+        liabilities: client.liabilities,
+        term_cover: client.termCover,
+        health_cover: client.healthCover,
+        retirement_age: client.retirementAge,
+        answers,
+      };
+
+      const targetUrl = resolveApiUrl(`${API_URL}/api/backoffice/risk-profiling/report.pdf`);
+      const res = await fetch(targetUrl, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "sec-fetch-site": "same-origin",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        let errDetail = `Server returned ${res.status}`;
+        try {
+          const j = await res.json();
+          if (j.detail) errDetail = j.detail;
+        } catch {
+          /* fallback */
+        }
+        throw new Error(errDetail);
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const clientSlug = (client.firstName || "client").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") || "client";
+      const dateStr = new Date().toISOString().split("T")[0];
+      link.download = `risk_profiling_report_${clientSlug}_${dateStr}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to generate PDF report.";
+      setPdfError(msg);
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -94,30 +161,45 @@ export default function RiskProfilingPage() {
           </p>
         </div>
 
-        {/* View Tabs */}
-        <div className="flex rounded-lg border border-navy-200 bg-navy-50 p-1 dark:border-navy-700 dark:bg-navy-900">
+        {/* Actions & View Tabs */}
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
-            onClick={() => setActiveTab("studio")}
-            className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
-              activeTab === "studio"
-                ? "bg-white text-navy-950 shadow-sm dark:bg-navy-800 dark:text-white"
-                : "text-navy-600 hover:text-navy-900 dark:text-navy-400 dark:hover:text-white"
-            }`}
+            onClick={handleDownloadPdf}
+            disabled={downloadingPdf}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-teal-700 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-teal-800 disabled:opacity-50"
+            title="Download official 2-page A4 SEBI Suitability Assessment PDF"
           >
-            Interactive Studio
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {downloadingPdf ? "Generating PDF..." : "Download PDF Report"}
           </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("methodology")}
-            className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
-              activeTab === "methodology"
-                ? "bg-white text-navy-950 shadow-sm dark:bg-navy-800 dark:text-white"
-                : "text-navy-600 hover:text-navy-900 dark:text-navy-400 dark:hover:text-white"
-            }`}
-          >
-            Regulatory Methodology
-          </button>
+
+          <div className="flex rounded-lg border border-navy-200 bg-navy-50 p-1 dark:border-navy-700 dark:bg-navy-900">
+            <button
+              type="button"
+              onClick={() => setActiveTab("studio")}
+              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                activeTab === "studio"
+                  ? "bg-white text-navy-950 shadow-sm dark:bg-navy-800 dark:text-white"
+                  : "text-navy-600 hover:text-navy-900 dark:text-navy-400 dark:hover:text-white"
+              }`}
+            >
+              Interactive Studio
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("methodology")}
+              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                activeTab === "methodology"
+                  ? "bg-white text-navy-950 shadow-sm dark:bg-navy-800 dark:text-white"
+                  : "text-navy-600 hover:text-navy-900 dark:text-navy-400 dark:hover:text-white"
+              }`}
+            >
+              Regulatory Methodology
+            </button>
+          </div>
         </div>
       </div>
 
@@ -541,6 +623,47 @@ export default function RiskProfilingPage() {
                   </ul>
                 </div>
               )}
+
+              {/* Official SEBI Suitability Assessment PDF Download */}
+              <div className="card space-y-3 border-teal-200 bg-gradient-to-br from-teal-50/70 via-white to-emerald-50/40 dark:border-teal-800/40 dark:from-teal-950/20 dark:via-navy-900/60 dark:to-emerald-950/10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-6 w-6 items-center justify-center rounded bg-teal-600 text-[10px] font-black text-white shadow-xs">
+                      PDF
+                    </span>
+                    <div>
+                      <h4 className="text-xs font-bold text-navy-950 dark:text-white">
+                        Client Suitability Dossier
+                      </h4>
+                      <p className="text-[10px] text-navy-600 dark:text-navy-400">
+                        Official 2-page A4 assessment report
+                      </p>
+                    </div>
+                  </div>
+                  <span className="rounded bg-teal-100 px-2 py-0.5 text-[10px] font-semibold text-teal-800 dark:bg-teal-900/60 dark:text-teal-300">
+                    ARN-345439
+                  </span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-navy-600 dark:text-navy-400">
+                  Includes deterministic capacity scorecard, 10-question behavioral breakdown, strategic asset allocation donut chart, SEBI suitability declaration, and RIA/client sign-off blocks.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleDownloadPdf}
+                  disabled={downloadingPdf}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-teal-700 py-2.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-teal-800 disabled:opacity-50"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  {downloadingPdf ? "Generating Official PDF Report..." : "Download Official PDF Report"}
+                </button>
+                {pdfError && (
+                  <div className="rounded bg-rose-50 p-2 text-xs font-medium text-rose-700 dark:bg-rose-950/40 dark:text-rose-400">
+                    ⚠️ {pdfError}
+                  </div>
+                )}
+              </div>
 
               {/* CRM Household Suitability Sync */}
               <div className="card space-y-3">

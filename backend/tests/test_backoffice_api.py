@@ -435,3 +435,10 @@ def test_backoffice_risk_profiling_endpoints(client):
     assert data["target_allocation"]["equity"] > 0
     assert data["target_allocation"]["debt"] > 0
 
+    # 3. Report PDF
+    pdf_res = client.post("/api/backoffice/risk-profiling/report.pdf", json=payload)
+    assert pdf_res.status_code == 200
+    assert pdf_res.headers["content-type"] == "application/pdf"
+    assert pdf_res.content.startswith(b"%PDF")
+    assert len(pdf_res.content) > 10000
+

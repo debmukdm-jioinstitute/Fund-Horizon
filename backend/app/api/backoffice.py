@@ -1179,3 +1179,86 @@ def backoffice_evaluate_risk_profile(
         },
     }
 
+
+@router.post("/risk-profiling/report.pdf")
+def backoffice_risk_profile_report_pdf(
+    req: BackofficeRiskProfileRequest,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Generate and return official client Risk Profiling and Suitability PDF report."""
+    from app.config import load_questionnaire
+    from app.engine.profiling import band_for, build_profile
+    from app.report.risk_profile_doc import build_risk_profile_pdf
+    from app.schemas import Client, EmploymentType
+
+    try:
+        emp = EmploymentType(req.employment_type)
+    except Exception:
+        emp = EmploymentType.salaried_private
+
+    retire_age = max(req.retirement_age, req.age) if emp != EmploymentType.retired_none else req.retirement_age
+
+    client = Client(
+        first_name=req.first_name,
+        age=req.age,
+        employment_type=emp,
+        dependents=req.dependents,
+        monthly_income=req.monthly_income,
+        monthly_expenses=req.monthly_expenses,
+        monthly_emi=req.monthly_emi,
+        liquid_assets=req.liquid_assets,
+        investments=req.investments,
+        liabilities=req.liabilities,
+        term_cover=req.term_cover,
+        health_cover=req.health_cover,
+        retirement_age=retire_age,
+    )
+
+    answers = req.answers or {f"q{i}": 2 for i in range(1, 11)}
+    profile = build_profile(client, answers)
+    allocation = band_for(profile["final_score"])
+    profile["target_allocation"] = allocation
+
+    # Build question responses list with questions text and chosen answers
+    q_data = load_questionnaire()
+    responses = []
+    questions_list = q_data.get("questions", [])
+    for q in questions_list:
+        qid = q.get("id")
+        ans_idx = answers.get(qid, 2)
+        opts = q.get("options", [])
+        chosen_opt = opts[ans_idx] if 0 <= ans_idx < len(opts) else {"text": "Moderate", "score": 50}
+        responses.append({
+            "question": q.get("question", ""),
+            "answer": chosen_opt.get("text", ""),
+            "score": chosen_opt.get("score", 50),
+        })
+
+    client_inputs = {
+        "age": req.age,
+        "monthly_income": req.monthly_income,
+        "monthly_expenses": req.monthly_expenses,
+        "monthly_emi": req.monthly_emi,
+        "liquid_assets": req.liquid_assets,
+        "investments": req.investments,
+        "liabilities": req.liabilities,
+        "term_cover": req.term_cover,
+        "health_cover": req.health_cover,
+    }
+
+    pdf_bytes = build_risk_profile_pdf(
+        client_name=req.first_name or "Client",
+        profile=profile,
+        client_inputs=client_inputs,
+        questionnaire_responses=responses,
+    )
+
+    filename_slug = re.sub(r"[^a-zA-Z0-9_\-]+", "_", req.first_name or "client").lower()
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="risk-profiling-{filename_slug}.pdf"',
+        },
+    )
+

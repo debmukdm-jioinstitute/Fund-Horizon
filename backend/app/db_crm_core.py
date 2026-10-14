@@ -105,6 +105,7 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
             customer_id TEXT,
             opportunity_id TEXT,
             case_id TEXT,
+            lead_id TEXT,
             policy_id TEXT,
             fd_id TEXT,
             due_at TEXT,
@@ -121,6 +122,7 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
     conn.execute("CREATE INDEX IF NOT EXISTS ix_activities_household ON activities(household_id)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_activities_due ON activities(due_at)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_activities_policy ON activities(policy_id)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_activities_lead ON activities(lead_id)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_activities_fd ON activities(fd_id)")
     conn.execute(
         """
@@ -159,3 +161,20 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
     )
     conn.execute("CREATE INDEX IF NOT EXISTS ix_audit_log_entity ON audit_log(entity)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_audit_log_entity_id ON audit_log(entity_id)")
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS crm_list_views (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            entity TEXT NOT NULL,
+            name TEXT NOT NULL,
+            filters TEXT NOT NULL DEFAULT '{}',
+            columns TEXT NOT NULL DEFAULT '[]',
+            is_default INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            UNIQUE(user_id, entity, name)
+        )
+        """
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_crm_list_views_user ON crm_list_views(user_id)")

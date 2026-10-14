@@ -93,6 +93,7 @@ class ActivityModel(Base):
     customer_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     opportunity_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     case_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    lead_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     policy_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     fd_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     due_at: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
@@ -132,3 +133,21 @@ class AuditLogModel(Base):
     new: Mapped[str | None] = mapped_column(Text, nullable=True)
     actor_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+
+class CrmListViewModel(Base):
+    """A user's saved list view: filters + visible columns for one CRM entity."""
+
+    __tablename__ = "crm_list_views"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
+    entity: Mapped[str] = mapped_column(String(32), nullable=False)
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    filters: Mapped[str] = mapped_column(Text, nullable=False, default="{}")  # JSON object
+    columns: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON array of column ids
+    is_default: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+    __table_args__ = (UniqueConstraint("user_id", "entity", "name", name="uq_crm_list_view_name"),)

@@ -194,6 +194,7 @@ def create_app() -> FastAPI:
     from app.api.auth import auth_router
     from app.api.backoffice import router as backoffice_router
     from app.api.crm_core import router as crm_core_router
+    from app.api.crm_extras import router as crm_extras_router
     from app.api.crm_products import router as crm_products_router
     from app.api.rm import rm_router
 
@@ -203,6 +204,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(rm_router)
     app.include_router(crm_core_router)
+    app.include_router(crm_extras_router)
     app.include_router(crm_products_router)
     app.include_router(backoffice_router)
     return app

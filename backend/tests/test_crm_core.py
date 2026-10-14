@@ -203,7 +203,8 @@ def test_lead_convert_with_explicit_password(client, admin):
 def test_lead_convert_duplicate_email_422(client, admin):
     existing = _make_customer()
     lead = client.post(
-        "/api/crm/leads", json={"name": "Dup", "email": existing["email"], "mobile": "9844444444"}
+        "/api/crm/leads",
+        json={"name": "Dup", "email": existing["email"], "mobile": "9844444444", "allow_duplicates": True},
     ).json()
     r = client.post(f"/api/crm/leads/{lead['id']}/convert", json={})
     assert r.status_code == 422

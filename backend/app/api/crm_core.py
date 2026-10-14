@@ -21,6 +21,7 @@ from app.api.auth import _hash_password, require_role
 from app.api.crm_page import PageParams, guard, paginate_rows, send_total
 from app.db import sqlite
 from app.repo_crm_core import IST, CrmCoreError, Page, get_crm_repository, today_ist
+from app.repo_crm_extras import find_duplicates
 
 router = APIRouter(prefix="/api/crm", tags=["crm"])
 
@@ -72,7 +73,7 @@ LEAD_STATUSES = ("new", "contacted", "qualified", "converted", "lost")
 ACTIVE_LEAD_STATUSES = ("new", "contacted", "qualified")
 LEAD_SOURCES = ("sip_calculator", "website", "blog", "referral", "plan_link", "other")
 
-ACTIVITY_KINDS = ("call", "meeting", "note", "followup", "email", "review")
+ACTIVITY_KINDS = ("call", "meeting", "note", "followup", "email", "review", "whatsapp")
 
 MEMBER_ROLES = ("primary", "spouse", "child", "dependent", "other")
 
@@ -116,6 +117,11 @@ def _scope(me: dict) -> _Scope:
         return _Scope(True, set(), set())
     hids, cids = get_crm_repository().scope_ids(me["id"])
     return _Scope(False, hids, cids)
+
+
+def _owner(me: dict, value: str | None) -> str | None:
+    """List filters accept the literal ``me`` for the signed-in user."""
+    return me["id"] if value == "me" else value
 
 
 def _viewer(me: dict) -> str | None:
@@ -284,6 +290,10 @@ def _visible_activity(act: dict, me: dict, scope: _Scope) -> bool:
         case = repo.get_case(act["case_id"])
         if case and _visible_case(case, me, scope):
             return True
+    if act.get("lead_id"):
+        lead = repo.get_lead(act["lead_id"])
+        if lead and _visible_lead(lead, me, scope):
+            return True
     return False
 
 
@@ -330,9 +340,13 @@ class LeadCreate(BaseModel):
     source: str = "other"
     notes: str | None = None
     assigned_rm_id: str | None = None
+    allow_duplicates: bool = False  # continue even though a possible duplicate exists
 
 
 class LeadUpdate(BaseModel):
+    name: str | None = None
+    email: str | None = None
+    mobile: str | None = None
     status: str | None = None
     assigned_rm_id: str | None = None
     notes: str | None = None
@@ -379,6 +393,7 @@ class ActivityCreate(BaseModel):
     customer_id: str | None = None
     opportunity_id: str | None = None
     case_id: str | None = None
+    lead_id: str | None = None
     policy_id: str | None = None
     fd_id: str | None = None
     due_at: str | None = None
@@ -415,9 +430,12 @@ class GenerateTasksRequest(BaseModel):
 # Households
 # ---------------------------------------------------------------------------
 @router.get("/households")
-def list_households(me: Me, response: Response, page: PageParams):
+def list_households(me: Me, response: Response, page: PageParams, rm_id: str | None = Query(None, description="RM id, or 'me'")):
     repo = get_crm_repository()
-    rows = guard(repo.list_households, rm_id=_viewer(me), page=page)
+    owner = _owner(me, rm_id)
+    if me["role"] != "admin" and owner not in (None, me["id"]):
+        raise HTTPException(403, "You can only filter by yourself.")
+    rows = guard(repo.list_households, rm_id=_viewer(me) or owner, page=page)
     send_total(response, page)
     ids = [h["id"] for h in rows]
     members, open_opps = repo.member_counts(ids), repo.open_opp_counts(ids)
@@ -544,12 +562,16 @@ def list_leads(
     me: Me,
     response: Response,
     page: PageParams,
-    status: str | None = Query(None),
-    assigned_rm_id: str | None = Query(None),
+    status: str | None = Query(None, description="One status or a comma-separated list"),
+    assigned_rm_id: str | None = Query(None, description="RM id, or 'me'"),
 ):
-    _check_enum(status, LEAD_STATUSES, "status")
+    statuses = tuple(x for x in (status or "").split(",") if x)
+    for st in statuses:
+        _check_enum(st, LEAD_STATUSES, "status")
     repo = get_crm_repository()
-    rows = guard(repo.list_leads, status=status, assigned_rm_id=assigned_rm_id, viewer_rm_id=_viewer(me), page=page)
+    rows = guard(
+        repo.list_leads, statuses=statuses, assigned_rm_id=_owner(me, assigned_rm_id), viewer_rm_id=_viewer(me), page=page
+    )
     send_total(response, page)
     return rows
 
@@ -566,11 +588,26 @@ def create_lead(body: LeadCreate, me: Me):
     assert name is not None
     _check_enum(body.source, LEAD_SOURCES, "source")
     assigned = _assignee(me, body.assigned_rm_id, create=True)
+    email, mobile = _check_email(body.email), _check_mobile(body.mobile)
+    if not body.allow_duplicates:
+        strong = [
+            m for m in find_duplicates(name=name, email=email, mobile=mobile, pan_last4=None, viewer_rm_id=_viewer(me))
+            if set(m["reasons"]) - {"name"}
+        ]
+        if strong:
+            raise HTTPException(
+                409,
+                detail={
+                    "message": "Possible duplicate: a record with the same " + " / ".join(sorted({r for m in strong for r in m["reasons"] if r != "name"}))
+                    + " already exists. Resubmit with allow_duplicates=true to continue.",
+                    "matches": strong,
+                },
+            )
     repo = get_crm_repository()
     return repo.create_lead(
         name=name,
-        email=_check_email(body.email),
-        mobile=_check_mobile(body.mobile),
+        email=email,
+        mobile=mobile,
         source=body.source,
         status="new",
         assigned_rm_id=assigned,
@@ -595,6 +632,14 @@ def update_lead(lead_id: str, body: LeadUpdate, me: Me):
         fields["assigned_rm_id"] = _assignee(me, body.assigned_rm_id, create=False)
     if "notes" in body.model_fields_set:
         fields["notes"] = body.notes
+    if "name" in body.model_fields_set:
+        if body.name is None:
+            raise HTTPException(422, "name cannot be empty")
+        fields["name"] = _clean_str(body.name, "name")
+    if "email" in body.model_fields_set:
+        fields["email"] = _check_email(body.email)
+    if "mobile" in body.model_fields_set:
+        fields["mobile"] = _check_mobile(body.mobile)
     updated = repo.update_lead(lead_id, fields, actor_id=me["id"])
     if not updated:
         raise HTTPException(404, "Lead not found")
@@ -680,7 +725,7 @@ def list_opportunities(
         product_line=product_line,
         stage=stage,
         household_id=household_id,
-        assigned_rm_id=assigned_rm_id,
+        assigned_rm_id=_owner(me, assigned_rm_id),
         viewer_rm_id=_viewer(me),
         page=page,
     )
@@ -837,18 +882,22 @@ def list_activities(
     customer_id: str | None = Query(None),
     opportunity_id: str | None = Query(None),
     case_id: str | None = Query(None),
+    lead_id: str | None = Query(None),
     done: bool | None = Query(None),
     due_before: str | None = Query(None),
+    overdue: bool = Query(False, description="Open tasks due before today (IST)"),
 ):
     repo = get_crm_repository()
     rows = guard(
         repo.list_activities,
-        assigned_rm_id=assigned_rm_id,
+        overdue_before=today_ist() if overdue else None,
+        assigned_rm_id=_owner(me, assigned_rm_id),
         household_id=household_id,
         customer_id=customer_id,
         opportunity_id=opportunity_id,
         case_id=case_id,
-        done=done,
+        lead_id=lead_id,
+        done=False if overdue else done,
         due_before=due_before,
         viewer_rm_id=_viewer(me),
         page=page,
@@ -886,6 +935,8 @@ def create_activity(body: ActivityCreate, me: Me):
             raise HTTPException(404, "Case not found")
         if not _visible_case(case, me, scope):
             raise HTTPException(403, "You do not have permission to use this case.")
+    if body.lead_id:
+        _get_visible(repo.get_lead, body.lead_id, me, scope, _visible_lead, "Lead")
     assigned = _assignee(me, body.assigned_rm_id, create=True)
     due_at = _check_date(body.due_at, "due_at")
     row = repo.create_activity(
@@ -896,6 +947,7 @@ def create_activity(body: ActivityCreate, me: Me):
         customer_id=body.customer_id,
         opportunity_id=body.opportunity_id,
         case_id=body.case_id,
+        lead_id=body.lead_id,
         policy_id=body.policy_id,
         fd_id=body.fd_id,
         due_at=due_at,
@@ -949,10 +1001,19 @@ def list_cases(
     page: PageParams,
     status: str | None = Query(None),
     customer_id: str | None = Query(None),
+    sla_breaching: bool = Query(False, description="Open cases whose SLA date is before today (IST)"),
 ):
     _check_enum(status, CASE_STATUSES, "status")
     repo = get_crm_repository()
-    cases = guard(repo.list_cases, status=status, customer_id=customer_id, viewer_rm_id=_viewer(me), page=page)
+    cases = guard(
+        repo.list_cases,
+        status=status,
+        statuses=CASE_OPEN_STATUSES if sla_breaching else (),
+        sla_before=today_ist() if sla_breaching else None,
+        customer_id=customer_id,
+        viewer_rm_id=_viewer(me),
+        page=page,
+    )
     send_total(response, page)
     names = repo.customer_names([c["customer_id"] for c in cases])
     return [{**c, "customer_name": names.get(c.get("customer_id"))} for c in cases]

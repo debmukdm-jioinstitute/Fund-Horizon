@@ -53,6 +53,9 @@ export interface Opportunity {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  lost_reason?: string | null;
+  closed_at?: string | null;
+  won_amount?: number | null;
   household_name?: string;
   customer_name?: string;
 }
@@ -105,11 +108,14 @@ export interface Lead {
   assigned_rm_id: string | null;
   notes: string | null;
   created_at: string;
+  converted_household_id?: string | null;
+  converted_at?: string | null;
 }
 
 export interface ConvertResult {
   customer_id: string;
   household_id: string;
+  invited: boolean;
   temp_password?: string;
 }
 
@@ -120,9 +126,10 @@ export interface PipelineStage {
 }
 
 export interface PipelineSummary {
-  stages: PipelineStage[];
-  total_value: number;
+  stages: PipelineStage[]; // open stages only
+  total_value: number; // open pipeline: excludes won and lost
   total_count: number;
+  closed: Record<"won" | "lost", { count: number; value: number }>;
 }
 
 export interface CrmDashboard {
@@ -177,8 +184,17 @@ export async function crmRaw<T>(path: string, init?: RequestInit): Promise<T> {
   return crmRequest<T>(path, init);
 }
 
+/** List endpoints page at 50 by default; the board-style tabs show everything, so ask for the maximum (500). */
+const LIST_PATH = /^\/(households|leads|opportunities|activities|cases|renewals|maturities|policies|fds|pms|mandates|disclosures)(\?|$)/;
+
+export function withListLimit(path: string): string {
+  if (!LIST_PATH.test(path) || /[?&]limit=/.test(path)) return path;
+  return `${path}${path.includes("?") ? "&" : "?"}limit=500`;
+}
+
 async function crmRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const targetUrl = resolveApiUrl(`${API_URL}/api/crm${path}`);
+  const isGet = !init?.method || init.method === "GET";
+  const targetUrl = resolveApiUrl(`${API_URL}/api/crm${isGet ? withListLimit(path) : path}`);
   const res = await fetch(targetUrl, {
     ...init,
     credentials: "include",
@@ -226,7 +242,7 @@ export const patchHousehold = (
 
 export const addHouseholdMember = (
   householdId: string,
-  body: { customer_id: string; role: string },
+  body: { customer_id: string; role: string; override?: boolean },
 ) =>
   crmRequest<HouseholdMember>(`/households/${householdId}/members`, {
     method: "POST",
@@ -254,7 +270,20 @@ export const patchLead = (
   body: { status?: string; assigned_rm_id?: string | null; notes?: string },
 ) => crmRequest<Lead>(`/leads/${id}`, { method: "PATCH", body: JSON.stringify(body) });
 
-export const convertLead = (id: string, body: { household_name?: string; password?: string }) =>
+export const fetchLead = (id: string) => crmRequest<Lead>(`/leads/${id}`);
+export const fetchOpportunity = (id: string) => crmRequest<Opportunity>(`/opportunities/${id}`);
+export const fetchCase = (id: string) => crmRequest<CrmCase>(`/cases/${id}`);
+
+export const convertLead = (
+  id: string,
+  body: {
+    household_name?: string;
+    household_id?: string;
+    member_role?: string;
+    invite_to_portal?: boolean;
+    password?: string;
+  },
+) =>
   crmRequest<ConvertResult>(`/leads/${id}/convert`, {
     method: "POST",
     body: JSON.stringify(body),
@@ -299,6 +328,8 @@ export const patchOpportunity = (
     expected_close?: string;
     notes?: string;
     assigned_rm_id?: string;
+    lost_reason?: string;
+    won_amount?: number;
   },
 ) => crmRequest<Opportunity>(`/opportunities/${id}`, { method: "PATCH", body: JSON.stringify(body) });
 

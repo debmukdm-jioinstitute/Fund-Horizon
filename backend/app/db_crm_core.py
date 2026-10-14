@@ -22,10 +22,14 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
             primary_customer_id TEXT,
             rm_id TEXT,
             notes TEXT,
-            created_at TEXT NOT NULL
+            created_at TEXT NOT NULL,
+            updated_at TEXT,
+            created_by TEXT,
+            updated_by TEXT
         )
         """
     )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_households_rm ON households(rm_id)")
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS household_members (
@@ -50,10 +54,17 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
             status TEXT NOT NULL DEFAULT 'new',
             assigned_rm_id TEXT,
             notes TEXT,
-            created_at TEXT NOT NULL
+            created_at TEXT NOT NULL,
+            converted_household_id TEXT,
+            converted_at TEXT,
+            updated_at TEXT,
+            created_by TEXT,
+            updated_by TEXT
         )
         """
     )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_leads_email ON leads(email)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_leads_mobile ON leads(mobile)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_leads_status ON leads(status)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_leads_assigned_rm ON leads(assigned_rm_id)")
     conn.execute(
@@ -71,11 +82,17 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
             assigned_rm_id TEXT,
             notes TEXT,
             created_at TEXT NOT NULL,
-            updated_at TEXT NOT NULL
+            updated_at TEXT NOT NULL,
+            lost_reason TEXT,
+            closed_at TEXT,
+            won_amount INTEGER,
+            created_by TEXT,
+            updated_by TEXT
         )
         """
     )
     conn.execute("CREATE INDEX IF NOT EXISTS ix_opportunities_household ON opportunities(household_id)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_opportunities_assigned_rm ON opportunities(assigned_rm_id)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_opportunities_line_stage ON opportunities(product_line, stage)")
     conn.execute(
         """
@@ -93,7 +110,10 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
             due_at TEXT,
             done_at TEXT,
             assigned_rm_id TEXT,
-            created_at TEXT NOT NULL
+            created_at TEXT NOT NULL,
+            updated_at TEXT,
+            created_by TEXT,
+            updated_by TEXT
         )
         """
     )
@@ -113,9 +133,29 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
             status TEXT NOT NULL DEFAULT 'open',
             sla_due_at TEXT,
             created_at TEXT NOT NULL,
-            resolved_at TEXT
+            resolved_at TEXT,
+            updated_at TEXT,
+            created_by TEXT,
+            updated_by TEXT
         )
         """
     )
     conn.execute("CREATE INDEX IF NOT EXISTS ix_cases_customer ON cases(customer_id)")
     conn.execute("CREATE INDEX IF NOT EXISTS ix_cases_status ON cases(status)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_cases_sla ON cases(sla_due_at)")
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS audit_log (
+            id TEXT PRIMARY KEY,
+            entity TEXT NOT NULL,
+            entity_id TEXT NOT NULL,
+            field TEXT NOT NULL,
+            old TEXT,
+            new TEXT,
+            actor_id TEXT,
+            at TEXT NOT NULL
+        )
+        """
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_audit_log_entity ON audit_log(entity)")
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_audit_log_entity_id ON audit_log(entity_id)")

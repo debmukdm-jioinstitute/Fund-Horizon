@@ -7,6 +7,7 @@ import {
   PRODUCT_LINES,
   ProductLine,
   STAGES_BY_LINE,
+  isClosedStage,
   formatRupeesFromPaise,
   stageLabel,
   getOpportunities,
@@ -14,6 +15,8 @@ import {
   patchOpportunity,
 } from "../../lib/crmProductsApi";
 import { ApiError } from "../../lib/api";
+import { fieldErrors, lostSchema } from "../../lib/crmSchemas";
+import Link from "next/link";
 
 function stageIndex(line: ProductLine, stage: string): number {
   return STAGES_BY_LINE[line].indexOf(stage);
@@ -26,6 +29,9 @@ export default function PipelinesTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [movingId, setMovingId] = useState<string | null>(null);
+  const [losing, setLosing] = useState<Opportunity | null>(null);
+  const [lostReason, setLostReason] = useState("");
+  const [lostError, setLostError] = useState<string | null>(null);
 
   const load = useCallback(async (pl: ProductLine) => {
     setLoading(true);
@@ -57,20 +63,39 @@ export default function PipelinesTab() {
     return map;
   }, [opps, columns]);
 
-  const move = async (opp: Opportunity, newStage: string) => {
+  const move = async (opp: Opportunity, newStage: string, extra?: { lost_reason?: string }) => {
     setMovingId(opp.id);
+    setError(null);
     try {
-      const updated = await patchOpportunity(opp.id, { stage: newStage });
+      const updated = await patchOpportunity(opp.id, { stage: newStage, ...extra });
       setOpps((prev) => prev.map((o) => (o.id === opp.id ? updated : o)));
+      // won/lost leave the open pipeline: refresh its total
+      getPipeline(line).then((s) => setTotalValue(s.total_value)).catch(() => undefined);
+      return true;
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Stage move failed.");
+      return false;
     } finally {
       setMovingId(null);
     }
   };
 
+  const confirmLost = async () => {
+    if (!losing) return;
+    const errs = fieldErrors(lostSchema, { lost_reason: lostReason });
+    if (errs) {
+      setLostError(errs.lost_reason);
+      return;
+    }
+    if (await move(losing, "lost", { lost_reason: lostReason.trim() })) {
+      setLosing(null);
+      setLostReason("");
+      setLostError(null);
+    }
+  };
+
   const columnValue = (stage: string) =>
-    (byStage[stage] ?? []).reduce((s, o) => s + (o.amount ?? 0), 0);
+    (byStage[stage] ?? []).reduce((s, o) => s + ((stage === "won" ? (o.won_amount ?? o.amount) : o.amount) ?? 0), 0);
 
   return (
     <div className="space-y-4">
@@ -90,12 +115,12 @@ export default function PipelinesTab() {
         ))}
       </div>
 
-      <div className="flex items-center gap-4 text-xs text-navy-600">
+      <div className="flex items-center gap-4 text-xs text-navy-600 dark:text-[#A8B4C4]">
         <span>
-          <strong className="text-navy-950">{opps.filter((o) => o.stage !== "lost").length}</strong> open opportunities
+          <strong className="text-navy-950 dark:text-[#EDF2F7]">{opps.filter((o) => !isClosedStage(o.stage)).length}</strong> open opportunities
         </span>
         <span>
-          Pipeline value (open): <strong className="text-navy-950">{formatRupeesFromPaise(totalValue)}</strong>
+          Pipeline value (open): <strong className="text-navy-950 dark:text-[#EDF2F7]">{formatRupeesFromPaise(totalValue)}</strong>
         </span>
       </div>
 
@@ -104,19 +129,18 @@ export default function PipelinesTab() {
       )}
 
       {loading ? (
-        <div className="p-16 text-center">
+        <div role="status" aria-busy="true" aria-label="Loading" className="p-16 text-center">
           <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
-          <p className="text-xs text-navy-600 font-medium mt-3">Loading pipeline...</p>
         </div>
       ) : (
-        <div className="grid gap-3 auto-cols-fr grid-flow-col overflow-x-auto pb-2">
+        <div className="flex gap-3 overflow-x-auto pb-2">
           {columns.map((stage) => {
             const cards = byStage[stage] ?? [];
             const isLost = stage === "lost";
             return (
               <div
                 key={stage}
-                className={`min-w-60 w-64 rounded-2xl border p-3 space-y-2 ${
+                className={`w-64 shrink-0 rounded-2xl border p-3 space-y-2 ${
                   isLost ? "bg-gray-50 border-gray-200" : "bg-white border-navy-200"
                 }`}
               >
@@ -124,37 +148,42 @@ export default function PipelinesTab() {
                   <h3 className="text-xs font-bold text-navy-950">{stageLabel(stage)}</h3>
                   <span className="text-xs text-navy-500 font-semibold">{cards.length}</span>
                 </div>
-                {!isLost && (
-                  <p className="text-xs text-navy-500">{formatRupeesFromPaise(columnValue(stage))}</p>
-                )}
+                <p className="text-xs text-navy-500">{formatRupeesFromPaise(columnValue(stage))}</p>
                 <div className="space-y-2 max-h-[60vh] overflow-y-auto">
                   {cards.map((o) => {
                     const idx = stageIndex(line, o.stage);
-                    const prev = idx > 0 ? STAGES_BY_LINE[line][idx - 1] : null;
-                    const next = idx >= 0 && idx < STAGES_BY_LINE[line].length - 1 ? STAGES_BY_LINE[line][idx + 1] : null;
+                    const closed = isClosedStage(o.stage);
+                    const prev = !closed && idx > 0 ? STAGES_BY_LINE[line][idx - 1] : null;
+                    const next = !closed && idx >= 0 && idx < STAGES_BY_LINE[line].length - 1 ? STAGES_BY_LINE[line][idx + 1] : null;
                     const busy = movingId === o.id;
                     return (
                       <div key={o.id} className="bg-white border border-navy-100 rounded-xl p-2.5 space-y-1.5 shadow-sm">
-                        <p className="text-xs font-semibold text-navy-950 leading-snug">{o.title}</p>
+                        <Link
+                          href={`/backoffice/crm/opportunities/${o.id}`}
+                          className="block text-xs font-semibold text-navy-950 leading-snug hover:underline"
+                        >
+                          {o.title}
+                        </Link>
                         {(o.household_name || o.customer_name) && (
                           <p className="text-xs text-navy-500">{o.household_name || o.customer_name}</p>
                         )}
                         <div className="flex items-center justify-between text-xs text-navy-600">
-                          <span className="font-bold text-navy-900">{formatRupeesFromPaise(o.amount)}</span>
+                          <span className="font-bold text-navy-900">
+                            {formatRupeesFromPaise(o.stage === "won" ? (o.won_amount ?? o.amount) : o.amount)}
+                          </span>
                           <span>{o.probability}% prob</span>
                         </div>
-                        {o.expected_close && (
+                        {o.stage === "lost" && o.lost_reason && (
+                          <p className="text-xs text-navy-500">Reason: {o.lost_reason}</p>
+                        )}
+                        {o.expected_close && !closed && (
                           <p className="text-xs text-navy-500">Expected close: {o.expected_close}</p>
                         )}
                         <div className="flex gap-1 pt-1">
-                          {isLost ? (
-                            <button
-                              disabled={busy}
-                              onClick={() => move(o, STAGES_BY_LINE[line][0])}
-                              className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-navy-100 text-navy-800 hover:bg-navy-200 disabled:opacity-50"
-                            >
-                              Reopen
-                            </button>
+                          {closed ? (
+                            <p className="text-xs text-navy-500">
+                              {o.stage === "won" ? "Won" : "Lost"} {o.closed_at ? o.closed_at.slice(0, 10) : ""} · final
+                            </p>
                           ) : (
                             <>
                               <button
@@ -175,7 +204,11 @@ export default function PipelinesTab() {
                               </button>
                               <button
                                 disabled={busy}
-                                onClick={() => move(o, "lost")}
+                                onClick={() => {
+                                  setLosing(o);
+                                  setLostReason("");
+                                  setLostError(null);
+                                }}
                                 title="Mark as lost"
                                 className="text-xs font-semibold px-2 py-1 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-40"
                               >
@@ -194,6 +227,42 @@ export default function PipelinesTab() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {losing && (
+        <div className="fixed inset-0 z-50 bg-navy-950/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Mark opportunity lost">
+          <div className="bg-white rounded-2xl border border-navy-100 shadow-xl w-full max-w-md p-6 space-y-3">
+            <h3 className="text-base font-bold text-navy-950">Mark “{losing.title}” as lost</h3>
+            <label className="block text-xs font-semibold text-navy-700" htmlFor="lost-reason">
+              Reason (required)
+            </label>
+            <textarea
+              id="lost-reason"
+              value={lostReason}
+              onChange={(e) => setLostReason(e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+            {lostError && <p className="text-xs font-medium text-rose-700">{lostError}</p>}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setLosing(null)}
+                className="flex-1 px-3 py-2 text-xs font-semibold bg-navy-50 hover:bg-navy-100 text-navy-700 rounded-xl transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmLost}
+                disabled={movingId === losing.id}
+                className="flex-1 px-3 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white rounded-xl transition"
+              >
+                Mark lost
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

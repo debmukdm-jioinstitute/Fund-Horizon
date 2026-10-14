@@ -5,9 +5,11 @@
 // agenda, and case tabs. No cross-worker imports: only ./api is reused.
 
 import { API_URL, ApiError, resolveApiUrl } from "./api";
+import { withListLimit } from "./crmApi";
 
 async function crmRequest<T>(url: string, init?: RequestInit): Promise<T> {
-  const targetUrl = resolveApiUrl(url);
+  const isGet = !init?.method || init.method === "GET";
+  const targetUrl = resolveApiUrl(isGet ? url.replace(/^(.*?\/api\/crm)(\/.*)$/, (_m, a, b) => a + withListLimit(b)) : url);
   const res = await fetch(targetUrl, {
     ...init,
     credentials: "include", // backend sets the fh_session httpOnly cookie
@@ -53,14 +55,17 @@ export const PRODUCT_LINES: { value: ProductLine; label: string }[] = [
   { value: "pms", label: "PMS" },
 ];
 
-/** Kanban columns per product line ("lost" is terminal and appended to all). */
+/** Kanban columns per product line. Every line ends in "won"; "lost" is the other terminal stage and is appended to all. */
 export const STAGES_BY_LINE: Record<ProductLine, string[]> = {
-  mutual_fund: ["illustration", "discussion", "invested", "sip_active", "closed"],
-  life_insurance: ["need_analysis", "proposal", "issued", "active", "closed"],
-  general_insurance: ["quote", "proposal", "issued", "renewal_due", "renewed"],
-  corporate_fd: ["proposed", "booked", "matured", "reinvested"],
-  pms: ["prospect", "disclosure_given", "agreement_signed", "funded", "reporting", "closed"],
+  mutual_fund: ["illustration", "discussion", "invested", "sip_active", "won"],
+  life_insurance: ["need_analysis", "proposal", "issued", "active", "won"],
+  general_insurance: ["quote", "proposal", "issued", "renewal_due", "won"],
+  corporate_fd: ["proposed", "booked", "matured", "won"],
+  pms: ["prospect", "disclosure_given", "agreement_signed", "funded", "reporting", "won"],
 };
+
+export const CLOSED_STAGES = ["won", "lost"] as const;
+export const isClosedStage = (stage: string): boolean => (CLOSED_STAGES as readonly string[]).includes(stage);
 
 export interface InsurancePolicy {
   id: string;
@@ -189,18 +194,22 @@ export interface Opportunity {
   notes?: string | null;
   created_at: string;
   updated_at: string;
+  lost_reason?: string | null;
+  closed_at?: string | null;
+  won_amount?: number | null;
 }
 
 export interface PipelineStageStat {
   stage: string;
   count: number;
-  value: number; // paise, excludes lost
+  value: number; // paise, open stages only
 }
 
 export interface PipelineSummary {
   stages: PipelineStageStat[];
-  total_value: number; // paise
+  total_value: number; // paise, open pipeline: excludes won and lost
   total_count: number;
+  closed?: Record<"won" | "lost", { count: number; value: number }>;
 }
 
 export type ActivityKind = "call" | "meeting" | "note" | "followup" | "email" | "review";

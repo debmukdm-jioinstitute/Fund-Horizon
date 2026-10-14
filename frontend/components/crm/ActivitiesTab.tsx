@@ -9,6 +9,7 @@ import {
   getActivities,
   patchActivity,
 } from "../../lib/crmProductsApi";
+import { fieldErrors, pastDueWarning, taskSchema } from "../../lib/crmSchemas";
 import { ApiError } from "../../lib/api";
 
 const KINDS: ActivityKind[] = ["call", "meeting", "note", "followup", "email", "review"];
@@ -98,6 +99,7 @@ export default function ActivitiesTab() {
   const [opportunityId, setOpportunityId] = useState("");
   const [dueAt, setDueAt] = useState("");
   const [assignee, setAssignee] = useState("");
+  const [subjectError, setSubjectError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -174,7 +176,9 @@ export default function ActivitiesTab() {
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!subject.trim()) return;
+    const errs = fieldErrors(taskSchema, { subject });
+    setSubjectError(errs?.subject ?? null);
+    if (errs) return;
     setSaving(true);
     setError(null);
     try {
@@ -185,7 +189,7 @@ export default function ActivitiesTab() {
         household_id: householdId.trim() || undefined,
         customer_id: customerId.trim() || undefined,
         opportunity_id: opportunityId.trim() || undefined,
-        due_at: dueAt ? new Date(dueAt).toISOString() : undefined,
+        due_at: dueAt ? `${dueAt}:00+05:30` : undefined, // entered in IST
         assigned_rm_id: assignee.trim() || undefined,
       });
       setItems((prev) => [created, ...prev]);
@@ -251,6 +255,9 @@ export default function ActivitiesTab() {
                 onChange={(e) => setDueAt(e.target.value)}
                 className="w-full border border-navy-200 rounded-lg px-2 py-1.5 text-xs font-normal"
               />
+              {pastDueWarning(dueAt) && (
+                <span className="block text-xs font-medium text-amber-700">{pastDueWarning(dueAt)}</span>
+              )}
             </label>
           </div>
           <label className="text-xs font-semibold text-navy-800 space-y-1 block">
@@ -262,6 +269,7 @@ export default function ActivitiesTab() {
               className="w-full border border-navy-200 rounded-lg px-2 py-1.5 text-xs font-normal"
               required
             />
+            {subjectError && <span className="block text-xs font-medium text-rose-700">{subjectError}</span>}
           </label>
           <label className="text-xs font-semibold text-navy-800 space-y-1 block">
             <span>Notes</span>
@@ -305,9 +313,8 @@ export default function ActivitiesTab() {
       )}
 
       {loading ? (
-        <div className="p-16 text-center">
+        <div role="status" aria-busy="true" aria-label="Loading" className="p-16 text-center">
           <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
-          <p className="text-xs text-navy-600 font-medium mt-3">Loading agenda...</p>
         </div>
       ) : (
         <div className="space-y-5">

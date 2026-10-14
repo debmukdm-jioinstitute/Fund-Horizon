@@ -14,12 +14,13 @@ import secrets
 from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any, NamedTuple
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 
 from app.api.auth import _hash_password, require_role
+from app.api.crm_page import PageParams, guard, paginate_rows, send_total
 from app.db import sqlite
-from app.repo_crm_core import CrmCoreError, get_crm_repository
+from app.repo_crm_core import IST, CrmCoreError, Page, get_crm_repository, today_ist
 
 router = APIRouter(prefix="/api/crm", tags=["crm"])
 
@@ -31,15 +32,41 @@ Me = Annotated[dict, Depends(require_role("admin", "rm"))]
 # ---------------------------------------------------------------------------
 PRODUCT_LINES = ("mutual_fund", "life_insurance", "general_insurance", "corporate_fd", "pms")
 
+# Each line ends in ``won``; ``lost`` is a separate terminal stage reachable from any open stage.
 OPPORTUNITY_STAGES: dict[str, list[str]] = {
-    "mutual_fund": ["illustration", "discussion", "invested", "sip_active", "closed"],
-    "life_insurance": ["need_analysis", "proposal", "issued", "active", "closed"],
-    "general_insurance": ["quote", "proposal", "issued", "renewal_due", "renewed"],
-    "corporate_fd": ["proposed", "booked", "matured", "reinvested"],
-    "pms": ["prospect", "disclosure_given", "agreement_signed", "funded", "reporting", "closed"],
+    "mutual_fund": ["illustration", "discussion", "invested", "sip_active", "won"],
+    "life_insurance": ["need_analysis", "proposal", "issued", "active", "won"],
+    "general_insurance": ["quote", "proposal", "issued", "renewal_due", "won"],
+    "corporate_fd": ["proposed", "booked", "matured", "won"],
+    "pms": ["prospect", "disclosure_given", "agreement_signed", "funded", "reporting", "won"],
 }
+WON_STAGE = "won"
 LOST_STAGE = "lost"
-CLOSED_STAGES = ("closed", "lost")
+CLOSED_STAGES = (WON_STAGE, LOST_STAGE)
+
+
+def open_stages(line: str) -> list[str]:
+    return OPPORTUNITY_STAGES[line][:-1]
+
+
+def allowed_transitions(line: str) -> dict[str, set[str]]:
+    """Open stages move freely among themselves and to lost; only the last open stage can win. Won/lost are final."""
+    opened = open_stages(line)
+    out = {st: (set(opened) - {st}) | {LOST_STAGE} for st in opened}
+    out[opened[-1]].add(WON_STAGE)
+    out[WON_STAGE] = set()
+    out[LOST_STAGE] = set()
+    return out
+
+
+def default_probability(line: str, stage: str) -> int:
+    if stage == WON_STAGE:
+        return 100
+    if stage == LOST_STAGE:
+        return 0
+    stages = OPPORTUNITY_STAGES[line]
+    return round(100 * (stages.index(stage) + 1) / len(stages))
+
 
 LEAD_STATUSES = ("new", "contacted", "qualified", "converted", "lost")
 ACTIVE_LEAD_STATUSES = ("new", "contacted", "qualified")
@@ -69,6 +96,9 @@ GENERATE_TASK_TYPES = ("policy", "fd")
 
 _EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 _MOBILE_RE = re.compile(r"^[6-9]\d{9}$")
+_INTL_MOBILE_RE = re.compile(r"^\+[1-9]\d{6,14}$")  # NRIs: +<country code><number>
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -81,19 +111,16 @@ class _Scope(NamedTuple):
 
 
 def _scope(me: dict) -> _Scope:
-    """Household/customer ids visible to an RM. Admins are unscoped."""
+    """Household/customer ids visible to an RM (two queries). Admins are unscoped."""
     if me["role"] == "admin":
         return _Scope(True, set(), set())
-    repo = get_crm_repository()
-    households = repo.list_households(rm_id=me["id"])
-    hids = {h["id"] for h in households}
-    cids: set[str] = set()
-    for h in households:
-        if h.get("primary_customer_id"):
-            cids.add(h["primary_customer_id"])
-        for m in repo.list_household_members(h["id"]):
-            cids.add(m["customer_id"])
+    hids, cids = get_crm_repository().scope_ids(me["id"])
     return _Scope(False, hids, cids)
+
+
+def _viewer(me: dict) -> str | None:
+    """RM id to filter list queries by, or None for admins (unscoped)."""
+    return None if me["role"] == "admin" else me["id"]
 
 
 def _public_customer(row: dict) -> dict:
@@ -122,6 +149,20 @@ def _require_rm_account(rm_id: str | None) -> None:
         raise HTTPException(422, "assigned_rm_id must reference an existing RM or admin account.")
 
 
+def _assignee(me: dict, value: str | None, *, create: bool) -> str | None:
+    """Resolve ``assigned_rm_id``: RMs can only assign to themselves; admins to any RM/admin (or nobody)."""
+    if me["role"] == "admin":
+        _require_rm_account(value)
+        return value
+    if value is None:
+        if create:
+            return me["id"]  # RM-created records belong to the RM
+        raise HTTPException(403, "You cannot unassign a record; ask an admin.")
+    if value != me["id"]:
+        raise HTTPException(403, "You can only assign records to yourself.")
+    return value
+
+
 def _check_enum(value: str | None, allowed: tuple[str, ...], field: str) -> None:
     if value is not None and value not in allowed:
         raise HTTPException(422, f"{field} must be one of: {', '.join(allowed)}")
@@ -140,19 +181,32 @@ def _check_email(value: str | None, field: str = "email") -> str | None:
     if value is None:
         return None
     v = value.strip().lower()
+    if not v:
+        return None
     if not _EMAIL_RE.match(v):
         raise HTTPException(422, f"Enter a valid {field} address")
     return v
 
 
 def _check_mobile(value: str | None) -> str | None:
+    """10-digit Indian mobile (optional +91/91/0 prefix), or ``+<cc><number>`` for NRIs."""
     if value is None:
         return None
-    digits = re.sub(r"\D", "", value)
+    raw = value.strip()
+    if not raw:
+        return None
+    compact = re.sub(r"[\s\-()]", "", raw)
+    if compact.startswith("+") and not compact.startswith("+91"):
+        if not _INTL_MOBILE_RE.match(compact):
+            raise HTTPException(422, "Enter an international number as +<country code><number>")
+        return compact
+    digits = re.sub(r"\D", "", compact)
     if len(digits) == 12 and digits.startswith("91"):
         digits = digits[2:]
+    elif len(digits) == 11 and digits.startswith("0"):
+        digits = digits[1:]
     if not _MOBILE_RE.match(digits):
-        raise HTTPException(422, "Enter a valid 10-digit Indian mobile number")
+        raise HTTPException(422, "Enter a valid 10-digit Indian mobile number (or +<country code> for NRIs)")
     return digits
 
 
@@ -170,13 +224,32 @@ def _check_date(value: str | None, field: str) -> str | None:
     return dt.isoformat()
 
 
+def _past_warnings(due_at: str | None) -> list[str]:
+    """A due date before today (IST) is allowed but flagged."""
+    if not due_at:
+        return []
+    try:
+        dt = datetime.fromisoformat(due_at)
+    except ValueError:
+        return []
+    if "T" in due_at:
+        past = (dt if dt.tzinfo else dt.replace(tzinfo=UTC)) < datetime.now(UTC)
+    else:
+        past = dt.date().isoformat() < today_ist()
+    return ["due_at is in the past"] if past else []
+
+
+def _with_warnings(row: dict, warnings: list[str]) -> dict:
+    return {**row, "warnings": warnings} if warnings else row
+
+
 def _visible_household(h: dict, me: dict, scope: _Scope) -> bool:
     return scope.admin or h.get("rm_id") == me["id"]
 
 
 def _visible_lead(lead: dict, me: dict, scope: _Scope) -> bool:
-    # RMs see their own leads plus the unassigned pool they can claim.
-    return scope.admin or lead.get("assigned_rm_id") in (me["id"], None)
+    # RMs see their own leads; the unassigned pool is admin-only.
+    return scope.admin or lead.get("assigned_rm_id") == me["id"]
 
 
 def _visible_opportunity(opp: dict, me: dict, scope: _Scope) -> bool:
@@ -247,6 +320,7 @@ class HouseholdUpdate(BaseModel):
 class MemberCreate(BaseModel):
     customer_id: str
     role: str = "other"
+    override: bool = False  # admin only: allow a customer who already belongs to another household
 
 
 class LeadCreate(BaseModel):
@@ -266,6 +340,9 @@ class LeadUpdate(BaseModel):
 
 class LeadConvert(BaseModel):
     household_name: str | None = None
+    household_id: str | None = None  # convert into an existing household instead of creating one
+    member_role: str | None = None
+    invite_to_portal: bool = False  # only then does the new customer get a usable login
     password: str | None = Field(None, min_length=8)
 
 
@@ -276,7 +353,7 @@ class OpportunityCreate(BaseModel):
     title: str
     amount: int | None = Field(None, ge=0)
     stage: str | None = None
-    probability: int = Field(0, ge=0, le=100)
+    probability: int | None = Field(None, ge=0, le=100)  # defaults from the stage
     expected_close: str | None = None
     assigned_rm_id: str | None = None
     notes: str | None = None
@@ -290,6 +367,8 @@ class OpportunityUpdate(BaseModel):
     notes: str | None = None
     assigned_rm_id: str | None = None
     title: str | None = None
+    lost_reason: str | None = None  # required when moving to lost
+    won_amount: int | None = Field(None, ge=0)  # paise; defaults to amount when moving to won
 
 
 class ActivityCreate(BaseModel):
@@ -336,19 +415,13 @@ class GenerateTasksRequest(BaseModel):
 # Households
 # ---------------------------------------------------------------------------
 @router.get("/households")
-def list_households(me: Me):
+def list_households(me: Me, response: Response, page: PageParams):
     repo = get_crm_repository()
-    rows = repo.list_households() if me["role"] == "admin" else repo.list_households(rm_id=me["id"])
-    out = []
-    for h in rows:
-        out.append(
-            {
-                **h,
-                "member_count": repo.count_household_members(h["id"]),
-                "open_opportunities": repo.count_open_opportunities(h["id"]),
-            }
-        )
-    return out
+    rows = guard(repo.list_households, rm_id=_viewer(me), page=page)
+    send_total(response, page)
+    ids = [h["id"] for h in rows]
+    members, open_opps = repo.member_counts(ids), repo.open_opp_counts(ids)
+    return [{**h, "member_count": members.get(h["id"], 0), "open_opportunities": open_opps.get(h["id"], 0)} for h in rows]
 
 
 @router.post("/households", status_code=201)
@@ -365,18 +438,23 @@ def create_household(body: HouseholdCreate, me: Me):
     else:
         _require_rm_account(rm_id)
     repo = get_crm_repository()
-    return repo.create_household(name=name, primary_customer_id=body.primary_customer_id, rm_id=rm_id, notes=body.notes)
+    return repo.create_household(
+        name=name, primary_customer_id=body.primary_customer_id, rm_id=rm_id, notes=body.notes, actor_id=me["id"]
+    )
 
 
 @router.get("/households/{household_id}")
 def get_household(household_id: str, me: Me):
     repo = get_crm_repository()
-    h = _get_visible(repo.get_household, household_id, me, _scope(me), _visible_household, "Household")
+    scope = _scope(me)
+    h = _get_visible(repo.get_household, household_id, me, scope, _visible_household, "Household")
+    customers = {}
     members = []
     for m in repo.list_household_members(household_id):
         customer = sqlite.get_customer_by_id(m["customer_id"])
         if not customer:
             continue
+        customers[m["customer_id"]] = customer
         members.append(
             {
                 "customer_id": m["customer_id"],
@@ -386,20 +464,13 @@ def get_household(household_id: str, me: Me):
                 "role": m["role"],
             }
         )
-    scope = _scope(me)
-    opportunities = [
-        o for o in repo.list_opportunities(household_id=household_id) if _visible_opportunity(o, me, scope)
-    ]
-    activities = [a for a in repo.list_activities(household_id=household_id) if _visible_activity(a, me, scope)][:20]
-    cases = [
-        c
-        for c in repo.list_cases()
-        if c["status"] in CASE_OPEN_STATUSES
-        and _visible_case(c, me, scope)
-        and (
-            c["customer_id"] == h.get("primary_customer_id") or c["customer_id"] in {m["customer_id"] for m in members}
-        )
-    ]
+    viewer = _viewer(me)
+    opportunities = repo.list_opportunities(household_id=household_id, viewer_rm_id=viewer)
+    activities = repo.list_activities(household_id=household_id, viewer_rm_id=viewer, page=Page(limit=20))
+    member_ids = {m["customer_id"] for m in members}
+    if h.get("primary_customer_id"):
+        member_ids.add(h["primary_customer_id"])
+    cases = repo.list_cases(statuses=CASE_OPEN_STATUSES, customer_ids=member_ids, viewer_rm_id=viewer)
     return {
         "household": h,
         "members": members,
@@ -422,14 +493,14 @@ def update_household(household_id: str, body: HouseholdUpdate, me: Me):
         fields["primary_customer_id"] = body.primary_customer_id
     if "rm_id" in body.model_fields_set:
         if me["role"] != "admin":
-            if body.rm_id is not None and body.rm_id != me["id"]:
+            if body.rm_id != me["id"]:
                 raise HTTPException(403, "You cannot assign a household to another RM.")
         else:
             _require_rm_account(body.rm_id)
         fields["rm_id"] = body.rm_id
     if "notes" in body.model_fields_set:
         fields["notes"] = body.notes
-    updated = repo.update_household(household_id, fields)
+    updated = repo.update_household(household_id, fields, actor_id=me["id"])
     if not updated:
         raise HTTPException(404, "Household not found")
     return updated
@@ -438,11 +509,29 @@ def update_household(household_id: str, body: HouseholdUpdate, me: Me):
 @router.post("/households/{household_id}/members", status_code=201)
 def add_household_member(household_id: str, body: MemberCreate, me: Me):
     repo = get_crm_repository()
-    _get_visible(repo.get_household, household_id, me, _scope(me), _visible_household, "Household")
+    scope = _scope(me)
+    _get_visible(repo.get_household, household_id, me, scope, _visible_household, "Household")
     _check_enum(body.role, MEMBER_ROLES, "role")
-    _customer_or_404(body.customer_id)
+    customer = _customer_or_404(body.customer_id)
+    others = [m for m in repo.customer_memberships(body.customer_id) if m["household_id"] != household_id]
+    if me["role"] != "admin":
+        if body.override:
+            raise HTTPException(403, "Only an admin can override the one-household-per-customer rule.")
+        if others:
+            if body.customer_id in scope.customer_ids:
+                raise HTTPException(422, "This customer already belongs to another household. Ask an admin to override.")
+            raise HTTPException(403, "You do not have permission to use this customer.")
+        # A brand-new customer must not already be another RM's client.
+        if customer.get("assigned_rm_id") not in (None, me["id"]) and body.customer_id not in scope.customer_ids:
+            raise HTTPException(403, "You do not have permission to use this customer.")
+    elif others and not body.override:
+        names = repo.household_names([m["household_id"] for m in others])
+        where = ", ".join(sorted(names.values())) or "another household"
+        raise HTTPException(422, f"This customer already belongs to {where}. Pass override=true to add them anyway.")
     try:
-        return repo.add_household_member(household_id=household_id, customer_id=body.customer_id, role=body.role)
+        return repo.add_household_member(
+            household_id=household_id, customer_id=body.customer_id, role=body.role, actor_id=me["id"]
+        )
     except CrmCoreError as e:
         raise HTTPException(422, str(e)) from e
 
@@ -453,14 +542,22 @@ def add_household_member(household_id: str, body: MemberCreate, me: Me):
 @router.get("/leads")
 def list_leads(
     me: Me,
+    response: Response,
+    page: PageParams,
     status: str | None = Query(None),
     assigned_rm_id: str | None = Query(None),
 ):
     _check_enum(status, LEAD_STATUSES, "status")
     repo = get_crm_repository()
-    leads = repo.list_leads(status=status, assigned_rm_id=assigned_rm_id)
-    scope = _scope(me)
-    return [lead for lead in leads if _visible_lead(lead, me, scope)]
+    rows = guard(repo.list_leads, status=status, assigned_rm_id=assigned_rm_id, viewer_rm_id=_viewer(me), page=page)
+    send_total(response, page)
+    return rows
+
+
+@router.get("/leads/{lead_id}")
+def get_lead(lead_id: str, me: Me):
+    repo = get_crm_repository()
+    return _get_visible(repo.get_lead, lead_id, me, _scope(me), _visible_lead, "Lead")
 
 
 @router.post("/leads", status_code=201)
@@ -468,7 +565,7 @@ def create_lead(body: LeadCreate, me: Me):
     name = _clean_str(body.name, "name")
     assert name is not None
     _check_enum(body.source, LEAD_SOURCES, "source")
-    _require_rm_account(body.assigned_rm_id)
+    assigned = _assignee(me, body.assigned_rm_id, create=True)
     repo = get_crm_repository()
     return repo.create_lead(
         name=name,
@@ -476,25 +573,29 @@ def create_lead(body: LeadCreate, me: Me):
         mobile=_check_mobile(body.mobile),
         source=body.source,
         status="new",
-        assigned_rm_id=body.assigned_rm_id,
+        assigned_rm_id=assigned,
         notes=body.notes,
+        actor_id=me["id"],
     )
 
 
 @router.patch("/leads/{lead_id}")
 def update_lead(lead_id: str, body: LeadUpdate, me: Me):
     repo = get_crm_repository()
-    _get_visible(repo.get_lead, lead_id, me, _scope(me), _visible_lead, "Lead")
-    if body.status is not None:
+    lead = _get_visible(repo.get_lead, lead_id, me, _scope(me), _visible_lead, "Lead")
+    fields: dict[str, Any] = {}
+    if "status" in body.model_fields_set:
         _check_enum(body.status, LEAD_STATUSES, "status")
+        if body.status == "converted" and lead["status"] != "converted":
+            raise HTTPException(422, "Use the convert action to convert a lead.")
+        if lead["status"] == "converted" and body.status != "converted":
+            raise HTTPException(422, "A converted lead cannot be reopened.")
+        fields["status"] = body.status
     if "assigned_rm_id" in body.model_fields_set:
-        _require_rm_account(body.assigned_rm_id)
-    fields = {
-        k: v
-        for k, v in {"status": body.status, "assigned_rm_id": body.assigned_rm_id, "notes": body.notes}.items()
-        if k in body.model_fields_set
-    }
-    updated = repo.update_lead(lead_id, fields)
+        fields["assigned_rm_id"] = _assignee(me, body.assigned_rm_id, create=False)
+    if "notes" in body.model_fields_set:
+        fields["notes"] = body.notes
+    updated = repo.update_lead(lead_id, fields, actor_id=me["id"])
     if not updated:
         raise HTTPException(404, "Lead not found")
     return updated
@@ -503,49 +604,50 @@ def update_lead(lead_id: str, body: LeadUpdate, me: Me):
 @router.post("/leads/{lead_id}/convert")
 def convert_lead(lead_id: str, body: LeadConvert, me: Me):
     repo = get_crm_repository()
-    lead = _get_visible(repo.get_lead, lead_id, me, _scope(me), _visible_lead, "Lead")
+    scope = _scope(me)
+    lead = _get_visible(repo.get_lead, lead_id, me, scope, _visible_lead, "Lead")
     if lead["status"] == "converted":
         raise HTTPException(422, "This lead has already been converted.")
+    if body.member_role is not None:
+        _check_enum(body.member_role, MEMBER_ROLES, "member_role")
+    if lead.get("email"):
+        _check_email(lead["email"])
+    if lead.get("mobile"):
+        _check_mobile(lead["mobile"])
 
-    email = _check_email(lead.get("email"))
-    if not email:
-        raise HTTPException(422, "Add an email address to the lead before converting.")
-    if sqlite.get_customer_by_email(email):
-        raise HTTPException(422, "An account with this email already exists.")
-    mobile = _check_mobile(lead.get("mobile"))
-    if not mobile:
-        raise HTTPException(422, "Add a mobile number to the lead before converting.")
-    if sqlite.get_customer_by_mobile(mobile):
-        raise HTTPException(422, "An account with this mobile number already exists.")
-
-    temp_password: str | None = None
-    if body.password:
-        password = body.password
-    else:
-        password = secrets.token_urlsafe(24)  # 32 chars
-        temp_password = password
+    if body.household_id:
+        h = repo.get_household(body.household_id)
+        if not h:
+            raise HTTPException(404, "Household not found")
+        if not _visible_household(h, me, scope):
+            raise HTTPException(403, "You do not have permission to use this household.")
 
     owner_rm_id = me["id"] if me["role"] == "rm" else lead.get("assigned_rm_id")
-    if owner_rm_id:
-        _require_rm_account(owner_rm_id)
+    _require_rm_account(owner_rm_id)
 
-    customer = sqlite.create_customer(
-        name=lead["name"],
-        email=email,
-        mobile=mobile,
+    # No usable login unless the RM explicitly invites the client to the portal.
+    temp_password: str | None = None
+    if body.invite_to_portal:
+        password = body.password
+        if not password:
+            password = temp_password = secrets.token_urlsafe(24)
+    else:
+        password = secrets.token_urlsafe(32)  # unknowable; the client cannot sign in
+
+    household_name = (body.household_name or "").strip() or None
+    result = guard(
+        repo.convert_lead,
+        lead_id,
+        actor_id=me["id"],
+        owner_rm_id=owner_rm_id,
         password_hash=_hash_password(password),
-        role="customer",
-        assigned_rm_id=owner_rm_id,
+        household_id=body.household_id,
+        household_name=household_name,
+        member_role=body.member_role or ("other" if body.household_id else "primary"),
     )
-    household_name = (body.household_name or f"{lead['name']} Household").strip()
-    household = repo.create_household(name=household_name, primary_customer_id=customer["id"], rm_id=owner_rm_id)
-    repo.add_household_member(household_id=household["id"], customer_id=customer["id"], role="primary")
-    repo.update_lead(lead_id, {"status": "converted"})
-
-    result: dict[str, Any] = {"customer_id": customer["id"], "household_id": household["id"]}
+    result["invited"] = body.invite_to_portal
     if temp_password is not None:
-        # Returned once; never stored in plain text.
-        result["temp_password"] = temp_password
+        result["temp_password"] = temp_password  # returned once; never stored in plain text
     return result
 
 
@@ -564,6 +666,8 @@ def _check_stage(product_line: str, stage: str | None, field: str = "stage") -> 
 @router.get("/opportunities")
 def list_opportunities(
     me: Me,
+    response: Response,
+    page: PageParams,
     product_line: str | None = Query(None),
     stage: str | None = Query(None),
     household_id: str | None = Query(None),
@@ -571,33 +675,36 @@ def list_opportunities(
 ):
     _check_enum(product_line, PRODUCT_LINES, "product_line")
     repo = get_crm_repository()
-    opps = repo.list_opportunities(
+    opps = guard(
+        repo.list_opportunities,
         product_line=product_line,
         stage=stage,
         household_id=household_id,
         assigned_rm_id=assigned_rm_id,
+        viewer_rm_id=_viewer(me),
+        page=page,
     )
-    scope = _scope(me)
-    out = []
-    for o in opps:
-        if not _visible_opportunity(o, me, scope):
-            continue
-        out.append(
-            {
-                **o,
-                "household_name": repo.get_household(o["household_id"])["name"]
-                if o.get("household_id") and repo.get_household(o["household_id"])
-                else None,
-                "customer_name": _customer_name(o.get("customer_id")),
-            }
-        )
-    return out
+    send_total(response, page)
+    hh = repo.household_names([o["household_id"] for o in opps if o.get("household_id")])
+    cust = repo.customer_names([o["customer_id"] for o in opps if o.get("customer_id")])
+    return [{**o, "household_name": hh.get(o.get("household_id")), "customer_name": cust.get(o.get("customer_id"))} for o in opps]
+
+
+@router.get("/opportunities/{opportunity_id}")
+def get_opportunity(opportunity_id: str, me: Me):
+    repo = get_crm_repository()
+    opp = _get_visible(repo.get_opportunity, opportunity_id, me, _scope(me), _visible_opportunity, "Opportunity")
+    hh = repo.household_names([opp["household_id"]] if opp.get("household_id") else [])
+    cust = repo.customer_names([opp["customer_id"]] if opp.get("customer_id") else [])
+    return {**opp, "household_name": hh.get(opp.get("household_id")), "customer_name": cust.get(opp.get("customer_id"))}
 
 
 @router.post("/opportunities", status_code=201)
 def create_opportunity(body: OpportunityCreate, me: Me):
     _check_enum(body.product_line, PRODUCT_LINES, "product_line")
     stage = _check_stage(body.product_line, body.stage)
+    if stage in CLOSED_STAGES:
+        raise HTTPException(422, "New opportunities must start in an open stage.")
     title = _clean_str(body.title, "title")
     assert title is not None
     scope = _scope(me)
@@ -612,7 +719,8 @@ def create_opportunity(body: OpportunityCreate, me: Me):
         _customer_or_404(body.customer_id)
         if not scope.admin and body.customer_id not in scope.customer_ids:
             raise HTTPException(403, "You do not have permission to use this customer.")
-    _require_rm_account(body.assigned_rm_id)
+    assigned = _assignee(me, body.assigned_rm_id, create=True)
+    probability = body.probability if body.probability is not None else default_probability(body.product_line, stage)
     return repo.create_opportunity(
         household_id=body.household_id,
         customer_id=body.customer_id,
@@ -620,11 +728,37 @@ def create_opportunity(body: OpportunityCreate, me: Me):
         title=title,
         amount=body.amount,
         stage=stage,
-        probability=body.probability,
+        probability=probability,
         expected_close=_check_date(body.expected_close, "expected_close"),
-        assigned_rm_id=body.assigned_rm_id,
+        assigned_rm_id=assigned,
         notes=body.notes,
+        actor_id=me["id"],
     )
+
+
+def _stage_change_fields(opp: dict, body: OpportunityUpdate) -> dict[str, Any]:
+    """Validate a stage move against the transitions map and derive close fields."""
+    new = _check_stage(opp["product_line"], body.stage)
+    if new == opp["stage"]:
+        return {}
+    if new not in allowed_transitions(opp["product_line"]).get(opp["stage"], set()):
+        if opp["stage"] in CLOSED_STAGES:
+            raise HTTPException(422, f"A {opp['stage']} opportunity is final and cannot change stage.")
+        raise HTTPException(422, f"Cannot move from {opp['stage']} to {new}.")
+    fields: dict[str, Any] = {"stage": new}
+    if "probability" not in body.model_fields_set:
+        fields["probability"] = default_probability(opp["product_line"], new)
+    if new == WON_STAGE:
+        won_amount = body.won_amount if body.won_amount is not None else (body.amount or opp.get("amount"))
+        if won_amount is None:
+            raise HTTPException(422, "won_amount is required to mark an opportunity won.")
+        fields.update(won_amount=won_amount, closed_at=_utcnow(), lost_reason=None)
+    elif new == LOST_STAGE:
+        reason = (body.lost_reason or "").strip()
+        if not reason:
+            raise HTTPException(422, "lost_reason is required to mark an opportunity lost.")
+        fields.update(lost_reason=reason, closed_at=_utcnow())
+    return fields
 
 
 @router.patch("/opportunities/{opportunity_id}")
@@ -641,7 +775,7 @@ def update_opportunity(opportunity_id: str, body: OpportunityUpdate, me: Me):
     )
     fields: dict[str, Any] = {}
     if "stage" in body.model_fields_set:
-        fields["stage"] = _check_stage(opp["product_line"], body.stage)
+        fields.update(_stage_change_fields(opp, body))
     if "probability" in body.model_fields_set:
         fields["probability"] = body.probability
     if "amount" in body.model_fields_set:
@@ -653,9 +787,8 @@ def update_opportunity(opportunity_id: str, body: OpportunityUpdate, me: Me):
     if "title" in body.model_fields_set:
         fields["title"] = _clean_str(body.title, "title")
     if "assigned_rm_id" in body.model_fields_set:
-        _require_rm_account(body.assigned_rm_id)
-        fields["assigned_rm_id"] = body.assigned_rm_id
-    updated = repo.update_opportunity(opportunity_id, fields)
+        fields["assigned_rm_id"] = _assignee(me, body.assigned_rm_id, create=False)
+    updated = repo.update_opportunity(opportunity_id, fields, actor_id=me["id"])
     if not updated:
         raise HTTPException(404, "Opportunity not found")
     return updated
@@ -663,17 +796,17 @@ def update_opportunity(opportunity_id: str, body: OpportunityUpdate, me: Me):
 
 @router.get("/pipeline")
 def pipeline_summary(me: Me, product_line: str | None = Query(None)):
+    """Open pipeline by stage. Won and lost are excluded from the totals and reported under ``closed``."""
     _check_enum(product_line, PRODUCT_LINES, "product_line")
     repo = get_crm_repository()
-    opps = repo.list_opportunities(product_line=product_line, exclude_stages=(LOST_STAGE,))
-    scope = _scope(me)
-    opps = [o for o in opps if _visible_opportunity(o, me, scope)]
+    viewer = _viewer(me)
+    opps = repo.list_opportunities(product_line=product_line, exclude_stages=CLOSED_STAGES, viewer_rm_id=viewer)
     if product_line:
-        ordered = OPPORTUNITY_STAGES[product_line]
+        ordered = open_stages(product_line)
     else:
         ordered = []
         for line in PRODUCT_LINES:
-            for st in OPPORTUNITY_STAGES[line]:
+            for st in open_stages(line):
                 if st not in ordered:
                     ordered.append(st)
     stages = []
@@ -683,7 +816,12 @@ def pipeline_summary(me: Me, product_line: str | None = Query(None)):
         value = sum(o["amount"] or 0 for o in bucket)
         stages.append({"stage": st, "count": len(bucket), "value": value})
         total_value += value
-    return {"stages": stages, "total_value": total_value, "total_count": len(opps)}
+    closed = {}
+    for st in CLOSED_STAGES:
+        rows = repo.list_opportunities(product_line=product_line, stage=st, viewer_rm_id=viewer)
+        key = "won_amount" if st == WON_STAGE else "amount"
+        closed[st] = {"count": len(rows), "value": sum((o[key] if o.get(key) is not None else o["amount"]) or 0 for o in rows)}
+    return {"stages": stages, "total_value": total_value, "total_count": len(opps), "closed": closed}
 
 
 # ---------------------------------------------------------------------------
@@ -692,6 +830,8 @@ def pipeline_summary(me: Me, product_line: str | None = Query(None)):
 @router.get("/activities")
 def list_activities(
     me: Me,
+    response: Response,
+    page: PageParams,
     assigned_rm_id: str | None = Query(None),
     household_id: str | None = Query(None),
     customer_id: str | None = Query(None),
@@ -701,7 +841,8 @@ def list_activities(
     due_before: str | None = Query(None),
 ):
     repo = get_crm_repository()
-    acts = repo.list_activities(
+    rows = guard(
+        repo.list_activities,
         assigned_rm_id=assigned_rm_id,
         household_id=household_id,
         customer_id=customer_id,
@@ -709,9 +850,11 @@ def list_activities(
         case_id=case_id,
         done=done,
         due_before=due_before,
+        viewer_rm_id=_viewer(me),
+        page=page,
     )
-    scope = _scope(me)
-    return [a for a in acts if _visible_activity(a, me, scope)]
+    send_total(response, page)
+    return rows
 
 
 @router.post("/activities", status_code=201)
@@ -743,8 +886,9 @@ def create_activity(body: ActivityCreate, me: Me):
             raise HTTPException(404, "Case not found")
         if not _visible_case(case, me, scope):
             raise HTTPException(403, "You do not have permission to use this case.")
-    _require_rm_account(body.assigned_rm_id)
-    return repo.create_activity(
+    assigned = _assignee(me, body.assigned_rm_id, create=True)
+    due_at = _check_date(body.due_at, "due_at")
+    row = repo.create_activity(
         kind=body.kind,
         subject=subject,
         body=body.body,
@@ -754,9 +898,11 @@ def create_activity(body: ActivityCreate, me: Me):
         case_id=body.case_id,
         policy_id=body.policy_id,
         fd_id=body.fd_id,
-        due_at=_check_date(body.due_at, "due_at"),
-        assigned_rm_id=body.assigned_rm_id,
+        due_at=due_at,
+        assigned_rm_id=assigned,
+        actor_id=me["id"],
     )
+    return _with_warnings(row, _past_warnings(due_at))
 
 
 @router.patch("/activities/{activity_id}")
@@ -772,22 +918,25 @@ def update_activity(activity_id: str, body: ActivityUpdate, me: Me):
         "Activity",
     )
     fields: dict[str, Any] = {}
+    warnings: list[str] = []
     if "done_at" in body.model_fields_set:
         # done_at=null reopens the activity.
         fields["done_at"] = _check_date(body.done_at, "done_at") if body.done_at else None
     if "subject" in body.model_fields_set:
+        if body.subject is None:
+            raise HTTPException(422, "subject cannot be empty")
         fields["subject"] = _clean_str(body.subject, "subject")
     if "body" in body.model_fields_set:
         fields["body"] = body.body
     if "due_at" in body.model_fields_set:
         fields["due_at"] = _check_date(body.due_at, "due_at") if body.due_at else None
+        warnings = _past_warnings(fields["due_at"])
     if "assigned_rm_id" in body.model_fields_set:
-        _require_rm_account(body.assigned_rm_id)
-        fields["assigned_rm_id"] = body.assigned_rm_id
-    updated = repo.update_activity(activity_id, fields)
+        fields["assigned_rm_id"] = _assignee(me, body.assigned_rm_id, create=False)
+    updated = repo.update_activity(activity_id, fields, actor_id=me["id"])
     if not updated:
         raise HTTPException(404, "Activity not found")
-    return updated
+    return _with_warnings(updated, warnings)
 
 
 # ---------------------------------------------------------------------------
@@ -796,19 +945,24 @@ def update_activity(activity_id: str, body: ActivityUpdate, me: Me):
 @router.get("/cases")
 def list_cases(
     me: Me,
+    response: Response,
+    page: PageParams,
     status: str | None = Query(None),
     customer_id: str | None = Query(None),
 ):
     _check_enum(status, CASE_STATUSES, "status")
     repo = get_crm_repository()
-    cases = repo.list_cases(status=status, customer_id=customer_id)
-    scope = _scope(me)
-    out = []
-    for c in cases:
-        if not _visible_case(c, me, scope):
-            continue
-        out.append({**c, "customer_name": _customer_name(c.get("customer_id"))})
-    return out
+    cases = guard(repo.list_cases, status=status, customer_id=customer_id, viewer_rm_id=_viewer(me), page=page)
+    send_total(response, page)
+    names = repo.customer_names([c["customer_id"] for c in cases])
+    return [{**c, "customer_name": names.get(c.get("customer_id"))} for c in cases]
+
+
+@router.get("/cases/{case_id}")
+def get_case(case_id: str, me: Me):
+    repo = get_crm_repository()
+    case = _get_visible(repo.get_case, case_id, me, _scope(me), _visible_case, "Case")
+    return {**case, "customer_name": _customer_name(case.get("customer_id"))}
 
 
 @router.post("/cases", status_code=201)
@@ -828,6 +982,7 @@ def create_case(body: CaseCreate, me: Me):
         body=body.body,
         status="open",
         sla_due_at=_check_date(body.sla_due_at, "sla_due_at"),
+        actor_id=me["id"],
     )
 
 
@@ -855,7 +1010,7 @@ def update_case(case_id: str, body: CaseUpdate, me: Me):
         fields["sla_due_at"] = _check_date(body.sla_due_at, "sla_due_at") if body.sla_due_at else None
     if "body" in body.model_fields_set:
         fields["body"] = body.body
-    updated = repo.update_case(case_id, fields)
+    updated = repo.update_case(case_id, fields, actor_id=me["id"])
     if not updated:
         raise HTTPException(404, "Case not found")
     return updated
@@ -868,44 +1023,22 @@ def update_case(case_id: str, body: CaseUpdate, me: Me):
 def dashboard(me: Me):
     repo = get_crm_repository()
     scope = _scope(me)
+    viewer = _viewer(me)
 
-    if scope.admin:
-        households = repo.list_households()
-    else:
-        households = repo.list_households(rm_id=me["id"])
+    households = repo.list_households(rm_id=viewer)
+    leads = [lead for lead in repo.list_leads(viewer_rm_id=viewer) if lead["status"] in ACTIVE_LEAD_STATUSES]
 
-    leads = [
-        lead for lead in repo.list_leads() if lead["status"] in ACTIVE_LEAD_STATUSES and _visible_lead(lead, me, scope)
-    ]
-
-    opps = [o for o in repo.list_opportunities(exclude_stages=(LOST_STAGE,)) if _visible_opportunity(o, me, scope)]
+    opps = repo.list_opportunities(exclude_stages=CLOSED_STAGES, viewer_rm_id=viewer)
     pipeline_value_by_line = {line: 0 for line in PRODUCT_LINES}
     for o in opps:
         pipeline_value_by_line[o["product_line"]] += o["amount"] or 0
 
-    renewals = repo.list_policy_renewals(days=30)
-    if not scope.admin:
-        renewals = [
-            p
-            for p in renewals
-            if (p.get("household_id") in scope.household_ids) or (p.get("customer_id") in scope.customer_ids)
-        ]
-    maturities = repo.list_fd_maturities(days=60)
-    if not scope.admin:
-        maturities = [
-            f
-            for f in maturities
-            if (f.get("household_id") in scope.household_ids) or (f.get("customer_id") in scope.customer_ids)
-        ]
+    renewals = _scoped_product_rows(repo.list_policy_renewals(days=30), scope)
+    maturities = _scoped_product_rows(repo.list_fd_maturities(days=60), scope)
+    open_cases = repo.list_cases(statuses=CASE_OPEN_STATUSES, viewer_rm_id=viewer)
 
-    open_cases = [c for c in repo.list_cases() if c["status"] in CASE_OPEN_STATUSES and _visible_case(c, me, scope)]
-
-    horizon = (_utcnow_dt() + timedelta(days=7)).isoformat()
-    tasks_due = [
-        a
-        for a in repo.list_activities(done=False)
-        if a.get("due_at") and a["due_at"] <= horizon and _visible_activity(a, me, scope)
-    ]
+    horizon = (datetime.now(IST) + timedelta(days=7)).isoformat()
+    tasks_due = repo.list_activities(done=False, due_before=horizon, viewer_rm_id=viewer)
 
     return {
         "households_count": len(households),
@@ -918,8 +1051,10 @@ def dashboard(me: Me):
     }
 
 
-def _utcnow_dt() -> datetime:
-    return datetime.now(UTC)
+def _scoped_product_rows(rows: list[dict], scope: _Scope) -> list[dict]:
+    if scope.admin:
+        return rows
+    return [r for r in rows if (r.get("household_id") in scope.household_ids) or (r.get("customer_id") in scope.customer_ids)]
 
 
 # ---------------------------------------------------------------------------
@@ -927,44 +1062,26 @@ def _utcnow_dt() -> datetime:
 # ---------------------------------------------------------------------------
 def _enrich_product_rows(rows: list[dict]) -> list[dict]:
     repo = get_crm_repository()
-    out = []
-    for r in rows:
-        h = repo.get_household(r["household_id"]) if r.get("household_id") else None
-        out.append(
-            {
-                **r,
-                "household_name": h["name"] if h else None,
-                "customer_name": _customer_name(r.get("customer_id")),
-            }
-        )
-    return out
+    hh = repo.household_names([r["household_id"] for r in rows if r.get("household_id")])
+    cust = repo.customer_names([r["customer_id"] for r in rows if r.get("customer_id")])
+    return [{**r, "household_name": hh.get(r.get("household_id")), "customer_name": cust.get(r.get("customer_id"))} for r in rows]
 
 
 @router.get("/renewals")
-def list_renewals(me: Me, days: int = Query(45, ge=1, le=365)):
+def list_renewals(me: Me, response: Response, page: PageParams, days: int = Query(45, ge=1, le=365)):
     repo = get_crm_repository()
-    scope = _scope(me)
-    rows = repo.list_policy_renewals(days=days)
-    if not scope.admin:
-        rows = [
-            p
-            for p in rows
-            if (p.get("household_id") in scope.household_ids) or (p.get("customer_id") in scope.customer_ids)
-        ]
+    rows = _scoped_product_rows(repo.list_policy_renewals(days=days), _scope(me))
+    rows = paginate_rows(rows, page)
+    send_total(response, page)
     return _enrich_product_rows(rows)
 
 
 @router.get("/maturities")
-def list_maturities(me: Me, days: int = Query(60, ge=1, le=365)):
+def list_maturities(me: Me, response: Response, page: PageParams, days: int = Query(60, ge=1, le=365)):
     repo = get_crm_repository()
-    scope = _scope(me)
-    rows = repo.list_fd_maturities(days=days)
-    if not scope.admin:
-        rows = [
-            f
-            for f in rows
-            if (f.get("household_id") in scope.household_ids) or (f.get("customer_id") in scope.customer_ids)
-        ]
+    rows = _scoped_product_rows(repo.list_fd_maturities(days=days), _scope(me))
+    rows = paginate_rows(rows, page)
+    send_total(response, page)
     return _enrich_product_rows(rows)
 
 
@@ -989,12 +1106,8 @@ def generate_renewal_tasks(body: GenerateTasksRequest, me: Me):
 
     created = 0
     if body.type == "policy":
-        items = repo.list_policy_renewals(days=45)
+        items = _scoped_product_rows(repo.list_policy_renewals(days=45), scope)
         for item in items:
-            if not scope.admin and not (
-                item.get("household_id") in scope.household_ids or item.get("customer_id") in scope.customer_ids
-            ):
-                continue
             if repo.open_followup_exists(policy_id=item["id"]):
                 continue  # idempotent: an open follow-up already covers this policy
             label = " ".join(p for p in (item.get("insurer"), item.get("policy_no")) if p) or item.get(
@@ -1009,15 +1122,12 @@ def generate_renewal_tasks(body: GenerateTasksRequest, me: Me):
                 policy_id=item["id"],
                 due_at=item.get("renewal_date"),
                 assigned_rm_id=_resolve_task_rm(item, me, repo),
+                actor_id=me["id"],
             )
             created += 1
     else:
-        items = repo.list_fd_maturities(days=60)
+        items = _scoped_product_rows(repo.list_fd_maturities(days=60), scope)
         for item in items:
-            if not scope.admin and not (
-                item.get("household_id") in scope.household_ids or item.get("customer_id") in scope.customer_ids
-            ):
-                continue
             if repo.open_followup_exists(fd_id=item["id"]):
                 continue  # idempotent
             label = item.get("company") or "FD"
@@ -1030,6 +1140,7 @@ def generate_renewal_tasks(body: GenerateTasksRequest, me: Me):
                 fd_id=item["id"],
                 due_at=item.get("maturity_date"),
                 assigned_rm_id=_resolve_task_rm(item, me, repo),
+                actor_id=me["id"],
             )
             created += 1
     return {"created": created}

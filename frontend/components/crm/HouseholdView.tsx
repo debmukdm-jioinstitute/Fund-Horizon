@@ -13,6 +13,7 @@ import {
   type Opportunity,
 } from "../../lib/crmApi";
 import { shortInr, inr } from "../../lib/format";
+import { ApiError } from "../../lib/api";
 
 interface ProductRows {
   policies: { id: string; insurer?: string | null; policy_no?: string | null; premium_amount?: number | null; renewal_date?: string | null; policy_type?: string; status?: string }[];
@@ -51,7 +52,13 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-export default function HouseholdView({ householdId }: { householdId: string }) {
+export default function HouseholdView({
+  householdId,
+  onNotFound,
+}: {
+  householdId: string;
+  onNotFound?: () => void;
+}) {
   const [detail, setDetail] = useState<HouseholdDetail | null>(null);
   const [products, setProducts] = useState<ProductRows | null>(null);
   const [loading, setLoading] = useState(true);
@@ -93,23 +100,24 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
         });
       }
     } catch (e) {
+      if (e instanceof ApiError && e.status === 404 && onNotFound) onNotFound();
       setError(e instanceof Error ? e.message : "Could not load the household");
     } finally {
       setLoading(false);
     }
-  }, [householdId]);
+  }, [householdId, onNotFound]);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  const handleAddMember = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddMember = async (e: React.FormEvent | null, override = false) => {
+    e?.preventDefault();
     if (!customerId.trim()) return;
     setAdding(true);
     setAddError(null);
     try {
-      await addHouseholdMember(householdId, { customer_id: customerId.trim(), role });
+      await addHouseholdMember(householdId, { customer_id: customerId.trim(), role, override: override || undefined });
       setCustomerId("");
       await load();
     } catch (e) {
@@ -120,7 +128,12 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
   };
 
   if (loading) {
-    return <div className="p-12 text-center text-xs text-navy-500">Loading household…</div>;
+    return (
+      <div role="status" aria-busy="true" aria-label="Loading" className="space-y-2 p-5">
+        <div className="h-6 w-1/3 rounded bg-navy-100 animate-pulse" />
+        <div className="h-4 w-2/3 rounded bg-navy-100 animate-pulse" />
+      </div>
+    );
   }
   if (error || !detail) {
     return (
@@ -233,7 +246,7 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
             </p>
             {household.notes && <p className="text-xs text-navy-600 mt-2">{household.notes}</p>}
           </div>
-          <form onSubmit={handleAddMember} className="flex flex-wrap items-end gap-2">
+          <form onSubmit={(e) => handleAddMember(e)} className="flex flex-wrap items-end gap-2">
             <div>
               <label className="block text-xs font-semibold text-navy-700 mb-1">
                 Add member (customer ID)
@@ -271,6 +284,16 @@ export default function HouseholdView({ householdId }: { householdId: string }) 
         {addError && (
           <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
             {addError}
+            {addError.includes("override=true") && (
+              <button
+                type="button"
+                disabled={adding}
+                onClick={() => handleAddMember(null, true)}
+                className="ml-2 underline font-bold disabled:opacity-50"
+              >
+                Add anyway
+              </button>
+            )}
           </div>
         )}
       </div>

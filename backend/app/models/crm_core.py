@@ -21,9 +21,12 @@ class HouseholdModel(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     primary_customer_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
-    rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    updated_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
 
 class HouseholdMemberModel(Base):
@@ -43,12 +46,17 @@ class LeadModel(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
-    mobile: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    mobile: Mapped[str | None] = mapped_column(String(16), nullable=True, index=True)
     source: Mapped[str] = mapped_column(String(32), nullable=False, default="other")
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="new", index=True)
     assigned_rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    converted_household_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    converted_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    updated_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
 
 class OpportunityModel(Base):
@@ -67,6 +75,11 @@ class OpportunityModel(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
     updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    lost_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    closed_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    won_amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
 
 class ActivityModel(Base):
@@ -86,6 +99,9 @@ class ActivityModel(Base):
     done_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
     assigned_rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    updated_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
 
 class CaseModel(Base):
@@ -97,6 +113,22 @@ class CaseModel(Base):
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
     body: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="open", index=True)
-    sla_due_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    sla_due_at: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
     resolved_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    updated_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+
+
+class AuditLogModel(Base):
+    __tablename__ = "audit_log"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    entity: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    entity_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
+    field: Mapped[str] = mapped_column(String(64), nullable=False)
+    old: Mapped[str | None] = mapped_column(Text, nullable=True)
+    new: Mapped[str | None] = mapped_column(Text, nullable=True)
+    actor_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    at: Mapped[str] = mapped_column(String(50), nullable=False)

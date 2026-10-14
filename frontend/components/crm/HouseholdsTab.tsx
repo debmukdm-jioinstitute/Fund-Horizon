@@ -1,13 +1,14 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   createHousehold,
   fetchHouseholds,
   type Household,
 } from "../../lib/crmApi";
-import HouseholdView from "./HouseholdView";
 
 function formatDate(iso: string): string {
   try {
@@ -26,7 +27,7 @@ export default function HouseholdsTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const [openId, setOpenId] = useState<string | null>(null);
+  const router = useRouter();
 
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
@@ -65,31 +66,13 @@ export default function HouseholdsTab() {
       setHouseholds((prev) => [created, ...prev]);
       setName("");
       setNotes("");
-      setOpenId(created.id);
+      router.push(`/backoffice/crm/households/${created.id}`);
     } catch (e) {
       setCreateError(e instanceof Error ? e.message : "Could not create the household");
     } finally {
       setCreating(false);
     }
   };
-
-  if (openId) {
-    return (
-      <div className="space-y-4">
-        <button
-          type="button"
-          onClick={() => {
-            setOpenId(null);
-            load();
-          }}
-          className="px-3 py-2 text-xs font-semibold bg-navy-50 hover:bg-navy-100 text-navy-700 rounded-xl transition"
-        >
-          ← Back to households
-        </button>
-        <HouseholdView householdId={openId} />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -117,7 +100,11 @@ export default function HouseholdsTab() {
           )}
 
           {loading ? (
-            <div className="p-12 text-center text-xs text-navy-500">Loading households…</div>
+            <div role="status" aria-busy="true" aria-label="Loading" className="space-y-3 p-2">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="h-10 rounded-xl bg-navy-100/70 animate-pulse" />
+              ))}
+            </div>
           ) : filtered.length === 0 ? (
             <div className="p-12 text-center text-xs text-navy-500">
               {query ? "No households match your search." : "No households yet. Create one to get started."}
@@ -125,10 +112,9 @@ export default function HouseholdsTab() {
           ) : (
             <div className="divide-y divide-navy-100">
               {filtered.map((h) => (
-                <button
+                <Link
                   key={h.id}
-                  type="button"
-                  onClick={() => setOpenId(h.id)}
+                  href={`/backoffice/crm/households/${h.id}`}
                   className="w-full text-left px-2 py-3.5 hover:bg-teal-50/30 rounded-xl transition flex items-center justify-between gap-3"
                 >
                   <div>
@@ -148,7 +134,7 @@ export default function HouseholdsTab() {
                       </span>
                     )}
                   </div>
-                </button>
+                </Link>
               ))}
             </div>
           )}

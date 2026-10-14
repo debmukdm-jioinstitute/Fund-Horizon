@@ -2,14 +2,18 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import {
   convertLead,
   createLead,
+  fetchHouseholds,
   fetchLeads,
   LEAD_STATUSES,
   patchLead,
+  type Household,
   type Lead,
 } from "../../lib/crmApi";
+import { fieldErrors, leadSchema } from "../../lib/crmSchemas";
 
 const STATUS_LABELS: Record<string, string> = {
   new: "New",
@@ -40,7 +44,9 @@ function LeadCard({
 }) {
   return (
     <div className="bg-white rounded-xl border border-navy-100 shadow-sm p-3.5 space-y-2">
-      <div className="text-xs font-bold text-navy-950">{lead.name}</div>
+      <Link href={`/backoffice/crm/leads/${lead.id}`} className="block text-xs font-bold text-navy-950 hover:underline">
+        {lead.name}
+      </Link>
       <div className="text-xs text-navy-600">
         {[lead.email, lead.mobile].filter(Boolean).join(" · ") || "No contact details"}
       </div>
@@ -51,10 +57,12 @@ function LeadCard({
       <div className="flex items-center gap-2 pt-1">
         <select
           value={lead.status}
+          disabled={lead.status === "converted"}
+          title={lead.status === "converted" ? "Converted leads are final" : undefined}
           onChange={(e) => onStatusChange(lead, e.target.value)}
           className="text-xs font-semibold px-2 py-1 rounded-lg border border-navy-200 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
         >
-          {LEAD_STATUSES.map((s) => (
+          {LEAD_STATUSES.filter((s) => s !== "converted" || lead.status === "converted").map((s) => (
             <option key={s} value={s}>
               {STATUS_LABELS[s]}
             </option>
@@ -90,6 +98,10 @@ export default function LeadsTab() {
   const [converting, setConverting] = useState<Lead | null>(null);
   const [householdName, setHouseholdName] = useState("");
   const [password, setPassword] = useState("");
+  const [invite, setInvite] = useState(false);
+  const [existingHousehold, setExistingHousehold] = useState("");
+  const [households, setHouseholds] = useState<Household[]>([]);
+  const [fieldErrs, setFieldErrs] = useState<Record<string, string>>({});
   const [convertError, setConvertError] = useState<string | null>(null);
   const [convertResult, setConvertResult] = useState<{ householdId: string; tempPassword?: string } | null>(null);
   const [convertBusy, setConvertBusy] = useState(false);
@@ -112,7 +124,9 @@ export default function LeadsTab() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    const errs = fieldErrors(leadSchema, { name, email, mobile });
+    setFieldErrs(errs ?? {});
+    if (errs) return;
     setCreating(true);
     setCreateError(null);
     try {
@@ -150,8 +164,11 @@ export default function LeadsTab() {
     setConverting(lead);
     setHouseholdName(`${lead.name.split(" ")[0] ?? lead.name} family`);
     setPassword("");
+    setInvite(false);
+    setExistingHousehold("");
     setConvertError(null);
     setConvertResult(null);
+    fetchHouseholds().then(setHouseholds).catch(() => setHouseholds([]));
   };
 
   const handleConvert = async () => {
@@ -160,12 +177,16 @@ export default function LeadsTab() {
     setConvertError(null);
     try {
       const res = await convertLead(converting.id, {
-        household_name: householdName.trim() || undefined,
-        password: password || undefined,
+        household_id: existingHousehold || undefined,
+        household_name: existingHousehold ? undefined : householdName.trim() || undefined,
+        invite_to_portal: invite,
+        password: invite ? password || undefined : undefined,
       });
       setConvertResult({ householdId: res.household_id, tempPassword: res.temp_password });
       setLeads((prev) =>
-        prev.map((l) => (l.id === converting.id ? { ...l, status: "converted" } : l)),
+        prev.map((l) =>
+          l.id === converting.id ? { ...l, status: "converted", converted_household_id: res.household_id } : l,
+        ),
       );
     } catch (e) {
       setConvertError(e instanceof Error ? e.message : "Could not convert the lead");
@@ -198,7 +219,8 @@ export default function LeadsTab() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            type="email"
+            type="text"
+            inputMode="email"
             className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <input
@@ -220,7 +242,7 @@ export default function LeadsTab() {
           </select>
           <button
             type="submit"
-            disabled={creating || !name.trim()}
+            disabled={creating}
             className="px-3 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-xl transition"
           >
             {creating ? "Adding…" : "Add lead"}
@@ -232,6 +254,13 @@ export default function LeadsTab() {
           placeholder="Notes (optional)"
           className="mt-3 w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
+        {Object.values(fieldErrs).length > 0 && (
+          <ul className="mt-3 text-xs font-medium text-rose-700 list-disc pl-5" role="alert">
+            {Object.values(fieldErrs).map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+        )}
         {createError && (
           <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
             {createError}
@@ -246,7 +275,11 @@ export default function LeadsTab() {
       )}
 
       {loading ? (
-        <div className="p-12 text-center text-xs text-navy-500">Loading leads…</div>
+        <div role="status" aria-busy="true" aria-label="Loading" className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-32 rounded-2xl bg-navy-100/70 animate-pulse" />
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
           {columns.map(({ status, leads: col }) => (
@@ -285,11 +318,13 @@ export default function LeadsTab() {
             {convertResult ? (
               <div className="space-y-3">
                 <div className="p-4 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900">
-                  <div className="font-bold mb-1">Account and household created.</div>
-                  <div className="font-mono text-xs break-all">
-                    Household ID: {convertResult.householdId}
+                  <div className="font-bold mb-1">
+                    {existingHousehold ? "Added to the household." : "Customer and household created."}
                   </div>
-                  {convertResult.tempPassword && (
+                  <Link className="underline font-semibold" href={`/backoffice/crm/households/${convertResult.householdId}`}>
+                    Open household
+                  </Link>
+                  {convertResult.tempPassword ? (
                     <div className="mt-2">
                       <div className="font-semibold">Temporary password (share once):</div>
                       <div className="font-mono font-bold text-sm break-all mt-1 select-all">
@@ -299,6 +334,8 @@ export default function LeadsTab() {
                         The customer should set their own password after the first sign-in.
                       </div>
                     </div>
+                  ) : (
+                    <div className="mt-2">No portal login was created.</div>
                   )}
                 </div>
                 <button
@@ -312,30 +349,63 @@ export default function LeadsTab() {
             ) : (
               <div className="space-y-3">
                 <p className="text-xs text-navy-500">
-                  This creates a customer account, a household, and marks the lead as converted.
+                  This creates the customer record and a household (or adds them to an existing one) and marks the lead
+                  as converted. Conversion cannot be undone. Only an email or a mobile number is needed.
                 </p>
                 <div>
-                  <label className="block text-xs font-semibold text-navy-700 mb-1">
-                    Household name
+                  <label className="block text-xs font-semibold text-navy-700 mb-1" htmlFor="convert-household">
+                    Add to existing household <span className="font-normal text-navy-600">(optional)</span>
                   </label>
-                  <input
-                    value={householdName}
-                    onChange={(e) => setHouseholdName(e.target.value)}
+                  <select
+                    id="convert-household"
+                    value={existingHousehold}
+                    onChange={(e) => setExistingHousehold(e.target.value)}
                     className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  />
+                  >
+                    <option value="">Create a new household</option>
+                    {households.map((h) => (
+                      <option key={h.id} value={h.id}>
+                        {h.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-navy-700 mb-1">
-                    Initial password <span className="font-normal text-navy-600">(optional — a temporary one is generated if left blank)</span>
-                  </label>
+                {!existingHousehold && (
+                  <div>
+                    <label className="block text-xs font-semibold text-navy-700 mb-1">Household name</label>
+                    <input
+                      value={householdName}
+                      onChange={(e) => setHouseholdName(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+                )}
+                <label className="flex items-start gap-2 text-xs text-navy-800">
                   <input
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    autoComplete="new-password"
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    type="checkbox"
+                    checked={invite}
+                    onChange={(e) => setInvite(e.target.checked)}
+                    className="mt-0.5"
                   />
-                </div>
+                  <span>
+                    <span className="font-semibold">Invite to portal</span>
+                    <span className="block text-navy-600">Creates a login for the client. Leave unticked to keep them as a record only.</span>
+                  </span>
+                </label>
+                {invite && (
+                  <div>
+                    <label className="block text-xs font-semibold text-navy-700 mb-1">
+                      Initial password <span className="font-normal text-navy-600">(optional — a temporary one is generated if left blank)</span>
+                    </label>
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type="password"
+                      autoComplete="new-password"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+                )}
                 {convertError && (
                   <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
                     {convertError}

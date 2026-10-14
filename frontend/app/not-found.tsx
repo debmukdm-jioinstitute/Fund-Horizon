@@ -8,9 +8,9 @@ export default function NotFound() {
         <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-lg font-bold text-navy-900">
           404
         </span>
-        <h1 className="text-2xl font-bold">Plan not found</h1>
+        <h1 className="text-2xl font-bold">Page not found</h1>
         <p className="text-navy-700">
-          We could not find the requested plan or page. A plan may have expired, or the link may be incomplete.
+          We could not find the page you were looking for. The link may be incomplete, or the page may have moved.
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Link href="/" className="btn-secondary">

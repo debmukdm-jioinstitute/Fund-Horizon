@@ -47,6 +47,7 @@ from app.backoffice.schemas import (
     StaffMemberCreateRequest,
     WatchlistCreateRequest,
 )
+from app.backoffice import mf_screener
 from app.backoffice.screening.service import ScreeningService
 from app.backoffice.compare import build_compare_payload
 from app.backoffice.service import BackofficeService
@@ -696,6 +697,58 @@ def backoffice_mf_tracker(
         "availability": "ready" if total else "unavailable",
     }
     return with_meta(res, "amfi", facets.get("as_of"))
+
+
+@router.get("/mutual-funds/screener")
+def backoffice_mf_screener(
+    staff: Annotated[dict, Depends(require_staff)],
+    category: list[str] | None = Query(None, description="Canonical category keys; omit for all"),
+    plan: list[str] | None = Query(None, description="Direct and/or Regular"),
+    search: str | None = Query(None, max_length=80),
+    sort: str = Query("score"),
+    order: str = Query("desc", pattern="^(asc|desc)$"),
+    f: list[str] | None = Query(None, description="Range filters as key:min:max (percent units)"),
+    recommended: bool = Query(False),
+    format: str = Query("json", pattern="^(json|csv)$"),
+    limit: int = Query(25, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+):
+    """Trendlyne-style screener over the AMFI + mfapi.in dataset: categories, returns, risk, FH checklist score."""
+    if sort not in mf_screener.SORT_KEYS:
+        raise HTTPException(422, "Unknown sort column.")
+    plans = [p.strip().title() for p in plan or [] if p.strip().title() in {"Direct", "Regular"}]
+    ranges: dict[str, tuple[float | None, float | None]] = {}
+    for item in f or []:
+        key, _, rest = item.partition(":")
+        lo_s, _, hi_s = rest.partition(":")
+        if key not in mf_screener.NUMERIC_KEYS:
+            raise HTTPException(422, f"Unknown filter column: {key}")
+        try:
+            ranges[key] = (float(lo_s) if lo_s else None, float(hi_s) if hi_s else None)
+        except ValueError:
+            raise HTTPException(422, f"Bad range for {key}") from None
+    ter = _REPO.mf_ter_by_code()
+    df = mf_screener.screen(ter, category, plans, search, ranges, sort, order == "desc")
+    df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES))
+    if recommended:
+        df = df[df["is_fh_recommended"]]
+    if format == "csv":
+        return PlainTextResponse(
+            mf_screener.to_csv(df),
+            media_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="fund-horizon-mutual-funds.csv"'},
+        )
+    page = df.iloc[offset: offset + limit]
+    as_of = pd.to_datetime(df["nav_date"], format="%d-%b-%Y").max().date().isoformat() if len(df) else None
+    return with_meta({
+        "data": mf_screener.records(page),
+        "total": int(len(df)),
+        "limit": limit,
+        "offset": offset,
+        "as_of": as_of,
+        "groups": mf_screener.facets(mf_screener.all_frame(ter)),
+        "availability": "ready" if len(df) else "unavailable",
+    }, "amfi", as_of)
 
 
 @router.get("/mutual-funds/nav-pair-check")

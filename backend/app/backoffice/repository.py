@@ -626,6 +626,21 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def mf_ter_by_code(self) -> dict[str, float]:
+        """scheme_code -> net expense ratio % (plan-specific) for every scheme with a TER on file."""
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT s.scheme_code AS code,
+                       CASE WHEN s.plan = 'Direct' THEN t.direct_ter_pct ELSE t.regular_ter_pct END AS ter
+                FROM mf_schemes s JOIN mf_ter t ON t.base_key = s.base_key
+                """
+            ).fetchall()
+            return {r["code"]: float(r["ter"]) for r in rows if r["ter"] is not None}
+        finally:
+            conn.close()
+
     def get_mf_schemes_by_codes(self, codes: list[str]) -> list[dict[str, Any]]:
         if not codes:
             return []

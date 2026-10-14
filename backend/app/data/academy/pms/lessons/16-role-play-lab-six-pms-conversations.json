@@ -1,0 +1,81 @@
+{
+ "id": "pms-16",
+ "title": "Role-play lab: six PMS conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Practise six realistic PMS conversations.",
+  "Score each against what a good response includes.",
+  "Link each scenario to a L.E.A.R.N. stage."
+ ],
+ "body_md": "Run in pairs: one plays the client, one the distributor. The trainer scores on the points listed.\n\n| # | Scenario | Stage tested | What a good response includes |\n|---|---|---|---|\n| 1 | A business owner has exactly ₹55 lakh in total savings and wants all of it in \"the best PMS\". | E | Explains eligible is not suitable; checks core portfolio, emergency fund and horizon; suggests PMS only as a slice, or MFs first. |\n| 2 | A client asks, \"Why go through you when I can onboard directly?\" | L | Acknowledges the direct option honestly; explains due diligence across strategies, monitoring, reviews and service. |\n| 3 | A client compares two strategies on headline returns only. | A | Brings in after-fee returns, worst drawdown, concentration, manager tenure and a rupee fee illustration. |\n| 4 | The client's account return is 4% below the published strategy return. | R / Niche | Explains entry timing and cash flows; shows the account's own after-fee return vs benchmark. |\n| 5 | The portfolio is down 28% while the Nifty is down 12%; the client wants to exit today. | N | Calm; separates market vs manager; checks process; shows tax and exit-load cost; records the conversation. |\n| 6 | The star fund manager has just left the PMS firm. | R | Proactively informs the client; explains the review process; no panic, no automatic exit. |",
+ "key_terms": [
+  "PMS",
+  "exit load"
+ ],
+ "example": "Run scenario 5 in pairs: the portfolio is down 28% while the Nifty is down 12%, and the client wants to exit today. Stay calm, separate market from manager, check the process, show tax and exit-load cost, and record the conversation.",
+ "say": [
+  "Let's separate the market from the manager.",
+  "Here is what leaving costs you in tax and exit load."
+ ],
+ "never": [
+  "Let's exit now.",
+  "Don't worry, nothing is wrong."
+ ],
+ "talk_track": [
+  {
+   "n": 18,
+   "title": "Eligible is not the same as suitable.",
+   "text": "If you remember one thing from this module, remember this: eligible is not the same as suitable. Fifty lakh rupees opens the door to PMS. Our job is to decide, honestly, whether the client should walk through it."
+  },
+  {
+   "n": 20,
+   "title": "Practise, then prove it",
+   "text": "That brings us to the end of Module 2. Practise in pairs with the six PMS role-play scenarios from the training manual, then take the thirty-question quiz. The pass mark is eighty percent. Our next module covers Investor Psychology. Thank you."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q6",
+   "sec": "E: Evaluate the Client",
+   "q": "A client has exactly ₹55 lakh in total savings and wants ₹50 lakh in PMS. What is correct?",
+   "o": [
+    "Suitable, because the ₹50 lakh minimum is met",
+    "Suitable if the strategy has strong past returns",
+    "Invest the full ₹55 lakh to qualify for lower fees",
+    "Eligible but not suitable; suggest MFs first, PMS later"
+   ],
+   "a": 3,
+   "why": "Eligible is not suitable. That is 91% of their savings, with no core portfolio and no emergency buffer."
+  },
+  {
+   "id": "pms-q19",
+   "sec": "R: Review & Rebalance",
+   "q": "The star fund manager has just left the PMS firm. What should you do?",
+   "o": [
+    "Exit all clients automatically",
+    "Wait three years before reviewing",
+    "Say nothing unless the client asks",
+    "Review immediately and inform the client proactively"
+   ],
+   "a": 3,
+   "why": "No panic and no automatic exit, but an immediate review."
+  },
+  {
+   "id": "pms-q24",
+   "sec": "N: Navigate Behaviour",
+   "q": "The portfolio is down 28% while the Nifty is down 12%. What is a key step before advising?",
+   "o": [
+    "Separate the market from the manager and check the process",
+    "Exit today to stop further losses",
+    "Move everything to the friend's PMS",
+    "Ignore the client until markets recover"
+   ],
+   "a": 0,
+   "why": "If the manager, process and portfolio quality are intact, the case for staying holds. Record the conversation."
+  }
+ ],
+ "card_ids": [],
+ "words": 211
+}

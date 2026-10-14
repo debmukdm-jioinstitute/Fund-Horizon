@@ -1,0 +1,70 @@
+{
+ "id": "pms-05",
+ "title": "PMS discovery questions",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Ask the five PMS discovery questions.",
+  "Test drawdown tolerance with the 30% question.",
+  "Record exclusions the client wants."
+ ],
+ "body_md": "- \"What share of your total investments would this ₹50 lakh be?\"\n- \"What did you do with your equity investments in March 2020?\"\n- \"If this portfolio fell 30% in a year while the Nifty fell 15%, how would you react?\"\n- \"Do you need any of this money in the next three years?\"\n- \"Do you have stocks or sectors you want excluded, for example your employer's shares?\"\n\n> **Investor takeaway:** PMS is not a better mutual fund. It suits investors who already have a core portfolio and can handle bigger swings.",
+ "key_terms": [
+  "PMS"
+ ],
+ "example": "You ask, 'What did you do with your equity in March 2020?' The client says he sold half. You note a lower drawdown tolerance and set expectations before PMS.",
+ "say": [
+  "If this portfolio fell 30% in a year while the Nifty fell 15%, how would you react?",
+  "Do you have any stocks you would want excluded?"
+ ],
+ "never": [
+  "You can handle volatility, right?",
+  "Don't worry about the falls."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "pms-q9",
+   "sec": "E: Evaluate the Client",
+   "q": "Which discovery question best tests drawdown tolerance?",
+   "o": [
+    "\"What is your PAN number?\"",
+    "\"Which PMS did your friend invest in?\"",
+    "\"Do you prefer large-cap stocks?\"",
+    "\"What did you do with your equity investments in March 2020?\""
+   ],
+   "a": 3,
+   "why": "Past behaviour in a real fall reveals tolerance. Also ask how they'd react to a 30% fall while the Nifty fell 15%."
+  },
+  {
+   "id": "pms-q10",
+   "sec": "E: Evaluate the Client",
+   "q": "A client expects PMS to defer tax like a mutual fund. What should you explain?",
+   "o": [
+    "PMS is tax-free for ₹50 lakh+ investors",
+    "Every trade by the manager is a tax event in the client's hands",
+    "Tax is paid only on final exit",
+    "The PMS provider pays the tax"
+   ],
+   "a": 1,
+   "why": "Expecting MF-like deferral is a suitability red flag. High turnover can mean a bigger tax bill."
+  },
+  {
+   "id": "pms-n04",
+   "q": "Why ask whether the client holds employer shares?",
+   "o": [
+    "To plan a stock exclusion and avoid concentration",
+    "To collect fees",
+    "To choose a benchmark",
+    "It is a KYC question"
+   ],
+   "a": 0,
+   "why": "PMS can allow stock exclusions, and a client may want to avoid more of their employer's shares."
+  }
+ ],
+ "card_ids": [
+  "pms-c22"
+ ],
+ "words": 88
+}

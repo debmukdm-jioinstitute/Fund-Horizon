@@ -1,0 +1,83 @@
+{
+ "id": "pms-03",
+ "title": "Who a PMS distributor is: NISM XXI-A, APRN and EUIN",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Name the certification and registration required.",
+  "Explain the trail-only commission rule.",
+  "Describe the client's direct onboarding option and our value."
+ ],
+ "body_md": "- Must clear the NISM Series XXI-A (PMS Distributors) certification.\n- Must register with APMI and hold an APRN (APMI Registration Number). Since 31 July 2025, distributors without an APRN cannot bring in new PMS business or receive commission.\n- Employees of non-individual distributors also need an EUIN.\n- Earns trail commission only; upfront commissions and upfront fees to clients are not permitted.\n- Clients can always choose direct onboarding with the portfolio manager, with no distributor, so our value must be clear.\n\n> **Investor takeaway:** PMS gives you a concentrated, transparent portfolio in your own name, but needs ₹50 lakh and more tolerance for swings.\n\n<!-- TODO-COMPLIANCE: confirm the APRN cut-off date (31 Jul 2025) and current APMI/SEBI rules before each training cycle. -->",
+ "key_terms": [
+  "PMS",
+  "DDPI/POA",
+  "EUIN"
+ ],
+ "example": "A new RM brings a PMS lead before his APRN is active. He cannot take on new PMS business or receive commission. He completes registration first.",
+ "say": [
+  "You can onboard directly with the manager. Here is what we add: strategy comparison, monitoring and reviews.",
+  "My APRN and EUIN are on every document, and our trail commission is disclosed."
+ ],
+ "never": [
+  "You must go through us to invest in PMS.",
+  "There is no commission."
+ ],
+ "talk_track": [
+  {
+   "n": 5,
+   "title": "Three steps before selling any PMS",
+   "text": "Before anyone at Fund Horizon talks to a client about PMS, three things must be in place. First, the NISM Series XXI-A PMS Distributors certification. Second, registration with APMI and an APRN, the APMI Registration Number. Since 31st July 2025, distributors without an APRN cannot bring in new PMS business or receive commission. Third, an EUIN for each employee of a non-individual distributor. Two more rules shape every conversation: we earn trail commission only, never upfront; and every client can choose to onboard directly with the portfolio manager. So we must be clear about the value we add."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q4",
+   "sec": "L: Learn the Basics",
+   "q": "What does a PMS distributor need before dealing with PMS clients?",
+   "o": [
+    "Only an ARN from AMFI",
+    "NISM Series XXI-A and an APRN from APMI",
+    "SEBI RIA registration",
+    "NISM Series V-A only"
+   ],
+   "a": 1,
+   "why": "Employees of non-individual distributors also need an EUIN. Since 31 July 2025, no APRN means no new business or commission."
+  },
+  {
+   "id": "pms-q5",
+   "sec": "L: Learn the Basics",
+   "q": "How is a PMS distributor paid?",
+   "o": [
+    "Upfront commission on each new client",
+    "Trail commission only",
+    "An upfront fee charged to the client",
+    "A share of the manager's profit fee"
+   ],
+   "a": 1,
+   "why": "Upfront commissions and upfront fees to clients are not permitted."
+  },
+  {
+   "id": "pms-n03",
+   "q": "What happens to a PMS distributor without an APRN after the cut-off date?",
+   "o": [
+    "Nothing changes",
+    "They cannot bring in new PMS business or receive commission",
+    "They get a warning only",
+    "They must pay a fee"
+   ],
+   "a": 1,
+   "why": "Without an APRN, a distributor cannot bring in new PMS business or receive commission."
+  }
+ ],
+ "card_ids": [
+  "pms-c11",
+  "pms-c12",
+  "pms-c13",
+  "pms-c14",
+  "pms-c15"
+ ],
+ "todo": "TODO-COMPLIANCE: confirm the APRN cut-off date (31 Jul 2025) and current APMI/SEBI rules before each training cycle.",
+ "words": 122
+}

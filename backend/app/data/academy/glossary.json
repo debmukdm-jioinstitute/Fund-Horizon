@@ -1,0 +1,181 @@
+[
+ {
+  "term": "NAV",
+  "aliases": [],
+  "definition": "Net Asset Value: the value of one unit, worked out each business day as (investments + cash and receivables − liabilities) ÷ units outstanding."
+ },
+ {
+  "term": "AUM",
+  "aliases": [],
+  "definition": "Assets Under Management: the total market value of the money a fund house, scheme or distributor looks after."
+ },
+ {
+  "term": "TER",
+  "aliases": [],
+  "definition": "Total Expense Ratio: the yearly cost of running a scheme as a % of its assets, deducted from the NAV daily. A regular plan's TER includes the distributor's commission."
+ },
+ {
+  "term": "ARN",
+  "aliases": [],
+  "definition": "AMFI Registration Number: the distributor's registration with AMFI, renewed periodically."
+ },
+ {
+  "term": "EUIN",
+  "aliases": [],
+  "definition": "Employee Unique Identification Number: given to each person who deals with clients and quoted on every transaction they handle."
+ },
+ {
+  "term": "KYC",
+  "aliases": [],
+  "definition": "Know Your Client: identity and address verification required before investing. Status must be validated, not on hold."
+ },
+ {
+  "term": "FATCA/CRS",
+  "aliases": [
+   "FATCA",
+   "CRS"
+  ],
+  "definition": "Foreign tax residency declarations. Some fund houses restrict US and Canada residents."
+ },
+ {
+  "term": "riskometer",
+  "aliases": [
+   "risk-o-meter"
+  ],
+  "definition": "A six-level label on every scheme from Low to Very High, showing the risk of the portfolio."
+ },
+ {
+  "term": "SIP",
+  "aliases": [],
+  "definition": "Systematic Investment Plan: a fixed amount invested at regular intervals. Averages the purchase cost over time."
+ },
+ {
+  "term": "STP",
+  "aliases": [],
+  "definition": "Systematic Transfer Plan: moves money from one scheme to another in instalments, such as from a liquid fund into equity over 6 to 12 months."
+ },
+ {
+  "term": "SWP",
+  "aliases": [],
+  "definition": "Systematic Withdrawal Plan: regular withdrawals from a scheme. Each withdrawal is part principal and part gain."
+ },
+ {
+  "term": "XIRR",
+  "aliases": [],
+  "definition": "Annualised return that accounts for the date of each investment. The right measure for a SIP."
+ },
+ {
+  "term": "CAGR",
+  "aliases": [],
+  "definition": "Compound Annual Growth Rate: the yearly rate that takes a single lump sum from start to end value. Not for SIPs."
+ },
+ {
+  "term": "exit load",
+  "aliases": [],
+  "definition": "A fee charged on redemption within a set period. It applies per unit, and units are redeemed first-in, first-out (FIFO)."
+ },
+ {
+  "term": "lock-in",
+  "aliases": [
+   "ELSS"
+  ],
+  "definition": "A period during which units cannot be redeemed. In ELSS, each SIP instalment unlocks 3 years after its own date."
+ },
+ {
+  "term": "high-water mark",
+  "aliases": [],
+  "definition": "The portfolio's previous peak value. A profit share is charged only on gains above it."
+ },
+ {
+  "term": "hurdle",
+  "aliases": [
+   "hurdle rate"
+  ],
+  "definition": "The minimum return a PMS must beat before a profit share is charged."
+ },
+ {
+  "term": "DDPI/POA",
+  "aliases": [
+   "DDPI",
+   "POA",
+   "power of attorney"
+  ],
+  "definition": "Demat Debit and Pledge Instruction or Power of Attorney: authority a client gives the manager over the demat and bank account. Its scope defines what the manager can do."
+ },
+ {
+  "term": "in-specie",
+  "aliases": [
+   "in specie"
+  ],
+  "definition": "Transferring securities in kind, for example funding a PMS with shares you own, or receiving securities back on exit, instead of cash."
+ },
+ {
+  "term": "SID/SAI/KIM",
+  "aliases": [
+   "SID",
+   "SAI",
+   "KIM"
+  ],
+  "definition": "SID: scheme document. SAI: statement about the sponsor, trustees and AMC. KIM: short summary given with the application form."
+ },
+ {
+  "term": "CAS",
+  "aliases": [],
+  "definition": "Consolidated Account Statement: one statement of all folios across fund houses, sent monthly if there were transactions, otherwise half-yearly."
+ },
+ {
+  "term": "NFO",
+  "aliases": [],
+  "definition": "New Fund Offer: the first sale of a new scheme's units. A ₹10 NFO is not cheaper than an older fund. It has no track record."
+ },
+ {
+  "term": "folio",
+  "aliases": [
+   "folios"
+  ],
+  "definition": "The account number of an investor with a fund house. Holds units, nominee and holding mode."
+ },
+ {
+  "term": "cut-off time",
+  "aliases": [
+   "cut-off",
+   "cut-off times"
+  ],
+  "definition": "The time before which an order and funds must arrive to get that day's NAV. Usually 3:00 pm for most schemes."
+ },
+ {
+  "term": "PMS",
+  "aliases": [],
+  "definition": "Portfolio Management Services: a portfolio of securities held in the client's own demat, with a ₹50 lakh minimum and a manager who decides or advises on trades."
+ },
+ {
+  "term": "demat",
+  "aliases": [],
+  "definition": "Dematerialised account that holds securities electronically. In a PMS it is in the client's own name."
+ },
+ {
+  "term": "STCG",
+  "aliases": [],
+  "definition": "Short-term capital gains: tax on profits from units sold within the short-term holding period. Check current rates."
+ },
+ {
+  "term": "LTCG",
+  "aliases": [],
+  "definition": "Long-term capital gains: tax on profits from units sold after the long-term holding period. Check current rates and exemption."
+ },
+ {
+  "term": "TDS",
+  "aliases": [],
+  "definition": "Tax deducted at source: tax withheld before a payment reaches the investor, for example on NRI redemptions."
+ },
+ {
+  "term": "Direct plan",
+  "aliases": [],
+  "definition": "A plan bought straight from the AMC, with no distributor and a lower TER."
+ },
+ {
+  "term": "Regular plan",
+  "aliases": [],
+  "definition": "A plan bought through a distributor. Its TER includes trail commission paid by the AMC from the TER."
+ }
+]

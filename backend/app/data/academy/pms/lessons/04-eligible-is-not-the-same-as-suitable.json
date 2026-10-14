@@ -1,0 +1,89 @@
+{
+ "id": "pms-04",
+ "title": "Eligible is not the same as suitable",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Apply the six suitability checks.",
+  "Spot the red flags for each check.",
+  "Explain why PMS sits on top of a core portfolio."
+ ],
+ "body_md": "Meeting the ₹50 lakh minimum makes a client eligible, not suitable. PMS should sit on top of a solid core portfolio, never replace it.\n\n## Suitability checklist\n\n| Question | Suitable if… | Red flag |\n|---|---|---|\n| Investible surplus | ₹50 lakh is a slice of a larger portfolio | It is most of the client's investible wealth |\n| Existing core | Already has diversified MFs, debt and emergency funds | No core portfolio; PMS would be the first equity |\n| Horizon | 3–5+ years without needing the money | May need it within 2–3 years |\n| Drawdown tolerance | Has stayed invested through a 30%+ fall before | Has never seen a real market fall, or sold in one |\n| Tax awareness | Understands each trade creates a tax event | Expects MF-like tax deferral |\n| Engagement | Comfortable with monthly statements and a full trade list | Wants something hands-off and simple |",
+ "key_terms": [
+  "PMS",
+  "DDPI/POA"
+ ],
+ "example": "A business owner has exactly ₹55 lakh in total savings and wants ₹50 lakh in PMS. That is nearly all of his wealth with no core portfolio, which is a red flag. Suggest mutual funds first, or PMS only as a slice later.",
+ "say": [
+  "PMS should be a part of your portfolio, not all of it. How would you feel if this portion fell 30% in a year?",
+  "Meeting the ₹50 lakh minimum makes you eligible, not suitable."
+ ],
+ "never": [
+  "You have the ₹50 lakh, so PMS is right for you.",
+  "PMS replaces your mutual funds."
+ ],
+ "talk_track": [
+  {
+   "n": 6,
+   "title": "Eligible is not the same as suitable",
+   "text": "This is the most important idea in the module: meeting the fifty lakh minimum makes a client eligible, not suitable. Look at the first client. They have about three crore invested: an emergency and debt cushion, a solid mutual fund core, some other holdings, and PMS as a seventeen percent slice on top. That's suitable. Now the second client: fifty-five lakh in total savings, and they want fifty lakh of it in PMS. That's ninety-one percent of everything they have, with no core portfolio and no emergency buffer. They are eligible, but this is a red flag. For them, the right advice is mutual funds first, PMS later."
+  },
+  {
+   "n": 7,
+   "title": "Five suitability checks",
+   "text": "Use these five checks with every PMS prospect. Surplus: the fifty lakh should be a slice of a larger portfolio, not most of their wealth. Core portfolio: they should already have mutual funds, debt and an emergency fund; PMS should never be someone's first equity investment. Horizon: three to five years or more without needing the money. Drawdowns: ask what they did in March 2020. If they stayed invested through a thirty percent fall, good. If they've never seen one, or sold in one, be careful. And tax: they must understand that every trade the manager makes is taxed in their hands. A useful question to ask: \"If this portfolio fell thirty percent in a year while the Nifty fell fifteen, how would you react?\""
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q6",
+   "sec": "E: Evaluate the Client",
+   "q": "A client has exactly ₹55 lakh in total savings and wants ₹50 lakh in PMS. What is correct?",
+   "o": [
+    "Suitable, because the ₹50 lakh minimum is met",
+    "Suitable if the strategy has strong past returns",
+    "Invest the full ₹55 lakh to qualify for lower fees",
+    "Eligible but not suitable; suggest MFs first, PMS later"
+   ],
+   "a": 3,
+   "why": "Eligible is not suitable. That is 91% of their savings, with no core portfolio and no emergency buffer."
+  },
+  {
+   "id": "pms-q7",
+   "sec": "E: Evaluate the Client",
+   "q": "Which client profile is a red flag for PMS?",
+   "o": [
+    "PMS would be the client's first equity investment",
+    "Client has a diversified MF and debt core",
+    "Client stayed invested through a 30% fall",
+    "Client has a 5+ year horizon"
+   ],
+   "a": 0,
+   "why": "PMS should sit on top of a solid core portfolio, never replace it."
+  },
+  {
+   "id": "pms-q8",
+   "sec": "E: Evaluate the Client",
+   "q": "What is the minimum horizon for a suitable PMS client?",
+   "o": [
+    "6 months",
+    "1 year",
+    "3–5+ years without needing the money",
+    "Until the next market rally"
+   ],
+   "a": 2,
+   "why": "If the client may need the money within 2–3 years, it is a red flag."
+  }
+ ],
+ "card_ids": [
+  "pms-c16",
+  "pms-c17",
+  "pms-c18",
+  "pms-c19",
+  "pms-c20",
+  "pms-c21",
+  "pms-c23"
+ ],
+ "words": 133
+}

@@ -1,0 +1,99 @@
+{
+ "id": "pms-01",
+ "title": "What a PMS is",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Define a PMS and its three types.",
+  "State the three numbers to remember: ₹50 lakh, 15 to 30 stocks, own demat.",
+  "Explain the April 2023 benchmarking change."
+ ],
+ "body_md": "A PMS is a professionally managed portfolio of securities held directly in the client's own demat account, regulated by SEBI, with a minimum investment of ₹50 lakh.\n\n## What a PMS is\n\n- Discretionary: the portfolio manager decides what to buy and sell. This is the most common type.\n- Non-discretionary: the manager recommends, but each trade needs the client's approval.\n- Advisory: the manager only advises; the client executes.\n- Portfolios are concentrated, typically 15–30 stocks, so they can differ sharply from the index, both up and down.\n- Since April 2023, every PMS investment approach is grouped under one of four strategies (equity, debt, hybrid, multi-asset) and compared against a common benchmark, with data published through APMI.",
+ "key_terms": [
+  "PMS",
+  "demat",
+  "DDPI/POA"
+ ],
+ "example": "A client invests ₹60 lakh in a discretionary PMS. A demat account opens in her own name and the manager buys 22 stocks in it. She sees every holding and every trade in her statement.",
+ "say": [
+  "Unlike a mutual fund, the stocks are held directly in your own demat account.",
+  "The manager runs a focused portfolio of 15 to 30 stocks, so it can do very differently from the index."
+ ],
+ "never": [
+  "PMS is a better mutual fund.",
+  "The manager promises market-beating returns."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "The PMS Distributor",
+   "text": "Welcome to Module 2 of the Fund Horizon training series: the PMS Distributor. Portfolio Management Services are a concentrated, high-ticket product held in the client's own name. So our job is due diligence and suitability first, and access second. We'll follow the same L.E.A.R.N. framework as Module 1: Learn the basics, Evaluate the client, Act right, Review and rebalance, and Navigate behaviour."
+  },
+  {
+   "n": 2,
+   "title": "L.E.A.R.N. applied to PMS",
+   "text": "Here's how L.E.A.R.N. applies to PMS. Learn: what a PMS is, and who is allowed to sell it. Evaluate: the most important idea in this module is that being eligible for PMS is not the same as being suitable for it. Act right: proper due diligence on the strategy, and fees explained in rupees, not percentages. Review: judge a PMS on after-fee returns against its benchmark. And Navigate: concentrated portfolios fall harder, so keeping clients steady matters even more than with mutual funds."
+  },
+  {
+   "n": 3,
+   "title": "What a PMS is, in three numbers",
+   "text": "A Portfolio Management Service is a professionally managed portfolio held directly in the client's own demat account, regulated by SEBI. Remember three numbers. Fifty lakh rupees is the SEBI minimum. Fifteen to thirty stocks is a typical portfolio, much more concentrated than a mutual fund. And one demat account in the client's own name, so they can see every stock and every trade. There are three types: discretionary, where the manager decides every trade, and which is the most common; non-discretionary, where the client approves each trade; and advisory, where the manager only advises. Since April 2023, every PMS approach is grouped into one of four strategies, equity, debt, hybrid or multi-asset, and compared against a common benchmark, with data published through APMI."
+  },
+  {
+   "n": 8,
+   "title": "Fewer stocks, bigger bets",
+   "text": "Here's why PMS behaves so differently from a mutual fund or an index. The Nifty 50 spreads money across fifty stocks. A typical PMS holds about twenty, so each stock carries far more weight. When the manager is right, that concentration can beat the index by a wide margin. When the manager is wrong, or the style is out of favour, it can lag by a wide margin too. Every PMS client must understand this before they invest: the same concentration that creates the upside creates the downside."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q1",
+   "sec": "L: Learn the Basics",
+   "q": "What is the SEBI minimum investment for a PMS?",
+   "o": [
+    "₹10 lakh",
+    "₹25 lakh",
+    "₹50 lakh",
+    "₹1 crore"
+   ],
+   "a": 2,
+   "why": "PMS needs ₹50 lakh. AIFs typically need ₹1 crore."
+  },
+  {
+   "id": "pms-q2",
+   "sec": "L: Learn the Basics",
+   "q": "Where are the securities in a PMS held?",
+   "o": [
+    "In the client's own demat account",
+    "In the AMC's pooled fund",
+    "In the distributor's demat account",
+    "With the RTA"
+   ],
+   "a": 0,
+   "why": "The client owns the shares directly and can see every holding and trade."
+  },
+  {
+   "id": "pms-q3",
+   "sec": "L: Learn the Basics",
+   "q": "In which type of PMS does the manager decide every trade?",
+   "o": [
+    "Non-discretionary",
+    "Advisory",
+    "Execution-only",
+    "Discretionary"
+   ],
+   "a": 3,
+   "why": "Discretionary is the most common type. In non-discretionary the client approves each trade; in advisory the manager only advises."
+  }
+ ],
+ "card_ids": [
+  "pms-c1",
+  "pms-c2",
+  "pms-c3",
+  "pms-c4",
+  "pms-c5",
+  "pms-c6"
+ ],
+ "words": 115
+}

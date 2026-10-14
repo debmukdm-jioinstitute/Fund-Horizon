@@ -1,0 +1,87 @@
+{
+ "id": "mf-14",
+ "title": "Matching categories to goals, and choosing how to invest",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Match a goal's time horizon to starting categories.",
+  "Pick between SIP, lump sum, STP and SWP.",
+  "Explain that these are starting points, not recommendations."
+ ],
+ "body_md": "The right category for the goal matters more than the \"best\" fund, and every recommendation must be explainable in one sentence.\n\n## Matching categories to goals\n\n| Goal horizon | Typical categories to consider | Why |\n|---|---|---|\n| Under 1 year / emergency | Liquid, overnight, money market | Stability and quick access |\n| 1–3 years | Short-duration debt, arbitrage, conservative hybrid | Limited equity swings |\n| 3–5 years | Balanced advantage, hybrid, some large-cap | Moderate growth with cushioning |\n| 7+ years | Flexi-cap, large & mid-cap, index funds, mid/small-cap within limits | Time to ride out equity cycles |\n| Tax saving | ELSS | Lock-in per instalment; suits long-term savers |\n\nThese are starting points for discussion, not recommendations. Final selection depends on the client's risk profile and existing holdings.\n\n## Choosing how to invest\n\n- SIP: regular amounts from income; averages purchase cost over time.\n- Lump sum: for long horizons when money is available now.\n- STP: park a large sum in a debt or liquid fund and transfer into equity over 6–12 months, reducing timing regret.\n- SWP: for regular withdrawals later, e.g. in retirement.",
+ "key_terms": [
+  "SIP",
+  "STP",
+  "SWP",
+  "lock-in"
+ ],
+ "example": "A client has ₹20 lakh for a 10-year goal but fears investing at the wrong time. Put the money in a liquid or debt fund and transfer it into equity through an STP over 6 to 12 months.",
+ "say": [
+  "The category for your goal comes before the fund. Money you need in a year doesn't belong in equity.",
+  "An STP stages a large sum into equity so timing worries matter less."
+ ],
+ "never": [
+  "Put everything in a mid-cap fund, it's a long-term goal.",
+  "This category is a guaranteed fit for your goal."
+ ],
+ "talk_track": [
+  {
+   "n": 8,
+   "title": "The longer the goal, the more equity it can carry",
+   "text": "Stage three is Act right, and the first rule is: pick the category for the goal before picking any fund. The staircase shows how much equity a goal can carry. Money needed within a year belongs in liquid, overnight or money market funds. One to three years: short-duration debt, arbitrage or conservative hybrids. Three to five years: balanced advantage and hybrid funds, with some large-cap. Seven years and more can carry the most equity: flexi-cap, large and mid-cap, index funds, and mid or small-cap within limits. Then choose the method: SIP from regular income, lump sum for long horizons, STP to stage a large sum into equity, and SWP for regular withdrawals. These are starting points for discussion, not recommendations."
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q11",
+   "sec": "A: Act Right",
+   "q": "A client needs money in 8 months. Which categories fit?",
+   "o": [
+    "Small-cap funds",
+    "ELSS",
+    "Liquid, overnight or money market funds",
+    "Flexi-cap funds"
+   ],
+   "a": 2,
+   "why": "Under 1 year / emergency money needs stability and quick access."
+  },
+  {
+   "id": "mf-q12",
+   "sec": "A: Act Right",
+   "q": "A client has a 2-year goal. Which categories should be considered?",
+   "o": [
+    "Short-duration debt, arbitrage, conservative hybrid",
+    "Mid and small-cap funds",
+    "Sectoral equity funds",
+    "ELSS"
+   ],
+   "a": 0,
+   "why": "1–3 year goals should have limited exposure to equity swings."
+  },
+  {
+   "id": "mf-q15",
+   "sec": "A: Act Right",
+   "q": "An SWP is best suited for:",
+   "o": [
+    "Saving tax under ELSS",
+    "Regular withdrawals, e.g. in retirement",
+    "Building a corpus from monthly income",
+    "Moving money between two equity funds"
+   ],
+   "a": 1,
+   "why": "SWP provides regular withdrawals; SIP is for accumulation from income."
+  }
+ ],
+ "card_ids": [
+  "mf-c21",
+  "mf-c22",
+  "mf-c23",
+  "mf-c24",
+  "mf-c25",
+  "mf-c26",
+  "mf-c27",
+  "mf-c28"
+ ],
+ "words": 171
+}

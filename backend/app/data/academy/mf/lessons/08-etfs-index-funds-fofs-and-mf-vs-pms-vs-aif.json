@@ -1,0 +1,72 @@
+{
+ "id": "mf-08",
+ "title": "ETFs, index funds, FoFs, and MF vs PMS vs AIF",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Explain how an ETF, an index fund and a fund of funds differ.",
+  "Say how mutual funds, PMS and AIFs compare.",
+  "Know when a client needs a demat account."
+ ],
+ "body_md": "## Passive and fund-of-funds products\n\n| Product | How it works | How to buy | Watch for |\n|---|---|---|---|\n| Index fund | Copies an index such as the Nifty 50; no stock-picking | From the AMC at NAV | Tracking error; the TER |\n| ETF | Index-linked units traded on the stock exchange | Through a demat and trading account at market price | The gap between market price and NAV; liquidity |\n| Fund of funds (FoF) | Invests in other funds' units, not directly in securities | From the AMC at NAV | Two layers of cost; tax follows the underlying fund type |\n\n<!-- TODO-VERIFY: tax treatment of FoFs and the debt-fund rules change with the Finance Act. -->\n\n## MF, PMS and AIF side by side\n\n| | Mutual fund | PMS | AIF |\n|---|---|---|---|\n| Minimum ticket | As low as a few hundred rupees | ₹50 lakh | Typically ₹1 crore |\n| Ownership | Units of a pooled fund | Securities in the client's own demat | Units of a pooled fund |\n| Customisation | None | Some, such as stock exclusions | None |\n| Taxation | At fund level; investor taxed on redemption | Every trade is taxed in the client's hands | Depends on the category |\n| Transparency | Monthly portfolio disclosure | Full view of every holding and trade | Periodic reporting |\n\n<!-- TODO-VERIFY: ticket sizes and fee limits per the current SEBI PMS and AIF regulations. -->\n\nHigher minimums do not mean better returns. They mean a different structure, different costs and more concentrated risk. Module 2 covers PMS in depth.\n\n> **Investor takeaway:** Pick the structure that fits your goal and size, not the one that sounds exclusive.",
+ "key_terms": [
+  "NAV",
+  "TER",
+  "folio"
+ ],
+ "example": "A client with ₹5 lakh wants 'something like the Nifty with low cost'. An index fund is bought from the AMC at NAV and needs no demat. An ETF on the same index needs a demat and trading account, and is bought at a market price that may differ slightly from NAV.",
+ "say": [
+  "An ETF trades on the exchange like a share. An index fund is bought from the fund house at NAV.",
+  "PMS and AIF need much larger amounts and have different risks. Let's see if they fit later."
+ ],
+ "never": [
+  "PMS always beats a mutual fund.",
+  "An ETF and an index fund work exactly the same way."
+ ],
+ "check": [
+  {
+   "id": "mf-n19",
+   "q": "Which product needs a demat and trading account to buy?",
+   "o": [
+    "Index fund",
+    "ETF",
+    "Fund of funds",
+    "Liquid fund"
+   ],
+   "a": 1,
+   "why": "ETFs trade on the stock exchange, so a demat and trading account is needed."
+  },
+  {
+   "id": "mf-n20",
+   "q": "What does a fund of funds invest in?",
+   "o": [
+    "Directly in shares only",
+    "Units of other funds",
+    "Fixed deposits only",
+    "Gold only"
+   ],
+   "a": 1,
+   "why": "A fund of funds invests in other funds' units."
+  },
+  {
+   "id": "mf-n21",
+   "q": "What is the minimum ticket for a PMS?",
+   "o": [
+    "₹500",
+    "₹1 lakh",
+    "₹50 lakh",
+    "₹1 crore"
+   ],
+   "a": 2,
+   "why": "A PMS requires a minimum of ₹50 lakh. AIFs typically need ₹1 crore."
+  }
+ ],
+ "card_ids": [
+  "mf-c77",
+  "mf-c78",
+  "mf-c79"
+ ],
+ "talk_track": [],
+ "words": 248
+}

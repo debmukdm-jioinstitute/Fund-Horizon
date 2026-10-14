@@ -1,0 +1,83 @@
+{
+ "id": "pms-13",
+ "title": "Niche topics (1): returns, costs, tax and exits",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain why a client's return can differ from the strategy return.",
+  "List hidden costs beyond the headline fee.",
+  "State the SEBI exit-load caps."
+ ],
+ "body_md": "These rarely come up at onboarding but drive most PMS complaints and surprises.\n\n| Topic | What to explain | Investor takeaway |\n|---|---|---|\n| Strategy return vs your return | Each client's portfolio is built at a different time and price, so their return can differ from the published strategy return. | Ask for your own account's after-fee return. |\n| Hidden costs | Brokerage, custody and demat charges, GST on fees and profit share add up beyond the headline fee. | Ask for the all-in cost, not just the management fee. |\n| Tax on trading | Every sale by the manager is a capital gains event for the client; high turnover can mean a bigger tax bill. Tax treatment of PMS fees is not straightforward. | Discuss turnover and tax with your CA. |\n| Exit loads | Exit loads are capped by SEBI (up to 3% in year 1, 2% in year 2, 1% in year 3) and set in each agreement. | Check your agreement before investing. |\n| Direct onboarding | Clients can invest directly without a distributor; explain selection, monitoring and service as our value. | You have a direct option; know what a distributor adds. |",
+ "key_terms": [
+  "PMS",
+  "exit load",
+  "high-water mark",
+  "STCG",
+  "LTCG"
+ ],
+ "example": "A client's account is 4% below the published strategy return. You explain entry timing and cash flows, and show the account's own after-fee return against the benchmark.",
+ "say": [
+  "Ask for the all-in cost, not just the management fee.",
+  "Check your agreement for the exit load before investing."
+ ],
+ "never": [
+  "The strategy return is your return.",
+  "There are no other costs."
+ ],
+ "talk_track": [
+  {
+   "n": 17,
+   "title": "What PMS clients miss, and complain about later",
+   "text": "These are the niche topics that drive most PMS complaints later. A client's own return differs from the strategy's published return because of entry timing. Hidden costs, like brokerage, custody charges and GST on fees, add up beyond the headline fee. Every trade is taxed in the client's hands, so high churn can mean a bigger tax bill; involve their CA. Exit loads are capped by SEBI at up to 3%, 2% and 1% in the first three years. The direct onboarding option is always available, so explain our value. Many providers let clients fund a PMS with shares they already own. Clients should know exactly what the DDPI authorises. And they should add a nominee to the PMS demat account too."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q26",
+   "sec": "Niche Topics & Compliance",
+   "q": "What are the SEBI caps on PMS exit loads?",
+   "o": [
+    "Up to 3% in year 1, 2% in year 2 and 1% in year 3",
+    "1% flat for the first year only",
+    "No exit load is allowed in PMS",
+    "Up to 5% in every year"
+   ],
+   "a": 0,
+   "why": "The actual load is set in each agreement, within these caps."
+  },
+  {
+   "id": "pms-q27",
+   "sec": "Niche Topics & Compliance",
+   "q": "Which is a \"hidden cost\" beyond the headline PMS fee?",
+   "o": [
+    "Stamp duty on MF units",
+    "The ELSS lock-in",
+    "GST on fees and profit share, brokerage, custody and demat charges",
+    "The NISM exam fee"
+   ],
+   "a": 2,
+   "why": "Ask for the all-in cost, not just the management fee."
+  },
+  {
+   "id": "pms-n11",
+   "q": "Which is a cost that sits beyond the headline PMS management fee?",
+   "o": [
+    "Brokerage, custody and GST",
+    "A free statement",
+    "The NAV",
+    "The riskometer"
+   ],
+   "a": 0,
+   "why": "Brokerage, custody and demat charges, and GST add up beyond the headline fee."
+  }
+ ],
+ "card_ids": [
+  "pms-c49",
+  "pms-c50",
+  "pms-c51",
+  "pms-c52"
+ ],
+ "words": 181
+}

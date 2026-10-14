@@ -1,0 +1,1194 @@
+{
+ "id": "mf",
+ "title": "MF Distributor",
+ "code": "Module 1",
+ "blurb": "Mutual fund distribution: suitability, discipline and service across the life of an investment.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics)"
+   ],
+   [
+    "Duration",
+    "One 60–75 minute session, plus 15 minutes of role-play and the quiz"
+   ],
+   [
+    "Prerequisite",
+    "None for awareness; NISM Series V-A and an EUIN before dealing with clients"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ],
+  "outcomes": [
+   "Explain the MF ecosystem and the distributor's role and limits in plain words.",
+   "Run a discovery and risk-profiling conversation before suggesting any fund.",
+   "Onboard a client correctly, with every disclosure made.",
+   "Conduct an annual review that goes beyond \"your SIP is running\".",
+   "Keep a client invested through a market fall without making promises."
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)",
+  "SEBI circular on categorisation and rationalisation of mutual fund schemes (Oct 2017) and later amendments",
+  "SEBI circulars on the riskometer and Potential Risk Class (2020 and 2021)",
+  "SEBI circular on uniform cut-off timings and NAV applicability",
+  "SEBI: investor grievance redress via SCORES and Smart ODR (2023 onwards)",
+  "AMFI Code of Conduct and distributor guidelines; NISM Series V-A: Mutual Fund Distributors certification workbook",
+  "Income-tax Act and Finance Act provisions on capital gains from mutual funds (verify current rates each year)"
+ ],
+ "lessons": [
+  {
+   "id": "mf-01",
+   "title": "What is a mutual fund?",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-02",
+   "title": "Open-ended, closed-ended and interval funds; how NAV works",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-03",
+   "title": "SEBI scheme categories and the riskometer",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-04",
+   "title": "Cut-off times and NAV applicability",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-05",
+   "title": "SID, SAI and KIM: what to show the client",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-06",
+   "title": "Taxation basics: equity vs debt, STCG and LTCG",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-07",
+   "title": "TER limits, and Direct vs Regular plans",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-08",
+   "title": "ETFs, index funds, FoFs, and MF vs PMS vs AIF",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "mf-09",
+   "title": "AMFI Code of Conduct, mis-selling and complaints",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Compliance"
+  },
+  {
+   "id": "mf-10",
+   "title": "Who an MF distributor is: ARN, EUIN and the limits",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "mf-11",
+   "title": "Before any fund: the foundation check and goal mapping",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "mf-12",
+   "title": "Risk profiling: capacity, tolerance and need",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "mf-13",
+   "title": "Discovery questions that reveal risk tolerance",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "mf-14",
+   "title": "Matching categories to goals, and choosing how to invest",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "mf-15",
+   "title": "The onboarding checklist",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "mf-16",
+   "title": "The annual review: answering 'my SIP is running, what next?'",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "mf-17",
+   "title": "Reading performance correctly, and when to switch",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "mf-18",
+   "title": "The market-fall playbook",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "mf-19",
+   "title": "Client reactions, biases and the ethics of retention",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "mf-20",
+   "title": "Niche topics (1): transmission, holding mode, switches and lock-ins",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "mf-21",
+   "title": "Niche topics (2): SWP tax, NFOs, segregated portfolios, NRIs and the CAS",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "mf-22",
+   "title": "Role-play lab: six client conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  }
+ ],
+ "cards": [
+  {
+   "id": "mf-c1",
+   "q": "Why is keeping a client invested the distributor's real job?",
+   "a": [
+    "₹10,000/month SIP at an assumed 12% a year:",
+    "10 yrs: ₹12 L invested → about ₹23 L",
+    "20 yrs: ₹24 L → about ₹1 Cr",
+    "30 yrs: ₹36 L → about ₹3.5 Cr (≈10×)",
+    "The last 10 years alone add about ₹2.5 Cr, so stopping early costs the most. (Illustration only, not a promise.)"
+   ]
+  },
+  {
+   "id": "mf-c2",
+   "q": "What does L.E.A.R.N. stand for?",
+   "a": [
+    "L: Learn the basics",
+    "E: Evaluate the client",
+    "A: Act right",
+    "R: Review & rebalance",
+    "N: Navigate behaviour"
+   ]
+  },
+  {
+   "id": "mf-c3",
+   "q": "Who regulates mutual funds and MF intermediaries in India?",
+   "a": [
+    "SEBI. It sets the rules on categories, costs, disclosures and investor protection."
+   ]
+  },
+  {
+   "id": "mf-c4",
+   "q": "What do the Sponsor and Trustees do?",
+   "a": [
+    "The sponsor sets up the fund; the trustees protect unitholders' interests. They are an independent layer watching the fund house."
+   ]
+  },
+  {
+   "id": "mf-c5",
+   "q": "What is the AMC's role?",
+   "a": [
+    "The AMC (fund house) manages the money as per each scheme's mandate. The fund manager decides what to buy within the scheme's rules."
+   ]
+  },
+  {
+   "id": "mf-c6",
+   "q": "Who holds a mutual fund scheme's securities?",
+   "a": [
+    "The custodian. Investor money is not held by the AMC or by the distributor."
+   ]
+  },
+  {
+   "id": "mf-c7",
+   "q": "What is an RTA? Name the two main RTAs.",
+   "a": [
+    "Registrar & Transfer Agent: CAMS and KFintech. Maintains investor records, processes transactions, issues statements, and handles folios, nominations and service requests."
+   ]
+  },
+  {
+   "id": "mf-c8",
+   "q": "What does AMFI do?",
+   "a": [
+    "Industry body that registers distributors (ARN), runs investor awareness and sets the distributor code of conduct."
+   ]
+  },
+  {
+   "id": "mf-c9",
+   "q": "What is an ARN?",
+   "a": [
+    "AMFI Registration Number: the distributor's registration with AMFI, renewed periodically."
+   ]
+  },
+  {
+   "id": "mf-c10",
+   "q": "What is an EUIN, and who needs one?",
+   "a": [
+    "Employee Unique Identification Number. Every person who deals with clients needs NISM Series V-A certification and an EUIN, quoted on every transaction they handle."
+   ]
+  },
+  {
+   "id": "mf-c11",
+   "q": "Distributor vs SEBI RIA: what can't a distributor do?",
+   "a": [
+    "Cannot charge an advisory fee or call themselves an \"independent adviser\". Describe yourself as a \"Mutual Fund Distributor\"; guidance must be incidental to selling products."
+   ]
+  },
+  {
+   "id": "mf-c12",
+   "q": "Direct plan vs regular plan?",
+   "a": [
+    "Direct: bought straight from the AMC. Regular: bought through a distributor. It has a higher expense ratio because the AMC pays the distributor's trail commission from the TER."
+   ]
+  },
+  {
+   "id": "mf-c13",
+   "q": "How does a distributor earn, and how is it disclosed?",
+   "a": [
+    "Trail commission from the AMC, paid only while the client stays invested. No upfront commission is allowed. The commission and expense ratio are shown in the client's CAS."
+   ]
+  },
+  {
+   "id": "mf-c14",
+   "q": "What is the foundation check before investing?",
+   "a": [
+    "Emergency fund in place (several months of expenses)",
+    "Adequate term life and health insurance",
+    "High-interest debt (credit cards, personal loans) being cleared",
+    "If missing, fix these first."
+   ]
+  },
+  {
+   "id": "mf-c15",
+   "q": "Define risk capacity.",
+   "a": [
+    "How much loss the client can AFFORD, judged by age, income stability, dependants, existing assets and horizon."
+   ]
+  },
+  {
+   "id": "mf-c16",
+   "q": "Define risk tolerance.",
+   "a": [
+    "How much loss the client can STOMACH, judged by past reactions to market falls, comfort questions and a questionnaire."
+   ]
+  },
+  {
+   "id": "mf-c17",
+   "q": "Define risk need.",
+   "a": [
+    "How much risk the goal actually REQUIRES: goal amount vs current savings and time left."
+   ]
+  },
+  {
+   "id": "mf-c18",
+   "q": "Golden rule of risk profiling?",
+   "a": [
+    "Match recommendations to the LOWER of capacity and tolerance. Re-profile after major life events. (A wealthy client who panics in falls is still a moderate investor.)"
+   ]
+  },
+  {
+   "id": "mf-c19",
+   "q": "What 4 things do you capture for every goal?",
+   "a": [
+    "What the goal is",
+    "Amount in today's money",
+    "Target year",
+    "Priority: must-have or nice-to-have"
+   ]
+  },
+  {
+   "id": "mf-c20",
+   "q": "The 5 discovery questions?",
+   "a": [
+    "What is this money for, and when will you need it?",
+    "Have you invested before? What happened in the last market fall?",
+    "If this fell 20% next year, what would you do?",
+    "Who else in the family is involved in money decisions?",
+    "What do you already hold (EPF, PPF, FDs, property)?"
+   ]
+  },
+  {
+   "id": "mf-c21",
+   "q": "Categories for a goal under 1 year / emergency money?",
+   "a": [
+    "Liquid, overnight, money market funds, for stability and quick access."
+   ]
+  },
+  {
+   "id": "mf-c22",
+   "q": "Categories for a 1–3 year goal?",
+   "a": [
+    "Short-duration debt, arbitrage, conservative hybrid, to limit equity swings."
+   ]
+  },
+  {
+   "id": "mf-c23",
+   "q": "Categories for a 3–5 year goal?",
+   "a": [
+    "Balanced advantage, hybrid, some large-cap, for moderate growth with cushioning."
+   ]
+  },
+  {
+   "id": "mf-c24",
+   "q": "Categories for a 7+ year goal?",
+   "a": [
+    "Flexi-cap, large & mid-cap, index funds, mid/small-cap within limits. There is time to ride out equity cycles."
+   ]
+  },
+  {
+   "id": "mf-c25",
+   "q": "What is ELSS, and what is its key feature?",
+   "a": [
+    "Tax-saving equity fund with a 3-year lock-in for each SIP instalment, counted from that instalment's own date. Suits long-term savers."
+   ]
+  },
+  {
+   "id": "mf-c26",
+   "q": "SIP vs lump sum?",
+   "a": [
+    "SIP: regular amounts from income; averages purchase cost over time. Lump sum: for long horizons when the money is available now."
+   ]
+  },
+  {
+   "id": "mf-c27",
+   "q": "What is an STP and when do you use it?",
+   "a": [
+    "Systematic Transfer Plan: park a large sum in a debt or liquid fund and transfer it into equity over 6–12 months, reducing timing regret."
+   ]
+  },
+  {
+   "id": "mf-c28",
+   "q": "What is an SWP?",
+   "a": [
+    "Systematic Withdrawal Plan: regular withdrawals later, e.g. in retirement."
+   ]
+  },
+  {
+   "id": "mf-c29",
+   "q": "The onboarding checklist?",
+   "a": [
+    "KYC verified (not on hold) · FATCA/CRS done",
+    "Holding mode chosen deliberately",
+    "Nomination registered, or opt-out recorded",
+    "Bank mandate for SIPs",
+    "Riskometer shown and matched to profile",
+    "Exit load, lock-in, expense ratio explained",
+    "Commission and direct-plan option disclosed",
+    "Recommendation and reason recorded"
+   ]
+  },
+  {
+   "id": "mf-c30",
+   "q": "How often should a client be reviewed, and what is the agenda?",
+   "a": [
+    "At least once a year (30–45 min):",
+    "Life update · Goal progress · Performance",
+    "Allocation check · Overlap & clutter",
+    "Step-up · Housekeeping",
+    "Written next-actions summary"
+   ]
+  },
+  {
+   "id": "mf-c31",
+   "q": "Which return measure suits SIPs?",
+   "a": [
+    "XIRR. It accounts for each instalment's date. Mistake: using simple or absolute return for SIPs."
+   ]
+  },
+  {
+   "id": "mf-c32",
+   "q": "When is CAGR the right measure?",
+   "a": [
+    "For a single lump-sum investment. Mistake: applying it to SIPs."
+   ]
+  },
+  {
+   "id": "mf-c33",
+   "q": "When is absolute return meaningful?",
+   "a": [
+    "Only over very short periods. Mistake: judging a 5-year holding by total % gain."
+   ]
+  },
+  {
+   "id": "mf-c34",
+   "q": "How do you judge a fund manager?",
+   "a": [
+    "Against the fund's benchmark and category average over 3 and 5 years, never on one good or bad year."
+   ]
+  },
+  {
+   "id": "mf-c35",
+   "q": "4 valid reasons to recommend switching a fund?",
+   "a": [
+    "Consistent underperformance vs benchmark & peers over 3+ years",
+    "Change in fund manager or investment style",
+    "Change in the scheme's mandate or category",
+    "Change in the client's goal or horizon"
+   ]
+  },
+  {
+   "id": "mf-c36",
+   "q": "What must you check before ANY switch?",
+   "a": [
+    "Exit load and tax."
+   ]
+  },
+  {
+   "id": "mf-c37",
+   "q": "What does a 10% yearly SIP step-up do?",
+   "a": [
+    "₹10,000/month, assumed 12%, 20 years: flat SIP ≈ ₹1 Cr (₹24 L invested); 10% step-up ≈ ₹1.99 Cr (₹68.7 L invested). Illustration only."
+   ]
+  },
+  {
+   "id": "mf-c38",
+   "q": "The 6-step market-fall playbook?",
+   "a": [
+    "Call first, before clients call in panic",
+    "Reconnect to the goal, not the day's loss",
+    "Explain the SIP advantage (more units)",
+    "Use history, without promises",
+    "Act only if the plan says so",
+    "Record the conversation; follow up in writing"
+   ]
+  },
+  {
+   "id": "mf-c39",
+   "q": "In a fall, which clients do you call first?",
+   "a": [
+    "Recent and first-time investors."
+   ]
+  },
+  {
+   "id": "mf-c40",
+   "q": "\"Let me stop my SIP until markets settle.\" Bias and response?",
+   "a": [
+    "Loss aversion. \"Your SIP is buying more units at lower prices now. Stopping skips the part that helps most later.\""
+   ]
+  },
+  {
+   "id": "mf-c41",
+   "q": "\"My friend's fund gave 40%. Let's switch.\" Bias and response?",
+   "a": [
+    "Recency / herd. \"Let's compare both over 5 years and see how each did in bad years.\""
+   ]
+  },
+  {
+   "id": "mf-c42",
+   "q": "\"I'll sell when it's back to my cost.\" Bias and response?",
+   "a": [
+    "Anchoring. \"Your buying price doesn't affect what the fund does next. Is it still the right fund for your goal?\""
+   ]
+  },
+  {
+   "id": "mf-c43",
+   "q": "Why does a falling NAV help a SIP investor?",
+   "a": [
+    "The same instalment buys more units. In the training example the average cost (₹85.6) came in below the average NAV (₹87.3), and ₹1.2 L invested grew to ≈ ₹1.51 L."
+   ]
+  },
+  {
+   "id": "mf-c44",
+   "q": "What happened in March 2020?",
+   "a": [
+    "The Nifty 50 fell close to 40% in about a month (closed 7,610 on 23 Mar). By Feb 2021 it had nearly doubled from that low. Those who stopped or redeemed at the bottom locked in losses."
+   ]
+  },
+  {
+   "id": "mf-c45",
+   "q": "The investor emotion cycle: when do most investors buy and sell?",
+   "a": [
+    "Most buy at euphoria (the top, when risk is highest) and sell at despondency (the bottom, just before recovery). Our job is to move clients against their emotions."
+   ]
+  },
+  {
+   "id": "mf-c46",
+   "q": "What must retention NEVER become?",
+   "a": [
+    "Switching or churning for commission",
+    "Pushing NFOs or new categories without a clear fit",
+    "Assuring returns, capital protection or recovery timelines"
+   ]
+  },
+  {
+   "id": "mf-c47",
+   "q": "Transmission after death: what speeds it up?",
+   "a": [
+    "A registered nominee. Without one, legal heirs must prove their claim. The claimant also needs KYC. Every folio needs a nominee."
+   ]
+  },
+  {
+   "id": "mf-c48",
+   "q": "What happens to a minor's folio at 18?",
+   "a": [
+    "It needs KYC and a status change to major, or transactions get blocked."
+   ]
+  },
+  {
+   "id": "mf-c49",
+   "q": "Is a switch within the same fund house taxable?",
+   "a": [
+    "It can be. A switch is a redemption plus a purchase, so it can trigger tax and exit load."
+   ]
+  },
+  {
+   "id": "mf-c50",
+   "q": "Exit load / ELSS lock-in on a SIP: when are all units free?",
+   "a": [
+    "Each SIP instalment has its own holding period. Exit load applies per unit, redeemed first-in, first-out (FIFO). The LAST instalment decides when all units are free."
+   ]
+  },
+  {
+   "id": "mf-c51",
+   "q": "Client short on cash: cancel the SIP?",
+   "a": [
+    "Ask about a SIP PAUSE. Many fund houses allow a temporary pause instead of cancelling and restarting."
+   ]
+  },
+  {
+   "id": "mf-c52",
+   "q": "How is an SWP taxed?",
+   "a": [
+    "Each withdrawal is part principal and part gain. Only the gain portion is taxed."
+   ]
+  },
+  {
+   "id": "mf-c53",
+   "q": "Is a ₹10 NFO cheaper than a fund at ₹200 NAV?",
+   "a": [
+    "No. New is not cheaper; it is untested. The scheme has no track record."
+   ]
+  },
+  {
+   "id": "mf-c54",
+   "q": "What happens on a change in fundamental attributes?",
+   "a": [
+    "When a scheme's mandate changes, investors get an exit window without exit load."
+   ]
+  },
+  {
+   "id": "mf-c55",
+   "q": "What is a segregated portfolio?",
+   "a": [
+    "In a credit event, a debt fund separates the bad paper. Investors hold units of both until recovery."
+   ]
+  },
+  {
+   "id": "mf-c56",
+   "q": "NRI / FATCA points to check?",
+   "a": [
+    "Some fund houses restrict US/Canada residents. NRE vs NRO account type matters. Confirm eligibility first."
+   ]
+  },
+  {
+   "id": "mf-c57",
+   "q": "What is the CAS?",
+   "a": [
+    "Consolidated Account Statement: one statement showing all folios across fund houses, including commission paid. Sent monthly if there were transactions, otherwise half-yearly. Download it twice a year."
+   ]
+  },
+  {
+   "id": "mf-c58",
+   "q": "Which small costs can change after investing?",
+   "a": [
+    "Stamp duty applies on purchases. Expense ratios can change with notice and with fund size. Check them at each review."
+   ]
+  },
+  {
+   "id": "mf-c59",
+   "q": "What must you quote on every transaction and communication?",
+   "a": [
+    "Your ARN and EUIN."
+   ]
+  },
+  {
+   "id": "mf-c60",
+   "q": "What must accompany any past-performance figure?",
+   "a": [
+    "The standard mutual fund risk disclaimer. Never promise or imply guaranteed returns or recovery timelines."
+   ]
+  },
+  {
+   "id": "mf-c61",
+   "q": "What is the complaint escalation path you share with clients?",
+   "a": [
+    "AMC → SEBI SCORES → Smart ODR. Escalate promptly and never discourage a client from complaining."
+   ]
+  },
+  {
+   "id": "mf-c62",
+   "q": "Key compliance don'ts?",
+   "a": [
+    "Deal with clients before NISM V-A + EUIN",
+    "Call yourself an adviser or charge a fee",
+    "Sell above the client's risk level",
+    "Hide costs or churn for commission",
+    "Accept cash or handle client money"
+   ]
+  },
+  {
+   "id": "mf-c63",
+   "q": "What is NAV, and how is it calculated?",
+   "a": [
+    "Value of one unit: (investments + cash and receivables, less liabilities) ÷ units outstanding. Calculated every business day."
+   ]
+  },
+  {
+   "id": "mf-c64",
+   "q": "Open-ended vs closed-ended vs interval funds?",
+   "a": [
+    "Open-ended: buy and sell any business day at NAV. Closed-ended: NFO, then the exchange, until maturity. Interval: open only at set intervals."
+   ]
+  },
+  {
+   "id": "mf-c65",
+   "q": "Does a low NAV mean a cheap fund?",
+   "a": [
+    "No. NAV is the price of one unit. Returns depend on the portfolio, not on the unit price."
+   ]
+  },
+  {
+   "id": "mf-c66",
+   "q": "How many riskometer levels are there?",
+   "a": [
+    "Six: Low, Low to Moderate, Moderate, Moderately High, High and Very High. Match the level to the client's profile."
+   ]
+  },
+  {
+   "id": "mf-c67",
+   "q": "What do large, mid and small cap mean?",
+   "a": [
+    "Large cap: top 100 companies. Mid cap: ranked 101 to 250. Small cap: ranked 251 onwards."
+   ]
+  },
+  {
+   "id": "mf-c68",
+   "q": "Can a scheme's riskometer change?",
+   "a": [
+    "Yes. It follows the portfolio, so check it at every review."
+   ]
+  },
+  {
+   "id": "mf-c69",
+   "q": "What is the usual cut-off for most schemes?",
+   "a": [
+    "3:00 pm on a business day, with funds available. After that, the next business day's NAV applies."
+   ]
+  },
+  {
+   "id": "mf-c70",
+   "q": "Is a switch one transaction?",
+   "a": [
+    "No. A switch is a redemption plus a purchase, each with its own cut-off and NAV."
+   ]
+  },
+  {
+   "id": "mf-c71",
+   "q": "SID, SAI and KIM: what is each?",
+   "a": [
+    "SID: scheme details and risks. SAI: sponsor, trustees and AMC details. KIM: short summary given with the application."
+   ]
+  },
+  {
+   "id": "mf-c72",
+   "q": "What should you point out before a client invests?",
+   "a": [
+    "Objective and category, riskometer, exit load, lock-in and TER, the benchmark, and where to find the SID and factsheet."
+   ]
+  },
+  {
+   "id": "mf-c73",
+   "q": "How are equity fund gains broadly taxed?",
+   "a": [
+    "Short term (up to 12 months) and long term (over 12 months) are taxed at different rates, with a yearly exemption on long-term gains. Check current rates."
+   ]
+  },
+  {
+   "id": "mf-c74",
+   "q": "How are specified debt fund gains taxed?",
+   "a": [
+    "For funds bought on or after 1 April 2023, gains are taxed at the client's slab rate regardless of holding period. Check current rules."
+   ]
+  },
+  {
+   "id": "mf-c75",
+   "q": "Who gives personal tax advice?",
+   "a": [
+    "A tax adviser or CA. A distributor explains the basics only."
+   ]
+  },
+  {
+   "id": "mf-c76",
+   "q": "What does the TER pay for?",
+   "a": [
+    "Running the scheme, including the fund manager, administration and, in a regular plan, the distributor's trail commission."
+   ]
+  },
+  {
+   "id": "mf-c77",
+   "q": "Index fund vs ETF?",
+   "a": [
+    "Index fund: bought from the AMC at NAV. ETF: traded on the exchange at market price through a demat account."
+   ]
+  },
+  {
+   "id": "mf-c78",
+   "q": "What is a fund of funds?",
+   "a": [
+    "A fund that invests in other funds' units. Costs sit at two levels and tax follows the underlying fund type."
+   ]
+  },
+  {
+   "id": "mf-c79",
+   "q": "MF vs PMS vs AIF minimum ticket?",
+   "a": [
+    "MF: a few hundred rupees. PMS: ₹50 lakh. AIF: typically ₹1 crore."
+   ]
+  }
+ ],
+ "final": {
+  "id": "mf-final",
+  "title": "MF Distributor final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "mf-q1",
+    "sec": "L: Learn the Basics",
+    "q": "Who holds the securities of a mutual fund scheme?",
+    "o": [
+     "The AMC",
+     "The distributor",
+     "The custodian",
+     "The RTA (CAMS / KFintech)"
+    ],
+    "a": 2,
+    "why": "An independent custodian holds the fund's securities. Investor money is never held by the AMC or the distributor."
+   },
+   {
+    "id": "mf-q2",
+    "sec": "L: Learn the Basics",
+    "q": "Which body registers mutual fund distributors and issues the ARN?",
+    "o": [
+     "AMFI",
+     "SEBI",
+     "NISM",
+     "The RTA"
+    ],
+    "a": 0,
+    "why": "AMFI is the industry body that registers distributors (ARN). SEBI is the regulator."
+   },
+   {
+    "id": "mf-q3",
+    "sec": "L: Learn the Basics",
+    "q": "Who needs an EUIN?",
+    "o": [
+     "Only the head of the distribution firm",
+     "Only SEBI Registered Investment Advisers",
+     "Only employees handling lump sums above ₹1 lakh",
+     "Every employee who deals with clients"
+    ],
+    "a": 3,
+    "why": "Each person dealing with clients needs NISM Series V-A and an EUIN, quoted on every transaction they handle."
+   },
+   {
+    "id": "mf-q4",
+    "sec": "L: Learn the Basics",
+    "q": "Why is a regular plan's expense ratio higher than a direct plan's?",
+    "o": [
+     "It invests in riskier securities",
+     "It includes the distributor's trail commission",
+     "It pays a higher fund-manager salary",
+     "It includes stamp duty on every purchase"
+    ],
+    "a": 1,
+    "why": "The regular plan carries the trail commission, which the AMC pays from the TER, only while the client stays invested. It is shown in the CAS."
+   },
+   {
+    "id": "mf-q5",
+    "sec": "L: Learn the Basics",
+    "q": "A distributor wants to charge a client ₹5,000 for a financial plan. What is correct?",
+    "o": [
+     "Allowed if disclosed in writing",
+     "Not allowed; charging for advice requires SEBI RIA registration",
+     "Allowed only for HNI clients",
+     "Allowed once a year at the annual review"
+    ],
+    "a": 1,
+    "why": "Distributors give guidance incidental to selling and cannot charge an advisory fee or call themselves independent advisers."
+   },
+   {
+    "id": "mf-q6",
+    "sec": "E: Evaluate the Client",
+    "q": "Before suggesting any fund, what must be checked first?",
+    "o": [
+     "Last year's top-performing funds",
+     "Which NFOs are currently open",
+     "The client's preferred fund house",
+     "Emergency fund, term and health insurance, and high-interest debt"
+    ],
+    "a": 3,
+    "why": "The foundation check comes first. If it is missing, fixing it is the first recommendation."
+   },
+   {
+    "id": "mf-q7",
+    "sec": "E: Evaluate the Client",
+    "q": "A wealthy client with high risk capacity panics and sells in every market fall. How should they be profiled?",
+    "o": [
+     "Moderate: match to the lower of capacity and tolerance",
+     "Growth, because capacity is high",
+     "Aggressive, to make up for past losses",
+     "They cannot be profiled"
+    ],
+    "a": 0,
+    "why": "Recommendations follow the LOWER of capacity and tolerance. Low tolerance sets the limit."
+   },
+   {
+    "id": "mf-q8",
+    "sec": "E: Evaluate the Client",
+    "q": "\"How much risk the goal actually requires\" describes:",
+    "o": [
+     "Risk capacity",
+     "Risk tolerance",
+     "Risk need",
+     "Risk appetite"
+    ],
+    "a": 2,
+    "why": "Risk need compares the goal amount with current savings and time left."
+   },
+   {
+    "id": "mf-q9",
+    "sec": "E: Evaluate the Client",
+    "q": "Which discovery question reveals the most about risk tolerance?",
+    "o": [
+     "\"What is your monthly salary?\"",
+     "\"Which fund house do you prefer?\"",
+     "\"How many bank accounts do you have?\"",
+     "\"What happened during the last market fall?\""
+    ],
+    "a": 3,
+    "why": "Past behaviour in a fall says more about tolerance than any questionnaire."
+   },
+   {
+    "id": "mf-q10",
+    "sec": "E: Evaluate the Client",
+    "q": "Which of these is NOT one of the four things captured for every goal?",
+    "o": [
+     "Amount in today's money",
+     "The fund the client has already chosen",
+     "Target year",
+     "Priority: must-have or nice-to-have"
+    ],
+    "a": 1,
+    "why": "For every goal capture: what it is, amount in today's money, target year and priority."
+   },
+   {
+    "id": "mf-q11",
+    "sec": "A: Act Right",
+    "q": "A client needs money in 8 months. Which categories fit?",
+    "o": [
+     "Small-cap funds",
+     "ELSS",
+     "Liquid, overnight or money market funds",
+     "Flexi-cap funds"
+    ],
+    "a": 2,
+    "why": "Under 1 year / emergency money needs stability and quick access."
+   },
+   {
+    "id": "mf-q12",
+    "sec": "A: Act Right",
+    "q": "A client has a 2-year goal. Which categories should be considered?",
+    "o": [
+     "Short-duration debt, arbitrage, conservative hybrid",
+     "Mid and small-cap funds",
+     "Sectoral equity funds",
+     "ELSS"
+    ],
+    "a": 0,
+    "why": "1–3 year goals should have limited exposure to equity swings."
+   },
+   {
+    "id": "mf-q13",
+    "sec": "A: Act Right",
+    "q": "A client has ₹20 lakh for a 10-year goal but fears investing at the wrong time. Best method?",
+    "o": [
+     "STP from a liquid/debt fund into equity over 6–12 months",
+     "Invest all of it in small-cap today",
+     "Keep it in a savings account until markets fall",
+     "Start an SWP"
+    ],
+    "a": 0,
+    "why": "STP stages a large sum into equity and reduces timing regret."
+   },
+   {
+    "id": "mf-q14",
+    "sec": "A: Act Right",
+    "q": "Which is NOT part of the onboarding checklist?",
+    "o": [
+     "FATCA / CRS declaration",
+     "Nomination registered or opt-out recorded",
+     "Confirming a guaranteed minimum return",
+     "Riskometer matched to the client's profile"
+    ],
+    "a": 2,
+    "why": "Returns are never guaranteed. Promising them is a compliance breach."
+   },
+   {
+    "id": "mf-q15",
+    "sec": "A: Act Right",
+    "q": "An SWP is best suited for:",
+    "o": [
+     "Saving tax under ELSS",
+     "Regular withdrawals, e.g. in retirement",
+     "Building a corpus from monthly income",
+     "Moving money between two equity funds"
+    ],
+    "a": 1,
+    "why": "SWP provides regular withdrawals; SIP is for accumulation from income."
+   },
+   {
+    "id": "mf-q16",
+    "sec": "R: Review & Rebalance",
+    "q": "How often should a client receive a structured review, at minimum?",
+    "o": [
+     "Every five years",
+     "Only when markets fall",
+     "Only when the client asks",
+     "At least once a year"
+    ],
+    "a": 3,
+    "why": "A yearly structured review is where most long-term value is added."
+   },
+   {
+    "id": "mf-q17",
+    "sec": "R: Review & Rebalance",
+    "q": "Which return measure should be used for a SIP portfolio?",
+    "o": [
+     "CAGR",
+     "XIRR",
+     "Absolute return",
+     "Dividend yield"
+    ],
+    "a": 1,
+    "why": "XIRR accounts for each instalment's date. CAGR is for a single lump sum."
+   },
+   {
+    "id": "mf-q18",
+    "sec": "R: Review & Rebalance",
+    "q": "Which is a valid reason to recommend switching out of a fund?",
+    "o": [
+     "Underperformance vs benchmark and peers over 3+ years",
+     "One bad year of returns",
+     "A friend's fund returned 40% last year",
+     "A new NFO has launched"
+    ],
+    "a": 0,
+    "why": "Other valid reasons are a manager/style change, a mandate change, or a change in the client's goal."
+   },
+   {
+    "id": "mf-q19",
+    "sec": "R: Review & Rebalance",
+    "q": "₹10,000/month at an assumed 12% for 20 years, stepped up 10% every year, ends at about:",
+    "o": [
+     "₹1 crore",
+     "₹1.5 crore",
+     "₹3.5 crore",
+     "₹1.99 crore"
+    ],
+    "a": 3,
+    "why": "A flat SIP ends at ≈₹1 Cr. The 10% step-up nearly doubles it to ≈₹1.99 Cr (illustration only)."
+   },
+   {
+    "id": "mf-q20",
+    "sec": "R: Review & Rebalance",
+    "q": "Before recommending any switch, the distributor must always check:",
+    "o": [
+     "Only the fund's 1-year return",
+     "The NAV of the new fund",
+     "Exit load and tax",
+     "Whether the new fund is an NFO"
+    ],
+    "a": 2,
+    "why": "A switch is a redemption plus a purchase, so it can trigger exit load and tax."
+   },
+   {
+    "id": "mf-q21",
+    "sec": "N: Navigate Behaviour",
+    "q": "Markets fall 15%. What is the first thing you do?",
+    "o": [
+     "Wait for clients to call you",
+     "Advise all clients to pause SIPs",
+     "Proactively call clients, starting with recent and first-time investors",
+     "Move all equity holdings to debt"
+    ],
+    "a": 2,
+    "why": "Call first, before clients call in panic, and reconnect them to their goals."
+   },
+   {
+    "id": "mf-q22",
+    "sec": "N: Navigate Behaviour",
+    "q": "\"I'll sell when it's back to my cost.\" Which bias is this?",
+    "o": [
+     "Loss aversion",
+     "Herd behaviour",
+     "Recency bias",
+     "Anchoring"
+    ],
+    "a": 3,
+    "why": "The buying price doesn't affect what the fund does next. Ask if it's still the right fund for the goal."
+   },
+   {
+    "id": "mf-q23",
+    "sec": "N: Navigate Behaviour",
+    "q": "\"My friend's fund gave 40%. Let's switch.\" Which bias is this?",
+    "o": [
+     "Anchoring",
+     "Recency / herd behaviour",
+     "Loss aversion",
+     "Home bias"
+    ],
+    "a": 1,
+    "why": "Respond by comparing both funds over 5 years, including how each did in bad years."
+   },
+   {
+    "id": "mf-q24",
+    "sec": "N: Navigate Behaviour",
+    "q": "When the NAV falls, what happens to a running SIP?",
+    "o": [
+     "The same instalment buys more units",
+     "It buys fewer units",
+     "It pauses automatically",
+     "The AMC refunds the instalment"
+    ],
+    "a": 0,
+    "why": "Lower prices mean more units, which lowers the average cost per unit."
+   },
+   {
+    "id": "mf-q25",
+    "sec": "N: Navigate Behaviour",
+    "q": "Which statement is acceptable to a client during a market fall?",
+    "o": [
+     "\"Markets will recover within six months.\"",
+     "\"Your capital is fully protected.\"",
+     "\"Let's move into this new NFO instead.\"",
+     "\"Falls like this have happened before; let's look at your goal and horizon.\""
+    ],
+    "a": 3,
+    "why": "Use history without promises. Never assure returns, capital protection or recovery timelines."
+   },
+   {
+    "id": "mf-q26",
+    "sec": "Niche Topics & Compliance",
+    "q": "A client switches from Fund A to Fund B in the same fund house. Can it be taxable?",
+    "o": [
+     "Yes, because a switch is a redemption plus a purchase",
+     "No, switches within one fund house are tax-free",
+     "Only if the amount exceeds ₹1 lakh",
+     "Only exit load applies, never tax"
+    ],
+    "a": 0,
+    "why": "Check tax and exit load before every switch, even within the same fund house."
+   },
+   {
+    "id": "mf-q27",
+    "sec": "Niche Topics & Compliance",
+    "q": "A client started an ELSS SIP 3 years ago. Are all units free of lock-in?",
+    "o": [
+     "Yes, lock-in counts from the first instalment",
+     "Yes, SIPs have no lock-in",
+     "No, each instalment has its own 3-year lock-in",
+     "No, ELSS units are locked for 5 years"
+    ],
+    "a": 2,
+    "why": "Each SIP instalment unlocks 3 years after its own date, so the last instalment decides when all units are free."
+   },
+   {
+    "id": "mf-q28",
+    "sec": "Niche Topics & Compliance",
+    "q": "A minor's folio when the child turns 18:",
+    "o": [
+     "Converts automatically",
+     "Needs KYC and a status change, or transactions get blocked",
+     "Is closed and paid out",
+     "Transfers to the parent's name"
+    ],
+    "a": 1,
+    "why": "Remind families to update a child's folio at 18."
+   },
+   {
+    "id": "mf-q29",
+    "sec": "Niche Topics & Compliance",
+    "q": "A new NFO is offered at ₹10 NAV. What is true?",
+    "o": [
+     "It is not cheaper; it is untested and has no track record",
+     "It is cheaper than a fund with a ₹200 NAV",
+     "It is guaranteed to grow faster",
+     "It carries lower risk than existing funds"
+    ],
+    "a": 0,
+    "why": "NAV level says nothing about value. New is not cheaper, only untested."
+   },
+   {
+    "id": "mf-q30",
+    "sec": "Niche Topics & Compliance",
+    "q": "Which escalation path should clients be told about?",
+    "o": [
+     "Social media complaints",
+     "AMC, then SEBI SCORES, then Smart ODR",
+     "Only the distributor's branch",
+     "The RTA's marketing team"
+    ],
+    "a": 1,
+    "why": "Escalate complaints promptly and never discourage a client from complaining."
+   }
+  ]
+ },
+ "role_play": null
+}

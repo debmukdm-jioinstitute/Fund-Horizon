@@ -1,0 +1,75 @@
+{
+ "id": "mf-13",
+ "title": "Discovery questions that reveal risk tolerance",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Ask the five discovery questions in a natural conversation.",
+  "Spot who the real decision-maker is.",
+  "Record the answers in the client file."
+ ],
+ "body_md": "- \"What is this money for, and when will you need it?\"\n- \"Have you invested before? What happened during the last market fall?\"\n- \"If this investment fell 20% next year, what would you do?\"\n- \"Who else in the family is involved in money decisions?\"\n- \"Which investments do you already hold, including EPF, PPF, FDs and property?\"\n\n> **Investor takeaway:** Good advice starts with your goals and your comfort with risk, not with the best-performing fund.",
+ "key_terms": [
+  "SIP"
+ ],
+ "example": "You ask, 'What happened during the last market fall?' The client says, 'I stopped my SIP for a year.' You note low tolerance and plan a more conservative mix with a clear fall-time conversation.",
+ "say": [
+  "If this investment fell 20% next year, what would you do?",
+  "Who else in the family is involved in money decisions?"
+ ],
+ "never": [
+  "You're comfortable with risk, aren't you?",
+  "Just tick the form, I'll pick the fund."
+ ],
+ "talk_track": [
+  {
+   "n": 7,
+   "title": "Five discovery questions",
+   "text": "Here are five discovery questions every sales conversation should include. One: what is this money for, and when will you need it? Two: have you invested before, and what happened in the last market fall? Their answer tells you more about risk tolerance than any questionnaire. Three: if this investment fell 20% next year, what would you do? Four: who else in the family is involved in money decisions? Often the real decision-maker isn't in the room. Five: what do you already hold, including EPF, PPF, fixed deposits and property? Talk-track: \"Before we talk about any fund, let's understand what this money is for and when you'll need it.\""
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q9",
+   "sec": "E: Evaluate the Client",
+   "q": "Which discovery question reveals the most about risk tolerance?",
+   "o": [
+    "\"What is your monthly salary?\"",
+    "\"Which fund house do you prefer?\"",
+    "\"How many bank accounts do you have?\"",
+    "\"What happened during the last market fall?\""
+   ],
+   "a": 3,
+   "why": "Past behaviour in a fall says more about tolerance than any questionnaire."
+  },
+  {
+   "id": "mf-n26",
+   "q": "Which question tells you the most about a client's real decision-maker?",
+   "o": [
+    "What is your salary?",
+    "Who else in the family is involved in money decisions?",
+    "Which AMC do you prefer?",
+    "How many bank accounts do you have?"
+   ],
+   "a": 1,
+   "why": "Often the real decision-maker is not in the room."
+  },
+  {
+   "id": "mf-n27",
+   "q": "Which answer shows low risk tolerance?",
+   "o": [
+    "I held on in 2020",
+    "I stopped my SIP and sold at the bottom",
+    "I added more in the fall",
+    "I did nothing and checked less"
+   ],
+   "a": 1,
+   "why": "Selling at the bottom reveals how a client really reacts to falls."
+  }
+ ],
+ "card_ids": [
+  "mf-c20"
+ ],
+ "words": 74
+}

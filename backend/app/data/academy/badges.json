@@ -1,0 +1,56 @@
+[
+ {
+  "id": "first_step",
+  "name": "First Step",
+  "icon": "👣",
+  "hint": "Complete your first lesson."
+ },
+ {
+  "id": "grad_mf",
+  "name": "Module Graduate (MF)",
+  "icon": "🎓",
+  "hint": "Pass the MF final quiz."
+ },
+ {
+  "id": "grad_pms",
+  "name": "Module Graduate (PMS)",
+  "icon": "🎓",
+  "hint": "Pass the PMS final quiz."
+ },
+ {
+  "id": "streak_7",
+  "name": "7-Day Streak",
+  "icon": "🔥",
+  "hint": "Learn on 7 days in a row."
+ },
+ {
+  "id": "streak_30",
+  "name": "30-Day Streak",
+  "icon": "🌋",
+  "hint": "Learn on 30 days in a row."
+ },
+ {
+  "id": "card_shark",
+  "name": "Card Shark",
+  "icon": "🃏",
+  "hint": "Review 100 flashcards."
+ },
+ {
+  "id": "perfectionist",
+  "name": "Perfectionist",
+  "icon": "💯",
+  "hint": "Score 30/30 on a final quiz."
+ },
+ {
+  "id": "compliance_ace",
+  "name": "Compliance Ace",
+  "icon": "⚖️",
+  "hint": "Get every compliance question right in a lesson check."
+ },
+ {
+  "id": "full_stack",
+  "name": "Full Stack Distributor",
+  "icon": "🏆",
+  "hint": "Pass both module final quizzes."
+ }
+]

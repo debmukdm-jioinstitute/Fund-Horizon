@@ -1,0 +1,79 @@
+{
+ "id": "mf-15",
+ "title": "The onboarding checklist",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Complete every item on the onboarding checklist.",
+  "Show the riskometer and match it to the profile.",
+  "Record the recommendation and the reason."
+ ],
+ "body_md": "- ☐ KYC verified (status validated, not on hold)\n- ☐ FATCA / CRS declaration completed\n- ☐ Holding mode chosen deliberately (single, joint, either or survivor)\n- ☐ Nomination registered, or opt-out formally recorded\n- ☐ Bank mandate set up for SIPs\n- ☐ Riskometer of each scheme shown and matched to the client's profile\n- ☐ Exit load, lock-in and expense ratio explained\n- ☐ Commission and direct-plan option disclosed\n- ☐ Recommendation and reason recorded in the client file\n\n> **Investor takeaway:** Know what you own, why you own it, and what it costs before you invest.",
+ "key_terms": [
+  "KYC",
+  "FATCA/CRS",
+  "riskometer",
+  "exit load",
+  "lock-in"
+ ],
+ "example": "Before a first SIP, you confirm KYC is validated, the nominee is registered, the mandate is set, and you show the scheme's riskometer. You note the reason in the file: 'Flexi cap for a 7-year goal, Moderately High risk, client accepts a 20% fall.'",
+ "say": [
+  "This fund suits your 7-year goal. It can fall 20% in a bad year. Are you comfortable staying invested if that happens?",
+  "Let me explain the exit load and the costs before you sign."
+ ],
+ "never": [
+  "Skip the nominee, you can add it later.",
+  "Don't worry about the exit load."
+ ],
+ "talk_track": [
+  {
+   "n": 9,
+   "title": "The onboarding checklist",
+   "text": "Before the first rupee goes in, run this checklist. KYC verified and not on hold. FATCA declaration done. Holding mode chosen deliberately: single, joint, or either or survivor. A nominee registered, or the opt-out formally recorded. Bank mandate set up for SIPs. The riskometer of each scheme shown and matched to the client's profile. Exit load, lock-in and expense ratio explained. Commission and the direct-plan option disclosed. And the reason for the recommendation recorded in the client file. Then set expectations honestly: \"This fund suits your seven-year goal. It can fall 20% in a bad year. Are you comfortable staying invested if that happens?\""
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q14",
+   "sec": "A: Act Right",
+   "q": "Which is NOT part of the onboarding checklist?",
+   "o": [
+    "FATCA / CRS declaration",
+    "Nomination registered or opt-out recorded",
+    "Confirming a guaranteed minimum return",
+    "Riskometer matched to the client's profile"
+   ],
+   "a": 2,
+   "why": "Returns are never guaranteed. Promising them is a compliance breach."
+  },
+  {
+   "id": "mf-n28",
+   "q": "Why is a nominee registered at onboarding?",
+   "o": [
+    "It is optional and has no effect",
+    "It makes transmission to the family much faster after death",
+    "It lowers the expense ratio",
+    "It is needed only for SIPs"
+   ],
+   "a": 1,
+   "why": "Nomination makes transmission much faster, so register one or record the opt-out."
+  },
+  {
+   "id": "mf-n29",
+   "q": "A client's KYC shows 'on hold'. What should you do?",
+   "o": [
+    "Proceed and fix it later",
+    "Resolve the KYC status before investing",
+    "Ignore it for SIPs",
+    "Use a family member's KYC"
+   ],
+   "a": 1,
+   "why": "KYC must be verified, with status validated and not on hold, before investing."
+  }
+ ],
+ "card_ids": [
+  "mf-c29"
+ ],
+ "words": 93
+}

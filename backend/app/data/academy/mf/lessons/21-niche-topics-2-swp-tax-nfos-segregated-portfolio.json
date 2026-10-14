@@ -1,0 +1,79 @@
+{
+ "id": "mf-21",
+ "title": "Niche topics (2): SWP tax, NFOs, segregated portfolios, NRIs and the CAS",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain SWP taxation and why a ₹10 NFO is not cheap.",
+  "Describe a segregated portfolio and a change in fundamental attributes.",
+  "Tell a client how the CAS works and what NRIs must check."
+ ],
+ "body_md": "| Topic | What to explain | Investor takeaway |\n|---|---|---|\n| SWP taxation | Each withdrawal is part principal and part gain; only the gain portion is taxed. | SWP can be a tax-efficient way to draw regular income. |\n| NFO myth | A ₹10 NFO NAV is not cheaper; the scheme has no track record. | New is not cheaper; it is untested. |\n| Changes in fundamental attributes | When a scheme's mandate changes, investors get an exit window without exit load. | Read fund house letters about scheme changes. |\n| Segregated portfolios | In a credit event, a debt fund can separate the bad paper; investors hold units of both. | Part of your money may be held separately until recovered. |\n| Small costs | Stamp duty on purchases; expense ratios can change with notice and fund size. | Costs can change after you invest; check at each review. |\n| NRI / FATCA restrictions | Some fund houses restrict US/Canada residents; NRE vs NRO account matters. | NRIs should confirm eligibility and account type first. |\n| CAS | One Consolidated Account Statement shows all folios across fund houses. It is sent monthly if there were transactions in the month, otherwise half-yearly. | Download your CAS twice a year to see everything you own. |\n\nRegulatory details here should be checked against current SEBI and AMFI rules before each training cycle.",
+ "key_terms": [
+  "CAS",
+  "NFO",
+  "SWP",
+  "FATCA/CRS",
+  "folio"
+ ],
+ "example": "A retiree withdraws ₹50,000 a month through an SWP. Each withdrawal is part principal and part gain, and only the gain portion is taxed, so tax is lower than selling the same amount in one go.",
+ "say": [
+  "Download your CAS twice a year, it shows everything you own.",
+  "A new fund is not cheaper at ₹10. It is untested."
+ ],
+ "never": [
+  "This NFO is a bargain at ₹10.",
+  "Segregated portfolios mean you lost money for sure."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "mf-q29",
+   "sec": "Niche Topics & Compliance",
+   "q": "A new NFO is offered at ₹10 NAV. What is true?",
+   "o": [
+    "It is not cheaper; it is untested and has no track record",
+    "It is cheaper than a fund with a ₹200 NAV",
+    "It is guaranteed to grow faster",
+    "It carries lower risk than existing funds"
+   ],
+   "a": 0,
+   "why": "NAV level says nothing about value. New is not cheaper, only untested."
+  },
+  {
+   "id": "mf-n32",
+   "q": "How often is a CAS sent to an investor?",
+   "o": [
+    "Only on request",
+    "Monthly if there were transactions, otherwise half-yearly",
+    "Every five years",
+    "Only at redemption"
+   ],
+   "a": 1,
+   "why": "A CAS is monthly when there were transactions in the month, otherwise half-yearly."
+  },
+  {
+   "id": "mf-n33",
+   "q": "What happens when a scheme's fundamental attributes change?",
+   "o": [
+    "Nothing",
+    "Investors get an exit window without exit load",
+    "The NAV resets to ₹10",
+    "Units are cancelled"
+   ],
+   "a": 1,
+   "why": "Investors get an exit window without exit load, and fund house letters should be read."
+  }
+ ],
+ "card_ids": [
+  "mf-c52",
+  "mf-c53",
+  "mf-c54",
+  "mf-c55",
+  "mf-c56",
+  "mf-c57",
+  "mf-c58"
+ ],
+ "words": 208
+}

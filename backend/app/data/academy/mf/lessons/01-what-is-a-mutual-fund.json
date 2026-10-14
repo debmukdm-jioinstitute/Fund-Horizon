@@ -1,0 +1,78 @@
+{
+ "id": "mf-01",
+ "title": "What is a mutual fund?",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Explain in two minutes how a mutual fund pools money and who does what.",
+  "Name the sponsor, trustees, AMC, custodian and RTA and say who holds the investor's money.",
+  "Say why a unit price (NAV) moves with the market."
+ ],
+ "body_md": "A mutual fund pools money from many investors and invests it in shares, bonds and other securities as set out in each scheme's mandate. Each investor owns **units** in proportion to the money put in, so everyone shares the gains, losses and costs in the same proportion.\n\n## Who does what\n\n| Entity | Role | What it means for the client |\n|---|---|---|\n| SEBI | Regulator for mutual funds and intermediaries | Rules on categories, costs, disclosures and investor protection |\n| Sponsor and Trust / Trustees | The sponsor sets up the fund; trustees protect unitholders' interests | An independent layer watches the fund house |\n| AMC (fund house) | Manages the money as per each scheme's mandate | The fund manager decides what to buy within the scheme's rules |\n| Custodian | Holds the fund's securities | Investor money is not held by the AMC or the distributor |\n| RTA (CAMS / KFintech) | Keeps investor records, processes transactions, issues statements | Where folios, nominations and service requests are processed |\n| AMFI | Industry body; registers distributors (ARN) | Runs investor awareness and the distributor code of conduct |\n| Distributor (Fund Horizon) | Helps the client choose, invest, review and stay invested | Earns trail commission from the AMC; never handles client money |\n\n## Three ideas to remember\n\n- **Units, not shares.** A client buys units at the scheme's NAV. Buying more units when the price is low and fewer when high is how a SIP works.\n- **Pooling gives access.** A client with ₹500 gets the same diversified portfolio as one with ₹5 crore, scaled down.\n- **Risk is not removed.** A mutual fund is subject to market risk. Diversification reduces single-stock risk; it does not remove market risk.\n\n> **Investor takeaway:** Your money sits with a custodian in a regulated structure, and you hold units in your own name.",
+ "key_terms": [
+  "NAV",
+  "AUM",
+  "folio",
+  "ARN"
+ ],
+ "example": "Four friends put ₹10,000 each into a fund when its NAV is ₹20. Each gets 500 units. If the NAV rises to ₹22, each holding is worth ₹11,000, and each owns exactly a quarter of the scheme's gain.",
+ "say": [
+  "Your money sits with the fund's custodian, not with us.",
+  "A mutual fund invests across many securities. It is still subject to market risk."
+ ],
+ "never": [
+  "Your money is safe with a mutual fund.",
+  "We hold your money and invest it for you."
+ ],
+ "check": [
+  {
+   "id": "mf-q1",
+   "q": "Who holds the securities of a mutual fund scheme?",
+   "o": [
+    "The AMC",
+    "The distributor",
+    "The custodian",
+    "The RTA (CAMS / KFintech)"
+   ],
+   "a": 2,
+   "why": "An independent custodian holds the fund's securities. Investor money is never held by the AMC or the distributor."
+  },
+  {
+   "id": "mf-q2",
+   "q": "Which body registers mutual fund distributors and issues the ARN?",
+   "o": [
+    "AMFI",
+    "SEBI",
+    "NISM",
+    "The RTA"
+   ],
+   "a": 0,
+   "why": "AMFI is the industry body that registers distributors (ARN). SEBI is the regulator."
+  },
+  {
+   "id": "mf-n01",
+   "q": "Four investors each put in ₹10,000 at the same NAV. The NAV then rises 10%. What happens to each holding?",
+   "o": [
+    "It rises about 10%",
+    "Only the largest investor gains",
+    "The AMC keeps part of the gain",
+    "It stays the same until redemption"
+   ],
+   "a": 0,
+   "why": "All unitholders share gains, losses and costs in proportion to their units."
+  }
+ ],
+ "card_ids": [
+  "mf-c1",
+  "mf-c2",
+  "mf-c3",
+  "mf-c4",
+  "mf-c5",
+  "mf-c6",
+  "mf-c7",
+  "mf-c8"
+ ],
+ "talk_track": [],
+ "words": 283
+}

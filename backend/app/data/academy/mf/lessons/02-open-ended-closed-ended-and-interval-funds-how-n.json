@@ -1,0 +1,73 @@
+{
+ "id": "mf-02",
+ "title": "Open-ended, closed-ended and interval funds; how NAV works",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Tell open-ended, closed-ended and interval schemes apart.",
+  "Calculate a NAV from a simple balance sheet.",
+  "Explain why a low NAV does not mean a cheap fund."
+ ],
+ "body_md": "## Three structures\n\n| Type | How you buy and sell | Typical use |\n|---|---|---|\n| Open-ended | Any business day, directly from the AMC at NAV, with no fixed maturity | Most schemes, including SIPs |\n| Closed-ended | Only in the NFO, then on the stock exchange at market price, until a fixed maturity | Fixed-term products; the market price can differ from NAV |\n| Interval | Open for purchase and redemption only at specified intervals | Short-term parking where liquidity is planned |\n\n<!-- TODO-VERIFY: ELSS and some solution-oriented schemes are close-ended or lock-in schemes; check the current SEBI category rules before stating exceptions. -->\n\n## What NAV is\n\n**NAV (Net Asset Value)** is the value of one unit. The AMC calculates it every business day after markets close:\n\nNAV = (market value of all investments + cash and receivables, less liabilities and expenses) ÷ units outstanding\n\nA scheme's NAV tells you what one unit costs today. It does **not** tell you whether the fund is cheap or expensive. A fund with a NAV of ₹10 and a fund with a NAV of ₹200 can both deliver the same percentage return.\n\n## Why units move\n\nWhen the market value of the portfolio rises, the NAV rises. Dividends (IDCW) paid out reduce the NAV by the amount paid, so a payout is not extra return.\n\n> **Investor takeaway:** Judge a fund on its returns, risk and cost, never on the size of its NAV.",
+ "key_terms": [
+  "NAV",
+  "AUM",
+  "NFO",
+  "folio"
+ ],
+ "example": "A scheme holds investments worth ₹500 crore and ₹10 crore of cash and receivables. Its liabilities and expenses are ₹5 crore, and 50 crore units are outstanding. NAV = (500 + 10 − 5) ÷ 50 = ₹10.10 per unit.",
+ "say": [
+  "NAV is just the price of one unit today. It does not tell you if a fund is cheap.",
+  "An open-ended fund lets you buy or sell on any business day at that day's NAV."
+ ],
+ "never": [
+  "This fund is only ₹12, so it is cheaper than that ₹250 one.",
+  "A closed-ended fund is just like an open-ended fund."
+ ],
+ "check": [
+  {
+   "id": "mf-n02",
+   "q": "A fund has a NAV of ₹12 and another has a NAV of ₹250. What can you say?",
+   "o": [
+    "The ₹12 fund is cheaper and better value",
+    "The ₹250 fund will fall more",
+    "NAV level alone says nothing about value or future returns",
+    "The ₹12 fund has lower costs"
+   ],
+   "a": 2,
+   "why": "NAV is the price of one unit. Returns depend on the portfolio, not the unit price."
+  },
+  {
+   "id": "mf-n03",
+   "q": "Which scheme type can be bought and redeemed on any business day at NAV?",
+   "o": [
+    "Closed-ended",
+    "Open-ended",
+    "Interval only",
+    "None of them"
+   ],
+   "a": 1,
+   "why": "Open-ended schemes allow purchase and redemption on any business day at the applicable NAV."
+  },
+  {
+   "id": "mf-n04",
+   "q": "A scheme has assets of ₹210, cash of ₹10, and liabilities of ₹20. With 20 units outstanding, what is the NAV?",
+   "o": [
+    "₹10",
+    "₹11",
+    "₹12",
+    "₹9"
+   ],
+   "a": 0,
+   "why": "(210 + 10 − 20) ÷ 20 = 200 ÷ 20 = ₹10."
+  }
+ ],
+ "card_ids": [
+  "mf-c63",
+  "mf-c64",
+  "mf-c65"
+ ],
+ "talk_track": [],
+ "words": 234
+}

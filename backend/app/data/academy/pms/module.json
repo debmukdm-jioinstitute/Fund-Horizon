@@ -1,0 +1,1021 @@
+{
+ "id": "pms",
+ "title": "PMS Distributor",
+ "code": "Module 2",
+ "blurb": "Portfolio Management Services: suitability, due diligence, fees and behaviour for high-ticket clients.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics)"
+   ],
+   [
+    "Duration",
+    "One 75–90 minute session, plus 20 minutes of role-play and the quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 1 (MF Distributors); the required PMS distributor certification and registration before dealing with PMS clients"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ],
+  "outcomes": [
+   "Explain what a PMS is, how it differs from mutual funds and AIFs, and who it suits.",
+   "Judge suitability before recommending any PMS strategy.",
+   "Run due diligence on a strategy and explain its full fee structure with a worked example.",
+   "Review a PMS on after-fee returns against its benchmark.",
+   "Keep a client steady through the sharper falls that concentrated portfolios bring."
+  ]
+ },
+ "sources": [
+  "Business Standard: SEBI puts expense cap on PMS providers (Feb 2020): ₹50 lakh minimum, exit-load caps, 0.5% expense cap, direct onboarding, net-of-fee reporting",
+  "Business Standard: SEBI performance benchmarking for PMS (Dec 2022): four strategies, APMI benchmarks, effective April 2023",
+  "Cafemutual: commission withheld without APRN: APRN deadlines and the 31 July 2025 cut-off",
+  "APMI: NISM XXI-A PMS Distributors Certificate Examination",
+  "Cafemutual: upfront commission allowed only till 30 June 2020"
+ ],
+ "lessons": [
+  {
+   "id": "pms-01",
+   "title": "What a PMS is",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "pms-02",
+   "title": "PMS vs mutual fund vs AIF",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "pms-03",
+   "title": "Who a PMS distributor is: NISM XXI-A, APRN and EUIN",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "pms-04",
+   "title": "Eligible is not the same as suitable",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "pms-05",
+   "title": "PMS discovery questions",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "pms-06",
+   "title": "Due diligence on a strategy",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "pms-07",
+   "title": "PMS fee structures, with a worked example",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "pms-08",
+   "title": "The PMS onboarding checklist",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "pms-09",
+   "title": "Review rhythm and the annual review",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "pms-10",
+   "title": "Stay, or review for exit?",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "pms-11",
+   "title": "Why PMS behaviour is harder, and the fall playbook",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "pms-12",
+   "title": "Client reactions and biases in PMS",
+   "minutes": 3,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "pms-13",
+   "title": "Niche topics (1): returns, costs, tax and exits",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "pms-14",
+   "title": "Niche topics (2): in-specie, DDPI, nomination and cash flows",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "pms-15",
+   "title": "PMS compliance dos and don'ts",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  },
+  {
+   "id": "pms-16",
+   "title": "Role-play lab: six PMS conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  }
+ ],
+ "cards": [
+  {
+   "id": "pms-c1",
+   "q": "What is the single most important idea in the PMS module?",
+   "a": [
+    "Eligible is not the same as suitable. ₹50 lakh opens the door to PMS; our job is to decide, honestly, whether the client should walk through it."
+   ]
+  },
+  {
+   "id": "pms-c2",
+   "q": "What is a PMS distributor's job, in order of priority?",
+   "a": [
+    "Due diligence and suitability first, access second. PMS is a concentrated, high-ticket product held in the client's own name."
+   ]
+  },
+  {
+   "id": "pms-c3",
+   "q": "What is a PMS?",
+   "a": [
+    "A professionally managed portfolio of securities held directly in the client's own demat account, regulated by SEBI."
+   ]
+  },
+  {
+   "id": "pms-c4",
+   "q": "The three numbers to remember about PMS?",
+   "a": [
+    "₹50 lakh: SEBI minimum investment",
+    "15–30 stocks: typical, concentrated portfolio",
+    "1 demat account in the client's own name"
+   ]
+  },
+  {
+   "id": "pms-c5",
+   "q": "What are the three types of PMS?",
+   "a": [
+    "Discretionary: manager decides every trade (most common)",
+    "Non-discretionary: manager recommends; client approves each trade",
+    "Advisory: manager only advises; client executes"
+   ]
+  },
+  {
+   "id": "pms-c6",
+   "q": "What changed for PMS benchmarking from April 2023?",
+   "a": [
+    "Every PMS investment approach is grouped into one of four strategies (equity, debt, hybrid, multi-asset) and compared against a common benchmark, with data published through APMI."
+   ]
+  },
+  {
+   "id": "pms-c7",
+   "q": "Minimum ticket: MF vs PMS vs AIF?",
+   "a": [
+    "MF: as low as a few hundred rupees. PMS: ₹50 lakh. AIF: typically ₹1 crore."
+   ]
+  },
+  {
+   "id": "pms-c8",
+   "q": "Ownership: MF vs PMS?",
+   "a": [
+    "MF: units of a pooled fund. PMS: the securities themselves, in the client's own demat account."
+   ]
+  },
+  {
+   "id": "pms-c9",
+   "q": "How is PMS taxed differently from a mutual fund?",
+   "a": [
+    "Every sale by the manager is a taxable event in the client's own hands. In an MF, tax arises at fund level and the investor is taxed only on redemption."
+   ]
+  },
+  {
+   "id": "pms-c10",
+   "q": "PMS fees vs MF fees?",
+   "a": [
+    "PMS: fixed and/or performance fee, set by agreement. MF: expense ratio capped by SEBI. AIF: management fee plus carry."
+   ]
+  },
+  {
+   "id": "pms-c11",
+   "q": "What certification does a PMS distributor need?",
+   "a": [
+    "NISM Series XXI-A (PMS Distributors)."
+   ]
+  },
+  {
+   "id": "pms-c12",
+   "q": "What is an APRN, and why does 31 July 2025 matter?",
+   "a": [
+    "APMI Registration Number. Since 31 July 2025, distributors without an APRN cannot bring in new PMS business or receive commission."
+   ]
+  },
+  {
+   "id": "pms-c13",
+   "q": "Who needs an EUIN in PMS distribution?",
+   "a": [
+    "Employees of non-individual distributors."
+   ]
+  },
+  {
+   "id": "pms-c14",
+   "q": "How is a PMS distributor paid?",
+   "a": [
+    "Trail commission only. Upfront commissions and upfront fees to clients are not permitted."
+   ]
+  },
+  {
+   "id": "pms-c15",
+   "q": "What option does every PMS client always have?",
+   "a": [
+    "Direct onboarding with the portfolio manager, with no distributor. So our value (selection, monitoring, service) must be clear."
+   ]
+  },
+  {
+   "id": "pms-c16",
+   "q": "Client A: ₹3 Cr invested, PMS is a 17% slice on top of a solid core. Client B: ₹55 L total savings, wants ₹50 L in PMS. Verdict?",
+   "a": [
+    "Client A is suitable. Client B is eligible but a red flag: 91% of everything, no core and no emergency buffer. Mutual funds first, PMS later."
+   ]
+  },
+  {
+   "id": "pms-c17",
+   "q": "Suitability check 1: investible surplus?",
+   "a": [
+    "Suitable if ₹50 lakh is a slice of a larger portfolio. Red flag if it is most of the client's investible wealth."
+   ]
+  },
+  {
+   "id": "pms-c18",
+   "q": "Suitability check 2: existing core?",
+   "a": [
+    "Suitable if the client already has diversified MFs, debt and an emergency fund. Red flag if PMS would be their first equity."
+   ]
+  },
+  {
+   "id": "pms-c19",
+   "q": "Suitability check 3: horizon?",
+   "a": [
+    "Suitable if 3–5+ years without needing the money. Red flag if they may need it within 2–3 years."
+   ]
+  },
+  {
+   "id": "pms-c20",
+   "q": "Suitability check 4: drawdown tolerance?",
+   "a": [
+    "Suitable if they have stayed invested through a 30%+ fall before. Red flag if they have never seen a real fall, or sold in one."
+   ]
+  },
+  {
+   "id": "pms-c21",
+   "q": "Suitability checks 5 and 6: tax awareness and engagement?",
+   "a": [
+    "Tax: understands each trade creates a tax event (red flag: expects MF-like deferral). Engagement: comfortable with monthly statements and full trade lists (red flag: wants hands-off and simple)."
+   ]
+  },
+  {
+   "id": "pms-c22",
+   "q": "The 5 PMS discovery questions?",
+   "a": [
+    "What share of your total investments would this ₹50 L be?",
+    "What did you do with your equity in March 2020?",
+    "If this fell 30% while the Nifty fell 15%, how would you react?",
+    "Do you need any of this money in the next 3 years?",
+    "Any stocks or sectors to exclude (e.g. employer shares)?"
+   ]
+  },
+  {
+   "id": "pms-c23",
+   "q": "Why does a PMS behave so differently from the index?",
+   "a": [
+    "The Nifty 50 spreads money across 50 stocks; a typical PMS holds about 20, so each stock carries far more weight. The same concentration that creates the upside creates the downside."
+   ]
+  },
+  {
+   "id": "pms-c24",
+   "q": "The due-diligence areas to check before recommending a strategy?",
+   "a": [
+    "Track record (after-fee, 3/5/7 yrs, incl. 2020 & 2022)",
+    "Manager & team · Process & style consistency",
+    "Portfolio concentration · Risk (worst fall, recovery)",
+    "Costs · Disclosure Document & agreement",
+    "Compare 2–3 strategies on APMI data"
+   ]
+  },
+  {
+   "id": "pms-c25",
+   "q": "What does \"track record\" due diligence look at?",
+   "a": [
+    "After-fee returns vs benchmark over 3, 5 and 7 years, including how the strategy did in falls such as 2020 and 2022."
+   ]
+  },
+  {
+   "id": "pms-c26",
+   "q": "What does \"portfolio\" due diligence look at?",
+   "a": [
+    "Number of stocks, top-10 weight, sector and market-cap concentration, and cash calls."
+   ]
+  },
+  {
+   "id": "pms-c27",
+   "q": "What are the three PMS fee structures?",
+   "a": [
+    "Fixed: a flat % of assets a year",
+    "Performance-linked: share of profits above a hurdle, usually with a high-water mark",
+    "Hybrid: lower fixed fee plus a profit share"
+   ]
+  },
+  {
+   "id": "pms-c28",
+   "q": "What is the cap on PMS operating expenses?",
+   "a": [
+    "0.5% a year, excluding brokerage."
+   ]
+  },
+  {
+   "id": "pms-c29",
+   "q": "Fee example, ₹1 Cr, +18% year: A = 2.5% fixed; B = 1% + 20% above a 10% hurdle?",
+   "a": [
+    "A: fee ₹2.5 L → net gain ₹15.5 L. B: ₹1 L + 20% of ₹8 L = ₹2.6 L → net gain ₹15.4 L. Almost the same. (Hypothetical, before GST, brokerage and expenses.)"
+   ]
+  },
+  {
+   "id": "pms-c30",
+   "q": "Same fee options in a −10% year (₹10 L loss)?",
+   "a": [
+    "A: still ₹2.5 L fee → net loss ₹12.5 L. B: only the ₹1 L fixed fee → net loss ₹11 L. Show the client both years before choosing."
+   ]
+  },
+  {
+   "id": "pms-c31",
+   "q": "What is a high-water mark?",
+   "a": [
+    "Profit share is charged only on gains above the portfolio's previous peak, so the client does not pay twice for recovering the same ground."
+   ]
+  },
+  {
+   "id": "pms-c32",
+   "q": "High-water mark example: ₹1 Cr → ₹1.20 Cr → ₹1 Cr → ₹1.15 Cr → ₹1.35 Cr. Where is profit share charged?",
+   "a": [
+    "Year 1 (new peak of ₹1.20 Cr). None in years 2–3 (regaining lost ground). Year 4 only on the ₹15 L above the old ₹1.20 Cr peak."
+   ]
+  },
+  {
+   "id": "pms-c33",
+   "q": "The PMS onboarding checklist?",
+   "a": [
+    "Suitability documented and signed",
+    "Disclosure Document shared; risks explained",
+    "Agreement, fee schedule, exit load reviewed",
+    "Fee illustration in rupees: up, flat, down years",
+    "Direct option mentioned; our role explained",
+    "KYC, demat, bank in client's name",
+    "DDPI / POA scope explained · Nominee added",
+    "APRN & EUIN on documents; trail disclosed"
+   ]
+  },
+  {
+   "id": "pms-c34",
+   "q": "How is a PMS judged?",
+   "a": [
+    "On at least 3 years of after-fee returns against its benchmark, never on one quarter or on the strategy's headline number."
+   ]
+  },
+  {
+   "id": "pms-c35",
+   "q": "The PMS review rhythm?",
+   "a": [
+    "Monthly: statement; check unusual trades, cash, drawdowns",
+    "Quarterly: call/note on performance vs benchmark, changes, manager commentary",
+    "Annually: full review with the client"
+   ]
+  },
+  {
+   "id": "pms-c36",
+   "q": "The annual review agenda?",
+   "a": [
+    "Client update · Returns (own account, after fees)",
+    "Risk (largest fall vs benchmark)",
+    "Portfolio (concentration, turnover, drift, cash)",
+    "Manager changes · Costs in ₹ and tax",
+    "Fit as a share of total portfolio",
+    "Decision: stay, top up, reduce or exit, with reasons"
+   ]
+  },
+  {
+   "id": "pms-c37",
+   "q": "\"Factsheet says 40%, why have I only made 12%?\"",
+   "a": [
+    "Entry timing. Client A joined at launch (100 → 140, up 40%); Client B joined at 125 after a strong run (up 12%). Show the client's own after-fee account return vs benchmark for the same period."
+   ]
+  },
+  {
+   "id": "pms-c38",
+   "q": "Lagging benchmark for 1 year, process unchanged, style out of favour?",
+   "a": [
+    "Stay, and explain the style cycle."
+   ]
+  },
+  {
+   "id": "pms-c39",
+   "q": "Lagging benchmark AND peers for 3+ years?",
+   "a": [
+    "Review for exit."
+   ]
+  },
+  {
+   "id": "pms-c40",
+   "q": "The fund manager or key team leaves?",
+   "a": [
+    "Review immediately. Proactively inform the client; no panic and no automatic exit."
+   ]
+  },
+  {
+   "id": "pms-c41",
+   "q": "Style drift away from what was sold?",
+   "a": [
+    "Review. It is no longer the product the client bought."
+   ]
+  },
+  {
+   "id": "pms-c42",
+   "q": "What must be set out before any PMS exit?",
+   "a": [
+    "The exit load, the tax on gains, and the cost of rebuilding elsewhere."
+   ]
+  },
+  {
+   "id": "pms-c43",
+   "q": "Why is the emotional test harder in PMS than in MFs?",
+   "a": [
+    "Bigger swings from 15–30 stocks",
+    "Full visibility: every red stock in their own demat",
+    "Switching costs real tax and exit load",
+    "Peer talk about \"last year's top PMS\""
+   ]
+  },
+  {
+   "id": "pms-c44",
+   "q": "The 6-step playbook for a sharp fall or long underperformance?",
+   "a": [
+    "Set expectations at onboarding (show worst past fall)",
+    "Call before they call, newest clients first",
+    "Separate the market from the manager",
+    "Check the process, not the price",
+    "Show the cost of leaving (tax, exit load, selling low)",
+    "Record and follow up in writing"
+   ]
+  },
+  {
+   "id": "pms-c45",
+   "q": "\"This stock is down 40%, tell the manager to sell it.\" Bias and response?",
+   "a": [
+    "Loss aversion and illusion of control. \"You're paying the manager for the whole portfolio. Let's judge the portfolio against its benchmark, not one stock.\""
+   ]
+  },
+  {
+   "id": "pms-c46",
+   "q": "\"My friend's PMS made 60% last year. Let's move.\" Bias and response?",
+   "a": [
+    "Recency and herd. \"Let's compare both on after-fee returns over five years, including their worst year.\""
+   ]
+  },
+  {
+   "id": "pms-c47",
+   "q": "\"The market is up but my PMS isn't.\" Bias and response?",
+   "a": [
+    "Short-term framing. \"This style lags in some phases. Here's how it did across a full cycle.\""
+   ]
+  },
+  {
+   "id": "pms-c48",
+   "q": "Talk-track when a dip is within what was discussed at onboarding?",
+   "a": [
+    "\"This dip is within what we discussed at the start. Exiting now would lock in both the loss and the tax.\""
+   ]
+  },
+  {
+   "id": "pms-c49",
+   "q": "Why can a client's return differ from the published strategy return?",
+   "a": [
+    "Each portfolio is built at a different time and price, with different cash flows. Ask for your own account's after-fee return."
+   ]
+  },
+  {
+   "id": "pms-c50",
+   "q": "What hidden costs sit beyond the headline fee?",
+   "a": [
+    "Brokerage, custody and demat charges, and GST on fees and profit share. Ask for the all-in cost."
+   ]
+  },
+  {
+   "id": "pms-c51",
+   "q": "How does manager turnover affect the client's tax?",
+   "a": [
+    "Every sale is a capital gains event for the client, so high turnover can mean a bigger tax bill. Tax on PMS fees is not straightforward; involve the client's CA."
+   ]
+  },
+  {
+   "id": "pms-c52",
+   "q": "What are the SEBI caps on PMS exit loads?",
+   "a": [
+    "Up to 3% in year 1, 2% in year 2 and 1% in year 3. The actual load is set in each agreement."
+   ]
+  },
+  {
+   "id": "pms-c53",
+   "q": "What is an in-specie transfer?",
+   "a": [
+    "Many providers accept existing shares instead of cash, and can return securities instead of selling on exit. Check the provider's policy."
+   ]
+  },
+  {
+   "id": "pms-c54",
+   "q": "Why does the DDPI / POA scope matter?",
+   "a": [
+    "The authority signed over the demat and bank account defines what the manager can do. Read what you authorise before signing."
+   ]
+  },
+  {
+   "id": "pms-c55",
+   "q": "Nomination and corporate actions in a PMS?",
+   "a": [
+    "Nominee, dividends, bonuses and voting rights all sit in the client's own demat. Add a nominee to the PMS demat too."
+   ]
+  },
+  {
+   "id": "pms-c56",
+   "q": "What to ask about high-water marks and cash flows?",
+   "a": [
+    "Whether and when the high-water mark resets, and whether fees are charged on contributions or withdrawals."
+   ]
+  },
+  {
+   "id": "pms-c57",
+   "q": "Top-ups and partial withdrawals?",
+   "a": [
+    "Rules on minimum top-ups and partial withdrawals vary by provider and agreement. Know them before the money is needed."
+   ]
+  },
+  {
+   "id": "pms-c58",
+   "q": "What must be in place before dealing with PMS clients?",
+   "a": [
+    "NISM XXI-A certification and a valid APRN (plus EUIN for employees of non-individual distributors)."
+   ]
+  },
+  {
+   "id": "pms-c59",
+   "q": "How must PMS performance be shown?",
+   "a": [
+    "Net of fees, against the benchmark and peers. Never quote headline or pre-fee returns, or cherry-pick periods or strategies."
+   ]
+  },
+  {
+   "id": "pms-c60",
+   "q": "The PMS complaint escalation path?",
+   "a": [
+    "Provider → SEBI SCORES → Smart ODR."
+   ]
+  },
+  {
+   "id": "pms-c61",
+   "q": "Key PMS compliance don'ts?",
+   "a": [
+    "Source PMS business without an APRN",
+    "Treat ₹50 L as proof of suitability",
+    "Take or imply upfront commission or fees",
+    "Recommend switches for commission",
+    "Promise returns or recovery timelines"
+   ]
+  }
+ ],
+ "final": {
+  "id": "pms-final",
+  "title": "PMS Distributor final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "pms-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What is the SEBI minimum investment for a PMS?",
+    "o": [
+     "₹10 lakh",
+     "₹25 lakh",
+     "₹50 lakh",
+     "₹1 crore"
+    ],
+    "a": 2,
+    "why": "PMS needs ₹50 lakh. AIFs typically need ₹1 crore."
+   },
+   {
+    "id": "pms-q2",
+    "sec": "L: Learn the Basics",
+    "q": "Where are the securities in a PMS held?",
+    "o": [
+     "In the client's own demat account",
+     "In the AMC's pooled fund",
+     "In the distributor's demat account",
+     "With the RTA"
+    ],
+    "a": 0,
+    "why": "The client owns the shares directly and can see every holding and trade."
+   },
+   {
+    "id": "pms-q3",
+    "sec": "L: Learn the Basics",
+    "q": "In which type of PMS does the manager decide every trade?",
+    "o": [
+     "Non-discretionary",
+     "Advisory",
+     "Execution-only",
+     "Discretionary"
+    ],
+    "a": 3,
+    "why": "Discretionary is the most common type. In non-discretionary the client approves each trade; in advisory the manager only advises."
+   },
+   {
+    "id": "pms-q4",
+    "sec": "L: Learn the Basics",
+    "q": "What does a PMS distributor need before dealing with PMS clients?",
+    "o": [
+     "Only an ARN from AMFI",
+     "NISM Series XXI-A and an APRN from APMI",
+     "SEBI RIA registration",
+     "NISM Series V-A only"
+    ],
+    "a": 1,
+    "why": "Employees of non-individual distributors also need an EUIN. Since 31 July 2025, no APRN means no new business or commission."
+   },
+   {
+    "id": "pms-q5",
+    "sec": "L: Learn the Basics",
+    "q": "How is a PMS distributor paid?",
+    "o": [
+     "Upfront commission on each new client",
+     "Trail commission only",
+     "An upfront fee charged to the client",
+     "A share of the manager's profit fee"
+    ],
+    "a": 1,
+    "why": "Upfront commissions and upfront fees to clients are not permitted."
+   },
+   {
+    "id": "pms-q6",
+    "sec": "E: Evaluate the Client",
+    "q": "A client has exactly ₹55 lakh in total savings and wants ₹50 lakh in PMS. What is correct?",
+    "o": [
+     "Suitable, because the ₹50 lakh minimum is met",
+     "Suitable if the strategy has strong past returns",
+     "Invest the full ₹55 lakh to qualify for lower fees",
+     "Eligible but not suitable; suggest MFs first, PMS later"
+    ],
+    "a": 3,
+    "why": "Eligible is not suitable. That is 91% of their savings, with no core portfolio and no emergency buffer."
+   },
+   {
+    "id": "pms-q7",
+    "sec": "E: Evaluate the Client",
+    "q": "Which client profile is a red flag for PMS?",
+    "o": [
+     "PMS would be the client's first equity investment",
+     "Client has a diversified MF and debt core",
+     "Client stayed invested through a 30% fall",
+     "Client has a 5+ year horizon"
+    ],
+    "a": 0,
+    "why": "PMS should sit on top of a solid core portfolio, never replace it."
+   },
+   {
+    "id": "pms-q8",
+    "sec": "E: Evaluate the Client",
+    "q": "What is the minimum horizon for a suitable PMS client?",
+    "o": [
+     "6 months",
+     "1 year",
+     "3–5+ years without needing the money",
+     "Until the next market rally"
+    ],
+    "a": 2,
+    "why": "If the client may need the money within 2–3 years, it is a red flag."
+   },
+   {
+    "id": "pms-q9",
+    "sec": "E: Evaluate the Client",
+    "q": "Which discovery question best tests drawdown tolerance?",
+    "o": [
+     "\"What is your PAN number?\"",
+     "\"Which PMS did your friend invest in?\"",
+     "\"Do you prefer large-cap stocks?\"",
+     "\"What did you do with your equity investments in March 2020?\""
+    ],
+    "a": 3,
+    "why": "Past behaviour in a real fall reveals tolerance. Also ask how they'd react to a 30% fall while the Nifty fell 15%."
+   },
+   {
+    "id": "pms-q10",
+    "sec": "E: Evaluate the Client",
+    "q": "A client expects PMS to defer tax like a mutual fund. What should you explain?",
+    "o": [
+     "PMS is tax-free for ₹50 lakh+ investors",
+     "Every trade by the manager is a tax event in the client's hands",
+     "Tax is paid only on final exit",
+     "The PMS provider pays the tax"
+    ],
+    "a": 1,
+    "why": "Expecting MF-like deferral is a suitability red flag. High turnover can mean a bigger tax bill."
+   },
+   {
+    "id": "pms-q11",
+    "sec": "A: Act Right",
+    "q": "Which is the most important track-record check in PMS due diligence?",
+    "o": [
+     "Best single-quarter return",
+     "Headline pre-fee return since launch",
+     "After-fee returns vs benchmark over 3, 5 and 7 years, including falls",
+     "Number of clients the PMS has"
+    ],
+    "a": 2,
+    "why": "Include how the strategy did in falls such as 2020 and 2022."
+   },
+   {
+    "id": "pms-q12",
+    "sec": "A: Act Right",
+    "q": "Name the three PMS fee structures.",
+    "o": [
+     "Fixed, performance-linked and hybrid",
+     "Entry load, exit load and expense ratio",
+     "Upfront, trail and carry",
+     "Management, custody and stamp duty"
+    ],
+    "a": 0,
+    "why": "Fixed is a flat %; performance-linked is a profit share above a hurdle; hybrid is a lower fixed fee plus a profit share."
+   },
+   {
+    "id": "pms-q13",
+    "sec": "A: Act Right",
+    "q": "₹1 Cr portfolio falls 10%. Option A: 2.5% fixed. Option B: 1% fixed + 20% above a 10% hurdle. Net loss under each?",
+    "o": [
+     "A: ₹12.5 lakh; B: ₹11 lakh",
+     "A: ₹11 lakh; B: ₹12.5 lakh",
+     "Both ₹10 lakh",
+     "A: ₹12.5 lakh; B: ₹13 lakh"
+    ],
+    "a": 0,
+    "why": "In a down year A still charges ₹2.5 L, while B charges only its ₹1 L fixed fee (hypothetical, before GST and expenses)."
+   },
+   {
+    "id": "pms-q14",
+    "sec": "A: Act Right",
+    "q": "What is a high-water mark?",
+    "o": [
+     "The highest NAV the strategy has ever reached",
+     "A cap on the manager's fixed fee",
+     "Profit share is charged only on gains above the portfolio's previous peak",
+     "The minimum return the manager guarantees"
+    ],
+    "a": 2,
+    "why": "It stops the client paying twice for recovering the same ground."
+   },
+   {
+    "id": "pms-q15",
+    "sec": "A: Act Right",
+    "q": "What is the cap on PMS operating expenses (excluding brokerage)?",
+    "o": [
+     "1% a year",
+     "0.5% a year",
+     "2.5% a year",
+     "There is no cap"
+    ],
+    "a": 1,
+    "why": "Operating expenses, excluding brokerage, are capped at 0.5% a year."
+   },
+   {
+    "id": "pms-q16",
+    "sec": "R: Review & Rebalance",
+    "q": "On what basis should a PMS be judged?",
+    "o": [
+     "The last quarter's return",
+     "The strategy's headline factsheet number",
+     "Returns compared with a bank FD",
+     "3+ years of after-fee returns vs its benchmark"
+    ],
+    "a": 3,
+    "why": "Never judge a PMS on one quarter or on the headline strategy number."
+   },
+   {
+    "id": "pms-q17",
+    "sec": "R: Review & Rebalance",
+    "q": "Factsheet shows +40%, but the client has made only 12%. Most likely reason?",
+    "o": [
+     "The manager charged the client a hidden fee",
+     "Different entry timing, prices and cash flows",
+     "The factsheet is wrong",
+     "The client's stocks are different by mistake"
+    ],
+    "a": 1,
+    "why": "Each account is built at a different time and price. Show the client their own after-fee account return."
+   },
+   {
+    "id": "pms-q18",
+    "sec": "R: Review & Rebalance",
+    "q": "A PMS lagged its benchmark for 1 year; process unchanged, style out of favour. Action?",
+    "o": [
+     "Stay, and explain the style cycle",
+     "Exit immediately",
+     "Switch to last year's top PMS",
+     "Stop the monthly statements"
+    ],
+    "a": 0,
+    "why": "Review for exit only after 3+ years behind benchmark AND peers."
+   },
+   {
+    "id": "pms-q19",
+    "sec": "R: Review & Rebalance",
+    "q": "The star fund manager has just left the PMS firm. What should you do?",
+    "o": [
+     "Exit all clients automatically",
+     "Wait three years before reviewing",
+     "Say nothing unless the client asks",
+     "Review immediately and inform the client proactively"
+    ],
+    "a": 3,
+    "why": "No panic and no automatic exit, but an immediate review."
+   },
+   {
+    "id": "pms-q20",
+    "sec": "R: Review & Rebalance",
+    "q": "Before recommending any PMS exit, what must you set out?",
+    "o": [
+     "Only the last month's return",
+     "The manager's personal track record",
+     "Exit load, tax on gains and the cost of rebuilding elsewhere",
+     "The new PMS's marketing brochure"
+    ],
+    "a": 2,
+    "why": "Exiting has real costs in a PMS, because tax falls in the client's own hands."
+   },
+   {
+    "id": "pms-q21",
+    "sec": "N: Navigate Behaviour",
+    "q": "Why is the emotional test sharper in PMS than in mutual funds?",
+    "o": [
+     "PMS has lower returns than MFs",
+     "PMS clients cannot see their holdings",
+     "Concentrated swings, full visibility of every stock, and real switching costs",
+     "PMS portfolios hold more stocks than MFs"
+    ],
+    "a": 2,
+    "why": "Wealthy clients also hear about \"last year's top PMS\" at every gathering."
+   },
+   {
+    "id": "pms-q22",
+    "sec": "N: Navigate Behaviour",
+    "q": "\"This stock is down 40%, tell the manager to sell it.\" Which bias?",
+    "o": [
+     "Anchoring",
+     "Home bias",
+     "Overconfidence in the index",
+     "Loss aversion and illusion of control"
+    ],
+    "a": 3,
+    "why": "Respond: you pay the manager for the whole portfolio; judge it against its benchmark, not one stock."
+   },
+   {
+    "id": "pms-q23",
+    "sec": "N: Navigate Behaviour",
+    "q": "\"My friend's PMS made 60% last year. Let's move.\" Best response?",
+    "o": [
+     "Switch immediately to capture the gains",
+     "Compare both on after-fee returns over 5 years, including their worst year",
+     "Tell the client their friend is lying",
+     "Promise the current PMS will do better next year"
+    ],
+    "a": 1,
+    "why": "This is recency and herd behaviour."
+   },
+   {
+    "id": "pms-q24",
+    "sec": "N: Navigate Behaviour",
+    "q": "The portfolio is down 28% while the Nifty is down 12%. What is a key step before advising?",
+    "o": [
+     "Separate the market from the manager and check the process",
+     "Exit today to stop further losses",
+     "Move everything to the friend's PMS",
+     "Ignore the client until markets recover"
+    ],
+    "a": 0,
+    "why": "If the manager, process and portfolio quality are intact, the case for staying holds. Record the conversation."
+   },
+   {
+    "id": "pms-q25",
+    "sec": "N: Navigate Behaviour",
+    "q": "When should a client first see the strategy's worst historical fall?",
+    "o": [
+     "Only after a fall happens",
+     "At the 3-year review",
+     "Never; it may scare the client",
+     "At onboarding, before investing"
+    ],
+    "a": 3,
+    "why": "Setting expectations at onboarding is step one of the playbook."
+   },
+   {
+    "id": "pms-q26",
+    "sec": "Niche Topics & Compliance",
+    "q": "What are the SEBI caps on PMS exit loads?",
+    "o": [
+     "Up to 3% in year 1, 2% in year 2 and 1% in year 3",
+     "1% flat for the first year only",
+     "No exit load is allowed in PMS",
+     "Up to 5% in every year"
+    ],
+    "a": 0,
+    "why": "The actual load is set in each agreement, within these caps."
+   },
+   {
+    "id": "pms-q27",
+    "sec": "Niche Topics & Compliance",
+    "q": "Which is a \"hidden cost\" beyond the headline PMS fee?",
+    "o": [
+     "Stamp duty on MF units",
+     "The ELSS lock-in",
+     "GST on fees and profit share, brokerage, custody and demat charges",
+     "The NISM exam fee"
+    ],
+    "a": 2,
+    "why": "Ask for the all-in cost, not just the management fee."
+   },
+   {
+    "id": "pms-q28",
+    "sec": "Niche Topics & Compliance",
+    "q": "A client wants to fund a PMS with shares they already own. What is true?",
+    "o": [
+     "It is never allowed; only cash is accepted",
+     "Many providers accept an in-specie transfer; check the provider's policy",
+     "The shares must be sold first by the distributor",
+     "Only mutual fund units can be transferred"
+    ],
+    "a": 1,
+    "why": "Many providers can also return securities instead of selling on exit."
+   },
+   {
+    "id": "pms-q29",
+    "sec": "Niche Topics & Compliance",
+    "q": "Which of these is a compliance DON'T?",
+    "o": [
+     "Treating the ₹50 lakh minimum as proof of suitability",
+     "Mentioning the direct onboarding option",
+     "Showing performance net of fees vs benchmark",
+     "Recording reasons for every recommendation"
+    ],
+    "a": 0,
+    "why": "Also don't source business without an APRN, quote pre-fee returns, or take upfront commission."
+   },
+   {
+    "id": "pms-q30",
+    "sec": "Niche Topics & Compliance",
+    "q": "What is the PMS complaint escalation path?",
+    "o": [
+     "AMFI, then NISM",
+     "Provider, then SEBI SCORES, then Smart ODR",
+     "Only the distributor's branch",
+     "The stock exchange helpline only"
+    ],
+    "a": 1,
+    "why": "Escalate complaints promptly and share the path with clients."
+   }
+  ]
+ },
+ "role_play": null
+}

@@ -1,0 +1,79 @@
+{
+ "id": "pms-12",
+ "title": "Client reactions and biases in PMS",
+ "minutes": 3,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Respond to three common PMS client statements.",
+  "Name the biases behind them.",
+  "Keep the focus on portfolio-level results."
+ ],
+ "body_md": "| Client says | Bias behind it | Respond with |\n|---|---|---|\n| \"This stock is down 40%, tell the manager to sell it.\" | Loss aversion, illusion of control | \"You're paying the manager for the whole portfolio. Let's judge the portfolio against its benchmark, not one stock.\" |\n| \"My friend's PMS made 60% last year. Let's move.\" | Recency, herd | \"Let's compare both on after-fee returns over five years, including their worst year.\" |\n| \"The market is up but my PMS isn't.\" | Short-term framing | \"This style lags in some phases. Here's how it did across a full cycle.\" |\n\n> **Investor takeaway:** Higher potential returns come with bigger dips. Staying the course matters even more in PMS.",
+ "key_terms": [
+  "PMS"
+ ],
+ "example": "A client says, 'This stock is down 40%, tell the manager to sell it.' You explain that the manager is judged on the whole portfolio against its benchmark, not on one stock.",
+ "say": [
+  "Let's compare both on after-fee returns over five years, including their worst year.",
+  "This style lags in some phases. Here's how it did across a full cycle."
+ ],
+ "never": [
+  "Yes, tell the manager to sell it.",
+  "Your friend's PMS is clearly better."
+ ],
+ "talk_track": [
+  {
+   "n": 16,
+   "title": "When the PMS client says…",
+   "text": "Here are three things PMS clients often say. \"This stock is down forty percent, tell the manager to sell it.\" That's loss aversion and the illusion of control. Respond: you're paying the manager for the whole portfolio, so let's judge the portfolio against its benchmark, not one stock. \"My friend's PMS made sixty percent last year, let's move.\" That's recency and herd behaviour. Respond: let's compare both on after-fee returns over five years, including their worst year. \"The market is up, but my PMS isn't.\" That's short-term framing. Respond: this style lags in some phases, so here's how it did across a full cycle. And when a dip is within what you discussed at onboarding, say so: exiting now would lock in both the loss and the tax."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q22",
+   "sec": "N: Navigate Behaviour",
+   "q": "\"This stock is down 40%, tell the manager to sell it.\" Which bias?",
+   "o": [
+    "Anchoring",
+    "Home bias",
+    "Overconfidence in the index",
+    "Loss aversion and illusion of control"
+   ],
+   "a": 3,
+   "why": "Respond: you pay the manager for the whole portfolio; judge it against its benchmark, not one stock."
+  },
+  {
+   "id": "pms-q23",
+   "sec": "N: Navigate Behaviour",
+   "q": "\"My friend's PMS made 60% last year. Let's move.\" Best response?",
+   "o": [
+    "Switch immediately to capture the gains",
+    "Compare both on after-fee returns over 5 years, including their worst year",
+    "Tell the client their friend is lying",
+    "Promise the current PMS will do better next year"
+   ],
+   "a": 1,
+   "why": "This is recency and herd behaviour."
+  },
+  {
+   "id": "pms-n10",
+   "q": "'The market is up but my PMS isn't.' What is the best framing?",
+   "o": [
+    "Switch now",
+    "This style lags in some phases; look at a full cycle",
+    "The manager is wrong",
+    "Ignore it"
+   ],
+   "a": 1,
+   "why": "Short-term framing hides how a style performs across a full cycle."
+  }
+ ],
+ "card_ids": [
+  "pms-c45",
+  "pms-c46",
+  "pms-c47",
+  "pms-c48"
+ ],
+ "words": 108
+}

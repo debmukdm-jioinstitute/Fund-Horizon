@@ -34,11 +34,20 @@ from app.models.crm_core import (
     ActivityModel,
     AuditLogModel,
     CaseModel,
+    ContactModel,
     CrmListViewModel,
     HouseholdMemberModel,
     HouseholdModel,
     LeadModel,
     OpportunityModel,
+)
+from app.models.crm_phase3 import (  # noqa: E402  (registers the tables on the shared Base)
+    CampaignMemberModel,
+    CampaignModel,
+    CommissionModel,
+    HoldingModel,
+    RmTeamModel,
+    SipScheduleModel,
 )
 
 log = logging.getLogger(__name__)
@@ -52,6 +61,13 @@ CRM_CORE_TABLES = [
     CaseModel.__table__,
     AuditLogModel.__table__,
     CrmListViewModel.__table__,
+    ContactModel.__table__,
+    HoldingModel.__table__,
+    SipScheduleModel.__table__,
+    CommissionModel.__table__,
+    CampaignModel.__table__,
+    CampaignMemberModel.__table__,
+    RmTeamModel.__table__,
 ]
 
 # W2 product tables get audit columns + unique business keys once they exist.
@@ -66,6 +82,12 @@ PRODUCT_TABLES = (
     "disclosure_logs",
 )
 _AUDIT_COLUMNS = (("created_by", "VARCHAR(36)"), ("updated_by", "VARCHAR(36)"), ("updated_at", "VARCHAR(50)"))
+_PRODUCT_EXTRA_COLUMNS = {
+    "mandates": (("valid_until", "VARCHAR(10)"),),
+    "suitability_records": (
+        ("score", "FLOAT"), ("answers", "TEXT"), ("review_due", "VARCHAR(10)"), ("max_riskometer", "INTEGER"),
+    ),
+}
 _PRODUCT_UNIQUE = (
     ("uq_mandates_umrn", "mandates", "umrn"),
     ("uq_policies_policy_no", "insurance_policies", "policy_no"),
@@ -169,7 +191,7 @@ def ensure_products_hardening() -> None:
         return
     for table in PRODUCT_TABLES:
         have = {c["name"] for c in insp.get_columns(table)}
-        for name, ddl in _AUDIT_COLUMNS:
+        for name, ddl in (*_AUDIT_COLUMNS, *_PRODUCT_EXTRA_COLUMNS.get(table, ())):
             if name not in have:
                 with engine.begin() as conn:
                     conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {ddl}"))
@@ -182,6 +204,34 @@ def ensure_products_hardening() -> None:
     _PRODUCTS_HARDENED.add(key)
 
 
+RELATION_FOR_ROLE = {"primary": "self", "spouse": "spouse", "child": "child", "dependent": "dependent", "other": "other"}
+
+
+def _backfill_contacts(engine: Engine) -> None:
+    """Give every existing household member a contact row (idempotent)."""
+    with Session(engine) as s:
+        have = set(s.scalars(select(ContactModel.customer_id)).all())
+        missing = [m for m in s.scalars(select(HouseholdMemberModel)).all() if m.customer_id not in have]
+        # a customer in several households (admin override) gets one contact, in the first household found
+        seen: set[str] = set()
+        for m in missing:
+            if m.customer_id in seen:
+                continue
+            seen.add(m.customer_id)
+            s.add(ContactModel(
+                id=_new_id(), customer_id=m.customer_id, household_id=m.household_id,
+                relation=RELATION_FOR_ROLE.get(m.role, "other"), created_at=_utcnow(),
+            ))
+        s.commit()
+
+
+def _ensure_contact(s: Session, household_id: str, customer_id: str, role: str, actor_id: str | None) -> None:
+    if s.scalar(select(ContactModel.id).where(ContactModel.customer_id == customer_id)):
+        return
+    _create(s, ContactModel, "contact", actor_id, customer_id=customer_id, household_id=household_id,
+            relation=RELATION_FOR_ROLE.get(role, "other"))
+
+
 def _get_engine() -> Engine:
     key = _resolve_url()
     engine = _ENGINES.get(key)
@@ -190,6 +240,7 @@ def _get_engine() -> Engine:
         # Idempotent: create_all only adds missing tables.
         Base.metadata.create_all(engine, tables=CRM_CORE_TABLES)
         _harden_core(engine)
+        _backfill_contacts(engine)
         _ENGINES[key] = engine
     return engine
 
@@ -228,38 +279,49 @@ def _page(s: Session, stmt, model: Any, page: Page | None, search_cols: tuple[st
     return s.scalars(stmt.limit(page.limit).offset(page.offset)).all()
 
 
-def _scope_customers(col, rm_id: str):
-    """Predicate: ``col`` is a customer in one of ``rm_id``'s households (primary or member)."""
-    hh = select(HouseholdModel.id).where(HouseholdModel.rm_id == rm_id)
+
+
+
+def rm_ids(rm: Any) -> list[str]:
+    """Normalise a viewer (one RM id or a team) to a list for ``IN`` clauses."""
+    return [rm] if isinstance(rm, str) else sorted(rm)
+
+
+def _scope_customers(col, rm: Any):
+    """Predicate: ``col`` is a customer in a household owned by ``rm`` (primary or member)."""
+    ids = rm_ids(rm)
+    hh = select(HouseholdModel.id).where(HouseholdModel.rm_id.in_(ids))
     members = select(HouseholdMemberModel.customer_id).where(HouseholdMemberModel.household_id.in_(hh))
     primaries = select(HouseholdModel.primary_customer_id).where(
-        HouseholdModel.rm_id == rm_id, HouseholdModel.primary_customer_id.isnot(None)
+        HouseholdModel.rm_id.in_(ids), HouseholdModel.primary_customer_id.isnot(None)
     )
     return or_(col.in_(members), col.in_(primaries))
 
 
-def _opp_visible(rm_id: str):
-    hh = select(HouseholdModel.id).where(HouseholdModel.rm_id == rm_id)
+def _opp_visible(rm: Any):
+    ids = rm_ids(rm)
+    hh = select(HouseholdModel.id).where(HouseholdModel.rm_id.in_(ids))
     return or_(
-        OpportunityModel.assigned_rm_id == rm_id,
+        OpportunityModel.assigned_rm_id.in_(ids),
         OpportunityModel.household_id.in_(hh),
-        _scope_customers(OpportunityModel.customer_id, rm_id),
+        _scope_customers(OpportunityModel.customer_id, rm),
     )
 
 
-def _case_visible(rm_id: str):
-    return _scope_customers(CaseModel.customer_id, rm_id)
+def _case_visible(rm: Any):
+    return _scope_customers(CaseModel.customer_id, rm)
 
 
-def _activity_visible(rm_id: str):
-    hh = select(HouseholdModel.id).where(HouseholdModel.rm_id == rm_id)
+def _activity_visible(rm: Any):
+    ids = rm_ids(rm)
+    hh = select(HouseholdModel.id).where(HouseholdModel.rm_id.in_(ids))
     return or_(
-        ActivityModel.assigned_rm_id == rm_id,
+        ActivityModel.assigned_rm_id.in_(ids),
         ActivityModel.household_id.in_(hh),
-        _scope_customers(ActivityModel.customer_id, rm_id),
-        ActivityModel.opportunity_id.in_(select(OpportunityModel.id).where(_opp_visible(rm_id))),
-        ActivityModel.case_id.in_(select(CaseModel.id).where(_case_visible(rm_id))),
-        ActivityModel.lead_id.in_(select(LeadModel.id).where(LeadModel.assigned_rm_id == rm_id)),
+        _scope_customers(ActivityModel.customer_id, rm),
+        ActivityModel.opportunity_id.in_(select(OpportunityModel.id).where(_opp_visible(rm))),
+        ActivityModel.case_id.in_(select(CaseModel.id).where(_case_visible(rm))),
+        ActivityModel.lead_id.in_(select(LeadModel.id).where(LeadModel.assigned_rm_id.in_(ids))),
     )
 
 
@@ -299,6 +361,7 @@ def _create(s: Session, model: Any, entity: str, actor_id: str | None, **values:
         values.setdefault("updated_at", now)
     if "created_by" in cols:
         values["created_by"] = actor_id
+    if "updated_by" in cols:
         values["updated_by"] = actor_id
     obj = model(**values)
     s.add(obj)
@@ -331,10 +394,11 @@ class CrmCoreRepository:
     """CRUD for the CRM core tables."""
 
     # -- scope / lookups ------------------------------------------------
-    def scope_ids(self, rm_id: str) -> tuple[set[str], set[str]]:
-        """(household ids, customer ids) an RM can see — two queries, no per-row lookups."""
+    def scope_ids(self, rm: Any) -> tuple[set[str], set[str]]:
+        """(household ids, customer ids) an RM (or a team) can see — a few queries, no per-row lookups."""
+        ids = rm_ids(rm)
         with _session() as s:
-            hh = select(HouseholdModel.id).where(HouseholdModel.rm_id == rm_id)
+            hh = select(HouseholdModel.id).where(HouseholdModel.rm_id.in_(ids))
             household_ids = set(s.scalars(hh).all())
             cids = set(
                 s.scalars(
@@ -344,7 +408,7 @@ class CrmCoreRepository:
             cids |= set(
                 s.scalars(
                     select(HouseholdModel.primary_customer_id).where(
-                        HouseholdModel.rm_id == rm_id, HouseholdModel.primary_customer_id.isnot(None)
+                        HouseholdModel.rm_id.in_(ids), HouseholdModel.primary_customer_id.isnot(None)
                     )
                 ).all()
             )
@@ -395,11 +459,11 @@ class CrmCoreRepository:
             h = s.get(HouseholdModel, household_id)
             return _row(h) if h else None
 
-    def list_households(self, *, rm_id: str | None = None, page: Page | None = None) -> list[dict[str, Any]]:
+    def list_households(self, *, rm_id: Any = None, page: Page | None = None) -> list[dict[str, Any]]:
         with _session() as s:
             stmt = select(HouseholdModel).order_by(HouseholdModel.created_at.desc())
             if rm_id is not None:
-                stmt = stmt.where(HouseholdModel.rm_id == rm_id)
+                stmt = stmt.where(HouseholdModel.rm_id.in_(rm_ids(rm_id)))
             return [_row(h) for h in _page(s, stmt, HouseholdModel, page, ("name", "notes"))]
 
     def update_household(
@@ -424,10 +488,12 @@ class CrmCoreRepository:
             )
             if existing:
                 raise CrmCoreError("duplicate_member", "This customer is already a member of the household.")
-            return _create(
+            member = _create(
                 s, HouseholdMemberModel, "household_member", actor_id,
                 household_id=household_id, customer_id=customer_id, role=role,
             )
+            _ensure_contact(s, household_id, customer_id, role, actor_id)
+            return member
 
     def list_household_members(self, household_id: str) -> list[dict[str, Any]]:
         with _session() as s:
@@ -495,7 +561,7 @@ class CrmCoreRepository:
             if assigned_rm_id is not None:
                 stmt = stmt.where(LeadModel.assigned_rm_id == assigned_rm_id)
             if viewer_rm_id is not None:  # RMs see only their own leads; the unassigned pool is admin-only
-                stmt = stmt.where(LeadModel.assigned_rm_id == viewer_rm_id)
+                stmt = stmt.where(LeadModel.assigned_rm_id.in_(rm_ids(viewer_rm_id)))
             return [_row(lead) for lead in _page(s, stmt, LeadModel, page, ("name", "email", "mobile", "notes"))]
 
     def update_lead(self, lead_id: str, fields: dict[str, Any], actor_id: str | None = None) -> dict[str, Any] | None:
@@ -567,6 +633,7 @@ class CrmCoreRepository:
                 s, HouseholdMemberModel, "household_member", actor_id,
                 household_id=household["id"], customer_id=customer_id, role=member_role,
             )
+            _ensure_contact(s, household["id"], customer_id, member_role, actor_id)
             _update(
                 s, LeadModel, "lead", lead_id,
                 {"status": "converted", "converted_household_id": household["id"], "converted_at": now},
@@ -588,6 +655,9 @@ class CrmCoreRepository:
         expected_close: str | None = None,
         assigned_rm_id: str | None = None,
         notes: str | None = None,
+        scheme_code: str | None = None,
+        riskometer: int | None = None,
+        suitability_note: str | None = None,
         actor_id: str | None = None,
     ) -> dict[str, Any]:
         with _session() as s:
@@ -595,7 +665,8 @@ class CrmCoreRepository:
                 s, OpportunityModel, "opportunity", actor_id,
                 household_id=household_id, customer_id=customer_id, product_line=product_line, title=title,
                 amount=amount, stage=stage, probability=probability, expected_close=expected_close,
-                assigned_rm_id=assigned_rm_id, notes=notes,
+                assigned_rm_id=assigned_rm_id, notes=notes, scheme_code=scheme_code, riskometer=riskometer,
+                suitability_note=suitability_note,
             )
 
     def get_opportunity(self, opportunity_id: str) -> dict[str, Any] | None:
@@ -670,11 +741,12 @@ class CrmCoreRepository:
         fd_id: str | None = None,
         due_at: str | None = None,
         assigned_rm_id: str | None = None,
+        source_ref: str | None = None,
         actor_id: str | None = None,
     ) -> dict[str, Any]:
         with _session() as s:
             return _create(
-                s, ActivityModel, "activity", actor_id,
+                s, ActivityModel, "activity", actor_id, source_ref=source_ref,
                 kind=kind, subject=subject, body=body, household_id=household_id, customer_id=customer_id,
                 opportunity_id=opportunity_id, case_id=case_id, lead_id=lead_id, policy_id=policy_id, fd_id=fd_id, due_at=due_at,
                 done_at=None, assigned_rm_id=assigned_rm_id,
@@ -739,12 +811,16 @@ class CrmCoreRepository:
         with _session() as s:
             return _update(s, ActivityModel, "activity", activity_id, fields, allowed, actor_id)
 
-    def open_followup_exists(self, *, policy_id: str | None = None, fd_id: str | None = None) -> bool:
+    def open_followup_exists(
+        self, *, policy_id: str | None = None, fd_id: str | None = None, source_ref: str | None = None
+    ) -> bool:
         with _session() as s:
             stmt = select(ActivityModel.id).where(
                 ActivityModel.kind == "followup",
                 ActivityModel.done_at.is_(None),
             )
+            if source_ref is not None:
+                stmt = stmt.where(ActivityModel.source_ref == source_ref)
             if policy_id is not None:
                 stmt = stmt.where(ActivityModel.policy_id == policy_id)
             if fd_id is not None:

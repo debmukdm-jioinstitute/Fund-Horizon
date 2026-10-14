@@ -29,7 +29,7 @@ PBKDF2_ITERATIONS = 600_000
 AUTH_RATE_LIMIT = 10  # requests per minute per IP on signup + login
 AUTH_RATE_WINDOW_S = 60.0
 
-STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only")
+STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 
 _EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 _MOBILE_RE = re.compile(r"^[6-9]\d{9}$")

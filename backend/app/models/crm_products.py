@@ -97,6 +97,7 @@ class MandateModel(Base):
     bank_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
     amount_cap: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="registered")
+    valid_until: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
 
 
@@ -127,6 +128,10 @@ class SuitabilityRecordModel(Base):
     risk_band: Mapped[str | None] = mapped_column(String(32), nullable=True)
     recorded_by_rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     recorded_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    score: Mapped[float | None] = mapped_column(Float, nullable=True)  # risk tolerance 0-100 from the questionnaire
+    answers: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON {q1: 1..5}
+    review_due: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
+    max_riskometer: Mapped[int | None] = mapped_column(Integer, nullable=True)  # highest riskometer the band allows
 
 
 class DisclosureLogModel(Base):

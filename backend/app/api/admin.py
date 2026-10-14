@@ -308,8 +308,8 @@ def admin_update_customer(
         raise HTTPException(404, "Customer not found")
     fields: dict[str, Any] = {}
     if "role" in body.model_fields_set:
-        if body.role not in ("customer", "rm", "admin"):
-            raise HTTPException(422, "role must be one of: customer, rm, admin")
+        if body.role not in ("customer", "rm", "admin", "compliance"):
+            raise HTTPException(422, "role must be one of: customer, rm, admin, compliance")
         if customer_id == customer["id"]:
             raise HTTPException(422, "You cannot change your own role.")
         fields["role"] = body.role

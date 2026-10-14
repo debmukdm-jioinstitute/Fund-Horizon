@@ -1380,7 +1380,7 @@ class BackofficeRepository:
         try:
             rows = conn.execute(
                 "SELECT id, name, email, mobile, role, status, is_staff FROM customers "
-                "WHERE is_staff = 1 OR role IN ('admin','analyst','rm','operations','read_only') ORDER BY name ASC"
+                "WHERE is_staff = 1 OR role IN ('admin','analyst','rm','operations','read_only','compliance') ORDER BY name ASC"
             ).fetchall()
             return [dict(r) for r in rows]
         finally:

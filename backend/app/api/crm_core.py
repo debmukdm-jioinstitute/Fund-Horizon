@@ -17,7 +17,9 @@ from typing import Annotated, Any, NamedTuple
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 
-from app.api.auth import _hash_password, require_role
+from app import repo_crm_phase3 as p3
+from app.api.auth import _hash_password
+from app.api.crm_auth import crm_user, unscoped
 from app.api.crm_page import PageParams, guard, paginate_rows, send_total
 from app.db import sqlite
 from app.repo_crm_core import IST, CrmCoreError, Page, get_crm_repository, today_ist
@@ -25,8 +27,8 @@ from app.repo_crm_extras import find_duplicates
 
 router = APIRouter(prefix="/api/crm", tags=["crm"])
 
-# 401 when not logged in, 403 when role == "customer".
-Me = Annotated[dict, Depends(require_role("admin", "rm"))]
+# 401 when not logged in, 403 for customers; compliance is read-only; RMs see their team (see crm_auth).
+Me = Annotated[dict, Depends(crm_user)]
 
 # ---------------------------------------------------------------------------
 # Vocabularies
@@ -113,9 +115,9 @@ class _Scope(NamedTuple):
 
 def _scope(me: dict) -> _Scope:
     """Household/customer ids visible to an RM (two queries). Admins are unscoped."""
-    if me["role"] == "admin":
+    if unscoped(me):
         return _Scope(True, set(), set())
-    hids, cids = get_crm_repository().scope_ids(me["id"])
+    hids, cids = get_crm_repository().scope_ids(me["_team"])
     return _Scope(False, hids, cids)
 
 
@@ -124,9 +126,9 @@ def _owner(me: dict, value: str | None) -> str | None:
     return me["id"] if value == "me" else value
 
 
-def _viewer(me: dict) -> str | None:
-    """RM id to filter list queries by, or None for admins (unscoped)."""
-    return None if me["role"] == "admin" else me["id"]
+def _viewer(me: dict) -> list[str] | None:
+    """The RM team (just themselves for a plain RM) to filter list queries by; None when unscoped."""
+    return me["_team"]
 
 
 def _public_customer(row: dict) -> dict:
@@ -164,8 +166,8 @@ def _assignee(me: dict, value: str | None, *, create: bool) -> str | None:
         if create:
             return me["id"]  # RM-created records belong to the RM
         raise HTTPException(403, "You cannot unassign a record; ask an admin.")
-    if value != me["id"]:
-        raise HTTPException(403, "You can only assign records to yourself.")
+    if value not in me["_team"]:  # a team lead may also assign to their reports
+        raise HTTPException(403, "You can only assign records to yourself or your team.")
     return value
 
 
@@ -250,19 +252,19 @@ def _with_warnings(row: dict, warnings: list[str]) -> dict:
 
 
 def _visible_household(h: dict, me: dict, scope: _Scope) -> bool:
-    return scope.admin or h.get("rm_id") == me["id"]
+    return scope.admin or h.get("rm_id") in me["_team"]
 
 
 def _visible_lead(lead: dict, me: dict, scope: _Scope) -> bool:
     # RMs see their own leads; the unassigned pool is admin-only.
-    return scope.admin or lead.get("assigned_rm_id") == me["id"]
+    return scope.admin or lead.get("assigned_rm_id") in me["_team"]
 
 
 def _visible_opportunity(opp: dict, me: dict, scope: _Scope) -> bool:
     if scope.admin:
         return True
     return (
-        opp.get("assigned_rm_id") == me["id"]
+        opp.get("assigned_rm_id") in me["_team"]
         or (opp.get("household_id") in scope.household_ids)
         or (opp.get("customer_id") in scope.customer_ids)
     )
@@ -276,7 +278,7 @@ def _visible_activity(act: dict, me: dict, scope: _Scope) -> bool:
     if scope.admin:
         return True
     repo = get_crm_repository()
-    if act.get("assigned_rm_id") == me["id"]:
+    if act.get("assigned_rm_id") in me["_team"]:
         return True
     if act.get("household_id") in scope.household_ids:
         return True
@@ -371,6 +373,9 @@ class OpportunityCreate(BaseModel):
     expected_close: str | None = None
     assigned_rm_id: str | None = None
     notes: str | None = None
+    scheme_code: str | None = None  # AMFI code: its category gives a default riskometer
+    riskometer: int | None = Field(None, ge=1, le=6)  # 1 Low .. 6 Very High; overrides the category default
+    suitability_override_reason: str | None = None  # admin only: proceed despite a blocking mismatch
 
 
 class OpportunityUpdate(BaseModel):
@@ -433,13 +438,24 @@ class GenerateTasksRequest(BaseModel):
 def list_households(me: Me, response: Response, page: PageParams, rm_id: str | None = Query(None, description="RM id, or 'me'")):
     repo = get_crm_repository()
     owner = _owner(me, rm_id)
-    if me["role"] != "admin" and owner not in (None, me["id"]):
-        raise HTTPException(403, "You can only filter by yourself.")
-    rows = guard(repo.list_households, rm_id=_viewer(me) or owner, page=page)
+    if _viewer(me) is not None and owner is not None and owner not in me["_team"]:
+        raise HTTPException(403, "You can only filter by yourself or your team.")
+    rows = guard(repo.list_households, rm_id=[owner] if owner and _viewer(me) is not None else (_viewer(me) or owner), page=page)
     send_total(response, page)
     ids = [h["id"] for h in rows]
     members, open_opps = repo.member_counts(ids), repo.open_opp_counts(ids)
-    return [{**h, "member_count": members.get(h["id"], 0), "open_opportunities": open_opps.get(h["id"], 0)} for h in rows]
+    aum = p3.household_aum(ids)
+    return [
+        {
+            **h,
+            "member_count": members.get(h["id"], 0),
+            "open_opportunities": open_opps.get(h["id"], 0),
+            "aum_paise": aum.get(h["id"], {}).get("aum_paise", 0),
+            "tier": aum.get(h["id"], {}).get("tier", "standard"),
+            "has_direct_plan": aum.get(h["id"], {}).get("has_direct_plan", False),
+        }
+        for h in rows
+    ]
 
 
 @router.post("/households", status_code=201)
@@ -495,6 +511,7 @@ def get_household(household_id: str, me: Me):
         "opportunities": opportunities,
         "activities": activities,
         "cases": cases,
+        "aum": p3.household_aum([household_id]).get(household_id),
     }
 
 
@@ -766,7 +783,8 @@ def create_opportunity(body: OpportunityCreate, me: Me):
             raise HTTPException(403, "You do not have permission to use this customer.")
     assigned = _assignee(me, body.assigned_rm_id, create=True)
     probability = body.probability if body.probability is not None else default_probability(body.product_line, stage)
-    return repo.create_opportunity(
+    riskometer, suitability, note = _suitability_for(body, me, repo)
+    opp = repo.create_opportunity(
         household_id=body.household_id,
         customer_id=body.customer_id,
         product_line=body.product_line,
@@ -777,8 +795,40 @@ def create_opportunity(body: OpportunityCreate, me: Me):
         expected_close=_check_date(body.expected_close, "expected_close"),
         assigned_rm_id=assigned,
         notes=body.notes,
+        scheme_code=body.scheme_code,
+        riskometer=riskometer,
+        suitability_note=note,
         actor_id=me["id"],
     )
+    return _with_warnings(opp, [suitability["message"]] if suitability["level"] != "ok" and suitability["message"] else [])
+
+
+def _suitability_for(body: OpportunityCreate, me: dict, repo) -> tuple[int | None, dict, str | None]:
+    """Riskometer vs the client's assessed limit: warn one step over, block two or more (admin may override with a reason)."""
+    riskometer = body.riskometer
+    if riskometer is None and body.scheme_code:
+        info = p3.latest_navs([body.scheme_code]).get(body.scheme_code)
+        riskometer = p3.riskometer_for_category((info or {}).get("category"))
+    if riskometer is None and body.product_line == "pms":
+        riskometer = 6  # PMS carries no scheme riskometer; treat as the highest until an explicit value is given
+    if body.product_line not in ("mutual_fund", "pms") or riskometer is None:
+        return None, {"level": "ok", "message": None, "gap": None}, None
+    client = body.customer_id
+    if not client and body.household_id:
+        h = repo.get_household(body.household_id)
+        client = (h or {}).get("primary_customer_id")
+        if not client:  # the household's primary member, else the earliest-added one
+            members = repo.list_household_members(body.household_id)
+            primary = next((m for m in members if m["role"] == "primary"), members[0] if members else None)
+            client = primary["customer_id"] if primary else None
+    check = p3.suitability_check(riskometer, client)
+    note = check["message"]
+    if check["level"] == "block":
+        reason = (body.suitability_override_reason or "").strip()
+        if me["role"] != "admin" or not reason:
+            raise HTTPException(422, f"Suitability block: {check['message']} An admin can proceed only with a documented reason.")
+        note = f"{check['message']} Override by {me['name']}: {reason}"
+    return riskometer, check, note
 
 
 def _stage_change_fields(opp: dict, body: OpportunityUpdate) -> dict[str, Any]:

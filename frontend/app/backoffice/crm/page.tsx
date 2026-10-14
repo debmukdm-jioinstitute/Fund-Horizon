@@ -11,7 +11,10 @@ import ActivitiesTab from "@/components/crm/ActivitiesTab";
 import CasesTab from "@/components/crm/CasesTab";
 import ComplianceTab from "@/components/crm/ComplianceTab";
 import ImportTab from "@/components/crm/ImportTab";
+import BookTab from "@/components/crm/BookTab";
 import { CasesList, ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
+import NewOpportunityForm from "@/components/crm/NewOpportunityForm";
+import { useCanWrite } from "@/components/crm/useCanWrite";
 import { CRM_TABS, resolveTab, tabHref } from "@/components/crm/tabs";
 
 /** Tabs that offer a table (Salesforce-style list view) next to the original board/agenda/create screen. */
@@ -50,6 +53,20 @@ function TableOrBoard({ table, board, boardLabel, defaultView }: { table: React.
   );
 }
 
+function OpportunitiesTab() {
+  const canWrite = useCanWrite();
+  const [version, setVersion] = React.useState(0);
+  return (
+    <div className="space-y-4">
+      {canWrite && <NewOpportunityForm onCreated={() => setVersion((v) => v + 1)} />}
+      <TableOrBoard
+        key={version} defaultView="board" boardLabel="Board"
+        table={<OpportunitiesList reloadKey={version} />} board={<PipelinesTab />}
+      />
+    </div>
+  );
+}
+
 function CrmTabs() {
   const router = useRouter();
   const tab = resolveTab(useSearchParams().get("tab")); // the tab lives in the URL: back, forward and refresh work
@@ -75,9 +92,10 @@ function CrmTabs() {
       {tab === "households" && <HouseholdsTab />}
       {tab === "contacts" && <ContactsList />}
       {tab === "leads" && <TableOrBoard defaultView="table" boardLabel="Board & new lead" table={<LeadsList />} board={<LeadsTab />} />}
-      {tab === "opportunities" && <TableOrBoard defaultView="board" boardLabel="Board" table={<OpportunitiesList />} board={<PipelinesTab />} />}
+      {tab === "opportunities" && <OpportunitiesTab />}
       {tab === "activities" && <TableOrBoard defaultView="table" boardLabel="Agenda & new task" table={<TasksList />} board={<ActivitiesTab />} />}
       {tab === "cases" && <TableOrBoard defaultView="table" boardLabel="Queue & new grievance" table={<CasesList />} board={<CasesTab />} />}
+      {tab === "book" && <BookTab />}
       {tab === "compliance" && <ComplianceTab />}
       {tab === "import" && <ImportTab />}
     </div>

@@ -73,7 +73,7 @@ class StaffMemberCreateRequest(BaseModel):
     email: str
     name: str
     mobile: str = "9999999999"
-    role: str = "analyst"  # admin, analyst, rm, operations, read_only
+    role: str = "analyst"  # admin, analyst, rm, operations, read_only, compliance
     password: str | None = None  # omitted -> server generates a temporary password
     temp_password: bool = False
 

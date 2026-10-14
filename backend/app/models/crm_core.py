@@ -9,7 +9,7 @@ raw-SQLite DDL.
 
 from __future__ import annotations
 
-from sqlalchemy import Integer, String, Text, UniqueConstraint
+from sqlalchemy import BigInteger, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.models import Base
@@ -67,7 +67,7 @@ class OpportunityModel(Base):
     customer_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     product_line: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
-    amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    amount: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
     stage: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     probability: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     expected_close: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
@@ -77,7 +77,10 @@ class OpportunityModel(Base):
     updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
     lost_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     closed_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    won_amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    won_amount: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
+    scheme_code: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    riskometer: Mapped[int | None] = mapped_column(Integer, nullable=True)  # 1 Low .. 6 Very High
+    suitability_note: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
     updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
@@ -94,6 +97,7 @@ class ActivityModel(Base):
     opportunity_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     case_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     lead_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    source_ref: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)  # idempotency key for generated tasks
     policy_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     fd_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     due_at: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
@@ -151,3 +155,30 @@ class CrmListViewModel(Base):
     updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
 
     __table_args__ = (UniqueConstraint("user_id", "entity", "name", name="uq_crm_list_view_name"),)
+
+
+class ContactModel(Base):
+    """A person in a household. Backed by a ``customers`` row (name, email, mobile) that has no usable
+    login unless the client is invited, so family members are never accidental logins."""
+
+    __tablename__ = "contacts"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    customer_id: Mapped[str] = mapped_column(String(36), nullable=False, unique=True)
+    household_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
+    relation: Mapped[str] = mapped_column(String(24), nullable=False, default="other")
+    dob: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
+    guardian_contact_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    tax_status: Mapped[str] = mapped_column(String(12), nullable=False, default="resident")  # resident|nri|oci
+    country: Mapped[str | None] = mapped_column(String(56), nullable=True)
+    nre_bank: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    nro_bank: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    nominee_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    nominee_relation: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    nominee_pct: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    fatca_crs: Mapped[str] = mapped_column(String(32), nullable=False, default="not_collected")
+    kyc_expiry: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
+    created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    updated_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)

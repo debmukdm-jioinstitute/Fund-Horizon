@@ -630,7 +630,7 @@ export interface Customer {
   name: string;
   email: string;
   mobile: string;
-  role: "customer" | "rm" | "admin" | "analyst" | "operations" | "read_only";
+  role: "customer" | "rm" | "admin" | "analyst" | "operations" | "read_only" | "compliance";
   is_staff?: boolean;
   status?: string;
   must_change_password?: boolean;

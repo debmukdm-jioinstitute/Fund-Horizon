@@ -24,7 +24,7 @@ def main() -> None:
     parser.add_argument("--mobile", default="9999999999", help="10-digit mobile number")
     parser.add_argument(
         "--role",
-        choices=["admin", "analyst", "rm", "operations", "read_only"],
+        choices=["admin", "analyst", "rm", "operations", "read_only", "compliance"],
         default="admin",
         help="Staff role",
     )

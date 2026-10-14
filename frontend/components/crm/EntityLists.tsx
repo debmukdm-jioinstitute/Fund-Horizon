@@ -7,6 +7,7 @@ import { LEAD_STATUSES } from "../../lib/crmApi";
 import { formatRupeesFromPaise, PRODUCT_LINES, STAGES_BY_LINE, stageLabel } from "../../lib/crmProductsApi";
 import ListView, { type FilterDef, type ListColumn } from "./ListView";
 import OwnerAvatar from "./OwnerAvatar";
+import { rupees, tierTone } from "./ui";
 
 export interface Contact {
   id: string;
@@ -17,6 +18,8 @@ export interface Contact {
   household_id: string;
   household_name: string;
   rm_id: string | null;
+  tax_status?: string;
+  dob?: string | null;
 }
 
 const IST = "Asia/Kolkata";
@@ -50,7 +53,16 @@ const ownerFilter = (key: string): FilterDef => ({ key, label: "Owner", type: "o
 const householdColumns: ListColumn<Household>[] = [
   { id: "name", header: "Household", sortKey: "name", cell: (h) => h.name },
   { id: "rm", header: "Owner", sortKey: "rm_id", cell: (h) => owner(h.rm_id) },
-  { id: "members", header: "Members", cell: (h) => h.member_count },
+  { id: "aum", header: "AUM", cell: (h) => (h.aum_paise ? rupees(h.aum_paise) : "–") },
+  {
+    id: "tier", header: "Tier",
+    cell: (h) => <span className={`inline-block rounded px-1.5 py-0.5 text-[11px] font-medium capitalize ${tierTone[h.tier ?? "standard"]}`}>{h.tier ?? "standard"}</span>,
+  },
+  {
+    id: "direct", header: "Direct plan",
+    cell: (h) => (h.has_direct_plan ? <Badge tone="warn">Direct</Badge> : "–"),
+  },
+  { id: "members", header: "Members", hiddenByDefault: true, cell: (h) => h.member_count },
   { id: "open", header: "Open opps", cell: (h) => h.open_opportunities },
   { id: "created", header: "Created", sortKey: "created_at", cell: (h) => fmtDate(h.created_at) },
 ];
@@ -66,7 +78,9 @@ const contactColumns: ListColumn<Contact>[] = [
   { id: "name", header: "Name", sortKey: "name", cell: (c) => c.name },
   { id: "email", header: "Email", sortKey: "email", cell: (c) => c.email ?? "–" },
   { id: "mobile", header: "Mobile", sortKey: "mobile", cell: (c) => c.mobile ?? "–" },
-  { id: "role", header: "Role", sortKey: "role", cell: (c) => <Badge>{c.role}</Badge> },
+  { id: "role", header: "Relation", sortKey: "relation", cell: (c) => <Badge>{c.role}</Badge> },
+  { id: "tax", header: "Tax status", sortKey: "tax_status", cell: (c) => <Badge tone={c.tax_status && c.tax_status !== "resident" ? "warn" : "neutral"}>{(c.tax_status ?? "resident").toUpperCase()}</Badge> },
+  { id: "dob", header: "Date of birth", sortKey: "dob", hiddenByDefault: true, cell: (c) => fmtDate(c.dob) },
   {
     id: "household", header: "Household", sortKey: "household_name",
     cell: (c) => (
@@ -78,7 +92,7 @@ const contactColumns: ListColumn<Contact>[] = [
 export const ContactsList = () => (
   <ListView<Contact>
     entity="contacts" columns={contactColumns} searchPlaceholder="Search name, email, mobile, household…"
-    rowHref={(c) => `/backoffice/crm/households/${c.household_id}`}
+    rowHref={(c) => `/backoffice/crm/contacts/${c.id}`}
   />
 );
 

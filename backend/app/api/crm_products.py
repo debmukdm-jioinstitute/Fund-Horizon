@@ -29,7 +29,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field, field_validator
 
 from app import db_crm_products
-from app.api.auth import _hash_password, require_role
+from app.api.auth import _hash_password
+from app.api.crm_auth import crm_user, unscoped
 from app.api.crm_page import PageParams, paginate_rows, send_total
 from app.repo_crm_core import ensure_products_hardening, get_crm_repository
 from app.repo_crm_extras import find_duplicates
@@ -63,7 +64,7 @@ def _ensure_schema() -> None:
 
 router = APIRouter(prefix="/api/crm", tags=["crm-products"], dependencies=[Depends(_ensure_schema)])
 
-Me = Annotated[dict, Depends(require_role("admin", "rm"))]
+Me = Annotated[dict, Depends(crm_user)]
 
 
 # ------------------------------------------------------------ validators ----
@@ -305,14 +306,19 @@ class ImportIn(BaseModel):
 # ------------------------------------------------------------------ scope ---
 def _scope_ids(me: dict) -> tuple[set[str], set[str]]:
     """(household ids, customer ids) the RM may act on. Admins bypass."""
-    if me["role"] == "admin":
+    if unscoped(me):
         return set(), set()
     store = _store()
-    return store.rm_household_ids(me["id"]), store.rm_customer_ids(me["id"])
+    hh: set[str] = set()
+    cust: set[str] = set()
+    for rm_id in me["_team"]:  # a team lead sees their reports' clients too
+        hh |= store.rm_household_ids(rm_id)
+        cust |= store.rm_customer_ids(rm_id)
+    return hh, cust
 
 
 def _row_visible(me: dict, row: dict, hh_ids: set[str], cust_ids: set[str]) -> bool:
-    if me["role"] == "admin":
+    if unscoped(me):
         return True
     hh, cust = row.get("household_id"), row.get("customer_id")
     if hh and hh in hh_ids:
@@ -323,14 +329,14 @@ def _row_visible(me: dict, row: dict, hh_ids: set[str], cust_ids: set[str]) -> b
 
 
 def _check_customer_link(me: dict, customer_id: str | None, cust_ids: set[str]) -> None:
-    if customer_id is None or me["role"] == "admin":
+    if customer_id is None or unscoped(me):
         return
     if customer_id not in cust_ids:
         raise HTTPException(403, "You do not have permission to access this customer's records.")
 
 
 def _check_household_link(me: dict, household_id: str | None, hh_ids: set[str]) -> None:
-    if household_id is None or me["role"] == "admin":
+    if household_id is None or unscoped(me):
         return
     if household_id not in hh_ids:
         raise HTTPException(403, "You do not have permission to access this household's records.")
@@ -552,7 +558,7 @@ def list_mandates(me: Me, response: Response, page: PageParams, customer_id: str
         _check_customer_link(me, customer_id, cust_ids)
     rows = _store().list_mandates(customer_id=customer_id)
     _, cust_ids = _scope_ids(me)
-    return _paged([r for r in rows if me["role"] == "admin" or r.get("customer_id") in cust_ids], page, response)
+    return _paged([r for r in rows if unscoped(me) or r.get("customer_id") in cust_ids], page, response)
 
 
 @router.post("/mandates", status_code=201)

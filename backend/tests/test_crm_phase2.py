@@ -69,7 +69,7 @@ def test_contacts_scoped_sorted_searchable(client, rm, rm2):
     _login_as(client, rm)
     r = client.get("/api/crm/contacts")
     assert [x["household_name"] for x in r.json()] == ["Mine"] and r.headers["X-Total-Count"] == "1"
-    assert client.get("/api/crm/contacts", params={"q": c["name"][:4]}).json()[0]["id"] == c["id"]
+    assert client.get("/api/crm/contacts", params={"q": c["name"][:4]}).json()[0]["customer_id"] == c["id"]
     assert client.get("/api/crm/contacts", params={"sort": "-name"}).status_code == 200
     assert client.get("/api/crm/contacts", params={"sort": "password_hash"}).status_code == 422
 

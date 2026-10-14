@@ -12,7 +12,7 @@ the full PAN is never stored.
 """
 from __future__ import annotations
 
-from sqlalchemy import Float, Integer, String, Text, UniqueConstraint
+from sqlalchemy import BigInteger, Float, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.models import Base
@@ -27,7 +27,7 @@ class InsurancePolicyModel(Base):
     policy_type: Mapped[str] = mapped_column(String(32), nullable=False)
     insurer: Mapped[str | None] = mapped_column(String(120), nullable=True)
     policy_no: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    premium_amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    premium_amount: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
     premium_due_date: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
     renewal_date: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="active")
@@ -43,7 +43,7 @@ class FixedDepositModel(Base):
     household_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     customer_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     company: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    amount: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
     interest_rate: Mapped[float | None] = mapped_column(Float, nullable=True)  # annual %
     start_date: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
     maturity_date: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
@@ -61,11 +61,11 @@ class PmsAccountModel(Base):
     customer_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     provider: Mapped[str | None] = mapped_column(String(120), nullable=True)
     agreement_date: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
-    amount: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    amount: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
     fee_fixed_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
     fee_performance_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
     hurdle_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
-    high_water_mark: Mapped[int] = mapped_column(Integer, nullable=False, default=0)  # paise
+    high_water_mark: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)  # paise
     exit_load_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
     disclosure_doc_version: Mapped[str | None] = mapped_column(String(32), nullable=True)
     disclosure_given_at: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
@@ -95,8 +95,9 @@ class MandateModel(Base):
     customer_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     umrn: Mapped[str | None] = mapped_column(String(64), nullable=True)
     bank_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    amount_cap: Mapped[int | None] = mapped_column(Integer, nullable=True)  # paise
+    amount_cap: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # paise
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="registered")
+    valid_until: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
 
 
@@ -127,6 +128,10 @@ class SuitabilityRecordModel(Base):
     risk_band: Mapped[str | None] = mapped_column(String(32), nullable=True)
     recorded_by_rm_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     recorded_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    score: Mapped[float | None] = mapped_column(Float, nullable=True)  # risk tolerance 0-100 from the questionnaire
+    answers: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON {q1: 1..5}
+    review_due: Mapped[str | None] = mapped_column(String(10), nullable=True)  # YYYY-MM-DD
+    max_riskometer: Mapped[int | None] = mapped_column(Integer, nullable=True)  # highest riskometer the band allows
 
 
 class DisclosureLogModel(Base):

@@ -166,7 +166,7 @@ def test_lead_lifecycle(client, admin):
 def test_lead_convert_creates_customer_and_household(client, admin):
     r = client.post("/api/crm/leads", json={"name": "Convert Me", "email": "conv@example.com", "mobile": "9822222222"})
     lead = r.json()
-    r = client.post(f"/api/crm/leads/{lead['id']}/convert", json={})
+    r = client.post(f"/api/crm/leads/{lead['id']}/convert", json={"invite_to_portal": True})
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["customer_id"] and body["household_id"]
@@ -191,7 +191,8 @@ def test_lead_convert_with_explicit_password(client, admin):
         "/api/crm/leads", json={"name": "PW User", "email": "pw@example.com", "mobile": "9833333333"}
     ).json()
     r = client.post(
-        f"/api/crm/leads/{lead['id']}/convert", json={"password": "supersecret1", "household_name": "PW Household"}
+        f"/api/crm/leads/{lead['id']}/convert",
+        json={"password": "supersecret1", "household_name": "PW Household", "invite_to_portal": True},
     )
     assert r.status_code == 200, r.text
     assert "temp_password" not in r.json()
@@ -232,7 +233,7 @@ def test_opportunity_stage_defaults_and_validation(client, admin):
     assert r.status_code == 201, r.text
     opp = r.json()
     assert opp["stage"] == "illustration"  # first stage of the line
-    assert opp["probability"] == 0
+    assert opp["probability"] == 20  # defaults from the stage
 
     r = client.post("/api/crm/opportunities", json={"product_line": "mutual_fund", "title": "Bad", "stage": "proposal"})
     assert r.status_code == 422  # proposal is not an MF stage
@@ -270,7 +271,8 @@ def test_pipeline_math_excludes_lost(client, admin):
 
     mk("mutual_fund", "illustration", 100000)  # ₹1,000 in paise
     mk("mutual_fund", "discussion", 200000)
-    mk("mutual_fund", "lost", 500000)
+    lost = mk("mutual_fund", "discussion", 500000)
+    client.patch(f"/api/crm/opportunities/{lost['id']}", json={"stage": "lost", "lost_reason": "chose competitor"})
     mk("life_insurance", "proposal", 300000)
 
     r = client.get("/api/crm/pipeline", params={"product_line": "mutual_fund"})
@@ -399,13 +401,14 @@ def test_rm_scoping(client, rm, rm2):
 
 
 def test_rm_lead_scoping(client, rm, rm2):
+    _login(client, _make_customer("admin"))
     mine = client.post("/api/crm/leads", json={"name": "Mine", "assigned_rm_id": rm["id"]}).json()
     pool = client.post("/api/crm/leads", json={"name": "Pool"}).json()
     other = client.post("/api/crm/leads", json={"name": "Other", "assigned_rm_id": rm2["id"]}).json()
 
     _login_as(client, rm2)
     ids = {row["id"] for row in client.get("/api/crm/leads").json()}
-    assert other["id"] in ids and pool["id"] in ids and mine["id"] not in ids
+    assert other["id"] in ids and pool["id"] not in ids and mine["id"] not in ids  # unassigned pool is admin-only
     assert client.patch(f"/api/crm/leads/{mine['id']}", json={"status": "lost"}).status_code == 403
 
 

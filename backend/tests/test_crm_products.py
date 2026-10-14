@@ -420,12 +420,21 @@ def test_import_clients_report(clients):
 
 def test_import_rm_caller_scoped_to_self(clients):
     rm2 = clients["rm2"]
+    # An RM naming another RM's email is refused for that row (no silent re-owning)...
     r = rm2.post(
         "/api/crm/import/clients",
         json={"rows": [{"name": "Rm Import", "email": "rmimport@example.com",
                         "household_name": "Rm HH", "rm_email": "crm-rm1@example.com"}]},
     )
     assert r.status_code == 200, r.text
+    assert r.json()["created"] == 0
+    assert "own address" in r.json()["skipped"][0]["reason"]
+    assert sqlite_repo.get_customer_by_email("rmimport@example.com") is None
+    # ...and without rm_email the row is owned by the caller.
+    r = rm2.post(
+        "/api/crm/import/clients",
+        json={"rows": [{"name": "Rm Import", "email": "rmimport@example.com", "household_name": "Rm HH"}]},
+    )
     assert r.json()["created"] == 1
     cust = sqlite_repo.get_customer_by_email("rmimport@example.com")
     assert cust["assigned_rm_id"] == clients["ids"]["rm2"]  # forced to the caller

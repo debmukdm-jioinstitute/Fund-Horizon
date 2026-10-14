@@ -10,7 +10,11 @@ Auth: ``require_role("admin", "rm")`` gives 401 when not signed in and 403 for
 customers who are members of their households.
 
 Money is integer paise in and out. ``pan_last4`` is validated as exactly four
-alphanumerics and the full PAN is never accepted or stored.
+alphanumerics; a full ``pan`` may be sent for validation but only its last four
+characters are kept — the full PAN is never stored.
+
+Every create/update writes ``audit_log`` rows and stamps ``created_by``/
+``updated_by``/``updated_at`` (see ``app.repo_crm_core``).
 """
 from __future__ import annotations
 
@@ -21,15 +25,18 @@ import secrets
 from datetime import datetime
 from typing import Annotated, Any, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field, field_validator
 
 from app import db_crm_products
 from app.api.auth import _hash_password, require_role
+from app.api.crm_page import PageParams, paginate_rows, send_total
+from app.repo_crm_core import ensure_products_hardening, get_crm_repository
 
 _EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _PAN4_RE = re.compile(r"^[A-Za-z0-9]{4}$")
+_PAN_RE = re.compile(r"^[A-Z]{5}\d{4}[A-Z]$")
 
 
 def _use_postgres() -> bool:
@@ -50,6 +57,7 @@ def _ensure_schema() -> None:
         store.ensure_crm_products_schema()
     else:  # pragma: no cover - postgres path
         store.ensure_schema()
+    ensure_products_hardening()  # audit columns + unique business keys (idempotent)
 
 
 router = APIRouter(prefix="/api/crm", tags=["crm-products"], dependencies=[Depends(_ensure_schema)])
@@ -72,6 +80,7 @@ def _check_date(v: str | None, field: str) -> str | None:
 
 class PolicyIn(BaseModel):
     model_config = {"extra": "forbid"}
+    _blank_no = field_validator("policy_no")(lambda cls, v: _blank_to_none(v))
     household_id: str | None = None
     customer_id: str | None = None
     policy_type: Literal["term", "health", "motor", "other_general", "other_life"]
@@ -91,6 +100,7 @@ class PolicyIn(BaseModel):
 
 class PolicyPatch(BaseModel):
     model_config = {"extra": "forbid"}
+    _blank_no = field_validator("policy_no")(lambda cls, v: _blank_to_none(v))
     household_id: str | None = None
     customer_id: str | None = None
     policy_type: Literal["term", "health", "motor", "other_general", "other_life"] | None = None
@@ -206,9 +216,20 @@ class PmsPatch(BaseModel):
 class KycIn(BaseModel):
     model_config = {"extra": "forbid"}
     customer_id: str
+    pan: str | None = None  # validated then reduced to its last four characters; never stored
     pan_last4: str | None = None
     kra_status: Literal["validated", "registered", "on_hold", "unknown"] = "unknown"
     ckyc_id: str | None = None
+
+    @field_validator("pan")
+    @classmethod
+    def _full_pan(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = v.strip().upper()
+        if not _PAN_RE.match(v):
+            raise ValueError("pan must look like ABCDE1234F")
+        return v
 
     @field_validator("pan_last4")
     @classmethod
@@ -223,6 +244,7 @@ class KycIn(BaseModel):
 
 class MandateIn(BaseModel):
     model_config = {"extra": "forbid"}
+    _blank_umrn = field_validator("umrn")(lambda cls, v: _blank_to_none(v))
     customer_id: str
     umrn: str | None = None
     bank_name: str | None = None
@@ -232,6 +254,7 @@ class MandateIn(BaseModel):
 
 class MandatePatch(BaseModel):
     model_config = {"extra": "forbid"}
+    _blank_umrn = field_validator("umrn")(lambda cls, v: _blank_to_none(v))
     umrn: str | None = None
     bank_name: str | None = None
     amount_cap: int | None = Field(default=None, ge=0)
@@ -316,7 +339,7 @@ def _resolve_links(me: dict, customer_id: str | None, household_id: str | None) 
     """404 on unknown ids, 403 on out-of-scope ids."""
     store = _store()
     if customer_id is not None and store.get_customer(customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     if household_id is not None and store.get_household(household_id) is None:
         raise HTTPException(404, "Household not found.")
     hh_ids, cust_ids = _scope_ids(me)
@@ -328,24 +351,61 @@ def _consent_out(row: dict) -> dict:
     return {**row, "granted": bool(row["granted"])}
 
 
+def _audit_create(entity: str, table: str, rec: dict, me: dict, id_col: str = "id") -> None:
+    repo = get_crm_repository()
+    repo.record_audit(entity, rec[id_col], me["id"], None, rec)
+    repo.stamp(table, rec[id_col], me["id"], created=True, id_col=id_col)
+
+
+def _audit_update(entity: str, table: str, old: dict, new: dict, me: dict, id_col: str = "id") -> None:
+    repo = get_crm_repository()
+    repo.record_audit(entity, new[id_col], me["id"], old, new)
+    repo.stamp(table, new[id_col], me["id"], created=False, id_col=id_col)
+
+
+def _unique(fn, what: str):
+    """Run a store write; a unique-index violation (UMRN / policy number) becomes a 422."""
+    try:
+        return fn()
+    except Exception as e:  # sqlite3.IntegrityError or sqlalchemy IntegrityError
+        if type(e).__name__ == "IntegrityError":
+            raise HTTPException(422, f"{what} already exists.") from e
+        raise
+
+
+def _paged(rows: list[dict], page, response: Response) -> list[dict]:
+    out = paginate_rows(rows, page)
+    send_total(response, page)
+    return out
+
+
+def _blank_to_none(v: str | None) -> str | None:
+    v = (v or "").strip()
+    return v or None
+
+
 # ---------------------------------------------------------------- policies --
 @router.get("/policies")
 def list_policies(
     me: Me,
+    response: Response,
+    page: PageParams,
     household_id: str | None = Query(default=None),
     customer_id: str | None = Query(default=None),
 ):
     _resolve_links(me, customer_id, household_id)
     rows = _store().list_policies(household_id=household_id, customer_id=customer_id)
     hh_ids, cust_ids = _scope_ids(me)
-    return [r for r in rows if _row_visible(me, r, hh_ids, cust_ids)]
+    return _paged([r for r in rows if _row_visible(me, r, hh_ids, cust_ids)], page, response)
 
 
 @router.post("/policies", status_code=201)
 def create_policy(body: PolicyIn, me: Me):
     data = body.model_dump()
     _resolve_links(me, data.get("customer_id"), data.get("household_id"))
-    return _store().create_policy(data)
+    rec = _unique(lambda: _store().create_policy(data), "A policy with this policy number")
+    _audit_create("policy", "insurance_policies", rec, me)
+    return rec
 
 
 @router.patch("/policies/{policy_id}")
@@ -359,27 +419,33 @@ def update_policy(policy_id: str, body: PolicyPatch, me: Me):
         raise HTTPException(403, "You do not have permission to access this policy.")
     data = {k: v for k, v in body.model_dump().items() if v is not None}
     _resolve_links(me, data.get("customer_id"), data.get("household_id"))
-    return store.patch_policy(policy_id, data)
+    new = _unique(lambda: store.patch_policy(policy_id, data), "A policy with this policy number")
+    _audit_update("policy", "insurance_policies", row, new, me)
+    return new
 
 
 # -------------------------------------------------------------------- fds ---
 @router.get("/fds")
 def list_fds(
     me: Me,
+    response: Response,
+    page: PageParams,
     household_id: str | None = Query(default=None),
     customer_id: str | None = Query(default=None),
 ):
     _resolve_links(me, customer_id, household_id)
     rows = _store().list_fds(household_id=household_id, customer_id=customer_id)
     hh_ids, cust_ids = _scope_ids(me)
-    return [r for r in rows if _row_visible(me, r, hh_ids, cust_ids)]
+    return _paged([r for r in rows if _row_visible(me, r, hh_ids, cust_ids)], page, response)
 
 
 @router.post("/fds", status_code=201)
 def create_fd(body: FdIn, me: Me):
     data = body.model_dump()
     _resolve_links(me, data.get("customer_id"), data.get("household_id"))
-    return _store().create_fd(data)
+    rec = _store().create_fd(data)
+    _audit_create("fixed_deposit", "fixed_deposits", rec, me)
+    return rec
 
 
 @router.patch("/fds/{fd_id}")
@@ -393,20 +459,24 @@ def update_fd(fd_id: str, body: FdPatch, me: Me):
         raise HTTPException(403, "You do not have permission to access this fixed deposit.")
     data = {k: v for k, v in body.model_dump().items() if v is not None}
     _resolve_links(me, data.get("customer_id"), data.get("household_id"))
-    return store.patch_fd(fd_id, data)
+    new = store.patch_fd(fd_id, data)
+    _audit_update("fixed_deposit", "fixed_deposits", row, new, me)
+    return new
 
 
 # -------------------------------------------------------------------- pms ---
 @router.get("/pms")
 def list_pms(
     me: Me,
+    response: Response,
+    page: PageParams,
     household_id: str | None = Query(default=None),
     customer_id: str | None = Query(default=None),
 ):
     _resolve_links(me, customer_id, household_id)
     rows = _store().list_pms(household_id=household_id, customer_id=customer_id)
     hh_ids, cust_ids = _scope_ids(me)
-    return [r for r in rows if _row_visible(me, r, hh_ids, cust_ids)]
+    return _paged([r for r in rows if _row_visible(me, r, hh_ids, cust_ids)], page, response)
 
 
 @router.post("/pms", status_code=201)
@@ -414,7 +484,9 @@ def create_pms(body: PmsIn, me: Me):
     data = body.model_dump()
     data["accredited_investor"] = 1 if data.pop("accredited_investor") else 0
     _resolve_links(me, data.get("customer_id"), data.get("household_id"))
-    return _store().create_pms(data)
+    rec = _store().create_pms(data)
+    _audit_create("pms_account", "pms_accounts", rec, me)
+    return rec
 
 
 @router.patch("/pms/{pms_id}")
@@ -430,7 +502,9 @@ def update_pms(pms_id: str, body: PmsPatch, me: Me):
     if "accredited_investor" in data:
         data["accredited_investor"] = 1 if data["accredited_investor"] else 0
     _resolve_links(me, data.get("customer_id"), data.get("household_id"))
-    return store.patch_pms(pms_id, data)
+    new = store.patch_pms(pms_id, data)
+    _audit_update("pms_account", "pms_accounts", row, new, me)
+    return new
 
 
 # -------------------------------------------------------------------- kyc ---
@@ -438,7 +512,7 @@ def update_pms(pms_id: str, body: PmsPatch, me: Me):
 def get_kyc(me: Me, customer_id: str = Query()):
     store = _store()
     if store.get_customer(customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, customer_id, cust_ids)
     rec = store.get_kyc(customer_id)
@@ -451,35 +525,45 @@ def get_kyc(me: Me, customer_id: str = Query()):
 def upsert_kyc(body: KycIn, me: Me):
     store = _store()
     if store.get_customer(body.customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, body.customer_id, cust_ids)
-    existed = store.get_kyc(body.customer_id) is not None
-    rec = store.upsert_kyc(body.model_dump())
-    return {"record": rec, "created": not existed}
+    before = store.get_kyc(body.customer_id)
+    data = body.model_dump()
+    pan = data.pop("pan")
+    if pan:
+        data["pan_last4"] = pan[-4:]
+    rec = store.upsert_kyc(data)
+    if before is None:
+        _audit_create("kyc", "kyc_records", rec, me, id_col="customer_id")
+    else:
+        _audit_update("kyc", "kyc_records", before, rec, me, id_col="customer_id")
+    return {"record": rec, "created": before is None}
 
 
 # --------------------------------------------------------------- mandates ---
 @router.get("/mandates")
-def list_mandates(me: Me, customer_id: str | None = Query(default=None)):
+def list_mandates(me: Me, response: Response, page: PageParams, customer_id: str | None = Query(default=None)):
     if customer_id is not None:
         if _store().get_customer(customer_id) is None:
-            raise HTTPException(404, "Customer not found.")
+            raise HTTPException(404, "Customer not found")
         _, cust_ids = _scope_ids(me)
         _check_customer_link(me, customer_id, cust_ids)
     rows = _store().list_mandates(customer_id=customer_id)
     _, cust_ids = _scope_ids(me)
-    return [r for r in rows if me["role"] == "admin" or r.get("customer_id") in cust_ids]
+    return _paged([r for r in rows if me["role"] == "admin" or r.get("customer_id") in cust_ids], page, response)
 
 
 @router.post("/mandates", status_code=201)
 def create_mandate(body: MandateIn, me: Me):
     store = _store()
     if store.get_customer(body.customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, body.customer_id, cust_ids)
-    return store.create_mandate(body.model_dump())
+    rec = _unique(lambda: store.create_mandate(body.model_dump()), "A mandate with this UMRN")
+    _audit_create("mandate", "mandates", rec, me)
+    return rec
 
 
 @router.patch("/mandates/{mandate_id}")
@@ -491,7 +575,9 @@ def update_mandate(mandate_id: str, body: MandatePatch, me: Me):
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, row.get("customer_id"), cust_ids)
     data = {k: v for k, v in body.model_dump().items() if v is not None}
-    return store.patch_mandate(mandate_id, data)
+    new = _unique(lambda: store.patch_mandate(mandate_id, data), "A mandate with this UMRN")
+    _audit_update("mandate", "mandates", row, new, me)
+    return new
 
 
 # --------------------------------------------------------------- consents ---
@@ -499,7 +585,7 @@ def update_mandate(mandate_id: str, body: MandatePatch, me: Me):
 def list_consents(me: Me, customer_id: str = Query()):
     store = _store()
     if store.get_customer(customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, customer_id, cust_ids)
     return [_consent_out(r) for r in store.list_consents(customer_id=customer_id)]
@@ -509,14 +595,16 @@ def list_consents(me: Me, customer_id: str = Query()):
 def upsert_consent(body: ConsentIn, me: Me):
     store = _store()
     if store.get_customer(body.customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, body.customer_id, cust_ids)
-    existed = any(
-        r["purpose"] == body.purpose for r in store.list_consents(customer_id=body.customer_id)
-    )
-    rec = _consent_out(store.upsert_consent(body.model_dump()))
-    return {"consent": rec, "created": not existed}
+    before = next((r for r in store.list_consents(customer_id=body.customer_id) if r["purpose"] == body.purpose), None)
+    raw = store.upsert_consent(body.model_dump())
+    if before is None:
+        _audit_create("consent", "consents", raw, me)
+    else:
+        _audit_update("consent", "consents", before, raw, me)
+    return {"consent": _consent_out(raw), "created": before is None}
 
 
 # ------------------------------------------------------------ suitability ---
@@ -524,7 +612,7 @@ def upsert_consent(body: ConsentIn, me: Me):
 def list_suitability(me: Me, customer_id: str = Query()):
     store = _store()
     if store.get_customer(customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, customer_id, cust_ids)
     return store.list_suitability(customer_id)  # latest first
@@ -534,43 +622,48 @@ def list_suitability(me: Me, customer_id: str = Query()):
 def create_suitability(body: SuitabilityIn, me: Me):
     store = _store()
     if store.get_customer(body.customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, body.customer_id, cust_ids)
     data = body.model_dump()
     data["recorded_by_rm_id"] = me["id"]  # append-only; the recorder is always the caller
-    return store.create_suitability(data)
+    rec = store.create_suitability(data)
+    _audit_create("suitability", "suitability_records", rec, me)
+    return rec
 
 
 # ------------------------------------------------------------ disclosures ---
 @router.get("/disclosures")
 def list_disclosures(
     me: Me,
+    response: Response,
+    page: PageParams,
     customer_id: str | None = Query(default=None),
     opportunity_id: str | None = Query(default=None),
 ):
     store = _store()
     if customer_id is not None:
         if store.get_customer(customer_id) is None:
-            raise HTTPException(404, "Customer not found.")
+            raise HTTPException(404, "Customer not found")
         _, cust_ids = _scope_ids(me)
         _check_customer_link(me, customer_id, cust_ids)
     rows = store.list_disclosures(customer_id=customer_id, opportunity_id=opportunity_id)
     hh_ids, cust_ids = _scope_ids(me)
-    return [r for r in rows if _row_visible(me, r, hh_ids, cust_ids)]
+    return _paged([r for r in rows if _row_visible(me, r, hh_ids, cust_ids)], page, response)
 
 
 @router.post("/disclosures", status_code=201)
 def create_disclosure(body: DisclosureIn, me: Me):
     store = _store()
     if store.get_customer(body.customer_id) is None:
-        raise HTTPException(404, "Customer not found.")
+        raise HTTPException(404, "Customer not found")
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, body.customer_id, cust_ids)
     data = body.model_dump()
     data["schemes_compared"] = json.dumps(data["schemes_compared"]) if data["schemes_compared"] else None
     data["regular_plan_noted"] = 1 if data.pop("regular_plan_noted") else 0
     rec = store.create_disclosure(data)
+    _audit_create("disclosure", "disclosure_logs", rec, me)
     return {**rec, "regular_plan_noted": bool(rec["regular_plan_noted"])}
 
 
@@ -586,6 +679,10 @@ def _normalize_mobile(raw: str | None) -> str | None:
 
 def _placeholder_mobile() -> str:
     return "9" + "".join(secrets.choice("0123456789") for _ in range(9))
+
+
+def _audit_created_core(entity: str, rec: dict, me: dict) -> None:
+    get_crm_repository().record_audit(entity, rec["id"], me["id"], None, rec)
 
 
 @router.post("/import/clients")
@@ -614,6 +711,9 @@ def import_clients(body: ImportIn, me: Me):
 
         rm_id: str | None = None
         if me["role"] == "rm":
+            if row.rm_email and row.rm_email.strip().lower() != (me.get("email") or "").lower():
+                skipped.append({"email": email, "reason": "rm_email must be your own address"})
+                continue
             rm_id = me["id"]  # RMs can only import under themselves
         elif row.rm_email:
             rm = store.get_customer_by_email(row.rm_email.strip().lower())
@@ -645,7 +745,9 @@ def import_clients(body: ImportIn, me: Me):
             household = store.create_household(household_name, rm_id)
             store.add_household_member(household["id"], customer["id"], "primary")
             store.set_household_primary(household["id"], customer["id"])
+            _audit_created_core("household", household, me)
             households_created += 1
+        _audit_created_core("customer", customer, me)
         created += 1
 
     return {"created": created, "skipped": skipped, "households_created": households_created}

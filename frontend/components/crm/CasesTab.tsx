@@ -10,6 +10,7 @@ import {
   patchCase,
 } from "../../lib/crmProductsApi";
 import { ApiError } from "../../lib/api";
+import { caseSchema, fieldErrors } from "../../lib/crmSchemas";
 
 const CATEGORIES = [
   "onboarding",
@@ -129,7 +130,12 @@ export default function CasesTab() {
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerId.trim() || !subject.trim()) return;
+    if (!customerId.trim()) return;
+    const errs = fieldErrors(caseSchema, { subject, category });
+    if (errs) {
+      setError(Object.values(errs).join(". "));
+      return;
+    }
     setSaving(true);
     setError(null);
     try {
@@ -138,7 +144,7 @@ export default function CasesTab() {
         category,
         subject: subject.trim(),
         body: body.trim() || undefined,
-        sla_due_at: slaDueAt ? new Date(slaDueAt).toISOString() : undefined,
+        sla_due_at: slaDueAt ? `${slaDueAt}:00+05:30` : undefined, // entered in IST
       });
       setCases((prev) => [created, ...prev]);
       setCustomerId("");
@@ -238,9 +244,8 @@ export default function CasesTab() {
       )}
 
       {loading ? (
-        <div className="p-16 text-center">
+        <div role="status" aria-busy="true" aria-label="Loading" className="p-16 text-center">
           <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
-          <p className="text-xs text-navy-600 font-medium mt-3">Loading cases...</p>
         </div>
       ) : ordered.length === 0 ? (
         <p className="text-xs text-navy-600 text-center py-8">No cases in the queue.</p>

@@ -119,7 +119,7 @@ export default function CrmHome({ onNavigate }: CrmHomeProps) {
             </div>
           </div>
           <p className="text-xs text-navy-600 mb-3">
-            Open opportunities, grouped by product line (excludes lost).
+            Open opportunities, grouped by product line (excludes won and lost).
           </p>
           <div className="space-y-2">
             {PRODUCT_LINES.map((line) => {

@@ -9,7 +9,8 @@ import path from "path";
 import { METRICS } from "../frontend/lib/metrics/registry";
 
 const BACKOFFICE_DIR = path.resolve(__dirname, "../frontend/app/backoffice");
-const COMPONENTS_DIR = path.resolve(__dirname, "../frontend/components/backoffice");
+const FUNDS_DIR = path.resolve(__dirname, "../frontend/app/funds");
+const COMPONENTS_DIR = path.resolve(__dirname, "../frontend/components");
 const REQUIRED_METRICS = [
   "ret_1m", "ret_1y", "cagr_3y", "cagr_5y", "xirr",
   "sharpe_3y", "sortino_3y", "vol_3y", "max_drawdown_3y",
@@ -36,8 +37,12 @@ function findFiles(dir: string, ext = ".tsx"): string[] {
 }
 
 function main() {
-  console.log("Checking InfoTip coverage across backoffice pages...");
-  const files = [...findFiles(BACKOFFICE_DIR), ...findFiles(COMPONENTS_DIR)];
+  console.log("Checking InfoTip coverage across app and backoffice pages...");
+  const files = [
+    ...findFiles(BACKOFFICE_DIR),
+    ...findFiles(FUNDS_DIR),
+    ...findFiles(COMPONENTS_DIR),
+  ];
   const metricRegex = /metric=["']([a-zA-Z0-9_-]+)["']/g;
 
   let totalInfoTips = 0;

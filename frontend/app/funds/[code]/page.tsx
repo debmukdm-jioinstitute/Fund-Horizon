@@ -11,6 +11,7 @@ import {
   NavChart,
   RollingDistributionCard,
 } from "@/components/FundCharts";
+import InfoTip from "@/components/InfoTip";
 
 interface PageProps {
   params: Promise<{ code: string }>;
@@ -43,6 +44,11 @@ export default async function FundDetailPage({ params }: PageProps) {
   const risk = analytics.risk;
   const rolling = analytics.rolling_returns;
   const dd = risk.drawdown_duration;
+  const mfMeta = {
+    source: "AMFI / MFAPI",
+    fetched_at: analytics.last_nav_date,
+    source_url: "https://www.amfiindia.com",
+  };
 
   return (
     <div className="w-full space-y-6">
@@ -99,26 +105,38 @@ export default async function FundDetailPage({ params }: PageProps) {
         {/* Quick Returns Grid */}
         <div className="grid grid-cols-2 gap-3 border-t border-navy-100 pt-3 sm:grid-cols-4">
           <div className="rounded-lg bg-navy-50 p-2.5">
-            <p className="text-xs text-navy-700">1Y Return</p>
-            <p className="text-lg font-bold text-navy-950" data-testid="analytics-cagr-1y">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-navy-700">1Y Return</p>
+              <InfoTip metric="ret_1y" meta={mfMeta} />
+            </div>
+            <p className="text-lg font-bold text-navy-950 mt-1" data-testid="analytics-cagr-1y">
               {ret.cagr_1y !== null ? pct(ret.cagr_1y) : "—"}
             </p>
           </div>
           <div className="rounded-lg bg-navy-50 p-2.5">
-            <p className="text-xs text-navy-700">3Y CAGR</p>
-            <p className="text-lg font-bold text-navy-950" data-testid="analytics-cagr-3y">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-navy-700">3Y CAGR</p>
+              <InfoTip metric="cagr_3y" meta={mfMeta} />
+            </div>
+            <p className="text-lg font-bold text-navy-950 mt-1" data-testid="analytics-cagr-3y">
               {ret.cagr_3y !== null ? pct(ret.cagr_3y) : "—"}
             </p>
           </div>
           <div className="rounded-lg bg-navy-50 p-2.5">
-            <p className="text-xs text-navy-700">5Y CAGR</p>
-            <p className="text-lg font-bold text-navy-950" data-testid="analytics-cagr-5y">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-navy-700">5Y CAGR</p>
+              <InfoTip metric="cagr_5y" meta={mfMeta} />
+            </div>
+            <p className="text-lg font-bold text-navy-950 mt-1" data-testid="analytics-cagr-5y">
               {ret.cagr_5y !== null ? pct(ret.cagr_5y) : "—"}
             </p>
           </div>
           <div className="rounded-lg bg-teal-50 p-2.5">
-            <p className="text-xs text-teal-800">SIP XIRR</p>
-            <p className="text-lg font-bold text-teal-900" data-testid="analytics-sip-xirr">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-teal-800">SIP XIRR</p>
+              <InfoTip metric="sip_xirr" meta={mfMeta} />
+            </div>
+            <p className="text-lg font-bold text-teal-900 mt-1" data-testid="analytics-sip-xirr">
               {ret.sip_xirr !== null ? pct(ret.sip_xirr) : "—"}
             </p>
           </div>
@@ -127,22 +145,28 @@ export default async function FundDetailPage({ params }: PageProps) {
 
       {/* NAV History Chart */}
       <section className="card space-y-4">
-        <h2 className="text-lg font-bold text-navy-950">NAV History</h2>
+        <div className="flex items-center gap-1.5">
+          <h2 className="text-lg font-bold text-navy-950">NAV History</h2>
+          <InfoTip metric="nav" meta={mfMeta} />
+        </div>
         <NavChart navs={detail.nav_monthly} />
       </section>
 
       {/* Rolling Returns Analysis */}
       <section className="card space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-navy-950">Rolling Returns Consistency</h2>
-          <p className="text-xs text-navy-700">
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-lg font-bold text-navy-950">Rolling Returns Consistency</h2>
+            <InfoTip metric="rolling_returns" meta={mfMeta} />
+          </div>
+          <p className="text-xs text-navy-700 mt-1">
             Rolling returns evaluate real holding period performance across all historical entry dates, avoiding point-to-point end-date bias.
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <RollingDistributionCard stats={rolling["1y"]} title="1-Year Rolling" />
-          <RollingDistributionCard stats={rolling["3y"]} title="3-Year Rolling" />
-          <RollingDistributionCard stats={rolling["5y"]} title="5-Year Rolling" />
+          <RollingDistributionCard stats={rolling["1y"]} title="1-Year Rolling" metric="rolling_1y" meta={mfMeta} />
+          <RollingDistributionCard stats={rolling["3y"]} title="3-Year Rolling" metric="rolling_3y" meta={mfMeta} />
+          <RollingDistributionCard stats={rolling["5y"]} title="5-Year Rolling" metric="rolling_5y" meta={mfMeta} />
         </div>
       </section>
 
@@ -155,32 +179,47 @@ export default async function FundDetailPage({ params }: PageProps) {
           </p>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700">Annualized Volatility (3Y)</dt>
+              <dt className="text-navy-700 inline-flex items-center gap-1">
+                <span>Annualized Volatility (3Y)</span>
+                <InfoTip metric="vol_3y" meta={mfMeta} />
+              </dt>
               <dd className="font-semibold text-navy-950" data-testid="analytics-vol-3y">
                 {risk.annualized_volatility_3y !== null ? pct(risk.annualized_volatility_3y) : "—"}
               </dd>
             </div>
             <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700">Sharpe Ratio (3Y)</dt>
+              <dt className="text-navy-700 inline-flex items-center gap-1">
+                <span>Sharpe Ratio (3Y)</span>
+                <InfoTip metric="sharpe_3y" meta={mfMeta} />
+              </dt>
               <dd className="font-semibold text-navy-950">
                 {risk.sharpe_3y !== null ? risk.sharpe_3y.toFixed(2) : "—"}
               </dd>
             </div>
             <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700">Sortino Ratio (3Y)</dt>
+              <dt className="text-navy-700 inline-flex items-center gap-1">
+                <span>Sortino Ratio (3Y)</span>
+                <InfoTip metric="sortino_3y" meta={mfMeta} />
+              </dt>
               <dd className="font-semibold text-navy-950">
                 {risk.sortino_3y !== null ? risk.sortino_3y.toFixed(2) : "—"}
               </dd>
             </div>
             <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700">Max Historical Drawdown</dt>
+              <dt className="text-navy-700 inline-flex items-center gap-1">
+                <span>Max Historical Drawdown</span>
+                <InfoTip metric="max_drawdown" meta={mfMeta} />
+              </dt>
               <dd className="font-semibold text-rose-700">
                 {risk.max_drawdown !== null ? pct(risk.max_drawdown) : "—"}
               </dd>
             </div>
             {dd && (
               <div className="flex justify-between py-1.5">
-                <dt className="text-navy-700">Longest underwater period</dt>
+                <dt className="text-navy-700 inline-flex items-center gap-1">
+                  <span>Longest underwater period</span>
+                  <InfoTip metric="underwater_period" meta={mfMeta} />
+                </dt>
                 <dd className="font-medium text-navy-900" data-testid="analytics-underwater">
                   {dd.longest_underwater_months} months
                 </dd>
@@ -191,7 +230,10 @@ export default async function FundDetailPage({ params }: PageProps) {
 
         {/* Capture Ratios */}
         <section className="card space-y-3">
-          <h2 className="text-lg font-bold text-navy-950">Market Capture vs Category</h2>
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-lg font-bold text-navy-950">Market Capture vs Category</h2>
+            <InfoTip metric="up_capture" meta={mfMeta} />
+          </div>
           <p className="text-xs text-navy-700">
             Measures participation in up vs down months relative to the category median.
           </p>

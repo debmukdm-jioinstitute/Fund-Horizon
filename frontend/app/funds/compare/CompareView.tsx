@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { CompareResponse } from "@/lib/types";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
+import InfoTip from "@/components/InfoTip";
 
 interface Props {
   initialData: CompareResponse | null;
@@ -151,7 +152,12 @@ export function CompareView({ initialData }: Props) {
               ))}
             </tr>
             <tr>
-              <td className="p-3 font-medium text-navy-700">3Y CAGR</td>
+              <td className="p-3 font-medium text-navy-700">
+                <span className="inline-flex items-center gap-1">
+                  <span>3Y CAGR</span>
+                  <InfoTip metric="cagr_3y" />
+                </span>
+              </td>
               {funds.map((f) => {
                 const isTop = f.cagr_3y !== null && f.cagr_3y === maxCagr3y && funds.length > 1;
                 return (
@@ -168,7 +174,12 @@ export function CompareView({ initialData }: Props) {
               })}
             </tr>
             <tr>
-              <td className="p-3 font-medium text-navy-700">5Y CAGR</td>
+              <td className="p-3 font-medium text-navy-700">
+                <span className="inline-flex items-center gap-1">
+                  <span>5Y CAGR</span>
+                  <InfoTip metric="cagr_5y" />
+                </span>
+              </td>
               {funds.map((f) => {
                 const isTop = f.cagr_5y !== null && f.cagr_5y === maxCagr5y && funds.length > 1;
                 return (
@@ -182,7 +193,12 @@ export function CompareView({ initialData }: Props) {
               })}
             </tr>
             <tr>
-              <td className="p-3 font-medium text-navy-700">3Y Volatility</td>
+              <td className="p-3 font-medium text-navy-700">
+                <span className="inline-flex items-center gap-1">
+                  <span>3Y Volatility</span>
+                  <InfoTip metric="vol_3y" />
+                </span>
+              </td>
               {funds.map((f) => {
                 const isLowest = f.vol_3y !== null && f.vol_3y === minVol && funds.length > 1;
                 return (
@@ -196,7 +212,12 @@ export function CompareView({ initialData }: Props) {
               })}
             </tr>
             <tr>
-              <td className="p-3 font-medium text-navy-700">3Y Sharpe Ratio</td>
+              <td className="p-3 font-medium text-navy-700">
+                <span className="inline-flex items-center gap-1">
+                  <span>3Y Sharpe Ratio</span>
+                  <InfoTip metric="sharpe_3y" />
+                </span>
+              </td>
               {funds.map((f) => {
                 const isTop = f.sharpe_3y !== null && f.sharpe_3y === maxSharpe && funds.length > 1;
                 return (
@@ -210,7 +231,12 @@ export function CompareView({ initialData }: Props) {
               })}
             </tr>
             <tr>
-              <td className="p-3 font-medium text-navy-700">Max Drawdown (3Y)</td>
+              <td className="p-3 font-medium text-navy-700">
+                <span className="inline-flex items-center gap-1">
+                  <span>Max Drawdown (3Y)</span>
+                  <InfoTip metric="max_drawdown_3y" />
+                </span>
+              </td>
               {funds.map((f) => {
                 const isLowest = f.max_drawdown_3y !== null && f.max_drawdown_3y === minDrawdown && funds.length > 1;
                 return (

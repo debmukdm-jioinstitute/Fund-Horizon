@@ -17,6 +17,7 @@ import {
 } from "recharts";
 import type { FundNavPoint, RollingStats } from "@/lib/types";
 import { pct } from "@/lib/format";
+import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
 
 export function NavChart({ navs }: { navs: FundNavPoint[] }) {
   const [range, setRange] = useState<"1y" | "3y" | "5y" | "all">("3y");
@@ -98,9 +99,13 @@ export function NavChart({ navs }: { navs: FundNavPoint[] }) {
 export function RollingDistributionCard({
   stats,
   title,
+  metric,
+  meta,
 }: {
   stats: RollingStats;
   title: string;
+  metric?: string;
+  meta?: InfoTipMeta | null;
 }) {
   if (stats.median === null || stats.min === null || stats.max === null) {
     return null;
@@ -109,7 +114,10 @@ export function RollingDistributionCard({
   return (
     <div className="rounded-lg border border-navy-100 bg-white p-3 text-sm">
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-navy-900">{title}</span>
+        <span className="font-semibold text-navy-900 inline-flex items-center gap-1">
+          <span>{title}</span>
+          {metric && <InfoTip metric={metric} meta={meta} />}
+        </span>
         {stats.pct_positive !== null && (
           <span className="rounded bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-800">
             {pct(stats.pct_positive, 0)} positive

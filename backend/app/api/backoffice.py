@@ -1,8 +1,6 @@
 """FastAPI router for Fund Horizon Internal Backoffice."""
 from __future__ import annotations
 
-import csv
-import io
 import re
 import secrets
 from datetime import UTC, datetime
@@ -20,11 +18,17 @@ from app.api.auth import (
     require_staff,
     verify_csrf,
 )
+from app.backoffice.analytics.impact_engine import analyze_impact, simulate_scenario
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import factsheet_archive_dir, refresh_source
-from app.backoffice.fh_recommended import FH_RECOMMENDED_MF_CODES, MF_FACTSHEET_SOURCE, PMS_FACTSHEET_SOURCE, PMS_NO_PUBLIC_FACTSHEET
-from app.backoffice.providers import factsheets as factsheets_provider
+from app.backoffice.fh_recommended import (
+    FH_RECOMMENDED_MF_CODES,
+    MF_FACTSHEET_SOURCE,
+    PMS_FACTSHEET_SOURCE,
+    PMS_NO_PUBLIC_FACTSHEET,
+)
 from app.backoffice.providers import apmi as apmi_provider
+from app.backoffice.providers import factsheets as factsheets_provider
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
 from app.backoffice.providers.nse import NseError
 from app.backoffice.repository import BackofficeRepository
@@ -546,13 +550,18 @@ def backoffice_mf_nav_pair_check(
 # Explainable Impact Engine
 # ---------------------------------------------------------------------------
 
+class ImpactScenarioRequestWithConvexity(ImpactScenarioRequest):
+    convexity: float = 0.0
+
+
 @router.post("/impact/analyze")
 def backoffice_impact_analyze(
     body: ImpactAnalyzeRequest,
     staff: Annotated[dict, Depends(require_staff)],
 ):
     """Empirical OLS elasticity, rolling correlation, and lag analysis between pairs."""
-    return _SERVICE.analyze_impact(
+    return analyze_impact(
+        repo=_REPO,
         series_x_id=body.series_x_id,
         series_y_id=body.series_y_id,
         horizon_days=body.horizon_days,
@@ -562,15 +571,17 @@ def backoffice_impact_analyze(
 
 @router.post("/impact/scenario")
 def backoffice_impact_scenario(
-    body: ImpactScenarioRequest,
+    body: ImpactScenarioRequestWithConvexity,
     staff: Annotated[dict, Depends(require_staff)],
 ):
     """Macroeconomic shock scenario simulation (duration shocks, USD rally, oil inflation)."""
-    return _SERVICE.simulate_scenario(
+    return simulate_scenario(
+        repo=_REPO,
         usd_shock_pct=body.usd_shock_pct,
         us_yield_shock_bps=body.us_yield_shock_bps,
         oil_shock_pct=body.oil_shock_pct,
         modified_duration=body.modified_duration,
+        convexity=body.convexity,
     )
 
 

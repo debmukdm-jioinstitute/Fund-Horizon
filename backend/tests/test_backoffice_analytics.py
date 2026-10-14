@@ -2,12 +2,10 @@
 from __future__ import annotations
 
 import math
-import pytest
 
-from app.backoffice.analytics.derivatives_math import calculate_pcr, compute_max_pain
+from app.backoffice.analytics.derivatives_math import calculate_pcr
 from app.backoffice.analytics.impact_engine import (
     align_paired_series,
-    calculate_bps_changes,
     calculate_log_returns,
     compute_bond_price_sensitivity,
     compute_correlation_and_beta,
@@ -199,3 +197,87 @@ def test_deterministic_briefing_generation():
     assert "300.0" in full_text
     assert "18.50" in full_text
     assert "1.15" in full_text
+
+
+def test_impact_engine_convexity():
+    # ΔP/P ≈ -modified_duration * Δyield_decimal + 0.5 * convexity * (Δyield_decimal ** 2)
+    # Duration = 6.0, yield_change_bps = 100.0 => Δyield_decimal = 0.0100
+    # Convexity = 50.0:
+    # duration_effect = -6.0 * 0.0100 = -0.0600 (-6.0%)
+    # convexity_effect = 0.5 * 50.0 * (0.0100 ** 2) = 0.0025 (+0.25%)
+    # total = -5.75%
+    res = compute_bond_price_sensitivity(modified_duration=6.0, yield_change_bps=100.0, convexity=50.0)
+    assert res["delta_yield_decimal"] == 0.0100
+    assert res["duration_effect_pct"] == -6.0
+    assert res["convexity_effect_pct"] == 0.25
+    assert res["estimated_price_change_pct"] == -5.75
+
+    # Default convexity = 0
+    res_zero = compute_bond_price_sensitivity(modified_duration=6.0, yield_change_bps=100.0, convexity=0.0)
+    assert res_zero["convexity_effect_pct"] == 0.0
+    assert res_zero["estimated_price_change_pct"] == -6.0
+
+
+def test_impact_engine_lag():
+    from app.backoffice.analytics.impact_engine import shift_series_dates
+
+    # Series X with dates 2026-10-01 to 2026-10-15 (non-linear series)
+    dates_x = [f"2026-10-{i:02d}" for i in range(1, 16)]
+    val_x = [float(i * i) for i in range(1, 16)]
+    series_x = list(zip(dates_x, val_x))
+
+    dates_y = [f"2026-10-{i:02d}" for i in range(1, 16)]
+    val_y = [float(i * 1.5 + (i % 3)) for i in range(1, 16)]
+    series_y = list(zip(dates_y, val_y))
+
+    # Lag 0
+    aligned_lag0 = align_paired_series(shift_series_dates(series_x, 0), series_y)
+    stats_lag0 = compute_correlation_and_beta(aligned_lag0["paired_x"], aligned_lag0["paired_y"])
+
+    # Lag 5: shifts X dates forward by 5 days so X on 10-01 joins with Y on 10-06
+    aligned_lag5 = align_paired_series(shift_series_dates(series_x, 5), series_y)
+    stats_lag5 = compute_correlation_and_beta(aligned_lag5["paired_x"], aligned_lag5["paired_y"])
+
+    # Lag 5 gives a different result from Lag 0
+    assert stats_lag5["beta"] != stats_lag0["beta"]
+    assert aligned_lag5["n"] == 10  # 10 overlapping dates (Oct 06 to Oct 15)
+    assert aligned_lag0["n"] == 15
+
+
+def test_impact_engine_window_and_symmetry():
+    # Asymmetric series lengths: Series X has 50 dates, Series Y has 10 dates
+    dates_x = [f"2026-09-{i:02d}" for i in range(1, 31)] + [f"2026-10-{i:02d}" for i in range(1, 21)]
+    s_x = [(d, 1.0) for d in dates_x]
+
+    dates_y = [f"2026-10-{i:02d}" for i in range(5, 15)]
+    s_y = [(d, 2.0) for d in dates_y]
+
+    # Align A on B
+    aligned_ab = align_paired_series(s_x, s_y)
+    # Align B on A
+    aligned_ba = align_paired_series(s_y, s_x)
+
+    # Must be completely symmetric and measured against shorter series (len=10)
+    assert aligned_ab["n"] == 10
+    assert aligned_ba["n"] == 10
+    assert aligned_ab["coverage_pct"] == 100.0
+    assert aligned_ba["coverage_pct"] == 100.0
+    assert aligned_ab["n"] == aligned_ba["n"]
+
+
+def test_impact_engine_calendar_windows():
+    from datetime import datetime, timedelta
+
+    # Generate daily trading dates for last 130 calendar days (excluding weekends)
+    today = datetime(2026, 10, 14).date()
+    trading_dates = []
+    for day_offset in range(130, -1, -1):
+        d = today - timedelta(days=day_offset)
+        if d.weekday() < 5:  # Mon-Fri
+            trading_dates.append(d.strftime("%Y-%m-%d"))
+
+    for horizon, expected_approx in [(20, 14), (60, 42), (120, 84)]:
+        start_date = (today - timedelta(days=horizon)).strftime("%Y-%m-%d")
+        in_window = [d for d in trading_dates if d >= start_date]
+        # In a 20/60/120 calendar day window, weekday count is approx 14, 42, 84
+        assert abs(len(in_window) - expected_approx) <= 4

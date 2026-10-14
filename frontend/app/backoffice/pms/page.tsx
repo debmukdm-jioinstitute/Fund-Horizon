@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
+import CompareTray from "@/components/compare/CompareTray";
+import CompareView from "@/components/compare/CompareView";
+import { pmsCompareId, useCompareSelection } from "@/lib/compare-selection";
 import {
   getPmsStrategies,
   getPmsAccountTracker,
@@ -96,6 +99,15 @@ function SortHeader({
 }
 
 export default function PmsTrackerPage() {
+  return (
+    <Suspense fallback={null}>
+      <PmsTracker />
+    </Suspense>
+  );
+}
+
+function PmsTracker() {
+  const compare = useCompareSelection("pms");
   const [tab, setTab] = useState<"strategies" | "accounts">("strategies");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
   const [asOf, setAsOf] = useState<string | undefined>();
@@ -238,10 +250,11 @@ export default function PmsTrackerPage() {
     setPage(0);
   }
 
-  const colSpan = isRecommended ? 9 : 7;
+  const colSpan = isRecommended ? 10 : 8;
+  const trayVisible = tab === "strategies" && compare.selectedIds.length > 0;
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${trayVisible ? "pb-[88px]" : ""}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
@@ -258,6 +271,16 @@ export default function PmsTrackerPage() {
         </div>
 
         <div className="flex items-center gap-1.5 self-start sm:self-auto">
+          {tab === "strategies" && (
+            <button
+              type="button"
+              disabled={compare.selectedIds.length < 2}
+              onClick={compare.openCompare}
+              className="terminal-btn-accent text-[12px] py-1 px-3 disabled:opacity-40"
+            >
+              Compare{compare.selectedIds.length ? ` (${compare.selectedIds.length})` : ""}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setTab("strategies")}
@@ -396,6 +419,7 @@ export default function PmsTrackerPage() {
                   {isRecommended ? (
                     fhSubTab === "returns" ? (
                       <tr>
+                        <th className="w-[40px]" aria-label="Compare" />
                         <th className="w-[5%] text-center">SR</th>
                         <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                         <SortHeader label="1M" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
@@ -428,6 +452,7 @@ export default function PmsTrackerPage() {
                       </tr>
                     ) : (
                       <tr>
+                        <th className="w-[40px]" aria-label="Compare" />
                         <th className="w-[5%] text-center">SR</th>
                         <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                         <th>Type</th>
@@ -440,6 +465,7 @@ export default function PmsTrackerPage() {
                     )
                   ) : (
                     <tr>
+                      <th className="w-[40px]" aria-label="Compare" />
                       <SortHeader label="Provider / Strategy" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                       <th>Approach</th>
                       <SortHeader label="AUM (₹ Cr)" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="aum" meta={meta?.aum ?? meta?._default} />
@@ -470,12 +496,26 @@ export default function PmsTrackerPage() {
                         const approach = normalizeApproach(s.investment_approach || s.strategy_type) || "—";
                         const benchmark = sourceBenchmark(s.benchmark_name);
                         const rowKey = `${s.ia_id || s.strategy_name}-${s.provider_name}-${s.service_type || ""}-${idx}`;
+                        const cid = pmsCompareId(s);
+                        const checked = compare.selectedIds.includes(cid);
+                        const capped = !checked && compare.maxSelected;
                         return (
                           <tr
                             key={rowKey}
                             className="cursor-pointer"
                             onClick={() => setSelectedStrategy(s)}
                           >
+                            <td className="w-[40px] text-center align-middle" onClick={(e) => e.stopPropagation()}>
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                disabled={capped}
+                                title={capped ? "Max 4 to compare" : undefined}
+                                aria-label={`Compare ${s.strategy_name}`}
+                                className="h-4 w-4 accent-[#006F64]"
+                                onChange={() => compare.toggle(cid, s.strategy_name)}
+                              />
+                            </td>
                             {isRecommended && (
                               <td className="text-center font-mono text-[11px] text-[#536176] dark:text-[#A8B4C4]">
                                 {safePage * PAGE_SIZE + idx + 1}
@@ -752,6 +792,25 @@ export default function PmsTrackerPage() {
             </div>
           )}
         </div>
+      )}
+
+      {tab === "strategies" && (
+        <>
+          <CompareTray
+            labels={compare.selectedIds.map((id) => ({ id, name: compare.resolveLabel(id) }))}
+            onRemove={compare.remove}
+            onClear={compare.clear}
+            onCompare={compare.openCompare}
+          />
+          <CompareView
+            open={compare.compareOpen}
+            type="pms"
+            ids={compare.selectedIds}
+            onClose={compare.closeCompare}
+            onRemoveId={compare.remove}
+            resolveLabel={compare.resolveLabel}
+          />
+        </>
       )}
 
       <PmsStrategyDrawer

@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { getMutualFundsTracker, MutualFundItem } from "@/lib/backoffice";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
+import CompareTray from "@/components/compare/CompareTray";
+import CompareView from "@/components/compare/CompareView";
+import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 
 const PAGE_SIZE = 50;
 
@@ -21,6 +24,15 @@ function formatNav(nav?: number | string): string {
 }
 
 export default function MutualFundsTrackerPage() {
+  return (
+    <Suspense fallback={null}>
+      <MutualFundsTracker />
+    </Suspense>
+  );
+}
+
+function MutualFundsTracker() {
+  const compare = useCompareSelection("mf");
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [amc, setAmc] = useState("");
@@ -146,7 +158,7 @@ export default function MutualFundsTrackerPage() {
   }, [from, to, total]);
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
@@ -162,6 +174,15 @@ export default function MutualFundsTrackerPage() {
           </p>
         </div>
 
+        <div className="flex items-center gap-3">
+        <button
+          type="button"
+          disabled={compare.selectedIds.length < 2}
+          onClick={compare.openCompare}
+          className="terminal-btn-accent text-[12px] py-1 px-3 disabled:opacity-40"
+        >
+          Compare{compare.selectedIds.length ? ` (${compare.selectedIds.length})` : ""}
+        </button>
         <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono text-right">
           {asOf && <div>NAV as of {formatISTDate(asOf)}</div>}
           <div>
@@ -170,6 +191,7 @@ export default function MutualFundsTrackerPage() {
               portal.amfiindia.com
             </a>
           </div>
+        </div>
         </div>
       </div>
 
@@ -260,6 +282,7 @@ export default function MutualFundsTrackerPage() {
           <table className="terminal-table">
             <thead>
               <tr>
+                <th className="w-[40px]" aria-label="Compare" />
                 <th className="w-[10%]">Code</th>
                 <th className="w-[32%]">
                   <button type="button" onClick={() => toggleSort("name")} className="hover:underline cursor-pointer" title="Sort by scheme name">
@@ -294,13 +317,13 @@ export default function MutualFundsTrackerPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                  <td colSpan={8} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
                     Loading scheme universe from AMFI registry…
                   </td>
                 </tr>
               ) : schemes.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                  <td colSpan={8} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
                     No schemes found matching the current search and filters.
                   </td>
                 </tr>
@@ -308,8 +331,22 @@ export default function MutualFundsTrackerPage() {
                 sortedSchemes.map((s) => {
                   const classified = schemeLabel(s);
                   const stale = isNavStale(s.nav_date);
+                  const cid = mfCompareId(s);
+                  const checked = compare.selectedIds.includes(cid);
+                  const capped = !checked && compare.maxSelected;
                   return (
                     <tr key={s.scheme_code} className="cursor-pointer" onClick={() => setSelectedScheme(s)}>
+                      <td className="w-[40px] text-center align-middle" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={capped}
+                          title={capped ? "Max 4 to compare" : undefined}
+                          aria-label={`Compare ${s.scheme_name}`}
+                          className="h-4 w-4 accent-[#006F64]"
+                          onChange={() => compare.toggle(cid, s.scheme_name)}
+                        />
+                      </td>
                       <td>
                         <button
                           type="button"
@@ -398,6 +435,21 @@ export default function MutualFundsTrackerPage() {
           </div>
         </div>
       </div>
+
+      <CompareTray
+        labels={compare.selectedIds.map((id) => ({ id, name: compare.resolveLabel(id) }))}
+        onRemove={compare.remove}
+        onClear={compare.clear}
+        onCompare={compare.openCompare}
+      />
+      <CompareView
+        open={compare.compareOpen}
+        type="mf"
+        ids={compare.selectedIds}
+        onClose={compare.closeCompare}
+        onRemoveId={compare.remove}
+        resolveLabel={compare.resolveLabel}
+      />
 
       <MutualFundDrawer
         scheme={selectedScheme}

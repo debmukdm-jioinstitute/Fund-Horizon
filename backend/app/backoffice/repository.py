@@ -585,6 +585,52 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def get_mf_schemes_by_codes(self, codes: list[str]) -> list[dict[str, Any]]:
+        if not codes:
+            return []
+        conn = self._conn()
+        try:
+            placeholders = ",".join("?" for _ in codes)
+            rows = conn.execute(
+                f"""
+                SELECT s.*,
+                       CASE WHEN s.plan = 'Direct' THEN t.direct_ter_pct ELSE t.regular_ter_pct END AS ter_pct,
+                       t.as_of AS ter_as_of
+                FROM mf_schemes s LEFT JOIN mf_ter t ON t.base_key = s.base_key
+                WHERE s.scheme_code IN ({placeholders})
+                """,
+                codes,
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def get_pms_apmi_by_ia_id(self, ia_id: str, as_on: str) -> dict[str, Any] | None:
+        conn = self._conn()
+        try:
+            row = conn.execute(
+                "SELECT * FROM pms_apmi_strategies WHERE ia_id = ? AND as_on = ? LIMIT 1",
+                (ia_id, as_on),
+            ).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def list_pms_apmi_history(self, provider: str, strategy_name: str) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT * FROM pms_apmi_strategies
+                WHERE provider = ? AND strategy_name = ?
+                ORDER BY as_on ASC
+                """,
+                (provider, strategy_name),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
     def _mf_where(
         self, search: str | None, amc: str | None, category: str | None, plan: str | None,
         codes: Collection[str] | None = None,

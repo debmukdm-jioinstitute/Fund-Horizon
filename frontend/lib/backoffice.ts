@@ -169,14 +169,51 @@ export interface SourceHealthData {
   };
 }
 
+export interface CompareMetrics {
+  ret_1y: number | null;
+  ret_3y: number | null;
+  ret_5y: number | null;
+  ret_si: number | null;
+  cagr: number | null;
+  std_dev: number | null;
+  sharpe: number | null;
+  sortino: number | null;
+  alpha: number | null;
+  beta: number | null;
+  max_dd: number | null;
+  up_capture: number | null;
+  down_capture: number | null;
+  ter: number | null;
+  aum: number | null;
+  nav_or_min_ticket: number | null;
+  manager: string | null;
+  manager_tenure: string | null;
+  quartile: number | null;
+}
+
+export interface ComparePayload {
+  type: "mf" | "pms";
+  items: Array<{
+    id: string;
+    name: string;
+    category: string | null;
+    amc_or_manager: string | null;
+    inception: string | null;
+    metrics: CompareMetrics;
+    series: [string, number][];
+  }>;
+  benchmark: { name: string; series: [string, number][] };
+  meta: { fetched_at: string; source: string };
+}
+
 export interface PmsStrategyItem {
   id?: string;
+  ia_id?: string;
   provider_name: string;
   strategy_name: string;
   investment_approach?: string;
   strategy_type?: string;
   service_type?: string;
-  ia_id?: string;
   aum_crore?: number;
   min_investment?: string;
   inception_date?: string;
@@ -634,6 +671,7 @@ export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategy
         return n === 0 && !aum ? undefined : n;
       };
       return {
+        id: str(r.ia_id) || `${str(r.provider) ?? "—"}::${str(r.strategy_name) ?? "—"}`,
         provider_name: str(r.provider) ?? "—",
         strategy_name: str(r.strategy_name) ?? "—",
         investment_approach: str(r.strategy_type),
@@ -766,6 +804,68 @@ export const getMutualFundsTracker = async (opts?: {
         : [],
       plan_counts,
     },
+  };
+};
+
+export const getBackofficeCompare = async (type: "mf" | "pms", ids: string[]): Promise<ComparePayload> => {
+  const qs = new URLSearchParams({ type, ids: ids.join(",") });
+  const raw = await boFetch<Json>(`/api/backoffice/compare?${qs.toString()}`);
+  const items = arr(raw.items).map((it) => {
+    const m = obj(it.metrics);
+    const metrics: CompareMetrics = {
+      ret_1y: num(m.ret_1y) ?? null,
+      ret_3y: num(m.ret_3y) ?? null,
+      ret_5y: num(m.ret_5y) ?? null,
+      ret_si: num(m.ret_si) ?? null,
+      cagr: num(m.cagr) ?? null,
+      std_dev: num(m.std_dev) ?? null,
+      sharpe: num(m.sharpe) ?? null,
+      sortino: num(m.sortino) ?? null,
+      alpha: num(m.alpha) ?? null,
+      beta: num(m.beta) ?? null,
+      max_dd: num(m.max_dd) ?? null,
+      up_capture: num(m.up_capture) ?? null,
+      down_capture: num(m.down_capture) ?? null,
+      ter: num(m.ter) ?? null,
+      aum: num(m.aum) ?? null,
+      nav_or_min_ticket: num(m.nav_or_min_ticket) ?? null,
+      manager: str(m.manager) ?? null,
+      manager_tenure: str(m.manager_tenure) ?? null,
+      quartile: num(m.quartile) ?? null,
+    };
+    const series = arr(it.series)
+      .map((pt) => {
+        const pair = arr(pt);
+        if (pair.length < 2) return null;
+        const v = num(pair[1]);
+        return v === undefined ? null : ([String(pair[0]), v] as [string, number]);
+      })
+      .filter((x): x is [string, number] => x !== null);
+    return {
+      id: String(it.id ?? ""),
+      name: str(it.name) ?? "—",
+      category: str(it.category) ?? null,
+      amc_or_manager: str(it.amc_or_manager) ?? null,
+      inception: str(it.inception) ?? null,
+      metrics,
+      series,
+    };
+  });
+  const bench = obj(raw.benchmark);
+  const benchSeries = arr(bench.series)
+    .map((pt) => {
+      const pair = arr(pt);
+      if (pair.length < 2) return null;
+      const v = num(pair[1]);
+      return v === undefined ? null : ([String(pair[0]), v] as [string, number]);
+    })
+    .filter((x): x is [string, number] => x !== null);
+  const meta = obj(raw.meta);
+  return {
+    type: raw.type === "pms" ? "pms" : "mf",
+    items,
+    benchmark: { name: str(bench.name) ?? "Benchmark", series: benchSeries },
+    meta: { fetched_at: str(meta.fetched_at) ?? "", source: str(meta.source) ?? "" },
   };
 };
 

@@ -678,12 +678,48 @@ def backoffice_impact_scenario(
 
 
 @router.get("/briefing")
-def backoffice_briefing(staff: Annotated[dict, Depends(require_staff)]):
-    """Deterministic daily research briefing generated from observed data (zero LLM)."""
-    res = _SERVICE.get_research_briefing()
-    if isinstance(res, dict):
-        return with_meta(res, "derived", res.get("generated_at"))
-    return res
+def backoffice_briefing(
+    staff: Annotated[dict, Depends(require_staff)],
+    date: str | None = Query(default=None, description="IST date YYYY-MM-DD; default latest"),
+):
+    """Stored daily briefing (read-only). No live provider or NSE fetch in the request path.
+
+    Empty sections are included with ``items: []`` and a ``note`` explaining why
+    (the frontend collapses them).
+    """
+    if date is not None:
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(
+                status_code=404, detail=f"No briefing stored for date '{date}' (expected YYYY-MM-DD)."
+            ) from None
+        row = _REPO.get_briefing_by_date(date)
+        if row is None:
+            raise HTTPException(status_code=404, detail=f"No briefing stored for {date} yet.")
+    else:
+        row = _REPO.get_latest_briefing()
+        if row is None:
+            raise HTTPException(status_code=404, detail="No briefing has been built yet.")
+    payload = dict(row["payload"])
+    payload.pop("_history", None)  # internal change-computation state, not part of the API contract
+    return payload
+
+
+@router.get("/briefing/dates")
+def backoffice_briefing_dates(staff: Annotated[dict, Depends(require_staff)]):
+    """Last 30 briefing dates (IST, newest first) for the archive picker."""
+    return {"dates": _REPO.list_briefing_dates(30)}
+
+
+@router.post("/briefing/rebuild", status_code=202)
+def backoffice_briefing_rebuild(admin: Annotated[dict, Depends(require_role("admin"))]):
+    """Manually trigger the daily briefing build (idempotent). Admin only."""
+    from app.backoffice.collectors import build_daily_briefing
+
+    res = build_daily_briefing()
+    _REPO.log_audit(admin["id"], "briefing_rebuild", "briefing", res["brief_date"], {"brief_date": res["brief_date"]})
+    return {"ok": True, "brief_date": res["brief_date"]}
 
 
 # ---------------------------------------------------------------------------

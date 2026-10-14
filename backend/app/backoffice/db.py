@@ -432,6 +432,10 @@ def _seed_default_registries(conn: sqlite3.Connection) -> None:
         # Volatility
         ("VOL:US:VIX", "CBOE", "VIX", "Cboe Volatility Index Close", "volatility", "USD", None, None, "index_pts", "SRC_CBOE", "VIX", "implied_vol", "1990-01-01", None),
         ("VOL:IN:INDIAVIX", "NSE", "INDIAVIX", "India VIX Index Close", "volatility", "INR", None, None, "index_pts", "SRC_NSE_FNO", "INDIAVIX", "implied_vol", "2008-01-01", None),
+        # Equity indices (persisted by the NSE collector; seeded here for provenance)
+        ("INDEX:IN:NIFTY50", "NSE", "NIFTY 50", "NIFTY 50 Index", "equity", "INR", None, None, "index_pts", "SRC_NSE_FNO", "NIFTY 50", "spot", "2000-01-01", None),
+        ("INDEX:IN:NIFTYBANK", "NSE", "NIFTY BANK", "NIFTY Bank Index", "equity", "INR", None, None, "index_pts", "SRC_NSE_FNO", "NIFTY BANK", "spot", "2000-01-01", None),
+        ("INDEX:IN:SENSEX", "BSE", "SENSEX", "BSE SENSEX Index", "equity", "INR", None, None, "index_pts", "SRC_NSE_FNO", "SENSEX", "spot", "2000-01-01", None),
         # Macro proxy
         ("MACRO:US:BROAD_USD", "FRED", "DTWEXBGS", "Trade Weighted U.S. Dollar Index (Broad Proxy)", "currency", "USD", None, None, "index_pts", "SRC_FRED", "DTWEXBGS", "trade_weighted", "2006-01-01", None),
     ]

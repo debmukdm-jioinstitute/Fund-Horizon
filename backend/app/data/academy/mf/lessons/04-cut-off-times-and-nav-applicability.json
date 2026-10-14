@@ -1,0 +1,71 @@
+{
+ "id": "mf-04",
+ "title": "Cut-off times and NAV applicability",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Explain which day's NAV a purchase or redemption gets.",
+  "State why the time funds are available matters.",
+  "Tell a client what to expect for a late-day order."
+ ],
+ "body_md": "The NAV a client gets depends on **when the request is received and when the money is available**, not simply when the client pressed the button.\n\n## Cut-off times\n\n| Order | General rule for most schemes |\n|---|---|\n| Purchase (not liquid or overnight) | Received and funds available before 3:00 pm on a business day gets that day's NAV |\n| Redemption | Received before 3:00 pm on a business day gets that day's NAV |\n| Liquid and overnight purchase | Earlier cut-off, with funds available for use before 1:30 pm |\n| After the cut-off, or on a holiday | Next business day's NAV |\n\n<!-- TODO-VERIFY: cut-off times and the funds-availability rule per the latest SEBI circular on uniform cut-off timings; confirm before each training cycle. -->\n\n## Why availability matters\n\nFor most non-liquid schemes, the NAV applied to a purchase is that of the day the money is available for use in the scheme. A cheque or transfer that clears the next day gets the next day's NAV. Online payments that settle instantly usually get the same-day NAV if made before the cut-off.\n\n## SIPs and switches\n\nA SIP instalment gets the NAV of the SIP date if funds are available, or the next business day if the date is a holiday. A switch is treated as a redemption from one scheme and a purchase in another, each with its own cut-off.\n\n> **Investor takeaway:** Timing decides the NAV, so place orders early and keep funds ready.",
+ "key_terms": [
+  "cut-off time",
+  "NAV",
+  "SIP"
+ ],
+ "example": "A client submits a redemption at 3:20 pm on Tuesday. It misses the 3:00 pm cut-off, so it gets Wednesday's NAV. If Wednesday's market falls, the client receives less than Tuesday's NAV would have paid.",
+ "say": [
+  "Orders in by 3 pm get that day's NAV. After that, it is the next business day's.",
+  "The NAV depends on when the money reaches the fund, not only when you click."
+ ],
+ "never": [
+  "You will definitely get today's NAV.",
+  "Late orders still get today's price."
+ ],
+ "check": [
+  {
+   "id": "mf-n08",
+   "q": "A redemption request in a non-liquid scheme is received at 3:20 pm on Tuesday. Which NAV applies?",
+   "o": [
+    "Tuesday's",
+    "Wednesday's (next business day)",
+    "Monday's",
+    "The client chooses"
+   ],
+   "a": 1,
+   "why": "After the 3:00 pm cut-off the next business day's NAV applies."
+  },
+  {
+   "id": "mf-n09",
+   "q": "A client pays by a transfer that clears the next day. Which NAV does a non-liquid scheme purchase generally get?",
+   "o": [
+    "The day the order was placed",
+    "The day the funds are available for use",
+    "Last week's NAV",
+    "The highest NAV that month"
+   ],
+   "a": 1,
+   "why": "NAV generally follows the day funds become available for use in the scheme."
+  },
+  {
+   "id": "mf-n10",
+   "q": "A switch from Fund A to Fund B is treated as:",
+   "o": [
+    "A single transaction with no NAV",
+    "A redemption plus a purchase",
+    "A purchase only",
+    "A transfer of units at cost"
+   ],
+   "a": 1,
+   "why": "A switch is a redemption plus a purchase, each at its own applicable NAV."
+  }
+ ],
+ "card_ids": [
+  "mf-c69",
+  "mf-c70"
+ ],
+ "talk_track": [],
+ "words": 244
+}

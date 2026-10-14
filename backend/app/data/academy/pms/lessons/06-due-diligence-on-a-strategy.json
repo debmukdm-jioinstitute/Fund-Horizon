@@ -1,0 +1,79 @@
+{
+ "id": "pms-06",
+ "title": "Due diligence on a strategy",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Check the seven due-diligence areas.",
+  "Compare at least two or three strategies using APMI data.",
+  "Judge track record after fees and in falls."
+ ],
+ "body_md": "A PMS recommendation rests on documented due diligence and a fee illustration the client has seen in rupees, not percentages.\n\n## Due diligence on a strategy\n\n| Area | What to check |\n|---|---|\n| Track record | After-fee returns vs benchmark over 3, 5 and 7 years, including how it did in falls such as 2020 and 2022 |\n| Manager & team | Who runs the money, how long they have, and what happens if they leave |\n| Process | Stock-selection approach and style (growth, value, quality, momentum) and whether it has stayed consistent |\n| Portfolio | Number of stocks, top-10 weight, sector and market-cap concentration, cash calls |\n| Risk | Worst drawdown, volatility, recovery time |\n| Costs | Full fee structure, exit load, and expected brokerage and churn |\n| Comparison | At least two or three strategies in the same category, using APMI-published data |",
+ "key_terms": [
+  "PMS",
+  "high-water mark",
+  "hurdle"
+ ],
+ "example": "You compare three multi-cap strategies on after-fee returns over 3, 5 and 7 years and on how each fell in 2020 and 2022. The fund with a slightly lower return but a shallower fall is a better fit for a cautious client.",
+ "say": [
+  "Here's how this manager did in the 2020 and 2022 falls.",
+  "I'm showing you three strategies side by side, not just one."
+ ],
+ "never": [
+  "This one gave 60% last year, so choose it.",
+  "There is no need to compare."
+ ],
+ "talk_track": [
+  {
+   "n": 9,
+   "title": "Due diligence before any recommendation",
+   "text": "Stage three is Act right, and in PMS it starts with due diligence. This is where we earn our trail. Check eight things before recommending any strategy. Track record: after-fee returns over three, five and seven years, including how it did in the 2020 and 2022 falls. Manager and team: who runs the money, and for how long. Process: the style, and whether it's applied consistently. Portfolio: number of stocks, how much sits in the top ten, sector tilts. Risk: the worst fall, volatility, and how long recovery took. Costs: every fee, the exit load, and expected trading churn. Documents: the Disclosure Document and the agreement. And always compare two or three strategies in the same category using APMI's published data."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q11",
+   "sec": "A: Act Right",
+   "q": "Which is the most important track-record check in PMS due diligence?",
+   "o": [
+    "Best single-quarter return",
+    "Headline pre-fee return since launch",
+    "After-fee returns vs benchmark over 3, 5 and 7 years, including falls",
+    "Number of clients the PMS has"
+   ],
+   "a": 2,
+   "why": "Include how the strategy did in falls such as 2020 and 2022."
+  },
+  {
+   "id": "pms-n05",
+   "q": "How many strategies should you compare before recommending one?",
+   "o": [
+    "Just one",
+    "At least two or three in the same category",
+    "Ten",
+    "None"
+   ],
+   "a": 1,
+   "why": "Compare at least two or three strategies in the same category using APMI-published data."
+  },
+  {
+   "id": "pms-n06",
+   "q": "Which return figure should you use in due diligence?",
+   "o": [
+    "Pre-fee returns",
+    "After-fee returns versus the benchmark",
+    "The best single year",
+    "The manager's own claim"
+   ],
+   "a": 1,
+   "why": "After-fee returns versus the benchmark over 3, 5 and 7 years give a fair picture."
+  }
+ ],
+ "card_ids": [
+  "pms-c24",
+  "pms-c25",
+  "pms-c26"
+ ],
+ "words": 132
+}

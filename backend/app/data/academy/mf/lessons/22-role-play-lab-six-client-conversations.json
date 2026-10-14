@@ -1,0 +1,82 @@
+{
+ "id": "mf-22",
+ "title": "Role-play lab: six client conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Practise six realistic client conversations in pairs.",
+  "Score yourself against what a good response includes.",
+  "Link each scenario to a L.E.A.R.N. stage."
+ ],
+ "body_md": "Run in pairs: one plays the client, one the distributor. The trainer scores on the points listed.\n\n| # | Scenario | Stage tested | What a good response includes |\n|---|---|---|---|\n| 1 | A 26-year-old with a new job wants to \"put ₹2 lakh in the fund that gave the highest return last year\". | E, A | Checks emergency fund and insurance; asks goals and horizon; explains recency bias; suggests SIP or STP into a suitable category. |\n| 2 | A client asks, \"Why should I invest through you when direct plans are cheaper?\" | L | Acknowledges the cost difference honestly; explains selection, reviews, servicing and behavioural support; never dismisses direct plans. |\n| 3 | A client invested 1 year ago and says, \"My fund hasn't grown. Was it the wrong time?\" | R, N | Shows XIRR vs benchmark and category; explains that 1 year is too short for equity; reconnects to goal; no promise of recovery. |\n| 4 | Markets have fallen 15%. A retired client wants to redeem everything. | N | Calm, goal-based response; checks whether near-term money is in debt; separates emergency need from panic; records the conversation. |\n| 5 | A client has 11 funds from different apps and friends. | R | Pulls the CAS; checks overlap; proposes consolidation with tax and exit load in mind. |\n| 6 | A widow calls; her husband's folios have no nominee. | Niche | Empathy first; explains transmission process and documents; offers to coordinate with the RTA; reviews nominations for her own folios. |",
+ "key_terms": [
+  "XIRR",
+  "SIP",
+  "STP"
+ ],
+ "example": "Run scenario 1 in pairs: one plays a 26-year-old who wants ₹2 lakh in last year's top fund. The distributor checks the emergency fund and insurance, asks the goal and horizon, and explains recency bias.",
+ "say": [
+  "Let's understand what this money is for first.",
+  "Let me show you the fund's five-year record, including the bad years."
+ ],
+ "never": [
+  "Let's just do what you asked.",
+  "I'll tell you what you want to hear."
+ ],
+ "talk_track": [
+  {
+   "n": 19,
+   "title": "A distributor's value shows up most when markets fall.",
+   "text": "If you remember one thing from this module, remember this: a distributor's value shows up most when markets fall. Keeping a client invested through one bad year can matter more to their long-term outcome than choosing the so-called best fund. That is the job."
+  },
+  {
+   "n": 21,
+   "title": "Practise, then prove it",
+   "text": "That brings us to the end of Module 1. Next, practise in pairs with the six role-play scenarios from the training manual, then take the thirty-question quiz. The pass mark is eighty percent. Our next module covers PMS Distributors. Thank you."
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q13",
+   "sec": "A: Act Right",
+   "q": "A client has ₹20 lakh for a 10-year goal but fears investing at the wrong time. Best method?",
+   "o": [
+    "STP from a liquid/debt fund into equity over 6–12 months",
+    "Invest all of it in small-cap today",
+    "Keep it in a savings account until markets fall",
+    "Start an SWP"
+   ],
+   "a": 0,
+   "why": "STP stages a large sum into equity and reduces timing regret."
+  },
+  {
+   "id": "mf-q21",
+   "sec": "N: Navigate Behaviour",
+   "q": "Markets fall 15%. What is the first thing you do?",
+   "o": [
+    "Wait for clients to call you",
+    "Advise all clients to pause SIPs",
+    "Proactively call clients, starting with recent and first-time investors",
+    "Move all equity holdings to debt"
+   ],
+   "a": 2,
+   "why": "Call first, before clients call in panic, and reconnect them to their goals."
+  },
+  {
+   "id": "mf-q26",
+   "sec": "Niche Topics & Compliance",
+   "q": "A client switches from Fund A to Fund B in the same fund house. Can it be taxable?",
+   "o": [
+    "Yes, because a switch is a redemption plus a purchase",
+    "No, switches within one fund house are tax-free",
+    "Only if the amount exceeds ₹1 lakh",
+    "Only exit load applies, never tax"
+   ],
+   "a": 0,
+   "why": "Check tax and exit load before every switch, even within the same fund house."
+  }
+ ],
+ "card_ids": [],
+ "words": 234
+}

@@ -1,0 +1,78 @@
+{
+ "id": "pms-08",
+ "title": "The PMS onboarding checklist",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Complete all nine onboarding items.",
+  "Explain DDPI / POA scope before signing.",
+  "Record suitability and the fee illustration."
+ ],
+ "body_md": "- ☐ Suitability assessment documented and signed\n- ☐ Disclosure Document shared and key risks explained\n- ☐ PMS agreement reviewed, including fee schedule and exit load\n- ☐ Fee illustration shown in rupees for up, flat and down years\n- ☐ Direct onboarding option mentioned and our role explained\n- ☐ KYC, demat and bank account opened in the client's name\n- ☐ DDPI / power of attorney scope explained before signing\n- ☐ Nominee added to the PMS demat account\n- ☐ Our APRN and EUIN on all documents; trail commission disclosed\n\n> **Investor takeaway:** Compare at least two or three strategies, read the Disclosure Document, and understand every fee in rupees before you invest.",
+ "key_terms": [
+  "DDPI/POA",
+  "KYC",
+  "demat",
+  "PMS"
+ ],
+ "example": "Before signing, you walk the client through the DDPI scope: it lets the manager trade in the demat but not move securities to other accounts. You note that you explained it and file the signed suitability form.",
+ "say": [
+  "Here is the Disclosure Document and the fee illustration in rupees.",
+  "Please read what you are authorising under the DDPI or power of attorney."
+ ],
+ "never": [
+  "Just sign here, it is standard.",
+  "We can skip the nominee."
+ ],
+ "talk_track": [
+  {
+   "n": 12,
+   "title": "The PMS onboarding checklist",
+   "text": "Before the client signs, run this checklist. Suitability documented and signed. The Disclosure Document shared and its key risks explained. The agreement, fee schedule and exit load reviewed together. Fees shown in rupees for an up year and a down year. The direct onboarding option mentioned, and our role explained. KYC, demat and bank accounts opened in the client's own name. The scope of the DDPI or power of attorney explained before signing. A nominee added to the PMS demat account. And our APRN and EUIN on every document, with the trail commission disclosed. Then set expectations honestly: show how the manager did in past falls, and what the client would pay in a good year and a bad one."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q15",
+   "sec": "A: Act Right",
+   "q": "What is the cap on PMS operating expenses (excluding brokerage)?",
+   "o": [
+    "1% a year",
+    "0.5% a year",
+    "2.5% a year",
+    "There is no cap"
+   ],
+   "a": 1,
+   "why": "Operating expenses, excluding brokerage, are capped at 0.5% a year."
+  },
+  {
+   "id": "pms-n07",
+   "q": "Which document must be shared and its key risks explained before onboarding?",
+   "o": [
+    "Disclosure Document",
+    "A friend's recommendation",
+    "The AMC's newsletter",
+    "A competitor's brochure"
+   ],
+   "a": 0,
+   "why": "The Disclosure Document describes the portfolio manager and risks and must be shared."
+  },
+  {
+   "id": "pms-n08",
+   "q": "Whose name should the demat account for a PMS be opened in?",
+   "o": [
+    "The distributor's",
+    "The client's",
+    "The portfolio manager's",
+    "A family friend's"
+   ],
+   "a": 1,
+   "why": "A PMS holds securities in the client's own demat account."
+  }
+ ],
+ "card_ids": [
+  "pms-c33"
+ ],
+ "words": 107
+}

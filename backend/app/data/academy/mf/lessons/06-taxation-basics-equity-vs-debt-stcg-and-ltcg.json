@@ -1,0 +1,73 @@
+{
+ "id": "mf-06",
+ "title": "Taxation basics: equity vs debt, STCG and LTCG",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Explain how equity and debt fund gains are taxed in broad terms.",
+  "Work out a simple long-term capital gains tax example.",
+  "Know when to send a client to a tax adviser."
+ ],
+ "body_md": "<!-- TODO-VERIFY: every rate and threshold on this page changes with the Finance Act. Check the current rates before each training cycle and before quoting them to a client. -->\n\nTax depends on the fund's **type** and how long the client **holds** the units. A distributor explains the basics and sends the client to a tax adviser for personal advice.\n\n| Fund type | Short-term gain | Long-term gain |\n|---|---|---|\n| Equity-oriented (at least 65% in Indian equity) | Held up to 12 months: taxed at 20% | Held over 12 months: 12.5% on gains above ₹1.25 lakh in a year |\n| Specified debt funds (bought on or after 1 April 2023) | Taxed at the client's slab rate, regardless of holding period | Same as short-term |\n| Other hybrid and debt funds | Rules depend on the equity share and holding period | Check the current rules |\n\nFigures are as understood at the time of writing. Add 4% health and education cess, and surcharge where it applies.\n\n## Points that surprise clients\n\n- **A switch or redemption is a sale** and can trigger tax, even within the same fund house.\n- **Dividends (IDCW)** are taxed at the client's slab rate, and a TDS may apply.\n- **NRIs** face TDS on redemption at the applicable rate, so the amount received is lower than the redemption value.\n- **Set-off:** losses can offset gains under the rules, and some can be carried forward.\n\n> **Investor takeaway:** Check tax before every switch or redemption. Ask your tax adviser about your own position.",
+ "key_terms": [
+  "STCG",
+  "LTCG",
+  "TDS",
+  "exit load"
+ ],
+ "example": "A client sells equity fund units held for 3 years with a gain of ₹3,00,000. The first ₹1,25,000 of long-term gains in the year is exempt, so ₹1,75,000 is taxed at 12.5% = ₹21,875, plus 4% cess of ₹875, about ₹22,750 in total.",
+ "say": [
+  "Tax depends on the fund type and how long you hold. Let's check before we sell.",
+  "For your own tax position, please confirm with your tax adviser."
+ ],
+ "never": [
+  "Mutual funds are tax-free.",
+  "This switch has no tax because it is the same fund house."
+ ],
+ "check": [
+  {
+   "id": "mf-n14",
+   "q": "A client moves money between two schemes of the same AMC. For tax, this is treated as:",
+   "o": [
+    "Not a taxable event",
+    "A redemption plus a purchase, which can be taxable",
+    "A tax refund",
+    "A transfer with no record"
+   ],
+   "a": 1,
+   "why": "A switch is a sale and a purchase, so it can trigger tax and exit load."
+  },
+  {
+   "id": "mf-n15",
+   "q": "For an equity fund, which holding period generally separates short-term from long-term gains?",
+   "o": [
+    "1 month",
+    "6 months",
+    "12 months",
+    "36 months"
+   ],
+   "a": 2,
+   "why": "For equity-oriented funds, the dividing line is 12 months."
+  },
+  {
+   "id": "mf-n16",
+   "q": "Who should you refer a client to for advice on their personal tax position?",
+   "o": [
+    "The fund manager",
+    "A tax adviser or chartered accountant",
+    "The RTA",
+    "SEBI"
+   ],
+   "a": 1,
+   "why": "A distributor explains basics and refers personal tax questions to a qualified adviser."
+  }
+ ],
+ "card_ids": [
+  "mf-c73",
+  "mf-c74",
+  "mf-c75"
+ ],
+ "talk_track": [],
+ "words": 245
+}

@@ -1,0 +1,85 @@
+{
+ "id": "mf-20",
+ "title": "Niche topics (1): transmission, holding mode, switches and lock-ins",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain nomination and transmission to a family.",
+  "Check holding mode and a minor's folio.",
+  "Explain switch = sale, exit load FIFO and ELSS lock-in per instalment."
+ ],
+ "body_md": "These rarely come up at onboarding but cause the most service problems and complaints later. Cover them in reviews.\n\n| Topic | What to explain | Investor takeaway |\n|---|---|---|\n| Transmission after death | Nominee vs legal heir; documents needed; claimant's KYC. Nomination makes transmission much faster. | Every folio needs a nominee, and your family should know where your CAS is. |\n| Joint holding & minor folios | \"Either or survivor\" vs \"joint\" mode; a minor's folio needs KYC and status change at 18, or transactions get blocked. | Check your holding mode; update a child's folio at 18. |\n| Switch = sale | A switch is a redemption plus a purchase, so it can trigger tax and exit load, even within the same fund house. | Check tax and exit load before every switch. |\n| Exit load and ELSS lock-in per SIP instalment | Each SIP instalment unlocks 3 years after its own date (ELSS) and has its own exit-load period. Exit load applies per unit, and units are redeemed first-in, first-out (FIFO), so the oldest units go first. The last instalment decides when all units are free. | Your last SIP instalment, not your first, decides when you can exit freely. |\n| SIP pause vs cancel | Many fund houses allow a temporary pause instead of cancelling and restarting. | Short on cash? Ask about pausing, not stopping. |",
+ "key_terms": [
+  "folio",
+  "exit load",
+  "lock-in",
+  "STCG",
+  "LTCG"
+ ],
+ "example": "A widow's husband held 4 folios with no nominee. Transmission needs a legal-heir or succession document and her KYC, and takes weeks. With a nominee on the folio, it takes far less time.",
+ "say": [
+  "Please add a nominee to every folio. It spares your family weeks of paperwork.",
+  "A switch is a sale and a purchase. Let me check tax and exit load first."
+ ],
+ "never": [
+  "Nominees are a formality.",
+  "A switch within the same AMC has no tax."
+ ],
+ "talk_track": [
+  {
+   "n": 18,
+   "title": "What clients miss, and complain about later",
+   "text": "These are the niche topics that rarely come up at onboarding but cause the most service problems later. Transmission after death: a registered nominee makes the claim far faster than going through legal heirs. Minor folios need KYC updated when the child turns 18. A switch is legally a sale, so it can trigger tax and exit load. Each SIP instalment has its own exit load period and its own ELSS lock-in. Many fund houses let you pause a SIP rather than cancel it. With SWP, only the gain portion of each withdrawal is taxed. A ten-rupee NFO is not cheap, just untested. And the Consolidated Account Statement shows every folio across fund houses in one place. Cover these in your reviews."
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q26",
+   "sec": "Niche Topics & Compliance",
+   "q": "A client switches from Fund A to Fund B in the same fund house. Can it be taxable?",
+   "o": [
+    "Yes, because a switch is a redemption plus a purchase",
+    "No, switches within one fund house are tax-free",
+    "Only if the amount exceeds ₹1 lakh",
+    "Only exit load applies, never tax"
+   ],
+   "a": 0,
+   "why": "Check tax and exit load before every switch, even within the same fund house."
+  },
+  {
+   "id": "mf-q27",
+   "sec": "Niche Topics & Compliance",
+   "q": "A client started an ELSS SIP 3 years ago. Are all units free of lock-in?",
+   "o": [
+    "Yes, lock-in counts from the first instalment",
+    "Yes, SIPs have no lock-in",
+    "No, each instalment has its own 3-year lock-in",
+    "No, ELSS units are locked for 5 years"
+   ],
+   "a": 2,
+   "why": "Each SIP instalment unlocks 3 years after its own date, so the last instalment decides when all units are free."
+  },
+  {
+   "id": "mf-q28",
+   "sec": "Niche Topics & Compliance",
+   "q": "A minor's folio when the child turns 18:",
+   "o": [
+    "Converts automatically",
+    "Needs KYC and a status change, or transactions get blocked",
+    "Is closed and paid out",
+    "Transfers to the parent's name"
+   ],
+   "a": 1,
+   "why": "Remind families to update a child's folio at 18."
+  }
+ ],
+ "card_ids": [
+  "mf-c47",
+  "mf-c48",
+  "mf-c49",
+  "mf-c50",
+  "mf-c51"
+ ],
+ "words": 216
+}

@@ -1,0 +1,72 @@
+{
+ "id": "mf-05",
+ "title": "SID, SAI and KIM: what to show the client",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Name the three offer documents and what each contains.",
+  "Know which scheme details to point out before a client invests.",
+  "Find the monthly factsheet and portfolio disclosure."
+ ],
+ "body_md": "Three documents describe a scheme. A distributor should know what each contains and where the client can read it.\n\n| Document | What it covers | Use it to show |\n|---|---|---|\n| **SID** (Scheme Information Document) | Objective, strategy, asset allocation, risk factors, fees, exit load, benchmark | What the scheme will and will not do |\n| **SAI** (Statement of Additional Information) | Details of the sponsor, trustees, AMC and legal structure | Who is behind the fund |\n| **KIM** (Key Information Memorandum) | A short summary of the SID, given with the application form | The essentials in a few pages |\n\n<!-- TODO-VERIFY: KIM format and distribution rules are periodically revised by SEBI; confirm the current practice. -->\n\n## Other disclosures\n\n- **Factsheet:** monthly, with returns, top holdings, expense ratio and riskometer.\n- **Portfolio disclosure:** every holding, published monthly and half-yearly on the AMC's website. <!-- TODO-VERIFY: disclosure deadlines per current SEBI rules. -->\n- **TER:** the scheme's current expense ratio is published on the AMC's website.\n\n## What to point out before the client signs\n\n1. The scheme's objective and category.\n2. The riskometer level.\n3. Exit load, any lock-in, and the expense ratio.\n4. The benchmark and how the scheme has done against it.\n5. Where to find the SID and the factsheet.\n\n> **Investor takeaway:** Read the key points of the SID or KIM before you invest, not after.",
+ "key_terms": [
+  "SID/SAI/KIM",
+  "riskometer",
+  "exit load",
+  "TER"
+ ],
+ "example": "A client asks, 'What is this fund allowed to buy?' Open the SID, go to the asset allocation table, and show the minimum and maximum equity and debt limits, so the answer comes from the document and not from memory.",
+ "say": [
+  "The scheme document lists exactly what this fund can invest in. Let's look at it together.",
+  "Here is the factsheet. It shows the riskometer, costs and top holdings."
+ ],
+ "never": [
+  "You don't need to read the documents, I will explain.",
+  "The documents are only for compliance."
+ ],
+ "check": [
+  {
+   "id": "mf-n11",
+   "q": "Which document sets out a scheme's objective, asset allocation and risk factors?",
+   "o": [
+    "SID",
+    "SAI",
+    "CAS",
+    "Factsheet only"
+   ],
+   "a": 0,
+   "why": "The SID (Scheme Information Document) is the main scheme document."
+  },
+  {
+   "id": "mf-n12",
+   "q": "Which document describes the sponsor, trustees and AMC?",
+   "o": [
+    "KIM",
+    "SAI",
+    "CAS",
+    "Riskometer"
+   ],
+   "a": 1,
+   "why": "The SAI covers the legal and institutional details of the fund house."
+  },
+  {
+   "id": "mf-n13",
+   "q": "How often is a scheme's factsheet normally published?",
+   "o": [
+    "Every year",
+    "Every month",
+    "Every five years",
+    "Only at the NFO"
+   ],
+   "a": 1,
+   "why": "Factsheets are published monthly."
+  }
+ ],
+ "card_ids": [
+  "mf-c71",
+  "mf-c72"
+ ],
+ "talk_track": [],
+ "words": 216
+}

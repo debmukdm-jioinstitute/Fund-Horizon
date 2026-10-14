@@ -1,0 +1,73 @@
+{
+ "id": "mf-07",
+ "title": "TER limits, and Direct vs Regular plans",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Explain TER and who pays it.",
+  "Compare Direct and Regular plans honestly with a rupee example.",
+  "Say how the distributor earns, and that it is disclosed."
+ ],
+ "body_md": "## The total expense ratio (TER)\n\nThe **TER** is the yearly cost of running a scheme, shown as a percentage of its assets. It is deducted from the scheme's NAV every day, so the client never writes a cheque for it. SEBI sets the maximum TER on a slab basis: the cap falls as the scheme's assets grow, and it is lower for debt than for equity-oriented schemes. <!-- TODO-VERIFY: slab limits (for example, 2.25% on the first ₹500 crore for equity-oriented schemes) and GST on the management fee; confirm the current Regulation 52 limits. -->\n\n## Direct and Regular plans\n\n- **Direct plan:** bought straight from the AMC, with no distributor. Lower TER.\n- **Regular plan:** bought through a distributor. The TER is higher because the AMC pays the distributor's trail commission **from the TER**.\n\nUpfront commissions are not allowed. The commission is paid only while the client stays invested, and the CAS shows it.\n\n## What the difference can mean\n\nThe gap is often around 0.5% to 1% a year. Over a long period it adds up, and that is why honesty matters. A distributor's value is **selection, reviews, servicing and behavioural support**, which must be worth more to the client than the cost.\n\n> **Investor takeaway:** A Direct plan costs less. A Regular plan includes help. Choose knowingly.",
+ "key_terms": [
+  "TER",
+  "Direct plan",
+  "Regular plan",
+  "ARN"
+ ],
+ "example": "₹10 lakh grows for 10 years at an assumed 12% gross. A Direct plan with 0.8% TER nets 11.2% a year and ends near ₹28.9 lakh. A Regular plan with 1.8% TER nets 10.2% and ends near ₹26.4 lakh. The difference is about ₹2.5 lakh, which is the cost of help the client should be getting. (Illustration, not a promise.)",
+ "say": [
+  "The Regular plan costs a little more because it includes our trail commission, and you can see that in your statement.",
+  "You can buy Direct. Here is what we do for the extra cost."
+ ],
+ "never": [
+  "There is no difference between Direct and Regular.",
+  "I earn nothing from this."
+ ],
+ "check": [
+  {
+   "id": "mf-q4",
+   "q": "Why is a regular plan's expense ratio higher than a direct plan's?",
+   "o": [
+    "It invests in riskier securities",
+    "It includes the distributor's trail commission",
+    "It pays a higher fund-manager salary",
+    "It includes stamp duty on every purchase"
+   ],
+   "a": 1,
+   "why": "The regular plan carries the trail commission, paid only while the client stays invested and shown in the CAS."
+  },
+  {
+   "id": "mf-n17",
+   "q": "How does the client pay the TER?",
+   "o": [
+    "By cheque each year",
+    "It is deducted from the scheme's NAV daily",
+    "Through a bank charge",
+    "At redemption only"
+   ],
+   "a": 1,
+   "why": "The TER is deducted from the scheme's assets, which shows up in the NAV."
+  },
+  {
+   "id": "mf-n18",
+   "q": "A client asks, 'Why not just buy direct?' What is the right response?",
+   "o": [
+    "Say direct plans are unsafe",
+    "Acknowledge it honestly and explain what selection, reviews and support add",
+    "Change the subject",
+    "Offer a rebate"
+   ],
+   "a": 1,
+   "why": "Be honest about the cost difference and explain what the distributor adds."
+  }
+ ],
+ "card_ids": [
+  "mf-c12",
+  "mf-c13",
+  "mf-c76"
+ ],
+ "talk_track": [],
+ "words": 219
+}

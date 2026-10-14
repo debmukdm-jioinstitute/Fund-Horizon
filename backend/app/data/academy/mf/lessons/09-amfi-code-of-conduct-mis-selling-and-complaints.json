@@ -1,0 +1,73 @@
+{
+ "id": "mf-09",
+ "title": "AMFI Code of Conduct, mis-selling and complaints",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Compliance",
+ "objectives": [
+  "List what the AMFI Code of Conduct expects from a distributor.",
+  "Spot common mis-selling patterns.",
+  "Share the complaint escalation path and timelines."
+ ],
+ "body_md": "## What the code expects\n\nA distributor holds an ARN and agrees to the AMFI Code of Conduct: act in the client's interest, do proper due diligence, disclose commissions, keep client data confidential, and never offer rebates or gifts as an inducement. <!-- TODO-VERIFY: current AMFI code and guidelines on rebates and inducements. -->\n\n## Common mis-selling patterns\n\n- **Churning:** switching a client between schemes to earn more commission.\n- **Pushing NFOs** as \"cheap at ₹10\" with no clear fit for the client.\n- **Promising returns,** capital protection or recovery timelines.\n- **Selling above the client's risk level,** such as a small-cap fund to a cautious retiree.\n- **Hiding costs** or the existence of a Direct plan.\n- **Handling client money** or accepting cash.\n\n## Compliance dos and don'ts\n\n| Do | Don't |\n|---|---|\n| Quote your ARN and EUIN on every transaction and communication | Deal with clients before getting NISM V-A certification and an EUIN |\n| Describe yourself as a Mutual Fund Distributor | Call yourself an independent adviser or charge an advisory fee |\n| Show the riskometer and match it to the client's profile | Recommend a scheme whose risk level exceeds the client's profile |\n| Disclose commission and that a direct plan exists | Hide or play down costs |\n| Use the standard MF risk disclaimer with any past performance | Promise or imply guaranteed returns or recovery timelines |\n| Record the reason for every recommendation and switch | Switch or churn clients for commission |\n| Keep client data confidential | Accept cash or handle client money directly |\n| Escalate complaints promptly and share the escalation path | Discourage a client from complaining |\n\n## Complaints\n\nThe path to share is: first the **AMC or the distributor**, then **SEBI SCORES**, then **Smart ODR** (online dispute resolution). Respond to every complaint promptly and keep a record. <!-- TODO-VERIFY: response timelines under SEBI SCORES and Smart ODR (currently about 21 days for the entity to respond); confirm before stating them. -->\n\n> **Investor takeaway:** You have the right to complain, and a good distributor will tell you how.",
+ "key_terms": [
+  "ARN",
+  "EUIN",
+  "KYC"
+ ],
+ "example": "A client's equity fund is down 8% in a month. You see an NFO paying a higher trail commission and think about switching the client. This is churning. The right step is to review the existing fund against its benchmark and record the reason for any change.",
+ "say": [
+  "Here is how to complain if you are not satisfied: first us or the AMC, then SEBI SCORES, then Smart ODR.",
+  "I can't promise returns. Here is the standard risk disclaimer."
+ ],
+ "never": [
+  "This fund will give you 15% every year.",
+  "Don't bother complaining, I will fix it."
+ ],
+ "check": [
+  {
+   "id": "mf-q30",
+   "q": "Which escalation path should clients be told about?",
+   "o": [
+    "Social media only",
+    "AMC, then SEBI SCORES, then Smart ODR",
+    "Only the distributor",
+    "The RTA only"
+   ],
+   "a": 1,
+   "why": "Escalate complaints promptly and never discourage a client from complaining."
+  },
+  {
+   "id": "mf-n22",
+   "q": "Switching a client between schemes mainly to earn more commission is called:",
+   "o": [
+    "Rebalancing",
+    "Churning",
+    "Averaging",
+    "Staggering"
+   ],
+   "a": 1,
+   "why": "Churning is switching for the distributor's benefit rather than the client's."
+  },
+  {
+   "id": "mf-n23",
+   "q": "Which statement is a compliance DON'T?",
+   "o": [
+    "Quote your ARN and EUIN",
+    "Disclose that a direct plan exists",
+    "Promise the client a minimum return",
+    "Record the reason for each recommendation"
+   ],
+   "a": 2,
+   "why": "Returns are never guaranteed. Promising them is a compliance breach."
+  }
+ ],
+ "card_ids": [
+  "mf-c59",
+  "mf-c60",
+  "mf-c61",
+  "mf-c62"
+ ],
+ "talk_track": [],
+ "words": 324
+}

@@ -1,0 +1,81 @@
+{
+ "id": "mf-10",
+ "title": "Who an MF distributor is: ARN, EUIN and the limits",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "State what an ARN and an EUIN are and who needs them.",
+  "Explain why a distributor is not a SEBI Registered Investment Adviser.",
+  "Describe yourself correctly to a client."
+ ],
+ "body_md": "A trainee must be able to explain, in two minutes, who holds the client's money, who regulates it, and where Fund Horizon fits.\n\n## Who an MF distributor is\n\n- Registered with AMFI and holds an ARN (AMFI Registration Number), renewed periodically.\n- Each person who deals with clients needs NISM Series V-A certification and an EUIN (Employee Unique Identification Number), quoted on every transaction they handle.\n- A distributor is not a SEBI Registered Investment Adviser (RIA). Distributors can give guidance incidental to selling products but cannot charge an advisory fee, and should describe themselves as a \"Mutual Fund Distributor\", not an \"independent adviser\".",
+ "key_terms": [
+  "ARN",
+  "EUIN",
+  "KYC"
+ ],
+ "example": "A client asks you to draw up a full financial plan for ₹5,000. You explain that distributors cannot charge an advisory fee, and offer guidance that is part of selling products, or refer them to a SEBI-registered adviser for a paid plan.",
+ "say": [
+  "I am a Mutual Fund Distributor, registered with AMFI. My ARN is on every document.",
+  "For a paid financial plan, a SEBI-registered investment adviser is the right person."
+ ],
+ "never": [
+  "I'm your independent financial adviser.",
+  "I'll charge you a fee for this advice."
+ ],
+ "talk_track": [
+  {
+   "n": 5,
+   "title": "Who we are, and how we earn",
+   "text": "A mutual fund distributor is registered with AMFI and holds an ARN. Anyone who deals with clients needs NISM Series V-A certification and an EUIN, which is quoted on every transaction. We are distributors, not SEBI registered investment advisers, so we never charge an advisory fee and never call ourselves independent advisers. On earnings: every scheme has a direct plan and a regular plan. The regular plan includes our trail commission, paid only while the client stays invested. There is no upfront commission, and the client can see what we're paid in their statement. Be open about this. Transparency builds trust. Suggested talk-track: \"Your money sits with the fund's custodian, not with us. We're paid a small trail by the fund house, and you can see it in your statement.\""
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q2",
+   "sec": "L: Learn the Basics",
+   "q": "Which body registers mutual fund distributors and issues the ARN?",
+   "o": [
+    "AMFI",
+    "SEBI",
+    "NISM",
+    "The RTA"
+   ],
+   "a": 0,
+   "why": "AMFI is the industry body that registers distributors (ARN). SEBI is the regulator."
+  },
+  {
+   "id": "mf-q3",
+   "sec": "L: Learn the Basics",
+   "q": "Who needs an EUIN?",
+   "o": [
+    "Only the head of the distribution firm",
+    "Only SEBI Registered Investment Advisers",
+    "Only employees handling lump sums above ₹1 lakh",
+    "Every employee who deals with clients"
+   ],
+   "a": 3,
+   "why": "Each person dealing with clients needs NISM Series V-A and an EUIN, quoted on every transaction they handle."
+  },
+  {
+   "id": "mf-q5",
+   "sec": "L: Learn the Basics",
+   "q": "A distributor wants to charge a client ₹5,000 for a financial plan. What is correct?",
+   "o": [
+    "Allowed if disclosed in writing",
+    "Not allowed; charging for advice requires SEBI RIA registration",
+    "Allowed only for HNI clients",
+    "Allowed once a year at the annual review"
+   ],
+   "a": 1,
+   "why": "Distributors give guidance incidental to selling and cannot charge an advisory fee or call themselves independent advisers."
+  }
+ ],
+ "card_ids": [
+  "mf-c9",
+  "mf-c10",
+  "mf-c11"
+ ],
+ "words": 102
+}

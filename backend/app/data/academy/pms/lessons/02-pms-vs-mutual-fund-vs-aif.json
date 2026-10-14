@@ -1,0 +1,81 @@
+{
+ "id": "pms-02",
+ "title": "PMS vs mutual fund vs AIF",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Compare ticket size, ownership, taxation and fees.",
+  "Explain why PMS portfolios are taxed in the client's hands.",
+  "Know when a mutual fund is the better fit."
+ ],
+ "body_md": "|  | Mutual fund | PMS | AIF |\n|---|---|---|---|\n| Minimum ticket | As low as a few hundred rupees | ₹50 lakh | Typically ₹1 crore |\n| Ownership | Units of a pooled fund | Securities in the client's own demat | Units of a pooled fund |\n| Customisation | None | Some (e.g. stock exclusions) | None |\n| Taxation | At fund level; investor taxed on redemption | Every trade taxed in the client's hands | Depends on category |\n| Fees | Expense ratio, capped by SEBI | Fixed and/or performance fee, set by agreement | Management and carry |\n| Transparency | Monthly portfolio disclosure | Full view of every holding and trade | Periodic reporting |",
+ "key_terms": [
+  "PMS",
+  "demat",
+  "TER",
+  "in-specie"
+ ],
+ "example": "A client with ₹30 lakh asks about PMS. It needs ₹50 lakh, so he is not eligible. A diversified mutual fund portfolio is the route today.",
+ "say": [
+  "PMS stocks sit in your own demat, so each trade the manager makes is taxed in your hands.",
+  "PMS fees are set in your agreement, unlike a mutual fund's capped expense ratio."
+ ],
+ "never": [
+  "PMS is taxed just like a mutual fund.",
+  "AIFs and PMS are the same."
+ ],
+ "talk_track": [
+  {
+   "n": 4,
+   "title": "Mutual fund, PMS or AIF?",
+   "text": "Clients often ask how PMS differs from mutual funds and AIFs. Focus on the PMS column. The minimum is fifty lakh rupees, against a few hundred for a mutual fund and typically one crore for an AIF. In a PMS, the client owns the shares directly in their own demat, rather than units of a pooled fund. Some customisation is possible, like excluding a stock. Tax is different: every sale by the manager is a taxable event in the client's own hands. Fees are fixed, profit-linked, or a mix. And the client sees every holding and every trade. Those last two points, tax and visibility, are where most client surprises come from."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q2",
+   "sec": "L: Learn the Basics",
+   "q": "Where are the securities in a PMS held?",
+   "o": [
+    "In the client's own demat account",
+    "In the AMC's pooled fund",
+    "In the distributor's demat account",
+    "With the RTA"
+   ],
+   "a": 0,
+   "why": "The client owns the shares directly and can see every holding and trade."
+  },
+  {
+   "id": "pms-n01",
+   "q": "How is tax on a PMS different from a mutual fund?",
+   "o": [
+    "It is the same",
+    "Each sale by the manager is a taxable event in the client's own hands",
+    "Tax is paid only at exit",
+    "PMS is exempt"
+   ],
+   "a": 1,
+   "why": "PMS holds securities in the client's own demat, so every sale is taxed in the client's hands."
+  },
+  {
+   "id": "pms-n02",
+   "q": "Which has the highest typical minimum ticket?",
+   "o": [
+    "Mutual fund SIP",
+    "PMS",
+    "AIF",
+    "ETF"
+   ],
+   "a": 2,
+   "why": "An AIF typically needs ₹1 crore, compared with ₹50 lakh for a PMS."
+  }
+ ],
+ "card_ids": [
+  "pms-c7",
+  "pms-c8",
+  "pms-c9",
+  "pms-c10"
+ ],
+ "words": 89
+}

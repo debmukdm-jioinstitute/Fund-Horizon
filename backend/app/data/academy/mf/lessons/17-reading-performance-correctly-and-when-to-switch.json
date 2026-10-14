@@ -1,0 +1,86 @@
+{
+ "id": "mf-17",
+ "title": "Reading performance correctly, and when to switch",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Pick XIRR, CAGR or absolute return for the right case.",
+  "Judge a fund against its benchmark and category over 3 to 5 years.",
+  "Name valid reasons to switch and what to check first."
+ ],
+ "body_md": "## Reading performance correctly\n\n| Metric | Use it for | Common mistake |\n|---|---|---|\n| XIRR | SIPs and multiple investments at different dates | Comparing SIP returns using simple or absolute return |\n| CAGR | A single lump-sum investment | Applying it to SIPs |\n| Absolute return | Very short periods only | Judging a 5-year holding by total % gain |\n| vs Benchmark / Category | Judging the fund manager | Judging a fund on one good or bad year |\n\n## When to recommend switching a fund\n\n- Consistent underperformance vs benchmark and peers over 3+ years, not one bad year\n- Change in fund manager or investment style that no longer suits the client\n- Change in the scheme's mandate or category\n- Change in the client's goal or horizon\n\nAlways check exit load and tax before recommending a switch.\n\n> **Investor takeaway:** Starting a SIP is step one. Review yearly, step up with income, and rebalance.",
+ "key_terms": [
+  "XIRR",
+  "CAGR",
+  "exit load",
+  "STCG",
+  "LTCG"
+ ],
+ "example": "A client's SIP shows an absolute gain of 18% after 4 years and she thinks it is poor. XIRR on the staggered instalments is about 11% a year, and the fund is ahead of its benchmark. You advise staying.",
+ "say": [
+  "For a SIP, XIRR is the right measure, because it counts each instalment's date.",
+  "One bad year is not a reason to switch. Three years behind benchmark and peers is a reason to review."
+ ],
+ "never": [
+  "This fund lost 5% this year, let's switch.",
+  "Compare your SIP's absolute return with a lump sum's CAGR."
+ ],
+ "talk_track": [
+  {
+   "n": 12,
+   "title": "Read returns right, switch only for a reason",
+   "text": "Clients often misread their own returns. For SIPs, always use XIRR, because it accounts for each instalment's date. CAGR is for a single lump sum. Absolute return is only meaningful over very short periods. And to judge a fund manager, compare against the benchmark and the category, over three to five years, never on one year. When should we recommend leaving a fund? When it has lagged its benchmark and peers for three years or more, when the manager or style changes, when the mandate changes, or when the client's goal changes. Not because of one bad year. And always check exit load and tax before any switch."
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q17",
+   "sec": "R: Review & Rebalance",
+   "q": "Which return measure should be used for a SIP portfolio?",
+   "o": [
+    "CAGR",
+    "XIRR",
+    "Absolute return",
+    "Dividend yield"
+   ],
+   "a": 1,
+   "why": "XIRR accounts for each instalment's date. CAGR is for a single lump sum."
+  },
+  {
+   "id": "mf-q18",
+   "sec": "R: Review & Rebalance",
+   "q": "Which is a valid reason to recommend switching out of a fund?",
+   "o": [
+    "Underperformance vs benchmark and peers over 3+ years",
+    "One bad year of returns",
+    "A friend's fund returned 40% last year",
+    "A new NFO has launched"
+   ],
+   "a": 0,
+   "why": "Other valid reasons are a manager/style change, a mandate change, or a change in the client's goal."
+  },
+  {
+   "id": "mf-q20",
+   "sec": "R: Review & Rebalance",
+   "q": "Before recommending any switch, the distributor must always check:",
+   "o": [
+    "Only the fund's 1-year return",
+    "The NAV of the new fund",
+    "Exit load and tax",
+    "Whether the new fund is an NFO"
+   ],
+   "a": 2,
+   "why": "A switch is a redemption plus a purchase, so it can trigger exit load and tax."
+  }
+ ],
+ "card_ids": [
+  "mf-c31",
+  "mf-c32",
+  "mf-c33",
+  "mf-c34",
+  "mf-c35",
+  "mf-c36"
+ ],
+ "words": 139
+}

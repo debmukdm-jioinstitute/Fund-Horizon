@@ -1,0 +1,71 @@
+{
+ "id": "mf-11",
+ "title": "Before any fund: the foundation check and goal mapping",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Run the foundation check before recommending any fund.",
+  "Capture the four facts about every goal.",
+  "Explain why fixing gaps first builds trust."
+ ],
+ "body_md": "No fund is suggested until the client's goals, horizon and risk profile are written down.\n\n## Before investing: the foundation check\n\n- Emergency fund in place (typically several months of expenses in liquid or bank savings)\n- Adequate term life and health insurance\n- High-interest debt (credit cards, personal loans) being cleared first\n\nIf these are missing, the first recommendation is to fix them. That builds trust faster than any fund.\n\n## Goal mapping\n\nFor every goal capture: what it is, the amount in today's money, the target year, and its priority (must-have or nice-to-have). Short goals (under 3 years) lean on debt and liquid funds; long goals (7+ years) can carry more equity.",
+ "key_terms": [
+  "SIP"
+ ],
+ "example": "A 28-year-old wants to start a ₹15,000 SIP. She has no emergency fund and a ₹90,000 credit-card balance. The first recommendation is to clear the card and build three to six months of expenses in a liquid fund, then start the SIP.",
+ "say": [
+  "Before we talk about any fund, let's understand what this money is for and when you'll need it.",
+  "Let's get your emergency fund and insurance in place first."
+ ],
+ "never": [
+  "Start the SIP today, we'll sort the rest later.",
+  "Everyone should put money in equity first."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "mf-q6",
+   "sec": "E: Evaluate the Client",
+   "q": "Before suggesting any fund, what must be checked first?",
+   "o": [
+    "Last year's top-performing funds",
+    "Which NFOs are currently open",
+    "The client's preferred fund house",
+    "Emergency fund, term and health insurance, and high-interest debt"
+   ],
+   "a": 3,
+   "why": "The foundation check comes first. If it is missing, fixing it is the first recommendation."
+  },
+  {
+   "id": "mf-q10",
+   "sec": "E: Evaluate the Client",
+   "q": "Which of these is NOT one of the four things captured for every goal?",
+   "o": [
+    "Amount in today's money",
+    "The fund the client has already chosen",
+    "Target year",
+    "Priority: must-have or nice-to-have"
+   ],
+   "a": 1,
+   "why": "For every goal capture: what it is, amount in today's money, target year and priority."
+  },
+  {
+   "id": "mf-n24",
+   "q": "A client has a 36% credit-card balance and no emergency fund. What do you recommend first?",
+   "o": [
+    "A high-return equity fund",
+    "Clearing the high-interest debt and building an emergency fund",
+    "An NFO with a good track record",
+    "A larger SIP"
+   ],
+   "a": 1,
+   "why": "Fix the foundation first: high-interest debt, emergency fund and insurance."
+  }
+ ],
+ "card_ids": [
+  "mf-c14",
+  "mf-c19"
+ ],
+ "words": 113
+}

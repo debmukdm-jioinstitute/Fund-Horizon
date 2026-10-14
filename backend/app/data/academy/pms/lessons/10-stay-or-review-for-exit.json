@@ -1,0 +1,84 @@
+{
+ "id": "pms-10",
+ "title": "Stay, or review for exit?",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Read the five signals and what each usually means.",
+  "Know what to set out before any exit.",
+  "Respond to a manager departure."
+ ],
+ "body_md": "| Signal | Usually means |\n|---|---|\n| Lagging benchmark for 1 year, process unchanged, style out of favour | Stay; explain the style cycle |\n| Lagging benchmark and peers for 3+ years | Review for exit |\n| Fund manager or key team leaves | Review immediately |\n| Style drift away from what was sold | Review; it is no longer the product the client bought |\n| Client's goal, horizon or liquidity need changes | Re-check suitability; may reduce |\n\nBefore any exit, set out the exit load, the tax on gains, and the cost of rebuilding elsewhere.\n\n> **Investor takeaway:** Judge a PMS on 3+ years of after-fee returns vs its benchmark, not on one quarter.",
+ "key_terms": [
+  "PMS",
+  "exit load",
+  "STCG",
+  "LTCG"
+ ],
+ "example": "The star manager leaves. You inform the client the same day, explain the review process, and set a date to compare the new team's process against what was sold. No automatic exit.",
+ "say": [
+  "The manager and process are unchanged, so we stay.",
+  "Before any exit, here is the exit load, the tax and the cost of rebuilding elsewhere."
+ ],
+ "never": [
+  "Exit now, before it gets worse.",
+  "Never mention the manager change."
+ ],
+ "talk_track": [
+  {
+   "n": 14,
+   "title": "Stay, or review for exit?",
+   "text": "When should a client leave a PMS? Use these signals. One year behind the benchmark, with the process unchanged and the style simply out of favour: stay, and explain the style cycle. Behind both the benchmark and peers for three years or more: review for exit. Style drift, where the manager is no longer doing what was sold: review, because it's no longer the product the client bought. A change in the client's own goals, horizon or liquidity needs: re-check suitability. And if the fund manager or key team leaves: review immediately. Before recommending any exit, always show the client the exit load, the tax on gains, and the cost of rebuilding elsewhere. Talk-track: \"After all fees, your account is three percent a year ahead of its benchmark over three years. The manager and process are unchanged, so we stay.\""
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q18",
+   "sec": "R: Review & Rebalance",
+   "q": "A PMS lagged its benchmark for 1 year; process unchanged, style out of favour. Action?",
+   "o": [
+    "Stay, and explain the style cycle",
+    "Exit immediately",
+    "Switch to last year's top PMS",
+    "Stop the monthly statements"
+   ],
+   "a": 0,
+   "why": "Review for exit only after 3+ years behind benchmark AND peers."
+  },
+  {
+   "id": "pms-q19",
+   "sec": "R: Review & Rebalance",
+   "q": "The star fund manager has just left the PMS firm. What should you do?",
+   "o": [
+    "Exit all clients automatically",
+    "Wait three years before reviewing",
+    "Say nothing unless the client asks",
+    "Review immediately and inform the client proactively"
+   ],
+   "a": 3,
+   "why": "No panic and no automatic exit, but an immediate review."
+  },
+  {
+   "id": "pms-q20",
+   "sec": "R: Review & Rebalance",
+   "q": "Before recommending any PMS exit, what must you set out?",
+   "o": [
+    "Only the last month's return",
+    "The manager's personal track record",
+    "Exit load, tax on gains and the cost of rebuilding elsewhere",
+    "The new PMS's marketing brochure"
+   ],
+   "a": 2,
+   "why": "Exiting has real costs in a PMS, because tax falls in the client's own hands."
+  }
+ ],
+ "card_ids": [
+  "pms-c38",
+  "pms-c39",
+  "pms-c40",
+  "pms-c41",
+  "pms-c42"
+ ],
+ "words": 103
+}

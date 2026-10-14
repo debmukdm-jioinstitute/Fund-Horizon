@@ -1,0 +1,81 @@
+{
+ "id": "pms-11",
+ "title": "Why PMS behaviour is harder, and the fall playbook",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Explain why concentrated portfolios test clients more.",
+  "Follow the six-step playbook for a sharp fall.",
+  "Separate the market from the manager."
+ ],
+ "body_md": "Concentrated portfolios fall harder and recover unevenly, and PMS clients see every trade, so the emotional test is sharper than with mutual funds.\n\n## Why PMS behaviour is harder\n\n- Bigger swings: 15–30 stocks can fall well beyond the index, and lag it for long stretches.\n- Full visibility: clients see each stock in red in their own demat and second-guess individual holdings.\n- Switching costs more: exiting triggers tax on gains in the client's hands, possible exit load, and the cost of rebuilding elsewhere.\n- Peer comparison: wealthy clients hear about \"last year's top PMS\" at every gathering.\n\n## Playbook for a sharp fall or long underperformance\n\n- Set expectations at onboarding: show the strategy's worst historical fall before the client invests.\n- Call before they call: reach clients early in a sharp fall, starting with the newest.\n- Separate the market from the manager: is the fall market-wide or specific to this strategy?\n- Check the process, not the price: if the manager, process and portfolio quality are intact, the case for staying holds.\n- Show the cost of leaving: tax, exit load and the risk of selling at the low.\n- Record the conversation and follow up in writing.",
+ "key_terms": [
+  "PMS",
+  "exit load",
+  "STCG",
+  "LTCG"
+ ],
+ "example": "The portfolio is down 28% while the Nifty is down 12%. You call the client, check whether the process is intact, and show the tax and exit-load cost of leaving at the low.",
+ "say": [
+  "This dip is within what we discussed at the start. Exiting now would lock in both the loss and the tax.",
+  "Let's see if the fall is the market or this manager."
+ ],
+ "never": [
+  "Sell, it will fall further.",
+  "This never happens in PMS."
+ ],
+ "talk_track": [
+  {
+   "n": 15,
+   "title": "The playbook for a sharp fall",
+   "text": "The emotional test is sharper in PMS than in mutual funds, for four reasons: bigger swings from a concentrated portfolio; full visibility, so clients see every stock in red in their own demat; switching costs real tax; and wealthy clients constantly hear about last year's top PMS. So follow this playbook. One, set expectations at onboarding by showing the strategy's worst past fall. Two, call clients before they call you, newest clients first. Three, separate a market-wide fall from a problem with the manager. Four, check the process, not the price: if the manager and process are intact, the case for staying holds. Five, show the cost of leaving: tax, exit load, and the risk of selling at the low. Six, record the conversation and follow up in writing."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q21",
+   "sec": "N: Navigate Behaviour",
+   "q": "Why is the emotional test sharper in PMS than in mutual funds?",
+   "o": [
+    "PMS has lower returns than MFs",
+    "PMS clients cannot see their holdings",
+    "Concentrated swings, full visibility of every stock, and real switching costs",
+    "PMS portfolios hold more stocks than MFs"
+   ],
+   "a": 2,
+   "why": "Wealthy clients also hear about \"last year's top PMS\" at every gathering."
+  },
+  {
+   "id": "pms-q24",
+   "sec": "N: Navigate Behaviour",
+   "q": "The portfolio is down 28% while the Nifty is down 12%. What is a key step before advising?",
+   "o": [
+    "Separate the market from the manager and check the process",
+    "Exit today to stop further losses",
+    "Move everything to the friend's PMS",
+    "Ignore the client until markets recover"
+   ],
+   "a": 0,
+   "why": "If the manager, process and portfolio quality are intact, the case for staying holds. Record the conversation."
+  },
+  {
+   "id": "pms-q25",
+   "sec": "N: Navigate Behaviour",
+   "q": "When should a client first see the strategy's worst historical fall?",
+   "o": [
+    "Only after a fall happens",
+    "At the 3-year review",
+    "Never; it may scare the client",
+    "At onboarding, before investing"
+   ],
+   "a": 3,
+   "why": "Setting expectations at onboarding is step one of the playbook."
+  }
+ ],
+ "card_ids": [
+  "pms-c43",
+  "pms-c44"
+ ],
+ "words": 192
+}

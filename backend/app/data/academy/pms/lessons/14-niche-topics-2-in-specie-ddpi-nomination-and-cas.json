@@ -1,0 +1,76 @@
+{
+ "id": "pms-14",
+ "title": "Niche topics (2): in-specie, DDPI, nomination and cash flows",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain in-specie transfers.",
+  "Describe DDPI / POA scope and corporate actions.",
+  "Ask about high-water-mark resets and top-up rules."
+ ],
+ "body_md": "| Topic | What to explain | Investor takeaway |\n|---|---|---|\n| In-specie transfer | Many providers accept existing shares instead of cash, and can return securities instead of selling on exit (check the provider's policy). | You may be able to fund a PMS with shares you own. |\n| DDPI / POA scope | The authority signed over the demat and bank account defines what the manager can do. | Read what you authorise before signing. |\n| Nomination & corporate actions | Nominee, dividends, bonuses and voting rights all sit in the client's own demat. | Add a nominee to your PMS demat too. |\n| High-water mark resets | Check whether and when the high-water mark resets, and whether fees are charged on contributions or withdrawals. | Ask how the profit share is calculated after a loss. |\n| Top-ups and withdrawals | Rules on minimum top-ups and partial withdrawals vary by provider and agreement. | Know the rules before you need the money. |\n\nRegulatory figures here should be checked against current SEBI and APMI rules before each training cycle.",
+ "key_terms": [
+  "in-specie",
+  "DDPI/POA",
+  "high-water mark",
+  "demat"
+ ],
+ "example": "A client holds ₹55 lakh of blue-chip shares. Many providers accept shares in kind (in-specie), but selling them to fund the PMS can trigger tax, so you check the provider's policy and the tax first.",
+ "say": [
+  "Add a nominee to your PMS demat account too.",
+  "Read what you authorise before signing the DDPI."
+ ],
+ "never": [
+  "Corporate actions don't affect you.",
+  "The authority is just a formality."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "pms-q28",
+   "sec": "Niche Topics & Compliance",
+   "q": "A client wants to fund a PMS with shares they already own. What is true?",
+   "o": [
+    "It is never allowed; only cash is accepted",
+    "Many providers accept an in-specie transfer; check the provider's policy",
+    "The shares must be sold first by the distributor",
+    "Only mutual fund units can be transferred"
+   ],
+   "a": 1,
+   "why": "Many providers can also return securities instead of selling on exit."
+  },
+  {
+   "id": "pms-n12",
+   "q": "What does the DDPI / POA scope define?",
+   "o": [
+    "The fund's NAV",
+    "What the manager can do in the client's demat and bank accounts",
+    "The distributor's commission",
+    "The benchmark"
+   ],
+   "a": 1,
+   "why": "The authority signed over the demat and bank account defines what the manager can do."
+  },
+  {
+   "id": "pms-n13",
+   "q": "Where do dividends, bonuses and voting rights sit in a PMS?",
+   "o": [
+    "With the manager",
+    "In the client's own demat account",
+    "With the distributor",
+    "With SEBI"
+   ],
+   "a": 1,
+   "why": "Because securities are in the client's demat, corporate actions and voting rights sit there."
+  }
+ ],
+ "card_ids": [
+  "pms-c53",
+  "pms-c54",
+  "pms-c55",
+  "pms-c56",
+  "pms-c57"
+ ],
+ "words": 165
+}

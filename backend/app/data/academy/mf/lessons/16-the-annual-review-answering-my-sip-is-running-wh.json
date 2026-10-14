@@ -1,0 +1,84 @@
+{
+ "id": "mf-16",
+ "title": "The annual review: answering 'my SIP is running, what next?'",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the eight-step annual review.",
+  "Show goal progress in rupees and percentage.",
+  "Suggest a step-up and a rebalance when due."
+ ],
+ "body_md": "This is the answer to \"my SIP is running, what next?\" A structured review at least once a year keeps clients on track and is where most long-term value is added.\n\n## Annual review agenda (30–45 minutes)\n\n- Life update: any change in income, family, job, goals or risk comfort?\n- Goal progress: for each goal, how far along it is in rupees and percentage, and whether it's on track.\n- Performance: portfolio and fund-level XIRR vs each fund's benchmark and category average over 3 and 5 years.\n- Allocation check: current equity / debt / gold mix vs target; rebalance if it has drifted meaningfully.\n- Overlap and clutter: too many funds holding the same stocks? Consolidate.\n- Step-up: raise SIPs in line with income growth.\n- Housekeeping: KYC status, nominations, bank mandates, contact details.\n- Next actions: written summary sent to the client after the meeting.",
+ "key_terms": [
+  "SIP",
+  "XIRR",
+  "KYC"
+ ],
+ "example": "A client's equity share has drifted to 72% against a 60% target. You suggest moving part of the gain into debt and stepping up the SIP by 10% with her raise, then send a written summary.",
+ "say": [
+  "Your SIP is on track. This year, let's step it up by 10% and bring equity back to your 60% target.",
+  "Here is a written summary of what we agreed today."
+ ],
+ "never": [
+  "Your SIP is running, so there's nothing to do.",
+  "We only need to meet when markets fall."
+ ],
+ "talk_track": [
+  {
+   "n": 10,
+   "title": "\"My SIP is running. What next?\"",
+   "text": "Stage four, Review and rebalance, is our answer to the most common question: \"My SIP is running, what next?\" Every client gets a structured review at least once a year, in eight steps. One, a life update. Two, goal progress in rupees and percentage. Three, performance: XIRR against each fund's benchmark and category. Four, allocation: bring it back to target if markets have pushed it off. Five, overlap: if several funds hold the same stocks, consolidate. Six, step up SIPs with income. Seven, housekeeping: KYC, nominees and mandates. And eight, send a written summary of next actions. Talk-track: \"Your SIP is on track. This year let's step it up by 10% and bring equity back to your 60% target.\""
+  },
+  {
+   "n": 11,
+   "title": "A yearly step-up nearly doubles the outcome",
+   "text": "Here's the single most useful review action: the step-up. Two clients both start a ₹10,000 monthly SIP and earn the same assumed 12% a year. One keeps it flat for 20 years and ends with about ₹1 crore. The other raises the SIP by 10% every year, in line with salary growth, and ends with about ₹1.99 crore. Yes, they invest more, ₹68.7 lakh against ₹24 lakh, but it is spread over rising income and they barely feel it. This is what \"my SIP is running, what next?\" should lead to in every annual review. Remember, the 12% is an assumption for illustration, not a promise."
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q16",
+   "sec": "R: Review & Rebalance",
+   "q": "How often should a client receive a structured review, at minimum?",
+   "o": [
+    "Every five years",
+    "Only when markets fall",
+    "Only when the client asks",
+    "At least once a year"
+   ],
+   "a": 3,
+   "why": "A yearly structured review is where most long-term value is added."
+  },
+  {
+   "id": "mf-q19",
+   "sec": "R: Review & Rebalance",
+   "q": "₹10,000/month at an assumed 12% for 20 years, stepped up 10% every year, ends at about:",
+   "o": [
+    "₹1 crore",
+    "₹1.5 crore",
+    "₹3.5 crore",
+    "₹1.99 crore"
+   ],
+   "a": 3,
+   "why": "A flat SIP ends at ≈₹1 Cr. The 10% step-up nearly doubles it to ≈₹1.99 Cr (illustration only)."
+  },
+  {
+   "id": "mf-n30",
+   "q": "In an annual review, what is the purpose of the allocation check?",
+   "o": [
+    "To compare the client with a friend",
+    "To see whether the equity, debt and gold mix has drifted from target",
+    "To choose a new fund house",
+    "To collect the next NFO order"
+   ],
+   "a": 1,
+   "why": "The allocation check compares the current mix with the target and rebalances if it has drifted."
+  }
+ ],
+ "card_ids": [
+  "mf-c30",
+  "mf-c37"
+ ],
+ "words": 142
+}

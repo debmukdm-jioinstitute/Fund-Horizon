@@ -1,0 +1,72 @@
+{
+ "id": "mf-03",
+ "title": "SEBI scheme categories and the riskometer",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Name the main SEBI scheme groups and what large, mid and small cap mean.",
+  "Read the six levels of the riskometer.",
+  "Match a scheme's riskometer to a client's profile."
+ ],
+ "body_md": "SEBI groups every scheme into a standard category so clients can compare like with like. The main groups are **equity**, **debt**, **hybrid**, **solution-oriented** (retirement, children's) and **other** (index funds, ETFs, funds of funds). <!-- TODO-VERIFY: category count and names change with SEBI circulars; confirm the current list. -->\n\n## Market-cap categories in equity\n\n| Category | Invests mainly in | Minimum equity allocation |\n|---|---|---|\n| Large cap | Top 100 companies by market cap | 80% in large caps |\n| Mid cap | Companies ranked 101 to 250 | 65% in mid caps |\n| Small cap | Companies ranked 251 onwards | 65% in small caps |\n| Multi cap | All three segments | At least 25% each in large, mid and small |\n| Flexi cap | Any market cap, manager's choice | At least 65% in equity |\n\n<!-- TODO-VERIFY: minimum allocations and market-cap ranking rules per the latest SEBI categorisation circular and AMFI list. -->\n\n## The riskometer\n\nEvery scheme shows a **riskometer** with six levels: Low, Low to Moderate, Moderate, Moderately High, High and Very High. <!-- TODO-VERIFY: the riskometer has six levels since 2020, with the AMC reviewing it monthly; confirm the current rule. --> The level depends on the securities held, not on past returns. It can change when the portfolio changes, so check it at every review.\n\nDebt schemes also carry a **Potential Risk Class** grid, which combines interest-rate risk and credit risk.\n\n## Using it with clients\n\nMatch each scheme's riskometer to the client's profile. Never recommend a scheme whose risk level is above the level the client can accept. A mid-cap fund is \"Very High\" risk even when last year's return looks calm.\n\n> **Investor takeaway:** Read the category and the riskometer before the return figure.",
+ "key_terms": [
+  "riskometer",
+  "NAV",
+  "AUM"
+ ],
+ "example": "A 62-year-old retired client with a Moderate risk profile asks about a small-cap fund that returned 45% last year. The fund's riskometer shows Very High. You decline to recommend it and show categories at or below the client's Moderate level.",
+ "say": [
+  "Every scheme carries a riskometer. Let's match it to what you are comfortable with.",
+  "Large, mid and small cap refer to the size of the companies the fund invests in."
+ ],
+ "never": [
+  "A small-cap fund is safe because it did well last year.",
+  "The riskometer does not matter if the return is good."
+ ],
+ "check": [
+  {
+   "id": "mf-n05",
+   "q": "How many levels does the SEBI riskometer show?",
+   "o": [
+    "Three",
+    "Four",
+    "Five",
+    "Six"
+   ],
+   "a": 3,
+   "why": "The riskometer has six levels, from Low to Very High."
+  },
+  {
+   "id": "mf-n06",
+   "q": "A client's profile is Moderate. A scheme's riskometer shows Very High. What should you do?",
+   "o": [
+    "Recommend it, because past returns are strong",
+    "Not recommend it, as it exceeds the client's risk level",
+    "Recommend a small amount",
+    "Ask the client to sign a waiver"
+   ],
+   "a": 1,
+   "why": "Never recommend a scheme whose risk level exceeds the client's profile."
+  },
+  {
+   "id": "mf-n07",
+   "q": "In SEBI's categorisation, which segment does a 'mid cap' fund mainly invest in?",
+   "o": [
+    "Top 100 companies",
+    "Companies ranked 101 to 250",
+    "Companies ranked 251 onwards",
+    "Government securities"
+   ],
+   "a": 1,
+   "why": "Mid caps are the companies ranked 101 to 250 by market capitalisation."
+  }
+ ],
+ "card_ids": [
+  "mf-c66",
+  "mf-c67",
+  "mf-c68"
+ ],
+ "talk_track": [],
+ "words": 278
+}

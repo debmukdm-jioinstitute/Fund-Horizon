@@ -1,0 +1,81 @@
+{
+ "id": "mf-19",
+ "title": "Client reactions, biases and the ethics of retention",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Name the bias behind three common client statements.",
+  "Respond with facts, not pressure.",
+  "Keep retention honest: no churning, no promises."
+ ],
+ "body_md": "## Common client reactions and responses\n\n| Client says | Bias behind it | Respond with |\n|---|---|---|\n| \"Let me stop my SIP until markets settle.\" | Loss aversion | \"Your SIP is buying more units at lower prices now. Stopping skips the part that helps most later.\" |\n| \"My friend's fund gave 40%. Let's switch.\" | Recency / herd | \"Let's compare both over 5 years and see how each did in bad years.\" |\n| \"I'll sell when it's back to my cost.\" | Anchoring | \"Your buying price doesn't affect what the fund does next. Is it still the right fund for your goal?\" |\n\n## Ethics: what retention must never become\n\n- No switching or churning that benefits commission rather than the client\n- No pushing NFOs or new categories without a clear fit\n- No assurance of returns, capital protection or recovery timelines\n\n> **Investor takeaway:** A good distributor's value often shows up most when markets fall, by helping you stay invested.",
+ "key_terms": [
+  "SIP",
+  "exit load",
+  "NFO"
+ ],
+ "example": "A client says, 'My friend's fund gave 40%, let's switch.' You show both funds over 5 years, including bad years, and note the exit load and tax cost of switching.",
+ "say": [
+  "Your buying price doesn't affect what the fund does next. Is it still the right fund for your goal?",
+  "Let's compare both funds over 5 years, including how each did in the bad years."
+ ],
+ "never": [
+  "You're right, switch to the top performer.",
+  "Don't worry, it will definitely recover."
+ ],
+ "talk_track": [
+  {
+   "n": 17,
+   "title": "When the client says…",
+   "text": "Here are three things clients say, the bias behind each, and how to respond. \"Let me stop my SIP until markets settle\" is loss aversion. Respond: your SIP is buying more units at lower prices now, and stopping skips the part that helps most later. \"My friend's fund gave 40%, let's switch\" is recency and herd behaviour. Respond: let's compare both over five years and see how each did in bad years. \"I'll sell when it's back to my cost\" is anchoring. Respond: your buying price doesn't affect what the fund does next; is it still the right fund for your goal? And remember the ethics: never churn for commission, never push NFOs without a clear fit, never assure returns."
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q22",
+   "sec": "N: Navigate Behaviour",
+   "q": "\"I'll sell when it's back to my cost.\" Which bias is this?",
+   "o": [
+    "Loss aversion",
+    "Herd behaviour",
+    "Recency bias",
+    "Anchoring"
+   ],
+   "a": 3,
+   "why": "The buying price doesn't affect what the fund does next. Ask if it's still the right fund for the goal."
+  },
+  {
+   "id": "mf-q23",
+   "sec": "N: Navigate Behaviour",
+   "q": "\"My friend's fund gave 40%. Let's switch.\" Which bias is this?",
+   "o": [
+    "Anchoring",
+    "Recency / herd behaviour",
+    "Loss aversion",
+    "Home bias"
+   ],
+   "a": 1,
+   "why": "Respond by comparing both funds over 5 years, including how each did in bad years."
+  },
+  {
+   "id": "mf-n31",
+   "q": "'Let me stop my SIP until markets settle' mostly reflects which bias?",
+   "o": [
+    "Loss aversion",
+    "Recency",
+    "Overconfidence",
+    "Herding"
+   ],
+   "a": 0,
+   "why": "Loss aversion makes clients want to avoid further falls, even though SIPs benefit from lower prices."
+  }
+ ],
+ "card_ids": [
+  "mf-c40",
+  "mf-c41",
+  "mf-c42",
+  "mf-c46"
+ ],
+ "words": 146
+}

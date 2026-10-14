@@ -1,0 +1,82 @@
+{
+ "id": "pms-15",
+ "title": "PMS compliance dos and don'ts",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Hold the required certification and APRN before dealing.",
+  "Show performance net of fees against the benchmark.",
+  "Share the complaint escalation path."
+ ],
+ "body_md": "| Do | Don't |\n|---|---|\n| Hold NISM XXI-A and a valid APRN before dealing with PMS clients | Source PMS business without an APRN |\n| Document suitability for every client | Treat the ₹50 lakh minimum as proof of suitability |\n| Share the Disclosure Document and explain every fee in rupees | Quote only headline or pre-fee returns |\n| Show performance net of fees, against the benchmark and peers | Cherry-pick periods or strategies to flatter returns |\n| Mention the direct onboarding option | Take or imply upfront commission or fees |\n| Record the reason for every recommendation and exit | Recommend switches that serve commission |\n| Escalate complaints and share the path (provider, SEBI SCORES, Smart ODR) | Promise returns or recovery timelines |\n\nAll investor-facing material from this manual needs compliance review before it is published or shared with clients.\n\n<!-- TODO-COMPLIANCE: confirm APRN requirements and the 31 Jul 2025 cut-off with current APMI/SEBI rules. -->",
+ "key_terms": [
+  "PMS",
+  "DDPI/POA",
+  "EUIN"
+ ],
+ "example": "A client asks for the best PMS return. You show after-fee returns against the benchmark and peers over 3 and 5 years, not a cherry-picked quarter.",
+ "say": [
+  "Here's the complaint path: provider, SEBI SCORES, then Smart ODR.",
+  "I can't promise returns or recovery timelines."
+ ],
+ "never": [
+  "Source PMS business without an APRN.",
+  "Quote only pre-fee returns."
+ ],
+ "talk_track": [
+  {
+   "n": 19,
+   "title": "Dos and don'ts",
+   "text": "Finally, compliance. Do: hold NISM XXI-A and a valid APRN; document suitability for every client; explain every fee in rupees; show returns net of fees, against the benchmark and peers; mention the direct onboarding option; record the reasons for every recommendation and exit; and share the escalation path for complaints. Don't: source PMS business without an APRN; treat the fifty lakh minimum as proof of suitability; quote headline or pre-fee returns; cherry-pick periods or strategies; take or imply upfront commission; recommend switches for commission; or promise returns or recovery timelines."
+  }
+ ],
+ "check": [
+  {
+   "id": "pms-q29",
+   "sec": "Niche Topics & Compliance",
+   "q": "Which of these is a compliance DON'T?",
+   "o": [
+    "Treating the ₹50 lakh minimum as proof of suitability",
+    "Mentioning the direct onboarding option",
+    "Showing performance net of fees vs benchmark",
+    "Recording reasons for every recommendation"
+   ],
+   "a": 0,
+   "why": "Also don't source business without an APRN, quote pre-fee returns, or take upfront commission."
+  },
+  {
+   "id": "pms-q30",
+   "sec": "Niche Topics & Compliance",
+   "q": "What is the PMS complaint escalation path?",
+   "o": [
+    "AMFI, then NISM",
+    "Provider, then SEBI SCORES, then Smart ODR",
+    "Only the distributor's branch",
+    "The stock exchange helpline only"
+   ],
+   "a": 1,
+   "why": "Escalate complaints promptly and share the path with clients."
+  },
+  {
+   "id": "pms-n14",
+   "q": "How must PMS performance be shown?",
+   "o": [
+    "Net of fees, against the benchmark and peers",
+    "Pre-fee only",
+    "Best period only",
+    "Without comparison"
+   ],
+   "a": 0,
+   "why": "Show performance net of fees, against the benchmark and peers."
+  }
+ ],
+ "card_ids": [
+  "pms-c58",
+  "pms-c59",
+  "pms-c60",
+  "pms-c61"
+ ],
+ "todo": "TODO-COMPLIANCE: confirm APRN requirements and the 31 Jul 2025 cut-off with current APMI/SEBI rules.",
+ "words": 146
+}

@@ -1,0 +1,79 @@
+{
+ "id": "mf-12",
+ "title": "Risk profiling: capacity, tolerance and need",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Tell risk capacity, tolerance and need apart.",
+  "Apply the rule: match the lower of capacity and tolerance.",
+  "Know when to re-profile."
+ ],
+ "body_md": "| Dimension | What it measures | How to assess |\n|---|---|---|\n| Risk capacity | How much loss the client can afford | Age, income stability, dependants, existing assets, horizon |\n| Risk tolerance | How much loss the client can stomach | Past reactions to market falls, comfort questions, questionnaire |\n| Risk need | How much risk the goal actually requires | Goal amount vs current savings and time left |\n\nMatch recommendations to the lower of capacity and tolerance. Re-profile after major life events.",
+ "key_terms": [
+  "riskometer"
+ ],
+ "example": "A business owner earns well, has no debt and a 15-year horizon, so his capacity is high. But he sold everything in March 2020, so his tolerance is low. He is profiled as Moderate, not Aggressive.",
+ "say": [
+  "A wealthy client who panics in falls is still a moderate investor. Let's build for how you will actually react.",
+  "Let's re-profile now that your circumstances have changed."
+ ],
+ "never": [
+  "You can afford the risk, so you should take it.",
+  "The questionnaire says Aggressive, so that is what you are."
+ ],
+ "talk_track": [
+  {
+   "n": 6,
+   "title": "Two questions decide the risk profile",
+   "text": "Stage two is Evaluate, and no fund is suggested until this is done. First check the foundation: emergency fund, term and health cover, and costly debt being cleared. Then two questions decide the risk profile. Risk capacity: how much loss can the client afford, given age, income, dependants and horizon? Risk tolerance: how much loss can they emotionally handle? Look at the matrix. Only when both are high do we build a growth portfolio. If either one is low, the lower one sets the limit. A wealthy client who panics in falls is still a moderate investor. Re-profile after big life events."
+  }
+ ],
+ "check": [
+  {
+   "id": "mf-q7",
+   "sec": "E: Evaluate the Client",
+   "q": "A wealthy client with high risk capacity panics and sells in every market fall. How should they be profiled?",
+   "o": [
+    "Moderate: match to the lower of capacity and tolerance",
+    "Growth, because capacity is high",
+    "Aggressive, to make up for past losses",
+    "They cannot be profiled"
+   ],
+   "a": 0,
+   "why": "Recommendations follow the LOWER of capacity and tolerance. Low tolerance sets the limit."
+  },
+  {
+   "id": "mf-q8",
+   "sec": "E: Evaluate the Client",
+   "q": "\"How much risk the goal actually requires\" describes:",
+   "o": [
+    "Risk capacity",
+    "Risk tolerance",
+    "Risk need",
+    "Risk appetite"
+   ],
+   "a": 2,
+   "why": "Risk need compares the goal amount with current savings and time left."
+  },
+  {
+   "id": "mf-n25",
+   "q": "When should a client's risk profile be reviewed again?",
+   "o": [
+    "Never, it is fixed at onboarding",
+    "After major life events",
+    "Only when markets rise",
+    "Every ten years"
+   ],
+   "a": 1,
+   "why": "Re-profile after major life events such as a job change, marriage or retirement."
+  }
+ ],
+ "card_ids": [
+  "mf-c15",
+  "mf-c16",
+  "mf-c17",
+  "mf-c18"
+ ],
+ "words": 72
+}

@@ -1,6 +1,8 @@
 import { ApiError, resolveApiUrl, API_URL } from "./api";
 import type { PmsManagerProfile } from "./pms-managers";
 
+import type { InfoTipMeta } from "@/components/InfoTip";
+
 export interface BackofficeEnvelope<T> {
   data: T;
   as_of?: string;
@@ -17,6 +19,7 @@ export interface BackofficeEnvelope<T> {
     total_coverage_pct?: number;
   };
   method_version?: string;
+  meta?: Record<string, InfoTipMeta>;
 }
 
 export interface MarketOverviewData {
@@ -518,6 +521,7 @@ function envelope<T>(raw: Json, data: T, fallbackAvailability: Availability = "r
     quality_flags: typeof flags === "string" || Array.isArray(flags) ? (flags as string[] | string) : undefined,
     method_version: str(raw.method_version),
     message: str(raw.message),
+    meta: (raw.meta && typeof raw.meta === "object") ? (raw.meta as Record<string, InfoTipMeta>) : undefined,
   };
 }
 

@@ -344,3 +344,20 @@ def test_backoffice_mf_tracker_fh_recommended_filter(client):
     df = load_metrics().set_index("scheme_code")
     for code in FH_RECOMMENDED_MF_CODES:
         assert code in df.index and (df.loc[code, "plan"], df.loc[code, "option"]) == ("Regular", "Growth"), code
+
+
+def test_provenance_meta_attached(client):
+    from app.backoffice.meta import with_meta
+    test_payload = {"data": "test"}
+    enriched = with_meta(test_payload, "fbil", "2026-10-14")
+    assert "meta" in enriched
+    assert enriched["meta"]["_default"]["source"] == "fbil"
+    assert enriched["meta"]["_default"]["source_url"] == "https://www.fbil.org.in"
+
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    r = client.get("/api/backoffice/yields")
+    assert r.status_code == 200
+    meta = r.json().get("meta")
+    assert meta and "_default" in meta
+    assert meta["_default"]["source"] == "fbil"

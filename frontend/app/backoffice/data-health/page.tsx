@@ -11,6 +11,7 @@ import {
   ImportJobData,
 } from "@/lib/backoffice";
 import { formatISTDateTime } from "@/lib/terminal-format";
+import InfoTip from "@/components/InfoTip";
 
 export default function DataHealthPage() {
   const [health, setHealth] = useState<SourceHealthData | null>(null);
@@ -194,10 +195,20 @@ export default function DataHealthPage() {
                 <thead>
                   <tr>
                     <th className="w-[22%]">Source / Adapter</th>
-                    <th className="w-[12%]">Status</th>
+                    <th className="w-[12%]">
+                      <div className="inline-flex items-center gap-1">
+                        <span>Status</span>
+                        <InfoTip metric="source_health" />
+                      </div>
+                    </th>
                     <th className="w-[10%]">Frequency</th>
                     <th className="w-[12%] text-right">Rate Budget</th>
-                    <th className="w-[16%]">Last Success</th>
+                    <th className="w-[16%]">
+                      <div className="inline-flex items-center gap-1">
+                        <span>Last Success</span>
+                        <InfoTip metric="freshness_latency" />
+                      </div>
+                    </th>
                     <th className="w-[18%]">Attribution Notes</th>
                     <th className="w-[10%] text-right">Actions</th>
                   </tr>

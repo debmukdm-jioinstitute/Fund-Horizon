@@ -18,5 +18,8 @@ litellm>=1.35.0
 sqlalchemy>=2.0
 alembic>=1.13
 psycopg[binary]>=3.1
+statsmodels>=0.14
+empyrical-reloaded>=0.5.9
+mftool>=2.8
 
 

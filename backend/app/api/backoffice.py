@@ -1,8 +1,6 @@
 """FastAPI router for Fund Horizon Internal Backoffice."""
 from __future__ import annotations
 
-import csv
-import io
 import json
 import re
 import secrets
@@ -21,11 +19,18 @@ from app.api.auth import (
     require_staff,
     verify_csrf,
 )
+from app.backoffice.analytics.impact_engine import analyze_impact, simulate_scenario
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import factsheet_archive_dir, refresh_source
-from app.backoffice.fh_recommended import FH_RECOMMENDED_MF_CODES, MF_FACTSHEET_SOURCE, PMS_FACTSHEET_SOURCE, PMS_NO_PUBLIC_FACTSHEET
-from app.backoffice.providers import factsheets as factsheets_provider
+from app.backoffice.meta import with_meta
+from app.backoffice.fh_recommended import (
+    FH_RECOMMENDED_MF_CODES,
+    MF_FACTSHEET_SOURCE,
+    PMS_FACTSHEET_SOURCE,
+    PMS_NO_PUBLIC_FACTSHEET,
+)
 from app.backoffice.providers import apmi as apmi_provider
+from app.backoffice.providers import factsheets as factsheets_provider
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
 from app.backoffice.providers.nse import NseError
 from app.backoffice.repository import BackofficeRepository
@@ -60,13 +65,14 @@ _SCREENING_SERVICE = ScreeningService(_REPO)
 def backoffice_overview(staff: Annotated[dict, Depends(require_staff)]):
     """Aggregate market overview and system telemetry for staff dashboard."""
     overview = _SERVICE.get_market_overview()
-    return {
+    res = {
         "data": overview,
         "as_of": overview.get("generated_at"),
         "availability": "ready",
         "freshness": "current",
         "method_version": "1.0.0",
     }
+    return with_meta(res, "derived", overview.get("generated_at"))
 
 
 @router.get("/series/{instrument_id}")
@@ -79,11 +85,12 @@ def backoffice_series(
     if not re.fullmatch(r"(FX|VOL|YIELD):[A-Z]{2,6}(:[A-Z0-9]{2,8})?", instrument_id):
         raise HTTPException(404, "Unknown series")
     rows = _REPO.get_observations_series(instrument_id, limit=limit)
-    return {
+    res = {
         "data": [{"observed_at": r["observed_at"], "value": r["value_numeric"]} for r in rows],
         "as_of": rows[-1]["observed_at"] if rows else None,
         "availability": "ready" if rows else "unavailable",
     }
+    return with_meta(res, "derived", rows[-1]["observed_at"] if rows else None)
 
 
 # ---------------------------------------------------------------------------
@@ -94,12 +101,13 @@ def backoffice_series(
 def backoffice_yields(staff: Annotated[dict, Depends(require_staff)]):
     """Sovereign tenor curves and cross-country spreads, from live-collected observations."""
     board = _SERVICE.get_yields_board()
-    return {
+    res = {
         "data": board,
         "as_of": board.get("as_of"),
         "availability": board.get("status", "unavailable"),
         "freshness": "current",
     }
+    return with_meta(res, "fbil", board.get("as_of"))
 
 
 # ---------------------------------------------------------------------------
@@ -114,12 +122,13 @@ def backoffice_derivatives(
 ):
     """Option chain, Put-Call Ratio (OI & Volume), and Max Pain."""
     board = _SERVICE.get_derivatives_board(underlying=underlying, expiry=expiry)
-    return {
+    res = {
         "data": board,
         "as_of": board.get("snapshot_timestamp"),
         "availability": board.get("status", "ready"),
         "freshness": "current" if board.get("live_status") == "live" else "stale",
     }
+    return with_meta(res, "nse", board.get("snapshot_timestamp"), stale=board.get("live_status") != "live")
 
 
 # ---------------------------------------------------------------------------
@@ -135,12 +144,13 @@ def backoffice_news(
 ):
     """Latest headlines collected from open RSS feeds (RBI, SEBI, PIB and major Indian business outlets)."""
     items = _REPO.list_news(limit=limit, category=category, source_id=source)
-    return {
+    res = {
         "data": items,
         "count": len(items),
         "availability": "ready" if items else "unavailable",
         "freshness": "current",
     }
+    return with_meta(res, "nse", items[0].get("published_at") if items else None)
 
 
 # ---------------------------------------------------------------------------
@@ -155,13 +165,14 @@ def backoffice_flows(
 ):
     """Daily reported and provisional FII/DII gross buy, sell, and net flows."""
     flows = _REPO.list_flows(start_date=start_date, end_date=end_date)
-    return {
+    res = {
         "data": flows,
         "count": len(flows),
         "unit": "inr_crore",
         "availability": "ready" if flows else "unavailable",
         "freshness": "current" if flows else "stale",
     }
+    return with_meta(res, "nse", flows[0].get("trade_date") if flows else None)
 
 
 # ---------------------------------------------------------------------------
@@ -201,7 +212,7 @@ def backoffice_pms_strategies(
         for m in _REPO.list_pms_strategies(provider=provider)
         if m.get("source") != "APMI"
     ]
-    return {
+    res = {
         "data": universe + manual,
         "count": len(universe) + len(manual),
         "as_on": as_on,
@@ -210,6 +221,7 @@ def backoffice_pms_strategies(
         "availability": "ready" if (universe or manual) else "unavailable",
         "freshness": "current" if universe else "stale",
     }
+    return with_meta(res, "apmi", as_on)
 
 
 _PMS_DETAIL_TTL_SECONDS = 24 * 3600.0
@@ -244,7 +256,7 @@ def backoffice_pms_strategy_detail(ia_id: str, staff: Annotated[dict, Depends(re
             detail = cached[0]  # serve stale facts rather than nothing
 
     siblings = _REPO.list_provider_strategies(latest["provider"], latest["as_on"], ia_id)
-    return {
+    res = {
         "data": {
             "ia_id": ia_id,
             "latest": latest,
@@ -258,6 +270,7 @@ def backoffice_pms_strategy_detail(ia_id: str, staff: Annotated[dict, Depends(re
         "availability": "ready",
         "freshness": "current" if detail_error is None else "stale",
     }
+    return with_meta(res, "apmi", latest["as_on"])
 
 
 @router.get("/pms/providers")
@@ -265,7 +278,7 @@ def backoffice_pms_providers(staff: Annotated[dict, Depends(require_staff)]):
     """Every SEBI-registered portfolio manager listed by APMI, with reported strategy count and total AUM."""
     as_on = _REPO.latest_pms_as_on()
     providers = _REPO.list_pms_providers(as_on)
-    return {
+    res = {
         "data": providers,
         "count": len(providers),
         "reporting_count": sum(1 for p in providers if p["strategy_count"]),
@@ -273,6 +286,7 @@ def backoffice_pms_providers(staff: Annotated[dict, Depends(require_staff)]):
         "availability": "ready" if providers else "unavailable",
         "freshness": "current",
     }
+    return with_meta(res, "apmi", as_on)
 
 
 @router.get("/pms/accounts")
@@ -377,7 +391,8 @@ def backoffice_micro_issuer(symbol: str, staff: Annotated[dict, Depends(require_
             "freshness": "current",
             "message": f"NSE has no quarterly results for {symbol.upper()}.",
         }
-    return {"data": data, "as_of": data["fiscal_period"], "availability": "ready", "freshness": "current", "frequency": "quarterly"}
+    res = {"data": data, "as_of": data["fiscal_period"], "availability": "ready", "freshness": "current", "frequency": "quarterly"}
+    return with_meta(res, "nse", data.get("fiscal_period"))
 
 
 # ---------------------------------------------------------------------------
@@ -410,11 +425,12 @@ def backoffice_factsheets(
             "url": f"/api/backoffice/factsheets/{r['id']}/file" if archived else r["url"],
             "official_url": r["url"],
         })
-    return {
+    res = {
         "data": {"source": factsheets_provider.SOURCES[key].label, "items": items},
         "availability": "ready" if items else "unavailable",
         "as_of": items[0]["period"] if items else None,
     }
+    return with_meta(res, "amfi" if kind == "mf" else "apmi", items[0]["period"] if items else None)
 
 
 @router.get("/factsheets/{factsheet_id}/file")
@@ -466,7 +482,7 @@ def backoffice_mf_performance(scheme_code: str, request: Request, staff: Annotat
         "r3y": ((nav / nav.shift(36)) ** (1 / 3) - 1) * 100,
         "r5y": ((nav / nav.shift(60)) ** (1 / 5) - 1) * 100,
     }).sort_index(ascending=False)
-    return {
+    res = {
         "data": {
             "scheme_code": scheme_code,
             # The public /funds/{code} page only exists for schemes eligible for shortlists (Regular, Growth, clean data).
@@ -486,6 +502,7 @@ def backoffice_mf_performance(scheme_code: str, request: Request, staff: Annotat
         "availability": "ready",
         "as_of": str(row.get("last_nav_date")),
     }
+    return with_meta(res, "amfi", str(row.get("last_nav_date")))
 
 
 def _mgr_key(name: str | None) -> str:
@@ -578,7 +595,7 @@ def backoffice_mf_tracker(
             f["isin"] = None
         if not f.get("isin_reinvest") or str(f.get("isin_reinvest")).strip() in {"-", "--"}:
             f["isin_reinvest"] = None
-    return {
+    res = {
         "data": funds,
         "count": len(funds),
         "total": total,
@@ -593,6 +610,7 @@ def backoffice_mf_tracker(
         },
         "availability": "ready" if total else "unavailable",
     }
+    return with_meta(res, "amfi", facets.get("as_of"))
 
 
 @router.get("/mutual-funds/nav-pair-check")
@@ -609,13 +627,18 @@ def backoffice_mf_nav_pair_check(
 # Explainable Impact Engine
 # ---------------------------------------------------------------------------
 
+class ImpactScenarioRequestWithConvexity(ImpactScenarioRequest):
+    convexity: float = 0.0
+
+
 @router.post("/impact/analyze")
 def backoffice_impact_analyze(
     body: ImpactAnalyzeRequest,
     staff: Annotated[dict, Depends(require_staff)],
 ):
     """Empirical OLS elasticity, rolling correlation, and lag analysis between pairs."""
-    return _SERVICE.analyze_impact(
+    return analyze_impact(
+        repo=_REPO,
         series_x_id=body.series_x_id,
         series_y_id=body.series_y_id,
         horizon_days=body.horizon_days,
@@ -625,22 +648,27 @@ def backoffice_impact_analyze(
 
 @router.post("/impact/scenario")
 def backoffice_impact_scenario(
-    body: ImpactScenarioRequest,
+    body: ImpactScenarioRequestWithConvexity,
     staff: Annotated[dict, Depends(require_staff)],
 ):
     """Macroeconomic shock scenario simulation (duration shocks, USD rally, oil inflation)."""
-    return _SERVICE.simulate_scenario(
+    return simulate_scenario(
+        repo=_REPO,
         usd_shock_pct=body.usd_shock_pct,
         us_yield_shock_bps=body.us_yield_shock_bps,
         oil_shock_pct=body.oil_shock_pct,
         modified_duration=body.modified_duration,
+        convexity=body.convexity,
     )
 
 
 @router.get("/briefing")
 def backoffice_briefing(staff: Annotated[dict, Depends(require_staff)]):
     """Deterministic daily research briefing generated from observed data (zero LLM)."""
-    return _SERVICE.get_research_briefing()
+    res = _SERVICE.get_research_briefing()
+    if isinstance(res, dict):
+        return with_meta(res, "derived", res.get("generated_at"))
+    return res
 
 
 # ---------------------------------------------------------------------------
@@ -752,7 +780,7 @@ def backoffice_data_health(staff: Annotated[dict, Depends(require_staff)]):
     def _count(status: str) -> int:
         return sum(1 for src in sources if src.get("health_status") == status)
 
-    return {
+    res = {
         "sources": sources,
         "summary": {
             "total": len(sources),
@@ -765,6 +793,7 @@ def backoffice_data_health(staff: Annotated[dict, Depends(require_staff)]):
         "recent_audits": audits,
         "as_of": datetime.now(UTC).isoformat(),
     }
+    return with_meta(res, "derived", datetime.now(UTC))
 
 
 @router.post("/sources/{source_id}/refresh")
@@ -861,14 +890,15 @@ def backoffice_screening_metrics(
     as_of: str | None = Query(None),
 ):
     """Retrieve precomputed screening metrics and facets for S0 universe."""
-    res = _SCREENING_SERVICE.get_screening_metrics(cat=cat, amc=amc, q_search=q_search, as_of=as_of)
-    return {
-        "data": res,
-        "as_of": res.get("as_of"),
-        "availability": "ready" if res.get("rows") else "unavailable",
-        "freshness": "current" if res.get("rows") else "stale",
+    res_data = _SCREENING_SERVICE.get_screening_metrics(cat=cat, amc=amc, q_search=q_search, as_of=as_of)
+    res = {
+        "data": res_data,
+        "as_of": res_data.get("as_of"),
+        "availability": "ready" if res_data.get("rows") else "unavailable",
+        "freshness": "current" if res_data.get("rows") else "stale",
         "method_version": "1.0.0",
     }
+    return with_meta(res, "amfi", res_data.get("as_of"))
 
 
 @router.post("/screening/run")

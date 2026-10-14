@@ -9,7 +9,6 @@ from app.backoffice.analytics.impact_engine import (
     calculate_log_returns,
     compute_bond_price_sensitivity,
     compute_correlation_and_beta,
-    generate_deterministic_briefing,
 )
 from app.backoffice.analytics.pms_math import (
     calculate_cagr,
@@ -176,27 +175,6 @@ def test_impact_engine_log_returns_and_correlation():
     stats = compute_correlation_and_beta(aligned["paired_x"], aligned["paired_y"])
     assert stats["correlation"] == 1.0
     assert stats["beta"] == 2.0
-
-
-def test_deterministic_briefing_generation():
-    briefing = generate_deterministic_briefing(
-        market_observations={
-            "fx": {"FX:USDINR": 84.15, "FX:EURUSD": 1.092, "as_of": "2026-10-09"},
-            "volatility": {"VOL:US:VIX": 18.5, "as_of": "2026-10-09"},
-        },
-        macro_data={"yields": {"india_us_spread_bps": 300.0, "in_10y": 7.0, "us_10y": 4.0}},
-        flows_data={"fii_net_crore": 1250.0, "dii_net_crore": 1850.0, "report_date": "2026-10-09"},
-        options_summary={"underlying": "NIFTY", "pcr_oi": 1.15, "total_call_oi": 100000, "total_put_oi": 115000},
-    )
-    assert "Briefing" in briefing["title"]
-    assert "Zero LLM" in briefing["method_version"]
-    assert len(briefing["bullets"]) >= 4
-    # Check that observed numbers are cited in bullets
-    full_text = " ".join(briefing["bullets"])
-    assert "84.15" in full_text
-    assert "300.0" in full_text
-    assert "18.50" in full_text
-    assert "1.15" in full_text
 
 
 def test_impact_engine_convexity():

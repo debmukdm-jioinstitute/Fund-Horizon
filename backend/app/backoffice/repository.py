@@ -177,6 +177,13 @@ CREATE TABLE IF NOT EXISTS screening_runs (
     created_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_screening_runs_staff ON screening_runs(staff_id);
+CREATE TABLE IF NOT EXISTS briefings (
+    brief_date TEXT PRIMARY KEY,
+    generated_at TEXT NOT NULL,
+    version INTEGER NOT NULL DEFAULT 1,
+    payload_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_briefings_date ON briefings(brief_date DESC);
 """
 _LIVE_TABLES_READY: set[str] = set()
 
@@ -1397,6 +1404,104 @@ class BackofficeRepository:
         conn = self._conn()
         try:
             rows = conn.execute("SELECT * FROM audit_events ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    # --- Daily briefings ---
+
+    def upsert_briefing(self, brief_date: str, payload: dict[str, Any], version: int = 1) -> None:
+        """Idempotent upsert keyed by ``brief_date`` (one row per IST date)."""
+        conn = self._conn()
+        try:
+            with conn:
+                conn.execute(
+                    """
+                    INSERT INTO briefings (brief_date, generated_at, version, payload_json)
+                    VALUES (?, ?, ?, ?)
+                    ON CONFLICT(brief_date) DO UPDATE SET
+                        generated_at = excluded.generated_at,
+                        version = excluded.version,
+                        payload_json = excluded.payload_json
+                    """,
+                    (brief_date, payload.get("generated_at") or _utcnow(), version, json.dumps(payload)),
+                )
+        finally:
+            conn.close()
+
+    def _briefing_row(self, row: Any) -> dict[str, Any] | None:
+        if row is None:
+            return None
+        d = dict(row)
+        try:
+            payload = json.loads(d.get("payload_json") or "{}")
+        except (TypeError, ValueError):
+            payload = {}
+        return {
+            "brief_date": d.get("brief_date"),
+            "generated_at": d.get("generated_at"),
+            "version": d.get("version"),
+            "payload": payload,
+        }
+
+    def get_briefing_by_date(self, brief_date: str) -> dict[str, Any] | None:
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT * FROM briefings WHERE brief_date = ?", (brief_date,)).fetchone()
+            return self._briefing_row(row)
+        finally:
+            conn.close()
+
+    def get_latest_briefing(self) -> dict[str, Any] | None:
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT * FROM briefings ORDER BY brief_date DESC LIMIT 1").fetchone()
+            return self._briefing_row(row)
+        finally:
+            conn.close()
+
+    def list_briefing_dates(self, limit: int = 30) -> list[str]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT brief_date FROM briefings ORDER BY brief_date DESC LIMIT ?", (limit,)
+            ).fetchall()
+            return [r["brief_date"] for r in rows]
+        finally:
+            conn.close()
+
+    # --- Briefing data helpers ---
+
+    def list_scheme_navs(self, plan: str | None = "Regular") -> list[dict[str, Any]]:
+        """Latest NAV per scheme, optionally restricted to one plan."""
+        conn = self._conn()
+        try:
+            query = "SELECT scheme_code, scheme_name, amc, category, plan, scheme_option, isin, latest_nav, nav_date FROM mf_schemes"
+            params: list[Any] = []
+            if plan:
+                query += " WHERE plan = ?"
+                params.append(plan)
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def list_mf_ter(self) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT base_key, scheme_name, regular_ter_pct, direct_ter_pct, as_of FROM mf_ter"
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def list_screening_quartiles(self) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT scheme_code, scheme_name, cat, quartile_2y, as_of FROM mf_screening_metrics"
+            ).fetchall()
             return [dict(r) for r in rows]
         finally:
             conn.close()

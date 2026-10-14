@@ -68,7 +68,11 @@ const householdColumns: ListColumn<Household>[] = [
 ];
 export const HouseholdsList = ({ reloadKey }: { reloadKey?: number }) => (
   <ListView<Household>
-    entity="households" columns={householdColumns} filters={[ownerFilter("rm_id")]} reloadKey={reloadKey}
+    entity="households" columns={householdColumns} filters={[
+      ownerFilter("rm_id"),
+      { key: "tier", label: "Tier", type: "select", options: ["platinum", "gold", "silver", "standard"].map((t) => ({ value: t, label: t[0].toUpperCase() + t.slice(1) })) },
+    ]}
+    reloadKey={reloadKey}
     rowHref={(h) => `/backoffice/crm/households/${h.id}`} searchPlaceholder="Search households…"
   />
 );
@@ -91,7 +95,7 @@ const contactColumns: ListColumn<Contact>[] = [
 ];
 export const ContactsList = () => (
   <ListView<Contact>
-    entity="contacts" columns={contactColumns} searchPlaceholder="Search name, email, mobile, household…"
+    entity="contacts" columns={contactColumns} filters={[{ key: "gaps", label: "Data gaps", type: "toggle" }]} searchPlaceholder="Search name, email, mobile, household…"
     rowHref={(c) => `/backoffice/crm/contacts/${c.id}`}
   />
 );
@@ -143,6 +147,8 @@ export const OpportunitiesList = ({ reloadKey }: { reloadKey?: number }) => (
     filters={[
       { key: "product_line", label: "Product", type: "select", options: PRODUCT_LINES.map((p) => ({ value: p.value, label: p.label })) },
       { key: "stage", label: "Stage", type: "select", options: allStages.map((s) => ({ value: s, label: stageLabel(s) })) },
+      { key: "open", label: "Open only", type: "toggle" },
+      { key: "won_this_month", label: "Won this month", type: "toggle" },
       ownerFilter("assigned_rm_id"),
     ]}
     rowHref={(o) => `/backoffice/crm/opportunities/${o.id}`} searchPlaceholder="Search opportunities…"

@@ -7,6 +7,7 @@ export const CRM_TABS = [
   ["opportunities", "Opportunities"],
   ["activities", "Tasks"],
   ["cases", "Grievances"],
+  ["deadlines", "Deadlines"],
   ["book", "Book"],
   ["compliance", "Compliance"],
   ["import", "Import"],
@@ -19,8 +20,8 @@ const TAB_ALIASES: Record<string, CrmTabId> = {
   "crm-home": "home",
   pipeline: "opportunities",
   pipelines: "opportunities",
-  renewals: "activities",
-  maturities: "activities",
+  renewals: "deadlines",
+  maturities: "deadlines",
 };
 
 export function resolveTab(raw: string | null | undefined): CrmTabId {

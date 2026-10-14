@@ -1,203 +1,144 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchDashboard, PRODUCT_LINES, type CrmDashboard } from "../../lib/crmApi";
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { stageLabel } from "../../lib/crmProductsApi";
+import { fetchReportsDashboard, linkHref, type Dashboard, type WidgetLink } from "../../lib/crmReportsApi";
 import { shortInr } from "../../lib/format";
+import { useTheme } from "../terminal/ThemeContext";
+import { cardCls, errCls, headCls, mutedCls, rupees } from "./ui";
 
-interface CrmHomeProps {
-  /** Called with the tab key to jump to a CRM tab (coordinator wires tabs). */
-  onNavigate?: (tab: string) => void;
-}
+const TIER_LABEL: Record<string, string> = { platinum: "Platinum", gold: "Gold", silver: "Silver", standard: "Standard" };
+const GAP_LABEL: Record<string, string> = { nominee: "No nominee", kyc: "KYC missing", kyc_expired: "KYC expired", fatca_crs: "FATCA/CRS" };
 
-const PRODUCT_LINE_LABELS: Record<string, string> = {
-  mutual_fund: "Mutual funds",
-  life_insurance: "Life insurance",
-  general_insurance: "General insurance",
-  corporate_fd: "Corporate FDs",
-  pms: "PMS",
-};
-
-function KpiCard({
-  label,
-  value,
-  hint,
-  onClick,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-  onClick?: () => void;
-}) {
+/** A number that opens the list it counts. */
+function Kpi({ label, value, hint, link, tone }: { label: string; value: string; hint?: string; link: WidgetLink; tone?: "warn" }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5 text-left hover:border-teal-300 hover:shadow transition w-full"
+    <Link
+      href={linkHref(link)}
+      className={`${cardCls} block hover:border-[#006F64] dark:hover:border-[#75E1CE] transition focus:outline-none focus:ring-2 focus:ring-[#006F64]`}
     >
-      <div className="text-xs font-semibold uppercase tracking-wider text-navy-500">{label}</div>
-      <div className="text-2xl font-extrabold text-navy-950 mt-1.5">{value}</div>
-      {hint && <div className="text-xs text-navy-600 mt-1">{hint}</div>}
-    </button>
+      <div className={`text-[11px] font-semibold uppercase tracking-wider ${mutedCls}`}>{label}</div>
+      <div className={`mt-1 text-2xl font-bold tabular-nums ${tone === "warn" ? "text-amber-700 dark:text-amber-300" : "text-[#172033] dark:text-[#EDF2F7]"}`}>{value}</div>
+      {hint && <div className={`mt-1 text-xs ${mutedCls}`}>{hint}</div>}
+    </Link>
   );
 }
 
-export default function CrmHome({ onNavigate }: CrmHomeProps) {
-  const [data, setData] = useState<CrmDashboard | null>(null);
-  const [loading, setLoading] = useState(true);
+interface Datum {
+  name: string;
+  value: number;
+  count: number;
+  link: WidgetLink | null;
+}
+
+/** Horizontal bars; clicking one opens its filtered list. */
+function BarCard({ title, sub, data, money = true, colors }: { title: string; sub: string; data: Datum[]; money?: boolean; colors: { bar: string; grid: string; text: string; tip: string } }) {
+  const router = useRouter();
+  const empty = data.every((d) => d.value === 0 && d.count === 0);
+  return (
+    <section className={cardCls} aria-label={title}>
+      <h3 className={headCls}>{title}</h3>
+      <p className={`mb-2 text-xs ${mutedCls}`}>{sub}</p>
+      {empty ? (
+        <p className={`py-8 text-center text-xs ${mutedCls}`}>No data yet.</p>
+      ) : (
+        <div style={{ height: Math.max(160, data.length * 32 + 24) }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, bottom: 4, left: 8 }}>
+              <CartesianGrid horizontal={false} stroke={colors.grid} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: colors.text }} stroke={colors.grid} tickFormatter={(v: number) => (money ? shortInr(v / 100) : String(v))} />
+              <YAxis type="category" dataKey="name" width={112} tick={{ fontSize: 11, fill: colors.text }} stroke={colors.grid} />
+              <Tooltip
+                cursor={{ fill: colors.grid, opacity: 0.4 }}
+                contentStyle={{ background: colors.tip, border: `1px solid ${colors.grid}`, borderRadius: 8, fontSize: 12, color: colors.text }}
+                formatter={(v: number, _n, item) => [money ? `${rupees(v)} · ${(item.payload as Datum).count}` : String(v), ""]}
+                separator=""
+              />
+              <Bar dataKey="value" isAnimationActive={false} radius={[0, 4, 4, 0]} cursor="pointer" onClick={(d) => { const l = (d as unknown as Datum).link; if (l) router.push(linkHref(l)); }}>
+                {data.map((d) => <Cell key={d.name} fill={colors.bar} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      {/* Keyboard- and screen-reader-friendly mirror of the chart */}
+      <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        {data.filter((d) => d.link).map((d) => (
+          <li key={d.name} className="text-xs">
+            <Link href={linkHref(d.link!)} className="text-[#006F64] dark:text-[#75E1CE] hover:underline">{d.name}</Link>
+            <span className={mutedCls}> · {d.count}{money ? ` · ${shortInr(d.value / 100)}` : ""}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export default function CrmHome() {
+  const { theme } = useTheme();
+  const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchDashboard()
-      .then((d) => setData(d))
-      .catch((e) => setError(e instanceof Error ? e.message : "Could not load the dashboard"))
-      .finally(() => setLoading(false));
+    fetchReportsDashboard().then(setData).catch((e) => setError(e instanceof Error ? e.message : "Could not load the dashboard"));
   }, []);
 
-  const go = (tab: string) => () => onNavigate?.(tab);
+  if (error) return <p role="alert" className={errCls}>{error}</p>;
+  if (!data) return <div aria-busy="true" className={`p-12 text-center text-xs ${mutedCls}`}>Loading the CRM overview…</div>;
 
-  if (loading) {
-    return <div className="p-12 text-center text-xs text-navy-500">Loading the CRM overview…</div>;
-  }
+  const dark = theme === "dark";
+  const colors = dark
+    ? { bar: "#75E1CE", grid: "#2B3644", text: "#A8B4C4", tip: "#171E27" }
+    : { bar: "#006F64", grid: "#E4E9EF", text: "#536176", tip: "#FFFFFF" };
 
-  if (error || !data) {
-    return (
-      <div className="p-5 rounded-2xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
-        {error ?? "Could not load the dashboard."}
-      </div>
-    );
-  }
-
-  const pipelineTotal = PRODUCT_LINES.reduce(
-    (sum, line) => sum + (data.pipeline_value_by_line[line] ?? 0),
-    0,
-  );
+  const tiers: Datum[] = data.aum_by_tier.map((t) => ({ name: `${TIER_LABEL[t.tier] ?? t.tier} (${t.households})`, value: t.aum_paise, count: t.households, link: t.link }));
+  const stages: Datum[] = data.pipeline_by_stage.filter((s) => s.count > 0).map((s) => ({ name: stageLabel(s.stage), value: s.value, count: s.count, link: s.link }));
+  const rms: Datum[] = data.pipeline_by_rm.map((r) => ({ name: r.rm_name || "Unassigned", value: r.value, count: r.count, link: r.link }));
+  const gapSummary = Object.entries(data.gaps.by_kind).map(([k, n]) => `${GAP_LABEL[k] ?? k} ${n}`).join(" · ");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-bold text-navy-950">CRM overview</h2>
-        <p className="text-xs text-navy-500">
-          A live snapshot of households, leads, pipeline and work due. Pick a card to open the
-          matching section.
-        </p>
+        <h2 className={headCls}>CRM overview</h2>
+        <p className={`text-xs ${mutedCls}`}>Your book as of {data.as_of}. Every number opens the list it counts.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <KpiCard
-          label="Households"
-          value={String(data.households_count)}
-          hint="Families under management"
-          onClick={go("households")}
-        />
-        <KpiCard
-          label="Active leads"
-          value={String(data.active_leads_count)}
-          hint="New, contacted or qualified"
-          onClick={go("leads")}
-        />
-        <KpiCard
-          label="Open cases"
-          value={String(data.open_cases_count)}
-          hint="Need attention"
-          onClick={go("cases")}
-        />
-        <KpiCard
-          label="Tasks due"
-          value={String(data.tasks_due_count)}
-          hint="Due within 7 days"
-          onClick={go("activities")}
-        />
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <Kpi label="SIP book" value={rupees(data.sip_book.monthly_paise)} hint={`${data.sip_book.count} active SIPs / month`} link={data.sip_book.link} />
+        <Kpi label="Won this month" value={String(data.won_this_month.count)} hint={rupees(data.won_this_month.value)} link={data.won_this_month.link} />
+        <Kpi label="Overdue tasks" value={String(data.overdue_tasks.count)} hint="Open, due before today" link={data.overdue_tasks.link} tone={data.overdue_tasks.count ? "warn" : undefined} />
+        <Kpi label="Cases past SLA" value={String(data.sla_breaching.count)} hint="Open, SLA date passed" link={data.sla_breaching.link} tone={data.sla_breaching.count ? "warn" : undefined} />
+        <Kpi label="KYC / nominee gaps" value={String(data.gaps.count)} hint={gapSummary || "No gaps"} link={data.gaps.link} tone={data.gaps.count ? "warn" : undefined} />
+        <Kpi label="Policy renewals" value={String(data.renewals.count)} hint={`Next ${data.renewals.days} days`} link={data.renewals.link} />
+        <Kpi label="FD maturities" value={String(data.maturities.count)} hint={`Next ${data.maturities.days} days`} link={data.maturities.link} />
+        <Kpi label="Open pipeline" value={shortInr(data.pipeline_open.value / 100)} hint={`${data.pipeline_open.count} opportunities`} link={{ tab: "opportunities", params: { open: "true" } }} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5">
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+        <BarCard title="AUM by household tier" sub={`Total ${rupees(data.aum_total_paise)}. Platinum ≥ ₹1 Cr, Gold ≥ ₹25 L, Silver ≥ ₹5 L.`} data={tiers} colors={colors} />
+        <BarCard title="Pipeline by stage" sub="Open opportunities only; stages with none are hidden, won and lost are excluded." data={stages} colors={colors} />
+        <BarCard title="Pipeline by RM" sub="Open opportunity value per owner." data={rms} colors={colors} />
+        <section className={cardCls} aria-label="Top trail earners">
           <div className="flex items-baseline justify-between">
-            <h3 className="text-sm font-bold text-navy-950">Pipeline value</h3>
-            <div className="text-lg font-extrabold text-navy-950">
-              {shortInr(pipelineTotal / 100)}
-            </div>
+            <h3 className={headCls}>Top trail earners</h3>
+            <Link href={linkHref(data.top_trail.link)} className="text-xs text-[#006F64] dark:text-[#75E1CE] hover:underline">Trail report</Link>
           </div>
-          <p className="text-xs text-navy-600 mb-3">
-            Open opportunities, grouped by product line (excludes won and lost).
-          </p>
-          <div className="space-y-2">
-            {PRODUCT_LINES.map((line) => {
-              const v = data.pipeline_value_by_line[line] ?? 0;
-              const pct = pipelineTotal > 0 ? Math.round((v / pipelineTotal) * 100) : 0;
-              return (
-                <button
-                  key={line}
-                  type="button"
-                  onClick={go("pipeline")}
-                  className="w-full text-left hover:bg-teal-50/40 rounded-xl px-2 py-1.5 transition"
-                >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-navy-800">
-                      {PRODUCT_LINE_LABELS[line]}
-                    </span>
-                    <span className="font-bold text-navy-950">{shortInr(v / 100)}</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-navy-100 mt-1 overflow-hidden">
-                    <div className="h-full rounded-full bg-teal-500" style={{ width: `${pct}%` }} />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5">
-          <h3 className="text-sm font-bold text-navy-950">Deadlines coming up</h3>
-          <p className="text-xs text-navy-600 mb-3">
-            Proactive reminders generated from stored policies and FDs.
-          </p>
-          <div className="space-y-2">
-            <button
-              type="button"
-              onClick={go("renewals")}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-amber-50/60 border border-amber-100 hover:bg-amber-50 transition text-left"
-            >
-              <div>
-                <div className="text-xs font-bold text-navy-950">Policy renewals</div>
-                <div className="text-xs text-navy-500">Due in the next 30 days</div>
-              </div>
-              <div className="text-xl font-extrabold text-amber-700">{data.renewals_due_30d}</div>
-            </button>
-            <button
-              type="button"
-              onClick={go("maturities")}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-sky-50/60 border border-sky-100 hover:bg-sky-50 transition text-left"
-            >
-              <div>
-                <div className="text-xs font-bold text-navy-950">FD maturities</div>
-                <div className="text-xs text-navy-500">Maturing in the next 60 days</div>
-              </div>
-              <div className="text-xl font-extrabold text-sky-700">{data.fd_maturities_60d}</div>
-            </button>
-          </div>
-          <div className="mt-4 pt-3 border-t border-navy-100">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-navy-500 mb-2">
-              Shortcuts
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {[
-                { key: "import", label: "Import clients" },
-                { key: "compliance", label: "Compliance" },
-                { key: "pipelines", label: "Pipelines" },
-              ].map((s) => (
-                <button
-                  key={s.key}
-                  type="button"
-                  onClick={go(s.key)}
-                  className="px-3 py-1.5 text-xs font-semibold bg-navy-50 hover:bg-navy-100 text-navy-700 rounded-xl transition"
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+          <p className={`mb-2 text-xs ${mutedCls}`}>{data.top_trail.month ? `Households by brokerage in ${data.top_trail.month}.` : "Upload a brokerage file in Book → Trail commission."}</p>
+          <ol className="space-y-1.5">
+            {data.top_trail.rows.map((r, i) => (
+              <li key={r.household_id} className="flex items-center justify-between text-xs">
+                <Link href={`/backoffice/crm/households/${r.household_id}`} className="text-[#172033] dark:text-[#EDF2F7] hover:underline">
+                  <span className={`mr-2 tabular-nums ${mutedCls}`}>{i + 1}.</span>{r.household_name ?? "Household"}
+                </Link>
+                <span className="font-semibold tabular-nums text-[#172033] dark:text-[#EDF2F7]">{rupees(r.amount_paise)}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
     </div>
   );

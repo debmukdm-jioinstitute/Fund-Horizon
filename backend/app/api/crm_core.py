@@ -22,7 +22,7 @@ from app.api.auth import _hash_password
 from app.api.crm_auth import crm_user, unscoped
 from app.api.crm_page import PageParams, guard, paginate_rows, send_total
 from app.db import sqlite
-from app.repo_crm_core import IST, CrmCoreError, Page, get_crm_repository, today_ist
+from app.repo_crm_core import IST, CrmCoreError, Page, get_crm_repository, month_start_utc, today_ist
 from app.repo_crm_extras import find_duplicates
 
 router = APIRouter(prefix="/api/crm", tags=["crm"])
@@ -435,12 +435,17 @@ class GenerateTasksRequest(BaseModel):
 # Households
 # ---------------------------------------------------------------------------
 @router.get("/households")
-def list_households(me: Me, response: Response, page: PageParams, rm_id: str | None = Query(None, description="RM id, or 'me'")):
+def list_households(
+    me: Me, response: Response, page: PageParams, rm_id: str | None = Query(None, description="RM id, or 'me'"),
+    tier: str | None = Query(None, description="AUM tier: platinum, gold, silver or standard"),
+):
     repo = get_crm_repository()
     owner = _owner(me, rm_id)
     if _viewer(me) is not None and owner is not None and owner not in me["_team"]:
         raise HTTPException(403, "You can only filter by yourself or your team.")
-    rows = guard(repo.list_households, rm_id=[owner] if owner and _viewer(me) is not None else (_viewer(me) or owner), page=page)
+    scope_rm = [owner] if owner and _viewer(me) is not None else (_viewer(me) or owner)
+    ids = guard(p3.households_in_tier, scope_rm, tier) if tier else None
+    rows = guard(repo.list_households, rm_id=scope_rm, ids=ids, page=page)
     send_total(response, page)
     ids = [h["id"] for h in rows]
     members, open_opps = repo.member_counts(ids), repo.open_opp_counts(ids)
@@ -734,13 +739,17 @@ def list_opportunities(
     stage: str | None = Query(None),
     household_id: str | None = Query(None),
     assigned_rm_id: str | None = Query(None),
+    open: bool = Query(False, description="Exclude won and lost"),
+    won_this_month: bool = Query(False, description="Won opportunities closed in the current IST month"),
 ):
     _check_enum(product_line, PRODUCT_LINES, "product_line")
     repo = get_crm_repository()
     opps = guard(
         repo.list_opportunities,
         product_line=product_line,
-        stage=stage,
+        stage=WON_STAGE if won_this_month else stage,
+        exclude_stages=CLOSED_STAGES if open else (),
+        closed_from=month_start_utc() if won_this_month else None,
         household_id=household_id,
         assigned_rm_id=_owner(me, assigned_rm_id),
         viewer_rm_id=_viewer(me),

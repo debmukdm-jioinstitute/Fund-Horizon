@@ -124,6 +124,12 @@ def _utcnow() -> str:
     return datetime.now(UTC).isoformat()
 
 
+def month_start_utc() -> str:
+    """Start of the current calendar month in IST, as a UTC ISO timestamp (matches ``closed_at``)."""
+    now = datetime.now(IST)
+    return datetime(now.year, now.month, 1, tzinfo=IST).astimezone(UTC).isoformat()
+
+
 def today_ist() -> str:
     return datetime.now(IST).date().isoformat()
 
@@ -459,11 +465,15 @@ class CrmCoreRepository:
             h = s.get(HouseholdModel, household_id)
             return _row(h) if h else None
 
-    def list_households(self, *, rm_id: Any = None, page: Page | None = None) -> list[dict[str, Any]]:
+    def list_households(
+        self, *, rm_id: Any = None, ids: list[str] | None = None, page: Page | None = None
+    ) -> list[dict[str, Any]]:
         with _session() as s:
             stmt = select(HouseholdModel).order_by(HouseholdModel.created_at.desc())
             if rm_id is not None:
                 stmt = stmt.where(HouseholdModel.rm_id.in_(rm_ids(rm_id)))
+            if ids is not None:
+                stmt = stmt.where(HouseholdModel.id.in_(ids))
             return [_row(h) for h in _page(s, stmt, HouseholdModel, page, ("name", "notes"))]
 
     def update_household(
@@ -682,11 +692,14 @@ class CrmCoreRepository:
         household_id: str | None = None,
         assigned_rm_id: str | None = None,
         exclude_stages: tuple[str, ...] = (),
+        closed_from: str | None = None,
         viewer_rm_id: str | None = None,
         page: Page | None = None,
     ) -> list[dict[str, Any]]:
         with _session() as s:
             stmt = select(OpportunityModel).order_by(OpportunityModel.created_at.desc())
+            if closed_from is not None:  # UTC ISO timestamp
+                stmt = stmt.where(OpportunityModel.closed_at >= closed_from)
             if product_line is not None:
                 stmt = stmt.where(OpportunityModel.product_line == product_line)
             if stage is not None:

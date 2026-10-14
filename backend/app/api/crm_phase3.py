@@ -182,11 +182,9 @@ def create_contact(body: ContactIn, me: Me):
     return _contact_detail(contact)
 
 
-@router.get("/contacts/gaps")
-def contact_gaps(me: Me, response: Response, page: PageParams):
-    """Contacts missing a nominee, KYC, FATCA/CRS, or with an expired KYC."""
-    big = Page(limit=100_000)
-    rows = guard(extras.list_contacts, _viewer(me), big)
+def gap_rows(me: dict) -> list[dict]:
+    """Contacts missing a nominee, KYC, FATCA/CRS, or with an expired KYC (the book the viewer may see)."""
+    rows = guard(extras.list_contacts, _viewer(me), Page(limit=100_000))
     out = []
     for r in rows:
         c = p3.get_contact(r["id"])
@@ -194,6 +192,13 @@ def contact_gaps(me: Me, response: Response, page: PageParams):
         if d and d["gaps"]:
             out.append({k: d[k] for k in ("id", "name", "household_id", "household_name", "rm_id", "gaps", "kyc_expiry")})
     out.sort(key=lambda x: (x["household_name"] or "", x["name"] or ""))
+    return out
+
+
+@router.get("/contacts/gaps")
+def contact_gaps(me: Me, response: Response, page: PageParams):
+    """Contacts missing a nominee, KYC, FATCA/CRS, or with an expired KYC."""
+    out = gap_rows(me)
     page.total = len(out)
     send_total(response, page)
     return out[page.offset : page.offset + page.limit]

@@ -11,6 +11,7 @@ from typing import Annotated, Any
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse, PlainTextResponse
+from pydantic import BaseModel, Field
 
 from app.api.auth import (
     _hash_password,
@@ -1000,3 +1001,75 @@ def backoffice_export_screening_csv(
         media_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="screening_action_{run_id}.csv"'},
     )
+
+
+class BackofficeRiskProfileRequest(BaseModel):
+    first_name: str = "Client"
+    age: int = Field(35, ge=18, le=80)
+    employment_type: str = "salaried_private"
+    dependents: int = Field(0, ge=0, le=15)
+    monthly_income: int = Field(100000, ge=0)
+    monthly_expenses: int = Field(40000, ge=0)
+    monthly_emi: int = Field(0, ge=0)
+    liquid_assets: int = Field(300000, ge=0)
+    investments: int = Field(500000, ge=0)
+    liabilities: int = Field(0, ge=0)
+    term_cover: int = Field(0, ge=0)
+    health_cover: int = Field(0, ge=0)
+    retirement_age: int = Field(60, ge=40, le=80)
+    answers: dict[str, int] = Field(default_factory=dict)
+
+
+@router.get("/risk-profiling/questionnaire")
+def backoffice_risk_questionnaire(
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Return standard 10-question risk questionnaire."""
+    from app.config import load_questionnaire
+    return {"status": "success", "data": load_questionnaire()}
+
+
+@router.post("/risk-profiling/evaluate")
+def backoffice_evaluate_risk_profile(
+    req: BackofficeRiskProfileRequest,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Evaluate customer risk capacity, tolerance score, final risk band, and target asset allocation."""
+    from app.engine.profiling import band_for, build_profile
+    from app.schemas import Client, EmploymentType
+
+    try:
+        emp = EmploymentType(req.employment_type)
+    except Exception:
+        emp = EmploymentType.salaried_private
+
+    retire_age = max(req.retirement_age, req.age) if emp != EmploymentType.retired_none else req.retirement_age
+
+    client = Client(
+        first_name=req.first_name,
+        age=req.age,
+        employment_type=emp,
+        dependents=req.dependents,
+        monthly_income=req.monthly_income,
+        monthly_expenses=req.monthly_expenses,
+        monthly_emi=req.monthly_emi,
+        liquid_assets=req.liquid_assets,
+        investments=req.investments,
+        liabilities=req.liabilities,
+        term_cover=req.term_cover,
+        health_cover=req.health_cover,
+        retirement_age=retire_age,
+    )
+
+    answers = req.answers or {f"q{i}": 2 for i in range(1, 11)}
+    profile = build_profile(client, answers)
+    allocation = band_for(profile["final_score"])
+
+    return {
+        "status": "success",
+        "data": {
+            **profile,
+            "target_allocation": allocation,
+        },
+    }
+

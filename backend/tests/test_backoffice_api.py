@@ -361,3 +361,43 @@ def test_provenance_meta_attached(client):
     meta = r.json().get("meta")
     assert meta and "_default" in meta
     assert meta["_default"]["source"] == "fbil"
+
+
+def test_backoffice_risk_profiling_endpoints(client):
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+
+    # 1. Questionnaire
+    q_res = client.get("/api/backoffice/risk-profiling/questionnaire")
+    assert q_res.status_code == 200
+    q_data = q_res.json()["data"]
+    assert "questions" in q_data
+    assert len(q_data["questions"]) == 10
+
+    # 2. Evaluate
+    payload = {
+        "first_name": "Priya",
+        "age": 32,
+        "employment_type": "salaried_private",
+        "dependents": 1,
+        "monthly_income": 120000,
+        "monthly_expenses": 45000,
+        "monthly_emi": 15000,
+        "liquid_assets": 400000,
+        "investments": 800000,
+        "liabilities": 500000,
+        "term_cover": 20000000,
+        "health_cover": 1000000,
+        "answers": {f"q{i}": 3 for i in range(1, 11)},
+    }
+    eval_res = client.post("/api/backoffice/risk-profiling/evaluate", json=payload)
+    assert eval_res.status_code == 200
+    data = eval_res.json()["data"]
+    assert "capacity" in data
+    assert "tolerance" in data
+    assert "final_score" in data
+    assert "band" in data
+    assert "target_allocation" in data
+    assert data["target_allocation"]["equity"] > 0
+    assert data["target_allocation"]["debt"] > 0
+

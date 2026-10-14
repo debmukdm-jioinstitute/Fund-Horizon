@@ -1536,3 +1536,71 @@ export const deleteScreeningPreset = async (
 export const screeningExportUrl = (runId: string, includeRetain: boolean = false): string => {
   return `${resolveApiUrl(`/api/backoffice/screening/export/${encodeURIComponent(runId)}.csv`)}?include_retain=${includeRetain}`;
 };
+
+export interface MfScreenerRow {
+  code: string;
+  name: string;
+  amc?: string | null;
+  plan: string;
+  cat: string;
+  nav_date?: string | null;
+  isin?: string | null;
+  is_fh_recommended: boolean;
+  perf_label: string;
+  risk_label: string;
+  ops_label: string;
+  [metric: string]: string | number | boolean | null | undefined;
+}
+
+export interface MfScreenerGroup {
+  group: string;
+  categories: { key: string; label: string; count: number }[];
+}
+
+export interface MfScreenerResult {
+  data: MfScreenerRow[];
+  total: number;
+  as_of?: string | null;
+  groups: MfScreenerGroup[];
+  meta?: Record<string, InfoTipMeta>;
+}
+
+export interface MfScreenerQuery {
+  category: string[];
+  plan: string[];
+  search?: string;
+  sort: string;
+  order: "asc" | "desc";
+  ranges: Record<string, { min?: string; max?: string }>;
+  recommended?: boolean;
+  limit?: number;
+  offset?: number;
+}
+
+export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
+  const q = new URLSearchParams();
+  o.category.forEach((c) => q.append("category", c));
+  o.plan.forEach((p) => q.append("plan", p));
+  if (o.search) q.set("search", o.search);
+  if (o.recommended) q.set("recommended", "true");
+  Object.entries(o.ranges).forEach(([k, r]) => {
+    if (r.min || r.max) q.append("f", `${k}:${r.min ?? ""}:${r.max ?? ""}`);
+  });
+  q.set("sort", o.sort);
+  q.set("order", o.order);
+  return q;
+}
+
+export const getMfScreener = (o: MfScreenerQuery, signal?: AbortSignal): Promise<MfScreenerResult> => {
+  const q = mfScreenerParams(o);
+  q.set("limit", String(o.limit ?? 25));
+  q.set("offset", String(o.offset ?? 0));
+  return boFetch<MfScreenerResult>(`/api/backoffice/mutual-funds/screener?${q.toString()}`, { signal });
+};
+
+/** Same-origin CSV download URL for the current filters (all matching rows). */
+export const mfScreenerCsvUrl = (o: MfScreenerQuery): string => {
+  const q = mfScreenerParams(o);
+  q.set("format", "csv");
+  return resolveApiUrl(`${API_URL}/api/backoffice/mutual-funds/screener?${q.toString()}`);
+};

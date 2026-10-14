@@ -1,16 +1,16 @@
 """Flows dedup cleanup and unique index on (report_date, category, segment).
 
-Revision ID: flows_0007
-Revises: screening_0006
-Create Date: 2026-10-14 00:00:00.000000
+Revision ID: flows_0009
+Revises: crm_list_views_0008
+Create Date: 2026-10-14 13:00:00.000000
 """
 from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
 
-revision: str = "flows_0007"
-down_revision: Union[str, None] = "screening_0006"
+revision: str = "flows_0009"
+down_revision: Union[str, None] = "crm_list_views_0008"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

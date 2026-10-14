@@ -32,6 +32,14 @@ const ADVISOR_ORDER = [
   "market_pulse",
 ];
 
+// Item 1-frontend: advisor caps per section key (regulatory max 8, short market
+// pulse max 5, every other advisor section max 8).
+const ADVISOR_ITEM_CAPS: Record<string, number> = {
+  regulatory_news: 8,
+  market_pulse: 5,
+};
+const ADVISOR_DEFAULT_CAP = 8;
+
 // Analyst fallback order if the payload arrives unordered.
 const ANALYST_ORDER = [
   "market_pulse",
@@ -53,25 +61,7 @@ function orderSections(sections: BriefingSection[], order: string[]): BriefingSe
   return [...ordered, ...sections.filter((s) => !orderedKeys.has(s.key))];
 }
 
-function formatISTTimeHM(dateInput?: string | number | Date | null): string {
-  if (!dateInput) return "—";
-  try {
-    const d = new Date(dateInput);
-    if (isNaN(d.getTime())) return "—";
-    return (
-      new Intl.DateTimeFormat("en-IN", {
-        timeZone: "Asia/Kolkata",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).format(d) + " IST"
-    );
-  } catch {
-    return "—";
-  }
-}
-
-function formatISTDateTimeShort(dateInput?: string | number | Date | null): string {
+function formatISTDateTimeHM(dateInput?: string | number | Date | null): string {
   if (!dateInput) return "—";
   try {
     const d = new Date(dateInput);
@@ -90,6 +80,41 @@ function formatISTDateTimeShort(dateInput?: string | number | Date | null): stri
   } catch {
     return "—";
   }
+}
+
+const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+// Item 11: show the real observation time. When only a date is known, show the
+// date with no time (never a fake "00:00 IST").
+function formatAsOf(asOf?: string): string {
+  if (!asOf) return "—";
+  const trimmed = asOf.trim();
+  if (DATE_ONLY_RE.test(trimmed)) return formatBriefDate(trimmed);
+  return formatISTDateTimeHM(trimmed);
+}
+
+function itemAgeHours(asOf?: string): number | null {
+  if (!asOf) return null;
+  const t = new Date(asOf).getTime();
+  if (isNaN(t)) return null;
+  return (Date.now() - t) / 3600000;
+}
+
+function isFxItem(sectionKey: string, item: BriefingItem): boolean {
+  if (sectionKey !== "market_pulse") return false;
+  const hay = `${item.text ?? ""} ${item.value ?? ""} ${item.source ?? ""}`.toUpperCase();
+  return /USD\/INR|EUR\/INR|GBP\/INR|\bFX\b|USDINR/.test(hay);
+}
+
+// Item 11: stale flags — FX older than 1 trading day, screening/PMS older than
+// 7 days. An explicit payload flag always wins; otherwise derive from as_of.
+function itemIsStale(sectionKey: string, item: BriefingItem): boolean {
+  if (item.stale === true) return true;
+  const age = itemAgeHours(item.as_of);
+  if (age == null || age < 0) return false;
+  if (isFxItem(sectionKey, item)) return age > 36; // ~1 trading day, weekend-safe
+  if (sectionKey === "screening_changes" || sectionKey === "pms") return age > 7 * 24;
+  return false;
 }
 
 function formatBriefDate(briefDate: string): string {
@@ -114,34 +139,85 @@ function formatBriefDate(briefDate: string): string {
   return formatISTDate(briefDate);
 }
 
+// Item 14: percentages to 2 dp, plain numeric changes to 2 dp, bps/FX keep their
+// backend unit formatting. Every change gets an arrow plus colour by sign;
+// flat shows "—".
 function ChangeMark({ item }: { item: BriefingItem }) {
-  const changeText = item.change ?? (item.change_pct != null ? `${item.change_pct > 0 ? "+" : ""}${item.change_pct}%` : null);
-  if (changeText == null) return null;
-  const up = item.direction === "up";
-  const down = item.direction === "down";
+  const pct = item.change_pct;
+  let sign: 1 | -1 | 0 = 0;
+  let text: string | null = null;
+
+  if (typeof pct === "number" && isFinite(pct)) {
+    sign = pct > 1e-9 ? 1 : pct < -1e-9 ? -1 : 0;
+    text = sign === 0 ? "—" : `${sign > 0 ? "+" : "−"}${Math.abs(pct).toFixed(2)}%`;
+  } else if (item.change != null && item.change.trim() !== "") {
+    const m = /([+-−]?\d[\d,]*(\.\d+)?)/.exec(item.change.replace(/−/g, "-"));
+    if (m) {
+      const n = parseFloat(m[1].replace(/,/g, ""));
+      if (isFinite(n)) {
+        sign = n > 1e-9 ? 1 : n < -1e-9 ? -1 : 0;
+        if (sign === 0) {
+          text = "—";
+        } else if (/bps|%|₹|\$|cr/i.test(item.change)) {
+          // Backend-formatted unit strings (bps as integers, FX to 2 dp) stay as-is.
+          text = item.change;
+        } else {
+          text = `${sign > 0 ? "+" : "−"}${Math.abs(n).toFixed(2)}`;
+        }
+      }
+    }
+  }
+
+  const upCls = "text-[#0E7C3A] dark:text-[#6FD598]";
+  const downCls = "text-[#B42332] dark:text-[#FF7D86]";
+  const flatCls = "text-[#536176] dark:text-[#A8B4C4]";
+
+  if (text == null) {
+    // No numeric change on file: fall back to the backend direction for the
+    // arrow only, without inventing a number.
+    if (item.direction === "up")
+      return <span className={`font-mono text-[12px] font-medium ${upCls}`}>▲</span>;
+    if (item.direction === "down")
+      return <span className={`font-mono text-[12px] font-medium ${downCls}`}>▼</span>;
+    return null;
+  }
+  const cls = sign > 0 ? upCls : sign < 0 ? downCls : flatCls;
+  const arrow = sign > 0 ? "▲ " : sign < 0 ? "▼ " : "";
   return (
-    <span
-      className={`font-mono text-[12px] font-medium ${
-        up
-          ? "text-[#0E7C3A] dark:text-[#6FD598]"
-          : down
-            ? "text-[#B42332] dark:text-[#FF7D86]"
-            : "text-[#536176] dark:text-[#A8B4C4]"
-      }`}
-    >
-      {up ? "▲ " : down ? "▼ " : ""}
-      {changeText}
+    <span className={`font-mono text-[12px] font-medium ${cls}`}>
+      {arrow}
+      {text}
     </span>
   );
 }
 
-function BriefingItemRow({ item, detailed }: { item: BriefingItem; detailed: boolean }) {
+function BriefingItemRow({
+  item,
+  sectionKey,
+  detailed,
+}: {
+  item: BriefingItem;
+  sectionKey: string;
+  detailed: boolean;
+}) {
   const headline = item.value ?? item.text ?? "—";
+  const stale = itemIsStale(sectionKey, item);
+  const sourceUrl = item.source_url ?? undefined;
+  // Item 15: when the source link equals the details link, render just one.
+  const detailsUrl = item.link && item.link !== sourceUrl ? item.link : undefined;
   return (
-    <div className="py-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] last:border-b-0 space-y-1">
+    <div className={`py-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] last:border-b-0 space-y-1 ${printStyles.item}`}>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="text-[13px] font-semibold text-[#172033] dark:text-[#EDF2F7]">{headline}</span>
         <ChangeMark item={item} />
+        {stale && (
+          <span
+            className="text-[10px] font-mono uppercase px-1 py-0.5 rounded border border-[#B42332]/40 text-[#B42332] dark:text-[#FF7D86]"
+            title="Observation is older than the freshness limit for this source"
+          >
+            Stale
+          </span>
+        )}
       </div>
       {item.text != null && item.value != null && item.text !== item.value && (
         <p className="text-[12px] text-[#172033] dark:text-[#EDF2F7] leading-relaxed">{item.text}</p>
@@ -151,12 +227,12 @@ function BriefingItemRow({ item, detailed }: { item: BriefingItem; detailed: boo
       )}
       {detailed && (
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
-          {item.as_of != null && <span>{formatISTDateTimeShort(item.as_of)}</span>}
+          {item.as_of != null && <span>{formatAsOf(item.as_of)}</span>}
           {item.source != null && (
             <span>
-              {item.source_url != null ? (
+              {sourceUrl != null ? (
                 <a
-                  href={item.source_url}
+                  href={sourceUrl}
                   target="_blank"
                   rel="noopener"
                   className="text-[#006F64] dark:text-[#75E1CE] hover:underline"
@@ -168,9 +244,9 @@ function BriefingItemRow({ item, detailed }: { item: BriefingItem; detailed: boo
               )}
             </span>
           )}
-          {item.link != null && (
+          {detailsUrl != null && (
             <a
-              href={item.link}
+              href={detailsUrl}
               target="_blank"
               rel="noopener"
               className="text-[#006F64] dark:text-[#75E1CE] hover:underline"
@@ -185,16 +261,17 @@ function BriefingItemRow({ item, detailed }: { item: BriefingItem; detailed: boo
 }
 
 function BriefingSectionCard({ section, detailed }: { section: BriefingSection; detailed: boolean }) {
+  // Item 9: empty sections show the backend reason string, never a generic blank.
   if (section.items.length === 0) {
     return (
       <details className={`terminal-panel p-6 mb-6 ${printStyles.card}`}>
         <summary className="cursor-pointer text-[13px] font-medium text-[#536176] dark:text-[#A8B4C4] list-none flex items-center gap-2">
           <span aria-hidden="true">▸</span>
           <span>{section.title || section.key}</span>
-          <span className="text-[11px] font-mono">— no data</span>
+          <span className="text-[11px] font-mono">— no items</span>
         </summary>
         <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-2">
-          {section.note ?? "—"}
+          {section.note ?? "No data for this section in this briefing."}
         </p>
       </details>
     );
@@ -204,9 +281,14 @@ function BriefingSectionCard({ section, detailed }: { section: BriefingSection; 
       <h2 className="text-[14px] font-semibold text-[#172033] dark:text-[#EDF2F7] mb-4">
         {section.title || section.key}
       </h2>
+      {section.note != null && (
+        <p className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4] -mt-2 mb-3">
+          {section.note}
+        </p>
+      )}
       <div>
         {section.items.map((item, idx) => (
-          <BriefingItemRow key={idx} item={item} detailed={detailed} />
+          <BriefingItemRow key={idx} item={item} sectionKey={section.key} detailed={detailed} />
         ))}
       </div>
     </section>
@@ -243,11 +325,20 @@ function ResearchPageContent() {
     tabParam === "screening" || tabParam === "notes" ? tabParam : "briefing"
   );
 
+  // Item 7: URL state ?tab=briefing&view=analyst|advisor&date=YYYY-MM-DD,
+  // restored on reload. Default view: advisor.
+  const viewParam = searchParams.get("view");
+  const dateParam = searchParams.get("date");
+  const initialView: BriefingView =
+    viewParam === "analyst" || viewParam === "advisor" ? viewParam : "advisor";
+  const initialDate =
+    dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : "";
+
   const [briefing, setBriefing] = useState<BriefingPayload | null>(null);
   const [briefingDates, setBriefingDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [briefingNotFound, setBriefingNotFound] = useState(false);
-  const [view, setView] = useState<BriefingView>("advisor");
+  const [view, setView] = useState<BriefingView>(initialView);
   const [notes, setNotes] = useState<ResearchNoteItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [briefingLoading, setBriefingLoading] = useState(false);
@@ -314,7 +405,8 @@ function ResearchPageContent() {
         ]);
         setBriefingDates(datesRes);
         setNotes(notesRes || []);
-        await loadBriefing();
+        // Item 7: honour a valid ?date= param on load; otherwise latest.
+        await loadBriefing(initialDate || undefined);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Failed to load research data");
       } finally {
@@ -322,7 +414,7 @@ function ResearchPageContent() {
       }
     }
     load();
-  }, [loadBriefing]);
+  }, [loadBriefing, initialDate]);
 
   function handleTabChange(nextTab: ResearchTab) {
     setTab(nextTab);
@@ -331,8 +423,25 @@ function ResearchPageContent() {
     router.replace(`${pathname}?${params.toString()}`);
   }
 
+  function syncBriefingUrl(nextView: BriefingView, nextDate?: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", "briefing");
+    params.set("view", nextView);
+    if (nextDate) params.set("date", nextDate);
+    else params.delete("date");
+    router.replace(`${pathname}?${params.toString()}`);
+  }
+
+  function handleViewChange(nextView: BriefingView) {
+    setView(nextView);
+    syncBriefingUrl(nextView, selectedDate || undefined);
+  }
+
   function handleDateChange(nextDate: string) {
-    if (!nextDate) return;
+    // Item 8: only dates with a stored brief (from /briefing/dates) are
+    // requestable; the picker only offers those.
+    if (!nextDate || !briefingDates.includes(nextDate)) return;
+    syncBriefingUrl(view, nextDate);
     loadBriefing(nextDate);
   }
 
@@ -379,15 +488,23 @@ function ResearchPageContent() {
     }
   }
 
+  // Item 1-frontend: advisor shows exactly the 5 composed sections by key
+  // (client_actions, fund_movers, cost_manager_changes, regulatory_news,
+  // market_pulse) with per-section item caps (regulatory ≤ 8, pulse ≤ 5).
   const orderedSections = briefing
     ? orderSections(
         briefing.sections,
         view === "advisor" ? ADVISOR_ORDER : ANALYST_ORDER
-      ).filter((s) => view === "analyst" || ADVISOR_ORDER.includes(s.key))
+      )
+        .filter((s) => view === "analyst" || ADVISOR_ORDER.includes(s.key))
+        .map((s) =>
+          view === "advisor"
+            ? { ...s, items: s.items.slice(0, ADVISOR_ITEM_CAPS[s.key] ?? ADVISOR_DEFAULT_CAP) }
+            : s
+        )
     : [];
 
-  const minDate = briefingDates.length ? briefingDates[briefingDates.length - 1] : undefined;
-  const maxDate = briefingDates.length ? briefingDates[0] : undefined;
+
 
   if (loading) {
     return <BriefingSkeleton />;
@@ -455,20 +572,29 @@ function ResearchPageContent() {
       {/* TAB 1: BRIEFING VIEW */}
       {tab === "briefing" && (
         <div className="space-y-4">
+          {/* Item 13: print-only header with generated_at in IST and the view name */}
+          {briefing && (
+            <div className={printStyles.printHeader} aria-hidden="true">
+              <div className="text-[16px] font-semibold">
+                Daily Briefing — {formatBriefDate(briefing.brief_date)}
+              </div>
+              <div className="text-[11px] font-mono">
+                {view === "advisor" ? "Advisor" : "Analyst"} view · Generated{" "}
+                {formatISTDateTimeHM(briefing.generated_at)}
+              </div>
+            </div>
+          )}
           {/* Briefing header: title, date, controls */}
-          <div className="flex flex-col gap-3">
+          <div className={`flex flex-col gap-3 ${printStyles.noPrint}`}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
+                {/* Item 8: header reads "Daily Briefing — {date}" */}
                 <h2 className="text-[18px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
-                  Daily Briefing
+                  {briefing ? `Daily Briefing — ${formatBriefDate(briefing.brief_date)}` : "Daily Briefing"}
                 </h2>
                 <div className="text-[12px] text-[#536176] dark:text-[#A8B4C4] font-mono mt-0.5">
                   {briefing ? (
-                    <>
-                      {formatBriefDate(briefing.brief_date)}
-                      <span className="mx-1.5">·</span>
-                      Generated {formatISTTimeHM(briefing.generated_at)}
-                    </>
+                    <>Generated {formatISTDateTimeHM(briefing.generated_at)}</>
                   ) : (
                     "—"
                   )}
@@ -476,18 +602,22 @@ function ResearchPageContent() {
               </div>
 
               <div className={`flex flex-wrap items-center gap-2 ${printStyles.noPrint}`}>
-                {/* Archive date picker */}
+                {/* Item 8: archive lists only dates with a stored brief, from /briefing/dates */}
                 <label className="text-[11px] text-[#536176] dark:text-[#A8B4C4] flex items-center gap-1.5">
                   Archive
-                  <input
-                    type="date"
+                  <select
                     value={selectedDate}
-                    min={minDate}
-                    max={maxDate}
                     onChange={(e) => handleDateChange(e.target.value)}
                     className="terminal-input text-[12px] py-1 px-2 font-mono"
                     aria-label="Briefing archive date"
-                  />
+                  >
+                    {briefingDates.length === 0 && <option value="">No archive</option>}
+                    {briefingDates.map((d) => (
+                      <option key={d} value={d}>
+                        {formatBriefDate(d)}
+                      </option>
+                    ))}
+                  </select>
                 </label>
 
                 {/* Advisor / Analyst toggle */}
@@ -499,7 +629,9 @@ function ResearchPageContent() {
                   {(["advisor", "analyst"] as BriefingView[]).map((v) => (
                     <button
                       key={v}
-                      onClick={() => setView(v)}
+                      onClick={() => handleViewChange(v)}
+                      aria-label={v === "advisor" ? "Advisor" : "Analyst"}
+                      aria-pressed={view === v}
                       className={`text-[12px] py-1 px-3 rounded capitalize ${
                         view === v
                           ? "bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] font-medium"

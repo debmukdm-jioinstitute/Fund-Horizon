@@ -807,6 +807,14 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def get_mf_scheme_amc(self, scheme_code: str) -> str | None:
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT amc FROM mf_schemes WHERE scheme_code = ?", (scheme_code,)).fetchone()
+            return row[0] if row else None
+        finally:
+            conn.close()
+
     def factsheet_periods(self, source_key: str) -> set[str]:
         conn = self._conn()
         try:

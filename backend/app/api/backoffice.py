@@ -390,8 +390,11 @@ def backoffice_factsheets(
     kind: str = Query(..., pattern="^(mf|pms)$"),
     id: str = Query(..., pattern="^[0-9]{1,8}$"),
 ):
-    """Official factsheets (newest first) for a curated mutual fund (AMFI code) or PMS strategy (APMI id)."""
-    key = (MF_FACTSHEET_SOURCE if kind == "mf" else PMS_FACTSHEET_SOURCE).get(id)
+    """Official factsheets (newest first) for a mutual fund (AMFI code: its AMC's factsheets) or PMS strategy (APMI id)."""
+    if kind == "mf":
+        key = MF_FACTSHEET_SOURCE.get(id) or factsheets_provider.SOURCE_BY_AMC.get(_REPO.get_mf_scheme_amc(id) or "")
+    else:
+        key = PMS_FACTSHEET_SOURCE.get(id)
     if key is None:
         return {
             "data": {"source": None, "items": [], "no_public": kind == "pms" and id in PMS_NO_PUBLIC_FACTSHEET},

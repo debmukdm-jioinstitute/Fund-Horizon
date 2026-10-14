@@ -90,3 +90,35 @@ def test_pms_without_public_factsheet_is_flagged_not_blank(client):
     assert body["data"]["no_public"] is True and body["data"]["items"] == []
     assert not set(PMS_FACTSHEET_SOURCE) & PMS_NO_PUBLIC_FACTSHEET
     assert client.get("/api/backoffice/factsheets?kind=mf&id=150799").json()["data"]["source"] == "WhiteOak Capital Mutual Fund"
+
+
+def test_period_from_text_two_digit_years_and_dates():
+    assert fs.period_from_text("Sept26.pdf") == "2026-09"
+    assert fs.period_from_text("Factsheet-as-on-February-26-2021.pdf") == "2021-02"  # 26 is a day, not a year
+    assert fs.period_from_text("NIMF-30-Mar-31.pdf") is None  # would be a future month
+    assert fs.period_from_text("no-date.pdf") is None
+
+
+def test_every_amc_in_the_scheme_list_has_a_factsheet_source():
+    from app.data.loader import load_metrics
+
+    assert set(load_metrics()["amc"].unique()) <= set(fs.AMC_SOURCES)
+    assert {k for k, _ in fs.AMC_SOURCES.values()} <= set(fs.SOURCES)
+    assert set(fs.BROWSER_PAGES) <= set(fs.SOURCES)
+
+
+def test_factsheets_api_covers_any_scheme_through_its_amc(client):
+    from app.backoffice.repository import BackofficeRepository
+
+    repo = BackofficeRepository()
+    conn = repo._conn()
+    with conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO mf_schemes (scheme_code, scheme_name, amc, updated_at) VALUES ('999001', 'Union Test Fund - Regular Plan - Growth', 'Union Mutual Fund', '2026-10-14')"
+        )
+    repo.upsert_factsheet("union", fs.Found("2026-09", "Union factsheet 2026-09", "https://example.test/union-2026-09.pdf"))
+    _login_staff(client, _create_staff("analyst"))
+    body = client.get("/api/backoffice/factsheets?kind=mf&id=999001").json()
+    assert body["data"]["source"] == "Union Mutual Fund"
+    assert [i["period"] for i in body["data"]["items"]] == ["2026-09"]
+    assert client.get("/api/backoffice/factsheets?kind=mf&id=888888").json()["data"]["source"] is None  # unknown scheme

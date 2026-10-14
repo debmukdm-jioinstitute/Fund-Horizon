@@ -124,7 +124,7 @@ def _backfill_apmi_history() -> int:
     return done
 
 
-FACTSHEET_BACKFILL_MONTHS = 36  # first run per source; afterwards only the newest months are re-checked
+FACTSHEET_BACKFILL_MONTHS = 96  # first run per source; afterwards only the newest months are re-checked
 FACTSHEET_RECENT_MONTHS = 4
 
 
@@ -152,16 +152,15 @@ def refresh_factsheets() -> dict[str, Any]:
         for src in factsheets.SOURCES.values():
             have = _REPO.factsheet_periods(src.key)
             try:
-                if src.links_file:
-                    found = factsheets.discover_links_file(src, browser_links)
-                elif src.templates:
+                found = factsheets.discover_links_file(src, browser_links)  # whatever the CI browser scraper recorded
+                if src.templates:
                     count = FACTSHEET_RECENT_MONTHS if have else FACTSHEET_BACKFILL_MONTHS
                     months = [(y, m) for y, m in factsheets.recent_months(count) if f"{y}-{m:02d}" not in have]
-                    found = factsheets.discover_templates(client, src, months)
+                    found += factsheets.discover_templates(client, src, months)
                 elif src.listing_url:
-                    found = factsheets.discover_listing(client, src)
-                else:
-                    found = factsheets.discover_fixed(client, src, factsheet_archive_dir(), have)
+                    found += factsheets.discover_listing(client, src)
+                elif src.fixed_url:
+                    found += factsheets.discover_fixed(client, src, factsheet_archive_dir(), have)
             except Exception as e:  # one broken publisher must not stop the others
                 logger.warning("factsheets %s failed: %s", src.key, e)
                 failed.append(src.key)

@@ -21,7 +21,7 @@ from playwright.sync_api import Page, sync_playwright
 
 backend_dir = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(backend_dir))
-from app.backoffice.providers.factsheets import period_from_name  # noqa: E402
+from app.backoffice.providers.factsheets import BROWSER_PAGES, FACTSHEET_LINK_RE, SOURCES, period_from_name, period_from_text  # noqa: E402
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 MONTH_NAMES = {n.lower(): i for i, n in enumerate(calendar.month_name) if n}
@@ -85,11 +85,42 @@ def icici_pms(page: Page) -> list[dict]:
     ]
 
 
+def generic(url: str):
+    """Any AMC's own factsheet page: factsheet PDFs from the page's links and from the JSON its scripts load."""
+    def scrape(page: Page) -> list[dict]:
+        seen: list = []
+        page.on("response", lambda r: seen.append(r) if r.status == 200 and ("json" in r.headers.get("content-type", "") or "text" in r.headers.get("content-type", "")) else None)
+        page.goto(url, wait_until="domcontentloaded", timeout=90_000)
+        page.wait_for_timeout(8000)
+        for _ in range(4):  # lazy lists load on scroll
+            page.mouse.wheel(0, 3000)
+            page.wait_for_timeout(800)
+        links = {a["h"]: a["t"] for a in page.eval_on_selector_all("a[href]", ANCHORS)}
+        for r in seen:
+            try:
+                for u in re.findall(r'https?://[^"\'\s<>\\]+?\.pdf[^"\'\s<>\\]*', r.text().replace("\\/", "/"), re.I):
+                    links.setdefault(u, "")
+            except Exception:  # response body already discarded
+                pass
+        out = {}
+        for h, t in links.items():
+            if ".pdf" not in h.lower() or not FACTSHEET_LINK_RE.search(h + " " + t):
+                continue
+            period = period_from_text(h.split("?")[0].rsplit("/", 1)[-1]) or period_from_text(t)  # filename beats the label
+            if period:
+                out.setdefault(period, h)
+        return [{"period": p, "title": "", "url": u} for p, u in out.items()]
+    return scrape
+
+
 SCRAPERS = {"helios": helios, "bandhan": bandhan, "carnelian_compounder": carnelian, "icici_pms_value": icici_pms}
 # WhiteOak's firewall returns 403 to CI/datacenter addresses, so it is opt-in (run from a normal connection with
 # FH_SCRAPE_WHITEOAK=1). Its previously collected links stay in browser.json untouched.
 if os.environ.get("FH_SCRAPE_WHITEOAK") == "1":
     SCRAPERS["whiteoak"] = whiteoak
+for _key, _url in BROWSER_PAGES.items():
+    if _key not in SCRAPERS and _key != "whiteoak":
+        SCRAPERS[_key] = generic(_url)
 
 
 def main() -> None:
@@ -99,7 +130,7 @@ def main() -> None:
     path = Path(args.out)
     result: dict[str, list[dict]] = json.loads(path.read_text()) if path.exists() else {}
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(args=["--disable-http2"])
         context = browser.new_context(user_agent=UA)
         for key, scrape in SCRAPERS.items():
             page = context.new_page()
@@ -110,6 +141,8 @@ def main() -> None:
                 continue
             finally:
                 page.close()
+            for e in found:
+                e["title"] = e["title"] or f"{SOURCES[key].label} factsheet {e['period']}"
             merged = {e["period"]: e for e in result.get(key, [])}
             merged.update({e["period"]: e for e in found})
             result[key] = sorted(merged.values(), key=lambda e: e["period"], reverse=True)

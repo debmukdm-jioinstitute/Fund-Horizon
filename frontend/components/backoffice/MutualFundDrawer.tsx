@@ -318,7 +318,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               </>
             )}
 
-            {scheme.is_fh_recommended && <FactsheetList kind="mf" id={scheme.scheme_code} />}
+            <FactsheetList kind="mf" id={scheme.scheme_code} />
 
             {/* ISIN & Identification Table */}
             <div className="terminal-panel overflow-hidden">

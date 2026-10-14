@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { FactsheetResult, getFactsheets } from "@/lib/backoffice";
 
-/** Official factsheet archive for a curated (FH Recommended) fund or strategy. */
+/** Official factsheet archive: for a mutual fund it is the AMC's monthly factsheet; for a PMS strategy, its publisher's. */
 export default function FactsheetList({ kind, id }: { kind: "mf" | "pms"; id?: string }) {
   const [data, setData] = useState<FactsheetResult | null | undefined>(undefined); // undefined = loading, null = failed
 

@@ -93,6 +93,68 @@ SOURCES: dict[str, Source] = {s.key: s for s in (
 )}
 
 
+# AMFI scheme-list AMC name -> (source key, the AMC's own factsheet page as listed on amfiindia.com/online-center/
+# download-factsheets). The browser scraper reads the page; every scheme of the AMC shows that AMC's factsheets.
+AMC_SOURCES: dict[str, tuple[str, str | None]] = {
+    "360 ONE Mutual Fund": ("360one", "https://www.360.one/asset/mutual-funds/downloads/"),
+    "Abakkus Mutual Fund": ("abakkus", "https://www.abakkusmf.com/factsheet.html"),
+    "Aditya Birla Sun Life Mutual Fund": ("absl", "https://mutualfund.adityabirlacapital.com/forms-and-downloads/factsheets"),
+    "AlphaGrep Mutual Fund": ("alphagrep", None),
+    "Angel One Mutual Fund": ("angelone", "https://www.angelonemf.com/downloads"),
+    "Axis Mutual Fund": ("axis", "https://www.axismf.com/downloads"),
+    "Bajaj Finserv Mutual Fund": ("bajaj", "https://www.bajajamc.com/downloads?factsheet"),
+    "Bandhan Mutual Fund": ("bandhan", None),
+    "Bank of India Mutual Fund": ("boi", None),
+    "Baroda BNP Paribas Mutual Fund": ("baroda_bnp", "https://www.barodabnpparibasmf.in/downloads/monthly-factsheet"),
+    "Canara Robeco Mutual Fund": ("canara", "https://www.canararobeco.com/documents/forms-downloads/forms-information-documents/information-documents/factsheets/"),
+    "Capitalmind Mutual Fund": ("capitalmind", "https://capitalmindmf.com/factsheet.html"),
+    "Choice Mutual Fund": ("choice", "https://choicemf.com/disclosures/factsheets"),
+    "DSP Mutual Fund": ("dsp", "https://www.dspim.com/downloads?category=Information%20Documents&sub_category=Factsheets"),
+    "Edelweiss Mutual Fund": ("edelweiss", None),
+    "Franklin Templeton Mutual Fund": ("franklin", "https://www.franklintempletonindia.com/downloads/fund-literature"),
+    "Groww Mutual Fund": ("groww", "https://www.growwmf.in/downloads/fact-sheet"),
+    "HDFC Mutual Fund": ("hdfc", None),
+    "HSBC Mutual Fund": ("hsbc", None),
+    "Helios Mutual Fund": ("helios", None),
+    "ICICI Prudential Mutual Fund": ("icici_mf", None),
+    "ITI Mutual Fund": ("iti", "https://www.itiamc.com/downloads"),
+    "Invesco Mutual Fund": ("invesco", "https://www.invescomutualfund.com/literature-forms/factsheets"),
+    "JM Financial Mutual Fund": ("jm", "https://www.jmfinancialmf.com/downloads/Factsheet/Factsheet"),
+    "Jio BlackRock Mutual Fund": ("jioblackrock", "https://www.jioblackrockamc.com/statutory-disclosure/fund-documents/factsheet"),
+    "Kotak Mahindra Mutual Fund": ("kotak", None),
+    "LIC Mutual Fund": ("lic", "https://www.licmf.com/downloads/factsheet"),
+    "Mahindra Manulife Mutual Fund": ("mahindra", "https://www.mahindramanulife.com/downloads#investor"),
+    "Mirae Asset Mutual Fund": ("mirae", "https://www.miraeassetmf.co.in/downloads/factsheet"),
+    "Motilal Oswal Mutual Fund": ("motilal", "https://www.motilaloswalmf.com/downloads/factsheets"),
+    "NJ Mutual Fund": ("nj", "https://downloads.njmutualfund.com/downloads.php"),
+    "Navi Mutual Fund": ("navi", "https://navi.com/mutual-fund/downloads/factsheet"),
+    "Nippon India Mutual Fund": ("nippon", "https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures"),
+    "Old Bridge Mutual Fund": ("oldbridge", None),
+    "PGIM India Mutual Fund": ("pgim", "https://www.pgimindia.com/mutual-funds/forms-and-product-updates/Fund-Factsheet"),
+    "PPFAS Mutual Fund": ("ppfas", "http://amc.ppfas.com/schemes/factsheet/index.php"),
+    "Quantum Mutual Fund": ("quantum", "https://www.quantumamc.com/factsheets/combined/-1/0/0"),
+    "SBI Mutual Fund": ("sbi", "https://www.sbimf.com/factsheets"),
+    "Samco Mutual Fund": ("samco", "https://www.samcomf.com/downloads"),
+    "Shriram Mutual Fund": ("shriram", "https://www.shriramamc.in/factsheet"),
+    "Sundaram Mutual Fund": ("sundaram", "https://www.sundarammutual.com/Fundwise-Factsheet"),
+    "Tata Mutual Fund": ("tata", "https://www.tatamutualfund.com/information-documents/factsheets"),
+    "Taurus Mutual Fund": ("taurus", "https://www.taurusmutualfund.com/factsheet"),
+    "The Wealth Company Mutual Fund": ("wealthco", "https://www.wealthcompanyamc.in/literature-forms/scheme-documents/factsheets/"),
+    "Trust Mutual Fund": ("trust", "https://www.trustmf.com/downloads?activeTab=factsheets"),
+    "UTI Mutual Fund": ("uti", "https://www.utimf.com/downloads/fact-sheet"),
+    "Unifi Mutual Fund": ("unifi", "https://unifimf.com/factsheet/"),
+    "Union Mutual Fund": ("union", "https://www.unionmf.com/about-us/downloads/factsheets"),
+    "WhiteOak Capital Mutual Fund": ("whiteoak", None),
+    "Zerodha Mutual Fund": ("zerodha", "https://www.zerodhafundhouse.com/resources/fund-documents"),
+    "quant Mutual Fund": ("quant", "https://quantmutual.com/downloads/factsheet"),
+}
+# An AMC without a source of its own yet is still tracked; its links arrive from the browser scraper (links_file).
+for _amc, (_key, _url) in AMC_SOURCES.items():
+    SOURCES.setdefault(_key, Source(_key, _amc, "mf", links_file=True))
+SOURCE_BY_AMC: dict[str, str] = {amc: key for amc, (key, _) in AMC_SOURCES.items()}
+BROWSER_PAGES: dict[str, str] = {key: url for key, url in AMC_SOURCES.values() if url}
+
+
 def recent_months(count: int, now: datetime | None = None) -> list[tuple[int, int]]:
     now = now or datetime.now(UTC)
     y, m, out = now.year, now.month, []
@@ -148,6 +210,27 @@ def period_from_name(name: str) -> str | None:
         return f"{n.group(1)}-{n.group(2)}" if n else None
     mon = MONTHS.get(m.group(1).lower()[:3] if m.group(1).lower() != "sept" else "sep")
     return f"{m.group(2)}-{mon:02d}" if mon else None
+
+
+_MON = r"(january|february|march|april|may|june|july|august|september|october|november|december|sept|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)"
+# month + 4-digit year, month + day + year ("February 26, 2021"), then month + 2-digit year ("Sept26") only when no more digits follow
+_PERIOD_TEXT_RES = (re.compile(_MON + r"[\W_]*'?(20\d\d)", re.I), re.compile(_MON + r"[\W_]+\d{1,2}(?:st|nd|rd|th)?[\W_]+(20\d\d)", re.I), re.compile(_MON + r"[\W_]*'?(\d\d)(?![\W_]*\d)", re.I))
+FACTSHEET_LINK_RE = re.compile(r"fact[-_ ]?sheet|fachsheet|fund[-_ ]?facts", re.I)  # "fachsheet" is Mirae's own filename typo
+
+
+def period_from_text(text: str, latest: str | None = None) -> str | None:
+    """YYYY-MM from a filename or link label; accepts 2-digit years ("Sept26") but never a future month ("Mar 31")."""
+    text = text.replace("%20", " ")
+    period = None
+    for rx in _PERIOD_TEXT_RES:
+        if m := rx.search(text):
+            year = int(m.group(2)) if len(m.group(2)) == 4 else 2000 + int(m.group(2))
+            period = f"{year}-{MONTHS[m.group(1).lower()[:3]]:02d}"
+            break
+    if period is None and (n := _NUMERIC_PERIOD_RE.search(text)):
+        period = f"{n.group(1)}-{n.group(2)}"
+    latest = latest or datetime.now(UTC).strftime("%Y-%m")
+    return period if period and "2005-01" <= period <= latest else None
 
 
 def discover_listing(client: httpx.Client, src: Source) -> list[Found]:

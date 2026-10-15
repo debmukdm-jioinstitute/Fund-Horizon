@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-table";
 import { useAuth } from "@/components/AuthContext";
 import {
+  bulkDeleteLeads,
   bulkReassign,
   createView,
   deleteView,
@@ -275,6 +276,22 @@ export default function ListView<T extends { id: string }>({
     loadViews();
   };
 
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteCode, setDeleteCode] = useState("");
+  const [deleteErr, setDeleteErr] = useState("");
+  const closeDelete = () => { setConfirmDelete(false); setDeleteCode(""); setDeleteErr(""); };
+  const doDelete = async () => {
+    try {
+      const r = await bulkDeleteLeads(selectedIds, deleteCode);
+      flash(`Deleted ${r.deleted} lead${r.deleted === 1 ? "" : "s"}.`);
+      setSelection({});
+      closeDelete();
+      load();
+    } catch (e) {
+      setDeleteErr(e instanceof Error ? e.message : "Could not delete");
+    }
+  };
+
   const doReassign = async () => {
     if (!bulkEntity || !selectedIds.length) return;
     try {
@@ -421,7 +438,30 @@ export default function ListView<T extends { id: string }>({
             ))}
           </select>
           <button type="button" onClick={doReassign} className={`${ctl} bg-[#006F64] text-white border-[#006F64]`}>Reassign owner</button>
+          {entity === "leads" && (
+            <button type="button" onClick={() => setConfirmDelete(true)} className={`${ctl} bg-rose-600 text-white border-rose-600`}>Delete</button>
+          )}
           <button type="button" onClick={() => setSelection({})} className={ctl}>Clear</button>
+        </div>
+      )}
+
+      {confirmDelete && (
+        <div role="dialog" aria-modal="true" aria-label="Confirm delete" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm space-y-3 rounded-lg bg-white dark:bg-[#171E27] p-5 shadow-xl">
+            <h2 className="text-base font-bold text-rose-700 dark:text-rose-300">Delete {selectedIds.length} lead{selectedIds.length === 1 ? "" : "s"}?</h2>
+            <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">This permanently removes the lead and its activity. To confirm, enter the delete code <strong>0000</strong> below.</p>
+            <input
+              autoFocus inputMode="numeric" value={deleteCode} onChange={(e) => { setDeleteCode(e.target.value); setDeleteErr(""); }}
+              onKeyDown={(e) => e.key === "Enter" && deleteCode && void doDelete()}
+              placeholder="Type 0000 to confirm" aria-label="Delete code"
+              className="w-full rounded border border-[#D5DDE5] dark:border-[#2B3644] bg-white dark:bg-[#111722] px-3 py-2 text-sm"
+            />
+            {deleteErr && <p role="alert" className="text-xs font-medium text-rose-600">{deleteErr}</p>}
+            <div className="flex justify-end gap-2">
+              <button type="button" onClick={closeDelete} className={ctl}>Cancel</button>
+              <button type="button" disabled={deleteCode !== "0000"} onClick={() => void doDelete()} className={`${ctl} bg-rose-600 text-white border-rose-600 disabled:opacity-40`}>Delete permanently</button>
+            </div>
+          </div>
         </div>
       )}
 

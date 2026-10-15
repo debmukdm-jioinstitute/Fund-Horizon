@@ -201,3 +201,24 @@ def test_lead_activities_timeline_and_inline_edit(client, rm, rm2):
     _login_as(client, rm2)
     assert client.post("/api/crm/activities", json={"kind": "note", "subject": "x", "lead_id": lead["id"]}).status_code == 403
     assert lead["id"] not in {a.get("lead_id") for a in client.get("/api/crm/activities").json()}
+
+
+def test_bulk_delete_leads_needs_admin_and_code(client, rm):
+    _login(client, _make_customer("admin"))
+    lead = client.post("/api/crm/leads", json={"name": "Del Me"}).json()
+    url = "/api/crm/leads/bulk-delete"
+    assert client.post(url, json={"ids": [lead["id"]], "code": "1234"}).status_code == 403
+    _login_as(client, rm)
+    assert client.post(url, json={"ids": [lead["id"]], "code": "0000"}).status_code == 403
+    _login(client, _make_customer("admin"))
+    assert client.post(url, json={"ids": [lead["id"], "nope"], "code": "0000"}).json() == {"deleted": 1, "missing": ["nope"]}
+    assert client.get(f"/api/crm/leads/{lead['id']}").status_code == 404
+
+
+def test_search_matches_ids_and_lead_notes(client, rm):
+    _login(client, _make_customer("admin"))
+    lead = client.post("/api/crm/leads", json={"name": "Zed Person", "notes": "Crossword token FH-424242"}).json()
+    hh = client.post("/api/crm/households", json={"name": "Quokka Family"}).json()
+    ids = lambda q: {r["id"] for r in client.get("/api/crm/search", params={"q": q}).json()["results"]}  # noqa: E731
+    assert lead["id"] in ids("fh-424242") and lead["id"] in ids(lead["id"][:8])
+    assert hh["id"] in ids(hh["id"]) and hh["id"] in ids("quokka")

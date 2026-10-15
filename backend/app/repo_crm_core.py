@@ -579,6 +579,18 @@ class CrmCoreRepository:
         with _session() as s:
             return _update(s, LeadModel, "lead", lead_id, fields, allowed, actor_id)
 
+    def delete_lead(self, lead_id: str, actor_id: str | None = None) -> bool:
+        """Hard-delete a lead and its activities; leaves an audit row."""
+        with _session() as s:
+            lead = s.get(LeadModel, lead_id)
+            if not lead:
+                return False
+            for a in s.scalars(select(ActivityModel).where(ActivityModel.lead_id == lead_id)).all():
+                s.delete(a)
+            s.add(AuditLogModel(id=_new_id(), entity="lead", entity_id=lead_id, field="_deleted", old=lead.name, new=None, actor_id=actor_id, at=_utcnow()))
+            s.delete(lead)
+            return True
+
     def convert_lead(
         self,
         lead_id: str,

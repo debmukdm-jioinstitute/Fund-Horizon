@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import csv
 import io
+import os
+import secrets
 from datetime import datetime
 from typing import Any
 
@@ -96,6 +98,28 @@ def bulk_reassign(body: BulkReassign, me: Me):
     return {"updated": updated, "missing": missing}
 
 
+class BulkDelete(BaseModel):
+    ids: list[str] = Field(min_length=1, max_length=500)
+    code: str
+
+
+@router.post("/leads/bulk-delete")
+def bulk_delete_leads(body: BulkDelete, me: Me):
+    if me["role"] != "admin":
+        raise HTTPException(403, "Only an admin can delete leads.")
+    # Guard against accidental deletes; set CRM_DELETE_CODE in the environment to change it.
+    if not secrets.compare_digest(body.code, os.environ.get("CRM_DELETE_CODE", "0000")):
+        raise HTTPException(403, "Wrong delete code.")
+    repo = get_crm_repository()
+    deleted, missing = 0, []
+    for lead_id in dict.fromkeys(body.ids):
+        if repo.delete_lead(lead_id, actor_id=me["id"]):
+            deleted += 1
+        else:
+            missing.append(lead_id)
+    return {"deleted": deleted, "missing": missing}
+
+
 # ---------------------------------------------------------------------------
 # Contacts
 # ---------------------------------------------------------------------------
@@ -176,7 +200,7 @@ def delete_view(view_id: str, me: Me):
 # ---------------------------------------------------------------------------
 @router.get("/search")
 def global_search(me: Me, q: str = Query(..., min_length=2, max_length=80)):
-    """⌘K: households, contacts, leads, opportunities, cases; also matches mobile and PAN last 4."""
+    """⌘K: households, contacts, leads, opportunities, cases; also matches ids, mobile, email, lead notes (e.g. game tokens) and PAN last 4."""
     return {"results": extras.search(q, _viewer(me))}
 
 

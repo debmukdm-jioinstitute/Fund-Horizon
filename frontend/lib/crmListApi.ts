@@ -115,6 +115,12 @@ export const bulkReassign = (entity: string, ids: string[], assigned_rm_id: stri
     body: JSON.stringify({ entity, ids, assigned_rm_id }),
   }).then((r) => r.data);
 
+export const bulkDeleteLeads = (ids: string[], code: string) =>
+  call<{ deleted: number; missing: string[] }>("/leads/bulk-delete", {
+    method: "POST",
+    body: JSON.stringify({ ids, code }),
+  }).then((r) => r.data);
+
 export const searchCrm = (q: string) => call<{ results: SearchResult[] }>(`/search?q=${encodeURIComponent(q)}`).then((r) => r.data.results);
 
 export const checkDuplicates = (body: { name?: string; email?: string; mobile?: string; pan_last4?: string; exclude_lead_id?: string }) =>

@@ -117,11 +117,11 @@ def search(q: str, viewer_rm_id: str | None, per_type: int = 5) -> list[dict[str
     pan = q.strip().upper() if re.fullmatch(r"[A-Za-z0-9]{4}", q.strip()) else None
     with _session() as s:
         for r in s.execute(
-            _t(f"SELECT h.id, h.name, h.notes FROM households h WHERE LOWER(h.name) LIKE :q ESCAPE '\\'{rm_clause} LIMIT :lim"),
+            _t(f"SELECT h.id, h.name, h.notes FROM households h WHERE (LOWER(h.name) LIKE :q ESCAPE '\\' OR LOWER(h.id) LIKE :q ESCAPE '\\'){rm_clause} LIMIT :lim"),
             params,
         ):
             out.append({"type": "household", "id": r[0], "title": r[1], "subtitle": (r[2] or "")[:60], "href": f"/backoffice/crm/households/{r[0]}"})
-        contact_where = "(LOWER(c.name) LIKE :q ESCAPE '\\' OR LOWER(c.email) LIKE :q ESCAPE '\\' OR LOWER(c.mobile) LIKE :q ESCAPE '\\'"
+        contact_where = "(LOWER(c.name) LIKE :q ESCAPE '\\' OR LOWER(c.email) LIKE :q ESCAPE '\\' OR LOWER(c.mobile) LIKE :q ESCAPE '\\' OR LOWER(c.id) LIKE :q ESCAPE '\\'"
         if len(num) >= 4:
             contact_where += " OR c.mobile LIKE :num"
             params["num"] = f"%{num}"
@@ -137,7 +137,7 @@ def search(q: str, viewer_rm_id: str | None, per_type: int = 5) -> list[dict[str
             params,
         ):
             out.append({"type": "contact", "id": r[0], "title": r[1], "subtitle": f"{r[2]} · {r[4]}", "href": f"/backoffice/crm/households/{r[3]}"})
-        lead_where = "(LOWER(name) LIKE :q ESCAPE '\\' OR LOWER(email) LIKE :q ESCAPE '\\' OR LOWER(mobile) LIKE :q ESCAPE '\\')"
+        lead_where = "(LOWER(name) LIKE :q ESCAPE '\\' OR LOWER(email) LIKE :q ESCAPE '\\' OR LOWER(mobile) LIKE :q ESCAPE '\\' OR LOWER(id) LIKE :q ESCAPE '\\' OR LOWER(notes) LIKE :q ESCAPE '\\')"
         lead_rm = " AND assigned_rm_id IN :rms" if viewer_rm_id is not None else ""
         for r in s.execute(
             _t(f"SELECT id, name, status, mobile FROM leads WHERE {lead_where}{lead_rm} LIMIT :lim"), params
@@ -149,7 +149,7 @@ def search(q: str, viewer_rm_id: str | None, per_type: int = 5) -> list[dict[str
             else " AND (assigned_rm_id IN :rms OR household_id IN (SELECT id FROM households WHERE rm_id IN :rms))"
         )
         for r in s.execute(
-            _t(f"SELECT id, title, stage, product_line FROM opportunities WHERE LOWER(title) LIKE :q ESCAPE '\\'{opp_vis} LIMIT :lim"),
+            _t(f"SELECT id, title, stage, product_line FROM opportunities WHERE (LOWER(title) LIKE :q ESCAPE '\\' OR LOWER(id) LIKE :q ESCAPE '\\'){opp_vis} LIMIT :lim"),
             params,
         ):
             out.append({"type": "opportunity", "id": r[0], "title": r[1], "subtitle": f"{r[3].replace('_', ' ')} · {r[2]}", "href": f"/backoffice/crm/opportunities/{r[0]}"})
@@ -159,7 +159,7 @@ def search(q: str, viewer_rm_id: str | None, per_type: int = 5) -> list[dict[str
             else " AND customer_id IN (SELECT m.customer_id FROM household_members m JOIN households h ON h.id = m.household_id WHERE h.rm_id IN :rms)"
         )
         for r in s.execute(
-            _t(f"SELECT id, subject, status FROM cases WHERE LOWER(subject) LIKE :q ESCAPE '\\'{case_vis} LIMIT :lim"),
+            _t(f"SELECT id, subject, status FROM cases WHERE (LOWER(subject) LIKE :q ESCAPE '\\' OR LOWER(id) LIKE :q ESCAPE '\\'){case_vis} LIMIT :lim"),
             params,
         ):
             out.append({"type": "case", "id": r[0], "title": r[1], "subtitle": r[2].replace("_", " "), "href": f"/backoffice/crm/cases/{r[0]}"})

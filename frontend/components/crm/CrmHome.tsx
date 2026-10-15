@@ -9,6 +9,7 @@ import { stageLabel } from "../../lib/crmProductsApi";
 import { fetchReportsDashboard, linkHref, type Dashboard, type WidgetLink } from "../../lib/crmReportsApi";
 import { shortInr } from "../../lib/format";
 import { useTheme } from "../terminal/ThemeContext";
+import CrmSearch from "./CrmSearch";
 import { cardCls, errCls, headCls, mutedCls, rupees } from "./ui";
 
 const TIER_LABEL: Record<string, string> = { platinum: "Platinum", gold: "Gold", silver: "Silver", standard: "Standard" };
@@ -102,6 +103,7 @@ export default function CrmHome() {
 
   return (
     <div className="space-y-4">
+      <CrmSearch />
       <div>
         <h2 className={headCls}>CRM overview</h2>
         <p className={`text-xs ${mutedCls}`}>Your book as of {data.as_of}. Every number opens the list it counts.</p>

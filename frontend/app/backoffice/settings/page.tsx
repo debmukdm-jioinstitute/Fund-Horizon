@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRecommended } from "@/lib/recommended";
 import {
   getWatchlists,
@@ -32,6 +33,34 @@ export default function SettingsPage() {
   const [savingRec, setSavingRec] = useState(false);
   const [recSuccess, setRecSuccess] = useState<string | null>(null);
 
+  // QR Code & Lead Capture state
+  const [qrDataUrl, setQrDataUrl] = useState<string>("");
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [leadUrl, setLeadUrl] = useState<string>("https://fundhorizon.up.railway.app/lead");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const url = `${window.location.origin}/lead`;
+      setLeadUrl(url);
+      import("qrcode").then((QRCode) => {
+        QRCode.toDataURL(url, {
+          width: 320,
+          margin: 2,
+          color: {
+            dark: "#006F64",
+            light: "#FFFFFF",
+          },
+        }).then(setQrDataUrl).catch(console.error);
+      });
+    }
+  }, []);
+
+  const copyLeadUrl = () => {
+    navigator.clipboard.writeText(leadUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
   const currentRecList = useMemo(() => {
     const map = recKind === "mf" ? rec.mfMap : rec.pmsMap;
     return Object.entries(map).map(([id, name]) => ({ id, name }));
@@ -59,23 +88,26 @@ export default function SettingsPage() {
   }
 
   async function handleRemoveRecommended(id: string) {
-    if (recKind === "mf") {
-      await rec.removeMf(id);
-    } else {
-      await rec.removePms(id);
+    try {
+      if (recKind === "mf") {
+        await rec.removeMf(id);
+      } else {
+        await rec.removePms(id);
+      }
+      setRecSuccess(`Removed ${id} from FH Recommended`);
+      setTimeout(() => setRecSuccess(null), 3000);
+    } catch {
+      /* ignore */
     }
-    setRecSuccess(`Removed ${id} from FH Recommended`);
-    setTimeout(() => setRecSuccess(null), 3000);
   }
 
-  // Staff state (Admin only)
+  // Staff provisioning state (admin only)
   const [staffList, setStaffList] = useState<StaffMemberItem[]>([]);
   const [staffName, setStaffName] = useState("");
   const [staffEmail, setStaffEmail] = useState("");
-  const [staffMobile, setStaffMobile] = useState("");
   const [staffRole, setStaffRole] = useState("analyst");
+  const [staffMobile, setStaffMobile] = useState("");
   const [savingStaff, setSavingStaff] = useState(false);
-  const [provisionedCredentials, setProvisionedCredentials] = useState<{ email: string; temp_pass: string } | null>(null);
 
   useEffect(() => {
     loadWatchlists();
@@ -86,35 +118,34 @@ export default function SettingsPage() {
 
   async function loadWatchlists() {
     try {
-      const res = await getWatchlists();
-      setWatchlists(res || []);
-    } catch (e) {
-      console.error(e);
+      const data = await getWatchlists();
+      setWatchlists(data);
+    } catch {
+      /* fallback */
     }
   }
 
   async function loadStaff() {
     try {
-      const res = await listStaffMembers();
-      setStaffList(res || []);
-    } catch (e) {
-      console.error(e);
+      const data = await listStaffMembers();
+      setStaffList(data);
+    } catch {
+      /* fallback */
     }
   }
 
   async function handleAddWatchlist(e: React.FormEvent) {
     e.preventDefault();
-    if (!wlName.trim() || !wlId.trim()) return;
-    setSavingWl(true);
+    if (!wlId.trim() || !wlName.trim()) return;
     try {
-      const created = await createWatchlist({
+      setSavingWl(true);
+      await createWatchlist({
         name: wlName.trim(),
         item_type: wlType,
         item_id: wlId.trim(),
       });
-      setWatchlists([created, ...watchlists]);
-      setWlName("");
       setWlId("");
+      await loadWatchlists();
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : "Failed to add watchlist item");
     } finally {
@@ -122,29 +153,25 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleDeleteWatchlist(id: string) {
+  async function handleDeleteWatchlist(id: string | number) {
     try {
-      await deleteWatchlist(id);
-      setWatchlists(watchlists.filter((w) => w.id !== id));
+      await deleteWatchlist(String(id));
+      await loadWatchlists();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Failed to delete watchlist item");
+      alert(err instanceof Error ? err.message : "Failed to remove watchlist item");
     }
   }
 
   async function handleProvisionStaff(e: React.FormEvent) {
     e.preventDefault();
-    if (!staffName.trim() || !staffEmail.trim() || !staffMobile.trim()) return;
-    setSavingStaff(true);
+    if (!staffEmail.trim() || !staffName.trim()) return;
     try {
-      const res = await createStaffMember({
+      setSavingStaff(true);
+      await createStaffMember({
         name: staffName.trim(),
-        email: staffEmail.trim().toLowerCase(),
-        mobile: staffMobile.trim(),
+        email: staffEmail.trim(),
         role: staffRole,
-      });
-      setProvisionedCredentials({
-        email: res.staff_member.email,
-        temp_pass: res.temporary_password ?? "(account promoted - existing password unchanged)",
+        mobile: staffMobile.trim() || "",
       });
       setStaffName("");
       setStaffEmail("");
@@ -164,15 +191,138 @@ export default function SettingsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
-              Settings, Watchlists &amp; Staff Administration
+              Settings, Lead Generation &amp; Terminal Administration
             </h1>
             <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
               Terminal Configuration
             </span>
           </div>
           <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
-            Role-based permissions (RBAC), operator account lifecycle, and custom asset watchlists
+            Client intake QR generator, FH Recommended fund curation, watchlists, and operator permissions
           </p>
+        </div>
+      </div>
+
+      {/* Client Intake QR Code & Lead Capture Section */}
+      <div className="terminal-panel p-4 space-y-4 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C2E9E0] dark:border-[#234542]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[14px]">📱</span>
+              <div className="text-[14px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+                Client Intake QR Code &amp; Lead Generation
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#E1F3EC] dark:bg-[#10372A] text-[#006F64] dark:text-[#7FE0B5] border border-[#C2E9E0] dark:border-[#224845]">
+                Live CRM Sync
+              </span>
+            </div>
+            <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+              When prospective clients scan this QR code on their phone, it opens the branded Fund Horizon intake form. All submissions automatically sync to your Backoffice CRM.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Link
+              href="/lead"
+              target="_blank"
+              className="terminal-btn text-[11px] py-1 px-2.5 text-[#006F64] dark:text-[#75E1CE] border-[#C2E9E0] dark:border-[#224845] hover:bg-[#E7F5F2] dark:hover:bg-[#1A3034] font-medium flex items-center gap-1"
+            >
+              <span>Test Intake Form</span>
+              <span>↗</span>
+            </Link>
+            <Link
+              href="/backoffice/crm?tab=leads"
+              className="terminal-btn text-[11px] py-1 px-2.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium flex items-center gap-1"
+            >
+              <span>View in CRM</span>
+              <span>→</span>
+            </Link>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+          {/* QR Card */}
+          <div className="md:col-span-4 flex flex-col items-center text-center p-4 bg-white dark:bg-[#111722] rounded-xl border border-[#D8E3E0] dark:border-[#25373E] shadow-sm">
+            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E4E9EF] flex items-center justify-center">
+              {qrDataUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={qrDataUrl}
+                  alt="Fund Horizon Client Intake QR Code"
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <div className="text-xs text-[#536176] animate-pulse">Generating QR…</div>
+              )}
+            </div>
+
+            <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#006F64] dark:bg-[#75E1CE]" />
+              SCAN WITH PHONE CAMERA
+            </div>
+
+            {qrDataUrl && (
+              <a
+                href={qrDataUrl}
+                download="fund-horizon-intake-qr.png"
+                className="mt-2.5 text-[11px] text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium flex items-center gap-1"
+              >
+                <span>↓ Download QR (PNG)</span>
+              </a>
+            )}
+          </div>
+
+          {/* Details & Copy Link */}
+          <div className="md:col-span-8 space-y-3.5">
+            <div>
+              <label className="text-[11px] font-semibold text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                Client Intake URL
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={leadUrl}
+                  className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F7F9FB] dark:bg-[#111722]"
+                />
+                <button
+                  type="button"
+                  onClick={copyLeadUrl}
+                  className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold shrink-0 transition"
+                >
+                  {copiedLink ? "✓ Copied!" : "Copy Link"}
+                </button>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-lg bg-[#F7F9FB] dark:bg-[#111722] border border-[#E4E9EF] dark:border-[#2B3644] space-y-2 text-[12px]">
+              <div className="font-semibold text-[#172033] dark:text-[#EDF2F7] flex items-center gap-1.5">
+                <span>📋</span>
+                <span>Collected Customer Information</span>
+              </div>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span><strong>Customer Name</strong> (Full Legal Name)</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span><strong>Phone Number</strong> (10-Digit Mobile)</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span><strong>Email Address</strong> (Direct Correspondence)</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span><strong>Investment Interest</strong> (MF, PMS, Advisory)</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] leading-relaxed">
+              💡 <strong>Usage Tip:</strong> Print or place this QR code on reception desks, presentation slides, or client brochures. When scanned, leads flow directly into the CRM with source tag <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-semibold">qr_code</span> and status <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-semibold">new</span>.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -218,115 +368,127 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Mobile (10 Digits)</label>
-              <input
-                type="text"
-                value={staffMobile}
-                onChange={(e) => setStaffMobile(e.target.value)}
-                placeholder="9876543210"
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Assigned Role</label>
+              <select
+                value={staffRole}
+                onChange={(e) => setStaffRole(e.target.value)}
                 className="terminal-input w-full text-[12px] py-1 px-2"
-                required
-              />
+              >
+                <option value="analyst">Analyst (Research &amp; Terminal)</option>
+                <option value="rm">Relationship Manager (Client Portfolios)</option>
+                <option value="operations">Operations (Data Management)</option>
+                <option value="compliance">Compliance (Audit &amp; Oversight)</option>
+                <option value="admin">System Administrator</option>
+              </select>
             </div>
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Role Permission</label>
+              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Mobile</label>
               <div className="flex gap-2">
-                <select
-                  value={staffRole}
-                  onChange={(e) => setStaffRole(e.target.value)}
+                <input
+                  type="tel"
+                  value={staffMobile}
+                  onChange={(e) => setStaffMobile(e.target.value)}
+                  placeholder="9876543210"
                   className="terminal-input w-full text-[12px] py-1 px-2"
-                >
-                  <option value="analyst">Analyst</option>
-                  <option value="rm">Relationship Manager (RM)</option>
-                  <option value="operations">Operations</option>
-                  <option value="read_only">Read Only</option>
-                  <option value="admin">Admin</option>
-                </select>
+                />
                 <button
                   type="submit"
                   disabled={savingStaff}
                   className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium shrink-0"
                 >
-                  {savingStaff ? "Adding…" : "+ Provision"}
+                  {savingStaff ? "Saving…" : "Provision"}
                 </button>
               </div>
             </div>
           </form>
 
-          {/* Provisioned credentials alert */}
-          {provisionedCredentials && (
-            <div className="terminal-panel p-2.5 border border-[#087744]/30 bg-[#087744]/5 text-[#087744] dark:text-[#58D6A0] text-[12px] space-y-1">
-              <div className="font-semibold">
-                Staff Account Provisioned Successfully
-              </div>
-              <p className="text-[11px]">
-                Copy these temporary credentials and securely share them with the staff member:
-              </p>
-              <div className="p-2 bg-[#FFFFFF] dark:bg-[#10151C] border border-[#087744]/30 rounded font-mono text-[12px] text-[#172033] dark:text-[#EDF2F7] select-all">
-                Email: <span className="font-medium">{provisionedCredentials.email}</span> • Temporary Password: <span className="font-medium">{provisionedCredentials.temp_pass}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Staff directory table */}
+          {/* Staff Table */}
           <div className="terminal-panel overflow-hidden mt-3">
             <table className="terminal-table">
               <thead>
                 <tr>
                   <th className="w-[30%]">Staff Member</th>
-                  <th className="w-[30%]">Email</th>
-                  <th className="w-[20%]">Role</th>
-                  <th className="w-[20%]">Status</th>
+                  <th className="w-[25%]">Role</th>
+                  <th className="w-[25%]">Contact</th>
+                  <th className="w-[20%] text-right">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {staffList.map((s) => (
-                  <tr key={s.id}>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{s.name}</td>
-                    <td className="font-mono text-[12px] text-[#536176] dark:text-[#A8B4C4]">{s.email}</td>
-                    <td>
-                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#006F64] dark:text-[#75E1CE] font-medium">
-                        {s.role}
-                      </span>
+                {staffList.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      No additional staff members provisioned yet.
                     </td>
-                    <td className="text-[12px] text-[#087744] dark:text-[#58D6A0] font-medium">{s.status || "active"}</td>
                   </tr>
-                ))}
+                ) : (
+                  staffList.map((s) => (
+                    <tr key={s.id}>
+                      <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                        {s.name}
+                        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-normal">{s.email}</div>
+                      </td>
+                      <td>
+                        <span className="font-mono uppercase text-[10px] px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644]">
+                          {s.role}
+                        </span>
+                      </td>
+                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{s.mobile || "–"}</td>
+                      <td className="text-right">
+                        <span className="text-[11px] text-[#006F64] dark:text-[#75E1CE] font-medium">
+                          {s.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
       )}
 
-      {/* FH Recommended Manager */}
+      {/* FH Recommended Picks Manager */}
       <div className="terminal-panel p-3.5 space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644] gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
           <div>
-            <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center gap-2">
-              <span>★ FH Recommended Picks</span>
-              <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C]">
-                {currentRecList.length} Active
-              </span>
+            <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center gap-1.5">
+              <span>★</span>
+              <span>FH Recommended Picks ({currentRecList.length} {recKind === "mf" ? "Funds" : "Strategies"})</span>
             </div>
             <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-              Curated universe highlighted with the ★ FH badge across Mutual Funds and PMS terminal pages
+              Curated shortlist of top-performing Mutual Funds and PMS strategies highlighted across the terminal
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4]">Asset Class:</label>
-            <select
-              value={recKind}
-              onChange={(e) => setRecKind(e.target.value as "mf" | "pms")}
-              className="terminal-input text-[12px] py-1 px-2.5 font-medium"
+
+          {/* Toggle MF vs PMS */}
+          <div className="inline-flex rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] p-0.5 bg-[#F7F9FB] dark:bg-[#111722]">
+            <button
+              type="button"
+              onClick={() => setRecKind("mf")}
+              className={`px-3 py-1 text-[11px] font-medium rounded-md transition ${
+                recKind === "mf"
+                  ? "bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] shadow-sm"
+                  : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+              }`}
             >
-              <option value="mf">Mutual Funds ({Object.keys(rec.mfMap).length})</option>
-              <option value="pms">PMS Strategies ({Object.keys(rec.pmsMap).length})</option>
-            </select>
+              Mutual Funds ({Object.keys(rec.mfMap).length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setRecKind("pms")}
+              className={`px-3 py-1 text-[11px] font-medium rounded-md transition ${
+                recKind === "pms"
+                  ? "bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] shadow-sm"
+                  : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+              }`}
+            >
+              PMS Strategies ({Object.keys(rec.pmsMap).length})
+            </button>
           </div>
         </div>
 
         {recSuccess && (
-          <div className="p-2 rounded bg-[#087744]/10 border border-[#087744]/20 text-[#087744] dark:text-[#58D6A0] text-[12px]">
+          <div className="text-[11px] p-2 rounded bg-[#E1F3EC] dark:bg-[#10372A] text-[#006F64] dark:text-[#7FE0B5] border border-[#C2E9E0] dark:border-[#224845]">
             {recSuccess}
           </div>
         )}

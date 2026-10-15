@@ -108,6 +108,12 @@ async def lifespan(app: FastAPI):
     load_metrics()
     app.state.eligible = eligible_funds()
 
+    try:
+        from app.crm_seed import seed_crm_if_empty
+        await asyncio.to_thread(seed_crm_if_empty)
+    except Exception as e:
+        pass
+
     collector_task = None
     if _flag("FH_BACKOFFICE_COLLECTORS", "true"):
         from app.backoffice.collectors import run_collector_loop

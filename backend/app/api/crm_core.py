@@ -73,7 +73,7 @@ def default_probability(line: str, stage: str) -> int:
 
 LEAD_STATUSES = ("new", "contacted", "qualified", "converted", "lost")
 ACTIVE_LEAD_STATUSES = ("new", "contacted", "qualified")
-LEAD_SOURCES = ("sip_calculator", "website", "blog", "referral", "plan_link", "other")
+LEAD_SOURCES = ("sip_calculator", "website", "blog", "referral", "plan_link", "qr_code", "other")
 
 ACTIVITY_KINDS = ("call", "meeting", "note", "followup", "email", "review", "whatsapp")
 
@@ -602,6 +602,55 @@ def list_leads(
 def get_lead(lead_id: str, me: Me):
     repo = get_crm_repository()
     return _get_visible(repo.get_lead, lead_id, me, _scope(me), _visible_lead, "Lead")
+
+
+
+class PublicLeadCapture(BaseModel):
+    name: str = Field(min_length=2, max_length=200)
+    phone: str = Field(min_length=8, max_length=20)
+    email: str = Field(min_length=3, max_length=255)
+    interest: str | None = None
+    notes: str | None = None
+
+
+@router.post("/public/lead", status_code=201)
+def public_lead_capture(body: PublicLeadCapture):
+    """Public client intake endpoint (QR code scan).
+    Creates a new lead with source='qr_code', status='new'.
+    No staff session required.
+    """
+    clean_name = body.name.strip()
+    clean_email = body.email.strip().lower()
+    clean_mobile = re.sub(r"[^\d+]", "", body.phone.strip())
+
+    note_parts = []
+    if body.interest:
+        note_parts.append(f"Interest: {body.interest.strip()}")
+    if body.notes and body.notes.strip():
+        note_parts.append(body.notes.strip())
+    combined_notes = " | ".join(note_parts) if note_parts else "Client scanned Fund Horizon QR intake form."
+
+    repo = get_crm_repository()
+    lead = repo.create_lead(
+        name=clean_name,
+        email=clean_email,
+        mobile=clean_mobile,
+        source="qr_code",
+        status="new",
+        notes=combined_notes,
+        actor_id="qr_intake",
+    )
+    try:
+        repo.create_activity(
+            kind="note",
+            subject=f"QR Intake: {clean_name}",
+            body=f"Client scanned QR code and submitted contact details. Mobile: {clean_mobile}, Email: {clean_email}. {combined_notes}",
+            lead_id=lead["id"],
+            actor_id="qr_intake",
+        )
+    except Exception:
+        pass
+    return {"success": True, "lead_id": lead["id"], "lead": lead}
 
 
 @router.post("/leads", status_code=201)

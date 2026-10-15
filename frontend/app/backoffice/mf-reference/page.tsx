@@ -54,21 +54,38 @@ const Sec = ({ title, children }: { title: string; children: React.ReactNode }) 
   </section>
 );
 
+type Ref = { t: "scheme" | "manager"; id: string };
+
 function Detail({ table, row, onClose }: { table: string; row: MfRefRow; onClose: () => void }) {
+  // Navigation stack: clicking a scheme or manager inside the panel drills in; Back pops.
+  const [stack, setStack] = useState<Ref[]>([]);
   const [scheme, setScheme] = useState<MfRefSchemeDetail | null>(null);
   const [mgr, setMgr] = useState<MfRefManagerDetail | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => {
-    setScheme(null); setMgr(null); setErr(null);
-    const fail = (e: unknown) => setErr(e instanceof Error ? e.message : "Failed to load");
-    if (table === "scheme_master" && row.amfi_scheme_code) getMfRefScheme(row.amfi_scheme_code).then(setScheme).catch(fail);
-    if (table === "fund_manager_master" && row.manager_id) getMfRefManager(row.manager_id).then(setMgr).catch(fail);
+    if (table === "scheme_master" && row.amfi_scheme_code) setStack([{ t: "scheme", id: row.amfi_scheme_code }]);
+    else if (table === "fund_manager_master" && row.manager_id) setStack([{ t: "manager", id: row.manager_id }]);
+    else setStack([]);
   }, [table, row]);
+  const cur = stack[stack.length - 1];
+  useEffect(() => {
+    setScheme(null); setMgr(null); setErr(null);
+    if (!cur) return;
+    const fail = (e: unknown) => setErr(e instanceof Error ? e.message : "Failed to load");
+    if (cur.t === "scheme") getMfRefScheme(cur.id).then(setScheme).catch(fail);
+    else getMfRefManager(cur.id).then(setMgr).catch(fail);
+  }, [cur?.t, cur?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const go = (r: Ref) => setStack((s) => [...s, r]);
+  const link = "text-[#0176D3] dark:text-[#1B96FF] hover:underline text-left";
+  const title = scheme?.scheme.scheme_name || mgr?.manager.full_name || row.scheme_name || row.full_name || row.amc_name || row.benchmark_name_tri || "Record";
   return (
     <aside className="terminal-panel p-3 lg:w-[420px] shrink-0 max-h-[75vh] overflow-y-auto">
-      <div className="flex justify-between items-start mb-3">
-        <h2 className="text-[14px] font-medium">{row.scheme_name || row.full_name || row.amc_name || row.benchmark_name_tri || "Record"}</h2>
-        <button className="terminal-btn text-[11px] px-2 py-0.5" onClick={onClose}>Close</button>
+      <div className="flex justify-between items-start mb-3 gap-2">
+        <h2 className="text-[14px] font-medium">{title}</h2>
+        <span className="flex gap-1.5 shrink-0">
+          {stack.length > 1 && <button className="terminal-btn text-[11px] px-2 py-0.5" onClick={() => setStack((s) => s.slice(0, -1))}>Back</button>}
+          <button className="terminal-btn text-[11px] px-2 py-0.5" onClick={onClose}>Close</button>
+        </span>
       </div>
       {err && <p className="text-[12px] text-[#B42332] dark:text-[#FF7D86]">{err}</p>}
       {scheme ? (
@@ -77,7 +94,12 @@ function Detail({ table, row, onClose }: { table: string; row: MfRefRow; onClose
           {scheme.amc && <Sec title="AMC"><KV row={scheme.amc} /></Sec>}
           {scheme.managers.length > 0 && (
             <Sec title="Fund managers">
-              {scheme.managers.map((m, i) => <div key={i} className="mb-2"><KV row={{ full_name: m.full_name, designation: m.designation, role: m.role_as_stated, since: m.start_date_as_stated }} /></div>)}
+              {scheme.managers.map((m, i) => (
+                <div key={i} className="mb-2">
+                  {m.manager_id && m.full_name && <button className={`${link} text-[12px] font-medium mb-0.5`} onClick={() => go({ t: "manager", id: m.manager_id as string })}>{m.full_name}</button>}
+                  <KV row={{ designation: m.designation, role: m.role_as_stated, since: m.start_date_as_stated }} />
+                </div>
+              ))}
             </Sec>
           )}
           {scheme.benchmarks.map((b, i) => <Sec key={i} title="Benchmark"><KV row={b} /></Sec>)}
@@ -89,10 +111,14 @@ function Detail({ table, row, onClose }: { table: string; row: MfRefRow; onClose
         <>
           <Sec title="Manager"><KV row={mgr.manager} /></Sec>
           <Sec title={`Schemes (${mgr.schemes.length})`}>
-            {mgr.schemes.map((s, i) => <div key={i} className="text-[12px] py-0.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">{s.scheme_name} <span className="text-[#706E6B] dark:text-[#A8B4C4]">· {s.plan} · {s.amfi_scheme_code}</span></div>)}
+            {mgr.schemes.map((s, i) => (
+              <button key={i} className={`${link} block w-full text-[12px] py-0.5 border-b border-[#E5E5E5] dark:border-[#2B3644]`} onClick={() => go({ t: "scheme", id: s.amfi_scheme_code as string })}>
+                {s.scheme_name} <span className="text-[#706E6B] dark:text-[#A8B4C4]">· {s.plan} · {s.amfi_scheme_code}</span>
+              </button>
+            ))}
           </Sec>
         </>
-      ) : (table === "scheme_master" || table === "fund_manager_master") && !err ? (
+      ) : cur && !err ? (
         <p className="text-[12px]">Loading…</p>
       ) : (
         <KV row={row} />

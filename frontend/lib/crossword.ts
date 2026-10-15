@@ -56,9 +56,8 @@ const WORDS: [string, string][] = [
   ["PIN", "Secret number used with a debit card"],
 ];
 
-export type Dir = "A" | "D";
-export interface Entry { id: number; num: number; word: string; clue: string; dir: Dir; r: number; c: number }
-export interface Puzzle { id: number; rows: number; cols: number; cells: (string | null)[][]; numbers: Record<string, number>; entries: Entry[] }
+export interface Placed { word: string; cells: [number, number][] }
+export interface Puzzle { id: number; size: number; grid: string[][]; words: Placed[] }
 
 function rng(seed: number) {
   let a = (seed + 1) * 2654435761;
@@ -70,68 +69,30 @@ function rng(seed: number) {
   };
 }
 
-const N = 15;
-type Placed = { word: string; clue: string; dir: Dir; r: number; c: number };
+const SIZE = 10;
+const DIRS: [number, number][] = [[0, 1], [1, 0], [1, 1]]; // right, down, diagonal: kept basic for mobile
 
-function fits(g: string[][], w: string, dir: Dir, r: number, c: number): boolean {
-  const dr = dir === "D" ? 1 : 0, dc = dir === "A" ? 1 : 0;
-  const er = r + dr * w.length, ec = c + dc * w.length;
-  if (r < 0 || c < 0 || (dir === "D" ? er > N || c >= N : ec > N || r >= N)) return false;
-  if ((r - dr >= 0 && c - dc >= 0 && g[r - dr][c - dc]) || (er < N && ec < N && g[er][ec])) return false;
-  let cross = 0;
-  for (let i = 0; i < w.length; i++) {
-    const rr = r + dr * i, cc = c + dc * i, cur = g[rr][cc];
-    if (cur) {
-      if (cur !== w[i]) return false;
-      cross++;
-    } else {
-      const a = rr + dc, b = cc + dr, x = rr - dc, y = cc - dr; // perpendicular neighbours must be empty
-      if ((a < N && b < N && g[a][b]) || (x >= 0 && y >= 0 && g[x][y])) return false;
-    }
-  }
-  return cross === 1;
-}
-
+// Word search: hide WORDS_PER_PUZZLE words in a 10x10 grid, fill the rest with seeded random letters.
 export function buildPuzzle(id: number): Puzzle {
   const rand = rng(id);
-  const pool = WORDS.map((w) => ({ w, k: rand() })).sort((a, b) => a.k - b.k).map((x) => x.w);
-  const g: string[][] = Array.from({ length: N }, () => Array(N).fill(""));
-  const placed: Placed[] = [];
-  const put = (w: string, clue: string, dir: Dir, r: number, c: number) => {
-    for (let i = 0; i < w.length; i++) g[dir === "D" ? r + i : r][dir === "A" ? c + i : c] = w[i];
-    placed.push({ word: w, clue, dir, r, c });
-  };
-  // seed with the longest of the first few words so the grid has a spine
-  const first = pool.slice(0, 4).sort((a, b) => b[0].length - a[0].length)[0];
-  put(first[0], first[1], "A", 7, Math.floor((N - first[0].length) / 2));
-  for (const [w, clue] of pool) {
-    if (placed.length >= WORDS_PER_PUZZLE) break;
-    if (placed.some((p) => p.word === w)) continue;
-    const opts: [Dir, number, number][] = [];
-    const want: Dir = placed[placed.length - 1].dir === "A" ? "D" : "A";
-    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (fits(g, w, want, r, c)) opts.push([want, r, c]);
-    if (!opts.length) continue;
-    const [d, r, c] = opts[Math.floor(rand() * opts.length)];
-    put(w, clue, d, r, c);
+  const pool = WORDS.map(([w]) => w).filter((w) => w.length <= SIZE).map((w) => ({ w, k: rand() })).sort((a, b) => a.k - b.k).map((x) => x.w);
+  const grid: string[][] = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
+  const words: Placed[] = [];
+  for (const w of pool) {
+    if (words.length >= WORDS_PER_PUZZLE) break;
+    for (let t = 0; t < 60; t++) {
+      const [dr, dc] = DIRS[Math.floor(rand() * DIRS.length)];
+      const r = Math.floor(rand() * SIZE), c = Math.floor(rand() * SIZE);
+      const er = r + dr * (w.length - 1), ec = c + dc * (w.length - 1);
+      if (er >= SIZE || ec >= SIZE) continue;
+      const cells = Array.from({ length: w.length }, (_, i) => [r + dr * i, c + dc * i] as [number, number]);
+      if (cells.some(([rr, cc], i) => grid[rr][cc] && grid[rr][cc] !== w[i])) continue;
+      cells.forEach(([rr, cc], i) => (grid[rr][cc] = w[i]));
+      words.push({ word: w, cells });
+      break;
+    }
   }
-  const r0 = Math.min(...placed.map((p) => p.r)), c0 = Math.min(...placed.map((p) => p.c));
-  const r1 = Math.max(...placed.map((p) => p.r + (p.dir === "D" ? p.word.length : 1)));
-  const c1 = Math.max(...placed.map((p) => p.c + (p.dir === "A" ? p.word.length : 1)));
-  const rows = r1 - r0, cols = c1 - c0;
-  const cells: (string | null)[][] = Array.from({ length: rows }, (_, r) =>
-    Array.from({ length: cols }, (_, c) => g[r + r0][c + c0] || null));
-  const starts = placed.map((p) => ({ ...p, r: p.r - r0, c: p.c - c0 }));
-  const numbers: Record<string, number> = {};
-  [...starts].sort((a, b) => a.r - b.r || a.c - b.c).forEach((p) => {
-    const k = `${p.r},${p.c}`;
-    if (!numbers[k]) numbers[k] = Object.keys(numbers).length + 1;
-  });
-  const entries = starts
-    .map((p, i) => ({ id: i, num: numbers[`${p.r},${p.c}`], ...p }))
-    .sort((a, b) => a.num - b.num);
-  return { id, rows, cols, cells, numbers, entries };
-}
-
-export function cellsOf(e: Entry): [number, number][] {
-  return Array.from({ length: e.word.length }, (_, i) => (e.dir === "D" ? [e.r + i, e.c] : [e.r, e.c + i]));
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (!grid[r][c]) grid[r][c] = letters[Math.floor(rand() * 26)];
+  return { id, size: SIZE, grid, words };
 }

@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Logo from "@/components/Logo";
 import { resolveApiUrl, API_URL } from "@/lib/api";
-import { buildPuzzle, cellsOf, PUZZLE_COUNT, type Entry } from "@/lib/crossword";
+import { buildPuzzle, PUZZLE_COUNT } from "@/lib/crossword";
 
 const GAME_SECONDS = 120;
 const INPUT_CLS =
@@ -17,38 +17,29 @@ export default function CrosswordPage() {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [puzzleId, setPuzzleId] = useState(0);
-  const [solved, setSolved] = useState<number[]>([]);
+  const [found, setFound] = useState<string[]>([]);
+  const [path, setPath] = useState<[number, number][]>([]);
   const [bad, setBad] = useState<string[]>([]);
-  const [pick, setPick] = useState<string | null>(null);
-  const [drag, setDrag] = useState<{ word: string; x: number; y: number } | null>(null);
-  const [sel, setSel] = useState<[number, number] | null>(null);
   const [left, setLeft] = useState(GAME_SECONDS);
   const [token, setToken] = useState("");
   const [result, setResult] = useState({ correct: 0, total: 0, used: 0 });
   const finishing = useRef(false);
-  const solvedRef = useRef<number[]>([]);
+  const foundRef = useRef<string[]>([]);
 
   const puzzle = useMemo(() => buildPuzzle(puzzleId), [puzzleId]);
 
-  const at = useCallback(
-    (r: number, c: number): Entry[] => puzzle.entries.filter((e) => cellsOf(e).some(([rr, cc]) => rr === r && cc === c)),
-    [puzzle],
-  );
-  const solvedKeys = new Set(puzzle.entries.filter((e) => solved.includes(e.id)).flatMap((e) => cellsOf(e).map(([r, c]) => `${r},${c}`)));
-  const shown = sel ? at(sel[0], sel[1]).filter((e) => !solved.includes(e.id)) : [];
-  const bank = useMemo(
-    () => puzzle.entries.map((e) => ({ id: e.id, word: e.word })).sort((a, b) => a.word.localeCompare(b.word)),
-    [puzzle],
-  );
+  const foundKeys = new Set(puzzle.words.filter((w) => found.includes(w.word)).flatMap((w) => w.cells.map(([r, c]) => `${r},${c}`)));
+  const pathKeys = new Set(path.map(([r, c]) => `${r},${c}`));
+  const startRef = useRef<[number, number] | null>(null);
 
   const finish = useCallback(
     async (used: number) => {
       if (finishing.current) return;
       finishing.current = true;
-      const correct = solvedRef.current.length;
-      setResult({ correct, total: puzzle.entries.length, used });
+      const correct = foundRef.current.length;
+      setResult({ correct, total: puzzle.words.length, used });
       setPhase("saving");
-      await save(correct, puzzle.entries.length, used);
+      await save(correct, puzzle.words.length, used);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [puzzle, name, phone, puzzleId],
@@ -89,57 +80,57 @@ export default function CrosswordPage() {
     setError(null);
     const id = Math.floor(Math.random() * PUZZLE_COUNT); // new random crossword for every scan/session
     setPuzzleId(id);
-    setSolved([]);
-    solvedRef.current = [];
-    setPick(null);
+    setFound([]);
+    foundRef.current = [];
+    setPath([]);
     setLeft(GAME_SECONDS);
     finishing.current = false;
-    setSel(null);
     setPhase("play");
   }
 
-  // Try placing `word` on the slot(s) covering cell (r,c): correct = green + lock, wrong = red flash, nothing kept.
-  function attempt(word: string, r: number, c: number) {
-    const open = at(r, c).filter((e) => !solved.includes(e.id));
-    if (!open.length) return;
-    const hit = open.find((e) => e.word === word);
-    setPick(null);
+  const cellAt = (x: number, y: number): [number, number] | null => {
+    const el = document.elementFromPoint(x, y)?.closest("[data-cell]");
+    const [r, c] = (el?.getAttribute("data-cell") ?? "").split(",").map(Number);
+    return el && !Number.isNaN(r) ? [r, c] : null;
+  };
+
+  // Straight line (horizontal, vertical or diagonal) from the start cell to the finger; ignores off-line positions.
+  function lineTo(end: [number, number]): [number, number][] | null {
+    const [r0, c0] = startRef.current!;
+    const dr = end[0] - r0, dc = end[1] - c0;
+    if (dr !== 0 && dc !== 0 && Math.abs(dr) !== Math.abs(dc)) return null;
+    const n = Math.max(Math.abs(dr), Math.abs(dc));
+    return Array.from({ length: n + 1 }, (_, i) => [r0 + Math.sign(dr) * i, c0 + Math.sign(dc) * i] as [number, number]);
+  }
+
+  function down(e: React.PointerEvent) {
+    const cell = cellAt(e.clientX, e.clientY);
+    if (!cell) return;
+    startRef.current = cell;
+    setPath([cell]);
+  }
+  function move(e: React.PointerEvent) {
+    if (!startRef.current) return;
+    const cell = cellAt(e.clientX, e.clientY);
+    const line = cell && lineTo(cell);
+    if (line) setPath(line);
+  }
+  // Release: correct word turns green and locks; wrong selection flashes red and is discarded.
+  function up() {
+    if (!startRef.current) return;
+    startRef.current = null;
+    const sel = path.map(([r, c]) => puzzle.grid[r][c]).join("");
+    setPath([]);
+    if (path.length < 2) return;
+    const hit = puzzle.words.find((w) => !foundRef.current.includes(w.word) && (w.word === sel || w.word === sel.split("").reverse().join("")));
     if (hit) {
-      solvedRef.current = [...solvedRef.current, hit.id];
-      setSolved(solvedRef.current);
-      if (solvedRef.current.length === puzzle.entries.length) void finish(GAME_SECONDS - left);
+      foundRef.current = [...foundRef.current, hit.word];
+      setFound(foundRef.current);
+      if (foundRef.current.length === puzzle.words.length) void finish(GAME_SECONDS - left);
     } else {
-      setBad(open.flatMap((e) => cellsOf(e).map(([rr, cc]) => `${rr},${cc}`)));
-      setTimeout(() => setBad([]), 700);
+      setBad(path.map(([r, c]) => `${r},${c}`));
+      setTimeout(() => setBad([]), 600);
     }
-  }
-
-  function tapCell(r: number, c: number) {
-    if (pick) attempt(pick, r, c);
-    else setSel([r, c]);
-  }
-
-  function chipDown(e: React.PointerEvent, word: string) {
-    const sx = e.clientX, sy = e.clientY;
-    let moved = false;
-    const move = (ev: PointerEvent) => {
-      if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) return;
-      moved = true;
-      setDrag({ word, x: ev.clientX, y: ev.clientY });
-    };
-    const up = (ev: PointerEvent) => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", up);
-      setDrag(null);
-      if (!moved) return setPick((p) => (p === word ? null : word));
-      const el = document.elementFromPoint(ev.clientX, ev.clientY)?.closest("[data-cell]");
-      const [r, c] = (el?.getAttribute("data-cell") ?? "").split(",").map(Number);
-      if (el && !Number.isNaN(r)) attempt(word, r, c);
-    };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", up);
   }
 
   const mm = String(Math.floor(Math.max(left, 0) / 60));
@@ -161,9 +152,9 @@ export default function CrosswordPage() {
           <form onSubmit={start} noValidate className="bg-white/95 dark:bg-[#171E27]/95 backdrop-blur-sm border border-white/60 dark:border-[#2B3644] rounded-2xl p-5 space-y-4 shadow-xl">
             <div className="text-center space-y-1">
               <div className="text-3xl">🧩</div>
-              <h1 className="text-xl font-semibold">Fund Horizon Cross₹word</h1>
+              <h1 className="text-xl font-semibold">Fund Horizon Word Hunt</h1>
               <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">
-                Solve a basic financial-literacy crossword in 2 minutes and win a token. Enter your details to begin.
+                Find hidden basic financial words in 2 minutes and win a token. Enter your details to begin.
               </p>
             </div>
             {error && <div className="p-3 text-xs rounded-lg bg-[#FBE7EA] dark:bg-[#43181F] text-[#9B1C2E] dark:text-[#FFA9B5]">{error}</div>}
@@ -176,84 +167,52 @@ export default function CrosswordPage() {
         {phase === "play" && (
           <>
             <div className="flex items-center justify-between">
-              <div className="text-xs text-[#536176] dark:text-[#A8B4C4]">Crossword #{puzzleId + 1} of {PUZZLE_COUNT}</div>
+              <div className="text-xs text-[#536176] dark:text-[#A8B4C4]">Puzzle #{puzzleId + 1} of {PUZZLE_COUNT}</div>
               <div className={`text-lg font-semibold tabular-nums px-3 py-0.5 rounded-full ${left <= 20 ? "bg-[#FBE7EA] text-[#9B1C2E]" : "bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE]"}`}>
                 ⏱ {mm}:{ss}
               </div>
             </div>
 
             <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">
-              Drag a word onto its boxes (or tap the word, then tap its boxes). Green = correct and locked. Red = wrong, try again.
+              Find the hidden words: drag your finger across the letters in a straight line (across, down or diagonal). Green = found. Red = not a word.
             </p>
 
-            <div className="grid gap-[2px] w-full select-none" style={{ gridTemplateColumns: `repeat(${puzzle.cols}, minmax(0, 1fr))` }}>
-              {puzzle.cells.flatMap((row, r) =>
+            <div
+              className="grid gap-[2px] w-full select-none rounded-xl bg-white/60 dark:bg-[#171E27] p-1.5 border border-[#D8E3E0] dark:border-[#2B3644]"
+              style={{ gridTemplateColumns: `repeat(${puzzle.size}, minmax(0, 1fr))`, touchAction: "none" }}
+              onPointerDown={down}
+              onPointerMove={move}
+              onPointerUp={up}
+              onPointerCancel={up}
+            >
+              {puzzle.grid.flatMap((row, r) =>
                 row.map((ch, c) => {
-                  if (!ch) return <div key={`${r},${c}`} className="aspect-square" />;
                   const k = `${r},${c}`;
-                  const state = bad.includes(k)
-                    ? "bg-[#FBD5DA] border-[#D6293E] text-[#9B1C2E]"
-                    : solvedKeys.has(k)
-                      ? "bg-[#BFE8CD] border-[#1E8E4E] text-[#0F5A2F]"
-                      : shown.some((e) => cellsOf(e).some(([rr, cc]) => rr === r && cc === c))
-                        ? "bg-[#FFE9A8] border-[#C79200]"
-                        : "bg-white dark:bg-[#171E27] border-[#B8C4CF] dark:border-[#3A485A]";
+                  const cls = bad.includes(k)
+                    ? "bg-[#FBD5DA] text-[#9B1C2E]"
+                    : pathKeys.has(k)
+                      ? "bg-[#FFE9A8]"
+                      : foundKeys.has(k)
+                        ? "bg-[#BFE8CD] text-[#0F5A2F]"
+                        : "bg-transparent";
                   return (
-                    <button
-                      key={k}
-                      type="button"
-                      data-cell={k}
-                      onClick={() => tapCell(r, c)}
-                      aria-label={`Row ${r + 1} column ${c + 1}`}
-                      className={`relative aspect-square rounded-[3px] border text-[clamp(11px,4vw,18px)] font-semibold flex items-center justify-center transition-colors ${state}`}
-                    >
-                      {puzzle.numbers[k] && <span className="absolute top-0 left-[2px] text-[7px] leading-none font-medium text-[#536176]">{puzzle.numbers[k]}</span>}
-                      {solvedKeys.has(k) ? ch : ""}
-                    </button>
+                    <div key={k} data-cell={k} className={`aspect-square rounded-md flex items-center justify-center text-[clamp(14px,5vw,22px)] font-semibold transition-colors ${cls}`}>
+                      {ch}
+                    </div>
                   );
                 }),
               )}
             </div>
 
-            <div className="rounded-lg bg-white dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] px-3 py-2 text-sm min-h-[3.2rem]">
-              {shown.length ? shown.map((e) => (
-                <div key={e.id}><b>{e.num} {e.dir === "A" ? "Across" : "Down"}</b> ({e.word.length}): {e.clue}</div>
-              )) : "Tap a box to see its clue"}
-            </div>
-
             <div>
-              <div className="text-xs font-semibold mb-1.5">Word bank ({solved.length}/{puzzle.entries.length} placed)</div>
+              <div className="text-xs font-semibold mb-1.5">Words to find ({found.length}/{puzzle.words.length})</div>
               <div className="flex flex-wrap gap-2">
-                {bank.filter((b) => !solved.includes(b.id)).map((b) => (
-                  <button
-                    key={b.id}
-                    type="button"
-                    onPointerDown={(e) => chipDown(e, b.word)}
-                    style={{ touchAction: "none" }}
-                    className={`min-h-[44px] px-3.5 rounded-lg border-2 text-sm font-bold tracking-wide select-none ${pick === b.word ? "bg-[#FFE9A8] border-[#C79200]" : "bg-white dark:bg-[#1E2734] border-[#006F64] text-[#006F64] dark:text-[#75E1CE]"}`}
-                  >
-                    {b.word}
-                  </button>
+                {[...puzzle.words].sort((a, b) => a.word.localeCompare(b.word)).map((w) => (
+                  <span key={w.word} className={`px-3 py-1.5 rounded-lg border-2 text-sm font-bold tracking-wide ${found.includes(w.word) ? "bg-[#BFE8CD] border-[#1E8E4E] text-[#0F5A2F] line-through" : "bg-white dark:bg-[#1E2734] border-[#006F64] text-[#006F64] dark:text-[#75E1CE]"}`}>
+                    {w.word}
+                  </span>
                 ))}
-                {solved.length === puzzle.entries.length && <span className="text-sm text-[#1E8E4E] font-semibold">All words placed! 🎉</span>}
               </div>
-            </div>
-
-            {drag && (
-              <div className="fixed z-50 pointer-events-none px-3.5 py-2 rounded-lg bg-[#006F64] text-white text-sm font-bold shadow-lg" style={{ left: drag.x, top: drag.y, transform: "translate(-50%, -140%)" }}>
-                {drag.word}
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 gap-2 text-xs text-[#536176] dark:text-[#A8B4C4]">
-              {(["A", "D"] as const).map((d) => (
-                <div key={d}>
-                  <div className="font-semibold text-[#172033] dark:text-[#EDF2F7] mb-0.5">{d === "A" ? "Across" : "Down"}</div>
-                  {puzzle.entries.filter((e) => e.dir === d).map((e) => (
-                    <div key={e.id} className={`py-0.5 ${solved.includes(e.id) ? "text-[#1E8E4E] line-through" : ""}`}>{e.num}. {e.clue}</div>
-                  ))}
-                </div>
-              ))}
             </div>
 
             <button type="button" onClick={() => finish(GAME_SECONDS - left)} className="w-full py-3 rounded-lg bg-[#006F64] hover:bg-[#00574E] text-white font-semibold text-sm">Submit now</button>
@@ -263,7 +222,7 @@ export default function CrosswordPage() {
         {(phase === "saving" || phase === "done") && (
           <div className="bg-white dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] rounded-2xl p-5 text-center space-y-4">
             <h2 className="text-lg font-semibold">{phase === "done" ? "🏁 Game over!" : "Saving your result…"}</h2>
-            <p className="text-sm">You solved <b>{result.correct}</b> of <b>{result.total}</b> words correctly.</p>
+            <p className="text-sm">You found <b>{result.correct}</b> of <b>{result.total}</b> words.</p>
             {error && (
               <div className="space-y-2">
                 <div className="p-3 text-xs rounded-lg bg-[#FBE7EA] text-[#9B1C2E]">{error}</div>

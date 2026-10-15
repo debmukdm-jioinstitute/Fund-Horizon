@@ -334,7 +334,7 @@ export default function SettingsPage() {
           <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#E1F3EC] dark:bg-[#10372A] text-[#006F64] dark:text-[#7FE0B5] border border-[#C2E9E0] dark:border-[#224845]">Lead Magnet</span>
         </div>
         <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-          Scanners play a 2-minute basic financial-literacy crossword (1 of 20, random each scan), get a token to screenshot, and are saved to CRM Leads with source <span className="font-mono font-semibold text-[#006F64] dark:text-[#75E1CE]">crossword</span> plus words-correct score.
+          Scanners play a 2-minute word-search of basic financial terms (1 of 20, random each scan), get a token to screenshot, and are saved to CRM Leads with source <span className="font-mono font-semibold text-[#006F64] dark:text-[#75E1CE]">crossword</span> plus words-correct score.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
           <div className="md:col-span-4 flex flex-col items-center p-4 bg-white dark:bg-[#111722] rounded-xl border border-[#D8E3E0] dark:border-[#25373E]">

@@ -147,7 +147,7 @@ function MutualFunds() {
   const params = useSearchParams();
   const compare = useCompareSelection("mf");
 
-  const category = useMemo(() => (params.has("category") ? params.getAll("category") : DEFAULT_CATEGORIES), [params]);
+  const category = useMemo(() => (params.has("category") ? params.getAll("category") : params.has("q") ? [] : DEFAULT_CATEGORIES), [params]);
   const plan = useMemo(() => (params.has("plan") ? params.getAll("plan") : PLANS), [params]);
   const section = (SECTIONS.find((s) => s === params.get("section")) ?? "Summary") as Section;
 
@@ -155,8 +155,8 @@ function MutualFunds() {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [pageSize, setPageSize] = useState(25);
   const [offset, setOffset] = useState(0);
-  const [query, setQuery] = useState("");
-  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(params.get("q") ?? "");
+  const [search, setSearch] = useState((params.get("q") ?? "").trim());
   const [recommended, setRecommended] = useState(false);
   const [ranges, setRanges] = useState<Record<string, { min?: string; max?: string }>>({});
   const [draft, setDraft] = useState<Record<string, { min?: string; max?: string }>>({});

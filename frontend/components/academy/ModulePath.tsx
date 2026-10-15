@@ -15,7 +15,7 @@ export function ModulePath({ content }: { content: ModuleContent }) {
   const best = me?.quiz_best ?? {};
   const node = (key: string, title: string, sub: string, onClick: () => void, state: "done" | "current" | "open", mark: string) => (
     <li key={key} className="relative pl-12 pb-6 last:pb-0">
-      <span aria-hidden="true" className={`absolute left-0 top-0 h-8 w-8 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${state === "done" ? "bg-[#006F64] border-[#006F64] text-white dark:bg-[#75E1CE] dark:border-[#75E1CE] dark:text-[#10151C]" : state === "current" ? "border-[#006F64] dark:border-[#75E1CE] " + accent : "border-[#E4E9EF] dark:border-[#2B3644] " + muted}`}>{mark}</span>
+      <span aria-hidden="true" className={`absolute left-0 top-0 h-8 w-8 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${state === "done" ? "bg-[#0176D3] border-[#0176D3] text-white dark:bg-[#1B96FF] dark:border-[#1B96FF] dark:text-[#10151C]" : state === "current" ? "border-[#0176D3] dark:border-[#1B96FF] " + accent : "border-[#E4E9EF] dark:border-[#2B3644] " + muted}`}>{mark}</span>
       <span aria-hidden="true" className="absolute left-4 top-8 bottom-0 w-px bg-[#E4E9EF] dark:bg-[#2B3644] last:hidden" />
       <button onClick={onClick} aria-current={state === "current" ? "step" : undefined} className="text-left group">
         <span className="block text-[15px] font-medium group-hover:underline">{title}</span>

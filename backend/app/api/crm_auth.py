@@ -22,15 +22,6 @@ _SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 # POSTs that only read (nothing is written), so read-only accounts may use them
 _READ_ONLY_POSTS = {"/api/crm/duplicates/check"}
 
-DEFAULT_BACKOFFICE_STAFF = {
-    "id": "admin_default",
-    "name": "Fund Horizon Advisor",
-    "email": "advisor@fundhorizon.internal",
-    "role": "admin",
-    "is_staff": True,
-}
-
-
 def unscoped(me: dict) -> bool:
     """True when the account sees every record (admin and compliance)."""
     return me["role"] in UNSCOPED_ROLES
@@ -38,15 +29,7 @@ def unscoped(me: dict) -> bool:
 
 def crm_user(request: Request, customer: Annotated[dict | None, Depends(get_optional_customer)]) -> dict:
     if not customer:
-        try:
-            conn = sqlite.get_default_connection()
-            admin_row = conn.execute("SELECT id, name, email, role, is_staff FROM customers WHERE role = 'admin' LIMIT 1").fetchone()
-            if admin_row:
-                customer = dict(admin_row)
-            else:
-                customer = DEFAULT_BACKOFFICE_STAFF
-        except Exception:
-            customer = DEFAULT_BACKOFFICE_STAFF
+        raise HTTPException(401, "Sign in to continue.")
 
     role = customer.get("role", "admin")
     if role not in CRM_ROLES:

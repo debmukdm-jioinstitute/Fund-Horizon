@@ -52,6 +52,7 @@ from app.backoffice.schemas import (
 from app.backoffice import mf_screener
 from app.backoffice.screening.service import ScreeningService
 from app.backoffice.compare import build_compare_payload
+from app.backoffice import search as universal_search
 from app.backoffice.service import BackofficeService
 from app.data.loader import data_dir, load_metrics, load_nav
 from app.db import get_repository
@@ -61,6 +62,29 @@ router = APIRouter(prefix="/api/backoffice", tags=["backoffice"])
 _SERVICE = BackofficeService()
 _REPO = BackofficeRepository()
 _SCREENING_SERVICE = ScreeningService(_REPO)
+
+
+# ---------------------------------------------------------------------------
+# Universal search
+# ---------------------------------------------------------------------------
+
+@router.get("/search/scopes")
+def search_scopes(staff: Annotated[dict, Depends(require_staff)]):
+    return {"scopes": universal_search.scopes()}
+
+
+@router.get("/search")
+def universal_search_endpoint(
+    staff: Annotated[dict, Depends(require_staff)],
+    q: str = Query(..., min_length=2, max_length=80),
+    scope: str = Query("all", max_length=32),
+):
+    """One query across funds, managers, PMS, AMCs, CRM records and news/notes (CRM hits follow the RM's own book)."""
+    from app.api.crm_auth import UNSCOPED_ROLES
+    from app.repo_crm_phase3 import team_ids
+
+    viewer = None if staff.get("role") in UNSCOPED_ROLES else team_ids(staff["id"])
+    return {"results": universal_search.run(q, scope, viewer)}
 
 
 # ---------------------------------------------------------------------------

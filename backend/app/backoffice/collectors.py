@@ -346,11 +346,22 @@ async def run_collector_loop(interval_seconds: int = TICK_SECONDS) -> None:
     logger.info("Starting Fund Horizon supervised backoffice collector loop...")
     while True:
         try:
+            screening_ok = False
             for src in _due_sources():
                 result = await refresh_source(src)
-                if result.get("status") not in ("success", "coalesced"):
+                if src == "SRC_SCREENING" and (result.get("success") or result.get("status") == "success"):
+                    screening_ok = True
+                elif result.get("status") not in ("success", "coalesced"):
                     logger.warning("Refresh %s -> %s", src, result)
                 await asyncio.sleep(1.0)  # rate pacing
+            # A brief built earlier today used the previous screening run: rebuild it (idempotent upsert) so its
+            # "Screening changes" never lag the refreshed data.
+            if screening_ok and not briefing_due():
+                from app.backoffice.analytics.briefing_builder import ist_today
+
+                if _REPO.get_briefing_by_date(ist_today()) is not None:
+                    await asyncio.to_thread(build_daily_briefing)
+                    logger.info("Daily briefing rebuilt after screening refresh")
             # Daily briefing: once at/after 08:00 IST, after the prerequisite
             # collectors ran today; idempotent so a repeat tick is a no-op.
             if briefing_due():

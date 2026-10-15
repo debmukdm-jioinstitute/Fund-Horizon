@@ -14,6 +14,8 @@ import { formatISTDate } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
 import IndicatorDrawer, { IndicatorSpec } from "@/components/backoffice/IndicatorDrawer";
 import InfoTip from "@/components/InfoTip";
+import UniversalSearch from "@/components/backoffice/UniversalSearch";
+import { NAV_ITEMS } from "@/components/backoffice/navItems";
 
 const IND: Record<string, IndicatorSpec> = {
   usdinr: { title: "USD / INR Reference Rate", a: "FX:USDINR", unit: "", decimals: 4 },
@@ -168,6 +170,9 @@ export default function BackofficeOverviewPage() {
 
   return (
     <div className="space-y-4">
+      <div className="rounded-xl border border-[#C5DDF7] dark:border-[#1F4A74] bg-[#F3F9FE] dark:bg-[#0F2A45] p-4">
+        <UniversalSearch modules={NAV_ITEMS} />
+      </div>
       {/* Top Header Row: Title, Observation Date, Freshness, and Compact Refresh Control */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>

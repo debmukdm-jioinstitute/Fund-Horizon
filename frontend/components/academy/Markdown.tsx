@@ -16,7 +16,7 @@ function Term({ label, def }: { label: string; def: Def }) {
   return (
     <span className="relative" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <button type="button" aria-expanded={open} onClick={() => setPinned((p) => !p)} onKeyDown={(e) => e.key === "Escape" && setPinned(false)}
-        className="underline decoration-dotted underline-offset-4 decoration-[#006F64] dark:decoration-[#75E1CE] cursor-help">
+        className="underline decoration-dotted underline-offset-4 decoration-[#0176D3] dark:decoration-[#1B96FF] cursor-help">
         {label}
       </button>
       {open && (
@@ -89,7 +89,7 @@ export function Markdown({ text, terms }: { text: string; terms: string[] }) {
     } else if (ln.startsWith(">")) {
       const q: string[] = [];
       while (i < lines.length && lines[i].startsWith(">")) q.push(lines[i++].replace(/^>\s?/, ""));
-      out.push(<blockquote key={key} className="border-l-4 border-[#006F64] dark:border-[#75E1CE] pl-4 py-1">{inline(q.join(" "), key)}</blockquote>);
+      out.push(<blockquote key={key} className="border-l-4 border-[#0176D3] dark:border-[#1B96FF] pl-4 py-1">{inline(q.join(" "), key)}</blockquote>);
     } else {
       const p: string[] = [];
       while (i < lines.length && lines[i].trim() && !/^(\||#|- |>)/.test(lines[i])) p.push(lines[i++]);

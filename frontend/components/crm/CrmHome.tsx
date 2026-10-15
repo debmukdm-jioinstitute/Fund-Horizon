@@ -9,7 +9,8 @@ import { stageLabel } from "../../lib/crmProductsApi";
 import { fetchReportsDashboard, linkHref, type Dashboard, type WidgetLink } from "../../lib/crmReportsApi";
 import { shortInr } from "../../lib/format";
 import { useTheme } from "../terminal/ThemeContext";
-import CrmSearch from "./CrmSearch";
+import UniversalSearch from "@/components/backoffice/UniversalSearch";
+import { CRM_TABS } from "./tabs";
 import { cardCls, errCls, headCls, mutedCls, rupees } from "./ui";
 
 const TIER_LABEL: Record<string, string> = { platinum: "Platinum", gold: "Gold", silver: "Silver", standard: "Standard" };
@@ -103,7 +104,7 @@ export default function CrmHome() {
 
   return (
     <div className="space-y-4">
-      <CrmSearch />
+      <UniversalSearch heading={false} modules={CRM_TABS.map(([id, label]) => ({ href: `/backoffice/crm?tab=${id}`, label: `CRM: ${label}`, description: "CRM section" }))} />
       <div>
         <h2 className={headCls}>CRM overview</h2>
         <p className={`text-xs ${mutedCls}`}>Your book as of {data.as_of}. Every number opens the list it counts.</p>

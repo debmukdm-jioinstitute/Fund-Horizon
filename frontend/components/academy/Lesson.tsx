@@ -62,7 +62,7 @@ function QuickCheck({ lesson }: { lesson: LessonT }) {
                 const isPick = picked[q.id] === i;
                 const isRight = r && r.correct_choice === i;
                 return (
-                  <label key={i} className={`flex items-start gap-3 rounded-md border p-3 text-[15px] cursor-pointer ${isRight ? "border-[#006F64] dark:border-[#75E1CE]" : r && isPick ? "border-[#B42332] dark:border-[#FF7D86]" : "border-[#E4E9EF] dark:border-[#2B3644]"}`}>
+                  <label key={i} className={`flex items-start gap-3 rounded-md border p-3 text-[15px] cursor-pointer ${isRight ? "border-[#0176D3] dark:border-[#1B96FF]" : r && isPick ? "border-[#B42332] dark:border-[#FF7D86]" : "border-[#E4E9EF] dark:border-[#2B3644]"}`}>
                     <input type="radio" name={q.id} checked={isPick} disabled={!!r} onChange={() => void answer(q.id, i)} className="mt-1 h-4 w-4" />
                     <span>{o}{isRight && <strong className={`ml-2 ${accent}`}>✓ Correct answer</strong>}{r && isPick && !isRight && <strong className="ml-2 text-[#B42332] dark:text-[#FF7D86]">✗ Not quite</strong>}</span>
                   </label>
@@ -98,7 +98,7 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
     <article ref={ref} className="mx-auto max-w-[720px] space-y-6">
       {/* fixed under the 52px top bar (the layout's <main> is overflow-y-auto, which would stop a sticky bar from sticking) */}
       <div role="progressbar" aria-label="Reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)} className="fixed top-[52px] left-0 right-0 md:left-[210px] z-20 h-1 bg-[#E4E9EF] dark:bg-[#2B3644]">
-        <div className="h-full bg-[#006F64] dark:bg-[#75E1CE]" style={{ width: `${progress * 100}%` }} />
+        <div className="h-full bg-[#0176D3] dark:bg-[#1B96FF]" style={{ width: `${progress * 100}%` }} />
       </div>
       <header className="space-y-2">
         <button className={`text-[15px] ${accent} underline`} onClick={() => go({ m: content.module.id })}>← {content.module.title} path</button>
@@ -114,7 +114,7 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
 
       <Markdown text={lesson.body_md} terms={lesson.key_terms} />
 
-      <section aria-label="Worked example" className={`${card} p-4 border-l-4 border-l-[#006F64] dark:border-l-[#75E1CE]`}>
+      <section aria-label="Worked example" className={`${card} p-4 border-l-4 border-l-[#0176D3] dark:border-l-[#1B96FF]`}>
         <h3 className="text-[15px] font-semibold mb-1">Worked example</h3>
         <p className="text-base leading-relaxed">{lesson.example}</p>
       </section>

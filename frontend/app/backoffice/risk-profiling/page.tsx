@@ -146,17 +146,17 @@ export default function RiskProfilingPage() {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-navy-100 pb-4 dark:border-navy-800">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#ECEBEA] pb-4 dark:border-navy-800">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-navy-950 dark:text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-[#181818] dark:text-white">
               Risk Profiling & Suitability Studio
             </h1>
-            <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-teal-800 ring-1 ring-teal-600/20 dark:bg-teal-950/40 dark:text-teal-400">
+            <span className="rounded-full bg-[#EAF5FE] px-2.5 py-0.5 text-xs font-semibold text-[#014486] ring-1 ring-[#0176D3]/20 dark:bg-[#0F2A45]/40 dark:text-[#1B96FF]">
               SEBI Compliant
             </span>
           </div>
-          <p className="mt-1 text-xs text-navy-600 dark:text-navy-400">
+          <p className="mt-1 text-xs text-[#706E6B] dark:text-navy-400">
             Deterministic risk capacity (8 financial factors) vs emotional risk tolerance (10 questions) · Min-score rule · Strategic asset allocation
           </p>
         </div>
@@ -167,7 +167,7 @@ export default function RiskProfilingPage() {
             type="button"
             onClick={handleDownloadPdf}
             disabled={downloadingPdf}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-teal-700 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-teal-800 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0176D3] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#032D60] disabled:opacity-50"
             title="Download official 2-page A4 SEBI Suitability Assessment PDF"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,14 +176,14 @@ export default function RiskProfilingPage() {
             {downloadingPdf ? "Generating PDF..." : "Download PDF Report"}
           </button>
 
-          <div className="flex rounded-lg border border-navy-200 bg-navy-50 p-1 dark:border-navy-700 dark:bg-navy-900">
+          <div className="flex rounded-lg border border-[#E5E5E5] bg-[#F3F3F3] p-1 dark:border-navy-700 dark:bg-navy-900">
             <button
               type="button"
               onClick={() => setActiveTab("studio")}
               className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === "studio"
-                  ? "bg-white text-navy-950 shadow-sm dark:bg-navy-800 dark:text-white"
-                  : "text-navy-600 hover:text-navy-900 dark:text-navy-400 dark:hover:text-white"
+                  ? "bg-white text-[#181818] shadow-sm dark:bg-navy-800 dark:text-white"
+                  : "text-[#706E6B] hover:text-[#181818] dark:text-navy-400 dark:hover:text-white"
               }`}
             >
               Interactive Studio
@@ -193,8 +193,8 @@ export default function RiskProfilingPage() {
               onClick={() => setActiveTab("methodology")}
               className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeTab === "methodology"
-                  ? "bg-white text-navy-950 shadow-sm dark:bg-navy-800 dark:text-white"
-                  : "text-navy-600 hover:text-navy-900 dark:text-navy-400 dark:hover:text-white"
+                  ? "bg-white text-[#181818] shadow-sm dark:bg-navy-800 dark:text-white"
+                  : "text-[#706E6B] hover:text-[#181818] dark:text-navy-400 dark:hover:text-white"
               }`}
             >
               Regulatory Methodology
@@ -207,7 +207,7 @@ export default function RiskProfilingPage() {
         <div className="space-y-6">
           {/* Presets Bar */}
           <div className="card space-y-2 p-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-navy-500 dark:text-navy-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#706E6B] dark:text-navy-400">
               Quick Load Client Profiles:
             </span>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -216,12 +216,12 @@ export default function RiskProfilingPage() {
                   key={preset.name}
                   type="button"
                   onClick={() => loadPreset(idx)}
-                  className="flex items-start gap-2.5 rounded-lg border border-navy-100 bg-white p-2.5 text-left text-xs transition-all hover:border-teal-500 hover:bg-teal-50/20 hover:shadow-sm dark:border-navy-800 dark:bg-navy-900/60 dark:hover:border-teal-500/40"
+                  className="flex items-start gap-2.5 rounded-lg border border-[#ECEBEA] bg-white p-2.5 text-left text-xs transition-all hover:border-[#0176D3] hover:bg-[#EAF5FE]/20 hover:shadow-sm dark:border-navy-800 dark:bg-navy-900/60 dark:hover:border-[#0176D3]/40"
                 >
                   <span className="text-xl" aria-hidden>{preset.icon}</span>
                   <div>
-                    <span className="font-semibold text-navy-900 dark:text-white">{preset.name}</span>
-                    <p className="line-clamp-1 text-[11px] text-navy-600 dark:text-navy-400">{preset.desc}</p>
+                    <span className="font-semibold text-[#181818] dark:text-white">{preset.name}</span>
+                    <p className="line-clamp-1 text-[11px] text-[#706E6B] dark:text-navy-400">{preset.desc}</p>
                   </div>
                 </button>
               ))}
@@ -233,47 +233,47 @@ export default function RiskProfilingPage() {
             <div className="space-y-6 lg:col-span-7">
               {/* Part 1: Financial Capacity */}
               <section className="card space-y-4">
-                <div className="flex items-center justify-between border-b border-navy-100 pb-2.5 dark:border-navy-800">
+                <div className="flex items-center justify-between border-b border-[#ECEBEA] pb-2.5 dark:border-navy-800">
                   <div>
-                    <h2 className="text-base font-bold text-navy-950 dark:text-white">
+                    <h2 className="text-base font-bold text-[#181818] dark:text-white">
                       1. Financial Risk Capacity (Ability to Take Risk)
                     </h2>
-                    <p className="text-xs text-navy-600 dark:text-navy-400">
+                    <p className="text-xs text-[#706E6B] dark:text-navy-400">
                       Objective quantitative ability to bear loss based on cashflow, obligations, and liquidity.
                     </p>
                   </div>
-                  <span className="rounded bg-navy-100 px-2 py-0.5 text-xs font-semibold text-navy-800 dark:bg-navy-800 dark:text-navy-200">
+                  <span className="rounded bg-[#ECEBEA] px-2 py-0.5 text-xs font-semibold text-[#444444] dark:bg-navy-800 dark:text-navy-200">
                     Score: {profile.capacity.score} / 100
                   </span>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Client / Household Name</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Client / Household Name</label>
                     <input
                       type="text"
                       value={client.firstName}
                       onChange={(e) => setClient({ ...client, firstName: e.target.value })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Age (years)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Age (years)</label>
                     <input
                       type="number"
                       min={18}
                       max={80}
                       value={client.age}
                       onChange={(e) => setClient({ ...client, age: Number(e.target.value) || 35 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Employment Type</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Employment Type</label>
                     <select
                       value={client.employmentType}
                       onChange={(e) => setClient({ ...client, employmentType: e.target.value as ClientCapacityInputs["employmentType"] })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     >
                       <option value="govt_psu">Govt / PSU (Highest stability)</option>
                       <option value="salaried_private">Salaried Private (High stability)</option>
@@ -283,120 +283,120 @@ export default function RiskProfilingPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Financial Dependents</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Financial Dependents</label>
                     <input
                       type="number"
                       min={0}
                       max={10}
                       value={client.dependents}
                       onChange={(e) => setClient({ ...client, dependents: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Monthly Income (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Monthly Income (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={5000}
                       value={client.monthlyIncome}
                       onChange={(e) => setClient({ ...client, monthlyIncome: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Monthly Expenses (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Monthly Expenses (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={5000}
                       value={client.monthlyExpenses}
                       onChange={(e) => setClient({ ...client, monthlyExpenses: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Monthly Loan EMIs (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Monthly Loan EMIs (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={5000}
                       value={client.monthlyEmi}
                       onChange={(e) => setClient({ ...client, monthlyEmi: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Liquid Emergency Fund (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Liquid Emergency Fund (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={10000}
                       value={client.liquidAssets}
                       onChange={(e) => setClient({ ...client, liquidAssets: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Existing Investments (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Existing Investments (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={50000}
                       value={client.investments}
                       onChange={(e) => setClient({ ...client, investments: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Outstanding Debt / Loans (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Outstanding Debt / Loans (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={50000}
                       value={client.liabilities}
                       onChange={(e) => setClient({ ...client, liabilities: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Term Life Insurance (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Term Life Insurance (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={500000}
                       value={client.termCover}
                       onChange={(e) => setClient({ ...client, termCover: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-navy-700 dark:text-navy-300">Health Cover (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Health Cover (₹)</label>
                     <input
                       type="number"
                       min={0}
                       step={100000}
                       value={client.healthCover}
                       onChange={(e) => setClient({ ...client, healthCover: Number(e.target.value) || 0 })}
-                      className="mt-1 w-full rounded border border-navy-200 px-2.5 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
                 </div>
 
                 {/* Factors Breakdown */}
-                <div className="mt-3 rounded-lg border border-navy-100 bg-navy-50/70 p-3 text-xs dark:border-navy-800 dark:bg-navy-900/40">
-                  <div className="mb-2 font-semibold text-navy-800 dark:text-navy-200">
+                <div className="mt-3 rounded-lg border border-[#ECEBEA] bg-[#F3F3F3]/70 p-3 text-xs dark:border-navy-800 dark:bg-navy-900/40">
+                  <div className="mb-2 font-semibold text-[#444444] dark:text-navy-200">
                     Capacity Sub-Factors (Weighted Contribution to {profile.capacity.score}/100):
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
                     {profile.capacity.factors.map((f: FactorScore) => (
-                      <div key={f.factor} className="rounded border border-navy-100 bg-white p-2 dark:border-navy-800 dark:bg-navy-900">
-                        <div className="flex justify-between text-navy-500">
+                      <div key={f.factor} className="rounded border border-[#ECEBEA] bg-white p-2 dark:border-navy-800 dark:bg-navy-900">
+                        <div className="flex justify-between text-[#706E6B]">
                           <span>{f.factor}</span>
-                          <span className="font-semibold text-navy-900 dark:text-white">{f.score}/100</span>
+                          <span className="font-semibold text-[#181818] dark:text-white">{f.score}/100</span>
                         </div>
-                        <div className="mt-1 text-[11px] text-navy-600 dark:text-navy-400">
-                          Weight: {(f.weight * 100).toFixed(0)}% · Contrib: <span className="font-semibold text-teal-700 dark:text-teal-400">+{f.contribution}</span>
+                        <div className="mt-1 text-[11px] text-[#706E6B] dark:text-navy-400">
+                          Weight: {(f.weight * 100).toFixed(0)}% · Contrib: <span className="font-semibold text-[#0176D3] dark:text-[#1B96FF]">+{f.contribution}</span>
                         </div>
                       </div>
                     ))}
@@ -406,16 +406,16 @@ export default function RiskProfilingPage() {
 
               {/* Part 2: Emotional Risk Tolerance Questionnaire */}
               <section className="card space-y-4">
-                <div className="flex items-center justify-between border-b border-navy-100 pb-2.5 dark:border-navy-800">
+                <div className="flex items-center justify-between border-b border-[#ECEBEA] pb-2.5 dark:border-navy-800">
                   <div>
-                    <h2 className="text-base font-bold text-navy-950 dark:text-white">
+                    <h2 className="text-base font-bold text-[#181818] dark:text-white">
                       2. Risk Tolerance Questionnaire (Willingness to Take Risk)
                     </h2>
-                    <p className="text-xs text-navy-600 dark:text-navy-400">
+                    <p className="text-xs text-[#706E6B] dark:text-navy-400">
                       Standard SEBI / AMFI 10-question behavioral suitability assessment.
                     </p>
                   </div>
-                  <span className="rounded bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
+                  <span className="rounded bg-[#EAF5FE] px-2 py-0.5 text-xs font-semibold text-[#014486] dark:bg-[#0F2A45]/40 dark:text-[#57A9F5]">
                     Score: {profile.tolerance} / 100
                   </span>
                 </div>
@@ -426,9 +426,9 @@ export default function RiskProfilingPage() {
                     return (
                       <div
                         key={q.id}
-                        className="rounded-lg border border-navy-100 bg-white p-3.5 transition-all dark:border-navy-800 dark:bg-navy-900"
+                        className="rounded-lg border border-[#ECEBEA] bg-white p-3.5 transition-all dark:border-navy-800 dark:bg-navy-900"
                       >
-                        <div className="flex items-center justify-between text-xs font-semibold text-navy-900 dark:text-white">
+                        <div className="flex items-center justify-between text-xs font-semibold text-[#181818] dark:text-white">
                           <span>
                             Q{qIndex + 1}. {q.text}
                           </span>
@@ -441,8 +441,8 @@ export default function RiskProfilingPage() {
                                 key={opt.text}
                                 className={`flex cursor-pointer items-center justify-between rounded border px-3 py-2 text-xs transition-all ${
                                   isSelected
-                                    ? "border-teal-600 bg-teal-50/60 font-semibold text-teal-950 dark:border-teal-500 dark:bg-teal-950/30 dark:text-teal-200"
-                                    : "border-navy-100 bg-white text-navy-700 hover:border-navy-200 hover:bg-navy-50/50 dark:border-navy-800 dark:bg-navy-900 dark:text-navy-300 dark:hover:bg-navy-800/40"
+                                    ? "border-[#0176D3] bg-[#EAF5FE]/60 font-semibold text-[#032D60] dark:border-[#0176D3] dark:bg-[#0F2A45]/30 dark:text-[#C5DDF7]"
+                                    : "border-[#ECEBEA] bg-white text-[#444444] hover:border-[#E5E5E5] hover:bg-[#F3F3F3]/50 dark:border-navy-800 dark:bg-navy-900 dark:text-navy-300 dark:hover:bg-navy-800/40"
                                 }`}
                               >
                                 <div className="flex items-center gap-2">
@@ -451,11 +451,11 @@ export default function RiskProfilingPage() {
                                     name={q.id}
                                     checked={isSelected}
                                     onChange={() => handleAnswerChange(q.id, optIndex)}
-                                    className="text-teal-600 focus:ring-teal-500"
+                                    className="text-[#0176D3] focus:ring-[#0176D3]"
                                   />
                                   <span>{opt.text}</span>
                                 </div>
-                                <span className="font-mono text-[11px] text-navy-400">
+                                <span className="font-mono text-[11px] text-[#939393]">
                                   {opt.score} pt{opt.score > 1 ? "s" : ""}
                                 </span>
                               </label>
@@ -472,13 +472,13 @@ export default function RiskProfilingPage() {
             {/* Right Output & Allocation Column (5 cols) */}
             <div className="space-y-6 lg:col-span-5">
               {/* Composite Score Card */}
-              <div className="card space-y-4 border-t-4 border-t-teal-600 bg-white dark:bg-navy-900">
+              <div className="card space-y-4 border-t-4 border-t-[#0176D3] bg-white dark:bg-navy-900">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-navy-500 dark:text-navy-400">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#706E6B] dark:text-navy-400">
                       Assigned Risk Category
                     </span>
-                    <h3 className="mt-1 text-2xl font-extrabold text-navy-950 dark:text-white">
+                    <h3 className="mt-1 text-2xl font-extrabold text-[#181818] dark:text-white">
                       {profile.band}
                     </h3>
                   </div>
@@ -487,7 +487,7 @@ export default function RiskProfilingPage() {
                       profile.band.includes("Aggressive")
                         ? "bg-rose-50 text-rose-800 ring-rose-300 dark:bg-rose-950/40 dark:text-rose-300"
                         : profile.band.includes("Moderate")
-                        ? "bg-teal-50 text-teal-800 ring-teal-300 dark:bg-teal-950/40 dark:text-teal-300"
+                        ? "bg-[#EAF5FE] text-[#014486] ring-[#57A9F5] dark:bg-[#0F2A45]/40 dark:text-[#57A9F5]"
                         : "bg-blue-50 text-blue-800 ring-blue-300 dark:bg-blue-950/40 dark:text-blue-300"
                     }`}
                   >
@@ -495,13 +495,13 @@ export default function RiskProfilingPage() {
                   </span>
                 </div>
 
-                <div className="rounded-lg bg-navy-50 p-3.5 text-center dark:bg-navy-800/50">
-                  <div className="text-xs text-navy-600 dark:text-navy-400">Composite Suitability Score</div>
-                  <div className="mt-1 text-4xl font-extrabold text-teal-700 dark:text-teal-400">
+                <div className="rounded-lg bg-[#F3F3F3] p-3.5 text-center dark:bg-navy-800/50">
+                  <div className="text-xs text-[#706E6B] dark:text-navy-400">Composite Suitability Score</div>
+                  <div className="mt-1 text-4xl font-extrabold text-[#0176D3] dark:text-[#1B96FF]">
                     {profile.final_score}
-                    <span className="text-base font-normal text-navy-500"> / 100</span>
+                    <span className="text-base font-normal text-[#706E6B]"> / 100</span>
                   </div>
-                  <p className="mt-1 text-[11px] text-navy-600 dark:text-navy-400">
+                  <p className="mt-1 text-[11px] text-[#706E6B] dark:text-navy-400">
                     Calculated as <strong>min(Capacity, Tolerance)</strong> per regulatory conservatism standards.
                   </p>
                 </div>
@@ -510,12 +510,12 @@ export default function RiskProfilingPage() {
                 <div className="space-y-3 pt-1">
                   <div>
                     <div className="flex justify-between text-xs">
-                      <span className="font-medium text-navy-700 dark:text-navy-300">Financial Risk Capacity:</span>
-                      <span className="font-bold text-navy-900 dark:text-white">{profile.capacity.score} / 100</span>
+                      <span className="font-medium text-[#444444] dark:text-navy-300">Financial Risk Capacity:</span>
+                      <span className="font-bold text-[#181818] dark:text-white">{profile.capacity.score} / 100</span>
                     </div>
-                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800">
+                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[#ECEBEA] dark:bg-navy-800">
                       <div
-                        className="h-full bg-navy-800 transition-all dark:bg-navy-300"
+                        className="h-full bg-[#444444] transition-all dark:bg-navy-300"
                         style={{ width: `${Math.min(100, profile.capacity.score)}%` }}
                       />
                     </div>
@@ -523,12 +523,12 @@ export default function RiskProfilingPage() {
 
                   <div>
                     <div className="flex justify-between text-xs">
-                      <span className="font-medium text-navy-700 dark:text-navy-300">Emotional Risk Tolerance:</span>
-                      <span className="font-bold text-teal-700 dark:text-teal-400">{profile.tolerance} / 100</span>
+                      <span className="font-medium text-[#444444] dark:text-navy-300">Emotional Risk Tolerance:</span>
+                      <span className="font-bold text-[#0176D3] dark:text-[#1B96FF]">{profile.tolerance} / 100</span>
                     </div>
-                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800">
+                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[#ECEBEA] dark:bg-navy-800">
                       <div
-                        className="h-full bg-teal-600 transition-all dark:bg-teal-500"
+                        className="h-full bg-[#0176D3] transition-all dark:bg-[#0176D3]"
                         style={{ width: `${Math.min(100, profile.tolerance)}%` }}
                       />
                     </div>
@@ -546,17 +546,17 @@ export default function RiskProfilingPage() {
               {/* Recommended Asset Allocation Card */}
               <div className="card space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-bold text-navy-950 dark:text-white">
+                  <h4 className="text-sm font-bold text-[#181818] dark:text-white">
                     Target Strategic Asset Allocation
                   </h4>
-                  <span className="text-xs text-navy-500">SEBI/AMFI Band Model</span>
+                  <span className="text-xs text-[#706E6B]">SEBI/AMFI Band Model</span>
                 </div>
 
                 {/* Stacked Allocation Bar */}
                 <div className="h-4 w-full overflow-hidden rounded-full flex">
                   <div
                     style={{ width: `${profile.allocation.equity}%` }}
-                    className="bg-teal-600 transition-all"
+                    className="bg-[#0176D3] transition-all"
                     title={`Equity: ${profile.allocation.equity}%`}
                   />
                   <div
@@ -578,9 +578,9 @@ export default function RiskProfilingPage() {
 
                 {/* Allocation Badges */}
                 <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                  <div className="rounded border border-teal-200 bg-teal-50 p-2 text-center dark:border-teal-900 dark:bg-teal-950/30">
-                    <span className="text-teal-700 dark:text-teal-400 font-medium">Equity</span>
-                    <div className="text-base font-extrabold text-teal-950 dark:text-white">{profile.allocation.equity}%</div>
+                  <div className="rounded border border-[#C5DDF7] bg-[#EAF5FE] p-2 text-center dark:border-teal-900 dark:bg-[#0F2A45]/30">
+                    <span className="text-[#0176D3] dark:text-[#1B96FF] font-medium">Equity</span>
+                    <div className="text-base font-extrabold text-[#032D60] dark:text-white">{profile.allocation.equity}%</div>
                   </div>
                   <div className="rounded border border-blue-200 bg-blue-50 p-2 text-center dark:border-blue-900 dark:bg-blue-950/30">
                     <span className="text-blue-700 dark:text-blue-400 font-medium">Debt</span>
@@ -597,9 +597,9 @@ export default function RiskProfilingPage() {
                 </div>
 
                 {/* Implementation Guidance */}
-                <div className="rounded bg-navy-50/70 p-3 text-xs text-navy-700 dark:bg-navy-900/60 dark:text-navy-300 space-y-1">
-                  <div className="font-semibold text-navy-900 dark:text-white">Scheme Class Implementation:</div>
-                  <ul className="list-disc pl-4 space-y-0.5 text-[11px] text-navy-600 dark:text-navy-400">
+                <div className="rounded bg-[#F3F3F3]/70 p-3 text-xs text-[#444444] dark:bg-navy-900/60 dark:text-navy-300 space-y-1">
+                  <div className="font-semibold text-[#181818] dark:text-white">Scheme Class Implementation:</div>
+                  <ul className="list-disc pl-4 space-y-0.5 text-[11px] text-[#706E6B] dark:text-navy-400">
                     <li><strong>Equity sleeve ({profile.allocation.equity}%):</strong> Large Cap, Flexi Cap, Mid Cap diversified mutual funds.</li>
                     <li><strong>Debt sleeve ({profile.allocation.debt}%):</strong> Corporate Bond, Banking & PSU, and Short Duration funds.</li>
                     <li><strong>Gold & Liquid ({profile.allocation.gold + profile.allocation.liquid}%):</strong> Gold ETFs / Sovereign Gold, Overnight & Liquid schemes.</li>
@@ -625,33 +625,33 @@ export default function RiskProfilingPage() {
               )}
 
               {/* Official SEBI Suitability Assessment PDF Download */}
-              <div className="card space-y-3 border-teal-200 bg-gradient-to-br from-teal-50/70 via-white to-emerald-50/40 dark:border-teal-800/40 dark:from-teal-950/20 dark:via-navy-900/60 dark:to-emerald-950/10">
+              <div className="card space-y-3 border-[#C5DDF7] bg-gradient-to-br from-[#EAF5FE]/70 via-white to-emerald-50/40 dark:border-[#014486]/40 dark:from-[#0F2A45]/20 dark:via-navy-900/60 dark:to-emerald-950/10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded bg-teal-600 text-[10px] font-black text-white shadow-xs">
+                    <span className="flex h-6 w-6 items-center justify-center rounded bg-[#0176D3] text-[10px] font-black text-white shadow-xs">
                       PDF
                     </span>
                     <div>
-                      <h4 className="text-xs font-bold text-navy-950 dark:text-white">
+                      <h4 className="text-xs font-bold text-[#181818] dark:text-white">
                         Client Suitability Dossier
                       </h4>
-                      <p className="text-[10px] text-navy-600 dark:text-navy-400">
+                      <p className="text-[10px] text-[#706E6B] dark:text-navy-400">
                         Official 2-page A4 assessment report
                       </p>
                     </div>
                   </div>
-                  <span className="rounded bg-teal-100 px-2 py-0.5 text-[10px] font-semibold text-teal-800 dark:bg-teal-900/60 dark:text-teal-300">
+                  <span className="rounded bg-[#D8E6FE] px-2 py-0.5 text-[10px] font-semibold text-[#014486] dark:bg-teal-900/60 dark:text-[#57A9F5]">
                     ARN-345439
                   </span>
                 </div>
-                <p className="text-[11px] leading-relaxed text-navy-600 dark:text-navy-400">
+                <p className="text-[11px] leading-relaxed text-[#706E6B] dark:text-navy-400">
                   Includes deterministic capacity scorecard, 10-question behavioral breakdown, strategic asset allocation donut chart, SEBI suitability declaration, and RIA/client sign-off blocks.
                 </p>
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
                   disabled={downloadingPdf}
-                  className="flex w-full items-center justify-center gap-2 rounded-md bg-teal-700 py-2.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-teal-800 disabled:opacity-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-[#0176D3] py-2.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-[#032D60] disabled:opacity-50"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -668,12 +668,12 @@ export default function RiskProfilingPage() {
               {/* CRM Household Suitability Sync */}
               <div className="card space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-bold text-navy-950 dark:text-white">
+                  <h4 className="text-sm font-bold text-[#181818] dark:text-white">
                     Record to CRM Household
                   </h4>
-                  <span className="text-[11px] text-navy-500">Audit Compliance</span>
+                  <span className="text-[11px] text-[#706E6B]">Audit Compliance</span>
                 </div>
-                <p className="text-xs text-navy-600 dark:text-navy-400">
+                <p className="text-xs text-[#706E6B] dark:text-navy-400">
                   Store this suitability assessment directly under the customer record in the CRM module.
                 </p>
 
@@ -683,18 +683,18 @@ export default function RiskProfilingPage() {
                     placeholder="Customer / Household ID (e.g., CUST_001)"
                     value={targetCustomerId}
                     onChange={(e) => setTargetCustomerId(e.target.value)}
-                    className="w-full rounded border border-navy-200 px-3 py-1.5 text-xs font-medium focus:border-teal-600 focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
+                    className="w-full rounded border border-[#E5E5E5] px-3 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                   />
                   <button
                     type="button"
                     onClick={handleSaveToCrm}
                     disabled={saving}
-                    className="w-full rounded-md bg-teal-700 py-2 text-xs font-semibold text-white transition-colors hover:bg-teal-800 disabled:opacity-50"
+                    className="w-full rounded-md bg-[#0176D3] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#032D60] disabled:opacity-50"
                   >
                     {saving ? "Saving to CRM..." : "Record Suitability in CRM →"}
                   </button>
                   {saveStatus && (
-                    <div className="rounded p-2 text-xs font-medium bg-navy-50 text-navy-900 dark:bg-navy-800 dark:text-white">
+                    <div className="rounded p-2 text-xs font-medium bg-[#F3F3F3] text-[#181818] dark:bg-navy-800 dark:text-white">
                       {saveStatus}
                     </div>
                   )}
@@ -707,19 +707,19 @@ export default function RiskProfilingPage() {
         /* Regulatory Methodology Tab */
         <div className="space-y-6">
           <div className="card space-y-4">
-            <h2 className="text-lg font-bold text-navy-950 dark:text-white">
+            <h2 className="text-lg font-bold text-[#181818] dark:text-white">
               Regulatory Suitability & Risk Engine Architecture
             </h2>
-            <p className="text-xs text-navy-700 dark:text-navy-300 leading-relaxed">
+            <p className="text-xs text-[#444444] dark:text-navy-300 leading-relaxed">
               Fund Horizon implements the SEBI Master Circular for Mutual Fund Distributors and RIAs, enforcing deterministic suitability scoring before recommending capital allocation.
             </p>
 
             {/* Capacity Scoring Factors Table */}
             <div className="space-y-2">
-              <h3 className="text-sm font-bold text-navy-900 dark:text-white">1. Capacity Scoring Factors (Weights = 100%)</h3>
-              <div className="overflow-x-auto rounded-lg border border-navy-100 bg-white dark:border-navy-800 dark:bg-navy-900">
+              <h3 className="text-sm font-bold text-[#181818] dark:text-white">1. Capacity Scoring Factors (Weights = 100%)</h3>
+              <div className="overflow-x-auto rounded-lg border border-[#ECEBEA] bg-white dark:border-navy-800 dark:bg-navy-900">
                 <table className="min-w-full text-left text-xs">
-                  <thead className="border-b border-navy-100 bg-navy-50 font-semibold text-navy-800 dark:border-navy-800 dark:bg-navy-800/60 dark:text-navy-200">
+                  <thead className="border-b border-[#ECEBEA] bg-[#F3F3F3] font-semibold text-[#444444] dark:border-navy-800 dark:bg-navy-800/60 dark:text-navy-200">
                     <tr>
                       <th className="px-3 py-2">Factor</th>
                       <th className="px-3 py-2">Weight</th>
@@ -727,54 +727,54 @@ export default function RiskProfilingPage() {
                       <th className="px-3 py-2">Scale (10-100)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-navy-50 dark:divide-navy-800">
+                  <tbody className="divide-y divide-[#F3F3F3] dark:divide-navy-800">
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Age</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">20%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">Years until traditional retirement horizon</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">≤30 (100) to &gt;60 (20)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Age</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">20%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Years until traditional retirement horizon</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">≤30 (100) to &gt;60 (20)</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Income Stability</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">15%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">Employment predictability and continuity</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">Govt/PSU (100) to Retired (25)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Income Stability</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">15%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Employment predictability and continuity</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">Govt/PSU (100) to Retired (25)</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Savings Rate</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">15%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">(Income - Expenses - EMIs) / Income</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">≥40% (100) to &lt;0% (10)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Savings Rate</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">15%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">(Income - Expenses - EMIs) / Income</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">≥40% (100) to &lt;0% (10)</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Emergency Fund</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">15%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">Liquid assets divided by monthly outgo</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">≥12 mos (100) to &lt;1 mo (10)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Emergency Fund</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">15%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Liquid assets divided by monthly outgo</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">≥12 mos (100) to &lt;1 mo (10)</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Net Worth Multiple</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">10%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">Net Assets divided by annual gross income</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">≥5x (100) to &lt;0x (10)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Net Worth Multiple</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">10%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Net Assets divided by annual gross income</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">≥5x (100) to &lt;0x (10)</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Debt Burden</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">10%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">Monthly EMI divided by monthly income</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">&lt;10% (100) to ≥50% (10)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Debt Burden</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">10%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Monthly EMI divided by monthly income</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">&lt;10% (100) to ≥50% (10)</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Dependents</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">10%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">Count of financially dependent individuals</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">0 (100) to 4+ (25)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Dependents</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">10%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Count of financially dependent individuals</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">0 (100) to 4+ (25)</td>
                     </tr>
                     <tr>
-                      <td className="px-3 py-2 font-medium text-navy-900 dark:text-white">Insurance Adequacy</td>
-                      <td className="px-3 py-2 font-semibold text-teal-700 dark:text-teal-400">5%</td>
-                      <td className="px-3 py-2 text-navy-600 dark:text-navy-400">Term cover vs human life value and health cover</td>
-                      <td className="px-3 py-2 text-navy-700 dark:text-navy-300">Both OK (100) to None (20)</td>
+                      <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Insurance Adequacy</td>
+                      <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">5%</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Term cover vs human life value and health cover</td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">Both OK (100) to None (20)</td>
                     </tr>
                   </tbody>
                 </table>
@@ -783,10 +783,10 @@ export default function RiskProfilingPage() {
 
             {/* Risk Bands Matrix Table */}
             <div className="space-y-2 pt-2">
-              <h3 className="text-sm font-bold text-navy-900 dark:text-white">2. Risk Bands & Allocation Matrix</h3>
-              <div className="overflow-x-auto rounded-lg border border-navy-100 bg-white dark:border-navy-800 dark:bg-navy-900">
+              <h3 className="text-sm font-bold text-[#181818] dark:text-white">2. Risk Bands & Allocation Matrix</h3>
+              <div className="overflow-x-auto rounded-lg border border-[#ECEBEA] bg-white dark:border-navy-800 dark:bg-navy-900">
                 <table className="min-w-full text-left text-xs">
-                  <thead className="border-b border-navy-100 bg-navy-50 font-semibold text-navy-800 dark:border-navy-800 dark:bg-navy-800/60 dark:text-navy-200">
+                  <thead className="border-b border-[#ECEBEA] bg-[#F3F3F3] font-semibold text-[#444444] dark:border-navy-800 dark:bg-navy-800/60 dark:text-navy-200">
                     <tr>
                       <th className="px-3 py-2">Band Name</th>
                       <th className="px-3 py-2">Score Range</th>
@@ -796,12 +796,12 @@ export default function RiskProfilingPage() {
                       <th className="px-3 py-2">Liquid %</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-navy-50 dark:divide-navy-800">
+                  <tbody className="divide-y divide-[#F3F3F3] dark:divide-navy-800">
                     {BANDS.map((b) => (
-                      <tr key={b.name} className="hover:bg-navy-50/50 dark:hover:bg-navy-800/40">
-                        <td className="px-3 py-2 font-semibold text-navy-900 dark:text-white">{b.name}</td>
-                        <td className="px-3 py-2 font-mono text-navy-600 dark:text-navy-400">[{b.min}, {b.max})</td>
-                        <td className="px-3 py-2 font-bold text-teal-700 dark:text-teal-400">{b.equity}%</td>
+                      <tr key={b.name} className="hover:bg-[#F3F3F3]/50 dark:hover:bg-navy-800/40">
+                        <td className="px-3 py-2 font-semibold text-[#181818] dark:text-white">{b.name}</td>
+                        <td className="px-3 py-2 font-mono text-[#706E6B] dark:text-navy-400">[{b.min}, {b.max})</td>
+                        <td className="px-3 py-2 font-bold text-[#0176D3] dark:text-[#1B96FF]">{b.equity}%</td>
                         <td className="px-3 py-2 font-bold text-blue-700 dark:text-blue-400">{b.debt}%</td>
                         <td className="px-3 py-2 text-amber-700 dark:text-amber-400">{b.gold}%</td>
                         <td className="px-3 py-2 text-slate-600 dark:text-slate-400">{b.liquid}%</td>

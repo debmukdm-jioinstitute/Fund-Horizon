@@ -167,7 +167,7 @@ function Runner({ content, quizId, mode, only, onExit, onRetry, onRetake }: {
           <li key={x.id}>
             <button aria-label={`Question ${i + 1} of ${att.questions.length}${answers[x.id] !== undefined ? ", answered" : ""}`} aria-current={i === idx ? "step" : undefined}
               onClick={() => (mode === "exam" || answers[x.id] !== undefined || i <= idx) && setIdx(i)}
-              className={`h-3 w-3 rounded-full border ${i === idx ? "border-[#006F64] dark:border-[#75E1CE] scale-125" : "border-[#536176] dark:border-[#A8B4C4]"} ${answers[x.id] !== undefined ? "bg-[#006F64] dark:bg-[#75E1CE]" : ""}`} />
+              className={`h-3 w-3 rounded-full border ${i === idx ? "border-[#0176D3] dark:border-[#1B96FF] scale-125" : "border-[#536176] dark:border-[#A8B4C4]"} ${answers[x.id] !== undefined ? "bg-[#0176D3] dark:bg-[#1B96FF]" : ""}`} />
           </li>
         ))}
       </ol>
@@ -178,7 +178,7 @@ function Runner({ content, quizId, mode, only, onExit, onRetry, onRetake }: {
           const right = r && r.correct_choice === i;
           const wrong = r && picked && !right;
           return (
-            <label key={i} className={`flex items-start gap-3 rounded-md border p-3 text-[15px] ${r ? "" : "cursor-pointer hover:bg-[#F7F9FB] dark:hover:bg-[#171E27]"} ${right ? "border-[#006F64] dark:border-[#75E1CE]" : wrong ? "border-[#B42332] dark:border-[#FF7D86]" : picked ? "border-[#006F64] dark:border-[#75E1CE]" : "border-[#E4E9EF] dark:border-[#2B3644]"}`}>
+            <label key={i} className={`flex items-start gap-3 rounded-md border p-3 text-[15px] ${r ? "" : "cursor-pointer hover:bg-[#F7F9FB] dark:hover:bg-[#171E27]"} ${right ? "border-[#0176D3] dark:border-[#1B96FF]" : wrong ? "border-[#B42332] dark:border-[#FF7D86]" : picked ? "border-[#0176D3] dark:border-[#1B96FF]" : "border-[#E4E9EF] dark:border-[#2B3644]"}`}>
               <input type="radio" name={q.id} className="mt-1 h-4 w-4" checked={picked} disabled={!!r} onChange={() => void choose(i)} />
               <span>{o}{right && <strong className={`ml-2 ${accent}`}>✓ Correct</strong>}{wrong && <strong className={`ml-2 ${bad}`}>✗ Incorrect</strong>}</span>
             </label>

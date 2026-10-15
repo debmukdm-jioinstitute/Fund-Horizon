@@ -39,7 +39,7 @@ export default function CompareTray({ labels, onRemove, onClear, onCompare }: Co
       <button
         type="button"
         disabled={labels.length < 2}
-        className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] disabled:opacity-40 dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+        className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] disabled:opacity-40 dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
         onClick={onCompare}
       >
         Compare ({labels.length})

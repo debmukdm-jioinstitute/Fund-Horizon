@@ -45,8 +45,8 @@ const ROLE_LABELS: Record<string, string> = {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5">
-      <h3 className="text-sm font-bold text-navy-950 mb-3">{title}</h3>
+    <div className="bg-white rounded-2xl border border-[#ECEBEA] shadow-sm p-5">
+      <h3 className="text-sm font-bold text-[#181818] mb-3">{title}</h3>
       {children}
     </div>
   );
@@ -133,8 +133,8 @@ export default function HouseholdView({
   if (loading) {
     return (
       <div role="status" aria-busy="true" aria-label="Loading" className="space-y-2 p-5">
-        <div className="h-6 w-1/3 rounded bg-navy-100 dark:bg-[#2B3644] animate-pulse" />
-        <div className="h-4 w-2/3 rounded bg-navy-100 dark:bg-[#2B3644] animate-pulse" />
+        <div className="h-6 w-1/3 rounded bg-[#ECEBEA] dark:bg-[#2B3644] animate-pulse" />
+        <div className="h-4 w-2/3 rounded bg-[#ECEBEA] dark:bg-[#2B3644] animate-pulse" />
       </div>
     );
   }
@@ -150,18 +150,18 @@ export default function HouseholdView({
 
   const memberList = (ms: HouseholdMember[]) =>
     ms.length === 0 ? (
-      <p className="text-xs text-navy-600">No members linked yet.</p>
+      <p className="text-xs text-[#706E6B]">No members linked yet.</p>
     ) : (
-      <div className="divide-y divide-navy-100">
+      <div className="divide-y divide-[#ECEBEA]">
         {ms.map((m) => (
           <div key={m.customer_id} className="py-2.5 flex items-center justify-between gap-3">
             <div>
-              <div className="text-xs font-bold text-navy-950">{m.name}</div>
-              <div className="text-xs text-navy-600">
+              <div className="text-xs font-bold text-[#181818]">{m.name}</div>
+              <div className="text-xs text-[#706E6B]">
                 {[m.email, m.mobile].filter(Boolean).join(" · ") || "No contact details"}
               </div>
             </div>
-            <span className="px-2 py-1 rounded-lg bg-navy-50 text-navy-700 text-xs font-semibold">
+            <span className="px-2 py-1 rounded-lg bg-[#F3F3F3] text-[#444444] text-xs font-semibold">
               {ROLE_LABELS[m.role] ?? m.role}
             </span>
           </div>
@@ -171,18 +171,18 @@ export default function HouseholdView({
 
   const oppList = (ops: Opportunity[]) =>
     ops.length === 0 ? (
-      <p className="text-xs text-navy-600">No opportunities for this household yet.</p>
+      <p className="text-xs text-[#706E6B]">No opportunities for this household yet.</p>
     ) : (
-      <div className="divide-y divide-navy-100">
+      <div className="divide-y divide-[#ECEBEA]">
         {ops.map((o) => (
           <div key={o.id} className="py-2.5">
             <div className="flex items-center justify-between gap-3">
-              <div className="text-xs font-bold text-navy-950">{o.title}</div>
+              <div className="text-xs font-bold text-[#181818]">{o.title}</div>
               {o.amount != null && (
-                <div className="text-xs font-extrabold text-navy-950">{inr(o.amount / 100)}</div>
+                <div className="text-xs font-extrabold text-[#181818]">{inr(o.amount / 100)}</div>
               )}
             </div>
-            <div className="text-xs text-navy-600 mt-0.5">
+            <div className="text-xs text-[#706E6B] mt-0.5">
               {o.product_line.replaceAll("_", " ")} · {o.stage.replaceAll("_", " ")} ·{" "}
               {o.probability}% probability
               {o.expected_close ? ` · closes ${formatDate(o.expected_close)}` : ""}
@@ -194,21 +194,21 @@ export default function HouseholdView({
 
   const timeline = (as: Activity[]) =>
     as.length === 0 ? (
-      <p className="text-xs text-navy-600">No activity recorded yet.</p>
+      <p className="text-xs text-[#706E6B]">No activity recorded yet.</p>
     ) : (
-      <ol className="relative border-l border-navy-100 ml-1.5 space-y-4">
+      <ol className="relative border-l border-[#ECEBEA] ml-1.5 space-y-4">
         {as.map((a) => (
           <li key={a.id} className="pl-4 relative">
-            <span className="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-teal-500" />
-            <div className="text-xs font-bold text-navy-950">
+            <span className="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-[#0176D3]" />
+            <div className="text-xs font-bold text-[#181818]">
               {a.subject}
-              {a.done_at && <span className="ml-2 text-xs text-teal-700 font-semibold">Done</span>}
+              {a.done_at && <span className="ml-2 text-xs text-[#0176D3] font-semibold">Done</span>}
             </div>
-            <div className="text-xs text-navy-600">
+            <div className="text-xs text-[#706E6B]">
               {a.kind} · {formatDate(a.created_at)}
               {a.due_at && !a.done_at ? ` · due ${formatDate(a.due_at)}` : ""}
             </div>
-            {a.body && <div className="text-xs text-navy-600 mt-1">{a.body}</div>}
+            {a.body && <div className="text-xs text-[#706E6B] mt-1">{a.body}</div>}
           </li>
         ))}
       </ol>
@@ -216,18 +216,18 @@ export default function HouseholdView({
 
   const caseList = (cs: CrmCase[]) =>
     cs.length === 0 ? (
-      <p className="text-xs text-navy-600">No open cases.</p>
+      <p className="text-xs text-[#706E6B]">No open cases.</p>
     ) : (
-      <div className="divide-y divide-navy-100">
+      <div className="divide-y divide-[#ECEBEA]">
         {cs.map((c) => (
           <div key={c.id} className="py-2.5">
             <div className="flex items-center justify-between gap-3">
-              <div className="text-xs font-bold text-navy-950">{c.subject}</div>
+              <div className="text-xs font-bold text-[#181818]">{c.subject}</div>
               <span className="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold">
                 {c.status.replaceAll("_", " ")}
               </span>
             </div>
-            <div className="text-xs text-navy-600 mt-0.5">
+            <div className="text-xs text-[#706E6B] mt-0.5">
               {c.category} · opened {formatDate(c.created_at)}
               {c.sla_due_at ? ` · SLA by ${formatDate(c.sla_due_at)}` : ""}
             </div>
@@ -238,39 +238,39 @@ export default function HouseholdView({
 
   return (
     <div className="space-y-4">
-      <div className="bg-white rounded-2xl border border-navy-100 shadow-sm p-5">
+      <div className="bg-white rounded-2xl border border-[#ECEBEA] shadow-sm p-5">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
           {showTitle ? (
           <div>
-            <h2 className="text-lg font-bold text-navy-950">{household.name}</h2>
-            <p className="text-xs text-navy-600">
+            <h2 className="text-lg font-bold text-[#181818]">{household.name}</h2>
+            <p className="text-xs text-[#706E6B]">
               Created {formatDate(household.created_at)} · {members.length} member
               {members.length === 1 ? "" : "s"} · {opportunities.length} opportunit
               {opportunities.length === 1 ? "y" : "ies"}
             </p>
-            {household.notes && <p className="text-xs text-navy-600 mt-2">{household.notes}</p>}
+            {household.notes && <p className="text-xs text-[#706E6B] mt-2">{household.notes}</p>}
           </div>
           ) : (
-            <h3 className="text-sm font-bold text-navy-950">Members</h3>
+            <h3 className="text-sm font-bold text-[#181818]">Members</h3>
           )}
           <form onSubmit={(e) => handleAddMember(e)} className="flex flex-wrap items-end gap-2">
             <div>
-              <label className="block text-xs font-semibold text-navy-700 mb-1">
+              <label className="block text-xs font-semibold text-[#444444] mb-1">
                 Add member (customer ID)
               </label>
               <input
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
                 placeholder="Customer ID"
-                className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500 w-40"
+                className="px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] bg-white text-[#181818] placeholder:text-[#706E6B] focus:outline-none focus:ring-2 focus:ring-[#0176D3] w-40"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-navy-700 mb-1">Role</label>
+              <label className="block text-xs font-semibold text-[#444444] mb-1">Role</label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] bg-white text-[#181818] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
               >
                 {Object.entries(ROLE_LABELS).map(([v, l]) => (
                   <option key={v} value={v}>
@@ -282,7 +282,7 @@ export default function HouseholdView({
             <button
               type="submit"
               disabled={adding || !customerId.trim()}
-              className="px-3 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-xl transition"
+              className="px-3 py-2 text-xs font-bold bg-[#0176D3] hover:bg-[#014486] disabled:opacity-50 text-white rounded-xl transition"
             >
               {adding ? "Adding…" : "Add"}
             </button>
@@ -314,15 +314,15 @@ export default function HouseholdView({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <Section title="Insurance policies">
             {products.policies.length === 0 ? (
-              <p className="text-xs text-navy-600">No policies linked.</p>
+              <p className="text-xs text-[#706E6B]">No policies linked.</p>
             ) : (
-              <div className="divide-y divide-navy-100">
+              <div className="divide-y divide-[#ECEBEA]">
                 {products.policies.map((p) => (
                   <div key={p.id} className="py-2">
-                    <div className="text-xs font-bold text-navy-950">
+                    <div className="text-xs font-bold text-[#181818]">
                       {p.insurer ?? "Policy"} · {p.policy_type?.replaceAll("_", " ") ?? "–"}
                     </div>
-                    <div className="text-xs text-navy-600">
+                    <div className="text-xs text-[#706E6B]">
                       {p.policy_no ?? "No policy number"} · premium{" "}
                       {p.premium_amount != null ? inr(p.premium_amount / 100) : "–"} · renews{" "}
                       {formatDate(p.renewal_date)}
@@ -334,15 +334,15 @@ export default function HouseholdView({
           </Section>
           <Section title="Corporate FDs">
             {products.fds.length === 0 ? (
-              <p className="text-xs text-navy-600">No FDs linked.</p>
+              <p className="text-xs text-[#706E6B]">No FDs linked.</p>
             ) : (
-              <div className="divide-y divide-navy-100">
+              <div className="divide-y divide-[#ECEBEA]">
                 {products.fds.map((f) => (
                   <div key={f.id} className="py-2">
-                    <div className="text-xs font-bold text-navy-950">
+                    <div className="text-xs font-bold text-[#181818]">
                       {f.company ?? "FD"} · {f.amount != null ? shortInr(f.amount / 100) : "–"}
                     </div>
-                    <div className="text-xs text-navy-600">
+                    <div className="text-xs text-[#706E6B]">
                       matures {formatDate(f.maturity_date)} · {f.status}
                     </div>
                   </div>
@@ -352,15 +352,15 @@ export default function HouseholdView({
           </Section>
           <Section title="PMS accounts">
             {products.pms.length === 0 ? (
-              <p className="text-xs text-navy-600">No PMS accounts linked.</p>
+              <p className="text-xs text-[#706E6B]">No PMS accounts linked.</p>
             ) : (
-              <div className="divide-y divide-navy-100">
+              <div className="divide-y divide-[#ECEBEA]">
                 {products.pms.map((p) => (
                   <div key={p.id} className="py-2">
-                    <div className="text-xs font-bold text-navy-950">
+                    <div className="text-xs font-bold text-[#181818]">
                       {p.provider ?? "PMS"} · {p.amount != null ? shortInr(p.amount / 100) : "–"}
                     </div>
-                    <div className="text-xs text-navy-600">{p.status}</div>
+                    <div className="text-xs text-[#706E6B]">{p.status}</div>
                   </div>
                 ))}
               </div>
@@ -376,32 +376,32 @@ export default function HouseholdView({
 
       {products?.suitability && (
         <Section title="Latest suitability record">
-          <div className="text-xs text-navy-800 space-y-1.5">
+          <div className="text-xs text-[#444444] space-y-1.5">
             {products.suitability.risk_band && (
               <div>
-                <span className="font-semibold text-navy-500">Risk band:</span>{" "}
+                <span className="font-semibold text-[#706E6B]">Risk band:</span>{" "}
                 {products.suitability.risk_band}
               </div>
             )}
             {products.suitability.financial_status && (
               <div>
-                <span className="font-semibold text-navy-500">Financial status:</span>{" "}
+                <span className="font-semibold text-[#706E6B]">Financial status:</span>{" "}
                 {products.suitability.financial_status}
               </div>
             )}
             {products.suitability.investment_experience && (
               <div>
-                <span className="font-semibold text-navy-500">Experience:</span>{" "}
+                <span className="font-semibold text-[#706E6B]">Experience:</span>{" "}
                 {products.suitability.investment_experience}
               </div>
             )}
             {products.suitability.objectives && (
               <div>
-                <span className="font-semibold text-navy-500">Objectives:</span>{" "}
+                <span className="font-semibold text-[#706E6B]">Objectives:</span>{" "}
                 {products.suitability.objectives}
               </div>
             )}
-            <div className="text-xs text-navy-600">
+            <div className="text-xs text-[#706E6B]">
               Recorded {formatDate(products.suitability.recorded_at)}
             </div>
           </div>

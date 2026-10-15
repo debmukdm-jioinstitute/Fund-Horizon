@@ -17,6 +17,7 @@ import { ApiError } from "@/lib/api";
 import { formatISTDate } from "@/lib/terminal-format";
 import { useAuth } from "@/components/AuthContext";
 import FundScreening from "@/components/backoffice/FundScreening";
+import InfoTip from "@/components/InfoTip";
 import briefingCopy from "@/lib/briefing-copy.json";
 import printStyles from "./briefing-print.module.css";
 
@@ -108,6 +109,18 @@ function isFxItem(sectionKey: string, item: BriefingItem): boolean {
 
 // Item 11: stale flags — FX older than 1 trading day, screening/PMS older than
 // 7 days. An explicit payload flag always wins; otherwise derive from as_of.
+// Methodology popover per briefing section (see lib/metrics/registry.ts).
+const SECTION_INFO: Record<string, string> = {
+  market_pulse: "brief_market_pulse",
+  fund_movers: "brief_fund_movers",
+  screening_changes: "brief_screening_changes",
+  cost_manager_changes: "brief_cost_manager",
+  regulatory_news: "brief_regulatory_news",
+  pms: "brief_pms",
+  client_actions: "brief_client_actions",
+  data_freshness: "brief_data_freshness",
+};
+
 function itemIsStale(sectionKey: string, item: BriefingItem): boolean {
   if (item.stale === true) return true;
   const age = itemAgeHours(item.as_of);
@@ -269,6 +282,7 @@ function BriefingSectionCard({ section, detailed }: { section: BriefingSection; 
           <span aria-hidden="true">▸</span>
           <span>{section.title || section.key}</span>
           <span className="text-[11px] font-mono">— no items</span>
+          {SECTION_INFO[section.key] && <InfoTip metric={SECTION_INFO[section.key]} />}
         </summary>
         <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-2">
           {section.note ?? "No data for this section in this briefing."}
@@ -278,8 +292,9 @@ function BriefingSectionCard({ section, detailed }: { section: BriefingSection; 
   }
   return (
     <section className={`terminal-panel p-6 mb-6 ${printStyles.card}`}>
-      <h2 className="text-[14px] font-semibold text-[#181818] dark:text-[#EDF2F7] mb-4">
+      <h2 className="text-[14px] font-semibold text-[#181818] dark:text-[#EDF2F7] mb-4 flex items-center">
         {section.title || section.key}
+        {SECTION_INFO[section.key] && <InfoTip metric={SECTION_INFO[section.key]} />}
       </h2>
       {section.note != null && (
         <p className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4] -mt-2 mb-3">
@@ -591,6 +606,7 @@ function ResearchPageContent() {
                 {/* Item 8: header reads "Daily Briefing — {date}" */}
                 <h2 className="text-[18px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
                   {briefing ? `Daily Briefing — ${formatBriefDate(briefing.brief_date)}` : "Daily Briefing"}
+                  <InfoTip metric="brief_overview" />
                 </h2>
                 <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-mono mt-0.5">
                   {briefing ? (

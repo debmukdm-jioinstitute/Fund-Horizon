@@ -59,16 +59,16 @@ function OppCard({
   return (
     <div
       ref={overlay ? undefined : setNodeRef}
-      className={`bg-white dark:bg-[#171E27] border border-navy-100 dark:border-[#2B3644] rounded-xl p-2.5 space-y-1.5 shadow-sm ${
+      className={`bg-white dark:bg-[#171E27] border border-[#ECEBEA] dark:border-[#2B3644] rounded-xl p-2.5 space-y-1.5 shadow-sm ${
         isDragging ? "opacity-40" : ""
-      } ${overlay ? "shadow-lg ring-2 ring-teal-500" : ""}`}
+      } ${overlay ? "shadow-lg ring-2 ring-[#0176D3]" : ""}`}
     >
       <div className="flex items-start gap-1.5">
         {!closed && !overlay && (
           <button
             type="button"
             aria-label={`Drag ${o.title}`}
-            className="mt-0.5 cursor-grab touch-none select-none text-navy-400 hover:text-navy-700 dark:text-[#A8B4C4]"
+            className="mt-0.5 cursor-grab touch-none select-none text-[#939393] hover:text-[#444444] dark:text-[#A8B4C4]"
             {...listeners}
             {...attributes}
           >
@@ -77,25 +77,25 @@ function OppCard({
         )}
         <Link
           href={`/backoffice/crm/opportunities/${o.id}`}
-          className="block text-xs font-semibold text-navy-950 dark:text-[#EDF2F7] leading-snug hover:underline"
+          className="block text-xs font-semibold text-[#181818] dark:text-[#EDF2F7] leading-snug hover:underline"
         >
           {o.title}
         </Link>
       </div>
       {(o.household_name || o.customer_name) && (
-        <p className="text-xs text-navy-500 dark:text-[#A8B4C4]">{o.household_name || o.customer_name}</p>
+        <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">{o.household_name || o.customer_name}</p>
       )}
-      <div className="flex items-center justify-between text-xs text-navy-600 dark:text-[#A8B4C4]">
-        <span className="font-bold text-navy-900 dark:text-[#EDF2F7]">{formatRupeesFromPaise(o.stage === "won" ? (o.won_amount ?? o.amount) : o.amount)}</span>
+      <div className="flex items-center justify-between text-xs text-[#706E6B] dark:text-[#A8B4C4]">
+        <span className="font-bold text-[#181818] dark:text-[#EDF2F7]">{formatRupeesFromPaise(o.stage === "won" ? (o.won_amount ?? o.amount) : o.amount)}</span>
         <span>{o.probability}% prob</span>
       </div>
-      <div className="text-xs text-navy-600 dark:text-[#A8B4C4]"><OwnerAvatar ownerId={o.assigned_rm_id} /></div>
-      {o.stage === "lost" && o.lost_reason && <p className="text-xs text-navy-500 dark:text-[#A8B4C4]">Reason: {o.lost_reason}</p>}
-      {o.expected_close && !closed && <p className="text-xs text-navy-500 dark:text-[#A8B4C4]">Expected close: {o.expected_close}</p>}
+      <div className="text-xs text-[#706E6B] dark:text-[#A8B4C4]"><OwnerAvatar ownerId={o.assigned_rm_id} /></div>
+      {o.stage === "lost" && o.lost_reason && <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">Reason: {o.lost_reason}</p>}
+      {o.expected_close && !closed && <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">Expected close: {o.expected_close}</p>}
       {!overlay && (
         <div className="flex gap-1 pt-1">
           {closed ? (
-            <p className="text-xs text-navy-500 dark:text-[#A8B4C4]">
+            <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">
               {o.stage === "won" ? "Won" : "Lost"} {o.closed_at ? o.closed_at.slice(0, 10) : ""} · final
             </p>
           ) : (
@@ -104,7 +104,7 @@ function OppCard({
                 disabled={busy || !prev}
                 onClick={() => prev && onMove(o, prev)}
                 title={prev ? `Move back to ${stageLabel(prev)}` : "First stage"}
-                className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-navy-50 dark:bg-[#24303E] text-navy-700 dark:text-[#EDF2F7] hover:bg-navy-100 disabled:opacity-40"
+                className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-[#F3F3F3] dark:bg-[#24303E] text-[#444444] dark:text-[#EDF2F7] hover:bg-[#ECEBEA] disabled:opacity-40"
               >
                 ← Back
               </button>
@@ -112,7 +112,7 @@ function OppCard({
                 disabled={busy || !next}
                 onClick={() => next && onMove(o, next)}
                 title={next ? `Move to ${stageLabel(next)}` : "Final stage"}
-                className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-40"
+                className="flex-1 text-xs font-semibold px-2 py-1 rounded-lg bg-[#0176D3] text-white hover:bg-[#014486] disabled:opacity-40"
               >
                 Forward →
               </button>
@@ -141,18 +141,18 @@ function Column({ stage, cards, dragging, line, children }: { stage: string; car
     <div
       ref={setNodeRef}
       className={`w-64 shrink-0 rounded-2xl border p-3 space-y-2 transition-colors ${
-        isOver ? (invalid || (dragging && isClosedStage(dragging.stage)) ? "border-rose-500 bg-rose-50/60 dark:bg-rose-950/30" : "border-teal-500 bg-teal-50/60 dark:bg-[#0F2A27]")
-          : isLost ? "bg-gray-50 dark:bg-[#10151C] border-gray-200 dark:border-[#2B3644]" : "bg-white dark:bg-[#10151C] border-navy-200 dark:border-[#2B3644]"
+        isOver ? (invalid || (dragging && isClosedStage(dragging.stage)) ? "border-rose-500 bg-rose-50/60 dark:bg-rose-950/30" : "border-[#0176D3] bg-[#EAF5FE]/60 dark:bg-[#0F2A27]")
+          : isLost ? "bg-gray-50 dark:bg-[#10151C] border-gray-200 dark:border-[#2B3644]" : "bg-white dark:bg-[#10151C] border-[#E5E5E5] dark:border-[#2B3644]"
       }`}
     >
       <div className="flex items-baseline justify-between">
-        <h3 className="text-xs font-bold text-navy-950 dark:text-[#EDF2F7]">{stageLabel(stage)}</h3>
-        <span className="text-xs text-navy-500 dark:text-[#A8B4C4] font-semibold">{cards.length}</span>
+        <h3 className="text-xs font-bold text-[#181818] dark:text-[#EDF2F7]">{stageLabel(stage)}</h3>
+        <span className="text-xs text-[#706E6B] dark:text-[#A8B4C4] font-semibold">{cards.length}</span>
       </div>
-      <p className="text-xs text-navy-500 dark:text-[#A8B4C4]">{formatRupeesFromPaise(total)}</p>
+      <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">{formatRupeesFromPaise(total)}</p>
       <div className="space-y-2 max-h-[60vh] overflow-y-auto">
         {children}
-        {cards.length === 0 && <p className="text-xs text-navy-600 dark:text-[#A8B4C4] text-center py-4">No opportunities here yet.</p>}
+        {cards.length === 0 && <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4] text-center py-4">No opportunities here yet.</p>}
       </div>
     </div>
   );
@@ -274,8 +274,8 @@ export default function PipelinesTab() {
             onClick={() => setLine(p.value)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
               line === p.value
-                ? "bg-navy-900 text-white border-navy-900 dark:bg-[#0176D3] dark:border-[#0176D3]"
-                : "bg-white dark:bg-[#171E27] text-navy-700 dark:text-[#EDF2F7] border-navy-200 dark:border-[#2B3644] hover:border-navy-400"
+                ? "bg-[#181818] text-white border-[#181818] dark:bg-[#0176D3] dark:border-[#0176D3]"
+                : "bg-white dark:bg-[#171E27] text-[#444444] dark:text-[#EDF2F7] border-[#E5E5E5] dark:border-[#2B3644] hover:border-[#939393]"
             }`}
           >
             {p.label}
@@ -283,12 +283,12 @@ export default function PipelinesTab() {
         ))}
       </div>
 
-      <div className="flex items-center gap-4 text-xs text-navy-600 dark:text-[#A8B4C4]">
+      <div className="flex items-center gap-4 text-xs text-[#706E6B] dark:text-[#A8B4C4]">
         <span>
-          <strong className="text-navy-950 dark:text-[#EDF2F7]">{openCount}</strong> open opportunities
+          <strong className="text-[#181818] dark:text-[#EDF2F7]">{openCount}</strong> open opportunities
         </span>
         <span>
-          Pipeline value (open): <strong className="text-navy-950 dark:text-[#EDF2F7]">{formatRupeesFromPaise(totalValue)}</strong>
+          Pipeline value (open): <strong className="text-[#181818] dark:text-[#EDF2F7]">{formatRupeesFromPaise(totalValue)}</strong>
         </span>
         <span className="hidden md:inline">Drag a card to another stage, or use the buttons.</span>
       </div>
@@ -301,7 +301,7 @@ export default function PipelinesTab() {
 
       {loading ? (
         <div role="status" aria-busy="true" aria-label="Loading" className="p-16 text-center">
-          <div className="inline-block animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full" />
+          <div className="inline-block animate-spin h-8 w-8 border-4 border-[#0176D3] border-t-transparent rounded-full" />
         </div>
       ) : (
         <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={() => setDragging(null)}>
@@ -319,10 +319,10 @@ export default function PipelinesTab() {
       )}
 
       {losing && (
-        <div className="fixed inset-0 z-50 bg-navy-950/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Mark opportunity lost">
-          <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-navy-100 dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-3">
-            <h3 className="text-base font-bold text-navy-950 dark:text-[#EDF2F7]">Mark “{losing.title}” as lost</h3>
-            <label className="block text-xs font-semibold text-navy-700 dark:text-[#EDF2F7]" htmlFor="lost-reason">
+        <div className="fixed inset-0 z-50 bg-[#181818]/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Mark opportunity lost">
+          <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-[#ECEBEA] dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-3">
+            <h3 className="text-base font-bold text-[#181818] dark:text-[#EDF2F7]">Mark “{losing.title}” as lost</h3>
+            <label className="block text-xs font-semibold text-[#444444] dark:text-[#EDF2F7]" htmlFor="lost-reason">
               Reason (required)
             </label>
             <textarea
@@ -331,11 +331,11 @@ export default function PipelinesTab() {
               onChange={(e) => setLostReason(e.target.value)}
               rows={3}
               autoFocus
-              className="w-full px-3 py-2 text-xs rounded-xl border border-navy-200 dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-navy-900 dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
             />
             {lostError && <p className="text-xs font-medium text-rose-700 dark:text-rose-300">{lostError}</p>}
             <div className="flex gap-2">
-              <button type="button" onClick={() => setLosing(null)} className="flex-1 px-3 py-2 text-xs font-semibold bg-navy-50 dark:bg-[#24303E] hover:bg-navy-100 text-navy-700 dark:text-[#EDF2F7] rounded-xl transition">
+              <button type="button" onClick={() => setLosing(null)} className="flex-1 px-3 py-2 text-xs font-semibold bg-[#F3F3F3] dark:bg-[#24303E] hover:bg-[#ECEBEA] text-[#444444] dark:text-[#EDF2F7] rounded-xl transition">
                 Cancel
               </button>
               <button type="button" onClick={confirmLost} disabled={movingId === losing.id} className="flex-1 px-3 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white rounded-xl transition">

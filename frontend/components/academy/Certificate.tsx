@@ -22,7 +22,7 @@ export function Certificate() {
         </div>
         <button className={btnPrimary} onClick={() => window.print()}>Print certificate</button>
       </div>
-      <div id="fh-cert" className="hidden print:flex flex-col items-center justify-center text-center p-16 border-8 border-double border-[#006F64] gap-4">
+      <div id="fh-cert" className="hidden print:flex flex-col items-center justify-center text-center p-16 border-8 border-double border-[#0176D3] gap-4">
         <div className="text-sm tracking-widest uppercase">Fund Horizon Academy</div>
         <h1 className="text-4xl font-semibold">Certificate of Completion</h1>
         <p className="text-lg">This certifies that</p>

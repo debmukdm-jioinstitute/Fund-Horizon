@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useRecommended } from "@/lib/recommended";
 import CompareTray from "@/components/compare/CompareTray";
@@ -109,6 +110,7 @@ export default function PmsTrackerPage() {
 }
 
 function PmsTracker() {
+  const urlQuery = useSearchParams().get("q") ?? "";
   const compare = useCompareSelection("pms");
   const rec = useRecommended();
   const [pmsRecDropdownOpen, setPmsRecDropdownOpen] = useState(false);
@@ -129,7 +131,7 @@ function PmsTracker() {
 
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [fhSubTab, setFhSubTab] = useState<"returns" | "details">("returns");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(urlQuery);
   const [sortKey, setSortKey] = useState<SortKey>("aum");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(0);

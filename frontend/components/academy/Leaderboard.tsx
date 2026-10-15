@@ -32,7 +32,7 @@ export function Leaderboard() {
         <>
           <ol className={`${card} divide-y divide-[#E4E9EF] dark:divide-[#2B3644]`}>
             {board.top.map((r) => (
-              <li key={r.rank} className={`flex items-center justify-between px-4 py-3 text-[15px] ${r.you ? "bg-[#E7F5F2] dark:bg-[#1A3034] font-semibold" : ""}`}>
+              <li key={r.rank} className={`flex items-center justify-between px-4 py-3 text-[15px] ${r.you ? "bg-[#EAF5FE] dark:bg-[#11304F] font-semibold" : ""}`}>
                 <span><span className={`inline-block w-8 ${muted}`}>#{r.rank}</span>{r.name}{r.you && " (you)"}</span>
                 <span>{r.xp} XP</span>
               </li>

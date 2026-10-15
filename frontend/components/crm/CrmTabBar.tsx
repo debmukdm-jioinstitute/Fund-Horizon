@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { CRM_TABS, tabHref } from "./tabs";
 
 const circle = (cx: number, cy: number) => `M${cx - 4} ${cy}a4 4 0 1 0 8 0a4 4 0 1 0-8 0`;
@@ -20,8 +21,13 @@ const ICONS: Record<string, string[]> = {
 
 /** CRM section tabs: icon above label, active tab filled. Scrolls sideways on narrow screens. */
 export default function CrmTabBar({ tab }: { tab: string }) {
+  const nav = useRef<HTMLElement>(null);
+  // Only when the tab changes; scrolling on every render fought the user's own scrolling.
+  useEffect(() => {
+    nav.current?.querySelector<HTMLElement>("[data-active]")?.scrollIntoView({ inline: "nearest", block: "nearest" });
+  }, [tab]);
   return (
-    <nav aria-label="CRM sections" className="overflow-x-auto rounded-lg border border-[#C5DDF7] dark:border-[#1F4A74] border-t-4 border-t-[#0176D3] bg-[#F3F9FE] dark:bg-[#0F2A45]">
+    <nav ref={nav} aria-label="CRM sections" className="overflow-x-auto overscroll-x-contain rounded-lg border border-[#C5DDF7] dark:border-[#1F4A74] border-t-4 border-t-[#0176D3] bg-[#F3F9FE] dark:bg-[#0F2A45]">
       <div className="flex min-w-max justify-between gap-1 p-1.5">
         {CRM_TABS.map(([id, label]) => {
           const on = tab === id;
@@ -30,7 +36,7 @@ export default function CrmTabBar({ tab }: { tab: string }) {
               key={id}
               href={tabHref(id)}
               aria-current={on ? "page" : undefined}
-              ref={on ? (el) => el?.scrollIntoView({ inline: "center", block: "nearest" }) : undefined}
+              data-active={on || undefined}
               className={`flex min-w-[72px] flex-1 flex-col items-center gap-1 rounded-md px-3 py-2 text-[12px] font-semibold transition-colors ${
                 on
                   ? "bg-[#0176D3] text-white shadow-[0_3px_0_#014486]"

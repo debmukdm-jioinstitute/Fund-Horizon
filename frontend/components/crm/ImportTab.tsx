@@ -125,9 +125,9 @@ export default function ImportTab() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-5 rounded-2xl border border-navy-100 shadow-sm">
-        <h2 className="text-lg font-bold text-navy-950 mb-1">Import clients</h2>
-        <p className="text-xs text-navy-500 mb-4">
+      <div className="bg-white p-5 rounded-2xl border border-[#ECEBEA] shadow-sm">
+        <h2 className="text-lg font-bold text-[#181818] mb-1">Import clients</h2>
+        <p className="text-xs text-[#706E6B] mb-4">
           Paste CSV rows or pick a file. Columns:{" "}
           <span className="font-mono text-xs">{EXPECTED_COLUMNS.join(", ")}</span>. A header
           row is optional. Rows with a duplicate email or missing name/email are skipped and
@@ -139,7 +139,7 @@ export default function ImportTab() {
           onChange={(e) => setText(e.target.value)}
           rows={8}
           placeholder={"name,email,mobile,household_name,rm_email\nAarav Sharma,aarav@example.com,98200XXXXX,Sharma family,rm@fundhorizon.in"}
-          className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-[#E5E5E5] bg-white text-[#181818] placeholder:text-[#706E6B] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
         />
 
         <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -147,7 +147,7 @@ export default function ImportTab() {
             type="button"
             onClick={handleParse}
             disabled={!text.trim()}
-            className="px-4 py-2 text-xs font-bold bg-navy-900 hover:bg-navy-800 disabled:opacity-50 text-white rounded-xl transition"
+            className="px-4 py-2 text-xs font-bold bg-[#181818] hover:bg-[#444444] disabled:opacity-50 text-white rounded-xl transition"
           >
             Preview rows
           </button>
@@ -161,7 +161,7 @@ export default function ImportTab() {
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="px-4 py-2 text-xs font-semibold bg-navy-50 hover:bg-navy-100 text-navy-700 rounded-xl transition"
+            className="px-4 py-2 text-xs font-semibold bg-[#F3F3F3] hover:bg-[#ECEBEA] text-[#444444] rounded-xl transition"
           >
             Pick a CSV file
           </button>
@@ -175,10 +175,10 @@ export default function ImportTab() {
       </div>
 
       {preview && (
-        <div className="bg-white p-5 rounded-2xl border border-navy-100 shadow-sm">
+        <div className="bg-white p-5 rounded-2xl border border-[#ECEBEA] shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-navy-950">
+              <h3 className="text-sm font-bold text-[#181818]">
                 Preview — {preview.length} row{preview.length === 1 ? "" : "s"}
               </h3>
               {invalidCount > 0 && (
@@ -192,15 +192,15 @@ export default function ImportTab() {
               type="button"
               onClick={handleImport}
               disabled={importing || preview.length === 0}
-              className="px-4 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-xl transition"
+              className="px-4 py-2 text-xs font-bold bg-[#0176D3] hover:bg-[#014486] disabled:opacity-50 text-white rounded-xl transition"
             >
               {importing ? "Importing…" : `Import ${preview.length} rows`}
             </button>
           </div>
 
-          <div className="overflow-x-auto max-h-72 overflow-y-auto rounded-xl border border-navy-100">
+          <div className="overflow-x-auto max-h-72 overflow-y-auto rounded-xl border border-[#ECEBEA]">
             <table className="w-full text-left text-xs">
-              <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs sticky top-0">
+              <thead className="bg-[#F3F3F3]/80 text-[#444444] uppercase tracking-wider font-semibold border-b border-[#ECEBEA] text-xs sticky top-0">
                 <tr>
                   {EXPECTED_COLUMNS.map((c) => (
                     <th key={c} className="px-4 py-2.5 font-mono">
@@ -210,11 +210,11 @@ export default function ImportTab() {
                   <th className="px-4 py-2.5">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-navy-100 text-navy-800">
+              <tbody className="divide-y divide-[#ECEBEA] text-[#444444]">
                 {preview.slice(0, 100).map((r, i) => {
                   const bad = !r.name || !r.email;
                   return (
-                    <tr key={i} className={bad ? "bg-amber-50/40" : "hover:bg-teal-50/20"}>
+                    <tr key={i} className={bad ? "bg-amber-50/40" : "hover:bg-[#EAF5FE]/20"}>
                       <td className="px-4 py-2 font-medium">{r.name || "–"}</td>
                       <td className="px-4 py-2">{r.email || "–"}</td>
                       <td className="px-4 py-2">{r.mobile || "–"}</td>
@@ -226,7 +226,7 @@ export default function ImportTab() {
                             Will be skipped
                           </span>
                         ) : (
-                          <span className="text-xs font-semibold text-teal-700">Ready</span>
+                          <span className="text-xs font-semibold text-[#0176D3]">Ready</span>
                         )}
                       </td>
                     </tr>
@@ -236,7 +236,7 @@ export default function ImportTab() {
             </table>
           </div>
           {preview.length > 100 && (
-            <p className="text-xs text-navy-600 mt-2">
+            <p className="text-xs text-[#706E6B] mt-2">
               Showing the first 100 rows of {preview.length}.
             </p>
           )}
@@ -250,16 +250,16 @@ export default function ImportTab() {
       )}
 
       {result && (
-        <div className="bg-white p-5 rounded-2xl border border-navy-100 shadow-sm">
-          <h3 className="text-sm font-bold text-navy-950 mb-3">Import report</h3>
+        <div className="bg-white p-5 rounded-2xl border border-[#ECEBEA] shadow-sm">
+          <h3 className="text-sm font-bold text-[#181818] mb-3">Import report</h3>
           <div className="grid grid-cols-3 gap-3 mb-4">
-            <div className="rounded-xl bg-teal-50 border border-teal-200 p-4 text-center">
-              <div className="text-2xl font-extrabold text-teal-800">{result.created}</div>
-              <div className="text-xs font-semibold text-teal-700">Customers created</div>
+            <div className="rounded-xl bg-[#EAF5FE] border border-[#C5DDF7] p-4 text-center">
+              <div className="text-2xl font-extrabold text-[#014486]">{result.created}</div>
+              <div className="text-xs font-semibold text-[#0176D3]">Customers created</div>
             </div>
-            <div className="rounded-xl bg-navy-50 border border-navy-200 p-4 text-center">
-              <div className="text-2xl font-extrabold text-navy-900">{result.households_created}</div>
-              <div className="text-xs font-semibold text-navy-600">Households created</div>
+            <div className="rounded-xl bg-[#F3F3F3] border border-[#E5E5E5] p-4 text-center">
+              <div className="text-2xl font-extrabold text-[#181818]">{result.households_created}</div>
+              <div className="text-xs font-semibold text-[#706E6B]">Households created</div>
             </div>
             <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-center">
               <div className="text-2xl font-extrabold text-amber-800">{result.skipped.length}</div>
@@ -267,15 +267,15 @@ export default function ImportTab() {
             </div>
           </div>
           {result.skipped.length > 0 && (
-            <div className="rounded-xl border border-navy-100 overflow-hidden">
+            <div className="rounded-xl border border-[#ECEBEA] overflow-hidden">
               <table className="w-full text-left text-xs">
-                <thead className="bg-navy-50/80 text-navy-700 uppercase tracking-wider font-semibold border-b border-navy-100 text-xs">
+                <thead className="bg-[#F3F3F3]/80 text-[#444444] uppercase tracking-wider font-semibold border-b border-[#ECEBEA] text-xs">
                   <tr>
                     <th className="px-4 py-2.5">Email</th>
                     <th className="px-4 py-2.5">Reason</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-navy-100 text-navy-800">
+                <tbody className="divide-y divide-[#ECEBEA] text-[#444444]">
                   {result.skipped.map((s, i) => (
                     <tr key={i}>
                       <td className="px-4 py-2 font-mono text-xs">{s.email || "–"}</td>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { convertLead, fetchHouseholds, type ConvertResult, type Household, type Lead } from "../../lib/crmApi";
 
 const field =
-  "w-full px-3 py-2 text-xs rounded-xl border border-navy-200 dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-navy-900 dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-teal-500";
+  "w-full px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#0176D3]";
 
 export default function ConvertLeadDialog({
   lead, onClose, onConverted,
@@ -46,12 +46,12 @@ export default function ConvertLeadDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-navy-950/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={`Convert lead ${lead.name}`}>
-      <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-navy-100 dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-4 text-navy-950 dark:text-[#EDF2F7]">
+    <div className="fixed inset-0 z-50 bg-[#181818]/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label={`Convert lead ${lead.name}`}>
+      <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-[#ECEBEA] dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-4 text-[#181818] dark:text-[#EDF2F7]">
         <h3 className="text-base font-bold">Convert lead: {lead.name}</h3>
         {result ? (
           <div className="space-y-3">
-            <div className="p-4 rounded-xl bg-teal-50 dark:bg-[#0F2A27] border border-teal-200 dark:border-[#1F5C54] text-xs text-teal-900 dark:text-[#CFE6FC]">
+            <div className="p-4 rounded-xl bg-[#EAF5FE] dark:bg-[#0F2A27] border border-[#C5DDF7] dark:border-[#1F5C54] text-xs text-[#032D60] dark:text-[#CFE6FC]">
               <div className="font-bold mb-1">{existingHousehold ? "Added to the household." : "Customer and household created."}</div>
               <Link className="underline font-semibold" href={`/backoffice/crm/households/${result.household_id}`}>Open household</Link>
               {result.temp_password ? (
@@ -64,11 +64,11 @@ export default function ConvertLeadDialog({
                 <div className="mt-2">{result.invited ? "Portal login created with the password you set." : "No portal login was created."}</div>
               )}
             </div>
-            <button type="button" onClick={onClose} className="w-full px-3 py-2 text-xs font-bold bg-navy-900 dark:bg-[#0176D3] hover:bg-navy-800 text-white rounded-xl transition">Done</button>
+            <button type="button" onClick={onClose} className="w-full px-3 py-2 text-xs font-bold bg-[#181818] dark:bg-[#0176D3] hover:bg-[#444444] text-white rounded-xl transition">Done</button>
           </div>
         ) : (
           <div className="space-y-3">
-            <p className="text-xs text-navy-500 dark:text-[#A8B4C4]">
+            <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">
               This creates the customer record and a household (or adds them to an existing one) and marks the lead as converted.
               Conversion cannot be undone. Only an email or a mobile number is needed.
             </p>
@@ -106,8 +106,8 @@ export default function ConvertLeadDialog({
             )}
             {error && <div role="alert" className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 text-xs font-medium text-rose-700 dark:text-rose-300">{error}</div>}
             <div className="flex gap-2">
-              <button type="button" onClick={onClose} className="flex-1 px-3 py-2 text-xs font-semibold bg-navy-50 dark:bg-[#24303E] hover:bg-navy-100 rounded-xl transition">Cancel</button>
-              <button type="button" onClick={submit} disabled={busy} className="flex-1 px-3 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-xl transition">
+              <button type="button" onClick={onClose} className="flex-1 px-3 py-2 text-xs font-semibold bg-[#F3F3F3] dark:bg-[#24303E] hover:bg-[#ECEBEA] rounded-xl transition">Cancel</button>
+              <button type="button" onClick={submit} disabled={busy} className="flex-1 px-3 py-2 text-xs font-bold bg-[#0176D3] hover:bg-[#014486] disabled:opacity-50 text-white rounded-xl transition">
                 {busy ? "Converting…" : "Convert lead"}
               </button>
             </div>

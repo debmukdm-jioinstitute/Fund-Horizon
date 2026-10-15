@@ -47,7 +47,7 @@ export function NewsFeed({ limit = 25, compact = false, showFilters = true }: { 
               key={c.id}
               onClick={() => setCategory(c.id)}
               className={`px-3 py-1 rounded-xl text-xs font-medium border transition-colors ${
-                category === c.id ? "bg-forest-700 text-white border-forest-700" : "bg-white text-sand-700 border-sand-300 hover:bg-sand-50"
+                category === c.id ? "bg-[#0176D3] text-white border-[#0176D3]" : "bg-white text-sand-700 border-sand-300 hover:bg-sand-50"
               }`}
             >
               {c.label}

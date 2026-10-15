@@ -13,7 +13,7 @@ import {
 import { ComparePayload, getBackofficeCompare } from "@/lib/backoffice";
 import InfoTip from "@/components/InfoTip";
 
-const CHART_COLORS = ["#006F64", "#2170E4", "#D97706", "#7C3AED"];
+const CHART_COLORS = ["#0176D3", "#2170E4", "#D97706", "#7C3AED"];
 
 type Period = "1Y" | "3Y" | "5Y" | "Max";
 

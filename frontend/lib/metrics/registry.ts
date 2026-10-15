@@ -9,9 +9,170 @@ export interface MetricDef {
   direction: Direction;
   unit?: string; // "%", "x", "bps", "₹ Cr", "yrs"
   sourceKey: string; // key into SOURCES
+  method?: string[]; // step-by-step methodology, shown as a numbered list in the info popover
+  sources?: string[]; // every data source behind the figure (the primary one is still sourceKey)
+  refresh?: string; // how and when the data is refreshed, and what makes it stale
 }
 
 export const METRICS: Record<string, MetricDef> = {
+
+  // ---------------------------------------------------------------------------
+  // Daily briefing (Research > Briefing)
+  // ---------------------------------------------------------------------------
+  brief_overview: {
+    key: "brief_overview",
+    label: "Daily briefing",
+    what: "A once-a-day, read-only summary of markets, funds, PMS, regulation and client follow-ups, stored in the database and served unchanged to every viewer.",
+    meaning: "Everything is built only from data already stored by the Fund Horizon collectors. Nothing is fetched live when you open the page, so each line carries its own as-of date and source.",
+    direction: "neutral",
+    sourceKey: "derived",
+    method: [
+      "At or after 08:00 IST the build waits until the AMFI, NSE F&O, RSS news and India yield collectors have each logged a successful run that day.",
+      "Each section reads the latest stored rows, computes its changes and caps itself at 8 items.",
+      "Changes in market series are measured against the previous observation. Changes in fund NAV, TER and manager are measured against the previous stored briefing, so rebuilding the same date gives the same result.",
+      "The finished payload is saved by briefing date. When the screening engine finishes a refresh, today's briefing is rebuilt automatically so it never lags the latest screening.",
+      "Items older than their source's freshness limit show a Stale badge; missing data shows an em dash with the reason instead of a guess.",
+    ],
+    sources: ["AMFI", "NSE", "FBIL / CCIL", "RBI, SEBI and news RSS feeds", "APMI", "ECB", "Cboe", "US Treasury", "Fund Horizon screening engine and CRM"],
+    refresh: "Built daily after 08:00 IST (Asia/Kolkata). All dates and times are IST.",
+  },
+  brief_market_pulse: {
+    key: "brief_market_pulse",
+    label: "Market pulse",
+    what: "The handful of market numbers that moved most: Indian indices, yields and the 2s10s slope, USD/INR and other FX, VIX, and FII/DII flows.",
+    formula: "Change = latest value − previous observation;  % change = change ÷ |previous| × 100",
+    meaning: "Each line states the move and, where a rule fires (e.g. 10Y yield up 10 bps or more, VIX at 20 or above, Nifty up 1.5% or more, USD/INR up 0.5% or more, India-US spread at 250 bps or more), adds a one-line 'so what'.",
+    direction: "neutral",
+    sourceKey: "derived",
+    method: [
+      "Take the newest two stored observations with a numeric value for each series, ignoring future-dated rows.",
+      "Compute absolute and percentage change; yields are shown in basis points (1 bp = 0.01 percentage point).",
+      "India 10Y appears exactly once per brief, from FBIL/CCIL yields. The India-US spread reuses that same 10Y against the latest US 10Y on or before that date.",
+      "FII and DII flows are net equity and debt transactions in ₹ Cr, matched on the exact category codes FII (includes FPI) and DII.",
+      "The first matching 'so what' rule per metric is attached; if none fires, only the numbers are shown.",
+    ],
+    sources: ["NSE (indices, F&O, FII/DII)", "FBIL / CCIL (India G-Sec yields)", "US Treasury (US yields)", "ECB reference rates (EUR, GBP)", "Cboe (VIX)"],
+    refresh: "Collectors refresh through the day. An FX or market item turns Stale when it is more than one trading day old.",
+  },
+  brief_fund_movers: {
+    key: "brief_fund_movers",
+    label: "Fund movers",
+    what: "The Regular-plan funds that gained or lost the most in a day, with how far each sits from its category median.",
+    formula: "1D % = (NAV today ÷ NAV in previous briefing − 1) × 100;  gap = fund 1D % − category median 1D %",
+    meaning: "A large positive or negative gap flags a fund moving differently from its peers, which is a prompt to check holdings or news before client conversations.",
+    direction: "neutral",
+    sourceKey: "amfi",
+    method: [
+      "Start from Regular-plan equity, hybrid and debt schemes in the AMFI NAV feed; asset class comes from the AMFI category header.",
+      "Use the Fund Horizon marked-pick list as the universe. If none of those schemes are in today's feed, the whole Regular universe is used and a note says so.",
+      "The database keeps only the latest NAV, so the 1-day change is measured against the same scheme's NAV in the previous stored briefing.",
+      "Rank by 1D % change and show the top 4 and bottom 4, each compared with its category median.",
+    ],
+    sources: ["AMFI daily NAV (amfiindia.com)", "Previous stored Fund Horizon briefing"],
+    refresh: "AMFI publishes NAVs each evening; the briefing reads them after 08:00 IST the next morning.",
+  },
+  brief_screening_changes: {
+    key: "brief_screening_changes",
+    label: "Screening changes",
+    what: "Funds whose 2-year return quartile changed since the previous screening run, plus any marked-pick fund that has slipped outside the Q2 to Q3 band.",
+    formula: "Quartile = rank by 2Y return within category;  Q1 = top 25%, Q4 = bottom 25%",
+    meaning: "Q1 is best and Q4 worst within a fund's category. A marked pick sitting in Q1 or Q4 is outside the intended Q2 to Q3 band and deserves a review. The date beside each line is the latest NAV date behind that fund's score.",
+    direction: "neutral",
+    sourceKey: "derived",
+    method: [
+      "Universe: open-ended Regular-plan Growth funds with clean data and a NAV within the last 10 days.",
+      "For each category, compute the trailing 2-year return of every fund from its NAV series and rank them from highest to lowest.",
+      "Quartile is assigned from the rank. A category needs at least 8 funds with valid returns, otherwise quartiles are marked unavailable.",
+      "Quartile source cascade: an external or manual quartile (AdvisorKhoj) is used when present, otherwise the computed one.",
+      "A fund is listed when its quartile differs from the previously stored external quartile, or when it is a marked pick outside Q2 to Q3. At most 8 are shown.",
+      "As-of date is the fund's latest NAV date. The monthly NAV files label the running month with its month-end, so the screening job relabels that last point with the fund's true last NAV date instead of dropping it.",
+    ],
+    sources: ["AMFI daily NAV and scheme list", "MFAPI.in NAV history", "AMFI TER disclosures (expense ratio)", "AdvisorKhoj quartiles (external cascade)", "Fund Horizon screening engine"],
+    refresh: "Screening is recomputed daily after the AMFI and TER collectors run, and today's briefing is rebuilt right after. A line shows Stale only if its NAV date is more than 7 calendar days old.",
+  },
+  brief_cost_manager: {
+    key: "brief_cost_manager",
+    label: "Cost & manager changes",
+    what: "Regular-plan expense ratio (TER) moves of 5 bps or more, and fund-manager changes, since the previous briefing.",
+    formula: "TER change (bps) = (TER now − TER before) × 100",
+    meaning: "A rising TER lowers net returns for clients every year; a manager change can alter a fund's style. Both are common triggers for a client review.",
+    direction: "lower",
+    unit: "bps",
+    sourceKey: "amfi",
+    method: [
+      "Read the latest Regular-plan TER per fund from the stored AMFI disclosures, keyed by a normalised fund name.",
+      "Compare with the TER stored in the previous briefing; list moves of 5 bps or more in either direction.",
+      "Compare each fund's current manager with the one stored in the previous briefing and list differences.",
+      "Store today's TER and manager values so tomorrow's comparison has a baseline. At most 8 items are shown.",
+    ],
+    sources: ["AMFI TER disclosures", "Fund manager records (factsheets and the maintained manager list)"],
+    refresh: "TER is monthly; factsheet and manager data refresh on their own schedules.",
+  },
+  brief_regulatory_news: {
+    key: "brief_regulatory_news",
+    label: "Regulatory & news",
+    what: "RBI, SEBI and market-news items published in the last 24 hours that matter to distributors.",
+    meaning: "Regulator items (RBI press and notifications, SEBI) are listed first. Notices that are only attachments, recovery or demand notices, or adjudication appeals are dropped as noise.",
+    direction: "neutral",
+    sourceKey: "derived",
+    method: [
+      "Read stored RSS items and keep those published within 24 hours of the briefing's generation time; timestamps are converted from their feed timezone to IST.",
+      "Drop future-dated items and low-signal regulator notices.",
+      "Remove duplicates, put regulator feeds first, mask any PAN as XXXXX1234X and trim summaries at a sentence boundary.",
+      "Show up to 8 items, each linking to its original source.",
+    ],
+    sources: ["RBI press releases and notifications RSS", "SEBI RSS", "Market news RSS feeds"],
+    refresh: "RSS feeds are polled throughout the day.",
+  },
+  brief_pms: {
+    key: "brief_pms",
+    label: "PMS",
+    what: "Portfolio Management Service strategies with the biggest 1-month return moves, from the APMI performance tables.",
+    formula: "Return figures are as published by APMI (time-weighted, net of fees as reported)",
+    meaning: "Use it to see which PMS strategies led or lagged last month. Returns are as reported by each manager to APMI, not audited by Fund Horizon.",
+    direction: "higher",
+    unit: "%",
+    sourceKey: "apmi",
+    method: [
+      "Read the latest stored APMI strategy rows.",
+      "Reject any 1M return outside -100% to +100%; it is implausible for a month and is flagged in data health instead of shown.",
+      "Rank the remaining strategies by 1M return and show the top 4 and bottom 4, with the change versus the previous stored briefing.",
+    ],
+    sources: ["APMI monthly PMS performance (apmiindia.org)"],
+    refresh: "APMI publishes monthly. A line turns Stale when its as-on date is more than 7 days old.",
+  },
+  brief_client_actions: {
+    key: "brief_client_actions",
+    label: "Client actions",
+    what: "Who to call today: households holding funds that moved or changed screening band, plus CRM follow-ups and grievance cases that are due.",
+    meaning: "Turns the day's market and fund changes into a client contact list. Names link to the CRM household record.",
+    direction: "neutral",
+    sourceKey: "derived",
+    method: [
+      "Match the day's fund movers and screening changes to household portfolio positions in the CRM.",
+      "Add open follow-up tasks due today or earlier, and open grievance cases due today.",
+      "Show at most 8 items; households are listed by name with the holdings that triggered the action.",
+    ],
+    sources: ["Fund Horizon CRM (households, portfolio positions, tasks, cases)", "Today's fund movers and screening changes"],
+    refresh: "Rebuilt with each briefing, using CRM data as of build time.",
+  },
+  brief_data_freshness: {
+    key: "brief_data_freshness",
+    label: "Data freshness",
+    what: "How recently each data source last refreshed successfully, and whether it is overdue.",
+    formula: "Stale when age > 2 × the source's refresh interval",
+    meaning: "If a source is stale, the briefing lines that depend on it may be out of date. Overdue sources are listed first.",
+    direction: "lower",
+    unit: "hours",
+    sourceKey: "derived",
+    method: [
+      "For every enabled source, read the time of its last successful collector run.",
+      "Compute its age in hours and compare with twice its expected refresh interval (daily sources: 48 hours).",
+      "Sort so stale sources appear first, then the oldest.",
+    ],
+    sources: ["Fund Horizon collector run log"],
+    refresh: "Evaluated every time the briefing is built.",
+  },
   // ---------------------------------------------------------------------------
   // Returns & Compounding
   // ---------------------------------------------------------------------------

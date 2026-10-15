@@ -25,6 +25,21 @@ from app.engine import analytics as an
 logger = logging.getLogger("backoffice.screening.jobs")
 
 
+def with_live_tail(s: pd.Series, last_nav_date: Any, today: pd.Timestamp) -> pd.Series:
+    """nav_monthly labels the running month with its month-end date, so a fund's freshest NAV sits in the future.
+
+    Dropping it made ``as_of`` lag by up to a month and every screening item read "stale". Relabel that point with
+    the fund's real last NAV date instead; fall back to dropping it when that date is missing or not newer.
+    """
+    past = s[s.index <= today]
+    if len(past) == len(s):
+        return s
+    last = pd.to_datetime(last_nav_date, errors="coerce")
+    if pd.isna(last) or last > today or (not past.empty and last <= past.index[-1]):
+        return past
+    return pd.concat([past, pd.Series([s.iloc[-1]], index=[last.normalize()])])
+
+
 # metric -> minimum history (years) a scheme needs before the metric must exist
 COVERAGE_MIN_HISTORY = {
     "ret_1y": 1.05, "cagr_3y": 3.1, "cagr_5y": 5.1, "cagr_si": 1.05,
@@ -126,11 +141,12 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
         conn.close()
 
     # Cache fund NAV series
+    last_nav_map = dict(zip(df_s0["scheme_code"].astype(str), df_s0["last_nav_date"]))
     nav_cache: dict[str, pd.Series] = {}
     for code in df_s0["scheme_code"]:
         try:
             s = load_nav(str(code))
-            s = s[s.index <= pd.Timestamp.now().normalize()]  # drop future-dated NAV rows
+            s = with_live_tail(s, last_nav_map.get(str(code)), pd.Timestamp.now().normalize())
             if not s.empty and len(s) >= 2:
                 nav_cache[str(code)] = s
         except Exception:

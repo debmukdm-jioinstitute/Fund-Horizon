@@ -101,7 +101,7 @@ export function StatusBadge({
               href={sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-forest-700 underline hover:text-forest-900"
+              className="text-[#0176D3] underline hover:text-[#014486]"
             >
               {sourceName}
             </a>

@@ -147,6 +147,33 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
   const fetchedText = formatIst(meta?.fetched_at);
   const isStale = Boolean(meta?.stale);
 
+  const extra = (def.method || def.sources || def.refresh) && (
+    <div className="space-y-2 border-t border-navy-100 dark:border-navy-800 pt-2 text-[11px] leading-relaxed text-navy-700 dark:text-navy-300">
+      {def.method && (
+        <div>
+          <div className="mb-1 font-semibold text-navy-900 dark:text-white">How it is calculated</div>
+          <ol className="list-decimal space-y-1 pl-4">
+            {def.method.map((m) => <li key={m}>{m}</li>)}
+          </ol>
+        </div>
+      )}
+      {def.sources && (
+        <div>
+          <div className="mb-1 font-semibold text-navy-900 dark:text-white">Data sources</div>
+          <ul className="list-disc space-y-0.5 pl-4">
+            {def.sources.map((m) => <li key={m}>{m}</li>)}
+          </ul>
+        </div>
+      )}
+      {def.refresh && (
+        <div>
+          <span className="font-semibold text-navy-900 dark:text-white">Refresh: </span>
+          {def.refresh}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div ref={containerRef} className={`relative inline-flex items-center align-middle ${className}`}>
       <button
@@ -154,7 +181,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
         onClick={handleToggle}
         aria-label={`About ${def.label}`}
         aria-expanded={isOpen}
-        className="inline-flex items-center justify-center h-4 w-4 rounded-full text-navy-400 hover:text-navy-700 dark:text-navy-400 dark:hover:text-navy-200 transition-colors focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer mx-1 select-none"
+        className="inline-flex items-center justify-center h-4 w-4 rounded-full text-navy-400 hover:text-navy-700 dark:text-navy-400 dark:hover:text-navy-200 transition-colors focus:outline-none focus:ring-1 focus:ring-[var(--terminal-accent)] cursor-pointer mx-1 select-none"
       >
         <svg
           className="h-3.5 w-3.5"
@@ -209,6 +236,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
             <p className="text-xs text-navy-600 dark:text-navy-400 leading-relaxed">
               {def.meaning}
             </p>
+            {extra}
 
             <div className="pt-1">
               {def.direction === "higher" && (
@@ -236,7 +264,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
                     href={sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-teal-600 dark:text-teal-400 underline hover:text-teal-700"
+                    className="font-medium text-[var(--terminal-accent)]  underline hover:opacity-80"
                   >
                     {sourceName}
                   </a>
@@ -260,7 +288,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
           <div
             ref={popRef}
             style={{ top: pos?.top ?? 0, left: pos?.left ?? 0, maxHeight: pos?.maxH, visibility: pos ? "visible" : "hidden" }}
-            className="hidden sm:block fixed overflow-y-auto z-50 w-80 rounded-xl bg-white dark:bg-navy-900 border border-navy-200 dark:border-navy-800 p-4 shadow-xl space-y-2.5 text-left text-xs leading-normal">
+            className={`hidden sm:block fixed overflow-y-auto z-50 ${def.method ? "w-[26rem]" : "w-80"} rounded-xl bg-white dark:bg-navy-900 border border-navy-200 dark:border-navy-800 p-4 shadow-xl space-y-2.5 text-left text-xs leading-normal`}>
             {/* 1. Label (unit) */}
             <div className="flex items-center justify-between border-b border-navy-100 dark:border-navy-800 pb-1.5">
               <span className="font-bold text-navy-900 dark:text-white">
@@ -291,6 +319,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
             <p className="text-navy-600 dark:text-navy-400">
               {def.meaning}
             </p>
+            {extra}
 
             {/* 5. Direction Badge */}
             <div>
@@ -320,7 +349,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
                     href={sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-teal-600 dark:text-teal-400 underline hover:text-teal-700"
+                    className="font-medium text-[var(--terminal-accent)]  underline hover:opacity-80"
                   >
                     {sourceName}
                   </a>

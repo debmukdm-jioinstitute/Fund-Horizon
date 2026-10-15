@@ -194,7 +194,7 @@ function OppRecord({ id }: { id: string }) {
         right={<Timeline target={{ entity: "opportunity", id: opp.id, householdId: opp.household_id } as TimelineTarget} refreshKey={bump} />}
       />
       {losing && (
-        <div className="fixed inset-0 z-50 bg-navy-950/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Mark opportunity lost">
+        <div className="fixed inset-0 z-50 bg-[#181818]/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Mark opportunity lost">
           <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-[#E5E5E5] dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-3">
             <h3 className="text-base font-bold text-[#181818] dark:text-[#EDF2F7]">Mark “{opp.title}” as lost</h3>
             <label className="block text-xs font-semibold text-[#181818] dark:text-[#EDF2F7]" htmlFor="rec-lost-reason">Reason (required)</label>

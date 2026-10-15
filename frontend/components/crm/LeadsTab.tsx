@@ -20,8 +20,8 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, string> = {
   new: "bg-sky-50 text-sky-800 border-sky-200",
   contacted: "bg-violet-50 text-violet-800 border-violet-200",
-  qualified: "bg-teal-50 text-teal-800 border-teal-200",
-  converted: "bg-navy-50 text-navy-800 border-navy-200",
+  qualified: "bg-[#EAF5FE] text-[#014486] border-[#C5DDF7]",
+  converted: "bg-[#F3F3F3] text-[#444444] border-[#E5E5E5]",
   lost: "bg-rose-50 text-rose-700 border-rose-200",
 };
 
@@ -37,24 +37,24 @@ function LeadCard({
   onStatusChange: (lead: Lead, status: string) => void;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-navy-100 shadow-sm p-3.5 space-y-2">
-      <Link href={`/backoffice/crm/leads/${lead.id}`} className="block text-xs font-bold text-navy-950 hover:underline">
+    <div className="bg-white rounded-xl border border-[#ECEBEA] shadow-sm p-3.5 space-y-2">
+      <Link href={`/backoffice/crm/leads/${lead.id}`} className="block text-xs font-bold text-[#181818] hover:underline">
         {lead.name}
       </Link>
-      <div className="text-xs text-navy-600">
+      <div className="text-xs text-[#706E6B]">
         {[lead.email, lead.mobile].filter(Boolean).join(" · ") || "No contact details"}
       </div>
-      <div className="text-xs text-navy-500">
+      <div className="text-xs text-[#706E6B]">
         Source: {lead.source.replaceAll("_", " ")}
       </div>
-      {lead.notes && <div className="text-xs text-navy-600">{lead.notes}</div>}
+      {lead.notes && <div className="text-xs text-[#706E6B]">{lead.notes}</div>}
       <div className="flex items-center gap-2 pt-1">
         <select
           value={lead.status}
           disabled={lead.status === "converted"}
           title={lead.status === "converted" ? "Converted leads are final" : undefined}
           onChange={(e) => onStatusChange(lead, e.target.value)}
-          className="text-xs font-semibold px-2 py-1 rounded-lg border border-navy-200 bg-white text-navy-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="text-xs font-semibold px-2 py-1 rounded-lg border border-[#E5E5E5] bg-white text-[#444444] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
         >
           {LEAD_STATUSES.filter((s) => s !== "converted" || lead.status === "converted").map((s) => (
             <option key={s} value={s}>
@@ -66,7 +66,7 @@ function LeadCard({
           <button
             type="button"
             onClick={() => onConvert(lead)}
-            className="px-2.5 py-1 text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition"
+            className="px-2.5 py-1 text-xs font-bold bg-[#0176D3] hover:bg-[#014486] text-white rounded-lg transition"
           >
             Convert
           </button>
@@ -173,9 +173,9 @@ export default function LeadsTab() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-5 rounded-2xl border border-navy-100 shadow-sm">
-        <h2 className="text-lg font-bold text-navy-950 mb-1">Leads</h2>
-        <p className="text-xs text-navy-500 mb-4">
+      <div className="bg-white p-5 rounded-2xl border border-[#ECEBEA] shadow-sm">
+        <h2 className="text-lg font-bold text-[#181818] mb-1">Leads</h2>
+        <p className="text-xs text-[#706E6B] mb-4">
           Every prospect enquiry, grouped by stage. Convert a qualified lead to create their
           customer account and household in one step.
         </p>
@@ -184,7 +184,7 @@ export default function LeadsTab() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name *"
-            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] bg-white text-[#181818] placeholder:text-[#706E6B] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
           />
           <input
             value={email}
@@ -192,18 +192,18 @@ export default function LeadsTab() {
             placeholder="Email"
             type="text"
             inputMode="email"
-            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] bg-white text-[#181818] placeholder:text-[#706E6B] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
           />
           <input
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
             placeholder="Mobile"
-            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] bg-white text-[#181818] placeholder:text-[#706E6B] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
           />
           <select
             value={source}
             onChange={(e) => setSource(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] bg-white text-[#181818] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
           >
             {LEAD_SOURCES.map((s) => (
               <option key={s} value={s}>
@@ -214,7 +214,7 @@ export default function LeadsTab() {
           <button
             type="submit"
             disabled={creating}
-            className="px-3 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-xl transition"
+            className="px-3 py-2 text-xs font-bold bg-[#0176D3] hover:bg-[#014486] disabled:opacity-50 text-white rounded-xl transition"
           >
             {creating ? "Adding…" : "Add lead"}
           </button>
@@ -223,7 +223,7 @@ export default function LeadsTab() {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Notes (optional)"
-          className="mt-3 w-full px-3 py-2 text-xs rounded-xl border border-navy-200 bg-white text-navy-900 placeholder:text-navy-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="mt-3 w-full px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] bg-white text-[#181818] placeholder:text-[#706E6B] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
         />
         {Object.values(fieldErrs).length > 0 && (
           <ul className="mt-3 text-xs font-medium text-rose-700 list-disc pl-5" role="alert">
@@ -248,23 +248,23 @@ export default function LeadsTab() {
       {loading ? (
         <div role="status" aria-busy="true" aria-label="Loading" className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
           {[0, 1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-32 rounded-2xl bg-navy-100/70 animate-pulse" />
+            <div key={i} className="h-32 rounded-2xl bg-[#ECEBEA]/70 animate-pulse" />
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
           {columns.map(({ status, leads: col }) => (
-            <div key={status} className="bg-navy-50/60 rounded-2xl border border-navy-100 p-3 space-y-3">
+            <div key={status} className="bg-[#F3F3F3]/60 rounded-2xl border border-[#ECEBEA] p-3 space-y-3">
               <div className="flex items-center justify-between px-1">
                 <span
                   className={`px-2 py-1 rounded-lg border text-xs font-bold ${STATUS_STYLES[status]}`}
                 >
                   {STATUS_LABELS[status]}
                 </span>
-                <span className="text-xs font-bold text-navy-500">{col.length}</span>
+                <span className="text-xs font-bold text-[#706E6B]">{col.length}</span>
               </div>
               {col.length === 0 ? (
-                <div className="text-xs text-navy-600 text-center py-4">Empty</div>
+                <div className="text-xs text-[#706E6B] text-center py-4">Empty</div>
               ) : (
                 col.map((l) => (
                   <LeadCard

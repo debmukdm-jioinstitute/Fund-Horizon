@@ -69,16 +69,27 @@ def _pillar(values: pd.Series, groups: pd.Series, higher_better: bool = True) ->
     return values.groupby(groups).rank(pct=True, ascending=higher_better)
 
 
-def _stars(df: pd.DataFrame, key: pd.Series) -> pd.Series:
-    """1-5 stars from the percentile of a Morningstar-style weighted Sharpe (3Y 20%, 5Y 30%, 10Y 50%) in category and plan."""
+def _bucket(p: pd.Series) -> pd.Series:
+    return pd.Series(np.select([p > 0.9, p > 0.675, p > 0.325, p > 0.1], [5, 4, 3, 2], 1), index=p.index, dtype="float")
+
+
+def _stars(df: pd.DataFrame, key: pd.Series) -> tuple[pd.Series, pd.Series]:
+    """1-5 stars from the percentile of a Morningstar-style weighted Sharpe (3Y 20%, 5Y 30%, 10Y 50%) in category and plan.
+
+    Funds under 3 years (no 3Y Sharpe) get a provisional rating from the percentile of their 1Y Sharpe instead,
+    returned as the second series so the UI can flag it. Stale / flat-NAV funds stay unrated.
+    """
     w = {"sharpe_3y": 0.2, "sharpe_5y": 0.3, "sharpe_10y": 0.5}
     have = pd.concat([df[c].notna() * x for c, x in w.items()], axis=1).sum(axis=1)
     raw = sum(df[c].fillna(0) * x for c, x in w.items()) / have.where(have > 0)
     raw = raw.where(df["sharpe_3y"].notna())
     size = raw.groupby(key).transform("count")
-    p = _pillar(raw, key)
-    stars = pd.Series(np.select([p > 0.9, p > 0.675, p > 0.325, p > 0.1], [5, 4, 3, 2], 1), index=df.index, dtype="float")
-    return stars.where(raw.notna() & (size >= 5))
+    stars = _bucket(_pillar(raw, key)).where(raw.notna() & (size >= 3))  # shortcut: 3-fund peer groups are thin; upgrade if a parent group is added
+
+    live = df["quality"].eq("ok")
+    s1 = df["sharpe_1y"].where(live & df["history_years"].ge(1))
+    prov = _bucket(_pillar(s1, key)).where(s1.notna() & (s1.groupby(key).transform("count") >= 5) & stars.isna())
+    return stars.fillna(prov), prov.notna()
 
 
 def _label(points: float, good: str, mid: str, weak: str) -> str:
@@ -127,7 +138,7 @@ def _scored(ter: dict[str, float]) -> pd.DataFrame:
     seen = pillars.notna().sum(axis=1)
     # A fund missing one pillar (e.g. too young for alpha) is scored on the rest, scaled to 100.
     df["score"] = (pillars.sum(axis=1) * 4 / seen).where(seen >= 3).round()
-    df["stars"] = _stars(df, key)
+    df["stars"], df["stars_provisional"] = _stars(df, key)
     df["port_label"] = [_label(p, "HIGH RANK", "MEDIUM RANK", "WEAK RANK") for p in df["port"].fillna(0)]
     df["perf_label"] = [_label(p, "GOOD RETURNS", "AVERAGE RETURNS", "POOR RETURNS") for p in df["perf"].fillna(0)]
     df["risk_label"] = [_label(p, "GOOD RISK REWARD", "FAIR RISK REWARD", "POOR RISK REWARD") for p in df["risk"].fillna(0)]

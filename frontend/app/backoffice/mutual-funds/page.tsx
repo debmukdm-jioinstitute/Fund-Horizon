@@ -630,8 +630,9 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
   if (col.kind === "stars") {
     const n = typeof v === "number" ? v : 0;
     return (
-      <td className="text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]" title={n ? `${n} of 5 (FH rating, not Morningstar)` : "Not rated"}>
+      <td className="text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]" title={n ? `${n} of 5 (FH rating, not Morningstar)${row.stars_provisional ? ". Provisional: under 3 years of history, ranked on 1Y Sharpe" : ""}` : "Not rated"}>
         {n ? "★".repeat(n) + "☆".repeat(5 - n) : <span className="text-[#706E6B] dark:text-[#A8B4C4]">-</span>}
+        {n > 0 && row.stars_provisional ? <sup className="ml-0.5 text-[9px]">P</sup> : null}
       </td>
     );
   }

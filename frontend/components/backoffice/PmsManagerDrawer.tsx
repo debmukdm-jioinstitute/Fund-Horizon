@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { PmsLogo } from "@/components/BrandLogo";
 import { PmsStrategyItem } from "@/lib/backoffice";
 import {
   findManagerProfile,
@@ -104,7 +105,8 @@ export default function PmsManagerDrawer({
                   >
                     {displayName}
                   </h2>
-                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 font-medium">
+                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 font-medium flex items-center gap-2">
+                    {profile && <PmsLogo firm={profile.firm} className="h-6 min-w-6" />}
                     {profile ? `${profile.current_title} · ${profile.firm}` : "Principal Officer"}
                   </p>
                 </div>

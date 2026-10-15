@@ -87,3 +87,47 @@ export function amcLogoSrc(name: string): string | null {
   const hit = AMCS[norm(name)];
   return hit ? `/brands/${hit}` : null;
 }
+
+// PMS firms. Many are the PMS arm of a fund house (reuse that fund house's logo); the rest have their own file
+// in /public/brands/pms. Keys are matched as whole words inside the normalised firm name.
+const PMS_OWN: Record<string, string> = {
+  alchemy: "alchemy.png", "amara capital": "amara.png", arihant: "arihant.png", bonanza: "bonanza.png",
+  buoyant: "buoyant.png", equirus: "equirus.png", equitree: "equitree.png", iifl: "iifl.png", incred: "incred.png",
+  "julius baer": "julius-baer.png", kamayakya: "kamayakya.png", nuvama: "nuvama.png", "piper serica": "piper-serica.png",
+  prabhudas: "prabhudas-lilladher.png", renaissance: "renaissance.png", "right horizons": "right-horizons.png",
+  sameeksha: "sameeksha.png", sanctum: "sanctum.png", sharekhan: "sharekhan.png", stallion: "stallion.png",
+  valentis: "valentis.png", wallfort: "wallfort.png",
+  agreya: "agreya.png", alfaccurate: "alfaccurate.png", "anand rathi": "anand-rathi.png", "banyan tree": "banyan-tree.png",
+  barclays: "barclays.png", "dalal broacha": "dalal-broacha.png", "equity intelligence": "equity-intelligence.png",
+  itus: "itus.png", lgt: "lgt.png", "neo asset": "neo.png",
+};
+
+// PMS firm names that differ from the fund house name we hold a logo under.
+const PMS_ALIASES: Record<string, string> = {
+  "nippon life india": "nippon india", "j m financial": "jm financial", "hongkong and shanghai banking": "hsbc",
+};
+
+const hasWords = (name: string, key: string) => new RegExp(`(^| )${key}( |$)`).test(name);
+
+export function normFirm(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\(.*?\)/g, " ")
+    .replace(/[^a-z0-9 ]+/g, " ")
+    .replace(/\b(private|pvt|limited|ltd|llp|llc|inc|company|co)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function pmsLogoSrc(name: string): string | null {
+  const n = normFirm(name);
+  const own = Object.entries(PMS_OWN).find(([k]) => hasWords(n, k));
+  if (own) return `/brands/pms/${own[1]}`;
+  const alias = Object.entries(PMS_ALIASES).find(([k]) => n.includes(k));
+  const amc = alias
+    ? ([alias[1], AMCS[alias[1]]] as [string, string])
+    : Object.entries(AMCS)
+        .sort((a, b) => b[0].length - a[0].length)
+        .find(([k]) => hasWords(n, k));
+  return amc ? `/brands/${amc[1]}` : null;
+}

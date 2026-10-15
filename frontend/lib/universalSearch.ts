@@ -9,6 +9,7 @@ export interface SearchHit {
   href: string;
   external?: boolean;
   amc?: string | null;
+  pms?: string | null;
 }
 export interface SearchScope { key: string; label: string }
 

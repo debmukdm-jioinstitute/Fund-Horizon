@@ -2,6 +2,7 @@
 
 import React, { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { PmsLogo } from "@/components/BrandLogo";
 import Link from "next/link";
 import { useRecommended } from "@/lib/recommended";
 import CompareTray from "@/components/compare/CompareTray";
@@ -626,7 +627,10 @@ function PmsTracker() {
                                 <span className="group-hover:opacity-90">{s.strategy_name}</span>
                               </button>
                               <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
-                                <span>{normalizeProviderName(s.provider_name) || s.provider_name}</span>
+                                <span className="inline-flex items-center gap-1.5">
+                                  <PmsLogo firm={s.provider_name} className="h-5 min-w-5 max-w-[4rem] text-[8px]" />
+                                  {normalizeProviderName(s.provider_name) || s.provider_name}
+                                </span>
                                 {isStrategyRecommended(s) && !isRecommended && (
                                   <button
                                     type="button"

@@ -8,6 +8,7 @@ import SignedValue from "@/components/terminal/SignedValue";
 import FactsheetList from "@/components/backoffice/FactsheetList";
 import { formatCrore, formatISTDate } from "@/lib/terminal-format";
 import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBenchmark } from "@/lib/backoffice-display";
+import { PmsLogo } from "@/components/BrandLogo";
 
 interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
@@ -146,7 +147,8 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
               >
                 {strategy.strategy_name}
               </h2>
-              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 font-medium">
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 font-medium flex items-center gap-2">
+                <PmsLogo firm={strategy.provider_name} className="h-7 min-w-7" />
                 {normalizeProviderName(strategy.provider_name) || strategy.provider_name}
               </p>
             </div>

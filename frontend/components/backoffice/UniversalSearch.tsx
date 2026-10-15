@@ -3,7 +3,7 @@
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AmcLogo } from "@/components/BrandLogo";
+import { AmcLogo, PmsLogo } from "@/components/BrandLogo";
 import { fetchSearchScopes, universalSearch, type SearchHit, type SearchScope } from "@/lib/universalSearch";
 
 export interface SearchModule { href: string; label: string; description: string }
@@ -110,6 +110,7 @@ export default function UniversalSearch({
                     >
                       <span className="flex min-w-0 items-center gap-2.5">
                         {h.amc && <AmcLogo amc={h.amc} className="h-7 min-w-7" />}
+                        {h.pms && <PmsLogo firm={h.pms} className="h-7 min-w-7" />}
                         <span className="truncate text-[13px] font-medium">{h.title}</span>
                       </span>
                       <span className="hidden truncate text-[11px] text-[#706E6B] dark:text-[#A8B4C4] sm:block">{h.subtitle}{h.external ? " ↗" : ""}</span>

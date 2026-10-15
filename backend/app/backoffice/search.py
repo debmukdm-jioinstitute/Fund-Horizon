@@ -30,9 +30,9 @@ def provider(scope: str, label: str) -> Callable[[Provider], Provider]:
     return deco
 
 
-def _hit(scope: str, type_: str, id_: str, title: str, subtitle: str, href: str, external: bool = False, amc: str | None = None) -> Hit:
-    """``amc`` lets the UI show the fund house logo next to the result."""
-    return {"scope": scope, "type": type_, "id": str(id_), "title": title, "subtitle": subtitle, "href": href, "external": external, "amc": amc}
+def _hit(scope: str, type_: str, id_: str, title: str, subtitle: str, href: str, external: bool = False, amc: str | None = None, pms: str | None = None) -> Hit:
+    """``amc`` / ``pms`` let the UI show the fund house or PMS firm logo next to the result."""
+    return {"scope": scope, "type": type_, "id": str(id_), "title": title, "subtitle": subtitle, "href": href, "external": external, "amc": amc, "pms": pms}
 
 
 def _like(q: str) -> str:
@@ -90,7 +90,7 @@ def pms(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
         "WHERE LOWER(strategy_name) LIKE ? ESCAPE '\\' OR LOWER(provider) LIKE ? ESCAPE '\\' LIMIT ?",
         (_like(q), _like(q), limit),
     )
-    return [_hit("pms", "pms", r[0] or r[1], r[1], " · ".join(x for x in (r[2], r[3]) if x), f"/backoffice/pms?q={quote(str(r[1]))}") for r in rows]
+    return [_hit("pms", "pms", r[0] or r[1], r[1], " · ".join(x for x in (r[2], r[3]) if x), f"/backoffice/pms?q={quote(str(r[1]))}", pms=r[2]) for r in rows]
 
 
 @provider("amcs", "AMCs")

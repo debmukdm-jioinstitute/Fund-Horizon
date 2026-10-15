@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRecommended } from "@/lib/recommended";
 import Link from "next/link";
 import { getMutualFundPerformance, getMfNavPairCheck, getMfManager, MfManagerInfo, MfPerformance, MutualFundItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
@@ -21,6 +22,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
   const [navPairSiblings, setNavPairSiblings] = useState<string[]>([]);
   const [manager, setManager] = useState<MfManagerInfo | null>(null);
   const [managerOpen, setManagerOpen] = useState(false);
+  const rec = useRecommended();
   const code = scheme?.scheme_code;
 
   useEffect(() => {
@@ -138,6 +140,18 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                     Stale NAV
                   </span>
                 )}
+                <button
+                  type="button"
+                  onClick={() => rec.toggleMf(scheme.scheme_code, scheme.scheme_name)}
+                  className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border transition-colors cursor-pointer ${
+                    rec.isMfRecommended(scheme.scheme_code)
+                      ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold"
+                      : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64]"
+                  }`}
+                  title="Click to toggle FH Recommended status"
+                >
+                  ★ {rec.isMfRecommended(scheme.scheme_code) ? "FH Recommended" : "Mark Recommended"}
+                </button>
               </div>
               <h2
                 id="mf-drawer-title"

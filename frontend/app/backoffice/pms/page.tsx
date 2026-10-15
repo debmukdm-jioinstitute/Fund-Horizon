@@ -1,6 +1,8 @@
 "use client";
 
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRecommended } from "@/lib/recommended";
 import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
 import { pmsCompareId, useCompareSelection } from "@/lib/compare-selection";
@@ -108,6 +110,10 @@ export default function PmsTrackerPage() {
 
 function PmsTracker() {
   const compare = useCompareSelection("pms");
+  const rec = useRecommended();
+  const [pmsRecDropdownOpen, setPmsRecDropdownOpen] = useState(false);
+  const [newPmsId, setNewPmsId] = useState("");
+  const [newPmsName, setNewPmsName] = useState("");
   const [tab, setTab] = useState<"strategies" | "accounts">("strategies");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
   const [asOf, setAsOf] = useState<string | undefined>();
@@ -169,7 +175,8 @@ function PmsTracker() {
   }
 
   const isRecommended = categoryFilter === "fh-recommended";
-  const fhRecCount = strategies.filter((s) => s.is_fh_recommended).length;
+  const isStrategyRecommended = useCallback((s: PmsStrategyItem) => Boolean(s.ia_id && rec.isPmsRecommended(s.ia_id)) || Boolean(s.is_fh_recommended), [rec]);
+  const fhRecCount = strategies.filter(isStrategyRecommended).length;
 
   const approachOptions = useMemo(() => {
     const set = new Set<string>();
@@ -186,7 +193,7 @@ function PmsTracker() {
     const q = search.trim().toLowerCase();
     const rows = strategies.filter((s) => {
       if (isRecommended) {
-        if (!s.is_fh_recommended) return false;
+        if (!isStrategyRecommended(s)) return false;
       } else if (categoryFilter !== "all") {
         if (!approachesMatch(s.investment_approach || s.strategy_type, categoryFilter)) return false;
       }
@@ -222,7 +229,7 @@ function PmsTracker() {
       return dir * ((av as number) - (bv as number));
     });
     return rows;
-  }, [strategies, isRecommended, categoryFilter, search, sortKey, sortDir]);
+  }, [strategies, isRecommended, categoryFilter, search, sortKey, sortDir, isStrategyRecommended]);
 
   useEffect(() => {
     setPage(0);
@@ -334,6 +341,89 @@ function PmsTracker() {
                 <span>FH Recommended ({fhRecCount})</span>
               </button>
 
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-haspopup="true"
+                  aria-expanded={pmsRecDropdownOpen}
+                  onClick={() => setPmsRecDropdownOpen((v) => !v)}
+                  className="terminal-btn text-[12px] py-1 px-2.5 flex items-center gap-1.5 cursor-pointer"
+                  title="Settings & manage FH Recommended PMS strategies"
+                >
+                  <span>⚙ Settings</span>
+                  <span className="text-[10px] font-mono">▾</span>
+                </button>
+                {pmsRecDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setPmsRecDropdownOpen(false)} />
+                    <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                      <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-2">
+                        <span className="text-[12px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+                          ★ FH Recommended PMS Strategies ({Object.keys(rec.pmsMap).length})
+                        </span>
+                        <button type="button" onClick={() => setPmsRecDropdownOpen(false)} className="text-[#536176] dark:text-[#A8B4C4] text-xs">
+                          ✕
+                        </button>
+                      </div>
+                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                        Add APMI Strategy ID to mark as recommended, or click Remove.
+                      </div>
+                      <div className="flex gap-1.5">
+                        <input
+                          type="text"
+                          placeholder="APMI ID (e.g. 174)"
+                          value={newPmsId}
+                          onChange={(e) => setNewPmsId(e.target.value)}
+                          className="terminal-input text-[11px] py-1 px-2 font-mono w-28 shrink-0"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Strategy name (optional)"
+                          value={newPmsName}
+                          onChange={(e) => setNewPmsName(e.target.value)}
+                          className="terminal-input text-[11px] py-1 px-2 flex-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (!newPmsId.trim()) return;
+                            await rec.addPms(newPmsId.trim(), newPmsName.trim() || undefined);
+                            setNewPmsId("");
+                            setNewPmsName("");
+                          }}
+                          className="terminal-btn-accent text-[11px] py-1 px-3 shrink-0"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E4E9EF]/40 dark:divide-[#2B3644]/40">
+                        {Object.entries(rec.pmsMap).map(([id, name]) => (
+                          <div key={id} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
+                            <div className="truncate">
+                              <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-medium mr-1.5">#{id}</span>
+                              <span className="text-[#172033] dark:text-[#EDF2F7] truncate">{name}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => rec.removePms(id)}
+                              className="text-[10px] text-[#B42332] dark:text-[#FF7D86] hover:underline shrink-0 cursor-pointer"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="pt-2 border-t border-[#E4E9EF] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
+                        <Link href="/backoffice/settings" className="text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium">
+                          All Settings →
+                        </Link>
+                        <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">Saves live across terminal</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
               {filtersActive && (
                 <button type="button" onClick={clearFilters} className="terminal-btn text-[12px] py-1 px-3">
                   Clear filters
@@ -413,9 +503,9 @@ function PmsTracker() {
                 </button>
               </div>
             </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px]">
               <table className="terminal-table">
-                <thead>
+                <thead className="sticky top-0 z-10 bg-[#F7F9FB] dark:bg-[#171E27]">
                   {isRecommended ? (
                     fhSubTab === "returns" ? (
                       <tr>
@@ -535,10 +625,18 @@ function PmsTracker() {
                               </button>
                               <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
                                 <span>{normalizeProviderName(s.provider_name) || s.provider_name}</span>
-                                {s.is_fh_recommended && !isRecommended && (
-                                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#006F64]/10 text-[#006F64] dark:bg-[#75E1CE]/15 dark:text-[#75E1CE] font-medium border border-[#006F64]/20">
+                                {isStrategyRecommended(s) && !isRecommended && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (s.ia_id) rec.togglePms(s.ia_id, s.strategy_name);
+                                    }}
+                                    title="Click to toggle FH Recommended status"
+                                    className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] font-medium hover:opacity-80 cursor-pointer"
+                                  >
                                     ★ FH Rec
-                                  </span>
+                                  </button>
                                 )}
                                 {warning && (
                                   <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#B45309]/10 text-[#B45309] dark:text-[#FBBF24] border border-[#B45309]/20" title={warning}>

@@ -2,6 +2,7 @@ import { ApiError, resolveApiUrl, API_URL } from "./api";
 import type { PmsManagerProfile } from "./pms-managers";
 
 import type { InfoTipMeta } from "@/components/InfoTip";
+import { isPmsRecommended, isMfRecommended } from "./recommended";
 
 export interface BackofficeEnvelope<T> {
   data: T;
@@ -780,7 +781,7 @@ export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategy
     // boFetch failure fallback
   }
 
-  const merged = apiItems.map((item) => ({ ...item, is_fh_recommended: !!item.ia_id && FH_RECOMMENDED_IA_IDS.has(item.ia_id) }));
+  const merged = apiItems.map((item) => ({ ...item, is_fh_recommended: !!item.ia_id && (FH_RECOMMENDED_IA_IDS.has(item.ia_id) || isPmsRecommended(item.ia_id)) }));
 
   const env = envelope(raw, merged, merged.length > 0 ? "ready" : "unavailable");
   env.as_of = asOn || "Latest";
@@ -866,7 +867,7 @@ export const getMutualFundsTracker = async (opts?: {
     isin_div: str(f.isin_reinvest) ?? str(f.isin_div),
     ter_pct: num(f.ter_pct),
     ter_as_of: str(f.ter_as_of),
-    is_fh_recommended: f.is_fh_recommended === true,
+    is_fh_recommended: f.is_fh_recommended === true || isMfRecommended(f.scheme_code),
   }));
   const facets = obj(raw.facets);
   const planCountsRaw = obj(facets.plan_counts);

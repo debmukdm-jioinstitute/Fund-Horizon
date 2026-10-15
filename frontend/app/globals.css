@@ -178,6 +178,10 @@ body {
     background-color: var(--terminal-surface);
     border-bottom: 1px solid var(--terminal-border);
     white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 1px 0 var(--terminal-border);
   }
   .terminal-table td {
     height: 36px;

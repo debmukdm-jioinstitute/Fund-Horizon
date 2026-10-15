@@ -69,3 +69,80 @@ PMS_FACTSHEET_SOURCE: dict[str, str] = {
 # Checked in a real browser: these publishers offer no public factsheet download for the strategy
 # (360 ONE and Sundaram show performance on-page only). Distinct from "source not connected yet".
 PMS_NO_PUBLIC_FACTSHEET: frozenset[str] = frozenset({"731", "325", "324", "327"})
+
+import json
+from pathlib import Path
+
+OVERRIDES_FILE = Path(__file__).resolve().parent.parent / "data" / "recommended_overrides.json"
+
+FH_RECOMMENDED_PMS_IDS: dict[str, str] = {
+    "174": "Stallion Asset Core Fund",
+    "781": "ICICI Prudential PMS Value Strategy",
+    "606": "Buoyant Opportunities PMS",
+    "1193": "Carnelian Capital Compounder Strategy",
+    "2512": "Abakkus Emerging Opportunities Approach",
+    "731": "360 ONE Multicap PMS",
+    "325": "Sundaram S.E.L.F",
+    "324": "Sundaram SISOP",
+    "327": "Sundaram Rising Star",
+}
+
+def load_overrides():
+    if OVERRIDES_FILE.exists():
+        try:
+            with open(OVERRIDES_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if "mf_add" in data and isinstance(data["mf_add"], dict):
+                    FH_RECOMMENDED_MF_CODES.update(data["mf_add"])
+                if "mf_remove" in data and isinstance(data["mf_remove"], list):
+                    for k in data["mf_remove"]:
+                        FH_RECOMMENDED_MF_CODES.pop(str(k), None)
+                if "pms_add" in data and isinstance(data["pms_add"], dict):
+                    FH_RECOMMENDED_PMS_IDS.update(data["pms_add"])
+                if "pms_remove" in data and isinstance(data["pms_remove"], list):
+                    for k in data["pms_remove"]:
+                        FH_RECOMMENDED_PMS_IDS.pop(str(k), None)
+        except Exception:
+            pass
+
+def save_recommended_override(kind: str, item_id: str, name: str, recommended: bool):
+    item_id = str(item_id).strip()
+    data = {"mf_add": {}, "mf_remove": [], "pms_add": {}, "pms_remove": []}
+    if OVERRIDES_FILE.exists():
+        try:
+            with open(OVERRIDES_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            pass
+    if kind == "mf":
+        if recommended:
+            FH_RECOMMENDED_MF_CODES[item_id] = name or f"Scheme {item_id}"
+            data.setdefault("mf_add", {})[item_id] = name or f"Scheme {item_id}"
+            if item_id in data.get("mf_remove", []):
+                data["mf_remove"].remove(item_id)
+        else:
+            FH_RECOMMENDED_MF_CODES.pop(item_id, None)
+            if item_id not in data.setdefault("mf_remove", []):
+                data["mf_remove"].append(item_id)
+            if item_id in data.get("mf_add", {}):
+                del data["mf_add"][item_id]
+    elif kind == "pms":
+        if recommended:
+            FH_RECOMMENDED_PMS_IDS[item_id] = name or f"Strategy {item_id}"
+            data.setdefault("pms_add", {})[item_id] = name or f"Strategy {item_id}"
+            if item_id in data.get("pms_remove", []):
+                data["pms_remove"].remove(item_id)
+        else:
+            FH_RECOMMENDED_PMS_IDS.pop(item_id, None)
+            if item_id not in data.setdefault("pms_remove", []):
+                data["pms_remove"].append(item_id)
+            if item_id in data.get("pms_add", {}):
+                del data["pms_add"][item_id]
+    try:
+        OVERRIDES_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(OVERRIDES_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+    except Exception:
+        pass
+
+load_overrides()

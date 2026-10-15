@@ -27,6 +27,8 @@ from app.backoffice.collectors import factsheet_archive_dir, refresh_source
 from app.backoffice.meta import with_meta
 from app.backoffice.fh_recommended import (
     FH_RECOMMENDED_MF_CODES,
+    FH_RECOMMENDED_PMS_IDS,
+    save_recommended_override,
     MF_FACTSHEET_SOURCE,
     PMS_FACTSHEET_SOURCE,
     PMS_NO_PUBLIC_FACTSHEET,
@@ -1315,3 +1317,31 @@ def backoffice_risk_profile_report_pdf(
         },
     )
 
+
+
+class RecommendedUpdateRequest(BaseModel):
+    kind: str  # "mf" or "pms"
+    id: str
+    name: str = ""
+    recommended: bool = True
+
+
+@router.get("/recommended")
+def backoffice_get_recommended():
+    return {
+        "mf": dict(FH_RECOMMENDED_MF_CODES),
+        "pms": dict(FH_RECOMMENDED_PMS_IDS),
+    }
+
+
+@router.post("/recommended")
+def backoffice_update_recommended(req: RecommendedUpdateRequest):
+    save_recommended_override(req.kind, req.id, req.name, req.recommended)
+    return {
+        "ok": True,
+        "kind": req.kind,
+        "id": req.id,
+        "recommended": req.recommended,
+        "mf_count": len(FH_RECOMMENDED_MF_CODES),
+        "pms_count": len(FH_RECOMMENDED_PMS_IDS),
+    }

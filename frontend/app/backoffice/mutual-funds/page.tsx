@@ -1,6 +1,8 @@
 "use client";
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRecommended } from "@/lib/recommended";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   getMfScreener,
@@ -159,6 +161,10 @@ function MutualFunds() {
   const [ranges, setRanges] = useState<Record<string, { min?: string; max?: string }>>({});
   const [draft, setDraft] = useState<Record<string, { min?: string; max?: string }>>({});
   const [showFilter, setShowFilter] = useState(false);
+  const rec = useRecommended();
+  const [recDropdownOpen, setRecDropdownOpen] = useState(false);
+  const [newRecCode, setNewRecCode] = useState("");
+  const [newRecName, setNewRecName] = useState("");
   const [activeGroup, setActiveGroup] = useState("Equity");
   const [rows, setRows] = useState<MfScreenerRow[]>([]);
   const [total, setTotal] = useState(0);
@@ -320,8 +326,83 @@ function MutualFunds() {
             onClick={() => setRecommended((v) => !v)}
             className={`${recommended ? "terminal-btn-accent" : "terminal-btn"} text-[12px] py-1 px-3`}
           >
-            ★ FH Recommended
+            ★ FH Recommended ({Object.keys(rec.mfMap).length})
           </button>
+          <div className="relative">
+            <button
+              type="button"
+              aria-haspopup="true"
+              aria-expanded={recDropdownOpen}
+              onClick={() => setRecDropdownOpen((v) => !v)}
+              className="terminal-btn text-[12px] py-1 px-2.5 flex items-center gap-1.5"
+              title="Settings & manage FH Recommended mutual funds"
+            >
+              <span>⚙ Settings</span>
+              <span className="text-[10px] font-mono">▾</span>
+            </button>
+            {recDropdownOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setRecDropdownOpen(false)} />
+                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                  <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-2">
+                    <span className="text-[12px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+                      ★ FH Recommended Mutual Funds ({Object.keys(rec.mfMap).length})
+                    </span>
+                    <button type="button" onClick={() => setRecDropdownOpen(false)} className="text-[#536176] dark:text-[#A8B4C4] text-xs">
+                      ✕
+                    </button>
+                  </div>
+                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                    Add scheme code to mark as recommended, or click Remove.
+                  </div>
+                  <div className="flex gap-1.5">
+                    <input
+                      type="text"
+                      placeholder="Scheme Code (e.g. 108466)"
+                      value={newRecCode}
+                      onChange={(e) => setNewRecCode(e.target.value)}
+                      className="terminal-input text-[11px] py-1 px-2 font-mono flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!newRecCode.trim()) return;
+                        await rec.addMf(newRecCode.trim(), newRecName.trim() || undefined);
+                        setNewRecCode("");
+                        setNewRecName("");
+                      }}
+                      className="terminal-btn-accent text-[11px] py-1 px-3 shrink-0"
+                    >
+                      + Add
+                    </button>
+                  </div>
+                  <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E4E9EF]/40 dark:divide-[#2B3644]/40">
+                    {Object.entries(rec.mfMap).map(([code, name]) => (
+                      <div key={code} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
+                        <div className="truncate">
+                          <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-medium mr-1.5">{code}</span>
+                          <span className="text-[#172033] dark:text-[#EDF2F7] truncate">{name}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => rec.removeMf(code)}
+                          className="text-[10px] text-[#B42332] dark:text-[#FF7D86] hover:underline shrink-0 cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="pt-2 border-t border-[#E4E9EF] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
+                    <Link href="/backoffice/settings" className="text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium">
+                      All Settings →
+                    </Link>
+                    <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">Saves live across terminal</span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           <button type="button" aria-expanded={showFilter} onClick={() => setShowFilter((v) => !v)} className="terminal-btn text-[12px] py-1 px-3">
             Quick Filter{activeFilters ? ` (${activeFilters})` : ""}
           </button>
@@ -393,9 +474,9 @@ function MutualFunds() {
       )}
 
       <div className="terminal-panel overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px]">
           <table className="terminal-table">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-[#F7F9FB] dark:bg-[#171E27]">
               <tr>
                 <th className="w-[40px]" aria-label="Compare" />
                 <th className="min-w-[240px]">
@@ -447,8 +528,18 @@ function MutualFunds() {
                         >
                           {r.name.replace(/ - (Direct|Regular) Plan - Growth$/i, "")}
                         </button>
-                        {r.is_fh_recommended && (
-                          <span className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C]">★ FH</span>
+                        {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              rec.toggleMf(r.code, r.name);
+                            }}
+                            title="Click to toggle FH Recommended status"
+                            className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] hover:opacity-85 cursor-pointer align-middle"
+                          >
+                            ★ FH
+                          </button>
                         )}
                         <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
                           {r.amc ?? "-"} · {r.plan}

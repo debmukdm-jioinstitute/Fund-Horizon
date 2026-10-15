@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useRecommended } from "@/lib/recommended";
 import {
   getWatchlists,
   createWatchlist,
@@ -22,6 +23,50 @@ export default function SettingsPage() {
   const [wlType, setWlType] = useState("scheme");
   const [wlId, setWlId] = useState("");
   const [savingWl, setSavingWl] = useState(false);
+
+  // FH Recommended management
+  const rec = useRecommended();
+  const [recKind, setRecKind] = useState<"mf" | "pms">("mf");
+  const [recId, setRecId] = useState("");
+  const [recName, setRecName] = useState("");
+  const [savingRec, setSavingRec] = useState(false);
+  const [recSuccess, setRecSuccess] = useState<string | null>(null);
+
+  const currentRecList = useMemo(() => {
+    const map = recKind === "mf" ? rec.mfMap : rec.pmsMap;
+    return Object.entries(map).map(([id, name]) => ({ id, name }));
+  }, [recKind, rec.mfMap, rec.pmsMap]);
+
+  async function handleAddRecommended(e: React.FormEvent) {
+    e.preventDefault();
+    if (!recId.trim()) return;
+    try {
+      setSavingRec(true);
+      if (recKind === "mf") {
+        await rec.addMf(recId.trim(), recName.trim() || undefined);
+      } else {
+        await rec.addPms(recId.trim(), recName.trim() || undefined);
+      }
+      setRecSuccess(`Added ${recId.trim()} to FH Recommended ${recKind === "mf" ? "Mutual Funds" : "PMS"}`);
+      setRecId("");
+      setRecName("");
+      setTimeout(() => setRecSuccess(null), 3000);
+    } catch {
+      /* ignore */
+    } finally {
+      setSavingRec(false);
+    }
+  }
+
+  async function handleRemoveRecommended(id: string) {
+    if (recKind === "mf") {
+      await rec.removeMf(id);
+    } else {
+      await rec.removePms(id);
+    }
+    setRecSuccess(`Removed ${id} from FH Recommended`);
+    setTimeout(() => setRecSuccess(null), 3000);
+  }
 
   // Staff state (Admin only)
   const [staffList, setStaffList] = useState<StaffMemberItem[]>([]);
@@ -252,6 +297,116 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
+
+      {/* FH Recommended Manager */}
+      <div className="terminal-panel p-3.5 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644] gap-2">
+          <div>
+            <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center gap-2">
+              <span>★ FH Recommended Picks</span>
+              <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C]">
+                {currentRecList.length} Active
+              </span>
+            </div>
+            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              Curated universe highlighted with the ★ FH badge across Mutual Funds and PMS terminal pages
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4]">Asset Class:</label>
+            <select
+              value={recKind}
+              onChange={(e) => setRecKind(e.target.value as "mf" | "pms")}
+              className="terminal-input text-[12px] py-1 px-2.5 font-medium"
+            >
+              <option value="mf">Mutual Funds ({Object.keys(rec.mfMap).length})</option>
+              <option value="pms">PMS Strategies ({Object.keys(rec.pmsMap).length})</option>
+            </select>
+          </div>
+        </div>
+
+        {recSuccess && (
+          <div className="p-2 rounded bg-[#087744]/10 border border-[#087744]/20 text-[#087744] dark:text-[#58D6A0] text-[12px]">
+            {recSuccess}
+          </div>
+        )}
+
+        {/* Add Recommended Form */}
+        <form onSubmit={handleAddRecommended} className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div>
+            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+              {recKind === "mf" ? "AMFI Scheme Code" : "APMI Strategy ID"}
+            </label>
+            <input
+              type="text"
+              value={recId}
+              onChange={(e) => setRecId(e.target.value)}
+              placeholder={recKind === "mf" ? "e.g. 108466" : "e.g. 174"}
+              className="terminal-input w-full text-[12px] py-1 px-2 font-mono"
+              required
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+              {recKind === "mf" ? "Fund / Scheme Name" : "PMS Strategy Name"}
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={recName}
+                onChange={(e) => setRecName(e.target.value)}
+                placeholder={recKind === "mf" ? "e.g. ICICI Prudential Large Cap Fund" : "e.g. Stallion Asset Core Fund"}
+                className="terminal-input w-full text-[12px] py-1 px-2"
+              />
+              <button
+                type="submit"
+                disabled={savingRec}
+                className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium shrink-0"
+              >
+                {savingRec ? "Saving…" : "+ Add Recommended"}
+              </button>
+            </div>
+          </div>
+        </form>
+
+        {/* Table of Recommended Picks */}
+        <div className="terminal-panel overflow-hidden mt-3 max-h-72 overflow-y-auto">
+          <table className="terminal-table">
+            <thead className="sticky top-0 z-10 bg-[#F7F9FB] dark:bg-[#171E27]">
+              <tr>
+                <th className="w-[20%]">{recKind === "mf" ? "Code" : "APMI ID"}</th>
+                <th className="w-[60%]">{recKind === "mf" ? "Fund Name" : "Strategy Name"}</th>
+                <th className="w-[20%] text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRecList.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                    No {recKind === "mf" ? "mutual funds" : "PMS strategies"} marked as recommended.
+                  </td>
+                </tr>
+              ) : (
+                currentRecList.map((item) => (
+                  <tr key={item.id}>
+                    <td className="font-mono text-[12px] text-[#006F64] dark:text-[#75E1CE] font-medium">{item.id}</td>
+                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{item.name}</td>
+                    <td className="text-right">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveRecommended(item.id)}
+                        className="text-[11px] text-[#B42332] dark:text-[#FF7D86] hover:underline cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Watchlist Manager */}
       <div className="terminal-panel p-3.5 space-y-3">

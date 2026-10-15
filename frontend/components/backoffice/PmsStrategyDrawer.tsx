@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRecommended } from "@/lib/recommended";
 import Link from "next/link";
 import { getPmsStrategyDetail, PmsStrategyDetail, PmsStrategyItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
@@ -18,6 +19,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
   const [copied, setCopied] = useState(false);
   const [detail, setDetail] = useState<PmsStrategyDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const rec = useRecommended();
   const [historyView, setHistoryView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const iaId = strategy?.ia_id;
 
@@ -112,10 +114,19 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
           <div className="p-4 sm:p-5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F7F9FB] dark:bg-[#171E27]">
             <div>
               <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                {strategy.is_fh_recommended && (
-                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#006F64] text-white font-semibold dark:bg-[#75E1CE] dark:text-[#10151C]">
-                    ★ FH Recommended
-                  </span>
+                {strategy.ia_id && (
+                  <button
+                    type="button"
+                    onClick={() => strategy.ia_id && rec.togglePms(strategy.ia_id, strategy.strategy_name)}
+                    className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border transition-colors cursor-pointer ${
+                      rec.isPmsRecommended(strategy.ia_id)
+                        ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold"
+                        : "bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64]"
+                    }`}
+                    title="Click to toggle FH Recommended status"
+                  >
+                    ★ {rec.isPmsRecommended(strategy.ia_id) ? "FH Recommended" : "Mark Recommended"}
+                  </button>
                 )}
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#006F64]/10 dark:bg-[#75E1CE]/15 text-[#006F64] dark:text-[#75E1CE] font-semibold border border-[#006F64]/20 dark:border-[#75E1CE]/30">
                   PMS Strategy

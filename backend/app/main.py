@@ -1,6 +1,7 @@
 """FastAPI app factory. Dataset is loaded once at startup into memory."""
 from __future__ import annotations
 
+import logging
 import os
 import time
 from collections import defaultdict, deque
@@ -108,11 +109,13 @@ async def lifespan(app: FastAPI):
     load_metrics()
     app.state.eligible = eligible_funds()
 
-    try:
-        from app.crm_seed import seed_crm_if_empty
-        await asyncio.to_thread(seed_crm_if_empty)
-    except Exception as e:
-        pass
+    if _flag("FH_SEED_CRM", "true"):
+        try:
+            from app.crm_seed import seed_crm_if_empty
+
+            await asyncio.to_thread(seed_crm_if_empty)
+        except Exception:  # noqa: BLE001 - demo data is optional; never block start-up
+            logging.getLogger(__name__).exception("CRM demo seed failed")
 
     collector_task = None
     if _flag("FH_BACKOFFICE_COLLECTORS", "true"):

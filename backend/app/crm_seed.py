@@ -312,7 +312,7 @@ def seed_crm_if_empty() -> None:
             (h_singhania_id, s_cust_id, "mutual_fund", "Singhania Family - Monthly SIP Mandate ₹2.5L", 300000000, "sip_active", 95, rm1_id, "Mandate registered with ICICI Bank."),
             (h_mehta_id, None, "corporate_fd", "Mehta Holdings - Bajaj Finance AAA Corporate FD", 1000000000, "booked", 100, rm2_id, "3-year cumulative deposit booked."),
             (None, None, "mutual_fund", "Priya Nair - Small Cap & Flexicap Strategy", 400000000, "illustration", 40, rm1_id, "Comparison with benchmark quartiles sent."),
-            (None, None, "pms", "Rajesh Malhotra - Retirement PMS Advisory", 750000000, "discussion", 60, rm1_id, "Risk profiling completed, moderate growth orientation."),
+            (None, None, "pms", "Rajesh Malhotra - Retirement PMS Review", 750000000, "discussion", 60, rm1_id, "Risk profiling completed, moderate growth orientation."),
             (None, None, "corporate_fd", "Kavita Reddy - Corporate Fixed Deposit & Term Life", 250000000, "proposed", 50, rm2_id, "Inquiry from QR intake form."),
         ]
         for h_id, c_id, line, title, amt, stage, prob, rm, notes in opps:

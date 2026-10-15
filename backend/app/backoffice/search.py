@@ -176,8 +176,3 @@ TABLE_COVERAGE: dict[str, str] = {
         "sip_schedules", "suitability_records", "mandates")},
 }
 
-
-try:  # shortcut: warm the cached fund table at start-up so the first search is not slow
-    load_metrics()
-except Exception:  # noqa: BLE001
-    pass

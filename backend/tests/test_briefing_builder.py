@@ -342,12 +342,17 @@ def test_freshness_flags_stale_sources(repo):
     assert pending and all(f["stale"] for f in pending)
 
 
+# Fixed clock matching generated_at="2026-10-14T18:00:00+05:30": news items must be built relative to the brief,
+# not the wall clock, or they land in its future and are (correctly) dropped.
+GEN_AT = datetime(2026, 10, 14, 12, 30, tzinfo=UTC)
+
+
 # ---------------------------------------------------------------------------
 # Fix Round 2
 # ---------------------------------------------------------------------------
 
 def test_pan_masked_in_regulatory_text(repo):
-    now = datetime.now(UTC)
+    now = GEN_AT
     repo.upsert_news([
         {"id": "p1", "source_id": "sebi", "source_name": "SEBI",
          "category": "regulator",
@@ -368,7 +373,7 @@ def test_future_items_excluded(repo):
         {"instrument_id": "INDEX:IN:NIFTY50", "observed_at": "2026-10-14T10:00:00+00:00", "value_numeric": 25000.0},
         {"instrument_id": "INDEX:IN:NIFTY50", "observed_at": "2026-10-15T10:00:00+00:00", "value_numeric": 99999.0},
     ])
-    now = datetime.now(UTC)
+    now = GEN_AT
     repo.upsert_news([
         {"id": "f1", "source_id": "rbi_press", "source_name": "RBI Press Releases",
          "category": "regulator", "title": "News from tomorrow",
@@ -446,7 +451,7 @@ def test_pms_benchmark_column_hidden_when_none_on_file(repo):
 
 
 def test_regulatory_duplicate_collapse_by_title_and_entity(repo):
-    now = datetime.now(UTC)
+    now = GEN_AT
     repo.upsert_news([
         {"id": "d1", "source_id": "sebi", "source_name": "SEBI",
          "category": "regulator", "title": "SEBI issues circular on mutual fund TER disclosure",
@@ -465,7 +470,7 @@ def test_regulatory_duplicate_collapse_by_title_and_entity(repo):
 
 
 def test_regulatory_notice_filtering(repo):
-    now = datetime.now(UTC)
+    now = GEN_AT
     repo.upsert_news([
         {"id": "x1", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
          "title": "Attachment order against XYZ Ltd for recovery of dues",

@@ -22,11 +22,11 @@
       20.0
     ],
     [
-      "105503",
+      "140225",
       15.0
     ],
     [
-      "148989",
+      "148405",
       15.0
     ],
     [
@@ -102,8 +102,8 @@
     "emergency_reserved": 0
   },
   "stress": {
-    "crash_2020_drawdown": -0.1269,
-    "worst_peak_to_trough": -0.1269,
-    "worst_rolling_12m": -0.0524
+    "crash_2020_drawdown": -0.1335,
+    "worst_peak_to_trough": -0.1335,
+    "worst_rolling_12m": -0.0595
   }
 }

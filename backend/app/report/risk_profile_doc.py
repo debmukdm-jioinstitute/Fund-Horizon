@@ -141,7 +141,7 @@ def build_risk_profile_pdf(
         canvas.drawString(
             15 * mm,
             8 * mm,
-            f"{FIRM} · SEBI Regulated Advisory & Suitability Engine · Confidential Assessment for {canvas_text(client_name)}",
+            f"{FIRM} · Suitability Engine · Confidential Assessment for {canvas_text(client_name)}",
         )
         canvas.drawRightString(w - 15 * mm, 8 * mm, f"Page {doc.page} of 2")
         canvas.restoreState()
@@ -326,7 +326,7 @@ def build_risk_profile_pdf(
 
     # 7. Advisory Hygiene & Risk Shortfall Flags
     if notes:
-        story += [Paragraph("Advisory Hygiene & Financial Health shortfalls", H2)]
+        story += [Paragraph("Planning Hygiene & Financial Health shortfalls", H2)]
         for n in notes:
             story += [Paragraph(f"• {xml_escape(n)}", BODY)]
         story += [Spacer(1, 4)]

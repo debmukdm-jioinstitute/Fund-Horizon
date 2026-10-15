@@ -22,6 +22,8 @@ if "FH_CHROMA_DIR" not in os.environ:
 
 # Tests must not poll live market feeds in the background (slow, flaky, and it blocks app shutdown).
 os.environ.setdefault("FH_BACKOFFICE_COLLECTORS", "false")
+# Tests assume an empty CRM; the demo seed would add households, leads and SIPs to every fresh test database.
+os.environ.setdefault("FH_SEED_CRM", "false")
 
 FIX = Path(__file__).parent / "fixtures"
 

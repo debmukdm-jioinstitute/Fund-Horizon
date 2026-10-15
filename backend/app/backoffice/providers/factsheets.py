@@ -98,6 +98,7 @@ SOURCES: dict[str, Source] = {s.key: s for s in (
 AMC_SOURCES: dict[str, tuple[str, str | None]] = {
     "360 ONE Mutual Fund": ("360one", "https://www.360.one/asset/mutual-funds/downloads/"),
     "Abakkus Mutual Fund": ("abakkus", "https://www.abakkusmf.com/factsheet.html"),
+    "ASK MUTUAL FUND": ("ask", None),  # no verified factsheet page yet; add its URL to enable the browser scraper
     "Aditya Birla Sun Life Mutual Fund": ("absl", "https://mutualfund.adityabirlacapital.com/forms-and-downloads/factsheets"),
     "AlphaGrep Mutual Fund": ("alphagrep", None),
     "Angel One Mutual Fund": ("angelone", "https://www.angelonemf.com/downloads"),

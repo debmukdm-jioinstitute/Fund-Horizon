@@ -3,6 +3,7 @@
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AmcLogo } from "@/components/BrandLogo";
 import { fetchSearchScopes, universalSearch, type SearchHit, type SearchScope } from "@/lib/universalSearch";
 
 export interface SearchModule { href: string; label: string; description: string }
@@ -23,7 +24,18 @@ export default function UniversalSearch({
   const [failed, setFailed] = useState(false);
   const [open, setOpen] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const box = useRef<HTMLDivElement>(null);
   const term = q.trim();
+
+  // Close on a click outside. (Closing on input blur raced with clicks: the list unmounted ~150ms after mouse-down,
+  // so a slower click never reached the result.)
+  useEffect(() => {
+    const away = (e: PointerEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", away);
+    return () => document.removeEventListener("pointerdown", away);
+  }, []);
 
   useEffect(() => {
     fetchSearchScopes().then((s) => setScopes([ALL, ...s, MODULES_SCOPE])).catch(() => undefined);
@@ -53,6 +65,7 @@ export default function UniversalSearch({
   }, [modules, scope, term]);
 
   const go = (href: string, external?: boolean) => {
+    setOpen(false);
     onDone?.();
     if (external) window.open(href, "_blank", "noopener,noreferrer");
     else router.push(href);
@@ -64,7 +77,7 @@ export default function UniversalSearch({
   return (
     <div className="space-y-2.5">
       {heading && <h2 className="text-[20px] font-bold text-[#032D60] dark:text-[#EDF2F7]">One search. Your entire workspace.</h2>}
-      <div className="relative" onBlur={() => setTimeout(() => setOpen(false), 150)}>
+      <div ref={box} className="relative">
         <Command shouldFilter={false} label="Universal search" loop>
           <div className="flex items-stretch overflow-hidden rounded-lg border-2 border-[#0176D3] bg-white dark:bg-[#111722] shadow-[0_0_0_4px_rgba(1,118,211,0.12)]">
             <svg className="ml-3 h-5 w-5 shrink-0 self-center text-[#0176D3]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -87,7 +100,7 @@ export default function UniversalSearch({
           </div>
 
           {open && term.length >= 2 && (
-            <Command.List className="absolute left-0 right-0 top-full z-40 mt-1.5 max-h-[60vh] overflow-y-auto rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-1 shadow-xl">
+            <Command.List onMouseDown={(e) => e.preventDefault()} className="absolute left-0 right-0 top-full z-40 mt-1.5 max-h-[60vh] overflow-y-auto rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-1 shadow-xl">
               {groups.map(({ scope: s, items }) => (
                 <Command.Group key={s.key} heading={s.label} className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-[#706E6B]">
                   {items.map((h) => (
@@ -95,7 +108,10 @@ export default function UniversalSearch({
                       key={`${h.scope}:${h.type}:${h.id}`} value={`${h.scope}:${h.type}:${h.id}`} onSelect={() => go(h.href, h.external)}
                       className="flex cursor-pointer items-center justify-between gap-3 rounded p-2.5 text-[#181818] dark:text-[#EDF2F7] data-[selected=true]:bg-[#EAF5FE] dark:data-[selected=true]:bg-[#11304F]"
                     >
-                      <span className="truncate text-[13px] font-medium">{h.title}</span>
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        {h.amc && <AmcLogo amc={h.amc} className="h-7 min-w-7" />}
+                        <span className="truncate text-[13px] font-medium">{h.title}</span>
+                      </span>
                       <span className="hidden truncate text-[11px] text-[#706E6B] dark:text-[#A8B4C4] sm:block">{h.subtitle}{h.external ? " ↗" : ""}</span>
                     </Command.Item>
                   ))}

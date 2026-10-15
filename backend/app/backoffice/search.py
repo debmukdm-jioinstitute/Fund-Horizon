@@ -30,8 +30,9 @@ def provider(scope: str, label: str) -> Callable[[Provider], Provider]:
     return deco
 
 
-def _hit(scope: str, type_: str, id_: str, title: str, subtitle: str, href: str, external: bool = False) -> Hit:
-    return {"scope": scope, "type": type_, "id": str(id_), "title": title, "subtitle": subtitle, "href": href, "external": external}
+def _hit(scope: str, type_: str, id_: str, title: str, subtitle: str, href: str, external: bool = False, amc: str | None = None) -> Hit:
+    """``amc`` lets the UI show the fund house logo next to the result."""
+    return {"scope": scope, "type": type_, "id": str(id_), "title": title, "subtitle": subtitle, "href": href, "external": external, "amc": amc}
 
 
 def _like(q: str) -> str:
@@ -67,7 +68,7 @@ def mutual_funds(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
         out.append(_hit(
             "mutual_funds", "fund", r["scheme_code"], r["scheme_name"],
             f"{r.get('amc') or ''} · {r.get('plan') or ''} · {r.get('category') or ''}".strip(" ·"),
-            f"/backoffice/mutual-funds?q={quote(str(r['scheme_code']))}",
+            f"/backoffice/mutual-funds?q={quote(str(r['scheme_code']))}", amc=r.get("amc"),
         ))
     return out
 
@@ -97,7 +98,7 @@ def amcs(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
     df = load_metrics()
     s = q.strip().lower()
     counts = df[df["amc"].fillna("").str.lower().str.contains(s, regex=False)]["amc"].value_counts().head(limit)
-    return [_hit("amcs", "amc", name, name, f"{n} schemes", f"/backoffice/mutual-funds?q={quote(str(name))}") for name, n in counts.items()]
+    return [_hit("amcs", "amc", name, name, f"{n} schemes", f"/backoffice/mutual-funds?q={quote(str(name))}", amc=str(name)) for name, n in counts.items()]
 
 
 @provider("crm", "CRM records")

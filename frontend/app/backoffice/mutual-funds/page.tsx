@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRecommended } from "@/lib/recommended";
 import { useRouter, useSearchParams } from "next/navigation";
+import { AmcLogo } from "@/components/BrandLogo";
 import {
   getMfScreener,
   mfScreenerCsvUrl,
@@ -542,7 +543,10 @@ function MutualFunds() {
                           </button>
                         )}
                         <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                          {r.amc ?? "-"} · {r.plan}
+                          <span className="inline-flex items-center gap-1.5">
+                            {r.amc ? <AmcLogo amc={r.amc} className="h-5 min-w-5 max-w-[4rem] text-[8px]" /> : null}
+                            {r.amc ?? "-"} · {r.plan}
+                          </span>
                         </div>
                       </td>
                       {cols.map((c) => (

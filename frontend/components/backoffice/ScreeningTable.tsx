@@ -4,6 +4,7 @@ import React from "react";
 import { MfScreeningRatioMeta, MfScreeningRow } from "@/lib/backoffice";
 import { SignedValue } from "@/components/terminal/SignedValue";
 import InfoTip from "@/components/InfoTip";
+import { AmcLogo } from "@/components/BrandLogo";
 
 interface ScreeningTableProps {
   rows: MfScreeningRow[];
@@ -148,7 +149,7 @@ export default function ScreeningTable({
                       </div>
                       <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">
                         <span className="uppercase font-mono">{row.cat.replace(/_/g, " ")}</span>
-                        {row.amc && <span>• {row.amc}</span>}
+                        {row.amc && <span className="inline-flex items-center gap-1">• <AmcLogo amc={row.amc} className="h-4 min-w-4 text-[8px]" /> {row.amc}</span>}
                         {row.pms_link && (
                           <span className="px-1 py-0.2 rounded bg-[#0176D3]/10 text-[#0176D3] dark:text-[#1B96FF] font-mono">
                             PMS Match

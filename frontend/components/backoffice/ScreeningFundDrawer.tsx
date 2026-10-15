@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { AmcLogo } from "@/components/BrandLogo";
 import { getScreeningFund, ScreeningFundDetail } from "@/lib/backoffice";
 import { findManagerProfile } from "@/lib/pms-managers";
 import { SignedValue } from "@/components/terminal/SignedValue";
@@ -72,8 +73,9 @@ export default function ScreeningFundDrawer({
                 {fund?.scheme_name || `Scheme ${schemeCode}`}
               </h2>
               {fund?.amc && (
-                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-                  AMC: {fund.amc}
+                <div className="mt-1 flex items-center gap-2 text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                  <AmcLogo amc={fund.amc} className="h-6 min-w-6" />
+                  {fund.amc}
                 </div>
               )}
             </div>

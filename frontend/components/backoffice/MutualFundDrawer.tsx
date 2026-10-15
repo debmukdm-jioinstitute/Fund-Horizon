@@ -7,6 +7,7 @@ import { getMutualFundPerformance, getMfNavPairCheck, getMfManager, MfManagerInf
 import SignedValue from "@/components/terminal/SignedValue";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
 import FactsheetList from "@/components/backoffice/FactsheetList";
+import { AmcLogo } from "@/components/BrandLogo";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 
@@ -159,7 +160,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               >
                 {scheme.scheme_name}
               </h2>
-              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 font-medium">
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 font-medium flex items-center gap-2">
+                {scheme.amc_name && <AmcLogo amc={scheme.amc_name} className="h-7 min-w-7" />}
                 {scheme.amc_name || "Asset Management Company"}
               </p>
             </div>
@@ -360,7 +362,10 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 )}
                 <div className="p-3 flex items-center justify-between">
                   <span className="text-[#706E6B] dark:text-[#A8B4C4]">Fund House (AMC)</span>
-                  <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">{scheme.amc_name || "—"}</span>
+                  <span className="flex items-center gap-2 font-medium text-[#181818] dark:text-[#EDF2F7]">
+                    {scheme.amc_name && <AmcLogo amc={scheme.amc_name} className="h-6 min-w-6" />}
+                    {scheme.amc_name || "—"}
+                  </span>
                 </div>
                 <div className="p-3 flex items-center justify-between">
                   <span className="text-[#706E6B] dark:text-[#A8B4C4]">SEBI Categorization</span>

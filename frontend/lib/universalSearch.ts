@@ -8,6 +8,7 @@ export interface SearchHit {
   subtitle: string;
   href: string;
   external?: boolean;
+  amc?: string | null;
 }
 export interface SearchScope { key: string; label: string }
 

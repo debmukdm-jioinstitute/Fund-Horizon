@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Suspense } from "react";
-import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import CrmHome from "@/components/crm/CrmHome";
 import HouseholdsTab from "@/components/crm/HouseholdsTab";
@@ -16,7 +15,8 @@ import DeadlinesTab from "@/components/crm/DeadlinesTab";
 import { CasesList, ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
 import NewOpportunityForm from "@/components/crm/NewOpportunityForm";
 import { useCanWrite } from "@/components/crm/useCanWrite";
-import { CRM_TABS, resolveTab, tabHref } from "@/components/crm/tabs";
+import CrmTabBar from "@/components/crm/CrmTabBar";
+import { resolveTab } from "@/components/crm/tabs";
 
 /** Tabs that offer a table (Salesforce-style list view) next to the original board/agenda/create screen. */
 function TableOrBoard({ table, board, boardLabel, defaultView }: { table: React.ReactNode; board: React.ReactNode; boardLabel: string; defaultView: "table" | "board" }) {
@@ -72,22 +72,7 @@ function CrmTabs() {
   const tab = resolveTab(useSearchParams().get("tab")); // the tab lives in the URL: back, forward and refresh work
   return (
     <div className="space-y-4">
-      <nav aria-label="CRM sections" className="flex flex-wrap gap-1 border-b border-[#E4E9EF] dark:border-[#2B3644]">
-        {CRM_TABS.map(([id, label]) => (
-          <Link
-            key={id}
-            href={tabHref(id)}
-            aria-current={tab === id ? "page" : undefined}
-            className={`px-3 py-1.5 text-[13px] -mb-px border-b-2 ${
-              tab === id
-                ? "border-[#006F64] text-[#006F64] dark:border-[#75E1CE] dark:text-[#75E1CE] font-medium"
-                : "border-transparent text-[#536176] dark:text-[#A8B4C4]"
-            }`}
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
+      <CrmTabBar tab={tab} />
       {tab === "home" && <CrmHome />}
       {tab === "households" && <HouseholdsTab />}
       {tab === "contacts" && <ContactsList />}

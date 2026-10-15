@@ -662,11 +662,28 @@ class CrosswordResult(BaseModel):
     seconds_used: int = Field(ge=0, le=600)
 
 
+class CrosswordCheck(BaseModel):
+    phone: str = Field(min_length=8, max_length=20)
+
+
+def _crossword_played(phone: str) -> bool:
+    digits = re.sub(r"\D", "", phone)[-10:]
+    return len(digits) >= 8 and get_crm_repository().crossword_played(digits)
+
+
+@router.post("/public/crossword/check")
+def public_crossword_check(body: CrosswordCheck):
+    """Lets the game refuse a mobile number that already played, before the timer starts."""
+    return {"played": _crossword_played(body.phone)}
+
+
 @router.post("/public/crossword", status_code=201)
 def public_crossword_result(body: CrosswordResult):
     """Public crossword game result (QR scan). Saves a lead with source='crossword' and returns a random token."""
     if body.words_correct > body.words_total:
         raise HTTPException(422, "words_correct exceeds words_total")
+    if _crossword_played(body.phone):
+        raise HTTPException(409, "This mobile number has already played the game.")
     token = f"FH-{secrets.randbelow(900000) + 100000}"
     notes = (
         f"Crossword token {token} | Puzzle #{body.puzzle_id + 1} | "

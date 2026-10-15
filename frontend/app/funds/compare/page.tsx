@@ -1,6 +1,6 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 import type { Metadata } from "next";
-import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
 import { redirect } from "next/navigation";
 import { compareFundsServer, getFundDetailServer } from "@/lib/api";
 import { CompareView } from "./CompareView";
@@ -63,19 +63,7 @@ export default async function ComparePage({ searchParams }: PageProps) {
 
   return (
     <div className="w-full space-y-6">
-      <nav aria-label="Breadcrumb">
-        <ol className="flex items-center gap-2 text-xs text-navy-700">
-          <li>
-            <Link href="/" className="hover:underline">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li>
-            <span className="text-navy-900 font-medium">Scheme Comparison</span>
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Scheme Comparison" }]} />
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-navy-950 sm:text-3xl">

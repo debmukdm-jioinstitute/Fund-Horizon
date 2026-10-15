@@ -56,6 +56,11 @@ export default function CrosswordPage() {
           words_correct: correct, words_total: total, seconds_used: used,
         }),
       });
+      if (res.status === 409) {
+        finishing.current = false;
+        setPhase("intro");
+        return setError("This mobile number has already played. Each number can play only once.");
+      }
       if (!res.ok) throw new Error("Could not save your result.");
       setToken((await res.json()).token);
       setPhase("done");
@@ -73,11 +78,19 @@ export default function CrosswordPage() {
     if (phase === "play" && left <= 0) void finish(GAME_SECONDS);
   }, [phase, left, finish]);
 
-  function start(e: React.FormEvent) {
+  async function start(e: React.FormEvent) {
     e.preventDefault();
     if (name.trim().length < 2) return setError("Please enter your name.");
     if (phone.replace(/\D/g, "").length < 10) return setError("Please enter a valid 10-digit mobile number.");
     setError(null);
+    try {
+      const chk = await fetch(resolveApiUrl(`${API_URL}/api/crm/public/crossword/check`), {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone: phone.replace(/[^\d+]/g, "") }),
+      });
+      if (chk.ok && (await chk.json()).played) return setError("This mobile number has already played. Each number can play only once.");
+    } catch {
+      return setError("Could not reach the server. Please check your connection and try again.");
+    }
     const id = Math.floor(Math.random() * PUZZLE_COUNT); // new random crossword for every scan/session
     setPuzzleId(id);
     setFound([]);
@@ -174,11 +187,11 @@ export default function CrosswordPage() {
             </div>
 
             <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">
-              Find the hidden words: drag your finger across the letters in a straight line (across, down or diagonal). Green = found. Red = not a word.
+              Find the hidden words: drag your finger across the letters in a straight line (across, down or diagonal, forwards or backwards). Green = found. Red = not a word.
             </p>
 
             <div
-              className="grid gap-[2px] w-full select-none rounded-xl bg-white/60 dark:bg-[#171E27] p-1.5 border border-[#D8E3E0] dark:border-[#2B3644]"
+              className="grid gap-[1px] w-full select-none rounded-xl bg-white/60 dark:bg-[#171E27] p-1 border border-[#D8E3E0] dark:border-[#2B3644]"
               style={{ gridTemplateColumns: `repeat(${puzzle.size}, minmax(0, 1fr))`, touchAction: "none" }}
               onPointerDown={down}
               onPointerMove={move}
@@ -196,7 +209,7 @@ export default function CrosswordPage() {
                         ? "bg-[#BFE8CD] text-[#0F5A2F]"
                         : "bg-transparent";
                   return (
-                    <div key={k} data-cell={k} className={`aspect-square rounded-md flex items-center justify-center text-[clamp(14px,5vw,22px)] font-semibold transition-colors ${cls}`}>
+                    <div key={k} data-cell={k} className={`aspect-square rounded-md flex items-center justify-center text-[clamp(11px,3.6vw,18px)] font-semibold transition-colors ${cls}`}>
                       {ch}
                     </div>
                   );

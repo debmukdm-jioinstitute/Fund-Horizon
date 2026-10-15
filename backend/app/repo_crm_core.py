@@ -579,6 +579,12 @@ class CrmCoreRepository:
         with _session() as s:
             return _update(s, LeadModel, "lead", lead_id, fields, allowed, actor_id)
 
+    def crossword_played(self, last10: str) -> bool:
+        """True when a crossword-game lead already exists for this mobile (matched on its last 10 digits)."""
+        with _session() as s:
+            n = s.scalar(select(func.count()).select_from(LeadModel).where(LeadModel.source == "crossword", LeadModel.mobile.like(f"%{last10}")))
+            return bool(n)
+
     def delete_lead(self, lead_id: str, actor_id: str | None = None) -> bool:
         """Hard-delete a lead and its activities; leaves an audit row."""
         with _session() as s:

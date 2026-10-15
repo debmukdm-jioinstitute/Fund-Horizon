@@ -520,3 +520,7 @@ def test_public_crossword_result_creates_lead(client):
     assert token.startswith("FH-") and len(token) == 9
     bad = client.post("/api/crm/public/crossword", json={**body, "words_correct": 9})
     assert bad.status_code == 422
+    # same mobile (any formatting) cannot play again
+    assert client.post("/api/crm/public/crossword/check", json={"phone": "+91 98201-12345"}).json() == {"played": True}
+    assert client.post("/api/crm/public/crossword/check", json={"phone": "9000000001"}).json() == {"played": False}
+    assert client.post("/api/crm/public/crossword", json={**body, "phone": "+919820112345"}).status_code == 409

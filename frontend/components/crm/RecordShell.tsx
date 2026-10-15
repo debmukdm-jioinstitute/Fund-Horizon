@@ -1,7 +1,7 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
-import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthContext";
@@ -31,11 +31,7 @@ export function Layout({ kind, title, chips, owner, actions, path, left, right }
   const { singular, plural, tab } = KIND_LABEL[kind];
   return (
     <div className="space-y-4">
-      <nav aria-label="Breadcrumb" className={`text-xs ${muted}`}>
-        <Link href="/backoffice/crm" className="hover:underline">CRM</Link>{" / "}
-        <Link href={tabHref(tab)} className="hover:underline">{plural}</Link>{" / "}
-        <span className="text-[#172033] dark:text-[#EDF2F7]">{singular}</span>
-      </nav>
+      <Breadcrumb items={[{ label: "CRM", href: "/backoffice/crm" }, { label: plural, href: tabHref(tab) }, { label: singular }]} />
       <header className={`${card} space-y-3`}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">

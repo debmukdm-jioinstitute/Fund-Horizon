@@ -1,7 +1,7 @@
 // Basic financial-literacy crosswords. 20 fixed puzzles, built deterministically from a seed (puzzle id).
 
 export const PUZZLE_COUNT = 20;
-export const WORDS_PER_PUZZLE = 7;
+export const WORDS_PER_PUZZLE = 10;
 
 const WORDS: [string, string][] = [
   ["SIP", "Fixed amount invested every month in a mutual fund"],
@@ -69,30 +69,45 @@ function rng(seed: number) {
   };
 }
 
-const SIZE = 10;
-const DIRS: [number, number][] = [[0, 1], [1, 0], [1, 1]]; // right, down, diagonal: kept basic for mobile
+const SIZE = 14; // 14x14 keeps cells about 24px on a 375px phone
+// All 8 directions: right, left, down, up, and the four diagonals (down-right, up-left, up-right, down-left).
+const DIRS: [number, number][] = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, -1], [-1, 1], [1, -1]];
 
-// Word search: hide WORDS_PER_PUZZLE words in a 10x10 grid, fill the rest with seeded random letters.
+// Word search: hide WORDS_PER_PUZZLE words in all 8 directions (each direction used at least once),
+// fill the rest with decoy letters taken mostly from the hidden words so nothing stands out.
 export function buildPuzzle(id: number): Puzzle {
   const rand = rng(id);
-  const pool = WORDS.map(([w]) => w).filter((w) => w.length <= SIZE).map((w) => ({ w, k: rand() })).sort((a, b) => a.k - b.k).map((x) => x.w);
+  const shuffle = <T,>(a: T[]) => a.map((x) => ({ x, k: rand() })).sort((p, q) => p.k - q.k).map((o) => o.x);
+  const pool = shuffle(WORDS.map(([w]) => w).filter((w) => w.length <= SIZE));
+  const dirOrder = shuffle(DIRS); // word i takes dirOrder[i % 8] first, so all 8 appear in every puzzle
   const grid: string[][] = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
   const words: Placed[] = [];
-  for (const w of pool) {
-    if (words.length >= WORDS_PER_PUZZLE) break;
-    for (let t = 0; t < 60; t++) {
-      const [dr, dc] = DIRS[Math.floor(rand() * DIRS.length)];
+  const tryPlace = (w: string, [dr, dc]: [number, number]) => {
+    for (let t = 0; t < 120; t++) {
       const r = Math.floor(rand() * SIZE), c = Math.floor(rand() * SIZE);
       const er = r + dr * (w.length - 1), ec = c + dc * (w.length - 1);
-      if (er >= SIZE || ec >= SIZE) continue;
+      if (er < 0 || ec < 0 || er >= SIZE || ec >= SIZE) continue;
       const cells = Array.from({ length: w.length }, (_, i) => [r + dr * i, c + dc * i] as [number, number]);
       if (cells.some(([rr, cc], i) => grid[rr][cc] && grid[rr][cc] !== w[i])) continue;
       cells.forEach(([rr, cc], i) => (grid[rr][cc] = w[i]));
       words.push({ word: w, cells });
-      break;
+      return true;
     }
+    return false;
+  };
+  const used = new Set<string>();
+  const dirKey = ([a, b]: [number, number]) => `${a},${b}`;
+  for (const w of pool) {
+    if (words.length >= WORDS_PER_PUZZLE) break;
+    // prefer a direction not used yet so all 8 appear; fall back to any
+    const order = [...dirOrder.filter((d) => !used.has(dirKey(d))), ...shuffle(DIRS)];
+    const d = order.find((d) => tryPlace(w, d));
+    if (d) used.add(dirKey(d));
   }
+  const hidden = words.flatMap((x) => x.word.split(""));
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if (!grid[r][c]) grid[r][c] = letters[Math.floor(rand() * 26)];
+  for (let r = 0; r < SIZE; r++)
+    for (let c = 0; c < SIZE; c++)
+      if (!grid[r][c]) grid[r][c] = rand() < 0.7 ? hidden[Math.floor(rand() * hidden.length)] : letters[Math.floor(rand() * 26)];
   return { id, size: SIZE, grid, words };
 }

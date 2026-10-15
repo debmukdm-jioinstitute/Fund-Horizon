@@ -1,6 +1,6 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 import type { Metadata } from "next";
-import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
 import CasUpload from "@/components/CasUpload";
 
 export const metadata: Metadata = {
@@ -12,19 +12,7 @@ export const metadata: Metadata = {
 export default function CasPage() {
   return (
     <div className="w-full space-y-6">
-      <nav aria-label="Breadcrumb">
-        <ol className="flex items-center gap-2 text-xs text-navy-700">
-          <li>
-            <Link href="/" className="hover:underline">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li>
-            <span className="font-medium text-navy-900">CAS Analysis</span>
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "CAS Analysis" }]} />
 
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-navy-950">Consolidated Account Statement (CAS) Analysis</h1>

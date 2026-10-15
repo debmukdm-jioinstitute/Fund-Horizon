@@ -2,6 +2,7 @@
 import { AmcName } from "@/components/BrandLogo";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
 import { notFound } from "next/navigation";
 import { getFundAnalyticsServer, getFundDetailServer } from "@/lib/api";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
@@ -63,19 +64,7 @@ export default async function FundDetailPage({ params }: PageProps) {
 
   return (
     <div className="w-full space-y-6">
-      <nav aria-label="Breadcrumb">
-        <ol className="flex items-center gap-2 text-xs text-navy-700">
-          <li>
-            <Link href="/" className="hover:underline">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li>
-            <span className="text-navy-900 font-medium">{detail.scheme_name}</span>
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumb items={[{ label: "Home", href: "/" }, { label: detail.scheme_name }]} />
 
       {/* Scheme Header */}
       <header className="card space-y-3">

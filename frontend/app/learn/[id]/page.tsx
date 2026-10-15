@@ -3,6 +3,7 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 
 import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
 import { useEffect, useState } from "react";
 import { getTaxCatalog, getTaxInstrument } from "@/lib/api";
 import type { CatalogInstrument } from "@/lib/types";
@@ -47,7 +48,7 @@ export default function InstrumentPage({ params }: { params: { id: string } }) {
 
   return (
     <article className="w-full space-y-6">
-      <nav aria-label="Breadcrumb" className="text-sm"><Link href="/learn" className="font-semibold text-teal-800 underline">All options</Link></nav>
+      <Breadcrumb items={[{ label: "All options", href: "/learn" }, { label: item.name }]} />
       <header>
         <h1 className="text-3xl font-extrabold tracking-tight text-navy-950">{item.name}</h1>
         <p className="mt-2 text-lg text-slate-700">{item.summary}</p>

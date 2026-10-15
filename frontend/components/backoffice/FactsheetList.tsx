@@ -19,12 +19,12 @@ export default function FactsheetList({ kind, id }: { kind: "mf" | "pms"; id?: s
     };
   }, [kind, id]);
 
-  const muted = "text-[12px] text-[#536176] dark:text-[#A8B4C4]";
+  const muted = "text-[12px] text-[#706E6B] dark:text-[#A8B4C4]";
   return (
     <div className="terminal-panel overflow-hidden">
-      <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex justify-between gap-2">
+      <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7] flex justify-between gap-2">
         <span>Factsheets</span>
-        {data?.source && <span className="font-normal text-[#536176] dark:text-[#A8B4C4]">{data.source} · official PDFs</span>}
+        {data?.source && <span className="font-normal text-[#706E6B] dark:text-[#A8B4C4]">{data.source} · official PDFs</span>}
       </div>
       {data === undefined && <div className={`p-3 ${muted}`}>Loading factsheets…</div>}
       {data === null && <div className={`p-3 ${muted}`}>Could not load factsheets.</div>}
@@ -38,17 +38,17 @@ export default function FactsheetList({ kind, id }: { kind: "mf" | "pms"; id?: s
         </div>
       )}
       {data && data.items.length > 0 && (
-        <ul className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644] max-h-72 overflow-y-auto">
+        <ul className="divide-y divide-[#E5E5E5] dark:divide-[#2B3644] max-h-72 overflow-y-auto">
           {data.items.map((f) => (
             <li key={f.id}>
               <a
                 href={f.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-between gap-3 p-3 text-[12px] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition"
+                className="flex items-center justify-between gap-3 p-3 text-[12px] hover:bg-[#F3F3F3] dark:hover:bg-[#171E27] transition"
               >
-                <span className="font-medium text-[#006F64] dark:text-[#75E1CE]">{f.title}</span>
-                <span className="font-mono text-[#536176] dark:text-[#A8B4C4] shrink-0">{f.period} ↗</span>
+                <span className="font-medium text-[#0176D3] dark:text-[#1B96FF]">{f.title}</span>
+                <span className="font-mono text-[#706E6B] dark:text-[#A8B4C4] shrink-0">{f.period} ↗</span>
               </a>
             </li>
           ))}

@@ -48,7 +48,7 @@ export default function SettingsPage() {
       const game = `${window.location.origin}/crossword`;
       setGameUrl(game);
       import("qrcode").then((QRCode) => {
-        const opts = { width: 320, margin: 2, color: { dark: "#006F64", light: "#FFFFFF" } };
+        const opts = { width: 320, margin: 2, color: { dark: "#0176D3", light: "#FFFFFF" } };
         QRCode.toDataURL(url, opts).then(setQrDataUrl).catch(console.error);
         QRCode.toDataURL(game, opts).then(setGameQr).catch(console.error);
       });
@@ -187,36 +187,36 @@ export default function SettingsPage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               Settings, Lead Generation &amp; Terminal Administration
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               Terminal Configuration
             </span>
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Client intake QR generator, FH Recommended fund curation, watchlists, and operator permissions
           </p>
         </div>
       </div>
 
       {/* Client Intake QR Code & Lead Capture Section */}
-      <div className="terminal-panel p-4 space-y-4 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C2E9E0] dark:border-[#234542]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="terminal-panel p-4 space-y-4 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C5DDF7] dark:border-[#1F4A74]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[14px]">📱</span>
-              <div className="text-[14px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+              <div className="text-[14px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
                 Client Intake QR Code &amp; Lead Generation
               </div>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#E1F3EC] dark:bg-[#10372A] text-[#006F64] dark:text-[#7FE0B5] border border-[#C2E9E0] dark:border-[#224845]">
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#EAF5FE] dark:bg-[#10372A] text-[#0176D3] dark:text-[#7FE0B5] border border-[#C5DDF7] dark:border-[#1F4A74]">
                 Live CRM Sync
               </span>
             </div>
-            <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+            <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
               When prospective clients scan this QR code on their phone, it opens the branded Fund Horizon intake form. All submissions automatically sync to your Backoffice CRM.
             </p>
           </div>
@@ -224,14 +224,14 @@ export default function SettingsPage() {
             <Link
               href="/lead"
               target="_blank"
-              className="terminal-btn text-[11px] py-1 px-2.5 text-[#006F64] dark:text-[#75E1CE] border-[#C2E9E0] dark:border-[#224845] hover:bg-[#E7F5F2] dark:hover:bg-[#1A3034] font-medium flex items-center gap-1"
+              className="terminal-btn text-[11px] py-1 px-2.5 text-[#0176D3] dark:text-[#1B96FF] border-[#C5DDF7] dark:border-[#1F4A74] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F] font-medium flex items-center gap-1"
             >
               <span>Test Intake Form</span>
               <span>↗</span>
             </Link>
             <Link
               href="/backoffice/crm?tab=leads"
-              className="terminal-btn text-[11px] py-1 px-2.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium flex items-center gap-1"
+              className="terminal-btn text-[11px] py-1 px-2.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium flex items-center gap-1"
             >
               <span>View in CRM</span>
               <span>→</span>
@@ -242,7 +242,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
           {/* QR Card */}
           <div className="md:col-span-4 flex flex-col items-center text-center p-4 bg-white dark:bg-[#111722] rounded-xl border border-[#D8E3E0] dark:border-[#25373E] shadow-sm">
-            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E4E9EF] flex items-center justify-center">
+            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E5E5E5] flex items-center justify-center">
               {qrDataUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -251,12 +251,12 @@ export default function SettingsPage() {
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <div className="text-xs text-[#536176] animate-pulse">Generating QR…</div>
+                <div className="text-xs text-[#706E6B] animate-pulse">Generating QR…</div>
               )}
             </div>
 
-            <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#006F64] dark:bg-[#75E1CE]" />
+            <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0176D3] dark:bg-[#1B96FF]" />
               SCAN WITH PHONE CAMERA
             </div>
 
@@ -264,7 +264,7 @@ export default function SettingsPage() {
               <a
                 href={qrDataUrl}
                 download="fund-horizon-intake-qr.png"
-                className="mt-2.5 text-[11px] text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium flex items-center gap-1"
+                className="mt-2.5 text-[11px] text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium flex items-center gap-1"
               >
                 <span>↓ Download QR (PNG)</span>
               </a>
@@ -274,7 +274,7 @@ export default function SettingsPage() {
           {/* Details & Copy Link */}
           <div className="md:col-span-8 space-y-3.5">
             <div>
-              <label className="text-[11px] font-semibold text-[#536176] dark:text-[#A8B4C4] block mb-1">
+              <label className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                 Client Intake URL
               </label>
               <div className="flex gap-2">
@@ -282,89 +282,89 @@ export default function SettingsPage() {
                   type="text"
                   readOnly
                   value={leadUrl}
-                  className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F7F9FB] dark:bg-[#111722]"
+                  className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F3F3F3] dark:bg-[#111722]"
                 />
                 <button
                   type="button"
                   onClick={copyLeadUrl}
-                  className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold shrink-0 transition"
+                  className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-semibold shrink-0 transition"
                 >
                   {copiedLink ? "✓ Copied!" : "Copy Link"}
                 </button>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-lg bg-[#F7F9FB] dark:bg-[#111722] border border-[#E4E9EF] dark:border-[#2B3644] space-y-2 text-[12px]">
-              <div className="font-semibold text-[#172033] dark:text-[#EDF2F7] flex items-center gap-1.5">
+            <div className="p-3.5 rounded-lg bg-[#F3F3F3] dark:bg-[#111722] border border-[#E5E5E5] dark:border-[#2B3644] space-y-2 text-[12px]">
+              <div className="font-semibold text-[#181818] dark:text-[#EDF2F7] flex items-center gap-1.5">
                 <span>📋</span>
                 <span>Collected Customer Information</span>
               </div>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                 <li className="flex items-center gap-1.5">
-                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
                   <span><strong>Customer Name</strong> (Full Legal Name)</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
                   <span><strong>Phone Number</strong> (10-Digit Mobile)</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
                   <span><strong>Email Address</strong> (Direct Correspondence)</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="text-[#006F64] dark:text-[#75E1CE]">✓</span>
+                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
                   <span><strong>Investment Interest</strong> (MF, PMS, Advisory)</span>
                 </li>
               </ul>
             </div>
 
-            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] leading-relaxed">
-              💡 <strong>Usage Tip:</strong> Print or place this QR code on reception desks, presentation slides, or client brochures. When scanned, leads flow directly into the CRM with source tag <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-semibold">qr_code</span> and status <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-semibold">new</span>.
+            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] leading-relaxed">
+              💡 <strong>Usage Tip:</strong> Print or place this QR code on reception desks, presentation slides, or client brochures. When scanned, leads flow directly into the CRM with source tag <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-semibold">qr_code</span> and status <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-semibold">new</span>.
             </div>
           </div>
         </div>
       </div>
 
       {/* Cross₹word Game QR */}
-      <div className="terminal-panel p-4 space-y-3 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C2E9E0] dark:border-[#234542]">
-        <div className="flex items-center gap-2 pb-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="terminal-panel p-4 space-y-3 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C5DDF7] dark:border-[#1F4A74]">
+        <div className="flex items-center gap-2 pb-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           <span className="text-[14px]">🧩</span>
-          <div className="text-[14px] font-semibold text-[#172033] dark:text-[#EDF2F7]">Cross₹word Game QR</div>
-          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#E1F3EC] dark:bg-[#10372A] text-[#006F64] dark:text-[#7FE0B5] border border-[#C2E9E0] dark:border-[#224845]">Lead Magnet</span>
+          <div className="text-[14px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Cross₹word Game QR</div>
+          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#EAF5FE] dark:bg-[#10372A] text-[#0176D3] dark:text-[#7FE0B5] border border-[#C5DDF7] dark:border-[#1F4A74]">Lead Magnet</span>
         </div>
-        <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-          Scanners play a 2-minute word-search of basic financial terms (1 of 20, random each scan), get a token to screenshot, and are saved to CRM Leads with source <span className="font-mono font-semibold text-[#006F64] dark:text-[#75E1CE]">crossword</span> plus words-correct score.
+        <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+          Scanners play a 2-minute word-search of basic financial terms (1 of 20, random each scan), get a token to screenshot, and are saved to CRM Leads with source <span className="font-mono font-semibold text-[#0176D3] dark:text-[#1B96FF]">crossword</span> plus words-correct score.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
           <div className="md:col-span-4 flex flex-col items-center p-4 bg-white dark:bg-[#111722] rounded-xl border border-[#D8E3E0] dark:border-[#25373E]">
-            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E4E9EF] flex items-center justify-center">
+            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E5E5E5] flex items-center justify-center">
               {gameQr ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={gameQr} alt="Fund Horizon Crossword Game QR Code" className="w-full h-full object-contain" />
               ) : (
-                <div className="text-xs text-[#536176] animate-pulse">Generating QR…</div>
+                <div className="text-xs text-[#706E6B] animate-pulse">Generating QR…</div>
               )}
             </div>
             {gameQr && (
-              <a href={gameQr} download="fund-horizon-crossword-qr.png" className="mt-2.5 text-[11px] text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium">↓ Download QR (PNG)</a>
+              <a href={gameQr} download="fund-horizon-crossword-qr.png" className="mt-2.5 text-[11px] text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">↓ Download QR (PNG)</a>
             )}
           </div>
           <div className="md:col-span-8 space-y-3">
-            <label className="text-[11px] font-semibold text-[#536176] dark:text-[#A8B4C4] block">Game URL</label>
+            <label className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4] block">Game URL</label>
             <div className="flex gap-2">
-              <input type="text" readOnly value={gameUrl} className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F7F9FB] dark:bg-[#111722]" />
+              <input type="text" readOnly value={gameUrl} className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F3F3F3] dark:bg-[#111722]" />
               <button
                 type="button"
                 onClick={() => { navigator.clipboard.writeText(gameUrl); setCopiedGame(true); setTimeout(() => setCopiedGame(false), 2000); }}
-                className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold shrink-0"
+                className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-semibold shrink-0"
               >
                 {copiedGame ? "✓ Copied!" : "Copy Link"}
               </button>
             </div>
             <div className="flex gap-2">
-              <Link href="/crossword" target="_blank" className="terminal-btn text-[11px] py-1 px-2.5 text-[#006F64] dark:text-[#75E1CE] border-[#C2E9E0] dark:border-[#224845] font-medium">Test Game ↗</Link>
-              <Link href="/backoffice/crm?tab=leads" className="terminal-btn text-[11px] py-1 px-2.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium">View in CRM →</Link>
+              <Link href="/crossword" target="_blank" className="terminal-btn text-[11px] py-1 px-2.5 text-[#0176D3] dark:text-[#1B96FF] border-[#C5DDF7] dark:border-[#1F4A74] font-medium">Test Game ↗</Link>
+              <Link href="/backoffice/crm?tab=leads" className="terminal-btn text-[11px] py-1 px-2.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium">View in CRM →</Link>
             </div>
           </div>
         </div>
@@ -373,16 +373,16 @@ export default function SettingsPage() {
       {/* Admin-only Staff Provisioning */}
       {isAdmin && (
         <div className="terminal-panel p-3.5 space-y-3">
-          <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
             <div>
-              <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                 Staff Account Management (Admin Scope)
               </div>
-              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                 Provision internal operator credentials with role-based permissions
               </div>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE] px-1.5 py-0.5 rounded font-medium">
+            <span className="text-[10px] font-mono uppercase bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] px-1.5 py-0.5 rounded font-medium">
               Admin Exclusive
             </span>
           </div>
@@ -390,7 +390,7 @@ export default function SettingsPage() {
           {/* Provision Form */}
           <form onSubmit={handleProvisionStaff} className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Full Name</label>
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Full Name</label>
               <input
                 type="text"
                 value={staffName}
@@ -401,7 +401,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Email Address</label>
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Email Address</label>
               <input
                 type="email"
                 value={staffEmail}
@@ -412,7 +412,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Assigned Role</label>
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Assigned Role</label>
               <select
                 value={staffRole}
                 onChange={(e) => setStaffRole(e.target.value)}
@@ -426,7 +426,7 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Mobile</label>
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Mobile</label>
               <div className="flex gap-2">
                 <input
                   type="tel"
@@ -438,7 +438,7 @@ export default function SettingsPage() {
                 <button
                   type="submit"
                   disabled={savingStaff}
-                  className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium shrink-0"
+                  className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium shrink-0"
                 >
                   {savingStaff ? "Saving…" : "Provision"}
                 </button>
@@ -460,25 +460,25 @@ export default function SettingsPage() {
               <tbody>
                 {staffList.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                    <td colSpan={4} className="py-6 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                       No additional staff members provisioned yet.
                     </td>
                   </tr>
                 ) : (
                   staffList.map((s) => (
                     <tr key={s.id}>
-                      <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                         {s.name}
-                        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-normal">{s.email}</div>
+                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-normal">{s.email}</div>
                       </td>
                       <td>
-                        <span className="font-mono uppercase text-[10px] px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644]">
+                        <span className="font-mono uppercase text-[10px] px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644]">
                           {s.role}
                         </span>
                       </td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{s.mobile || "–"}</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{s.mobile || "–"}</td>
                       <td className="text-right">
-                        <span className="text-[11px] text-[#006F64] dark:text-[#75E1CE] font-medium">
+                        <span className="text-[11px] text-[#0176D3] dark:text-[#1B96FF] font-medium">
                           {s.status}
                         </span>
                       </td>
@@ -493,26 +493,26 @@ export default function SettingsPage() {
 
       {/* FH Recommended Picks Manager */}
       <div className="terminal-panel p-3.5 space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           <div>
-            <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center gap-1.5">
+            <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center gap-1.5">
               <span>★</span>
               <span>FH Recommended Picks ({currentRecList.length} {recKind === "mf" ? "Funds" : "Strategies"})</span>
             </div>
-            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
               Curated shortlist of top-performing Mutual Funds and PMS strategies highlighted across the terminal
             </div>
           </div>
 
           {/* Toggle MF vs PMS */}
-          <div className="inline-flex rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] p-0.5 bg-[#F7F9FB] dark:bg-[#111722]">
+          <div className="inline-flex rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] p-0.5 bg-[#F3F3F3] dark:bg-[#111722]">
             <button
               type="button"
               onClick={() => setRecKind("mf")}
               className={`px-3 py-1 text-[11px] font-medium rounded-md transition ${
                 recKind === "mf"
-                  ? "bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] shadow-sm"
-                  : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+                  ? "bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] shadow-sm"
+                  : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
               }`}
             >
               Mutual Funds ({Object.keys(rec.mfMap).length})
@@ -522,8 +522,8 @@ export default function SettingsPage() {
               onClick={() => setRecKind("pms")}
               className={`px-3 py-1 text-[11px] font-medium rounded-md transition ${
                 recKind === "pms"
-                  ? "bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] shadow-sm"
-                  : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+                  ? "bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] shadow-sm"
+                  : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
               }`}
             >
               PMS Strategies ({Object.keys(rec.pmsMap).length})
@@ -532,7 +532,7 @@ export default function SettingsPage() {
         </div>
 
         {recSuccess && (
-          <div className="text-[11px] p-2 rounded bg-[#E1F3EC] dark:bg-[#10372A] text-[#006F64] dark:text-[#7FE0B5] border border-[#C2E9E0] dark:border-[#224845]">
+          <div className="text-[11px] p-2 rounded bg-[#EAF5FE] dark:bg-[#10372A] text-[#0176D3] dark:text-[#7FE0B5] border border-[#C5DDF7] dark:border-[#1F4A74]">
             {recSuccess}
           </div>
         )}
@@ -540,7 +540,7 @@ export default function SettingsPage() {
         {/* Add Recommended Form */}
         <form onSubmit={handleAddRecommended} className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div>
-            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+            <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
               {recKind === "mf" ? "AMFI Scheme Code" : "APMI Strategy ID"}
             </label>
             <input
@@ -553,7 +553,7 @@ export default function SettingsPage() {
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+            <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
               {recKind === "mf" ? "Fund / Scheme Name" : "PMS Strategy Name"}
             </label>
             <div className="flex gap-2">
@@ -567,7 +567,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={savingRec}
-                className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium shrink-0"
+                className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium shrink-0"
               >
                 {savingRec ? "Saving…" : "+ Add Recommended"}
               </button>
@@ -578,7 +578,7 @@ export default function SettingsPage() {
         {/* Table of Recommended Picks */}
         <div className="terminal-panel overflow-hidden mt-3 max-h-72 overflow-y-auto">
           <table className="terminal-table">
-            <thead className="sticky top-0 z-10 bg-[#F7F9FB] dark:bg-[#171E27]">
+            <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
               <tr>
                 <th className="w-[20%]">{recKind === "mf" ? "Code" : "APMI ID"}</th>
                 <th className="w-[60%]">{recKind === "mf" ? "Fund Name" : "Strategy Name"}</th>
@@ -588,15 +588,15 @@ export default function SettingsPage() {
             <tbody>
               {currentRecList.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                  <td colSpan={3} className="py-6 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                     No {recKind === "mf" ? "mutual funds" : "PMS strategies"} marked as recommended.
                   </td>
                 </tr>
               ) : (
                 currentRecList.map((item) => (
                   <tr key={item.id}>
-                    <td className="font-mono text-[12px] text-[#006F64] dark:text-[#75E1CE] font-medium">{item.id}</td>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{item.name}</td>
+                    <td className="font-mono text-[12px] text-[#0176D3] dark:text-[#1B96FF] font-medium">{item.id}</td>
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">{item.name}</td>
                     <td className="text-right">
                       <button
                         type="button"
@@ -616,12 +616,12 @@ export default function SettingsPage() {
 
       {/* Watchlist Manager */}
       <div className="terminal-panel p-3.5 space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+        <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           <div>
-            <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+            <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
               Watchlist Items ({watchlists.length})
             </div>
-            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
               Monitored mutual fund schemes, issuers, and PMS strategies
             </div>
           </div>
@@ -630,7 +630,7 @@ export default function SettingsPage() {
         {/* Add Watchlist Form */}
         <form onSubmit={handleAddWatchlist} className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
           <div>
-            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Watchlist Group</label>
+            <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Watchlist Group</label>
             <input
               type="text"
               value={wlName}
@@ -641,7 +641,7 @@ export default function SettingsPage() {
             />
           </div>
           <div>
-            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Item Type</label>
+            <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Item Type</label>
             <select
               value={wlType}
               onChange={(e) => setWlType(e.target.value)}
@@ -653,7 +653,7 @@ export default function SettingsPage() {
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">Identifier</label>
+            <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Identifier</label>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -666,7 +666,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={savingWl}
-                className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium shrink-0"
+                className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium shrink-0"
               >
                 {savingWl ? "Adding…" : "+ Add"}
               </button>
@@ -688,16 +688,16 @@ export default function SettingsPage() {
             <tbody>
               {watchlists.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-6 text-center text-[#536176] dark:text-[#A8B4C4]">
+                  <td colSpan={4} className="py-6 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                     No watchlists configured. Add an item above to track.
                   </td>
                 </tr>
               ) : (
                 watchlists.map((w) => (
                   <tr key={w.id}>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{w.name}</td>
-                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{w.item_type}</td>
-                    <td className="font-mono text-[12px] text-[#006F64] dark:text-[#75E1CE] font-medium">{w.item_id}</td>
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">{w.name}</td>
+                    <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{w.item_type}</td>
+                    <td className="font-mono text-[12px] text-[#0176D3] dark:text-[#1B96FF] font-medium">{w.item_id}</td>
                     <td className="text-right">
                       <button
                         onClick={() => handleDeleteWatchlist(w.id)}

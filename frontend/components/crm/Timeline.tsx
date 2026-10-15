@@ -22,10 +22,10 @@ const COMPOSER = [
 ] as const;
 
 const KIND_TONE: Record<string, string> = {
-  call: "bg-[#CBE9E4] text-[#0B4F47] dark:bg-[#17433D] dark:text-[#CFF5EE]",
+  call: "bg-[#D8E6FE] text-[#014486] dark:bg-[#12385C] dark:text-[#CFE6FC]",
   email: "bg-[#DCE8FB] text-[#17407F] dark:bg-[#1B2E4B] dark:text-[#BBD2F7]",
   whatsapp: "bg-[#D8F2DC] text-[#1B5E20] dark:bg-[#183A1C] dark:text-[#B5E8BA]",
-  note: "bg-[#EEF2F6] text-[#172033] dark:bg-[#24303E] dark:text-[#EDF2F7]",
+  note: "bg-[#ECEBEA] text-[#181818] dark:bg-[#24303E] dark:text-[#EDF2F7]",
   followup: "bg-[#FFF1D6] text-[#8A5A00] dark:bg-[#40300E] dark:text-[#FFD27A]",
 };
 
@@ -107,14 +107,14 @@ export default function Timeline({ target, refreshKey = 0 }: { target: TimelineT
   const dueWarn = mode === "task" ? pastDueWarning(due) : null;
 
   return (
-    <section aria-label="Activity" className="rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-4 space-y-4">
+    <section aria-label="Activity" className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-4 space-y-4">
       {canWrite && <form onSubmit={submit} className="space-y-2">
         <div role="tablist" aria-label="Log an activity" className="flex flex-wrap gap-1">
           {COMPOSER.map((c) => (
             <button
               key={c.id} type="button" role="tab" aria-selected={mode === c.id} onClick={() => setMode(c.id)}
               className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                mode === c.id ? "bg-[#006F64] text-white" : "bg-[#EEF2F6] dark:bg-[#24303E] text-[#536176] dark:text-[#A8B4C4]"
+                mode === c.id ? "bg-[#0176D3] text-white" : "bg-[#ECEBEA] dark:bg-[#24303E] text-[#706E6B] dark:text-[#A8B4C4]"
               }`}
             >
               {c.label}
@@ -124,23 +124,23 @@ export default function Timeline({ target, refreshKey = 0 }: { target: TimelineT
         <input
           value={subject} onChange={(e) => setSubject(e.target.value)} aria-label="Subject"
           placeholder={mode === "task" ? "Task subject" : mode === "note" ? "Note title" : `${COMPOSER.find((c) => c.id === mode)!.label} — what happened?`}
-          className="w-full px-3 py-2 text-xs rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#172033] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]"
+          className="w-full px-3 py-2 text-xs rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
         />
         <textarea
           value={body} onChange={(e) => setBody(e.target.value)} rows={2} aria-label="Details" placeholder="Details (optional)"
-          className="w-full px-3 py-2 text-xs rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#172033] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]"
+          className="w-full px-3 py-2 text-xs rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#0176D3]"
         />
         <div className="flex flex-wrap items-center gap-2">
           {mode === "task" && (
-            <label className="text-xs text-[#536176] dark:text-[#A8B4C4] inline-flex items-center gap-2">
+            <label className="text-xs text-[#706E6B] dark:text-[#A8B4C4] inline-flex items-center gap-2">
               Due (IST)
               <input
                 type="datetime-local" value={due} onChange={(e) => setDue(e.target.value)}
-                className="px-2 py-1 text-xs rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#172033] dark:text-[#EDF2F7]"
+                className="px-2 py-1 text-xs rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#181818] dark:text-[#EDF2F7]"
               />
             </label>
           )}
-          <button type="submit" disabled={saving} className="ml-auto px-3 py-1.5 text-xs font-bold rounded bg-[#006F64] text-white disabled:opacity-50">
+          <button type="submit" disabled={saving} className="ml-auto px-3 py-1.5 text-xs font-bold rounded bg-[#0176D3] text-white disabled:opacity-50">
             {saving ? "Saving…" : "Save"}
           </button>
         </div>
@@ -152,27 +152,27 @@ export default function Timeline({ target, refreshKey = 0 }: { target: TimelineT
       {error && <p role="alert" className="text-xs font-medium text-rose-700 dark:text-rose-300">{error}</p>}
       {loading ? (
         <div role="status" aria-busy="true" aria-label="Loading" className="space-y-2">
-          {[0, 1, 2].map((i) => <div key={i} className="h-10 rounded bg-[#E4E9EF]/70 dark:bg-[#2B3644]/70 animate-pulse" />)}
+          {[0, 1, 2].map((i) => <div key={i} className="h-10 rounded bg-[#E5E5E5]/70 dark:bg-[#2B3644]/70 animate-pulse" />)}
         </div>
       ) : items.length === 0 ? (
-        <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">No activity yet. Log a call, note or task above.</p>
+        <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">No activity yet. Log a call, note or task above.</p>
       ) : (
         <ol className="space-y-3">
           {items.map((i) => (
             <li key={`${i.type}-${i.id}`} className="flex gap-3 text-xs">
-              <span className={`mt-0.5 h-fit shrink-0 rounded px-1.5 py-0.5 text-[11px] font-semibold capitalize ${i.type === "audit" ? "bg-[#EEF2F6] text-[#536176] dark:bg-[#24303E] dark:text-[#A8B4C4]" : i.type === "case" ? "bg-[#FBE7EA] text-[#9B1C2E] dark:bg-[#43181F] dark:text-[#FFA9B5]" : (KIND_TONE[i.kind] ?? KIND_TONE.note)}`}>
+              <span className={`mt-0.5 h-fit shrink-0 rounded px-1.5 py-0.5 text-[11px] font-semibold capitalize ${i.type === "audit" ? "bg-[#ECEBEA] text-[#706E6B] dark:bg-[#24303E] dark:text-[#A8B4C4]" : i.type === "case" ? "bg-[#FBE7EA] text-[#9B1C2E] dark:bg-[#43181F] dark:text-[#FFA9B5]" : (KIND_TONE[i.kind] ?? KIND_TONE.note)}`}>
                 {i.type === "audit" ? "change" : i.type === "case" ? "grievance" : i.kind}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-[#172033] dark:text-[#EDF2F7] break-words">{i.title}</p>
-                {i.detail && <p className="text-[#536176] dark:text-[#A8B4C4] break-words whitespace-pre-wrap">{i.detail}</p>}
-                <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                <p className="font-semibold text-[#181818] dark:text-[#EDF2F7] break-words">{i.title}</p>
+                {i.detail && <p className="text-[#706E6B] dark:text-[#A8B4C4] break-words whitespace-pre-wrap">{i.detail}</p>}
+                <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                   {when(i.at)}{i.actor_name ? ` · ${i.actor_name}` : ""}
                   {i.type === "activity" && i.due_at && !i.done_at ? ` · due ${when(i.due_at)}` : ""}
                   {i.done_at ? " · done" : ""}
                 </p>
                 {canWrite && i.type === "activity" && i.kind === "followup" && !i.done_at && (
-                  <button type="button" onClick={() => markDone(i.id)} className="mt-1 text-[11px] font-semibold underline text-[#006F64] dark:text-[#75E1CE]">
+                  <button type="button" onClick={() => markDone(i.id)} className="mt-1 text-[11px] font-semibold underline text-[#0176D3] dark:text-[#1B96FF]">
                     Mark done
                   </button>
                 )}

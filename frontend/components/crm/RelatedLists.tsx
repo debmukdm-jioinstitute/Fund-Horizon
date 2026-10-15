@@ -10,9 +10,9 @@ interface Mandate { id: string; customer_id: string; umrn: string | null; bank_n
 interface Kyc { customer_id: string; pan_last4: string | null; kra_status: string; ckyc_id: string | null }
 interface Consent { customer_id: string; purpose: string; granted: boolean }
 
-const card = "rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-4";
-const head = "text-sm font-bold text-[#172033] dark:text-[#EDF2F7] mb-2";
-const sub = "text-xs text-[#536176] dark:text-[#A8B4C4]";
+const card = "rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-4";
+const head = "text-sm font-bold text-[#181818] dark:text-[#EDF2F7] mb-2";
+const sub = "text-xs text-[#706E6B] dark:text-[#A8B4C4]";
 
 /** Mandates, KYC and consents for each household member (policies, FDs, PMS, opportunities and cases are
  *  shown by the household view itself). Endpoints a role cannot read are skipped, not fatal. */
@@ -44,7 +44,7 @@ export default function RelatedLists({ members }: { members: Member[] }) {
   }, [key]);
 
   const nameOf = (id: string) => members.find((m) => m.customer_id === id)?.name ?? "–";
-  if (!loaded) return <div role="status" aria-busy="true" aria-label="Loading" className="h-16 rounded bg-[#E4E9EF]/70 dark:bg-[#2B3644]/70 animate-pulse" />;
+  if (!loaded) return <div role="status" aria-busy="true" aria-label="Loading" className="h-16 rounded bg-[#E5E5E5]/70 dark:bg-[#2B3644]/70 animate-pulse" />;
 
   return (
     <div className="grid gap-4 md:grid-cols-2">

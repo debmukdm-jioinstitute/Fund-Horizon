@@ -44,17 +44,17 @@ function TaxResidency({ c, onSaved }: { c: ContactDetail; onSaved: (c: ContactDe
   return (
     <div className="space-y-2 text-xs">
       <div className="grid grid-cols-[9rem_1fr] items-center gap-2">
-        <label htmlFor="tax-status" className="font-semibold text-[#536176] dark:text-[#A8B4C4]">Tax status</label>
+        <label htmlFor="tax-status" className="font-semibold text-[#706E6B] dark:text-[#A8B4C4]">Tax status</label>
         <select id="tax-status" disabled={!canWrite} value={f.tax_status} onChange={(e) => setF({ ...f, tax_status: e.target.value })} className={inputCls}>
           {TAX_STATUSES.map((t) => <option key={t} value={t}>{t.toUpperCase()}</option>)}
         </select>
         {offshore && (
           <>
-            <label htmlFor="tax-country" className="font-semibold text-[#536176] dark:text-[#A8B4C4]">Country</label>
+            <label htmlFor="tax-country" className="font-semibold text-[#706E6B] dark:text-[#A8B4C4]">Country</label>
             <input id="tax-country" disabled={!canWrite} value={f.country} onChange={(e) => setF({ ...f, country: e.target.value })} className={inputCls} />
-            <label htmlFor="tax-nre" className="font-semibold text-[#536176] dark:text-[#A8B4C4]">NRE bank</label>
+            <label htmlFor="tax-nre" className="font-semibold text-[#706E6B] dark:text-[#A8B4C4]">NRE bank</label>
             <input id="tax-nre" disabled={!canWrite} value={f.nre_bank} onChange={(e) => setF({ ...f, nre_bank: e.target.value })} className={inputCls} />
-            <label htmlFor="tax-nro" className="font-semibold text-[#536176] dark:text-[#A8B4C4]">NRO bank</label>
+            <label htmlFor="tax-nro" className="font-semibold text-[#706E6B] dark:text-[#A8B4C4]">NRO bank</label>
             <input id="tax-nro" disabled={!canWrite} value={f.nro_bank} onChange={(e) => setF({ ...f, nro_bank: e.target.value })} className={inputCls} />
           </>
         )}
@@ -85,8 +85,8 @@ export default function ContactRecord({ id }: { id: string }) {
       kind="contacts" title={c.name}
       chips={
         <>
-          <span className="rounded bg-[#EEF2F6] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{label(c.relation)}</span>
-          <span className="rounded bg-[#EEF2F6] dark:bg-[#24303E] px-2 py-0.5 font-semibold uppercase">{c.tax_status}</span>
+          <span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{label(c.relation)}</span>
+          <span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold uppercase">{c.tax_status}</span>
           {c.is_minor && <span className="rounded bg-[#FFF1D6] dark:bg-[#40300E] text-[#8A5A00] dark:text-[#FFD27A] px-2 py-0.5 font-semibold">Minor</span>}
           {c.gaps.map((g) => (
             <span key={g} className="rounded bg-[#FBE7EA] dark:bg-[#43181F] text-[#9B1C2E] dark:text-[#FFA9B5] px-2 py-0.5 font-semibold">{GAP_LABEL[g] ?? g}</span>
@@ -96,7 +96,7 @@ export default function ContactRecord({ id }: { id: string }) {
       left={
         <>
           <div className={card}>
-            <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">Details</h2>
+            <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Details</h2>
             <InlineField label="Name" value={c.name} validate={(v) => (v.trim() ? null : "Name is required")} onSave={text("name", true)} />
             <InlineField label="Email" value={c.email?.endsWith("@placeholder.invalid") ? "" : c.email} onSave={text("email")} />
             <InlineField label="Mobile" value={c.mobile?.startsWith("0000") ? "" : c.mobile} onSave={text("mobile")} />
@@ -109,21 +109,21 @@ export default function ContactRecord({ id }: { id: string }) {
                 options={[{ value: "", label: "None" }, ...adults]} onSave={(v) => save({ guardian_contact_id: v || null })}
               />
             )}
-            <InlineField label="Household" value="" readOnly display={<Link className="underline text-[#006F64] dark:text-[#75E1CE]" href={`/backoffice/crm/households/${c.household_id}`}>{c.household_name}</Link>} />
+            <InlineField label="Household" value="" readOnly display={<Link className="underline text-[#0176D3] dark:text-[#1B96FF]" href={`/backoffice/crm/households/${c.household_id}`}>{c.household_name}</Link>} />
           </div>
           <div className={card}>
-            <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">Tax residency</h2>
+            <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Tax residency</h2>
             <TaxResidency key={`${c.tax_status}-${c.country}-${c.nre_bank}-${c.nro_bank}`} c={c} onSaved={setData} />
           </div>
           <div className={card}>
-            <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">KYC &amp; compliance</h2>
+            <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">KYC &amp; compliance</h2>
             <InlineField label="PAN" value="" readOnly display={c.kyc?.pan_last4 ? `••••••${c.kyc.pan_last4}` : "Not on file"} />
             <InlineField label="KRA status" value="" readOnly display={c.kyc ? label(c.kyc.kra_status) : "Not on file"} />
             <InlineField label="FATCA / CRS" value={c.fatca_crs} type="select" display={label(c.fatca_crs)} options={FATCA_CRS.map((x) => ({ value: x, label: label(x) }))} onSave={(v) => save({ fatca_crs: v })} />
             <InlineField label="KYC expiry" value={c.kyc_expiry} type="date" display={fmtDate(c.kyc_expiry)} onSave={(v) => save({ kyc_expiry: v || null })} />
           </div>
           <div className={card}>
-            <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">Nominee</h2>
+            <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Nominee</h2>
             <InlineField label="Nominee name" value={c.nominee_name} onSave={text("nominee_name")} />
             <InlineField label="Relationship" value={c.nominee_relation} onSave={text("nominee_relation")} />
             <InlineField

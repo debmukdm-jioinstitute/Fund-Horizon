@@ -226,3 +226,27 @@ body {
     display: none !important;
   }
 }
+
+/* Salesforce Lightning palette, scoped to the backoffice shell (class "sf" on its root). */
+.sf {
+  --terminal-bg: #FFFFFF;
+  --terminal-surface: #F3F3F3;
+  --terminal-text-primary: #181818;
+  --terminal-text-secondary: #706E6B;
+  --terminal-border: #E5E5E5;
+  --terminal-accent: #0176D3;
+  --terminal-accent-bg: #EAF5FE;
+}
+html.dark .sf {
+  --terminal-bg: #10151C;
+  --terminal-surface: #171E27;
+  --terminal-text-primary: #EDF2F7;
+  --terminal-text-secondary: #A8B4C4;
+  --terminal-border: #2B3644;
+  --terminal-accent: #1B96FF;
+  --terminal-accent-bg: #11304F;
+}
+.sf .terminal-btn-accent { background-color: #0176D3; border-color: #0176D3; border-radius: 4px; }
+.sf .terminal-btn-accent:hover { background-color: #014486; border-color: #014486; opacity: 1; }
+html.dark .sf .terminal-btn-accent { color: #10151C; background-color: #1B96FF; border-color: #1B96FF; }
+.sf .terminal-btn, .sf .terminal-input, .sf .terminal-panel { border-radius: 4px; }

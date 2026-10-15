@@ -75,13 +75,13 @@ export default function SuitabilityPanel({ customerId }: { customerId: string })
 
       {open && q && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center overflow-y-auto p-4" role="dialog" aria-modal="true" aria-label="Risk questionnaire">
-          <div className="bg-white dark:bg-[#10151C] rounded-xl border border-[#E4E9EF] dark:border-[#2B3644] shadow-xl w-full max-w-2xl p-6 space-y-4 my-8">
-            <h3 className="text-base font-bold text-[#172033] dark:text-[#EDF2F7]">Risk questionnaire</h3>
+          <div className="bg-white dark:bg-[#10151C] rounded-xl border border-[#E5E5E5] dark:border-[#2B3644] shadow-xl w-full max-w-2xl p-6 space-y-4 my-8">
+            <h3 className="text-base font-bold text-[#181818] dark:text-[#EDF2F7]">Risk questionnaire</h3>
             {q.questions.map((question, i) => (
               <fieldset key={question.id} className="space-y-1.5">
-                <legend className="text-xs font-semibold text-[#172033] dark:text-[#EDF2F7]">{i + 1}. {question.text}</legend>
+                <legend className="text-xs font-semibold text-[#181818] dark:text-[#EDF2F7]">{i + 1}. {question.text}</legend>
                 {question.options.map((o, idx) => (
-                  <label key={idx} className="flex items-start gap-2 text-xs text-[#172033] dark:text-[#EDF2F7]">
+                  <label key={idx} className="flex items-start gap-2 text-xs text-[#181818] dark:text-[#EDF2F7]">
                     <input type="radio" name={question.id} checked={answers[question.id] === idx} onChange={() => setAnswers((x) => ({ ...x, [question.id]: idx }))} className="mt-0.5" />
                     {o.text}
                   </label>

@@ -48,7 +48,7 @@ function LeadRecord({ id }: { id: string }) {
     <>
       <Layout
         kind="leads" title={lead.name}
-        chips={<span className="rounded bg-[#EEF2F6] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{lead.status}</span>}
+        chips={<span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{lead.status}</span>}
         owner={<OwnerAvatar ownerId={lead.assigned_rm_id} />}
         actions={!converted && lead.status !== "lost" && <button type="button" className={btn} onClick={() => setConverting(true)}>Convert</button>}
         path={
@@ -66,7 +66,7 @@ function LeadRecord({ id }: { id: string }) {
         }
         left={
           <div className={card}>
-            <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">Details</h2>
+            <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Details</h2>
             <InlineField label="Name" value={lead.name} readOnly={converted} validate={(v) => (v.trim() ? null : "Name is required")} onSave={(v) => save({ name: v.trim() })} />
             <InlineField
               label="Email" value={lead.email} readOnly={converted}
@@ -85,7 +85,7 @@ function LeadRecord({ id }: { id: string }) {
             {lead.converted_at && (
               <InlineField
                 label="Converted" value="" readOnly
-                display={<>{fmtDate(lead.converted_at, true)}{lead.converted_household_id && <> · <Link className="underline text-[#006F64] dark:text-[#75E1CE]" href={`/backoffice/crm/households/${lead.converted_household_id}`}>Open household</Link></>}</>}
+                display={<>{fmtDate(lead.converted_at, true)}{lead.converted_household_id && <> · <Link className="underline text-[#0176D3] dark:text-[#1B96FF]" href={`/backoffice/crm/households/${lead.converted_household_id}`}>Open household</Link></>}</>}
               />
             )}
           </div>
@@ -156,7 +156,7 @@ function OppRecord({ id }: { id: string }) {
     <>
       <Layout
         kind="opportunities" title={opp.title}
-        chips={<span className="rounded bg-[#EEF2F6] dark:bg-[#24303E] px-2 py-0.5 font-semibold">{opp.product_line.replaceAll("_", " ")} · {formatRupeesFromPaise(opp.stage === "won" ? (opp.won_amount ?? opp.amount) : opp.amount)}</span>}
+        chips={<span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold">{opp.product_line.replaceAll("_", " ")} · {formatRupeesFromPaise(opp.stage === "won" ? (opp.won_amount ?? opp.amount) : opp.amount)}</span>}
         owner={<OwnerAvatar ownerId={opp.assigned_rm_id} />}
         path={
           <>
@@ -166,7 +166,7 @@ function OppRecord({ id }: { id: string }) {
         }
         left={
           <div className={card}>
-            <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">Details</h2>
+            <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Details</h2>
             <InlineField label="Title" value={opp.title} validate={(v) => (v.trim() ? null : "Title is required")} onSave={(v) => save({ title: v.trim() })} />
             <InlineField
               label="Amount (₹)" value={rupees(opp.amount)} type="number" display={formatRupeesFromPaise(opp.amount)}
@@ -181,7 +181,7 @@ function OppRecord({ id }: { id: string }) {
             <InlineField label="Expected close" value={opp.expected_close} type="date" display={fmtDate(opp.expected_close)} onSave={(v) => save({ expected_close: v || undefined })} />
             <InlineField
               label="Household" value="" readOnly
-              display={opp.household_id ? <Link className="underline text-[#006F64] dark:text-[#75E1CE]" href={`/backoffice/crm/households/${opp.household_id}`}>{opp.household_name ?? "Open household"}</Link> : (opp.customer_name ?? "–")}
+              display={opp.household_id ? <Link className="underline text-[#0176D3] dark:text-[#1B96FF]" href={`/backoffice/crm/households/${opp.household_id}`}>{opp.household_name ?? "Open household"}</Link> : (opp.customer_name ?? "–")}
             />
             <OwnerField value={opp.assigned_rm_id} onSave={(rm) => save({ assigned_rm_id: rm })} />
             {opp.stage === "won" && <InlineField label="Won amount" value="" readOnly display={formatRupeesFromPaise(opp.won_amount ?? opp.amount)} />}
@@ -195,13 +195,13 @@ function OppRecord({ id }: { id: string }) {
       />
       {losing && (
         <div className="fixed inset-0 z-50 bg-navy-950/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Mark opportunity lost">
-          <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-[#E4E9EF] dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-3">
-            <h3 className="text-base font-bold text-[#172033] dark:text-[#EDF2F7]">Mark “{opp.title}” as lost</h3>
-            <label className="block text-xs font-semibold text-[#172033] dark:text-[#EDF2F7]" htmlFor="rec-lost-reason">Reason (required)</label>
-            <textarea id="rec-lost-reason" autoFocus rows={3} value={reason} onChange={(e) => setReason(e.target.value)} className="w-full px-3 py-2 text-xs rounded-xl border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#172033] dark:text-[#EDF2F7]" />
+          <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-[#E5E5E5] dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-3">
+            <h3 className="text-base font-bold text-[#181818] dark:text-[#EDF2F7]">Mark “{opp.title}” as lost</h3>
+            <label className="block text-xs font-semibold text-[#181818] dark:text-[#EDF2F7]" htmlFor="rec-lost-reason">Reason (required)</label>
+            <textarea id="rec-lost-reason" autoFocus rows={3} value={reason} onChange={(e) => setReason(e.target.value)} className="w-full px-3 py-2 text-xs rounded-xl border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#181818] dark:text-[#EDF2F7]" />
             {reasonError && <p className="text-xs font-medium text-rose-700 dark:text-rose-300">{reasonError}</p>}
             <div className="flex gap-2">
-              <button type="button" onClick={() => setLosing(false)} className="flex-1 px-3 py-2 text-xs font-semibold bg-[#EEF2F6] dark:bg-[#24303E] rounded-xl">Cancel</button>
+              <button type="button" onClick={() => setLosing(false)} className="flex-1 px-3 py-2 text-xs font-semibold bg-[#ECEBEA] dark:bg-[#24303E] rounded-xl">Cancel</button>
               <button type="button" onClick={confirmLost} className="flex-1 px-3 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl">Mark lost</button>
             </div>
           </div>
@@ -230,14 +230,14 @@ function CaseRecord({ id }: { id: string }) {
       kind="cases" title={c.subject}
       chips={
         <>
-          <span className="rounded bg-[#EEF2F6] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{c.status.replaceAll("_", " ")}</span>
+          <span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{c.status.replaceAll("_", " ")}</span>
           {breaching && <span className="rounded bg-[#FBE7EA] dark:bg-[#43181F] text-[#9B1C2E] dark:text-[#FFA9B5] px-2 py-0.5 font-semibold">SLA breached</span>}
         </>
       }
       path={<PathBar stages={CASE_STATUS} current={c.status} onSelect={(s) => void save({ status: s }).catch(() => undefined)} />}
       left={
         <div className={card}>
-          <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">Details</h2>
+          <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Details</h2>
           <InlineField label="Status" value={c.status} type="select" display={c.status.replaceAll("_", " ")} options={CASE_STATUS.map((s) => ({ value: s, label: s.replaceAll("_", " ") }))} onSave={(v) => save({ status: v })} />
           <InlineField label="Category" value={c.category.replaceAll("_", " ")} readOnly />
           <InlineField label="Customer" value={c.customer_name} readOnly />
@@ -265,15 +265,15 @@ function HouseholdPeople({ data, onChanged }: { data: HouseholdDetail; onChanged
   return (
     <div className={card} aria-label="Contacts">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-bold text-[#172033] dark:text-[#EDF2F7]">Contacts</h2>
+        <h2 className="text-sm font-bold text-[#181818] dark:text-[#EDF2F7]">Contacts</h2>
         {canWrite && <NewOpportunityForm householdId={data.household.id} onCreated={onChanged} />}
       </div>
-      {people === null ? <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">Loading contacts…</p> : (
+      {people === null ? <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">Loading contacts…</p> : (
         <ul className="space-y-1 text-xs mb-3">
           {people.map((p) => (
             <li key={p.id} className="flex justify-between gap-2">
-              <Link className="font-semibold underline text-[#006F64] dark:text-[#75E1CE]" href={`/backoffice/crm/contacts/${p.id}`}>{p.name}</Link>
-              <span className="text-[#536176] dark:text-[#A8B4C4] capitalize">{p.relation} · {p.tax_status.toUpperCase()}</span>
+              <Link className="font-semibold underline text-[#0176D3] dark:text-[#1B96FF]" href={`/backoffice/crm/contacts/${p.id}`}>{p.name}</Link>
+              <span className="text-[#706E6B] dark:text-[#A8B4C4] capitalize">{p.relation} · {p.tax_status.toUpperCase()}</span>
             </li>
           ))}
         </ul>
@@ -304,12 +304,12 @@ function HouseholdRecord({ id }: { id: string }) {
   return (
     <Layout
       kind="households" title={h.name}
-      chips={<span className="rounded bg-[#EEF2F6] dark:bg-[#24303E] px-2 py-0.5 font-semibold">{data.members.length} member{data.members.length === 1 ? "" : "s"} · {data.opportunities.filter((o) => o.stage !== "won" && o.stage !== "lost").length} open</span>}
+      chips={<span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold">{data.members.length} member{data.members.length === 1 ? "" : "s"} · {data.opportunities.filter((o) => o.stage !== "won" && o.stage !== "lost").length} open</span>}
       owner={<OwnerAvatar ownerId={h.rm_id} />}
       left={
         <>
           <div className={card}>
-            <h2 className="text-sm font-bold mb-2 text-[#172033] dark:text-[#EDF2F7]">Details</h2>
+            <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Details</h2>
             <InlineField label="Name" value={h.name} validate={(v) => (v.trim() ? null : "Name is required")} onSave={(v) => save({ name: v.trim() })} />
             <OwnerField value={h.rm_id} onSave={(rm) => save({ rm_id: rm })} />
             <InlineField label="Notes" value={h.notes} type="textarea" onSave={(v) => save({ notes: v })} />

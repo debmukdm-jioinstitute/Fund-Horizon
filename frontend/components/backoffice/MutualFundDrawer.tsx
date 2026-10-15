@@ -118,10 +118,10 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="p-4 sm:p-5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F7F9FB] dark:bg-[#171E27]">
+          <div className="p-4 sm:p-5 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F3F3F3] dark:bg-[#171E27]">
             <div>
               <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#006F64]/10 dark:bg-[#75E1CE]/15 text-[#006F64] dark:text-[#75E1CE] font-semibold border border-[#006F64]/20 dark:border-[#75E1CE]/30">
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#0176D3]/10 dark:bg-[#1B96FF]/15 text-[#0176D3] dark:text-[#1B96FF] font-semibold border border-[#0176D3]/20 dark:border-[#1B96FF]/30">
                   Code: {scheme.scheme_code}
                 </span>
                 <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border ${
@@ -132,7 +132,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   {classified.plan || "—"}
                   {classified.option ? ` · ${classified.option}` : ""}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644]">
                   {scheme.category || "Mutual Fund"}
                 </span>
                 {stale && (
@@ -145,8 +145,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   onClick={() => rec.toggleMf(scheme.scheme_code, scheme.scheme_name)}
                   className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border transition-colors cursor-pointer ${
                     rec.isMfRecommended(scheme.scheme_code)
-                      ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold"
-                      : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64]"
+                      ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-semibold"
+                      : "bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border-[#E5E5E5] dark:border-[#2B3644] hover:border-[#0176D3]"
                   }`}
                   title="Click to toggle FH Recommended status"
                 >
@@ -155,18 +155,18 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               </div>
               <h2
                 id="mf-drawer-title"
-                className="text-[17px] sm:text-[19px] font-medium text-[#172033] dark:text-[#EDF2F7] leading-snug"
+                className="text-[17px] sm:text-[19px] font-medium text-[#181818] dark:text-[#EDF2F7] leading-snug"
               >
                 {scheme.scheme_name}
               </h2>
-              <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 font-medium">
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 font-medium">
                 {scheme.amc_name || "Asset Management Company"}
               </p>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] p-2.5 rounded-md hover:bg-[#E4E9EF] dark:hover:bg-[#2B3644] transition shrink-0"
+              className="text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7] p-2.5 rounded-md hover:bg-[#E5E5E5] dark:hover:bg-[#2B3644] transition shrink-0"
               aria-label="Close"
             >
               <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,8 +180,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
             {/* Key Metrics Cards */}
             <div className="grid grid-cols-2 gap-2.5">
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Latest NAV</div>
-                <div className="text-[17px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Latest NAV</div>
+                <div className="text-[17px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                   {navLabel}
                 </div>
                 {navPairSiblings.length > 0 && (
@@ -192,70 +192,70 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               </div>
 
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">NAV Date</div>
-                <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">NAV Date</div>
+                <div className="text-[13px] font-mono text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                   {formatISTDate(scheme.nav_date)}
                   {stale ? " · stale" : ""}
                 </div>
               </div>
 
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Expense Ratio (TER)</div>
-                <div className="text-[16px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Expense Ratio (TER)</div>
+                <div className="text-[16px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                   {scheme.ter_pct ? `${Number(scheme.ter_pct).toFixed(2)}%` : "—"}
                 </div>
                 {scheme.ter_as_of && (
-                  <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4] font-mono mt-0.5">
+                  <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] font-mono mt-0.5">
                     As of: {scheme.ter_as_of}
                   </div>
                 )}
               </div>
 
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Plan Type</div>
-                <div className="text-[14px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Plan Type</div>
+                <div className="text-[14px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                   {classified.plan || "—"}
                   {classified.option ? ` · ${classified.option}` : ""}
                 </div>
               </div>
 
               <div className="terminal-panel p-3 col-span-2">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Fund Manager</div>
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Fund Manager</div>
                 {manager ? (
                   <>
                     <button
                       type="button"
                       onClick={() => setManagerOpen(true)}
-                      className="text-[14px] font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline mt-0.5 text-left"
+                      className="text-[14px] font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline mt-0.5 text-left"
                     >
                       {manager.manager_name}
                     </button>
                     {manager.manager_start && (
-                      <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4] font-mono mt-0.5">
+                      <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] font-mono mt-0.5">
                         Since {manager.manager_start}
                         {manager.tenure_years != null ? ` · ${manager.tenure_years} yrs` : ""}
                       </div>
                     )}
                   </>
                 ) : (
-                  <div className="text-[13px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">Not on file</div>
+                  <div className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">Not on file</div>
                 )}
               </div>
             </div>
 
             {/* Performance & history from the AMFI + mfapi.in dataset */}
-            {perf === undefined && <div className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Loading performance…</div>}
+            {perf === undefined && <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Loading performance…</div>}
             {perf === null && (
-              <div className="terminal-panel p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              <div className="terminal-panel p-3 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                 No performance data for this scheme: the dataset covers Growth-option, open-ended schemes only.
               </div>
             )}
             {perf && (
               <>
                 <div className="terminal-panel overflow-hidden">
-                  <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex justify-between">
+                  <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7] flex justify-between">
                     <span>Performance Horizons</span>
-                    <span className="font-normal text-[#536176] dark:text-[#A8B4C4]">as of {perf.as_of ?? "—"} · {perf.metrics.history_years ?? "—"} yrs of history</span>
+                    <span className="font-normal text-[#706E6B] dark:text-[#A8B4C4]">as of {perf.as_of ?? "—"} · {perf.metrics.history_years ?? "—"} yrs of history</span>
                   </div>
                   <table className="terminal-table">
                     <thead>
@@ -274,15 +274,15 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 <div className="grid grid-cols-2 gap-2.5">
                   {([["Volatility (3Y)", "vol_3y", "%"], ["Max Drawdown (3Y)", "max_drawdown_3y", "%"], ["Max Drawdown (All)", "max_drawdown_all", "%"], ["Sharpe (3Y)", "sharpe_3y", ""], ["Sortino (3Y)", "sortino_3y", ""]] as const).map(([label, key, unit]) => (
                     <div key={key} className="terminal-panel p-3">
-                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">{label}</div>
-                      <div className="text-[14px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{label}</div>
+                      <div className="text-[14px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                         {typeof perf.metrics[key] === "number" ? `${(perf.metrics[key] as number).toFixed(2)}${unit}` : "—"}
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="terminal-panel overflow-hidden">
-                  <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
+                  <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
                     <span>NAV History</span>
                     <div className="flex gap-1">
                       {(["monthly", "quarterly", "yearly"] as const).map((v) => (
@@ -336,42 +336,42 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
 
             {/* ISIN & Identification Table */}
             <div className="terminal-panel overflow-hidden">
-              <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                 Identification &amp; Settlement Details
               </div>
-              <div className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644] text-[12px]">
+              <div className="divide-y divide-[#E5E5E5] dark:divide-[#2B3644] text-[12px]">
                 <div className="p-3 flex items-center justify-between">
-                  <span className="text-[#536176] dark:text-[#A8B4C4]">AMFI Scheme Code</span>
-                  <span className="font-mono font-medium text-[#172033] dark:text-[#EDF2F7]">{scheme.scheme_code}</span>
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4]">AMFI Scheme Code</span>
+                  <span className="font-mono font-medium text-[#181818] dark:text-[#EDF2F7]">{scheme.scheme_code}</span>
                 </div>
                 <div className="p-3 flex items-center justify-between">
-                  <span className="text-[#536176] dark:text-[#A8B4C4]">ISIN Growth</span>
-                  <span className="font-mono font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4]">ISIN Growth</span>
+                  <span className="font-mono font-medium text-[#181818] dark:text-[#EDF2F7]">
                     {blankDash(scheme.isin_growth)}
                   </span>
                 </div>
                 {scheme.isin_div && (
                   <div className="p-3 flex items-center justify-between">
-                    <span className="text-[#536176] dark:text-[#A8B4C4]">ISIN Dividend / IDCW</span>
-                    <span className="font-mono font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <span className="text-[#706E6B] dark:text-[#A8B4C4]">ISIN Dividend / IDCW</span>
+                    <span className="font-mono font-medium text-[#181818] dark:text-[#EDF2F7]">
                       {scheme.isin_div}
                     </span>
                   </div>
                 )}
                 <div className="p-3 flex items-center justify-between">
-                  <span className="text-[#536176] dark:text-[#A8B4C4]">Fund House (AMC)</span>
-                  <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">{scheme.amc_name || "—"}</span>
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4]">Fund House (AMC)</span>
+                  <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">{scheme.amc_name || "—"}</span>
                 </div>
                 <div className="p-3 flex items-center justify-between">
-                  <span className="text-[#536176] dark:text-[#A8B4C4]">SEBI Categorization</span>
-                  <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">{scheme.category || "—"}</span>
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4]">SEBI Categorization</span>
+                  <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">{scheme.category || "—"}</span>
                 </div>
               </div>
             </div>
 
             {/* Quick Link Cards */}
             <div className="terminal-panel p-3.5 space-y-2.5">
-              <div className="text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                 Analytics &amp; External Integrations
               </div>
 
@@ -381,13 +381,13 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   href={`/funds/${scheme.scheme_code}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-between p-2 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64] dark:hover:border-[#75E1CE] transition text-[12px] group"
+                  className="flex items-center justify-between p-2 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] hover:border-[#0176D3] dark:hover:border-[#1B96FF] transition text-[12px] group"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[#006F64] dark:text-[#75E1CE] font-medium">Scheme Analytics Page</span>
-                    <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">(Regular / Retail)</span>
+                    <span className="text-[#0176D3] dark:text-[#1B96FF] font-medium">Scheme Analytics Page</span>
+                    <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">(Regular / Retail)</span>
                   </div>
-                  <span className="text-[#536176] dark:text-[#A8B4C4] group-hover:text-[#006F64] dark:group-hover:text-[#75E1CE]">↗</span>
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4] group-hover:text-[#0176D3] dark:group-hover:text-[#1B96FF]">↗</span>
                 </a>
                 )}
 
@@ -395,10 +395,10 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   href={`https://api.mfapi.in/mf/${scheme.scheme_code}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-between p-2 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64] dark:hover:border-[#75E1CE] transition text-[12px] group"
+                  className="flex items-center justify-between p-2 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] hover:border-[#0176D3] dark:hover:border-[#1B96FF] transition text-[12px] group"
                 >
-                  <span className="text-[#172033] dark:text-[#EDF2F7]">MFAPI Historical NAV JSON Feed</span>
-                  <span className="text-[#536176] dark:text-[#A8B4C4] group-hover:text-[#006F64] dark:group-hover:text-[#75E1CE]">↗</span>
+                  <span className="text-[#181818] dark:text-[#EDF2F7]">MFAPI Historical NAV JSON Feed</span>
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4] group-hover:text-[#0176D3] dark:group-hover:text-[#1B96FF]">↗</span>
                 </a>
 
                 <a
@@ -406,17 +406,17 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   href={`https://www.google.com/search?q=${encodeURIComponent([scheme.scheme_name, classified.plan, classified.option, "NAV google finance"].filter(Boolean).join(" "))}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-between p-2 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64] dark:hover:border-[#75E1CE] transition text-[12px] group"
+                  className="flex items-center justify-between p-2 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] hover:border-[#0176D3] dark:hover:border-[#1B96FF] transition text-[12px] group"
                 >
-                  <span className="text-[#172033] dark:text-[#EDF2F7]">Search on Google Finance</span>
-                  <span className="text-[#536176] dark:text-[#A8B4C4] group-hover:text-[#006F64] dark:group-hover:text-[#75E1CE]">↗</span>
+                  <span className="text-[#181818] dark:text-[#EDF2F7]">Search on Google Finance</span>
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4] group-hover:text-[#0176D3] dark:group-hover:text-[#1B96FF]">↗</span>
                 </a>
               </div>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="p-4 border-t border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] flex flex-wrap items-center justify-between gap-2">
+          <div className="p-4 border-t border-[#E5E5E5] dark:border-[#2B3644] bg-[#F3F3F3] dark:bg-[#171E27] flex flex-wrap items-center justify-between gap-2">
             <button
               type="button"
               onClick={handleCopy}
@@ -431,7 +431,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 </>
               ) : (
                 <>
-                  <svg className="w-3.5 h-3.5 text-[#536176] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 text-[#706E6B] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <span>Copy Details</span>
@@ -451,7 +451,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                 href={`/funds/${scheme.scheme_code}`}
                 target="_blank"
                 rel="noreferrer"
-                className="terminal-btn text-[12px] py-1.5 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                className="terminal-btn text-[12px] py-1.5 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
               >
                 Open Analytics ↗
               </a>

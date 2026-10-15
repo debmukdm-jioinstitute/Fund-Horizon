@@ -36,8 +36,8 @@ function TableOrBoard({ table, board, boardLabel, defaultView }: { table: React.
       aria-pressed={view === v}
       className={`px-3 py-1.5 text-xs font-medium border first:rounded-l-lg last:rounded-r-lg ${
         view === v
-          ? "bg-[#006F64] text-white border-[#006F64]"
-          : "bg-white dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644]"
+          ? "bg-[#0176D3] text-white border-[#0176D3]"
+          : "bg-white dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border-[#E5E5E5] dark:border-[#2B3644]"
       }`}
     >
       {text}

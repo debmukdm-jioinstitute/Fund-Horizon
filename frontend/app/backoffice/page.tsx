@@ -68,7 +68,7 @@ export default function BackofficeOverviewPage() {
       onClick: open,
       onKeyDown: (e: React.KeyboardEvent) => e.key === "Enter" && open(),
       tabIndex: 0,
-      className: "cursor-pointer hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] focus:outline-none focus-visible:bg-[#F7F9FB] dark:focus-visible:bg-[#171E27]",
+      className: "cursor-pointer hover:bg-[#F3F3F3] dark:hover:bg-[#171E27] focus:outline-none focus-visible:bg-[#F3F3F3] dark:focus-visible:bg-[#171E27]",
     };
   };
 
@@ -107,8 +107,8 @@ export default function BackofficeOverviewPage() {
 
   if (loading && !data) {
     return (
-      <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
-        <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+      <div className="p-8 text-center text-[#706E6B] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
+        <svg className="animate-spin h-4 w-4 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
         </svg>
@@ -169,24 +169,24 @@ export default function BackofficeOverviewPage() {
   return (
     <div className="space-y-4">
       {/* Top Header Row: Title, Observation Date, Freshness, and Compact Refresh Control */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               Market Overview & System Telemetry
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               Multi-Asset Core
             </span>
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Internal market benchmarks, sovereign curves, and telemetry • Observed {formattedObservationDate}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {lastRefreshedAt && (
-            <span className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4] tabular-nums hidden sm:inline">
+            <span className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4] tabular-nums hidden sm:inline">
               Refreshed: {lastRefreshedAt}
             </span>
           )}
@@ -196,7 +196,7 @@ export default function BackofficeOverviewPage() {
             className="terminal-btn flex items-center gap-1.5 text-[12px] py-1 px-2.5"
           >
             <svg
-              className={`w-3.5 h-3.5 text-[#536176] dark:text-[#A8B4C4] ${refreshing ? "animate-spin" : ""}`}
+              className={`w-3.5 h-3.5 text-[#706E6B] dark:text-[#A8B4C4] ${refreshing ? "animate-spin" : ""}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -221,23 +221,23 @@ export default function BackofficeOverviewPage() {
           const firstItem = bannerSection.items[0];
           const bannerText = firstItem.text ?? firstItem.value;
           return (
-            <div className="terminal-panel p-3 border border-[#E4E9EF] dark:border-[#2B3644] flex flex-col md:flex-row md:items-center justify-between gap-2 text-[12px]">
+            <div className="terminal-panel p-3 border border-[#E5E5E5] dark:border-[#2B3644] flex flex-col md:flex-row md:items-center justify-between gap-2 text-[12px]">
               <div className="flex items-center gap-2">
-                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE] font-medium shrink-0">
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] font-medium shrink-0">
                   Briefing
                 </span>
-                <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {bannerSection.title || formatISTDate(briefing.brief_date)}
                 </span>
                 {bannerText != null && (
-                  <span className="text-[#536176] dark:text-[#A8B4C4] hidden lg:inline">
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4] hidden lg:inline">
                     — {bannerText}
                   </span>
                 )}
               </div>
               <Link
                 href="/backoffice/research?tab=briefing"
-                className="text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium flex items-center gap-1 shrink-0 self-start md:self-auto"
+                className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium flex items-center gap-1 shrink-0 self-start md:self-auto"
               >
                 <span>View Full Briefing & Notes</span>
                 <span>→</span>
@@ -261,8 +261,8 @@ export default function BackofficeOverviewPage() {
             </thead>
             <tbody>
               {/* Section 1: Indian Markets & Sovereign Rates */}
-              <tr className="bg-[#F7F9FB] dark:bg-[#171E27] border-y border-[#E4E9EF] dark:border-[#2B3644]">
-                <td colSpan={5} className="py-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+              <tr className="bg-[#F3F3F3] dark:bg-[#171E27] border-y border-[#E5E5E5] dark:border-[#2B3644]">
+                <td colSpan={5} className="py-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
                   Indian Markets & Sovereign Rates
                 </td>
               </tr>
@@ -271,38 +271,38 @@ export default function BackofficeOverviewPage() {
                   <span>USD / INR Reference Rate</span>
                   <InfoTip metric="inr_usd_fx" meta={data?.meta?.inr_usd_fx ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:USDINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
                   —
                 </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("usdinr"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usdinr")}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("usdinr"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("usdinr")}</td>
               </tr>
               <tr {...rowProps("India 10Y Benchmark G-Sec")}>
                 <td className="font-medium flex items-center">
                   <span>India 10Y Benchmark G-Sec</span>
                   <InfoTip metric="in_10y_yield" meta={data?.meta?.in_10y_yield ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.in_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("in10"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("in10")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("in10"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("in10")}</td>
               </tr>
               <tr {...rowProps("India 2Y Sovereign Bond")}>
                 <td className="font-medium flex items-center">
                   <span>India 2Y Sovereign Bond</span>
                   <InfoTip metric="in_10y_yield" meta={data?.meta?.in_10y_yield ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.in_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("in2"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("in2")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("in2"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("in2")}</td>
               </tr>
               <tr {...rowProps("India 10Y - 2Y Curve Slope")}>
                 <td className="font-medium flex items-center">
@@ -312,9 +312,9 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={spreads.india_10y_2y_bps} unit="bps" />
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("inSlope"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inSlope")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("inSlope"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("inSlope")}</td>
               </tr>
               <tr {...rowProps("India - US 10Y Sovereign Spread")}>
                 <td className="font-medium flex items-center">
@@ -324,26 +324,26 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={spreads.india_us_10y_bps} unit="bps" />
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("inUs"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inUs")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("inUs"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("inUs")}</td>
               </tr>
               <tr {...rowProps("India VIX (NSE Volatility Index)")}>
                 <td className="font-medium flex items-center">
                   <span>India VIX (NSE Volatility Index)</span>
                   <InfoTip metric="india_vix" meta={data?.meta?.india_vix ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(volData["VOL:IN:INDIAVIX"], (n) => n.toFixed(2))}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("inVix"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("inVix")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("inVix"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("inVix")}</td>
               </tr>
 
               {/* Section 2: Global & Macro Benchmarks */}
-              <tr className="bg-[#F7F9FB] dark:bg-[#171E27] border-y border-[#E4E9EF] dark:border-[#2B3644]">
-                <td colSpan={5} className="py-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+              <tr className="bg-[#F3F3F3] dark:bg-[#171E27] border-y border-[#E5E5E5] dark:border-[#2B3644]">
+                <td colSpan={5} className="py-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
                   Global & Macro Benchmarks
                 </td>
               </tr>
@@ -352,24 +352,24 @@ export default function BackofficeOverviewPage() {
                   <span>US 10Y Treasury Benchmark</span>
                   <InfoTip metric="us_10y_yield" meta={data?.meta?.us_10y_yield ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.us_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("us10"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("us10")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("us10"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("us10")}</td>
               </tr>
               <tr {...rowProps("US 2Y Treasury Yield")}>
                 <td className="font-medium flex items-center">
                   <span>US 2Y Treasury Yield</span>
                   <InfoTip metric="us_2y_yield" meta={data?.meta?.us_2y_yield ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.us_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("us2"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("us2")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("us2"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("us2")}</td>
               </tr>
               <tr {...rowProps("US 10Y - 2Y Curve Slope")}>
                 <td className="font-medium flex items-center">
@@ -379,62 +379,62 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={spreads.us_10y_2y_bps} unit="bps" />
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("usSlope"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usSlope")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("usSlope"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("usSlope")}</td>
               </tr>
               <tr {...rowProps("EUR / INR Reference Rate")}>
                 <td className="font-medium flex items-center">
                   <span>EUR / INR Reference Rate</span>
                   <InfoTip metric="fx_rate" meta={data?.meta?.fx_rate ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:EURINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("eurinr"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("eurinr")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("eurinr"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("eurinr")}</td>
               </tr>
               <tr {...rowProps("GBP / INR Reference Rate")}>
                 <td className="font-medium flex items-center">
                   <span>GBP / INR Reference Rate</span>
                   <InfoTip metric="fx_rate" meta={data?.meta?.fx_rate ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:GBPINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("gbpinr"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("gbpinr")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("gbpinr"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("gbpinr")}</td>
               </tr>
               <tr {...rowProps("JPY / INR Reference Rate (100 JPY)")}>
                 <td className="font-medium flex items-center">
                   <span>JPY / INR Reference Rate (100 JPY)</span>
                   <InfoTip metric="fx_rate" meta={data?.meta?.fx_rate ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:JPYINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("jpyinr"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("jpyinr")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("jpyinr"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("jpyinr")}</td>
               </tr>
               <tr {...rowProps("Cboe US VIX")}>
                 <td className="font-medium flex items-center">
                   <span>Cboe US VIX</span>
                   <InfoTip metric="vix" meta={data?.meta?.vix ?? data?.meta?._default} />
                 </td>
-                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(volData["VOL:US:VIX"], (n) => n.toFixed(2))}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(asOf("usVix"))}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{source("usVix")}</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("usVix"))}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("usVix")}</td>
               </tr>
 
               {/* Section 3: Institutional Flows & Telemetry */}
-              <tr className="bg-[#F7F9FB] dark:bg-[#171E27] border-y border-[#E4E9EF] dark:border-[#2B3644]">
-                <td colSpan={5} className="py-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+              <tr className="bg-[#F3F3F3] dark:bg-[#171E27] border-y border-[#E5E5E5] dark:border-[#2B3644]">
+                <td colSpan={5} className="py-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
                   Institutional Flows & System Telemetry
                 </td>
               </tr>
@@ -446,9 +446,9 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={flows?.fii_net} unit="₹ Cr" />
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">NSE</td>
               </tr>
               <tr {...rowProps("DII Net Equity Investment (Cr)")}>
                 <td className="font-medium flex items-center">
@@ -458,9 +458,9 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={flows?.dii_net} unit="₹ Cr" />
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">NSE</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">NSE</td>
               </tr>
               <tr {...rowProps("Upstream Feed Operational Health")}>
                 <td className="font-medium flex items-center">
@@ -470,11 +470,11 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#087744] dark:text-[#58D6A0]">
                   {sourcesSummary ? `${sourcesSummary.ready} / ${sourcesSummary.total} Ready` : "—"}
                 </td>
-                <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
                   {sourcesSummary ? (sourcesSummary.status === "healthy" ? "Healthy" : "Degraded") : "—"}
                 </td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{formattedObservationDate}</td>
-                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formattedObservationDate}</td>
+                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                   <Link href="/backoffice/data-health" className="hover:underline">Data Health →</Link>
                 </td>
               </tr>

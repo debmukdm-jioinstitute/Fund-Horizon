@@ -18,7 +18,7 @@ export default function HoldingsCard({ householdId, contactId, title = "Holdings
   }, [householdId, contactId]);
 
   if (error) return <p role="alert" className={errCls}>{error}</p>;
-  if (!data) return <div role="status" aria-busy="true" aria-label="Loading" className="h-20 rounded bg-[#E4E9EF]/70 dark:bg-[#2B3644]/70 animate-pulse" />;
+  if (!data) return <div role="status" aria-busy="true" aria-label="Loading" className="h-20 rounded bg-[#E5E5E5]/70 dark:bg-[#2B3644]/70 animate-pulse" />;
   const direct = data.direct_plan_holdings.length;
   return (
     <section className={cardCls} aria-label={title}>
@@ -26,7 +26,7 @@ export default function HoldingsCard({ householdId, contactId, title = "Holdings
         <h2 className={headCls}>{title}</h2>
         <span className={`rounded px-2 py-0.5 text-[11px] font-semibold capitalize ${tierTone[data.tier] ?? tierTone.standard}`}>{data.tier}</span>
       </div>
-      <p className="mt-1 text-2xl font-bold text-[#172033] dark:text-[#EDF2F7]" aria-label="Assets under management">{rupees(data.aum_paise)}</p>
+      <p className="mt-1 text-2xl font-bold text-[#181818] dark:text-[#EDF2F7]" aria-label="Assets under management">{rupees(data.aum_paise)}</p>
       <p className={`text-xs ${mutedCls}`}>
         Cost {rupees(data.cost_paise)} · {data.holdings.length} position{data.holdings.length === 1 ? "" : "s"}
         {data.unvalued > 0 && ` · ${data.unvalued} without a NAV (not counted)`}
@@ -42,7 +42,7 @@ export default function HoldingsCard({ householdId, contactId, title = "Holdings
         <div className="overflow-x-auto mt-3">
           <table className="w-full text-xs">
             <thead>
-              <tr className="border-b border-[#E4E9EF] dark:border-[#2B3644]">
+              <tr className="border-b border-[#E5E5E5] dark:border-[#2B3644]">
                 <th className={thCls}>Scheme</th>
                 {householdId && <th className={thCls}>Holder</th>}
                 <th className={thCls}>Folio</th><th className={`${thCls} text-right`}>Units</th>
@@ -51,7 +51,7 @@ export default function HoldingsCard({ householdId, contactId, title = "Holdings
             </thead>
             <tbody>
               {data.holdings.map((h) => (
-                <tr key={h.id} className="border-b border-[#E4E9EF]/60 dark:border-[#2B3644]/60">
+                <tr key={h.id} className="border-b border-[#E5E5E5]/60 dark:border-[#2B3644]/60">
                   <td className={tdCls}>
                     {h.scheme_name ?? h.scheme_code}
                     {h.is_direct && <span className="ml-1 rounded bg-[#FFF1D6] dark:bg-[#40300E] px-1 text-[10px] font-semibold text-[#8A5A00] dark:text-[#FFD27A]">Direct</span>}

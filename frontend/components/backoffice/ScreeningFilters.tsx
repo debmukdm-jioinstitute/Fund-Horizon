@@ -80,7 +80,7 @@ export default function ScreeningFilters({
   return (
     <div className="terminal-panel p-3.5 space-y-3">
       {/* Top Bar: Search, Category, AMC, Preset controls & Apply */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div className="flex flex-wrap items-center gap-2 flex-1">
           {/* Quick Search */}
           <input
@@ -162,7 +162,7 @@ export default function ScreeningFilters({
             type="button"
             disabled={loading}
             onClick={onApply}
-            className="terminal-btn text-[12px] py-1.5 px-4 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+            className="terminal-btn text-[12px] py-1.5 px-4 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
           >
             {loading ? "Running Funnel…" : "Apply Funnel"}
           </button>
@@ -172,23 +172,23 @@ export default function ScreeningFilters({
       {/* Funnel Stage Controls Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[12px]">
         {/* S1: Manager Tenure */}
-        <div className="p-2.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] space-y-1.5">
+        <div className="p-2.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-[#172033] dark:text-[#EDF2F7]">
+            <span className="font-semibold text-[#181818] dark:text-[#EDF2F7]">
               S1 Manager Tenure
             </span>
-            <label className="flex items-center gap-1 text-[10px] text-[#172033] dark:text-[#EDF2F7]">
+            <label className="flex items-center gap-1 text-[10px] text-[#181818] dark:text-[#EDF2F7]">
               <input
                 type="checkbox"
                 checked={filters.include_missing}
                 onChange={(e) => onChange({ ...filters, include_missing: e.target.checked })}
-                className="accent-[#006F64] dark:accent-[#75E1CE]"
+                className="accent-[#0176D3] dark:accent-[#1B96FF]"
               />
               Include funds with missing data
             </label>
           </div>
           <div className="flex items-center gap-2">
-            <label className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+            <label className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
               Min tenure:
             </label>
             <input
@@ -201,46 +201,46 @@ export default function ScreeningFilters({
               }
               className="terminal-input w-20 py-0.5 px-2 text-[12px] tabular-nums"
             />
-            <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">years</span>
+            <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">years</span>
           </div>
-          <p className="text-[10px] text-[#536176] dark:text-[#A8B4C4] leading-tight">
+          <p className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] leading-tight">
             Unknown manager or start date → kept and flagged needs data when the toggle is on.
           </p>
         </div>
 
         {/* S2: Selected Columns & Bounds */}
-        <div className="p-2.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] space-y-1.5">
+        <div className="p-2.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-[#172033] dark:text-[#EDF2F7]">
+            <span className="font-semibold text-[#181818] dark:text-[#EDF2F7]">
               S2 Ratio Columns ({filters.columns.length})
             </span>
             <button
               type="button"
               onClick={() => setShowRatioSelector(!showRatioSelector)}
-              className="text-[#006F64] dark:text-[#75E1CE] text-[11px] font-medium hover:underline"
+              className="text-[#0176D3] dark:text-[#1B96FF] text-[11px] font-medium hover:underline"
             >
               {showRatioSelector ? "Close" : "Select Columns"}
             </button>
           </div>
-          <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] truncate">
+          <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] truncate">
             {filters.columns.join(", ") || "None"}
           </div>
-          <p className="text-[10px] text-[#536176] dark:text-[#A8B4C4] leading-tight">
+          <p className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] leading-tight">
             Columns without a min/max do not filter.
           </p>
         </div>
 
         {/* S3: 2Y Capture Ratios & Quartiles */}
-        <div className="p-2.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] space-y-1.5">
+        <div className="p-2.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-[#172033] dark:text-[#EDF2F7]">
+            <span className="font-semibold text-[#181818] dark:text-[#EDF2F7]">
               S3 Capture &amp; Quartile
             </span>
-            <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">2Y Window</span>
+            <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">2Y Window</span>
           </div>
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Up capture &gt; (%)</span>
+              <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] block">Up capture &gt; (%)</span>
               <input
                 type="number"
                 step="5"
@@ -251,7 +251,7 @@ export default function ScreeningFilters({
               />
             </div>
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Down capture &lt; (%)</span>
+              <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] block">Down capture &lt; (%)</span>
               <input
                 type="number"
                 step="5"
@@ -262,22 +262,22 @@ export default function ScreeningFilters({
               />
             </div>
           </div>
-          <p className="text-[10px] text-[#536176] dark:text-[#A8B4C4] leading-tight">
+          <p className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] leading-tight">
             Q1 = Retain (excluded from action); Q2+Q3 = Review; Q4 = Dropped.
           </p>
         </div>
 
         {/* S4a & S4c: Risk Ratios & TER */}
-        <div className="p-2.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] space-y-1.5">
+        <div className="p-2.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-[#172033] dark:text-[#EDF2F7]">
+            <span className="font-semibold text-[#181818] dark:text-[#EDF2F7]">
               S4 Risk &amp; TER
             </span>
-            <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">3Y Window</span>
+            <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">3Y Window</span>
           </div>
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Sharpe ≥</span>
+              <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] block">Sharpe ≥</span>
               <input
                 type="number"
                 step="0.1"
@@ -288,7 +288,7 @@ export default function ScreeningFilters({
               />
             </div>
             <div>
-              <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] block">Sortino ≥</span>
+              <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] block">Sortino ≥</span>
               <input
                 type="number"
                 step="0.1"
@@ -305,9 +305,9 @@ export default function ScreeningFilters({
               id="ter-median"
               checked={filters.filter_ter_median}
               onChange={(e) => onChange({ ...filters, filter_ter_median: e.target.checked })}
-              className="accent-[#006F64] dark:accent-[#75E1CE]"
+              className="accent-[#0176D3] dark:accent-[#1B96FF]"
             />
-            <label htmlFor="ter-median" className="text-[11px] text-[#172033] dark:text-[#EDF2F7]">
+            <label htmlFor="ter-median" className="text-[11px] text-[#181818] dark:text-[#EDF2F7]">
               TER ≤ Cat Median
             </label>
           </div>
@@ -316,15 +316,15 @@ export default function ScreeningFilters({
 
       {/* S2 Ratio Selector Drawer/Dropdown */}
       {showRatioSelector && (
-        <div className="p-3 bg-[#F7F9FB] dark:bg-[#171E27] border border-[#006F64]/40 dark:border-[#75E1CE]/40 rounded space-y-2">
-          <div className="flex items-center justify-between pb-1.5 border-b border-[#E4E9EF] dark:border-[#2B3644]">
-            <span className="text-[11px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+        <div className="p-3 bg-[#F3F3F3] dark:bg-[#171E27] border border-[#0176D3]/40 dark:border-[#1B96FF]/40 rounded space-y-2">
+          <div className="flex items-center justify-between pb-1.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+            <span className="text-[11px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
               Select Ratio Columns &amp; Configure Optional Bounds
             </span>
             <button
               type="button"
               onClick={() => setShowRatioSelector(false)}
-              className="text-[11px] text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+              className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
             >
               Done
             </button>
@@ -339,8 +339,8 @@ export default function ScreeningFilters({
                   key={r.key}
                   className={`p-2 rounded border text-[11px] ${
                     selected
-                      ? "bg-white dark:bg-[#10151C] border-[#006F64] dark:border-[#75E1CE]"
-                      : "bg-[#F7F9FB] dark:bg-[#171E27] border-[#E4E9EF] dark:border-[#2B3644]"
+                      ? "bg-white dark:bg-[#10151C] border-[#0176D3] dark:border-[#1B96FF]"
+                      : "bg-[#F3F3F3] dark:bg-[#171E27] border-[#E5E5E5] dark:border-[#2B3644]"
                   }`}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
@@ -349,11 +349,11 @@ export default function ScreeningFilters({
                       id={`chk-${r.key}`}
                       checked={selected}
                       onChange={() => handleColumnToggle(r.key)}
-                      className="accent-[#006F64] dark:accent-[#75E1CE]"
+                      className="accent-[#0176D3] dark:accent-[#1B96FF]"
                     />
                     <label
                       htmlFor={`chk-${r.key}`}
-                      className="font-medium text-[#172033] dark:text-[#EDF2F7] cursor-pointer"
+                      className="font-medium text-[#181818] dark:text-[#EDF2F7] cursor-pointer"
                     >
                       {r.label}
                     </label>
@@ -389,10 +389,10 @@ export default function ScreeningFilters({
       {showPresetModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="terminal-panel max-w-sm w-full p-4 space-y-3 bg-white dark:bg-[#171E27]">
-            <div className="text-[13px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+            <div className="text-[13px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
               Save Screening Preset
             </div>
-            <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+            <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
               Give this filter and ratio configuration a name to recall later.
             </p>
             <input
@@ -421,7 +421,7 @@ export default function ScreeningFilters({
                   }
                 }}
                 disabled={!newPresetName.trim()}
-                className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
               >
                 Save
               </button>

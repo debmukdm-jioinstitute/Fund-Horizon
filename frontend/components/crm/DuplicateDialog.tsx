@@ -39,7 +39,7 @@ export default function DuplicateDialog({
                 <span className="block text-navy-500 dark:text-[#A8B4C4]">Match: {m.reasons.map((r) => REASON[r] ?? r).join(", ")}</span>
               </span>
               {m.visible && m.href && (
-                <Link href={m.href} className="shrink-0 rounded-lg bg-navy-900 dark:bg-[#006F64] px-3 py-1.5 font-semibold text-white">Open existing</Link>
+                <Link href={m.href} className="shrink-0 rounded-lg bg-navy-900 dark:bg-[#0176D3] px-3 py-1.5 font-semibold text-white">Open existing</Link>
               )}
             </li>
           ))}

@@ -101,17 +101,17 @@ export default function DataHealthPage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               Data Health &amp; Upstream Source Registry
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               Diagnostics
             </span>
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Upstream provider quotas, verified reachability latency, and atomic CSV import hub
           </p>
         </div>
@@ -128,8 +128,8 @@ export default function DataHealthPage() {
       </div>
 
       {loading && !health ? (
-        <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
-          <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+        <div className="p-8 text-center text-[#706E6B] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
+          <svg className="animate-spin h-4 w-4 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
@@ -144,7 +144,7 @@ export default function DataHealthPage() {
         <div className="space-y-4">
           {/* Telemetry Summary Flat Table */}
           <div className="terminal-panel overflow-hidden">
-            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+            <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
               Upstream Adapters Health Telemetry
             </div>
             <table className="terminal-table">
@@ -159,27 +159,27 @@ export default function DataHealthPage() {
                 <tr>
                   <td className="font-medium text-[#087744] dark:text-[#58D6A0]">Ready Adapters</td>
                   <td className="text-right font-medium text-[#087744] dark:text-[#58D6A0]">{health.summary.ready}</td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">At least one successful live pull recorded</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">At least one successful live pull recorded</td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Awaiting First Run</td>
-                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{health.summary.pending}</td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Registered but no successful pull recorded yet</td>
+                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Awaiting First Run</td>
+                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{health.summary.pending}</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Registered but no successful pull recorded yet</td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Needs API Key</td>
-                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{health.summary.needs_key}</td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Free registration key pending in environment (e.g. FRED_API_KEY)</td>
+                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Needs API Key</td>
+                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{health.summary.needs_key}</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Free registration key pending in environment (e.g. FRED_API_KEY)</td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#536176] dark:text-[#A8B4C4]">Manual Import Only</td>
-                  <td className="text-right font-medium text-[#536176] dark:text-[#A8B4C4]">{health.summary.manual_only}</td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Manual CSV / XLSX ingest due to zero-scraping licensing constraint</td>
+                  <td className="font-medium text-[#706E6B] dark:text-[#A8B4C4]">Manual Import Only</td>
+                  <td className="text-right font-medium text-[#706E6B] dark:text-[#A8B4C4]">{health.summary.manual_only}</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Manual CSV / XLSX ingest due to zero-scraping licensing constraint</td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Total Registered Adapters</td>
-                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{health.summary.total}</td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Complete backoffice data adapter catalog</td>
+                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Total Registered Adapters</td>
+                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{health.summary.total}</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Complete backoffice data adapter catalog</td>
                 </tr>
               </tbody>
             </table>
@@ -187,7 +187,7 @@ export default function DataHealthPage() {
 
           {/* Source Adapters Registry Table */}
           <div className="terminal-panel overflow-hidden">
-            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+            <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
               Source Adapters Registry
             </div>
             <div className="overflow-x-auto">
@@ -217,30 +217,30 @@ export default function DataHealthPage() {
                   {health.sources.map((s) => (
                     <tr key={s.id}>
                       <td>
-                        <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{s.name}</div>
-                        <div className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
+                        <div className="font-medium text-[#181818] dark:text-[#EDF2F7]">{s.name}</div>
+                        <div className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4]">
                           {s.id} • v{s.adapter_version}
                         </div>
                       </td>
                       <td>
                         <span className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded ${
                           s.health_status === "ready"
-                            ? "bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE]"
-                            : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]"
+                            ? "bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF]"
+                            : "bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644]"
                         }`}>
                           {s.health_status.replace("_", " ")}
                         </span>
                       </td>
-                      <td className="text-[11px] font-mono uppercase text-[#536176] dark:text-[#A8B4C4]">
+                      <td className="text-[11px] font-mono uppercase text-[#706E6B] dark:text-[#A8B4C4]">
                         {s.supported_frequency}
                       </td>
-                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
                         {s.rate_budget}/hr
                       </td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                         {s.last_success_at ? formatISTDateTime(s.last_success_at) : "Never"}
                       </td>
-                      <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4] truncate max-w-xs" title={s.terms_notes}>
+                      <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] truncate max-w-xs" title={s.terms_notes}>
                         {s.terms_notes}
                       </td>
                       <td className="text-right">
@@ -248,7 +248,7 @@ export default function DataHealthPage() {
                           <button
                             onClick={() => handleRefresh(s.id)}
                             disabled={refreshingId === s.id}
-                            className="terminal-btn text-[11px] py-0.5 px-2 text-[#006F64] dark:text-[#75E1CE]"
+                            className="terminal-btn text-[11px] py-0.5 px-2 text-[#0176D3] dark:text-[#1B96FF]"
                           >
                             {refreshingId === s.id ? "Syncing…" : "Sync"}
                           </button>
@@ -263,12 +263,12 @@ export default function DataHealthPage() {
 
           {/* Validated CSV Import Hub */}
           <div className="terminal-panel p-3.5 space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
               <div>
-                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                   Validated CSV / XLSX Ingestion Hub
                 </div>
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                   Two-stage safe import: Preview row-level validation → Atomic Commit with formula sanitization
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function DataHealthPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                   Import Dataset
                 </label>
                 <select
@@ -299,7 +299,7 @@ export default function DataHealthPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                   Select CSV File ({fileName})
                 </label>
                 <input
@@ -315,7 +315,7 @@ export default function DataHealthPage() {
               <button
                 onClick={handlePreview}
                 disabled={previewing || !fileContent.trim()}
-                className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
               >
                 {previewing ? "Validating Rows…" : "Preview & Validate Ingest"}
               </button>
@@ -328,9 +328,9 @@ export default function DataHealthPage() {
             )}
 
             {previewJob && (
-              <div className="terminal-panel p-3 border border-[#E4E9EF] dark:border-[#2B3644] space-y-2.5">
+              <div className="terminal-panel p-3 border border-[#E5E5E5] dark:border-[#2B3644] space-y-2.5">
                 <div className="flex items-center justify-between text-[12px]">
-                  <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                     Preview Summary: {previewJob.valid_rows_count + previewJob.error_rows_count} total rows ({previewJob.valid_rows_count} valid, {previewJob.error_rows_count} errors)
                   </span>
                   <button

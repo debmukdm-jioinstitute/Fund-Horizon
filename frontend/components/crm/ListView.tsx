@@ -63,10 +63,10 @@ const BULK_FIELD: Partial<Record<ListEntity, string>> = {
 };
 
 const PAGE_SIZES = [10, 25, 50, 100];
-const surface = "bg-white dark:bg-[#10151C] border-[#E4E9EF] dark:border-[#2B3644]";
-const muted = "text-[#536176] dark:text-[#A8B4C4]";
+const surface = "bg-white dark:bg-[#10151C] border-[#E5E5E5] dark:border-[#2B3644]";
+const muted = "text-[#706E6B] dark:text-[#A8B4C4]";
 const ctl =
-  "px-2.5 py-1.5 text-xs rounded border bg-white dark:bg-[#171E27] border-[#E4E9EF] dark:border-[#2B3644] text-[#172033] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]";
+  "px-2.5 py-1.5 text-xs rounded border bg-white dark:bg-[#171E27] border-[#E5E5E5] dark:border-[#2B3644] text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#0176D3]";
 
 export default function ListView<T extends { id: string }>({
   entity, columns, filters = [], rowHref, searchPlaceholder = "Search…", emptyText = "Nothing matches these filters.", reloadKey = 0,
@@ -328,15 +328,15 @@ export default function ListView<T extends { id: string }>({
         </select>
         {activeView && !activeView.builtin && (
           <>
-            <button type="button" onClick={updateView} className={`${ctl} hover:bg-[#F7F9FB] dark:hover:bg-[#1D2733]`}>Update view</button>
-            <button type="button" onClick={toggleDefault} className={`${ctl} hover:bg-[#F7F9FB] dark:hover:bg-[#1D2733]`}>
+            <button type="button" onClick={updateView} className={`${ctl} hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733]`}>Update view</button>
+            <button type="button" onClick={toggleDefault} className={`${ctl} hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733]`}>
               {activeView.is_default ? "Unset default" : "Make default"}
             </button>
             <button type="button" onClick={removeView} className={`${ctl} text-rose-700 dark:text-rose-300`}>Delete view</button>
           </>
         )}
         {savingName === null ? (
-          <button type="button" onClick={() => setSavingName("")} className={`${ctl} hover:bg-[#F7F9FB] dark:hover:bg-[#1D2733]`}>
+          <button type="button" onClick={() => setSavingName("")} className={`${ctl} hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733]`}>
             Save as view…
           </button>
         ) : (
@@ -353,7 +353,7 @@ export default function ListView<T extends { id: string }>({
             <label className={`text-xs inline-flex items-center gap-1 ${muted}`}>
               <input type="checkbox" checked={saveDefault} onChange={(e) => setSaveDefault(e.target.checked)} /> Default
             </label>
-            <button type="button" onClick={saveView} disabled={!savingName.trim()} className={`${ctl} bg-[#006F64] text-white border-[#006F64] disabled:opacity-50`}>Save</button>
+            <button type="button" onClick={saveView} disabled={!savingName.trim()} className={`${ctl} bg-[#0176D3] text-white border-[#0176D3] disabled:opacity-50`}>Save</button>
             <button type="button" onClick={() => setSavingName(null)} className={ctl}>Cancel</button>
           </span>
         )}
@@ -375,7 +375,7 @@ export default function ListView<T extends { id: string }>({
               </div>
             )}
           </div>
-          <button type="button" onClick={exportCsv} className={`${ctl} hover:bg-[#F7F9FB] dark:hover:bg-[#1D2733]`}>Export CSV</button>
+          <button type="button" onClick={exportCsv} className={`${ctl} hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733]`}>Export CSV</button>
         </span>
       </div>
 
@@ -428,7 +428,7 @@ export default function ListView<T extends { id: string }>({
       </div>
 
       {isAdmin && bulkEntity && selectedIds.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 rounded border border-[#006F64]/40 bg-[#E6F4F2] dark:bg-[#0F2A27] px-3 py-2 text-xs">
+        <div className="flex flex-wrap items-center gap-2 rounded border border-[#0176D3]/40 bg-[#E6F4F2] dark:bg-[#0F2A27] px-3 py-2 text-xs">
           <strong>{selectedIds.length} selected</strong>
           <label className="sr-only" htmlFor={`${entity}-reassign`}>New owner</label>
           <select id={`${entity}-reassign`} value={reassignTo} onChange={(e) => setReassignTo(e.target.value)} className={ctl}>
@@ -437,7 +437,7 @@ export default function ListView<T extends { id: string }>({
               <option key={o.id} value={o.id}>{o.name}</option>
             ))}
           </select>
-          <button type="button" onClick={doReassign} className={`${ctl} bg-[#006F64] text-white border-[#006F64]`}>Reassign owner</button>
+          <button type="button" onClick={doReassign} className={`${ctl} bg-[#0176D3] text-white border-[#0176D3]`}>Reassign owner</button>
           {entity === "leads" && (
             <button type="button" onClick={() => setConfirmDelete(true)} className={`${ctl} bg-rose-600 text-white border-rose-600`}>Delete</button>
           )}
@@ -449,7 +449,7 @@ export default function ListView<T extends { id: string }>({
         <div role="dialog" aria-modal="true" aria-label="Confirm delete" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-sm space-y-3 rounded-lg bg-white dark:bg-[#171E27] p-5 shadow-xl">
             <h2 className="text-base font-bold text-rose-700 dark:text-rose-300">Delete {selectedIds.length} lead{selectedIds.length === 1 ? "" : "s"}?</h2>
-            <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">This permanently removes the lead and its activity. To confirm, enter the delete code <strong>0000</strong> below.</p>
+            <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">This permanently removes the lead and its activity. To confirm, enter the delete code <strong>0000</strong> below.</p>
             <input
               autoFocus inputMode="numeric" value={deleteCode} onChange={(e) => { setDeleteCode(e.target.value); setDeleteErr(""); }}
               onKeyDown={(e) => e.key === "Enter" && deleteCode && void doDelete()}
@@ -465,14 +465,14 @@ export default function ListView<T extends { id: string }>({
         </div>
       )}
 
-      {notice && <p role="status" className="text-xs font-medium text-[#006F64] dark:text-[#75E1CE]">{notice}</p>}
+      {notice && <p role="status" className="text-xs font-medium text-[#0176D3] dark:text-[#1B96FF]">{notice}</p>}
       {error && <p role="alert" className="rounded border border-rose-300 bg-rose-50 dark:bg-rose-950/40 px-3 py-2 text-xs font-medium text-rose-700 dark:text-rose-300">{error}</p>}
 
       <div className="overflow-x-auto" aria-busy={loading}>
         <table className="w-full text-left text-xs">
           <thead>
             {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id} className="border-b border-[#E4E9EF] dark:border-[#2B3644]">
+              <tr key={hg.id} className="border-b border-[#E5E5E5] dark:border-[#2B3644]">
                 {hg.headers.map((h) => {
                   const sortKey = (h.column.columnDef.meta as { sortKey?: string } | undefined)?.sortKey;
                   const dir = sort === sortKey ? "ascending" : sort === `-${sortKey}` ? "descending" : "none";
@@ -484,7 +484,7 @@ export default function ListView<T extends { id: string }>({
                       className={`px-2 py-2 font-semibold whitespace-nowrap ${muted}`}
                     >
                       {sortKey ? (
-                        <button type="button" onClick={() => toggleSort(sortKey)} className="inline-flex items-center gap-1 hover:text-[#172033] dark:hover:text-[#EDF2F7]">
+                        <button type="button" onClick={() => toggleSort(sortKey)} className="inline-flex items-center gap-1 hover:text-[#181818] dark:hover:text-[#EDF2F7]">
                           {flexRender(h.column.columnDef.header, h.getContext())}
                           <span aria-hidden="true">{dir === "ascending" ? "▲" : dir === "descending" ? "▼" : ""}</span>
                         </button>
@@ -502,7 +502,7 @@ export default function ListView<T extends { id: string }>({
               [0, 1, 2, 3, 4].map((i) => (
                 <tr key={i}>
                   <td colSpan={table.getVisibleLeafColumns().length} className="px-2 py-2">
-                    <div className="h-5 rounded bg-[#E4E9EF]/70 dark:bg-[#2B3644]/70 animate-pulse" />
+                    <div className="h-5 rounded bg-[#E5E5E5]/70 dark:bg-[#2B3644]/70 animate-pulse" />
                   </td>
                 </tr>
               ))
@@ -512,11 +512,11 @@ export default function ListView<T extends { id: string }>({
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="border-b border-[#E4E9EF]/70 dark:border-[#2B3644]/70 hover:bg-[#F7F9FB] dark:hover:bg-[#171E27]">
+                <tr key={row.id} className="border-b border-[#E5E5E5]/70 dark:border-[#2B3644]/70 hover:bg-[#F3F3F3] dark:hover:bg-[#171E27]">
                   {row.getVisibleCells().map((cell, i) => (
-                    <td key={cell.id} className="px-2 py-2 align-middle text-[#172033] dark:text-[#EDF2F7]">
+                    <td key={cell.id} className="px-2 py-2 align-middle text-[#181818] dark:text-[#EDF2F7]">
                       {rowHref && i === (isAdmin && bulkEntity ? 1 : 0) ? (
-                        <Link href={rowHref(row.original)} className="font-semibold hover:underline text-[#006F64] dark:text-[#75E1CE]">
+                        <Link href={rowHref(row.original)} className="font-semibold hover:underline text-[#0176D3] dark:text-[#1B96FF]">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </Link>
                       ) : (

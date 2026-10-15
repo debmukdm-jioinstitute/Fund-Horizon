@@ -48,7 +48,7 @@ export default function HouseholdsTab() {
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="grid gap-3 md:grid-cols-[1fr_2fr_auto] items-end bg-white dark:bg-[#10151C] p-4 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644]">
+        <form onSubmit={handleCreate} className="grid gap-3 md:grid-cols-[1fr_2fr_auto] items-end bg-white dark:bg-[#10151C] p-4 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644]">
           <div>
             <label htmlFor="hh-name" className="block text-xs font-semibold text-navy-700 dark:text-[#EDF2F7] mb-1">Household name</label>
             <input

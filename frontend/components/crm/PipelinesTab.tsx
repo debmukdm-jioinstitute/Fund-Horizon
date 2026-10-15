@@ -274,7 +274,7 @@ export default function PipelinesTab() {
             onClick={() => setLine(p.value)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
               line === p.value
-                ? "bg-navy-900 text-white border-navy-900 dark:bg-[#006F64] dark:border-[#006F64]"
+                ? "bg-navy-900 text-white border-navy-900 dark:bg-[#0176D3] dark:border-[#0176D3]"
                 : "bg-white dark:bg-[#171E27] text-navy-700 dark:text-[#EDF2F7] border-navy-200 dark:border-[#2B3644] hover:border-navy-400"
             }`}
           >

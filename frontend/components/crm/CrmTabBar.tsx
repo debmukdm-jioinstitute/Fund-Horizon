@@ -21,7 +21,7 @@ const ICONS: Record<string, string[]> = {
 /** CRM section tabs: icon above label, active tab filled. Scrolls sideways on narrow screens. */
 export default function CrmTabBar({ tab }: { tab: string }) {
   return (
-    <nav aria-label="CRM sections" className="overflow-x-auto rounded-lg border border-[#C2E9E0] dark:border-[#234542] border-t-4 border-t-[#006F64] bg-[#F1F8F6] dark:bg-[#12292B]">
+    <nav aria-label="CRM sections" className="overflow-x-auto rounded-lg border border-[#C5DDF7] dark:border-[#1F4A74] border-t-4 border-t-[#0176D3] bg-[#F3F9FE] dark:bg-[#0F2A45]">
       <div className="flex min-w-max justify-between gap-1 p-1.5">
         {CRM_TABS.map(([id, label]) => {
           const on = tab === id;
@@ -33,8 +33,8 @@ export default function CrmTabBar({ tab }: { tab: string }) {
               ref={on ? (el) => el?.scrollIntoView({ inline: "center", block: "nearest" }) : undefined}
               className={`flex min-w-[72px] flex-1 flex-col items-center gap-1 rounded-md px-3 py-2 text-[12px] font-semibold transition-colors ${
                 on
-                  ? "bg-[#006F64] text-white shadow-[0_3px_0_#00A896]"
-                  : "text-[#0B4F47] dark:text-[#CFF5EE] hover:bg-[#DDEFEA] dark:hover:bg-[#1A3A3C]"
+                  ? "bg-[#0176D3] text-white shadow-[0_3px_0_#014486]"
+                  : "text-[#014486] dark:text-[#CFE6FC] hover:bg-[#E3F0FB] dark:hover:bg-[#17406A]"
               }`}
             >
               <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">

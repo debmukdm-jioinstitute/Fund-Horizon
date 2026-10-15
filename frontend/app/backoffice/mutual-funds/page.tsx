@@ -236,12 +236,12 @@ function MutualFunds() {
 
   return (
     <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
-          <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+          <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
             {selectedLabels.length ? `Top ${selectedLabels.slice(0, 3).join(", ")}${selectedLabels.length > 3 ? " & more" : ""} mutual funds` : "Mutual funds"}
           </h1>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Compare Growth-option schemes by returns, risk, expense ratio and FH checklist score. NAV as of {asOf ? formatISTDate(asOf) : "-"}. Source: AMFI + mfapi.in.
           </p>
         </div>
@@ -270,10 +270,10 @@ function MutualFunds() {
           ))}
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5">
-          <label className="flex items-center gap-2 text-[12px] font-medium text-[#006F64] dark:text-[#75E1CE] cursor-pointer">
+          <label className="flex items-center gap-2 text-[12px] font-medium text-[#0176D3] dark:text-[#1B96FF] cursor-pointer">
             <input
               type="checkbox"
-              className="h-4 w-4 accent-[#006F64]"
+              className="h-4 w-4 accent-[#0176D3]"
               checked={allSelected}
               onChange={() =>
                 setUrl({ category: allSelected ? category.filter((c) => !groupKeys.includes(c)) : Array.from(new Set([...category, ...groupKeys])) })
@@ -282,14 +282,14 @@ function MutualFunds() {
             Select All ({groupKeys.length})
           </label>
           {group?.categories.map((c) => (
-            <label key={c.key} className="flex items-center gap-2 text-[12px] text-[#172033] dark:text-[#EDF2F7] cursor-pointer">
+            <label key={c.key} className="flex items-center gap-2 text-[12px] text-[#181818] dark:text-[#EDF2F7] cursor-pointer">
               <input
                 type="checkbox"
-                className="h-4 w-4 accent-[#006F64]"
+                className="h-4 w-4 accent-[#0176D3]"
                 checked={category.includes(c.key)}
                 onChange={() => setUrl({ category: toggle(category, c.key) })}
               />
-              {c.label} <span className="text-[#536176] dark:text-[#A8B4C4]">({c.count})</span>
+              {c.label} <span className="text-[#706E6B] dark:text-[#A8B4C4]">({c.count})</span>
             </label>
           ))}
         </div>
@@ -307,16 +307,16 @@ function MutualFunds() {
                 setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Returns" ? "cagr_3y" : "score");
                 setOrder("desc");
               }}
-              className={`text-[13px] py-1 px-3 border-b-2 ${section === s ? "border-[#006F64] text-[#006F64] dark:border-[#75E1CE] dark:text-[#75E1CE] font-medium" : "border-transparent text-[#536176] dark:text-[#A8B4C4]"}`}
+              className={`text-[13px] py-1 px-3 border-b-2 ${section === s ? "border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] font-medium" : "border-transparent text-[#706E6B] dark:text-[#A8B4C4]"}`}
             >
               {s}
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#172033] dark:text-[#EDF2F7]">
+        <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#181818] dark:text-[#EDF2F7]">
           {PLANS.map((p) => (
             <label key={p} className="flex items-center gap-1.5 cursor-pointer">
-              <input type="checkbox" className="h-4 w-4 accent-[#006F64]" checked={plan.includes(p)} onChange={() => setUrl({ plan: toggle(plan, p) })} />
+              <input type="checkbox" className="h-4 w-4 accent-[#0176D3]" checked={plan.includes(p)} onChange={() => setUrl({ plan: toggle(plan, p) })} />
               {p}
             </label>
           ))}
@@ -343,16 +343,16 @@ function MutualFunds() {
             {recDropdownOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setRecDropdownOpen(false)} />
-                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
-                  <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-2">
-                    <span className="text-[12px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+                <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                  <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
+                    <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
                       ★ FH Recommended Mutual Funds ({Object.keys(rec.mfMap).length})
                     </span>
-                    <button type="button" onClick={() => setRecDropdownOpen(false)} className="text-[#536176] dark:text-[#A8B4C4] text-xs">
+                    <button type="button" onClick={() => setRecDropdownOpen(false)} className="text-[#706E6B] dark:text-[#A8B4C4] text-xs">
                       ✕
                     </button>
                   </div>
-                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                     Add scheme code to mark as recommended, or click Remove.
                   </div>
                   <div className="flex gap-1.5">
@@ -376,12 +376,12 @@ function MutualFunds() {
                       + Add
                     </button>
                   </div>
-                  <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E4E9EF]/40 dark:divide-[#2B3644]/40">
+                  <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E5E5E5]/40 dark:divide-[#2B3644]/40">
                     {Object.entries(rec.mfMap).map(([code, name]) => (
                       <div key={code} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
                         <div className="truncate">
-                          <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-medium mr-1.5">{code}</span>
-                          <span className="text-[#172033] dark:text-[#EDF2F7] truncate">{name}</span>
+                          <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-medium mr-1.5">{code}</span>
+                          <span className="text-[#181818] dark:text-[#EDF2F7] truncate">{name}</span>
                         </div>
                         <button
                           type="button"
@@ -393,11 +393,11 @@ function MutualFunds() {
                       </div>
                     ))}
                   </div>
-                  <div className="pt-2 border-t border-[#E4E9EF] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
-                    <Link href="/backoffice/settings" className="text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium">
+                  <div className="pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
+                    <Link href="/backoffice/settings" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
                       All Settings →
                     </Link>
-                    <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">Saves live across terminal</span>
+                    <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Saves live across terminal</span>
                   </div>
                 </div>
               </>
@@ -416,7 +416,7 @@ function MutualFunds() {
         <div className="terminal-panel p-2.5 space-y-2.5">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {FILTERABLE.map((f) => (
-              <div key={f.key} className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              <div key={f.key} className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                 <div className="mb-1">{f.label}</div>
                 <div className="flex gap-1.5">
                   {(["min", "max"] as const).map((side) => (
@@ -461,7 +461,7 @@ function MutualFunds() {
           placeholder="Search fund, AMC or scheme code…"
           className="terminal-input w-full max-w-md text-[12px] py-1 px-2.5"
         />
-        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">{loading ? "Loading…" : `${total.toLocaleString("en-IN")} funds`}</div>
+        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{loading ? "Loading…" : `${total.toLocaleString("en-IN")} funds`}</div>
       </div>
 
       {error && (
@@ -476,7 +476,7 @@ function MutualFunds() {
       <div className="terminal-panel overflow-hidden">
         <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px]">
           <table className="terminal-table">
-            <thead className="sticky top-0 z-10 bg-[#F7F9FB] dark:bg-[#171E27]">
+            <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
               <tr>
                 <th className="w-[40px]" aria-label="Compare" />
                 <th className="min-w-[240px]">
@@ -500,7 +500,7 @@ function MutualFunds() {
             <tbody>
               {!loading && rows.length === 0 ? (
                 <tr>
-                  <td colSpan={cols.length + 2} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                  <td colSpan={cols.length + 2} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                     No funds match the current categories and filters.
                   </td>
                 </tr>
@@ -516,7 +516,7 @@ function MutualFunds() {
                           checked={checked}
                           disabled={!checked && compare.maxSelected}
                           aria-label={`Compare ${r.name}`}
-                          className="h-4 w-4 accent-[#006F64]"
+                          className="h-4 w-4 accent-[#0176D3]"
                           onChange={() => compare.toggle(cid, r.name)}
                         />
                       </td>
@@ -524,7 +524,7 @@ function MutualFunds() {
                         <button
                           type="button"
                           onClick={() => setSelected(toItem(r))}
-                          className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline cursor-pointer leading-snug"
+                          className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug"
                         >
                           {r.name.replace(/ - (Direct|Regular) Plan - Growth$/i, "")}
                         </button>
@@ -536,12 +536,12 @@ function MutualFunds() {
                               rec.toggleMf(r.code, r.name);
                             }}
                             title="Click to toggle FH Recommended status"
-                            className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] hover:opacity-85 cursor-pointer align-middle"
+                            className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] hover:opacity-85 cursor-pointer align-middle"
                           >
                             ★ FH
                           </button>
                         )}
-                        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                           {r.amc ?? "-"} · {r.plan}
                         </div>
                       </td>
@@ -555,7 +555,7 @@ function MutualFunds() {
             </tbody>
           </table>
         </div>
-        <div className="px-3 py-2 border-t border-[#E4E9EF] dark:border-[#2B3644] text-[11px] text-[#536176] dark:text-[#A8B4C4] flex flex-wrap items-center justify-between gap-2">
+        <div className="px-3 py-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] text-[#706E6B] dark:text-[#A8B4C4] flex flex-wrap items-center justify-between gap-2">
           <label className="flex items-center gap-1.5">
             Rows
             <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))} className="terminal-input text-[11px] py-0.5 px-1.5">
@@ -580,7 +580,7 @@ function MutualFunds() {
         </div>
       </div>
 
-      <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+      <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
         FH checklist score (out of 100) ranks each fund against its category and plan on Performance (1Y/3Y/5Y returns), Portfolio (fund size and 3Yr alpha, since
         holdings are not in the dataset), Operations (expense ratio, track record) and Risk vs Reward (Sharpe, Sortino, drawdown, volatility). FH Star Rating is our own
         risk-adjusted rank (3Y/5Y/10Y Sharpe within category), not Morningstar&apos;s. Alpha, Beta and Treynor are measured against the median of the fund&apos;s category and plan, not an index.
@@ -615,10 +615,10 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
     const w = typeof v === "number" ? Math.max(0, Math.min(100, (v / max) * 100)) : 0;
     return (
       <td className="text-right whitespace-nowrap">
-        {label && <span className="mr-2 text-[10px] uppercase text-[#536176] dark:text-[#A8B4C4]">{label}</span>}
+        {label && <span className="mr-2 text-[10px] uppercase text-[#706E6B] dark:text-[#A8B4C4]">{label}</span>}
         <span className="font-medium tabular-nums">{typeof v === "number" ? v : "-"}</span>
-        <div className="mt-1 ml-auto h-1 w-20 rounded bg-[#E4E9EF] dark:bg-[#2B3644]" aria-hidden>
-          <div className="h-1 rounded bg-[#006F64] dark:bg-[#75E1CE]" style={{ width: `${w}%` }} />
+        <div className="mt-1 ml-auto h-1 w-20 rounded bg-[#E5E5E5] dark:bg-[#2B3644]" aria-hidden>
+          <div className="h-1 rounded bg-[#0176D3] dark:bg-[#1B96FF]" style={{ width: `${w}%` }} />
         </div>
       </td>
     );
@@ -627,7 +627,7 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
     const n = typeof v === "number" ? v : 0;
     return (
       <td className="text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]" title={n ? `${n} of 5 (FH rating, not Morningstar)` : "Not rated"}>
-        {n ? "★".repeat(n) + "☆".repeat(5 - n) : <span className="text-[#536176] dark:text-[#A8B4C4]">-</span>}
+        {n ? "★".repeat(n) + "☆".repeat(5 - n) : <span className="text-[#706E6B] dark:text-[#A8B4C4]">-</span>}
       </td>
     );
   }
@@ -638,9 +638,9 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
     <td className={`text-right tabular-nums ${col.kind === "pct" && !col.plain ? tone(v) : ""}`}>
       {fmt(v, col.digits)}
       {col.kind === "pct" && typeof v === "number" ? "%" : ""}
-      {typeof when === "string" && when && <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">{formatISTDate(when)}</div>}
+      {typeof when === "string" && when && <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(when)}</div>}
       {col.avg && (
-        <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">cat. {typeof avg === "number" ? `${fmt(avg)}%` : "-"}</div>
+        <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">cat. {typeof avg === "number" ? `${fmt(avg)}%` : "-"}</div>
       )}
     </td>
   );

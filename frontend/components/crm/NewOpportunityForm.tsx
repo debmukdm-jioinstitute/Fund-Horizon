@@ -79,7 +79,7 @@ export default function NewOpportunityForm({ householdId, onCreated }: { househo
     return (
       <div className="space-y-2">
         <button type="button" className={btnCls} onClick={() => setOpen(true)}>New opportunity</button>
-        {notice && <p role="status" className="text-xs font-medium text-[#006F64] dark:text-[#75E1CE]">{notice}</p>}
+        {notice && <p role="status" className="text-xs font-medium text-[#0176D3] dark:text-[#1B96FF]">{notice}</p>}
       </div>
     );
   }

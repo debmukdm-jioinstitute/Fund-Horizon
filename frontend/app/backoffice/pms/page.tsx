@@ -40,7 +40,7 @@ function ReturnCell({
 }) {
   if (isMissingNumber(value)) {
     return (
-      <span className="text-[#536176] dark:text-[#A8B4C4] font-normal" title="No data">
+      <span className="text-[#706E6B] dark:text-[#A8B4C4] font-normal" title="No data">
         —
       </span>
     );
@@ -87,7 +87,7 @@ function SortHeader({
         <button
           type="button"
           onClick={() => onSort(column)}
-          className={`inline-flex items-center gap-1 uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]`}
+          className={`inline-flex items-center gap-1 uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]`}
         >
           <span>{label}</span>
           <span className="font-mono text-[10px]" aria-hidden>
@@ -262,17 +262,17 @@ function PmsTracker() {
 
   return (
     <div className={`space-y-4 ${trayVisible ? "pb-[88px]" : ""}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               PMS Performance & Account Tracker
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               APMI Standard
             </span>
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Portfolio Management Services strategy registry, XIRR returns, and high-water mark fee auditing
           </p>
         </div>
@@ -334,7 +334,7 @@ function PmsTracker() {
                 type="button"
                 onClick={() => setCategoryFilter(categoryFilter === "fh-recommended" ? "all" : "fh-recommended")}
                 className={`text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer ${
-                  categoryFilter === "fh-recommended" ? "terminal-btn-accent" : "terminal-btn text-[#006F64] dark:text-[#75E1CE]"
+                  categoryFilter === "fh-recommended" ? "terminal-btn-accent" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
                 }`}
               >
                 <span className="text-[12px]">★</span>
@@ -356,16 +356,16 @@ function PmsTracker() {
                 {pmsRecDropdownOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setPmsRecDropdownOpen(false)} />
-                    <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
-                      <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-2">
-                        <span className="text-[12px] font-semibold text-[#172033] dark:text-[#EDF2F7]">
+                    <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                      <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
+                        <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
                           ★ FH Recommended PMS Strategies ({Object.keys(rec.pmsMap).length})
                         </span>
-                        <button type="button" onClick={() => setPmsRecDropdownOpen(false)} className="text-[#536176] dark:text-[#A8B4C4] text-xs">
+                        <button type="button" onClick={() => setPmsRecDropdownOpen(false)} className="text-[#706E6B] dark:text-[#A8B4C4] text-xs">
                           ✕
                         </button>
                       </div>
-                      <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                         Add APMI Strategy ID to mark as recommended, or click Remove.
                       </div>
                       <div className="flex gap-1.5">
@@ -396,12 +396,12 @@ function PmsTracker() {
                           + Add
                         </button>
                       </div>
-                      <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E4E9EF]/40 dark:divide-[#2B3644]/40">
+                      <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E5E5E5]/40 dark:divide-[#2B3644]/40">
                         {Object.entries(rec.pmsMap).map(([id, name]) => (
                           <div key={id} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
                             <div className="truncate">
-                              <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-medium mr-1.5">#{id}</span>
-                              <span className="text-[#172033] dark:text-[#EDF2F7] truncate">{name}</span>
+                              <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-medium mr-1.5">#{id}</span>
+                              <span className="text-[#181818] dark:text-[#EDF2F7] truncate">{name}</span>
                             </div>
                             <button
                               type="button"
@@ -413,11 +413,11 @@ function PmsTracker() {
                           </div>
                         ))}
                       </div>
-                      <div className="pt-2 border-t border-[#E4E9EF] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
-                        <Link href="/backoffice/settings" className="text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium">
+                      <div className="pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
+                        <Link href="/backoffice/settings" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
                           All Settings →
                         </Link>
-                        <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4]">Saves live across terminal</span>
+                        <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Saves live across terminal</span>
                       </div>
                     </div>
                   </>
@@ -430,11 +430,11 @@ function PmsTracker() {
                 </button>
               )}
             </div>
-            <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono shrink-0 text-right">
+            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono shrink-0 text-right">
               {asOf ? <div>As of {formatISTDate(asOf)}</div> : <div>As-of date not in this APMI snapshot</div>}
               <div>
                 Source:{" "}
-                <a href="https://www.apmiindia.org" target="_blank" rel="noreferrer" className="underline hover:text-[#172033] dark:hover:text-[#EDF2F7]">
+                <a href="https://www.apmiindia.org" target="_blank" rel="noreferrer" className="underline hover:text-[#181818] dark:hover:text-[#EDF2F7]">
                   APMI Disclosures
                 </a>
               </div>
@@ -443,14 +443,14 @@ function PmsTracker() {
 
           {isRecommended && (
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-              <div className="flex items-center gap-1 bg-[#F0F3F6] dark:bg-[#202936] p-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]">
+              <div className="flex items-center gap-1 bg-[#F0F3F6] dark:bg-[#202936] p-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644]">
                 <button
                   type="button"
                   onClick={() => setFhSubTab("returns")}
                   className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${
                     fhSubTab === "returns"
-                      ? "bg-white dark:bg-[#10151C] text-[#172033] dark:text-[#EDF2F7] shadow-sm"
-                      : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+                      ? "bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7] shadow-sm"
+                      : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
                   }`}
                 >
                   Returns Comparison vs Benchmark
@@ -460,21 +460,21 @@ function PmsTracker() {
                   onClick={() => setFhSubTab("details")}
                   className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${
                     fhSubTab === "details"
-                      ? "bg-white dark:bg-[#10151C] text-[#172033] dark:text-[#EDF2F7] shadow-sm"
-                      : "text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
+                      ? "bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7] shadow-sm"
+                      : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
                   }`}
                 >
                   Fund Details &amp; Structure
                 </button>
               </div>
-              <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+              <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">
                 Click any fund to inspect complete factsheet &amp; history
               </span>
             </div>
           )}
 
           <div className="terminal-panel overflow-hidden">
-            <div className="px-3 py-2 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono flex flex-wrap items-center justify-between gap-2">
+            <div className="px-3 py-2 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono flex flex-wrap items-center justify-between gap-2">
               <span>
                 {filteredStrategies.length === 0
                   ? "No strategies match the current filters"
@@ -505,7 +505,7 @@ function PmsTracker() {
             </div>
             <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px]">
               <table className="terminal-table">
-                <thead className="sticky top-0 z-10 bg-[#F7F9FB] dark:bg-[#171E27]">
+                <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
                   {isRecommended ? (
                     fhSubTab === "returns" ? (
                       <tr>
@@ -569,13 +569,13 @@ function PmsTracker() {
                 <tbody>
                   {strategiesLoading ? (
                     <tr>
-                      <td colSpan={colSpan} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      <td colSpan={colSpan} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                         Loading PMS strategies…
                       </td>
                     </tr>
                   ) : filteredStrategies.length === 0 ? (
                     <tr>
-                      <td colSpan={colSpan} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                      <td colSpan={colSpan} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                         No PMS strategies found matching query.
                       </td>
                     </tr>
@@ -602,12 +602,12 @@ function PmsTracker() {
                                 disabled={capped}
                                 title={capped ? "Max 4 to compare" : undefined}
                                 aria-label={`Compare ${s.strategy_name}`}
-                                className="h-4 w-4 accent-[#006F64]"
+                                className="h-4 w-4 accent-[#0176D3]"
                                 onChange={() => compare.toggle(cid, s.strategy_name)}
                               />
                             </td>
                             {isRecommended && (
-                              <td className="text-center font-mono text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                              <td className="text-center font-mono text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                                 {safePage * PAGE_SIZE + idx + 1}
                               </td>
                             )}
@@ -619,11 +619,11 @@ function PmsTracker() {
                                   e.stopPropagation();
                                   setSelectedStrategy(s);
                                 }}
-                                className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
+                                className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
                               >
                                 <span className="group-hover:opacity-90">{s.strategy_name}</span>
                               </button>
-                              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
+                              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
                                 <span>{normalizeProviderName(s.provider_name) || s.provider_name}</span>
                                 {isStrategyRecommended(s) && !isRecommended && (
                                   <button
@@ -633,7 +633,7 @@ function PmsTracker() {
                                       if (s.ia_id) rec.togglePms(s.ia_id, s.strategy_name);
                                     }}
                                     title="Click to toggle FH Recommended status"
-                                    className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] font-medium hover:opacity-80 cursor-pointer"
+                                    className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] font-medium hover:opacity-80 cursor-pointer"
                                   >
                                     ★ FH Rec
                                   </button>
@@ -673,14 +673,14 @@ function PmsTracker() {
                                 </>
                               ) : (
                                 <>
-                                  <td className="text-[#536176] dark:text-[#A8B4C4]">{approach}</td>
-                                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7] font-mono">
+                                  <td className="text-[#706E6B] dark:text-[#A8B4C4]">{approach}</td>
+                                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7] font-mono">
                                     {formatCrore(s.aum_crore)}
                                   </td>
-                                  <td className="text-right text-[#536176] dark:text-[#A8B4C4] font-mono">
+                                  <td className="text-right text-[#706E6B] dark:text-[#A8B4C4] font-mono">
                                     {s.min_investment || "—"}
                                   </td>
-                                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                                     {s.inception_date || "—"}
                                   </td>
                                   <td className="text-[12px]">
@@ -688,22 +688,22 @@ function PmsTracker() {
                                       <button
                                         type="button"
                                         onClick={() => setSelectedManager(s.principal_officer as string)}
-                                        className="text-left font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline focus:outline-none transition cursor-pointer"
+                                        className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline focus:outline-none transition cursor-pointer"
                                         title="Open manager profile"
                                       >
                                         {s.principal_officer}
                                       </button>
                                     ) : (
-                                      <span className="text-[#172033] dark:text-[#EDF2F7]">—</span>
+                                      <span className="text-[#181818] dark:text-[#EDF2F7]">—</span>
                                     )}
                                   </td>
-                                  <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
+                                  <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
                                 </>
                               )
                             ) : (
                               <>
-                                <td className="text-[#536176] dark:text-[#A8B4C4]">{approach}</td>
-                                <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7] font-mono">
+                                <td className="text-[#706E6B] dark:text-[#A8B4C4]">{approach}</td>
+                                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7] font-mono">
                                   {formatCrore(s.aum_crore)}
                                 </td>
                                 <td className="text-right">
@@ -715,7 +715,7 @@ function PmsTracker() {
                                 <td className="text-right">
                                   <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
                                 </td>
-                                <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
+                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
                               </>
                             )}
                           </tr>
@@ -753,7 +753,7 @@ function PmsTracker() {
                 {accountLoading ? "Loading…" : "Track Account"}
               </button>
             </div>
-            <p id="pms-account-id-hint" className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+            <p id="pms-account-id-hint" className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
               Use the internal account id from the client ledger (for example <span className="font-mono">acc_pms_01</span>). Matching is exact and case-sensitive.
             </p>
           </div>
@@ -765,7 +765,7 @@ function PmsTracker() {
           )}
 
           {accountHint && (
-            <div className="terminal-panel p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+            <div className="terminal-panel p-3 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
               {accountHint}
             </div>
           )}
@@ -791,15 +791,15 @@ function PmsTracker() {
                           <InfoTip metric="aum" />
                         </span>
                       </td>
-                      <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                         {accountTracker.current_valuation_paise
                           ? formatCurrencyPaiseToINR(accountTracker.current_valuation_paise)
                           : "—"}
                       </td>
-                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
                         Fee: {accountTracker.hwm_fee?.estimated_fee_paise ? formatCurrencyPaiseToINR(accountTracker.hwm_fee.estimated_fee_paise) : "₹0"}
                       </td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Latest Closing Valuation</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Latest Closing Valuation</td>
                       <td className="text-[12px] text-[#087744] dark:text-[#58D6A0]">Audited</td>
                     </tr>
                     <tr>
@@ -812,11 +812,11 @@ function PmsTracker() {
                       <td className="text-right">
                         <SignedValue value={accountTracker.xirr?.xirr_pct} unit="%" />
                       </td>
-                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
                         Status: {accountTracker.xirr?.status || "Computed"}
                       </td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">SEBI Cashflow IRR Standard</td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Audited</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">SEBI Cashflow IRR Standard</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Audited</td>
                     </tr>
                     <tr>
                       <td className="font-medium">
@@ -828,9 +828,9 @@ function PmsTracker() {
                       <td className="text-right">
                         <SignedValue value={accountTracker.modified_dietz?.return_pct} unit="%" />
                       </td>
-                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">—</td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Time-Weighted Cashflows</td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Daily-weighted</td>
+                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Time-Weighted Cashflows</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Daily-weighted</td>
                     </tr>
                     <tr>
                       <td className="font-medium">
@@ -839,16 +839,16 @@ function PmsTracker() {
                           <InfoTip metric="hwm" />
                         </span>
                       </td>
-                      <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                         {accountTracker.hwm_fee?.hwm_exceeded ? "Above HWM (Fee Triggered)" : "Below HWM (No Performance Fee)"}
                       </td>
-                      <td className="text-right text-[#536176] dark:text-[#A8B4C4]">
+                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
                         {accountTracker.hwm_fee?.estimated_fee_paise
                           ? `Est. Fee: ${formatCurrencyPaiseToINR(accountTracker.hwm_fee.estimated_fee_paise)}`
                           : "No Fee Due"}
                       </td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">SEBI Performance Fee Rule</td>
-                      <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Compliant</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">SEBI Performance Fee Rule</td>
+                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Compliant</td>
                     </tr>
                   </tbody>
                 </table>
@@ -856,7 +856,7 @@ function PmsTracker() {
 
               {accountTracker.positions && accountTracker.positions.length > 0 && (
                 <div className="terminal-panel overflow-hidden">
-                  <div className="p-2 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+                  <div className="p-2 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
                     Portfolio Holdings & Weight Breakdown
                   </div>
                   <div className="overflow-x-auto">
@@ -873,13 +873,13 @@ function PmsTracker() {
                       <tbody>
                         {accountTracker.positions.map((pos, pIdx) => (
                           <tr key={pIdx}>
-                            <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{pos.asset_name || pos.symbol || "Asset"}</td>
-                            <td className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">{pos.symbol || pos.asset_class || "—"}</td>
+                            <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">{pos.asset_name || pos.symbol || "Asset"}</td>
+                            <td className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4]">{pos.symbol || pos.asset_class || "—"}</td>
                             <td className="text-right font-mono">{pos.quantity !== undefined ? pos.quantity.toLocaleString("en-IN") : "—"}</td>
                             <td className="text-right font-medium font-mono">
                               {formatCurrencyPaiseToINR(pos.market_value_paise)}
                             </td>
-                            <td className="text-right text-[12px] text-[#536176] dark:text-[#A8B4C4] font-mono">{pos.valuation_date}</td>
+                            <td className="text-right text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">{pos.valuation_date}</td>
                           </tr>
                         ))}
                       </tbody>

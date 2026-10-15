@@ -227,17 +227,17 @@ export default function ImpactEnginePage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               Explainable Impact &amp; Sensitivity Engine
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               HAC OLS • Zero LLM
             </span>
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Empirical regressions and scenario shocks are mathematical sensitivities, not observed facts or investment forecasts.
           </p>
         </div>
@@ -247,23 +247,23 @@ export default function ImpactEnginePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Module 1: Empirical Cross-Asset Regression */}
         <div className="terminal-panel p-3.5 space-y-3">
-          <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
             <div>
-              <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                 Pair Relationship &amp; Empirical Regression
               </div>
-              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                 Continuous log returns &amp; bps changes • HAC Standard Errors (maxlags=5)
               </div>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]">
+            <span className="text-[10px] font-mono uppercase bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644]">
               OLS Beta
             </span>
           </div>
 
           <div className="space-y-2.5">
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                 Asset A (Dependent Y)
               </label>
               <select
@@ -300,7 +300,7 @@ export default function ImpactEnginePage() {
                   className="terminal-input flex-1 text-[11px] py-1 px-2 font-mono"
                 />
                 {pairA.startsWith("MF:") && (
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#006F64]/10 text-[#006F64] dark:bg-[#75E1CE]/10 dark:text-[#75E1CE] border border-[#006F64]/20 dark:border-[#75E1CE]/20 whitespace-nowrap">
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#0176D3]/10 text-[#0176D3] dark:bg-[#1B96FF]/10 dark:text-[#1B96FF] border border-[#0176D3]/20 dark:border-[#1B96FF]/20 whitespace-nowrap">
                     mftool active
                   </span>
                 )}
@@ -308,7 +308,7 @@ export default function ImpactEnginePage() {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                 Asset B (Independent Driver X)
               </label>
               <select
@@ -324,7 +324,7 @@ export default function ImpactEnginePage() {
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                   Observation Window
                 </label>
                 <div className="flex gap-1.5">
@@ -335,8 +335,8 @@ export default function ImpactEnginePage() {
                       onClick={() => setWindowSessions(w)}
                       className={`flex-1 py-1 text-[11px] font-mono rounded border transition-colors ${
                         windowSessions === w
-                          ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
-                          : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644] hover:bg-[#FFFFFF] dark:hover:bg-[#10151C]"
+                          ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
+                          : "bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border-[#E5E5E5] dark:border-[#2B3644] hover:bg-[#FFFFFF] dark:hover:bg-[#10151C]"
                       }`}
                     >
                       {w}d
@@ -346,7 +346,7 @@ export default function ImpactEnginePage() {
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                   Lag on X (Calendar Days)
                 </label>
                 <div className="flex gap-1.5">
@@ -357,8 +357,8 @@ export default function ImpactEnginePage() {
                       onClick={() => setLagDays(l)}
                       className={`flex-1 py-1 text-[11px] font-mono rounded border transition-colors ${
                         lagDays === l
-                          ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
-                          : "bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644] hover:bg-[#FFFFFF] dark:hover:bg-[#10151C]"
+                          ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
+                          : "bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border-[#E5E5E5] dark:border-[#2B3644] hover:bg-[#FFFFFF] dark:hover:bg-[#10151C]"
                       }`}
                     >
                       +{l}d
@@ -371,7 +371,7 @@ export default function ImpactEnginePage() {
             <button
               onClick={handleRunAnalysis}
               disabled={analyzing || pairA === pairB}
-              className="terminal-btn w-full text-[12px] py-1.5 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium disabled:opacity-50"
+              className="terminal-btn w-full text-[12px] py-1.5 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium disabled:opacity-50"
             >
               {analyzing ? "Computing HAC Regression…" : "Compute Rolling Relationship"}
             </button>
@@ -386,7 +386,7 @@ export default function ImpactEnginePage() {
           {analysisResult && (
             <div className="space-y-3 mt-3">
               {analysisResult.reason ? (
-                <div className="terminal-panel p-3 border border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] text-[12px] space-y-2">
+                <div className="terminal-panel p-3 border border-[#E5E5E5] dark:border-[#2B3644] bg-[#F3F3F3] dark:bg-[#171E27] text-[12px] space-y-2">
                   <div className="flex items-center gap-2 font-medium text-[#B42332] dark:text-[#FF7D86]">
                     <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-[#B42332]/10 border border-[#B42332]/20">
                       Reason: {analysisResult.reason}
@@ -397,11 +397,11 @@ export default function ImpactEnginePage() {
                       {analysisResult.reason === "n<5" && `Sample size too small (n = ${analysisResult.n} < 5 required).`}
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] grid grid-cols-2 gap-2 pt-1 border-t border-[#E4E9EF] dark:border-[#2B3644]">
-                    <div>Series A As-of: <span className="font-mono text-[#172033] dark:text-[#EDF2F7]">{analysisResult.asof_y || "N/A"}</span></div>
-                    <div>Series B As-of: <span className="font-mono text-[#172033] dark:text-[#EDF2F7]">{analysisResult.asof_x || "N/A"}</span></div>
-                    <div>Paired Observations: <span className="font-mono text-[#172033] dark:text-[#EDF2F7]">n = {analysisResult.n}</span></div>
-                    <div>Shorter-series Coverage: <span className="font-mono text-[#172033] dark:text-[#EDF2F7]">{analysisResult.coverage}%</span></div>
+                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] grid grid-cols-2 gap-2 pt-1 border-t border-[#E5E5E5] dark:border-[#2B3644]">
+                    <div>Series A As-of: <span className="font-mono text-[#181818] dark:text-[#EDF2F7]">{analysisResult.asof_y || "N/A"}</span></div>
+                    <div>Series B As-of: <span className="font-mono text-[#181818] dark:text-[#EDF2F7]">{analysisResult.asof_x || "N/A"}</span></div>
+                    <div>Paired Observations: <span className="font-mono text-[#181818] dark:text-[#EDF2F7]">n = {analysisResult.n}</span></div>
+                    <div>Shorter-series Coverage: <span className="font-mono text-[#181818] dark:text-[#EDF2F7]">{analysisResult.coverage}%</span></div>
                   </div>
                 </div>
               ) : (
@@ -417,89 +417,89 @@ export default function ImpactEnginePage() {
                       </thead>
                       <tbody>
                         <tr>
-                          <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                             <span className="inline-flex items-center gap-1">
                               Sensitivity Beta (β)
                               <InfoTip metric="elasticity_beta" />
                             </span>
                           </td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                             {analysisResult.statistics.beta !== null ? analysisResult.statistics.beta.toFixed(4) : "—"}
                           </td>
-                          <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                          <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                             {analysisResult.statistics.beta_unit || "OLS Slope"}
                           </td>
                         </tr>
                         <tr>
-                          <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                             <span className="inline-flex items-center gap-1">
                               Standard Error (SE)
                               <InfoTip metric="std_error" />
                             </span>
                           </td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                             {analysisResult.statistics.beta_se !== null ? analysisResult.statistics.beta_se.toFixed(4) : "—"}
                           </td>
-                          <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">HAC Newey-West (maxlags=5)</td>
+                          <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">HAC Newey-West (maxlags=5)</td>
                         </tr>
                         <tr>
-                          <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                             <span className="inline-flex items-center gap-1">
                               p-value
                               <InfoTip metric="p_value" />
                             </span>
                           </td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                             {analysisResult.statistics.p_value !== null ? analysisResult.statistics.p_value.toFixed(4) : "—"}
                           </td>
-                          <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Two-tailed significance test</td>
+                          <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Two-tailed significance test</td>
                         </tr>
                         <tr>
-                          <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                             <span className="inline-flex items-center gap-1">
                               Goodness of Fit (R²)
                               <InfoTip metric="r_squared" />
                             </span>
                           </td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                             {analysisResult.statistics.r2 !== null ? analysisResult.statistics.r2.toFixed(4) : "—"}
                           </td>
-                          <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Proportion of variance explained</td>
+                          <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Proportion of variance explained</td>
                         </tr>
                         <tr>
-                          <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                             <span className="inline-flex items-center gap-1">
                               95% Confidence Interval
                               <InfoTip metric="ci95" />
                             </span>
                           </td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                             {analysisResult.statistics.ci95
                               ? `[${analysisResult.statistics.ci95[0].toFixed(3)}, ${analysisResult.statistics.ci95[1].toFixed(3)}]`
                               : "—"}
                           </td>
-                          <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">HAC 95% confidence bounds</td>
+                          <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">HAC 95% confidence bounds</td>
                         </tr>
                         <tr>
-                          <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                             <span className="inline-flex items-center gap-1">
                               Correlation (r)
                               <InfoTip metric="correlation_r" />
                             </span>
                           </td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                             {analysisResult.statistics.correlation !== null
                               ? analysisResult.statistics.correlation.toFixed(4)
                               : "—"}
                           </td>
-                          <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Pearson linear correlation coefficient</td>
+                          <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Pearson linear correlation coefficient</td>
                         </tr>
                         <tr>
-                          <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Sample Alignment</td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                          <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Sample Alignment</td>
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                             n = {analysisResult.n}
                           </td>
-                          <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                          <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                             {analysisResult.coverage}% coverage (A as-of {analysisResult.asof_y || "N/A"}, B as-of {analysisResult.asof_x || "N/A"})
                           </td>
                         </tr>
@@ -510,8 +510,8 @@ export default function ImpactEnginePage() {
                   {/* Rolling Beta Chart */}
                   {analysisResult.statistics.rolling_beta && analysisResult.statistics.rolling_beta.length > 1 && (
                     <div className="terminal-panel p-3 space-y-2">
-                      <div className="flex items-center justify-between text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-                        <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      <div className="flex items-center justify-between text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                        <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                           Rolling Beta (Window: min(20, n))
                         </span>
                         <span className="font-mono">Last {analysisResult.statistics.rolling_beta.length} points</span>
@@ -540,7 +540,7 @@ export default function ImpactEnginePage() {
                             <Line
                               type="monotone"
                               dataKey="beta"
-                              stroke="#006F64"
+                              stroke="#0176D3"
                               strokeWidth={1.5}
                               dot={false}
                             />
@@ -557,28 +557,28 @@ export default function ImpactEnginePage() {
 
         {/* Module 2: Deterministic Scenario Sensitivity Sliders */}
         <div className="terminal-panel p-3.5 space-y-3">
-          <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
             <div>
-              <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                 Portfolio Sensitivity &amp; Shock Sliders
               </div>
-              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                 Taylor series: ΔP/P ≈ −D·Δy + ½·C·Δy² • Macro pass-throughs
               </div>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-[#F7F9FB] dark:bg-[#171E27] text-[#536176] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]">
+            <span className="text-[10px] font-mono uppercase bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644]">
               Sensitivity
             </span>
           </div>
 
           <div className="space-y-3">
             <div>
-              <div className="flex justify-between text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] mb-1">
+              <div className="flex justify-between text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] mb-1">
                 <span className="inline-flex items-center gap-1">
                   <span>Fixed Income Modified Duration (D)</span>
                   <InfoTip metric="modified_duration" />
                 </span>
-                <span className="font-mono text-[#172033] dark:text-[#EDF2F7] font-semibold">{bondDuration} yrs</span>
+                <span className="font-mono text-[#181818] dark:text-[#EDF2F7] font-semibold">{bondDuration} yrs</span>
               </div>
               <input
                 type="range"
@@ -587,17 +587,17 @@ export default function ImpactEnginePage() {
                 step="0.5"
                 value={bondDuration}
                 onChange={(e) => setBondDuration(Number(e.target.value))}
-                className="w-full accent-[#006F64] dark:accent-[#75E1CE]"
+                className="w-full accent-[#0176D3] dark:accent-[#1B96FF]"
               />
             </div>
 
             <div>
-              <div className="flex justify-between text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] mb-1">
+              <div className="flex justify-between text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] mb-1">
                 <span className="inline-flex items-center gap-1">
                   <span>Portfolio Convexity (C)</span>
                   <InfoTip metric="convexity" />
                 </span>
-                <span className="font-mono text-[#172033] dark:text-[#EDF2F7] font-semibold">{convexity}</span>
+                <span className="font-mono text-[#181818] dark:text-[#EDF2F7] font-semibold">{convexity}</span>
               </div>
               <input
                 type="range"
@@ -606,14 +606,14 @@ export default function ImpactEnginePage() {
                 step="1"
                 value={convexity}
                 onChange={(e) => setConvexity(Number(e.target.value))}
-                className="w-full accent-[#006F64] dark:accent-[#75E1CE]"
+                className="w-full accent-[#0176D3] dark:accent-[#1B96FF]"
               />
             </div>
 
             <div>
-              <div className="flex justify-between text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] mb-1">
+              <div className="flex justify-between text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] mb-1">
                 <span>US 10Y Yield Shift (bps)</span>
-                <span className="font-mono text-[#172033] dark:text-[#EDF2F7] font-semibold">
+                <span className="font-mono text-[#181818] dark:text-[#EDF2F7] font-semibold">
                   {yieldShiftBps > 0 ? "+" : ""}{yieldShiftBps} bps
                 </span>
               </div>
@@ -624,14 +624,14 @@ export default function ImpactEnginePage() {
                 step="5"
                 value={yieldShiftBps}
                 onChange={(e) => setYieldShiftBps(Number(e.target.value))}
-                className="w-full accent-[#006F64] dark:accent-[#75E1CE]"
+                className="w-full accent-[#0176D3] dark:accent-[#1B96FF]"
               />
             </div>
 
             <div>
-              <div className="flex justify-between text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] mb-1">
+              <div className="flex justify-between text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] mb-1">
                 <span>USD Currency Shift (%)</span>
-                <span className="font-mono text-[#172033] dark:text-[#EDF2F7] font-semibold">
+                <span className="font-mono text-[#181818] dark:text-[#EDF2F7] font-semibold">
                   {fxShiftPct > 0 ? "+" : ""}{fxShiftPct}%
                 </span>
               </div>
@@ -642,14 +642,14 @@ export default function ImpactEnginePage() {
                 step="0.5"
                 value={fxShiftPct}
                 onChange={(e) => setFxShiftPct(Number(e.target.value))}
-                className="w-full accent-[#006F64] dark:accent-[#75E1CE]"
+                className="w-full accent-[#0176D3] dark:accent-[#1B96FF]"
               />
             </div>
 
             <button
               onClick={handleRunScenario}
               disabled={simulating}
-              className="terminal-btn w-full text-[12px] py-1.5 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium disabled:opacity-50"
+              className="terminal-btn w-full text-[12px] py-1.5 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium disabled:opacity-50"
             >
               {simulating ? "Evaluating Sensitivity…" : "Simulate Scenario Impact"}
             </button>
@@ -667,7 +667,7 @@ export default function ImpactEnginePage() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                       <span className="inline-flex items-center gap-1">
                         Estimated Bond Price Shock (ΔP/P)
                         <InfoTip metric="bond_shock" />
@@ -676,12 +676,12 @@ export default function ImpactEnginePage() {
                     <td className="text-right">
                       <SignedValue value={scenarioResult.impacts.bond_portfolio_price_change_pct} unit="%" />
                     </td>
-                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                    <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                       ΔP/P ≈ −D·Δy + ½·C·Δy² (Dur: {scenarioResult.impacts.bond_duration_effect_pct}%, Cvx: {scenarioResult.impacts.bond_convexity_effect_pct}%)
                     </td>
                   </tr>
                   <tr>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                       <span className="inline-flex items-center gap-1">
                         India 10Y Sovereign Yield Shift (Δindia)
                         <InfoTip metric="india_yield_move" />
@@ -690,12 +690,12 @@ export default function ImpactEnginePage() {
                     <td className="text-right">
                       <SignedValue value={scenarioResult.impacts.india_yield_move_bps} unit=" bps" />
                     </td>
-                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                    <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                       Δindia = β(US10Y→IN10Y) × Δus ({scenarioResult.sources.india_yield})
                     </td>
                   </tr>
                   <tr>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                       <span className="inline-flex items-center gap-1">
                         INR FX Shift (USD/INR)
                         <InfoTip metric="inr_move" />
@@ -704,12 +704,12 @@ export default function ImpactEnginePage() {
                     <td className="text-right">
                       <SignedValue value={scenarioResult.impacts.inr_move} unit="%" />
                     </td>
-                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                    <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                       β(USDINR on DXY) × USD shock ({scenarioResult.sources.inr})
                     </td>
                   </tr>
                   <tr>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                       <span className="inline-flex items-center gap-1">
                         Equity Proxy Shift (NIFTY 50)
                         <InfoTip metric="equity_proxy_move" />
@@ -718,30 +718,30 @@ export default function ImpactEnginePage() {
                     <td className="text-right">
                       <SignedValue value={scenarioResult.impacts.equity_proxy_move} unit="%" />
                     </td>
-                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                    <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                       β(NIFTY on DXY) × USD shock ({scenarioResult.sources.equity})
                     </td>
                   </tr>
                   <tr>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                       <span className="inline-flex items-center gap-1">
                         India CPI Inflation Pass-through
                         <InfoTip metric="oil_cpi_pass_through" />
                       </span>
                     </td>
-                    <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                       +{scenarioResult.impacts.oil_cpi_inflation_impact_bps.toFixed(1)} bps
                     </td>
-                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                    <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                       Crude oil pass-through (~1.8 bps per 1% oil shock)
                     </td>
                   </tr>
                   <tr>
-                    <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Yield Decimal Equivalent Shift</td>
-                    <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                    <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Yield Decimal Equivalent Shift</td>
+                    <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                       {(yieldShiftBps / 10000).toFixed(4)}
                     </td>
-                    <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                    <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                       {yieldShiftBps} bps = {(yieldShiftBps / 10000).toFixed(4)} yield decimal
                     </td>
                   </tr>

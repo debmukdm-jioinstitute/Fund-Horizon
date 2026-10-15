@@ -84,16 +84,16 @@ export default function ScreeningFunnel({
 
   return (
     <div className="terminal-panel p-3">
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
             Sequential Screening Funnel
           </span>
-          <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+          <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
             (Each stage ⊆ previous)
           </span>
           {stageAsOf && (
-            <span className="text-[10px] font-mono text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[10px] font-mono text-[#706E6B] dark:text-[#A8B4C4]">
               NAV {stageAsOf.nav ?? "—"} · Managers {stageAsOf.managers?.slice(0, 10) ?? "none"} · TER {stageAsOf.ter ?? "—"}
             </span>
           )}
@@ -111,7 +111,7 @@ export default function ScreeningFunnel({
             onClick={() => onSelectStage(activeStage === "retain" ? "final" : "retain")}
             className={`terminal-btn text-[11px] py-0.5 px-2 ${
               activeStage === "retain"
-                ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
                 : ""
             }`}
           >
@@ -121,7 +121,7 @@ export default function ScreeningFunnel({
       </div>
 
       {showHelp && (
-        <div className="mb-3 p-3 rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] text-[11px] text-[#172033] dark:text-[#EDF2F7] space-y-2">
+        <div className="mb-3 p-3 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-[#F3F3F3] dark:bg-[#171E27] text-[11px] text-[#181818] dark:text-[#EDF2F7] space-y-2">
           <p>
             Think of a sieve. Funds enter at S0 and each stage removes the ones that fail its test, so every stage is a subset of the one before.
             A fund with missing data is not dropped by default. It passes and is flagged <span className="text-[#C26200] dark:text-[#EAA847]">missing data</span>, so treat that count as unverified.
@@ -130,11 +130,11 @@ export default function ScreeningFunnel({
             {stages.map((st) => (
               <li key={st.key}>
                 <span className="font-semibold">{st.label}:</span>{" "}
-                <span className="text-[#536176] dark:text-[#A8B4C4]">{st.help}</span>
+                <span className="text-[#706E6B] dark:text-[#A8B4C4]">{st.help}</span>
               </li>
             ))}
           </ol>
-          <p className="text-[#536176] dark:text-[#A8B4C4]">
+          <p className="text-[#706E6B] dark:text-[#A8B4C4]">
             Q1 Retain List: top-quartile funds that passed S1 to S3. They are kept without further cost or risk filtering, so this list can include funds that would fail the final stage.
           </p>
         </div>
@@ -151,24 +151,24 @@ export default function ScreeningFunnel({
               title={st.help}
               className={`p-2 rounded text-left border transition-all ${
                 isSelected
-                  ? "bg-[#006F64]/10 dark:bg-[#75E1CE]/15 border-[#006F64] dark:border-[#75E1CE]"
-                  : "bg-[#F7F9FB] dark:bg-[#171E27] border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64]/50 dark:hover:border-[#75E1CE]/50"
+                  ? "bg-[#0176D3]/10 dark:bg-[#1B96FF]/15 border-[#0176D3] dark:border-[#1B96FF]"
+                  : "bg-[#F3F3F3] dark:bg-[#171E27] border-[#E5E5E5] dark:border-[#2B3644] hover:border-[#0176D3]/50 dark:hover:border-[#1B96FF]/50"
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <span className="text-[11px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {st.label}
                 </span>
                 {st.badge && (
-                  <span className="text-[9px] px-1 py-0.2 rounded bg-[#006F64]/15 text-[#006F64] dark:text-[#75E1CE] font-mono">
+                  <span className="text-[9px] px-1 py-0.2 rounded bg-[#0176D3]/15 text-[#0176D3] dark:text-[#1B96FF] font-mono">
                     {st.badge}
                   </span>
                 )}
               </div>
-              <div className="text-[18px] font-semibold tracking-tight text-[#172033] dark:text-[#EDF2F7] tabular-nums">
+              <div className="text-[18px] font-semibold tracking-tight text-[#181818] dark:text-[#EDF2F7] tabular-nums">
                 {st.count}
               </div>
-              <div className="flex items-center justify-between text-[10px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+              <div className="flex items-center justify-between text-[10px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
                 <span>{st.sublabel}</span>
                 {st.insufficient !== undefined && st.insufficient > 0 && (
                   <span className="text-[#C26200] dark:text-[#EAA847] tabular-nums" title="Funds with missing data at this stage">

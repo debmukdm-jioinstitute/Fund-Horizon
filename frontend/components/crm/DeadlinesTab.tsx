@@ -10,7 +10,7 @@ import { cardCls, errCls, mutedCls, tdCls, thCls } from "./ui";
 const KINDS = [["renewals", "Policy renewals"], ["maturities", "FD maturities"]] as const;
 const DAYS = [30, 60, 90];
 const selCls =
-  "px-2.5 py-1.5 text-xs rounded border bg-white dark:bg-[#171E27] border-[#E4E9EF] dark:border-[#2B3644] text-[#172033] dark:text-[#EDF2F7]";
+  "px-2.5 py-1.5 text-xs rounded border bg-white dark:bg-[#171E27] border-[#E5E5E5] dark:border-[#2B3644] text-[#181818] dark:text-[#EDF2F7]";
 const fmt = (d: string | null) => (d ? new Date(d + "T00:00:00+05:30").toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" }) : "–");
 
 /** Policies due for renewal and FDs about to mature: the lists behind the dashboard's deadline widgets. */
@@ -72,7 +72,7 @@ export default function DeadlinesTab() {
             {rows?.map((r) => {
               const p = r as RenewalItem & MaturityItem;
               return (
-                <tr key={r.id} className="border-t border-[#E4E9EF] dark:border-[#2B3644]">
+                <tr key={r.id} className="border-t border-[#E5E5E5] dark:border-[#2B3644]">
                   <td className={tdCls}>{kind === "renewals" ? [p.insurer, p.policy_no].filter(Boolean).join(" ") || p.policy_type : (p.company ?? "–")}</td>
                   <td className={tdCls}>{holder(p)}</td>
                   <td className={tdCls}>{fmt(kind === "renewals" ? p.renewal_date : p.maturity_date)}</td>

@@ -174,21 +174,21 @@ function FlowsContent() {
 
   const renderSortIndicator = (column: SortColumn) => {
     if (sortCol !== column) {
-      return <span className="text-[#A8B4C4]/50 dark:text-[#536176] ml-1">↕</span>;
+      return <span className="text-[#A8B4C4]/50 dark:text-[#706E6B] ml-1">↕</span>;
     }
-    return <span className="text-[#006F64] dark:text-[#75E1CE] ml-1 font-bold">{sortDir === "asc" ? "↑" : "↓"}</span>;
+    return <span className="text-[#0176D3] dark:text-[#1B96FF] ml-1 font-bold">{sortDir === "asc" ? "↑" : "↓"}</span>;
   };
 
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               Institutional FII / FPI & DII Capital Flows
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               Equity (Cash)
             </span>
             {isStale ? (
@@ -201,7 +201,7 @@ function FlowsContent() {
               </span>
             ) : null}
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Foreign and domestic institutional cash market gross buy, sell, and net flows in ₹ Crore.
             {flows.as_of && <span> As-of {formatISTDate(flows.as_of)}.</span>}
             {flows.fetched_at && <span> Fetched at {formatISTDateTime(flows.fetched_at)}.</span>}
@@ -243,23 +243,23 @@ function FlowsContent() {
         onSubmit={handleApplyFilter}
         className="terminal-panel p-2.5 flex flex-wrap items-center gap-3 text-[12px]"
       >
-        <span className="font-medium text-[#536176] dark:text-[#A8B4C4]">Filter Dates:</span>
+        <span className="font-medium text-[#706E6B] dark:text-[#A8B4C4]">Filter Dates:</span>
         <div className="flex items-center gap-1.5">
-          <label className="text-[#536176] dark:text-[#A8B4C4] font-mono text-[11px]">From</label>
+          <label className="text-[#706E6B] dark:text-[#A8B4C4] font-mono text-[11px]">From</label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="bg-[#FFFFFF] dark:bg-[#101720] border border-[#E4E9EF] dark:border-[#2B3644] rounded px-2 py-1 text-[12px] font-mono text-[#172033] dark:text-[#EDF2F7] focus:outline-none focus:border-[#006F64]"
+            className="bg-[#FFFFFF] dark:bg-[#101720] border border-[#E5E5E5] dark:border-[#2B3644] rounded px-2 py-1 text-[12px] font-mono text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:border-[#0176D3]"
           />
         </div>
         <div className="flex items-center gap-1.5">
-          <label className="text-[#536176] dark:text-[#A8B4C4] font-mono text-[11px]">To</label>
+          <label className="text-[#706E6B] dark:text-[#A8B4C4] font-mono text-[11px]">To</label>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="bg-[#FFFFFF] dark:bg-[#101720] border border-[#E4E9EF] dark:border-[#2B3644] rounded px-2 py-1 text-[12px] font-mono text-[#172033] dark:text-[#EDF2F7] focus:outline-none focus:border-[#006F64]"
+            className="bg-[#FFFFFF] dark:bg-[#101720] border border-[#E5E5E5] dark:border-[#2B3644] rounded px-2 py-1 text-[12px] font-mono text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:border-[#0176D3]"
           />
         </div>
         <button
@@ -272,7 +272,7 @@ function FlowsContent() {
           <button
             type="button"
             onClick={handleClearFilter}
-            className="text-[11px] text-[#536176] hover:text-[#172033] dark:text-[#A8B4C4] dark:hover:text-[#EDF2F7] underline ml-auto cursor-pointer"
+            className="text-[11px] text-[#706E6B] hover:text-[#181818] dark:text-[#A8B4C4] dark:hover:text-[#EDF2F7] underline ml-auto cursor-pointer"
           >
             Reset to Last 365 Days
           </button>
@@ -317,10 +317,10 @@ function FlowsContent() {
 
       {/* Summary Highlight Table */}
       <div className="terminal-panel overflow-hidden">
-        <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE] flex items-center justify-between">
+        <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF] flex items-center justify-between">
           <span>Latest Session Institutional Net Positions</span>
           {flows.as_of && (
-            <span className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4] font-normal lowercase">
+            <span className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4] font-normal lowercase">
               session: {formatISTDate(flows.as_of)}
             </span>
           )}
@@ -336,35 +336,35 @@ function FlowsContent() {
           </thead>
           <tbody>
             <tr>
-              <td className="text-left font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+              <td className="text-left font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center">
                 <span>FII / FPI Net Cash Position</span>
                 <InfoTip metric="fii_net_flow" meta={data?.meta?.fii_net_flow ?? data?.meta?._default} />
               </td>
               <td className="text-right">
                 <SignedValue value={flows.fii_net_crore} unit="Cr" />
               </td>
-              <td className="text-left text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              <td className="text-left text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                 Foreign Portfolio Investors (Equity Cash)
               </td>
-              <td className="text-left text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644]">
+              <td className="text-left text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644]">
                   {latestProvisional ? "provisional" : "final"}
                 </span>
               </td>
             </tr>
             <tr>
-              <td className="text-left font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+              <td className="text-left font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center">
                 <span>DII Net Cash Position</span>
                 <InfoTip metric="dii_net_flow" meta={data?.meta?.dii_net_flow ?? data?.meta?._default} />
               </td>
               <td className="text-right">
                 <SignedValue value={flows.dii_net_crore} unit="Cr" />
               </td>
-              <td className="text-left text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              <td className="text-left text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                 Domestic Institutions (MFs, Banks, Insurance)
               </td>
-              <td className="text-left text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644]">
+              <td className="text-left text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644]">
                   {latestProvisional ? "provisional" : "final"}
                 </span>
               </td>
@@ -375,9 +375,9 @@ function FlowsContent() {
 
       {/* Historical Flows Ledger */}
       <div className="terminal-panel overflow-hidden">
-        <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4] flex items-center justify-between">
+        <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] flex items-center justify-between">
           <span>Daily Institutional Activity Ledger</span>
-          <span className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4] font-normal lowercase">
+          <span className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4] font-normal lowercase">
             {sortedDaily.length} records
           </span>
         </div>
@@ -453,7 +453,7 @@ function FlowsContent() {
             <tbody>
               {loading && !data ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                  <td colSpan={7} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                     Loading institutional flows ledger…
                   </td>
                 </tr>
@@ -467,7 +467,7 @@ function FlowsContent() {
 
                   return (
                     <tr key={stableKey}>
-                      <td className="text-left font-medium text-[#172033] dark:text-[#EDF2F7]">
+                      <td className="text-left font-medium text-[#181818] dark:text-[#EDF2F7]">
                         {formatISTDate(row.report_date)}
                       </td>
                       <td className="text-left">
@@ -481,20 +481,20 @@ function FlowsContent() {
                           {row.category}
                         </span>
                       </td>
-                      <td className="text-left text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                      <td className="text-left text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                         {segmentLabel}
                       </td>
-                      <td className="text-right text-[#536176] dark:text-[#A8B4C4] font-mono">
+                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4] font-mono">
                         {buyDisplay}
                       </td>
-                      <td className="text-right text-[#536176] dark:text-[#A8B4C4] font-mono">
+                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4] font-mono">
                         {sellDisplay}
                       </td>
                       <td className="text-right font-mono">
                         <SignedValue value={row.net_crore} unit="Cr" />
                       </td>
                       <td className="text-left">
-                        <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+                        <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
                           {row.provisional ? "provisional" : "final"}
                         </span>
                       </td>
@@ -503,7 +503,7 @@ function FlowsContent() {
                 })
               ) : (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-[#536176] dark:text-[#A8B4C4]">
+                  <td colSpan={7} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                     No institutional flow records matching the criteria. Click &quot;Retry / Poll&quot; to fetch recent exchange data.
                   </td>
                 </tr>
@@ -520,8 +520,8 @@ export default function FlowsPage() {
   return (
     <Suspense
       fallback={
-        <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
-          <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+        <div className="p-8 text-center text-[#706E6B] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
+          <svg className="animate-spin h-4 w-4 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>

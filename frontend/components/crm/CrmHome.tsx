@@ -20,10 +20,10 @@ function Kpi({ label, value, hint, link, tone }: { label: string; value: string;
   return (
     <Link
       href={linkHref(link)}
-      className={`${cardCls} block hover:border-[#006F64] dark:hover:border-[#75E1CE] transition focus:outline-none focus:ring-2 focus:ring-[#006F64]`}
+      className={`${cardCls} block hover:border-[#0176D3] dark:hover:border-[#1B96FF] transition focus:outline-none focus:ring-2 focus:ring-[#0176D3]`}
     >
       <div className={`text-[11px] font-semibold uppercase tracking-wider ${mutedCls}`}>{label}</div>
-      <div className={`mt-1 text-2xl font-bold tabular-nums ${tone === "warn" ? "text-amber-700 dark:text-amber-300" : "text-[#172033] dark:text-[#EDF2F7]"}`}>{value}</div>
+      <div className={`mt-1 text-2xl font-bold tabular-nums ${tone === "warn" ? "text-amber-700 dark:text-amber-300" : "text-[#181818] dark:text-[#EDF2F7]"}`}>{value}</div>
       {hint && <div className={`mt-1 text-xs ${mutedCls}`}>{hint}</div>}
     </Link>
   );
@@ -70,7 +70,7 @@ function BarCard({ title, sub, data, money = true, colors }: { title: string; su
       <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
         {data.filter((d) => d.link).map((d) => (
           <li key={d.name} className="text-xs">
-            <Link href={linkHref(d.link!)} className="text-[#006F64] dark:text-[#75E1CE] hover:underline">{d.name}</Link>
+            <Link href={linkHref(d.link!)} className="text-[#0176D3] dark:text-[#1B96FF] hover:underline">{d.name}</Link>
             <span className={mutedCls}> · {d.count}{money ? ` · ${shortInr(d.value / 100)}` : ""}</span>
           </li>
         ))}
@@ -93,8 +93,8 @@ export default function CrmHome() {
 
   const dark = theme === "dark";
   const colors = dark
-    ? { bar: "#75E1CE", grid: "#2B3644", text: "#A8B4C4", tip: "#171E27" }
-    : { bar: "#006F64", grid: "#E4E9EF", text: "#536176", tip: "#FFFFFF" };
+    ? { bar: "#1B96FF", grid: "#2B3644", text: "#A8B4C4", tip: "#171E27" }
+    : { bar: "#0176D3", grid: "#E5E5E5", text: "#706E6B", tip: "#FFFFFF" };
 
   const tiers: Datum[] = data.aum_by_tier.map((t) => ({ name: `${TIER_LABEL[t.tier] ?? t.tier} (${t.households})`, value: t.aum_paise, count: t.households, link: t.link }));
   const stages: Datum[] = data.pipeline_by_stage.filter((s) => s.count > 0).map((s) => ({ name: stageLabel(s.stage), value: s.value, count: s.count, link: s.link }));
@@ -127,16 +127,16 @@ export default function CrmHome() {
         <section className={cardCls} aria-label="Top trail earners">
           <div className="flex items-baseline justify-between">
             <h3 className={headCls}>Top trail earners</h3>
-            <Link href={linkHref(data.top_trail.link)} className="text-xs text-[#006F64] dark:text-[#75E1CE] hover:underline">Trail report</Link>
+            <Link href={linkHref(data.top_trail.link)} className="text-xs text-[#0176D3] dark:text-[#1B96FF] hover:underline">Trail report</Link>
           </div>
           <p className={`mb-2 text-xs ${mutedCls}`}>{data.top_trail.month ? `Households by brokerage in ${data.top_trail.month}.` : "Upload a brokerage file in Book → Trail commission."}</p>
           <ol className="space-y-1.5">
             {data.top_trail.rows.map((r, i) => (
               <li key={r.household_id} className="flex items-center justify-between text-xs">
-                <Link href={`/backoffice/crm/households/${r.household_id}`} className="text-[#172033] dark:text-[#EDF2F7] hover:underline">
+                <Link href={`/backoffice/crm/households/${r.household_id}`} className="text-[#181818] dark:text-[#EDF2F7] hover:underline">
                   <span className={`mr-2 tabular-nums ${mutedCls}`}>{i + 1}.</span>{r.household_name ?? "Household"}
                 </Link>
-                <span className="font-semibold tabular-nums text-[#172033] dark:text-[#EDF2F7]">{rupees(r.amount_paise)}</span>
+                <span className="font-semibold tabular-nums text-[#181818] dark:text-[#EDF2F7]">{rupees(r.amount_paise)}</span>
               </li>
             ))}
           </ol>

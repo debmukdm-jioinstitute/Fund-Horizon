@@ -50,7 +50,7 @@ export default function AddContactForm({
 
   if (!open) return <button type="button" className={ghostBtnCls} onClick={() => setOpen(true)}>Add contact</button>;
   return (
-    <form onSubmit={submit} className="grid grid-cols-2 gap-2 text-xs rounded border border-[#E4E9EF] dark:border-[#2B3644] p-3" aria-label="Add contact">
+    <form onSubmit={submit} className="grid grid-cols-2 gap-2 text-xs rounded border border-[#E5E5E5] dark:border-[#2B3644] p-3" aria-label="Add contact">
       <label>Name<input value={f.name} onChange={set("name")} className={inputCls} /></label>
       <label>Relation<select value={f.relation} onChange={set("relation")} className={inputCls}>{RELATIONS.map((r) => <option key={r}>{r}</option>)}</select></label>
       <label>Email (optional)<input value={f.email} onChange={set("email")} className={inputCls} /></label>

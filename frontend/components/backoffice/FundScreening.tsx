@@ -230,7 +230,7 @@ export default function FundScreening() {
 
       {/* Empty result: say which stage emptied it and why */}
       {runData && !runningFunnel && runData.counts.final === 0 && runData.counts.zeroed_stage && (
-        <div className="terminal-panel p-3 border border-[#C26200]/30 bg-[#C26200]/5 text-[12px] text-[#172033] dark:text-[#EDF2F7] flex flex-wrap items-center justify-between gap-2">
+        <div className="terminal-panel p-3 border border-[#C26200]/30 bg-[#C26200]/5 text-[12px] text-[#181818] dark:text-[#EDF2F7] flex flex-wrap items-center justify-between gap-2">
           <div>
             <strong>0 funds after {STAGE_LABEL[runData.counts.zeroed_stage]}.</strong>
             {(runData.counts.zeroed_reasons?.length ?? 0) > 0 && (
@@ -273,9 +273,9 @@ export default function FundScreening() {
 
       {/* Table Action Header & Export Link */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-        <div className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+        <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
           Showing <strong>{displayedRows.length}</strong> schemes for stage{" "}
-          <span className="font-mono text-[#006F64] dark:text-[#75E1CE] uppercase font-semibold">
+          <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] uppercase font-semibold">
             {activeStage}
           </span>
           {runData?.as_of && (
@@ -296,7 +296,7 @@ export default function FundScreening() {
             </a>
             <a
               href={screeningExportUrl(runData.run_id, true)}
-              className="terminal-btn text-[11px] py-1 px-2 text-[#536176] dark:text-[#A8B4C4]"
+              className="terminal-btn text-[11px] py-1 px-2 text-[#706E6B] dark:text-[#A8B4C4]"
               title="Includes Q1 Retain peers in the CSV export"
             >
               + with Retain

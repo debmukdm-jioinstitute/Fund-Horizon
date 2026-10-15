@@ -21,10 +21,10 @@ export default function PathBar({
         const state = s === current ? "current" : idx >= 0 && i < idx ? "done" : "todo";
         const tone =
           state === "current"
-            ? current === "lost" ? "bg-rose-600 text-white" : "bg-[#006F64] text-white"
+            ? current === "lost" ? "bg-rose-600 text-white" : "bg-[#0176D3] text-white"
             : state === "done"
-              ? "bg-[#CBE9E4] dark:bg-[#17433D] text-[#0B4F47] dark:text-[#CFF5EE]"
-              : "bg-[#EEF2F6] dark:bg-[#24303E] text-[#536176] dark:text-[#A8B4C4]";
+              ? "bg-[#D8E6FE] dark:bg-[#12385C] text-[#014486] dark:text-[#CFE6FC]"
+              : "bg-[#ECEBEA] dark:bg-[#24303E] text-[#706E6B] dark:text-[#A8B4C4]";
         const first = i === 0, last = i === stages.length - 1;
         const clipPath = `polygon(0 0, ${last ? "100%" : `calc(100% - ${TIP}px)`} 0, ${last ? "100% 100%" : `100% 50%, calc(100% - ${TIP}px) 100%`}, 0 100%${first ? "" : `, ${TIP}px 50%`})`;
         return (

@@ -81,22 +81,22 @@ export default function CommandPalette({ open, onClose, modules }: { open: boole
       onKeyDown={(e) => e.key === "Escape" && onClose()}
     >
       <div
-        className="w-full max-w-xl bg-white dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] rounded-lg shadow-lg overflow-hidden"
+        className="w-full max-w-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] rounded-lg shadow-lg overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <Command shouldFilter={false} label="Search" loop>
-          <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center gap-2">
+          <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-center gap-2">
             <Command.Input
               autoFocus
               value={query}
               onValueChange={setQuery}
               placeholder="Search households, contacts, leads, mobile, PAN last 4… or jump to a module"
-              className="w-full text-[13px] bg-transparent text-[#172033] dark:text-[#EDF2F7] placeholder-[#536176] dark:placeholder-[#A8B4C4] focus:outline-none"
+              className="w-full text-[13px] bg-transparent text-[#181818] dark:text-[#EDF2F7] placeholder-[#706E6B] dark:placeholder-[#A8B4C4] focus:outline-none"
             />
             <button
               type="button"
               onClick={onClose}
-              className="text-[11px] text-[#536176] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644]"
+              className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] px-1.5 py-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644]"
             >
               ESC
             </button>
@@ -109,48 +109,48 @@ export default function CommandPalette({ open, onClose, modules }: { open: boole
                 <Command.Group
                   key={type}
                   heading={TYPE_LABEL[type]}
-                  className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-[#536176] dark:[&_[cmdk-group-heading]]:text-[#A8B4C4]"
+                  className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-[#706E6B] dark:[&_[cmdk-group-heading]]:text-[#A8B4C4]"
                 >
                   {items.map((r) => (
                     <Command.Item
                       key={`${r.type}:${r.id}`}
                       value={`${r.type}:${r.id}`}
                       onSelect={() => go(r.href)}
-                      className="flex items-center justify-between gap-3 p-2.5 rounded cursor-pointer text-[#172033] dark:text-[#EDF2F7] data-[selected=true]:bg-[#F0F4F8] dark:data-[selected=true]:bg-[#1D2733]"
+                      className="flex items-center justify-between gap-3 p-2.5 rounded cursor-pointer text-[#181818] dark:text-[#EDF2F7] data-[selected=true]:bg-[#F0F4F8] dark:data-[selected=true]:bg-[#1D2733]"
                     >
                       <span className="text-[13px] font-medium truncate">{r.title}</span>
-                      <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] truncate">{r.subtitle}</span>
+                      <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] truncate">{r.subtitle}</span>
                     </Command.Item>
                   ))}
                 </Command.Group>
               );
             })}
-            {searching && <div className="px-3 py-2 text-[12px] text-[#536176] dark:text-[#A8B4C4]">Searching…</div>}
+            {searching && <div className="px-3 py-2 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Searching…</div>}
             {failed && !searching && query.trim().length >= 2 && (
-              <div className="px-3 py-2 text-[12px] text-[#536176] dark:text-[#A8B4C4]">CRM search is unavailable for this account.</div>
+              <div className="px-3 py-2 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">CRM search is unavailable for this account.</div>
             )}
             {matchingModules.length > 0 && (
               <Command.Group
                 heading="Terminal modules"
-                className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-[#536176] dark:[&_[cmdk-group-heading]]:text-[#A8B4C4]"
+                className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-[#706E6B] dark:[&_[cmdk-group-heading]]:text-[#A8B4C4]"
               >
                 {matchingModules.map((m) => (
                   <Command.Item
                     key={m.href}
                     value={`module:${m.href}`}
                     onSelect={() => go(m.href)}
-                    className="flex items-center justify-between gap-3 p-2.5 rounded cursor-pointer text-[#172033] dark:text-[#EDF2F7] data-[selected=true]:bg-[#F0F4F8] dark:data-[selected=true]:bg-[#1D2733]"
+                    className="flex items-center justify-between gap-3 p-2.5 rounded cursor-pointer text-[#181818] dark:text-[#EDF2F7] data-[selected=true]:bg-[#F0F4F8] dark:data-[selected=true]:bg-[#1D2733]"
                   >
                     <span>
                       <span className="block text-[13px] font-medium">{m.label}</span>
-                      <span className="block text-[11px] text-[#536176] dark:text-[#A8B4C4]">{m.description}</span>
+                      <span className="block text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{m.description}</span>
                     </span>
                   </Command.Item>
                 ))}
               </Command.Group>
             )}
             {!searching && results.length === 0 && matchingModules.length === 0 && (
-              <Command.Empty className="p-4 text-center text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              <Command.Empty className="p-4 text-center text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                 No modules or CRM records match &quot;{query}&quot;
               </Command.Empty>
             )}

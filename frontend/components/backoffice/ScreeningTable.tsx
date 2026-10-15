@@ -26,7 +26,7 @@ export default function ScreeningTable({
   function renderRatioValue(row: MfScreeningRow, colKey: string) {
     const val = (row as unknown as Record<string, number | null | undefined>)[colKey];
     if (val === null || val === undefined || isNaN(val)) {
-      return <span className="text-[#536176] dark:text-[#A8B4C4]">—</span>;
+      return <span className="text-[#706E6B] dark:text-[#A8B4C4]">—</span>;
     }
 
     if (colKey === "expense_ratio") {
@@ -40,13 +40,13 @@ export default function ScreeningTable({
     }
     if (unit === "ratio") {
       return (
-        <span className="tabular-nums font-medium text-[#172033] dark:text-[#EDF2F7]">
+        <span className="tabular-nums font-medium text-[#181818] dark:text-[#EDF2F7]">
           {val.toFixed(2)}x
         </span>
       );
     }
     return (
-      <span className="tabular-nums text-[#172033] dark:text-[#EDF2F7]">
+      <span className="tabular-nums text-[#181818] dark:text-[#EDF2F7]">
         {val.toFixed(2)}
       </span>
     );
@@ -54,18 +54,18 @@ export default function ScreeningTable({
 
   return (
     <div className="terminal-panel overflow-hidden">
-      <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center justify-between">
+      <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
             {isRetainView ? "Q1 Retain Peers (Do Not Touch)" : "Screening Action Universe"} ({rows.length})
           </span>
           {isRetainView && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#006F64]/15 text-[#006F64] dark:text-[#75E1CE] font-mono">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#0176D3]/15 text-[#0176D3] dark:text-[#1B96FF] font-mono">
               Excluded from action export by default
             </span>
           )}
         </div>
-        <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+        <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">
           Click any row to open strategy inspection drawer
         </div>
       </div>
@@ -122,7 +122,7 @@ export default function ScreeningTable({
               <tr>
                 <td
                   colSpan={6 + selectedColumns.length}
-                  className="py-12 text-center text-[#536176] dark:text-[#A8B4C4] text-[12px]"
+                  className="py-12 text-center text-[#706E6B] dark:text-[#A8B4C4] text-[12px]"
                 >
                   No funds match the current filter criteria and funnel thresholds.
                 </td>
@@ -134,23 +134,23 @@ export default function ScreeningTable({
                   <tr
                     key={row.scheme_code}
                     onClick={() => onSelectScheme(row.scheme_code)}
-                    className="cursor-pointer hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition-colors"
+                    className="cursor-pointer hover:bg-[#F3F3F3] dark:hover:bg-[#171E27] transition-colors"
                   >
                     {/* Scheme Code */}
-                    <td className="font-mono text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+                    <td className="font-mono text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                       {row.scheme_code}
                     </td>
 
                     {/* Scheme Name & Category */}
                     <td>
-                      <div className="font-medium text-[#172033] dark:text-[#EDF2F7] leading-snug">
+                      <div className="font-medium text-[#181818] dark:text-[#EDF2F7] leading-snug">
                         {row.scheme_name}
                       </div>
-                      <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-[#536176] dark:text-[#A8B4C4]">
+                      <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">
                         <span className="uppercase font-mono">{row.cat.replace(/_/g, " ")}</span>
                         {row.amc && <span>• {row.amc}</span>}
                         {row.pms_link && (
-                          <span className="px-1 py-0.2 rounded bg-[#006F64]/10 text-[#006F64] dark:text-[#75E1CE] font-mono">
+                          <span className="px-1 py-0.2 rounded bg-[#0176D3]/10 text-[#0176D3] dark:text-[#1B96FF] font-mono">
                             PMS Match
                           </span>
                         )}
@@ -159,10 +159,10 @@ export default function ScreeningTable({
 
                     {/* Manager & Tenure */}
                     <td>
-                      <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">
-                        {row.manager_name || <span className="text-[#536176] dark:text-[#A8B4C4]">Unknown</span>}
+                      <div className="font-medium text-[#181818] dark:text-[#EDF2F7]">
+                        {row.manager_name || <span className="text-[#706E6B] dark:text-[#A8B4C4]">Unknown</span>}
                       </div>
-                      <div className="text-[10px] text-[#536176] dark:text-[#A8B4C4] tabular-nums font-mono">
+                      <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] tabular-nums font-mono">
                         {row.manager_tenure_years !== null && row.manager_tenure_years !== undefined
                           ? `${row.manager_tenure_years.toFixed(1)} yrs`
                           : "No start date"}
@@ -180,11 +180,11 @@ export default function ScreeningTable({
                     {/* 2Y Quartile Badge */}
                     <td className="text-center">
                       {q === 1 ? (
-                        <span className="inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#006F64]/15 text-[#006F64] dark:text-[#75E1CE] font-medium">
+                        <span className="inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#0176D3]/15 text-[#0176D3] dark:text-[#1B96FF] font-medium">
                           Q1 Retain
                         </span>
                       ) : q === 2 || q === 3 ? (
-                        <span className="inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#E4E9EF] dark:bg-[#2B3644] text-[#172033] dark:text-[#EDF2F7] font-medium">
+                        <span className="inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#E5E5E5] dark:bg-[#2B3644] text-[#181818] dark:text-[#EDF2F7] font-medium">
                           Q{q} Review
                         </span>
                       ) : q === 4 ? (
@@ -192,7 +192,7 @@ export default function ScreeningTable({
                           Q4 Dropped
                         </span>
                       ) : (
-                        <span className="text-[10px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+                        <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">
                           Unavail
                         </span>
                       )}
@@ -200,7 +200,7 @@ export default function ScreeningTable({
 
                     {/* Composite pick score */}
                     <td className="text-right tabular-nums text-[12px] font-mono">
-                      {row.score !== null && row.score !== undefined ? row.score.toFixed(2) : <span className="text-[#536176] dark:text-[#A8B4C4]">—</span>}
+                      {row.score !== null && row.score !== undefined ? row.score.toFixed(2) : <span className="text-[#706E6B] dark:text-[#A8B4C4]">—</span>}
                     </td>
 
                     {/* Dynamic Selected Ratio Columns */}
@@ -215,14 +215,14 @@ export default function ScreeningTable({
                       {row.ret_1y !== null && row.ret_1y !== undefined ? (
                         <SignedValue value={row.ret_1y * 100} isPercent decimals={2} />
                       ) : (
-                        <span className="text-[#536176] dark:text-[#A8B4C4]">—</span>
+                        <span className="text-[#706E6B] dark:text-[#A8B4C4]">—</span>
                       )}
                     </td>
                     <td className="text-right">
                       {row.cagr_3y !== null && row.cagr_3y !== undefined ? (
                         <SignedValue value={row.cagr_3y * 100} isPercent decimals={2} />
                       ) : (
-                        <span className="text-[#536176] dark:text-[#A8B4C4]">—</span>
+                        <span className="text-[#706E6B] dark:text-[#A8B4C4]">—</span>
                       )}
                     </td>
                   </tr>

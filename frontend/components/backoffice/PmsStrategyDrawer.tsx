@@ -111,7 +111,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="p-4 sm:p-5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F7F9FB] dark:bg-[#171E27]">
+          <div className="p-4 sm:p-5 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F3F3F3] dark:bg-[#171E27]">
             <div>
               <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
                 {strategy.ia_id && (
@@ -120,40 +120,40 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                     onClick={() => strategy.ia_id && rec.togglePms(strategy.ia_id, strategy.strategy_name)}
                     className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded border transition-colors cursor-pointer ${
                       rec.isPmsRecommended(strategy.ia_id)
-                        ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold"
-                        : "bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64]"
+                        ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-semibold"
+                        : "bg-[#F0F3F6] dark:bg-[#202936] text-[#706E6B] dark:text-[#A8B4C4] border-[#E5E5E5] dark:border-[#2B3644] hover:border-[#0176D3]"
                     }`}
                     title="Click to toggle FH Recommended status"
                   >
                     ★ {rec.isPmsRecommended(strategy.ia_id) ? "FH Recommended" : "Mark Recommended"}
                   </button>
                 )}
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#006F64]/10 dark:bg-[#75E1CE]/15 text-[#006F64] dark:text-[#75E1CE] font-semibold border border-[#006F64]/20 dark:border-[#75E1CE]/30">
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#0176D3]/10 dark:bg-[#1B96FF]/15 text-[#0176D3] dark:text-[#1B96FF] font-semibold border border-[#0176D3]/20 dark:border-[#1B96FF]/30">
                   PMS Strategy
                 </span>
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]">
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644]">
                   {normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}
                 </span>
                 {strategy.service_type && (
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#536176] dark:text-[#A8B4C4] border border-[#E4E9EF] dark:border-[#2B3644]">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644]">
                     {strategy.service_type}
                   </span>
                 )}
               </div>
               <h2
                 id="pms-drawer-title"
-                className="text-[17px] sm:text-[19px] font-medium text-[#172033] dark:text-[#EDF2F7] leading-snug"
+                className="text-[17px] sm:text-[19px] font-medium text-[#181818] dark:text-[#EDF2F7] leading-snug"
               >
                 {strategy.strategy_name}
               </h2>
-              <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5 font-medium">
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 font-medium">
                 {normalizeProviderName(strategy.provider_name) || strategy.provider_name}
               </p>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] p-2.5 rounded-md hover:bg-[#E4E9EF] dark:hover:bg-[#2B3644] transition shrink-0"
+              className="text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7] p-2.5 rounded-md hover:bg-[#E5E5E5] dark:hover:bg-[#2B3644] transition shrink-0"
               aria-label="Close"
             >
               <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,23 +172,23 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-2.5">
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">AUM (₹ Crore)</div>
-                <div className="text-[16px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">AUM (₹ Crore)</div>
+                <div className="text-[16px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                   {strategy.aum_crore != null ? formatCrore(strategy.aum_crore) : "Not Disclosed"}
                 </div>
               </div>
 
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Benchmark</div>
-                <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || "—"}>
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Benchmark</div>
+                <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5 truncate" title={sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || "—"}>
                   {sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || (detailLoading ? "Loading…" : "—")}
                 </div>
               </div>
 
               {(strategy.min_investment || detail?.profile?.min_investment_inr !== undefined) && (
                 <div className="terminal-panel p-3">
-                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Min Investment</div>
-                  <div className="text-[14px] font-mono font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Min Investment</div>
+                  <div className="text-[14px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                     {strategy.min_investment ?? `₹${(detail?.profile?.min_investment_inr ?? 0).toLocaleString("en-IN")}`}
                   </div>
                 </div>
@@ -196,8 +196,8 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
 
               {(strategy.inception_date || detail?.profile?.inception_date) && (
                 <div className="terminal-panel p-3">
-                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Inception Date</div>
-                  <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Inception Date</div>
+                  <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                     {strategy.inception_date ?? detail?.profile?.inception_date}
                     {detail?.profile?.age ? ` · ${detail.profile.age}` : ""}
                   </div>
@@ -206,10 +206,10 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
 
               {(strategy.principal_officer || detail?.profile?.fund_manager) && (
                 <div className="terminal-panel p-3 col-span-2">
-                  <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">
+                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">
                     {strategy.principal_officer ? "Principal Officer" : "Fund Manager"}
                   </div>
-                  <div className="text-[13px] font-medium text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                  <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                     {strategy.principal_officer ?? detail?.profile?.fund_manager}
                     {!strategy.principal_officer && detail?.profile?.fund_manager_experience
                       ? ` (${detail.profile.fund_manager_experience} experience)`
@@ -219,15 +219,15 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
               )}
 
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Report As-Of Month</div>
-                <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Report As-Of Month</div>
+                <div className="text-[13px] font-mono text-[#181818] dark:text-[#EDF2F7] mt-0.5">
                   {strategy.report_month ? formatISTDate(strategy.report_month) : "Latest Disclosure"}
                 </div>
               </div>
 
               <div className="terminal-panel p-3">
-                <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium">Approach / Category</div>
-                <div className="text-[13px] font-mono text-[#172033] dark:text-[#EDF2F7] mt-0.5 truncate" title={normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}>
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Approach / Category</div>
+                <div className="text-[13px] font-mono text-[#181818] dark:text-[#EDF2F7] mt-0.5 truncate" title={normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}>
                   {normalizeApproach(strategy.investment_approach || strategy.strategy_type) || "—"}
                 </div>
               </div>
@@ -235,11 +235,11 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
 
             {/* Performance Horizon Table */}
             <div className="terminal-panel overflow-hidden">
-              <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center justify-between">
-                <div className="text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-center justify-between">
+                <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                   Performance Horizons (APMI Standard)
                 </div>
-                <div className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
+                <div className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4]">
                   XIRR / CAGR
                 </div>
               </div>
@@ -255,8 +255,8 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                   {horizons.map((h, i) => {
                     return (
                       <tr key={i}>
-                        <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">{h.label}</td>
-                        <td className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">{h.period}</td>
+                        <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">{h.label}</td>
+                        <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{h.period}</td>
                         <td className="text-right font-medium">
                           <SignedValue value={h.val} unit="%" />
                         </td>
@@ -270,11 +270,11 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
             {/* APMI profile: fees, turnover, approach (fetched per strategy) */}
             {iaId && (
               <div className="terminal-panel overflow-hidden">
-                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                   Fees, Turnover &amp; Approach (APMI)
                 </div>
                 {detailLoading && !detail ? (
-                  <div className="p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">Loading APMI profile…</div>
+                  <div className="p-3 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Loading APMI profile…</div>
                 ) : detail?.profile ? (
                   <div className="p-3 space-y-3">
                     <dl className="grid grid-cols-2 gap-x-3 gap-y-2.5 text-[12px]">
@@ -290,22 +290,22 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                         ],
                       ].map(([k, v]) => (
                         <div key={k as string}>
-                          <dt className="text-[#536176] dark:text-[#A8B4C4]">{k}</dt>
-                          <dd className="font-medium text-[#172033] dark:text-[#EDF2F7] break-words">{v}</dd>
+                          <dt className="text-[#706E6B] dark:text-[#A8B4C4]">{k}</dt>
+                          <dd className="font-medium text-[#181818] dark:text-[#EDF2F7] break-words">{v}</dd>
                         </div>
                       ))}
                     </dl>
                     {detail.profile.purpose && (
                       <div>
-                        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-medium mb-0.5">Investment approach</div>
-                        <p className="text-[12px] leading-relaxed text-[#172033] dark:text-[#EDF2F7] whitespace-pre-line">
+                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium mb-0.5">Investment approach</div>
+                        <p className="text-[12px] leading-relaxed text-[#181818] dark:text-[#EDF2F7] whitespace-pre-line">
                           {detail.profile.purpose}
                         </p>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div className="p-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                  <div className="p-3 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                     {detail?.profile_error ?? "APMI profile is not available right now."}
                   </div>
                 )}
@@ -315,7 +315,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
             {/* Monthly history from stored APMI snapshots */}
             {detail && detail.history.length > 0 && (
               <div className="terminal-panel overflow-hidden">
-                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
+                <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
                   <span>History</span>
                   <div className="flex gap-1">
                     {(["monthly", "quarterly", "yearly"] as const).map((v) => (
@@ -368,19 +368,19 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
             {/* Same provider's other strategies */}
             {detail && detail.siblings.length > 0 && (
               <div className="terminal-panel overflow-hidden">
-                <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+                <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                   More from this provider ({detail.siblings.length})
                 </div>
-                <ul className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644]">
+                <ul className="divide-y divide-[#E5E5E5] dark:divide-[#2B3644]">
                   {detail.siblings.map((x, i) => (
                     <li key={`${x.ia_id ?? x.strategy_name}-${i}`}>
                       <button
                         type="button"
                         onClick={() => x.ia_id && onSelectSibling?.(x.ia_id)}
-                        className="w-full text-left p-3 text-[12px] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition"
+                        className="w-full text-left p-3 text-[12px] hover:bg-[#F3F3F3] dark:hover:bg-[#171E27] transition"
                       >
-                        <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">{x.strategy_name}</div>
-                        <div className="font-mono text-[#536176] dark:text-[#A8B4C4]">
+                        <div className="font-medium text-[#181818] dark:text-[#EDF2F7]">{x.strategy_name}</div>
+                        <div className="font-mono text-[#706E6B] dark:text-[#A8B4C4]">
                           {formatCrore(x.aum_crore)} · 1Y{" "}
                           <SignedValue value={x.r1y} unit="%" /> · 3Y <SignedValue value={x.r3y} unit="%" />
                         </div>
@@ -392,8 +392,8 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
             )}
 
             {/* Regulatory & Methodology Note */}
-            <div className="terminal-panel p-3 bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[11px] text-[#536176] dark:text-[#A8B4C4] space-y-1 leading-relaxed">
-              <div className="font-medium text-[#172033] dark:text-[#EDF2F7]">APMI Verification & Compliance</div>
+            <div className="terminal-panel p-3 bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[11px] text-[#706E6B] dark:text-[#A8B4C4] space-y-1 leading-relaxed">
+              <div className="font-medium text-[#181818] dark:text-[#EDF2F7]">APMI Verification & Compliance</div>
               <div>
                 Data sourced from official monthly Association of Portfolio Managers in India (APMI) performance disclosures under SEBI Portfolio Managers Regulations. Returns for &gt; 1 year are annualized (CAGR).
               </div>
@@ -401,7 +401,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
           </div>
 
           {/* Footer Actions */}
-          <div className="p-4 border-t border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] flex flex-wrap items-center justify-between gap-2">
+          <div className="p-4 border-t border-[#E5E5E5] dark:border-[#2B3644] bg-[#F3F3F3] dark:bg-[#171E27] flex flex-wrap items-center justify-between gap-2">
             <button
               type="button"
               onClick={handleCopy}
@@ -416,7 +416,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                 </>
               ) : (
                 <>
-                  <svg className="w-3.5 h-3.5 text-[#536176] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 text-[#706E6B] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <span>Copy Details</span>
@@ -435,7 +435,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                 href={detail?.source_url ?? "https://www.apmiindia.org"}
                 target="_blank"
                 rel="noreferrer"
-                className="terminal-btn text-[12px] py-1.5 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                className="terminal-btn text-[12px] py-1.5 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
               >
                 APMI Portal ↗
               </a>

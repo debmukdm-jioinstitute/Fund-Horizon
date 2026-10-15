@@ -168,6 +168,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [istTime, setIstTime] = useState("");
 
   // Maintain Live IST Clock
@@ -214,9 +215,9 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
 
   if (loading || !customer || !customer.is_staff) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] dark:bg-[#10151C] text-[#536176] dark:text-[#A8B4C4]">
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] dark:bg-[#10151C] text-[#706E6B] dark:text-[#A8B4C4]">
         <div className="flex items-center gap-2.5 text-[13px] font-medium">
-          <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+          <svg className="animate-spin h-4 w-4 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
@@ -226,160 +227,126 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
     );
   }
 
+  const isActive = (href: string) => {
+    const base = href.split("?")[0];
+    return base === "/backoffice" ? pathname === base : pathname === base || pathname.startsWith(`${base}/`);
+  };
+  const initials = (customer.name || customer.email || "?").split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  const iconBtn = "h-8 w-8 rounded flex items-center justify-center text-[#706E6B] dark:text-[#A8B4C4] hover:bg-[#F3F3F3] dark:hover:bg-[#171E27] transition-colors";
+
   return (
-    <div className="min-h-screen flex bg-[#FFFFFF] dark:bg-[#10151C] text-[#172033] dark:text-[#EDF2F7]">
-      {/* Mobile Drawer Backdrop */}
-      {mobileDrawerOpen && (
-        <div
-          role="presentation"
-          onClick={() => setMobileDrawerOpen(false)}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs md:hidden"
-        />
-      )}
-
-      {/* Sidebar (210px width) */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 w-[210px] md:static flex flex-col bg-[#FFFFFF] dark:bg-[#10151C] border-r border-[#E4E9EF] dark:border-[#2B3644] shrink-0 transition-transform duration-200 ease-in-out ${
-          mobileDrawerOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        }`}
-      >
-        {/* Sidebar Header: Single Logo + Terminal Badge */}
-        <div className="h-[52px] px-3.5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Logo size="sm" showSubtitle={false} href="/backoffice" />
-            <span className="text-[10px] font-semibold tracking-wider uppercase text-[#006F64] dark:text-[#75E1CE] bg-[#E7F5F2] dark:bg-[#1A3034] px-1 py-0.5 rounded">
-              Terminal
-            </span>
-          </div>
-          <button
-            onClick={() => setMobileDrawerOpen(false)}
-            aria-label="Close menu"
-            className="md:hidden p-1 text-[#536176] hover:text-[#172033] dark:text-[#A8B4C4] dark:hover:text-[#EDF2F7]"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    <div className="sf min-h-screen flex flex-col bg-[#F3F3F3] dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7]">
+      {/* Lightning global header */}
+      <header className="sticky top-0 z-40 bg-white dark:bg-[#10151C] border-b border-[#E5E5E5] dark:border-[#2B3644] select-none">
+        <div className="h-[52px] px-3 flex items-center gap-3">
+          <button type="button" onClick={() => setMobileDrawerOpen(true)} aria-label="Open app launcher" title="App Launcher" className={iconBtn}>
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              {[5, 12, 19].flatMap((x) => [5, 12, 19].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r={1.8} />))}
             </svg>
           </button>
-        </div>
-
-        {/* Navigation Items (11 compact items) */}
-        <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto" aria-label="Terminal Navigation">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href || pathname === item.href.split("?")[0];
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileDrawerOpen(false)}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded text-[13px] transition-colors ${
-                  isActive
-                    ? "bg-[#E7F5F2] dark:bg-[#1A3034] text-[#006F64] dark:text-[#75E1CE] font-medium"
-                    : "text-[#536176] dark:text-[#A8B4C4] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] hover:text-[#172033] dark:hover:text-[#EDF2F7]"
-                }`}
-              >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#006F64] dark:text-[#75E1CE]" : "text-[#536176] dark:text-[#A8B4C4]"}`} />
-                <span className="truncate">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Sidebar Footer: Staff Card & Sign Out */}
-        <div className="p-2.5 border-t border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] space-y-2">
-          <div className="flex items-center justify-between text-[11px]">
-            <div className="truncate pr-1">
-              <div className="font-medium text-[#172033] dark:text-[#EDF2F7] truncate">{customer.name || customer.email}</div>
-              <div className="text-[#536176] dark:text-[#A8B4C4] truncate text-[10px]">{customer.email}</div>
-            </div>
-            <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#FFFFFF] dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] text-[#006F64] dark:text-[#75E1CE] shrink-0 font-medium">
-              {customer.role}
-            </span>
-          </div>
+          <span className="hidden sm:block shrink-0"><Logo size="sm" showSubtitle={false} href="/backoffice" /></span>
 
           <button
-            onClick={async () => {
-              await logout();
-              router.replace("/login");
-            }}
-            className="w-full flex items-center justify-center gap-1.5 py-1 px-2 text-[12px] text-[#B42332] dark:text-[#FF7D86] hover:bg-[#FFFFFF] dark:hover:bg-[#10151C] rounded border border-transparent hover:border-[#E4E9EF] dark:hover:border-[#2B3644] transition-colors"
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            className="mx-auto flex h-8 min-w-0 flex-1 max-w-xl items-center gap-2 rounded border border-[#C9C7C5] dark:border-[#2B3644] bg-[#F3F3F3] dark:bg-[#171E27] px-2.5 text-[13px] text-[#706E6B] dark:text-[#A8B4C4] hover:border-[#0176D3] transition-colors"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            Sign Out
+            <span className="truncate">Search customers, leads, households and modules…</span>
+            <kbd className="ml-auto hidden sm:inline text-[10px] px-1 bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] rounded">⌘K</kbd>
           </button>
-        </div>
-      </aside>
 
-      {/* Main Terminal Shell: Slim Top Bar + Content Area */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        {/* Slim 52px Top Bar */}
-        <header className="h-[52px] border-b border-[#E4E9EF] dark:border-[#2B3644] bg-[#FFFFFF] dark:bg-[#10151C] px-4 flex items-center justify-between shrink-0 sticky top-0 z-30 select-none">
-          {/* Left: Mobile hamburger & route breadcrumb / search trigger */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileDrawerOpen(true)}
-              aria-label="Open navigation drawer"
-              className="md:hidden p-1.5 rounded text-[#536176] dark:text-[#A8B4C4] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27]"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-
-            {/* Quick Navigation Search Button */}
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 h-7 px-2.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4] text-[12px] hover:border-[#006F64] dark:hover:border-[#75E1CE] transition-colors"
-            >
-              <svg className="w-3.5 h-3.5 text-[#536176] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <span className="hidden sm:inline">Search terminal modules…</span>
-              <span className="sm:hidden">Search…</span>
-              <kbd className="hidden sm:inline text-[10px] px-1 py-0.2 bg-[#FFFFFF] dark:bg-[#10151C] border border-[#E4E9EF] dark:border-[#2B3644] rounded text-[#536176] dark:text-[#A8B4C4] font-mono">
-                ⌘K
-              </kbd>
-            </button>
-          </div>
-
-          {/* Right: Live IST Clock, Refresh indicator, Theme Toggle */}
-          <div className="flex items-center gap-3">
-            {istTime && (
-              <span className="text-[12px] font-mono text-[#536176] dark:text-[#A8B4C4] tabular-nums hidden sm:inline">
-                {istTime}
-              </span>
-            )}
-
-            {/* Theme Toggle Button */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              title={`Switch to ${theme === "dark" ? "Light" : "Dark"} theme`}
-              className="h-7 w-7 rounded flex items-center justify-center text-[#536176] dark:text-[#A8B4C4] hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] transition-colors"
-            >
+          <div className="flex items-center gap-1 shrink-0">
+            {istTime && <span className="mr-2 hidden lg:inline text-[12px] text-[#706E6B] dark:text-[#A8B4C4] tabular-nums">{istTime}</span>}
+            <button type="button" onClick={toggleTheme} aria-label="Toggle theme" title={`Switch to ${theme === "dark" ? "Light" : "Dark"} theme`} className={iconBtn}>
               {theme === "dark" ? (
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
               ) : (
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
               )}
             </button>
+            <div className="relative">
+              <button type="button" onClick={() => setUserMenuOpen((o) => !o)} aria-label="User menu" aria-expanded={userMenuOpen} className="ml-1 h-8 w-8 rounded-full bg-[#0176D3] text-white text-[12px] font-semibold flex items-center justify-center">
+                {initials}
+              </button>
+              {userMenuOpen && (
+                <div className="absolute right-0 top-10 z-50 w-64 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] shadow-lg">
+                  <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+                    <div className="text-[13px] font-semibold truncate">{customer.name || customer.email}</div>
+                    <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] truncate">{customer.email}</div>
+                    <span className="mt-1 inline-block rounded bg-[#EAF5FE] dark:bg-[#11304F] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[#0176D3] dark:text-[#1B96FF]">{customer.role}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={async () => { await logout(); router.replace("/login"); }}
+                    className="w-full px-3 py-2 text-left text-[13px] text-[#B42332] dark:text-[#FF7D86] hover:bg-[#F3F3F3] dark:hover:bg-[#10151C]"
+                  >
+                    Log Out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </header>
+        </div>
 
-        {/* Main Content View with 20-24px padding */}
-        <main className="flex-1 p-5 md:p-6 overflow-y-auto">
-          <div className="max-w-[1600px] mx-auto">
-            {children}
+        {/* Lightning navigation bar: app name + object tabs */}
+        <nav aria-label="Terminal Navigation" className="flex items-stretch border-t-[3px] border-t-[#0176D3] border-t border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#10151C] shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
+          <div className="hidden sm:flex items-center border-r border-[#E5E5E5] dark:border-[#2B3644] px-4 text-[15px] font-semibold whitespace-nowrap">Fund Horizon</div>
+          <div className="flex min-w-0 flex-1 overflow-x-auto">
+            {NAV_ITEMS.map((item) => {
+              const on = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={on ? "page" : undefined}
+                  ref={on ? (el) => el?.scrollIntoView({ inline: "center", block: "nearest" }) : undefined}
+                  className={`relative flex h-11 shrink-0 items-center px-3.5 text-[13px] whitespace-nowrap hover:bg-[#F3F3F3] dark:hover:bg-[#171E27] ${
+                    on ? "font-semibold text-[#0176D3] dark:text-[#1B96FF]" : "text-[#444444] dark:text-[#A8B4C4] hover:text-[#0176D3]"
+                  }`}
+                >
+                  {item.label}
+                  {on && <span className="absolute inset-x-0 bottom-0 h-[3px] bg-[#0176D3] dark:bg-[#1B96FF]" />}
+                </Link>
+              );
+            })}
           </div>
-        </main>
-      </div>
+        </nav>
+      </header>
+
+      {/* App launcher */}
+      {mobileDrawerOpen && (
+        <div role="dialog" aria-modal="true" aria-label="App Launcher" className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4 pt-16" onClick={() => setMobileDrawerOpen(false)}>
+          <div className="w-full max-w-3xl max-h-[80vh] overflow-y-auto rounded bg-white dark:bg-[#171E27] shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] px-5 py-3">
+              <h2 className="text-[16px] font-semibold">App Launcher</h2>
+              <button type="button" onClick={() => setMobileDrawerOpen(false)} aria-label="Close" className={iconBtn}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3">
+              {NAV_ITEMS.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.href} href={item.href} onClick={() => setMobileDrawerOpen(false)} className="flex items-start gap-3 rounded border border-[#E5E5E5] dark:border-[#2B3644] p-3 hover:border-[#0176D3] hover:bg-[#F3F9FE] dark:hover:bg-[#11304F]">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#0176D3] text-white"><Icon className="w-5 h-5" /></span>
+                    <span className="min-w-0">
+                      <span className="block text-[13px] font-semibold text-[#0176D3] dark:text-[#1B96FF]">{item.label}</span>
+                      <span className="block text-[12px] text-[#706E6B] dark:text-[#A8B4C4] line-clamp-2">{item.description}</span>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className="flex-1 p-3 sm:p-4 md:p-5">
+        <div className="max-w-[1600px] mx-auto">{children}</div>
+      </main>
 
       <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={NAV_ITEMS} />
     </div>

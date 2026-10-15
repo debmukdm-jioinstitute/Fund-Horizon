@@ -91,12 +91,12 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={spec.title} onClick={onClose}>
       <div className="absolute inset-0 flex">
         <div className="w-full h-full bg-[#FFFFFF] dark:bg-[#10151C] flex flex-col" onClick={(e) => e.stopPropagation()}>
-          <div className="p-4 sm:p-5 border-b border-[#E4E9EF] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F7F9FB] dark:bg-[#171E27]">
+          <div className="p-4 sm:p-5 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-start justify-between gap-3 bg-[#F3F3F3] dark:bg-[#171E27]">
             <div>
-              <div className="text-[10px] font-mono uppercase text-[#536176] dark:text-[#A8B4C4] mb-1">Indicator history</div>
-              <h2 className="text-[19px] font-medium text-[#172033] dark:text-[#EDF2F7]">{spec.title}</h2>
+              <div className="text-[10px] font-mono uppercase text-[#706E6B] dark:text-[#A8B4C4] mb-1">Indicator history</div>
+              <h2 className="text-[19px] font-medium text-[#181818] dark:text-[#EDF2F7]">{spec.title}</h2>
               {rows[0] && (
-                <p className="text-[13px] font-mono text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+                <p className="text-[13px] font-mono text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
                   Latest {fmt(rows[0].value)} · {day(rows[0].observed_at)}
                 </p>
               )}
@@ -105,7 +105,7 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] p-2.5 rounded-md hover:bg-[#E4E9EF] dark:hover:bg-[#2B3644] transition shrink-0"
+              className="text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7] p-2.5 rounded-md hover:bg-[#E5E5E5] dark:hover:bg-[#2B3644] transition shrink-0"
             >
               <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -114,14 +114,14 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
           </div>
           <div className="flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-4xl p-4 sm:p-8 space-y-4">
-              {points === null && !error && <div className="text-[13px] text-[#536176] dark:text-[#A8B4C4]">Loading history…</div>}
+              {points === null && !error && <div className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4]">Loading history…</div>}
               {error && <div className="text-[13px] text-[#B42332] dark:text-[#FF7D86]">Could not load history.</div>}
               {points && points.length === 0 && (
-                <div className="text-[13px] text-[#536176] dark:text-[#A8B4C4]">No history stored yet; points accumulate as the feed refreshes.</div>
+                <div className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4]">No history stored yet; points accumulate as the feed refreshes.</div>
               )}
               {points && points.length > 0 && (
                 <div className="terminal-panel overflow-hidden">
-                  <div className="p-3 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[12px] font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
+                  <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center justify-between gap-2">
                     <span>History ({rows.length})</span>
                     <div className="flex gap-1">
                       {(["daily", "weekly", "monthly"] as const).map((v) => (
@@ -137,7 +137,7 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
                     </div>
                   </div>
                   {series.length > 1 && (
-                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="w-full h-24 text-[#006F64] dark:text-[#75E1CE] p-2">
+                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="w-full h-24 text-[#0176D3] dark:text-[#1B96FF] p-2">
                       <polyline points={line} fill="none" stroke="currentColor" strokeWidth="0.8" vectorEffect="non-scaling-stroke" />
                     </svg>
                   )}

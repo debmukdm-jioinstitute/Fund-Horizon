@@ -100,33 +100,33 @@ export default function DerivativesPage() {
       ? "text-[#087744] dark:text-[#58D6A0]"
       : status?.tone === "warn"
         ? "text-[#B45309] dark:text-[#FBBF24]"
-        : "text-[#536176] dark:text-[#A8B4C4]";
+        : "text-[#706E6B] dark:text-[#A8B4C4]";
 
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               Index Derivatives, Open Interest & PCR Analytics
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               NSE / BSE F&amp;O
             </span>
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Option chain contracts, Put-Call Ratio (PCR) by OI and volume, and max pain distribution
           </p>
         </div>
 
-        <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono text-right">
+        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono text-right">
           {d?.snapshot_timestamp && (
             <div>Last updated: {formatISTDate(d.snapshot_timestamp.slice(0, 10))} {d.snapshot_timestamp.slice(11, 16)} IST</div>
           )}
           <div>
             Feed:{" "}
-            <a href="https://www.nseindia.com" target="_blank" rel="noreferrer" className="underline hover:text-[#172033] dark:hover:text-[#EDF2F7]">
+            <a href="https://www.nseindia.com" target="_blank" rel="noreferrer" className="underline hover:text-[#181818] dark:hover:text-[#EDF2F7]">
               NSE Official F&amp;O Reports
             </a>
           </div>
@@ -135,7 +135,7 @@ export default function DerivativesPage() {
 
       {/* Index Selector Bar */}
       <div className="terminal-panel p-2 flex flex-wrap items-center gap-1.5">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4] mr-2">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] mr-2">
           Underlying:
         </span>
         {INDICES.map((idx) => {
@@ -161,8 +161,8 @@ export default function DerivativesPage() {
       )}
 
       {loading ? (
-        <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
-          <svg className="animate-spin h-4 w-4 text-[#006F64] dark:text-[#75E1CE]" viewBox="0 0 24 24" fill="none">
+        <div className="p-8 text-center text-[#706E6B] dark:text-[#A8B4C4] font-mono text-[13px] flex items-center justify-center gap-2">
+          <svg className="animate-spin h-4 w-4 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
@@ -177,7 +177,7 @@ export default function DerivativesPage() {
         <div className="space-y-4">
           {/* Key Analytics Flat Table */}
           <div className="terminal-panel overflow-hidden">
-            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+            <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
               Index PCR &amp; Key Analytics Summary ({selectedIndex})
             </div>
             <table className="terminal-table">
@@ -191,59 +191,59 @@ export default function DerivativesPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center">
                     <span>Put-Call Ratio (Open Interest)</span>
                     <InfoTip metric="pcr_oi" meta={data?.meta?.pcr_oi ?? data?.meta?._default} />
                   </td>
-                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                     {hasContracts && d.pcr_oi != null ? d.pcr_oi.toFixed(2) : "N/A"}
                   </td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                     {hasContracts
                       ? (d.pcr_oi_reason || `Total Call OI: ${formatWhole(d.total_call_oi)} | Total Put OI: ${formatWhole(d.total_put_oi)}`)
                       : "No contracts for this underlying"}
                   </td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]" title="PCR > 1.20 leans bullish · 0.80–1.20 neutral · < 0.80 leans bearish">
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]" title="PCR > 1.20 leans bullish · 0.80–1.20 neutral · < 0.80 leans bearish">
                     {hasContracts && status?.tone === "ok" ? pcrLabel(d.pcr_oi) : "N/A"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center">
+                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center">
                     <span>Put-Call Ratio (Traded Volume)</span>
                     <InfoTip metric="pcr_volume" meta={data?.meta?.pcr_volume ?? data?.meta?._default} />
                   </td>
-                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                     {hasContracts && d.pcr_volume != null ? d.pcr_volume.toFixed(2) : "N/A"}
                   </td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Put Traded Volume ÷ Call Traded Volume</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Put Traded Volume ÷ Call Traded Volume</td>
                   <td className={`text-[12px] font-medium ${statusTone}`}>{status?.label ?? "N/A"}</td>
                 </tr>
                 <tr>
                   <td
-                    className="font-medium text-[#172033] dark:text-[#EDF2F7] flex items-center"
+                    className="font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center"
                     title="Strike where option writers' total payout is lowest, computed from open interest across all strikes of the selected expiry"
                   >
                     <span>Max Pain Strike</span>
                     <InfoTip metric="max_pain" meta={data?.meta?.max_pain ?? data?.meta?._default} />
                   </td>
-                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                     {hasContracts && d.max_pain_strike ? formatWhole(d.max_pain_strike) : "N/A"}
                   </td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Minimum aggregate option payoff level</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Minimum aggregate option payoff level</td>
                   <td
-                    className="text-[12px] text-[#536176] dark:text-[#A8B4C4]"
+                    className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]"
                     title={hasContracts && d.expiry_date ? `Strike where option writers lose least, computed from OI across all strikes for expiry ${formatISTDate(d.expiry_date)}${d.snapshot_timestamp ? `, as of ${formatISTDate(d.snapshot_timestamp.slice(0, 10))} ${d.snapshot_timestamp.slice(11, 16)} IST` : ""}` : undefined}
                   >
                     {hasContracts ? "Calculated" : "N/A"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="font-medium text-[#172033] dark:text-[#EDF2F7]">Underlying Spot / Future Price</td>
-                  <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">
+                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Underlying Spot / Future Price</td>
+                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                     {d.underlying_price ? `₹${formatNumber(d.underlying_price)}` : "N/A"}
                   </td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">Index underlying reference price</td>
-                  <td className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Index underlying reference price</td>
+                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                     Expiry: {d.expiry_date ? formatISTDate(d.expiry_date) : "N/A"}
                     {d.expiry_date && d.expiry_date < istToday() && (
                       <span className="ml-1 text-[#B45309] dark:text-[#FBBF24] font-medium">(expired)</span>
@@ -252,21 +252,21 @@ export default function DerivativesPage() {
                 </tr>
               </tbody>
             </table>
-            <div className="px-2.5 py-2 border-t border-[#E4E9EF] dark:border-[#2B3644] text-[10px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+            <div className="px-2.5 py-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[10px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">
               PCR legend: &gt;1.20 bullish lean · 0.80–1.20 neutral · &lt;0.80 bearish lean · OI &amp; volume in contracts
             </div>
           </div>
 
           {/* Option Chain Dense Table */}
           <div className="terminal-panel overflow-hidden">
-            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+            <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
               Dense Option Chain Matrix
               {d.expiry_date && <span className="normal-case font-normal"> · Expiry {formatISTDate(d.expiry_date)}</span>}
             </div>
 
             {!hasContracts ? (
-              <div className="p-8 text-center text-[12px] text-[#536176] dark:text-[#A8B4C4]">
-                <div className="font-medium mb-1 text-[#172033] dark:text-[#EDF2F7]">No option chain available</div>
+              <div className="p-8 text-center text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                <div className="font-medium mb-1 text-[#181818] dark:text-[#EDF2F7]">No option chain available</div>
                 <p className="max-w-md mx-auto">
                   No contracts were returned for this underlying. The feed may be temporarily unavailable.
                 </p>
@@ -275,23 +275,23 @@ export default function DerivativesPage() {
               <div className="overflow-x-auto">
                 <table className="terminal-table text-center">
                   <thead>
-                    <tr className="border-b border-[#E4E9EF] dark:border-[#2B3644]">
-                      <th colSpan={3} className="text-center font-semibold bg-[#F7F9FB] dark:bg-[#171E27] border-r border-[#E4E9EF] dark:border-[#2B3644]">
+                    <tr className="border-b border-[#E5E5E5] dark:border-[#2B3644]">
+                      <th colSpan={3} className="text-center font-semibold bg-[#F3F3F3] dark:bg-[#171E27] border-r border-[#E5E5E5] dark:border-[#2B3644]">
                         CALLS (CE)
                       </th>
-                      <th className="text-center font-semibold bg-[#E4E9EF]/50 dark:bg-[#2B3644]/50">
+                      <th className="text-center font-semibold bg-[#E5E5E5]/50 dark:bg-[#2B3644]/50">
                         STRIKE
                       </th>
-                      <th colSpan={3} className="text-center font-semibold bg-[#F7F9FB] dark:bg-[#171E27] border-l border-[#E4E9EF] dark:border-[#2B3644]">
+                      <th colSpan={3} className="text-center font-semibold bg-[#F3F3F3] dark:bg-[#171E27] border-l border-[#E5E5E5] dark:border-[#2B3644]">
                         PUTS (PE)
                       </th>
                     </tr>
                     <tr className="text-[11px]">
                       <th className="text-right" title="Open interest in contracts">Call OI (contracts)</th>
                       <th className="text-right" title="Traded volume in contracts">Volume (contracts)</th>
-                      <th className="text-right border-r border-[#E4E9EF] dark:border-[#2B3644]" title="Implied volatility as reported by NSE">IV (%)</th>
-                      <th className="text-center font-semibold bg-[#E4E9EF]/20 dark:bg-[#2B3644]/20" title="Strike price in rupees">Strike (₹)</th>
-                      <th className="text-right border-l border-[#E4E9EF] dark:border-[#2B3644]" title="Implied volatility as reported by NSE">IV (%)</th>
+                      <th className="text-right border-r border-[#E5E5E5] dark:border-[#2B3644]" title="Implied volatility as reported by NSE">IV (%)</th>
+                      <th className="text-center font-semibold bg-[#E5E5E5]/20 dark:bg-[#2B3644]/20" title="Strike price in rupees">Strike (₹)</th>
+                      <th className="text-right border-l border-[#E5E5E5] dark:border-[#2B3644]" title="Implied volatility as reported by NSE">IV (%)</th>
                       <th className="text-right" title="Traded volume in contracts">Volume (contracts)</th>
                       <th className="text-right" title="Open interest in contracts">Put OI (contracts)</th>
                     </tr>
@@ -302,21 +302,21 @@ export default function DerivativesPage() {
                       const peIV = formatIV(pe?.implied_volatility);
                       return (
                         <tr key={strike}>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{ce ? formatWhole(ce.oi) : "—"}</td>
-                          <td className="text-right text-[#536176] dark:text-[#A8B4C4]">{ce ? formatWhole(ce.volume) : "—"}</td>
-                          <td className={`text-right border-r border-[#E4E9EF] dark:border-[#2B3644] ${ceIV.warn ? "text-[#B42332] dark:text-[#FF7D86] font-medium" : "text-[#536176] dark:text-[#A8B4C4]"}`} title={ceIV.warn ?? undefined}>
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{ce ? formatWhole(ce.oi) : "—"}</td>
+                          <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">{ce ? formatWhole(ce.volume) : "—"}</td>
+                          <td className={`text-right border-r border-[#E5E5E5] dark:border-[#2B3644] ${ceIV.warn ? "text-[#B42332] dark:text-[#FF7D86] font-medium" : "text-[#706E6B] dark:text-[#A8B4C4]"}`} title={ceIV.warn ?? undefined}>
                             {ceIV.text}
                             {ceIV.warn && <span className="ml-1 text-[#B45309] dark:text-[#FBBF24]">⚠</span>}
                           </td>
-                          <td className="text-center font-medium text-[#172033] dark:text-[#EDF2F7] bg-[#F7F9FB] dark:bg-[#171E27]">
+                          <td className="text-center font-medium text-[#181818] dark:text-[#EDF2F7] bg-[#F3F3F3] dark:bg-[#171E27]">
                             {formatWhole(strike)}
                           </td>
-                          <td className={`text-right border-l border-[#E4E9EF] dark:border-[#2B3644] ${peIV.warn ? "text-[#B42332] dark:text-[#FF7D86] font-medium" : "text-[#536176] dark:text-[#A8B4C4]"}`} title={peIV.warn ?? undefined}>
+                          <td className={`text-right border-l border-[#E5E5E5] dark:border-[#2B3644] ${peIV.warn ? "text-[#B42332] dark:text-[#FF7D86] font-medium" : "text-[#706E6B] dark:text-[#A8B4C4]"}`} title={peIV.warn ?? undefined}>
                             {peIV.text}
                             {peIV.warn && <span className="ml-1 text-[#B45309] dark:text-[#FBBF24]">⚠</span>}
                           </td>
-                          <td className="text-right text-[#536176] dark:text-[#A8B4C4]">{pe ? formatWhole(pe.volume) : "—"}</td>
-                          <td className="text-right font-medium text-[#172033] dark:text-[#EDF2F7]">{pe ? formatWhole(pe.oi) : "—"}</td>
+                          <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">{pe ? formatWhole(pe.volume) : "—"}</td>
+                          <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{pe ? formatWhole(pe.oi) : "—"}</td>
                         </tr>
                       );
                     })}

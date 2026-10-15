@@ -170,7 +170,7 @@ function ChangeMark({ item }: { item: BriefingItem }) {
 
   const upCls = "text-[#0E7C3A] dark:text-[#6FD598]";
   const downCls = "text-[#B42332] dark:text-[#FF7D86]";
-  const flatCls = "text-[#536176] dark:text-[#A8B4C4]";
+  const flatCls = "text-[#706E6B] dark:text-[#A8B4C4]";
 
   if (text == null) {
     // No numeric change on file: fall back to the backend direction for the
@@ -206,9 +206,9 @@ function BriefingItemRow({
   // Item 15: when the source link equals the details link, render just one.
   const detailsUrl = item.link && item.link !== sourceUrl ? item.link : undefined;
   return (
-    <div className={`py-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] last:border-b-0 space-y-1 ${printStyles.item}`}>
+    <div className={`py-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] last:border-b-0 space-y-1 ${printStyles.item}`}>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="text-[13px] font-semibold text-[#172033] dark:text-[#EDF2F7]">{headline}</span>
+        <span className="text-[13px] font-semibold text-[#181818] dark:text-[#EDF2F7]">{headline}</span>
         <ChangeMark item={item} />
         {stale && (
           <span
@@ -220,13 +220,13 @@ function BriefingItemRow({
         )}
       </div>
       {item.text != null && item.value != null && item.text !== item.value && (
-        <p className="text-[12px] text-[#172033] dark:text-[#EDF2F7] leading-relaxed">{item.text}</p>
+        <p className="text-[12px] text-[#181818] dark:text-[#EDF2F7] leading-relaxed">{item.text}</p>
       )}
       {item.so_what != null && (
-        <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] leading-relaxed">{item.so_what}</p>
+        <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] leading-relaxed">{item.so_what}</p>
       )}
       {detailed && (
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4]">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4]">
           {item.as_of != null && <span>{formatAsOf(item.as_of)}</span>}
           {item.source != null && (
             <span>
@@ -235,7 +235,7 @@ function BriefingItemRow({
                   href={sourceUrl}
                   target="_blank"
                   rel="noopener"
-                  className="text-[#006F64] dark:text-[#75E1CE] hover:underline"
+                  className="text-[#0176D3] dark:text-[#1B96FF] hover:underline"
                 >
                   {item.source}
                 </a>
@@ -249,7 +249,7 @@ function BriefingItemRow({
               href={detailsUrl}
               target="_blank"
               rel="noopener"
-              className="text-[#006F64] dark:text-[#75E1CE] hover:underline"
+              className="text-[#0176D3] dark:text-[#1B96FF] hover:underline"
             >
               Details
             </a>
@@ -265,12 +265,12 @@ function BriefingSectionCard({ section, detailed }: { section: BriefingSection; 
   if (section.items.length === 0) {
     return (
       <details className={`terminal-panel p-6 mb-6 ${printStyles.card}`}>
-        <summary className="cursor-pointer text-[13px] font-medium text-[#536176] dark:text-[#A8B4C4] list-none flex items-center gap-2">
+        <summary className="cursor-pointer text-[13px] font-medium text-[#706E6B] dark:text-[#A8B4C4] list-none flex items-center gap-2">
           <span aria-hidden="true">▸</span>
           <span>{section.title || section.key}</span>
           <span className="text-[11px] font-mono">— no items</span>
         </summary>
-        <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-2">
+        <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-2">
           {section.note ?? "No data for this section in this briefing."}
         </p>
       </details>
@@ -278,11 +278,11 @@ function BriefingSectionCard({ section, detailed }: { section: BriefingSection; 
   }
   return (
     <section className={`terminal-panel p-6 mb-6 ${printStyles.card}`}>
-      <h2 className="text-[14px] font-semibold text-[#172033] dark:text-[#EDF2F7] mb-4">
+      <h2 className="text-[14px] font-semibold text-[#181818] dark:text-[#EDF2F7] mb-4">
         {section.title || section.key}
       </h2>
       {section.note != null && (
-        <p className="text-[11px] font-mono text-[#536176] dark:text-[#A8B4C4] -mt-2 mb-3">
+        <p className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4] -mt-2 mb-3">
           {section.note}
         </p>
       )}
@@ -300,11 +300,11 @@ function BriefingSkeleton() {
     <div className="space-y-6" aria-label="Loading briefing">
       {[0, 1, 2].map((i) => (
         <div key={i} className="terminal-panel p-6 mb-6 animate-pulse">
-          <div className="h-4 w-40 bg-[#E4E9EF] dark:bg-[#2B3644] rounded mb-4" />
+          <div className="h-4 w-40 bg-[#E5E5E5] dark:bg-[#2B3644] rounded mb-4" />
           {[0, 1, 2].map((j) => (
             <div key={j} className="py-2.5 space-y-2">
-              <div className="h-3 w-3/4 bg-[#E4E9EF] dark:bg-[#2B3644] rounded" />
-              <div className="h-3 w-1/2 bg-[#E4E9EF] dark:bg-[#2B3644] rounded" />
+              <div className="h-3 w-3/4 bg-[#E5E5E5] dark:bg-[#2B3644] rounded" />
+              <div className="h-3 w-1/2 bg-[#E5E5E5] dark:bg-[#2B3644] rounded" />
             </div>
           ))}
         </div>
@@ -513,17 +513,17 @@ function ResearchPageContent() {
   return (
     <div className="space-y-4">
       {/* Header Bar */}
-      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E9EF] dark:border-[#2B3644] ${printStyles.noPrint}`}>
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644] ${printStyles.noPrint}`}>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               Market Briefings, Research &amp; Fund Screening
             </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4]">
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               Internal Research
             </span>
           </div>
-          <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             Daily market briefings, strategy evaluations, analyst commentary, and systematic fund screening
           </p>
         </div>
@@ -534,7 +534,7 @@ function ResearchPageContent() {
             onClick={() => handleTabChange("briefing")}
             className={`terminal-btn text-[12px] py-1 px-3 ${
               tab === "briefing"
-                ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
                 : ""
             }`}
           >
@@ -544,7 +544,7 @@ function ResearchPageContent() {
             onClick={() => handleTabChange("notes")}
             className={`terminal-btn text-[12px] py-1 px-3 ${
               tab === "notes"
-                ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
                 : ""
             }`}
           >
@@ -554,7 +554,7 @@ function ResearchPageContent() {
             onClick={() => handleTabChange("screening")}
             className={`terminal-btn text-[12px] py-1 px-3 ${
               tab === "screening"
-                ? "bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                ? "bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
                 : ""
             }`}
           >
@@ -589,10 +589,10 @@ function ResearchPageContent() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 {/* Item 8: header reads "Daily Briefing — {date}" */}
-                <h2 className="text-[18px] font-medium text-[#172033] dark:text-[#EDF2F7] tracking-tight">
+                <h2 className="text-[18px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
                   {briefing ? `Daily Briefing — ${formatBriefDate(briefing.brief_date)}` : "Daily Briefing"}
                 </h2>
-                <div className="text-[12px] text-[#536176] dark:text-[#A8B4C4] font-mono mt-0.5">
+                <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-mono mt-0.5">
                   {briefing ? (
                     <>Generated {formatISTDateTimeHM(briefing.generated_at)}</>
                   ) : (
@@ -603,7 +603,7 @@ function ResearchPageContent() {
 
               <div className={`flex flex-wrap items-center gap-2 ${printStyles.noPrint}`}>
                 {/* Item 8: archive lists only dates with a stored brief, from /briefing/dates */}
-                <label className="text-[11px] text-[#536176] dark:text-[#A8B4C4] flex items-center gap-1.5">
+                <label className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] flex items-center gap-1.5">
                   Archive
                   <select
                     value={selectedDate}
@@ -622,7 +622,7 @@ function ResearchPageContent() {
 
                 {/* Advisor / Analyst toggle */}
                 <div
-                  className="flex items-center gap-1 p-0.5 rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27]"
+                  className="flex items-center gap-1 p-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-[#F3F3F3] dark:bg-[#171E27]"
                   role="group"
                   aria-label="Briefing view"
                 >
@@ -634,8 +634,8 @@ function ResearchPageContent() {
                       aria-pressed={view === v}
                       className={`text-[12px] py-1 px-3 rounded capitalize ${
                         view === v
-                          ? "bg-[#006F64] text-white dark:bg-[#75E1CE] dark:text-[#10151C] font-medium"
-                          : "text-[#536176] dark:text-[#A8B4C4]"
+                          ? "bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] font-medium"
+                          : "text-[#706E6B] dark:text-[#A8B4C4]"
                       }`}
                     >
                       {v}
@@ -657,7 +657,7 @@ function ResearchPageContent() {
                   <button
                     onClick={handleRebuild}
                     disabled={rebuilding}
-                    className="terminal-btn text-[12px] py-1 px-2.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                    className="terminal-btn text-[12px] py-1 px-2.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
                   >
                     {rebuilding ? "Rebuilding…" : "Rebuild"}
                   </button>
@@ -666,7 +666,7 @@ function ResearchPageContent() {
             </div>
 
             {rebuildMsg && (
-              <div className={`text-[12px] text-[#536176] dark:text-[#A8B4C4] ${printStyles.noPrint}`}>
+              <div className={`text-[12px] text-[#706E6B] dark:text-[#A8B4C4] ${printStyles.noPrint}`}>
                 {rebuildMsg}
               </div>
             )}
@@ -676,10 +676,10 @@ function ResearchPageContent() {
 
           {!briefingLoading && briefingNotFound && (
             <div className="terminal-panel p-8 text-center space-y-3">
-              <div className="text-[14px] font-medium text-[#172033] dark:text-[#EDF2F7]">
+              <div className="text-[14px] font-medium text-[#181818] dark:text-[#EDF2F7]">
                 No briefing stored for {selectedDate || "this date"}
               </div>
-              <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                 Briefings are stored once a day. Pick another date from the archive or return to the latest.
               </p>
               <button
@@ -700,7 +700,7 @@ function ResearchPageContent() {
                   detailed={view === "analyst"}
                 />
               ))}
-              <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] pt-2 border-t border-[#E4E9EF] dark:border-[#2B3644]">
+              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644]">
                 {briefingCopy.disclaimer}
               </div>
             </>
@@ -714,7 +714,7 @@ function ResearchPageContent() {
           <div className={`flex justify-end ${printStyles.noPrint}`}>
             <button
               onClick={() => setShowNoteForm(!showNoteForm)}
-              className="terminal-btn text-[12px] py-1 px-2.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+              className="terminal-btn text-[12px] py-1 px-2.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
             >
               {showNoteForm ? "Cancel Note" : "+ New Research Note"}
             </button>
@@ -723,16 +723,16 @@ function ResearchPageContent() {
           {/* Note Creation Form */}
           {showNoteForm && (
             <form onSubmit={handleCreateNote} className="terminal-panel p-3.5 space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
-                <span className="text-[12px] font-semibold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">
+              <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+                <span className="text-[12px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
                   New Internal Research Note
                 </span>
-                <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono">Staff Memo</span>
+                <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">Staff Memo</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                  <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                     Target Instrument
                   </label>
                   <select
@@ -747,7 +747,7 @@ function ResearchPageContent() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                  <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                     Identifier (Code or Symbol)
                   </label>
                   <input
@@ -761,7 +761,7 @@ function ResearchPageContent() {
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                   Note Title
                 </label>
                 <input
@@ -775,7 +775,7 @@ function ResearchPageContent() {
               </div>
 
               <div>
-                <label className="text-[11px] font-medium text-[#536176] dark:text-[#A8B4C4] block mb-1">
+                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
                   Research Content &amp; Rationale
                 </label>
                 <textarea
@@ -799,7 +799,7 @@ function ResearchPageContent() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="terminal-btn text-[12px] py-1 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
+                  className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
                 >
                   {submitting ? "Saving Note…" : "Publish Research Note"}
                 </button>
@@ -809,33 +809,33 @@ function ResearchPageContent() {
 
           {/* Notes List */}
           <div className="terminal-panel overflow-hidden">
-            <div className="p-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+            <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
               Internal Analyst Research Notes ({notes.length})
             </div>
 
             {notes.length === 0 ? (
-              <div className="p-8 text-center text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+              <div className="p-8 text-center text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                 No research notes published yet. Click &quot;+ New Research Note&quot; to log internal analysis.
               </div>
             ) : (
-              <div className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644]">
+              <div className="divide-y divide-[#E5E5E5] dark:divide-[#2B3644]">
                 {notes.map((n) => (
-                  <div key={n.id} className="p-3 hover:bg-[#F7F9FB] dark:hover:bg-[#171E27] transition-colors space-y-1">
+                  <div key={n.id} className="p-3 hover:bg-[#F3F3F3] dark:hover:bg-[#171E27] transition-colors space-y-1">
                     <div className="flex items-center justify-between text-[12px]">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-[#172033] dark:text-[#EDF2F7]">{n.title}</span>
-                        <span className="text-[10px] font-mono uppercase bg-[#F7F9FB] dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] text-[#536176] dark:text-[#A8B4C4] px-1.5 py-0.2 rounded">
+                        <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">{n.title}</span>
+                        <span className="text-[10px] font-mono uppercase bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4] px-1.5 py-0.2 rounded">
                           {n.target_type}: {n.target_id}
                         </span>
                       </div>
-                      <span className="text-[11px] text-[#536176] dark:text-[#A8B4C4] font-mono">
+                      <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">
                         {formatISTDate(n.created_at)}
                       </span>
                     </div>
-                    <p className="text-[12px] text-[#536176] dark:text-[#A8B4C4] leading-relaxed">
+                    <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] leading-relaxed">
                       {n.content}
                     </p>
-                    <div className="text-[10px] text-[#536176]/80 dark:text-[#A8B4C4]/80 font-mono">
+                    <div className="text-[10px] text-[#706E6B]/80 dark:text-[#A8B4C4]/80 font-mono">
                       Author: {n.author_name || "Staff Analyst"}
                     </div>
                   </div>
@@ -856,7 +856,7 @@ export default function ResearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="p-8 text-center text-[#536176] dark:text-[#A8B4C4] font-mono text-[13px]">
+        <div className="p-8 text-center text-[#706E6B] dark:text-[#A8B4C4] font-mono text-[13px]">
           Loading research hub…
         </div>
       }

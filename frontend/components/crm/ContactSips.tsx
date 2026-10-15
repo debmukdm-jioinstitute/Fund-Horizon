@@ -82,10 +82,10 @@ export default function ContactSips({ contactId, customerId }: { contactId: stri
       ) : (
         <div className="overflow-x-auto mt-2">
           <table className="w-full text-xs">
-            <thead><tr className="border-b border-[#E4E9EF] dark:border-[#2B3644]"><th className={thCls}>Scheme</th><th className={thCls}>Type</th><th className={`${thCls} text-right`}>Amount</th><th className={thCls}>Day</th><th className={thCls}>Ends</th><th className={thCls}>Status</th>{canWrite && <th className={thCls}><span className="sr-only">Actions</span></th>}</tr></thead>
+            <thead><tr className="border-b border-[#E5E5E5] dark:border-[#2B3644]"><th className={thCls}>Scheme</th><th className={thCls}>Type</th><th className={`${thCls} text-right`}>Amount</th><th className={thCls}>Day</th><th className={thCls}>Ends</th><th className={thCls}>Status</th>{canWrite && <th className={thCls}><span className="sr-only">Actions</span></th>}</tr></thead>
             <tbody>
               {sips.map((s) => (
-                <tr key={s.id} className="border-b border-[#E4E9EF]/60 dark:border-[#2B3644]/60">
+                <tr key={s.id} className="border-b border-[#E5E5E5]/60 dark:border-[#2B3644]/60">
                   <td className={tdCls}>{s.scheme_name ?? s.scheme_code}</td>
                   <td className={`${tdCls} uppercase`}>{s.type}</td>
                   <td className={`${tdCls} text-right tabular-nums`}>{rupees(s.amount_paise)}</td>

@@ -3,12 +3,25 @@ import Link from "next/link";
 export interface Crumb { label: string; href?: string }
 
 /** Site-wide breadcrumb: icon tile, linked parents separated by chevrons, current page as a filled pill. */
-export default function Breadcrumb({ items }: { items: Crumb[] }) {
+const TONES = {
+  green: {
+    bar: "border-[#C2E9E0] dark:border-[#234542] border-l-[#006F64] bg-[#E7F5F2] dark:bg-[#12292B]",
+    solid: "bg-[#006F64]", link: "text-[#006F64] dark:text-[#75E1CE]",
+  },
+  // Salesforce Lightning blue, used inside the backoffice
+  blue: {
+    bar: "border-[#C5DDF7] dark:border-[#1F4A74] border-l-[#0176D3] bg-[#EAF5FE] dark:bg-[#0F2A45]",
+    solid: "bg-[#0176D3]", link: "text-[#0176D3] dark:text-[#1B96FF]",
+  },
+};
+
+export default function Breadcrumb({ items, tone = "green" }: { items: Crumb[]; tone?: keyof typeof TONES }) {
+  const t = TONES[tone];
   const last = items.length - 1;
   return (
     <nav aria-label="Breadcrumb" className="min-w-0">
-      <ol className="flex min-w-0 items-center gap-2 overflow-hidden rounded-lg border border-[#C2E9E0] dark:border-[#234542] border-l-4 border-l-[#006F64] bg-[#E7F5F2] dark:bg-[#12292B] py-1.5 pl-2 pr-2 text-xs font-semibold">
-        <li aria-hidden className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#006F64] text-white">
+      <ol className={`flex min-w-0 items-center gap-2 overflow-hidden rounded-lg border border-l-4 ${t.bar} py-1.5 pl-2 pr-2 text-xs font-semibold`}>
+        <li aria-hidden className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${t.solid} text-white`}>
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" />
           </svg>
@@ -21,9 +34,9 @@ export default function Breadcrumb({ items }: { items: Crumb[] }) {
               </svg>
             )}
             {i === last ? (
-              <span aria-current="page" className="truncate rounded-md bg-[#006F64] px-2.5 py-1 text-white">{c.label}</span>
+              <span aria-current="page" className={`truncate rounded-md ${t.solid} px-2.5 py-1 text-white`}>{c.label}</span>
             ) : (
-              <Link href={c.href ?? "/"} className="text-[#006F64] dark:text-[#75E1CE] hover:underline">{c.label}</Link>
+              <Link href={c.href ?? "/"} className={`${t.link} hover:underline`}>{c.label}</Link>
             )}
           </li>
         ))}

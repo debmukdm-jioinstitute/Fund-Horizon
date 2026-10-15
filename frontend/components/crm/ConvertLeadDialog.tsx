@@ -51,7 +51,7 @@ export default function ConvertLeadDialog({
         <h3 className="text-base font-bold">Convert lead: {lead.name}</h3>
         {result ? (
           <div className="space-y-3">
-            <div className="p-4 rounded-xl bg-teal-50 dark:bg-[#0F2A27] border border-teal-200 dark:border-[#1F5C54] text-xs text-teal-900 dark:text-[#CFF5EE]">
+            <div className="p-4 rounded-xl bg-teal-50 dark:bg-[#0F2A27] border border-teal-200 dark:border-[#1F5C54] text-xs text-teal-900 dark:text-[#CFE6FC]">
               <div className="font-bold mb-1">{existingHousehold ? "Added to the household." : "Customer and household created."}</div>
               <Link className="underline font-semibold" href={`/backoffice/crm/households/${result.household_id}`}>Open household</Link>
               {result.temp_password ? (
@@ -64,7 +64,7 @@ export default function ConvertLeadDialog({
                 <div className="mt-2">{result.invited ? "Portal login created with the password you set." : "No portal login was created."}</div>
               )}
             </div>
-            <button type="button" onClick={onClose} className="w-full px-3 py-2 text-xs font-bold bg-navy-900 dark:bg-[#006F64] hover:bg-navy-800 text-white rounded-xl transition">Done</button>
+            <button type="button" onClick={onClose} className="w-full px-3 py-2 text-xs font-bold bg-navy-900 dark:bg-[#0176D3] hover:bg-navy-800 text-white rounded-xl transition">Done</button>
           </div>
         ) : (
           <div className="space-y-3">

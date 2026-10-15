@@ -38,8 +38,8 @@ const label = (s: string) => s.replaceAll("_", " ");
 
 function Badge({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "good" | "bad" | "warn" }) {
   const tones = {
-    neutral: "bg-[#EEF2F6] text-[#172033] dark:bg-[#24303E] dark:text-[#EDF2F7]",
-    good: "bg-[#E1F3EC] text-[#0B5D3B] dark:bg-[#10372A] dark:text-[#7FE0B5]",
+    neutral: "bg-[#ECEBEA] text-[#181818] dark:bg-[#24303E] dark:text-[#EDF2F7]",
+    good: "bg-[#EAF5FE] text-[#0B5D3B] dark:bg-[#10372A] dark:text-[#7FE0B5]",
     bad: "bg-[#FBE7EA] text-[#9B1C2E] dark:bg-[#43181F] dark:text-[#FFA9B5]",
     warn: "bg-[#FFF1D6] text-[#8A5A00] dark:bg-[#40300E] dark:text-[#FFD27A]",
   };

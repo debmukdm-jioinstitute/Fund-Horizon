@@ -22,7 +22,7 @@ export function useOwners(): Owner[] {
   return owners;
 }
 
-const SWATCHES = ["#006F64", "#1F5FBF", "#8A4FB5", "#B5651D", "#2E7D32", "#B0305C"];
+const SWATCHES = ["#0176D3", "#1F5FBF", "#8A4FB5", "#B5651D", "#2E7D32", "#B0305C"];
 
 export const initials = (name: string): string =>
   name
@@ -34,7 +34,7 @@ export const initials = (name: string): string =>
 
 export default function OwnerAvatar({ ownerId, showName = true }: { ownerId: string | null | undefined; showName?: boolean }) {
   const owners = useOwners();
-  if (!ownerId) return <span className="text-[#536176] dark:text-[#A8B4C4]">Unassigned</span>;
+  if (!ownerId) return <span className="text-[#706E6B] dark:text-[#A8B4C4]">Unassigned</span>;
   const owner = owners.find((o) => o.id === ownerId);
   const name = owner?.name ?? "…";
   const swatch = SWATCHES[ownerId.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % SWATCHES.length];

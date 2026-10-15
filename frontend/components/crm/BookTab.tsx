@@ -77,7 +77,7 @@ function UploadSection({ kind }: { kind: "holdings" | "commissions" }) {
       {error && <p role="alert" className={errCls}>{error}</p>}
       {res && (
         <div className="space-y-2 text-xs" role="status">
-          <p className="font-semibold text-[#172033] dark:text-[#EDF2F7]">
+          <p className="font-semibold text-[#181818] dark:text-[#EDF2F7]">
             {res.dry_run ? "Preview (nothing saved): " : "Imported: "}
             {kind === "holdings"
               ? `${res.matched_rows} of ${res.rows} rows matched to ${res.contacts ?? 0} contact(s)${res.dry_run ? "" : `; ${res.created} added, ${res.updated} updated`}. Valued at ${rupees(res.aum_paise)}.`
@@ -136,7 +136,7 @@ function SipSection() {
           <h3 className={headCls}>Alerts (next 30 days)</h3>
           {canWrite && alerts.length > 0 && <button type="button" className={btnCls} onClick={gen}>Create follow-up tasks</button>}
         </div>
-        {notice && <p role="status" className="text-xs font-medium text-[#006F64] dark:text-[#75E1CE] mt-1">{notice}</p>}
+        {notice && <p role="status" className="text-xs font-medium text-[#0176D3] dark:text-[#1B96FF] mt-1">{notice}</p>}
         {alerts.length === 0 ? <p className={`text-xs mt-2 ${mutedCls}`}>Nothing needs attention.</p> : (
           <ul className="mt-2 space-y-1 text-xs">
             {alerts.map((a) => (
@@ -153,14 +153,14 @@ function SipSection() {
         <h3 className={`${headCls} mb-2`}>All schedules</h3>
         {sips.length === 0 ? <p className={`text-xs ${mutedCls}`}>None yet. Add them from a contact&apos;s page.</p> : (
           <table className="w-full text-xs">
-            <thead><tr className="border-b border-[#E4E9EF] dark:border-[#2B3644]"><th className={thCls}>Scheme</th><th className={thCls}>Type</th><th className={`${thCls} text-right`}>Amount</th><th className={thCls}>Ends</th><th className={thCls}>Status</th><th className={thCls}>Contact</th></tr></thead>
+            <thead><tr className="border-b border-[#E5E5E5] dark:border-[#2B3644]"><th className={thCls}>Scheme</th><th className={thCls}>Type</th><th className={`${thCls} text-right`}>Amount</th><th className={thCls}>Ends</th><th className={thCls}>Status</th><th className={thCls}>Contact</th></tr></thead>
             <tbody>
               {sips.map((s) => (
-                <tr key={s.id} className="border-b border-[#E4E9EF]/60 dark:border-[#2B3644]/60">
+                <tr key={s.id} className="border-b border-[#E5E5E5]/60 dark:border-[#2B3644]/60">
                   <td className={tdCls}>{s.scheme_name ?? s.scheme_code}</td><td className={`${tdCls} uppercase`}>{s.type}</td>
                   <td className={`${tdCls} text-right tabular-nums`}>{rupees(s.amount_paise)}</td><td className={tdCls}>{fmtDate(s.end_date)}</td>
                   <td className={`${tdCls} capitalize`}>{s.status}</td>
-                  <td className={tdCls}><Link className="underline text-[#006F64] dark:text-[#75E1CE]" href={`/backoffice/crm/contacts/${s.contact_id}`}>Open</Link></td>
+                  <td className={tdCls}><Link className="underline text-[#0176D3] dark:text-[#1B96FF]" href={`/backoffice/crm/contacts/${s.contact_id}`}>Open</Link></td>
                 </tr>
               ))}
             </tbody>
@@ -257,20 +257,20 @@ function CampaignSection() {
           </div>
         </form>
       )}
-      {notice && <p role="status" className="text-xs font-medium text-[#006F64] dark:text-[#75E1CE]">{notice}</p>}
+      {notice && <p role="status" className="text-xs font-medium text-[#0176D3] dark:text-[#1B96FF]">{notice}</p>}
       {error && <p role="alert" className={errCls}>{error}</p>}
       <div className={`${cardCls} overflow-x-auto`}>
         <h3 className={`${headCls} mb-2`}>Campaigns</h3>
         {list.length === 0 ? <p className={`text-xs ${mutedCls}`}>No campaigns yet.</p> : (
           <table className="w-full text-xs">
-            <thead><tr className="border-b border-[#E4E9EF] dark:border-[#2B3644]"><th className={thCls}>Name</th><th className={thCls}>Status</th><th className={thCls}>Members</th><th className={thCls}>Responded</th><th className={thCls} /></tr></thead>
+            <thead><tr className="border-b border-[#E5E5E5] dark:border-[#2B3644]"><th className={thCls}>Name</th><th className={thCls}>Status</th><th className={thCls}>Members</th><th className={thCls}>Responded</th><th className={thCls} /></tr></thead>
             <tbody>
               {list.map((c) => (
-                <tr key={c.id} className="border-b border-[#E4E9EF]/60 dark:border-[#2B3644]/60">
+                <tr key={c.id} className="border-b border-[#E5E5E5]/60 dark:border-[#2B3644]/60">
                   <td className={`${tdCls} font-semibold`}>{c.name}</td><td className={`${tdCls} capitalize`}>{c.status}</td>
                   <td className={tdCls}>{c.member_total}</td>
                   <td className={tdCls}>{(c.member_counts.responded ?? 0) + (c.member_counts.converted ?? 0)}</td>
-                  <td className={tdCls}><button type="button" className="underline text-[#006F64] dark:text-[#75E1CE]" onClick={() => wrap(async () => setOpen(await fetchCampaign(c.id)))}>Open</button></td>
+                  <td className={tdCls}><button type="button" className="underline text-[#0176D3] dark:text-[#1B96FF]" onClick={() => wrap(async () => setOpen(await fetchCampaign(c.id)))}>Open</button></td>
                 </tr>
               ))}
             </tbody>
@@ -292,10 +292,10 @@ function CampaignSection() {
           </div>
           {(open.members ?? []).length === 0 ? <p className={`text-xs ${mutedCls}`}>No members yet.</p> : (
             <table className="w-full text-xs">
-              <thead><tr className="border-b border-[#E4E9EF] dark:border-[#2B3644]"><th className={thCls}>Contact</th><th className={thCls}>Household</th><th className={thCls}>Response</th></tr></thead>
+              <thead><tr className="border-b border-[#E5E5E5] dark:border-[#2B3644]"><th className={thCls}>Contact</th><th className={thCls}>Household</th><th className={thCls}>Response</th></tr></thead>
               <tbody>
                 {(open.members ?? []).map((m) => (
-                  <tr key={m.contact_id} className="border-b border-[#E4E9EF]/60 dark:border-[#2B3644]/60">
+                  <tr key={m.contact_id} className="border-b border-[#E5E5E5]/60 dark:border-[#2B3644]/60">
                     <td className={tdCls}><Link className="underline" href={`/backoffice/crm/contacts/${m.contact_id}`}>{m.name}</Link></td>
                     <td className={tdCls}>{m.household_name}</td>
                     <td className={tdCls}>
@@ -328,11 +328,11 @@ function GapsSection() {
       <h3 className={`${headCls} mb-2`}>Contacts with a nominee, KYC or FATCA/CRS gap ({rows.length})</h3>
       {rows.length === 0 ? <p className={`text-xs ${mutedCls}`}>No gaps.</p> : (
         <table className="w-full text-xs">
-          <thead><tr className="border-b border-[#E4E9EF] dark:border-[#2B3644]"><th className={thCls}>Contact</th><th className={thCls}>Household</th><th className={thCls}>Missing</th></tr></thead>
+          <thead><tr className="border-b border-[#E5E5E5] dark:border-[#2B3644]"><th className={thCls}>Contact</th><th className={thCls}>Household</th><th className={thCls}>Missing</th></tr></thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.id} className="border-b border-[#E4E9EF]/60 dark:border-[#2B3644]/60">
-                <td className={tdCls}><Link className="font-semibold underline text-[#006F64] dark:text-[#75E1CE]" href={`/backoffice/crm/contacts/${r.id}`}>{r.name}</Link></td>
+              <tr key={r.id} className="border-b border-[#E5E5E5]/60 dark:border-[#2B3644]/60">
+                <td className={tdCls}><Link className="font-semibold underline text-[#0176D3] dark:text-[#1B96FF]" href={`/backoffice/crm/contacts/${r.id}`}>{r.name}</Link></td>
                 <td className={tdCls}>{r.household_name}</td>
                 <td className={tdCls}>{r.gaps.map((g) => GAP_LABEL[g] ?? g).join(", ")}</td>
               </tr>
@@ -397,7 +397,7 @@ export default function BookTab() {
       <div role="tablist" aria-label="Book sections" className="flex flex-wrap gap-1">
         {SECTIONS.map(([id, label]) => (
           <button key={id} type="button" role="tab" aria-selected={section === id} onClick={() => go(id)}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-full ${section === id ? "bg-[#006F64] text-white" : "bg-[#EEF2F6] dark:bg-[#24303E] text-[#536176] dark:text-[#A8B4C4]"}`}>
+            className={`px-3 py-1.5 text-xs font-semibold rounded-full ${section === id ? "bg-[#0176D3] text-white" : "bg-[#ECEBEA] dark:bg-[#24303E] text-[#706E6B] dark:text-[#A8B4C4]"}`}>
             {label}
           </button>
         ))}

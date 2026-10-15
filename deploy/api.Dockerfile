@@ -13,6 +13,7 @@ COPY backend/scripts backend/scripts
 COPY data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv
 COPY data/fundhorizon_mf_rag_dataset/nav_monthly data/fundhorizon_mf_rag_dataset/nav_monthly
 COPY data/factsheet_links data/factsheet_links
+COPY data/India_MF_Static_Reference_Consolidated.csv.gz data/India_MF_Static_Reference_Consolidated.csv.gz
 
 ENV FH_DATA_DIR=/srv/data/fundhorizon_mf_rag_dataset
 ENV FH_INTERNAL_ONLY=true

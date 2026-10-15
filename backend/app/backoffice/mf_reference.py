@@ -66,6 +66,9 @@ def _conn() -> sqlite3.Connection:
 
 
 def _tables(conn: sqlite3.Connection) -> list[str]:
+    if not conn.execute("SELECT 1 FROM sqlite_master WHERE name LIKE ? LIMIT 1", (PREFIX + "%",)).fetchone():
+        if SNAPSHOT.exists():  # first request on a fresh/other DB: load the bundled snapshot
+            load_csv(SNAPSHOT, conn)
     return [r[0][len(PREFIX):] for r in conn.execute(
         "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE ? ORDER BY name", (PREFIX + "%",))]
 
@@ -215,11 +218,9 @@ def ensure_loaded() -> None:
     """Load the bundled snapshot when the DB has no reference tables yet (fresh deploy)."""
     conn = _conn()
     try:
-        empty = not _tables(conn)
+        _tables(conn)
     finally:
         conn.close()
-    if empty and SNAPSHOT.exists():
-        load_csv(SNAPSHOT)
 
 
 if __name__ == "__main__":

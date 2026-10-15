@@ -117,6 +117,13 @@ async def lifespan(app: FastAPI):
         except Exception:  # noqa: BLE001 - demo data is optional; never block start-up
             logging.getLogger(__name__).exception("CRM demo seed failed")
 
+    try:
+        from app.backoffice.mf_reference import ensure_loaded
+
+        await asyncio.to_thread(ensure_loaded)
+    except Exception:  # noqa: BLE001 - reference data is optional; never block start-up
+        logging.getLogger(__name__).exception("MF reference load failed")
+
     collector_task = None
     if _flag("FH_BACKOFFICE_COLLECTORS", "true"):
         from app.backoffice.collectors import run_collector_loop
@@ -210,6 +217,7 @@ def create_app() -> FastAPI:
     from app.api.admin import admin_router
     from app.api.auth import auth_router
     from app.api.backoffice import router as backoffice_router
+    from app.backoffice.mf_reference import router as mf_reference_router
     from app.api.crm_core import router as crm_core_router
     from app.api.crm_extras import router as crm_extras_router
     from app.api.crm_phase3 import router as crm_phase3_router
@@ -230,6 +238,7 @@ def create_app() -> FastAPI:
     app.include_router(learn_router)
     app.include_router(crm_products_router)
     app.include_router(backoffice_router)
+    app.include_router(mf_reference_router)
     return app
 
 

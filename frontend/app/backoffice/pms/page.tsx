@@ -924,6 +924,10 @@ function PmsTracker() {
           const next = strategies.find((s) => s.ia_id === iaId);
           if (next) setSelectedStrategy(next);
         }}
+        onSelectManager={(name) => {
+          setSelectedStrategy(null);
+          setSelectedManager(name);
+        }}
       />
 
       <PmsManagerDrawer

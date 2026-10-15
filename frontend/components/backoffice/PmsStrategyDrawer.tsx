@@ -14,9 +14,10 @@ interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
   onClose: () => void;
   onSelectSibling?: (iaId: string) => void;
+  onSelectManager?: (name: string) => void;
 }
 
-export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }: PmsStrategyDrawerProps) {
+export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, onSelectManager }: PmsStrategyDrawerProps) {
   const [copied, setCopied] = useState(false);
   const [detail, setDetail] = useState<PmsStrategyDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -212,7 +213,17 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling }
                     {strategy.principal_officer ? "Principal Officer" : "Fund Manager"}
                   </div>
                   <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
-                    {strategy.principal_officer ?? detail?.profile?.fund_manager}
+                    {onSelectManager ? (
+                      <button
+                        type="button"
+                        onClick={() => onSelectManager((strategy.principal_officer ?? detail?.profile?.fund_manager) as string)}
+                        className="text-[#0176D3] dark:text-[#1B96FF] hover:underline text-left"
+                      >
+                        {strategy.principal_officer ?? detail?.profile?.fund_manager}
+                      </button>
+                    ) : (
+                      (strategy.principal_officer ?? detail?.profile?.fund_manager)
+                    )}
                     {!strategy.principal_officer && detail?.profile?.fund_manager_experience
                       ? ` (${detail.profile.fund_manager_experience} experience)`
                       : ""}

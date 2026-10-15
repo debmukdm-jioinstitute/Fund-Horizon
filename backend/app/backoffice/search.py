@@ -87,7 +87,8 @@ def fund_managers(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
 def pms(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
     rows = _rows(
         "SELECT ia_id, strategy_name, provider, strategy_type FROM pms_apmi_strategies "
-        "WHERE LOWER(strategy_name) LIKE ? ESCAPE '\\' OR LOWER(provider) LIKE ? ESCAPE '\\' LIMIT ?",
+        "WHERE LOWER(strategy_name) LIKE ? ESCAPE '\\' OR LOWER(provider) LIKE ? ESCAPE '\\' "
+        "GROUP BY COALESCE(ia_id, strategy_name) ORDER BY strategy_name LIMIT ?",  # table holds one row per period
         (_like(q), _like(q), limit),
     )
     return [_hit("pms", "pms", r[0] or r[1], r[1], " · ".join(x for x in (r[2], r[3]) if x), f"/backoffice/pms?q={quote(str(r[1]))}", pms=r[2]) for r in rows]
@@ -145,7 +146,8 @@ def run(q: str, scope: str, viewer: list[str] | None) -> list[Hit]:
             out += PROVIDERS[k][1](q, limit, viewer)
         except Exception:  # noqa: BLE001 - one broken data set must not blank the whole search
             continue
-    return out
+    seen: set[tuple[str, str, str]] = set()
+    return [h for h in out if (k := (h["scope"], h["type"], h["id"])) not in seen and not seen.add(k)]
 
 
 # ---------------------------------------------------------------------------

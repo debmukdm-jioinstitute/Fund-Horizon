@@ -272,7 +272,8 @@ class ScreeningService:
             pms_matches = []
             if mgr_name:
                 pms_rows = conn.execute(
-                    "SELECT ia_id, strategy_name, provider, aum_crore, return_1y, return_3y FROM pms_apmi_strategies WHERE strategy_name LIKE ? OR provider LIKE ?",
+                    "SELECT ia_id, strategy_name, provider, aum_crore, return_1y, return_3y FROM pms_apmi_strategies WHERE (strategy_name LIKE ? OR provider LIKE ?) "
+                    "AND as_on = (SELECT MAX(as_on) FROM pms_apmi_strategies)",
                     (f"%{mgr_name}%", f"%{mgr_name}%"),
                 ).fetchall()
                 pms_matches = [dict(pr) for pr in pms_rows]

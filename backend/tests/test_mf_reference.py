@@ -16,3 +16,11 @@ def test_load_and_query(tmp_path, monkeypatch):
     assert load_csv(f) == {"scheme_master": 1, "amc_master": 1}
     cols, rows, total = _query("scheme_master", "alpha", {"amc_id": "A1"}, None, "asc", 10, 0)
     assert total == 1 and rows[0]["scheme_name"] == "Alpha Fund" and "amc_name" not in cols
+
+
+def test_search_dedupes_per_period_rows(monkeypatch):
+    from app.backoffice import search
+
+    monkeypatch.setitem(search.PROVIDERS, "pms", ("PMS", lambda q, limit, viewer: [
+        search._hit("pms", "pms", "174", "A", "x", "/h") for _ in range(3)]))
+    assert len(search.run("ab", "pms", None)) == 1

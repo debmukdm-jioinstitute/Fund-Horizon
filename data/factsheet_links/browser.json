@@ -2758,6 +2758,11 @@
  ],
  "shriram": [
   {
+   "period": "2026-09",
+   "title": "Shriram Mutual Fund factsheet 2026-09",
+   "url": "https://cdn.shriramamc.in/uploads/fact-sheet/Fact-Sheet/2026-2027/Factsheet-September-2026.pdf"
+  },
+  {
    "period": "2026-08",
    "title": "Shriram Mutual Fund factsheet 2026-08",
    "url": "https://cdn.shriramamc.in/uploads/fact-sheet/Fact-Sheet/2026-2027/Shriram-Factsheet-August-2026-(1).pdf"
@@ -5015,6 +5020,11 @@
  ],
  "choice": [
   {
+   "period": "2026-09",
+   "title": "Choice Mutual Fund factsheet 2026-09",
+   "url": "https://choicemf.com/api/document/s6t5KNhcwo/Choice-Mutual-Fund-Factsheet-Sept-2026.pdf"
+  },
+  {
    "period": "2026-08",
    "title": "Choice Mutual Fund factsheet 2026-08",
    "url": "https://choicemf.com/api/document/1ECAAUiDxa/Choice-Mutual-Fund-Factsheet-Full-Aug-2026.pdf"
@@ -5880,6 +5890,11 @@
   }
  ],
  "absl": [
+  {
+   "period": "2026-10",
+   "title": "Aditya Birla Sun Life Mutual Fund factsheet 2026-10",
+   "url": "https://mutualfund.adityabirlacapital.com/-/media/bsl/files/resources/factsheets/2026/empower-for-the-month-of-october-2026.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Aditya Birla Sun Life Mutual Fund factsheet 2026-09",
@@ -7377,7 +7392,7 @@
   {
    "period": "2026-10",
    "title": "JM Financial Mutual Fund factsheet 2026-10",
-   "url": "https://www.jmfinancialmf.com/CMS/downloads/Factsheet/Factsheet/Factsheet%20October%202026.pdf"
+   "url": "https://www.jmfinancialmf.com/CMS/downloads/Factsheet/Factsheet/JM%20Factsheet_October%202026..pdf"
   },
   {
    "period": "2026-09",
@@ -7866,7 +7881,13 @@
  "mahindra": [],
  "navi": [],
  "sundaram": [],
- "tata": [],
+ "tata": [
+  {
+   "period": "2026-09",
+   "title": "Tata Mutual Fund factsheet 2026-09",
+   "url": "https://betacms.tatamutualfund.com/system/files/2026-10/Tata%20Factsheet%20-%20September%202026.pdf"
+  }
+ ],
  "taurus": [],
  "wealthco": [],
  "uti": []

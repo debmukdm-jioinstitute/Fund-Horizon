@@ -15,6 +15,7 @@ import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
 import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
 import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
+import InfoTip from "@/components/InfoTip";
 
 const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward"] as const;
 type Section = (typeof SECTIONS)[number];
@@ -34,13 +35,14 @@ interface Col {
   date?: string;
   /** Percent column that is not good/bad by sign (volatility). */
   plain?: boolean;
+  tip?: string;
 }
 
-const pct = (key: string, label: string, avg?: string): Col => ({ key, label, kind: "pct", digits: 2, avg });
-const num = (key: string, label: string, digits = 2): Col => ({ key, label, kind: "num", digits });
+const pct = (key: string, label: string, avg?: string, tip?: string): Col => ({ key, label, kind: "pct", digits: 2, avg, tip });
+const num = (key: string, label: string, digits = 2, tip?: string): Col => ({ key, label, kind: "num", digits, tip });
 const YEARS = [1, 3, 5, 10];
 const perYear = (key: string, label: string, kind: "pct" | "num", plain = false): Col[] =>
-  YEARS.map((y) => ({ key: `${key}_${y}y`, label: `${label} ${y}Yr`, kind, digits: 2, plain }));
+  YEARS.map((y) => ({ key: `${key}_${y}y`, label: `${label} ${y}Yr`, kind, digits: 2, plain, tip: key }));
 
 const COLUMNS: Record<Section, Col[]> = {
   Summary: [
@@ -403,10 +405,13 @@ function MutualFunds() {
                 </th>
                 {cols.map((c) => (
                   <th key={c.key} className="text-right whitespace-nowrap">
-                    <button type="button" onClick={() => onSort(c.key)} className="hover:underline cursor-pointer" title={`Sort by ${c.label}`}>
-                      {c.label}
-                      {arrow(c.key)}
-                    </button>
+                    <div className="inline-flex items-center justify-end gap-1">
+                      <button type="button" onClick={() => onSort(c.key)} className="hover:underline cursor-pointer" title={`Sort by ${c.label}`}>
+                        {c.label}
+                        {arrow(c.key)}
+                      </button>
+                      <InfoTip metric={c.tip ?? c.key} />
+                    </div>
                   </th>
                 ))}
               </tr>

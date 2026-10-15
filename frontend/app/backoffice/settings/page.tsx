@@ -36,21 +36,21 @@ export default function SettingsPage() {
   // QR Code & Lead Capture state
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [copiedLink, setCopiedLink] = useState(false);
+  const [gameQr, setGameQr] = useState<string>("");
+  const [gameUrl, setGameUrl] = useState<string>("https://fundhorizon.up.railway.app/crossword");
+  const [copiedGame, setCopiedGame] = useState(false);
   const [leadUrl, setLeadUrl] = useState<string>("https://fundhorizon.up.railway.app/lead");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const url = `${window.location.origin}/lead`;
       setLeadUrl(url);
+      const game = `${window.location.origin}/crossword`;
+      setGameUrl(game);
       import("qrcode").then((QRCode) => {
-        QRCode.toDataURL(url, {
-          width: 320,
-          margin: 2,
-          color: {
-            dark: "#006F64",
-            light: "#FFFFFF",
-          },
-        }).then(setQrDataUrl).catch(console.error);
+        const opts = { width: 320, margin: 2, color: { dark: "#006F64", light: "#FFFFFF" } };
+        QRCode.toDataURL(url, opts).then(setQrDataUrl).catch(console.error);
+        QRCode.toDataURL(game, opts).then(setGameQr).catch(console.error);
       });
     }
   }, []);
@@ -321,6 +321,50 @@ export default function SettingsPage() {
 
             <div className="text-[11px] text-[#536176] dark:text-[#A8B4C4] leading-relaxed">
               💡 <strong>Usage Tip:</strong> Print or place this QR code on reception desks, presentation slides, or client brochures. When scanned, leads flow directly into the CRM with source tag <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-semibold">qr_code</span> and status <span className="font-mono text-[#006F64] dark:text-[#75E1CE] font-semibold">new</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Cross₹word Game QR */}
+      <div className="terminal-panel p-4 space-y-3 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C2E9E0] dark:border-[#234542]">
+        <div className="flex items-center gap-2 pb-2.5 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+          <span className="text-[14px]">🧩</span>
+          <div className="text-[14px] font-semibold text-[#172033] dark:text-[#EDF2F7]">Cross₹word Game QR</div>
+          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#E1F3EC] dark:bg-[#10372A] text-[#006F64] dark:text-[#7FE0B5] border border-[#C2E9E0] dark:border-[#224845]">Lead Magnet</span>
+        </div>
+        <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+          Scanners play a 2-minute basic financial-literacy crossword (1 of 20, random each scan), get a token to screenshot, and are saved to CRM Leads with source <span className="font-mono font-semibold text-[#006F64] dark:text-[#75E1CE]">crossword</span> plus words-correct score.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+          <div className="md:col-span-4 flex flex-col items-center p-4 bg-white dark:bg-[#111722] rounded-xl border border-[#D8E3E0] dark:border-[#25373E]">
+            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E4E9EF] flex items-center justify-center">
+              {gameQr ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={gameQr} alt="Fund Horizon Crossword Game QR Code" className="w-full h-full object-contain" />
+              ) : (
+                <div className="text-xs text-[#536176] animate-pulse">Generating QR…</div>
+              )}
+            </div>
+            {gameQr && (
+              <a href={gameQr} download="fund-horizon-crossword-qr.png" className="mt-2.5 text-[11px] text-[#006F64] dark:text-[#75E1CE] hover:underline font-medium">↓ Download QR (PNG)</a>
+            )}
+          </div>
+          <div className="md:col-span-8 space-y-3">
+            <label className="text-[11px] font-semibold text-[#536176] dark:text-[#A8B4C4] block">Game URL</label>
+            <div className="flex gap-2">
+              <input type="text" readOnly value={gameUrl} className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F7F9FB] dark:bg-[#111722]" />
+              <button
+                type="button"
+                onClick={() => { navigator.clipboard.writeText(gameUrl); setCopiedGame(true); setTimeout(() => setCopiedGame(false), 2000); }}
+                className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-semibold shrink-0"
+              >
+                {copiedGame ? "✓ Copied!" : "Copy Link"}
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <Link href="/crossword" target="_blank" className="terminal-btn text-[11px] py-1 px-2.5 text-[#006F64] dark:text-[#75E1CE] border-[#C2E9E0] dark:border-[#224845] font-medium">Test Game ↗</Link>
+              <Link href="/backoffice/crm?tab=leads" className="terminal-btn text-[11px] py-1 px-2.5 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium">View in CRM →</Link>
             </div>
           </div>
         </div>

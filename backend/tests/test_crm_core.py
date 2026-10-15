@@ -509,3 +509,14 @@ def test_generate_tasks_idempotent(client, admin, rm, tmp_path):
 def test_renewals_maturities_empty_without_w2(client, admin):
     assert client.get("/api/crm/renewals").json() == []
     assert client.get("/api/crm/maturities").json() == []
+
+
+def test_public_crossword_result_creates_lead(client):
+    body = {"name": "Asha Rao", "phone": "98201 12345", "puzzle_id": 3,
+            "words_correct": 4, "words_total": 7, "seconds_used": 95}
+    r = client.post("/api/crm/public/crossword", json=body)
+    assert r.status_code == 201, r.text
+    token = r.json()["token"]
+    assert token.startswith("FH-") and len(token) == 9
+    bad = client.post("/api/crm/public/crossword", json={**body, "words_correct": 9})
+    assert bad.status_code == 422

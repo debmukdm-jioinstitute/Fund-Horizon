@@ -25,7 +25,7 @@ const STATUS_STYLES: Record<string, string> = {
   lost: "bg-rose-50 text-rose-700 border-rose-200",
 };
 
-const LEAD_SOURCES = ["qr_code", "sip_calculator", "website", "blog", "referral", "plan_link", "other"] as const;
+const LEAD_SOURCES = ["qr_code", "sip_calculator", "website", "blog", "referral", "plan_link", "crossword", "other"] as const;
 
 function LeadCard({
   lead,

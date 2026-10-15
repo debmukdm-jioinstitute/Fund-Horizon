@@ -73,7 +73,7 @@ def default_probability(line: str, stage: str) -> int:
 
 LEAD_STATUSES = ("new", "contacted", "qualified", "converted", "lost")
 ACTIVE_LEAD_STATUSES = ("new", "contacted", "qualified")
-LEAD_SOURCES = ("sip_calculator", "website", "blog", "referral", "plan_link", "qr_code", "other")
+LEAD_SOURCES = ("sip_calculator", "website", "blog", "referral", "plan_link", "qr_code", "crossword", "other")
 
 ACTIVITY_KINDS = ("call", "meeting", "note", "followup", "email", "review", "whatsapp")
 
@@ -651,6 +651,36 @@ def public_lead_capture(body: PublicLeadCapture):
     except Exception:
         pass
     return {"success": True, "lead_id": lead["id"], "lead": lead}
+
+
+class CrosswordResult(BaseModel):
+    name: str = Field(min_length=2, max_length=200)
+    phone: str = Field(min_length=8, max_length=20)
+    puzzle_id: int = Field(ge=0, lt=1000)
+    words_correct: int = Field(ge=0, le=30)
+    words_total: int = Field(ge=1, le=30)
+    seconds_used: int = Field(ge=0, le=600)
+
+
+@router.post("/public/crossword", status_code=201)
+def public_crossword_result(body: CrosswordResult):
+    """Public crossword game result (QR scan). Saves a lead with source='crossword' and returns a random token."""
+    if body.words_correct > body.words_total:
+        raise HTTPException(422, "words_correct exceeds words_total")
+    token = f"FH-{secrets.randbelow(900000) + 100000}"
+    notes = (
+        f"Crossword token {token} | Puzzle #{body.puzzle_id + 1} | "
+        f"{body.words_correct}/{body.words_total} words correct | {body.seconds_used}s used"
+    )
+    lead = get_crm_repository().create_lead(
+        name=body.name.strip(),
+        mobile=re.sub(r"[^\d+]", "", body.phone.strip()),
+        source="crossword",
+        status="new",
+        notes=notes,
+        actor_id="crossword_game",
+    )
+    return {"success": True, "token": token, "lead_id": lead["id"]}
 
 
 @router.post("/leads", status_code=201)

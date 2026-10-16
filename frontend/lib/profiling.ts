@@ -289,6 +289,13 @@ export function computeClientProfileLocally(
   };
 }
 
+/** Empty form: nothing is pre-filled; presets are an explicit choice. Zeros render as blank inputs. */
+export const BLANK_CLIENT: ClientCapacityInputs = {
+  firstName: "", age: 0, employmentType: "" as ClientCapacityInputs["employmentType"], dependents: 0,
+  monthlyIncome: 0, monthlyExpenses: 0, monthlyEmi: 0, liquidAssets: 0, investments: 0, liabilities: 0,
+  termCover: 0, healthCover: 0, retirementAge: 60,
+};
+
 export const PROFILING_PRESETS: { name: string; icon: string; desc: string; client: ClientCapacityInputs; answers: Record<string, number> }[] = [
   {
     name: "Young Tech Professional",

@@ -7,6 +7,7 @@ import {
   ClientCapacityInputs,
   computeClientProfileLocally,
   FactorScore,
+  BLANK_CLIENT,
   PROFILING_PRESETS,
   QUESTIONNAIRE_QUESTIONS,
   RiskProfileResult,
@@ -16,8 +17,8 @@ export default function RiskProfilingPage() {
   const [activeTab, setActiveTab] = useState<"studio" | "methodology">("studio");
 
   // Client inputs
-  const [client, setClient] = useState<ClientCapacityInputs>(PROFILING_PRESETS[1].client);
-  const [answers, setAnswers] = useState<Record<string, number>>(PROFILING_PRESETS[1].answers);
+  const [client, setClient] = useState<ClientCapacityInputs>(BLANK_CLIENT);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
 
   // PDF report state
   const [downloadingPdf, setDownloadingPdf] = useState(false);
@@ -32,6 +33,11 @@ export default function RiskProfilingPage() {
   const profile: RiskProfileResult = useMemo(() => {
     return computeClientProfileLocally(client, answers);
   }, [client, answers]);
+
+  // The form starts empty; reports and CRM saves need real inputs, not defaults.
+  const ready =
+    client.age >= 18 && client.monthlyIncome > 0 && !!client.employmentType &&
+    QUESTIONNAIRE_QUESTIONS.every((q) => answers[q.id] !== undefined);
 
   const loadPreset = (presetIndex: number) => {
     const p = PROFILING_PRESETS[presetIndex];
@@ -166,7 +172,7 @@ export default function RiskProfilingPage() {
           <button
             type="button"
             onClick={handleDownloadPdf}
-            disabled={downloadingPdf}
+            disabled={downloadingPdf || !ready}
             className="inline-flex items-center gap-1.5 rounded-lg bg-[#0176D3] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#032D60] disabled:opacity-50"
             title="Download official 2-page A4 SEBI Suitability Assessment PDF"
           >
@@ -263,8 +269,8 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={18}
                       max={80}
-                      value={client.age}
-                      onChange={(e) => setClient({ ...client, age: Number(e.target.value) || 35 })}
+                      value={client.age || ""} placeholder="0"
+                      onChange={(e) => setClient({ ...client, age: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
@@ -275,6 +281,7 @@ export default function RiskProfilingPage() {
                       onChange={(e) => setClient({ ...client, employmentType: e.target.value as ClientCapacityInputs["employmentType"] })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     >
+                      <option value="" disabled>Select employment type…</option>
                       <option value="govt_psu">Govt / PSU (Highest stability)</option>
                       <option value="salaried_private">Salaried Private (High stability)</option>
                       <option value="business_professional">Business / Professional (Moderate)</option>
@@ -288,7 +295,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       max={10}
-                      value={client.dependents}
+                      value={client.dependents || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, dependents: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -299,7 +306,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={5000}
-                      value={client.monthlyIncome}
+                      value={client.monthlyIncome || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, monthlyIncome: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -310,7 +317,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={5000}
-                      value={client.monthlyExpenses}
+                      value={client.monthlyExpenses || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, monthlyExpenses: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -321,7 +328,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={5000}
-                      value={client.monthlyEmi}
+                      value={client.monthlyEmi || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, monthlyEmi: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -332,7 +339,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={10000}
-                      value={client.liquidAssets}
+                      value={client.liquidAssets || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, liquidAssets: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -343,7 +350,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={50000}
-                      value={client.investments}
+                      value={client.investments || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, investments: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -354,7 +361,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={50000}
-                      value={client.liabilities}
+                      value={client.liabilities || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, liabilities: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -365,7 +372,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={500000}
-                      value={client.termCover}
+                      value={client.termCover || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, termCover: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -376,7 +383,7 @@ export default function RiskProfilingPage() {
                       type="number"
                       min={0}
                       step={100000}
-                      value={client.healthCover}
+                      value={client.healthCover || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, healthCover: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
@@ -422,7 +429,7 @@ export default function RiskProfilingPage() {
 
                 <div className="space-y-4">
                   {QUESTIONNAIRE_QUESTIONS.map((q, qIndex) => {
-                    const currentAnswer = answers[q.id] ?? 2;
+                    const currentAnswer = answers[q.id];
                     return (
                       <div
                         key={q.id}
@@ -471,6 +478,11 @@ export default function RiskProfilingPage() {
 
             {/* Right Output & Allocation Column (5 cols) */}
             <div className="space-y-6 lg:col-span-5">
+              {!ready && (
+                <p className="rounded-lg border border-dashed border-[#B8C0CC] px-3 py-2 text-xs text-[#706E6B] dark:border-navy-700 dark:text-navy-400">
+                  Enter the client details and answer all 10 questions to complete the assessment. The figures below are provisional until then.
+                </p>
+              )}
               {/* Composite Score Card */}
               <div className="card space-y-4 border-t-4 border-t-[#0176D3] bg-white dark:bg-navy-900">
                 <div className="flex items-start justify-between">
@@ -650,7 +662,7 @@ export default function RiskProfilingPage() {
                 <button
                   type="button"
                   onClick={handleDownloadPdf}
-                  disabled={downloadingPdf}
+                  disabled={downloadingPdf || !ready}
                   className="flex w-full items-center justify-center gap-2 rounded-md bg-[#0176D3] py-2.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-[#032D60] disabled:opacity-50"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -688,7 +700,7 @@ export default function RiskProfilingPage() {
                   <button
                     type="button"
                     onClick={handleSaveToCrm}
-                    disabled={saving}
+                    disabled={saving || !ready}
                     className="w-full rounded-md bg-[#0176D3] py-2 text-xs font-semibold text-white transition-colors hover:bg-[#032D60] disabled:opacity-50"
                   >
                     {saving ? "Saving to CRM..." : "Record Suitability in CRM →"}

@@ -181,7 +181,7 @@ def test_csv_export_honours_filters_scope_and_neutralises_formulas(client, rm, r
     assert "Plain Lead" in body and "Other RM Lead" not in body
     full = client.get("/api/crm/export/leads").text
     assert "'=HYPERLINK" in full and "\n=HYPERLINK" not in full and ",=HYPERLINK" not in full
-    assert full.splitlines()[0].startswith("Name,Email,Mobile")
+    assert full.splitlines()[0].startswith("Sr No,Name,Email,Mobile")
     assert client.get("/api/crm/export/passwords").status_code == 422
     _h, _c = _household_with_member(client, "Exported Fam")
     assert "Exported Fam" in client.get("/api/crm/export/households").text

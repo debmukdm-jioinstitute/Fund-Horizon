@@ -105,7 +105,7 @@ const LEAD_SOURCES = ["qr_code", "sip_calculator", "website", "blog", "referral"
 const leadTone = (s: string) => (s === "converted" ? "good" : s === "lost" ? "bad" : s === "qualified" ? "warn" : "neutral");
 const leadColumns: ListColumn<Lead>[] = [
   { id: "sr_no", header: "Sr No", sortKey: "sr_no", cell: (l) => (l.sr_no != null ? <span className="tabular-nums font-medium">{l.sr_no}</span> : "–") },
-  { id: "name", header: "Name", sortKey: "name", cell: (l) => l.name },
+  { id: "name", header: "Name", sortKey: "name", link: true, cell: (l) => l.name },
   { id: "email", header: "Email", sortKey: "email", cell: (l) => l.email ?? "–" },
   { id: "mobile", header: "Mobile", sortKey: "mobile", cell: (l) => l.mobile ?? "–" },
   { id: "source", header: "Source", sortKey: "source", cell: (l) => label(l.source) },

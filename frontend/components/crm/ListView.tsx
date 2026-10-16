@@ -33,6 +33,8 @@ export interface ListColumn<T> {
   /** Server sort key; omit to make the column unsortable. */
   sortKey?: string;
   hiddenByDefault?: boolean;
+  /** Renders this column's cell as the row's link to its record (default: the first data column). */
+  link?: boolean;
   cell: (row: T) => React.ReactNode;
 }
 
@@ -309,6 +311,11 @@ export default function ListView<T extends { id: string }>({
     }
   };
 
+  const linkCellIndex = (ids: string[]) => {
+    const flagged = ids.findIndex((id) => columns.find((c) => c.id === id)?.link);
+    return flagged >= 0 ? flagged : ids.findIndex((id) => columns.some((c) => c.id === id)); // first data column (skips the select checkbox)
+  };
+
   const exportAs = (format: "csv" | "xlsx") =>
     downloadCsv(entity, { sort, q: debouncedQ || undefined, filters: filterValues }, format).catch((e) =>
       setError(e instanceof Error ? e.message : "Export failed"),
@@ -546,9 +553,9 @@ export default function ListView<T extends { id: string }>({
             ) : (
               table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="border-b border-[#E5E5E5]/70 dark:border-[#2B3644]/70 hover:bg-[#F3F3F3] dark:hover:bg-[#171E27]">
-                  {row.getVisibleCells().map((cell, i) => (
+                  {row.getVisibleCells().map((cell, i, cells) => (
                     <td key={cell.id} className="px-2 py-2 align-middle text-[#181818] dark:text-[#EDF2F7]">
-                      {rowHref && i === (isAdmin && bulkEntity ? 1 : 0) ? (
+                      {rowHref && i === linkCellIndex(cells.map((c) => c.column.id)) ? (
                         <Link href={rowHref(row.original)} className="font-semibold hover:underline text-[#0176D3] dark:text-[#1B96FF]">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </Link>

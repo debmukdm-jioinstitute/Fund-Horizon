@@ -2,11 +2,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createOpportunity, fetchHouseholdDetail, fetchHouseholds, type Household } from "../../lib/crmApi";
+import { createHousehold, createOpportunity, fetchHouseholdDetail, fetchHouseholds, type Household } from "../../lib/crmApi";
 import { PRODUCT_LINES } from "../../lib/crmProductsApi";
 import { checkSuitability, RISKOMETER_LABELS, type SuitabilityCheck } from "../../lib/crmPhase3Api";
 import { btnCls, cardCls, errCls, headCls, inputCls, toPaise } from "./ui";
 import { useAuth } from "@/components/AuthContext";
+
+const NEW_HOUSEHOLD = "__new__";
 
 /** Create an opportunity. For mutual funds and PMS the client's risk limit is checked live: one step over warns,
  *  two or more blocks (an admin can proceed with a documented reason). */
@@ -20,6 +22,7 @@ export default function NewOpportunityForm({ householdId, onCreated }: { househo
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
+  const [newHousehold, setNewHousehold] = useState("");
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
 
   useEffect(() => {
@@ -28,7 +31,7 @@ export default function NewOpportunityForm({ householdId, onCreated }: { househo
 
   // the client we assess is the household's primary customer (or its first member)
   useEffect(() => {
-    if (!f.household_id) return setClientId(null);
+    if (!f.household_id || f.household_id === NEW_HOUSEHOLD) return setClientId(null);
     let alive = true;
     fetchHouseholdDetail(f.household_id)
       .then((d) => alive && setClientId(d.household.primary_customer_id ?? (d.members.find((m) => m.role === "primary") ?? d.members[0])?.customer_id ?? null))
@@ -52,12 +55,22 @@ export default function NewOpportunityForm({ householdId, onCreated }: { househo
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!f.title.trim()) return setError("Title is required.");
+    const creating = f.household_id === NEW_HOUSEHOLD;
+    if (creating && newHousehold.trim().length < 2) return setError("Enter a name for the new household.");
     setBusy(true);
     setError(null);
     setNotice(null);
     try {
+      let householdIdToUse = f.household_id;
+      if (creating) {
+        const h = await createHousehold({ name: newHousehold.trim() });
+        householdIdToUse = h.id;
+        setHouseholds((hs) => [...hs, h]); // keep it selectable if the opportunity step fails
+        setF((cur) => ({ ...cur, household_id: h.id }));
+        setNewHousehold("");
+      }
       const created = await createOpportunity({
-        household_id: f.household_id || undefined, product_line: f.product_line, title: f.title.trim(),
+        household_id: householdIdToUse || undefined, product_line: f.product_line, title: f.title.trim(),
         amount: toPaise(f.amount) ?? undefined, expected_close: f.expected_close || undefined,
         scheme_code: f.scheme_code.trim() || undefined, riskometer: f.riskometer ? Number(f.riskometer) : undefined,
         suitability_override_reason: f.override.trim() || undefined,
@@ -89,7 +102,12 @@ export default function NewOpportunityForm({ householdId, onCreated }: { househo
       <h2 className={`${headCls} md:col-span-3`}>New opportunity</h2>
       {!householdId && (
         <label>Household
-          <select value={f.household_id} onChange={set("household_id")} className={inputCls}><option value="">None</option>{households.map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}</select>
+          <select value={f.household_id} onChange={set("household_id")} className={inputCls}><option value="">None</option>{households.map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}<option value={NEW_HOUSEHOLD}>+ Create new household…</option></select>
+        </label>
+      )}
+      {!householdId && f.household_id === NEW_HOUSEHOLD && (
+        <label>New household name
+          <input value={newHousehold} onChange={(e) => setNewHousehold(e.target.value)} className={inputCls} placeholder="e.g. Sharma family" autoFocus />
         </label>
       )}
       <label>Product<select value={f.product_line} onChange={set("product_line")} className={inputCls}>{PRODUCT_LINES.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}</select></label>

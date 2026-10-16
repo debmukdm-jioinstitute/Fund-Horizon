@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CaseStatus,
   CrmCase,
@@ -80,7 +81,7 @@ export default function CasesTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(useSearchParams().get("new") === "1"); // "+ New grievance" in the table view lands here with the form open
   const [saving, setSaving] = useState(false);
 
   const [customerId, setCustomerId] = useState("");

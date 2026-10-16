@@ -71,6 +71,18 @@ def owners(me: Me):
     return extras.list_owners()
 
 
+@router.get("/new-counts")
+def new_counts(request: Request, me: Me):
+    """Admin only: how many records of each kind were created after the given ``<tab>=<ISO time>`` query values.
+    Drives the blue "new" bubbles on the CRM tab bar."""
+    if me["role"] != "admin":
+        raise HTTPException(403, "Only an admin can see new-entry counts.")
+    try:
+        return get_crm_repository().count_created_since(dict(request.query_params))
+    except ValueError:
+        raise HTTPException(422, "Each value must be an ISO timestamp.") from None
+
+
 class BulkReassign(BaseModel):
     entity: str
     ids: list[str] = Field(min_length=1, max_length=500)

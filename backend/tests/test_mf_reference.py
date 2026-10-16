@@ -88,3 +88,13 @@ def test_lead_delete_keeps_snapshot_and_backup_rotates(tmp_path, monkeypatch):
         assert json.loads(snap.old)["lead"]["name"] == "Keep Me"
     first = backup.backup_sqlite()
     assert first and first.exists() and backup.backup_sqlite() is None  # one per day
+
+
+def test_new_counts_since(tmp_path, monkeypatch):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "t.db"))
+    from app import repo_crm_core as r
+
+    repo = r.get_crm_repository()
+    repo.create_lead(name="Aa Aa", mobile="9000000001")
+    assert repo.count_created_since({"leads": "2000-01-01T00:00:00Z", "cases": "2000-01-01T00:00:00Z", "nope": "x"}) == {"leads": 1, "cases": 0}
+    assert repo.count_created_since({"leads": "2999-01-01T00:00:00Z"}) == {"leads": 0}

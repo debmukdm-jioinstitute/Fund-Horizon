@@ -610,6 +610,18 @@ class CrmCoreRepository:
         with _session() as s:
             return _update(s, LeadModel, "lead", lead_id, fields, allowed, actor_id)
 
+    def count_created_since(self, since: dict[str, str]) -> dict[str, int]:
+        """Rows created after each given UTC ISO timestamp, keyed by CRM tab (households, contacts, leads, ...)."""
+        models = {"households": HouseholdModel, "contacts": ContactModel, "leads": LeadModel,
+                  "opportunities": OpportunityModel, "activities": ActivityModel, "cases": CaseModel}
+        out: dict[str, int] = {}
+        with _session() as s:
+            for key, ts in since.items():
+                if key in models:
+                    stamp = datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(UTC).isoformat()
+                    out[key] = s.scalar(select(func.count()).select_from(models[key]).where(models[key].created_at > stamp)) or 0
+        return out
+
     def crossword_played(self, last10: str) -> bool:
         """True when a crossword-game lead already exists for this mobile (matched on its last 10 digits)."""
         with _session() as s:

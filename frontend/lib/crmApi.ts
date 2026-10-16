@@ -426,3 +426,7 @@ export const importClients = (rows: ImportRow[]) =>
     method: "POST",
     body: JSON.stringify({ rows }),
   });
+
+/** Admin only: records created after each given ISO time, keyed by CRM tab. */
+export const fetchNewCounts = (since: Record<string, string>) =>
+  crmRequest<Record<string, number>>(`/new-counts?${new URLSearchParams(since)}`);

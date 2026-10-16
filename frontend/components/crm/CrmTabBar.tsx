@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuth } from "@/components/AuthContext";
+import { fetchNewCounts } from "../../lib/crmApi";
 import { CRM_TABS, tabHref } from "./tabs";
 
 const circle = (cx: number, cy: number) => `M${cx - 4} ${cy}a4 4 0 1 0 8 0a4 4 0 1 0-8 0`;
@@ -19,9 +21,50 @@ const ICONS: Record<string, string[]> = {
   import: ["M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", "M17 8l-5-5-5 5", "M12 3v12"],
 };
 
+
+const COUNTED = ["households", "contacts", "leads", "opportunities", "activities", "cases"];
+
+/** Admin only. Per-browser "last opened" time for each tab; the badge counts records created since then. */
+function useNewCounts(tab: string): Record<string, number> {
+  const { customer } = useAuth();
+  const admin = customer?.role === "admin";
+  const key = `crm_seen_v1:${customer?.id ?? ""}`;
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  const read = useCallback((): Record<string, string> => {
+    try { return JSON.parse(localStorage.getItem(key) ?? "{}"); } catch { return {}; }
+  }, [key]);
+
+  const refresh = useCallback(() => {
+    if (!admin) return;
+    const seen = read();
+    const now = new Date().toISOString();
+    let dirty = false;
+    for (const t of COUNTED) if (!seen[t]) { seen[t] = now; dirty = true; } // first visit: start counting from now
+    if (dirty) try { localStorage.setItem(key, JSON.stringify(seen)); } catch { /* private mode: counts just restart */ }
+    fetchNewCounts(Object.fromEntries(COUNTED.map((t) => [t, seen[t]]))).then(setCounts).catch(() => undefined);
+  }, [admin, key, read]);
+
+  // opening a tab marks it as seen
+  useEffect(() => {
+    if (!admin || !COUNTED.includes(tab)) return;
+    try { localStorage.setItem(key, JSON.stringify({ ...read(), [tab]: new Date().toISOString() })); } catch { /* ignore */ }
+    setCounts((c) => ({ ...c, [tab]: 0 }));
+  }, [admin, tab, key, read]);
+
+  useEffect(() => {
+    refresh();
+    const t = setInterval(refresh, 60_000);
+    return () => clearInterval(t);
+  }, [refresh, tab]);
+
+  return counts;
+}
+
 /** CRM section tabs: icon above label, active tab filled. Scrolls sideways on narrow screens. */
 export default function CrmTabBar({ tab }: { tab: string }) {
   const nav = useRef<HTMLElement>(null);
+  const newCounts = useNewCounts(tab);
   // Only when the tab changes; scrolling on every render fought the user's own scrolling.
   useEffect(() => {
     nav.current?.querySelector<HTMLElement>("[data-active]")?.scrollIntoView({ inline: "nearest", block: "nearest" });
@@ -37,7 +80,7 @@ export default function CrmTabBar({ tab }: { tab: string }) {
               href={tabHref(id)}
               aria-current={on ? "page" : undefined}
               data-active={on || undefined}
-              className={`flex min-w-[72px] flex-1 flex-col items-center gap-1 rounded-md px-3 py-2 text-[12px] font-semibold transition-colors ${
+              className={`relative flex min-w-[72px] flex-1 flex-col items-center gap-1 rounded-md px-3 py-2 text-[12px] font-semibold transition-colors ${
                 on
                   ? "bg-[#0176D3] text-white shadow-[0_3px_0_#014486]"
                   : "text-[#014486] dark:text-[#CFE6FC] hover:bg-[#E3F0FB] dark:hover:bg-[#17406A]"
@@ -47,6 +90,14 @@ export default function CrmTabBar({ tab }: { tab: string }) {
                 {ICONS[id].map((d) => <path key={d} d={d} />)}
               </svg>
               {label}
+              {!on && newCounts[id] > 0 && (
+                <span
+                  aria-label={`${newCounts[id]} new`} title={`${newCounts[id]} new since you last opened ${label}`}
+                  className="absolute right-2 top-1 min-w-[20px] rounded-full bg-[#0176D3] px-1.5 text-center text-[11px] font-bold leading-5 text-white ring-2 ring-[#F3F9FE] dark:bg-[#1B96FF] dark:text-[#0B1B2E] dark:ring-[#0F2A45]"
+                >
+                  {newCounts[id] > 99 ? "99+" : newCounts[id]}
+                </span>
+              )}
             </Link>
           );
         })}

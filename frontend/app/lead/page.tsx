@@ -24,6 +24,7 @@ export default function PublicLeadCapturePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [srNo, setSrNo] = useState<number | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -72,6 +73,8 @@ export default function PublicLeadCapturePage() {
         throw new Error(msg);
       }
 
+      const data = await res.json().catch(() => ({}));
+      setSrNo(typeof data.sr_no === "number" ? data.sr_no : null);
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
@@ -87,6 +90,7 @@ export default function PublicLeadCapturePage() {
     setInterest(INTEREST_OPTIONS[0]);
     setNotes("");
     setSubmitted(false);
+    setSrNo(null);
     setError(null);
   }
 
@@ -128,6 +132,16 @@ export default function PublicLeadCapturePage() {
                   <span className="font-semibold text-[#172033] dark:text-[#EDF2F7]">{phone}</span> shortly.
                 </p>
               </div>
+
+              {srNo !== null && (
+                <div className="p-4 rounded-xl border-2 border-dashed border-[#006F64] dark:border-[#7FE0B5] bg-[#E1F3EC] dark:bg-[#10372A]">
+                  <div className="text-[11px] uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">Your Sr No</div>
+                  <div className="text-4xl font-semibold tabular-nums text-[#006F64] dark:text-[#7FE0B5] mt-1">{srNo}</div>
+                  <p className="text-xs text-[#172033] dark:text-[#EDF2F7] mt-2 font-medium">
+                    Please take a screenshot of this Sr No and show it to our team.
+                  </p>
+                </div>
+              )}
 
               <div className="p-4 rounded-xl bg-[#F7F9FB] dark:bg-[#111722] border border-[#E4E9EF] dark:border-[#2B3644] text-left text-xs space-y-1.5">
                 <div className="flex justify-between">

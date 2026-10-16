@@ -101,8 +101,10 @@ export const ContactsList = () => (
 );
 
 /* ---------------- Leads ---------------- */
+const LEAD_SOURCES = ["qr_code", "sip_calculator", "website", "blog", "referral", "plan_link", "crossword", "other"];
 const leadTone = (s: string) => (s === "converted" ? "good" : s === "lost" ? "bad" : s === "qualified" ? "warn" : "neutral");
 const leadColumns: ListColumn<Lead>[] = [
+  { id: "sr_no", header: "Sr No", sortKey: "sr_no", cell: (l) => (l.sr_no != null ? <span className="tabular-nums font-medium">{l.sr_no}</span> : "–") },
   { id: "name", header: "Name", sortKey: "name", cell: (l) => l.name },
   { id: "email", header: "Email", sortKey: "email", cell: (l) => l.email ?? "–" },
   { id: "mobile", header: "Mobile", sortKey: "mobile", cell: (l) => l.mobile ?? "–" },
@@ -117,6 +119,8 @@ export const LeadsList = ({ reloadKey }: { reloadKey?: number }) => (
     filters={[
       { key: "status", label: "Status", type: "select", options: LEAD_STATUSES.map((s) => ({ value: s, label: label(s) })) },
       ownerFilter("assigned_rm_id"),
+      { key: "source", label: "Source", type: "select", options: LEAD_SOURCES.map((s) => ({ value: s, label: label(s) })) },
+      { key: "created", label: "Created", type: "daterange" },
     ]}
     rowHref={(l) => `/backoffice/crm/leads/${l.id}`} searchPlaceholder="Search leads…"
   />

@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import re
 import secrets
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from typing import Annotated, Any, NamedTuple
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
@@ -174,6 +174,22 @@ def _assignee(me: dict, value: str | None, *, create: bool) -> str | None:
 def _check_enum(value: str | None, allowed: tuple[str, ...], field: str) -> None:
     if value is not None and value not in allowed:
         raise HTTPException(422, f"{field} must be one of: {', '.join(allowed)}")
+
+
+def lead_range_filters(source: str | None, created_from: str | None, created_to: str | None) -> dict:
+    """Validated source list + IST date range for the leads list and its export."""
+    sources = tuple(x for x in (source or "").split(",") if x)
+    for src in sources:
+        _check_enum(src, LEAD_SOURCES, "source")
+    for name, day in (("created_from", created_from), ("created_to", created_to)):
+        if day:
+            try:
+                date.fromisoformat(day)
+            except ValueError:
+                raise HTTPException(422, f"{name} must be YYYY-MM-DD") from None
+    if created_from and created_to and created_from > created_to:
+        raise HTTPException(422, "created_from must not be after created_to")
+    return {"sources": sources, "created_from": created_from or None, "created_to": created_to or None}
 
 
 def _clean_str(value: str | None, field: str, *, min_len: int = 1) -> str | None:
@@ -586,13 +602,17 @@ def list_leads(
     page: PageParams,
     status: str | None = Query(None, description="One status or a comma-separated list"),
     assigned_rm_id: str | None = Query(None, description="RM id, or 'me'"),
+    source: str | None = Query(None, description="One lead source or a comma-separated list"),
+    created_from: str | None = Query(None, description="YYYY-MM-DD (IST), inclusive"),
+    created_to: str | None = Query(None, description="YYYY-MM-DD (IST), inclusive"),
 ):
     statuses = tuple(x for x in (status or "").split(",") if x)
     for st in statuses:
         _check_enum(st, LEAD_STATUSES, "status")
     repo = get_crm_repository()
     rows = guard(
-        repo.list_leads, statuses=statuses, assigned_rm_id=_owner(me, assigned_rm_id), viewer_rm_id=_viewer(me), page=page
+        repo.list_leads, statuses=statuses, assigned_rm_id=_owner(me, assigned_rm_id), viewer_rm_id=_viewer(me), page=page,
+        **lead_range_filters(source, created_from, created_to),
     )
     send_total(response, page)
     return rows
@@ -650,7 +670,7 @@ def public_lead_capture(body: PublicLeadCapture):
         )
     except Exception:
         pass
-    return {"success": True, "lead_id": lead["id"], "lead": lead}
+    return {"success": True, "lead_id": lead["id"], "sr_no": lead["sr_no"], "lead": lead}
 
 
 class CrosswordResult(BaseModel):

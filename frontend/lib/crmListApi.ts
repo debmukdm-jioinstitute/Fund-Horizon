@@ -129,19 +129,20 @@ export const checkDuplicates = (body: { name?: string; email?: string; mobile?: 
 export const fetchTimeline = (entity: "household" | "lead" | "opportunity" | "case", id: string) =>
   call<TimelineItem[]>(`/timeline?entity=${entity}&id=${encodeURIComponent(id)}`).then((r) => r.data);
 
-/** Downloads the CSV for the current list (filters, search and sort included). */
-export async function downloadCsv(entity: ListEntity, params: Omit<PageParams, "limit" | "offset">): Promise<void> {
+/** Downloads the CSV (or Excel) for the current list (filters, search and sort included). */
+export async function downloadCsv(entity: ListEntity, params: Omit<PageParams, "limit" | "offset">, format: "csv" | "xlsx" = "csv"): Promise<void> {
   const q = new URLSearchParams();
   if (params.sort) q.set("sort", params.sort);
   if (params.q) q.set("q", params.q);
   for (const [k, v] of Object.entries(params.filters ?? {})) if (v !== "" && v != null) q.set(k, v);
+  if (format === "xlsx") q.set("format", "xlsx");
   const res = await fetch(resolveApiUrl(`${API_URL}/api/crm/export/${entity}?${q}`), { credentials: "include" });
   if (!res.ok) throw new ApiError(`Export failed (${res.status})`, res.status);
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = /filename="([^"]+)"/.exec(res.headers.get("Content-Disposition") ?? "")?.[1] ?? `crm-${entity}.csv`;
+  a.download = /filename="([^"]+)"/.exec(res.headers.get("Content-Disposition") ?? "")?.[1] ?? `crm-${entity}.${format}`;
   document.body.appendChild(a);
   a.click();
   a.remove();

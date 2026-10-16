@@ -39,7 +39,7 @@ export interface ListColumn<T> {
 export interface FilterDef {
   key: string;
   label: string;
-  type: "select" | "owner" | "toggle";
+  type: "select" | "owner" | "toggle" | "daterange"; // daterange: key "created" sends created_from / created_to
   options?: { value: string; label: string }[];
 }
 
@@ -65,8 +65,11 @@ const BULK_FIELD: Partial<Record<ListEntity, string>> = {
 const PAGE_SIZES = [10, 25, 50, 100];
 const surface = "bg-white dark:bg-[#10151C] border-[#E5E5E5] dark:border-[#2B3644]";
 const muted = "text-[#706E6B] dark:text-[#A8B4C4]";
-const ctl =
-  "px-2.5 py-1.5 text-xs rounded border bg-white dark:bg-[#171E27] border-[#E5E5E5] dark:border-[#2B3644] text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#0176D3]";
+const ctlBase = "px-2.5 py-1.5 text-xs rounded border focus:outline-none focus:ring-2 focus:ring-[#0176D3]";
+// Colour variants must not share bg/text classes with each other: Tailwind picks by stylesheet order, not class order.
+const ctl = `${ctlBase} bg-white dark:bg-[#171E27] border-[#B8C0CC] dark:border-[#3B4A5E] text-[#181818] dark:text-[#EDF2F7]`;
+const ctlPrimary = `${ctlBase} bg-[#0176D3] border-[#0176D3] text-white font-medium hover:bg-[#014486]`;
+const ctlDanger = `${ctlBase} bg-[#B42332] border-[#B42332] text-white font-medium hover:bg-[#8F1B28] disabled:cursor-not-allowed disabled:bg-[#E5E5E5] disabled:border-[#C9C9C9] disabled:text-[#706E6B] dark:disabled:bg-[#2B3644] dark:disabled:border-[#3B4A5E] dark:disabled:text-[#A8B4C4]`;
 
 export default function ListView<T extends { id: string }>({
   entity, columns, filters = [], rowHref, searchPlaceholder = "Search…", emptyText = "Nothing matches these filters.", reloadKey = 0,
@@ -90,8 +93,10 @@ export default function ListView<T extends { id: string }>({
   const urlFilters = useMemo(() => {
     const out: Record<string, string> = {};
     for (const f of filters) {
-      const v = urlParams.get(f.key);
-      if (v) out[f.key] = v;
+      for (const k of f.type === "daterange" ? [`${f.key}_from`, `${f.key}_to`] : [f.key]) {
+        const v = urlParams.get(k);
+        if (v) out[k] = v;
+      }
     }
     return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -304,8 +309,8 @@ export default function ListView<T extends { id: string }>({
     }
   };
 
-  const exportCsv = () =>
-    downloadCsv(entity, { sort, q: debouncedQ || undefined, filters: filterValues }).catch((e) =>
+  const exportAs = (format: "csv" | "xlsx") =>
+    downloadCsv(entity, { sort, q: debouncedQ || undefined, filters: filterValues }, format).catch((e) =>
       setError(e instanceof Error ? e.message : "Export failed"),
     );
 
@@ -353,7 +358,7 @@ export default function ListView<T extends { id: string }>({
             <label className={`text-xs inline-flex items-center gap-1 ${muted}`}>
               <input type="checkbox" checked={saveDefault} onChange={(e) => setSaveDefault(e.target.checked)} /> Default
             </label>
-            <button type="button" onClick={saveView} disabled={!savingName.trim()} className={`${ctl} bg-[#0176D3] text-white border-[#0176D3] disabled:opacity-50`}>Save</button>
+            <button type="button" onClick={saveView} disabled={!savingName.trim()} className={`${ctlPrimary} disabled:opacity-50`}>Save</button>
             <button type="button" onClick={() => setSavingName(null)} className={ctl}>Cancel</button>
           </span>
         )}
@@ -375,7 +380,8 @@ export default function ListView<T extends { id: string }>({
               </div>
             )}
           </div>
-          <button type="button" onClick={exportCsv} className={`${ctl} hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733]`}>Export CSV</button>
+          <button type="button" onClick={() => exportAs("csv")} className={`${ctl} hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733]`}>Export CSV</button>
+          <button type="button" onClick={() => exportAs("xlsx")} className={`${ctl} hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733]`}>Export Excel</button>
         </span>
       </div>
 
@@ -399,6 +405,28 @@ export default function ListView<T extends { id: string }>({
             });
             setPageIndex(0);
           };
+          if (f.type === "daterange") {
+            const [fromKey, toKey] = [`${f.key}_from`, `${f.key}_to`];
+            const setDay = (k: string, v: string) => {
+              setFilterValues((fv) => {
+                const next = { ...fv };
+                if (v) next[k] = v;
+                else delete next[k];
+                return next;
+              });
+              setPageIndex(0);
+            };
+            return (
+              <span key={f.key} className={`inline-flex items-center gap-1.5 text-xs ${muted}`}>
+                {f.label}
+                <input type="date" aria-label={`${f.label} from`} value={filterValues[fromKey] ?? ""} max={filterValues[toKey] || undefined}
+                  onChange={(e) => setDay(fromKey, e.target.value)} className={ctl} />
+                to
+                <input type="date" aria-label={`${f.label} to`} value={filterValues[toKey] ?? ""} min={filterValues[fromKey] || undefined}
+                  onChange={(e) => setDay(toKey, e.target.value)} className={ctl} />
+              </span>
+            );
+          }
           if (f.type === "toggle") {
             return (
               <label key={f.key} className={`inline-flex items-center gap-1.5 text-xs ${muted}`}>
@@ -437,9 +465,9 @@ export default function ListView<T extends { id: string }>({
               <option key={o.id} value={o.id}>{o.name}</option>
             ))}
           </select>
-          <button type="button" onClick={doReassign} className={`${ctl} bg-[#0176D3] text-white border-[#0176D3]`}>Reassign owner</button>
+          <button type="button" onClick={doReassign} className={ctlPrimary}>Reassign owner</button>
           {entity === "leads" && (
-            <button type="button" onClick={() => setConfirmDelete(true)} className={`${ctl} bg-rose-600 text-white border-rose-600`}>Delete</button>
+            <button type="button" onClick={() => setConfirmDelete(true)} className={ctlDanger}>Delete</button>
           )}
           <button type="button" onClick={() => setSelection({})} className={ctl}>Clear</button>
         </div>
@@ -454,12 +482,17 @@ export default function ListView<T extends { id: string }>({
               autoFocus inputMode="numeric" value={deleteCode} onChange={(e) => { setDeleteCode(e.target.value); setDeleteErr(""); }}
               onKeyDown={(e) => e.key === "Enter" && deleteCode && void doDelete()}
               placeholder="Type 0000 to confirm" aria-label="Delete code"
-              className="w-full rounded border border-[#D5DDE5] dark:border-[#2B3644] bg-white dark:bg-[#111722] px-3 py-2 text-sm"
+              className="w-full rounded border-2 border-[#8A94A3] dark:border-[#5B6B80] bg-white dark:bg-[#111722] px-3 py-2 text-sm text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:border-[#0176D3] dark:focus:border-[#1B96FF]"
             />
             {deleteErr && <p role="alert" className="text-xs font-medium text-rose-600">{deleteErr}</p>}
             <div className="flex justify-end gap-2">
               <button type="button" onClick={closeDelete} className={ctl}>Cancel</button>
-              <button type="button" disabled={deleteCode !== "0000"} onClick={() => void doDelete()} className={`${ctl} bg-rose-600 text-white border-rose-600 disabled:opacity-40`}>Delete permanently</button>
+              <button
+                type="button" disabled={deleteCode !== "0000"} onClick={() => void doDelete()}
+                className={ctlDanger}
+              >
+                Delete permanently
+              </button>
             </div>
           </div>
         </div>

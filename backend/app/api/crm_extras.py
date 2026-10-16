@@ -28,6 +28,7 @@ from app.api.crm_core import (
     WON_STAGE,
     Me,
     _check_enum,
+    lead_range_filters,
     _get_visible,
     _owner,
     _require_rm_account,
@@ -268,7 +269,7 @@ def _csv_safe(v: Any) -> str:
 _EXPORT_COLUMNS: dict[str, list[tuple[str, str]]] = {
     "households": [("name", "Household"), ("owner", "Owner"), ("member_count", "Members"), ("open_opportunities", "Open opportunities"), ("created_at", "Created")],
     "contacts": [("name", "Name"), ("email", "Email"), ("mobile", "Mobile"), ("role", "Role"), ("household_name", "Household"), ("owner", "Owner")],
-    "leads": [("name", "Name"), ("email", "Email"), ("mobile", "Mobile"), ("source", "Source"), ("status", "Status"), ("owner", "Owner"), ("created_at", "Created")],
+    "leads": [("sr_no", "Sr No"), ("name", "Name"), ("email", "Email"), ("mobile", "Mobile"), ("source", "Source"), ("status", "Status"), ("owner", "Owner"), ("created_at", "Created")],
     "opportunities": [("title", "Title"), ("product_line", "Product line"), ("stage", "Stage"), ("amount_rupees", "Amount (₹)"), ("probability", "Probability %"), ("household_name", "Household"), ("owner", "Owner"), ("expected_close", "Expected close"), ("lost_reason", "Lost reason")],
     "activities": [("subject", "Subject"), ("kind", "Type"), ("due_at", "Due"), ("done_at", "Done"), ("owner", "Owner"), ("created_at", "Created")],
     "cases": [("subject", "Subject"), ("category", "Category"), ("status", "Status"), ("customer_name", "Customer"), ("sla_due_at", "SLA due"), ("created_at", "Created")],
@@ -288,7 +289,10 @@ def _export_rows(entity: str, me: Me, qp: dict[str, str], page: Page) -> list[di
         statuses = tuple(x for x in qp.get("status", "").split(",") if x)
         for st in statuses:
             _check_enum(st, LEAD_STATUSES, "status")
-        return repo.list_leads(statuses=statuses, assigned_rm_id=owner, viewer_rm_id=viewer, page=page)
+        return repo.list_leads(
+            statuses=statuses, assigned_rm_id=owner, viewer_rm_id=viewer, page=page,
+            **lead_range_filters(qp.get("source"), qp.get("created_from"), qp.get("created_to")),
+        )
     if entity == "opportunities":
         won = qp.get("won_this_month") == "true"
         return repo.list_opportunities(
@@ -327,9 +331,7 @@ def export_csv(entity: str, request: Request, me: Me):
     cust = repo.customer_names([r["customer_id"] for r in rows if r.get("customer_id")])
     counts = (repo.member_counts([r["id"] for r in rows]), repo.open_opp_counts([r["id"] for r in rows])) if entity == "households" else ({}, {})
     cols = _EXPORT_COLUMNS[entity]
-    buf = io.StringIO()
-    writer = csv.writer(buf)
-    writer.writerow([label for _, label in cols])
+    table = [[label for _, label in cols]]
     for r in rows:
         r = {
             **r,
@@ -340,9 +342,28 @@ def export_csv(entity: str, request: Request, me: Me):
         }
         if entity == "households":
             r["member_count"], r["open_opportunities"] = counts[0].get(r["id"], 0), counts[1].get(r["id"], 0)
-        writer.writerow([_csv_safe(r.get(key)) for key, _ in cols])
-    name = f"crm-{entity}-{datetime.now(IST).strftime('%Y%m%d')}.csv"
+        table.append([r.get(key) if key == "sr_no" else _csv_safe(r.get(key)) for key, _ in cols])
+    stem = f"crm-{entity}-{datetime.now(IST).strftime('%Y%m%d')}"
+    if qp.get("format") == "xlsx":
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = entity[:31]
+        for row in table:
+            ws.append(row)
+        ws.freeze_panes = "A2"
+        for i, col in enumerate(zip(*table), start=1):
+            ws.column_dimensions[ws.cell(1, i).column_letter].width = min(max(len(str(c or "")) for c in col) + 2, 48)
+        out = io.BytesIO()
+        wb.save(out)
+        return StreamingResponse(
+            iter([out.getvalue()]), media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": f'attachment; filename="{stem}.xlsx"'},
+        )
+    buf = io.StringIO()
+    csv.writer(buf).writerows(table)
     return StreamingResponse(
         iter([buf.getvalue()]), media_type="text/csv; charset=utf-8",
-        headers={"Content-Disposition": f'attachment; filename="{name}"'},
+        headers={"Content-Disposition": f'attachment; filename="{stem}.csv"'},
     )

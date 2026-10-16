@@ -47,6 +47,7 @@ def init_crm_core_schema(conn: sqlite3.Connection) -> None:
         """
         CREATE TABLE IF NOT EXISTS leads (
             id TEXT PRIMARY KEY,
+            sr_no INTEGER,
             name TEXT NOT NULL,
             email TEXT,
             mobile TEXT,

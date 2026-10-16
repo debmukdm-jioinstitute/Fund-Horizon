@@ -24,3 +24,47 @@ def test_search_dedupes_per_period_rows(monkeypatch):
     monkeypatch.setitem(search.PROVIDERS, "pms", ("PMS", lambda q, limit, viewer: [
         search._hit("pms", "pms", "174", "A", "x", "/h") for _ in range(3)]))
     assert len(search.run("ab", "pms", None)) == 1
+
+
+def test_pms_manager_lookup_matches_firm_strategies(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.api import backoffice as bo
+    from app.api.auth import require_staff
+    from app.main import create_app
+
+    rows = [{"ia_id": "1", "provider": "PP", "strategy_name": "A"}, {"ia_id": "2", "provider": "PP", "strategy_name": "B"},
+            {"ia_id": "3", "provider": "QQ", "strategy_name": "C"}]
+    monkeypatch.setattr(bo._REPO, "list_pms_universe_strategies", lambda as_on=None: rows)
+    monkeypatch.setattr(bo._REPO, "latest_pms_as_on", lambda: "x")
+    mgr = {"1": "Mr. Amit  Jeswani", "2": "Someone Else"}
+    monkeypatch.setattr(bo, "_pms_detail", lambda i: ({"fund_manager": mgr[i], "fund_manager_experience": "20 yrs"}, None))
+    app = create_app()
+    app.dependency_overrides[require_staff] = lambda: {"id": "t"}
+    r = TestClient(app).get("/api/backoffice/pms/manager", params={"name": "amit jeswani", "provider": "PP"}).json()["data"]
+    assert [s["ia_id"] for s in r["strategies"]] == ["1"] and r["experience"] == "20 yrs"
+
+
+def test_lead_sr_no_ascending(tmp_path, monkeypatch):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "t.db"))
+    from app import repo_crm_core as r
+
+    repo = r.CrmRepository() if hasattr(r, "CrmRepository") else r.get_crm_repository()
+    a = repo.create_lead(name="Aa Aa", email="a@x.com", mobile="9000000001")
+    b = repo.create_lead(name="Bb Bb", email="b@x.com", mobile="9000000002")
+    assert (a["sr_no"], b["sr_no"]) == (1, 2)
+    assert [x["sr_no"] for x in repo.list_leads()] == [2, 1]
+
+
+def test_lead_source_and_date_range_filters(tmp_path, monkeypatch):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "t.db"))
+    from app import repo_crm_core as r
+
+    repo = r.get_crm_repository()
+    a = repo.create_lead(name="Aa Aa", mobile="9000000001", source="qr_code")
+    repo.create_lead(name="Bb Bb", mobile="9000000002", source="website")
+    today = r.today_ist()
+    assert [x["id"] for x in repo.list_leads(sources=("qr_code",))] == [a["id"]]
+    assert len(repo.list_leads(created_from=today, created_to=today)) == 2
+    assert repo.list_leads(created_to="2000-01-01") == []
+    assert r.ist_day_utc("2026-10-16") == "2026-10-15T18:30:00+00:00"

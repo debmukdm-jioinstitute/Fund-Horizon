@@ -44,6 +44,7 @@ class LeadModel(Base):
     __tablename__ = "leads"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    sr_no: Mapped[int | None] = mapped_column(Integer, nullable=True, unique=True)  # ascending, shown to the customer
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     mobile: Mapped[str | None] = mapped_column(String(16), nullable=True, index=True)

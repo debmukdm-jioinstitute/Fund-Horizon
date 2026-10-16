@@ -106,6 +106,7 @@ export interface HouseholdDetail {
 
 export interface Lead {
   id: string;
+  sr_no?: number | null;
   name: string;
   email: string | null;
   mobile: string | null;

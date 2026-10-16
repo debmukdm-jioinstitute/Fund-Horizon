@@ -26,6 +26,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy import Engine, and_, bindparam, create_engine, func, inspect, or_, select, text
 from sqlalchemy.orm import Session
 
@@ -130,6 +131,12 @@ def month_start_utc() -> str:
     return datetime(now.year, now.month, 1, tzinfo=IST).astimezone(UTC).isoformat()
 
 
+def ist_day_utc(day: str, end: bool = False) -> str:
+    """'YYYY-MM-DD' (an IST calendar day) -> UTC ISO timestamp of its start, or of the start of the next day when ``end``."""
+    d = datetime.fromisoformat(day).replace(tzinfo=IST)
+    return (d + timedelta(days=1 if end else 0)).astimezone(UTC).isoformat()
+
+
 def today_ist() -> str:
     return datetime.now(IST).date().isoformat()
 
@@ -183,6 +190,12 @@ def _harden_core(engine: Engine) -> None:
             ).bindparams(bindparam("legacy", expanding=True)),
             {"legacy": list(_LEGACY_WON_STAGES)},
         )
+        # Mirrors Alembic lead_sr_no_0012 for DBs that never ran it: number old leads in created order.
+        if "leads" in inspect(conn).get_table_names():
+            n = conn.execute(text("SELECT COALESCE(MAX(sr_no), 0) FROM leads")).scalar() or 0
+            for i, (lid,) in enumerate(conn.execute(text("SELECT id FROM leads WHERE sr_no IS NULL ORDER BY created_at, id")).fetchall(), n + 1):
+                conn.execute(text("UPDATE leads SET sr_no = :n WHERE id = :id"), {"n": i, "id": lid})
+            conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ux_leads_sr_no ON leads(sr_no)"))
 
 
 def ensure_products_hardening() -> None:
@@ -541,12 +554,19 @@ class CrmCoreRepository:
         notes: str | None = None,
         actor_id: str | None = None,
     ) -> dict[str, Any]:
-        with _session() as s:
-            return _create(
-                s, LeadModel, "lead", actor_id,
-                name=name, email=email, mobile=mobile, source=source, status=status,
-                assigned_rm_id=assigned_rm_id, notes=notes,
-            )
+        for attempt in range(5):  # sr_no is max+1; a concurrent insert can claim it first, so retry on the unique index
+            try:
+                with _session() as s:
+                    sr_no = (s.scalar(select(func.max(LeadModel.sr_no))) or 0) + 1
+                    return _create(
+                        s, LeadModel, "lead", actor_id, sr_no=sr_no,
+                        name=name, email=email, mobile=mobile, source=source, status=status,
+                        assigned_rm_id=assigned_rm_id, notes=notes,
+                    )
+            except IntegrityError:
+                if attempt == 4:
+                    raise
+        raise AssertionError("unreachable")
 
     def get_lead(self, lead_id: str) -> dict[str, Any] | None:
         with _session() as s:
@@ -560,10 +580,19 @@ class CrmCoreRepository:
         statuses: tuple[str, ...] = (),
         assigned_rm_id: str | None = None,
         viewer_rm_id: str | None = None,
+        sources: tuple[str, ...] = (),
+        created_from: str | None = None,
+        created_to: str | None = None,
         page: Page | None = None,
     ) -> list[dict[str, Any]]:
         with _session() as s:
             stmt = select(LeadModel).order_by(LeadModel.created_at.desc())
+            if sources:
+                stmt = stmt.where(LeadModel.source.in_(sources))
+            if created_from:  # inclusive IST calendar days
+                stmt = stmt.where(LeadModel.created_at >= ist_day_utc(created_from))
+            if created_to:
+                stmt = stmt.where(LeadModel.created_at < ist_day_utc(created_to, end=True))
             if status is not None:
                 stmt = stmt.where(LeadModel.status == status)
             if statuses:

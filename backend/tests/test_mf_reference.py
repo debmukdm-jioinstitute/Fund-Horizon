@@ -68,3 +68,23 @@ def test_lead_source_and_date_range_filters(tmp_path, monkeypatch):
     assert len(repo.list_leads(created_from=today, created_to=today)) == 2
     assert repo.list_leads(created_to="2000-01-01") == []
     assert r.ist_day_utc("2026-10-16") == "2026-10-15T18:30:00+00:00"
+
+
+def test_lead_delete_keeps_snapshot_and_backup_rotates(tmp_path, monkeypatch):
+    import json
+
+    from sqlalchemy import select
+
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "t.db"))
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    from app import backup, repo_crm_core as r
+    from app.models.crm_core import AuditLogModel
+
+    repo = r.get_crm_repository()
+    lead = repo.create_lead(name="Keep Me", mobile="9000000009", source="website")
+    assert repo.delete_lead(lead["id"], actor_id="admin")
+    with r._session() as s:
+        snap = s.scalars(select(AuditLogModel).where(AuditLogModel.entity_id == lead["id"], AuditLogModel.field == "_snapshot")).one()
+        assert json.loads(snap.old)["lead"]["name"] == "Keep Me"
+    first = backup.backup_sqlite()
+    assert first and first.exists() and backup.backup_sqlite() is None  # one per day

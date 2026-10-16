@@ -18,6 +18,8 @@ the same transaction and stamps ``created_by``/``updated_by``/``updated_at``.
 
 from __future__ import annotations
 
+import json
+
 import logging
 import os
 import uuid
@@ -620,7 +622,12 @@ class CrmCoreRepository:
             lead = s.get(LeadModel, lead_id)
             if not lead:
                 return False
-            for a in s.scalars(select(ActivityModel).where(ActivityModel.lead_id == lead_id)).all():
+            acts = s.scalars(select(ActivityModel).where(ActivityModel.lead_id == lead_id)).all()
+            # Full recoverable copy: a hard delete must never be the only record of the lead.
+            s.add(AuditLogModel(id=_new_id(), entity="lead", entity_id=lead_id, field="_snapshot",
+                                old=json.dumps({"lead": _row(lead), "activities": [_row(a) for a in acts]}, default=str),
+                                new=None, actor_id=actor_id, at=_utcnow()))
+            for a in acts:
                 s.delete(a)
             s.add(AuditLogModel(id=_new_id(), entity="lead", entity_id=lead_id, field="_deleted", old=lead.name, new=None, actor_id=actor_id, at=_utcnow()))
             s.delete(lead)

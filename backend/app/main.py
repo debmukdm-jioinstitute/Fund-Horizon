@@ -124,6 +124,20 @@ async def lifespan(app: FastAPI):
     except Exception:  # noqa: BLE001 - reference data is optional; never block start-up
         logging.getLogger(__name__).exception("MF reference load failed")
 
+    from app import backup
+
+    backup.warn_if_ephemeral()
+
+    async def _daily_backup() -> None:
+        while True:
+            try:
+                await asyncio.to_thread(backup.backup_sqlite)
+            except Exception:  # noqa: BLE001 - a failed backup must never take the API down
+                logging.getLogger(__name__).exception("DB backup failed")
+            await asyncio.sleep(6 * 3600)  # one file per day; checking every 6h also covers restarts
+
+    backup_task = asyncio.create_task(_daily_backup())
+
     collector_task = None
     if _flag("FH_BACKOFFICE_COLLECTORS", "true"):
         from app.backoffice.collectors import run_collector_loop
@@ -141,6 +155,7 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
+        backup_task.cancel()
         if collector_task:
             collector_task.cancel()
             try:

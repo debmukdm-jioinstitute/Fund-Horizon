@@ -29,27 +29,82 @@ const TABS: [string, string][] = [
   ["data_dictionary", "Dictionary"],
 ];
 const LIMIT = 50;
-const label = (c: string) => c.replace(/_/g, " ");
+const ACRONYMS: Record<string, string> = {
+  url: "URL", tri: "TRI", aum: "AUM", ter: "TER", isin: "ISIN", amc: "AMC", amfi: "AMFI", sebi: "SEBI", ssd: "SSD",
+  id: "ID", cio: "CIO", ceo: "CEO", inr: "INR", pct: "%", nav: "NAV", idcw: "IDCW", sid: "SID", fof: "FoF",
+};
+const label = (c: string) =>
+  c.split("_").map((w, i) => ACRONYMS[w] ?? (i === 0 ? w[0].toUpperCase() + w.slice(1) : w)).join(" ");
 const isUrl = (v: string) => /^https?:\/\//.test(v);
+const MONEY = /(aum|crore)/;
+const META = new Set(["source_url", "as_of_date", "notes", "record_number", "field_group", "match_method", "verification_level"]);
+const link = "text-[#0176D3] dark:text-[#1B96FF] hover:underline text-left";
 
-function KV({ row }: { row: MfRefRow }) {
+function shortUrl(u: string) {
+  try {
+    const x = new URL(u);
+    return x.hostname.replace(/^www\./, "") + (x.pathname.length > 1 ? x.pathname.replace(/\/$/, "").slice(0, 28) + (x.pathname.length > 29 ? "…" : "") : "");
+  } catch {
+    return u;
+  }
+}
+
+function Val({ k, v }: { k: string; v: string }) {
+  const parts = v.split(/ ?[;|] ?/).filter(Boolean);
+  if (parts.length > 1 && parts.every((p) => isUrl(p))) {
+    return <span className="flex flex-col gap-0.5">{parts.map((u) => <a key={u} className={link} href={u} target="_blank" rel="noreferrer" title={u}>{shortUrl(u)}</a>)}</span>;
+  }
+  if (isUrl(v)) return <a className={link} href={v} target="_blank" rel="noreferrer" title={v}>{shortUrl(v)}</a>;
+  if (parts.length > 3 && parts.every((p) => p.length <= 14)) return <Chips items={parts} />; // code lists, e.g. scheme codes
+  if (MONEY.test(k) && /^-?\d+(\.\d+)?$/.test(v)) return <span className="tabular-nums">{Number(v).toLocaleString("en-IN", { maximumFractionDigits: 2 })}</span>;
+  return <>{v}</>;
+}
+
+function Chips({ items }: { items: string[] }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? items : items.slice(0, 12);
   return (
-    <dl className="grid grid-cols-[minmax(0,40%)_1fr] gap-x-3 gap-y-1 text-[12px]">
+    <span className="flex flex-wrap gap-1">
+      {shown.map((c, i) => <span key={i} className="px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[11px] tabular-nums">{c}</span>)}
+      {items.length > 12 && <button type="button" className={`${link} text-[11px]`} onClick={() => setAll(!all)}>{all ? "Show less" : `+${items.length - 12} more`}</button>}
+    </span>
+  );
+}
+
+function Rows({ row }: { row: MfRefRow }) {
+  return (
+    <div className="divide-y divide-[#EEEEEE] dark:divide-[#222C39]">
       {Object.entries(row).filter(([, v]) => v).map(([k, v]) => (
-        <React.Fragment key={k}>
-          <dt className="text-[#706E6B] dark:text-[#A8B4C4] capitalize">{label(k)}</dt>
-          <dd className="break-words">
-            {isUrl(v as string) ? <a className="text-[#0176D3] dark:text-[#1B96FF] underline" href={(v as string).split(" | ")[0]} target="_blank" rel="noreferrer">{v}</a> : v}
-          </dd>
-        </React.Fragment>
+        <div key={k} className="py-1.5">
+          <div className="text-[10px] uppercase tracking-wide text-[#706E6B] dark:text-[#A8B4C4]">{label(k)}</div>
+          <div className="text-[13px] leading-snug break-words mt-0.5"><Val k={k} v={v as string} /></div>
+        </div>
       ))}
-    </dl>
+    </div>
+  );
+}
+
+/** Facts first; source / notes / timestamps tucked into a collapsible block. */
+function KV({ row }: { row: MfRefRow }) {
+  const main: MfRefRow = {}, meta: MfRefRow = {};
+  Object.entries(row).forEach(([k, v]) => ((META.has(k) ? meta : main)[k] = v));
+  const hasMeta = Object.values(meta).some(Boolean);
+  return (
+    <>
+      <Rows row={main} />
+      {hasMeta && (
+        <details className="mt-1.5 text-[12px]">
+          <summary className="cursor-pointer text-[#706E6B] dark:text-[#A8B4C4] select-none py-1">Source &amp; notes</summary>
+          <Rows row={meta} />
+        </details>
+      )}
+    </>
   );
 }
 
 const Sec = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section className="mb-4">
-    <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF] mb-1.5">{title}</h3>
+  <section className="mb-5 last:mb-0">
+    <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF] pb-1.5 mb-1 border-b border-[#E5E5E5] dark:border-[#2B3644]">{title}</h3>
     {children}
   </section>
 );
@@ -76,12 +131,11 @@ function Detail({ table, row, onClose }: { table: string; row: MfRefRow; onClose
     else getMfRefManager(cur.id).then(setMgr).catch(fail);
   }, [cur?.t, cur?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const go = (r: Ref) => setStack((s) => [...s, r]);
-  const link = "text-[#0176D3] dark:text-[#1B96FF] hover:underline text-left";
   const title = scheme?.scheme.scheme_name || mgr?.manager.full_name || row.scheme_name || row.full_name || row.amc_name || row.benchmark_name_tri || "Record";
   return (
-    <aside className="terminal-panel p-3 lg:w-[420px] shrink-0 max-h-[75vh] overflow-y-auto">
-      <div className="flex justify-between items-start mb-3 gap-2">
-        <h2 className="text-[14px] font-medium">{title}</h2>
+    <aside className="terminal-panel p-4 lg:w-[440px] w-full shrink-0 max-h-[78vh] overflow-y-auto">
+      <div className="flex justify-between items-start mb-4 pb-3 gap-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+        <h2 className="text-[15px] font-medium leading-snug">{title}</h2>
         <span className="flex gap-1.5 shrink-0">
           {stack.length > 1 && <button className="terminal-btn text-[11px] px-2 py-0.5" onClick={() => setStack((s) => s.slice(0, -1))}>Back</button>}
           <button className="terminal-btn text-[11px] px-2 py-0.5" onClick={onClose}>Close</button>
@@ -95,8 +149,8 @@ function Detail({ table, row, onClose }: { table: string; row: MfRefRow; onClose
           {scheme.managers.length > 0 && (
             <Sec title="Fund managers">
               {scheme.managers.map((m, i) => (
-                <div key={i} className="mb-2">
-                  {m.manager_id && m.full_name && <button className={`${link} text-[12px] font-medium mb-0.5`} onClick={() => go({ t: "manager", id: m.manager_id as string })}>{m.full_name}</button>}
+                <div key={i} className="mb-3 pb-2 border-b border-[#EEEEEE] dark:border-[#222C39] last:border-0">
+                  {m.manager_id && m.full_name && <button className={`${link} text-[13px] font-medium mb-1`} onClick={() => go({ t: "manager", id: m.manager_id as string })}>{m.full_name}</button>}
                   <KV row={{ designation: m.designation, role: m.role_as_stated, since: m.start_date_as_stated }} />
                 </div>
               ))}
@@ -105,14 +159,14 @@ function Detail({ table, row, onClose }: { table: string; row: MfRefRow; onClose
           {scheme.benchmarks.map((b, i) => <Sec key={i} title="Benchmark"><KV row={b} /></Sec>)}
           {scheme.category && <Sec title="SEBI category definition"><KV row={scheme.category} /></Sec>}
           {scheme.manager_changes.length > 0 && <Sec title="Manager changes">{scheme.manager_changes.map((c, i) => <KV key={i} row={c} />)}</Sec>}
-          {scheme.provenance.length > 0 && <Sec title="Field provenance">{scheme.provenance.map((p, i) => <div key={i} className="mb-2"><KV row={p} /></div>)}</Sec>}
+          {scheme.provenance.length > 0 && <Sec title="Field provenance">{scheme.provenance.map((p, i) => <div key={i} className="mb-3 pb-2 border-b border-[#EEEEEE] dark:border-[#222C39] last:border-0"><KV row={p} /></div>)}</Sec>}
         </>
       ) : mgr ? (
         <>
           <Sec title="Manager"><KV row={mgr.manager} /></Sec>
           <Sec title={`Schemes (${mgr.schemes.length})`}>
             {mgr.schemes.map((s, i) => (
-              <button key={i} className={`${link} block w-full text-[12px] py-0.5 border-b border-[#E5E5E5] dark:border-[#2B3644]`} onClick={() => go({ t: "scheme", id: s.amfi_scheme_code as string })}>
+              <button key={i} className={`${link} block w-full text-[13px] py-2 border-b border-[#EEEEEE] dark:border-[#222C39] last:border-0`} onClick={() => go({ t: "scheme", id: s.amfi_scheme_code as string })}>
                 {s.scheme_name} <span className="text-[#706E6B] dark:text-[#A8B4C4]">· {s.plan} · {s.amfi_scheme_code}</span>
               </button>
             ))}

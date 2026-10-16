@@ -966,6 +966,24 @@ class BackofficeRepository:
                 out[str(row["ia_id"])] = benchmark
         return out
 
+    def list_pms_cached_managers(self) -> dict[str, str]:
+        """ia_id -> fund manager / principal officer from cached APMI strategy pages."""
+        conn = self._conn()
+        try:
+            rows = conn.execute("SELECT ia_id, detail_json FROM pms_strategy_details").fetchall()
+        finally:
+            conn.close()
+        out: dict[str, str] = {}
+        for row in rows:
+            try:
+                detail = json.loads(row["detail_json"])
+            except (TypeError, ValueError):
+                continue
+            name = (detail.get("fund_manager") or "").strip() if isinstance(detail, dict) else ""
+            if name:
+                out[str(row["ia_id"])] = name
+        return out
+
     def list_pms_universe_strategies(self, as_on: str | None = None) -> list[dict[str, Any]]:
         as_on = as_on or self.latest_pms_as_on()
         if not as_on:

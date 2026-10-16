@@ -743,6 +743,42 @@ export const getFlows = async (start?: string, end?: string): Promise<Backoffice
   return envelope(raw, data, "unavailable");
 };
 
+/** One backend PMS strategy row -> UI item. APMI rows with no AUM often carry placeholder 0.00% returns: treat as missing. */
+const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
+  const aum = num(r.aum_crore);
+  const ret = (v: unknown) => {
+    const n = num(v);
+    return n === 0 && !aum ? undefined : n;
+  };
+  return {
+    id: str(r.ia_id) || `${str(r.provider) ?? "—"}::${str(r.strategy_name) ?? "—"}`,
+    provider_name: str(r.provider) ?? "—",
+    strategy_name: str(r.strategy_name) ?? "—",
+    investment_approach: str(r.strategy_type),
+    strategy_type: str(r.strategy_type),
+    service_type: str(r.service_type),
+    ia_id: str(r.ia_id),
+    principal_officer: str(r.principal_officer),
+    aum_crore: aum,
+    return_1m_pct: ret(r.return_1m),
+    return_3m_pct: ret(r.return_3m),
+    return_6m_pct: ret(r.return_6m),
+    return_1y_pct: ret(r.return_1y),
+    return_3y_cagr_pct: ret(r.return_3y),
+    return_5y_cagr_pct: ret(r.return_5y),
+    return_since_inception_pct: ret(r.return_since_inception),
+    benchmark_name: str(r.benchmark) ?? str(r.benchmark_name),
+    report_month: str(r.as_on) ?? asOn,
+  };
+};
+
+/** Strategies run by one APMI fund manager (APMI lists managers per strategy page, so the backend checks the firm's strategies). */
+export const getPmsManager = async (name: string, provider: string): Promise<{ experience?: string; strategies: PmsStrategyItem[] }> => {
+  const raw = await boFetch<Json>(`/api/backoffice/pms/manager?name=${encodeURIComponent(name)}&provider=${encodeURIComponent(provider)}`);
+  const d = obj(raw.data);
+  return { experience: str(d.experience), strategies: arr(d.strategies).map((r) => mapPmsRow(r)) };
+};
+
 export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategyItem[]>> => {
   let raw: Json = {};
   let apiItems: PmsStrategyItem[] = [];
@@ -750,33 +786,7 @@ export const getPmsStrategies = async (): Promise<BackofficeEnvelope<PmsStrategy
   try {
     raw = await boFetch<Json>("/api/backoffice/pms/strategies");
     asOn = str(raw.as_on) || "";
-    apiItems = arr(raw.data).map<PmsStrategyItem>((r) => {
-      const aum = num(r.aum_crore);
-      // APMI rows with no AUM often carry placeholder 0.00% returns — treat those as missing, not real zeros.
-      const ret = (v: unknown) => {
-        const n = num(v);
-        return n === 0 && !aum ? undefined : n;
-      };
-      return {
-        id: str(r.ia_id) || `${str(r.provider) ?? "—"}::${str(r.strategy_name) ?? "—"}`,
-        provider_name: str(r.provider) ?? "—",
-        strategy_name: str(r.strategy_name) ?? "—",
-        investment_approach: str(r.strategy_type),
-        strategy_type: str(r.strategy_type),
-        service_type: str(r.service_type),
-        ia_id: str(r.ia_id),
-        aum_crore: aum,
-        return_1m_pct: ret(r.return_1m),
-        return_3m_pct: ret(r.return_3m),
-        return_6m_pct: ret(r.return_6m),
-        return_1y_pct: ret(r.return_1y),
-        return_3y_cagr_pct: ret(r.return_3y),
-        return_5y_cagr_pct: ret(r.return_5y),
-        return_since_inception_pct: ret(r.return_since_inception),
-        benchmark_name: str(r.benchmark) ?? str(r.benchmark_name),
-        report_month: str(r.as_on) ?? asOn,
-      };
-    });
+    apiItems = arr(raw.data).map((r) => mapPmsRow(r, asOn));
   } catch {
     // boFetch failure fallback
   }

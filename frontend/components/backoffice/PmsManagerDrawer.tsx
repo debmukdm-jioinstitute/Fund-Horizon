@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PmsLogo } from "@/components/BrandLogo";
-import { PmsStrategyItem } from "@/lib/backoffice";
+import { getPmsManager, PmsStrategyItem } from "@/lib/backoffice";
 import {
   findManagerProfile,
   getManagerStrategies,
@@ -12,6 +12,8 @@ import SignedValue from "@/components/terminal/SignedValue";
 
 interface PmsManagerDrawerProps {
   managerName: string | null;
+  /** Firm of the strategy the manager was opened from; lets the drawer look the manager up when the list has no manager names. */
+  provider?: string | null;
   strategies: PmsStrategyItem[];
   onClose: () => void;
   onSelectStrategy: (s: PmsStrategyItem) => void;
@@ -41,6 +43,7 @@ export function avatarBgFor(name: string): string {
 
 export default function PmsManagerDrawer({
   managerName,
+  provider,
   strategies,
   onClose,
   onSelectStrategy,
@@ -59,10 +62,28 @@ export default function PmsManagerDrawer({
     };
   }, [managerName, onClose]);
 
+  const [remote, setRemote] = useState<{ experience?: string; strategies: PmsStrategyItem[] } | null>(null);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setRemote(null);
+    if (!managerName || !provider) return;
+    let cancelled = false;
+    setLoading(true);
+    getPmsManager(managerName, provider)
+      .then((r) => !cancelled && setRemote(r))
+      .catch(() => undefined)
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [managerName, provider]);
+
   if (!managerName) return null;
 
   const profile: PmsManagerProfile | null = findManagerProfile(managerName);
-  const managed = getManagerStrategies(managerName, strategies);
+  const local = getManagerStrategies(managerName, strategies);
+  const seen = new Set(local.map((s) => s.ia_id));
+  const managed = [...local, ...(remote?.strategies ?? []).filter((s) => !seen.has(s.ia_id))];
   const totalAum = managed.reduce((sum, s) => sum + (s.aum_crore || 0), 0);
   const displayName = profile ? profile.name : managerName;
   const asOf = managed.find((s) => s.report_month)?.report_month;
@@ -140,7 +161,7 @@ export default function PmsManagerDrawer({
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Experience</div>
                 <div className="text-[18px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
-                  {profile?.years_experience ? `${profile.years_experience} yrs` : "—"}
+                  {profile?.years_experience ? `${profile.years_experience} yrs` : remote?.experience || "—"}
                 </div>
               </div>
             </div>
@@ -209,7 +230,7 @@ export default function PmsManagerDrawer({
               </div>
               {managed.length === 0 ? (
                 <p className="p-4 text-[13px] text-[#706E6B] dark:text-[#A8B4C4]">
-                  No strategies found for this manager in the current dataset.
+                  {loading ? "Looking up this manager's strategies…" : "No strategies found for this manager in the current dataset."}
                 </p>
               ) : (
                 <div className="overflow-x-auto">

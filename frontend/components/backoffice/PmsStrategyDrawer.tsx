@@ -14,7 +14,7 @@ interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
   onClose: () => void;
   onSelectSibling?: (iaId: string) => void;
-  onSelectManager?: (name: string) => void;
+  onSelectManager?: (name: string, provider: string) => void;
 }
 
 export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, onSelectManager }: PmsStrategyDrawerProps) {
@@ -216,7 +216,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
                     {onSelectManager ? (
                       <button
                         type="button"
-                        onClick={() => onSelectManager((strategy.principal_officer ?? detail?.profile?.fund_manager) as string)}
+                        onClick={() => onSelectManager((strategy.principal_officer ?? detail?.profile?.fund_manager) as string, strategy.provider_name)}
                         className="text-[#0176D3] dark:text-[#1B96FF] hover:underline text-left"
                       >
                         {strategy.principal_officer ?? detail?.profile?.fund_manager}

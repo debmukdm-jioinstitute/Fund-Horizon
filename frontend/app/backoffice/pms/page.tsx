@@ -122,6 +122,7 @@ function PmsTracker() {
   const [asOf, setAsOf] = useState<string | undefined>();
   const [selectedStrategy, setSelectedStrategy] = useState<PmsStrategyItem | null>(null);
   const [selectedManager, setSelectedManager] = useState<string | null>(null);
+  const [managerProvider, setManagerProvider] = useState<string | null>(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
   const [accountTracker, setAccountTracker] = useState<PmsAccountTrackerData | null>(null);
   const [strategiesLoading, setStrategiesLoading] = useState(true);
@@ -693,7 +694,7 @@ function PmsTracker() {
                                     {s.principal_officer ? (
                                       <button
                                         type="button"
-                                        onClick={() => setSelectedManager(s.principal_officer as string)}
+                                        onClick={() => { setManagerProvider(s.provider_name); setSelectedManager(s.principal_officer as string); }}
                                         className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline focus:outline-none transition cursor-pointer"
                                         title="Open manager profile"
                                       >
@@ -924,14 +925,16 @@ function PmsTracker() {
           const next = strategies.find((s) => s.ia_id === iaId);
           if (next) setSelectedStrategy(next);
         }}
-        onSelectManager={(name) => {
+        onSelectManager={(name, provider) => {
           setSelectedStrategy(null);
+          setManagerProvider(provider);
           setSelectedManager(name);
         }}
       />
 
       <PmsManagerDrawer
         managerName={selectedManager}
+        provider={managerProvider}
         strategies={strategies}
         onClose={() => setSelectedManager(null)}
         onSelectStrategy={(st) => {

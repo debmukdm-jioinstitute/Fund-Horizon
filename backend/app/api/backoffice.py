@@ -49,7 +49,7 @@ from app.backoffice.schemas import (
     StaffMemberCreateRequest,
     WatchlistCreateRequest,
 )
-from app.backoffice import mf_screener
+from app.backoffice import mf_reference, mf_screener
 from app.backoffice.screening.service import ScreeningService
 from app.backoffice.compare import build_compare_payload
 from app.backoffice import search as universal_search
@@ -289,7 +289,10 @@ def backoffice_pms_strategies(
     if provider:
         universe = [s for s in universe if s["provider"] == provider]
     cached_benchmarks = _REPO.list_pms_cached_benchmarks()
+    cached_managers = _REPO.list_pms_cached_managers()
     for row in universe:
+        if row.get("ia_id") and not row.get("principal_officer"):
+            row["principal_officer"] = cached_managers.get(str(row["ia_id"]))
         if not row.get("benchmark") and not row.get("benchmark_name"):
             ia = row.get("ia_id")
             if ia and cached_benchmarks.get(str(ia)):
@@ -326,6 +329,52 @@ def backoffice_pms_strategies(
 _PMS_DETAIL_TTL_SECONDS = 24 * 3600.0
 
 
+def _pms_detail(ia_id: str) -> tuple[dict[str, Any] | None, str | None]:
+    """APMI strategy page facts: fresh cache, else a live fetch, else stale cache. Returns (detail, error)."""
+    detail: dict[str, Any] | None = None
+    detail_error: str | None = None
+    cached = _REPO.get_pms_strategy_detail_cache(ia_id)
+    if cached and cached[1] < _PMS_DETAIL_TTL_SECONDS:
+        return cached[0], None
+    try:
+        fresh = apmi_provider.fetch_strategy_detail(ia_id)
+        if fresh:
+            _REPO.put_pms_strategy_detail_cache(ia_id, fresh)
+            detail = fresh
+        else:
+            detail_error = "APMI strategy page could not be parsed."
+    except Exception as e:  # network/HTTP failure must not break the page
+        detail_error = f"APMI strategy page unavailable: {e.__class__.__name__}"
+    if detail is None and cached:
+        detail = cached[0]  # serve stale facts rather than nothing
+    return detail, detail_error
+
+
+def _mgr_norm(name: str | None) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"^(mr|mrs|ms|dr)\.?\s+", "", (name or "").strip(), flags=re.I)).lower()
+
+
+@router.get("/pms/manager")
+def backoffice_pms_manager(
+    staff: Annotated[dict, Depends(require_staff)],
+    name: Annotated[str, Query(min_length=2, max_length=120)],
+    provider: Annotated[str, Query(min_length=2, max_length=160)],
+):
+    """Strategies run by one APMI fund manager. APMI lists managers only on each strategy page, so check the firm's strategies."""
+    want = _mgr_norm(name)
+    found, experience = [], None
+    for row in _REPO.list_pms_universe_strategies(_REPO.latest_pms_as_on())[:5000]:
+        if row["provider"] != provider or not row.get("ia_id"):
+            continue
+        detail, _ = _pms_detail(str(row["ia_id"]))
+        if detail and _mgr_norm(detail.get("fund_manager")) == want:
+            found.append({**row, "principal_officer": detail["fund_manager"]})
+            experience = experience or detail.get("fund_manager_experience")
+        if len(found) >= 25:
+            break
+    return {"data": {"name": name, "provider": provider, "experience": experience, "strategies": found}}
+
+
 @router.get("/pms/strategies/{ia_id}")
 def backoffice_pms_strategy_detail(ia_id: str, staff: Annotated[dict, Depends(require_staff)]):
     """Everything known about one PMS strategy: monthly performance history, APMI profile, sibling strategies."""
@@ -336,23 +385,7 @@ def backoffice_pms_strategy_detail(ia_id: str, staff: Annotated[dict, Depends(re
         raise HTTPException(404, "Strategy not found")
     latest = history[0]
 
-    detail: dict[str, Any] | None = None
-    detail_error: str | None = None
-    cached = _REPO.get_pms_strategy_detail_cache(ia_id)
-    if cached and cached[1] < _PMS_DETAIL_TTL_SECONDS:
-        detail = cached[0]
-    else:
-        try:
-            fresh = apmi_provider.fetch_strategy_detail(ia_id)
-            if fresh:
-                _REPO.put_pms_strategy_detail_cache(ia_id, fresh)
-                detail = fresh
-            else:
-                detail_error = "APMI strategy page could not be parsed."
-        except Exception as e:  # network/HTTP failure must not break the page
-            detail_error = f"APMI strategy page unavailable: {e.__class__.__name__}"
-        if detail is None and cached:
-            detail = cached[0]  # serve stale facts rather than nothing
+    detail, detail_error = _pms_detail(ia_id)
 
     siblings = _REPO.list_provider_strategies(latest["provider"], latest["as_on"], ia_id)
     res = {
@@ -626,7 +659,8 @@ def backoffice_mf_manager(scheme_code: str, staff: Annotated[dict, Depends(requi
     """Named fund manager of one scheme (from the mf_managers table), or null when none is on file."""
     m = _REPO.list_mf_managers().get(scheme_code)
     if not m:
-        return {"data": None}
+        fallback = mf_reference.manager_for_scheme(scheme_code)  # AMFI snapshot
+        return {"data": {"manager_name": fallback, "manager_start": None, "tenure_years": None, "source": "AMFI"}} if fallback else {"data": None}
     start = m.get("manager_start")
     tenure = None
     if start:
@@ -659,6 +693,8 @@ def backoffice_mf_manager_profile(name: Annotated[str, Query(min_length=2, max_l
             "tenure_cagr": _tenure_cagr(code, m.get("manager_start")),
             **({k: _num_or_none(row.get(k), 100) for k in ("ret_1y", "cagr_3y", "cagr_5y", "max_drawdown_3y")} | {"sharpe_3y": _num_or_none(row.get("sharpe_3y"))} if row is not None else {}),
         })
+    if not funds:  # no mf_managers rows: fall back to the AMFI snapshot (scheme list only, no performance)
+        funds = [{**f, "tenure_cagr": None} for f in mf_reference.schemes_for_manager(name)]
     funds.sort(key=lambda f: f["manager_start"] or "9999")
     return {"data": {"name": profile["name"] if profile else name, "profile": profile, "funds": funds}}
 

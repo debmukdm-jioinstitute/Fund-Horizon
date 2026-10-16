@@ -227,3 +227,41 @@ if __name__ == "__main__":
     import sys
 
     print(load_csv(sys.argv[1] if len(sys.argv) > 1 else SNAPSHOT))
+
+
+def _name_key(name: str | None) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"^(mr|mrs|ms|dr)\.?\s+", "", (name or "").strip(), flags=re.I)).lower()
+
+
+def manager_for_scheme(code: str) -> str | None:
+    """First manager of a scheme from the AMFI snapshot (fallback when mf_managers has no row)."""
+    conn = _conn()
+    try:
+        if "manager_scheme_map" not in _tables(conn):
+            return None
+        r = conn.execute(
+            f'SELECT m.full_name FROM "{_tname("manager_scheme_map")}" mp JOIN "{_tname("fund_manager_master")}" m '
+            "USING (manager_id) WHERE mp.amfi_scheme_code = ? LIMIT 1", (code,)).fetchone()
+        return r[0] if r else None
+    finally:
+        conn.close()
+
+
+def schemes_for_manager(name: str) -> list[dict[str, str | None]]:
+    """[{scheme_code, scheme_name, category, manager_start}] for a manager name, from the AMFI snapshot."""
+    conn = _conn()
+    try:
+        if "manager_scheme_map" not in _tables(conn):
+            return []
+        ids = [r[0] for r in conn.execute(f'SELECT manager_id, full_name FROM "{_tname("fund_manager_master")}"')
+               if _name_key(r[1]) == _name_key(name)]
+        out = []
+        for mid in ids:
+            out += [dict(r) for r in conn.execute(
+                f'SELECT s.amfi_scheme_code AS scheme_code, s.scheme_name, s.sebi_category AS category, '
+                f'mp.start_date_as_stated AS manager_start FROM "{_tname("manager_scheme_map")}" mp '
+                f'JOIN "{_tname("scheme_master")}" s USING (amfi_scheme_code) WHERE mp.manager_id = ? '
+                "ORDER BY s.scheme_name", (mid,))]
+        return out
+    finally:
+        conn.close()

@@ -3636,7 +3636,7 @@
   {
    "period": "2026-09",
    "title": "Invesco Mutual Fund factsheet 2026-09",
-   "url": "https://www.invescomutualfund.com/docs/default-source/factsheet/invesco-mf-factsheet-september-2026.pdf?sfvrsn=97889ec2_0"
+   "url": "https://www.invescomutualfund.com/docs/default-source/factsheet/invesco-mf-factsheet-september-2026.pdf?sfvrsn=97889ec2_2"
   },
   {
    "period": "2026-08",
@@ -7421,6 +7421,11 @@
   }
  ],
  "dsp": [
+  {
+   "period": "2026-09",
+   "title": "DSP Mutual Fund factsheet 2026-09",
+   "url": "https://www.dspim.com/downloads/dsp-factsheet_september-2026_final.pdf"
+  },
   {
    "period": "2026-08",
    "title": "DSP Mutual Fund factsheet 2026-08",

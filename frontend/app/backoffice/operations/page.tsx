@@ -8,6 +8,7 @@ import {
   FormRepository,
   FormCategory,
 } from "@/lib/operationsForms";
+import { OFFICIAL_FORMS } from "@/lib/officialForms";
 import FormEditorModal from "@/components/operations/FormEditorModal";
 
 interface DownloadActivity {
@@ -64,6 +65,13 @@ export default function OperationsPage() {
   }, [selectedRepo, selectedCategory, searchQuery]);
 
   // Counts for repository badges
+  const officialForms = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return OFFICIAL_FORMS.filter(
+      (f) => (selectedRepo === "ALL" || f.repository === selectedRepo) && (!q || `${f.title} ${f.repository}`.toLowerCase().includes(q)),
+    );
+  }, [selectedRepo, searchQuery]);
+
   const camsCount = useMemo(() => OPERATIONS_FORMS.filter((f) => f.repository === "CAMS").length, []);
   const carvyCount = useMemo(() => OPERATIONS_FORMS.filter((f) => f.repository === "Carvy").length, []);
   const stallionCount = useMemo(() => OPERATIONS_FORMS.filter((f) => f.repository === "Stallion").length, []);
@@ -399,6 +407,34 @@ export default function OperationsPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Official forms: straight from the CAMS / KFintech / Stallion sites */}
+      {officialForms.length > 0 && (
+        <div className="bg-[#FFFFFF] dark:bg-[#10151C] rounded-2xl border border-[#E4E9EF] dark:border-[#2B3644] p-4 space-y-3">
+          <div>
+            <h3 className="text-[13px] font-bold text-[#172033] dark:text-[#EDF2F7]">Official Forms (download)</h3>
+            <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
+              Blank forms published by the RTA or PMS, always the current version. Follows the repository and search filters above.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {officialForms.map((f) => (
+              <a
+                key={f.url}
+                href={f.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64] dark:hover:border-[#75E1CE] text-[12px] text-[#172033] dark:text-[#EDF2F7] transition"
+              >
+                <span className="truncate" title={f.title}>{f.title}</span>
+                <span className="shrink-0 text-[10px] font-bold uppercase text-[#006F64] dark:text-[#75E1CE]">
+                  {f.kind === "PDF" ? "Download PDF" : "Open page"}
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
       )}
 

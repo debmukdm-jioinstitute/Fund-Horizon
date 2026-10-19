@@ -75,7 +75,7 @@ export default function MfManagerDrawer({ manager, onClose }: MfManagerDrawerPro
                 </div>
               ) : (
                 <p className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4] leading-relaxed">
-                  Education and career details have not been compiled for this manager yet. Add them to <span className="font-mono">data/mf_manager_profiles.json</span>.
+                  Education and career details are not published for this manager. The list below comes from AMFI scheme disclosures.
                 </p>
               )}
             </div>

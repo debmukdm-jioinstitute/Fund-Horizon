@@ -680,21 +680,32 @@ def backoffice_mf_manager_profile(name: Annotated[str, Query(min_length=2, max_l
     if path.exists():
         profile = next((p for p in json.loads(path.read_text()) if key in {_mgr_key(p.get("name")), *map(_mgr_key, p.get("aliases", []))}), None)
     mets = load_metrics().set_index("scheme_code")
+    # AMFI lists every plan/option code of a fund; collapse to one row per fund on the Direct Growth code, which has metrics.
+    groups: dict[str, list[dict]] = {}
+    for f in mf_reference.schemes_for_manager(name):
+        groups.setdefault(f["scheme_name"], []).append(f)
+    seeded = {c: m for c, m in _REPO.list_mf_managers().items() if _mgr_key(m["manager_name"]) == key}
+    known = {f["scheme_code"] for g in groups.values() for f in g}
+    for c, m in seeded.items():
+        if c not in known and c in mets.index:
+            groups[str(mets.at[c, "scheme_name"])] = [{"scheme_code": c, "category": mets.at[c, "category"], "manager_start": None}]
     funds = []
-    for code, m in _REPO.list_mf_managers().items():
-        if _mgr_key(m["manager_name"]) != key:
-            continue
+    for scheme_name, g in groups.items():
+        have = [f for f in g if f["scheme_code"] in mets.index]
+        growth = [f for f in have if mets.at[f["scheme_code"], "option"] == "Growth"] or have
+        f = next((f for f in growth if mets.at[f["scheme_code"], "plan"] == "Direct"), (growth or g)[0])
+        code = f["scheme_code"]
         row = mets.loc[code] if code in mets.index else None
+        start = (seeded.get(code) or {}).get("manager_start") or next(
+            (d.date().isoformat() for x in g if pd.notna(d := pd.to_datetime(re.sub(r"(?<=\d)(st|nd|rd|th)", "", x["manager_start"] or ""), errors="coerce"))), None)
         funds.append({
             "scheme_code": code,
-            "scheme_name": str(row["scheme_name"]) if row is not None else code,
-            "category": str(row["category"]) if row is not None else None,
-            "manager_start": m.get("manager_start"),
-            "tenure_cagr": _tenure_cagr(code, m.get("manager_start")),
+            "scheme_name": scheme_name,
+            "category": (str(row["category"]) if row is not None else None) or f.get("category"),
+            "manager_start": start,
+            "tenure_cagr": _tenure_cagr(code, start),
             **({k: _num_or_none(row.get(k), 100) for k in ("ret_1y", "cagr_3y", "cagr_5y", "max_drawdown_3y")} | {"sharpe_3y": _num_or_none(row.get("sharpe_3y"))} if row is not None else {}),
         })
-    if not funds:  # no mf_managers rows: fall back to the AMFI snapshot (scheme list only, no performance)
-        funds = [{**f, "tenure_cagr": None} for f in mf_reference.schemes_for_manager(name)]
     funds.sort(key=lambda f: f["manager_start"] or "9999")
     return {"data": {"name": profile["name"] if profile else name, "profile": profile, "funds": funds}}
 

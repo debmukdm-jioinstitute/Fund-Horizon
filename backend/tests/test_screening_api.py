@@ -213,5 +213,14 @@ def test_mf_manager_endpoints(client, seeded_screening):
     assert client.get("/api/backoffice/mutual-funds/000001/manager").json()["data"] is None
     d = client.get("/api/backoffice/mutual-fund-managers/profile", params={"name": "Mr Chirag Setalvad"}).json()["data"]
     assert d["profile"]["firm"] == "HDFC Mutual Fund"  # from data/mf_manager_profiles.json
-    assert "119551" in [f["scheme_code"] for f in d["funds"]]
+    assert any(f["scheme_name"].startswith("HDFC") for f in d["funds"])
     assert client.get("/api/backoffice/mutual-fund-managers/profile", params={"name": "Nobody Atall"}).json()["data"]["profile"] is None
+
+
+def test_mf_manager_profile_one_row_per_fund_with_metrics():
+    from app.api.backoffice import backoffice_mf_manager_profile
+
+    funds = backoffice_mf_manager_profile("Nitin Arora", {})["data"]["funds"]
+    names = [f["scheme_name"] for f in funds]
+    assert len(names) == len(set(names)) > 1  # plan/option codes collapsed
+    assert any(f.get("cagr_3y") is not None for f in funds)

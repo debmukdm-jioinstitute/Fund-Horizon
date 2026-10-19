@@ -8,7 +8,6 @@
     "start": "next start",
     "lint": "next lint && node scripts/check-fonts.mjs",
     "lint:fonts": "node scripts/check-fonts.mjs",
-    "postinstall": "node scripts/copy-pdf-worker.mjs",
     "prebuild": "node scripts/copy-pdf-worker.mjs",
     "predev": "node scripts/copy-pdf-worker.mjs"
   },

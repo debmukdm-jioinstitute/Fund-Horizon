@@ -1,0 +1,38 @@
+name: Fund Manager Profiles
+
+# Re-scrapes manager education/experience from Groww fund pages so the Fund manager drawer never shows blanks.
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: manager-profiles
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - run: python backend/scripts/refresh_manager_profiles.py
+
+      - name: Commit changed profiles
+        run: |
+          git config user.name "fh-data-bot"
+          git config user.email "fh-data-bot@users.noreply.github.com"
+          git add data/mf_manager_profiles.json
+          git diff --cached --quiet || (git commit -m "data: weekly fund manager profiles refresh" && git pull --rebase origin main && git push)

@@ -1,3 +1,4 @@
+import type { OfficialForm } from "@/lib/officialForms";
 import { ApiError, resolveApiUrl, API_URL } from "./api";
 import type { PmsManagerProfile } from "./pms-managers";
 
@@ -407,6 +408,9 @@ export interface MfManagedFund {
   max_drawdown_3y?: number;
   sharpe_3y?: number;
 }
+
+export const getOfficialForms = async (): Promise<OfficialForm[]> =>
+  (await boFetch<{ data: OfficialForm[] }>("/api/backoffice/operations/official-forms")).data;
 
 export const getMfManagerProfile = async (name: string): Promise<{ name: string; profile: PmsManagerProfile | null; funds: MfManagedFund[] }> => {
   const raw = await boFetch<Json>(`/api/backoffice/mutual-fund-managers/profile?name=${encodeURIComponent(name)}`);

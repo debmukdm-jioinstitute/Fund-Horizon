@@ -120,6 +120,16 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    href: "/backoffice/operations",
+    label: "Operations",
+    description: "Automated forms repository, CAMS & Carvy automation, in-house form editor, signatures & downloads",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      </svg>
+    ),
+  },
+  {
     href: "/backoffice/risk-profiling",
     label: "Risk profiling",
     description: "SEBI/AMFI suitability scoring, risk capacity vs tolerance, and asset allocation",

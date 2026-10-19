@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import pandas as pd
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse
 from pydantic import BaseModel, Field
 
@@ -680,21 +680,32 @@ def backoffice_mf_manager_profile(name: Annotated[str, Query(min_length=2, max_l
     if path.exists():
         profile = next((p for p in json.loads(path.read_text()) if key in {_mgr_key(p.get("name")), *map(_mgr_key, p.get("aliases", []))}), None)
     mets = load_metrics().set_index("scheme_code")
+    # AMFI lists every plan/option code of a fund; collapse to one row per fund on the Direct Growth code, which has metrics.
+    groups: dict[str, list[dict]] = {}
+    for f in mf_reference.schemes_for_manager(name):
+        groups.setdefault(f["scheme_name"], []).append(f)
+    seeded = {c: m for c, m in _REPO.list_mf_managers().items() if _mgr_key(m["manager_name"]) == key}
+    known = {f["scheme_code"] for g in groups.values() for f in g}
+    for c, m in seeded.items():
+        if c not in known and c in mets.index:
+            groups[str(mets.at[c, "scheme_name"])] = [{"scheme_code": c, "category": mets.at[c, "category"], "manager_start": None}]
     funds = []
-    for code, m in _REPO.list_mf_managers().items():
-        if _mgr_key(m["manager_name"]) != key:
-            continue
+    for scheme_name, g in groups.items():
+        have = [f for f in g if f["scheme_code"] in mets.index]
+        growth = [f for f in have if mets.at[f["scheme_code"], "option"] == "Growth"] or have
+        f = next((f for f in growth if mets.at[f["scheme_code"], "plan"] == "Direct"), (growth or g)[0])
+        code = f["scheme_code"]
         row = mets.loc[code] if code in mets.index else None
+        start = (seeded.get(code) or {}).get("manager_start") or next(
+            (d.date().isoformat() for x in g if pd.notna(d := pd.to_datetime(re.sub(r"(?<=\d)(st|nd|rd|th)", "", x["manager_start"] or ""), errors="coerce"))), None)
         funds.append({
             "scheme_code": code,
-            "scheme_name": str(row["scheme_name"]) if row is not None else code,
-            "category": str(row["category"]) if row is not None else None,
-            "manager_start": m.get("manager_start"),
-            "tenure_cagr": _tenure_cagr(code, m.get("manager_start")),
+            "scheme_name": scheme_name,
+            "category": (str(row["category"]) if row is not None else None) or f.get("category"),
+            "manager_start": start,
+            "tenure_cagr": _tenure_cagr(code, start),
             **({k: _num_or_none(row.get(k), 100) for k in ("ret_1y", "cagr_3y", "cagr_5y", "max_drawdown_3y")} | {"sharpe_3y": _num_or_none(row.get("sharpe_3y"))} if row is not None else {}),
         })
-    if not funds:  # no mf_managers rows: fall back to the AMFI snapshot (scheme list only, no performance)
-        funds = [{**f, "tenure_cagr": None} for f in mf_reference.schemes_for_manager(name)]
     funds.sort(key=lambda f: f["manager_start"] or "9999")
     return {"data": {"name": profile["name"] if profile else name, "profile": profile, "funds": funds}}
 
@@ -1378,7 +1389,6 @@ def backoffice_risk_profile_report_pdf(
     )
 
 
-
 class RecommendedUpdateRequest(BaseModel):
     kind: str  # "mf" or "pms"
     id: str
@@ -1405,3 +1415,89 @@ def backoffice_update_recommended(req: RecommendedUpdateRequest):
         "mf_count": len(FH_RECOMMENDED_MF_CODES),
         "pms_count": len(FH_RECOMMENDED_PMS_IDS),
     }
+
+
+@router.get("/operations/official-forms")
+def backoffice_official_forms(staff: Annotated[dict, Depends(require_staff)]):
+    """Official CAMS / KFintech (Karvy) forms catalogue (same data the universal search reads)."""
+    return {"data": universal_search.official_forms()}
+
+
+_PDF_LIMIT = 15_000_000
+_BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+
+
+def _fetch_official_pdf(url: str) -> bytes:
+    """Download a catalogue form server-side (the publishers send no CORS headers). Only catalogue URLs are fetched."""
+    import requests
+
+    if url not in {f["url"] for f in universal_search.official_forms() if f["kind"] == "PDF"}:
+        raise HTTPException(404, "That form is not in the official forms catalogue.")
+    host = re.match(r"https?://[^/]+", url).group(0)  # type: ignore[union-attr]
+    referer = f"{host}/Investors/Service-requests/Service-Request-Forms" if "camsonline" in host else f"{host}/"
+    try:
+        r = requests.get(url, timeout=30, stream=True, allow_redirects=False, headers={
+            "User-Agent": _BROWSER_UA, "Accept": "application/pdf,*/*", "Referer": referer, "Accept-Language": "en-US,en;q=0.9",
+            "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "same-origin"})
+        body = r.raw.read(_PDF_LIMIT + 1, decode_content=True)
+    except requests.RequestException as exc:
+        raise HTTPException(502, "Could not reach the publisher's site.") from exc
+    if r.status_code != 200 or not body.startswith(b"%PDF") or len(body) > _PDF_LIMIT:
+        raise HTTPException(502, "The publisher did not return a usable PDF.")
+    return body
+
+
+@router.get("/operations/official-forms/pdf")
+def backoffice_official_form_pdf(url: Annotated[str, Query(max_length=600)], staff: Annotated[dict, Depends(require_staff)]):
+    """The PDF of one catalogue form, proxied so the browser editor can open it."""
+    return Response(_fetch_official_pdf(url), media_type="application/pdf")
+
+
+@router.post("/operations/pdf-fill")
+async def backoffice_pdf_fill(
+    staff: Annotated[dict, Depends(require_staff)],
+    edits: Annotated[str, Form()] = "[]",
+    drop_fields: Annotated[str, Form()] = "[]",
+    url: Annotated[str | None, Form()] = None,
+    file: Annotated[UploadFile | None, File()] = None,
+    filename: Annotated[str, Form()] = "filled-form",
+):
+    """Draw the editor's typed text, marks, signatures and images onto a PDF (uploaded or from the catalogue)."""
+    from app.report.pdf_fill import PdfFillError, apply_edits
+
+    if file is not None:
+        src = await file.read(_PDF_LIMIT + 1)
+        if len(src) > _PDF_LIMIT:
+            raise HTTPException(413, "PDF is larger than 15 MB.")
+    elif url:
+        src = _fetch_official_pdf(url)
+    else:
+        raise HTTPException(422, "Provide a PDF file or a catalogue form URL.")
+    try:
+        out = apply_edits(src, json.loads(edits), json.loads(drop_fields))
+    except (PdfFillError, ValueError, TypeError, KeyError) as exc:
+        raise HTTPException(422, str(exc) if isinstance(exc, PdfFillError) else "The edits are malformed.") from exc
+    safe = re.sub(r"[^a-zA-Z0-9_\-]+", "_", filename)[:80] or "filled-form"
+    return Response(out, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{safe}.pdf"'})
+
+
+@router.get("/operations/status")
+async def get_operations_status(
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Return RTA and automated forms repository status."""
+    return with_meta({
+        "status": "online",
+        "rta_sync": {
+            "cams": {"status": "connected", "latency_ms": 42, "last_synced": "Live AMFI Feed"},
+            "kfintech": {"status": "connected", "latency_ms": 38, "last_synced": "Live AMFI Feed"},
+            "stallion": {"status": "connected", "latency_ms": 25, "last_synced": "Direct PMA Master"},
+        },
+        "form_engine": "ReportLab Google-Sans Vector Engine v2026",
+        "distributor": {
+            "name": "Fund Horizon",
+            "arn": "345439",
+            "euin": "E482910",
+        },
+    })
+

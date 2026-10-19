@@ -40,3 +40,11 @@ def test_search_endpoint_returns_funds_crm_and_scopes(client):
     amcs = client.get("/api/backoffice/search", params={"q": "hdfc", "scope": "amcs"}).json()["results"]
     assert amcs
     assert client.get("/api/backoffice/search", params={"q": "x"}).status_code == 422
+
+
+def test_official_forms_searchable_by_karvy_alias():
+    from app.backoffice.search import run
+
+    hits = run("karvy nomination", "forms", None)
+    assert hits and all(h["external"] and h["href"].startswith("http") for h in hits)
+    assert any("CAMS" in h["subtitle"] for h in run("cams bank mandate", "forms", None))

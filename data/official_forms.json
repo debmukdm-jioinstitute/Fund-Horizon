@@ -1,0 +1,1002 @@
+[
+ {
+  "source": "CAMS",
+  "category": "Transactions",
+  "title": "CAMS Additional Purchase Transaction Slip",
+  "url": "https://www.camsonline.com/Investors/Transactions/Paper-Financial-Transaction-request/Additional-purchase-slip",
+  "kind": "Page",
+  "keywords": "purchase top up lumpsum slip"
+ },
+ {
+  "source": "CAMS",
+  "category": "Transactions",
+  "title": "CAMS Redemption Transaction Slip",
+  "url": "https://www.camsonline.com/Investors/Transactions/Paper-Financial-Transaction-request/Redemption-slip",
+  "kind": "Page",
+  "keywords": "withdraw sell slip"
+ },
+ {
+  "source": "CAMS",
+  "category": "Transactions",
+  "title": "CAMS Switch Transaction Slip",
+  "url": "https://www.camsonline.com/Investors/Transactions/Paper-Financial-Transaction-request/Switch-transaction-slip",
+  "kind": "Page",
+  "keywords": "switch slip"
+ },
+ {
+  "source": "CAMS",
+  "category": "Transactions",
+  "title": "CAMS SIP / STP / SWP Cancellation Request",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms/SIP-STP-SWP-Cancellation-request",
+  "kind": "Page",
+  "keywords": "stop sip terminate"
+ },
+ {
+  "source": "CAMS",
+  "category": "Bank mandate & payments",
+  "title": "CAMS Registration / Cancellation of Bank Mandate",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms/Bank-Mandate-registration&cancellation",
+  "kind": "Page",
+  "keywords": "change bank multiple bank accounts"
+ },
+ {
+  "source": "CAMS",
+  "category": "Bank mandate & payments",
+  "title": "CAMS Bank Accounts Registration Form (PDF)",
+  "url": "https://www.camsonline.com/assets/PDF/Bank_Accounts_Registration_Form.pdf",
+  "kind": "PDF",
+  "keywords": "bank mandate multiple banks"
+ },
+ {
+  "source": "CAMS",
+  "category": "Bank mandate & payments",
+  "title": "CAMS Bank Mandate with Banker Attestation",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms/Bank-Mandate-with-Banker-Attestation",
+  "kind": "Page",
+  "keywords": "signature update bank attestation"
+ },
+ {
+  "source": "CAMS",
+  "category": "Bank mandate & payments",
+  "title": "CAMS Digital Bank Mandate Change",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Change-Bank-Mandate/Digital-Bank-Mandate-Change",
+  "kind": "Page",
+  "keywords": "online bank change"
+ },
+ {
+  "source": "CAMS",
+  "category": "Bank mandate & payments",
+  "title": "CAMS eNACH / eMandate (CAMSPay)",
+  "url": "https://www.camsonline.com/Investors/Service-requests/eNACH-eMandate/CAMSPay-eMandate",
+  "kind": "Page",
+  "keywords": "nach emandate sip mandate"
+ },
+ {
+  "source": "CAMS",
+  "category": "Bank mandate & payments",
+  "title": "CAMS Redemption or IDCW Revalidation",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms/Redemption-IDCW-Revalidation",
+  "kind": "Page",
+  "keywords": "dividend warrant cheque revalidate"
+ },
+ {
+  "source": "CAMS",
+  "category": "Nomination",
+  "title": "CAMS Nomination Opt-in / Opt-out (physical form page)",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms/Nomination_Opt-in_or_Opt-out",
+  "kind": "Page",
+  "keywords": "nominee"
+ },
+ {
+  "source": "CAMS",
+  "category": "Nomination",
+  "title": "CAMS Nomination Form (PDF)",
+  "url": "https://www.camsonline.com/assets/PDF/Nomination_Form.pdf",
+  "kind": "PDF",
+  "keywords": "nominee registration opt in"
+ },
+ {
+  "source": "CAMS",
+  "category": "Nomination",
+  "title": "CAMS Nomination Opt-out Form (PDF)",
+  "url": "https://www.camsonline.com/assets/PDF/Nomination_Opt-out_Form.pdf",
+  "kind": "PDF",
+  "keywords": "nominee opt out declaration"
+ },
+ {
+  "source": "CAMS",
+  "category": "Contact & folio updates",
+  "title": "CAMS Email / Mobile Updation & Family Declaration Form",
+  "url": "https://www.camsonline.com/assets/PDF/EMAIL_MOBILE_UPDATE/Updation_of_contact_details_%26_Family_Declaration_Form_V1.pdf",
+  "kind": "PDF",
+  "keywords": "email mobile phone contact family declaration"
+ },
+ {
+  "source": "CAMS",
+  "category": "Contact & folio updates",
+  "title": "CAMS PAN Updation Form",
+  "url": "https://www.camsonline.com/assets/PDF/EMAIL_MOBILE_UPDATE/PAN_UPDATION_FORM.pdf",
+  "kind": "PDF",
+  "keywords": "pan update"
+ },
+ {
+  "source": "CAMS",
+  "category": "Contact & folio updates",
+  "title": "CAMS PAN-based Service Request Form",
+  "url": "https://www.camsonline.com/assets/PDF/EMAIL_MOBILE_UPDATE/PAN_base_request_form.pdf",
+  "kind": "PDF",
+  "keywords": "pan based email mobile nominee"
+ },
+ {
+  "source": "CAMS",
+  "category": "Contact & folio updates",
+  "title": "CAMS Mutual Fund PAN & KYC Updation (online)",
+  "url": "https://www.camsonline.com/Investors/Service-requests/GoGreen/Pan-updation",
+  "kind": "Page",
+  "keywords": "pan kyc update online"
+ },
+ {
+  "source": "CAMS",
+  "category": "Contact & folio updates",
+  "title": "CAMS Consolidation of Folios",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms/Folio-Consolidation",
+  "kind": "Page",
+  "keywords": "merge folios aggregate"
+ },
+ {
+  "source": "CAMS",
+  "category": "Contact & folio updates",
+  "title": "CAMS Minor Attains Majority Form",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms/Minor-attains-Major",
+  "kind": "Page",
+  "keywords": "minor major guardian tax status"
+ },
+ {
+  "source": "CAMS",
+  "category": "Contact & folio updates",
+  "title": "CAMS Change of Broker (ARN) Request",
+  "url": "https://www.camsonline.com/assets/PDF/Request_for_Change_in_Broker.pdf",
+  "kind": "PDF",
+  "keywords": "broker arn change distributor"
+ },
+ {
+  "source": "CAMS",
+  "category": "KYC & compliance",
+  "title": "CAMSKRA KYC Form (CKYC / Non-Individual)",
+  "url": "https://www.camsonline.com/assets/PDF/CAMSKRA_Form_KYC.pdf",
+  "kind": "PDF",
+  "keywords": "ckyc kra kyc application non individual"
+ },
+ {
+  "source": "CAMS",
+  "category": "KYC & compliance",
+  "title": "CAMS UBO Declaration Form",
+  "url": "https://www.camsonline.com/assets/PDF/EMAIL_MOBILE_UPDATE/UBO-Declaration.pdf",
+  "kind": "PDF",
+  "keywords": "ultimate beneficial owner"
+ },
+ {
+  "source": "CAMS",
+  "category": "KYC & compliance",
+  "title": "CAMS NPO (Non-Profit Organisation) Declaration",
+  "url": "https://www.camsonline.com/assets/PDF/EMAIL_MOBILE_UPDATE/NPO-Declaration.pdf",
+  "kind": "PDF",
+  "keywords": "npo trust"
+ },
+ {
+  "source": "CAMS",
+  "category": "KYC & compliance",
+  "title": "CAMS FATCA & CRS Declaration",
+  "url": "https://www.camsonline.com/Investors/Service-requests/FATCA&CRS",
+  "kind": "Page",
+  "keywords": "fatca crs tax residency"
+ },
+ {
+  "source": "CAMS",
+  "category": "KYC & compliance",
+  "title": "CAMS KYC Modification Form",
+  "url": "https://www.camsonline.com/assets/PDF/KYC_Modification.pdf",
+  "kind": "PDF",
+  "keywords": "kyc change modify"
+ },
+ {
+  "source": "CAMS",
+  "category": "KYC & compliance",
+  "title": "CAMS KYC (online / paperless)",
+  "url": "https://www.camsonline.com/Investors/Transactions/KYC/Paper-less-KYC",
+  "kind": "Page",
+  "keywords": "ekyc kyc status"
+ },
+ {
+  "source": "CAMS",
+  "category": "Transmission & incapacitation",
+  "title": "CAMS Transmission Helpdesk (death claim)",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Transmission/Transmission-Helpdesk",
+  "kind": "Page",
+  "keywords": "transmission deceased nominee legal heir"
+ },
+ {
+  "source": "CAMS",
+  "category": "Transmission & incapacitation",
+  "title": "CAMS Incapacitation Intimation Letter Format",
+  "url": "https://www.camsonline.com/assets/PDF/SOP/Incapacitation_Intimation_Letter_Format.pdf",
+  "kind": "PDF",
+  "keywords": "incapacitated investor"
+ },
+ {
+  "source": "CAMS",
+  "category": "Guides & circulars",
+  "title": "CAMS SOP for Incapacitated Investors",
+  "url": "https://www.camsonline.com/assets/PDF/SOP/SOP_for_Incapacitated_Investors.pdf",
+  "kind": "PDF",
+  "keywords": "sop incapacitated"
+ },
+ {
+  "source": "CAMS",
+  "category": "Guides & circulars",
+  "title": "CAMS FAQs on Unclaimed Mutual Funds",
+  "url": "https://www.camsonline.com/assets/PDF/SOP/FAQs_on_Unclaimed_Mutual_Funds.pdf",
+  "kind": "PDF",
+  "keywords": "unclaimed idcw redemption"
+ },
+ {
+  "source": "CAMS",
+  "category": "Guides & circulars",
+  "title": "CAMS KYC Remediation FAQ",
+  "url": "https://www.camsonline.com/assets/PDF/KYCRemediationFAQ.pdf",
+  "kind": "PDF",
+  "keywords": "kyc faq"
+ },
+ {
+  "source": "CAMS",
+  "category": "Guides & circulars",
+  "title": "CAMS FAQs on revised KYC process (1 Apr 2024)",
+  "url": "https://www.camsonline.com/assets/PDF/FAQs_on_revised_KYC_process_1st_April_2024.pdf",
+  "kind": "PDF",
+  "keywords": "kyc faq"
+ },
+ {
+  "source": "CAMS",
+  "category": "Guides & circulars",
+  "title": "CAMS Email / Mobile cleanup FAQs",
+  "url": "https://www.camsonline.com/assets/PDF/EMAIL_MOBILE_UPDATE/FAQs-Email%20_Mobile_cleanup.pdf",
+  "kind": "PDF",
+  "keywords": "faq email mobile"
+ },
+ {
+  "source": "CAMS",
+  "category": "Distributor",
+  "title": "CAMS Request for RIA Registration",
+  "url": "https://www.camsonline.com/Distributors/Service-Requests/RIA-Registration-Form",
+  "kind": "Page",
+  "keywords": "ria registration"
+ },
+ {
+  "source": "CAMS",
+  "category": "Distributor",
+  "title": "CAMS GSTIN Registration & Invoice",
+  "url": "https://www.camsonline.com/Distributors/Service-Requests/GSTIN-Registration&Invoice",
+  "kind": "Page",
+  "keywords": "gst invoice distributor"
+ },
+ {
+  "source": "CAMS",
+  "category": "Distributor",
+  "title": "CAMS Distributor Mailback Services",
+  "url": "https://www.camsonline.com/Distributors/Service-Requests/Distributor-Mailback-Services",
+  "kind": "Page",
+  "keywords": "mailback statement"
+ },
+ {
+  "source": "CAMS",
+  "category": "Distributor",
+  "title": "CAMS Distributor User Manual",
+  "url": "https://www.camsonline.com/assets/PDF/usermanual/Distributor-user-manual.pdf",
+  "kind": "PDF",
+  "keywords": "manual"
+ },
+ {
+  "source": "CAMS",
+  "category": "Distributor",
+  "title": "CAMS GST Invoice Upload Process Flow",
+  "url": "https://www.camsonline.com/assets/PDF/GST_Invoice_Upload_Process_Flow.pdf",
+  "kind": "PDF",
+  "keywords": "gst"
+ },
+ {
+  "source": "CAMS",
+  "category": "Statements & other",
+  "title": "CAMS Consolidated Account Statement (CAS)",
+  "url": "https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement",
+  "kind": "Page",
+  "keywords": "cas statement"
+ },
+ {
+  "source": "CAMS",
+  "category": "Statements & other",
+  "title": "CAMS Capital Gain / Loss Statement",
+  "url": "https://www.camsonline.com/Investors/Statements/Capital-Gain&Capital-Loss-statement",
+  "kind": "Page",
+  "keywords": "capital gains tax"
+ },
+ {
+  "source": "CAMS",
+  "category": "Statements & other",
+  "title": "CAMS All Service Request Forms (index)",
+  "url": "https://www.camsonline.com/Investors/Service-requests/Service-Request-Forms",
+  "kind": "Page",
+  "keywords": "index all forms"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transactions",
+  "title": "KFintech Common Transaction Form (purchase / redemption / switch)",
+  "url": "https://mfs.kfintech.com/mfs/InvestorServices/COMMON%20TRANSACTION%20FORM.pdf",
+  "kind": "PDF",
+  "keywords": "ctf additional purchase redemption switch address bank"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transactions",
+  "title": "KFintech SIP / STP / SWP Cancellation Request",
+  "url": "https://mfs.kfintech.com/mfs/InvestorServices/Request%20For%20Cancellation%20Of%20%20SIP-STP-SWP.pdf",
+  "kind": "PDF",
+  "keywords": "stop sip terminate"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transactions",
+  "title": "KFintech Transaction Slip (online generator)",
+  "url": "https://mfs.kfintech.com/investor/General/TransactionSlip",
+  "kind": "Page",
+  "keywords": "purchase redemption switch slip"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transactions",
+  "title": "KFintech Form 121",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Form%20121.pdf",
+  "kind": "PDF",
+  "keywords": "form 121"
+ },
+ {
+  "source": "KFintech",
+  "category": "Bank mandate & payments",
+  "title": "KFintech Multiple Bank Account Registration",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Multiple-bankregistration.pdf",
+  "kind": "PDF",
+  "keywords": "change bank mandate"
+ },
+ {
+  "source": "KFintech",
+  "category": "Bank mandate & payments",
+  "title": "KFintech NACH / OTM Mandate Format",
+  "url": "https://mfs.kfintech.com/investor/Manuals/NACH_MANDATE_FORMAT_Rev.pdf",
+  "kind": "PDF",
+  "keywords": "nach mandate sip"
+ },
+ {
+  "source": "KFintech",
+  "category": "Bank mandate & payments",
+  "title": "KFintech NACH Form Mandates (info)",
+  "url": "https://mfs.kfintech.com/investor/General/NACHFormMandates",
+  "kind": "Page",
+  "keywords": "nach"
+ },
+ {
+  "source": "KFintech",
+  "category": "Bank mandate & payments",
+  "title": "KFintech eNACH / OTM Cancellation",
+  "url": "https://mfs.kfintech.com/investor/General/eNACHOTMCancellation",
+  "kind": "Page",
+  "keywords": "otm cancel emandate"
+ },
+ {
+  "source": "KFintech",
+  "category": "Bank mandate & payments",
+  "title": "KFintech RTGS / NEFT RBI Circular",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/RTGNEFTNEWRBICIRCULAR.pdf",
+  "kind": "PDF",
+  "keywords": "rtgs neft"
+ },
+ {
+  "source": "KFintech",
+  "category": "Nomination",
+  "title": "KFintech Nomination: Fresh / Change / Cancellation",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Fresh%20%20Change%20Cancellation%20of%20Nominatin.docx.pdf",
+  "kind": "PDF",
+  "keywords": "nominee annexure a"
+ },
+ {
+  "source": "KFintech",
+  "category": "Nomination",
+  "title": "KFintech Nomination Opt-out",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Nomination%20Opt%20Out.pdf",
+  "kind": "PDF",
+  "keywords": "nominee opt out"
+ },
+ {
+  "source": "KFintech",
+  "category": "Nomination",
+  "title": "KFintech MF Nomination Form",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Forms/MF_NominationForm.pdf",
+  "kind": "PDF",
+  "keywords": "nominee"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech Email / Mobile / Family Declaration",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/EMAIL%20MOBILE%20UPDATION.pdf",
+  "kind": "PDF",
+  "keywords": "email mobile family"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech Service Request for PAN / PEKRN",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/SRForm_PAN.pdf",
+  "kind": "PDF",
+  "keywords": "pan pekrn"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech PAN-based Email / Mobile Update",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/KFintech_PAN_base_request_form_NEW.pdf",
+  "kind": "PDF",
+  "keywords": "pan based"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech PAN Based Services Annexure 1",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Annexure1.pdf",
+  "kind": "PDF",
+  "keywords": "pan annexure"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech PAN Based Services Annexure 2",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/PAN-Annexure2.pdf",
+  "kind": "PDF",
+  "keywords": "pan annexure"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech PAN Based Services Annexure 3",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Annexure3.pdf",
+  "kind": "PDF",
+  "keywords": "pan annexure"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech PAN Based Services (online)",
+  "url": "https://mfs.kfintech.com/investor/General/PANBasedServices",
+  "kind": "Page",
+  "keywords": "pan based online"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech Change of Broker Code",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Change%20in%20Brok%20Code.pdf",
+  "kind": "PDF",
+  "keywords": "broker arn change"
+ },
+ {
+  "source": "KFintech",
+  "category": "Contact & folio updates",
+  "title": "KFintech Consent Form (MFD as Joint Holder)",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/Consent_form.pdf",
+  "kind": "PDF",
+  "keywords": "distributor joint holder"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech KYC Form (Individual)",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/CKYC-KRA-KYC-FormforIndividuals.pdf",
+  "kind": "PDF",
+  "keywords": "ckyc kra individual"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech KYC Form (Non-Individual)",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/NonIndividual-KYC.pdf",
+  "kind": "PDF",
+  "keywords": "kyc entity"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech KYC Form Individual (legacy)",
+  "url": "https://mfs.kfintech.com/mfs/GeneralPages/downloads/Individual.pdf",
+  "kind": "PDF",
+  "keywords": "kyc individual"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech KYC Form Non-Individual (legacy)",
+  "url": "https://mfs.kfintech.com/mfs/GeneralPages/downloads/KYC%20NonIndividual.pdf",
+  "kind": "PDF",
+  "keywords": "kyc non individual"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech Form 49A (PAN application)",
+  "url": "https://mfs.kfintech.com/mfs/GeneralPages/downloads/Form49aE.pdf",
+  "kind": "PDF",
+  "keywords": "pan application 49a"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech FATCA Form (Individuals)",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/KFIN_FATCA-Individuals.pdf",
+  "kind": "PDF",
+  "keywords": "fatca crs"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech FATCA & UBO Combined (Entities)",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/FATCA_UBO_COMBINED_NON_INDIVIDUALS.pdf",
+  "kind": "PDF",
+  "keywords": "fatca ubo entity"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech FATCA / CRS Declaration (Individual)",
+  "url": "https://mfs.kfintech.com/mfs/FATCA_CRS_Declaration_form_Individual.pdf",
+  "kind": "PDF",
+  "keywords": "fatca crs"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech FATCA / CRS Declaration (Entities)",
+  "url": "https://mfs.kfintech.com/mfs/FATCA_CRS_Declaration_form_Entities.pdf",
+  "kind": "PDF",
+  "keywords": "fatca crs"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech UBO Declaration",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/UBO_Format.pdf",
+  "kind": "PDF",
+  "keywords": "ultimate beneficial owner"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech NPO Declaration",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/NPO-Declaration_Form.pdf",
+  "kind": "PDF",
+  "keywords": "npo"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech Self Declaration",
+  "url": "https://mfs.kfintech.com/mfs/Self-Declaration.pdf",
+  "kind": "PDF",
+  "keywords": "self certification"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech AML Policy",
+  "url": "https://mfs.kfintech.com/mfs/GeneralPages/downloads/AML-Policy.pdf",
+  "kind": "PDF",
+  "keywords": "aml"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech KYC Guidelines (documents required)",
+  "url": "https://mfs.kfintech.com/mfs/GeneralPages/downloads/KYC%20Guidelines_Revised.pdf",
+  "kind": "PDF",
+  "keywords": "kyc documents"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "AMFI Prescribed Documents for Proof of Identity & Address",
+  "url": "https://mfs.kfintech.com/mfs/GeneralPages/downloads/AMFI%20-PrescribedDocuments%20for%20proof%20of%20Identity%20and%20Address.pdf",
+  "kind": "PDF",
+  "keywords": "poi poa"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech KYC FAQs (April 2024 changes)",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/FAQsonKYCprocesschangeseffectivefromApril012024.pdf",
+  "kind": "PDF",
+  "keywords": "kyc faq"
+ },
+ {
+  "source": "KFintech",
+  "category": "KYC & compliance",
+  "title": "KFintech Aadhaar KYC Process",
+  "url": "https://mfs.kfintech.com/investor/General/AadhaarKYCProcess",
+  "kind": "Page",
+  "keywords": "aadhaar ekyc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Form T1 - Deletion of Name of Deceased 2nd/3rd Joint Holder",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Forms/Form_T1_for_Deletion_of_Name_of_Deceased_2nd_or_3rd_Jt_Holder_March2024.pdf",
+  "kind": "PDF",
+  "keywords": "transmission death deceased nominee legal heir huf"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Form T2 - Transmission where 1st Holder is Deceased",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Forms/Form_T2_for_Transmission_of_Units_Where_the_1st_holder_is_Deceased_March_2024.pdf",
+  "kind": "PDF",
+  "keywords": "transmission death deceased nominee legal heir huf"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Form T3 - Transmission Request for Nominee & Legal Heir",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Forms/Form_T3_for_Transmission_Request_for_Nominee_Legal_Heir_March_2024.pdf",
+  "kind": "PDF",
+  "keywords": "transmission death deceased nominee legal heir huf"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Form T4 - Change of Karta upon demise of Karta",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Forms/Form_T4_for_Transmission_Request_for_change_of_Karta_upon_demise_of_regd_Karta_March_2024.pdf",
+  "kind": "PDF",
+  "keywords": "transmission death deceased nominee legal heir huf"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Form T5 - Transmission where HUF is dissolved",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Forms/Form_T5_Transmission_Request_where_HUF_is_dissolved_upon_demise_of_Karta_Revised_Mar_2024.pdf",
+  "kind": "PDF",
+  "keywords": "transmission death deceased nominee legal heir huf"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Annexure Ia - Bank Attestation of Signature & Bank Account Details",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Annexures/Annexure_Ia_Bank_Attestation_of_Signature_And_bank_account_details.pdf",
+  "kind": "PDF",
+  "keywords": "transmission annexure indemnity affidavit noc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Annexure Ib - Bank Attestation of Signature of New Karta",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Annexures/Annexure_Ib_Bank_Attestation_of_Signature_of_the_new_Karta.pdf",
+  "kind": "PDF",
+  "keywords": "transmission annexure indemnity affidavit noc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Annexure II - Bond of Indemnity (Legal Heirs, no Legal Representation)",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Annexures/Annexure-II_Bond_of_Indemnity_to_be_furnished_jointly_by_Legal_Heirs_for_Transmission_without_Legal_Representation.pdf",
+  "kind": "PDF",
+  "keywords": "transmission annexure indemnity affidavit noc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Annexure III - Individual Affidavits of Legal Heirs",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Annexures/Annexure_III_Individual_Affidavits_to_be_given_by_ALL_the_Legal_Heirs.pdf",
+  "kind": "PDF",
+  "keywords": "transmission annexure indemnity affidavit noc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Annexure IV - NOC from Other Legal Heirs",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Annexures/Annexure_IV_NOC_from_other_legal_heirs.pdf",
+  "kind": "PDF",
+  "keywords": "transmission annexure indemnity affidavit noc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Annexure V - Indemnity from Coparceners (Change of Karta)",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Annexures/AnnexureV-Indemnity_from_coparceners_for_change_of_Karta.pdf",
+  "kind": "PDF",
+  "keywords": "transmission annexure indemnity affidavit noc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Annexure VI - Bond of Indemnity (Dissolved HUF)",
+  "url": "https://mfs.kfintech.com/investor/img/guidelinestransmission/img/Annexures/Annexure_VI_Bond_of_Indemnity_by_surviving_member_of_dissolved_HUF.pdf",
+  "kind": "PDF",
+  "keywords": "transmission annexure indemnity affidavit noc"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech Transmission Guidelines (all scenarios)",
+  "url": "https://mfs.kfintech.com/investor/General/GuidelinesTransmission",
+  "kind": "Page",
+  "keywords": "transmission guidelines documents"
+ },
+ {
+  "source": "KFintech",
+  "category": "Transmission & incapacitation",
+  "title": "KFintech SOP: Demise Intimation Upload",
+  "url": "https://mfs.kfintech.com/investor/Manuals/SOP_Demise_IntimationUpload.pdf",
+  "kind": "PDF",
+  "keywords": "demise sop"
+ },
+ {
+  "source": "KFintech",
+  "category": "Guides & circulars",
+  "title": "KFintech Circular for Mutual Funds",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/downloads/cirimddf.pdf",
+  "kind": "PDF",
+  "keywords": "circular"
+ },
+ {
+  "source": "KFintech",
+  "category": "Guides & circulars",
+  "title": "KFintech FAQs on Unclaimed Mutual Funds (English)",
+  "url": "https://mfs.kfintech.com/investor/Manuals/SOP_FAQs_English.pdf",
+  "kind": "PDF",
+  "keywords": "unclaimed"
+ },
+ {
+  "source": "KFintech",
+  "category": "Guides & circulars",
+  "title": "KFintech Investor User Manual",
+  "url": "https://mfs.kfintech.com/investor/Manuals/User%20Manual-Investor.pdf",
+  "kind": "PDF",
+  "keywords": "manual"
+ },
+ {
+  "source": "KFintech",
+  "category": "Guides & circulars",
+  "title": "KFintech KTRACK User Guide",
+  "url": "https://mfs.kfintech.com/mfs/InvestorServices/KTrack%20User%20Guide%20V2.pdf",
+  "kind": "PDF",
+  "keywords": "ktrack"
+ },
+ {
+  "source": "KFintech",
+  "category": "Guides & circulars",
+  "title": "KFintech DEMAT / REMAT & Redemption Process Note",
+  "url": "https://mfs.kfintech.com/mfs/PROCESS%20NOTE%20ON%20DMAT-REMAT%20&%20REDEMPTION%20OF%20UNITS%20Ver%202%202%2026%20APR%202013.pdf",
+  "kind": "PDF",
+  "keywords": "demat remat"
+ },
+ {
+  "source": "KFintech",
+  "category": "Distributor",
+  "title": "KFintech Distributor Manual",
+  "url": "https://mfs.kfintech.com/mfs/Distributor/Downloads/DistributorManual.pdf",
+  "kind": "PDF",
+  "keywords": "distributor manual"
+ },
+ {
+  "source": "KFintech",
+  "category": "Distributor",
+  "title": "KFintech Service Request Forms (all)",
+  "url": "https://mfs.kfintech.com/mfs/Generalpages/Download%20Forms.aspx?frm=iC",
+  "kind": "Page",
+  "keywords": "index all forms"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form ISR-1 Request for Registering PAN, KYC, Bank & Specimen Signature",
+  "url": "https://karisma.kfintech.com/downloads/2Form_ISR-1.pdf",
+  "kind": "PDF",
+  "keywords": "isr1 kyc pan bank shares equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form ISR-2 Confirmation of Signature of Securities Holder by Bank",
+  "url": "https://karisma.kfintech.com/downloads/3Form_ISR-2.pdf",
+  "kind": "PDF",
+  "keywords": "isr2 signature bank equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form ISR-3 Declaration for Opting Out of Nomination",
+  "url": "https://karisma.kfintech.com/downloads/6Form_ISR-3.pdf",
+  "kind": "PDF",
+  "keywords": "isr3 nomination opt out equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form ISR-4 Request for Issue of Duplicate Certificate / Service Requests",
+  "url": "https://karisma.kfintech.com/downloads/Form-ISR-4.pdf",
+  "kind": "PDF",
+  "keywords": "isr4 duplicate equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form SH-13 Nomination Form",
+  "url": "https://karisma.kfintech.com/downloads/Form_SH13_NOMINATION_FORM.pdf",
+  "kind": "PDF",
+  "keywords": "sh13 nomination equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form SH-14 Cancellation / Variation of Nomination",
+  "url": "https://karisma.kfintech.com/downloads/Form_SH14.pdf",
+  "kind": "PDF",
+  "keywords": "sh14 nomination equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form Form A - Affidavit for Duplicate Securities",
+  "url": "https://karisma.kfintech.com/downloads/Form_A_Affidavit_for_issuance_of_duplicate_securities.pdf",
+  "kind": "PDF",
+  "keywords": "duplicate affidavit equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form Form B - Indemnity for Duplicate Securities",
+  "url": "https://karisma.kfintech.com/downloads/Form_B_Indemnity_for_issuance_of_duplicate_securities.pdf",
+  "kind": "PDF",
+  "keywords": "duplicate indemnity equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: NSDL DCRF (Demat Request)",
+  "url": "https://karisma.kfintech.com/downloads/nsdl_dcrf_format.pdf",
+  "kind": "PDF",
+  "keywords": "dcrf demat nsdl equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: CDSL DCRF (Demat Request)",
+  "url": "https://karisma.kfintech.com/downloads/cdsl_dcrf_format.pdf",
+  "kind": "PDF",
+  "keywords": "dcrf demat cdsl equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Form ISR-5 Annexure C",
+  "url": "https://karisma.kfintech.com/downloads/Annexure-C-ISR5.pdf",
+  "kind": "PDF",
+  "keywords": "isr5 equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Annexure D",
+  "url": "https://karisma.kfintech.com/downloads/Annexure-D.pdf",
+  "kind": "PDF",
+  "keywords": "annexure equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Annexure E",
+  "url": "https://karisma.kfintech.com/downloads/Annexure-E.pdf",
+  "kind": "PDF",
+  "keywords": "annexure equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Corporate registry (shares)",
+  "title": "KFintech (Karvy) Shares: Annexure F",
+  "url": "https://karisma.kfintech.com/downloads/Annexure-F.pdf",
+  "kind": "PDF",
+  "keywords": "annexure equity shares rta"
+ },
+ {
+  "source": "KFintech",
+  "category": "Tax & TDS (shares)",
+  "title": "KFintech Shares Tax: Form 121 (TDS exemption)",
+  "url": "https://ris.kfintech.com/clientservices/investors/Templates/TDS_Form-121.pdf",
+  "kind": "PDF",
+  "keywords": "form 121 tds tax exemption 15g 15h dividend"
+ },
+ {
+  "source": "KFintech",
+  "category": "Tax & TDS (shares)",
+  "title": "KFintech Shares Tax: Form 121 Guidelines",
+  "url": "https://ris.kfintech.com/clientservices/investors/Templates/TDS_Form-121_Guidelines.pdf",
+  "kind": "PDF",
+  "keywords": "form 121 guidelines tax exemption 15g 15h dividend"
+ },
+ {
+  "source": "KFintech",
+  "category": "Tax & TDS (shares)",
+  "title": "KFintech Shares Tax: Form 41",
+  "url": "https://ris.kfintech.com/clientservices/investors/Templates/Form-41.pdf",
+  "kind": "PDF",
+  "keywords": "form 41 tax exemption 15g 15h dividend"
+ },
+ {
+  "source": "KFintech",
+  "category": "Tax & TDS (shares)",
+  "title": "KFintech Shares Tax: Self Declaration by Non-Residents",
+  "url": "https://ris.kfintech.com/clientservices/investors/Templates/SelfDeclarationNRI.pdf",
+  "kind": "PDF",
+  "keywords": "nri tds tax exemption 15g 15h dividend"
+ },
+ {
+  "source": "KFintech",
+  "category": "Tax & TDS (shares)",
+  "title": "KFintech Shares Tax: Self Declaration by Residents",
+  "url": "https://ris.kfintech.com/clientservices/investors/Templates/Self%20declaration%20by%20Resident.pdf",
+  "kind": "PDF",
+  "keywords": "resident tds tax exemption 15g 15h dividend"
+ },
+ {
+  "source": "KFintech",
+  "category": "Tax & TDS (shares)",
+  "title": "KFintech Shares Tax: Self Declaration for DTAA Applicability",
+  "url": "https://ris.kfintech.com/clientservices/investors/Templates/Self%20declaration%20for%20DTAA%20applicability.pdf",
+  "kind": "PDF",
+  "keywords": "dtaa tax exemption 15g 15h dividend"
+ },
+ {
+  "source": "KFintech",
+  "category": "Tax & TDS (shares)",
+  "title": "KFintech Shares Tax: Declaration under Rule 203",
+  "url": "https://ris.kfintech.com/clientservices/investors/Templates/Declaration%20under%20Rule%20203.pdf",
+  "kind": "PDF",
+  "keywords": "rule 203 tax exemption 15g 15h dividend"
+ },
+ {
+  "source": "Stallion",
+  "category": "PMS (Stallion)",
+  "title": "Stallion Asset PMS Disclosure Document",
+  "url": "https://www.stallionasset.com/regulatory/SAPL_Disclosure_Document_21_09_2026.pdf",
+  "kind": "PDF",
+  "keywords": "disclosure pms"
+ },
+ {
+  "source": "Stallion",
+  "category": "PMS (Stallion)",
+  "title": "Stallion Asset PMS Investor Charter",
+  "url": "https://www.stallionasset.com/regulatory/INVESTOR_CHARTER_PMS_STALLION_(17).pdf",
+  "kind": "PDF",
+  "keywords": "charter pms"
+ },
+ {
+  "source": "Stallion",
+  "category": "PMS (Stallion)",
+  "title": "Stallion Asset PMS PMS Charges",
+  "url": "https://www.stallionasset.com/attach_sendgrid/Stallion%20Asset%20PMS%20Charges_July2025.pdf",
+  "kind": "PDF",
+  "keywords": "fees charges pms"
+ },
+ {
+  "source": "Stallion",
+  "category": "PMS (Stallion)",
+  "title": "Stallion Asset PMS page (account opening and withdrawal forms are issued by operations@stallionasset.com)",
+  "url": "https://www.stallionasset.com/pms",
+  "kind": "Page",
+  "keywords": "pms account opening"
+ }
+]

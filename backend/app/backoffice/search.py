@@ -7,12 +7,14 @@ stay out of search.
 """
 from __future__ import annotations
 
+import json
 import re
+from functools import lru_cache
 from collections.abc import Callable
 from typing import Any
 from urllib.parse import quote
 
-from app.data.loader import load_metrics
+from app.data.loader import data_dir, load_metrics
 from app.db import sqlite
 
 Hit = dict[str, Any]
@@ -127,6 +129,23 @@ def news(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
             "SELECT id, title FROM research_notes WHERE LOWER(title) LIKE ? ESCAPE '\\' OR LOWER(content) LIKE ? ESCAPE '\\' "
             "ORDER BY updated_at DESC LIMIT ?", (_like(q), _like(q), limit))
     ]
+    return out[:limit]
+
+
+@lru_cache(maxsize=1)
+def official_forms() -> list[dict[str, str]]:
+    """Official CAMS / KFintech (Karvy) forms from data/official_forms.json (rebuilt by scripts/build_official_forms.py)."""
+    return json.loads((data_dir().parent / "official_forms.json").read_text())
+
+
+@provider("forms", "Official forms")
+def forms(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
+    words = q.lower().split()
+    out = []
+    for f in official_forms():
+        hay = f"{f['title']} {f['source']} {f['category']} {f['keywords']} {'karvy' if f['source'] == 'KFintech' else ''}".lower()
+        if all(w in hay for w in words):
+            out.append(_hit("forms", f["kind"].lower(), f["url"], f["title"], f"{f['source']} · {f['category']} · {f['kind']}", f["url"], external=True))
     return out[:limit]
 
 

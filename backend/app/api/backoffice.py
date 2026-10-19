@@ -1439,6 +1439,12 @@ class BackofficeOperationsPdfRequest(BaseModel):
     second_signature_base64: str | None = None
 
 
+@router.get("/operations/official-forms")
+def backoffice_official_forms(staff: Annotated[dict, Depends(require_staff)]):
+    """Official CAMS / KFintech (Karvy) forms catalogue (same data the universal search reads)."""
+    return {"data": universal_search.official_forms()}
+
+
 @router.post("/operations/form-pdf")
 async def generate_operations_form_pdf(
     req: BackofficeOperationsPdfRequest,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   OPERATIONS_FORMS,
   FORM_CATEGORIES,
@@ -8,7 +8,8 @@ import {
   FormRepository,
   FormCategory,
 } from "@/lib/operationsForms";
-import { OFFICIAL_FORMS } from "@/lib/officialForms";
+import { getOfficialForms } from "@/lib/backoffice";
+import type { OfficialForm } from "@/lib/officialForms";
 import FormEditorModal from "@/components/operations/FormEditorModal";
 
 interface DownloadActivity {
@@ -65,12 +66,24 @@ export default function OperationsPage() {
   }, [selectedRepo, selectedCategory, searchQuery]);
 
   // Counts for repository badges
+  const [allOfficial, setAllOfficial] = useState<OfficialForm[]>([]);
+  useEffect(() => {
+    getOfficialForms().then(setAllOfficial).catch(() => undefined);
+  }, []);
   const officialForms = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return OFFICIAL_FORMS.filter(
-      (f) => (selectedRepo === "ALL" || f.repository === selectedRepo) && (!q || `${f.title} ${f.repository}`.toLowerCase().includes(q)),
-    );
-  }, [selectedRepo, searchQuery]);
+    const words = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+    const src = { CAMS: "CAMS", Carvy: "KFintech", Stallion: "Stallion" } as const;
+    return allOfficial.filter((f) => {
+      if (selectedRepo !== "ALL" && f.source !== src[selectedRepo]) return false;
+      const hay = `${f.title} ${f.source} ${f.category} ${f.keywords} ${f.source === "KFintech" ? "karvy" : ""}`.toLowerCase();
+      return words.every((w) => hay.includes(w));
+    });
+  }, [allOfficial, selectedRepo, searchQuery]);
+  const officialByCategory = useMemo(() => {
+    const groups: Record<string, OfficialForm[]> = {};
+    officialForms.forEach((f) => (groups[f.category] ??= []).push(f));
+    return Object.entries(groups);
+  }, [officialForms]);
 
   const camsCount = useMemo(() => OPERATIONS_FORMS.filter((f) => f.repository === "CAMS").length, []);
   const carvyCount = useMemo(() => OPERATIONS_FORMS.filter((f) => f.repository === "Carvy").length, []);
@@ -410,31 +423,40 @@ export default function OperationsPage() {
         </div>
       )}
 
-      {/* Official forms: straight from the CAMS / KFintech / Stallion sites */}
+      {/* Official forms: straight from the CAMS / KFintech (Karvy) / Stallion sites */}
       {officialForms.length > 0 && (
-        <div className="bg-[#FFFFFF] dark:bg-[#10151C] rounded-2xl border border-[#E4E9EF] dark:border-[#2B3644] p-4 space-y-3">
+        <div className="bg-[#FFFFFF] dark:bg-[#10151C] rounded-2xl border border-[#E4E9EF] dark:border-[#2B3644] p-4 space-y-4">
           <div>
-            <h3 className="text-[13px] font-bold text-[#172033] dark:text-[#EDF2F7]">Official Forms (download)</h3>
+            <h3 className="text-[13px] font-bold text-[#172033] dark:text-[#EDF2F7]">
+              Official Forms ({officialForms.length})
+            </h3>
             <p className="text-[11px] text-[#536176] dark:text-[#A8B4C4]">
-              Blank forms published by the RTA or PMS, always the current version. Follows the repository and search filters above.
+              Every CAMS and KFintech (Karvy) form, linked from the publisher so it is always the current version. Also searchable from the main search bar. Follows the repository and search filters above.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {officialForms.map((f) => (
-              <a
-                key={f.url}
-                href={f.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64] dark:hover:border-[#75E1CE] text-[12px] text-[#172033] dark:text-[#EDF2F7] transition"
-              >
-                <span className="truncate" title={f.title}>{f.title}</span>
-                <span className="shrink-0 text-[10px] font-bold uppercase text-[#006F64] dark:text-[#75E1CE]">
-                  {f.kind === "PDF" ? "Download PDF" : "Open page"}
-                </span>
-              </a>
-            ))}
-          </div>
+          {officialByCategory.map(([category, items]) => (
+            <div key={category} className="space-y-1.5">
+              <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
+                {category} · {items.length}
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {items.map((f) => (
+                  <a
+                    key={f.url}
+                    href={f.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] hover:border-[#006F64] dark:hover:border-[#75E1CE] text-[12px] text-[#172033] dark:text-[#EDF2F7] transition"
+                  >
+                    <span className="truncate" title={f.title}>{f.title}</span>
+                    <span className="shrink-0 text-[10px] font-bold uppercase text-[#006F64] dark:text-[#75E1CE]">
+                      {f.kind === "PDF" ? "Download PDF" : "Open page"}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

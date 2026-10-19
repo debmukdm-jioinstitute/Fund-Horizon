@@ -13,6 +13,7 @@ COPY backend/scripts backend/scripts
 COPY data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv
 COPY data/fundhorizon_mf_rag_dataset/nav_monthly data/fundhorizon_mf_rag_dataset/nav_monthly
 COPY data/factsheet_links data/factsheet_links
+COPY data/official_forms.json data/official_forms.json
 COPY data/mf_manager_profiles.json data/mf_manager_profiles.json
 COPY data/mf_managers_seed.csv data/mf_managers_seed.csv
 COPY data/India_MF_Static_Reference_Consolidated.csv.gz data/India_MF_Static_Reference_Consolidated.csv.gz

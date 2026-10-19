@@ -338,6 +338,20 @@ export interface FundDetail {
   nav_monthly: FundNavPoint[];
 }
 
+/** One AMFI/SEBI reference record (scheme, AMC, benchmark, provenance, ...): raw snapshot fields. */
+export type MfRefRow = Record<string, string | null>;
+
+/** Everything the AMFI/SEBI static snapshot holds for one scheme (GET /api/funds/{code}/reference). */
+export interface FundReference {
+  scheme: MfRefRow;
+  amc: MfRefRow | null;
+  managers: MfRefRow[];
+  benchmarks: MfRefRow[];
+  category: MfRefRow | null;
+  manager_changes: MfRefRow[];
+  provenance: MfRefRow[];
+}
+
 export interface RollingStats {
   median: number | null;
   min: number | null;

@@ -238,6 +238,18 @@ def fund_detail(scheme_code: str, request: Request):
     })
 
 
+@router.get("/api/funds/{scheme_code}/reference")
+def fund_reference(scheme_code: str):
+    """Full AMFI/SEBI reference detail for a scheme: scheme master fields, AMC, fund managers,
+    benchmarks, SEBI category definition, manager changes and field provenance (public, no auth)."""
+    from app.backoffice.mf_reference import scheme_reference
+
+    out = scheme_reference(scheme_code)
+    if out is None:
+        raise HTTPException(404, "Scheme not found in reference snapshot")
+    return clean(out)
+
+
 @router.get("/api/funds/{scheme_code}/analytics")
 def fund_analytics(scheme_code: str, request: Request):
     """Deep analytics for a fund: CAGR, rolling returns, SIP XIRR, drawdown, and capture ratios."""

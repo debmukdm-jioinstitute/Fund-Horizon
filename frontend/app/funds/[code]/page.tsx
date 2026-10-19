@@ -1,10 +1,12 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 import { AmcName } from "@/components/BrandLogo";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import { notFound } from "next/navigation";
-import { getFundAnalyticsServer, getFundDetailServer } from "@/lib/api";
+import { getFundAnalyticsServer, getFundDetailServer, getFundReferenceServer } from "@/lib/api";
+import type { FundReference, MfRefRow } from "@/lib/types";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
 import ExplainModal from "@/components/ExplainModal";
 import {
@@ -15,6 +17,158 @@ import {
 } from "@/components/FundCharts";
 import { computeDrawdownEpisodes } from "@/lib/drawdown";
 import InfoTip from "@/components/InfoTip";
+
+/* ---- AMFI/SEBI reference detail (everything the reference snapshot holds for a scheme) ---- */
+const REF_ACRONYMS: Record<string, string> = {
+  url: "URL", tri: "TRI", aum: "AUM", ter: "TER", isin: "ISIN", amc: "AMC", amfi: "AMFI", sebi: "SEBI",
+  ssd: "SSD", id: "ID", cio: "CIO", ceo: "CEO", inr: "INR", pct: "%", nav: "NAV", idcw: "IDCW",
+  sid: "SID", fof: "FoF", sr: "SR",
+};
+const refLabel = (c: string) =>
+  c
+    .split("_")
+    .map((w, i) => REF_ACRONYMS[w] ?? (i === 0 ? w[0].toUpperCase() + w.slice(1) : w))
+    .join(" ");
+const REF_META = new Set([
+  "source_url", "as_of_date", "notes", "record_number", "field_group", "match_method", "verification_level",
+]);
+const isRefUrl = (v: string) => /^https?:\/\//.test(v);
+
+function RefValue({ v }: { v: string }) {
+  const parts = v.split(/ ?[;|] ?/).filter(Boolean);
+  if (parts.length > 1 && parts.every((p) => isRefUrl(p))) {
+    return (
+      <span className="flex flex-col gap-0.5">
+        {parts.map((u) => (
+          <a key={u} href={u} target="_blank" rel="noreferrer" className="text-teal-700 hover:underline break-all">
+            {u}
+          </a>
+        ))}
+      </span>
+    );
+  }
+  if (isRefUrl(v))
+    return (
+      <a href={v} target="_blank" rel="noreferrer" className="text-teal-700 hover:underline break-all">
+        {v}
+      </a>
+    );
+  return <span className="break-words">{v}</span>;
+}
+
+function RefFields({ row }: { row: MfRefRow }) {
+  const entries = Object.entries(row).filter(([, v]) => v);
+  const main = entries.filter(([k]) => !REF_META.has(k));
+  const meta = entries.filter(([k]) => REF_META.has(k));
+  return (
+    <>
+      <dl className="grid grid-cols-1 gap-x-6 gap-y-1.5 sm:grid-cols-2">
+        {main.map(([k, v]) => (
+          <div key={k} className="border-b border-navy-100 pb-1.5">
+            <dt className="text-[11px] uppercase tracking-wide text-navy-600">{refLabel(k)}</dt>
+            <dd className="text-sm text-navy-950" data-testid={`ref-${k}`}>
+              <RefValue v={v as string} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {meta.length > 0 && (
+        <details className="mt-2 text-xs">
+          <summary className="cursor-pointer select-none text-navy-600">Source &amp; notes</summary>
+          <dl className="mt-1.5 grid grid-cols-1 gap-x-6 gap-y-1.5 sm:grid-cols-2">
+            {meta.map(([k, v]) => (
+              <div key={k} className="border-b border-navy-100 pb-1.5">
+                <dt className="text-[11px] uppercase tracking-wide text-navy-600">{refLabel(k)}</dt>
+                <dd className="text-sm text-navy-950">
+                  <RefValue v={v as string} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      )}
+    </>
+  );
+}
+
+function RefSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="border-t border-navy-100 pt-3 first:border-0 first:pt-0">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-teal-800">{title}</h3>
+      <div className="mt-2 space-y-3">{children}</div>
+    </section>
+  );
+}
+
+/** Consolidated AMFI/SEBI reference detail: scheme, AMC, fund managers, benchmarks, category, changes, provenance. */
+function ReferenceDetails({ reference }: { reference: FundReference }) {
+  return (
+    <section className="card space-y-4" data-testid="fund-reference">
+      <div>
+        <h2 className="text-lg font-bold text-navy-950">Scheme & Fund Manager Details</h2>
+        <p className="text-xs text-navy-700 mt-1">
+          AMFI / SEBI static reference snapshot (15 Oct 2026). Blank means unverified, never estimated.
+        </p>
+      </div>
+      <RefSection title="Scheme">
+        <RefFields row={reference.scheme} />
+      </RefSection>
+      {reference.amc && (
+        <RefSection title="Asset management company">
+          <RefFields row={reference.amc} />
+        </RefSection>
+      )}
+      {reference.managers.length > 0 && (
+        <RefSection title={`Fund managers (${reference.managers.length})`}>
+          {reference.managers.map((m, i) => (
+            <div key={i} className="rounded-lg bg-navy-50 p-3">
+              <p className="text-sm font-semibold text-navy-950">{m.full_name ?? m.manager_id ?? "—"}</p>
+              <div className="mt-1.5">
+                <RefFields
+                  row={{
+                    designation: m.designation,
+                    role: m.role_as_stated,
+                    start_date: m.start_date_as_stated,
+                    end_date: m.end_date_as_stated,
+                    manager_id: m.manager_id,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </RefSection>
+      )}
+      {reference.benchmarks.map((b, i) => (
+        <RefSection key={i} title="Benchmark">
+          <RefFields row={b} />
+        </RefSection>
+      ))}
+      {reference.category && (
+        <RefSection title="SEBI category definition">
+          <RefFields row={reference.category} />
+        </RefSection>
+      )}
+      {reference.manager_changes.length > 0 && (
+        <RefSection title="Manager changes">
+          {reference.manager_changes.map((c, i) => (
+            <div key={i} className="rounded-lg border border-navy-100 p-3">
+              <RefFields row={c} />
+            </div>
+          ))}
+        </RefSection>
+      )}
+      {reference.provenance.length > 0 && (
+        <RefSection title="Field provenance">
+          {reference.provenance.map((p, i) => (
+            <div key={i} className="rounded-lg border border-navy-100 p-3">
+              <RefFields row={p} />
+            </div>
+          ))}
+        </RefSection>
+      )}
+    </section>
+  );
+}
 
 interface PageProps {
   params: Promise<{ code: string }>;
@@ -34,9 +188,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function FundDetailPage({ params }: PageProps) {
   const { code } = await params;
-  const [detail, analytics] = await Promise.all([
+  const [detail, analytics, reference] = await Promise.all([
     getFundDetailServer(code),
     getFundAnalyticsServer(code),
+    getFundReferenceServer(code),
   ]);
 
   if (!detail || !analytics) {
@@ -142,6 +297,9 @@ export default async function FundDetailPage({ params }: PageProps) {
           </div>
         </div>
       </header>
+
+      {/* Consolidated AMFI/SEBI reference detail: everything on the mf-reference snapshot */}
+      {reference && <ReferenceDetails reference={reference} />}
 
       {/* NAV History Chart */}
       <section className="card space-y-4">

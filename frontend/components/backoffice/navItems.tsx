@@ -40,16 +40,6 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/backoffice/mf-reference",
-    label: "MF reference",
-    description: "AMFI/SEBI scheme, AMC, fund manager, benchmark and category master data",
-    icon: (p) => (
-      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 7c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2zm0 0v10c0 1.1 3.6 2 8 2s8-.9 8-2V7M4 12c0 1.1 3.6 2 8 2s8-.9 8-2" />
-      </svg>
-    ),
-  },
-  {
     href: "/backoffice/macro",
     label: "Macro & yields",
     description: "RBI policy rates, G-Sec sovereign yield curve, global central bank benchmarks",

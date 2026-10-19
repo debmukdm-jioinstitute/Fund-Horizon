@@ -7,6 +7,7 @@ import type {
   ExplainResponse,
   FundAnalytics,
   FundDetail,
+  FundReference,
   LoginCustomerBody,
   Meta,
   MyPlan,
@@ -135,6 +136,17 @@ export async function getFundDetailServer(code: string): Promise<FundDetail | nu
     const res = await fetch(`${SERVER_API_URL}/api/funds/${code}`, { cache: "no-store", headers });
     if (res.status === 404) return null;
     return res.ok ? ((await res.json()) as FundDetail) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Server-side fund reference fetch (AMFI/SEBI snapshot detail for one scheme). */
+export async function getFundReferenceServer(code: string): Promise<FundReference | null> {
+  try {
+    const res = await fetch(`${SERVER_API_URL}/api/funds/${code}/reference`, { cache: "no-store" });
+    if (res.status === 404) return null;
+    return res.ok ? ((await res.json()) as FundReference) : null;
   } catch {
     return null;
   }

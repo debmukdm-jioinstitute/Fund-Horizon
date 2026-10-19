@@ -18,6 +18,34 @@ def test_load_and_query(tmp_path, monkeypatch):
     assert total == 1 and rows[0]["scheme_name"] == "Alpha Fund" and "amc_name" not in cols
 
 
+def test_public_fund_reference_endpoint(client):
+    """GET /api/funds/{code}/reference is public (no staff auth) and returns the full snapshot payload."""
+    from app.backoffice import mf_reference
+
+    mf_reference.ensure_loaded()  # bundled snapshot must be in the (fresh test) DB
+    conn = mf_reference._conn()
+    try:
+        codes = [r[0] for r in conn.execute(
+            f'SELECT amfi_scheme_code FROM "{mf_reference._tname("scheme_master")}" LIMIT 5')]
+    finally:
+        conn.close()
+    assert codes, "bundled snapshot must contain schemes"
+    for code in codes:
+        r = client.get(f"/api/funds/{code}/reference")
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["scheme"]["amfi_scheme_code"] == code
+        assert set(body) == {"scheme", "amc", "managers", "benchmarks", "category", "manager_changes", "provenance"}
+    assert client.get("/api/funds/000000/reference").status_code == 404
+
+
+def test_staff_scheme_endpoint_still_requires_auth(client):
+    from app.backoffice.mf_reference import ensure_loaded
+
+    ensure_loaded()
+    assert client.get("/api/backoffice/mf-reference/summary").status_code == 401
+
+
 def test_search_dedupes_per_period_rows(monkeypatch):
     from app.backoffice import search
 

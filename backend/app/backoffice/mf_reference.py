@@ -162,8 +162,10 @@ def table_rows(
     return {"columns": cols, "rows": rows, "total": total, "limit": limit, "offset": offset}
 
 
-@router.get("/schemes/{scheme_code}")
-def scheme_detail(scheme_code: str, staff: Annotated[dict, Depends(require_staff)]):
+def scheme_reference(scheme_code: str) -> dict[str, Any] | None:
+    """Full snapshot payload for one scheme: scheme, AMC, fund managers, benchmarks, SEBI category,
+    manager changes and field provenance. None when the code is not in the snapshot.
+    Shared by the staff backoffice endpoint and the public /api/funds/{code}/reference route."""
     conn = _conn()
     try:
         def rows(table: str, where: str, args: tuple) -> list[dict]:
@@ -173,7 +175,7 @@ def scheme_detail(scheme_code: str, staff: Annotated[dict, Depends(require_staff
 
         sch = rows("scheme_master", "amfi_scheme_code = ?", (scheme_code,))
         if not sch:
-            raise HTTPException(404, "Scheme not found in reference snapshot")
+            return None
         s = sch[0]
         amc = rows("amc_master", "amc_id = ?", (s.get("amc_id"),))
         maps = rows("manager_scheme_map", "amfi_scheme_code = ?", (scheme_code,))
@@ -192,6 +194,14 @@ def scheme_detail(scheme_code: str, staff: Annotated[dict, Depends(require_staff
         }
     finally:
         conn.close()
+
+
+@router.get("/schemes/{scheme_code}")
+def scheme_detail(scheme_code: str, staff: Annotated[dict, Depends(require_staff)]):
+    out = scheme_reference(scheme_code)
+    if out is None:
+        raise HTTPException(404, "Scheme not found in reference snapshot")
+    return out
 
 
 @router.get("/managers/{manager_id}")

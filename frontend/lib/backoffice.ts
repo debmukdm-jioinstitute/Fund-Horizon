@@ -1616,41 +1616,5 @@ export const mfScreenerCsvUrl = (o: MfScreenerQuery): string => {
   return resolveApiUrl(`${API_URL}/api/backoffice/mutual-funds/screener?${q.toString()}`);
 };
 
-// ---- AMFI/SEBI static MF reference snapshot ----
-export type MfRefRow = Record<string, string | null>;
-export interface MfRefSummary {
-  loaded: boolean;
-  tables: Record<string, number>;
-  categories?: string[];
-  plans?: string[];
-  amcs?: { amc_id: string; amc_name: string }[];
-}
-export interface MfRefPage {
-  columns: string[];
-  rows: MfRefRow[];
-  total: number;
-}
-export interface MfRefSchemeDetail {
-  scheme: MfRefRow;
-  amc: MfRefRow | null;
-  managers: MfRefRow[];
-  benchmarks: MfRefRow[];
-  category: MfRefRow | null;
-  manager_changes: MfRefRow[];
-  provenance: MfRefRow[];
-}
-const MFREF = "/api/backoffice/mf-reference";
-export const getMfRefSummary = () => boFetch<MfRefSummary>(`${MFREF}/summary`);
-export const mfRefTableUrl = (table: string, p: Record<string, string | number | undefined>) => {
-  const q = new URLSearchParams();
-  Object.entries(p).forEach(([k, v]) => v !== undefined && v !== "" && q.set(k, String(v)));
-  return `${MFREF}/tables/${table}?${q.toString()}`;
-};
-export const getMfRefTable = (table: string, p: Record<string, string | number | undefined>, signal?: AbortSignal) =>
-  boFetch<MfRefPage>(mfRefTableUrl(table, p), { signal });
-export const mfRefCsvUrl = (table: string, p: Record<string, string | number | undefined>) =>
-  resolveApiUrl(`${API_URL}${mfRefTableUrl(table, { ...p, format: "csv" })}`);
-export const getMfRefScheme = (code: string) => boFetch<MfRefSchemeDetail>(`${MFREF}/schemes/${encodeURIComponent(code)}`);
-export const getMfRefManager = (id: string) =>
-  boFetch<{ manager: MfRefRow; schemes: MfRefRow[] }>(`${MFREF}/managers/${encodeURIComponent(id)}`);
-export type MfRefManagerDetail = { manager: MfRefRow; schemes: MfRefRow[] };
+// AMFI/SEBI reference data is served from the public fund endpoint:
+// GET /api/funds/{scheme_code}/reference (see lib/api.ts getFundReferenceServer).

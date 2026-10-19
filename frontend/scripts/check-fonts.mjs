@@ -9,6 +9,9 @@ import { join, relative } from "node:path";
 const ROOTS = ["app", "components", "lib", "public"];
 const EXTRA_FILES = ["tailwind.config.ts", "package.json"];
 const SCAN = /\.(tsx?|jsx?|css|mjs|html|svg)$/;
+// Vendored third-party runtime copied in at build time (see scripts/copy-pdf-worker.mjs). It renders
+// nothing on the site: pdf.js only uses these strings for form-field text in the PDF editor.
+const VENDOR = new Set(["public/pdf.worker.min.mjs"]);
 
 const problems = [];
 const report = (file, line, msg, text) => problems.push(`${file}:${line}: ${msg}: ${text.trim().slice(0, 140)}`);
@@ -63,7 +66,7 @@ const walk = (d) => {
   for (const f of readdirSync(d)) {
     const p = join(d, f);
     if (statSync(p).isDirectory()) walk(p);
-    else if (SCAN.test(f)) checkFile(p);
+    else if (SCAN.test(f) && !VENDOR.has(relative(".", p).replaceAll("\\", "/"))) checkFile(p);
   }
 };
 

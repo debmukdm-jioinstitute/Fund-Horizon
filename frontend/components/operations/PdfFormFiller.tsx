@@ -101,7 +101,7 @@ export default function PdfFormFiller({ source, onClose, onDownloaded }: { sourc
             });
         bytes.current = blob;
         const pdfjs = await import("pdfjs-dist");
-        pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
+        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"; // copied into public/ by scripts/copy-pdf-worker.mjs
         const d = await pdfjs.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
         if (d.numPages > MAX_PAGES) throw new Error(`This PDF has ${d.numPages} pages; the editor handles up to ${MAX_PAGES}.`);
         const sizes: { w: number; h: number; rotated: boolean }[] = [];

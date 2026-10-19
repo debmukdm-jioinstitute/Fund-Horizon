@@ -53,12 +53,57 @@ def _full_name(annot: Any) -> str:
     return ".".join(reversed(parts))
 
 
+def _draw_field(c: canvas.Canvas, e: dict[str, Any], x: float, by: float, w: float, h: float) -> None:
+    """A value typed into a form field: drawn inside the field's own rectangle so it lines up with the printed boxes.
+
+    Comb fields (``comb`` = number of cells) get one character centred in each cell. Any printed hint text under the
+    value ("First Name", "D D M M Y Y Y Y") is covered with white, inset so the box borders and dividers survive.
+    """
+    text = str(e.get("text") or "")[:2000]
+    if not text:
+        return
+    font = fonts.BODY_FONT
+    size = min(max(float(e.get("size") or 0) or min(11.0, h * 0.7), 4), 72)
+    c.setFillColorRGB(*_rgb(e.get("color")))
+    comb = int(e.get("comb") or 0)
+    if comb > 0:
+        cell = w / comb
+        size = min(size, cell * 0.9)
+        c.setFont(font, size)
+        asc, desc = pdfmetrics.getAscentDescent(font, size)
+        base = by + h / 2 - (asc + desc) / 2
+        for i, ch in enumerate(text[:comb]):
+            c.saveState(); c.setFillColorRGB(1, 1, 1); c.rect(x + i * cell + 1, by + 1, cell - 2, h - 2, stroke=0, fill=1); c.restoreState()
+            c.setFillColorRGB(*_rgb(e.get("color")))
+            c.drawCentredString(x + (i + 0.5) * cell, base, ch)
+        return
+    c.saveState(); c.setFillColorRGB(1, 1, 1); c.rect(x + 0.8, by + 0.8, w - 1.6, h - 1.6, stroke=0, fill=1); c.restoreState()
+    c.setFillColorRGB(*_rgb(e.get("color")))
+    c.setFont(font, size)
+    asc, desc = pdfmetrics.getAscentDescent(font, size)
+    if e.get("multiline"):
+        line = size * 1.2
+        for i, t in enumerate(text.split("\n")):
+            c.drawString(x + 2, by + h - 2 - asc - i * line, t)
+        return
+    base = by + h / 2 - (asc + desc) / 2
+    align = int(e.get("align") or 0)
+    if align == 1:
+        c.drawCentredString(x + w / 2, base, text)
+    elif align == 2:
+        c.drawRightString(x + w - 2, base, text)
+    else:
+        c.drawString(x + 2, base, text)
+
+
 def _draw(c: canvas.Canvas, e: dict[str, Any], page_h: float) -> None:
     """Draw one edit. x/y/w/h are top-left based; reportlab is bottom-left based."""
     kind = e.get("type")
     x, y, w, h = (float(e.get(k) or 0) for k in ("x", "y", "w", "h"))
     by = page_h - y - h  # bottom edge
-    if kind in ("text", "date"):
+    if kind == "field":
+        _draw_field(c, e, x, by, w, h)
+    elif kind in ("text", "date"):
         size = min(max(float(e.get("size") or 11), 4), 72)
         font = fonts.BOLD_FONT if e.get("bold") else fonts.BODY_FONT
         asc, desc = pdfmetrics.getAscentDescent(font, size)

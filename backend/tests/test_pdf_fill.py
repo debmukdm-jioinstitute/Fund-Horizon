@@ -71,3 +71,28 @@ def test_endpoints_proxy_catalogue_only_and_fill_an_upload(client):
     assert 'my_form.pdf' in r.headers["content-disposition"]
     bad = client.post("/api/backoffice/operations/pdf-fill", files={"file": ("f.pdf", b"nope", "application/pdf")}, data={"edits": "[]"})
     assert bad.status_code == 422
+
+
+def test_comb_field_puts_one_character_in_each_cell_and_covers_hints():
+    # a 120pt wide, 14pt tall field with 8 cells (e.g. a DD MM YYYY date box)
+    edit = {"page": 0, "type": "field", "x": 100, "y": 50, "w": 120, "h": 14, "text": "16091999", "comb": 8, "size": 9}
+    page = PdfReader(io.BytesIO(apply_edits(_pdf(), [edit]))).pages[0]
+    xs: list[float] = []
+
+    def visit(text, cm, tm, font_dict, font_size):
+        if text.strip() and text.strip() in "16091999":
+            xs.append(tm[4] * cm[0] + cm[4])
+
+    page.extract_text(visitor_text=visit)
+    assert len(xs) == 8
+    gaps = [b - a for a, b in zip(xs, xs[1:])]
+    assert all(abs(g - 15.0) < 1.0 for g in gaps), gaps  # 120 / 8 cells
+    assert 100 < xs[0] < 115 and xs[-1] < 220
+
+
+def test_field_text_respects_alignment_inside_its_rectangle():
+    edit = {"page": 0, "type": "field", "x": 100, "y": 50, "w": 100, "h": 14, "text": "Centre", "align": 1}
+    page = PdfReader(io.BytesIO(apply_edits(_pdf(), [edit]))).pages[0]
+    seen = []
+    page.extract_text(visitor_text=lambda t, cm, tm, f, s: seen.append((t, tm[4] * cm[0] + cm[4])) if "Centre" in t else None)
+    assert seen and 125 < seen[0][1] < 160  # starts left of the middle (150), ends right of it

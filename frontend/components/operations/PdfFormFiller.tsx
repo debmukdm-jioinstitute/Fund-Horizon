@@ -10,14 +10,15 @@ import SignaturePad from "./SignaturePad";
 export type PdfSource = { kind: "url"; url: string; title: string } | { kind: "file"; file: File; title: string };
 
 type Tool = "select" | "text" | "date" | "check" | "cross" | "dot" | "circle" | "signature" | "initials" | "image" | "whiteout";
-type ItemType = "text" | "date" | "check" | "cross" | "dot" | "circle" | "signature" | "image" | "whiteout";
+type ItemType = "field" | "text" | "date" | "check" | "cross" | "dot" | "circle" | "signature" | "image" | "whiteout";
 interface Item {
   id: number; page: number; type: ItemType; x: number; y: number; w: number; h: number;
   text?: string; size?: number; bold?: boolean; color?: string; dataUrl?: string;
+  align?: number; comb?: number; multiline?: boolean;
 }
 interface Widget {
   page: number; name: string; kind: "text" | "check" | "radio" | "choice"; x: number; y: number; w: number; h: number;
-  multiline: boolean; value: string; on?: string; options: { value: string; label: string }[];
+  multiline: boolean; comb: number; align: number; fontSize: number; value: string; on?: string; options: { value: string; label: string }[];
 }
 type Values = Record<string, string | boolean>;
 interface Snapshot { items: Item[]; values: Values }
@@ -116,7 +117,7 @@ export default function PdfFormFiller({ source, onClose, onDownloaded }: { sourc
             const kind = a.fieldType === "Tx" ? "text" : a.fieldType === "Ch" ? "choice" : a.radioButton ? "radio" : "check";
             found.push({
               page: n - 1, name: a.fieldName, kind, x: Math.min(x1, x2), y: Math.min(y1, y2), w: Math.abs(x2 - x1), h: Math.abs(y2 - y1),
-              multiline: !!a.multiLine, value: Array.isArray(a.fieldValue) ? String(a.fieldValue[0] ?? "") : String(a.fieldValue ?? ""),
+              multiline: !!a.multiLine, comb: a.comb && a.maxLen ? Number(a.maxLen) : 0, align: Number(a.textAlignment ?? 0), fontSize: Number(a.defaultAppearanceData?.fontSize ?? 0), value: Array.isArray(a.fieldValue) ? String(a.fieldValue[0] ?? "") : String(a.fieldValue ?? ""),
               on: kind === "radio" ? String(a.buttonValue) : String(a.exportValue ?? "Yes"),
               options: (a.options ?? []).map((o: { exportValue: string; displayValue: string }) => ({ value: o.exportValue, label: o.displayValue })),
             });
@@ -249,8 +250,10 @@ export default function PdfFormFiller({ source, onClose, onDownloaded }: { sourc
         if (w.kind === "check" && v) fromFields.push({ page: w.page, type: "check", x: w.x, y: w.y, w: w.w, h: w.h, color: "#0B2545" });
         else if (w.kind === "radio" && v === w.on) fromFields.push({ page: w.page, type: "dot", x: w.x, y: w.y, w: w.w, h: w.h, color: "#0B2545" });
         else if ((w.kind === "text" || w.kind === "choice") && v) {
-          const sz = Math.min(11, Math.max(6, w.h * 0.7));
-          fromFields.push({ page: w.page, type: "text", x: w.x + 2, y: w.y + (w.h - sz * 1.2) / 2, w: w.w, h: sz * 1.2, text: String(v), size: sz, color: "#0B2545" });
+          fromFields.push({
+            page: w.page, type: "field", x: w.x, y: w.y, w: w.w, h: w.h, text: String(v), size: w.fontSize || undefined,
+            align: w.align, comb: w.comb, multiline: w.multiline, color: "#0B2545",
+          });
         }
       }
       const edits = [...fromFields, ...items.map((it) => ({ ...it, id: undefined }))]; // JSON drops the undefined id
@@ -352,13 +355,28 @@ export default function PdfFormFiller({ source, onClose, onDownloaded }: { sourc
                   const pos = { left: w.x * zoom, top: w.y * zoom, width: w.w * zoom, height: w.h * zoom };
                   const base = "absolute bg-[#BFDBFE]/50 hover:bg-[#BFDBFE]/80 focus:bg-[#BFDBFE]/90 outline-none border border-[#60A5FA]/60 text-[#0B2545]";
                   const v = values[w.name];
-                  const font = { fontSize: Math.min(11, Math.max(6, w.h * 0.7)) * zoom };
+                  const font = { fontSize: (w.fontSize || Math.min(11, Math.max(6, w.h * 0.7))) * zoom, textAlign: (["left", "center", "right"] as const)[w.align] ?? "left" };
                   if (w.kind === "check" || w.kind === "radio") {
                     const on = w.kind === "check" ? v === true : v === w.on;
                     return <button key={i} type="button" aria-label={w.name} aria-pressed={on} style={pos} className={base} onClick={() => setValue(w.name, w.kind === "check" ? !on : on ? "" : String(w.on))}>{on ? (w.kind === "check" ? "✓" : "●") : ""}</button>;
                   }
                   if (w.kind === "choice") {
                     return <select key={i} aria-label={w.name} style={{ ...pos, ...font }} className={base} value={String(v ?? "")} onChange={(e) => setValue(w.name, e.target.value)}><option value="" />{w.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select>;
+                  }
+                  if (w.kind === "text" && w.comb > 0) {
+                    // one character per printed cell, exactly where the download will draw it
+                    const val = String(v ?? "").slice(0, w.comb);
+                    const cell = (w.w * zoom) / w.comb;
+                    return (
+                      <div key={i} style={pos} className={`${base} p-0 overflow-hidden`}>
+                        <div className="absolute inset-0 flex pointer-events-none">
+                          {Array.from({ length: w.comb }, (_, k) => (
+                            <span key={k} style={{ width: cell, fontSize: Math.min(font.fontSize, cell * 0.9), lineHeight: `${w.h * zoom}px` }} className="text-center">{val[k] ?? ""}</span>
+                          ))}
+                        </div>
+                        <input aria-label={w.name} maxLength={w.comb} value={val} onChange={(e) => setValue(w.name, e.target.value)} className="absolute inset-0 h-full w-full bg-transparent outline-none text-transparent caret-[#0B2545]" style={{ fontSize: font.fontSize, paddingLeft: cell * 0.35 }} />
+                      </div>
+                    );
                   }
                   return w.multiline
                     ? <textarea key={i} aria-label={w.name} style={{ ...pos, ...font, resize: "none" }} className={base} value={String(v ?? "")} onChange={(e) => setValue(w.name, e.target.value)} />

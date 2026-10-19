@@ -117,6 +117,61 @@ SA="https://www.stallionasset.com"
 for n,u,kw in [("Disclosure Document","/regulatory/SAPL_Disclosure_Document_21_09_2026.pdf","disclosure"),("Investor Charter","/regulatory/INVESTOR_CHARTER_PMS_STALLION_(17).pdf","charter"),("PMS Charges","/attach_sendgrid/Stallion%20Asset%20PMS%20Charges_July2025.pdf","fees charges")]:
     a("Stallion","PMS (Stallion)","Stallion Asset PMS "+n,SA+u,kw+" pms")
 a("Stallion","PMS (Stallion)","Stallion Asset PMS page (account opening and withdrawal forms are issued by operations@stallionasset.com)",SA+"/pms","pms account opening")
+# ---- Fund houses (AMCs): links harvested from each AMC's own forms pages by scripts/harvest_amc_forms.mjs
+import re as _re
+AMC_PAGES = {  # the AMC's own forms page, always listed so a fund house is never empty
+    "ICICI Prudential": "https://www.icicipruamc.com/media-center/downloads?currentTabFilter=Forms",
+    "DSP": "https://www.dspim.com/downloads?category=Forms",
+    "WhiteOak Capital": "https://mf.whiteoakamc.com/resources/downloads/forms",
+    "Invesco India": "https://www.invescomutualfund.com/literature-forms/forms/application",
+    "Bandhan": "https://bandhanmutual.com/downloads/forms",
+    "Edelweiss": "https://www.edelweissmf.com/downloads/forms",
+    "Helios": "https://www.heliosmf.in/downloads",
+    "HSBC": "https://www.assetmanagement.hsbc.co.in/en/mutual-funds/investor-resources?Doc=forms",
+    "Mirae Asset": "https://www.miraeassetmf.co.in/downloads/forms",
+    "Nippon India": "https://mf.nipponindiaim.com/investor-service/downloads/forms",
+    "HDFC": "https://www.hdfcfund.com/investor-services/forms",
+    "Kotak": "https://www.kotakmf.com/Information/forms-and-downloads",
+}
+AMC_PDFS = [("ICICI Prudential", "Common Application Form (KIM cum application)", "https://www.icicipruamc.com/blob/downloads/Application-Forms/Common%20Application%20Form.pdf")]
+CATEGORY_RULES = [  # first match wins
+    ("Transmission & incapacitation", r"transmission|deceased|demise|karta|indemnity|affidavit|annexure|incapacit|qtp|deletion.of.name"),
+    ("KYC & compliance", r"kyc|fatca|crs|\bubo\b|\bnpo\b|declaration|self.cert|form.?121|\b121\b|\bpan\b|aadhaar"),
+    ("Nomination", r"nomin"),
+    ("Bank mandate & payments", r"bank|mandate|\botm\b|\bnach\b|payout|e.?payout|ifsc|banker|lien|third.party|pledge|idcw|unclaimed"),
+    ("SIP / STP / SWP", r"\bsip\b|\bstp\b|\bswp\b|systematic|\bdtp\b|step.?up|top.?up|pause|insure|salary|flex|smart|swing|golden|invest.?easy|simply.save|chhoti|dream|insta"),
+    ("Contact & folio updates", r"email|mobile|family|change.of|change.in|minor|guardian|major|name|signature|tax.status|consolidat|broker|folio|e.?service|dob|date.of.birth"),
+    ("Distributor", r"distributor|empanel|euin|\barn\b|ria\b|mfd"),
+    ("Transactions", r"transaction|slip|purchase|redemption|switch|non.?financial|non.?commercial|etf"),
+    ("Account opening", r"application|\bcaf\b|common"),
+]
+def _categorise(text):
+    for cat, rx in CATEGORY_RULES:
+        if _re.search(rx, text, _re.I): return cat
+    return "Other forms"
+def _pretty(title, url, amc):
+    from urllib.parse import unquote, urlparse
+    t = title.strip()
+    if not t or t.islower() or t.lower() in ("download form", "download", "read", "view"):  # lowercase = a URL slug, not a real title
+        t = unquote(urlparse(url).path.split("/")[-1]).rsplit(".", 1)[0]
+        t = _re.sub(r"[-_+]+", " ", t)
+        t = _re.sub(r"\s+", " ", _re.sub(r"\b(editable|final|v\d+)\b", "", t, flags=_re.I)).strip()
+        t = t.title()
+        for k, v in {"Sip": "SIP", "Stp": "STP", "Swp": "SWP", "Kyc": "KYC", "Ckyc": "CKYC", "Fatca": "FATCA", "Crs": "CRS", "Ubo": "UBO", "Npo": "NPO", "Otm": "OTM", "Nach": "NACH", "Euin": "EUIN", "Arn": "ARN", "Huf": "HUF", "Pan": "PAN", "Etf": "ETF", "Idcw": "IDCW", "Qtp": "QTP", "Hsbc": "HSBC", "Hdfc": "HDFC", "Dsp": "DSP", "Cam": "CAM", "Mfd": "MFD", "Ifsc": "IFSC", "Otbm": "OTBM", "Dtp": "DTP", "Caf": "CAF", "Mf": "MF"}.items():
+            t = _re.sub(rf"\b{k}\b", v, t)
+    t = _re.sub(r"^Download\s+", "", t)
+    return t if amc.split()[0].lower() in t.lower() else f"{amc}: {t}"
+amc_raw = Path(__file__).resolve().parents[2] / "data" / "amc_forms_raw.json"
+amc_entries = []
+for amc, page in AMC_PAGES.items():
+    amc_entries.append(dict(source="AMC", amc=amc, category="Forms page", title=f"{amc} Mutual Fund: official forms page", url=page, kind="Page", keywords="forms downloads"))
+for amc, title, url in AMC_PDFS:
+    amc_entries.append(dict(source="AMC", amc=amc, category=_categorise(title), title=f"{amc}: {title}", url=url, kind="PDF", keywords=""))
+if amc_raw.exists():
+    for amc, links in json.loads(amc_raw.read_text()).items():
+        for l in links:
+            title = _pretty(l["title"], l["url"], amc)
+            amc_entries.append(dict(source="AMC", amc=amc, category=_categorise(f'{l["title"]} {l["url"]}'), title=title, url=l["url"], kind="PDF", keywords=""))
 # dedupe
 seen=set(); out=[]
 for f in F:
@@ -138,4 +193,4 @@ with cf.ThreadPoolExecutor(12) as ex:
         (ok if good else bad).append((f,r))
 print(len(out),len(ok),len(bad))
 for f,r in bad: print("BAD",r,f["url"])
-json.dump([f for f,_ in ok],open(Path(__file__).resolve().parents[2]/"data"/"official_forms.json","w"),indent=1,ensure_ascii=False)
+json.dump([f for f,_ in ok] + [e for e in {x["url"]: x for x in amc_entries}.values()],open(Path(__file__).resolve().parents[2]/"data"/"official_forms.json","w"),indent=1,ensure_ascii=False)

@@ -48,3 +48,12 @@ def test_official_forms_searchable_by_karvy_alias():
     hits = run("karvy nomination", "forms", None)
     assert hits and all(h["external"] and h["href"].startswith("http") for h in hits)
     assert any("CAMS" in h["subtitle"] for h in run("cams bank mandate", "forms", None))
+
+
+def test_amc_forms_searchable_by_fund_house():
+    from app.backoffice.search import official_forms, run
+
+    amcs = {f["amc"] for f in official_forms() if f["source"] == "AMC"}
+    assert {"HSBC", "WhiteOak Capital", "Helios", "DSP", "Mirae Asset", "HDFC", "Nippon India"} <= amcs
+    hits = run("hsbc nomination", "forms", None)
+    assert hits and all("HSBC" in h["subtitle"] for h in hits)

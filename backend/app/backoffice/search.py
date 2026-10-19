@@ -143,9 +143,9 @@ def forms(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
     words = q.lower().split()
     out = []
     for f in official_forms():
-        hay = f"{f['title']} {f['source']} {f['category']} {f['keywords']} {'karvy' if f['source'] == 'KFintech' else ''}".lower()
+        hay = f"{f['title']} {f['source']} {f.get('amc', '')} {f['category']} {f['keywords']} {'karvy' if f['source'] == 'KFintech' else ''}".lower()
         if all(w in hay for w in words):
-            out.append(_hit("forms", f["kind"].lower(), f["url"], f["title"], f"{f['source']} · {f['category']} · {f['kind']}", f["url"], external=True))
+            out.append(_hit("forms", f["kind"].lower(), f["url"], f["title"], f"{f.get('amc') or f['source']} · {f['category']} · {f['kind']}", f["url"], external=True))
     return out[:limit]
 
 

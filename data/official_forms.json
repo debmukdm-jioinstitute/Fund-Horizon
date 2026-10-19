@@ -998,5 +998,3281 @@
   "url": "https://www.stallionasset.com/pms",
   "kind": "Page",
   "keywords": "pms account opening"
+ },
+ {
+  "source": "AMC",
+  "amc": "ICICI Prudential",
+  "category": "Forms page",
+  "title": "ICICI Prudential Mutual Fund: official forms page",
+  "url": "https://www.icicipruamc.com/media-center/downloads?currentTabFilter=Forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Forms page",
+  "title": "DSP Mutual Fund: official forms page",
+  "url": "https://www.dspim.com/downloads?category=Forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "Forms page",
+  "title": "WhiteOak Capital Mutual Fund: official forms page",
+  "url": "https://mf.whiteoakamc.com/resources/downloads/forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "Invesco India",
+  "category": "Forms page",
+  "title": "Invesco India Mutual Fund: official forms page",
+  "url": "https://www.invescomutualfund.com/literature-forms/forms/application",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "Bandhan",
+  "category": "Forms page",
+  "title": "Bandhan Mutual Fund: official forms page",
+  "url": "https://bandhanmutual.com/downloads/forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "Edelweiss",
+  "category": "Forms page",
+  "title": "Edelweiss Mutual Fund: official forms page",
+  "url": "https://www.edelweissmf.com/downloads/forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Forms page",
+  "title": "Helios Mutual Fund: official forms page",
+  "url": "https://www.heliosmf.in/downloads",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Forms page",
+  "title": "HSBC Mutual Fund: official forms page",
+  "url": "https://www.assetmanagement.hsbc.co.in/en/mutual-funds/investor-resources?Doc=forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Forms page",
+  "title": "Mirae Asset Mutual Fund: official forms page",
+  "url": "https://www.miraeassetmf.co.in/downloads/forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Forms page",
+  "title": "Nippon India Mutual Fund: official forms page",
+  "url": "https://mf.nipponindiaim.com/investor-service/downloads/forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Forms page",
+  "title": "HDFC Mutual Fund: official forms page",
+  "url": "https://www.hdfcfund.com/investor-services/forms",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "Kotak",
+  "category": "Forms page",
+  "title": "Kotak Mutual Fund: official forms page",
+  "url": "https://www.kotakmf.com/Information/forms-and-downloads",
+  "kind": "Page",
+  "keywords": "forms downloads"
+ },
+ {
+  "source": "AMC",
+  "amc": "ICICI Prudential",
+  "category": "Account opening",
+  "title": "ICICI Prudential: Common Application Form (KIM cum application)",
+  "url": "https://www.icicipruamc.com/blob/downloads/Application-Forms/Common%20Application%20Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Transactions",
+  "title": "DSP: Common Transaction Form Non Financial",
+  "url": "https://www.dspim.com/downloads/common-transaction-form-non-financial.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "KYC & compliance",
+  "title": "DSP: Form No. 121",
+  "url": "https://www.dspim.com/downloads/form-no.-121.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "KYC & compliance",
+  "title": "DSP: CKYC Individual Form",
+  "url": "https://www.dspim.com/downloads/ckyc-individual-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Transmission & incapacitation",
+  "title": "Change Of Broker Annexure A DSP",
+  "url": "https://www.dspim.com/downloads/change-of-broker-annexure-a_dsp.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "KYC & compliance",
+  "title": "DSP: NPO Declaration",
+  "url": "https://www.dspim.com/downloads/npo-declaration.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Distributor",
+  "title": "DSP: Distributor Empanelment Application",
+  "url": "https://www.dspim.com/downloads/distributor-empanelment-application.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Transactions",
+  "title": "DSP: Common Transaction Form",
+  "url": "https://www.dspim.com/downloads/common-transaction-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "KYC & compliance",
+  "title": "DSP: FATCA CRS And Additional KYC",
+  "url": "https://www.dspim.com/downloads/fatca-crs-and-additional-kyc.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Bank mandate & payments",
+  "title": "DSP: Bank Accounts Registration Form",
+  "url": "https://www.dspim.com/downloads/bank_accounts_registration_form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Contact & folio updates",
+  "title": "DSP: Change In Mode Of Holding Form Sflb",
+  "url": "https://www.dspim.com/downloads/change-in-mode-of-holding-form-sflb.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Bank mandate & payments",
+  "title": "DSP: Change Of Bank Mandate Form",
+  "url": "https://www.dspim.com/downloads/change_of_bank_mandate_form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Contact & folio updates",
+  "title": "DSP: Change Of Name Non Individuals Form",
+  "url": "https://www.dspim.com/downloads/change-of-name-non-individuals-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Contact & folio updates",
+  "title": "DSP: Change Of Guardian Form",
+  "url": "https://www.dspim.com/downloads/change-of-guardian-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "DSP",
+  "category": "Contact & folio updates",
+  "title": "DSP: Change Of Signature Form May23",
+  "url": "https://www.dspim.com/downloads/change-of-signature-form-may23.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "SIP / STP / SWP",
+  "title": "WhiteOak Capital: SIP Registration Form - Editable",
+  "url": "https://content.whiteoakamc.com/SIP_Top_Up_Form_Editable_5523d67dd7.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "Transactions",
+  "title": "WhiteOak Capital: Editable Transaction Form",
+  "url": "https://content.whiteoakamc.com/Editable_Transaction_Form_9806e6235f.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "SIP / STP / SWP",
+  "title": "WhiteOak Capital: SIP Registration Form",
+  "url": "https://content.whiteoakamc.com/SIP_Top_Up_Form_151b9bc468.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "Bank mandate & payments",
+  "title": "WhiteOak Capital: Change of Bank in Existing SIP Form",
+  "url": "https://content.whiteoakamc.com/Change_of_Bank_in_Existing_SIP_Form_b598dc5128.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "SIP / STP / SWP",
+  "title": "WhiteOak Capital: Flex SIP Form",
+  "url": "https://content.whiteoakamc.com/Flex_SIP_Form_a74914513d.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "SIP / STP / SWP",
+  "title": "WhiteOak Capital: Goal SIP Registration Form",
+  "url": "https://content.whiteoakamc.com/Goal_SIP_Registration_Form_ecbafee8ff.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "Nomination",
+  "title": "WhiteOak Capital: Common Application Form",
+  "url": "https://content.whiteoakamc.com/CAF_for_multiple_schcemes_with_new_nomination_79b3222806.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "Account opening",
+  "title": "WhiteOak Capital: Common Application Form – Editable",
+  "url": "https://content.whiteoakamc.com/Editable_Common_Application_Form_with_KIM_21f611b951.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "Transactions",
+  "title": "WhiteOak Capital: Transaction Form",
+  "url": "https://content.whiteoakamc.com/Transaction_Form_cd51d2e8a0.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "KYC & compliance",
+  "title": "WhiteOak Capital: Details of Ultimate Beneficial Owner including Additional FATCA & CRS Information Form",
+  "url": "https://content.whiteoakamc.com/Details_of_Ultimate_Beneficial_Owner_including_Additional_FATCA_and_CRS_Information_5e6085efda.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "Transactions",
+  "title": "WhiteOak Capital: Common Non-Financial Transaction Form",
+  "url": "https://content.whiteoakamc.com/Common_Non_Financial_Transaction_Form_d36bc29e40.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "SIP / STP / SWP",
+  "title": "WhiteOak Capital: STP and SWP Form",
+  "url": "https://content.whiteoakamc.com/STP_and_SWP_Facility_Form_768e311509.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "KYC & compliance",
+  "title": "WhiteOak Capital: CKYC-KRA KYC Form Non-Individual",
+  "url": "https://content.whiteoakamc.com/combined_form_for_kyc_non_individual_d3aac59457.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "WhiteOak Capital",
+  "category": "KYC & compliance",
+  "title": "WhiteOak Capital: CKYC-KRA KYC Form Individual",
+  "url": "https://content.whiteoakamc.com/ckyc_kra_kyc_form_individual_780586063c.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Invesco India",
+  "category": "Account opening",
+  "title": "Invesco India: Common Application Form (Equity and Select Hybrid schemes)",
+  "url": "https://www.invescomutualfund.com/docs/default-source/qick-form-pdf/invesco-common-application-form_v1.pdf?sfvrsn=5e7d9fc2_2",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Edelweiss",
+  "category": "Contact & folio updates",
+  "title": "Edelweiss Change in Mutual Fund Distributor Form",
+  "url": "https://www.edelweissmf.com/Files/downloads/Forms/Distributor-Literature-or-Form/Published/Edelweiss_Change%20in%20MFD%20Form_Editable%20Form_19082025_055538_PM.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Edelweiss",
+  "category": "Distributor",
+  "title": "Edelweiss Distributors Empanelment Agreement Form",
+  "url": "https://www.edelweissmf.com/Files/downloads/Forms/Distributor-Literature-or-Form/Published/Edelweiss_Distributor%20Empanelment%20Form_MF_SIF_16092025_102127_AM.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Edelweiss",
+  "category": "Transmission & incapacitation",
+  "title": "Edelweiss: Common SOP",
+  "url": "https://www.edelweissmf.com/Files/Common-SOP/Final%20Common%20SOP%20for%20Centralized%20Demise%20information-March%202026.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Edelweiss",
+  "category": "Other forms",
+  "title": "Edelweiss: Alternative Investment Fund",
+  "url": "https://www.edelweissmf.com/Files/Alternative-Investment-Fund/Service_Request_Form_28112025_061812_PM.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Edelweiss",
+  "category": "Other forms",
+  "title": "Edelweiss: PMS Form and Fees",
+  "url": "https://www.edelweissmf.com/Files/PMS-fee-calc-tool.xlsx",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Edelweiss",
+  "category": "Distributor",
+  "title": "Edelweiss: Empanelled PMS Distributors",
+  "url": "https://www.edelweissmf.com/Files/MF/Empanelled_PMS_Distributors/List%20of%20Empanelled%20PMS%20distributors.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: Nomination Out-Out Declaration Form - Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/nomination-opt-out-form-format-sep-2026-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Nomination",
+  "title": "Helios: Fresh Nomination Form - Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/nomination-form-format-sep-2026-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: Multiple SIP & Top Up Form - Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Helios-Multi-SIP-Top-Up-Form_Editable_25.08.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transactions",
+  "title": "Helios Multi Scheme Purchase Transaction Slip Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Helios-Multi-Scheme-Purchase-Transaction-Slip_Editable_25.08.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Account opening",
+  "title": "Helios Multi Scheme Common Application Form Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Helios-Multi-Scheme-Common-Application-Form_Editable_19.08.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: STP Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/04/STP-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: SIP & Top Up Form - Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/06/SIP-Form-Ediatble-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transactions",
+  "title": "Helios: Transaction Slip",
+  "url": "https://www.heliosmf.in/wp-content/uploads/resources/transaction-slip-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: Common Application Form with SIP & Top Up - Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/05/Common-Application-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: Individual",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/KYC-Individual-Form-Terms-and-Conditions.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: Non-Individual",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/KYC-Non-Individual-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: FATCA-CRS TIN Declaration Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/fatca-crs-tin-declaration-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Nomination",
+  "title": "Helios: Fresh Nomination Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/nomination-form-format-sep-2026.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: Nomination Out-Out Declaration Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/nomination-opt-out-form-format-sep-2026.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Bank mandate & payments",
+  "title": "Helios: Change of Bank Mandate",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/06/Change-of-Bank-Mandate.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Bank mandate & payments",
+  "title": "Helios: Bank Certificate for Demand Draft",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/11/Helios-Mutual-Fund-Demand-Draft-Bank-Certificate-R1.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: Declaration for MFD as a Joint Holder",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/11/Helios-Mutual-Fund-Joint-Holder-Declaration-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transactions",
+  "title": "Helios: Non-commercial transaction form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/06/Non-Common-Transaction-Form-29.5.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Other forms",
+  "title": "Helios: Income Distribution Cum Capital Withdrawal Transfer Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/02/Transfer-of-Income-Distribution-Cum-Capital-Withdrawal-Plan-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: FATCA Form For Individual",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/FATCA-for-Individuals.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: FATCA Form For Non-Individual",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/FATCA-non-individual.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: UBO Declaration",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/03/UBO-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: NPO Declaration",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Declaration-for-NPO.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Bank mandate & payments",
+  "title": "Helios: Lien Marking Letter from Banker",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Lien-Marking-Letter-from-Banker.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Bank mandate & payments",
+  "title": "Helios: Lien Removal Request Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Lien-Removal-Request.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Bank mandate & payments",
+  "title": "Helios: Lien Request Format For Investor",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Lien-request-format-for-Investor.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: Third Party Declaration Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Third-Party-Declaration-Form-Terms-and-Conditions.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Bank mandate & payments",
+  "title": "Helios: Multiple Bank Account Registration Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/11/Multiple-Bank-Account-Registration-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Contact & folio updates",
+  "title": "Helios: Change of Broker Code",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/04/Change-of-Broker-Code-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Distributor",
+  "title": "Helios: RIA Consent Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/04/RIA-Consent-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: Common Application Form with Multiple SIP & Top Up",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Helios-Multiple-SIPOTM-Common-App-Form-28.8.2025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: Multiple SIP & Top Up Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Helios-Multi-SIP-Top-Up-Form-25.08.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transactions",
+  "title": "Helios Multi Scheme Purchase Transaction Slip",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Helios-Multi-Scheme-Purchase-Transaction-Slip-25.08.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Account opening",
+  "title": "Helios Multi Scheme Common Application Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Helios-Multi-Scheme-Common-Application-Form_19.08.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: Common Application Form with SIP & Top Up",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/06/Common-Application-Form_30.5.25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: Flex STP Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Flex-STP-Form-Terms-and-Conditions.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: SIP & Top Up Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/06/SIP-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Other forms",
+  "title": "Helios: Special Products Request Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Special-Product-Request-Form-T-and-C.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: STP Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/04/STP-Form-1.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transactions",
+  "title": "Helios: Transaction Slip",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Transaction-Slip.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: SWP Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/04/SWP-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "Helios: Value STP Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Value-STP-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Annexure - 1: Bond of Indemnity",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/annexure-1-bond-of-indemnity.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Annexure - 2: Affidavit-cum-No Objection Declaration",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/annexure-2-affidavit-cum-no-objection-declaration.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Annexure - 3 : Bank Attestation of Account Details & Account Holder's Signature",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/annexure-3-bank-attestation-of-account-details-account-holders-signature.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Annexure - 4: Bank Attestation of Account Details & Signature of New Karta",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/annexure-4-bank-attestation-of-account-details-signature-of-new-karta.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Annexure - 5: Bond of Indemnity for Change of Karta",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/annexure-5-bond-of-indemnity-for-change-of-karta.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Form - 1: Request for Deletion of Name(s) of Joint Holders in case of Death of the 1st and 2nd Joint Holders",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/form-1-request-for-deletion-of-names-of-joint-holders-in-case-of-death-of-the-1s.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Form - 2: Request for Transmission of Units by Surviving Joint Holders",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/form-2-request-for-transmission-of-units-by-surviving-joint-holders.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Form - 3: Transmission Request Form (Under Simplified Category but Other than QTP Category)",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/form-3-transmission-request-form-under-simplified-category-but-other-than-qtp-ca.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Form - 4: Transmission to New Karta/Claimant (On death of HUF Karta or on Dissolution of HUF)",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/form-4-transmission-to-new-karta-claimant-on-death-of-huf-karta-or-on-dissolutio.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Form - 5: Transmission Request Form-cum-Undertaking for Quick Transmission Process (QTP)",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/form-5-transmission-request-form-cum-undertaking-for-quick-transmission-process-.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Simplification and Standardisation of the Framework for Transmission of Securities",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/08/simplification-and-standardisation-of-the-framework-for-transmission-of-securiti.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Contact & folio updates",
+  "title": "Helios: Minor to Major",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Minor-to-Major-Change-Request-Form-1.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Contact & folio updates",
+  "title": "Helios: Change in Guardian",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Request-Form-for-change-in-Guardian-of-Minor-Unit-holder.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Annexure 1 – Bank Attestation of Signature",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Annexure-I-Bank-Attestation-of-Signature.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Other forms",
+  "title": "Helios: Information Regarding Dematerialisation or Rematerialization of Units",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/01/Information-Regarding-Dematerialisation-or-Rematerialization-of-Units.docx",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Transmission & incapacitation",
+  "title": "Helios: Final Common SOP for Centralized Demise information-March 2026",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/07/Final-Common-SOP-for-Centralized-Demise-information-March-2026.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Distributor",
+  "title": "Helios: Empanelment Form - Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/04/Empanelment-Form-Editable-April-25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Distributor",
+  "title": "Helios: Empanelment Form - Non-Editable",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/04/Empanelment-Form-April-25.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: Self-Declaration Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/10/Format-for-Declaration-of-Self-Certification-for-the-ARN-Holder.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Distributor",
+  "title": "Helios: Distributor Non-Commercial Transaction Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/06/Distributor-Non-Commercial-Transaction-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "KYC & compliance",
+  "title": "Helios: EUIN Declaration Form",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/06/EUIN-Decleration-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Nomination",
+  "title": "Helios: May 6, 2024 - Nomination for Mutual Fund Unit Holders - Exemption for jointly held folios",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/05/May-6-2024-Nomination-for-Mutual-Fund-Unit-Holders-Exemption-for-jointly-held-folios.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Contact & folio updates",
+  "title": "Helios: April 19, 2024 - Change in Information of Key Personnel and Fund Management responsibilities - HFCF",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/04/April-19-2024-Change-in-Information-of-Key-Personnel-and-Fund-Management-responsibilities-HFCF.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Contact & folio updates",
+  "title": "Helios: Feb 23, 2024 – Change in Official points of Acceptance of Transactions",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/02/3.Location-Change-of-Address-Jan-2024-upto-date-22_02_2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "SIP / STP / SWP",
+  "title": "27-Dec-2023 - Introduction of Daily STP under Helios Overnight Fund",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2023/12/27-Dec-2023-Introduction-of-Daily-STP.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Other forms",
+  "title": "Helios: MGT-7 (2024-25)",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2026/02/Form-MGT-7-Helios-Capital-FY-2024-2025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Other forms",
+  "title": "Helios: MGT-7 (2023-24)",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2025/08/Filed_Form_MGT_7-_2024_F99112443.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Helios",
+  "category": "Bank mandate & payments",
+  "title": "Helios: Details of Collecting Bankers",
+  "url": "https://www.heliosmf.in/wp-content/uploads/2024/06/Details-of-collecting-bankers.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Contact & folio updates",
+  "title": "HSBC: Minor Attaining Majority Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/9ef7a7b4-d7bc-49bc-9d96-2bdebaca0093/minor-attaining-majority-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC Annexure 2 Affidavit Cum No Objection Declaration",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/3f00dbfa-f9fc-473b-b74e-e5b724988823/hsbc-annexure-2-affidavit-cum-no-objection-declaration.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC Annexure 3 Bank Attestation Of Account Details And Account Holder Signature",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/8872cdbd-6541-4542-a4ef-62274398de0b/hsbc-annexure-3-bank-attestation-of%20account-details-and-account-holder-signature.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC Annexure 4 Bank Attestation Of Account Details And Signature Of New Karta Of The HUF",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/10dcc227-d64f-4820-89a9-aba9ee03d60e/hsbc-annexure-4-bank-attestation-of-account-details-and%20signature-of-new-karta-of-the-huf.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC Annexure 1 Bond Of Indemnity",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/0b1c68ac-7160-4590-9e46-3cc974327792/hsbc-annexure-1-bond-of-indemnity.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC Annexure 5 Bond Of Indemnity For Change Of Karta",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/b0a34565-e7be-47b4-bbf1-8b0eec36bbb4/hsbc-annexure-5-bond-of-indemnity-for-change-of-karta.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC: Form 3 Request For Transmission Form Under Simplified Category And Other Than QTP Category",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/4350de2f-1ebf-4716-a230-2a33723a8e13/form-3-request-for-transmission-form-under-simplified-category-and-other-than-qtp-category.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "Form 4 HSBC Transmission Request With Annexures Karta Of Deceased HUF Dissolved Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/30ad981f-13be-448f-9afc-94415a29ad02/form-4-hsbc-transmission-request-with-annexures-karta-of-deceased-huf-dissolved-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC FATCA Individual",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/6e694c7e-44a3-4932-b7f3-610745c55884/hsbc-fatca-individual.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC Form 1 Request For Deletion Of Names Of Joint Holders In Case Of Death Of First And Second Joint Holders",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/7b7af261-2f5b-484c-81f8-84bfe304fe5a/hsbc-form-1-request-for-deletion-of-names-of-joint-holders-in-case-of-death-of-first-and-second-joint-holders.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC: Form 2 Request For Transmission Of Units By Surviving Joint Holders On Demise Of First Unit Holder",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/622239ea-f19b-422b-a731-a57710ca4e25/form-2-request-for-transmission-of-units-by-surviving-joint-holders-on-demise-of-first-unit-holder.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transmission & incapacitation",
+  "title": "HSBC Quick Transmission Processing QTP Where No Nominee Is Registered",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/f88ba2a1-f6d8-4fcc-9ea3-067702be0ab3/hsbc-quick-transmission-processing-qtp-where-no-nominee-is-registered.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Standalone OTM Registration Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/fe345357-42a4-4761-8cee-f94f862d3a98/hsbc-standalone-otm-registration-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC Multi Scheme SIP Combo",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/12c56664-d124-40fb-bb65-341887ada668/hsbc-multi-scheme-sip-combo-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC SIP Micro SIP Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/0998f706-68b5-4c47-87d6-fd30f0648498/hsbc-sip-micro-sip-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC SIP Modification Form 2025",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/18b445ff-8473-4bf7-a057-f465845e20d7/hsbc-sip-modification-form-editable-2025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "Ssd13373 HSBC Banking And Psu Debt Fund",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/72cf2a8b-f2e8-4b10-80c2-489885628266/ssd13373-hsbc-banking-and-psu-debt-fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC: Uniform KYC Form For Non Individuals",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/33d90274-9910-408d-9e97-fd6703e31019/uniform-kyc-form-for-non-individuals-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Nomination",
+  "title": "HSBC Form For Opting Out Of Nomination",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/3b805041-16ef-4b74-b51c-eca0cb7e6587/hsbc-form-for-opting-out-of-nomination.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Nomination",
+  "title": "HSBC: Form For Fresh Nomination",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/16e89bb7-e668-4b51-a862-635a148faca5/form-for-fresh-nomination.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Multiple Bank Accounts Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/cded6977-b2dd-430b-87b4-e6932beed4da/multiple-bank-accounts-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transactions",
+  "title": "HSBC Common Form For Non Financial Transactions",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/10363163-de70-451a-b37c-8ff6748715da/hsbc-common-form-for-non-financial-transactions.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transactions",
+  "title": "HSBC Gold ETF Transaction Form For Purchase And Redemption",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/ba925c8a-566f-4057-a5f7-feff74a368d8/hsbc-gold-etf-transaction-form-for-purchase-and-redemption.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Distributor Empanelment Form For Company Bank",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/8d7423cd-767e-4b51-b0c2-5f670ab51a23/distributor-empanelment-form-for-company-bank.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC SIP Top Up Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/06d43ad3-16df-43c6-8da9-2e12697d0c68/hsbc-sip-top-up-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Contact & folio updates",
+  "title": "HSBC Change Of Name Request Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/b05e22ea-3da4-445f-ab64-4d6c2f36b91d/hsbc-change-of-name-request-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Distributor Empanelment Form Excluding Company Bank",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/1f2db3a3-f5ae-4f2a-b354-b3323dc41e18/distributor-empanelment-form-excluding-company-bank.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC Flex STP Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/1662ce8e-6709-44ca-b13a-ed839defbf6c/hsbc-flex-stp-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banker Certificate",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/318e773c-f7d9-4d7f-b19c-6e12439c5e29/hsbc-banker-certificate-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transactions",
+  "title": "HSBC Purchase Redemption And Switch Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/01378f88-dfa7-441f-9a94-3a808879cf28/hsbc-purchase-redemption-and-switch-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transactions",
+  "title": "HSBC Consent To Provide Direct Transaction Data",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/a902c005-04a1-4b54-891e-ca3269c9f08d/hsbc-consent-to-provide-direct-transaction-data.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Nomination",
+  "title": "HSBC Distributor Nomination Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/9dacc201-95a1-4597-8cdb-d324256d8212/hsbc-distributor-nomination-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Distributor",
+  "title": "HSBC Distributor Service Request Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/fa6778a8-b862-4472-af49-9dea63df3be3/hsbc-distributor-service-request-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Dynamic Lien Financier Letter",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/1b5c6174-2dac-4f6d-8b03-e49025f152be/hsbc-dynamic-lien-financier-letter.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Dynamic Lien Investor Letter",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/640d2b86-9a1a-4613-894f-190d98d32199/hsbc-dynamic-lien-investor-letter.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC EUIN Declaration Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/097771fb-e856-4e8d-85f3-80f5d581508d/hsbc-euin-declaration-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC FATCA CRS Self Certificatin Additional Declaration",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/4f5eec96-b524-4bbc-8c39-6e2060875914/hsbc-fatca-crs-self-certificatin-additional-declaration.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC STP SWP Iscw Transfer Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/548d47e9-39d8-4a7c-b780-3c843519160e/hsbc-stp-swp-iscw-transfer-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC SIP Pause And Cancellation Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/cc000971-5e8a-48b4-9876-05e2ec0c1ecd/hsbc-sip-pause-and-cancellation-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Static Lien Financier Letter",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/d5952334-a70a-40c2-b531-c60e2cb36be5/hsbc-static-lien-financier-letter.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Static Lien Investor Letter",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/f9cab0a1-cc41-4153-a4be-c821a80bd904/hsbc-static-lien-investor-letter.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Transactions",
+  "title": "HSBC Transaction Form For Corp",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/3dbaec7d-3981-47f4-988b-427b2c323e25/hsbc-transaction-form-for-corp-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC UBO And NPO Declaration Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/71a679bf-5553-4345-802c-3068c5b84e54/hsbc-ubo-and-npo-declaration-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Contact & folio updates",
+  "title": "HSBC: Form For Change In Guardian Of Minor Unitholder",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/9c533b6b-0810-4339-bcca-ab94ce14ba1a/form-for-change-in-guardian-of-minor-unitholder.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Unclaimed Redemption Dividend Claim Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/00e3e019-21ee-4857-9396-a58daf9db669/hsbc-unclaimed-redemption-dividend-claim-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Contact & folio updates",
+  "title": "HSBC Change In Tax Status Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/f3b6e4b0-01eb-441e-97a1-2096cf25865c/hsbc-change-in-tax-status-form-final.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC Third Party Payment Declaration Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/e4f0db44-54be-459b-a8c5-6a7660e66d29/hsbc-third-party-payment-declaration-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC: FATCA Form For Individuals",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/0706a5f9-69b8-457a-8ea8-c174653668e1/fatca-form-for-individuals.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC: FATCA Form For Non Individuals",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/3eefbe95-b9b4-4796-b6c3-d21779b91c34/fatca-form-for-non-individuals.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC Form 121",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/08b4e53b-1488-4ab9-be62-c5f0ccf0bf5c/hsbc-form-121.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC: CKYC Individual Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/709e7922-92aa-45c0-98ce-57702b90c7a8/ckyc-individual-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund Mar 2026",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/1a77bbc0-18df-457c-8269-8f601646880e/hsbc-banking-and-psu-debt-fund-mar-2026.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: Addition Of Daily SIP Frequency In Systematic Investment Plan SIP",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/1a1a3e90-4c90-40fe-8a63-ea5e0a376d14/addition-of-daily-sip-frequency-in-systematic-investment-plan-sip.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: SIP Or Lump Sum Investment Which One Is Better",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/23b2946a-ccbd-430e-bee9-9ab8001cbe88/sip-or-lump-sum-investment-which-one-is-better.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund Oct 2025",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/f38a1543-a565-4ce1-8436-871c8bf8a1e8/hsbc-banking-and-psu-debt-fund-oct-2025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Other forms",
+  "title": "HSBC: Amin Form 5 A Extract",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/b584f7d2-8f3d-43a6-bf37-649b7ab289a9/amin-form-5-a-extract.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Contact & folio updates",
+  "title": "HSBC Change Of Broker Request Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/a98dbdad-7ab3-4f38-98d6-54597aa96df3/hsbc-change-of-broker-request-form-editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "Declaration Form HSBC UBO NPO",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/4000e47e-fe1a-4c40-8d09-457836c01ea5/declaration-form-hsbc-ubo-npo.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund April 2025",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/d8a21888-de44-4115-b12d-f0115b260b73/hsbc-banking-and-psu-debt-fund-april-2025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Bank Attestation Of Account Holder Signature",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/11c69ad5-ff62-417c-aafc-d6c93c410bbd/hsbc-bank-attestation-of-account-holder-signature.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund March 2025",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/0ca83165-f174-4ff9-995f-59c5008c1f63/hsbc-banking-and-psu-debt-fund-march-2025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: Change Minimum Number Of Installments Systematic Transfer Plan STP",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/a87a8148-31b7-4498-9ee8-a3db717e0497/change-minimum-number-of-installments-systematic-transfer-plan-stp.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Other forms",
+  "title": "HSBC: Indias Financial Sector Poised For Transformational Growth",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/7d7b1e40-6f63-443a-bc20-9cb6e011484e/indias-financial-sector-poised-for-transformational-growth.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund November 2024",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/d6640b6b-f72f-4a6e-a4f6-44dabe5f9ce1/hsbc-banking-and-psu-debt-fund-november-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund Sep 2024",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/ec8c0093-a79a-49d6-8851-ec26a3c8a992/hsbc-banking-and-psu-debt-fund-sep-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: Change In Minimum Number Of Installments And Re Introducing The Aggregate Amount For SIP",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/845cef2e-bef7-4811-b03e-f11bbb8f38fa/change-in-minimum-number-of-installments-and-re-introducing-the-aggregate-amount-for-sip.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Contact & folio updates",
+  "title": "HSBC: Form For Providing Minors Dob",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/688cd934-3114-4a94-ab5f-640c970331f5/form-for-providing-minors-dob.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Contact & folio updates",
+  "title": "India HSBC Signature Update Form",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/e460d8d3-1aaf-4929-a84c-ebf32642613e/india-hsbc-signature-update-form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund Aug 2024",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/19a43b22-0bf1-4d4a-906f-b25476c43fc1/hsbc-banking-and-psu-debt-fund-aug-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "Introduction Of Flex STP In Schemes Of HSBC MF April 26 2024",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/87e1f96b-8dc8-4d38-a8e8-5142c0381269/introduction-of-flex-stp-in-schemes-of-hsbc-mf-april-26-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund March 2024",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/7f2aec47-fc29-442c-8978-f7a4b07c515a/hsbc-banking-and-psu-debt-fund-march-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund February 2024",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/eb493c63-bc1d-4ca5-8a36-17374ed3464a/hsbc-banking-and-psu-debt-fund-february-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund Jan 2024",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/5b717271-4ec8-4a78-bcfb-416d06ee493e/hsbc-banking-and-psu-debt-fund-jan-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund 2023",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/bfd96099-4cab-4235-94fc-04a16e2a7a09/hsbc-banking-and-psu-debt-fund-2023.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Pn Banking Psu Debt Fund",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/1a50d06f-ba88-43f0-b000-bfd3c688f3da/pn-banking-psu-debt-fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Pn Banking Psu Debt Fund",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/5392f03a-fda7-40bb-bfba-926cbc18eceb/pn-banking-psu-debt-fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Banking Psu Debt Fund",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/bad7ad07-3322-49fb-ad26-162583d83044/banking-psu-debt-fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Banking And Psu Debt Fund",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/46048b42-3cc2-4a88-a7e7-27602721b3d1/banking-and-psu-debt-fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC: Pn Banking And Psu Debt Fund April 2023",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/022d5ba7-c0c1-4671-b75b-91bd113cc000/pn-banking-and-psu-debt-fund-april-2023.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC Funds SIP And Lumpsum",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/28bee0ad-2cbd-4ffa-a766-95721f2fe3c0/hsbc-funds-sip-and-lumpsum.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Fund Jan 23",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/9c351206-1863-4466-8329-271c8334105a/hsbc-banking-and-psu-fund-jan-23.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "Bank mandate & payments",
+  "title": "HSBC Banking And Psu Debt Fund As On Dec 2022",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/b4d3ed17-9987-4637-83a0-62a328d9986f/hsbc-banking-and-psu-debt-fund-as-on-dec-2022.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: SIP And Step Up SIP SWP 2022",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/aeb67532-a97e-451b-a6b3-585ced30d685/sip-and-step-up-sip-swp-2022.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "KYC & compliance",
+  "title": "HSBC: Declaration Of Dividend 20210405",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/6f514aa6-88ac-46ec-853b-e6b3bf623dea/declaration-of-dividend-20210405.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: SIP Step Up SIP 2021",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/e89b8d82-dd46-40ba-8039-18343cf34ea5/sip-step-up-sip-2021.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: Why Equity SIP May2020",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/94446c74-b3c7-465e-8783-acb53a593f1e/why-equity-sip-may2020.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "HSBC: SIP March 2020",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/4f4adf7c-13c7-46d0-bd2f-c6f2274ae16e/sip-march-2020.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HSBC",
+  "category": "SIP / STP / SWP",
+  "title": "Step Up SIP HSBC MF March 2020",
+  "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/mutual-funds/en/9d85b930-20c0-4b4b-991c-9b316a8881b9/step-up-sip-hsbc-mf-march-2020.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset: Common Application Form - Printable",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/common-application-form_01102026.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset BSE Information Technology Index Fund",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/application-form---mirae-asset-bse-information-technology-index-fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset Life Cycle Fund 2056",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/mirae-asset-life-cycle-fund-2056_v4.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset BSE Midcap 150 Momentum 30 ETF FOF",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/form-mirae-asset-bse-midcap-150-momentum-30-etf-fof-14-37.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset BSE Midcap 150 Momentum 30 ETF",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/form-mirae-asset-bse-midcap-150-momentum-30-etf.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset Nifty200 Momentum 30 Plus 8-13 yr G-Sec 50:50 ETF",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/mirae-asset-nifty200-momentum-30-plus-8-13-yr-g_sec-50_50-etf.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset: Common Transaction Form with Multi Scheme Facility for Lumpsum Investments",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/common-transaction-form-with-multi-scheme-facility_v1_23jun26.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset: Common Transaction Form with Multi Scheme Facility for Lumpsum Investments - Editable",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/common-transaction-form-with-multi-scheme-facility-editable_19092025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset: Common Transaction Form - Printable",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/common-transaction-form-march-2024_19092025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Mirae Asset",
+  "category": "Transactions",
+  "title": "Mirae Asset: Common Transaction Form - Editable",
+  "url": "https://www.miraeassetmf.co.in/docs/default-source/transaction-forms/common-transaction-form-editable-dec2023_19092025.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Single SIP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/One-Time-Bank-Mandate+Single-SIP-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nippon India: Equity And Sector Specific CAF Single Purchase",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Equity-and-Sector-specific-CAF-Single-Purchase.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nippon India: Equity And Sector Specific CAF Multiple Purchase",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Equity-and-Sector-specific-CAF-Multiple-Purchase.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Multi SIP One Time Bank Mandate Registration Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Multi-SIP--One-Time-Bank-Mandate-Registration-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Other forms",
+  "title": "Nippon India: Single Cheque Multiple Investment (New Investor)",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Single-Cheque-Multiple-Investment-(New-Investor)-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Single Cheque Multiple Investment (SIP) Existing Investor",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Single-Cheque-Multiple-Investment-(SIP)-Existing-Investor-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Multi SIP Form Sector Fund",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/MULTI-SIP-FORM-SECTOR-FUND-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: STP Enrolment (EUIN) Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/STP-Enrolment-(EUIN)-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Multiple STP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Multiple-STP-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nippon India: Common Transaction Slip",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Common-Transaction-Slip-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nippon India: Non Commercial Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Non-Commercial-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia SIP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/NipponIndia-SIP+Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia STP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/NipponIndia-STP+Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: SIP Multi SIP Cancellation Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/SIP-Multi-SIP-Cancellation-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: EUIN Declaration Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/EUIN-Declaration-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nippon India: ETF Transaction Slip",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/ETF-Transaction-Slip-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Other forms",
+  "title": "Nippon India: App For Roll Over Req Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/App-for-Roll-Over-Req-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: SWP Application (EUIN) Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/SWP-Application-(EUIN)-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: STP Cancellation Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/STP-Cancellation-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Change Of Bank Details Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Change-of-Bank-Details-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Multiple Bank Account Registration Deletion Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Multiple-Bank-Account-Registration---Deletion-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Banker Attestation",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Banker-Attestation-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Contact & folio updates",
+  "title": "Nippon India: Request For Change In Status From Minor To Major",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Request-for-change-in-status-from-Minor-to-Major.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Nomination",
+  "title": "Nippon India: Fresh Change Of Existing Cancellation Of Nomination Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Fresh-Change-of-Existing--Cancellation-of-Nomination-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: Fatcacrs UBO Declaration And Additional KYC Details Form For Non Individual Investors",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/FATCACRS-UBO-Declaration-and-Additional-KYC-Details-form-for-Non-Individual-Investors.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: FATCA CRS Declaration And Additional KYC Details Form For Individual Investors",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/FATCA-CRS-Declaration-and-Additional-KYC-Details-form-for-Individual-Investors-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Distributor",
+  "title": "Nippon India: Consent For MFD As Joint Holder Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/Consent-for-MFD-as-Joint-Holder-Form-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: CKYC Application Form For Individual",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/CKYC-Application-Form-for-Individual-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: CKYC Application Form For Non Individuals",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/CKYC-Application-Form-for-Non-Individuals-Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Single SIP Form (Feehand)",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/One-Time-Bank-Mandate-Single-SIP-Form-(Feehand).pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Single SIP Form 30 01 2026 (Request For) (1)",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/EditableForms/One-Time-Bank-Mandate-Single-SIP-Form-30-01-2026-(REQUEST%20FOR)-(1).pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Distributor",
+  "title": "Nippon India: Consent For MFD As Joint Holder Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Consent-for-MFD-as-Joint-Holder-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India STP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Nippon-India-STP+Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia SIP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-SIP+-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Other forms",
+  "title": "Nippon India: Dividend Skip Withdrawal Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Dividend-Skip-Withdrawal-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Flex SIP Enrollment Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/One-Time-Bank-Mandate-Flex-SIP-Enrollment-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Flex STP Enrolment (EUIN) Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Flex-STP-Enrolment-(EUIN)-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: OTBM Multiple SIP Enrollment Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/OTBM+Multiple-Sip-Enrollment-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Multiple SIP Common Application Form Full Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/MULTIPLE-SIP-COMMON-APPLICATION-FORM-Full-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Multi SIP Form Sector Fund",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Multi-SIP-Form-Sector-Fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Plus Multi SIP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/One-Time-Bank-Mandate-plus-Multi-SIP-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Plus SIP And SIP Insure Enrollment Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/One-Time-Bank-Mandate-plus-SIP-and-SIP-Insure-Enrollment-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nippon India: Common Transaction Slip",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Common-Transaction-Slip.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: STP Enrolment (EUIN) Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/STP-Enrolment-(EUIN)-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Multiple STP Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Multiple-STP-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: SWP Application (EUIN) Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/SWP-Application-(EUIN)-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: DTP Enrolment (EUIN) Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/DTP-Enrolment-(EUIN)-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia Smart Step (EUIN) Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-SMART-STeP-(EUIN)-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia Golden Transfer Step (EUIN)",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-Golden-Transfer-Step-(EUIN).pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia Golden Dividend Transfer Plan (EUIN)",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-Golden-Dividend-Transfer-Plan-(EUIN).pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nippon India: ETF Transaction Slip",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/ETF-Transaction-Slip.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: EUIN Declaration Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/EUIN-Declaration-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Other forms",
+  "title": "Nippon India: App For Roll Over Req Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/App-for-Roll-Over-Req-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: STP Cancellation Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/STP-Cancellation-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Multi SIP Cancellation Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Multi-SIP-Cancellation-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: SWP Cancellation Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/SWP-Cancellation-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: DTP Cancellation Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/DTP-Cancellation-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Cancelation Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/One-Time-Bank-Mandate-Cancelation-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Transaction Slip For Nipponindia Retirement Fund",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Transaction-Slip-for-NipponIndia-Retirement-Fund.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Invest Easy Cancellatin Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Invest-Easy-Cancellatin-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: Simply Save Registration Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Simply-Save-Registration-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia Salary Advantage SIP Af Full Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-Salary-Advantage-SIP_AF-Full-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia Salary Advantage Af Additional Purchase Full Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-Salary-Advantage-AF_Additional-Purchase-Full-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: STP Re Registration Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/STP-Re-Registration-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: SIP Modification Application Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/SIP-Modification-Application-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nipponindia Step Up Application Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-Step-Up-Application-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "SIP / STP / SWP",
+  "title": "Nippon India: SIP Pause Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/SIP-Pause-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: One Time Bank Mandate Registration Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/One-Time-Bank-Mandate-Registration-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Change Of Bank And Modify Request In One Time Bank Mandate Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Change-Of-Bank-and-Modify-Request-In-One-Time-Bank-Mandate-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Account opening",
+  "title": "Nippon India: Application Form For Non Individual Investor New Full Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Application-Form-For-Non-Individual-Investor-New-Full-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: KYC Application Form For Non Individuals",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/KYC-Application-Form-for-Non-Individuals.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: CKYC Application Form For Individual",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/CKYC-Application-Form-for-Individual.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: FATCA Declaration For Individual Investors Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/FATCA-Declaration-for-Individual-investors-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: FATCA And CRS Information For Non Individuals Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/FATCA-and-CRS-information-for-Non-Individuals-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Change Of Bank Details Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Change-of-Bank-Details-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Multiple Bank Account Registration Form Recommended",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Multiple-Bank-Account-Registration-Form_Recommended.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Updation Of Bank Details Non Cbs To Cbs",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Updation-of-Bank-Details-Non-CBS-to-CBS.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Banker Attestation Format",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Banker-Attestation-format.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: Bank Account Deletion",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Bank-Account-Deletion.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Bank mandate & payments",
+  "title": "Nippon India: E Payout",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/E-Payout.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: Form 121 Format",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Form-121-Format.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Contact & folio updates",
+  "title": "Nippon India: Form For Change In Status From Minor To Major",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Form-for-change-in-status-from-Minor-to-Major.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: PAN Based Updation Of Mobile Number And Email Id",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/PAN-Based-Updation-of-Mobile-Number-and-Email-Id.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Transactions",
+  "title": "Nipponindia Non Commercial Form",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/NipponIndia-Non-Commercial-Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "Nomination",
+  "title": "Nippon India: Registration Cancellation Of Nominee",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Registration-Cancellation-of-Nominee.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "Nippon India",
+  "category": "KYC & compliance",
+  "title": "Nippon India: Declaration From Residents Of United States Of America Canada",
+  "url": "https://mf.nipponindiaim.com/InvestorServices/DownloadForms/Declaration-from-Residents-of-United-States-of-America-Canada.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transactions",
+  "title": "HDFC: Application Cum Transaction Slip for ALL ETF Schemes",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-10/Application%20Cum%20Transaction%20Slip%20for%20ALL%20ETF%20Schemes%2015.10.26%20-%20Editable%20form.pdf?VersionId=fwOHBw3ouSdlowm8YmXA_anf1ITM0QYU",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: SIP Application Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/SIP%20Application%20Form%20200826Step%20Up%20Editable.pdf?VersionId=iKYOEpOdUW23JYPAcbZnptsJYbYKVb4F",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: PAN & Folio level OTM Debit Mandate Form NACH/ECS/ DIRECT DEBIT/SI",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/Standalone%20OTM%20Form%20PAN%20Level%20%26%20Folio%20270826%20Editable.pdf?VersionId=DSfOnYVIZNCO1_I270setCYeyIN4BpIn",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Systematic Transfer Plan - Application form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-10/Multiple%20Syatematic%20Transfer%20Plan%20141026%20EDITABLE.pdf?VersionId=_BggInl5J1eVIkXn4grjYFKh5sNB2OUr",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Flex Systematic Transfer Plan (Flex STP)",
+  "url": "https://files.hdfcfund.com/s3fs-public/2025-05/Flex%20STP%20Application%20Form%20260525%20Editable%20form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Flex Index Plan Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Flex%20Index%20Plan%20Form%20020726%20Editable%20form.pdf?VersionId=8w6kmqUWZWsRikhwOPMzpQbQxhrYC0YJ",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Swing STP",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/SWING%20STP%20FORM%20020726%20Editable%20form.pdf?VersionId=j7g0wpsatc7e7xawcycfvZ7aWXn2jWaK",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "SMART CAP Form- HDFC Arbitrage Fund",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/SMART%20CAP%20Appreciation%20FORM%20020726%20ediable%20form.pdf?VersionId=.k3upXmJBHlakPFSChzK3O0ND1JBAufD",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: InstaInvest Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Invest%20Insta%20Form%20020726%20Editable%20form.pdf?VersionId=d.vEiAzN3Ln.J9WADrZVtq525qe9RmoC",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Bank mandate & payments",
+  "title": "HDFC: Transfer of IDCW Facility Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Transfer%20of%20IDCW%20%20Application%20Form%20020726%20Editable%20form.pdf?VersionId=8EILEAUO_xNoUObqjeTigOcq8tdLlp.k",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Chhoti SIP Application Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/Chhoti%20SIP%20Application%20Form%20270826%20Editable.pdf?VersionId=Ry2BfMm.OLe0r.srDu9rxGJtWKYUsMw8",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Flex SIP Application Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Flex%20SIP%20Form%20020726%20Editable%20form.pdf?VersionId=69qLxxpyJZKqYoKT8ZtQcBGpqOC2r7xJ",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC Dream SIP Application Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/HDFC%20Dream%20SIP%20Application%20Form%20270826%20Editable.pdf?VersionId=LpN2GzZ.tepgXpld7PAkmgNVr7Elk.jO",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: SIP Modification Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/SIP%20Modification%20Application%20Form%20270826%20Editable.pdf?VersionId=EICvei6_IVGz9E.bgSKxDyi4Cy9USQCK",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: SIP Pause Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/SIP%20Pause%20Form%20150726.pdf?VersionId=ifsWhJm_c1BUprQZbq_RP28Z8f3y6BkE",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: SMART SWP Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/SMART%20SWP%20Form%20020726editable%20form.pdf?VersionId=FMPn75Crsh1HJrNWJrh4VApIyZNjY4SV",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Switch-Cum-Smart SWP Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Switch%20Cum%20Smart%20SWP%20Form%20130726%20EDITABLE.pdf?VersionId=7g253U8E_EC9zJxFsp3vCh1fIgHfpxfv",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "HDFC: Systematic Withdrawal Plan (SWP)",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-06/SWP%20FORM%20040626%20EDITABLE.pdf?VersionId=9cd70po96DT2t0flvNZxKis7Qn0E4Ps4",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Declaration from Investor(s) for leaving the box for Employee Unique Identity Number (EUIN) blank in the Application Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2018-04/EUIN%20Application%20Form_1.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Declaration for deduction of transaction charges",
+  "url": "https://files.hdfcfund.com/s3fs-public/2018-04/Declaration_for_deduction%20of%20transaction%20charges_1.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Contact & folio updates",
+  "title": "HDFC: Folio Guard Facility",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Folio%20Guard%20Facility%20Form%20240626%20EDITABLE.pdf?VersionId=4R9qqrVq4KP4GN9eKheQOFJ6UHizoTO8",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Bank mandate & payments",
+  "title": "HDFC: Unclaimed Redemption / IDCW Claim Form (NEW!)",
+  "url": "https://files.hdfcfund.com/s3fs-public/2023-10/Unclaimed%20Redemption%20IDCW%20Claim%20Form%20031023.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Format from Primary Holder for Obtaining Declaration for Mutual Fund Distributor featuring as Joint holder in folio",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-06/002-MFD%20as%20Joint%20holder%20Declaration-V2%20-%20April-2024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Format from Primary Holder for Obtaining Declaration for Unrelated Person in folio",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-06/Format%20from%20Primary%20Holder%20for%20Obtaining%20Declaration%20for%20Unrelated%20Person%20in%20folio210624.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: NPO Declaration Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-04/NPO%20Declaration%20Form.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Bank mandate & payments",
+  "title": "HDFC: Change/Updation of IFSC Code Form ONLY",
+  "url": "https://files.hdfcfund.com/s3fs-public/2023-03/Application%20Form%20for%20Change-Updation%20of%20IFSC%20Code%20030323%20%281%29.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Nomination",
+  "title": "HDFC: Nomination Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/Nomination%20Registration%20Form%20310826%20V1%20%28Revised%29.pdf?VersionId=jbKjZgj9kHsQWQlJDvnk9VFM7fv1huoX",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Form for Opting out of Nomination",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/Declaration%20for%20opting-out%20of%20nomination%20310826%20%28Revised%29.pdf?VersionId=8ZGMgBCUL7sviNZ4Is4MULWzeeBT422f",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Change in Tax Status Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2025-10/PAN%20Based%20Application%20Form%20For%20Tax%20Status%20Change%20241025%20editable%20form.pdf?VersionId=rpl0N8RiQ2lh.8YH7G_zoXXAGsZRd_IR",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Account opening",
+  "title": "HDFC: Application for conversion into New Personal Accident Insurance Cover",
+  "url": "https://files.hdfcfund.com/s3fs-public/2018-08/Application_for_conversion_into_New_Personal_Accident_Insurance_Cover.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Bank mandate & payments",
+  "title": "HDFC: Form for Registration of / Additions to Multiple Bank Accounts",
+  "url": "https://files.hdfcfund.com/s3fs-public/2018-08/Multiple-Bank-Mandate-Form-May29-2014_25032016%281%29.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "SIP / STP / SWP",
+  "title": "Insta Invest-HDFC Low Duration Fund",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-06/Invest%20Insta%20Form%2000626%20editable%20form.pdf?VersionId=n9idpU57Qu2T4ilymHebdJtatlWid73O",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Family Declaration Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-02/Email%20id%20%20Mobile%20number%20updation%20Form%20EDITABLE290124.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: PAN & Folio level OTM Debit Mandate Form NACH/ECS/ DIRECT DEBIT/SI",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-04/Standalone%20OTM%20Form%20PAN%20Level%20%20Folio%202024%20040424%20-40years%20Editable_0.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transactions",
+  "title": "HDFC: Transaction Slip - For all schemes including Fixed Maturity Plans",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Transaction%20Slip%20130726.pdf?VersionId=tonyIaIvEdRbuvPlvHWi_oIaz27o5XCV",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Contact & folio updates",
+  "title": "HDFC: eServices Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2023-09/eService%20Request%20Form%20180923.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transactions",
+  "title": "HDFC: Common Transaction Form - Non-Financial Transactions",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/Common%20Transaction%20Form%20-%20Non%20Financial%20Transactions%20310826.pdf?VersionId=W0lxDar9zKqGwscEHfA2l2gQkfLyyBB_",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Contact & folio updates",
+  "title": "HDFC: Change of Mutual Fund Distributor Code - ARN/RIA Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2025-08/Request%20for%20Change%20in%20Mutual%20Fund%20Distributor%20%28MFD%29090825_1.pdf?VersionId=OdQGPFw3h6SQ7m4LwTRT7bOs_sEBVNN2",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Contact & folio updates",
+  "title": "HDFC: Change of Name - Signature Request Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-02/Change%20of%20Name%20%20Signature%20Request%20Form%20280126%20V2%20editable%20form.pdf?VersionId=mFrK5tbJukVuYeu8YljHxf8zKX2ndbbU",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Form No 121",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-04/Form%20No%20121%20280426.pdf%20editable%20form.pdf?VersionId=_PcuNe.rLNXapGpjcsbX0FR5I5TRRiBX",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: CKYC Application Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-12/CKYC%20Individual%20Form%20-%20Aug%202024.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: Individual KYC Supporting - FATCA-CRS Declaration Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-12/FATCA-Individuals_KRA.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: KYC Individual - CVL Form",
+  "url": "https://files.hdfcfund.com/s3fs-public/2022-01/KYC_Form_Individual_oct21.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: KYC Non Individual",
+  "url": "https://files.hdfcfund.com/s3fs-public/2021-07/CAMSKRA%20Non%20Individual%20Form-May%202021_0.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Contact & folio updates",
+  "title": "HDFC: Request Form for Change in Guardian of Minor Unitholder",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-02/Request%20Form%20for%20Change%20in%20Guardian%20of%20Minor%20Unitholder%20140224%20Editable.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Contact & folio updates",
+  "title": "HDFC: Request for change in status from Minor to Major 310826.pdf",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/Request%20for%20change%20in%20status%20from%20Minor%20to%20Major%20310826.pdf?VersionId=65MRJWhp_0QBPZAWSgN5jujgKkL_GY5e",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Annexure - 1 Bank Attestation of Account Details & Account-holder's signature",
+  "url": "https://files.hdfcfund.com/s3fs-public/2020-07/Annexure%20-%201%20Bank%20Attestation%20of%20Account%20Details%20%26%20Account-holder%27s%20signature.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Contact & folio updates",
+  "title": "HDFC: Form for providing Minor's Date of Birth & Details of the Guardian",
+  "url": "https://files.hdfcfund.com/s3fs-public/2024-02/Form%20for%20providing%20Minor%27s%20Date%20of%20Birth%20%20Details%20of%20the%20Guardian%20Editable290124.pdf",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "KYC & compliance",
+  "title": "HDFC: FATCA, CRS & Ultimate Beneficial Ownership (UBO) Self Certification Form For Non-Individuals",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/FATCA%20Form%20240826%20V1%20EDITABLE.pdf?VersionId=1Z1c6DV9nQKpQw.J7JXDLqTCYTqNbONK",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Annexure 1 – Letter for Intimation of Demise information by Joint Holders(s)/Nominee(s)/Notifier-SOP Centralised Death Reporting",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-07/Intimation%20of%20Demise%20information%20by%20the%20Joint%20Holders%20s%20Nominees%20Notifier%20220726.pdf?VersionId=HvXHyQbzJmqMmbj6qpMlogqPDE4izZYe",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Simplified Grid for Documentation Requirement for Transmission",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Transmission%20Matrix%20August%202026.pdf?VersionId=ZxZoixiuv5C2LbSw.5W99i85ZVdpuRln",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: QTP - Transmission Request Form-cum-Undertaking",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/FORM-QTP.pdf?VersionId=AOoi2lfmcQDgSWlxpajr3TqEWsXAr8DI",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: FORM-1 Request for Deletion of name(s) of Joint Holder(s) in case of death of the 1st and 2nd Joint Holder(s)",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/FORM-1%20Request%20for%20Deletion%20of%20name%28s%29%20of%20Joint%20Holders%20in%20case%20of%20death%20of%20the%201st%20and%202nd%20Joint%20Holders.pdf?VersionId=0joCnKNxRybUBSX0YIWVomRMtrKPmCy9",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: FORM-2 Request for Transmission of Units by Surviving Joint Holder(s) on demise of 1st unit holder",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/FORM-2%20Request%20for%20Transmission%20of%20Units%20by%20Surviving%20Joint%20Holder%28s%29%20on%20demise%20of%201st%20unit%20holder%20Revised.pdf?VersionId=uP7D9peLuYwP4UlZlK9J_0T3K1kJ8Vwr",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: FORM-3 Transmission Request Form (under Simplified category and other than QTP Category)",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/FORM-3%20Transmission%20Request%20Form%20%28under%20Simplified%20category%20and%20other%20than%20QTP%20Category%29%20Revised.pdf?VersionId=yb2uojFD9Bl39aWBzWG.ZW2GOmKlQHsU",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: FORM-4 Transmission to New Karta_Claimant (on death of HUF Karta or on Dissolution of HUF)",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/FORM-4%20Transmission%20to%20New%20Karta_Claimant%20%28on%20death%20of%20HUF%20Karta%20or%20on%20Dissolution%20of%20HUF%29_0.pdf?VersionId=362xmo1EtRBiudHTi.EJDhdUF8oGfbE9",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Annexure-1 Bond of Indemnity- No Nominee cases",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Annexure-1%20BOND%20OF%20INDEMNITY.pdf?VersionId=1QKVTvr99hChr0lj5.mLbtGtKPNPa1xG",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Annexure-2 AFFIDAVIT-CUM-NO OBJECTION DECLARATION",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Annexure-2%20AFFIDAVIT-CUM-NO%20OBJECTION%20DECLARATION.pdf?VersionId=TFeyO4pclhPCG9B65B0rzxzFo7iVwyvT",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Annexure-3 Bank Attestation of Signature & bank account details",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Annexure-3%20Bank%20Attestation%20of%20Signature%20%26%20bank%20account%20details.pdf?VersionId=FOPQcsuK7XnohD3iqew2iIiBWxmCr53m",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Annexure-4 Bank Attestation of Signature of new Karta",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-08/Annexure-4%20Bank%20Attestation%20of%20Signature%20of%20new%20Karta.pdf?VersionId=81PH6WyaaeCfgah6i2LYGkbA4x.n7JPi",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Transmission & incapacitation",
+  "title": "HDFC: Annexure-5 Indemnity Bond - Change of Karta",
+  "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Annexure-5%20BOND%20OF%20INDEMNITY-Change%20of%20Karta%20Revised.pdf?VersionId=QEgbHRMtOkjF3TYSLzJHzt_xZZaN2iR9",
+  "kind": "PDF",
+  "keywords": ""
+ },
+ {
+  "source": "AMC",
+  "amc": "HDFC",
+  "category": "Account opening",
+  "title": "Consent letter for roll over of HDFC Fixed Maturity Plans",
+  "url": "https://files.hdfcfund.com/s3fs-public/2018-04/Common-Format-Consent-Letter-HDFC-FMP-Roll-overs_1.pdf",
+  "kind": "PDF",
+  "keywords": ""
  }
 ]

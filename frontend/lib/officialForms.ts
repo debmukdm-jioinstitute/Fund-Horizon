@@ -2,7 +2,8 @@
 // (also read by universal search), so a form added there shows up here and in search with no frontend change.
 export interface OfficialForm {
   title: string;
-  source: "CAMS" | "KFintech" | "Stallion";
+  source: "CAMS" | "KFintech" | "Stallion" | "AMC";
+  amc?: string; // fund house, when source is "AMC"
   category: string;
   kind: "PDF" | "Page";
   url: string;

@@ -7,6 +7,7 @@ import secrets
 from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 from pathlib import Path
+from urllib.parse import urljoin, urlparse
 from typing import Annotated, Any
 
 import pandas as pd
@@ -1435,10 +1436,19 @@ def _fetch_official_pdf(url: str) -> bytes:
         raise HTTPException(404, "That form is not in the official forms catalogue.")
     host = re.match(r"https?://[^/]+", url).group(0)  # type: ignore[union-attr]
     referer = f"{host}/Investors/Service-requests/Service-Request-Forms" if "camsonline" in host else f"{host}/"
+    headers = {
+        "User-Agent": _BROWSER_UA, "Accept": "application/pdf,*/*", "Referer": referer, "Accept-Language": "en-US,en;q=0.9",
+        "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "same-origin"}
     try:
-        r = requests.get(url, timeout=30, stream=True, allow_redirects=False, headers={
-            "User-Agent": _BROWSER_UA, "Accept": "application/pdf,*/*", "Referer": referer, "Accept-Language": "en-US,en;q=0.9",
-            "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "same-origin"})
+        for _ in range(4):  # follow redirects by hand, same host only (no open redirect into our network)
+            r = requests.get(url, timeout=30, stream=True, allow_redirects=False, headers=headers)
+            loc = r.headers.get("Location")
+            if r.status_code in (301, 302, 307, 308) and loc:
+                url = urljoin(url, loc)
+                if urlparse(url).netloc != urlparse(host).netloc:
+                    raise HTTPException(502, "The publisher redirected to another site.")
+                continue
+            break
         body = r.raw.read(_PDF_LIMIT + 1, decode_content=True)
     except requests.RequestException as exc:
         raise HTTPException(502, "Could not reach the publisher's site.") from exc

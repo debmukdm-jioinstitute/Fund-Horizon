@@ -180,6 +180,7 @@ export default function PdfFormFiller({ source, onClose, onDownloaded }: { sourc
     const add = (it: Omit<Item, "id" | "page" | "x" | "y">) => { commit({ items: [...items, { ...base, ...it }] }); setSelected(base.id); };
     if (tool === "text" || tool === "date") {
       const text = tool === "date" ? today() : pending ?? "";
+      base.y -= size * 0.7; // the click lands mid-line, so text sits on the line you clicked
       add({ type: tool, text, w: Math.max(40, (text.length || 6) * size * 0.6), h: size * 1.4 });
       setPending(null); setTool("select");
     } else if (tool === "check" || tool === "cross" || tool === "dot" || tool === "circle") {

@@ -1417,28 +1417,6 @@ def backoffice_update_recommended(req: RecommendedUpdateRequest):
     }
 
 
-class BackofficeOperationsPdfRequest(BaseModel):
-    form_id: str = "cams_common_tx"
-    title: str = "Operations Form"
-    repository: str = "CAMS"
-    category: str = "Mutual Fund"
-    form_code: str = "FH-OPS-2026"
-    investor_name: str = "Client"
-    pan: str = ""
-    dob: str = ""
-    mobile: str = ""
-    email: str = ""
-    tax_status: str = "Resident Individual"
-    ckyc: str = ""
-    address: str = ""
-    folio_number: str = ""
-    amc_name: str = ""
-    scheme_name: str = ""
-    details: dict[str, Any] = Field(default_factory=dict)
-    signature_base64: str | None = None
-    second_signature_base64: str | None = None
-
-
 @router.get("/operations/official-forms")
 def backoffice_official_forms(staff: Annotated[dict, Depends(require_staff)]):
     """Official CAMS / KFintech (Karvy) forms catalogue (same data the universal search reads)."""
@@ -1501,27 +1479,6 @@ async def backoffice_pdf_fill(
         raise HTTPException(422, str(exc) if isinstance(exc, PdfFillError) else "The edits are malformed.") from exc
     safe = re.sub(r"[^a-zA-Z0-9_\-]+", "_", filename)[:80] or "filled-form"
     return Response(out, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{safe}.pdf"'})
-
-
-@router.post("/operations/form-pdf")
-async def generate_operations_form_pdf(
-    req: BackofficeOperationsPdfRequest,
-    staff: Annotated[dict, Depends(require_staff)],
-):
-    """Generate official client Operations Form PDF with signatures and ARN 345439."""
-    from app.report.operations_doc import build_operations_form_pdf
-
-    pdf_bytes = build_operations_form_pdf(req.model_dump())
-    clean_title = re.sub(r"[^a-zA-Z0-9_\-]+", "_", req.title).lower()
-    clean_client = re.sub(r"[^a-zA-Z0-9_\-]+", "_", req.investor_name or "client").lower()
-
-    return Response(
-        content=pdf_bytes,
-        media_type="application/pdf",
-        headers={
-            "Content-Disposition": f'attachment; filename="{req.repository.lower()}_{clean_title}_{clean_client}.pdf"',
-        },
-    )
 
 
 @router.get("/operations/status")

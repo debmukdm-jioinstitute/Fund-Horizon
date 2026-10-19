@@ -22,3 +22,11 @@ How it is wired (keep it that way):
   Any new page, component, chart or document must pass these checks before it is considered done.
 
 Note: the variable font ships weights 400-700, so `font-light` renders as 400 and `font-extrabold`/`font-black` as 700.
+
+## Forms: official publisher forms only (no lookalikes)
+
+Operations forms (CAMS, KFintech/Karvy, PMS) are the publishers' own PDFs, listed in `data/official_forms.json`
+(rebuilt and link-checked by `backend/scripts/build_official_forms.py`). Entries, ticks and signatures are drawn
+onto the original PDF (`frontend/components/operations/PdfFormFiller.tsx`, `backend/app/report/pdf_fill.py`).
+Never generate a form that imitates an RTA/AMC/PMS form or invents a form code, and never label a generated
+document "official". If no official PDF exists for a need, link the publisher's page instead.

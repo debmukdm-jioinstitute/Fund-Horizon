@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import pandas as pd
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse
 from pydantic import BaseModel, Field
 
@@ -1443,6 +1443,64 @@ class BackofficeOperationsPdfRequest(BaseModel):
 def backoffice_official_forms(staff: Annotated[dict, Depends(require_staff)]):
     """Official CAMS / KFintech (Karvy) forms catalogue (same data the universal search reads)."""
     return {"data": universal_search.official_forms()}
+
+
+_PDF_LIMIT = 15_000_000
+_BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+
+
+def _fetch_official_pdf(url: str) -> bytes:
+    """Download a catalogue form server-side (the publishers send no CORS headers). Only catalogue URLs are fetched."""
+    import requests
+
+    if url not in {f["url"] for f in universal_search.official_forms() if f["kind"] == "PDF"}:
+        raise HTTPException(404, "That form is not in the official forms catalogue.")
+    host = re.match(r"https?://[^/]+", url).group(0)  # type: ignore[union-attr]
+    referer = f"{host}/Investors/Service-requests/Service-Request-Forms" if "camsonline" in host else f"{host}/"
+    try:
+        r = requests.get(url, timeout=30, stream=True, allow_redirects=False, headers={
+            "User-Agent": _BROWSER_UA, "Accept": "application/pdf,*/*", "Referer": referer, "Accept-Language": "en-US,en;q=0.9",
+            "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "same-origin"})
+        body = r.raw.read(_PDF_LIMIT + 1, decode_content=True)
+    except requests.RequestException as exc:
+        raise HTTPException(502, "Could not reach the publisher's site.") from exc
+    if r.status_code != 200 or not body.startswith(b"%PDF") or len(body) > _PDF_LIMIT:
+        raise HTTPException(502, "The publisher did not return a usable PDF.")
+    return body
+
+
+@router.get("/operations/official-forms/pdf")
+def backoffice_official_form_pdf(url: Annotated[str, Query(max_length=600)], staff: Annotated[dict, Depends(require_staff)]):
+    """The PDF of one catalogue form, proxied so the browser editor can open it."""
+    return Response(_fetch_official_pdf(url), media_type="application/pdf")
+
+
+@router.post("/operations/pdf-fill")
+async def backoffice_pdf_fill(
+    staff: Annotated[dict, Depends(require_staff)],
+    edits: Annotated[str, Form()] = "[]",
+    drop_fields: Annotated[str, Form()] = "[]",
+    url: Annotated[str | None, Form()] = None,
+    file: Annotated[UploadFile | None, File()] = None,
+    filename: Annotated[str, Form()] = "filled-form",
+):
+    """Draw the editor's typed text, marks, signatures and images onto a PDF (uploaded or from the catalogue)."""
+    from app.report.pdf_fill import PdfFillError, apply_edits
+
+    if file is not None:
+        src = await file.read(_PDF_LIMIT + 1)
+        if len(src) > _PDF_LIMIT:
+            raise HTTPException(413, "PDF is larger than 15 MB.")
+    elif url:
+        src = _fetch_official_pdf(url)
+    else:
+        raise HTTPException(422, "Provide a PDF file or a catalogue form URL.")
+    try:
+        out = apply_edits(src, json.loads(edits), json.loads(drop_fields))
+    except (PdfFillError, ValueError, TypeError, KeyError) as exc:
+        raise HTTPException(422, str(exc) if isinstance(exc, PdfFillError) else "The edits are malformed.") from exc
+    safe = re.sub(r"[^a-zA-Z0-9_\-]+", "_", filename)[:80] or "filled-form"
+    return Response(out, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{safe}.pdf"'})
 
 
 @router.post("/operations/form-pdf")

@@ -10,6 +10,7 @@ import {
 } from "@/lib/operationsForms";
 import { getOfficialForms } from "@/lib/backoffice";
 import type { OfficialForm } from "@/lib/officialForms";
+import PdfFormFiller, { type PdfSource } from "@/components/operations/PdfFormFiller";
 import FormEditorModal from "@/components/operations/FormEditorModal";
 
 interface DownloadActivity {
@@ -66,6 +67,7 @@ export default function OperationsPage() {
   }, [selectedRepo, selectedCategory, searchQuery]);
 
   // Counts for repository badges
+  const [filling, setFilling] = useState<PdfSource | null>(null);
   const [allOfficial, setAllOfficial] = useState<OfficialForm[]>([]);
   useEffect(() => {
     getOfficialForms().then(setAllOfficial).catch(() => undefined);
@@ -426,6 +428,7 @@ export default function OperationsPage() {
       {/* Official forms: straight from the CAMS / KFintech (Karvy) / Stallion sites */}
       {officialForms.length > 0 && (
         <div className="bg-[#FFFFFF] dark:bg-[#10151C] rounded-2xl border border-[#E4E9EF] dark:border-[#2B3644] p-4 space-y-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h3 className="text-[13px] font-bold text-[#172033] dark:text-[#EDF2F7]">
               Official Forms ({officialForms.length})
@@ -434,6 +437,20 @@ export default function OperationsPage() {
               Every CAMS and KFintech (Karvy) form, linked from the publisher so it is always the current version. Also searchable from the main search bar. Follows the repository and search filters above.
             </p>
           </div>
+          <label className="cursor-pointer px-3 py-1.5 rounded-lg border border-[#006F64] text-[#006F64] dark:text-[#75E1CE] text-[12px] font-bold hover:bg-[#E7F5F2] dark:hover:bg-[#1A3034]">
+            Fill &amp; sign your own PDF
+            <input
+              type="file"
+              accept="application/pdf"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (file) setFilling({ kind: "file", file, title: file.name.replace(/\.pdf$/i, "") });
+              }}
+            />
+          </label>
+          </div>
           {officialByCategory.map(([category, items]) => (
             <div key={category} className="space-y-1.5">
               <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#536176] dark:text-[#A8B4C4]">
@@ -441,8 +458,8 @@ export default function OperationsPage() {
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {items.map((f) => (
+                  <div key={f.url} className="flex items-stretch gap-1.5">
                   <a
-                    key={f.url}
                     href={f.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -453,6 +470,12 @@ export default function OperationsPage() {
                       {f.kind === "PDF" ? "Download PDF" : "Open page"}
                     </span>
                   </a>
+                  {f.kind === "PDF" && (
+                    <button type="button" onClick={() => setFilling({ kind: "url", url: f.url, title: f.title })} className="shrink-0 px-2.5 py-2 rounded-lg bg-[#006F64] text-white text-[11px] font-bold hover:bg-[#005a52]">
+                      Fill &amp; Sign
+                    </button>
+                  )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -499,6 +522,8 @@ export default function OperationsPage() {
           </div>
         </div>
       )}
+
+      {filling && <PdfFormFiller source={filling} onClose={() => setFilling(null)} onDownloaded={handleDownloadCompleted} />}
 
       {/* Interactive In-House Form Editor Modal */}
       {activeForm && (

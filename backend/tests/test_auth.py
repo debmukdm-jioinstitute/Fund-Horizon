@@ -325,3 +325,13 @@ def test_auth_rate_limit_trips(client):
         assert r.status_code == 401
     limited = client.post("/api/auth/login", json={"email": "nobody@example.com", "password": "wrongpass1"})
     assert limited.status_code == 429
+
+
+def test_guest_login_is_gated_and_read_only(client, monkeypatch):
+    monkeypatch.delenv("FH_GUEST_LOGIN", raising=False)
+    assert client.post("/api/auth/guest").status_code == 404
+    monkeypatch.setenv("FH_GUEST_LOGIN", "1")
+    r = client.post("/api/auth/guest")
+    assert r.status_code == 200 and r.json()["customer"]["email"] == auth_module.GUEST_EMAIL
+    assert client.get("/api/auth/me").status_code == 200
+    assert client.post("/api/auth/logout").status_code == 200  # logout is unguarded

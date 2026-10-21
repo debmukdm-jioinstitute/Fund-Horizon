@@ -10,7 +10,7 @@ import { getPlan } from "@/lib/api";
 const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
 export default function LoginPage() {
-  const { customer, loading, login } = useAuth();
+  const { customer, loading, login, guestLogin } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
 
@@ -48,6 +48,15 @@ export default function LoginPage() {
       return;
     }
     router.push("/backoffice");
+  }
+
+  async function handleGuest() {
+    setError(null);
+    setSubmitting(true);
+    const err = await guestLogin();
+    setSubmitting(false);
+    if (err) setError(err);
+    else router.push("/backoffice");
   }
 
   async function handlePlanLink(e: React.FormEvent) {
@@ -164,6 +173,14 @@ export default function LoginPage() {
             className="w-full terminal-btn text-[13px] py-2 px-3 bg-[#006F64] text-white border-[#006F64] dark:bg-[#75E1CE] dark:text-[#10151C] dark:border-[#75E1CE] font-medium"
           >
             {submitting ? "Authenticating…" : "Sign In to Terminal"}
+          </button>
+          <button
+            type="button"
+            onClick={handleGuest}
+            disabled={submitting}
+            className="w-full terminal-btn text-[13px] py-2 px-3"
+          >
+            Continue as Guest (read-only)
           </button>
         </form>
 

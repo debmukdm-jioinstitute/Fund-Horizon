@@ -292,6 +292,9 @@ export const loginCustomer = (body: LoginCustomerBody) =>
     body: JSON.stringify(body),
   });
 
+export const loginGuest = () =>
+  authedRequest<{ customer: Customer }>(`${API_URL}/api/auth/guest`, { method: "POST" });
+
 export const logoutCustomer = () =>
   authedRequest<{ ok: boolean }>(`${API_URL}/api/auth/logout`, { method: "POST" });
 

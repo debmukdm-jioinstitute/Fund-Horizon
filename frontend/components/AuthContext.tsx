@@ -2,7 +2,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { ApiError, getMe, loginCustomer, logoutCustomer } from "@/lib/api";
+import { ApiError, getMe, loginCustomer, loginGuest, logoutCustomer } from "@/lib/api";
 import type { Customer } from "@/lib/types";
 
 interface AuthState {
@@ -10,6 +10,7 @@ interface AuthState {
   loading: boolean;
   /** Returns an error message string on failure, null on success. */
   login: (email: string, password: string) => Promise<string | null>;
+  guestLogin: () => Promise<string | null>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthState>({
   customer: null,
   loading: true,
   login: async () => "not initialised",
+  guestLogin: async () => "not initialised",
   logout: async () => {},
   refresh: async () => {},
 });
@@ -59,6 +61,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const guestLogin = useCallback(async (): Promise<string | null> => {
+    try {
+      setCustomer((await loginGuest()).customer);
+      return null;
+    } catch (e) {
+      return e instanceof Error ? e.message : "Guest access is unavailable.";
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await logoutCustomer();
@@ -68,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setCustomer(null);
   }, []);
 
-  const value = useMemo(() => ({ customer, loading, login, logout, refresh }), [customer, loading, login, logout, refresh]);
+  const value = useMemo(() => ({ customer, loading, login, guestLogin, logout, refresh }), [customer, loading, login, guestLogin, logout, refresh]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

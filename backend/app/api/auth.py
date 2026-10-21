@@ -34,6 +34,8 @@ AUTH_RATE_WINDOW_S = 60.0
 
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 
+GUEST_EMAIL = "guest@fundhorizon.local"
+
 _EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 _MOBILE_RE = re.compile(r"^[6-9]\d{9}$")
 
@@ -233,6 +235,10 @@ def get_current_customer(request: Request) -> dict:
             sqlite.delete_auth_session(token_sha)
             raise HTTPException(401, "Session has been revoked. Please sign in again.")
 
+    # Guest sessions are strictly read-only, whatever the route.
+    if customer.get("email") == GUEST_EMAIL and request.method not in ("GET", "HEAD", "OPTIONS"):
+        raise HTTPException(403, "Guest access is read-only.")
+
     return _public_customer(customer)
 
 
@@ -372,6 +378,29 @@ def login(body: LoginRequest, request: Request, response: Response):
 
     _set_session_cookie(response, _new_session_token(customer["id"]))
     return {"customer": _public_customer(customer)}
+
+
+@auth_router.post("/guest")
+def guest_login(request: Request, response: Response):
+    """Passwordless read-only staff session. Off unless FH_GUEST_LOGIN is set."""
+    if os.environ.get("FH_GUEST_LOGIN", "false").lower() not in ("true", "1", "yes"):
+        raise HTTPException(404, "Not found")
+    _check_auth_rate_limit(request)
+    verify_csrf(request)
+    from app.db import get_repository
+
+    repo = get_repository()
+    guest = sqlite.get_customer_by_email(GUEST_EMAIL)
+    if not guest:
+        guest = repo.create_customer(
+            name="Guest", email=GUEST_EMAIL, mobile="0000000000",
+            password_hash=_hash_password(secrets.token_urlsafe(32)), role="compliance",
+        )
+    # compliance = unscoped read-only in the CRM; writes are also blocked in get_current_customer
+    repo.update_customer(guest["id"], {"role": "compliance", "is_staff": 1, "status": "active"})
+    guest = sqlite.get_customer_by_email(GUEST_EMAIL)
+    _set_session_cookie(response, _new_session_token(guest["id"]))
+    return {"customer": _public_customer(guest)}
 
 
 @auth_router.post("/logout")

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { API_URL, resolveApiUrl } from "@/lib/api";
+import React, { useEffect, useMemo, useState } from "react";
+import { API_URL, getMe, resolveApiUrl } from "@/lib/api";
 import {
   BANDS,
   ClientCapacityInputs,
@@ -28,6 +28,16 @@ export default function RiskProfilingPage() {
   const [targetCustomerId, setTargetCustomerId] = useState("");
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  // Client-facing link; ?ref attributes the new lead/account to the staff member who shares it.
+  const [clientLink, setClientLink] = useState("");
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    getMe()
+      .then((m) => m?.id)
+      .catch(() => undefined)
+      .then((id) => setClientLink(`${window.location.origin}/risk-profile${id ? `?ref=${encodeURIComponent(id)}` : ""}`));
+  }, []);
 
   // Live calculated profile
   const profile: RiskProfileResult = useMemo(() => {
@@ -151,6 +161,22 @@ export default function RiskProfilingPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-[#C5DDF7] bg-[#EAF5FE] p-3 text-xs dark:border-[#1F4A74] dark:bg-[#0F2A45]/40">
+        <span className="font-semibold text-[#014486] dark:text-[#1B96FF]">Client link</span>
+        <input readOnly value={clientLink} aria-label="Client risk profiling link" onFocus={(e) => e.currentTarget.select()} className="min-w-[240px] flex-1 rounded border border-[#C5DDF7] bg-white px-2 py-1 dark:border-[#1F4A74] dark:bg-navy-900" />
+        <button
+          type="button"
+          disabled={!clientLink}
+          onClick={() => navigator.clipboard.writeText(clientLink).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); })}
+          className="rounded bg-[#0176D3] px-3 py-1 font-semibold text-white disabled:opacity-50"
+        >
+          {copied ? "Copied" : "Copy link"}
+        </button>
+        <span className="w-full text-[11px] text-[#706E6B] dark:text-navy-400">
+          Send to your client. On submit they get the PDF, a portal account is created, and the lead, account and suitability record land in the CRM.
+        </span>
+      </div>
+
       {/* Top Banner */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#ECEBEA] pb-4 dark:border-navy-800">
         <div>

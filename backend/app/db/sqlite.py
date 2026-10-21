@@ -9,6 +9,7 @@ Plans expire after FH_PLAN_TTL_DAYS (default 30) and can be deleted by id.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sqlite3
 import uuid
@@ -17,6 +18,8 @@ from pathlib import Path
 from typing import Any
 
 from app.db.base import DatabaseRepository
+
+logger = logging.getLogger(__name__)
 
 
 def get_default_db_path() -> Path:
@@ -49,7 +52,11 @@ class SQLiteRepository(DatabaseRepository):
         return conn
 
     def _init_schema(self) -> None:
-        conn = self._get_connection()
+        try:
+            conn = self._get_connection()
+        except sqlite3.OperationalError as e:
+            logger.error("Failed to connect to SQLite in _init_schema (disk full or DB error): %s", e)
+            return
         try:
             with conn:
                 conn.execute(
@@ -161,6 +168,8 @@ class SQLiteRepository(DatabaseRepository):
                 init_crm_core_schema(conn)
                 init_crm_products_schema(conn)
                 init_backoffice_schema(conn)
+        except sqlite3.OperationalError as e:
+            logger.error("Failed to initialize SQLite schema (disk full or DB error): %s", e)
         finally:
             conn.close()
 

@@ -2,15 +2,19 @@
 from __future__ import annotations
 
 import json
+import logging
+import sqlite3
 import time
 import uuid
-from datetime import UTC, datetime, timedelta
 from collections.abc import Collection
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from app.backoffice.db import ensure_backoffice_schema
 from app.backoffice.providers.amfi_ter import base_key as mf_base_key
 from app.db import sqlite as _sqlite
+
+logger = logging.getLogger(__name__)
 
 _LIVE_TABLES_SQL = """
 CREATE TABLE IF NOT EXISTS factsheets (
@@ -213,19 +217,22 @@ class BackofficeRepository:
         conn = _sqlite.get_default_connection()
         key = str(_sqlite.get_default_db_path())
         if key not in _LIVE_TABLES_READY:
-            # Tables added after the 0005 migration are created lazily so existing volumes need no migration.
-            with conn:
-                for stmt in _LIVE_TABLES_SQL.strip().split(";"):
-                    if stmt.strip():
-                        conn.execute(stmt)
-                cols = {r["name"] for r in conn.execute("PRAGMA table_info(mf_schemes)").fetchall()}
-                if "base_key" not in cols:
-                    conn.execute("ALTER TABLE mf_schemes ADD COLUMN base_key TEXT")
-                if "scheme_option" not in cols:
-                    conn.execute("ALTER TABLE mf_schemes ADD COLUMN scheme_option TEXT")
-                if "isin_reinvest" not in cols:
-                    conn.execute("ALTER TABLE mf_schemes ADD COLUMN isin_reinvest TEXT")
-            _LIVE_TABLES_READY.add(key)
+            try:
+                # Tables added after the 0005 migration are created lazily so existing volumes need no migration.
+                with conn:
+                    for stmt in _LIVE_TABLES_SQL.strip().split(";"):
+                        if stmt.strip():
+                            conn.execute(stmt)
+                    cols = {r["name"] for r in conn.execute("PRAGMA table_info(mf_schemes)").fetchall()}
+                    if "base_key" not in cols:
+                        conn.execute("ALTER TABLE mf_schemes ADD COLUMN base_key TEXT")
+                    if "scheme_option" not in cols:
+                        conn.execute("ALTER TABLE mf_schemes ADD COLUMN scheme_option TEXT")
+                    if "isin_reinvest" not in cols:
+                        conn.execute("ALTER TABLE mf_schemes ADD COLUMN isin_reinvest TEXT")
+                _LIVE_TABLES_READY.add(key)
+            except sqlite3.OperationalError as e:
+                logger.error("Failed to init live backoffice tables (disk full or DB error): %s", e)
         return conn
 
     # --- Sources & Health ---

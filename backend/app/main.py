@@ -1,6 +1,7 @@
 """FastAPI app factory. Dataset is loaded once at startup into memory."""
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
 import time
@@ -82,11 +83,14 @@ def _plan_get_recompute(path: str, request: Request) -> bool:
     return len(parts) == 4 and parts[1:3] == ["api", "plans"]
 
 
-import asyncio
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from app import backup
+
+    try:
+        await asyncio.to_thread(backup.restore_if_needed)
+    except Exception:  # noqa: BLE001
+        logging.getLogger(__name__).exception("Restore from R2 on boot failed")
     if _flag("FH_REQUIRE_PRODUCTION_MIGRATIONS", "false"):
         from alembic.config import Config
         from alembic.runtime.migration import MigrationContext
@@ -144,18 +148,23 @@ async def lifespan(app: FastAPI):
 
         collector_task = asyncio.create_task(run_collector_loop())
 
-        # Daily briefing: build on startup when today's row is missing
+        # Daily briefing: build/refresh on startup so updated filtering applies
         # (idempotent upsert; the scheduled loop keeps it fresh afterwards).
-        from app.backoffice.analytics.briefing_builder import briefing_missing_today
         from app.backoffice.collectors import build_daily_briefing
 
-        if briefing_missing_today():
+        try:
             await asyncio.to_thread(build_daily_briefing)
+        except Exception:
+            logging.getLogger(__name__).exception("Startup briefing build failed")
 
     try:
         yield
     finally:
         backup_task.cancel()
+        try:
+            await asyncio.to_thread(backup.backup_sqlite)
+        except Exception:  # noqa: BLE001
+            logging.getLogger(__name__).exception("Shutdown DB backup failed")
         if collector_task:
             collector_task.cancel()
             try:
@@ -232,14 +241,14 @@ def create_app() -> FastAPI:
     from app.api.admin import admin_router
     from app.api.auth import auth_router
     from app.api.backoffice import router as backoffice_router
-    from app.backoffice.mf_reference import router as mf_reference_router
     from app.api.crm_core import router as crm_core_router
     from app.api.crm_extras import router as crm_extras_router
     from app.api.crm_phase3 import router as crm_phase3_router
-    from app.api.crm_reports import router as crm_reports_router
     from app.api.crm_products import router as crm_products_router
+    from app.api.crm_reports import router as crm_reports_router
     from app.api.learn import router as learn_router
     from app.api.rm import rm_router
+    from app.backoffice.mf_reference import router as mf_reference_router
 
     app.include_router(router)
     app.include_router(portal_router)
@@ -254,6 +263,29 @@ def create_app() -> FastAPI:
     app.include_router(crm_products_router)
     app.include_router(backoffice_router)
     app.include_router(mf_reference_router)
+
+    @app.get("/health")
+    def health_check():
+        import shutil
+
+        from app.db.sqlite import get_default_db_path
+        from app.storage import r2
+
+        db_path = get_default_db_path()
+        db_bytes = db_path.stat().st_size if db_path.exists() else 0
+        data_dir = "/data" if os.path.exists("/data") else str(db_path.parent)
+        try:
+            data_free_mb = shutil.disk_usage(data_dir).free // (2**20)
+        except Exception:
+            data_free_mb = 0
+
+        return {
+            "ok": True,
+            "r2": r2.enabled(),
+            "db_bytes": db_bytes,
+            "data_free_mb": data_free_mb,
+        }
+
     return app
 
 

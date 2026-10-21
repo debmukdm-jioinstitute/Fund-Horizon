@@ -25,3 +25,4 @@ empyrical-reloaded>=0.5.9
 mftool>=2.8
 
 
+boto3>=1.34

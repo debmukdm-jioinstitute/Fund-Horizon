@@ -1532,8 +1532,15 @@ async def backoffice_pdf_fill(
     url: Annotated[str | None, Form()] = None,
     file: Annotated[UploadFile | None, File()] = None,
     filename: Annotated[str, Form()] = "filled-form",
+    log_filing: Annotated[bool, Form()] = False,
+    form_title: Annotated[str, Form(max_length=300)] = "",
+    household_id: Annotated[str | None, Form(max_length=64)] = None,
+    client_name: Annotated[str | None, Form(max_length=200)] = None,
+    folio: Annotated[str | None, Form(max_length=60)] = None,
 ):
-    """Draw the editor's typed text, marks, signatures and images onto a PDF (uploaded or from the catalogue)."""
+    """Draw the editor's typed text, marks, signatures and images onto a PDF (uploaded or from the catalogue).
+
+    With log_filing=true the filled PDF is also stored in the filings register and logged to the household's CRM activity."""
     from app.report.pdf_fill import PdfFillError, apply_edits
 
     if file is not None:
@@ -1549,7 +1556,67 @@ async def backoffice_pdf_fill(
     except (PdfFillError, ValueError, TypeError, KeyError) as exc:
         raise HTTPException(422, str(exc) if isinstance(exc, PdfFillError) else "The edits are malformed.") from exc
     safe = re.sub(r"[^a-zA-Z0-9_\-]+", "_", filename)[:80] or "filled-form"
-    return Response(out, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{safe}.pdf"'})
+    headers = {"Content-Disposition": f'attachment; filename="{safe}.pdf"'}
+    if log_filing:
+        title = form_title.strip() or filename
+        filing = _REPO.add_filing(
+            form_title=title, form_url=url, household_id=household_id or None, client_name=client_name or None,
+            folio=folio or None, staff_id=staff["id"], staff_name=staff.get("name"), pdf=out,
+        )
+        _log_filing_activity(staff, filing, f"Form filled: {title}")
+        headers["X-Filing-Id"] = filing["id"]
+    return Response(out, media_type="application/pdf", headers=headers)
+
+
+FILING_STATUSES = ("Downloaded", "Submitted to RTA", "Ack received")
+
+
+def _log_filing_activity(staff: dict, filing: dict, subject: str) -> None:
+    """Best effort: record the filing on the household's CRM timeline; the register is the source of truth."""
+    if not filing.get("household_id"):
+        return
+    try:
+        from app.repo_crm_core import get_crm_repository
+
+        get_crm_repository().create_activity(
+            kind="note", subject=subject[:255], household_id=filing["household_id"], actor_id=staff["id"],
+            body=f"{filing.get('client_name') or ''} {('Folio ' + filing['folio']) if filing.get('folio') else ''}".strip() or None,
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
+
+@router.get("/operations/filings")
+def backoffice_list_filings(staff: Annotated[dict, Depends(require_staff)]):
+    return {"data": _REPO.list_filings(), "statuses": list(FILING_STATUSES)}
+
+
+class FilingStatusRequest(BaseModel):
+    status: int = Field(ge=0, le=2)
+
+
+@router.patch("/operations/filings/{filing_id}")
+def backoffice_update_filing(filing_id: str, body: FilingStatusRequest, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    """Move a filing forward: Downloaded -> Submitted to RTA -> Ack received."""
+    verify_csrf(request)
+    filing = _REPO.get_filing(filing_id)
+    if not filing:
+        raise HTTPException(404, "Filing not found")
+    if body.status < filing["status"]:
+        raise HTTPException(409, "A filing cannot move backwards.")
+    _REPO.set_filing_status(filing_id, body.status)
+    filing["status"] = body.status
+    _log_filing_activity(staff, filing, f"{filing['form_title']} → {FILING_STATUSES[body.status]}")
+    _REPO.log_audit(staff["id"], "filing_status", "filing", filing_id, {"status": body.status})
+    return {"data": filing}
+
+
+@router.get("/operations/filings/{filing_id}/pdf")
+def backoffice_filing_pdf(filing_id: str, staff: Annotated[dict, Depends(require_staff)]):
+    pdf = _REPO.get_filing_pdf(filing_id)
+    if pdf is None:
+        raise HTTPException(404, "Filing not found")
+    return Response(pdf, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="filing-{filing_id[:8]}.pdf"'})
 
 
 @router.get("/operations/status")

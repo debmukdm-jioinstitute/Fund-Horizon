@@ -1460,6 +1460,56 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    # --- Operations filings register ---
+
+    _FILING_COLS = "id, created_at, form_title, form_url, household_id, client_name, folio, filled_by_id, filled_by_name, status"
+
+    def add_filing(self, *, form_title: str, form_url: str | None, household_id: str | None, client_name: str | None,
+                   folio: str | None, staff_id: str | None, staff_name: str | None, pdf: bytes) -> dict[str, Any]:
+        conn = self._conn()
+        fid = _new_id()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT INTO operations_filings (id, created_at, form_title, form_url, household_id, client_name, folio, filled_by_id, filled_by_name, status, pdf) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)",
+                    (fid, _utcnow(), form_title, form_url, household_id, client_name, folio, staff_id, staff_name, pdf),
+                )
+        finally:
+            conn.close()
+        return self.get_filing(fid) or {}
+
+    def list_filings(self, limit: int = 200) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(f"SELECT {self._FILING_COLS} FROM operations_filings ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def get_filing(self, filing_id: str) -> dict[str, Any] | None:
+        conn = self._conn()
+        try:
+            row = conn.execute(f"SELECT {self._FILING_COLS} FROM operations_filings WHERE id = ?", (filing_id,)).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def get_filing_pdf(self, filing_id: str) -> bytes | None:
+        conn = self._conn()
+        try:
+            row = conn.execute("SELECT pdf FROM operations_filings WHERE id = ?", (filing_id,)).fetchone()
+            return bytes(row["pdf"]) if row and row["pdf"] is not None else None
+        finally:
+            conn.close()
+
+    def set_filing_status(self, filing_id: str, status: int) -> None:
+        conn = self._conn()
+        try:
+            with conn:
+                conn.execute("UPDATE operations_filings SET status = ? WHERE id = ?", (status, filing_id))
+        finally:
+            conn.close()
+
     # --- Audit Events ---
 
     def log_audit(self, staff_id: str | None, action: str, target_type: str, target_id: str | None = None, details: dict[str, Any] | None = None, ip_address: str | None = None) -> None:

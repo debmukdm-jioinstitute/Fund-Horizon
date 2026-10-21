@@ -343,6 +343,25 @@ def _init_backoffice_schema_raw(conn: sqlite3.Connection) -> None:
 
     conn.execute(
         """
+        CREATE TABLE IF NOT EXISTS operations_filings (
+            id TEXT PRIMARY KEY,
+            created_at TEXT NOT NULL,
+            form_title TEXT NOT NULL,
+            form_url TEXT,
+            household_id TEXT,
+            client_name TEXT,
+            folio TEXT,
+            filled_by_id TEXT,
+            filled_by_name TEXT,
+            status INTEGER NOT NULL DEFAULT 0,
+            pdf BLOB
+        )
+        """
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS ix_filings_created ON operations_filings(created_at DESC)")
+
+    conn.execute(
+        """
         CREATE TABLE IF NOT EXISTS audit_events (
             id TEXT PRIMARY KEY,
             staff_id TEXT,

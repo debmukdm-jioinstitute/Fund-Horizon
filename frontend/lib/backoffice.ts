@@ -1251,6 +1251,22 @@ export const createStaffMember = async (body: {
 export const updateStaffMember = (id: string, body: { role?: string; status?: "active" | "inactive"; reset_password?: boolean }) =>
   boFetch<{ temporary_password: string | null }>(`/api/backoffice/staff/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(body) });
 
+export interface Filing {
+  id: string;
+  created_at: string;
+  form_title: string;
+  form_url: string | null;
+  household_id: string | null;
+  client_name: string | null;
+  folio: string | null;
+  filled_by_name: string | null;
+  status: number; // 0 Downloaded, 1 Submitted to RTA, 2 Ack received
+}
+export const FILING_STATUSES = ["Downloaded", "Submitted to RTA", "Ack received"] as const;
+export const getFilings = () => boFetch<{ data: Filing[] }>("/api/backoffice/operations/filings").then((r) => r.data);
+export const setFilingStatus = (id: string, status: number) =>
+  boFetch<{ data: Filing }>(`/api/backoffice/operations/filings/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ status }) });
+
 export const getNews = async (opts: { limit?: number; category?: string } = {}): Promise<NewsItem[]> => {
   const q = new URLSearchParams({ limit: String(opts.limit ?? 40) });
   if (opts.category) q.set("category", opts.category);

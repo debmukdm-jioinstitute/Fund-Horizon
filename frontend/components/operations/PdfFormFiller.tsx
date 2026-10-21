@@ -61,7 +61,13 @@ function PageView({ doc, pageNo, zoom, children }: { doc: PDFDocumentProxy; page
   );
 }
 
-export default function PdfFormFiller({ source, onClose, onDownloaded }: { source: PdfSource; onClose: () => void; onDownloaded?: (title: string, client: string) => void }) {
+export interface ClientDetails { name: string; pan: string; dob: string; mobile: string; email: string; folio: string; address: string }
+export interface FillContext { householdId?: string; householdName?: string }
+
+export default function PdfFormFiller({ source, onClose, onDownloaded, prefill, context }: {
+  source: PdfSource; onClose: () => void; onDownloaded?: (title: string, client: string, filingId?: string) => void;
+  prefill?: Partial<ClientDetails>; context?: FillContext;
+}) {
   const [doc, setDoc] = useState<PDFDocumentProxy | null>(null);
   const [pageSizes, setPageSizes] = useState<{ w: number; h: number; rotated: boolean }[]>([]);
   const [widgets, setWidgets] = useState<Widget[]>([]);
@@ -81,7 +87,7 @@ export default function PdfFormFiller({ source, onClose, onDownloaded }: { sourc
   const [initials, setInitials] = useState<string | null>(null);
   const [padFor, setPadFor] = useState<"signature" | "initials" | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [client, setClient] = useState({ name: "", pan: "", dob: "", mobile: "", email: "", folio: "", address: "" });
+  const [client, setClient] = useState<ClientDetails>({ name: "", pan: "", dob: "", mobile: "", email: "", folio: "", address: "", ...prefill });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState<{ page: number; x: number; y: number; w: number; h: number } | null>(null);
@@ -262,13 +268,18 @@ export default function PdfFormFiller({ source, onClose, onDownloaded }: { sourc
       form.append("edits", JSON.stringify(edits));
       form.append("drop_fields", JSON.stringify(changed.map((w) => w.name)));
       form.append("filename", `${source.title}_${client.name || "filled"}`.toLowerCase());
+      form.append("log_filing", "true");
+      form.append("form_title", source.title);
+      form.append("client_name", context?.householdName || client.name);
+      if (context?.householdId) form.append("household_id", context.householdId);
+      if (client.folio) form.append("folio", client.folio);
       const res = await fetch("/api/backoffice/operations/pdf-fill", { method: "POST", body: form, credentials: "include" });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail ?? `Could not build the PDF (${res.status})`);
       const url = URL.createObjectURL(await res.blob());
       const a = document.createElement("a");
       a.href = url; a.download = `${source.title.replace(/[^a-zA-Z0-9]+/g, "_").toLowerCase()}_filled.pdf`;
       document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      onDownloaded?.(source.title, client.name || "—");
+      onDownloaded?.(source.title, context?.householdName || client.name || "—", res.headers.get("X-Filing-Id") ?? undefined);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Download failed.");
     } finally { setBusy(false); }

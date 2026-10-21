@@ -1,0 +1,80 @@
+{
+ "id": "stepup-16",
+ "title": "Why clients don't step up",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Name the five behaviours that stop clients from stepping up.",
+  "Give the compliant response to each."
+ ],
+ "body_md": "Most clients agree a step-up makes sense, then never do it. Make it automatic, small and tied to a raise.\n\n| Behaviour | What it sounds like | What to say |\n|---|---|---|\n| Lifestyle creep | \"The raise just disappeared.\" | \"Let's send a slice of every raise to the SIP before it reaches your account.\" |\n| Present bias | \"I'll increase it next year.\" | \"Set it now and it happens on its own. Waiting five years cost about ₹54 lakh in our example.\" |\n| Fear of commitment | \"What if I can't afford it later?\" | \"We'll set a cap, and it can be paused or reduced at review.\" |\n| Anchoring on the start amount | \"₹10,000 is my SIP.\" | \"That was right five years ago. As a share of your income, it's now much smaller.\" |\n| Waiting for markets | \"I'll step up after the market settles.\" | \"A step-up is about your income, not the market. Falls are good months to buy more units.\" |\n\n**The one line to remember:** save more tomorrow, automatically.",
+ "key_terms": [
+  "lifestyle creep",
+  "step-up SIP",
+  "cap amount"
+ ],
+ "example": "Sameer has delayed for three years. Setting an automatic 5% step-up with a cap, timed to his April raise, removes the annual decision that he keeps postponing.",
+ "say": [
+  "We'll send a slice of every raise to the SIP before it reaches your account.",
+  "A step-up is about your income, not the market."
+ ],
+ "never": [
+  "Let's wait until the market settles.",
+  "You'll increase it when you feel ready."
+ ],
+ "talk_track": [
+  {
+   "n": 12,
+   "title": "Why clients don't step up, and what to say",
+   "text": "Most clients agree a step-up makes sense, then never do it. Lifestyle creep: “the raise just disappeared”. Suggest sending a slice of every raise to the SIP first, before it reaches their account. Present bias: “I'll increase it next year”. Set it now, and it happens on its own. Fear of commitment: set a cap, and remind them it can be paused or reduced. Anchoring: ten thousand is much smaller as a share of income now. And waiting for markets: a step-up is about income, not the market."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q35",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client says, \"I'll increase it next year.\" What is the best response?",
+   "o": [
+    "Agree and revisit next year",
+    "Set it now so it happens automatically, and mention the cost of a five-year delay",
+    "Double the SIP immediately",
+    "Stop the SIP until next year"
+   ],
+   "a": 1,
+   "why": "Present bias is beaten by automation, not by good intentions."
+  },
+  {
+   "id": "stepup-q45x",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client says, \"What if I can't afford it later?\" What helps?",
+   "o": [
+    "A promise that income will grow",
+    "A cap, plus the option to pause or reduce at review",
+    "A longer tenure",
+    "A higher step-up"
+   ],
+   "a": 1,
+   "why": "A bounded commitment is easier to accept, and it can be revisited every year."
+  },
+  {
+   "id": "stepup-q46x",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client wants to wait for the market to settle before stepping up. What do you say?",
+   "o": [
+    "Good idea; markets are risky",
+    "A step-up is about your income, not the market; falls are good months to buy more units",
+    "Let's switch funds instead",
+    "Let's stop the SIP until then"
+   ],
+   "a": 1,
+   "why": "The step-up decision is tied to income. Market timing is not part of it."
+  }
+ ],
+ "card_ids": [
+  "stepup-c26",
+  "stepup-c27",
+  "stepup-c28"
+ ],
+ "words": 184
+}

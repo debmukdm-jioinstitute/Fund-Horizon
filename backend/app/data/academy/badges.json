@@ -9,13 +9,31 @@
   "id": "grad_mf",
   "name": "Module Graduate (MF)",
   "icon": "🎓",
-  "hint": "Pass the MF final quiz."
+  "hint": "Pass the MF Distributor final quiz."
  },
  {
   "id": "grad_pms",
   "name": "Module Graduate (PMS)",
   "icon": "🎓",
-  "hint": "Pass the PMS final quiz."
+  "hint": "Pass the PMS Distributor final quiz."
+ },
+ {
+  "id": "grad_sip",
+  "name": "Module Graduate (SIP – What Next?)",
+  "icon": "🎓",
+  "hint": "Pass the SIP – What Next? final quiz."
+ },
+ {
+  "id": "grad_alloc",
+  "name": "Module Graduate (Asset Allocation)",
+  "icon": "🎓",
+  "hint": "Pass the Asset Allocation final quiz."
+ },
+ {
+  "id": "grad_stepup",
+  "name": "Module Graduate (SIP Step-Up)",
+  "icon": "🎓",
+  "hint": "Pass the SIP Step-Up final quiz."
  },
  {
   "id": "streak_7",
@@ -51,6 +69,6 @@
   "id": "full_stack",
   "name": "Full Stack Distributor",
   "icon": "🏆",
-  "hint": "Pass both module final quizzes."
+  "hint": "Pass every module final quiz."
  }
 ]

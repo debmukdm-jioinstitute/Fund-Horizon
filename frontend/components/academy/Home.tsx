@@ -5,7 +5,6 @@ import { useAcademy } from "./AcademyContext";
 import { Certificate } from "./Certificate";
 import { Bar, Ring, Spinner, accent, btnGhost, btnPrimary, card, muted } from "./ui";
 
-const TITLES: Record<string, string> = { mf: "MF Distributor", pms: "PMS Distributor" };
 const PATH = ["Beginner", "Intermediate", "Expert"];
 
 export function Home() {
@@ -14,13 +13,18 @@ export function Home() {
   const span = Math.max(1, me.next_level_xp - me.level_floor_xp);
   const earned = new Set(me.badges.map((b) => b.id));
   const nl = me.next_lesson;
+  // module order and titles come from the server (/me), so a new module needs no UI change
+  const mods = Object.entries(me.progress);
+  const [firstMid, firstP] = mods[0] ?? ["mf", null];
+  const heroMid = nl?.module ?? firstMid;
+  const heroLesson = nl?.lesson_id ?? "";
   return (
     <div className="space-y-6">
       <section className={`${card} p-6 flex flex-wrap items-center justify-between gap-4`}>
         <div>
           {me.new_here ? (
             <>
-              <h2 className="text-xl font-semibold">👋 New here? Start with MF Basics → Lesson 1</h2>
+              <h2 className="text-xl font-semibold">👋 New here? Start with {firstP?.title ?? "Module 1"} → Lesson 1</h2>
               <p className={`text-[15px] ${muted}`}>Short lessons, flashcards and quizzes. Your first lesson takes about 5 minutes.</p>
             </>
           ) : nl ? (
@@ -35,8 +39,8 @@ export function Home() {
             </>
           )}
         </div>
-        <button className={btnPrimary} onClick={() => (me.new_here || !nl ? go(me.new_here ? { m: "mf", l: "mf-01", v: "read" } : { m: "mf", v: "quiz" }) : go({ m: nl.module, l: nl.lesson_id, v: "read" }))}>
-          {me.new_here ? "Start Lesson 1" : nl ? "Continue lesson" : "Open quizzes"}
+        <button className={btnPrimary} onClick={() => go({ m: heroMid, l: heroLesson, v: "read" })}>
+          {me.new_here ? "Start Lesson 1" : nl ? "Continue lesson" : `Open ${firstP?.title ?? "Module 1"}`}
         </button>
       </section>
 
@@ -52,7 +56,7 @@ export function Home() {
           <Bar value={(me.xp - me.level_floor_xp) / span} label="Progress to next level" />
           <div className={`text-sm ${muted}`}>{Math.max(0, me.next_level_xp - me.xp)} XP to level {me.level + 1}</div>
         </div>
-        <button className={`${card} p-4 text-left hover:bg-[#F7F9FB] dark:hover:bg-[#171E27]`} onClick={() => go({ m: "mf", v: "cards" })}>
+        <button className={`${card} p-4 text-left hover:bg-[#F7F9FB] dark:hover:bg-[#171E27]`} onClick={() => go({ m: heroMid, v: "cards" })}>
           <div className={`text-sm ${muted}`}>🃏 Cards due today</div>
           <div className="text-2xl font-semibold">{me.due_count}</div>
           <div className={`text-sm ${accent}`}>Review now →</div>
@@ -64,19 +68,21 @@ export function Home() {
         </button>
       </section>
 
-      <section aria-label="Modules" className="grid gap-4 md:grid-cols-2">
-        {Object.entries(me.progress).map(([mid, p]) => {
+      <section aria-label="Modules" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {mods.map(([mid, p]) => {
           const frac = p.total ? p.done / p.total : 0;
           const stage = frac < 1 / 3 ? 0 : frac < 2 / 3 ? 1 : 2;
           return (
             <div key={mid} className={`${card} p-6 space-y-4`}>
               <div className="flex items-center gap-4">
-                <Ring value={frac} size={64} label={`${TITLES[mid] ?? mid} progress`} />
+                <Ring value={frac} size={64} label={`${p.title} progress`} />
                 <div>
-                  <h3 className="text-lg font-semibold">{TITLES[mid] ?? mid}</h3>
+                  <p className={`text-xs font-bold uppercase tracking-wider ${muted}`}>{p.code}</p>
+                  <h3 className="text-lg font-semibold">{p.title}</h3>
                   <p className={`text-[15px] ${muted}`}>{p.done}/{p.total} lessons{p.minutes_left ? ` · about ${p.minutes_left} min left` : ""}</p>
                 </div>
               </div>
+              <p className={`text-[15px] ${muted}`}>{p.blurb}</p>
               <ol className="flex items-center gap-2 text-sm" aria-label="Path">
                 {PATH.map((s, i) => (
                   <li key={s} aria-current={i === stage ? "step" : undefined} className={`flex items-center gap-2 ${i === stage ? `${accent} font-semibold` : muted}`}>

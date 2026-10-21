@@ -1,0 +1,78 @@
+{
+ "id": "stepup-14",
+ "title": "Reviewing the step-up every year",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the annual step-up check.",
+  "Decide when the step-up should slow rather than grow."
+ ],
+ "body_md": "Review the step-up at every annual SIP review, alongside the goal and the asset mix.\n\n## The annual check\n\n- Did income grow as expected? If not, keep the step-up smaller this year rather than cancelling the SIP.\n- Is the instalment still comfortable? A SIP that feels heavy is at risk of being stopped.\n- Is the goal on track or ahead? If ahead, the step-up can slow down.\n- Has the cap been reached? Decide whether to raise it, keep it, or start a new SIP.\n- Does the bank mandate still cover the next instalment?\n- Is the step-up money going to the right asset mix? As a goal nears, new money may go to debt instead.\n\n## The principle\n\nThe step-up is a dial, not a switch. Small adjustments each year keep the SIP alive; an all-or-nothing approach produces cancellations.",
+ "key_terms": [
+  "step-up SIP",
+  "cap amount",
+  "rebalancing"
+ ],
+ "example": "At the review, income grew 6% not 10%, so the step-up is held at 5% for the year, the cap is unchanged, and the new money is redirected to debt because the goal is now three years away.",
+ "say": [
+  "Let's check the step-up against your income, your comfort and the goal.",
+  "If income didn't grow as expected, we'll hold the step-up rather than cancel the SIP."
+ ],
+ "never": [
+  "The step-up runs on its own; no review needed.",
+  "If you can't afford it this year, cancel the SIP."
+ ],
+ "talk_track": [
+  {
+   "n": 11,
+   "title": "Keep the step-up realistic as life changes",
+   "text": "The step-up needs a review. At every annual review, check income, comfort, goal progress, the cap, the mandate limit and the asset mix. If the goal is ahead of plan, the step-up can slow down. If the cap has been reached, decide whether to raise it, keep it, or start a new SIP."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q39",
+   "sec": "R: Review & Rebalance",
+   "q": "What should happen at the annual review if income grew less than expected?",
+   "o": [
+    "Cancel the SIP",
+    "Keep the step-up smaller this year rather than cancelling",
+    "Double the step-up",
+    "Remove the cap"
+   ],
+   "a": 1,
+   "why": "Hold or lower the step-up; never cancel the SIP over one weak year."
+  },
+  {
+   "id": "stepup-q40x",
+   "sec": "R: Review & Rebalance",
+   "q": "The goal is now ahead of plan. What does that mean for the step-up?",
+   "o": [
+    "It can slow down",
+    "It must increase",
+    "It must be cancelled",
+    "It should move to a sectoral fund"
+   ],
+   "a": 0,
+   "why": "If the goal is ahead, the step-up can slow; the plan is working."
+  },
+  {
+   "id": "stepup-q41x",
+   "sec": "R: Review & Rebalance",
+   "q": "Which item belongs in the annual step-up check?",
+   "o": [
+    "The fund's star rating only",
+    "Income, comfort, goal progress, cap, mandate and asset mix",
+    "Only the cap",
+    "Only the market level"
+   ],
+   "a": 1,
+   "why": "All six, every year, at the same review as the goal and the mix."
+  }
+ ],
+ "card_ids": [
+  "stepup-c24"
+ ],
+ "words": 144
+}

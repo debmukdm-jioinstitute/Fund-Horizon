@@ -1,0 +1,79 @@
+{
+ "id": "sip-12",
+ "title": "Goal reached: staged redemption",
+ "minutes": 3,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Distinguish a one-time goal from a regular-income goal, and the tool for each.",
+  "Explain why staged redemption beats a single redemption."
+ ],
+ "body_md": "When the goal arrives, the money has to leave the portfolio in the right shape.\n\n## Two kinds of goal\n\n- A one-time goal — an education fee, a house down payment, a wedding: redeem from the debt or liquid portion as payments fall due.\n- A regular-income goal — retirement: set up a Systematic Withdrawal Plan, which redeems a fixed amount each month.\n\n## Why staged, not one shot\n\n- A single redemption on one day puts the whole amount at that day's price and tax treatment.\n- Staged redemption matches the money to the payments, so nothing sits in equity that will be spent next month.\n- The rest stays invested, so it keeps earning while it waits its turn.\n\n## Before the first redemption\n\nCheck the exit load on recent instalments, refer the tax question to a CA, and confirm the nominee, bank account and KYC are current. Money moving out is the worst time to discover an outdated bank mandate.",
+ "key_terms": [
+  "SWP",
+  "exit load",
+  "KYC"
+ ],
+ "example": "A client's daughter starts college in July and the fees are due each term. The first term is redeemed from a liquid fund now; the rest stays in short-duration debt and is redeemed term by term.",
+ "say": [
+  "We'll redeem as each payment falls due, so nothing sits in equity that you need next term.",
+  "Let's confirm your bank details and nominee before the first withdrawal."
+ ],
+ "never": [
+  "Let's redeem it all today and park it in a savings account.",
+  "Withdrawals from your SIP are tax-free."
+ ],
+ "talk_track": [
+  {
+   "n": 10,
+   "title": "Goal reached: staged redemption or SWP",
+   "text": "When the goal is reached and the client needs regular income, such as in retirement, we use a systematic withdrawal plan, which redeems a fixed amount every month. For a one-time goal, redeem from the safe portion as payments fall due, and keep the rest invested until its turn."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q21x",
+   "sec": "A: Act Right",
+   "q": "A one-time goal such as a college fee is best funded by…",
+   "o": [
+    "Redeeming the whole corpus on day one",
+    "Redeeming from the debt or liquid portion as each payment falls due",
+    "An SWP for the next twenty years",
+    "Borrowing against the units"
+   ],
+   "a": 1,
+   "why": "A one-time goal is paid as payments fall due, from the safe portion, while the rest stays invested."
+  },
+  {
+   "id": "sip-q22x",
+   "sec": "A: Act Right",
+   "q": "Which goal calls for an SWP?",
+   "o": [
+    "A house down payment in 18 months",
+    "A regular-income goal such as retirement",
+    "A wedding in two years",
+    "A car purchase next year"
+   ],
+   "a": 1,
+   "why": "An SWP redeems a fixed amount at regular intervals, which suits a monthly income need."
+  },
+  {
+   "id": "sip-q23x",
+   "sec": "A: Act Right",
+   "q": "Why stage redemptions instead of making one?",
+   "o": [
+    "Because the AMC limits redemptions to one a year",
+    "Because it matches the money to the payments and avoids one day's price and tax treatment",
+    "Because staged redemptions are always tax-free",
+    "Because exit loads rise with each redemption"
+   ],
+   "a": 1,
+   "why": "Staged redemption matches cash to need and avoids putting the whole amount through one day's price and tax treatment."
+  }
+ ],
+ "card_ids": [
+  "sip-c25",
+  "sip-c27"
+ ],
+ "words": 164
+}

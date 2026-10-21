@@ -1,0 +1,76 @@
+{
+ "id": "sip-18",
+ "title": "Role-play lab: six SIP conversations",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Handle six realistic SIP conversations in the right order: ask, check, plan, record.",
+  "Avoid promises while still giving the client a clear next step."
+ ],
+ "body_md": "Practise these in pairs, five minutes each. The expected answer is the shape of a good conversation, not a script.\n\n## 1. The forgotten SIP\n\nAnil's 10-year SIP ended last month. His child's college fund is needed in 8 years. Expected: confirm the goal amount, renew the SIP with a step-up, and calendar the next end date.\n\n## 2. Stop during a fall\n\nMeera wants to stop her SIP because markets fell 15%. Her goal is 12 years away and her income is stable. Expected: ask the reason, explain buying more units in a fall, offer a pause only if cash is tight.\n\n## 3. Goal in two years\n\nRahul's house down payment is due in 24 months and 80% of the money is in equity. Expected: plan a gradual STP to debt or liquid funds, check exit loads, refer tax to a CA.\n\n## 4. Bonus received\n\nPriya got a ₹3 lakh bonus and wants to double her SIP. Expected: check the emergency fund and loans first, then a sustainable step-up; consider an STP for the lump sum.\n\n## 5. New retiree\n\nMr. Iyer has ₹50 lakh and needs ₹45,000 a month. Expected: show the illustrative SWP duration (about 17 years at 8%), discuss a lower withdrawal or other income, keep a 1–2 year buffer.\n\n## 6. Failed debits\n\nSana's SIP has failed twice in a row because of a mandate issue. Expected: explain that a third consecutive failure cancels the SIP, and fix the mandate now.",
+ "key_terms": [
+  "SIP",
+  "SWP",
+  "STP"
+ ],
+ "example": "In the Mr. Iyer role-play, the good answer covers three things: the illustrative duration at a stated assumption, the alternatives (a lower withdrawal or other income), and the one-year buffer — with no promise about how long the money will last.",
+ "say": [
+  "Let's look at what the illustration shows, then at what would make it more comfortable.",
+  "Before we decide, let's fix the mandate so the next debit isn't missed."
+ ],
+ "never": [
+  "Don't worry, the money will last.",
+  "Just double the SIP; you'll thank me later."
+ ],
+ "talk_track": [
+  {
+   "n": 16,
+   "title": "Practice before you need it",
+   "text": "To wrap up: practise this before you need it. Role-play the six client scenarios from the manual in pairs, take the twenty-five question quiz, where the pass mark is twenty, and use the thirty-two flash cards for quick revision. Remember, this is for training and investor awareness, not investment advice."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q29",
+   "sec": "Practice: Role-Plays",
+   "q": "Anil's 10-year SIP has ended and his goal is 8 years away. What is the best next step?",
+   "o": [
+    "Redeem everything and move to a fixed deposit",
+    "Renew the SIP, ideally with a step-up, and calendar the end date",
+    "Stop the SIP; the goal is only 8 years away",
+    "Switch to a small-cap fund for higher returns"
+   ],
+   "a": 1,
+   "why": "With 8 years to the goal, renewing adds contributions while the existing units keep compounding. Calendar the new end date."
+  },
+  {
+   "id": "sip-q30",
+   "sec": "Practice: Role-Plays",
+   "q": "Sana's monthly SIP has failed twice in a row. What must happen now?",
+   "o": [
+    "Wait for the third failure",
+    "Fix or re-register the mandate now, because a third consecutive failure cancels the SIP",
+    "Cancel the SIP and start a new one",
+    "Change her bank account without telling her"
+   ],
+   "a": 1,
+   "why": "Three consecutive failures cancel a monthly SIP, so the mandate is fixed after the first, definitely after the second."
+  },
+  {
+   "id": "sip-q31x",
+   "sec": "Practice: Role-Plays",
+   "q": "Rahul's house down payment is due in 24 months and 80% is in equity. What does a good answer include?",
+   "o": [
+    "A gradual STP to debt or liquid funds, exit-load checks and a referral to a CA",
+    "A promise that equity will recover in time",
+    "Moving everything to a small-cap fund",
+    "Doing nothing until month 23"
+   ],
+   "a": 0,
+   "why": "Start the glide path now, check exit loads instalment by instalment, and refer the tax question to a CA."
+  }
+ ],
+ "card_ids": [],
+ "words": 248
+}

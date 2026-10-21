@@ -1,0 +1,81 @@
+{
+ "id": "stepup-12",
+ "title": "Setting up a step-up: six steps",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Walk through the six steps to set up a step-up.",
+  "Explain where a bonus or windfall fits."
+ ],
+ "body_md": "Setting up a step-up takes six steps, and skipping any one of them creates a problem later.\n\n1. Pick the type: fixed amount or percentage; yearly is simplest to explain.\n2. Set a cap, where the AMC allows one, so the instalment stops rising at a comfortable level.\n3. Check the bank mandate: it must cover the highest future instalment.\n4. Existing SIP? Check whether adding a step-up means cancelling and re-registering, and whether exit-load terms change.\n5. Time it: step up just after the client's annual raise.\n6. No facility, or the client prefers control? Start a second, smaller SIP each year instead.\n\n## Bonuses and windfalls\n\nUse a lump sum or an STP alongside the step-up, not instead of it. A bonus is irregular; a step-up is the habit that runs every year.\n\n## What goes in the note\n\nThe rule (type, rate, frequency), the cap, the month it applies, the mandate limit, and the review date.",
+ "key_terms": [
+  "step-up SIP",
+  "cap amount",
+  "bank mandate limit",
+  "STP"
+ ],
+ "example": "A client with a bonus of ₹4 lakh sets a 5% step-up in April, keeps the emergency fund topped up first, and puts the bonus through a three-month STP — the step-up runs alongside it.",
+ "say": [
+  "Let's set the type, the cap and the mandate limit, and time it to your raise.",
+  "A bonus is a one-off; we'll use an STP for it and keep the step-up running."
+ ],
+ "never": [
+  "Set the step-up as high as possible and we'll sort the mandate later.",
+  "A bonus replaces the need for a step-up."
+ ],
+ "talk_track": [
+  {
+   "n": 10,
+   "title": "Setting up a step-up: six steps",
+   "text": "Setting up a step-up takes six steps. One, pick the type: a fixed amount or a percentage; yearly is the simplest to explain. Two, set a cap where the fund house allows it. Three, check the bank mandate: it must cover the highest future instalment. Four, for an existing SIP, check whether adding a step-up means cancelling and re-registering. Five, time it to just after the client's annual raise. And six, if there's no step-up facility, start a second smaller SIP each year instead."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q33",
+   "sec": "A: Act Right",
+   "q": "What is a step-up cap?",
+   "o": [
+    "The maximum instalment, beyond which the step-up stops rising",
+    "The maximum return the fund can earn",
+    "The maximum number of SIPs allowed",
+    "The maximum exit load"
+   ],
+   "a": 0,
+   "why": "A cap stops the instalment rising at a level the client finds comfortable."
+  },
+  {
+   "id": "stepup-q34x",
+   "sec": "A: Act Right",
+   "q": "Why must the bank mandate be checked?",
+   "o": [
+    "Because it must cover the highest future instalment",
+    "Because it sets the fund's return",
+    "Because it decides the exit load",
+    "Because the AMC requires a new mandate every year"
+   ],
+   "a": 0,
+   "why": "A mandate that only covers today's amount will fail on a future, higher instalment."
+  },
+  {
+   "id": "stepup-q35x",
+   "sec": "A: Act Right",
+   "q": "What should be done with a bonus?",
+   "o": [
+    "Replace the step-up with it",
+    "Use a lump sum or STP alongside the step-up",
+    "Ignore it",
+    "Use it to start a sectoral SIP"
+   ],
+   "a": 1,
+   "why": "A bonus is irregular; the step-up is the annual habit. Use both."
+  }
+ ],
+ "card_ids": [
+  "stepup-c21",
+  "stepup-c22",
+  "stepup-c23"
+ ],
+ "words": 159
+}

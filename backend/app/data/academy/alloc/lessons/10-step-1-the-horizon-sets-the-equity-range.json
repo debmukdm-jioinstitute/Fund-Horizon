@@ -1,0 +1,77 @@
+{
+ "id": "alloc-10",
+ "title": "Step 1: the horizon sets the equity range",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Give the illustrative equity range for each horizon band.",
+  "Explain why the horizon, not the product, comes first."
+ ],
+ "body_md": "Start from the horizon, adjust for the risk profile, then pick products. Never start from the product.\n\n## The ranges\n\n| Time to goal | Illustrative equity range | The rest in |\n|---|---|---|\n| Under 1 year | 0% | Liquid, overnight or money-market funds |\n| 1–3 years | 0–20% | Short-duration debt, arbitrage funds |\n| 3–5 years | 20–50% | Debt funds, some gold |\n| 5–7 years | 40–65% | Debt and gold |\n| 7+ years | 60–80% | Debt and gold as stabilisers |\n\n## Why the horizon decides\n\nEquity needs time to recover from its falls. The shorter the horizon, the less room there is for that recovery, so the smaller the equity share. This is arithmetic, not opinion, and it is why the product choice comes third rather than first.\n\nThe ranges are illustrative, not recommendations. The risk profile picks the point inside the range.",
+ "key_terms": [
+  "asset allocation",
+  "riskometer"
+ ],
+ "example": "A goal in 18 months lands in the 1–3 year band: at most 20% equity, with the rest in short-duration debt. A 20-year retirement goal lands in the 7+ band: 60–80% equity, with debt and gold as stabilisers.",
+ "say": [
+  "The horizon sets the range for equity; the risk profile picks the point inside it.",
+  "Money needed within a year carries no equity."
+ ],
+ "never": [
+  "Let's start with this new fund and see where it fits.",
+  "Two years is long enough for equity to recover."
+ ],
+ "talk_track": [
+  {
+   "n": 8,
+   "title": "Step 1: horizon sets the range for equity",
+   "text": "Step one: the horizon sets the range for equity. For money needed in under a year, no equity at all. One to three years, zero to twenty percent. Three to five years, twenty to fifty percent. Five to seven, forty to sixty-five. And seven years or more, sixty to eighty percent. The rest goes into debt and gold, and for short goals, into liquid funds. The key habit: start from the horizon, never from the product."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q6",
+   "sec": "A: Act Right",
+   "q": "Money needed within a year should be in…",
+   "o": [
+    "Small-cap funds",
+    "Liquid or money-market funds",
+    "Gold",
+    "Thematic funds"
+   ],
+   "a": 1,
+   "why": "Under a year means no equity: liquid, overnight or money-market funds."
+  },
+  {
+   "id": "alloc-q29x",
+   "sec": "A: Act Right",
+   "q": "What is the illustrative equity range for a 7+ year goal?",
+   "o": [
+    "0–20%",
+    "20–50%",
+    "40–65%",
+    "60–80%"
+   ],
+   "a": 3,
+   "why": "Seven years or more: 60–80% equity, with debt and gold as stabilisers."
+  },
+  {
+   "id": "alloc-q30x",
+   "sec": "A: Act Right",
+   "q": "Why does the horizon set the range before the risk profile?",
+   "o": [
+    "Because SEBI says so",
+    "Because equity needs time to recover from falls, so short horizons cannot carry much of it",
+    "Because younger clients pay less tax",
+    "Because debt funds are safer"
+   ],
+   "a": 1,
+   "why": "The horizon decides how much time equity has to recover. The risk profile then picks a point inside that range."
+  }
+ ],
+ "card_ids": [
+  "alloc-c11"
+ ],
+ "words": 154
+}

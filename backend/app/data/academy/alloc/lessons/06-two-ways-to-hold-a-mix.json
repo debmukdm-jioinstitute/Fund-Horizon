@@ -1,0 +1,80 @@
+{
+ "id": "alloc-06",
+ "title": "Two ways to hold a mix",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Compare separate funds for each asset class with a single hybrid or multi-asset fund.",
+  "State the SEBI rule for multi-asset allocation funds."
+ ],
+ "body_md": "Once the mix is set, there are two valid ways to hold it.\n\n## Separate funds\n\nOne equity fund, one debt fund, one gold fund. More control over the mix, and the client sees each part clearly. The cost is that you have to rebalance it yourself.\n\n## One all-in-one fund\n\nMulti-asset, balanced advantage, aggressive or conservative hybrid funds hold several asset classes in one scheme. Simpler to run, and rebalancing inside the fund is not a taxable event for the investor.\n\n## What SEBI requires\n\nA multi-asset allocation fund must hold at least 10% in each of at least three asset classes. A balanced advantage fund changes its equity-debt mix dynamically, so always check the actual mix in the factsheet.\n\n## How to choose\n\nBy the client's preference and portfolio size. A small portfolio is easier to run in one hybrid fund. A large one usually wants separate parts so the mix can be controlled. Both are valid; neither is automatically better.",
+ "key_terms": [
+  "multi-asset allocation fund",
+  "balanced advantage fund",
+  "rebalancing"
+ ],
+ "example": "A client with ₹8 lakh a year to invest chooses a multi-asset fund for simplicity, while a client with ₹80 lakh uses separate equity, debt and gold funds so the mix can be controlled precisely.",
+ "say": [
+  "We can hold the mix in separate funds, or in one multi-asset fund if you prefer simplicity.",
+  "A multi-asset fund must hold at least 10% in each of at least three asset classes."
+ ],
+ "never": [
+  "A hybrid fund is safer than equity.",
+  "The balanced advantage fund always holds 65% equity."
+ ],
+ "talk_track": [
+  {
+   "n": 11,
+   "title": "Then choose products for each part",
+   "text": "There are two valid ways to hold a mix: separate funds, which give more control but need you to rebalance, or a single hybrid fund, which is simpler because the fund rebalances inside. Under SEBI rules, a multi-asset allocation fund must hold at least ten percent in each of at least three asset classes."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q16x",
+   "sec": "L: Learn the Basics",
+   "q": "Under SEBI rules, a multi-asset allocation fund must hold…",
+   "o": [
+    "Only equity and debt",
+    "At least 10% in each of at least three asset classes",
+    "At least 50% in gold",
+    "No equity at all"
+   ],
+   "a": 1,
+   "why": "That is the multi-asset mandate: at least 10% in each of at least three asset classes."
+  },
+  {
+   "id": "alloc-q17x",
+   "sec": "L: Learn the Basics",
+   "q": "What is the main advantage of holding the mix in separate funds?",
+   "o": [
+    "It removes tax",
+    "More control over the mix, though you have to rebalance it",
+    "It guarantees higher returns",
+    "It avoids exit loads"
+   ],
+   "a": 1,
+   "why": "Separate funds give control and visibility; the cost is that rebalancing is your job."
+  },
+  {
+   "id": "alloc-q18x",
+   "sec": "L: Learn the Basics",
+   "q": "What should you check in a balanced advantage fund?",
+   "o": [
+    "Only its star rating",
+    "The actual equity-debt mix in the factsheet",
+    "The AMC's head office",
+    "The fund manager's age"
+   ],
+   "a": 1,
+   "why": "A balanced advantage fund changes its mix dynamically, so the factsheet is the source."
+  }
+ ],
+ "card_ids": [
+  "alloc-c14",
+  "alloc-c28",
+  "alloc-c29"
+ ],
+ "words": 163
+}

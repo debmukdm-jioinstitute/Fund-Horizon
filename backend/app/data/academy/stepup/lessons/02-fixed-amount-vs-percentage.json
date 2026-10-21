@@ -1,0 +1,81 @@
+{
+ "id": "stepup-02",
+ "title": "Fixed amount vs percentage",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Compare a fixed-amount step-up with a percentage step-up.",
+  "Say which suits a client with an irregular income."
+ ],
+ "body_md": "There are two ways to set a step-up, and the difference compounds.\n\n## Fixed amount\n\nAdds the same rupee amount each time: ₹10,000 → ₹11,000 → ₹12,000 → ₹13,000. It is gentler and easier to budget.\n\n## Percentage\n\nRaises the instalment by a set share of the previous one. At 10%: ₹10,000 → ₹11,000 → ₹12,100 → ₹13,310.\n\n## Why the percentage grows faster\n\nEvery raise is applied to a bigger base. The fixed amount adds ₹1,000 every year; the percentage adds 10% of an amount that is itself growing. Over 20 years the difference is large.\n\n## Which to choose\n\n- Fixed amount: irregular income, a tight budget, a client who wants a number they can predict.\n- Percentage: salaried income growing every year, and a goal that is still far away.\n\nBoth are valid. The best one is the one the client will not cancel in a tight month.",
+ "key_terms": [
+  "step-up SIP",
+  "cap amount",
+  "SIP"
+ ],
+ "example": "At ₹10,000 a month, a fixed +₹1,000 reaches ₹14,000 by year 5; a 10% step-up reaches ₹14,641. By year 20 the gap is far wider, because one is linear and the other compounds.",
+ "say": [
+  "A fixed step-up adds the same rupees each year; a percentage adds a share of a growing amount.",
+  "A percentage step-up grows faster because each raise is on a bigger base."
+ ],
+ "never": [
+  "A percentage step-up is always better.",
+  "A fixed step-up never catches up."
+ ],
+ "talk_track": [
+  {
+   "n": 2,
+   "title": "A step-up raises the SIP automatically, two ways",
+   "text": "A step-up, also called a top-up SIP, raises the monthly instalment automatically at a set interval. There are two ways to do it. A fixed amount adds the same rupees each time: ten thousand, then eleven, twelve, thirteen, fourteen thousand. It's gentler and easy to budget. A percentage raises it by a set share of the previous instalment: at ten percent, ten thousand becomes eleven thousand, then twelve thousand one hundred. It grows faster, because each raise is applied to a bigger base."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q4",
+   "sec": "L: Learn the Basics",
+   "q": "Name the two ways a step-up can be set.",
+   "o": [
+    "Fixed amount or percentage",
+    "Yearly or monthly",
+    "Equity or debt",
+    "Automatic or manual"
+   ],
+   "a": 0,
+   "why": "A fixed rupee amount each time, or a percentage of the previous instalment."
+  },
+  {
+   "id": "stepup-q5x",
+   "sec": "L: Learn the Basics",
+   "q": "Why does a percentage step-up grow faster than a fixed one over time?",
+   "o": [
+    "Because the AMC charges less",
+    "Because each raise is applied to a bigger base",
+    "Because it starts higher",
+    "Because it is reviewed more often"
+   ],
+   "a": 1,
+   "why": "The percentage raise compounds: 10% of a growing instalment adds more each year than a flat ₹1,000."
+  },
+  {
+   "id": "stepup-q6x",
+   "sec": "L: Learn the Basics",
+   "q": "Which step-up suits a client with irregular income?",
+   "o": [
+    "A 15% percentage step-up",
+    "A fixed-amount step-up, or occasional lump sums",
+    "No step-up ever",
+    "A step-up every month"
+   ],
+   "a": 1,
+   "why": "A fixed amount is easier to predict and budget when income is uneven."
+  }
+ ],
+ "card_ids": [
+  "stepup-c3",
+  "stepup-c4",
+  "stepup-c5",
+  "stepup-c6"
+ ],
+ "words": 151
+}

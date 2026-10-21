@@ -1,0 +1,75 @@
+{
+ "id": "sip-17",
+ "title": "SIP compliance: do's and don'ts",
+ "minutes": 3,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "State the do's and don'ts that apply to every SIP decision.",
+  "Rewrite a non-compliant sentence into a compliant one."
+ ],
+ "body_md": "Every SIP conversation ends with the same compliance frame.\n\n## Do\n\n- Ask why before acting on any stop, pause or redemption request.\n- Label every projection as illustrative, with the assumed return.\n- Explain exit loads, and refer tax questions to a CA.\n- Fit every change to the client's goal and risk profile.\n- Give the client a written note of each decision.\n\n## Don't\n\n- Process a stop or switch without understanding the reason.\n- Promise a corpus, a return or an SWP duration.\n- Give tax advice or call a withdrawal \"tax-free\".\n- Push switches that mainly generate commission.\n- Call any fund \"safe\" or \"guaranteed\".\n\n## The test to apply\n\nIf a sentence would need the words \"guaranteed\", \"will\" or \"safe\" to sound convincing, it is the wrong sentence. Replace it with what the assumption is, what the range is, and what is not promised.",
+ "key_terms": [
+  "SIP",
+  "exit load"
+ ],
+ "example": "\"Your ₹50 lakh will last 22 years\" becomes \"Illustratively, at 8% assumed, ₹40,000 a month could last about 22 years; not guaranteed.\" Same information, no promise.",
+ "say": [
+  "Illustratively, at 8% assumed, this could last about 22 years; it is not guaranteed.",
+  "The tax treatment depends on your holding period, so let's confirm it with your CA."
+ ],
+ "never": [
+  "Your money will last 22 years.",
+  "SWP withdrawals are tax-free, so don't worry."
+ ],
+ "talk_track": [
+  {
+   "n": 15,
+   "title": "Compliance: what we say, and what we never say",
+   "text": "Finally, compliance. Do ask why before acting on any stop, pause or redemption request. Do label every projection as illustrative, with the assumed return. Do explain exit loads, and refer tax questions to a CA. Do fit every change to the client's goal and risk profile. And do give the client a written note of each decision. Don't process a stop or a switch without knowing the reason. Don't promise a corpus, a return, or how long an SWP will last. Don't give tax advice or call a withdrawal tax-free. Don't push switches that mainly earn commission. And never call any fund safe or guaranteed."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q27",
+   "sec": "Compliance: What We Say",
+   "q": "Which statement is compliant?",
+   "o": [
+    "\"Your ₹50 L will last 22 years.\"",
+    "\"Illustratively, at 8% assumed, ₹40,000 a month could last about 22 years; not guaranteed.\"",
+    "\"SWP withdrawals are tax-free.\"",
+    "\"Liquid funds are 100% safe.\""
+   ],
+   "a": 1,
+   "why": "Label projections illustrative, state the assumption, and make no promise."
+  },
+  {
+   "id": "sip-q28",
+   "sec": "Compliance: What We Say",
+   "q": "A client asks how much tax the redemption will attract. What do you do?",
+   "o": [
+    "Work it out and tell them the exact amount",
+    "Explain that redemptions may be taxed and refer them to a CA",
+    "Say withdrawals are tax-free",
+    "Change the subject"
+   ],
+   "a": 1,
+   "why": "We explain that a redemption may be taxed and refer the calculation to the client's CA. We do not give tax advice."
+  },
+  {
+   "id": "sip-q26x",
+   "sec": "Compliance: What We Say",
+   "q": "Which of these is a compliance DON'T?",
+   "o": [
+    "Asking why before processing a stop",
+    "Labelling a projection illustrative",
+    "Calling a liquid fund \"100% safe\"",
+    "Giving the client a written note of the decision"
+   ],
+   "a": 2,
+   "why": "No fund is safe or guaranteed. The other three are requirements, not risks."
+  }
+ ],
+ "card_ids": [],
+ "words": 150
+}

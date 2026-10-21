@@ -46,6 +46,9 @@ XP = {"lesson": 10, "check": 5, "card": 2, "quiz_pass": 50, "perfect": 100, "dai
 LEVEL_NAMES = [(1, "Trainee"), (3, "Associate"), (6, "Specialist"), (10, "Expert"), (15, "Mentor")]
 CHECKPOINT_PASS, MOCK_PASS, MOCK_SIZE, MOCK_SECONDS, GRACE_SECONDS = 70, 50, 50, 3600, 30
 STAGE_OF_SECTION = {"L": "L", "E": "E", "A": "A", "R": "R", "N": "N", "Niche": "Niche"}
+# Syllabus order a new joiner follows. Module directories are loaded in this order (not alphabetically),
+# so /me progress, "next lesson" and the Home page cards all read in teaching order.
+MODULE_ORDER = ["mf", "pms", "sip", "alloc", "stepup"]
 _ENSURED: set[int] = set()
 
 
@@ -58,7 +61,9 @@ def _content() -> dict[str, Any]:
     lessons: dict[str, Any] = {}
     questions: dict[str, Any] = {}
     cards: dict[str, Any] = {}
-    for mdir in sorted(p for p in DATA.iterdir() if p.is_dir()):
+    dirs = sorted((p for p in DATA.iterdir() if p.is_dir()),
+                  key=lambda p: (MODULE_ORDER.index(p.name) if p.name in MODULE_ORDER else len(MODULE_ORDER), p.name))
+    for mdir in dirs:
         mod = json.loads((mdir / "module.json").read_text())
         order = [json.loads(f.read_text()) for f in sorted((mdir / "lessons").glob("*.json"))]
         mod["_lessons"] = order
@@ -218,12 +223,12 @@ def _check_badges(s: Session, staff: str, extra: dict[str, bool] | None = None) 
     extra = extra or {}
     if s.scalar(select(func.count()).select_from(LearnProgressModel).where(LearnProgressModel.staff_id == staff)):
         _badge(s, staff, "first_step", new)
-    mf, pms = _passed(s, staff, "mf-final"), _passed(s, staff, "pms-final")
-    if mf:
-        _badge(s, staff, "grad_mf", new)
-    if pms:
-        _badge(s, staff, "grad_pms", new)
-    if mf and pms:
+    # one graduate badge per module, whatever the module set grows to, plus one for every module at once
+    c = _content()
+    passed = [mid for mid in c["mods"] if _passed(s, staff, f"{mid}-final")]
+    for mid in passed:
+        _badge(s, staff, f"grad_{mid}", new)
+    if passed and len(passed) == len(c["mods"]):
         _badge(s, staff, "full_stack", new)
     streak, _ = streak_for(_activity_days(s, staff), datetime.now(IST).date().isoformat())
     if streak >= 7:
@@ -293,14 +298,15 @@ def me(staff: Staff):
         progress = {}
         for mid, m in c["mods"].items():
             left = [les for les in m["_lessons"] if les["id"] not in done]
-            progress[mid] = dict(done=len(m["_lessons"]) - len(left), total=len(m["_lessons"]), minutes_left=sum(les["minutes"] for les in left),
+            progress[mid] = dict(code=m["code"], title=m["title"], blurb=m["blurb"],
+                                 done=len(m["_lessons"]) - len(left), total=len(m["_lessons"]), minutes_left=sum(les["minutes"] for les in left),
                                  next=dict(lesson_id=left[0]["id"], title=left[0]["title"], minutes=left[0]["minutes"]) if left else None)
         nxt = next(((m["id"], les) for m in c["mods"].values() for les in m["_lessons"] if les["id"] not in done), None)
         cert = {}
         for mid in c["mods"]:
             b = best.get(f"{mid}-final")
             if b and b["passed"]:
-                cert[mid] = dict(score=b["score"], total=b["total"], date=_ist_day(b["finished_at"]))
+                cert[mid] = dict(title=c["mods"][mid]["title"], score=b["score"], total=b["total"], date=_ist_day(b["finished_at"]))
         return dict(
             xp=xp, level=lvl, level_name=level_name(lvl), level_floor_xp=level_xp(lvl) if lvl > 1 else 0, next_level_xp=level_xp(lvl + 1),
             streak=streak, freezes=freezes, week_xp=week, week_rank=rank, due_count=len(_due_ids(s, sid)),

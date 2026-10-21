@@ -1,0 +1,80 @@
+{
+ "id": "sip-09",
+ "title": "Time to goal decides the next step",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Match each time-to-goal band to the right next step.",
+  "Explain why the job changes from growing to protecting."
+ ],
+ "body_md": "The right next step depends on one thing above all: how far away the goal is.\n\n| Time to goal | Next step | Tools |\n|---|---|---|\n| 7+ years | Renew or extend the SIP; step up each year | SIP renewal, step-up (top-up) facility |\n| 3–7 years | Keep the SIP; start planning the glide path | Annual review, asset-mix target |\n| 1–3 years | Stop new equity money; shift gradually to debt | STP from equity to debt or liquid funds, new SIPs into debt |\n| Under 1 year | Money mostly in liquid or short-duration debt | Redeem or switch the remainder on a plan |\n| Goal reached | Pay for the goal, or set up regular income | Staged redemption, SWP |\n\n## The change of job\n\nFor a long goal, the job is to grow the money and to keep buying through falls. As the goal approaches, the job becomes protecting what has been built, so a fall just before the goal cannot derail it. Same client, same SIP, different job.\n\nThe rest of this stage works through the rows one at a time.",
+ "key_terms": [
+  "glide path",
+  "STP",
+  "SWP",
+  "SIP end date"
+ ],
+ "example": "A client's retirement is 20 years away, so the answer is renewal plus a yearly step-up. His daughter's fee, due in 18 months, is a separate pot that belongs in debt now.",
+ "say": [
+  "With seven years or more to go, we renew and step up.",
+  "As the goal gets closer, our job changes from growing the money to protecting it."
+ ],
+ "never": [
+  "Keep everything in equity; the goal is only two years away.",
+  "One switch today is the same as a glide path."
+ ],
+ "talk_track": [
+  {
+   "n": 8,
+   "title": "Time to goal decides the next step",
+   "text": "Now the A of L.E.A.R.N.: acting right. The next step depends above all on how far away the goal is. Seven years or more: renew or extend the SIP, and step it up every year. Three to seven years: keep the SIP going, and start planning the glide path. One to three years: stop putting new money into equity, and start moving to debt through a systematic transfer plan. Under a year: the money should be mostly in liquid or short-duration debt funds. And when the goal is reached: redeem in stages, or set up a systematic withdrawal plan. As the goal comes closer, the job changes from growing the money to protecting it."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q11",
+   "sec": "A: Act Right",
+   "q": "A client's goal is 8 years away and the SIP has just ended. What is the next step?",
+   "o": [
+    "Redeem in stages",
+    "Renew or extend the SIP, and step up each year",
+    "Start an SWP",
+    "Move everything to liquid funds"
+   ],
+   "a": 1,
+   "why": "With 7+ years to go, renew and step up. Staged redemption and SWP come much later."
+  },
+  {
+   "id": "sip-q15x",
+   "sec": "A: Act Right",
+   "q": "A goal is 2 years away. What is the next step?",
+   "o": [
+    "Add more equity",
+    "Stop new equity money and shift gradually to debt",
+    "Do nothing until the goal date",
+    "Move to a small-cap fund"
+   ],
+   "a": 1,
+   "why": "One to three years out: stop new equity money and shift gradually to debt, usually through an STP."
+  },
+  {
+   "id": "sip-q16x",
+   "sec": "A: Act Right",
+   "q": "Money is needed in under a year. Where should it sit?",
+   "o": [
+    "Mostly in liquid or short-duration debt funds",
+    "Mostly in equity",
+    "In a mid-cap fund",
+    "Gold ETFs"
+   ],
+   "a": 0,
+   "why": "Under a year, the money should be mostly in liquid or short-duration debt."
+  }
+ ],
+ "card_ids": [
+  "sip-c12",
+  "sip-c21"
+ ],
+ "words": 194
+}

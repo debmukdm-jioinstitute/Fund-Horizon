@@ -1,0 +1,79 @@
+{
+ "id": "sip-06",
+ "title": "Step-up: the biggest lever",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "L",
+ "objectives": [
+  "Show what a 10% yearly step-up does to a 15-year SIP.",
+  "Explain the order of checks: basics first, then the step-up."
+ ],
+ "body_md": "Decision point one, the step-up, is the most powerful lever a SIP investor has.\n\n## The illustration\n\n₹10,000 a month for 15 years, at an assumed 12% a year:\n\n| Choice over 15 years | Invested | Value at year 15 |\n|---|---|---|\n| Flat ₹10,000 | ₹18.0 L | ≈ ₹50.5 L |\n| ₹10,000 with a 10% yearly step-up | ≈ ₹38.1 L | ≈ ₹86.8 L |\n| ₹10,000, paused for 6 months in year 5 | ₹17.4 L | ≈ ₹48.3 L |\n\nThe same start, with a step-up, ends about ₹36 lakh higher. It also invests far more, so it only works if income grows too.\n\n## The order to do it in\n\nStep up only after the emergency fund and loans are covered. A step-up that squeezes the budget is the first thing a client cancels in a bad month, and cancelling costs more than never having stepped up.\n\nModule 14 covers the step-up in full: how to set the rate, the cap and the mandate, and how to keep it realistic.",
+ "key_terms": [
+  "SIP",
+  "step-up SIP",
+  "liquidity"
+ ],
+ "example": "A client earning ₹12 lakh a year, with six months of expenses saved and no personal loans, agrees to raise a ₹10,000 SIP by 10% each April, right after the increment lands.",
+ "say": [
+  "A 10% step-up on the same start ends about ₹36 lakh higher in our illustration.",
+  "Let's raise it only after the emergency fund is in place."
+ ],
+ "never": [
+  "A step-up guarantees the goal.",
+  "Max out the step-up now and sort out the emergency fund later."
+ ],
+ "talk_track": [
+  {
+   "n": 3,
+   "title": "A 10% yearly step-up changes everything",
+   "text": "Decision point one, the step-up, is the most powerful lever a SIP investor has. Take a SIP of ten thousand rupees a month for fifteen years, at an assumed twelve percent a year. Kept flat, the client invests eighteen lakh, and it grows to about fifty and a half lakh. Increase the SIP by ten percent every year, and the client invests about thirty-eight lakh, which grows to about eighty-seven lakh. That's roughly thirty-six lakh more, from a change most clients barely notice once their income grows."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q4",
+   "sec": "L: Learn the Basics",
+   "q": "In the illustration, a 10% yearly step-up on ₹10,000 for 15 years grows to about…",
+   "o": [
+    "₹50.5 L",
+    "₹62 L",
+    "₹86.8 L",
+    "₹1.2 Cr"
+   ],
+   "a": 2,
+   "why": "About ₹86.8 L at an assumed 12%, against ₹50.5 L flat, with about ₹38.1 L invested instead of ₹18.0 L."
+  },
+  {
+   "id": "sip-q10x",
+   "sec": "L: Learn the Basics",
+   "q": "Which check must come before suggesting a step-up?",
+   "o": [
+    "The fund's last month return",
+    "The emergency fund and any costly loans",
+    "The level of the index",
+    "The number of SIPs running"
+   ],
+   "a": 1,
+   "why": "A step-up only after the basics: six months of expenses set aside and no costly debt."
+  },
+  {
+   "id": "sip-q11x",
+   "sec": "L: Learn the Basics",
+   "q": "What does the illustration say a six-month pause does to a 15-year SIP?",
+   "o": [
+    "It costs more than stopping",
+    "It costs very little: about ₹48.3 L instead of ₹50.5 L",
+    "It doubles the final value",
+    "It has no effect at all"
+   ],
+   "a": 1,
+   "why": "A short pause costs little. A yearly step-up changes the outcome far more."
+  }
+ ],
+ "card_ids": [
+  "sip-c10",
+  "sip-c17"
+ ],
+ "words": 178
+}

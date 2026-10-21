@@ -4,6 +4,9 @@ import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
 
 export interface BadgeDef { id: string; name: string; icon: string; hint: string }
 export interface ModuleProgress {
+  code: string;
+  title: string;
+  blurb: string;
   done: number;
   total: number;
   minutes_left: number;
@@ -15,7 +18,7 @@ export interface Me {
   streak: number; freezes: number; week_xp: number; week_rank: number | null; due_count: number;
   badges: { id: string; earned_at: string }[]; badge_defs: BadgeDef[];
   completed_lessons: string[]; progress: Record<string, ModuleProgress>; quiz_best: Record<string, QuizBest>;
-  certificate: Record<string, { score: number; total: number; date: string }> | null;
+  certificate: Record<string, { title: string; score: number; total: number; date: string }> | null;
   next_lesson: { module: string; lesson_id: string; title: string; minutes: number } | null;
   new_here: boolean; leaderboard_optout: boolean; migrated: boolean; name: string;
 }

@@ -61,7 +61,7 @@ function Shell() {
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">FH Academy</h1>
-          <p className={`text-[15px] ${muted}`}>L.E.A.R.N. training for MF and PMS distributors.</p>
+          <p className={`text-[15px] ${muted}`}>L.E.A.R.N. training for the whole team: mutual funds, PMS, SIPs and asset allocation.</p>
         </div>
         <nav aria-label="Academy" className="flex flex-wrap items-center gap-2">
           <button className={btnGhost} aria-current={home ? "page" : undefined} onClick={() => go({})}>Home</button>

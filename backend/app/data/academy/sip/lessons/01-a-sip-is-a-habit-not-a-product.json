@@ -1,0 +1,84 @@
+{
+ "id": "sip-01",
+ "title": "A SIP is a habit, not a product",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain why the decisions after a SIP starts matter more than the product itself.",
+  "Name the five L.E.A.R.N. stages of this module.",
+  "State the one line to remember."
+ ],
+ "body_md": "A mutual fund SIP is not a product you sell once. It is a habit a client keeps for ten or twenty years, and most of its value comes from decisions made after the first instalment.\n\n## Where the value is\n\n- Starting a SIP takes ten minutes. Guiding it takes two decades.\n- The decisions are predictable: step up, pause, missed debit, market fall, end date, goal near, goal reached.\n- Each one has a default answer, and the default is often the opposite of what the client asks for in the moment.\n\n## How this module runs\n\nThis module follows the same L.E.A.R.N. framework as the rest of the series.\n\n- Learn: the SIP life cycle, and the rules that govern it.\n- Evaluate: four checks and six client sentences before any change.\n- Act right: what to do at each stage, from renewal to withdrawal.\n- Review: a 20-minute annual review that replaces ten panicked calls.\n- Navigate: the behaviour that breaks SIPs, and the words that steady it.\n\n**The one line to remember:** a SIP is a habit, not a product. Our job is to protect the habit.",
+ "key_terms": [
+  "SIP",
+  "SIP end date"
+ ],
+ "example": "A client has run a ₹10,000 SIP for nine years and asks whether to stop it now that the tenure is nearly over. The habit, not the scheme form, is what built the corpus — so the conversation starts with the goal date, not with the end date.",
+ "say": [
+  "Selling the SIP is the start of our work, not the end of it.",
+  "Most of the value we add comes from the decisions after the first instalment."
+ ],
+ "never": [
+  "Your SIP will take care of itself now.",
+  "Just keep paying and don't ask questions."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Welcome to Module 12",
+   "text": "Welcome to Module 12 of the Fund Horizon training series: SIP, what next? Starting a SIP is the easy part. Over ten or twenty years, every SIP investor faces a series of decisions: whether to step up, what to do in a cash crunch, what happens when the SIP's end date arrives, how to protect the money as a goal approaches, and how to draw it out once the goal arrives. Getting these decisions right is where we add the most value."
+  },
+  {
+   "n": 14,
+   "title": "The one line to remember",
+   "text": "If you remember one line from this module, make it this one: a SIP is a habit, not a product. Selling the SIP is just the start. Our real job is to protect the habit: step it up as income grows, renew it when the end date arrives, glide it down into debt as the goal nears, and help the client draw it out wisely once the goal arrives."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q1x",
+   "sec": "L: Learn the Basics",
+   "q": "What is a SIP best described as, for the purpose of this module?",
+   "o": [
+    "A one-time product to be sold",
+    "A habit that has to be protected for years",
+    "A tax-saving instrument",
+    "A guaranteed-return plan"
+   ],
+   "a": 1,
+   "why": "A SIP is a habit, not a product: the value comes from the decisions made after the first instalment."
+  },
+  {
+   "id": "sip-q2x",
+   "sec": "L: Learn the Basics",
+   "q": "Which is NOT one of the module's five L.E.A.R.N. stages?",
+   "o": [
+    "Learn the basics",
+    "Evaluate the client",
+    "Act right",
+    "Forecast the market"
+   ],
+   "a": 3,
+   "why": "The stages are Learn, Evaluate, Act right, Review and rebalance, and Navigate behaviour. Forecasting the market is never one of them."
+  },
+  {
+   "id": "sip-q3x",
+   "sec": "L: Learn the Basics",
+   "q": "Who is this module written for?",
+   "o": [
+    "Only the sales team",
+    "Only new employees",
+    "New employees, the sales team, and investors as awareness material",
+    "Only compliance officers"
+   ],
+   "a": 2,
+   "why": "The module is training and investor awareness material for the whole team."
+  }
+ ],
+ "card_ids": [
+  "sip-c1",
+  "sip-c2"
+ ],
+ "words": 192
+}

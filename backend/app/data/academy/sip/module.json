@@ -1,0 +1,825 @@
+{
+ "id": "sip",
+ "title": "SIP – What Next?",
+ "code": "Module 12",
+ "order": 12,
+ "blurb": "What comes after a SIP starts: step-up, pause, renewal, the glide path, withdrawals and the behaviour that breaks the habit.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays) and investors as awareness material"
+   ],
+   [
+    "Duration",
+    "One 60–75 minute session, plus 20 minutes of role-play and the quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 9 (goal-based investing), Module 10 (XIRR vs CAGR) and Module 11 (the wrong time to invest); NISM Series V-A and an EUIN before dealing with clients"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ],
+  "outcomes": [
+   "Name the seven decision points in a SIP's life, from step-up to goal reached.",
+   "Ask the right questions before advising a client to step up, pause, stop, extend or redeem.",
+   "Explain what to do when a SIP's end date arrives or a goal is 1–3 years away.",
+   "Use STP and SWP correctly when moving money out of equity.",
+   "Run an annual SIP review and handle the behaviour that derails SIPs.",
+   "Stay within compliance: no return promises, no tax advice, every decision recorded."
+  ]
+ },
+ "sources": [
+  "SEBI letter of 3 January 2024 on SIP auto-cancellation after consecutive failed instalments (in force April 2024)",
+  "Cafemutual (Dec 2024): SIP cancellation to be processed within 2 working days from 1 December 2024",
+  "AMFI guidance on SIP pause and top-up facilities; AMC scheme forms for pause and step-up terms",
+  "Income-tax Act and Finance Act provisions on capital gains from mutual funds (verify current rates each year)"
+ ],
+ "lessons": [
+  {
+   "id": "sip-01",
+   "title": "A SIP is a habit, not a product",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "sip-02",
+   "title": "The seven decision points",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "sip-03",
+   "title": "The end date is not the goal date",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "sip-04",
+   "title": "Each instalment is its own purchase",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "L"
+  },
+  {
+   "id": "sip-05",
+   "title": "Missed debits, pause and cancellation",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "L"
+  },
+  {
+   "id": "sip-06",
+   "title": "Step-up: the biggest lever",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "L"
+  },
+  {
+   "id": "sip-07",
+   "title": "Four checks before any SIP change",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "sip-08",
+   "title": "Six client sentences, and what to ask",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "sip-09",
+   "title": "Time to goal decides the next step",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "sip-10",
+   "title": "When the goal is years away: renew",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "sip-11",
+   "title": "The glide path: step down, not jump off",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "sip-12",
+   "title": "Goal reached: staged redemption",
+   "minutes": 3,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "sip-13",
+   "title": "SWP: how long does the money last?",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "sip-14",
+   "title": "Three checks before money moves out",
+   "minutes": 3,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "sip-15",
+   "title": "The 20-minute annual SIP review",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "sip-16",
+   "title": "What derails SIPs, and what to say",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "sip-17",
+   "title": "SIP compliance: do's and don'ts",
+   "minutes": 3,
+   "level": "advanced",
+   "stage": "Compliance"
+  },
+  {
+   "id": "sip-18",
+   "title": "Role-play lab: six SIP conversations",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Practice"
+  }
+ ],
+ "cards": [
+  {
+   "id": "sip-c1",
+   "q": "The one idea",
+   "a": [
+    "A SIP is a habit, not a product. Our job is to protect the habit through every decision that follows."
+   ]
+  },
+  {
+   "id": "sip-c2",
+   "q": "Seven decision points",
+   "a": [
+    "Step-up, pause, missed debit, market fall, end date, goal near, goal reached."
+   ]
+  },
+  {
+   "id": "sip-c3",
+   "q": "Step-up example (illustrative)",
+   "a": [
+    "₹10,000 a month for 15 years at 12%: flat ≈ ₹50.5 L; with a 10% yearly step-up ≈ ₹86.8 L."
+   ]
+  },
+  {
+   "id": "sip-c4",
+   "q": "When to step up",
+   "a": [
+    "Every year or after a raise, but only after the emergency fund and loans are covered."
+   ]
+  },
+  {
+   "id": "sip-c5",
+   "q": "End date ≠ goal date",
+   "a": [
+    "When a SIP's tenure ends, only instalments stop. Units stay invested until redeemed."
+   ]
+  },
+  {
+   "id": "sip-c6",
+   "q": "Renew vs hold (illustrative)",
+   "a": [
+    "₹10,000 for 10 years ≈ ₹23.2 L. Held 10 more years ≈ ₹72.2 L; renewed ≈ ₹99.9 L."
+   ]
+  },
+  {
+   "id": "sip-c7",
+   "q": "Missed instalments rule",
+   "a": [
+    "Since April 2024: a monthly SIP is cancelled after 3 consecutive failed debits; quarterly or less often after 2."
+   ]
+  },
+  {
+   "id": "sip-c8",
+   "q": "Cancellation timeline",
+   "a": [
+    "Since 1 December 2024, SIP cancellation requests are processed within 2 working days (earlier 10)."
+   ]
+  },
+  {
+   "id": "sip-c9",
+   "q": "Pause vs stop",
+   "a": [
+    "A pause skips instalments for a few months and then resumes; a stop ends the SIP. Pause terms vary by AMC."
+   ]
+  },
+  {
+   "id": "sip-c10",
+   "q": "Cost of a pause (illustrative)",
+   "a": [
+    "A 6-month pause in a 15-year SIP: ≈ ₹48.3 L vs ≈ ₹50.5 L. A short pause costs little."
+   ]
+  },
+  {
+   "id": "sip-c11",
+   "q": "Four checks before any change",
+   "a": [
+    "Goal, time left, cash flow, progress (by XIRR). Ask why before acting."
+   ]
+  },
+  {
+   "id": "sip-c12",
+   "q": "Time to goal decides",
+   "a": [
+    "7+ yrs: renew and step up. 3–7: plan glide. 1–3: STP to debt. Under 1: mostly liquid. Reached: staged redemption or SWP."
+   ]
+  },
+  {
+   "id": "sip-c13",
+   "q": "Glide path (illustrative)",
+   "a": [
+    "Equity about 65% at 3 years out, 45% at 2, 25% at 1, close to 0% at the goal for money to be spent."
+   ]
+  },
+  {
+   "id": "sip-c14",
+   "q": "SWP duration (illustrative)",
+   "a": [
+    "₹50 L at 8%: ₹40,000 a month lasts ≈ 22 years; ₹45,000 ≈ 17; ₹50,000 ≈ 14."
+   ]
+  },
+  {
+   "id": "sip-c15",
+   "q": "Income buffer",
+   "a": [
+    "Keep 1–2 years of withdrawals in a liquid or short-duration fund so falls don't force equity sales."
+   ]
+  },
+  {
+   "id": "sip-c16",
+   "q": "Before money moves out",
+   "a": [
+    "Check exit load (per instalment, FIFO), tax (refer to a CA), and nominee, bank and KYC details."
+   ]
+  },
+  {
+   "id": "sip-c17",
+   "q": "Step-up (top-up) SIP",
+   "a": [
+    "A SIP that rises by a set amount or % each year.",
+    "Example: ₹10,000 rising 10% a year.",
+    "Remember: the biggest lever after starting early."
+   ]
+  },
+  {
+   "id": "sip-c18",
+   "q": "SIP pause",
+   "a": [
+    "Temporarily skipping instalments without cancelling.",
+    "Example: 3-month pause after a job change.",
+    "Remember: better than stopping or redeeming."
+   ]
+  },
+  {
+   "id": "sip-c19",
+   "q": "SIP end date",
+   "a": [
+    "The date registered instalments stop.",
+    "Example: 10-year SIP ends in 2026; goal is 2034.",
+    "Remember: units stay invested; renew if the goal is far."
+   ]
+  },
+  {
+   "id": "sip-c20",
+   "q": "Auto-cancellation",
+   "a": [
+    "SIP cancelled after consecutive failed debits.",
+    "Example: monthly SIP fails 3 times in a row.",
+    "Remember: fix the mandate after the first failure."
+   ]
+  },
+  {
+   "id": "sip-c21",
+   "q": "2-day cancellation",
+   "a": [
+    "Cancellation processed within 2 working days.",
+    "Example: request on Monday, done by Wednesday.",
+    "Remember: in force since 1 Dec 2024."
+   ]
+  },
+  {
+   "id": "sip-c22",
+   "q": "FIFO",
+   "a": [
+    "Oldest units are treated as redeemed first.",
+    "Example: year-1 units redeemed before year-5 units.",
+    "Remember: each instalment has its own date."
+   ]
+  },
+  {
+   "id": "sip-c23",
+   "q": "Exit load",
+   "a": [
+    "A charge on redemptions within a set period.",
+    "Example: often 1% within 1 year (varies by scheme).",
+    "Remember: recent instalments may still carry it."
+   ]
+  },
+  {
+   "id": "sip-c24",
+   "q": "Glide path",
+   "a": [
+    "Planned shift from equity to debt as a goal nears.",
+    "Example: equity 65% → 45% → 25% → ~0%.",
+    "Remember: step down, don't jump off."
+   ]
+  },
+  {
+   "id": "sip-c25",
+   "q": "STP (equity → debt)",
+   "a": [
+    "Regular transfers from one scheme to another.",
+    "Example: monthly transfer from equity to a liquid fund.",
+    "Remember: spreads the exit; each transfer is a redemption."
+   ]
+  },
+  {
+   "id": "sip-c26",
+   "q": "SWP",
+   "a": [
+    "Systematic Withdrawal Plan: fixed regular redemptions.",
+    "Example: ₹45,000 a month from ₹50 L.",
+    "Remember: the withdrawal rate decides how long it lasts."
+   ]
+  },
+  {
+   "id": "sip-c27",
+   "q": "Staged redemption",
+   "a": [
+    "Redeeming as payments fall due.",
+    "Example: college fees paid each term from a debt fund.",
+    "Remember: keep the rest invested meanwhile."
+   ]
+  },
+  {
+   "id": "sip-c28",
+   "q": "Annual SIP review",
+   "a": [
+    "A yearly check of goal, progress, mix and admin.",
+    "Example: 20-minute review each April.",
+    "Remember: plus extra reviews after life events."
+   ]
+  },
+  {
+   "id": "sip-c29",
+   "q": "Milestone cash-out",
+   "a": [
+    "Redeeming because the value looks big.",
+    "Example: \"It's doubled, let's enjoy it.\"",
+    "Remember: ask whether it is the goal money."
+   ]
+  },
+  {
+   "id": "sip-c30",
+   "q": "Lifestyle creep",
+   "a": [
+    "Spending rises with income; the SIP does not.",
+    "Example: raise received, SIP unchanged.",
+    "Remember: step up while the raise is fresh."
+   ]
+  },
+  {
+   "id": "sip-c31",
+   "q": "SIP overload",
+   "a": [
+    "Many overlapping SIPs.",
+    "Example: 12 SIPs holding the same stocks.",
+    "Remember: fewer, well-chosen funds."
+   ]
+  },
+  {
+   "id": "sip-c32",
+   "q": "Income buffer, in practice",
+   "a": [
+    "A retiree draws from a liquid fund during a fall so equity is never sold at the bottom.",
+    "Example: one year of withdrawals kept aside.",
+    "Remember: the buffer protects the plan, not just the money."
+   ]
+  }
+ ],
+ "final": {
+  "id": "sip-final",
+  "title": "SIP – What Next? final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "sip-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What happens to existing units when a SIP's end date arrives?",
+    "o": [
+     "They are redeemed automatically",
+     "They stay invested until redeemed",
+     "They move into a liquid fund",
+     "They are frozen in the folio"
+    ],
+    "a": 1,
+    "why": "Only the instalments stop. The units stay invested until the investor redeems them."
+   },
+   {
+    "id": "sip-q2",
+    "sec": "L: Learn the Basics",
+    "q": "How many consecutive failed debits cancel a monthly SIP?",
+    "o": [
+     "One",
+     "Two",
+     "Three",
+     "Six"
+    ],
+    "a": 2,
+    "why": "Three for monthly or more frequent SIPs; two for quarterly or less frequent SIPs."
+   },
+   {
+    "id": "sip-q3",
+    "sec": "L: Learn the Basics",
+    "q": "Within how many working days must a SIP cancellation be processed?",
+    "o": [
+     "2",
+     "5",
+     "10",
+     "30"
+    ],
+    "a": 0,
+    "why": "Two working days since 1 December 2024, down from ten."
+   },
+   {
+    "id": "sip-q4",
+    "sec": "L: Learn the Basics",
+    "q": "In the illustration, a 10% yearly step-up on ₹10,000 for 15 years grows to about…",
+    "o": [
+     "₹50.5 L",
+     "₹62 L",
+     "₹86.8 L",
+     "₹1.2 Cr"
+    ],
+    "a": 2,
+    "why": "About ₹86.8 L at an assumed 12%, against ₹50.5 L flat, with about ₹38.1 L invested instead of ₹18.0 L."
+   },
+   {
+    "id": "sip-q5",
+    "sec": "L: Learn the Basics",
+    "q": "What does pausing a SIP do?",
+    "o": [
+     "Ends the SIP permanently",
+     "Skips instalments for a while and then resumes",
+     "Redeems the units",
+     "Switches to another scheme"
+    ],
+    "a": 1,
+    "why": "A pause skips instalments for a few months and then resumes; a stop ends the SIP. A pause keeps the habit and the units intact."
+   },
+   {
+    "id": "sip-q6",
+    "sec": "L: Learn the Basics",
+    "q": "On a redemption, which units are treated as sold first?",
+    "o": [
+     "The newest units",
+     "The oldest units",
+     "An average of all units",
+     "Whichever the AMC chooses"
+    ],
+    "a": 1,
+    "why": "FIFO means first in, first out: the oldest units are redeemed first, so each instalment's own purchase date decides its exit load and tax."
+   },
+   {
+    "id": "sip-q7",
+    "sec": "E: Evaluate the Client",
+    "q": "Which four checks come before any SIP change?",
+    "o": [
+     "The fund's last month return, the market level, the AMC and the tax rate",
+     "Goal, time left, cash flow and progress",
+     "Number of SIPs, folio count, bank and nominee",
+     "Past returns, star rating, AUM and expense ratio"
+    ],
+    "a": 1,
+    "why": "Goal, time left, cash flow and progress. The request itself is never the reason."
+   },
+   {
+    "id": "sip-q8",
+    "sec": "E: Evaluate the Client",
+    "q": "A client says, \"I want to stop my SIP.\" What is the first move?",
+    "o": [
+     "Process the stop at once",
+     "Ask whether it is cash flow, a market fall, a goal change or fund doubts",
+     "Switch the fund",
+     "Promise better returns next year"
+    ],
+    "a": 1,
+    "why": "The cause decides the fix: pause for cash flow, stay for a fall, re-plan for a goal change, review the fund for doubts."
+   },
+   {
+    "id": "sip-q9",
+    "sec": "E: Evaluate the Client",
+    "q": "A client gets a raise and wants a bigger SIP. What comes first?",
+    "o": [
+     "Step up by the whole raise immediately",
+     "Check the emergency fund and any costly loans",
+     "Stop the old SIP and start fresh",
+     "Invest the raise as a lump sum in a sectoral fund"
+    ],
+    "a": 1,
+    "why": "Step up only after basics are covered. A step-up the client cannot sustain is the first thing cancelled."
+   },
+   {
+    "id": "sip-q10",
+    "sec": "E: Evaluate the Client",
+    "q": "A client's SIP has ended but the goal is 8 years away. What is the best next step?",
+    "o": [
+     "Redeem everything",
+     "Renew the SIP, ideally with a step-up",
+     "Switch to a fixed deposit",
+     "Do nothing ever again"
+    ],
+    "a": 1,
+    "why": "With years to go, renewing adds contributions and keeps the habit. Calendar the new end date."
+   },
+   {
+    "id": "sip-q11",
+    "sec": "A: Act Right",
+    "q": "A client's goal is 8 years away and the SIP has just ended. What is the next step?",
+    "o": [
+     "Redeem in stages",
+     "Renew or extend the SIP, and step up each year",
+     "Start an SWP",
+     "Move everything to liquid funds"
+    ],
+    "a": 1,
+    "why": "With 7+ years to go, renew and step up. Staged redemption and SWP come much later."
+   },
+   {
+    "id": "sip-q12",
+    "sec": "A: Act Right",
+    "q": "Which is the illustrative glide path for a goal three, two and one year away?",
+    "o": [
+     "About 65%, then 45%, then 25% equity",
+     "About 25%, then 45%, then 65% equity",
+     "100% equity until the goal",
+     "0% equity three years out"
+    ],
+    "a": 0,
+    "why": "Equity steps down as the goal approaches: about 65%, 45%, 25%, and close to 0% at the goal for money to be spent."
+   },
+   {
+    "id": "sip-q13",
+    "sec": "A: Act Right",
+    "q": "What is a glide path?",
+    "o": [
+     "A gradual, stepped shift from equity to debt as the goal nears",
+     "Moving all the money on one day",
+     "Selling everything when the goal arrives",
+     "Switching funds every year for higher returns"
+    ],
+    "a": 0,
+    "why": "It is a stepped shift over one to three years, not one big switch."
+   },
+   {
+    "id": "sip-q14",
+    "sec": "A: Act Right",
+    "q": "₹10,000 a month for 10 years, then 10 more years: what does the illustration show?",
+    "o": [
+     "About ₹72.2 L if held; about ₹99.9 L if renewed",
+     "About ₹99.9 L if held; about ₹72.2 L if renewed",
+     "Both about ₹72.2 L",
+     "Both about ₹23.2 L"
+    ],
+    "a": 0,
+    "why": "Holding reaches about ₹72.2 L; renewing reaches about ₹99.9 L, because renewal adds ten more years of contributions."
+   },
+   {
+    "id": "sip-q15",
+    "sec": "A: Act Right",
+    "q": "What does an SWP do?",
+    "o": [
+     "Buys units every month",
+     "Redeems a fixed amount at regular intervals",
+     "Switches between two funds",
+     "Pays a dividend"
+    ],
+    "a": 1,
+    "why": "A Systematic Withdrawal Plan redeems a fixed amount at regular intervals, which is how a retiree takes income."
+   },
+   {
+    "id": "sip-q16",
+    "sec": "A: Act Right",
+    "q": "₹50 lakh at an assumed 8%: roughly how long does ₹45,000 a month last?",
+    "o": [
+     "About 8 years",
+     "About 12 years",
+     "About 17 years",
+     "About 30 years"
+    ],
+    "a": 2,
+    "why": "About 17 years in the illustration. It is not a promise."
+   },
+   {
+    "id": "sip-q17",
+    "sec": "A: Act Right",
+    "q": "Why keep 1–2 years of withdrawals in a liquid fund?",
+    "o": [
+     "To earn higher returns",
+     "So a market fall does not force equity sales at low prices",
+     "To avoid all tax",
+     "To replace the SWP entirely"
+    ],
+    "a": 1,
+    "why": "The buffer pays the client through a fall so the equity portion is not sold at the bottom."
+   },
+   {
+    "id": "sip-q18",
+    "sec": "A: Act Right",
+    "q": "Which three checks come before a redemption, switch, STP or SWP?",
+    "o": [
+     "Exit load, tax, and nominee/bank/KYC details",
+     "Only the latest NAV",
+     "The fund manager's tenure, the AUM and the star rating",
+     "The AMC's office address and the folio number"
+    ],
+    "a": 0,
+    "why": "Exit load per instalment, the tax position (referred to a CA), and current nominee, bank and KYC details."
+   },
+   {
+    "id": "sip-q19",
+    "sec": "A: Act Right",
+    "q": "Which of these is a redemption that may be taxed?",
+    "o": [
+     "Only the final SWP withdrawal",
+     "Every STP transfer and SWP withdrawal",
+     "Only switches between fund houses",
+     "None; SIP investments are tax-free"
+    ],
+    "a": 1,
+    "why": "Every switch, STP transfer and SWP withdrawal is a redemption, so gains on it may be taxed. Refer the client to a CA."
+   },
+   {
+    "id": "sip-q20",
+    "sec": "R: Review & Rebalance",
+    "q": "How should progress towards a goal be measured in the annual review?",
+    "o": [
+     "Absolute return",
+     "XIRR against a goal calculator",
+     "Last month's NAV",
+     "The number of units held"
+    ],
+    "a": 1,
+    "why": "XIRR handles SIP cash flows correctly; absolute return hides the effect of timing."
+   },
+   {
+    "id": "sip-q21",
+    "sec": "R: Review & Rebalance",
+    "q": "When should a SIP be reviewed?",
+    "o": [
+     "Once every five years",
+     "Only when the client calls",
+     "Once a year, plus after any major life event",
+     "Only when markets fall"
+    ],
+    "a": 2,
+    "why": "Every SIP gets an annual review, and an extra one after a job change, marriage, a child, a loan, a bonus or retirement."
+   },
+   {
+    "id": "sip-q22",
+    "sec": "R: Review & Rebalance",
+    "q": "A SIP ends in nine months. What should the review do?",
+    "o": [
+     "Ignore it; the AMC will call",
+     "Note it and plan the renewal now",
+     "Cancel it early",
+     "Redeem everything"
+    ],
+    "a": 1,
+    "why": "Note SIPs ending in the next 12 months and plan renewals; the call goes three months before the end date."
+   },
+   {
+    "id": "sip-q23",
+    "sec": "N: Navigate Behaviour",
+    "q": "A stable-income client wants to stop a SIP after a 15% fall, with the goal 12 years away. Best response?",
+    "o": [
+     "Stop the SIP until markets settle",
+     "Pause only if cash is tight; a fall is when the SIP buys the most units",
+     "Switch to a fixed deposit",
+     "Redeem and wait for a better entry"
+    ],
+    "a": 1,
+    "why": "With a stable income and a long goal, the habit should continue. A pause is for a cash crunch, not for a fall."
+   },
+   {
+    "id": "sip-q24",
+    "sec": "N: Navigate Behaviour",
+    "q": "A client says, \"It's doubled! Let's take it out.\" What is the first question?",
+    "o": [
+     "Which fund should we buy next?",
+     "Is this the money for your goal?",
+     "How much tax will you pay?",
+     "Shall we double it again?"
+    ],
+    "a": 1,
+    "why": "Link the decision to the goal. If it is goal money, stay the course; a separate fun fund can cover the celebration."
+   },
+   {
+    "id": "sip-q25",
+    "sec": "N: Navigate Behaviour",
+    "q": "A client wants to switch because a friend's fund did better last year. What do you do?",
+    "o": [
+     "Switch immediately to capture the gains",
+     "Compare 3–5 year records against the benchmark first",
+     "Stop all SIPs",
+     "Add more funds for safety"
+    ],
+    "a": 1,
+    "why": "One year is noise. Compare three to five year records against the benchmark and category before any switch."
+   },
+   {
+    "id": "sip-q26",
+    "sec": "N: Navigate Behaviour",
+    "q": "A client has 12 SIPs holding overlapping funds. What is the right advice?",
+    "o": [
+     "More SIPs are always safer",
+     "Many hold the same stocks; fewer, well-chosen funds are easier to track",
+     "Cancel them all and start over",
+     "Move them all to one sectoral fund"
+    ],
+    "a": 1,
+    "why": "Overlapping funds add complexity, not diversification. Consolidate where it is sensible."
+   },
+   {
+    "id": "sip-q27",
+    "sec": "Compliance: What We Say",
+    "q": "Which statement is compliant?",
+    "o": [
+     "\"Your ₹50 L will last 22 years.\"",
+     "\"Illustratively, at 8% assumed, ₹40,000 a month could last about 22 years; not guaranteed.\"",
+     "\"SWP withdrawals are tax-free.\"",
+     "\"Liquid funds are 100% safe.\""
+    ],
+    "a": 1,
+    "why": "Label projections illustrative, state the assumption, and make no promise."
+   },
+   {
+    "id": "sip-q28",
+    "sec": "Compliance: What We Say",
+    "q": "A client asks how much tax the redemption will attract. What do you do?",
+    "o": [
+     "Work it out and tell them the exact amount",
+     "Explain that redemptions may be taxed and refer them to a CA",
+     "Say withdrawals are tax-free",
+     "Change the subject"
+    ],
+    "a": 1,
+    "why": "We explain that a redemption may be taxed and refer the calculation to the client's CA. We do not give tax advice."
+   },
+   {
+    "id": "sip-q29",
+    "sec": "Practice: Role-Plays",
+    "q": "Anil's 10-year SIP has ended and his goal is 8 years away. What is the best next step?",
+    "o": [
+     "Redeem everything and move to a fixed deposit",
+     "Renew the SIP, ideally with a step-up, and calendar the end date",
+     "Stop the SIP; the goal is only 8 years away",
+     "Switch to a small-cap fund for higher returns"
+    ],
+    "a": 1,
+    "why": "With 8 years to the goal, renewing adds contributions while the existing units keep compounding. Calendar the new end date."
+   },
+   {
+    "id": "sip-q30",
+    "sec": "Practice: Role-Plays",
+    "q": "Sana's monthly SIP has failed twice in a row. What must happen now?",
+    "o": [
+     "Wait for the third failure",
+     "Fix or re-register the mandate now, because a third consecutive failure cancels the SIP",
+     "Cancel the SIP and start a new one",
+     "Change her bank account without telling her"
+    ],
+    "a": 1,
+    "why": "Three consecutive failures cancel a monthly SIP, so the mandate is fixed after the first, definitely after the second."
+   }
+  ]
+ },
+ "role_play": null
+}

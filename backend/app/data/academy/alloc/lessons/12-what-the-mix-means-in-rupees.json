@@ -1,0 +1,77 @@
+{
+ "id": "alloc-12",
+ "title": "What the mix means in rupees",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Translate three mixes into rupee outcomes.",
+  "Explain the trade-off between the expected result and the falls on the way."
+ ],
+ "body_md": "Clients agree with percentages and decide with rupees. Show both.\n\n## ₹10 lakh for 15 years\n\nAssuming equity 12%, debt 7%, gold 8% and a fixed deposit 6.5% a year, rebalanced yearly, before tax:\n\n| Mix | Blended return | Value at year 15 |\n|---|---|---|\n| 100% fixed deposit (6.5%) | 6.5% | ≈ ₹25.7 L |\n| Conservative 30/60/10 | ≈ 8.6% | ≈ ₹34.5 L |\n| Moderate 50/40/10 | ≈ 9.6% | ≈ ₹39.6 L |\n| Aggressive 70/20/10 | ≈ 10.6% | ≈ ₹45.3 L |\n\n## Read the table honestly\n\nMore equity means a higher expected result and bigger falls on the way. The aggressive row is not automatically the right answer: the right row is the one the client can stay with through a bad year.\n\n## Label it\n\nEvery figure here is illustrative, with stated assumptions, before tax. Never present it as a forecast or a promise.",
+ "key_terms": [
+  "asset allocation",
+  "XIRR"
+ ],
+ "example": "A 52-year-old with ₹30 lakh in fixed deposits sees that the FD row reaches about ₹25.7 lakh in 15 years while a conservative mix reaches about ₹34.5 lakh at assumed returns. The illustration opens the conversation; the risk profile decides it.",
+ "say": [
+  "At the assumptions shown, the conservative mix reaches about ₹34.5 lakh against about ₹25.7 lakh in fixed deposits.",
+  "The right row is the one you can stay with through a bad year, not the highest one."
+ ],
+ "never": [
+  "This mix will give you ₹45 lakh.",
+  "The aggressive mix is the best choice for everyone."
+ ],
+ "talk_track": [
+  {
+   "n": 10,
+   "title": "What the mix means in rupees",
+   "text": "What does the mix mean in rupees? Take ten lakh rupees for fifteen years, with assumed returns of twelve percent for equity, seven for debt, eight for gold and six and a half for a fixed deposit, rebalanced every year, before tax. All in fixed deposits, it grows to about twenty-six lakh. The conservative mix reaches about thirty-four and a half lakh. The moderate mix, about forty lakh. And the aggressive mix, about forty-five lakh. More equity means a higher expected result, and bigger falls on the way."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q14",
+   "sec": "A: Act Right",
+   "q": "In the ₹10 L, 15-year illustration, the moderate mix reached about…",
+   "o": [
+    "₹25.7 L",
+    "₹39.6 L",
+    "₹60 L",
+    "₹1 Cr"
+   ],
+   "a": 1,
+   "why": "About ₹39.6 L at the assumed returns; not a forecast."
+  },
+  {
+   "id": "alloc-q35x",
+   "sec": "A: Act Right",
+   "q": "Which row reached about ₹25.7 lakh in the illustration?",
+   "o": [
+    "The aggressive mix",
+    "The moderate mix",
+    "The conservative mix",
+    "The all fixed deposit row"
+   ],
+   "a": 3,
+   "why": "A fixed deposit at 6.5% reaches about ₹25.7 L, less than the conservative mix at assumed returns."
+  },
+  {
+   "id": "alloc-q36x",
+   "sec": "A: Act Right",
+   "q": "What must accompany every projection like this?",
+   "o": [
+    "A guarantee",
+    "The label 'illustrative', the assumptions and the fact that it is before tax",
+    "Only the final number",
+    "A comparison with a bank FD"
+   ],
+   "a": 1,
+   "why": "Label it illustrative, state the assumptions and say it is before tax. Never present it as a promise."
+  }
+ ],
+ "card_ids": [
+  "alloc-c13"
+ ],
+ "words": 155
+}

@@ -50,7 +50,7 @@ export function ModulePath({ content }: { content: ModuleContent }) {
           return out;
         })}
         {node("final", m.final.title, `${m.final.questions} questions · pass ${m.final.pass_pct}%${best[m.final.id] ? ` · best ${best[m.final.id].score}/${best[m.final.id].total}` : ""}`, () => go({ m: m.id, v: "quiz", q: m.final.id }), best[m.final.id]?.passed ? "done" : "open", best[m.final.id]?.passed ? "✓" : "🎯")}
-        {node("cert", "Certificate", me?.certificate ? "Ready to print on the Academy home page" : "Pass both module final quizzes to unlock", () => go({}), me?.certificate ? "done" : "open", "🏆")}
+        {node("cert", "Certificate", me?.certificate ? "Ready to print on the Academy home page" : `Pass all ${Object.keys(me?.progress ?? {}).length} module final quizzes to unlock`, () => go({}), me?.certificate ? "done" : "open", "🏆")}
       </ol>
       <div className={`${card} p-4`}>
         <button className="text-[15px] font-medium" aria-expanded={src} onClick={() => setSrc(!src)}>{src ? "−" : "+"} Sources</button>

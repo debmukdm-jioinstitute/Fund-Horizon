@@ -177,5 +177,100 @@
   "term": "Regular plan",
   "aliases": [],
   "definition": "A plan bought through a distributor. Its TER includes trail commission paid by the AMC from the TER."
+ },
+ {
+  "term": "FIFO",
+  "aliases": [],
+  "definition": "First In, First Out: the oldest units are sold first, so the holding period (and the LTCG/STCG split) is decided by the oldest purchase unless the fund offers HIFO or FIFO-switch options."
+ },
+ {
+  "term": "SIP end date",
+  "aliases": [],
+  "definition": "The date a SIP registration is set to stop. It is not the goal date: the SIP can end while the goal is still years away."
+ },
+ {
+  "term": "SIP pause",
+  "aliases": [],
+  "definition": "A temporary stop to a SIP's instalments, usually up to 3–6 months by scheme, that leaves the registration alive so it resumes on its own."
+ },
+ {
+  "term": "asset allocation",
+  "aliases": [],
+  "definition": "How a client's money is split across equity, debt, gold and cash, set for the goal's horizon and the client's risk, and reviewed as markets move."
+ },
+ {
+  "term": "balanced advantage fund",
+  "aliases": [],
+  "definition": "A dynamic-allocation fund that shifts between equity and debt using its own model and risk controls, without the investor having to rebalance."
+ },
+ {
+  "term": "band rule",
+  "aliases": [],
+  "definition": "A pre-agreed corridor around the target mix, such as 5 percentage points either side, that triggers rebalancing; smaller drift is left alone."
+ },
+ {
+  "term": "bank mandate limit",
+  "aliases": [],
+  "definition": "The maximum amount a bank mandate authorises per SIP debit. A step-up that raises the instalment above it will be rejected by the bank."
+ },
+ {
+  "term": "cap amount",
+  "aliases": [],
+  "definition": "The ceiling on a step-up SIP registration: the instalment rises with each step until it reaches the cap, then stops rising."
+ },
+ {
+  "term": "core and satellite",
+  "aliases": [],
+  "definition": "A portfolio split: a low-cost, diversified core held for years, with smaller satellite positions around it for themes or opportunities."
+ },
+ {
+  "term": "drift",
+  "aliases": [],
+  "definition": "How far a portfolio has wandered from its target weights after market moves. Drift is what a rebalance corrects."
+ },
+ {
+  "term": "glide path",
+  "aliases": [],
+  "definition": "The planned shift from equity toward debt as a goal nears, done step by step over the last few years instead of one jump."
+ },
+ {
+  "term": "lifestyle creep",
+  "aliases": [],
+  "definition": "Spending that rises along with income, so the corpus a bigger SIP was meant to build gets consumed instead."
+ },
+ {
+  "term": "liquidity",
+  "aliases": [],
+  "definition": "How quickly an investment can be turned into cash without a large cost; it decides how much of the emergency fund and near-goal money can stay in equity."
+ },
+ {
+  "term": "multi-asset allocation fund",
+  "aliases": [],
+  "definition": "A single fund that holds equity, debt and gold in stated proportions, with the rebalancing done inside the fund."
+ },
+ {
+  "term": "rebalancing",
+  "aliases": [],
+  "definition": "Selling what has grown past its target and buying what has fallen short, restoring the chosen mix; usually once a year or when a band is breached."
+ },
+ {
+  "term": "risk capacity",
+  "aliases": [],
+  "definition": "The client's real ability to take risk: horizon, cash flows, income stability and the size of the emergency buffer."
+ },
+ {
+  "term": "risk tolerance",
+  "aliases": [],
+  "definition": "How much of a fall the client can emotionally accept, which is usually lower than their risk capacity."
+ },
+ {
+  "term": "step-up SIP",
+  "aliases": [],
+  "definition": "A SIP registered to raise its instalment by a fixed amount or percentage at set intervals, each year by default."
+ },
+ {
+  "term": "strategic allocation",
+  "aliases": [],
+  "definition": "A fixed long-term target mix, such as 60% equity, 30% debt, 10% gold, set once and rebalanced back to, as opposed to a dynamic or tactical mix."
  }
 ]

@@ -1,0 +1,78 @@
+{
+ "id": "stepup-05",
+ "title": "The numbers: five ways to 20 years",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "L",
+ "objectives": [
+  "Quote the five outcomes for ₹10,000 over 20 years at 12%.",
+  "Explain the trade-off between the final value and the total invested."
+ ],
+ "body_md": "₹10,000 a month for 20 years, at an assumed 12% a year:\n\n| Step-up rule | Total invested | Value at year 20 |\n|---|---|---|\n| None (flat) | ₹24.0 L | ≈ ₹1.0 Cr |\n| +₹1,000 a year (fixed) | ≈ ₹46.8 L | ≈ ₹1.59 Cr |\n| +5% a year | ≈ ₹39.7 L | ≈ ₹1.37 Cr |\n| +10% a year | ≈ ₹68.7 L | ≈ ₹1.99 Cr |\n| +15% a year | ≈ ₹1.23 Cr | ≈ ₹3.03 Cr |\n\n## How to read the table\n\nA 10% yearly step-up roughly doubles the outcome. It also means investing far more in total, so it only works if income grows too. The 15% row looks spectacular and is the one most likely to be cancelled in year three.\n\n## The order to present it\n\n1. The final value.\n2. The total invested.\n3. The assumption (12% a year, illustrative, not a forecast).\n\nNever present the first without the second.",
+ "key_terms": [
+  "step-up SIP",
+  "SIP"
+ ],
+ "example": "A client sees ₹1.0 Cr flat and ₹1.99 Cr at 10%. The second column shows ₹24 L invested versus ₹68.7 L — the conversation becomes about whether her income can carry the extra ₹44.7 lakh, not just about the bigger number.",
+ "say": [
+  "A 10% step-up roughly doubles the outcome in this illustration, and also invests far more.",
+  "The assumption is 12% a year and the figures are illustrative, not a forecast."
+ ],
+ "never": [
+  "You'll end with ₹2 crore.",
+  "The 15% step-up is the best option because it gives the most."
+ ],
+ "talk_track": [
+  {
+   "n": 5,
+   "title": "₹10,000 a month for 20 years, five ways",
+   "text": "Here are the numbers. Ten thousand rupees a month for twenty years, at an assumed twelve percent a year. Flat, it grows to about one crore, from twenty-four lakh invested. With a five percent yearly step-up, about one point three seven crore. Adding a fixed thousand rupees each year, about one point six crore. A ten percent step-up, about two crore: roughly double the flat SIP. And fifteen percent, about three crore. But be honest about the other side: the total invested rises too. A ten percent step-up invests about sixty-nine lakh instead of twenty-four. It only works if the client's income grows too."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q13",
+   "sec": "L: Learn the Basics",
+   "q": "In the illustration, what does a 10% step-up do to a ₹10,000, 20-year SIP?",
+   "o": [
+    "Roughly doubles the value, from about ₹1.0 Cr to about ₹2.0 Cr, with far more invested",
+    "Adds about ₹5 lakh",
+    "Halves the amount invested",
+    "Has no effect without a longer tenure"
+   ],
+   "a": 0,
+   "why": "About ₹1.99 Cr against ₹1.0 Cr, with about ₹68.7 L invested instead of ₹24 L."
+  },
+  {
+   "id": "stepup-q14x",
+   "sec": "L: Learn the Basics",
+   "q": "Which row invests about ₹46.8 lakh in total?",
+   "o": [
+    "Flat ₹10,000",
+    "+5% a year",
+    "+₹1,000 a year (fixed)",
+    "+15% a year"
+   ],
+   "a": 2,
+   "why": "The fixed ₹1,000-a-year step-up invests about ₹46.8 L and reaches about ₹1.59 Cr."
+  },
+  {
+   "id": "stepup-q15x",
+   "sec": "L: Learn the Basics",
+   "q": "Why is the 15% row the riskiest to recommend?",
+   "o": [
+    "Because it earns the least",
+    "Because it needs the largest income growth and is the most likely to be cancelled",
+    "Because the AMC does not allow it",
+    "Because it has no cap"
+   ],
+   "a": 1,
+   "why": "It invests about ₹1.23 Cr in total. A step-up the client cannot sustain gets cancelled, which defeats the purpose."
+  }
+ ],
+ "card_ids": [
+  "stepup-c12",
+  "stepup-c13"
+ ],
+ "words": 167
+}

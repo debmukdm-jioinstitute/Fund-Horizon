@@ -1,0 +1,80 @@
+{
+ "id": "sip-15",
+ "title": "The 20-minute annual SIP review",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the ten-point annual SIP review.",
+  "Name the life events that call for an extra review."
+ ],
+ "body_md": "Review every SIP once a year, plus after any major life event. One 20-minute review does more than ten panicked calls.\n\n## The ten checks\n\n- Goal still right? Update the target for inflation and any change in plans.\n- On track? Compare the projected value with the target using XIRR, not absolute return.\n- Step-up? Raise the SIP by 5–10% if income has grown.\n- Funds: compare each with its benchmark and category over 3–5 years, not one bad year.\n- Mix: rebalance if it has drifted by more than 5–10 percentage points.\n- End dates: note SIPs ending in the next 12 months and plan renewals.\n- Glide path: any goal now within 3 years? Start the shift to debt.\n- Too many SIPs? Overlapping funds add complexity, not diversification.\n- Admin: mandate validity, bank account, nominee and KYC.\n- Record: note what was decided and why, and share it with the client.\n\n## Life events that trigger an extra review\n\nA job change or raise, marriage, a child's birth, a new loan, an inheritance or bonus, a health expense, a move abroad, and retirement.",
+ "key_terms": [
+  "XIRR",
+  "SIP end date",
+  "glide path",
+  "rebalancing"
+ ],
+ "example": "A review in April finds a goal that is now 2 years away, a SIP ending in June, and a mix that has drifted 8 points. The client renews, starts the glide path, and moves the step-up money into debt rather than equity.",
+ "say": [
+  "Let's do the twenty-minute review: goal, progress by XIRR, step-up, funds, mix and admin.",
+  "This SIP ends in June, so let's decide the renewal today."
+ ],
+ "never": [
+  "Your SIP is running, so the review is done.",
+  "Let's skip the mix; the funds are doing well."
+ ],
+ "talk_track": [
+  {
+   "n": 12,
+   "title": "The 20-minute annual SIP review",
+   "text": "Once a year, a twenty-minute SIP review does more than ten panicked phone calls. Ten checks: is the goal still right after inflation? Is the portfolio on track, measured by XIRR? Can the SIP step up by five to ten percent? How are the funds doing against their benchmarks over three to five years? Has the mix drifted? Which SIPs end in the next twelve months? Is any goal now within three years? Are there too many overlapping SIPs? Are the mandate, bank, nominee and KYC details current? And finally, record the decision and share it with the client."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q20",
+   "sec": "R: Review & Rebalance",
+   "q": "How should progress towards a goal be measured in the annual review?",
+   "o": [
+    "Absolute return",
+    "XIRR against a goal calculator",
+    "Last month's NAV",
+    "The number of units held"
+   ],
+   "a": 1,
+   "why": "XIRR handles SIP cash flows correctly; absolute return hides the effect of timing."
+  },
+  {
+   "id": "sip-q21",
+   "sec": "R: Review & Rebalance",
+   "q": "When should a SIP be reviewed?",
+   "o": [
+    "Once every five years",
+    "Only when the client calls",
+    "Once a year, plus after any major life event",
+    "Only when markets fall"
+   ],
+   "a": 2,
+   "why": "Every SIP gets an annual review, and an extra one after a job change, marriage, a child, a loan, a bonus or retirement."
+  },
+  {
+   "id": "sip-q22",
+   "sec": "R: Review & Rebalance",
+   "q": "A SIP ends in nine months. What should the review do?",
+   "o": [
+    "Ignore it; the AMC will call",
+    "Note it and plan the renewal now",
+    "Cancel it early",
+    "Redeem everything"
+   ],
+   "a": 1,
+   "why": "Note SIPs ending in the next 12 months and plan renewals; the call goes three months before the end date."
+  }
+ ],
+ "card_ids": [
+  "sip-c28",
+  "sip-c29"
+ ],
+ "words": 187
+}

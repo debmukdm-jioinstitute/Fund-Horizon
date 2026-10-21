@@ -1,0 +1,78 @@
+{
+ "id": "sip-07",
+ "title": "Four checks before any SIP change",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Run the four checks before any stop, pause, switch or step-up.",
+  "Explain why 'never change a SIP on the request alone' protects the client."
+ ],
+ "body_md": "Never change a SIP on the request alone. Ask first; the answer usually changes the advice.\n\n## The four checks\n\n- Goal: what is this SIP for, and is the target amount still right after inflation?\n- Time left: the years to the goal decide how much can stay in equity.\n- Cash flow: can the client keep paying comfortably, or increase?\n- Progress: is the portfolio on track? Use XIRR and a goal calculator, not just the current value.\n\n## Why the request is not the reason\n\n\"I want to stop my SIP\" has at least four different causes: a cash crunch, a market fall, a change in the goal, or doubts about the fund. Each has a different fix. Pausing solves a cash crunch, staying solves a fall, re-planning solves a goal change, and a fund review solves doubts. Acting on the sentence rather than the cause is how a good SIP gets cancelled for the wrong reason.\n\n## Record it\n\nWrite down what was decided and why, and share the note with the client. Two years later, that note is the difference between a review and an argument.",
+ "key_terms": [
+  "SIP",
+  "XIRR",
+  "SIP pause"
+ ],
+ "example": "A client asks to stop her SIP. The four checks show the goal is 11 years away, cash flow is fine, and progress is on track — the real cause was a 9% fall last month. The SIP continues, and the note records why.",
+ "say": [
+  "Before we change anything, let's check the goal, the time left, your cash flow and the progress.",
+  "If cash is the issue, we can pause instead of stopping."
+ ],
+ "never": [
+  "Stop it if you want; it's your money.",
+  "The market fell, so stopping makes sense."
+ ],
+ "talk_track": [
+  {
+   "n": 6,
+   "title": "Four checks before any SIP change",
+   "text": "Now the E of L.E.A.R.N.: evaluating the client. Before any change to a SIP, run four checks. Goal: what is this SIP for, and is the target amount still right after inflation? Time left: the years to the goal decide how much can stay in equity. Cash flow: can the client keep paying comfortably, or even pay more? And progress: is the portfolio on track? Use XIRR and a goal calculator, as we covered in Modules nine and ten, not just the current value. The rule: never change a SIP on the request alone."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q7",
+   "sec": "E: Evaluate the Client",
+   "q": "Which four checks come before any SIP change?",
+   "o": [
+    "The fund's last month return, the market level, the AMC and the tax rate",
+    "Goal, time left, cash flow and progress",
+    "Number of SIPs, folio count, bank and nominee",
+    "Past returns, star rating, AUM and expense ratio"
+   ],
+   "a": 1,
+   "why": "Goal, time left, cash flow and progress. The request itself is never the reason."
+  },
+  {
+   "id": "sip-q12x",
+   "sec": "E: Evaluate the Client",
+   "q": "Why is the client's request not enough on its own?",
+   "o": [
+    "Because clients change their minds",
+    "Because the same words can have four different causes, each with a different fix",
+    "Because the AMC must approve it",
+    "Because SEBI requires a form"
+   ],
+   "a": 1,
+   "why": "A stop request can come from a cash crunch, a fall, a goal change or fund doubts; each has a different fix."
+  },
+  {
+   "id": "sip-q13x",
+   "sec": "E: Evaluate the Client",
+   "q": "How should progress towards a goal be measured?",
+   "o": [
+    "Absolute return",
+    "XIRR against a goal calculator",
+    "Last month's NAV",
+    "The number of units held"
+   ],
+   "a": 1,
+   "why": "XIRR handles SIP cash flows correctly. Absolute value tells you nothing about whether the goal is on track."
+  }
+ ],
+ "card_ids": [
+  "sip-c11"
+ ],
+ "words": 191
+}

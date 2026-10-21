@@ -1,0 +1,76 @@
+{
+ "id": "alloc-17",
+ "title": "Asset allocation compliance",
+ "minutes": 3,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "State the do's and don'ts for recommending a mix.",
+  "Rewrite a non-compliant sentence into a compliant one."
+ ],
+ "body_md": "Every allocation conversation ends with the same compliance frame.\n\n## Do\n\n- Complete a risk profile before suggesting any mix.\n- Label every mix and projection as illustrative, with its assumptions.\n- Match products to the client's risk profile and the scheme's risk-o-meter.\n- Explain that rebalancing may trigger exit loads and tax; refer tax to a CA.\n- Record the agreed target mix and rebalancing rules in writing.\n- Disclose your role and how you are paid.\n\n## Don't\n\n- Suggest a mix from a market view or a product push.\n- Promise returns or say a mix \"can't lose\".\n- Call debt, gold or hybrid funds \"safe\" or \"guaranteed\".\n- Give tax advice.\n- Recommend switches that mainly generate commission.\n\n## The test to apply\n\nCould this sentence be repeated in front of the client's CA and the regulator without a correction? If not, rewrite it with the assumption, the range and the absence of a promise.",
+ "key_terms": [
+  "asset allocation",
+  "riskometer",
+  "exit load"
+ ],
+ "example": "\"This hybrid fund is safe\" becomes \"This hybrid fund holds about 60% equity and 40% debt; it can fall in a bad year, and the risk-o-meter rates it 'moderately high'.\"",
+ "say": [
+  "This mix is built from your goals and your risk profile, and every figure is illustrative.",
+  "Rebalancing may trigger an exit load and a tax event, so let's confirm the tax with your CA."
+ ],
+ "never": [
+  "This mix can't lose money.",
+  "Hybrid funds are safe."
+ ],
+ "talk_track": [
+  {
+   "n": 15,
+   "title": "Compliance: what we say, and what we never say",
+   "text": "Do complete a risk profile before suggesting any mix. Do label every mix and projection as illustrative, with its assumptions. Do match products to the client's risk profile and the scheme's risk-o-meter. Do explain that rebalancing may trigger exit loads and tax, and refer tax questions to a CA. And do record the agreed target mix and rebalancing rules in writing. Don't set a mix from a market view or to push a product. Don't promise returns or say a mix can't lose. Don't call debt, gold or hybrid funds safe or guaranteed."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q15",
+   "sec": "Compliance: What We Say",
+   "q": "Which statement is compliant?",
+   "o": [
+    "\"This hybrid fund is safe.\"",
+    "\"Illustratively, at assumed returns, this mix could reach about ₹40 L; not guaranteed.\"",
+    "\"Debt funds can't lose money.\"",
+    "\"Rebalancing is tax-free.\""
+   ],
+   "a": 1,
+   "why": "Label the projection illustrative, state the assumption, promise nothing."
+  },
+  {
+   "id": "alloc-q50x",
+   "sec": "Compliance: What We Say",
+   "q": "What must be done before suggesting any mix?",
+   "o": [
+    "A market view from the research team",
+    "A completed risk profile",
+    "A comparison with last year's best asset",
+    "A tax calculation"
+   ],
+   "a": 1,
+   "why": "A risk profile comes first. The mix follows from goals, horizon and profile."
+  },
+  {
+   "id": "alloc-q51x",
+   "sec": "Compliance: What We Say",
+   "q": "Which is a compliance DON'T?",
+   "o": [
+    "Recording the target mix in writing",
+    "Calling a debt fund 'guaranteed'",
+    "Explaining exit loads",
+    "Referring tax to a CA"
+   ],
+   "a": 1,
+   "why": "No fund or mix is guaranteed. The other three are requirements."
+  }
+ ],
+ "card_ids": [],
+ "words": 159
+}

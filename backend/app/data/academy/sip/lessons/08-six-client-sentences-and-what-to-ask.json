@@ -1,0 +1,78 @@
+{
+ "id": "sip-08",
+ "title": "Six client sentences, and what to ask",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Match the six most common client sentences to the question that changes the advice.",
+  "Explain why each cause has a different fix."
+ ],
+ "body_md": "Clients rarely describe the real problem. These six sentences cover most of what you will hear.\n\n| Client says | Ask | Why it matters |\n|---|---|---|\n| \"I want to stop my SIP.\" | Is it cash flow, a market fall, a goal change or fund doubts? | Each cause has a different fix |\n| \"My SIP has ended. Now what?\" | How far away is the goal? Is the goal amount still right? | Years away: renew. Near: start a glide path. Reached: plan withdrawals |\n| \"I got a raise / bonus.\" | Has the emergency fund been topped up? Any loans or near-term needs? | Step up only after basics are covered |\n| \"I need the money next year.\" | Exact date and amount? Any flexibility? | A short horizon means moving out of equity on a plan now |\n| \"I've retired.\" | Monthly expense need? Other income? | Sets the SWP amount and the safety buffer |\n| \"My SIP failed this month.\" | Mandate or balance issue? How many in a row? | Three consecutive misses (monthly) cancel the SIP |\n\n## The habit behind the table\n\nEvery row is the same move: turn a request into a question, and a question into a plan. The client hears that you took the request seriously; you get the information that decides the answer.",
+ "key_terms": [
+  "SIP",
+  "SIP pause",
+  "SWP"
+ ],
+ "example": "Mr. Iyer says, \"I've retired.\" The follow-up questions give a monthly need of ₹45,000 and a pension of ₹12,000 — so the plan covers the gap, not the whole amount, and keeps a one-year buffer in a liquid fund.",
+ "say": [
+  "Let's start with what the money is for and when you need it.",
+  "How many instalments have failed in a row? That decides whether the SIP survives."
+ ],
+ "never": [
+  "I've processed the stop as you asked.",
+  "A failed debit is nothing to worry about."
+ ],
+ "talk_track": [
+  {
+   "n": 7,
+   "title": "When the client says…, ask…",
+   "text": "Here are the six things clients say most often, and what to ask. “I want to stop my SIP”: ask whether it's cash flow, a market fall, a change in goal, or doubts about the fund. “My SIP has ended”: ask how far away the goal is and whether the target is still right. “I got a raise”: ask whether the emergency fund is topped up and whether there are loans. “I need the money next year”: ask the exact date and amount. “I've retired”: ask about the monthly need and other income. And “my SIP failed”: ask how many in a row, because three in a row cancels a monthly SIP."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q8",
+   "sec": "E: Evaluate the Client",
+   "q": "A client says, \"I want to stop my SIP.\" What is the first move?",
+   "o": [
+    "Process the stop at once",
+    "Ask whether it is cash flow, a market fall, a goal change or fund doubts",
+    "Switch the fund",
+    "Promise better returns next year"
+   ],
+   "a": 1,
+   "why": "The cause decides the fix: pause for cash flow, stay for a fall, re-plan for a goal change, review the fund for doubts."
+  },
+  {
+   "id": "sip-q9",
+   "sec": "E: Evaluate the Client",
+   "q": "A client gets a raise and wants a bigger SIP. What comes first?",
+   "o": [
+    "Step up by the whole raise immediately",
+    "Check the emergency fund and any costly loans",
+    "Stop the old SIP and start fresh",
+    "Invest the raise as a lump sum in a sectoral fund"
+   ],
+   "a": 1,
+   "why": "Step up only after basics are covered. A step-up the client cannot sustain is the first thing cancelled."
+  },
+  {
+   "id": "sip-q14x",
+   "sec": "E: Evaluate the Client",
+   "q": "A client needs the money in 12 months. What should the plan be?",
+   "o": [
+    "Stay fully in equity until the money is needed",
+    "Move out of equity on a plan now",
+    "Add a small-cap fund for extra return",
+    "Wait for a market high"
+   ],
+   "a": 1,
+   "why": "A short horizon means moving out of equity on a plan now, not at the last minute."
+  }
+ ],
+ "card_ids": [
+  "sip-c18"
+ ],
+ "words": 231
+}

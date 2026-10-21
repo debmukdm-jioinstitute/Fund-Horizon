@@ -1,0 +1,79 @@
+{
+ "id": "alloc-04",
+ "title": "Diversify within each class",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain why diversifying across asset classes is not enough.",
+  "Give an example of diversification inside equity and inside debt."
+ ],
+ "body_md": "Mixing asset classes is the first layer. The second is diversifying inside each class.\n\n## Inside equity\n\nAcross company sizes and styles: large, mid and small cap; growth and value; index and active. Ten mid-cap funds holding the same stocks is not diversification, it is the same bet with more paperwork.\n\n## Inside debt\n\nAcross issuers and maturities. A portfolio of one corporate issuer's paper is a credit bet, not a stable part of the mix. Short-duration, gilt and target-maturity funds do different jobs.\n\n## Inside gold and cash\n\nGold through an ETF, a fund or SGBs already held; cash across a savings account and a liquid fund. Overlap here is harmless, but there is no benefit in holding four gold funds.\n\n## The test\n\nIf two holdings would fall for the same reason, they are one holding. Count them that way.",
+ "key_terms": [
+  "asset allocation",
+  "core and satellite"
+ ],
+ "example": "A client holds five flexi-cap funds from five AMCs. The top ten stocks overlap by more than half, so the five funds behave like one large position with five expense ratios.",
+ "say": [
+  "Within equity, let's spread across sizes and styles, not just across fund houses.",
+  "If two funds fall for the same reason, they are one holding."
+ ],
+ "never": [
+  "Five funds is diversification.",
+  "Debt funds from three AMCs diversify credit risk."
+ ],
+ "talk_track": [
+  {
+   "n": 3,
+   "title": "Diversify within each class too",
+   "text": "Remember to diversify within each class too: equity across company sizes and styles, and debt across issuers and maturities. Several funds holding the same stocks are not diversification; they are the same bet with more paperwork."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q10x",
+   "sec": "L: Learn the Basics",
+   "q": "A client holds five flexi-cap funds with heavily overlapping portfolios. What is true?",
+   "o": [
+    "That is good diversification across AMCs",
+    "They behave like one holding, with five expense ratios",
+    "It removes equity risk",
+    "It guarantees a better return"
+   ],
+   "a": 1,
+   "why": "If two holdings fall for the same reason, they are one holding. Diversify across sizes and styles instead."
+  },
+  {
+   "id": "alloc-q11x",
+   "sec": "L: Learn the Basics",
+   "q": "How do you diversify inside debt?",
+   "o": [
+    "Across issuers and maturities",
+    "By holding only one gilt fund",
+    "By buying the highest-yield fund",
+    "By holding three liquid funds"
+   ],
+   "a": 0,
+   "why": "Debt is diversified across issuers and maturities, which spreads credit and interest-rate risk."
+  },
+  {
+   "id": "alloc-q12x",
+   "sec": "L: Learn the Basics",
+   "q": "Which is NOT a way to diversify inside equity?",
+   "o": [
+    "Across company sizes",
+    "Across styles such as growth and value",
+    "Across index and active",
+    "Across five copies of the same flexi-cap fund"
+   ],
+   "a": 3,
+   "why": "Overlapping funds are the same bet. Sizes, styles and index versus active are real dimensions."
+  }
+ ],
+ "card_ids": [
+  "alloc-c18",
+  "alloc-c19",
+  "alloc-c20"
+ ],
+ "words": 142
+}

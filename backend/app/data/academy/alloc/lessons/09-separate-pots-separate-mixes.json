@@ -1,0 +1,78 @@
+{
+ "id": "alloc-09",
+ "title": "Separate pots, separate mixes",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Explain why one client can need several different mixes.",
+  "List the questions to ask before suggesting any mix."
+ ],
+ "body_md": "Never apply one mix to all of a client's money. A client can have an emergency fund needed at any time, a house down payment due in three years and retirement twenty-five years away.\n\n## An illustrative client\n\n| Pot | Horizon | Illustrative mix |\n|---|---|---|\n| Emergency fund | Any time | Cash or liquid 100% |\n| House down payment | 3 years | Debt 80% |\n| Retirement | 25 years | Equity 70% |\n\nSame client, three mixes. The emergency fund is not there to earn; the house money is not there to take risk; the retirement money is not there to be safe.\n\n## The questions to ask\n\n- \"What is this money for, and when will you need it?\"\n- \"If this portfolio fell 25% in a year, what would you do?\"\n- \"How stable is your income? Who depends on it?\"\n- \"Do you have six months of expenses set aside? Any loans?\"\n- \"What else do you own: EPF, PPF, FDs, property, gold?\"\n- \"What did you do during the last big market fall?\"\n\nOne conversation, several pots, and a target mix for each.",
+ "key_terms": [
+  "asset allocation",
+  "risk capacity",
+  "liquidity"
+ ],
+ "example": "Neha, 29, has her wedding fund needed in 18 months invested in a small-cap fund. The fix is not a better fund; it is a separate pot, moved to short-duration debt on a plan.",
+ "say": [
+  "Each pot of money gets its own mix, because each one has its own date.",
+  "Your emergency fund is not there to earn returns; it is there to be available."
+ ],
+ "never": [
+  "One mix for all your money keeps it simple.",
+  "The wedding is two years away; equity will be fine."
+ ],
+ "talk_track": [
+  {
+   "n": 7,
+   "title": "One client, separate pots, separate mixes",
+   "text": "Never apply one mix to all of a client's money. One client can have three separate pots. An emergency fund, needed at any time, goes entirely into cash or liquid funds. A house down payment due in three years is a near-term must-have, so it's mostly in debt. And retirement twenty-five years away can be mostly equity."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q25x",
+   "sec": "E: Evaluate the Client",
+   "q": "Why does one client need several mixes?",
+   "o": [
+    "Because each pot has its own horizon and job",
+    "Because it looks more thorough",
+    "Because SEBI requires three portfolios",
+    "Because taxes differ by pot"
+   ],
+   "a": 0,
+   "why": "Each pot has its own date and job, so each gets its own mix."
+  },
+  {
+   "id": "alloc-q26x",
+   "sec": "E: Evaluate the Client",
+   "q": "A wedding fund is needed in 18 months. Where should it sit?",
+   "o": [
+    "In a small-cap fund",
+    "In short-duration debt or liquid funds",
+    "In gold",
+    "In an aggressive hybrid fund"
+   ],
+   "a": 1,
+   "why": "Money needed that soon belongs in debt or liquid funds, whatever its long-term potential."
+  },
+  {
+   "id": "alloc-q27x",
+   "sec": "E: Evaluate the Client",
+   "q": "Which question best tests emotional tolerance?",
+   "o": [
+    "What is your PAN number?",
+    "If this portfolio fell 25% in a year, what would you do?",
+    "Which AMC do you prefer?",
+    "How much tax do you pay?"
+   ],
+   "a": 1,
+   "why": "A concrete loss in rupees, plus past behaviour in a real fall, reveals tolerance."
+  }
+ ],
+ "card_ids": [
+  "alloc-c9"
+ ],
+ "words": 193
+}

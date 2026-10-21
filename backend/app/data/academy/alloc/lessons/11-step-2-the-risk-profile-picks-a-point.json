@@ -1,0 +1,78 @@
+{
+ "id": "alloc-11",
+ "title": "Step 2: the risk profile picks a point",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Give the conservative, moderate and aggressive illustrative mixes for a 7+ year goal.",
+  "Explain why these are teaching examples, not model portfolios."
+ ],
+ "body_md": "Within the horizon range, the client's risk profile picks the point.\n\n## Illustrative mixes for a 7+ year goal\n\n| Profile | Equity | Debt | Gold |\n|---|---|---|---|\n| Conservative | 30% | 60% | 10% |\n| Moderate | 50% | 40% | 10% |\n| Aggressive | 70% | 20% | 10% |\n\n## What these are, and are not\n\nThey are teaching examples, not Fund Horizon model portfolios. Every client's mix is set after a proper risk profile, and the profile is re-run every two to three years or after a life event.\n\n## The point of the three rows\n\nTwo clients with the same 20-year goal can legitimately hold 30% or 70% equity. The difference is not the goal; it is how much loss each can afford and live with. Getting that wrong is how a good mix gets abandoned in the first bad year.",
+ "key_terms": [
+  "asset allocation",
+  "risk tolerance",
+  "riskometer"
+ ],
+ "example": "Two clients, both retiring in 20 years. One has a stable government pension and a high tolerance: 70/20/10. The other has an irregular business income and low tolerance: 30/60/10. Same goal, different mixes.",
+ "say": [
+  "Your risk profile picks the point inside the range for your horizon.",
+  "Two clients with the same goal can hold very different mixes, and both be right."
+ ],
+ "never": [
+  "This is our model portfolio for everyone.",
+  "Aggressive is always better over 20 years."
+ ],
+ "talk_track": [
+  {
+   "n": 9,
+   "title": "Step 2: risk profile picks a point in the range",
+   "text": "Step two: the client's risk profile picks a point within that range. For a goal seven or more years away, here are three teaching examples. Conservative: thirty percent equity, sixty percent debt, ten percent gold. Moderate: fifty, forty, ten. Aggressive: seventy, twenty, ten. These are teaching examples only, not Fund Horizon model portfolios."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q31",
+   "sec": "A: Act Right",
+   "q": "For a 7+ year goal, the illustrative moderate mix is…",
+   "o": [
+    "10/80/10",
+    "50/40/10",
+    "90/0/10",
+    "0/100/0"
+   ],
+   "a": 1,
+   "why": "Moderate is 50% equity, 40% debt, 10% gold — a teaching example, not a model portfolio."
+  },
+  {
+   "id": "alloc-q32x",
+   "sec": "A: Act Right",
+   "q": "What are the three illustrative mixes for a 7+ year goal?",
+   "o": [
+    "Conservative 30/60/10, moderate 50/40/10, aggressive 70/20/10",
+    "Conservative 70/20/10, moderate 50/40/10, aggressive 30/60/10",
+    "All three at 60/40/0",
+    "Conservative 0/100/0, moderate 50/50/0, aggressive 100/0/0"
+   ],
+   "a": 0,
+   "why": "Conservative 30/60/10, moderate 50/40/10, aggressive 70/20/10."
+  },
+  {
+   "id": "alloc-q33x",
+   "sec": "A: Act Right",
+   "q": "How often should a risk profile be re-run?",
+   "o": [
+    "Every month",
+    "Every two to three years, or after a life event",
+    "Only at retirement",
+    "Never"
+   ],
+   "a": 1,
+   "why": "Re-run every two to three years or after a life event, because both capacity and tolerance move."
+  }
+ ],
+ "card_ids": [
+  "alloc-c12"
+ ],
+ "words": 150
+}

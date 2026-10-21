@@ -1,0 +1,813 @@
+{
+ "id": "stepup",
+ "title": "SIP Step-Up",
+ "code": "Module 14",
+ "order": 14,
+ "blurb": "Raising the SIP automatically each year: the two step-up types, who it suits, how to set it up and how to keep it realistic.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays) and investors as awareness material"
+   ],
+   [
+    "Duration",
+    "One 45–60 minute session, plus 15 minutes of role-play and the quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 9 (goal-based investing), Module 12 (SIP – What Next?) and Module 13 (Asset Allocation)"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ],
+  "outcomes": [
+   "Explain what a step-up (top-up) SIP is and the two ways to set it: a percentage or a fixed amount.",
+   "Show with illustrative numbers why stepping up matters more than most clients expect.",
+   "Check whether a client can afford a step-up, and pick a sensible rate.",
+   "Use a step-up to make a goal reachable from a lower starting SIP.",
+   "Review, pause or lower a step-up when life changes.",
+   "Handle the behaviour that blocks step-ups, within compliance."
+  ]
+ },
+ "sources": [
+  "SBI Mutual Fund: Top-up SIP terms (minimum ₹500 in multiples of ₹500; half-yearly or yearly for monthly SIPs)",
+  "DSP Mutual Fund: terms for special facilities (fixed or percentage top-up; instalment capped at ₹5 lakh or the mandate limit)",
+  "AMFI distributor guidelines; AMC scheme forms for top-up and pause facilities",
+  "Income-tax Act and Finance Act provisions on capital gains from mutual funds (verify current rates each year)"
+ ],
+ "lessons": [
+  {
+   "id": "stepup-01",
+   "title": "What a step-up SIP is",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "stepup-02",
+   "title": "Fixed amount vs percentage",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "stepup-03",
+   "title": "How AMCs run a step-up",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "stepup-04",
+   "title": "Why a flat SIP isn't enough",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "stepup-05",
+   "title": "The numbers: five ways to 20 years",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "L"
+  },
+  {
+   "id": "stepup-06",
+   "title": "The cost of a late step-up",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "L"
+  },
+  {
+   "id": "stepup-07",
+   "title": "Four checks before a step-up",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "stepup-08",
+   "title": "Who a step-up suits less",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "stepup-09",
+   "title": "Setting the rate: at or below income growth",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "stepup-10",
+   "title": "Make a goal reachable from a lower start",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "stepup-11",
+   "title": "Step up vs start bigger",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "stepup-12",
+   "title": "Setting up a step-up: six steps",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "stepup-13",
+   "title": "The cap, the mandate and re-registration",
+   "minutes": 3,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "stepup-14",
+   "title": "Reviewing the step-up every year",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "stepup-15",
+   "title": "When life changes: pause, hold or lower",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "stepup-16",
+   "title": "Why clients don't step up",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "stepup-17",
+   "title": "SIP step-up compliance",
+   "minutes": 3,
+   "level": "advanced",
+   "stage": "Compliance"
+  },
+  {
+   "id": "stepup-18",
+   "title": "Role-play lab: six step-up conversations",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Practice"
+  }
+ ],
+ "cards": [
+  {
+   "id": "stepup-c1",
+   "q": "The one idea",
+   "a": [
+    "Save more tomorrow, automatically. Tie each step-up to a raise, so the client never feels the money go."
+   ]
+  },
+  {
+   "id": "stepup-c2",
+   "q": "Step-up (top-up) SIP",
+   "a": [
+    "A SIP whose instalment rises by a set amount or percentage at set intervals, decided once and applied by the AMC."
+   ]
+  },
+  {
+   "id": "stepup-c3",
+   "q": "Fixed-amount step-up",
+   "a": [
+    "Adds the same rupee amount each time.",
+    "Example: ₹10,000 → ₹11,000 → ₹12,000 → ₹13,000.",
+    "Remember: gentler and easier to budget."
+   ]
+  },
+  {
+   "id": "stepup-c4",
+   "q": "Percentage step-up",
+   "a": [
+    "Raises the instalment by a set percentage of the previous one.",
+    "Example: ₹10,000 → ₹11,000 → ₹12,100 at 10%.",
+    "Remember: grows faster, because each raise is on a bigger base."
+   ]
+  },
+  {
+   "id": "stepup-c5",
+   "q": "Fixed example",
+   "a": [
+    "₹10,000 → ₹11,000 → ₹12,000 → ₹13,000 → ₹14,000."
+   ]
+  },
+  {
+   "id": "stepup-c6",
+   "q": "Percentage example",
+   "a": [
+    "₹10,000 → ₹11,000 → ₹12,100 → ₹13,310 → ₹14,641 at 10% a year."
+   ]
+  },
+  {
+   "id": "stepup-c7",
+   "q": "SBI top-up terms",
+   "a": [
+    "Minimum ₹500, in multiples of ₹500; half-yearly or yearly for monthly SIPs; chosen at enrolment."
+   ]
+  },
+  {
+   "id": "stepup-c8",
+   "q": "DSP top-up terms",
+   "a": [
+    "Fixed (from ₹500) or percentage; half-yearly or yearly; instalment capped at ₹5 lakh or the mandate limit."
+   ]
+  },
+  {
+   "id": "stepup-c9",
+   "q": "Inflation erosion",
+   "a": [
+    "At 6% inflation, ₹10,000 a month in 20 years buys only what about ₹3,100 buys today."
+   ]
+  },
+  {
+   "id": "stepup-c10",
+   "q": "Income grows",
+   "a": [
+    "A flat SIP becomes a smaller share of income every year, without the client deciding anything."
+   ]
+  },
+  {
+   "id": "stepup-c11",
+   "q": "Compounding rewards it",
+   "a": [
+    "Later, bigger instalments still have years to grow, so a step-up adds more than its rupee value suggests."
+   ]
+  },
+  {
+   "id": "stepup-c12",
+   "q": "20-year outcomes (illustrative)",
+   "a": [
+    "₹10,000 a month at 12%: flat ≈ ₹1.0 Cr; +5% ≈ ₹1.37 Cr; +₹1,000/yr ≈ ₹1.59 Cr; +10% ≈ ₹1.99 Cr; +15% ≈ ₹3.03 Cr."
+   ]
+  },
+  {
+   "id": "stepup-c13",
+   "q": "The 10% rule of thumb",
+   "a": [
+    "A 10% yearly step-up roughly doubles a long-term outcome, and invests far more in total."
+   ]
+  },
+  {
+   "id": "stepup-c14",
+   "q": "₹1 crore in 15 years",
+   "a": [
+    "Flat SIP: about ₹19,800 a month. With a 10% yearly step-up: about ₹11,500 to start. Illustrative at 12%."
+   ]
+  },
+  {
+   "id": "stepup-c15",
+   "q": "Cost of waiting",
+   "a": [
+    "Starting the 10% step-up five years late: ≈ ₹1.45 Cr instead of ≈ ₹1.99 Cr — about ₹54 lakh."
+   ]
+  },
+  {
+   "id": "stepup-c16",
+   "q": "Step up or start bigger",
+   "a": [
+    "₹15,000 flat ≈ ₹1.50 Cr from ₹36 L invested; ₹10,000 + 10% ≈ ₹1.99 Cr from ₹68.7 L."
+   ]
+  },
+  {
+   "id": "stepup-c17",
+   "q": "Four checks",
+   "a": [
+    "Income growth, emergency fund and loans, budget room, and time to the goal."
+   ]
+  },
+  {
+   "id": "stepup-c18",
+   "q": "Rate rule of thumb",
+   "a": [
+    "Step up at or below expected income growth: income +8–10% a year → a 5–10% step-up."
+   ]
+  },
+  {
+   "id": "stepup-c19",
+   "q": "Who suits less",
+   "a": [
+    "Retirees on fixed income, clients with very irregular earnings, and goals only 1–3 years away."
+   ]
+  },
+  {
+   "id": "stepup-c20",
+   "q": "Six set-up steps",
+   "a": [
+    "Pick the type; set a cap; check the mandate; check re-registration for an existing SIP; time it to the raise; or start a second SIP each year."
+   ]
+  },
+  {
+   "id": "stepup-c21",
+   "q": "Cap amount",
+   "a": [
+    "The maximum instalment, beyond which the step-up stops rising.",
+    "Example: cap at ₹20,000.",
+    "Remember: it turns an open commitment into a bounded one."
+   ]
+  },
+  {
+   "id": "stepup-c22",
+   "q": "Bank mandate limit",
+   "a": [
+    "The maximum the bank will allow per debit.",
+    "Example: set at ₹25,000 for a SIP rising to ₹16,105.",
+    "Remember: it must cover the highest future instalment."
+   ]
+  },
+  {
+   "id": "stepup-c23",
+   "q": "Re-registration",
+   "a": [
+    "Adding a step-up to an existing SIP can mean cancelling and registering again.",
+    "Example: a 4-year-old SIP with no facility.",
+    "Remember: the instalment and exit-load clocks restart."
+   ]
+  },
+  {
+   "id": "stepup-c24",
+   "q": "Annual step-up review",
+   "a": [
+    "Check income, comfort, goal progress, the cap, the mandate limit and the asset mix."
+   ]
+  },
+  {
+   "id": "stepup-c25",
+   "q": "Life changes",
+   "a": [
+    "Pay cut: pause, don't cancel. New EMI: hold the step-up. Big raise: a larger step-up. Goal near: send extra money to debt."
+   ]
+  },
+  {
+   "id": "stepup-c26",
+   "q": "Lifestyle creep",
+   "a": [
+    "Spending rises with income; the SIP stays flat.",
+    "Example: the raise disappears into monthly spending.",
+    "Remember: send a slice of every raise to the SIP first."
+   ]
+  },
+  {
+   "id": "stepup-c27",
+   "q": "Present bias",
+   "a": [
+    "Choosing a small gain now over a bigger one later.",
+    "Example: \"I'll increase it next year.\"",
+    "Remember: automate it and the decision disappears."
+   ]
+  },
+  {
+   "id": "stepup-c28",
+   "q": "Fear of commitment",
+   "a": [
+    "Worrying about affording future instalments.",
+    "Example: \"What if I can't afford it later?\"",
+    "Remember: a cap plus a review date answers it."
+   ]
+  },
+  {
+   "id": "stepup-c29",
+   "q": "Anchoring on the start amount",
+   "a": [
+    "Treating the first SIP as the right one forever.",
+    "Example: \"₹10,000 is my SIP.\"",
+    "Remember: as a share of income it is much smaller now."
+   ]
+  },
+  {
+   "id": "stepup-c30",
+   "q": "Waiting for markets",
+   "a": [
+    "Delaying a step-up until markets \"settle\".",
+    "Example: \"I'll step up after the correction.\"",
+    "Remember: a step-up is about income, not the market."
+   ]
+  },
+  {
+   "id": "stepup-c31",
+   "q": "Compliance essentials",
+   "a": [
+    "Label projections illustrative; show the total invested; explain cap, mandate and re-registration; record consent."
+   ]
+  },
+  {
+   "id": "stepup-c32",
+   "q": "The one line, again",
+   "a": [
+    "Save more tomorrow, automatically. A step-up decided once beats good intentions every year."
+   ]
+  }
+ ],
+ "final": {
+  "id": "stepup-final",
+  "title": "SIP Step-Up final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "stepup-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What is a step-up SIP?",
+    "o": [
+     "A SIP that rises automatically at set intervals",
+     "A one-time lump sum",
+     "A SIP that switches funds every year",
+     "A SIP with a guaranteed return"
+    ],
+    "a": 0,
+    "why": "The instalment rises by a fixed amount or a percentage at a set interval, decided once and applied by the AMC."
+   },
+   {
+    "id": "stepup-q2",
+    "sec": "L: Learn the Basics",
+    "q": "A fixed-amount step-up adds…",
+    "o": [
+     "The same rupee amount each time",
+     "A percentage of the previous instalment",
+     "A percentage of the portfolio",
+     "Whatever the AMC decides"
+    ],
+    "a": 0,
+    "why": "A fixed amount adds the same rupees each time; a percentage raises the instalment by a share of a growing base."
+   },
+   {
+    "id": "stepup-q3",
+    "sec": "L: Learn the Basics",
+    "q": "Starting from ₹10,000, what is the third instalment under a 10% yearly step-up?",
+    "o": [
+     "₹11,000",
+     "₹12,000",
+     "₹12,100",
+     "₹13,000"
+    ],
+    "a": 2,
+    "why": "₹10,000 → ₹11,000 → ₹12,100. Each raise is 10% of the previous instalment."
+   },
+   {
+    "id": "stepup-q4",
+    "sec": "L: Learn the Basics",
+    "q": "Name the two ways a step-up can be set.",
+    "o": [
+     "Fixed amount or percentage",
+     "Yearly or monthly",
+     "Equity or debt",
+     "Automatic or manual"
+    ],
+    "a": 0,
+    "why": "A fixed rupee amount each time, or a percentage of the previous instalment."
+   },
+   {
+    "id": "stepup-q5",
+    "sec": "L: Learn the Basics",
+    "q": "What is SBI Mutual Fund's top-up minimum and multiple?",
+    "o": [
+     "₹100, in any amount",
+     "₹500, in multiples of ₹500",
+     "₹5,000, in multiples of ₹1,000",
+     "No minimum"
+    ],
+    "a": 1,
+    "why": "At least ₹500, in multiples of ₹500, half-yearly or yearly for monthly SIPs."
+   },
+   {
+    "id": "stepup-q6",
+    "sec": "L: Learn the Basics",
+    "q": "At DSP Mutual Fund, the step-up instalment is capped at…",
+    "o": [
+     "₹1 lakh",
+     "₹5 lakh or the bank mandate limit, whichever is lower",
+     "₹25 lakh",
+     "There is no cap"
+    ],
+    "a": 1,
+    "why": "₹5 lakh or the mandate limit, whichever is lower. Terms differ by AMC, so always check the form."
+   },
+   {
+    "id": "stepup-q7",
+    "sec": "L: Learn the Basics",
+    "q": "A step-up facility is often available only on…",
+    "o": [
+     "An existing SIP of five years or more",
+     "A fresh SIP",
+     "A debt fund",
+     "A lump-sum investment"
+    ],
+    "a": 1,
+    "why": "Many AMCs offer it only on a fresh registration, so converting an existing SIP may mean re-registering."
+   },
+   {
+    "id": "stepup-q8",
+    "sec": "L: Learn the Basics",
+    "q": "Adding a step-up to an existing SIP can mean cancelling and re-registering. What does that do?",
+    "o": [
+     "Nothing at all",
+     "It resets the instalment clock and the exit-load period on new units",
+     "It removes the cap",
+     "It changes the fund's category"
+    ],
+    "a": 1,
+    "why": "A new registration means new instalment dates and a new exit-load clock. Explain it before acting."
+   },
+   {
+    "id": "stepup-q9",
+    "sec": "L: Learn the Basics",
+    "q": "Why show the total invested beside the final value?",
+    "o": [
+     "Because the AMC requires it",
+     "Because a step-up invests far more, and showing only the result misleads",
+     "Because it improves the return",
+     "Because it reduces the tax"
+    ],
+    "a": 1,
+    "why": "A 10% step-up invests about ₹68.7 L instead of ₹24 L in the illustration. Both numbers belong on the page."
+   },
+   {
+    "id": "stepup-q10",
+    "sec": "L: Learn the Basics",
+    "q": "What step-up rate is usually comfortable?",
+    "o": [
+     "At or below expected income growth, often 5–10%",
+     "20–25% every year",
+     "Whatever reaches the goal fastest",
+     "Above income growth, to catch up"
+    ],
+    "a": 0,
+    "why": "At or below expected income growth. A step-up faster than income growth squeezes the budget within a few years."
+   },
+   {
+    "id": "stepup-q11",
+    "sec": "E: Evaluate the Client",
+    "q": "A goal is 1–3 years away. What does a step-up add?",
+    "o": [
+     "A great deal; step up aggressively",
+     "Little, and extra money may need to move to debt instead",
+     "It removes the risk",
+     "It guarantees the goal"
+    ],
+    "a": 1,
+    "why": "Under three years a step-up adds little, and the money should be moving towards debt."
+   },
+   {
+    "id": "stepup-q12",
+    "sec": "E: Evaluate the Client",
+    "q": "The AMC offers no step-up facility, or the client wants control. What is the alternative?",
+    "o": [
+     "Stopping the SIP",
+     "Starting a second, smaller SIP each year",
+     "A lump sum only",
+     "A sectoral fund"
+    ],
+    "a": 1,
+    "why": "A second SIP each year gives the same effect with more flexibility."
+   },
+   {
+    "id": "stepup-q13",
+    "sec": "L: Learn the Basics",
+    "q": "In the illustration, what does a 10% step-up do to a ₹10,000, 20-year SIP?",
+    "o": [
+     "Roughly doubles the value, from about ₹1.0 Cr to about ₹2.0 Cr, with far more invested",
+     "Adds about ₹5 lakh",
+     "Halves the amount invested",
+     "Has no effect without a longer tenure"
+    ],
+    "a": 0,
+    "why": "About ₹1.99 Cr against ₹1.0 Cr, with about ₹68.7 L invested instead of ₹24 L."
+   },
+   {
+    "id": "stepup-q14",
+    "sec": "L: Learn the Basics",
+    "q": "The 15% step-up row invests about ₹1.23 Cr. Why is it risky to recommend?",
+    "o": [
+     "It earns the least",
+     "It needs the largest income growth and is the most likely to be cancelled",
+     "The AMC does not allow it",
+     "It has no cap"
+    ],
+    "a": 1,
+    "why": "It requires income to keep up for twenty years. A cancelled step-up is worse than a modest one."
+   },
+   {
+    "id": "stepup-q15",
+    "sec": "L: Learn the Basics",
+    "q": "Which is the honest way to present a step-up illustration?",
+    "o": [
+     "The final value alone",
+     "The final value, the total invested, and the assumed return labelled illustrative",
+     "A guarantee of the final value",
+     "A comparison with a fixed deposit only"
+    ],
+    "a": 1,
+    "why": "All three, every time: the result, the extra money invested, and the assumption."
+   },
+   {
+    "id": "stepup-q16",
+    "sec": "L: Learn the Basics",
+    "q": "In the illustration, starting the 10% step-up five years late costs about…",
+    "o": [
+     "₹5 lakh",
+     "₹54 lakh",
+     "₹1 crore",
+     "Nothing"
+    ],
+    "a": 1,
+    "why": "About ₹54 lakh: ₹1.45 Cr against ₹1.99 Cr when the step-up starts in year 2."
+   },
+   {
+    "id": "stepup-q17",
+    "sec": "E: Evaluate the Client",
+    "q": "A client says a step-up feels like too much commitment. What helps?",
+    "o": [
+     "A higher step-up",
+     "A cap, plus the option to pause or reduce at review",
+     "A longer tenure",
+     "A sectoral fund"
+    ],
+    "a": 1,
+    "why": "A cap bounds the commitment, and a review date makes it revisitable."
+   },
+   {
+    "id": "stepup-q18",
+    "sec": "A: Act Right",
+    "q": "A client receives a ₹4 lakh bonus. What is the right order?",
+    "o": [
+     "Bonus into the SIP, then the emergency fund",
+     "Emergency fund and loans first, then a lump sum or STP alongside the step-up",
+     "Cancel the SIP and invest the bonus",
+     "Use the bonus instead of a step-up"
+    ],
+    "a": 1,
+    "why": "Basics first. A bonus is irregular; the step-up is the annual habit, so use both."
+   },
+   {
+    "id": "stepup-q19",
+    "sec": "E: Evaluate the Client",
+    "q": "Name two checks before suggesting a step-up.",
+    "o": [
+     "Income growth and the emergency fund",
+     "The fund's star rating and the AMC's AUM",
+     "The market level and the tax rate",
+     "The number of folios and the nominee"
+    ],
+    "a": 0,
+    "why": "Income growth, the emergency fund and loans, budget room, and the time to the goal."
+   },
+   {
+    "id": "stepup-q20",
+    "sec": "A: Act Right",
+    "q": "The bank mandate is lower than the highest future instalment. What should happen?",
+    "o": [
+     "Wait for the first failure",
+     "Raise the mandate when the step-up is set up",
+     "Lower the step-up",
+     "Change the bank"
+    ],
+    "a": 1,
+    "why": "A mandate that only covers today's amount will fail later, and three consecutive failures cancel a monthly SIP."
+   },
+   {
+    "id": "stepup-q21",
+    "sec": "R: Review & Rebalance",
+    "q": "When is the step-up reviewed?",
+    "o": [
+     "Only when it fails",
+     "At the annual SIP review, alongside the goal and the asset mix",
+     "Every month",
+     "Never"
+    ],
+    "a": 1,
+    "why": "It is part of the annual review: income, comfort, goal progress, cap, mandate and asset mix."
+   },
+   {
+    "id": "stepup-q22",
+    "sec": "E: Evaluate the Client",
+    "q": "Which client does a percentage step-up suit least?",
+    "o": [
+     "A salaried 30-year-old with regular raises",
+     "A retiree on a fixed pension",
+     "A business owner whose income grows",
+     "A 28-year-old with a 25-year goal"
+    ],
+    "a": 1,
+    "why": "A fixed pension does not grow, so the instalment would rise while income does not."
+   },
+   {
+    "id": "stepup-q23",
+    "sec": "E: Evaluate the Client",
+    "q": "A step-up faster than income growth will…",
+    "o": [
+     "Always work out",
+     "Squeeze the budget within a few years and get cancelled or missed",
+     "Be capped by the AMC",
+     "Reduce the tax"
+    ],
+    "a": 1,
+    "why": "The instalment becomes a visibly larger share of pay, and the client either cancels it or starts missing debits."
+   },
+   {
+    "id": "stepup-q24",
+    "sec": "N: Navigate Behaviour",
+    "q": "What is lifestyle creep?",
+    "o": [
+     "Spending rising with income while the SIP stays flat",
+     "The fund's expense ratio rising",
+     "The SIP amount rising every year",
+     "Inflation raising prices"
+    ],
+    "a": 0,
+    "why": "It is why a flat SIP quietly becomes a smaller share of income."
+   },
+   {
+    "id": "stepup-q25",
+    "sec": "N: Navigate Behaviour",
+    "q": "What is present bias in the step-up conversation?",
+    "o": [
+     "Preferring a small gain now over a larger one later, as in \"I'll increase it next year\"",
+     "Preferring equity over debt",
+     "Wanting a higher cap",
+     "Reviewing the SIP every year"
+    ],
+    "a": 0,
+    "why": "It is beaten by automation: set the step-up now and it happens on its own."
+   },
+   {
+    "id": "stepup-q26",
+    "sec": "Compliance: What We Say",
+    "q": "Which statement is compliant?",
+    "o": [
+     "\"A 10% step-up will get you ₹2 crore.\"",
+     "\"Illustratively, at 12% assumed, a 10% step-up invests about ₹68.7 L and could reach about ₹2 crore; not guaranteed.\"",
+     "\"A step-up guarantees the goal.\"",
+     "\"Re-registering changes nothing.\""
+    ],
+    "a": 1,
+    "why": "Label it illustrative, state the assumption and the total invested, and promise nothing."
+   },
+   {
+    "id": "stepup-q27",
+    "sec": "A: Act Right",
+    "q": "For ₹1 crore in 15 years at an assumed 12%, what is the starting SIP with and without a 10% step-up?",
+    "o": [
+     "About ₹19,800 flat; about ₹11,500 with the step-up",
+     "About ₹11,500 flat; about ₹19,800 with the step-up",
+     "About ₹10,000 in both cases",
+     "About ₹25,000 flat; about ₹15,000 with the step-up"
+    ],
+    "a": 0,
+    "why": "About ₹19,800 flat, or about ₹11,500 to start with a 10% yearly step-up. Illustrative, not a promise."
+   },
+   {
+    "id": "stepup-q28",
+    "sec": "A: Act Right",
+    "q": "What must be recorded after agreeing a step-up?",
+    "o": [
+     "Only the fund's name",
+     "The rule (type, rate, frequency), the cap, the mandate limit and the review date",
+     "The client's PAN",
+     "The AMC's address"
+    ],
+    "a": 1,
+    "why": "The note is the record of consent, and it drives the next review."
+   },
+   {
+    "id": "stepup-q29",
+    "sec": "N: Navigate Behaviour",
+    "q": "A step-up is a decision about…",
+    "o": [
+     "The market",
+     "The client's income",
+     "The fund's rating",
+     "The tax year"
+    ],
+    "a": 1,
+    "why": "It is tied to income growth, not to a market view. Falls are good months to buy more units."
+   },
+   {
+    "id": "stepup-q30",
+    "sec": "A: Act Right",
+    "q": "₹15,000 flat vs ₹10,000 with a 10% step-up over 20 years: what does the illustration show?",
+    "o": [
+     "₹1.50 Cr vs ₹1.99 Cr, with ₹36.0 L vs ₹68.7 L invested",
+     "₹1.99 Cr vs ₹1.50 Cr, with ₹36.0 L vs ₹68.7 L invested",
+     "Both reach ₹1.50 Cr",
+     "Both invest the same amount"
+    ],
+    "a": 0,
+    "why": "The flat SIP reaches about ₹1.50 Cr from ₹36 L invested; the step-up reaches about ₹1.99 Cr from ₹68.7 L."
+   }
+  ]
+ },
+ "role_play": null
+}

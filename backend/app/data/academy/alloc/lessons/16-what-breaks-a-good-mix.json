@@ -1,0 +1,79 @@
+{
+ "id": "alloc-16",
+ "title": "What breaks a good mix",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Name the six behaviours that break a well-built allocation.",
+  "Give the compliant response to each."
+ ],
+ "body_md": "A well-built allocation fails only when the client abandons it.\n\n| Behaviour | What it sounds like | What to say |\n|---|---|---|\n| Chasing last year's winner | \"Gold did 20% last year; move everything there.\" | \"Each asset has its year. The mix is built so we don't have to guess which one is next.\" |\n| Debt feels like a drag | \"Why keep debt earning 7% when equity did 25%?\" | \"Debt is the part that lets you sleep in a bad year, and it's what we buy equity with after a fall.\" |\n| All in FDs | \"I don't want any risk.\" | \"FDs carry inflation risk. Let's look at what ₹10 L in FDs buys in 15 years versus a balanced mix.\" |\n| Concentration | \"Most of my money is in my company's shares.\" | \"Let's count it in your mix and diversify the new money around it.\" |\n| Mental accounting | \"My EPF and PPF are separate; they don't count.\" | \"They're debt. Counting them may mean your mutual funds can hold more equity.\" |\n| Rebalancing feels wrong | \"Why sell equity when it's doing well?\" | \"We're taking some profit to get back to your agreed mix, not predicting a fall.\" |\n\n**The one line to remember:** the best mix is the one the client can stick with through a bad year.",
+ "key_terms": [
+  "asset allocation",
+  "rebalancing",
+  "risk tolerance"
+ ],
+ "example": "After a strong year for gold, Vikram wants to move his whole portfolio into gold. The answer keeps gold at the agreed 10% and explains that each asset has its year, without predicting the next one.",
+ "say": [
+  "Each asset has its year, and the mix means we don't have to guess which is next.",
+  "We're returning to your agreed mix, not predicting a fall."
+ ],
+ "never": [
+  "Gold is the place to be now.",
+  "Debt is a waste of money in a bull market."
+ ],
+ "talk_track": [
+  {
+   "n": 13,
+   "title": "What breaks a good mix",
+   "text": "A well-built mix fails only when the client abandons it. Six patterns to watch for. Chasing winners: “gold did twenty percent, move it all”. Each asset has its year, and the mix means we don't have to guess which is next. Debt as a drag: debt is what lets them sleep in a bad year, and what we use to buy equity after a fall. All in FDs: FDs carry inflation risk. Concentration in one company's shares or one property: count it in the mix. Mental accounting: EPF and PPF are debt. And resisting rebalancing: we're returning to the agreed mix, not predicting a fall."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q46",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client wants to move most of the portfolio into gold after a strong year. What is the right response?",
+   "o": [
+    "Agree; momentum matters",
+    "Each asset has its year; keep gold to the agreed share, often 5–15%",
+    "Move everything to gold and review in a year",
+    "Promise gold will keep rising"
+   ],
+   "a": 1,
+   "why": "The mix exists so nobody has to guess which asset is next. Gold stays at its agreed share."
+  },
+  {
+   "id": "alloc-q47x",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client says debt is a drag at 7% while equity did 25%. Best answer?",
+   "o": [
+    "Sell the debt and buy equity",
+    "Debt is what lets you sleep in a bad year, and what we buy equity with after a fall",
+    "Debt is pointless at your age",
+    "Let's move to a sectoral fund"
+   ],
+   "a": 1,
+   "why": "Debt is the ballast, and the dry powder for the next fall."
+  },
+  {
+   "id": "alloc-q48x",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client's wealth is mostly in his employer's shares. What should happen?",
+   "o": [
+    "Ignore it; we don't manage it",
+    "Count it in the mix and diversify new money around it",
+    "Sell the shares immediately",
+    "Move the mutual funds to the same sector"
+   ],
+   "a": 1,
+   "why": "Concentration belongs in the picture: count it, then diversify new money around it."
+  }
+ ],
+ "card_ids": [
+  "alloc-c30",
+  "alloc-c32"
+ ],
+ "words": 234
+}

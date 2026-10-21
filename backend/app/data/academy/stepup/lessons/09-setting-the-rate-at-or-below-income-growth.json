@@ -1,0 +1,75 @@
+{
+ "id": "stepup-09",
+ "title": "Setting the rate: at or below income growth",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Apply the rule of thumb for the step-up rate.",
+  "Explain what happens when the step-up outruns income."
+ ],
+ "body_md": "The rate is the easiest part of the conversation, once the four checks are done.\n\n## The rule of thumb\n\nSet the step-up at or below the client's expected income growth. If income grows 8–10% a year, a 5–10% step-up is usually comfortable.\n\n## Why not higher\n\nA step-up faster than income growth squeezes the budget within a few years. By year three the instalment is a visibly larger share of pay, and the client either cancels it or starts missing debits.\n\n## How to frame it\n\n\"What share of your raise could go to savings?\" If the answer is a third to a half, the step-up rate is simply that share of the expected raise. The client sees the money as coming out of the raise, not out of today's spending.\n\n## When income is uncertain\n\nPick the lower end, or use a fixed amount the client is sure about. The rate can be raised at the next review; it cannot be un-cancelled.",
+ "key_terms": [
+  "step-up SIP",
+  "lifestyle creep"
+ ],
+ "example": "Income expected to grow 8% a year: a 5–8% step-up is comfortable and leaves room for the EMI the client expects next year. A 15% step-up would be cancelled by year three.",
+ "say": [
+  "Let's set the step-up at or below what your income is likely to grow by.",
+  "If your raise is 10%, sending half of it to the SIP is a 5% step-up."
+ ],
+ "never": [
+  "Let's do 20% so you catch up faster.",
+  "The rate doesn't matter; the fund's return does."
+ ],
+ "talk_track": [
+  {
+   "n": 6,
+   "title": "The rule of thumb for the rate",
+   "text": "The rule of thumb: step up at or below the client's expected income growth. If income grows eight to ten percent a year, a five to ten percent step-up is usually comfortable. A step-up faster than income growth will squeeze the budget within a few years."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q30x",
+   "sec": "E: Evaluate the Client",
+   "q": "How much of each raise should a comfortable step-up roughly reflect?",
+   "o": [
+    "A third to a half",
+    "All of it",
+    "None of it",
+    "Twice the raise"
+   ],
+   "a": 0,
+   "why": "If a third to a half of each raise is free to save, that share of the expected raise sets a comfortable step-up."
+  },
+  {
+   "id": "stepup-q25x",
+   "sec": "E: Evaluate the Client",
+   "q": "Income is expected to grow 8–10% a year. What step-up fits?",
+   "o": [
+    "1–2%",
+    "5–10%",
+    "15–20%",
+    "25%"
+   ],
+   "a": 1,
+   "why": "At or below income growth: 5–10% is usually comfortable."
+  },
+  {
+   "id": "stepup-q26x",
+   "sec": "E: Evaluate the Client",
+   "q": "What happens when a step-up outruns income growth?",
+   "o": [
+    "The client saves more, so it always works",
+    "The instalment becomes a visibly larger share of pay and gets cancelled or missed",
+    "The AMC caps it automatically",
+    "The fund returns fall"
+   ],
+   "a": 1,
+   "why": "Unsustainable step-ups are cancelled or missed, which costs more than never stepping up."
+  }
+ ],
+ "card_ids": [],
+ "words": 164
+}

@@ -1,0 +1,78 @@
+{
+ "id": "sip-10",
+ "title": "When the goal is years away: renew",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Explain the renew-versus-hold decision with illustrative numbers.",
+  "Say why renewal should usually come with a step-up."
+ ],
+ "body_md": "Decision point five is where most value is quietly lost. The SIP ends, the instalments stop, and nobody calls.\n\n## The illustration\n\n₹10,000 a month for 10 years, at an assumed 12% a year, is worth about ₹23.2 lakh at year 10.\n\n- Hold for 10 more years without a SIP: about ₹72.2 lakh at year 20.\n- Renew and continue for 10 more years: about ₹99.9 lakh at year 20.\n\nThe existing units compound either way. Renewing adds the extra years of contributions, and those contributions are what close the gap.\n\n## Why renew with a step-up\n\nA flat renewal repeats the amount that was right ten years ago. Income has usually grown and costs certainly have. Renewing with a 5–10% step-up keeps the new instalment in line with today's salary rather than yesterday's.\n\n## Renewal mechanics\n\n- Renew before the old tenure ends, so there is no gap in debits.\n- Check the AMC's renewal terms; a renewal may be treated as a fresh registration.\n- Update the bank mandate if the new amount is higher.\n- Put the new end date in the review calendar immediately.",
+ "key_terms": [
+  "SIP",
+  "SIP end date",
+  "step-up SIP"
+ ],
+ "example": "Anil's SIP ended at ₹23.2 lakh, with eight years to the college goal. Renewing at the same amount reaches about ₹99.9 lakh over a full 20 years; he renews with a 10% step-up instead of a flat amount.",
+ "say": [
+  "The units keep compounding whether or not you renew; the renewal adds the contributions.",
+  "Let's renew at today's income, not at the amount that was right ten years ago."
+ ],
+ "never": [
+  "Holding and renewing give the same result.",
+  "Renewal is automatic, so there is nothing to plan."
+ ],
+ "talk_track": [
+  {
+   "n": 4,
+   "title": "Renew or just hold?",
+   "text": "At year ten, the SIP is worth about twenty-three lakh. If the client simply holds for ten more years, it grows to about seventy-two lakh. If the client renews the SIP for those ten years, it reaches about one crore. The existing units compound either way; renewing adds the extra years of contributions. And many investors simply forget to renew, so put the end date in the review calendar."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q14",
+   "sec": "A: Act Right",
+   "q": "₹10,000 a month for 10 years, then 10 more years: what does the illustration show?",
+   "o": [
+    "About ₹72.2 L if held; about ₹99.9 L if renewed",
+    "About ₹99.9 L if held; about ₹72.2 L if renewed",
+    "Both about ₹72.2 L",
+    "Both about ₹23.2 L"
+   ],
+   "a": 0,
+   "why": "Holding reaches about ₹72.2 L; renewing reaches about ₹99.9 L, because renewal adds ten more years of contributions."
+  },
+  {
+   "id": "sip-q17x",
+   "sec": "A: Act Right",
+   "q": "Why renew with a step-up rather than a flat amount?",
+   "o": [
+    "Because the AMC requires it",
+    "Because the flat amount was right ten years ago, and income and costs have moved since",
+    "Because a step-up removes the exit load",
+    "Because a step-up guarantees the goal"
+   ],
+   "a": 1,
+   "why": "The old instalment is a smaller share of today's income, and a step-up keeps the renewal realistic."
+  },
+  {
+   "id": "sip-q18x",
+   "sec": "A: Act Right",
+   "q": "What must be checked before a renewal with a higher amount?",
+   "o": [
+    "Only the fund's star rating",
+    "The bank mandate and the renewal terms",
+    "The AMC's share price",
+    "The number of folios"
+   ],
+   "a": 1,
+   "why": "A higher instalment needs a mandate that covers it, and renewal terms can differ from the original registration."
+  }
+ ],
+ "card_ids": [
+  "sip-c19"
+ ],
+ "words": 189
+}

@@ -1,0 +1,78 @@
+{
+ "id": "alloc-02",
+ "title": "The four asset classes and their jobs",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Name the four main asset classes and the job of each.",
+  "Give an example product for each class."
+ ],
+ "body_md": "There are four main asset classes, and each has a different job.\n\n| Asset class | Main job | Typical behaviour | Example products |\n|---|---|---|---|\n| Equity | Long-term growth, beating inflation | Highest long-run growth; sharp falls along the way | Equity mutual funds, PMS, direct stocks |\n| Debt | Stability and income | Steadier; carries interest-rate and credit risk | Debt funds, bonds, FDs, PPF, EPF |\n| Gold | Diversifier, crisis hedge | Often holds up when equity falls; long flat spells | Gold ETFs, gold funds, SGBs already held |\n| Cash | Liquidity and emergencies | Very stable; often below inflation after tax | Savings account, liquid funds |\n\n## The point of the table\n\nNo single class does every job. Equity without debt swings too hard for most clients. Debt alone loses to inflation. Gold alone can be flat for a decade. Cash is there so a bad month never forces a sale.\n\nThe mix is how these jobs are combined for one client and one goal.",
+ "key_terms": [
+  "asset allocation",
+  "riskometer"
+ ],
+ "example": "A retiree's emergency fund sits in cash, her three-year expense pot in debt, and the money she will not touch for fifteen years in equity and gold. Four classes, four different jobs, one client.",
+ "say": [
+  "Equity is for growth, debt for stability, gold as a diversifier and cash for liquidity.",
+  "Each asset class has a job; the mix is how we combine them."
+ ],
+ "never": [
+  "Debt funds are risk-free.",
+  "Gold always goes up when markets fall."
+ ],
+ "talk_track": [
+  {
+   "n": 3,
+   "title": "Four asset classes, four different jobs",
+   "text": "There are four main asset classes, and each has a different job. Equity is for growth: it has the highest long-run growth, but with sharp falls along the way. Debt is for stability and income: it's steadier, though it carries interest-rate and credit risk. Gold is a diversifier: it often holds up when equity falls, but it can go through long flat spells. And cash is for liquidity and emergencies: very stable, but often below inflation after tax."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q2",
+   "sec": "L: Learn the Basics",
+   "q": "Which asset class is mainly for long-term growth?",
+   "o": [
+    "Cash",
+    "Debt",
+    "Equity",
+    "Gold"
+   ],
+   "a": 2,
+   "why": "Equity has the highest long-run growth, with sharp falls along the way."
+  },
+  {
+   "id": "alloc-q5x",
+   "sec": "L: Learn the Basics",
+   "q": "What is gold's main role in a portfolio?",
+   "o": [
+    "Highest return",
+    "A diversifier that often holds up when equity falls",
+    "Monthly income",
+    "Tax saving"
+   ],
+   "a": 1,
+   "why": "Gold is a diversifier and crisis hedge, and it can go through long flat spells. Usually 5–15% is enough."
+  },
+  {
+   "id": "alloc-q6x",
+   "sec": "L: Learn the Basics",
+   "q": "Why hold cash at all, when it often trails inflation?",
+   "o": [
+    "To beat equity over time",
+    "So a bad month never forces a sale of long-term investments",
+    "To save tax",
+    "To earn the highest return"
+   ],
+   "a": 1,
+   "why": "Cash buys liquidity and emergencies, so nothing long-term has to be sold at the wrong moment."
+  }
+ ],
+ "card_ids": [
+  "alloc-c4",
+  "alloc-c17"
+ ],
+ "words": 175
+}

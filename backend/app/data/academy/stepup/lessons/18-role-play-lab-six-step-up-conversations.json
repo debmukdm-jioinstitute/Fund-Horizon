@@ -1,0 +1,78 @@
+{
+ "id": "stepup-18",
+ "title": "Role-play lab: six step-up conversations",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Handle six realistic step-up conversations: check, illustrate, set up, record.",
+  "Keep every projection illustrative and every commitment bounded."
+ ],
+ "body_md": "Practise these in pairs, five minutes each. The expected answer is the shape of a good conversation, not a script.\n\n## 1. The new graduate\n\nRiya, 24, can invest ₹5,000 a month but expects 10% yearly raises. Expected: suggest a 10% step-up timed to her raise; check her emergency fund first.\n\n## 2. The ₹1 crore goal\n\nKaran wants ₹1 crore in 15 years but can afford only ₹12,000 a month now. Expected: show the step-up path (about ₹11,500 to start with 10% a year, illustrative); no promises.\n\n## 3. \"Next year\"\n\nSameer has said he'll increase his SIP \"next year\" for three years running. Expected: show the cost of delay; set an automatic step-up with a cap.\n\n## 4. Pay cut\n\nAnita's step-up is due but her salary was cut 15%. Expected: hold or reduce the step-up; don't cancel the SIP; review in six months.\n\n## 5. Existing SIP\n\nVivek wants to add a step-up to a 4-year-old SIP. Expected: check whether it needs re-registration and any exit-load change; offer a second SIP as an alternative.\n\n## 6. Big bonus\n\nMeghna got a ₹4 lakh bonus. Expected: emergency fund first, then a lump sum or STP, plus a modest step-up.",
+ "key_terms": [
+  "step-up SIP",
+  "STP",
+  "SIP pause"
+ ],
+ "example": "In the Vivek role-play, the good answer covers three things: whether the AMC allows the facility on an existing SIP, what re-registration does to the instalment and exit-load clock, and the second-SIP alternative.",
+ "say": [
+  "Let's see whether your AMC allows a step-up on this SIP, or whether a second SIP is cleaner.",
+  "We'll set a cap so this stays comfortable."
+ ],
+ "never": [
+  "We'll just convert it; nothing changes.",
+  "A step-up guarantees the goal."
+ ],
+ "talk_track": [
+  {
+   "n": 15,
+   "title": "Practise before you need it",
+   "text": "To wrap up: practise this before you need it. Role-play the six client scenarios from the manual in pairs, take the twenty-five question quiz, where the pass mark is twenty, and use the thirty-two flash cards for quick revision. All figures are illustrative, and fund house terms vary, so always check the scheme form."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q41",
+   "sec": "Practice: Role-Plays",
+   "q": "Riya, 24, can invest ₹5,000 a month and expects 10% raises. What is the best plan?",
+   "o": [
+    "Wait until she can invest ₹20,000",
+    "A 10% step-up timed to her raise, after checking her emergency fund",
+    "A 25% step-up now",
+    "A one-time lump sum"
+   ],
+   "a": 1,
+   "why": "A step-up at her expected income growth, timed to the raise, with the buffer checked first."
+  },
+  {
+   "id": "stepup-q42",
+   "sec": "Practice: Role-Plays",
+   "q": "Karan can afford ₹12,000 a month now but wants ₹1 crore in 15 years. What do you show?",
+   "o": [
+    "That the goal is impossible",
+    "The illustrative step-up path (about ₹11,500 to start at 10% a year), with assumptions and no promises",
+    "That a flat SIP will do",
+    "That he should borrow to invest more"
+   ],
+   "a": 1,
+   "why": "Show the illustrative path and its assumptions, and label it clearly."
+  },
+  {
+   "id": "stepup-q43",
+   "sec": "Practice: Role-Plays",
+   "q": "Vivek wants to add a step-up to a 4-year-old SIP. What must be checked?",
+   "o": [
+    "Only the fund's returns",
+    "Whether the AMC allows it on an existing SIP, and what re-registration does to the instalment and exit-load clock",
+    "Whether the SIP can be cancelled first",
+    "The AMC's share price"
+   ],
+   "a": 1,
+   "why": "Check the facility and the re-registration effects, and offer a second SIP as an alternative."
+  }
+ ],
+ "card_ids": [
+  "stepup-c32"
+ ],
+ "words": 201
+}

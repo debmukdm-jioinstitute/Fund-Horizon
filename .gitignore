@@ -20,3 +20,5 @@ data/fundhorizon_mf_rag_dataset/all_schemes_master.csv
 data/fundhorizon_mf_rag_dataset/ingest_example.py
 .claude-flow/
 backend/factsheets/*.pdf
+.open-next/
+.wrangler/

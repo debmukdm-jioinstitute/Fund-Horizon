@@ -40,6 +40,9 @@ const securityHeaders = [
 
 const nextConfig = {
   poweredByHeader: false,
+  images: {
+    unoptimized: process.env.CF_BUILD === "1",
+  },
   async headers() {
     return [
       {

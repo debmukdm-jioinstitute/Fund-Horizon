@@ -20,6 +20,13 @@ def _utcnow() -> str:
 
 def init_backoffice_schema(conn: sqlite3.Connection) -> None:
     """Create all backoffice tables and indexes in SQLite if they don't exist."""
+    try:
+        _init_backoffice_schema_raw(conn)
+    except sqlite3.OperationalError as e:
+        logger.error("Failed to create backoffice tables (disk full or DB error): %s", e)
+
+
+def _init_backoffice_schema_raw(conn: sqlite3.Connection) -> None:
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS source_registry (
@@ -369,6 +376,13 @@ def init_backoffice_schema(conn: sqlite3.Connection) -> None:
 
 def _seed_default_registries(conn: sqlite3.Connection) -> None:
     """Seed supported sources and baseline instruments."""
+    try:
+        _seed_default_registries_raw(conn)
+    except sqlite3.OperationalError as e:
+        logger.error("Failed to seed default registries (disk full or DB error): %s", e)
+
+
+def _seed_default_registries_raw(conn: sqlite3.Connection) -> None:
     now = _utcnow()
 
     sources = [

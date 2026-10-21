@@ -15,6 +15,8 @@ def get_chroma_dir() -> str:
     env_dir = os.environ.get("FH_CHROMA_DIR")
     if env_dir:
         return env_dir
+    if os.environ.get("RAILWAY_ENVIRONMENT"):
+        return "/tmp/chroma"
     if os.path.exists("/data/chroma"):
         return "/data/chroma"
     # Local fallback

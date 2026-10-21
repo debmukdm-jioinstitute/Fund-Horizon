@@ -84,3 +84,37 @@ def exists(key: str) -> bool:
         if error_code in ("404", "NoSuchKey") or http_code == 404:
             return False
         raise
+
+def get_file(key: str, local_path: str | Path) -> Path:
+    """Download object from R2 to local_path. Returns Path(local_path)."""
+    bucket = os.environ["R2_BUCKET"]
+    path = Path(local_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    get_client().download_file(bucket, key, str(path))
+    return path
+
+
+def list_keys(prefix: str = "") -> list[str]:
+    """List all object keys under prefix in R2 bucket."""
+    if not enabled():
+        return []
+    bucket = os.environ.get("R2_BUCKET", "")
+    client = get_client()
+    keys: list[str] = []
+    paginator = client.get_paginator("list_objects_v2")
+    kwargs = {"Bucket": bucket}
+    if prefix:
+        kwargs["Prefix"] = prefix
+    for page in paginator.paginate(**kwargs):
+        for item in page.get("Contents", []):
+            keys.append(item["Key"])
+    return keys
+
+
+def delete(key: str) -> bool:
+    """Delete an object from R2 bucket."""
+    if not enabled():
+        return False
+    bucket = os.environ.get("R2_BUCKET", "")
+    get_client().delete_object(Bucket=bucket, Key=key)
+    return True

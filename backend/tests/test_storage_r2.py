@@ -1,6 +1,7 @@
 """Tests for Cloudflare R2 storage module with mocked boto3 client and fallback."""
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from botocore.exceptions import ClientError
@@ -153,3 +154,136 @@ def test_migrate_factsheets_to_r2(monkeypatch, tmp_path):
     migrate_factsheets_to_r2.migrate()
     row = repo.get_factsheet(98765)
     assert row["archived_path"] == "factsheets/dsp-2026-09-abcdef1234.pdf"
+
+
+def test_r2_get_list_delete(monkeypatch, tmp_path):
+    monkeypatch.setenv("R2_ACCOUNT_ID", "acc123")
+    monkeypatch.setenv("R2_ACCESS_KEY_ID", "key123")
+    monkeypatch.setenv("R2_SECRET_ACCESS_KEY", "sec123")
+    monkeypatch.setenv("R2_BUCKET", "fund-horizon-files")
+
+    mock_client = MagicMock()
+    mock_paginator = MagicMock()
+    mock_paginator.paginate.return_value = [
+        {"Contents": [{"Key": "backups/plans-20261020-0000.db.gz"}, {"Key": "backups/plans-20261021-0000.db.gz"}]}
+    ]
+    mock_client.get_paginator.return_value = mock_paginator
+
+    with patch("app.storage.r2.boto3.client", return_value=mock_client):
+        # get_file
+        dest = tmp_path / "downloaded.txt"
+        r2.get_file("test.txt", dest)
+        mock_client.download_file.assert_called_once_with("fund-horizon-files", "test.txt", str(dest))
+
+        # list_keys
+        keys = r2.list_keys("backups/")
+        assert keys == ["backups/plans-20261020-0000.db.gz", "backups/plans-20261021-0000.db.gz"]
+
+        # delete
+        assert r2.delete("old.txt") is True
+        mock_client.delete_object.assert_called_once_with(Bucket="fund-horizon-files", Key="old.txt")
+
+
+def test_backup_upload_and_retention(monkeypatch, tmp_path):
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    from app import backup
+
+    db_path = tmp_path / "plans.db"
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    conn.execute("CREATE TABLE test (id int)")
+    conn.execute("INSERT INTO test VALUES (1)")
+    conn.commit()
+    conn.close()
+
+    monkeypatch.setattr("app.backup.get_default_db_path", lambda: db_path)
+    monkeypatch.setenv("R2_ACCOUNT_ID", "acc123")
+    monkeypatch.setenv("R2_ACCESS_KEY_ID", "key123")
+    monkeypatch.setenv("R2_SECRET_ACCESS_KEY", "sec123")
+    monkeypatch.setenv("R2_BUCKET", "fund-horizon-files")
+    monkeypatch.setattr("app.backup.KEEP", 2)
+
+    uploaded: dict[str, bytes] = {}
+    deleted = []
+
+    def mock_put_file(local_path, key, content_type=None):
+        uploaded[key] = Path(local_path).read_bytes()
+        return key
+
+    existing_backups = [
+        "backups/plans-20261001-0000.db.gz",
+        "backups/plans-20261002-0000.db.gz",
+        "backups/plans-20261003-0000.db.gz",
+    ]
+
+    def mock_list_keys(prefix=""):
+        return sorted(existing_backups + list(uploaded.keys()))
+
+    def mock_delete(key):
+        deleted.append(key)
+        if key in existing_backups:
+            existing_backups.remove(key)
+        return True
+
+    monkeypatch.setattr("app.storage.r2.put_file", mock_put_file)
+    monkeypatch.setattr("app.storage.r2.list_keys", mock_list_keys)
+    monkeypatch.setattr("app.storage.r2.delete", mock_delete)
+
+    key = backup.backup_sqlite()
+    assert key is not None and key.startswith("backups/plans-") and key.endswith(".db.gz")
+    assert key in uploaded
+    # Verify retention deleted older backups down to KEEP=2
+    assert "backups/plans-20261001-0000.db.gz" in deleted
+    assert "backups/plans-20261002-0000.db.gz" in deleted
+
+
+def test_restore_on_boot(monkeypatch, tmp_path):
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    import gzip
+    import sqlite3
+
+    from app import backup
+
+    db_path = tmp_path / "empty_plans.db"
+    monkeypatch.setattr("app.backup.get_default_db_path", lambda: db_path)
+    monkeypatch.setenv("R2_ACCOUNT_ID", "acc123")
+    monkeypatch.setenv("R2_ACCESS_KEY_ID", "key123")
+    monkeypatch.setenv("R2_SECRET_ACCESS_KEY", "sec123")
+    monkeypatch.setenv("R2_BUCKET", "fund-horizon-files")
+
+    # Create dummy gzipped db content
+    raw_tmp = tmp_path / "raw.db"
+    conn = sqlite3.connect(raw_tmp)
+    conn.execute("CREATE TABLE restored_table (x text)")
+    conn.execute("INSERT INTO restored_table VALUES ('restored_val')")
+    conn.commit()
+    conn.close()
+
+    gz_content = gzip.compress(raw_tmp.read_bytes())
+
+    def mock_list_keys(prefix=""):
+        return ["backups/plans-20261021-1200.db.gz"]
+
+    def mock_get_file(key, local_path):
+        Path(local_path).write_bytes(gz_content)
+        return Path(local_path)
+
+    monkeypatch.setattr("app.storage.r2.list_keys", mock_list_keys)
+    monkeypatch.setattr("app.storage.r2.get_file", mock_get_file)
+
+    assert backup.restore_if_needed() is True
+    assert db_path.exists()
+    conn2 = sqlite3.connect(db_path)
+    row = conn2.execute("SELECT x FROM restored_table").fetchone()
+    conn2.close()
+    assert row[0] == "restored_val"
+
+
+def test_health_endpoint(client):
+    res = client.get("/health")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["ok"] is True
+    assert "r2" in data
+    assert "db_bytes" in data
+    assert "data_free_mb" in data

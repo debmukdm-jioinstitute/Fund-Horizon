@@ -1,5 +1,5 @@
-"""Load the local fund dataset into Supabase. Plans and CAS sessions are left alone."""
 from __future__ import annotations
+"""Load the local fund dataset into Supabase. Plans and CAS sessions are left alone."""
 
 from pathlib import Path
 

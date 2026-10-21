@@ -1,20 +1,24 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
+from fastapi import HTTPException
+
 """Apply a filled-in form (typed text, marks, signatures, images, whiteout) onto an existing PDF.
 
 Coordinates arrive in PDF points with the origin at the top-left of the page as a viewer shows it (crop box).
 Text is drawn in Google Sans, never in the source form's font, so the site-wide typeface rule holds.
 """
-from __future__ import annotations
 
 import base64
 import io
 import re
 from typing import Any
 
-from pypdf import PdfReader, PdfWriter, Transformation
-from pypdf.generic import ArrayObject, NameObject
-from reportlab.lib.utils import ImageReader
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfgen import canvas
+if not on_workers():
+    from pypdf import PdfReader, PdfWriter, Transformation
+    from pypdf.generic import ArrayObject, NameObject
+    from reportlab.lib.utils import ImageReader
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfgen import canvas
 
 from app.report import fonts
 

@@ -1,5 +1,5 @@
-"""FastAPI app factory. Dataset is loaded once at startup into memory."""
 from __future__ import annotations
+"""FastAPI app factory. Dataset is loaded once at startup into memory."""
 
 import asyncio
 import logging

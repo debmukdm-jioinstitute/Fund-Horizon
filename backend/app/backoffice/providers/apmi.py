@@ -1,3 +1,4 @@
+from __future__ import annotations
 """APMI (Association of Portfolio Managers in India) PMS performance collector.
 
 APMI publishes monthly, audited performance for every SEBI-registered portfolio manager's investment approaches at
@@ -5,7 +6,6 @@ https://www.apmiindia.org/apmi/welcomeiaperformance.htm?action=PMSmenu. The page
 (select ``pmsProvideName``) and answers a form POST (``action=loadIAReport``) with an HTML table of strategies. One POST
 per (strategy type, service type) with *all* provider ids returns the whole industry, so a full refresh is 8 requests.
 """
-from __future__ import annotations
 
 import html
 import logging

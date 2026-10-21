@@ -1,5 +1,5 @@
-"""Calculation of screening ratios and metrics per mutual fund scheme."""
 from __future__ import annotations
+"""Calculation of screening ratios and metrics per mutual fund scheme."""
 
 from datetime import date
 from typing import Any

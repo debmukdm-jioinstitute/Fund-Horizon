@@ -1,11 +1,10 @@
-"""ChromaDB store and vector search using BAAI/bge-small-en-v1.5 embeddings."""
 from __future__ import annotations
+"""ChromaDB store and vector search using BAAI/bge-small-en-v1.5 embeddings."""
 
 import os
 from pathlib import Path
 from typing import Any
 
-import chromadb
 
 _embedding_model = None
 
@@ -27,6 +26,12 @@ def get_chroma_dir() -> str:
 
 def get_embedding_model():
     """Lazy-load fastembed BAAI/bge-small-en-v1.5 embedding model."""
+    from app.db.d1 import on_workers
+    from fastapi import HTTPException
+
+    if on_workers():
+        raise HTTPException(503, detail={"error": "runs_offline"})
+
     global _embedding_model
     if _embedding_model is None:
         from fastembed import TextEmbedding
@@ -35,13 +40,20 @@ def get_embedding_model():
     return _embedding_model
 
 
-def get_chroma_client() -> chromadb.ClientAPI:
+def get_chroma_client():
     """Get persistent Chroma client."""
+    from app.db.d1 import on_workers
+    from fastapi import HTTPException
+
+    if on_workers():
+        raise HTTPException(503, detail={"error": "runs_offline"})
+    import chromadb
+
     path = get_chroma_dir()
     return chromadb.PersistentClient(path=path)
 
 
-def get_collection() -> chromadb.Collection:
+def get_collection():
     """Get or create the fundhorizon_schemes collection."""
     client = get_chroma_client()
     return client.get_or_create_collection(

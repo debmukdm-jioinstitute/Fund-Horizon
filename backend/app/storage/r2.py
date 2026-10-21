@@ -1,5 +1,5 @@
-"""Cloudflare R2 storage client (S3-compatible API or Workers env.FILES binding)."""
 from __future__ import annotations
+"""Cloudflare R2 storage client (S3-compatible API or Workers env.FILES binding)."""
 
 import logging
 import os

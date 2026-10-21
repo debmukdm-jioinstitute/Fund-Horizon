@@ -1,10 +1,10 @@
+from __future__ import annotations
 """Advisorkhoj public research parser for fund quartile data.
 
 Operates strictly within robots.txt Allow rules (no Disallow/admin/ajax paths).
 UA: FundHorizon-Backoffice/1.0 (internal-research).
 Graceful fallback to computed quartiles on any block, timeout, or layout change.
 """
-from __future__ import annotations
 
 import logging
 import re

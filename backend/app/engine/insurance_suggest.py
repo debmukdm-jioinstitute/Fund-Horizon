@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Illustrative cover-plan shortlists attached to a plan. Pure functions.
 
 The underlying lists are curated research in app.data.insurance_plans. The
@@ -6,7 +7,6 @@ is written in plain words that refer to the customer's own gap, age and
 dependents. No premiums are quoted: they vary by age, health, occupation, city
 and sum insured.
 """
-from __future__ import annotations
 
 from app.config.disclosures import INSURANCE_SHORTLIST_NOTE
 from app.data.insurance_plans import HEALTH_PLANS, RESEARCHED_ON, TERM_PLANS

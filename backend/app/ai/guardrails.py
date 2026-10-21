@@ -1,5 +1,5 @@
-"""AI guardrails: number consistency, compliance scanner, and PII scrubbing."""
 from __future__ import annotations
+"""AI guardrails: number consistency, compliance scanner, and PII scrubbing."""
 
 import re
 from typing import Any

@@ -22,3 +22,7 @@ data/fundhorizon_mf_rag_dataset/ingest_example.py
 backend/factsheets/*.pdf
 .open-next/
 .wrangler/
+
+backend/python_modules/
+backend/src/app/
+

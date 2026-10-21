@@ -1,9 +1,9 @@
+from __future__ import annotations
 """MFapi provider and divergence validator.
 
 Documentation: https://www.mfapi.in/docs/
 Fetches scheme NAV history and detects divergence against official AMFI latest observations.
 """
-from __future__ import annotations
 
 import logging
 from datetime import datetime

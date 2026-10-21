@@ -1,16 +1,18 @@
+from __future__ import annotations
 """CRM Phase 3 persistence: contacts, holdings + AUM, SIP/STP/SWP schedules, trail commissions, campaigns and
 RM teams. Portable SQLAlchemy (SQLite and Postgres); every read that is RM-scoped takes the viewing RM or
 team (``None`` = unscoped admin/compliance) and applies it inside the query.
 """
 
-from __future__ import annotations
+from app.db.d1 import on_workers
 
 import json
 import uuid
 from datetime import date, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import bindparam, delete, func, select, text
+if not on_workers():
+    from sqlalchemy import bindparam, delete, func, select, text
 
 from app.models.crm_core import ContactModel, HouseholdMemberModel, HouseholdModel
 from app.models.crm_phase3 import (

@@ -1,5 +1,5 @@
-"""Service layer for fund screening: metrics retrieval, funnel runs, presets, and exports."""
 from __future__ import annotations
+"""Service layer for fund screening: metrics retrieval, funnel runs, presets, and exports."""
 
 import csv
 import io

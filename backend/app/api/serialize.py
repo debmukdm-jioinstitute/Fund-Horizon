@@ -1,10 +1,14 @@
-"""JSON-safe conversion: numpy scalars -> python, NaN/inf -> None."""
 from __future__ import annotations
+"""JSON-safe conversion: numpy scalars -> python, NaN/inf -> None."""
 
 import math
 from typing import Any
 
-import numpy as np
+try:
+    import numpy as np
+    _NP_GENERIC: tuple[type, ...] = (np.generic,)
+except ImportError:
+    _NP_GENERIC = ()
 
 
 def clean(o: Any) -> Any:
@@ -12,7 +16,7 @@ def clean(o: Any) -> Any:
         return {str(k): clean(v) for k, v in o.items()}
     if isinstance(o, (list, tuple)):
         return [clean(v) for v in o]
-    if isinstance(o, np.generic):
+    if _NP_GENERIC and isinstance(o, _NP_GENERIC):
         o = o.item()
     if isinstance(o, float) and (math.isnan(o) or math.isinf(o)):
         return None

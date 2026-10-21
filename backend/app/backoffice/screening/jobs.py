@@ -1,5 +1,5 @@
-"""Nightly and on-demand screening refresh job."""
 from __future__ import annotations
+"""Nightly and on-demand screening refresh job."""
 
 import csv
 import json

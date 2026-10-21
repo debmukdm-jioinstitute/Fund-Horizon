@@ -1,7 +1,7 @@
+from __future__ import annotations
 """Forgiving CSV parsing for registrar (CAMS / KFin) and brokerage uploads: header aliases, Indian number
 formats, and per-row errors instead of failing the whole file."""
 
-from __future__ import annotations
 
 import csv
 import io

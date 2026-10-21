@@ -1,9 +1,9 @@
+from __future__ import annotations
 """Admin panel management API routes for Fund Horizon.
 
 Provides monitoring, plan inspection, CAS session auditing, scheme directory
 search, assumptions view, and data synchronization controls.
 """
-from __future__ import annotations
 
 import hmac
 import logging
@@ -16,7 +16,6 @@ from pydantic import BaseModel
 from app.api.auth import require_role
 from app.api.serialize import clean
 from app.config import load_allocation, load_assumptions, load_scoring
-from app.data.loader import load_metrics
 from app.db import get_repository
 
 logger = logging.getLogger("admin")

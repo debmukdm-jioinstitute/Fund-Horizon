@@ -1,5 +1,5 @@
-"""Display formatting for money (Indian grouping, lakh/crore shorthand)."""
 from __future__ import annotations
+"""Display formatting for money (Indian grouping, lakh/crore shorthand)."""
 
 from xml.sax.saxutils import escape as _xml_escape
 

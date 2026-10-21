@@ -1,3 +1,4 @@
+from __future__ import annotations
 """AMFI India NAV provider.
 
 Parses official AMFI NAV bulk text file (NAVAll.txt), supporting both:
@@ -7,7 +8,6 @@ Parses official AMFI NAV bulk text file (NAVAll.txt), supporting both:
 - Date normalization to YYYY-MM-DD
 - Strict validation of positive NAV values and rejecting corrupted rows
 """
-from __future__ import annotations
 
 import logging
 import re

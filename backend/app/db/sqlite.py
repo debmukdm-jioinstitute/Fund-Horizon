@@ -1,3 +1,4 @@
+from __future__ import annotations
 """SQLite persistence repository for Fund Horizon.
 
 Provides fast, zero-dependency local storage for development and unit testing.
@@ -6,7 +7,6 @@ Plans expire after FH_PLAN_TTL_DAYS (default 30) and can be deleted by id.
 
 # EXTENSION: add a user_id column once authentication exists.
 """
-from __future__ import annotations
 
 import json
 import logging

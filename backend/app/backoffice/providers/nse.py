@@ -1,3 +1,4 @@
+from __future__ import annotations
 """NSE India live data client: indices (incl. India VIX), FII/DII flows, option chains, quarterly results.
 
 NSE publishes these as JSON behind its public website. The API requires a browser-like User-Agent and the
@@ -5,7 +6,6 @@ cookies set by the home page, so a client first warms a session. NSE may rate-li
 call therefore reports failure through ``NseError`` instead of raising bare HTTP errors, and callers fall back to the
 last stored data with an explicit unavailable/blocked status.
 """
-from __future__ import annotations
 
 import logging
 import threading

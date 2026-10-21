@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Phase 2 queries that span several CRM tables: contacts, owners, global search,
 duplicate matching, record timelines and saved list views.
 
@@ -6,14 +7,16 @@ Postgres alike, and every read takes the viewing RM's id (``None`` = admin) so
 RM scoping is enforced in the query, not afterwards.
 """
 
-from __future__ import annotations
+from app.db.d1 import on_workers
 
 import json
 import re
 from typing import Any
 
-from sqlalchemy import bindparam, text
-from sqlalchemy.exc import IntegrityError
+if not on_workers():
+    from sqlalchemy import bindparam, text
+if not on_workers():
+    from sqlalchemy.exc import IntegrityError
 
 from app.repo_crm_core import CrmCoreError, Page, _new_id, _session, _utcnow, rm_ids
 

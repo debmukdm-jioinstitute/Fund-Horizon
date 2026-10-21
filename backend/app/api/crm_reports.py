@@ -1,3 +1,4 @@
+from __future__ import annotations
 """CRM Phase 4: the home dashboard.
 
 Every widget is computed with the same repo calls (and the same scoping) as the list it links to, and
@@ -5,7 +6,6 @@ carries ``link`` = {tab, params}: the CRM tab and list filters that reproduce it
 every link and checks the list's total equals the widget's count.
 """
 
-from __future__ import annotations
 
 from typing import Any
 

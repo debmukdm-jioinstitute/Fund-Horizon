@@ -1,3 +1,5 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
 """PostgreSQL data access for the CRM products & compliance tables (W2).
 
 Mirrors the function names of ``app/db_crm_products.py`` (the SQLite store) so
@@ -10,15 +12,16 @@ declarative ``Base``.
 W1 household tables via DDL when missing, so the client-import flow works
 without running Alembic in tests.
 """
-from __future__ import annotations
 
 import os
 import uuid
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import Engine, create_engine, text
-from sqlalchemy.orm import Session, sessionmaker
+if not on_workers():
+    from sqlalchemy import Engine, create_engine, text
+if not on_workers():
+    from sqlalchemy.orm import Session, sessionmaker
 
 from app.db.postgres import normalize_postgres_url
 from app.models.crm_products import (

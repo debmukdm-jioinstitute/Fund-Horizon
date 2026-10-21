@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Indian Index Derivatives Analytics: Put-Call Ratio (PCR), Open Interest & Volume.
 
 Equations:
@@ -6,7 +7,6 @@ Equations:
 - Zero denominator or missing side => null with explicit reason
 - Cash index level has no intrinsic traded volume or OI; derivatives displayed N/A for cash-only indices.
 """
-from __future__ import annotations
 
 from typing import Any
 

@@ -1,5 +1,5 @@
-"""Provenance metadata helper for backoffice API responses."""
 from __future__ import annotations
+"""Provenance metadata helper for backoffice API responses."""
 
 from datetime import UTC, datetime, timedelta, timezone
 from typing import Any

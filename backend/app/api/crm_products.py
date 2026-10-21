@@ -1,3 +1,4 @@
+from __future__ import annotations
 """CRM products & compliance endpoints (W2).
 
 ``router`` (prefix ``/api/crm``) covers insurance policies, fixed deposits, PMS
@@ -16,7 +17,6 @@ characters are kept — the full PAN is never stored.
 Every create/update writes ``audit_log`` rows and stamps ``created_by``/
 ``updated_by``/``updated_at`` (see ``app.repo_crm_core``).
 """
-from __future__ import annotations
 
 import json
 import os

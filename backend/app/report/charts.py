@@ -1,15 +1,17 @@
-"""matplotlib charts rendered offline to PNG bytes (Agg backend)."""
 from __future__ import annotations
+from app.db.d1 import on_workers
+from fastapi import HTTPException
+
+"""matplotlib charts rendered offline to PNG bytes (Agg backend)."""
 
 import io
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
-
-import app.report.fonts  # noqa: F401  (sets Google Sans as the matplotlib default)
+if not on_workers():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import FuncFormatter
+    import app.report.fonts  # noqa: F401  (sets Google Sans as the matplotlib default)
 from app.report.fmt import short_inr
 
 NAVY, TEAL, GREY = "#0B2545", "#13A89E", "#8D99AE"

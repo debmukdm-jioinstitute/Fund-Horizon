@@ -1,9 +1,9 @@
+from __future__ import annotations
 """AMFI total expense ratios (TER), read from the JSON API behind amfiindia.com/ter-of-mf-schemes.
 
 The API serves one row per scheme per day in 100-row pages, with separate Regular (R_TER) and Direct (D_TER)
 columns. We keep the latest row per scheme name for the newest month that has data.
 """
-from __future__ import annotations
 
 import logging
 import re

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Who may use the CRM, and what they can see.
 
 * ``admin``      — everything, can write.
@@ -6,7 +7,6 @@
 * ``compliance`` — read-only access to everything; every write is refused.
 """
 
-from __future__ import annotations
 
 from typing import Annotated
 

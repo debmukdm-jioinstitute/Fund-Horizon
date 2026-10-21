@@ -1,10 +1,10 @@
+from __future__ import annotations
 """PostgreSQL persistence repository for Fund Horizon.
 
 Designed for free-tier managed Postgres databases (Supabase, Neon).
 Supports SQLAlchemy 2.0 with connection pooling, automatic ping,
 and JSON payload serialization.
 """
-from __future__ import annotations
 
 import json
 import uuid

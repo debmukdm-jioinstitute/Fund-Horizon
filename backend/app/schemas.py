@@ -1,5 +1,5 @@
-"""Pydantic v2 input/output models. Money is integer rupees."""
 from __future__ import annotations
+"""Pydantic v2 input/output models. Money is integer rupees."""
 
 from enum import Enum
 from typing import Any

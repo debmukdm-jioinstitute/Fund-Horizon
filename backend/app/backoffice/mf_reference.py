@@ -1,5 +1,5 @@
-"""AMFI/SEBI static MF reference snapshot: CSV loader (one table per record_type) and read API."""
 from __future__ import annotations
+"""AMFI/SEBI static MF reference snapshot: CSV loader (one table per record_type) and read API."""
 
 import csv
 import gzip

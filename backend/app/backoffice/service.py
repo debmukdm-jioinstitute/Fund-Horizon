@@ -1,5 +1,5 @@
-"""Backoffice service orchestrator: caching, business logic, calculations, and reporting."""
 from __future__ import annotations
+"""Backoffice service orchestrator: caching, business logic, calculations, and reporting."""
 
 import csv
 import io

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Mathematical calculation engine for PMS & Portfolio accounting.
 
 Calculations:
@@ -6,7 +7,6 @@ Calculations:
 - TWR with valuation boundaries and Modified Dietz fallback
 - Flow-adjusted High-Water Mark (HWM) and performance fee estimates
 """
-from __future__ import annotations
 
 import math
 from datetime import datetime

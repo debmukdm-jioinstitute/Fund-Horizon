@@ -1,5 +1,5 @@
-"""End-to-end plan builder used by the API and tests. Pure given the dataset DataFrame."""
 from __future__ import annotations
+"""End-to-end plan builder used by the API and tests. Pure given the dataset DataFrame."""
 
 import pandas as pd
 

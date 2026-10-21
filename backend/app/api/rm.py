@@ -1,5 +1,5 @@
-"""Relationship-manager routes: view assigned customers and their plans."""
 from __future__ import annotations
+"""Relationship-manager routes: view assigned customers and their plans."""
 
 from typing import Annotated, Any
 

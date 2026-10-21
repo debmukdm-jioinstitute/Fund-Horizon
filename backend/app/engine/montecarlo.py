@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Vectorised Monte Carlo for goal success. Fixed seed => reproducible; common random numbers
 across SIP levels => success probability is monotone non-decreasing in SIP.
 
@@ -5,7 +6,6 @@ Annual returns: correlated multivariate lognormal per asset class (equity, debt,
 by default, with optional historical bootstrap resampling.
 For mean m and vol s of the simple return: sigma^2 = ln(1 + s^2/(1+m)^2), mu = ln(1+m) - sigma^2/2.
 """
-from __future__ import annotations
 
 import numpy as np
 

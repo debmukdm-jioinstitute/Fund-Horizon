@@ -5,11 +5,12 @@ import logging
 import os
 from typing import Any
 
-from workers import WorkerEntrypoint, asgi
+from workers import WorkerEntrypoint
+import asgi
 
 from app.db.d1 import set_d1_database
-from app.main import app
 from app.storage.r2 import set_worker_files
+from app.worker_app import app
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ class Default(WorkerEntrypoint):
         if hasattr(self.env, "FILES"):
             set_worker_files(self.env.FILES)
 
-        return await asgi.fetch(app, request, self.env)
+        return await asgi.fetch(app, request.js_object, self.env)
 
     async def scheduled(self, event: Any) -> None:
         os.environ["CF_WORKER"] = "1"

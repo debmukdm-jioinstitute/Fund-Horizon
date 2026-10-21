@@ -1,10 +1,10 @@
+from __future__ import annotations
 """Trendlyne-style mutual fund screener: category groups, returns, risk, AUM, FH star rating and checklist score.
 
 Built from the shipped AMFI + mfapi.in dataset (Growth option, Direct and Regular), rebuilt daily by
 data/fundhorizon_mf_rag_dataset/build_dataset.py. Alpha, beta and Treynor are measured against the median of the
 scheme's AMFI category and plan (no index data). The star rating is FH's own (risk-adjusted rank), not Morningstar's.
 """
-from __future__ import annotations
 
 import io
 from functools import lru_cache

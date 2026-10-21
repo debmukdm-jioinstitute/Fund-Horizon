@@ -1,11 +1,16 @@
-"""Provider-agnostic LiteLLM client with fallback orchestration across free-tier providers."""
 from __future__ import annotations
+"""Provider-agnostic client with fallback orchestration across free-tier providers."""
 
+import json
+import logging
 import os
+import urllib.request
 from pathlib import Path
 from typing import Any
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 _CONFIG: dict[str, Any] | None = None
 
@@ -19,6 +24,13 @@ def load_ai_config() -> dict[str, Any]:
         else:
             _CONFIG = {}
     return _CONFIG
+
+
+PROVIDER_URLS = {
+    "groq": "https://api.groq.com/openai/v1/chat/completions",
+    "gemini": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+    "openrouter": "https://openrouter.ai/api/v1/chat/completions",
+}
 
 
 def call_llm(
@@ -49,45 +61,51 @@ def call_llm(
     if mock_response is not None:
         return mock_response, "mock"
 
-    import litellm
-
-    litellm.suppress_debug_info = True
-
     for p in providers:
         name = p.get("name", "unknown")
-        model = p.get("model")
+        raw_model = p.get("model", "")
+        # strip provider prefix if present (e.g. groq/llama-3.1-8b-instant -> llama-3.1-8b-instant)
+        model = raw_model.split("/", 1)[1] if "/" in raw_model and not raw_model.startswith("openrouter/") else raw_model
+        if raw_model.startswith("openrouter/"):
+            model = raw_model.removeprefix("openrouter/")
+
         env_key = p.get("env_key")
         api_base_env = p.get("api_base_env")
         default_base = p.get("default_base_url")
 
-        # Check API key or custom base URL
         api_key = os.environ.get(env_key) if env_key else None
         api_base = os.environ.get(api_base_env) if api_base_env else default_base
 
         if env_key and not api_key:
-            # Skip if key is not configured
+            continue
+
+        url = PROVIDER_URLS.get(name)
+        if name == "ollama" and api_base:
+            url = f"{api_base.rstrip("/")}/v1/chat/completions"
+
+        if not url:
             continue
 
         try:
-            kwargs: dict[str, Any] = {
+            payload = {
                 "model": model,
                 "messages": messages,
                 "temperature": temperature,
                 "max_tokens": max_tokens,
-                "timeout": timeout,
             }
+            data = json.dumps(payload).encode("utf-8")
+            headers = {"Content-Type": "application/json"}
             if api_key:
-                kwargs["api_key"] = api_key
-            if api_base and name == "ollama":
-                kwargs["api_base"] = api_base
+                headers["Authorization"] = f"Bearer {api_key}"
 
-            resp = litellm.completion(**kwargs)
-            if resp and resp.choices and resp.choices[0].message:
-                content = resp.choices[0].message.content
-                if content:
-                    return content.strip(), name
+            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                res_data = json.loads(resp.read().decode("utf-8"))
+                choices = res_data.get("choices", [])
+                if choices and choices[0].get("message", {}).get("content"):
+                    return choices[0]["message"]["content"].strip(), name
         except Exception:
-            # Fall through to next provider
+            logger.debug("Provider %s failed, falling back", name, exc_info=True)
             continue
 
     return None, None

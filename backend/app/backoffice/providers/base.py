@@ -1,5 +1,5 @@
-"""Base provider contract, HTTP client pooling, and normalized data shapes."""
 from __future__ import annotations
+"""Base provider contract, HTTP client pooling, and normalized data shapes."""
 
 import logging
 import time

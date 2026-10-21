@@ -1,30 +1,39 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
+from fastapi import HTTPException
+
 """Official Client Risk Profiling & SEBI Suitability Assessment PDF Document.
 
 Uses ReportLab with Google Sans fonts and standard disclosures.
 """
-from __future__ import annotations
 
 import io
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import mm
-from reportlab.platypus import (
-    BaseDocTemplate,
-    Frame,
-    Image,
-    PageBreak,
-    PageTemplate,
-    Paragraph,
-    Spacer,
-    Table,
-    TableStyle,
-)
+if not on_workers():
+    from reportlab.lib import colors
+if not on_workers():
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+if not on_workers():
+    from reportlab.lib.pagesizes import A4
+if not on_workers():
+    from reportlab.lib.styles import ParagraphStyle
+if not on_workers():
+    from reportlab.lib.units import mm
+if not on_workers():
+    from reportlab.platypus import (
+        BaseDocTemplate,
+        Frame,
+        Image,
+        PageBreak,
+        PageTemplate,
+        Paragraph,
+        Spacer,
+        Table,
+        TableStyle,
+    )
 
 from app.config.disclosures import ARN, FIRM
 from app.report import charts

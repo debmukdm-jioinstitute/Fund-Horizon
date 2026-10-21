@@ -1,10 +1,10 @@
+from __future__ import annotations
 """Shared list pagination for the CRM routers: ``limit``/``offset``/``sort``/``q``.
 
 Lists keep returning bare JSON arrays (existing clients rely on that); the
 match count before paging is sent in the ``X-Total-Count`` header.
 """
 
-from __future__ import annotations
 
 from typing import Annotated, Any
 

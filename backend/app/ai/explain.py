@@ -1,5 +1,5 @@
-"""Explanation layer: transforms structured engine outputs into clear educational narratives."""
 from __future__ import annotations
+"""Explanation layer: transforms structured engine outputs into clear educational narratives."""
 
 import hashlib
 import json

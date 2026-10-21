@@ -1,9 +1,9 @@
+from __future__ import annotations
 """US Treasury daily par yield curve provider (no API key).
 
 URL: https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/{year}/all
 Official constant-maturity par yields for every published tenor, one row per business day.
 """
-from __future__ import annotations
 
 import csv
 import io

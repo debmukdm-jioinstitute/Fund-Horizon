@@ -1,5 +1,5 @@
-"""FastAPI router for Fund Horizon Internal Backoffice."""
 from __future__ import annotations
+"""FastAPI router for Fund Horizon Internal Backoffice."""
 
 import json
 import re

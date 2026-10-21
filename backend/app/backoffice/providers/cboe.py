@@ -1,10 +1,10 @@
+from __future__ import annotations
 """Cboe VIX Historical Volatility Provider.
 
 URL: https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv
 Parses daily close observations of the Cboe Volatility Index (VIX).
 Note: This historical file represents official daily closes, not a live streaming feed.
 """
-from __future__ import annotations
 
 import csv
 import io

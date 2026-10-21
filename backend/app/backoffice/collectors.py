@@ -1,10 +1,10 @@
+from __future__ import annotations
 """Supervised background collectors that keep every market feed live.
 
 Each source has its own refresh interval. A single loop wakes every ``TICK_SECONDS`` and runs whichever sources are
 due, so intraday NSE data refreshes every few minutes while daily sources are polled hourly (AMFI every six hours).
 Request handlers can also call ``refresh_source`` for an on-demand refresh.
 """
-from __future__ import annotations
 
 import asyncio
 import json

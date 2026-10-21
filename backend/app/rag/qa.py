@@ -1,9 +1,9 @@
+from __future__ import annotations
 """Question-answering and synthesis layer for fund knowledge base.
 
 In Phase 4, synthesizes responses via deterministic templates + live analytics.
 Phase 5 attaches the LiteLLM rephrasing layer on top.
 """
-from __future__ import annotations
 
 import math
 from typing import Any

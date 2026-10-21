@@ -1,5 +1,5 @@
-"""Side-by-side compare payload for backoffice PMS and MF (single batched builder)."""
 from __future__ import annotations
+"""Side-by-side compare payload for backoffice PMS and MF (single batched builder)."""
 
 import time
 from datetime import UTC, datetime

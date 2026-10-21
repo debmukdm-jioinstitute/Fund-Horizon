@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Fund scoring and shortlist selection. Pure given a metrics DataFrame.
 
 Score = weighted mean of within-category percentile ranks (weights in config/scoring.yaml).
@@ -8,7 +9,6 @@ Gold and fee-stacked FoF recent-return inputs are capped; FoF-over-ETF names are
 a same-category alternative exists.
 # EXTENSION: add AUM / TER metrics to scoring.yaml and `_metric_series` once the data has them.
 """
-from __future__ import annotations
 
 import math
 import re

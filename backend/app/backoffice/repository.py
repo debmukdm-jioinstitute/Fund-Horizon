@@ -1,5 +1,5 @@
-"""Backoffice repository for persistence, querying, and auditing."""
 from __future__ import annotations
+"""Backoffice repository for persistence, querying, and auditing."""
 
 import json
 import logging

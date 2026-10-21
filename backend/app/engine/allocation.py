@@ -1,8 +1,8 @@
+from __future__ import annotations
 """Band allocation, goal glide path and category mapping. All pure; config in allocation.yaml.
 
 Allocations are dicts of canonical category key -> percent (sum = 100).
 """
-from __future__ import annotations
 
 from app.config import load_allocation
 

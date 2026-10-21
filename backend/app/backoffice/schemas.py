@@ -1,5 +1,5 @@
-"""Pydantic schemas and typed request/response models for Fund Horizon Backoffice."""
 from __future__ import annotations
+"""Pydantic schemas and typed request/response models for Fund Horizon Backoffice."""
 
 from typing import Any, Generic, TypeVar
 

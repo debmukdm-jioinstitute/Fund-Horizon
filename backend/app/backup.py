@@ -1,5 +1,5 @@
-"""Backup and restore of the SQLite database using Cloudflare R2 or local fallback."""
 from __future__ import annotations
+"""Backup and restore of the SQLite database using Cloudflare R2 or local fallback."""
 
 import gzip
 import logging

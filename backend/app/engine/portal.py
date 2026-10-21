@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Customer portal v1 view builders.
 
 Pure functions over a stored plan row
@@ -5,14 +6,12 @@ Pure functions over a stored plan row
 values are 0-100 percents; every pct/allocation value returned here is a 0-1
 fraction. Internal score maths converts back to the percent scale first.
 """
-from __future__ import annotations
 
 from datetime import date
 from typing import Any
 
 from app.config import load_allocation
 from app.engine.finmath import indian_format
-from app.engine.pipeline import build_full_plan
 from app.schemas import PlanRequest
 
 _DISCLAIMER = "This is an illustration, not a recommendation."

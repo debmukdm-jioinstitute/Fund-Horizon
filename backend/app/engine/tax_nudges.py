@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Rule-based tax-saving nudges, ranked by estimated rupee impact. Deterministic; no LLM.
 
 Each nudge is a plain dict; every rupee figure is computed from `engine/tax.py`, so the explainer
@@ -7,7 +8,6 @@ what to check, never what to buy.
 TODO(owner-compliance-review): the titles, summaries and steps below are user-facing copy.
 TODO(owner-ca-review): confirm each rule against the current Act before wide release.
 """
-from __future__ import annotations
 
 from dataclasses import replace
 

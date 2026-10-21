@@ -1,12 +1,15 @@
-"""Dataset loader: loads metrics once, normalises categories, serves NAV series on demand."""
 from __future__ import annotations
+"""Dataset loader: loads metrics once, normalises categories, serves NAV series on demand."""
 
 import os
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
 
-import pandas as pd
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
 
 from app.config import load_assumptions
 from app.data.categories import needs_demat, normalise_category
@@ -19,7 +22,13 @@ def data_dir() -> Path:
 
 
 @lru_cache(maxsize=1)
-def load_metrics() -> pd.DataFrame:
+def load_metrics():
+    if pd is None:
+        from app.db.d1 import on_workers
+        if on_workers():
+            from fastapi import HTTPException
+            raise HTTPException(503, detail={"error": "runs_offline"})
+        raise RuntimeError("pandas required")
     """All schemes with canonical `cat` and `needs_demat` columns. Cached for process life."""
     df = pd.read_csv(data_dir() / "all_schemes_metrics.csv", dtype={"scheme_code": str})
     df["cat"] = [normalise_category(c, n) for c, n in zip(df["category"], df["scheme_name"])]

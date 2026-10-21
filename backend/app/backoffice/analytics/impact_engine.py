@@ -1,3 +1,5 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
 """Reproducible, Explainable Impact Engine and Deterministic Research Briefing.
 
 Key invariants:
@@ -10,14 +12,14 @@ Key invariants:
   ΔP/P ≈ -modified_duration * Δyield_decimal + 0.5 * convexity * (Δyield_decimal ** 2)
   (+25 bps shock => +0.0025, NOT 0.25).
 """
-from __future__ import annotations
 
 import math
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import numpy as np
-import statsmodels.api as sm
+if not on_workers():
+    import statsmodels.api as sm
 
 _SCENARIO_COEFF_CACHE: dict[str, tuple[float, str]] = {}
 

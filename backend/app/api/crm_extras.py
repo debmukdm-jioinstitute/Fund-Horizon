@@ -1,3 +1,4 @@
+from __future__ import annotations
 """CRM Phase 2 endpoints: saved list views, contacts, owners + bulk reassign,
 record timelines, global search, duplicate checks and CSV export.
 
@@ -5,7 +6,6 @@ Same auth model as ``crm_core``: admin and RM only; an RM only ever sees their
 own book (scoping is applied inside the SQL, see ``repo_crm_extras``).
 """
 
-from __future__ import annotations
 
 import csv
 import io

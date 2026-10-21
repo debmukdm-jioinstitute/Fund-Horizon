@@ -1,20 +1,32 @@
-"""Config loaders. All thresholds/assumptions live in yaml/json beside this file."""
 from __future__ import annotations
+"""Config loaders. All thresholds/assumptions live in yaml/json beside this file."""
 
 import copy
 import json
 from functools import lru_cache
 from pathlib import Path
 
-import pandas as pd
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
 import yaml
 
 CONFIG_DIR = Path(__file__).parent
 
 
 def _load_yaml(name: str) -> dict:
-    with open(CONFIG_DIR / name, encoding="utf-8") as f:
-        return yaml.safe_load(f)
+    try:
+        with open(CONFIG_DIR / name, encoding="utf-8") as f:
+            return yaml.safe_load(f)
+    except FileNotFoundError:
+        try:
+            from app.config._embedded import EMBEDDED_CONFIGS
+            if name in EMBEDDED_CONFIGS:
+                return copy.deepcopy(EMBEDDED_CONFIGS[name])
+        except Exception:
+            pass
+        raise
 
 
 def deep_merge(base: dict, overrides: dict | None) -> dict:
@@ -32,11 +44,14 @@ def deep_merge(base: dict, overrides: dict | None) -> dict:
 def _assumptions_default() -> dict:
     data = _load_yaml("assumptions.yaml")
     # The data date is whatever the dataset really contains (latest NAV date), never a typed-in constant.
-    from app.data.loader import load_metrics
-
-    latest = pd.to_datetime(load_metrics()["last_nav_date"], errors="coerce").max()
-    if pd.notna(latest):
-        data["data_asof"] = latest.strftime("%Y-%m-%d")
+    if pd is not None:
+        try:
+            from app.data.loader import load_metrics
+            latest = pd.to_datetime(load_metrics()["last_nav_date"], errors="coerce").max()
+            if pd.notna(latest):
+                data["data_asof"] = latest.strftime("%Y-%m-%d")
+        except Exception:
+            pass
     return data
 
 
@@ -57,8 +72,17 @@ def load_scoring() -> dict:
 
 @lru_cache(maxsize=1)
 def load_questionnaire() -> dict:
-    with open(CONFIG_DIR / "questionnaire.json", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(CONFIG_DIR / "questionnaire.json", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        try:
+            from app.config._embedded import EMBEDDED_CONFIGS
+            if "questionnaire.json" in EMBEDDED_CONFIGS:
+                return copy.deepcopy(EMBEDDED_CONFIGS["questionnaire.json"])
+        except Exception:
+            pass
+        raise
 
 
 @lru_cache(maxsize=1)

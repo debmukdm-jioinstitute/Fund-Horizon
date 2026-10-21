@@ -1,3 +1,5 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
 """Persistence layer for CRM core entities (W1).
 
 Backend-agnostic: the SQLAlchemy 2.0 models from ``app.models.crm_core`` run
@@ -16,7 +18,6 @@ Every create/update also writes ``audit_log`` rows (one per changed field) in
 the same transaction and stamps ``created_by``/``updated_by``/``updated_at``.
 """
 
-from __future__ import annotations
 
 import json
 
@@ -28,9 +29,12 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy import Engine, and_, bindparam, create_engine, func, inspect, or_, select, text
-from sqlalchemy.orm import Session
+if not on_workers():
+    from sqlalchemy.exc import IntegrityError
+if not on_workers():
+    from sqlalchemy import Engine, and_, bindparam, create_engine, func, inspect, or_, select, text
+if not on_workers():
+    from sqlalchemy.orm import Session
 
 from app.db.models import Base
 from app.models.crm_core import (
@@ -55,23 +59,26 @@ from app.models.crm_phase3 import (  # noqa: E402  (registers the tables on the 
 
 log = logging.getLogger(__name__)
 
-CRM_CORE_TABLES = [
-    HouseholdModel.__table__,
-    HouseholdMemberModel.__table__,
-    LeadModel.__table__,
-    OpportunityModel.__table__,
-    ActivityModel.__table__,
-    CaseModel.__table__,
-    AuditLogModel.__table__,
-    CrmListViewModel.__table__,
-    ContactModel.__table__,
-    HoldingModel.__table__,
-    SipScheduleModel.__table__,
-    CommissionModel.__table__,
-    CampaignModel.__table__,
-    CampaignMemberModel.__table__,
-    RmTeamModel.__table__,
-]
+if not on_workers():
+    CRM_CORE_TABLES = [
+        HouseholdModel.__table__,
+        HouseholdMemberModel.__table__,
+        LeadModel.__table__,
+        OpportunityModel.__table__,
+        ActivityModel.__table__,
+        CaseModel.__table__,
+        AuditLogModel.__table__,
+        CrmListViewModel.__table__,
+        ContactModel.__table__,
+        HoldingModel.__table__,
+        SipScheduleModel.__table__,
+        CommissionModel.__table__,
+        CampaignModel.__table__,
+        CampaignMemberModel.__table__,
+        RmTeamModel.__table__,
+    ]
+else:
+    CRM_CORE_TABLES = []
 
 # W2 product tables get audit columns + unique business keys once they exist.
 PRODUCT_TABLES = (

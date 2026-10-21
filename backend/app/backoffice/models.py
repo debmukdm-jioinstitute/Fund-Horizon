@@ -1,3 +1,4 @@
+from __future__ import annotations
 """SQLAlchemy 2.0 models for Fund Horizon Backoffice.
 
 Covers:
@@ -10,7 +11,6 @@ Covers:
 - fund_holdings & issuer_fundamentals
 - watchlists, research_notes, saved_views, import_jobs, audit_events, collector_runs
 """
-from __future__ import annotations
 
 from sqlalchemy import Float, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column

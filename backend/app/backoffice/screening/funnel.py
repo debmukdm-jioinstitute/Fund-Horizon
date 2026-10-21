@@ -1,5 +1,5 @@
-"""Pure sequential funnel engine for mutual fund screening."""
 from __future__ import annotations
+"""Pure sequential funnel engine for mutual fund screening."""
 
 import math
 from collections import Counter

@@ -1,5 +1,5 @@
-"""Open RSS/Atom feed collector for Indian markets, regulators and macro news (stdlib XML only, no API keys)."""
 from __future__ import annotations
+"""Open RSS/Atom feed collector for Indian markets, regulators and macro news (stdlib XML only, no API keys)."""
 
 import hashlib
 import html

@@ -1,12 +1,15 @@
+from __future__ import annotations
 """Pure financial-math primitives. Money in rupees (float internally, rounded at the edges).
 
 Conventions: rates are decimals; `r` is a per-period rate; annuity-due = payment at period start.
 """
-from __future__ import annotations
 
 import math
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 
 def monthly_rate(annual: float) -> float:

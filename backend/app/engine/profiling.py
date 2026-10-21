@@ -1,9 +1,9 @@
+from __future__ import annotations
 """Customer profiling: risk capacity (0-100), risk tolerance (0-100), final band.
 
 final_score = min(capacity, tolerance). Band edges: lower bound inclusive, upper exclusive
 (exception: 100 falls in the top band).
 """
-from __future__ import annotations
 
 from app.config import load_allocation, load_assumptions, load_questionnaire
 from app.engine.insurance import health_target, term_need

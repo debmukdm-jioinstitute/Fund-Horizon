@@ -1,3 +1,5 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
 """FH Academy: staff learning hub (lessons, flashcards with FSRS state, scored quizzes, XP, streaks, badges, leaderboard).
 
 Content lives in ``app/data/academy`` (one source of truth, bundled with the API image). Quizzes are scored here so
@@ -5,7 +7,6 @@ results cannot be faked: ``start`` returns a seeded shuffle without answers, ``a
 per question, and ``submit`` scores. XP rows are unique on (staff, kind, ref) so a repeated action never pays twice.
 """
 
-from __future__ import annotations
 
 import json
 import math
@@ -19,10 +20,14 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
-from sqlalchemy import func, select
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.dialects import sqlite as sqlite_dialect
-from sqlalchemy.orm import Session
+if not on_workers():
+    from sqlalchemy import func, select
+if not on_workers():
+    from sqlalchemy.dialects import postgresql
+if not on_workers():
+    from sqlalchemy.dialects import sqlite as sqlite_dialect
+if not on_workers():
+    from sqlalchemy.orm import Session
 
 from app.api.auth import require_staff
 from app.db import sqlite

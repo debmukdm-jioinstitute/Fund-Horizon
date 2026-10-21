@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Historical stress test on month-end NAVs.
 
 Limitation: month-end data understates intra-month falls; the Feb-Mar 2020 drawdown is measured
@@ -5,7 +6,6 @@ from the Jan-2020 month-end to the lower of Feb/Mar month-ends. A constant-mix p
 (rebalanced monthly to target weights) is assumed. Funds lacking history in a month use the
 median monthly return of eligible funds in their category (flagged as substituted).
 """
-from __future__ import annotations
 
 from functools import lru_cache
 

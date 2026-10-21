@@ -1,5 +1,5 @@
-"""Insurance need calculations (pure)."""
 from __future__ import annotations
+"""Insurance need calculations (pure)."""
 
 from app.engine.finmath import growing_annuity_due_pv
 

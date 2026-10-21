@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Raw-SQLite DDL and data access for the CRM products & compliance tables (W2).
 
 ``init_crm_products_schema(conn)`` is idempotent (``CREATE TABLE IF NOT EXISTS``).
@@ -12,7 +13,6 @@ layer (``app/api/crm_products.py``) calls ``ensure_crm_products_schema()`` per
 request, which also creates the W1 core tables when they are missing, so the
 client-import flow works standalone.
 """
-from __future__ import annotations
 
 import sqlite3
 import uuid

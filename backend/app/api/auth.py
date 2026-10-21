@@ -1,10 +1,10 @@
+from __future__ import annotations
 """Customer & staff authentication: sessions, roles, CSRF, and backoffice access guards.
 
 Session identity travels in the ``fh_session`` HttpOnly cookie (or an
 ``Authorization: Bearer`` header fallback). Only the SHA-256 of the token is
 stored server-side. Passwords use PBKDF2-HMAC-SHA256 with 600k iterations.
 """
-from __future__ import annotations
 
 import hashlib
 import hmac
@@ -78,7 +78,7 @@ def _verify_password(password: str, stored: str) -> bool:
     return hmac.compare_digest(dk.hex(), hash_hex)
 
 
-_DUMMY_HASH = _hash_password(secrets.token_hex(16))
+_DUMMY_HASH = "pbkdf2_sha256$600000$00000000000000000000000000000000$0000000000000000000000000000000000000000000000000000000000000000"
 
 
 def _normalize_mobile(raw: str) -> str:

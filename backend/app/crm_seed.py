@@ -1,15 +1,17 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
 """CRM seed data for Fund Horizon Backoffice.
 Ensures rich, realistic Indian HNI data for households, contacts, holdings,
 SIPs, leads, opportunities, activities, and cases.
 Idempotent: skips if households or leads already exist.
 """
-from __future__ import annotations
 
 import logging
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import select
+if not on_workers():
+    from sqlalchemy import select
 
 from app.api.auth import _hash_password
 from app.db import sqlite

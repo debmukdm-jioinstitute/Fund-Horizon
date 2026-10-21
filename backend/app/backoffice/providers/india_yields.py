@@ -1,10 +1,10 @@
+from __future__ import annotations
 """India G-Sec yield curve scraped from the public Trading Economics India bond page.
 
 There is no free official daily feed (FBIL requires a login), so this reads the server-rendered yield table on
 https://tradingeconomics.com/india/government-bond-yield. Scraped data is third-party and may change layout or be
 blocked; failures are reported as source health, and the FRED/OECD monthly series acts as the fallback.
 """
-from __future__ import annotations
 
 import logging
 import re

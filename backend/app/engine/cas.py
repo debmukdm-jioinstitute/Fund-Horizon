@@ -1,10 +1,11 @@
+from __future__ import annotations
+from app.db.d1 import on_workers
 """CAS (Consolidated Account Statement) ingestion and portfolio analysis engine.
 
 Processes CAMS/KFintech CAS PDFs entirely in memory using casparser.
 NEVER persists the raw PDF or password to disk or remote database.
 Numbers are deterministic Python; no LLM and no runtime network calls.
 """
-from __future__ import annotations
 
 import io
 import re
@@ -161,7 +162,8 @@ def _apply_casparser_patches() -> None:
         pass
 
 
-_apply_casparser_patches()
+if not on_workers():
+    _apply_casparser_patches()
 
 
 def normalize_cas_dict(parsed: Any) -> dict[str, Any]:

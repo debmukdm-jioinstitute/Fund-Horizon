@@ -1,5 +1,5 @@
-"""Database repository factory and entry points with process-wide caching."""
 from __future__ import annotations
+"""Database repository factory and entry points with process-wide caching."""
 
 import os
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Official factsheet discovery for FH Recommended funds and PMS strategies.
 
 Every record points at the publisher's own PDF. A candidate only counts when the server answers 200 with a PDF
@@ -8,7 +9,6 @@ content-type, so a guessed URL can never produce a fake entry. Three discovery s
 * ``fixed``: one URL that is overwritten every release; each new version (by Last-Modified) is archived to disk so
   history accumulates from the first pull.
 """
-from __future__ import annotations
 
 import calendar
 import hashlib

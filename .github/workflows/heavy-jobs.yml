@@ -1,0 +1,44 @@
+name: Heavy Jobs (D1 / R2)
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Job to run"
+        required: true
+        default: "daily_refresh"
+        type: choice
+        options:
+          - daily_refresh
+          - rag_index
+          - briefing
+
+jobs:
+  run-heavy-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run Job
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          FH_SECRET_KEY: ${{ secrets.FH_SECRET_KEY }}
+          ADMIN_BOOTSTRAP_PASSWORD: ${{ secrets.ADMIN_BOOTSTRAP_PASSWORD }}
+        run: |
+          cd backend
+          python -m app.cli.bootstrap_admin || true

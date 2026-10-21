@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Deterministic Indian income-tax maths for resident individuals (rules in config/tax_rules.yaml).
 
 Pure functions: no network, no I/O beyond the cached rules file. Amounts are rupees.
@@ -6,7 +7,6 @@ Simplifications (also listed in docs/TAX_RULES.md): surcharge marginal relief is
 capital gains are taxed on top at special rates without basic-exemption adjustment, no AMT,
 no professional tax, no set-off of losses, HRA uses one rent figure for the whole year.
 """
-from __future__ import annotations
 
 from dataclasses import dataclass, replace
 

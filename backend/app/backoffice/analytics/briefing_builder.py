@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Daily stored briefing for the Fund Horizon backoffice.
 
 Replaces the old 7-line deterministic template with a daily, business-first
@@ -26,7 +27,6 @@ Conventions:
 - Number formatting is centralised in the ``fmt_*`` helpers below; the frontend
   does display formatting, and backend values stay numeric where feasible.
 """
-from __future__ import annotations
 
 import math
 import re

@@ -1,5 +1,5 @@
-"""Category normaliser: maps old/new SEBI category labels (+ scheme name) to canonical keys."""
 from __future__ import annotations
+"""Category normaliser: maps old/new SEBI category labels (+ scheme name) to canonical keys."""
 
 import re
 

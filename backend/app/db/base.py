@@ -1,9 +1,9 @@
+from __future__ import annotations
 """Abstract Database Repository Protocol & Base Class.
 
 Defines the contract for persistence backends (SQLite for local/test,
 PostgreSQL with connection pooling for Supabase/Neon production).
 """
-from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Any

@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Universal backoffice search: one query across every searchable data set.
 
 Adding a searchable data set = writing one function decorated with ``@provider(scope, label)`` below and listing its
@@ -5,7 +6,6 @@ table(s) in ``TABLE_COVERAGE``. ``tests/test_universal_search.py`` fails when a 
 appears in the code that is in neither ``TABLE_COVERAGE`` nor an explicit exemption, so new data cannot silently
 stay out of search.
 """
-from __future__ import annotations
 
 import json
 import re

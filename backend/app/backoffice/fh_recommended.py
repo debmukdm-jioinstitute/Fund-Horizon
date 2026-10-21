@@ -1,8 +1,8 @@
+from __future__ import annotations
 """Curated "FH Recommended" mutual funds (Regular plan, Growth), keyed by AMFI scheme code.
 
 Only the pick is stored here; every number shown for these funds comes from the live AMFI / mfapi.in feeds.
 """
-from __future__ import annotations
 
 FH_RECOMMENDED_MF_CODES: dict[str, str] = {
     # Large cap

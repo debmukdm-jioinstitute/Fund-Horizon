@@ -1,28 +1,32 @@
-"""Client-ready PDF (A4) built with ReportLab; charts via matplotlib. Fully offline."""
 from __future__ import annotations
+from app.db.d1 import on_workers
+from fastapi import HTTPException
+
+"""Client-ready PDF (A4) built with ReportLab; charts via matplotlib. Fully offline."""
 
 # TODO(owner-compliance-review): this module contains user-facing report copy.
 import io
 from datetime import date
 from pathlib import Path
 
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_LEFT
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import mm
-from reportlab.platypus import (
-    BaseDocTemplate,
-    Frame,
-    Image,
-    KeepTogether,
-    PageBreak,
-    PageTemplate,
-    Paragraph,
-    Spacer,
-    Table,
-    TableStyle,
-)
+if not on_workers():
+    from reportlab.lib import colors
+    from reportlab.lib.enums import TA_LEFT
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import (
+        BaseDocTemplate,
+        Frame,
+        Image,
+        KeepTogether,
+        PageBreak,
+        PageTemplate,
+        Paragraph,
+        Spacer,
+        Table,
+        TableStyle,
+    )
 
 from app.config.disclosures import (
     ALLOCATION_HEADING,

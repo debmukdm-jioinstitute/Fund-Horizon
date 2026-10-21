@@ -1,10 +1,10 @@
+from __future__ import annotations
 """CRM Phase 3 endpoints for an Indian MF distributor: contacts (NRI/minor/nominee/KYC), CAS holdings and AUM,
 SIP/STP/SWP schedules and alerts, trail commission, suitability scoring, campaigns and RM teams.
 
 Auth and scoping come from ``crm_auth`` (admin, RM/team lead, read-only compliance). Money is integer paise.
 """
 
-from __future__ import annotations
 
 import re
 import secrets

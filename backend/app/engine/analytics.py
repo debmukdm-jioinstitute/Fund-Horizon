@@ -1,9 +1,9 @@
+from __future__ import annotations
 """Pure analytics engine functions on NAV series. Money in rupees.
 
 All calculations take clean NAV series and/or parameters and return plain Python dicts/floats.
 Numbers are deterministic; no LLM and no network calls.
 """
-from __future__ import annotations
 
 import math
 from datetime import date
@@ -12,14 +12,16 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-# Compatibility shim for PyPortfolioOpt HRPOpt on SciPy >= 1.18
-import scipy.cluster.hierarchy as sch
-from scipy.optimize import brentq
+from app.db.d1 import on_workers
 
-if not hasattr(sch, "_LINKAGE_METHODS"):
-    sch._LINKAGE_METHODS = ["single", "complete", "average", "weighted", "centroid", "median", "ward"]
+if not on_workers():
+    import scipy.cluster.hierarchy as sch
+    from scipy.optimize import brentq
 
-from pypfopt import EfficientFrontier, HRPOpt, expected_returns, risk_models
+    if not hasattr(sch, "_LINKAGE_METHODS"):
+        sch._LINKAGE_METHODS = ["single", "complete", "average", "weighted", "centroid", "median", "ward"]
+
+    from pypfopt import EfficientFrontier, HRPOpt, expected_returns, risk_models
 
 
 def nav_at(s: pd.Series, ts: pd.Timestamp) -> float:

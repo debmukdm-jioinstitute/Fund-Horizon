@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Operator CLI for initial administrative and staff provisioning.
 
 Usage:
@@ -6,7 +7,6 @@ Usage:
 Supports interactive password entry via getpass (or --password / FH_ADMIN_BOOTSTRAP_PASSWORD env var).
 No hardcoded passwords, no email dependencies.
 """
-from __future__ import annotations
 
 import argparse
 import getpass

@@ -1,21 +1,29 @@
-"""Generates a downloadable PDF specification & product brochure for an insurance plan."""
 from __future__ import annotations
+from app.db.d1 import on_workers
+from fastapi import HTTPException
+
+"""Generates a downloadable PDF specification & product brochure for an insurance plan."""
 
 import io
 
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import mm
-from reportlab.platypus import (
-    BaseDocTemplate,
-    Frame,
-    PageTemplate,
-    Paragraph,
-    Spacer,
-    Table,
-    TableStyle,
-)
+if not on_workers():
+    from reportlab.lib import colors
+if not on_workers():
+    from reportlab.lib.pagesizes import A4
+if not on_workers():
+    from reportlab.lib.styles import ParagraphStyle
+if not on_workers():
+    from reportlab.lib.units import mm
+if not on_workers():
+    from reportlab.platypus import (
+        BaseDocTemplate,
+        Frame,
+        PageTemplate,
+        Paragraph,
+        Spacer,
+        Table,
+        TableStyle,
+    )
 
 from app.config.disclosures import ARN, FIRM, INSURANCE_SHORTLIST_NOTE
 from app.report.fmt import xml_escape

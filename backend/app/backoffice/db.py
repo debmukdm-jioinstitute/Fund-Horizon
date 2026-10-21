@@ -1,8 +1,8 @@
+from __future__ import annotations
 """SQLite DDL and initialization for Fund Horizon Backoffice tables.
 
 Ensures schema exists idempotently and seeds the default source and instrument registries.
 """
-from __future__ import annotations
 
 import logging
 import os

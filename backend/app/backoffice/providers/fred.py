@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Federal Reserve Bank of St. Louis (FRED) API Provider.
 
 Documentation: https://fred.stlouisfed.org/docs/api/fred/
@@ -10,7 +11,6 @@ Series:
 - DGS30: 30-Year Treasury Constant Maturity Rate
 - DTWEXBGS: Trade Weighted U.S. Dollar Index (Broad Goods and Services) - Broad Dollar Proxy (NEVER DXY)
 """
-from __future__ import annotations
 
 import logging
 import os

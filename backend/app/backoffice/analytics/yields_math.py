@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Yield curve and interest rate spread calculations.
 
 Rules:
@@ -7,7 +8,6 @@ Rules:
 - Compounding and tenor conventions are tracked explicitly
 - No synthetic interpolation without 'interpolated_estimated' tag
 """
-from __future__ import annotations
 
 from typing import Any
 

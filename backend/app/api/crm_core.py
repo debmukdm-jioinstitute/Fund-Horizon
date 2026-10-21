@@ -1,3 +1,4 @@
+from __future__ import annotations
 """CRM core API (W1): households, leads, opportunities, activities, cases.
 
 Every endpoint requires a signed-in session (401) and refuses the ``customer``
@@ -7,7 +8,6 @@ households and assigned/linked records (see CONTRACT.md §1).
 Money is integer paise; dates are ``YYYY-MM-DD``; timestamps are ISO-8601 UTC.
 """
 
-from __future__ import annotations
 
 import json
 import re

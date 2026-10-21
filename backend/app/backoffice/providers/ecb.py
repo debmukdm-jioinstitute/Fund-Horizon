@@ -1,3 +1,4 @@
+from __future__ import annotations
 """European Central Bank (ECB) Reference Exchange Rates Provider.
 
 Parses daily eurofxref XML feed: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
@@ -8,7 +9,6 @@ Computes normalized currency reference pairs with EUR as common base:
 - USD/JPY = JPY_per_EUR / USD_per_EUR
 Reference rates are official reference benchmarks, not executable live bid/ask quotes.
 """
-from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ET

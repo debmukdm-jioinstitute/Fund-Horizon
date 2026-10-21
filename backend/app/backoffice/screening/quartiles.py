@@ -1,5 +1,5 @@
-"""Quartile ranking and cascade resolution for mutual fund schemes."""
 from __future__ import annotations
+"""Quartile ranking and cascade resolution for mutual fund schemes."""
 
 import math
 

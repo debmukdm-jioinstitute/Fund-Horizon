@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Manual Import Engine: Validation, Preview, Reconciliation, and Commit.
 
 Supports:
@@ -13,7 +14,6 @@ Features:
 - Row-level schema validation and error reporting
 - Two-step preview and commit lifecycle
 """
-from __future__ import annotations
 
 import csv
 import io

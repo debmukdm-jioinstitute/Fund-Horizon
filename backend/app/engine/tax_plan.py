@@ -1,9 +1,9 @@
+from __future__ import annotations
 """Builds the plan's tax section from a TaxProfile, the goals and the switches. Pure and deterministic.
 
 Flow: profile -> TaxInputs -> regime comparison -> regime in force -> nudges -> applied nudges ->
 marginal rate -> (optional) post-tax planning rate and reinvested tax saving.
 """
-from __future__ import annotations
 
 from app.config import load_tax_rules
 from app.engine import tax as tx

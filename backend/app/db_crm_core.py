@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Raw-SQLite DDL for the CRM core tables (W1).
 
 ``init_crm_core_schema(conn)`` is idempotent (``CREATE TABLE IF NOT EXISTS``).
@@ -7,7 +8,6 @@ migration ``0003_crm_core`` carries the matching Postgres DDL and
 ``create_all`` on first use, so tests work without manual migration steps.
 """
 
-from __future__ import annotations
 
 import sqlite3
 

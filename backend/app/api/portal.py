@@ -1,5 +1,5 @@
-"""Customer portal v1 routes. Thin HTTP layer over app.engine.portal pure functions."""
 from __future__ import annotations
+"""Customer portal v1 routes. Thin HTTP layer over app.engine.portal pure functions."""
 
 from fastapi import APIRouter, HTTPException, Request
 

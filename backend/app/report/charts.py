@@ -28,10 +28,10 @@ def _png(fig) -> bytes:
     return buf.getvalue()
 
 
-def donut(by_category: dict[str, float]) -> bytes:
+def donut(by_category: dict[str, float], palette: list[str] | None = None) -> bytes:
     items = [(LABELS.get(k, k), v) for k, v in sorted(by_category.items(), key=lambda kv: -kv[1]) if v > 0]
     fig, ax = plt.subplots(figsize=(4.2, 3.4))
-    wedges, _ = ax.pie([v for _, v in items], colors=PALETTE[: len(items)], startangle=90,
+    wedges, _ = ax.pie([v for _, v in items], colors=(palette or PALETTE)[: len(items)], startangle=90,
                        wedgeprops=dict(width=0.38, edgecolor="white"))
     ax.legend(wedges, [f"{n} {v:.1f}%" for n, v in items], loc="center left", bbox_to_anchor=(1, 0.5),
               frameon=False, fontsize=8)

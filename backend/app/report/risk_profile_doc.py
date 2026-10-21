@@ -31,12 +31,16 @@ from app.report import charts
 from app.report.fmt import canvas_text, inr, pct, short_inr, xml_escape
 from app.report.fonts import BODY_FONT, BOLD_FONT
 
-NAVY = colors.HexColor("#0B2545")
-TEAL = colors.HexColor("#0D9488")
-LIGHT = colors.HexColor("#F0FDFA")
-BORDER_COLOR = colors.HexColor("#99F6E4")
-DARK_GRAY = colors.HexColor("#334155")
-SLATE = colors.HexColor("#64748B")
+# Monochrome document. Yellow marks what the advisor wants noticed, red marks a shortfall; nothing else is coloured.
+NAVY = colors.HexColor("#111111")  # name kept so the styles below read unchanged; it is black
+TEAL = colors.HexColor("#111111")
+LIGHT = colors.HexColor("#F2F2F2")
+BORDER_COLOR = colors.HexColor("#BDBDBD")
+DARK_GRAY = colors.HexColor("#222222")
+SLATE = colors.HexColor("#666666")
+YELLOW = colors.HexColor("#FFE45C")
+RED = colors.HexColor("#C00000")
+GREYS = ["#111111", "#4D4D4D", "#808080", "#B3B3B3", "#D9D9D9"]
 
 BODY = ParagraphStyle("rp_body", fontName=BODY_FONT, fontSize=8, leading=11, textColor=DARK_GRAY)
 SMALL = ParagraphStyle("rp_small", parent=BODY, fontSize=6.8, leading=9, textColor=SLATE)
@@ -62,7 +66,7 @@ def _tbl(rows, widths, header=True, zebra=True):
     style = [
         ("FONT", (0, 0), (-1, -1), BODY_FONT, 7.2),
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("LINEBELOW", (0, 0), (-1, -1), 0.25, colors.HexColor("#E2E8F0")),
+        ("LINEBELOW", (0, 0), (-1, -1), 0.25, colors.HexColor("#D0D0D0")),
         ("TOPPADDING", (0, 0), (-1, -1), 2.5),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
     ]
@@ -73,7 +77,7 @@ def _tbl(rows, widths, header=True, zebra=True):
             ("FONT", (0, 0), (-1, 0), BOLD_FONT, 7.2),
         ]
     if zebra:
-        style += [("ROWBACKGROUNDS", (0, 1 if header else 0), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])]
+        style += [("ROWBACKGROUNDS", (0, 1 if header else 0), (-1, -1), [colors.white, colors.HexColor("#F7F7F7")])]
     t.setStyle(TableStyle(style))
     return t
 
@@ -99,40 +103,26 @@ def build_risk_profile_pdf(
         canvas.saveState()
         w, h = A4
 
-        # Header background
-        canvas.setFillColor(NAVY)
-        canvas.rect(0, h - 16 * mm, w, 16 * mm, stroke=0, fill=1)
-
-        # Official Logo
-        logo_dark_path = Path(__file__).parent / "assets" / "logo-header-dark.png"
-        if logo_dark_path.exists():
-            canvas.drawImage(
-                str(logo_dark_path),
-                15 * mm,
-                h - 14.5 * mm,
-                height=12 * mm,
-                preserveAspectRatio=True,
-                mask="auto",
-            )
+        # Header: official logo on white, black rule underneath
+        logo = Path(__file__).parent / "assets" / "logo.png"
+        if logo.exists():
+            canvas.drawImage(str(logo), 15 * mm, h - 21.5 * mm, width=33 * mm, height=17 * mm, mask="auto")
         else:
-            canvas.setFillColor(colors.white)
+            canvas.setFillColor(NAVY)
             canvas.setFont(BOLD_FONT, 12)
-            canvas.drawString(15 * mm, h - 10.5 * mm, FIRM)
-
-        # Top Right header text
-        canvas.setFillColor(colors.white)
-        canvas.setFont(BODY_FONT, 7.5)
-        canvas.drawRightString(w - 15 * mm, h - 9.5 * mm, f"Risk Profile: {canvas_text(client_name)}")
-        canvas.setFillColor(colors.HexColor("#A0AEC0"))
+            canvas.drawString(15 * mm, h - 12 * mm, FIRM)
+        canvas.setFillColor(NAVY)
+        canvas.setFont(BOLD_FONT, 8)
+        canvas.drawRightString(w - 15 * mm, h - 10 * mm, f"Risk Profile: {canvas_text(client_name)}")
+        canvas.setFillColor(SLATE)
         canvas.setFont(BODY_FONT, 6.5)
-        canvas.drawRightString(w - 15 * mm, h - 13 * mm, f"AMFI ARN {ARN} · SEBI Suitability Record · {today_date}")
-
-        # Teal stripe below header
-        canvas.setFillColor(TEAL)
-        canvas.rect(0, h - 17 * mm, w, 1 * mm, stroke=0, fill=1)
+        canvas.drawRightString(w - 15 * mm, h - 14 * mm, f"AMFI ARN {ARN} · SEBI Suitability Record · {today_date}")
+        canvas.setStrokeColor(NAVY)
+        canvas.setLineWidth(1.5)
+        canvas.line(0, h - 23 * mm, w, h - 23 * mm)
 
         # Footer
-        canvas.setStrokeColor(colors.HexColor("#CBD5E1"))
+        canvas.setStrokeColor(colors.HexColor("#BDBDBD"))
         canvas.setLineWidth(0.5)
         canvas.line(15 * mm, 12 * mm, w - 15 * mm, 12 * mm)
 
@@ -151,7 +141,7 @@ def build_risk_profile_pdf(
         pagesize=A4,
         leftMargin=15 * mm,
         rightMargin=15 * mm,
-        topMargin=22 * mm,
+        topMargin=27 * mm,
         bottomMargin=16 * mm,
         title=f"{FIRM} Risk Profiling - {client_name}",
         author=FIRM,
@@ -183,21 +173,23 @@ def build_risk_profile_pdf(
     # 2. Executive Assessment Summary Table
     summary_rows = [
         [
-            Paragraph("<b>Assigned Risk Band</b>", CELL_BOLD),
-            Paragraph("<b>Composite Score</b>", CELL_BOLD),
-            Paragraph("<b>Financial Capacity</b>", CELL_BOLD),
-            Paragraph("<b>Emotional Tolerance</b>", CELL_BOLD),
-            Paragraph("<b>Governing Rule</b>", CELL_BOLD),
+            Paragraph("<font color='white'><b>Assigned Risk Band</b></font>", CELL_BOLD),
+            Paragraph("<font color='white'><b>Composite Score</b></font>", CELL_BOLD),
+            Paragraph("<font color='white'><b>Financial Capacity</b></font>", CELL_BOLD),
+            Paragraph("<font color='white'><b>Emotional Tolerance</b></font>", CELL_BOLD),
+            Paragraph("<font color='white'><b>Governing Rule</b></font>", CELL_BOLD),
         ],
         [
-            Paragraph(f"<font color='#0D9488' size='9'><b>{xml_escape(band)}</b></font>", CELL),
+            Paragraph(f"<font size='9'><b>{xml_escape(band)}</b></font>", CELL),
             Paragraph(f"<font size='9'><b>{final_score:.0f} / 100</b></font>", CELL),
             Paragraph(f"{cap_score:.0f} / 100", CELL),
             Paragraph(f"{tol_score:.0f} / 100", CELL),
             Paragraph("Min(Capacity, Tolerance)", CELL),
         ],
     ]
-    story += [_tbl(summary_rows, [W * 0.25, W * 0.18, W * 0.18, W * 0.18, W * 0.21], header=True, zebra=False), Spacer(1, 4)]
+    summary = _tbl(summary_rows, [W * 0.25, W * 0.18, W * 0.18, W * 0.18, W * 0.21], header=True, zebra=False)
+    summary.setStyle(TableStyle([("BACKGROUND", (0, 1), (1, 1), YELLOW)]))  # manual highlight: band and score
+    story += [summary, Spacer(1, 4)]
 
     # 3. Client Capacity Financial Background
     if client_inputs:
@@ -257,7 +249,7 @@ def build_risk_profile_pdf(
             f_rows.append([
                 Paragraph(label, CELL),
                 Paragraph(xml_escape(val_str), CELL),
-                f"{f.get('score', 0):.0f} / 100",
+                Paragraph(f"<font color='#C00000'><b>{f.get('score', 0):.0f} / 100</b></font>", CELL) if f.get("score", 0) < 50 else f"{f.get('score', 0):.0f} / 100",
                 f"{f.get('weight', 0):.0%}",
                 f"{f.get('contribution', 0):.1f} pts",
             ])
@@ -271,7 +263,7 @@ def build_risk_profile_pdf(
     liquid = alloc.get("liquid", 0)
 
     try:
-        donut_bytes = charts.donut({"large_cap": eq, "corporate_bond": debt, "gold": gold, "liquid": liquid})
+        donut_bytes = charts.donut({"large_cap": eq, "corporate_bond": debt, "gold": gold, "liquid": liquid}, GREYS)
         donut_img = _img(donut_bytes, 75)
     except Exception:
         donut_img = None
@@ -283,7 +275,7 @@ def build_risk_profile_pdf(
         [Paragraph("<b>Gold</b> (Sovereign Gold Bonds, ETFs)", CELL), f"{gold:.1f}%", Paragraph("Hedge against currency depreciation and macro crisis events", CELL)],
         [Paragraph("<b>Liquid / Cash</b> (Overnight & Liquid Funds)", CELL), f"{liquid:.1f}%", Paragraph("Immediate liquidity buffer and tactical rebalancing reserve", CELL)],
     ]
-    alloc_table = _tbl(alloc_table_rows, [W * 0.35, W * 0.18, W * 0.47])
+    alloc_table = _tbl(alloc_table_rows, [W * 0.65 * 0.36, W * 0.65 * 0.17, W * 0.65 * 0.47])
 
     if donut_img:
         layout_table = Table([[alloc_table, donut_img]], colWidths=[W * 0.65, W * 0.35])
@@ -328,7 +320,7 @@ def build_risk_profile_pdf(
     if notes:
         story += [Paragraph("Planning Hygiene & Financial Health shortfalls", H2)]
         for n in notes:
-            story += [Paragraph(f"• {xml_escape(n)}", BODY)]
+            story += [Paragraph(f"<font color='#C00000'>• {xml_escape(n)}</font>", BODY)]
         story += [Spacer(1, 4)]
 
     # 8. SEBI Suitability Alignment Note

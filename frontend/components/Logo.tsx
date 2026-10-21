@@ -25,10 +25,10 @@ export default function Logo({
 }: LogoProps) {
   // Height mapping based on size
   const heightClasses = {
-    sm: layout === "stacked" ? "h-11" : "h-8",
-    md: layout === "stacked" ? "h-14" : "h-10",
-    lg: layout === "stacked" ? "h-20" : "h-13",
-    xl: layout === "stacked" ? "h-28" : "h-16",
+    sm: layout === "stacked" ? "h-14" : "h-10",
+    md: layout === "stacked" ? "h-20" : "h-12",
+    lg: layout === "stacked" ? "h-28" : "h-16",
+    xl: layout === "stacked" ? "h-36" : "h-20",
   }[size];
 
   // Asset selection
@@ -42,7 +42,7 @@ export default function Logo({
   }
 
   const content = (
-    <div className={`inline-flex items-center gap-3 ${className}`}>
+    <div className={`inline-flex items-center gap-3 ${variant === "dark" ? "rounded-md bg-white px-2 py-1" : ""} ${className}`}>
       {/* Official Brand Logo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

@@ -504,8 +504,17 @@ def optimize_portfolio_weights(
         # Max Sharpe
         bounds = (min_weight, max_weight)
         ef_sharpe = EfficientFrontier(mu, S, weight_bounds=bounds)
-        ef_sharpe.max_sharpe(risk_free_rate=rf)
-        out["max_sharpe"] = {k: round(float(v), 4) for k, v in ef_sharpe.clean_weights().items()}
+        effective_rf = rf
+        max_mu = float(mu.max())
+        if max_mu <= rf:
+            effective_rf = max(0.0, max_mu - 0.01)
+        try:
+            ef_sharpe.max_sharpe(risk_free_rate=effective_rf)
+            out["max_sharpe"] = {k: round(float(v), 4) for k, v in ef_sharpe.clean_weights().items()}
+        except Exception:
+            ef_sharpe = EfficientFrontier(mu, S, weight_bounds=bounds)
+            ef_sharpe.min_volatility()
+            out["max_sharpe"] = {k: round(float(v), 4) for k, v in ef_sharpe.clean_weights().items()}
 
         # Min Volatility
         ef_vol = EfficientFrontier(mu, S, weight_bounds=bounds)

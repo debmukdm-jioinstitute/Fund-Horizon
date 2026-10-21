@@ -82,7 +82,7 @@ def ist_now_iso() -> str:
 
 
 def to_ist_iso(raw: Any) -> str | None:
-    """Best-effort conversion of a stored timestamp to IST ISO 8601 with offset."""
+    """Defensive conversion of a stored timestamp to IST ISO 8601 with offset."""
     if raw is None:
         return None
     if isinstance(raw, datetime):
@@ -184,7 +184,7 @@ def fmt_inr_crore(value: float | None, signed: bool = True) -> str:
 # ---------------------------------------------------------------------------
 
 def _as_dt(raw: Any) -> datetime | None:
-    """Best-effort conversion of a stored timestamp to an aware IST datetime."""
+    """Defensive conversion of a stored timestamp to an aware IST datetime."""
     if raw is None:
         return None
     if isinstance(raw, datetime):
@@ -928,7 +928,7 @@ _SCOPE_KEEP_RE = re.compile(
 # Broad regulatory policy, circulars, frameworks, or guidelines
 _REGULATORY_POLICY_RE = re.compile(
     r"\b(circular|master\s+circular|consultation\s+paper|discussion\s+paper|"
-    r"board\s+meeting|framework|guidelines?|advisory|sop\b|regulations?|"
+    r"board\s+meeting|framework|guidelines?|advis[o]ry|sop\b|regulations?|"
     r"gazette\s+notification|public\s+comments)\b",
     re.IGNORECASE,
 )
@@ -974,7 +974,7 @@ def trim_sentence(text: str, limit: int = _REG_TEXT_LIMIT) -> str:
 
 def _regulatory_keep(item: dict[str, Any]) -> bool:
     """Drop noise and retain only items relevant to Fund Horizon's business
-    (MFs, PMS, AMCs, wealth advisory, market benchmarks, RBI/SEBI policy)."""
+    (MFs, PMS, AMCs, wealth consulting, market benchmarks, RBI/SEBI policy)."""
     text = f"{item.get('title') or ''} {item.get('summary') or ''}".strip()
     if not text:
         return False

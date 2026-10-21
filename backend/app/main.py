@@ -279,8 +279,10 @@ def create_app() -> FastAPI:
         except Exception:
             data_free_mb = 0
 
+        is_workers = bool(os.environ.get("CF_WORKER") == "1" or os.environ.get("WORKERS_RUNTIME"))
         return {
             "ok": True,
+            "runtime": "workers" if is_workers else "standard",
             "r2": r2.enabled(),
             "db_bytes": db_bytes,
             "data_free_mb": data_free_mb,

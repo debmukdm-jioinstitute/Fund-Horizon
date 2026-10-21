@@ -1,0 +1,80 @@
+{
+ "id": "alloc-08",
+ "title": "Capacity vs tolerance: build for the lower",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Distinguish risk capacity from risk tolerance.",
+  "Explain the rule to build for the lower of the two, with the four combinations."
+ ],
+ "body_md": "Capacity and tolerance often disagree. When they do, build for the lower one.\n\n## The two ideas\n\n- Risk capacity: the financial ability to bear losses. Stable income, no loans, a large buffer and other assets raise it.\n- Risk tolerance: the emotional willingness to bear losses. A questionnaire and past behaviour in a fall reveal it.\n\n## The four combinations\n\n| | High tolerance | Low tolerance |\n|---|---|---|\n| High capacity | More equity is possible | Build for tolerance, and educate over time |\n| Low capacity | Build for capacity | Most conservative mix |\n\n## The cases to watch\n\n- Young, well paid, but sold in the 2020 fall: high capacity, low tolerance. Build for tolerance; the client will grow into more equity.\n- Keen on risk but has dependants and loans: high tolerance, low capacity. Build for capacity.\n- Nervous-sounding with a 20-year horizon: may need help taking enough equity to beat inflation, slowly.\n\nAsk about losses in rupees, not percentages: \"If your ₹10 lakh became ₹7.5 lakh in a bad year, what would you do?\"",
+ "key_terms": [
+  "risk capacity",
+  "risk tolerance",
+  "riskometer"
+ ],
+ "example": "A 29-year-old engineer with a stable job, no loans and a year of expenses saved sold everything in March 2020. His capacity is high; his tolerance is low. The mix is built for tolerance, with a plan to revisit after the next full cycle.",
+ "say": [
+  "When capacity and comfort disagree, we build for the lower one.",
+  "If your ₹10 lakh became ₹7.5 lakh in a bad year, what would you do?"
+ ],
+ "never": [
+  "You're young, so 90% equity is fine.",
+  "Nervous clients should stay in FDs."
+ ],
+ "talk_track": [
+  {
+   "n": 6,
+   "title": "Capacity vs tolerance: build for the lower one",
+   "text": "Capacity and tolerance often disagree, and when they do, build for the lower one. High capacity but low tolerance, like a young, well-paid client who sold in the 2020 fall: build for their tolerance, and educate them over time. High tolerance but low capacity, like a client keen on risk who has dependants and loans: build for their capacity. And neither able nor willing to take losses: that client needs the most conservative mix."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q5",
+   "sec": "E: Evaluate the Client",
+   "q": "A client has high risk capacity but low risk tolerance. What do you build for?",
+   "o": [
+    "Capacity",
+    "Tolerance",
+    "Whichever is higher",
+    "The market view"
+   ],
+   "a": 1,
+   "why": "Always build for the lower of the two."
+  },
+  {
+   "id": "alloc-q23x",
+   "sec": "E: Evaluate the Client",
+   "q": "What is the difference between capacity and tolerance?",
+   "o": [
+    "Capacity is emotional; tolerance is financial",
+    "Capacity is the financial ability to bear losses; tolerance is the emotional willingness",
+    "They mean the same thing",
+    "Capacity applies only to retirees"
+   ],
+   "a": 1,
+   "why": "Capacity is financial, tolerance is emotional. When they disagree, build for the lower one."
+  },
+  {
+   "id": "alloc-q24x",
+   "sec": "E: Evaluate the Client",
+   "q": "Why ask about losses in rupees rather than percentages?",
+   "o": [
+    "Because percentages are not allowed",
+    "Because a rupee figure makes the loss concrete and gets an honest answer",
+    "Because it is faster",
+    "Because it avoids the riskometer"
+   ],
+   "a": 1,
+   "why": "If your ten lakh became seven and a half lakh lands far better than minus twenty-five percent."
+  }
+ ],
+ "card_ids": [
+  "alloc-c8",
+  "alloc-c25",
+  "alloc-c26"
+ ],
+ "words": 182
+}

@@ -1,0 +1,79 @@
+{
+ "id": "sip-16",
+ "title": "What derails SIPs, and what to say",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Name the six behaviours that break a SIP habit.",
+  "Give the compliant response to each."
+ ],
+ "body_md": "Most SIPs do not fail because of the fund. They fail because the investor stops, forgets or spends too early.\n\n| Behaviour | What it sounds like | What to say |\n|---|---|---|\n| Stopping in a fall | \"Markets are crashing; I'll stop till it settles.\" | \"This is when your SIP buys the most units. If cash is tight, let's pause, not stop.\" |\n| Milestone cash-out | \"It's doubled! Let's take it out and enjoy.\" | \"Is this the money for your goal? If yes, let's stay the course; we can plan a separate fun fund.\" |\n| Forgetting to renew | (Silence: the SIP just ended) | Calendar the end date; call the client 3 months before it |\n| Lifestyle creep | \"I earn more now but can't increase the SIP.\" | \"Let's raise it by just 10% now, when the raise is fresh.\" |\n| Fund hopping | \"My friend's fund did better last year.\" | \"Let's compare 3–5 year records against the benchmark before switching.\" |\n| Too many SIPs | \"I have 12 SIPs; more must be safer.\" | \"Many of these hold the same stocks. Fewer, well-chosen funds are easier to track.\" |\n| Retirement panic | \"I'll take it all out and put it in an FD.\" | \"Let's set up a monthly SWP with 1–2 years in a safe buffer, and keep the rest working.\" |\n\n**The one line to remember:** a SIP is a habit, not a product. Our job is to protect the habit.",
+ "key_terms": [
+  "SIP",
+  "SWP",
+  "exit load"
+ ],
+ "example": "Meera wants to stop her SIP because markets fell 15%. Her goal is 12 years away and her income is stable, so the answer is to keep going, explain what falls do to unit costs, and make no prediction about recovery.",
+ "say": [
+  "A fall is when your SIP buys the most units.",
+  "Let's ask whether this money is for your goal before we take it out."
+ ],
+ "never": [
+  "The market will recover by December.",
+  "Stop the SIP now and restart when it feels safer."
+ ],
+ "talk_track": [
+  {
+   "n": 13,
+   "title": "SIPs fail when the habit breaks",
+   "text": "Most SIPs don't fail because of the fund. They fail when the habit breaks. Stopping in a fall: remind the client this is when the SIP buys the most units, and pause only if cash is tight. The milestone cash-out: ask whether this is the goal money, and plan a separate fun fund instead. Lifestyle creep: suggest raising the SIP by ten percent right away. Fund hopping: compare three to five year records before any switch. Too many SIPs: many hold the same stocks. And retirement panic: set up a systematic withdrawal plan with a one to two year buffer."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q23",
+   "sec": "N: Navigate Behaviour",
+   "q": "A stable-income client wants to stop a SIP after a 15% fall, with the goal 12 years away. Best response?",
+   "o": [
+    "Stop the SIP until markets settle",
+    "Pause only if cash is tight; a fall is when the SIP buys the most units",
+    "Switch to a fixed deposit",
+    "Redeem and wait for a better entry"
+   ],
+   "a": 1,
+   "why": "With a stable income and a long goal, the habit should continue. A pause is for a cash crunch, not for a fall."
+  },
+  {
+   "id": "sip-q24",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client says, \"It's doubled! Let's take it out.\" What is the first question?",
+   "o": [
+    "Which fund should we buy next?",
+    "Is this the money for your goal?",
+    "How much tax will you pay?",
+    "Shall we double it again?"
+   ],
+   "a": 1,
+   "why": "Link the decision to the goal. If it is goal money, stay the course; a separate fun fund can cover the celebration."
+  },
+  {
+   "id": "sip-q25",
+   "sec": "N: Navigate Behaviour",
+   "q": "A client wants to switch because a friend's fund did better last year. What do you do?",
+   "o": [
+    "Switch immediately to capture the gains",
+    "Compare 3–5 year records against the benchmark first",
+    "Stop all SIPs",
+    "Add more funds for safety"
+   ],
+   "a": 1,
+   "why": "One year is noise. Compare three to five year records against the benchmark and category before any switch."
+  }
+ ],
+ "card_ids": [
+  "sip-c30",
+  "sip-c31"
+ ],
+ "words": 257
+}

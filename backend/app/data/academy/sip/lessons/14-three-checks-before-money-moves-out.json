@@ -1,0 +1,81 @@
+{
+ "id": "sip-14",
+ "title": "Three checks before money moves out",
+ "minutes": 3,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Name the three checks before any redemption, switch, STP or SWP.",
+  "Explain why each instalment's date matters at exit."
+ ],
+ "body_md": "Before any redemption, switch, STP or SWP, run three checks.\n\n## 1. Exit load\n\nRecent SIP instalments may still be inside the exit-load period, even in a SIP that started years ago. Check the scheme's terms, instalment by instalment.\n\n## 2. Tax\n\nEvery switch, STP transfer and SWP withdrawal is a redemption, so gains on it may be taxed. Ask the client to check with a CA. Never give tax advice, and never call a withdrawal tax-free.\n\n## 3. Details\n\nConfirm the nominee, bank account and KYC are current before money starts flowing out. Money leaving is the worst time to discover a closed bank account.\n\n## FIFO, again\n\nUnits are redeemed oldest first, so each instalment's own purchase date decides its exit load and tax treatment. That is why a plan built on \"the SIP is old\" can still produce a charge.",
+ "key_terms": [
+  "exit load",
+  "FIFO",
+  "KYC",
+  "STCG",
+  "LTCG"
+ ],
+ "example": "A client switches ₹6 lakh from equity to a liquid fund. The check finds that the last year's instalments carry a 1% exit load, so the switch is split: part now, part after the load period ends.",
+ "say": [
+  "Let's check the exit load on the recent instalments, and confirm your nominee and bank details.",
+  "The tax on this redemption is a question for your CA; I'll flag which instalments are involved."
+ ],
+ "never": [
+  "Switching between funds is not a redemption, so there's no tax.",
+  "Your KYC will be fine; it was done years ago."
+ ],
+ "talk_track": [
+  {
+   "n": 11,
+   "title": "Three checks before money moves out",
+   "text": "Before any money moves out, whether by redemption, switch, STP or SWP, run three checks. Exit load: recent SIP instalments may still be inside the exit-load period, even in a SIP that started years ago. Tax: every switch, STP transfer and SWP withdrawal is a redemption, so gains on it may be taxed; ask the client to check with a CA. Details: confirm the nominee, bank account and KYC are up to date before money starts flowing out."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q18",
+   "sec": "A: Act Right",
+   "q": "Which three checks come before a redemption, switch, STP or SWP?",
+   "o": [
+    "Exit load, tax, and nominee/bank/KYC details",
+    "Only the latest NAV",
+    "The fund manager's tenure, the AUM and the star rating",
+    "The AMC's office address and the folio number"
+   ],
+   "a": 0,
+   "why": "Exit load per instalment, the tax position (referred to a CA), and current nominee, bank and KYC details."
+  },
+  {
+   "id": "sip-q24x",
+   "sec": "A: Act Right",
+   "q": "Why is a switch between schemes a tax event?",
+   "o": [
+    "Because the AMC charges a fee",
+    "Because it is a redemption of units, so gains on it may be taxed",
+    "Because SEBI treats switches as sales of the AMC",
+    "It is not a tax event"
+   ],
+   "a": 1,
+   "why": "A switch, an STP transfer and an SWP withdrawal are all redemptions. Gains may be taxable; refer the client to a CA."
+  },
+  {
+   "id": "sip-q25x",
+   "sec": "A: Act Right",
+   "q": "What does FIFO mean at redemption?",
+   "o": [
+    "The newest units are sold first",
+    "The oldest units are treated as sold first",
+    "Units are sold in equal parts",
+    "The AMC decides which units to sell"
+   ],
+   "a": 1,
+   "why": "First in, first out: the oldest units are redeemed first, so each instalment's own date decides its exit load and tax."
+  }
+ ],
+ "card_ids": [
+  "sip-c16",
+  "sip-c26"
+ ],
+ "words": 143
+}

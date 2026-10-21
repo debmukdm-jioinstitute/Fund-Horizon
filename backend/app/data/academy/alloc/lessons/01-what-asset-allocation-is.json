@@ -1,0 +1,84 @@
+{
+ "id": "alloc-01",
+ "title": "What asset allocation is",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Define asset allocation in one sentence.",
+  "Explain why the mix comes before fund selection."
+ ],
+ "body_md": "Asset allocation is deciding what share of a client's money goes into each asset class, based on their goals, time horizon and ability to handle losses. It is the first investment decision, made before choosing any fund.\n\n## An illustrative moderate mix\n\nEquity 50%, debt 40%, gold 10%. Not a recommendation for any client, just the shape of a mix.\n\n## Why it comes first\n\nResearch since the 1980s has found that a portfolio's mix explains most of how much its value swings over time. Fund selection matters, but less. Two clients in the same three funds, with different splits, can have completely different experiences.\n\n## What it is not\n\n- It is not a market call. The mix comes from the client's goal, horizon and risk profile.\n- It is not one mix for all the money. Each pot gets its own.\n- It is not a one-time decision. Markets move the mix, and life changes it.\n\n**The one line to remember:** the best mix is the one the client can stick with through a bad year.",
+ "key_terms": [
+  "asset allocation",
+  "risk capacity",
+  "risk tolerance"
+ ],
+ "example": "Two clients both hold a flexi-cap fund. One has 70% of the money there, the other 25%. Same fund, very different outcomes and very different behaviour in a fall.",
+ "say": [
+  "Asset allocation is deciding how much goes into each asset class before we choose any fund.",
+  "The best mix is the one you can stay with through a bad year."
+ ],
+ "never": [
+  "The mix doesn't matter; the fund does.",
+  "This is my view of where the market is going."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Welcome to Module 13",
+   "text": "Welcome to Module 13 of the Fund Horizon training series: asset allocation. How a client's money is split between equity, debt, gold and cash usually matters more than which fund they pick. In this module you'll learn what asset allocation is, why mixing assets helps, how to set the right mix for each client, how to keep it on track, and how to handle the behaviour that breaks a good mix."
+  },
+  {
+   "n": 2,
+   "title": "Asset allocation is the first decision",
+   "text": "Asset allocation is deciding what share of a client's money goes into each asset class. For example, an illustrative moderate mix might be half in equity, forty percent in debt and ten percent in gold. The mix is based on the client's goals, time horizon and ability to handle losses. It's the first investment decision, made before choosing any fund. And research since the nineteen-eighties has found that the mix explains most of how much a portfolio's value swings over time."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q1",
+   "sec": "L: Learn the Basics",
+   "q": "What is asset allocation?",
+   "o": [
+    "Picking the best fund",
+    "Deciding what share of money goes into each asset class",
+    "Timing the market",
+    "Choosing an AMC"
+   ],
+   "a": 1,
+   "why": "It is the split across asset classes, decided before choosing any fund."
+  },
+  {
+   "id": "alloc-q2x",
+   "sec": "L: Learn the Basics",
+   "q": "What comes first?",
+   "o": [
+    "The fund",
+    "The asset mix",
+    "The tax rate",
+    "The AMC's rating"
+   ],
+   "a": 1,
+   "why": "The mix comes first; the products fill in the parts afterwards."
+  },
+  {
+   "id": "alloc-q3x",
+   "sec": "L: Learn the Basics",
+   "q": "Which drives most of how much a portfolio's value swings over time?",
+   "o": [
+    "The asset mix",
+    "The fund's star rating",
+    "The date of purchase",
+    "The folio count"
+   ],
+   "a": 0,
+   "why": "Research since the 1980s finds the mix explains most of the swing. Fund selection matters, but less."
+  }
+ ],
+ "card_ids": [
+  "alloc-c1",
+  "alloc-c2"
+ ],
+ "words": 178
+}

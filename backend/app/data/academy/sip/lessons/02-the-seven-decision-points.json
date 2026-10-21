@@ -1,0 +1,80 @@
+{
+ "id": "sip-02",
+ "title": "The seven decision points",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "List the seven decision points in a SIP's life.",
+  "Say which points keep the habit alive and which protect what it has built."
+ ],
+ "body_md": "A SIP is not a one-time decision. Over its life it passes through seven decision points, and most of the value we add comes from getting these right.\n\n| # | Decision point | When it comes up | Our default stance |\n|---|---|---|---|\n| 1 | Step-up | Every year, or after a raise | Raise the SIP by 5–10% a year if the budget allows |\n| 2 | Pause | Short-term cash crunch | Pause briefly rather than stop or redeem |\n| 3 | Missed instalments | Bank balance short on the debit date | Fix the mandate fast; repeated misses can cancel the SIP |\n| 4 | Market fall | Any time | Keep going; this is when SIPs buy the most units |\n| 5 | End date reached | The SIP's registered tenure ends | Renew if the goal is still years away |\n| 6 | Goal 1–3 years away | Approaching the goal | Stop new equity money; start moving to debt gradually |\n| 7 | Goal reached | The money is needed | Redeem in stages, or use an SWP for regular income |\n\n## Two halves of the same life\n\nPoints 1 to 4 keep the habit alive: they are about paying more, skipping a month, fixing a mandate and not stopping in a fall. Points 5 to 7 protect what the habit has built: renewing, gliding down and drawing the money out.\n\nEvery one of the seven has a question to ask before acting. That is the next stage of the module.",
+ "key_terms": [
+  "SIP",
+  "SIP pause",
+  "glide path",
+  "SWP"
+ ],
+ "example": "A client calls to stop a SIP because the market fell 15%. That is point 4, not point 2 — the cash-flow review shows his salary is stable, so the answer is to keep going, not to pause.",
+ "say": [
+  "There are seven decisions in a SIP's life, and each one has a default answer.",
+  "Points one to four keep the habit alive; points five to seven protect what it built."
+ ],
+ "never": [
+  "The SIP is on autopilot, so nothing needs deciding.",
+  "Stopping is the same as pausing."
+ ],
+ "talk_track": [
+  {
+   "n": 2,
+   "title": "A SIP's life: seven decision points",
+   "text": "A SIP isn't a one-time decision. Over its life, it passes through seven decision points. One, the step-up: every year, or after a raise, should the SIP go up? Two, the pause: what to do in a short-term cash crunch. Three, missed debits: fix the mandate fast, because repeated misses can cancel the SIP. Four, market falls: keep going, because this is when the SIP buys the most units. Five, the end date: when the registered tenure ends, renew if the goal is still years away."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q4x",
+   "sec": "L: Learn the Basics",
+   "q": "A client has a three-month cash crunch. Which decision point is this, and what is the default stance?",
+   "o": [
+    "A market fall; keep going",
+    "A pause; pause briefly rather than stop or redeem",
+    "The end date; renew",
+    "Goal reached; start an SWP"
+   ],
+   "a": 1,
+   "why": "A short cash crunch is decision point 2: pause briefly, and keep the SIP and the units intact."
+  },
+  {
+   "id": "sip-q5x",
+   "sec": "L: Learn the Basics",
+   "q": "Which decision point protects the money once the goal is close?",
+   "o": [
+    "Market fall",
+    "Missed instalments",
+    "Goal 1–3 years away: move gradually to debt",
+    "Step-up"
+   ],
+   "a": 2,
+   "why": "Points 5 to 7 protect what the habit built; the glide path starts when the goal is one to three years away."
+  },
+  {
+   "id": "sip-q6x",
+   "sec": "L: Learn the Basics",
+   "q": "What is the default stance when a SIP's end date arrives and the goal is still years away?",
+   "o": [
+    "Redeem everything",
+    "Renew the SIP",
+    "Move to an FD",
+    "Stop and forget it"
+   ],
+   "a": 1,
+   "why": "If the goal is far, renew or extend the SIP and keep stepping it up."
+  }
+ ],
+ "card_ids": [
+  "sip-c3",
+  "sip-c4"
+ ],
+ "words": 266
+}

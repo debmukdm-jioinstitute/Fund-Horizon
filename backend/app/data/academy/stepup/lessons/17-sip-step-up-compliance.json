@@ -1,0 +1,80 @@
+{
+ "id": "stepup-17",
+ "title": "SIP step-up compliance",
+ "minutes": 3,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "State the do's and don'ts for recommending a step-up.",
+  "Check an illustration for the two things that must always appear."
+ ],
+ "body_md": "Every step-up conversation ends with the same compliance frame.\n\n## Do\n\n- Check the emergency fund, loans and budget before suggesting a step-up.\n- Show projections as illustrative, with the assumed return and the higher total invested.\n- Explain the AMC's top-up terms, cap and mandate limit.\n- Mention that converting a SIP may mean re-registration and new exit-load terms.\n- Record the agreed step-up rule and review date.\n\n## Don't\n\n- Push a step-up the client can't sustain.\n- Show only the final corpus without the extra money invested.\n- Promise that a step-up will reach a goal.\n- Cancel and re-register a SIP without explaining the effects.\n- Raise a step-up without the client's documented consent.\n\n## The two things every illustration needs\n\nThe assumed return, labelled illustrative, and the total invested. A number without either is a promise in disguise.",
+ "key_terms": [
+  "step-up SIP",
+  "bank mandate limit",
+  "cap amount"
+ ],
+ "example": "\"A 10% step-up will get you ₹2 crore\" becomes \"Illustratively, at 12% assumed, a 10% step-up invests about ₹68.7 L and could reach about ₹2 crore; not guaranteed.\"",
+ "say": [
+  "Illustratively, at 12% assumed, this step-up invests about ₹68.7 lakh and could reach about ₹2 crore.",
+  "Converting this SIP means re-registering it, which restarts the exit-load clock on new units."
+ ],
+ "never": [
+  "The step-up will get you to ₹2 crore.",
+  "Just re-register the SIP; nothing changes."
+ ],
+ "talk_track": [
+  {
+   "n": 14,
+   "title": "Compliance: what we say, and what we never say",
+   "text": "Do check the client's emergency fund, loans and budget before suggesting a step-up. Do show the extra money invested, not just the final result. Do explain the fund house's terms, the cap and the mandate limit. Do explain any re-registration and exit-load effects. And do record the agreed step-up rule and the review date. Don't push a step-up the client can't sustain. Don't show only the final corpus. Don't promise that a step-up will reach a goal."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q38",
+   "sec": "Compliance: What We Say",
+   "q": "Which is compliant?",
+   "o": [
+    "\"A 10% step-up will get you ₹2 crore.\"",
+    "\"Illustratively, at 12% assumed, a 10% step-up invests about ₹68.7 L and could reach about ₹2 crore; not guaranteed.\"",
+    "\"A step-up guarantees the goal.\"",
+    "\"The step-up is risk-free.\""
+   ],
+   "a": 1,
+   "why": "Label it illustrative, state the assumption, show the total invested, promise nothing."
+  },
+  {
+   "id": "stepup-q39x",
+   "sec": "Compliance: What We Say",
+   "q": "What must accompany a step-up illustration?",
+   "o": [
+    "Only the final value",
+    "The assumed return, labelled illustrative, and the total invested",
+    "The AMC's address",
+    "The fund manager's name"
+   ],
+   "a": 1,
+   "why": "The assumption and the total invested. A number without them is a promise in disguise."
+  },
+  {
+   "id": "stepup-q47x",
+   "sec": "Compliance: What We Say",
+   "q": "Which is a compliance DON'T?",
+   "o": [
+    "Recording the step-up rule",
+    "Showing the extra money invested",
+    "Raising a step-up without documented consent",
+    "Explaining re-registration effects"
+   ],
+   "a": 2,
+   "why": "Every change needs the client's documented consent."
+  }
+ ],
+ "card_ids": [
+  "stepup-c29",
+  "stepup-c30",
+  "stepup-c31"
+ ],
+ "words": 143
+}

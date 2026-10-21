@@ -1,0 +1,79 @@
+{
+ "id": "stepup-10",
+ "title": "Make a goal reachable from a lower start",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Show how a step-up lowers the starting SIP needed for a goal.",
+  "Explain who benefits most from that trade-off."
+ ],
+ "body_md": "The most practical use of a step-up is making a goal reachable today.\n\n## Goal: ₹1 crore in 15 years (illustrative, 12% a year assumed)\n\n| Approach | Starting monthly SIP needed |\n|---|---|\n| Flat SIP | ≈ ₹19,800 |\n| SIP with a 10% yearly step-up | ≈ ₹11,500 |\n\nA step-up lets a young client start with what they can afford today, and let rising income do the rest.\n\n## Who benefits most\n\n- Clients early in their careers, whose income will grow faster than their expenses.\n- Clients who cannot start at ₹19,800 today but can start at ₹11,500 and grow into it.\n- Clients who dislike big commitments: the start is smaller and the cap makes it bounded.\n\n## What to tell them\n\nThe ₹11,500 is not a magic number; it is an illustration at 12% a year. Show the assumption and the total invested, and make no promise that the goal will be reached.",
+ "key_terms": [
+  "step-up SIP",
+  "SIP",
+  "XIRR"
+ ],
+ "example": "Karan wants ₹1 crore in 15 years but can afford ₹12,000 a month. A 10% yearly step-up starting around ₹11,500 fits today's cash flow, at an assumed 12%, with no guarantee.",
+ "say": [
+  "A step-up lets you start at about ₹11,500 instead of ₹19,800 for the same illustrative goal.",
+  "The figure assumes 12% a year; it is an illustration, not a promise."
+ ],
+ "never": [
+  "₹11,500 will get you ₹1 crore.",
+  "The step-up removes the need to review the goal."
+ ],
+ "talk_track": [
+  {
+   "n": 7,
+   "title": "₹1 crore in 15 years: start where you can",
+   "text": "The most practical use of a step-up is making a goal reachable. Say a client wants one crore rupees in fifteen years, at an assumed twelve percent a year. With a flat SIP, they'd need about nineteen thousand eight hundred a month from day one. With a ten percent yearly step-up, they can start at about eleven thousand five hundred and grow into it. A step-up lets a young client start with what they can afford today, and let rising income do the rest."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q27",
+   "sec": "A: Act Right",
+   "q": "For ₹1 crore in 15 years at an assumed 12%, what is the starting SIP with and without a 10% step-up?",
+   "o": [
+    "About ₹19,800 flat; about ₹11,500 with the step-up",
+    "About ₹11,500 flat; about ₹19,800 with the step-up",
+    "About ₹10,000 in both cases",
+    "About ₹25,000 flat; about ₹15,000 with the step-up"
+   ],
+   "a": 0,
+   "why": "About ₹19,800 flat, or about ₹11,500 to start with a 10% yearly step-up. Illustrative, not a promise."
+  },
+  {
+   "id": "stepup-q28x",
+   "sec": "A: Act Right",
+   "q": "Who benefits most from the lower starting amount?",
+   "o": [
+    "Retirees drawing an SWP",
+    "Clients early in their careers whose income will grow",
+    "Clients with 2-year goals",
+    "Clients with no emergency fund"
+   ],
+   "a": 1,
+   "why": "A younger client can start lower and grow into the goal as income rises."
+  },
+  {
+   "id": "stepup-q29x",
+   "sec": "A: Act Right",
+   "q": "What must accompany the ₹11,500 figure?",
+   "o": [
+    "A guarantee",
+    "The assumption, the total invested and a clear 'illustrative' label",
+    "The fund's past return",
+    "A comparison with an FD"
+   ],
+   "a": 1,
+   "why": "Assume 12%, show the total invested, label it illustrative and promise nothing."
+  }
+ ],
+ "card_ids": [
+  "stepup-c14",
+  "stepup-c20"
+ ],
+ "words": 160
+}

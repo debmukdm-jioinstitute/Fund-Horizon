@@ -34,9 +34,19 @@ def play(client, quiz_id, mode="practice", right=True):
 
 
 # --- content integrity -------------------------------------------------------------------------------------
+MODULES = {"mf": (22, "Module 1"), "pms": (16, "Module 2"), "sip": (18, "Module 12"),
+           "alloc": (18, "Module 13"), "stepup": (18, "Module 14")}
+
+
 def test_content_is_consistent():
     c = L._content()
-    assert set(c["mods"]) == {"mf", "pms"}
+    assert set(c["mods"]) == set(MODULES)
+    # syllabus order, not directory order: Module 1 must stay the first module a new joiner sees
+    assert list(c["mods"]) == ["mf", "pms", "sip", "alloc", "stepup"]
+    for mid, (n_lessons, code) in MODULES.items():
+        mod = c["mods"][mid]
+        assert (len(mod["_lessons"]), mod["code"]) == (n_lessons, code), mid
+        assert len(mod["final"]["questions"]) >= 25 and mod["final"]["pass_pct"] == 80, mid
     for mod in c["mods"].values():
         ids = [x["id"] for x in mod["_lessons"]]
         assert ids == sorted(ids) and len(ids) >= 15
@@ -50,9 +60,34 @@ def test_content_is_consistent():
         assert len(q["o"]) == 4 and len(set(q["o"])) == 4 and q["a"] in range(4) and q["why"], q["id"]
 
 
+def test_every_lesson_check_and_final_question_resolves():
+    c = L._content()
+    for mid, mod in c["mods"].items():
+        spec = L._quiz_spec(f"{mid}-final")
+        assert spec["module"] == mid and len(spec["ids"]) == len(mod["final"]["questions"])
+        for les in mod["_lessons"]:
+            assert L._quiz_spec(f"lesson:{les['id']}")["ids"] == [q["id"] for q in les["check"]]
+            for q in les["check"]:
+                # a question can be reused by a later lesson; the mapping points at its first home in this module
+                assert c["q_lesson"][q["id"]] in {x["id"] for x in mod["_lessons"]}
+        assert len(L._quiz_spec(f"{mid}-cp1")["ids"]) >= 3
+
+
 def test_pms_aprn_date_is_flagged_for_compliance_review():
     les = L._content()["lessons"]["pms-03"]
     assert "TODO-COMPLIANCE" in les["body_md"] and "31 Jul 2025" in les["body_md"]
+
+
+def test_certificate_needs_all_five_finals_and_names_them(client, admin):
+    play(client, "mf-final")
+    assert client.get("/api/learn/me").json()["certificate"] is None  # one of five is not enough
+    for mid in ("pms", "sip", "alloc", "stepup"):
+        play(client, f"{mid}-final")
+    me = client.get("/api/learn/me").json()
+    assert set(me["certificate"]) == set(MODULES)
+    assert all(c["score"] == 30 and c["title"] for c in me["certificate"].values())
+    badges = {b["id"] for b in me["badges"]}
+    assert {f"grad_{m}" for m in MODULES} | {"full_stack"} <= badges
 
 
 # --- pure helpers ----------------------------------------------------------------------------------------

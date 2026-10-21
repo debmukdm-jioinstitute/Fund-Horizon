@@ -1,0 +1,78 @@
+{
+ "id": "alloc-15",
+ "title": "When to change the target mix",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "List the valid reasons to change the target mix.",
+  "Explain why a market view or last year's returns are not reasons."
+ ],
+ "body_md": "Rebalancing returns to the target. Changing the target is a different, bigger decision, and only three things justify it.\n\n## The valid reasons\n\n- A goal comes within 3–5 years: start the glide path.\n- Life changes: marriage, a child, a new loan, job loss, an inheritance, retirement.\n- The risk profile changes: re-run the questionnaire every 2–3 years or after a life event.\n\n## What is never a reason\n\nA market view, a news headline, last year's returns, or a friend's portfolio. These change the noise, not the client's goal, horizon or capacity.\n\n## How to handle it\n\nWhen a client asks to change the mix after a strong year for one asset, the answer is: the target was set from your goal and your profile, and neither has changed. If the profile has changed, we will re-run it and document the new target.\n\nThe target mix and the rebalancing rules belong in writing, agreed with the client.",
+ "key_terms": [
+  "strategic allocation",
+  "rebalancing",
+  "risk tolerance"
+ ],
+ "example": "After gold's strong year, a client wants 40% gold. The target stays at 10%: the goal is unchanged and the profile is unchanged. The band rule may trim or top up, but the target is not rewritten because of one year.",
+ "say": [
+  "We change the target when your goal or your profile changes, not when an asset has a good year.",
+  "Let's re-run the risk profile and put the new target in writing."
+ ],
+ "never": [
+  "Gold did well, so let's make it the core holding.",
+  "Let's change the mix because the market looks shaky."
+ ],
+ "talk_track": [
+  {
+   "n": 12,
+   "title": "Change the target only for goals, life events or a new risk profile",
+   "text": "Change the target itself only for goals, life events or a new risk profile, never because of a market view. Rebalancing brings the mix back to the target; changing the target is a bigger decision that belongs in writing."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q12",
+   "sec": "R: Review & Rebalance",
+   "q": "Which is a good reason to change the target mix?",
+   "o": [
+    "Equity did badly last year",
+    "A news headline",
+    "A goal is now within 3 years",
+    "A friend's advice"
+   ],
+   "a": 2,
+   "why": "Goals, life events and a changed risk profile justify a new target."
+  },
+  {
+   "id": "alloc-q44x",
+   "sec": "R: Review & Rebalance",
+   "q": "What is the difference between rebalancing and changing the target?",
+   "o": [
+    "They are the same thing",
+    "Rebalancing returns to the agreed target; changing the target sets a new one",
+    "Rebalancing changes the goal",
+    "Changing the target needs no documentation"
+   ],
+   "a": 1,
+   "why": "Rebalancing is maintenance. Changing the target is a new decision, and it belongs in writing."
+  },
+  {
+   "id": "alloc-q45x",
+   "sec": "R: Review & Rebalance",
+   "q": "When should the target mix be reviewed?",
+   "o": [
+    "Every month",
+    "When a goal comes within 3–5 years, after a life event, or when the risk profile changes",
+    "Only when markets fall",
+    "Never"
+   ],
+   "a": 1,
+   "why": "Those three triggers, plus a routine re-run of the risk profile every two to three years."
+  }
+ ],
+ "card_ids": [
+  "alloc-c16"
+ ],
+ "words": 159
+}

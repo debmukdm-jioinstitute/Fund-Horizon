@@ -1,0 +1,77 @@
+{
+ "id": "stepup-11",
+ "title": "Step up vs start bigger",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Compare a flat higher SIP with a lower SIP that steps up.",
+  "Match each option to the client's cash flow."
+ ],
+ "body_md": "Clients often ask whether to start bigger or step up later. The honest answer depends on their cash flow today and tomorrow.\n\n## ₹10,000 stepped up versus ₹15,000 flat (20 years, 12% assumed)\n\n| Option | Total invested | Value at year 20 |\n|---|---|---|\n| ₹15,000 flat | ₹36.0 L | ≈ ₹1.50 Cr |\n| ₹10,000 with a 10% step-up | ≈ ₹68.7 L | ≈ ₹1.99 Cr |\n\n## What the table says\n\n- Starting bigger puts more money to work early, which suits a stable, higher income today.\n- A step-up ends with more, but only because far more is invested later, so it suits a growing income.\n- A mix of both often works best: start with what is comfortable, and step up from there.\n\n## How to choose\n\nAsk what the client's income will look like in five years. If it is flat, start bigger. If it is rising, step up. If it is uncertain, start lower with a cap.",
+ "key_terms": [
+  "step-up SIP",
+  "SIP"
+ ],
+ "example": "A 45-year-old with a stable salary and a child starting college in five years starts at ₹15,000 flat. A 27-year-old with a rising salary starts at ₹10,000 and steps up 10% a year.",
+ "say": [
+  "Starting bigger puts more money to work early; stepping up follows your income.",
+  "A mix of both often works best."
+ ],
+ "never": [
+  "Stepping up always beats starting bigger.",
+  "The final value is the only thing that matters."
+ ],
+ "talk_track": [
+  {
+   "n": 9,
+   "title": "Step up, or start bigger?",
+   "text": "Should a client step up, or simply start bigger? Compare fifteen thousand rupees flat for twenty years with ten thousand stepped up by ten percent a year. Fifteen thousand flat invests thirty-six lakh and reaches about one and a half crore: more money is working from the start, which suits a client with a stable, higher income today. Ten thousand with a step-up invests about sixty-nine lakh and reaches about two crore. It ends with more, but only because far more is invested later, so it suits a client whose income will grow."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q30",
+   "sec": "A: Act Right",
+   "q": "₹15,000 flat vs ₹10,000 with a 10% step-up over 20 years: what does the illustration show?",
+   "o": [
+    "₹1.50 Cr vs ₹1.99 Cr, with ₹36.0 L vs ₹68.7 L invested",
+    "₹1.99 Cr vs ₹1.50 Cr, with ₹36.0 L vs ₹68.7 L invested",
+    "Both reach ₹1.50 Cr",
+    "Both invest the same amount"
+   ],
+   "a": 0,
+   "why": "The flat SIP reaches about ₹1.50 Cr from ₹36 L invested; the step-up reaches about ₹1.99 Cr from ₹68.7 L."
+  },
+  {
+   "id": "stepup-q31x",
+   "sec": "A: Act Right",
+   "q": "Which client should start bigger rather than step up?",
+   "o": [
+    "A 27-year-old expecting rapid raises",
+    "A 45-year-old with a stable, higher income today",
+    "A consultant with irregular income",
+    "A client with a 25-year goal"
+   ],
+   "a": 1,
+   "why": "A stable income today favours starting bigger; a growing income favours stepping up."
+  },
+  {
+   "id": "stepup-q32x",
+   "sec": "A: Act Right",
+   "q": "What is often the best answer for an uncertain income?",
+   "o": [
+    "Start as high as possible",
+    "Start lower with a cap, and step up as income allows",
+    "Wait until income is certain",
+    "Use only lump sums"
+   ],
+   "a": 1,
+   "why": "A lower start with a cap keeps the SIP alive when income is uncertain."
+  }
+ ],
+ "card_ids": [
+  "stepup-c16"
+ ],
+ "words": 166
+}

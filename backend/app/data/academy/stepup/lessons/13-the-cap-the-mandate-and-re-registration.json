@@ -1,0 +1,76 @@
+{
+ "id": "stepup-13",
+ "title": "The cap, the mandate and re-registration",
+ "minutes": 3,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Explain what a cap protects and how to set one.",
+  "Explain the exit-load consequence of re-registering an existing SIP."
+ ],
+ "body_md": "Three mechanics decide whether a step-up survives its first few years.\n\n## The cap\n\nA maximum instalment beyond which the step-up stops rising. It converts an open-ended commitment into a bounded one, which is often what a nervous client needs before agreeing. Where the AMC allows a cap, set it at a level the client is confident about.\n\n## The mandate\n\nThe bank mandate limit must cover the highest future instalment. If it does not, a debit fails, and three consecutive failures cancel a monthly SIP. Raise the mandate when the step-up is set up, not when it first fails.\n\n## Re-registration\n\nIf the existing SIP has no step-up facility, converting may mean cancelling and registering a new SIP. That resets the instalment clock, so the newest units restart the exit-load period. Explain that before doing it, and consider a second smaller SIP instead.",
+ "key_terms": [
+  "cap amount",
+  "bank mandate limit",
+  "exit load"
+ ],
+ "example": "A ₹10,000 SIP with a 10% step-up reaches ₹16,105 by year six. If the mandate is set at ₹15,000, the debit fails in year six — so the mandate is raised to ₹25,000 at the start.",
+ "say": [
+  "We'll set a cap so the instalment stops at a level you're comfortable with.",
+  "Converting this SIP means re-registering it, which restarts the exit-load clock on new units."
+ ],
+ "never": [
+  "The cap is a formality.",
+  "The mandate can stay at today's amount."
+ ],
+ "talk_track": [
+  {
+   "n": 10,
+   "title": "Setting up a step-up: the cap and the mandate",
+   "text": "Two practical points. Set a cap where the fund house allows it, so the instalment stops rising at a comfortable level. And check the bank mandate: it must cover the highest future instalment, not just today's."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q36x",
+   "sec": "A: Act Right",
+   "q": "A ₹10,000 SIP with a 10% step-up will reach about ₹16,105 by year six. The mandate is ₹15,000. What happens?",
+   "o": [
+    "Nothing; the AMC adjusts it",
+    "The debit fails, and consecutive failures can cancel the SIP",
+    "The step-up pauses automatically",
+    "The SIP continues at ₹15,000"
+   ],
+   "a": 1,
+   "why": "The mandate must cover the highest future instalment. Set it higher at the start."
+  },
+  {
+   "id": "stepup-q37x",
+   "sec": "A: Act Right",
+   "q": "What does re-registering an existing SIP do?",
+   "o": [
+    "Nothing changes",
+    "It resets the instalment clock, so new units restart the exit-load period",
+    "It removes the exit load",
+    "It changes the fund's category"
+   ],
+   "a": 1,
+   "why": "A new registration means new instalment dates and new exit-load clocks. Explain it before acting."
+  },
+  {
+   "id": "stepup-q38x",
+   "sec": "A: Act Right",
+   "q": "When a client is nervous about committing, what helps most?",
+   "o": [
+    "A higher step-up",
+    "A cap, plus the option to pause or reduce at review",
+    "A longer tenure",
+    "A sectoral fund"
+   ],
+   "a": 1,
+   "why": "A cap makes the commitment bounded, and a review date makes it revisitable."
+  }
+ ],
+ "card_ids": [],
+ "words": 144
+}

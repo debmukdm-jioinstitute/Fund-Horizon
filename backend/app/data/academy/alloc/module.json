@@ -1,0 +1,825 @@
+{
+ "id": "alloc",
+ "title": "Asset Allocation",
+ "code": "Module 13",
+ "order": 13,
+ "blurb": "How a client's money is split between equity, debt, gold and cash: setting the mix, explaining it and keeping it on target.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays) and investors as awareness material"
+   ],
+   [
+    "Duration",
+    "One 60–75 minute session, plus 20 minutes of role-play and the quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 6 (bonds and debt), Module 9 (goal-based investing), Module 11 (the wrong time to invest) and Module 12 (SIP – What Next?)"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ],
+  "outcomes": [
+   "Explain asset allocation in one sentence, and why it matters more than fund selection.",
+   "Describe how equity, debt, gold and cash behave, and why mixing them helps.",
+   "Assess risk capacity, risk tolerance and time horizon before suggesting a mix.",
+   "Build an illustrative mix for a goal and choose suitable products for each part.",
+   "Rebalance when the mix drifts, and adjust it as life changes.",
+   "Handle the behaviour that breaks allocations, and stay within compliance."
+  ]
+ },
+ "sources": [
+  "Angel One: Nifty 50 versus gold, including 2008 (Nifty about −52%, gold in rupees about +27%)",
+  "SEBI circular on categorisation of multi-asset allocation funds (at least 10% in each of at least three asset classes)",
+  "SEBI riskometer and Potential Risk Class circulars; AMFI best-practices on risk profiling",
+  "Income-tax Act and Finance Act provisions on capital gains and debt-fund taxation (verify current rates each year)"
+ ],
+ "lessons": [
+  {
+   "id": "alloc-01",
+   "title": "What asset allocation is",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "alloc-02",
+   "title": "The four asset classes and their jobs",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "alloc-03",
+   "title": "Why mixing helps: 2008",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "alloc-04",
+   "title": "Diversify within each class",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "alloc-05",
+   "title": "Count everything the client owns",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "alloc-06",
+   "title": "Two ways to hold a mix",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "alloc-07",
+   "title": "Four inputs set the mix",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "alloc-08",
+   "title": "Capacity vs tolerance: build for the lower",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "alloc-09",
+   "title": "Separate pots, separate mixes",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "alloc-10",
+   "title": "Step 1: the horizon sets the equity range",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "alloc-11",
+   "title": "Step 2: the risk profile picks a point",
+   "minutes": 3,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "alloc-12",
+   "title": "What the mix means in rupees",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "alloc-13",
+   "title": "Step 3: products for each part",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "A"
+  },
+  {
+   "id": "alloc-14",
+   "title": "Drift and the rules of rebalancing",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "alloc-15",
+   "title": "When to change the target mix",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "alloc-16",
+   "title": "What breaks a good mix",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "alloc-17",
+   "title": "Asset allocation compliance",
+   "minutes": 3,
+   "level": "advanced",
+   "stage": "Compliance"
+  },
+  {
+   "id": "alloc-18",
+   "title": "Role-play lab: six allocation conversations",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Practice"
+  }
+ ],
+ "cards": [
+  {
+   "id": "alloc-c1",
+   "q": "The one idea",
+   "a": [
+    "The best mix is the one the client can stick with through a bad year."
+   ]
+  },
+  {
+   "id": "alloc-c2",
+   "q": "Asset allocation",
+   "a": [
+    "Deciding what share of money goes into each asset class, based on goals, horizon and ability to handle losses."
+   ]
+  },
+  {
+   "id": "alloc-c3",
+   "q": "Why it matters",
+   "a": [
+    "The mix explains most of how much a portfolio swings over time; it is the first decision, before choosing funds."
+   ]
+  },
+  {
+   "id": "alloc-c4",
+   "q": "The four asset classes",
+   "a": [
+    "Equity (growth), debt (stability and income), gold (diversifier), cash (liquidity)."
+   ]
+  },
+  {
+   "id": "alloc-c5",
+   "q": "2008 (historical)",
+   "a": [
+    "Nifty 50 fell about 52%; gold in rupees rose about 27%. Assets don't move together."
+   ]
+  },
+  {
+   "id": "alloc-c6",
+   "q": "2008 portfolios (illustrative)",
+   "a": [
+    "₹10 L: 100% equity → ≈₹4.8 L; 60/30/10 → ≈₹7.4 L; 40/50/10 → ≈₹8.5 L (debt assumed +7%)."
+   ]
+  },
+  {
+   "id": "alloc-c7",
+   "q": "Four inputs",
+   "a": [
+    "Time horizon, risk capacity, risk tolerance, goal type. The market view is not an input."
+   ]
+  },
+  {
+   "id": "alloc-c8",
+   "q": "Capacity vs tolerance",
+   "a": [
+    "Capacity = financial ability to bear losses; tolerance = emotional willingness. Build for the lower one."
+   ]
+  },
+  {
+   "id": "alloc-c9",
+   "q": "Separate pots",
+   "a": [
+    "Emergency fund, near goals and long goals each get their own mix."
+   ]
+  },
+  {
+   "id": "alloc-c10",
+   "q": "Count everything",
+   "a": [
+    "EPF, PPF, FDs, gold, property belong in the total picture; EPF and PPF are debt."
+   ]
+  },
+  {
+   "id": "alloc-c11",
+   "q": "Horizon ranges (illustrative)",
+   "a": [
+    "Equity: under 1 yr 0%; 1–3 yrs 0–20%; 3–5 yrs 20–50%; 5–7 yrs 40–65%; 7+ yrs 60–80%."
+   ]
+  },
+  {
+   "id": "alloc-c12",
+   "q": "Profile mixes (illustrative, 7+ yrs)",
+   "a": [
+    "Conservative 30/60/10; moderate 50/40/10; aggressive 70/20/10 (equity/debt/gold)."
+   ]
+  },
+  {
+   "id": "alloc-c13",
+   "q": "Mix in rupees (illustrative)",
+   "a": [
+    "₹10 L for 15 years: FD ≈ ₹25.7 L; conservative ≈ ₹34.5 L; moderate ≈ ₹39.6 L; aggressive ≈ ₹45.3 L."
+   ]
+  },
+  {
+   "id": "alloc-c14",
+   "q": "Multi-asset funds",
+   "a": [
+    "SEBI requires at least 10% in each of at least three asset classes."
+   ]
+  },
+  {
+   "id": "alloc-c15",
+   "q": "Rebalancing rules",
+   "a": [
+    "Check yearly; act if drift exceeds about 5 points; use new money first; check exit loads and tax."
+   ]
+  },
+  {
+   "id": "alloc-c16",
+   "q": "When to change the target",
+   "a": [
+    "A goal within 3–5 years, a life event, or a new risk profile; never a market view."
+   ]
+  },
+  {
+   "id": "alloc-c17",
+   "q": "Equity",
+   "a": [
+    "Ownership in companies; the growth engine.",
+    "Example: flexi-cap, index, mid-cap funds.",
+    "Remember: highest long-run growth, sharp falls."
+   ]
+  },
+  {
+   "id": "alloc-c18",
+   "q": "Debt",
+   "a": [
+    "Lending for interest; the stabiliser.",
+    "Example: short-duration, gilt, corporate bond funds; PPF, EPF.",
+    "Remember: has rate and credit risk; not risk-free."
+   ]
+  },
+  {
+   "id": "alloc-c19",
+   "q": "Gold",
+   "a": [
+    "A diversifier that often holds up in crises.",
+    "Example: gold ETFs, gold funds.",
+    "Remember: 5–15% is usually enough."
+   ]
+  },
+  {
+   "id": "alloc-c20",
+   "q": "Cash",
+   "a": [
+    "Money for liquidity and emergencies.",
+    "Example: savings account, liquid funds.",
+    "Remember: often below inflation after tax."
+   ]
+  },
+  {
+   "id": "alloc-c21",
+   "q": "Strategic allocation",
+   "a": [
+    "The long-term target mix.",
+    "Example: 60/30/10 for a 10-year goal.",
+    "Remember: set from goals and risk profile."
+   ]
+  },
+  {
+   "id": "alloc-c22",
+   "q": "Drift",
+   "a": [
+    "The mix moving away from target as markets move.",
+    "Example: 60/40 becomes 65/35 after a strong year.",
+    "Remember: normal; fix it with rules."
+   ]
+  },
+  {
+   "id": "alloc-c23",
+   "q": "Rebalancing",
+   "a": [
+    "Bringing the mix back to target.",
+    "Example: move 5 points from equity to debt.",
+    "Remember: sells high, buys low, automatically."
+   ]
+  },
+  {
+   "id": "alloc-c24",
+   "q": "Band rule",
+   "a": [
+    "Rebalance when drift passes a set limit.",
+    "Example: act at 5 points away from target.",
+    "Remember: removes emotion from timing."
+   ]
+  },
+  {
+   "id": "alloc-c25",
+   "q": "Risk capacity",
+   "a": [
+    "Financial ability to bear losses.",
+    "Example: stable income, no loans, big buffer.",
+    "Remember: can be high while tolerance is low."
+   ]
+  },
+  {
+   "id": "alloc-c26",
+   "q": "Risk tolerance",
+   "a": [
+    "Emotional willingness to bear losses.",
+    "Example: sold everything in the 2020 fall.",
+    "Remember: ask in rupees, not percentages."
+   ]
+  },
+  {
+   "id": "alloc-c27",
+   "q": "Core and satellite",
+   "a": [
+    "Broad core funds plus small higher-risk holdings.",
+    "Example: 80% flexi/index, 20% mid/small/thematic.",
+    "Remember: keep satellites small."
+   ]
+  },
+  {
+   "id": "alloc-c28",
+   "q": "Multi-asset allocation fund",
+   "a": [
+    "One fund holding three or more asset classes.",
+    "Example: equity, debt and gold in one scheme.",
+    "Remember: at least 10% in each (SEBI)."
+   ]
+  },
+  {
+   "id": "alloc-c29",
+   "q": "Balanced advantage fund",
+   "a": [
+    "A hybrid fund that changes its equity-debt mix dynamically.",
+    "Example: equity share moves with valuations.",
+    "Remember: check the actual mix in the factsheet."
+   ]
+  },
+  {
+   "id": "alloc-c30",
+   "q": "Chasing winners",
+   "a": [
+    "Moving money into last year's best asset.",
+    "Example: \"Gold did 20%, move it all.\"",
+    "Remember: each asset has its year."
+   ]
+  },
+  {
+   "id": "alloc-c31",
+   "q": "Mental accounting",
+   "a": [
+    "Treating some money as separate from the rest.",
+    "Example: \"EPF doesn't count.\"",
+    "Remember: count all assets in the mix."
+   ]
+  },
+  {
+   "id": "alloc-c32",
+   "q": "Concentration risk",
+   "a": [
+    "Too much in one stock, sector or property.",
+    "Example: most wealth in employer shares.",
+    "Remember: diversify new money around it."
+   ]
+  }
+ ],
+ "final": {
+  "id": "alloc-final",
+  "title": "Asset Allocation final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "alloc-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What is asset allocation?",
+    "o": [
+     "Picking the best fund",
+     "Deciding what share of money goes into each asset class",
+     "Timing the market",
+     "Choosing an AMC"
+    ],
+    "a": 1,
+    "why": "It is the split across asset classes, decided before choosing any fund."
+   },
+   {
+    "id": "alloc-q2",
+    "sec": "L: Learn the Basics",
+    "q": "Which asset class is mainly for long-term growth?",
+    "o": [
+     "Cash",
+     "Debt",
+     "Equity",
+     "Gold"
+    ],
+    "a": 2,
+    "why": "Equity has the highest long-run growth, with sharp falls along the way."
+   },
+   {
+    "id": "alloc-q3",
+    "sec": "L: Learn the Basics",
+    "q": "In 2008, roughly how did the Nifty 50 and gold in rupees move?",
+    "o": [
+     "Both fell about 20%",
+     "Nifty −52%, gold +27%",
+     "Nifty +10%, gold −10%",
+     "Both rose"
+    ],
+    "a": 1,
+    "why": "They moved in opposite directions, which is why mixing helps."
+   },
+   {
+    "id": "alloc-q4",
+    "sec": "E: Evaluate the Client",
+    "q": "Which is NOT one of the four inputs that set the mix?",
+    "o": [
+     "Time horizon",
+     "Risk capacity",
+     "Market outlook",
+     "Goal type"
+    ],
+    "a": 2,
+    "why": "The mix comes from the client, not from a market view."
+   },
+   {
+    "id": "alloc-q5",
+    "sec": "E: Evaluate the Client",
+    "q": "A client has high risk capacity but low risk tolerance. What do you build for?",
+    "o": [
+     "Capacity",
+     "Tolerance",
+     "Whichever is higher",
+     "The market view"
+    ],
+    "a": 1,
+    "why": "Always build for the lower of the two."
+   },
+   {
+    "id": "alloc-q6",
+    "sec": "A: Act Right",
+    "q": "Money needed within a year should be in…",
+    "o": [
+     "Small-cap funds",
+     "Liquid or money-market funds",
+     "Gold",
+     "Thematic funds"
+    ],
+    "a": 1,
+    "why": "Under a year means no equity: liquid, overnight or money-market funds."
+   },
+   {
+    "id": "alloc-q7",
+    "sec": "A: Act Right",
+    "q": "For a 7+ year goal, an illustrative moderate mix is…",
+    "o": [
+     "10/80/10",
+     "50/40/10",
+     "90/0/10",
+     "0/100/0"
+    ],
+    "a": 1,
+    "why": "Moderate is 50% equity, 40% debt, 10% gold, as a teaching example."
+   },
+   {
+    "id": "alloc-q8",
+    "sec": "A: Act Right",
+    "q": "SEBI requires a multi-asset allocation fund to hold…",
+    "o": [
+     "Only equity and debt",
+     "At least 10% in each of at least three asset classes",
+     "At least 50% gold",
+     "No equity"
+    ],
+    "a": 1,
+    "why": "That is the multi-asset mandate."
+   },
+   {
+    "id": "alloc-q9",
+    "sec": "R: Review & Rebalance",
+    "q": "A 60/40 portfolio becomes 65/35 after a strong equity year. What does rebalancing involve?",
+    "o": [
+     "Buying more equity",
+     "Moving about 5 points from equity to debt",
+     "Doing nothing ever",
+     "Moving everything to cash"
+    ],
+    "a": 1,
+    "why": "Return to target by booking some equity gains."
+   },
+   {
+    "id": "alloc-q10",
+    "sec": "R: Review & Rebalance",
+    "q": "What is usually the cheapest way to rebalance?",
+    "o": [
+     "Selling the overweight asset",
+     "Directing new money to the underweight asset",
+     "Switching AMCs",
+     "Stopping all SIPs"
+    ],
+    "a": 1,
+    "why": "New money avoids exit loads and tax on a sale."
+   },
+   {
+    "id": "alloc-q11",
+    "sec": "L: Learn the Basics",
+    "q": "A client has ₹25 lakh in EPF and calls himself \"100% equity\". What should you do?",
+    "o": [
+     "Ignore the EPF",
+     "Count EPF as debt in his total mix",
+     "Count EPF as equity",
+     "Ask him to close the EPF"
+    ],
+    "a": 1,
+    "why": "EPF is debt. Counting everything may mean the funds can hold more equity than the standalone view suggested."
+   },
+   {
+    "id": "alloc-q12",
+    "sec": "R: Review & Rebalance",
+    "q": "Which is a good reason to change the target mix?",
+    "o": [
+     "Equity did badly last year",
+     "A news headline",
+     "A goal is now within 3 years",
+     "A friend's advice"
+    ],
+    "a": 2,
+    "why": "Goals, life events and a changed risk profile justify a new target."
+   },
+   {
+    "id": "alloc-q13",
+    "sec": "L: Learn the Basics",
+    "q": "Gold's main role in a portfolio is…",
+    "o": [
+     "The highest return",
+     "A diversifier that often holds up when equity falls",
+     "Monthly income",
+     "Tax saving"
+    ],
+    "a": 1,
+    "why": "Gold is a diversifier; usually 5–15% is enough."
+   },
+   {
+    "id": "alloc-q14",
+    "sec": "A: Act Right",
+    "q": "In the ₹10 L, 15-year illustration, the moderate mix reached about…",
+    "o": [
+     "₹25.7 L",
+     "₹39.6 L",
+     "₹60 L",
+     "₹1 Cr"
+    ],
+    "a": 1,
+    "why": "About ₹39.6 L at the assumed returns; not a forecast."
+   },
+   {
+    "id": "alloc-q15",
+    "sec": "Compliance: What We Say",
+    "q": "Which statement is compliant?",
+    "o": [
+     "\"This hybrid fund is safe.\"",
+     "\"Illustratively, at assumed returns, this mix could reach about ₹40 L; not guaranteed.\"",
+     "\"Debt funds can't lose money.\"",
+     "\"Rebalancing is tax-free.\""
+    ],
+    "a": 1,
+    "why": "Label the projection illustrative, state the assumption, promise nothing."
+   },
+   {
+    "id": "alloc-q16",
+    "sec": "E: Evaluate the Client",
+    "q": "True or false: the right mix can be decided from the market outlook alone.",
+    "o": [
+     "True",
+     "False",
+     "Only for equity goals",
+     "Only for retirees"
+    ],
+    "a": 1,
+    "why": "It comes from horizon, capacity, tolerance and goal type — never from a market view."
+   },
+   {
+    "id": "alloc-q17",
+    "sec": "E: Evaluate the Client",
+    "q": "True or false: one client can need different mixes for different goals.",
+    "o": [
+     "True",
+     "False",
+     "Only above ₹1 crore",
+     "Only in retirement"
+    ],
+    "a": 0,
+    "why": "Separate pots, separate mixes: emergency fund, near goals and long goals each get their own."
+   },
+   {
+    "id": "alloc-q18",
+    "sec": "L: Learn the Basics",
+    "q": "True or false: debt funds carry no risk at all.",
+    "o": [
+     "True",
+     "False",
+     "Only gilt funds are risk-free",
+     "Only if held for three years"
+    ],
+    "a": 1,
+    "why": "Debt funds carry interest-rate and credit risk. They are not risk-free."
+   },
+   {
+    "id": "alloc-q19",
+    "sec": "R: Review & Rebalance",
+    "q": "True or false: rebalancing after a fall can mean buying equity at lower prices.",
+    "o": [
+     "True",
+     "False",
+     "Only with new money",
+     "Only for aggressive clients"
+    ],
+    "a": 0,
+    "why": "Restoring the target moves money from debt to equity after a fall."
+   },
+   {
+    "id": "alloc-q20",
+    "sec": "L: Learn the Basics",
+    "q": "True or false: a mixed portfolio cannot fall in value.",
+    "o": [
+     "True",
+     "False",
+     "Only if it holds gold",
+     "Only over ten years"
+    ],
+    "a": 1,
+    "why": "It usually falls less than pure equity, but it can fall."
+   },
+   {
+    "id": "alloc-q21",
+    "sec": "Practice: Role-Plays",
+    "q": "Mrs. Kulkarni, 52, keeps ₹30 lakh in FDs for retirement at 60 and wants no risk. What is the right approach?",
+    "o": [
+     "Agree that FDs are safest",
+     "Explain inflation risk with illustrative numbers, profile her, suggest a conservative mix",
+     "Put it all in equity to catch up",
+     "Promise a return above inflation"
+    ],
+    "a": 1,
+    "why": "Inflation risk, a proper risk profile, a conservative mix, and no promises."
+   },
+   {
+    "id": "alloc-q22",
+    "sec": "Practice: Role-Plays",
+    "q": "Vikram wants to move his whole portfolio into gold after a strong year. What do you do?",
+    "o": [
+     "Move it all to gold",
+     "Explain that each asset has its year and keep gold to the agreed share",
+     "Move half to gold",
+     "Suggest a gold-themed equity fund"
+    ],
+    "a": 1,
+    "why": "Gold is a diversifier: keep it to the agreed share, often 5–15%."
+   },
+   {
+    "id": "alloc-q23",
+    "sec": "Practice: Role-Plays",
+    "q": "Neha, 29, has her wedding fund (needed in 18 months) in a small-cap fund. What is the plan?",
+    "o": [
+     "Leave it; small caps do well over time",
+     "Separate pot: move to short-duration debt on a plan, check the exit load",
+     "Move it to another small-cap fund",
+     "Move it to gold"
+    ],
+    "a": 1,
+    "why": "Money needed in 18 months belongs in debt or liquid funds, whatever its long-term potential."
+   },
+   {
+    "id": "alloc-q24",
+    "sec": "Practice: Role-Plays",
+    "q": "A 60/40 client is at 66/34 after a strong year and refuses to sell equity. Best next step?",
+    "o": [
+     "Sell 6 points without telling him",
+     "Explain the band rule, use new money for debt first, and record the decision",
+     "Change the target to 66/34",
+     "Move everything to cash"
+    ],
+    "a": 1,
+    "why": "Use the agreed rules: new money first, partial rebalance if needed, documented."
+   },
+   {
+    "id": "alloc-q25",
+    "sec": "Practice: Role-Plays",
+    "q": "A moderate client wants 100% debt after equity fell 20%. Best response?",
+    "o": [
+     "Move everything to debt as asked",
+     "Show how the mix cushioned the fall and rebalance per the agreed rules",
+     "Promise equity will recover next year",
+     "Switch to a small-cap fund"
+    ],
+    "a": 1,
+    "why": "Show the mix working, review goal and profile, follow the rules, make no predictions."
+   },
+   {
+    "id": "alloc-q26",
+    "sec": "L: Learn the Basics",
+    "q": "What is the one line to remember from this module?",
+    "o": [
+     "The highest-return mix is best",
+     "The best mix is the one the client can stick with through a bad year",
+     "More equity is always better",
+     "Timing the market beats allocation"
+    ],
+    "a": 1,
+    "why": "A mix the client abandons in a fall does worse than a modest mix they hold."
+   },
+   {
+    "id": "alloc-q27",
+    "sec": "L: Learn the Basics",
+    "q": "What is cash's job in the mix?",
+    "o": [
+     "Growth",
+     "Liquidity and emergencies",
+     "Tax saving",
+     "Income"
+    ],
+    "a": 1,
+    "why": "Cash is for liquidity, so nothing long-term has to be sold at the wrong moment."
+   },
+   {
+    "id": "alloc-q28",
+    "sec": "R: Review & Rebalance",
+    "q": "What is the band rule?",
+    "o": [
+     "Rebalance when drift passes a set limit, such as 5 points",
+     "Buy only within a price band",
+     "Keep each fund under ₹5 lakh",
+     "Review once every five years"
+    ],
+    "a": 0,
+    "why": "A pre-agreed drift limit that triggers rebalancing without emotion."
+   },
+   {
+    "id": "alloc-q29",
+    "sec": "R: Review & Rebalance",
+    "q": "Which is NOT a reason to change the target mix?",
+    "o": [
+     "A goal moving within 3 years",
+     "A new loan or a child's birth",
+     "A changed risk profile",
+     "Last year's returns"
+    ],
+    "a": 3,
+    "why": "Market performance alone never changes the target."
+   },
+   {
+    "id": "alloc-q30",
+    "sec": "R: Review & Rebalance",
+    "q": "What does rebalancing quietly do?",
+    "o": [
+     "Sells low and buys high",
+     "Sells high and buys low",
+     "Avoids all tax",
+     "Removes market risk"
+    ],
+    "a": 1,
+    "why": "Returning to the target trims what has run up and tops up what has fallen."
+   }
+  ]
+ },
+ "role_play": null
+}

@@ -1,0 +1,78 @@
+{
+ "id": "stepup-15",
+ "title": "When life changes: pause, hold or lower",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Choose between pausing the SIP, holding the step-up, lowering it or redirecting it.",
+  "Explain why cancelling is the last resort."
+ ],
+ "body_md": "A step-up has to survive real life, and real life includes pay cuts, EMIs and school fees.\n\n| Situation | Suggested response |\n|---|---|\n| Job loss or pay cut | Pause the SIP briefly; don't cancel. Restart the step-up when income recovers |\n| New EMI or child's school fees | Hold the step-up at the current level for a year |\n| Big raise or promotion | Consider a one-time larger step-up or an extra SIP |\n| Goal within 3 years | Stop stepping up equity SIPs; direct extra money to debt |\n| Goal ahead of plan | Slow the step-up down |\n| Cap reached | Raise it, keep it, or start a new SIP |\n\n## Why cancelling is last\n\nA pause keeps the SIP, the mandate and the units. A cancellation ends the habit, and restarting means a new registration, a new instalment clock and a fresh set of exit-load dates.\n\n## The habit of review\n\nEvery life event is a review trigger. Fifteen minutes on the phone now avoids a cancelled SIP and a restarted one later.",
+ "key_terms": [
+  "SIP pause",
+  "step-up SIP",
+  "SIP end date"
+ ],
+ "example": "Anita's salary is cut 15% in the month her step-up is due. The step-up is held at the current level, the SIP continues, and both are reviewed in six months.",
+ "say": [
+  "With a pay cut, we'll hold the step-up and keep the SIP running.",
+  "A pause keeps everything in place; a cancellation means starting over."
+ ],
+ "never": [
+  "If money is tight, let's cancel the SIP.",
+  "A pay cut means selling the units."
+ ],
+ "talk_track": [
+  {
+   "n": 11,
+   "title": "Keep the step-up realistic as life changes",
+   "text": "After a job loss or pay cut, pause the SIP briefly, don't cancel it, and restart the step-up when income recovers. With a new EMI or school fees, hold the step-up at the current level for a year. After a big raise or promotion, consider a one-time larger step-up or an extra SIP. If the goal is ahead of plan, the step-up can slow down. And when a goal comes within three years, stop stepping up equity SIPs and send extra money to debt instead."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q32",
+   "sec": "R: Review & Rebalance",
+   "q": "Anita's salary is cut 15% and her step-up is due. What should happen?",
+   "o": [
+    "Cancel the SIP",
+    "Hold or reduce the step-up, keep the SIP, and review in six months",
+    "Double the step-up to catch up",
+    "Redeem the units"
+   ],
+   "a": 1,
+   "why": "Hold or reduce the step-up; don't cancel the SIP. Review when income recovers."
+  },
+  {
+   "id": "stepup-q33x",
+   "sec": "R: Review & Rebalance",
+   "q": "Why is cancelling the last resort?",
+   "o": [
+    "Because the AMC charges a fee",
+    "Because a cancellation ends the habit, the mandate and the instalment clock",
+    "Because the units are frozen",
+    "Because tax doubles"
+   ],
+   "a": 1,
+   "why": "A pause keeps the SIP, mandate and units; a cancellation means a new registration later."
+  },
+  {
+   "id": "stepup-q44x",
+   "sec": "R: Review & Rebalance",
+   "q": "A goal is now within three years. What happens to the step-up?",
+   "o": [
+    "It continues in equity",
+    "Stop stepping up equity SIPs and direct extra money to debt",
+    "It doubles",
+    "It moves to a sectoral fund"
+   ],
+   "a": 1,
+   "why": "As the goal nears, extra money goes to debt, not to a bigger equity SIP."
+  }
+ ],
+ "card_ids": [
+  "stepup-c25"
+ ],
+ "words": 185
+}

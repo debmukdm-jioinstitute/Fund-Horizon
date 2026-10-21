@@ -1,0 +1,80 @@
+{
+ "id": "stepup-04",
+ "title": "Why a flat SIP isn't enough",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain inflation erosion in rupee terms.",
+  "Explain how income growth and compounding both favour a step-up."
+ ],
+ "body_md": "A flat SIP is a decision that gets quietly worse every year.\n\n## Inflation erodes it\n\nAt 6% inflation, ₹10,000 a month in 20 years buys only what about ₹3,100 buys today. The instalment stays the same in rupees and shrinks in what it can buy.\n\n## Income usually grows\n\nA SIP that stays flat becomes a smaller share of income every year. A client who started at 15% of income may be at 6% a decade later, without ever deciding to save less.\n\n## Compounding rewards it\n\nLater, bigger instalments still have years to grow, so a step-up adds more than its rupee value suggests. That is why a 10% step-up can roughly double a long-term outcome.\n\n## The honest side\n\nA step-up invests far more in total, so it only works if income grows too. Show the total invested beside the final value, every time.",
+ "key_terms": [
+  "step-up SIP",
+  "lifestyle creep",
+  "SIP"
+ ],
+ "example": "A client's ₹10,000 SIP was 15% of take-home pay in 2015. After three increments it is 7% of a larger salary, and the family's spending has absorbed the rest — lifestyle creep, not a decision.",
+ "say": [
+  "Inflation means the same instalment buys less every year.",
+  "A flat SIP quietly becomes a smaller share of your income."
+ ],
+ "never": [
+  "Your SIP is fine as it is; inflation is only 6%.",
+  "The step-up will double your money."
+ ],
+ "talk_track": [
+  {
+   "n": 4,
+   "title": "Why a flat SIP isn't enough",
+   "text": "Why isn't a flat SIP enough? Three reasons. First, inflation erodes it. At six percent inflation, ten thousand rupees a month in twenty years buys only what about three thousand one hundred buys today. Second, income usually grows, so a SIP that stays flat becomes a smaller and smaller share of income each year. And third, compounding rewards stepping up: the later, bigger instalments still have years to grow."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q10",
+   "sec": "L: Learn the Basics",
+   "q": "What step-up rate is usually comfortable?",
+   "o": [
+    "At or below expected income growth, often 5–10%",
+    "20–25% every year",
+    "Whatever reaches the goal fastest",
+    "Above income growth, to catch up"
+   ],
+   "a": 0,
+   "why": "At or below expected income growth. A step-up faster than income growth squeezes the budget within a few years."
+  },
+  {
+   "id": "stepup-q11x",
+   "sec": "L: Learn the Basics",
+   "q": "How does a flat SIP behave as income grows?",
+   "o": [
+    "It becomes a smaller share of income every year",
+    "It grows with income automatically",
+    "It stays the same share of income",
+    "It falls in rupee terms"
+   ],
+   "a": 0,
+   "why": "The rupee amount is flat while income rises, so the saving rate quietly falls."
+  },
+  {
+   "id": "stepup-q12x",
+   "sec": "L: Learn the Basics",
+   "q": "What must be shown alongside the final value of a step-up illustration?",
+   "o": [
+    "Only the final corpus",
+    "The total amount invested, which is also much higher",
+    "The fund's star rating",
+    "The AMC's AUM"
+   ],
+   "a": 1,
+   "why": "A step-up invests far more in total. Showing only the result hides the extra money the client has to find."
+  }
+ ],
+ "card_ids": [
+  "stepup-c9",
+  "stepup-c10",
+  "stepup-c11"
+ ],
+ "words": 147
+}

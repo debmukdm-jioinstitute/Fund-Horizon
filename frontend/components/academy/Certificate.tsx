@@ -4,9 +4,7 @@ import React from "react";
 import { useAcademy } from "./AcademyContext";
 import { btnPrimary, card, muted } from "./ui";
 
-const TITLES: Record<string, string> = { mf: "MF Distributor", pms: "PMS Distributor" };
-
-/** Shown once both module final quizzes are passed. Printing uses a print stylesheet that shows only the certificate. */
+/** Shown once every module final quiz is passed. Printing uses a print stylesheet that shows only the certificate. */
 export function Certificate() {
   const { me } = useAcademy();
   if (!me?.certificate) return null;
@@ -18,7 +16,7 @@ export function Certificate() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold">🏆 Certificate ready</h3>
-          <p className={`text-[15px] ${muted}`}>You passed both final quizzes. Print or save it as a PDF.</p>
+          <p className={`text-[15px] ${muted}`}>You passed every module final quiz ({entries.length} in all). Print or save it as a PDF.</p>
         </div>
         <button className={btnPrimary} onClick={() => window.print()}>Print certificate</button>
       </div>
@@ -28,7 +26,7 @@ export function Certificate() {
         <p className="text-lg">This certifies that</p>
         <p className="text-3xl font-semibold">{me.name}</p>
         <p className="text-lg">has completed the L.E.A.R.N. distributor training and passed the final quizzes:</p>
-        <ul className="text-lg">{entries.map(([m, c]) => <li key={m}>{TITLES[m] ?? m}: {c.score}/{c.total}</li>)}</ul>
+        <ul className="text-lg">{entries.map(([m, c]) => <li key={m}>{c.title ?? m}: {c.score}/{c.total}</li>)}</ul>
         <p className="text-base">Date (IST): {date}</p>
       </div>
     </section>

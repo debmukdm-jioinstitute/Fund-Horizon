@@ -1,0 +1,79 @@
+{
+ "id": "alloc-03",
+ "title": "Why mixing helps: 2008",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Quote what the Nifty 50 and gold did in 2008.",
+  "Use the three portfolios to show why mixing reduces the fall."
+ ],
+ "body_md": "Assets do not move together. That is the whole argument for mixing, and 2008 shows it clearly.\n\n## The year\n\n- Nifty 50: about −52%.\n- Gold in rupees: about +27%.\n\n## Three illustrative portfolios of ₹10 lakh\n\n| Mix (equity / debt / gold) | Value after a 2008-type year |\n|---|---|\n| 100 / 0 / 0 | ≈ ₹4.8 L (−52%) |\n| 60 / 30 / 10 | ≈ ₹7.4 L (−26%) |\n| 40 / 50 / 10 | ≈ ₹8.5 L (−15%) |\n\nEquity and gold use the 2008 index moves above; debt assumes +7% for illustration.\n\n## What to take from it\n\nThe mixed portfolios still fell. They fell by much less, and that is the point: a smaller fall is easier for a client to sit through, and easier to recover from. The mix does not remove risk; it spreads the sources of risk so no single one can sink the goal.",
+ "key_terms": [
+  "asset allocation",
+  "risk capacity"
+ ],
+ "example": "A client who saw her ₹10 lakh fall to ₹4.8 lakh in 2008-type conditions sold at the bottom. The same client in a 60/30/10 mix would have seen about ₹7.4 lakh, and stayed invested.",
+ "say": [
+  "In 2008 the Nifty fell about 52% while gold rose about 27%.",
+  "A mix still falls in a bad year; it just falls far less."
+ ],
+ "never": [
+  "A mixed portfolio cannot fall.",
+  "Gold and equity always move in opposite directions."
+ ],
+ "talk_track": [
+  {
+   "n": 4,
+   "title": "2008: assets don't move together",
+   "text": "Why does mixing help? Because assets don't move together. In 2008, the Nifty 50 fell about fifty-two percent, while gold in rupees rose about twenty-seven percent. Now look at three illustrative portfolios of ten lakh rupees. All in equity, it fell to about four point eight lakh. A mix of sixty percent equity, thirty percent debt and ten percent gold fell to about seven point four lakh. And a forty, fifty, ten mix fell only to about eight and a half lakh."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q3",
+   "sec": "L: Learn the Basics",
+   "q": "In 2008, roughly how did the Nifty 50 and gold in rupees move?",
+   "o": [
+    "Both fell about 20%",
+    "Nifty −52%, gold +27%",
+    "Nifty +10%, gold −10%",
+    "Both rose"
+   ],
+   "a": 1,
+   "why": "They moved in opposite directions, which is why mixing helps."
+  },
+  {
+   "id": "alloc-q8x",
+   "sec": "L: Learn the Basics",
+   "q": "₹10 lakh in a 60/30/10 mix after a 2008-type year is worth about…",
+   "o": [
+    "₹4.8 L",
+    "₹7.4 L",
+    "₹8.5 L",
+    "₹10.9 L"
+   ],
+   "a": 1,
+   "why": "About ₹7.4 L, against ₹4.8 L all in equity and ₹8.5 L in a 40/50/10 mix."
+  },
+  {
+   "id": "alloc-q9x",
+   "sec": "L: Learn the Basics",
+   "q": "What is the correct conclusion from the 2008 illustration?",
+   "o": [
+    "A mixed portfolio cannot fall",
+    "A mixed portfolio still falls, but by much less, so clients can stay invested",
+    "Gold always rises when equity falls",
+    "Debt has no risk"
+   ],
+   "a": 1,
+   "why": "The mix spreads the sources of risk. The fall is smaller, and that is what makes it easier to hold and to recover."
+  }
+ ],
+ "card_ids": [
+  "alloc-c3",
+  "alloc-c5",
+  "alloc-c6"
+ ],
+ "words": 160
+}

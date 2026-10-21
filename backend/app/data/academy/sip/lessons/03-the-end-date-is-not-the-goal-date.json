@@ -1,0 +1,80 @@
+{
+ "id": "sip-03",
+ "title": "The end date is not the goal date",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain what happens when a SIP's registered tenure ends.",
+  "Use the renewal illustration to show why renewing beats simply holding."
+ ],
+ "body_md": "When a SIP's registered tenure ends, only the instalments stop. The units already bought stay invested and keep moving with the market until the investor redeems them. That is why the end date is not the goal date.\n\n## The arithmetic of forgetting\n\n₹10,000 a month for ten years, at an assumed 12% a year, grows to about ₹23.2 lakh.\n\n- Stop and simply hold for ten more years: about ₹72.2 lakh at year 20.\n- Renew the SIP for those ten years: about ₹99.9 lakh at year 20.\n\nThe existing units compound either way. Renewing adds the extra years of contributions. Many investors simply forget to renew, so put the end date in the client's review calendar and call three months before it.\n\n## What to say when the end date arrives\n\n- Confirm the goal date and the target amount first; the answer decides everything.\n- If the goal is years away, renew with a step-up rather than a flat renewal.\n- If the goal is near, start the glide path instead of renewing into equity.\n- Write the new end date down, for the client and for your calendar.",
+ "key_terms": [
+  "SIP end date",
+  "SIP",
+  "glide path"
+ ],
+ "example": "Anil's 10-year SIP ended last month and his child's college fund is needed in 8 years. His units are worth about ₹23.2 lakh. Renewing with a step-up for those eight years adds contributions while the existing corpus keeps compounding.",
+ "say": [
+  "Your SIP's end date stops the instalments, not the investment.",
+  "With eight years to the goal, renewing and stepping up adds the years that matter."
+ ],
+ "never": [
+  "The SIP has ended, so the money is now safe.",
+  "The fund house will automatically renew it for you."
+ ],
+ "talk_track": [
+  {
+   "n": 4,
+   "title": "The SIP end date is not the goal date",
+   "text": "Here's a common confusion: the SIP end date is not the goal date. When a SIP's registered tenure ends, only the instalments stop. The units already bought stay invested and keep moving with the market until the investor redeems them. Take ten thousand rupees a month for ten years, at an assumed twelve percent. At year ten, it's worth about twenty-three lakh. If the client simply holds for ten more years, it grows to about seventy-two lakh. If the client renews the SIP for those ten years, it reaches about one crore."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q1",
+   "sec": "L: Learn the Basics",
+   "q": "What happens to existing units when a SIP's end date arrives?",
+   "o": [
+    "They are redeemed automatically",
+    "They stay invested until redeemed",
+    "They move into a liquid fund",
+    "They are frozen in the folio"
+   ],
+   "a": 1,
+   "why": "Only the instalments stop. The units stay invested until the investor redeems them."
+  },
+  {
+   "id": "sip-q7x",
+   "sec": "L: Learn the Basics",
+   "q": "₹10,000 a month for 10 years is worth about ₹23.2 lakh. Held for 10 more years versus renewed for 10 more years, what does the illustration show?",
+   "o": [
+    "About ₹72.2 lakh held; about ₹99.9 lakh renewed",
+    "About ₹99.9 lakh held; about ₹72.2 lakh renewed",
+    "Both about ₹72.2 lakh",
+    "Both about ₹23.2 lakh"
+   ],
+   "a": 0,
+   "why": "At an assumed 12%, holding reaches about ₹72.2 lakh and renewing about ₹99.9 lakh, because renewal adds ten more years of contributions."
+  },
+  {
+   "id": "sip-q8x",
+   "sec": "L: Learn the Basics",
+   "q": "When should the end date be dealt with?",
+   "o": [
+    "Only after the units stop growing",
+    "On the day the SIP ends",
+    "Three months before it, with the date in the review calendar",
+    "Never; the client will remember"
+   ],
+   "a": 2,
+   "why": "Calendar every end date and call three months before, so renewal is a decision rather than an afterthought."
+  }
+ ],
+ "card_ids": [
+  "sip-c14",
+  "sip-c15",
+  "sip-c32"
+ ],
+ "words": 192
+}

@@ -1,0 +1,79 @@
+{
+ "id": "sip-11",
+ "title": "The glide path: step down, not jump off",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Describe an illustrative glide path from three years out to the goal.",
+  "Explain why the shift is done in steps through an STP."
+ ],
+ "body_md": "When the goal is one to three years away, the aim is to protect what has been built so a market fall just before the goal cannot derail it.\n\n## An illustrative path\n\n| Years to goal | Illustrative equity share |\n|---|---|\n| 3 | About 60–70% |\n| 2 | About 40–50% |\n| 1 | About 20–30% |\n| At goal | Close to 0% for money to be spent |\n\n## How the shift is made\n\nThe shift happens in steps, through an STP from the equity fund into a debt or liquid fund, or by redirecting new SIP money into debt. That avoids one big switch on a single day, and it spreads the exit across prices rather than betting on one.\n\n## What to watch\n\n- These shares are illustrative; the actual path depends on the client's risk profile and how flexible the goal is.\n- Each STP transfer is a redemption, so check exit loads per instalment and refer tax to a CA.\n- Do not stop the whole SIP at once if the client still needs to save; direct the new money to debt instead.",
+ "key_terms": [
+  "glide path",
+  "STP",
+  "exit load"
+ ],
+ "example": "Rahul's house down payment is due in 24 months and 80% of the money is in equity. The plan moves about a fifth of the equity to a short-duration fund every quarter, checks the exit load on recent instalments, and leaves the rest invested until the last year.",
+ "say": [
+  "We'll step down to debt over the next two years, not jump off in one day.",
+  "The point is to protect the goal from a fall, not to predict one."
+ ],
+ "never": [
+  "Let's switch everything to debt tomorrow.",
+  "A glide path means we can time the market."
+ ],
+ "talk_track": [
+  {
+   "n": 9,
+   "title": "The glide path: step down, not jump off",
+   "text": "When the goal is one to three years away, we use a glide path: step down, don't jump off. Here's an illustrative path. Three years out, about sixty-five percent in equity. Two years out, about forty-five. One year out, about twenty-five. And at the goal, close to nothing in equity for the money that will be spent. The shift happens in steps, through a systematic transfer plan from the equity fund into a debt or liquid fund, or by sending new SIP money into debt. This avoids one big switch on a single day."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q12",
+   "sec": "A: Act Right",
+   "q": "Which is the illustrative glide path for a goal three, two and one year away?",
+   "o": [
+    "About 65%, then 45%, then 25% equity",
+    "About 25%, then 45%, then 65% equity",
+    "100% equity until the goal",
+    "0% equity three years out"
+   ],
+   "a": 0,
+   "why": "Equity steps down as the goal approaches: about 65%, 45%, 25%, and close to 0% at the goal for money to be spent."
+  },
+  {
+   "id": "sip-q13",
+   "sec": "A: Act Right",
+   "q": "What is a glide path?",
+   "o": [
+    "A gradual, stepped shift from equity to debt as the goal nears",
+    "Moving all the money on one day",
+    "Selling everything when the goal arrives",
+    "Switching funds every year for higher returns"
+   ],
+   "a": 0,
+   "why": "It is a stepped shift over one to three years, not one big switch."
+  },
+  {
+   "id": "sip-q20x",
+   "sec": "A: Act Right",
+   "q": "How is the shift usually made?",
+   "o": [
+    "By redeeming everything on the goal date",
+    "Through an STP into a debt or liquid fund, or by sending new SIP money to debt",
+    "By taking a loan against the units",
+    "By moving to another equity fund"
+   ],
+   "a": 1,
+   "why": "An STP or redirecting new SIP money spreads the move across prices instead of betting on one day."
+  }
+ ],
+ "card_ids": [
+  "sip-c13",
+  "sip-c24"
+ ],
+ "words": 193
+}

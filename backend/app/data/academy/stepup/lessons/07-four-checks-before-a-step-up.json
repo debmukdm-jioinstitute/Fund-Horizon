@@ -1,0 +1,79 @@
+{
+ "id": "stepup-07",
+ "title": "Four checks before a step-up",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Run the four checks before suggesting any step-up.",
+  "Explain why a step-up that squeezes the budget is worse than none."
+ ],
+ "body_md": "A step-up suits clients whose income is likely to grow, and whose goal is at least 5–7 years away. Check four things before suggesting one.\n\n| Check | Question to ask | Green light | Caution |\n|---|---|---|---|\n| Income growth | \"How much has your income grown each year, on average?\" | Salaried with regular raises; growing business | Fixed pension, irregular income |\n| Basics | \"Is your emergency fund in place? Any high-interest loans?\" | 6 months' expenses set aside; no costly debt | No buffer; credit-card or personal-loan debt |\n| Budget room | \"What share of a raise could go to savings?\" | A third to a half of each raise | Raise already committed to EMIs |\n| Time left | \"When is the goal?\" | 7+ years away | Under 3 years (a step-up adds little) |\n\n## Why the basics come first\n\nA step-up that squeezes the budget is the first thing cancelled in a bad month, and cancelling costs more than never having stepped up. The emergency fund is what lets the SIP survive a job change.\n\n## The output of the checks\n\nEither a rate and a date, or a clear reason to wait — and a note recording which.",
+ "key_terms": [
+  "step-up SIP",
+  "risk capacity",
+  "liquidity"
+ ],
+ "example": "A client with no emergency fund and a personal loan at 14% asks to triple his SIP. The answer is the loan first, the buffer next, and a 5% step-up after that.",
+ "say": [
+  "Before we raise the SIP, let's check that the emergency fund is in place and no costly loans are running.",
+  "A step-up you can't sustain is the first thing cancelled in a bad month."
+ ],
+ "never": [
+  "You can afford it; let's double the SIP.",
+  "The emergency fund can wait until later."
+ ],
+ "talk_track": [
+  {
+   "n": 6,
+   "title": "Four checks before a step-up",
+   "text": "Run four checks before suggesting a step-up. Income growth: regular raises or a growing business is a green light; a fixed pension or irregular income calls for caution. Basics: an emergency fund of six months and no costly debt. Budget room: ideally a third to half of each raise is free to save. And time left: a goal seven or more years away benefits most; under three years, a step-up adds little."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q19",
+   "sec": "E: Evaluate the Client",
+   "q": "Name two checks before suggesting a step-up.",
+   "o": [
+    "Income growth and the emergency fund",
+    "The fund's star rating and the AMC's AUM",
+    "The market level and the tax rate",
+    "The number of folios and the nominee"
+   ],
+   "a": 0,
+   "why": "Income growth, the emergency fund and loans, budget room, and the time to the goal."
+  },
+  {
+   "id": "stepup-q20x",
+   "sec": "E: Evaluate the Client",
+   "q": "A client has no emergency fund and a 14% personal loan. What comes first?",
+   "o": [
+    "A 15% step-up",
+    "Repay the costly loan and build the buffer before stepping up",
+    "A step-up and the loan together",
+    "Stopping the existing SIP"
+   ],
+   "a": 1,
+   "why": "Basics first: costly debt and a buffer come before a bigger SIP."
+  },
+  {
+   "id": "stepup-q21x",
+   "sec": "E: Evaluate the Client",
+   "q": "A goal is 2 years away. Does a step-up make sense?",
+   "o": [
+    "Yes, at 15% a year",
+    "No: under 3 years a step-up adds little, and the money may need to move to debt",
+    "Yes, but only in a small-cap fund",
+    "Only if the market is low"
+   ],
+   "a": 1,
+   "why": "With under three years to the goal, extra money belongs in debt, not in a larger equity SIP."
+  }
+ ],
+ "card_ids": [
+  "stepup-c17",
+  "stepup-c18"
+ ],
+ "words": 210
+}

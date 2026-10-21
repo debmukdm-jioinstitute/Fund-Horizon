@@ -1,0 +1,78 @@
+{
+ "id": "alloc-13",
+ "title": "Step 3: products for each part",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Choose suitable products for each part of the mix.",
+  "Name what to watch for in each part."
+ ],
+ "body_md": "Step three is the product choice, and it comes last for a reason.\n\n## The parts and their products\n\n| Part of the mix | Suitable options | Watch for |\n|---|---|---|\n| Core equity | Flexi-cap, large-cap or index funds | Overlap between funds |\n| Satellite equity | Mid-cap, small-cap, thematic funds | Keep small; higher risk |\n| Debt | Short-duration, corporate bond, gilt, target-maturity funds | Credit and interest-rate risk |\n| Gold | Gold ETFs or gold funds | Usually 5–15% is enough |\n| All-in-one | Multi-asset, balanced advantage, aggressive or conservative hybrid funds | Check the actual mix in the factsheet |\n\n## Two rules\n\n- Match the product's risk-o-meter to the client's profile; do not put a small-cap fund in a three-year pot.\n- Check overlap. Five flexi-cap funds are one holding with five expense ratios.\n\n## The test\n\nBefore any product is named, the mix, the horizon and the risk profile are already agreed. If the product is driving the conversation, the order is wrong.",
+ "key_terms": [
+  "core and satellite",
+  "riskometer",
+  "multi-asset allocation fund"
+ ],
+ "example": "For a 60/30/10 mix: a flexi-cap fund plus an index fund for the equity core, a short-duration fund and a target-maturity fund for debt, and a gold ETF for the 10% — each checked against the risk-o-meter.",
+ "say": [
+  "We'll match each product to the part of the mix it fills, and check the risk-o-meter.",
+  "Satellite holdings stay small, because their risk is higher."
+ ],
+ "never": [
+  "This new fund is excellent; let's build the plan around it.",
+  "Small-cap funds are fine for a three-year goal."
+ ],
+ "talk_track": [
+  {
+   "n": 11,
+   "title": "Step 3: choose products for each part",
+   "text": "Step three: choose products for each part of the mix. For core equity: flexi-cap, large-cap or index funds; watch for overlap between funds. For satellite equity: mid-cap, small-cap or thematic funds; keep this part small. For debt: short-duration, corporate bond, gilt or target-maturity funds; watch credit and interest-rate risk. For gold: gold ETFs or gold funds; five to fifteen percent is usually enough."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q37x",
+   "sec": "A: Act Right",
+   "q": "Which is a core equity holding?",
+   "o": [
+    "A small-cap fund",
+    "A flexi-cap or index fund",
+    "A thematic fund",
+    "A gold ETF"
+   ],
+   "a": 1,
+   "why": "The core is broad: flexi-cap, large-cap or index funds. Satellites such as mid-cap, small-cap and thematic funds stay small."
+  },
+  {
+   "id": "alloc-q38x",
+   "sec": "A: Act Right",
+   "q": "What should you watch for in the debt part?",
+   "o": [
+    "Credit and interest-rate risk",
+    "Only the exit load",
+    "The fund manager's age",
+    "The AMC's advertising"
+   ],
+   "a": 0,
+   "why": "Debt carries credit and interest-rate risk, as covered in Module 6. It is not risk-free."
+  },
+  {
+   "id": "alloc-q39x",
+   "sec": "A: Act Right",
+   "q": "How much gold is usually enough?",
+   "o": [
+    "5–15%",
+    "30–40%",
+    "50%",
+    "None at all"
+   ],
+   "a": 0,
+   "why": "Gold is a diversifier: usually 5–15% is enough, and it can be flat for long periods."
+  }
+ ],
+ "card_ids": [
+  "alloc-c27"
+ ],
+ "words": 174
+}

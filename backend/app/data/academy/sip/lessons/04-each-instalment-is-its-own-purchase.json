@@ -1,0 +1,81 @@
+{
+ "id": "sip-04",
+ "title": "Each instalment is its own purchase",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "L",
+ "objectives": [
+  "Explain why a years-old SIP can still carry an exit load.",
+  "Describe FIFO and how it decides the exit load and tax on a redemption."
+ ],
+ "body_md": "Every SIP instalment has its own purchase date. So exit loads and capital-gains tax are worked out instalment by instalment, usually first-in, first-out: the oldest units are treated as redeemed first.\n\n## Why an old SIP can still have an exit load\n\nA SIP that started six years ago still bought units last month. If the scheme charges 1% on redemptions within a year, those newest units carry the load even though the SIP itself is old.\n\n## What that means in practice\n\n- Check the scheme's exit-load terms before any switch, STP or redemption.\n- Work out which instalments fall inside the load period, not just the age of the SIP.\n- Tax is worked out per instalment too, so a single redemption can carry both short-term and long-term gains.\n- Refer every tax question to the client's CA. We explain, we do not advise.\n\n## The line to use with clients\n\nEach instalment is a separate purchase with its own clock. That is why \"my SIP is five years old\" does not mean \"no exit load\".",
+ "key_terms": [
+  "SIP",
+  "exit load",
+  "FIFO",
+  "STCG",
+  "LTCG"
+ ],
+ "example": "A client wants to switch a six-year-old SIP in March. The oldest units are outside the exit-load period, but the last eleven instalments are not — so the switch is planned in two steps rather than one.",
+ "say": [
+  "Each SIP instalment is a separate purchase with its own exit-load and tax clock.",
+  "Units are redeemed oldest first, so the recent instalments carry the load."
+ ],
+ "never": [
+  "Your SIP is five years old, so no exit load applies.",
+  "Redemptions from a SIP are tax-free."
+ ],
+ "talk_track": [
+  {
+   "n": 5,
+   "title": "Four facts every team member must know",
+   "text": "Four facts every team member must know. First, missed instalments have consequences: a monthly SIP is cancelled after three consecutive failed debits, and a quarterly or less frequent SIP after two. That's been in force since April 2024. Second, cancellation is quick: since the first of December 2024, cancellation requests must be processed within two working days, down from ten. Third, pause, don't stop: many fund houses and platforms allow a SIP to be paused for a few months; terms vary, so check them. Fourth, each instalment is its own buy: exit load and tax are worked out per instalment, oldest first."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q6",
+   "sec": "L: Learn the Basics",
+   "q": "On a redemption, which units are treated as sold first?",
+   "o": [
+    "The newest units",
+    "The oldest units",
+    "An average of all units",
+    "Whichever the AMC chooses"
+   ],
+   "a": 1,
+   "why": "FIFO means first in, first out: the oldest units are redeemed first, so each instalment's own purchase date decides its exit load and tax."
+  },
+  {
+   "id": "sip-q19",
+   "sec": "L: Learn the Basics",
+   "q": "Which of these is a redemption that may be taxed?",
+   "o": [
+    "Only the final SWP withdrawal",
+    "Every STP transfer and SWP withdrawal",
+    "Only switches between fund houses",
+    "None; SIP investments are tax-free"
+   ],
+   "a": 1,
+   "why": "Every switch, STP transfer and SWP withdrawal is a redemption, so gains on it may be taxed. Refer the client to a CA."
+  },
+  {
+   "id": "sip-q9x",
+   "sec": "L: Learn the Basics",
+   "q": "Why can an exit load apply to a six-year-old SIP?",
+   "o": [
+    "Exit loads rise with the age of the SIP",
+    "Recent instalments may still be inside the exit-load period",
+    "SIPs always carry an exit load",
+    "It cannot; the load ends after three years"
+   ],
+   "a": 1,
+   "why": "Every instalment has its own date, so the newest ones can still be inside the load period."
+  }
+ ],
+ "card_ids": [
+  "sip-c5",
+  "sip-c6"
+ ],
+ "words": 178
+}

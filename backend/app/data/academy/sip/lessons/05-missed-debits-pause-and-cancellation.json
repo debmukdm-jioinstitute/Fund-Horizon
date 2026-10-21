@@ -1,0 +1,81 @@
+{
+ "id": "sip-05",
+ "title": "Missed debits, pause and cancellation",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "L",
+ "objectives": [
+  "State the auto-cancellation rule for monthly and for quarterly SIPs.",
+  "Explain the difference between pausing and stopping a SIP, and how fast a cancellation is processed."
+ ],
+ "body_md": "Three rules cover almost every operational question about a SIP, and every team member should know them cold.\n\n## Missed instalments\n\nUnder the uniform rules effective April 2024, a SIP is cancelled after 3 consecutive failed instalments for monthly or more frequent SIPs, and after 2 for quarterly or less frequent ones. Banks may also charge a bounce fee. Fix the mandate after the first failure, not the third.\n\n## Cancellation\n\nSince 1 December 2024, SIP cancellation requests are processed within 2 working days, down from 10.\n\n## Pause\n\nMany AMCs and platforms let investors pause a SIP for a few months without cancelling it. Terms differ, so check the AMC's or platform's rules. A pause keeps the SIP and the existing units intact; a stop ends the SIP.\n\n## Why this matters for behaviour\n\nStopping feels decisive and pausing feels weak, so clients ask to stop. In practice a pause is almost always the better instrument: it protects the habit and costs very little. In the illustration, a six-month pause in a 15-year SIP left about ₹48.3 lakh instead of ₹50.5 lakh — a small price for not breaking the habit.",
+ "key_terms": [
+  "SIP",
+  "SIP pause",
+  "SIP end date"
+ ],
+ "example": "Sana's monthly SIP has failed twice because her salary account changed. The third consecutive failure would cancel it, so the fix is to re-register the mandate today and confirm the debit date.",
+ "say": [
+  "If cash is tight for a few months, let's pause the SIP rather than stop it.",
+  "Three failed debits in a row cancel a monthly SIP, so let's fix the mandate after the first one."
+ ],
+ "never": [
+  "One missed instalment will cancel the SIP.",
+  "A cancellation takes about ten working days."
+ ],
+ "talk_track": [
+  {
+   "n": 5,
+   "title": "Pause, don't stop",
+   "text": "Pause, don't stop: many fund houses and platforms allow a SIP to be paused for a few months; terms vary, so check them. A six-month pause in a fifteen-year SIP cost only about two lakh of final value in our illustration, while stopping costs the habit itself."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q2",
+   "sec": "L: Learn the Basics",
+   "q": "How many consecutive failed debits cancel a monthly SIP?",
+   "o": [
+    "One",
+    "Two",
+    "Three",
+    "Six"
+   ],
+   "a": 2,
+   "why": "Three for monthly or more frequent SIPs; two for quarterly or less frequent SIPs."
+  },
+  {
+   "id": "sip-q3",
+   "sec": "L: Learn the Basics",
+   "q": "Within how many working days must a SIP cancellation be processed?",
+   "o": [
+    "2",
+    "5",
+    "10",
+    "30"
+   ],
+   "a": 0,
+   "why": "Two working days since 1 December 2024, down from ten."
+  },
+  {
+   "id": "sip-q5",
+   "sec": "L: Learn the Basics",
+   "q": "What does pausing a SIP do?",
+   "o": [
+    "Ends the SIP permanently",
+    "Skips instalments for a while and then resumes",
+    "Redeems the units",
+    "Switches to another scheme"
+   ],
+   "a": 1,
+   "why": "A pause skips instalments for a few months and then resumes; a stop ends the SIP. A pause keeps the habit and the units intact."
+  }
+ ],
+ "card_ids": [
+  "sip-c7",
+  "sip-c8",
+  "sip-c9",
+  "sip-c20"
+ ],
+ "words": 192
+}

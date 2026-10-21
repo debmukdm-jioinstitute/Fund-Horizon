@@ -1,0 +1,77 @@
+{
+ "id": "stepup-06",
+ "title": "The cost of a late step-up",
+ "minutes": 3,
+ "level": "intermediate",
+ "stage": "L",
+ "objectives": [
+  "Quantify the cost of waiting five years to start a step-up.",
+  "Explain why the step-up should be set up with the SIP itself."
+ ],
+ "body_md": "\"I'll step up later\" is one of the most expensive sentences in investing.\n\n## The illustration\n\n₹10,000 a month for 20 years with a 10% yearly step-up, at an assumed 12%:\n\n| When the step-up starts | Value at year 20 |\n|---|---|\n| From year 2 | ≈ ₹1.99 Cr |\n| From year 6 (five flat years first) | ≈ ₹1.45 Cr |\n\nWaiting five years costs about ₹54 lakh in this illustration.\n\n## Why the cost is so large\n\nThe first five years are the ones with the longest time to compound, so they are exactly the years you least want to leave flat. The later step-ups are bigger but have fewer years left.\n\n## What to do about it\n\nSet the step-up together with the SIP, and time it to just after the client's annual raise, when the extra money is least missed.",
+ "key_terms": [
+  "step-up SIP",
+  "SIP"
+ ],
+ "example": "Sameer has said \"next year\" for three years. Showing that a five-year delay costs about ₹54 lakh in the illustration changes the conversation from intention to a date in the calendar.",
+ "say": [
+  "Waiting five years to start the step-up cost about ₹54 lakh in our illustration.",
+  "Let's set the step-up now and time it to your next raise."
+ ],
+ "never": [
+  "You can step up whenever it feels comfortable.",
+  "The later years matter most for compounding."
+ ],
+ "talk_track": [
+  {
+   "n": 8,
+   "title": "\"I'll step up later\" is expensive",
+   "text": "“I'll step up later” is one of the most expensive sentences in investing. Take ten thousand rupees a month for twenty years, with a ten percent step-up, at an assumed twelve percent a year. If the step-up starts in year two, it grows to about two crore. If the client waits five flat years first, it reaches about one point four five crore. That delay costs roughly fifty-four lakh. So set the step-up together with the SIP, and time it to just after the client's annual raise."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q16",
+   "sec": "L: Learn the Basics",
+   "q": "In the illustration, starting the 10% step-up five years late costs about…",
+   "o": [
+    "₹5 lakh",
+    "₹54 lakh",
+    "₹1 crore",
+    "Nothing"
+   ],
+   "a": 1,
+   "why": "About ₹54 lakh: ₹1.45 Cr against ₹1.99 Cr when the step-up starts in year 2."
+  },
+  {
+   "id": "stepup-q17x",
+   "sec": "L: Learn the Basics",
+   "q": "Why is a late step-up so expensive?",
+   "o": [
+    "Because the AMC charges a penalty",
+    "Because the earliest years have the longest time to compound",
+    "Because the market is usually higher later",
+    "Because the step-up percentage falls"
+   ],
+   "a": 1,
+   "why": "The first five years compound for longest, so leaving them flat gives up the most growth."
+  },
+  {
+   "id": "stepup-q18x",
+   "sec": "L: Learn the Basics",
+   "q": "When should the step-up be timed?",
+   "o": [
+    "In March, before the tax year ends",
+    "Just after the client's annual raise",
+    "Only when the market falls",
+    "At the SIP's end date"
+   ],
+   "a": 1,
+   "why": "Just after the raise, when the extra money is least missed."
+  }
+ ],
+ "card_ids": [
+  "stepup-c15"
+ ],
+ "words": 147
+}

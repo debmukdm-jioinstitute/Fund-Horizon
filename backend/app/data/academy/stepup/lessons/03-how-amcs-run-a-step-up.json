@@ -1,0 +1,79 @@
+{
+ "id": "stepup-03",
+ "title": "How AMCs run a step-up",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Give the SBI and DSP terms as examples.",
+  "Explain why a step-up may mean cancelling and re-registering an existing SIP."
+ ],
+ "body_md": "Terms differ by AMC and platform, so always check the scheme's form. Two examples show how much they vary.\n\n## SBI Mutual Fund\n\nTop-up of at least ₹500, in multiples of ₹500; half-yearly or yearly for monthly SIPs; chosen at enrolment.\n\n## DSP Mutual Fund\n\nFixed (minimum ₹500) or percentage top-up; half-yearly or yearly; the instalment is capped at ₹5 lakh or the bank mandate limit, whichever is lower.\n\n## Two practical points\n\n- A step-up is often available only on a fresh SIP, so converting an existing SIP may mean cancelling it and registering a new one.\n- The bank mandate must be large enough for the future, higher instalments.\n\n## What to check on the form\n\nThe minimum and multiple, the frequency allowed, whether a cap is available, and whether the facility can be added to an existing registration.",
+ "key_terms": [
+  "step-up SIP",
+  "cap amount",
+  "bank mandate limit"
+ ],
+ "example": "A client's 4-year-old SIP has no step-up facility. Converting it means cancelling and re-registering, which resets the instalment clock and can change the exit-load terms. A second, smaller SIP is often the cleaner route.",
+ "say": [
+  "Let's check the scheme form for the minimum and frequency before we set the step-up.",
+  "The bank mandate has to cover the highest future instalment, not today's."
+ ],
+ "never": [
+  "All AMCs run step-ups the same way.",
+  "The mandate will adjust itself as the SIP grows."
+ ],
+ "talk_track": [
+  {
+   "n": 3,
+   "title": "Terms differ by AMC: always check the form",
+   "text": "How fund houses run step-ups differs, so always check the scheme's form. At SBI Mutual Fund, the top-up is at least five hundred rupees, in multiples of five hundred; it can be half-yearly or yearly for monthly SIPs, and it's chosen at enrolment. At DSP Mutual Fund, the top-up can be a fixed amount from five hundred rupees, or a percentage; it's half-yearly or yearly; and the instalment is capped at five lakh rupees or the bank mandate limit. A step-up is often available only on a fresh SIP."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q7x",
+   "sec": "L: Learn the Basics",
+   "q": "What is the SBI Mutual Fund top-up minimum?",
+   "o": [
+    "₹100",
+    "₹500, in multiples of ₹500",
+    "₹5,000",
+    "₹10,000"
+   ],
+   "a": 1,
+   "why": "At least ₹500, in multiples of ₹500, half-yearly or yearly for monthly SIPs, chosen at enrolment."
+  },
+  {
+   "id": "stepup-q8x",
+   "sec": "L: Learn the Basics",
+   "q": "At DSP Mutual Fund, the instalment under a step-up is capped at…",
+   "o": [
+    "₹1 lakh",
+    "₹5 lakh or the bank mandate limit, whichever is lower",
+    "₹25 lakh",
+    "There is no cap"
+   ],
+   "a": 1,
+   "why": "The instalment is capped at ₹5 lakh or the mandate limit, whichever is lower."
+  },
+  {
+   "id": "stepup-q9x",
+   "sec": "L: Learn the Basics",
+   "q": "Why might converting an existing SIP mean re-registering it?",
+   "o": [
+    "Because the AMC changes its name",
+    "Because a step-up is often available only on a fresh SIP",
+    "Because the exit load changes every year",
+    "Because SEBI requires a new KYC"
+   ],
+   "a": 1,
+   "why": "Many AMCs offer the facility only on a fresh registration, so converting can mean cancelling and starting again."
+  }
+ ],
+ "card_ids": [
+  "stepup-c7",
+  "stepup-c8"
+ ],
+ "words": 141
+}

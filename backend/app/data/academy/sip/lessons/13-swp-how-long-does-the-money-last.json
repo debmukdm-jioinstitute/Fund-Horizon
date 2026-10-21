@@ -1,0 +1,79 @@
+{
+ "id": "sip-13",
+ "title": "SWP: how long does the money last?",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "A",
+ "objectives": [
+  "Quote the illustrative SWP durations at 8% and label them correctly.",
+  "Explain why the withdrawal rate matters more than the fund, and why 1–2 years of withdrawals sit in a safe fund."
+ ],
+ "body_md": "A Systematic Withdrawal Plan redeems a fixed amount each month. The question every retiree asks is how long the money will last.\n\n## The illustration\n\n₹50 lakh at an assumed 8% a year, no inflation step-up, not a promise:\n\n| Monthly withdrawal | Approximate duration |\n|---|---|\n| ₹30,000 | 20+ years (about ₹69.6 L still left after 20 years) |\n| ₹40,000 | About 22 years |\n| ₹45,000 | About 17 years |\n| ₹50,000 | About 14 years |\n\nThe withdrawal rate matters far more than which fund is chosen. A small change in the monthly amount moves the end date by years.\n\n## The buffer\n\nKeep 1–2 years of withdrawals in a liquid or short-duration fund, so a market fall never forces equity sales at low prices. In a long fall, the buffer pays the client while the equity portion recovers.\n\n## How to say it\n\n\"Illustratively, at 8% assumed, ₹40,000 a month could last about 22 years — not guaranteed.\" Never say the money *will* last a stated number of years.",
+ "key_terms": [
+  "SWP",
+  "liquidity",
+  "XIRR"
+ ],
+ "example": "Mr. Iyer has ₹50 lakh and needs ₹45,000 a month. The illustration shows about 17 years at 8%, so the conversation turns to a lower withdrawal, his pension income, and a one-year buffer in a liquid fund.",
+ "say": [
+  "At 8% assumed, ₹45,000 a month could last about 17 years; that is an illustration, not a promise.",
+  "Let's keep one to two years of withdrawals in a liquid fund so a fall doesn't force us to sell equity."
+ ],
+ "never": [
+  "Your ₹50 lakh will last 22 years.",
+  "The SWP is guaranteed for life."
+ ],
+ "talk_track": [
+  {
+   "n": 10,
+   "title": "SWP: how long does ₹50 lakh last?",
+   "text": "How long does fifty lakh last? At an assumed eight percent a year: withdrawing thirty thousand a month, it lasts well over twenty years, with about seventy lakh still left after twenty years. Forty thousand a month lasts about twenty-two years. Forty-five thousand, about seventeen. Fifty thousand, about fourteen. The withdrawal rate matters far more than which fund is chosen. And keep one to two years of withdrawals in a liquid or short-duration fund, so a market fall never forces equity sales at low prices."
+  }
+ ],
+ "check": [
+  {
+   "id": "sip-q15",
+   "sec": "A: Act Right",
+   "q": "What does an SWP do?",
+   "o": [
+    "Buys units every month",
+    "Redeems a fixed amount at regular intervals",
+    "Switches between two funds",
+    "Pays a dividend"
+   ],
+   "a": 1,
+   "why": "A Systematic Withdrawal Plan redeems a fixed amount at regular intervals, which is how a retiree takes income."
+  },
+  {
+   "id": "sip-q16",
+   "sec": "A: Act Right",
+   "q": "₹50 lakh at an assumed 8%: roughly how long does ₹45,000 a month last?",
+   "o": [
+    "About 8 years",
+    "About 12 years",
+    "About 17 years",
+    "About 30 years"
+   ],
+   "a": 2,
+   "why": "About 17 years in the illustration. It is not a promise."
+  },
+  {
+   "id": "sip-q17",
+   "sec": "A: Act Right",
+   "q": "Why keep 1–2 years of withdrawals in a liquid fund?",
+   "o": [
+    "To earn higher returns",
+    "So a market fall does not force equity sales at low prices",
+    "To avoid all tax",
+    "To replace the SWP entirely"
+   ],
+   "a": 1,
+   "why": "The buffer pays the client through a fall so the equity portion is not sold at the bottom."
+  }
+ ],
+ "card_ids": [
+  "sip-c22",
+  "sip-c23"
+ ],
+ "words": 176
+}

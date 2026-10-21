@@ -1,0 +1,84 @@
+{
+ "id": "stepup-01",
+ "title": "What a step-up SIP is",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Define a step-up (top-up) SIP.",
+  "Explain the three reasons a flat SIP is not enough."
+ ],
+ "body_md": "A step-up (or top-up) SIP increases the instalment automatically at a set interval, by a fixed amount or a percentage. The investor decides the rule once, and the AMC applies it.\n\n## Why a flat SIP is not enough\n\n- Inflation erodes it. At 6% inflation, ₹10,000 a month in 20 years buys only what about ₹3,100 buys today.\n- Income usually grows. A SIP that stays flat becomes a smaller share of income every year.\n- Compounding rewards it. Later, bigger instalments still have years to grow.\n\n## The one line to remember\n\nSave more tomorrow, automatically. Tie each step-up to a raise, so the client never feels the money go.\n\n## What this module covers\n\nThe two ways to set a step-up and how AMCs run them; the numbers; who it suits and how much to raise; how to set it up, cap it and review it; and the habits that stop clients from ever doing it.",
+ "key_terms": [
+  "step-up SIP",
+  "SIP",
+  "lifestyle creep"
+ ],
+ "example": "Riya, 24, can invest ₹5,000 a month and expects 10% raises. A 10% yearly step-up, timed just after each increment, keeps the SIP in line with her income without a single decision after the first.",
+ "say": [
+  "A step-up SIP raises your instalment automatically, so you don't have to remember.",
+  "We'll set it once and it happens on its own."
+ ],
+ "never": [
+  "A step-up guarantees you'll reach the goal.",
+  "Just double your SIP today."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Welcome to Module 14",
+   "text": "Welcome to Module 14 of the Fund Horizon training series: the SIP step-up. A step-up SIP raises the monthly amount automatically, usually once a year. It's the simplest way to keep a SIP in line with rising income and rising costs, and over a long goal it can roughly double the outcome."
+  },
+  {
+   "n": 13,
+   "title": "The one line to remember",
+   "text": "If you remember one line from this module, make it this one: save more tomorrow, automatically. Tie each step-up to a raise, so the client never feels the money go. A step-up decided once and applied automatically beats good intentions every single year."
+  }
+ ],
+ "check": [
+  {
+   "id": "stepup-q1",
+   "sec": "L: Learn the Basics",
+   "q": "What is a step-up SIP?",
+   "o": [
+    "A SIP that rises automatically at set intervals",
+    "A one-time lump sum",
+    "A SIP that switches funds every year",
+    "A SIP with a guaranteed return"
+   ],
+   "a": 0,
+   "why": "The instalment rises by a fixed amount or a percentage at a set interval, decided once and applied by the AMC."
+  },
+  {
+   "id": "stepup-q2x",
+   "sec": "L: Learn the Basics",
+   "q": "At 6% inflation, ₹10,000 a month in 20 years buys roughly what…",
+   "o": [
+    "₹10,000 buys today",
+    "₹6,000 buys today",
+    "₹3,100 buys today",
+    "₹1,000 buys today"
+   ],
+   "a": 2,
+   "why": "About ₹3,100 today. That is why a flat SIP quietly shrinks."
+  },
+  {
+   "id": "stepup-q3x",
+   "sec": "L: Learn the Basics",
+   "q": "Why does compounding reward a step-up?",
+   "o": [
+    "Because the later, bigger instalments still have years to grow",
+    "Because the AMC pays a bonus",
+    "Because the expense ratio falls",
+    "Because the exit load is waived"
+   ],
+   "a": 0,
+   "why": "The later instalments are larger but still have years to compound, so they add more than their size suggests."
+  }
+ ],
+ "card_ids": [
+  "stepup-c1",
+  "stepup-c2"
+ ],
+ "words": 159
+}

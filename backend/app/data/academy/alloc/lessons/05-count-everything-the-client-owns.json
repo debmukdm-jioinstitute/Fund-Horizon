@@ -1,0 +1,78 @@
+{
+ "id": "alloc-05",
+ "title": "Count everything the client owns",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain why EPF, PPF, FDs, gold and property belong in the picture.",
+  "Show how hidden debt changes the equity decision."
+ ],
+ "body_md": "A client's mix is not just the money we manage. EPF, PPF, fixed deposits, gold jewellery held as savings, property and insurance-linked savings all belong in the picture, even though we do not manage them.\n\n## Why it matters\n\nA client with ₹25 lakh in EPF and PPF already holds a lot of debt. Counting it may mean the mutual funds can hold more equity than a standalone view would suggest. Ignoring it may mean the client is far more conservative than they intended, or far more concentrated.\n\n## The two mistakes\n\n- Mental accounting: \"my EPF and PPF are separate, they don't count\". They do; they are debt.\n- Concentration: most of the wealth in the employer's shares or in one property. That belongs in the mix too.\n\n## How to ask\n\n\"What else do you own: EPF, PPF, FDs, property, gold? Roughly how much, and when would you use it?\" Then count it before suggesting any mix.",
+ "key_terms": [
+  "asset allocation",
+  "risk capacity"
+ ],
+ "example": "Arjun calls himself \"100% equity\", but ₹25 lakh of his ₹75 lakh total is in EPF and PPF. Counting them, his real split is about 67% equity and 33% debt — a very different conversation from the one he expected.",
+ "say": [
+  "Let's count everything you own, not just the funds we manage.",
+  "Your EPF and PPF are debt, so the rest of the portfolio may be able to hold more equity."
+ ],
+ "never": [
+  "EPF doesn't count; it's separate.",
+  "Property is not part of your portfolio."
+ ],
+ "talk_track": [
+  {
+   "n": 7,
+   "title": "One client, separate pots, separate mixes",
+   "text": "Also, count everything the client owns, not just what we manage: EPF, PPF, fixed deposits, gold and property. For example, a client with twenty-five lakh in EPF already holds a lot of debt, so their mutual funds may be able to hold more equity."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q11",
+   "sec": "L: Learn the Basics",
+   "q": "A client has ₹25 lakh in EPF and calls himself \"100% equity\". What should you do?",
+   "o": [
+    "Ignore the EPF",
+    "Count EPF as debt in his total mix",
+    "Count EPF as equity",
+    "Ask him to close the EPF"
+   ],
+   "a": 1,
+   "why": "EPF is debt. Counting everything may mean the funds can hold more equity than the standalone view suggested."
+  },
+  {
+   "id": "alloc-q14x",
+   "sec": "L: Learn the Basics",
+   "q": "Which of these belongs in the client's total mix?",
+   "o": [
+    "Only the mutual funds we manage",
+    "EPF, PPF, FDs, gold, property and insurance-linked savings as well",
+    "Only the equity funds",
+    "Only the assets over ₹10 lakh"
+   ],
+   "a": 1,
+   "why": "Count everything the client owns, even what we do not manage."
+  },
+  {
+   "id": "alloc-q15x",
+   "sec": "L: Learn the Basics",
+   "q": "What is the risk of ignoring hidden assets?",
+   "o": [
+    "The client pays more tax",
+    "The real mix can be far more conservative or far more concentrated than it looks",
+    "The AMC rejects the investment",
+    "Nothing; only mutual funds matter"
+   ],
+   "a": 1,
+   "why": "Ignoring EPF, property or employer shares hides the real allocation, and the advice can be wrong in either direction."
+  }
+ ],
+ "card_ids": [
+  "alloc-c10",
+  "alloc-c31"
+ ],
+ "words": 159
+}

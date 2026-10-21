@@ -1,0 +1,76 @@
+{
+ "id": "alloc-18",
+ "title": "Role-play lab: six allocation conversations",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Handle six realistic allocation conversations: profile, illustrate, agree, record.",
+  "Stay inside compliance while giving the client a clear next step."
+ ],
+ "body_md": "Practise these in pairs, five minutes each. The expected answer is the shape of a good conversation, not a script.\n\n## 1. The FD loyalist\n\nMrs. Kulkarni, 52, keeps ₹30 lakh in fixed deposits for retirement at 60 and says she wants no risk. Expected: explain inflation risk with illustrative numbers, profile her, suggest a conservative mix, make no promises.\n\n## 2. The gold chaser\n\nVikram wants to move his whole portfolio into gold after a strong year. Expected: show that each asset has its year, keep gold to its agreed share, stick to the target mix.\n\n## 3. All equity, short goal\n\nNeha, 29, has her wedding fund (needed in 18 months) in a small-cap fund. Expected: separate pots, move the wedding money to short-duration debt on a plan, check the exit load.\n\n## 4. Hidden debt\n\nArjun says he is \"100% equity\" but has ₹25 lakh in EPF and PPF. Expected: count EPF and PPF as debt, review the total mix.\n\n## 5. Rebalance resistance\n\nAfter a strong year, a 60/40 client is at 66/34 and refuses to sell equity. Expected: explain the band rule, use new money for debt first, record the decision.\n\n## 6. Panic after a fall\n\nA moderate client wants 100% debt after equity fell 20%. Expected: show that the mix cushioned the fall, rebalance into equity per the agreed rules, make no market predictions.",
+ "key_terms": [
+  "asset allocation",
+  "risk capacity",
+  "band rule"
+ ],
+ "example": "In the Mrs. Kulkarni role-play, the good answer covers three things: inflation risk shown in rupees, a completed risk profile, and a conservative mix with debt, some equity and gold — with no promise about returns.",
+ "say": [
+  "Let's look at what ₹30 lakh in FDs buys in fifteen years against a conservative mix at assumed returns.",
+  "The band rule says we top up the underweight part; that's not a forecast."
+ ],
+ "never": [
+  "FDs are the safest place for your money.",
+  "The market will recover, so let's buy equity now."
+ ],
+ "talk_track": [
+  {
+   "n": 16,
+   "title": "Practise before you need it",
+   "text": "To wrap up: practise this before you need it. Role-play the six client scenarios from the manual in pairs, take the twenty-five question quiz, where the pass mark is twenty, and use the thirty-two flash cards for quick revision. All mixes and figures are illustrative, and past performance doesn't guarantee future returns."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q52",
+   "sec": "Practice: Role-Plays",
+   "q": "Mrs. Kulkarni, 52, keeps ₹30 lakh in FDs for retirement at 60 and wants no risk. What does a good answer include?",
+   "o": [
+    "Agreeing that FDs are safest and leaving it there",
+    "Inflation risk shown in rupees, a completed risk profile, and a conservative mix with no promises",
+    "An aggressive mix to catch up",
+    "A promise that equity will beat inflation"
+   ],
+   "a": 1,
+   "why": "Explain inflation risk with illustrative numbers, profile her, propose a conservative mix, and promise nothing."
+  },
+  {
+   "id": "alloc-q53",
+   "sec": "Practice: Role-Plays",
+   "q": "A 60/40 client is at 66/34 after a strong year and refuses to sell equity. What do you do?",
+   "o": [
+    "Sell 6 points of equity without telling him",
+    "Explain the band rule, use new money for debt first, and record the decision",
+    "Change the target to 66/34",
+    "Move everything to cash"
+   ],
+   "a": 1,
+   "why": "The rule was agreed in advance: use new money first, rebalance partially if needed, and record it."
+  },
+  {
+   "id": "alloc-q25",
+   "sec": "Practice: Role-Plays",
+   "q": "A moderate client wants 100% debt after equity fell 20%. Best response?",
+   "o": [
+    "Move everything to debt as asked",
+    "Show how the mix cushioned the fall and rebalance per the agreed rules",
+    "Promise equity will recover next year",
+    "Switch to a small-cap fund"
+   ],
+   "a": 1,
+   "why": "Show the mix working, review goal and profile, follow the rules, make no predictions."
+  }
+ ],
+ "card_ids": [],
+ "words": 231
+}

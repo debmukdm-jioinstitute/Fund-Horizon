@@ -1,0 +1,81 @@
+{
+ "id": "alloc-14",
+ "title": "Drift and the rules of rebalancing",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Show how a market move creates drift.",
+  "State the rebalancing rules to agree with the client in writing."
+ ],
+ "body_md": "Markets move the mix on their own. Rebalancing brings it back, and in doing so it quietly sells high and buys low.\n\n## How drift happens\n\nStarting at 60/40 equity/debt:\n\n| After a year when… | Equity share becomes | Rebalancing means |\n|---|---|---|\n| Equity +30%, debt +7% | ≈ 65% | Move about 5 points from equity to debt (book some gains) |\n| Equity −25%, debt +7% | ≈ 51% | Move about 9 points from debt to equity (buy after the fall) |\n\n## The rules to agree in writing\n\n- Calendar rule: check once a year on a fixed date.\n- Band rule: act when any asset class drifts more than 5 percentage points from target (10 for smaller portfolios).\n- Use new money first: direct fresh SIPs or lump sums to the underweight asset before selling anything.\n- Check costs before selling: exit loads and capital-gains tax. Refer tax to a CA.\n\n## Why rules beat judgement\n\nA rule tells the client in advance what will happen after a big year, in both directions. That is what makes rebalancing acceptable, especially when it means adding to the asset that just fell.",
+ "key_terms": [
+  "drift",
+  "rebalancing",
+  "band rule"
+ ],
+ "example": "A 60/40 portfolio ends a strong year at 65/35. The band rule triggers at 5 points, so about 5 points move from equity to debt — booking gains, not predicting a fall.",
+ "say": [
+  "Rebalancing is going back to the mix we agreed, not a prediction about the market.",
+  "Before we sell anything, let's use the new SIP money for the underweight part."
+ ],
+ "never": [
+  "Let's sell equity because a fall is coming.",
+  "Rebalancing is tax-free."
+ ],
+ "talk_track": [
+  {
+   "n": 12,
+   "title": "Markets move the mix; rebalancing brings it back",
+   "text": "Markets move the mix on their own. Start with a sixty-forty target. After a year when equity rises thirty percent and debt seven, equity becomes about sixty-five percent. Rebalancing means moving about five points back to debt, booking some gains. After a year when equity falls twenty-five percent, equity drops to about fifty-one percent. Rebalancing means moving about nine points from debt into equity, buying after the fall. Agree the rules in writing."
+  }
+ ],
+ "check": [
+  {
+   "id": "alloc-q9",
+   "sec": "R: Review & Rebalance",
+   "q": "A 60/40 portfolio becomes 65/35 after a strong equity year. What does rebalancing involve?",
+   "o": [
+    "Buying more equity",
+    "Moving about 5 points from equity to debt",
+    "Doing nothing ever",
+    "Moving everything to cash"
+   ],
+   "a": 1,
+   "why": "Return to target by booking some equity gains."
+  },
+  {
+   "id": "alloc-q10",
+   "sec": "R: Review & Rebalance",
+   "q": "What is usually the cheapest way to rebalance?",
+   "o": [
+    "Selling the overweight asset",
+    "Directing new money to the underweight asset",
+    "Switching AMCs",
+    "Stopping all SIPs"
+   ],
+   "a": 1,
+   "why": "New money avoids exit loads and tax on a sale."
+  },
+  {
+   "id": "alloc-q42x",
+   "sec": "R: Review & Rebalance",
+   "q": "What happens after a year when equity falls 25% and debt gains 7%?",
+   "o": [
+    "Equity becomes about 51%, so rebalancing buys equity after the fall",
+    "Equity becomes 65%, so we sell equity",
+    "The mix does not move",
+    "The target mix changes"
+   ],
+   "a": 0,
+   "why": "Equity drifts down to about 51%, so rebalancing moves about 9 points from debt into equity."
+  }
+ ],
+ "card_ids": [
+  "alloc-c15",
+  "alloc-c22",
+  "alloc-c23",
+  "alloc-c24"
+ ],
+ "words": 197
+}

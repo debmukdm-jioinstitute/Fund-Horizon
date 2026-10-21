@@ -49,6 +49,10 @@ const perYear = (key: string, label: string, kind: "pct" | "num", plain = false)
 
 const COLUMNS: Record<Section, Col[]> = {
   Summary: [
+    { key: "cat_label", label: "Category / Benchmark", kind: "text" },
+    pct("out_1y", "1Yr vs Category Avg", undefined, "Fund 1Yr return minus its category-plan average, in percentage points"),
+    pct("out_3y", "3Yr vs Category Avg"),
+    pct("out_5y", "5Yr vs Category Avg"),
     { key: "score", label: "FH Checklist Score / 100", kind: "score" },
     { key: "stars", label: "FH Star Rating", kind: "stars" },
     { key: "aum_cr", label: "AUM Cr", kind: "aum" },
@@ -636,6 +640,13 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
       </td>
     );
   }
+  if (col.kind === "text")
+    return (
+      <td className="min-w-[200px]">
+        <div>{String(v ?? "-")}</div>
+        <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Benchmark: {String(row.benchmark ?? "-")}</div>
+      </td>
+    );
   if (col.kind === "aum") return <td className="text-right tabular-nums">{fmt(v, 0)}</td>;
   const avg = col.avg ? row[col.avg] : undefined;
   const when = col.date ? row[col.date] : undefined;

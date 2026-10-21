@@ -44,6 +44,25 @@ CATEGORY_GROUPS: dict[str, list[tuple[str, str]]] = {
     ],
 }
 
+# SEBI tier-1 benchmark per category. The dataset has no index series, so these are labels only.
+_N500, _AGG, _MOD, _CON = "NIFTY 500 TRI", "CRISIL Hybrid 35+65 Aggressive", "CRISIL Hybrid 50+50 Moderate", "CRISIL Hybrid 85+15 Conservative"
+BENCHMARKS: dict[str, str] = {
+    "contra": _N500, "dividend_yield": _N500, "elss": _N500, "flexi_cap": _N500, "focused": _N500, "value": _N500,
+    "large_mid_cap": "NIFTY LargeMidcap 250 TRI", "large_cap": "NIFTY 100 TRI", "mid_cap": "NIFTY Midcap 150 TRI",
+    "multi_cap": "NIFTY 500 Multicap 50:25:25 TRI", "small_cap": "NIFTY Smallcap 250 TRI",
+    "sectoral_thematic": "Sector/theme index (varies by fund)",
+    "aggressive_hybrid": _AGG, "arbitrage": "NIFTY 50 Arbitrage", "balanced_advantage": "NIFTY 50 Hybrid Composite Debt 50:50",
+    "balanced_hybrid": _MOD, "conservative_hybrid": _CON, "equity_savings": "NIFTY Equity Savings",
+    "multi_asset": "Composite: Equity + Debt + Gold (varies by fund)",
+    "banking_psu": "CRISIL Banking & PSU Debt", "corporate_bond": "CRISIL Corporate Debt", "credit_risk": "CRISIL Credit Risk Debt",
+    "dynamic_bond": "CRISIL Dynamic Bond", "fixed_term": "CRISIL Composite Bond", "floater": "CRISIL Short Term Bond",
+    "gilt": "CRISIL Dynamic Gilt", "liquid": "CRISIL Liquid Debt", "medium_long_duration": "CRISIL Medium to Long Duration Debt",
+    "money_market": "CRISIL Money Market", "other_debt": "CRISIL Composite Bond", "overnight": "CRISIL Overnight",
+    "short_duration": "CRISIL Short Duration Debt",
+    "solution_children": _AGG, "solution_retirement": _AGG,
+    "gold": "Domestic price of physical gold", "international": "Global index (varies by fund)",
+}
+_LABELS = {k: lbl for items in CATEGORY_GROUPS.values() for k, lbl in items}
 _YEARS = (1, 3, 5, 10)
 # Dataset fraction columns -> output percent columns.
 _PCT = {
@@ -57,7 +76,7 @@ _PCT = {
 _RAW = ["sharpe_{}y", "sortino_{}y", "beta_{}y"]
 _AVG_COLS = ["ret_3m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_10y"]
 NUMERIC_KEYS = (
-    ["score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
+    ["out_1y", "out_3y", "out_5y", "score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
     + list(_PCT.values())
     + [t.format(y) for y in _YEARS for t in _RAW]
 )
@@ -120,6 +139,11 @@ def _base_frame() -> pd.DataFrame:
 def _scored(ter: dict[str, float]) -> pd.DataFrame:
     df = _base_frame().copy()
     df["ter"] = df["code"].map(ter)
+    df["cat_label"] = df["cat"].map(_LABELS).fillna(df["cat"])
+    df["benchmark"] = df["cat"].map(BENCHMARKS).fillna("Scheme's tracked index")
+    # Excess return vs the category-plan average (no index series in the dataset), in percentage points.
+    for y, (r, c) in {1: ("ret_1y", "ret_1y_cat"), 3: ("cagr_3y", "cagr_3y_cat"), 5: ("cagr_5y", "cagr_5y_cat")}.items():
+        df[f"out_{y}y"] = df[r] - df[c]
     key = df["cat"] + "|" + df["plan"]
     perf = pd.concat([_pillar(df[c], key) for c in ("ret_1y", "cagr_3y", "cagr_5y")], axis=1).mean(axis=1)
     risk = pd.concat([
@@ -197,7 +221,8 @@ def records(df: pd.DataFrame) -> list[dict[str, Any]]:
 
 def to_csv(df: pd.DataFrame) -> str:
     cols = {
-        "code": "Scheme Code", "name": "Fund Name", "amc": "AMC", "plan": "Plan", "score": "FH Checklist Score",
+        "code": "Scheme Code", "name": "Fund Name", "amc": "AMC", "plan": "Plan", "cat_label": "Category", "benchmark": "Benchmark",
+        "out_1y": "1Y vs Category Avg (pp)", "out_3y": "3Y vs Category Avg (pp)", "out_5y": "5Y vs Category Avg (pp)", "score": "FH Checklist Score",
         "perf": "Performance /25", "port": "Portfolio /25", "ops": "Operations /25", "risk": "Risk vs Reward /25",
         "stars": "FH Star Rating", "aum_cr": "AUM Cr", "ter": "Net Expense Ratio %",
         "nav": "NAV", "day_chg": "Day %", "week_chg": "Week %", "hi52": "52W High", "hi52_date": "52W High Date",

@@ -174,6 +174,9 @@ def init_crm_products_schema(conn: sqlite3.Connection) -> None:
 
 
 def _connect() -> sqlite3.Connection:
+    from app.db.d1 import on_workers
+    if on_workers():
+        raise RuntimeError("SQLite filesystem access is not supported on Cloudflare Workers; use D1.")
     path = _sqlite.get_default_db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(path)

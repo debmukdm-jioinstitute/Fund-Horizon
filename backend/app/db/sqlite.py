@@ -31,6 +31,9 @@ def db_path() -> Path:
 
 
 def get_default_connection() -> sqlite3.Connection:
+    from app.db.d1 import on_workers
+    if on_workers():
+        raise RuntimeError("SQLite filesystem access is not supported on Cloudflare Workers; use D1.")
     path = get_default_db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(path)
@@ -46,6 +49,9 @@ class SQLiteRepository(DatabaseRepository):
         self._init_schema()
 
     def _get_connection(self) -> sqlite3.Connection:
+        from app.db.d1 import on_workers
+        if on_workers():
+            raise RuntimeError("SQLite filesystem access is not supported on Cloudflare Workers; use D1.")
         self.path.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(self.path)
         conn.row_factory = sqlite3.Row

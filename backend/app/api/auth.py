@@ -8,6 +8,9 @@ stored server-side. Passwords use PBKDF2-HMAC-SHA256 with 600k iterations.
 
 import hashlib
 import hmac
+import logging
+
+logger = logging.getLogger("auth")
 import os
 import re
 import secrets
@@ -61,10 +64,47 @@ def _check_auth_rate_limit(request: Request) -> None:
     hits.append(now)
 
 
+def _pbkdf2_hex(password: str, salt_bytes: bytes, iters: int) -> str:
+    if hasattr(hashlib, "pbkdf2_hmac"):
+        return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt_bytes, iters).hex()
+    try:
+        import js
+        from pyodide.ffi import run_sync, to_js
+
+        pw_arr = js.Uint8Array.new(to_js(list(password.encode("utf-8"))))
+        salt_arr = js.Uint8Array.new(to_js(list(salt_bytes)))
+
+        async def _derive():
+            key = await js.crypto.subtle.importKey(
+                "raw",
+                pw_arr,
+                to_js({"name": "PBKDF2"}),
+                False,
+                to_js(["deriveBits"]),
+            )
+            bits = await js.crypto.subtle.deriveBits(
+                to_js({
+                    "name": "PBKDF2",
+                    "salt": salt_arr,
+                    "iterations": iters,
+                    "hash": "SHA-256",
+                }),
+                key,
+                256,
+            )
+            u8 = js.Uint8Array.new(bits)
+            return bytes(u8.to_py()).hex()
+
+        return run_sync(_derive())
+    except Exception as e:
+        logger.error("PBKDF2 derivation failed: %s", e)
+        return ""
+
+
 def _hash_password(password: str) -> str:
     salt = secrets.token_bytes(16)
-    dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, PBKDF2_ITERATIONS)
-    return f"pbkdf2_sha256${PBKDF2_ITERATIONS}${salt.hex()}${dk.hex()}"
+    dk_hex = _pbkdf2_hex(password, salt, PBKDF2_ITERATIONS)
+    return f"pbkdf2_sha256${PBKDF2_ITERATIONS}${salt.hex()}${dk_hex}"
 
 
 def _verify_password(password: str, stored: str) -> bool:
@@ -72,10 +112,10 @@ def _verify_password(password: str, stored: str) -> bool:
         algo, iters, salt_hex, hash_hex = stored.split("$")
         if algo != "pbkdf2_sha256":
             return False
-        dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), bytes.fromhex(salt_hex), int(iters))
+        dk_hex = _pbkdf2_hex(password, bytes.fromhex(salt_hex), int(iters))
     except (ValueError, TypeError):
         return False
-    return hmac.compare_digest(dk.hex(), hash_hex)
+    return hmac.compare_digest(dk_hex, hash_hex)
 
 
 _DUMMY_HASH = "pbkdf2_sha256$600000$00000000000000000000000000000000$0000000000000000000000000000000000000000000000000000000000000000"

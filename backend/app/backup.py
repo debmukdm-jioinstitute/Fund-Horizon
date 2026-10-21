@@ -68,7 +68,8 @@ def restore_if_needed() -> bool:
 
 def backup_sqlite() -> Path | str | None:
     """Take a consistent SQLite snapshot, gzip and upload to R2 (or fallback to local disk)."""
-    if not uses_sqlite():
+    from app.db.d1 import on_workers
+    if on_workers() or not uses_sqlite():
         return None
     src_path = get_default_db_path()
     if not src_path.exists() or src_path.stat().st_size == 0:

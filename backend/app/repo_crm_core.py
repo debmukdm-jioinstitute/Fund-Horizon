@@ -159,6 +159,9 @@ def _row(model: Any) -> dict[str, Any]:
 
 
 def _resolve_url() -> str:
+    from app.db.d1 import on_workers
+    if on_workers():
+        raise RuntimeError("SQLite filesystem access is not supported on Cloudflare Workers; use D1.")
     url = os.environ.get("DATABASE_URL", "").strip()
     if url.startswith(("postgres://", "postgresql://")):
         from app.db.postgres import normalize_postgres_url

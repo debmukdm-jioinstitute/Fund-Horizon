@@ -18,6 +18,11 @@ from app.api.serialize import clean
 from app.config import load_allocation, load_assumptions, load_scoring
 from app.db import get_repository
 
+try:
+    from app.data.loader import load_metrics
+except ImportError:
+    load_metrics = None
+
 logger = logging.getLogger("admin")
 
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"])

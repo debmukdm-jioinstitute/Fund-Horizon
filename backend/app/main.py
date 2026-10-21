@@ -113,7 +113,7 @@ async def lifespan(app: FastAPI):
     load_metrics()
     app.state.eligible = eligible_funds()
 
-    if _flag("FH_SEED_CRM", "true"):
+    if _flag("FH_SEED_CRM", "false"):
         try:
             from app.crm_seed import seed_crm_if_empty
 

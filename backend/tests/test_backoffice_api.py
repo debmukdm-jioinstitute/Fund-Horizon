@@ -273,6 +273,20 @@ def test_admin_staff_provisioning_api(client):
     assert forbidden_r.status_code == 403
 
 
+def test_admin_staff_update_deactivate_and_reset(client):
+    admin_id = _create_staff("admin")
+    _login_staff(client, admin_id)
+    h = {"sec-fetch-site": "same-origin"}
+    other = _create_staff("analyst")
+
+    r = client.patch(f"/api/backoffice/staff/{other}", json={"role": "rm", "reset_password": True}, headers=h)
+    assert r.status_code == 200 and r.json()["temporary_password"]
+    assert r.json()["staff_member"]["role"] == "rm"
+    assert client.patch(f"/api/backoffice/staff/{other}", json={"status": "inactive"}, headers=h).json()["staff_member"]["status"] == "inactive"
+    assert client.patch(f"/api/backoffice/staff/{other}", json={"role": "bogus"}, headers=h).status_code == 422
+    assert client.patch(f"/api/backoffice/staff/{admin_id}", json={"status": "inactive"}, headers=h).status_code == 422
+
+
 def test_mutual_fund_tracker_pagination_dates_and_plan_filter(client):
     from app.backoffice.repository import BackofficeRepository
 

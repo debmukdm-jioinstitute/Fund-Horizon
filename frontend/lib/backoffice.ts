@@ -1232,6 +1232,7 @@ export const createStaffMember = async (body: {
   email: string;
   mobile: string;
   role: string;
+  password?: string;
 }): Promise<StaffProvisionResponse> => {
   const raw = await boFetch<Json>("/api/backoffice/staff/provision", { method: "POST", body: JSON.stringify(body) });
   const m = obj(raw.staff_member);
@@ -1246,6 +1247,9 @@ export const createStaffMember = async (body: {
     temporary_password: str(raw.temporary_password) ?? null,
   };
 };
+
+export const updateStaffMember = (id: string, body: { role?: string; status?: "active" | "inactive"; reset_password?: boolean }) =>
+  boFetch<{ temporary_password: string | null }>(`/api/backoffice/staff/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(body) });
 
 export const getNews = async (opts: { limit?: number; category?: string } = {}): Promise<NewsItem[]> => {
   const q = new URLSearchParams({ limit: String(opts.limit ?? 40) });

@@ -9,6 +9,7 @@ import {
   deleteWatchlist,
   listStaffMembers,
   createStaffMember,
+  updateStaffMember,
   WatchlistItem,
   StaffMemberItem,
 } from "@/lib/backoffice";
@@ -107,6 +108,8 @@ export default function SettingsPage() {
   const [staffEmail, setStaffEmail] = useState("");
   const [staffRole, setStaffRole] = useState("analyst");
   const [staffMobile, setStaffMobile] = useState("");
+  const [staffPassword, setStaffPassword] = useState("");
+  const [staffNotice, setStaffNotice] = useState<string | null>(null);
   const [savingStaff, setSavingStaff] = useState(false);
 
   useEffect(() => {
@@ -162,17 +165,34 @@ export default function SettingsPage() {
     }
   }
 
+  async function changeStaff(id: string, body: Parameters<typeof updateStaffMember>[1]) {
+    try {
+      const r = await updateStaffMember(id, body);
+      setStaffNotice(r.temporary_password ? `New temporary password ${r.temporary_password} (shown once, share securely)` : "Updated.");
+      await loadStaff();
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Update failed");
+    }
+  }
+
   async function handleProvisionStaff(e: React.FormEvent) {
     e.preventDefault();
     if (!staffEmail.trim() || !staffName.trim()) return;
     try {
       setSavingStaff(true);
-      await createStaffMember({
+      const res = await createStaffMember({
         name: staffName.trim(),
         email: staffEmail.trim(),
         role: staffRole,
         mobile: staffMobile.trim() || "",
+        password: staffPassword || undefined,
       });
+      setStaffNotice(
+        res.temporary_password
+          ? `Login ${staffEmail.trim().toLowerCase()} · temporary password ${res.temporary_password} (shown once, share securely)`
+          : `Account created. Login ${staffEmail.trim().toLowerCase()} with the password you set.`,
+      );
+      setStaffPassword("");
       setStaffName("");
       setStaffEmail("");
       setStaffMobile("");
@@ -387,6 +407,12 @@ export default function SettingsPage() {
             </span>
           </div>
 
+          {staffNotice && (
+            <div className="rounded border border-[#C5DDF7] bg-[#EAF5FE] p-2 text-[12px] font-mono break-all dark:border-[#1F4A74] dark:bg-[#0F2A45]/40">
+              {staffNotice} <button type="button" className="ml-2 underline" onClick={() => setStaffNotice(null)}>dismiss</button>
+            </div>
+          )}
+
           {/* Provision Form */}
           <form onSubmit={handleProvisionStaff} className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
             <div>
@@ -409,6 +435,18 @@ export default function SettingsPage() {
                 placeholder="staff@fundhorizon.com"
                 className="terminal-input w-full text-[12px] py-1 px-2"
                 required
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Password (blank = generate)</label>
+              <input
+                type="password"
+                autoComplete="new-password"
+                minLength={8}
+                value={staffPassword}
+                onChange={(e) => setStaffPassword(e.target.value)}
+                placeholder="min 8 characters"
+                className="terminal-input w-full text-[12px] py-1 px-2"
               />
             </div>
             <div>
@@ -477,10 +515,14 @@ export default function SettingsPage() {
                         </span>
                       </td>
                       <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{s.mobile || "–"}</td>
-                      <td className="text-right">
-                        <span className="text-[11px] text-[#0176D3] dark:text-[#1B96FF] font-medium">
-                          {s.status}
-                        </span>
+                      <td className="text-right whitespace-nowrap">
+                        <span className="text-[11px] text-[#0176D3] dark:text-[#1B96FF] font-medium mr-2">{s.status}</span>
+                        <button type="button" className="terminal-btn text-[11px] py-0.5 px-2 mr-1" onClick={() => changeStaff(s.id, { status: s.status === "inactive" ? "active" : "inactive" })}>
+                          {s.status === "inactive" ? "Activate" : "Deactivate"}
+                        </button>
+                        <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" onClick={() => confirm(`Reset password for ${s.name}? They will be signed out.`) && changeStaff(s.id, { reset_password: true })}>
+                          Reset password
+                        </button>
                       </td>
                     </tr>
                   ))

@@ -48,6 +48,7 @@ from app.backoffice.schemas import (
     ScreeningPresetCreateRequest,
     ScreeningRunRequest,
     StaffMemberCreateRequest,
+    StaffMemberUpdateRequest,
     WatchlistCreateRequest,
 )
 from app.backoffice import mf_reference, mf_screener
@@ -1123,6 +1124,45 @@ def provision_staff_member(
         )
         _REPO.log_audit(admin["id"], "staff_created", "staff", created["id"], {"email": email, "role": body.role})
         return {"success": True, "action": "created", "staff": created, "staff_member": created, "temporary_password": temporary_password}
+
+
+STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
+
+
+@router.patch("/staff/{staff_id}")
+def update_staff_member(
+    staff_id: str,
+    body: StaffMemberUpdateRequest,
+    request: Request,
+    admin: Annotated[dict, Depends(require_role("admin"))],
+):
+    """Admin: change a staff member's role, deactivate/reactivate them, or reset their password."""
+    verify_csrf(request)
+    repo = get_repository()
+    target = repo.get_customer_by_id(staff_id)
+    if not target or not target.get("is_staff"):
+        raise HTTPException(404, "Staff member not found")
+    if body.role is not None and body.role not in STAFF_ROLES:
+        raise HTTPException(422, f"role must be one of: {', '.join(STAFF_ROLES)}")
+    if body.status is not None and body.status not in ("active", "inactive"):
+        raise HTTPException(422, "status must be active or inactive")
+    if staff_id == admin["id"] and (body.status == "inactive" or (body.role and body.role != "admin")):
+        raise HTTPException(422, "You cannot deactivate or demote your own account.")
+    fields: dict = {}
+    if body.role is not None:
+        fields["role"] = body.role
+    if body.status is not None:
+        fields["status"] = body.status
+    temporary_password = None
+    if body.reset_password:
+        temporary_password = secrets.token_urlsafe(9)
+        fields["password_hash"] = _hash_password(temporary_password)
+        fields["must_change_password"] = 1
+    if body.status == "inactive" or body.reset_password:
+        fields["revoked_before"] = datetime.now(UTC).isoformat()  # ends their open sessions
+    updated = repo.update_customer(staff_id, fields)
+    _REPO.log_audit(admin["id"], "staff_updated", "staff", staff_id, {k: v for k, v in fields.items() if k != "password_hash"})
+    return {"success": True, "staff_member": updated, "temporary_password": temporary_password}
 
 
 # ---------------------------------------------------------------------------

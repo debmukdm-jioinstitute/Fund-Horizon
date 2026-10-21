@@ -12,6 +12,7 @@ import {
 } from "../../lib/crmProductsApi";
 import { fieldErrors, pastDueWarning, taskSchema } from "../../lib/crmSchemas";
 import { ApiError } from "../../lib/api";
+import { useOwners } from "./OwnerAvatar";
 
 const KINDS: ActivityKind[] = ["call", "meeting", "note", "followup", "email", "whatsapp", "review"];
 
@@ -101,6 +102,7 @@ export default function ActivitiesTab() {
   const [opportunityId, setOpportunityId] = useState("");
   const [dueAt, setDueAt] = useState("");
   const [assignee, setAssignee] = useState("");
+  const owners = useOwners();
   const [subjectError, setSubjectError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -299,9 +301,12 @@ export default function ActivitiesTab() {
                 className="w-full border border-[#E5E5E5] rounded-lg px-2 py-1.5 text-xs font-normal" />
             </label>
             <label className="text-xs font-semibold text-[#444444] space-y-1">
-              <span>Assignee RM ID</span>
-              <input value={assignee} onChange={(e) => setAssignee(e.target.value)} placeholder="optional"
-                className="w-full border border-[#E5E5E5] rounded-lg px-2 py-1.5 text-xs font-normal" />
+              <span>Assign to</span>
+              <select value={assignee} onChange={(e) => setAssignee(e.target.value)}
+                className="w-full border border-[#E5E5E5] rounded-lg px-2 py-1.5 text-xs font-normal">
+                <option value="">Unassigned</option>
+                {owners.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
+              </select>
             </label>
           </div>
           <button

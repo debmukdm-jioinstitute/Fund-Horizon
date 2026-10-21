@@ -128,11 +128,11 @@ export default function LoginPage() {
             </label>
             <input
               id="email"
-              type="email"
+              type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@fundhorizon.com"
-              autoComplete="email"
+              autoComplete="username"
               className="terminal-input w-full text-[13px] py-1.5 px-2.5"
             />
           </div>

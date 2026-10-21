@@ -78,6 +78,12 @@ class StaffMemberCreateRequest(BaseModel):
     temp_password: bool = False
 
 
+class StaffMemberUpdateRequest(BaseModel):
+    role: str | None = None
+    status: str | None = None  # active | inactive
+    reset_password: bool = False  # issue a new temporary password and sign the user out everywhere
+
+
 class ScreeningRunRequest(BaseModel):
     preset_id: str | None = None
     filters: dict[str, Any] = Field(default_factory=dict)

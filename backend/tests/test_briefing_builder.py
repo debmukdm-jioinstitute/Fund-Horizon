@@ -634,3 +634,52 @@ def test_fx_stale_flagged_after_one_trading_day(repo):
     pulse = next(s for s in payload["sections"] if s["key"] == "market_pulse")
     fx = next(i for i in pulse["items"] if i["text"].startswith("USD/INR"))
     assert fx["stale"] is False
+
+
+def test_unrelated_enforcement_and_pr_noise_filtered_from_briefing(repo):
+    now = GEN_AT
+    repo.upsert_news([
+        {"id": "u1", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Release Order for RC No.3965 of 2021-Ram Kishore Taparia in the matter of Cosboard Industries Ltd",
+         "link": "https://sebi.gov.in/u1", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "u2", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Confirmatory order in the matter of Rajesh Exports Limited",
+         "link": "https://sebi.gov.in/u2", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "u3", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Completion of RC No. 8924 of 2025 issued against Yuvika Tradewing LLP in the matter of Cressanda",
+         "link": "https://sebi.gov.in/u3", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "u4", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Order in the matter of Capital Stroke Investment Services Pvt. Ltd.",
+         "link": "https://sebi.gov.in/u4", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "u5", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "Prohibitory Order no. 1575/2026 issued against Venkatachari Suresh in the matter of Securekloud",
+         "link": "https://sebi.gov.in/u5", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "u6", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "SEBI Teams win at IOSCO TechSprint 2026 on Investor Education",
+         "link": "https://sebi.gov.in/u6", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "u7", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "SEBI PolicyTwin Prototype Wins First Place at the Hackathon",
+         "link": "https://sebi.gov.in/u7", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "k1", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "SEBI Master Circular for Mutual Funds on risk-o-meter disclosures",
+         "link": "https://sebi.gov.in/k1", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "k2", "source_id": "sebi", "source_name": "SEBI", "category": "regulator",
+         "title": "SEBI consultation paper on easing norms for Portfolio Managers",
+         "link": "https://sebi.gov.in/k2", "published_at": (now - timedelta(hours=1)).isoformat()},
+        {"id": "k3", "source_id": "rbi_press", "source_name": "RBI Press Releases", "category": "regulator",
+         "title": "RBI Monetary Policy Committee keeps repo rate at 6.50%",
+         "link": "https://rbi.org.in/k3", "published_at": (now - timedelta(hours=1)).isoformat()},
+    ])
+    payload = bb.build_briefing_payload(repo, "2026-10-14", generated_at="2026-10-14T18:00:00+05:30")
+    news = next(s for s in payload["sections"] if s["key"] == "regulatory_news")
+    titles = [i["text"] for i in news["items"]]
+    assert not any("Release Order" in t for t in titles)
+    assert not any("Confirmatory order" in t for t in titles)
+    assert not any("Completion of RC" in t for t in titles)
+    assert not any("Capital Stroke" in t for t in titles)
+    assert not any("Prohibitory Order" in t for t in titles)
+    assert not any("TechSprint" in t for t in titles)
+    assert not any("Hackathon" in t for t in titles)
+    assert any("Master Circular for Mutual Funds" in t for t in titles)
+    assert any("Portfolio Managers" in t for t in titles)
+    assert any("repo rate" in t for t in titles)

@@ -889,16 +889,62 @@ def _norm_entity(name: str | None) -> str:
     return re.sub(r"\s+", " ", (name or "").lower()).strip()
 
 
-# SEBI notice/appeal patterns to EXCLUDE unless the item is about
-# MFs, PMS, AMCs or intermediaries (scope-keep below).
-_NOTICE_TYPE_RE = re.compile(
-    r"\b(attachment|recovery|demand\s+notice|notice\s+of\s+demand|adjudication|"
-    r"show\s*cause|appeal|interim\s+order\s+cum\s+show\s+cause)\b",
+# SEBI PR, awards, hackathons, and internal events to drop unconditionally
+_PR_NOISE_RE = re.compile(
+    r"\b(techsprint|hackathon|first\s+place|wins?\s+at|wins?\s+first|award|trophy|"
+    r"competition|quiz|essay|sports\s+meet|pakhwada|vigilance\s+awareness|"
+    r"inaugurat|conclave|seminar|celebrat)\b",
     re.IGNORECASE,
 )
+
+# Individual enforcement, recovery, auction, or specific company order notices
+# that are noise unless specifically about an AMC, MF, PMS, or distributor.
+_NOTICE_TYPE_RE = re.compile(
+    r"\b(attachment(\s+order)?|recovery(\s+certificate|\s+proceedings)?|"
+    r"demand\s+notice|notice\s+of\s+demand|adjudication(\s+order)?|"
+    r"show\s*cause|appeal|interim\s+order(\s+cum\s+show\s+cause)?|confirmatory\s+order|"
+    r"prohibitory\s+order|release\s+order|settlement\s+order|final\s+order|"
+    r"order\s+in\s+the\s+matter\s+of|in\s+the\s+matter\s+of|rc\s+no\.?|rc\s*\d+|completion\s+of\s+rc|"
+    r"summons|garnishee|impounding|defaulter|auction\s+of|sale\s+of\s+properties)\b"
+    r"|pan\s*[-–:]?\s*XXXXX",
+    re.IGNORECASE,
+)
+
+# Fund Horizon core business topics: Mutual Funds, PMS, AIF, Wealth Management,
+# Advisory, AMCs, AMFI, APMI, Distributors, and client investment regulations.
 _SCOPE_KEEP_RE = re.compile(
-    r"\b(mutual\s+funds?|portfolio\s+manag(?:er|ers?)|pms\b|asset\s+management\s+compan|"
-    r"\bamc\b|intermediar(?:y|ies)|alternative\s+investment\s+funds?|\baif\b)\b",
+    r"\b(mutual\s+funds?|portfolio\s+manag(?:er|ers?|ement)|\bpms\b|"
+    r"asset\s+management(\s+compan(?:y|ies))?|\bamc\b|\bamcs\b|"
+    r"intermediar(?:y|ies)|alternative\s+investment\s+funds?|\baif\b|\baifs\b|"
+    r"investment\s+advis(?:er|ers|or|ors|ory)|\bria\b|\brias\b|"
+    r"research\s+analyst|\bra\b|\bras\b|distributor|distributors|\bmfd\b|\bmfds\b|"
+    r"wealth\s+management|financial\s+plann(?:er|ers|ing)|\bamfi\b|\bapmi\b|"
+    r"systematic\s+investment|\bsip\b|\bsips\b|expense\s+ratio|\bter\b|"
+    r"net\s+asset\s+value|\bnav\b|scheme\s+categorisation|scheme\s+categorization|"
+    r"demat|nomination|\bkyc\b|retail\s+investor|investor\s+charter)\b",
+    re.IGNORECASE,
+)
+
+# Broad regulatory policy, circulars, frameworks, or guidelines
+_REGULATORY_POLICY_RE = re.compile(
+    r"\b(circular|master\s+circular|consultation\s+paper|discussion\s+paper|"
+    r"board\s+meeting|framework|guidelines?|advisory|sop\b|regulations?|"
+    r"gazette\s+notification|public\s+comments)\b",
+    re.IGNORECASE,
+)
+
+# Non-financial noise in market feeds (celebrity, gossip, penny-stock bait)
+_MARKET_EXCLUDE_RE = re.compile(
+    r"\b(horoscope|astrology|bollywood|box\s+office|celebrity|wedding|divorce|"
+    r"cricket|ipl\b|football|match|actor|actress|movie|trailer|review|"
+    r"multibagger\s+penny|penny\s+stock|under\s+rs\s*\d+|lottery)\b",
+    re.IGNORECASE,
+)
+
+# Internal RBI administrative noise
+_RBI_NOISE_RE = re.compile(
+    r"\b(tender|canteen|catering|maintenance\s+contract|recruitment|vacancy|vacancies|"
+    r"holiday|estate\s+department|auction\s+of\s+scrap)\b",
     re.IGNORECASE,
 )
 
@@ -927,14 +973,27 @@ def trim_sentence(text: str, limit: int = _REG_TEXT_LIMIT) -> str:
 
 
 def _regulatory_keep(item: dict[str, Any]) -> bool:
-    """Drop SEBI attachment/recovery/demand notices and adjudication appeals
-    that are not about MFs, PMS, AMCs or intermediaries. Circulars, MF/PMS
-    regulations and RBI policy items are always kept."""
-    if (item.get("source_id") or "").lower() != "sebi":
-        return True
-    text = f"{item.get('title') or ''} {item.get('summary') or ''}"
-    if _NOTICE_TYPE_RE.search(text):
-        return bool(_SCOPE_KEEP_RE.search(text))
+    """Drop noise and retain only items relevant to Fund Horizon's business
+    (MFs, PMS, AMCs, wealth advisory, market benchmarks, RBI/SEBI policy)."""
+    text = f"{item.get('title') or ''} {item.get('summary') or ''}".strip()
+    if not text:
+        return False
+
+    source = (item.get("source_id") or "").lower()
+
+    if source == "sebi":
+        if _PR_NOISE_RE.search(text):
+            return False
+        if _NOTICE_TYPE_RE.search(text):
+            return bool(_SCOPE_KEEP_RE.search(text))
+        return bool(_SCOPE_KEEP_RE.search(text) or _REGULATORY_POLICY_RE.search(text))
+
+    if source in ("rbi_press", "rbi_notif"):
+        return not bool(_RBI_NOISE_RE.search(text))
+
+    if _MARKET_EXCLUDE_RE.search(text):
+        return False
+
     return True
 
 

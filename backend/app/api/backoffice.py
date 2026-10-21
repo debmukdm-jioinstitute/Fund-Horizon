@@ -1307,12 +1307,8 @@ def backoffice_evaluate_risk_profile(
     }
 
 
-@router.post("/risk-profiling/report.pdf")
-def backoffice_risk_profile_report_pdf(
-    req: BackofficeRiskProfileRequest,
-    staff: Annotated[dict, Depends(require_staff)],
-):
-    """Generate and return official client Risk Profiling and Suitability PDF report."""
+def risk_profile_report(req: BackofficeRiskProfileRequest) -> tuple[dict, bytes]:
+    """Score a client and render the Risk Profiling and Suitability PDF. Shared by staff and public-link flows."""
     from app.config import load_questionnaire
     from app.engine.profiling import band_for, build_profile
     from app.report.risk_profile_doc import build_risk_profile_pdf
@@ -1379,7 +1375,17 @@ def backoffice_risk_profile_report_pdf(
         client_inputs=client_inputs,
         questionnaire_responses=responses,
     )
+    return profile, pdf_bytes
 
+
+
+@router.post("/risk-profiling/report.pdf")
+def backoffice_risk_profile_report_pdf(
+    req: BackofficeRiskProfileRequest,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Generate and return official client Risk Profiling and Suitability PDF report."""
+    _, pdf_bytes = risk_profile_report(req)
     filename_slug = re.sub(r"[^a-zA-Z0-9_\-]+", "_", req.first_name or "client").lower()
     return Response(
         content=pdf_bytes,

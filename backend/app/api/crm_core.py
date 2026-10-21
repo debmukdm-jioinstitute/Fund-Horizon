@@ -9,16 +9,17 @@ Money is integer paise; dates are ``YYYY-MM-DD``; timestamps are ISO-8601 UTC.
 
 from __future__ import annotations
 
+import json
 import re
 import secrets
 from datetime import UTC, date, datetime, timedelta
 from typing import Annotated, Any, NamedTuple
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from pydantic import BaseModel, Field
 
 from app import repo_crm_phase3 as p3
-from app.api.auth import _hash_password
+from app.api.auth import _check_auth_rate_limit, _hash_password
 from app.api.crm_auth import crm_user, unscoped
 from app.api.crm_page import PageParams, guard, paginate_rows, send_total
 from app.db import sqlite
@@ -671,6 +672,75 @@ def public_lead_capture(body: PublicLeadCapture):
     except Exception:
         pass
     return {"success": True, "lead_id": lead["id"], "sr_no": lead["sr_no"], "lead": lead}
+
+
+class PublicRiskProfile(BaseModel):
+    name: str = Field(min_length=2, max_length=200)
+    email: str = Field(min_length=3, max_length=255)
+    phone: str = Field(min_length=8, max_length=20)
+    password: str = Field(min_length=8, max_length=128)
+    consent: bool
+    ref: str | None = Field(None, max_length=64, description="RM/admin id that shared the link")
+    age: int = Field(ge=18, le=80)
+    employment_type: str
+    dependents: int = Field(0, ge=0, le=15)
+    monthly_income: int = Field(gt=0)
+    monthly_expenses: int = Field(0, ge=0)
+    monthly_emi: int = Field(0, ge=0)
+    liquid_assets: int = Field(0, ge=0)
+    investments: int = Field(0, ge=0)
+    liabilities: int = Field(0, ge=0)
+    term_cover: int = Field(0, ge=0)
+    health_cover: int = Field(0, ge=0)
+    retirement_age: int = Field(60, ge=40, le=80)
+    answers: dict[str, int]
+
+
+@router.post("/public/risk-profile")
+def public_risk_profile(body: PublicRiskProfile, request: Request):
+    """Client-facing risk profiling: scores the client, creates their lead + portal account + suitability record,
+    and returns the PDF report. No staff session required (rate limited like signup)."""
+    from app.api.backoffice import BackofficeRiskProfileRequest, risk_profile_report
+    from app.api.crm_products import _ensure_schema, _store
+
+    _check_auth_rate_limit(request)
+    if not body.consent:
+        raise HTTPException(422, "Consent is required.")
+    if len(body.answers) != 10 or any(not 0 <= v <= 4 for v in body.answers.values()):
+        raise HTTPException(422, "Answer all 10 questions.")
+    name, email = body.name.strip(), body.email.strip().lower()
+    mobile = _check_mobile(re.sub(r"[^\d+]", "", body.phone.strip()))
+    email = _check_email(email)
+    if sqlite.get_customer_by_email(email) or sqlite.get_customer_by_mobile(mobile):
+        raise HTTPException(409, "An account with these details already exists. Please sign in or contact your advisor.")
+    rm_id = body.ref if body.ref and (sqlite.get_customer_by_id(body.ref) or {}).get("role") in ("rm", "admin") else None
+
+    profile, pdf = risk_profile_report(BackofficeRiskProfileRequest(
+        **body.model_dump(exclude={"name", "email", "phone", "password", "consent", "ref"}), first_name=name,
+    ))
+    repo = get_crm_repository()
+    lead = repo.create_lead(
+        name=name, email=email, mobile=mobile, source="website", status="new", assigned_rm_id=rm_id,
+        notes="Completed client risk profiling via shared link.", actor_id="risk_profile_link",
+    )
+    try:
+        res = repo.convert_lead(
+            lead["id"], actor_id="risk_profile_link", owner_rm_id=rm_id, password_hash=_hash_password(body.password),
+        )
+    except CrmCoreError as e:
+        raise HTTPException(409, str(e)) from e
+    _ensure_schema()
+    band = profile["band"]
+    _store().create_suitability({
+        "customer_id": res["customer_id"], "risk_band": band, "recorded_by_rm_id": rm_id, "objectives": "Client risk profiling via shared link",
+        "financial_status": f"Monthly income Rs {body.monthly_income:,}; capacity {profile['capacity']['score']}/100",
+        "investment_experience": None, "score": profile["tolerance"], "answers": json.dumps(body.answers),
+        "review_due": (datetime.now(IST).date() + timedelta(days=365)).isoformat(), "max_riskometer": p3.BAND_MAX_RISKOMETER[band],
+    })
+    return Response(
+        content=pdf, media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="risk-profile.pdf"'},
+    )
 
 
 class CrosswordResult(BaseModel):

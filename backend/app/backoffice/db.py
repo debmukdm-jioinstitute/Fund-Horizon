@@ -4,11 +4,14 @@ Ensures schema exists idempotently and seeds the default source and instrument r
 """
 from __future__ import annotations
 
+import logging
 import os
 import sqlite3
 from datetime import UTC, datetime
 
 from app.db import sqlite as _sqlite
+
+logger = logging.getLogger(__name__)
 
 
 def _utcnow() -> str:
@@ -476,7 +479,12 @@ _SEEDED_PATHS: set[str] = set()
 
 def ensure_backoffice_schema() -> None:
     """Ensure SQLite backoffice and CRM products schemas are loaded and registries are current."""
-    conn = _sqlite.get_default_connection()
+    try:
+        conn = _sqlite.get_default_connection()
+    except sqlite3.OperationalError as e:
+        logger.error("Failed to connect to SQLite in ensure_backoffice_schema: %s", e)
+        return
+
     try:
         table_check = conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='source_registry'"
@@ -519,5 +527,7 @@ def ensure_backoffice_schema() -> None:
                     """
                 )
                 conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS uq_flows_date_cat_seg ON flows(report_date, category, segment)")
+    except sqlite3.OperationalError as e:
+        logger.error("Failed to ensure backoffice schema or seed registries (disk full or DB error): %s", e)
     finally:
         conn.close()

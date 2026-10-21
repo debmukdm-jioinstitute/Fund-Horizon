@@ -12,7 +12,7 @@ from typing import Annotated, Any
 
 import pandas as pd
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
-from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.responses import FileResponse, PlainTextResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
 from app.api.auth import (
@@ -548,9 +548,12 @@ def backoffice_factsheets(
             "data": {"source": None, "items": [], "no_public": kind == "pms" and id in PMS_NO_PUBLIC_FACTSHEET},
             "availability": "unavailable",
         }
+    from app.storage import r2
+
     items = []
     for r in _REPO.list_factsheets(key):
-        archived = bool(r["archived_path"]) and Path(r["archived_path"]).is_file()
+        archived_val = r.get("archived_path")
+        archived = bool(archived_val) and (r2.enabled() or Path(archived_val).is_file())
         items.append({
             "id": r["id"], "period": r["period"], "title": r["title"], "size_bytes": r["size_bytes"],
             "first_seen_at": r["first_seen_at"],
@@ -569,8 +572,20 @@ def backoffice_factsheets(
 @router.get("/factsheets/{factsheet_id}/file")
 def backoffice_factsheet_file(factsheet_id: int, staff: Annotated[dict, Depends(require_staff)]):
     row = _REPO.get_factsheet(factsheet_id)
-    path = Path(row["archived_path"]) if row and row["archived_path"] else None
-    if path is None or not path.is_file() or not path.resolve().is_relative_to(factsheet_archive_dir().resolve()):
+    archived_val = row.get("archived_path") if row else None
+    if not archived_val:
+        raise HTTPException(404, "Factsheet file not archived")
+
+    from app.storage import r2
+
+    if r2.enabled():
+        path = Path(archived_val)
+        if path.is_file() and path.resolve().is_relative_to(factsheet_archive_dir().resolve()):
+            return FileResponse(path, media_type="application/pdf", filename=f"{row['source_key']}-{row['period']}.pdf")
+        return RedirectResponse(url=r2.url_for(archived_val), status_code=307)
+
+    path = Path(archived_val)
+    if not path.is_file() or not path.resolve().is_relative_to(factsheet_archive_dir().resolve()):
         raise HTTPException(404, "Factsheet file not archived")
     return FileResponse(path, media_type="application/pdf", filename=f"{row['source_key']}-{row['period']}.pdf")
 

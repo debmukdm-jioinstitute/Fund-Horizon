@@ -126,6 +126,7 @@ AMC_SOURCES: dict[str, tuple[str, str | None]] = {
     "LIC Mutual Fund": ("lic", "https://www.licmf.com/downloads/factsheet"),
     "Mahindra Manulife Mutual Fund": ("mahindra", "https://www.mahindramanulife.com/downloads#investor"),
     "Mirae Asset Mutual Fund": ("mirae", "https://www.miraeassetmf.co.in/downloads/factsheet"),
+    "Monarch Mutual Fund": ("monarch", None),
     "Motilal Oswal Mutual Fund": ("motilal", "https://www.motilaloswalmf.com/downloads/factsheets"),
     "NJ Mutual Fund": ("nj", "https://downloads.njmutualfund.com/downloads.php"),
     "Navi Mutual Fund": ("navi", "https://navi.com/mutual-fund/downloads/factsheet"),
@@ -276,11 +277,21 @@ def discover_fixed(client: httpx.Client, src: Source, archive_dir: Path, already
         return []
     if not _is_pdf(body):
         return []
-    archive_dir.mkdir(parents=True, exist_ok=True)
     digest = hashlib.sha256(body.content).hexdigest()
-    path = archive_dir / f"{src.key}-{modified}-{digest[:10]}.pdf"
-    path.write_bytes(body.content)
-    return [Found(modified, f"{src.label} factsheet (published {modified})", src.fixed_url, len(body.content), digest, str(path))]
+    filename = f"{src.key}-{modified}-{digest[:10]}.pdf"
+    from app.storage import r2
+
+    if r2.enabled():
+        key = f"factsheets/{filename}"
+        r2.put_bytes(body.content, key, content_type="application/pdf")
+        archived_ref = key
+    else:
+        archive_dir.mkdir(parents=True, exist_ok=True)
+        path = archive_dir / filename
+        path.write_bytes(body.content)
+        archived_ref = str(path)
+
+    return [Found(modified, f"{src.label} factsheet (published {modified})", src.fixed_url, len(body.content), digest, archived_ref)]
 
 
 def new_client() -> httpx.Client:

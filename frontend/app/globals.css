@@ -112,7 +112,9 @@ body {
     white-space: nowrap;
     text-decoration: none;
   }
-  .terminal-btn:hover {
+  /* :where() keeps this hover at base specificity, so the button's own bg and text utilities still win on hover.
+     A plain :hover here out-ranks them and turned white-text buttons white-on-white. */
+  .terminal-btn:where(:hover) {
     background-color: var(--terminal-bg);
     border-color: var(--terminal-text-secondary);
   }
@@ -138,7 +140,7 @@ body {
     background-color: #75E1CE;
     border-color: #75E1CE;
   }
-  .terminal-btn-accent:hover {
+  .terminal-btn-accent:where(:hover) {
     opacity: 0.9;
   }
 

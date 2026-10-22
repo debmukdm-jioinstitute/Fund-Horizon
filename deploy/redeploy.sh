@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Rebuild and restart the API container on the AWS server from the latest main.
-# Run on the server (Session Manager works): curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh | bash
+# Run on the server in Session Manager, as the ubuntu user (ssm-user cannot touch /home/ubuntu): curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh | sudo -iu ubuntu bash
 # Secrets stay on the server in /home/ubuntu/fh.env (OPENAI_API_KEY=...); the database lives in /home/ubuntu/fhdata.
 set -euo pipefail
 H=/home/ubuntu

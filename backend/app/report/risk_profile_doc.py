@@ -97,6 +97,14 @@ def _img(png: bytes, width_mm: float) -> Image:
     return Image(io.BytesIO(png), width=width_mm * mm, height=width_mm * mm * h / w)
 
 
+def _signature_stamp() -> list:
+    """The firm's signature and stamp, placed above the signatory line on every report. Empty if the file is missing."""
+    path = Path(__file__).parent / "assets" / "signature_stamp.png"
+    if not path.exists():
+        return []
+    return [_img(path.read_bytes(), 38)]
+
+
 def build_risk_profile_pdf(
     client_name: str,
     profile: dict,
@@ -398,7 +406,8 @@ def build_risk_profile_pdf(
         ],
         [
             Paragraph("<br/><br/>________________________________________<br/>Client Signature & Date", CELL),
-            Paragraph(f"<br/><br/>________________________________________<br/>Authorized Signatory & Stamp<br/>Date: {today_date}", CELL),
+            [*_signature_stamp(), Paragraph(f"________________________________________<br/>Authorized Signatory & Stamp<br/>Date: {today_date}", CELL)]
+            or Paragraph(f"<br/><br/>________________________________________<br/>Authorized Signatory & Stamp<br/>Date: {today_date}", CELL),
         ],
     ]
     story += [

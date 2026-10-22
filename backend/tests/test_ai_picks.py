@@ -100,3 +100,15 @@ def test_risk_pdf_shows_question_text_and_100_scale():
     _, pdf = risk_profile_report(BackofficeRiskProfileRequest(answers={f"q{i}": 3 for i in range(1, 11)}))
     text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(pdf)).pages)
     assert "Your investing experience" in text and "75 / 100" in text
+
+
+def test_risk_pdf_always_carries_signature_stamp():
+    import io
+
+    from pypdf import PdfReader
+
+    from app.api.backoffice import BackofficeRiskProfileRequest, risk_profile_report
+
+    _, pdf = risk_profile_report(BackofficeRiskProfileRequest())
+    sizes = [i.image.size for i in PdfReader(io.BytesIO(pdf)).pages[-1].images]
+    assert (256, 166) in sizes  # signature_stamp.png on the sign-off block

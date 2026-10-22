@@ -7,6 +7,10 @@
     "nodejs_compat",
     "global_fetch_strictly_public"
   ],
+  "routes": [
+    { "pattern": "fundhorizon.website", "custom_domain": true },
+    { "pattern": "www.fundhorizon.website", "custom_domain": true }
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

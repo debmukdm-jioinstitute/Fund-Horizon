@@ -160,7 +160,11 @@ class D1Repository(SQLiteRepository):
             stmt = stmt.bind(*params)
         if run_sync is None:
             raise RuntimeError("pyodide.ffi.run_sync unavailable on this platform")
-        res = run_sync(stmt.first())
+        try:
+            res = run_sync(stmt.first())
+        except Exception as e:
+            logger.warning("D1 first query failed: %s", e)
+            return None
         if res is None:
             return None
         if hasattr(res, "to_py"):
@@ -174,7 +178,11 @@ class D1Repository(SQLiteRepository):
             stmt = stmt.bind(*params)
         if run_sync is None:
             raise RuntimeError("pyodide.ffi.run_sync unavailable on this platform")
-        res = run_sync(stmt.all())
+        try:
+            res = run_sync(stmt.all())
+        except Exception as e:
+            logger.warning("D1 all query failed: %s", e)
+            return []
         results = getattr(res, "results", res)
         if hasattr(results, "to_py"):
             raw = results.to_py()
@@ -189,7 +197,11 @@ class D1Repository(SQLiteRepository):
             stmt = stmt.bind(*params)
         if run_sync is None:
             raise RuntimeError("pyodide.ffi.run_sync unavailable on this platform")
-        res = run_sync(stmt.run())
+        try:
+            res = run_sync(stmt.run())
+        except Exception as e:
+            logger.warning("D1 run query failed: %s", e)
+            return None
         meta = getattr(res, "meta", None)
         if hasattr(meta, "to_py"):
             return meta.to_py()

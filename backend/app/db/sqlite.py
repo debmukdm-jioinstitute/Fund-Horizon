@@ -174,8 +174,92 @@ class SQLiteRepository(DatabaseRepository):
                 init_crm_core_schema(conn)
                 init_crm_products_schema(conn)
                 init_backoffice_schema(conn)
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS chat_messages (
+                        id TEXT PRIMARY KEY,
+                        customer_id TEXT NOT NULL,
+                        sender_id TEXT NOT NULL,
+                        from_staff INTEGER NOT NULL DEFAULT 0,
+                        body TEXT NOT NULL,
+                        created_at TEXT NOT NULL,
+                        read_at TEXT
+                    )
+                    """
+                )
+                conn.execute("CREATE INDEX IF NOT EXISTS ix_chat_customer ON chat_messages (customer_id, created_at)")
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS holdings (
+                        id TEXT PRIMARY KEY,
+                        contact_id TEXT NOT NULL,
+                        folio TEXT NOT NULL,
+                        scheme_code TEXT NOT NULL,
+                        scheme_name TEXT,
+                        units REAL NOT NULL,
+                        cost_paise INTEGER NOT NULL DEFAULT 0,
+                        as_of TEXT NOT NULL,
+                        source TEXT,
+                        created_at TEXT NOT NULL,
+                        updated_at TEXT,
+                        created_by TEXT,
+                        updated_by TEXT,
+                        UNIQUE (contact_id, folio, scheme_code)
+                    )
+                    """
+                )
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS sip_schedules (
+                        id TEXT PRIMARY KEY,
+                        contact_id TEXT NOT NULL,
+                        scheme_code TEXT NOT NULL,
+                        scheme_name TEXT,
+                        type TEXT NOT NULL DEFAULT 'sip',
+                        amount_paise INTEGER NOT NULL,
+                        day INTEGER NOT NULL,
+                        start_date TEXT NOT NULL,
+                        end_date TEXT,
+                        mandate_id TEXT,
+                        status TEXT NOT NULL DEFAULT 'active',
+                        bounce_count INTEGER NOT NULL DEFAULT 0,
+                        last_bounce_at TEXT,
+                        created_at TEXT NOT NULL,
+                        updated_at TEXT,
+                        created_by TEXT,
+                        updated_by TEXT
+                    )
+                    """
+                )
         except sqlite3.OperationalError as e:
             logger.error("Failed to initialize SQLite schema (disk full or DB error): %s", e)
+        finally:
+            conn.close()
+
+    def _all(self, sql: str, params: tuple | list = ()) -> list[dict[str, Any]]:
+        conn = self._get_connection()
+        try:
+            return [dict(r) for r in conn.execute(sql, params).fetchall()]
+        except sqlite3.OperationalError:
+            return []
+        finally:
+            conn.close()
+
+    def _first(self, sql: str, params: tuple | list = ()) -> dict[str, Any] | None:
+        conn = self._get_connection()
+        try:
+            r = conn.execute(sql, params).fetchone()
+            return dict(r) if r else None
+        except sqlite3.OperationalError:
+            return None
+        finally:
+            conn.close()
+
+    def _run(self, sql: str, params: tuple | list = ()) -> Any:
+        conn = self._get_connection()
+        try:
+            with conn:
+                return conn.execute(sql, params)
         finally:
             conn.close()
 

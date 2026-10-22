@@ -76,3 +76,15 @@ def test_backtest_blends_funds_and_reports_window():
     bt = backtest([{"scheme_code": CODES[0], "weight_pct": 50}, {"scheme_code": CODES[1], "weight_pct": 50}])
     assert bt and bt["months"] >= 12 and bt["growth"][0]["v"] == 100 and bt["max_drawdown"] <= 0
     assert backtest([{"scheme_code": "000000", "weight_pct": 100}]) is None  # no NAV file: no result, no crash
+
+
+def test_risk_pdf_shows_question_text_and_100_scale():
+    import io
+
+    from pypdf import PdfReader
+
+    from app.api.backoffice import BackofficeRiskProfileRequest, risk_profile_report
+
+    _, pdf = risk_profile_report(BackofficeRiskProfileRequest(answers={f"q{i}": 3 for i in range(1, 11)}))
+    text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(pdf)).pages)
+    assert "Your investing experience" in text and "75 / 100" in text

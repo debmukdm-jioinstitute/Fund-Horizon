@@ -1407,11 +1407,11 @@ def risk_profile_report(req: BackofficeRiskProfileRequest) -> tuple[dict, bytes]
         qid = q.get("id")
         ans_idx = answers.get(qid, 2)
         opts = q.get("options", [])
-        chosen_opt = opts[ans_idx] if 0 <= ans_idx < len(opts) else {"text": "Moderate", "score": 50}
+        chosen_opt = opts[ans_idx] if 0 <= ans_idx < len(opts) else {"text": "Moderate", "score": 3}
         responses.append({
-            "question": q.get("question", ""),
+            "question": q.get("text", ""),
             "answer": chosen_opt.get("text", ""),
-            "score": chosen_opt.get("score", 50),
+            "score": (chosen_opt.get("score", 3) - 1) * 25,  # option scores run 1-5; the report shows 0-100 like the tolerance score
         })
 
     client_inputs = {

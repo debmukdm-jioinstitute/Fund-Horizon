@@ -456,3 +456,50 @@ def test_backoffice_risk_profiling_endpoints(client):
     assert pdf_res.content.startswith(b"%PDF")
     assert len(pdf_res.content) > 10000
 
+
+def test_risk_profiling_report_validation_errors(client):
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    valid_payload = {
+        "first_name": "Vikram Sharma",
+        "age": 35,
+        "employment_type": "salaried_private",
+        "dependents": 1,
+        "monthly_income": 100000,
+        "monthly_expenses": 40000,
+        "monthly_emi": 10000,
+        "liquid_assets": 500000,
+        "investments": 1000000,
+        "liabilities": 0,
+        "term_cover": 15000000,
+        "health_cover": 2500000,
+        "answers": {f"q{i}": 2 for i in range(1, 11)},
+    }
+
+    # Blank name
+    res = client.post("/api/backoffice/risk-profiling/report.pdf", json={**valid_payload, "first_name": ""})
+    assert res.status_code == 400
+    assert "Client / Household Name is required" in res.json()["detail"]
+
+    # Short name (<3 chars)
+    res = client.post("/api/backoffice/risk-profiling/report.pdf", json={**valid_payload, "first_name": "AB"})
+    assert res.status_code == 400
+
+    # Invalid age
+    res = client.post("/api/backoffice/risk-profiling/report.pdf", json={**valid_payload, "age": 150})
+    assert res.status_code in (400, 422)
+
+    res = client.post("/api/backoffice/risk-profiling/report.pdf", json={**valid_payload, "age": 17})
+    assert res.status_code in (400, 422)
+
+    # Invalid dependents
+    res = client.post("/api/backoffice/risk-profiling/report.pdf", json={**valid_payload, "dependents": -2})
+    assert res.status_code in (400, 422)
+
+    # Special characters & markup in name
+    res = client.post(
+        "/api/backoffice/risk-profiling/report.pdf",
+        json={**valid_payload, "first_name": '<b>Vikram & Partners</b> "HNI"'}
+    )
+    assert res.status_code == 200
+    assert res.content.startswith(b"%PDF")

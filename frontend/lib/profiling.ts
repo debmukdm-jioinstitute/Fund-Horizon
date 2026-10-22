@@ -137,8 +137,9 @@ export const QUESTIONNAIRE_QUESTIONS = [
     text: "Which is true of a diversified equity fund?",
     options: [
       { text: "Returns are fixed", score: 1 },
-      { text: "It cannot lose money over 3 years", score: 1 },
-      { text: "Not sure", score: 2 },
+      { text: "It cannot lose money over 3 years", score: 2 },
+      { text: "Not sure", score: 3 },
+      { text: "Principal is protected with small market upside", score: 4 },
       { text: "It can lose money for 1-2 years but usually recovers over long periods", score: 5 },
     ],
   },
@@ -155,6 +156,8 @@ export const QUESTIONNAIRE_QUESTIONS = [
   },
 ];
 
+export const MISMATCH_THRESHOLD_POINTS = 20;
+
 export const BANDS = [
   { name: "Conservative", min: 0, max: 20, equity: 15, debt: 65, gold: 5, liquid: 15, color: "text-blue-700 bg-blue-50 border-blue-200" },
   { name: "Moderately Conservative", min: 20, max: 40, equity: 30, debt: 52, gold: 8, liquid: 10, color: "text-cyan-700 bg-cyan-50 border-cyan-200" },
@@ -164,10 +167,15 @@ export const BANDS = [
 ];
 
 export function getBandForScore(score: number) {
-  for (const b of BANDS) {
-    if (score >= b.min && score < b.max) return b;
+  for (let i = 0; i < BANDS.length; i++) {
+    const b = BANDS[i];
+    if (i === BANDS.length - 1) {
+      if (score >= b.min && score <= b.max) return b;
+    } else {
+      if (score >= b.min && score < b.max) return b;
+    }
   }
-  return BANDS[BANDS.length - 1];
+  return score <= 0 ? BANDS[0] : BANDS[BANDS.length - 1];
 }
 
 export function computeClientProfileLocally(
@@ -175,10 +183,12 @@ export function computeClientProfileLocally(
   answers: Record<string, number>
 ): RiskProfileResult {
   const isClientValid =
+    c.firstName.trim().length >= 3 &&
+    c.firstName.trim().length <= 100 &&
     c.age >= 18 &&
     c.age <= 100 &&
     c.dependents >= 0 &&
-    c.dependents <= 20 &&
+    c.dependents <= 15 &&
     c.monthlyIncome > 0 &&
     Boolean(c.employmentType);
 
@@ -209,7 +219,7 @@ export function computeClientProfileLocally(
 
   // Dependents score (0 if invalid negative)
   let depScore = 0;
-  if (c.dependents >= 0 && c.dependents <= 20) {
+  if (c.dependents >= 0 && c.dependents <= 15) {
     depScore = c.dependents === 0 ? 100 : c.dependents === 1 ? 80 : c.dependents === 2 ? 60 : c.dependents === 3 ? 40 : 25;
   }
 
@@ -252,12 +262,22 @@ export function computeClientProfileLocally(
     else dbScore = 10;
   }
 
-  // Insurance score: HLV = 70% * annual income * working years. Adequate if term cover >= 70% of HLV need
-  const workingYears = Math.max(1, c.retirementAge - c.age);
-  const termNeedEst = c.monthlyIncome > 0 ? Math.max(0, c.monthlyIncome * 12 * workingYears * 0.7) : 0;
-  const termOk = c.termCover > 0 && (termNeedEst === 0 || c.termCover >= 0.7 * termNeedEst);
-  const healthOk = c.healthCover > 0;
-  const insScore = termOk && healthOk ? 100 : termOk || healthOk ? 60 : 20;
+  // Insurance score: Two explicit sub-scores (Term adequacy + Health cover) per Fix 6
+  const annualIncome = c.monthlyIncome * 12;
+  const termMultiple = annualIncome > 0 ? c.termCover / annualIncome : (c.termCover > 0 ? 15 : 0);
+  let termSubScore = 20;
+  if (termMultiple >= 15.0) termSubScore = 100;
+  else if (termMultiple >= 10.0) termSubScore = 80;
+  else if (termMultiple >= 7.0) termSubScore = 60;
+  else if (termMultiple >= 5.0) termSubScore = 40;
+  else termSubScore = 20;
+
+  let healthSubScore = 20;
+  if (c.healthCover >= 2500000) healthSubScore = 100;
+  else if (c.healthCover >= 1000000) healthSubScore = 60;
+  else healthSubScore = 20;
+
+  const insScore = Math.round((termSubScore + healthSubScore) / 2);
 
   const factors: FactorScore[] = [
     { factor: "Age", weight: 0.20, value: c.age || "—", score: ageScore, contribution: Number((ageScore * 0.20).toFixed(2)) },
@@ -267,7 +287,7 @@ export function computeClientProfileLocally(
     { factor: "Dependents", weight: 0.10, value: c.dependents < 0 ? "Invalid" : c.dependents, score: depScore, contribution: Number((depScore * 0.10).toFixed(2)) },
     { factor: "Net worth", weight: 0.10, value: c.monthlyIncome > 0 ? `${nwMultiple.toFixed(1)}×` : "—", score: nwScore, contribution: Number((nwScore * 0.10).toFixed(2)) },
     { factor: "Debt burden", weight: 0.10, value: c.monthlyIncome > 0 ? `${(debtBurden * 100).toFixed(1)}%` : "—", score: dbScore, contribution: Number((dbScore * 0.10).toFixed(2)) },
-    { factor: "Insurance", weight: 0.05, value: termOk ? "Adequate" : "Shortfall", score: insScore, contribution: Number((insScore * 0.05).toFixed(2)) },
+    { factor: "Insurance", weight: 0.05, value: termSubScore === 100 && healthSubScore === 100 ? "Adequate" : `${termMultiple.toFixed(1)}× inc`, score: insScore, contribution: Number((insScore * 0.05).toFixed(2)) },
   ];
 
   const capacityScore = isClientValid ? Number(factors.reduce((sum, f) => sum + f.contribution, 0).toFixed(1)) : 0;
@@ -288,11 +308,14 @@ export function computeClientProfileLocally(
   }
 
   const isQuestionnaireComplete = answeredCount === QUESTIONNAIRE_QUESTIONS.length;
-  const toleranceScore = answeredCount > 0
+  // Raw min 10 -> 0%, Raw max 50 -> 100% (Tolerance = (raw - 10) * 2.5)
+  const toleranceScore = isQuestionnaireComplete
+    ? Number(((totalTolerancePoints - 10) * 2.5).toFixed(1))
+    : answeredCount > 0
     ? Number((((totalTolerancePoints - answeredCount) / (answeredCount * 4)) * 100).toFixed(1))
     : 0;
 
-  const isComplete = isClientValid && isQuestionnaireComplete && c.firstName.trim().length > 0;
+  const isComplete = isClientValid && isQuestionnaireComplete;
   const finalScore = isComplete ? Number(Math.min(capacityScore, toleranceScore).toFixed(1)) : 0;
   const band = isComplete
     ? getBandForScore(finalScore)
@@ -301,16 +324,17 @@ export function computeClientProfileLocally(
   const priorityActions: string[] = [];
   if (isClientValid) {
     if (efMonths < 6) priorityActions.push("Build emergency fund to at least 6 months of expenses");
-    if (!termOk) {
-      const needCr = (termNeedEst / 10000000).toFixed(2);
-      priorityActions.push(`Bridge term life insurance cover shortfall (HLV Need: ~₹${needCr} Cr)`);
+    if (termSubScore < 100) {
+      priorityActions.push(`Bridge term life insurance cover shortfall (current: ${termMultiple.toFixed(1)}× income; target: 15×)`);
     }
-    if (!healthOk) priorityActions.push("Procure dedicated health insurance cover");
+    if (healthSubScore < 100) {
+      priorityActions.push("Procure dedicated health insurance cover (target: ₹25L)");
+    }
   }
 
   let mismatchNote: string | null = null;
-  if (isComplete && toleranceScore - capacityScore >= 25) {
-    mismatchNote = `High risk appetite (${toleranceScore}) exceeds objective financial capacity (${capacityScore}) by ${Number((toleranceScore - capacityScore).toFixed(1))} points (threshold: ≥25 pts). Risk band capped at capacity to protect capital.`;
+  if (isComplete && toleranceScore - capacityScore >= MISMATCH_THRESHOLD_POINTS) {
+    mismatchNote = `High risk appetite (${toleranceScore}) exceeds objective financial capacity (${capacityScore}) by ${Number((toleranceScore - capacityScore).toFixed(1))} points (threshold: ≥${MISMATCH_THRESHOLD_POINTS} pts). Risk band capped at capacity to protect capital.`;
   }
 
   return {
@@ -356,7 +380,7 @@ export const PROFILING_PRESETS: { name: string; icon: string; desc: string; clie
       healthCover: 1500000,
       retirementAge: 60,
     },
-    answers: { q1: 3, q2: 4, q3: 3, q4: 3, q5: 3, q6: 3, q7: 3, q8: 3, q9: 3, q10: 3 },
+    answers: { q1: 3, q2: 4, q3: 3, q4: 3, q5: 3, q6: 3, q7: 3, q8: 3, q9: 4, q10: 3 },
   },
   {
     name: "Balanced Family Wealth",
@@ -377,7 +401,7 @@ export const PROFILING_PRESETS: { name: string; icon: string; desc: string; clie
       healthCover: 2000000,
       retirementAge: 60,
     },
-    answers: { q1: 2, q2: 2, q3: 2, q4: 2, q5: 1, q6: 3, q7: 2, q8: 2, q9: 3, q10: 2 },
+    answers: { q1: 2, q2: 2, q3: 2, q4: 2, q5: 1, q6: 3, q7: 2, q8: 2, q9: 4, q10: 2 },
   },
   {
     name: "Conservative Pre-Retiree",
@@ -419,6 +443,6 @@ export const PROFILING_PRESETS: { name: string; icon: string; desc: string; clie
       healthCover: 2500000,
       retirementAge: 65,
     },
-    answers: { q1: 3, q2: 3, q3: 3, q4: 3, q5: 4, q6: 4, q7: 4, q8: 4, q9: 3, q10: 4 },
+    answers: { q1: 3, q2: 3, q3: 3, q4: 3, q5: 4, q6: 4, q7: 4, q8: 4, q9: 4, q10: 4 },
   },
 ];

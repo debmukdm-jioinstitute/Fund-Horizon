@@ -1366,6 +1366,17 @@ def backoffice_evaluate_risk_profile(
 
 def risk_profile_report(req: BackofficeRiskProfileRequest) -> tuple[dict, bytes]:
     """Score a client and render the Risk Profiling and Suitability PDF. Shared by staff and public-link flows."""
+    if not req.first_name or len(req.first_name.strip()) < 3:
+        raise HTTPException(400, "Client / Household Name is required (minimum 3 characters).")
+    if len(req.first_name.strip()) > 100:
+        raise HTTPException(400, "Client / Household Name cannot exceed 100 characters.")
+    if req.age < 18 or req.age > 100:
+        raise HTTPException(400, "Age must be between 18 and 100 years.")
+    if req.dependents < 0 or req.dependents > 15:
+        raise HTTPException(400, "Financial dependents must be between 0 and 15.")
+    if req.monthly_income <= 0:
+        raise HTTPException(400, "Monthly income must be greater than 0.")
+
     from app.config import load_questionnaire
     from app.engine.profiling import band_for, build_profile
     from app.report.risk_profile_doc import build_risk_profile_pdf

@@ -55,7 +55,8 @@ function AiPicksView({ initial, onSave, onChange }: { initial: AiPicks; onSave: 
 
   const byCode = new Map<string, AiFund>(data.candidates.map((c) => [c.scheme_code, c]));
   const total = edit ? edit.reduce((s, r) => s + (parseFloat(r.w) || 0), 0) : 0;
-  const valid = !!edit && edit.length >= 1 && Math.abs(total - 100) <= 0.05 && edit.every((r) => (parseFloat(r.w) || 0) > 0);
+  const hasNonPositive = !!edit && edit.some((r) => (parseFloat(r.w) || 0) <= 0);
+  const valid = !!edit && edit.length >= 1 && Math.abs(total - 100) <= 0.05 && !hasNonPositive;
 
   async function save() {
     if (!edit) return;
@@ -71,7 +72,7 @@ function AiPicksView({ initial, onSave, onChange }: { initial: AiPicks; onSave: 
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-navy-700">
-          {data.ai_generated ? "Chosen by AI" : "Chosen by a fixed rule"} from the FH Recommended funds, using your allocation and the current market.
+          {data.ai_generated ? "Chosen by AI" : "Chosen by a fixed rule"} from the FH Marked funds, using your allocation and the current market.
           {data.edited && " You have edited this split."}
         </p>
         {!edit && <button type="button" className="btn-secondary" onClick={() => setEdit(data.picks.map((p) => ({ scheme_code: p.scheme_code, w: String(p.weight_pct) })))}>Edit</button>}
@@ -103,11 +104,15 @@ function AiPicksView({ initial, onSave, onChange }: { initial: AiPicks; onSave: 
           {edit.length < MAX && (
             <select value="" aria-label="Add a fund" className="rounded border border-navy-200 px-2 py-1 text-sm"
               onChange={(e) => e.target.value && setEdit([...edit, { scheme_code: e.target.value, w: "0" }])}>
-              <option value="">Add a fund from the FH Recommended list…</option>
+              <option value="">Add a fund from the FH Marked list…</option>
               {data.candidates.filter((c) => !edit.some((r) => r.scheme_code === c.scheme_code)).map((c) => <option key={c.scheme_code} value={c.scheme_code}>{c.scheme_name}</option>)}
             </select>
           )}
-          <div className={`text-sm font-semibold ${valid ? "text-green-700" : "text-red-700"}`}>Total {total.toFixed(1)}% (must be 100%)</div>
+          <div className={`text-sm font-semibold ${valid ? "text-green-700" : "text-red-700"}`}>
+            {hasNonPositive && Math.abs(total - 100) <= 0.05
+              ? "Weights must be greater than 0 and total 100%"
+              : `Total ${total.toFixed(1)}% (must be 100%)`}
+          </div>
           <div className="flex gap-2">
             <button type="button" className="btn-primary" disabled={!valid || saving} onClick={save}>{saving ? "Saving…" : "Save split"}</button>
             <button type="button" className="btn-secondary" onClick={() => { setEdit(null); setErr(null); }}>Cancel</button>

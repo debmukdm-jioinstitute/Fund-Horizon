@@ -86,13 +86,17 @@ export default function RiskProfilingPage() {
     return computeClientProfileLocally(client, answers);
   }, [client, answers]);
 
-  // The form starts empty; reports and CRM saves need real inputs, not defaults.
-  const ready =
-    client.firstName.trim().length > 0 &&
-    client.age >= 18 && client.age <= 100 &&
-    client.dependents >= 0 && client.dependents <= 20 &&
-    client.monthlyIncome > 0 && Boolean(client.employmentType) &&
-    QUESTIONNAIRE_QUESTIONS.every((q) => answers[q.id] !== undefined);
+  const nameValid = client.firstName.trim().length >= 3 && client.firstName.trim().length <= 100;
+  const ageValid = client.age >= 18 && client.age <= 100;
+  const empValid = Boolean(client.employmentType);
+  const incomeValid = client.monthlyIncome > 0;
+  const depValid = client.dependents >= 0 && client.dependents <= 15;
+  const questionnaireAnsweredCount = QUESTIONNAIRE_QUESTIONS.filter((q) => answers[q.id] !== undefined).length;
+  const questionnaireComplete = questionnaireAnsweredCount === QUESTIONNAIRE_QUESTIONS.length;
+
+  const completedInputs = (nameValid ? 1 : 0) + (ageValid ? 1 : 0) + (empValid ? 1 : 0) + (incomeValid ? 1 : 0) + questionnaireAnsweredCount;
+  const remainingInputs = 14 - completedInputs;
+  const ready = nameValid && ageValid && empValid && incomeValid && depValid && questionnaireComplete;
 
   const loadPreset = (presetIndex: number) => {
     const p = PROFILING_PRESETS[presetIndex];
@@ -137,7 +141,7 @@ export default function RiskProfilingPage() {
         }),
       });
       if (res.ok) {
-        setSaveStatus(`✅ Successfully saved suitability record for ${targetCustomerId.trim()} (${profile.band}).`);
+        setSaveStatus(`✅ Recorded suitability to CRM for ${targetCustomerId.trim()} (${profile.band}).`);
       } else {
         const err = await res.json().catch(() => ({}));
         setSaveStatus(`❌ Failed to record to CRM (${res.status}): ${err.detail || "Server rejected request."}`);
@@ -348,7 +352,7 @@ export default function RiskProfilingPage() {
                     </label>
                     <input
                       type="text"
-                      maxLength={80}
+                      maxLength={100}
                       value={client.firstName}
                       placeholder="e.g. Vikram Sharma"
                       onChange={(e) => {
@@ -357,9 +361,11 @@ export default function RiskProfilingPage() {
                       }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
-                    {!client.firstName.trim() && (
-                      <p className="mt-1 text-[11px] text-[#706E6B] dark:text-navy-400">Required for official SEBI dossier.</p>
-                    )}
+                    {!client.firstName.trim() ? (
+                      <p className="mt-1 text-[11px] text-[#706E6B] dark:text-navy-400">Required for official SEBI dossier (min 3 characters).</p>
+                    ) : client.firstName.trim().length < 3 ? (
+                      <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">Name must be at least 3 characters.</p>
+                    ) : null}
                   </div>
                   <div>
                     <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Age (years) *</label>
@@ -401,7 +407,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      max={20}
+                      max={15}
                       value={client.dependents !== undefined && client.dependents !== 0 ? client.dependents : client.dependents === 0 ? "0" : ""}
                       placeholder="0"
                       onChange={(e) => {
@@ -410,8 +416,8 @@ export default function RiskProfilingPage() {
                       }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
-                    {client.dependents < 0 && (
-                      <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">Dependents cannot be negative.</p>
+                    {(client.dependents < 0 || client.dependents > 15) && (
+                      <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">Dependents must be between 0 and 15.</p>
                     )}
                   </div>
                   <div>
@@ -419,7 +425,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={1000}
+                      step="any"
                       value={client.monthlyIncome || ""} placeholder="0"
                       onChange={(e) => {
                         setClient({ ...client, monthlyIncome: Number(e.target.value) || 0 });
@@ -433,7 +439,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={1000}
+                      step="any"
                       value={client.monthlyExpenses || ""} placeholder="0"
                       onChange={(e) => {
                         setClient({ ...client, monthlyExpenses: Number(e.target.value) || 0 });
@@ -447,7 +453,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={1000}
+                      step="any"
                       value={client.monthlyEmi || ""} placeholder="0"
                       onChange={(e) => {
                         setClient({ ...client, monthlyEmi: Number(e.target.value) || 0 });
@@ -461,7 +467,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={10000}
+                      step="any"
                       value={client.liquidAssets || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, liquidAssets: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
@@ -472,7 +478,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={50000}
+                      step="any"
                       value={client.investments || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, investments: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
@@ -483,7 +489,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={50000}
+                      step="any"
                       value={client.liabilities || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, liabilities: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
@@ -494,7 +500,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={500000}
+                      step="any"
                       value={client.termCover || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, termCover: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
@@ -505,7 +511,7 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={100000}
+                      step="any"
                       value={client.healthCover || ""} placeholder="0"
                       onChange={(e) => setClient({ ...client, healthCover: Number(e.target.value) || 0 })}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
@@ -602,9 +608,9 @@ export default function RiskProfilingPage() {
             {/* Right Output & Allocation Column (5 cols) */}
             <div className="space-y-6 lg:col-span-5">
               {!ready && (
-                <p className="rounded-lg border border-dashed border-[#B8C0CC] px-3 py-2 text-xs text-[#706E6B] dark:border-navy-700 dark:text-navy-400">
-                  Enter the client details and answer all 10 questions to complete the assessment. The figures below are provisional until then.
-                </p>
+                <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
+                  <span className="font-bold">Assessment incomplete</span> — {remainingInputs} of 14 inputs remaining. Enter required client details and answer all 10 questions to compute suitability.
+                </div>
               )}
               {/* Composite Score Card */}
               <div className="card space-y-4 border-t-4 border-t-[#0176D3] bg-white dark:bg-navy-900">
@@ -614,19 +620,21 @@ export default function RiskProfilingPage() {
                       Assigned Risk Category
                     </span>
                     <h3 className="mt-1 text-2xl font-extrabold text-[#181818] dark:text-white">
-                      {profile.band}
+                      {ready ? profile.band : "—"}
                     </h3>
                   </div>
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-bold ring-1 ${
-                      profile.band.includes("Aggressive")
+                      !ready
+                        ? "bg-slate-100 text-slate-700 ring-slate-300 dark:bg-slate-800 dark:text-slate-300"
+                        : profile.band.includes("Aggressive")
                         ? "bg-rose-50 text-rose-800 ring-rose-300 dark:bg-rose-950/40 dark:text-rose-300"
                         : profile.band.includes("Moderate")
                         ? "bg-[#EAF5FE] text-[#014486] ring-[#57A9F5] dark:bg-[#0F2A45]/40 dark:text-[#57A9F5]"
                         : "bg-blue-50 text-blue-800 ring-blue-300 dark:bg-blue-950/40 dark:text-blue-300"
                     }`}
                   >
-                    Band: {profile.band}
+                    Band: {ready ? profile.band : "Incomplete"}
                   </span>
                 </div>
 
@@ -651,13 +659,13 @@ export default function RiskProfilingPage() {
                     <div className="flex justify-between text-xs">
                       <span className="font-medium text-[#444444] dark:text-navy-300">Financial Risk Capacity:</span>
                       <span className="font-bold text-[#181818] dark:text-white">
-                        {profile.capacity.score > 0 ? `${profile.capacity.score} / 100` : "— / 100"}
+                        {ready && profile.capacity.score > 0 ? `${profile.capacity.score} / 100` : "— / 100"}
                       </span>
                     </div>
                     <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[#ECEBEA] dark:bg-navy-800">
                       <div
                         className="h-full bg-[#444444] transition-all dark:bg-navy-300"
-                        style={{ width: `${Math.min(100, profile.capacity.score)}%` }}
+                        style={{ width: `${ready ? Math.min(100, profile.capacity.score) : 0}%` }}
                       />
                     </div>
                   </div>
@@ -666,20 +674,20 @@ export default function RiskProfilingPage() {
                     <div className="flex justify-between text-xs">
                       <span className="font-medium text-[#444444] dark:text-navy-300">Emotional Risk Tolerance:</span>
                       <span className="font-bold text-[#0176D3] dark:text-[#1B96FF]">
-                        {profile.tolerance > 0 ? `${profile.tolerance} / 100` : "— / 100"}
+                        {ready && profile.tolerance > 0 ? `${profile.tolerance} / 100` : "— / 100"}
                       </span>
                     </div>
                     <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[#ECEBEA] dark:bg-navy-800">
                       <div
                         className="h-full bg-[#0176D3] transition-all dark:bg-[#0176D3]"
-                        style={{ width: `${Math.min(100, profile.tolerance)}%` }}
+                        style={{ width: `${ready ? Math.min(100, profile.tolerance) : 0}%` }}
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Mismatch Alert */}
-                {profile.mismatch_note && (
+                {ready && profile.mismatch_note && (
                   <div className="rounded border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
                     <span className="font-bold">⚠️ Regulatory Risk Mismatch:</span> {profile.mismatch_note}
                   </div>
@@ -696,26 +704,26 @@ export default function RiskProfilingPage() {
                 </div>
 
                 {/* Stacked Allocation Bar */}
-                <div className="h-4 w-full overflow-hidden rounded-full flex">
+                <div className="h-4 w-full overflow-hidden rounded-full flex bg-[#ECEBEA] dark:bg-navy-800">
                   <div
-                    style={{ width: `${profile.allocation.equity}%` }}
+                    style={{ width: `${ready ? profile.allocation.equity : 0}%` }}
                     className="bg-[#0176D3] transition-all"
-                    title={`Equity: ${profile.allocation.equity}%`}
+                    title={`Equity: ${ready ? profile.allocation.equity : 0}%`}
                   />
                   <div
-                    style={{ width: `${profile.allocation.debt}%` }}
+                    style={{ width: `${ready ? profile.allocation.debt : 0}%` }}
                     className="bg-blue-600 transition-all"
-                    title={`Debt: ${profile.allocation.debt}%`}
+                    title={`Debt: ${ready ? profile.allocation.debt : 0}%`}
                   />
                   <div
-                    style={{ width: `${profile.allocation.gold}%` }}
+                    style={{ width: `${ready ? profile.allocation.gold : 0}%` }}
                     className="bg-amber-500 transition-all"
-                    title={`Gold: ${profile.allocation.gold}%`}
+                    title={`Gold: ${ready ? profile.allocation.gold : 0}%`}
                   />
                   <div
-                    style={{ width: `${profile.allocation.liquid}%` }}
+                    style={{ width: `${ready ? profile.allocation.liquid : 0}%` }}
                     className="bg-slate-400 transition-all"
-                    title={`Liquid: ${profile.allocation.liquid}%`}
+                    title={`Liquid: ${ready ? profile.allocation.liquid : 0}%`}
                   />
                 </div>
 
@@ -723,19 +731,19 @@ export default function RiskProfilingPage() {
                 <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
                   <div className="rounded border border-[#C5DDF7] bg-[#EAF5FE] p-2 text-center dark:border-teal-900 dark:bg-[#0F2A45]/30">
                     <span className="text-[#0176D3] dark:text-[#1B96FF] font-medium">Equity</span>
-                    <div className="text-base font-extrabold text-[#032D60] dark:text-white">{profile.allocation.equity}%</div>
+                    <div className="text-base font-extrabold text-[#032D60] dark:text-white">{ready ? `${profile.allocation.equity}%` : "—%"}</div>
                   </div>
                   <div className="rounded border border-blue-200 bg-blue-50 p-2 text-center dark:border-blue-900 dark:bg-blue-950/30">
                     <span className="text-blue-700 dark:text-blue-400 font-medium">Debt</span>
-                    <div className="text-base font-extrabold text-blue-950 dark:text-white">{profile.allocation.debt}%</div>
+                    <div className="text-base font-extrabold text-blue-950 dark:text-white">{ready ? `${profile.allocation.debt}%` : "—%"}</div>
                   </div>
                   <div className="rounded border border-amber-200 bg-amber-50 p-2 text-center dark:border-amber-900 dark:bg-amber-950/30">
                     <span className="text-amber-700 dark:text-amber-400 font-medium">Gold</span>
-                    <div className="text-base font-extrabold text-amber-950 dark:text-white">{profile.allocation.gold}%</div>
+                    <div className="text-base font-extrabold text-amber-950 dark:text-white">{ready ? `${profile.allocation.gold}%` : "—%"}</div>
                   </div>
                   <div className="rounded border border-slate-200 bg-slate-50 p-2 text-center dark:border-slate-800 dark:bg-slate-900/50">
                     <span className="text-slate-600 dark:text-slate-400 font-medium">Liquid</span>
-                    <div className="text-base font-extrabold text-slate-900 dark:text-white">{profile.allocation.liquid}%</div>
+                    <div className="text-base font-extrabold text-slate-900 dark:text-white">{ready ? `${profile.allocation.liquid}%` : "—%"}</div>
                   </div>
                 </div>
 
@@ -750,9 +758,9 @@ export default function RiskProfilingPage() {
                 </div>
               </div>
 
-              {/* AI fund picks from the FH Recommended list */}
+              {/* AI fund picks from the FH Marked list */}
               <div className="card space-y-3">
-                <h4 className="text-sm font-bold text-[#181818] dark:text-white">AI fund picks from the FH Recommended list</h4>
+                <h4 className="text-sm font-bold text-[#181818] dark:text-white">AI fund picks from the FH Marked list</h4>
                 {ready ? (
                   <AiPicksPreview profile={{ band: profile.band, ...profile.allocation }} onChange={setFundPicks} />
                 ) : (
@@ -761,7 +769,7 @@ export default function RiskProfilingPage() {
               </div>
 
               {/* Priority Financial Hygiene Actions */}
-              {profile.priority_actions.length > 0 && (
+              {ready && profile.priority_actions.length > 0 && (
                 <div className="card space-y-2.5 border-l-4 border-l-amber-500 bg-amber-50/40 dark:bg-amber-950/20">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300">
                     Mandatory Advisory Gaps:
@@ -926,8 +934,10 @@ export default function RiskProfilingPage() {
                     <tr>
                       <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Insurance Adequacy</td>
                       <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">5%</td>
-                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">HLV Need = 70% × Annual Income × (Retirement Age - Age). Adequate if Term Cover ≥ 70% of need and Health Cover &gt; 0</td>
-                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">Both OK (100) to None (20)</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">
+                        Two explicit sub-scores averaged: (1) Term adequacy = Term cover ÷ Annual income (≥15×: 100, 10–&lt;15×: 80, 7–&lt;10×: 60, 5–&lt;7×: 40, &lt;5×: 20); (2) Health cover (≥₹25L: 100, ₹10L–&lt;₹25L: 60, &lt;₹10L: 20).
+                      </td>
+                      <td className="px-3 py-2 text-[#444444] dark:text-navy-300">Average of Term &amp; Health (20 to 100)</td>
                     </tr>
                   </tbody>
                 </table>
@@ -969,7 +979,7 @@ export default function RiskProfilingPage() {
             <div className="space-y-2 pt-2">
               <h3 className="text-sm font-bold text-[#181818] dark:text-white">3. Regulatory Conservatism & Mismatch Threshold</h3>
               <p className="text-xs text-[#444444] dark:text-navy-300 leading-relaxed">
-                Whenever Emotional Risk Tolerance exceeds Financial Risk Capacity by <strong>25 points or more</strong> (or when emergency funds cover fewer than 3 months of outgo), the composite score and strategic asset allocation are capped at the capacity ceiling. This regulatory barrier prevents behavioral over-confidence from jeopardizing client capital adequacy.
+                Whenever Emotional Risk Tolerance exceeds Financial Risk Capacity by <strong>20 points or more</strong> (or when emergency funds cover fewer than 3 months of outgo), the composite score and strategic asset allocation are capped at the capacity ceiling. This regulatory barrier prevents behavioral over-confidence from jeopardizing client capital adequacy.
               </p>
             </div>
           </div>

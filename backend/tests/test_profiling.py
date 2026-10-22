@@ -52,11 +52,28 @@ def test_dependents(n, score):
     assert p.score_dependents(n) == score
 
 
+@pytest.mark.parametrize("term_mult,score", [
+    (15.0, 100), (16.0, 100), (14.99, 80), (10.0, 80),
+    (9.99, 60), (7.0, 60), (6.99, 40), (5.0, 40),
+    (4.99, 20), (0.0, 20)
+])
+def test_term_adequacy_boundaries(term_mult, score):
+    assert p.score_term_adequacy(term_mult) == score
+
+
+@pytest.mark.parametrize("cover,score", [
+    (2_500_000, 100), (3_000_000, 100), (2_499_999, 60), (1_000_000, 60),
+    (999_999, 20), (0, 20)
+])
+def test_health_cover_boundaries(cover, score):
+    assert p.score_health_cover(cover) == score
+
+
 def test_insurance_scoring():
-    assert p.score_insurance(100, 100, 1, 0.8) == 100
-    assert p.score_insurance(80, 100, 0, 0.8) == 60
-    assert p.score_insurance(79, 100, 1, 0.8) == 60
-    assert p.score_insurance(0, 100, 0, 0.8) == 20
+    assert p.score_insurance(15_000_000, 1_000_000, 2_500_000) == 100
+    assert p.score_insurance(10_000_000, 1_000_000, 1_000_000) == 70
+    assert p.score_insurance(7_000_000, 1_000_000, 0) == 40
+    assert p.score_insurance(0, 1_000_000, 0) == 20
 
 
 def test_exactly_three_months_and_twenty_percent_on_client():
@@ -93,12 +110,12 @@ def test_band_edges(score, band):
     assert p.band_for(score)["name"] == band
 
 
-def test_mismatch_triggers_only_above_25():
+def test_mismatch_triggers_at_20():
+    assert p.MISMATCH_GAP == 20.0
     c = make()
     cap = p.risk_capacity(c)["score"]
-    # tolerance all-1 (score 0): gap == cap
     res = p.build_profile(c, {**{f"q{n}": 0 for n in range(1, 11)}})
-    assert (res["mismatch_note"] is not None) == (abs(cap - 0.0) > 25)
+    assert (res["mismatch_note"] is not None) == (abs(cap - 0.0) > 20.0)
 
 
 def test_emergency_override_caps_band_and_adds_action():
@@ -119,17 +136,15 @@ def test_emergency_cap_binds_on_high_scores():
 
 
 def test_insurance_actions_follow_actual_gaps():
-    # Zero dependents and zero cover still has a term need — action must fire.
-    uncovered = make(dependents=0, term_cover=0, health_cover=1_000_000)
+    uncovered = make(dependents=0, term_cover=0, health_cover=2_500_000)
     actions = p.build_profile(uncovered, ANS_ALL(2))["priority_actions"]
-    assert p.ACTION_TERM_GAP in actions
-    assert p.ACTION_HEALTH_GAP not in actions
+    assert any("Bridge term life insurance cover shortfall" in a for a in actions)
+    assert not any("Procure dedicated health insurance cover" in a for a in actions)
 
-    # Assets already above HLV: no term action even with dependents and zero cover.
-    rich = make(dependents=1, term_cover=0, health_cover=0, investments=500_000_000)
-    actions = p.build_profile(rich, ANS_ALL(2))["priority_actions"]
-    assert p.ACTION_TERM_GAP not in actions
-    assert p.ACTION_HEALTH_GAP in actions
+    covered = make(dependents=1, term_cover=150_000_000, health_cover=500_000, monthly_income=100000)
+    actions = p.build_profile(covered, ANS_ALL(2))["priority_actions"]
+    assert not any("Bridge term life insurance cover shortfall" in a for a in actions)
+    assert any("Procure dedicated health insurance cover" in a for a in actions)
 
 
 def test_zero_income_retiree_is_not_max_debt_burden():
@@ -151,3 +166,12 @@ def test_zero_income_with_emi_scores_debt_against_assets():
     # annual EMI / assets = 120000 / 1000000 = 0.12 → 80
     assert by["debt_burden"]["score"] == 80
     assert by["savings_rate"]["score"] == 10
+
+
+def test_questionnaire_monotonicity_and_options():
+    qs = p.load_questionnaire()["questions"]
+    assert len(qs) == 10
+    for q in qs:
+        scores = [opt["score"] for opt in q["options"]]
+        assert len(scores) == 5, f"Question {q['id']} must have 5 options"
+        assert scores == [1, 2, 3, 4, 5], f"Question {q['id']} options must be monotonic [1, 2, 3, 4, 5]"

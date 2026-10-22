@@ -18,7 +18,7 @@ STABILITY = {
     EmploymentType.business_professional: 55, EmploymentType.freelance_variable: 45,
     EmploymentType.retired_none: 25,
 }
-MISMATCH_GAP = 25.0
+MISMATCH_GAP = 20.0
 
 ACTION_EMERGENCY = "Build emergency fund first"
 ACTION_TERM_GAP = "Close the term cover gap"
@@ -78,23 +78,48 @@ def score_debt_burden(ratio: float) -> int:
     return 10
 
 
-def score_insurance(term_cover: float, need: float, health_cover: float, threshold: float) -> int:
-    term_ok = term_cover > 0 and (need == 0 or term_cover >= threshold * need)
-    health_ok = health_cover > 0
-    if term_ok and health_ok:
+def score_term_adequacy(multiple: float) -> int:
+    """Term adequacy = term cover / annual income.
+    >= 15x: 100; [10, 15): 80; [7, 10): 60; [5, 7): 40; < 5 (including none): 20.
+    """
+    if multiple >= 15.0:
         return 100
-    if term_ok or health_ok:
+    if multiple >= 10.0:
+        return 80
+    if multiple >= 7.0:
+        return 60
+    if multiple >= 5.0:
+        return 40
+    return 20
+
+
+def score_health_cover(cover: float) -> int:
+    """>= 25L: 100; [10L, 25L): 60; < 10L (including none): 20."""
+    if cover >= 25_00_000:
+        return 100
+    if cover >= 10_00_000:
         return 60
     return 20
 
 
+def score_insurance(term_cover: float, annual_income: float, health_cover: float) -> int:
+    multiple = term_cover / annual_income if annual_income > 0 else (15.0 if term_cover > 0 else 0.0)
+    term_score = score_term_adequacy(multiple)
+    health_score = score_health_cover(health_cover)
+    return round((term_score + health_score) / 2)
+
+
 def band_for(score: float) -> dict:
-    """Band row from allocation.yaml for a score. Lower inclusive, upper exclusive."""
+    """Band row from allocation.yaml for a score. Lower inclusive, upper exclusive, top band inclusive [80, 100]."""
     bands = load_allocation()["bands"]
-    for b in bands:
-        if b["min"] <= score < b["max"]:
-            return b
-    return bands[-1]
+    for i, b in enumerate(bands):
+        if i == len(bands) - 1:
+            if b["min"] <= score <= b["max"]:
+                return b
+        else:
+            if b["min"] <= score < b["max"]:
+                return b
+    return bands[0] if score <= 0 else bands[-1]
 
 
 def _zero_income_metrics(client: Client, outgo: float, nw: float) -> tuple[float, float, float]:
@@ -145,9 +170,13 @@ def risk_capacity(client: Client, assumptions: dict | None = None) -> dict:
         "debt_burden": (score_debt_burden(debt), round(debt, 4)),
         "insurance": (
             score_insurance(
-                client.term_cover, need, client.health_cover, a["insurance"]["adequacy_threshold"]
+                client.term_cover, client.monthly_income * 12.0, client.health_cover
             ),
-            {"term_need": need, "term_cover": client.term_cover, "health_cover": client.health_cover},
+            {
+                "term_multiple": round(client.term_cover / (client.monthly_income * 12.0), 2) if client.monthly_income > 0 else 0.0,
+                "term_cover": client.term_cover,
+                "health_cover": client.health_cover,
+            },
         ),
     }
     factors = [
@@ -212,17 +241,12 @@ def build_profile(client: Client, answers: dict[str, int], assumptions: dict | N
             band = moderate
             notes.append("Band capped at Moderate until the emergency fund covers 3 months.")
 
-    ins = a["insurance"]
-    term = term_need(
-        client.age, client.retirement_age, client.monthly_income, client.investments,
-        client.liquid_assets, client.liabilities, ins, dependents=client.dependents,
-    )
-    term_gap = max(term["need"] - client.term_cover, 0)
-    h_gap = max(health_target(client.age, client.dependents, ins) - client.health_cover, 0)
-    if term_gap > 0:
-        actions.append(ACTION_TERM_GAP)
-    if h_gap > 0:
-        actions.append(ACTION_HEALTH_GAP)
+    annual_inc = client.monthly_income * 12.0
+    term_mult = client.term_cover / annual_inc if annual_inc > 0 else (15.0 if client.term_cover > 0 else 0.0)
+    if score_term_adequacy(term_mult) < 100:
+        actions.append(f"Bridge term life insurance cover shortfall (current: {term_mult:.1f}× income; target: 15×)")
+    if score_health_cover(client.health_cover) < 100:
+        actions.append("Procure dedicated health insurance cover (target: ₹25L)")
 
     return {
         "capacity": cap,

@@ -21,11 +21,15 @@ MAX_PICKS = 6
 _FIELDS = ("ret_1y", "cagr_3y", "cagr_5y", "vol_3y", "sharpe_3y", "max_drawdown_3y")
 
 # Token budget: short prompt, a few strong candidates as compact rows, short array output, capped length, cached by profile.
+from app.config.disclosures import BANNED_WORDS
+
 SYSTEM = (
     "Pick 3-6 funds for an Indian investor using ONLY the candidate codes. Weights total 100. Fit the risk band, "
     "allocation and market. Reply JSON only: "
     '{"p":[["code",weight,"reason of at most 8 words, no digits"]],"m":"one short sentence on the market, no digits"}. '
-    "Never use the words best, guaranteed, advice, advisory, recommend, suggested."
+    + "Never use prohibited promotional words: "
+    + ", ".join(sorted(BANNED_WORDS))
+    + "."
 )
 PER_CATEGORY = 2
 MAX_OUTPUT_TOKENS = 1200

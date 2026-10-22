@@ -330,3 +330,14 @@ export type DownloadResult =
 
 export const startDownload = (body: { url: string; mode: string; quality: string }) =>
   authedRequest<DownloadResult>(`${API_URL}/api/staff/download`, { method: "POST", body: JSON.stringify(body) });
+
+export interface AiFund {
+  scheme_code: string; scheme_name: string; category: string; weight_pct: number; reason: string;
+  cagr_5y: number | null; sharpe_3y: number | null; vol_3y: number | null;
+}
+export interface AiPicks {
+  picks: AiFund[]; candidates: AiFund[]; market_note: string; ai_generated: boolean; edited: boolean; notice: string;
+}
+export const getAiPicks = (id: string) => request<AiPicks>(`${API_URL}/api/plans/${id}/ai-picks`);
+export const saveAiPicks = (id: string, picks: { scheme_code: string; weight_pct: number }[]) =>
+  request<AiPicks>(`${API_URL}/api/plans/${id}/ai-picks`, { method: "PUT", body: JSON.stringify({ picks }) });

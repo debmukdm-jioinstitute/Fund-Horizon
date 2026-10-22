@@ -9,6 +9,7 @@ import {
   extraDisclosures, isShortlistOmitted, safeHeading, unusedSurplus,
 } from "@/components/Results";
 import { Donut, StressChart } from "@/components/charts";
+import AiPicksSection from "@/components/AiPicks";
 import ExplainModal from "@/components/ExplainModal";
 import TaxSection from "@/components/TaxSection";
 import { getPlan, reportUrl } from "@/lib/api";
@@ -177,6 +178,13 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
             Regular plans only. Direct plans with lower expense ratios are available. Funds are keyed by scheme code.
           </p>
           <p className="mt-1 text-sm text-navy-700">{extra.scheme_docs_note || FALLBACK_SCHEME_DOCS}</p>
+        </section>
+      )}
+
+      {!hideBuyList && (
+        <section aria-labelledby="aipicks">
+          <SectionTitle id="aipicks">AI fund picks from the FH Recommended list</SectionTitle>
+          <AiPicksSection id={id} />
         </section>
       )}
 

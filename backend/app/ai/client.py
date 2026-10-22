@@ -109,3 +109,33 @@ def call_llm(
             continue
 
     return None, None
+
+
+def call_openai_json(system_prompt: str, user_prompt: str) -> dict[str, Any] | None:
+    """One OpenAI Responses API call that must return a JSON object. None on any failure (caller falls back)."""
+    key = os.environ.get("OPENAI_API_KEY")
+    if not key:
+        return None
+    body = {
+        "model": os.environ.get("FH_OPENAI_MODEL", "gpt-6-luna"),
+        "input": [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
+        "text": {"format": {"type": "json_object"}},
+        "store": False,
+    }
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/responses",
+        data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as r:  # noqa: S310 - fixed https endpoint
+            data = json.loads(r.read())
+        text = "".join(
+            c.get("text", "") for item in data.get("output", []) if item.get("type") == "message"
+            for c in item.get("content", []) if c.get("type") == "output_text"
+        )
+        return json.loads(text)
+    except Exception:
+        logger.warning("OpenAI call failed", exc_info=True)
+        return None

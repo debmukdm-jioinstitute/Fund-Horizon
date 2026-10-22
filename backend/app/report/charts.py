@@ -54,6 +54,18 @@ def stress_chart(path: list[dict]) -> bytes:
     return _png(fig)
 
 
+def backtest_chart(growth: list[dict]) -> bytes:
+    fig, ax = plt.subplots(figsize=(6.4, 2.4))
+    ax.plot([g["d"] for g in growth], [g["v"] for g in growth], color=TEAL, lw=1.6)
+    ax.axhline(100, color=GREY, lw=0.6, ls="--")
+    step = max(len(growth) // 6, 1)
+    ax.set_xticks([g["d"] for g in growth][::step], [g["d"][:4] for g in growth][::step], fontsize=8)
+    ax.tick_params(axis="y", labelsize=8)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.set_title("Growth of 100 invested in this split (past data)", fontsize=9, color=NAVY)
+    return _png(fig)
+
+
 def fan_chart(fan: list[dict], target: float, title: str) -> bytes:
     xs = [f["year"] for f in fan]
     fig, ax = plt.subplots(figsize=(3.9, 2.2))

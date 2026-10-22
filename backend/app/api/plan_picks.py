@@ -14,6 +14,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from app.ai import picks as ai_picks
+from app.ai.backtest import backtest
 from app.api.customer_portal import staff_only
 from app.db import sqlite
 from app.db.sqlite import get_default_connection
@@ -43,7 +44,8 @@ def _plan(plan_id: str) -> dict:
 def _view(body: dict, edited: bool) -> dict:
     cands = {c["scheme_code"]: c for c in ai_picks.candidates()}
     funds = [{**cands[p["scheme_code"]], **p} for p in body["picks"] if p["scheme_code"] in cands]
-    return {**body, "picks": funds, "edited": edited, "candidates": list(cands.values())}
+    return {**body, "picks": funds, "edited": edited, "candidates": list(cands.values()),
+            "backtest": backtest([{"scheme_code": p["scheme_code"], "weight_pct": p["weight_pct"]} for p in funds])}
 
 
 @router.get("/api/plans/{plan_id}/ai-picks")
@@ -112,3 +114,9 @@ def preview_ai_picks(body: PreviewIn, _: Annotated[dict, Depends(staff_only)]):
         finally:
             conn.close()
     return _view(_PREVIEW_CACHE[key], False)
+
+
+@router.post("/api/staff/ai-picks/backtest")
+def backtest_picks(body: PicksIn, _: Annotated[dict, Depends(staff_only)]):
+    clean = ai_picks.validate_weights([p.model_dump() for p in body.picks], {c["scheme_code"] for c in ai_picks.candidates()})
+    return {"backtest": backtest(clean)}

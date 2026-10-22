@@ -103,6 +103,7 @@ def build_risk_profile_pdf(
     client_inputs: dict | None = None,
     questionnaire_responses: list[dict] | None = None,
     fund_picks: list[dict] | None = None,
+    fund_backtest: dict | None = None,
 ) -> bytes:
     """Build a client-ready 2-page A4 Risk Profiling and Suitability Assessment PDF."""
     buf = io.BytesIO()
@@ -143,7 +144,7 @@ def build_risk_profile_pdf(
             8 * mm,
             f"{FIRM} · Suitability Engine · Confidential Assessment for {canvas_text(client_name)}",
         )
-        canvas.drawRightString(w - 15 * mm, 8 * mm, f"Page {doc.page} of 2")
+        canvas.drawRightString(w - 15 * mm, 8 * mm, f"Page {doc.page} of {3 if fund_picks else 2}")
         canvas.restoreState()
 
     doc = BaseDocTemplate(
@@ -300,13 +301,34 @@ def build_risk_profile_pdf(
             rows.append([Paragraph(xml_escape(f["scheme_name"]), CELL), Paragraph(xml_escape(f["category"]), CELL),
                          f"{f['weight_pct']:.1f}%", Paragraph(xml_escape(f["detail"]), CELL)])
         story += [
-            Spacer(1, 6),
+            PageBreak(),  # own page, so the allocation page keeps its layout
             Paragraph("Fund picks from the FH Recommended list (AI-assisted)", H2),
             Paragraph("Chosen only from the FH Recommended funds to fit the allocation above and the market on the report date; "
                       "the split may have been edited by the adviser. Equity-oriented funds only; no debt or gold fund is on the list.", SMALL),
             Spacer(1, 3),
             _tbl(rows, [W * 0.36, W * 0.24, W * 0.09, W * 0.31]),
         ]
+        bt = fund_backtest
+        if bt:
+            def _p(v):
+                return "n/a" if v is None else f"{v * 100:.1f}%"
+
+            stats = [["Past-data backtest", "1Y", "3Y", "5Y", "Whole window", "Volatility", "Max drawdown", "Worst 12M"],
+                     [f"{bt['start']} to {bt['end']}", _p(bt["cagr"]["1y"]), _p(bt["cagr"]["3y"]), _p(bt["cagr"]["5y"]),
+                      _p(bt["cagr"]["all"]), _p(bt["vol"]), _p(bt["max_drawdown"]), _p(bt["worst_12m"])]]
+            story += [
+                Spacer(1, 5),
+                Paragraph("Past performance of this split (backtest)", H2),
+                Paragraph("Funds held at the weights above and rebalanced monthly, on month-end NAVs from the latest data refresh. "
+                          "Only months where every fund has history are used. CAGR is annualised. Past performance does not "
+                          "indicate future results.", SMALL),
+                Spacer(1, 3),
+                _tbl(stats, [W * 0.22, W * 0.08, W * 0.08, W * 0.08, W * 0.14, W * 0.12, W * 0.14, W * 0.14]),
+            ]
+            try:
+                story += [Spacer(1, 3), _img(charts.backtest_chart(bt["growth"]), 150)]
+            except Exception:
+                pass
 
     # Page Break to Page 2
     story += [PageBreak()]

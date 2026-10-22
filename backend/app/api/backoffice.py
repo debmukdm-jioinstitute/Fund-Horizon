@@ -1426,7 +1426,7 @@ def risk_profile_report(req: BackofficeRiskProfileRequest) -> tuple[dict, bytes]
         "health_cover": req.health_cover,
     }
 
-    fund_rows = None
+    fund_rows, fund_bt = None, None
     if req.fund_picks:
         from app.ai import picks as ai_picks
 
@@ -1436,6 +1436,9 @@ def risk_profile_report(req: BackofficeRiskProfileRequest) -> tuple[dict, bytes]
                 [{"scheme_code": str(p.get("scheme_code")), "weight_pct": p.get("weight_pct")} for p in req.fund_picks], set(cands))
         except ValueError as e:
             raise HTTPException(422, f"Fund picks: {e}") from e
+        from app.ai.backtest import backtest
+
+        fund_bt = backtest(clean)
         fund_rows = [{"scheme_name": cands[p["scheme_code"]]["scheme_name"], "category": cands[p["scheme_code"]]["category"],
                       "weight_pct": p["weight_pct"], "detail": ai_picks._template_reason(cands[p["scheme_code"]])} for p in clean]
 
@@ -1445,6 +1448,7 @@ def risk_profile_report(req: BackofficeRiskProfileRequest) -> tuple[dict, bytes]
         client_inputs=client_inputs,
         questionnaire_responses=responses,
         fund_picks=fund_rows,
+        fund_backtest=fund_bt,
     )
     return profile, pdf_bytes
 

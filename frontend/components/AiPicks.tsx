@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type AiFund, type AiPicks, getAiPicks, previewAiPicks, saveAiPicks } from "@/lib/api";
+import { type AiFund, type AiPicks, type Backtest, backtestPicks, getAiPicks, previewAiPicks, saveAiPicks } from "@/lib/api";
 
 const MAX = 6;
 const pc = (v: number | null) => (v === null ? "–" : `${(v * 100).toFixed(1)}%`);
@@ -30,10 +30,11 @@ export function AiPicksPreview({ profile, onChange }: { profile: { band: string;
     setBusy(false);
   }
   if (data) {
-    const local = (picks: { scheme_code: string; weight_pct: number }[]): Promise<AiPicks> => {
+    const local = async (picks: { scheme_code: string; weight_pct: number }[]): Promise<AiPicks> => {
       const byCode = new Map(data.candidates.map((c) => [c.scheme_code, c]));
       const reasons = new Map(data.picks.map((p) => [p.scheme_code, p.reason]));
-      return Promise.resolve({ ...data, edited: true, picks: picks.map((p) => ({ ...byCode.get(p.scheme_code)!, ...p, reason: reasons.get(p.scheme_code) ?? "" })) });
+      const { backtest } = await backtestPicks(picks);
+      return { ...data, edited: true, backtest, picks: picks.map((p) => ({ ...byCode.get(p.scheme_code)!, ...p, reason: reasons.get(p.scheme_code) ?? "" })) };
     };
     return <AiPicksView initial={data} onSave={local} onChange={onChange} />;
   }
@@ -113,7 +114,32 @@ function AiPicksView({ initial, onSave, onChange }: { initial: AiPicks; onSave: 
           </div>
         </div>
       )}
+      {!edit && data.backtest && <BacktestCard bt={data.backtest} />}
       <p className="text-xs text-navy-700">{data.notice}</p>
+    </div>
+  );
+}
+
+const bp = (v: number | null) => (v === null ? "n/a" : `${(v * 100).toFixed(1)}%`);
+
+/** Past-data backtest of the split: stats row and a growth-of-100 line. */
+function BacktestCard({ bt }: { bt: Backtest }) {
+  const vs = bt.growth.map((g) => g.v);
+  const lo = Math.min(...vs, 100), hi = Math.max(...vs);
+  const pts = bt.growth.map((g, i) => `${(i / Math.max(bt.growth.length - 1, 1)) * 300},${58 - ((g.v - lo) / Math.max(hi - lo, 1)) * 52}`).join(" ");
+  const stats: [string, string][] = [["1Y", bp(bt.cagr["1y"])], ["3Y", bp(bt.cagr["3y"])], ["5Y", bp(bt.cagr["5y"])], ["Whole window", bp(bt.cagr.all)],
+    ["Volatility", bp(bt.vol)], ["Max drawdown", bp(bt.max_drawdown)], ["Worst 12M", bp(bt.worst_12m)]];
+  return (
+    <div className="card space-y-2 p-4">
+      <div className="font-semibold text-navy-900">Past performance of this split</div>
+      <p className="text-xs text-navy-700">Funds held at these weights and rebalanced monthly, {bt.start} to {bt.end}, on month-end NAVs from the latest data refresh. Past performance does not indicate future results.</p>
+      <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 lg:grid-cols-7">
+        {stats.map(([k, v]) => <div key={k}><div className="text-xs text-navy-700">{k}</div><div className="font-semibold text-navy-900">{v}</div></div>)}
+      </div>
+      <svg viewBox="0 0 300 62" className="w-full" role="img" aria-label="Growth of 100 invested in this split">
+        <polyline points={pts} fill="none" stroke="#13A89E" strokeWidth="1.5" />
+      </svg>
+      <div className="flex justify-between text-xs text-navy-700"><span>{bt.start}</span><span>100 → {bt.growth[bt.growth.length - 1].v.toFixed(0)}</span><span>{bt.end}</span></div>
     </div>
   );
 }

@@ -20,15 +20,16 @@ from app.data.loader import load_metrics
 MAX_PICKS = 6
 _FIELDS = ("ret_1y", "cagr_3y", "cagr_5y", "vol_3y", "sharpe_3y", "max_drawdown_3y")
 
+# Token budget: short prompt, a few strong candidates as compact rows, short array output, capped length, cached by profile.
 SYSTEM = (
-    "You pick mutual funds for an Indian investor from a fixed list. Use ONLY the scheme_code values in "
-    "candidates. Pick 3 to 6 funds and give each a weight_pct; weights must total exactly 100. Spread across "
-    "categories to fit the investor's risk band and asset allocation, and take the market context into account. "
-    "Write one short reason per fund in plain words with NO digits. Never use the words best, guaranteed, advice, "
-    "advisory, recommend or suggested. Reply with a JSON object: "
-    '{"picks":[{"scheme_code":"","weight_pct":0,"reason":""}],"market_note":""} where market_note is one '
-    "sentence about how the market context shaped the picks, with no digits."
+    "Pick 3-6 funds for an Indian investor using ONLY the candidate codes. Weights total 100. Fit the risk band, "
+    "allocation and market. Reply JSON only: "
+    '{"p":[["code",weight,"reason of at most 8 words, no digits"]],"m":"one short sentence on the market, no digits"}. '
+    "Never use the words best, guaranteed, advice, advisory, recommend, suggested."
 )
+PER_CATEGORY = 2
+MAX_OUTPUT_TOKENS = 1200
+_CACHE: dict[str, dict] = {}
 
 
 def _num(v: Any) -> float | None:
@@ -97,24 +98,44 @@ def validate_weights(picks: list[dict], allowed: set[str]) -> list[dict]:
     return [{**p, "weight_pct": float(p["weight_pct"])} for p in picks]
 
 
+def shortlist(cands: list[dict]) -> list[dict]:
+    """Strongest PER_CATEGORY funds by 3Y Sharpe in each category; funds without history are left out."""
+    ok = [c for c in cands if c["sharpe_3y"] is not None and c["cagr_5y"] is not None]
+    out: list[dict] = []
+    for cat in sorted({c["cat"] for c in ok}):
+        out += sorted((c for c in ok if c["cat"] == cat), key=lambda c: -c["sharpe_3y"])[:PER_CATEGORY]
+    return out or cands
+
+
+def _parse(ai: dict | None) -> list[dict] | None:
+    try:
+        return [{"scheme_code": str(r[0]), "weight_pct": float(r[1]), "reason": str(r[2])} for r in ai["p"]]
+    except (TypeError, KeyError, IndexError, ValueError):
+        return None
+
+
 def generate(plan: dict, conn: sqlite3.Connection) -> dict[str, Any]:
     cands = candidates()
     by_code = {c["scheme_code"]: c for c in cands}
-    alloc = plan.get("allocation", {})
-    profile = plan.get("profile", {})
+    alloc = plan.get("allocation", {}).get("by_asset_class")
+    band = plan.get("profile", {}).get("band")
+    key = json.dumps([band, {k: round(float(v) / 5) * 5 for k, v in (alloc or {}).items()}, plan.get("data_asof")], sort_keys=True)
+    if key in _CACHE:
+        return _CACHE[key]
+    short = shortlist(cands)
+    rows = [[c["scheme_code"], c["cat"], *(round(c[k], 3) if c[k] is not None else None for k in ("cagr_5y", "sharpe_3y", "vol_3y", "max_drawdown_3y"))] for c in short]
     payload = {
-        "risk_band": profile.get("band"),
-        "asset_allocation_pct": alloc.get("by_asset_class"),
-        "data_as_of": plan.get("data_asof"),
-        "market_context": market_context(conn),
-        "candidates": [{k: (round(v, 4) if isinstance(v, float) else v) for k, v in c.items() if k != "scheme_name"} | {"name": c["scheme_name"]} for c in cands],
+        "band": band, "alloc": alloc, "asof": plan.get("data_asof"),
+        "market": [m[:70] for m in market_context(conn)[:4]],
+        "cols": "code,cat,cagr5y,sharpe3y,vol3y,maxdd3y", "cands": rows,
     }
-    ai = call_openai_json(SYSTEM, "Plan data (JSON):\n" + json.dumps(payload, default=str))
+    ai = call_openai_json(SYSTEM, json.dumps(payload, separators=(",", ":"), default=str), MAX_OUTPUT_TOKENS)
     picks, note, ai_ok = None, "", False
-    if ai:
+    parsed = _parse(ai)
+    if parsed:
         try:
-            picks = validate_weights(ai.get("picks") or [], set(by_code))
-            note = str(ai.get("market_note") or "")
+            picks = validate_weights(parsed, {c["scheme_code"] for c in short})
+            note = str((ai or {}).get("m") or "")
             ai_ok = True
         except ValueError:
             picks = None
@@ -127,4 +148,7 @@ def generate(plan: dict, conn: sqlite3.Connection) -> dict[str, Any]:
         p["reason"] = reason
     if re.search(r"\d", note) or not scan_banned_wording(note):
         note = ""
-    return {"picks": picks, "market_note": note, "ai_generated": ai_ok, "notice": append_statutory_disclosures("").strip("- \n")}
+    out = {"picks": picks, "market_note": note, "ai_generated": ai_ok, "notice": append_statutory_disclosures("").strip("- \n")}
+    if ai_ok:  # a rule fallback is not cached, so the next request can try the model again
+        _CACHE[key] = out
+    return out

@@ -10,6 +10,7 @@ from app.ai import picks as P
 
 PLAN = {"profile": {"band": "Moderate"}, "allocation": {"by_asset_class": {"equity": 60, "debt": 40}}, "data_asof": "2026-10-09"}
 CODES = [c["scheme_code"] for c in P.candidates()]
+CODE_A, CODE_B = [c["scheme_code"] for c in P.shortlist(P.candidates())[:2]]
 
 
 def _gen(answer):
@@ -18,16 +19,17 @@ def _gen(answer):
 
 
 def test_ai_answer_is_used_when_valid():
-    out = _gen({"picks": [{"scheme_code": CODES[0], "weight_pct": 60, "reason": "steady large companies"},
-                          {"scheme_code": CODES[1], "weight_pct": 40, "reason": "has 5 digits"}], "market_note": "calm"})
+    P._CACHE.clear()
+    out = _gen({"p": [[CODE_A, 60, "steady large companies"], [CODE_B, 40, "has 5 digits"]], "m": "calm"})
     assert out["ai_generated"] and [p["weight_pct"] for p in out["picks"]] == [60, 40]
     assert out["picks"][0]["reason"] == "steady large companies"
+    assert len(P.shortlist(P.candidates())) <= 2 * len({c["cat"] for c in P.candidates()})
     assert any(ch.isdigit() for ch in out["picks"][1]["reason"]) and out["picks"][1]["reason"] != "has 5 digits"  # replaced by template
 
 
-@pytest.mark.parametrize("bad", [None, {"picks": [{"scheme_code": "999999", "weight_pct": 100, "reason": "x"}]},
-                                 {"picks": [{"scheme_code": CODES[0], "weight_pct": 50, "reason": "x"}]}])
+@pytest.mark.parametrize("bad", [None, {"p": [["999999", 100, "x"]]}, {"p": [[CODE_A, 50, "x"]]}, {"nonsense": 1}])
 def test_bad_answer_falls_back_to_rule(bad):
+    P._CACHE.clear()
     out = _gen(bad)
     assert not out["ai_generated"] and out["picks"]
     assert {p["scheme_code"] for p in out["picks"]} <= set(CODES)
@@ -66,3 +68,11 @@ def test_risk_profile_pdf_lists_fund_picks():
     assert "AI-assisted" not in "".join(p.extract_text() for p in PdfReader(io.BytesIO(plain)).pages)
     with pytest.raises(HTTPException):
         risk_profile_report(BackofficeRiskProfileRequest(fund_picks=[{"scheme_code": "000000", "weight_pct": 100}]))
+
+
+def test_backtest_blends_funds_and_reports_window():
+    from app.ai.backtest import backtest
+
+    bt = backtest([{"scheme_code": CODES[0], "weight_pct": 50}, {"scheme_code": CODES[1], "weight_pct": 50}])
+    assert bt and bt["months"] >= 12 and bt["growth"][0]["v"] == 100 and bt["max_drawdown"] <= 0
+    assert backtest([{"scheme_code": "000000", "weight_pct": 100}]) is None  # no NAV file: no result, no crash

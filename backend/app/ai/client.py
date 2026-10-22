@@ -111,7 +111,7 @@ def call_llm(
     return None, None
 
 
-def call_openai_json(system_prompt: str, user_prompt: str) -> dict[str, Any] | None:
+def call_openai_json(system_prompt: str, user_prompt: str, max_output_tokens: int = 1200) -> dict[str, Any] | None:
     """One OpenAI Responses API call that must return a JSON object. None on any failure (caller falls back)."""
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
@@ -121,7 +121,11 @@ def call_openai_json(system_prompt: str, user_prompt: str) -> dict[str, Any] | N
         "input": [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
         "text": {"format": {"type": "json_object"}},
         "store": False,
+        "max_output_tokens": max_output_tokens,  # a cap, not a spend: reasoning tokens count against it
     }
+    effort = os.environ.get("FH_OPENAI_EFFORT", "low")  # low reasoning effort keeps token use down; "" omits it
+    if effort:
+        body["reasoning"] = {"effort": effort}
     req = urllib.request.Request(
         "https://api.openai.com/v1/responses",
         data=json.dumps(body).encode(),
@@ -131,6 +135,7 @@ def call_openai_json(system_prompt: str, user_prompt: str) -> dict[str, Any] | N
     try:
         with urllib.request.urlopen(req, timeout=45) as r:  # noqa: S310 - fixed https endpoint
             data = json.loads(r.read())
+        logger.info("openai usage: %s", data.get("usage"))
         text = "".join(
             c.get("text", "") for item in data.get("output", []) if item.get("type") == "message"
             for c in item.get("content", []) if c.get("type") == "output_text"

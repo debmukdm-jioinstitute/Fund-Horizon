@@ -335,11 +335,19 @@ export interface AiFund {
   scheme_code: string; scheme_name: string; category: string; weight_pct: number; reason: string;
   cagr_5y: number | null; sharpe_3y: number | null; vol_3y: number | null;
 }
+export interface Backtest {
+  start: string; end: string; months: number; vol: number; max_drawdown: number; worst_12m: number | null;
+  cagr: { "1y": number | null; "3y": number | null; "5y": number | null; all: number | null };
+  growth: { d: string; v: number }[];
+}
 export interface AiPicks {
   picks: AiFund[]; candidates: AiFund[]; market_note: string; ai_generated: boolean; edited: boolean; notice: string;
+  backtest: Backtest | null;
 }
 export const getAiPicks = (id: string) => request<AiPicks>(`${API_URL}/api/plans/${id}/ai-picks`);
 export const saveAiPicks = (id: string, picks: { scheme_code: string; weight_pct: number }[]) =>
   request<AiPicks>(`${API_URL}/api/plans/${id}/ai-picks`, { method: "PUT", body: JSON.stringify({ picks }) });
 export const previewAiPicks = (b: { band: string; equity: number; debt: number; gold: number; liquid: number }) =>
   request<AiPicks>(`${API_URL}/api/staff/ai-picks`, { method: "POST", body: JSON.stringify(b) });
+export const backtestPicks = (picks: { scheme_code: string; weight_pct: number }[]) =>
+  request<{ backtest: Backtest | null }>(`${API_URL}/api/staff/ai-picks/backtest`, { method: "POST", body: JSON.stringify({ picks }) });

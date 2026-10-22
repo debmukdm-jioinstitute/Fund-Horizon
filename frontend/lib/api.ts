@@ -341,3 +341,5 @@ export interface AiPicks {
 export const getAiPicks = (id: string) => request<AiPicks>(`${API_URL}/api/plans/${id}/ai-picks`);
 export const saveAiPicks = (id: string, picks: { scheme_code: string; weight_pct: number }[]) =>
   request<AiPicks>(`${API_URL}/api/plans/${id}/ai-picks`, { method: "PUT", body: JSON.stringify({ picks }) });
+export const previewAiPicks = (b: { band: string; equity: number; debt: number; gold: number; liquid: number }) =>
+  request<AiPicks>(`${API_URL}/api/staff/ai-picks`, { method: "POST", body: JSON.stringify(b) });

@@ -1,5 +1,6 @@
 "use client";
 
+import { AiPicksPreview } from "@/components/AiPicks";
 import React, { useEffect, useMemo, useState } from "react";
 import { API_URL, getMe, resolveApiUrl } from "@/lib/api";
 import {
@@ -643,6 +644,16 @@ export default function RiskProfilingPage() {
                     <li><strong>Gold & Liquid ({profile.allocation.gold + profile.allocation.liquid}%):</strong> Gold ETFs / Sovereign Gold, Overnight & Liquid schemes.</li>
                   </ul>
                 </div>
+              </div>
+
+              {/* AI fund picks from the FH Recommended list */}
+              <div className="card space-y-3">
+                <h4 className="text-sm font-bold text-[#181818] dark:text-white">AI fund picks from the FH Recommended list</h4>
+                {ready ? (
+                  <AiPicksPreview profile={{ band: profile.band, ...profile.allocation }} />
+                ) : (
+                  <p className="text-xs text-[#706E6B]">Complete the client details and all 10 questions to get fund picks.</p>
+                )}
               </div>
 
               {/* Priority Financial Hygiene Actions */}

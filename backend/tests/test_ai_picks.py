@@ -41,3 +41,8 @@ def test_edit_validation():
                 [{"scheme_code": CODES[0], "weight_pct": 50}, {"scheme_code": CODES[0], "weight_pct": 50}], []):
         with pytest.raises(ValueError):
             P.validate_weights(bad, allowed)
+
+
+def test_preview_needs_staff_login(client):
+    body = {"band": "Moderate", "equity": 50, "debt": 33, "gold": 10, "liquid": 7}
+    assert client.post("/api/staff/ai-picks", json=body).status_code == 401

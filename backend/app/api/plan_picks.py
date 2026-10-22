@@ -8,10 +8,13 @@ reloading never calls the model again. The client's edits overwrite the stored p
 import json
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from app.ai import picks as ai_picks
+from app.api.customer_portal import staff_only
 from app.db import sqlite
 from app.db.sqlite import get_default_connection
 
@@ -83,3 +86,29 @@ def save_ai_picks(plan_id: str, body: PicksIn):
         return _view(saved, True)
     finally:
         conn.close()
+
+
+class PreviewIn(BaseModel):
+    band: str
+    equity: float
+    debt: float
+    gold: float
+    liquid: float
+
+
+_PREVIEW_CACHE: dict[str, dict] = {}
+
+
+@router.post("/api/staff/ai-picks")
+def preview_ai_picks(body: PreviewIn, _: Annotated[dict, Depends(staff_only)]):
+    """Picks for a risk profile that has no saved plan (Risk Profiling Studio). Nothing is stored; repeats are cached."""
+    key = body.model_dump_json()
+    if key not in _PREVIEW_CACHE:
+        conn = get_default_connection()
+        try:
+            plan = {"profile": {"band": body.band}, "data_asof": None,
+                    "allocation": {"by_asset_class": {"equity": body.equity, "debt": body.debt, "gold": body.gold, "liquid": body.liquid}}}
+            _PREVIEW_CACHE[key] = ai_picks.generate(plan, conn)
+        finally:
+            conn.close()
+    return _view(_PREVIEW_CACHE[key], False)

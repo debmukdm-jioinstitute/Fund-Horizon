@@ -1,22 +1,55 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type AiFund, type AiPicks, getAiPicks, saveAiPicks } from "@/lib/api";
+import { type AiFund, type AiPicks, getAiPicks, previewAiPicks, saveAiPicks } from "@/lib/api";
 
 const MAX = 6;
 const pc = (v: number | null) => (v === null ? "–" : `${(v * 100).toFixed(1)}%`);
 
-/** AI-chosen split across FH Recommended funds for this plan, with an Edit mode to reallocate. */
+/** AI picks for a saved plan; the edited split is stored with the plan. */
 export default function AiPicksSection({ id }: { id: string }) {
   const [data, setData] = useState<AiPicks | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [edit, setEdit] = useState<{ scheme_code: string; w: string }[] | null>(null);
-  const [saving, setSaving] = useState(false);
-
   useEffect(() => { getAiPicks(id).then(setData).catch(() => setErr("Could not load the AI picks.")); }, [id]);
-
   if (err) return <p className="text-sm text-red-700">{err}</p>;
   if (!data) return <p className="text-sm text-navy-700">Preparing fund picks…</p>;
+  return <AiPicksView initial={data} onSave={(picks) => saveAiPicks(id, picks)} />;
+}
+
+/** AI picks for a risk profile with no saved plan (Risk Profiling Studio). Runs on a button press; edits stay on the page. */
+export function AiPicksPreview({ profile }: { profile: { band: string; equity: number; debt: number; gold: number; liquid: number } }) {
+  const [data, setData] = useState<AiPicks | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const key = JSON.stringify(profile);
+  useEffect(() => { setData(null); setErr(null); }, [key]);
+
+  async function run() {
+    setBusy(true); setErr(null);
+    try { setData(await previewAiPicks(profile)); } catch (e) { setErr(e instanceof Error ? e.message : "Could not load the AI picks."); }
+    setBusy(false);
+  }
+  if (data) {
+    const local = (picks: { scheme_code: string; weight_pct: number }[]): Promise<AiPicks> => {
+      const byCode = new Map(data.candidates.map((c) => [c.scheme_code, c]));
+      const reasons = new Map(data.picks.map((p) => [p.scheme_code, p.reason]));
+      return Promise.resolve({ ...data, edited: true, picks: picks.map((p) => ({ ...byCode.get(p.scheme_code)!, ...p, reason: reasons.get(p.scheme_code) ?? "" })) });
+    };
+    return <AiPicksView initial={data} onSave={local} />;
+  }
+  return (
+    <div className="space-y-2">
+      <button type="button" className="btn-primary" disabled={busy} onClick={run}>{busy ? "Preparing fund picks…" : "Get AI fund picks"}</button>
+      {err && <p role="alert" className="text-sm text-red-700">{err}</p>}
+    </div>
+  );
+}
+
+function AiPicksView({ initial, onSave }: { initial: AiPicks; onSave: (picks: { scheme_code: string; weight_pct: number }[]) => Promise<AiPicks> }) {
+  const [data, setData] = useState<AiPicks>(initial);
+  const [err, setErr] = useState<string | null>(null);
+  const [edit, setEdit] = useState<{ scheme_code: string; w: string }[] | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const byCode = new Map<string, AiFund>(data.candidates.map((c) => [c.scheme_code, c]));
   const total = edit ? edit.reduce((s, r) => s + (parseFloat(r.w) || 0), 0) : 0;
@@ -26,7 +59,7 @@ export default function AiPicksSection({ id }: { id: string }) {
     if (!edit) return;
     setSaving(true); setErr(null);
     try {
-      setData(await saveAiPicks(id, edit.map((r) => ({ scheme_code: r.scheme_code, weight_pct: parseFloat(r.w) }))));
+      setData(await onSave(edit.map((r) => ({ scheme_code: r.scheme_code, weight_pct: parseFloat(r.w) }))));
       setEdit(null);
     } catch (e) { setErr(e instanceof Error ? e.message : "Could not save."); }
     setSaving(false);

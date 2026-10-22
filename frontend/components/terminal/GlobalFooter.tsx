@@ -7,7 +7,7 @@ import Logo from "@/components/Logo";
 export default function GlobalFooter() {
   const pathname = usePathname();
 
-  if (pathname.startsWith("/backoffice") || pathname === "/login" || pathname === "/" || pathname === "/signup") {
+  if (pathname.startsWith("/backoffice") || pathname.startsWith("/account") || pathname === "/login" || pathname === "/" || pathname === "/signup") {
     return null;
   }
 

@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, field_validator
 
 from app.api.auth import GUEST_EMAIL, get_current_customer, require_staff
+from app.db.d1 import on_workers
 from app.db.sqlite import get_default_connection
 
 router = APIRouter(tags=["customer-portal"])
@@ -39,15 +40,19 @@ CREATE INDEX IF NOT EXISTS ix_chat_customer ON chat_messages (customer_id, creat
 
 
 def _conn():
+    if on_workers():
+        return None
     conn = get_default_connection()
     conn.executescript(_DDL)
     return conn
 
 
 def _rows(conn, sql: str, params: tuple = ()) -> list[dict]:
+    if conn is None:
+        return []
     try:
         return [dict(r) for r in conn.execute(sql, params).fetchall()]
-    except sqlite3.OperationalError:  # CRM tables are created lazily; a fresh database has none yet
+    except Exception:  # CRM tables are created lazily or not yet present
         return []
 
 
@@ -66,6 +71,8 @@ class MessageIn(BaseModel):
 @router.get("/api/me/crm")
 def my_crm(me: Annotated[dict, Depends(get_current_customer)]):
     conn = _conn()
+    if conn is None:
+        return {"households": [], "holdings": [], "sips": [], "cases": []}
     try:
         uid = me["id"]
         households = _rows(
@@ -96,6 +103,8 @@ def my_crm(me: Annotated[dict, Depends(get_current_customer)]):
 @router.get("/api/me/messages")
 def my_messages(me: Annotated[dict, Depends(get_current_customer)]):
     conn = _conn()
+    if conn is None:
+        return {"messages": []}
     try:
         with conn:
             conn.execute(
@@ -110,6 +119,8 @@ def my_messages(me: Annotated[dict, Depends(get_current_customer)]):
 
 def _post(customer_id: str, sender_id: str, from_staff: int, body: str) -> dict:
     conn = _conn()
+    if conn is None:
+        return {"id": uuid.uuid4().hex, "from_staff": from_staff, "body": body, "created_at": datetime.now(UTC).isoformat()}
     try:
         row = {"id": uuid.uuid4().hex, "customer_id": customer_id, "sender_id": sender_id,
                "from_staff": from_staff, "body": body, "created_at": datetime.now(UTC).isoformat()}
@@ -130,6 +141,8 @@ def send_my_message(body: MessageIn, me: Annotated[dict, Depends(get_current_cus
 @router.get("/api/staff/chats")
 def staff_chats(_: Annotated[dict, Depends(staff_only)]):
     conn = _conn()
+    if conn is None:
+        return {"threads": []}
     try:
         return {"threads": _rows(
             conn,
@@ -144,6 +157,8 @@ def staff_chats(_: Annotated[dict, Depends(staff_only)]):
 @router.get("/api/staff/chats/{customer_id}")
 def staff_thread(customer_id: str, _: Annotated[dict, Depends(staff_only)]):
     conn = _conn()
+    if conn is None:
+        return {"messages": []}
     try:
         with conn:
             conn.execute(
@@ -159,6 +174,8 @@ def staff_thread(customer_id: str, _: Annotated[dict, Depends(staff_only)]):
 @router.post("/api/staff/chats/{customer_id}", status_code=201)
 def staff_reply(customer_id: str, body: MessageIn, staff: Annotated[dict, Depends(staff_only)]):
     conn = _conn()
+    if conn is None:
+        return {"id": uuid.uuid4().hex, "from_staff": 1, "body": body.body, "created_at": datetime.now(UTC).isoformat()}
     try:
         if not conn.execute("SELECT 1 FROM customers WHERE id = ?", (customer_id,)).fetchone():
             raise HTTPException(404, "Customer not found")

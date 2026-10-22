@@ -18,8 +18,16 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !customer) router.replace("/");
+    if (!loading && !customer) router.replace("/login");
   }, [loading, customer, router]);
+
+  if (loading || !customer) {
+    return (
+      <div className="min-h-screen bg-[#F7F9FB] dark:bg-[#10151C] flex items-center justify-center text-[13px] text-[#536176] dark:text-[#A8B4C4]">
+        Loading…
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F7F9FB] dark:bg-[#10151C]">

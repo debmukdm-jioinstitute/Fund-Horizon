@@ -13,7 +13,7 @@ export default function GlobalHeader() {
   const { theme, toggleTheme } = useTheme();
 
   // Do not render on backoffice pages (which have their own dedicated sidebar shell) or login/signup
-  if (pathname.startsWith("/backoffice") || pathname === "/login" || pathname === "/" || pathname === "/signup") {
+  if (pathname.startsWith("/backoffice") || pathname.startsWith("/account") || pathname === "/login" || pathname === "/" || pathname === "/signup") {
     return null;
   }
 

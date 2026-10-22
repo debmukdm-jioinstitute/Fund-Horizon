@@ -17,12 +17,12 @@ export default function AiPicksSection({ id }: { id: string }) {
 }
 
 /** AI picks for a risk profile with no saved plan (Risk Profiling Studio). Runs on a button press; edits stay on the page. */
-export function AiPicksPreview({ profile }: { profile: { band: string; equity: number; debt: number; gold: number; liquid: number } }) {
+export function AiPicksPreview({ profile, onChange }: { profile: { band: string; equity: number; debt: number; gold: number; liquid: number }; onChange?: (p: { scheme_code: string; weight_pct: number }[] | null) => void }) {
   const [data, setData] = useState<AiPicks | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const key = JSON.stringify(profile);
-  useEffect(() => { setData(null); setErr(null); }, [key]);
+  useEffect(() => { setData(null); setErr(null); onChange?.(null); }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function run() {
     setBusy(true); setErr(null);
@@ -35,7 +35,7 @@ export function AiPicksPreview({ profile }: { profile: { band: string; equity: n
       const reasons = new Map(data.picks.map((p) => [p.scheme_code, p.reason]));
       return Promise.resolve({ ...data, edited: true, picks: picks.map((p) => ({ ...byCode.get(p.scheme_code)!, ...p, reason: reasons.get(p.scheme_code) ?? "" })) });
     };
-    return <AiPicksView initial={data} onSave={local} />;
+    return <AiPicksView initial={data} onSave={local} onChange={onChange} />;
   }
   return (
     <div className="space-y-2">
@@ -45,8 +45,9 @@ export function AiPicksPreview({ profile }: { profile: { band: string; equity: n
   );
 }
 
-function AiPicksView({ initial, onSave }: { initial: AiPicks; onSave: (picks: { scheme_code: string; weight_pct: number }[]) => Promise<AiPicks> }) {
+function AiPicksView({ initial, onSave, onChange }: { initial: AiPicks; onSave: (picks: { scheme_code: string; weight_pct: number }[]) => Promise<AiPicks>; onChange?: (p: { scheme_code: string; weight_pct: number }[] | null) => void }) {
   const [data, setData] = useState<AiPicks>(initial);
+  useEffect(() => { onChange?.(data.picks.map((p) => ({ scheme_code: p.scheme_code, weight_pct: p.weight_pct }))); }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
   const [err, setErr] = useState<string | null>(null);
   const [edit, setEdit] = useState<{ scheme_code: string; w: string }[] | null>(null);
   const [saving, setSaving] = useState(false);

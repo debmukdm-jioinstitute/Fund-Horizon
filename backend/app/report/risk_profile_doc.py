@@ -102,6 +102,7 @@ def build_risk_profile_pdf(
     profile: dict,
     client_inputs: dict | None = None,
     questionnaire_responses: list[dict] | None = None,
+    fund_picks: list[dict] | None = None,
 ) -> bytes:
     """Build a client-ready 2-page A4 Risk Profiling and Suitability Assessment PDF."""
     buf = io.BytesIO()
@@ -292,6 +293,20 @@ def build_risk_profile_pdf(
         story += [layout_table]
     else:
         story += [alloc_table]
+
+    if fund_picks:
+        rows = [["Fund", "Category", "Weight", "Basis (fund's own history)"]]
+        for f in fund_picks:
+            rows.append([Paragraph(xml_escape(f["scheme_name"]), CELL), Paragraph(xml_escape(f["category"]), CELL),
+                         f"{f['weight_pct']:.1f}%", Paragraph(xml_escape(f["detail"]), CELL)])
+        story += [
+            Spacer(1, 6),
+            Paragraph("Fund picks from the FH Recommended list (AI-assisted)", H2),
+            Paragraph("Chosen only from the FH Recommended funds to fit the allocation above and the market on the report date; "
+                      "the split may have been edited by the adviser. Equity-oriented funds only; no debt or gold fund is on the list.", SMALL),
+            Spacer(1, 3),
+            _tbl(rows, [W * 0.36, W * 0.24, W * 0.09, W * 0.31]),
+        ]
 
     # Page Break to Page 2
     story += [PageBreak()]

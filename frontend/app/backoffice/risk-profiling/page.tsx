@@ -23,6 +23,7 @@ export default function RiskProfilingPage() {
 
   // PDF report state
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [fundPicks, setFundPicks] = useState<{ scheme_code: string; weight_pct: number }[] | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
 
   // CRM save state
@@ -117,6 +118,7 @@ export default function RiskProfilingPage() {
         health_cover: client.healthCover,
         retirement_age: client.retirementAge,
         answers,
+        ...(fundPicks ? { fund_picks: fundPicks } : {}),
       };
 
       const targetUrl = resolveApiUrl(`${API_URL}/api/backoffice/risk-profiling/report.pdf`);
@@ -650,7 +652,7 @@ export default function RiskProfilingPage() {
               <div className="card space-y-3">
                 <h4 className="text-sm font-bold text-[#181818] dark:text-white">AI fund picks from the FH Recommended list</h4>
                 {ready ? (
-                  <AiPicksPreview profile={{ band: profile.band, ...profile.allocation }} />
+                  <AiPicksPreview profile={{ band: profile.band, ...profile.allocation }} onChange={setFundPicks} />
                 ) : (
                   <p className="text-xs text-[#706E6B]">Complete the client details and all 10 questions to get fund picks.</p>
                 )}

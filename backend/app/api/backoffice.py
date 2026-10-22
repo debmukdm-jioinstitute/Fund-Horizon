@@ -1306,6 +1306,8 @@ class BackofficeRiskProfileRequest(BaseModel):
     health_cover: int = Field(0, ge=0)
     retirement_age: int = Field(60, ge=40, le=80)
     answers: dict[str, int] = Field(default_factory=dict)
+    # optional split chosen on the page; only codes and weights are read, names and reasons are rebuilt server-side
+    fund_picks: list[dict[str, Any]] | None = None
 
 
 @router.get("/risk-profiling/questionnaire")
@@ -1424,11 +1426,25 @@ def risk_profile_report(req: BackofficeRiskProfileRequest) -> tuple[dict, bytes]
         "health_cover": req.health_cover,
     }
 
+    fund_rows = None
+    if req.fund_picks:
+        from app.ai import picks as ai_picks
+
+        cands = {c["scheme_code"]: c for c in ai_picks.candidates()}
+        try:
+            clean = ai_picks.validate_weights(
+                [{"scheme_code": str(p.get("scheme_code")), "weight_pct": p.get("weight_pct")} for p in req.fund_picks], set(cands))
+        except ValueError as e:
+            raise HTTPException(422, f"Fund picks: {e}") from e
+        fund_rows = [{"scheme_name": cands[p["scheme_code"]]["scheme_name"], "category": cands[p["scheme_code"]]["category"],
+                      "weight_pct": p["weight_pct"], "detail": ai_picks._template_reason(cands[p["scheme_code"]])} for p in clean]
+
     pdf_bytes = build_risk_profile_pdf(
         client_name=req.first_name or "Client",
         profile=profile,
         client_inputs=client_inputs,
         questionnaire_responses=responses,
+        fund_picks=fund_rows,
     )
     return profile, pdf_bytes
 

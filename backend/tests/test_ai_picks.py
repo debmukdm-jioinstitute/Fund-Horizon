@@ -46,3 +46,23 @@ def test_edit_validation():
 def test_preview_needs_staff_login(client):
     body = {"band": "Moderate", "equity": 50, "debt": 33, "gold": 10, "liquid": 7}
     assert client.post("/api/staff/ai-picks", json=body).status_code == 401
+
+
+def test_risk_profile_pdf_lists_fund_picks():
+    import io
+
+    import pytest
+    from fastapi import HTTPException
+    from pypdf import PdfReader
+
+    from app.api.backoffice import BackofficeRiskProfileRequest, risk_profile_report
+
+    picks = [{"scheme_code": CODES[0], "weight_pct": 60}, {"scheme_code": CODES[1], "weight_pct": 40}]
+    _, pdf = risk_profile_report(BackofficeRiskProfileRequest(fund_picks=picks))
+    text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(pdf)).pages)
+    name = next(c["scheme_name"] for c in P.candidates() if c["scheme_code"] == CODES[0])
+    assert "FH Recommended list (AI-assisted)" in text and name.split()[0] in text
+    _, plain = risk_profile_report(BackofficeRiskProfileRequest())
+    assert "AI-assisted" not in "".join(p.extract_text() for p in PdfReader(io.BytesIO(plain)).pages)
+    with pytest.raises(HTTPException):
+        risk_profile_report(BackofficeRiskProfileRequest(fund_picks=[{"scheme_code": "000000", "weight_pct": 100}]))

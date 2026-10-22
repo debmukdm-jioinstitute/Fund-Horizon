@@ -6,6 +6,7 @@ import { FILING_STATUSES, type Filing, getFilings, getOfficialForms, setFilingSt
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
 import { getKyc } from "@/lib/crmProductsApi";
 import type { OfficialForm } from "@/lib/officialForms";
+import { startDownload, type DownloadResult } from "@/lib/api";
 import { domain, isReference, JOBS, type Job, jobForms } from "@/lib/operations";
 
 type Tab = "tasks" | "library" | "register";
@@ -387,17 +388,7 @@ function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: str
 export default function OperationsPage() {
   const [view, setView] = useState<"home" | "forms" | "download">("home");
   if (view === "forms") return <div><button type="button" className={`${btn} mb-3`} onClick={() => setView("home")}>← Operations</button><FormFilling /></div>;
-  if (view === "download") {
-    return (
-      <div className="space-y-4">
-        <button type="button" className={btn} onClick={() => setView("home")}>← Operations</button>
-        <div className={`${card} p-6`}>
-          <h1 className={`text-xl font-bold ${ink}`}>Download Content</h1>
-          <p className={`mt-2 max-w-xl text-[14px] ${muted}`}>Not set up yet. Tell us which content staff need to download and it will be added here.</p>
-        </div>
-      </div>
-    );
-  }
+  if (view === "download") return <div className="space-y-4"><button type="button" className={btn} onClick={() => setView("home")}>← Operations</button><DownloadContent /></div>;
   return (
     <div className="space-y-5 pb-12">
       <div>
@@ -405,13 +396,56 @@ export default function OperationsPage() {
         <p className={`mt-1 text-[14px] ${muted}`}>Choose what you want to do.</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."], ["download", "Download Content", "Download content for the team."]] as const).map(([v, title, text]) => (
+        {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."], ["download", "Download Content", "Paste a link to save a video, audio or image file."]] as const).map(([v, title, text]) => (
           <button key={v} type="button" onClick={() => setView(v)} className={`${card} p-6 text-left hover:border-[#006F64]`}>
             <div className={`text-lg font-bold ${ink}`}>{title}</div>
             <p className={`mt-1.5 text-[13.5px] ${muted}`}>{text}</p>
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+function DownloadContent() {
+  const [url, setUrl] = useState("");
+  const [mode, setMode] = useState("auto");
+  const [quality, setQuality] = useState("1080");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [res, setRes] = useState<DownloadResult | null>(null);
+  const field = "rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-2.5 py-2 text-[14px]";
+
+  async function go(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true); setErr(null); setRes(null);
+    try { setRes(await startDownload({ url: url.trim(), mode, quality })); } catch (x) { setErr(x instanceof Error ? x.message : "Could not fetch this link."); }
+    setBusy(false);
+  }
+
+  return (
+    <div className={`${card} p-6 space-y-4`}>
+      <div>
+        <h1 className={`text-xl font-bold ${ink}`}>Download Content</h1>
+        <p className={`mt-1 text-[13px] ${muted}`}>Only download content you own or have permission to use.</p>
+      </div>
+      <form onSubmit={go} className="space-y-3">
+        <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Paste a link" aria-label="Link" className={`${field} w-full`} />
+        <div className="flex flex-wrap gap-3">
+          <select value={mode} onChange={(e) => setMode(e.target.value)} aria-label="Type" className={field}>
+            <option value="auto">Video</option><option value="audio">Audio only</option><option value="mute">Video without sound</option>
+          </select>
+          <select value={quality} onChange={(e) => setQuality(e.target.value)} aria-label="Quality" className={field}>
+            {["max", "2160", "1440", "1080", "720", "480", "360"].map((q) => <option key={q} value={q}>{q === "max" ? "Best quality" : `${q}p`}</option>)}
+          </select>
+          <button type="submit" disabled={busy || !url.trim()} className={btnPrimary}>{busy ? "Fetching…" : "Get file"}</button>
+        </div>
+      </form>
+      {err && <p role="alert" className="text-[13px] text-[#B42318] dark:text-[#FF7D86]">{err}</p>}
+      {res && res.status !== "picker" && <a href={res.file} download={res.filename} className={btnPrimary}>Save {res.filename}</a>}
+      {res && res.status === "picker" && (
+        <ul className="space-y-1.5 text-[13px]">{res.items.map((i, n) => <li key={n}><a className={teal} href={i.url} target="_blank" rel="noreferrer">{i.type} {n + 1}</a></li>)}</ul>
+      )}
     </div>
   );
 }

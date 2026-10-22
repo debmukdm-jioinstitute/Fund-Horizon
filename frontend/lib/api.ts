@@ -323,3 +323,10 @@ export const getStaffThread = (id: string) =>
   authedRequest<{ messages: ChatMessage[] }>(`${API_URL}/api/staff/chats/${id}`);
 export const sendStaffReply = (id: string, body: string) =>
   authedRequest<ChatMessage>(`${API_URL}/api/staff/chats/${id}`, { method: "POST", body: JSON.stringify({ body }) });
+
+export type DownloadResult =
+  | { status: "tunnel" | "redirect"; filename: string; file: string }
+  | { status: "picker"; items: { type: string; url: string }[] };
+
+export const startDownload = (body: { url: string; mode: string; quality: string }) =>
+  authedRequest<DownloadResult>(`${API_URL}/api/staff/download`, { method: "POST", body: JSON.stringify(body) });

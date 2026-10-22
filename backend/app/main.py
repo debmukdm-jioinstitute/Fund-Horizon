@@ -247,6 +247,7 @@ def create_app() -> FastAPI:
     from app.api.crm_products import router as crm_products_router
     from app.api.crm_reports import router as crm_reports_router
     from app.api.customer_portal import router as customer_portal_router
+    from app.api.download import router as download_router
     from app.api.learn import router as learn_router
     from app.api.rm import rm_router
     from app.backoffice.mf_reference import router as mf_reference_router
@@ -262,6 +263,7 @@ def create_app() -> FastAPI:
     app.include_router(crm_reports_router)
     app.include_router(learn_router)
     app.include_router(customer_portal_router)
+    app.include_router(download_router)
     app.include_router(crm_products_router)
     app.include_router(backoffice_router)
     app.include_router(mf_reference_router)

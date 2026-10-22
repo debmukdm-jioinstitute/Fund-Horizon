@@ -4,10 +4,11 @@
 
 **Profile a customer, suggest a risk-based allocation, shortlist funds, and plan every goal. Then look inside any fund, read a CAS, and hand over a PDF.**
 
-[**Live site**](https://fundhorizon.up.railway.app) ·
+[**Live site**](https://fundhorizon.website) ·
 [Docs](docs/) ·
 [Assumptions](docs/ASSUMPTIONS.md) ·
-[Architecture](docs/ARCHITECTURE.md) ·
+[System architecture](#system-architecture-end-to-end) ·
+[Design decisions](docs/ARCHITECTURE.md) ·
 [Verification](docs/VERIFICATION.md)
 
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
@@ -34,12 +35,13 @@ every number it writes is checked against the engine's output.
 ---
 
 ## Contents
-[What you get](#what-you-get) · [How it fits together](#how-it-fits-together) ·
+[What you get](#what-you-get) · [**System architecture**](#system-architecture-end-to-end) ·
+[Plan engine](#how-the-plan-engine-fits-together) ·
 [The plan pipeline](#the-plan-pipeline) · [Risk profile](#risk-profile-final--the-lower-score) ·
 [Allocation and glide path](#allocation-and-the-glide-path) · [Fund shortlist](#fund-shortlist-filter-first-rank-second) ·
 [Goals and Monte Carlo](#goal-planning-and-monte-carlo) · [Stress test](#stress-test-on-past-data) · [Tax planning](#smart-tax-planning) ·
 [Beyond the plan](#beyond-the-plan) · [Quick start](#quick-start) · [Configure](#configure-assumptions) ·
-[Database](#database-and-persistence) · [API](#api) · [Deploy](#deploy-railway) · [Quality](#quality-and-compliance) ·
+[Database](#database-and-persistence) · [API](#api) · [Deploy](#12-deploying-and-operating) · [Quality](#quality-and-compliance) ·
 [Credits](#credits)
 
 ---
@@ -57,7 +59,556 @@ every number it writes is checked against the engine's output.
 | **6. Safety net** | Emergency-fund target and gap, term and health cover gaps. When there is a gap, an illustrative shortlist of researched cover plans appears (curated October 2026; not a recommendation). |
 | **7. PDF** | A branded report with the disclosures on every page. |
 
-## How it fits together
+## System architecture (end to end)
+
+> This section explains the **whole running system**: what each piece is, where it lives, how the pieces talk to
+> each other, how data gets in, and how code gets from GitHub to the live website. You do not need to know the code.
+> Start with the picture, then read the table that explains each box.
+
+### 1. The big picture
+
+```mermaid
+flowchart TB
+    subgraph People["People"]
+        CUST["Customers<br/>(plan, CRM view, chat)"]
+        STAFF["Staff and admins<br/>(back office)"]
+        QR["Visitors who scan a QR code<br/>(crossword, lead form)"]
+    end
+
+    subgraph CF["Cloudflare (free plan)"]
+        DNS["DNS for fundhorizon.website"]
+        WORKER["Web app<br/>Cloudflare Worker<br/>Next.js 14"]
+        TUNNEL["Cloudflare Tunnel<br/>api.fundhorizon.website"]
+    end
+
+    subgraph AWS["AWS EC2 server (Mumbai)"]
+        CFD["cloudflared<br/>(tunnel agent)"]
+        API["API container<br/>FastAPI + Python"]
+        DB[("SQLite database<br/>plans.db")]
+        COBALT["cobalt container<br/>media download engine"]
+        BK["Daily backup<br/>(cron, keeps 7 days)"]
+    end
+
+    subgraph GH["GitHub"]
+        REPO["Code and data<br/>repository"]
+        ACT["GitHub Actions<br/>scheduled data bots"]
+    end
+
+    subgraph EXT["Outside data and services"]
+        AMFI["AMFI + mfapi.in<br/>fund NAVs"]
+        MKT["NSE, FRED, ECB, Cboe, US Treasury,<br/>APMI, news RSS"]
+        FS["Fund house websites<br/>factsheets, manager profiles"]
+        OAI["OpenAI<br/>Responses API"]
+    end
+
+    GD["GoDaddy<br/>(domain registrar)"]
+
+    CUST --> DNS
+    STAFF --> DNS
+    QR --> DNS
+    GD -. "nameservers point to Cloudflare" .-> DNS
+    DNS --> WORKER
+    DNS --> TUNNEL
+    WORKER -- "/api calls" --> TUNNEL
+    TUNNEL --> CFD
+    CFD --> API
+    API --> DB
+    API --> COBALT
+    API --> OAI
+    API -- "daily NAVs, live feeds" --> AMFI
+    API -- "collector loop" --> MKT
+    BK --> DB
+    ACT --> AMFI
+    ACT --> FS
+    ACT -- "commit refreshed data" --> REPO
+    REPO -- "docker build (redeploy)" --> API
+    REPO -- "npm build and wrangler deploy" --> WORKER
+```
+
+**In one paragraph.** A visitor types `fundhorizon.website`. GoDaddy only *sold* the name; Cloudflare runs its DNS. Cloudflare
+serves the **web app** (a Next.js site running as a Cloudflare Worker). Whenever the page needs data, it calls
+`/api/...`, which Cloudflare forwards through a **tunnel** to a small **AWS server**. On that server a **Docker
+container** runs the **Python API**, which reads and writes one **SQLite** file. Separately, **GitHub Actions** robots
+refresh fund data on a schedule and commit it back to GitHub, and the API picks that data up whenever it is redeployed.
+
+### 2. Every component in one table
+
+| # | Component | What it is, in plain words | Where it runs | Built with | Code location |
+|---|---|---|---|---|---|
+| 1 | **Domain registrar** | The shop where the name `fundhorizon.website` was bought. Only holds ownership and the nameserver setting. | GoDaddy | n/a | n/a |
+| 2 | **DNS** | The phone book: turns the name into the right server. | Cloudflare | Cloudflare DNS | n/a (dashboard) |
+| 3 | **Web app** | Everything users see: landing page, plan wizard, customer area, staff back office. | Cloudflare Worker `fund-horizon-web` | Next.js 14, TypeScript, Tailwind, OpenNext | [`frontend/`](frontend) |
+| 4 | **Cloudflare Tunnel** | A private pipe from Cloudflare to the server, so the server needs no open web port. | Cloudflare edge to the `cloudflared` service on EC2 | cloudflared | n/a (dashboard + service) |
+| 5 | **API** | The brain: sign-in, plans, CRM, AI picks, PDFs, downloads, data feeds. | Docker container `fh-api` on EC2 | Python 3.12, FastAPI, Pydantic v2 | [`backend/app/`](backend/app) |
+| 6 | **Database** | One file holding every account, plan, lead, chat message and market observation. | `/home/ubuntu/fhdata/plans.db` on EC2 | SQLite | [`backend/app/db/`](backend/app/db) |
+| 7 | **cobalt** | Open-source engine behind the Download Content box. Not reachable from the internet. | Docker container `cobalt` on EC2 | Node.js (AGPL-3.0, unmodified) | [`deploy/redeploy.sh`](deploy/redeploy.sh) |
+| 8 | **Server** | The one computer that runs 5, 6, 7 and the tunnel agent. | AWS EC2 `fund-horizon-api`, Mumbai | Ubuntu 24.04, Docker | [`deploy/`](deploy) |
+| 9 | **Data bots** | Scheduled robots that download fund data and commit it to GitHub. | GitHub Actions | Python, Playwright | [`.github/workflows/`](.github/workflows) |
+| 10 | **Fund dataset** | NAV history and metrics for about 3,600 schemes, shipped inside the API image. | In the repo, baked into the image | CSV files | [`data/`](data) |
+| 11 | **AI layer** | Picks funds, writes plain-English explanations. Never does the maths. | Inside the API, calls OpenAI | OpenAI Responses API | [`backend/app/ai/`](backend/app/ai) |
+| 12 | **Source code** | The single source of truth for everything above. | GitHub | git | this repository |
+
+### 3. How a click travels (request path)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant B as Browser
+    participant E as Cloudflare edge
+    participant W as Web app (Worker)
+    participant T as Tunnel
+    participant A as API container (EC2)
+    participant D as SQLite file
+
+    B->>E: GET https://fundhorizon.website/plan/123
+    E->>W: run the Next.js app
+    W-->>B: HTML and JavaScript
+    B->>E: POST /api/auth/login (same website, so same origin)
+    E->>W: Worker matches the /api/* rewrite
+    W->>T: forwards to https://api.fundhorizon.website
+    T->>A: through cloudflared to 127.0.0.1:8000
+    A->>D: look up the account, check the password hash
+    D-->>A: account row
+    A-->>W: 200 plus Set-Cookie fh_session (HttpOnly, Secure)
+    W-->>B: response and cookie
+    Note over B,A: Every later call carries the cookie. The API only stores a hash of the session token.
+```
+
+Why the web app forwards `/api/*` itself: the browser then only ever talks to `fundhorizon.website`, so the login cookie
+is first-party and no cross-site rules get in the way.
+
+### 4. Domain and DNS
+
+```mermaid
+flowchart LR
+    GD["GoDaddy<br/>owns the name"] -- "nameservers changed to<br/>damon / meilani .ns.cloudflare.com" --> CFZ["Cloudflare DNS zone"]
+    CFZ -- "fundhorizon.website<br/>www.fundhorizon.website<br/>(Worker custom domains)" --> WK["Web app Worker"]
+    CFZ -- "api.fundhorizon.website<br/>CNAME to the tunnel" --> TN["Cloudflare Tunnel"]
+    TN --> EC["EC2: cloudflared then API"]
+```
+
+- `fundhorizon.website` and `www` are **Worker custom domains**, declared in [`frontend/wrangler.jsonc`](frontend/wrangler.jsonc).
+- `api.fundhorizon.website` is a proxied CNAME to the tunnel; the tunnel's routing rule (`api.fundhorizon.website` to
+  `http://127.0.0.1:8000`) is stored in Cloudflare.
+- The old `fund-horizon-web.fundhorizon.workers.dev` address still works and is allowed by the API's CORS list.
+
+### 5. The web app (frontend)
+
+Next.js 14 (App Router). It is built into a Cloudflare Worker with **OpenNext** (`npm run cf:build`), so pages render on
+Cloudflare's edge. All fonts are Google Sans (enforced by `npm run lint`); all user-facing wording passes a compliance check
+(`frontend/scripts/check-copy.mjs`).
+
+```mermaid
+flowchart TB
+    L["/  Landing page<br/>Customer box and Admin box"]
+    L --> CU["Customer area<br/>/account/*"]
+    L --> AD["Admin login<br/>/login"]
+    AD --> BO["Back office<br/>/backoffice/*"]
+    L --> PUB["Public tools<br/>plan wizard, CAS, tax, fund pages,<br/>crossword, lead form, risk profile link"]
+    CU --> PL["My plans"]
+    CU --> CRM["My CRM (read only)"]
+    CU --> CH["Messages (chat with staff)"]
+    PUB --> PV["Plan results /plan/id<br/>AI fund picks and backtest"]
+    BO --> OPS["Operations<br/>form filling, download content"]
+    BO --> RP["Risk profiling studio"]
+    BO --> CRMB["CRM, chats, research, data health ..."]
+```
+
+| Area | Routes (under `frontend/app/`) | What it does |
+|---|---|---|
+| **Landing** | `/` | Two boxes: **Customer** (log in or create account) and **Admin** (goes to `/login`). Signed-in users are sent straight to their area. |
+| **Customer area** | `/account/plans`, `/account/crm`, `/account/messages` | Their saved plans, a read-only view of their household, holdings, SIPs and service requests, and chat with the team. |
+| **Plan and tools** | `/plan/new`, `/plan/[id]`, `/portal/[id]/*`, `/tax`, `/cas`, `/funds/*`, `/learn/*` | Five-minute plan wizard, results (allocation, shortlist, stress test, goals, tax, **AI fund picks with Edit and a backtest**), CAS statement reader, tax planner, fund detail, compare and Q&A, the Academy. |
+| **Lead capture** | `/crossword`, `/lead`, `/risk-profile?ref=...` | Pages reached by QR code or a shared link. They post to the public lead endpoints and the lead lands in the CRM. |
+| **Back office (staff)** | `/backoffice/*` | Overview, **Operations** (form filling, Download Content), **Risk profiling studio**, **CRM** (households, contacts, leads, opportunities, cases), **Customer chats**, mutual funds, PMS, derivatives, macro, micro, flows, impact, research, briefings, data health, Academy admin, settings. |
+| **Admin tools** | `/admin` | Admin control centre (plans, CAS sessions, customers, config). |
+
+Code layout:
+
+| Folder | Holds |
+|---|---|
+| [`frontend/app/`](frontend/app) | One folder per route (`page.tsx`), plus `layout.tsx` (fonts, auth provider, theme). |
+| [`frontend/components/`](frontend/components) | Reusable UI: `AuthContext` (who is signed in), `AiPicks`, `ChatThread`, `Results` (plan sections), `backoffice/*`, `operations/*` (PDF form filler, signature pad), `crm/*`, `academy/*`, `charts`. |
+| [`frontend/lib/`](frontend/lib) | `api.ts` and the `crm*Api.ts` files (every call to the API), `types.ts`, formatting helpers, profiling questionnaire, recommended-fund list. |
+| [`frontend/wrangler.jsonc`](frontend/wrangler.jsonc) | Worker name, custom domains, API address. |
+| [`frontend/next.config.mjs`](frontend/next.config.mjs) | Security headers (CSP) and the `/api/*` rewrite to the API. |
+
+### 6. The API (backend)
+
+One FastAPI app, `backend/app/main.py`, which wires every router, the security middleware, and two background loops
+(daily database backup and the market-data collector loop).
+
+```mermaid
+flowchart LR
+    M["main.py<br/>app factory, CORS, rate limits,<br/>security headers, background loops"]
+    M --> RT["api/ routers<br/>(HTTP endpoints)"]
+    RT --> EN["engine/<br/>pure maths"]
+    RT --> DBL["db/ and repo_crm_*<br/>read and write SQLite"]
+    RT --> AIL["ai/<br/>picks, backtest, explain"]
+    RT --> RPT["report/<br/>PDFs and charts"]
+    RT --> BOF["backoffice/<br/>collectors, screening, briefings"]
+    EN --> CFG["config/<br/>assumptions, allocation, scoring, tax rules,<br/>questionnaire, disclosures"]
+    EN --> DS["data/<br/>dataset loader (CSV in memory)"]
+    AIL --> DS
+    AIL --> OAI(("OpenAI"))
+    AIL --> MFA(("mfapi.in"))
+    BOF --> FEEDS(("market feeds"))
+    DBL --> SQ[("SQLite")]
+    BOF --> SQ
+    RT -. "cobalt" .-> CB(("download engine"))
+```
+
+**Routers (`backend/app/api/`)** (the doors into the API):
+
+| File | Purpose |
+|---|---|
+| `routes.py` | Public plan API: create a plan, fetch it (with step-up and tax switches), PDF, fund detail, compare, CAS upload, tax, RAG Q&A, AI explain. |
+| `portal.py` | Plan dashboard, health, analytics, partial update (recompute in place). |
+| `plan_picks.py` | **AI fund picks**: generate once per plan, save the client's edited split, staff preview, backtest. |
+| `auth.py` | Sign-up, login, logout, session cookie, roles, CSRF check, read-only **guest** login. |
+| `customer_portal.py` | A customer's own CRM view, and **chat** (customer side and staff inbox). |
+| `crm_core.py`, `crm_extras.py`, `crm_phase3.py`, `crm_products.py`, `crm_reports.py` | The CRM: households, contacts, leads (including the public `crossword`/`lead` endpoints), opportunities, cases, KYC, holdings, SIPs, campaigns, commissions, reports, CSV import. |
+| `crm_auth.py` | Who may see which CRM rows (admin, relationship manager, compliance read-only). |
+| `backoffice.py` | Staff data APIs: markets, funds, PMS, derivatives, macro, briefings, screening, **risk-profiling report PDF**, **operations filings register**, recommended-funds list. |
+| `download.py` | **Download Content**: staff-only proxy to the cobalt container. |
+| `learn.py` | The Academy: lessons, quizzes, flashcards, XP, leaderboard. |
+| `admin.py`, `rm.py` | Admin control centre, relationship-manager helpers. |
+
+**Engine and support packages:**
+
+| Package | Purpose |
+|---|---|
+| [`engine/`](backend/app/engine) | The maths, as pure functions: `profiling` (risk score), `allocation`, `funds` (shortlist), `planning` and `montecarlo` (goals), `stress`, `tax*`, `insurance*`, `cas` (statement reader), `pipeline` (runs them in order), `portal` (recompute and analytics). |
+| [`ai/`](backend/app/ai) | `picks.py` (fund picks), `backtest.py` (past performance of a split), `explain.py` (plain-English explanations), `guardrails.py` (banned wording, number checks, PII scrub), `client.py` (OpenAI and fallback providers). |
+| [`report/`](backend/app/report) | PDFs with ReportLab and charts with matplotlib: plan report, risk-profile report, insurance doc, form filler. Fonts are Google Sans only. |
+| [`backoffice/`](backend/app/backoffice) | The market-data side: `collectors.py` (scheduler), `providers/` (one file per feed), `analytics/` (briefing, derivatives, yields, PMS maths), `screening/` (fund screener), `fh_recommended.py` (the FH Recommended list), `mf_reference.py` (reference data). |
+| [`db/`](backend/app/db) and `repo_crm_*.py` | Database access: SQLite (live), plus PostgreSQL and Cloudflare D1 adapters kept for other setups. Alembic migrations in `backend/alembic/`. |
+| [`models/`](backend/app/models) | CRM and Academy table definitions (SQLAlchemy). |
+| [`config/`](backend/app/config) | Editable rules: `assumptions.yaml`, `allocation.yaml`, `scoring.yaml`, `questionnaire.json`, tax rules and catalog, `ai.yaml`, and `disclosures.py` (all compliance wording). |
+| [`data/`](backend/app/data) | Loads the fund dataset (CSV) once at start-up; Academy and insurance content. |
+| [`rag/`](backend/app/rag) | Fund Q&A over the dataset (ChromaDB, off by default). |
+| [`storage/`](backend/app/storage) and `backup.py` | Optional R2 file storage and the daily SQLite backup. |
+| [`cli/bootstrap_admin.py`](backend/app/cli/bootstrap_admin.py) | Command to create or promote a staff account. |
+
+### 7. How data gets in (GitHub, GitHub Actions, live feeds)
+
+There are **three separate ways** data enters the system. Keeping them apart is the key to understanding it.
+
+```mermaid
+flowchart TB
+    subgraph A["Way 1: GitHub Actions bots (scheduled, results stored in the repo)"]
+        W1["Daily Data Refresh<br/>weekdays 00:00 IST"]
+        W2["Factsheet Links (browser)<br/>daily 08:00 IST"]
+        W3["Fund Manager Profiles<br/>Sundays 08:30 IST"]
+    end
+    subgraph SRC["Public sources"]
+        AM["AMFI NAV file + mfapi.in<br/>every scheme's NAV history"]
+        FH["Fund house websites<br/>(Chromium via Playwright)"]
+        MP["Manager profile pages"]
+    end
+    REPO[("GitHub repository<br/>main branch<br/>data/ folder")]
+    W1 --> AM
+    W2 --> FH
+    W3 --> MP
+    W1 -- "all_schemes_metrics.csv<br/>category_summary.csv<br/>nav_monthly/*.csv" --> REPO
+    W2 -- "factsheet_links/browser.json" --> REPO
+    W3 -- "mf_manager_profiles.json" --> REPO
+    REPO -- "docker build<br/>(redeploy.sh)" --> IMG["API image<br/>dataset baked in"]
+    IMG --> RUN["Running API<br/>loads the CSVs into memory at start-up"]
+
+    subgraph B["Way 2: the API's own collector loop (runs inside the container, writes to SQLite)"]
+        CL["collectors.py<br/>wakes every 60 s,<br/>runs each source when due"]
+    end
+    CL -- "NSE, ECB, Cboe, Treasury, FRED,<br/>AMFI, APMI, RSS, India yields,<br/>factsheets, screening" --> RUN
+    RUN --> SQ[("SQLite: observations,<br/>briefings, news, screening")]
+
+    subgraph C["Way 3: live look-ups at the moment a user asks"]
+        BT["Backtest of a fund split<br/>daily NAVs from mfapi.in<br/>cached for the day"]
+    end
+    RUN --> BT
+```
+
+**Way 1: GitHub Actions bots.** The workflow files are in [`.github/workflows/`](.github/workflows). Each runs on a schedule on GitHub's
+own computers (free), does its job, and **commits the result back to `main`** as the user `fh-data-bot`. Nothing here touches
+the live server directly.
+
+| Workflow | Schedule (UTC) | Does | Writes (committed to `main`) |
+|---|---|---|---|
+| **Daily Data Refresh** (`daily-refresh.yml`) | `30 18 * * 1-5` (00:00 IST, Mon-Fri) | Rebuilds returns for every scheme from the AMFI file and mfapi.in; refuses to overwrite if the new file has under 90% of the old rows; then runs `backend/scripts/refresh_data.py` | `data/fundhorizon_mf_rag_dataset/all_schemes_metrics.csv`, `category_summary.csv`, `nav_monthly/*.csv` |
+| **Factsheet Links (browser)** (`factsheets-browser.yml`) | `30 2 * * *` (08:00 IST daily) | Opens fund-house websites in headless Chromium and collects factsheet download links | `data/factsheet_links/browser.json` |
+| **Fund Manager Profiles** (`manager-profiles.yml`) | `0 3 * * 0` (08:30 IST Sundays) | Refreshes fund manager profile data | `data/mf_manager_profiles.json` |
+| **Heavy Jobs (D1 / R2)** (`heavy-jobs.yml`) | `0 2 * * *` | Left over from the old Cloudflare-only design. **Not part of the live system.** | none that matter |
+
+All four can also be started by hand (**Actions** tab, then **Run workflow**).
+
+> **Important to know.** A bot commit updates the *repository*. The running API holds a **copy of the dataset baked into its Docker
+> image**, so fresh bot data reaches the live site the next time the API is **redeployed** (section 12). Live NAVs for the backtest
+> are the exception: they are fetched from mfapi.in at request time (Way 3).
+
+**Way 2: the collector loop.** Inside the API container, `backoffice/collectors.py` checks every 60 seconds which sources are due,
+fetches them, and stores the numbers in SQLite. The back-office pages (Overview, Macro, Micro, Derivatives, Flows, Briefings,
+Data health) read from there.
+
+| Source id | Feed | Runs every |
+|---|---|---|
+| `SRC_NSE_FNO` | NSE index levels, India VIX, option chains and flows | 5 min |
+| `SRC_RSS` | News headlines | 10 min |
+| `SRC_IN_YIELDS` | India government bond yields | 30 min |
+| `SRC_ECB`, `SRC_CBOE`, `SRC_TREASURY`, `SRC_FRED` | ECB rates, Cboe volatility, US Treasury yields, FRED series (FRED needs `FRED_API_KEY`) | 1 hour |
+| `SRC_AMFI`, `SRC_FACTSHEETS` | AMFI scheme master and NAV, factsheet source list | 6 hours |
+| `SRC_APMI` | PMS universe | 12 hours |
+| `SRC_AMFI_TER`, `SRC_SCREENING` | Expense ratios, fund screening funnel | 24 hours |
+
+After a failure a source retries soon instead of waiting its full interval. Each run is logged in `collector_runs`
+and shown on the Data health page.
+
+**Way 3: live look-ups.** The **backtest** under the AI fund picks calls `api.mfapi.in/mf/<code>` for each chosen fund
+(in parallel), keeps the result in memory for the day, and falls back to the monthly files shipped in the image if mfapi.in is down.
+
+### 8. The database
+
+One SQLite file, `plans.db`, on the server's disk (mounted into the API container as `/dbdata/plans.db`).
+
+| Group | Tables (examples) | Written by |
+|---|---|---|
+| **Accounts and sessions** | `customers` (role, is_staff, password hash), `sessions` (only a hash of the token) | `api/auth.py` |
+| **Plans** | `plans` (stored request and result, by random UUID), `plan_ai_picks` (AI picks and the client's edits), `cas_sessions` | `routes.py`, `plan_picks.py` |
+| **CRM** | `households`, `household_members`, `contacts`, `leads`, `opportunities`, `activities`, `cases`, `holdings`, `sip_schedules`, `kyc_records`, `mandates`, `consents`, `campaigns`, `commissions`, `rm_teams`, `crm_list_views`, `audit_log` | `crm_*.py` |
+| **Chat** | `chat_messages` (one thread per customer) | `customer_portal.py` |
+| **Operations** | `operations_filings` (the filings register) | `backoffice.py` |
+| **Market data** | `observations`, `instrument_registry`, `source_registry`, `collector_runs`, `briefings`, `news_items`, `option_*`, `flows`, `pms_*`, `mf_*`, `screening_*`, `mfref_*` | `backoffice/` collectors |
+| **Academy** | `learn_progress`, `quiz_attempts`, `card_reviews`, `xp_events`, `badges`, `learn_prefs` | `learn.py` |
+
+- **Migrations.** Alembic (`backend/alembic/`) creates and changes tables. The container refuses to start if migrations fail.
+- **Backups.** A cron job on the server runs daily and keeps the last 7 copies in `/home/ubuntu/backups` (same disk). The API also writes its own
+  daily backup file inside the container. **Neither is off-server today.** Copying backups to Cloudflare R2 or S3 is the recommended next step.
+- **Other database back ends** (PostgreSQL, Cloudflare D1) exist in `backend/app/db/` for other setups but are **not used** in production.
+
+### 9. The AI layer
+
+The AI never calculates. Python computes every number; the AI only chooses among funds Fund Horizon has already approved and
+writes short wording, and everything it says is checked.
+
+```mermaid
+flowchart LR
+    P["Finished plan or risk profile<br/>band + asset allocation"] --> SL["Shortlist<br/>top 2 funds per category<br/>from the FH Recommended list"]
+    MK["Market snapshot<br/>latest daily briefing"] --> PR
+    SL --> PR["Compact prompt<br/>about 500 tokens"]
+    PR --> OA["OpenAI Responses API<br/>low reasoning effort"]
+    OA --> VAL{"Validate"}
+    VAL -- "codes on the FH list,<br/>weights total 100,<br/>no digits or banned words" --> OK["AI picks"]
+    VAL -- "any check fails<br/>or no answer" --> RULE["Fixed rule picks<br/>(highest 3Y Sharpe per category)"]
+    OK --> ST[("Stored in plan_ai_picks<br/>(AI runs once per plan)")]
+    RULE --> ST
+    ST --> UI["Plan page or Risk profiling studio<br/>weights, reasons, Edit"]
+    UI -- "client edits weights" --> SAVE["Saved after server re-check:<br/>only FH funds, total 100"]
+    UI --> BT["Backtest (daily NAVs)"]
+    BT --> UI
+    UI --> PDF["PDF report<br/>picks table + backtest"]
+```
+
+- **Funds can only come from the FH Recommended list** (`backend/app/backoffice/fh_recommended.py`, editable in the back office).
+  Anything else is rejected server-side, even if the browser asks for it.
+- **Token saving:** the AI sees about 11 of 31 candidate funds as short number rows, answers in short arrays, runs at low reasoning effort,
+  and results are cached by risk band and allocation. A typical call is about 800 tokens in total.
+- **Backtest** (`ai/backtest.py`): holds the chosen funds at their weights, rebalanced each day, using daily NAVs. A fund that did not exist yet is left out
+  of the early period and the others are rescaled, so history reaches back to the oldest fund. It reports 1, 3, 5 and 10 year annualised return, whole-window return, volatility,
+  maximum drawdown and worst 12 months. Past data only.
+- **Explanation layer** (`ai/explain.py`, `guardrails.py`): optional plain-English summaries; every number in the text must exist in the engine's output, and banned
+  wording (such as "best", "guaranteed", "advice") is blocked. It is off unless enabled (`FH_AI_ENABLED`).
+- **Key and model:** `OPENAI_API_KEY` is stored only on the server (`/home/ubuntu/fh.env`), never in Git. `FH_OPENAI_MODEL` (default `gpt-6-luna`) and
+  `FH_OPENAI_EFFORT` (default `low`) can change the model and effort.
+
+### 10. Key journeys, step by step
+
+**A. A customer creates an account, builds a plan and gets AI picks**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Customer
+    participant W as Web app
+    participant A as API
+    participant D as SQLite
+    participant O as OpenAI
+    participant M as mfapi.in
+    C->>W: Landing page: Create account
+    W->>A: POST /api/auth/signup
+    A->>D: insert customer (password hashed)
+    A-->>C: session cookie, go to /account/plans
+    C->>W: New plan: answers the wizard
+    W->>A: POST /api/plans
+    A->>A: engine: profile, allocation, goals, shortlist, stress test
+    A->>D: store plan (UUID)
+    C->>W: open /plan/UUID
+    W->>A: GET /api/plans/UUID/ai-picks
+    A->>O: compact prompt (first time only)
+    O-->>A: picks as JSON
+    A->>A: validate against the FH Recommended list
+    A->>D: store plan_ai_picks
+    A->>M: daily NAVs for the backtest
+    A-->>C: picks, reasons, backtest
+    C->>W: Edit, change weights, Save
+    W->>A: PUT /api/plans/UUID/ai-picks
+    A->>A: check FH funds only, total 100
+    A->>D: save the edited split
+```
+
+**B. A QR code scan becomes a lead in the CRM**
+
+```mermaid
+flowchart LR
+    Q["Printed QR code"] --> P["/crossword or /lead page"]
+    P -- "POST /api/crm/public/crossword<br/>or /public/lead" --> A["API<br/>validated"]
+    A --> L[("leads table<br/>source = qr_code or crossword")]
+    L --> CRM["Back office CRM, Leads"]
+    CRM --> X["Export CSV or Excel,<br/>assign to a relationship manager"]
+```
+
+**C. Staff prepare a risk profile and a PDF**
+
+```mermaid
+flowchart LR
+    S["Staff: Risk profiling studio"] --> F["Client details + 10 questions"]
+    F --> SC["Live score in the browser<br/>capacity vs tolerance, lower one wins"]
+    SC --> AL["Target allocation:<br/>equity, debt, gold, liquid"]
+    AL --> GP["Get AI fund picks, then Edit"]
+    GP --> PDF["Download PDF<br/>POST /api/backoffice/risk-profiling/report.pdf"]
+    PDF --> OUT["Page 1: profile and allocation<br/>Page 2: AI picks and backtest<br/>Page 3: questionnaire and sign-off"]
+    F -. "share link" .-> CL["Client link /risk-profile?ref=..."]
+    CL --> CRMW["Lead, account and suitability record created"]
+```
+
+**D. Customer and staff chat**
+
+```mermaid
+flowchart LR
+    CU["Customer: Messages tab"] -- "POST /api/me/messages" --> T[("chat_messages<br/>one thread per customer")]
+    T -- "GET /api/staff/chats (unread count)" --> ST["Staff: Customer chats"]
+    ST -- "POST /api/staff/chats/customer_id" --> T
+    T -- "refresh every 8 s" --> CU
+```
+
+The guest login cannot open the staff inbox.
+
+**E. Operations: form filling and Download Content**
+
+```mermaid
+flowchart TB
+    OP["Back office: Operations"] --> FF["Form filling box"]
+    OP --> DL["Download Content box"]
+    FF --> T1["Start a task, Forms library,<br/>Filings register, upload your own PDF"]
+    T1 --> PF["Official AMC / CAMS / KFintech PDF<br/>filled and signed in the browser<br/>(PdfFormFiller)"]
+    PF --> FR[("operations_filings")]
+    DL --> LK["Paste a link"]
+    LK --> AP["API: POST /api/staff/download<br/>(staff only)"]
+    AP --> CB["cobalt container<br/>(private network)"]
+    CB --> FILE["File streamed back through<br/>/api/staff/download/file"]
+```
+
+### 11. Security and access
+
+| Topic | How it works |
+|---|---|
+| **Sessions** | HttpOnly, Secure cookie `fh_session`; the database keeps only a SHA-256 hash of the token. Passwords use PBKDF2-HMAC-SHA256 (600,000 rounds). |
+| **Roles** | `customer`, and staff roles `admin`, `analyst`, `rm`, `operations`, `read_only`, `compliance`. CRM rows are scoped (RMs see their team; admin and compliance see all; compliance is read-only). |
+| **Guest login** | A passwordless **read-only** staff session, switched on by `FH_GUEST_LOGIN`. Any write is refused; it cannot use staff chat. **It exposes staff data to anyone with the link, so turn it off for real use.** |
+| **Public sign-up** | Allowed because `FH_INTERNAL_ONLY=false` on the server. |
+| **Protection** | Rate limits on sign-in and on plan creation and recompute (public lead forms are validated); CSRF check on cookie-authenticated writes; CORS allow-list (`FH_CORS_ORIGINS`); strict security headers and a Content-Security-Policy. |
+| **Plan links** | A plan is reachable by its random UUID (no login). Treat plan links like private links. |
+| **Secrets** | Never in Git. `OPENAI_API_KEY` in `/home/ubuntu/fh.env` (permissions 600). The tunnel token lives in the `cloudflared` service on the server. |
+| **Server access** | AWS **Session Manager** (browser terminal, no open ports needed). SSH is limited to one IP address in the AWS security group. No web port is open: all traffic comes through the tunnel. |
+| **Compliance guardrails** | Wording is centralised in `config/disclosures.py`; the build blocks words like "best", "guaranteed", "advice", "advisory"; the AI cannot invent numbers. Output is illustrative only. |
+
+### 12. Deploying and operating
+
+There is **no automatic deploy**. Pushing to `main` updates GitHub only. Two deliberate manual steps put code live.
+
+```mermaid
+flowchart LR
+    DEV["Developer pushes to main"] --> GHB["GitHub main"]
+    GHB --> WEBD["Web: from frontend/<br/>npm run cf:build<br/>npx opennextjs-cloudflare deploy"]
+    WEBD --> CFW["Cloudflare Worker updated"]
+    GHB --> APID["API: in AWS Session Manager run<br/>curl .../deploy/redeploy.sh | sudo -iu ubuntu bash"]
+    APID --> EC["On EC2: git clone, docker build,<br/>replace container fh-api"]
+```
+
+**Deploy the web app** (from `frontend/`, on a machine logged in to Cloudflare with `wrangler`):
+
+```bash
+export NEXT_PUBLIC_SITE_URL=https://fundhorizon.website
+npm run cf:build
+npx opennextjs-cloudflare deploy
+```
+
+The API address is baked in at build time (`https://api.fundhorizon.website`, set in `frontend/package.json` and `frontend/wrangler.jsonc`).
+
+**Deploy the API** (AWS console, then Systems Manager, **Session Manager**, pick `fund-horizon-api`, **Start session**, then paste):
+
+```bash
+curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh | sudo -iu ubuntu bash
+```
+
+> Always keep `sudo -iu ubuntu`. Session Manager logs in as `ssm-user`, which cannot read `/home/ubuntu`; without it the script silently rebuilds the old copy.
+
+The script clones the latest `main`, builds the image from [`deploy/api.Dockerfile`](deploy/api.Dockerfile) (this is where fresh bot data is picked up), and restarts the
+container with these settings:
+
+| Setting | Value | Meaning |
+|---|---|---|
+| `FH_DB_PATH` | `/dbdata/plans.db` | Where the database file is (mounted from `/home/ubuntu/fhdata`). |
+| `FH_COOKIE_SECURE` | `true` | Cookies only over HTTPS. |
+| `FH_GUEST_LOGIN` | `1` | Enables the read-only guest button. |
+| `FH_INTERNAL_ONLY` | `false` | Allows public customer sign-up. |
+| `FH_SEED_CRM` | `false` | Never insert demo CRM data. |
+| `FH_COBALT_URL` | `http://cobalt:9000` | The download engine, on the private Docker network `fhnet`. |
+| `FH_CORS_ORIGINS` | the website domains | Which sites may call the API. |
+| `OPENAI_API_KEY` | from `fh.env` | Enables the AI picks. |
+| defaults in the image | `FH_BACKOFFICE_COLLECTORS=true`, `FH_AI_ENABLED=false`, `FH_RATE_LIMIT=true`, `FH_REQUIRE_PRODUCTION_MIGRATIONS=true` | See the Dockerfile. |
+
+**Health check:** `https://api.fundhorizon.website/health` returns `{"ok":true,...}`.
+
+**On the server, things that run by themselves:** `docker` (containers `fh-api` and `cobalt`, both restart automatically), the `cloudflared` service (the tunnel), and a daily
+backup cron job.
+
+### 13. Retired and unused parts (kept so nothing is lost)
+
+| Item | Status |
+|---|---|
+| **Railway** (old host) | Retired. `deploy/web.Dockerfile` and the "Deploy (Railway)" notes were for it. |
+| **Cloudflare Python Worker API** (`backend/src/entry.py`, `backend/app/worker_app.py`, `backend/wrangler.jsonc`) and the Worker `fund-horizon-api` | An earlier attempt to run the API on Cloudflare's free plan. It only covers part of the routes and is **not used**. |
+| **Cloudflare D1 and R2** | D1 holds an old snapshot; R2 bucket `fund-horizon-files` exists. Neither is read by the live API. |
+| **`heavy-jobs.yml`** | Belongs to that Worker design. |
+| **Internal-network option** (`deploy/compose.internal.yml`, nginx) | An alternative for hosting inside an office network; not in use. |
+
+### 14. Quality gates
+
+| Check | Command | Covers |
+|---|---|---|
+| Backend tests | `make test` (pytest) | Engine, API, AI picks and backtest, PDFs (including fonts), chat, downloads, compliance wording. |
+| Font and wording lint | `npm run lint` in `frontend/` | Google Sans only; no banned compliance words in the UI. The build also runs the font check. |
+| End to end | Playwright (`frontend/e2e/`) | Wizard, plan view, PDF download, fonts. |
+
+### 15. Glossary (for non-engineers)
+
+| Term | Meaning |
+|---|---|
+| **API** | The server program that answers the website's questions ("save this plan", "list my leads"). |
+| **Worker** | A small program Cloudflare runs close to the user. Here it runs the website. |
+| **Tunnel** | A private, outbound-only connection from the server to Cloudflare, so the server needs no public door. |
+| **EC2** | A rented computer from Amazon Web Services. |
+| **Docker container** | A sealed box holding a program and everything it needs, so it runs the same everywhere. |
+| **SQLite** | A database that is one ordinary file. |
+| **GitHub Actions** | Robots on GitHub that run scripts on a schedule. |
+| **CORS / CSRF** | Browser safety rules that stop other websites from using your login. |
+| **NAV** | Net Asset Value: a mutual fund's price per unit. |
+| **Backtest** | Replaying a fund mix over past prices to see how it would have behaved. Not a forecast. |
+| **FH Recommended list** | The funds Fund Horizon has approved; AI picks come only from it. |
+| **Session Manager** | AWS's browser-based terminal for the server. |
+
+---
+
+## How the plan engine fits together
 
 ```mermaid
 flowchart LR
@@ -310,7 +861,7 @@ make lint      # ruff, eslint, tsc, banned-wording scan
 
 Optional: copy `backend/.env.example` to `backend/.env` (CORS origins, database, data dir, AI provider keys).
 Set `NEXT_PUBLIC_API_URL` for the frontend if the API is not on `localhost:8000`. Public site links (sitemap,
-robots, Open Graph) use `NEXT_PUBLIC_SITE_URL` (default `https://fundhorizon.up.railway.app`).
+robots, Open Graph) use `NEXT_PUBLIC_SITE_URL` (default `https://fundhorizon.website`).
 
 ```text
 backend/app/{api,engine,data,config,report,db,ai,rag}   FastAPI app, pure engine, config, PDF, storage, AI, retrieval
@@ -318,7 +869,7 @@ backend/tests/                                          tests; golden persona fi
 backend/{alembic,scripts}/                              migrations, data refresh
 frontend/                                               Next.js 14 (App Router), Tailwind, Recharts
 data/fundhorizon_mf_rag_dataset/                        metrics CSV + month-end NAVs (as of 2026-10-09)
-deploy/                                                 Dockerfiles for Railway
+deploy/                                                 Dockerfiles and the server redeploy script
 docs/                                                   ARCHITECTURE, ASSUMPTIONS, VERIFICATION, images
 PHASE_*_REPORT.md, ADMIN_PANEL_REPORT.md                what each build phase changed and how it was verified
 ```
@@ -404,27 +955,10 @@ Plans **expire after `FH_PLAN_TTL_DAYS` (default 30)** and can be deleted by id.
 
 Validation errors return `422` with a readable message.
 
-## Deploy (Railway)
+## Deploy
 
-```mermaid
-flowchart LR
-    U(("Customer")) --> WEB["web service<br/>deploy/web.Dockerfile<br/>Next.js"]
-    WEB -- "NEXT_PUBLIC_API_URL<br/>(baked in at build)" --> API["api service<br/>deploy/api.Dockerfile<br/>uvicorn"]
-    API --- DB[("Volume /data (SQLite)<br/>or DATABASE_URL (PostgreSQL)")]
-    API --- IMG[("Dataset baked into the image")]
-    GH["GitHub main"] -- "auto-deploy" --> WEB
-    GH -- "auto-deploy" --> API
-```
-
-Two services built from the repo root with the Dockerfiles in `deploy/`:
-
-| Service | Dockerfile | Variables |
-|---|---|---|
-| `api` | `deploy/api.Dockerfile` | `RAILWAY_DOCKERFILE_PATH`, `FH_DB_PATH=/data/plans.db` (volume at `/data`) **or** `DATABASE_URL`, `FH_CORS_ORIGINS=https://fundhorizon.up.railway.app`, `FH_ADMIN_KEY` (required to use `/admin`), optional AI provider keys |
-| `web` | `deploy/web.Dockerfile` | `RAILWAY_DOCKERFILE_PATH`, `NEXT_PUBLIC_API_URL` and `API_INTERNAL_URL` set to the api URL, `NEXT_PUBLIC_SITE_URL` |
-
-`NEXT_PUBLIC_*` values are baked in at build time, so redeploy `web` when they change. Railway auto-deploys from
-`main`.
+The live site runs on **Cloudflare (web) and AWS EC2 (API)**; Railway is retired. The full, current procedure is in
+[System architecture, section 12](#12-deploying-and-operating).
 
 ## Quality and compliance
 

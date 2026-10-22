@@ -26,7 +26,7 @@ const ampKey = (f: OfficialForm) => (f.source === "AMC" ? f.amc ?? "Other" : f.s
 const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 const emptyFilters = (): Filters => ({ q: "", sources: new Set(["CAMS", "KFintech", "AMC", "Stallion"]), amc: "All", cat: "All", amcQ: "" });
 
-export default function OperationsPage() {
+function FormFilling() {
   const [forms, setForms] = useState<OfficialForm[]>([]);
   const [loadError, setLoadError] = useState(false);
   const [tab, setTab] = useState<Tab>("tasks");
@@ -380,5 +380,38 @@ function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: str
       </div>
       <p className={`mt-3 text-[13px] ${muted}`}>Use “Update status” to move a filing along: Downloaded → Submitted to RTA → Ack received.</p>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ landing */
+export default function OperationsPage() {
+  const [view, setView] = useState<"home" | "forms" | "download">("home");
+  if (view === "forms") return <div><button type="button" className={`${btn} mb-3`} onClick={() => setView("home")}>← Operations</button><FormFilling /></div>;
+  if (view === "download") {
+    return (
+      <div className="space-y-4">
+        <button type="button" className={btn} onClick={() => setView("home")}>← Operations</button>
+        <div className={`${card} p-6`}>
+          <h1 className={`text-xl font-bold ${ink}`}>Download Content</h1>
+          <p className={`mt-2 max-w-xl text-[14px] ${muted}`}>Not set up yet. Tell us which content staff need to download and it will be added here.</p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-5 pb-12">
+      <div>
+        <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Operations</h1>
+        <p className={`mt-1 text-[14px] ${muted}`}>Choose what you want to do.</p>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."], ["download", "Download Content", "Download content for the team."]] as const).map(([v, title, text]) => (
+          <button key={v} type="button" onClick={() => setView(v)} className={`${card} p-6 text-left hover:border-[#006F64]`}>
+            <div className={`text-lg font-bold ${ink}`}>{title}</div>
+            <p className={`mt-1.5 text-[13.5px] ${muted}`}>{text}</p>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -304,3 +304,22 @@ export const getMyPlans = () =>
   authedRequest<{ plans: MyPlan[]; total: number; limit: number; offset: number }>(
     `${API_URL}/api/auth/me/plans`,
   );
+
+export interface ChatMessage { id: string; from_staff: number; body: string; created_at: string }
+export interface ChatThread { customer_id: string; name: string; email: string; last_at: string; unread: number; last_body: string }
+export interface MyCrm {
+  households: { id: string; name: string; notes: string | null; rm_name: string | null }[];
+  holdings: { scheme_name: string; folio: string; units: number; cost_paise: number; as_of: string | null }[];
+  sips: { scheme_name: string; type: string; amount_paise: number; day: number; status: string }[];
+  cases: { subject: string; category: string; status: string; created_at: string }[];
+}
+
+export const getMyCrm = () => authedRequest<MyCrm>(`${API_URL}/api/me/crm`);
+export const getMyMessages = () => authedRequest<{ messages: ChatMessage[] }>(`${API_URL}/api/me/messages`);
+export const sendMyMessage = (body: string) =>
+  authedRequest<ChatMessage>(`${API_URL}/api/me/messages`, { method: "POST", body: JSON.stringify({ body }) });
+export const getStaffChats = () => authedRequest<{ threads: ChatThread[] }>(`${API_URL}/api/staff/chats`);
+export const getStaffThread = (id: string) =>
+  authedRequest<{ messages: ChatMessage[] }>(`${API_URL}/api/staff/chats/${id}`);
+export const sendStaffReply = (id: string, body: string) =>
+  authedRequest<ChatMessage>(`${API_URL}/api/staff/chats/${id}`, { method: "POST", body: JSON.stringify({ body }) });

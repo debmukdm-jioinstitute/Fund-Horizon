@@ -127,13 +127,13 @@ function BacktestCard({ bt }: { bt: Backtest }) {
   const vs = bt.growth.map((g) => g.v);
   const lo = Math.min(...vs, 100), hi = Math.max(...vs);
   const pts = bt.growth.map((g, i) => `${(i / Math.max(bt.growth.length - 1, 1)) * 300},${58 - ((g.v - lo) / Math.max(hi - lo, 1)) * 52}`).join(" ");
-  const stats: [string, string][] = [["1Y", bp(bt.cagr["1y"])], ["3Y", bp(bt.cagr["3y"])], ["5Y", bp(bt.cagr["5y"])], ["Whole window", bp(bt.cagr.all)],
+  const stats: [string, string][] = [["1Y", bp(bt.cagr["1y"])], ["3Y", bp(bt.cagr["3y"])], ["5Y", bp(bt.cagr["5y"])], ["10Y", bp(bt.cagr["10y"])], ["Whole window", bp(bt.cagr.all)],
     ["Volatility", bp(bt.vol)], ["Max drawdown", bp(bt.max_drawdown)], ["Worst 12M", bp(bt.worst_12m)]];
   return (
     <div className="card space-y-2 p-4">
       <div className="font-semibold text-navy-900">Past performance of this split</div>
-      <p className="text-xs text-navy-700">Funds held at these weights and rebalanced monthly, {bt.start} to {bt.end}, on month-end NAVs from the latest data refresh. Past performance does not indicate future results.</p>
-      <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 lg:grid-cols-7">
+      <p className="text-xs text-navy-700">Funds held at these weights and rebalanced each period, {bt.start} to {bt.end}, on {bt.basis === "daily" ? "daily NAVs up to the latest available date" : "month-end NAVs from the latest data refresh"}.{bt.joins.length > 0 && ` ${bt.joins.join("; ")}: before that date the other funds are held at rescaled weights.`} Past performance does not indicate future results.</p>
+      <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 lg:grid-cols-8">
         {stats.map(([k, v]) => <div key={k}><div className="text-xs text-navy-700">{k}</div><div className="font-semibold text-navy-900">{v}</div></div>)}
       </div>
       <svg viewBox="0 0 300 62" className="w-full" role="img" aria-label="Growth of 100 invested in this split">

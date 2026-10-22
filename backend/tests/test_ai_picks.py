@@ -70,12 +70,24 @@ def test_risk_profile_pdf_lists_fund_picks():
         risk_profile_report(BackofficeRiskProfileRequest(fund_picks=[{"scheme_code": "000000", "weight_pct": 100}]))
 
 
-def test_backtest_blends_funds_and_reports_window():
-    from app.ai.backtest import backtest
+def test_backtest_daily_extends_to_oldest_fund_and_falls_back_to_monthly():
+    from unittest.mock import patch
 
-    bt = backtest([{"scheme_code": CODES[0], "weight_pct": 50}, {"scheme_code": CODES[1], "weight_pct": 50}])
-    assert bt and bt["months"] >= 12 and bt["growth"][0]["v"] == 100 and bt["max_drawdown"] <= 0
-    assert backtest([{"scheme_code": "000000", "weight_pct": 100}]) is None  # no NAV file: no result, no crash
+    import pandas as pd
+
+    from app.ai import backtest as B
+
+    idx = pd.bdate_range("2015-01-01", "2026-01-01")
+    old = pd.Series(range(100, 100 + len(idx)), index=idx, dtype=float)
+    new = old[idx >= "2020-01-01"]
+    with patch.object(B, "_daily", side_effect=[old, new]):
+        bt = B.backtest([{"scheme_code": CODES[0], "weight_pct": 50}, {"scheme_code": CODES[1], "weight_pct": 50}])
+    assert bt["basis"] == "daily" and bt["start"].endswith("2015") and bt["cagr"]["10y"] is not None and len(bt["joins"]) == 1
+    assert bt["growth"][0]["v"] == 100 and bt["max_drawdown"] <= 0
+    with patch.object(B, "_daily", return_value=None):  # network down: shipped monthly files
+        m = B.backtest([{"scheme_code": CODES[0], "weight_pct": 50}, {"scheme_code": CODES[1], "weight_pct": 50}])
+        assert m and m["basis"] == "monthly"
+        assert B.backtest([{"scheme_code": "000000", "weight_pct": 100}]) is None  # no NAV file: no result, no crash
 
 
 def test_risk_pdf_shows_question_text_and_100_scale():

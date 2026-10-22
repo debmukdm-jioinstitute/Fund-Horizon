@@ -336,8 +336,8 @@ export interface AiFund {
   cagr_5y: number | null; sharpe_3y: number | null; vol_3y: number | null;
 }
 export interface Backtest {
-  start: string; end: string; months: number; vol: number; max_drawdown: number; worst_12m: number | null;
-  cagr: { "1y": number | null; "3y": number | null; "5y": number | null; all: number | null };
+  start: string; end: string; months: number; basis: "daily" | "monthly"; joins: string[]; vol: number; max_drawdown: number; worst_12m: number | null;
+  cagr: { "1y": number | null; "3y": number | null; "5y": number | null; "10y": number | null; all: number | null };
   growth: { d: string; v: number }[];
 }
 export interface AiPicks {

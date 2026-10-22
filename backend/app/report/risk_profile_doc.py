@@ -313,17 +313,18 @@ def build_risk_profile_pdf(
             def _p(v):
                 return "n/a" if v is None else f"{v * 100:.1f}%"
 
-            stats = [["Past-data backtest", "1Y", "3Y", "5Y", "Whole window", "Volatility", "Max drawdown", "Worst 12M"],
+            stats = [["Past-data backtest", "1Y", "3Y", "5Y", "10Y", "Whole window", "Volatility", "Max drawdown", "Worst 12M"],
                      [f"{bt['start']} to {bt['end']}", _p(bt["cagr"]["1y"]), _p(bt["cagr"]["3y"]), _p(bt["cagr"]["5y"]),
-                      _p(bt["cagr"]["all"]), _p(bt["vol"]), _p(bt["max_drawdown"]), _p(bt["worst_12m"])]]
+                      _p(bt["cagr"]["10y"]), _p(bt["cagr"]["all"]), _p(bt["vol"]), _p(bt["max_drawdown"]), _p(bt["worst_12m"])]]
+            nav_kind = "daily NAVs up to the latest available date" if bt["basis"] == "daily" else "month-end NAVs from the latest data refresh"
+            joined = f" {'; '.join(bt['joins'])}: before that date the other funds are held at rescaled weights." if bt["joins"] else ""
             story += [
                 Spacer(1, 5),
                 Paragraph("Past performance of this split (backtest)", H2),
-                Paragraph("Funds held at the weights above and rebalanced monthly, on month-end NAVs from the latest data refresh. "
-                          "Only months where every fund has history are used. CAGR is annualised. Past performance does not "
-                          "indicate future results.", SMALL),
+                Paragraph(f"Funds held at the weights above and rebalanced each period, on {nav_kind}. The window runs from the oldest "
+                          f"fund's first NAV.{xml_escape(joined)} CAGR is annualised. Past performance does not indicate future results.", SMALL),
                 Spacer(1, 3),
-                _tbl(stats, [W * 0.22, W * 0.08, W * 0.08, W * 0.08, W * 0.14, W * 0.12, W * 0.14, W * 0.14]),
+                _tbl(stats, [W * 0.21, W * 0.07, W * 0.07, W * 0.07, W * 0.07, W * 0.13, W * 0.11, W * 0.14, W * 0.13]),
             ]
             try:
                 story += [Spacer(1, 3), _img(charts.backtest_chart(bt["growth"]), 150)]

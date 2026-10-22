@@ -114,6 +114,13 @@ def build_risk_profile_pdf(
     fund_backtest: dict | None = None,
 ) -> bytes:
     """Build a client-ready 2-page A4 Risk Profiling and Suitability Assessment PDF."""
+    import re
+    clean_client_name = re.sub(r"<[^>]+>", "", str(client_name or "Client")).replace('"', "'").strip()
+    if not clean_client_name:
+        clean_client_name = "Client"
+    clean_client_name = clean_client_name[:80]
+    header_name = clean_client_name if len(clean_client_name) <= 40 else f"{clean_client_name[:37]}..."
+
     buf = io.BytesIO()
     today_str = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%d %b %Y, %H:%M IST")
     today_date = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%d %b %Y")
@@ -132,7 +139,7 @@ def build_risk_profile_pdf(
             canvas.drawString(15 * mm, h - 12 * mm, FIRM)
         canvas.setFillColor(NAVY)
         canvas.setFont(BOLD_FONT, 8)
-        canvas.drawRightString(w - 15 * mm, h - 10 * mm, f"Risk Profile: {canvas_text(client_name)}")
+        canvas.drawRightString(w - 15 * mm, h - 10 * mm, f"Risk Profile: {canvas_text(header_name)}")
         canvas.setFillColor(SLATE)
         canvas.setFont(BODY_FONT, 6.5)
         canvas.drawRightString(w - 15 * mm, h - 14 * mm, f"AMFI ARN {ARN} · SEBI Suitability Record · {today_date}")
@@ -150,7 +157,7 @@ def build_risk_profile_pdf(
         canvas.drawString(
             15 * mm,
             8 * mm,
-            f"{FIRM} · Suitability Engine · Confidential Assessment for {canvas_text(client_name)}",
+            f"{FIRM} · Suitability Engine · Confidential Assessment for {canvas_text(header_name)}",
         )
         canvas.drawRightString(w - 15 * mm, 8 * mm, f"Page {doc.page} of {3 if fund_picks else 2}")
         canvas.restoreState()
@@ -162,7 +169,7 @@ def build_risk_profile_pdf(
         rightMargin=15 * mm,
         topMargin=27 * mm,
         bottomMargin=16 * mm,
-        title=f"{FIRM} Risk Profiling - {client_name}",
+        title=f"{FIRM} Risk Profiling - {clean_client_name}",
         author=FIRM,
     )
     frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
@@ -396,7 +403,7 @@ def build_risk_profile_pdf(
         ],
         [
             Paragraph(
-                f"I, <b>{xml_escape(client_name)}</b>, confirm that the financial inputs and risk tolerance responses provided above are accurate and complete. I understand the risks inherent to mutual funds and market-linked instruments.",
+                f"I, <b>{xml_escape(clean_client_name)}</b>, confirm that the financial inputs and risk tolerance responses provided above are accurate and complete. I understand the risks inherent to mutual funds and market-linked instruments.",
                 SMALL,
             ),
             Paragraph(

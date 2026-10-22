@@ -94,6 +94,7 @@ export const QUESTIONNAIRE_QUESTIONS = [
     options: [
       { text: "Certain +6%", score: 1 },
       { text: "50% chance of +12%, 50% chance of 0%", score: 2 },
+      { text: "50% chance of +15%, 50% chance of -3%", score: 3 },
       { text: "50% chance of +18%, 50% chance of -6%", score: 4 },
       { text: "50% chance of +25%, 50% chance of -12%", score: 5 },
     ],
@@ -136,9 +137,9 @@ export const QUESTIONNAIRE_QUESTIONS = [
     text: "Which is true of a diversified equity fund?",
     options: [
       { text: "Returns are fixed", score: 1 },
-      { text: "It can lose money for 1-2 years but usually recovers over long periods", score: 5 },
       { text: "It cannot lose money over 3 years", score: 1 },
       { text: "Not sure", score: 2 },
+      { text: "It can lose money for 1-2 years but usually recovers over long periods", score: 5 },
     ],
   },
   {
@@ -173,21 +174,30 @@ export function computeClientProfileLocally(
   c: ClientCapacityInputs,
   answers: Record<string, number>
 ): RiskProfileResult {
+  const isClientValid =
+    c.age >= 18 &&
+    c.age <= 100 &&
+    c.dependents >= 0 &&
+    c.dependents <= 20 &&
+    c.monthlyIncome > 0 &&
+    Boolean(c.employmentType);
+
   const outgo = c.monthlyExpenses + c.monthlyEmi;
   const nw = c.liquidAssets + c.investments - c.liabilities;
   const savingsRate = c.monthlyIncome > 0 ? (c.monthlyIncome - outgo) / c.monthlyIncome : 0;
   const nwMultiple = c.monthlyIncome > 0 ? nw / (12 * c.monthlyIncome) : 0;
   const debtBurden = c.monthlyIncome > 0 ? c.monthlyEmi / c.monthlyIncome : 0;
-  const efMonths = outgo > 0 ? c.liquidAssets / outgo : 99;
+  const efMonths = outgo > 0 ? c.liquidAssets / outgo : (c.liquidAssets > 0 ? 99 : 0);
 
-  // Age score
-  let ageScore = 20;
-  if (c.age <= 30) ageScore = 100;
-  else if (c.age <= 40) ageScore = 85;
-  else if (c.age <= 50) ageScore = 65;
-  else if (c.age <= 60) ageScore = 40;
+  // Age score (0 if unentered / invalid)
+  let ageScore = 0;
+  if (c.age >= 18 && c.age <= 30) ageScore = 100;
+  else if (c.age > 30 && c.age <= 40) ageScore = 85;
+  else if (c.age > 40 && c.age <= 50) ageScore = 65;
+  else if (c.age > 50 && c.age <= 60) ageScore = 40;
+  else if (c.age > 60 && c.age <= 100) ageScore = 20;
 
-  // Income stability score
+  // Income stability score (0 if empty)
   const stabilityScores: Record<string, number> = {
     govt_psu: 100,
     salaried_private: 75,
@@ -195,82 +205,112 @@ export function computeClientProfileLocally(
     freelance_variable: 45,
     retired_none: 25,
   };
-  const stabScore = stabilityScores[c.employmentType] ?? 50;
+  const stabScore = c.employmentType ? (stabilityScores[c.employmentType] ?? 0) : 0;
 
-  // Dependents score
-  const depScore = c.dependents === 0 ? 100 : c.dependents === 1 ? 80 : c.dependents === 2 ? 60 : c.dependents === 3 ? 40 : 25;
+  // Dependents score (0 if invalid negative)
+  let depScore = 0;
+  if (c.dependents >= 0 && c.dependents <= 20) {
+    depScore = c.dependents === 0 ? 100 : c.dependents === 1 ? 80 : c.dependents === 2 ? 60 : c.dependents === 3 ? 40 : 25;
+  }
 
   // Savings rate score
-  let srScore = 10;
-  if (savingsRate >= 0.40) srScore = 100;
-  else if (savingsRate >= 0.30) srScore = 85;
-  else if (savingsRate >= 0.20) srScore = 70;
-  else if (savingsRate >= 0.10) srScore = 50;
-  else if (savingsRate >= 0.0) srScore = 30;
+  let srScore = 0;
+  if (c.monthlyIncome > 0) {
+    if (savingsRate >= 0.40) srScore = 100;
+    else if (savingsRate >= 0.30) srScore = 85;
+    else if (savingsRate >= 0.20) srScore = 70;
+    else if (savingsRate >= 0.10) srScore = 50;
+    else if (savingsRate >= 0.0) srScore = 30;
+    else srScore = 10;
+  }
 
-  // Emergency fund score
+  // Emergency fund score: min 10 per doc rule
   let efScore = 10;
   if (efMonths >= 12) efScore = 100;
   else if (efMonths >= 6) efScore = 85;
   else if (efMonths >= 3) efScore = 55;
   else if (efMonths >= 1) efScore = 30;
+  else efScore = 10;
 
   // Net worth multiple score
-  let nwScore = 10;
-  if (nwMultiple >= 5) nwScore = 100;
-  else if (nwMultiple >= 3) nwScore = 80;
-  else if (nwMultiple >= 1) nwScore = 55;
-  else if (nwMultiple >= 0) nwScore = 35;
+  let nwScore = 0;
+  if (c.monthlyIncome > 0) {
+    if (nwMultiple >= 5) nwScore = 100;
+    else if (nwMultiple >= 3) nwScore = 80;
+    else if (nwMultiple >= 1) nwScore = 55;
+    else if (nwMultiple >= 0) nwScore = 35;
+    else nwScore = 10;
+  }
 
   // Debt burden score
-  let dbScore = 10;
-  if (debtBurden < 0.10) dbScore = 100;
-  else if (debtBurden < 0.20) dbScore = 80;
-  else if (debtBurden < 0.35) dbScore = 55;
-  else if (debtBurden < 0.50) dbScore = 30;
+  let dbScore = 0;
+  if (c.monthlyIncome > 0) {
+    if (debtBurden < 0.10) dbScore = 100;
+    else if (debtBurden < 0.20) dbScore = 80;
+    else if (debtBurden < 0.35) dbScore = 55;
+    else if (debtBurden < 0.50) dbScore = 30;
+    else dbScore = 10;
+  }
 
-  // Insurance score: simplified threshold (annual income * 10)
-  const termNeedEst = Math.max(0, c.monthlyIncome * 12 * Math.max(1, c.retirementAge - c.age) * 0.7);
-  const termOk = c.termCover >= 0.7 * termNeedEst;
+  // Insurance score: HLV = 70% * annual income * working years. Adequate if term cover >= 70% of HLV need
+  const workingYears = Math.max(1, c.retirementAge - c.age);
+  const termNeedEst = c.monthlyIncome > 0 ? Math.max(0, c.monthlyIncome * 12 * workingYears * 0.7) : 0;
+  const termOk = c.termCover > 0 && (termNeedEst === 0 || c.termCover >= 0.7 * termNeedEst);
   const healthOk = c.healthCover > 0;
   const insScore = termOk && healthOk ? 100 : termOk || healthOk ? 60 : 20;
 
   const factors: FactorScore[] = [
-    { factor: "Age", weight: 0.20, value: c.age, score: ageScore, contribution: Number((ageScore * 0.20).toFixed(2)) },
-    { factor: "Income stability", weight: 0.15, value: c.employmentType, score: stabScore, contribution: Number((stabScore * 0.15).toFixed(2)) },
-    { factor: "Savings rate", weight: 0.15, value: `${(savingsRate * 100).toFixed(1)}%`, score: srScore, contribution: Number((srScore * 0.15).toFixed(2)) },
+    { factor: "Age", weight: 0.20, value: c.age || "—", score: ageScore, contribution: Number((ageScore * 0.20).toFixed(2)) },
+    { factor: "Income stability", weight: 0.15, value: c.employmentType || "—", score: stabScore, contribution: Number((stabScore * 0.15).toFixed(2)) },
+    { factor: "Savings rate", weight: 0.15, value: c.monthlyIncome > 0 ? `${(savingsRate * 100).toFixed(1)}%` : "—", score: srScore, contribution: Number((srScore * 0.15).toFixed(2)) },
     { factor: "Emergency fund", weight: 0.15, value: `${efMonths.toFixed(1)} mos`, score: efScore, contribution: Number((efScore * 0.15).toFixed(2)) },
-    { factor: "Dependents", weight: 0.10, value: c.dependents, score: depScore, contribution: Number((depScore * 0.10).toFixed(2)) },
-    { factor: "Net worth", weight: 0.10, value: `${nwMultiple.toFixed(1)}×`, score: nwScore, contribution: Number((nwScore * 0.10).toFixed(2)) },
-    { factor: "Debt burden", weight: 0.10, value: `${(debtBurden * 100).toFixed(1)}%`, score: dbScore, contribution: Number((dbScore * 0.10).toFixed(2)) },
+    { factor: "Dependents", weight: 0.10, value: c.dependents < 0 ? "Invalid" : c.dependents, score: depScore, contribution: Number((depScore * 0.10).toFixed(2)) },
+    { factor: "Net worth", weight: 0.10, value: c.monthlyIncome > 0 ? `${nwMultiple.toFixed(1)}×` : "—", score: nwScore, contribution: Number((nwScore * 0.10).toFixed(2)) },
+    { factor: "Debt burden", weight: 0.10, value: c.monthlyIncome > 0 ? `${(debtBurden * 100).toFixed(1)}%` : "—", score: dbScore, contribution: Number((dbScore * 0.10).toFixed(2)) },
     { factor: "Insurance", weight: 0.05, value: termOk ? "Adequate" : "Shortfall", score: insScore, contribution: Number((insScore * 0.05).toFixed(2)) },
   ];
 
-  const capacityScore = Number(factors.reduce((sum, f) => sum + f.contribution, 0).toFixed(1));
+  const capacityScore = isClientValid ? Number(factors.reduce((sum, f) => sum + f.contribution, 0).toFixed(1)) : 0;
 
-  // Compute tolerance from questionnaire
+  // Compute tolerance strictly from answered questions — no invisible defaults
   let totalTolerancePoints = 0;
-  const minPossible = 10;
-  const maxPossible = 50;
+  let answeredCount = 0;
   for (let i = 0; i < QUESTIONNAIRE_QUESTIONS.length; i++) {
     const q = QUESTIONNAIRE_QUESTIONS[i];
-    const chosenIdx = answers[q.id] ?? 2;
-    const opt = q.options[chosenIdx] || q.options[0];
-    totalTolerancePoints += opt.score;
+    if (answers[q.id] !== undefined) {
+      const chosenIdx = answers[q.id];
+      const opt = q.options[chosenIdx];
+      if (opt) {
+        totalTolerancePoints += opt.score;
+        answeredCount++;
+      }
+    }
   }
-  const toleranceScore = Number((((totalTolerancePoints - minPossible) / (maxPossible - minPossible)) * 100).toFixed(1));
 
-  const finalScore = Number(Math.min(capacityScore, toleranceScore).toFixed(1));
-  const band = getBandForScore(finalScore);
+  const isQuestionnaireComplete = answeredCount === QUESTIONNAIRE_QUESTIONS.length;
+  const toleranceScore = answeredCount > 0
+    ? Number((((totalTolerancePoints - answeredCount) / (answeredCount * 4)) * 100).toFixed(1))
+    : 0;
+
+  const isComplete = isClientValid && isQuestionnaireComplete && c.firstName.trim().length > 0;
+  const finalScore = isComplete ? Number(Math.min(capacityScore, toleranceScore).toFixed(1)) : 0;
+  const band = isComplete
+    ? getBandForScore(finalScore)
+    : { name: "Pending Assessment", min: 0, max: 0, equity: 0, debt: 0, gold: 0, liquid: 0, color: "text-[#706E6B] bg-[#F3F3F3] border-[#ECEBEA]" };
 
   const priorityActions: string[] = [];
-  if (efMonths < 6) priorityActions.push("Build emergency fund to at least 6 months of expenses");
-  if (!termOk) priorityActions.push("Bridge term life insurance cover shortfall");
-  if (!healthOk) priorityActions.push("Procure dedicated health insurance cover");
+  if (isClientValid) {
+    if (efMonths < 6) priorityActions.push("Build emergency fund to at least 6 months of expenses");
+    if (!termOk) {
+      const needCr = (termNeedEst / 10000000).toFixed(2);
+      priorityActions.push(`Bridge term life insurance cover shortfall (HLV Need: ~₹${needCr} Cr)`);
+    }
+    if (!healthOk) priorityActions.push("Procure dedicated health insurance cover");
+  }
 
   let mismatchNote: string | null = null;
-  if (toleranceScore - capacityScore >= 25) {
-    mismatchNote = `High risk appetite (${toleranceScore}) exceeds objective financial capacity (${capacityScore}) by ${Number((toleranceScore - capacityScore).toFixed(1))} points. Risk band capped at capacity to protect capital.`;
+  if (isComplete && toleranceScore - capacityScore >= 25) {
+    mismatchNote = `High risk appetite (${toleranceScore}) exceeds objective financial capacity (${capacityScore}) by ${Number((toleranceScore - capacityScore).toFixed(1))} points (threshold: ≥25 pts). Risk band capped at capacity to protect capital.`;
   }
 
   return {
@@ -316,7 +356,7 @@ export const PROFILING_PRESETS: { name: string; icon: string; desc: string; clie
       healthCover: 1500000,
       retirementAge: 60,
     },
-    answers: { q1: 3, q2: 4, q3: 3, q4: 3, q5: 2, q6: 3, q7: 3, q8: 3, q9: 1, q10: 3 },
+    answers: { q1: 3, q2: 4, q3: 3, q4: 3, q5: 3, q6: 3, q7: 3, q8: 3, q9: 3, q10: 3 },
   },
   {
     name: "Balanced Family Wealth",
@@ -337,7 +377,7 @@ export const PROFILING_PRESETS: { name: string; icon: string; desc: string; clie
       healthCover: 2000000,
       retirementAge: 60,
     },
-    answers: { q1: 2, q2: 2, q3: 2, q4: 2, q5: 1, q6: 3, q7: 2, q8: 2, q9: 1, q10: 2 },
+    answers: { q1: 2, q2: 2, q3: 2, q4: 2, q5: 1, q6: 3, q7: 2, q8: 2, q9: 3, q10: 2 },
   },
   {
     name: "Conservative Pre-Retiree",
@@ -379,6 +419,6 @@ export const PROFILING_PRESETS: { name: string; icon: string; desc: string; clie
       healthCover: 2500000,
       retirementAge: 65,
     },
-    answers: { q1: 3, q2: 3, q3: 3, q4: 3, q5: 3, q6: 4, q7: 4, q8: 4, q9: 1, q10: 4 },
+    answers: { q1: 3, q2: 3, q3: 3, q4: 3, q5: 4, q6: 4, q7: 4, q8: 4, q9: 3, q10: 4 },
   },
 ];

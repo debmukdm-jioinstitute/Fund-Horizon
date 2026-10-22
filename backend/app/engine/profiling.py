@@ -79,7 +79,7 @@ def score_debt_burden(ratio: float) -> int:
 
 
 def score_insurance(term_cover: float, need: float, health_cover: float, threshold: float) -> int:
-    term_ok = term_cover >= threshold * need
+    term_ok = term_cover > 0 and (need == 0 or term_cover >= threshold * need)
     health_ok = health_cover > 0
     if term_ok and health_ok:
         return 100
@@ -129,7 +129,7 @@ def risk_capacity(client: Client, assumptions: dict | None = None) -> dict:
         debt = client.monthly_emi / income
     else:
         savings_rate, nw_multiple, debt = _zero_income_metrics(client, outgo, nw)
-    ef_months = client.liquid_assets / outgo if outgo > 0 else 99.0
+    ef_months = client.liquid_assets / outgo if outgo > 0 else (99.0 if client.liquid_assets > 0 else 0.0)
     need = term_need(
         client.age, client.retirement_age, income, client.investments,
         client.liquid_assets, client.liabilities, a["insurance"],

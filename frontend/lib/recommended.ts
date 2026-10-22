@@ -20,7 +20,6 @@ export const DEFAULT_MF_RECOMMENDED: Record<string, string> = {
   "151812": "Mirae Asset Multicap Fund",
   "152095": "Edelweiss Multi Cap Fund",
   "151289": "HSBC Multi Cap Fund",
-  "151292": "HSBC Multi Cap Fund",
   "150347": "WhiteOak Capital Flexi Cap Fund",
   "102252": "HSBC Flexi Cap Fund",
   "140355": "Edelweiss Flexi Cap Fund",

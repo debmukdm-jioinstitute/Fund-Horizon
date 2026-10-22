@@ -31,6 +31,46 @@ export default function RiskProfilingPage() {
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const DRAFT_KEY = "fundhorizon_risk_profiling_draft";
+
+  // Restore draft on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(DRAFT_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.client) setClient(parsed.client);
+        if (parsed.answers) setAnswers(parsed.answers);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  // Autosave draft on changes
+  useEffect(() => {
+    try {
+      const isDirty = client.firstName || client.age > 0 || client.monthlyIncome > 0 || Object.keys(answers).length > 0;
+      if (isDirty) {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({ client, answers }));
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [client, answers]);
+
+  const resetForm = () => {
+    setClient(BLANK_CLIENT);
+    setAnswers({});
+    setSaveStatus(null);
+    setPdfError(null);
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {
+      /* ignore */
+    }
+  };
+
   // Client-facing link; ?ref attributes the new lead/account to the staff member who shares it.
   const [clientLink, setClientLink] = useState("");
   const [copied, setCopied] = useState(false);
@@ -48,7 +88,10 @@ export default function RiskProfilingPage() {
 
   // The form starts empty; reports and CRM saves need real inputs, not defaults.
   const ready =
-    client.age >= 18 && client.monthlyIncome > 0 && !!client.employmentType &&
+    client.firstName.trim().length > 0 &&
+    client.age >= 18 && client.age <= 100 &&
+    client.dependents >= 0 && client.dependents <= 20 &&
+    client.monthlyIncome > 0 && Boolean(client.employmentType) &&
     QUESTIONNAIRE_QUESTIONS.every((q) => answers[q.id] !== undefined);
 
   const loadPreset = (presetIndex: number) => {
@@ -61,9 +104,14 @@ export default function RiskProfilingPage() {
 
   const handleAnswerChange = (qId: string, optIdx: number) => {
     setAnswers((prev) => ({ ...prev, [qId]: optIdx }));
+    setSaveStatus(null);
   };
 
   const handleSaveToCrm = async () => {
+    if (!ready) {
+      setSaveStatus("Please complete the required client details and all 10 questions first.");
+      return;
+    }
     if (!targetCustomerId.trim()) {
       setSaveStatus("Please enter a valid Customer ID or Household reference.");
       return;
@@ -71,6 +119,8 @@ export default function RiskProfilingPage() {
     setSaving(true);
     setSaveStatus(null);
     try {
+      const assessmentSummary = `Capacity: ${profile.capacity.score}/100, Tolerance: ${profile.tolerance}/100, Final Score: ${profile.final_score}/100. Target Allocation: ${profile.allocation.equity}% Equity, ${profile.allocation.debt}% Debt, ${profile.allocation.gold}% Gold, ${profile.allocation.liquid}% Liquid.`;
+      const objectivesText = QUESTIONNAIRE_QUESTIONS[1].options[answers["q2"] ?? 0]?.text || "Balanced growth";
       const res = await fetch("/api/crm/suitability", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,19 +131,19 @@ export default function RiskProfilingPage() {
             (client.liquidAssets + client.investments - client.liabilities) /
             (12 * Math.max(1, client.monthlyIncome))
           ).toFixed(1)}x`,
-          investment_experience: QUESTIONNAIRE_QUESTIONS[0].options[answers["q1"] ?? 2]?.text,
-          objectives: QUESTIONNAIRE_QUESTIONS[1].options[answers["q2"] ?? 2]?.text,
-          assessment: `Capacity: ${profile.capacity.score}/100, Tolerance: ${profile.tolerance}/100, Final Score: ${profile.final_score}/100. Target Allocation: ${profile.allocation.equity}% Equity, ${profile.allocation.debt}% Debt, ${profile.allocation.gold}% Gold, ${profile.allocation.liquid}% Liquid.`,
+          investment_experience: QUESTIONNAIRE_QUESTIONS[0].options[answers["q1"] ?? 0]?.text || "Mutual funds",
+          objectives: `${objectivesText} | ${assessmentSummary}`,
+          assessment: assessmentSummary,
         }),
       });
       if (res.ok) {
         setSaveStatus(`✅ Successfully saved suitability record for ${targetCustomerId.trim()} (${profile.band}).`);
       } else {
         const err = await res.json().catch(() => ({}));
-        setSaveStatus(`⚠️ Saved with status ${res.status}: ${err.detail || "Recorded locally."}`);
+        setSaveStatus(`❌ Failed to record to CRM (${res.status}): ${err.detail || "Server rejected request."}`);
       }
     } catch {
-      setSaveStatus(`✅ Suitability recorded for ${targetCustomerId.trim()}: ${profile.band} (${profile.final_score}/100).`);
+      setSaveStatus("❌ Network error: Could not record suitability to CRM.");
     } finally {
       setSaving(false);
     }
@@ -242,9 +292,18 @@ export default function RiskProfilingPage() {
         <div className="space-y-6">
           {/* Presets Bar */}
           <div className="card space-y-2 p-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#706E6B] dark:text-navy-400">
-              Quick Load Client Profiles:
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#706E6B] dark:text-navy-400">
+                Quick Load Client Profiles:
+              </span>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="text-xs font-semibold text-[#B42332] dark:text-[#FF7D86] hover:underline"
+              >
+                Reset Form
+              </button>
+            </div>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {PROFILING_PRESETS.map((preset, idx) => (
                 <button
@@ -284,30 +343,49 @@ export default function RiskProfilingPage() {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Client / Household Name</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">
+                      Client / Household Name <span className="text-rose-500">*</span>
+                    </label>
                     <input
                       type="text"
+                      maxLength={80}
                       value={client.firstName}
-                      onChange={(e) => setClient({ ...client, firstName: e.target.value })}
+                      placeholder="e.g. Vikram Sharma"
+                      onChange={(e) => {
+                        setClient({ ...client, firstName: e.target.value });
+                        setSaveStatus(null);
+                      }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
+                    {!client.firstName.trim() && (
+                      <p className="mt-1 text-[11px] text-[#706E6B] dark:text-navy-400">Required for official SEBI dossier.</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Age (years)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Age (years) *</label>
                     <input
                       type="number"
                       min={18}
-                      max={80}
-                      value={client.age || ""} placeholder="0"
-                      onChange={(e) => setClient({ ...client, age: Number(e.target.value) || 0 })}
+                      max={100}
+                      value={client.age || ""} placeholder="e.g. 35"
+                      onChange={(e) => {
+                        setClient({ ...client, age: Number(e.target.value) || 0 });
+                        setSaveStatus(null);
+                      }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
+                    {client.age > 0 && (client.age < 18 || client.age > 100) && (
+                      <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">Age must be between 18 and 100.</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Employment Type</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Employment Type *</label>
                     <select
                       value={client.employmentType}
-                      onChange={(e) => setClient({ ...client, employmentType: e.target.value as ClientCapacityInputs["employmentType"] })}
+                      onChange={(e) => {
+                        setClient({ ...client, employmentType: e.target.value as ClientCapacityInputs["employmentType"] });
+                        setSaveStatus(null);
+                      }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     >
                       <option value="" disabled>Select employment type…</option>
@@ -323,20 +401,30 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      max={10}
-                      value={client.dependents || ""} placeholder="0"
-                      onChange={(e) => setClient({ ...client, dependents: Number(e.target.value) || 0 })}
+                      max={20}
+                      value={client.dependents !== undefined && client.dependents !== 0 ? client.dependents : client.dependents === 0 ? "0" : ""}
+                      placeholder="0"
+                      onChange={(e) => {
+                        setClient({ ...client, dependents: e.target.value === "" ? 0 : Number(e.target.value) });
+                        setSaveStatus(null);
+                      }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
+                    {client.dependents < 0 && (
+                      <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">Dependents cannot be negative.</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Monthly Income (₹)</label>
+                    <label className="text-xs font-medium text-[#444444] dark:text-navy-300">Monthly Income (₹) *</label>
                     <input
                       type="number"
                       min={0}
-                      step={5000}
+                      step={1000}
                       value={client.monthlyIncome || ""} placeholder="0"
-                      onChange={(e) => setClient({ ...client, monthlyIncome: Number(e.target.value) || 0 })}
+                      onChange={(e) => {
+                        setClient({ ...client, monthlyIncome: Number(e.target.value) || 0 });
+                        setSaveStatus(null);
+                      }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
@@ -345,9 +433,12 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={5000}
+                      step={1000}
                       value={client.monthlyExpenses || ""} placeholder="0"
-                      onChange={(e) => setClient({ ...client, monthlyExpenses: Number(e.target.value) || 0 })}
+                      onChange={(e) => {
+                        setClient({ ...client, monthlyExpenses: Number(e.target.value) || 0 });
+                        setSaveStatus(null);
+                      }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
@@ -356,9 +447,12 @@ export default function RiskProfilingPage() {
                     <input
                       type="number"
                       min={0}
-                      step={5000}
+                      step={1000}
                       value={client.monthlyEmi || ""} placeholder="0"
-                      onChange={(e) => setClient({ ...client, monthlyEmi: Number(e.target.value) || 0 })}
+                      onChange={(e) => {
+                        setClient({ ...client, monthlyEmi: Number(e.target.value) || 0 });
+                        setSaveStatus(null);
+                      }}
                       className="mt-1 w-full rounded border border-[#E5E5E5] px-2.5 py-1.5 text-xs font-medium focus:border-[#0176D3] focus:outline-none dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                     />
                   </div>
@@ -539,11 +633,15 @@ export default function RiskProfilingPage() {
                 <div className="rounded-lg bg-[#F3F3F3] p-3.5 text-center dark:bg-navy-800/50">
                   <div className="text-xs text-[#706E6B] dark:text-navy-400">Composite Suitability Score</div>
                   <div className="mt-1 text-4xl font-extrabold text-[#0176D3] dark:text-[#1B96FF]">
-                    {profile.final_score}
+                    {ready ? profile.final_score : "—"}
                     <span className="text-base font-normal text-[#706E6B]"> / 100</span>
                   </div>
                   <p className="mt-1 text-[11px] text-[#706E6B] dark:text-navy-400">
-                    Calculated as <strong>min(Capacity, Tolerance)</strong> per regulatory conservatism standards.
+                    {ready ? (
+                      <>Calculated as <strong>min(Capacity, Tolerance)</strong> per regulatory conservatism standards.</>
+                    ) : (
+                      <>Complete all inputs and 10 questions to compute suitability score.</>
+                    )}
                   </p>
                 </div>
 
@@ -552,7 +650,9 @@ export default function RiskProfilingPage() {
                   <div>
                     <div className="flex justify-between text-xs">
                       <span className="font-medium text-[#444444] dark:text-navy-300">Financial Risk Capacity:</span>
-                      <span className="font-bold text-[#181818] dark:text-white">{profile.capacity.score} / 100</span>
+                      <span className="font-bold text-[#181818] dark:text-white">
+                        {profile.capacity.score > 0 ? `${profile.capacity.score} / 100` : "— / 100"}
+                      </span>
                     </div>
                     <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[#ECEBEA] dark:bg-navy-800">
                       <div
@@ -565,7 +665,9 @@ export default function RiskProfilingPage() {
                   <div>
                     <div className="flex justify-between text-xs">
                       <span className="font-medium text-[#444444] dark:text-navy-300">Emotional Risk Tolerance:</span>
-                      <span className="font-bold text-[#0176D3] dark:text-[#1B96FF]">{profile.tolerance} / 100</span>
+                      <span className="font-bold text-[#0176D3] dark:text-[#1B96FF]">
+                        {profile.tolerance > 0 ? `${profile.tolerance} / 100` : "— / 100"}
+                      </span>
                     </div>
                     <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[#ECEBEA] dark:bg-navy-800">
                       <div
@@ -762,7 +864,7 @@ export default function RiskProfilingPage() {
               Regulatory Suitability & Risk Engine Architecture
             </h2>
             <p className="text-xs text-[#444444] dark:text-navy-300 leading-relaxed">
-              Fund Horizon implements the SEBI Master Circular for Mutual Fund Distributors and RIAs, enforcing deterministic suitability scoring before recommending capital allocation.
+              Fund Horizon implements the SEBI Master Circular for Mutual Fund Distributors and RIAs, enforcing deterministic suitability scoring before allocating client capital.
             </p>
 
             {/* Capacity Scoring Factors Table */}
@@ -824,7 +926,7 @@ export default function RiskProfilingPage() {
                     <tr>
                       <td className="px-3 py-2 font-medium text-[#181818] dark:text-white">Insurance Adequacy</td>
                       <td className="px-3 py-2 font-semibold text-[#0176D3] dark:text-[#1B96FF]">5%</td>
-                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">Term cover vs human life value and health cover</td>
+                      <td className="px-3 py-2 text-[#706E6B] dark:text-navy-400">HLV Need = 70% × Annual Income × (Retirement Age - Age). Adequate if Term Cover ≥ 70% of need and Health Cover &gt; 0</td>
                       <td className="px-3 py-2 text-[#444444] dark:text-navy-300">Both OK (100) to None (20)</td>
                     </tr>
                   </tbody>
@@ -851,7 +953,7 @@ export default function RiskProfilingPage() {
                     {BANDS.map((b) => (
                       <tr key={b.name} className="hover:bg-[#F3F3F3]/50 dark:hover:bg-navy-800/40">
                         <td className="px-3 py-2 font-semibold text-[#181818] dark:text-white">{b.name}</td>
-                        <td className="px-3 py-2 font-mono text-[#706E6B] dark:text-navy-400">[{b.min}, {b.max})</td>
+                        <td className="px-3 py-2 font-mono text-[#706E6B] dark:text-navy-400">[{b.min}, {b.max === 100 ? `${b.max}]` : `${b.max})`}]</td>
                         <td className="px-3 py-2 font-bold text-[#0176D3] dark:text-[#1B96FF]">{b.equity}%</td>
                         <td className="px-3 py-2 font-bold text-blue-700 dark:text-blue-400">{b.debt}%</td>
                         <td className="px-3 py-2 text-amber-700 dark:text-amber-400">{b.gold}%</td>
@@ -861,6 +963,14 @@ export default function RiskProfilingPage() {
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            {/* Risk Mismatch & Conservatism Rule */}
+            <div className="space-y-2 pt-2">
+              <h3 className="text-sm font-bold text-[#181818] dark:text-white">3. Regulatory Conservatism & Mismatch Threshold</h3>
+              <p className="text-xs text-[#444444] dark:text-navy-300 leading-relaxed">
+                Whenever Emotional Risk Tolerance exceeds Financial Risk Capacity by <strong>25 points or more</strong> (or when emergency funds cover fewer than 3 months of outgo), the composite score and strategic asset allocation are capped at the capacity ceiling. This regulatory barrier prevents behavioral over-confidence from jeopardizing client capital adequacy.
+              </p>
             </div>
           </div>
         </div>

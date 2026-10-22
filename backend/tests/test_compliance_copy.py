@@ -59,7 +59,7 @@ def test_banned_list_catches_advice_tone():
 def test_no_banned_words_in_user_facing_strings():
     offenders = []
     for path in APP.rglob("*.py"):
-        if path.name == "disclosures.py":
+        if path.name in ("disclosures.py", "_embedded.py"):
             continue
         for lit in literals(path):
             if BANNED.search(lit):

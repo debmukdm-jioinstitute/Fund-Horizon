@@ -16,6 +16,19 @@ interface ExplainModalProps {
   className?: string;
 }
 
+function renderInlineMarkdown(text: string): React.ReactNode {
+  const parts = text.split(/(\*[^*]+\*|\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i} className="font-semibold text-navy-950">{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith("*") && part.endsWith("*")) {
+      return <strong key={i} className="font-semibold text-navy-950">{part.slice(1, -1)}</strong>;
+    }
+    return part;
+  });
+}
+
 export default function ExplainModal({
   buttonLabel = "Explain with AI",
   kind,
@@ -129,8 +142,27 @@ export default function ExplainModal({
             )}
 
             {data && (
-              <div className="prose prose-navy max-w-none text-sm leading-relaxed text-navy-800 whitespace-pre-line">
-                {data.explanation}
+              <div className="space-y-2 text-sm leading-relaxed text-navy-800">
+                {data.explanation.split("\n").map((line, idx) => {
+                  const trimmed = line.trim();
+                  if (!trimmed) return <div key={idx} className="h-1" />;
+                  if (trimmed === "---") {
+                    return <hr key={idx} className="border-t border-navy-200 my-2" />;
+                  }
+                  if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+                    return (
+                      <div key={idx} className="flex items-start gap-2 pl-2">
+                        <span className="text-teal-600 font-bold">•</span>
+                        <span>{renderInlineMarkdown(trimmed.slice(2))}</span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <p key={idx}>
+                      {renderInlineMarkdown(line)}
+                    </p>
+                  );
+                })}
               </div>
             )}
 

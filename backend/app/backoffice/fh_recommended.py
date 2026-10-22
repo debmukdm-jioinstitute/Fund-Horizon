@@ -21,12 +21,11 @@ FH_RECOMMENDED_MF_CODES: dict[str, str] = {
     "106823": "ICICI Prudential Small Cap Fund",
     "146193": "Edelweiss Small Cap Fund",
     "153909": "Helios Small Cap Fund",
-    # Multi cap (AMFI lists two identical HSBC Multi Cap Regular Growth codes; both kept)
+    # Multi cap
     "152072": "WhiteOak Capital Multi Cap Fund",
     "151812": "Mirae Asset Multicap Fund",
     "152095": "Edelweiss Multi Cap Fund",
     "151289": "HSBC Multi Cap Fund",
-    "151292": "HSBC Multi Cap Fund",
     # Flexi cap
     "150347": "WhiteOak Capital Flexi Cap Fund",
     "102252": "HSBC Flexi Cap Fund",
@@ -53,7 +52,7 @@ MF_FACTSHEET_SOURCE: dict[str, str] = {
     **dict.fromkeys(("101635", "152208", "152053", "108202"), "dsp"),
     **dict.fromkeys(("106144", "145139", "149766", "153046"), "invesco"),
     **dict.fromkeys(("101262", "148459"), "nippon"),
-    **dict.fromkeys(("102252", "151289", "151292"), "hsbc"),
+    **dict.fromkeys(("102252", "151289"), "hsbc"),
     "148987": "hdfc",
     "152065": "kotak",
     **dict.fromkeys(("146193", "152095", "140355"), "edelweiss"),

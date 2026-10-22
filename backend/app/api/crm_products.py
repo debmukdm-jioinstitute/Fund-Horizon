@@ -272,12 +272,13 @@ class ConsentIn(BaseModel):
 
 
 class SuitabilityIn(BaseModel):
-    model_config = {"extra": "forbid"}
+    model_config = {"extra": "ignore"}
     customer_id: str
     financial_status: str | None = None
     investment_experience: str | None = None
     objectives: str | None = None
     risk_band: str | None = None
+    assessment: str | None = None
 
 
 class DisclosureIn(BaseModel):
@@ -633,6 +634,10 @@ def create_suitability(body: SuitabilityIn, me: Me):
     _, cust_ids = _scope_ids(me)
     _check_customer_link(me, body.customer_id, cust_ids)
     data = body.model_dump()
+    assessment = data.pop("assessment", None)
+    if assessment:
+        current_obj = data.get("objectives") or ""
+        data["objectives"] = f"{current_obj}\n\nAssessment: {assessment}".strip()
     data["recorded_by_rm_id"] = me["id"]  # append-only; the recorder is always the caller
     rec = store.create_suitability(data)
     _audit_create("suitability", "suitability_records", rec, me)

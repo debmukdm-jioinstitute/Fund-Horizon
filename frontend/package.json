@@ -10,7 +10,7 @@
     "lint:fonts": "node scripts/check-fonts.mjs",
     "prebuild": "node scripts/copy-pdf-worker.mjs",
     "predev": "node scripts/copy-pdf-worker.mjs",
-    "cf:build": "API_INTERNAL_URL=https://fund-horizon-api.fundhorizon.workers.dev NEXT_PUBLIC_API_URL=https://fund-horizon-api.fundhorizon.workers.dev CF_BUILD=1 opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
+    "cf:build": "API_INTERNAL_URL=https://api.fundhorizon.website NEXT_PUBLIC_API_URL=https://api.fundhorizon.website CF_BUILD=1 opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
     "cf:deploy": "opennextjs-cloudflare deploy"
   },
   "dependencies": {

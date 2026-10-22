@@ -4,9 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
-import { signupCustomer, getPlan } from "@/lib/api";
-
-const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+import { signupCustomer } from "@/lib/api";
 
 interface AuthPortalProps {
   initialTab?: "customer" | "admin";
@@ -26,12 +24,6 @@ export default function AuthPortal({
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  // Historical Plan Lookup (available in Admin mode)
-  const [showPlanLookup, setShowPlanLookup] = useState(false);
-  const [planLink, setPlanLink] = useState("");
-  const [planError, setPlanError] = useState<string | null>(null);
-  const [planLoading, setPlanLoading] = useState(false);
 
   // Modals
   const [showForgotModal, setShowForgotModal] = useState(false);
@@ -143,24 +135,6 @@ export default function AuthPortal({
     }
   }
 
-  async function handlePlanLookup(e: React.FormEvent) {
-    e.preventDefault();
-    const m = UUID_RE.exec(planLink.trim());
-    if (!m) {
-      setPlanError("Please enter a valid 36-character Plan UUID.");
-      return;
-    }
-    setPlanLoading(true);
-    setPlanError(null);
-    try {
-      await getPlan(m[0]);
-      router.push(`/portal/${m[0]}`);
-    } catch {
-      setPlanError("Plan record not found or inaccessible.");
-    } finally {
-      setPlanLoading(false);
-    }
-  }
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#FFFFFF] dark:bg-[#10151C] text-[#101828] dark:text-[#EDF2F7]">
@@ -573,45 +547,6 @@ export default function AuthPortal({
             Create account
           </button>
 
-          {/* Historical Plan Lookup (Collapsible for Staff Terminal) */}
-          {activeTab === "admin" && (
-            <div className="mt-6 pt-4 border-t border-[#E4E9EF] dark:border-[#2B3644]">
-              <button
-                type="button"
-                onClick={() => setShowPlanLookup(!showPlanLookup)}
-                className="text-xs font-semibold text-[#536176] dark:text-[#A8B4C4] hover:text-[#172033] dark:hover:text-[#EDF2F7] flex items-center justify-between w-full"
-              >
-                <span>HISTORICAL PLAN RECORD LOOKUP</span>
-                <span className="text-sm">{showPlanLookup ? "−" : "+"}</span>
-              </button>
-
-              {showPlanLookup && (
-                <form onSubmit={handlePlanLookup} className="mt-3 space-y-2">
-                  <input
-                    type="text"
-                    value={planLink}
-                    onChange={(e) => setPlanLink(e.target.value)}
-                    placeholder="Plan UUID (00000000-0000-…)"
-                    autoComplete="off"
-                    spellCheck={false}
-                    className="w-full px-3 py-1.5 rounded-lg border border-[#D0D5DD] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#171E27] text-xs text-[#172033] dark:text-[#EDF2F7]"
-                  />
-                  {planError && (
-                    <p role="alert" className="text-[11px] text-[#B42332] dark:text-[#FF7D86]">
-                      {planError}
-                    </p>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={planLoading || planLink.trim().length === 0}
-                    className="w-full py-1.5 px-3 rounded-lg bg-[#006F64] text-white text-xs font-medium"
-                  >
-                    {planLoading ? "Searching…" : "Open Plan Record"}
-                  </button>
-                </form>
-              )}
-            </div>
-          )}
         </div>
       </main>
 

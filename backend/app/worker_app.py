@@ -85,6 +85,8 @@ def create_worker_app() -> FastAPI:
     from app.api.crm_extras import router as crm_extras_router
     from app.api.crm_products import router as crm_products_router
     from app.api.learn import router as learn_router
+    from app.api.customer_portal import router as customer_portal_router
+    from app.api.download import router as download_router
     from app.api.portal import router as portal_router
     from app.api.rm import rm_router
 
@@ -96,6 +98,8 @@ def create_worker_app() -> FastAPI:
     app.include_router(learn_router)
     app.include_router(portal_router)
     app.include_router(rm_router)
+    app.include_router(customer_portal_router)
+    app.include_router(download_router)
 
     return app
 

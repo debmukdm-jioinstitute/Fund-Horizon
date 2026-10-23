@@ -23,6 +23,7 @@ from app.api.auth import _check_auth_rate_limit, _hash_password
 from app.api.crm_auth import crm_user, unscoped
 from app.api.crm_page import PageParams, guard, paginate_rows, send_total
 from app.db import sqlite
+from app.mailer import MailerError, send_email
 from app.repo_crm_core import IST, CrmCoreError, Page, get_crm_repository, month_start_utc, today_ist
 from app.repo_crm_extras import find_duplicates
 
@@ -1200,6 +1201,33 @@ def create_activity(body: ActivityCreate, me: Me):
         actor_id=me["id"],
     )
     return _with_warnings(row, _past_warnings(due_at))
+
+
+class CustomerEmail(BaseModel):
+    subject: str = Field(min_length=1, max_length=200)
+    message: str = Field(min_length=1, max_length=10000)
+
+
+@router.post("/customers/{customer_id}/email", status_code=201)
+def email_customer(customer_id: str, body: CustomerEmail, me: Me):
+    """Email a customer via Resend and log it on their CRM timeline. Same visibility rule as activities."""
+    customer = _customer_or_404(customer_id)
+    scope = _scope(me)
+    if not scope.admin and customer_id not in scope.customer_ids:
+        raise HTTPException(403, "You do not have permission to use this customer.")
+    to = (customer.get("email") or "").strip()
+    if not to:
+        raise HTTPException(422, "This customer has no email address.")
+    subject, message = _clean_str(body.subject, "subject"), _clean_str(body.message, "message")
+    try:
+        email_id = send_email(to, subject, message)
+    except MailerError as e:
+        raise HTTPException(503 if not e.configured else 502, str(e)) from e
+    row = get_crm_repository().create_activity(
+        kind="email", subject=subject, body=message, customer_id=customer_id,
+        source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"],
+    )
+    return {"email_id": email_id, "activity": row}
 
 
 @router.patch("/activities/{activity_id}")

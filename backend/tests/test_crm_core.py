@@ -524,3 +524,47 @@ def test_public_crossword_result_creates_lead(client):
     assert client.post("/api/crm/public/crossword/check", json={"phone": "+91 98201-12345"}).json() == {"played": True}
     assert client.post("/api/crm/public/crossword/check", json={"phone": "9000000001"}).json() == {"played": False}
     assert client.post("/api/crm/public/crossword", json={**body, "phone": "+919820112345"}).status_code == 409
+
+
+# ---------------------------------------------------------------------------
+# Email via Resend
+# ---------------------------------------------------------------------------
+def test_email_customer_sends_and_logs(client, admin, monkeypatch):
+    sent = []
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m: sent.append((to, s, m)) or "em_1")
+    cust = _make_customer()
+    r = client.post(f"/api/crm/customers/{cust['id']}/email", json={"subject": "Update", "message": "Hello"}, headers={"sec-fetch-site": "same-origin"})
+    assert r.status_code == 201, r.text
+    assert sent == [(cust["email"], "Update", "Hello")]
+    assert r.json()["activity"]["kind"] == "email"
+
+
+def test_email_customer_unconfigured_and_forbidden(client, admin, monkeypatch):
+    monkeypatch.delenv("RESEND_API_KEY", raising=False)
+    cust = _make_customer()
+    h = {"sec-fetch-site": "same-origin"}
+    assert client.post(f"/api/crm/customers/{cust['id']}/email", json={"subject": "a", "message": "b"}, headers=h).status_code == 503
+    assert client.post("/api/crm/customers/nope/email", json={"subject": "a", "message": "b"}, headers=h).status_code == 404
+    _login_as(client, _make_customer("rm"))  # RM with no book cannot email an unrelated customer
+    assert client.post(f"/api/crm/customers/{cust['id']}/email", json={"subject": "a", "message": "b"}, headers=h).status_code == 403
+
+
+def test_mailer_payload_and_errors(monkeypatch):
+    import httpx
+
+    from app import mailer
+
+    monkeypatch.setenv("RESEND_API_KEY", "k")
+    monkeypatch.setenv("EMAIL_FROM", "FH <u@example.com>")
+    seen = {}
+
+    def fake_post(url, json, headers, timeout):
+        seen.update(url=url, json=json, auth=headers["Authorization"])
+        return httpx.Response(200, json={"id": "em_9"}, request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(mailer.httpx, "post", fake_post)
+    assert mailer.send_email("a@b.com", "S", "<b>hi</b>") == "em_9"
+    assert seen["auth"] == "Bearer k" and seen["json"]["to"] == ["a@b.com"] and "&lt;b&gt;" in seen["json"]["html"]
+    monkeypatch.setattr(mailer.httpx, "post", lambda *a, **k: httpx.Response(422, json={"message": "bad"}, request=httpx.Request("POST", "x")))
+    with pytest.raises(mailer.MailerError):
+        mailer.send_email("a@b.com", "S", "t")

@@ -229,6 +229,16 @@ body {
   }
 }
 
+/* Fund one-pager print: portal sits on <body>; print only it, unclipped, with backgrounds. */
+@media print {
+  body.print-onepager > *:not(.mf-onepager) { display: none !important; }
+  body.print-onepager { overflow: visible !important; }
+  .mf-onepager, .mf-op-inner, .mf-op-scroll { position: static !important; inset: auto !important; height: auto !important; overflow: visible !important; background: #fff !important; backdrop-filter: none !important; }
+  .mf-onepager { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .mf-onepager button { display: none !important; }
+  .mf-onepager .terminal-panel { break-inside: avoid; }
+}
+
 /* Salesforce Lightning palette, scoped to the backoffice shell (class "sf" on its root). */
 .sf {
   --terminal-bg: #FFFFFF;

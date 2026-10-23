@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal, flushSync } from "react-dom";
 import {
   Area,
   AreaChart,
@@ -16,7 +17,7 @@ import {
   PolarGrid,
   Radar,
   RadarChart,
-  ResponsiveContainer,
+  ResponsiveContainer as RechartsRC,
   Tooltip,
   XAxis,
   YAxis,
@@ -64,12 +65,31 @@ function Panel({ title, note, children }: { title: string; note?: string; childr
   );
 }
 
+// Print layout is not observed by ResizeObserver, so charts get a fixed width while printing (A4 content width).
+const PrintCtx = React.createContext(false);
+function ResponsiveContainer({ children }: { children: React.ReactElement }) {
+  const printing = React.useContext(PrintCtx);
+  return <RechartsRC width={printing ? 660 : "100%"} height="100%">{children}</RechartsRC>;
+}
+
 const axis = { fontSize: 10, fill: "#706E6B" };
 
 export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null; onClose: () => void }) {
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined);
   const [range, setRange] = useState<(typeof RANGES)[number]["k"]>("5Y");
+  const [printing, setPrinting] = useState(false);
   const code = row?.code;
+
+  useEffect(() => {
+    const on = () => flushSync(() => setPrinting(true));
+    const off = () => flushSync(() => setPrinting(false));
+    window.addEventListener("beforeprint", on);
+    window.addEventListener("afterprint", off);
+    return () => {
+      window.removeEventListener("beforeprint", on);
+      window.removeEventListener("afterprint", off);
+    };
+  }, []);
 
   useEffect(() => {
     setPerf(undefined);
@@ -88,9 +108,11 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    document.body.classList.add("print-onepager");
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "unset";
+      document.body.classList.remove("print-onepager");
     };
   }, [row, onClose]);
 
@@ -158,10 +180,11 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
   const nav = n(r.nav);
   const pos = hi !== undefined && lo !== undefined && nav !== undefined && hi > lo ? Math.max(0, Math.min(100, ((nav - lo) / (hi - lo)) * 100)) : undefined;
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${name} one-pager`} onClick={onClose}>
-      <div className="absolute inset-0 bg-[#F3F3F3] dark:bg-[#10151C] flex flex-col" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-2.5 bg-[#0B2A4A] text-white">
+  return createPortal(
+    <PrintCtx.Provider value={printing}>
+    <div className="mf-onepager fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={`${name} one-pager`} onClick={onClose}>
+      <div className="mf-op-inner absolute inset-0 bg-[#F3F3F3] dark:bg-[#10151C] flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-2.5 bg-[#0B2A4A] print:[print-color-adjust:exact] text-white">
           <Logo variant="dark" size="sm" href="#" />
           <span className="hidden sm:block text-[11px] uppercase tracking-wider opacity-80">Fund One-Pager · NAV as of {r.nav_date ? formatISTDate(String(r.nav_date)) : "-"}</span>
           <div className="flex gap-2">
@@ -174,7 +197,7 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="mf-op-scroll flex-1 overflow-y-auto">
           <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 space-y-4">
             <div className="terminal-panel p-4 border-l-4 border-l-[#0176D3] flex flex-wrap items-start justify-between gap-4">
               <div className="space-y-1.5 min-w-0">
@@ -241,8 +264,8 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                       <YAxis tick={axis} domain={["auto", "auto"]} width={42} />
                       <Tooltip formatter={(v, k) => [Number(v).toFixed(2), String(k)]} labelFormatter={(d) => formatISTDate(String(d))} />
                       {hasBench && <Legend wrapperStyle={{ fontSize: 11 }} />}
-                      <Area type="monotone" dataKey="growth" name="This fund" stroke={BLUE} strokeWidth={2} fill="url(#fhg)" />
-                      {hasBench && <Line type="monotone" dataKey="bench" name={perf?.benchmark?.name ?? "Benchmark"} stroke="#B45309" strokeWidth={1.8} strokeDasharray="5 3" dot={false} connectNulls />}
+                      <Area isAnimationActive={false} type="monotone" dataKey="growth" name="This fund" stroke={BLUE} strokeWidth={2} fill="url(#fhg)" />
+                      {hasBench && <Line isAnimationActive={false} type="monotone" dataKey="bench" name={perf?.benchmark?.name ?? "Benchmark"} stroke="#B45309" strokeWidth={1.8} strokeDasharray="5 3" dot={false} connectNulls />}
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
@@ -273,8 +296,8 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                       <YAxis tick={axis} width={36} unit="%" />
                       <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Bar dataKey="fund" name="This fund" fill={BLUE} radius={[3, 3, 0, 0]} />
-                      <Bar dataKey="cat" name="Category avg" fill={CAT} radius={[3, 3, 0, 0]} />
+                      <Bar isAnimationActive={false} dataKey="fund" name="This fund" fill={BLUE} radius={[3, 3, 0, 0]} />
+                      <Bar isAnimationActive={false} dataKey="cat" name="Category avg" fill={CAT} radius={[3, 3, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -286,7 +309,7 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                     <RadarChart data={radar} outerRadius="72%">
                       <PolarGrid stroke="#9CA3AF66" />
                       <PolarAngleAxis dataKey="k" tick={axis} />
-                      <Radar dataKey="v" stroke={BLUE} fill={BLUE} fillOpacity={0.3} />
+                      <Radar isAnimationActive={false} dataKey="v" stroke={BLUE} fill={BLUE} fillOpacity={0.3} />
                       <Tooltip formatter={(_v, _n2, p) => `${(p.payload as { raw: unknown }).raw ?? "-"} / 25`} />
                     </RadarChart>
                   </ResponsiveContainer>
@@ -304,7 +327,7 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                         <XAxis dataKey="year" tick={axis} />
                         <YAxis tick={axis} width={36} unit="%" />
                         <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} />
-                        <Bar dataKey="ret" name="Return">
+                        <Bar isAnimationActive={false} dataKey="ret" name="Return">
                           {yearly.map((y) => (
                             <Cell key={y.year} fill={y.ret >= 0 ? UP : DOWN} />
                           ))}
@@ -326,7 +349,7 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                         <XAxis dataKey="date" tick={axis} tickFormatter={(d: string) => d.slice(0, 4)} minTickGap={40} />
                         <YAxis tick={axis} width={36} unit="%" />
                         <Tooltip formatter={(v) => [`${Number(v).toFixed(2)}%`, "Drawdown"]} labelFormatter={(d) => formatISTDate(String(d))} />
-                        <Area type="monotone" dataKey="dd" stroke={DOWN} fill={DOWN} fillOpacity={0.2} />
+                        <Area isAnimationActive={false} type="monotone" dataKey="dd" stroke={DOWN} fill={DOWN} fillOpacity={0.2} />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
@@ -345,9 +368,9 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                         <YAxis tick={axis} width={36} unit="%" />
                         <Tooltip formatter={(v) => `${Number(v).toFixed(2)}%`} labelFormatter={(d) => formatISTDate(String(d))} />
                         <Legend wrapperStyle={{ fontSize: 11 }} />
-                        <Line type="monotone" dataKey="r1y" name="1Y" stroke={BLUE} dot={false} strokeWidth={1.8} connectNulls />
-                        <Line type="monotone" dataKey="r3y" name="3Y" stroke="#0B7A4B" dot={false} strokeWidth={1.8} connectNulls />
-                        <Line type="monotone" dataKey="r5y" name="5Y" stroke="#B45309" dot={false} strokeWidth={1.8} connectNulls />
+                        <Line isAnimationActive={false} type="monotone" dataKey="r1y" name="1Y" stroke={BLUE} dot={false} strokeWidth={1.8} connectNulls />
+                        <Line isAnimationActive={false} type="monotone" dataKey="r3y" name="3Y" stroke="#0B7A4B" dot={false} strokeWidth={1.8} connectNulls />
+                        <Line isAnimationActive={false} type="monotone" dataKey="r5y" name="5Y" stroke="#B45309" dot={false} strokeWidth={1.8} connectNulls />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -386,5 +409,7 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
         </div>
       </div>
     </div>
+    </PrintCtx.Provider>,
+    document.body,
   );
 }

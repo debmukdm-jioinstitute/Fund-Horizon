@@ -1,4 +1,7 @@
 /* eslint-disable */
+import { API_URL, resolveApiUrl } from "@/lib/api";
+import { pdfBlob, renderCard } from "@/lib/calcExport";
+
 export function initRiskProfiling() {
 /* ================= Data — FH Recommended List (Regular Plan, Growth) ================= */
       var FH_BY_CATEGORY = {
@@ -994,7 +997,10 @@ export function initRiskProfiling() {
 
       document.getElementById("downloadPdfBtn").addEventListener("click", function(){
         var v = validateDetails(true);
-        if (!v.ok) { scrollToDetails(); return; }
+        var cOk = validateConsent(true);
+        if (!v.ok || !cOk) { scrollToDetails(); return; }
+        recordLead(null, v.data.email).catch(function () {}); // best effort: the print dialog must still open
+        window.addEventListener("afterprint", function once() { window.removeEventListener("afterprint", once); showThanks(); });
         buildPrintReport(); setTimeout(function(){ window.print(); }, 120);
       });
 
@@ -1351,6 +1357,69 @@ export function initRiskProfiling() {
         if (this.checked) { $("errConsent").classList.remove("show"); $("consentRow").classList.remove("bad"); }
       });
 
+      /* ================= Save lead, email PDF, thank-you ================= */
+      var recorded = false;
+      var ROUTE_SHORT = { mf: "Mutual Funds only", mix: "Mutual Funds + PMS mix", pms: "PMS only (enquiry)" };
+      function planFacts() {
+        var s = STYLES[state.style], goal = GOALS.filter(function (g) { return g.id === state.goal; })[0];
+        return { s: s, goal: goal ? goal.name : "—", plan: calcPlan(), route: ROUTE_SHORT[pmsState.route] || ROUTE_SHORT.mf };
+      }
+      function recordLead(pdfB64, email) {
+        var cd = contactData(), f = planFacts();
+        var body = {
+          name: cd.name, email: email || cd.email, phone: cd.phone, consent: true, recorded: recorded,
+          ref: new URLSearchParams(window.location.search).get("ref") || undefined, pdf_base64: pdfB64 || undefined,
+          plan: { Style: f.s.name, Goal: f.goal, Target: fmtShort(state.target), Years: String(state.years), "Monthly SIP": fmtINR(f.plan.sip), Route: f.route }
+        };
+        return fetch(resolveApiUrl(API_URL + "/api/crm/public/plan-lead"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+          .then(function (r) {
+            if (!r.ok) return r.json().catch(function () { return {}; }).then(function (j) { throw new Error(typeof j.detail === "string" ? j.detail : "Request failed (" + r.status + ")"); });
+            recorded = true; return r.json();
+          });
+      }
+      function planPdfB64() {
+        var f = planFacts(), cd = contactData(), s = f.s, years = [], inv, val, r = s.ret / 1200;
+        for (var y = 0; y <= state.years; y++) {
+          inv = f.plan.sip * 12 * y; val = r === 0 ? inv : f.plan.sip * ((Math.pow(1 + r, 12 * y) - 1) / r) * (1 + r);
+          years.push({ x: y, a: inv, b: Math.max(val - inv, 0) });
+        }
+        return renderCard({
+          title: "Your plan at a glance", client: cd.name,
+          inputs: [["Style", s.name], ["Goal", f.goal], ["Target", fmtShort(state.target)], ["Time", state.years + " years"], ["Assumed return", s.ret + "% a year"], ["Route", f.route]],
+          metrics: [{ label: "Monthly SIP needed", text: fmtINR(f.plan.sip) + " / month" }, { label: "You invest", text: fmtINR(f.plan.invested) }, { label: "Growth (market gains)", text: fmtINR(f.plan.growth) }, { label: "Or one-time lumpsum today", text: fmtINR(f.plan.lumpsum) }],
+          viz: { donutTitle: "How your money is split", donut: ASSETS.map(function (a) { return { name: a.label, value: s.alloc[a.key] }; }), growth: { kind: "stack", title: "Year-by-year growth", names: ["Invested", "Growth"], pts: years } }
+        }).then(pdfBlob).then(function (blob) {
+          return new Promise(function (res, rej) { var fr = new FileReader(); fr.onload = function () { res(String(fr.result).split(",")[1]); }; fr.onerror = rej; fr.readAsDataURL(blob); });
+        });
+      }
+      function showThanks() {
+        var cd = contactData();
+        $("thanksName").textContent = cd.name.split(/\s+/)[0];
+        $("thanksPhone").textContent = fmtPhone(cd.phone);
+        $("thanksOverlay").classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+      $("thanksCloseBtn").addEventListener("click", function () { window.close(); $("thanksHint").style.display = "block"; });
+      $("thanksNewBtn").addEventListener("click", function () {
+        $("thanksOverlay").classList.remove("show"); $("thanksHint").style.display = "none";
+        document.body.style.overflow = ""; recorded = false; $("emailPdfTo").value = ""; $("emailPdfMsg").textContent = "";
+        $("startOverBtn").click();
+      });
+      $("emailPdfBtn").addEventListener("click", function () {
+        var btn = this, msg = $("emailPdfMsg"), v = validateDetails(true), cOk = validateConsent(true);
+        var to = ($("emailPdfTo").value || "").trim() || v.data.email;
+        msg.classList.remove("bad");
+        if (!v.ok || !cOk) { scrollToDetails(); return; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(to)) { msg.textContent = "Please enter a valid email ID."; msg.classList.add("bad"); return; }
+        btn.disabled = true; msg.textContent = "Preparing and sending your PDF…";
+        planPdfB64().then(function (b64) { return recordLead(b64, to); }).then(function (res) {
+          if (!res.emailed) throw new Error("We could not send the email right now. Please use Download PDF report.");
+          msg.textContent = "Sent to " + to + ".";
+          showThanks();
+        }).catch(function (e) { msg.textContent = e && e.message ? e.message : "Something went wrong. Please try again."; msg.classList.add("bad"); })
+          .then(function () { btn.disabled = false; });
+      });
+
       /* ================= CTA / reset ================= */
       $("ctaBtn").addEventListener("click", function () {
         var v = validateDetails(true);
@@ -1360,6 +1429,7 @@ export function initRiskProfiling() {
         var box = $("talkSuccess");
         box.innerHTML = "Thank you, <strong>" + escHtml(first) + "</strong> — your plan summary is ready. Fund Horizon will reach you on <strong>" + escHtml(fmtPhone(v.data.phone)) + "</strong> / <strong>" + escHtml(v.data.email) + '</strong>.<span class="small">Your details are captured in this plan and its PDF report.</span>';
         box.classList.add("show");
+        recordLead(null, v.data.email).catch(function () {});
         box.scrollIntoView({ behavior: "smooth", block: "center" });
       });
       $("startOverBtn").addEventListener("click", function () {
@@ -1373,6 +1443,7 @@ export function initRiskProfiling() {
         ["errName","errEmail","errPhone","errConsent"].forEach(function (id) { $(id).classList.remove("show"); });
         $("cdConsent").checked = false; $("consentRow").classList.remove("bad");
         $("talkSuccess").classList.remove("show");
+        recorded = false;
         $("sumPrepared").style.display = "none";
         closePmsDrawer();
         closeAIModal();

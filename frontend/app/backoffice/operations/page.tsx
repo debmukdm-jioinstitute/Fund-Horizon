@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link";
 import { CALCULATORS } from "@/lib/calculators";
 import EmailDialog, { type Recipient } from "@/components/crm/EmailDialog";
+import UpdatesFeed from "@/components/operations/UpdatesFeed";
 import PdfFormFiller, { type ClientDetails, type FillContext, type PdfSource } from "@/components/operations/PdfFormFiller";
 import { FILING_STATUSES, type Filing, getFilings, getOfficialForms, setFilingStatus } from "@/lib/backoffice";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
@@ -12,7 +13,7 @@ import type { OfficialForm } from "@/lib/officialForms";
 import { startDownload, type DownloadResult } from "@/lib/api";
 import { domain, isReference, JOBS, type Job, jobForms } from "@/lib/operations";
 
-type Tab = "tasks" | "library" | "register";
+type Tab = "updates" | "tasks" | "library" | "register";
 interface Filling { source: PdfSource; prefill?: Partial<ClientDetails>; context?: FillContext }
 interface Filters { q: string; sources: Set<string>; amc: string; cat: string; amcQ: string }
 
@@ -33,7 +34,7 @@ const emptyFilters = (): Filters => ({ q: "", sources: new Set(["CAMS", "KFintec
 function FormFilling() {
   const [forms, setForms] = useState<OfficialForm[]>([]);
   const [loadError, setLoadError] = useState(false);
-  const [tab, setTab] = useState<Tab>("tasks");
+  const [tab, setTab] = useState<Tab>("updates");
   const [filling, setFilling] = useState<Filling | null>(null);
   const [filings, setFilings] = useState<Filing[]>([]);
   const [registerError, setRegisterError] = useState<string | null>(null);
@@ -120,7 +121,7 @@ function FormFilling() {
           </label>
         </div>
         <nav className="flex gap-0.5 overflow-x-auto border-t border-[#E4E9EF] dark:border-[#2B3644]" role="tablist" aria-label="Operations sections">
-          {([["tasks", "Start a task", null], ["library", "Forms library", forms.length || null], ["register", "Filings register", openCount ? `${openCount} open` : null]] as [Tab, string, string | number | null][]).map(([t, label, cnt]) => (
+          {([["updates", "Updates", null], ["tasks", "Start a task", null], ["library", "Forms library", forms.length || null], ["register", "Filings register", openCount ? `${openCount} open` : null]] as [Tab, string, string | number | null][]).map(([t, label, cnt]) => (
             <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
               className={`whitespace-nowrap border-b-[3px] px-4 py-3 text-[14.5px] font-semibold ${tab === t ? "border-[#006F64] text-[#006F64] dark:text-[#75E1CE]" : `border-transparent ${muted}`}`}>
               {label}{cnt !== null && <span className={`ml-1.5 rounded-full border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-px text-[11.5px] ${soft}`}>{cnt}</span>}
@@ -131,6 +132,7 @@ function FormFilling() {
 
       {loadError && <p className="text-[13px] text-[#B42318] dark:text-[#FF7D86]">Could not load the forms catalogue.</p>}
 
+      {tab === "updates" && <UpdatesFeed />}
       {tab === "tasks" && (
         <TasksTab forms={mfForms} filings={filings} jobId={jobId} setJobId={setJobId} hhName={hhName} member={member} pan4={pan4} fillLabel={fillLabel}
           fillForm={fillForm} changeClient={() => { clientSelect.current?.focus(); window.scrollTo({ top: 0, behavior: "smooth" }); }} openLibrary={openLibrary} />

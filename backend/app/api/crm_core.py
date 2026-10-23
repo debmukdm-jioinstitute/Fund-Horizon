@@ -9,6 +9,7 @@ Money is integer paise; dates are ``YYYY-MM-DD``; timestamps are ISO-8601 UTC.
 """
 
 
+import base64
 import hashlib
 import hmac
 import json
@@ -747,6 +748,58 @@ def public_risk_profile(body: PublicRiskProfile, request: Request):
         content=pdf, media_type="application/pdf",
         headers={"Content-Disposition": 'attachment; filename="risk-profile.pdf"'},
     )
+
+
+class PublicPlanLead(BaseModel):
+    name: str = Field(min_length=2, max_length=200)
+    email: str = Field(min_length=3, max_length=255)
+    phone: str = Field(min_length=8, max_length=20)
+    consent: bool
+    ref: str | None = Field(None, max_length=64)
+    plan: dict[str, str] = Field(default_factory=dict, max_length=16)
+    recorded: bool = Field(False, description="Lead and activity already saved by an earlier call; only email now")
+    pdf_base64: str | None = Field(None, max_length=4_200_000)
+
+
+@router.post("/public/plan-lead")
+def public_plan_lead(body: PublicPlanLead, request: Request):
+    """Goal-plan page: saves the visitor as a lead (once), logs a "Risk profiling" activity for Operations, and
+    optionally emails them their plan PDF. No staff session; rate limited like signup."""
+    _check_auth_rate_limit(request)
+    if not body.consent:
+        raise HTTPException(422, "Consent is required.")
+    name, email = body.name.strip(), _check_email(body.email)
+    mobile = _check_mobile(re.sub(r"[^\d+]", "", body.phone.strip()))
+    plan = {k[:40]: v[:200] for k, v in body.plan.items()}
+    summary = " · ".join(f"{k}: {v}" for k, v in plan.items())
+    pdf = None
+    if body.pdf_base64:
+        try:
+            pdf = base64.b64decode(body.pdf_base64, validate=True)
+        except ValueError as e:
+            raise HTTPException(422, "Invalid PDF.") from e
+        if not pdf.startswith(b"%PDF") or len(pdf) > 3_000_000:
+            raise HTTPException(422, "Invalid PDF.")
+    if not body.recorded:
+        rm_id = body.ref if body.ref and (sqlite.get_customer_by_id(body.ref) or {}).get("role") in ("rm", "admin") else None
+        repo = get_crm_repository()
+        sqlite.get_customer_by_email(email)  # opens the customers table that find_duplicates reads
+        known = [d["id"] for d in find_duplicates(name=name, email=email, mobile=mobile, pan_last4=None, viewer_rm_id=None) if d["type"] == "lead" and d["id"]]
+        lead_id = known[0] if known else repo.create_lead(
+            name=name, email=email, mobile=mobile, source="website", status="new", assigned_rm_id=rm_id,
+            notes=f"Goal plan via risk profiling page. {summary}", actor_id="risk_profile_link",
+        )["id"]
+        repo.create_activity(kind="review", subject=f"Risk profiling: {name}", body=summary, lead_id=lead_id, assigned_rm_id=rm_id, actor_id="risk_profile_link")
+    error = None
+    if pdf:
+        text = (f"Hi {name.split()[0]},\n\nYour Fund Horizon plan summary is attached. One of our advisors will call you soon to understand your goals better.\n\n"
+                "Illustration only: assumed returns are not guaranteed, and mutual fund investments are subject to market risks.\n"
+                "Fund Horizon · AMFI Registered Mutual Fund Distributor · ARN 345439")
+        try:
+            send_email(email, "Your Fund Horizon plan", text, attachments=[("fund-horizon-plan.pdf", pdf)])
+        except MailerError as e:
+            error = str(e)
+    return {"emailed": bool(pdf) and error is None, "error": error}
 
 
 class CrosswordResult(BaseModel):

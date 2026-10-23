@@ -6,8 +6,8 @@ import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { fetchPage } from "../../lib/crmListApi";
 import {
-  fetchCase, fetchHouseholdDetail, fetchLead, fetchOpportunity, patchCase, patchHousehold, patchLead, patchOpportunity,
-  type CrmCase, type HouseholdDetail, type Lead, type Opportunity,
+  fetchHouseholdDetail, fetchLead, fetchOpportunity, patchHousehold, patchLead, patchOpportunity,
+  type HouseholdDetail, type Lead, type Opportunity,
 } from "../../lib/crmApi";
 import { formatRupeesFromPaise, STAGES_BY_LINE, type ProductLine } from "../../lib/crmProductsApi";
 import { emailSchema, fieldErrors, lostSchema, mobileSchema } from "../../lib/crmSchemas";
@@ -211,47 +211,6 @@ function OppRecord({ id }: { id: string }) {
   );
 }
 
-/* ------------------------------- Case ------------------------------- */
-const CASE_STATUS = ["open", "in_progress", "resolved", "escalated_amc", "escalated_scores", "closed"];
-
-function CaseRecord({ id }: { id: string }) {
-  const { data: c, setData, error } = useRecord(() => fetchCase(id), [id]);
-  const [bump, setBump] = useState(0);
-  if (error) return <p role="alert" className="text-xs text-rose-700 dark:text-rose-300">{error}</p>;
-  if (!c) return <Skeleton />;
-  const save = async (patch: Parameters<typeof patchCase>[1]) => {
-    const updated = await patchCase(c.id, patch);
-    setData({ ...c, ...updated });
-    setBump((b) => b + 1);
-  };
-  const breaching = !!c.sla_due_at && c.sla_due_at.slice(0, 10) < new Date(Date.now() + 19800000).toISOString().slice(0, 10) && !["resolved", "closed"].includes(c.status);
-  return (
-    <Layout
-      kind="cases" title={c.subject}
-      chips={
-        <>
-          <span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{c.status.replaceAll("_", " ")}</span>
-          {breaching && <span className="rounded bg-[#FBE7EA] dark:bg-[#43181F] text-[#9B1C2E] dark:text-[#FFA9B5] px-2 py-0.5 font-semibold">SLA breached</span>}
-        </>
-      }
-      path={<PathBar stages={CASE_STATUS} current={c.status} onSelect={(s) => void save({ status: s }).catch(() => undefined)} />}
-      left={
-        <div className={card}>
-          <h2 className="text-sm font-bold mb-2 text-[#181818] dark:text-[#EDF2F7]">Details</h2>
-          <InlineField label="Status" value={c.status} type="select" display={c.status.replaceAll("_", " ")} options={CASE_STATUS.map((s) => ({ value: s, label: s.replaceAll("_", " ") }))} onSave={(v) => save({ status: v })} />
-          <InlineField label="Category" value={c.category.replaceAll("_", " ")} readOnly />
-          <InlineField label="Customer" value={c.customer_name} readOnly />
-          <InlineField label="SLA due" value={c.sla_due_at?.slice(0, 10)} type="date" display={fmtDate(c.sla_due_at)} onSave={(v) => save({ sla_due_at: v || undefined })} />
-          <InlineField label="Details" value={c.body} type="textarea" onSave={(v) => save({ body: v })} />
-          <InlineField label="Opened" value={fmtDate(c.created_at, true)} readOnly />
-          <InlineField label="Resolved" value={fmtDate(c.resolved_at, true)} readOnly />
-        </div>
-      }
-      right={<Timeline target={{ entity: "case", id: c.id }} refreshKey={bump} />}
-    />
-  );
-}
-
 /* ----------------------------- Household ----------------------------- */
 function HouseholdPeople({ data, onChanged }: { data: HouseholdDetail; onChanged: () => void }) {
   const canWrite = useCanWrite();
@@ -330,8 +289,7 @@ export default function RecordPage({ kind, id }: { kind: Kind; id: string }) {
   if (kind === "households") return <HouseholdRecord id={id} />;
   if (kind === "contacts") return <ContactRecord id={id} />;
   if (kind === "leads") return <LeadRecord id={id} />;
-  if (kind === "opportunities") return <OppRecord id={id} />;
-  return <CaseRecord id={id} />;
+  return <OppRecord id={id} />;
 }
 
-export type { Lead, Opportunity, CrmCase };
+export type { Lead, Opportunity };

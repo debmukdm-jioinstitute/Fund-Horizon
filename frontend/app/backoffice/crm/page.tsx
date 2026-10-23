@@ -7,12 +7,9 @@ import HouseholdsTab from "@/components/crm/HouseholdsTab";
 import LeadsTab from "@/components/crm/LeadsTab";
 import PipelinesTab from "@/components/crm/PipelinesTab";
 import ActivitiesTab from "@/components/crm/ActivitiesTab";
-import CasesTab from "@/components/crm/CasesTab";
-import ComplianceTab from "@/components/crm/ComplianceTab";
 import ImportTab from "@/components/crm/ImportTab";
-import BookTab from "@/components/crm/BookTab";
 import DeadlinesTab from "@/components/crm/DeadlinesTab";
-import { CasesList, ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
+import { ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
 import NewOpportunityForm from "@/components/crm/NewOpportunityForm";
 import { useCanWrite } from "@/components/crm/useCanWrite";
 import CrmTabBar from "@/components/crm/CrmTabBar";
@@ -95,10 +92,7 @@ function CrmTabs() {
       {tab === "leads" && <TableOrBoard defaultView="table" boardLabel="Board & new lead" newLabel="New lead" table={<LeadsList />} board={<LeadsTab />} />}
       {tab === "opportunities" && <OpportunitiesTab />}
       {tab === "activities" && <TableOrBoard defaultView="table" boardLabel="Agenda & new task" newLabel="New task" table={<TasksList />} board={<ActivitiesTab />} />}
-      {tab === "cases" && <TableOrBoard defaultView="table" boardLabel="Queue & new grievance" newLabel="New grievance" table={<CasesList />} board={<CasesTab />} />}
       {tab === "deadlines" && <DeadlinesTab />}
-      {tab === "book" && <BookTab />}
-      {tab === "compliance" && <ComplianceTab />}
       {tab === "import" && <ImportTab />}
     </div>
   );

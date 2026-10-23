@@ -16,13 +16,11 @@ import HouseholdsTab from "@/components/crm/HouseholdsTab";
 import LeadsTab from "@/components/crm/LeadsTab";
 import PipelinesTab from "@/components/crm/PipelinesTab";
 import ActivitiesTab from "@/components/crm/ActivitiesTab";
-import CasesTab from "@/components/crm/CasesTab";
-import ComplianceTab from "@/components/crm/ComplianceTab";
 import ImportTab from "@/components/crm/ImportTab";
 import { MeUser, fetchMe } from "@/components/admin/account-api";
 import { AdminStats, AdminPlanSummary, fetchAdminStats, saveAdminKey } from "@/lib/admin-api";
 
-const CRM_TABS: AdminTab[] = ["crm-home", "households", "leads", "pipelines", "activities", "cases", "compliance", "import"];
+const CRM_TABS: AdminTab[] = ["crm-home", "households", "leads", "pipelines", "activities", "import"];
 function isCrmTab(tab: AdminTab): boolean {
   return CRM_TABS.includes(tab);
 }
@@ -84,8 +82,6 @@ export default function AdminPage() {
             {activeTab === "leads" && <LeadsTab />}
             {activeTab === "pipelines" && <PipelinesTab />}
             {activeTab === "activities" && <ActivitiesTab />}
-            {activeTab === "cases" && <CasesTab />}
-            {activeTab === "compliance" && <ComplianceTab />}
             {activeTab === "import" && <ImportTab />}
           </>
         ) : loading && !stats ? (

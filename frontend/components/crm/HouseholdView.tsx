@@ -7,7 +7,6 @@ import {
   crmRaw,
   fetchHouseholdDetail,
   type Activity,
-  type CrmCase,
   type HouseholdDetail,
   type HouseholdMember,
   type Opportunity,
@@ -148,7 +147,7 @@ export default function HouseholdView({
     );
   }
 
-  const { household, members, opportunities, activities, cases } = detail;
+  const { household, members, opportunities, activities } = detail;
 
   const memberList = (ms: HouseholdMember[]) =>
     ms.length === 0 ? (
@@ -214,28 +213,6 @@ export default function HouseholdView({
           </li>
         ))}
       </ol>
-    );
-
-  const caseList = (cs: CrmCase[]) =>
-    cs.length === 0 ? (
-      <p className="text-xs text-[#706E6B]">No open cases.</p>
-    ) : (
-      <div className="divide-y divide-[#ECEBEA]">
-        {cs.map((c) => (
-          <div key={c.id} className="py-2.5">
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-xs font-bold text-[#181818]">{c.subject}</div>
-              <span className="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold">
-                {c.status.replaceAll("_", " ")}
-              </span>
-            </div>
-            <div className="text-xs text-[#706E6B] mt-0.5">
-              {c.category} · opened {formatDate(c.created_at)}
-              {c.sla_due_at ? ` · SLA by ${formatDate(c.sla_due_at)}` : ""}
-            </div>
-          </div>
-        ))}
-      </div>
     );
 
   return (
@@ -375,9 +352,8 @@ export default function HouseholdView({
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         <Section title="Activity timeline (latest 20)">{timeline(activities)}</Section>
-        <Section title="Open cases">{caseList(cases)}</Section>
       </div>
 
       {products?.suitability && (

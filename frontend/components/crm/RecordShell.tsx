@@ -10,14 +10,13 @@ import InlineField from "./InlineField";
 import OwnerAvatar, { useOwners } from "./OwnerAvatar";
 import { tabHref } from "./tabs";
 
-export type Kind = "households" | "contacts" | "leads" | "opportunities" | "cases";
+export type Kind = "households" | "contacts" | "leads" | "opportunities";
 
 const KIND_LABEL: Record<Kind, { singular: string; plural: string; tab: string }> = {
   households: { singular: "Household", plural: "Households", tab: "households" },
   contacts: { singular: "Contact", plural: "Contacts", tab: "contacts" },
   leads: { singular: "Lead", plural: "Leads", tab: "leads" },
   opportunities: { singular: "Opportunity", plural: "Opportunities", tab: "opportunities" },
-  cases: { singular: "Grievance", plural: "Grievances", tab: "cases" },
 };
 
 export const card = "rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#10151C] p-4";

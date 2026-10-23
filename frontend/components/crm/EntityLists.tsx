@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import type { Activity, CrmCase, Household, Lead, Opportunity } from "../../lib/crmApi";
+import type { Activity, Household, Lead, Opportunity } from "../../lib/crmApi";
 import { LEAD_STATUSES } from "../../lib/crmApi";
 import { formatRupeesFromPaise, PRODUCT_LINES, STAGES_BY_LINE, stageLabel } from "../../lib/crmProductsApi";
 import ListView, { type FilterDef, type ListColumn } from "./ListView";
@@ -184,25 +184,3 @@ export const TasksList = ({ reloadKey }: { reloadKey?: number }) => (
 );
 
 /* ---------------- Cases ---------------- */
-const CASE_STATUSES = ["open", "in_progress", "resolved", "escalated_amc", "escalated_scores", "closed"];
-const caseColumns: ListColumn<CrmCase>[] = [
-  { id: "subject", header: "Subject", sortKey: "subject", cell: (c) => c.subject },
-  { id: "category", header: "Category", sortKey: "category", cell: (c) => label(c.category) },
-  {
-    id: "status", header: "Status", sortKey: "status",
-    cell: (c) => <Badge tone={c.status === "resolved" || c.status === "closed" ? "good" : c.status.startsWith("escalated") ? "bad" : "neutral"}>{label(c.status)}</Badge>,
-  },
-  { id: "customer", header: "Customer", cell: (c) => c.customer_name ?? "–" },
-  { id: "sla", header: "SLA due", sortKey: "sla_due_at", cell: (c) => fmtDate(c.sla_due_at, true) },
-  { id: "created", header: "Opened", sortKey: "created_at", cell: (c) => fmtDate(c.created_at) },
-];
-export const CasesList = ({ reloadKey }: { reloadKey?: number }) => (
-  <ListView<CrmCase>
-    entity="cases" columns={caseColumns} reloadKey={reloadKey}
-    filters={[
-      { key: "status", label: "Status", type: "select", options: CASE_STATUSES.map((s) => ({ value: s, label: label(s) })) },
-      { key: "sla_breaching", label: "SLA breaching", type: "toggle" },
-    ]}
-    rowHref={(c) => `/backoffice/crm/cases/${c.id}`} searchPlaceholder="Search grievances…"
-  />
-);

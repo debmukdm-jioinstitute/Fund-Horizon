@@ -14,7 +14,6 @@ import { CRM_TABS } from "./tabs";
 import { cardCls, errCls, headCls, mutedCls, rupees } from "./ui";
 
 const TIER_LABEL: Record<string, string> = { platinum: "Platinum", gold: "Gold", silver: "Silver", standard: "Standard" };
-const GAP_LABEL: Record<string, string> = { nominee: "No nominee", kyc: "KYC missing", kyc_expired: "KYC expired", fatca_crs: "FATCA/CRS" };
 
 /** A number that opens the list it counts. */
 function Kpi({ label, value, hint, link, tone }: { label: string; value: string; hint?: string; link: WidgetLink; tone?: "warn" }) {
@@ -100,7 +99,6 @@ export default function CrmHome() {
   const tiers: Datum[] = data.aum_by_tier.map((t) => ({ name: `${TIER_LABEL[t.tier] ?? t.tier} (${t.households})`, value: t.aum_paise, count: t.households, link: t.link }));
   const stages: Datum[] = data.pipeline_by_stage.filter((s) => s.count > 0).map((s) => ({ name: stageLabel(s.stage), value: s.value, count: s.count, link: s.link }));
   const rms: Datum[] = data.pipeline_by_rm.map((r) => ({ name: r.rm_name || "Unassigned", value: r.value, count: r.count, link: r.link }));
-  const gapSummary = Object.entries(data.gaps.by_kind).map(([k, n]) => `${GAP_LABEL[k] ?? k} ${n}`).join(" · ");
 
   return (
     <div className="space-y-4">
@@ -111,11 +109,8 @@ export default function CrmHome() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <Kpi label="SIP book" value={rupees(data.sip_book.monthly_paise)} hint={`${data.sip_book.count} active SIPs / month`} link={data.sip_book.link} />
         <Kpi label="Won this month" value={String(data.won_this_month.count)} hint={rupees(data.won_this_month.value)} link={data.won_this_month.link} />
         <Kpi label="Overdue tasks" value={String(data.overdue_tasks.count)} hint="Open, due before today" link={data.overdue_tasks.link} tone={data.overdue_tasks.count ? "warn" : undefined} />
-        <Kpi label="Cases past SLA" value={String(data.sla_breaching.count)} hint="Open, SLA date passed" link={data.sla_breaching.link} tone={data.sla_breaching.count ? "warn" : undefined} />
-        <Kpi label="KYC / nominee gaps" value={String(data.gaps.count)} hint={gapSummary || "No gaps"} link={data.gaps.link} tone={data.gaps.count ? "warn" : undefined} />
         <Kpi label="Policy renewals" value={String(data.renewals.count)} hint={`Next ${data.renewals.days} days`} link={data.renewals.link} />
         <Kpi label="FD maturities" value={String(data.maturities.count)} hint={`Next ${data.maturities.days} days`} link={data.maturities.link} />
         <Kpi label="Open pipeline" value={shortInr(data.pipeline_open.value / 100)} hint={`${data.pipeline_open.count} opportunities`} link={{ tab: "opportunities", params: { open: "true" } }} />
@@ -128,9 +123,8 @@ export default function CrmHome() {
         <section className={cardCls} aria-label="Top trail earners">
           <div className="flex items-baseline justify-between">
             <h3 className={headCls}>Top trail earners</h3>
-            <Link href={linkHref(data.top_trail.link)} className="text-xs text-[#0176D3] dark:text-[#1B96FF] hover:underline">Trail report</Link>
           </div>
-          <p className={`mb-2 text-xs ${mutedCls}`}>{data.top_trail.month ? `Households by brokerage in ${data.top_trail.month}.` : "Upload a brokerage file in Book → Trail commission."}</p>
+          <p className={`mb-2 text-xs ${mutedCls}`}>{data.top_trail.month ? `Households by brokerage in ${data.top_trail.month}.` : "No brokerage data uploaded yet."}</p>
           <ol className="space-y-1.5">
             {data.top_trail.rows.map((r, i) => (
               <li key={r.household_id} className="flex items-center justify-between text-xs">

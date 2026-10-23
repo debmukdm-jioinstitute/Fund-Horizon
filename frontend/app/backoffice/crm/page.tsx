@@ -10,6 +10,7 @@ import ActivitiesTab from "@/components/crm/ActivitiesTab";
 import ImportTab from "@/components/crm/ImportTab";
 import DeadlinesTab from "@/components/crm/DeadlinesTab";
 import { ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
+import NewContactForm from "@/components/crm/NewContactForm";
 import NewOpportunityForm from "@/components/crm/NewOpportunityForm";
 import { useCanWrite } from "@/components/crm/useCanWrite";
 import CrmTabBar from "@/components/crm/CrmTabBar";
@@ -67,6 +68,17 @@ function TableOrBoard({ table, board, boardLabel, defaultView, newLabel }: { tab
   );
 }
 
+function ContactsTab() {
+  const canWrite = useCanWrite();
+  const [version, setVersion] = React.useState(0);
+  return (
+    <div className="space-y-4">
+      {canWrite && <NewContactForm onCreated={() => setVersion((v) => v + 1)} />}
+      <ContactsList reloadKey={version} />
+    </div>
+  );
+}
+
 function OpportunitiesTab() {
   const canWrite = useCanWrite();
   const [version, setVersion] = React.useState(0);
@@ -88,7 +100,7 @@ function CrmTabs() {
       <CrmTabBar tab={tab} />
       {tab === "home" && <CrmHome />}
       {tab === "households" && <HouseholdsTab />}
-      {tab === "contacts" && <ContactsList />}
+      {tab === "contacts" && <ContactsTab />}
       {tab === "leads" && <TableOrBoard defaultView="table" boardLabel="Board & new lead" newLabel="New lead" table={<LeadsList />} board={<LeadsTab />} />}
       {tab === "opportunities" && <OpportunitiesTab />}
       {tab === "activities" && <TableOrBoard defaultView="table" boardLabel="Agenda & new task" newLabel="New task" table={<TasksList />} board={<ActivitiesTab />} />}

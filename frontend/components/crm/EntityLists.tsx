@@ -93,9 +93,9 @@ const contactColumns: ListColumn<Contact>[] = [
   },
   { id: "rm", header: "Owner", cell: (c) => owner(c.rm_id) },
 ];
-export const ContactsList = () => (
+export const ContactsList = ({ reloadKey }: { reloadKey?: number }) => (
   <ListView<Contact>
-    entity="contacts" columns={contactColumns} filters={[{ key: "gaps", label: "Data gaps", type: "toggle" }]} searchPlaceholder="Search name, email, mobile, household…"
+    entity="contacts" reloadKey={reloadKey} columns={contactColumns} filters={[{ key: "gaps", label: "Data gaps", type: "toggle" }]} searchPlaceholder="Search name, email, mobile, household…"
     rowHref={(c) => `/backoffice/crm/contacts/${c.id}`}
   />
 );

@@ -7,6 +7,7 @@ import Logo from "@/components/Logo";
 import NavTabs from "@/components/backoffice/NavTabs";
 import { NAV_ITEMS } from "@/components/backoffice/navItems";
 import CommandPalette from "@/components/crm/CommandPalette";
+import EmailDialog from "@/components/crm/EmailDialog";
 import { useAuth } from "@/components/AuthContext";
 import { useTheme } from "@/components/terminal/ThemeContext";
 
@@ -18,6 +19,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [istTime, setIstTime] = useState("");
 
@@ -110,6 +112,11 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
 
           <div className="flex items-center gap-1 shrink-0">
             {istTime && <span className="mr-2 hidden lg:inline text-[12px] text-[#706E6B] dark:text-[#A8B4C4] tabular-nums">{istTime}</span>}
+            {customer.role !== "compliance" && (
+              <button type="button" onClick={() => setEmailOpen(true)} aria-label="Email a client" title="Email a client" className={iconBtn}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" /></svg>
+              </button>
+            )}
             <button type="button" onClick={toggleTheme} aria-label="Toggle theme" title={`Switch to ${theme === "dark" ? "Light" : "Dark"} theme`} className={iconBtn}>
               {theme === "dark" ? (
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
@@ -184,6 +191,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       </main>
 
       <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={NAV_ITEMS} />
+      {emailOpen && <EmailDialog onClose={() => setEmailOpen(false)} />}
     </div>
   );
 }

@@ -15,7 +15,7 @@ import secrets
 from datetime import UTC, date, datetime, timedelta
 from typing import Annotated, Any, NamedTuple
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from pydantic import BaseModel, Field
 
 from app import repo_crm_phase3 as p3
@@ -1203,31 +1203,67 @@ def create_activity(body: ActivityCreate, me: Me):
     return _with_warnings(row, _past_warnings(due_at))
 
 
-class CustomerEmail(BaseModel):
-    subject: str = Field(min_length=1, max_length=200)
-    message: str = Field(min_length=1, max_length=10000)
+EMAIL_EXTS = {"pdf", "xlsx", "xls", "csv", "docx", "png", "jpg", "jpeg", "txt"}
+EMAIL_MAX_FILES, EMAIL_MAX_BYTES, EMAIL_MAX_RECIPIENTS = 5, 15 * 1024 * 1024, 50
 
 
-@router.post("/customers/{customer_id}/email", status_code=201)
-def email_customer(customer_id: str, body: CustomerEmail, me: Me):
-    """Email a customer via Resend and log it on their CRM timeline. Same visibility rule as activities."""
-    customer = _customer_or_404(customer_id)
-    scope = _scope(me)
-    if not scope.admin and customer_id not in scope.customer_ids:
-        raise HTTPException(403, "You do not have permission to use this customer.")
-    to = (customer.get("email") or "").strip()
-    if not to:
-        raise HTTPException(422, "This customer has no email address.")
-    subject, message = _clean_str(body.subject, "subject"), _clean_str(body.message, "message")
+@router.post("/email")
+async def email_customers(
+    me: Me,
+    subject: Annotated[str, Form(min_length=1, max_length=200)],
+    message: Annotated[str, Form(min_length=1, max_length=10000)],
+    customer_ids: Annotated[str, Form(description="JSON list of customer ids")],
+    files: Annotated[list[UploadFile], File()] = [],  # noqa: B006 - FastAPI reads, never mutates
+):
+    """Email one or more customers (a contact, a household's members, anyone found by search) via Resend, with
+    optional attachments such as statements. ``{name}`` in subject/message becomes each person's first name.
+    One email per recipient, each logged on that customer's CRM timeline. Same visibility rule as activities."""
     try:
-        email_id = send_email(to, subject, message)
-    except MailerError as e:
-        raise HTTPException(503 if not e.configured else 502, str(e)) from e
-    row = get_crm_repository().create_activity(
-        kind="email", subject=subject, body=message, customer_id=customer_id,
-        source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"],
-    )
-    return {"email_id": email_id, "activity": row}
+        ids = list(dict.fromkeys(json.loads(customer_ids)))
+        assert ids and all(isinstance(i, str) for i in ids)
+    except (ValueError, AssertionError):
+        raise HTTPException(422, "customer_ids must be a non-empty JSON list of ids") from None
+    if len(ids) > EMAIL_MAX_RECIPIENTS:
+        raise HTTPException(422, f"At most {EMAIL_MAX_RECIPIENTS} recipients per send.")
+    files = [f for f in files if f.filename]
+    if len(files) > EMAIL_MAX_FILES:
+        raise HTTPException(422, f"At most {EMAIL_MAX_FILES} attachments.")
+    attach: list[tuple[str, bytes]] = []
+    for f in files:
+        name = re.sub(r"[^\w.\- ]", "_", f.filename.rsplit("/", 1)[-1])[:120]
+        if name.rsplit(".", 1)[-1].lower() not in EMAIL_EXTS:
+            raise HTTPException(422, f"“{name}”: attachments must be {', '.join(sorted(EMAIL_EXTS))}.")
+        attach.append((name, await f.read()))
+    if sum(len(b) for _, b in attach) > EMAIL_MAX_BYTES:
+        raise HTTPException(422, "Attachments are over 15 MB in total.")
+    scope, repo = _scope(me), get_crm_repository()
+    files_note = f"\n\nAttachments: {', '.join(n for n, _ in attach)}" if attach else ""
+    results = []
+    for cid in ids:
+        customer = sqlite.get_customer_by_id(cid)
+        if not customer:
+            results.append({"customer_id": cid, "name": None, "ok": False, "error": "Customer not found"})
+            continue
+        entry = {"customer_id": cid, "name": customer["name"], "ok": False, "error": None}
+        to = (customer.get("email") or "").strip()
+        if not scope.admin and cid not in scope.customer_ids:
+            entry["error"] = "You do not have permission to use this customer."
+        elif not to or to.endswith("@placeholder.invalid"):
+            entry["error"] = "No email address on file."
+        else:
+            first = (customer["name"] or "").split(" ")[0] or "there"
+            subj, text = subject.replace("{name}", first), message.replace("{name}", first)
+            try:
+                email_id = send_email(to, subj, text, attach)
+                repo.create_activity(kind="email", subject=subj, body=text + files_note, customer_id=cid,
+                                     source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"])
+                entry["ok"] = True
+            except MailerError as e:
+                entry["error"] = str(e)
+                if not e.configured:  # same for every recipient: stop and say so
+                    raise HTTPException(503, str(e)) from e
+        results.append(entry)
+    return {"sent": sum(r["ok"] for r in results), "failed": sum(not r["ok"] for r in results), "results": results}
 
 
 @router.patch("/activities/{activity_id}")

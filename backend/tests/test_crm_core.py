@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import itertools
+import json
 import secrets
 import sqlite3
 from datetime import UTC, datetime, timedelta
@@ -529,24 +530,37 @@ def test_public_crossword_result_creates_lead(client):
 # ---------------------------------------------------------------------------
 # Email via Resend
 # ---------------------------------------------------------------------------
-def test_email_customer_sends_and_logs(client, admin, monkeypatch):
+def _email(client, ids, **extra):
+    data = {"subject": extra.pop("subject", "Hi {name}"), "message": "Dear {name}, statement attached.", "customer_ids": json.dumps(ids)}
+    return client.post("/api/crm/email", data=data, headers={"sec-fetch-site": "same-origin"}, **extra)
+
+
+def test_email_sends_personalised_with_attachment_and_logs(client, admin, monkeypatch):
     sent = []
-    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m: sent.append((to, s, m)) or "em_1")
-    cust = _make_customer()
-    r = client.post(f"/api/crm/customers/{cust['id']}/email", json={"subject": "Update", "message": "Hello"}, headers={"sec-fetch-site": "same-origin"})
-    assert r.status_code == 201, r.text
-    assert sent == [(cust["email"], "Update", "Hello")]
-    assert r.json()["activity"]["kind"] == "email"
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m, a=None: sent.append((to, s, m, a)) or "em_1")
+    a, b = _make_customer(name="Asha Rao"), _make_customer(name="Ben Cole")
+    r = _email(client, [a["id"], b["id"]], files=[("files", ("stmt.pdf", b"%PDF-1", "application/pdf"))])
+    assert r.status_code == 200, r.text
+    assert r.json()["sent"] == 2 and r.json()["failed"] == 0
+    assert sent[0][1] == "Hi Asha" and "Dear Asha" in sent[0][2] and sent[0][3] == [("stmt.pdf", b"%PDF-1")]
+    acts = client.get("/api/crm/activities", params={"customer_id": a["id"]}).json()
+    assert acts and acts[0]["kind"] == "email" and "stmt.pdf" in acts[0]["body"]
 
 
-def test_email_customer_unconfigured_and_forbidden(client, admin, monkeypatch):
-    monkeypatch.delenv("RESEND_API_KEY", raising=False)
-    cust = _make_customer()
-    h = {"sec-fetch-site": "same-origin"}
-    assert client.post(f"/api/crm/customers/{cust['id']}/email", json={"subject": "a", "message": "b"}, headers=h).status_code == 503
-    assert client.post("/api/crm/customers/nope/email", json={"subject": "a", "message": "b"}, headers=h).status_code == 404
+def test_email_partial_failure_validation_and_rbac(client, admin, monkeypatch):
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda *a, **k: "em_2")
+    good = _make_customer()
+    r = _email(client, [good["id"], "nope"])
+    assert r.json()["sent"] == 1 and r.json()["results"][1]["error"] == "Customer not found"
+    assert _email(client, [good["id"]], files=[("files", ("x.exe", b"MZ", "application/octet-stream"))]).status_code == 422
+    assert client.post("/api/crm/email", data={"subject": "a", "message": "b", "customer_ids": "[]"}, headers={"sec-fetch-site": "same-origin"}).status_code == 422
     _login_as(client, _make_customer("rm"))  # RM with no book cannot email an unrelated customer
-    assert client.post(f"/api/crm/customers/{cust['id']}/email", json={"subject": "a", "message": "b"}, headers=h).status_code == 403
+    assert _email(client, [good["id"]]).json()["results"][0]["error"].startswith("You do not have permission")
+
+
+def test_email_unconfigured_is_503(client, admin, monkeypatch):
+    monkeypatch.delenv("RESEND_API_KEY", raising=False)
+    assert _email(client, [_make_customer()["id"]]).status_code == 503
 
 
 def test_mailer_payload_and_errors(monkeypatch):
@@ -564,7 +578,7 @@ def test_mailer_payload_and_errors(monkeypatch):
 
     monkeypatch.setattr(mailer.httpx, "post", fake_post)
     assert mailer.send_email("a@b.com", "S", "<b>hi</b>") == "em_9"
-    assert seen["auth"] == "Bearer k" and seen["json"]["to"] == ["a@b.com"] and "&lt;b&gt;" in seen["json"]["html"]
+    assert seen["auth"] == "Bearer k" and "attachments" not in seen["json"] and seen["json"]["to"] == ["a@b.com"] and "&lt;b&gt;" in seen["json"]["html"]
     monkeypatch.setattr(mailer.httpx, "post", lambda *a, **k: httpx.Response(422, json={"message": "bad"}, request=httpx.Request("POST", "x")))
     with pytest.raises(mailer.MailerError):
         mailer.send_email("a@b.com", "S", "t")

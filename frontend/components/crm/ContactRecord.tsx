@@ -11,6 +11,7 @@ import InlineField from "./InlineField";
 import { Layout, Skeleton, card, useRecord } from "./RecordShell";
 import SuitabilityPanel from "./SuitabilityPanel";
 import ContactSips from "./ContactSips";
+import EmailDialog from "./EmailDialog";
 import { btnCls, errCls, inputCls } from "./ui";
 import { useCanWrite } from "./useCanWrite";
 
@@ -67,6 +68,8 @@ function TaxResidency({ c, onSaved }: { c: ContactDetail; onSaved: (c: ContactDe
 
 export default function ContactRecord({ id }: { id: string }) {
   const { data: c, setData, error } = useRecord(() => fetchContact(id), [id]);
+  const canWrite = useCanWrite();
+  const [emailing, setEmailing] = useState(false);
   const [adults, setAdults] = useState<{ value: string; label: string }[]>([]);
   useEffect(() => {
     if (!c) return;
@@ -81,8 +84,10 @@ export default function ContactRecord({ id }: { id: string }) {
   const text = (k: keyof ContactDetail, required = false) => async (v: string) => save({ [k]: v.trim() || (required ? undefined : null) });
 
   return (
+    <>
     <Layout
       kind="contacts" title={c.name}
+      actions={canWrite ? <button type="button" className={btnCls} onClick={() => setEmailing(true)}>Email</button> : undefined}
       chips={
         <>
           <span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{label(c.relation)}</span>
@@ -142,5 +147,7 @@ export default function ContactRecord({ id }: { id: string }) {
         </div>
       }
     />
+    {emailing && <EmailDialog recipients={[{ customer_id: c.customer_id, name: c.name, email: c.email }]} onClose={() => setEmailing(false)} />}
+    </>
   );
 }

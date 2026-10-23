@@ -14,6 +14,7 @@ import {
 } from "../../lib/crmApi";
 import { shortInr, inr } from "../../lib/format";
 import { ApiError } from "../../lib/api";
+import EmailDialog from "./EmailDialog";
 
 interface ProductRows {
   policies: { id: string; insurer?: string | null; policy_no?: string | null; premium_amount?: number | null; renewal_date?: string | null; policy_type?: string; status?: string }[];
@@ -64,6 +65,7 @@ export default function HouseholdView({
 }) {
   const [detail, setDetail] = useState<HouseholdDetail | null>(null);
   const [products, setProducts] = useState<ProductRows | null>(null);
+  const [emailing, setEmailing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -287,7 +289,11 @@ export default function HouseholdView({
               {adding ? "Adding…" : "Add"}
             </button>
           </form>
+          <button type="button" onClick={() => setEmailing(true)} className="px-3 py-2 text-xs font-bold border border-[#0176D3] text-[#0176D3] rounded-xl hover:bg-[#EAF5FE]">
+            Email household
+          </button>
         </div>
+        {emailing && <EmailDialog recipients={members.map((m) => ({ customer_id: m.customer_id, name: m.name, email: m.email }))} onClose={() => setEmailing(false)} onSent={load} />}
         {addError && (
           <div className="mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700">
             {addError}

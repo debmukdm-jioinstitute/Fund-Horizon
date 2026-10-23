@@ -213,6 +213,13 @@ def test_bulk_delete_leads_needs_admin_and_code(client, rm):
     _login(client, _make_customer("admin"))
     assert client.post(url, json={"ids": [lead["id"], "nope"], "code": "0000"}).json() == {"deleted": 1, "missing": ["nope"]}
     assert client.get(f"/api/crm/leads/{lead['id']}").status_code == 404
+    # test generic bulk-delete for households and activities
+    hh = client.post("/api/crm/households", json={"name": "To Delete"}).json()
+    act = client.post("/api/crm/activities", json={"kind": "note", "subject": "Task to delete"}).json()
+    del_url = "/api/crm/bulk-delete"
+    assert client.post(del_url, json={"entity": "households", "ids": [hh["id"]], "code": "0000"}).json() == {"deleted": 1, "missing": []}
+    assert client.get(f"/api/crm/households/{hh['id']}").status_code == 404
+    assert client.post(del_url, json={"entity": "activities", "ids": [act["id"]], "code": "0000"}).json() == {"deleted": 1, "missing": []}
 
 
 def test_search_matches_ids_and_lead_notes(client, rm):

@@ -3,6 +3,9 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { bulkDeleteRecords } from "../../lib/crmListApi";
+import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import { z } from "zod";
 import { fetchPage } from "../../lib/crmListApi";
 import {
@@ -32,7 +35,9 @@ const LEAD_PATH = ["new", "contacted", "qualified", "converted", "lost"];
 
 function LeadRecord({ id }: { id: string }) {
   const { data: lead, setData, error } = useRecord(() => fetchLead(id), [id]);
+  const router = useRouter();
   const [converting, setConverting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [bump, setBump] = useState(0);
   const [pathError, setPathError] = useState<string | null>(null);
   if (error) return <p role="alert" className="text-xs text-rose-700 dark:text-rose-300">{error}</p>;
@@ -50,7 +55,12 @@ function LeadRecord({ id }: { id: string }) {
         kind="leads" title={lead.name}
         chips={<span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{lead.status}</span>}
         owner={<OwnerAvatar ownerId={lead.assigned_rm_id} />}
-        actions={!converted && lead.status !== "lost" && <button type="button" className={btn} onClick={() => setConverting(true)}>Convert</button>}
+        actions={
+          <div className="flex gap-2">
+            {!converted && lead.status !== "lost" && <button type="button" className={btn} onClick={() => setConverting(true)}>Convert</button>}
+            <button type="button" onClick={() => setConfirmDelete(true)} className="px-3 py-1.5 text-xs font-bold rounded border border-rose-300 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30">Delete</button>
+          </div>
+        }
         path={
           <>
             <PathBar
@@ -102,6 +112,17 @@ function LeadRecord({ id }: { id: string }) {
           }}
         />
       )}
+      {confirmDelete && (
+        <DeleteConfirmDialog
+          title={`Delete lead "${lead.name}"?`}
+          description="This permanently removes the lead and its activities."
+          onConfirm={async (code) => {
+            await bulkDeleteRecords("leads", [lead.id], code);
+            router.push("/backoffice/crm?tab=leads");
+          }}
+          onClose={() => setConfirmDelete(false)}
+        />
+      )}
     </>
   );
 }
@@ -114,6 +135,8 @@ function OppRecord({ id }: { id: string }) {
   const { data: opp, setData, error } = useRecord(() => fetchOpportunity(id), [id]);
   const [bump, setBump] = useState(0);
   const [pathError, setPathError] = useState<string | null>(null);
+  const router = useRouter();
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [losing, setLosing] = useState(false);
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState<string | null>(null);
@@ -156,6 +179,7 @@ function OppRecord({ id }: { id: string }) {
     <>
       <Layout
         kind="opportunities" title={opp.title}
+        actions={<button type="button" onClick={() => setConfirmDelete(true)} className="px-3 py-1.5 text-xs font-bold rounded border border-rose-300 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30">Delete</button>}
         chips={<span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold">{opp.product_line.replaceAll("_", " ")} · {formatRupeesFromPaise(opp.stage === "won" ? (opp.won_amount ?? opp.amount) : opp.amount)}</span>}
         owner={<OwnerAvatar ownerId={opp.assigned_rm_id} />}
         path={
@@ -193,6 +217,17 @@ function OppRecord({ id }: { id: string }) {
         }
         right={<Timeline target={{ entity: "opportunity", id: opp.id, householdId: opp.household_id } as TimelineTarget} refreshKey={bump} />}
       />
+      {confirmDelete && (
+        <DeleteConfirmDialog
+          title={`Delete opportunity "${opp.title}"?`}
+          description="This permanently removes the opportunity and related activities."
+          onConfirm={async (code) => {
+            await bulkDeleteRecords("opportunities", [opp.id], code);
+            router.push("/backoffice/crm?tab=opportunities");
+          }}
+          onClose={() => setConfirmDelete(false)}
+        />
+      )}
       {losing && (
         <div className="fixed inset-0 z-50 bg-[#181818]/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Mark opportunity lost">
           <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-[#E5E5E5] dark:border-[#2B3644] shadow-xl w-full max-w-md p-6 space-y-3">
@@ -250,6 +285,8 @@ function HouseholdPeople({ data, onChanged }: { data: HouseholdDetail; onChanged
 
 function HouseholdRecord({ id }: { id: string }) {
   const { data, setData, error } = useRecord<HouseholdDetail>(() => fetchHouseholdDetail(id), [id]);
+  const router = useRouter();
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [bump, setBump] = useState(0);
   const onNotFound = useCallback(() => undefined, []);
   if (error) return <p role="alert" className="text-xs text-rose-700 dark:text-rose-300">{error}</p>;
@@ -261,8 +298,10 @@ function HouseholdRecord({ id }: { id: string }) {
     setBump((b) => b + 1);
   };
   return (
+    <>
     <Layout
       kind="households" title={h.name}
+      actions={<button type="button" onClick={() => setConfirmDelete(true)} className="px-3 py-1.5 text-xs font-bold rounded border border-rose-300 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30">Delete</button>}
       chips={<span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold">{data.members.length} member{data.members.length === 1 ? "" : "s"} · {data.opportunities.filter((o) => o.stage !== "won" && o.stage !== "lost").length} open</span>}
       owner={<OwnerAvatar ownerId={h.rm_id} />}
       left={
@@ -282,6 +321,18 @@ function HouseholdRecord({ id }: { id: string }) {
       }
       right={<Timeline target={{ entity: "household", id: h.id }} refreshKey={bump} />}
     />
+    {confirmDelete && (
+      <DeleteConfirmDialog
+        title={`Delete household "${h.name}"?`}
+        description="This permanently removes the household and related records."
+        onConfirm={async (code) => {
+          await bulkDeleteRecords("households", [h.id], code);
+          router.push("/backoffice/crm?tab=households");
+        }}
+        onClose={() => setConfirmDelete(false)}
+      />
+    )}
+    </>
   );
 }
 

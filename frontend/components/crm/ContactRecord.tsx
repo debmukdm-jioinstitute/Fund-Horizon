@@ -3,6 +3,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { bulkDeleteRecords } from "../../lib/crmListApi";
+import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import { crmRaw } from "../../lib/crmApi";
 import { fetchPage } from "../../lib/crmListApi";
 import { FATCA_CRS, fetchContact, patchContact, RELATIONS, TAX_STATUSES, type ContactDetail } from "../../lib/crmPhase3Api";
@@ -92,7 +95,9 @@ function EmailOptOut({ customerId }: { customerId: string }) {
 export default function ContactRecord({ id }: { id: string }) {
   const { data: c, setData, error } = useRecord(() => fetchContact(id), [id]);
   const canWrite = useCanWrite();
+  const router = useRouter();
   const [emailing, setEmailing] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [adults, setAdults] = useState<{ value: string; label: string }[]>([]);
   useEffect(() => {
     if (!c) return;
@@ -110,7 +115,12 @@ export default function ContactRecord({ id }: { id: string }) {
     <>
     <Layout
       kind="contacts" title={c.name}
-      actions={canWrite ? <button type="button" className={btnCls} onClick={() => setEmailing(true)}>Email</button> : undefined}
+      actions={canWrite ? (
+        <div className="flex gap-2">
+          <button type="button" className={btnCls} onClick={() => setEmailing(true)}>Email</button>
+          <button type="button" onClick={() => setConfirmDelete(true)} className="px-3 py-1.5 text-xs font-bold rounded border border-rose-300 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30">Delete</button>
+        </div>
+      ) : undefined}
       chips={
         <>
           <span className="rounded bg-[#ECEBEA] dark:bg-[#24303E] px-2 py-0.5 font-semibold capitalize">{label(c.relation)}</span>
@@ -172,6 +182,17 @@ export default function ContactRecord({ id }: { id: string }) {
       }
     />
     {emailing && <EmailDialog recipients={[{ customer_id: c.customer_id, name: c.name, email: c.email }]} onClose={() => setEmailing(false)} />}
+      {confirmDelete && (
+        <DeleteConfirmDialog
+          title={`Delete contact "${c.name}"?`}
+          description="This permanently removes the contact."
+          onConfirm={async (code) => {
+            await bulkDeleteRecords("contacts", [c.id], code);
+            router.push("/backoffice/crm?tab=contacts");
+          }}
+          onClose={() => setConfirmDelete(false)}
+        />
+      )}
     </>
   );
 }

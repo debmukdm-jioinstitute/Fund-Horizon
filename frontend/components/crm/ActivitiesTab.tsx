@@ -13,6 +13,8 @@ import {
 import { fieldErrors, pastDueWarning, taskSchema } from "../../lib/crmSchemas";
 import { ApiError } from "../../lib/api";
 import { useOwners } from "./OwnerAvatar";
+import { bulkDeleteRecords } from "../../lib/crmListApi";
+import DeleteConfirmDialog from "./DeleteConfirmDialog";
 
 const KINDS: ActivityKind[] = ["call", "meeting", "note", "followup", "email", "whatsapp", "review"];
 
@@ -43,11 +45,12 @@ function kindChip(kind: ActivityKind) {
   );
 }
 
-function ActivityCard({ a, busy, onDone, onReopen }: {
+function ActivityCard({ a, busy, onDone, onReopen, onDelete }: {
   a: Activity;
   busy: boolean;
   onDone: (a: Activity) => void;
   onReopen: (a: Activity) => void;
+  onDelete?: (a: Activity) => void;
 }) {
   const done = !!a.done_at;
   return (
@@ -63,7 +66,7 @@ function ActivityCard({ a, busy, onDone, onReopen }: {
       </div>
       <p className={`text-xs font-semibold text-[#181818] ${done ? "line-through" : ""}`}>{a.subject}</p>
       {a.body && <p className="text-xs text-[#706E6B] whitespace-pre-wrap">{a.body}</p>}
-      <div className="pt-1">
+      <div className="pt-1 flex items-center justify-between gap-2">
         {done ? (
           <button
             disabled={busy}
@@ -81,6 +84,16 @@ function ActivityCard({ a, busy, onDone, onReopen }: {
             Mark done
           </button>
         )}
+        {onDelete && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => onDelete(a)}
+            className="text-xs font-semibold px-2 py-1 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 disabled:opacity-50"
+          >
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );
@@ -91,6 +104,7 @@ export default function ActivitiesTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [deletingActivity, setDeletingActivity] = useState<Activity | null>(null);
   const [showForm, setShowForm] = useState(useSearchParams().get("new") === "1"); // "+ New task" in the table view lands here with the form open
   const [saving, setSaving] = useState(false);
 
@@ -335,13 +349,25 @@ export default function ActivitiesTab() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
                   {s.items.map((a) => (
-                    <ActivityCard key={a.id} a={a} busy={busyId === a.id} onDone={markDone} onReopen={reopen} />
+                    <ActivityCard key={a.id} a={a} busy={busyId === a.id} onDone={markDone} onReopen={reopen} onDelete={setDeletingActivity} />
                   ))}
                 </div>
               )}
             </section>
           ))}
         </div>
+      )}
+
+      {deletingActivity && (
+        <DeleteConfirmDialog
+          title={`Delete task "${deletingActivity.subject}"?`}
+          description="This permanently removes the task from the CRM."
+          onConfirm={async (code) => {
+            await bulkDeleteRecords("activities", [deletingActivity.id], code);
+            setItems((prev) => prev.filter((x) => x.id !== deletingActivity.id));
+          }}
+          onClose={() => setDeletingActivity(null)}
+        />
       )}
     </div>
   );

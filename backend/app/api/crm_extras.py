@@ -114,23 +114,39 @@ def bulk_reassign(body: BulkReassign, me: Me):
 class BulkDelete(BaseModel):
     ids: list[str] = Field(min_length=1, max_length=500)
     code: str
+    entity: str = "leads"
+
+
+@router.post("/bulk-delete")
+def bulk_delete(body: BulkDelete, me: Me):
+    if me["role"] != "admin":
+        raise HTTPException(403, "Only an admin can delete records.")
+    _check_enum(body.entity, ("households", "contacts", "leads", "opportunities", "activities", "cases"), "entity")
+    if not secrets.compare_digest(body.code, os.environ.get("CRM_DELETE_CODE", "0000")):
+        raise HTTPException(403, "Wrong delete code.")
+    repo = get_crm_repository()
+    deleters = {
+        "households": repo.delete_household,
+        "contacts": repo.delete_contact,
+        "leads": repo.delete_lead,
+        "opportunities": repo.delete_opportunity,
+        "activities": repo.delete_activity,
+        "cases": repo.delete_case,
+    }
+    delete_fn = deleters[body.entity]
+    deleted, missing = 0, []
+    for rec_id in dict.fromkeys(body.ids):
+        if delete_fn(rec_id, actor_id=me["id"]):
+            deleted += 1
+        else:
+            missing.append(rec_id)
+    return {"deleted": deleted, "missing": missing}
 
 
 @router.post("/leads/bulk-delete")
 def bulk_delete_leads(body: BulkDelete, me: Me):
-    if me["role"] != "admin":
-        raise HTTPException(403, "Only an admin can delete leads.")
-    # Guard against accidental deletes; set CRM_DELETE_CODE in the environment to change it.
-    if not secrets.compare_digest(body.code, os.environ.get("CRM_DELETE_CODE", "0000")):
-        raise HTTPException(403, "Wrong delete code.")
-    repo = get_crm_repository()
-    deleted, missing = 0, []
-    for lead_id in dict.fromkeys(body.ids):
-        if repo.delete_lead(lead_id, actor_id=me["id"]):
-            deleted += 1
-        else:
-            missing.append(lead_id)
-    return {"deleted": deleted, "missing": missing}
+    body.entity = "leads"
+    return bulk_delete(body, me)
 
 
 # ---------------------------------------------------------------------------

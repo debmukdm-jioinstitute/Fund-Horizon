@@ -655,6 +655,105 @@ class CrmCoreRepository:
             s.delete(lead)
             return True
 
+    def delete_household(self, household_id: str, actor_id: str | None = None) -> bool:
+        """Hard-delete a household and related members, contacts, activities, opportunities; leaves audit rows."""
+        with _session() as s:
+            hh = s.get(HouseholdModel, household_id)
+            if not hh:
+                return False
+            members = s.scalars(select(HouseholdMemberModel).where(HouseholdMemberModel.household_id == household_id)).all()
+            contacts = s.scalars(select(ContactModel).where(ContactModel.household_id == household_id)).all()
+            acts = s.scalars(select(ActivityModel).where(ActivityModel.household_id == household_id)).all()
+            opps = s.scalars(select(OpportunityModel).where(OpportunityModel.household_id == household_id)).all()
+            snapshot = {
+                "household": _row(hh),
+                "members": [_row(m) for m in members],
+                "contacts": [_row(c) for c in contacts],
+                "activities": [_row(a) for a in acts],
+                "opportunities": [_row(o) for o in opps],
+            }
+            s.add(AuditLogModel(id=_new_id(), entity="household", entity_id=household_id, field="_snapshot",
+                                old=json.dumps(snapshot, default=str), new=None, actor_id=actor_id, at=_utcnow()))
+            for o in opps:
+                s.delete(o)
+            for a in acts:
+                s.delete(a)
+            for c in contacts:
+                s.delete(c)
+            for m in members:
+                s.delete(m)
+            s.add(AuditLogModel(id=_new_id(), entity="household", entity_id=household_id, field="_deleted", old=hh.name, new=None, actor_id=actor_id, at=_utcnow()))
+            s.delete(hh)
+            return True
+
+    def delete_contact(self, contact_id: str, actor_id: str | None = None) -> bool:
+        """Hard-delete a contact; leaves audit row."""
+        with _session() as s:
+            contact = s.get(ContactModel, contact_id)
+            if not contact:
+                return False
+            members = s.scalars(select(HouseholdMemberModel).where(
+                and_(HouseholdMemberModel.customer_id == contact.customer_id, HouseholdMemberModel.household_id == contact.household_id)
+            )).all()
+            acts = s.scalars(select(ActivityModel).where(ActivityModel.customer_id == contact.customer_id)).all()
+            snapshot = {
+                "contact": _row(contact),
+                "members": [_row(m) for m in members],
+                "activities": [_row(a) for a in acts],
+            }
+            s.add(AuditLogModel(id=_new_id(), entity="contact", entity_id=contact_id, field="_snapshot",
+                                old=json.dumps(snapshot, default=str), new=None, actor_id=actor_id, at=_utcnow()))
+            for m in members:
+                s.delete(m)
+            s.add(AuditLogModel(id=_new_id(), entity="contact", entity_id=contact_id, field="_deleted", old=contact.id, new=None, actor_id=actor_id, at=_utcnow()))
+            s.delete(contact)
+            return True
+
+    def delete_opportunity(self, opportunity_id: str, actor_id: str | None = None) -> bool:
+        """Hard-delete an opportunity and its activities; leaves audit row."""
+        with _session() as s:
+            opp = s.get(OpportunityModel, opportunity_id)
+            if not opp:
+                return False
+            acts = s.scalars(select(ActivityModel).where(ActivityModel.opportunity_id == opportunity_id)).all()
+            s.add(AuditLogModel(id=_new_id(), entity="opportunity", entity_id=opportunity_id, field="_snapshot",
+                                old=json.dumps({"opportunity": _row(opp), "activities": [_row(a) for a in acts]}, default=str),
+                                new=None, actor_id=actor_id, at=_utcnow()))
+            for a in acts:
+                s.delete(a)
+            s.add(AuditLogModel(id=_new_id(), entity="opportunity", entity_id=opportunity_id, field="_deleted", old=opp.title, new=None, actor_id=actor_id, at=_utcnow()))
+            s.delete(opp)
+            return True
+
+    def delete_activity(self, activity_id: str, actor_id: str | None = None) -> bool:
+        """Hard-delete an activity/task; leaves audit row."""
+        with _session() as s:
+            act = s.get(ActivityModel, activity_id)
+            if not act:
+                return False
+            s.add(AuditLogModel(id=_new_id(), entity="activity", entity_id=activity_id, field="_snapshot",
+                                old=json.dumps({"activity": _row(act)}, default=str),
+                                new=None, actor_id=actor_id, at=_utcnow()))
+            s.add(AuditLogModel(id=_new_id(), entity="activity", entity_id=activity_id, field="_deleted", old=act.subject, new=None, actor_id=actor_id, at=_utcnow()))
+            s.delete(act)
+            return True
+
+    def delete_case(self, case_id: str, actor_id: str | None = None) -> bool:
+        """Hard-delete a case/grievance and its activities; leaves audit row."""
+        with _session() as s:
+            c = s.get(CaseModel, case_id)
+            if not c:
+                return False
+            acts = s.scalars(select(ActivityModel).where(ActivityModel.case_id == case_id)).all()
+            s.add(AuditLogModel(id=_new_id(), entity="case", entity_id=case_id, field="_snapshot",
+                                old=json.dumps({"case": _row(c), "activities": [_row(a) for a in acts]}, default=str),
+                                new=None, actor_id=actor_id, at=_utcnow()))
+            for a in acts:
+                s.delete(a)
+            s.add(AuditLogModel(id=_new_id(), entity="case", entity_id=case_id, field="_deleted", old=c.subject, new=None, actor_id=actor_id, at=_utcnow()))
+            s.delete(c)
+            return True
+
     def convert_lead(
         self,
         lead_id: str,

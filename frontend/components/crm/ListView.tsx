@@ -13,8 +13,9 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import { useAuth } from "@/components/AuthContext";
+import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import {
-  bulkDeleteLeads,
+  bulkDeleteRecords,
   bulkReassign,
   createView,
   deleteView,
@@ -57,11 +58,22 @@ interface Props<T extends { id: string }> {
   reloadKey?: number;
 }
 
-const BULK_FIELD: Partial<Record<ListEntity, string>> = {
+const BULK_FIELD: Record<ListEntity, string> = {
   households: "households",
+  contacts: "contacts",
   leads: "leads",
   opportunities: "opportunities",
   activities: "activities",
+  cases: "cases",
+};
+
+const ENTITY_NAMES: Record<ListEntity, { singular: string; plural: string }> = {
+  households: { singular: "household", plural: "households" },
+  contacts: { singular: "contact", plural: "contacts" },
+  leads: { singular: "lead", plural: "leads" },
+  opportunities: { singular: "opportunity", plural: "opportunities" },
+  activities: { singular: "task", plural: "tasks" },
+  cases: { singular: "grievance", plural: "grievances" },
 };
 
 const PAGE_SIZES = [10, 25, 50, 100];
@@ -284,20 +296,6 @@ export default function ListView<T extends { id: string }>({
   };
 
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleteCode, setDeleteCode] = useState("");
-  const [deleteErr, setDeleteErr] = useState("");
-  const closeDelete = () => { setConfirmDelete(false); setDeleteCode(""); setDeleteErr(""); };
-  const doDelete = async () => {
-    try {
-      const r = await bulkDeleteLeads(selectedIds, deleteCode);
-      flash(`Deleted ${r.deleted} lead${r.deleted === 1 ? "" : "s"}.`);
-      setSelection({});
-      closeDelete();
-      load();
-    } catch (e) {
-      setDeleteErr(e instanceof Error ? e.message : "Could not delete");
-    }
-  };
 
   const doReassign = async () => {
     if (!bulkEntity || !selectedIds.length) return;
@@ -465,44 +463,35 @@ export default function ListView<T extends { id: string }>({
       {isAdmin && bulkEntity && selectedIds.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded border border-[#0176D3]/40 bg-[#E6F4F2] dark:bg-[#0F2A27] px-3 py-2 text-xs">
           <strong>{selectedIds.length} selected</strong>
-          <label className="sr-only" htmlFor={`${entity}-reassign`}>New owner</label>
-          <select id={`${entity}-reassign`} value={reassignTo} onChange={(e) => setReassignTo(e.target.value)} className={ctl}>
-            <option value="">Unassigned</option>
-            {owners.map((o) => (
-              <option key={o.id} value={o.id}>{o.name}</option>
-            ))}
-          </select>
-          <button type="button" onClick={doReassign} className={ctlPrimary}>Reassign owner</button>
-          {entity === "leads" && (
-            <button type="button" onClick={() => setConfirmDelete(true)} className={ctlDanger}>Delete</button>
+          {["households", "leads", "opportunities", "activities"].includes(entity) && (
+            <>
+              <label className="sr-only" htmlFor={`${entity}-reassign`}>New owner</label>
+              <select id={`${entity}-reassign`} value={reassignTo} onChange={(e) => setReassignTo(e.target.value)} className={ctl}>
+                <option value="">Unassigned</option>
+                {owners.map((o) => (
+                  <option key={o.id} value={o.id}>{o.name}</option>
+                ))}
+              </select>
+              <button type="button" onClick={doReassign} className={ctlPrimary}>Reassign owner</button>
+            </>
           )}
+          <button type="button" onClick={() => setConfirmDelete(true)} className={ctlDanger}>Delete</button>
           <button type="button" onClick={() => setSelection({})} className={ctl}>Clear</button>
         </div>
       )}
 
       {confirmDelete && (
-        <div role="dialog" aria-modal="true" aria-label="Confirm delete" className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-sm space-y-3 rounded-lg bg-white dark:bg-[#171E27] p-5 shadow-xl">
-            <h2 className="text-base font-bold text-rose-700 dark:text-rose-300">Delete {selectedIds.length} lead{selectedIds.length === 1 ? "" : "s"}?</h2>
-            <p className="text-xs text-[#706E6B] dark:text-[#A8B4C4]">This permanently removes the lead and its activity. To confirm, enter the delete code <strong>0000</strong> below.</p>
-            <input
-              autoFocus inputMode="numeric" value={deleteCode} onChange={(e) => { setDeleteCode(e.target.value); setDeleteErr(""); }}
-              onKeyDown={(e) => e.key === "Enter" && deleteCode && void doDelete()}
-              placeholder="Type 0000 to confirm" aria-label="Delete code"
-              className="w-full rounded border-2 border-[#8A94A3] dark:border-[#5B6B80] bg-white dark:bg-[#111722] px-3 py-2 text-sm text-[#181818] dark:text-[#EDF2F7] focus:outline-none focus:border-[#0176D3] dark:focus:border-[#1B96FF]"
-            />
-            {deleteErr && <p role="alert" className="text-xs font-medium text-rose-600">{deleteErr}</p>}
-            <div className="flex justify-end gap-2">
-              <button type="button" onClick={closeDelete} className={ctl}>Cancel</button>
-              <button
-                type="button" disabled={deleteCode !== "0000"} onClick={() => void doDelete()}
-                className={ctlDanger}
-              >
-                Delete permanently
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteConfirmDialog
+          title={`Delete ${selectedIds.length} ${selectedIds.length === 1 ? ENTITY_NAMES[entity].singular : ENTITY_NAMES[entity].plural}?`}
+          description={`This permanently removes the selected ${selectedIds.length === 1 ? ENTITY_NAMES[entity].singular : ENTITY_NAMES[entity].plural}.`}
+          onConfirm={async (code) => {
+            const r = await bulkDeleteRecords(entity, selectedIds, code);
+            flash(`Deleted ${r.deleted} ${r.deleted === 1 ? ENTITY_NAMES[entity].singular : ENTITY_NAMES[entity].plural}.`);
+            setSelection({});
+            load();
+          }}
+          onClose={() => setConfirmDelete(false)}
+        />
       )}
 
       {notice && <p role="status" className="text-xs font-medium text-[#0176D3] dark:text-[#1B96FF]">{notice}</p>}

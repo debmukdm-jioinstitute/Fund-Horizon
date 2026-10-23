@@ -115,11 +115,13 @@ export const bulkReassign = (entity: string, ids: string[], assigned_rm_id: stri
     body: JSON.stringify({ entity, ids, assigned_rm_id }),
   }).then((r) => r.data);
 
-export const bulkDeleteLeads = (ids: string[], code: string) =>
-  call<{ deleted: number; missing: string[] }>("/leads/bulk-delete", {
+export const bulkDeleteRecords = (entity: ListEntity, ids: string[], code: string) =>
+  call<{ deleted: number; missing: string[] }>("/bulk-delete", {
     method: "POST",
-    body: JSON.stringify({ ids, code }),
+    body: JSON.stringify({ entity, ids, code }),
   }).then((r) => r.data);
+
+export const bulkDeleteLeads = (ids: string[], code: string) => bulkDeleteRecords("leads", ids, code);
 
 export const searchCrm = (q: string) => call<{ results: SearchResult[] }>(`/search?q=${encodeURIComponent(q)}`).then((r) => r.data.results);
 

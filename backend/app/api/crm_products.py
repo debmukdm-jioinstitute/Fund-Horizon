@@ -80,12 +80,18 @@ def _check_date(v: str | None, field: str) -> str | None:
     return v
 
 
+PolicyType = Literal[
+    "sip", "swp", "top_up", "mf", "pms",
+    "term", "health", "motor", "other_general", "other_life",
+]
+
+
 class PolicyIn(BaseModel):
     model_config = {"extra": "forbid"}
     _blank_no = field_validator("policy_no")(lambda cls, v: _blank_to_none(v))
     household_id: str | None = None
     customer_id: str | None = None
-    policy_type: Literal["term", "health", "motor", "other_general", "other_life"]
+    policy_type: PolicyType
     insurer: str | None = None
     policy_no: str | None = None
     premium_amount: int | None = Field(default=None, ge=0)
@@ -105,7 +111,7 @@ class PolicyPatch(BaseModel):
     _blank_no = field_validator("policy_no")(lambda cls, v: _blank_to_none(v))
     household_id: str | None = None
     customer_id: str | None = None
-    policy_type: Literal["term", "health", "motor", "other_general", "other_life"] | None = None
+    policy_type: PolicyType | None = None
     insurer: str | None = None
     policy_no: str | None = None
     premium_amount: int | None = Field(default=None, ge=0)

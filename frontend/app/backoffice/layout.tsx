@@ -55,7 +55,10 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const isRiskProfiling = pathname === "/backoffice/risk-profiling" || pathname === "/backoffice/risk-profiling/";
+
   useEffect(() => {
+    if (isRiskProfiling) return;
     if (!loading) {
       if (!customer) {
         router.replace("/login");
@@ -63,7 +66,11 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
         router.replace("/login");
       }
     }
-  }, [customer, loading, router]);
+  }, [customer, loading, router, isRiskProfiling]);
+
+  if (isRiskProfiling) {
+    return <>{children}</>;
+  }
 
   if (loading || !customer || !customer.is_staff) {
     return (

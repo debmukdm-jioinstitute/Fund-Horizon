@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import EmailDialog from "@/components/crm/EmailDialog";
 import { fetchOutbox, type OutboxRow } from "@/lib/crmEmail";
 
 const card = "rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]";
@@ -14,6 +15,7 @@ export default function SentEmailsPage() {
   const [total, setTotal] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [composing, setComposing] = useState(false);
 
   const load = (offset: number) => {
     setLoading(true);
@@ -28,9 +30,13 @@ export default function SentEmailsPage() {
     <div className="space-y-4 pb-12">
       <div className={`${card} px-5 py-4`}>
         <Link href="/backoffice/operations" className="text-[12.5px] font-semibold text-[#006F64] dark:text-[#75E1CE] hover:underline">← Operations</Link>
-        <h1 className={`mt-1 text-2xl font-bold tracking-tight ${ink}`}>Sent emails</h1>
-        <p className={`mt-1 text-[14px] ${muted}`}>Emails sent to clients from the CRM, newest first. Scheduled emails show their send time in the message.</p>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+          <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Sent emails</h1>
+          <button type="button" onClick={() => setComposing(true)} className="rounded-lg bg-[#006F64] px-4 py-2 text-[13.5px] font-semibold text-white hover:bg-[#00554D]">Compose email</button>
+        </div>
+        <p className={`mt-1 text-[14px] ${muted}`}>Email any client or any address, with attachments. Everything sent from the CRM is listed here, newest first. Scheduled emails show their send time in the message.</p>
       </div>
+      {composing && <EmailDialog onClose={() => setComposing(false)} onSent={() => load(0)} />}
       {error && <p role="alert" className="text-[13px] text-[#B42318] dark:text-[#FF7D86]">{error}</p>}
       <div className={`${card} overflow-x-auto`}>
         <table className="w-full min-w-[560px] text-left text-[13.5px]" aria-label="Sent emails">

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { fetchHouseholdDetail } from "../../lib/crmApi";
-import { EMAIL_ACCEPT, EMAIL_MAX_BYTES, EMAIL_TEMPLATES, sendClientEmail, type EmailOutcome } from "../../lib/crmEmail";
+import { CUSTOM, EMAIL_ACCEPT, EMAIL_MAX_BYTES, EMAIL_TEMPLATES, isEmail, sendClientEmail, type EmailOutcome } from "../../lib/crmEmail";
 import { searchCrm, type SearchResult } from "../../lib/crmListApi";
 import { fetchContact } from "../../lib/crmPhase3Api";
 import { btnCls, errCls, ghostBtnCls, inputCls, mutedCls } from "./ui";
@@ -39,6 +39,12 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
     return () => clearTimeout(t);
   }, [q, fixed]);
 
+  const addAddress = () => {
+    const a = q.trim().toLowerCase();
+    setQ(""); setHits([]);
+    setTo((cur) => (cur.some((c) => c.customer_id === CUSTOM + a) ? cur : [...cur, { customer_id: CUSTOM + a, name: a, email: a }]));
+  };
+
   const add = async (h: SearchResult) => {
     setQ(""); setHits([]); setError(null);
     try {
@@ -60,7 +66,8 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
   const send = async () => {
     setBusy(true); setError(null);
     try {
-      const r = await sendClientEmail(sendable.map((t) => t.customer_id), subject.trim(), message.trim(), files, {
+      const r = await sendClientEmail(sendable.filter((t) => !t.customer_id.startsWith(CUSTOM)).map((t) => t.customer_id), subject.trim(), message.trim(), files, {
+        emails: sendable.filter((t) => t.customer_id.startsWith(CUSTOM)).map((t) => t.email as string),
         statement, filingId: filing?.id, sendAt: later && sendAt ? new Date(sendAt).toISOString() : undefined,
       });
       setOutcome(r);
@@ -94,9 +101,11 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
               </div>
               {!fixed && (
                 <div className="relative mt-1.5">
-                  <input id="em-to" ref={(el) => { first.current = el; }} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a client or household…" className={inputCls} autoComplete="off" />
-                  {hits.length > 0 && (
+                  <input id="em-to" ref={(el) => { first.current = el; }} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a client or household, or type any email address…" className={inputCls} autoComplete="off"
+                    onKeyDown={(e) => { if (e.key === "Enter" && isEmail(q)) { e.preventDefault(); addAddress(); } }} />
+                  {(hits.length > 0 || isEmail(q)) && (
                     <ul className="absolute z-10 mt-1 w-full rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] shadow-lg">
+                      {isEmail(q) && <li><button type="button" onClick={addAddress} className="w-full px-2.5 py-1.5 text-left text-xs hover:bg-[#F0F4F8] dark:hover:bg-[#1D2733]">Send to <b>{q.trim()}</b> <span className={mutedCls}>any email address</span></button></li>}
                       {hits.map((h) => <li key={`${h.type}-${h.id}`}><button type="button" onClick={() => add(h)} className="w-full px-2.5 py-1.5 text-left text-xs hover:bg-[#F0F4F8] dark:hover:bg-[#1D2733]"><b>{h.title}</b> <span className={mutedCls}>{h.type} · {h.subtitle}</span></button></li>)}
                     </ul>
                   )}

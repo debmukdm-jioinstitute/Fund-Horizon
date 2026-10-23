@@ -3,7 +3,9 @@ import { API_URL, ApiError, resolveApiUrl } from "./api";
 
 export interface EmailResult { customer_id: string; name: string | null; ok: boolean; error: string | null }
 export interface EmailOutcome { sent: number; failed: number; scheduled: boolean; results: EmailResult[] }
-export interface EmailExtras { statement?: boolean; filingId?: string; sendAt?: string }
+export interface EmailExtras { statement?: boolean; filingId?: string; sendAt?: string; emails?: string[] }
+export const CUSTOM = "email:"; // recipient id prefix for an address that is not a CRM client
+export const isEmail = (v: string) => /^[^@\s<>,;]+@[^@\s<>,;]+\.[^@\s<>,;]+$/.test(v.trim());
 
 export const EMAIL_ACCEPT = ".pdf,.xlsx,.xls,.csv,.docx,.png,.jpg,.jpeg,.txt";
 export const EMAIL_MAX_BYTES = 15 * 1024 * 1024;
@@ -23,6 +25,7 @@ export async function sendClientEmail(customerIds: string[], subject: string, me
   fd.set("subject", subject);
   fd.set("message", message);
   fd.set("customer_ids", JSON.stringify(customerIds));
+  if (extras.emails?.length) fd.set("emails", JSON.stringify(extras.emails));
   files.forEach((f) => fd.append("files", f));
   if (extras.statement) fd.set("statement", "true");
   if (extras.filingId) fd.set("filing_id", extras.filingId);

@@ -603,6 +603,25 @@ def test_email_statement_filing_schedule_optout_outbox(client, admin, monkeypatc
     assert box and box[0]["kind"] == "email" and box[0]["customer_name"] == "Meera Iyer"
 
 
+def test_email_custom_address_logged_optout_and_validation(client, admin, monkeypatch):
+    sent = []
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m, a=None, **kw: sent.append((to, s, m)) or "em_c")
+    h = {"sec-fetch-site": "same-origin"}
+    send = lambda emails, **k: client.post("/api/crm/email", data={"subject": "Hello {name}", "message": "Hi {name}", "emails": json.dumps(emails), **k}, headers=h)  # noqa: E731
+    r = send(["New.Person@Example.com", "new.person@example.com"])  # case-insensitive dedupe
+    assert r.status_code == 200 and r.json()["sent"] == 1 and sent == [("new.person@example.com", "Hello there", sent[0][2])]
+    assert "Unsubscribe:" in sent[0][2] and "c=email%3Anew.person%40example.com" in sent[0][2]
+    box = client.get("/api/crm/email/outbox").json()
+    assert box[0]["customer_name"] == "new.person@example.com"
+    assert send(["not-an-email"]).status_code == 422 and send([]).status_code == 422
+    assert send(["a@b.co"], statement="true").json()["results"][0]["error"].startswith("A holdings statement needs")
+    from app.api.crm_core import _optouts, _unsub_token
+
+    key = "email:new.person@example.com"
+    assert client.get(f"/api/crm/public/unsubscribe?c={key}&t={_unsub_token(key)}").status_code == 200 and _optouts().email_opted_out(key)
+    assert "opted out" in send(["new.person@example.com"]).json()["results"][0]["error"]
+
+
 def test_public_unsubscribe_link(client):
     from app.api.crm_core import _optouts, _unsub_token
 

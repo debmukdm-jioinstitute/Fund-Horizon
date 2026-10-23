@@ -17,6 +17,7 @@ import re
 import secrets
 from datetime import UTC, date, datetime, timedelta
 from typing import Annotated, Any, NamedTuple
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import HTMLResponse
@@ -1209,6 +1210,7 @@ def create_activity(body: ActivityCreate, me: Me):
 
 EMAIL_EXTS = {"pdf", "xlsx", "xls", "csv", "docx", "png", "jpg", "jpeg", "txt"}
 EMAIL_MAX_FILES, EMAIL_MAX_BYTES, EMAIL_MAX_RECIPIENTS = 5, 15 * 1024 * 1024, 50
+EMAIL_RE = re.compile(r"[^@\s<>,;]+@[^@\s<>,;]+\.[^@\s<>,;]+")
 PUBLIC_API_URL = os.environ.get("PUBLIC_API_URL", "https://api.fundhorizon.website")
 
 
@@ -1242,7 +1244,8 @@ async def email_customers(
     me: Me,
     subject: Annotated[str, Form(min_length=1, max_length=200)],
     message: Annotated[str, Form(min_length=1, max_length=10000)],
-    customer_ids: Annotated[str, Form(description="JSON list of customer ids")],
+    customer_ids: Annotated[str, Form(description="JSON list of customer ids")] = "[]",
+    emails: Annotated[str, Form(description="JSON list of any other email addresses")] = "[]",
     files: Annotated[list[UploadFile], File()] = [],  # noqa: B006 - FastAPI reads, never mutates
     statement: Annotated[bool, Form(description="Attach each client's own holdings statement PDF")] = False,
     filing_id: Annotated[str | None, Form(max_length=64)] = None,
@@ -1256,9 +1259,13 @@ async def email_customers(
     one-click unsubscribe. Same visibility rule as activities."""
     try:
         ids = list(dict.fromkeys(json.loads(customer_ids)))
-        assert ids and all(isinstance(i, str) for i in ids)
-    except (ValueError, AssertionError):
-        raise HTTPException(422, "customer_ids must be a non-empty JSON list of ids") from None
+        extra = list(dict.fromkeys(e.strip().lower() for e in json.loads(emails)))
+        assert all(isinstance(i, str) for i in ids) and ids + extra
+    except (ValueError, AssertionError, AttributeError, TypeError):
+        raise HTTPException(422, "Provide at least one customer id or email address (as JSON lists).") from None
+    if bad := [e for e in extra if not EMAIL_RE.fullmatch(e)]:
+        raise HTTPException(422, f"Not a valid email address: {bad[0]}")
+    ids += [f"email:{e}" for e in extra]  # a custom address is its own recipient key (also used for opt-out)
     if len(ids) > EMAIL_MAX_RECIPIENTS:
         raise HTTPException(422, f"At most {EMAIL_MAX_RECIPIENTS} recipients per send.")
     when = _parse_send_at(send_at)
@@ -1280,19 +1287,22 @@ async def email_customers(
     scope, repo = _scope(me), get_crm_repository()
     results = []
     for cid in ids:
-        customer = sqlite.get_customer_by_id(cid)
+        custom = cid.startswith("email:")
+        customer = {"name": cid[6:], "email": cid[6:]} if custom else sqlite.get_customer_by_id(cid)
         if not customer:
             results.append({"customer_id": cid, "name": None, "ok": False, "error": "Customer not found"})
             continue
         entry = {"customer_id": cid, "name": customer["name"], "ok": False, "error": None}
         to = (customer.get("email") or "").strip()
         own: list[tuple[str, bytes]] = []
-        if not scope.admin and cid not in scope.customer_ids:
+        if not custom and not scope.admin and cid not in scope.customer_ids:
             entry["error"] = "You do not have permission to use this customer."
+        elif custom and statement:
+            entry["error"] = "A holdings statement needs a client record; this is a custom address."
         elif not to or to.endswith("@placeholder.invalid"):
             entry["error"] = "No email address on file."
         elif _optouts().email_opted_out(cid):
-            entry["error"] = "This client has opted out of emails."
+            entry["error"] = "This address has opted out of emails."
         elif statement:
             contact = p3.contact_by_customer(cid)
             rows = p3.value_holdings(p3.list_holdings(contact_ids=[contact["id"]])) if contact else []
@@ -1305,9 +1315,9 @@ async def email_customers(
         if entry["error"]:
             results.append(entry)
             continue
-        first = (customer["name"] or "").split(" ")[0] or "there"
+        first = "there" if custom else (customer["name"] or "").split(" ")[0] or "there"
         subj, text = subject.replace("{name}", first), message.replace("{name}", first)
-        unsub = f"{PUBLIC_API_URL}/api/crm/public/unsubscribe?c={cid}&t={_unsub_token(cid)}"
+        unsub = f"{PUBLIC_API_URL}/api/crm/public/unsubscribe?c={quote(cid, safe='')}&t={_unsub_token(cid)}"
         names = [n for n, _ in attach + own]
         try:
             email_id = send_email(
@@ -1315,7 +1325,8 @@ async def email_customers(
                 headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"},
             )
             note = ("\n\nAttachments: " + ", ".join(names) if names else "") + (f"\n\nScheduled for {when}" if when else "")
-            repo.create_activity(kind="email", subject=subj, body=text + note, customer_id=cid,
+            repo.create_activity(kind="email", subject=subj, body=(f"To: {to}\n\n" if custom else "") + text + note,
+                                 customer_id=None if custom else cid, assigned_rm_id=me["id"] if custom else None,
                                  source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"])
             entry["ok"] = True
         except MailerError as e:
@@ -1333,7 +1344,7 @@ def email_outbox(me: Me, response: Response, page: PageParams):
     rows = guard(repo.list_activities, kind="email", viewer_rm_id=_viewer(me), page=page)
     names = repo.customer_names([r["customer_id"] for r in rows])
     send_total(response, page)
-    return [{**r, "customer_name": names.get(r["customer_id"])} for r in rows]
+    return [{**r, "customer_name": names.get(r["customer_id"]) or (m.group(1) if (m := re.match(r"To: (\S+)", r.get("body") or "")) else None)} for r in rows]
 
 
 def _visible_customer(customer_id: str, me: Me) -> None:

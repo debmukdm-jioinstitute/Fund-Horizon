@@ -187,6 +187,20 @@ export const fetchHouseholdAum = (householdId: string) => call<AumPayload>(`/hou
 export const fetchContactHoldings = (contactId: string) => call<AumPayload>(`/contacts/${contactId}/holdings`);
 export const importHoldings = (csv_text: string, as_of: string | undefined, dry_run: boolean, source = "cas") =>
   post<ImportResult>("/holdings/import", { csv_text, as_of: as_of || undefined, dry_run, source });
+export interface HoldingInput {
+  contact_id: string;
+  folio: string;
+  scheme_code: string;
+  scheme_name?: string | null;
+  units: number;
+  cost?: number | null;
+  cost_paise?: number;
+  as_of?: string | null;
+  source?: string;
+}
+
+export const createHolding = (body: HoldingInput) => post<{ status: string; holding: Record<string, unknown> }>("/holdings", body);
+export const deleteHolding = (id: string) => call<{ status: string; deleted: boolean }>("/holdings/" + id, { method: "DELETE" });
 
 /* sips */
 export const fetchSips = (filters: { contact_id?: string; status?: string } = {}) => {

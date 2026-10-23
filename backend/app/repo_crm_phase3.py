@@ -285,6 +285,21 @@ def upsert_holdings(rows: list[dict[str, Any]], actor_id: str | None) -> tuple[i
     return created, updated
 
 
+def get_holding(holding_id: str) -> dict[str, Any] | None:
+    with _session() as s:
+        cur = s.scalar(select(HoldingModel).where(HoldingModel.id == holding_id))
+        return _row(cur) if cur else None
+
+
+def delete_holding(holding_id: str, actor_id: str | None = None) -> bool:
+    with _session() as s:
+        cur = s.scalar(select(HoldingModel).where(HoldingModel.id == holding_id))
+        if cur is None:
+            return False
+        s.delete(cur)
+        return True
+
+
 def list_holdings(
     *, contact_ids: list[str] | None = None, household_id: str | None = None, viewer_rm: Any = None,
     page: Page | None = None,

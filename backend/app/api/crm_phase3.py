@@ -265,6 +265,56 @@ def household_aum(household_id: str, me: Me):
     return payload
 
 
+class HoldingIn(BaseModel):
+    contact_id: str
+    folio: str = Field(min_length=1, max_length=40)
+    scheme_code: str = Field(min_length=1, max_length=32)
+    scheme_name: str | None = Field(default=None, max_length=255)
+    units: float = Field(gt=0)
+    cost: float | None = Field(default=None, ge=0)
+    cost_paise: int = Field(default=0, ge=0)
+    as_of: str | None = None
+    source: str = Field(default="manual", max_length=40)
+
+
+@router.post("/holdings")
+def create_holding(body: HoldingIn, me: Me):
+    """Add or update a holding position directly from the CRM."""
+    _contact_or_404(body.contact_id, me)
+    as_of = _iso_date(body.as_of, "as_of") or today_ist()
+    if as_of > today_ist():
+        raise HTTPException(422, "as_of cannot be in the future")
+    cost_paise = round(float(body.cost) * 100) if body.cost is not None else body.cost_paise
+    scheme_name = body.scheme_name
+    if not scheme_name:
+        navs = p3.latest_navs([body.scheme_code])
+        if body.scheme_code in navs:
+            scheme_name = navs[body.scheme_code].get("name")
+    row = {
+        "contact_id": body.contact_id,
+        "folio": body.folio.strip(),
+        "scheme_code": body.scheme_code.strip(),
+        "scheme_name": scheme_name.strip() if scheme_name else None,
+        "units": float(body.units),
+        "cost_paise": cost_paise,
+        "as_of": as_of,
+        "source": body.source,
+    }
+    created, updated = p3.upsert_holdings([row], me["id"])
+    return {"status": "ok", "created": created, "updated": updated, "holding": row}
+
+
+@router.delete("/holdings/{holding_id}")
+def delete_holding(holding_id: str, me: Me):
+    """Delete a holding position."""
+    holding = p3.get_holding(holding_id)
+    if not holding:
+        raise HTTPException(404, "Holding not found")
+    _contact_or_404(holding["contact_id"], me)
+    p3.delete_holding(holding_id, me["id"])
+    return {"status": "ok", "deleted": True}
+
+
 class HoldingsImport(BaseModel):
     csv_text: str = Field(max_length=6_000_000)
     as_of: str | None = None  # default for rows with no date column; YYYY-MM-DD

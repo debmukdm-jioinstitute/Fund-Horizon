@@ -127,6 +127,38 @@ def book(client, admin):
     return {"hh": hh, "meera": meera, "ravi": ravi}
 
 
+def test_direct_holding_crud(client, book):
+    # Add a holding directly
+    meera_id = book['meera']['id']
+    res = client.post('/api/crm/holdings', json={
+        'contact_id': meera_id,
+        'folio': 'FOLIO-MANUAL-1',
+        'scheme_code': '100001',
+        'units': 50.0,
+        'cost': 2500.0,
+        'as_of': '2026-10-13',
+        'source': 'manual'
+    })
+    assert res.status_code == 200, res.text
+    assert res.json()['created'] == 1
+
+    # Check holdings roll-up
+    per = client.get(f'/api/crm/contacts/{meera_id}/holdings').json()
+    h = [x for x in per['holdings'] if x['folio'] == 'FOLIO-MANUAL-1'][0]
+    assert h['units'] == 50.0
+    assert h['cost_paise'] == 250000
+    holding_id = h['id']
+
+    # Delete the holding
+    del_res = client.delete(f'/api/crm/holdings/{holding_id}')
+    assert del_res.status_code == 200, del_res.text
+    assert del_res.json()['deleted'] is True
+
+    # Verify deleted
+    after = client.get(f'/api/crm/contacts/{meera_id}/holdings').json()
+    assert not any(x['folio'] == 'FOLIO-MANUAL-1' for x in after['holdings'])
+
+
 def test_cas_import_matches_values_and_rolls_up_household_aum(client, book):
     r = client.post("/api/crm/holdings/import", json={"csv_text": CAS, "as_of": "2026-10-13", "source": "cams"})
     assert r.status_code == 200, r.text

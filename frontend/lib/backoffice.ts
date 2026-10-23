@@ -365,6 +365,7 @@ export interface MfPerformance {
   metrics: Record<string, number | string | undefined>;
   history: Array<{ date: string; nav?: number; r1m?: number; r1y?: number; r3y?: number; r5y?: number }>;
   as_of?: string;
+  benchmark?: { name?: string; proxy_name?: string; history: Array<{ date: string; nav: number }> } | null;
 }
 
 /** Returns null for schemes outside the performance dataset (IDCW/payout options, closed-ended). */
@@ -379,6 +380,13 @@ export const getMutualFundPerformance = async (code: string): Promise<MfPerforma
     metrics,
     history: arr(d.history).map((h) => ({ date: str(h.date) ?? "", nav: num(h.nav), r1m: num(h.r1m), r1y: num(h.r1y), r3y: num(h.r3y), r5y: num(h.r5y) })),
     as_of: str(raw.as_of),
+    benchmark: d.benchmark
+      ? {
+          name: str(obj(d.benchmark).name),
+          proxy_name: str(obj(d.benchmark).proxy_name),
+          history: arr(obj(d.benchmark).history).flatMap((h) => (str(h.date) && num(h.nav) !== undefined ? [{ date: str(h.date) as string, nav: num(h.nav) as number }] : [])),
+        }
+      : null,
   };
 };
 

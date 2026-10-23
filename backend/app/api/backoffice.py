@@ -26,6 +26,7 @@ from app.backoffice.analytics.impact_engine import analyze_impact, simulate_scen
 from app.backoffice.analytics.pms_math import calculate_modified_dietz, calculate_xirr, estimate_hwm_fee
 from app.backoffice.collectors import factsheet_archive_dir, refresh_source
 from app.backoffice.meta import with_meta
+from app.backoffice.mf_screener import BENCHMARK_PROXY, BENCHMARKS
 from app.backoffice.fh_recommended import (
     FH_RECOMMENDED_MF_CODES,
     FH_RECOMMENDED_PMS_IDS,
@@ -605,6 +606,23 @@ def _num_or_none(v: Any, scale: float = 1.0) -> float | None:
     return None if f != f else round(f * scale, 4)  # NaN -> None
 
 
+def _benchmark_series(cat: str) -> dict | None:
+    """Benchmark name plus a month-end NAV series of a passive fund tracking it; None when no tracker exists."""
+    code = BENCHMARK_PROXY.get(cat)
+    if not code:
+        return None
+    try:
+        nav = load_nav(code)
+    except FileNotFoundError:
+        return None
+    name = load_metrics().set_index("scheme_code")["scheme_name"].get(code, code)
+    return {
+        "name": BENCHMARKS.get(cat),
+        "proxy_name": re.sub(r" - Direct Plan - Growth$", "", str(name)),
+        "history": [{"date": str(d.date()), "nav": _num_or_none(v)} for d, v in nav.items()],
+    }
+
+
 @router.get("/mutual-funds/{scheme_code}/performance")
 def backoffice_mf_performance(scheme_code: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
     """Trailing returns, risk stats and month-end NAV history for one scheme, from the AMFI + mfapi.in dataset."""
@@ -634,6 +652,7 @@ def backoffice_mf_performance(scheme_code: str, request: Request, staff: Annotat
     res = {
         "data": {
             "scheme_code": scheme_code,
+            "benchmark": _benchmark_series(str(row.get("cat"))),
             # The public /funds/{code} page only exists for schemes eligible for shortlists (Regular, Growth, clean data).
             "public_page": scheme_code in set(request.app.state.eligible["scheme_code"]),
             "metrics": {

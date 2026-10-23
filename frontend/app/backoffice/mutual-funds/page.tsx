@@ -15,12 +15,13 @@ import {
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
+import MfOnePager from "@/components/backoffice/MfOnePager";
 import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
 import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import InfoTip from "@/components/InfoTip";
 
-const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward"] as const;
+const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "One-Pager"] as const;
 type Section = (typeof SECTIONS)[number];
 const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
 const DEFAULT_CATEGORIES = ["flexi_cap", "multi_cap"];
@@ -48,6 +49,7 @@ const perYear = (key: string, label: string, kind: "pct" | "num", plain = false)
   YEARS.map((y) => ({ key: `${key}_${y}y`, label: `${label} ${y}Yr`, kind, digits: 2, plain, tip: key }));
 
 const COLUMNS: Record<Section, Col[]> = {
+  "One-Pager": [],
   Summary: [
     { key: "cat_label", label: "Category / Benchmark", kind: "text" },
     pct("out_1y", "1Yr vs Category Avg", undefined, "Fund 1Yr return minus its category-plan average, in percentage points"),
@@ -75,6 +77,7 @@ const COLUMNS: Record<Section, Col[]> = {
     { key: "risk", label: "Risk vs Reward / 25", kind: "score" },
   ],
   Returns: [
+    pct("ret_1m", "Returns 1M %", "ret_1m_cat"),
     pct("ret_3m", "Returns 3M %", "ret_3m_cat"),
     pct("ret_6m", "Returns 6M %"),
     pct("ret_1y", "Returns 1Yr %", "ret_1y_cat"),
@@ -179,6 +182,7 @@ function MutualFunds() {
   const [error, setError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
   const [selected, setSelected] = useState<MutualFundItem | null>(null);
+  const [onePager, setOnePager] = useState<MfScreenerRow | null>(null);
 
   const q: MfScreenerQuery = { category, plan, search, sort, order, ranges, recommended };
   const qKey = JSON.stringify(q);
@@ -479,7 +483,37 @@ function MutualFunds() {
       )}
 
       <div className="terminal-panel overflow-hidden">
-        <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px]">
+        {section === "One-Pager" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 p-2.5 min-h-[420px] content-start">
+            {!loading && rows.length === 0 && <div className="col-span-full py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">No funds match the current categories and filters.</div>}
+            {rows.map((r) => (
+              <button
+                key={r.code}
+                type="button"
+                onClick={() => setOnePager(r)}
+                className={`text-left terminal-panel p-3 border-l-4 border-l-[#0176D3] hover:shadow-md cursor-pointer space-y-2 ${loading ? "opacity-50" : ""}`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="font-medium text-[13px] text-[#0176D3] dark:text-[#1B96FF] leading-snug">{r.name.replace(/ - (Direct|Regular) Plan - Growth$/i, "")}</div>
+                  {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0176D3] text-white shrink-0">★ FH</span>}
+                </div>
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] flex items-center gap-1.5">
+                  {r.amc ? <AmcLogo amc={r.amc} className="h-5 min-w-5 max-w-[4rem] text-[8px]" /> : null}
+                  {r.amc ?? "-"} · {r.plan}
+                </div>
+                <div className="grid grid-cols-4 gap-1 text-center text-[11px]">
+                  {([["Score", "score"], ["1Yr", "ret_1y"], ["3Yr", "cagr_3y"], ["5Yr", "cagr_5y"]] as const).map(([l, k]) => (
+                    <div key={k}>
+                      <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{l}</div>
+                      <div className={`tabular-nums font-medium ${k === "score" ? "" : tone(r[k])}`}>{fmt(r[k], k === "score" ? 0 : 1)}{k === "score" || typeof r[k] !== "number" ? "" : "%"}</div>
+                    </div>
+                  ))}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+        <div className={`overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px] ${section === "One-Pager" ? "hidden" : ""}`}>
           <table className="terminal-table">
             <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
               <tr>
@@ -610,6 +644,7 @@ function MutualFunds() {
         resolveLabel={compare.resolveLabel}
       />
       <MutualFundDrawer scheme={selected} onClose={() => setSelected(null)} />
+      <MfOnePager row={onePager} onClose={() => setOnePager(null)} />
     </div>
   );
 }

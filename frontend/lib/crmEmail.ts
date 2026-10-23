@@ -2,7 +2,8 @@
 import { API_URL, ApiError, resolveApiUrl } from "./api";
 
 export interface EmailResult { customer_id: string; name: string | null; ok: boolean; error: string | null }
-export interface EmailOutcome { sent: number; failed: number; results: EmailResult[] }
+export interface EmailOutcome { sent: number; failed: number; scheduled: boolean; results: EmailResult[] }
+export interface EmailExtras { statement?: boolean; filingId?: string; sendAt?: string }
 
 export const EMAIL_ACCEPT = ".pdf,.xlsx,.xls,.csv,.docx,.png,.jpg,.jpeg,.txt";
 export const EMAIL_MAX_BYTES = 15 * 1024 * 1024;
@@ -17,12 +18,15 @@ export const EMAIL_TEMPLATES: { id: string; label: string; subject: string; body
   { id: "general", label: "General", subject: "", body: "Hi {name},\n\n\n\nRegards,\nFund Horizon" },
 ];
 
-export async function sendClientEmail(customerIds: string[], subject: string, message: string, files: File[]): Promise<EmailOutcome> {
+export async function sendClientEmail(customerIds: string[], subject: string, message: string, files: File[], extras: EmailExtras = {}): Promise<EmailOutcome> {
   const fd = new FormData();
   fd.set("subject", subject);
   fd.set("message", message);
   fd.set("customer_ids", JSON.stringify(customerIds));
   files.forEach((f) => fd.append("files", f));
+  if (extras.statement) fd.set("statement", "true");
+  if (extras.filingId) fd.set("filing_id", extras.filingId);
+  if (extras.sendAt) fd.set("send_at", extras.sendAt);
   // no Content-Type header: the browser sets the multipart boundary
   const res = await fetch(resolveApiUrl(`${API_URL}/api/crm/email`), { method: "POST", body: fd, credentials: "include" });
   if (!res.ok) {
@@ -35,4 +39,13 @@ export async function sendClientEmail(customerIds: string[], subject: string, me
     throw new ApiError(res.status === 503 ? "Email isn't set up yet. Ask an admin to configure Resend." : msg, res.status);
   }
   return res.json() as Promise<EmailOutcome>;
+}
+
+export interface OutboxRow { id: string; created_at: string; subject: string; body: string | null; customer_id: string | null; customer_name: string | null }
+
+export async function fetchOutbox(offset: number, limit = 50): Promise<{ rows: OutboxRow[]; total: number }> {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/crm/email/outbox?limit=${limit}&offset=${offset}`), { credentials: "include" });
+  if (!res.ok) throw new ApiError(`Request failed (${res.status})`, res.status);
+  const rows = (await res.json()) as OutboxRow[];
+  return { rows, total: Number(res.headers.get("X-Total-Count") ?? rows.length) };
 }

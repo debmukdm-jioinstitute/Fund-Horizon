@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CALCULATORS } from "@/lib/calculators";
+import EmailDialog, { type Recipient } from "@/components/crm/EmailDialog";
 import PdfFormFiller, { type ClientDetails, type FillContext, type PdfSource } from "@/components/operations/PdfFormFiller";
 import { FILING_STATUSES, type Filing, getFilings, getOfficialForms, setFilingStatus } from "@/lib/backoffice";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
@@ -352,12 +353,22 @@ function LibraryTab({ forms, filters, setFilters, fillLabel, fillForm }: {
 
 /* ------------------------------------------------------------------ tab 3 */
 function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: string | null; onMove: (f: Filing) => void }) {
+  const [mail, setMail] = useState<{ filing: Filing; to: Recipient[] } | null>(null);
+  const [mailErr, setMailErr] = useState<string | null>(null);
+  const emailFiling = async (f: Filing) => {
+    setMailErr(null);
+    try {
+      const d = await fetchHouseholdDetail(f.household_id as string);
+      setMail({ filing: f, to: d.members.map((m) => ({ customer_id: m.customer_id, name: m.name, email: m.email })) });
+    } catch (e) { setMailErr(e instanceof Error ? e.message : "Could not load the household."); }
+  };
   return (
     <section>
       <div className="mb-4 rounded-[9px] border border-[#E4E9EF] dark:border-[#2B3644] bg-[#E6F2F0] dark:bg-[#0C2B28] px-4 py-3 text-[14px]">
         📋 <b className={teal}>Auto-logged, always.</b> Every Fill &amp; Sign is recorded here <b className={teal}>and</b> in the household&apos;s CRM activity, so any team member can pick a filing up where it was left.
       </div>
-      {error && <p className="mb-3 text-[13px] text-[#B42318] dark:text-[#FF7D86]">{error}</p>}
+      {(error || mailErr) && <p role="alert" className="mb-3 text-[13px] text-[#B42318] dark:text-[#FF7D86]">{error ?? mailErr}</p>}
+      {mail && <EmailDialog recipients={mail.to} filing={{ id: mail.filing.id, title: mail.filing.form_title }} onClose={() => setMail(null)} />}
       <div className={`${card} overflow-x-auto`}>
         <table className="w-full border-collapse text-[14px]" aria-label="Filings register">
           <thead>
@@ -373,6 +384,7 @@ function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: str
                 <td className="px-3.5 py-3"><span className={`whitespace-nowrap rounded-full px-2.5 py-1 text-[12px] font-extrabold ${STATUS_TONE[r.status]}`}>{FILING_STATUSES[r.status]}</span></td>
                 <td className="whitespace-nowrap px-3.5 py-3">
                   <a href={`/api/backoffice/operations/filings/${r.id}/pdf`} download className={`${btn} mr-1.5`}>Re-download</a>
+                  <button type="button" className={`${btn} mr-1.5`} disabled={!r.household_id} title={r.household_id ? "Email the filled form to the household" : "This filing is not linked to a household"} onClick={() => emailFiling(r)}>Email client</button>
                   <button type="button" className={btn} disabled={r.status >= 2} onClick={() => onMove(r)}>Update status</button>
                 </td>
               </tr>
@@ -397,7 +409,7 @@ export default function OperationsPage() {
         <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Operations</h1>
         <p className={`mt-1 text-[14px] ${muted}`}>Choose what you want to do.</p>
       </div>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."], ["download", "Download Content", "Paste a link to save a video, audio or image file."]] as const).map(([v, title, text]) => (
           <button key={v} type="button" onClick={() => setView(v)} className={`${card} p-6 text-left hover:border-[#006F64]`}>
             <div className={`text-lg font-bold ${ink}`}>{title}</div>
@@ -407,6 +419,10 @@ export default function OperationsPage() {
         <Link href="/backoffice/operations/calculators" className={`${card} p-6 text-left hover:border-[#006F64]`}>
           <div className={`text-lg font-bold ${ink}`}>Calculators</div>
           <p className={`mt-1.5 text-[13.5px] ${muted}`}>{CALCULATORS.length} calculators: SIP, goal, retirement, SWP, CAGR, rebalancing and term cover.</p>
+        </Link>
+        <Link href="/backoffice/operations/emails" className={`${card} p-6 text-left hover:border-[#006F64]`}>
+          <div className={`text-lg font-bold ${ink}`}>Sent emails</div>
+          <p className={`mt-1.5 text-[13.5px] ${muted}`}>Everything emailed to clients from the CRM: who, when, and what was attached.</p>
         </Link>
       </div>
     </div>

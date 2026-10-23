@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { crmRaw } from "../../lib/crmApi";
 import { fetchPage } from "../../lib/crmListApi";
 import { FATCA_CRS, fetchContact, patchContact, RELATIONS, TAX_STATUSES, type ContactDetail } from "../../lib/crmPhase3Api";
 import { fmtDate } from "./EntityLists";
@@ -66,6 +67,28 @@ function TaxResidency({ c, onSaved }: { c: ContactDetail; onSaved: (c: ContactDe
   );
 }
 
+/** "Do not email" — staff record a client's request; sends then skip them. Clients can also opt out from any email's link. */
+function EmailOptOut({ customerId }: { customerId: string }) {
+  const canWrite = useCanWrite();
+  const [out, setOut] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => { crmRaw<{ opted_out: boolean }>(`/customers/${customerId}/email-optout`).then((r) => setOut(r.opted_out)).catch(() => setOut(null)); }, [customerId]);
+  if (out === null) return null;
+  const toggle = async (v: boolean) => {
+    setError(null);
+    try { setOut((await crmRaw<{ opted_out: boolean }>(`/customers/${customerId}/email-optout`, { method: "PUT", body: JSON.stringify({ opted_out: v }) })).opted_out); }
+    catch (e) { setError(e instanceof Error ? e.message : "Could not save"); }
+  };
+  return (
+    <div className="text-xs">
+      <label className="flex items-center gap-2 font-semibold text-[#181818] dark:text-[#EDF2F7]">
+        <input type="checkbox" disabled={!canWrite} checked={out} onChange={(e) => toggle(e.target.checked)} /> Do not email this client
+      </label>
+      {error && <p role="alert" className={errCls}>{error}</p>}
+    </div>
+  );
+}
+
 export default function ContactRecord({ id }: { id: string }) {
   const { data: c, setData, error } = useRecord(() => fetchContact(id), [id]);
   const canWrite = useCanWrite();
@@ -114,6 +137,7 @@ export default function ContactRecord({ id }: { id: string }) {
                 options={[{ value: "", label: "None" }, ...adults]} onSave={(v) => save({ guardian_contact_id: v || null })}
               />
             )}
+            <EmailOptOut customerId={c.customer_id} />
             <InlineField label="Household" value="" readOnly display={<Link className="underline text-[#0176D3] dark:text-[#1B96FF]" href={`/backoffice/crm/households/${c.household_id}`}>{c.household_name}</Link>} />
           </div>
           <div className={card}>

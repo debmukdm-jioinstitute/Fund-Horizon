@@ -9,13 +9,17 @@ Money is integer paise; dates are ``YYYY-MM-DD``; timestamps are ISO-8601 UTC.
 """
 
 
+import hashlib
+import hmac
 import json
+import os
 import re
 import secrets
 from datetime import UTC, date, datetime, timedelta
 from typing import Annotated, Any, NamedTuple
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from app import repo_crm_phase3 as p3
@@ -1205,6 +1209,32 @@ def create_activity(body: ActivityCreate, me: Me):
 
 EMAIL_EXTS = {"pdf", "xlsx", "xls", "csv", "docx", "png", "jpg", "jpeg", "txt"}
 EMAIL_MAX_FILES, EMAIL_MAX_BYTES, EMAIL_MAX_RECIPIENTS = 5, 15 * 1024 * 1024, 50
+PUBLIC_API_URL = os.environ.get("PUBLIC_API_URL", "https://api.fundhorizon.website")
+
+
+def _unsub_token(customer_id: str) -> str:
+    key = os.environ.get("EMAIL_UNSUB_SECRET") or os.environ.get("RESEND_API_KEY") or "unset"
+    return hmac.new(key.encode(), customer_id.encode(), hashlib.sha256).hexdigest()[:32]
+
+
+def _optouts():
+    from app.api.backoffice import _REPO  # lazy: backoffice imports heavy modules
+
+    return _REPO
+
+
+def _parse_send_at(value: str | None) -> str | None:
+    if not value:
+        return None
+    try:
+        at = datetime.fromisoformat(value)
+    except ValueError:
+        raise HTTPException(422, "send_at must be an ISO date-time") from None
+    at = at if at.tzinfo else at.replace(tzinfo=UTC)
+    now = datetime.now(UTC)
+    if not now + timedelta(minutes=1) <= at <= now + timedelta(days=30):
+        raise HTTPException(422, "Schedule between a minute and 30 days from now.")
+    return at.astimezone(UTC).isoformat()
 
 
 @router.post("/email")
@@ -1214,10 +1244,16 @@ async def email_customers(
     message: Annotated[str, Form(min_length=1, max_length=10000)],
     customer_ids: Annotated[str, Form(description="JSON list of customer ids")],
     files: Annotated[list[UploadFile], File()] = [],  # noqa: B006 - FastAPI reads, never mutates
+    statement: Annotated[bool, Form(description="Attach each client's own holdings statement PDF")] = False,
+    filing_id: Annotated[str | None, Form(max_length=64)] = None,
+    send_at: Annotated[str | None, Form(max_length=40)] = None,
 ):
-    """Email one or more customers (a contact, a household's members, anyone found by search) via Resend, with
-    optional attachments such as statements. ``{name}`` in subject/message becomes each person's first name.
-    One email per recipient, each logged on that customer's CRM timeline. Same visibility rule as activities."""
+    """Email one or more customers via Resend: a contact, a household's members, anyone found by search.
+
+    Optional attachments: uploaded files, each client's generated holdings statement, or a stored Operations filing.
+    ``{name}`` in subject/message becomes the first name. ``send_at`` schedules it (Resend holds it, max 30 days).
+    One email per recipient, logged on that client's timeline. Opted-out clients are skipped; every email carries a
+    one-click unsubscribe. Same visibility rule as activities."""
     try:
         ids = list(dict.fromkeys(json.loads(customer_ids)))
         assert ids and all(isinstance(i, str) for i in ids)
@@ -1225,19 +1261,23 @@ async def email_customers(
         raise HTTPException(422, "customer_ids must be a non-empty JSON list of ids") from None
     if len(ids) > EMAIL_MAX_RECIPIENTS:
         raise HTTPException(422, f"At most {EMAIL_MAX_RECIPIENTS} recipients per send.")
+    when = _parse_send_at(send_at)
     files = [f for f in files if f.filename]
-    if len(files) > EMAIL_MAX_FILES:
-        raise HTTPException(422, f"At most {EMAIL_MAX_FILES} attachments.")
     attach: list[tuple[str, bytes]] = []
     for f in files:
         name = re.sub(r"[^\w.\- ]", "_", f.filename.rsplit("/", 1)[-1])[:120]
         if name.rsplit(".", 1)[-1].lower() not in EMAIL_EXTS:
             raise HTTPException(422, f"“{name}”: attachments must be {', '.join(sorted(EMAIL_EXTS))}.")
         attach.append((name, await f.read()))
-    if sum(len(b) for _, b in attach) > EMAIL_MAX_BYTES:
-        raise HTTPException(422, "Attachments are over 15 MB in total.")
+    if filing_id:
+        pdf = _optouts().get_filing_pdf(filing_id)
+        filing = _optouts().get_filing(filing_id)
+        if pdf is None or filing is None:
+            raise HTTPException(404, "Filing not found")
+        attach.append((re.sub(r"[^\w.\- ]", "_", filing["form_title"])[:100] + ".pdf", pdf))
+    if len(attach) > EMAIL_MAX_FILES or sum(len(b) for _, b in attach) > EMAIL_MAX_BYTES:
+        raise HTTPException(422, f"At most {EMAIL_MAX_FILES} attachments, 15 MB in total.")
     scope, repo = _scope(me), get_crm_repository()
-    files_note = f"\n\nAttachments: {', '.join(n for n, _ in attach)}" if attach else ""
     results = []
     for cid in ids:
         customer = sqlite.get_customer_by_id(cid)
@@ -1246,24 +1286,88 @@ async def email_customers(
             continue
         entry = {"customer_id": cid, "name": customer["name"], "ok": False, "error": None}
         to = (customer.get("email") or "").strip()
+        own: list[tuple[str, bytes]] = []
         if not scope.admin and cid not in scope.customer_ids:
             entry["error"] = "You do not have permission to use this customer."
         elif not to or to.endswith("@placeholder.invalid"):
             entry["error"] = "No email address on file."
-        else:
-            first = (customer["name"] or "").split(" ")[0] or "there"
-            subj, text = subject.replace("{name}", first), message.replace("{name}", first)
-            try:
-                email_id = send_email(to, subj, text, attach)
-                repo.create_activity(kind="email", subject=subj, body=text + files_note, customer_id=cid,
-                                     source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"])
-                entry["ok"] = True
-            except MailerError as e:
-                entry["error"] = str(e)
-                if not e.configured:  # same for every recipient: stop and say so
-                    raise HTTPException(503, str(e)) from e
+        elif _optouts().email_opted_out(cid):
+            entry["error"] = "This client has opted out of emails."
+        elif statement:
+            contact = p3.contact_by_customer(cid)
+            rows = p3.value_holdings(p3.list_holdings(contact_ids=[contact["id"]])) if contact else []
+            if rows:
+                from app.report.statement_doc import build_holdings_statement
+
+                own = [("Holdings statement.pdf", build_holdings_statement(customer["name"], rows))]
+            else:
+                entry["error"] = "No holdings on file to build a statement."
+        if entry["error"]:
+            results.append(entry)
+            continue
+        first = (customer["name"] or "").split(" ")[0] or "there"
+        subj, text = subject.replace("{name}", first), message.replace("{name}", first)
+        unsub = f"{PUBLIC_API_URL}/api/crm/public/unsubscribe?c={cid}&t={_unsub_token(cid)}"
+        names = [n for n, _ in attach + own]
+        try:
+            email_id = send_email(
+                to, subj, f"{text}\n\n--\nDon't want these emails? Unsubscribe: {unsub}", attach + own, scheduled_at=when,
+                headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"},
+            )
+            note = ("\n\nAttachments: " + ", ".join(names) if names else "") + (f"\n\nScheduled for {when}" if when else "")
+            repo.create_activity(kind="email", subject=subj, body=text + note, customer_id=cid,
+                                 source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"])
+            entry["ok"] = True
+        except MailerError as e:
+            entry["error"] = str(e)
+            if not e.configured:  # same for every recipient: stop and say so
+                raise HTTPException(503, str(e)) from e
         results.append(entry)
-    return {"sent": sum(r["ok"] for r in results), "failed": sum(not r["ok"] for r in results), "results": results}
+    return {"sent": sum(r["ok"] for r in results), "failed": sum(not r["ok"] for r in results), "scheduled": bool(when), "results": results}
+
+
+@router.get("/email/outbox")
+def email_outbox(me: Me, response: Response, page: PageParams):
+    """Emails sent from the CRM (newest first), limited to the clients this user can see."""
+    repo = get_crm_repository()
+    rows = guard(repo.list_activities, kind="email", viewer_rm_id=_viewer(me), page=page)
+    names = repo.customer_names([r["customer_id"] for r in rows])
+    send_total(response, page)
+    return [{**r, "customer_name": names.get(r["customer_id"])} for r in rows]
+
+
+def _visible_customer(customer_id: str, me: Me) -> None:
+    _customer_or_404(customer_id)
+    scope = _scope(me)
+    if not scope.admin and customer_id not in scope.customer_ids:
+        raise HTTPException(403, "You do not have permission to use this customer.")
+
+
+class OptOut(BaseModel):
+    opted_out: bool
+
+
+@router.get("/customers/{customer_id}/email-optout")
+def get_email_optout(customer_id: str, me: Me):
+    _visible_customer(customer_id, me)
+    return {"opted_out": _optouts().email_opted_out(customer_id)}
+
+
+@router.put("/customers/{customer_id}/email-optout")
+def set_email_optout(customer_id: str, body: OptOut, me: Me):
+    """Staff record a client's request not to be emailed (or reverse it)."""
+    _visible_customer(customer_id, me)
+    _optouts().set_email_optout(customer_id, body.opted_out, f"staff:{me['id']}")
+    return {"opted_out": body.opted_out}
+
+
+@router.api_route("/public/unsubscribe", methods=["GET", "POST"], response_class=HTMLResponse)
+def public_unsubscribe(c: str, t: str):
+    """One-click unsubscribe from the link in every email. The token is an HMAC of the customer id."""
+    if not hmac.compare_digest(t, _unsub_token(c)):
+        raise HTTPException(400, "This unsubscribe link is not valid.")
+    _optouts().set_email_optout(c, True, "client-link")
+    return "<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width'><title>Unsubscribed</title><p style='margin:3rem auto;max-width:28rem;padding:0 1rem'>You have been unsubscribed and will not receive further emails from us.</p>"
 
 
 @router.patch("/activities/{activity_id}")

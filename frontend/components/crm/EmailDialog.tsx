@@ -11,13 +11,16 @@ export interface Recipient { customer_id: string; name: string; email: string | 
 const usable = (r: Recipient) => !!r.email && !r.email.endsWith("@placeholder.invalid");
 
 /** Compose + send an email (optionally with statements attached). Pass `recipients` for a fixed list, or omit to search for clients. */
-export default function EmailDialog({ recipients: fixed, onClose, onSent }: { recipients?: Recipient[]; onClose: () => void; onSent?: () => void }) {
+export default function EmailDialog({ recipients: fixed, filing, onClose, onSent }: { recipients?: Recipient[]; filing?: { id: string; title: string }; onClose: () => void; onSent?: () => void }) {
   const [to, setTo] = useState<Recipient[]>(fixed ?? []);
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<SearchResult[]>([]);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [files, setFiles] = useState<File[]>([]);
+  const [statement, setStatement] = useState(false);
+  const [later, setLater] = useState(false);
+  const [sendAt, setSendAt] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<EmailOutcome | null>(null);
@@ -57,7 +60,9 @@ export default function EmailDialog({ recipients: fixed, onClose, onSent }: { re
   const send = async () => {
     setBusy(true); setError(null);
     try {
-      const r = await sendClientEmail(sendable.map((t) => t.customer_id), subject.trim(), message.trim(), files);
+      const r = await sendClientEmail(sendable.map((t) => t.customer_id), subject.trim(), message.trim(), files, {
+        statement, filingId: filing?.id, sendAt: later && sendAt ? new Date(sendAt).toISOString() : undefined,
+      });
       setOutcome(r);
       if (r.sent) onSent?.();
     } catch (e) { setError(e instanceof Error ? e.message : "Could not send"); } finally { setBusy(false); }
@@ -71,7 +76,7 @@ export default function EmailDialog({ recipients: fixed, onClose, onSent }: { re
 
         {outcome ? (
           <div className="mt-3 space-y-2 text-xs" role="status">
-            <p className="font-semibold text-[#181818] dark:text-[#EDF2F7]">{outcome.sent} sent{outcome.failed ? `, ${outcome.failed} failed` : ""}. Logged on each client&apos;s timeline.</p>
+            <p className="font-semibold text-[#181818] dark:text-[#EDF2F7]">{outcome.sent} {outcome.scheduled ? "scheduled" : "sent"}{outcome.failed ? `, ${outcome.failed} failed` : ""}. Logged on each client&apos;s timeline.</p>
             {outcome.results.filter((r) => !r.ok).map((r) => <p key={r.customer_id} className={errCls}>{r.name ?? r.customer_id}: {r.error}</p>)}
             <div className="flex justify-end"><button type="button" className={btnCls} onClick={onClose}>Done</button></div>
           </div>
@@ -116,11 +121,19 @@ export default function EmailDialog({ recipients: fixed, onClose, onSent }: { re
               <input id="em-files" type="file" multiple accept={EMAIL_ACCEPT} onChange={(e) => { pickFiles(e.target.files); e.target.value = ""; }} className="text-xs" />
               {files.map((f) => <div key={f.name + f.size} className="mt-1 flex items-center gap-2 text-xs">{f.name} <span className={mutedCls}>{(f.size / 1024).toFixed(0)} KB</span><button type="button" aria-label={`Remove ${f.name}`} onClick={() => setFiles(files.filter((x) => x !== f))}>×</button></div>)}
             </div>
+            {filing && <p className="text-xs">Attached: filled form “{filing.title}” (PDF)</p>}
+            <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={statement} onChange={(e) => setStatement(e.target.checked)} /> Attach each client&apos;s holdings statement (generated from CRM holdings)</label>
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <label className="flex items-center gap-2"><input type="checkbox" checked={later} onChange={(e) => setLater(e.target.checked)} /> Send later</label>
+              {later && <input type="datetime-local" aria-label="Send at" value={sendAt} onChange={(e) => setSendAt(e.target.value)} className={`${inputCls} w-auto`} />}
+              {later && <span className={mutedCls}>up to 30 days ahead</span>}
+            </div>
+            <p className={`text-[11px] ${mutedCls}`}>Every email includes an unsubscribe link. Clients who opted out are skipped.</p>
             {error && <p role="alert" className={errCls}>{error}</p>}
             <div className="flex justify-end gap-2">
               <button type="button" className={ghostBtnCls} onClick={onClose}>Cancel</button>
-              <button type="button" className={btnCls} disabled={busy || !sendable.length || !subject.trim() || !message.trim()} onClick={send}>
-                {busy ? "Sending…" : `Send to ${sendable.length}`}
+              <button type="button" className={btnCls} disabled={busy || !sendable.length || !subject.trim() || !message.trim() || (later && !sendAt)} onClick={send}>
+                {busy ? "Sending…" : `${later ? "Schedule for" : "Send to"} ${sendable.length}`}
               </button>
             </div>
           </div>

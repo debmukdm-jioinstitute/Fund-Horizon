@@ -1502,6 +1502,25 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def email_opted_out(self, customer_id: str) -> bool:
+        conn = self._conn()
+        try:
+            return conn.execute("SELECT 1 FROM email_optouts WHERE customer_id = ?", (customer_id,)).fetchone() is not None
+        finally:
+            conn.close()
+
+    def set_email_optout(self, customer_id: str, opted_out: bool, source: str) -> None:
+        conn = self._conn()
+        try:
+            with conn:
+                if opted_out:
+                    conn.execute("INSERT OR IGNORE INTO email_optouts (customer_id, created_at, source) VALUES (?, ?, ?)",
+                                 (customer_id, datetime.now(UTC).isoformat(), source))
+                else:
+                    conn.execute("DELETE FROM email_optouts WHERE customer_id = ?", (customer_id,))
+        finally:
+            conn.close()
+
     def set_filing_status(self, filing_id: str, status: int) -> None:
         conn = self._conn()
         try:

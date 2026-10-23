@@ -359,6 +359,7 @@ def _init_backoffice_schema_raw(conn: sqlite3.Connection) -> None:
         """
     )
     conn.execute("CREATE INDEX IF NOT EXISTS ix_filings_created ON operations_filings(created_at DESC)")
+    conn.execute("CREATE TABLE IF NOT EXISTS email_optouts (customer_id TEXT PRIMARY KEY, created_at TEXT NOT NULL, source TEXT NOT NULL)")
 
     conn.execute(
         """

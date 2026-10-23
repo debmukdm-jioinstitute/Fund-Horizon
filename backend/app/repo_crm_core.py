@@ -857,6 +857,7 @@ class CrmCoreRepository:
         lead_id: str | None = None,
         policy_id: str | None = None,
         fd_id: str | None = None,
+        kind: str | None = None,
         done: bool | None = None,
         due_before: str | None = None,
         overdue_before: str | None = None,
@@ -881,6 +882,8 @@ class CrmCoreRepository:
                 stmt = stmt.where(ActivityModel.policy_id == policy_id)
             if fd_id is not None:
                 stmt = stmt.where(ActivityModel.fd_id == fd_id)
+            if kind is not None:
+                stmt = stmt.where(ActivityModel.kind == kind)
             if done is True:
                 stmt = stmt.where(ActivityModel.done_at.isnot(None))
             elif done is False:

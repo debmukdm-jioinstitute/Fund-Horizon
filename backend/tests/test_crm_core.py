@@ -530,19 +530,19 @@ def test_public_crossword_result_creates_lead(client):
 # ---------------------------------------------------------------------------
 # Email via Resend
 # ---------------------------------------------------------------------------
-def _email(client, ids, **extra):
-    data = {"subject": extra.pop("subject", "Hi {name}"), "message": "Dear {name}, statement attached.", "customer_ids": json.dumps(ids)}
+def _email(client, ids, data_extra=None, **extra):
+    data = {"subject": extra.pop("subject", "Hi {name}"), "message": "Dear {name}, statement attached.", "customer_ids": json.dumps(ids), **(data_extra or {})}
     return client.post("/api/crm/email", data=data, headers={"sec-fetch-site": "same-origin"}, **extra)
 
 
 def test_email_sends_personalised_with_attachment_and_logs(client, admin, monkeypatch):
     sent = []
-    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m, a=None: sent.append((to, s, m, a)) or "em_1")
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m, a=None, **kw: sent.append((to, s, m, a)) or "em_1")
     a, b = _make_customer(name="Asha Rao"), _make_customer(name="Ben Cole")
     r = _email(client, [a["id"], b["id"]], files=[("files", ("stmt.pdf", b"%PDF-1", "application/pdf"))])
     assert r.status_code == 200, r.text
     assert r.json()["sent"] == 2 and r.json()["failed"] == 0
-    assert sent[0][1] == "Hi Asha" and "Dear Asha" in sent[0][2] and sent[0][3] == [("stmt.pdf", b"%PDF-1")]
+    assert sent[0][1] == "Hi Asha" and "Dear Asha" in sent[0][2] and "Unsubscribe:" in sent[0][2] and sent[0][3] == [("stmt.pdf", b"%PDF-1")]
     acts = client.get("/api/crm/activities", params={"customer_id": a["id"]}).json()
     assert acts and acts[0]["kind"] == "email" and "stmt.pdf" in acts[0]["body"]
 
@@ -563,6 +563,56 @@ def test_email_unconfigured_is_503(client, admin, monkeypatch):
     assert _email(client, [_make_customer()["id"]]).status_code == 503
 
 
+def test_email_statement_filing_schedule_optout_outbox(client, admin, monkeypatch):
+    from datetime import UTC, datetime, timedelta
+
+    from app import repo_crm_phase3 as p3
+    from app.api.crm_core import _optouts
+
+    calls = []
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m, a=None, **kw: calls.append((a, kw)) or "em_3")
+    cust = _make_customer(name="Meera Iyer")
+    # statement: needs holdings; none -> clear error, then a valued holding -> a real PDF is attached
+    r = _email(client, [cust["id"]], data_extra={"statement": "true"})
+    assert r.json()["results"][0]["error"] == "No holdings on file to build a statement."
+    monkeypatch.setattr(p3, "contact_by_customer", lambda cid: {"id": "k1"})
+    monkeypatch.setattr(p3, "list_holdings", lambda **kw: [{"x": 1}])
+    monkeypatch.setattr(p3, "value_holdings", lambda rows: [{"scheme_name": "Alpha Fund", "scheme_code": "1", "folio": "F1", "units": 10.5, "nav": 20.0, "cost_paise": 100000, "value_paise": 21000, "gain_paise": 5000}])
+    assert _email(client, [cust["id"]], data_extra={"statement": "true"}).json()["sent"] == 1
+    name, pdf = calls[-1][0][0]
+    assert name == "Holdings statement.pdf" and pdf.startswith(b"%PDF")
+    # filing attach + unknown filing
+    filing = _optouts().add_filing(form_title="CAMS Nomination", form_url=None, household_id=None, client_name="Meera", folio=None, staff_id="s", staff_name="S", pdf=b"%PDF-filing")
+    assert _email(client, [cust["id"]], data_extra={"filing_id": filing["id"]}).json()["sent"] == 1
+    assert calls[-1][0] == [("CAMS Nomination.pdf", b"%PDF-filing")]
+    assert _email(client, [cust["id"]], data_extra={"filing_id": "nope"}).status_code == 404
+    # schedule: past rejected, future passed to the mailer
+    past = (datetime.now(UTC) - timedelta(hours=1)).isoformat()
+    assert _email(client, [cust["id"]], data_extra={"send_at": past}).status_code == 422
+    fut = (datetime.now(UTC) + timedelta(days=2)).isoformat()
+    assert _email(client, [cust["id"]], data_extra={"send_at": fut}).json()["scheduled"] is True and calls[-1][1]["scheduled_at"]
+    assert calls[-1][1]["headers"]["List-Unsubscribe"].startswith("<")
+    # opt-out by staff blocks sending; reversing restores it
+    h = {"sec-fetch-site": "same-origin"}
+    assert client.put(f"/api/crm/customers/{cust['id']}/email-optout", json={"opted_out": True}, headers=h).json() == {"opted_out": True}
+    assert "opted out" in _email(client, [cust["id"]]).json()["results"][0]["error"]
+    client.put(f"/api/crm/customers/{cust['id']}/email-optout", json={"opted_out": False}, headers=h)
+    assert _email(client, [cust["id"]]).json()["sent"] == 1
+    # outbox lists what was logged, with the client's name
+    box = client.get("/api/crm/email/outbox").json()
+    assert box and box[0]["kind"] == "email" and box[0]["customer_name"] == "Meera Iyer"
+
+
+def test_public_unsubscribe_link(client):
+    from app.api.crm_core import _optouts, _unsub_token
+
+    cust = _make_customer()
+    assert client.get(f"/api/crm/public/unsubscribe?c={cust['id']}&t=bad").status_code == 400
+    assert not _optouts().email_opted_out(cust["id"])
+    r = client.post(f"/api/crm/public/unsubscribe?c={cust['id']}&t={_unsub_token(cust['id'])}")  # one-click POST
+    assert r.status_code == 200 and "unsubscribed" in r.text.lower() and _optouts().email_opted_out(cust["id"])
+
+
 def test_mailer_payload_and_errors(monkeypatch):
     import httpx
 
@@ -578,7 +628,7 @@ def test_mailer_payload_and_errors(monkeypatch):
 
     monkeypatch.setattr(mailer.httpx, "post", fake_post)
     assert mailer.send_email("a@b.com", "S", "<b>hi</b>") == "em_9"
-    assert seen["auth"] == "Bearer k" and "attachments" not in seen["json"] and seen["json"]["to"] == ["a@b.com"] and "&lt;b&gt;" in seen["json"]["html"]
+    assert seen["auth"] == "Bearer k" and "attachments" not in seen["json"] and "scheduled_at" not in seen["json"] and seen["json"]["to"] == ["a@b.com"] and "&lt;b&gt;" in seen["json"]["html"]
     monkeypatch.setattr(mailer.httpx, "post", lambda *a, **k: httpx.Response(422, json={"message": "bad"}, request=httpx.Request("POST", "x")))
     with pytest.raises(mailer.MailerError):
         mailer.send_email("a@b.com", "S", "t")

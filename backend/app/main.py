@@ -241,6 +241,7 @@ def create_app() -> FastAPI:
     from app.api.admin import admin_router
     from app.api.auth import auth_router
     from app.api.backoffice import router as backoffice_router
+    from app.api.client_report import router as client_report_router
     from app.api.crm_core import router as crm_core_router
     from app.api.crm_extras import router as crm_extras_router
     from app.api.crm_phase3 import router as crm_phase3_router
@@ -268,6 +269,7 @@ def create_app() -> FastAPI:
     app.include_router(plan_picks_router)
     app.include_router(crm_products_router)
     app.include_router(backoffice_router)
+    app.include_router(client_report_router)
     app.include_router(mf_reference_router)
 
     @app.get("/health")

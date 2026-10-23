@@ -9,6 +9,7 @@ import {
   fetchContactHoldings,
   fetchHouseholdAum,
   importHoldings,
+  uploadHoldingsFile,
   type AumPayload,
 } from "../../lib/crmPhase3Api";
 import { cardCls, errCls, headCls, inputCls, mutedCls, rupees, tdCls, thCls, tierTone } from "./ui";
@@ -24,7 +25,7 @@ const POPULAR_FUNDS = [
   { code: "120465", name: "Nippon India Small Cap Fund - Direct Plan - Growth" },
 ];
 
-/** AUM roll-up (units × latest AMFI NAV) with positions, tier, and direct add/delete/import controls. */
+/** AUM roll-up (units × latest AMFI NAV) with positions, tier, and direct add/delete/import controls (PDF, Excel, CSV). */
 export default function HoldingsCard({
   householdId,
   contactId,
@@ -58,7 +59,9 @@ export default function HoldingsCard({
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // Import form fields
+  // File import form fields (PDF, Excel, CSV)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [pdfPassword, setPdfPassword] = useState("");
   const [csvText, setCsvText] = useState("");
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
@@ -162,17 +165,42 @@ export default function HoldingsCard({
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setSelectedFile(file);
+    setImportError(null);
+  };
+
   const handleImportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!csvText.trim()) {
-      setImportError("Please paste CSV text or select a file");
+    setImportError(null);
+    setImportSuccess(null);
+
+    const targetContactId = contactId || (selectedContact.trim() ? selectedContact : undefined);
+
+    if (!selectedFile && !csvText.trim()) {
+      setImportError("Please upload a file (.pdf, .xlsx, .xls, .csv) or paste CSV text");
       return;
     }
+
     try {
       setImporting(true);
-      setImportError(null);
-      const res = await importHoldings(csvText, asOf || undefined, false);
-      setImportSuccess(`Imported ${res.matched_rows} position(s) across ${res.contacts} contact(s).`);
+      if (selectedFile) {
+        const res = await uploadHoldingsFile(selectedFile, {
+          password: pdfPassword.trim() || undefined,
+          contact_id: targetContactId,
+          as_of: asOf || undefined,
+        });
+        setImportSuccess(
+          `Successfully processed ${res.filename}: ${res.matched_rows} position(s) across ${res.contacts} contact(s).`
+        );
+      } else {
+        const res = await importHoldings(csvText, asOf || undefined, false);
+        setImportSuccess(`Imported ${res.matched_rows} position(s) across ${res.contacts} contact(s).`);
+      }
+
+      setSelectedFile(null);
+      setPdfPassword("");
       setCsvText("");
       setTimeout(() => {
         setShowImportModal(false);
@@ -180,21 +208,10 @@ export default function HoldingsCard({
       }, 1500);
       await loadHoldings();
     } catch (err) {
-      setImportError(err instanceof Error ? err.message : "Failed to import CAS data");
+      setImportError(err instanceof Error ? err.message : "Failed to process statement file");
     } finally {
       setImporting(false);
     }
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      const text = evt.target?.result as string;
-      if (text) setCsvText(text);
-    };
-    reader.readAsText(file);
   };
 
   if (error) return <p role="alert" className={errCls}>{error}</p>;
@@ -202,6 +219,7 @@ export default function HoldingsCard({
   if (!data) return null;
 
   const direct = data.direct_plan_holdings.length;
+  const isPdfSelected = selectedFile?.name?.toLowerCase().endsWith(".pdf");
 
   return (
     <section className={cardCls} aria-label={title}>
@@ -229,6 +247,8 @@ export default function HoldingsCard({
               type="button"
               onClick={() => {
                 setShowImportModal(true);
+                setSelectedFile(null);
+                setPdfPassword("");
                 setImportError(null);
                 setImportSuccess(null);
               }}
@@ -237,7 +257,7 @@ export default function HoldingsCard({
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
-              Import CAS
+              Import CAS / Statement
             </button>
           </div>
         )}
@@ -258,7 +278,7 @@ export default function HoldingsCard({
       {data.holdings.length === 0 ? (
         <div className="mt-3 rounded-lg border border-dashed border-[#E5E5E5] dark:border-[#2B3644] p-5 text-center">
           <p className="text-xs font-semibold text-[#181818] dark:text-[#EDF2F7]">No holdings recorded yet</p>
-          <p className={`text-xs mt-1 mb-3 ${mutedCls}`}>Add positions directly from the CRM or import a CAS file.</p>
+          <p className={`text-xs mt-1 mb-3 ${mutedCls}`}>Add positions directly from the CRM or upload a PDF, Excel, or CAS file.</p>
           {canWrite && (
             <div className="flex flex-wrap items-center justify-center gap-2">
               <button
@@ -278,12 +298,17 @@ export default function HoldingsCard({
                 type="button"
                 onClick={() => {
                   setShowImportModal(true);
+                  setSelectedFile(null);
+                  setPdfPassword("");
                   setImportError(null);
                   setImportSuccess(null);
                 }}
                 className="inline-flex items-center gap-1 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] px-3 py-1.5 text-xs font-semibold text-[#181818] dark:text-[#EDF2F7] hover:bg-[#F3F4F6] dark:hover:bg-[#202936] transition-colors"
               >
-                Import CAS
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Import CAS / Statement
               </button>
             </div>
           )}
@@ -537,14 +562,14 @@ export default function HoldingsCard({
         </div>
       )}
 
-      {/* Import CAS Modal */}
+      {/* Import CAS / PDF / Excel Modal */}
       {showImportModal && (
-        <div className="fixed inset-0 z-50 bg-[#181818]/50 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Import CAS File">
+        <div className="fixed inset-0 z-50 bg-[#181818]/50 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Import Statement or File">
           <div className="bg-white dark:bg-[#10151C] rounded-2xl border border-[#E5E5E5] dark:border-[#2B3644] shadow-2xl w-full max-w-lg p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-3">
               <div>
-                <h3 className="text-base font-bold text-[#181818] dark:text-[#EDF2F7]">Import CAS Holdings</h3>
-                <p className={`text-xs ${mutedCls}`}>Upload or paste CAMS/KFin CSV to auto-match holdings</p>
+                <h3 className="text-base font-bold text-[#181818] dark:text-[#EDF2F7]">Import Holdings Statement</h3>
+                <p className={`text-xs ${mutedCls}`}>Upload PDF, Excel, or CSV statement to import positions</p>
               </div>
               <button
                 type="button"
@@ -569,29 +594,86 @@ export default function HoldingsCard({
               </p>
             )}
 
-            <form onSubmit={handleImportSubmit} className="space-y-3">
-              <div>
-                <label className="block text-xs font-semibold text-[#181818] dark:text-[#EDF2F7] mb-1">
-                  Upload CSV File
-                </label>
-                <input
-                  type="file"
-                  accept=".csv,text/csv"
-                  onChange={handleFileUpload}
-                  className="block w-full text-xs text-[#706E6B] dark:text-[#A8B4C4] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#0176D3]/10 file:text-[#0176D3] hover:file:bg-[#0176D3]/20"
-                />
+            <form onSubmit={handleImportSubmit} className="space-y-3.5">
+              {householdId && (
+                <div>
+                  <label htmlFor="import-holder" className="block text-xs font-semibold text-[#181818] dark:text-[#EDF2F7] mb-1">
+                    Assign To Member (Optional)
+                  </label>
+                  <select
+                    id="import-holder"
+                    value={selectedContact}
+                    onChange={(e) => setSelectedContact(e.target.value)}
+                    className={inputCls}
+                  >
+                    <option value="">Auto-match from statement (PAN / Email / Name)</option>
+                    {members.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Supported formats pills */}
+              <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                <span className="font-semibold text-[#706E6B] dark:text-[#A8B4C4]">Supported:</span>
+                <span className="rounded bg-[#EAF5FE] dark:bg-[#102B47] px-2 py-0.5 font-medium text-[#0176D3] dark:text-[#1B96FF]">PDF (CAMS / KFin CAS)</span>
+                <span className="rounded bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 font-medium text-emerald-700 dark:text-emerald-400">Excel (.xlsx, .xls)</span>
+                <span className="rounded bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 font-medium text-amber-800 dark:text-amber-400">CSV</span>
               </div>
 
               <div>
+                <label className="block text-xs font-semibold text-[#181818] dark:text-[#EDF2F7] mb-1">
+                  Select Statement File (PDF / Excel / CSV)
+                </label>
+                <input
+                  type="file"
+                  accept=".pdf,.xlsx,.xls,.csv,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                  onChange={handleFileChange}
+                  className="block w-full text-xs text-[#706E6B] dark:text-[#A8B4C4] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#0176D3]/10 file:text-[#0176D3] hover:file:bg-[#0176D3]/20"
+                />
+                {selectedFile && (
+                  <p className="mt-1 text-[11px] text-[#0176D3] dark:text-[#1B96FF] font-medium">
+                    Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
+                  </p>
+                )}
+              </div>
+
+              {/* If PDF, show password input */}
+              {isPdfSelected && (
+                <div className="rounded-lg border border-amber-200 dark:border-amber-900/60 bg-amber-50/70 dark:bg-[#40300E]/40 p-3 space-y-1">
+                  <label htmlFor="pdf-pass" className="block text-xs font-semibold text-amber-900 dark:text-[#FFD27A]">
+                    PDF Password (if password protected)
+                  </label>
+                  <p className="text-[11px] text-amber-800/80 dark:text-[#FFD27A]/80">
+                    CAMS/KFintech CAS PDFs are usually locked with PAN in UPPERCASE or Date of Birth.
+                  </p>
+                  <input
+                    id="pdf-pass"
+                    type="password"
+                    placeholder="e.g. ABCDE1234F"
+                    value={pdfPassword}
+                    onChange={(e) => setPdfPassword(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+              )}
+
+              <div>
                 <label htmlFor="import-csv-text" className="block text-xs font-semibold text-[#181818] dark:text-[#EDF2F7] mb-1">
-                  Or Paste CSV Text
+                  Or Paste CSV Text (Optional)
                 </label>
                 <textarea
                   id="import-csv-text"
-                  rows={5}
+                  rows={4}
                   placeholder="folio,scheme_code,units,cost,as_of&#10;12345/67,118834,150.25,25000,2026-10-13"
                   value={csvText}
-                  onChange={(e) => setCsvText(e.target.value)}
+                  onChange={(e) => {
+                    setCsvText(e.target.value);
+                    if (e.target.value.trim()) setSelectedFile(null);
+                  }}
                   className={`${inputCls} font-mono text-[11px]`}
                 />
               </div>
@@ -609,7 +691,7 @@ export default function HoldingsCard({
                   disabled={importing}
                   className="px-4 py-1.5 text-xs font-bold rounded-lg bg-[#0176D3] text-white hover:bg-[#015db0] transition-colors shadow-sm disabled:opacity-50"
                 >
-                  {importing ? "Importing..." : "Import CAS"}
+                  {importing ? "Processing file..." : "Import Statement"}
                 </button>
               </div>
             </form>

@@ -201,6 +201,36 @@ export interface HoldingInput {
 
 export const createHolding = (body: HoldingInput) => post<{ status: string; holding: Record<string, unknown> }>("/holdings", body);
 export const deleteHolding = (id: string) => call<{ status: string; deleted: boolean }>("/holdings/" + id, { method: "DELETE" });
+export const uploadHoldingsFile = async (
+  file: File,
+  options: { password?: string; contact_id?: string; as_of?: string; dry_run?: boolean } = {}
+) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  if (options.password) formData.append("password", options.password);
+  if (options.contact_id) formData.append("contact_id", options.contact_id);
+  if (options.as_of) formData.append("as_of", options.as_of);
+  if (options.dry_run) formData.append("dry_run", "true");
+
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/crm/holdings/upload`), {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  if (!res.ok) {
+    let msg = `Upload failed (${res.status})`;
+    try {
+      const j = await res.json();
+      if (typeof j.detail === "string") msg = j.detail;
+      else if (j.detail && typeof j.detail.message === "string") msg = j.detail.message;
+      else if (Array.isArray(j.detail) && j.detail[0]?.msg) msg = String(j.detail[0].msg);
+    } catch {
+      /* fallback */
+    }
+    throw new ApiError(msg, res.status);
+  }
+  return (await res.json()) as ImportResult & { filename: string };
+};
 
 /* sips */
 export const fetchSips = (filters: { contact_id?: string; status?: string } = {}) => {

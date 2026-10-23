@@ -11,7 +11,8 @@ import secrets
 from datetime import date, datetime, timedelta
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query, Response
+import io
+from fastapi import APIRouter, File, Form, HTTPException, Query, Response, UploadFile
 from pydantic import BaseModel, Field
 
 from app import repo_crm_extras as extras
@@ -443,6 +444,208 @@ def import_holdings(body: HoldingsImport, me: Me):
     return {
         "dry_run": body.dry_run, "rows": len(rows), "created": created, "updated": updated,
         "matched_rows": len(good), "skipped": skipped, "contacts": len({g["contact_id"] for g in good}),
+        "unvalued_schemes": sorted({g["scheme_code"] for g in good if g["scheme_code"] not in navs}),
+        "aum_paise": sum(round(g["units"] * float(navs[g["scheme_code"]]["nav"]) * 100) for g in good if g["scheme_code"] in navs),
+    }
+
+
+@router.post("/holdings/upload")
+async def upload_holdings(
+    file: UploadFile = File(...),
+    password: str = Form(""),
+    contact_id: str | None = Form(None),
+    as_of: str | None = Form(None),
+    dry_run: bool = Form(False),
+    source: str = Form("upload"),
+    me: Me = None,
+):
+    """Upload a CAS PDF, Excel (.xlsx/.xls), or CSV file to import holdings."""
+    default_as_of = _iso_date(as_of, "as_of") or today_ist()
+    if default_as_of > today_ist():
+        raise HTTPException(422, "as_of cannot be in the future")
+
+    if contact_id:
+        _contact_or_404(contact_id, me)
+
+    filename = (file.filename or "").lower()
+    contents = await file.read()
+    if not contents:
+        raise HTTPException(400, "Uploaded file is empty.")
+
+    matcher = _Matcher(me)
+    good: list[dict[str, Any]] = []
+    skipped: list[dict[str, Any]] = []
+
+    if filename.endswith(".pdf"):
+        from app.engine import cas
+
+        try:
+            parsed_cas = cas.parse_cas_pdf_bytes(contents, password=password)
+        except cas.CASValidationError as e:
+            raise HTTPException(400, str(e)) from e
+        except cas.CASPasswordError as e:
+            raise HTTPException(400, str(e)) from e
+        except cas.CASParsingError as e:
+            raise HTTPException(422, str(e)) from e
+        except Exception as e:
+            raise HTTPException(422, f"Failed to parse PDF statement: {e}") from e
+
+        holdings_list = parsed_cas.get("holdings", [])
+        if not holdings_list:
+            raise HTTPException(422, "No holdings found in the uploaded CAS PDF.")
+
+        matched_contact = None
+        if contact_id:
+            matched_contact = p3.get_contact(contact_id)
+        else:
+            investor_info = {
+                "name": parsed_cas.get("investor_name"),
+                "email": parsed_cas.get("email"),
+                "pan": parsed_cas.get("pan"),
+            }
+            c, _ = matcher.match(investor_info)
+            if c:
+                matched_contact = c
+
+        for idx, h in enumerate(holdings_list, start=1):
+            folio_no = str(h.get("folio") or "").strip()
+            scheme_cd = str(h.get("scheme_code") or h.get("isin") or "").strip()
+            units_val = float(h.get("units") or 0)
+            if not folio_no or not scheme_cd or units_val <= 0:
+                skipped.append({"row": idx, "reason": "Missing folio, scheme_code, or valid units", "folio": folio_no})
+                continue
+
+            target_c = matched_contact
+            if not target_c:
+                c, why = matcher.match({"folio": folio_no, "scheme_code": scheme_cd, "name": parsed_cas.get("investor_name"), "email": parsed_cas.get("email")})
+                if not c:
+                    skipped.append({"row": idx, "reason": why or "no matching contact", "folio": folio_no})
+                    continue
+                target_c = c
+
+            cost_val = float(h.get("invested_value") or 0)
+            h_as_of = h.get("valuation_date") or default_as_of
+
+            good.append({
+                "contact_id": target_c["id"],
+                "folio": folio_no,
+                "scheme_code": scheme_cd,
+                "scheme_name": h.get("scheme_name") or h.get("scheme") or None,
+                "units": units_val,
+                "cost_paise": round(cost_val * 100),
+                "as_of": h_as_of,
+                "source": "cas_pdf",
+            })
+
+    elif filename.endswith((".xlsx", ".xls")):
+        import pandas as pd
+
+        try:
+            df = pd.read_excel(io.BytesIO(contents))
+            csv_text = df.to_csv(index=False)
+            rows = read_csv(csv_text, _HOLDING_ALIASES, ("folio", "scheme_code", "units"))
+        except Exception as e:
+            raise HTTPException(422, f"Failed to parse Excel file: {e}") from e
+
+        for line, r in rows:
+            try:
+                units = parse_decimal(r.get("units"))
+                cost = parse_decimal(r.get("cost"))
+                if not r.get("folio") or not r.get("scheme_code"):
+                    raise ValueError("folio and scheme_code are required")
+                if units is None or units <= 0:
+                    raise ValueError("units must be greater than zero")
+                if cost is not None and cost < 0:
+                    raise ValueError("cost cannot be negative")
+                row_as_of = parse_date(r["as_of"]) if r.get("as_of") else default_as_of
+                if row_as_of > today_ist():
+                    raise ValueError("date is in the future")
+            except ValueError as e:
+                skipped.append({"row": line, "reason": str(e)})
+                continue
+
+            target_c = None
+            if contact_id:
+                target_c = p3.get_contact(contact_id)
+            else:
+                target_c, why = matcher.match(r)
+                if not target_c:
+                    skipped.append({"row": line, "reason": why, "folio": r["folio"]})
+                    continue
+
+            good.append({
+                "contact_id": target_c["id"],
+                "folio": r["folio"],
+                "scheme_code": r["scheme_code"],
+                "scheme_name": r.get("scheme_name") or None,
+                "units": float(units),
+                "cost_paise": to_paise(cost) if cost is not None else 0,
+                "as_of": row_as_of,
+                "source": "excel",
+            })
+
+    elif filename.endswith(".csv"):
+        try:
+            csv_text = contents.decode("utf-8", errors="replace")
+            rows = read_csv(csv_text, _HOLDING_ALIASES, ("folio", "scheme_code", "units"))
+        except Exception as e:
+            raise HTTPException(422, f"Failed to parse CSV file: {e}") from e
+
+        for line, r in rows:
+            try:
+                units = parse_decimal(r.get("units"))
+                cost = parse_decimal(r.get("cost"))
+                if not r.get("folio") or not r.get("scheme_code"):
+                    raise ValueError("folio and scheme_code are required")
+                if units is None or units <= 0:
+                    raise ValueError("units must be greater than zero")
+                if cost is not None and cost < 0:
+                    raise ValueError("cost cannot be negative")
+                row_as_of = parse_date(r["as_of"]) if r.get("as_of") else default_as_of
+                if row_as_of > today_ist():
+                    raise ValueError("date is in the future")
+            except ValueError as e:
+                skipped.append({"row": line, "reason": str(e)})
+                continue
+
+            target_c = None
+            if contact_id:
+                target_c = p3.get_contact(contact_id)
+            else:
+                target_c, why = matcher.match(r)
+                if not target_c:
+                    skipped.append({"row": line, "reason": why, "folio": r["folio"]})
+                    continue
+
+            good.append({
+                "contact_id": target_c["id"],
+                "folio": r["folio"],
+                "scheme_code": r["scheme_code"],
+                "scheme_name": r.get("scheme_name") or None,
+                "units": float(units),
+                "cost_paise": to_paise(cost) if cost is not None else 0,
+                "as_of": row_as_of,
+                "source": "csv",
+            })
+    else:
+        raise HTTPException(400, "Supported formats: .pdf (CAS), .xlsx/.xls (Excel), .csv")
+
+    navs = p3.latest_navs([g["scheme_code"] for g in good])
+    for g in good:
+        if not g["scheme_name"] and g["scheme_code"] in navs:
+            g["scheme_name"] = navs[g["scheme_code"]]["name"]
+
+    created = updated = 0
+    if not dry_run and good:
+        created, updated = p3.upsert_holdings(good, me["id"])
+
+    return {
+        "filename": file.filename,
+        "matched_rows": len(good),
+        "created": created,
+        "updated": updated,
+        "contacts": len({g["contact_id"] for g in good}),
+        "skipped": skipped,
         "unvalued_schemes": sorted({g["scheme_code"] for g in good if g["scheme_code"] not in navs}),
         "aum_paise": sum(round(g["units"] * float(navs[g["scheme_code"]]["nav"]) * 100) for g in good if g["scheme_code"] in navs),
     }

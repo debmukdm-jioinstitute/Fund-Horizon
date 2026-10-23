@@ -159,6 +159,30 @@ def test_direct_holding_crud(client, book):
     assert not any(x['folio'] == 'FOLIO-MANUAL-1' for x in after['holdings'])
 
 
+def test_upload_excel_holdings(client, book):
+    import io, pandas as pd
+    meera_id = book['meera']['id']
+    df = pd.DataFrame([
+        {'folio': 'F-EXCEL-1', 'scheme_code': '100001', 'units': 25.5, 'cost': 1200.0}
+    ])
+    buf = io.BytesIO()
+    df.to_excel(buf, index=False)
+    buf.seek(0)
+
+    r = client.post(
+        "/api/crm/holdings/upload",
+        files={"file": ("holdings.xlsx", buf.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        data={"contact_id": meera_id, "as_of": "2026-10-13"}
+    )
+    assert r.status_code == 200, r.text
+    out = r.json()
+    assert out["created"] == 1
+    assert out["matched_rows"] == 1
+
+    per = client.get(f"/api/crm/contacts/{meera_id}/holdings").json()
+    assert any(h["folio"] == "F-EXCEL-1" for h in per["holdings"])
+
+
 def test_cas_import_matches_values_and_rolls_up_household_aum(client, book):
     r = client.post("/api/crm/holdings/import", json={"csv_text": CAS, "as_of": "2026-10-13", "source": "cams"})
     assert r.status_code == 200, r.text

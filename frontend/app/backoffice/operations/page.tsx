@@ -242,15 +242,6 @@ function TasksTab({ forms, filings, jobId, setJobId, hhName, member, pan4, fillL
               <span className={`text-[12px] font-bold ${teal}`}>{forms.filter(j.match).length} forms →</span>
             </button>
           ))}
-          <Link href="/backoffice/operations/calculators"
-            className="flex flex-col gap-1.5 rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-4 text-left hover:border-[#006F64]">
-            <span className="flex h-10 w-10 items-center justify-center rounded-[9px] bg-[#E6F2F0] dark:bg-[#0C2B28] text-[#006F64] dark:text-[#75E1CE]">
-              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="3" width="14" height="18" rx="2" /><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" /></svg>
-            </span>
-            <h3 className={`text-[15.5px] font-bold leading-tight ${ink}`}>Calculators</h3>
-            <p className={`flex-1 text-[13px] ${muted}`}>SIP, goal, retirement, SWP, CAGR, rebalancing and term cover calculators.</p>
-            <span className={`text-[12px] font-bold ${teal}`}>{CALCULATORS.length} calculators →</span>
-          </Link>
         </div>
       </div>
 
@@ -406,13 +397,17 @@ export default function OperationsPage() {
         <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Operations</h1>
         <p className={`mt-1 text-[14px] ${muted}`}>Choose what you want to do.</p>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."], ["download", "Download Content", "Paste a link to save a video, audio or image file."]] as const).map(([v, title, text]) => (
           <button key={v} type="button" onClick={() => setView(v)} className={`${card} p-6 text-left hover:border-[#006F64]`}>
             <div className={`text-lg font-bold ${ink}`}>{title}</div>
             <p className={`mt-1.5 text-[13.5px] ${muted}`}>{text}</p>
           </button>
         ))}
+        <Link href="/backoffice/operations/calculators" className={`${card} p-6 text-left hover:border-[#006F64]`}>
+          <div className={`text-lg font-bold ${ink}`}>Calculators</div>
+          <p className={`mt-1.5 text-[13.5px] ${muted}`}>{CALCULATORS.length} calculators: SIP, goal, retirement, SWP, CAGR, rebalancing and term cover.</p>
+        </Link>
       </div>
     </div>
   );

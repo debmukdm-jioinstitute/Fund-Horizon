@@ -2,6 +2,11 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import CalcCharts, { CountUp } from "@/components/operations/CalcCharts";
+import { ClientPicker, loadSaved, saveCalc, type Client, type Saved } from "@/components/operations/CalcClient";
+import { download, pdfBlob, renderCard, toBlob } from "@/lib/calcExport";
+import { vizFor } from "@/lib/calcViz";
 import { CALCULATORS, CATEGORIES, calculate, type Calculator, type Metric, type Result } from "@/lib/calculators";
 
 const card = "rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]";
@@ -28,6 +33,14 @@ export default function CalculatorsPage() {
     const h = window.location.hash.slice(1);
     if (CALCULATORS.some((c) => c.id === h)) setId(h);
   }, []);
+  const [client, setClient] = useState<Client | null>(null);
+  const [loaded, setLoaded] = useState<{ vals: Record<string, string>; n: number } | null>(null);
+  const [saved, setSaved] = useState<Saved[]>([]);
+  const [stamp, setStamp] = useState(0); // bumps after a save so the history reloads
+  useEffect(() => {
+    if (!client) { setSaved([]); return; }
+    loadSaved(client).then(setSaved).catch(() => setSaved([]));
+  }, [client, stamp]);
   const calc = CALCULATORS.find((c) => c.id === id) ?? CALCULATORS[0];
   const pick = (next: string) => { setId(next); window.history.replaceState(null, "", `#${next}`); };
 
@@ -38,6 +51,18 @@ export default function CalculatorsPage() {
         <h1 className={`mt-1 text-2xl font-bold tracking-tight ${ink}`}>Calculators</h1>
         <p className={`mt-1 max-w-2xl text-[14px] ${muted}`}>Planning tools for client conversations. Results are estimates from the assumptions you enter, not guaranteed returns or advice.</p>
       </div>
+      <ClientPicker client={client} onChange={setClient} />
+      {client && saved.length > 0 && (
+        <div className={`${card} px-5 py-3`}>
+          <div className={`mb-1.5 text-[12px] font-bold uppercase tracking-wider ${muted}`}>Saved for {client.name}</div>
+          <ul className="flex flex-wrap gap-2">
+            {saved.map((s) => (
+              <li key={s.id}><button type="button" className={btn} onClick={() => { setId(s.calc); setLoaded({ vals: s.vals, n: Date.now() }); window.history.replaceState(null, "", `#${s.calc}`); }}>
+                {CALCULATORS.find((c) => c.id === s.calc)?.title ?? s.calc} · {new Date(s.at).toLocaleDateString("en-IN")}</button></li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="grid gap-4 lg:grid-cols-[250px_1fr]">
         <nav aria-label="Calculators" className={`${card} p-2 lg:self-start`}>
           {CATEGORIES.map((cat) => (
@@ -54,14 +79,14 @@ export default function CalculatorsPage() {
             </div>
           ))}
         </nav>
-        <CalcPanel key={calc.id} calc={calc} />
+        <CalcPanel key={`${calc.id}-${loaded?.n ?? 0}`} calc={calc} client={client} initial={loaded?.vals} onSaved={() => setStamp((x) => x + 1)} />
       </div>
     </div>
   );
 }
 
-function CalcPanel({ calc }: { calc: Calculator }) {
-  const [vals, setVals] = useState<Record<string, string>>(() => defaults(calc));
+function CalcPanel({ calc, client, initial, onSaved }: { calc: Calculator; client: Client | null; initial?: Record<string, string>; onSaved: () => void }) {
+  const [vals, setVals] = useState<Record<string, string>>(() => ({ ...defaults(calc), ...initial }));
   const [result, setResult] = useState<Result | null>(null);
   const parsed = useMemo(() => Object.fromEntries(calc.fields.map((f) => [f.key, vals[f.key].trim() === "" ? undefined : Number(vals[f.key])])), [calc, vals]);
 
@@ -100,19 +125,48 @@ function CalcPanel({ calc }: { calc: Calculator }) {
             <ul className="list-disc space-y-0.5 pl-5">{result.errors.map((m) => <li key={m}>{m}</li>)}</ul>
           </div>
         )}
-        {result?.ok && <Results calc={calc} r={result} />}
+        {result?.ok && <Results calc={calc} r={result} vals={vals} parsed={parsed} client={client} onSaved={onSaved} />}
       </div>
     </section>
   );
 }
 
-function Results({ calc, r }: { calc: Calculator; r: Extract<Result, { ok: true }> }) {
+function Results({ calc, r, vals, parsed, client, onSaved }: { calc: Calculator; r: Extract<Result, { ok: true }>; vals: Record<string, string>; parsed: Record<string, number | undefined>; client: Client | null; onSaved: () => void }) {
   const [hero, ...rest] = r.metrics;
+  const [note, setNote] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const values = useMemo(() => Object.fromEntries(calc.fields.map((f) => [f.key, parsed[f.key] ?? 0])), [calc, parsed]);
+  const viz = useMemo(() => vizFor(calc.id, values, r), [calc, values, r]);
+  const summary = `${calc.title}: ${r.metrics.slice(0, 3).map((m) => `${m.label} ${show(m)}`).join("; ")}`;
+
+  const card$ = () => renderCard({
+    title: calc.title, client: client?.name, viz, notes: r.notes,
+    inputs: calc.fields.filter((f) => vals[f.key].trim() !== "").map((f) => [f.label, f.unit === "₹" ? inr(Number(vals[f.key])) : `${vals[f.key]} ${f.unit === "age" ? "" : f.unit}`.trim()]),
+    metrics: r.metrics.map((m) => ({ label: m.label, text: show(m) })),
+  });
+  const file = `fund-horizon-${calc.id}${client ? `-${client.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}` : ""}`;
+  const act = (fn: () => Promise<string | void>) => async () => {
+    setBusy(true); setNote(null);
+    try { setNote((await fn()) ?? null); } catch (e) { setNote(e instanceof Error ? e.message : "Something went wrong"); } finally { setBusy(false); }
+  };
+  const pdf = act(async () => { download(await pdfBlob(await card$()), `${file}.pdf`); });
+  const png = act(async () => { download(await toBlob(await card$(), "image/png"), `${file}.png`); });
+  const share = act(async () => {
+    const f = new File([await toBlob(await card$(), "image/png")], `${file}.png`, { type: "image/png" });
+    if (!navigator.canShare?.({ files: [f] })) return "Sharing is not supported here. Use Image or PDF and send the file.";
+    await navigator.share({ files: [f], title: calc.title });
+  });
+  const save = act(async () => {
+    if (!client) return "Pick or create a customer first.";
+    await saveCalc(client, calc.title, calc.id, vals, summary); onSaved();
+    return `Saved to ${client.name}.`;
+  });
+
   return (
-    <div className="space-y-4">
+    <motion.div className="space-y-4" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
       <div className={`${card} p-5`}>
         <div className={`text-[12px] font-bold uppercase tracking-wider ${muted}`}>{hero.label}</div>
-        <div className={`mt-1 text-3xl font-bold tabular-nums ${teal}`}>{show(hero)}</div>
+        <div className={`mt-1 text-3xl font-bold tabular-nums ${teal}`}>{hero.text || hero.kind === "text" ? show(hero) : <CountUp value={hero.value} fmt={(n) => show({ ...hero, value: n })} />}</div>
         {hero.kind === "inr" && words(hero.value) && <div className={`text-[13px] ${muted}`}>{words(hero.value)}</div>}
         <dl className="mt-4 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((m) => (
@@ -123,6 +177,14 @@ function Results({ calc, r }: { calc: Calculator; r: Extract<Result, { ok: true 
           ))}
         </dl>
         {r.notes?.map((n) => <p key={n} className={`mt-3 text-[13px] ${ink}`}>ⓘ {n}</p>)}
+      </div>
+      <CalcCharts viz={viz} />
+      <div className={`${card} flex flex-wrap items-center gap-2 px-4 py-3`}>
+        <button type="button" className={btnPrimary} disabled={busy} onClick={pdf}>Download PDF</button>
+        <button type="button" className={btn} disabled={busy} onClick={png}>Download image</button>
+        <button type="button" className={btn} disabled={busy} onClick={share}>Share</button>
+        <button type="button" className={btn} disabled={busy || !client} title={client ? undefined : "Pick a customer first"} onClick={save}>Save to {client ? client.name : "customer"}</button>
+        {note && <span role="status" className={`text-[12.5px] ${muted}`}>{note}</span>}
       </div>
       {r.table && (
         <div className={`${card} overflow-x-auto`}>
@@ -142,6 +204,6 @@ function Results({ calc, r }: { calc: Calculator; r: Extract<Result, { ok: true 
         <summary className={`cursor-pointer text-[13.5px] font-semibold ${ink}`}>How {calc.title} was calculated</summary>
         <ol className={`mt-2 list-decimal space-y-1 pl-5 text-[13px] ${muted}`}>{r.steps.map((s) => <li key={s}>{s}</li>)}</ol>
       </details>
-    </div>
+    </motion.div>
   );
 }

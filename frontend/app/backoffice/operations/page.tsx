@@ -414,12 +414,20 @@ export default function OperationsPage() {
         <p className={`mt-1 text-[14px] ${muted}`}>Choose what you want to do.</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."], ["download", "Download Content", "Paste a link to save a video, audio or image file."]] as const).map(([v, title, text]) => (
+        {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."]] as const).map(([v, title, text]) => (
           <button key={v} type="button" onClick={() => setView(v)} className={`${card} p-6 text-left hover:border-[#006F64]`}>
             <div className={`text-lg font-bold ${ink}`}>{title}</div>
             <p className={`mt-1.5 text-[13.5px] ${muted}`}>{text}</p>
           </button>
         ))}
+        <Link href="/backoffice/operations/paperwork" className={`${card} p-6 text-left hover:border-[#006F64]`}>
+          <div className={`text-lg font-bold ${ink}`}>Paperwork Processing</div>
+          <p className={`mt-1.5 text-[13.5px] ${muted}`}>Build a client&apos;s monthly report from PMS factsheets and portfolio files: check the tables, fix the numbers, download, save to the CRM and email it.</p>
+        </Link>
+        <button type="button" onClick={() => setView("download")} className={`${card} p-6 text-left hover:border-[#006F64]`}>
+          <div className={`text-lg font-bold ${ink}`}>Download Content</div>
+          <p className={`mt-1.5 text-[13.5px] ${muted}`}>Paste a link to save a video, audio or image file.</p>
+        </button>
         <Link href="/backoffice/operations/calculators" className={`${card} p-6 text-left hover:border-[#006F64]`}>
           <div className={`text-lg font-bold ${ink}`}>Calculators</div>
           <p className={`mt-1.5 text-[13.5px] ${muted}`}>{CALCULATORS.length} calculators: SIP, goal, retirement, SWP, CAGR, rebalancing and term cover.</p>

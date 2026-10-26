@@ -22,7 +22,6 @@
   "Payouts never erode capital if they are regular.",
   "Only IDCW erodes capital; SWPs cannot."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "idcw-q10",

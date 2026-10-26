@@ -24,7 +24,6 @@
   "Debt is risk-free.",
   "A sudden NAV drop is always interest-rate risk."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "bonds-q16",

@@ -25,13 +25,6 @@
   "Exit now, before it gets worse.",
   "Never mention the manager change."
  ],
- "talk_track": [
-  {
-   "n": 14,
-   "title": "Stay, or review for exit?",
-   "text": "When should a client leave a PMS? Use these signals. One year behind the benchmark, with the process unchanged and the style simply out of favour: stay, and explain the style cycle. Behind both the benchmark and peers for three years or more: review for exit. Style drift, where the manager is no longer doing what was sold: review, because it's no longer the product the client bought. A change in the client's own goals, horizon or liquidity needs: re-check suitability. And if the fund manager or key team leaves: review immediately. Before recommending any exit, always show the client the exit load, the tax on gains, and the cost of rebuilding elsewhere. Talk-track: \"After all fees, your account is three percent a year ahead of its benchmark over three years. The manager and process are unchanged, so we stay.\""
-  }
- ],
  "check": [
   {
    "id": "pms-q18",

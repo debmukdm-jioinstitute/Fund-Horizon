@@ -23,7 +23,6 @@
   "Predict a recovery date.",
   "Promise a fund will come back by a date."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "timing-q14",

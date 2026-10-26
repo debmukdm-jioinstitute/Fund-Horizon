@@ -23,7 +23,6 @@
   "Check only funds from one AMC.",
   "Ignore direct holdings."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-n02",

@@ -23,13 +23,6 @@
   "The market will recover by December.",
   "Stop the SIP now and restart when it feels safer."
  ],
- "talk_track": [
-  {
-   "n": 13,
-   "title": "SIPs fail when the habit breaks",
-   "text": "Most SIPs don't fail because of the fund. They fail when the habit breaks. Stopping in a fall: remind the client this is when the SIP buys the most units, and pause only if cash is tight. The milestone cash-out: ask whether this is the goal money, and plan a separate fun fund instead. Lifestyle creep: suggest raising the SIP by ten percent right away. Fund hopping: compare three to five year records before any switch. Too many SIPs: many hold the same stocks. And retirement panic: set up a systematic withdrawal plan with a one to two year buffer."
-  }
- ],
  "check": [
   {
    "id": "sip-q23",

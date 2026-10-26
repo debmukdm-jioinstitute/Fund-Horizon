@@ -24,13 +24,6 @@
   "This one gave 60% last year, so choose it.",
   "There is no need to compare."
  ],
- "talk_track": [
-  {
-   "n": 9,
-   "title": "Due diligence before any recommendation",
-   "text": "Stage three is Act right, and in PMS it starts with due diligence. This is where we earn our trail. Check eight things before recommending any strategy. Track record: after-fee returns over three, five and seven years, including how it did in the 2020 and 2022 falls. Manager and team: who runs the money, and for how long. Process: the style, and whether it's applied consistently. Portfolio: number of stocks, how much sits in the top ten, sector tilts. Risk: the worst fall, volatility, and how long recovery took. Costs: every fee, the exit load, and expected trading churn. Documents: the Disclosure Document and the agreement. And always compare two or three strategies in the same category using APMI's published data."
-  }
- ],
  "check": [
   {
    "id": "pms-q11",

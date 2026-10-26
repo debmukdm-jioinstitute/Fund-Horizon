@@ -23,13 +23,6 @@
   "A percentage step-up is always better.",
   "A fixed step-up never catches up."
  ],
- "talk_track": [
-  {
-   "n": 2,
-   "title": "A step-up raises the SIP automatically, two ways",
-   "text": "A step-up, also called a top-up SIP, raises the monthly instalment automatically at a set interval. There are two ways to do it. A fixed amount adds the same rupees each time: ten thousand, then eleven, twelve, thirteen, fourteen thousand. It's gentler and easy to budget. A percentage raises it by a set share of the previous instalment: at ten percent, ten thousand becomes eleven thousand, then twelve thousand one hundred. It grows faster, because each raise is applied to a bigger base."
-  }
- ],
  "check": [
   {
    "id": "stepup-q4",

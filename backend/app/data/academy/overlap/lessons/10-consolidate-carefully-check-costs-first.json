@@ -23,7 +23,6 @@
   "Redeem everything at once to consolidate fast.",
   "Ignore exit loads on recent units."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q10",

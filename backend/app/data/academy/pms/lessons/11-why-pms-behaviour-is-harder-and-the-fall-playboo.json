@@ -25,13 +25,6 @@
   "Sell, it will fall further.",
   "This never happens in PMS."
  ],
- "talk_track": [
-  {
-   "n": 15,
-   "title": "The playbook for a sharp fall",
-   "text": "The emotional test is sharper in PMS than in mutual funds, for four reasons: bigger swings from a concentrated portfolio; full visibility, so clients see every stock in red in their own demat; switching costs real tax; and wealthy clients constantly hear about last year's top PMS. So follow this playbook. One, set expectations at onboarding by showing the strategy's worst past fall. Two, call clients before they call you, newest clients first. Three, separate a market-wide fall from a problem with the manager. Four, check the process, not the price: if the manager and process are intact, the case for staying holds. Five, show the cost of leaving: tax, exit load, and the risk of selling at the low. Six, record the conversation and follow up in writing."
-  }
- ],
  "check": [
   {
    "id": "pms-q21",

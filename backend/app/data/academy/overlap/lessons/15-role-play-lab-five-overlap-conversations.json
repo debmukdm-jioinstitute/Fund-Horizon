@@ -23,7 +23,6 @@
   "Add funds without checking what the portfolio already holds.",
   "Switch funds mainly to earn commission."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q21",

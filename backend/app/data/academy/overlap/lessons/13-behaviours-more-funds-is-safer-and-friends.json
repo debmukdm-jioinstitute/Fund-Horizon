@@ -24,7 +24,6 @@
   "Different AMCs guarantee safety.",
   "Dropping an overlapping fund means missing its gains."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q14",

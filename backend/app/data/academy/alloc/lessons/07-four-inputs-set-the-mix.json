@@ -23,13 +23,6 @@
   "Let's go heavy on equity while the market is strong.",
   "I'm confident about the next year, so we'll adjust the mix."
  ],
- "talk_track": [
-  {
-   "n": 5,
-   "title": "Four inputs set the mix, not the market view",
-   "text": "The mix comes from the client, not from our view of the market. Four inputs decide it. Time horizon: when is the money needed? Risk capacity: can the client afford a loss financially? Risk tolerance: can the client live with a loss emotionally? And goal type: is it a must-have or a nice-to-have, and is the date flexible?"
-  }
- ],
  "check": [
   {
    "id": "alloc-q4",

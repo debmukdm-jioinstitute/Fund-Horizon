@@ -23,13 +23,6 @@
   "Don't worry, the money will last.",
   "Just double the SIP; you'll thank me later."
  ],
- "talk_track": [
-  {
-   "n": 16,
-   "title": "Practice before you need it",
-   "text": "To wrap up: practise this before you need it. Role-play the six client scenarios from the manual in pairs, take the twenty-five question quiz, where the pass mark is twenty, and use the thirty-two flash cards for quick revision. Remember, this is for training and investor awareness, not investment advice."
-  }
- ],
  "check": [
   {
    "id": "sip-q29",

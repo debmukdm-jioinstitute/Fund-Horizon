@@ -22,13 +22,6 @@
   "Five funds is diversification.",
   "Debt funds from three AMCs diversify credit risk."
  ],
- "talk_track": [
-  {
-   "n": 3,
-   "title": "Diversify within each class too",
-   "text": "Remember to diversify within each class too: equity across company sizes and styles, and debt across issuers and maturities. Several funds holding the same stocks are not diversification; they are the same bet with more paperwork."
-  }
- ],
  "check": [
   {
    "id": "alloc-q10x",

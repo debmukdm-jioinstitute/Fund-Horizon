@@ -24,7 +24,6 @@
   "Call IDCW a dividend or bonus.",
   "Promise a fixed IDCW amount."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "idcw-n25",

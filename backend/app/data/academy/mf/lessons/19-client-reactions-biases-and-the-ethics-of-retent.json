@@ -24,13 +24,6 @@
   "You're right, switch to the top performer.",
   "Don't worry, it will definitely recover."
  ],
- "talk_track": [
-  {
-   "n": 17,
-   "title": "When the client says…",
-   "text": "Here are three things clients say, the bias behind each, and how to respond. \"Let me stop my SIP until markets settle\" is loss aversion. Respond: your SIP is buying more units at lower prices now, and stopping skips the part that helps most later. \"My friend's fund gave 40%, let's switch\" is recency and herd behaviour. Respond: let's compare both over five years and see how each did in bad years. \"I'll sell when it's back to my cost\" is anchoring. Respond: your buying price doesn't affect what the fund does next; is it still the right fund for your goal? And remember the ethics: never churn for commission, never push NFOs without a clear fit, never assure returns."
-  }
- ],
  "check": [
   {
    "id": "mf-q22",

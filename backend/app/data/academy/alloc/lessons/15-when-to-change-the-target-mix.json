@@ -23,13 +23,6 @@
   "Gold did well, so let's make it the core holding.",
   "Let's change the mix because the market looks shaky."
  ],
- "talk_track": [
-  {
-   "n": 12,
-   "title": "Change the target only for goals, life events or a new risk profile",
-   "text": "Change the target itself only for goals, life events or a new risk profile, never because of a market view. Rebalancing brings the mix back to the target; changing the target is a bigger decision that belongs in writing."
-  }
- ],
  "check": [
   {
    "id": "alloc-q12",

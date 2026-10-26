@@ -22,13 +22,6 @@
   "Your money will last 22 years.",
   "SWP withdrawals are tax-free, so don't worry."
  ],
- "talk_track": [
-  {
-   "n": 15,
-   "title": "Compliance: what we say, and what we never say",
-   "text": "Finally, compliance. Do ask why before acting on any stop, pause or redemption request. Do label every projection as illustrative, with the assumed return. Do explain exit loads, and refer tax questions to a CA. Do fit every change to the client's goal and risk profile. And do give the client a written note of each decision. Don't process a stop or a switch without knowing the reason. Don't promise a corpus, a return, or how long an SWP will last. Don't give tax advice or call a withdrawal tax-free. Don't push switches that mainly earn commission. And never call any fund safe or guaranteed."
-  }
- ],
  "check": [
   {
    "id": "sip-q27",

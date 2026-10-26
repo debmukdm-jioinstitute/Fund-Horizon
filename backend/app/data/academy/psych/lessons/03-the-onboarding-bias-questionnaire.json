@@ -23,13 +23,6 @@
   "Label the client by their biases.",
   "Ask the questionnaire only once, at onboarding."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "If it fell 20% next month",
-   "text": "Quick question: if your portfolio fell 20% next month, what would you do?"
-  }
- ],
  "check": [
   {
    "id": "psych-n05",

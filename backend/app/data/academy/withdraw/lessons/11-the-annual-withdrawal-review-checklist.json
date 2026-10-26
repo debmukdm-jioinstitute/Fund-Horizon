@@ -21,7 +21,6 @@
   "Increase the SWP every year regardless.",
   "Skip the health-cover and nominee checks."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-n15",

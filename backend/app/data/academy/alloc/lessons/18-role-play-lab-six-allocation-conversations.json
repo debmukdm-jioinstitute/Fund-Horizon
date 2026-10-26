@@ -23,13 +23,6 @@
   "FDs are the safest place for your money.",
   "The market will recover, so let's buy equity now."
  ],
- "talk_track": [
-  {
-   "n": 16,
-   "title": "Practise before you need it",
-   "text": "To wrap up: practise this before you need it. Role-play the six client scenarios from the manual in pairs, take the twenty-five question quiz, where the pass mark is twenty, and use the thirty-two flash cards for quick revision. All mixes and figures are illustrative, and past performance doesn't guarantee future returns."
-  }
- ],
  "check": [
   {
    "id": "alloc-q52",

@@ -23,13 +23,6 @@
   "I've processed the stop as you asked.",
   "A failed debit is nothing to worry about."
  ],
- "talk_track": [
-  {
-   "n": 7,
-   "title": "When the client says…, ask…",
-   "text": "Here are the six things clients say most often, and what to ask. “I want to stop my SIP”: ask whether it's cash flow, a market fall, a change in goal, or doubts about the fund. “My SIP has ended”: ask how far away the goal is and whether the target is still right. “I got a raise”: ask whether the emergency fund is topped up and whether there are loans. “I need the money next year”: ask the exact date and amount. “I've retired”: ask about the monthly need and other income. And “my SIP failed”: ask how many in a row, because three in a row cancels a monthly SIP."
-  }
- ],
  "check": [
   {
    "id": "sip-q8",

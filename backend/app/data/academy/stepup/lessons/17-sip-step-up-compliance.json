@@ -23,13 +23,6 @@
   "The step-up will get you to ₹2 crore.",
   "Just re-register the SIP; nothing changes."
  ],
- "talk_track": [
-  {
-   "n": 14,
-   "title": "Compliance: what we say, and what we never say",
-   "text": "Do check the client's emergency fund, loans and budget before suggesting a step-up. Do show the extra money invested, not just the final result. Do explain the fund house's terms, the cap and the mandate limit. Do explain any re-registration and exit-load effects. And do record the agreed step-up rule and the review date. Don't push a step-up the client can't sustain. Don't show only the final corpus. Don't promise that a step-up will reach a goal."
-  }
- ],
  "check": [
   {
    "id": "stepup-q38",

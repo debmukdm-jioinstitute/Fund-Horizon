@@ -22,7 +22,6 @@
   "SIPs skip falling months.",
   "A lump sum at the start beats a SIP through a fall."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "timing-q4",

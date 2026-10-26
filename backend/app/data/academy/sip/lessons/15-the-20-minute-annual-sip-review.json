@@ -24,13 +24,6 @@
   "Your SIP is running, so the review is done.",
   "Let's skip the mix; the funds are doing well."
  ],
- "talk_track": [
-  {
-   "n": 12,
-   "title": "The 20-minute annual SIP review",
-   "text": "Once a year, a twenty-minute SIP review does more than ten panicked phone calls. Ten checks: is the goal still right after inflation? Is the portfolio on track, measured by XIRR? Can the SIP step up by five to ten percent? How are the funds doing against their benchmarks over three to five years? Has the mix drifted? Which SIPs end in the next twelve months? Is any goal now within three years? Are there too many overlapping SIPs? Are the mandate, bank, nominee and KYC details current? And finally, record the decision and share it with the client."
-  }
- ],
  "check": [
   {
    "id": "sip-q20",

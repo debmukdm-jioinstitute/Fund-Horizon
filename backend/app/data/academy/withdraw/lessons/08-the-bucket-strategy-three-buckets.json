@@ -23,7 +23,6 @@
   "Run the SWP from the equity bucket.",
   "Refill Bucket 1 from equity in a bad year."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q10",

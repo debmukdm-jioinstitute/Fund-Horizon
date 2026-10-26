@@ -23,13 +23,6 @@
   "If money is tight, let's cancel the SIP.",
   "A pay cut means selling the units."
  ],
- "talk_track": [
-  {
-   "n": 11,
-   "title": "Keep the step-up realistic as life changes",
-   "text": "After a job loss or pay cut, pause the SIP briefly, don't cancel it, and restart the step-up when income recovers. With a new EMI or school fees, hold the step-up at the current level for a year. After a big raise or promotion, consider a one-time larger step-up or an extra SIP. If the goal is ahead of plan, the step-up can slow down. And when a goal comes within three years, stop stepping up equity SIPs and send extra money to debt instead."
-  }
- ],
  "check": [
   {
    "id": "stepup-q32",

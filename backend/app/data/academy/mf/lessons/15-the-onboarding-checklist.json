@@ -26,13 +26,6 @@
   "Skip the nominee, you can add it later.",
   "Don't worry about the exit load."
  ],
- "talk_track": [
-  {
-   "n": 9,
-   "title": "The onboarding checklist",
-   "text": "Before the first rupee goes in, run this checklist. KYC verified and not on hold. FATCA declaration done. Holding mode chosen deliberately: single, joint, or either or survivor. A nominee registered, or the opt-out formally recorded. Bank mandate set up for SIPs. The riskometer of each scheme shown and matched to the client's profile. Exit load, lock-in and expense ratio explained. Commission and the direct-plan option disclosed. And the reason for the recommendation recorded in the client file. Then set expectations honestly: \"This fund suits your seven-year goal. It can fall 20% in a bad year. Are you comfortable staying invested if that happens?\""
-  }
- ],
  "check": [
   {
    "id": "mf-q14",

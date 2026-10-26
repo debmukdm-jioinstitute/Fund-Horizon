@@ -22,7 +22,6 @@
   "Portfolios only change when the client trades.",
   "Drift is caused by fund manager changes."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-q1",

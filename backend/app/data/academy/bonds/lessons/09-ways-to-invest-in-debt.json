@@ -26,7 +26,6 @@
   "Direct G-secs never change price before maturity.",
   "Corporate bonds bought directly carry no concentration risk."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "bonds-n11",

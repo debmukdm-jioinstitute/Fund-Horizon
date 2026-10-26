@@ -22,7 +22,6 @@
   "Never change a withdrawal plan.",
   "Always increase withdrawals for inflation."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-n21",

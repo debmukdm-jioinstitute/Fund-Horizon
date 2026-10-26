@@ -22,13 +22,6 @@
   "EPF doesn't count; it's separate.",
   "Property is not part of your portfolio."
  ],
- "talk_track": [
-  {
-   "n": 7,
-   "title": "One client, separate pots, separate mixes",
-   "text": "Also, count everything the client owns, not just what we manage: EPF, PPF, fixed deposits, gold and property. For example, a client with twenty-five lakh in EPF already holds a lot of debt, so their mutual funds may be able to hold more equity."
-  }
- ],
  "check": [
   {
    "id": "alloc-q11",

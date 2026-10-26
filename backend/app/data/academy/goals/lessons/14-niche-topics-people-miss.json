@@ -25,7 +25,6 @@
   "Use one inflation rate for every goal.",
   "Retirement planning ends at the corpus number."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "goals-q20",

@@ -25,7 +25,6 @@
   "Start from the corpus size.",
   "Ignore health cover and other income."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q14",

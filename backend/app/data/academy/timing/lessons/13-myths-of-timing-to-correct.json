@@ -22,7 +22,6 @@
   "Experts can time exits and re-entries reliably.",
   "Stopping a SIP protects you in a fall."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "timing-q1",

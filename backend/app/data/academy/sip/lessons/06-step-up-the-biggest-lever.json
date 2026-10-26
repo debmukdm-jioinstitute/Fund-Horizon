@@ -23,13 +23,6 @@
   "A step-up guarantees the goal.",
   "Max out the step-up now and sort out the emergency fund later."
  ],
- "talk_track": [
-  {
-   "n": 3,
-   "title": "A 10% yearly step-up changes everything",
-   "text": "Decision point one, the step-up, is the most powerful lever a SIP investor has. Take a SIP of ten thousand rupees a month for fifteen years, at an assumed twelve percent a year. Kept flat, the client invests eighteen lakh, and it grows to about fifty and a half lakh. Increase the SIP by ten percent every year, and the client invests about thirty-eight lakh, which grows to about eighty-seven lakh. That's roughly thirty-six lakh more, from a change most clients barely notice once their income grows."
-  }
- ],
  "check": [
   {
    "id": "sip-q4",

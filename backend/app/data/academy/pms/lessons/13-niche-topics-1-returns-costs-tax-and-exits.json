@@ -26,13 +26,6 @@
   "The strategy return is your return.",
   "There are no other costs."
  ],
- "talk_track": [
-  {
-   "n": 17,
-   "title": "What PMS clients miss, and complain about later",
-   "text": "These are the niche topics that drive most PMS complaints later. A client's own return differs from the strategy's published return because of entry timing. Hidden costs, like brokerage, custody charges and GST on fees, add up beyond the headline fee. Every trade is taxed in the client's hands, so high churn can mean a bigger tax bill; involve their CA. Exit loads are capped by SEBI at up to 3%, 2% and 1% in the first three years. The direct onboarding option is always available, so explain our value. Many providers let clients fund a PMS with shares they already own. Clients should know exactly what the DDPI authorises. And they should add a nominee to the PMS demat account too."
-  }
- ],
  "check": [
   {
    "id": "pms-q26",

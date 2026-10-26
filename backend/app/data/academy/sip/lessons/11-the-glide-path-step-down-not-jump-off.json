@@ -23,13 +23,6 @@
   "Let's switch everything to debt tomorrow.",
   "A glide path means we can time the market."
  ],
- "talk_track": [
-  {
-   "n": 9,
-   "title": "The glide path: step down, not jump off",
-   "text": "When the goal is one to three years away, we use a glide path: step down, don't jump off. Here's an illustrative path. Three years out, about sixty-five percent in equity. Two years out, about forty-five. One year out, about twenty-five. And at the goal, close to nothing in equity for the money that will be spent. The shift happens in steps, through a systematic transfer plan from the equity fund into a debt or liquid fund, or by sending new SIP money into debt. This avoids one big switch on a single day."
-  }
- ],
  "check": [
   {
    "id": "sip-q12",

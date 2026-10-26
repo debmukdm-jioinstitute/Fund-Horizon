@@ -23,13 +23,6 @@
   "All AMCs run step-ups the same way.",
   "The mandate will adjust itself as the SIP grows."
  ],
- "talk_track": [
-  {
-   "n": 3,
-   "title": "Terms differ by AMC: always check the form",
-   "text": "How fund houses run step-ups differs, so always check the scheme's form. At SBI Mutual Fund, the top-up is at least five hundred rupees, in multiples of five hundred; it can be half-yearly or yearly for monthly SIPs, and it's chosen at enrolment. At DSP Mutual Fund, the top-up can be a fixed amount from five hundred rupees, or a percentage; it's half-yearly or yearly; and the instalment is capped at five lakh rupees or the bank mandate limit. A step-up is often available only on a fresh SIP."
-  }
- ],
  "check": [
   {
    "id": "stepup-q7x",

@@ -23,7 +23,6 @@
   "Judge drift on funds alone.",
   "Rebalance to 60/40 when the goal is near."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-q24",

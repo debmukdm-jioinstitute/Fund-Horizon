@@ -24,13 +24,6 @@
   "Judge funds by daily market moves.",
   "Delaying the start costs nothing."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "The plan already expects falls",
-   "text": "The market will fall many times before your daughter starts college. Our plan already expects that. What matters is that we stay on track for the date."
-  }
- ],
  "check": [
   {
    "id": "goals-q25",

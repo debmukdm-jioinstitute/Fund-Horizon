@@ -25,13 +25,6 @@
   "Switching between funds is not a redemption, so there's no tax.",
   "Your KYC will be fine; it was done years ago."
  ],
- "talk_track": [
-  {
-   "n": 11,
-   "title": "Three checks before money moves out",
-   "text": "Before any money moves out, whether by redemption, switch, STP or SWP, run three checks. Exit load: recent SIP instalments may still be inside the exit-load period, even in a SIP that started years ago. Tax: every switch, STP transfer and SWP withdrawal is a redemption, so gains on it may be taxed; ask the client to check with a CA. Details: confirm the nominee, bank account and KYC are up to date before money starts flowing out."
-  }
- ],
  "check": [
   {
    "id": "sip-q18",

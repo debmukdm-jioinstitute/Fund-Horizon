@@ -26,7 +26,7 @@ export interface Mcq { id: string; q: string; o: string[] }
 export interface Lesson {
   id: string; module: string; title: string; minutes: number; level: string; stage: string;
   objectives: string[]; body_md: string; key_terms: string[]; example: string; say: string[]; never: string[];
-  talk_track: { n: number; title: string; text: string }[]; check: Mcq[]; card_ids: string[];
+  check: Mcq[]; card_ids: string[];
 }
 export interface Card { id: string; q: string; a: string[] }
 export interface GlossaryEntry { term: string; aliases: string[]; definition: string }

@@ -26,13 +26,6 @@
   "A bond's coupon is its market price.",
   "YTM is a promised return."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "A bond is a loan you give",
-   "text": "A bond is a loan you give. You earn interest, and you get your money back at the end, if the borrower can pay. In between, the price can move with interest rates."
-  }
- ],
  "check": [
   {
    "id": "bonds-q2",

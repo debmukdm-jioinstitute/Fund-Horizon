@@ -22,7 +22,6 @@
   "Ignore merger notices.",
   "A merger never changes risk or costs."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q25",

@@ -23,7 +23,6 @@
   "Start with funds, then worry about the emergency fund.",
   "Insurance can wait until goals are funded."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "goals-q4",

@@ -25,7 +25,6 @@
   "Move everything to FDs in a fall.",
   "Never touch the corpus at all."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q23",

@@ -25,7 +25,6 @@
   "AIFs can be publicly advertised.",
   "PMS trades are taxed only at exit."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "compare-q8",

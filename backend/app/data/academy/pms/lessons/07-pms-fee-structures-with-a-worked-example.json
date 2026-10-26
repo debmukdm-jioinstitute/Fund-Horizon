@@ -25,18 +25,6 @@
   "The fee is only 2%.",
   "Performance fees are charged on every gain regardless of earlier losses."
  ],
- "talk_track": [
-  {
-   "n": 10,
-   "title": "Fees, shown in rupees, in good and bad years",
-   "text": "Clients understand fees in rupees, not percentages, so always show them this way. Take a one crore portfolio and two fee options. Option A charges a flat 2.5% a year. Option B charges 1% fixed plus 20% of gains above a 10% hurdle. In a good year, with an 18% gross return, they cost almost the same: two and a half lakh versus two point six lakh, leaving a net gain of about fifteen and a half lakh either way. But in a bad year, with a 10% fall, Option A still charges two and a half lakh, while Option B charges only the one lakh fixed fee. So the client loses twelve and a half lakh with A, and eleven lakh with B. Neither is always better; what matters is that the client sees both years before choosing. This is a hypothetical example, before GST, brokerage and operating expenses."
-  },
-  {
-   "n": 11,
-   "title": "How a high-water mark protects the client",
-   "text": "When a PMS charges a share of profits, ask whether it uses a high-water mark, and explain it like this. Say a client's portfolio grows from one crore to one crore twenty lakh in year one. That's a new peak, so the manager earns a profit share. In year two it falls back to one crore, and in year three it recovers to one fifteen. With a high-water mark, no profit share is charged in those years, because the client is only regaining lost ground. In year four it reaches one thirty-five, and the profit share applies only to the fifteen lakh above the old peak of one twenty. Without a high-water mark, the client could pay twice for the same gains. Always check the agreement for when and how the high-water mark resets."
-  }
- ],
  "check": [
   {
    "id": "pms-q12",

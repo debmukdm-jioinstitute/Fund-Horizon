@@ -21,7 +21,6 @@
   "Inflation doesn't affect retirees.",
   "Withdrawals should never rise."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q4",

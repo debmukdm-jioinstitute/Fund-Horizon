@@ -23,13 +23,6 @@
   "Your ₹50 lakh will last 22 years.",
   "The SWP is guaranteed for life."
  ],
- "talk_track": [
-  {
-   "n": 10,
-   "title": "SWP: how long does ₹50 lakh last?",
-   "text": "How long does fifty lakh last? At an assumed eight percent a year: withdrawing thirty thousand a month, it lasts well over twenty years, with about seventy lakh still left after twenty years. Forty thousand a month lasts about twenty-two years. Forty-five thousand, about seventeen. Fifty thousand, about fourteen. The withdrawal rate matters far more than which fund is chosen. And keep one to two years of withdrawals in a liquid or short-duration fund, so a market fall never forces equity sales at low prices."
-  }
- ],
  "check": [
   {
    "id": "sip-q15",

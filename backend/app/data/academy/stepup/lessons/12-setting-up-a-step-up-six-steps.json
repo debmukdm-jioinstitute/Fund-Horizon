@@ -24,13 +24,6 @@
   "Set the step-up as high as possible and we'll sort the mandate later.",
   "A bonus replaces the need for a step-up."
  ],
- "talk_track": [
-  {
-   "n": 10,
-   "title": "Setting up a step-up: six steps",
-   "text": "Setting up a step-up takes six steps. One, pick the type: a fixed amount or a percentage; yearly is the simplest to explain. Two, set a cap where the fund house allows it. Three, check the bank mandate: it must cover the highest future instalment. Four, for an existing SIP, check whether adding a step-up means cancelling and re-registering. Five, time it to just after the client's annual raise. And six, if there's no step-up facility, start a second smaller SIP each year instead."
-  }
- ],
  "check": [
   {
    "id": "stepup-q33",

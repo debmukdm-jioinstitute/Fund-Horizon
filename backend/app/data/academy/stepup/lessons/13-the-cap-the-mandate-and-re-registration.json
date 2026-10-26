@@ -23,13 +23,6 @@
   "The cap is a formality.",
   "The mandate can stay at today's amount."
  ],
- "talk_track": [
-  {
-   "n": 10,
-   "title": "Setting up a step-up: the cap and the mandate",
-   "text": "Two practical points. Set a cap where the fund house allows it, so the instalment stops rising at a comfortable level. And check the bank mandate: it must cover the highest future instalment, not just today's."
-  }
- ],
  "check": [
   {
    "id": "stepup-q36x",

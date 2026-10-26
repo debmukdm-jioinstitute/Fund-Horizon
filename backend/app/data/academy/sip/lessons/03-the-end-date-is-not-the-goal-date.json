@@ -23,13 +23,6 @@
   "The SIP has ended, so the money is now safe.",
   "The fund house will automatically renew it for you."
  ],
- "talk_track": [
-  {
-   "n": 4,
-   "title": "The SIP end date is not the goal date",
-   "text": "Here's a common confusion: the SIP end date is not the goal date. When a SIP's registered tenure ends, only the instalments stop. The units already bought stay invested and keep moving with the market until the investor redeems them. Take ten thousand rupees a month for ten years, at an assumed twelve percent. At year ten, it's worth about twenty-three lakh. If the client simply holds for ten more years, it grows to about seventy-two lakh. If the client renews the SIP for those ten years, it reaches about one crore."
-  }
- ],
  "check": [
   {
    "id": "sip-q1",

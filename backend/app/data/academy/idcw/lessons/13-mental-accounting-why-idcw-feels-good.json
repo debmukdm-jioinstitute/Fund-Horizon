@@ -23,13 +23,6 @@
   "A payout and an SWP are economically different in amount.",
   "SWPs always cost more tax than IDCW."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Same place, different feeling",
-   "text": "Whether the fund sends you money or you take it out yourself, it comes from the same place. The SWP just lets you choose the amount and pay less tax."
-  }
- ],
  "check": [
   {
    "id": "idcw-n20",

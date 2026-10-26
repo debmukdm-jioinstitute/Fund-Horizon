@@ -23,13 +23,6 @@
   "Stop it if you want; it's your money.",
   "The market fell, so stopping makes sense."
  ],
- "talk_track": [
-  {
-   "n": 6,
-   "title": "Four checks before any SIP change",
-   "text": "Now the E of L.E.A.R.N.: evaluating the client. Before any change to a SIP, run four checks. Goal: what is this SIP for, and is the target amount still right after inflation? Time left: the years to the goal decide how much can stay in equity. Cash flow: can the client keep paying comfortably, or even pay more? And progress: is the portfolio on track? Use XIRR and a goal calculator, as we covered in Modules nine and ten, not just the current value. The rule: never change a SIP on the request alone."
-  }
- ],
  "check": [
   {
    "id": "sip-q7",

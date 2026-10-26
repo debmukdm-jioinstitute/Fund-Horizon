@@ -24,13 +24,6 @@
   "I'm your independent financial adviser.",
   "I'll charge you a fee for this advice."
  ],
- "talk_track": [
-  {
-   "n": 5,
-   "title": "Who we are, and how we earn",
-   "text": "A mutual fund distributor is registered with AMFI and holds an ARN. Anyone who deals with clients needs NISM Series V-A certification and an EUIN, which is quoted on every transaction. We are distributors, not SEBI registered investment advisers, so we never charge an advisory fee and never call ourselves independent advisers. On earnings: every scheme has a direct plan and a regular plan. The regular plan includes our trail commission, paid only while the client stays invested. There is no upfront commission, and the client can see what we're paid in their statement. Be open about this. Transparency builds trust. Suggested talk-track: \"Your money sits with the fund's custodian, not with us. We're paid a small trail by the fund house, and you can see it in your statement.\""
-  }
- ],
  "check": [
   {
    "id": "mf-q2",

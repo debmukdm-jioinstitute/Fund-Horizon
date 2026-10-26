@@ -26,7 +26,6 @@
   "The quoted price is always what you pay.",
   "A flat yield curve rewards lending longer."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "bonds-q13",

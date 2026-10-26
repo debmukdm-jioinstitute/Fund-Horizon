@@ -23,13 +23,6 @@
   "Holding and renewing give the same result.",
   "Renewal is automatic, so there is nothing to plan."
  ],
- "talk_track": [
-  {
-   "n": 4,
-   "title": "Renew or just hold?",
-   "text": "At year ten, the SIP is worth about twenty-three lakh. If the client simply holds for ten more years, it grows to about seventy-two lakh. If the client renews the SIP for those ten years, it reaches about one crore. The existing units compound either way; renewing adds the extra years of contributions. And many investors simply forget to renew, so put the end date in the review calendar."
-  }
- ],
  "check": [
   {
    "id": "sip-q14",

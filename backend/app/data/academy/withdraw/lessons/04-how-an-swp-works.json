@@ -23,7 +23,6 @@
   "The whole SWP withdrawal is taxed as gains.",
   "An SWP is a guaranteed pension."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q7",

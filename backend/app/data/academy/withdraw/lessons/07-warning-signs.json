@@ -21,7 +21,6 @@
   "A 9.6% rate is fine if the client is optimistic.",
   "Promise the corpus will last."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q22",

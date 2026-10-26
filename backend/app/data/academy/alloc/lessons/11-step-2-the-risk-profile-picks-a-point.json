@@ -23,13 +23,6 @@
   "This is our model portfolio for everyone.",
   "Aggressive is always better over 20 years."
  ],
- "talk_track": [
-  {
-   "n": 9,
-   "title": "Step 2: risk profile picks a point in the range",
-   "text": "Step two: the client's risk profile picks a point within that range. For a goal seven or more years away, here are three teaching examples. Conservative: thirty percent equity, sixty percent debt, ten percent gold. Moderate: fifty, forty, ten. Aggressive: seventy, twenty, ten. These are teaching examples only, not Fund Horizon model portfolios."
-  }
- ],
  "check": [
   {
    "id": "alloc-q31",

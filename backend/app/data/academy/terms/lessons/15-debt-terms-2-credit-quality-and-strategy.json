@@ -26,13 +26,6 @@
   "AAA means a bond cannot fail.",
   "Gilt funds cannot fall in value."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "A debt fund is not an FD",
-   "text": "A debt fund is not an FD. Its return depends on two things: how sensitive it is to interest rates, which is its duration, and how safe its borrowers are, which is its credit quality. Let's match the duration to when you need the money."
-  }
- ],
  "check": [
   {
    "id": "terms-q17",

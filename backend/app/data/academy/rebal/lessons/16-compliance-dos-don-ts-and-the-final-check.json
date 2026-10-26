@@ -23,7 +23,6 @@
   "Rebalance without a documented target.",
   "Switch funds without consent, or to earn commission."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-n20",

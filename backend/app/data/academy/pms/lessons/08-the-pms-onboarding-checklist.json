@@ -25,13 +25,6 @@
   "Just sign here, it is standard.",
   "We can skip the nominee."
  ],
- "talk_track": [
-  {
-   "n": 12,
-   "title": "The PMS onboarding checklist",
-   "text": "Before the client signs, run this checklist. Suitability documented and signed. The Disclosure Document shared and its key risks explained. The agreement, fee schedule and exit load reviewed together. Fees shown in rupees for an up year and a down year. The direct onboarding option mentioned, and our role explained. KYC, demat and bank accounts opened in the client's own name. The scope of the DDPI or power of attorney explained before signing. A nominee added to the PMS demat account. And our APRN and EUIN on every document, with the trail commission disclosed. Then set expectations honestly: show how the manager did in past falls, and what the client would pay in a good year and a bad one."
-  }
- ],
  "check": [
   {
    "id": "pms-q15",

@@ -24,7 +24,6 @@
   "Predict rates to choose duration.",
   "Rebalancing is free of tax and exit loads."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "bonds-n18",

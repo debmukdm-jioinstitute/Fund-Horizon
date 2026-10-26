@@ -25,13 +25,6 @@
   "Your SIP is five years old, so no exit load applies.",
   "Redemptions from a SIP are tax-free."
  ],
- "talk_track": [
-  {
-   "n": 5,
-   "title": "Four facts every team member must know",
-   "text": "Four facts every team member must know. First, missed instalments have consequences: a monthly SIP is cancelled after three consecutive failed debits, and a quarterly or less frequent SIP after two. That's been in force since April 2024. Second, cancellation is quick: since the first of December 2024, cancellation requests must be processed within two working days, down from ten. Third, pause, don't stop: many fund houses and platforms allow a SIP to be paused for a few months; terms vary, so check them. Fourth, each instalment is its own buy: exit load and tax are worked out per instalment, oldest first."
-  }
- ],
  "check": [
   {
    "id": "sip-q6",

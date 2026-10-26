@@ -23,13 +23,6 @@
   "This new fund is excellent; let's build the plan around it.",
   "Small-cap funds are fine for a three-year goal."
  ],
- "talk_track": [
-  {
-   "n": 11,
-   "title": "Step 3: choose products for each part",
-   "text": "Step three: choose products for each part of the mix. For core equity: flexi-cap, large-cap or index funds; watch for overlap between funds. For satellite equity: mid-cap, small-cap or thematic funds; keep this part small. For debt: short-duration, corporate bond, gilt or target-maturity funds; watch credit and interest-rate risk. For gold: gold ETFs or gold funds; five to fifteen percent is usually enough."
-  }
- ],
  "check": [
   {
    "id": "alloc-q37x",

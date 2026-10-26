@@ -26,13 +26,6 @@
   "This fund lost 5% this year, let's switch.",
   "Compare your SIP's absolute return with a lump sum's CAGR."
  ],
- "talk_track": [
-  {
-   "n": 12,
-   "title": "Read returns right, switch only for a reason",
-   "text": "Clients often misread their own returns. For SIPs, always use XIRR, because it accounts for each instalment's date. CAGR is for a single lump sum. Absolute return is only meaningful over very short periods. And to judge a fund manager, compare against the benchmark and the category, over three to five years, never on one year. When should we recommend leaving a fund? When it has lagged its benchmark and peers for three years or more, when the manager or style changes, when the mandate changes, or when the client's goal changes. Not because of one bad year. And always check exit load and tax before any switch."
-  }
- ],
  "check": [
   {
    "id": "mf-q17",

@@ -24,13 +24,6 @@
   "Long duration fits money needed any day.",
   "A large share in one issuer is fine if the yield is high."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Two deciding questions",
-   "text": "Let's decide two things before choosing a fund: when do you need this money, and how would you feel if it fell 3% in a month?"
-  }
- ],
  "check": [
   {
    "id": "bonds-q11",

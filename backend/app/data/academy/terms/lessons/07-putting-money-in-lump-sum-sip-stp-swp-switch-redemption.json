@@ -25,13 +25,6 @@
   "STP and SIP are the same thing.",
   "A switch is free of tax because it stays in one AMC."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Three checks before investing",
-   "text": "Before we invest, three checks: is your KYC and nomination done, which plan and option are you choosing, and what will it cost you in rupees?"
-  }
- ],
  "check": [
   {
    "id": "terms-q7",

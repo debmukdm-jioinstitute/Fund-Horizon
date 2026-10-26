@@ -22,13 +22,6 @@
   "Debt funds are risk-free.",
   "Gold always goes up when markets fall."
  ],
- "talk_track": [
-  {
-   "n": 3,
-   "title": "Four asset classes, four different jobs",
-   "text": "There are four main asset classes, and each has a different job. Equity is for growth: it has the highest long-run growth, but with sharp falls along the way. Debt is for stability and income: it's steadier, though it carries interest-rate and credit risk. Gold is a diversifier: it often holds up when equity falls, but it can go through long flat spells. And cash is for liquidity and emergencies: very stable, but often below inflation after tax."
-  }
- ],
  "check": [
   {
    "id": "alloc-q2",

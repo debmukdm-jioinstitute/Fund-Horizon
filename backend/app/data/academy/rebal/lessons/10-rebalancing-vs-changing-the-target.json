@@ -22,7 +22,6 @@
   "Change the target because markets look expensive.",
   "Rebalance to 60/40 when the goal is 2 years away."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-q11",

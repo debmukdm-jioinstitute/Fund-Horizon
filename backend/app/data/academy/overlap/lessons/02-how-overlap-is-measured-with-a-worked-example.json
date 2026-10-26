@@ -22,7 +22,6 @@
   "Add the larger weights.",
   "Count shared stocks only, ignoring weights."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q2",

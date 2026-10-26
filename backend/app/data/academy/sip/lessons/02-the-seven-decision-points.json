@@ -24,13 +24,6 @@
   "The SIP is on autopilot, so nothing needs deciding.",
   "Stopping is the same as pausing."
  ],
- "talk_track": [
-  {
-   "n": 2,
-   "title": "A SIP's life: seven decision points",
-   "text": "A SIP isn't a one-time decision. Over its life, it passes through seven decision points. One, the step-up: every year, or after a raise, should the SIP go up? Two, the pause: what to do in a short-term cash crunch. Three, missed debits: fix the mandate fast, because repeated misses can cancel the SIP. Four, market falls: keep going, because this is when the SIP buys the most units. Five, the end date: when the registered tenure ends, renew if the goal is still years away."
-  }
- ],
  "check": [
   {
    "id": "sip-q4x",

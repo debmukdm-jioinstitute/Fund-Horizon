@@ -23,7 +23,6 @@
   "Use the emergency fund for routine monthly expenses.",
   "Pay big known costs from the monthly SWP."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q13",

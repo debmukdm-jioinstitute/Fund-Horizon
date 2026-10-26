@@ -23,13 +23,6 @@
   "Let's sell equity because a fall is coming.",
   "Rebalancing is tax-free."
  ],
- "talk_track": [
-  {
-   "n": 12,
-   "title": "Markets move the mix; rebalancing brings it back",
-   "text": "Markets move the mix on their own. Start with a sixty-forty target. After a year when equity rises thirty percent and debt seven, equity becomes about sixty-five percent. Rebalancing means moving about five points back to debt, booking some gains. After a year when equity falls twenty-five percent, equity drops to about fifty-one percent. Rebalancing means moving about nine points from debt into equity, buying after the fall. Agree the rules in writing."
-  }
- ],
  "check": [
   {
    "id": "alloc-q9",

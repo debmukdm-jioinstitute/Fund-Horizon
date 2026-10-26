@@ -23,7 +23,6 @@
   "Add last year's top fund without checking.",
   "Same large-cap stocks add diversification."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q23",

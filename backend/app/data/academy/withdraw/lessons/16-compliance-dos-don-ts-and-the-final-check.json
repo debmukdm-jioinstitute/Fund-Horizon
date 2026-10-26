@@ -23,7 +23,6 @@
   "Set an SWP amount without knowing the client's spending.",
   "Say SWP income is tax-free."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q15",

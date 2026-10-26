@@ -8,6 +8,8 @@
 # Normally this runs by itself via deploy/auto-deploy.sh. Secrets stay in /home/ubuntu/fh.env.
 set -euo pipefail
 H=/home/ubuntu
+# One deploy at a time: the server timer and the GitHub Actions deploy can fire together; the second waits here.
+exec 8>$H/.redeploy.lock; flock 8
 REPO=https://github.com/debmukdm-jioinstitute/Fund-Horizon
 PX=$H/fh-proxy
 D="sudo docker"

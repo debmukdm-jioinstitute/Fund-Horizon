@@ -276,3 +276,106 @@ def test_household_push_behaviour_is_unchanged(monkeypatch, tmp_path):
     r = push(PushIn(customer_id=cust["id"], household_id=hh["id"], report=_report(), send_email=False), ADMIN)
     assert r["emailed"] is False and r["matched_existing"] is False
     assert [h["report_month"] for h in history(cust["id"], ADMIN)] == ["september 2026"]
+
+
+# ------------------------------------------------------- phase 2 --------
+# Valuation prefill, multi-file order independence, OCR, logo.
+
+from pathlib import Path
+
+import app.report.monthly_report as mr_mod
+from app.report.monthly_report import PREFILL_BUCKET_NAME
+
+
+def test_valuation_only_upload_prefills_one_labelled_bucket(monkeypatch):
+    monkeypatch.setattr("app.report.monthly_report.extract_text", lambda n, _d: VALUATION_TEXT)
+    d = parse_monthly_files([("v.pdf", b"")])
+    # Exactly one bucket, honestly labelled — never a per-fund or per-category
+    # split invented from fund names.
+    assert [b["name"] for b in d["buckets"]] == [PREFILL_BUCKET_NAME]
+    assert d["buckets"][0]["invested"] == 352103.35
+    assert d["buckets"][0]["current"] == 797440.90
+    assert d["buckets"][0]["xirr"] == 14.31
+    # The valuation is still kept as the cross-check alongside the prefill.
+    assert d["valuation"] is not None and d["valuation"]["invested"] == 352103.35
+    assert d["file_results"] == [
+        {"name": "v.pdf", "kind": "valuation", "method": "text", "buckets": 0, "valuation_rows": 1, "factsheet_items": 0}
+    ]
+
+
+def test_monthly_plus_valuation_in_either_order_gives_same_buckets_and_cross_check(monkeypatch):
+    def fake_extract(name, _data):
+        return MONTHLY_TEXT if name == "m.pdf" else VALUATION_TEXT
+
+    monkeypatch.setattr("app.report.monthly_report.extract_text", fake_extract)
+    a = parse_monthly_files([("m.pdf", b""), ("v.pdf", b"")])
+    b = parse_monthly_files([("v.pdf", b""), ("m.pdf", b"")])
+    assert [x["name"] for x in a["buckets"]] == [x["name"] for x in b["buckets"]]
+    assert len(a["buckets"]) == 6  # real monthly buckets win, not the prefill
+    assert a["valuation"] == b["valuation"]
+    assert a["warnings"] == b["warnings"] == []
+    assert sorted(r["kind"] for r in a["file_results"]) == ["monthly", "valuation"]
+    assert sorted(r["kind"] for r in b["file_results"]) == ["monthly", "valuation"]
+
+
+def test_second_monthly_and_second_valuation_are_ignored_with_warning(monkeypatch):
+    monkeypatch.setattr("app.report.monthly_report.extract_text", lambda n, _d: MONTHLY_TEXT if n.startswith("m") else VALUATION_TEXT)
+    d = parse_monthly_files([("m1.pdf", b""), ("m2.pdf", b""), ("v1.pdf", b""), ("v2.pdf", b"")])
+    assert len(d["buckets"]) == 6
+    assert d["valuation"]["rows"] == 1
+    assert any("second monthly report" in w for w in d["warnings"])
+    assert any("second valuation" in w for w in d["warnings"])
+
+
+def test_file_results_name_image_reads_as_ocr(monkeypatch):
+    def fake_extract(name, _data):
+        return "Some Fund Portfolio\nNAV: 123.45\n" if name.endswith(".png") else MONTHLY_TEXT
+
+    monkeypatch.setattr("app.report.monthly_report.extract_text", fake_extract)
+    d = parse_monthly_files([("fs.png", b"")])
+    assert d["file_results"][0]["kind"] == "factsheet"
+    assert d["file_results"][0]["method"] == "ocr"
+    assert d["file_results"][0]["factsheet_items"] == 1
+
+
+def test_built_pdf_embeds_official_logo_and_grows_vs_text_only(monkeypatch, tmp_path):
+    pdf = build_monthly_report(_report())
+    assert pdf.startswith(b"%PDF")
+    assert b"/Subtype /Image" in pdf  # an embedded image XObject, not text art
+    monkeypatch.setattr(mr_mod, "LOGO_PATH", tmp_path / "missing-logo.png")
+    plain = build_monthly_report(_report())
+    assert plain.startswith(b"%PDF")  # missing logo never breaks the PDF
+    assert b"/Subtype /Image" not in plain
+    assert len(pdf) > len(plain)
+
+
+# Note: a synthetic Helvetica page was tried as a portable OCR stand-in, but
+# RapidOCR drops whole rows on it at several font/spacing settings, so it
+# tests the renderer more than the parser. The September test below — the
+# real Excel-rendered page — is the OCR regression test.
+def test_ocr_on_rendered_september_page_recovers_six_buckets_and_totals():
+    # The real September one-page report (a user file, not a repo fixture):
+    # skipped wherever it is not present, so the suite stays portable.
+    import pytest as _pytest
+
+    _pytest.importorskip("pypdfium2")
+    _pytest.importorskip("rapidocr_onnxruntime")
+    import io as _io
+
+    import pypdfium2
+    from app.report.client_report import extract_text
+
+    sept = Path.home() / "workspace" / "user" / "files" / "Satish_Nandlal_Vora_Monthly_report_september_2026.pdf"
+    if not sept.exists():
+        _pytest.skip("September monthly PDF not present in this checkout")
+    pdf = pypdfium2.PdfDocument(sept.read_bytes())
+    img = pdf[0].render(scale=2.5).to_pil()
+    png = _io.BytesIO()
+    img.save(png, format="PNG")
+    ocr_text = extract_text("september-page.png", png.getvalue())
+    d = parse_monthly_buckets(ocr_text)
+    assert d is not None
+    assert len(d["buckets"]) == 6
+    assert abs(d["totals"]["invested"] - 44308730.0) / 44308730.0 < 0.02
+    assert abs(d["totals"]["current"] - 71033736.0) / 71033736.0 < 0.02
+    assert abs((d["total_xirr"] or 0) - 7.49) < 0.5

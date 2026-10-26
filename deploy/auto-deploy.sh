@@ -16,5 +16,7 @@ if [ -n "$last" ]; then
   if [ -z "$changed" ]; then echo "$(date -u +%FT%TZ) $remote: nothing to deploy"; echo "$remote" > $H/.deployed-sha; exit 0; fi
 fi
 echo "$(date -u +%FT%TZ) deploying $remote"
+# Always run the newest deploy script from main, not the copy installed on first setup.
+curl -sfL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh -o $H/fh-redeploy.sh.new && mv $H/fh-redeploy.sh.new $H/fh-redeploy.sh
 if bash $H/fh-redeploy.sh; then echo "$remote" > $H/.deployed-sha; echo "$(date -u +%FT%TZ) deployed $remote"
 else echo "$(date -u +%FT%TZ) deploy of $remote FAILED (rolled back); will retry on the next push"; echo "$remote" > $H/.deployed-sha; fi

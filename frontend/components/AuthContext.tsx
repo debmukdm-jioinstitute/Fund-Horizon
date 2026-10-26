@@ -30,7 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refresh = useCallback(async () => {
     // Only a 401/403 means the session is gone. A 502 or network error (deploy, cold start) must not log staff out.
-    for (let attempt = 0; attempt < 4; attempt++) {
+    // Keep retrying for about a minute so a deploy never bounces someone to the login page.
+    for (let attempt = 0; attempt < 14; attempt++) {
       try {
         setCustomer(await getMe());
         return;
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setCustomer(null);
           return;
         }
-        if (attempt < 3) await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+        if (attempt < 13) await new Promise((r) => setTimeout(r, Math.min(1000 * (attempt + 1), 5000)));
       }
     }
   }, []);

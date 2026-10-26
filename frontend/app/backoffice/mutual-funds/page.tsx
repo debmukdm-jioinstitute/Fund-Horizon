@@ -230,6 +230,7 @@ function MutualFunds() {
   const groupKeys = group?.categories.map((c) => c.key) ?? [];
   const allSelected = groupKeys.length > 0 && groupKeys.every((k) => category.includes(k));
   const selectedLabels = groups.flatMap((g) => g.categories).filter((c) => category.includes(c.key)).map((c) => c.label);
+  const quartileCategories = groups.flatMap((g) => g.categories).filter((c) => category.includes(c.key)).map((c) => ({ key: c.key, label: c.label }));
 
   function onSort(key: string) {
     if (sort === key) setOrder((o) => (o === "asc" ? "desc" : "asc"));
@@ -485,7 +486,7 @@ function MutualFunds() {
       )}
 
       <div className="terminal-panel overflow-hidden">
-        {section === "Quartile Rankings" && <MfQuartileRankings />}
+        {section === "Quartile Rankings" && <MfQuartileRankings screenerCategories={quartileCategories} plans={plan} />}
         {section === "One-Pager" && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 p-2.5 min-h-[420px] content-start">
             {!loading && rows.length === 0 && <div className="col-span-full py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">No funds match the current categories and filters.</div>}

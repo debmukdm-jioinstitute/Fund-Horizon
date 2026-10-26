@@ -5,8 +5,6 @@ import { getMfQuartileRanking, MfQuartileData } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 
 const PERIODS = ["1y", "2y", "3y", "4y", "5y", "10y"];
-const DEFAULT_CATEGORY = "Equity: Flexi Cap";
-const DEFAULT_PLAN = "Regular";
 const QUARTILE_TONE: Record<string, string> = {
   "Top Quartile": "text-[#2E844A] dark:text-[#45C65A]",
   "Upper Middle Quartile": "text-[#0176D3] dark:text-[#1B96FF]",
@@ -34,40 +32,6 @@ const EQUITY_ADVISORKHOJ: Record<string, string> = {
   small_cap: "Equity: Small Cap",
   value: "Equity: Value",
 };
-
-interface MfQuartileRankingsProps {
-  /** Categories ticked on the page above (screener keys + labels). */
-  screenerCategories?: { key: string; label: string }[];
-  /** Plans ticked on the page above ("Regular" / "Direct"). */
-  plans?: string[];
-}
-
-/**
- * Work out the single category + plan this table shows from the page's
- * selection. The table always shows exactly one category and one plan:
- * - exactly one mapped category + exactly one plan -> that category + plan;
- * - anything else (several categories, several plans, or a category with no
- *   matching Advisorkhoj label) -> the default category + Regular plan,
- *   with `exact` false so the caller shows the banner below.
- */
-function resolveSelection(
-  screenerCategories: { key: string; label: string }[] | undefined,
-  plans: string[] | undefined,
-) {
-  if (screenerCategories === undefined && plans === undefined) {
-    return { category: DEFAULT_CATEGORY, plan: DEFAULT_PLAN, exact: true, unmappedSingle: false };
-  }
-  const cats = screenerCategories ?? [];
-  const ps = plans ?? [];
-  const mapped = cats.length === 1 ? EQUITY_ADVISORKHOJ[cats[0].key] : undefined;
-  const singlePlan = ps.length === 1 && (ps[0] === "Regular" || ps[0] === "Direct") ? ps[0] : null;
-  return {
-    category: mapped ?? DEFAULT_CATEGORY,
-    plan: singlePlan ?? DEFAULT_PLAN,
-    exact: mapped !== undefined && singlePlan !== null,
-    unmappedSingle: cats.length === 1 && mapped === undefined,
-  };
-}
 
 function periodLabel(period: string): string {
   return period === "1y" ? "1 Year" : `${period.replace("y", "")} Years`;
@@ -106,56 +70,47 @@ function fetchedLabel(raw: string | undefined): string | null {
   return formatted === "—" ? raw.trim() : formatted;
 }
 
-export default function MfQuartileRankings({ screenerCategories, plans }: MfQuartileRankingsProps) {
-  const resolved = resolveSelection(screenerCategories, plans);
-  const [category, setCategory] = useState(resolved.category);
+export default function MfQuartileRankings({ screenerCategories = [], plans = [], query = "" }: { screenerCategories?: { key: string; label: string }[]; plans?: string[]; query?: string }) {
   const [period, setPeriod] = useState("1y");
-  const [plan, setPlan] = useState(resolved.plan);
   const [data, setData] = useState<MfQuartileData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sortCol, setSortCol] = useState(3);
-  const [unmatchedNote, setUnmatchedNote] = useState(false);
 
-  // Follow the page above: when its selection changes, the table follows it.
-  // The category and plan pickers were removed on purpose — the table shows
-  // the page's selection (or the single fallback below), not a second selection.
-  useEffect(() => {
-    setCategory(resolved.category);
-    setPlan(resolved.plan);
-    setUnmatchedNote(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resolved.category, resolved.plan]);
+  // No category ticked = every Advisorkhoj equity category. Advisorkhoj has no Direct-plan quartiles.
+  const labels = (screenerCategories.length ? screenerCategories.map((c) => EQUITY_ADVISORKHOJ[c.key]) : Object.values(EQUITY_ADVISORKHOJ)).filter(Boolean);
+  const regular = plans.length === 0 || plans.includes("Regular");
+  const labelKey = labels.join("|");
 
   useEffect(() => {
+    if (!regular || !labels.length) {
+      setData(null);
+      setLoading(false);
+      return;
+    }
     const ctl = new AbortController();
     setLoading(true);
     setError(null);
-    getMfQuartileRanking({ category, period, plan }, ctl.signal)
-      .then((r) => setData(r.data))
-      .catch((e) => {
+    Promise.allSettled(labels.map((category) => getMfQuartileRanking({ category, period, plan: "Regular" }, ctl.signal)))
+      .then((res) => {
         if (ctl.signal.aborted) return;
-        const msg = e instanceof Error ? e.message : "Failed to load";
-        // Advisorkhoj has no label for the picked category: fall back to the
-        // default table instead of leaving an error on screen.
-        if (/unknown category/i.test(msg) && category !== DEFAULT_CATEGORY) {
-          setUnmatchedNote(true);
-          setCategory(DEFAULT_CATEGORY);
-          return;
-        }
-        setError(msg);
+        const ok = res.flatMap((r, i) => (r.status === "fulfilled" ? [{ label: labels[i], d: r.value.data }] : []));
+        if (!ok.length) return setError("Failed to load quartile data");
+        setData({
+          ...ok[0].d,
+          columns: [...ok[0].d.columns, "Category"],
+          rows: ok.flatMap(({ label, d }) => d.rows.map((r) => [...r, label.replace("Equity: ", "")])),
+          links: ok.flatMap(({ d }) => d.links),
+        });
       })
       .finally(() => !ctl.signal.aborted && setLoading(false));
     return () => ctl.abort();
-  }, [category, period, plan]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [labelKey, regular, period]);
 
   const num = (s: string) => parseFloat((s ?? "").replace(/,/g, ""));
-  const showBanner = !resolved.exact || unmatchedNote;
-  const bannerReason = unmatchedNote || resolved.unmappedSingle
-    ? "The category picked above has no matching Advisorkhoj label, so this table shows a single category that Advisorkhoj does publish."
-    : "The list above can show more than one category or plan, but this table shows a single category and plan.";
-
-  const idx = data ? data.rows.map((_, i) => i) : [];
+  const q = query.trim().toLowerCase();
+  const idx = data ? data.rows.map((_, i) => i).filter((i) => !q || data.rows[i][0].toLowerCase().includes(q)) : [];
   if (data) {
     const retCol = trailingReturnCol(data.columns, data.rows, period);
     const safeSort = sortCol < data.columns.length ? sortCol : 0;
@@ -183,9 +138,6 @@ export default function MfQuartileRankings({ screenerCategories, plans }: MfQuar
   return (
     <div className="p-2.5 space-y-2.5 min-h-[420px]">
       <div className="flex flex-wrap items-center gap-2 text-[12px]">
-        <span className="text-[12px] text-[#181818] dark:text-[#EDF2F7]">
-          Showing: {category} · {plan}
-        </span>
         <select aria-label="Period" className={sel} value={period} onChange={(e) => setPeriod(e.target.value)}>
           {PERIODS.map((p) => <option key={p} value={p}>{periodLabel(p)}</option>)}
         </select>
@@ -193,15 +145,10 @@ export default function MfQuartileRankings({ screenerCategories, plans }: MfQuar
           Source: <a className="underline" href="https://www.advisorkhoj.com/mutual-funds-research/quartile-ranking" target="_blank" rel="noreferrer">Advisorkhoj</a> · cached 24h
         </span>
       </div>
-      {showBanner && (
-        <div className="text-[12px] p-2.5 rounded bg-[#FFF4E5] dark:bg-[#2B2113] text-[#7A4A00] dark:text-[#FFD38A]">
-          Showing one table only: {category} · {plan} · {periodLabel(period)}. {bannerReason} Advisorkhoj does not publish Direct-plan quartiles, so Direct funds can never appear in this table.
-        </div>
-      )}
       {data && (
         <div className="space-y-1">
           <h2 className="text-[14px] font-medium text-[#181818] dark:text-[#EDF2F7]">
-            Quartile Rankings — {category} · {plan} · {periodLabel(period)} · {data.rows.length} funds
+            Quartile Rankings — {labels.length} {labels.length === 1 ? "category" : "categories"} · Regular · {periodLabel(period)} · {idx.length} funds
           </h2>
           <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
             Top Quartile = top 25% in this category and plan, then upper-middle 25%, lower-middle 25%, bottom 25%, as published by Advisorkhoj. Past performance is not a guide to future returns.
@@ -210,12 +157,12 @@ export default function MfQuartileRankings({ screenerCategories, plans }: MfQuar
         </div>
       )}
       {error && <div className="py-8 text-center text-[#B42332] dark:text-[#FF7D86]">{error}</div>}
-      {!error && !loading && data && data.rows.length === 0 && (
+      {!loading && !error && (!regular || !labels.length || idx.length === 0) && (
         <div className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
-          Advisorkhoj has no quartile data for this selection{plan === "Direct" ? " (it does not publish Direct-plan quartiles)" : ""}.{plan === "Direct" ? " The screener above may still show Direct funds, but this table cannot show Direct funds." : ""}
+          {!regular ? "Advisorkhoj does not publish Direct-plan quartiles. Tick Regular to see quartile data." : !labels.length ? "Advisorkhoj has no quartile data for the selected categories." : q ? `No fund matching “${query}” in the selected categories.` : "Advisorkhoj has no quartile data for this selection."}
         </div>
       )}
-      {data && data.rows.length > 0 && (
+      {data && idx.length > 0 && (
         <div className={`overflow-x-auto overflow-y-auto max-h-[calc(100vh-300px)] ${loading ? "opacity-50" : ""}`}>
           <table className="terminal-table">
             <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">

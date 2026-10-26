@@ -157,8 +157,8 @@ function MutualFunds() {
   const params = useSearchParams();
   const compare = useCompareSelection("mf");
 
-  const category = useMemo(() => (params.has("category") ? params.getAll("category") : params.has("q") ? [] : DEFAULT_CATEGORIES), [params]);
-  const plan = useMemo(() => (params.has("plan") ? params.getAll("plan") : PLANS), [params]);
+  const category = useMemo(() => (params.has("category") ? params.getAll("category") : params.has("q") || params.has("section") ? [] : DEFAULT_CATEGORIES), [params]);
+  const plan = useMemo(() => (params.has("plan") || params.has("section") ? params.getAll("plan") : PLANS), [params]);
   const section = (SECTIONS.find((s) => s === params.get("section")) ?? "Summary") as Section;
 
   const [sort, setSort] = useState("score");
@@ -415,6 +415,18 @@ function MutualFunds() {
               </>
             )}
           </div>
+          <button
+            type="button"
+            className="terminal-btn text-[12px] py-1 px-3"
+            onClick={() => {
+              setUrl({ category: [], plan: [] });
+              setRecommended(false);
+              setRanges({});
+              setDraft({});
+            }}
+          >
+            Clear all
+          </button>
           <button type="button" aria-expanded={showFilter} onClick={() => setShowFilter((v) => !v)} className="terminal-btn text-[12px] py-1 px-3">
             Quick Filter{activeFilters ? ` (${activeFilters})` : ""}
           </button>
@@ -486,7 +498,7 @@ function MutualFunds() {
       )}
 
       <div className="terminal-panel overflow-hidden">
-        {section === "Quartile Rankings" && <MfQuartileRankings screenerCategories={quartileCategories} plans={plan} />}
+        {section === "Quartile Rankings" && <MfQuartileRankings screenerCategories={quartileCategories} plans={plan} query={query} />}
         {section === "One-Pager" && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 p-2.5 min-h-[420px] content-start">
             {!loading && rows.length === 0 && <div className="col-span-full py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">No funds match the current categories and filters.</div>}

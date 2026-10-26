@@ -209,7 +209,7 @@ flowchart TB
     CU --> CRM["My CRM (read only)"]
     CU --> CH["Messages (chat with staff)"]
     PUB --> PV["Plan results /plan/id<br/>AI fund picks and backtest"]
-    BO --> OPS["Operations<br/>form filling, download content"]
+    BO --> OPS["Operations<br/>form filling, paperwork processing,<br/>download content"]
     BO --> RP["Risk profiling studio"]
     BO --> CRMB["CRM, chats, research, data health ..."]
 ```
@@ -220,7 +220,7 @@ flowchart TB
 | **Customer area** | `/account/plans`, `/account/crm`, `/account/messages` | Their saved plans, a read-only view of their household, holdings, SIPs and service requests, and chat with the team. |
 | **Plan and tools** | `/plan/new`, `/plan/[id]`, `/portal/[id]/*`, `/tax`, `/cas`, `/funds/*`, `/learn/*` | Five-minute plan wizard, results (allocation, shortlist, stress test, goals, tax, **AI fund picks with Edit and a backtest**), CAS statement reader, tax planner, fund detail, compare and Q&A, the Academy. |
 | **Lead capture** | `/crossword`, `/lead`, `/risk-profile?ref=...` | Pages reached by QR code or a shared link. They post to the public lead endpoints and the lead lands in the CRM. |
-| **Back office (staff)** | `/backoffice/*` | Overview, **Operations** (form filling, Download Content), **Risk profiling studio**, **CRM** (households, contacts, leads, opportunities, cases), **Customer chats**, mutual funds, PMS, derivatives, macro, micro, flows, impact, research, briefings, data health, Academy admin, settings. |
+| **Back office (staff)** | `/backoffice/*` | Overview, **Operations** (form filling, Paperwork Processing, Download Content), **Risk profiling studio**, **CRM** (households, contacts, leads, opportunities, cases), **Customer chats**, mutual funds, PMS, derivatives, macro, micro, flows, impact, research, briefings, data health, Academy admin, settings. |
 | **Admin tools** | `/admin` | Admin control centre (plans, CAS sessions, customers, config). |
 
 Code layout:
@@ -228,7 +228,7 @@ Code layout:
 | Folder | Holds |
 |---|---|
 | [`frontend/app/`](frontend/app) | One folder per route (`page.tsx`), plus `layout.tsx` (fonts, auth provider, theme). |
-| [`frontend/components/`](frontend/components) | Reusable UI: `AuthContext` (who is signed in), `AiPicks`, `ChatThread`, `Results` (plan sections), `backoffice/*`, `operations/*` (PDF form filler, signature pad), `crm/*`, `academy/*`, `charts`. |
+| [`frontend/components/`](frontend/components) | Reusable UI: `AuthContext` (who is signed in), `AiPicks`, `ChatThread`, `Results` (plan sections), `backoffice/*`, `operations/*` (PDF form filler, signature pad, monthly report builder), `crm/*`, `academy/*`, `charts`. |
 | [`frontend/lib/`](frontend/lib) | `api.ts` and the `crm*Api.ts` files (every call to the API), `types.ts`, formatting helpers, profiling questionnaire, recommended-fund list. |
 | [`frontend/wrangler.jsonc`](frontend/wrangler.jsonc) | Worker name, custom domains, API address. |
 | [`frontend/next.config.mjs`](frontend/next.config.mjs) | Security headers (CSP) and the `/api/*` rewrite to the API. |
@@ -375,7 +375,7 @@ One SQLite file, `plans.db`, on the server's disk (mounted into the API containe
 | **Plans** | `plans` (stored request and result, by random UUID), `plan_ai_picks` (AI picks and the client's edits), `cas_sessions` | `routes.py`, `plan_picks.py` |
 | **CRM** | `households`, `household_members`, `contacts`, `leads`, `opportunities`, `activities`, `cases`, `holdings`, `sip_schedules`, `kyc_records`, `mandates`, `consents`, `campaigns`, `commissions`, `rm_teams`, `crm_list_views`, `audit_log` | `crm_*.py` |
 | **Chat** | `chat_messages` (one thread per customer) | `customer_portal.py` |
-| **Operations** | `operations_filings` (the filings register) | `backoffice.py` |
+| **Operations** | `operations_filings` (the filings register), `monthly_reports` (stored monthly reports) | `backoffice.py`, `monthly_report.py` |
 | **Market data** | `observations`, `instrument_registry`, `source_registry`, `collector_runs`, `briefings`, `news_items`, `option_*`, `flows`, `pms_*`, `mf_*`, `screening_*`, `mfref_*` | `backoffice/` collectors |
 | **Academy** | `learn_progress`, `quiz_attempts`, `card_reviews`, `xp_events`, `badges`, `learn_prefs` | `learn.py` |
 
@@ -491,11 +491,14 @@ flowchart LR
 
 The guest login cannot open the staff inbox.
 
-**E. Operations: form filling and Download Content**
+**E. Operations: form filling, Paperwork Processing and Download Content**
 
 ```mermaid
 flowchart TB
     OP["Back office: Operations"] --> FF["Form filling box"]
+    OP --> PP["Paperwork Processing box"]
+    PP --> MR["Monthly bucket report: upload PMS factsheets + valuation,<br/>edit buckets, download, save to CRM, email"]
+    MR --> MDB[("monthly_reports")]
     OP --> DL["Download Content box"]
     FF --> T1["Start a task, Forms library,<br/>Filings register, upload your own PDF"]
     T1 --> PF["Official AMC / CAMS / KFintech PDF<br/>filled and signed in the browser<br/>(PdfFormFiller)"]
@@ -505,6 +508,14 @@ flowchart TB
     AP --> CB["cobalt container<br/>(private network)"]
     CB --> FILE["File streamed back through<br/>/api/staff/download/file"]
 ```
+
+Paperwork Processing builds the monthly bucket report (PORTFOLIO XIRR buckets plus a COMPLETE
+PORTFOLIO table with a PMS row) from uploaded PMS factsheets and folio-wise valuations, read by text
+layer with OCR fallback. Gains and weights are recomputed from the edited amounts; the portfolio XIRR
+is carried from the source and never averaged from the bucket XIRRs. Create Report downloads the PDF
+(`<Client Name> Monthly report <month year>.pdf`), saves a copy to the client CRM record
+(`monthly_reports`), and emails it via Resend when ticked — the save happens before the email attempt,
+so a failed email never loses the report, and a successful email is logged so it appears under Sent emails.
 
 ### 11. Security and access
 

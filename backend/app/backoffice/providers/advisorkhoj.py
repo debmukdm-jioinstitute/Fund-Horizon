@@ -143,13 +143,20 @@ _quartile_cache: dict[tuple[str, str, str], tuple[float, dict]] = {}
 def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Client | None = None) -> dict:
     """Quartile-ranking table for one category/period/plan, parsed from the public page (server-rendered, 24h cache).
 
-    Returns ``{"categories": [...], "columns": [...], "rows": [[...]], "links": [...]}``; ``rows`` is empty when
-    Advisorkhoj has no data for the combination (it currently publishes nothing for Direct plans).
-    Raises ``RuntimeError`` when robots.txt disallows the path or the page is blocked / unreachable.
+    Returns ``{"categories": [...], "columns": [...], "rows": [[...]], "links": [...], "fetched_at": "<ISO UTC time>"}``;
+    ``rows`` is empty when Advisorkhoj has no data for the combination (it currently publishes nothing for Direct plans).
+    ``fetched_at`` is the time of the fresh fetch; a cache hit returns the original ``fetched_at``, not the time of
+    the cache-hit call. Raises ``RuntimeError`` when robots.txt disallows the path or the page is blocked / unreachable.
     """
+    from datetime import UTC, datetime
+
     key = (category, period, plan)
     hit = _quartile_cache.get(key)
     if hit and time.time() - hit[0] < _QUARTILE_TTL:
+        if "fetched_at" not in hit[1]:
+            # Entries cached before fetched_at existed: derive it from the
+            # cache timestamp so a hit still reports the original fetch time.
+            hit[1]["fetched_at"] = datetime.fromtimestamp(hit[0], tz=UTC).isoformat()
         return hit[1]
     prov = AdvisorkhojProvider(client)
     if not prov.check_robots_allowed(QUARTILE_PATH):
@@ -178,6 +185,12 @@ def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Cl
         rows.append([td.get_text(" ", strip=True) for td in tds])
         a = tds[0].find("a")
         links.append(ADVISORKHOJ_BASE_URL + a["href"] if a and a.get("href", "").startswith("/") else None)
-    out = {"categories": cats, "columns": columns, "rows": rows, "links": links}
+    out = {
+        "categories": cats,
+        "columns": columns,
+        "rows": rows,
+        "links": links,
+        "fetched_at": datetime.now(UTC).isoformat(),
+    }
     _quartile_cache[key] = (time.time(), out)
     return out

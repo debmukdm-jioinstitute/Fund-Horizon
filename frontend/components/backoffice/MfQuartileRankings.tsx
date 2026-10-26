@@ -91,7 +91,7 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
     setRecKeys(null);
     if (!recommended) return;
     const ctl = new AbortController();
-    getMfScreener({ category: [], plan: [], sort: "name", order: "asc", ranges: {}, recommended: true, limit: 500 }, ctl.signal)
+    getMfScreener({ category: [], plan: [], sort: "name", order: "asc", ranges: {}, recommended: true, limit: 200 }, ctl.signal)
       .then((r) => setRecKeys(new Set(r.data.map((f) => nameKey(f.name)))))
       .catch((e) => !ctl.signal.aborted && setError(e instanceof Error ? e.message : "Failed to load FH Recommended list"));
     return () => ctl.abort();

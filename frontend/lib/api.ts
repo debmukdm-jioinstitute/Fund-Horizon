@@ -152,6 +152,24 @@ export async function getFundReferenceServer(code: string): Promise<FundReferenc
   }
 }
 
+export interface FundQuartiles {
+  category: string;
+  trailing: Record<string, string>; // "1Y" -> "Top Quartile" (current quarter)
+  years: [string, string][]; // last 5 calendar years -> "Top" / "Upper Mid" / ...
+  fetched_at?: string;
+}
+
+/** Advisorkhoj quartile ranks for one scheme (public endpoint; null when not ranked or unavailable). Works on server and client. */
+export async function getFundQuartiles(code: string): Promise<FundQuartiles | null> {
+  try {
+    const path = `/api/funds/${code}/quartiles`;
+    const res = await fetch(typeof window === "undefined" ? SERVER_API_URL + path : resolveApiUrl(API_URL + path), { cache: "no-store" });
+    return res.ok ? (((await res.json()) as { data: FundQuartiles | null }).data ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Server-side fund analytics fetch with forwarded session cookies. */
 export async function getFundAnalyticsServer(code: string): Promise<FundAnalytics | null> {
   try {

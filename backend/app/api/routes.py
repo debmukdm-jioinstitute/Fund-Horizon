@@ -250,6 +250,23 @@ def fund_reference(scheme_code: str):
     return clean(out)
 
 
+@router.get("/api/funds/{scheme_code}/quartiles")
+def fund_quartiles_route(scheme_code: str):
+    """Advisorkhoj quartile ranks for a scheme (public); ``data`` is null when the fund is not ranked / not covered."""
+    from app.backoffice.fund_quartile import fund_quartiles
+    from app.data.loader import load_metrics
+
+    m = load_metrics()
+    rows = m[m["scheme_code"] == scheme_code]
+    if rows.empty:
+        raise HTTPException(404, "Scheme not found")
+    try:
+        data = fund_quartiles(str(rows.iloc[0]["scheme_name"]), str(rows.iloc[0]["cat"]))
+    except Exception as e:  # httpx errors, robots block, layout change
+        raise HTTPException(502, f"Advisorkhoj unavailable: {e}") from None
+    return {"data": data}
+
+
 @router.get("/api/funds/{scheme_code}/analytics")
 def fund_analytics(scheme_code: str, request: Request):
     """Deep analytics for a fund: CAGR, rolling returns, SIP XIRR, drawdown, and capture ratios."""

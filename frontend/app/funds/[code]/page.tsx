@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import { notFound } from "next/navigation";
-import { getFundAnalyticsServer, getFundDetailServer, getFundReferenceServer } from "@/lib/api";
+import { getFundAnalyticsServer, getFundDetailServer, getFundQuartiles, getFundReferenceServer } from "@/lib/api";
 import type { FundReference, MfRefRow } from "@/lib/types";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
 import ExplainModal from "@/components/ExplainModal";
@@ -188,10 +188,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function FundDetailPage({ params }: PageProps) {
   const { code } = await params;
-  const [detail, analytics, reference] = await Promise.all([
+  const [detail, analytics, reference, quartiles] = await Promise.all([
     getFundDetailServer(code),
     getFundAnalyticsServer(code),
     getFundReferenceServer(code),
+    getFundQuartiles(code),
   ]);
 
   if (!detail || !analytics) {
@@ -466,6 +467,33 @@ export default async function FundDetailPage({ params }: PageProps) {
             Chronological audit of peak-to-trough drawdowns and recovery periods computed directly from published NAV history.
           </p>
           <DrawdownEpisodesTable episodes={episodesByDrop.slice(0, 5)} />
+        </section>
+      )}
+
+      {quartiles && (
+        <section className="card space-y-3" data-testid="fund-quartiles">
+          <h2 className="text-lg font-bold text-navy-950">Quartile Rankings</h2>
+          <p className="text-xs text-navy-700">
+            Rank within {quartiles.category.replace("Equity: ", "")} (Regular plan): Top = best 25% of the category. Source: Advisorkhoj. Past performance is not a guide to future returns.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            {Object.entries(quartiles.trailing).map(([k, v]) => (
+              <div key={k} className="text-center">
+                <div className="text-[11px] text-navy-700">{k} (current quarter)</div>
+                <div className="text-sm font-semibold text-navy-950">{v.replace(" Quartile", "")}</div>
+              </div>
+            ))}
+          </div>
+          {quartiles.years.length > 0 && (
+            <div className="flex flex-wrap gap-4">
+              {quartiles.years.map(([y, v]) => (
+                <div key={y} className="text-center">
+                  <div className="text-[11px] text-navy-700">{y}</div>
+                  <div className="text-sm font-semibold text-navy-950">{v}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       )}
 

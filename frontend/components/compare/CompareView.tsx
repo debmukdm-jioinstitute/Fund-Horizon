@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { ComparePayload, getBackofficeCompare } from "@/lib/backoffice";
 import InfoTip from "@/components/InfoTip";
+import { FundQuartiles, getFundQuartiles } from "@/lib/api";
 
 const CHART_COLORS = ["#0176D3", "#2170E4", "#D97706", "#7C3AED"];
 
@@ -137,6 +138,7 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [quartiles, setQuartiles] = useState<Record<string, FundQuartiles | null>>({});
 
   const load = React.useCallback(async () => {
     if (ids.length < 2) return;
@@ -172,6 +174,17 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
       document.body.style.overflow = "unset";
     };
   }, [open, onClose]);
+
+  // Advisorkhoj quartile ranks per fund (equity MFs only); rows appear once loaded.
+  useEffect(() => {
+    if (!open || type !== "mf") return;
+    let off = false;
+    ids.forEach((id) => getFundQuartiles(id).then((q) => !off && setQuartiles((m) => ({ ...m, [id]: q }))));
+    return () => {
+      off = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, type, idsKey]);
 
   const chartData = useMemo(() => (payload ? buildChartRows(payload, period) : []), [payload, period]);
 
@@ -373,6 +386,27 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
                           })}
                       </React.Fragment>
                     ))}
+                    {type === "mf" && ids.some((id) => quartiles[id]) && (
+                      <>
+                        <tr>
+                          <td colSpan={payload.items.length + 1} className="bg-[#F0F3F6] font-semibold text-[11px] uppercase tracking-wide dark:bg-[#202936]">
+                            Quartile rankings (Advisorkhoj)
+                          </td>
+                        </tr>
+                        {[
+                          ...["1Y", "3Y", "5Y"].map((k) => ({ label: `${k} (current quarter)`, get: (q: FundQuartiles) => q.trailing[k]?.replace(" Quartile", "") })),
+                          ...Array.from(new Set(ids.flatMap((id) => (quartiles[id]?.years ?? []).map(([y]) => y)))).sort().map((y) => ({ label: y, get: (q: FundQuartiles) => q.years.find(([yy]) => yy === y)?.[1] })),
+                        ].map((row) => (
+                          <tr key={row.label}>
+                            <td className="sticky left-0 z-[1] bg-[#FFFFFF] dark:bg-[#10151C] py-2.5 px-4">{row.label}</td>
+                            {payload.items.map((it) => {
+                              const q = quartiles[it.id];
+                              return <td key={it.id} className="text-right py-2.5 px-4">{(q && row.get(q)) || "—"}</td>;
+                            })}
+                          </tr>
+                        ))}
+                      </>
+                    )}
                   </tbody>
                 </table>
               </div>

@@ -877,7 +877,12 @@ def backoffice_mf_quartile_ranking(
         raise HTTPException(422, str(e)) from None
     except Exception as e:  # httpx errors, robots block, layout change
         raise HTTPException(502, f"Advisorkhoj unavailable: {e}") from None
-    return {"data": data, "source": "advisorkhoj", "availability": "ready" if data["rows"] else "no_data"}
+    return {
+        "data": data,
+        "fetched_at": data.get("fetched_at"),
+        "source": "advisorkhoj",
+        "availability": "ready" if data["rows"] else "no_data",
+    }
 
 
 @router.get("/mutual-funds/nav-pair-check")

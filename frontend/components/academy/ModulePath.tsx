@@ -30,10 +30,12 @@ export function ModulePath({ content }: { content: ModuleContent }) {
         <h2 className="text-xl font-semibold mt-2">{m.title}</h2>
         <p className={`text-[15px] ${muted}`}>{m.blurb}</p>
       </div>
-      <div className={`${card} p-4 space-y-2`}>
-        <h3 className="text-[15px] font-semibold">By the end you can</h3>
-        <ul className="list-disc pl-6 text-[15px] space-y-1">{m.overview.outcomes.map((o) => <li key={o}>{o}</li>)}</ul>
-      </div>
+      {!!m.overview.outcomes?.length && (
+        <div className={`${card} p-4 space-y-2`}>
+          <h3 className="text-[15px] font-semibold">By the end you can</h3>
+          <ul className="list-disc pl-6 text-[15px] space-y-1">{m.overview.outcomes.map((o) => <li key={o}>{o}</li>)}</ul>
+        </div>
+      )}
       <div className="flex flex-wrap gap-2">
         <button className={btnGhost} onClick={() => go({ m: m.id, v: "cards" })}>🃏 Flashcards</button>
         <button className={btnGhost} onClick={() => go({ m: m.id, v: "quiz" })}>📝 Quizzes and mock exam</button>

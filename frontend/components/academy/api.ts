@@ -32,7 +32,7 @@ export interface Card { id: string; q: string; a: string[] }
 export interface GlossaryEntry { term: string; aliases: string[]; definition: string }
 export interface ModuleHead {
   id: string; title: string; code: string; blurb: string; sources: string[];
-  overview: { rows: string[][]; outcomes: string[] };
+  overview: { rows: string[][]; outcomes?: string[] };
   lessons: { id: string; title: string; minutes: number; level: string; stage: string }[];
   checkpoints: { id: string; after: string }[];
   final: { id: string; title: string; questions: number; pass_pct: number };

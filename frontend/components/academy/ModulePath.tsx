@@ -10,8 +10,8 @@ export function ModulePath({ content }: { content: ModuleContent }) {
   const [src, setSrc] = useState(false);
   const m = content.module;
   const done = new Set(me?.completed_lessons ?? []);
-  const current = m.lessons.find((l) => !done.has(l.id))?.id;
-  const cps = new Map(m.checkpoints.map((c, i) => [c.after, { id: c.id, n: i + 1 }]));
+  const current = (m.lessons ?? []).find((l) => !done.has(l.id))?.id;
+  const cps = new Map((m.checkpoints ?? []).map((c, i) => [c.after, { id: c.id, n: i + 1 }]));
   const best = me?.quiz_best ?? {};
   const node = (key: string, title: string, sub: string, onClick: () => void, state: "done" | "current" | "open", mark: string) => (
     <li key={key} className="relative pl-12 pb-6 last:pb-0">
@@ -41,7 +41,7 @@ export function ModulePath({ content }: { content: ModuleContent }) {
         <button className={btnGhost} onClick={() => go({ m: m.id, v: "quiz" })}>📝 Quizzes and mock exam</button>
       </div>
       <ol aria-label={`${m.title} lessons`}>
-        {m.lessons.flatMap((l, i) => {
+        {(m.lessons ?? []).flatMap((l, i) => {
           const state = done.has(l.id) ? "done" : l.id === current ? "current" : "open";
           const out = [node(l.id, `${i + 1}. ${l.title}`, `🕒 ${l.minutes} min · ${LEVEL_LABEL[l.level] ?? l.level}`, () => go({ m: m.id, l: l.id, v: "read" }), state, state === "done" ? "✓" : String(i + 1))];
           const cp = cps.get(l.id);
@@ -56,7 +56,7 @@ export function ModulePath({ content }: { content: ModuleContent }) {
       </ol>
       <div className={`${card} p-4`}>
         <button className="text-[15px] font-medium" aria-expanded={src} onClick={() => setSrc(!src)}>{src ? "−" : "+"} Sources</button>
-        {src && <ul className={`mt-2 list-disc pl-6 text-[15px] space-y-1 ${muted}`}>{m.sources.map((s) => <li key={s}>{s}</li>)}<li>Check regulatory details against current rules before each training cycle.</li></ul>}
+        {src && <ul className={`mt-2 list-disc pl-6 text-[15px] space-y-1 ${muted}`}>{(m.sources ?? []).map((s) => <li key={s}>{s}</li>)}<li>Check regulatory details against current rules before each training cycle.</li></ul>}
       </div>
     </div>
   );

@@ -1649,6 +1649,8 @@ export interface MfQuartileData {
   columns: string[];
   rows: string[][];
   links: (string | null)[];
+  /** When Advisorkhoj's table was fetched (added by the backend); absent on older payloads. */
+  fetched_at?: string;
 }
 
 export const getMfQuartileRanking = (o: { category: string; period: string; plan: string }, signal?: AbortSignal) =>

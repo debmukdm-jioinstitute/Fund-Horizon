@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import CalcCharts, { CountUp } from "@/components/operations/CalcCharts";
 import { ClientPicker, loadSaved, saveCalc, type Client, type Saved } from "@/components/operations/CalcClient";
-import { download, pdfBlob, renderCard, toBlob } from "@/lib/calcExport";
+import { download, pdfBlob, renderCard, renderReport, toBlob } from "@/lib/calcExport";
 import { vizFor } from "@/lib/calcViz";
 import { CALCULATORS, CATEGORIES, calculate, type Calculator, type Metric, type Result } from "@/lib/calculators";
 
@@ -88,10 +88,15 @@ export default function CalculatorsPage() {
 function CalcPanel({ calc, client, initial, onSaved }: { calc: Calculator; client: Client | null; initial?: Record<string, string>; onSaved: () => void }) {
   const [vals, setVals] = useState<Record<string, string>>(() => ({ ...defaults(calc), ...initial }));
   const [result, setResult] = useState<Result | null>(null);
+  // Snapshot of the inputs that produced the current result. The result,
+  // charts, saved copy and PDF/image export all read from this snapshot,
+  // never from the live form — so editing a field after Calculate cannot
+  // silently mix new inputs with old results in an export.
+  const [snap, setSnap] = useState<{ vals: Record<string, string>; parsed: Record<string, number | undefined> } | null>(null);
   const parsed = useMemo(() => Object.fromEntries(calc.fields.map((f) => [f.key, vals[f.key].trim() === "" ? undefined : Number(vals[f.key])])), [calc, vals]);
 
-  const run = (e: React.FormEvent) => { e.preventDefault(); setResult(calculate(calc, parsed)); };
-  const reset = () => { setVals(defaults(calc)); setResult(null); };
+  const run = (e: React.FormEvent) => { e.preventDefault(); setResult(calculate(calc, parsed)); setSnap({ vals: { ...vals }, parsed: { ...parsed } }); };
+  const reset = () => { setVals(defaults(calc)); setResult(null); setSnap(null); };
 
   return (
     <section className="space-y-4" aria-labelledby="calc-title">
@@ -125,7 +130,7 @@ function CalcPanel({ calc, client, initial, onSaved }: { calc: Calculator; clien
             <ul className="list-disc space-y-0.5 pl-5">{result.errors.map((m) => <li key={m}>{m}</li>)}</ul>
           </div>
         )}
-        {result?.ok && <Results calc={calc} r={result} vals={vals} parsed={parsed} client={client} onSaved={onSaved} />}
+        {result?.ok && snap && <Results calc={calc} r={result} vals={snap.vals} parsed={snap.parsed} client={client} onSaved={onSaved} />}
       </div>
     </section>
   );
@@ -139,17 +144,27 @@ function Results({ calc, r, vals, parsed, client, onSaved }: { calc: Calculator;
   const viz = useMemo(() => vizFor(calc.id, values, r), [calc, values, r]);
   const summary = `${calc.title}: ${r.metrics.slice(0, 3).map((m) => `${m.label} ${show(m)}`).join("; ")}`;
 
-  const card$ = () => renderCard({
-    title: calc.title, client: client?.name, viz, notes: r.notes,
-    inputs: calc.fields.filter((f) => vals[f.key].trim() !== "").map((f) => [f.label, f.unit === "₹" ? inr(Number(vals[f.key])) : `${vals[f.key]} ${f.unit === "age" ? "" : f.unit}`.trim()]),
-    metrics: r.metrics.map((m) => ({ label: m.label, text: show(m) })),
-  });
+  // Export inputs are the effective values that produced this result
+  // (blank optional fields count as 0, as in the calculation), for every
+  // field — not just the non-empty form strings. Rupee values keep paise
+  // instead of being rounded away, so the PDF matches the screen exactly.
+  const inrExact = (v: number) => `${v < 0 ? "−" : ""}₹${Math.abs(v).toLocaleString("en-IN", { minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 })}`;
+  const data = {
+    title: calc.title, client: client?.name, viz, notes: r.notes, steps: r.steps, table: r.table,
+    inputs: calc.fields.map((f) => {
+      const v = parsed[f.key] ?? 0;
+      return [f.label, f.unit === "₹" ? inrExact(v) : f.unit === "age" ? `${v}` : `${v} ${f.unit}`] as [string, string];
+    }),
+    metrics: r.metrics.map((m) => ({ label: m.label, text: show(m), words: m.kind === "inr" ? (words(m.value) || undefined) : undefined })),
+  };
+  const card$ = () => renderCard(data);
+  const report$ = () => renderReport(data);
   const file = `fund-horizon-${calc.id}${client ? `-${client.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}` : ""}`;
   const act = (fn: () => Promise<string | void>) => async () => {
     setBusy(true); setNote(null);
     try { setNote((await fn()) ?? null); } catch (e) { setNote(e instanceof Error ? e.message : "Something went wrong"); } finally { setBusy(false); }
   };
-  const pdf = act(async () => { download(await pdfBlob(await card$()), `${file}.pdf`); });
+  const pdf = act(async () => { download(await pdfBlob(await report$()), `${file}.pdf`); });
   const png = act(async () => { download(await toBlob(await card$(), "image/png"), `${file}.png`); });
   const share = act(async () => {
     const f = new File([await toBlob(await card$(), "image/png")], `${file}.png`, { type: "image/png" });

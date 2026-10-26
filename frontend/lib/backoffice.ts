@@ -561,6 +561,7 @@ export interface StaffMemberItem {
   role: string;
   status?: string;
   is_staff?: number | boolean;
+  pages?: string[];
 }
 
 export interface StaffProvisionResponse {
@@ -1232,6 +1233,7 @@ export const listStaffMembers = async (): Promise<StaffMemberItem[]> => {
     role: str(s.role) ?? "—",
     status: str(s.status),
     is_staff: s.is_staff as number | boolean | undefined,
+    pages: Array.isArray(s.pages) ? (s.pages as string[]) : [],
   }));
 };
 
@@ -1241,6 +1243,7 @@ export const createStaffMember = async (body: {
   mobile: string;
   role: string;
   password?: string;
+  pages?: string[];
 }): Promise<StaffProvisionResponse> => {
   const raw = await boFetch<Json>("/api/backoffice/staff/provision", { method: "POST", body: JSON.stringify(body) });
   const m = obj(raw.staff_member);
@@ -1256,7 +1259,7 @@ export const createStaffMember = async (body: {
   };
 };
 
-export const updateStaffMember = (id: string, body: { role?: string; status?: "active" | "inactive"; reset_password?: boolean }) =>
+export const updateStaffMember = (id: string, body: { role?: string; status?: "active" | "inactive"; reset_password?: boolean; pages?: string[] }) =>
   boFetch<{ temporary_password: string | null }>(`/api/backoffice/staff/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(body) });
 
 export interface Filing {

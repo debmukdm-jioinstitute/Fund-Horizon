@@ -14,6 +14,38 @@ import {
   StaffMemberItem,
 } from "@/lib/backoffice";
 import { useAuth } from "@/components/AuthContext";
+import { NAV_ITEMS } from "@/components/backoffice/navItems";
+
+const PAGE_OPTIONS = NAV_ITEMS.map((i) => ({ href: i.href.split("?")[0], label: i.label }));
+
+function PagePicker({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
+  return (
+    <div className="flex flex-wrap gap-x-3 gap-y-1">
+      {PAGE_OPTIONS.map((o) => (
+        <label key={o.href} className="flex items-center gap-1 text-[12px]">
+          <input
+            type="checkbox"
+            checked={value.includes(o.href)}
+            onChange={(e) => onChange(e.target.checked ? [...value, o.href] : value.filter((h) => h !== o.href))}
+          />
+          {o.label}
+        </label>
+      ))}
+    </div>
+  );
+}
+
+function PageEditor({ current, onSave }: { current: string[]; onSave: (v: string[]) => void }) {
+  const [sel, setSel] = useState(current);
+  return (
+    <div className="mt-1 space-y-1.5">
+      <PagePicker value={sel} onChange={setSel} />
+      <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" onClick={() => onSave(sel)}>
+        Save pages
+      </button>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
   const { customer } = useAuth();
@@ -109,6 +141,7 @@ export default function SettingsPage() {
   const [staffRole, setStaffRole] = useState("analyst");
   const [staffMobile, setStaffMobile] = useState("");
   const [staffPassword, setStaffPassword] = useState("");
+  const [staffPages, setStaffPages] = useState<string[]>([]);
   const [staffNotice, setStaffNotice] = useState<string | null>(null);
   const [savingStaff, setSavingStaff] = useState(false);
 
@@ -186,6 +219,7 @@ export default function SettingsPage() {
         role: staffRole,
         mobile: staffMobile.trim() || "",
         password: staffPassword || undefined,
+        pages: staffPages,
       });
       setStaffNotice(
         res.temporary_password
@@ -193,6 +227,7 @@ export default function SettingsPage() {
           : `Account created. Login ${staffEmail.trim().toLowerCase()} with the password you set.`,
       );
       setStaffPassword("");
+      setStaffPages([]);
       setStaffName("");
       setStaffEmail("");
       setStaffMobile("");
@@ -427,12 +462,12 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Email Address</label>
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Email / Username</label>
               <input
-                type="email"
+                type="text"
                 value={staffEmail}
                 onChange={(e) => setStaffEmail(e.target.value)}
-                placeholder="staff@fundhorizon.com"
+                placeholder="staff@fundhorizon.com or username"
                 className="terminal-input w-full text-[12px] py-1 px-2"
                 required
               />
@@ -442,10 +477,9 @@ export default function SettingsPage() {
               <input
                 type="password"
                 autoComplete="new-password"
-                minLength={8}
                 value={staffPassword}
                 onChange={(e) => setStaffPassword(e.target.value)}
-                placeholder="min 8 characters"
+                placeholder="blank = generate"
                 className="terminal-input w-full text-[12px] py-1 px-2"
               />
             </div>
@@ -462,6 +496,12 @@ export default function SettingsPage() {
                 <option value="compliance">Compliance (Audit &amp; Oversight)</option>
                 <option value="admin">System Administrator</option>
               </select>
+            </div>
+            <div className="sm:col-span-4">
+              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
+                Allowed pages (none ticked = all pages)
+              </label>
+              <PagePicker value={staffPages} onChange={setStaffPages} />
             </div>
             <div>
               <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Mobile</label>
@@ -508,6 +548,14 @@ export default function SettingsPage() {
                       <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
                         {s.name}
                         <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-normal">{s.email}</div>
+                        {s.role !== "admin" && (
+                          <details className="text-[11px] font-normal">
+                            <summary className="cursor-pointer text-[#0176D3] dark:text-[#1B96FF]">
+                              Pages: {s.pages?.length ? s.pages.map((h) => PAGE_OPTIONS.find((o) => o.href === h)?.label ?? h).join(", ") : "all"}
+                            </summary>
+                            <PageEditor current={s.pages ?? []} onSave={(v) => changeStaff(s.id, { pages: v })} />
+                          </details>
+                        )}
                       </td>
                       <td>
                         <span className="font-mono uppercase text-[10px] px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644]">

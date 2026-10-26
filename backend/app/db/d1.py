@@ -378,7 +378,7 @@ class D1Repository(SQLiteRepository):
     def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
         allowed = {
             "name", "role", "assigned_rm_id", "password_hash",
-            "is_staff", "status", "must_change_password", "revoked_before"
+            "is_staff", "status", "must_change_password", "revoked_before", "pages"
         }
         updates = {k: v for k, v in fields.items() if k in allowed}
         if updates:

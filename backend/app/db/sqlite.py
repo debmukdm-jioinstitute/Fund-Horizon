@@ -102,6 +102,7 @@ class SQLiteRepository(DatabaseRepository):
                     ("status", "TEXT NOT NULL DEFAULT 'active'"),
                     ("must_change_password", "INTEGER NOT NULL DEFAULT 0"),
                     ("revoked_before", "TEXT"),
+                    ("pages", "TEXT"),
                 ]:
                     if col_name not in cust_cols:
                         conn.execute(f"ALTER TABLE customers ADD COLUMN {col_name} {col_def}")
@@ -496,7 +497,7 @@ class SQLiteRepository(DatabaseRepository):
     def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
         allowed = {
             "name", "role", "assigned_rm_id", "password_hash",
-            "is_staff", "status", "must_change_password", "revoked_before"
+            "is_staff", "status", "must_change_password", "revoked_before", "pages"
         }
         updates = {k: v for k, v in fields.items() if k in allowed}
         conn = self._get_connection()

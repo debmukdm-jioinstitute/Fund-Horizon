@@ -32,6 +32,7 @@ if not on_workers():
             status: Mapped[str] = mapped_column(String(16), nullable=False, default="active")
             must_change_password: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
             revoked_before: Mapped[str | None] = mapped_column(String(50), nullable=True)
+            pages: Mapped[str | None] = mapped_column(String(2000), nullable=True)
             created_at: Mapped[str] = mapped_column(String(50), nullable=False)
 
         class AuthSessionModel(Base):

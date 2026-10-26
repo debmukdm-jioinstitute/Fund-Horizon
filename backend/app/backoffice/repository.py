@@ -1453,10 +1453,10 @@ class BackofficeRepository:
         conn = self._conn()
         try:
             rows = conn.execute(
-                "SELECT id, name, email, mobile, role, status, is_staff FROM customers "
+                "SELECT id, name, email, mobile, role, status, is_staff, pages FROM customers "
                 "WHERE is_staff = 1 OR role IN ('admin','analyst','rm','operations','read_only','compliance') ORDER BY name ASC"
             ).fetchall()
-            return [dict(r) for r in rows]
+            return [{**dict(r), "pages": json.loads(r["pages"] or "[]")} for r in rows]
         finally:
             conn.close()
 

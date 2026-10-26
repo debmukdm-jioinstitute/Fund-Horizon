@@ -388,7 +388,7 @@ export default function AuthPortal({
                 </span>
                 <input
                   id="portal-email"
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={

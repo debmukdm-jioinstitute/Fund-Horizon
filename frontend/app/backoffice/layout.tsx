@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
 import NavTabs from "@/components/backoffice/NavTabs";
-import { NAV_ITEMS } from "@/components/backoffice/navItems";
+import { NAV_ITEMS, canAccessPage } from "@/components/backoffice/navItems";
 import CommandPalette from "@/components/crm/CommandPalette";
 import EmailDialog from "@/components/crm/EmailDialog";
 import { useAuth } from "@/components/AuthContext";
@@ -67,6 +67,12 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       }
     }
   }, [customer, loading, router, isRiskProfiling]);
+
+  const allowed = !customer || canAccessPage(customer.pages, customer.role, pathname);
+  const navItems = customer ? NAV_ITEMS.filter((i) => canAccessPage(customer.pages, customer.role, i.href.split("?")[0])) : NAV_ITEMS;
+  useEffect(() => {
+    if (!isRiskProfiling && !loading && customer && !allowed && navItems[0]) router.replace(navItems[0].href);
+  }, [isRiskProfiling, loading, customer, allowed, navItems, router]);
 
   if (isRiskProfiling) {
     return <>{children}</>;
@@ -161,7 +167,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
             <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M10 20v-5h4v5" /></svg>
           </Link>
           <span aria-hidden className="my-2 w-px shrink-0 bg-[#E5E5E5] dark:bg-[#2B3644]" />
-          <NavTabs items={NAV_ITEMS} pathname={pathname} isActive={isActive} />
+          <NavTabs items={navItems} pathname={pathname} isActive={isActive} />
         </nav>
       </header>
 
@@ -176,7 +182,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
               </button>
             </div>
             <div className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3">
-              {NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link key={item.href} href={item.href} onClick={() => setMobileDrawerOpen(false)} className="flex items-start gap-3 rounded border border-[#E5E5E5] dark:border-[#2B3644] p-3 hover:border-[#0176D3] hover:bg-[#F3F9FE] dark:hover:bg-[#11304F]">
@@ -194,10 +200,10 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       )}
 
       <main className="flex-1 p-3 sm:p-4 md:p-5">
-        <div className="max-w-[1600px] mx-auto">{children}</div>
+        <div className="max-w-[1600px] mx-auto">{allowed ? children : null}</div>
       </main>
 
-      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={NAV_ITEMS} />
+      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={navItems} />
       {emailOpen && <EmailDialog onClose={() => setEmailOpen(false)} />}
     </div>
   );

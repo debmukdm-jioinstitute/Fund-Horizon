@@ -8,6 +8,7 @@ stored server-side. Passwords use PBKDF2-HMAC-SHA256 with 600k iterations.
 
 import hashlib
 import hmac
+import json
 import logging
 
 logger = logging.getLogger("auth")
@@ -32,6 +33,7 @@ PBKDF2_ITERATIONS = 600_000
 AUTH_RATE_LIMIT = 10  # requests per minute per IP on signup + login
 AUTH_RATE_WINDOW_S = 60.0
 
+LEARN_ONLY = {"/backoffice/learn"}
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 
 GUEST_EMAIL = "guest@fundhorizon.local"
@@ -131,7 +133,12 @@ def _normalize_mobile(raw: str) -> str:
 
 
 def _public_customer(row: dict) -> dict:
-    return {k: v for k, v in row.items() if k != "password_hash"}
+    out = {k: v for k, v in row.items() if k != "password_hash"}
+    try:
+        out["pages"] = json.loads(out.get("pages") or "[]")
+    except ValueError:
+        out["pages"] = []
+    return out
 
 
 def _parse_dt(value: str) -> datetime:
@@ -267,6 +274,9 @@ def require_staff(customer: Annotated[dict, Depends(get_current_customer)]) -> d
         raise HTTPException(403, "Staff access required.")
     if customer.get("status") in ("inactive", "suspended"):
         raise HTTPException(403, "Staff account is suspended or inactive.")
+    # Learn-only logins have no data pages, so no staff API is open to them.
+    if customer.get("role") != "admin" and customer.get("pages") and set(customer["pages"]) <= LEARN_ONLY:
+        raise HTTPException(403, "This login is limited to the Academy.")
     return customer
 
 

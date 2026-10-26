@@ -648,6 +648,7 @@ export interface Customer {
   is_staff?: boolean;
   status?: string;
   must_change_password?: boolean;
+  pages?: string[];
 }
 
 export interface SignupCustomerBody {

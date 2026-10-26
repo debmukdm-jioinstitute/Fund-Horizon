@@ -1118,6 +1118,9 @@ def provision_staff_member(
     verify_csrf(request)
     repo = get_repository()
     email = body.email.strip().lower()
+    if body.role not in STAFF_ROLES:
+        raise HTTPException(422, f"role must be one of: {', '.join(STAFF_ROLES)}")
+    pages = _pages_json(body.pages)
     existing = repo.get_customer_by_email(email)
     temporary_password = None
     password = body.password
@@ -1136,6 +1139,7 @@ def provision_staff_member(
                 "status": "active",
                 "password_hash": pwd_hash,
                 "must_change_password": 1 if (body.temp_password or temporary_password) else 0,
+                "pages": pages,
             },
         )
         _REPO.log_audit(admin["id"], "staff_promoted", "staff", existing["id"], {"email": email, "role": body.role})
@@ -1144,7 +1148,7 @@ def provision_staff_member(
         created = repo.create_customer(
             name=body.name,
             email=email,
-            mobile=body.mobile,
+            mobile=body.mobile if re.fullmatch(r"[6-9]\d{9}", body.mobile or "") and body.mobile != "9999999999" else f"9{secrets.randbelow(10**9):09d}",
             password_hash=pwd_hash,
             role=body.role,
         )
@@ -1154,6 +1158,7 @@ def provision_staff_member(
                 "is_staff": 1,
                 "status": "active",
                 "must_change_password": 1 if (body.temp_password or temporary_password) else 0,
+                "pages": pages,
             },
         )
         _REPO.log_audit(admin["id"], "staff_created", "staff", created["id"], {"email": email, "role": body.role})
@@ -1161,6 +1166,19 @@ def provision_staff_member(
 
 
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
+BACKOFFICE_PAGES = (
+    "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/macro", "/backoffice/micro",
+    "/backoffice/derivatives", "/backoffice/flows", "/backoffice/impact", "/backoffice/research",
+    "/backoffice/data-health", "/backoffice/crm", "/backoffice/operations", "/backoffice/chats",
+    "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/settings",
+)
+
+
+def _pages_json(pages: list[str] | None) -> str | None:
+    bad = [p for p in pages or [] if p not in BACKOFFICE_PAGES]
+    if bad:
+        raise HTTPException(422, f"unknown pages: {', '.join(bad)}")
+    return json.dumps(sorted(set(pages))) if pages else None
 
 
 @router.patch("/staff/{staff_id}")
@@ -1187,6 +1205,8 @@ def update_staff_member(
         fields["role"] = body.role
     if body.status is not None:
         fields["status"] = body.status
+    if body.pages is not None:
+        fields["pages"] = _pages_json(body.pages)
     temporary_password = None
     if body.reset_password:
         temporary_password = secrets.token_urlsafe(9)

@@ -76,11 +76,13 @@ class StaffMemberCreateRequest(BaseModel):
     role: str = "analyst"  # admin, analyst, rm, operations, read_only, compliance
     password: str | None = None  # omitted -> server generates a temporary password
     temp_password: bool = False
+    pages: list[str] | None = None  # allowed backoffice pages; None/empty = unrestricted
 
 
 class StaffMemberUpdateRequest(BaseModel):
     role: str | None = None
     status: str | None = None  # active | inactive
+    pages: list[str] | None = None  # replace allowed pages; [] = unrestricted
     reset_password: bool = False  # issue a new temporary password and sign the user out everywhere
 
 

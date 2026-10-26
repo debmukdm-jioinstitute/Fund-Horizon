@@ -171,3 +171,9 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
 ];
+
+/** Pages a login may open. Empty/absent list = unrestricted. Admins are never restricted. */
+export function canAccessPage(pages: string[] | undefined, role: string | undefined, path: string): boolean {
+  if (role === "admin" || !pages?.length) return true;
+  return pages.some((p) => path === p || (p !== "/backoffice" && path.startsWith(`${p}/`)));
+}

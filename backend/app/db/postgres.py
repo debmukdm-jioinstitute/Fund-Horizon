@@ -65,6 +65,7 @@ def _orm_customer_full(c: CustomerModel) -> dict[str, Any]:
         "status": getattr(c, "status", "active"),
         "must_change_password": getattr(c, "must_change_password", 0),
         "revoked_before": getattr(c, "revoked_before", None),
+        "pages": getattr(c, "pages", None),
         "created_at": c.created_at,
     }
 
@@ -312,7 +313,7 @@ class PostgresRepository(DatabaseRepository):
     def update_customer(self, customer_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
         allowed = {
             "name", "role", "assigned_rm_id", "password_hash",
-            "is_staff", "status", "must_change_password", "revoked_before"
+            "is_staff", "status", "must_change_password", "revoked_before", "pages"
         }
         updates = {k: v for k, v in fields.items() if k in allowed}
         with self.get_session() as session:

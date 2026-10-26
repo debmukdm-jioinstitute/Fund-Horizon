@@ -516,6 +516,12 @@ is carried from the source and never averaged from the bucket XIRRs. Create Repo
 (`<Client Name> Monthly report <month year>.pdf`), saves a copy to the client CRM record
 (`monthly_reports`), and emails it via Resend when ticked — the save happens before the email attempt,
 so a failed email never loses the report, and a successful email is logged so it appears under Sent emails.
+A client who is not a CRM household can still be reported: pick "Custom client — enter details" and type
+the name (mobile and email are optional, name is the only required detail). At Create Report the custom
+client is moved into the CRM properly — an existing record is reused when the entered email or mobile
+already matches one, otherwise a proper CRM customer + household record is created (household named as
+entered, new customer as primary member) and the normal household report flow then applies. A custom
+client gets no portal login unless separately invited.
 
 ### 11. Security and access
 

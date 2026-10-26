@@ -1,3 +1,10 @@
+import sqlite3
+
+import pytest
+from fastapi import HTTPException
+
+from app.api import monthly_report as mr_api
+from app.api.monthly_report import PushIn, history, latest, push, stored_pdf
 from app.report.monthly_report import (
     build_monthly_report,
     parse_monthly_buckets,
@@ -105,3 +112,167 @@ def test_parse_monthly_files_keeps_valuation_as_cross_check_only(monkeypatch):
 
 def test_non_monthly_text_returns_none():
     assert parse_monthly_buckets("hello world\nno tables here\n") is None
+
+
+# ------------------------------------------------------- custom clients ----
+# Corrected design: a custom client becomes a proper CRM customer + household
+# at Create Report time. No portal login is ever created or returned here.
+
+ADMIN = {"id": "staff-admin", "role": "admin"}
+
+
+def _db(tmp_path):
+    conn = sqlite3.connect(str(tmp_path / "test.db"))
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def _table(conn, name):
+    try:
+        return [dict(r) for r in conn.execute(f"SELECT * FROM {name}").fetchall()]
+    except sqlite3.OperationalError:
+        return []  # table not created yet because the push failed before any write
+
+
+def _custom_push(monkeypatch, tmp_path, **overrides):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "test.db"))
+    monkeypatch.setenv("DATABASE_URL", "")
+    body = {
+        "custom_client": {"name": "Test Custom Client", "mobile": "9876543210", "email": "customtest@example.com"},
+        "report": _report(), "send_email": False,
+    }
+    body.update(overrides)
+    return push(PushIn(**body), ADMIN)
+
+
+def test_custom_create_makes_customer_household_primary_and_report_retrievable(monkeypatch, tmp_path):
+    r = _custom_push(monkeypatch, tmp_path)
+    assert r["matched_existing"] is False
+    assert r["customer_id"] and r["household_id"] and r["emailed"] is False
+    assert "password" not in r and "temp_password" not in r  # no usable login is ever returned
+    conn = _db(tmp_path)
+    customers = _table(conn, "customers")
+    assert len(customers) == 1
+    cust = customers[0]
+    assert (cust["id"], cust["name"], cust["email"], cust["mobile"], cust["role"]) == (
+        r["customer_id"], "Test Custom Client", "customtest@example.com", "9876543210", "customer")
+    assert cust["password_hash"].startswith("pbkdf2_sha256$")
+    assert cust["assigned_rm_id"] is None  # admin creator, not an RM
+    households = _table(conn, "households")
+    assert len(households) == 1
+    assert households[0]["id"] == r["household_id"]
+    assert households[0]["name"] == "Test Custom Client"
+    assert households[0]["primary_customer_id"] == r["customer_id"]
+    members = _table(conn, "household_members")
+    assert len(members) == 1
+    assert members[0]["household_id"] == r["household_id"]
+    assert members[0]["customer_id"] == r["customer_id"] and members[0]["role"] == "primary"
+    reports = _table(conn, "monthly_reports")
+    assert len(reports) == 1
+    assert reports[0]["customer_id"] == r["customer_id"] and reports[0]["household_id"] == r["household_id"]
+    assert reports[0]["pdf"][:4] == b"%PDF"
+    conn.close()
+    assert [h["report_month"] for h in history(r["customer_id"], ADMIN)] == ["september 2026"]
+    assert latest(r["customer_id"], ADMIN)["report"]["month"] == "september 2026"
+    assert stored_pdf(r["id"], ADMIN).body[:4] == b"%PDF"
+
+
+def test_custom_duplicate_email_reuses_existing_customer(monkeypatch, tmp_path):
+    first = _custom_push(monkeypatch, tmp_path)
+    second = _custom_push(monkeypatch, tmp_path,
+                          custom_client={"name": "A Different Name", "mobile": "9111111111", "email": "customtest@example.com"})
+    assert second["matched_existing"] is True
+    assert second["customer_id"] == first["customer_id"]
+    assert second["household_id"] == first["household_id"]
+    conn = _db(tmp_path)
+    assert len(_table(conn, "customers")) == 1
+    assert len(_table(conn, "households")) == 1
+    assert len(_table(conn, "monthly_reports")) == 2
+    conn.close()
+
+
+def test_custom_duplicate_mobile_reuses_existing_customer(monkeypatch, tmp_path):
+    first = _custom_push(monkeypatch, tmp_path)
+    second = _custom_push(monkeypatch, tmp_path,
+                          custom_client={"name": "Another Name", "mobile": "9876543210", "email": "other@example.com"})
+    assert second["matched_existing"] is True
+    assert second["customer_id"] == first["customer_id"]
+    conn = _db(tmp_path)
+    assert len(_table(conn, "customers")) == 1
+    conn.close()
+
+
+def test_custom_email_and_mobile_matching_different_customers_is_422(monkeypatch, tmp_path):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "test.db"))
+    monkeypatch.setenv("DATABASE_URL", "")
+    from app.db import sqlite as sqlite_mod
+    sqlite_mod.create_customer(name="First Person", email="first@example.com", mobile="9000000001",
+                               password_hash="pbkdf2_sha256$1$aa$bb", role="customer")
+    sqlite_mod.create_customer(name="Second Person", email="second@example.com", mobile="9000000002",
+                               password_hash="pbkdf2_sha256$1$aa$bb", role="customer")
+    with pytest.raises(HTTPException) as exc:
+        push(PushIn(custom_client={"name": "Test Custom Client", "mobile": "9000000002", "email": "first@example.com"},
+                    report=_report(), send_email=False), ADMIN)
+    assert exc.value.status_code == 422
+
+
+def test_custom_blank_name_is_422_and_creates_nothing(monkeypatch, tmp_path):
+    with pytest.raises(HTTPException) as exc:
+        _custom_push(monkeypatch, tmp_path, custom_client={"name": "   ", "mobile": "", "email": ""})
+    assert exc.value.status_code == 422
+    conn = _db(tmp_path)
+    assert _table(conn, "customers") == []
+    assert _table(conn, "monthly_reports") == []
+    conn.close()
+
+
+def test_custom_name_only_uses_placeholders_and_skips_email(monkeypatch, tmp_path):
+    r = _custom_push(monkeypatch, tmp_path, send_email=True,
+                     custom_client={"name": "Test Custom Client", "mobile": "", "email": ""})
+    assert r["emailed"] is False
+    assert r["email_error"] == "No email address on file for this client."
+    conn = _db(tmp_path)
+    cust = _table(conn, "customers")[0]
+    assert cust["email"].startswith("no-email-") and cust["email"].endswith("@placeholder.invalid")
+    assert cust["mobile"].startswith("0000")
+    conn.close()
+
+
+def test_custom_with_valid_email_sends_via_household_path(monkeypatch, tmp_path):
+    sent = []
+    monkeypatch.setattr(mr_api, "send_email", lambda to, subj, text, attachments: sent.append(to) or "resend:1")
+    r = _custom_push(monkeypatch, tmp_path, send_email=True)
+    assert r["emailed"] is True and r["email_error"] is None
+    assert sent == ["customtest@example.com"]
+    conn = _db(tmp_path)
+    assert _table(conn, "monthly_reports")[0]["emailed_at"] is not None
+    kinds = [a["kind"] for a in _table(conn, "activities")]
+    assert "email" in kinds and "note" in kinds
+    conn.close()
+
+
+def test_report_failure_after_crm_creation_is_reported_honestly(monkeypatch, tmp_path):
+    monkeypatch.setattr(mr_api, "build_monthly_report", lambda data: (_ for _ in ()).throw(RuntimeError("pdf boom")))
+    with pytest.raises(HTTPException) as exc:
+        _custom_push(monkeypatch, tmp_path)
+    assert exc.value.status_code == 500
+    assert "but the report was not saved" in exc.value.detail
+    conn = _db(tmp_path)
+    assert len(_table(conn, "customers")) == 1  # CRM record stands; only the report is missing
+    assert _table(conn, "monthly_reports") == []
+    conn.close()
+
+
+def test_household_push_behaviour_is_unchanged(monkeypatch, tmp_path):
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "test.db"))
+    monkeypatch.setenv("DATABASE_URL", "")
+    from app.db import sqlite as sqlite_mod
+    from app.repo_crm_core import get_crm_repository
+    cust = sqlite_mod.create_customer(name="Household Client", email="household@example.com", mobile="9811111111",
+                                      password_hash="pbkdf2_sha256$1$aa$bb", role="customer")
+    repo = get_crm_repository()
+    hh = repo.create_household(name="Household Client", primary_customer_id=cust["id"], actor_id="staff-admin")
+    repo.add_household_member(household_id=hh["id"], customer_id=cust["id"], role="primary", actor_id="staff-admin")
+    r = push(PushIn(customer_id=cust["id"], household_id=hh["id"], report=_report(), send_email=False), ADMIN)
+    assert r["emailed"] is False and r["matched_existing"] is False
+    assert [h["report_month"] for h in history(cust["id"], ADMIN)] == ["september 2026"]

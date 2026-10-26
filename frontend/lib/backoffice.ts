@@ -325,6 +325,7 @@ export interface MutualFundItem {
   scheme_name: string;
   amc_name?: string;
   category?: string;
+  cat_key?: string; // screener category key, used to look up Advisorkhoj quartiles
   plan?: string;
   option?: string;
   latest_nav?: number | string;

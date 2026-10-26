@@ -8,6 +8,7 @@ import SignedValue from "@/components/terminal/SignedValue";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
 import FactsheetList from "@/components/backoffice/FactsheetList";
 import { AmcLogo } from "@/components/BrandLogo";
+import FundQuartile from "./FundQuartile";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 
@@ -372,6 +373,11 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">{scheme.category || "—"}</span>
                 </div>
               </div>
+            </div>
+
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Quartile rankings</div>
+              <FundQuartile name={scheme.scheme_name} cat={scheme.cat_key ?? scheme.category} />
             </div>
 
             {/* Quick Link Cards */}

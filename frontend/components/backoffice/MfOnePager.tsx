@@ -23,6 +23,7 @@ import {
   YAxis,
 } from "recharts";
 import { getMutualFundPerformance, MfPerformance, MfScreenerRow } from "@/lib/backoffice";
+import FundQuartile from "./FundQuartile";
 import { AmcLogo } from "@/components/BrandLogo";
 import Logo from "@/components/Logo";
 import { formatISTDate } from "@/lib/terminal-format";
@@ -314,6 +315,10 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                     </RadarChart>
                   </ResponsiveContainer>
                 </div>
+              </Panel>
+
+              <Panel title="Quartile rankings" note="Advisorkhoj, within category">
+                <FundQuartile name={r.name} cat={r.cat} />
               </Panel>
 
               <Panel title="Calendar-year returns" note="From month-end NAV history">

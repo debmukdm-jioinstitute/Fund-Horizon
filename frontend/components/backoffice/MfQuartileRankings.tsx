@@ -19,7 +19,7 @@ const sel = "terminal-btn text-[12px] py-1 px-2";
 // from the screener's own Equity group, and "Equity: Flexi Cap" is the label
 // this table already used). Categories outside this group are NOT mapped here:
 // Advisorkhoj's labels for them are not verified, so no label is guessed.
-const EQUITY_ADVISORKHOJ: Record<string, string> = {
+export const EQUITY_ADVISORKHOJ: Record<string, string> = {
   contra: "Equity: Contra",
   dividend_yield: "Equity: Dividend Yield",
   elss: "Equity: ELSS (Tax Savings)",
@@ -72,7 +72,7 @@ function fetchedLabel(raw: string | undefined): string | null {
 }
 
 // Advisorkhoj names ("HSBC Multi Cap Fund Reg Gr") and screener names ("... - Regular Plan - Growth") only agree once plan/option words are dropped.
-const nameKey = (n: string) => n.toLowerCase().replace(/\b(direct|regular|reg|dir|plan|growth|gr|option|fund|scheme)\b/g, "").replace(/[^a-z0-9]/g, "");
+export const nameKey = (n: string) => n.toLowerCase().replace(/\b(direct|regular|reg|dir|plan|growth|gr|option|fund|scheme)\b/g, "").replace(/[^a-z0-9]/g, "");
 
 export default function MfQuartileRankings({ screenerCategories = [], plans = [], query = "", recommended = false }: { screenerCategories?: { key: string; label: string }[]; plans?: string[]; query?: string; recommended?: boolean }) {
   const [recKeys, setRecKeys] = useState<Set<string> | null>(null);

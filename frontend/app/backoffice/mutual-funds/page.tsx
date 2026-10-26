@@ -134,6 +134,7 @@ function toItem(r: MfScreenerRow): MutualFundItem {
     scheme_code: r.code,
     scheme_name: r.name,
     amc_name: r.amc ?? undefined,
+    cat_key: r.cat,
     plan: r.plan,
     option: "Growth",
     latest_nav: typeof r.nav === "number" ? r.nav : undefined,

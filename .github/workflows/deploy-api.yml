@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Skip when AWS secrets are not set
         if: env.AWS_ACCESS_KEY_ID == ''
-        run: echo "AWS secrets missing: API not deployed by Actions (server timer may still deploy it)."
+        run: echo "AWS secrets missing, so Actions did not deploy the API (the server timer may still do it)."
       - name: Run redeploy.sh on the API instance
         if: env.AWS_ACCESS_KEY_ID != ''
         run: |

@@ -1644,6 +1644,16 @@ export const getMfScreener = (o: MfScreenerQuery, signal?: AbortSignal): Promise
   return boFetch<MfScreenerResult>(`/api/backoffice/mutual-funds/screener?${q.toString()}`, { signal });
 };
 
+export interface MfQuartileData {
+  categories: string[];
+  columns: string[];
+  rows: string[][];
+  links: (string | null)[];
+}
+
+export const getMfQuartileRanking = (o: { category: string; period: string; plan: string }, signal?: AbortSignal) =>
+  boFetch<{ data: MfQuartileData }>(`/api/backoffice/mutual-funds/quartile-ranking?${new URLSearchParams(o).toString()}`, { signal });
+
 /** Same-origin CSV download URL for the current filters (all matching rows). */
 export const mfScreenerCsvUrl = (o: MfScreenerQuery): string => {
   const q = mfScreenerParams(o);

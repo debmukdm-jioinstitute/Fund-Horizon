@@ -8,9 +8,11 @@ Graceful fallback to computed quartiles on any block, timeout, or layout change.
 
 import logging
 import re
+import time
 import urllib.robotparser
 
 import httpx
+from bs4 import BeautifulSoup
 
 from app.backoffice.providers.base import (
     BaseProvider,
@@ -129,3 +131,53 @@ class AdvisorkhojProvider(BaseProvider):
             if 1 <= val <= 4:
                 return val
         return None
+
+
+QUARTILE_PATH = "/mutual-funds-research/quartile-ranking"
+QUARTILE_PERIODS = ("1y", "2y", "3y", "4y", "5y", "10y")
+QUARTILE_PLANS = ("Direct", "Regular")
+_QUARTILE_TTL = 24 * 3600
+_quartile_cache: dict[tuple[str, str, str], tuple[float, dict]] = {}
+
+
+def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Client | None = None) -> dict:
+    """Quartile-ranking table for one category/period/plan, parsed from the public page (server-rendered, 24h cache).
+
+    Returns ``{"categories": [...], "columns": [...], "rows": [[...]], "links": [...]}``; ``rows`` is empty when
+    Advisorkhoj has no data for the combination (it currently publishes nothing for Direct plans).
+    Raises ``RuntimeError`` when robots.txt disallows the path or the page is blocked / unreachable.
+    """
+    key = (category, period, plan)
+    hit = _quartile_cache.get(key)
+    if hit and time.time() - hit[0] < _QUARTILE_TTL:
+        return hit[1]
+    prov = AdvisorkhojProvider(client)
+    if not prov.check_robots_allowed(QUARTILE_PATH):
+        raise RuntimeError("Advisorkhoj robots.txt disallows this path")
+    resp = prov._client.get(
+        ADVISORKHOJ_BASE_URL + QUARTILE_PATH,
+        params={"category": category, "period": period, "scheme_plan_type": plan},
+        headers={"User-Agent": ADVISORKHOJ_UA},
+        timeout=20.0,
+    )
+    if resp.status_code != 200:
+        raise RuntimeError(f"Advisorkhoj HTTP {resp.status_code}")
+    soup = BeautifulSoup(resp.text, "html.parser")
+    table = soup.find("table", id="tbl_scheme_returns")
+    if table is None:
+        raise RuntimeError("Advisorkhoj layout changed: quartile table not found")
+    cats = [o["value"] for o in soup.select("#sel_schemeCategories option") if o.get("value")]
+    if cats and category not in cats:
+        raise ValueError("Unknown category")
+    columns = [th.get_text(" ", strip=True) for th in table.select("thead th")]
+    rows, links = [], []
+    for tr in table.select("tbody tr"):
+        tds = tr.find_all("td")
+        if len(tds) != len(columns):
+            continue
+        rows.append([td.get_text(" ", strip=True) for td in tds])
+        a = tds[0].find("a")
+        links.append(ADVISORKHOJ_BASE_URL + a["href"] if a and a.get("href", "").startswith("/") else None)
+    out = {"categories": cats, "columns": columns, "rows": rows, "links": links}
+    _quartile_cache[key] = (time.time(), out)
+    return out

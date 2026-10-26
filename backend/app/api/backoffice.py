@@ -35,6 +35,7 @@ from app.backoffice.fh_recommended import (
     PMS_FACTSHEET_SOURCE,
     PMS_NO_PUBLIC_FACTSHEET,
 )
+from app.backoffice.providers import advisorkhoj as advisorkhoj_provider
 from app.backoffice.providers import apmi as apmi_provider
 from app.backoffice.providers import factsheets as factsheets_provider
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
@@ -858,6 +859,25 @@ def backoffice_mf_screener(
         "groups": mf_screener.facets(mf_screener.all_frame(ter)),
         "availability": "ready" if len(df) else "unavailable",
     }, "amfi", as_of)
+
+
+@router.get("/mutual-funds/quartile-ranking")
+def backoffice_mf_quartile_ranking(
+    staff: Annotated[dict, Depends(require_staff)],
+    category: str = Query("Equity: Flexi Cap", max_length=80),
+    period: str = Query("1y"),
+    plan: str = Query("Regular"),
+):
+    """Advisorkhoj quartile rankings (public page, robots-aware, cached 24h)."""
+    if period not in advisorkhoj_provider.QUARTILE_PERIODS or plan not in advisorkhoj_provider.QUARTILE_PLANS:
+        raise HTTPException(422, "Bad period or plan.")
+    try:
+        data = advisorkhoj_provider.fetch_quartile_table(category, period, plan)
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None
+    except Exception as e:  # httpx errors, robots block, layout change
+        raise HTTPException(502, f"Advisorkhoj unavailable: {e}") from None
+    return {"data": data, "source": "advisorkhoj", "availability": "ready" if data["rows"] else "no_data"}
 
 
 @router.get("/mutual-funds/nav-pair-check")

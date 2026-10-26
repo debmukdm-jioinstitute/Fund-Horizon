@@ -16,12 +16,13 @@ import {
 import { formatISTDate } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
 import MfOnePager from "@/components/backoffice/MfOnePager";
+import MfQuartileRankings from "@/components/backoffice/MfQuartileRankings";
 import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
 import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import InfoTip from "@/components/InfoTip";
 
-const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "One-Pager"] as const;
+const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
 const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
 const DEFAULT_CATEGORIES = ["flexi_cap", "multi_cap"];
@@ -50,6 +51,7 @@ const perYear = (key: string, label: string, kind: "pct" | "num", plain = false)
 
 const COLUMNS: Record<Section, Col[]> = {
   "One-Pager": [],
+  "Quartile Rankings": [],
   Summary: [
     { key: "cat_label", label: "Category / Benchmark", kind: "text" },
     pct("out_1y", "1Yr vs Category Avg", undefined, "Fund 1Yr return minus its category-plan average, in percentage points"),
@@ -483,6 +485,7 @@ function MutualFunds() {
       )}
 
       <div className="terminal-panel overflow-hidden">
+        {section === "Quartile Rankings" && <MfQuartileRankings />}
         {section === "One-Pager" && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 p-2.5 min-h-[420px] content-start">
             {!loading && rows.length === 0 && <div className="col-span-full py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">No funds match the current categories and filters.</div>}
@@ -513,7 +516,7 @@ function MutualFunds() {
             ))}
           </div>
         )}
-        <div className={`overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px] ${section === "One-Pager" ? "hidden" : ""}`}>
+        <div className={`overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px] ${section === "One-Pager" || section === "Quartile Rankings" ? "hidden" : ""}`}>
           <table className="terminal-table">
             <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
               <tr>

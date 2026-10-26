@@ -1,0 +1,71 @@
+{
+ "id": "bonds-06",
+ "title": "The three debt risks, plus a quiet fourth",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Name interest-rate, credit, liquidity and reinvestment risk, and how each shows up.",
+  "Say how to reduce each risk."
+ ],
+ "body_md": "Debt is not risk-free; it carries different risks. Interest-rate risk: bond prices fall when rates rise, showing up as a gradual NAV fall — reduce it by matching fund duration to the goal date. Credit (default) risk: the borrower delays or fails to pay, or is downgraded, showing up as a sudden NAV drop — reduce it with high ratings and no yield chasing. Liquidity risk: bonds can't be sold quickly at a fair price, showing up as redemption delays — prefer liquid categories and large, diversified funds. Reinvestment risk, a fourth quieter one: maturing money must be reinvested at lower rates, so income falls over time.\n\n| Risk | What it means | How it shows up | How to reduce it |\n| --- | --- | --- | --- |\n| Interest-rate risk | Bond prices fall when rates rise | Gradual NAV fall over weeks or months | Match fund duration to the goal date; shorter duration for near goals |\n| Credit (default) risk | The borrower delays or fails to pay, or is downgraded | Sudden NAV drop, sometimes in a day | Stick to high ratings (AAA, sovereign); avoid chasing yield |\n| Liquidity risk | Bonds can't be sold quickly at a fair price | Redemption delays, wide price gaps | Prefer liquid categories and large, diversified funds |\n| Reinvestment risk (a fourth, quieter one) | Maturing money must be reinvested at lower rates | Income falls over time | Lock in longer maturities when rates are high, within the goal's horizon |\n\n> **Investor takeaway:** Duration should match the goal date; credit quality should match how essential the money is.",
+ "key_terms": [
+  "Interest-rate risk",
+  "Credit (default) risk",
+  "Liquidity risk",
+  "Reinvestment risk"
+ ],
+ "example": "A downgrade can cut NAV in a day (credit risk); a rate rise causes a gradual NAV dip (interest-rate risk) — different risks, different responses.",
+ "say": [
+  "Debt has interest-rate, credit and liquidity risk; only the mix differs from equity.",
+  "Match duration to the goal; don't chase yield."
+ ],
+ "never": [
+  "Debt is risk-free.",
+  "A sudden NAV drop is always interest-rate risk."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q16",
+   "q": "G-secs have no default risk. What risk remains if sold before maturity?",
+   "o": [
+    "None at all",
+    "Interest-rate risk: prices fall when rates rise",
+    "Currency risk only",
+    "Credit risk from the AMC"
+   ],
+   "a": 1,
+   "why": "Rate risk remains."
+  },
+  {
+   "id": "bonds-n09",
+   "q": "What does “Liquidity risk” mean in plain language?",
+   "o": [
+    "Bonds can't be sold quickly at a fair price",
+    "Bond prices fall when rates rise",
+    "The borrower delays or fails to pay, or is downgraded",
+    "Maturing money must be reinvested at lower rates"
+   ],
+   "a": 0,
+   "why": "Liquidity risk: Bonds can't be sold quickly at a fair price Example: Redemption delays, wide price gaps"
+  },
+  {
+   "id": "bonds-n10",
+   "q": "What does “Reinvestment risk (a fourth, quieter one)” mean in plain language?",
+   "o": [
+    "Bond prices fall when rates rise",
+    "The borrower delays or fails to pay, or is downgraded",
+    "Bonds can't be sold quickly at a fair price",
+    "Maturing money must be reinvested at lower rates"
+   ],
+   "a": 3,
+   "why": "Reinvestment risk (a fourth, quieter one): Maturing money must be reinvested at lower rates Example: Income falls over time"
+  }
+ ],
+ "card_ids": [
+  "bonds-c11",
+  "bonds-c12"
+ ],
+ "words": 245
+}

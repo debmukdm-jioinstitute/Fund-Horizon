@@ -1,0 +1,69 @@
+{
+ "id": "compare-05",
+ "title": "Which product fits whom, and four questions before moving up",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Match five client needs to the best-fit product and the reason.",
+  "Ask the four ladder questions before moving a client up."
+ ],
+ "body_md": "Building wealth from salary, any amount: mutual funds (SIP) — low minimum, diversified, liquid, low cost. Emergency money or goals under 3 years: liquid / debt mutual funds — stability and quick access. Large surplus, wants own portfolio and transparency: PMS — personal portfolio, full visibility, some customisation. ₹1 crore+, long horizon, wants private-market exposure: Category I / II AIF — access to unlisted companies, private credit, real estate. ₹1 crore+, wants hedged or complex strategies: Category III AIF — long-short, hedge-style approaches.\n\n| Client need | Best fit | Why |\n| --- | --- | --- |\n| Building wealth from salary, any amount | Mutual funds (SIP) | Low minimum, diversified, liquid, low cost |\n| Emergency money or goals under 3 years | Liquid / debt mutual funds | Stability and quick access |\n| Large surplus, wants own portfolio and transparency | PMS | Personal portfolio, full visibility, some customisation |\n| ₹1 crore+, long horizon, wants private-market exposure | Category I / II AIF | Access to unlisted companies, private credit, real estate |\n| ₹1 crore+, wants hedged or complex strategies | Category III AIF | Long-short, hedge-style approaches |\n\nQuestions before moving a client up the ladder: “What share of your total investments would this be?” “Could you leave this money untouched for 5–7 years, with no option to exit early?” (critical for Cat I & II AIFs). “Is your mutual fund core already in place?” “Are you comfortable with less frequent valuations and less liquidity?”",
+ "key_terms": [
+  "Suitability",
+  "Lock-in tolerance"
+ ],
+ "example": "₹5 crore client wanting ₹2 crore in a PE AIF but needing ₹50 lakh in two years for a house: keep the house money liquid; size the AIF only from money not needed for years.",
+ "say": [
+  "Ask: could you leave this untouched for 5–7 years?",
+  "Eligible is not the same as suitable."
+ ],
+ "never": [
+  "Meeting the minimum proves suitability.",
+  "AIFs suit money needed soon."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q19",
+   "q": "A client meets the ₹1 crore AIF minimum. Does that make them suitable?",
+   "o": [
+    "Yes, eligibility equals suitability",
+    "No — eligible is not suitable; check lock-in tolerance and the core portfolio",
+    "Yes, for Category III only",
+    "Only if they already hold a PMS"
+   ],
+   "a": 1,
+   "why": "Eligible is not the same as suitable; check lock-in tolerance and the core portfolio."
+  },
+  {
+   "id": "compare-n03",
+   "q": "Emergency money or goals under 3 years fit:",
+   "o": [
+    "Category II AIF",
+    "PMS",
+    "Liquid / debt mutual funds — stability and quick access",
+    "Category III AIF"
+   ],
+   "a": 2,
+   "why": "Emergency money or goals under 3 years: liquid / debt mutual funds. Stability and quick access."
+  },
+  {
+   "id": "compare-n04",
+   "q": "The critical question for a Cat I & II AIF is:",
+   "o": [
+    "“What did it return last year?”",
+    "“Could you leave this money untouched for 5–7 years, with no option to exit early?”",
+    "“Is it advertised?”",
+    "“Can I exit next month?”"
+   ],
+   "a": 1,
+   "why": "“Could you leave this money untouched for 5–7 years, with no option to exit early?” (critical for Cat I & II AIFs)."
+  }
+ ],
+ "card_ids": [
+  "compare-c9",
+  "compare-c10"
+ ],
+ "words": 223
+}

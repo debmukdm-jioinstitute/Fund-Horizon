@@ -1,0 +1,70 @@
+{
+ "id": "idcw-06",
+ "title": "Why SWP is usually more tax-efficient, and who fits which option",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Work the ₹3 lakh tax illustration for IDCW vs SWP.",
+  "Match four client types to the option that usually serves them."
+ ],
+ "body_md": "Why SWP is usually more tax-efficient (illustrative). A retiree withdraws ₹3 lakh in a year from a fund. IDCW: the entire ₹3 lakh is added to taxable income at the slab rate. SWP: each withdrawal is part capital, part gain. If, say, 20% of the value is gain, only about ₹60,000 of the ₹3 lakh is a taxable gain, taxed under capital gains rules. The exact tax depends on the fund type, holding period and the client's slab. Always confirm with the client's CA, but the direction is consistent: SWP taxes only the gain; IDCW taxes the whole payout.\n\n| Client | Usually better served by |\n| --- | --- |\n| Retiree needing fixed monthly income | SWP from a suitable growth option |\n| Salaried investor building wealth, no cash needed | Growth option |\n| Investor in a low or nil tax bracket who wants occasional payouts and accepts irregular amounts | IDCW payout can be acceptable |\n| Investor currently in \"IDCW reinvestment\" | Usually growth: same result, less tax |",
+ "key_terms": [
+  "SWP tax",
+  "IDCW tax",
+  "Retiree income"
+ ],
+ "example": "Retiree needing fixed monthly income: SWP from a suitable growth option. Salaried investor building wealth: growth. Low/nil tax bracket wanting occasional payouts and accepting irregular amounts: IDCW payout can be acceptable. Investor in IDCW reinvestment: usually growth — same result, less tax.",
+ "say": [
+  "SWP taxes only the gain; IDCW taxes the whole payout.",
+  "An investor in IDCW reinvestment is usually better in growth."
+ ],
+ "never": [
+  "SWP taxes the whole withdrawal.",
+  "IDCW payout is acceptable for every client."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-n04",
+   "q": "A retiree withdraws ₹3 lakh in a year; about 20% of the value is gain. Roughly how much is taxable gain under an SWP?",
+   "o": [
+    "The whole ₹3 lakh",
+    "About ₹60,000",
+    "Nothing",
+    "₹3 lakh plus TDS"
+   ],
+   "a": 1,
+   "why": "SWP: each withdrawal is part capital, part gain. If 20% is gain, only about ₹60,000 of ₹3 lakh is a taxable gain."
+  },
+  {
+   "id": "idcw-n05",
+   "q": "A salaried investor building wealth with no cash need is usually best served by:",
+   "o": [
+    "The growth option",
+    "IDCW payout",
+    "IDCW reinvestment",
+    "Monthly IDCW"
+   ],
+   "a": 0,
+   "why": "Salaried investor building wealth, no cash needed: growth option."
+  },
+  {
+   "id": "idcw-n06",
+   "q": "Which client can IDCW payout be acceptable for?",
+   "o": [
+    "Any retiree needing fixed income",
+    "An investor who needs a fixed monthly amount",
+    "An investor who wants no tax",
+    "An investor in a low or nil tax bracket who wants occasional payouts and accepts irregular amounts"
+   ],
+   "a": 3,
+   "why": "Investor in a low or nil tax bracket who wants occasional payouts and accepts irregular amounts: IDCW payout can be acceptable."
+  }
+ ],
+ "card_ids": [
+  "idcw-c11",
+  "idcw-c12"
+ ],
+ "words": 156
+}

@@ -1,0 +1,69 @@
+{
+ "id": "overlap-11",
+ "title": "Annual overlap check",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the seven-point annual overlap check alongside the rebalancing review.",
+  "Say why one check is never enough."
+ ],
+ "body_md": "Overlap changes as fund managers trade, so one check is not enough. Annual overlap check (alongside the rebalancing review): count the equity funds; flag any increase since last year. Run an overlap check on the main fund pairs. Review the combined top 10 stocks and sector weights. Check for style drift: has a fund moved away from its stated style or market-cap focus? Before adding any new fund, check its overlap with what the client already holds. Note any scheme mergers or category changes announced by AMCs. Record findings and any agreed changes.\n\n> **Investor takeaway:** Overlap changes as managers trade. Check every year, not once.",
+ "key_terms": [
+  "Annual check",
+  "Style drift"
+ ],
+ "example": "Annual check: fund count up from 4 to 7, one fund drifted from value to growth — flag both before adding anything new.",
+ "say": [
+  "Run the check alongside the rebalancing review.",
+  "Record findings and agreed changes."
+ ],
+ "never": [
+  "One overlap check lasts forever.",
+  "Style drift doesn't matter."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-n17",
+   "q": "Why is one overlap check not enough?",
+   "o": [
+    "Overlap changes as fund managers trade",
+    "Funds never change holdings",
+    "SEBI bans re-checking",
+    "Tools expire"
+   ],
+   "a": 0,
+   "why": "Overlap changes as fund managers trade, so one check is not enough."
+  },
+  {
+   "id": "overlap-n18",
+   "q": "What is style drift?",
+   "o": [
+    "A fund changing its AMC",
+    "A fund merging",
+    "A fund cutting fees",
+    "A fund moving away from its stated style or market-cap focus"
+   ],
+   "a": 3,
+   "why": "Check for style drift: has a fund moved away from its stated style or market-cap focus?"
+  },
+  {
+   "id": "overlap-n19",
+   "q": "The annual check runs alongside:",
+   "o": [
+    "The tax filing",
+    "The NFO calendar",
+    "The rebalancing review",
+    "The AMC AGM"
+   ],
+   "a": 2,
+   "why": "Annual overlap check (alongside the rebalancing review)."
+  }
+ ],
+ "card_ids": [
+  "overlap-c21",
+  "overlap-c22"
+ ],
+ "words": 105
+}

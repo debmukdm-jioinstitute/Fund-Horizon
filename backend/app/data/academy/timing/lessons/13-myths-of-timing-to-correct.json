@@ -1,0 +1,69 @@
+{
+ "id": "timing-13",
+ "title": "Myths of timing to correct",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Correct five timing myths with the reality behind each.",
+  "Explain why “cash is safe while I wait” is wrong."
+ ],
+ "body_md": "“Experts know when the market will fall.” Reality: consistently timing both exit and re-entry is extremely rare. “Investing at a peak means I'll lose money.” Reality: over long horizons, the entry point usually matters far less than staying invested. “Stopping my SIP protects me in a fall.” Reality: it stops you buying units at lower prices. “I'll come back when things are clear.” Reality: when things look clear, prices have usually already recovered. “Cash is safe while I wait.” Reality: cash loses to inflation and misses rebounds.\n\n| Myth | Reality |\n| --- | --- |\n| \"Experts know when the market will fall.\" | Consistently timing both exit and re-entry is extremely rare. |\n| \"Investing at a peak means I'll lose money.\" | Over long horizons, the entry point usually matters far less than staying invested. |\n| \"Stopping my SIP protects me in a fall.\" | It stops you buying units at lower prices. |\n| \"I'll come back when things are clear.\" | When things look clear, prices have usually already recovered. |\n| \"Cash is safe while I wait.\" | Cash loses to inflation and misses rebounds. |\n\n> **Investor takeaway:** In a diversified, suitable fund, a market fall usually becomes a permanent loss only when you sell.",
+ "key_terms": [
+  "Timing myths",
+  "Cash drag"
+ ],
+ "example": "“I'll come back when things are clear”: by then, prices have usually already recovered — clarity arrives after the rebound.",
+ "say": [
+  "Consistently timing both exit and re-entry is extremely rare.",
+  "Cash loses to inflation and misses rebounds."
+ ],
+ "never": [
+  "Experts can time exits and re-entries reliably.",
+  "Stopping a SIP protects you in a fall."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q1",
+   "q": "Which line best sums up this module?",
+   "o": [
+    "Buy only after a 20% fall",
+    "Time in the market matters more than timing the market",
+    "Always invest in debt first",
+    "Exit when the market looks expensive"
+   ],
+   "a": 1,
+   "why": "Time in the market matters more than timing the market. No one can reliably pick the best day; staying invested for the goal matters more."
+  },
+  {
+   "id": "timing-n20",
+   "q": "“I'll come back when things are clear” is wrong because:",
+   "o": [
+    "Clarity comes before rebounds",
+    "When things look clear, prices have usually already recovered",
+    "Markets wait for retail investors",
+    "Clear markets fall further"
+   ],
+   "a": 1,
+   "why": "When things look clear, prices have usually already recovered."
+  },
+  {
+   "id": "timing-n21",
+   "q": "“Cash is safe while I wait” is wrong because:",
+   "o": [
+    "Cash loses to inflation and misses rebounds",
+    "Cash earns equity returns",
+    "Cash never loses value",
+    "Cash is banned"
+   ],
+   "a": 0,
+   "why": "Cash loses to inflation and misses rebounds."
+  }
+ ],
+ "card_ids": [
+  "timing-c25",
+  "timing-c26"
+ ],
+ "words": 190
+}

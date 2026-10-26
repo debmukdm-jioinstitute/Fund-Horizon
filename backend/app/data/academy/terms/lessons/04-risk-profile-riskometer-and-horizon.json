@@ -1,0 +1,77 @@
+{
+ "id": "terms-04",
+ "title": "Risk profile, riskometer and horizon",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Separate risk capacity (what finances can afford) from risk tolerance (what a client can stomach).",
+  "Read SEBI's six-level riskometer and match horizon to asset type."
+ ],
+ "body_md": "A risk profile has two halves: capacity, what the client's finances can afford to lose, and tolerance, what falls they can live through without selling. Every scheme carries SEBI's riskometer label — Low, Low to Moderate, Moderate, Moderately High, High, Very High — and most equity funds show Very High. Investment horizon is how long the money can stay invested: equity suits 5+ years, liquid funds suit weeks to months.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Risk profile | How much risk a client can take (capacity) and is comfortable taking (tolerance) | A 28-year-old with stable income vs a 68-year-old living on interest |\n| Riskometer | SEBI's six-level risk label on every scheme: Low, Low to Moderate, Moderate, Moderately High, High, Very High | Most equity funds show \"Very High\" |\n| Investment horizon | How long the money can stay invested | Equity for 5+ years; liquid funds for weeks to months |\n| Volatility | How much and how often returns swing up and down | A small-cap fund can fall 30% in a year and rise 50% the next |\n\n> **Talk-track:** “Return is what you hope for; risk is what you might live through on the way. Let's check you can live through the bumpy part.”",
+ "key_terms": [
+  "Risk profile",
+  "Riskometer",
+  "Investment horizon",
+  "Volatility"
+ ],
+ "example": "A 28-year-old with stable income and a 68-year-old living on interest need very different risk profiles, even for the same amount.",
+ "say": [
+  "The riskometer labels the fund; suitability matches the fund to the client.",
+  "Equity is for money you will not need for 5+ years."
+ ],
+ "never": [
+  "Most equity funds are low risk because they are regulated.",
+  "Horizon doesn't matter if the fund is good."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Return and risk",
+   "text": "Return is what you hope for; risk is what you might live through on the way. Let's check you can live through the bumpy part."
+  }
+ ],
+ "check": [
+  {
+   "id": "terms-q12",
+   "q": "How many levels does the SEBI riskometer have?",
+   "o": [
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "a": 3,
+   "why": "6. Low to Very High."
+  },
+  {
+   "id": "terms-n06",
+   "q": "What does “Riskometer” mean in plain language?",
+   "o": [
+    "How much risk a client can take (capacity) and is comfortable taking (tolerance)",
+    "How long the money can stay invested",
+    "How much and how often returns swing up and down",
+    "SEBI's six-level risk label on every scheme: Low, Low to Moderate, Moderate, Moderately High, High, Very High"
+   ],
+   "a": 3,
+   "why": "Riskometer: SEBI's six-level risk label on every scheme: Low, Low to Moderate, Moderate, Moderately High, High, Very High Example: Most equity funds show \"Very High\""
+  },
+  {
+   "id": "terms-n07",
+   "q": "What does “Investment horizon” mean in plain language?",
+   "o": [
+    "How much risk a client can take (capacity) and is comfortable taking (tolerance)",
+    "SEBI's six-level risk label on every scheme: Low, Low to Moderate, Moderate, Moderately High, High, Very High",
+    "How long the money can stay invested",
+    "How much and how often returns swing up and down"
+   ],
+   "a": 2,
+   "why": "Investment horizon: How long the money can stay invested Example: Equity for 5+ years; liquid funds for weeks to months"
+  }
+ ],
+ "card_ids": [
+  "terms-c7",
+  "terms-c8"
+ ],
+ "words": 194
+}

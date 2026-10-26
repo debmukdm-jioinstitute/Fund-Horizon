@@ -1,0 +1,70 @@
+{
+ "id": "timing-07",
+ "title": "Investing a lump sum without worrying about timing",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Compare all-at-once, STP and trigger-based entry, and who each suits.",
+  "Say honestly what STP does and does not do."
+ ],
+ "body_md": "All at once: invest the full amount on day one. Suits a long horizon and a client comfortable with swings; historically often ahead when markets rise over time. STP (Systematic Transfer Plan): park in a liquid or low-duration fund; move a fixed amount to equity each week or month (for example over 6–12 months). Suits nervous clients and large amounts relative to their wealth. Staggered by trigger: part now, more if the market falls by set amounts. Suits clients who want a rule; agree the rules in writing.\n\n| Approach | How it works | Suits |\n| --- | --- | --- |\n| All at once | Invest the full amount on day one | Long horizon, client comfortable with swings; historically often ahead when markets rise over time |\n| STP (Systematic Transfer Plan) | Park in a liquid or low-duration fund; move a fixed amount to equity each week or month (e.g. over 6–12 months) | Nervous clients, large amounts relative to their wealth |\n| Staggered by trigger | Part now, more if the market falls by set amounts | Clients who want a rule; agree the rules in writing |\n\nThe honest message: no method guarantees a better result. STP mainly reduces regret if a fall comes soon after investing, which helps clients stay invested.",
+ "key_terms": [
+  "STP",
+  "All at once",
+  "Staggered by trigger"
+ ],
+ "example": "₹25 lakh from a property sale, nervous client: park in a liquid fund, STP over 6–12 months — or agree written trigger rules — rather than waiting for a crash.",
+ "say": [
+  "No method guarantees a better result.",
+  "STP mainly reduces regret; it helps clients stay invested."
+ ],
+ "never": [
+  "STP guarantees higher returns.",
+  "STP avoids all tax."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q5",
+   "q": "What does an STP mainly do?",
+   "o": [
+    "Guarantees higher returns",
+    "Reduces regret if a fall comes soon after investing",
+    "Avoids all tax",
+    "Removes market risk"
+   ],
+   "a": 1,
+   "why": "Reduces regret if a fall comes soon after investing. STP spreads entry over time; it reduces regret but does not guarantee a better result."
+  },
+  {
+   "id": "timing-q6",
+   "q": "A client wants to invest ₹20 L but is very nervous. Which approach fits best?",
+   "o": [
+    "All at once in small-cap",
+    "STP from a liquid fund over 6–12 months",
+    "Wait in cash for a big fall",
+    "Split across ten sectoral funds"
+   ],
+   "a": 1,
+   "why": "STP from a liquid fund over 6–12 months. STP suits nervous clients and large amounts."
+  },
+  {
+   "id": "timing-q17",
+   "q": "What does an STP guarantee?",
+   "o": [
+    "A better return than a lump sum",
+    "Nothing — it mainly reduces regret if a fall comes soon after investing",
+    "No tax on transfers",
+    "No risk at all"
+   ],
+   "a": 1,
+   "why": "It mainly reduces regret; no method guarantees a better result."
+  }
+ ],
+ "card_ids": [
+  "timing-c13",
+  "timing-c14"
+ ],
+ "words": 198
+}

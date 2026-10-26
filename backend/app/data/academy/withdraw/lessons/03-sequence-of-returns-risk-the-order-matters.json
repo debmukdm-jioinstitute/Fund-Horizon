@@ -1,0 +1,69 @@
+{
+ "id": "withdraw-03",
+ "title": "Sequence-of-returns risk: the order matters",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain sequence-of-returns risk with the two-retiree illustration.",
+  "Say why retirees need a cash and debt buffer."
+ ],
+ "body_md": "The order of returns matters once money is coming out. Two retirees, each with ₹1 Cr, withdraw ₹5 L in year one, rising 6% a year. Both get exactly the same returns over 20 years, just in a different order (illustrative).\n\n| Retiree | Returns | Result |\n| --- | --- | --- |\n| A | Two falls of 15% in years 1–2, then 12% a year | Money runs out in about year 19 |\n| B | 12% a year, then two falls of 15% in years 19–20 | About ₹2.06 Cr still left after 20 years |\n\nA fall early in retirement does lasting damage, because units are sold at low prices to pay expenses. That is why retirees need a cash and debt buffer.",
+ "key_terms": [
+  "Sequence-of-returns risk",
+  "Cash and debt buffer"
+ ],
+ "example": "Retiree A: two falls of 15% in years 1–2, then 12% a year → money runs out in about year 19. Retiree B: 12% a year, then two falls in years 19–20 → about ₹2.06 Cr still left after 20 years. Same returns, different order.",
+ "say": [
+  "Early losses in withdrawals do more damage.",
+  "Units sold low to pay bills cause lasting damage."
+ ],
+ "never": [
+  "Only the average return matters.",
+  "A fall late in retirement is worse than an early fall."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q5",
+   "q": "Sequence-of-returns risk means…",
+   "o": [
+    "Returns are always negative",
+    "Early losses in withdrawals do more damage",
+    "SWP is taxed twice",
+    "Inflation is zero"
+   ],
+   "a": 1,
+   "why": "Early losses in withdrawals do more damage. Units are sold low to pay bills."
+  },
+  {
+   "id": "withdraw-q6",
+   "q": "Two retirees with the same returns in different order: the one with falls first…",
+   "o": [
+    "Ends richer",
+    "Runs out sooner",
+    "Ends the same",
+    "Pays no tax"
+   ],
+   "a": 1,
+   "why": "Runs out sooner. About year 19 in the illustration."
+  },
+  {
+   "id": "withdraw-n03",
+   "q": "Why does an early fall do lasting damage?",
+   "o": [
+    "Tax rises",
+    "Exit loads rise",
+    "Units are sold at low prices to pay expenses",
+    "Inflation falls"
+   ],
+   "a": 2,
+   "why": "A fall early in retirement does lasting damage, because units are sold at low prices to pay expenses."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c5",
+  "withdraw-c6"
+ ],
+ "words": 111
+}

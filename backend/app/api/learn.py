@@ -53,7 +53,7 @@ CHECKPOINT_PASS, MOCK_PASS, MOCK_SIZE, MOCK_SECONDS, GRACE_SECONDS = 70, 50, 50,
 STAGE_OF_SECTION = {"L": "L", "E": "E", "A": "A", "R": "R", "N": "N", "Niche": "Niche"}
 # Syllabus order a new joiner follows. Module directories are loaded in this order (not alphabetically),
 # so /me progress, "next lesson" and the Home page cards all read in teaching order.
-MODULE_ORDER = ["mf", "pms", "sip", "alloc", "stepup"]
+MODULE_ORDER = ["mf", "pms", "sip", "alloc", "stepup", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "rebal", "overlap", "withdraw"]
 _ENSURED: set[int] = set()
 
 

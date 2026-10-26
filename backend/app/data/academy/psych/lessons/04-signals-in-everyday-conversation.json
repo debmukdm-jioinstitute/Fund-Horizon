@@ -1,0 +1,73 @@
+{
+ "id": "psych-04",
+ "title": "Signals in everyday conversation",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Match six client behaviours to their likely biases.",
+  "Listen for biases in what clients say, before advising."
+ ],
+ "body_md": "Biases show up in what clients say and do, so the first skill is listening for them. Wants to stop SIPs after a fall: loss aversion. Asks for “the fund everyone is buying”: herd / FOMO. Quotes last year's return as the reason to invest: recency bias. Waits to “break even” before selling: anchoring. Checks the app daily and calls after every dip: myopic loss aversion. Keeps money idle in savings “for now”: status quo / inertia.\n\n| Client behaviour | Likely bias |\n| --- | --- |\n| Wants to stop SIPs after a fall | Loss aversion |\n| Asks for \"the fund everyone is buying\" | Herd / FOMO |\n| Quotes last year's return as the reason to invest | Recency bias |\n| Waits to \"break even\" before selling | Anchoring |\n| Checks the app daily and calls after every dip | Myopic loss aversion |\n| Keeps money idle in savings \"for now\" | Status quo / inertia |",
+ "key_terms": [
+  "Loss aversion",
+  "Herd / FOMO",
+  "Recency bias",
+  "Anchoring",
+  "Myopic loss aversion",
+  "Status quo / inertia"
+ ],
+ "example": "“Everyone is buying small-caps” → herd/FOMO: check fit with allocation first, before discussing the fund.",
+ "say": [
+  "Listen for the bias in what the client says before advising.",
+  "“The fund everyone is buying” is a herd signal, not a recommendation."
+ ],
+ "never": [
+  "Client behaviour is random and meaningless.",
+  "Quote last year's return as the reason to invest."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q5",
+   "q": "\"Everyone in my WhatsApp group is buying this small-cap fund.\" Which bias?",
+   "o": [
+    "Sunk cost",
+    "Herd / FOMO",
+    "Hindsight",
+    "Framing"
+   ],
+   "a": 1,
+   "why": "Herd / FOMO. Following the crowd, often after a rally."
+  },
+  {
+   "id": "psych-q6",
+   "q": "\"I check my portfolio every day and it stresses me.\" Which bias?",
+   "o": [
+    "Overconfidence",
+    "Myopic loss aversion",
+    "Confirmation",
+    "Present bias"
+   ],
+   "a": 1,
+   "why": "Myopic loss aversion. Frequent checking makes normal swings feel like losses."
+  },
+  {
+   "id": "psych-n08",
+   "q": "A client checks the app daily and calls after every dip. Which bias?",
+   "o": [
+    "Anchoring",
+    "Myopic loss aversion",
+    "Overconfidence",
+    "Sunk cost"
+   ],
+   "a": 1,
+   "why": "Checks the app daily and calls after every dip: myopic loss aversion."
+  }
+ ],
+ "card_ids": [
+  "psych-c7",
+  "psych-c8"
+ ],
+ "words": 141
+}

@@ -1,0 +1,72 @@
+{
+ "id": "bonds-16",
+ "title": "Niche topics (2): prices, curves, spreads and ladders",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain clean vs dirty price and the yield curve.",
+  "Say why Macaulay duration matches a goal date and modified duration estimates swings."
+ ],
+ "body_md": "Clean price excludes accrued interest; dirty price includes it and is what the buyer actually pays — which explains why the cash paid differs from the quoted price. The yield curve plots yields against maturities: normal means longer pays more; flat or inverted means little or no extra pay for longer. Credit spread is the extra yield a corporate bond pays over a G-sec of the same maturity; a wider spread means the market sees more risk. Roll-down: as a bond nears maturity, its price usually moves towards face value. Macaulay duration is the weighted-average time to receive cash flows (used for SEBI categories); modified duration is price sensitivity to a 1% rate change. A bond ladder spreads money across bonds or FDs maturing in different years, smoothing reinvestment risk.\n\n| Topic | What it is | Why it matters to the client |\n| --- | --- | --- |\n| Clean vs dirty price | Clean price excludes accrued interest; dirty price includes it and is what the buyer actually pays | Explains why the cash paid differs from the quoted price |\n| Yield curve | Yields plotted against maturities. Normal = longer pays more; flat or inverted = little or no extra pay for longer | Tells you whether locking in a longer maturity is being rewarded |\n| Credit spread | Extra yield a corporate bond pays over a G-sec of the same maturity | Wider spread = market sees more risk |\n| Roll-down | As a bond nears maturity, it moves down the yield curve and its price usually moves towards face value | Part of how target maturity funds deliver close to their starting YTM |\n| Macaulay vs modified duration | Macaulay: weighted-average time to receive cash flows (used for SEBI categories). Modified: price sensitivity to a 1% rate change | Use Macaulay to match the goal date, modified to estimate price swings |\n| Bond ladder | Spreading money across bonds or FDs maturing in different years | Smooths reinvestment risk and gives regular maturities for income |",
+ "key_terms": [
+  "Clean vs dirty price",
+  "Yield curve",
+  "Credit spread",
+  "Roll-down",
+  "Macaulay vs modified duration",
+  "Bond ladder"
+ ],
+ "example": "Quoted ₹1,000, paid ₹1,017: the difference is accrued interest — the dirty price is what the buyer actually pays.",
+ "say": [
+  "Use Macaulay to match the goal date, modified to estimate price swings.",
+  "A wider credit spread means more perceived risk."
+ ],
+ "never": [
+  "The quoted price is always what you pay.",
+  "A flat yield curve rewards lending longer."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q13",
+   "q": "What happened to Yes Bank's AT1 bonds in 2020?",
+   "o": [
+    "Paid double",
+    "Converted to FDs",
+    "Written off",
+    "Became tax-free"
+   ],
+   "a": 2,
+   "why": "Written off. AT1 holders lost their investment."
+  },
+  {
+   "id": "bonds-q18",
+   "q": "What can happen to AT1 bonds if the bank is in trouble?",
+   "o": [
+    "They convert to FDs",
+    "They can be written off",
+    "They are repaid first",
+    "Their coupon is guaranteed"
+   ],
+   "a": 1,
+   "why": "As happened with Yes Bank in 2020."
+  },
+  {
+   "id": "bonds-n28",
+   "q": "What does “Bond ladder” mean in plain language?",
+   "o": [
+    "Clean price excludes accrued interest; dirty price includes it and is what the buyer actually pays",
+    "Spreading money across bonds or FDs maturing in different years",
+    "Yields plotted against maturities. Normal = longer pays more; flat or inverted = little or no extra pay for longer",
+    "Extra yield a corporate bond pays over a G-sec of the same maturity"
+   ],
+   "a": 1,
+   "why": "Bond ladder: Spreading money across bonds or FDs maturing in different years Example: Smooths reinvestment risk and gives regular maturities for income"
+  }
+ ],
+ "card_ids": [
+  "bonds-c30"
+ ],
+ "words": 313
+}

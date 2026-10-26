@@ -1,0 +1,73 @@
+{
+ "id": "psych-14",
+ "title": "Bias library (3): six niche biases",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Recognise sunk cost, status quo, regret aversion, familiarity, hindsight and myopic loss aversion.",
+  "Answer each with the manual's “what to say” line."
+ ],
+ "body_md": "Sunk cost: “I've held this 5 years, I can't exit now.” Say: “The past years are spent. Is it the best fund for the next five?” Status quo / inertia: “My money is fine in savings for now.” Say: “Doing nothing is also a decision, and inflation charges for it.” Regret aversion: “What if I invest and it falls tomorrow?” Say: “Let's stagger it through an STP so no single day decides the outcome.” Familiarity / home bias: “Most of my money is in my company's shares.” Say: “Your salary already depends on that company. Let's not put your savings on the same bet.” Hindsight: “It was obvious the market would crash.” Say: “It always looks obvious afterwards. That's why we plan, not predict.” Myopic loss aversion: “I check daily and it stresses me.” Say: “Let's look quarterly. Daily moves are noise for a 10-year goal.”\n\n| Bias | How it sounds | What to say |\n| --- | --- | --- |\n| Sunk cost | \"I've held this 5 years, I can't exit now.\" | \"The past years are spent. Is it the best fund for the next five?\" |\n| Status quo / inertia | \"My money is fine in savings for now.\" | \"Doing nothing is also a decision, and inflation charges for it.\" |\n| Regret aversion | \"What if I invest and it falls tomorrow?\" | \"Let's stagger it through an STP so no single day decides the outcome.\" |\n| Familiarity / home bias | \"Most of my money is in my company's shares.\" | \"Your salary already depends on that company. Let's not put your savings on the same bet.\" |\n| Hindsight | \"It was obvious the market would crash.\" | \"It always looks obvious afterwards. That's why we plan, not predict.\" |\n| Myopic loss aversion | \"I check daily and it stresses me.\" | \"Let's look quarterly. Daily moves are noise for a 10-year goal.\" |",
+ "key_terms": [
+  "Sunk cost",
+  "Status quo / inertia",
+  "Regret aversion",
+  "Familiarity / home bias",
+  "Hindsight",
+  "Myopic loss aversion"
+ ],
+ "example": "“I've held this 5 years, I can't exit now” → sunk cost: the past years are spent; is it the best fund for the next five?",
+ "say": [
+  "Doing nothing is also a decision, and inflation charges for it.",
+  "We plan, not predict."
+ ],
+ "never": [
+  "Past years justify keeping a bad fund.",
+  "Daily moves matter most for a 10-year goal."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q7",
+   "q": "\"I've held this fund for 5 years, I can't exit now.\" Which bias?",
+   "o": [
+    "Sunk cost",
+    "Authority",
+    "Gambler's fallacy",
+    "Familiarity"
+   ],
+   "a": 0,
+   "why": "Sunk cost. Past investment is spent; the question is the next five years."
+  },
+  {
+   "id": "psych-q8",
+   "q": "\"My money is fine in savings for now.\" Which bias?",
+   "o": [
+    "Status quo / inertia",
+    "Disposition effect",
+    "Herd",
+    "Anchoring"
+   ],
+   "a": 0,
+   "why": "Status quo / inertia. Doing nothing feels safe but has a cost."
+  },
+  {
+   "id": "psych-n25",
+   "q": "“My money is fine in savings for now” is:",
+   "o": [
+    "Status quo / inertia",
+    "Disposition effect",
+    "Herd",
+    "Anchoring"
+   ],
+   "a": 0,
+   "why": "Status quo / inertia: “My money is fine in savings for now.” Say: “Doing nothing is also a decision, and inflation charges for it.”"
+  }
+ ],
+ "card_ids": [
+  "psych-c27",
+  "psych-c28"
+ ],
+ "words": 293
+}

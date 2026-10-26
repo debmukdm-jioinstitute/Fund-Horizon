@@ -1,0 +1,735 @@
+{
+ "id": "overlap",
+ "title": "Portfolio Overlap",
+ "code": "Module 16",
+ "blurb": "When more funds means the same portfolio: measuring overlap, reading the bands, and consolidating with care.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 75 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Modules 13 and 15"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)",
+  "SEBI circular on categorisation and rationalisation of schemes (26 February 2026)"
+ ],
+ "lessons": [
+  {
+   "id": "overlap-01",
+   "title": "What overlap is, and why it happens",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "overlap-02",
+   "title": "How overlap is measured, with a worked example",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "overlap-03",
+   "title": "SEBI's 2026 overlap limits within fund houses",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "overlap-04",
+   "title": "How to check a client's overlap",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "overlap-05",
+   "title": "Reading the result: the teaching bands",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "overlap-06",
+   "title": "Signs of a cluttered portfolio, and questions to ask",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "overlap-07",
+   "title": "Core and satellite: give every fund a job",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "overlap-08",
+   "title": "Choosing funds that complement each other",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "overlap-09",
+   "title": "Worked example: 9 funds down to 4",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "overlap-10",
+   "title": "Consolidate carefully: check costs first",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "overlap-11",
+   "title": "Annual overlap check",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "overlap-12",
+   "title": "Scheme changes to watch: mergers and category changes",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "overlap-13",
+   "title": "Behaviours: “more funds is safer” and friends",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "overlap-14",
+   "title": "The one line, and why paperwork isn't safety",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "overlap-15",
+   "title": "Role-play lab: five overlap conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "overlap-16",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "overlap-c1",
+   "q": "The one idea",
+   "a": [
+    "Diversify by what you own, not by how many funds you own."
+   ]
+  },
+  {
+   "id": "overlap-c2",
+   "q": "Portfolio overlap",
+   "a": [
+    "The share of one fund’s portfolio that is also held by another fund."
+   ]
+  },
+  {
+   "id": "overlap-c3",
+   "q": "How it is measured",
+   "a": [
+    "For every stock both funds hold, add up the smaller of its two weights."
+   ]
+  },
+  {
+   "id": "overlap-c4",
+   "q": "Worked example (illustrative)",
+   "a": [
+    "Shared stocks counted at 8% + 6% + 6% + 4% = 24% overlap from four top holdings."
+   ]
+  },
+  {
+   "id": "overlap-c5",
+   "q": "Large caps (SEBI)",
+   "a": [
+    "The top 100 companies by market capitalisation, from AMFI’s half-yearly list."
+   ]
+  },
+  {
+   "id": "overlap-c6",
+   "q": "Large-cap fund rule",
+   "a": [
+    "At least 80% in large-cap stocks, so large-cap funds tend to overlap."
+   ]
+  },
+  {
+   "id": "overlap-c7",
+   "q": "Why overlap happens",
+   "a": [
+    "Same big companies, same benchmarks, different labels on similar portfolios, and fund collecting."
+   ]
+  },
+  {
+   "id": "overlap-c8",
+   "q": "SEBI 2026: value and contra",
+   "a": [
+    "An AMC may offer both only if their overlap is no more than 50%."
+   ]
+  },
+  {
+   "id": "overlap-c9",
+   "q": "SEBI 2026: sectoral/thematic",
+   "a": [
+    "No more than 50% overlap with the AMC’s other equity schemes (large-cap excepted); 3 years to comply."
+   ]
+  },
+  {
+   "id": "overlap-c10",
+   "q": "SEBI 2026: measurement and disclosure",
+   "a": [
+    "Quarterly average of daily overlap; category-wise overlap disclosed monthly on AMC websites."
+   ]
+  },
+  {
+   "id": "overlap-c11",
+   "q": "Limits are within one AMC",
+   "a": [
+    "Funds from different AMCs can still overlap heavily, so we check the client’s portfolio."
+   ]
+  },
+  {
+   "id": "overlap-c12",
+   "q": "Teaching bands (not regulation)",
+   "a": [
+    "Under 30%: different. 30–50%: ask what each adds. Over 50%: consider keeping one."
+   ]
+  },
+  {
+   "id": "overlap-c13",
+   "q": "Four checking steps",
+   "a": [
+    "List every fund (CAS), run the pairs, see the combined portfolio, check direct holdings."
+   ]
+  },
+  {
+   "id": "overlap-c14",
+   "q": "Core and satellite",
+   "a": [
+    "1–2 broad core funds (≈60–80%) plus 1–3 satellites with distinct jobs (≈20–40%)."
+   ]
+  },
+  {
+   "id": "overlap-c15",
+   "q": "Consolidating cheaply",
+   "a": [
+    "Stop new money first, check exit loads and tax, let old units stay if sensible, record reasons."
+   ]
+  },
+  {
+   "id": "overlap-c16",
+   "q": "Annual review",
+   "a": [
+    "Count funds, run overlap, check style drift, check before adding funds, review merger notices."
+   ]
+  },
+  {
+   "id": "overlap-c17",
+   "q": "Common holdings",
+   "a": [
+    "Stocks held by both funds.",
+    "Example: Bank 1 in Fund A and Fund B.",
+    "Remember: Drive the overlap figure."
+   ]
+  },
+  {
+   "id": "overlap-c18",
+   "q": "Overlap tool",
+   "a": [
+    "Website tool comparing published portfolios.",
+    "Example: Enter two fund names, get a %.",
+    "Remember: Note the portfolio date."
+   ]
+  },
+  {
+   "id": "overlap-c19",
+   "q": "CAS",
+   "a": [
+    "Consolidated Account Statement of all MF holdings.",
+    "Example: Shows funds across AMCs.",
+    "Remember: Start every overlap check here."
+   ]
+  },
+  {
+   "id": "overlap-c20",
+   "q": "Core fund",
+   "a": [
+    "Broad, steady base of the portfolio.",
+    "Example: Flexi-cap or index fund.",
+    "Remember: 1–2 funds, most of the equity."
+   ]
+  },
+  {
+   "id": "overlap-c21",
+   "q": "Satellite fund",
+   "a": [
+    "Smaller holding with a distinct job.",
+    "Example: Mid-cap, small-cap, value, international.",
+    "Remember: Must add something different."
+   ]
+  },
+  {
+   "id": "overlap-c22",
+   "q": "Style drift",
+   "a": [
+    "A fund moving away from its stated style.",
+    "Example: A value fund holding growth stocks.",
+    "Remember: Check at each review."
+   ]
+  },
+  {
+   "id": "overlap-c23",
+   "q": "Over-diversification",
+   "a": [
+    "So many similar funds that each adds little.",
+    "Example: 14 funds, 5 doing the same job.",
+    "Remember: More funds ≠ more safety."
+   ]
+  },
+  {
+   "id": "overlap-c24",
+   "q": "Consolidation",
+   "a": [
+    "Fewer funds, same asset mix.",
+    "Example: 9 funds → 4 funds.",
+    "Remember: Cheapest steps first."
+   ]
+  },
+  {
+   "id": "overlap-c25",
+   "q": "Value vs contra (SEBI)",
+   "a": [
+    "Both allowed only if overlap ≤ 50%.",
+    "Example: One AMC’s value and contra funds.",
+    "Remember: February 2026 circular."
+   ]
+  },
+  {
+   "id": "overlap-c26",
+   "q": "Thematic overlap cap",
+   "a": [
+    "Sectoral/thematic ≤ 50% overlap with other equity schemes.",
+    "Example: Large-cap schemes excepted.",
+    "Remember: Breaching schemes merged after 3 years."
+   ]
+  },
+  {
+   "id": "overlap-c27",
+   "q": "Scheme merger notice",
+   "a": [
+    "AMC letter that two schemes are combining.",
+    "Example: Thematic fund merged into another.",
+    "Remember: Review portfolio, cost, risk, exit option."
+   ]
+  },
+  {
+   "id": "overlap-c28",
+   "q": "Direct holdings",
+   "a": [
+    "Shares held outside funds.",
+    "Example: ESOPs in the employer.",
+    "Remember: Count them in concentration."
+   ]
+  },
+  {
+   "id": "overlap-c29",
+   "q": "Diversification myth",
+   "a": [
+    "Belief that more funds = more safety.",
+    "Example: “12 funds must be safer.”",
+    "Remember: Look at what they hold."
+   ]
+  },
+  {
+   "id": "overlap-c30",
+   "q": "Fund collecting",
+   "a": [
+    "Adding the latest top-rated fund.",
+    "Example: A new “star” fund every year.",
+    "Remember: Ask what job it does."
+   ]
+  },
+  {
+   "id": "overlap-c31",
+   "q": "FOMO on dropped fund",
+   "a": [
+    "Fear the dropped fund will do best.",
+    "Example: “What if it outperforms?”",
+    "Remember: Overlapping funds move together."
+   ]
+  },
+  {
+   "id": "overlap-c32",
+   "q": "Loyalty",
+   "a": [
+    "Attachment to an old fund.",
+    "Example: “I’ve had it for years.”",
+    "Remember: Keep old units; stop new money."
+   ]
+  }
+ ],
+ "final": {
+  "id": "overlap-final",
+  "title": "Portfolio Overlap final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "overlap-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What is portfolio overlap?",
+    "o": [
+     "The fund’s expense ratio",
+     "The share of one fund’s holdings also held by another",
+     "The number of funds held",
+     "A fund’s return over the index"
+    ],
+    "a": 1,
+    "why": "The share of one fund’s holdings also held by another. High overlap means two funds act like one."
+   },
+   {
+    "id": "overlap-q2",
+    "sec": "L: Learn the Basics",
+    "q": "How is overlap between two funds usually calculated?",
+    "o": [
+     "Add the larger weights of shared stocks",
+     "Add the smaller weights of shared stocks",
+     "Count shared stocks only",
+     "Compare NAVs"
+    ],
+    "a": 1,
+    "why": "Add the smaller weights of shared stocks. Sum of the smaller weight for each common stock."
+   },
+   {
+    "id": "overlap-q3",
+    "sec": "L: Learn the Basics",
+    "q": "Shared stocks at 8%, 6%, 6%, 4% (smaller weights) give overlap of…",
+    "o": [
+     "14%",
+     "24%",
+     "30%",
+     "48%"
+    ],
+    "a": 1,
+    "why": "24%. 8 + 6 + 6 + 4 = 24%."
+   },
+   {
+    "id": "overlap-q4",
+    "sec": "L: Learn the Basics",
+    "q": "SEBI defines large-cap companies as…",
+    "o": [
+     "Top 50 by revenue",
+     "Top 100 by market capitalisation",
+     "Top 250 by profit",
+     "Any company above ₹1 lakh crore"
+    ],
+    "a": 1,
+    "why": "Top 100 by market capitalisation. Per AMFI’s half-yearly list."
+   },
+   {
+    "id": "overlap-q5",
+    "sec": "L: Learn the Basics",
+    "q": "Large-cap funds must hold at least…",
+    "o": [
+     "50% in large caps",
+     "65% in large caps",
+     "80% in large caps",
+     "100% in large caps"
+    ],
+    "a": 2,
+    "why": "80% in large caps. Which is why they overlap heavily."
+   },
+   {
+    "id": "overlap-q6",
+    "sec": "L: Learn the Basics",
+    "q": "Under SEBI’s February 2026 circular, an AMC’s value and contra funds may overlap by no more than…",
+    "o": [
+     "25%",
+     "50%",
+     "75%",
+     "No limit"
+    ],
+    "a": 1,
+    "why": "50%. Both can be offered only within this limit."
+   },
+   {
+    "id": "overlap-q7",
+    "sec": "L: Learn the Basics",
+    "q": "The 50% overlap cap with other equity schemes applies to…",
+    "o": [
+     "Liquid funds",
+     "Sectoral and thematic schemes",
+     "Index funds only",
+     "Debt funds"
+    ],
+    "a": 1,
+    "why": "Sectoral and thematic schemes. Large-cap schemes are excepted from the comparison."
+   },
+   {
+    "id": "overlap-q8",
+    "sec": "L: Learn the Basics",
+    "q": "Do SEBI’s overlap limits prevent overlap across different AMCs?",
+    "o": [
+     "Yes, fully",
+     "No, they apply within one AMC",
+     "Only for index funds",
+     "Only for ELSS"
+    ],
+    "a": 1,
+    "why": "No, they apply within one AMC. We still need to check the client’s portfolio."
+   },
+   {
+    "id": "overlap-q9",
+    "sec": "L: Learn the Basics",
+    "q": "In our teaching guide, overlap above 50% between two funds suggests…",
+    "o": [
+     "Buy a third fund",
+     "Consider keeping one of them",
+     "Ignore it",
+     "Switch to debt"
+    ],
+    "a": 1,
+    "why": "Consider keeping one of them. They are largely the same portfolio."
+   },
+   {
+    "id": "overlap-q10",
+    "sec": "A: Act Right",
+    "q": "What is the cheapest first step when consolidating?",
+    "o": [
+     "Redeem everything",
+     "Stop new money into funds being dropped and redirect it",
+     "Open a new folio",
+     "Buy more of each fund"
+    ],
+    "a": 1,
+    "why": "Stop new money into funds being dropped and redirect it. Costs nothing."
+   },
+   {
+    "id": "overlap-q11",
+    "sec": "A: Act Right",
+    "q": "In core and satellite, the core is usually…",
+    "o": [
+     "3–4 thematic funds",
+     "1–2 broad funds like flexi-cap or index",
+     "Only small-cap funds",
+     "A liquid fund"
+    ],
+    "a": 1,
+    "why": "1–2 broad funds like flexi-cap or index. About 60–80% of equity, illustratively."
+   },
+   {
+    "id": "overlap-q12",
+    "sec": "E: Evaluate the Client",
+    "q": "Which is a sign of a cluttered portfolio?",
+    "o": [
+     "3 funds with different jobs",
+     "Three large-cap funds from different AMCs",
+     "One index fund",
+     "A written target mix"
+    ],
+    "a": 1,
+    "why": "Three large-cap funds from different AMCs. Same category, same stocks."
+   },
+   {
+    "id": "overlap-q13",
+    "sec": "E: Evaluate the Client",
+    "q": "A client holds ESOPs in his employer, which his funds also hold. You should…",
+    "o": [
+     "Ignore the ESOPs",
+     "Count the direct holding when assessing concentration",
+     "Sell all funds",
+     "Buy more of the employer’s stock"
+    ],
+    "a": 1,
+    "why": "Count the direct holding when assessing concentration. Direct holdings add to overlap and concentration."
+   },
+   {
+    "id": "overlap-q14",
+    "sec": "N: Navigate Behaviour",
+    "q": "“Different AMCs are safer” is answered by…",
+    "o": [
+     "“Yes, always”",
+     "“Scheme assets sit with a trust and custodian; what matters is what funds own”",
+     "“Use only one AMC”",
+     "“AMCs guarantee returns”"
+    ],
+    "a": 1,
+    "why": "“Scheme assets sit with a trust and custodian; what matters is what funds own”. Diversify holdings, not fund houses."
+   },
+   {
+    "id": "overlap-q15",
+    "sec": "Compliance: Compliance",
+    "q": "Which statement is compliant?",
+    "o": [
+     "“Switch all 9 funds today.”",
+     "“Let’s check overlap, costs and your goals, then decide which funds to keep, with your approval.”",
+     "“Redemptions are tax-free.”",
+     "“This fund is better, trust me.”"
+    ],
+    "a": 1,
+    "why": "“Let’s check overlap, costs and your goals, then decide which funds to keep, with your approval.”. Base changes on goals, risk and costs; record approval."
+   },
+   {
+    "id": "overlap-q16",
+    "sec": "L: Learn the Basics",
+    "q": "Does owning more funds always mean more diversification?",
+    "o": [
+     "Yes, always",
+     "No — funds often hold the same top stocks",
+     "Yes, if they are from different AMCs",
+     "Only for equity funds"
+    ],
+    "a": 1,
+    "why": "Funds often hold the same top stocks."
+   },
+   {
+    "id": "overlap-q17",
+    "sec": "L: Learn the Basics",
+    "q": "How is overlap between two funds usually calculated?",
+    "o": [
+     "Add the larger weights of shared stocks",
+     "Add the smaller weight of each shared stock",
+     "Count shared stocks only",
+     "Compare their NAVs"
+    ],
+    "a": 1,
+    "why": "Add the smaller weights of shared stocks. Sum of the smaller weight for each common stock."
+   },
+   {
+    "id": "overlap-q18",
+    "sec": "L: Learn the Basics",
+    "q": "Do SEBI's 2026 overlap limits apply across all AMCs a client uses?",
+    "o": [
+     "Yes, fully",
+     "No, they apply within one fund house",
+     "Only for index funds",
+     "Only for ELSS"
+    ],
+    "a": 1,
+    "why": "They apply within one AMC. We still need to check the client's portfolio."
+   },
+   {
+    "id": "overlap-q19",
+    "sec": "A: Act Right",
+    "q": "What is the cheapest first step when consolidating?",
+    "o": [
+     "Redeem everything at once",
+     "Stop new money into funds being dropped and redirect it",
+     "Open a new folio",
+     "Buy more of each fund"
+    ],
+    "a": 1,
+    "why": "Stop new money into funds being dropped and redirect it. Costs nothing."
+   },
+   {
+    "id": "overlap-q20",
+    "sec": "A: Act Right",
+    "q": "Should a fund be added once it is top-rated, without checking overlap?",
+    "o": [
+     "Yes, ratings are enough",
+     "No — always check what it adds to existing holdings",
+     "Yes, for flexi-cap funds",
+     "Only if it is a small-cap fund"
+    ],
+    "a": 1,
+    "why": "Always check what it adds to existing holdings."
+   },
+   {
+    "id": "overlap-q21",
+    "sec": "Practice: Role-Play",
+    "q": "Suresh has 14 equity funds with ₹1,000 SIPs each. What do you propose?",
+    "o": [
+     "Keep all 14 funds",
+     "Check overlap; propose a core-satellite structure of 4–5 funds; redirect SIPs first; check exit loads and tax before any redemption; record his approval",
+     "Redeem everything in one day",
+     "Add more funds for safety"
+    ],
+    "a": 1,
+    "why": "Check overlap; propose a core-satellite structure of 4–5 funds; redirect SIPs first; check exit loads and tax before any redemption; record his approval."
+   },
+   {
+    "id": "overlap-q22",
+    "sec": "Practice: Role-Play",
+    "q": "Divya holds three large-cap funds from different AMCs “for safety”. What do you explain?",
+    "o": [
+     "Agree — different AMCs are always safer",
+     "Show their high overlap; explain safety comes from what is owned, not the number of AMCs; suggest keeping one core fund",
+     "Add a fourth large-cap fund",
+     "Switch everything to a single AMC for safety"
+    ],
+    "a": 1,
+    "why": "Show their high overlap; explain safety comes from what is owned, not the number of AMCs; suggest keeping one core fund."
+   },
+   {
+    "id": "overlap-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A client wants to add last year's top flexi-cap fund. What do you do first?",
+    "o": [
+     "Add it immediately",
+     "Check its overlap with existing funds; ask what job it would do; add only if it brings something different",
+     "Replace all existing funds with it",
+     "Ignore overlap and follow the rating"
+    ],
+    "a": 1,
+    "why": "Check its overlap with existing funds; ask what job it would do; add only if it brings something different."
+   },
+   {
+    "id": "overlap-q24",
+    "sec": "Practice: Role-Play",
+    "q": "Kiran holds many employer shares via ESOPs, and his funds also hold that stock. What do you do?",
+    "o": [
+     "Ignore the ESOPs",
+     "Count the direct holding; review sector and stock concentration; consider funds with less exposure to that sector",
+     "Buy more of the employer's stock",
+     "Sell all funds at once"
+    ],
+    "a": 1,
+    "why": "Count the direct holding; review sector and stock concentration; consider funds with less exposure to that sector."
+   },
+   {
+    "id": "overlap-q25",
+    "sec": "Practice: Role-Play",
+    "q": "A client receives a notice that a thematic fund is being merged. How do you respond?",
+    "o": [
+     "Ignore the notice",
+     "Explain SEBI's overlap rules as the likely reason; review the merged scheme's portfolio, risk and costs; explain the exit option",
+     "Exit immediately without reviewing",
+     "Assume nothing changes"
+    ],
+    "a": 1,
+    "why": "Explain SEBI's overlap rules as the likely reason; review the merged scheme's portfolio, risk and costs; explain the exit option."
+   }
+  ]
+ },
+ "role_play": null
+}

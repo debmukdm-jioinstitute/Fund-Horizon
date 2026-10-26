@@ -1,0 +1,74 @@
+{
+ "id": "bonds-04",
+ "title": "SEBI debt categories by time: the duration ladder",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Read SEBI's duration ladder from overnight to long duration.",
+  "Match a category to a goal date."
+ ],
+ "body_md": "A debt mutual fund pools money and buys many bonds. SEBI defines 16 debt categories so clients can compare like with like. Most are defined by how long the fund lends (duration) and a few by whom it lends to. Overnight funds hold securities maturing in 1 day; liquid funds up to 91 days; ultra short duration 3–6 months; low duration 6–12 months; money market up to 1 year; short duration 1–3 years; medium duration 3–4 years; medium to long duration 4–7 years; long duration above 7 years. A dynamic bond fund changes duration with the manager's view on rates.\n\n| Category | What SEBI requires (portfolio) | Typical use |\n| --- | --- | --- |\n| Overnight | Securities maturing in 1 day | Parking money for days; lowest interest-rate risk |\n| Liquid | Securities maturing up to 91 days | Emergency fund, short-term parking |\n| Ultra short duration | Macaulay duration 3–6 months | Money needed in 3–6 months |\n| Low duration | Macaulay duration 6–12 months | Money needed in 6–12 months |\n| Money market | Money market instruments maturing up to 1 year | Up to 1 year |\n| Short duration | Macaulay duration 1–3 years | Goals 1–3 years away |\n| Medium duration | Macaulay duration 3–4 years | 3–4 years, some rate risk |\n| Medium to long duration | Macaulay duration 4–7 years | 4–7 years; noticeable rate swings |\n| Long duration | Macaulay duration above 7 years | Long goals; large rate swings |\n| Dynamic bond | Duration changes with the manager's view on rates | Manager makes the rate call |\n\n> **Investor takeaway:** The fund's name tells you two things: how long it lends and to whom. Match how long it lends to when you need the money.",
+ "key_terms": [
+  "Overnight",
+  "Liquid",
+  "Ultra short duration",
+  "Low duration",
+  "Short duration",
+  "Long duration",
+  "Dynamic bond"
+ ],
+ "example": "Money needed in 6–12 months fits low duration or money market; money needed in 1–3 years fits short duration.",
+ "say": [
+  "Match how long the fund lends to when the client needs the money.",
+  "Overnight and liquid funds carry the lowest interest-rate risk."
+ ],
+ "never": [
+  "Choose a debt fund by last year's return.",
+  "Long duration suits money needed next month."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q3",
+   "q": "Liquid funds invest in securities maturing up to:",
+   "o": [
+    "1 day",
+    "91 days",
+    "1 year",
+    "3 years"
+   ],
+   "a": 1,
+   "why": "91 days. Overnight funds: 1 day."
+  },
+  {
+   "id": "bonds-n07",
+   "q": "What does “Liquid” mean in plain language?",
+   "o": [
+    "Securities maturing in 1 day",
+    "Macaulay duration 3–6 months",
+    "Securities maturing up to 91 days",
+    "Macaulay duration 6–12 months"
+   ],
+   "a": 2,
+   "why": "Liquid: Securities maturing up to 91 days Example: Emergency fund, short-term parking"
+  },
+  {
+   "id": "bonds-n08",
+   "q": "What does “Dynamic bond” mean in plain language?",
+   "o": [
+    "Securities maturing in 1 day",
+    "Duration changes with the manager's view on rates",
+    "Securities maturing up to 91 days",
+    "Macaulay duration 3–6 months"
+   ],
+   "a": 1,
+   "why": "Dynamic bond: Duration changes with the manager's view on rates Example: Manager makes the rate call"
+  }
+ ],
+ "card_ids": [
+  "bonds-c7",
+  "bonds-c8"
+ ],
+ "words": 256
+}

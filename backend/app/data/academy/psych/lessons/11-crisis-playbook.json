@@ -1,0 +1,75 @@
+{
+ "id": "psych-11",
+ "title": "Crisis playbook",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Run the seven crisis steps in order, starting with calling first.",
+  "Use history with a clear no-guarantee line."
+ ],
+ "body_md": "Crisis playbook. Call first: contact clients before they call you, starting with recent and first-time investors. Name the feeling: “It's normal to feel uneasy when markets fall like this.” Reconnect to the goal and horizon, not today's loss. Remind them of their own plan agreed at onboarding. Use history, without promises: in March 2020, the Nifty 50 fell nearly 40% in about a month, then nearly doubled from its low within a year. Past recoveries do not guarantee future ones. Act only by the rules: rebalance or deploy planned money; no emotional switches. Record the conversation and follow up in writing.\n\n> **Talk-track:** “In 2020, investors who stayed invested through the fall came out ahead of those who sold at the bottom. Your plan was built for exactly this.”\n\n> **Investor takeaway:** Market falls are normal. Staying invested through them is how long-term returns are earned.",
+ "key_terms": [
+  "Crisis playbook",
+  "Call first"
+ ],
+ "example": "Fall of 15% in a month: call recent and first-time investors before they call you; name the feeling; reconnect to the goal; remind them of their signed plan.",
+ "say": [
+  "Call clients before they call you, newest investors first.",
+  "Use history as context, never as a promise."
+ ],
+ "never": [
+  "Wait for clients to call.",
+  "Promise markets will recover."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Built for exactly this",
+   "text": "In 2020, investors who stayed invested through the fall came out ahead of those who sold at the bottom. Your plan was built for exactly this."
+  }
+ ],
+ "check": [
+  {
+   "id": "psych-q13",
+   "q": "What is the first step of the crisis playbook?",
+   "o": [
+    "Wait for clients to call",
+    "Switch clients to debt funds",
+    "Call clients before they call you, newest investors first",
+    "Send a market-outlook newsletter"
+   ],
+   "a": 2,
+   "why": "Call clients before they call you, newest investors first. Proactive calls prevent panic decisions."
+  },
+  {
+   "id": "psych-q14",
+   "q": "What was the Nifty 50's closing low on 23 March 2020?",
+   "o": [
+    "5,500",
+    "7,610",
+    "9,200",
+    "10,450"
+   ],
+   "a": 1,
+   "why": "7,610. It then rose about 99% from that low by 8 February 2021."
+  },
+  {
+   "id": "psych-n20",
+   "q": "What is the first step in the crisis playbook?",
+   "o": [
+    "Wait for clients to call",
+    "Call clients before they call you, starting with recent and first-time investors",
+    "Switch clients to debt funds",
+    "Send a newsletter"
+   ],
+   "a": 1,
+   "why": "First step: call clients before they call you, starting with recent and first-time investors."
+  }
+ ],
+ "card_ids": [
+  "psych-c21",
+  "psych-c22"
+ ],
+ "words": 144
+}

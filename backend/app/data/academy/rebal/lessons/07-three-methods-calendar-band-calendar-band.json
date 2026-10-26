@@ -1,0 +1,70 @@
+{
+ "id": "rebal-07",
+ "title": "Three methods: calendar, band, calendar + band",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Compare the three methods on rule, strength and weakness.",
+  "Say which is the suggested default and when to check early."
+ ],
+ "body_md": "Three methods.\n\n| Method | Rule | Strength | Weakness |\n| --- | --- | --- | --- |\n| Calendar | Check and rebalance on a fixed date, e.g. once a year | Simple; easy to explain and remember | May act on tiny drifts, or miss a big mid-year move |\n| Band (threshold) | Act only when an asset drifts beyond a limit, e.g. ±5 points | Acts only when it matters | Needs regular monitoring |\n| Calendar + band | Check yearly; act only if drift is beyond the band | Combines both; our suggested default | Slightly more to explain |\n\nAfter a sharp market move (a fall of 15–20% or more), check the bands early rather than waiting for the calendar date.",
+ "key_terms": [
+  "Calendar rebalancing",
+  "Band (threshold) rebalancing",
+  "Calendar + band"
+ ],
+ "example": "Calendar: simple, but may act on tiny drifts or miss a big mid-year move. Band: acts only when it matters, but needs monitoring. Calendar + band: check yearly, act only beyond the band — the suggested default.",
+ "say": [
+  "Calendar + band is the suggested default.",
+  "After a sharp fall of 15–20% or more, check bands early."
+ ],
+ "never": [
+  "Calendar alone is the suggested default.",
+  "Bands need no monitoring."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q6",
+   "q": "Which is our suggested default method?",
+   "o": [
+    "Never rebalance",
+    "Calendar only",
+    "Calendar + band",
+    "Daily rebalancing"
+   ],
+   "a": 2,
+   "why": "Calendar + band. Check yearly; act only beyond the band."
+  },
+  {
+   "id": "rebal-n12",
+   "q": "With a ±5-point band, a 60% target at 64.6% means:",
+   "o": [
+    "Must sell now",
+    "Within band: no action needed",
+    "Change the target",
+    "Move all to debt"
+   ],
+   "a": 1,
+   "why": "With a ±5-point band, a 60% target at 64.6% means within band: no action needed. Optional nudge with new money."
+  },
+  {
+   "id": "rebal-n13",
+   "q": "After a sharp market move, you should:",
+   "o": [
+    "Check the bands early rather than waiting for the calendar date",
+    "Wait for the calendar date",
+    "Ignore the bands",
+    "Sell everything"
+   ],
+   "a": 0,
+   "why": "After a sharp market move (a fall of 15–20% or more), check the bands early rather than waiting for the calendar date."
+  }
+ ],
+ "card_ids": [
+  "rebal-c13",
+  "rebal-c14"
+ ],
+ "words": 101
+}

@@ -1,0 +1,71 @@
+{
+ "id": "goals-15",
+ "title": "Role-play lab: six goal conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six goal conversations using amounts, dates and priorities.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example.\n\n| Client says | Explain |\n| --- | --- |\n| “Just tell me the best fund.” | Redirect the conversation to goals, amounts and dates: the goal decides the mix and the fund. |\n| A couple wants to fund their son's MBA in 12 years and retire in 20. | Prioritise, quantify both with inflation, and discuss the education-vs-retirement trade-off. |\n| “I need ₹10 lakh for a car in 2 years; put it in small caps for better returns.” | Explain why short-term goals belong in debt. |\n| A client's retirement goal is 30% behind plan. | Walk through the four levers without promising higher returns. |\n| A goal is 3 years away and still 80% in equity. | Explain the glide path and plan the shift, including tax. |\n| “Markets fell 15%. Should I stop the education SIP?” | Use the goal's time frame to keep the client on track. |\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Goal",
+  "Glide path",
+  "Four levers"
+ ],
+ "example": "Role-play the car question: ₹10 lakh in 2 years in small caps risks a fall just before the purchase — short-term money belongs in debt.",
+ "say": [
+  "Start with the goal, not the fund.",
+  "Never chase returns to catch up."
+ ],
+ "never": [
+  "Recommend funds before goals are clear.",
+  "Promise a goal will be met."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q21",
+   "q": "A client says, “Just tell me the best fund.” How do you respond?",
+   "o": [
+    "Name last year’s top fund",
+    "Redirect to goals: what for, how much, when, priority; explain that the goal decides the mix and the fund",
+    "Ask for their risk profile only",
+    "Recommend a sectoral fund"
+   ],
+   "a": 1,
+   "why": "Redirects to goals: what for, how much, when, priority; explains that the goal decides the mix and the fund."
+  },
+  {
+   "id": "goals-q22",
+   "q": "A couple wants to fund their son’s MBA in 12 years and retire in 20. How do you plan?",
+   "o": [
+    "One fund for both goals",
+    "Quantify both with inflation; prioritise; discuss the education-loan vs retirement trade-off; separate mixes and SIPs",
+    "Fund the MBA first and ignore retirement",
+    "Use the same mix for both"
+   ],
+   "a": 1,
+   "why": "Quantifies both with inflation; prioritises; discusses education loan vs retirement; separate mixes and SIPs."
+  },
+  {
+   "id": "goals-q23",
+   "q": "A client wants ₹10 lakh for a car in 2 years in small-cap funds “for better returns”. What do you say?",
+   "o": [
+    "Agree — small caps return more",
+    "Explain short-horizon risk; recommend debt (short duration / target maturity); no equity for near goals",
+    "Suggest a sectoral fund instead",
+    "Say 2 years is long enough for equity"
+   ],
+   "a": 1,
+   "why": "Explains short-horizon risk; recommends debt (short duration / target maturity); no equity for near goals."
+  }
+ ],
+ "card_ids": [
+  "goals-c29",
+  "goals-c30"
+ ],
+ "words": 177
+}

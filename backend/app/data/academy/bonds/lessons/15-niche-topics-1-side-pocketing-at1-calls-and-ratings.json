@@ -1,0 +1,71 @@
+{
+ "id": "bonds-15",
+ "title": "Niche topics (1): side-pocketing, AT1, calls and ratings",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain side-pocketing and AT1 bonds in under a minute each.",
+  "Say what YTC, CE ratings and a negative outlook warn about."
+ ],
+ "body_md": "These are the debt details that most often catch out distributors.\n\n| Topic | What it is | Why it matters to the client |\n| --- | --- | --- |\n| Side-pocketing (segregated portfolio) | When a bond held by a fund is downgraded to default-like levels, the AMC can move it into a separate portfolio. Existing investors get units in both; new money only enters the main portfolio | Investors may recover something later if the borrower pays; the side-pocket can't be redeemed, only held until recovery |\n| AT1 (perpetual) bonds | Bank bonds with no maturity that count as capital; interest can be skipped and the bond can be written off if the bank is in trouble | In 2020, Yes Bank's AT1 bonds were written off and holders lost their investment. Not a fixed deposit substitute |\n| Call option and YTC | Some bonds let the issuer repay early. Yield to Call (YTC) shows the return if that happens | If rates fall, the issuer may call the bond, and the investor must reinvest at lower rates |\n| Credit enhancement (CE) ratings | A rating with \"CE\" relies on a guarantee or other support, not the borrower alone | Check who the guarantor is and how strong the support really is |\n| Rating outlook and watch | \"Negative outlook\" or \"rating watch\" signals a possible downgrade | An early warning to review holdings |\n\n> **Investor takeaway:** Ask each new joiner to explain side-pocketing and AT1 bonds in under a minute; these are the questions that most often catch out distributors.",
+ "key_terms": [
+  "Side-pocketing",
+  "AT1 (perpetual) bonds",
+  "Call option and YTC",
+  "Credit enhancement (CE) ratings",
+  "Rating outlook and watch"
+ ],
+ "example": "Yes Bank AT1 bonds were written off in 2020 — a bank bond is not automatically safe, and AT1 is never an FD substitute.",
+ "say": [
+  "The side-pocket can't be redeemed, only held until recovery.",
+  "Check who the guarantor is behind a CE rating."
+ ],
+ "never": [
+  "Side-pocket units can be redeemed any time.",
+  "AT1 bonds are fixed-deposit substitutes."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q10",
+   "q": "Side-pocketing is used when:",
+   "o": [
+    "A fund is launched",
+    "A held bond suffers a severe credit event",
+    "Rates fall",
+    "The NAV rises"
+   ],
+   "a": 1,
+   "why": "A held bond suffers a severe credit event. Separates the troubled bond from the main portfolio."
+  },
+  {
+   "id": "bonds-n26",
+   "q": "What does “Side-pocketing (segregated portfolio)” mean in plain language?",
+   "o": [
+    "Bank bonds with no maturity that count as capital; interest can be skipped and the bond can be written off if the bank is in trouble",
+    "Some bonds let the issuer repay early. Yield to Call (YTC) shows the return if that happens",
+    "A rating with \"CE\" relies on a guarantee or other support, not the borrower alone",
+    "When a bond held by a fund is downgraded to default-like levels, the AMC can move it into a separate portfolio. Existing investors get units in both; new money only enters the main portfolio"
+   ],
+   "a": 3,
+   "why": "Side-pocketing (segregated portfolio): When a bond held by a fund is downgraded to default-like levels, the AMC can move it into a separate portfolio. Existing investors get units in both; new money only enters the main portfolio Example: Investors may recover something later if the borrower pays; the side-pocket can't be redeemed, only held until recovery"
+  },
+  {
+   "id": "bonds-n27",
+   "q": "What does “AT1 (perpetual) bonds” mean in plain language?",
+   "o": [
+    "When a bond held by a fund is downgraded to default-like levels, the AMC can move it into a separate portfolio. Existing investors get units in both; new money only enters the main portfolio",
+    "Some bonds let the issuer repay early. Yield to Call (YTC) shows the return if that happens",
+    "Bank bonds with no maturity that count as capital; interest can be skipped and the bond can be written off if the bank is in trouble",
+    "A rating with \"CE\" relies on a guarantee or other support, not the borrower alone"
+   ],
+   "a": 2,
+   "why": "AT1 (perpetual) bonds: Bank bonds with no maturity that count as capital; interest can be skipped and the bond can be written off if the bank is in trouble Example: In 2020, Yes Bank's AT1 bonds were written off and holders lost their investment. Not a fixed deposit substitute"
+  }
+ ],
+ "card_ids": [
+  "bonds-c29"
+ ],
+ "words": 238
+}

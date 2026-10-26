@@ -1,0 +1,70 @@
+{
+ "id": "bonds-02",
+ "title": "The price–yield seesaw",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain why bond prices fall when rates rise, with the ₹1,000 bond example.",
+  "Say why longer bonds swing more."
+ ],
+ "body_md": "When market interest rates rise, existing bonds with lower coupons become less attractive, so their prices fall. When rates fall, prices rise. That is the price–yield seesaw.\n\n| A 5-year bond, ₹1,000 face value, 7% coupon | Price (approx.) |\n| --- | --- |\n| Market rates fall to 6% | ₹1,042 (gain) |\n| Market rates stay at 7% | ₹1,000 |\n| Market rates rise to 8% | ₹960 (loss) |\n\nThe longer the bond's maturity, the bigger the swing. That sensitivity is measured by duration (see the Evaluate lessons).",
+ "key_terms": [
+  "Price–yield seesaw",
+  "Market price",
+  "Interest-rate risk"
+ ],
+ "example": "₹1,000 bond, 7% coupon, 5 years left: rates fall to 6% → about ₹1,042; rates rise to 8% → about ₹960 (approximate, illustrative).",
+ "say": [
+  "When rates rise, existing bond prices fall.",
+  "The longer the bond, the bigger the swing."
+ ],
+ "never": [
+  "When rates rise, existing bond prices rise too.",
+  "A bond's price never moves before maturity."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q1",
+   "q": "When interest rates rise, existing bond prices:",
+   "o": [
+    "Rise",
+    "Fall",
+    "Stay the same",
+    "Double"
+   ],
+   "a": 1,
+   "why": "Fall. The price–yield seesaw."
+  },
+  {
+   "id": "bonds-n03",
+   "q": "A 5-year bond yields 7%. Market rates rise to 8%. What happens to its price (approximately)?",
+   "o": [
+    "Rises to about ₹1,042",
+    "Stays at ₹1,000",
+    "Falls to about ₹960",
+    "Doubles to ₹2,000"
+   ],
+   "a": 2,
+   "why": "Rates rise to 8% → ₹960 (loss)."
+  },
+  {
+   "id": "bonds-n04",
+   "q": "Why do longer bonds swing more when rates move?",
+   "o": [
+    "Longer bonds pay no coupon",
+    "Their cash flows are further away, so rate changes affect their value more",
+    "Longer bonds are always lower rated",
+    "Duration does not depend on maturity"
+   ],
+   "a": 1,
+   "why": "The longer the bond's maturity, the bigger the swing."
+  }
+ ],
+ "card_ids": [
+  "bonds-c3",
+  "bonds-c4"
+ ],
+ "words": 76
+}

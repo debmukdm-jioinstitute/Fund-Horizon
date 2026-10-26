@@ -1,0 +1,749 @@
+{
+ "id": "psych",
+ "title": "Investor Psychology",
+ "code": "Module 3",
+ "blurb": "Why clients buy high and sell low — and how to spot the bias, answer it, and keep the plan on track.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 81 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "None for awareness; Modules 1–2 help"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)"
+ ],
+ "lessons": [
+  {
+   "id": "psych-01",
+   "title": "The behaviour gap: why clients earn less than their funds",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "psych-02",
+   "title": "How the gap opens: three costly moves",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "psych-03",
+   "title": "The onboarding bias questionnaire",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "psych-04",
+   "title": "Signals in everyday conversation",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "psych-05",
+   "title": "Check your own biases",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "psych-06",
+   "title": "Guardrails (1): buckets, automation, allocation, rebalancing",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "psych-07",
+   "title": "Guardrails (2): emergency fund, STP, cooling-off, pre-commitment",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "psych-08",
+   "title": "Framing rules for reviews",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "R"
+  },
+  {
+   "id": "psych-09",
+   "title": "Review rhythm: calendar, less checking, rebalance by rule",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "R"
+  },
+  {
+   "id": "psych-10",
+   "title": "The investor emotion cycle",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "psych-11",
+   "title": "Crisis playbook",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "psych-12",
+   "title": "Bias library (1): loss aversion, herd, recency, anchoring",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "psych-13",
+   "title": "Bias library (2): disposition, overconfidence, confirmation, mental accounting",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "psych-14",
+   "title": "Bias library (3): six niche biases",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "psych-15",
+   "title": "Bias library (4): six more niche biases",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "psych-16",
+   "title": "Role-play lab: six bias conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "psych-17",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "psych-c1",
+   "q": "Behaviour gap",
+   "a": [
+    "The difference between the return a fund delivers and the return its investors actually earn, caused by buying after rallies and selling after falls."
+   ]
+  },
+  {
+   "id": "psych-c2",
+   "q": "Fast vs slow system",
+   "a": [
+    "Fast: instant, emotional, driven by fear and greed. Slow: deliberate, checks the plan. Under stress, the fast system usually wins."
+   ]
+  },
+  {
+   "id": "psych-c3",
+   "q": "How much more do losses hurt?",
+   "a": [
+    "Roughly twice as much as equal gains feel good (Kahneman & Tversky, Prospect Theory)."
+   ]
+  },
+  {
+   "id": "psych-c4",
+   "q": "Emotion cycle: the peak",
+   "a": [
+    "Euphoria. Most investors buy here, just when risk is highest."
+   ]
+  },
+  {
+   "id": "psych-c5",
+   "q": "Emotion cycle: the bottom",
+   "a": [
+    "Despondency. Most investors sell here, often just before the recovery."
+   ]
+  },
+  {
+   "id": "psych-c6",
+   "q": "March 2020 in three numbers",
+   "a": [
+    "Nifty 50 fell about 40% in a month; closed at 7,610 on 23 March 2020; rose about 99% from that low by 8 February 2021."
+   ]
+  },
+  {
+   "id": "psych-c7",
+   "q": "Pre-commitment",
+   "a": [
+    "A written plan, agreed in calm times, of what the client will and won't do if markets fall 20%."
+   ]
+  },
+  {
+   "id": "psych-c8",
+   "q": "Cooling-off rule",
+   "a": [
+    "No switch or redemption is decided on the same day as a big market move."
+   ]
+  },
+  {
+   "id": "psych-c9",
+   "q": "Rebalancing rule",
+   "a": [
+    "Rebalance when the allocation drifts beyond an agreed band (e.g. ±5%). It forces trimming what rose and adding to what fell."
+   ]
+  },
+  {
+   "id": "psych-c10",
+   "q": "Guard question for distributors",
+   "a": [
+    "\"Would I suggest this if it hadn't done well last year?\""
+   ]
+  },
+  {
+   "id": "psych-c11",
+   "q": "Framing a review",
+   "a": [
+    "Show progress to goals in rupees and %, and 3–5 year XIRR vs benchmark, not a list of red and green funds."
+   ]
+  },
+  {
+   "id": "psych-c12",
+   "q": "Crisis playbook: step 1",
+   "a": [
+    "Call clients before they call you, starting with recent and first-time investors."
+   ]
+  },
+  {
+   "id": "psych-c13",
+   "q": "Loss aversion",
+   "a": [
+    "Losses hurt about twice as much as equal gains please.",
+    "Sounds like: \"The market fell, let me stop my SIP.\"",
+    "Say: Your SIP is buying more units cheaper now."
+   ]
+  },
+  {
+   "id": "psych-c14",
+   "q": "Herd / FOMO",
+   "a": [
+    "Following what everyone else is doing.",
+    "Sounds like: \"Everyone is buying small-caps.\"",
+    "Say: Let's check it fits your allocation first."
+   ]
+  },
+  {
+   "id": "psych-c15",
+   "q": "Recency",
+   "a": [
+    "Over-weighting the latest results.",
+    "Sounds like: \"This fund gave 40% last year.\"",
+    "Say: Let's look at its 5-year record and bad years."
+   ]
+  },
+  {
+   "id": "psych-c16",
+   "q": "Anchoring",
+   "a": [
+    "Fixating on a reference number like the buy price.",
+    "Sounds like: \"I'll sell once it's back to my cost.\"",
+    "Say: Your buying price doesn't affect what the fund does next."
+   ]
+  },
+  {
+   "id": "psych-c17",
+   "q": "Disposition effect",
+   "a": [
+    "Selling winners too early, holding losers too long.",
+    "Sounds like: \"Sell the winner, keep the loser.\"",
+    "Say: Let's judge each fund on merit."
+   ]
+  },
+  {
+   "id": "psych-c18",
+   "q": "Overconfidence",
+   "a": [
+    "Over-rating one's ability to pick or time.",
+    "Sounds like: \"I'll time the market myself.\"",
+    "Say: Even professionals struggle to time markets."
+   ]
+  },
+  {
+   "id": "psych-c19",
+   "q": "Confirmation",
+   "a": [
+    "Seeking only information that agrees.",
+    "Sounds like: \"Everything I read says it will go up.\"",
+    "Say: Let's look at the case against it too."
+   ]
+  },
+  {
+   "id": "psych-c20",
+   "q": "Mental accounting",
+   "a": [
+    "Treating money differently by its source.",
+    "Sounds like: \"This bonus is free money to take a risk with.\"",
+    "Say: It's still your money; put it toward a goal."
+   ]
+  },
+  {
+   "id": "psych-c21",
+   "q": "Sunk cost",
+   "a": [
+    "Staying in a bad choice because of what's already put in.",
+    "Sounds like: \"I've held this 5 years, I can't exit now.\"",
+    "Say: Is it the best fund for the next five years?"
+   ]
+  },
+  {
+   "id": "psych-c22",
+   "q": "Status quo / inertia",
+   "a": [
+    "Doing nothing because change feels hard.",
+    "Sounds like: \"My money is fine in savings for now.\"",
+    "Say: Doing nothing is also a decision; inflation charges for it."
+   ]
+  },
+  {
+   "id": "psych-c23",
+   "q": "Regret aversion",
+   "a": [
+    "Avoiding action for fear of regretting it.",
+    "Sounds like: \"What if I invest and it falls tomorrow?\"",
+    "Say: Let's stagger it through an STP."
+   ]
+  },
+  {
+   "id": "psych-c24",
+   "q": "Familiarity / home bias",
+   "a": [
+    "Preferring what is known, e.g. employer shares.",
+    "Sounds like: \"Most of my money is in my company's shares.\"",
+    "Say: Your salary already depends on that company."
+   ]
+  },
+  {
+   "id": "psych-c25",
+   "q": "Hindsight",
+   "a": [
+    "\"I knew it all along\", after the fact.",
+    "Sounds like: \"It was obvious the market would crash.\"",
+    "Say: It always looks obvious afterwards; we plan, not predict."
+   ]
+  },
+  {
+   "id": "psych-c26",
+   "q": "Myopic loss aversion",
+   "a": [
+    "Checking too often makes normal swings feel like losses.",
+    "Sounds like: \"I check daily and it stresses me.\"",
+    "Say: Let's look quarterly; daily moves are noise."
+   ]
+  },
+  {
+   "id": "psych-c27",
+   "q": "Authority",
+   "a": [
+    "Trusting someone because they sound expert.",
+    "Sounds like: \"A big YouTuber recommended this.\"",
+    "Say: Let's check they're SEBI-registered and it fits your plan."
+   ]
+  },
+  {
+   "id": "psych-c28",
+   "q": "Framing",
+   "a": [
+    "Same fact, different reaction depending on wording.",
+    "Sounds like: \"90% chance of gain\" vs \"10% chance of loss\"",
+    "Say: Present risk both ways, and in rupees."
+   ]
+  },
+  {
+   "id": "psych-c29",
+   "q": "Gambler's fallacy",
+   "a": [
+    "Expecting a reversal because of a streak.",
+    "Sounds like: \"It's risen 5 months straight, it must fall now.\"",
+    "Say: Markets have no memory; stick to your allocation."
+   ]
+  },
+  {
+   "id": "psych-c30",
+   "q": "Endowment",
+   "a": [
+    "Valuing what you own more than you'd pay for it.",
+    "Sounds like: \"I inherited these shares, I can't sell them.\"",
+    "Say: Would you buy them today with fresh money?"
+   ]
+  },
+  {
+   "id": "psych-c31",
+   "q": "Present bias",
+   "a": [
+    "Preferring spending now over saving for later.",
+    "Sounds like: \"I'll start investing after the new car.\"",
+    "Say: A small SIP now buys years of compounding."
+   ]
+  },
+  {
+   "id": "psych-c32",
+   "q": "Distributor's own bias",
+   "a": [
+    "Favouring last year's winners or easy-to-sell products.",
+    "Sounds like: \"This fund is hot, every client should get it.\"",
+    "Say: Use the suitability checklist every time."
+   ]
+  }
+ ],
+ "final": {
+  "id": "psych-final",
+  "title": "Investor Psychology final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "psych-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What is the behaviour gap?",
+    "o": [
+     "The gap between NAV and market price",
+     "The difference between a fund's return and the return its investors actually earn",
+     "The difference between direct and regular plan returns",
+     "The gap between a benchmark and its category average"
+    ],
+    "a": 1,
+    "why": "The difference between a fund's return and the return its investors actually earn. It opens up when investors buy after rallies and sell after falls."
+   },
+   {
+    "id": "psych-q2",
+    "sec": "L: Learn the Basics",
+    "q": "According to Kahneman and Tversky, losses feel roughly how painful compared with equal gains?",
+    "o": [
+     "About the same",
+     "About 1.2 times",
+     "About twice",
+     "About ten times"
+    ],
+    "a": 2,
+    "why": "About twice. Losses loom roughly twice as large as gains (Prospect Theory)."
+   },
+   {
+    "id": "psych-q3",
+    "sec": "E: Evaluate the Client",
+    "q": "\"I'll sell once it's back to what I paid.\" Which bias?",
+    "o": [
+     "Recency",
+     "Anchoring",
+     "Herd behaviour",
+     "Overconfidence"
+    ],
+    "a": 1,
+    "why": "Anchoring. The client is fixated on the purchase price as a reference point."
+   },
+   {
+    "id": "psych-q4",
+    "sec": "E: Evaluate the Client",
+    "q": "\"This fund gave 40% last year, let's buy it.\" Which bias?",
+    "o": [
+     "Recency",
+     "Endowment",
+     "Mental accounting",
+     "Regret aversion"
+    ],
+    "a": 0,
+    "why": "Recency. Over-weighting the most recent results."
+   },
+   {
+    "id": "psych-q5",
+    "sec": "E: Evaluate the Client",
+    "q": "\"Everyone in my WhatsApp group is buying this small-cap fund.\" Which bias?",
+    "o": [
+     "Sunk cost",
+     "Herd / FOMO",
+     "Hindsight",
+     "Framing"
+    ],
+    "a": 1,
+    "why": "Herd / FOMO. Following the crowd, often after a rally."
+   },
+   {
+    "id": "psych-q6",
+    "sec": "E: Evaluate the Client",
+    "q": "\"I check my portfolio every day and it stresses me.\" Which bias?",
+    "o": [
+     "Overconfidence",
+     "Myopic loss aversion",
+     "Confirmation",
+     "Present bias"
+    ],
+    "a": 1,
+    "why": "Myopic loss aversion. Frequent checking makes normal swings feel like losses."
+   },
+   {
+    "id": "psych-q7",
+    "sec": "E: Evaluate the Client",
+    "q": "\"I've held this fund for 5 years, I can't exit now.\" Which bias?",
+    "o": [
+     "Sunk cost",
+     "Authority",
+     "Gambler's fallacy",
+     "Familiarity"
+    ],
+    "a": 0,
+    "why": "Sunk cost. Past investment is spent; the question is the next five years."
+   },
+   {
+    "id": "psych-q8",
+    "sec": "E: Evaluate the Client",
+    "q": "\"My money is fine in savings for now.\" Which bias?",
+    "o": [
+     "Status quo / inertia",
+     "Disposition effect",
+     "Herd",
+     "Anchoring"
+    ],
+    "a": 0,
+    "why": "Status quo / inertia. Doing nothing feels safe but has a cost."
+   },
+   {
+    "id": "psych-q9",
+    "sec": "N: Navigate Behaviour",
+    "q": "At which point in the emotion cycle do most investors buy?",
+    "o": [
+     "Despondency",
+     "Fear",
+     "Euphoria",
+     "Hope"
+    ],
+    "a": 2,
+    "why": "Euphoria. They buy near the peak, when risk is highest."
+   },
+   {
+    "id": "psych-q10",
+    "sec": "A: Act Right",
+    "q": "Which guardrail best counters regret aversion when investing a large lump sum?",
+    "o": [
+     "A cooling-off rule",
+     "An STP over 6–12 months",
+     "Checking the portfolio daily",
+     "A sector fund"
+    ],
+    "a": 1,
+    "why": "An STP over 6–12 months. Staggering entry means no single day decides the outcome."
+   },
+   {
+    "id": "psych-q11",
+    "sec": "A: Act Right",
+    "q": "What does the cooling-off rule say?",
+    "o": [
+     "Wait 30 days before any SIP",
+     "No switch or redemption on the same day as a big market move",
+     "Review the portfolio every week",
+     "Invest only after markets fall 10%"
+    ],
+    "a": 1,
+    "why": "No switch or redemption on the same day as a big market move. It stops panic or FOMO decisions in the heat of the moment."
+   },
+   {
+    "id": "psych-q12",
+    "sec": "R: Review & Rebalance",
+    "q": "What is the best way to frame an annual review?",
+    "o": [
+     "List each fund's quarterly return",
+     "Show progress to each goal in rupees and %",
+     "Lead with the latest market headline",
+     "Show the best and worst fund only"
+    ],
+    "a": 1,
+    "why": "Show progress to each goal in rupees and %. Goals and long periods counter short-term framing and recency."
+   },
+   {
+    "id": "psych-q13",
+    "sec": "N: Navigate Behaviour",
+    "q": "What is the first step of the crisis playbook?",
+    "o": [
+     "Wait for clients to call",
+     "Switch clients to debt funds",
+     "Call clients before they call you, newest investors first",
+     "Send a market-outlook newsletter"
+    ],
+    "a": 2,
+    "why": "Call clients before they call you, newest investors first. Proactive calls prevent panic decisions."
+   },
+   {
+    "id": "psych-q14",
+    "sec": "L: Learn the Basics",
+    "q": "What was the Nifty 50's closing low on 23 March 2020?",
+    "o": [
+     "5,500",
+     "7,610",
+     "9,200",
+     "10,450"
+    ],
+    "a": 1,
+    "why": "7,610. It then rose about 99% from that low by 8 February 2021."
+   },
+   {
+    "id": "psych-q15",
+    "sec": "Compliance: Compliance",
+    "q": "Which statement to a client is compliant?",
+    "o": [
+     "\"Markets always recover within a year.\"",
+     "\"In 2020 markets recovered, but past recoveries don't guarantee future ones.\"",
+     "\"I promise your SIP will be positive by March.\"",
+     "\"Stay invested; losses are impossible over 3 years.\""
+    ],
+    "a": 1,
+    "why": "\"In 2020 markets recovered, but past recoveries don't guarantee future ones.\". Use history as context, never as a promise."
+   },
+   {
+    "id": "psych-q16",
+    "sec": "L: Learn the Basics",
+    "q": "Is knowing about biases enough to stop them affecting decisions?",
+    "o": [
+     "Yes, knowledge switches them off",
+     "No — knowing doesn't switch them off; systems and habits do",
+     "Yes, for experienced investors",
+     "Only for clients, not distributors"
+    ],
+    "a": 1,
+    "why": "Knowing doesn't switch them off; systems and habits do."
+   },
+   {
+    "id": "psych-q17",
+    "sec": "E: Evaluate the Client",
+    "q": "Can distributors be affected by recency bias?",
+    "o": [
+     "No, training prevents it",
+     "Yes — e.g. pitching last year's top fund to every client",
+     "Only in rallies",
+     "Only when selling PMS"
+    ],
+    "a": 1,
+    "why": "e.g. pitching last year's top fund to every client."
+   },
+   {
+    "id": "psych-q18",
+    "sec": "N: Navigate Behaviour",
+    "q": "A client redeems during a fall. What should you check first?",
+    "o": [
+     "Assume it is panic",
+     "Whether it reflects a genuine need: job loss, medical expense, or a goal that is due",
+     "The fund's NAV that day",
+     "The client's age"
+    ],
+    "a": 1,
+    "why": "First check for a genuine need: job loss, medical expense, or a goal that is due."
+   },
+   {
+    "id": "psych-q19",
+    "sec": "R: Review & Rebalance",
+    "q": "Rebalancing by rule usually means:",
+    "o": [
+     "Buying more of what rose",
+     "Trimming some of what has risen and adding to what fell",
+     "Selling everything",
+     "Holding only cash"
+    ],
+    "a": 1,
+    "why": "It forces “sell high, buy low”, the opposite of instinct."
+   },
+   {
+    "id": "psych-q20",
+    "sec": "Compliance: Compliance",
+    "q": "Is it acceptable to tell a client markets will recover within 12 months?",
+    "o": [
+     "Yes, if you sound confident",
+     "No — never promise a recovery or its timing",
+     "Yes, for diversified funds",
+     "Only in writing"
+    ],
+    "a": 1,
+    "why": "Never promise a recovery or its timing."
+   },
+   {
+    "id": "psych-q21",
+    "sec": "Practice: Role-Play",
+    "q": "Markets have fallen 15% in a month. A client with a 10-year goal calls to stop all SIPs. How do you respond?",
+    "o": [
+     "Agree and stop all SIPs immediately",
+     "Acknowledge the feeling; reconnect to the goal and 10-year horizon; explain the SIP buys more units at lower prices; remind them of their signed plan; use history as context without promising recovery; record the call",
+     "Promise the market will recover next month",
+     "Switch everything to debt at once"
+    ],
+    "a": 1,
+    "why": "Acknowledge the feeling; reconnect to the goal and 10-year horizon; explain that the SIP is buying more units at lower prices; remind them of their signed plan; use history as context without promising recovery; record the call."
+   },
+   {
+    "id": "psych-q22",
+    "sec": "Practice: Role-Play",
+    "q": "A client wants to move everything into a small-cap fund “everyone in the WhatsApp group” is buying. How do you respond?",
+    "o": [
+     "Move everything at once",
+     "Name it gently as following the crowd; check fit with the target allocation and risk profile; explain popular often means it has already run up; if appropriate, limit it to a planned slice; never pitch using FOMO",
+     "Buy even more on margin",
+     "Promise it will keep rising"
+    ],
+    "a": 1,
+    "why": "Name it gently as following the crowd; check fit with the target allocation and risk profile; explain that popular often means it has already run up; if appropriate, limit it to a planned slice; never pitch using FOMO."
+   },
+   {
+    "id": "psych-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A client has ₹20 lakh in a savings account “until the market settles”. What do you suggest?",
+    "o": [
+     "Leave it in savings indefinitely",
+     "Show the cost of waiting (inflation, missed compounding); link the money to specific goals; propose an STP from a liquid or debt fund into equity over 6–12 months to reduce regret",
+     "Wait for a crash before investing anything",
+     "Put it all in a sectoral fund now"
+    ],
+    "a": 1,
+    "why": "Show the cost of waiting (inflation, missed compounding); link the money to specific goals; propose an STP from a liquid or debt fund into equity over 6–12 months to reduce regret."
+   },
+   {
+    "id": "psych-q24",
+    "sec": "Practice: Role-Play",
+    "q": "An IT employee has 70% of their wealth in their employer's shares. What is the bias, and what do you do?",
+    "o": [
+     "No bias — employer shares are safe",
+     "Familiarity bias. Explain the double risk to job and savings together; propose gradual diversification over time, with tax implications discussed with their CA",
+     "Buy more employer shares",
+     "Sell everything in one day regardless of tax"
+    ],
+    "a": 1,
+    "why": "Familiarity bias. Explain the double risk to job and savings together; propose gradual diversification over time, with tax implications discussed with their CA."
+   },
+   {
+    "id": "psych-q25",
+    "sec": "Practice: Role-Play",
+    "q": "Your manager asks you to pitch last year's top fund to every client this month. What do you do?",
+    "o": [
+     "Pitch it to everyone as instructed",
+     "Recognise the distributor's own recency bias; raise suitability concerns; use the checklist and recommend the fund only where it fits a client's goals and risk profile; ask the guard question",
+     "Pitch it using FOMO",
+     "Ignore suitability entirely"
+    ],
+    "a": 1,
+    "why": "Recognise the distributor's own recency bias; raise suitability concerns; use the checklist and recommend the fund only where it fits a client's goals and risk profile; ask the guard question."
+   }
+  ]
+ },
+ "role_play": null
+}

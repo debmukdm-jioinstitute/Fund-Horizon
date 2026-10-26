@@ -1,0 +1,70 @@
+{
+ "id": "timing-10",
+ "title": "The post-fall review in five checks",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the five post-fall checks and say what each action could be.",
+  "Explain why a fall lowers the equity share — and what rebalancing then means."
+ ],
+ "body_md": "1. Fund vs benchmark: fund return vs its TRI over the same period. If in line, it's the market, not the fund: no change. 2. Fund vs category: rank and rolling returns over 3–5 years. Replace only on sustained under-performance, not one bad year. 3. Goal date: years left until the money is needed. If near, follow the glide path to debt; if far, stay the course. 4. Asset mix: equity share now vs target. A fall lowers the equity share; rebalancing may mean adding to equity. 5. Client's comfort: how the client felt and acted. If the fall caused real distress, revisit the risk profile calmly, not mid-panic.\n\n| Check | What to look at | Possible action |\n| --- | --- | --- |\n| 1. Fund vs benchmark | Fund return vs its TRI over the same period | If in line, it's the market, not the fund: no change |\n| 2. Fund vs category | Rank and rolling returns over 3–5 years | Replace only on sustained under-performance, not one bad year |\n| 3. Goal date | Years left until the money is needed | If near, follow the glide path to debt; if far, stay the course |\n| 4. Asset mix | Equity share now vs target | A fall lowers the equity share; rebalancing may mean adding to equity |\n| 5. Client's comfort | How the client felt and acted | If the fall caused real distress, revisit the risk profile calmly, not mid-panic |\n\n> **Investor takeaway:** Review after a fall with the same calm checks as any other time: benchmark, category, goal date, mix.",
+ "key_terms": [
+  "Post-fall review",
+  "TRI",
+  "Glide path"
+ ],
+ "example": "Fund −18%, benchmark −20%: in line — it's the market, not the fund; no change. Fund −10%, benchmark +5%: a fund problem to review.",
+ "say": [
+  "If in line with the benchmark, it's the market, not the fund.",
+  "Replace only on sustained under-performance, not one bad year."
+ ],
+ "never": [
+  "Switch funds just because they fell with the market.",
+  "Revisit the risk profile mid-panic."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q8",
+   "q": "A target 60:40 equity:debt mix drifts to 50:50 after a fall. Rebalancing means…",
+   "o": [
+    "Selling equity",
+    "Moving money from debt into equity",
+    "Moving everything to cash",
+    "Doing nothing ever"
+   ],
+   "a": 1,
+   "why": "Moving money from debt into equity. Rebalancing back to 60:40 buys equity after prices have fallen."
+  },
+  {
+   "id": "timing-q19",
+   "q": "A 60:40 mix drifted to 50:50 after a fall. Rebalancing back means:",
+   "o": [
+    "Selling equity",
+    "Moving money from debt into equity",
+    "Moving everything to cash",
+    "Doing nothing"
+   ],
+   "a": 1,
+   "why": "Restoring the target mix moves money from debt into equity after a fall."
+  },
+  {
+   "id": "timing-n15",
+   "q": "In the post-fall review, fund vs category is judged over:",
+   "o": [
+    "One month",
+    "One bad year",
+    "3–5 years of rank and rolling returns",
+    "One week"
+   ],
+   "a": 2,
+   "why": "Fund vs category: rank and rolling returns over 3–5 years. Replace only on sustained under-performance, not one bad year."
+  }
+ ],
+ "card_ids": [
+  "timing-c19",
+  "timing-c20"
+ ],
+ "words": 245
+}

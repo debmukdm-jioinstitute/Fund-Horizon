@@ -1,0 +1,69 @@
+{
+ "id": "goals-11",
+ "title": "When a goal is off track: four levers",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "R",
+ "objectives": [
+  "Use the four levers in order, and never chase returns to catch up.",
+  "Say which lever fits a must-have vs a should-have goal."
+ ],
+ "body_md": "Invest more: raise the SIP or add a lump sum (bonus, maturity). Extend the date: retire two years later; buy the house a year later. Adjust the target: a smaller car, a less expensive college option. Review the mix: only if the current mix is clearly too conservative for the horizon; never chase returns to catch up.\n\n| Lever | Example |\n| --- | --- |\n| Invest more | Raise the SIP or add a lump sum (bonus, maturity) |\n| Extend the date | Retire two years later; buy the house a year later |\n| Adjust the target | A smaller car, a less expensive college option |\n| Review the mix | Only if the current mix is clearly too conservative for the horizon; never chase returns to catch up |",
+ "key_terms": [
+  "Off-track lever",
+  "Chase returns"
+ ],
+ "example": "Retirement goal 30% behind plan: raise the SIP, extend the date by two years, or trim the target — never move a near goal into small caps to catch up.",
+ "say": [
+  "Off-track is fixed by levers, not gambling.",
+  "Never chase returns to catch up."
+ ],
+ "never": [
+  "Chase the highest-returning fund to catch up.",
+  "Extend the date only for must-have goals."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q8",
+   "q": "Which is NOT a lever when a goal is off track?",
+   "o": [
+    "Invest more",
+    "Extend the date",
+    "Adjust the target",
+    "Chase the highest-returning fund"
+   ],
+   "a": 3,
+   "why": "Chase the highest-returning fund. Never chase returns to catch up."
+  },
+  {
+   "id": "goals-q24",
+   "q": "A client’s retirement goal is 30% behind plan. What do you do?",
+   "o": [
+    "Chase the highest-returning fund to catch up",
+    "Use the four levers: invest more, extend the date, adjust the target, review the mix; never chase returns",
+    "Stop all SIPs",
+    "Promise higher returns"
+   ],
+   "a": 1,
+   "why": "Uses the four levers: invest more, extend the date, adjust the target, review the mix; never chases returns."
+  },
+  {
+   "id": "goals-n16",
+   "q": "Which is NOT a lever when a goal is off track?",
+   "o": [
+    "Invest more",
+    "Chase the highest-returning fund",
+    "Extend the date",
+    "Adjust the target"
+   ],
+   "a": 1,
+   "why": "Never chase returns to catch up."
+  }
+ ],
+ "card_ids": [
+  "goals-c21",
+  "goals-c22"
+ ],
+ "words": 116
+}

@@ -1,0 +1,70 @@
+{
+ "id": "goals-09",
+ "title": "The yearly goal review",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "R",
+ "objectives": [
+  "Run the five yearly review checks for each goal.",
+  "Say when a review happens: yearly and on life events, not on headlines."
+ ],
+ "body_md": "Progress: is the current value at or above where the plan expected it to be by now? Target: has the goal's cost, date or priority changed? Asset mix: has the mix drifted from the target for this horizon? Glide path: is it time to shift part of the money from equity to debt? Contributions: has the SIP been stepped up as planned? Any missed instalments?\n\n| Check | Question |\n| --- | --- |\n| Progress | Is the current value at or above where the plan expected it to be by now? |\n| Target | Has the goal's cost, date or priority changed? |\n| Asset mix | Has the mix drifted from the target for this horizon? |\n| Glide path | Is it time to shift part of the money from equity to debt? |\n| Contributions | Has the SIP been stepped up as planned? Any missed instalments? |\n\nDon't panic-review. A market fall in a goal that is 10 years away is not a reason to change the plan. The review is yearly, and on life events, not on headlines.",
+ "key_terms": [
+  "Yearly review",
+  "Glide path",
+  "Contributions"
+ ],
+ "example": "Education goal 11 years away, markets fell 15%: the plan already expects falls — review yearly, not on headlines; the SIP keeps buying cheaper units.",
+ "say": [
+  "Review goals once a year and as they approach, not every time the market moves.",
+  "A fall in a 10-year goal is not a reason to change the plan."
+ ],
+ "never": [
+  "Review the portfolio every day.",
+  "Change a 10-year goal's plan on every market fall."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q15",
+   "q": "When should goals normally be reviewed?",
+   "o": [
+    "Daily",
+    "After every market fall",
+    "Yearly and on life events",
+    "Never"
+   ],
+   "a": 2,
+   "why": "Yearly and on life events. Not on headlines."
+  },
+  {
+   "id": "goals-q20",
+   "q": "Markets fell 15%. A client's education goal is 11 years away. Should the plan change?",
+   "o": [
+    "Yes, stop the SIP",
+    "No — review yearly, not on headlines; the plan already expects falls",
+    "Yes, move everything to debt",
+    "Only if the fall exceeds 20%"
+   ],
+   "a": 1,
+   "why": "Review yearly, not on headlines."
+  },
+  {
+   "id": "goals-n13",
+   "q": "The yearly review checks:",
+   "o": [
+    "Progress, target, mix, glide path, contributions",
+    "Only returns",
+    "Only the NAV",
+    "Only new funds"
+   ],
+   "a": 0,
+   "why": "Yearly review: progress, target, asset mix, glide path, contributions."
+  }
+ ],
+ "card_ids": [
+  "goals-c17",
+  "goals-c18"
+ ],
+ "words": 164
+}

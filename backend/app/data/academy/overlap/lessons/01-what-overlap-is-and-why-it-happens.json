@@ -1,0 +1,70 @@
+{
+ "id": "overlap-01",
+ "title": "What overlap is, and why it happens",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain portfolio overlap in one sentence.",
+  "Name four reasons funds end up holding the same stocks."
+ ],
+ "body_md": "Portfolio overlap is the share of one fund's portfolio that is also held by another fund. High overlap means two funds behave much like one. Owning more funds does not always mean owning more diversification. When several funds hold the same stocks, the client pays for many fund managers but effectively owns one portfolio. Why it happens: the same big companies dominate. SEBI defines large caps as the top 100 companies by market capitalisation, from AMFI's half-yearly list. Large-cap funds must hold at least 80% in them, and flexi-cap, multi-cap and large & mid-cap funds also hold many of the same names. Benchmarks drive holdings: funds compared with the same index tend to own its biggest stocks. Different labels, similar portfolios: a flexi-cap, a large & mid-cap and a large-cap fund can share many top holdings. Collecting funds: clients add a “star” fund each year without checking what they already own.\n\n> **Investor takeaway:** Diversify by what you own, not by how many funds you own.",
+ "key_terms": [
+  "Portfolio overlap",
+  "Large cap",
+  "Benchmark"
+ ],
+ "example": "Three large-cap funds from different AMCs: same top 100 stocks, same big names — three funds, effectively one portfolio.",
+ "say": [
+  "Diversify by what you own, not by how many funds you own.",
+  "Large-cap funds must hold at least 80% in large caps."
+ ],
+ "never": [
+  "More funds always means more diversification.",
+  "Different fund labels guarantee different portfolios."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q1",
+   "q": "What is portfolio overlap?",
+   "o": [
+    "The fund’s expense ratio",
+    "The share of one fund’s holdings also held by another",
+    "The number of funds held",
+    "A fund’s return over the index"
+   ],
+   "a": 1,
+   "why": "The share of one fund’s holdings also held by another. High overlap means two funds act like one."
+  },
+  {
+   "id": "overlap-q4",
+   "q": "SEBI defines large-cap companies as…",
+   "o": [
+    "Top 50 by revenue",
+    "Top 100 by market capitalisation",
+    "Top 250 by profit",
+    "Any company above ₹1 lakh crore"
+   ],
+   "a": 1,
+   "why": "Top 100 by market capitalisation. Per AMFI’s half-yearly list."
+  },
+  {
+   "id": "overlap-q5",
+   "q": "Large-cap funds must hold at least…",
+   "o": [
+    "50% in large caps",
+    "65% in large caps",
+    "80% in large caps",
+    "100% in large caps"
+   ],
+   "a": 2,
+   "why": "80% in large caps. Which is why they overlap heavily."
+  }
+ ],
+ "card_ids": [
+  "overlap-c1",
+  "overlap-c2"
+ ],
+ "words": 165
+}

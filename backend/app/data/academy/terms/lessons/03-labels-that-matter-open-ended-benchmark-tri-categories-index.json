@@ -1,0 +1,71 @@
+{
+ "id": "terms-03",
+ "title": "Labels that matter: open-ended, benchmark, TRI, categories, index funds",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain open-ended vs closed-ended funds and what a benchmark is.",
+  "Say why SEBI requires comparison against a TRI benchmark."
+ ],
+ "body_md": "Most equity and debt funds are open-ended: units can be bought or sold on any business day. A closed-ended fund locks money until maturity. Every fund is compared against a benchmark index; SEBI requires the comparison against the TRI (Total Return Index), which includes dividends, so the comparison is like-for-like. SEBI's standard fund categories (large cap, mid cap, flexi cap, liquid and others) let similar funds be compared, and index funds and ETFs passively copy an index, usually at lower cost.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Open-ended fund | You can buy or sell units on any business day | Most equity and debt funds |\n| Closed-ended fund | Money is locked until maturity; units may trade on an exchange | Fixed maturity plans |\n| Benchmark | The index a fund is compared against | Large-cap fund vs Nifty 100 |\n| TRI (Total Return Index) | Benchmark version that includes dividends; SEBI requires funds to compare against TRI | Fair, like-for-like comparison |\n| Fund categories | SEBI's standard labels (large cap, mid cap, flexi cap, liquid, etc.) so similar funds can be compared | Each AMC can have one fund per category (with some exceptions) |\n| Index fund / ETF | A passive fund that copies an index instead of picking stocks; usually lower cost | Nifty 50 index fund |",
+ "key_terms": [
+  "Benchmark",
+  "TRI (Total Return Index)",
+  "Open-ended fund",
+  "Index fund / ETF"
+ ],
+ "example": "A large-cap fund is compared with the Nifty 100 TRI, not with a small-cap index or with another fund's absolute return.",
+ "say": [
+  "We compare this fund with its TRI benchmark, which includes dividends.",
+  "An index fund copies its index instead of picking stocks."
+ ],
+ "never": [
+  "This fund beat its benchmark last year, so it will do so again.",
+  "A closed-ended fund can always be redeemed any day."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q2",
+   "q": "Fund A has NAV ₹10 and Fund B has NAV ₹200. Which is cheaper?",
+   "o": [
+    "Fund A",
+    "Fund B",
+    "Neither; NAV level doesn't make a fund cheap",
+    "Depends on AUM"
+   ],
+   "a": 2,
+   "why": "Neither; NAV level doesn't make a fund cheap. Returns depend on how much the NAV grows, not where it starts."
+  },
+  {
+   "id": "terms-n04",
+   "q": "What does “Benchmark” mean in plain language?",
+   "o": [
+    "You can buy or sell units on any business day",
+    "The index a fund is compared against",
+    "Money is locked until maturity; units may trade on an exchange",
+    "Benchmark version that includes dividends; SEBI requires funds to compare against TRI"
+   ],
+   "a": 1,
+   "why": "Benchmark: The index a fund is compared against Example: Large-cap fund vs Nifty 100"
+  },
+  {
+   "id": "terms-n05",
+   "q": "What does “TRI (Total Return Index)” mean in plain language?",
+   "o": [
+    "Benchmark version that includes dividends; SEBI requires funds to compare against TRI",
+    "You can buy or sell units on any business day",
+    "Money is locked until maturity; units may trade on an exchange",
+    "The index a fund is compared against"
+   ],
+   "a": 0,
+   "why": "TRI (Total Return Index): Benchmark version that includes dividends; SEBI requires funds to compare against TRI Example: Fair, like-for-like comparison"
+  }
+ ],
+ "card_ids": [
+  "terms-c5",
+  "terms-c6"
+ ],
+ "words": 202
+}

@@ -1,0 +1,69 @@
+{
+ "id": "psych-02",
+ "title": "How the gap opens: three costly moves",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Name the three moves that open the behaviour gap.",
+  "Explain where a distributor adds the most value."
+ ],
+ "body_md": "The behaviour gap is the difference between the return a fund delivers and the return its investors actually earn. It opens up because investors: add money after strong performance, when prices are already high; stop SIPs or redeem after falls, missing the recovery; switch funds chasing last year's winner. For many clients, closing this gap matters more to their final outcome than picking the “best” fund. That is where a distributor adds the most value.\n\n> **Investor takeaway:** Your own behaviour can affect your returns as much as the fund you choose.",
+ "key_terms": [
+  "Behaviour gap",
+  "Chasing performance"
+ ],
+ "example": "Client adds ₹5 lakh after a 40% year, then stops the SIP after a 15% fall: high prices bought, low prices missed — the gap in action.",
+ "say": [
+  "Closing the gap matters more than picking the best fund for many clients.",
+  "A distributor's biggest value is keeping clients on plan."
+ ],
+ "never": [
+  "Adding after rallies is the best strategy.",
+  "Switching to last year's winner closes the gap."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-n02",
+   "q": "Which move opens the behaviour gap?",
+   "o": [
+    "Holding through a fall",
+    "Rebalancing by rule",
+    "Checking quarterly",
+    "Adding money after strong performance, when prices are already high"
+   ],
+   "a": 3,
+   "why": "The behaviour gap opens up because investors add money after strong performance, when prices are already high."
+  },
+  {
+   "id": "psych-n03",
+   "q": "For many clients, what matters more than picking the “best” fund?",
+   "o": [
+    "Picking the cheapest fund",
+    "Checking daily",
+    "Closing the behaviour gap",
+    "Timing the market"
+   ],
+   "a": 2,
+   "why": "For many clients, closing this gap matters more to their final outcome than picking the “best” fund."
+  },
+  {
+   "id": "psych-n04",
+   "q": "Stopping SIPs after a fall costs the investor:",
+   "o": [
+    "Nothing",
+    "The recovery and the cheapest units",
+    "Only the exit load",
+    "Only tax"
+   ],
+   "a": 1,
+   "why": "Stop SIPs or redeem after falls, missing the recovery."
+  }
+ ],
+ "card_ids": [
+  "psych-c3",
+  "psych-c4"
+ ],
+ "words": 91
+}

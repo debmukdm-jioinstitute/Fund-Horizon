@@ -1,0 +1,71 @@
+{
+ "id": "rebal-08",
+ "title": "The cheapest order of tools, with the worked example",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Use the four tools in order: new money, redirect income, switch/STP, sell.",
+  "Work the example: 64.6% needs nothing; 51.3% needs about ₹1.5 L."
+ ],
+ "body_md": "The cheapest order of tools. New money first: direct SIPs, bonuses or maturities to the underweight asset. No selling, so no exit load or tax. Redirect income: send IDCW payouts, if any, to the underweight side. Switch or STP within the fund house: for larger gaps, move money in stages. Each switch is a redemption, so check exit load and tax. Sell and reinvest: only for what the first three can't fix. Worked example (illustrative). Client: ₹20 L, target 60% equity / 40% debt, calendar + ±5-point band.\n\n| Step | After a strong equity year (+30%) | After a fall (equity −25%) |\n| --- | --- | --- |\n| Equity | ₹15.6 L | ₹9.0 L |\n| Debt (+7%) | ₹8.56 L | ₹8.56 L |\n| Total | ₹24.16 L | ₹17.56 L |\n| Equity share | ≈ 64.6% (+4.6 points) | ≈ 51.3% (−8.7 points) |\n| Band breached? | No, within ±5: no action needed, or use new money | Yes: rebalance |\n| Action | Optional: ≈ ₹1.8 L of new money (e.g. ₹15,000 a month for a year) to debt brings it to ≈ 60% | Move ≈ ₹1.5 L from debt to equity, in one go or in stages |",
+ "key_terms": [
+  "Cheapest order",
+  "New money first",
+  "Switch",
+  "STP"
+ ],
+ "example": "64.6% (+4.6 points): no action needed, or ≈ ₹1.8 L of new money (₹15,000 a month for a year) to debt brings it to ≈ 60%. 51.3% (−8.7 points): move ≈ ₹1.5 L from debt to equity, in one go or in stages.",
+ "say": [
+  "New money first: no exit load, no tax.",
+  "Switches are redemptions: check load and tax."
+ ],
+ "never": [
+  "Sell first to rebalance fast.",
+  "Switches are tax-free."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q7",
+   "q": "With a ±5-point band, a 60% target at 64.6% means…",
+   "o": [
+    "Must sell now",
+    "Within band: no action needed",
+    "Change the target",
+    "Move all to debt"
+   ],
+   "a": 1,
+   "why": "Within band: no action needed. Optional nudge with new money."
+  },
+  {
+   "id": "rebal-q8",
+   "q": "The cheapest rebalancing tool is…",
+   "o": [
+    "Selling equity",
+    "Directing new money to the underweight asset",
+    "Switching AMCs",
+    "Taking a loan"
+   ],
+   "a": 1,
+   "why": "Directing new money to the underweight asset. No exit load, no tax."
+  },
+  {
+   "id": "rebal-q9",
+   "q": "After equity falls 25% (60/40 start), rebalancing means…",
+   "o": [
+    "Selling more equity",
+    "Moving money from debt to equity",
+    "Doing nothing ever",
+    "Moving all to cash"
+   ],
+   "a": 1,
+   "why": "Moving money from debt to equity. About ₹1.5 L from debt to equity in the example."
+  }
+ ],
+ "card_ids": [
+  "rebal-c15",
+  "rebal-c16"
+ ],
+ "words": 176
+}

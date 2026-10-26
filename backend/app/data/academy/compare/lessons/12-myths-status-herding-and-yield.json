@@ -1,0 +1,70 @@
+{
+ "id": "compare-12",
+ "title": "Myths: status, herding and yield",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Answer five client myths with the bias behind each and the response.",
+  "Separate status from suitability."
+ ],
+ "body_md": "“PMS and AIFs always beat mutual funds.” Bias: authority / exclusivity. Respond: “Some do and some don't. Let's compare after-fee returns and risk over a full cycle.” “My friend got 30% in an AIF; I want in.” Bias: herd, recency. Respond: “Let's look at the fund's whole track record, lock-in and fees, and whether it fits your plan.” “Mutual funds are for small investors.” Bias: status bias. Respond: “Many large investors keep their core in mutual funds because they're liquid, low-cost and diversified.” “I'll put everything in private credit for the higher yield.” Bias: overconfidence, ignoring risk. Respond: “Higher yield usually means higher credit and liquidity risk. Let's size it as a slice, not the whole.” “Why can't I withdraw from my AIF?” Bias: forgotten lock-in. Respond: “Cat I and II AIFs are closed-ended; money returns as investments are exited. That's why we only use money you won't need.”\n\n| Client says | The bias behind it | Respond with |\n| --- | --- | --- |\n| \"PMS and AIFs always beat mutual funds.\" | Authority / exclusivity | \"Some do and some don't. Let's compare after-fee returns and risk over a full cycle.\" |\n| \"My friend got 30% in an AIF; I want in.\" | Herd, recency | \"Let's look at the fund's whole track record, lock-in and fees, and whether it fits your plan.\" |\n| \"Mutual funds are for small investors.\" | Status bias | \"Many large investors keep their core in mutual funds because they're liquid, low-cost and diversified.\" |\n| \"I'll put everything in private credit for the higher yield.\" | Overconfidence, ignoring risk | \"Higher yield usually means higher credit and liquidity risk. Let's size it as a slice, not the whole.\" |\n| \"Why can't I withdraw from my AIF?\" | Forgotten lock-in | \"Cat I and II AIFs are closed-ended; money returns as investments are exited. That's why we only use money you won't need.\" |\n\n> **Investor takeaway:** Exclusive doesn't mean better. Choose by fit, cost and liquidity.",
+ "key_terms": [
+  "Status bias",
+  "Herd",
+  "Recency"
+ ],
+ "example": "“My friend got 30% in an AIF”: look at the whole track record, lock-in and fees, and whether it fits the plan — not one friend's return.",
+ "say": [
+  "Some do and some don't. Compare after-fee returns over a full cycle.",
+  "Many large investors keep their core in mutual funds."
+ ],
+ "never": [
+  "PMS and AIFs always beat mutual funds.",
+  "Mutual funds are only for small investors."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q16",
+   "q": "Do PMS and AIFs always deliver higher returns than mutual funds?",
+   "o": [
+    "Yes, exclusivity guarantees it",
+    "No — some do and some don't; compare after-fee returns and risk over a full cycle",
+    "Yes, after fees",
+    "Only Category III does"
+   ],
+   "a": 1,
+   "why": "Some do and some don't; compare after-fee returns and risk over a full cycle."
+  },
+  {
+   "id": "compare-n16",
+   "q": "“Mutual funds are for small investors” reflects:",
+   "o": [
+    "Herd",
+    "Status bias",
+    "Recency",
+    "Anchoring"
+   ],
+   "a": 1,
+   "why": "“Mutual funds are for small investors.” Bias: status bias. Respond: “Many large investors keep their core in mutual funds because they're liquid, low-cost and diversified.”"
+  },
+  {
+   "id": "compare-n17",
+   "q": "“I'll put everything in private credit for the higher yield” should be answered:",
+   "o": [
+    "“Higher yield usually means higher credit and liquidity risk. Let's size it as a slice, not the whole.”",
+    "“Agreed, put everything in.”",
+    "“Private credit is risk-free.”",
+    "“Yield is guaranteed.”"
+   ],
+   "a": 0,
+   "why": "“I'll put everything in private credit for the higher yield.” Bias: overconfidence, ignoring risk. Respond: “Higher yield usually means higher credit and liquidity risk. Let's size it as a slice, not the whole.”"
+  }
+ ],
+ "card_ids": [
+  "compare-c23",
+  "compare-c24"
+ ],
+ "words": 308
+}

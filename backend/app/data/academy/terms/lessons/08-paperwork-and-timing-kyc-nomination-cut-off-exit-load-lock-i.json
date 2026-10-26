@@ -1,0 +1,73 @@
+{
+ "id": "terms-08",
+ "title": "Paperwork and timing: KYC, nomination, cut-off, exit load, lock-in, TER",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Explain KYC, FATCA/CRS and nomination, and why they come before investing.",
+  "Say how cut-off time, exit load and lock-in each affect a transaction."
+ ],
+ "body_md": "KYC (Know Your Customer) is a one-time identity and address verification recorded with a KYC Registration Agency; a FATCA/CRS declaration states tax residency. Nomination names who receives the investment if the investor dies. Cut-off time is the time by which a transaction (with money received) must reach the AMC to get that day's NAV: 3 pm for most funds, 1:30 pm for liquid and overnight funds. An exit load is a fee for redeeming early; a lock-in (ELSS: 3 years per instalment) blocks redemption entirely. TER is the yearly running cost, taken daily from the NAV and capped by SEBI.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| KYC (Know Your Customer) | One-time identity and address verification, recorded with a KYC Registration Agency | PAN, Aadhaar-based or in-person verification |\n| FATCA / CRS declaration | Tax-residency declaration required for every investor | Asked at account opening |\n| Nomination | Naming who receives the investment if the investor dies; more than one nominee can be named | Saves the family months of paperwork |\n| Cut-off time | The time by which a transaction (with money received) must reach the AMC to get that day's NAV. 3 pm for most funds; earlier (1:30 pm) for liquid and overnight funds | Money received after cut-off gets the next day's NAV |\n| Exit load | Fee charged if you redeem before a set period | Many equity funds charge 1% if redeemed within a year (check each scheme) |\n| Lock-in | A period during which you cannot redeem at all | ELSS: 3 years for each SIP instalment separately |\n| TER (Total Expense Ratio) | Annual cost of running the fund, taken daily from the NAV. SEBI caps it | TER 1.5% on ₹10 lakh ≈ ₹15,000 a year |",
+ "key_terms": [
+  "KYC (Know Your Customer)",
+  "Nomination",
+  "Cut-off time",
+  "Exit load",
+  "Lock-in",
+  "TER (Total Expense Ratio)"
+ ],
+ "example": "Money received after the 3 pm cut-off gets the next day's NAV — for purchases, what counts is when the AMC receives the money, not when the form was submitted.",
+ "say": [
+  "For purchases, the NAV depends on when the AMC receives the money.",
+  "Exit load is a fee; a lock-in blocks exit entirely."
+ ],
+ "never": [
+  "Exit load and lock-in mean the same thing.",
+  "Submitting a form before 3 pm guarantees that day's NAV, whatever time the money arrives."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q10",
+   "q": "The cut-off time for most equity funds is:",
+   "o": [
+    "12 noon",
+    "1:30 pm",
+    "3 pm",
+    "5 pm"
+   ],
+   "a": 2,
+   "why": "3 pm. Liquid and overnight funds: 1:30 pm."
+  },
+  {
+   "id": "terms-q16",
+   "q": "How do an exit load and a lock-in differ?",
+   "o": [
+    "They are the same charge",
+    "An exit load is a fee for leaving early; a lock-in blocks exit entirely",
+    "A lock-in is a fee; an exit load blocks exit",
+    "Neither applies to equity funds"
+   ],
+   "a": 1,
+   "why": "Exit load is a fee for leaving early; a lock-in blocks exit entirely."
+  },
+  {
+   "id": "terms-n14",
+   "q": "What does “Cut-off time” mean in plain language?",
+   "o": [
+    "One-time identity and address verification, recorded with a KYC Registration Agency",
+    "Tax-residency declaration required for every investor",
+    "Naming who receives the investment if the investor dies; more than one nominee can be named",
+    "The time by which a transaction (with money received) must reach the AMC to get that day's NAV. 3 pm for most funds; earlier (1:30 pm) for liquid and overnight funds"
+   ],
+   "a": 3,
+   "why": "Cut-off time: The time by which a transaction (with money received) must reach the AMC to get that day's NAV. 3 pm for most funds; earlier (1:30 pm) for liquid and overnight funds Example: Money received after cut-off gets the next day's NAV"
+  }
+ ],
+ "card_ids": [
+  "terms-c15",
+  "terms-c16"
+ ],
+ "words": 272
+}

@@ -1,0 +1,70 @@
+{
+ "id": "idcw-08",
+ "title": "Choosing and changing the option",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Say what to do for a new investment, an income need, and an IDCW-reinvestment client.",
+  "Explain the costs of switching from IDCW to growth."
+ ],
+ "body_md": "New investment: default to growth; choose IDCW only after explaining the tax and NAV drop, and record why. Client wants regular income: set up an SWP from the growth option instead, unless the client prefers IDCW after a clear explanation. Client is in IDCW reinvestment: explain that growth gives the same result without yearly tax; discuss switching. Switching from IDCW to growth is treated as a redemption and fresh purchase: check capital gains tax, exit load and any ELSS lock-in first. Future payouts only: some AMCs let investors change the option for future investments without switching existing units; check the AMC's process.\n\n| Situation | What to do |\n| --- | --- |\n| New investment | Default to growth; choose IDCW only after explaining the tax and NAV drop, and record why |\n| Client wants regular income | Set up an SWP from the growth option instead, unless the client prefers IDCW after a clear explanation |\n| Client is in IDCW reinvestment | Explain that growth gives the same result without yearly tax; discuss switching |\n| Switching from IDCW to growth | Treated as a redemption and fresh purchase: check capital gains tax, exit load and any ELSS lock-in first |\n| Future payouts only | Some AMCs let investors change the option for future investments without switching existing units; check the AMC's process |",
+ "key_terms": [
+  "Switching",
+  "IDCW reinvestment",
+  "Growth option"
+ ],
+ "example": "Switching IDCW → growth: check capital gains tax, exit load and ELSS lock-in first — it counts as a redemption and a fresh purchase.",
+ "say": [
+  "Default to growth; choose IDCW only after explaining tax and the NAV drop, and record why.",
+  "Switching counts as redemption plus fresh purchase."
+ ],
+ "never": [
+  "Switching options is always free of tax.",
+  "IDCW reinvestment clients should never be told about growth."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-n07",
+   "q": "A new investment defaults to:",
+   "o": [
+    "IDCW payout",
+    "IDCW reinvestment",
+    "Growth, unless IDCW is chosen after explaining tax and the NAV drop",
+    "IDCW transfer"
+   ],
+   "a": 2,
+   "why": "New investment: default to growth; choose IDCW only after explaining the tax and NAV drop, and record why."
+  },
+  {
+   "id": "idcw-n08",
+   "q": "Switching from IDCW to growth is treated as:",
+   "o": [
+    "A free option change with no tax",
+    "A redemption and fresh purchase",
+    "A transfer with no exit load",
+    "An SWP"
+   ],
+   "a": 1,
+   "why": "Switching from IDCW to growth: treated as a redemption and fresh purchase: check capital gains tax, exit load and any ELSS lock-in first."
+  },
+  {
+   "id": "idcw-n09",
+   "q": "Some AMCs allow changing the option for:",
+   "o": [
+    "Future investments without switching existing units",
+    "Past payouts only",
+    "Other AMCs' schemes",
+    "ELSS lock-ins only"
+   ],
+   "a": 0,
+   "why": "Some AMCs let investors change the option for future investments without switching existing units; check the AMC's process."
+  }
+ ],
+ "card_ids": [
+  "idcw-c15",
+  "idcw-c16"
+ ],
+ "words": 207
+}

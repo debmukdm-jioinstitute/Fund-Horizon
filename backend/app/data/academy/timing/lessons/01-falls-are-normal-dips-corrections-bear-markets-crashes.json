@@ -1,0 +1,72 @@
+{
+ "id": "timing-01",
+ "title": "Falls are normal: dips, corrections, bear markets, crashes",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Name the four fall sizes and how often each roughly happens.",
+  "Tell the Covid and 2008 stories with their recovery times — and the no-guarantee line."
+ ],
+ "body_md": "Volatility is the price of equity returns. Dip: 5–10%, several times in a typical year. Correction: 10–20%, common — most years see at least one. Bear market: 20%+, every few years. Crash: 30–60%, rare, but they happen.\n\n| Type of fall | Rough size | Historically |\n| --- | --- | --- |\n| Dip | 5–10% | Several times in a typical year |\n| Correction | 10–20% | Common; most years see at least one |\n| Bear market | 20%+ | Every few years |\n| Crash | 30–60% | Rare, but they happen |\n\nTwo Indian examples. Covid fall, 2020: the Nifty 50 fell from about 12,168 in January 2020 to about 7,511 in March 2020, roughly a 38% fall. It was back above 12,000 by November 2020. Global financial crisis, 2008: Indian equity indices fell by more than half from their January 2008 peak. Getting back to that peak took roughly three years. Recoveries are not guaranteed, and their timing varies widely. But for diversified equity held over long periods, falls have historically been temporary, while staying invested has been the deciding factor.\n\n> **Investor takeaway:** For long-term money, the bigger risk is not investing at the “wrong” time; it's leaving at the wrong time.",
+ "key_terms": [
+  "Dip",
+  "Correction",
+  "Bear market",
+  "Crash",
+  "Volatility"
+ ],
+ "example": "Nifty 50, January–March 2020: about 12,168 → about 7,511, roughly −38%, back above 12,000 by November 2020 — history, not a promise.",
+ "say": [
+  "Falls are normal; that's the price of equity returns.",
+  "Recoveries are not guaranteed; their timing varies widely."
+ ],
+ "never": [
+  "A 10% fall means the market is finished.",
+  "Past recoveries guarantee future ones."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q2",
+   "q": "Roughly how far did the Nifty 50 fall between January and March 2020?",
+   "o": [
+    "About 10%",
+    "About 20%",
+    "About 38%",
+    "About 60%"
+   ],
+   "a": 2,
+   "why": "About 38%. From about 12,168 to about 7,511, roughly −38%, recovering above 12,000 by November 2020."
+  },
+  {
+   "id": "timing-n01",
+   "q": "A fall of 10–20% is called:",
+   "o": [
+    "A correction",
+    "A dip",
+    "A bear market",
+    "A crash"
+   ],
+   "a": 0,
+   "why": "Correction: 10–20%. Common; most years see at least one."
+  },
+  {
+   "id": "timing-n02",
+   "q": "How long did the 2008 peak-to-peak recovery roughly take for Indian equities?",
+   "o": [
+    "Three months",
+    "One year",
+    "Ten years",
+    "Roughly three years"
+   ],
+   "a": 3,
+   "why": "Getting back to that peak took roughly three years."
+  }
+ ],
+ "card_ids": [
+  "timing-c1",
+  "timing-c2"
+ ],
+ "words": 183
+}

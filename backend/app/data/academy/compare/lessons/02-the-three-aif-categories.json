@@ -1,0 +1,71 @@
+{
+ "id": "compare-02",
+ "title": "The three AIF categories",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Name the three AIF categories, what each invests in, and their structure.",
+  "Say which category can use leverage."
+ ],
+ "body_md": "Category I: early-stage and socially or economically desirable sectors. Closed-ended, minimum 3-year tenure. Examples: venture capital, SME, social impact, infrastructure, angel funds. Category II: everything not in Cat I or III; no leverage except for temporary needs. Closed-ended, minimum 3-year tenure. Examples: private equity, private credit, real estate funds. Category III: complex or trading strategies, may use leverage within limits. Open-ended or closed-ended. Examples: long-short equity, hedge-style funds.\n\n| Category | What it invests in | Structure | Examples |\n| --- | --- | --- | --- |\n| Category I | Early-stage and socially or economically desirable sectors | Closed-ended, minimum 3-year tenure | Venture capital, SME, social impact, infrastructure, angel funds |\n| Category II | Everything not in Cat I or III; no leverage except for temporary needs | Closed-ended, minimum 3-year tenure | Private equity, private credit, real estate funds |\n| Category III | Complex or trading strategies, may use leverage within limits | Open-ended or closed-ended | Long-short equity, hedge-style funds |",
+ "key_terms": [
+  "Category I AIF",
+  "Category II AIF",
+  "Category III AIF",
+  "Leverage"
+ ],
+ "example": "Venture capital fund → Category I. Private credit fund → Category II. Long-short equity fund → Category III.",
+ "say": [
+  "Category I and II are closed-ended, minimum 3-year tenure.",
+  "Only Category III may use leverage within limits."
+ ],
+ "never": [
+  "Category I covers private equity.",
+  "Category III is always closed-ended."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q4",
+   "q": "Which AIF category includes venture capital and angel funds?",
+   "o": [
+    "Category I",
+    "Category II",
+    "Category III",
+    "None"
+   ],
+   "a": 0,
+   "why": "Category I. Cat I covers early-stage and socially or economically desirable sectors."
+  },
+  {
+   "id": "compare-q5",
+   "q": "Which AIF category includes private equity and private credit funds?",
+   "o": [
+    "Category I",
+    "Category II",
+    "Category III",
+    "PMS"
+   ],
+   "a": 1,
+   "why": "Category II. Cat II covers private-market funds."
+  },
+  {
+   "id": "compare-q6",
+   "q": "Which AIF category may use leverage and run long-short strategies?",
+   "o": [
+    "Category I",
+    "Category II",
+    "Category III",
+    "All categories"
+   ],
+   "a": 2,
+   "why": "Category III. Cat III runs complex or trading strategies."
+  }
+ ],
+ "card_ids": [
+  "compare-c3",
+  "compare-c4"
+ ],
+ "words": 140
+}

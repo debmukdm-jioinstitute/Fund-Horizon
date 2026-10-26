@@ -1,0 +1,71 @@
+{
+ "id": "psych-13",
+ "title": "Bias library (2): disposition, overconfidence, confirmation, mental accounting",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Recognise disposition effect, overconfidence, confirmation and mental accounting.",
+  "Answer each with the manual's “what to say” line."
+ ],
+ "body_md": "Disposition effect: selling winners too early, holding losers too long. Sounds like: “Sell the winner, keep the loser.” Say: “Let's judge each fund on merit, not on whether it's in profit.” Overconfidence: over-rating one's ability to pick or time. Sounds like: “I'll time the market myself.” Say: “Even professionals struggle to time markets. Missing a few of the best days can cut long-term returns sharply.” Confirmation: seeking only information that agrees. Sounds like: “Everything I read says this will go up.” Say: “Let's look at the case against it too.” Mental accounting: treating money differently by its source. Sounds like: “This bonus is free money to take a risk with.” Say: “It's still your money. Let's put it toward a goal.”\n\n| Bias | What it is | How it sounds | What to say |\n| --- | --- | --- | --- |\n| Disposition effect | Selling winners too early, holding losers too long | \"Sell the winner, keep the loser.\" | \"Let's judge each fund on merit, not on whether it's in profit.\" |\n| Overconfidence | Over-rating one's ability to pick or time | \"I'll time the market myself.\" | \"Even professionals struggle to time markets. Missing a few of the best days can cut long-term returns sharply.\" |\n| Confirmation | Seeking only information that agrees | \"Everything I read says this will go up.\" | \"Let's look at the case against it too.\" |\n| Mental accounting | Treating money differently by its source | \"This bonus is free money to take a risk with.\" | \"It's still your money. Let's put it toward a goal.\" |",
+ "key_terms": [
+  "Disposition effect",
+  "Overconfidence",
+  "Confirmation",
+  "Mental accounting"
+ ],
+ "example": "“This bonus is free money to take a risk with” → mental accounting: “It's still your money. Let's put it toward a goal.”",
+ "say": [
+  "Judge each fund on merit, not on whether it's in profit.",
+  "It's still your money. Let's put it toward a goal."
+ ],
+ "never": [
+  "Sell winners early, hold losers long.",
+  "Time the market yourself."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q17",
+   "q": "Can distributors be affected by recency bias?",
+   "o": [
+    "No, training prevents it",
+    "Yes — e.g. pitching last year's top fund to every client",
+    "Only in rallies",
+    "Only when selling PMS"
+   ],
+   "a": 1,
+   "why": "e.g. pitching last year's top fund to every client."
+  },
+  {
+   "id": "psych-n23",
+   "q": "“Sell the winner, keep the loser” is:",
+   "o": [
+    "Anchoring",
+    "Herd behaviour",
+    "The disposition effect",
+    "Overconfidence"
+   ],
+   "a": 2,
+   "why": "Disposition effect: selling winners too early, holding losers too long."
+  },
+  {
+   "id": "psych-n24",
+   "q": "“Everything I read says this will go up” is:",
+   "o": [
+    "Recency",
+    "Confirmation bias",
+    "Anchoring",
+    "Mental accounting"
+   ],
+   "a": 1,
+   "why": "Confirmation: seeking only information that agrees. Say: “Let's look at the case against it too.”"
+  }
+ ],
+ "card_ids": [
+  "psych-c25",
+  "psych-c26"
+ ],
+ "words": 240
+}

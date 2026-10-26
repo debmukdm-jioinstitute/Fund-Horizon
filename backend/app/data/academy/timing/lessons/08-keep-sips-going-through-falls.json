@@ -1,0 +1,69 @@
+{
+ "id": "timing-08",
+ "title": "Keep SIPs going through falls",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Explain why SIPs are designed for falls, and what to do when cash is tight.",
+  "Say what stopping a SIP gives up."
+ ],
+ "body_md": "SIPs are designed for falls: the same amount buys more units when prices are low. Stopping a SIP in a fall gives up the cheapest units. If cash is genuinely tight, pause for a short period rather than redeeming, and restart.\n\n> **Investor takeaway:** You can't control the date you started. You can control whether you stay, keep investing and stick to the plan.",
+ "key_terms": [
+  "SIP in a fall",
+  "Pause vs redeem"
+ ],
+ "example": "Market fell 15%, SIP running: the same ₹10,000 buys more units this month — stopping skips the cheapest units.",
+ "say": [
+  "Stopping a SIP in a fall gives up the cheapest units.",
+  "If cash is tight, pause briefly rather than redeem."
+ ],
+ "never": [
+  "Stopping a SIP protects you in a fall.",
+  "Redeeming locks in gains."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q12",
+   "q": "“It was obvious the market would crash” reflects…",
+   "o": [
+    "Recency bias",
+    "Hindsight bias",
+    "Herding",
+    "Overconfidence in SIPs"
+   ],
+   "a": 1,
+   "why": "Hindsight bias. Events look predictable only after they happen."
+  },
+  {
+   "id": "timing-q13",
+   "q": "A client’s cash is genuinely tight during a fall. What’s the better option for the SIP?",
+   "o": [
+    "Redeem the whole fund",
+    "Pause the SIP briefly rather than redeem",
+    "Switch to a sectoral fund",
+    "Increase the SIP"
+   ],
+   "a": 1,
+   "why": "Pause the SIP briefly rather than redeem. Pausing keeps existing units invested; redeeming locks in the fall."
+  },
+  {
+   "id": "timing-n12",
+   "q": "A client's cash is genuinely tight during a fall. What is the better SIP option?",
+   "o": [
+    "Redeem the whole fund",
+    "Pause the SIP briefly rather than redeem",
+    "Switch to a sectoral fund",
+    "Increase the SIP"
+   ],
+   "a": 1,
+   "why": "If cash is genuinely tight, pause for a short period rather than redeeming, and restart."
+  }
+ ],
+ "card_ids": [
+  "timing-c15",
+  "timing-c16"
+ ],
+ "words": 63
+}

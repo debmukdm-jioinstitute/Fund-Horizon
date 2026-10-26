@@ -1,0 +1,67 @@
+{
+ "id": "compare-16",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to any MF/PMS/AIF recommendation.",
+  "Pass the trainer's final check: explain all three products, compare them on six dimensions, place a client on the ladder and judge each on its yardstick."
+ ],
+ "body_md": "Do: hold the right certification for each product (NISM V-A, XXI-A, XIX-A/B). Assess suitability, including lock-in tolerance, before any PMS or AIF. Sell AIFs only through private placement, to eligible investors. Show all fees, lock-in and tax side by side, in rupees. Disclose commission and the direct option. Advise clients to confirm tax treatment with their CA.\n\n| Do | Don't |\n| --- | --- |\n| Hold the right certification for each product (NISM V-A, XXI-A, XIX-A/B) | Sell a product you're not certified for |\n| Assess suitability, including lock-in tolerance, before any PMS or AIF | Treat the minimum ticket as proof of suitability |\n| Sell AIFs only through private placement, to eligible investors | Advertise AIFs publicly or on social media |\n| Show all fees, lock-in and tax side by side, in rupees | Quote best-case or pre-fee returns |\n| Disclose commission and the direct option | Move clients up the ladder for higher commission |\n| Advise clients to confirm tax treatment with their CA | Promise returns or exit dates |\n\n> **Investor takeaway:** Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. All investor-facing material from this manual needs compliance review before it is published or shared. Final check for trainers: a new joiner passes this module when they can explain mutual funds, PMS and the three AIF categories in plain words; compare them on ticket size, ownership, liquidity, cost, tax and regulation; place a client on the right rung of the wealth ladder; judge each product on the right yardstick; and handle the myth that AIF and PMS always beat mutual funds.",
+ "key_terms": [
+  "Compliance",
+  "Certification",
+  "Suitability"
+ ],
+ "example": "A trainee explains MF/PMS/AIF, compares on six dimensions, places a client on the ladder, and judges each on its yardstick — without promising returns.",
+ "say": [
+  "Hold the right certification for each product.",
+  "Assess suitability, including lock-in tolerance, before any PMS or AIF."
+ ],
+ "never": [
+  "Sell a product you're not certified for.",
+  "Treat the minimum ticket as proof of suitability."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-n23",
+   "q": "Which of these is compliant?",
+   "o": [
+    "Quote best-case returns only",
+    "Advertise AIFs publicly",
+    "Show all fees, lock-in and tax side by side, in rupees",
+    "Promise exit dates"
+   ],
+   "a": 2,
+   "why": "Do: show all fees, lock-in and tax side by side, in rupees."
+  },
+  {
+   "id": "compare-n24",
+   "q": "A trainee passes this module when they can:",
+   "o": [
+    "Promise AIF returns",
+    "Explain all three products, compare on six dimensions, place a client on the ladder and judge each on its yardstick",
+    "Sell without certification",
+    "Advertise on social media"
+   ],
+   "a": 1,
+   "why": "Final check: explain mutual funds, PMS and the three AIF categories; compare them on ticket size, ownership, liquidity, cost, tax and regulation; place a client on the ladder; judge each on its yardstick."
+  },
+  {
+   "id": "compare-n25",
+   "q": "What must appear on all investor material for this module?",
+   "o": [
+    "Mutual fund investments are subject to market risks. Read all scheme-related documents carefully.",
+    "A guaranteed return figure",
+    "The fund's last month return only",
+    "A promise of future performance"
+   ],
+   "a": 0,
+   "why": "Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully."
+  }
+ ],
+ "card_ids": [],
+ "words": 257
+}

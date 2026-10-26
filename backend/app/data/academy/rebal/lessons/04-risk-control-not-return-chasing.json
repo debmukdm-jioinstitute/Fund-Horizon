@@ -1,0 +1,69 @@
+{
+ "id": "rebal-04",
+ "title": "Risk control, not return chasing",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain the price of risk control in plain words.",
+  "Answer “why rebalance if it can cost returns?”"
+ ],
+ "body_md": "Rebalancing removes emotion from buying and selling decisions, and makes falls easier to sit through. It does not replace a review of the goal itself. A client who asks “why rebalance if it sometimes costs returns?” gets this answer: “Because you chose a risk level when things were calm. Rebalancing keeps that promise, even when markets tempt you to break it.”\n\n> **Investor takeaway:** Rebalancing is a promise kept to the client's own risk choice.",
+ "key_terms": [
+  "Risk control",
+  "Promise kept"
+ ],
+ "example": "Client: “Last time we rebalanced, equity kept rising.” Answer: “Rebalancing controls risk; it isn't a forecast. Some years it costs a little, some years it saves a lot.”",
+ "say": [
+  "Rebalancing keeps the risk you chose.",
+  "Some years it costs a little, some years it saves a lot."
+ ],
+ "never": [
+  "Rebalancing is a forecast.",
+  "Rebalancing replaces reviewing the goal."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q15",
+   "q": "Which statement is compliant?",
+   "o": [
+    "“Rebalancing guarantees higher returns.”",
+    "“Rebalancing keeps your risk at the level you chose; it doesn’t guarantee returns.”",
+    "“Switching is always tax-free.”",
+    "“We’ll rebalance because markets look expensive.”"
+   ],
+   "a": 1,
+   "why": "“Rebalancing keeps your risk at the level you chose; it doesn’t guarantee returns.”. Explain the purpose honestly."
+  },
+  {
+   "id": "rebal-n05",
+   "q": "What does rebalancing NOT replace?",
+   "o": [
+    "A review of the goal itself",
+    "The target mix",
+    "The client's approval",
+    "Cost checks"
+   ],
+   "a": 0,
+   "why": "It doesn't replace a review of the goal itself."
+  },
+  {
+   "id": "rebal-n06",
+   "q": "“Last time we rebalanced, equity kept rising” is best answered:",
+   "o": [
+    "“We should never have rebalanced.”",
+    "“Next time we'll time it better.”",
+    "“Ignore the past.”",
+    "“Rebalancing controls risk; it isn't a forecast.”"
+   ],
+   "a": 3,
+   "why": "Rebalancing controls risk; it isn't a forecast. Some years it costs a little, some years it saves a lot."
+  }
+ ],
+ "card_ids": [
+  "rebal-c7",
+  "rebal-c8"
+ ],
+ "words": 74
+}

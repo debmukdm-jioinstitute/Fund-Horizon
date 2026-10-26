@@ -1,0 +1,69 @@
+{
+ "id": "rebal-01",
+ "title": "Why portfolios drift: the 10-year example",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain drift in plain words.",
+  "Work the 10-year example: 60% became about 70%."
+ ],
+ "body_md": "Rebalancing means moving money between asset classes to bring the portfolio back to its target mix. Different assets grow at different speeds, so the mix changes on its own even if the client does nothing. Illustrative: ₹20 L at a 60/40 equity/debt target, never rebalanced, with equity at 12% and debt at 7% a year.\n\n| Point in time | Equity | Debt | Equity share |\n| --- | --- | --- | --- |\n| Start | ₹12.0 L | ₹8.0 L | 60% |\n| After 10 years | ≈ ₹37.3 L | ≈ ₹15.7 L | ≈ 70% |\n\nThe client agreed to 60% equity, but now holds 70% without ever deciding to. A big fall would now hurt more than they signed up for.",
+ "key_terms": [
+  "Drift",
+  "Target mix"
+ ],
+ "example": "₹20 L at 60/40, equity 12%, debt 7%: after 10 years ≈ ₹37.3 L equity, ≈ ₹15.7 L debt — about 70% equity, without any decision.",
+ "say": [
+  "Different assets grow at different speeds, so the mix changes on its own.",
+  "The client agreed to 60% equity, but now holds 70% without deciding to."
+ ],
+ "never": [
+  "Portfolios only change when the client trades.",
+  "Drift is caused by fund manager changes."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q1",
+   "q": "What is rebalancing?",
+   "o": [
+    "Picking new funds",
+    "Restoring the target mix by moving money between asset classes",
+    "Timing the market",
+    "Stopping SIPs"
+   ],
+   "a": 1,
+   "why": "Restoring the target mix by moving money between asset classes. It brings the portfolio back to the agreed mix."
+  },
+  {
+   "id": "rebal-q2",
+   "q": "Why do portfolios drift?",
+   "o": [
+    "Fund managers change",
+    "Assets grow at different speeds",
+    "SEBI rules",
+    "Taxes"
+   ],
+   "a": 1,
+   "why": "Assets grow at different speeds. The mix changes on its own."
+  },
+  {
+   "id": "rebal-q3",
+   "q": "In the 10-year example, a 60% equity target drifted to about…",
+   "o": [
+    "50%",
+    "60%",
+    "70%",
+    "90%"
+   ],
+   "a": 2,
+   "why": "70%. About 70% if never rebalanced."
+  }
+ ],
+ "card_ids": [
+  "rebal-c1",
+  "rebal-c2"
+ ],
+ "words": 105
+}

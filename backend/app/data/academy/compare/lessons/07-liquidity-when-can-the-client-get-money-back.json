@@ -1,0 +1,76 @@
+{
+ "id": "compare-07",
+ "title": "Liquidity: when can the client get money back?",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "State the exit route for MF, PMS, Cat I & II and Cat III.",
+  "Explain drawdowns and why early exit is usually impossible for Cat I & II."
+ ],
+ "body_md": "MF: usually within a few working days of redemption. PMS: can exit anytime; exit loads may apply in the first three years; securities may be sold or transferred back. Category I & II AIF: money is typically drawn down in stages and returned as investments are exited, often over 5–8+ years. Early exit is usually not possible. Category III AIF: depends on the scheme; some offer periodic redemptions.\n\n> **Talk-track:** “Here's what each option would cost you in rupees, how long your money is locked, and how it's taxed. Let's compare before you decide.”",
+ "key_terms": [
+  "Drawdown",
+  "Liquidity",
+  "Exit load"
+ ],
+ "example": "Cat I & II AIF: commitment drawn in stages; money returned as investments are exited over 5–8+ years — early exit usually not possible.",
+ "say": [
+  "Money returns as investments are exited.",
+  "Early exit is usually not possible for Cat I & II."
+ ],
+ "never": [
+  "Cat II AIFs can be exited any business day.",
+  "PMS can never be exited."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Cost, lock-in, tax",
+   "text": "Here's what each option would cost you in rupees, how long your money is locked, and how it's taxed. Let's compare before you decide."
+  }
+ ],
+ "check": [
+  {
+   "id": "compare-q17",
+   "q": "Can a client usually exit a Category II AIF whenever they like?",
+   "o": [
+    "Yes, any business day",
+    "No — closed-ended; money returns as investments are exited",
+    "Yes, with no cost",
+    "Only after 1 year"
+   ],
+   "a": 1,
+   "why": "Cat I & II are closed-ended; money returns as investments are exited."
+  },
+  {
+   "id": "compare-n07",
+   "q": "Category I & II AIF money is typically returned:",
+   "o": [
+    "Within a few working days",
+    "Monthly by SWP",
+    "As investments are exited, often over 5–8+ years",
+    "At 3 years exactly"
+   ],
+   "a": 2,
+   "why": "Money is typically drawn down in stages and returned as investments are exited, often over 5–8+ years."
+  },
+  {
+   "id": "compare-n08",
+   "q": "PMS exit in the first three years may involve:",
+   "o": [
+    "No costs at all",
+    "Exit loads",
+    "A SEBI fine",
+    "Compulsory lock-in"
+   ],
+   "a": 1,
+   "why": "PMS: can exit anytime; exit loads may apply in the first three years."
+  }
+ ],
+ "card_ids": [
+  "compare-c13",
+  "compare-c14"
+ ],
+ "words": 93
+}

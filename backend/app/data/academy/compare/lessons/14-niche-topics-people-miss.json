@@ -1,0 +1,68 @@
+{
+ "id": "compare-14",
+ "title": "Niche topics people miss",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain drawdowns, commitment vs invested, valuation lag and fees-on-fees.",
+  "Say why overlap must be checked across all three products."
+ ],
+ "body_md": "These are the comparison details that most often get missed.\n\n| Topic | What to explain | Investor takeaway |\n| --- | --- | --- |\n| Drawdowns (capital calls) | In many Cat I & II AIFs, the commitment is drawn in stages over months or years, not invested upfront. | Keep committed money ready; missing a call can have penalties. |\n| Commitment vs invested | Returns are often quoted on money actually invested, while the client thinks of the full commitment. | Ask how returns are calculated. |\n| J-curve | Early years of a private equity or VC AIF often look flat or negative. | Judge over the fund's full life. |\n| Valuation lag | Unlisted holdings are valued periodically using estimates, so AIF NAVs can look smoother than they really are. | Smooth isn't the same as low-risk. |\n| Category III tax | Cat III AIFs are generally taxed at fund level, which can affect post-tax returns compared with PMS or MFs. | Compare post-tax, with your CA. |\n| Private placement | AIFs cannot be publicly advertised; social media \"AIF offers\" should be treated with caution. | Only invest via SEBI-registered intermediaries. |\n| Minimum for employees | A manager's employees and directors can invest from ₹25 lakh, not ₹1 crore. | The ₹1 crore minimum applies to other investors. |\n| Overlap across products | A client's MF, PMS and Cat III AIF may all hold the same large listed stocks. | Check overlap across all three, not within each. |\n| Fees on fees | Fund-of-funds AIFs add a second layer of fees. | Ask for the all-in cost. |",
+ "key_terms": [
+  "Drawdown (capital call)",
+  "Commitment vs invested",
+  "Valuation lag",
+  "Fees on fees"
+ ],
+ "example": "Fund-of-funds AIF: two layers of fees — ask for the all-in cost before comparing with a mutual fund's single expense ratio.",
+ "say": [
+  "Smooth isn't the same as low-risk.",
+  "Check overlap across all three products, not within each."
+ ],
+ "never": [
+  "AIF NAV smoothness means low risk.",
+  "Returns are always quoted on the full commitment."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q18",
+   "q": "Category III AIFs are generally taxed:",
+   "o": [
+    "In the investor's hands on every trade",
+    "At fund level",
+    "Not at all",
+    "Only on exit, at slab rate"
+   ],
+   "a": 1,
+   "why": "Cat I & II have pass-through status for most income."
+  },
+  {
+   "id": "compare-n21",
+   "q": "What is a capital call (drawdown)?",
+   "o": [
+    "The commitment drawn in stages over months or years, not invested upfront",
+    "A tax on AIFs",
+    "An exit load",
+    "A SIP feature"
+   ],
+   "a": 0,
+   "why": "In many Cat I & II AIFs, the commitment is drawn in stages over months or years, not invested upfront."
+  },
+  {
+   "id": "compare-n22",
+   "q": "Why check overlap across MF, PMS and Cat III AIF together?",
+   "o": [
+    "They never overlap",
+    "SEBI requires separate checks",
+    "Overlap only matters within one product",
+    "They may all hold the same large listed stocks"
+   ],
+   "a": 3,
+   "why": "A client's MF, PMS and Cat III AIF may all hold the same large listed stocks. Check overlap across all three, not within each."
+  }
+ ],
+ "card_ids": [],
+ "words": 234
+}

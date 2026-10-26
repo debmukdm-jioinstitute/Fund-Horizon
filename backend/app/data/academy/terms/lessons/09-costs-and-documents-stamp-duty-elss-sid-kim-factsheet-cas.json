@@ -1,0 +1,72 @@
+{
+ "id": "terms-09",
+ "title": "Costs and documents: stamp duty, ELSS, SID/KIM, factsheet, CAS",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "State the stamp duty rate and what TER means in rupees.",
+  "Say which document answers which question: SID/KIM, factsheet, CAS."
+ ],
+ "body_md": "Stamp duty of 0.005% is charged on mutual fund purchases: ₹50 on ₹10 lakh. ELSS (Equity Linked Savings Scheme) is an equity fund with a 3-year lock-in that qualifies for a tax deduction under the old tax regime — tax benefit depends on the client's regime, so confirm with a CA. The SID (Scheme Information Document) and KIM (Key Information Memorandum) are the official offer documents to read before investing. The monthly factsheet summarises holdings, returns, TER and risk ratios. The CAS (Consolidated Account Statement) shows all mutual fund holdings across AMCs in one statement.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Stamp duty | 0.005% charged on mutual fund purchases | ₹50 on a ₹10 lakh investment |\n| ELSS | Equity Linked Savings Scheme: equity fund with a 3-year lock-in that qualifies for a tax deduction under the old tax regime | Tax benefit depends on the client's regime; confirm with a CA |\n| SID / KIM | Scheme Information Document / Key Information Memorandum: the official offer documents | Read before investing |\n| Factsheet | Monthly summary of a fund: holdings, returns, TER, risk ratios | First place to check what a fund owns |\n| CAS (Consolidated Account Statement) | One statement showing all your mutual fund holdings across AMCs (and demat holdings) | Sent monthly when there is a transaction |\n\n> **Investor takeaway:** Costs are small numbers that compound. Ask for TER, exit load and lock-in in rupees before you invest.",
+ "key_terms": [
+  "Stamp duty",
+  "ELSS",
+  "SID / KIM",
+  "Factsheet",
+  "CAS (Consolidated Account Statement)"
+ ],
+ "example": "TER of 1.5% on ₹10 lakh is about ₹15,000 a year — always show costs in rupees, not just percentages.",
+ "say": [
+  "Show costs in rupees, not just percentages.",
+  "For exact exit loads, lock-ins and TER, use the scheme's own SID, KIM and factsheet."
+ ],
+ "never": [
+  "A 1.5% TER is too small to matter.",
+  "The factsheet is a marketing brochure, not a source of facts."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q8",
+   "q": "TER is:",
+   "o": [
+    "A one-time entry fee",
+    "The yearly cost of running the fund",
+    "A tax",
+    "An exit fee"
+   ],
+   "a": 1,
+   "why": "The yearly cost of running the fund. Charged daily through the NAV."
+  },
+  {
+   "id": "terms-q9",
+   "q": "Stamp duty on mutual fund purchases is:",
+   "o": [
+    "0.5%",
+    "0.05%",
+    "0.005%",
+    "Nil"
+   ],
+   "a": 2,
+   "why": "0.005%. ₹50 on ₹10 lakh."
+  },
+  {
+   "id": "terms-n15",
+   "q": "What does “CAS (Consolidated Account Statement)” mean in plain language?",
+   "o": [
+    "0.005% charged on mutual fund purchases",
+    "Equity Linked Savings Scheme: equity fund with a 3-year lock-in that qualifies for a tax deduction under the old tax regime",
+    "One statement showing all your mutual fund holdings across AMCs (and demat holdings)",
+    "Scheme Information Document / Key Information Memorandum: the official offer documents"
+   ],
+   "a": 2,
+   "why": "CAS (Consolidated Account Statement): One statement showing all your mutual fund holdings across AMCs (and demat holdings) Example: Sent monthly when there is a transaction"
+  }
+ ],
+ "card_ids": [
+  "terms-c17",
+  "terms-c18"
+ ],
+ "words": 226
+}

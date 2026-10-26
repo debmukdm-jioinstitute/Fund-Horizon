@@ -1,0 +1,77 @@
+{
+ "id": "terms-01",
+ "title": "What a fund is: pool, AMC, scheme, units, NAV, AUM",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain a mutual fund as a pool of money run by an AMC, in plain words.",
+  "Say what a unit and a NAV are, and work out units from an amount and a NAV."
+ ],
+ "body_md": "A mutual fund pools money from many investors and invests it as one portfolio, managed by a professional fund manager and regulated by SEBI. The company that runs the schemes is the AMC (Asset Management Company). Each scheme is one specific fund with its own objective.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Mutual fund | A pool of money from many investors, managed by a professional fund manager and regulated by SEBI | 10 lakh investors each put in small amounts; the fund buys 60 stocks for all of them |\n| AMC (Asset Management Company) | The company that runs the mutual fund schemes | The AMC appoints the fund manager and publishes the NAV |\n| Scheme | One specific fund with its own objective, e.g. a large-cap fund | One AMC can run 40+ schemes |\n| Unit | Your share of the fund. You buy units, not shares | ₹10,000 at NAV ₹50 = 200 units |\n| NAV (Net Asset Value) | Price of one unit = (value of the fund's holdings − expenses) ÷ units. Declared once every business day | Fund worth ₹500 crore with 10 crore units → NAV ₹50 |\n| AUM (Assets Under Management) | Total money a fund or AMC manages | \"This fund has ₹12,000 crore AUM\" |\n\n> **Talk-track:** “Think of a mutual fund as a shared basket. Your money buys units in it. The NAV is today's price of one unit; it moves because the things in the basket move.”\n\n> **Investor takeaway:** A low NAV does not mean a fund is cheap, and a high NAV does not mean it is expensive. What matters is how the NAV grows.",
+ "key_terms": [
+  "NAV",
+  "AUM",
+  "AMC",
+  "Unit"
+ ],
+ "example": "₹10,000 invested at a NAV of ₹50 buys 200 units. If the NAV rises to ₹55, those units are worth ₹11,000.",
+ "say": [
+  "Think of a mutual fund as a shared basket. Your money buys units in it.",
+  "The NAV is today's price of one unit; it moves because the things in the basket move."
+ ],
+ "never": [
+  "A low NAV means this fund is cheap.",
+  "This NFO at ₹10 is a bargain."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "The shared basket",
+   "text": "Think of a mutual fund as a shared basket. Your money buys units in it. The NAV is today's price of one unit; it moves because the things in the basket move."
+  }
+ ],
+ "check": [
+  {
+   "id": "terms-q1",
+   "q": "NAV stands for:",
+   "o": [
+    "Net Annual Value",
+    "Net Asset Value",
+    "New Asset Value",
+    "Net Average Value"
+   ],
+   "a": 1,
+   "why": "Net Asset Value. It is the price of one unit of a fund."
+  },
+  {
+   "id": "terms-n01",
+   "q": "What does “NAV (Net Asset Value)” mean in plain language?",
+   "o": [
+    "Price of one unit = (value of the fund's holdings − expenses) ÷ units. Declared once every business day",
+    "A pool of money from many investors, managed by a professional fund manager and regulated by SEBI",
+    "The company that runs the mutual fund schemes",
+    "One specific fund with its own objective, e.g. a large-cap fund"
+   ],
+   "a": 0,
+   "why": "NAV (Net Asset Value): Price of one unit = (value of the fund's holdings − expenses) ÷ units. Declared once every business day Example: Fund worth ₹500 crore with 10 crore units → NAV ₹50"
+  },
+  {
+   "id": "terms-n02",
+   "q": "What does “AUM (Assets Under Management)” mean in plain language?",
+   "o": [
+    "A pool of money from many investors, managed by a professional fund manager and regulated by SEBI",
+    "The company that runs the mutual fund schemes",
+    "One specific fund with its own objective, e.g. a large-cap fund",
+    "Total money a fund or AMC manages"
+   ],
+   "a": 3,
+   "why": "AUM (Assets Under Management): Total money a fund or AMC manages Example: \"This fund has ₹12,000 crore AUM\""
+  }
+ ],
+ "card_ids": [
+  "terms-c1",
+  "terms-c2"
+ ],
+ "words": 257
+}

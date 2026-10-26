@@ -1,0 +1,69 @@
+{
+ "id": "overlap-06",
+ "title": "Signs of a cluttered portfolio, and questions to ask",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Spot five signs of a cluttered portfolio.",
+  "Ask the three clutter questions."
+ ],
+ "body_md": "Signs of a cluttered portfolio: more than 6–8 equity funds for a typical portfolio. Several funds in the same category (for example three large-cap funds). The same 5–10 stocks at the top of most funds. A combined portfolio that looks like an index fund, but with higher costs. Small SIPs of ₹500–₹1,000 spread across many schemes. Questions to ask the client: “Why did you add each fund?”, “Do you hold any shares directly, or through your employer?”, and “Would fewer funds be easier for you to track?”\n\n> **Investor takeaway:** Diversify by what you own, not by how many funds you own.",
+ "key_terms": [
+  "Cluttered portfolio",
+  "Small SIPs"
+ ],
+ "example": "14 funds with ₹1,000 SIPs each: more paperwork, same top stocks — a cluttered portfolio, not a diversified one.",
+ "say": [
+  "More than 6–8 equity funds for a typical portfolio is a warning sign.",
+  "A combined portfolio like an index fund, but costlier, is clutter."
+ ],
+ "never": [
+  "14 funds is always safer than 4.",
+  "Small SIPs across many schemes add diversification."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q12",
+   "q": "Which is a sign of a cluttered portfolio?",
+   "o": [
+    "3 funds with different jobs",
+    "Three large-cap funds from different AMCs",
+    "One index fund",
+    "A written target mix"
+   ],
+   "a": 1,
+   "why": "Three large-cap funds from different AMCs. Same category, same stocks."
+  },
+  {
+   "id": "overlap-n07",
+   "q": "Which is a sign of a cluttered portfolio?",
+   "o": [
+    "3 funds with different jobs",
+    "One index fund",
+    "Three large-cap funds from different AMCs",
+    "A written target mix"
+   ],
+   "a": 2,
+   "why": "Several funds in the same category (e.g. three large-cap funds)."
+  },
+  {
+   "id": "overlap-n08",
+   "q": "A combined portfolio that looks like an index fund but costs more is:",
+   "o": [
+    "Ideal diversification",
+    "Clutter, not diversification",
+    "A core-satellite structure",
+    "A SEBI requirement"
+   ],
+   "a": 1,
+   "why": "A combined portfolio that looks like an index fund, but with higher costs."
+  }
+ ],
+ "card_ids": [
+  "overlap-c11",
+  "overlap-c12"
+ ],
+ "words": 101
+}

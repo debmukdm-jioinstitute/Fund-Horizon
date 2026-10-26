@@ -1,0 +1,71 @@
+{
+ "id": "psych-16",
+ "title": "Role-play lab: six bias conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six bias conversations using empathy, goals and rules — never promises.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, one the distributor. The trainer scores on the points listed.\n\n| # | Scenario | Bias | What a good response includes |\n| --- | --- | --- | --- |\n| 1 | Markets have fallen 15% in a month. A client with a 10-year goal calls to stop all SIPs. | Loss aversion | Empathy first; goal and horizon; SIP buys more units; reminder of their own plan; no promise of recovery. |\n| 2 | A client wants to move everything into a small-cap fund that \"everyone in the WhatsApp group\" is buying. | Herd / FOMO | Checks allocation and risk profile; explains buying after a rally; suggests limiting it to a planned share, if any. |\n| 3 | A client refuses to sell a long-underperforming fund until it \"gets back to what I paid\". | Anchoring, sunk cost | Separates purchase price from future prospects; compares with benchmark and alternatives; mentions tax and exit load. |\n| 4 | A client has ₹20 lakh sitting in a savings account \"until the market settles\". | Inertia, regret aversion | Shows the cost of waiting; proposes an STP over 6–12 months; ties money to goals. |\n| 5 | A client in IT has 70% of their wealth in their employer's shares. | Familiarity | Explains doubled risk (job and savings); proposes gradual diversification with tax planning. |\n| 6 | Your manager tells you to pitch last year's top fund to every client this month. | Distributor's own bias | Raises suitability concerns; uses the checklist; recommends only where it fits the client. |\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Loss aversion",
+  "Herd / FOMO",
+  "Anchoring"
+ ],
+ "example": "Role-play the fall: empathy first, goal and horizon, SIP buys more units, reminder of their own plan, no promise of recovery.",
+ "say": [
+  "Empathy first; goal and horizon; no promise of recovery.",
+  "Use the suitability checklist for every recommendation."
+ ],
+ "never": [
+  "Pressure a client to stay invested against their stated needs.",
+  "Use FOMO or fear in your own sales pitch."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q21",
+   "q": "Markets have fallen 15% in a month. A client with a 10-year goal calls to stop all SIPs. How do you respond?",
+   "o": [
+    "Agree and stop all SIPs immediately",
+    "Acknowledge the feeling; reconnect to the goal and 10-year horizon; explain the SIP buys more units at lower prices; remind them of their signed plan; use history as context without promising recovery; record the call",
+    "Promise the market will recover next month",
+    "Switch everything to debt at once"
+   ],
+   "a": 1,
+   "why": "Acknowledge the feeling; reconnect to the goal and 10-year horizon; explain that the SIP is buying more units at lower prices; remind them of their signed plan; use history as context without promising recovery; record the call."
+  },
+  {
+   "id": "psych-q22",
+   "q": "A client wants to move everything into a small-cap fund “everyone in the WhatsApp group” is buying. How do you respond?",
+   "o": [
+    "Move everything at once",
+    "Name it gently as following the crowd; check fit with the target allocation and risk profile; explain popular often means it has already run up; if appropriate, limit it to a planned slice; never pitch using FOMO",
+    "Buy even more on margin",
+    "Promise it will keep rising"
+   ],
+   "a": 1,
+   "why": "Name it gently as following the crowd; check fit with the target allocation and risk profile; explain that popular often means it has already run up; if appropriate, limit it to a planned slice; never pitch using FOMO."
+  },
+  {
+   "id": "psych-q23",
+   "q": "A client has ₹20 lakh in a savings account “until the market settles”. What do you suggest?",
+   "o": [
+    "Leave it in savings indefinitely",
+    "Show the cost of waiting (inflation, missed compounding); link the money to specific goals; propose an STP from a liquid or debt fund into equity over 6–12 months to reduce regret",
+    "Wait for a crash before investing anything",
+    "Put it all in a sectoral fund now"
+   ],
+   "a": 1,
+   "why": "Show the cost of waiting (inflation, missed compounding); link the money to specific goals; propose an STP from a liquid or debt fund into equity over 6–12 months to reduce regret."
+  }
+ ],
+ "card_ids": [
+  "psych-c31",
+  "psych-c32"
+ ],
+ "words": 258
+}

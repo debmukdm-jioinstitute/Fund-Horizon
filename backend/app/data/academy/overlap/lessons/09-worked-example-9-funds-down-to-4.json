@@ -1,0 +1,69 @@
+{
+ "id": "overlap-09",
+ "title": "Worked example: 9 funds down to 4",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Walk the 9-to-4 consolidation and say what changed and what didn't.",
+  "Explain why the asset mix stays the same."
+ ],
+ "body_md": "Worked example (illustrative). Before: 9 equity funds — 3 large-cap funds, 2 flexi-cap funds, 1 large & mid-cap fund, 1 focused fund, 2 small SIPs in thematic funds. After: 4 equity funds — 1 index fund (core), 1 flexi-cap fund (core), 1 mid-cap fund (satellite), 1 small-cap fund (satellite). Same asset mix, fewer funds, easier tracking and fewer statements.\n\n| Before: 9 equity funds | After: 4 equity funds |\n| --- | --- |\n| 3 large-cap funds | 1 index fund (core) |\n| 2 flexi-cap funds | 1 flexi-cap fund (core) |\n| 1 large & mid-cap fund | 1 mid-cap fund (satellite) |\n| 1 focused fund | 1 small-cap fund (satellite) |\n| 2 small SIPs in thematic funds | — |",
+ "key_terms": [
+  "Consolidation",
+  "Worked example"
+ ],
+ "example": "9 funds → 4 funds: same asset mix, fewer statements, easier tracking — consolidation changes the fund count, not the mix.",
+ "say": [
+  "Same asset mix, fewer funds.",
+  "Consolidation is about jobs, not about selling everything."
+ ],
+ "never": [
+  "Consolidation must change the asset mix.",
+  "Fewer funds means less diversification."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-n13",
+   "q": "In the worked example, 9 funds became:",
+   "o": [
+    "4 funds: 1 index, 1 flexi-cap, 1 mid-cap, 1 small-cap",
+    "2 funds",
+    "6 funds",
+    "1 fund"
+   ],
+   "a": 0,
+   "why": "After: 4 equity funds — 1 index fund (core), 1 flexi-cap fund (core), 1 mid-cap fund (satellite), 1 small-cap fund (satellite)."
+  },
+  {
+   "id": "overlap-n14",
+   "q": "What stayed the same after consolidation?",
+   "o": [
+    "The fund count",
+    "The number of statements",
+    "The SIP amounts",
+    "The asset mix"
+   ],
+   "a": 3,
+   "why": "Same asset mix, fewer funds, easier tracking and fewer statements."
+  },
+  {
+   "id": "overlap-n15",
+   "q": "The two small thematic SIPs were:",
+   "o": [
+    "Kept as core",
+    "Doubled",
+    "Dropped in the consolidation",
+    "Moved to debt"
+   ],
+   "a": 2,
+   "why": "Before: 2 small SIPs in thematic funds. After: — (dropped)."
+  }
+ ],
+ "card_ids": [
+  "overlap-c17",
+  "overlap-c18"
+ ],
+ "words": 104
+}

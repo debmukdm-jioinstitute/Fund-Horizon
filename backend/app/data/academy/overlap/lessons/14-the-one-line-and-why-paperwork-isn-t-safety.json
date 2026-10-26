@@ -1,0 +1,69 @@
+{
+ "id": "overlap-14",
+ "title": "The one line, and why paperwork isn't safety",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Use the one line to answer “more funds is safer” in any conversation.",
+  "Explain the real cost of clutter: paperwork, statements, tracking."
+ ],
+ "body_md": "The one line to remember: diversify by what you own, not by how many funds you own. Many clients believe each extra fund adds safety. Often it only adds paperwork: more statements, more funds to track, more decisions — while the portfolio underneath stays the same handful of top stocks. Fewer funds with distinct jobs are easier to review, easier to rebalance, and easier for the client to understand. That understanding is itself a guardrail: a client who can explain their portfolio in one sentence is less likely to panic-sell it.\n\n> **Investor takeaway:** Diversify by what you own, not by how many funds you own.",
+ "key_terms": [
+  "One line",
+  "Paperwork"
+ ],
+ "example": "Client with 14 funds: “Let's look at what they hold” — same top stocks, one portfolio, fourteen statements.",
+ "say": [
+  "Fewer funds with distinct jobs are easier to review and rebalance.",
+  "Understanding the portfolio is itself a guardrail."
+ ],
+ "never": [
+  "More statements mean more safety.",
+  "A portfolio nobody understands is easier to hold."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-n23",
+   "q": "What is the one line to remember in this module?",
+   "o": [
+    "More funds is safer",
+    "One AMC is safest",
+    "Diversify by what you own, not by how many funds you own",
+    "Index funds never overlap"
+   ],
+   "a": 2,
+   "why": "The one line to remember: diversify by what you own, not by how many funds you own."
+  },
+  {
+   "id": "overlap-n24",
+   "q": "What does clutter usually add?",
+   "o": [
+    "More diversification",
+    "Paperwork: more statements, more funds to track, more decisions",
+    "Lower costs",
+    "Better returns"
+   ],
+   "a": 1,
+   "why": "Many clients believe each extra fund adds safety. Often it only adds paperwork."
+  },
+  {
+   "id": "overlap-n25",
+   "q": "Why does understanding the portfolio matter?",
+   "o": [
+    "A client who can explain their portfolio in one sentence is less likely to panic-sell it",
+    "It raises returns",
+    "It avoids tax",
+    "SEBI requires it"
+   ],
+   "a": 0,
+   "why": "A client who can explain their portfolio in one sentence is less likely to panic-sell it."
+  }
+ ],
+ "card_ids": [
+  "overlap-c27",
+  "overlap-c28"
+ ],
+ "words": 105
+}

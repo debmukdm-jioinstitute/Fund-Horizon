@@ -1,0 +1,70 @@
+{
+ "id": "goals-04",
+ "title": "Discovery questions and foundation first",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Ask the five discovery questions, involving the family where possible.",
+  "Explain the four foundation layers in order."
+ ],
+ "body_md": "Discovery questions: “What are you saving for in the next 3 years? 3–10 years? Beyond?” “For each goal: roughly what would it cost today, and when do you need it?” “If you could achieve only three of these, which would they be?” “What money do you already have set aside, and for what?” “Who depends on your income?” Involve the spouse or family where possible; goals are shared, and so are the decisions in a market fall. Foundation before goals: 1. Emergency fund — usually 6 months of expenses in a savings account or liquid fund — stops the client breaking long-term investments in a crisis. 2. Insurance — adequate term life cover and health insurance — protects the goals if the earner dies or falls ill. 3. High-cost debt cleared — credit cards and expensive personal loans — no investment reliably beats a high-interest loan. 4. Goals — must-haves, then should-haves, then nice-to-haves — built on a stable base. Refer insurance needs to a licensed insurance adviser if Fund Horizon doesn't cover them; note the gap in the plan either way.\n\n| Layer | What it is | Why it comes first |\n| --- | --- | --- |\n| 1. Emergency fund | Usually 6 months of expenses in a savings account or liquid fund | Stops the client breaking long-term investments in a crisis |\n| 2. Insurance | Adequate term life cover and health insurance | Protects the goals if the earner dies or falls ill |\n| 3. High-cost debt cleared | Credit cards and expensive personal loans | No investment reliably beats a high-interest loan |\n| 4. Goals | Must-haves, then should-haves, then nice-to-haves | Built on a stable base |\n\n> **Investor takeaway:** Build the foundation first, then fund goals in order of importance, not in order of excitement.",
+ "key_terms": [
+  "Emergency fund",
+  "Discovery",
+  "Foundation"
+ ],
+ "example": "Emergency fund of 6 months' expenses in a liquid fund: a job loss then doesn't force selling a long-term equity SIP at a loss.",
+ "say": [
+  "Involve the family; goals are shared, and so are decisions in a fall.",
+  "Note any insurance gap in the plan in writing."
+ ],
+ "never": [
+  "Start with funds, then worry about the emergency fund.",
+  "Insurance can wait until goals are funded."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q4",
+   "q": "What comes before investing for goals?",
+   "o": [
+    "A new fund offer",
+    "Emergency fund and insurance",
+    "A PMS",
+    "Gold"
+   ],
+   "a": 1,
+   "why": "Emergency fund and insurance. Foundation first."
+  },
+  {
+   "id": "goals-q12",
+   "q": "A typical emergency fund is about:",
+   "o": [
+    "1 week of expenses",
+    "6 months of expenses",
+    "5 years of expenses",
+    "10% of net worth in equity"
+   ],
+   "a": 1,
+   "why": "6 months of expenses. In savings or a liquid fund."
+  },
+  {
+   "id": "goals-n05",
+   "q": "Which comes first: goals, or emergency fund and insurance?",
+   "o": [
+    "Emergency fund and insurance — foundation first",
+    "Goals first",
+    "A new fund offer",
+    "Gold"
+   ],
+   "a": 0,
+   "why": "Foundation first: emergency fund → insurance → clear high-cost debt → goals."
+  }
+ ],
+ "card_ids": [
+  "goals-c7",
+  "goals-c8"
+ ],
+ "words": 280
+}

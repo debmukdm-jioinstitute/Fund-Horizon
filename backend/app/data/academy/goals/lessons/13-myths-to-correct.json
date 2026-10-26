@@ -1,0 +1,69 @@
+{
+ "id": "goals-13",
+ "title": "Myths to correct",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Correct five goal myths with the reality behind each.",
+  "Explain why “one big portfolio is enough” is wrong."
+ ],
+ "body_md": "“One big portfolio is enough; goals are just labels.” Reality: different goals need different time frames and asset mixes. “Long-term goals need the highest-return fund.” Reality: they need enough growth with a mix the client can hold through falls. “Short-term goals should be in equity for better returns.” Reality: money needed soon can't afford a market fall; it belongs in debt. “Once the plan is made, I'm done.” Reality: goals, costs and markets change; review every year. “Retirement is far away; I'll plan later.” Reality: it is usually the largest goal, and the one most hurt by a late start.\n\n| Myth | Reality |\n| --- | --- |\n| \"One big portfolio is enough; goals are just labels.\" | Different goals need different time frames and asset mixes. |\n| \"Long-term goals need the highest-return fund.\" | They need enough growth with a mix the client can hold through falls. |\n| \"Short-term goals should be in equity for better returns.\" | Money needed soon can't afford a market fall; it belongs in debt. |\n| \"Once the plan is made, I'm done.\" | Goals, costs and markets change; review every year. |\n| \"Retirement is far away; I'll plan later.\" | It is usually the largest goal, and the one most hurt by a late start. |\n\n> **Investor takeaway:** Judge your investments by whether your goals are on track, not by daily market moves.",
+ "key_terms": [
+  "Goal myths",
+  "Retirement"
+ ],
+ "example": "“Retirement is far away”: it is usually the largest goal, and the one most hurt by a late start — ₹50,000 a month today is about ₹2.15 lakh a month in 25 years at 6% inflation.",
+ "say": [
+  "Different goals need different time frames and asset mixes.",
+  "Retirement is usually the largest goal; don't plan it last."
+ ],
+ "never": [
+  "One big portfolio is enough; goals are just labels.",
+  "Short-term goals should be in equity for better returns."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q17",
+   "q": "Why use a goal-specific inflation rate for education?",
+   "o": [
+    "SEBI requires one rate per goal",
+    "Education costs often rise faster than general inflation",
+    "General inflation ignores education entirely",
+    "It lowers the SIP needed"
+   ],
+   "a": 1,
+   "why": "Use goal-specific inflation."
+  },
+  {
+   "id": "goals-n19",
+   "q": "“One big portfolio is enough; goals are just labels” is wrong because:",
+   "o": [
+    "Labels lower tax",
+    "Portfolios cannot hold many funds",
+    "Different goals need different time frames and asset mixes",
+    "SEBI bans labels"
+   ],
+   "a": 2,
+   "why": "Different goals need different time frames and asset mixes."
+  },
+  {
+   "id": "goals-n20",
+   "q": "“Once the plan is made, I'm done” is wrong because:",
+   "o": [
+    "Plans expire yearly by law",
+    "Goals, costs and markets change; review every year",
+    "SIPs stop automatically",
+    "Returns are fixed"
+   ],
+   "a": 1,
+   "why": "Goals, costs and markets change; review every year."
+  }
+ ],
+ "card_ids": [
+  "goals-c25",
+  "goals-c26"
+ ],
+ "words": 214
+}

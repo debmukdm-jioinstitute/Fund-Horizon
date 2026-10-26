@@ -1,0 +1,69 @@
+{
+ "id": "withdraw-14",
+ "title": "The one line, and why plans must bend",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Use the one line in any withdrawal conversation.",
+  "Explain why a rigid plan breaks and a flexible one lasts."
+ ],
+ "body_md": "The one line to remember: spend from safety, grow from equity, and refill on a plan. A rigid plan breaks in a bad year: fixed withdrawals from falling equity, inflation increases regardless of the corpus, big costs paid from the monthly SWP. A flexible plan bends: skip the inflation increase, draw from Bucket 2, fund big costs from their own pot, and rebuild over time. Flexible spending in bad years is one of the most powerful ways to make a corpus last.\n\n> **Investor takeaway:** Spend from safety, grow from equity, and refill on a plan.",
+ "key_terms": [
+  "One line",
+  "Flexible plan"
+ ],
+ "example": "Bad year, fixed plan: sell equity low to pay bills. Flexible plan: Bucket 2 pays, equity recovers, inflation increase skipped.",
+ "say": [
+  "Flexible spending in bad years is one of the most powerful ways to make a corpus last.",
+  "A rigid plan breaks; a flexible plan bends."
+ ],
+ "never": [
+  "Never change a withdrawal plan.",
+  "Always increase withdrawals for inflation."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-n21",
+   "q": "What is the one line to remember in this module?",
+   "o": [
+    "Spend from safety, grow from equity, and refill on a plan",
+    "Spend from equity, grow from safety",
+    "Never touch the corpus",
+    "SWP is guaranteed income"
+   ],
+   "a": 0,
+   "why": "The one line to remember: spend from safety, grow from equity, and refill on a plan."
+  },
+  {
+   "id": "withdraw-n22",
+   "q": "Why is flexible spending powerful?",
+   "o": [
+    "It raises returns",
+    "It avoids tax",
+    "It guarantees income",
+    "It is one of the most powerful ways to make a corpus last"
+   ],
+   "a": 3,
+   "why": "Flexible spending in bad years is one of the most powerful ways to make a corpus last."
+  },
+  {
+   "id": "withdraw-n23",
+   "q": "A rigid plan in a bad year forces:",
+   "o": [
+    "Higher returns",
+    "Lower inflation",
+    "Selling equity low to pay bills",
+    "No withdrawals"
+   ],
+   "a": 2,
+   "why": "A rigid plan breaks in a bad year: fixed withdrawals from falling equity."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c27",
+  "withdraw-c28"
+ ],
+ "words": 95
+}

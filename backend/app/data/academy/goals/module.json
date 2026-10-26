@@ -1,0 +1,734 @@
+{
+ "id": "goals",
+ "title": "Goal-Based Investing",
+ "code": "Module 9",
+ "blurb": "Planning by goal, not by product: sizes, horizons and SIPs for real life goals.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 77 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Modules 1 and 13 help"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)"
+ ],
+ "lessons": [
+  {
+   "id": "goals-01",
+   "title": "What a goal is: four answers, three horizons, five steps",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "goals-02",
+   "title": "The maths of a goal: inflate the cost, then find the SIP",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "goals-03",
+   "title": "Worked examples: starting early, stepping up, and retirement",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "goals-04",
+   "title": "Discovery questions and foundation first",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "goals-05",
+   "title": "Prioritising goals: must, should, nice-to-have",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "goals-06",
+   "title": "Matching the asset mix to the horizon",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "goals-07",
+   "title": "Mapping funds to goals, and step-up SIPs",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "goals-08",
+   "title": "The plan document checklist",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "goals-09",
+   "title": "The yearly goal review",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "R"
+  },
+  {
+   "id": "goals-10",
+   "title": "The glide path: de-risk as the goal approaches",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "R"
+  },
+  {
+   "id": "goals-11",
+   "title": "When a goal is off track: four levers",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "R"
+  },
+  {
+   "id": "goals-12",
+   "title": "Goals as an anchor: behaviours to watch",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "goals-13",
+   "title": "Myths to correct",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "goals-14",
+   "title": "Niche topics people miss",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "goals-15",
+   "title": "Role-play lab: six goal conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "goals-16",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "goals-c1",
+   "q": "The one idea",
+   "a": [
+    "Start with the goal, not the fund. Goal → time frame → asset mix → funds."
+   ]
+  },
+  {
+   "id": "goals-c2",
+   "q": "What makes a goal",
+   "a": [
+    "Four answers: what it's for, how much (today's cost), when, and how important."
+   ]
+  },
+  {
+   "id": "goals-c3",
+   "q": "The five-step process",
+   "a": [
+    "Discover → Quantify → Prioritise → Plan → Review yearly."
+   ]
+  },
+  {
+   "id": "goals-c4",
+   "q": "Short-term goal",
+   "a": [
+    "Under 3 years. Main risk: losing capital just before it's needed. Use debt."
+   ]
+  },
+  {
+   "id": "goals-c5",
+   "q": "Medium-term goal",
+   "a": [
+    "3–7 years. Main risk: a market fall close to the goal date. Use a balanced mix."
+   ]
+  },
+  {
+   "id": "goals-c6",
+   "q": "Long-term goal",
+   "a": [
+    "7+ years. Main risk: inflation and not taking enough growth. Mostly equity."
+   ]
+  },
+  {
+   "id": "goals-c7",
+   "q": "Future cost formula",
+   "a": [
+    "Today's cost × (1 + inflation) ^ years."
+   ]
+  },
+  {
+   "id": "goals-c8",
+   "q": "Education example (illustrative)",
+   "a": [
+    "₹20 lakh today at 8% for 15 years ≈ ₹63.4 lakh."
+   ]
+  },
+  {
+   "id": "goals-c9",
+   "q": "SIP for that goal (illustrative)",
+   "a": [
+    "About ₹13,300 a month at an assumed 12% for 15 years."
+   ]
+  },
+  {
+   "id": "goals-c10",
+   "q": "Cost of a 5-year delay",
+   "a": [
+    "Same target with 10 years left: about ₹28,300 a month, more than double."
+   ]
+  },
+  {
+   "id": "goals-c11",
+   "q": "Step-up SIP",
+   "a": [
+    "Raise the SIP yearly with income. A 10% step-up cut the starting SIP to about ₹7,700."
+   ]
+  },
+  {
+   "id": "goals-c12",
+   "q": "Retirement example (illustrative)",
+   "a": [
+    "₹50,000 a month today ≈ ₹2.15 lakh a month in 25 years at 6% inflation."
+   ]
+  },
+  {
+   "id": "goals-c13",
+   "q": "Foundation first",
+   "a": [
+    "Emergency fund (about 6 months) → insurance → clear high-cost debt → goals."
+   ]
+  },
+  {
+   "id": "goals-c14",
+   "q": "Goal priorities",
+   "a": [
+    "Must-have (retirement, education), should-have (house, car), nice-to-have (holiday)."
+   ]
+  },
+  {
+   "id": "goals-c15",
+   "q": "Asset mix by horizon (illustrative)",
+   "a": [
+    "<1 yr: all debt · 1–3: mostly debt · 3–5: 20–40% equity · 5–7: about half · 7+: 60–80%+ equity."
+   ]
+  },
+  {
+   "id": "goals-c16",
+   "q": "Glide path",
+   "a": [
+    "Move gradually from equity to debt as the goal approaches, often by STP; check tax and exit loads."
+   ]
+  },
+  {
+   "id": "goals-c17",
+   "q": "Discovery question",
+   "a": [
+    "Find every goal across horizons.",
+    "Example: \"What are you saving for in the next 3 years? 3–10? Beyond?\"",
+    "Remember: Involve the family."
+   ]
+  },
+  {
+   "id": "goals-c18",
+   "q": "Prioritising question",
+   "a": [
+    "Separate must-haves from wants.",
+    "Example: \"If you could achieve only three, which would they be?\"",
+    "Remember: Fund must-haves first."
+   ]
+  },
+  {
+   "id": "goals-c19",
+   "q": "Education vs retirement",
+   "a": [
+    "Parents often put education above their own retirement.",
+    "Example: Child's MBA vs retiring at 60",
+    "Remember: Education can be part-funded by a loan; retirement can't."
+   ]
+  },
+  {
+   "id": "goals-c20",
+   "q": "Goal-specific inflation",
+   "a": [
+    "Different costs rise at different rates.",
+    "Example: Education, healthcare often faster",
+    "Remember: One rate for all goals underestimates the costly ones."
+   ]
+  },
+  {
+   "id": "goals-c21",
+   "q": "Mapping funds to goals",
+   "a": [
+    "Each goal gets its own SIP and label.",
+    "Example: Folio tag \"Riya college\"",
+    "Remember: Label the units, don't multiply the funds."
+   ]
+  },
+  {
+   "id": "goals-c22",
+   "q": "STP for lump sums",
+   "a": [
+    "Park a lump sum in a liquid fund and move it in stages.",
+    "Example: Bonus for a 10-year goal",
+    "Remember: Eases timing worries."
+   ]
+  },
+  {
+   "id": "goals-c23",
+   "q": "Yearly review",
+   "a": [
+    "Progress, target, mix, glide path, contributions.",
+    "Example: Is the value where the plan expected?",
+    "Remember: Yearly and on life events, not on headlines."
+   ]
+  },
+  {
+   "id": "goals-c24",
+   "q": "Lever: invest more",
+   "a": [
+    "Raise the SIP or add a lump sum.",
+    "Example: Bonus, policy maturity",
+    "Remember: First lever when off track."
+   ]
+  },
+  {
+   "id": "goals-c25",
+   "q": "Lever: extend the date",
+   "a": [
+    "Give the goal more time.",
+    "Example: Retire two years later",
+    "Remember: Flexible for should-haves."
+   ]
+  },
+  {
+   "id": "goals-c26",
+   "q": "Lever: adjust the target",
+   "a": [
+    "Reduce the goal's cost.",
+    "Example: A less expensive college option",
+    "Remember: Discuss honestly with the family."
+   ]
+  },
+  {
+   "id": "goals-c27",
+   "q": "Never: chase returns",
+   "a": [
+    "Taking more risk to catch up.",
+    "Example: Moving a near goal into small caps",
+    "Remember: Off-track is fixed by levers, not gambling."
+   ]
+  },
+  {
+   "id": "goals-c28",
+   "q": "Mental accounting, used well",
+   "a": [
+    "Labelled money is less likely to be spent or panic-sold.",
+    "Example: \"Riya's college\" folio",
+    "Remember: Name the folios."
+   ]
+  },
+  {
+   "id": "goals-c29",
+   "q": "Present bias",
+   "a": [
+    "Delaying the start.",
+    "Example: \"I'll begin next year\"",
+    "Remember: Show the cost of delay in rupees."
+   ]
+  },
+  {
+   "id": "goals-c30",
+   "q": "Over-optimism",
+   "a": [
+    "Assuming high returns to make the SIP look small.",
+    "Example: Planning at 18% a year",
+    "Remember: Use conservative, labelled assumptions."
+   ]
+  },
+  {
+   "id": "goals-c31",
+   "q": "Existing assets",
+   "a": [
+    "Count what's already earmarked.",
+    "Example: EPF, PPF, NPS, FDs, gold",
+    "Remember: Reduces the new SIP needed."
+   ]
+  },
+  {
+   "id": "goals-c32",
+   "q": "Retirement has two phases",
+   "a": [
+    "Accumulation, then drawing income.",
+    "Example: SWP after retirement",
+    "Remember: Plan the income phase too, not just the corpus."
+   ]
+  }
+ ],
+ "final": {
+  "id": "goals-final",
+  "title": "Goal-Based Investing final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "goals-q1",
+    "sec": "L: Learn the Basics",
+    "q": "A goal needs:",
+    "o": [
+     "Only an amount",
+     "An amount, a date and a priority",
+     "A fund name",
+     "A market forecast"
+    ],
+    "a": 1,
+    "why": "An amount, a date and a priority. Plus what it's for."
+   },
+   {
+    "id": "goals-q2",
+    "sec": "L: Learn the Basics",
+    "q": "₹20 lakh today at 8% inflation for 15 years becomes about:",
+    "o": [
+     "₹20 lakh",
+     "₹32 lakh",
+     "₹63 lakh",
+     "₹120 lakh"
+    ],
+    "a": 2,
+    "why": "₹63 lakh. 20 × 1.08^15 ≈ 63.4."
+   },
+   {
+    "id": "goals-q3",
+    "sec": "A: Act Right",
+    "q": "Money needed in under a year should usually be in:",
+    "o": [
+     "Small-cap funds",
+     "Liquid or overnight funds",
+     "Sectoral funds",
+     "Long-duration gilt funds"
+    ],
+    "a": 1,
+    "why": "Liquid or overnight funds. No room for a market fall."
+   },
+   {
+    "id": "goals-q4",
+    "sec": "E: Evaluate the Client",
+    "q": "What comes before investing for goals?",
+    "o": [
+     "A new fund offer",
+     "Emergency fund and insurance",
+     "A PMS",
+     "Gold"
+    ],
+    "a": 1,
+    "why": "Emergency fund and insurance. Foundation first."
+   },
+   {
+    "id": "goals-q5",
+    "sec": "L: Learn the Basics",
+    "q": "In the illustration, a 5-year delay changed the SIP from about ₹13,300 to about:",
+    "o": [
+     "₹15,000",
+     "₹20,000",
+     "₹28,300",
+     "₹50,000"
+    ],
+    "a": 2,
+    "why": "₹28,300. A late start more than doubles it."
+   },
+   {
+    "id": "goals-q6",
+    "sec": "L: Learn the Basics",
+    "q": "A step-up SIP means:",
+    "o": [
+     "A lump sum each year",
+     "Raising the SIP regularly with income",
+     "Switching funds yearly",
+     "Stopping the SIP in falls"
+    ],
+    "a": 1,
+    "why": "Raising the SIP regularly with income. Makes big goals affordable today."
+   },
+   {
+    "id": "goals-q7",
+    "sec": "R: Review & Rebalance",
+    "q": "As a goal approaches, the equity share should usually:",
+    "o": [
+     "Rise",
+     "Fall gradually",
+     "Stay fixed",
+     "Go to 100%"
+    ],
+    "a": 1,
+    "why": "Fall gradually. The glide path."
+   },
+   {
+    "id": "goals-q8",
+    "sec": "R: Review & Rebalance",
+    "q": "Which is NOT a lever when a goal is off track?",
+    "o": [
+     "Invest more",
+     "Extend the date",
+     "Adjust the target",
+     "Chase the highest-returning fund"
+    ],
+    "a": 3,
+    "why": "Chase the highest-returning fund. Never chase returns to catch up."
+   },
+   {
+    "id": "goals-q9",
+    "sec": "L: Learn the Basics",
+    "q": "Which goal is often underfunded because it feels far away?",
+    "o": [
+     "Vacation",
+     "Retirement",
+     "Car",
+     "Phone"
+    ],
+    "a": 1,
+    "why": "Retirement. Largest goal; hurt most by a late start."
+   },
+   {
+    "id": "goals-q10",
+    "sec": "N: Navigate Behaviour",
+    "q": "Labelling folios by goal mainly helps because:",
+    "o": [
+     "It lowers tax",
+     "It reduces the urge to spend goal money and clarifies reviews",
+     "It raises returns",
+     "SEBI requires it"
+    ],
+    "a": 1,
+    "why": "It reduces the urge to spend goal money and clarifies reviews. Mental accounting used well."
+   },
+   {
+    "id": "goals-q11",
+    "sec": "L: Learn the Basics",
+    "q": "The right order is:",
+    "o": [
+     "Fund → goal → mix",
+     "Goal → time frame → asset mix → funds",
+     "Mix → fund → goal",
+     "Fund → mix → goal"
+    ],
+    "a": 1,
+    "why": "Goal → time frame → asset mix → funds. Start with the goal."
+   },
+   {
+    "id": "goals-q12",
+    "sec": "E: Evaluate the Client",
+    "q": "A typical emergency fund is about:",
+    "o": [
+     "1 week of expenses",
+     "6 months of expenses",
+     "5 years of expenses",
+     "10% of net worth in equity"
+    ],
+    "a": 1,
+    "why": "6 months of expenses. In savings or a liquid fund."
+   },
+   {
+    "id": "goals-q13",
+    "sec": "A: Act Right",
+    "q": "For a goal 7+ years away, the illustrative equity share is:",
+    "o": [
+     "0%",
+     "10–20%",
+     "60–80% or more",
+     "Exactly 50%"
+    ],
+    "a": 2,
+    "why": "60–80% or more. Adjusted to the client's risk profile."
+   },
+   {
+    "id": "goals-q14",
+    "sec": "L: Learn the Basics",
+    "q": "₹50,000 monthly expenses today become about how much in 25 years at 6% inflation?",
+    "o": [
+     "₹75,000",
+     "₹1 lakh",
+     "₹2.15 lakh",
+     "₹5 lakh"
+    ],
+    "a": 2,
+    "why": "₹2.15 lakh. 50,000 × 1.06^25."
+   },
+   {
+    "id": "goals-q15",
+    "sec": "R: Review & Rebalance",
+    "q": "When should goals normally be reviewed?",
+    "o": [
+     "Daily",
+     "After every market fall",
+     "Yearly and on life events",
+     "Never"
+    ],
+    "a": 2,
+    "why": "Yearly and on life events. Not on headlines."
+   },
+   {
+    "id": "goals-q16",
+    "sec": "A: Act Right",
+    "q": "Why should money needed soon not be in equity?",
+    "o": [
+     "Equity is banned for short goals",
+     "A market fall just before the goal date could shrink the money needed",
+     "Equity funds don't accept short holding periods",
+     "Debt always returns more than equity"
+    ],
+    "a": 1,
+    "why": "Debt for short-term goals."
+   },
+   {
+    "id": "goals-q17",
+    "sec": "L: Learn the Basics",
+    "q": "Why use a goal-specific inflation rate for education?",
+    "o": [
+     "SEBI requires one rate per goal",
+     "Education costs often rise faster than general inflation",
+     "General inflation ignores education entirely",
+     "It lowers the SIP needed"
+    ],
+    "a": 1,
+    "why": "Use goal-specific inflation."
+   },
+   {
+    "id": "goals-q18",
+    "sec": "R: Review & Rebalance",
+    "q": "A client says a plan made 3 years ago never needs review. Why is that wrong?",
+    "o": [
+     "Goals, costs and markets change; review yearly and on life events",
+     "SEBI requires monthly reviews",
+     "SIPs expire every year",
+     "Returns change daily"
+    ],
+    "a": 0,
+    "why": "Review yearly and on life events."
+   },
+   {
+    "id": "goals-q19",
+    "sec": "E: Evaluate the Client",
+    "q": "Why are parents often advised to prioritise retirement over education funding?",
+    "o": [
+     "Education is free",
+     "Education can be part-funded by a loan; retirement cannot",
+     "Retirement needs less money",
+     "Loans are banned for education"
+    ],
+    "a": 1,
+    "why": "Prioritise retirement accordingly."
+   },
+   {
+    "id": "goals-q20",
+    "sec": "N: Navigate Behaviour",
+    "q": "Markets fell 15%. A client's education goal is 11 years away. Should the plan change?",
+    "o": [
+     "Yes, stop the SIP",
+     "No — review yearly, not on headlines; the plan already expects falls",
+     "Yes, move everything to debt",
+     "Only if the fall exceeds 20%"
+    ],
+    "a": 1,
+    "why": "Review yearly, not on headlines."
+   },
+   {
+    "id": "goals-q21",
+    "sec": "Practice: Role-Play",
+    "q": "A client says, “Just tell me the best fund.” How do you respond?",
+    "o": [
+     "Name last year’s top fund",
+     "Redirect to goals: what for, how much, when, priority; explain that the goal decides the mix and the fund",
+     "Ask for their risk profile only",
+     "Recommend a sectoral fund"
+    ],
+    "a": 1,
+    "why": "Redirects to goals: what for, how much, when, priority; explains that the goal decides the mix and the fund."
+   },
+   {
+    "id": "goals-q22",
+    "sec": "Practice: Role-Play",
+    "q": "A couple wants to fund their son’s MBA in 12 years and retire in 20. How do you plan?",
+    "o": [
+     "One fund for both goals",
+     "Quantify both with inflation; prioritise; discuss the education-loan vs retirement trade-off; separate mixes and SIPs",
+     "Fund the MBA first and ignore retirement",
+     "Use the same mix for both"
+    ],
+    "a": 1,
+    "why": "Quantifies both with inflation; prioritises; discusses education loan vs retirement; separate mixes and SIPs."
+   },
+   {
+    "id": "goals-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A client wants ₹10 lakh for a car in 2 years in small-cap funds “for better returns”. What do you say?",
+    "o": [
+     "Agree — small caps return more",
+     "Explain short-horizon risk; recommend debt (short duration / target maturity); no equity for near goals",
+     "Suggest a sectoral fund instead",
+     "Say 2 years is long enough for equity"
+    ],
+    "a": 1,
+    "why": "Explains short-horizon risk; recommends debt (short duration / target maturity); no equity for near goals."
+   },
+   {
+    "id": "goals-q24",
+    "sec": "Practice: Role-Play",
+    "q": "A client’s retirement goal is 30% behind plan. What do you do?",
+    "o": [
+     "Chase the highest-returning fund to catch up",
+     "Use the four levers: invest more, extend the date, adjust the target, review the mix; never chase returns",
+     "Stop all SIPs",
+     "Promise higher returns"
+    ],
+    "a": 1,
+    "why": "Uses the four levers: invest more, extend the date, adjust the target, review the mix; never chases returns."
+   },
+   {
+    "id": "goals-q25",
+    "sec": "Practice: Role-Play",
+    "q": "Markets fell 15%. A client wants to stop the education SIP for a goal 11 years away. How do you respond?",
+    "o": [
+     "Agree — stop until markets settle",
+     "Use the goal’s time frame: SIPs buy more units in falls; the plan already expects falls; stay on track",
+     "Move the SIP to a sectoral fund",
+     "Double the SIP immediately"
+    ],
+    "a": 1,
+    "why": "Uses the goal's time frame; SIP buys more units in falls; the plan already expects falls; stays on track."
+   }
+  ]
+ },
+ "role_play": null
+}

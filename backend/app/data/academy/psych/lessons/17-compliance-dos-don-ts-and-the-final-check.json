@@ -1,0 +1,67 @@
+{
+ "id": "psych-17",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to behavioural coaching.",
+  "Pass the trainer's final check: explain the behaviour gap, name eight biases, set guardrails, frame a review and run the crisis playbook."
+ ],
+ "body_md": "Behavioural coaching must never turn into pressure or promises. Do: use past market history as context, with the standard risk disclaimer. Respect the client's final decision and record it. Check whether a redemption request reflects a genuine need (job loss, medical, goal reached) before discussing behaviour. Apply the same suitability checks in rallies as in falls. Disclose commission and the direct-plan option as usual. Keep notes of every crisis-period conversation.\n\n| Do | Don't |\n| --- | --- |\n| Use past market history as context, with the standard risk disclaimer | Promise that markets will recover, or when |\n| Respect the client's final decision and record it | Pressure a client to stay invested against their stated needs |\n| Check whether a redemption request reflects a genuine need (job loss, medical, goal reached) before discussing behaviour | Treat every redemption as panic |\n| Apply the same suitability checks in rallies as in falls | Use FOMO or fear in your own sales pitch |\n| Disclose commission and the direct-plan option as usual | Discourage switches or exits that genuinely serve the client because they reduce your trail |\n| Keep notes of every crisis-period conversation | Give tax or legal advice beyond your role; refer to a CA |\n\n> **Investor takeaway:** Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. All investor-facing material from this manual needs compliance review before it is published or shared with clients. Final check for trainers: a new joiner passes this module when they can explain the behaviour gap, recognise at least eight biases from what clients say, set up guardrails before markets turn, frame reviews around goals, and keep clients steady through falls and rallies using the crisis playbook, without promising outcomes.",
+ "key_terms": [
+  "Compliance",
+  "Behaviour gap",
+  "Crisis playbook"
+ ],
+ "example": "A trainee explains the behaviour gap, names eight biases from client quotes, sets guardrails, frames a review around goals, and runs the crisis playbook — without promising recovery.",
+ "say": [
+  "Respect the client's final decision and record it.",
+  "Check for a genuine need before discussing behaviour."
+ ],
+ "never": [
+  "Promise markets will recover, or when.",
+  "Pressure a client to stay invested against their stated needs."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q15",
+   "q": "Which statement to a client is compliant?",
+   "o": [
+    "\"Markets always recover within a year.\"",
+    "\"In 2020 markets recovered, but past recoveries don't guarantee future ones.\"",
+    "\"I promise your SIP will be positive by March.\"",
+    "\"Stay invested; losses are impossible over 3 years.\""
+   ],
+   "a": 1,
+   "why": "\"In 2020 markets recovered, but past recoveries don't guarantee future ones.\". Use history as context, never as a promise."
+  },
+  {
+   "id": "psych-q18",
+   "q": "A client redeems during a fall. What should you check first?",
+   "o": [
+    "Assume it is panic",
+    "Whether it reflects a genuine need: job loss, medical expense, or a goal that is due",
+    "The fund's NAV that day",
+    "The client's age"
+   ],
+   "a": 1,
+   "why": "First check for a genuine need: job loss, medical expense, or a goal that is due."
+  },
+  {
+   "id": "psych-q20",
+   "q": "Is it acceptable to tell a client markets will recover within 12 months?",
+   "o": [
+    "Yes, if you sound confident",
+    "No — never promise a recovery or its timing",
+    "Yes, for diversified funds",
+    "Only in writing"
+   ],
+   "a": 1,
+   "why": "Never promise a recovery or its timing."
+  }
+ ],
+ "card_ids": [],
+ "words": 278
+}

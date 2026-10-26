@@ -1,0 +1,70 @@
+{
+ "id": "timing-16",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to any “wrong time” conversation.",
+  "Pass the trainer's final check: diagnose a “wrong time” client in under five minutes and recommend a calm, goal-based next step."
+ ],
+ "body_md": "Do: acknowledge the client's frustration before explaining. Diagnose the cause (measure, horizon, expectation, market, fund, timing) before recommending action. Use historical examples as illustrations, stating that past recoveries do not guarantee future ones. Offer STP as a way to manage regret, not as a way to beat the market. Rebalance and de-risk on a plan, not on headlines. Record the client's decision and reasons, especially if they choose to exit.\n\n- Don’t — Predict when the market will fall or recover.\n- Don’t — Promise that a fund will “come back” by a certain date.\n- Don’t — Encourage stopping SIPs or exiting in a fall without reviewing the goal.\n- Don’t — Recommend all-in or all-out moves based on valuation or news.\n- Don’t — Dismiss the client's concern as irrational.\n\n> **Investor takeaway:** Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. Past performance may or may not be sustained in future. Final check for trainers: a new joiner passes this module when they can take a client who says “I invested at the wrong time”, diagnose the real cause in under five minutes, and recommend a calm, goal-based next step without predicting the market.",
+ "key_terms": [
+  "Compliance",
+  "Diagnosis",
+  "No prediction"
+ ],
+ "example": "A trainee diagnoses a “wrong time” client in under five minutes: measure, horizon, expectation, market, fund, timing — then a calm, goal-based next step, no prediction.",
+ "say": [
+  "Acknowledge frustration before explaining.",
+  "Use history with a clear “no guarantee”."
+ ],
+ "never": [
+  "Predict a recovery date.",
+  "Promise a fund will come back by a date."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q14",
+   "q": "Which statement is compliant?",
+   "o": [
+    "“The market will recover by March.”",
+    "“Historically markets have recovered from falls, but there’s no guarantee.”",
+    "“This fund can’t fall further.”",
+    "“Stop your SIPs until things settle.”"
+   ],
+   "a": 1,
+   "why": "“Historically markets have recovered from falls, but there’s no guarantee.”. Use history with a clear “no guarantee”; never predict or promise."
+  },
+  {
+   "id": "timing-q20",
+   "q": "A distributor tells a client the market will recover by March. Is that compliant?",
+   "o": [
+    "Yes, if they sound confident",
+    "No — never predict recoveries or promise a comeback by a date",
+    "Yes, for diversified funds",
+    "Only if put in writing"
+   ],
+   "a": 1,
+   "why": "Never predict recoveries or promise a comeback by a date."
+  },
+  {
+   "id": "timing-n23",
+   "q": "A trainee passes this module when they can:",
+   "o": [
+    "Predict the next market fall",
+    "Promise a recovery date",
+    "Diagnose a “wrong time” client in under five minutes and recommend a calm, goal-based next step without predicting the market",
+    "Recommend all-in moves on news"
+   ],
+   "a": 2,
+   "why": "Final check: take a client who says “I invested at the wrong time”, diagnose the real cause in under five minutes, and recommend a calm, goal-based next step without predicting the market."
+  }
+ ],
+ "card_ids": [
+  "timing-c31",
+  "timing-c32"
+ ],
+ "words": 201
+}

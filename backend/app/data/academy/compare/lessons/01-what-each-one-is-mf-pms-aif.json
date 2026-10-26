@@ -1,0 +1,77 @@
+{
+ "id": "compare-01",
+ "title": "What each one is: MF, PMS, AIF",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain mutual funds, PMS and AIFs in plain words, with minimum tickets.",
+  "Say what makes an AIF different from a mutual fund."
+ ],
+ "body_md": "All three are SEBI-regulated professional money management, but a mutual fund is open to everyone, a PMS is a personal portfolio from ₹50 lakh, and an AIF is a privately placed pooled fund, typically from ₹1 crore. Mutual fund (MF): a pooled fund regulated under SEBI's Mutual Fund Regulations. Investors own units; the fund is diversified, highly liquid and tightly regulated on costs and disclosure. Portfolio Management Service (PMS): a portfolio of securities managed for one client, held in that client's own demat account. SEBI minimum ₹50 lakh. Alternative Investment Fund (AIF): a privately pooled fund regulated under SEBI's AIF Regulations, 2012. It can invest in assets mutual funds largely cannot, such as unlisted companies, private credit or real estate. Minimum ₹1 crore per investor (₹25 lakh for the manager's employees and directors), up to 1,000 investors per scheme, sold only by private placement.\n\n> **Talk-track:** “All three are professionally managed and SEBI-regulated. The difference is how much you put in, how long it's locked, what it can invest in, and how it's taxed.”\n\n> **Investor takeaway:** Bigger ticket and more exclusive do not mean better. Each product suits a different investor.",
+ "key_terms": [
+  "Mutual fund",
+  "PMS",
+  "AIF",
+  "Private placement"
+ ],
+ "example": "₹500 a month buys a mutual fund SIP; ₹50 lakh is the PMS minimum; ₹1 crore is the AIF minimum for most investors.",
+ "say": [
+  "All three are professionally managed and SEBI-regulated.",
+  "The difference is ticket, lock-in, holdings and tax."
+ ],
+ "never": [
+  "AIFs are open to everyone.",
+  "PMS minimum is ₹10 lakh."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Three ways to get managed",
+   "text": "All three are professionally managed and SEBI-regulated. The difference is how much you put in, how long it's locked, what it can invest in, and how it's taxed."
+  }
+ ],
+ "check": [
+  {
+   "id": "compare-q1",
+   "q": "What is the SEBI minimum investment for a PMS?",
+   "o": [
+    "₹10 lakh",
+    "₹25 lakh",
+    "₹50 lakh",
+    "₹1 crore"
+   ],
+   "a": 2,
+   "why": "₹50 lakh. The minimum was raised to ₹50 lakh in 2020."
+  },
+  {
+   "id": "compare-q2",
+   "q": "What is the minimum investment for an AIF for most investors?",
+   "o": [
+    "₹25 lakh",
+    "₹50 lakh",
+    "₹1 crore",
+    "₹5 crore"
+   ],
+   "a": 2,
+   "why": "₹1 crore. ₹25 lakh applies only to the manager's employees and directors."
+  },
+  {
+   "id": "compare-q3",
+   "q": "How many investors can an AIF scheme have at most?",
+   "o": [
+    "50",
+    "200",
+    "1,000",
+    "No limit"
+   ],
+   "a": 2,
+   "why": "1,000. AIF schemes are capped at 1,000 investors."
+  }
+ ],
+ "card_ids": [
+  "compare-c1",
+  "compare-c2"
+ ],
+ "words": 190
+}

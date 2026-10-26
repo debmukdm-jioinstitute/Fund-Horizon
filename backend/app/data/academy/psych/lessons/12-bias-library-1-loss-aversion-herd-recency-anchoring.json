@@ -1,0 +1,71 @@
+{
+ "id": "psych-12",
+ "title": "Bias library (1): loss aversion, herd, recency, anchoring",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Recognise loss aversion, herd/FOMO, recency and anchoring from client quotes.",
+  "Answer each with the manual's “what to say” line."
+ ],
+ "body_md": "Loss aversion: losses hurt about twice as much as equal gains please. Sounds like: “The market fell, let me stop my SIP.” Say: “Your SIP is buying more units cheaper now. Stopping skips the best buying opportunity.” Herd / FOMO: following what everyone else is doing. Sounds like: “Everyone is buying small-caps.” Say: “Let's check it fits your allocation first. Popular usually means it has already run up.” Recency: over-weighting the latest results. Sounds like: “This fund gave 40% last year.” Say: “Let's look at its 5-year record and how it did in bad years.” Anchoring: fixating on a reference number like the buy price. Sounds like: “I'll sell once it's back to my cost.” Say: “Your buying price doesn't affect what the fund does next. Is it still right for you?”\n\n| Bias | What it is | How it sounds | What to say |\n| --- | --- | --- | --- |\n| Loss aversion | Losses hurt about twice as much as equal gains please | \"The market fell, let me stop my SIP.\" | \"Your SIP is buying more units cheaper now. Stopping skips the best buying opportunity.\" |\n| Herd / FOMO | Following what everyone else is doing | \"Everyone is buying small-caps.\" | \"Let's check it fits your allocation first. Popular usually means it has already run up.\" |\n| Recency | Over-weighting the latest results | \"This fund gave 40% last year.\" | \"Let's look at its 5-year record and how it did in bad years.\" |\n| Anchoring | Fixating on a reference number like the buy price | \"I'll sell once it's back to my cost.\" | \"Your buying price doesn't affect what the fund does next. Is it still right for you?\" |",
+ "key_terms": [
+  "Loss aversion",
+  "Herd / FOMO",
+  "Recency",
+  "Anchoring"
+ ],
+ "example": "“This fund gave 40% last year” → recency: look at the 5-year record and how it did in bad years.",
+ "say": [
+  "Your SIP is buying more units cheaper now.",
+  "Popular usually means it has already run up."
+ ],
+ "never": [
+  "Sell the winner, keep the loser, always.",
+  "Last year's return is the reason to invest."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q16",
+   "q": "Is knowing about biases enough to stop them affecting decisions?",
+   "o": [
+    "Yes, knowledge switches them off",
+    "No — knowing doesn't switch them off; systems and habits do",
+    "Yes, for experienced investors",
+    "Only for clients, not distributors"
+   ],
+   "a": 1,
+   "why": "Knowing doesn't switch them off; systems and habits do."
+  },
+  {
+   "id": "psych-n21",
+   "q": "“I'll sell once it's back to my cost” is:",
+   "o": [
+    "Anchoring",
+    "Recency",
+    "Herd behaviour",
+    "Overconfidence"
+   ],
+   "a": 0,
+   "why": "Anchoring: fixating on a reference number like the buy price. Say: “Your buying price doesn't affect what the fund does next.”"
+  },
+  {
+   "id": "psych-n22",
+   "q": "“Everyone is buying small-caps” is:",
+   "o": [
+    "Recency",
+    "Anchoring",
+    "Confirmation",
+    "Herd / FOMO"
+   ],
+   "a": 3,
+   "why": "Herd / FOMO: following what everyone else is doing. Say: “Let's check it fits your allocation first.”"
+  }
+ ],
+ "card_ids": [
+  "psych-c23",
+  "psych-c24"
+ ],
+ "words": 262
+}

@@ -1,0 +1,71 @@
+{
+ "id": "compare-06",
+ "title": "Costs: what the client actually pays",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "State the cost structure of MF, PMS and AIF, with caps.",
+  "Say which document carries the full AIF fee structure."
+ ],
+ "body_md": "MF: one expense ratio, capped by SEBI and already reflected in the NAV. Direct plans have no distributor commission. PMS: fixed fee and/or profit share, plus brokerage, custody and GST. Operating expenses (excluding brokerage) are capped at 0.5% a year. AIF: management fee plus carried interest (a share of profits above a hurdle), plus fund expenses. Read the Private Placement Memorandum (PPM) for the full structure.\n\n> **Investor takeaway:** Compare costs, lock-in and tax side by side before choosing PMS or AIF over a mutual fund.",
+ "key_terms": [
+  "Expense ratio",
+  "Profit share",
+  "Carried interest (carry)",
+  "PPM"
+ ],
+ "example": "PMS fee illustration: fixed fee plus profit share plus brokerage, custody and GST — show the all-in cost in rupees, not just the headline fee.",
+ "say": [
+  "Show the all-in cost in rupees, side by side.",
+  "Direct plans have no distributor commission."
+ ],
+ "never": [
+  "PMS operating expenses are uncapped.",
+  "AIF fees are fully shown in the factsheet."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q12",
+   "q": "What is \"carry\" in an AIF?",
+   "o": [
+    "A tax",
+    "The manager's share of profits above a hurdle",
+    "An exit load",
+    "A SIP feature"
+   ],
+   "a": 1,
+   "why": "The manager's share of profits above a hurdle. It is paid in addition to the management fee."
+  },
+  {
+   "id": "compare-n05",
+   "q": "What is “carry” in an AIF?",
+   "o": [
+    "The manager's share of profits above a hurdle",
+    "A tax",
+    "An exit load",
+    "A SIP feature"
+   ],
+   "a": 0,
+   "why": "Carry: the manager's share of profits above a hurdle. It is paid in addition to the management fee."
+  },
+  {
+   "id": "compare-n06",
+   "q": "PMS operating expenses (excluding brokerage) are capped at:",
+   "o": [
+    "2% a year",
+    "No cap",
+    "0.1% a year",
+    "0.5% a year"
+   ],
+   "a": 3,
+   "why": "Operating expenses (excluding brokerage) are capped at 0.5% a year."
+  }
+ ],
+ "card_ids": [
+  "compare-c11",
+  "compare-c12"
+ ],
+ "words": 85
+}

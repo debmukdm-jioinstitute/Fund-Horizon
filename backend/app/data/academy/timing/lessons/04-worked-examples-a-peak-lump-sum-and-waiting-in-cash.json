@@ -1,0 +1,70 @@
+{
+ "id": "timing-04",
+ "title": "Worked examples: a peak lump sum, and waiting in cash",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Compare peak vs perfect timing over 10 years, and day-one vs waiting a year.",
+  "Say why waiting has a cost too."
+ ],
+ "body_md": "Example 2: a lump sum at a peak. ₹10 lakh is invested just before a 40% fall. The market takes two years to recover to the starting level, then grows at an assumed 12% a year. Invested at the “perfect” time (no fall, 12% a year throughout): about ₹31.1 lakh after 10 years. Invested at the peak, then the fall and 2-year recovery: about ₹24.8 lakh after 10 years.\n\n|  | Value after 10 years |\n| --- | --- |\n| Invested at the \"perfect\" time (no fall, 12% a year throughout) | ≈ ₹31.1 lakh |\n| Invested at the peak, then the fall and 2-year recovery | ≈ ₹24.8 lakh |\n\nThe peak hurts, but with a long horizon the investment still grows substantially. Selling during the fall would have locked in the loss. Example 3: waiting in cash for “the right time”. An investor keeps ₹10 lakh in a deposit earning an assumed 6% for one year, waiting for a dip that doesn't come, then invests at an assumed 12% for nine years. Invested on day one: about ₹31.1 lakh after 10 years. Waited one year in cash: about ₹29.4 lakh after 10 years.\n\n|  | Value after 10 years |\n| --- | --- |\n| Invested on day one | ≈ ₹31.1 lakh |\n| Waited one year in cash | ≈ ₹29.4 lakh |\n\nWaiting has a cost too. It feels safer, but it isn't free, and the dip it waits for may arrive only after the market has risen further.",
+ "key_terms": [
+  "Peak lump sum",
+  "Cost of waiting",
+  "Recovery"
+ ],
+ "example": "Peak vs perfect over 10 years: about ₹24.8 lakh vs ₹31.1 lakh — the peak cost about ₹6.3 lakh, but the investment still more than doubled; selling in the fall would have locked in the loss.",
+ "say": [
+  "The peak hurts, but a long horizon still grows the money.",
+  "Waiting feels safer, but it isn't free."
+ ],
+ "never": [
+  "Investing at a peak means losing money over long horizons.",
+  "Cash is risk-free while waiting."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q15",
+   "q": "In the illustration, waiting a year in cash for a dip ended at ≈₹29.4 L versus ≈₹31.1 L invested on day one. The lesson is…",
+   "o": [
+    "Waiting always wins",
+    "Waiting has a cost too",
+    "Cash is risk-free so better",
+    "Timing is easy"
+   ],
+   "a": 1,
+   "why": "Waiting has a cost too. Missing time in the market can cost more than investing on a bad day."
+  },
+  {
+   "id": "timing-n06",
+   "q": "In Example 2, the peak investment after 10 years was about:",
+   "o": [
+    "₹10 lakh",
+    "₹31.1 lakh",
+    "₹0",
+    "₹24.8 lakh, vs about ₹31.1 lakh for perfect timing"
+   ],
+   "a": 3,
+   "why": "Invested at the peak, then the fall and 2-year recovery: about ₹24.8 lakh after 10 years."
+  },
+  {
+   "id": "timing-n07",
+   "q": "In Example 3, waiting one year in cash cost about:",
+   "o": [
+    "Nothing",
+    "₹10 lakh",
+    "₹1.7 lakh (₹31.1 lakh vs ₹29.4 lakh) over 10 years",
+    "₹6.3 lakh"
+   ],
+   "a": 2,
+   "why": "Invested on day one: about ₹31.1 lakh. Waited one year in cash: about ₹29.4 lakh."
+  }
+ ],
+ "card_ids": [
+  "timing-c7",
+  "timing-c8"
+ ],
+ "words": 230
+}

@@ -1,0 +1,70 @@
+{
+ "id": "overlap-10",
+ "title": "Consolidate carefully: check costs first",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Consolidate in the cheapest order: stop money, check loads, check tax, keep old units.",
+  "Record reasons and client approval for every keep/drop."
+ ],
+ "body_md": "Consolidate carefully: check costs first. Stop new money first. Pause SIPs in the funds being dropped and redirect them to the funds being kept. This costs nothing. Check exit loads on recent units before redeeming. Check tax. Every redemption may create capital gains. Spreading exits across financial years can help; refer the client to a CA. Old units can stay. Sometimes it is better to leave older units invested and simply stop adding to that fund. Record the reasons for every fund kept or dropped, and the client's approval.\n\n> **Investor takeaway:** The cheapest first step costs nothing: stop new money into funds being dropped.",
+ "key_terms": [
+  "Exit load",
+  "Capital gains",
+  "Old units"
+ ],
+ "example": "Rebalance would redeem units bought 6 months ago: check exit load and short-term gains first; use new money or wait where sensible; refer tax to a CA.",
+ "say": [
+  "Stop new money first — it costs nothing.",
+  "Spreading exits across financial years can help; refer tax to a CA."
+ ],
+ "never": [
+  "Redeem everything at once to consolidate fast.",
+  "Ignore exit loads on recent units."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q10",
+   "q": "What is the cheapest first step when consolidating?",
+   "o": [
+    "Redeem everything",
+    "Stop new money into funds being dropped and redirect it",
+    "Open a new folio",
+    "Buy more of each fund"
+   ],
+   "a": 1,
+   "why": "Stop new money into funds being dropped and redirect it. Costs nothing."
+  },
+  {
+   "id": "overlap-q19",
+   "q": "What is the cheapest first step when consolidating?",
+   "o": [
+    "Redeem everything at once",
+    "Stop new money into funds being dropped and redirect it",
+    "Open a new folio",
+    "Buy more of each fund"
+   ],
+   "a": 1,
+   "why": "Stop new money into funds being dropped and redirect it. Costs nothing."
+  },
+  {
+   "id": "overlap-n16",
+   "q": "What is the cheapest first step when consolidating?",
+   "o": [
+    "Redeem everything",
+    "Stop new money into funds being dropped and redirect it",
+    "Open a new folio",
+    "Buy more of each fund"
+   ],
+   "a": 1,
+   "why": "Stop new money first. Pause SIPs in the funds being dropped and redirect them to the funds being kept. This costs nothing."
+  }
+ ],
+ "card_ids": [
+  "overlap-c19",
+  "overlap-c20"
+ ],
+ "words": 104
+}

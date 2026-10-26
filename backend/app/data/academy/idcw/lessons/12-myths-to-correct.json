@@ -1,0 +1,70 @@
+{
+ "id": "idcw-12",
+ "title": "Myths to correct",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Correct seven IDCW myths with the reality behind each.",
+  "Explain why “monthly IDCW means fixed income” is false."
+ ],
+ "body_md": "“IDCW is extra income on top of my investment.” Reality: it is part of your own investment paid back; the NAV falls by the same amount. “A fund that pays IDCW is a better fund.” Reality: payouts say nothing about performance; growth and IDCW options hold the same portfolio. “IDCW is tax-free.” Reality: that was the old rule; since April 2020, IDCW is taxed at your slab rate, with TDS above the threshold. “Monthly IDCW means a fixed monthly income.” Reality: amount and frequency aren't guaranteed; payouts can be cut or skipped. “IDCW reinvestment is the same as growth.” Reality: same value before tax, but you pay tax on every reinvested payout. “Buy before the record date to earn the IDCW.” Reality: the NAV falls by the payout, and you pay tax on it — you end up worse off. “A high IDCW rate per unit means a high return.” Reality: the rate is per unit, not a percentage of your investment, and it reduces the NAV.\n\n| Myth | Reality |\n| --- | --- |\n| \"IDCW is extra income on top of my investment.\" | It is part of your own investment paid back; the NAV falls by the same amount. |\n| \"A fund that pays IDCW is a better fund.\" | Payouts say nothing about performance; growth and IDCW options hold the same portfolio. |\n| \"IDCW is tax-free.\" | That was the old rule. Since April 2020, IDCW is taxed at your slab rate, with TDS above the threshold. |\n| \"Monthly IDCW means a fixed monthly income.\" | Amount and frequency aren't guaranteed; payouts can be cut or skipped. |\n| \"IDCW reinvestment is the same as growth.\" | Same value before tax, but you pay tax on every reinvested payout. |\n| \"Buy before the record date to earn the IDCW.\" | The NAV falls by the payout, and you pay tax on it: you end up worse off. |\n| \"A high IDCW rate per unit means a high return.\" | The rate is per unit, not a percentage of your investment, and it reduces the NAV. |",
+ "key_terms": [
+  "IDCW myths",
+  "Record date",
+  "IDCW rate"
+ ],
+ "example": "Monthly IDCW cut this month? That does not by itself mean the fund is in trouble — payouts depend on surplus and trustee decisions.",
+ "say": [
+  "Payouts say nothing about performance.",
+  "Don't judge a fund by its payouts; judge it by total return, after tax."
+ ],
+ "never": [
+  "A fund paying IDCW is a better fund.",
+  "IDCW is tax-free."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-n17",
+   "q": "“A high IDCW rate per unit means a high return” is wrong because:",
+   "o": [
+    "The rate is per unit, not a percentage of your investment, and it reduces the NAV",
+    "Rates are set by SEBI",
+    "High rates mean high NAV",
+    "Rates compound monthly"
+   ],
+   "a": 0,
+   "why": "The rate is per unit, not a percentage of your investment, and it reduces the NAV."
+  },
+  {
+   "id": "idcw-n18",
+   "q": "“Monthly IDCW means fixed monthly income” is wrong because:",
+   "o": [
+    "Monthly funds never pay",
+    "Trustees must pay fixed amounts",
+    "IDCW is paid by the AMC's profits",
+    "Amount and frequency aren't guaranteed; payouts can be cut or skipped"
+   ],
+   "a": 3,
+   "why": "Amount and frequency aren't guaranteed; payouts can be cut or skipped."
+  },
+  {
+   "id": "idcw-n19",
+   "q": "Which myth does “IDCW is tax-free” reflect?",
+   "o": [
+    "The 2021 renaming",
+    "The SWP rule",
+    "The pre-2020 rule: since April 2020 IDCW is taxed at slab rate",
+    "The ELSS rule"
+   ],
+   "a": 2,
+   "why": "That was the old rule. Since April 2020, IDCW is taxed at your slab rate, with TDS above the threshold."
+  }
+ ],
+ "card_ids": [
+  "idcw-c23",
+  "idcw-c24"
+ ],
+ "words": 328
+}

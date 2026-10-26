@@ -1,0 +1,75 @@
+{
+ "id": "compare-11",
+ "title": "The J-curve, and rebalancing across products",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Explain the J-curve in plain words and when to explain it.",
+  "Say how to rebalance when AIF money can't be withdrawn."
+ ],
+ "body_md": "The J-curve, in plain words: in private equity and venture capital AIFs, early years often show low or negative returns because fees are paid and investments are made before any are sold. Returns, if they come, usually arrive later as companies are exited. Explain this before the client invests, not after the first statement. Rebalancing across products: check the total split across MF, PMS and AIF against the client's plan at every annual review. Remember that AIF money cannot usually be withdrawn to rebalance; adjust with new money or the liquid parts of the portfolio instead.\n\n> **Talk-track:** “Your AIF is in its second year, so returns are expected to look flat. We judge it over the full life of the fund, not one statement.”\n\n> **Investor takeaway:** Judge each product on the right yardstick and time frame.",
+ "key_terms": [
+  "J-curve",
+  "Rebalancing across products"
+ ],
+ "example": "AIF in year two showing flat returns: explain the J-curve was expected; judge over the full life; rebalance using new money, not by withdrawing AIF money.",
+ "say": [
+  "Explain the J-curve before the client invests, not after the first statement.",
+  "Adjust with new money or liquid parts when AIF money can't move."
+ ],
+ "never": [
+  "Explain the J-curve only after the first bad statement.",
+  "Withdraw AIF money to rebalance."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Flat in year two is expected",
+   "text": "Your AIF is in its second year, so returns are expected to look flat. We judge it over the full life of the fund, not one statement."
+  }
+ ],
+ "check": [
+  {
+   "id": "compare-n13",
+   "q": "What is the J-curve?",
+   "o": [
+    "Early years of a PE/VC fund often show low or negative returns before investments are exited",
+    "Mutual fund NAV growth",
+    "Interest-rate movements",
+    "SIP returns"
+   ],
+   "a": 0,
+   "why": "Early years of a PE/VC fund often show low or negative returns before investments are exited."
+  },
+  {
+   "id": "compare-n14",
+   "q": "How do you rebalance when AIF money can't be withdrawn?",
+   "o": [
+    "Force an AIF withdrawal",
+    "Stop all SIPs",
+    "Ignore the split",
+    "Adjust with new money or the liquid parts of the portfolio"
+   ],
+   "a": 3,
+   "why": "AIF money cannot usually be withdrawn to rebalance; adjust with new money or the liquid parts of the portfolio instead."
+  },
+  {
+   "id": "compare-n15",
+   "q": "When should the J-curve be explained?",
+   "o": [
+    "After the first bad statement",
+    "Never",
+    "Before the client invests, not after the first statement",
+    "Only at exit"
+   ],
+   "a": 2,
+   "why": "Explain this before the client invests, not after the first statement."
+  }
+ ],
+ "card_ids": [
+  "compare-c21",
+  "compare-c22"
+ ],
+ "words": 136
+}

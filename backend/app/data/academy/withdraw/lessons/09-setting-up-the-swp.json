@@ -1,0 +1,69 @@
+{
+ "id": "withdraw-09",
+ "title": "Setting up the SWP",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Set up an SWP: amount, source fund, date, inflation, loads, tax.",
+  "Say which fund should feed the SWP and why."
+ ],
+ "body_md": "Setting up the SWP. Amount: the gap between expenses and other income, monthly. Source fund: usually the liquid or short-duration fund in Bucket 1, not an equity fund. Date: a few days before the client's main bills, after any pension credit. Inflation: plan a yearly increase (for example 5–6%), reviewed each year rather than set and forgotten. Exit loads: use units past their exit-load period where possible. Tax: only the gains part of each withdrawal is taxed; treatment depends on fund type and holding period. Refer the client to a CA.\n\n> **Investor takeaway:** Source the SWP from Bucket 1, not from an equity fund.",
+ "key_terms": [
+  "SWP set-up",
+  "Source fund"
+ ],
+ "example": "SWP date: a few days before the main bills, after the pension credit lands — so bills are covered without a gap.",
+ "say": [
+  "Source fund: usually the liquid or short-duration fund in Bucket 1.",
+  "Plan a yearly inflation increase, reviewed each year."
+ ],
+ "never": [
+  "Run the SWP from a small-cap fund.",
+  "Set the inflation increase and forget it."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q11",
+   "q": "Which fund should usually feed the SWP?",
+   "o": [
+    "Small-cap fund",
+    "Liquid or short-duration fund",
+    "Thematic fund",
+    "Gold ETF"
+   ],
+   "a": 1,
+   "why": "Liquid or short-duration fund. Avoid selling equity every month."
+  },
+  {
+   "id": "withdraw-q25",
+   "q": "A client runs his SWP directly from a small-cap fund. What do you change?",
+   "o": [
+    "Nothing — SWPs from equity are ideal",
+    "Move the SWP source to a liquid or short-duration fund; refill from equity once a year on a plan",
+    "Increase the SWP amount",
+    "Switch to a thematic fund"
+   ],
+   "a": 1,
+   "why": "Move the SWP source to a liquid or short-duration fund; refill from equity once a year on a plan."
+  },
+  {
+   "id": "withdraw-n13",
+   "q": "When should the SWP date fall?",
+   "o": [
+    "A few days before the client's main bills, after any pension credit",
+    "On the 1st regardless",
+    "After the bills are due",
+    "At month-end always"
+   ],
+   "a": 0,
+   "why": "Date: a few days before the client's main bills, after any pension credit."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c17",
+  "withdraw-c18"
+ ],
+ "words": 104
+}

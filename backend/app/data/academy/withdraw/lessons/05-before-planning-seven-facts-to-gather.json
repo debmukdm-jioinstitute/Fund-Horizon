@@ -1,0 +1,72 @@
+{
+ "id": "withdraw-05",
+ "title": "Before planning: seven facts to gather",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Gather the seven facts and say why each matters.",
+  "Ask the seven questions in plain words."
+ ],
+ "body_md": "A withdrawal plan starts from the client's spending, not from the corpus.\n\n| Fact | Question to ask | Why it matters |\n| --- | --- | --- |\n| Monthly need | “What do you spend each month, essentials vs extras?” | Sets the withdrawal amount; essentials need the most secure source |\n| Other income | “Any pension, rent, annuity, interest or part-time income?” | Reduces what the portfolio must provide |\n| Big expenses ahead | “Any planned costs: travel, a child's wedding, a car, home repairs?” | Plan these separately so they don't derail the SWP |\n| Health and insurance | “Do you have health cover for yourself and your spouse?” | Medical costs are the biggest threat to a retirement corpus |\n| Horizon | “How many years should this money last, including for your spouse?” | Longer horizons need a lower withdrawal rate |\n| Whole corpus | “What do you hold across EPF, PPF, FDs, SCSS, funds and property?” | Shows the true withdrawal rate and asset mix |\n| Comfort with risk | “How would you feel if your portfolio fell 20% in your first year?” | Sets the size of the safety buffer |",
+ "key_terms": [
+  "Monthly need",
+  "Other income",
+  "Horizon",
+  "Whole corpus",
+  "Comfort with risk"
+ ],
+ "example": "Ask: “What do you spend each month, essentials vs extras?” “Any pension, rent, annuity, interest or part-time income?” “How many years should this money last, including for your spouse?”",
+ "say": [
+  "A withdrawal plan starts from spending, not from the corpus.",
+  "Essentials need the most secure source."
+ ],
+ "never": [
+  "Start from the corpus size.",
+  "Ignore health cover and other income."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q14",
+   "q": "Which is the biggest threat to many retirement corpuses?",
+   "o": [
+    "Bank holidays",
+    "Medical costs without health cover",
+    "NAV rounding",
+    "KYC updates"
+   ],
+   "a": 1,
+   "why": "Medical costs without health cover. Check health cover."
+  },
+  {
+   "id": "withdraw-n05",
+   "q": "What does a withdrawal plan start from?",
+   "o": [
+    "The client's spending, not the corpus",
+    "The corpus size",
+    "Last year's returns",
+    "The fund's NAV"
+   ],
+   "a": 0,
+   "why": "A withdrawal plan starts from the client's spending, not from the corpus."
+  },
+  {
+   "id": "withdraw-n06",
+   "q": "Why ask about health and insurance?",
+   "o": [
+    "It is a SEBI formality",
+    "It changes the NAV",
+    "It sets the exit load",
+    "Medical costs are the biggest threat to a retirement corpus"
+   ],
+   "a": 3,
+   "why": "Health and insurance: medical costs are the biggest threat to a retirement corpus."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c9",
+  "withdraw-c10"
+ ],
+ "words": 166
+}

@@ -1,0 +1,69 @@
+{
+ "id": "rebal-10",
+ "title": "Rebalancing vs changing the target",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Separate rebalancing from target changes on trigger, reason and frequency.",
+  "Name the never-reasons for changing a target."
+ ],
+ "body_md": "Rebalancing returns the portfolio to the same target. Changing the target is a different decision, and it needs its own reason and the client's agreement.\n\n|  | Rebalancing | Changing the target |\n| --- | --- | --- |\n| Triggered by | Market movement (drift) | Life or goal change |\n| Examples | 60/40 drifted to 66/34; bring it back | Goal now 3 years away; move to 30/70 (glide path) |\n| How often | Yearly check, or when a band is breached | Only when the client's situation changes |\n| Valid reasons | Drift beyond the band | Goal date nearer, life event, new risk profile |\n| Never because of | — | A market view, news, or last year's returns |",
+ "key_terms": [
+  "Rebalancing vs target change",
+  "Glide path"
+ ],
+ "example": "Goal now 3 years away; move to 30/70 (glide path) — that is a target change, not a rebalance, and needs the client's agreement.",
+ "say": [
+  "Rebalancing: triggered by market movement (drift).",
+  "Target change: never because of a market view, news, or last year's returns."
+ ],
+ "never": [
+  "Change the target because markets look expensive.",
+  "Rebalance to 60/40 when the goal is 2 years away."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q11",
+   "q": "A goal is now 2 years away. The client asks to “rebalance to 60/40”. You…",
+   "o": [
+    "Rebalance to 60/40",
+    "Explain a new target (glide path) is needed",
+    "Ignore it",
+    "Move to small-cap"
+   ],
+   "a": 1,
+   "why": "Explain a new target (glide path) is needed. That is a target change, not a rebalance."
+  },
+  {
+   "id": "rebal-q12",
+   "q": "Which is a valid reason to change the target?",
+   "o": [
+    "Market news",
+    "Last year’s returns",
+    "A life event",
+    "A friend’s tip"
+   ],
+   "a": 2,
+   "why": "A life event. Goal, life or risk-profile changes."
+  },
+  {
+   "id": "rebal-q20",
+   "q": "Is a market view a good reason to change the target mix?",
+   "o": [
+    "Yes, if the view is strong",
+    "No — only goal, life or risk-profile changes justify it",
+    "Yes, after a rally",
+    "Only for equity targets"
+   ],
+   "a": 1,
+   "why": "Only goal, life or risk-profile changes justify it."
+  }
+ ],
+ "card_ids": [
+  "rebal-c19",
+  "rebal-c20"
+ ],
+ "words": 98
+}

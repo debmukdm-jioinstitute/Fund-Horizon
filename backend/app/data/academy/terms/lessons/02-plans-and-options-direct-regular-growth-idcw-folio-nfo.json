@@ -1,0 +1,73 @@
+{
+ "id": "terms-02",
+ "title": "Plans and options: direct, regular, growth, IDCW, folio, NFO",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain direct vs regular plans and growth vs IDCW options without jargon.",
+  "Say why a ₹10 NFO is not cheaper than a ₹200 fund."
+ ],
+ "body_md": "Every scheme comes in a direct plan (bought straight from the AMC, no distributor commission) and a regular plan (bought through a distributor, commission included in the expense ratio). Separately, the growth option reinvests profits so they show up as a rising NAV, while the IDCW option pays out of the investor's own capital and gains, so the NAV falls by the payout.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Direct plan | Bought straight from the AMC; no distributor commission, so a lower expense ratio | Same portfolio, slightly higher NAV growth over time |\n| Regular plan | Bought through a distributor; includes distributor commission in the expense ratio | Client pays for advice and service through the expense ratio |\n| Growth option | Profits stay invested and show up as a rising NAV | Best for long-term wealth building |\n| IDCW option | Income Distribution cum Capital Withdrawal (old name: dividend). Payouts come out of the investor's own capital and gains; NAV falls by the payout | ₹1 per unit paid → NAV drops by ₹1 |\n| Folio number | Your account number with an AMC; all your investments in that AMC can sit under one folio | Quote it for any service request |\n| NFO (New Fund Offer) | The launch period of a new scheme, usually at ₹10 per unit | A ₹10 NFO is not \"cheaper\" than an existing fund at ₹200 |",
+ "key_terms": [
+  "Direct plan",
+  "Regular plan",
+  "Growth option",
+  "IDCW option",
+  "Folio number",
+  "NFO (New Fund Offer)"
+ ],
+ "example": "A fund pays IDCW of ₹1 per unit: the NAV drops by ₹1. The payout is not extra income; it came out of the fund.",
+ "say": [
+  "The growth and IDCW options of one scheme hold the same portfolio; only what happens to profits differs.",
+  "A regular plan costs more because it includes commission for guidance and service."
+ ],
+ "never": [
+  "IDCW is a bonus on top of your returns.",
+  "This NFO is cheap because its NAV is only ₹10."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q5",
+   "q": "When an IDCW of ₹1 per unit is paid, the NAV:",
+   "o": [
+    "Rises by ₹1",
+    "Stays the same",
+    "Falls by ₹1",
+    "Doubles"
+   ],
+   "a": 2,
+   "why": "Falls by ₹1. The payout comes out of the fund's assets."
+  },
+  {
+   "id": "terms-q18",
+   "q": "Direct and regular plans of a scheme differ in:",
+   "o": [
+    "The portfolio they hold",
+    "The fund manager",
+    "Only the expense ratio, which includes distributor commission in the regular plan",
+    "The benchmark they follow"
+   ],
+   "a": 2,
+   "why": "The difference is the expense ratio, which includes distributor commission in the regular plan."
+  },
+  {
+   "id": "terms-n03",
+   "q": "What does “IDCW option” mean in plain language?",
+   "o": [
+    "Bought straight from the AMC; no distributor commission, so a lower expense ratio",
+    "Bought through a distributor; includes distributor commission in the expense ratio",
+    "Income Distribution cum Capital Withdrawal (old name: dividend). Payouts come out of the investor's own capital and gains; NAV falls by the payout",
+    "Profits stay invested and show up as a rising NAV"
+   ],
+   "a": 2,
+   "why": "IDCW option: Income Distribution cum Capital Withdrawal (old name: dividend). Payouts come out of the investor's own capital and gains; NAV falls by the payout Example: ₹1 per unit paid → NAV drops by ₹1"
+  }
+ ],
+ "card_ids": [
+  "terms-c3",
+  "terms-c4"
+ ],
+ "words": 217
+}

@@ -1,0 +1,70 @@
+{
+ "id": "withdraw-16",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to any withdrawal plan.",
+  "Pass the trainer's final check: rate, inflation, sequence, gaps, buckets, SWP, reviews, behaviour and compliance."
+ ],
+ "body_md": "Do: base the plan on actual expenses, other income and the whole corpus. Show how long the money may last as an illustration, with assumptions. Call an SWP a withdrawal plan, not guaranteed income. Explain that SWP withdrawals are redemptions that may be taxed; refer to a CA. Recommend health cover and nominee checks. Record the plan, buckets and review date.\n\n| Do | Don't |\n| --- | --- |\n| Base the plan on actual expenses, other income and the whole corpus | Set an SWP amount without knowing the client's spending |\n| Show how long the money may last as an illustration, with assumptions | Promise the corpus will last a set number of years |\n| Call an SWP a withdrawal plan, not guaranteed income | Present an SWP as “monthly income” or “pension” without caveats |\n| Explain that SWP withdrawals are redemptions that may be taxed; refer to a CA | Say SWP income is tax-free |\n| Recommend health cover and nominee checks | Ignore risks outside the portfolio |\n| Record the plan, buckets and review date | Change withdrawals without the client's documented agreement |\n\n> **Investor takeaway:** Standard disclaimer: mutual fund investments are subject to market risks; read all scheme-related documents carefully. Past performance does not guarantee future returns. Final check for trainers: a new joiner passes this module when they can explain withdrawal rate, inflation and sequence-of-returns risk in plain words; estimate how long a corpus may last at different withdrawal rates (illustratively); gather the facts needed to plan a client's withdrawals; set up a bucket structure and an SWP; review and adjust withdrawals each year; and handle overspending and panic in falls, within compliance. All figures in this module are illustrative calculations with stated assumptions, not forecasts.",
+ "key_terms": [
+  "Compliance",
+  "SWP",
+  "Health cover"
+ ],
+ "example": "A trainee bases the plan on expenses, income and the whole corpus, shows illustrations with assumptions, and records the plan, buckets and review date.",
+ "say": [
+  "Base the plan on actual expenses, other income and the whole corpus.",
+  "Call an SWP a withdrawal plan, not guaranteed income."
+ ],
+ "never": [
+  "Set an SWP amount without knowing the client's spending.",
+  "Say SWP income is tax-free."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q15",
+   "q": "Which statement is compliant?",
+   "o": [
+    "“Your ₹1 Cr will last 41 years.”",
+    "“Illustratively, at 9% assumed and 6% inflation, ₹4 L a year could last about 41 years; not guaranteed.”",
+    "“SWP is tax-free.”",
+    "“SWP is a guaranteed pension.”"
+   ],
+   "a": 1,
+   "why": "“Illustratively, at 9% assumed and 6% inflation, ₹4 L a year could last about 41 years; not guaranteed.”. Show assumptions; no guarantees."
+  },
+  {
+   "id": "withdraw-q24",
+   "q": "A retired client wants to give ₹15 L to her son. How do you handle it?",
+   "o": [
+    "Refuse outright",
+    "Show the effect on her withdrawal rate and plan; discuss options; it is her decision, documented",
+    "Ignore the effect on the plan",
+    "Fund it from the monthly SWP"
+   ],
+   "a": 1,
+   "why": "Show the effect on her withdrawal rate and plan; discuss options; it is her decision, documented."
+  },
+  {
+   "id": "withdraw-n24",
+   "q": "Which of these is compliant?",
+   "o": [
+    "“Your ₹1 Cr will last 41 years.”",
+    "“Illustratively, at 9% assumed and 6% inflation, ₹4 L a year could last about 41 years; not guaranteed.”",
+    "“SWP is tax-free.”",
+    "“SWP is a guaranteed pension.”"
+   ],
+   "a": 1,
+   "why": "“Illustratively, at 9% assumed and 6% inflation, ₹4 L a year could last about 41 years; not guaranteed.” Show assumptions; no guarantees."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c31",
+  "withdraw-c32"
+ ],
+ "words": 273
+}

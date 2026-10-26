@@ -1,0 +1,79 @@
+{
+ "id": "bonds-01",
+ "title": "A bond is a loan: issuer, face value, coupon, maturity, price, yield",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain a bond as a loan with interest and a maturity date.",
+  "Work out current yield and say what YTM and accrued interest mean."
+ ],
+ "body_md": "A bond is a loan. The investor lends money to a government or company; the borrower pays interest and returns the money on a fixed date. The issuer is the borrower. Face value is the amount repaid at maturity. Coupon is the fixed interest paid on face value. Maturity is the date the face value is repaid. Market price is what the bond trades at today and can be above or below face value. Current yield is coupon ÷ market price. YTM is the total yearly return if bought today and held to maturity. Accrued interest is interest earned since the last coupon date, paid by the buyer to the seller.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Issuer | The borrower | Government of India, a state, a PSU, a company |\n| Face value | The amount repaid at maturity | ₹1,000 per bond |\n| Coupon | Fixed interest paid on face value | 7% coupon = ₹70 a year |\n| Maturity | The date the face value is repaid | 5 years from issue |\n| Market price | What the bond trades at today; can be above or below face value | ₹960 or ₹1,042 |\n| Current yield | Coupon ÷ market price | ₹70 ÷ ₹960 ≈ 7.3% |\n| YTM (Yield to Maturity) | Total yearly return if bought today and held to maturity, counting coupons and the gain or loss to face value | The fairest single number for comparing bonds |\n| Accrued interest | Interest earned since the last coupon date; the buyer pays it to the seller | Explains why the price paid looks higher than quoted |\n\n> **Talk-track:** “A bond is a loan you give. You earn interest, and you get your money back at the end, if the borrower can pay. In between, the price can move with interest rates.”\n\n> **Investor takeaway:** Two questions for any bond: who am I lending to, and for how long?",
+ "key_terms": [
+  "Issuer",
+  "Face value",
+  "Coupon",
+  "Maturity",
+  "YTM (Yield to Maturity)",
+  "Accrued interest"
+ ],
+ "example": "₹1,000 bond, 7% coupon: ₹70 a year. At a market price of ₹960, current yield is ₹70 ÷ ₹960 ≈ 7.3%.",
+ "say": [
+  "A bond is a loan you give; the price can move in between.",
+  "YTM is the fairest single number for comparing bonds."
+ ],
+ "never": [
+  "A bond's coupon is its market price.",
+  "YTM is a promised return."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "A bond is a loan you give",
+   "text": "A bond is a loan you give. You earn interest, and you get your money back at the end, if the borrower can pay. In between, the price can move with interest rates."
+  }
+ ],
+ "check": [
+  {
+   "id": "bonds-q2",
+   "q": "A ₹1,000 bond with a 7% coupon pays each year:",
+   "o": [
+    "₹7",
+    "₹70",
+    "₹700",
+    "₹1,070"
+   ],
+   "a": 1,
+   "why": "₹70. Coupon is interest on face value."
+  },
+  {
+   "id": "bonds-n01",
+   "q": "What does “Coupon” mean in plain language?",
+   "o": [
+    "Fixed interest paid on face value",
+    "The borrower",
+    "The amount repaid at maturity",
+    "The date the face value is repaid"
+   ],
+   "a": 0,
+   "why": "Coupon: Fixed interest paid on face value Example: 7% coupon = ₹70 a year"
+  },
+  {
+   "id": "bonds-n02",
+   "q": "What does “YTM (Yield to Maturity)” mean in plain language?",
+   "o": [
+    "The borrower",
+    "The amount repaid at maturity",
+    "Fixed interest paid on face value",
+    "Total yearly return if bought today and held to maturity, counting coupons and the gain or loss to face value"
+   ],
+   "a": 3,
+   "why": "YTM (Yield to Maturity): Total yearly return if bought today and held to maturity, counting coupons and the gain or loss to face value Example: The fairest single number for comparing bonds"
+  }
+ ],
+ "card_ids": [
+  "bonds-c1",
+  "bonds-c2"
+ ],
+ "words": 297
+}

@@ -1,0 +1,70 @@
+{
+ "id": "rebal-16",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to any rebalance.",
+  "Pass the trainer's final check: drift, methods, cheapest tools, target changes, behaviour and compliance."
+ ],
+ "body_md": "Do: agree the target mix and rebalancing rule in writing at the start. Explain that rebalancing controls risk and doesn't guarantee returns. Use new money first; check exit loads and possible tax; refer tax to a CA. Get the client's approval for each rebalance and record it. Keep rebalancing and target changes separate, each with its reason.\n\n| Do | Don't |\n| --- | --- |\n| Agree the target mix and rebalancing rule in writing at the start | Rebalance without a documented target |\n| Explain that rebalancing controls risk and doesn't guarantee returns | Present rebalancing as a way to beat the market |\n| Use new money first; check exit loads and possible tax; refer tax to a CA | Give tax advice or ignore costs |\n| Get the client's approval for each rebalance and record it | Switch funds without consent, or to earn commission |\n| Keep rebalancing and target changes separate, each with its reason | Change the target because of a market view or news |\n\n> **Investor takeaway:** Standard disclaimer: mutual fund investments are subject to market risks; read all scheme-related documents carefully. Past performance does not guarantee future returns. Final check for trainers: a new joiner passes this module when they can explain why portfolios drift and what rebalancing does and doesn't achieve; measure drift against the client's target mix; choose calendar, band or a mix of both; rebalance in the cheapest way using new money first and checking exit loads and tax; tell rebalancing apart from changing the target mix; and handle reluctance to sell winners and buy losers, within compliance.",
+ "key_terms": [
+  "Compliance",
+  "Client approval",
+  "Record"
+ ],
+ "example": "A trainee measures drift in points, picks calendar + band, uses new money first, checks loads and tax, and records approval — without promising returns.",
+ "say": [
+  "Agree the target mix and rebalancing rule in writing at the start.",
+  "Get the client's approval for each rebalance and record it."
+ ],
+ "never": [
+  "Rebalance without a documented target.",
+  "Switch funds without consent, or to earn commission."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-n20",
+   "q": "Which of these is compliant?",
+   "o": [
+    "“Rebalancing guarantees higher returns.”",
+    "“Rebalancing keeps your risk at the level you chose; it doesn't guarantee returns.”",
+    "“Switching is always tax-free.”",
+    "“We'll rebalance because markets look expensive.”"
+   ],
+   "a": 1,
+   "why": "“Rebalancing keeps your risk at the level you chose; it doesn't guarantee returns.” Explain the purpose honestly."
+  },
+  {
+   "id": "rebal-n21",
+   "q": "A trainee passes this module when they can:",
+   "o": [
+    "Explain drift, measure it, choose a method, use the cheapest tools, separate target changes, and handle pushback within compliance",
+    "Promise higher returns",
+    "Rebalance without approval",
+    "Change targets on news"
+   ],
+   "a": 0,
+   "why": "Final check: explain why portfolios drift and what rebalancing does and doesn't achieve; measure drift; choose a method; rebalance in the cheapest way; tell rebalancing apart from changing the target; handle reluctance, within compliance."
+  },
+  {
+   "id": "rebal-n22",
+   "q": "What must appear on all investor material for this module?",
+   "o": [
+    "A guaranteed return figure",
+    "The fund's last month return only",
+    "A promise of future performance",
+    "Mutual fund investments are subject to market risks. Read all scheme-related documents carefully."
+   ],
+   "a": 3,
+   "why": "Standard disclaimer: mutual fund investments are subject to market risks; read all scheme-related documents carefully."
+  }
+ ],
+ "card_ids": [
+  "rebal-c31",
+  "rebal-c32"
+ ],
+ "words": 250
+}

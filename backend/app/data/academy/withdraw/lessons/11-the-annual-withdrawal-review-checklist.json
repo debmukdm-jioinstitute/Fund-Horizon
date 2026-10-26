@@ -1,0 +1,68 @@
+{
+ "id": "withdraw-11",
+ "title": "The annual withdrawal review checklist",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the seven-point annual withdrawal review.",
+  "Say why it is ideally in the same month every year."
+ ],
+ "body_md": "A withdrawal plan needs a yearly check-up, ideally in the same month every year. Annual withdrawal review checklist: did actual spending match the plan? Update the monthly need. Recalculate the withdrawal rate on the current corpus. Refill Bucket 1 for the next 1–2 years; decide where to take it from. Rebalance the growth and stability buckets to their targets (Module 15). Increase the SWP for inflation only if the corpus can support it. Check health cover, nominees and the will. Record changes and share a one-page summary with the client.\n\n> **Investor takeaway:** Record changes and share a one-page summary with the client.",
+ "key_terms": [
+  "Annual review checklist"
+ ],
+ "example": "Review in the same month every year: spending vs plan, rate on current corpus, Bucket 1 refill, rebalance (Module 15), inflation increase only if affordable, health cover, nominees, will.",
+ "say": [
+  "Recalculate the withdrawal rate on the current corpus.",
+  "Increase the SWP for inflation only if the corpus can support it."
+ ],
+ "never": [
+  "Increase the SWP every year regardless.",
+  "Skip the health-cover and nominee checks."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-n15",
+   "q": "What does the annual review recalculate?",
+   "o": [
+    "The fund's NAV",
+    "The exit load",
+    "The withdrawal rate on the current corpus",
+    "The AMC's AUM"
+   ],
+   "a": 2,
+   "why": "Recalculate the withdrawal rate on the current corpus."
+  },
+  {
+   "id": "withdraw-n16",
+   "q": "What should the review share with the client?",
+   "o": [
+    "The fund's factsheet",
+    "A one-page summary of changes",
+    "A market forecast",
+    "A new SIP"
+   ],
+   "a": 1,
+   "why": "Record changes and share a one-page summary with the client."
+  },
+  {
+   "id": "withdraw-n17",
+   "q": "The review also checks:",
+   "o": [
+    "Health cover, nominees and the will",
+    "Only the NAV",
+    "Only the SIP date",
+    "Only the exit load"
+   ],
+   "a": 0,
+   "why": "Check health cover, nominees and the will."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c21",
+  "withdraw-c22"
+ ],
+ "words": 102
+}

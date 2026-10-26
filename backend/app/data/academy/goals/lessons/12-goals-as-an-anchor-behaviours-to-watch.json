@@ -1,0 +1,77 @@
+{
+ "id": "goals-12",
+ "title": "Goals as an anchor: behaviours to watch",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Explain why goals calm investors, including mental accounting used well.",
+  "Name five behaviours and the response to each."
+ ],
+ "body_md": "Why goals calm investors: a goal gives a time frame — a 20% fall matters much less when the money isn't needed for 12 years. A goal gives a yardstick — “Am I on track for my daughter's college?” replaces “Did I beat my neighbour's fund?” Mental accounting, used well: people treat labelled money differently. A folio named “Riya's college” is less likely to be raided for a phone upgrade than an unlabelled balance. Behaviours to watch: goal drift (using long-term goal money for short-term wants — keep goal folios labelled; agree in writing what each is for); present bias (delaying the start — show the cost of a 5-year delay in rupees); over-optimism (assuming 15–20% returns to make the SIP look small — use conservative, clearly labelled assumptions); panic near a goal (holding too much equity as the date approaches, then panicking in a fall — follow the glide path in good time); underestimating inflation (planning with today's cost — always show the future cost).\n\n| Behaviour | What it looks like | How to respond |\n| --- | --- | --- |\n| Goal drift | Using long-term goal money for short-term wants | Keep goal folios labelled; agree in writing what each is for |\n| Present bias | Delaying the start (\"I'll begin next year\") | Show the cost of a 5-year delay in rupees |\n| Over-optimism | Assuming 15–20% returns to make the SIP look small | Use conservative, clearly labelled assumptions |\n| Panic near a goal | Holding too much equity as the date approaches, then panicking in a fall | Follow the glide path in good time |\n| Underestimating inflation | Planning with today's cost | Always show the future cost |\n\n> **Talk-track:** “The market will fall many times before your daughter starts college. Our plan already expects that. What matters is that we stay on track for the date.”",
+ "key_terms": [
+  "Mental accounting",
+  "Goal drift",
+  "Present bias",
+  "Over-optimism"
+ ],
+ "example": "“I'll begin next year”: show the cost of a 5-year delay in rupees — education SIP ₹13,300 becomes ₹28,300.",
+ "say": [
+  "Judge investments by whether goals are on track, not by daily moves.",
+  "A goal gives a time frame and a yardstick."
+ ],
+ "never": [
+  "Judge funds by daily market moves.",
+  "Delaying the start costs nothing."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "The plan already expects falls",
+   "text": "The market will fall many times before your daughter starts college. Our plan already expects that. What matters is that we stay on track for the date."
+  }
+ ],
+ "check": [
+  {
+   "id": "goals-q25",
+   "q": "Markets fell 15%. A client wants to stop the education SIP for a goal 11 years away. How do you respond?",
+   "o": [
+    "Agree — stop until markets settle",
+    "Use the goal’s time frame: SIPs buy more units in falls; the plan already expects falls; stay on track",
+    "Move the SIP to a sectoral fund",
+    "Double the SIP immediately"
+   ],
+   "a": 1,
+   "why": "Uses the goal's time frame; SIP buys more units in falls; the plan already expects falls; stays on track."
+  },
+  {
+   "id": "goals-n17",
+   "q": "Present bias looks like:",
+   "o": [
+    "Delaying the start (“I'll begin next year”)",
+    "Chasing last year's winner",
+    "Selling winners early",
+    "Checking daily"
+   ],
+   "a": 0,
+   "why": "Present bias: delaying the start (“I'll begin next year”). Response: show the cost of a 5-year delay in rupees."
+  },
+  {
+   "id": "goals-n18",
+   "q": "Mental accounting, used well, means:",
+   "o": [
+    "Labelling lowers tax",
+    "Labelling raises returns",
+    "SEBI requires labels",
+    "Labelled money is less likely to be spent or panic-sold"
+   ],
+   "a": 3,
+   "why": "Mental accounting, used well: people treat labelled money differently. A folio named “Riya's college” is less likely to be raided."
+  }
+ ],
+ "card_ids": [
+  "goals-c23",
+  "goals-c24"
+ ],
+ "words": 290
+}

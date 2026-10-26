@@ -1,0 +1,78 @@
+{
+ "id": "bonds-10",
+ "title": "Checklist before recommending, and debt-fund tax",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Run the eight-point debt-fund checklist before recommending.",
+  "State debt-fund tax from 1 April 2023 correctly, and refer specifics to a CA."
+ ],
+ "body_md": "Checklist before recommending a debt fund: goal date → choose the category whose duration fits it. YTM (before expenses) → a rough guide to future return if rates don't move. Modified duration → how much it can move if rates move 1%. Credit profile → % in sovereign/AAA vs AA and below; check the PRC cell. Concentration → the top issuers' share of the portfolio. Expense ratio → in debt, cost is a big part of the return gap between funds. Exit load and AUM → small funds can face more liquidity pressure. Riskometer → must suit the client's risk profile. Tax (confirm with a CA): interest from FDs and bond coupons is taxed every year at the investor's slab rate. For debt mutual funds bought on or after 1 April 2023 (funds with 35% or less in equity), gains are taxed at the slab rate, with no indexation benefit. In a debt fund, tax arises only when the investor redeems, which can help with deferral and with SWPs. Rules change with Budgets; always refer specific tax questions to the client's CA.\n\n- Goal date → category whose duration fits it\n- YTM before expenses → rough guide, if rates don't move\n- Modified duration → swing for a 1% rate move\n- Credit profile → sovereign/AAA vs AA and below; PRC cell\n- Concentration → top issuers' share\n- Expense ratio → a big part of the return gap in debt\n- Exit load and AUM → small funds face more liquidity pressure\n- Riskometer → must suit the client's risk profile\n\n> **Talk-track:** “Here are the three numbers I check for any debt fund: its yield, its duration and its credit quality. Let me show you each in rupees.”\n\n> **Investor takeaway:** In debt, small differences in cost and credit quality matter more than last year's return.",
+ "key_terms": [
+  "YTM (Yield to Maturity)",
+  "Modified duration",
+  "Credit profile",
+  "Expense ratio",
+  "Riskometer"
+ ],
+ "example": "In debt, a 0.5% cost difference matters more than in equity, because the whole return is smaller — check TER before recommending.",
+ "say": [
+  "In debt, cost is a big part of the return gap between funds.",
+  "Tax arises in a debt fund only when the investor redeems."
+ ],
+ "never": [
+  "Recommend a debt fund on last year's return alone.",
+  "Quote tax rules from memory without checking current rules."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Three numbers I check",
+   "text": "Here are the three numbers I check for any debt fund: its yield, its duration and its credit quality. Let me show you each in rupees."
+  }
+ ],
+ "check": [
+  {
+   "id": "bonds-q14",
+   "q": "For debt funds bought from 1 April 2023, gains are generally taxed:",
+   "o": [
+    "At 0%",
+    "At slab rate, without indexation",
+    "Only on maturity of each bond",
+    "At a flat 1%"
+   ],
+   "a": 1,
+   "why": "At slab rate, without indexation. Confirm specifics with the client's CA."
+  },
+  {
+   "id": "bonds-n14",
+   "q": "For debt funds bought on or after 1 April 2023, gains are generally taxed:",
+   "o": [
+    "At 0%",
+    "Only on maturity of each bond",
+    "At a flat 1%",
+    "At the slab rate, without indexation"
+   ],
+   "a": 3,
+   "why": "Gains on debt funds bought on or after 1 April 2023 are taxed at slab rate with no indexation. Confirm with a CA."
+  },
+  {
+   "id": "bonds-n15",
+   "q": "Which checklist item is about how much a fund can move if rates move 1%?",
+   "o": [
+    "YTM",
+    "AUM trend",
+    "Modified duration",
+    "Riskometer"
+   ],
+   "a": 2,
+   "why": "Modified duration → how much it can move if rates move 1%."
+  }
+ ],
+ "card_ids": [
+  "bonds-c19",
+  "bonds-c20"
+ ],
+ "words": 299
+}

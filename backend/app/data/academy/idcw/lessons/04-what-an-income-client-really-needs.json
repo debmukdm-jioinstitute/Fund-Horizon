@@ -1,0 +1,70 @@
+{
+ "id": "idcw-04",
+ "title": "What an “income” client really needs",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Find out which of three things an “income” client really wants before recommending an option.",
+  "Separate regular cash, the feeling of earning, and habit."
+ ],
+ "body_md": "Clients who ask for IDCW usually want one of three things: regular cash, a feeling of earning, or habit (“my father always took dividends”). Find out which before recommending an option. Regular cash is a genuine need: the client needs a predictable amount on a predictable date. The feeling of earning is psychological: a payout feels like income even though it is the client's own money coming back. Habit is the hardest: a family tradition of taking “dividends” that survives the 2021 renaming and the 2020 tax change. Each want points to a different answer — and only the first is well served by a payout at all.\n\n- Regular cash → needs a predictable amount on a predictable date\n- A feeling of earning → a payout feels like income, though it is own money back\n- Habit → “my father always took dividends”; explain what changed in 2020–2021",
+ "key_terms": [
+  "Income need",
+  "IDCW",
+  "SWP"
+ ],
+ "example": "A retiree who needs ₹25,000 on the 5th of every month needs control of amount and date — that points to an SWP, not to a trustee-decided payout.",
+ "say": [
+  "Find out which of the three wants the client really has before recommending.",
+  "Habit is not a reason to keep a tax-inefficient option."
+ ],
+ "never": [
+  "Every client asking for IDCW wants the same thing.",
+  "A payout that feels like income is extra income."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-n01",
+   "q": "A client asks for IDCW because “my father always took dividends”. What do you do first?",
+   "o": [
+    "Find out what they really want: regular cash, a feeling of earning, or habit",
+    "Set up IDCW immediately",
+    "Explain that dividends no longer exist",
+    "Recommend the highest-paying fund"
+   ],
+   "a": 0,
+   "why": "Clients who ask for IDCW usually want one of three things: regular cash, a feeling of earning, or habit. Find out which before recommending an option."
+  },
+  {
+   "id": "idcw-n02",
+   "q": "Which client want is genuinely served by a payout?",
+   "o": [
+    "The feeling of earning",
+    "Family habit alone",
+    "A desire for the highest NAV",
+    "Regular cash on a predictable date — and even then, an SWP usually serves it better"
+   ],
+   "a": 3,
+   "why": "For regular income, an SWP usually beats IDCW on both control and tax."
+  },
+  {
+   "id": "idcw-n03",
+   "q": "Why did SEBI rename “dividend” to IDCW?",
+   "o": [
+    "To raise tax on payouts",
+    "To ban payouts",
+    "The old word misled investors: a payout is not a company dividend paid from profits on top of the investment",
+    "To merge IDCW with SWP"
+   ],
+   "a": 2,
+   "why": "SEBI required the new name from 1 April 2021 because the old word misled investors."
+  }
+ ],
+ "card_ids": [
+  "idcw-c7",
+  "idcw-c8"
+ ],
+ "words": 147
+}

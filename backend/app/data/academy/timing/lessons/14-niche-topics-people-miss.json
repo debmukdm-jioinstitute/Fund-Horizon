@@ -1,0 +1,71 @@
+{
+ "id": "timing-14",
+ "title": "Niche topics people miss",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain sequence-of-returns risk and why timing matters near a goal.",
+  "Say what valuation indicators can and cannot do, and why SIP date barely matters."
+ ],
+ "body_md": "These are the timing details that most often get missed.\n\n| Topic | What it is | Why it matters |\n| --- | --- | --- |\n| Sequence-of-returns risk | The order of returns matters a lot when money is being withdrawn (retirement) or is needed soon | Timing does matter near a goal or during withdrawals; this is why glide paths and income buffers exist (Modules 8 and 9) |\n| Valuation indicators | Measures like the market P/E ratio | Can hint at long-term expectations but are poor tools for timing entries and exits; avoid making all-in or all-out calls on them |\n| SIP date | The day of the month the SIP runs | Over long periods, the date makes little difference; consistency matters far more |\n| Lump sum vs STP over time | Investing all at once vs in stages | When markets rise over time, all-at-once has often done better; STP mainly reduces the pain of a fall soon after investing |\n| Concentrated vs diversified | A single sector or small-cap fund vs a diversified fund | Recovery after a fall is less certain for narrow bets; \"wrong time\" can be \"wrong fund\" in disguise |\n| Tax-loss harvesting | Booking a loss to set against gains | Can help in some cases; tax rules are specific, so refer to a CA |\n| Debt and \"wrong time\" | Buying long-duration debt just before rates rise | Rate timing is as hard as equity timing; match duration to the goal (Module 6) |\n| New money vs old money | Fresh lump sums vs long-held investments | The fear of a fall should not stop new money being invested for a long-term goal; use STP if needed |",
+ "key_terms": [
+  "Sequence-of-returns risk",
+  "Valuation indicators",
+  "SIP date",
+  "Tax-loss harvesting"
+ ],
+ "example": "Retiree drawing ₹50,000 a month from an equity-heavy portfolio in a fall: sequence risk — set up a 1–2 year income buffer in debt or liquid funds so withdrawals don't force equity sales at low prices.",
+ "say": [
+  "Timing matters near a goal or during withdrawals.",
+  "Valuation indicators are poor timing tools; don't go all-in or all-out on them."
+ ],
+ "never": [
+  "SIP date is the biggest driver of long-term returns.",
+  "Valuation indicators reliably tell you when to exit and re-enter."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q10",
+   "q": "Sequence-of-returns risk is greatest…",
+   "o": [
+    "At the start of a 20-year SIP",
+    "Near a goal or early in retirement withdrawals",
+    "In liquid funds",
+    "Only for debt funds"
+   ],
+   "a": 1,
+   "why": "Near a goal or early in retirement withdrawals. Money coming out when prices are low can do lasting damage."
+  },
+  {
+   "id": "timing-q18",
+   "q": "Money needed within a year generally should not be in equity because:",
+   "o": [
+    "Equity funds refuse short-term money",
+    "Short horizons leave no time to recover from a fall",
+    "Debt always beats equity over short periods",
+    "SEBI bans it"
+   ],
+   "a": 1,
+   "why": "Over short horizons the entry date matters a lot and there is no time to recover."
+  },
+  {
+   "id": "timing-n22",
+   "q": "Sequence-of-returns risk is greatest:",
+   "o": [
+    "At the start of a 20-year SIP",
+    "In liquid funds",
+    "Only for debt funds",
+    "Near a goal or early in retirement withdrawals"
+   ],
+   "a": 3,
+   "why": "Sequence-of-returns risk: the order of returns matters a lot when money is being withdrawn (retirement) or is needed soon."
+  }
+ ],
+ "card_ids": [
+  "timing-c27",
+  "timing-c28"
+ ],
+ "words": 255
+}

@@ -1,0 +1,69 @@
+{
+ "id": "rebal-03",
+ "title": "What rebalancing does and doesn't do",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "State four things rebalancing does and four it doesn't.",
+  "Explain why a rebalanced portfolio can end with less in a strong rally."
+ ],
+ "body_md": "Key point: the main job of rebalancing is risk control. In a strongly rising market, a rebalanced portfolio can end up with less than one left alone, because it keeps trimming equity. That is the price of keeping risk where the client wants it.\n\n| It does | It doesn't |\n| --- | --- |\n| Keep risk at the level the client agreed to | Guarantee higher returns |\n| Make the client sell some of what has risen and buy what has fallen, by rule | Predict markets or time the top and bottom |\n| Remove emotion from buying and selling decisions | Come free: selling can mean exit loads and tax |\n| Make falls easier to sit through | Replace a review of the goal itself |",
+ "key_terms": [
+  "Risk control",
+  "Does and doesn't"
+ ],
+ "example": "In a strong rally, trimming equity keeps risk at the agreed level — but it also means giving up some of the rally. That is the price, not a failure.",
+ "say": [
+  "The main job of rebalancing is risk control.",
+  "Rebalancing doesn't predict markets or time the top and bottom."
+ ],
+ "never": [
+  "Rebalancing guarantees higher returns.",
+  "Rebalancing comes free."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q18",
+   "q": "Does rebalancing always produce higher returns?",
+   "o": [
+    "Yes, it guarantees higher returns",
+    "No — its job is risk control; in strong rallies it can end with less",
+    "Yes, in every market",
+    "Only for debt portfolios"
+   ],
+   "a": 1,
+   "why": "Its job is risk control; in strong rallies it can end with less."
+  },
+  {
+   "id": "rebal-n03",
+   "q": "What is the main job of rebalancing?",
+   "o": [
+    "Higher returns",
+    "Tax saving",
+    "Risk control",
+    "Beating the index"
+   ],
+   "a": 2,
+   "why": "The main job of rebalancing is risk control. It keeps risk at the agreed level."
+  },
+  {
+   "id": "rebal-n04",
+   "q": "In a strong rally, a rebalanced portfolio can end with less because:",
+   "o": [
+    "It holds too much debt",
+    "It keeps trimming equity",
+    "Fees rise",
+    "Tax is charged"
+   ],
+   "a": 1,
+   "why": "In a strongly rising market, a rebalanced portfolio can end up with less than one left alone, because it keeps trimming equity."
+  }
+ ],
+ "card_ids": [
+  "rebal-c5",
+  "rebal-c6"
+ ],
+ "words": 113
+}

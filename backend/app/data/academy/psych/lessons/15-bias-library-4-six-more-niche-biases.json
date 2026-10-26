@@ -1,0 +1,72 @@
+{
+ "id": "psych-15",
+ "title": "Bias library (4): six more niche biases",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Recognise authority, framing, gambler's fallacy, endowment, present bias and the distributor's own bias.",
+  "Say how to answer each, including the distributor's own."
+ ],
+ "body_md": "Authority: “A big YouTuber recommended this.” Say: “Let's check if they're SEBI-registered and whether it fits your plan.” Framing: reacts differently to “90% chance of gain” and “10% chance of loss”. Say: present risk both ways, and in rupees. Gambler's fallacy: “It's risen 5 months straight, it must fall now.” Say: “Markets have no memory. Stick to your allocation.” Endowment: “I inherited these shares, I can't sell them.” Say: “Would you buy them today with fresh money? If not, they may not fit your plan.” Present bias: “I'll start investing after I buy the new car.” Say: “Even a small SIP now buys years of compounding you can't get back.” Distributor's own bias (internal): “This fund is hot, every client should get it.” Say: use the suitability checklist for every recommendation.\n\n| Bias | How it sounds | What to say |\n| --- | --- | --- |\n| Authority | \"A big YouTuber recommended this.\" | \"Let's check if they're SEBI-registered and whether it fits your plan.\" |\n| Framing | Reacts differently to \"90% chance of gain\" and \"10% chance of loss\" | Present risk both ways, and in rupees. |\n| Gambler's fallacy | \"It's risen 5 months straight, it must fall now.\" | \"Markets have no memory. Stick to your allocation.\" |\n| Endowment | \"I inherited these shares, I can't sell them.\" | \"Would you buy them today with fresh money? If not, they may not fit your plan.\" |\n| Present bias | \"I'll start investing after I buy the new car.\" | \"Even a small SIP now buys years of compounding you can't get back.\" |\n| Distributor's own bias | (Internal) \"This fund is hot, every client should get it.\" | Use the suitability checklist for every recommendation. |",
+ "key_terms": [
+  "Authority bias",
+  "Framing",
+  "Gambler's fallacy",
+  "Endowment",
+  "Present bias"
+ ],
+ "example": "“A big YouTuber recommended this” → authority: check SEBI registration and whether it fits the plan.",
+ "say": [
+  "Present risk both ways, and in rupees.",
+  "Markets have no memory. Stick to your allocation."
+ ],
+ "never": [
+  "Trust any expert-sounding recommendation.",
+  "A rising streak means a fall must come now."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-n26",
+   "q": "“It's risen 5 months straight, it must fall now” is:",
+   "o": [
+    "Recency",
+    "Hindsight",
+    "Framing",
+    "Gambler's fallacy"
+   ],
+   "a": 3,
+   "why": "Gambler's fallacy: “It's risen 5 months straight, it must fall now.” Say: “Markets have no memory. Stick to your allocation.”"
+  },
+  {
+   "id": "psych-n27",
+   "q": "“I inherited these shares, I can't sell them” is:",
+   "o": [
+    "Sunk cost",
+    "Authority",
+    "Endowment bias",
+    "Framing"
+   ],
+   "a": 2,
+   "why": "Endowment: “I inherited these shares, I can't sell them.” Say: “Would you buy them today with fresh money?”"
+  },
+  {
+   "id": "psych-n28",
+   "q": "Present bias looks like:",
+   "o": [
+    "“Everyone is buying it”",
+    "“I'll start investing after I buy the new car”",
+    "“It gave 40% last year”",
+    "“I'll sell at my cost”"
+   ],
+   "a": 1,
+   "why": "Present bias: “I'll start investing after I buy the new car.” Say: “Even a small SIP now buys years of compounding you can't get back.”"
+  }
+ ],
+ "card_ids": [
+  "psych-c29",
+  "psych-c30"
+ ],
+ "words": 263
+}

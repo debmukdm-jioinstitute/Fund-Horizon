@@ -1,0 +1,69 @@
+{
+ "id": "goals-10",
+ "title": "The glide path: de-risk as the goal approaches",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "R",
+ "objectives": [
+  "Read the illustrative glide path and shift in stages, not all at once.",
+  "Check tax and exit loads before each move."
+ ],
+ "body_md": "As a goal gets closer, move gradually from equity to debt so a late market fall can't derail it. An illustrative path for a must-have goal: 10+ years left — 70–80% equity; 7 years — 60%; 5 years — 40%; 3 years — 20%; 1 year — 0–10%. Shift in stages (for example once or twice a year, often through an STP from equity to debt) rather than all at once, and check tax and exit loads before each move.\n\n| Years left | Approx. equity share |\n| --- | --- |\n| 10+ | 70–80% |\n| 7 | 60% |\n| 5 | 40% |\n| 3 | 20% |\n| 1 | 0–10% |\n\n> **Investor takeaway:** Review goals once a year and as they approach, not every time the market moves.",
+ "key_terms": [
+  "Glide path",
+  "STP (equity to debt)"
+ ],
+ "example": "A goal 3 years away still 80% in equity: plan the shift now in stages through an STP, checking tax — not in panic after a fall.",
+ "say": [
+  "Shift in stages, not all at once.",
+  "Check tax and exit loads before each move."
+ ],
+ "never": [
+  "Hold 80% equity until the goal year.",
+  "Move everything to debt in one panic sale."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q7",
+   "q": "As a goal approaches, the equity share should usually:",
+   "o": [
+    "Rise",
+    "Fall gradually",
+    "Stay fixed",
+    "Go to 100%"
+   ],
+   "a": 1,
+   "why": "Fall gradually. The glide path."
+  },
+  {
+   "id": "goals-n14",
+   "q": "On the illustrative glide path, equity at 3 years left is about:",
+   "o": [
+    "70–80%",
+    "60%",
+    "40%",
+    "20%"
+   ],
+   "a": 3,
+   "why": "Glide path: 10+ years 70–80%; 7 years 60%; 5 years 40%; 3 years 20%; 1 year 0–10%."
+  },
+  {
+   "id": "goals-n15",
+   "q": "How should the glide-path shift be made?",
+   "o": [
+    "All at once in a panic sale",
+    "Only after the goal date",
+    "In stages, e.g. once or twice a year, often through an STP from equity to debt",
+    "By stopping all SIPs"
+   ],
+   "a": 2,
+   "why": "Shift in stages (for example once or twice a year, often through an STP from equity to debt) rather than all at once."
+  }
+ ],
+ "card_ids": [
+  "goals-c19",
+  "goals-c20"
+ ],
+ "words": 112
+}

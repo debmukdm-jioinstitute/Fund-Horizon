@@ -1,0 +1,72 @@
+{
+ "id": "bonds-11",
+ "title": "Reading a debt fund: monthly factsheet checks",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the six factsheet checks and say what each warning sign means.",
+  "Explain why a sudden yield jump is a warning, not a win."
+ ],
+ "body_md": "YTM: a big jump vs peers or vs last month — a sharply higher yield often means lower credit quality or longer duration. Modified duration: does it still match the client's goal date? A dynamic fund may have lengthened duration. Rating mix: a rise in AA and below, or unrated paper, means credit risk creeping in. Top holdings: any single issuer above a comfortable share means one default could hurt badly. AUM trend: sudden large outflows can force the fund to sell good bonds first. Return vs category and benchmark over 1–3 years, after costs: one bad month is not a verdict.\n\n| Check | What to look for | Why it matters |\n| --- | --- | --- |\n| YTM | Big jump vs peers or vs last month | A sharply higher yield often means lower credit quality or longer duration |\n| Modified duration | Still matches the client's goal date? | A dynamic fund may have lengthened duration |\n| Rating mix | Rise in AA and below, or unrated paper | Credit risk creeping in |\n| Top holdings | Any single issuer above a comfortable share | One default could hurt badly |\n| AUM trend | Sudden large outflows | Can force the fund to sell good bonds first |\n| Return vs category and benchmark | Over 1–3 years, after costs | One bad month is not a verdict |\n\n> **Investor takeaway:** Review a debt fund for what it holds, not just what it returned.",
+ "key_terms": [
+  "YTM (Yield to Maturity)",
+  "Modified duration",
+  "Rating mix",
+  "Top holdings",
+  "AUM trend"
+ ],
+ "example": "A fund suddenly far ahead of its category on yield is a red flag to investigate, not a reason to buy.",
+ "say": [
+  "A sharply higher yield often means lower credit quality or longer duration.",
+  "One bad month is not a verdict."
+ ],
+ "never": [
+  "A yield jump vs peers is always good news.",
+  "Factsheet checks don't matter if returns look good."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q17",
+   "q": "A debt fund's YTM is much higher than its peers'. What should you check first?",
+   "o": [
+    "Nothing — higher is better",
+    "Whether it means lower credit quality or longer duration",
+    "The fund's launch date",
+    "Only the AMC's AUM"
+   ],
+   "a": 1,
+   "why": "Higher yield often means more credit or duration risk."
+  },
+  {
+   "id": "bonds-n16",
+   "q": "What does “Rating mix” mean in plain language?",
+   "o": [
+    "Big jump vs peers or vs last month",
+    "Rise in AA and below, or unrated paper",
+    "Still matches the client's goal date?",
+    "Any single issuer above a comfortable share"
+   ],
+   "a": 1,
+   "why": "Rating mix: Rise in AA and below, or unrated paper Example: Credit risk creeping in"
+  },
+  {
+   "id": "bonds-n17",
+   "q": "What does “AUM trend” mean in plain language?",
+   "o": [
+    "Sudden large outflows",
+    "Big jump vs peers or vs last month",
+    "Still matches the client's goal date?",
+    "Rise in AA and below, or unrated paper"
+   ],
+   "a": 0,
+   "why": "AUM trend: Sudden large outflows Example: Can force the fund to sell good bonds first"
+  }
+ ],
+ "card_ids": [
+  "bonds-c21",
+  "bonds-c22"
+ ],
+ "words": 220
+}

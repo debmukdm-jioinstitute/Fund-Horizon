@@ -1,0 +1,73 @@
+{
+ "id": "bonds-03",
+ "title": "Types of bonds in India",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Name the main bond types in India and their key point for clients.",
+  "Explain why a PSU bond is not a government guarantee, and why AT1 is high risk."
+ ],
+ "body_md": "G-secs are long-term central-government bonds: virtually no default risk, still interest-rate risk. T-bills are short-term government borrowing (91, 182 or 364 days), issued at a discount with no coupon. SDLs are state-government bonds, usually yielding a little more than a G-sec. PSU bonds are often AAA but are not the same as a government guarantee. Corporate bonds/NCDs pay higher yield for higher credit risk — check the rating. Tax-free bonds (mostly old PSU issues) trade only on the exchange now. Zero-coupon bonds pay no interest and are bought at a discount. Floating-rate bonds reset their coupon with a benchmark. 54EC bonds save tax on long-term capital gains from property, with a 5-year lock-in. Perpetual/AT1 bonds have no maturity and can be written off.\n\n| Type | What it is | Key point for clients |\n| --- | --- | --- |\n| G-sec (Government security) | Long-term bond issued by the central government | Virtually no default risk; still has interest-rate risk |\n| T-bill (Treasury bill) | Short-term government borrowing: 91, 182 or 364 days | Issued at a discount, repaid at face value; no coupon |\n| SDL (State Development Loan) | Bond issued by a state government | Usually yields a little more than a G-sec |\n| PSU bond | Issued by a public sector company | Often AAA; not the same as a government guarantee |\n| Corporate bond / NCD | Issued by a company; NCD = non-convertible debenture | Higher yield = higher credit risk; check the rating |\n| Tax-free bond | Interest exempt from tax; mostly issued by PSUs in the past | Available only on the exchange now; check liquidity |\n| Zero-coupon bond | No interest paid; bought at a discount, repaid at face value | All return comes at maturity |\n| Floating-rate bond | Coupon resets with a benchmark rate | Less interest-rate risk |\n| 54EC bond | Capital gains bonds from specified issuers, 5-year lock-in | Used to save tax on long-term capital gains from property; confirm eligibility with a CA |\n| Perpetual / AT1 bond | No maturity date; banks use them as capital | High risk: can be written off (see Niche topics) |",
+ "key_terms": [
+  "G-sec (Government security)",
+  "T-bill (Treasury bill)",
+  "SDL (State Development Loan)",
+  "PSU bond",
+  "Corporate bond / NCD",
+  "Perpetual / AT1 bond"
+ ],
+ "example": "A T-bill bought at a discount is repaid at face value; a 54EC bond is used after selling property — confirm eligibility with a CA.",
+ "say": [
+  "PSU bonds are often AAA, but that is not a government guarantee.",
+  "AT1 bonds can be written off; they are not a fixed deposit substitute."
+ ],
+ "never": [
+  "A PSU bond is guaranteed by the government.",
+  "AT1 bonds are as safe as FDs."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q9",
+   "q": "A T-bill pays:",
+   "o": [
+    "A monthly coupon",
+    "No coupon; issued at a discount",
+    "A floating coupon",
+    "Dividends"
+   ],
+   "a": 1,
+   "why": "No coupon; issued at a discount. Repaid at face value."
+  },
+  {
+   "id": "bonds-n05",
+   "q": "What does “T-bill (Treasury bill)” mean in plain language?",
+   "o": [
+    "Short-term government borrowing: 91, 182 or 364 days",
+    "Long-term bond issued by the central government",
+    "Bond issued by a state government",
+    "Issued by a public sector company"
+   ],
+   "a": 0,
+   "why": "T-bill (Treasury bill): Short-term government borrowing: 91, 182 or 364 days Example: Issued at a discount, repaid at face value; no coupon"
+  },
+  {
+   "id": "bonds-n06",
+   "q": "What does “Perpetual / AT1 bond” mean in plain language?",
+   "o": [
+    "Long-term bond issued by the central government",
+    "Short-term government borrowing: 91, 182 or 364 days",
+    "Bond issued by a state government",
+    "No maturity date; banks use them as capital"
+   ],
+   "a": 3,
+   "why": "Perpetual / AT1 bond: No maturity date; banks use them as capital Example: High risk: can be written off (see Niche topics)"
+  }
+ ],
+ "card_ids": [
+  "bonds-c5",
+  "bonds-c6"
+ ],
+ "words": 322
+}

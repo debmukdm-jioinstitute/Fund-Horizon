@@ -1,0 +1,70 @@
+{
+ "id": "idcw-02",
+ "title": "The three IDCW options: payout, reinvestment, transfer",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain payout, reinvestment and transfer (sweep), and how each is taxed.",
+  "Say why reinvestment is usually just the growth option with an extra tax bill."
+ ],
+ "body_md": "IDCW payout: the payout is credited to the investor's bank account. Units stay the same; NAV falls; cash arrives; taxed at slab rate. IDCW reinvestment: the payout is used to buy more units of the same scheme at the ex-IDCW NAV. More units, same total value — still taxed as if paid out. IDCW transfer (sweep): the payout is invested into another scheme of the same AMC. It moves money between funds and is taxed as a payout.\n\n| Option | What happens | Result for the investor |\n| --- | --- | --- |\n| IDCW payout | Payout is credited to the investor's bank account | Units stay the same; NAV falls; cash arrives; taxed at slab rate |\n| IDCW reinvestment | Payout is used to buy more units of the same scheme at the ex-IDCW NAV | More units, same total value; still taxed as if paid out |\n| IDCW transfer (sweep) | Payout is invested into another scheme of the same AMC | Moves money between funds; taxed as a payout |\n\nIDCW reinvestment is the least understood. The investor ends up with the same total value as the growth option would have given (before tax), but pays tax on every payout. For most investors who don't need cash, the growth option does the same job without the yearly tax.\n\n> **Investor takeaway:** If you don't need the cash, IDCW reinvestment is usually just the growth option with an extra tax bill.",
+ "key_terms": [
+  "IDCW payout",
+  "IDCW reinvestment",
+  "IDCW transfer (sweep)"
+ ],
+ "example": "Reinvestment for 8 years: same value as growth before tax, but tax paid on every payout along the way.",
+ "say": [
+  "Reinvestment gives the same value as growth before tax — but with yearly tax.",
+  "Transfer moves money between schemes of the same AMC and is taxed as a payout."
+ ],
+ "never": [
+  "IDCW reinvestment is tax-free.",
+  "Reinvestment is the same as an SWP."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-q6",
+   "q": "IDCW reinvestment is:",
+   "o": [
+    "Tax-free",
+    "Taxed like a payout",
+    "The same as an SWP",
+    "Only for ELSS"
+   ],
+   "a": 1,
+   "why": "Taxed like a payout. Taxed as if paid out."
+  },
+  {
+   "id": "idcw-q14",
+   "q": "IDCW transfer (sweep) sends the payout to:",
+   "o": [
+    "The bank",
+    "The same scheme",
+    "Another scheme of the same AMC",
+    "A PMS"
+   ],
+   "a": 2,
+   "why": "Another scheme of the same AMC. Taxed as a payout."
+  },
+  {
+   "id": "idcw-q16",
+   "q": "Growth and IDCW options of the same plan differ in:",
+   "o": [
+    "The portfolio they hold",
+    "The fund manager",
+    "Only how profits are treated",
+    "The AMC that runs them"
+   ],
+   "a": 2,
+   "why": "Only the treatment of profits differs."
+  }
+ ],
+ "card_ids": [
+  "idcw-c3",
+  "idcw-c4"
+ ],
+ "words": 225
+}

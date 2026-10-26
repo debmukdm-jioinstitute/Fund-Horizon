@@ -1,0 +1,70 @@
+{
+ "id": "withdraw-08",
+ "title": "The bucket strategy: three buckets",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Explain the three buckets, what each covers, and illustrative shares.",
+  "Say how refills work and why bad years don't force equity sales."
+ ],
+ "body_md": "Split the corpus by when the money will be spent, so a market fall never forces equity sales to pay this year's bills.\n\n| Bucket | Covers | Typical home | Illustrative share of ₹1 Cr (need ₹4 L a year) |\n| --- | --- | --- | --- |\n| 1. Income | Next 1–2 years of withdrawals | Savings, liquid or money-market funds | ₹8–10 L |\n| 2. Stability | Years 3–7 | Short-duration debt, conservative hybrid funds | ₹20–25 L |\n| 3. Growth | Year 8 onwards | Equity or balanced funds | ₹65–70 L |\n\nHow it works: the monthly SWP runs from Bucket 1. Once a year, refill Bucket 1 from Bucket 2, and Bucket 2 from Bucket 3, taking more from equity in good years and less in bad years. In a bad year, Bucket 2 keeps paying while equity recovers.",
+ "key_terms": [
+  "Bucket 1 (Income)",
+  "Bucket 2 (Stability)",
+  "Bucket 3 (Growth)"
+ ],
+ "example": "₹1 Cr, need ₹4 L a year: Bucket 1 ₹8–10 L, Bucket 2 ₹20–25 L, Bucket 3 ₹65–70 L.",
+ "say": [
+  "The monthly SWP runs from Bucket 1.",
+  "In a bad year, Bucket 2 keeps paying while equity recovers."
+ ],
+ "never": [
+  "Run the SWP from the equity bucket.",
+  "Refill Bucket 1 from equity in a bad year."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q10",
+   "q": "Bucket 1 usually holds…",
+   "o": [
+    "Small-cap funds",
+    "The next 1–2 years of withdrawals in liquid funds",
+    "Gold only",
+    "Real estate"
+   ],
+   "a": 1,
+   "why": "The next 1–2 years of withdrawals in liquid funds. The SWP runs from here."
+  },
+  {
+   "id": "withdraw-n11",
+   "q": "Bucket 2 (Stability) covers:",
+   "o": [
+    "Next 1–2 years",
+    "Year 8 onwards",
+    "Years 3–7, in short-duration debt or conservative hybrid funds",
+    "Only emergencies"
+   ],
+   "a": 2,
+   "why": "Bucket 2: years 3–7. Short-duration debt, conservative hybrid funds. ₹20–25 L."
+  },
+  {
+   "id": "withdraw-n12",
+   "q": "How is Bucket 1 refilled?",
+   "o": [
+    "Monthly from equity",
+    "Once a year from Bucket 2, and Bucket 2 from Bucket 3 — more from equity in good years, less in bad years",
+    "Only when markets rise",
+    "Never"
+   ],
+   "a": 1,
+   "why": "Once a year, refill Bucket 1 from Bucket 2, and Bucket 2 from Bucket 3, taking more from equity in good years and less in bad years."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c15",
+  "withdraw-c16"
+ ],
+ "words": 121
+}

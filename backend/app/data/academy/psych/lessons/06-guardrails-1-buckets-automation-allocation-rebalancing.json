@@ -1,0 +1,76 @@
+{
+ "id": "psych-06",
+ "title": "Guardrails (1): buckets, automation, allocation, rebalancing",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Set up goal buckets, automated SIPs, a written allocation and a rebalancing rule.",
+  "Say which bias each guardrail counters."
+ ],
+ "body_md": "Biases are beaten by decisions made in calm times and written down, not by willpower in a crisis. Goal-based buckets: each goal has its own amount, date and asset mix — counters mental accounting and short-term framing. Automated SIPs and step-ups: investing happens without a decision each month — counters inertia and market timing. Written target allocation: for example 60% equity / 40% debt, agreed and signed — counters herd behaviour and recency. Rebalancing rule: rebalance when allocation drifts beyond an agreed band, for example ±5% — counters loss aversion and euphoria.\n\n| Guardrail | How it works | Bias it counters |\n| --- | --- | --- |\n| Goal-based buckets | Each goal has its own amount, date and asset mix | Mental accounting, short-term framing |\n| Automated SIPs and step-ups | Investing happens without a decision each month | Inertia, market timing |\n| Written target allocation | e.g. 60% equity / 40% debt, agreed and signed | Herd behaviour, recency |\n| Rebalancing rule | Rebalance when allocation drifts beyond an agreed band, e.g. ±5% | Loss aversion, euphoria |\n\n> **Talk-track:** “Let's write down your plan now, while markets are calm, so we can follow it when they're not.”",
+ "key_terms": [
+  "Goal-based buckets",
+  "Written target allocation",
+  "Rebalancing rule"
+ ],
+ "example": "60/40 agreed and signed: when equity runs to 70%, the rule sells some gains and buys debt — the opposite of what emotions suggest.",
+ "say": [
+  "Decide rules in calm times; follow them in volatile times.",
+  "A written allocation counters herd behaviour and recency."
+ ],
+ "never": [
+  "Rely on willpower in a crisis.",
+  "Rebalance only when you feel like it."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Write it down now",
+   "text": "Let's write down your plan now, while markets are calm, so we can follow it when they're not."
+  }
+ ],
+ "check": [
+  {
+   "id": "psych-q11",
+   "q": "What does the cooling-off rule say?",
+   "o": [
+    "Wait 30 days before any SIP",
+    "No switch or redemption on the same day as a big market move",
+    "Review the portfolio every week",
+    "Invest only after markets fall 10%"
+   ],
+   "a": 1,
+   "why": "No switch or redemption on the same day as a big market move. It stops panic or FOMO decisions in the heat of the moment."
+  },
+  {
+   "id": "psych-n11",
+   "q": "Which guardrail counters inertia and market timing?",
+   "o": [
+    "Goal-based buckets",
+    "Written target allocation",
+    "Automated SIPs and step-ups",
+    "Cooling-off rule"
+   ],
+   "a": 2,
+   "why": "Automated SIPs and step-ups: investing happens without a decision each month. Counters inertia, market timing."
+  },
+  {
+   "id": "psych-n12",
+   "q": "A rebalancing rule of ±5% counters:",
+   "o": [
+    "Framing only",
+    "Loss aversion and euphoria",
+    "Authority bias",
+    "Tax"
+   ],
+   "a": 1,
+   "why": "Rebalancing rule: counters loss aversion, euphoria."
+  }
+ ],
+ "card_ids": [
+  "psych-c11",
+  "psych-c12"
+ ],
+ "words": 178
+}

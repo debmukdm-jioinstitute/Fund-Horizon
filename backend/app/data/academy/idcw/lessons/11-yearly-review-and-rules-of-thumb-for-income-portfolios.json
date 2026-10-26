@@ -1,0 +1,70 @@
+{
+ "id": "idcw-11",
+ "title": "Yearly review and rules of thumb for income portfolios",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the five yearly review checks for an income client.",
+  "Apply the income-portfolio rules of thumb, including the 1–2 year buffer."
+ ],
+ "body_md": "What to review each year. Total payouts vs fund return: is the client withdrawing more than the fund is earning? Value of remaining units: is capital holding up for the years the client needs it? IDCW consistency: has the fund cut or skipped payouts the client relies on? Tax paid on IDCW: show the client what IDCW cost them in tax vs an SWP. Option still right? Life changes (retirement, tax bracket) may favour switching to growth + SWP.\n\n| Check | What to look for |\n| --- | --- |\n| Total payouts vs fund return | Is the client withdrawing more than the fund is earning? |\n| Value of remaining units | Is capital holding up for the years the client needs it? |\n| IDCW consistency | Has the fund cut or skipped payouts the client relies on? |\n| Tax paid on IDCW | Show the client what IDCW cost them in tax vs an SWP |\n| Option still right? | Life changes (retirement, tax bracket) may favour switching to growth + SWP |\n\nRules of thumb for income portfolios: keep withdrawals at a level the portfolio can sustain over the client's time frame; review the rate yearly. Hold one to two years of planned withdrawals in a liquid or short-duration debt fund, so equity isn't sold in a fall. Use SWP amounts the client controls, and lower them in poor years if possible.",
+ "key_terms": [
+  "Yearly review",
+  "Income buffer",
+  "IDCW consistency"
+ ],
+ "example": "Review: payouts ₹80,000 vs fund earnings ₹60,000 — the withdrawal rate must come down or capital will keep eroding.",
+ "say": [
+  "Show the client what IDCW cost in tax vs an SWP.",
+  "Hold 1–2 years of withdrawals in liquid or short-duration debt."
+ ],
+ "never": [
+  "Review income portfolios only when payouts stop.",
+  "Equity should always be sold first in a fall."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-q17",
+   "q": "Can a monthly IDCW amount be counted on every month?",
+   "o": [
+    "Yes, the AMC guarantees it",
+    "No — amount and frequency are decided by the trustees and can be cut or skipped",
+    "Yes, if the fund is a debt fund",
+    "Only for the first year"
+   ],
+   "a": 1,
+   "why": "Amount and frequency aren't guaranteed."
+  },
+  {
+   "id": "idcw-n15",
+   "q": "In the yearly review, “IDCW consistency” means checking:",
+   "o": [
+    "The fund's launch date",
+    "The AMC's AUM",
+    "Whether the fund cut or skipped payouts the client relies on",
+    "The client's age"
+   ],
+   "a": 2,
+   "why": "IDCW consistency: has the fund cut or skipped payouts the client relies on?"
+  },
+  {
+   "id": "idcw-n16",
+   "q": "Why hold 1–2 years of withdrawals in liquid or short-duration debt?",
+   "o": [
+    "To earn higher returns",
+    "So equity isn't sold in a fall",
+    "To avoid all tax",
+    "To increase IDCW"
+   ],
+   "a": 1,
+   "why": "Hold one to two years of planned withdrawals in a liquid or short-duration debt fund, so equity isn't sold in a fall."
+  }
+ ],
+ "card_ids": [
+  "idcw-c21",
+  "idcw-c22"
+ ],
+ "words": 218
+}

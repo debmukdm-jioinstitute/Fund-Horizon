@@ -1,0 +1,70 @@
+{
+ "id": "goals-07",
+ "title": "Mapping funds to goals, and step-up SIPs",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Give each goal its own SIP and label, without multiplying funds.",
+  "Explain how a step-up SIP makes a large goal affordable."
+ ],
+ "body_md": "Give each goal its own SIP(s) and, where possible, its own folio or tag in the client's report, so progress is visible goal by goal. Avoid fund overlap across goals: the same 3–5 well-chosen funds can serve several long-term goals; label the units, don't multiply the funds. Put lump sums meant for distant goals into a liquid fund and move them in through an STP if the client is nervous about timing. Step-up SIPs: increase each SIP every year with income (for example 10%). In the education example, a 10% step-up cut the starting SIP from about ₹13,300 to about ₹7,700 for the same target.\n\n> **Investor takeaway:** Label the units, don't multiply the funds.",
+ "key_terms": [
+  "Folio tag",
+  "Step-up SIP",
+  "STP"
+ ],
+ "example": "Folio tag “Riya's college”: labelled money is less likely to be raided for a phone upgrade than an unlabelled balance — mental accounting, used well.",
+ "say": [
+  "Label the units, don't multiply the funds.",
+  "A 10% step-up cut the education starting SIP to about ₹7,700."
+ ],
+ "never": [
+  "Each goal needs its own different funds.",
+  "Step-up SIPs mean switching funds yearly."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q6",
+   "q": "A step-up SIP means:",
+   "o": [
+    "A lump sum each year",
+    "Raising the SIP regularly with income",
+    "Switching funds yearly",
+    "Stopping the SIP in falls"
+   ],
+   "a": 1,
+   "why": "Raising the SIP regularly with income. Makes big goals affordable today."
+  },
+  {
+   "id": "goals-q10",
+   "q": "Labelling folios by goal mainly helps because:",
+   "o": [
+    "It lowers tax",
+    "It reduces the urge to spend goal money and clarifies reviews",
+    "It raises returns",
+    "SEBI requires it"
+   ],
+   "a": 1,
+   "why": "It reduces the urge to spend goal money and clarifies reviews. Mental accounting used well."
+  },
+  {
+   "id": "goals-n09",
+   "q": "Why give each goal its own SIP and label?",
+   "o": [
+    "Progress is visible goal by goal, and labelled money is less likely to be spent",
+    "It lowers tax",
+    "It raises returns",
+    "SEBI requires it"
+   ],
+   "a": 0,
+   "why": "Each goal gets its own SIP and label, so progress is visible goal by goal; labelled money is less likely to be raided."
+  }
+ ],
+ "card_ids": [
+  "goals-c13",
+  "goals-c14"
+ ],
+ "words": 114
+}

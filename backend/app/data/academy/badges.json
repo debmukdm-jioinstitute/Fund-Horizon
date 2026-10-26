@@ -36,6 +36,66 @@
   "hint": "Pass the SIP Step-Up final quiz."
  },
  {
+  "id": "grad_psych",
+  "name": "Module Graduate (Investor Psychology)",
+  "icon": "🎓",
+  "hint": "Pass the Investor Psychology final quiz."
+ },
+ {
+  "id": "grad_compare",
+  "name": "Module Graduate (MF vs PMS vs AIF)",
+  "icon": "🎓",
+  "hint": "Pass the MF vs PMS vs AIF final quiz."
+ },
+ {
+  "id": "grad_terms",
+  "name": "Module Graduate (Basic Investment Terms)",
+  "icon": "🎓",
+  "hint": "Pass the Basic Investment Terms final quiz."
+ },
+ {
+  "id": "grad_bonds",
+  "name": "Module Graduate (Bonds & Debt)",
+  "icon": "🎓",
+  "hint": "Pass the Bonds & Debt final quiz."
+ },
+ {
+  "id": "grad_idcw",
+  "name": "Module Graduate (IDCW)",
+  "icon": "🎓",
+  "hint": "Pass the IDCW final quiz."
+ },
+ {
+  "id": "grad_goals",
+  "name": "Module Graduate (Goal-Based Investing)",
+  "icon": "🎓",
+  "hint": "Pass the Goal-Based Investing final quiz."
+ },
+ {
+  "id": "grad_timing",
+  "name": "Module Graduate (Wrong Time to Invest?)",
+  "icon": "🎓",
+  "hint": "Pass the Wrong Time to Invest? final quiz."
+ },
+ {
+  "id": "grad_rebal",
+  "name": "Module Graduate (Rebalancing)",
+  "icon": "🎓",
+  "hint": "Pass the Rebalancing final quiz."
+ },
+ {
+  "id": "grad_overlap",
+  "name": "Module Graduate (Portfolio Overlap)",
+  "icon": "🎓",
+  "hint": "Pass the Portfolio Overlap final quiz."
+ },
+ {
+  "id": "grad_withdraw",
+  "name": "Module Graduate (Withdrawal Planning)",
+  "icon": "🎓",
+  "hint": "Pass the Withdrawal Planning final quiz."
+ },
+ {
   "id": "streak_7",
   "name": "7-Day Streak",
   "icon": "🔥",
@@ -57,7 +117,7 @@
   "id": "perfectionist",
   "name": "Perfectionist",
   "icon": "💯",
-  "hint": "Score 30/30 on a final quiz."
+  "hint": "Score a perfect mark on a final quiz."
  },
  {
   "id": "compliance_ace",

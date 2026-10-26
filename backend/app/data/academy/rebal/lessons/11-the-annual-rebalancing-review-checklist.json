@@ -1,0 +1,69 @@
+{
+ "id": "rebal-11",
+ "title": "The annual rebalancing review checklist",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Run the seven-point annual review checklist.",
+  "Record “no action” with the date when no band is breached."
+ ],
+ "body_md": "Annual rebalancing review checklist. Pull the current mix across all holdings, by goal. Compare each asset class with target; note the drift in points. Any band breached? If not, record “no action” and the date. If yes, plan the cheapest route: new money, redirect, switch, then sell. Check exit loads and possible tax before any redemption. Check whether any goal now needs a new target (glide path). Get the client's approval and record what was done and why. Records matter: a simple log of date, drift, action and reason protects the client and the firm, and shows the decisions were rule-based.\n\n> **Investor takeaway:** A simple log of date, drift, action and reason protects the client and the firm.",
+ "key_terms": [
+  "Annual review checklist",
+  "No action"
+ ],
+ "example": "Band not breached: record “no action” and the date — that is a completed review, not a skipped one.",
+ "say": [
+  "Record “no action” and the date when no band is breached.",
+  "A log of date, drift, action and reason shows decisions were rule-based."
+ ],
+ "never": [
+  "Skip recording when nothing is done.",
+  "A review must always end in a trade."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q13",
+   "q": "Why agree the rule in writing at the start?",
+   "o": [
+    "It is required by tax law",
+    "Later decisions follow the client’s calm choice",
+    "To avoid KYC",
+    "To raise commission"
+   ],
+   "a": 1,
+   "why": "Later decisions follow the client’s calm choice. It removes emotion later."
+  },
+  {
+   "id": "rebal-n15",
+   "q": "If no band is breached at the annual review, you:",
+   "o": [
+    "Sell anyway",
+    "Change the target",
+    "Record “no action” and the date",
+    "Skip the review"
+   ],
+   "a": 2,
+   "why": "Any band breached? If not, record “no action” and the date."
+  },
+  {
+   "id": "rebal-n16",
+   "q": "What should the rebalancing log contain?",
+   "o": [
+    "Only the date",
+    "Date, drift, action and reason",
+    "Only the amounts",
+    "Only the client's name"
+   ],
+   "a": 1,
+   "why": "A simple log of date, drift, action and reason protects the client and the firm."
+  }
+ ],
+ "card_ids": [
+  "rebal-c21",
+  "rebal-c22"
+ ],
+ "words": 118
+}

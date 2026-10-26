@@ -1,0 +1,76 @@
+{
+ "id": "psych-01",
+ "title": "The behaviour gap: why clients earn less than their funds",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain the behaviour gap and why it can matter more than fund selection.",
+  "Say how the fast and slow systems work, and why losses feel twice as bad as gains feel good."
+ ],
+ "body_md": "Behavioural biases are predictable mental shortcuts that make investors act against their own long-term interest, most often by buying after rallies and selling after falls. The brain has a fast, emotional system that reacts instantly and a slow, deliberate system that reasons. Under stress, the fast one usually wins. These shortcuts helped humans survive physical danger, but markets punish them: running from a falling price feels safe and is usually costly. Research by Kahneman and Tversky found that losses feel roughly twice as painful as equal gains feel good. That single fact explains much investor behaviour. Biases affect everyone, including experienced investors and distributors. Knowing about them does not switch them off; systems and habits do.\n\n> **Talk-track:** “Most investors don't lose money because of bad funds. They lose it by reacting at the wrong time.”\n\n> **Investor takeaway:** Your own behaviour can affect your returns as much as the fund you choose.",
+ "key_terms": [
+  "Behaviour gap",
+  "Fast and slow systems",
+  "Loss aversion"
+ ],
+ "example": "A fund returns 12% a year; its average investor earns 8% because they added after rallies and sold after falls — that 4% gap is the behaviour gap.",
+ "say": [
+  "Most investors don't lose money because of bad funds. They lose it by reacting at the wrong time.",
+  "Losses feel roughly twice as painful as equal gains feel good."
+ ],
+ "never": [
+  "Knowing about biases switches them off.",
+  "Picking the best fund matters more than behaviour for every client."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Reacting at the wrong time",
+   "text": "Most investors don't lose money because of bad funds. They lose it by reacting at the wrong time."
+  }
+ ],
+ "check": [
+  {
+   "id": "psych-q1",
+   "q": "What is the behaviour gap?",
+   "o": [
+    "The gap between NAV and market price",
+    "The difference between a fund's return and the return its investors actually earn",
+    "The difference between direct and regular plan returns",
+    "The gap between a benchmark and its category average"
+   ],
+   "a": 1,
+   "why": "The difference between a fund's return and the return its investors actually earn. It opens up when investors buy after rallies and sell after falls."
+  },
+  {
+   "id": "psych-q2",
+   "q": "According to Kahneman and Tversky, losses feel roughly how painful compared with equal gains?",
+   "o": [
+    "About the same",
+    "About 1.2 times",
+    "About twice",
+    "About ten times"
+   ],
+   "a": 2,
+   "why": "About twice. Losses loom roughly twice as large as gains (Prospect Theory)."
+  },
+  {
+   "id": "psych-n01",
+   "q": "The behaviour gap opens up because investors:",
+   "o": [
+    "Add money after strong performance, stop SIPs or redeem after falls, and switch chasing last year's winner",
+    "Hold too few funds",
+    "Pay too much tax",
+    "Check portfolios too rarely"
+   ],
+   "a": 0,
+   "why": "The behaviour gap opens up because investors add money after strong performance, stop SIPs or redeem after falls, and switch funds chasing last year's winner."
+  }
+ ],
+ "card_ids": [
+  "psych-c1",
+  "psych-c2"
+ ],
+ "words": 151
+}

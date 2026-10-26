@@ -1,0 +1,73 @@
+{
+ "id": "terms-16",
+ "title": "Commonly confused pairs",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain 15 commonly confused pairs in one line each, with a rupee example.",
+  "Test a partner on any pair in under 30 seconds."
+ ],
+ "body_md": "These are the mix-ups that cause the most client complaints and wrong decisions. NAV is calculated once a day from holdings; a share price changes every second — and a low NAV is not “cheap”. Absolute return ignores time; CAGR annualises a lump sum; XIRR annualises money in or out on different dates. Growth reinvests; IDCW pays out of your own money. Exit load is a fee; lock-in blocks exit. Volatility is a temporary swing; a loss becomes real only when you sell or a borrower defaults.\n\n| Often confused | The difference in one line |\n| --- | --- |\n| NAV vs share price | NAV is calculated once a day from holdings; a share price changes every second on the exchange. A low NAV is not \"cheap\" |\n| Absolute return vs CAGR | 100% over 5 years is about 14.9% a year, not 20% |\n| CAGR vs XIRR | CAGR for one lump sum; XIRR when money goes in or out on different dates (SIPs) |\n| Direct vs regular plan | Same portfolio and manager; regular includes distributor commission for advice and service |\n| Growth vs IDCW | Growth reinvests; IDCW pays out of your own money and the NAV falls by the payout. It is not extra income |\n| Exit load vs lock-in | Exit load: you can leave but pay a fee. Lock-in: you cannot leave at all |\n| TER vs exit load | TER is a yearly running cost in the NAV; exit load is a one-time fee only on early exit |\n| SIP vs STP | SIP moves money from your bank; STP moves money from one fund to another |\n| SWP vs IDCW | SWP: you choose a fixed amount; IDCW: the fund decides if and how much to pay |\n| Risk tolerance vs risk capacity | Tolerance: how much fall you can stomach. Capacity: how much fall your finances can afford |\n| Volatility vs loss | Volatility is a temporary swing; a loss becomes real only when you sell or when a borrower defaults |\n| Diversification vs many funds | Five funds holding the same stocks is not diversification |\n| Nominal vs real return | Real return is what's left after inflation |\n| YTM vs guaranteed return | YTM is today's indicative yield; debt fund returns are not guaranteed |\n| Riskometer vs suitability | The riskometer labels the fund; suitability matches the fund to the client |\n\n> **Investor takeaway:** Ask a new joiner to explain each pair to a partner in under 30 seconds, using a rupee example.",
+ "key_terms": [
+  "NAV vs share price",
+  "CAGR vs XIRR",
+  "Direct vs regular plan",
+  "Growth vs IDCW",
+  "Exit load vs lock-in",
+  "Volatility vs loss"
+ ],
+ "example": "₹1 lakh → ₹2 lakh in 5 years is 100% absolute, about 14.9% CAGR — not 20% a year.",
+ "say": [
+  "SWP: you choose the amount. IDCW: the fund decides.",
+  "Five funds holding the same stocks is not diversification."
+ ],
+ "never": [
+  "IDCW is extra income.",
+  "A low NAV fund is cheap."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-n27",
+   "q": "What does “CAGR vs XIRR” mean in plain language?",
+   "o": [
+    "NAV is calculated once a day from holdings; a share price changes every second on the exchange. A low NAV is not \"cheap\"",
+    "100% over 5 years is about 14.9% a year, not 20%",
+    "CAGR for one lump sum; XIRR when money goes in or out on different dates (SIPs).",
+    "Same portfolio and manager; regular includes distributor commission for advice and service"
+   ],
+   "a": 2,
+   "why": "CAGR vs XIRR: CAGR for one lump sum; XIRR when money goes in or out on different dates (SIPs). Example: ₹1 L → ₹2 L in 5 yrs = 100% absolute ≈ 14.9% CAGR; a SIP needs XIRR."
+  },
+  {
+   "id": "terms-n28",
+   "q": "What does “Exit load vs lock-in” mean in plain language?",
+   "o": [
+    "NAV is calculated once a day from holdings; a share price changes every second on the exchange. A low NAV is not \"cheap\"",
+    "Exit load: you can leave but pay a fee. Lock-in: you cannot leave at all.",
+    "100% over 5 years is about 14.9% a year, not 20%",
+    "CAGR for one lump sum; XIRR when money goes in or out on different dates (SIPs)"
+   ],
+   "a": 1,
+   "why": "Exit load vs lock-in: Exit load: you can leave but pay a fee. Lock-in: you cannot leave at all. Example: 1% within a year vs ELSS 3 years."
+  },
+  {
+   "id": "terms-n29",
+   "q": "What does “Growth vs IDCW” mean in plain language?",
+   "o": [
+    "Growth reinvests; IDCW pays out of your own money and the NAV falls by the payout. It is not extra income.",
+    "NAV is calculated once a day from holdings; a share price changes every second on the exchange. A low NAV is not \"cheap\"",
+    "100% over 5 years is about 14.9% a year, not 20%",
+    "CAGR for one lump sum; XIRR when money goes in or out on different dates (SIPs)"
+   ],
+   "a": 0,
+   "why": "Growth vs IDCW: Growth reinvests; IDCW pays out of your own money and the NAV falls by the payout. It is not extra income. Example: ₹1 per unit paid → NAV falls by ₹1."
+  }
+ ],
+ "card_ids": [
+  "terms-c29",
+  "terms-c30"
+ ],
+ "words": 389
+}

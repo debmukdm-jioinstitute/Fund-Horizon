@@ -1,0 +1,68 @@
+{
+ "id": "terms-18",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's plain-language and compliance rules to any client explanation.",
+  "Pass the trainer's final check: explain NAV, XIRR, TER, exit load, IDCW and duration without notes."
+ ],
+ "body_md": "Do: explain every term in one sentence, then give a rupee example. Use the scheme's own SID, KIM and factsheet for exact exit loads, lock-ins and TER. Show past returns as XIRR or CAGR against the TRI benchmark, with the period stated. Label any projection as illustrative, with the assumed rate shown. Say “subject to market risks” and mean it: explain what the risk looks like. Refer tax questions to the client's CA, as rules change with each Budget.\n\n- Don’t — Call a low-NAV fund or an NFO “cheap”.\n- Don’t — Present IDCW as extra income or a “dividend bonus”.\n- Don’t — Use the words “guaranteed”, “assured” or “safe as an FD” for any mutual fund, including debt funds.\n- Don’t — Quote absolute return as if it were a yearly return.\n- Don’t — Use jargon to sound expert; if the client can’t repeat it back, it wasn’t explained.\n- Don’t — Promise any return.\n\n> **Investor takeaway:** Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. Final check for trainers: a new joiner passes this module when they can explain NAV, XIRR, TER, exit load, IDCW and duration to a first-time investor without notes.",
+ "key_terms": [
+  "Compliance",
+  "IDCW",
+  "XIRR",
+  "TER"
+ ],
+ "example": "A trainee explains, without notes: NAV is the price of one unit; XIRR annualises a SIP; TER is the yearly cost in the NAV; exit load is an early-exit fee; IDCW pays out of your own money; duration measures rate sensitivity.",
+ "say": [
+  "Explain each term in one plain sentence, then give a rupee example.",
+  "Label every projection as illustrative, with the assumed rate shown."
+ ],
+ "never": [
+  "Call a low-NAV fund cheap.",
+  "Present IDCW as extra income."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-n30",
+   "q": "Which of these is compliant when explaining a fund?",
+   "o": [
+    "Quote absolute return as a yearly return",
+    "Call a low-NAV fund cheap",
+    "Present IDCW as extra income",
+    "Show past returns as XIRR or CAGR against the TRI benchmark, with the period stated"
+   ],
+   "a": 3,
+   "why": "Show past returns as XIRR or CAGR against the TRI benchmark, with the period stated."
+  },
+  {
+   "id": "terms-n31",
+   "q": "What must appear on all investor material for this module?",
+   "o": [
+    "A guaranteed return figure",
+    "The fund's last month return only",
+    "Mutual fund investments are subject to market risks. Read all scheme-related documents carefully.",
+    "A promise of future performance"
+   ],
+   "a": 2,
+   "why": "Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully."
+  },
+  {
+   "id": "terms-n32",
+   "q": "A trainee passes this module when they can explain, without notes:",
+   "o": [
+    "Only NAV and SIP",
+    "NAV, XIRR, TER, exit load, IDCW and duration",
+    "Only past returns",
+    "Only the fund's holdings"
+   ],
+   "a": 1,
+   "why": "Final check: explain NAV, XIRR, TER, exit load, IDCW and duration to a first-time investor without notes."
+  }
+ ],
+ "card_ids": [],
+ "words": 202
+}

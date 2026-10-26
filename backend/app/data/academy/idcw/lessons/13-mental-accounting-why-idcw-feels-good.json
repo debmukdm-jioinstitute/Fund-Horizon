@@ -1,0 +1,76 @@
+{
+ "id": "idcw-13",
+ "title": "Mental accounting: why IDCW feels good",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Explain mental accounting and why payouts feel like income while SWPs feel like touching capital.",
+  "Say why the economics are the same and where SWP still wins."
+ ],
+ "body_md": "Mental accounting: why IDCW feels good. People tend to treat money differently depending on which “mental account” it sits in. A payout feels like income, so investors are happy to spend it, while selling units in an SWP feels like “touching the capital”. Economically, the two are the same: both take money out of the fund. The difference is tax and control, and on both counts an SWP usually wins.\n\n> **Talk-track:** “Whether the fund sends you money or you take it out yourself, it comes from the same place. The SWP just lets you choose the amount and pay less tax.”\n\n> **Investor takeaway:** Don't judge a fund by its payouts. Judge it by its total return, after tax.",
+ "key_terms": [
+  "Mental accounting",
+  "SWP",
+  "IDCW"
+ ],
+ "example": "Payout ₹25,000 feels like income; SWP ₹25,000 feels like touching capital — economically both take ₹25,000 out of the fund; the SWP just lets you choose the amount and pay less tax.",
+ "say": [
+  "Both take money out of the same place; SWP gives control and usually less tax.",
+  "Judge a fund by total return, after tax — not by payouts."
+ ],
+ "never": [
+  "A payout and an SWP are economically different in amount.",
+  "SWPs always cost more tax than IDCW."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Same place, different feeling",
+   "text": "Whether the fund sends you money or you take it out yourself, it comes from the same place. The SWP just lets you choose the amount and pay less tax."
+  }
+ ],
+ "check": [
+  {
+   "id": "idcw-n20",
+   "q": "Why does an IDCW payout feel like income while an SWP feels like touching capital?",
+   "o": [
+    "Payouts are legally income, SWPs are not",
+    "Mental accounting: money is treated differently by which “mental account” it sits in",
+    "SWPs reduce units, payouts do not",
+    "Payouts are tax-free"
+   ],
+   "a": 1,
+   "why": "People tend to treat money differently depending on which “mental account” it sits in."
+  },
+  {
+   "id": "idcw-n21",
+   "q": "Economically, an IDCW payout and an SWP withdrawal are:",
+   "o": [
+    "The same: both take money out of the fund",
+    "Different amounts by law",
+    "Different funds",
+    "Only different in name"
+   ],
+   "a": 0,
+   "why": "Economically, the two are the same: both take money out of the fund."
+  },
+  {
+   "id": "idcw-n22",
+   "q": "On tax and control, which usually wins?",
+   "o": [
+    "IDCW payout",
+    "IDCW reinvestment",
+    "Neither — they are identical",
+    "SWP: you choose the amount, and only the gain is taxed"
+   ],
+   "a": 3,
+   "why": "The difference is tax and control, and on both counts an SWP usually wins."
+  }
+ ],
+ "card_ids": [
+  "idcw-c25",
+  "idcw-c26"
+ ],
+ "words": 118
+}

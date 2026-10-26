@@ -1,0 +1,73 @@
+{
+ "id": "bonds-09",
+ "title": "Ways to invest in debt",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Compare five routes into debt: FD/small savings, debt funds, target maturity, direct G-secs, direct corporate bonds.",
+  "Say what to watch out for on each route."
+ ],
+ "body_md": "Bank FD/small savings via bank or post office: simple, known return — but premature withdrawal penalties, and interest taxed every year. Debt mutual funds via AMC, distributor or platforms: diversification, liquidity, small amounts, SWP — but NAV can fall and there is no fixed return. Target maturity funds/ETFs via AMC or exchange: near-predictable outcome if held to maturity — but exiting early exposes the investor to rate moves. G-secs and T-bills directly via RBI Retail Direct or brokers: no credit risk, no fund expense — but prices move before maturity and trading is thin in some bonds. Corporate bonds directly via SEBI-registered Online Bond Platform Providers (OBPPs) or a broker, many listed bonds now from ₹10,000 face value: choose specific issuers and maturities — but concentration in one issuer, liquidity, rating and any call option must be checked.\n\n| Route | How | Good for | Watch out for |\n| --- | --- | --- | --- |\n| Bank FD / small savings | Bank or post office | Simplicity, known return | Premature withdrawal penalty; interest taxed every year |\n| Debt mutual fund | AMC, distributor, platforms | Diversification, liquidity, small amounts, SWP | NAV can fall; no fixed return |\n| Target maturity fund / ETF | AMC or stock exchange | Near-predictable outcome if held to maturity | Exiting early exposes the investor to rate moves |\n| G-secs and T-bills directly | RBI Retail Direct portal, or brokers | No credit risk, no fund expense | Price moves before maturity; thin trading in some bonds |\n| Corporate bonds directly | SEBI-registered Online Bond Platform Providers (OBPPs) or a broker; many listed bonds now available from ₹10,000 face value | Choosing specific issuers and maturities | Concentration in one issuer; liquidity; check rating and any call option |",
+ "key_terms": [
+  "Bank FD / small savings",
+  "Debt mutual fund",
+  "Target maturity fund / ETF",
+  "G-secs and T-bills directly",
+  "Corporate bonds directly",
+  "OBPP"
+ ],
+ "example": "A corporate bond bought directly concentrates risk in one issuer; a debt fund spreads it — that diversification is part of what the fund is for.",
+ "say": [
+  "Direct bonds only through SEBI-registered platforms or brokers.",
+  "A debt fund's NAV can fall; there is no fixed return."
+ ],
+ "never": [
+  "Direct G-secs never change price before maturity.",
+  "Corporate bonds bought directly carry no concentration risk."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-n11",
+   "q": "What does “G-secs and T-bills directly” mean in plain language?",
+   "o": [
+    "Bank or post office",
+    "AMC, distributor, platforms",
+    "RBI Retail Direct portal, or brokers",
+    "AMC or stock exchange"
+   ],
+   "a": 2,
+   "why": "G-secs and T-bills directly: RBI Retail Direct portal, or brokers Example: No credit risk, no fund expense"
+  },
+  {
+   "id": "bonds-n12",
+   "q": "What does “Corporate bonds directly” mean in plain language?",
+   "o": [
+    "Bank or post office",
+    "SEBI-registered Online Bond Platform Providers (OBPPs) or a broker; many listed bonds now available from ₹10,000 face value",
+    "AMC, distributor, platforms",
+    "AMC or stock exchange"
+   ],
+   "a": 1,
+   "why": "Corporate bonds directly: SEBI-registered Online Bond Platform Providers (OBPPs) or a broker; many listed bonds now available from ₹10,000 face value Example: Choosing specific issuers and maturities"
+  },
+  {
+   "id": "bonds-n13",
+   "q": "Which route gives diversification, liquidity, small amounts and an SWP?",
+   "o": [
+    "Debt mutual fund",
+    "Bank FD",
+    "Direct G-secs only",
+    "A single corporate bond"
+   ],
+   "a": 0,
+   "why": "Debt mutual fund: diversification, liquidity, small amounts, SWP."
+  }
+ ],
+ "card_ids": [
+  "bonds-c17",
+  "bonds-c18"
+ ],
+ "words": 266
+}

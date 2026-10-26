@@ -1,0 +1,76 @@
+{
+ "id": "idcw-01",
+ "title": "What IDCW really is: your own money, paid out",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Expand IDCW and say why SEBI renamed it from “dividend” in April 2021.",
+  "Show, with the NAV table, that a payout moves money instead of creating it."
+ ],
+ "body_md": "IDCW = Income Distribution cum Capital Withdrawal. Until March 2021 this option was called “dividend”. SEBI required the new name from 1 April 2021 because the old word misled investors: a mutual fund payout is not a company dividend paid from profits on top of your investment. It comes out of the scheme's assets, which belong to the investors, and can include part of the investor's own capital.\n\n|  | Before payout | IDCW of ₹1 per unit paid | After payout |\n| --- | --- | --- | --- |\n| NAV | ₹20 | — | ₹19 |\n| Units held | 1,000 | — | 1,000 |\n| Value in the fund | ₹20,000 | — | ₹19,000 |\n| Cash in the bank | — | ₹1,000 | ₹1,000 |\n| Total wealth (before tax) | ₹20,000 |  | ₹20,000 |\n\nKey facts: the fund can pay IDCW only from its distributable surplus (realised gains and income), but that surplus can include money paid in by investors who bought at higher NAVs — which is why it is called a capital withdrawal. The amount and frequency are not guaranteed. A “monthly IDCW” option can pay less, or nothing, in a weak period. The trustees decide each payout; the AMC announces the rate and the record date. Growth and IDCW options of the same plan hold the same portfolio; only what happens to the profits differs.\n\n> **Talk-track:** “When the fund pays IDCW, the NAV drops by the same amount. You haven't earned anything extra; part of your investment has come back to your bank, and it's taxed.”\n\n> **Investor takeaway:** IDCW is not extra income. It is your own money, paid out on the fund's schedule.",
+ "key_terms": [
+  "IDCW",
+  "Distributable surplus",
+  "NAV"
+ ],
+ "example": "NAV ₹20, 1,000 units = ₹20,000. IDCW of ₹1 per unit pays ₹1,000 to the bank; NAV becomes ₹19, value in the fund ₹19,000. Total wealth before tax: still ₹20,000.",
+ "say": [
+  "IDCW doesn't create money; it moves money from the fund to your bank.",
+  "The NAV falls by exactly the payout."
+ ],
+ "never": [
+  "IDCW is extra income on top of your investment.",
+  "A fund that pays IDCW is a better fund."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "It moves money",
+   "text": "When the fund pays IDCW, the NAV drops by the same amount. You haven't earned anything extra; part of your investment has come back to your bank, and it's taxed."
+  }
+ ],
+ "check": [
+  {
+   "id": "idcw-q1",
+   "q": "IDCW stands for:",
+   "o": [
+    "Income Distribution cum Capital Withdrawal",
+    "Interest and Dividend Credit Window",
+    "Investor Dividend Cash Withdrawal",
+    "Income Deposit cum Capital Withdrawal"
+   ],
+   "a": 0,
+   "why": "Income Distribution cum Capital Withdrawal. The name says part may be capital."
+  },
+  {
+   "id": "idcw-q2",
+   "q": "The IDCW name replaced \"dividend\" from:",
+   "o": [
+    "April 2018",
+    "April 2021",
+    "April 2023",
+    "April 2025"
+   ],
+   "a": 1,
+   "why": "April 2021. SEBI renaming."
+  },
+  {
+   "id": "idcw-q3",
+   "q": "After an IDCW of ₹1 per unit, a NAV of ₹20 becomes about:",
+   "o": [
+    "₹21",
+    "₹20",
+    "₹19",
+    "₹10"
+   ],
+   "a": 2,
+   "why": "₹19. NAV falls by the payout."
+  }
+ ],
+ "card_ids": [
+  "idcw-c1",
+  "idcw-c2"
+ ],
+ "words": 250
+}

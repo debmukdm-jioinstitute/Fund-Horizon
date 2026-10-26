@@ -1,0 +1,69 @@
+{
+ "id": "idcw-09",
+ "title": "The conversation in four steps",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Run the four-step IDCW conversation and record the choice.",
+  "Cover need, mechanics, tax and the recorded choice in order."
+ ],
+ "body_md": "The conversation in four steps. 1. What do you need? Regular cash, or long-term growth? 2. How IDCW works: the NAV falls by the payout; it's your own money. 3. The tax: the whole IDCW payout is taxed at your slab; an SWP taxes only the gain. 4. Choose and record: note the option chosen and the reason in the client file.\n\n- Step 1 — What do you need? Regular cash, or long-term growth?\n- Step 2 — How IDCW works: NAV falls by the payout; it's your own money\n- Step 3 — The tax: whole IDCW payout at slab; SWP taxes only the gain\n- Step 4 — Choose and record: option and reason in the client file\n\n> **Investor takeaway:** Choose IDCW only if you understand that it is your own money, taxed in full, on the fund's timetable.",
+ "key_terms": [
+  "Client conversation",
+  "Record-keeping"
+ ],
+ "example": "Client file note: “Client chose SWP from growth after IDCW comparison on control and tax, 12 May” — the record protects both client and distributor.",
+ "say": [
+  "Note the option chosen and the reason in the client file.",
+  "Cover need, mechanics, tax, then choice — in that order."
+ ],
+ "never": [
+  "Record-keeping is optional for IDCW choices.",
+  "Explain tax before explaining how IDCW works."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-n10",
+   "q": "What is step 1 of the IDCW conversation?",
+   "o": [
+    "The tax rate",
+    "The fund's past IDCW",
+    "The record date",
+    "What do you need? Regular cash, or long-term growth?"
+   ],
+   "a": 3,
+   "why": "Step 1: What do you need? Regular cash, or long-term growth?"
+  },
+  {
+   "id": "idcw-n11",
+   "q": "What must be recorded after the IDCW conversation?",
+   "o": [
+    "Only the fund name",
+    "Only the payout date",
+    "The option chosen and the reason, in the client file",
+    "Nothing"
+   ],
+   "a": 2,
+   "why": "Step 4: Choose and record: note the option chosen and the reason in the client file."
+  },
+  {
+   "id": "idcw-n12",
+   "q": "In step 3, the tax comparison is:",
+   "o": [
+    "IDCW is tax-free vs SWP taxed fully",
+    "Whole IDCW payout at slab vs SWP taxing only the gain",
+    "Both taxed identically",
+    "Neither is taxed"
+   ],
+   "a": 1,
+   "why": "Step 3: the whole IDCW payout is taxed at your slab; an SWP taxes only the gain."
+  }
+ ],
+ "card_ids": [
+  "idcw-c17",
+  "idcw-c18"
+ ],
+ "words": 138
+}

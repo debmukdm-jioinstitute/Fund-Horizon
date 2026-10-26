@@ -21,6 +21,9 @@ const PAGE_OPTIONS = NAV_ITEMS.map((i) => ({ href: i.href.split("?")[0], label: 
 function PagePicker({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
   return (
     <div className="flex flex-wrap gap-x-3 gap-y-1">
+      <button type="button" className="text-[12px] underline" onClick={() => onChange(value.length === PAGE_OPTIONS.length ? [] : PAGE_OPTIONS.map((o) => o.href))}>
+        {value.length === PAGE_OPTIONS.length ? "Clear all" : "All pages"}
+      </button>
       {PAGE_OPTIONS.map((o) => (
         <label key={o.href} className="flex items-center gap-1 text-[12px]">
           <input
@@ -40,7 +43,7 @@ function PageEditor({ current, onSave }: { current: string[]; onSave: (v: string
   return (
     <div className="mt-1 space-y-1.5">
       <PagePicker value={sel} onChange={setSel} />
-      <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" onClick={() => onSave(sel)}>
+      <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" disabled={!sel.length} onClick={() => onSave(sel)}>
         Save pages
       </button>
     </div>
@@ -211,6 +214,10 @@ export default function SettingsPage() {
   async function handleProvisionStaff(e: React.FormEvent) {
     e.preventDefault();
     if (!staffEmail.trim() || !staffName.trim()) return;
+    if (staffRole !== "admin" && !staffPages.length) {
+      alert("Tick at least one allowed page.");
+      return;
+    }
     try {
       setSavingStaff(true);
       const res = await createStaffMember({
@@ -494,12 +501,13 @@ export default function SettingsPage() {
                 <option value="rm">Relationship Manager (Client Portfolios)</option>
                 <option value="operations">Operations (Data Management)</option>
                 <option value="compliance">Compliance (Audit &amp; Oversight)</option>
+                <option value="read_only">Read-only (Academy / viewing)</option>
                 <option value="admin">System Administrator</option>
               </select>
             </div>
             <div className="sm:col-span-4">
               <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
-                Allowed pages (none ticked = all pages)
+                Allowed pages (required; ignored for System Administrator)
               </label>
               <PagePicker value={staffPages} onChange={setStaffPages} />
             </div>

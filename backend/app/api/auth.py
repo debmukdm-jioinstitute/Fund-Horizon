@@ -33,7 +33,46 @@ PBKDF2_ITERATIONS = 600_000
 AUTH_RATE_LIMIT = 10  # requests per minute per IP on signup + login
 AUTH_RATE_WINDOW_S = 60.0
 
-LEARN_ONLY = {"/backoffice/learn"}
+_B = "/api/backoffice/"
+# API prefixes each backoffice page may call. Deny-by-default: a page-restricted login can reach
+# nothing under /api except /api/auth and the prefixes of its ticked pages.
+PAGE_API: dict[str, tuple[str, ...]] = {
+    "/backoffice": tuple(_B + p for p in ("overview", "search", "series", "news", "recommended", "watchlists", "sources")),
+    "/backoffice/pms": (_B + "pms",),
+    "/backoffice/mutual-funds": tuple(_B + p for p in ("mutual-fund", "mf-reference", "factsheets", "compare", "screening")),
+    "/backoffice/macro": (_B + "yields", _B + "series"),
+    "/backoffice/micro": (_B + "micro",),
+    "/backoffice/derivatives": (_B + "derivatives",),
+    "/backoffice/flows": (_B + "flows",),
+    "/backoffice/impact": (_B + "impact",),
+    "/backoffice/research": (_B + "research-notes", _B + "briefing"),
+    "/backoffice/data-health": (_B + "data-health",),
+    "/backoffice/crm": ("/api/crm", "/api/rm"),
+    "/backoffice/operations": (_B + "operations", "/api/staff/download", _B + "client-report"),
+    "/backoffice/risk-profiling": (_B + "risk-profiling",),
+    "/backoffice/learn": ("/api/learn",),
+    "/backoffice/settings": (_B + "staff", _B + "watchlists", _B + "recommended"),
+}
+
+
+def peek_customer(request: Request) -> dict | None:
+    """Session owner without side effects; expiry/revocation stay get_current_customer's job."""
+    token = _token_from_request(request)
+    sess = sqlite.get_auth_session(hashlib.sha256(token.encode("utf-8")).hexdigest()) if token else None
+    row = sqlite.get_customer_by_id(sess["customer_id"]) if sess else None
+    return _public_customer(row) if row else None
+
+
+def page_restriction_denies(customer: dict, path: str) -> bool:
+    """True if a page-restricted (non-admin) login may not call this API path."""
+    pages = customer.get("pages")
+    if customer.get("role") == "admin" or not pages:
+        return False
+    if path == "/api/auth" or path.startswith("/api/auth/"):
+        return False
+    return not any(path.startswith(p) for pg in pages for p in PAGE_API.get(pg, ()))
+
+
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 
 GUEST_EMAIL = "guest@fundhorizon.local"
@@ -274,9 +313,6 @@ def require_staff(customer: Annotated[dict, Depends(get_current_customer)]) -> d
         raise HTTPException(403, "Staff access required.")
     if customer.get("status") in ("inactive", "suspended"):
         raise HTTPException(403, "Staff account is suspended or inactive.")
-    # Learn-only logins have no data pages, so no staff API is open to them.
-    if customer.get("role") != "admin" and customer.get("pages") and set(customer["pages"]) <= LEARN_ONLY:
-        raise HTTPException(403, "This login is limited to the Academy.")
     return customer
 
 

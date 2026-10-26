@@ -218,6 +218,15 @@ def create_app() -> FastAPI:
                     return Response(status_code=429, headers=dict(limited.headers))
                 return limited
 
+        if request.url.path.startswith("/api/") and not request.url.path.startswith("/api/auth/") and (
+            request.cookies.get("fh_session") or request.headers.get("authorization")
+        ):
+            from app.api.auth import page_restriction_denies, peek_customer
+
+            who = peek_customer(request)
+            if who and page_restriction_denies(who, request.url.path):
+                return JSONResponse(status_code=403, content={"detail": "Your login is not permitted to access this page's data."})
+
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"

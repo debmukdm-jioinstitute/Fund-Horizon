@@ -251,6 +251,7 @@ def test_admin_staff_provisioning_api(client):
             "role": "analyst",
             "password": "strongPassword123",
             "temp_password": True,
+            "pages": ["/backoffice"],
         },
         headers={"sec-fetch-site": "same-origin"},
     )

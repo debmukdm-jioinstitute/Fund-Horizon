@@ -179,11 +179,13 @@ def test_rm_idor_guard_across_clients(client):
     assert client.get("/api/backoffice/pms/accounts/acc_rm2/tracker").status_code == 200
 
 
-def test_learn_only_login_blocked_from_staff_apis(client):
+def test_learn_only_login_limited_to_learn_api(client):
     sid = _create_user(role="read_only", is_staff=1)
     sqlite.update_customer(sid, {"pages": '["/backoffice/learn"]'})
     _login(client, sid)
-    assert client.get("/api/backoffice/overview").status_code == 403
+    for ep in ("/api/backoffice/overview", "/api/backoffice/pms/strategies", "/api/crm/households", "/api/backoffice/staff"):
+        assert client.get(ep).status_code == 403, ep
+    assert client.get("/api/learn/me").status_code != 403
     assert client.get("/api/auth/me").json()["pages"] == ["/backoffice/learn"]
 
 
@@ -195,3 +197,4 @@ def test_admin_provisions_page_restricted_login(client):
     r = client.post("/api/backoffice/staff/provision", json=body, headers=h)
     assert r.status_code == 201, r.text
     assert client.post("/api/backoffice/staff/provision", json={**body, "email": "x", "pages": ["/nope"]}, headers=h).status_code == 422
+    assert client.post("/api/backoffice/staff/provision", json={**body, "email": "y", "pages": []}, headers=h).status_code == 422

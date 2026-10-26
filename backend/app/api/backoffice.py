@@ -1141,6 +1141,8 @@ def provision_staff_member(
     if body.role not in STAFF_ROLES:
         raise HTTPException(422, f"role must be one of: {', '.join(STAFF_ROLES)}")
     pages = _pages_json(body.pages)
+    if body.role != "admin" and not pages:
+        raise HTTPException(422, "Choose at least one allowed page (admins are unrestricted).")
     existing = repo.get_customer_by_email(email)
     temporary_password = None
     password = body.password
@@ -1227,6 +1229,8 @@ def update_staff_member(
         fields["status"] = body.status
     if body.pages is not None:
         fields["pages"] = _pages_json(body.pages)
+        if not fields["pages"] and (body.role or target.get("role")) != "admin":
+            raise HTTPException(422, "Choose at least one allowed page (admins are unrestricted).")
     temporary_password = None
     if body.reset_password:
         temporary_password = secrets.token_urlsafe(9)

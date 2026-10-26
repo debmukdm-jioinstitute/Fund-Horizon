@@ -148,6 +148,19 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
     });
   }
 
+  // shortcut: HTML table saved as .xls (Excel opens it, may show a format prompt), no xlsx dependency; upgrade if a true .xlsx is needed.
+  const downloadXls = () => {
+    if (!data) return;
+    const esc = (v: string) => v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const tr = (cells: string[], t: string) => `<tr>${cells.map((c) => `<${t}>${esc(c ?? "")}</${t}>`).join("")}</tr>`;
+    const html = `<html><head><meta charset="utf-8"></head><body><table>${tr(data.columns, "th")}${idx.map((i) => tr(data.rows[i], "td")).join("")}</table></body></html>`;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8" }));
+    a.download = `quartile-rankings-${period}.xls`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
   const fetched = data ? fetchedLabel(data.fetched_at) : null;
 
   return (
@@ -156,6 +169,7 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
         <select aria-label="Period" className={sel} value={period} onChange={(e) => setPeriod(e.target.value)}>
           {PERIODS.map((p) => <option key={p} value={p}>{periodLabel(p)}</option>)}
         </select>
+        <button type="button" className={sel} disabled={!idx.length} onClick={downloadXls}>Download Excel</button>
         <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] ml-auto">
           Source: <a className="underline" href="https://www.advisorkhoj.com/mutual-funds-research/quartile-ranking" target="_blank" rel="noreferrer">Advisorkhoj</a> · cached 24h
         </span>

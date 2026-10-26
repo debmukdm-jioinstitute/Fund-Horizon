@@ -1656,6 +1656,9 @@ export interface MfQuartileData {
 export const getMfQuartileRanking = (o: { category: string; period: string; plan: string }, signal?: AbortSignal) =>
   boFetch<{ data: MfQuartileData }>(`/api/backoffice/mutual-funds/quartile-ranking?${new URLSearchParams(o).toString()}`, { signal });
 
+export const getMfQuartileAnnual = (o: { category: string; plan: string }, signal?: AbortSignal) =>
+  boFetch<{ data: MfQuartileData }>(`/api/backoffice/mutual-funds/quartile-annual?${new URLSearchParams(o).toString()}`, { signal });
+
 /** Same-origin CSV download URL for the current filters (all matching rows). */
 export const mfScreenerCsvUrl = (o: MfScreenerQuery): string => {
   const q = mfScreenerParams(o);

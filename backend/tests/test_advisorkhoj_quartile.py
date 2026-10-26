@@ -61,3 +61,18 @@ def test_fetched_at_preserved_on_cache_hit_and_refreshed_after_expiry():
     assert third["fetched_at"]
     assert third["fetched_at"] != first["fetched_at"]
     assert datetime.fromisoformat(third["fetched_at"]) >= parsed
+
+
+def test_annual_uses_annual_path_without_period():
+    ak._quartile_cache.clear()
+    seen = {}
+
+    class _Spy(_C):
+        def get(self, url, **kw):
+            seen.update(url=url, params=kw["params"])
+            return _R()
+
+    out = ak.fetch_quartile_annual("Equity: Flexi Cap", "Regular", client=_Spy())
+    assert seen["url"].endswith("/quartile-ranking-annual-returns")
+    assert "period" not in seen["params"]
+    assert out["rows"] == [["A Fund", "Top Quartile"]]

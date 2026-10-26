@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { getMfQuartileRanking, getMfScreener, MfQuartileData } from "@/lib/backoffice";
+import MfQuartileAnnual from "./MfQuartileAnnual";
 import { formatISTDate } from "@/lib/terminal-format";
 
 const PERIODS = ["1y", "2y", "3y", "4y", "5y", "10y"];
@@ -215,6 +216,11 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
           </table>
         </div>
       )}
+      <MfQuartileAnnual
+        labels={labels}
+        enabled={regular}
+        keep={(n) => (!q || n.toLowerCase().includes(q)) && (!recommended || !!recKeys?.has(nameKey(n)))}
+      />
       <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
         Note: the return numbers in this table are Advisorkhoj&apos;s figures. They are not the screener&apos;s figures, and they do not use the NAV date shown at the top of this page (that date comes from AMFI / mfapi.in for the screener above).
       </p>

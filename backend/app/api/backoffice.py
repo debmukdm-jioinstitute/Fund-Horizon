@@ -885,6 +885,29 @@ def backoffice_mf_quartile_ranking(
     }
 
 
+@router.get("/mutual-funds/quartile-annual")
+def backoffice_mf_quartile_annual(
+    staff: Annotated[dict, Depends(require_staff)],
+    category: str = Query("Equity: Flexi Cap", max_length=80),
+    plan: str = Query("Regular"),
+):
+    """Advisorkhoj calendar-year quartile rankings (public page, robots-aware, cached 24h)."""
+    if plan not in advisorkhoj_provider.QUARTILE_PLANS:
+        raise HTTPException(422, "Bad plan.")
+    try:
+        data = advisorkhoj_provider.fetch_quartile_annual(category, plan)
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None
+    except Exception as e:  # httpx errors, robots block, layout change
+        raise HTTPException(502, f"Advisorkhoj unavailable: {e}") from None
+    return {
+        "data": data,
+        "fetched_at": data.get("fetched_at"),
+        "source": "advisorkhoj",
+        "availability": "ready" if data["rows"] else "no_data",
+    }
+
+
 @router.get("/mutual-funds/nav-pair-check")
 def backoffice_mf_nav_pair_check(
     staff: Annotated[dict, Depends(require_staff)],

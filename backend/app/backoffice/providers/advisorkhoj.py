@@ -134,13 +134,14 @@ class AdvisorkhojProvider(BaseProvider):
 
 
 QUARTILE_PATH = "/mutual-funds-research/quartile-ranking"
+ANNUAL_PATH = "/mutual-funds-research/quartile-ranking-annual-returns"  # calendar-year quartiles; no period param
 QUARTILE_PERIODS = ("1y", "2y", "3y", "4y", "5y", "10y")
 QUARTILE_PLANS = ("Direct", "Regular")
 _QUARTILE_TTL = 24 * 3600
 _quartile_cache: dict[tuple[str, str, str], tuple[float, dict]] = {}
 
 
-def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Client | None = None) -> dict:
+def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Client | None = None, path: str = QUARTILE_PATH) -> dict:
     """Quartile-ranking table for one category/period/plan, parsed from the public page (server-rendered, 24h cache).
 
     Returns ``{"categories": [...], "columns": [...], "rows": [[...]], "links": [...], "fetched_at": "<ISO UTC time>"}``;
@@ -159,11 +160,11 @@ def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Cl
             hit[1]["fetched_at"] = datetime.fromtimestamp(hit[0], tz=UTC).isoformat()
         return hit[1]
     prov = AdvisorkhojProvider(client)
-    if not prov.check_robots_allowed(QUARTILE_PATH):
+    if not prov.check_robots_allowed(path):
         raise RuntimeError("Advisorkhoj robots.txt disallows this path")
     resp = prov._client.get(
-        ADVISORKHOJ_BASE_URL + QUARTILE_PATH,
-        params={"category": category, "period": period, "scheme_plan_type": plan},
+        ADVISORKHOJ_BASE_URL + path,
+        params={"category": category, "scheme_plan_type": plan} | ({"period": period} if path == QUARTILE_PATH else {}),
         headers={"User-Agent": ADVISORKHOJ_UA},
         timeout=20.0,
     )
@@ -173,7 +174,7 @@ def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Cl
     table = soup.find("table", id="tbl_scheme_returns")
     if table is None:
         raise RuntimeError("Advisorkhoj layout changed: quartile table not found")
-    cats = [o["value"] for o in soup.select("#sel_schemeCategories option") if o.get("value")]
+    cats = [o["value"] for o in soup.select("#sel_schemeCategories option, #sel_category option") if o.get("value")]
     if cats and category not in cats:
         raise ValueError("Unknown category")
     columns = [th.get_text(" ", strip=True) for th in table.select("thead th")]
@@ -194,3 +195,8 @@ def fetch_quartile_table(category: str, period: str, plan: str, client: httpx.Cl
     }
     _quartile_cache[key] = (time.time(), out)
     return out
+
+
+def fetch_quartile_annual(category: str, plan: str, client: httpx.Client | None = None) -> dict:
+    """Calendar-year quartile table (2016..YTD) for one category/plan; same shape and cache as ``fetch_quartile_table``."""
+    return fetch_quartile_table(category, "annual", plan, client, path=ANNUAL_PATH)

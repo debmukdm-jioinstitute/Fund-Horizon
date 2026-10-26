@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getMfQuartileRanking, MfQuartileData } from "@/lib/backoffice";
+import { getMfQuartileRanking, getMfScreener, MfQuartileData } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 
 const PERIODS = ["1y", "2y", "3y", "4y", "5y", "10y"];
@@ -70,7 +70,11 @@ function fetchedLabel(raw: string | undefined): string | null {
   return formatted === "—" ? raw.trim() : formatted;
 }
 
-export default function MfQuartileRankings({ screenerCategories = [], plans = [], query = "" }: { screenerCategories?: { key: string; label: string }[]; plans?: string[]; query?: string }) {
+// Advisorkhoj names ("HSBC Multi Cap Fund Reg Gr") and screener names ("... - Regular Plan - Growth") only agree once plan/option words are dropped.
+const nameKey = (n: string) => n.toLowerCase().replace(/\b(direct|regular|reg|dir|plan|growth|gr|option|fund|scheme)\b/g, "").replace(/[^a-z0-9]/g, "");
+
+export default function MfQuartileRankings({ screenerCategories = [], plans = [], query = "", recommended = false }: { screenerCategories?: { key: string; label: string }[]; plans?: string[]; query?: string; recommended?: boolean }) {
+  const [recKeys, setRecKeys] = useState<Set<string> | null>(null);
   const [period, setPeriod] = useState("1y");
   const [data, setData] = useState<MfQuartileData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,9 +82,20 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
   const [sortCol, setSortCol] = useState(3);
 
   // No category ticked = every Advisorkhoj equity category. Advisorkhoj has no Direct-plan quartiles.
-  const labels = (screenerCategories.length ? screenerCategories.map((c) => EQUITY_ADVISORKHOJ[c.key]) : Object.values(EQUITY_ADVISORKHOJ)).filter(Boolean);
-  const regular = plans.length === 0 || plans.includes("Regular");
+  const labels = (screenerCategories.length && !recommended ? screenerCategories.map((c) => EQUITY_ADVISORKHOJ[c.key]) : Object.values(EQUITY_ADVISORKHOJ)).filter(Boolean);
+  // FH Recommended ignores the category/plan ticks; a Direct pick shows its Regular twin's quartile.
+  const regular = recommended || plans.length === 0 || plans.includes("Regular");
   const labelKey = labels.join("|");
+
+  useEffect(() => {
+    setRecKeys(null);
+    if (!recommended) return;
+    const ctl = new AbortController();
+    getMfScreener({ category: [], plan: [], sort: "name", order: "asc", ranges: {}, recommended: true, limit: 500 }, ctl.signal)
+      .then((r) => setRecKeys(new Set(r.data.map((f) => nameKey(f.name)))))
+      .catch((e) => !ctl.signal.aborted && setError(e instanceof Error ? e.message : "Failed to load FH Recommended list"));
+    return () => ctl.abort();
+  }, [recommended]);
 
   useEffect(() => {
     if (!regular || !labels.length) {
@@ -110,7 +125,7 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
 
   const num = (s: string) => parseFloat((s ?? "").replace(/,/g, ""));
   const q = query.trim().toLowerCase();
-  const idx = data ? data.rows.map((_, i) => i).filter((i) => !q || data.rows[i][0].toLowerCase().includes(q)) : [];
+  const idx = data ? data.rows.map((_, i) => i).filter((i) => (!q || data.rows[i][0].toLowerCase().includes(q)) && (!recommended || recKeys?.has(nameKey(data.rows[i][0])))) : [];
   if (data) {
     const retCol = trailingReturnCol(data.columns, data.rows, period);
     const safeSort = sortCol < data.columns.length ? sortCol : 0;
@@ -157,9 +172,9 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
         </div>
       )}
       {error && <div className="py-8 text-center text-[#B42332] dark:text-[#FF7D86]">{error}</div>}
-      {!loading && !error && (!regular || !labels.length || idx.length === 0) && (
+      {!loading && !error && !(recommended && !recKeys) && (!regular || !labels.length || idx.length === 0) && (
         <div className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
-          {!regular ? "Advisorkhoj does not publish Direct-plan quartiles. Tick Regular to see quartile data." : !labels.length ? "Advisorkhoj has no quartile data for the selected categories." : q ? `No fund matching “${query}” in the selected categories.` : "Advisorkhoj has no quartile data for this selection."}
+          {!regular ? "Advisorkhoj does not publish Direct-plan quartiles. Tick Regular to see quartile data." : !labels.length ? "Advisorkhoj has no quartile data for the selected categories." : q ? `No fund matching “${query}” in the selected categories.` : recommended ? "None of the FH Recommended funds has an Advisorkhoj quartile ranking for this period." : "Advisorkhoj has no quartile data for this selection."}
         </div>
       )}
       {data && idx.length > 0 && (

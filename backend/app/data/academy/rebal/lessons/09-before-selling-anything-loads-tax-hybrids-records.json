@@ -1,0 +1,70 @@
+{
+ "id": "rebal-09",
+ "title": "Before selling anything: loads, tax, hybrids, records",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Check exit loads per instalment and capital-gains tax before any redemption.",
+  "Say why hybrid-fund holders need no rebalance, and what to record."
+ ],
+ "body_md": "Before selling anything. Exit loads: each SIP instalment has its own date; recent units may still carry a load. Tax: each redemption may create capital gains, and short-term gains are usually taxed more heavily. Refer the client to a CA. Hybrid funds: where a client holds a multi-asset or balanced advantage fund, rebalancing happens inside the fund and the client does not redeem. Record it: what was moved, why, and the client's approval.\n\n> **Investor takeaway:** Each SIP instalment has its own exit-load date.",
+ "key_terms": [
+  "Exit load",
+  "Capital gains",
+  "Hybrid fund"
+ ],
+ "example": "Rebalance would redeem units bought 6 months ago: check exit load and short-term gains; use new money or wait where sensible; refer tax to a CA.",
+ "say": [
+  "Each switch is a redemption that may carry load and tax.",
+  "Where a hybrid fund rebalances internally, the client does not redeem."
+ ],
+ "never": [
+  "Switches are tax-free always.",
+  "Recent units never carry loads."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q10",
+   "q": "Each switch between funds is…",
+   "o": [
+    "Tax-free always",
+    "A redemption that may carry load and tax",
+    "Not allowed",
+    "Only for debt funds"
+   ],
+   "a": 1,
+   "why": "A redemption that may carry load and tax. Check costs; refer tax to a CA."
+  },
+  {
+   "id": "rebal-q14",
+   "q": "Clients in multi-asset or balanced advantage funds…",
+   "o": [
+    "Must rebalance monthly",
+    "Get rebalancing inside the fund",
+    "Cannot rebalance",
+    "Pay double tax"
+   ],
+   "a": 1,
+   "why": "Get rebalancing inside the fund. The fund does the moving."
+  },
+  {
+   "id": "rebal-n14",
+   "q": "Why do recent SIP units need a load check?",
+   "o": [
+    "All units share one date",
+    "Loads never apply to SIPs",
+    "Loads apply only to lump sums",
+    "Each SIP instalment has its own date; recent units may still carry a load"
+   ],
+   "a": 3,
+   "why": "Exit loads: each SIP instalment has its own date; recent units may still carry a load."
+  }
+ ],
+ "card_ids": [
+  "rebal-c17",
+  "rebal-c18"
+ ],
+ "words": 83
+}

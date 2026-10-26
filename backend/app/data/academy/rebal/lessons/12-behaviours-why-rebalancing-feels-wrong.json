@@ -1,0 +1,71 @@
+{
+ "id": "rebal-12",
+ "title": "Behaviours: why rebalancing feels wrong",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Answer five client behaviours with the manual's “what to say” line.",
+  "Explain why the rule is agreed in writing at the start."
+ ],
+ "body_md": "Rebalancing asks the client to do the opposite of what feels natural: sell what is doing well and buy what is doing badly. Expect pushback.\n\n| Behaviour | What it sounds like | What to say |\n| --- | --- | --- |\n| Letting winners run | “Why sell equity when it's doing so well?” | “We're only trimming back to the mix you chose. You still hold 60% in equity.” |\n| Fear of buying after a fall | “Why put more into something that's falling?” | “This is the rule we agreed while things were calm. It buys at lower prices, without guessing the bottom.” |\n| Recency bias | “Debt has done nothing; let's drop it.” | “Debt is what we use to buy equity after a fall. It earns its place in bad years.” |\n| Regret | “Last time we rebalanced, equity kept rising.” | “Rebalancing controls risk; it isn't a forecast. Some years it costs a little, some years it saves a lot.” |\n| Inertia | “Let's leave it; it's fine.” | “Left alone, a 60% target became 70% in our 10-year example. Let's keep the risk you chose.” |\n\nTip: agree the rebalancing rule in writing when the client first invests. Later, you're following the client's own decision, not asking them to make a new one under pressure.",
+ "key_terms": [
+  "Letting winners run",
+  "Recency bias",
+  "Regret",
+  "Inertia"
+ ],
+ "example": "“Why sell equity when it's doing so well?” → “We're only trimming back to the mix you chose. You still hold 60% in equity.”",
+ "say": [
+  "Agree the rule in writing when the client first invests.",
+  "Later, you're following the client's own decision."
+ ],
+ "never": [
+  "Let the client decide under pressure each time.",
+  "Sell winners because they did well."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q21",
+   "q": "After a strong year, Rohan's 60/40 portfolio is at 68/32 and he doesn't want to sell equity. What do you do?",
+   "o": [
+    "Leave it alone",
+    "Explain the band was breached; use new money first, then a partial switch or STP; check loads and tax; record his decision",
+    "Sell all equity at once",
+    "Move everything to debt"
+   ],
+   "a": 1,
+   "why": "Explain the band was breached; use new money first, then a partial switch or STP; check loads and tax; record his decision."
+  },
+  {
+   "id": "rebal-q22",
+   "q": "Leela's 60/40 is at 50/50 after a sharp fall and she wants to wait. What do you say?",
+   "o": [
+    "Agree to wait indefinitely",
+    "Remind her of the agreed rule; explain buying lower without predicting the bottom; consider staging the move; no market predictions",
+    "Sell all debt now",
+    "Promise a recovery"
+   ],
+   "a": 1,
+   "why": "Remind her of the agreed rule; explain buying lower without predicting the bottom; consider staging the move; no market predictions."
+  },
+  {
+   "id": "rebal-q17",
+   "q": "After equity falls, rebalancing can mean:",
+   "o": [
+    "Selling more equity",
+    "Buying equity after a fall",
+    "Moving all to cash",
+    "Doing nothing ever"
+   ],
+   "a": 1,
+   "why": "Restoring the target buys the underweight asset."
+  }
+ ],
+ "card_ids": [
+  "rebal-c23",
+  "rebal-c24"
+ ],
+ "words": 197
+}

@@ -1,0 +1,70 @@
+{
+ "id": "withdraw-04",
+ "title": "How an SWP works",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain an SWP and what each withdrawal is.",
+  "Say what an SWP does not guarantee, and what to refer to a CA."
+ ],
+ "body_md": "A Systematic Withdrawal Plan redeems a fixed amount from a fund at set intervals, usually monthly. Each withdrawal is a redemption of units, so: only the gains part of each withdrawal is a capital gain; the rest is the investor's own money coming back. Tax depends on the fund type and holding period; refer the client to a CA. Exit loads can apply to units within the exit-load period. An SWP does not guarantee income. If returns are lower than withdrawals for long, the corpus shrinks.\n\n> **Investor takeaway:** An SWP is a withdrawal plan, not guaranteed income.",
+ "key_terms": [
+  "SWP",
+  "Redemption",
+  "Capital gain"
+ ],
+ "example": "Monthly SWP of ₹40,000 from a liquid fund: each payout redeems units; only the gains part is a capital gain.",
+ "say": [
+  "Only the gains part of each withdrawal is a capital gain.",
+  "An SWP does not guarantee income."
+ ],
+ "never": [
+  "The whole SWP withdrawal is taxed as gains.",
+  "An SWP is a guaranteed pension."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q7",
+   "q": "What does an SWP do?",
+   "o": [
+    "Buys units monthly",
+    "Redeems a fixed amount regularly",
+    "Guarantees a pension",
+    "Switches funds"
+   ],
+   "a": 1,
+   "why": "Redeems a fixed amount regularly. It is a withdrawal plan, not guaranteed income."
+  },
+  {
+   "id": "withdraw-q8",
+   "q": "Is the whole SWP withdrawal taxed as capital gains?",
+   "o": [
+    "Yes",
+    "No, only the gains part",
+    "Never taxed",
+    "Only for debt funds"
+   ],
+   "a": 1,
+   "why": "No, only the gains part. Refer details to a CA."
+  },
+  {
+   "id": "withdraw-n04",
+   "q": "What does an SWP do?",
+   "o": [
+    "Buys units monthly",
+    "Redeems a fixed amount regularly",
+    "Guarantees a pension",
+    "Switches funds"
+   ],
+   "a": 1,
+   "why": "A Systematic Withdrawal Plan redeems a fixed amount from a fund at set intervals, usually monthly."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c7",
+  "withdraw-c8"
+ ],
+ "words": 97
+}

@@ -1,0 +1,72 @@
+{
+ "id": "terms-17",
+ "title": "Role-play lab: six client conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six common client objections in plain words with a rupee example.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example.\n\n| Client says | Explain |\n| --- | --- |\n| “This NFO is only ₹10, so it’s cheaper.” | NAV is the price of one unit, not a measure of value. The same percentage growth gives the same rupee result whatever the NAV level; judge a fund by its strategy, cost and fit, not by a ₹10 NAV. |\n| “My SIP statement says 45% return in 3 years, so 15% a year?” | 45% is the absolute return over 3 years, not a yearly rate. For a SIP the right annualised measure is XIRR; compare it with the TRI benchmark over the same period. |\n| “I want the IDCW option for monthly income.” | IDCW payouts come out of the investor’s own capital and gains, the amount and timing are not fixed, and the NAV falls by the payout. For a chosen, regular amount, compare an SWP — and refer tax questions to the client’s CA. |\n| “My debt fund fell. I thought debt was safe.” | A debt fund is not an FD. Its value moves with interest rates (duration) and with borrower credit quality. Check the fund’s duration against the goal date, and promise no recovery. |\n| “Why should I pay for the regular plan?” | Direct and regular plans of a scheme hold the same portfolio. The regular plan’s expense ratio includes distributor commission, which pays for guidance and service across the life of the investment. |\n| “I redeemed at 2:50 pm, why did I get tomorrow’s NAV?” | For purchases, the NAV depends on when the money is received by the AMC, not when the form was submitted. The cut-off is 3 pm for most funds (1:30 pm for liquid and overnight funds); money received after it gets the next day’s NAV. |\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "NAV",
+  "XIRR",
+  "IDCW",
+  "SWP"
+ ],
+ "example": "Role-play the NFO question: ₹1,00,000 in a ₹10 NAV fund buys 10,000 units and in a ₹200 NAV fund buys 500 units; 12% growth leaves both at ₹1,12,000.",
+ "say": [
+  "Say what it is in one plain sentence, give a rupee example, then say why it matters to this client.",
+  "If the client can't repeat it back, it wasn't explained."
+ ],
+ "never": [
+  "Use jargon to sound expert.",
+  "Promise that a fund will recover."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q21",
+   "q": "A client says, “This NFO is only ₹10, so it’s cheaper than the fund at ₹200.” What do you explain?",
+   "o": [
+    "Agree — a lower NAV is always cheaper",
+    "NAV is the price of one unit; the same % growth gives the same rupee result, so judge by strategy, cost and fit, not NAV level",
+    "That NFOs are banned for new investors",
+    "That only the AUM matters"
+   ],
+   "a": 1,
+   "why": "Explains NAV as a price per unit; same % growth gives the same rupee result; judges by strategy, cost and fit, not NAV level."
+  },
+  {
+   "id": "terms-q22",
+   "q": "A client’s SIP statement shows 45% after 3 years and they think that is 15% a year. What do you explain?",
+   "o": [
+    "That 45% divided by 3 is the right yearly return",
+    "Absolute return ignores time; for a SIP the right annualised measure is XIRR, compared with the TRI benchmark",
+    "That SIP returns are never annualised",
+    "That only CAGR applies to SIPs"
+   ],
+   "a": 1,
+   "why": "Explains absolute vs annualised return; shows XIRR as the right measure; compares with TRI benchmark."
+  },
+  {
+   "id": "terms-q23",
+   "q": "A retiree wants the IDCW option “for monthly income”. What do you explain?",
+   "o": [
+    "That IDCW is guaranteed monthly income",
+    "IDCW is paid from own capital, amount and timing not fixed; compare SWP for a chosen, regular amount; tax via CA",
+    "That retirees cannot use SWPs",
+    "That IDCW is tax-free"
+   ],
+   "a": 1,
+   "why": "IDCW is paid from own capital, amount and timing not fixed; compares SWP for a chosen, regular amount; tax via CA."
+  }
+ ],
+ "card_ids": [
+  "terms-c31",
+  "terms-c32"
+ ],
+ "words": 322
+}

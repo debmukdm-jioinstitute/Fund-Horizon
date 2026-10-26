@@ -1,0 +1,68 @@
+{
+ "id": "withdraw-06",
+ "title": "The gap calculation",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Calculate the gap and the withdrawal rate from expenses, other income and corpus.",
+  "Work the ₹6 L / ₹2 L / ₹1 Cr example."
+ ],
+ "body_md": "The gap calculation: annual expenses − other income = what the portfolio must provide. Divide that by the corpus to get the withdrawal rate. Example (illustrative): expenses ₹6 L a year, pension and rent ₹2 L, so the portfolio must provide ₹4 L. From a ₹1 Cr corpus that is a 4% withdrawal rate.\n\n> **Investor takeaway:** Gap = expenses − other income. Rate = gap ÷ corpus.",
+ "key_terms": [
+  "Gap calculation"
+ ],
+ "example": "Expenses ₹6 L, pension and rent ₹2 L, corpus ₹1 Cr → gap ₹4 L → 4% withdrawal rate.",
+ "say": [
+  "Annual expenses − other income = what the portfolio must provide.",
+  "Divide the gap by the corpus to get the rate."
+ ],
+ "never": [
+  "The rate is expenses divided by income.",
+  "Other income doesn't reduce the gap."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q9",
+   "q": "Expenses ₹6 L, pension and rent ₹2 L, corpus ₹1 Cr. The withdrawal rate is…",
+   "o": [
+    "2%",
+    "4%",
+    "6%",
+    "8%"
+   ],
+   "a": 1,
+   "why": "4%. (6 − 2) ÷ 100 = 4%."
+  },
+  {
+   "id": "withdraw-n07",
+   "q": "Expenses ₹6 L, pension and rent ₹2 L, corpus ₹1 Cr. The withdrawal rate is:",
+   "o": [
+    "2%",
+    "6%",
+    "4%",
+    "8%"
+   ],
+   "a": 2,
+   "why": "4%. (6 − 2) ÷ 100 = 4%."
+  },
+  {
+   "id": "withdraw-n08",
+   "q": "What is the gap calculation?",
+   "o": [
+    "Corpus minus returns",
+    "Annual expenses minus other income",
+    "Income plus expenses",
+    "Returns minus inflation"
+   ],
+   "a": 1,
+   "why": "The gap calculation: annual expenses − other income = what the portfolio must provide."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c11",
+  "withdraw-c12"
+ ],
+ "words": 67
+}

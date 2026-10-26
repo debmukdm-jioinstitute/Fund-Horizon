@@ -1,0 +1,70 @@
+{
+ "id": "overlap-08",
+ "title": "Choosing funds that complement each other",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Name four ways a new fund can complement existing funds.",
+  "Check overlap before adding any new fund."
+ ],
+ "body_md": "Choosing funds that complement each other: different market-cap focus (large vs mid vs small). Different style (growth vs value) or approach (active vs index). Different geography (an international fund, where suitable). Low overlap on a tool, checked before adding any new fund.\n\n> **Investor takeaway:** Before adding, let's see what it does that your current funds don't.",
+ "key_terms": [
+  "Complementary funds",
+  "Style",
+  "Geography"
+ ],
+ "example": "Adding a value fund to a growth-heavy portfolio, or an international fund for geography — each adds something different, checked on a tool first.",
+ "say": [
+  "Check overlap before adding any new fund.",
+  "Different style or geography can complement; same stocks cannot."
+ ],
+ "never": [
+  "Add last year's top fund without checking.",
+  "Same large-cap stocks add diversification."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q23",
+   "q": "A client wants to add last year's top flexi-cap fund. What do you do first?",
+   "o": [
+    "Add it immediately",
+    "Check its overlap with existing funds; ask what job it would do; add only if it brings something different",
+    "Replace all existing funds with it",
+    "Ignore overlap and follow the rating"
+   ],
+   "a": 1,
+   "why": "Check its overlap with existing funds; ask what job it would do; add only if it brings something different."
+  },
+  {
+   "id": "overlap-n11",
+   "q": "Which new fund complements a growth-heavy portfolio?",
+   "o": [
+    "Another growth fund holding the same stocks",
+    "A third large-cap fund",
+    "A value fund with low overlap, checked on a tool first",
+    "Any top-rated fund"
+   ],
+   "a": 2,
+   "why": "Different style (growth vs value) or approach (active vs index). Low overlap on a tool, checked before adding any new fund."
+  },
+  {
+   "id": "overlap-n12",
+   "q": "Before adding any new fund, always:",
+   "o": [
+    "Check only its rating",
+    "Check its overlap with what the client already holds",
+    "Check only its NAV",
+    "Check only its AMC"
+   ],
+   "a": 1,
+   "why": "Low overlap on a tool, checked before adding any new fund."
+  }
+ ],
+ "card_ids": [
+  "overlap-c15",
+  "overlap-c16"
+ ],
+ "words": 56
+}

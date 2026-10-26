@@ -1,0 +1,76 @@
+{
+ "id": "psych-08",
+ "title": "Framing rules for reviews",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "R",
+ "objectives": [
+  "Frame every review around goals and long periods, not the latest move.",
+  "Apply the four “instead of / show” swaps."
+ ],
+ "body_md": "How a review is framed decides how the client feels about the same numbers, so frame every review around goals and long periods, not the latest move. Instead of today's portfolio value vs last month, show progress to each goal in rupees and % — counters short-term framing. Instead of each fund's 1-year return, show XIRR over 3–5 years vs benchmark — counters recency bias. Instead of a list of red and green funds, show total portfolio vs target allocation — counters loss aversion on single holdings. Instead of “markets are down 8% this quarter”, show “you're 62% of the way to your house goal, on plan” — keeps attention on what matters.\n\n| Instead of… | Show… | Why |\n| --- | --- | --- |\n| Today's portfolio value vs last month | Progress to each goal in rupees and % | Counters short-term framing |\n| Each fund's 1-year return | XIRR over 3–5 years vs benchmark | Counters recency bias |\n| A list of red and green funds | Total portfolio vs target allocation | Counters loss aversion on single holdings |\n| \"Markets are down 8% this quarter\" | \"You're 62% of the way to your house goal, on plan\" | Keeps attention on what matters |\n\n> **Talk-track:** “Forget today's market. You're 62% of the way to your house goal, right on plan.”",
+ "key_terms": [
+  "Framing",
+  "XIRR",
+  "Goal progress"
+ ],
+ "example": "Review: “You're 62% of the way to your house goal, on plan” instead of “markets are down 8% this quarter” — same numbers, different feeling.",
+ "say": [
+  "Show progress to each goal in rupees and %.",
+  "Show XIRR over 3–5 years vs benchmark, not 1-year returns."
+ ],
+ "never": [
+  "Lead with the latest market headline.",
+  "List red and green funds first."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "62% of the way there",
+   "text": "Forget today's market. You're 62% of the way to your house goal, right on plan."
+  }
+ ],
+ "check": [
+  {
+   "id": "psych-q12",
+   "q": "What is the best way to frame an annual review?",
+   "o": [
+    "List each fund's quarterly return",
+    "Show progress to each goal in rupees and %",
+    "Lead with the latest market headline",
+    "Show the best and worst fund only"
+   ],
+   "a": 1,
+   "why": "Show progress to each goal in rupees and %. Goals and long periods counter short-term framing and recency."
+  },
+  {
+   "id": "psych-n15",
+   "q": "Instead of each fund's 1-year return, a review should show:",
+   "o": [
+    "Each fund's quarterly return",
+    "The latest headline",
+    "XIRR over 3–5 years vs benchmark",
+    "Only the best fund"
+   ],
+   "a": 2,
+   "why": "Instead of each fund's 1-year return: XIRR over 3–5 years vs benchmark. Counters recency bias."
+  },
+  {
+   "id": "psych-n16",
+   "q": "Instead of a list of red and green funds, show:",
+   "o": [
+    "Only red funds",
+    "Total portfolio vs target allocation",
+    "Only green funds",
+    "Daily values"
+   ],
+   "a": 1,
+   "why": "Instead of a list of red and green funds: total portfolio vs target allocation. Counters loss aversion on single holdings."
+  }
+ ],
+ "card_ids": [
+  "psych-c15",
+  "psych-c16"
+ ],
+ "words": 203
+}

@@ -1,0 +1,70 @@
+{
+ "id": "withdraw-15",
+ "title": "Role-play lab: six withdrawal conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six withdrawal conversations using gaps, buckets and guardrails.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example. Scenarios: New retiree — Mr. Iyer, 60, has ₹1 Cr, spends ₹6 L a year and has a ₹2 L pension. High withdrawal — Mrs. Rao wants ₹80,000 a month from ₹1 Cr. Panic in year one — a new retiree's equity bucket fell 18%; he wants to move all to FDs. Big family request — a retired client wants to give ₹15 L to her son. All in FDs — a couple keeps ₹80 L in FDs and spends ₹4 L a year. SWP from equity — a client runs his SWP directly from a small-cap fund.\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Gap calculation",
+  "Guardrails"
+ ],
+ "example": "Role-play Mr. Iyer: gap ₹4 L (4% rate), three buckets, SWP from a liquid fund, health-cover check, illustrations with assumptions, no promises.",
+ "say": [
+  "Gap, buckets, SWP source, health cover — no promises.",
+  "Show the rate and its effect before deciding."
+ ],
+ "never": [
+  "Promise the corpus will last a set number of years.",
+  "Present an SWP as guaranteed income."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q21",
+   "q": "Mr. Iyer, 60, has ₹1 Cr, spends ₹6 L a year and gets a ₹2 L pension. What is the plan?",
+   "o": [
+    "SWP of ₹6 L a year from equity",
+    "Gap = ₹4 L (4% rate); set up three buckets; SWP from a liquid fund; check health cover; show illustrations with assumptions; no promises",
+    "SWP of ₹2 L a year",
+    "No plan needed"
+   ],
+   "a": 1,
+   "why": "Gap = ₹4 L (4% rate); set up three buckets; SWP from a liquid fund; check health cover; show illustrations with assumptions; no promises."
+  },
+  {
+   "id": "withdraw-q22",
+   "q": "Mrs. Rao wants ₹80,000 a month from ₹1 Cr. What do you show her?",
+   "o": [
+    "Agree immediately",
+    "Show the ≈9.6% rate and how quickly it may run out (illustrative); discuss lower spending, other income or delaying extras",
+    "Promise it will last forever",
+    "Suggest a small-cap SWP"
+   ],
+   "a": 1,
+   "why": "Show the ≈9.6% rate and how quickly it may run out (illustrative); discuss lower spending, other income or delaying extras."
+  },
+  {
+   "id": "withdraw-q23",
+   "q": "A new retiree's equity bucket fell 18% and he wants to move all to FDs. What do you do?",
+   "o": [
+    "Move everything to FDs at once",
+    "Show Buckets 1–2 cover the next years; avoid selling equity low; apply guardrails; no market predictions",
+    "Stop all withdrawals",
+    "Promise equity will recover"
+   ],
+   "a": 1,
+   "why": "Show Buckets 1–2 cover the next years; avoid selling equity low; apply guardrails; no market predictions."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c29",
+  "withdraw-c30"
+ ],
+ "words": 142
+}

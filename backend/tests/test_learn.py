@@ -35,14 +35,18 @@ def play(client, quiz_id, mode="practice", right=True):
 
 # --- content integrity -------------------------------------------------------------------------------------
 MODULES = {"mf": (22, "Module 1"), "pms": (16, "Module 2"), "sip": (18, "Module 12"),
-           "alloc": (18, "Module 13"), "stepup": (18, "Module 14")}
+           "alloc": (18, "Module 13"), "stepup": (18, "Module 14"),
+           "psych": (17, "Module 3"), "compare": (16, "Module 4"), "terms": (18, "Module 5"),
+           "bonds": (18, "Module 6"), "idcw": (16, "Module 8"), "goals": (16, "Module 9"),
+           "timing": (16, "Module 11"), "rebal": (16, "Module 15"), "overlap": (16, "Module 16"),
+           "withdraw": (16, "Module 17")}
 
 
 def test_content_is_consistent():
     c = L._content()
     assert set(c["mods"]) == set(MODULES)
     # syllabus order, not directory order: Module 1 must stay the first module a new joiner sees
-    assert list(c["mods"]) == ["mf", "pms", "sip", "alloc", "stepup"]
+    assert list(c["mods"]) == ["mf", "pms", "sip", "alloc", "stepup", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "rebal", "overlap", "withdraw"]
     for mid, (n_lessons, code) in MODULES.items():
         mod = c["mods"][mid]
         assert (len(mod["_lessons"]), mod["code"]) == (n_lessons, code), mid
@@ -78,14 +82,15 @@ def test_pms_aprn_date_is_flagged_for_compliance_review():
     assert "TODO-COMPLIANCE" in les["body_md"] and "31 Jul 2025" in les["body_md"]
 
 
-def test_certificate_needs_all_five_finals_and_names_them(client, admin):
+def test_certificate_needs_all_thirteen_finals_and_names_them(client, admin):
     play(client, "mf-final")
-    assert client.get("/api/learn/me").json()["certificate"] is None  # one of five is not enough
-    for mid in ("pms", "sip", "alloc", "stepup"):
+    assert client.get("/api/learn/me").json()["certificate"] is None  # one of thirteen is not enough
+    for mid in ("pms", "sip", "alloc", "stepup", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "rebal", "overlap", "withdraw"):
         play(client, f"{mid}-final")
     me = client.get("/api/learn/me").json()
     assert set(me["certificate"]) == set(MODULES)
-    assert all(c["score"] == 30 and c["title"] for c in me["certificate"].values())
+    mods = L._content()["mods"]
+    assert all(c["score"] == len(mods[m]["final"]["questions"]) and c["title"] for m, c in me["certificate"].items())
     badges = {b["id"] for b in me["badges"]}
     assert {f"grad_{m}" for m in MODULES} | {"full_stack"} <= badges
 

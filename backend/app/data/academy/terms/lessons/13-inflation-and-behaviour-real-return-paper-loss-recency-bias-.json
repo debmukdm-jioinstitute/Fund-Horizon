@@ -1,0 +1,74 @@
+{
+ "id": "terms-13",
+ "title": "Inflation and behaviour: real return, paper loss, recency bias, FOMO",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Explain real return and why “safe” money can still lose value.",
+  "Name recency bias and FOMO and how each pushes clients to act."
+ ],
+ "body_md": "Compounding means earning returns on past returns, so growth speeds up over time: ₹10,000 a month for 20 years at an assumed 12% is about ₹1 crore on ₹24 lakh invested (illustrative). Inflation shrinks what money can buy: at 6% inflation, ₹1 lakh of expenses today becomes about ₹1.8 lakh in 10 years. Real return is return after inflation: a 7% FD with 6% inflation is about 1% real, before tax. The risk-free rate (usually government securities or T-bills) anchors Sharpe-ratio maths. A paper loss is not real until you sell. Recency bias assumes what happened lately will continue; FOMO rushes in because others are making money.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Compounding | Earning returns on past returns, so growth speeds up over time | ₹10,000 a month for 20 years at an assumed 12% ≈ ₹1 crore, on ₹24 lakh invested (illustrative) |\n| Inflation | The rise in prices that shrinks what money can buy | At 6% inflation, ₹1 lakh of expenses today becomes about ₹1.8 lakh in 10 years |\n| Real return | Return after inflation | 7% FD with 6% inflation ≈ 1% real return, before tax |\n| Risk-free rate | Return on the safest option, usually government securities or T-bills | Used to calculate the Sharpe ratio |\n| Paper loss / paper gain | A fall or rise in value that is not real until you sell | A 15% dip is a paper loss; selling makes it real |\n| Recency bias | Assuming what happened lately will continue | \"Small caps gave 40% last year, so they'll do it again\" |\n| FOMO | Fear of missing out: rushing in because others are making money | Buying a hot NFO because a friend did |\n\n> **Investor takeaway:** Inflation is the silent risk. Money that is “safe” but earns less than inflation is quietly losing value.",
+ "key_terms": [
+  "Compounding",
+  "Inflation",
+  "Real return",
+  "Risk-free rate",
+  "Paper loss / paper gain",
+  "Recency bias",
+  "FOMO"
+ ],
+ "example": "₹10,000 a month for 20 years at an assumed 12% a year: about ₹1 crore from ₹24 lakh invested — illustrative, not a forecast.",
+ "say": [
+  "“Safe” money earning less than inflation is losing value.",
+  "A 15% dip is a paper loss; selling makes it real."
+ ],
+ "never": [
+  "A fixed deposit always beats inflation.",
+  "Last year's best performer will repeat next year."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q20",
+   "q": "What is real return?",
+   "o": [
+    "Return before tax",
+    "Return after inflation",
+    "Return after exit load",
+    "The fund's best yearly return"
+   ],
+   "a": 1,
+   "why": "Nominal return minus inflation, roughly."
+  },
+  {
+   "id": "terms-n21",
+   "q": "What does “Real return” mean in plain language?",
+   "o": [
+    "Return after inflation",
+    "Earning returns on past returns, so growth speeds up over time",
+    "The rise in prices that shrinks what money can buy",
+    "Return on the safest option, usually government securities or T-bills"
+   ],
+   "a": 0,
+   "why": "Real return: Return after inflation Example: 7% FD with 6% inflation ≈ 1% real return, before tax"
+  },
+  {
+   "id": "terms-n22",
+   "q": "What does “FOMO” mean in plain language?",
+   "o": [
+    "Earning returns on past returns, so growth speeds up over time",
+    "The rise in prices that shrinks what money can buy",
+    "Return after inflation",
+    "Fear of missing out: rushing in because others are making money"
+   ],
+   "a": 3,
+   "why": "FOMO: Fear of missing out: rushing in because others are making money Example: Buying a hot NFO because a friend did"
+  }
+ ],
+ "card_ids": [
+  "terms-c25",
+  "terms-c26"
+ ],
+ "words": 289
+}

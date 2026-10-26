@@ -1,0 +1,78 @@
+{
+ "id": "bonds-14",
+ "title": "Lessons from Indian credit events",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Explain IL&FS (2018) and Franklin Templeton (2020) and what SEBI changed after them.",
+  "Name four behaviour patterns to watch in debt clients."
+ ],
+ "body_md": "IL&FS (2018). A large, highly rated infrastructure lender defaulted. Several debt funds holding its paper saw sudden NAV drops, and the shock spread to other non-bank lenders. Lesson: ratings can fall fast, and concentration in one issuer or sector is dangerous. Franklin Templeton (April 2020). Franklin Templeton wound up six debt schemes that held many lower-rated, less liquid bonds, after redemptions surged during the pandemic. Investors could not withdraw and received their money in instalments over the following years. Lesson: liquidity risk is real; high-yield debt funds can lock investors in when markets are stressed. These events led SEBI to tighten rules, including segregated portfolios (side-pocketing), the PRC matrix and stricter liquidity requirements. Behaviour patterns to watch: yield chasing (moving to whichever fund shows the highest YTM); recency bias (expecting last year's high return from a long-duration fund after a rate cut); panic exit on a rate-driven dip (selling just before the fund earns back the fall); overconfidence in ratings (treating AAA as a guarantee).\n\n> **Talk-track:** “In equity, the risk is volatility. In debt, the risk is usually quieter but can be sudden. Our job is to know which risk you're taking and to be paid fairly for it.”\n\n> **Investor takeaway:** In debt, the return you can see is rarely the risk you can't.",
+ "key_terms": [
+  "IL&FS",
+  "Franklin Templeton",
+  "Side-pocketing",
+  "Yield chasing",
+  "Recency bias"
+ ],
+ "example": "Franklin's six wound-up schemes held lower-rated, less liquid bonds; when redemptions surged, investors waited years for instalments — liquidity risk made real.",
+ "say": [
+  "Ratings can fall fast; concentration in one issuer or sector is dangerous.",
+  "Liquidity risk is real: high-yield debt funds can lock investors in when markets are stressed."
+ ],
+ "never": [
+  "Ratings never change quickly.",
+  "Liquidity risk only affects equity funds."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Quieter, but can be sudden",
+   "text": "In equity, the risk is volatility. In debt, the risk is usually quieter but can be sudden. Our job is to know which risk you're taking and to be paid fairly for it."
+  }
+ ],
+ "check": [
+  {
+   "id": "bonds-q8",
+   "q": "Which risk caused sudden NAV drops when IL&FS defaulted in 2018?",
+   "o": [
+    "Interest-rate risk",
+    "Credit risk",
+    "Inflation risk",
+    "Currency risk"
+   ],
+   "a": 1,
+   "why": "Credit risk. The borrower defaulted."
+  },
+  {
+   "id": "bonds-n24",
+   "q": "What did the IL&FS default (2018) teach distributors?",
+   "o": [
+    "AAA bonds never default",
+    "Ratings can fall fast, and concentration in one issuer or sector is dangerous",
+    "Debt funds never fall",
+    "Only equity carries risk"
+   ],
+   "a": 1,
+   "why": "Lesson: ratings can fall fast, and concentration in one issuer or sector is dangerous."
+  },
+  {
+   "id": "bonds-n25",
+   "q": "What did the Franklin Templeton wind-up (2020) teach about liquidity?",
+   "o": [
+    "High-yield debt funds can lock investors in when markets are stressed",
+    "Liquid funds always gate redemptions",
+    "Debt funds always pay on demand",
+    "SEBI banned debt funds"
+   ],
+   "a": 0,
+   "why": "Lesson: liquidity risk is real; high-yield debt funds can lock investors in when markets are stressed."
+  }
+ ],
+ "card_ids": [
+  "bonds-c27",
+  "bonds-c28"
+ ],
+ "words": 214
+}

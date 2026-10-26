@@ -1,0 +1,76 @@
+{
+ "id": "psych-03",
+ "title": "The onboarding bias questionnaire",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Ask the five onboarding questions and note the answers in the client file.",
+  "Use answers to plan the conversation, not to label the client."
+ ],
+ "body_md": "Ask these five questions and note the answers in the client file: “In March 2020, when markets fell sharply, what did you do with your investments?” (loss aversion, panic selling). “Have you ever invested in something mainly because friends or family were?” (herd behaviour). “How often do you check your portfolio?” (myopic loss aversion). “Is there an investment you're holding just until it gets back to what you paid?” (anchoring, disposition effect). “How confident are you that you can tell when markets will rise or fall?” (overconfidence). Use the answers to plan the conversation, not to label the client. Re-ask after big market moves or life events.\n\n> **Talk-track:** “Quick question: if your portfolio fell 20% next month, what would you do?”\n\n> **Investor takeaway:** Knowing which bias you're most prone to helps you avoid it.",
+ "key_terms": [
+  "Bias questionnaire",
+  "Loss aversion",
+  "Anchoring"
+ ],
+ "example": "A client who sold in March 2020 and checks daily: plan for loss aversion and myopic loss aversion before the next fall, not during it.",
+ "say": [
+  "Use answers to plan the conversation, not to label the client.",
+  "Re-ask after big market moves or life events."
+ ],
+ "never": [
+  "Label the client by their biases.",
+  "Ask the questionnaire only once, at onboarding."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "If it fell 20% next month",
+   "text": "Quick question: if your portfolio fell 20% next month, what would you do?"
+  }
+ ],
+ "check": [
+  {
+   "id": "psych-n05",
+   "q": "“How often do you check your portfolio?” screens for:",
+   "o": [
+    "Myopic loss aversion",
+    "Anchoring",
+    "Overconfidence",
+    "Herd behaviour"
+   ],
+   "a": 0,
+   "why": "“How often do you check your portfolio?” (myopic loss aversion)."
+  },
+  {
+   "id": "psych-n06",
+   "q": "“Is there an investment you're holding just until it gets back to what you paid?” screens for:",
+   "o": [
+    "Herd behaviour",
+    "Overconfidence",
+    "Present bias",
+    "Anchoring and the disposition effect"
+   ],
+   "a": 3,
+   "why": "“Is there an investment you're holding just until it gets back to what you paid?” (anchoring, disposition effect)."
+  },
+  {
+   "id": "psych-n07",
+   "q": "How should questionnaire answers be used?",
+   "o": [
+    "To label the client permanently",
+    "To reject the client",
+    "To plan the conversation, not to label the client",
+    "To pick the highest-return fund"
+   ],
+   "a": 2,
+   "why": "Use the answers to plan the conversation, not to label the client."
+  }
+ ],
+ "card_ids": [
+  "psych-c5",
+  "psych-c6"
+ ],
+ "words": 134
+}

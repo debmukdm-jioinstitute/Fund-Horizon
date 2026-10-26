@@ -1,0 +1,69 @@
+{
+ "id": "goals-08",
+ "title": "The plan document checklist",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Write a plan document that states every required item.",
+  "Label every assumption and never present a projection as guaranteed."
+ ],
+ "body_md": "Every goal plan given to the client should state: goal, target amount (today's and future), date, priority, assumed inflation, assumed return, asset mix, funds, monthly SIP, step-up, and the review date. Label every assumption clearly; returns are not guaranteed.\n\n- Goal and priority\n- Target amount: today's cost and inflation-adjusted future cost\n- Date and review date\n- Assumed inflation and assumed return (labelled as assumptions)\n- Asset mix and funds\n- Monthly SIP and step-up\n\n> **Investor takeaway:** Use conservative return assumptions and show what happens if returns are lower.",
+ "key_terms": [
+  "Plan document",
+  "Assumption"
+ ],
+ "example": "One-page plan for a family with three goals: each goal's future cost, asset mix, SIP, step-up and review date, with every assumption labelled.",
+ "say": [
+  "Label every assumption; returns are not guaranteed.",
+  "Show what happens if returns are lower."
+ ],
+ "never": [
+  "Present a projected amount as guaranteed.",
+  "Use high return assumptions to make a SIP look affordable."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-n10",
+   "q": "A goal plan document must state:",
+   "o": [
+    "Only the fund names",
+    "Only the SIP amount",
+    "Only the target date",
+    "Goal, target (today's and future), date, priority, assumed inflation, assumed return, mix, funds, SIP, step-up, review date"
+   ],
+   "a": 3,
+   "why": "Every goal plan should state: goal, target amount (today's and future), date, priority, assumed inflation, assumed return, asset mix, funds, monthly SIP, step-up, and the review date."
+  },
+  {
+   "id": "goals-n11",
+   "q": "Why label assumptions clearly?",
+   "o": [
+    "SEBI requires labels only",
+    "It raises the SIP",
+    "Returns are not guaranteed; the client must see what is assumed",
+    "It avoids all tax"
+   ],
+   "a": 2,
+   "why": "Label every assumption clearly; returns are not guaranteed."
+  },
+  {
+   "id": "goals-n12",
+   "q": "Which return assumption should a plan use?",
+   "o": [
+    "The highest recent return",
+    "A conservative one, with a lower-return scenario shown",
+    "15–20% to make the SIP look small",
+    "Last year's fund return"
+   ],
+   "a": 1,
+   "why": "Use conservative return assumptions and show what happens if returns are lower."
+  }
+ ],
+ "card_ids": [
+  "goals-c15",
+  "goals-c16"
+ ],
+ "words": 84
+}

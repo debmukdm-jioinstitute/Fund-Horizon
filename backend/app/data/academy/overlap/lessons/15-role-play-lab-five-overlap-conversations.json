@@ -1,0 +1,70 @@
+{
+ "id": "overlap-15",
+ "title": "Role-play lab: five overlap conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer five overlap conversations using tools, costs and client approval.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example. Scenarios: Suresh has 14 equity funds with ₹1,000 SIPs each. Divya holds three large-cap funds from different AMCs “for safety”. A client wants to add last year's top flexi-cap fund. Kiran holds many employer shares via ESOPs, and his funds also hold that stock. A client receives a notice that a thematic fund is being merged.\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Overlap tool",
+  "Client approval"
+ ],
+ "example": "Role-play Suresh: check overlap, propose 4–5 core-satellite funds, redirect SIPs first, check loads and tax, record approval.",
+ "say": [
+  "Check overlap, costs and goals, then decide with approval.",
+  "Record reasons for every fund kept or dropped."
+ ],
+ "never": [
+  "Add funds without checking what the portfolio already holds.",
+  "Switch funds mainly to earn commission."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q21",
+   "q": "Suresh has 14 equity funds with ₹1,000 SIPs each. What do you propose?",
+   "o": [
+    "Keep all 14 funds",
+    "Check overlap; propose a core-satellite structure of 4–5 funds; redirect SIPs first; check exit loads and tax before any redemption; record his approval",
+    "Redeem everything in one day",
+    "Add more funds for safety"
+   ],
+   "a": 1,
+   "why": "Check overlap; propose a core-satellite structure of 4–5 funds; redirect SIPs first; check exit loads and tax before any redemption; record his approval."
+  },
+  {
+   "id": "overlap-q22",
+   "q": "Divya holds three large-cap funds from different AMCs “for safety”. What do you explain?",
+   "o": [
+    "Agree — different AMCs are always safer",
+    "Show their high overlap; explain safety comes from what is owned, not the number of AMCs; suggest keeping one core fund",
+    "Add a fourth large-cap fund",
+    "Switch everything to a single AMC for safety"
+   ],
+   "a": 1,
+   "why": "Show their high overlap; explain safety comes from what is owned, not the number of AMCs; suggest keeping one core fund."
+  },
+  {
+   "id": "overlap-q23",
+   "q": "A client wants to add last year's top flexi-cap fund. What do you do first?",
+   "o": [
+    "Add it immediately",
+    "Check its overlap with existing funds; ask what job it would do; add only if it brings something different",
+    "Replace all existing funds with it",
+    "Ignore overlap and follow the rating"
+   ],
+   "a": 1,
+   "why": "Check its overlap with existing funds; ask what job it would do; add only if it brings something different."
+  }
+ ],
+ "card_ids": [
+  "overlap-c29",
+  "overlap-c30"
+ ],
+ "words": 100
+}

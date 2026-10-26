@@ -1,0 +1,79 @@
+{
+ "id": "terms-12",
+ "title": "Markets and moods: bull, bear, correction, timing, compounding",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Explain bull, bear and correction falls, and why timing is hard.",
+  "Say how rupee cost averaging and time in the market help a SIP investor."
+ ],
+ "body_md": "A bull market is a long period of rising prices; a bear market is a fall of about 20% or more from the peak, often lasting months; a correction is a fall of about 10–20% from a recent peak and happens most years. Market timing — buying at lows and selling at highs — is very hard to do consistently, and waiting for “the right time” often means staying out too long. Time in the market matters more: missing a few of the best days can cut long-term returns sharply. A fixed SIP buys more units when prices are low and fewer when high, so the average cost evens out.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Bull market | A long period of rising prices and optimism | Everyone talks about stocks at dinner |\n| Bear market | A fall of about 20% or more from the peak, often lasting months | March 2020 crash |\n| Correction | A fall of about 10–20% from a recent peak; normal and frequent | Happens most years in equity markets |\n| Market timing | Trying to buy at lows and sell at highs; very hard to do consistently | Waiting for \"the right time\" often means staying out too long |\n| Time in the market | Staying invested long enough for compounding to work | Missing a few of the best days can cut long-term returns sharply |\n| Rupee cost averaging | A fixed SIP buys more units when prices are low and fewer when high, so the average cost evens out | ₹10,000 buys 200 units at ₹50, 250 units at ₹40 |\n\n> **Talk-track:** “Markets fall regularly; that's the price of equity returns. A SIP actually buys more units when prices are down. The real question is whether your goal date has changed, not whether the market has.”",
+ "key_terms": [
+  "Bull market",
+  "Bear market",
+  "Correction",
+  "Market timing",
+  "Rupee cost averaging",
+  "Compounding"
+ ],
+ "example": "₹10,000 buys 200 units at NAV ₹50 and 250 units at ₹40 — falls help a SIP investor who keeps going.",
+ "say": [
+  "A correction is normal; it happens most years.",
+  "A SIP buys more units when prices are low."
+ ],
+ "never": [
+  "Waiting for the perfect day to invest is a reliable strategy.",
+  "A 10% fall means the market is finished."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Falls are the price of returns",
+   "text": "Markets fall regularly; that's the price of equity returns. A SIP actually buys more units when prices are down. The real question is whether your goal date has changed, not whether the market has."
+  }
+ ],
+ "check": [
+  {
+   "id": "terms-q14",
+   "q": "With 6% inflation, a 7% FD gives a real return of about:",
+   "o": [
+    "13%",
+    "7%",
+    "1%",
+    "6%"
+   ],
+   "a": 2,
+   "why": "1%. Before tax."
+  },
+  {
+   "id": "terms-n19",
+   "q": "What does “Correction” mean in plain language?",
+   "o": [
+    "A long period of rising prices and optimism",
+    "A fall of about 20% or more from the peak, often lasting months",
+    "A fall of about 10–20% from a recent peak; normal and frequent",
+    "Trying to buy at lows and sell at highs; very hard to do consistently"
+   ],
+   "a": 2,
+   "why": "Correction: A fall of about 10–20% from a recent peak; normal and frequent Example: Happens most years in equity markets"
+  },
+  {
+   "id": "terms-n20",
+   "q": "What does “Rupee cost averaging” mean in plain language?",
+   "o": [
+    "A long period of rising prices and optimism",
+    "A fixed SIP buys more units when prices are low and fewer when high, so the average cost evens out",
+    "A fall of about 20% or more from the peak, often lasting months",
+    "A fall of about 10–20% from a recent peak; normal and frequent"
+   ],
+   "a": 1,
+   "why": "Rupee cost averaging: A fixed SIP buys more units when prices are low and fewer when high, so the average cost evens out Example: ₹10,000 buys 200 units at ₹50, 250 units at ₹40"
+  }
+ ],
+ "card_ids": [
+  "terms-c23",
+  "terms-c24"
+ ],
+ "words": 286
+}

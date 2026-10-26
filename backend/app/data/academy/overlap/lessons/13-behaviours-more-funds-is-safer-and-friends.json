@@ -1,0 +1,71 @@
+{
+ "id": "overlap-13",
+ "title": "Behaviours: “more funds is safer” and friends",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Answer five client behaviours with the manual's “what to say” line.",
+  "Explain why scheme assets are safe regardless of AMC count."
+ ],
+ "body_md": "Many clients believe each extra fund adds safety. Often it only adds paperwork. Diversification myth: “Twelve funds must be safer than four.” Say: “Let's look at what they hold. Most own the same top stocks, so it's really one portfolio.” Fund collecting: “This one was top-rated, so I added it.” Say: “Before adding, let's see what it does that your current funds don't.” Fear of missing out: “What if the fund I drop does best?” Say: “If they hold the same stocks, they'll move together. You won't miss much.” Loyalty: “I've had this fund for years.” Say: “We can keep the old units and just stop new money into it.” Spreading across AMCs: “I use different fund houses to be safe.” Say: “A scheme's assets are held by a trust and custodian, separate from the AMC. What matters is what the funds own.”\n\n| Behaviour | What it sounds like | What to say |\n| --- | --- | --- |\n| Diversification myth | “Twelve funds must be safer than four.” | “Let's look at what they hold. Most own the same top stocks, so it's really one portfolio.” |\n| Fund collecting | “This one was top-rated, so I added it.” | “Before adding, let's see what it does that your current funds don't.” |\n| Fear of missing out | “What if the fund I drop does best?” | “If they hold the same stocks, they'll move together. You won't miss much.” |\n| Loyalty | “I've had this fund for years.” | “We can keep the old units and just stop new money into it.” |\n| Spreading across AMCs | “I use different fund houses to be safe.” | “A scheme's assets are held by a trust and custodian, separate from the AMC. What matters is what the funds own.” |\n\n> **Investor takeaway:** The one line to remember: diversify by what you own, not by how many funds you own.",
+ "key_terms": [
+  "Diversification myth",
+  "Fund collecting",
+  "FOMO",
+  "Loyalty"
+ ],
+ "example": "“I use different fund houses to be safe”: scheme assets sit with a trust and custodian, separate from the AMC — what matters is what the funds own.",
+ "say": [
+  "Most own the same top stocks, so it's really one portfolio.",
+  "We can keep old units and just stop new money into it."
+ ],
+ "never": [
+  "Different AMCs guarantee safety.",
+  "Dropping an overlapping fund means missing its gains."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q14",
+   "q": "“Different AMCs are safer” is answered by…",
+   "o": [
+    "“Yes, always”",
+    "“Scheme assets sit with a trust and custodian; what matters is what funds own”",
+    "“Use only one AMC”",
+    "“AMCs guarantee returns”"
+   ],
+   "a": 1,
+   "why": "“Scheme assets sit with a trust and custodian; what matters is what funds own”. Diversify holdings, not fund houses."
+  },
+  {
+   "id": "overlap-q20",
+   "q": "Should a fund be added once it is top-rated, without checking overlap?",
+   "o": [
+    "Yes, ratings are enough",
+    "No — always check what it adds to existing holdings",
+    "Yes, for flexi-cap funds",
+    "Only if it is a small-cap fund"
+   ],
+   "a": 1,
+   "why": "Always check what it adds to existing holdings."
+  },
+  {
+   "id": "overlap-n22",
+   "q": "“Twelve funds must be safer than four” is:",
+   "o": [
+    "Fund collecting",
+    "Loyalty",
+    "Style drift",
+    "The diversification myth"
+   ],
+   "a": 3,
+   "why": "Diversification myth: “Twelve funds must be safer than four.” Say: “Let's look at what they hold.”"
+  }
+ ],
+ "card_ids": [
+  "overlap-c25",
+  "overlap-c26"
+ ],
+ "words": 295
+}

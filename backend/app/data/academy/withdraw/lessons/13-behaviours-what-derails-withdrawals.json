@@ -1,0 +1,72 @@
+{
+ "id": "withdraw-13",
+ "title": "Behaviours: what derails withdrawals",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Answer five client behaviours with the manual's “what to say” line.",
+  "Use the one line for any withdrawal conversation."
+ ],
+ "body_md": "Behaviours that derail withdrawals.\n\n| Behaviour | What it sounds like | What to say |\n| --- | --- | --- |\n| Overspending early | “We've earned it; let's do the big trips now.” | “Let's set aside a travel pot, so the monthly plan stays safe.” |\n| Panic in a fall | “Move everything to FDs before it falls further.” | “Your next two years are already in safe funds. Equity has years to recover.” |\n| All-FD comfort | “I only trust fixed deposits now.” | “FDs alone may not keep up with 6% inflation for 25 years. Let's keep a growth bucket.” |\n| Fear of spending | “I won't touch the corpus at all.” | “The plan is built to be spent. Here's what you can safely draw.” |\n| Supporting family | “My son needs ₹15 L for his business.” | “Let's see what that does to your withdrawal rate before deciding.” |\n\nThe one line to remember: spend from safety, grow from equity, and refill on a plan.",
+ "key_terms": [
+  "Overspending early",
+  "Panic in a fall",
+  "All-FD comfort",
+  "Fear of spending",
+  "Supporting family"
+ ],
+ "example": "“Move everything to FDs before it falls further.” → “Your next two years are already in safe funds. Equity has years to recover.”",
+ "say": [
+  "Spend from safety, grow from equity, and refill on a plan.",
+  "FDs alone may not keep up with 6% inflation for 25 years."
+ ],
+ "never": [
+  "Move everything to FDs in a fall.",
+  "Never touch the corpus at all."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q23",
+   "q": "A new retiree's equity bucket fell 18% and he wants to move all to FDs. What do you do?",
+   "o": [
+    "Move everything to FDs at once",
+    "Show Buckets 1–2 cover the next years; avoid selling equity low; apply guardrails; no market predictions",
+    "Stop all withdrawals",
+    "Promise equity will recover"
+   ],
+   "a": 1,
+   "why": "Show Buckets 1–2 cover the next years; avoid selling equity low; apply guardrails; no market predictions."
+  },
+  {
+   "id": "withdraw-n19",
+   "q": "“I only trust fixed deposits now” is best answered:",
+   "o": [
+    "“Agreed, move everything to FDs.”",
+    "“FDs beat inflation always.”",
+    "“FDs alone may not keep up with 6% inflation for 25 years. Let's keep a growth bucket.”",
+    "“Equity is unsafe.”"
+   ],
+   "a": 2,
+   "why": "All-FD comfort: “I only trust fixed deposits now.” Say: “FDs alone may not keep up with 6% inflation for 25 years. Let's keep a growth bucket.”"
+  },
+  {
+   "id": "withdraw-n20",
+   "q": "“My son needs ₹15 L for his business” is best answered:",
+   "o": [
+    "“Refuse outright.”",
+    "“Let's see what that does to your withdrawal rate before deciding.”",
+    "“Fund it from the monthly SWP.”",
+    "“Ignore the effect.”"
+   ],
+   "a": 1,
+   "why": "Supporting family: “My son needs ₹15 L for his business.” Say: “Let's see what that does to your withdrawal rate before deciding.”"
+  }
+ ],
+ "card_ids": [
+  "withdraw-c25",
+  "withdraw-c26"
+ ],
+ "words": 146
+}

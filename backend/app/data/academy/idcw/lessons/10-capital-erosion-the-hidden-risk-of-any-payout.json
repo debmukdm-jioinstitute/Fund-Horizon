@@ -1,0 +1,69 @@
+{
+ "id": "idcw-10",
+ "title": "Capital erosion: the hidden risk of any payout",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Explain capital erosion with the one-year illustration.",
+  "Say why a steady payout can still eat capital."
+ ],
+ "body_md": "Capital erosion: the hidden risk of any payout. If payouts are larger than what the fund earns, the investor's capital shrinks, whether the payout is an IDCW or an SWP. Illustration (one year, ignoring tax and payout timing): starting value ₹10,00,000, payouts 8% (₹80,000). Fund earns 10% → year-end about ₹10,20,000: capital growing. Fund earns 6% → about ₹9,80,000: capital eroding. Fund falls 5% → about ₹8,70,000: capital eroding fast.\n\n| Illustration (one year) | Fund earns 10% | Fund earns 6% | Fund falls 5% |\n| --- | --- | --- | --- |\n| Starting value | ₹10,00,000 | ₹10,00,000 | ₹10,00,000 |\n| Payouts in the year (8%) | ₹80,000 | ₹80,000 | ₹80,000 |\n| Value at year end (approx.) | ₹10,20,000 | ₹9,80,000 | ₹8,70,000 |\n| Capital | Growing | Eroding | Eroding fast |\n\n> **Investor takeaway:** A steady payout feels safe, but if it's bigger than what the fund earns, it's eating your capital.",
+ "key_terms": [
+  "Capital erosion",
+  "Payout rate"
+ ],
+ "example": "8% payouts from a fund earning 6%: ₹10 lakh becomes about ₹9.8 lakh in a year — the payout felt steady while capital shrank.",
+ "say": [
+  "If payouts exceed what the fund earns, capital shrinks — for IDCW and SWP alike.",
+  "A steady payout is not proof the capital is safe."
+ ],
+ "never": [
+  "Payouts never erode capital if they are regular.",
+  "Only IDCW erodes capital; SWPs cannot."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-q10",
+   "q": "If payouts exceed what the fund earns, capital:",
+   "o": [
+    "Grows",
+    "Stays fixed",
+    "Erodes",
+    "Doubles"
+   ],
+   "a": 2,
+   "why": "Erodes. Applies to IDCW and SWP."
+  },
+  {
+   "id": "idcw-n13",
+   "q": "₹10 lakh, 8% payouts, fund earns 6%. Year-end value is about:",
+   "o": [
+    "₹9,80,000 — capital eroding",
+    "₹10,20,000",
+    "₹10,00,000",
+    "₹8,70,000"
+   ],
+   "a": 0,
+   "why": "Fund earns 6% → about ₹9,80,000: capital eroding."
+  },
+  {
+   "id": "idcw-n14",
+   "q": "Capital erosion happens when:",
+   "o": [
+    "Payouts are smaller than earnings",
+    "The NAV rises",
+    "The fund pays no IDCW",
+    "Payouts are larger than what the fund earns"
+   ],
+   "a": 3,
+   "why": "If payouts are larger than what the fund earns, the investor's capital shrinks."
+  }
+ ],
+ "card_ids": [
+  "idcw-c19",
+  "idcw-c20"
+ ],
+ "words": 128
+}

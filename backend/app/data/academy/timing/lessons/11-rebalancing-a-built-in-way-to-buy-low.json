@@ -1,0 +1,69 @@
+{
+ "id": "timing-11",
+ "title": "Rebalancing: a built-in way to “buy low”",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Explain how rebalancing back to target buys equity after falls.",
+  "Say when to rebalance, and what not to do after a fall."
+ ],
+ "body_md": "If a client's target is 60% equity and 40% debt, a market fall might shift it to 50:50. Rebalancing back to 60:40 means moving money from debt to equity after prices have fallen. Done on a schedule (for example once a year, or when the mix drifts by more than 5–10 percentage points), it removes the need to guess the timing. What not to do after a fall: switch funds just because they fell along with the market; move everything to debt at the bottom and plan to “come back later”; review the portfolio every day.\n\n> **Investor takeaway:** Review after a fall with the same calm checks as any other time: benchmark, category, goal date, mix.",
+ "key_terms": [
+  "Rebalancing",
+  "Drift band"
+ ],
+ "example": "60:40 drifted to 50:50 after a fall: rebalancing moves money from debt to equity — buying low, by rule, not by prediction.",
+ "say": [
+  "Rebalancing removes the need to guess the timing.",
+  "Moving everything to debt at the bottom locks in the fall."
+ ],
+ "never": [
+  "Rebalancing means selling equity after a fall.",
+  "Review the portfolio every day after a fall."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-n16",
+   "q": "A 60:40 mix drifted to 50:50 after a fall. Rebalancing back means:",
+   "o": [
+    "Selling equity",
+    "Moving money from debt into equity",
+    "Moving everything to cash",
+    "Doing nothing ever"
+   ],
+   "a": 1,
+   "why": "Rebalancing back to 60:40 means moving money from debt to equity after prices have fallen."
+  },
+  {
+   "id": "timing-n17",
+   "q": "When should rebalancing happen?",
+   "o": [
+    "On a schedule (e.g. once a year) or when the mix drifts by more than 5–10 percentage points",
+    "Every day",
+    "Only at market peaks",
+    "Never"
+   ],
+   "a": 0,
+   "why": "Done on a schedule (for example once a year, or when the mix drifts by more than 5–10 percentage points)."
+  },
+  {
+   "id": "timing-n18",
+   "q": "Which is on the “what not to do” list after a fall?",
+   "o": [
+    "Rebalance by rule",
+    "Check the goal date",
+    "Review the benchmark",
+    "Move everything to debt at the bottom and plan to “come back later”"
+   ],
+   "a": 3,
+   "why": "What not to do after a fall: move everything to debt at the bottom and plan to “come back later”."
+  }
+ ],
+ "card_ids": [
+  "timing-c21",
+  "timing-c22"
+ ],
+ "words": 116
+}

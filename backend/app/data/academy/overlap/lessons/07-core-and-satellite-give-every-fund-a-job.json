@@ -1,0 +1,69 @@
+{
+ "id": "overlap-07",
+ "title": "Core and satellite: give every fund a job",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Build a core-satellite structure with illustrative shares.",
+  "Say the test for keeping a fund: a clear, different job."
+ ],
+ "body_md": "Build around core and satellite. Core: broad, steady exposure; 1–2 flexi-cap, large-cap or index funds; typically 60–80% of equity. Satellite: extra growth or a different style; 1–3 mid-cap, small-cap, value or international funds; typically 20–40% of equity. Each fund should have a clear, different job. If two funds do the same job, keep the better one. Shares above are illustrative and depend on the risk profile.\n\n| Part | Role | Typical funds | Typical share of equity |\n| --- | --- | --- | --- |\n| Core | Broad, steady exposure | 1–2 flexi-cap, large-cap or index funds | 60–80% |\n| Satellite | Extra growth or a different style | 1–3 mid-cap, small-cap, value or international funds | 20–40% |",
+ "key_terms": [
+  "Core fund",
+  "Satellite fund"
+ ],
+ "example": "Core: 1 index fund + 1 flexi-cap fund (70%). Satellites: 1 mid-cap + 1 small-cap (30%) — four funds, four jobs.",
+ "say": [
+  "Each fund should have a clear, different job.",
+  "If two funds do the same job, keep the better one."
+ ],
+ "never": [
+  "Every fund needs the same job.",
+  "Core should be thematic funds."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q11",
+   "q": "In core and satellite, the core is usually…",
+   "o": [
+    "3–4 thematic funds",
+    "1–2 broad funds like flexi-cap or index",
+    "Only small-cap funds",
+    "A liquid fund"
+   ],
+   "a": 1,
+   "why": "1–2 broad funds like flexi-cap or index. About 60–80% of equity, illustratively."
+  },
+  {
+   "id": "overlap-n09",
+   "q": "In core and satellite, the core is usually:",
+   "o": [
+    "1–2 broad funds like flexi-cap or index, about 60–80% of equity",
+    "3–4 thematic funds",
+    "Only small-cap funds",
+    "A liquid fund"
+   ],
+   "a": 0,
+   "why": "Core: broad, steady exposure. 1–2 flexi-cap, large-cap or index funds. Typically 60–80% of equity."
+  },
+  {
+   "id": "overlap-n10",
+   "q": "What is the test for keeping a fund?",
+   "o": [
+    "It was top-rated last year",
+    "It is from a different AMC",
+    "It has the lowest NAV",
+    "It has a clear, different job"
+   ],
+   "a": 3,
+   "why": "Each fund should have a clear, different job. If two funds do the same job, keep the better one."
+  }
+ ],
+ "card_ids": [
+  "overlap-c13",
+  "overlap-c14"
+ ],
+ "words": 100
+}

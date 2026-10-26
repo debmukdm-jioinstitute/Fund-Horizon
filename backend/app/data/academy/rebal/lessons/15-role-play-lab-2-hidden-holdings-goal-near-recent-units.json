@@ -1,0 +1,70 @@
+{
+ "id": "rebal-15",
+ "title": "Role-play lab (2): hidden holdings, goal near, recent units",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer the remaining three rebalancing conversations.",
+  "Measure the whole portfolio, spot glide-path cases, and check recent-unit costs."
+ ],
+ "body_md": "Hidden holdings: measure drift on the whole portfolio before deciding — Arun's total mix may already be near target. Goal near: explain this needs a new target along the glide path, not a rebalance; agree and record the new target. Recent SIP units: check exit load and short-term gains; use new money or wait where sensible; refer tax to a CA.\n\n> **Investor takeaway:** Measure the whole portfolio, spot glide-path cases, and check recent-unit costs.",
+ "key_terms": [
+  "Hidden holdings",
+  "Glide path",
+  "Recent units"
+ ],
+ "example": "Arun: funds look 80% equity, but ₹30 L in PPF and FDs — measure the whole portfolio first.",
+ "say": [
+  "Measure drift on the whole portfolio.",
+  "A goal 2 years away needs a new target, not a rebalance."
+ ],
+ "never": [
+  "Judge drift on funds alone.",
+  "Rebalance to 60/40 when the goal is near."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q24",
+   "q": "Arun's funds look 80% equity, but he has ₹30 L in PPF and FDs. What do you do?",
+   "o": [
+    "Rebalance the funds to 60/40 immediately",
+    "Measure drift on the whole portfolio; his total mix may already be near target",
+    "Ignore the PPF and FDs",
+    "Sell the PPF"
+   ],
+   "a": 1,
+   "why": "Measure drift on the whole portfolio; his total mix may already be near target."
+  },
+  {
+   "id": "rebal-q25",
+   "q": "Priya's goal is 2 years away and she asks to “rebalance to 60/40”. What do you explain?",
+   "o": [
+    "Rebalance to 60/40 as asked",
+    "This needs a new target along the glide path, not a rebalance; agree and record the new target",
+    "Move to small-cap",
+    "Ignore the goal date"
+   ],
+   "a": 1,
+   "why": "Explain this needs a new target along the glide path, not a rebalance; agree and record the new target."
+  },
+  {
+   "id": "rebal-n19",
+   "q": "A rebalance would redeem units bought 6 months ago. What do you check first?",
+   "o": [
+    "Nothing — redeem immediately",
+    "Only the NAV",
+    "Exit load and short-term gains; use new money or wait where sensible",
+    "Only the fund manager"
+   ],
+   "a": 2,
+   "why": "Check exit load and short-term gains; use new money or wait where sensible; refer tax to a CA."
+  }
+ ],
+ "card_ids": [
+  "rebal-c29",
+  "rebal-c30"
+ ],
+ "words": 74
+}

@@ -1,0 +1,71 @@
+{
+ "id": "idcw-03",
+ "title": "Key dates, and the record-date trap",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Define record date, ex-IDCW date/NAV, payout date, IDCW rate and frequency.",
+  "Explain why buying just before the record date leaves the investor worse off after tax."
+ ],
+ "body_md": "Record date: investors holding units on this date are eligible for the payout. Ex-IDCW date / ex-IDCW NAV: the NAV is reduced by the payout amount from this date. Payout date: the date the money reaches the bank account. IDCW rate: declared per unit (for example ₹0.50 per unit), not as a percentage of your investment. Frequency: daily, weekly, monthly, quarterly, half-yearly, annual or ad hoc, depending on the scheme.\n\n| Term | Meaning |\n| --- | --- |\n| Record date | Investors holding units on this date are eligible for the payout |\n| Ex-IDCW date / ex-IDCW NAV | The NAV is reduced by the payout amount from this date |\n| Payout date | The date the money reaches the bank account |\n| IDCW rate | Declared per unit (e.g. ₹0.50 per unit), not as a percentage of your investment |\n| Frequency | Daily, weekly, monthly, quarterly, half-yearly, annual or ad hoc, depending on the scheme |\n\nBuying just before the record date doesn't help. An investor who buys a day before the record date receives the IDCW but sees the NAV fall by the same amount, and then pays tax on the payout. This trick, once called “dividend stripping”, leaves the investor worse off after tax.",
+ "key_terms": [
+  "Record date",
+  "Ex-IDCW date / ex-IDCW NAV",
+  "Payout date",
+  "IDCW rate"
+ ],
+ "example": "₹1 lakh buys 5,000 units; IDCW ₹1 pays ₹5,000, NAV falls correspondingly, and the ₹5,000 is taxed — no free money.",
+ "say": [
+  "The IDCW rate is per unit, not a percentage of your investment.",
+  "Buying before the record date doesn't make money."
+ ],
+ "never": [
+  "Buy before the record date to earn the IDCW.",
+  "A high IDCW rate per unit means a high return."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-q9",
+   "q": "The record date is:",
+   "o": [
+    "When the NAV is declared",
+    "The date that decides who receives the IDCW",
+    "The fund's launch date",
+    "The exit-load date"
+   ],
+   "a": 1,
+   "why": "The date that decides who receives the IDCW. Holders on that date are eligible."
+  },
+  {
+   "id": "idcw-q11",
+   "q": "The IDCW rate is declared:",
+   "o": [
+    "As % of your investment",
+    "Per unit",
+    "As a fixed monthly amount",
+    "By SEBI"
+   ],
+   "a": 1,
+   "why": "Per unit. For example ₹0.50 per unit."
+  },
+  {
+   "id": "idcw-q18",
+   "q": "An investor buys just before the record date. What happens after tax?",
+   "o": [
+    "They earn a free payout",
+    "The NAV falls by the payout and tax is due, leaving them worse off",
+    "They avoid TDS",
+    "Their units double"
+   ],
+   "a": 1,
+   "why": "NAV falls by the payout, and tax is due."
+  }
+ ],
+ "card_ids": [
+  "idcw-c5",
+  "idcw-c6"
+ ],
+ "words": 191
+}

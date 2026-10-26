@@ -1,0 +1,70 @@
+{
+ "id": "psych-05",
+ "title": "Check your own biases",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Name three distributor biases and the guard question for recency.",
+  "Apply the guard question before every recommendation."
+ ],
+ "body_md": "Distributors are not immune. Watch for: recommending last year's best performer to every client (recency); favouring products you are most comfortable explaining (familiarity); agreeing with a client's view to avoid an awkward conversation (confirmation, people-pleasing). A simple guard: before every recommendation, ask “Would I suggest this if it hadn't done well last year?”\n\n> **Investor takeaway:** Knowing which bias you're most prone to helps you avoid it.",
+ "key_terms": [
+  "Recency bias",
+  "Familiarity bias",
+  "Confirmation bias"
+ ],
+ "example": "A manager asks you to pitch last year's top fund to every client: recognise your own recency bias, raise suitability, use the checklist.",
+ "say": [
+  "Would I suggest this if it hadn't done well last year?",
+  "Distributors are not immune to biases."
+ ],
+ "never": [
+  "Distributors are immune to biases.",
+  "Agree with the client to avoid awkwardness."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q25",
+   "q": "Your manager asks you to pitch last year's top fund to every client this month. What do you do?",
+   "o": [
+    "Pitch it to everyone as instructed",
+    "Recognise the distributor's own recency bias; raise suitability concerns; use the checklist and recommend the fund only where it fits a client's goals and risk profile; ask the guard question",
+    "Pitch it using FOMO",
+    "Ignore suitability entirely"
+   ],
+   "a": 1,
+   "why": "Recognise the distributor's own recency bias; raise suitability concerns; use the checklist and recommend the fund only where it fits a client's goals and risk profile; ask the guard question."
+  },
+  {
+   "id": "psych-n09",
+   "q": "What simple question guards against your own recency bias?",
+   "o": [
+    "“Would I suggest this if it hadn't done well last year?”",
+    "“Did it rise last month?”",
+    "“Is it popular?”",
+    "“Did the manager recommend it?”"
+   ],
+   "a": 0,
+   "why": "A simple guard: before every recommendation, ask “Would I suggest this if it hadn't done well last year?”"
+  },
+  {
+   "id": "psych-n10",
+   "q": "Favouring products you are most comfortable explaining is:",
+   "o": [
+    "Recency bias",
+    "Anchoring",
+    "Herd behaviour",
+    "Familiarity bias"
+   ],
+   "a": 3,
+   "why": "Favouring products you are most comfortable explaining (familiarity)."
+  }
+ ],
+ "card_ids": [
+  "psych-c9",
+  "psych-c10"
+ ],
+ "words": 66
+}

@@ -1,0 +1,70 @@
+{
+ "id": "compare-09",
+ "title": "Onboarding checklist for PMS and AIF",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Run the seven-point PMS/AIF onboarding checklist.",
+  "Say what must be shared and explained before investing."
+ ],
+ "body_md": "Onboarding checklist for PMS and AIF: core mutual fund portfolio and emergency fund already in place. Suitability documented, including lock-in tolerance. Disclosure Document (PMS) or PPM (AIF) shared and key risks explained. Full fee structure shown in rupees, including profit share or carry. Tax treatment explained; client advised to consult their CA. Commission disclosed; direct option mentioned. For AIFs: drawdown schedule and expected tenure explained.\n\n> **Investor takeaway:** Compare costs, lock-in and tax side by side before choosing PMS or AIF over a mutual fund.",
+ "key_terms": [
+  "Disclosure Document",
+  "PPM",
+  "Suitability"
+ ],
+ "example": "Before a ₹1 crore AIF commitment: core in place, lock-in tolerance documented, PPM shared, fees in rupees, tax via CA, commission disclosed, drawdown schedule explained.",
+ "say": [
+  "Suitability documented, including lock-in tolerance.",
+  "Share the Disclosure Document or PPM and explain key risks."
+ ],
+ "never": [
+  "Treat the minimum ticket as proof of suitability.",
+  "Skip the drawdown schedule."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-n09",
+   "q": "Which document must be shared for a PMS?",
+   "o": [
+    "The Disclosure Document, with key risks explained",
+    "Only the factsheet",
+    "Only the NAV history",
+    "No document needed"
+   ],
+   "a": 0,
+   "why": "Disclosure Document (PMS) or PPM (AIF) shared and key risks explained."
+  },
+  {
+   "id": "compare-n10",
+   "q": "For AIFs, the checklist additionally requires explaining:",
+   "o": [
+    "Only the launch date",
+    "Only the manager's name",
+    "Only past returns",
+    "The drawdown schedule and expected tenure"
+   ],
+   "a": 3,
+   "why": "For AIFs: drawdown schedule and expected tenure explained."
+  },
+  {
+   "id": "compare-n11",
+   "q": "Before adding PMS or AIF, the client must already have:",
+   "o": [
+    "A Cat III AIF",
+    "Direct equity only",
+    "A diversified mutual fund core and an emergency fund",
+    "A home loan"
+   ],
+   "a": 2,
+   "why": "Core mutual fund portfolio and emergency fund already in place."
+  }
+ ],
+ "card_ids": [
+  "compare-c17",
+  "compare-c18"
+ ],
+ "words": 84
+}

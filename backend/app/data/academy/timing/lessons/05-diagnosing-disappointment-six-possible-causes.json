@@ -1,0 +1,73 @@
+{
+ "id": "timing-05",
+ "title": "Diagnosing disappointment: six possible causes",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Work through the six causes before agreeing “wrong time”.",
+  "Say which cause is usually least important for long-term money."
+ ],
+ "body_md": "When a client says “My fund isn't growing; did I invest at the wrong time?”, work through six possible causes before agreeing. Wrong measurement: are we reading absolute return over a short period, or a SIP's total instead of XIRR? Wrong horizon: how long has it been, and how long is it meant for? Wrong expectation: what return did the client expect, and why? Market phase: did the whole market or category fall? Wrong fund: has the fund lagged its benchmark and category over 3–5 years? Wrong time: was a large lump sum invested just before a fall, for a short horizon? Often the answer is a combination, and “wrong time” is usually the least important cause for long-term money.\n\n| Possible cause | Question to check | What it looks like | What to do |\n| --- | --- | --- | --- |\n| Wrong measurement | Are we reading absolute return over a short period, or a SIP's total instead of XIRR? | \"Only 8% in 2 years\" on a SIP | Recalculate with XIRR (Module 10) |\n| Wrong horizon | How long has it been, and how long is it meant for? | Equity held for 1–2 years | Reset expectations; equity needs 5+ years |\n| Wrong expectation | What return did the client expect, and why? | Expected last year's 40% to repeat | Show long-term, realistic ranges |\n| Market phase | Did the whole market or category fall? | Fund and benchmark both down | Normal volatility; stay the course if the horizon allows |\n| Wrong fund | Has the fund lagged its benchmark and category over 3–5 years? | Fund down 10%, benchmark up 5% | Review the fund (Module 1 review checklist) |\n| Wrong time | Was a large lump sum invested just before a fall, for a short horizon? | Lump sum at a peak, money needed in 2 years | Review the asset mix for the goal date; no panic selling |\n\n> **Investor takeaway:** Before blaming the timing, check the measure, the horizon, the expectation and the fund.",
+ "key_terms": [
+  "Wrong measurement",
+  "Wrong horizon",
+  "Wrong expectation",
+  "Wrong fund",
+  "Wrong time",
+  "XIRR"
+ ],
+ "example": "“Only 8% in 2 years” on a SIP: recalculate with XIRR before judging — the statement total is not the yearly return.",
+ "say": [
+  "Check measure, horizon, expectation and fund before blaming timing.",
+  "“Wrong time” is usually least important for long-term money."
+ ],
+ "never": [
+  "Agree “wrong time” before checking anything.",
+  "A fund down 10% while its benchmark is up 5% is a market-wide fall."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q3",
+   "q": "A client’s fund fell 18% while its benchmark fell 20% over the same period. What is the most likely cause?",
+   "o": [
+    "A weak fund",
+    "A market-wide fall",
+    "High expense ratio",
+    "Wrong NAV"
+   ],
+   "a": 1,
+   "why": "A market-wide fall. The fund did slightly better than its benchmark; the whole market fell."
+  },
+  {
+   "id": "timing-q16",
+   "q": "A client's fund fell 12% in a year. What should you do first?",
+   "o": [
+    "Conclude the investment was a mistake",
+    "Diagnose the cause: measure, horizon, expectation, market, fund",
+    "Switch funds immediately",
+    "Stop the SIP"
+   ],
+   "a": 1,
+   "why": "Falls are a normal feature of equity; diagnose the cause first."
+  },
+  {
+   "id": "timing-n08",
+   "q": "A fund fell 10% while its benchmark fell 11%. What does that suggest?",
+   "o": [
+    "A bad fund",
+    "A market-wide fall — the fund did slightly better than its benchmark",
+    "Fraud",
+    "Wrong SIP date"
+   ],
+   "a": 1,
+   "why": "Fund and benchmark both down: normal volatility; stay the course if the horizon allows."
+  }
+ ],
+ "card_ids": [
+  "timing-c9",
+  "timing-c10"
+ ],
+ "words": 310
+}

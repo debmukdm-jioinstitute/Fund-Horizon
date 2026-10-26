@@ -1,0 +1,71 @@
+{
+ "id": "idcw-15",
+ "title": "Role-play lab: six IDCW conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six IDCW client conversations on control, predictability and tax.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example.\n\n| Client says | Explain |\n| --- | --- |\n| “I want the dividend option; it's extra income.” | Explain what IDCW really is, using the NAV example: own money paid back, NAV falls, taxed at slab. |\n| A retiree wants ₹25,000 a month from ₹50 lakh. | Compare IDCW payout with an SWP on control, predictability and tax. |\n| “My monthly IDCW was cut this month. Is the fund in trouble?” | Explain why payouts aren't guaranteed and what to review: total return, not payouts. |\n| A client has been in IDCW reinvestment for 8 years. | Explain the tax impact and discuss switching to growth, including switching costs. |\n| “The fund declares IDCW next week. Should I buy now?” | Explain why buying before the record date doesn't help: NAV falls, tax is due. |\n| “Why was TDS deducted from my IDCW?” | Explain TDS, the threshold, and how it's adjusted in the tax return. |\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "IDCW",
+  "SWP",
+  "TDS"
+ ],
+ "example": "Role-play the retiree: ₹25,000 by IDCW (trustee decides, whole payout taxed) vs ₹25,000 by SWP (you decide, only gain taxed).",
+ "say": [
+  "IDCW doesn't create money; it moves money.",
+  "Record why the client chose IDCW, if they do."
+ ],
+ "never": [
+  "Promise a fixed IDCW amount.",
+  "Suggest buying before a record date to “earn” the payout."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-q21",
+   "q": "A client says, “I want the dividend option; it’s extra income.” How do you respond?",
+   "o": [
+    "Agree — IDCW is a bonus on top of returns",
+    "Explain IDCW with the NAV example: own money paid back, NAV falls by the payout, taxed at slab; compare SWP or growth",
+    "Say IDCW is tax-free",
+    "Recommend buying before the next record date"
+   ],
+   "a": 1,
+   "why": "Explains IDCW with the NAV example; own money paid back; taxed at slab; compares SWP or growth."
+  },
+  {
+   "id": "idcw-q22",
+   "q": "A retiree wants ₹25,000 a month from ₹50 lakh. IDCW or SWP?",
+   "o": [
+    "IDCW payout, because it feels like income",
+    "SWP from growth generally: compare control, predictability and tax; check sustainability; tax via CA",
+    "IDCW reinvestment, for monthly cash",
+    "Whichever paid most last month"
+   ],
+   "a": 1,
+   "why": "Compares control, predictability and tax; recommends SWP from growth generally; checks sustainability; tax via CA."
+  },
+  {
+   "id": "idcw-q23",
+   "q": "A client’s monthly IDCW was cut. “Is the fund in trouble?” How do you respond?",
+   "o": [
+    "Yes — a cut always means trouble",
+    "Payouts aren’t guaranteed and depend on surplus; review the fund on total return, not payouts",
+    "Promise the payout will return next month",
+    "Advise switching immediately"
+   ],
+   "a": 1,
+   "why": "Explains payouts aren't guaranteed and depend on surplus; reviews fund on total return, not payouts."
+  }
+ ],
+ "card_ids": [
+  "idcw-c29",
+  "idcw-c30"
+ ],
+ "words": 183
+}

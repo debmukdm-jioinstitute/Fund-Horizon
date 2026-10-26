@@ -1,0 +1,70 @@
+{
+ "id": "idcw-07",
+ "title": "Tax and TDS on IDCW",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "State how IDCW is taxed since April 2020 and the TDS threshold.",
+  "Explain that TDS is not the final tax, and that reinvestment and transfer are taxed as payouts."
+ ],
+ "body_md": "Since 1 April 2020, IDCW is taxed in the investor's hands at their slab rate, like other income. Before that, the fund paid a distribution tax and the payout was tax-free for the investor; many clients still remember the old rules. For resident investors, the AMC deducts TDS at 10% when IDCW from that AMC exceeds ₹10,000 in a financial year (the threshold was ₹5,000 until March 2025). TDS is not the final tax: it is adjusted when the client files the return. Clients in a higher slab may owe more; those below the taxable limit can claim a refund or submit the declaration forms that allow no deduction, where eligible. IDCW reinvestment and transfer are taxed the same way as a payout. Rules change with Budgets; refer every specific question to the client's CA.\n\n> **Investor takeaway:** Choose IDCW only if you understand that it is your own money, taxed in full, on the fund's timetable.",
+ "key_terms": [
+  "IDCW tax",
+  "TDS",
+  "Slab rate"
+ ],
+ "example": "IDCW of ₹12,000 from one AMC in a year: TDS at 10% applies above the ₹10,000 threshold — and the full payout is still reported as income in the return.",
+ "say": [
+  "TDS is not the final tax; it is adjusted in the return.",
+  "IDCW reinvestment and transfer are taxed the same way as a payout."
+ ],
+ "never": [
+  "IDCW is tax-free since 2020.",
+  "TDS on IDCW is the final tax; nothing more is reported."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-q4",
+   "q": "Since April 2020, IDCW is taxed:",
+   "o": [
+    "Not at all",
+    "At the investor's slab rate",
+    "At a flat 1%",
+    "Only at the fund level"
+   ],
+   "a": 1,
+   "why": "At the investor's slab rate. In the investor's hands."
+  },
+  {
+   "id": "idcw-q5",
+   "q": "For residents, TDS on IDCW applies above what yearly amount per AMC?",
+   "o": [
+    "₹1,000",
+    "₹5,000",
+    "₹10,000",
+    "₹50,000"
+   ],
+   "a": 2,
+   "why": "₹10,000. From April 2025; earlier ₹5,000."
+  },
+  {
+   "id": "idcw-q19",
+   "q": "What happens to TDS deducted on IDCW when the client files their return?",
+   "o": [
+    "Nothing — it is the final tax",
+    "It is adjusted; IDCW must still be reported as income",
+    "It is refunded automatically to everyone",
+    "The AMC pays the balance"
+   ],
+   "a": 1,
+   "why": "IDCW must be reported; TDS is adjusted in the return."
+  }
+ ],
+ "card_ids": [
+  "idcw-c13",
+  "idcw-c14"
+ ],
+ "words": 156
+}

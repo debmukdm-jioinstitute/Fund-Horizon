@@ -1,0 +1,72 @@
+{
+ "id": "compare-13",
+ "title": "Sales traps to avoid",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Name three sales traps and the compliant alternative.",
+  "Say why exclusivity is never a reason to invest."
+ ],
+ "body_md": "Sales traps to avoid: moving a client up the ladder because the commission is higher. Pitching an AIF's best-case return without showing the lock-in and fees. Using exclusivity (“only for select investors”) as the reason to invest.\n\n> **Talk-track:** “The right product isn't the most exclusive one; it's the one that fits your goals, timeline and comfort with risk.”\n\n> **Investor takeaway:** Exclusive doesn't mean better. Choose by fit, cost and liquidity.",
+ "key_terms": [
+  "Sales traps",
+  "Exclusivity"
+ ],
+ "example": "Pitching “only for select investors”: exclusivity is marketing, not suitability — fit, cost and liquidity decide.",
+ "say": [
+  "The right product fits goals, timeline and comfort with risk.",
+  "Never move a client up the ladder for higher commission."
+ ],
+ "never": [
+  "Move clients up the ladder for higher commission.",
+  "Pitch best-case returns without lock-in and fees."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Fit, not exclusivity",
+   "text": "The right product isn't the most exclusive one; it's the one that fits your goals, timeline and comfort with risk."
+  }
+ ],
+ "check": [
+  {
+   "id": "compare-n18",
+   "q": "Which of these is a sales trap?",
+   "o": [
+    "Showing fees in rupees",
+    "Disclosing commission",
+    "Checking lock-in tolerance",
+    "Moving a client up the ladder because the commission is higher"
+   ],
+   "a": 3,
+   "why": "Sales traps to avoid: moving a client up the ladder because the commission is higher."
+  },
+  {
+   "id": "compare-n19",
+   "q": "Pitching an AIF's best-case return without showing lock-in and fees is:",
+   "o": [
+    "Good practice",
+    "Required by SEBI",
+    "A sales trap to avoid",
+    "Harmless marketing"
+   ],
+   "a": 2,
+   "why": "Sales traps to avoid: pitching an AIF's best-case return without showing the lock-in and fees."
+  },
+  {
+   "id": "compare-n20",
+   "q": "Using exclusivity as the reason to invest is:",
+   "o": [
+    "Best practice",
+    "A sales trap — exclusivity is not suitability",
+    "Required for AIFs",
+    "A compliance rule"
+   ],
+   "a": 1,
+   "why": "Using exclusivity (“only for select investors”) as the reason to invest."
+  }
+ ],
+ "card_ids": [],
+ "words": 70
+}

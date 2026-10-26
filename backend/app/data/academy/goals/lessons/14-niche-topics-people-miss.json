@@ -1,0 +1,72 @@
+{
+ "id": "goals-14",
+ "title": "Niche topics people miss",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain goal-specific inflation, foreign education currency risk and existing assets.",
+  "Say why retirement needs an income phase plan, not just a corpus number."
+ ],
+ "body_md": "These are the goal-planning details that most often get missed.\n\n| Topic | What it is | Why it matters |\n| --- | --- | --- |\n| Goal-specific inflation | Education, healthcare and some lifestyle costs often rise faster than general inflation | Using one inflation rate for every goal underestimates the costly ones |\n| Foreign education | Costs are in foreign currency | Rupee depreciation adds to the cost; plan for it as an extra assumption |\n| Existing assets | EPF, PPF, NPS, FDs, gold, insurance maturities already earmarked | Count them against goals before asking for new SIPs |\n| Lump-sum events | Bonuses, inheritances, policy maturities | Assign them to a goal immediately, or they drift into spending |\n| Retirement has two phases | Accumulation (saving) and decumulation (drawing income) | The post-retirement plan needs its own mix and an SWP, not just a corpus number |\n| Health costs in retirement | Medical expenses rise with age | Separate health cover and a health buffer protect the retirement corpus |\n| Goal shortfall vs surplus | A goal can end up ahead of plan | Lock in gains early by moving to debt; redirect future SIPs to lagging goals |\n| Joint goals and nominations | Goals for children or spouse | Nominations and, where relevant, a will make sure the money reaches the intended person |\n| Tax at the goal date | Redeeming for a goal can trigger capital gains | Plan redemptions across financial years where possible; check with a CA |\n| Labelling in reports | Tagging folios or SIPs to goals in the client's statement | Makes yearly reviews and family conversations much easier |",
+ "key_terms": [
+  "Goal-specific inflation",
+  "Foreign education",
+  "Existing assets",
+  "Decumulation",
+  "Health buffer"
+ ],
+ "example": "Foreign education: a weaker rupee adds to the cost on top of the college's own fee inflation — plan it as an extra assumption.",
+ "say": [
+  "Count existing assets against goals before asking for new SIPs.",
+  "Retirement needs an income-phase plan, not just a corpus number."
+ ],
+ "never": [
+  "Use one inflation rate for every goal.",
+  "Retirement planning ends at the corpus number."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q20",
+   "q": "Markets fell 15%. A client's education goal is 11 years away. Should the plan change?",
+   "o": [
+    "Yes, stop the SIP",
+    "No — review yearly, not on headlines; the plan already expects falls",
+    "Yes, move everything to debt",
+    "Only if the fall exceeds 20%"
+   ],
+   "a": 1,
+   "why": "Review yearly, not on headlines."
+  },
+  {
+   "id": "goals-n21",
+   "q": "Why count EPF, PPF, NPS, FDs and gold before asking for new SIPs?",
+   "o": [
+    "Existing assets already earmarked reduce the new SIP needed",
+    "They raise the SIP",
+    "They are not investments",
+    "SEBI requires it"
+   ],
+   "a": 0,
+   "why": "Count them against goals before asking for new SIPs."
+  },
+  {
+   "id": "goals-n22",
+   "q": "Retirement's second phase is:",
+   "o": [
+    "A second accumulation",
+    "Only tax planning",
+    "Selling everything at 60",
+    "Decumulation: drawing income, needing its own mix and an SWP"
+   ],
+   "a": 3,
+   "why": "Retirement has two phases: accumulation (saving) and decumulation (drawing income)."
+  }
+ ],
+ "card_ids": [
+  "goals-c27",
+  "goals-c28"
+ ],
+ "words": 238
+}

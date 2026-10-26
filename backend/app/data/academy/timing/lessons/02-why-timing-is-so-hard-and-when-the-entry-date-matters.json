@@ -1,0 +1,76 @@
+{
+ "id": "timing-02",
+ "title": "Why timing is so hard, and when the entry date matters",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain the twice-right problem and why rebounds come when fear is highest.",
+  "Say how much the entry date matters at under 1 year, 3–5 years and 7+ years."
+ ],
+ "body_md": "To time the market, an investor must be right twice: when to get out, and when to get back in. The sharpest rebounds often come soon after the worst falls, when fear is highest, so investors who sell in panic frequently miss them. “Wrong time” depends on the horizon: under 1 year — yes, a lot, which is why equity doesn't belong here. 3–5 years — somewhat; a fall near the end can hurt. 7+ years — much less; time and continued investing smooth out the entry point.\n\n| Horizon | Does the entry date matter much? |\n| --- | --- |\n| Under 1 year | Yes, a lot. Which is why equity doesn't belong here |\n| 3–5 years | Somewhat; a fall near the end can hurt |\n| 7+ years | Much less; time and continued investing smooth out the entry point |\n\n> **Talk-track:** “Markets fall regularly; that's normal. The question isn't whether you picked the perfect day. It's whether this money has enough time and the right mix for your goal.”\n\n> **Investor takeaway:** For long-term money, the bigger risk is not investing at the “wrong” time; it's leaving at the wrong time.",
+ "key_terms": [
+  "Market timing",
+  "Horizon",
+  "Rebound"
+ ],
+ "example": "A client who sold in March 2020 and waited “until it's clear” missed the fastest part of the rebound — timing needs two right calls, not one.",
+ "say": [
+  "You must be right twice: exit and re-entry.",
+  "The question is whether the money has enough time and the right mix."
+ ],
+ "never": [
+  "Timing needs only one right call.",
+  "Entry date matters most for a 20-year goal."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Not the perfect day",
+   "text": "Markets fall regularly; that's normal. The question isn't whether you picked the perfect day. It's whether this money has enough time and the right mix for your goal."
+  }
+ ],
+ "check": [
+  {
+   "id": "timing-q9",
+   "q": "For which horizon does the entry date matter most?",
+   "o": [
+    "Under 1 year",
+    "7 years",
+    "10 years",
+    "15 years"
+   ],
+   "a": 0,
+   "why": "Under 1 year. Short horizons leave no time to recover, which is why equity doesn’t belong there."
+  },
+  {
+   "id": "timing-q15",
+   "q": "In the illustration, waiting a year in cash for a dip ended at ≈₹29.4 L versus ≈₹31.1 L invested on day one. The lesson is…",
+   "o": [
+    "Waiting always wins",
+    "Waiting has a cost too",
+    "Cash is risk-free so better",
+    "Timing is easy"
+   ],
+   "a": 1,
+   "why": "Waiting has a cost too. Missing time in the market can cost more than investing on a bad day."
+  },
+  {
+   "id": "timing-n03",
+   "q": "Why is timing the market so hard?",
+   "o": [
+    "You must predict dividends",
+    "You must buy only on Mondays",
+    "You must be right twice: when to exit and when to re-enter",
+    "You must hold only one fund"
+   ],
+   "a": 2,
+   "why": "To time the market, an investor must be right twice: when to get out, and when to get back in."
+  }
+ ],
+ "card_ids": [
+  "timing-c3",
+  "timing-c4"
+ ],
+ "words": 181
+}

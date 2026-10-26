@@ -1,0 +1,70 @@
+{
+ "id": "goals-03",
+ "title": "Worked examples: starting early, stepping up, and retirement",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Read the four worked examples and say what each teaches.",
+  "Explain why retirement is the most underestimated goal."
+ ],
+ "body_md": "Worked examples (illustrative). Child's education: ₹20 lakh today, 15 years, 8% inflation → future cost about ₹63.4 lakh; at an assumed 12% (equity-heavy) the monthly SIP needed is about ₹13,300. Same goal, started 5 years late: with 10 years left the SIP is about ₹28,300 — more than double. Same goal, with a 10% yearly step-up: starting SIP about ₹7,700. House down payment: ₹15 lakh today, 5 years, 6% inflation → about ₹20.1 lakh; at an assumed 8% (balanced, debt-heavy) the SIP is about ₹27,300. Retirement: monthly expenses of ₹50,000 today become about ₹2.15 lakh a month in 25 years at 6% inflation. The corpus must fund that, rising every year, for perhaps 25–30 years after retirement. Use a goal calculator with the client's actual numbers; never quote a rule-of-thumb corpus as advice.\n\n| Goal | Cost today | Years | Assumed inflation | Future cost | Assumed return | Monthly SIP needed |\n| --- | --- | --- | --- | --- | --- | --- |\n| Child's education | ₹20 lakh | 15 | 8% | ≈ ₹63.4 lakh | 12% (equity-heavy) | ≈ ₹13,300 |\n| Same goal, started 5 years late | ₹20 lakh | 10 | 8% | ≈ ₹63.4 lakh* | 12% | ≈ ₹28,300 |\n| Same goal, with a 10% yearly step-up | ₹20 lakh | 15 | 8% | ≈ ₹63.4 lakh | 12% | ≈ ₹7,700 to start |\n| House down payment | ₹15 lakh | 5 | 6% | ≈ ₹20.1 lakh | 8% (balanced, debt-heavy) | ≈ ₹27,300 |\n\nThree lessons from the numbers: start early — five years' delay more than doubles the SIP for the same goal. Step up — increasing the SIP with income makes a large goal affordable today. Inflation is the real target — planning for today's cost guarantees falling short.",
+ "key_terms": [
+  "Step-up SIP",
+  "Retirement corpus",
+  "Cost of delay"
+ ],
+ "example": "Delay costs: education SIP ₹13,300 at 15 years vs ₹28,300 at 10 years — the same target, the same date, more than double the monthly amount.",
+ "say": [
+  "Five years' delay more than doubles the SIP.",
+  "Retirement is usually the largest goal; plan it with actual numbers, not rules of thumb."
+ ],
+ "never": [
+  "Starting late only raises the SIP a little.",
+  "A rule-of-thumb corpus is fine as advice."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q5",
+   "q": "In the illustration, a 5-year delay changed the SIP from about ₹13,300 to about:",
+   "o": [
+    "₹15,000",
+    "₹20,000",
+    "₹28,300",
+    "₹50,000"
+   ],
+   "a": 2,
+   "why": "₹28,300. A late start more than doubles it."
+  },
+  {
+   "id": "goals-q14",
+   "q": "₹50,000 monthly expenses today become about how much in 25 years at 6% inflation?",
+   "o": [
+    "₹75,000",
+    "₹1 lakh",
+    "₹2.15 lakh",
+    "₹5 lakh"
+   ],
+   "a": 2,
+   "why": "₹2.15 lakh. 50,000 × 1.06^25."
+  },
+  {
+   "id": "goals-n04",
+   "q": "A 10% yearly step-up cut the education starting SIP from about ₹13,300 to about:",
+   "o": [
+    "₹13,300",
+    "₹7,700",
+    "₹28,300",
+    "₹20,100"
+   ],
+   "a": 1,
+   "why": "In the education example, a 10% step-up cut the starting SIP from about ₹13,300 to about ₹7,700 for the same target."
+  }
+ ],
+ "card_ids": [
+  "goals-c5",
+  "goals-c6"
+ ],
+ "words": 256
+}

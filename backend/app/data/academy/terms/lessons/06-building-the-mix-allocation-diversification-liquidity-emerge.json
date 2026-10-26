@@ -1,0 +1,71 @@
+{
+ "id": "terms-06",
+ "title": "Building the mix: allocation, diversification, liquidity, emergency fund",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Explain asset allocation and true diversification, not just owning many funds.",
+  "Say what liquidity means and why an emergency fund stays out of equity."
+ ],
+ "body_md": "Asset allocation is how money is split between equity, debt, gold and cash — for example 60% equity, 30% debt, 10% gold. Diversification spreads money across assets, sectors and styles so one fall doesn't sink the whole portfolio; it is not the same as owning many funds that hold the same stocks. Liquidity is how quickly money can be got back without big loss. An emergency fund — usually 6 months of expenses — is kept in savings or liquid funds, not equity.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Asset allocation | How money is split between equity, debt, gold and cash | 60% equity, 30% debt, 10% gold |\n| Diversification | Spreading money across assets, sectors and styles so one fall doesn't sink the whole portfolio | Not the same as owning many funds that hold the same stocks |\n| Liquidity | How quickly you can get your money back without big loss | Liquid fund: usually next business day |\n| Emergency fund | Money set aside, usually 6 months of expenses, for unexpected needs | Kept in savings or liquid funds, not equity |\n\n> **Investor takeaway:** The right fund is the one whose worst year you could sit through without selling.",
+ "key_terms": [
+  "Asset allocation",
+  "Diversification",
+  "Liquidity",
+  "Emergency fund"
+ ],
+ "example": "Five large-cap funds holding the same stocks add little diversification; check portfolio overlap before adding another fund.",
+ "say": [
+  "Five funds holding the same stocks is not diversification.",
+  "Emergency money stays in savings or a liquid fund, not equity."
+ ],
+ "never": [
+  "Owning many funds always means you are diversified.",
+  "An emergency fund should be invested in equity for growth."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q19",
+   "q": "A client holds five large-cap funds. Why might that not be diversification?",
+   "o": [
+    "Large-cap funds cannot diversify",
+    "They may hold mostly the same stocks; check portfolio overlap",
+    "Five funds is too few by rule",
+    "Diversification only comes from debt"
+   ],
+   "a": 1,
+   "why": "They may hold mostly the same stocks; check portfolio overlap."
+  },
+  {
+   "id": "terms-n10",
+   "q": "What does “Diversification” mean in plain language?",
+   "o": [
+    "How money is split between equity, debt, gold and cash",
+    "How quickly you can get your money back without big loss",
+    "Money set aside, usually 6 months of expenses, for unexpected needs",
+    "Spreading money across assets, sectors and styles so one fall doesn't sink the whole portfolio"
+   ],
+   "a": 3,
+   "why": "Diversification: Spreading money across assets, sectors and styles so one fall doesn't sink the whole portfolio Example: Not the same as owning many funds that hold the same stocks"
+  },
+  {
+   "id": "terms-n11",
+   "q": "What does “Emergency fund” mean in plain language?",
+   "o": [
+    "How money is split between equity, debt, gold and cash",
+    "Spreading money across assets, sectors and styles so one fall doesn't sink the whole portfolio",
+    "Money set aside, usually 6 months of expenses, for unexpected needs",
+    "How quickly you can get your money back without big loss"
+   ],
+   "a": 2,
+   "why": "Emergency fund: Money set aside, usually 6 months of expenses, for unexpected needs Example: Kept in savings or liquid funds, not equity"
+  }
+ ],
+ "card_ids": [
+  "terms-c11",
+  "terms-c12"
+ ],
+ "words": 189
+}

@@ -1,0 +1,734 @@
+{
+ "id": "rebal",
+ "title": "Rebalancing",
+ "code": "Module 15",
+ "blurb": "Bringing a portfolio back to its agreed mix: drift, methods, cheapest tools, and handling pushback.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 74 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 13 (asset allocation)"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)"
+ ],
+ "lessons": [
+  {
+   "id": "rebal-01",
+   "title": "Why portfolios drift: the 10-year example",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "rebal-02",
+   "title": "Drift in a single year: up and down",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "rebal-03",
+   "title": "What rebalancing does and doesn't do",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "rebal-04",
+   "title": "Risk control, not return chasing",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "rebal-05",
+   "title": "Before rebalancing: five checks",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "rebal-06",
+   "title": "Measure drift in percentage points, and ask the client",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "rebal-07",
+   "title": "Three methods: calendar, band, calendar + band",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "rebal-08",
+   "title": "The cheapest order of tools, with the worked example",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "rebal-09",
+   "title": "Before selling anything: loads, tax, hybrids, records",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "rebal-10",
+   "title": "Rebalancing vs changing the target",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "rebal-11",
+   "title": "The annual rebalancing review checklist",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "rebal-12",
+   "title": "Behaviours: why rebalancing feels wrong",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "rebal-13",
+   "title": "The one line, and selling winners without fear",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "rebal-14",
+   "title": "Role-play lab: six rebalancing conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "rebal-15",
+   "title": "Role-play lab (2): hidden holdings, goal near, recent units",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "rebal-16",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "rebal-c1",
+   "q": "The one idea",
+   "a": [
+    "Rebalancing is a promise kept to the client’s own risk choice."
+   ]
+  },
+  {
+   "id": "rebal-c2",
+   "q": "Rebalancing",
+   "a": [
+    "Moving money between asset classes to bring the portfolio back to its target mix."
+   ]
+  },
+  {
+   "id": "rebal-c3",
+   "q": "Why portfolios drift",
+   "a": [
+    "Assets grow at different speeds, so the mix changes even if the client does nothing."
+   ]
+  },
+  {
+   "id": "rebal-c4",
+   "q": "10-year drift (illustrative)",
+   "a": [
+    "₹20 L at 60/40, never rebalanced (equity 12%, debt 7%): equity becomes ≈70% of ≈₹53 L."
+   ]
+  },
+  {
+   "id": "rebal-c5",
+   "q": "One strong year (illustrative)",
+   "a": [
+    "Equity +30%, debt +7%: 60/40 becomes ≈65/35; full rebalance moves ≈₹1.1 L to debt."
+   ]
+  },
+  {
+   "id": "rebal-c6",
+   "q": "One bad year (illustrative)",
+   "a": [
+    "Equity −25%, debt +7%: 60/40 becomes ≈51/49; rebalance moves ≈₹1.5 L to equity."
+   ]
+  },
+  {
+   "id": "rebal-c7",
+   "q": "Main job",
+   "a": [
+    "Risk control, not higher returns; in a strongly rising market it can end with less."
+   ]
+  },
+  {
+   "id": "rebal-c8",
+   "q": "Measuring drift",
+   "a": [
+    "Current share minus target share, in percentage points: 66% vs 60% = +6 points."
+   ]
+  },
+  {
+   "id": "rebal-c9",
+   "q": "Five checks",
+   "a": [
+    "Written target, whole portfolio, drift size, costs, client situation."
+   ]
+  },
+  {
+   "id": "rebal-c10",
+   "q": "Calendar method",
+   "a": [
+    "Check and rebalance on a fixed date, e.g. yearly."
+   ]
+  },
+  {
+   "id": "rebal-c11",
+   "q": "Band method",
+   "a": [
+    "Act only when drift exceeds a limit, e.g. ±5 points."
+   ]
+  },
+  {
+   "id": "rebal-c12",
+   "q": "Suggested default",
+   "a": [
+    "Calendar + band: check yearly, act only beyond the band; check early after a sharp move."
+   ]
+  },
+  {
+   "id": "rebal-c13",
+   "q": "Cheapest order",
+   "a": [
+    "New money → redirect income → switch/STP in stages → sell and reinvest."
+   ]
+  },
+  {
+   "id": "rebal-c14",
+   "q": "Before selling",
+   "a": [
+    "Check exit loads (per instalment), possible tax (refer to a CA), and record approval."
+   ]
+  },
+  {
+   "id": "rebal-c15",
+   "q": "Hybrid funds",
+   "a": [
+    "Multi-asset and balanced advantage funds rebalance inside; the client doesn’t redeem."
+   ]
+  },
+  {
+   "id": "rebal-c16",
+   "q": "Rebalance vs new target",
+   "a": [
+    "Rebalancing restores the same target after drift; a new target follows goal, life or risk changes."
+   ]
+  },
+  {
+   "id": "rebal-c17",
+   "q": "Target mix",
+   "a": [
+    "The agreed share of each asset class.",
+    "Example: 60% equity, 40% debt.",
+    "Remember: Written, for each goal."
+   ]
+  },
+  {
+   "id": "rebal-c18",
+   "q": "Drift",
+   "a": [
+    "Gap between current and target share.",
+    "Example: 66% vs 60% target = +6 points.",
+    "Remember: Measure on the whole portfolio."
+   ]
+  },
+  {
+   "id": "rebal-c19",
+   "q": "Calendar rebalancing",
+   "a": [
+    "Rebalance on a fixed date.",
+    "Example: Every April.",
+    "Remember: Simple; may act on tiny drifts."
+   ]
+  },
+  {
+   "id": "rebal-c20",
+   "q": "Band rebalancing",
+   "a": [
+    "Rebalance when drift passes a limit.",
+    "Example: Act beyond ±5 points.",
+    "Remember: Acts only when it matters."
+   ]
+  },
+  {
+   "id": "rebal-c21",
+   "q": "Calendar + band",
+   "a": [
+    "Check yearly; act only beyond the band.",
+    "Example: April check, 64.6% → no action.",
+    "Remember: Suggested default."
+   ]
+  },
+  {
+   "id": "rebal-c22",
+   "q": "Cash-flow rebalancing",
+   "a": [
+    "New money to the underweight asset.",
+    "Example: ₹15,000 a month to debt for a year.",
+    "Remember: No load, no tax."
+   ]
+  },
+  {
+   "id": "rebal-c23",
+   "q": "Switch",
+   "a": [
+    "Move between schemes of the same fund house.",
+    "Example: Debt fund → equity fund.",
+    "Remember: It is a redemption: check costs."
+   ]
+  },
+  {
+   "id": "rebal-c24",
+   "q": "STP for rebalancing",
+   "a": [
+    "Transfer a fixed amount in stages.",
+    "Example: ₹1.5 L moved over 6 months.",
+    "Remember: Smooths a big move."
+   ]
+  },
+  {
+   "id": "rebal-c25",
+   "q": "Exit load",
+   "a": [
+    "Charge on redemption within a set period.",
+    "Example: Recent SIP units redeemed.",
+    "Remember: Check per instalment."
+   ]
+  },
+  {
+   "id": "rebal-c26",
+   "q": "Capital-gains tax",
+   "a": [
+    "Tax on gains when units are redeemed.",
+    "Example: Selling equity units with gains.",
+    "Remember: Refer to a CA."
+   ]
+  },
+  {
+   "id": "rebal-c27",
+   "q": "Glide path",
+   "a": [
+    "Planned change of target as a goal nears.",
+    "Example: 60/40 → 30/70 three years before goal.",
+    "Remember: A new target, not a rebalance."
+   ]
+  },
+  {
+   "id": "rebal-c28",
+   "q": "Rebalancing log",
+   "a": [
+    "Record of date, drift, action, reason.",
+    "Example: Apr 2026: +6.2, moved ₹1.2 L.",
+    "Remember: Protects client and firm."
+   ]
+  },
+  {
+   "id": "rebal-c29",
+   "q": "Letting winners run",
+   "a": [
+    "Reluctance to sell what is rising.",
+    "Example: “Why sell what’s doing so well?”",
+    "Remember: Trim back to the agreed mix."
+   ]
+  },
+  {
+   "id": "rebal-c30",
+   "q": "Fear after a fall",
+   "a": [
+    "Reluctance to buy what has fallen.",
+    "Example: “Why buy what’s falling?”",
+    "Remember: The rule was agreed when calm."
+   ]
+  },
+  {
+   "id": "rebal-c31",
+   "q": "Inertia",
+   "a": [
+    "Leaving the portfolio untouched.",
+    "Example: “Let’s leave it.”",
+    "Remember: 60% became 70% in 10 years."
+   ]
+  },
+  {
+   "id": "rebal-c32",
+   "q": "Regret",
+   "a": [
+    "Pain when rebalancing looks wrong later.",
+    "Example: “Equity kept rising after we sold.”",
+    "Remember: It controls risk; it isn’t a forecast."
+   ]
+  }
+ ],
+ "final": {
+  "id": "rebal-final",
+  "title": "Rebalancing final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "rebal-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What is rebalancing?",
+    "o": [
+     "Picking new funds",
+     "Restoring the target mix by moving money between asset classes",
+     "Timing the market",
+     "Stopping SIPs"
+    ],
+    "a": 1,
+    "why": "Restoring the target mix by moving money between asset classes. It brings the portfolio back to the agreed mix."
+   },
+   {
+    "id": "rebal-q2",
+    "sec": "L: Learn the Basics",
+    "q": "Why do portfolios drift?",
+    "o": [
+     "Fund managers change",
+     "Assets grow at different speeds",
+     "SEBI rules",
+     "Taxes"
+    ],
+    "a": 1,
+    "why": "Assets grow at different speeds. The mix changes on its own."
+   },
+   {
+    "id": "rebal-q3",
+    "sec": "L: Learn the Basics",
+    "q": "In the 10-year example, a 60% equity target drifted to about…",
+    "o": [
+     "50%",
+     "60%",
+     "70%",
+     "90%"
+    ],
+    "a": 2,
+    "why": "70%. About 70% if never rebalanced."
+   },
+   {
+    "id": "rebal-q4",
+    "sec": "L: Learn the Basics",
+    "q": "The main job of rebalancing is…",
+    "o": [
+     "Higher returns",
+     "Risk control",
+     "Tax saving",
+     "Beating the index"
+    ],
+    "a": 1,
+    "why": "Risk control. It keeps risk at the agreed level."
+   },
+   {
+    "id": "rebal-q5",
+    "sec": "L: Learn the Basics",
+    "q": "A 60% target is now 66%. The drift is…",
+    "o": [
+     "+6 points",
+     "+10%",
+     "−6 points",
+     "+66 points"
+    ],
+    "a": 0,
+    "why": "+6 points. Current share minus target share."
+   },
+   {
+    "id": "rebal-q6",
+    "sec": "A: Act Right",
+    "q": "Which is our suggested default method?",
+    "o": [
+     "Never rebalance",
+     "Calendar only",
+     "Calendar + band",
+     "Daily rebalancing"
+    ],
+    "a": 2,
+    "why": "Calendar + band. Check yearly; act only beyond the band."
+   },
+   {
+    "id": "rebal-q7",
+    "sec": "A: Act Right",
+    "q": "With a ±5-point band, a 60% target at 64.6% means…",
+    "o": [
+     "Must sell now",
+     "Within band: no action needed",
+     "Change the target",
+     "Move all to debt"
+    ],
+    "a": 1,
+    "why": "Within band: no action needed. Optional nudge with new money."
+   },
+   {
+    "id": "rebal-q8",
+    "sec": "A: Act Right",
+    "q": "The cheapest rebalancing tool is…",
+    "o": [
+     "Selling equity",
+     "Directing new money to the underweight asset",
+     "Switching AMCs",
+     "Taking a loan"
+    ],
+    "a": 1,
+    "why": "Directing new money to the underweight asset. No exit load, no tax."
+   },
+   {
+    "id": "rebal-q9",
+    "sec": "A: Act Right",
+    "q": "After equity falls 25% (60/40 start), rebalancing means…",
+    "o": [
+     "Selling more equity",
+     "Moving money from debt to equity",
+     "Doing nothing ever",
+     "Moving all to cash"
+    ],
+    "a": 1,
+    "why": "Moving money from debt to equity. About ₹1.5 L from debt to equity in the example."
+   },
+   {
+    "id": "rebal-q10",
+    "sec": "A: Act Right",
+    "q": "Each switch between funds is…",
+    "o": [
+     "Tax-free always",
+     "A redemption that may carry load and tax",
+     "Not allowed",
+     "Only for debt funds"
+    ],
+    "a": 1,
+    "why": "A redemption that may carry load and tax. Check costs; refer tax to a CA."
+   },
+   {
+    "id": "rebal-q11",
+    "sec": "R: Review & Rebalance",
+    "q": "A goal is now 2 years away. The client asks to “rebalance to 60/40”. You…",
+    "o": [
+     "Rebalance to 60/40",
+     "Explain a new target (glide path) is needed",
+     "Ignore it",
+     "Move to small-cap"
+    ],
+    "a": 1,
+    "why": "Explain a new target (glide path) is needed. That is a target change, not a rebalance."
+   },
+   {
+    "id": "rebal-q12",
+    "sec": "R: Review & Rebalance",
+    "q": "Which is a valid reason to change the target?",
+    "o": [
+     "Market news",
+     "Last year’s returns",
+     "A life event",
+     "A friend’s tip"
+    ],
+    "a": 2,
+    "why": "A life event. Goal, life or risk-profile changes."
+   },
+   {
+    "id": "rebal-q13",
+    "sec": "A: Act Right",
+    "q": "Why agree the rule in writing at the start?",
+    "o": [
+     "It is required by tax law",
+     "Later decisions follow the client’s calm choice",
+     "To avoid KYC",
+     "To raise commission"
+    ],
+    "a": 1,
+    "why": "Later decisions follow the client’s calm choice. It removes emotion later."
+   },
+   {
+    "id": "rebal-q14",
+    "sec": "A: Act Right",
+    "q": "Clients in multi-asset or balanced advantage funds…",
+    "o": [
+     "Must rebalance monthly",
+     "Get rebalancing inside the fund",
+     "Cannot rebalance",
+     "Pay double tax"
+    ],
+    "a": 1,
+    "why": "Get rebalancing inside the fund. The fund does the moving."
+   },
+   {
+    "id": "rebal-q15",
+    "sec": "Compliance: Compliance",
+    "q": "Which statement is compliant?",
+    "o": [
+     "“Rebalancing guarantees higher returns.”",
+     "“Rebalancing keeps your risk at the level you chose; it doesn’t guarantee returns.”",
+     "“Switching is always tax-free.”",
+     "“We’ll rebalance because markets look expensive.”"
+    ],
+    "a": 1,
+    "why": "“Rebalancing keeps your risk at the level you chose; it doesn’t guarantee returns.”. Explain the purpose honestly."
+   },
+   {
+    "id": "rebal-q16",
+    "sec": "L: Learn the Basics",
+    "q": "A portfolio's mix stays the same if the client does nothing. Why is that wrong?",
+    "o": [
+     "Assets grow at different speeds, so it drifts",
+     "SEBI changes mixes yearly",
+     "Tax resets the mix",
+     "SIPs freeze the mix"
+    ],
+    "a": 0,
+    "why": "Assets grow at different speeds, so it drifts."
+   },
+   {
+    "id": "rebal-q17",
+    "sec": "A: Act Right",
+    "q": "After equity falls, rebalancing can mean:",
+    "o": [
+     "Selling more equity",
+     "Buying equity after a fall",
+     "Moving all to cash",
+     "Doing nothing ever"
+    ],
+    "a": 1,
+    "why": "Restoring the target buys the underweight asset."
+   },
+   {
+    "id": "rebal-q18",
+    "sec": "L: Learn the Basics",
+    "q": "Does rebalancing always produce higher returns?",
+    "o": [
+     "Yes, it guarantees higher returns",
+     "No — its job is risk control; in strong rallies it can end with less",
+     "Yes, in every market",
+     "Only for debt portfolios"
+    ],
+    "a": 1,
+    "why": "Its job is risk control; in strong rallies it can end with less."
+   },
+   {
+    "id": "rebal-q19",
+    "sec": "A: Act Right",
+    "q": "Can new SIP money be used to rebalance without selling?",
+    "o": [
+     "No, only switches count",
+     "Yes — cash-flow rebalancing avoids loads and tax",
+     "Only for new clients",
+     "Only in January"
+    ],
+    "a": 1,
+    "why": "Cash-flow rebalancing avoids loads and tax."
+   },
+   {
+    "id": "rebal-q20",
+    "sec": "R: Review & Rebalance",
+    "q": "Is a market view a good reason to change the target mix?",
+    "o": [
+     "Yes, if the view is strong",
+     "No — only goal, life or risk-profile changes justify it",
+     "Yes, after a rally",
+     "Only for equity targets"
+    ],
+    "a": 1,
+    "why": "Only goal, life or risk-profile changes justify it."
+   },
+   {
+    "id": "rebal-q21",
+    "sec": "Practice: Role-Play",
+    "q": "After a strong year, Rohan's 60/40 portfolio is at 68/32 and he doesn't want to sell equity. What do you do?",
+    "o": [
+     "Leave it alone",
+     "Explain the band was breached; use new money first, then a partial switch or STP; check loads and tax; record his decision",
+     "Sell all equity at once",
+     "Move everything to debt"
+    ],
+    "a": 1,
+    "why": "Explain the band was breached; use new money first, then a partial switch or STP; check loads and tax; record his decision."
+   },
+   {
+    "id": "rebal-q22",
+    "sec": "Practice: Role-Play",
+    "q": "Leela's 60/40 is at 50/50 after a sharp fall and she wants to wait. What do you say?",
+    "o": [
+     "Agree to wait indefinitely",
+     "Remind her of the agreed rule; explain buying lower without predicting the bottom; consider staging the move; no market predictions",
+     "Sell all debt now",
+     "Promise a recovery"
+    ],
+    "a": 1,
+    "why": "Remind her of the agreed rule; explain buying lower without predicting the bottom; consider staging the move; no market predictions."
+   },
+   {
+    "id": "rebal-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A client at 62/38 asks to rebalance immediately. What do you explain?",
+    "o": [
+     "Rebalance immediately",
+     "It is within the ±5-point band; costs may outweigh benefits; direct new SIP money if anything",
+     "Change the target to 62/38",
+     "Ignore the request"
+    ],
+    "a": 1,
+    "why": "Explain it is within the ±5-point band; costs may outweigh benefits; use new SIP money if anything."
+   },
+   {
+    "id": "rebal-q24",
+    "sec": "Practice: Role-Play",
+    "q": "Arun's funds look 80% equity, but he has ₹30 L in PPF and FDs. What do you do?",
+    "o": [
+     "Rebalance the funds to 60/40 immediately",
+     "Measure drift on the whole portfolio; his total mix may already be near target",
+     "Ignore the PPF and FDs",
+     "Sell the PPF"
+    ],
+    "a": 1,
+    "why": "Measure drift on the whole portfolio; his total mix may already be near target."
+   },
+   {
+    "id": "rebal-q25",
+    "sec": "Practice: Role-Play",
+    "q": "Priya's goal is 2 years away and she asks to “rebalance to 60/40”. What do you explain?",
+    "o": [
+     "Rebalance to 60/40 as asked",
+     "This needs a new target along the glide path, not a rebalance; agree and record the new target",
+     "Move to small-cap",
+     "Ignore the goal date"
+    ],
+    "a": 1,
+    "why": "Explain this needs a new target along the glide path, not a rebalance; agree and record the new target."
+   }
+  ]
+ },
+ "role_play": null
+}

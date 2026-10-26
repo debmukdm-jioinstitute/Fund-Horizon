@@ -1,0 +1,68 @@
+{
+ "id": "withdraw-07",
+ "title": "Warning signs",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Name five warning signs in a withdrawal plan.",
+  "Say what to discuss when the rate is above 6–7%."
+ ],
+ "body_md": "Warning signs: a withdrawal rate above 6–7%, no health insurance, no emergency fund, large dependants' needs, or all money in a single asset class. When the rate is above 6–7%, discuss lower spending, other income, or delaying extras — and show, illustratively, how quickly the money may run out. Do not promise it will last.\n\n> **Investor takeaway:** A withdrawal rate above 6–7% is a warning sign, not a plan.",
+ "key_terms": [
+  "Warning signs"
+ ],
+ "example": "Mrs. Rao wants ₹80,000 a month from ₹1 Cr: ≈ 9.6% rate — show how quickly it may run out (illustrative) and discuss lower spending or other income.",
+ "say": [
+  "A withdrawal rate above 6–7% is a warning sign.",
+  "No health insurance and no emergency fund are warning signs."
+ ],
+ "never": [
+  "A 9.6% rate is fine if the client is optimistic.",
+  "Promise the corpus will last."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q22",
+   "q": "Mrs. Rao wants ₹80,000 a month from ₹1 Cr. What do you show her?",
+   "o": [
+    "Agree immediately",
+    "Show the ≈9.6% rate and how quickly it may run out (illustrative); discuss lower spending, other income or delaying extras",
+    "Promise it will last forever",
+    "Suggest a small-cap SWP"
+   ],
+   "a": 1,
+   "why": "Show the ≈9.6% rate and how quickly it may run out (illustrative); discuss lower spending, other income or delaying extras."
+  },
+  {
+   "id": "withdraw-n09",
+   "q": "Which of these is a warning sign?",
+   "o": [
+    "All money in a single asset class",
+    "A 4% withdrawal rate",
+    "Health cover in place",
+    "An emergency fund"
+   ],
+   "a": 0,
+   "why": "Warning signs: a withdrawal rate above 6–7%, no health insurance, no emergency fund, large dependants' needs, or all money in a single asset class."
+  },
+  {
+   "id": "withdraw-n10",
+   "q": "Mrs. Rao wants ₹80,000 a month from ₹1 Cr. Her rate is about:",
+   "o": [
+    "4%",
+    "6%",
+    "8%",
+    "9.6%"
+   ],
+   "a": 3,
+   "why": "₹80,000 a month is ₹9.6 L a year from ₹1 Cr: ≈ 9.6%."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c13",
+  "withdraw-c14"
+ ],
+ "words": 69
+}

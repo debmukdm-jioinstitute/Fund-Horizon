@@ -1,0 +1,72 @@
+{
+ "id": "idcw-14",
+ "title": "Niche topics people miss",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain equalisation reserve, ELSS reinvestment lock-ins, daily IDCW, unclaimed IDCW and NRI TDS.",
+  "Say where IDCW and TDS appear in the CAS and the tax return."
+ ],
+ "body_md": "These are the IDCW details that most often catch out distributors.\n\n| Topic | What it is | Why it matters |\n| --- | --- | --- |\n| Equalisation reserve | Part of the price paid by new investors that the scheme sets aside, so existing gains aren't diluted; it can form part of the distributable surplus | This is how a new investor's own money can come back to them as \"income\" |\n| ELSS with IDCW reinvestment | Each reinvested unit is a fresh purchase with its own 3-year lock-in | Units unlock at different dates; harder to track and redeem |\n| Daily or weekly IDCW in liquid funds | Frequent small payouts, often reinvested | Each one is taxable and adds to paperwork; growth is usually simpler |\n| \"Monthly income\" hybrid funds | Funds marketed for regular payouts | Payouts still depend on surplus; check equity exposure and the riskometer |\n| Unclaimed IDCW | Payouts that fail because of an old or closed bank account | Keep bank details updated; unclaimed amounts need a claim process with the AMC |\n| NRI investors | TDS on IDCW for NRIs is at higher rates than for residents | Check the current rate and any tax-treaty relief with the client's CA |\n| TDS declarations | Eligible resident investors with income below the taxable limit can submit declarations so that TDS isn't deducted | Useful for low-income retirees taking IDCW |\n| Reporting in the tax return | IDCW must be reported as income even after TDS | Clients often miss this; give them the yearly IDCW statement |\n| IDCW in the CAS | The CAS and AMC statements show IDCW paid and TDS deducted | Use them in the annual review and at tax time |\n\n> **Investor takeaway:** Ask each new joiner to show, using the NAV table, why buying just before a record date doesn't make money, and to explain it to a partner in under a minute.",
+ "key_terms": [
+  "Equalisation reserve",
+  "ELSS with IDCW reinvestment",
+  "Unclaimed IDCW",
+  "NRI investors",
+  "TDS declarations"
+ ],
+ "example": "New investor's purchase price partly set aside as equalisation reserve can later return to them as “income” — the clearest proof that IDCW can be own money back.",
+ "say": [
+  "IDCW must be reported as income even after TDS.",
+  "Keep bank details updated, or payouts go unclaimed."
+ ],
+ "never": [
+  "Unclaimed IDCW is lost forever with no claim process.",
+  "NRI TDS on IDCW is lower than for residents."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-q20",
+   "q": "Each IDCW reinvestment in an ELSS is:",
+   "o": [
+    "Exempt from lock-in",
+    "A fresh purchase with its own 3-year lock-in",
+    "Locked for 1 year",
+    "Redeemable immediately"
+   ],
+   "a": 1,
+   "why": "Each reinvestment is a fresh purchase."
+  },
+  {
+   "id": "idcw-n23",
+   "q": "What is an equalisation reserve?",
+   "o": [
+    "A SEBI fine on AMCs",
+    "A type of SWP",
+    "Part of new investors' purchase price set aside so existing gains aren't diluted; it can form part of distributable surplus",
+    "A tax refund"
+   ],
+   "a": 2,
+   "why": "Part of the price paid by new investors that the scheme sets aside, so existing gains aren't diluted; it can form part of the distributable surplus."
+  },
+  {
+   "id": "idcw-n24",
+   "q": "ELSS units bought by IDCW reinvestment:",
+   "o": [
+    "Are exempt from lock-in",
+    "Each is a fresh purchase with its own 3-year lock-in",
+    "Share the original units' lock-in end date",
+    "Can be redeemed immediately"
+   ],
+   "a": 1,
+   "why": "Each reinvested unit is a fresh purchase with its own 3-year lock-in."
+  }
+ ],
+ "card_ids": [
+  "idcw-c27",
+  "idcw-c28"
+ ],
+ "words": 290
+}

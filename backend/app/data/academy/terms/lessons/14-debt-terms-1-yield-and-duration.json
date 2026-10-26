@@ -1,0 +1,72 @@
+{
+ "id": "terms-14",
+ "title": "Debt terms (1): yield and duration",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain coupon, YTM and average maturity in plain words.",
+  "Say how modified duration predicts a price move for a 1% rate change."
+ ],
+ "body_md": "Many investors treat debt funds like fixed deposits. They are not: their value moves with interest rates and with the credit quality of what they hold. Coupon is the fixed interest a bond pays on face value. YTM (Yield to Maturity) is the return the fund's current bonds would earn if held to maturity, before expenses — a guide, not a promise. Average maturity is the average time until the fund's bonds are repaid; Macaulay duration is the weighted-average time to receive cash flows; modified duration is how much price changes for a 1% rate change. Interest-rate risk is the core debt risk: bond prices fall when rates rise.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Coupon | The fixed interest a bond pays on its face value | ₹1,000 bond with 7% coupon pays ₹70 a year |\n| YTM (Yield to Maturity) | The return the fund's current bonds would earn if held to maturity, before expenses. A guide, not a promise | Fund YTM 7.4%, TER 0.4% → roughly 7% indicative, if nothing changes |\n| Average maturity | Average time until the fund's bonds are repaid | Liquid fund: up to 91 days; gilt fund: often 10+ years |\n| Macaulay duration | The weighted average time to receive a bond's cash flows, in years | Used to match a fund to a goal date |\n| Modified duration | How much the fund's price changes for a 1% change in interest rates | Modified duration 4 → rates up 1% ≈ price down 4% |\n| Interest-rate risk | Bond prices fall when rates rise, and rise when rates fall. Longer duration = bigger effect | Gilt funds swing more than liquid funds |\n\n> **Investor takeaway:** For short-term goals, choose low duration and high credit quality. Never chase the highest yield without asking why it is high.",
+ "key_terms": [
+  "Coupon",
+  "YTM (Yield to Maturity)",
+  "Average maturity",
+  "Macaulay duration",
+  "Modified duration",
+  "Interest-rate risk"
+ ],
+ "example": "Modified duration 4: rates up 1% means price down about 4%. A fund with YTM 7.4% and TER 0.4% is roughly 7% indicative, if nothing changes.",
+ "say": [
+  "YTM is today's indicative yield, not a promise.",
+  "For short goals: low duration, high credit quality."
+ ],
+ "never": [
+  "A debt fund is as safe as an FD.",
+  "The highest yield is always the best debt fund."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q13",
+   "q": "A debt fund with modified duration 5 will, if rates rise 1%, roughly:",
+   "o": [
+    "Gain 5%",
+    "Lose 5%",
+    "Not change",
+    "Lose 1%"
+   ],
+   "a": 1,
+   "why": "Lose 5%. Modified duration × rate change ≈ price change."
+  },
+  {
+   "id": "terms-n23",
+   "q": "What does “Modified duration” mean in plain language?",
+   "o": [
+    "The fixed interest a bond pays on its face value",
+    "The return the fund's current bonds would earn if held to maturity, before expenses. A guide, not a promise",
+    "How much the fund's price changes for a 1% change in interest rates",
+    "Average time until the fund's bonds are repaid"
+   ],
+   "a": 2,
+   "why": "Modified duration: How much the fund's price changes for a 1% change in interest rates Example: Modified duration 4 → rates up 1% ≈ price down 4%"
+  },
+  {
+   "id": "terms-n24",
+   "q": "What does “YTM (Yield to Maturity)” mean in plain language?",
+   "o": [
+    "The fixed interest a bond pays on its face value",
+    "The return the fund's current bonds would earn if held to maturity, before expenses. A guide, not a promise",
+    "Average time until the fund's bonds are repaid",
+    "The weighted average time to receive a bond's cash flows, in years"
+   ],
+   "a": 1,
+   "why": "YTM (Yield to Maturity): The return the fund's current bonds would earn if held to maturity, before expenses. A guide, not a promise Example: Fund YTM 7.4%, TER 0.4% → roughly 7% indicative, if nothing changes"
+  }
+ ],
+ "card_ids": [
+  "terms-c27"
+ ],
+ "words": 286
+}

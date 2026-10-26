@@ -1,0 +1,748 @@
+{
+ "id": "terms",
+ "title": "Basic Investment Terms",
+ "code": "Module 5",
+ "blurb": "The investment words clients actually ask about, explained in plain language with numbers.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 89 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "None"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)"
+ ],
+ "lessons": [
+  {
+   "id": "terms-01",
+   "title": "What a fund is: pool, AMC, scheme, units, NAV, AUM",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "terms-02",
+   "title": "Plans and options: direct, regular, growth, IDCW, folio, NFO",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "terms-03",
+   "title": "Labels that matter: open-ended, benchmark, TRI, categories, index funds",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "terms-04",
+   "title": "Risk profile, riskometer and horizon",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "terms-05",
+   "title": "Measuring the bumps: volatility, beta, Sharpe, Sortino, drawdown",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "terms-06",
+   "title": "Building the mix: allocation, diversification, liquidity, emergency fund",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "terms-07",
+   "title": "Putting money in: lump sum, SIP, STP, SWP, switch, redemption",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "terms-08",
+   "title": "Paperwork and timing: KYC, nomination, cut-off, exit load, lock-in, TER",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "terms-09",
+   "title": "Costs and documents: stamp duty, ELSS, SID/KIM, factsheet, CAS",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "terms-10",
+   "title": "Returns done right: absolute, CAGR, XIRR, trailing, rolling",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "R"
+  },
+  {
+   "id": "terms-11",
+   "title": "Judging performance: alpha, tracking error, overlap, rebalancing, Rule of 72",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "R"
+  },
+  {
+   "id": "terms-12",
+   "title": "Markets and moods: bull, bear, correction, timing, compounding",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "terms-13",
+   "title": "Inflation and behaviour: real return, paper loss, recency bias, FOMO",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "terms-14",
+   "title": "Debt terms (1): yield and duration",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "terms-15",
+   "title": "Debt terms (2): credit quality and strategy",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "terms-16",
+   "title": "Commonly confused pairs",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "terms-17",
+   "title": "Role-play lab: six client conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "terms-18",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "terms-c1",
+   "q": "NAV (Net Asset Value)",
+   "a": [
+    "Price of one unit = (value of holdings − expenses) ÷ units. Declared once every business day."
+   ]
+  },
+  {
+   "id": "terms-c2",
+   "q": "AUM",
+   "a": [
+    "Assets Under Management: the total money a fund or AMC manages."
+   ]
+  },
+  {
+   "id": "terms-c3",
+   "q": "Folio number",
+   "a": [
+    "Your account number with an AMC. Quote it for any service request."
+   ]
+  },
+  {
+   "id": "terms-c4",
+   "q": "Direct vs regular plan",
+   "a": [
+    "Same portfolio and manager. Regular includes distributor commission (for advice and service) in its expense ratio."
+   ]
+  },
+  {
+   "id": "terms-c5",
+   "q": "TRI (Total Return Index)",
+   "a": [
+    "Benchmark version that includes dividends; the fair yardstick SEBI requires funds to compare against."
+   ]
+  },
+  {
+   "id": "terms-c6",
+   "q": "Riskometer",
+   "a": [
+    "SEBI's six levels: Low, Low to Moderate, Moderate, Moderately High, High, Very High."
+   ]
+  },
+  {
+   "id": "terms-c7",
+   "q": "Cut-off time",
+   "a": [
+    "3 pm for most funds; 1:30 pm for liquid and overnight funds. Money received after it gets the next day's NAV."
+   ]
+  },
+  {
+   "id": "terms-c8",
+   "q": "Stamp duty",
+   "a": [
+    "0.005% on mutual fund purchases: ₹50 on ₹10 lakh."
+   ]
+  },
+  {
+   "id": "terms-c9",
+   "q": "ELSS lock-in",
+   "a": [
+    "3 years, counted separately for each SIP instalment."
+   ]
+  },
+  {
+   "id": "terms-c10",
+   "q": "KYC",
+   "a": [
+    "One-time identity and address verification, recorded with a KYC Registration Agency."
+   ]
+  },
+  {
+   "id": "terms-c11",
+   "q": "CAS",
+   "a": [
+    "Consolidated Account Statement: all your mutual fund holdings across AMCs in one statement."
+   ]
+  },
+  {
+   "id": "terms-c12",
+   "q": "Rule of 72",
+   "a": [
+    "72 ÷ yearly return = years to double. At 12%, about 6 years."
+   ]
+  },
+  {
+   "id": "terms-c13",
+   "q": "Real return",
+   "a": [
+    "Return after inflation. 7% FD with 6% inflation ≈ 1% real, before tax."
+   ]
+  },
+  {
+   "id": "terms-c14",
+   "q": "Bear market vs correction",
+   "a": [
+    "Correction: a fall of about 10–20% from a peak. Bear market: about 20% or more."
+   ]
+  },
+  {
+   "id": "terms-c15",
+   "q": "Credit rating",
+   "a": [
+    "An agency's grade of a borrower's ability to repay. AAA is highest; below BBB− is below investment grade."
+   ]
+  },
+  {
+   "id": "terms-c16",
+   "q": "SID / KIM",
+   "a": [
+    "Scheme Information Document / Key Information Memorandum: the official offer documents to read before investing."
+   ]
+  },
+  {
+   "id": "terms-c17",
+   "q": "Growth vs IDCW",
+   "a": [
+    "Growth keeps profits invested; IDCW pays out of the investor's own capital and gains.",
+    "Example: ₹1 per unit paid → NAV falls by ₹1",
+    "Remember: IDCW is not extra income."
+   ]
+  },
+  {
+   "id": "terms-c18",
+   "q": "SIP",
+   "a": [
+    "A fixed amount invested automatically at regular intervals, from bank to fund.",
+    "Example: ₹10,000 on the 5th of every month",
+    "Remember: Buys more units when prices are low."
+   ]
+  },
+  {
+   "id": "terms-c19",
+   "q": "STP",
+   "a": [
+    "Money moved in instalments from one fund to another, usually debt to equity.",
+    "Example: ₹12 L in a liquid fund, ₹1 L a month to equity",
+    "Remember: Fund to fund, not bank to fund."
+   ]
+  },
+  {
+   "id": "terms-c20",
+   "q": "SWP",
+   "a": [
+    "A fixed amount withdrawn regularly from a fund to the bank.",
+    "Example: Retiree takes ₹40,000 a month",
+    "Remember: You choose the amount and date."
+   ]
+  },
+  {
+   "id": "terms-c21",
+   "q": "Exit load vs lock-in",
+   "a": [
+    "Exit load: you can leave early but pay a fee. Lock-in: you cannot leave at all.",
+    "Example: e.g. 1% within a year vs ELSS 3 years",
+    "Remember: Check each scheme's SID."
+   ]
+  },
+  {
+   "id": "terms-c22",
+   "q": "TER",
+   "a": [
+    "Yearly cost of running the fund, taken daily from the NAV; capped by SEBI.",
+    "Example: 1.5% vs 0.5% on ₹10 L over 20 yrs ≈ ₹14.5 L gap (illustrative)",
+    "Remember: Show costs in rupees."
+   ]
+  },
+  {
+   "id": "terms-c23",
+   "q": "Absolute return vs CAGR",
+   "a": [
+    "Absolute ignores time; CAGR is the steady yearly rate.",
+    "Example: ₹1 L → ₹2 L in 5 yrs = 100% absolute ≈ 14.9% CAGR",
+    "Remember: 100% in 5 years is not 20% a year."
+   ]
+  },
+  {
+   "id": "terms-c24",
+   "q": "XIRR",
+   "a": [
+    "Annualised return when money goes in or out on different dates.",
+    "Example: The right measure for SIPs",
+    "Remember: CAGR for lump sums, XIRR for SIPs."
+   ]
+  },
+  {
+   "id": "terms-c25",
+   "q": "Standard deviation",
+   "a": [
+    "A number for how much returns swing around their average.",
+    "Example: SD 20% is bumpier than SD 12%",
+    "Remember: Higher = bigger swings."
+   ]
+  },
+  {
+   "id": "terms-c26",
+   "q": "Beta",
+   "a": [
+    "How much a fund moves compared with its benchmark.",
+    "Example: Beta 1.2: market moves 10%, fund ~12%",
+    "Remember: Above 1 = more sensitive than the market."
+   ]
+  },
+  {
+   "id": "terms-c27",
+   "q": "Sharpe ratio",
+   "a": [
+    "Return above the risk-free rate per unit of volatility.",
+    "Example: Same return, higher Sharpe = smoother ride",
+    "Remember: Higher is better."
+   ]
+  },
+  {
+   "id": "terms-c28",
+   "q": "Drawdown",
+   "a": [
+    "Fall from a peak to a low before recovering.",
+    "Example: ₹10 L falls to ₹7 L = 30% drawdown",
+    "Remember: Can the client sit through it?"
+   ]
+  },
+  {
+   "id": "terms-c29",
+   "q": "Modified duration",
+   "a": [
+    "How much a debt fund's price changes for a 1% change in interest rates.",
+    "Example: Duration 4: rates up 1% → price ≈ −4%",
+    "Remember: Match duration to the goal date."
+   ]
+  },
+  {
+   "id": "terms-c30",
+   "q": "YTM",
+   "a": [
+    "Yield to Maturity: the indicative return of the fund's bonds if held to maturity, before expenses.",
+    "Example: YTM 7.4%, TER 0.4% → ~7% indicative",
+    "Remember: A guide, not a promise."
+   ]
+  },
+  {
+   "id": "terms-c31",
+   "q": "Compounding",
+   "a": [
+    "Earning returns on past returns, so growth speeds up over time.",
+    "Example: ₹10,000/month for 20 yrs at 12% ≈ ₹1 Cr on ₹24 L (illustrative)",
+    "Remember: Time matters more than timing."
+   ]
+  },
+  {
+   "id": "terms-c32",
+   "q": "Rupee cost averaging",
+   "a": [
+    "A fixed SIP buys more units when prices are low and fewer when high.",
+    "Example: ₹10,000 buys 200 units at ₹50, 250 at ₹40",
+    "Remember: Falls help a SIP investor."
+   ]
+  }
+ ],
+ "final": {
+  "id": "terms-final",
+  "title": "Basic Investment Terms final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "terms-q1",
+    "sec": "L: Learn the Basics",
+    "q": "NAV stands for:",
+    "o": [
+     "Net Annual Value",
+     "Net Asset Value",
+     "New Asset Value",
+     "Net Average Value"
+    ],
+    "a": 1,
+    "why": "Net Asset Value. It is the price of one unit of a fund."
+   },
+   {
+    "id": "terms-q2",
+    "sec": "L: Learn the Basics",
+    "q": "Fund A has NAV ₹10 and Fund B has NAV ₹200. Which is cheaper?",
+    "o": [
+     "Fund A",
+     "Fund B",
+     "Neither; NAV level doesn't make a fund cheap",
+     "Depends on AUM"
+    ],
+    "a": 2,
+    "why": "Neither; NAV level doesn't make a fund cheap. Returns depend on how much the NAV grows, not where it starts."
+   },
+   {
+    "id": "terms-q3",
+    "sec": "R: Review & Rebalance",
+    "q": "Which return measure suits a SIP?",
+    "o": [
+     "Absolute",
+     "CAGR",
+     "XIRR",
+     "Point-to-point"
+    ],
+    "a": 2,
+    "why": "XIRR. XIRR handles money invested on different dates."
+   },
+   {
+    "id": "terms-q4",
+    "sec": "R: Review & Rebalance",
+    "q": "₹1 lakh grows to ₹2 lakh in 5 years. The CAGR is about:",
+    "o": [
+     "20%",
+     "14.9%",
+     "10%",
+     "100%"
+    ],
+    "a": 1,
+    "why": "14.9%. 2^(1/5) − 1 ≈ 14.9%."
+   },
+   {
+    "id": "terms-q5",
+    "sec": "L: Learn the Basics",
+    "q": "When an IDCW of ₹1 per unit is paid, the NAV:",
+    "o": [
+     "Rises by ₹1",
+     "Stays the same",
+     "Falls by ₹1",
+     "Doubles"
+    ],
+    "a": 2,
+    "why": "Falls by ₹1. The payout comes out of the fund's assets."
+   },
+   {
+    "id": "terms-q6",
+    "sec": "A: Act Right",
+    "q": "The ELSS lock-in is:",
+    "o": [
+     "1 year",
+     "3 years",
+     "5 years",
+     "None"
+    ],
+    "a": 1,
+    "why": "3 years. Counted separately for each SIP instalment."
+   },
+   {
+    "id": "terms-q7",
+    "sec": "A: Act Right",
+    "q": "Money moved monthly from a liquid fund into an equity fund is a:",
+    "o": [
+     "SIP",
+     "STP",
+     "SWP",
+     "Switch-out"
+    ],
+    "a": 1,
+    "why": "STP. STP moves money fund to fund."
+   },
+   {
+    "id": "terms-q8",
+    "sec": "A: Act Right",
+    "q": "TER is:",
+    "o": [
+     "A one-time entry fee",
+     "The yearly cost of running the fund",
+     "A tax",
+     "An exit fee"
+    ],
+    "a": 1,
+    "why": "The yearly cost of running the fund. Charged daily through the NAV."
+   },
+   {
+    "id": "terms-q9",
+    "sec": "A: Act Right",
+    "q": "Stamp duty on mutual fund purchases is:",
+    "o": [
+     "0.5%",
+     "0.05%",
+     "0.005%",
+     "Nil"
+    ],
+    "a": 2,
+    "why": "0.005%. ₹50 on ₹10 lakh."
+   },
+   {
+    "id": "terms-q10",
+    "sec": "E: Evaluate the Client",
+    "q": "The cut-off time for most equity funds is:",
+    "o": [
+     "12 noon",
+     "1:30 pm",
+     "3 pm",
+     "5 pm"
+    ],
+    "a": 2,
+    "why": "3 pm. Liquid and overnight funds: 1:30 pm."
+   },
+   {
+    "id": "terms-q11",
+    "sec": "E: Evaluate the Client",
+    "q": "A beta of 1.2 means the fund tends to move:",
+    "o": [
+     "Less than the market",
+     "About 20% more than the market",
+     "The same as the market",
+     "Opposite to the market"
+    ],
+    "a": 1,
+    "why": "About 20% more than the market. Beta above 1 = more sensitive than the market."
+   },
+   {
+    "id": "terms-q12",
+    "sec": "E: Evaluate the Client",
+    "q": "How many levels does the SEBI riskometer have?",
+    "o": [
+     "3",
+     "4",
+     "5",
+     "6"
+    ],
+    "a": 3,
+    "why": "6. Low to Very High."
+   },
+   {
+    "id": "terms-q13",
+    "sec": "Niche: Debt Terms",
+    "q": "A debt fund with modified duration 5 will, if rates rise 1%, roughly:",
+    "o": [
+     "Gain 5%",
+     "Lose 5%",
+     "Not change",
+     "Lose 1%"
+    ],
+    "a": 1,
+    "why": "Lose 5%. Modified duration × rate change ≈ price change."
+   },
+   {
+    "id": "terms-q14",
+    "sec": "N: Navigate Behaviour",
+    "q": "With 6% inflation, a 7% FD gives a real return of about:",
+    "o": [
+     "13%",
+     "7%",
+     "1%",
+     "6%"
+    ],
+    "a": 2,
+    "why": "1%. Before tax."
+   },
+   {
+    "id": "terms-q15",
+    "sec": "R: Review & Rebalance",
+    "q": "Using the Rule of 72, money growing at 12% doubles in about:",
+    "o": [
+     "3 years",
+     "6 years",
+     "9 years",
+     "12 years"
+    ],
+    "a": 1,
+    "why": "6 years. 72 ÷ 12 = 6."
+   },
+   {
+    "id": "terms-q16",
+    "sec": "A: Act Right",
+    "q": "How do an exit load and a lock-in differ?",
+    "o": [
+     "They are the same charge",
+     "An exit load is a fee for leaving early; a lock-in blocks exit entirely",
+     "A lock-in is a fee; an exit load blocks exit",
+     "Neither applies to equity funds"
+    ],
+    "a": 1,
+    "why": "Exit load is a fee for leaving early; a lock-in blocks exit entirely."
+   },
+   {
+    "id": "terms-q17",
+    "sec": "Niche: Debt Terms",
+    "q": "A debt fund shows a high YTM. What does that guarantee?",
+    "o": [
+     "The return, if held to maturity",
+     "Nothing — YTM is indicative; rate moves and credit events can change returns",
+     "A return above FD rates",
+     "That the NAV cannot fall"
+    ],
+    "a": 1,
+    "why": "YTM is indicative; prices and credit can change."
+   },
+   {
+    "id": "terms-q18",
+    "sec": "L: Learn the Basics",
+    "q": "Direct and regular plans of a scheme differ in:",
+    "o": [
+     "The portfolio they hold",
+     "The fund manager",
+     "Only the expense ratio, which includes distributor commission in the regular plan",
+     "The benchmark they follow"
+    ],
+    "a": 2,
+    "why": "The difference is the expense ratio, which includes distributor commission in the regular plan."
+   },
+   {
+    "id": "terms-q19",
+    "sec": "R: Review & Rebalance",
+    "q": "A client holds five large-cap funds. Why might that not be diversification?",
+    "o": [
+     "Large-cap funds cannot diversify",
+     "They may hold mostly the same stocks; check portfolio overlap",
+     "Five funds is too few by rule",
+     "Diversification only comes from debt"
+    ],
+    "a": 1,
+    "why": "They may hold mostly the same stocks; check portfolio overlap."
+   },
+   {
+    "id": "terms-q20",
+    "sec": "N: Navigate Behaviour",
+    "q": "What is real return?",
+    "o": [
+     "Return before tax",
+     "Return after inflation",
+     "Return after exit load",
+     "The fund's best yearly return"
+    ],
+    "a": 1,
+    "why": "Nominal return minus inflation, roughly."
+   },
+   {
+    "id": "terms-q21",
+    "sec": "Practice: Role-Play",
+    "q": "A client says, “This NFO is only ₹10, so it’s cheaper than the fund at ₹200.” What do you explain?",
+    "o": [
+     "Agree — a lower NAV is always cheaper",
+     "NAV is the price of one unit; the same % growth gives the same rupee result, so judge by strategy, cost and fit, not NAV level",
+     "That NFOs are banned for new investors",
+     "That only the AUM matters"
+    ],
+    "a": 1,
+    "why": "Explains NAV as a price per unit; same % growth gives the same rupee result; judges by strategy, cost and fit, not NAV level."
+   },
+   {
+    "id": "terms-q22",
+    "sec": "Practice: Role-Play",
+    "q": "A client’s SIP statement shows 45% after 3 years and they think that is 15% a year. What do you explain?",
+    "o": [
+     "That 45% divided by 3 is the right yearly return",
+     "Absolute return ignores time; for a SIP the right annualised measure is XIRR, compared with the TRI benchmark",
+     "That SIP returns are never annualised",
+     "That only CAGR applies to SIPs"
+    ],
+    "a": 1,
+    "why": "Explains absolute vs annualised return; shows XIRR as the right measure; compares with TRI benchmark."
+   },
+   {
+    "id": "terms-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A retiree wants the IDCW option “for monthly income”. What do you explain?",
+    "o": [
+     "That IDCW is guaranteed monthly income",
+     "IDCW is paid from own capital, amount and timing not fixed; compare SWP for a chosen, regular amount; tax via CA",
+     "That retirees cannot use SWPs",
+     "That IDCW is tax-free"
+    ],
+    "a": 1,
+    "why": "IDCW is paid from own capital, amount and timing not fixed; compares SWP for a chosen, regular amount; tax via CA."
+   },
+   {
+    "id": "terms-q24",
+    "sec": "Practice: Role-Play",
+    "q": "A client’s debt fund fell 2% in a month and they say, “I thought debt was safe.” How do you respond?",
+    "o": [
+     "Promise it will recover next month",
+     "Explain interest-rate risk and duration (and credit risk if relevant); check duration vs goal date; no promise of recovery",
+     "Advise exiting immediately",
+     "Say debt funds never fall"
+    ],
+    "a": 1,
+    "why": "Explains interest-rate risk and duration (and credit risk if relevant); checks duration vs goal date; no promise of recovery."
+   },
+   {
+    "id": "terms-q25",
+    "sec": "Practice: Role-Play",
+    "q": "A client placed a ₹5 lakh purchase at 2:50 pm, but the money reached the AMC at 3:20 pm, so they got the next day’s NAV. Why?",
+    "o": [
+     "The AMC made an error",
+     "Cut-off is 3 pm (1:30 pm for liquid); for purchases the NAV depends on when money is received by the AMC, not when the form was submitted",
+     "Purchases always get the next day’s NAV",
+     "The cut-off is 2:50 pm"
+    ],
+    "a": 1,
+    "why": "Explains cut-off time (3 pm; 1:30 pm for liquid) and that for purchases the NAV depends on when the money is received by the AMC, not when the form was submitted."
+   }
+  ]
+ },
+ "role_play": null
+}

@@ -1,0 +1,71 @@
+{
+ "id": "compare-10",
+ "title": "Review yardsticks: judge each product on its own measure",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "State the valuation, return measure, time frame and review questions for each product.",
+  "Explain why a closed-ended AIF's early returns can't be judged like a fund NAV."
+ ],
+ "body_md": "Mutual fund: daily NAV; main return measure XIRR vs benchmark and category; judge over 3–5 years, rolling; key review questions: beating benchmark? Overlap? Allocation on target? PMS: daily valuation, every holding visible; client's own after-fee return vs benchmark (APMI data); judge over 3+ years after fees; key review questions: manager, process, concentration unchanged? AIF: periodic (often quarterly) NAV; unlisted holdings are estimates; for Cat I & II, IRR and multiple of money invested over the fund's life; judge over the full fund life — early years often look weak (the “J-curve”); key review questions: capital drawn and returned as planned? Portfolio companies on track? Fees as expected?\n\n|  | Mutual fund | PMS | AIF |\n| --- | --- | --- | --- |\n| Valuation | Daily NAV | Daily, every holding visible | Periodic (often quarterly) NAV; unlisted holdings are estimates |\n| Main return measure | XIRR vs benchmark and category | Client's own after-fee return vs benchmark (APMI data) | For Cat I & II, IRR and multiple of money invested over the fund's life |\n| Judge over | 3–5 years, rolling | 3+ years after fees | The full fund life; early years often look weak (the \"J-curve\") |\n| Key review questions | Beating benchmark? Overlap? Allocation on target? | Manager, process, concentration unchanged? | Capital drawn and returned as planned? Portfolio companies on track? Fees as expected? |\n\n> **Investor takeaway:** Judge each product on the right yardstick and time frame.",
+ "key_terms": [
+  "XIRR",
+  "IRR",
+  "Multiple of money",
+  "J-curve"
+ ],
+ "example": "VC AIF negative after 18 months: expected J-curve territory — review against the fund's plan, not against a mutual fund's NAV.",
+ "say": [
+  "Judge an AIF over its full life, not one statement.",
+  "Comparing a closed-ended PE AIF's early returns with a fund NAV is like judging a mango tree in its first year."
+ ],
+ "never": [
+  "Judge all three products on 1-year NAV return.",
+  "Early AIF weakness always means a bad fund."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q13",
+   "q": "What does the J-curve describe?",
+   "o": [
+    "Mutual fund NAV growth",
+    "Early low or negative returns in PE/VC funds before exits",
+    "Interest-rate movements",
+    "SIP returns"
+   ],
+   "a": 1,
+   "why": "Early low or negative returns in PE/VC funds before exits. Explain it before the client invests."
+  },
+  {
+   "id": "compare-q15",
+   "q": "What is the right yardstick for a Category II AIF?",
+   "o": [
+    "1-year NAV return",
+    "IRR and multiple of money over the fund's life",
+    "Daily NAV vs Nifty",
+    "Expense ratio"
+   ],
+   "a": 1,
+   "why": "IRR and multiple of money over the fund's life. Judge over the full life of the fund."
+  },
+  {
+   "id": "compare-n12",
+   "q": "The right yardstick for a Category II AIF is:",
+   "o": [
+    "1-year NAV return",
+    "IRR and multiple of money over the fund's life",
+    "Daily NAV vs Nifty",
+    "Expense ratio"
+   ],
+   "a": 1,
+   "why": "For Cat I & II, IRR and multiple of money invested over the fund's life."
+  }
+ ],
+ "card_ids": [
+  "compare-c19",
+  "compare-c20"
+ ],
+ "words": 215
+}

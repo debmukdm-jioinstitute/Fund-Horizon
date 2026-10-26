@@ -1,0 +1,78 @@
+{
+ "id": "terms-07",
+ "title": "Putting money in: lump sum, SIP, STP, SWP, switch, redemption",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Explain SIP, STP and SWP by which way the money flows.",
+  "Say what a switch and a redemption are, and how long redemption usually takes."
+ ],
+ "body_md": "A lump sum invests a single larger amount at once. A SIP (Systematic Investment Plan) invests a fixed amount automatically at regular intervals from the bank — for example ₹10,000 on the 5th of every month. A step-up SIP rises each year with income. An STP moves money in instalments from one fund to another, usually debt to equity. An SWP takes out a fixed amount regularly. A switch moves money between schemes of the same AMC and counts as a sale and a purchase; redemption is selling units to get money back, usually in 1–3 business days for equity funds.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Lump sum | Investing a single, larger amount at once | ₹5 lakh bonus invested on one day |\n| SIP (Systematic Investment Plan) | A fixed amount invested automatically at regular intervals | ₹10,000 on the 5th of every month |\n| Step-up SIP | SIP amount rises each year, usually with income | ₹10,000 rising 10% a year |\n| STP (Systematic Transfer Plan) | Moving money in instalments from one fund to another, usually debt to equity | ₹12 lakh in a liquid fund, ₹1 lakh a month moved to equity |\n| SWP (Systematic Withdrawal Plan) | Taking out a fixed amount regularly from a fund | Retiree withdraws ₹40,000 a month |\n| Switch | Moving money from one scheme to another in the same AMC; treated as a sale and a purchase | Switching from regular to direct plan |\n| Redemption | Selling units to get money back | Money usually reaches the bank in 1–3 business days for equity funds |\n\n> **Talk-track:** “Before we invest, three checks: is your KYC and nomination done, which plan and option are you choosing, and what will it cost you in rupees?”",
+ "key_terms": [
+  "SIP (Systematic Investment Plan)",
+  "STP (Systematic Transfer Plan)",
+  "SWP (Systematic Withdrawal Plan)",
+  "Switch",
+  "Redemption"
+ ],
+ "example": "₹12 lakh parked in a liquid fund, ₹1 lakh a month moved to equity by STP; a retiree takes ₹40,000 a month by SWP.",
+ "say": [
+  "SIP moves money from your bank; STP moves money from one fund to another.",
+  "An SWP amount is chosen by you; the date is fixed by you."
+ ],
+ "never": [
+  "STP and SIP are the same thing.",
+  "A switch is free of tax because it stays in one AMC."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Three checks before investing",
+   "text": "Before we invest, three checks: is your KYC and nomination done, which plan and option are you choosing, and what will it cost you in rupees?"
+  }
+ ],
+ "check": [
+  {
+   "id": "terms-q7",
+   "q": "Money moved monthly from a liquid fund into an equity fund is a:",
+   "o": [
+    "SIP",
+    "STP",
+    "SWP",
+    "Switch-out"
+   ],
+   "a": 1,
+   "why": "STP. STP moves money fund to fund."
+  },
+  {
+   "id": "terms-n12",
+   "q": "What does “STP (Systematic Transfer Plan)” mean in plain language?",
+   "o": [
+    "Investing a single, larger amount at once",
+    "Moving money in instalments from one fund to another, usually debt to equity",
+    "A fixed amount invested automatically at regular intervals",
+    "SIP amount rises each year, usually with income"
+   ],
+   "a": 1,
+   "why": "STP (Systematic Transfer Plan): Moving money in instalments from one fund to another, usually debt to equity Example: ₹12 lakh in a liquid fund, ₹1 lakh a month moved to equity"
+  },
+  {
+   "id": "terms-n13",
+   "q": "What does “SWP (Systematic Withdrawal Plan)” mean in plain language?",
+   "o": [
+    "Taking out a fixed amount regularly from a fund",
+    "Investing a single, larger amount at once",
+    "A fixed amount invested automatically at regular intervals",
+    "SIP amount rises each year, usually with income"
+   ],
+   "a": 0,
+   "why": "SWP (Systematic Withdrawal Plan): Taking out a fixed amount regularly from a fund Example: Retiree withdraws ₹40,000 a month"
+  }
+ ],
+ "card_ids": [
+  "terms-c13",
+  "terms-c14"
+ ],
+ "words": 274
+}

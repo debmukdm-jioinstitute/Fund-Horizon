@@ -1,0 +1,72 @@
+{
+ "id": "terms-05",
+ "title": "Measuring the bumps: volatility, beta, Sharpe, Sortino, drawdown",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Explain volatility, standard deviation, beta and drawdown in plain words.",
+  "Say what Sharpe and Sortino ratios reward, and why higher is better."
+ ],
+ "body_md": "Volatility is how much and how often returns swing. Standard deviation puts a number on it: higher means bigger swings around the average. Beta measures movement against the benchmark: beta 1.2 means the fund tends to move about 12% when the market moves 10%. Sharpe ratio is return above the risk-free rate per unit of total volatility; Sortino counts only downside volatility. Drawdown is the fall from a peak to a low before recovering.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Standard deviation | A number for volatility: higher means bigger swings around the average | SD 20% vs 12%: the first fund is bumpier |\n| Beta | How much a fund moves compared with its benchmark | Beta 1.2: if the market moves 10%, the fund tends to move about 12% |\n| Sharpe ratio | Return earned above a risk-free rate for each unit of total volatility. Higher is better | Two funds with the same return: the one with the higher Sharpe took a smoother road |\n| Sortino ratio | Like Sharpe, but counts only downside volatility | Useful for clients who only worry about falls |\n| Drawdown | Fall from a peak to a low before recovering | Portfolio at ₹10 lakh falls to ₹7 lakh → 30% drawdown |",
+ "key_terms": [
+  "Volatility",
+  "Standard deviation",
+  "Beta",
+  "Sharpe ratio",
+  "Drawdown"
+ ],
+ "example": "A portfolio at ₹10 lakh falls to ₹7 lakh: that is a 30% drawdown. The question is whether the client could sit through it without selling.",
+ "say": [
+  "Two funds with the same return: the one with the higher Sharpe took a smoother road.",
+  "A beta above 1 means the fund is more sensitive than the market."
+ ],
+ "never": [
+  "A high Sharpe ratio means guaranteed returns.",
+  "Volatility and loss are the same thing."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q11",
+   "q": "A beta of 1.2 means the fund tends to move:",
+   "o": [
+    "Less than the market",
+    "About 20% more than the market",
+    "The same as the market",
+    "Opposite to the market"
+   ],
+   "a": 1,
+   "why": "About 20% more than the market. Beta above 1 = more sensitive than the market."
+  },
+  {
+   "id": "terms-n08",
+   "q": "What does “Beta” mean in plain language?",
+   "o": [
+    "A number for volatility: higher means bigger swings around the average",
+    "How much a fund moves compared with its benchmark",
+    "Return earned above a risk-free rate for each unit of total volatility. Higher is better",
+    "Like Sharpe, but counts only downside volatility"
+   ],
+   "a": 1,
+   "why": "Beta: How much a fund moves compared with its benchmark Example: Beta 1.2: if the market moves 10%, the fund tends to move about 12%"
+  },
+  {
+   "id": "terms-n09",
+   "q": "What does “Drawdown” mean in plain language?",
+   "o": [
+    "Fall from a peak to a low before recovering",
+    "A number for volatility: higher means bigger swings around the average",
+    "How much a fund moves compared with its benchmark",
+    "Return earned above a risk-free rate for each unit of total volatility. Higher is better"
+   ],
+   "a": 0,
+   "why": "Drawdown: Fall from a peak to a low before recovering Example: Portfolio at ₹10 lakh falls to ₹7 lakh → 30% drawdown"
+  }
+ ],
+ "card_ids": [
+  "terms-c9",
+  "terms-c10"
+ ],
+ "words": 195
+}

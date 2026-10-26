@@ -1,0 +1,71 @@
+{
+ "id": "idcw-16",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to any IDCW explanation.",
+  "Pass the trainer's final check: explain, with the NAV example, why IDCW is not extra income, and compare IDCW with an SWP on control and tax."
+ ],
+ "body_md": "Do: use the term “IDCW” and explain what it stands for. Show that the NAV falls by the payout, with a simple example. Explain that IDCW is taxed at the slab rate, with TDS above the threshold. Compare IDCW with an SWP for any client seeking regular income. Record why the client chose IDCW, if they do. Refer specific tax questions to the client's CA.\n\n- Don’t — Call IDCW a “dividend”, “bonus”, “extra income” or “return”.\n- Don’t — Promise a fixed or regular IDCW amount.\n- Don’t — Suggest buying before a record date to “earn” the payout.\n- Don’t — Present a fund's IDCW history as evidence of good performance.\n- Don’t — Advise IDCW reinvestment without explaining the tax compared with growth.\n- Don’t — Quote tax rates or thresholds without checking the current rules.\n\n> **Investor takeaway:** Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. Final check for trainers: a new joiner passes this module when they can explain, with the NAV example, why IDCW is not extra income, and compare IDCW with an SWP on control and tax, without notes.",
+ "key_terms": [
+  "Compliance",
+  "IDCW",
+  "SWP",
+  "TDS"
+ ],
+ "example": "A trainee explains, without notes: NAV ₹20 minus IDCW ₹1 equals NAV ₹19; SWP taxes only the gain; IDCW taxes the whole payout.",
+ "say": [
+  "Use the term IDCW and explain what it stands for.",
+  "Compare IDCW with an SWP for any client seeking regular income."
+ ],
+ "never": [
+  "Call IDCW a dividend or bonus.",
+  "Promise a fixed IDCW amount."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "idcw-n25",
+   "q": "Which of these is compliant when explaining IDCW?",
+   "o": [
+    "Show that the NAV falls by the payout, with a simple example",
+    "Call IDCW a dividend bonus",
+    "Promise a fixed monthly IDCW",
+    "Suggest buying before the record date"
+   ],
+   "a": 0,
+   "why": "Do: show that the NAV falls by the payout, with a simple example."
+  },
+  {
+   "id": "idcw-n26",
+   "q": "A trainee passes this module when they can explain, without notes:",
+   "o": [
+    "Only IDCW rates",
+    "Only TDS thresholds",
+    "Only past payouts",
+    "Why IDCW is not extra income (NAV example) and IDCW vs SWP on control and tax"
+   ],
+   "a": 3,
+   "why": "Final check: explain, with the NAV example, why IDCW is not extra income, and compare IDCW with an SWP on control and tax, without notes."
+  },
+  {
+   "id": "idcw-n27",
+   "q": "What must appear on all investor material for this module?",
+   "o": [
+    "A guaranteed return figure",
+    "The fund's last month return only",
+    "Mutual fund investments are subject to market risks. Read all scheme-related documents carefully.",
+    "A promise of future performance"
+   ],
+   "a": 2,
+   "why": "Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully."
+  }
+ ],
+ "card_ids": [
+  "idcw-c31",
+  "idcw-c32"
+ ],
+ "words": 190
+}

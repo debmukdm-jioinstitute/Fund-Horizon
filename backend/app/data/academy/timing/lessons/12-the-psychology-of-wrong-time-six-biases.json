@@ -1,0 +1,78 @@
+{
+ "id": "timing-12",
+ "title": "The psychology of “wrong time”: six biases",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Name six biases from what the client says, and the response to each.",
+  "Explain loss aversion, hindsight and anchoring with client quotes."
+ ],
+ "body_md": "Regret: “I should have waited.” Response: acknowledge the feeling; shift focus to what can still be controlled. Hindsight bias: “It was obvious the market would fall.” Response: it only looks obvious afterwards; few predicted it beforehand. Loss aversion: “I just want my money back, then I'll exit.” Response: the decision should depend on the goal, not on breaking even. Recency bias: “Markets only go down now.” Response: show past falls and recoveries; nothing is guaranteed, but falls have historically been temporary for diversified equity. Anchoring: “I bought at ₹50; I'll sell when it's back to ₹50.” Response: the purchase price is irrelevant to whether the fund suits the goal today. Waiting for the perfect time: “I'll invest after the next dip.” Response: show the cost of waiting (Example 3).\n\n| Bias | What the client says | How to respond |\n| --- | --- | --- |\n| Regret | \"I should have waited.\" | Acknowledge the feeling; shift focus to what can still be controlled |\n| Hindsight bias | \"It was obvious the market would fall.\" | It only looks obvious afterwards; few predicted it beforehand |\n| Loss aversion | \"I just want my money back, then I'll exit.\" | The decision should depend on the goal, not on breaking even |\n| Recency bias | \"Markets only go down now.\" | Show past falls and recoveries; nothing is guaranteed, but falls have historically been temporary for diversified equity |\n| Anchoring | \"I bought at ₹50; I'll sell when it's back to ₹50.\" | The purchase price is irrelevant to whether the fund suits the goal today |\n| Waiting for the perfect time | \"I'll invest after the next dip.\" | Show the cost of waiting (Example 3) |\n\n> **Talk-track:** “Nobody can pick the perfect day. What we can control is staying invested for your goal, adding when prices are low, and not making a permanent decision in a temporary fall.”",
+ "key_terms": [
+  "Regret",
+  "Hindsight bias",
+  "Loss aversion",
+  "Recency bias",
+  "Anchoring"
+ ],
+ "example": "“I bought at ₹50; I'll sell when it's back to ₹50”: anchoring — the purchase price doesn't decide whether the fund suits the goal today.",
+ "say": [
+  "Decide by the goal, not by breaking even.",
+  "The purchase price is irrelevant to suitability today."
+ ],
+ "never": [
+  "Dismiss the client's concern as irrational.",
+  "Agree that the fall was obvious in advance."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "No perfect day",
+   "text": "Nobody can pick the perfect day. What we can control is staying invested for your goal, adding when prices are low, and not making a permanent decision in a temporary fall."
+  }
+ ],
+ "check": [
+  {
+   "id": "timing-q11",
+   "q": "“I bought at ₹50, so I’ll sell when it’s back to ₹50” is an example of…",
+   "o": [
+    "Anchoring",
+    "Diversification",
+    "Rebalancing",
+    "Compounding"
+   ],
+   "a": 0,
+   "why": "Anchoring. Fixing on a past price is anchoring."
+  },
+  {
+   "id": "timing-q12",
+   "q": "“It was obvious the market would crash” reflects…",
+   "o": [
+    "Recency bias",
+    "Hindsight bias",
+    "Herding",
+    "Overconfidence in SIPs"
+   ],
+   "a": 1,
+   "why": "Hindsight bias. Events look predictable only after they happen."
+  },
+  {
+   "id": "timing-n19",
+   "q": "“It was obvious the market would crash” reflects:",
+   "o": [
+    "Recency bias",
+    "Herding",
+    "Hindsight bias",
+    "Overconfidence in SIPs"
+   ],
+   "a": 2,
+   "why": "Hindsight bias: events look predictable only after they happen."
+  }
+ ],
+ "card_ids": [
+  "timing-c23",
+  "timing-c24"
+ ],
+ "words": 292
+}

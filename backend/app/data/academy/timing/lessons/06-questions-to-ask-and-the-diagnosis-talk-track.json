@@ -1,0 +1,75 @@
+{
+ "id": "timing-06",
+ "title": "Questions to ask, and the diagnosis talk-track",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Ask the four diagnosis questions in order.",
+  "Use the talk-track to agree what will be checked before any decision."
+ ],
+ "body_md": "Questions to ask: “When will you need this money?” “What return were you expecting, and over what period?” “Have you added or stopped anything since you started?” “How does the fund compare with its benchmark over the same dates?”\n\n> **Talk-track:** “Let's check four things before deciding anything: the right return measure, the time it's had, the benchmark, and your goal date. Then we'll know whether there's really a problem.”\n\n> **Investor takeaway:** Before blaming the timing, check the measure, the horizon, the expectation and the fund.",
+ "key_terms": [
+  "Diagnosis questions",
+  "Benchmark comparison"
+ ],
+ "example": "Client: “My fund isn't growing.” Ask: when do you need it, what return did you expect over what period, what changed since you started, and how does it compare with its benchmark?",
+ "say": [
+  "Check four things before deciding anything.",
+  "Decide by the goal date, not by the headline."
+ ],
+ "never": [
+  "Decide first, diagnose later.",
+  "Compare the fund with last year's top fund."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Four checks first",
+   "text": "Let's check four things before deciding anything: the right return measure, the time it's had, the benchmark, and your goal date. Then we'll know whether there's really a problem."
+  }
+ ],
+ "check": [
+  {
+   "id": "timing-n09",
+   "q": "Which question comes first in the diagnosis?",
+   "o": [
+    "“When will you need this money?”",
+    "“Which fund is best?”",
+    "“What did the market do today?”",
+    "“Should I sell now?”"
+   ],
+   "a": 0,
+   "why": "Questions to ask: “When will you need this money?” first."
+  },
+  {
+   "id": "timing-n10",
+   "q": "Why compare the fund with its benchmark over the same dates?",
+   "o": [
+    "Benchmarks never fall",
+    "It predicts recovery",
+    "It changes the tax",
+    "To tell a market-wide fall from a fund problem"
+   ],
+   "a": 3,
+   "why": "Market phase: did the whole market or category fall? Fund and benchmark both down means normal volatility."
+  },
+  {
+   "id": "timing-n11",
+   "q": "A client expected last year's 40% to repeat. Which cause is that?",
+   "o": [
+    "Wrong measurement",
+    "Wrong fund",
+    "Wrong expectation",
+    "Wrong time"
+   ],
+   "a": 2,
+   "why": "Wrong expectation: what return did the client expect, and why? Expected last year's 40% to repeat."
+  }
+ ],
+ "card_ids": [
+  "timing-c11",
+  "timing-c12"
+ ],
+ "words": 85
+}

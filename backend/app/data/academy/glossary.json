@@ -272,5 +272,170 @@
   "term": "strategic allocation",
   "aliases": [],
   "definition": "A fixed long-term target mix, such as 60% equity, 30% debt, 10% gold, set once and rebalanced back to, as opposed to a dynamic or tactical mix."
+ },
+ {
+  "term": "IDCW",
+  "aliases": [],
+  "definition": "Income Distribution cum Capital Withdrawal: the option under which a scheme pays out income when declared, instead of adding it to the NAV. IDCW payouts are taxed in the investor's hands at their slab rate."
+ },
+ {
+  "term": "Growth option",
+  "aliases": [],
+  "definition": "The scheme option under which income stays invested and adds to the NAV, instead of being paid out."
+ },
+ {
+  "term": "Goal-based investing",
+  "aliases": [],
+  "definition": "Planning by life goal — each goal gets its own amount, date, asset mix and monthly SIP — instead of choosing products first."
+ },
+ {
+  "term": "Market timing",
+  "aliases": [],
+  "definition": "Trying to buy at market lows and sell at highs. The training material shows it usually costs more than staying invested."
+ },
+ {
+  "term": "Withdrawal rate",
+  "aliases": [],
+  "definition": "First year's withdrawal as a % of the corpus. ₹4 L a year from ₹1 Cr is a 4% withdrawal rate."
+ },
+ {
+  "term": "Sequence-of-returns risk",
+  "aliases": [],
+  "definition": "The damage done by poor returns early in the withdrawal phase, when units are sold at low prices to pay expenses."
+ },
+ {
+  "term": "Bucket strategy",
+  "aliases": [],
+  "definition": "Splitting the corpus by when the money will be spent: next 1–2 years in safe funds, years 3–7 in stability funds, year 8 onwards in growth funds."
+ },
+ {
+  "term": "Guardrails",
+  "aliases": [],
+  "definition": "Pre-agreed rules for adjusting withdrawals after good or bad years, such as skipping the inflation increase in a bad year."
+ },
+ {
+  "term": "Longevity risk",
+  "aliases": [],
+  "definition": "The risk of outliving the money."
+ },
+ {
+  "term": "Target mix",
+  "aliases": [],
+  "definition": "The agreed share of each asset class in a portfolio."
+ },
+ {
+  "term": "Calendar rebalancing",
+  "aliases": [],
+  "definition": "Checking and rebalancing on a fixed date, such as once a year."
+ },
+ {
+  "term": "Cash-flow rebalancing",
+  "aliases": [],
+  "definition": "Using new money to top up the underweight asset, without selling anything."
+ },
+ {
+  "term": "Switch",
+  "aliases": [],
+  "definition": "Moving money between schemes of the same fund house. Each switch is a redemption and may carry load and tax."
+ },
+ {
+  "term": "Portfolio overlap",
+  "aliases": [],
+  "definition": "The share of one fund's portfolio that is also held by another fund, measured by adding the smaller weight of each shared stock."
+ },
+ {
+  "term": "Style drift",
+  "aliases": [],
+  "definition": "A fund moving away from its stated style or market-cap focus."
+ },
+ {
+  "term": "Category I AIF",
+  "aliases": [],
+  "definition": "An Alternative Investment Fund investing in early-stage and socially or economically desirable sectors, such as venture capital. Closed-ended, minimum 3-year tenure."
+ },
+ {
+  "term": "Category II AIF",
+  "aliases": [],
+  "definition": "An Alternative Investment Fund for everything not in Category I or III, such as private equity, private credit and real estate. Closed-ended, minimum 3-year tenure; no leverage except for temporary needs."
+ },
+ {
+  "term": "Category III AIF",
+  "aliases": [],
+  "definition": "An Alternative Investment Fund using complex or trading strategies, such as long-short equity. It may use leverage within limits and can be open-ended or closed-ended."
+ },
+ {
+  "term": "Carried interest (carry)",
+  "aliases": [],
+  "definition": "The AIF manager's share of profits above a hurdle, paid in addition to the management fee."
+ },
+ {
+  "term": "Drawdown (capital call)",
+  "aliases": [],
+  "definition": "In many Category I & II AIFs, the commitment drawn in stages over months or years, not invested upfront."
+ },
+ {
+  "term": "Valuation lag",
+  "aliases": [],
+  "definition": "Unlisted holdings are valued periodically using estimates, so AIF NAVs can look smoother than they really are. Smooth is not the same as low-risk."
+ },
+ {
+  "term": "Private placement",
+  "aliases": [],
+  "definition": "Selling a fund only to selected eligible investors, without public advertising. AIFs may only be sold this way."
+ },
+ {
+  "term": "PPM",
+  "aliases": [],
+  "definition": "Private Placement Memorandum: the AIF document that carries the full fee structure, risks and terms."
+ },
+ {
+  "term": "Disclosure Document",
+  "aliases": [],
+  "definition": "The PMS document shared with the client, carrying the fee structure, risks and terms, with key risks explained."
+ },
+ {
+  "term": "Loss aversion",
+  "aliases": [],
+  "definition": "Losses hurt about twice as much as equal gains please, so clients want to stop SIPs after a fall."
+ },
+ {
+  "term": "Herd behaviour (FOMO)",
+  "aliases": [],
+  "definition": "Following what everyone else is doing, such as buying a fund because it is popular."
+ },
+ {
+  "term": "Recency bias",
+  "aliases": [],
+  "definition": "Over-weighting the latest results, such as judging a fund only by last year's return."
+ },
+ {
+  "term": "Anchoring",
+  "aliases": [],
+  "definition": "Fixating on a reference number like the buy price, such as waiting to sell until the price returns to cost."
+ },
+ {
+  "term": "Disposition effect",
+  "aliases": [],
+  "definition": "Selling winners too early and holding losers too long."
+ },
+ {
+  "term": "Overconfidence",
+  "aliases": [],
+  "definition": "Over-rating one's ability to pick funds or time markets."
+ },
+ {
+  "term": "Confirmation bias",
+  "aliases": [],
+  "definition": "Seeking only information that agrees with what one already believes."
+ },
+ {
+  "term": "Mental accounting",
+  "aliases": [],
+  "definition": "Treating money differently by its source, such as calling a bonus 'free money' to take a risk with."
+ },
+ {
+  "term": "Behaviour gap",
+  "aliases": [],
+  "definition": "The difference between a fund's return and what the investor actually earns, caused by buying after rallies and selling after falls."
  }
 ]

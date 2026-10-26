@@ -1,0 +1,749 @@
+{
+ "id": "bonds",
+ "title": "Bonds & Debt",
+ "code": "Module 6",
+ "blurb": "Bonds and debt funds: how they pay, what moves their price, and how to explain risk without jargon.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 87 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 1"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)",
+  "SEBI circular on Potential Risk Class (PRC) matrix for debt schemes (2021)"
+ ],
+ "lessons": [
+  {
+   "id": "bonds-01",
+   "title": "A bond is a loan: issuer, face value, coupon, maturity, price, yield",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "bonds-02",
+   "title": "The price–yield seesaw",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "bonds-03",
+   "title": "Types of bonds in India",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "bonds-04",
+   "title": "SEBI debt categories by time: the duration ladder",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "bonds-05",
+   "title": "SEBI debt categories by borrower, plus target maturity funds",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "bonds-06",
+   "title": "The three debt risks, plus a quiet fourth",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "bonds-07",
+   "title": "Duration and the PRC matrix",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "bonds-08",
+   "title": "Matching the need to the option",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "bonds-09",
+   "title": "Ways to invest in debt",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "bonds-10",
+   "title": "Checklist before recommending, and debt-fund tax",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "bonds-11",
+   "title": "Reading a debt fund: monthly factsheet checks",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "bonds-12",
+   "title": "Rate cycles, rebalancing and red flags",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "bonds-13",
+   "title": "Myths to correct",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "bonds-14",
+   "title": "Lessons from Indian credit events",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "bonds-15",
+   "title": "Niche topics (1): side-pocketing, AT1, calls and ratings",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "bonds-16",
+   "title": "Niche topics (2): prices, curves, spreads and ladders",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "bonds-17",
+   "title": "Role-play lab: six debt client conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "bonds-18",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "bonds-c1",
+   "q": "Bond",
+   "a": [
+    "A loan you give to a government or company. You earn interest (coupon) and get the face value back at maturity."
+   ]
+  },
+  {
+   "id": "bonds-c2",
+   "q": "Coupon",
+   "a": [
+    "Fixed interest paid on face value. ₹1,000 bond at 7% pays ₹70 a year."
+   ]
+  },
+  {
+   "id": "bonds-c3",
+   "q": "The price–yield seesaw",
+   "a": [
+    "When interest rates rise, existing bond prices fall; when rates fall, prices rise."
+   ]
+  },
+  {
+   "id": "bonds-c4",
+   "q": "YTM",
+   "a": [
+    "Yield to Maturity: yearly return if bought today and held to maturity. Indicative, before fund expenses; not a promise."
+   ]
+  },
+  {
+   "id": "bonds-c5",
+   "q": "T-bill",
+   "a": [
+    "Short-term government borrowing (91, 182 or 364 days). Issued at a discount, repaid at face value; no coupon."
+   ]
+  },
+  {
+   "id": "bonds-c6",
+   "q": "Liquid fund",
+   "a": [
+    "Invests in securities maturing up to 91 days. For emergency money and short-term parking."
+   ]
+  },
+  {
+   "id": "bonds-c7",
+   "q": "Overnight fund",
+   "a": [
+    "Invests in securities maturing in 1 day. Lowest interest-rate risk."
+   ]
+  },
+  {
+   "id": "bonds-c8",
+   "q": "Gilt fund",
+   "a": [
+    "At least 80% in government securities. No credit risk, but can swing with interest rates."
+   ]
+  },
+  {
+   "id": "bonds-c9",
+   "q": "Corporate bond fund",
+   "a": [
+    "At least 80% in corporate bonds rated AA+ and above."
+   ]
+  },
+  {
+   "id": "bonds-c10",
+   "q": "Credit risk fund",
+   "a": [
+    "At least 65% in bonds rated AA and below. Higher yield for higher default risk."
+   ]
+  },
+  {
+   "id": "bonds-c11",
+   "q": "Banking & PSU fund",
+   "a": [
+    "At least 80% in debt of banks, PSUs and public financial institutions."
+   ]
+  },
+  {
+   "id": "bonds-c12",
+   "q": "Short duration fund",
+   "a": [
+    "Portfolio Macaulay duration of 1–3 years. Suits goals 1–3 years away."
+   ]
+  },
+  {
+   "id": "bonds-c13",
+   "q": "Long duration fund",
+   "a": [
+    "Portfolio Macaulay duration above 7 years. Large swings when rates move."
+   ]
+  },
+  {
+   "id": "bonds-c14",
+   "q": "PRC matrix",
+   "a": [
+    "SEBI's 3×3 grid showing a debt scheme's maximum interest-rate risk (Class I–III) and credit risk (A–C). A-I is the most conservative."
+   ]
+  },
+  {
+   "id": "bonds-c15",
+   "q": "Debt fund tax (from 1 April 2023)",
+   "a": [
+    "Gains on debt funds bought on or after 1 April 2023 are taxed at slab rate with no indexation. Confirm with a CA."
+   ]
+  },
+  {
+   "id": "bonds-c16",
+   "q": "Online Bond Platform Provider (OBPP)",
+   "a": [
+    "A SEBI-registered platform for buying listed bonds directly; many bonds now available from ₹10,000 face value."
+   ]
+  },
+  {
+   "id": "bonds-c17",
+   "q": "Interest-rate risk",
+   "a": [
+    "Bond prices fall when rates rise.",
+    "Example: Gilt fund NAV dips after a rate hike",
+    "Remember: Match duration to the goal date."
+   ]
+  },
+  {
+   "id": "bonds-c18",
+   "q": "Credit risk",
+   "a": [
+    "The borrower delays, fails to pay or is downgraded.",
+    "Example: IL&FS default in 2018 hit several debt funds",
+    "Remember: Stick to high ratings; don't chase yield."
+   ]
+  },
+  {
+   "id": "bonds-c19",
+   "q": "Liquidity risk",
+   "a": [
+    "Bonds can't be sold quickly at a fair price.",
+    "Example: Franklin Templeton wound up six debt schemes in 2020",
+    "Remember: Prefer liquid categories and diversified funds."
+   ]
+  },
+  {
+   "id": "bonds-c20",
+   "q": "Reinvestment risk",
+   "a": [
+    "Maturing money may have to be reinvested at lower rates.",
+    "Example: FD renewing at a lower rate",
+    "Remember: A bond ladder smooths it."
+   ]
+  },
+  {
+   "id": "bonds-c21",
+   "q": "Modified duration",
+   "a": [
+    "Approximate price change for a 1% move in rates.",
+    "Example: Duration 8: rates up 1% → price ≈ −8%",
+    "Remember: Shorter duration for nearer goals."
+   ]
+  },
+  {
+   "id": "bonds-c22",
+   "q": "Macaulay duration",
+   "a": [
+    "Weighted-average time to receive a bond's cash flows, in years.",
+    "Example: Used for SEBI's duration categories",
+    "Remember: Use it to match the goal date."
+   ]
+  },
+  {
+   "id": "bonds-c23",
+   "q": "Credit rating",
+   "a": [
+    "An agency's opinion of a borrower's ability to repay. AAA is highest.",
+    "Example: Rating outlook \"negative\" = early warning",
+    "Remember: Ratings can change fast."
+   ]
+  },
+  {
+   "id": "bonds-c24",
+   "q": "Target maturity fund",
+   "a": [
+    "A passive fund holding bonds that mature around one date.",
+    "Example: A fund tracking a 2030 bond index",
+    "Remember: Held to maturity, return ≈ starting YTM after costs; not guaranteed."
+   ]
+  },
+  {
+   "id": "bonds-c25",
+   "q": "Side-pocketing",
+   "a": [
+    "A defaulted bond is moved to a separate portfolio; investors get units in both.",
+    "Example: Recovery, if any, is paid out later",
+    "Remember: The side-pocket can't be redeemed early."
+   ]
+  },
+  {
+   "id": "bonds-c26",
+   "q": "AT1 (perpetual) bond",
+   "a": [
+    "Bank bond with no maturity; can skip interest or be written off.",
+    "Example: Yes Bank AT1 bonds written off in 2020",
+    "Remember: Never a substitute for an FD."
+   ]
+  },
+  {
+   "id": "bonds-c27",
+   "q": "Call option / YTC",
+   "a": [
+    "The issuer can repay early; Yield to Call shows the return if it does.",
+    "Example: Issuer calls the bond after rates fall",
+    "Remember: Investor must reinvest at lower rates."
+   ]
+  },
+  {
+   "id": "bonds-c28",
+   "q": "Credit spread",
+   "a": [
+    "Extra yield a corporate bond pays over a G-sec of the same maturity.",
+    "Example: AAA corporate at 7.6% vs G-sec at 7.0% → 0.6% spread (illustrative)",
+    "Remember: Wider spread = more perceived risk."
+   ]
+  },
+  {
+   "id": "bonds-c29",
+   "q": "Yield curve",
+   "a": [
+    "Yields plotted against maturity. Normal: longer pays more.",
+    "Example: Flat curve = little extra pay for lending longer",
+    "Remember: Shows whether longer maturities are rewarded."
+   ]
+  },
+  {
+   "id": "bonds-c30",
+   "q": "Clean vs dirty price",
+   "a": [
+    "Clean excludes accrued interest; dirty includes it and is what the buyer pays.",
+    "Example: Quoted ₹1,000, paid ₹1,017",
+    "Remember: Explains price differences on bond platforms."
+   ]
+  },
+  {
+   "id": "bonds-c31",
+   "q": "Bond ladder",
+   "a": [
+    "Money spread across bonds or FDs maturing in different years.",
+    "Example: ₹5 L each maturing in years 1–5",
+    "Remember: Regular maturities for income; less reinvestment risk."
+   ]
+  },
+  {
+   "id": "bonds-c32",
+   "q": "54EC bonds",
+   "a": [
+    "Capital gains bonds from specified issuers with a 5-year lock-in.",
+    "Example: Used after selling property",
+    "Remember: Confirm eligibility and limits with a CA."
+   ]
+  }
+ ],
+ "final": {
+  "id": "bonds-final",
+  "title": "Bonds & Debt final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "bonds-q1",
+    "sec": "L: Learn the Basics",
+    "q": "When interest rates rise, existing bond prices:",
+    "o": [
+     "Rise",
+     "Fall",
+     "Stay the same",
+     "Double"
+    ],
+    "a": 1,
+    "why": "Fall. The price–yield seesaw."
+   },
+   {
+    "id": "bonds-q2",
+    "sec": "L: Learn the Basics",
+    "q": "A ₹1,000 bond with a 7% coupon pays each year:",
+    "o": [
+     "₹7",
+     "₹70",
+     "₹700",
+     "₹1,070"
+    ],
+    "a": 1,
+    "why": "₹70. Coupon is interest on face value."
+   },
+   {
+    "id": "bonds-q3",
+    "sec": "L: Learn the Basics",
+    "q": "Liquid funds invest in securities maturing up to:",
+    "o": [
+     "1 day",
+     "91 days",
+     "1 year",
+     "3 years"
+    ],
+    "a": 1,
+    "why": "91 days. Overnight funds: 1 day."
+   },
+   {
+    "id": "bonds-q4",
+    "sec": "L: Learn the Basics",
+    "q": "Gilt funds must hold at least 80% in:",
+    "o": [
+     "AAA corporate bonds",
+     "Government securities",
+     "Bank FDs",
+     "Equities"
+    ],
+    "a": 1,
+    "why": "Government securities. No credit risk, but rate risk remains."
+   },
+   {
+    "id": "bonds-q5",
+    "sec": "L: Learn the Basics",
+    "q": "Credit risk funds hold at least 65% in bonds rated:",
+    "o": [
+     "AAA only",
+     "AA+ and above",
+     "AA and below",
+     "Unrated only"
+    ],
+    "a": 2,
+    "why": "AA and below. Higher yield for higher default risk."
+   },
+   {
+    "id": "bonds-q6",
+    "sec": "E: Evaluate the Client",
+    "q": "A fund with modified duration 6 will, if rates fall 1%, roughly:",
+    "o": [
+     "Fall 6%",
+     "Rise 6%",
+     "Rise 1%",
+     "Not change"
+    ],
+    "a": 1,
+    "why": "Rise 6%. Price moves opposite to rates by about the duration."
+   },
+   {
+    "id": "bonds-q7",
+    "sec": "E: Evaluate the Client",
+    "q": "The most conservative cell in the PRC matrix is:",
+    "o": [
+     "A-I",
+     "C-III",
+     "B-II",
+     "A-III"
+    ],
+    "a": 0,
+    "why": "A-I. Low credit risk, duration up to 1 year."
+   },
+   {
+    "id": "bonds-q8",
+    "sec": "E: Evaluate the Client",
+    "q": "Which risk caused sudden NAV drops when IL&FS defaulted in 2018?",
+    "o": [
+     "Interest-rate risk",
+     "Credit risk",
+     "Inflation risk",
+     "Currency risk"
+    ],
+    "a": 1,
+    "why": "Credit risk. The borrower defaulted."
+   },
+   {
+    "id": "bonds-q9",
+    "sec": "L: Learn the Basics",
+    "q": "A T-bill pays:",
+    "o": [
+     "A monthly coupon",
+     "No coupon; issued at a discount",
+     "A floating coupon",
+     "Dividends"
+    ],
+    "a": 1,
+    "why": "No coupon; issued at a discount. Repaid at face value."
+   },
+   {
+    "id": "bonds-q10",
+    "sec": "Niche: Niche Topics",
+    "q": "Side-pocketing is used when:",
+    "o": [
+     "A fund is launched",
+     "A held bond suffers a severe credit event",
+     "Rates fall",
+     "The NAV rises"
+    ],
+    "a": 1,
+    "why": "A held bond suffers a severe credit event. Separates the troubled bond from the main portfolio."
+   },
+   {
+    "id": "bonds-q11",
+    "sec": "E: Evaluate the Client",
+    "q": "For money a client may need any day, the usual choice is:",
+    "o": [
+     "Long duration fund",
+     "Credit risk fund",
+     "Liquid or overnight fund",
+     "Gilt fund"
+    ],
+    "a": 2,
+    "why": "Liquid or overnight fund. Lowest rate and credit risk, high liquidity."
+   },
+   {
+    "id": "bonds-q12",
+    "sec": "E: Evaluate the Client",
+    "q": "For a goal 1–3 years away, a suitable category is:",
+    "o": [
+     "Long duration",
+     "Short duration",
+     "Credit risk",
+     "Gilt with 10-year constant duration"
+    ],
+    "a": 1,
+    "why": "Short duration. Duration matched to the goal."
+   },
+   {
+    "id": "bonds-q13",
+    "sec": "Niche: Niche Topics",
+    "q": "What happened to Yes Bank's AT1 bonds in 2020?",
+    "o": [
+     "Paid double",
+     "Converted to FDs",
+     "Written off",
+     "Became tax-free"
+    ],
+    "a": 2,
+    "why": "Written off. AT1 holders lost their investment."
+   },
+   {
+    "id": "bonds-q14",
+    "sec": "A: Act Right",
+    "q": "For debt funds bought from 1 April 2023, gains are generally taxed:",
+    "o": [
+     "At 0%",
+     "At slab rate, without indexation",
+     "Only on maturity of each bond",
+     "At a flat 1%"
+    ],
+    "a": 1,
+    "why": "At slab rate, without indexation. Confirm specifics with the client's CA."
+   },
+   {
+    "id": "bonds-q15",
+    "sec": "E: Evaluate the Client",
+    "q": "The PRC matrix shows a debt scheme's:",
+    "o": [
+     "Past returns",
+     "Maximum interest-rate and credit risk",
+     "Expense ratio",
+     "Fund manager's rating"
+    ],
+    "a": 1,
+    "why": "Maximum interest-rate and credit risk. The riskometer shows today's portfolio risk."
+   },
+   {
+    "id": "bonds-q16",
+    "sec": "E: Evaluate the Client",
+    "q": "G-secs have no default risk. What risk remains if sold before maturity?",
+    "o": [
+     "None at all",
+     "Interest-rate risk: prices fall when rates rise",
+     "Currency risk only",
+     "Credit risk from the AMC"
+    ],
+    "a": 1,
+    "why": "Rate risk remains."
+   },
+   {
+    "id": "bonds-q17",
+    "sec": "R: Review & Rebalance",
+    "q": "A debt fund's YTM is much higher than its peers'. What should you check first?",
+    "o": [
+     "Nothing — higher is better",
+     "Whether it means lower credit quality or longer duration",
+     "The fund's launch date",
+     "Only the AMC's AUM"
+    ],
+    "a": 1,
+    "why": "Higher yield often means more credit or duration risk."
+   },
+   {
+    "id": "bonds-q18",
+    "sec": "Niche: Niche Topics",
+    "q": "What can happen to AT1 bonds if the bank is in trouble?",
+    "o": [
+     "They convert to FDs",
+     "They can be written off",
+     "They are repaid first",
+     "Their coupon is guaranteed"
+    ],
+    "a": 1,
+    "why": "As happened with Yes Bank in 2020."
+   },
+   {
+    "id": "bonds-q19",
+    "sec": "E: Evaluate the Client",
+    "q": "For a goal 2 years away, which duration fits best?",
+    "o": [
+     "Long duration",
+     "Short duration, matched to the goal date",
+     "Any duration, if the yield is high",
+     "Duration does not matter for debt"
+    ],
+    "a": 1,
+    "why": "Choose short duration to match the goal date."
+   },
+   {
+    "id": "bonds-q20",
+    "sec": "L: Learn the Basics",
+    "q": "Held to maturity, a target maturity fund's return is usually:",
+    "o": [
+     "Guaranteed at the starting YTM",
+     "Close to its YTM at purchase, after costs",
+     "Equal to the equity market return",
+     "Fixed by SEBI"
+    ],
+    "a": 1,
+    "why": "Not guaranteed; early exit changes the outcome."
+   },
+   {
+    "id": "bonds-q21",
+    "sec": "Practice: Role-Play",
+    "q": "A client says, “My debt fund fell 2% this month. I thought debt was safe.” How do you respond?",
+    "o": [
+     "Promise a recovery by next month",
+     "Check whether it is a rate move or a credit event; explain duration and the seesaw; review duration vs goal; no promise of recovery",
+     "Advise selling everything at once",
+     "Say debt funds cannot fall"
+    ],
+    "a": 1,
+    "why": "Checks whether it is a rate move or a credit event; explains duration and the seesaw; reviews duration vs goal; no promise of recovery."
+   },
+   {
+    "id": "bonds-q22",
+    "sec": "Practice: Role-Play",
+    "q": "A client wants to move all their FD money into a credit risk fund showing a 9% yield. What do you explain?",
+    "o": [
+     "That 9% is guaranteed",
+     "The yield–risk trade-off; default and liquidity risk; sizing as a small slice at most; not for essential money",
+     "That credit risk funds never default",
+     "That FDs are riskier"
+    ],
+    "a": 1,
+    "why": "Yield–risk trade-off; default and liquidity risk; sizing as a small slice at most; not for essential money."
+   },
+   {
+    "id": "bonds-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A retiree wants monthly income from ₹60 lakh. What do you outline?",
+    "o": [
+     "Only the highest-yield bond available",
+     "SWP from a conservative debt fund, a bond ladder, and eligible government schemes; check current rates rather than quoting from memory; tax via CA",
+     "A credit risk fund for the full amount",
+     "An equity fund for regular income"
+    ],
+    "a": 1,
+    "why": "SWP from a conservative debt fund, bond ladder, eligible government schemes; checks current rates rather than quoting from memory; tax via CA."
+   },
+   {
+    "id": "bonds-q24",
+    "sec": "Practice: Role-Play",
+    "q": "A parent needs college fees in 2 years. Which debt category fits and why?",
+    "o": [
+     "Long duration, for higher returns",
+     "Short duration / banking & PSU / matched target maturity; long duration and credit risk don’t fit a 2-year goal",
+     "Credit risk, for higher yield",
+     "Any category, since 2 years is long enough"
+    ],
+    "a": 1,
+    "why": "Short duration / banking & PSU / matched target maturity; explains why long duration and credit risk don't fit."
+   },
+   {
+    "id": "bonds-q25",
+    "sec": "Practice: Role-Play",
+    "q": "A client sees a “bank bond at 10%” online. What do you check and say?",
+    "o": [
+     "Nothing — a bank bond is safe",
+     "Whether it is an AT1/perpetual bond, its rating and the platform’s registration; explain write-off risk; it is not an FD substitute",
+     "Only the coupon rate",
+     "Only the bank’s branch network"
+    ],
+    "a": 1,
+    "why": "Checks if it is an AT1/perpetual bond, rating and platform registration; explains write-off risk; not an FD substitute."
+   }
+  ]
+ },
+ "role_play": null
+}

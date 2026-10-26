@@ -1,0 +1,69 @@
+{
+ "id": "withdraw-12",
+ "title": "Adjusting withdrawals: guardrails",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Apply the four guardrails to rate rises, falls, good years and big expenses.",
+  "Explain why flexible spending is so powerful."
+ ],
+ "body_md": "Adjusting withdrawals: simple guardrails (illustrative).\n\n| If… | Then consider… |\n| --- | --- |\n| The withdrawal rate has risen well above the starting rate (e.g. corpus fell) | Skip the inflation increase this year, or trim extras |\n| Markets fell sharply | Draw from Bucket 2, not equity; avoid selling growth assets low |\n| The withdrawal rate has fallen well below the starting rate (good years) | A modest extra increase is possible |\n| A big unplanned expense came up | Fund it from its own pot or Bucket 2, and rebuild over time |\n\nFlexible spending in bad years is one of the most powerful ways to make a corpus last.",
+ "key_terms": [
+  "Guardrails",
+  "Flexible spending"
+ ],
+ "example": "Corpus fell, rate rose well above the starting rate: skip the inflation increase this year, or trim extras. Markets fell sharply: draw from Bucket 2, not equity.",
+ "say": [
+  "Skip the inflation increase when the rate has risen well above the starting rate.",
+  "After a sharp fall, draw from Bucket 2, not equity."
+ ],
+ "never": [
+  "Always increase the SWP for inflation.",
+  "Sell growth assets low in a fall."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q12",
+   "q": "After a sharp market fall, the plan should usually…",
+   "o": [
+    "Sell equity to refill Bucket 1",
+    "Draw from Bucket 2",
+    "Stop all withdrawals",
+    "Move all to equity"
+   ],
+   "a": 1,
+   "why": "Draw from Bucket 2. Give equity time to recover."
+  },
+  {
+   "id": "withdraw-q19",
+   "q": "Can skipping the inflation increase after a bad year help money last?",
+   "o": [
+    "No, it never helps",
+    "Yes — flexible spending is a powerful guardrail",
+    "Only for large corpuses",
+    "Only in the first year"
+   ],
+   "a": 1,
+   "why": "Flexible spending is a powerful guardrail."
+  },
+  {
+   "id": "withdraw-n18",
+   "q": "If the withdrawal rate has fallen well below the starting rate (good years), consider:",
+   "o": [
+    "Stopping withdrawals",
+    "Moving all to FDs",
+    "A large lump-sum withdrawal",
+    "A modest extra increase"
+   ],
+   "a": 3,
+   "why": "The withdrawal rate has fallen well below the starting rate (good years): a modest extra increase is possible."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c23",
+  "withdraw-c24"
+ ],
+ "words": 98
+}

@@ -1,0 +1,734 @@
+{
+ "id": "withdraw",
+ "title": "Withdrawal Planning",
+ "code": "Module 17",
+ "blurb": "Drawing a corpus down so it lasts: withdrawal rates, inflation, sequence risk, buckets and SWPs.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 74 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Modules 12, 13 and 15"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)"
+ ],
+ "lessons": [
+  {
+   "id": "withdraw-01",
+   "title": "Withdrawal rate: how long the money may last",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "withdraw-02",
+   "title": "Inflation: why fixed withdrawals feel tighter every year",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "withdraw-03",
+   "title": "Sequence-of-returns risk: the order matters",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "withdraw-04",
+   "title": "How an SWP works",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "withdraw-05",
+   "title": "Before planning: seven facts to gather",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "withdraw-06",
+   "title": "The gap calculation",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "withdraw-07",
+   "title": "Warning signs",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "withdraw-08",
+   "title": "The bucket strategy: three buckets",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "withdraw-09",
+   "title": "Setting up the SWP",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "withdraw-10",
+   "title": "Order of withdrawals, and big expenses separate",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "withdraw-11",
+   "title": "The annual withdrawal review checklist",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "withdraw-12",
+   "title": "Adjusting withdrawals: guardrails",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "withdraw-13",
+   "title": "Behaviours: what derails withdrawals",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "withdraw-14",
+   "title": "The one line, and why plans must bend",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "withdraw-15",
+   "title": "Role-play lab: six withdrawal conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "withdraw-16",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "withdraw-c1",
+   "q": "The one idea",
+   "a": [
+    "Spend from safety, grow from equity, and refill on a plan."
+   ]
+  },
+  {
+   "id": "withdraw-c2",
+   "q": "Three forces",
+   "a": [
+    "Withdrawal rate, inflation, and the order of returns."
+   ]
+  },
+  {
+   "id": "withdraw-c3",
+   "q": "Withdrawal rate",
+   "a": [
+    "First year’s withdrawal ÷ corpus. ₹4 L from ₹1 Cr = 4%."
+   ]
+  },
+  {
+   "id": "withdraw-c4",
+   "q": "How long ₹1 Cr may last (illustrative)",
+   "a": [
+    "9% return, withdrawals +6% a year: 3% → 50+ yrs; 4% → ≈41; 5% → ≈28; 6% → ≈21; 7% → ≈17."
+   ]
+  },
+  {
+   "id": "withdraw-c5",
+   "q": "Inflation",
+   "a": [
+    "At 6%, ₹50,000 of monthly expenses becomes ≈₹90,000 in 10 years."
+   ]
+  },
+  {
+   "id": "withdraw-c6",
+   "q": "Sequence-of-returns risk",
+   "a": [
+    "Losses early in withdrawals do more damage than the same losses later."
+   ]
+  },
+  {
+   "id": "withdraw-c7",
+   "q": "Sequence example (illustrative)",
+   "a": [
+    "Same returns, different order: falls first → runs out ≈ year 19; falls last → ≈₹2.06 Cr left after 20 years."
+   ]
+  },
+  {
+   "id": "withdraw-c8",
+   "q": "SWP",
+   "a": [
+    "Systematic Withdrawal Plan: regular redemption of a fixed amount from a fund."
+   ]
+  },
+  {
+   "id": "withdraw-c9",
+   "q": "SWP tax",
+   "a": [
+    "Only the gains part of each withdrawal is a capital gain; depends on fund and holding period. Refer to a CA."
+   ]
+  },
+  {
+   "id": "withdraw-c10",
+   "q": "The gap",
+   "a": [
+    "Annual expenses − other income = what the portfolio must provide."
+   ]
+  },
+  {
+   "id": "withdraw-c11",
+   "q": "Gap example (illustrative)",
+   "a": [
+    "₹6 L expenses − ₹2 L pension and rent = ₹4 L; on ₹1 Cr that is 4%."
+   ]
+  },
+  {
+   "id": "withdraw-c12",
+   "q": "Warning signs",
+   "a": [
+    "Rate above 6–7%, no health cover, no emergency fund, big dependants’ needs, one asset class."
+   ]
+  },
+  {
+   "id": "withdraw-c13",
+   "q": "Three buckets",
+   "a": [
+    "Income (1–2 yrs, liquid), Stability (yrs 3–7, short debt/hybrid), Growth (8+ yrs, equity)."
+   ]
+  },
+  {
+   "id": "withdraw-c14",
+   "q": "Refilling",
+   "a": [
+    "Once a year; take more from equity in good years, less in bad years."
+   ]
+  },
+  {
+   "id": "withdraw-c15",
+   "q": "Order of withdrawals",
+   "a": [
+    "Regular income first, then Bucket 1 SWP, refill on a plan, keep the emergency fund separate."
+   ]
+  },
+  {
+   "id": "withdraw-c16",
+   "q": "Guardrails",
+   "a": [
+    "Rate rose: skip the inflation increase. Markets fell: draw from Bucket 2. Rate fell: modest extra increase."
+   ]
+  },
+  {
+   "id": "withdraw-c17",
+   "q": "Corpus",
+   "a": [
+    "The total money available for withdrawals.",
+    "Example: ₹1 Cr retirement portfolio.",
+    "Remember: Count all assets, not just funds."
+   ]
+  },
+  {
+   "id": "withdraw-c18",
+   "q": "Withdrawal rate",
+   "a": [
+    "First year’s withdrawal as % of corpus.",
+    "Example: ₹4 L ÷ ₹1 Cr = 4%.",
+    "Remember: Small changes matter a lot."
+   ]
+  },
+  {
+   "id": "withdraw-c19",
+   "q": "Longevity risk",
+   "a": [
+    "Risk of outliving the money.",
+    "Example: Living to 90 on a plan built to 80.",
+    "Remember: Plan for the spouse too."
+   ]
+  },
+  {
+   "id": "withdraw-c20",
+   "q": "Bucket 1: Income",
+   "a": [
+    "Next 1–2 years of withdrawals.",
+    "Example: ₹8–10 L in liquid funds.",
+    "Remember: SWP runs from here."
+   ]
+  },
+  {
+   "id": "withdraw-c21",
+   "q": "Bucket 2: Stability",
+   "a": [
+    "Money for years 3–7.",
+    "Example: ₹20–25 L in short-duration debt.",
+    "Remember: Pays through bad years."
+   ]
+  },
+  {
+   "id": "withdraw-c22",
+   "q": "Bucket 3: Growth",
+   "a": [
+    "Money for year 8 onwards.",
+    "Example: ₹65–70 L in equity or balanced funds.",
+    "Remember: Keeps up with inflation."
+   ]
+  },
+  {
+   "id": "withdraw-c23",
+   "q": "SWP source fund",
+   "a": [
+    "The fund the SWP redeems from.",
+    "Example: A liquid fund, not small-cap.",
+    "Remember: Avoid selling equity monthly."
+   ]
+  },
+  {
+   "id": "withdraw-c24",
+   "q": "SWP date",
+   "a": [
+    "Day of the month money is paid out.",
+    "Example: Just before main bills, after pension.",
+    "Remember: Matches cash needs."
+   ]
+  },
+  {
+   "id": "withdraw-c25",
+   "q": "Inflation increase",
+   "a": [
+    "Planned yearly rise in withdrawals.",
+    "Example: +5–6% a year.",
+    "Remember: Review, don’t automate blindly."
+   ]
+  },
+  {
+   "id": "withdraw-c26",
+   "q": "Guardrail",
+   "a": [
+    "Pre-agreed rule to adjust withdrawals.",
+    "Example: Skip increase after a big fall.",
+    "Remember: Flexibility makes money last."
+   ]
+  },
+  {
+   "id": "withdraw-c27",
+   "q": "Separate pots",
+   "a": [
+    "Money for big known costs.",
+    "Example: A child’s wedding in 3 years.",
+    "Remember: Not from the monthly SWP."
+   ]
+  },
+  {
+   "id": "withdraw-c28",
+   "q": "Health cover",
+   "a": [
+    "Medical insurance for client and spouse.",
+    "Example: Family floater health policy.",
+    "Remember: Biggest risk to a corpus."
+   ]
+  },
+  {
+   "id": "withdraw-c29",
+   "q": "Overspending early",
+   "a": [
+    "Big spending in early retirement.",
+    "Example: “Let’s do the big trips now.”",
+    "Remember: Use a separate travel pot."
+   ]
+  },
+  {
+   "id": "withdraw-c30",
+   "q": "Panic in a fall",
+   "a": [
+    "Urge to sell growth assets.",
+    "Example: “Move everything to FDs.”",
+    "Remember: Buckets 1–2 cover the next years."
+   ]
+  },
+  {
+   "id": "withdraw-c31",
+   "q": "Fear of spending",
+   "a": [
+    "Refusing to draw on the corpus.",
+    "Example: “I won’t touch it.”",
+    "Remember: Show the safe withdrawal amount."
+   ]
+  },
+  {
+   "id": "withdraw-c32",
+   "q": "Family requests",
+   "a": [
+    "Large gifts or loans to family.",
+    "Example: ₹15 L for a son’s business.",
+    "Remember: Show the effect on the rate first."
+   ]
+  }
+ ],
+ "final": {
+  "id": "withdraw-final",
+  "title": "Withdrawal Planning final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "withdraw-q1",
+    "sec": "L: Learn the Basics",
+    "q": "How is the withdrawal rate calculated?",
+    "o": [
+     "Return ÷ corpus",
+     "First year’s withdrawal ÷ corpus",
+     "Expenses ÷ income",
+     "Corpus ÷ years"
+    ],
+    "a": 1,
+    "why": "First year’s withdrawal ÷ corpus. ₹4 L from ₹1 Cr is 4%."
+   },
+   {
+    "id": "withdraw-q2",
+    "sec": "L: Learn the Basics",
+    "q": "In the illustration, about how long does ₹1 Cr last at a 4% rate?",
+    "o": [
+     "10 years",
+     "21 years",
+     "41 years",
+     "Forever"
+    ],
+    "a": 2,
+    "why": "41 years. 9% return and 6% inflation assumed."
+   },
+   {
+    "id": "withdraw-q3",
+    "sec": "L: Learn the Basics",
+    "q": "And at a 6% rate?",
+    "o": [
+     "41 years",
+     "28 years",
+     "21 years",
+     "50+ years"
+    ],
+    "a": 2,
+    "why": "21 years. Going from 4% to 6% roughly halves it."
+   },
+   {
+    "id": "withdraw-q4",
+    "sec": "L: Learn the Basics",
+    "q": "At 6% inflation, ₹50,000 of monthly expenses becomes about… in 10 years.",
+    "o": [
+     "₹55,000",
+     "₹70,000",
+     "₹90,000",
+     "₹1.5 L"
+    ],
+    "a": 2,
+    "why": "₹90,000. Costs nearly double in about 12 years."
+   },
+   {
+    "id": "withdraw-q5",
+    "sec": "L: Learn the Basics",
+    "q": "Sequence-of-returns risk means…",
+    "o": [
+     "Returns are always negative",
+     "Early losses in withdrawals do more damage",
+     "SWP is taxed twice",
+     "Inflation is zero"
+    ],
+    "a": 1,
+    "why": "Early losses in withdrawals do more damage. Units are sold low to pay bills."
+   },
+   {
+    "id": "withdraw-q6",
+    "sec": "L: Learn the Basics",
+    "q": "Two retirees with the same returns in different order: the one with falls first…",
+    "o": [
+     "Ends richer",
+     "Runs out sooner",
+     "Ends the same",
+     "Pays no tax"
+    ],
+    "a": 1,
+    "why": "Runs out sooner. About year 19 in the illustration."
+   },
+   {
+    "id": "withdraw-q7",
+    "sec": "L: Learn the Basics",
+    "q": "What does an SWP do?",
+    "o": [
+     "Buys units monthly",
+     "Redeems a fixed amount regularly",
+     "Guarantees a pension",
+     "Switches funds"
+    ],
+    "a": 1,
+    "why": "Redeems a fixed amount regularly. It is a withdrawal plan, not guaranteed income."
+   },
+   {
+    "id": "withdraw-q8",
+    "sec": "L: Learn the Basics",
+    "q": "Is the whole SWP withdrawal taxed as capital gains?",
+    "o": [
+     "Yes",
+     "No, only the gains part",
+     "Never taxed",
+     "Only for debt funds"
+    ],
+    "a": 1,
+    "why": "No, only the gains part. Refer details to a CA."
+   },
+   {
+    "id": "withdraw-q9",
+    "sec": "E: Evaluate the Client",
+    "q": "Expenses ₹6 L, pension and rent ₹2 L, corpus ₹1 Cr. The withdrawal rate is…",
+    "o": [
+     "2%",
+     "4%",
+     "6%",
+     "8%"
+    ],
+    "a": 1,
+    "why": "4%. (6 − 2) ÷ 100 = 4%."
+   },
+   {
+    "id": "withdraw-q10",
+    "sec": "A: Act Right",
+    "q": "Bucket 1 usually holds…",
+    "o": [
+     "Small-cap funds",
+     "The next 1–2 years of withdrawals in liquid funds",
+     "Gold only",
+     "Real estate"
+    ],
+    "a": 1,
+    "why": "The next 1–2 years of withdrawals in liquid funds. The SWP runs from here."
+   },
+   {
+    "id": "withdraw-q11",
+    "sec": "A: Act Right",
+    "q": "Which fund should usually feed the SWP?",
+    "o": [
+     "Small-cap fund",
+     "Liquid or short-duration fund",
+     "Thematic fund",
+     "Gold ETF"
+    ],
+    "a": 1,
+    "why": "Liquid or short-duration fund. Avoid selling equity every month."
+   },
+   {
+    "id": "withdraw-q12",
+    "sec": "R: Review & Rebalance",
+    "q": "After a sharp market fall, the plan should usually…",
+    "o": [
+     "Sell equity to refill Bucket 1",
+     "Draw from Bucket 2",
+     "Stop all withdrawals",
+     "Move all to equity"
+    ],
+    "a": 1,
+    "why": "Draw from Bucket 2. Give equity time to recover."
+   },
+   {
+    "id": "withdraw-q13",
+    "sec": "A: Act Right",
+    "q": "A big known cost (child’s wedding) should be…",
+    "o": [
+     "Paid from the monthly SWP",
+     "Planned as a separate pot",
+     "Ignored",
+     "Funded by a loan"
+    ],
+    "a": 1,
+    "why": "Planned as a separate pot. Invested for its own date."
+   },
+   {
+    "id": "withdraw-q14",
+    "sec": "E: Evaluate the Client",
+    "q": "Which is the biggest threat to many retirement corpuses?",
+    "o": [
+     "Bank holidays",
+     "Medical costs without health cover",
+     "NAV rounding",
+     "KYC updates"
+    ],
+    "a": 1,
+    "why": "Medical costs without health cover. Check health cover."
+   },
+   {
+    "id": "withdraw-q15",
+    "sec": "Compliance: Compliance",
+    "q": "Which statement is compliant?",
+    "o": [
+     "“Your ₹1 Cr will last 41 years.”",
+     "“Illustratively, at 9% assumed and 6% inflation, ₹4 L a year could last about 41 years; not guaranteed.”",
+     "“SWP is tax-free.”",
+     "“SWP is a guaranteed pension.”"
+    ],
+    "a": 1,
+    "why": "“Illustratively, at 9% assumed and 6% inflation, ₹4 L a year could last about 41 years; not guaranteed.”. Show assumptions; no guarantees."
+   },
+   {
+    "id": "withdraw-q16",
+    "sec": "E: Evaluate the Client",
+    "q": "Should a withdrawal plan start from the client's spending?",
+    "o": [
+     "No, from the corpus size",
+     "Yes — expenses minus other income sets the need",
+     "No, from last year's returns",
+     "Only for retirees"
+    ],
+    "a": 1,
+    "why": "Expenses minus other income sets the need."
+   },
+   {
+    "id": "withdraw-q17",
+    "sec": "L: Learn the Basics",
+    "q": "Does the order of returns matter once withdrawals start?",
+    "o": [
+     "No, only the average matters",
+     "Yes — early losses do more damage",
+     "No, SWPs remove the risk",
+     "Only for debt funds"
+    ],
+    "a": 1,
+    "why": "Early losses do more damage."
+   },
+   {
+    "id": "withdraw-q18",
+    "sec": "L: Learn the Basics",
+    "q": "Is an SWP guaranteed monthly income?",
+    "o": [
+     "Yes, like a pension",
+     "No — if returns stay below withdrawals, the corpus shrinks",
+     "Yes, for liquid funds",
+     "Only after age 60"
+    ],
+    "a": 1,
+    "why": "If returns stay below withdrawals, the corpus shrinks."
+   },
+   {
+    "id": "withdraw-q19",
+    "sec": "R: Review & Rebalance",
+    "q": "Can skipping the inflation increase after a bad year help money last?",
+    "o": [
+     "No, it never helps",
+     "Yes — flexible spending is a powerful guardrail",
+     "Only for large corpuses",
+     "Only in the first year"
+    ],
+    "a": 1,
+    "why": "Flexible spending is a powerful guardrail."
+   },
+   {
+    "id": "withdraw-q20",
+    "sec": "A: Act Right",
+    "q": "Should the emergency fund be used for routine monthly expenses?",
+    "o": [
+     "Yes, that is its purpose",
+     "No — keep it separate",
+     "Only in good years",
+     "Only for medical costs"
+    ],
+    "a": 1,
+    "why": "Keep it separate."
+   },
+   {
+    "id": "withdraw-q21",
+    "sec": "Practice: Role-Play",
+    "q": "Mr. Iyer, 60, has ₹1 Cr, spends ₹6 L a year and gets a ₹2 L pension. What is the plan?",
+    "o": [
+     "SWP of ₹6 L a year from equity",
+     "Gap = ₹4 L (4% rate); set up three buckets; SWP from a liquid fund; check health cover; show illustrations with assumptions; no promises",
+     "SWP of ₹2 L a year",
+     "No plan needed"
+    ],
+    "a": 1,
+    "why": "Gap = ₹4 L (4% rate); set up three buckets; SWP from a liquid fund; check health cover; show illustrations with assumptions; no promises."
+   },
+   {
+    "id": "withdraw-q22",
+    "sec": "Practice: Role-Play",
+    "q": "Mrs. Rao wants ₹80,000 a month from ₹1 Cr. What do you show her?",
+    "o": [
+     "Agree immediately",
+     "Show the ≈9.6% rate and how quickly it may run out (illustrative); discuss lower spending, other income or delaying extras",
+     "Promise it will last forever",
+     "Suggest a small-cap SWP"
+    ],
+    "a": 1,
+    "why": "Show the ≈9.6% rate and how quickly it may run out (illustrative); discuss lower spending, other income or delaying extras."
+   },
+   {
+    "id": "withdraw-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A new retiree's equity bucket fell 18% and he wants to move all to FDs. What do you do?",
+    "o": [
+     "Move everything to FDs at once",
+     "Show Buckets 1–2 cover the next years; avoid selling equity low; apply guardrails; no market predictions",
+     "Stop all withdrawals",
+     "Promise equity will recover"
+    ],
+    "a": 1,
+    "why": "Show Buckets 1–2 cover the next years; avoid selling equity low; apply guardrails; no market predictions."
+   },
+   {
+    "id": "withdraw-q24",
+    "sec": "Practice: Role-Play",
+    "q": "A retired client wants to give ₹15 L to her son. How do you handle it?",
+    "o": [
+     "Refuse outright",
+     "Show the effect on her withdrawal rate and plan; discuss options; it is her decision, documented",
+     "Ignore the effect on the plan",
+     "Fund it from the monthly SWP"
+    ],
+    "a": 1,
+    "why": "Show the effect on her withdrawal rate and plan; discuss options; it is her decision, documented."
+   },
+   {
+    "id": "withdraw-q25",
+    "sec": "Practice: Role-Play",
+    "q": "A client runs his SWP directly from a small-cap fund. What do you change?",
+    "o": [
+     "Nothing — SWPs from equity are ideal",
+     "Move the SWP source to a liquid or short-duration fund; refill from equity once a year on a plan",
+     "Increase the SWP amount",
+     "Switch to a thematic fund"
+    ],
+    "a": 1,
+    "why": "Move the SWP source to a liquid or short-duration fund; refill from equity once a year on a plan."
+   }
+  ]
+ },
+ "role_play": null
+}

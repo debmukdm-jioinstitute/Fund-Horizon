@@ -1,0 +1,69 @@
+{
+ "id": "timing-09",
+ "title": "What to tell a client who invested at a peak",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Run the five peak-investor steps in order, starting with acknowledgement.",
+  "Fix real problems on a plan, never in panic."
+ ],
+ "body_md": "Acknowledge it: “Yes, you invested just before a fall. That's frustrating.” Check the horizon: if the goal is 7+ years away, time is on their side. Compare fairly: is the fund doing in line with its benchmark from the same date? Add, don't flee: if possible, continue SIPs or add gradually through the fall to lower the average cost. Fix real problems: if the money is needed soon, rebalance towards debt in a planned way rather than in panic.\n\n- Acknowledge: “Yes, you invested just before a fall. That's frustrating.”\n- Check the horizon: 7+ years away means time is on their side\n- Compare fairly with the benchmark from the same date\n- Add, don't flee: continue SIPs or add gradually\n- Fix real problems on a plan, not in panic\n\n> **Investor takeaway:** You can't control the date you started. You can control whether you stay, keep investing and stick to the plan.",
+ "key_terms": [
+  "Peak investor",
+  "Acknowledge first"
+ ],
+ "example": "₹10 lakh invested last year, down 12%, goal 10 years away: acknowledge, confirm horizon, compare with benchmark, keep SIPs going, add gradually if comfortable.",
+ "say": [
+  "Acknowledge the frustration first.",
+  "Fix real problems on a plan, not in panic."
+ ],
+ "never": [
+  "Start by recommending a switch.",
+  "Predict when the market will recover."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q7",
+   "q": "What is the first step when a client says “I invested at the peak”?",
+   "o": [
+    "Recommend switching funds",
+    "Acknowledge the frustration",
+    "Stop the SIP",
+    "Predict when the market will recover"
+   ],
+   "a": 1,
+   "why": "Acknowledge the frustration. Acknowledge first, then check horizon, compare fairly, keep investing and fix real problems."
+  },
+  {
+   "id": "timing-n13",
+   "q": "What is the first step when a client says “I invested at the peak”?",
+   "o": [
+    "Acknowledge the frustration",
+    "Recommend switching funds",
+    "Stop the SIP",
+    "Predict when the market will recover"
+   ],
+   "a": 0,
+   "why": "Acknowledge it: “Yes, you invested just before a fall. That's frustrating.”"
+  },
+  {
+   "id": "timing-n14",
+   "q": "If the money is needed soon, what should happen?",
+   "o": [
+    "Sell everything at once",
+    "Wait for a recovery",
+    "Add more equity",
+    "Rebalance towards debt in a planned way rather than in panic"
+   ],
+   "a": 3,
+   "why": "Fix real problems: if the money is needed soon, rebalance towards debt in a planned way rather than in panic."
+  }
+ ],
+ "card_ids": [
+  "timing-c17",
+  "timing-c18"
+ ],
+ "words": 149
+}

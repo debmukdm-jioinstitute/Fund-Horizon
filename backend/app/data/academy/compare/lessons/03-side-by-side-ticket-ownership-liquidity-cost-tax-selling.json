@@ -1,0 +1,72 @@
+{
+ "id": "compare-03",
+ "title": "Side by side: ticket, ownership, liquidity, cost, tax, selling",
+ "minutes": 6,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Compare MF, PMS and AIF on all eight side-by-side rows.",
+  "Say which certification each product's distributor needs."
+ ],
+ "body_md": "Minimum: a few hundred rupees (SIP) for MF; ₹50 lakh for PMS; ₹1 crore for AIF (₹25 lakh for manager's employees). Structure: MF pooled, investor holds units; PMS individual portfolio in client's demat; AIF pooled, investor holds units. What it can hold: MF listed equity, debt, gold within SEBI category rules; PMS mainly listed securities; AIF unlisted equity, private credit, real estate, complex strategies. Liquidity: MF usually redeem any business day; PMS exit anytime, exit loads possible in first 3 years; Cat I & II locked for the fund's life (3+ years); Cat III varies. Costs: MF expense ratio capped by SEBI; PMS fixed and/or profit-share fees by agreement; AIF management fee plus carry / performance fee. Tax: MF at redemption, in investor's hands; PMS every trade taxed in client's hands; Cat I & II pass-through for most income; Cat III generally taxed at fund level. How it's sold: MF openly with advertising; PMS through APMI-registered distributors; AIF private placement only, no public advertising. Distributor certification: MF NISM V-A; PMS NISM XXI-A; AIF NISM XIX-A (Cat I & II), XIX-B (Cat III). Tax rules change with Budgets; always confirm current treatment with a CA.\n\n|  | Mutual fund | PMS | AIF |\n| --- | --- | --- | --- |\n| Minimum | A few hundred rupees (SIP) | ₹50 lakh | ₹1 crore (₹25 lakh for manager's employees) |\n| Structure | Pooled; investor holds units | Individual portfolio in client's demat | Pooled; investor holds units |\n| What it can hold | Listed equity, debt, gold, etc. within SEBI category rules | Mainly listed securities | Unlisted equity, private credit, real estate, complex strategies |\n| Liquidity | Usually redeem any business day | Exit anytime; exit loads possible in first 3 years | Cat I & II locked for the fund's life (3+ years); Cat III varies |\n| Costs | Expense ratio capped by SEBI | Fixed and/or profit-share fees, set by agreement | Management fee plus carry / performance fee |\n| Tax | At redemption, in investor's hands | Every trade taxed in client's hands | Cat I & II: pass-through for most income; Cat III: generally taxed at fund level |\n| How it's sold | Openly, with advertising | Through APMI-registered distributors | Private placement only; no public advertising |\n| Distributor certification | NISM V-A | NISM XXI-A | NISM XIX-A (Cat I & II), XIX-B (Cat III) |",
+ "key_terms": [
+  "Minimum ticket",
+  "Ownership",
+  "Liquidity",
+  "Carry",
+  "NISM certification"
+ ],
+ "example": "A client comparing costs: MF one capped expense ratio in the NAV; PMS fixed/profit-share plus brokerage, custody, GST; AIF management fee plus carry — always show costs in rupees, side by side.",
+ "say": [
+  "Show costs, lock-in and tax side by side before choosing.",
+  "Tax rules change with Budgets; confirm with a CA."
+ ],
+ "never": [
+  "AIFs can be publicly advertised.",
+  "PMS trades are taxed only at exit."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q8",
+   "q": "Where are the securities held in a PMS?",
+   "o": [
+    "In a pooled fund",
+    "In the client's own demat account",
+    "With the distributor",
+    "With AMFI"
+   ],
+   "a": 1,
+   "why": "In the client's own demat account. This is why every trade is taxed in the client's hands."
+  },
+  {
+   "id": "compare-q9",
+   "q": "How can an AIF be marketed?",
+   "o": [
+    "TV and newspaper ads",
+    "Social media campaigns",
+    "Private placement only",
+    "Any channel"
+   ],
+   "a": 2,
+   "why": "Private placement only. Public invitation and mass marketing are not allowed."
+  },
+  {
+   "id": "compare-q10",
+   "q": "Which NISM certification is needed to distribute Category III AIFs?",
+   "o": [
+    "V-A",
+    "XXI-A",
+    "XIX-A",
+    "XIX-B"
+   ],
+   "a": 3,
+   "why": "XIX-B. XIX-A is for Category I & II."
+  }
+ ],
+ "card_ids": [
+  "compare-c5",
+  "compare-c6"
+ ],
+ "words": 357
+}

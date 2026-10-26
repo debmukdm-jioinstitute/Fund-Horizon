@@ -1,0 +1,77 @@
+{
+ "id": "bonds-08",
+ "title": "Matching the need to the option",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Match seven client needs to suitable debt options, and name what to avoid.",
+  "Ask the two deciding questions: when is the money needed, and how would a 3% fall feel?"
+ ],
+ "body_md": "Emergency fund or money needed any day: savings account, liquid or overnight fund — avoid long duration and credit risk funds. Money needed in 6–12 months: ultra short, low duration, money market fund or short FD — avoid long duration. Goal 1–3 years away: short duration, banking & PSU, corporate bond fund or target maturity fund matched to the date — avoid credit risk funds for essential goals. Goal 5+ years away wanting stability: target maturity, gilt or long duration (accepting rate swings), PPF — and don't treat debt as the whole plan; consider some equity too. Retiree needing regular income: SWP from a conservative debt fund, government small-savings schemes for eligible seniors, bond ladder — avoid high-yield bonds for essential income. Large long-term capital gain from property: 54EC bonds if eligible. Wants higher yield and understands the risk: a small slice in a credit risk fund or rated corporate bonds, diversified — never a large share in one issuer.\n\n| Client need | Usually suitable | Avoid |\n| --- | --- | --- |\n| Emergency fund, money needed any day | Savings account, liquid or overnight fund | Long duration, credit risk funds |\n| Money needed in 6–12 months | Ultra short, low duration, money market fund; short FD | Long duration |\n| Goal 1–3 years away | Short duration, banking & PSU, corporate bond fund; target maturity fund matched to the date | Credit risk funds for essential goals |\n| Goal 5+ years away, wants stability | Target maturity fund, gilt or long duration (accepting rate swings), PPF | Treating debt as the whole plan; consider some equity too |\n| Retiree needing regular income | SWP from a conservative debt fund; government small-savings schemes for eligible seniors; bond ladder | High-yield bonds for essential income |\n| Large long-term capital gain from property | 54EC bonds (if eligible) | — |\n| Wants higher yield, understands the risk | Small slice in credit risk fund or rated corporate bonds, diversified | Putting a large share in one issuer |\n\n> **Talk-track:** “Let's decide two things before choosing a fund: when do you need this money, and how would you feel if it fell 3% in a month?”",
+ "key_terms": [
+  "Emergency fund",
+  "Target maturity fund",
+  "Bond ladder",
+  "54EC bond"
+ ],
+ "example": "Goal 1–3 years away: short duration or a target maturity fund matched to the date — not a credit risk fund for an essential goal.",
+ "say": [
+  "Duration matches the goal date; credit quality matches how essential the money is.",
+  "For essential income, avoid high-yield bonds."
+ ],
+ "never": [
+  "Long duration fits money needed any day.",
+  "A large share in one issuer is fine if the yield is high."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Two deciding questions",
+   "text": "Let's decide two things before choosing a fund: when do you need this money, and how would you feel if it fell 3% in a month?"
+  }
+ ],
+ "check": [
+  {
+   "id": "bonds-q11",
+   "q": "For money a client may need any day, the usual choice is:",
+   "o": [
+    "Long duration fund",
+    "Credit risk fund",
+    "Liquid or overnight fund",
+    "Gilt fund"
+   ],
+   "a": 2,
+   "why": "Liquid or overnight fund. Lowest rate and credit risk, high liquidity."
+  },
+  {
+   "id": "bonds-q12",
+   "q": "For a goal 1–3 years away, a suitable category is:",
+   "o": [
+    "Long duration",
+    "Short duration",
+    "Credit risk",
+    "Gilt with 10-year constant duration"
+   ],
+   "a": 1,
+   "why": "Short duration. Duration matched to the goal."
+  },
+  {
+   "id": "bonds-q19",
+   "q": "For a goal 2 years away, which duration fits best?",
+   "o": [
+    "Long duration",
+    "Short duration, matched to the goal date",
+    "Any duration, if the yield is high",
+    "Duration does not matter for debt"
+   ],
+   "a": 1,
+   "why": "Choose short duration to match the goal date."
+  }
+ ],
+ "card_ids": [
+  "bonds-c15",
+  "bonds-c16"
+ ],
+ "words": 335
+}

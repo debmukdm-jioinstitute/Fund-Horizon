@@ -1,0 +1,672 @@
+{
+ "id": "compare",
+ "title": "MF vs PMS vs AIF",
+ "code": "Module 4",
+ "blurb": "Mutual funds, PMS and AIFs compared on ticket, ownership, liquidity, cost, tax and regulation — and which client fits each.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 78 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Modules 1–2"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)",
+  "NISM Series XIX-A (AIF Categories I & II) and XIX-B (Category III) workbooks",
+  "NISM Series XXI-A (PMS Distributors) workbook"
+ ],
+ "lessons": [
+  {
+   "id": "compare-01",
+   "title": "What each one is: MF, PMS, AIF",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "compare-02",
+   "title": "The three AIF categories",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "compare-03",
+   "title": "Side by side: ticket, ownership, liquidity, cost, tax, selling",
+   "minutes": 6,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "compare-04",
+   "title": "The wealth ladder: foundation, core, satellites",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "compare-05",
+   "title": "Which product fits whom, and four questions before moving up",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "compare-06",
+   "title": "Costs: what the client actually pays",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "compare-07",
+   "title": "Liquidity: when can the client get money back?",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "compare-08",
+   "title": "Distributor requirements and selling rules",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "compare-09",
+   "title": "Onboarding checklist for PMS and AIF",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "compare-10",
+   "title": "Review yardsticks: judge each product on its own measure",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "compare-11",
+   "title": "The J-curve, and rebalancing across products",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "compare-12",
+   "title": "Myths: status, herding and yield",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "compare-13",
+   "title": "Sales traps to avoid",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "compare-14",
+   "title": "Niche topics people miss",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "compare-15",
+   "title": "Role-play lab: six comparison conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "compare-16",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "compare-c1",
+   "q": "Minimum investment: MF",
+   "a": [
+    "A few hundred rupees through a SIP."
+   ]
+  },
+  {
+   "id": "compare-c2",
+   "q": "Minimum investment: PMS",
+   "a": [
+    "₹50 lakh (SEBI minimum)."
+   ]
+  },
+  {
+   "id": "compare-c3",
+   "q": "Minimum investment: AIF",
+   "a": [
+    "₹1 crore per investor; ₹25 lakh for the manager's employees and directors."
+   ]
+  },
+  {
+   "id": "compare-c4",
+   "q": "Maximum investors in an AIF scheme",
+   "a": [
+    "1,000 investors per scheme."
+   ]
+  },
+  {
+   "id": "compare-c5",
+   "q": "How AIFs can be sold",
+   "a": [
+    "Only by private placement, through SEBI-registered intermediaries. No public advertising or mass marketing."
+   ]
+  },
+  {
+   "id": "compare-c6",
+   "q": "NISM certification by product",
+   "a": [
+    "MF: V-A. PMS: XXI-A. AIF: XIX-A (Category I & II) and XIX-B (Category III)."
+   ]
+  },
+  {
+   "id": "compare-c7",
+   "q": "AIF commission rules",
+   "a": [
+    "Category III: trail only. Category I & II: up to one-third upfront, the rest as trail over the tenure."
+   ]
+  },
+  {
+   "id": "compare-c8",
+   "q": "The wealth ladder",
+   "a": [
+    "Foundation → mutual fund core → PMS → AIF. Each rung sits on the one below; it never replaces it."
+   ]
+  },
+  {
+   "id": "compare-c9",
+   "q": "The J-curve",
+   "a": [
+    "In PE/VC AIFs, early years often show low or negative returns (fees and investing first); gains, if any, come later as investments are exited."
+   ]
+  },
+  {
+   "id": "compare-c10",
+   "q": "Carried interest (carry)",
+   "a": [
+    "The manager's share of an AIF's profits above a hurdle rate, on top of the management fee."
+   ]
+  },
+  {
+   "id": "compare-c11",
+   "q": "Capital call (drawdown)",
+   "a": [
+    "In many Cat I & II AIFs, the committed amount is drawn in stages over months or years, not invested upfront."
+   ]
+  },
+  {
+   "id": "compare-c12",
+   "q": "PPM",
+   "a": [
+    "Private Placement Memorandum: the AIF's offer document with strategy, risks and full fee structure."
+   ]
+  },
+  {
+   "id": "compare-c13",
+   "q": "Category I AIF",
+   "a": [
+    "Early-stage and socially or economically desirable sectors.",
+    "Example: VC, SME, social impact, infrastructure, angel funds",
+    "Remember: Closed-ended; minimum 3-year tenure."
+   ]
+  },
+  {
+   "id": "compare-c14",
+   "q": "Category II AIF",
+   "a": [
+    "Everything not in Cat I or III; no leverage except temporary needs.",
+    "Example: Private equity, private credit, real estate",
+    "Remember: Closed-ended; minimum 3-year tenure."
+   ]
+  },
+  {
+   "id": "compare-c15",
+   "q": "Category III AIF",
+   "a": [
+    "Complex or trading strategies; may use leverage within limits.",
+    "Example: Long-short equity, hedge-style funds",
+    "Remember: Open- or closed-ended; generally taxed at fund level."
+   ]
+  },
+  {
+   "id": "compare-c16",
+   "q": "Ownership",
+   "a": [
+    "MF and AIF investors hold units of a pooled fund.",
+    "Example: PMS: securities in the client's own demat",
+    "Remember: Ownership drives visibility and tax."
+   ]
+  },
+  {
+   "id": "compare-c17",
+   "q": "Liquidity",
+   "a": [
+    "MF: usually days. PMS: anytime, exit loads in years 1–3.",
+    "Example: Cat I & II AIF: typically locked 5–8+ years",
+    "Remember: Ask: \"Can you leave this untouched for 5–7 years?\""
+   ]
+  },
+  {
+   "id": "compare-c18",
+   "q": "Costs",
+   "a": [
+    "MF: one SEBI-capped expense ratio in the NAV.",
+    "Example: PMS: fixed/profit share + brokerage, GST. AIF: management fee + carry",
+    "Remember: Always show costs in rupees, side by side."
+   ]
+  },
+  {
+   "id": "compare-c19",
+   "q": "Tax",
+   "a": [
+    "MF: on redemption. PMS: every trade, client's hands.",
+    "Example: AIF Cat I & II: pass-through for most income; Cat III: fund level",
+    "Remember: Tax changes with Budgets; confirm with a CA."
+   ]
+  },
+  {
+   "id": "compare-c20",
+   "q": "Review yardstick",
+   "a": [
+    "MF: XIRR vs benchmark over 3–5 years. PMS: own after-fee return.",
+    "Example: AIF Cat I & II: IRR and multiple over the fund's life",
+    "Remember: Use the right yardstick and time frame."
+   ]
+  },
+  {
+   "id": "compare-c21",
+   "q": "Who fits MF",
+   "a": [
+    "Everyone, from the first rupee; emergency and short-term goals in liquid/debt funds.",
+    "Example: Salary earner starting a SIP",
+    "Remember: The core of every portfolio."
+   ]
+  },
+  {
+   "id": "compare-c22",
+   "q": "Who fits PMS",
+   "a": [
+    "Surplus well above ₹50 lakh; wants own portfolio and full visibility.",
+    "Example: Investor with a solid MF core and tolerance for bigger swings",
+    "Remember: A satellite, never the whole portfolio."
+   ]
+  },
+  {
+   "id": "compare-c23",
+   "q": "Who fits AIF",
+   "a": [
+    "₹1 crore+ that can be locked for years; wants private markets or complex strategies.",
+    "Example: HNI with core and PMS in place",
+    "Remember: Only money the client won't need."
+   ]
+  },
+  {
+   "id": "compare-c24",
+   "q": "Red flag",
+   "a": [
+    "An \"AIF offer\" advertised on social media, or any promised fixed return.",
+    "Example: \"AIF with 18% fixed returns\"",
+    "Remember: AIFs can't be publicly advertised or promise returns."
+   ]
+  }
+ ],
+ "final": {
+  "id": "compare-final",
+  "title": "MF vs PMS vs AIF final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "compare-q1",
+    "sec": "L: Learn the Basics",
+    "q": "What is the SEBI minimum investment for a PMS?",
+    "o": [
+     "₹10 lakh",
+     "₹25 lakh",
+     "₹50 lakh",
+     "₹1 crore"
+    ],
+    "a": 2,
+    "why": "₹50 lakh. The minimum was raised to ₹50 lakh in 2020."
+   },
+   {
+    "id": "compare-q2",
+    "sec": "L: Learn the Basics",
+    "q": "What is the minimum investment for an AIF for most investors?",
+    "o": [
+     "₹25 lakh",
+     "₹50 lakh",
+     "₹1 crore",
+     "₹5 crore"
+    ],
+    "a": 2,
+    "why": "₹1 crore. ₹25 lakh applies only to the manager's employees and directors."
+   },
+   {
+    "id": "compare-q3",
+    "sec": "L: Learn the Basics",
+    "q": "How many investors can an AIF scheme have at most?",
+    "o": [
+     "50",
+     "200",
+     "1,000",
+     "No limit"
+    ],
+    "a": 2,
+    "why": "1,000. AIF schemes are capped at 1,000 investors."
+   },
+   {
+    "id": "compare-q4",
+    "sec": "L: Learn the Basics",
+    "q": "Which AIF category includes venture capital and angel funds?",
+    "o": [
+     "Category I",
+     "Category II",
+     "Category III",
+     "None"
+    ],
+    "a": 0,
+    "why": "Category I. Cat I covers early-stage and socially or economically desirable sectors."
+   },
+   {
+    "id": "compare-q5",
+    "sec": "L: Learn the Basics",
+    "q": "Which AIF category includes private equity and private credit funds?",
+    "o": [
+     "Category I",
+     "Category II",
+     "Category III",
+     "PMS"
+    ],
+    "a": 1,
+    "why": "Category II. Cat II covers private-market funds."
+   },
+   {
+    "id": "compare-q6",
+    "sec": "L: Learn the Basics",
+    "q": "Which AIF category may use leverage and run long-short strategies?",
+    "o": [
+     "Category I",
+     "Category II",
+     "Category III",
+     "All categories"
+    ],
+    "a": 2,
+    "why": "Category III. Cat III runs complex or trading strategies."
+   },
+   {
+    "id": "compare-q7",
+    "sec": "L: Learn the Basics",
+    "q": "What is the minimum tenure of a Category I or II AIF?",
+    "o": [
+     "1 year",
+     "3 years",
+     "5 years",
+     "10 years"
+    ],
+    "a": 1,
+    "why": "3 years. Both are closed-ended with at least 3 years."
+   },
+   {
+    "id": "compare-q8",
+    "sec": "L: Learn the Basics",
+    "q": "Where are the securities held in a PMS?",
+    "o": [
+     "In a pooled fund",
+     "In the client's own demat account",
+     "With the distributor",
+     "With AMFI"
+    ],
+    "a": 1,
+    "why": "In the client's own demat account. This is why every trade is taxed in the client's hands."
+   },
+   {
+    "id": "compare-q9",
+    "sec": "A: Act Right",
+    "q": "How can an AIF be marketed?",
+    "o": [
+     "TV and newspaper ads",
+     "Social media campaigns",
+     "Private placement only",
+     "Any channel"
+    ],
+    "a": 2,
+    "why": "Private placement only. Public invitation and mass marketing are not allowed."
+   },
+   {
+    "id": "compare-q10",
+    "sec": "A: Act Right",
+    "q": "Which NISM certification is needed to distribute Category III AIFs?",
+    "o": [
+     "V-A",
+     "XXI-A",
+     "XIX-A",
+     "XIX-B"
+    ],
+    "a": 3,
+    "why": "XIX-B. XIX-A is for Category I & II."
+   },
+   {
+    "id": "compare-q11",
+    "sec": "A: Act Right",
+    "q": "How is distributor commission paid on Category III AIFs?",
+    "o": [
+     "Fully upfront",
+     "Trail only",
+     "Half upfront",
+     "No commission allowed"
+    ],
+    "a": 1,
+    "why": "Trail only. No upfront fee for Cat III; Cat I & II may pay up to one-third upfront."
+   },
+   {
+    "id": "compare-q12",
+    "sec": "A: Act Right",
+    "q": "What is \"carry\" in an AIF?",
+    "o": [
+     "A tax",
+     "The manager's share of profits above a hurdle",
+     "An exit load",
+     "A SIP feature"
+    ],
+    "a": 1,
+    "why": "The manager's share of profits above a hurdle. It is paid in addition to the management fee."
+   },
+   {
+    "id": "compare-q13",
+    "sec": "R: Review & Rebalance",
+    "q": "What does the J-curve describe?",
+    "o": [
+     "Mutual fund NAV growth",
+     "Early low or negative returns in PE/VC funds before exits",
+     "Interest-rate movements",
+     "SIP returns"
+    ],
+    "a": 1,
+    "why": "Early low or negative returns in PE/VC funds before exits. Explain it before the client invests."
+   },
+   {
+    "id": "compare-q14",
+    "sec": "E: Evaluate the Client",
+    "q": "What should every client have before adding PMS or AIF?",
+    "o": [
+     "A Cat III AIF",
+     "A diversified MF core and emergency fund",
+     "A home loan",
+     "Direct equity only"
+    ],
+    "a": 1,
+    "why": "A diversified MF core and emergency fund. Each rung of the ladder sits on the one below."
+   },
+   {
+    "id": "compare-q15",
+    "sec": "R: Review & Rebalance",
+    "q": "What is the right yardstick for a Category II AIF?",
+    "o": [
+     "1-year NAV return",
+     "IRR and multiple of money over the fund's life",
+     "Daily NAV vs Nifty",
+     "Expense ratio"
+    ],
+    "a": 1,
+    "why": "IRR and multiple of money over the fund's life. Judge over the full life of the fund."
+   },
+   {
+    "id": "compare-q16",
+    "sec": "N: Navigate Behaviour",
+    "q": "Do PMS and AIFs always deliver higher returns than mutual funds?",
+    "o": [
+     "Yes, exclusivity guarantees it",
+     "No — some do and some don't; compare after-fee returns and risk over a full cycle",
+     "Yes, after fees",
+     "Only Category III does"
+    ],
+    "a": 1,
+    "why": "Some do and some don't; compare after-fee returns and risk over a full cycle."
+   },
+   {
+    "id": "compare-q17",
+    "sec": "A: Act Right",
+    "q": "Can a client usually exit a Category II AIF whenever they like?",
+    "o": [
+     "Yes, any business day",
+     "No — closed-ended; money returns as investments are exited",
+     "Yes, with no cost",
+     "Only after 1 year"
+    ],
+    "a": 1,
+    "why": "Cat I & II are closed-ended; money returns as investments are exited."
+   },
+   {
+    "id": "compare-q18",
+    "sec": "A: Act Right",
+    "q": "Category III AIFs are generally taxed:",
+    "o": [
+     "In the investor's hands on every trade",
+     "At fund level",
+     "Not at all",
+     "Only on exit, at slab rate"
+    ],
+    "a": 1,
+    "why": "Cat I & II have pass-through status for most income."
+   },
+   {
+    "id": "compare-q19",
+    "sec": "E: Evaluate the Client",
+    "q": "A client meets the ₹1 crore AIF minimum. Does that make them suitable?",
+    "o": [
+     "Yes, eligibility equals suitability",
+     "No — eligible is not suitable; check lock-in tolerance and the core portfolio",
+     "Yes, for Category III only",
+     "Only if they already hold a PMS"
+    ],
+    "a": 1,
+    "why": "Eligible is not the same as suitable; check lock-in tolerance and the core portfolio."
+   },
+   {
+    "id": "compare-q20",
+    "sec": "Compliance: Compliance",
+    "q": "A social media post offers an “AIF with fixed 18% returns”. What is it?",
+    "o": [
+     "A good opportunity",
+     "A red flag: AIFs cannot be publicly advertised or promise returns",
+     "A Category III feature",
+     "SEBI-approved marketing"
+    ],
+    "a": 1,
+    "why": "AIFs cannot be publicly advertised or promise returns."
+   },
+   {
+    "id": "compare-q21",
+    "sec": "Practice: Role-Play",
+    "q": "A client asks, “What's the difference between MF, PMS and AIF?” Explain in under two minutes.",
+    "o": [
+     "Only the minimum ticket matters",
+     "Minimum ticket (₹100s / ₹50 lakh / ₹1 crore), ownership (units vs own demat vs units), liquidity, costs and tax, in plain words",
+     "Only the tax treatment matters",
+     "They are identical except for the name"
+    ],
+    "a": 1,
+    "why": "Covers minimum ticket (₹100s / ₹50 L / ₹1 Cr), ownership (units vs own demat vs units), liquidity, costs and tax, in plain words."
+   },
+   {
+    "id": "compare-q22",
+    "sec": "Practice: Role-Play",
+    "q": "A ₹60 lakh investor with no mutual fund core wants a PMS “because it's better”. How do you respond?",
+    "o": [
+     "Agree — PMS is always better",
+     "Eligible is not suitable; build the MF core and emergency fund first; PMS only later as a slice",
+     "Invest everything in the PMS now",
+     "Skip the emergency fund"
+    ],
+    "a": 1,
+    "why": "Eligible is not suitable; build the MF core and emergency fund first; PMS only later as a slice."
+   },
+   {
+    "id": "compare-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A ₹5 crore client wants ₹2 crore in a private equity AIF but may need ₹50 lakh in two years for a house. What do you do?",
+    "o": [
+     "Invest the full ₹2 crore including house money",
+     "Explain the lock-in and drawdowns; keep the house money liquid; size the AIF only from money not needed for years",
+     "Promise an exit in two years",
+     "Use the house money for the AIF"
+    ],
+    "a": 1,
+    "why": "Explains lock-in and capital calls; keeps the house money liquid; sizes the AIF only from money not needed for years."
+   },
+   {
+    "id": "compare-q24",
+    "sec": "Practice: Role-Play",
+    "q": "A client's VC AIF shows a negative return after 18 months and they want out. How do you respond?",
+    "o": [
+     "Promise a recovery by next year",
+     "Explain the J-curve and closed-ended structure; review against the fund's plan; no promise of recovery",
+     "Arrange an immediate exit at full value",
+     "Blame the fund manager"
+    ],
+    "a": 1,
+    "why": "Explains the J-curve and closed-ended structure; reviews against the fund's plan; no promise of recovery."
+   },
+   {
+    "id": "compare-q25",
+    "sec": "Practice: Role-Play",
+    "q": "A client asks why they should keep mutual funds now that they are “wealthy enough” for PMS and AIFs.",
+    "o": [
+     "They shouldn't — drop all mutual funds",
+     "Liquidity, low cost, diversification and tax efficiency of the MF core; the ladder adds, it doesn't replace",
+     "Mutual funds are only for small investors",
+     "Move everything to a Category III AIF"
+    ],
+    "a": 1,
+    "why": "Liquidity, low cost, diversification and tax efficiency of the MF core; the ladder adds, it doesn't replace."
+   }
+  ]
+ },
+ "role_play": null
+}

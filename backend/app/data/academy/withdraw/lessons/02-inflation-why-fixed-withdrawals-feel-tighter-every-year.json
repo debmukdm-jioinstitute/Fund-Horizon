@@ -1,0 +1,68 @@
+{
+ "id": "withdraw-02",
+ "title": "Inflation: why fixed withdrawals feel tighter every year",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain inflation's effect on a withdrawal plan with the ₹50,000 example.",
+  "Say why a fixed amount forever fails."
+ ],
+ "body_md": "Expenses rise every year. At 6% inflation, ₹50,000 of monthly expenses today becomes about ₹90,000 in 10 years. A plan that withdraws a fixed amount forever will feel tighter every year. That is why withdrawal plans build in a yearly increase — reviewed each year, not set and forgotten.\n\n> **Investor takeaway:** At 6% inflation, costs nearly double in about 12 years.",
+ "key_terms": [
+  "Inflation"
+ ],
+ "example": "₹50,000 a month today → about ₹90,000 in 10 years at 6% inflation. A fixed ₹50,000 withdrawal buys less every year.",
+ "say": [
+  "Expenses rise every year.",
+  "A plan that withdraws a fixed amount forever will feel tighter every year."
+ ],
+ "never": [
+  "Inflation doesn't affect retirees.",
+  "Withdrawals should never rise."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q4",
+   "q": "At 6% inflation, ₹50,000 of monthly expenses becomes about… in 10 years.",
+   "o": [
+    "₹55,000",
+    "₹70,000",
+    "₹90,000",
+    "₹1.5 L"
+   ],
+   "a": 2,
+   "why": "₹90,000. Costs nearly double in about 12 years."
+  },
+  {
+   "id": "withdraw-n01",
+   "q": "At 6% inflation, ₹50,000 of monthly expenses becomes about… in 10 years:",
+   "o": [
+    "₹90,000",
+    "₹55,000",
+    "₹70,000",
+    "₹1.5 L"
+   ],
+   "a": 0,
+   "why": "₹90,000. Costs nearly double in about 12 years."
+  },
+  {
+   "id": "withdraw-n02",
+   "q": "Why must a withdrawal plan build in a yearly increase?",
+   "o": [
+    "Because returns rise",
+    "Because of tax",
+    "Because of exit loads",
+    "Because expenses rise every year"
+   ],
+   "a": 3,
+   "why": "Expenses rise every year. At 6% inflation, ₹50,000 of monthly expenses today becomes about ₹90,000 in 10 years."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c3",
+  "withdraw-c4"
+ ],
+ "words": 61
+}

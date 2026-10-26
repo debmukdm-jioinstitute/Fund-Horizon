@@ -1,0 +1,69 @@
+{
+ "id": "withdraw-01",
+ "title": "Withdrawal rate: how long the money may last",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Calculate a withdrawal rate and read the illustration table.",
+  "Explain why a small rate change makes a big difference."
+ ],
+ "body_md": "Building a corpus is half the job. Drawing it down so it lasts, through inflation and market falls, is the other half. Withdrawal rate = first year's withdrawal ÷ corpus. ₹4 L a year from ₹1 Cr is a 4% withdrawal rate. Illustration: how long ₹1 Cr may last (withdrawal rises 6% a year for inflation; portfolio earns an assumed 9% a year, steadily).\n\n| First-year withdrawal | Withdrawal rate | Approximate years it lasts |\n| --- | --- | --- |\n| ₹3 L | 3% | 50+ years |\n| ₹4 L | 4% | ≈ 41 years |\n| ₹5 L | 5% | ≈ 28 years |\n| ₹6 L | 6% | ≈ 21 years |\n| ₹7 L | 7% | ≈ 17 years |\n\nA small change in the withdrawal rate makes a big difference to how long the money lasts. Real markets are not steady, so real outcomes will differ.",
+ "key_terms": [
+  "Withdrawal rate",
+  "Corpus"
+ ],
+ "example": "₹4 L from ₹1 Cr = 4% → ≈ 41 years (illustrative, 9% assumed, 6% inflation). ₹6 L from ₹1 Cr = 6% → ≈ 21 years.",
+ "say": [
+  "Withdrawal rate = first year's withdrawal ÷ corpus.",
+  "A small rate change makes a big difference."
+ ],
+ "never": [
+  "The withdrawal rate is the return divided by the corpus.",
+  "Illustrations are guarantees."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q1",
+   "q": "How is the withdrawal rate calculated?",
+   "o": [
+    "Return ÷ corpus",
+    "First year’s withdrawal ÷ corpus",
+    "Expenses ÷ income",
+    "Corpus ÷ years"
+   ],
+   "a": 1,
+   "why": "First year’s withdrawal ÷ corpus. ₹4 L from ₹1 Cr is 4%."
+  },
+  {
+   "id": "withdraw-q2",
+   "q": "In the illustration, about how long does ₹1 Cr last at a 4% rate?",
+   "o": [
+    "10 years",
+    "21 years",
+    "41 years",
+    "Forever"
+   ],
+   "a": 2,
+   "why": "41 years. 9% return and 6% inflation assumed."
+  },
+  {
+   "id": "withdraw-q3",
+   "q": "And at a 6% rate?",
+   "o": [
+    "41 years",
+    "28 years",
+    "21 years",
+    "50+ years"
+   ],
+   "a": 2,
+   "why": "21 years. Going from 4% to 6% roughly halves it."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c1",
+  "withdraw-c2"
+ ],
+ "words": 128
+}

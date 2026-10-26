@@ -1,0 +1,70 @@
+{
+ "id": "withdraw-10",
+ "title": "Order of withdrawals, and big expenses separate",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "State the withdrawal order: other income, Bucket 1 SWP, planned refills.",
+  "Explain why big known costs get their own pot."
+ ],
+ "body_md": "Order of withdrawals (rule of thumb). Pension, rent, interest and other regular income first. Then the Bucket 1 SWP. Refill from debt or equity on a plan, never in a panic. Keep the emergency fund separate and untouched for routine spending. Keep big expenses separate: known future costs (a child's wedding, a car, home repairs) get their own pot, invested for their own date (Module 9). They should not come out of the monthly SWP plan.\n\n> **Investor takeaway:** Spend from safety, grow from equity, and refill on a plan.",
+ "key_terms": [
+  "Withdrawal order",
+  "Emergency fund",
+  "Separate pots"
+ ],
+ "example": "A child's wedding in 3 years: its own pot, invested for its own date — not paid from the monthly SWP.",
+ "say": [
+  "Pension, rent and interest first, then the Bucket 1 SWP.",
+  "Keep the emergency fund separate and untouched for routine spending."
+ ],
+ "never": [
+  "Use the emergency fund for routine monthly expenses.",
+  "Pay big known costs from the monthly SWP."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "withdraw-q13",
+   "q": "A big known cost (child’s wedding) should be…",
+   "o": [
+    "Paid from the monthly SWP",
+    "Planned as a separate pot",
+    "Ignored",
+    "Funded by a loan"
+   ],
+   "a": 1,
+   "why": "Planned as a separate pot. Invested for its own date."
+  },
+  {
+   "id": "withdraw-q20",
+   "q": "Should the emergency fund be used for routine monthly expenses?",
+   "o": [
+    "Yes, that is its purpose",
+    "No — keep it separate",
+    "Only in good years",
+    "Only for medical costs"
+   ],
+   "a": 1,
+   "why": "Keep it separate."
+  },
+  {
+   "id": "withdraw-n14",
+   "q": "What comes first in the withdrawal order?",
+   "o": [
+    "The Bucket 1 SWP",
+    "Equity redemptions",
+    "The emergency fund",
+    "Pension, rent, interest and other regular income"
+   ],
+   "a": 3,
+   "why": "Pension, rent, interest and other regular income first. Then the Bucket 1 SWP."
+  }
+ ],
+ "card_ids": [
+  "withdraw-c19",
+  "withdraw-c20"
+ ],
+ "words": 89
+}

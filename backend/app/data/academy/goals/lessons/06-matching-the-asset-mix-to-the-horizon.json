@@ -1,0 +1,70 @@
+{
+ "id": "goals-06",
+ "title": "Matching the asset mix to the horizon",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Read the horizon mix table and adjust it for risk profile and priority.",
+  "Say why must-have goals deserve a slightly more conservative mix."
+ ],
+ "body_md": "An illustrative starting point, to be adjusted for each client's risk profile and the goal's priority: under 1 year — 0% equity, 100% debt (liquid, overnight, money market funds). 1–3 years — 0–20% equity, 80–100% debt (short duration, banking & PSU, target maturity matched to the date; conservative hybrid). 3–5 years — 20–40% equity, 60–80% debt (balanced advantage / hybrid funds plus short-duration debt). 5–7 years — 40–60% equity, 40–60% debt (large/flexi-cap or index funds plus debt). 7+ years — 60–80% or more equity, 20–40% debt (diversified equity — index, flexi-cap, large & mid — plus some debt). Must-have goals deserve a slightly more conservative mix than nice-to-haves with the same horizon.\n\n| Years to goal | Equity | Debt | Typical fund choices |\n| --- | --- | --- | --- |\n| Under 1 year | 0% | 100% | Liquid, overnight, money market funds |\n| 1–3 years | 0–20% | 80–100% | Short duration, banking & PSU, target maturity matched to the date; conservative hybrid |\n| 3–5 years | 20–40% | 60–80% | Balanced advantage / hybrid funds plus short-duration debt |\n| 5–7 years | 40–60% | 40–60% | Large/flexi-cap or index funds plus debt |\n| 7+ years | 60–80% or more | 20–40% | Diversified equity (index, flexi-cap, large & mid) plus some debt |\n\n> **Investor takeaway:** The goal date picks the asset mix; the asset mix picks the funds, never the other way round.",
+ "key_terms": [
+  "Asset mix",
+  "Horizon",
+  "Target maturity fund"
+ ],
+ "example": "House down payment in 5 years: about 40–60% equity at most, the rest in debt — not a small-cap fund for “better returns”.",
+ "say": [
+  "The goal date picks the asset mix; the mix picks the funds.",
+  "Must-have goals get a slightly more conservative mix."
+ ],
+ "never": [
+  "Pick funds first, then work out the mix.",
+  "Short-term goals should be in equity for better returns."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q3",
+   "q": "Money needed in under a year should usually be in:",
+   "o": [
+    "Small-cap funds",
+    "Liquid or overnight funds",
+    "Sectoral funds",
+    "Long-duration gilt funds"
+   ],
+   "a": 1,
+   "why": "Liquid or overnight funds. No room for a market fall."
+  },
+  {
+   "id": "goals-q13",
+   "q": "For a goal 7+ years away, the illustrative equity share is:",
+   "o": [
+    "0%",
+    "10–20%",
+    "60–80% or more",
+    "Exactly 50%"
+   ],
+   "a": 2,
+   "why": "60–80% or more. Adjusted to the client's risk profile."
+  },
+  {
+   "id": "goals-n08",
+   "q": "For a goal 7+ years away, the illustrative equity share is:",
+   "o": [
+    "0%",
+    "60–80% or more",
+    "10–20%",
+    "Exactly 50%"
+   ],
+   "a": 1,
+   "why": "7+ years: 60–80% or more equity, 20–40% debt. Adjusted to the client's risk profile."
+  }
+ ],
+ "card_ids": [
+  "goals-c11",
+  "goals-c12"
+ ],
+ "words": 205
+}

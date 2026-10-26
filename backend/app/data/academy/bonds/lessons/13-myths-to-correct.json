@@ -1,0 +1,71 @@
+{
+ "id": "bonds-13",
+ "title": "Myths to correct",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Correct seven debt myths with the reality behind each.",
+  "Explain why “higher yield means better fund” is the most expensive myth."
+ ],
+ "body_md": "“Debt funds are like FDs.” Reality: debt fund NAVs move daily and returns are not fixed or guaranteed. “Debt is risk-free.” Reality: debt has interest-rate, credit and liquidity risk; only the mix differs from equity. “Higher yield means a better fund.” Reality: higher yield usually means lower credit quality or longer duration — ask why it is higher. “A AAA rating means it can't fail.” Reality: ratings are opinions that can change, sometimes quickly — diversify across issuers. “Government bonds can't lose money.” Reality: no default risk, but they can fall in price when rates rise, if sold before maturity. “My debt fund fell, so I should exit.” Reality: a rate-driven dip usually recovers as the fund earns its yield; a credit event needs a different decision — find out which it is. “FD interest is all real return.” Reality: after tax and inflation, an FD's real return can be close to zero.\n\n| Myth | Reality |\n| --- | --- |\n| \"Debt funds are like FDs.\" | Debt fund NAVs move daily and returns are not fixed or guaranteed. |\n| \"Debt is risk-free.\" | Debt has interest-rate, credit and liquidity risk; only the mix differs from equity. |\n| \"Higher yield means a better fund.\" | Higher yield usually means lower credit quality or longer duration. Ask why it is higher. |\n| \"A AAA rating means it can't fail.\" | Ratings are opinions that can change, sometimes quickly. Diversify across issuers. |\n| \"Government bonds can't lose money.\" | They have no default risk but can fall in price when rates rise, if sold before maturity. |\n| \"My debt fund fell, so I should exit.\" | A rate-driven dip usually recovers as the fund earns its yield; a credit event needs a different decision. Find out which it is. |\n| \"FD interest is all real return.\" | After tax and inflation, an FD's real return can be close to zero. |",
+ "key_terms": [
+  "Myth",
+  "Reality",
+  "AAA rating",
+  "Real return"
+ ],
+ "example": "FD at 7% with 6% inflation is about 1% real, before tax — “safe” money can still lose purchasing power.",
+ "say": [
+  "Higher yield usually means lower credit quality or longer duration. Ask why.",
+  "A rate-driven dip usually recovers as the fund earns its yield; a credit event is different."
+ ],
+ "never": [
+  "Debt funds are like FDs.",
+  "A AAA rating means a bond can't fail."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-n21",
+   "q": "A client says “higher yield means a better fund”. What is the reality?",
+   "o": [
+    "Higher yield usually means lower credit quality or longer duration",
+    "Higher yield means lower risk",
+    "Yield and risk are unrelated",
+    "Only AAA funds show high yield"
+   ],
+   "a": 0,
+   "why": "Higher yield usually means lower credit quality or longer duration. Ask why it is higher."
+  },
+  {
+   "id": "bonds-n22",
+   "q": "A client's debt fund fell. What should you establish first?",
+   "o": [
+    "The fund's launch date",
+    "The AMC's head office",
+    "Last year's top fund",
+    "Whether it is a rate-driven dip or a credit event"
+   ],
+   "a": 3,
+   "why": "A rate-driven dip usually recovers as the fund earns its yield; a credit event needs a different decision. Find out which it is."
+  },
+  {
+   "id": "bonds-n23",
+   "q": "“Government bonds can't lose money” is wrong because:",
+   "o": [
+    "They can default",
+    "They pay no interest",
+    "They can fall in price when rates rise, if sold before maturity",
+    "They are unlisted"
+   ],
+   "a": 2,
+   "why": "They have no default risk but can fall in price when rates rise, if sold before maturity."
+  }
+ ],
+ "card_ids": [
+  "bonds-c25",
+  "bonds-c26"
+ ],
+ "words": 299
+}

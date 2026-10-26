@@ -1,0 +1,735 @@
+{
+ "id": "idcw",
+ "title": "IDCW",
+ "code": "Module 8",
+ "blurb": "IDCW explained: what it pays, how it is taxed, and when it suits — and when an SWP or the growth option serves the client better.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 74 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 1"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)",
+  "SEBI circular renaming dividend options as IDCW (effective 1 April 2021)"
+ ],
+ "lessons": [
+  {
+   "id": "idcw-01",
+   "title": "What IDCW really is: your own money, paid out",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "idcw-02",
+   "title": "The three IDCW options: payout, reinvestment, transfer",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "idcw-03",
+   "title": "Key dates, and the record-date trap",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "idcw-04",
+   "title": "What an “income” client really needs",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "E"
+  },
+  {
+   "id": "idcw-05",
+   "title": "IDCW vs SWP vs growth",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "idcw-06",
+   "title": "Why SWP is usually more tax-efficient, and who fits which option",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "idcw-07",
+   "title": "Tax and TDS on IDCW",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "idcw-08",
+   "title": "Choosing and changing the option",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "idcw-09",
+   "title": "The conversation in four steps",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "idcw-10",
+   "title": "Capital erosion: the hidden risk of any payout",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "idcw-11",
+   "title": "Yearly review and rules of thumb for income portfolios",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "idcw-12",
+   "title": "Myths to correct",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "idcw-13",
+   "title": "Mental accounting: why IDCW feels good",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "idcw-14",
+   "title": "Niche topics people miss",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "idcw-15",
+   "title": "Role-play lab: six IDCW conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "idcw-16",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "idcw-c1",
+   "q": "IDCW",
+   "a": [
+    "Income Distribution cum Capital Withdrawal. Replaced the name \"dividend\" from 1 April 2021 (SEBI)."
+   ]
+  },
+  {
+   "id": "idcw-c2",
+   "q": "The one idea",
+   "a": [
+    "IDCW doesn't create money; it moves money from the fund to your bank."
+   ]
+  },
+  {
+   "id": "idcw-c3",
+   "q": "What happens to the NAV",
+   "a": [
+    "It falls by exactly the payout. NAV ₹20, IDCW ₹1 → NAV ₹19; total wealth unchanged before tax."
+   ]
+  },
+  {
+   "id": "idcw-c4",
+   "q": "Where IDCW comes from",
+   "a": [
+    "The scheme's distributable surplus, which can include part of investors' own capital."
+   ]
+  },
+  {
+   "id": "idcw-c5",
+   "q": "Is IDCW guaranteed?",
+   "a": [
+    "No. Amount and frequency are decided by the trustees and can be cut or skipped."
+   ]
+  },
+  {
+   "id": "idcw-c6",
+   "q": "IDCW payout",
+   "a": [
+    "Payout credited to the bank account."
+   ]
+  },
+  {
+   "id": "idcw-c7",
+   "q": "IDCW reinvestment",
+   "a": [
+    "Payout buys more units of the same scheme; still taxed as if paid out."
+   ]
+  },
+  {
+   "id": "idcw-c8",
+   "q": "IDCW transfer (sweep)",
+   "a": [
+    "Payout invested in another scheme of the same AMC; taxed as a payout."
+   ]
+  },
+  {
+   "id": "idcw-c9",
+   "q": "Record date",
+   "a": [
+    "Investors holding units on this date receive the IDCW."
+   ]
+  },
+  {
+   "id": "idcw-c10",
+   "q": "Ex-IDCW NAV",
+   "a": [
+    "From this date the NAV is reduced by the payout amount."
+   ]
+  },
+  {
+   "id": "idcw-c11",
+   "q": "IDCW rate",
+   "a": [
+    "Declared per unit (e.g. ₹0.50 per unit), not as a % of your investment."
+   ]
+  },
+  {
+   "id": "idcw-c12",
+   "q": "Tax since April 2020",
+   "a": [
+    "IDCW is taxed in the investor's hands at their slab rate."
+   ]
+  },
+  {
+   "id": "idcw-c13",
+   "q": "TDS on IDCW (residents)",
+   "a": [
+    "10% when IDCW from one AMC exceeds ₹10,000 in a financial year (₹5,000 until March 2025)."
+   ]
+  },
+  {
+   "id": "idcw-c14",
+   "q": "TDS is not final",
+   "a": [
+    "IDCW must be reported in the tax return; higher slabs may owe more, others can claim a refund."
+   ]
+  },
+  {
+   "id": "idcw-c15",
+   "q": "SWP vs IDCW tax",
+   "a": [
+    "SWP taxes only the gain in each withdrawal; IDCW taxes the whole payout."
+   ]
+  },
+  {
+   "id": "idcw-c16",
+   "q": "Capital erosion",
+   "a": [
+    "If payouts exceed what the fund earns, capital shrinks, for IDCW and SWP alike."
+   ]
+  },
+  {
+   "id": "idcw-c17",
+   "q": "Growth option",
+   "a": [
+    "Profits stay invested; no payouts.",
+    "Example: Salaried investor building wealth",
+    "Remember: Taxed only when redeemed."
+   ]
+  },
+  {
+   "id": "idcw-c18",
+   "q": "SWP from growth",
+   "a": [
+    "Investor chooses a fixed amount and date.",
+    "Example: Retiree takes ₹25,000 a month",
+    "Remember: Predictable; taxes only the gain."
+   ]
+  },
+  {
+   "id": "idcw-c19",
+   "q": "IDCW payout",
+   "a": [
+    "Trustees decide amount and timing.",
+    "Example: Monthly IDCW option",
+    "Remember: Not guaranteed; whole payout taxed."
+   ]
+  },
+  {
+   "id": "idcw-c20",
+   "q": "Who suits IDCW?",
+   "a": [
+    "Rarely the best choice.",
+    "Example: Low or nil tax bracket, accepts irregular payouts",
+    "Remember: Explain first; record the reason."
+   ]
+  },
+  {
+   "id": "idcw-c21",
+   "q": "IDCW reinvestment client",
+   "a": [
+    "Gets the same value as growth before tax.",
+    "Example: In reinvestment for 8 years",
+    "Remember: Usually better in growth: less tax."
+   ]
+  },
+  {
+   "id": "idcw-c22",
+   "q": "Switching IDCW → growth",
+   "a": [
+    "Treated as a redemption and fresh purchase.",
+    "Example: Check tax, exit load, ELSS lock-in",
+    "Remember: Some AMCs allow changing the option for future units."
+   ]
+  },
+  {
+   "id": "idcw-c23",
+   "q": "Buying before the record date",
+   "a": [
+    "NAV drops by the payout and tax is due.",
+    "Example: ₹1 L buys 5,000 units; IDCW ₹1 → ₹95,000 + ₹5,000 taxed",
+    "Remember: Leaves you worse off after tax."
+   ]
+  },
+  {
+   "id": "idcw-c24",
+   "q": "Tax illustration",
+   "a": [
+    "Retiree takes ₹3 lakh in a year.",
+    "Example: IDCW: ₹3 L taxable. SWP: ~₹60,000 taxable gain (if 20% is gain)",
+    "Remember: Illustrative; confirm with a CA."
+   ]
+  },
+  {
+   "id": "idcw-c25",
+   "q": "Erosion illustration",
+   "a": [
+    "₹10 L paying out 8% a year.",
+    "Example: Fund +10% → ₹10.2 L; +6% → ₹9.8 L; −5% → ₹8.7 L",
+    "Remember: Review payouts vs returns yearly."
+   ]
+  },
+  {
+   "id": "idcw-c26",
+   "q": "Income buffer",
+   "a": [
+    "Keep planned withdrawals safe from falls.",
+    "Example: 1–2 years in liquid or short-duration debt",
+    "Remember: Avoids selling equity in a fall."
+   ]
+  },
+  {
+   "id": "idcw-c27",
+   "q": "Myth: extra income",
+   "a": [
+    "It's your own money paid back.",
+    "Example: NAV falls by the payout",
+    "Remember: Not a bonus."
+   ]
+  },
+  {
+   "id": "idcw-c28",
+   "q": "Myth: tax-free",
+   "a": [
+    "That was the pre-2020 rule.",
+    "Example: Taxed at slab now",
+    "Remember: Many clients remember the old rule."
+   ]
+  },
+  {
+   "id": "idcw-c29",
+   "q": "Myth: better fund",
+   "a": [
+    "Payouts say nothing about performance.",
+    "Example: Same portfolio as growth",
+    "Remember: Judge total return after tax."
+   ]
+  },
+  {
+   "id": "idcw-c30",
+   "q": "Mental accounting",
+   "a": [
+    "A payout feels like income; an SWP feels like touching capital.",
+    "Example: Both take money from the same place",
+    "Remember: SWP gives control and usually less tax."
+   ]
+  },
+  {
+   "id": "idcw-c31",
+   "q": "Equalisation reserve",
+   "a": [
+    "Part of new investors' purchase price can form distributable surplus.",
+    "Example: New investor's money returned as \"income\"",
+    "Remember: Why it's called capital withdrawal."
+   ]
+  },
+  {
+   "id": "idcw-c32",
+   "q": "ELSS with IDCW reinvestment",
+   "a": [
+    "Each reinvested unit has its own 3-year lock-in.",
+    "Example: Units unlock on different dates",
+    "Remember: Harder to track; growth is simpler."
+   ]
+  }
+ ],
+ "final": {
+  "id": "idcw-final",
+  "title": "IDCW final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "idcw-q1",
+    "sec": "L: Learn the Basics",
+    "q": "IDCW stands for:",
+    "o": [
+     "Income Distribution cum Capital Withdrawal",
+     "Interest and Dividend Credit Window",
+     "Investor Dividend Cash Withdrawal",
+     "Income Deposit cum Capital Withdrawal"
+    ],
+    "a": 0,
+    "why": "Income Distribution cum Capital Withdrawal. The name says part may be capital."
+   },
+   {
+    "id": "idcw-q2",
+    "sec": "L: Learn the Basics",
+    "q": "The IDCW name replaced \"dividend\" from:",
+    "o": [
+     "April 2018",
+     "April 2021",
+     "April 2023",
+     "April 2025"
+    ],
+    "a": 1,
+    "why": "April 2021. SEBI renaming."
+   },
+   {
+    "id": "idcw-q3",
+    "sec": "L: Learn the Basics",
+    "q": "After an IDCW of ₹1 per unit, a NAV of ₹20 becomes about:",
+    "o": [
+     "₹21",
+     "₹20",
+     "₹19",
+     "₹10"
+    ],
+    "a": 2,
+    "why": "₹19. NAV falls by the payout."
+   },
+   {
+    "id": "idcw-q4",
+    "sec": "A: Act Right",
+    "q": "Since April 2020, IDCW is taxed:",
+    "o": [
+     "Not at all",
+     "At the investor's slab rate",
+     "At a flat 1%",
+     "Only at the fund level"
+    ],
+    "a": 1,
+    "why": "At the investor's slab rate. In the investor's hands."
+   },
+   {
+    "id": "idcw-q5",
+    "sec": "A: Act Right",
+    "q": "For residents, TDS on IDCW applies above what yearly amount per AMC?",
+    "o": [
+     "₹1,000",
+     "₹5,000",
+     "₹10,000",
+     "₹50,000"
+    ],
+    "a": 2,
+    "why": "₹10,000. From April 2025; earlier ₹5,000."
+   },
+   {
+    "id": "idcw-q6",
+    "sec": "L: Learn the Basics",
+    "q": "IDCW reinvestment is:",
+    "o": [
+     "Tax-free",
+     "Taxed like a payout",
+     "The same as an SWP",
+     "Only for ELSS"
+    ],
+    "a": 1,
+    "why": "Taxed like a payout. Taxed as if paid out."
+   },
+   {
+    "id": "idcw-q7",
+    "sec": "E: Evaluate the Client",
+    "q": "Which option lets the investor choose a fixed monthly amount?",
+    "o": [
+     "IDCW payout",
+     "IDCW reinvestment",
+     "SWP from growth",
+     "IDCW transfer"
+    ],
+    "a": 2,
+    "why": "SWP from growth. The investor sets amount and date."
+   },
+   {
+    "id": "idcw-q8",
+    "sec": "E: Evaluate the Client",
+    "q": "In an SWP, what is taxed?",
+    "o": [
+     "The whole withdrawal",
+     "Only the gain portion",
+     "Nothing",
+     "Only the capital"
+    ],
+    "a": 1,
+    "why": "Only the gain portion. Each withdrawal is part capital, part gain."
+   },
+   {
+    "id": "idcw-q9",
+    "sec": "L: Learn the Basics",
+    "q": "The record date is:",
+    "o": [
+     "When the NAV is declared",
+     "The date that decides who receives the IDCW",
+     "The fund's launch date",
+     "The exit-load date"
+    ],
+    "a": 1,
+    "why": "The date that decides who receives the IDCW. Holders on that date are eligible."
+   },
+   {
+    "id": "idcw-q10",
+    "sec": "R: Review & Rebalance",
+    "q": "If payouts exceed what the fund earns, capital:",
+    "o": [
+     "Grows",
+     "Stays fixed",
+     "Erodes",
+     "Doubles"
+    ],
+    "a": 2,
+    "why": "Erodes. Applies to IDCW and SWP."
+   },
+   {
+    "id": "idcw-q11",
+    "sec": "L: Learn the Basics",
+    "q": "The IDCW rate is declared:",
+    "o": [
+     "As % of your investment",
+     "Per unit",
+     "As a fixed monthly amount",
+     "By SEBI"
+    ],
+    "a": 1,
+    "why": "Per unit. For example ₹0.50 per unit."
+   },
+   {
+    "id": "idcw-q12",
+    "sec": "E: Evaluate the Client",
+    "q": "Which client is usually best served by an SWP?",
+    "o": [
+     "A 25-year-old building wealth",
+     "A retiree needing fixed monthly income",
+     "A day trader",
+     "An NFO investor"
+    ],
+    "a": 1,
+    "why": "A retiree needing fixed monthly income. Control and tax efficiency."
+   },
+   {
+    "id": "idcw-q13",
+    "sec": "L: Learn the Basics",
+    "q": "Buying just before the record date:",
+    "o": [
+     "Earns a free payout",
+     "Leaves the investor worse off after tax",
+     "Avoids TDS",
+     "Doubles units"
+    ],
+    "a": 1,
+    "why": "Leaves the investor worse off after tax. NAV falls; tax is due."
+   },
+   {
+    "id": "idcw-q14",
+    "sec": "L: Learn the Basics",
+    "q": "IDCW transfer (sweep) sends the payout to:",
+    "o": [
+     "The bank",
+     "The same scheme",
+     "Another scheme of the same AMC",
+     "A PMS"
+    ],
+    "a": 2,
+    "why": "Another scheme of the same AMC. Taxed as a payout."
+   },
+   {
+    "id": "idcw-q15",
+    "sec": "A: Act Right",
+    "q": "TDS deducted on IDCW is:",
+    "o": [
+     "The final tax",
+     "Adjusted in the tax return",
+     "Refunded automatically to everyone",
+     "Paid by the AMC"
+    ],
+    "a": 1,
+    "why": "Adjusted in the tax return. Report IDCW in the return."
+   },
+   {
+    "id": "idcw-q16",
+    "sec": "L: Learn the Basics",
+    "q": "Growth and IDCW options of the same plan differ in:",
+    "o": [
+     "The portfolio they hold",
+     "The fund manager",
+     "Only how profits are treated",
+     "The AMC that runs them"
+    ],
+    "a": 2,
+    "why": "Only the treatment of profits differs."
+   },
+   {
+    "id": "idcw-q17",
+    "sec": "R: Review & Rebalance",
+    "q": "Can a monthly IDCW amount be counted on every month?",
+    "o": [
+     "Yes, the AMC guarantees it",
+     "No — amount and frequency are decided by the trustees and can be cut or skipped",
+     "Yes, if the fund is a debt fund",
+     "Only for the first year"
+    ],
+    "a": 1,
+    "why": "Amount and frequency aren't guaranteed."
+   },
+   {
+    "id": "idcw-q18",
+    "sec": "L: Learn the Basics",
+    "q": "An investor buys just before the record date. What happens after tax?",
+    "o": [
+     "They earn a free payout",
+     "The NAV falls by the payout and tax is due, leaving them worse off",
+     "They avoid TDS",
+     "Their units double"
+    ],
+    "a": 1,
+    "why": "NAV falls by the payout, and tax is due."
+   },
+   {
+    "id": "idcw-q19",
+    "sec": "A: Act Right",
+    "q": "What happens to TDS deducted on IDCW when the client files their return?",
+    "o": [
+     "Nothing — it is the final tax",
+     "It is adjusted; IDCW must still be reported as income",
+     "It is refunded automatically to everyone",
+     "The AMC pays the balance"
+    ],
+    "a": 1,
+    "why": "IDCW must be reported; TDS is adjusted in the return."
+   },
+   {
+    "id": "idcw-q20",
+    "sec": "Niche: Niche Topics",
+    "q": "Each IDCW reinvestment in an ELSS is:",
+    "o": [
+     "Exempt from lock-in",
+     "A fresh purchase with its own 3-year lock-in",
+     "Locked for 1 year",
+     "Redeemable immediately"
+    ],
+    "a": 1,
+    "why": "Each reinvestment is a fresh purchase."
+   },
+   {
+    "id": "idcw-q21",
+    "sec": "Practice: Role-Play",
+    "q": "A client says, “I want the dividend option; it’s extra income.” How do you respond?",
+    "o": [
+     "Agree — IDCW is a bonus on top of returns",
+     "Explain IDCW with the NAV example: own money paid back, NAV falls by the payout, taxed at slab; compare SWP or growth",
+     "Say IDCW is tax-free",
+     "Recommend buying before the next record date"
+    ],
+    "a": 1,
+    "why": "Explains IDCW with the NAV example; own money paid back; taxed at slab; compares SWP or growth."
+   },
+   {
+    "id": "idcw-q22",
+    "sec": "Practice: Role-Play",
+    "q": "A retiree wants ₹25,000 a month from ₹50 lakh. IDCW or SWP?",
+    "o": [
+     "IDCW payout, because it feels like income",
+     "SWP from growth generally: compare control, predictability and tax; check sustainability; tax via CA",
+     "IDCW reinvestment, for monthly cash",
+     "Whichever paid most last month"
+    ],
+    "a": 1,
+    "why": "Compares control, predictability and tax; recommends SWP from growth generally; checks sustainability; tax via CA."
+   },
+   {
+    "id": "idcw-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A client’s monthly IDCW was cut. “Is the fund in trouble?” How do you respond?",
+    "o": [
+     "Yes — a cut always means trouble",
+     "Payouts aren’t guaranteed and depend on surplus; review the fund on total return, not payouts",
+     "Promise the payout will return next month",
+     "Advise switching immediately"
+    ],
+    "a": 1,
+    "why": "Explains payouts aren't guaranteed and depend on surplus; reviews fund on total return, not payouts."
+   },
+   {
+    "id": "idcw-q24",
+    "sec": "Practice: Role-Play",
+    "q": "A client has been in IDCW reinvestment for 8 years. What do you discuss?",
+    "o": [
+     "Nothing — reinvestment equals growth in every way",
+     "Same value as growth before tax but yearly tax on every payout; discuss switching to growth, checking tax, exit load and lock-in",
+     "That reinvestment is tax-free",
+     "That switching has no costs"
+    ],
+    "a": 1,
+    "why": "Same value as growth but yearly tax; discusses switching to growth with tax, exit load and lock-in checks."
+   },
+   {
+    "id": "idcw-q25",
+    "sec": "Practice: Role-Play",
+    "q": "“The fund declares IDCW next week. Should I buy now?” What do you say?",
+    "o": [
+     "Yes — you’ll earn the payout free",
+     "No: explain the record date and NAV drop; tax is due on the payout; timing the purchase gains nothing",
+     "Yes, but only for ELSS",
+     "Only if the payout is large"
+    ],
+    "a": 1,
+    "why": "Explains record date and NAV drop; tax on payout; no gain from timing the purchase."
+   }
+  ]
+ },
+ "role_play": null
+}

@@ -1,0 +1,73 @@
+{
+ "id": "bonds-05",
+ "title": "SEBI debt categories by borrower, plus target maturity funds",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Explain gilt, banking & PSU, corporate bond, credit risk and floater categories by their minimum allocations.",
+  "Say what a target maturity fund promises — and what it does not."
+ ],
+ "body_md": "Gilt funds hold at least 80% in government securities: no credit risk, but possibly high rate risk. Gilt with 10-year constant duration holds at least 80% in G-secs at about 10 years' Macaulay duration: pure long-rate exposure. Banking & PSU funds hold at least 80% in debt of banks, PSUs and public financial institutions. Corporate bond funds hold at least 80% in AA+ and above corporate bonds. Credit risk funds hold at least 65% in bonds rated AA and below: higher yield for higher default risk. Floater funds hold at least 65% in floating-rate instruments: lower rate risk. Target maturity funds/ETFs are passive funds holding bonds maturing around one date; held to maturity, the return is close to the YTM at purchase, after costs, though not guaranteed. Hybrid funds (conservative hybrid, arbitrage, equity savings) are not pure debt funds; explain the equity part separately.\n\n| Category | What SEBI requires | Key point |\n| --- | --- | --- |\n| Gilt | At least 80% in government securities | No credit risk; can have high rate risk |\n| Gilt with 10-year constant duration | At least 80% in G-secs, portfolio Macaulay duration about 10 years | Pure long-rate exposure |\n| Banking & PSU | At least 80% in debt of banks, PSUs, public financial institutions | Generally high quality |\n| Corporate bond | At least 80% in AA+ and above rated corporate bonds | Higher-quality corporate credit |\n| Credit risk | At least 65% in bonds rated AA and below | Higher yield for higher default risk |\n| Floater | At least 65% in floating-rate instruments | Lower rate risk |\n\n> **Investor takeaway:** Don't choose a debt fund by last year's return. Choose by duration first, credit quality second, cost third.",
+ "key_terms": [
+  "Gilt",
+  "Banking & PSU",
+  "Corporate bond",
+  "Credit risk",
+  "Floater",
+  "Target maturity fund"
+ ],
+ "example": "Bharat Bond ETFs are target maturity funds: held to maturity, the return is close to the starting YTM after costs, though not guaranteed.",
+ "say": [
+  "Gilt means no credit risk, but rate risk remains.",
+  "A credit risk fund's higher yield is payment for higher default risk."
+ ],
+ "never": [
+  "Credit risk funds are the safest debt funds.",
+  "Target maturity returns are guaranteed if held to maturity."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q4",
+   "q": "Gilt funds must hold at least 80% in:",
+   "o": [
+    "AAA corporate bonds",
+    "Government securities",
+    "Bank FDs",
+    "Equities"
+   ],
+   "a": 1,
+   "why": "Government securities. No credit risk, but rate risk remains."
+  },
+  {
+   "id": "bonds-q5",
+   "q": "Credit risk funds hold at least 65% in bonds rated:",
+   "o": [
+    "AAA only",
+    "AA+ and above",
+    "AA and below",
+    "Unrated only"
+   ],
+   "a": 2,
+   "why": "AA and below. Higher yield for higher default risk."
+  },
+  {
+   "id": "bonds-q20",
+   "q": "Held to maturity, a target maturity fund's return is usually:",
+   "o": [
+    "Guaranteed at the starting YTM",
+    "Close to its YTM at purchase, after costs",
+    "Equal to the equity market return",
+    "Fixed by SEBI"
+   ],
+   "a": 1,
+   "why": "Not guaranteed; early exit changes the outcome."
+  }
+ ],
+ "card_ids": [
+  "bonds-c9",
+  "bonds-c10"
+ ],
+ "words": 263
+}

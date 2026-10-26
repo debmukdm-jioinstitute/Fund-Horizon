@@ -1,0 +1,77 @@
+{
+ "id": "terms-10",
+ "title": "Returns done right: absolute, CAGR, XIRR, trailing, rolling",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "R",
+ "objectives": [
+  "Convert an absolute return into CAGR for a lump sum and XIRR for a SIP.",
+  "Explain why point-to-point and trailing returns can flatter a fund."
+ ],
+ "body_md": "Absolute return is total gain ignoring time: ₹1 lakh → ₹2 lakh is 100% absolute. CAGR (Compound Annual Growth Rate) is the steady yearly rate for a single lump sum: ₹1 lakh → ₹2 lakh in 5 years is about 14.9% a year, not 20%. XIRR is the annualised return when money goes in or out on different dates — the right measure for SIPs. Point-to-point return depends on the two dates chosen; trailing return is measured up to today over 1, 3 or 5 years; rolling returns average many overlapping periods and show consistency.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Absolute return | Total gain as a percentage, ignoring time | ₹1 lakh → ₹2 lakh = 100% absolute return |\n| CAGR | Compound Annual Growth Rate: the steady yearly rate that turns the start value into the end value. Right for a single lump sum | ₹1 lakh → ₹2 lakh in 5 years ≈ 14.9% CAGR, not 20% a year |\n| XIRR | The annualised return when money goes in or out on different dates. Right for SIPs | A 3-year SIP shows 40% absolute, but XIRR may be about 22% |\n| Point-to-point return | Return between two chosen dates; can look very good or very bad depending on the dates | Return from a market low looks flattering |\n| Trailing return | Return up to today over 1, 3, 5 years | \"5-year return as of 30 Sep\" |\n| Rolling returns | Average of many overlapping periods (e.g. every 3-year window over 10 years); shows consistency | Fund beat benchmark in 80% of 3-year windows |\n\n> **Talk-track:** “Your statement shows a big absolute number. Let's turn it into XIRR so you can compare it fairly with a fixed deposit or the index.”",
+ "key_terms": [
+  "Absolute return",
+  "CAGR",
+  "XIRR",
+  "Rolling returns"
+ ],
+ "example": "A 3-year SIP shows 40% absolute, but its XIRR may be about 22% — quote the annualised figure, with the period stated.",
+ "say": [
+  "100% in 5 years is not 20% a year; it is about 14.9% CAGR.",
+  "For SIPs use XIRR; for lump sums use CAGR."
+ ],
+ "never": [
+  "A 100% return over 5 years means 20% a year.",
+  "A SIP's absolute return is the right yearly figure."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Turn the big number into XIRR",
+   "text": "Your statement shows a big absolute number. Let's turn it into XIRR so you can compare it fairly with a fixed deposit or the index."
+  }
+ ],
+ "check": [
+  {
+   "id": "terms-q3",
+   "q": "Which return measure suits a SIP?",
+   "o": [
+    "Absolute",
+    "CAGR",
+    "XIRR",
+    "Point-to-point"
+   ],
+   "a": 2,
+   "why": "XIRR. XIRR handles money invested on different dates."
+  },
+  {
+   "id": "terms-q4",
+   "q": "₹1 lakh grows to ₹2 lakh in 5 years. The CAGR is about:",
+   "o": [
+    "20%",
+    "14.9%",
+    "10%",
+    "100%"
+   ],
+   "a": 1,
+   "why": "14.9%. 2^(1/5) − 1 ≈ 14.9%."
+  },
+  {
+   "id": "terms-n16",
+   "q": "What does “XIRR” mean in plain language?",
+   "o": [
+    "Total gain as a percentage, ignoring time",
+    "The annualised return when money goes in or out on different dates. Right for SIPs",
+    "Compound Annual Growth Rate: the steady yearly rate that turns the start value into the end value. Right for a single lump sum",
+    "Return between two chosen dates; can look very good or very bad depending on the dates"
+   ],
+   "a": 1,
+   "why": "XIRR: The annualised return when money goes in or out on different dates. Right for SIPs Example: A 3-year SIP shows 40% absolute, but XIRR may be about 22%"
+  }
+ ],
+ "card_ids": [
+  "terms-c19",
+  "terms-c20"
+ ],
+ "words": 276
+}

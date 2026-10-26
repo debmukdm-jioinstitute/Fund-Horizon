@@ -1,0 +1,69 @@
+{
+ "id": "overlap-12",
+ "title": "Scheme changes to watch: mergers and category changes",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Explain the SEBI 3-year window and what a merger notice means for a client.",
+  "Review portfolio, costs, risk and the exit option on every notice."
+ ],
+ "body_md": "Scheme changes to watch: SEBI's February 2026 categorisation rules give existing sectoral and thematic schemes three years to bring overlap within limits, and schemes that still breach must be merged. Clients may therefore receive notices of scheme mergers or changes to a fund's objective or benchmark. Review each notice: a merger can change the portfolio, costs and risk level, and investors are usually given an option to exit.\n\n> **Investor takeaway:** A merger notice is a review trigger, not junk mail.",
+ "key_terms": [
+  "Scheme merger",
+  "Category change"
+ ],
+ "example": "Thematic fund merged after breaching the 50% limit: review the merged scheme's portfolio, costs and risk — and note the exit option.",
+ "say": [
+  "Review each merger notice: portfolio, costs, risk, exit option.",
+  "Breaching schemes must be merged after 3 years."
+ ],
+ "never": [
+  "Ignore merger notices.",
+  "A merger never changes risk or costs."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q25",
+   "q": "A client receives a notice that a thematic fund is being merged. How do you respond?",
+   "o": [
+    "Ignore the notice",
+    "Explain SEBI's overlap rules as the likely reason; review the merged scheme's portfolio, risk and costs; explain the exit option",
+    "Exit immediately without reviewing",
+    "Assume nothing changes"
+   ],
+   "a": 1,
+   "why": "Explain SEBI's overlap rules as the likely reason; review the merged scheme's portfolio, risk and costs; explain the exit option."
+  },
+  {
+   "id": "overlap-n20",
+   "q": "Existing sectoral/thematic schemes breaching the 50% limit have:",
+   "o": [
+    "No deadline",
+    "3 years to comply, then must be merged",
+    "1 year",
+    "10 years"
+   ],
+   "a": 1,
+   "why": "Existing sectoral/thematic schemes have 3 years; those still breaching must be merged."
+  },
+  {
+   "id": "overlap-n21",
+   "q": "On a merger notice, investors are usually given:",
+   "o": [
+    "An option to exit",
+    "A guaranteed return",
+    "A fee waiver always",
+    "Nothing"
+   ],
+   "a": 0,
+   "why": "A merger can change the portfolio, costs and risk level, and investors are usually given an option to exit."
+  }
+ ],
+ "card_ids": [
+  "overlap-c23",
+  "overlap-c24"
+ ],
+ "words": 80
+}

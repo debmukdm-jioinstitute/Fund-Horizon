@@ -1,0 +1,70 @@
+{
+ "id": "goals-16",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to any goal plan.",
+  "Pass the trainer's final check: build a one-page plan for a family's three goals, with every assumption labelled."
+ ],
+ "body_md": "Do: start every plan with the client's goals, amounts, dates and priorities. Show inflation-adjusted targets and label every assumption (inflation, return) as illustrative. Use conservative return assumptions and show what happens if returns are lower. Match the asset mix to each goal's horizon and the client's risk profile. Put the foundation (emergency fund, insurance) first, and note any gaps in writing. Review goals at least yearly and record the outcome.\n\n- Don’t — Promise that a goal will be met or that a projected amount is guaranteed.\n- Don’t — Use high return assumptions to make a SIP look affordable.\n- Don’t — Put short-term goal money in equity to “boost returns”.\n- Don’t — Recommend funds before the goals are clear.\n- Don’t — Give tax or insurance advice outside your licence; refer to a CA or licensed adviser.\n\n> **Investor takeaway:** Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully. Final check for trainers: a new joiner passes this module when they can take a family's three goals and produce a one-page plan (future cost, asset mix, SIP, step-up and review date) with every assumption labelled.",
+ "key_terms": [
+  "Compliance",
+  "Goal plan",
+  "Assumption"
+ ],
+ "example": "A trainee builds a one-page plan for three goals: future cost, asset mix, SIP, step-up and review date, every assumption labelled.",
+ "say": [
+  "Start every plan with goals, amounts, dates and priorities.",
+  "Review goals at least yearly and record the outcome."
+ ],
+ "never": [
+  "Promise a goal will be met.",
+  "Use high return assumptions to make a SIP look affordable."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-n23",
+   "q": "Which of these is compliant when presenting a goal plan?",
+   "o": [
+    "Promise the goal will be met",
+    "Use 18% returns to make the SIP look small",
+    "Show inflation-adjusted targets and label every assumption as illustrative",
+    "Put short-term money in equity"
+   ],
+   "a": 2,
+   "why": "Show inflation-adjusted targets and label every assumption (inflation, return) as illustrative."
+  },
+  {
+   "id": "goals-n24",
+   "q": "A trainee passes this module when they can:",
+   "o": [
+    "Name last year's best fund",
+    "Produce a one-page plan for a family's three goals with every assumption labelled",
+    "Promise a corpus",
+    "Skip the foundation"
+   ],
+   "a": 1,
+   "why": "Final check: take a family's three goals and produce a one-page plan (future cost, asset mix, SIP, step-up and review date) with every assumption labelled."
+  },
+  {
+   "id": "goals-n25",
+   "q": "What must appear on all investor material for this module?",
+   "o": [
+    "Mutual fund investments are subject to market risks. Read all scheme-related documents carefully.",
+    "A guaranteed return figure",
+    "The fund's last month return only",
+    "A promise of future performance"
+   ],
+   "a": 0,
+   "why": "Mandatory line on all investor material: Mutual fund investments are subject to market risks. Read all scheme-related documents carefully."
+  }
+ ],
+ "card_ids": [
+  "goals-c31",
+  "goals-c32"
+ ],
+ "words": 192
+}

@@ -1,0 +1,70 @@
+{
+ "id": "psych-10",
+ "title": "The investor emotion cycle",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Name the five cycle phases, what investors do in each, and what we do.",
+  "Say where most investors buy and where most sell."
+ ],
+ "body_md": "Every market cycle pulls investors to buy near the top and sell near the bottom; our job is to move clients against their own emotions, calmly and without promises. Rising market: optimism → excitement; investors add money and take more risk; we stick to target allocation. Peak: euphoria; investors pile in and chase hot funds; we rebalance and warn against FOMO. Falling market: anxiety → fear; investors check daily and question the plan; we call proactively and reconnect to goals. Bottom: panic → despondency; investors stop SIPs and redeem; we keep SIPs going and deploy planned STP money. Recovery: hope → optimism; investors wait on the sidelines “until it's clear”; we show what staying invested achieved.\n\n| Phase | What investors feel | What they tend to do | What we do |\n| --- | --- | --- | --- |\n| Rising market | Optimism → excitement | Add money, take more risk | Stick to target allocation |\n| Peak | Euphoria | Pile in; chase hot funds | Rebalance; warn against FOMO |\n| Falling market | Anxiety → fear | Check daily; question the plan | Call proactively; reconnect to goals |\n| Bottom | Panic → despondency | Stop SIPs; redeem | Keep SIPs going; deploy planned STP money |\n| Recovery | Hope → optimism | Wait on the sidelines \"until it's clear\" | Show what staying invested achieved |\n\n> **Investor takeaway:** Market falls are normal. Staying invested through them is how long-term returns are earned.",
+ "key_terms": [
+  "Emotion cycle",
+  "Euphoria",
+  "Despondency"
+ ],
+ "example": "Peak euphoria: clients pile into hot funds — rebalance and warn against FOMO. Bottom despondency: clients stop SIPs — keep them going, deploy planned STP money.",
+ "say": [
+  "Buy near the top and sell near the bottom is the cycle to break.",
+  "At the bottom, keep SIPs going; deploy planned STP money."
+ ],
+ "never": [
+  "Buy at the bottom and sell at the peak is what most investors do naturally.",
+  "At the peak, add more risk."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q9",
+   "q": "At which point in the emotion cycle do most investors buy?",
+   "o": [
+    "Despondency",
+    "Fear",
+    "Euphoria",
+    "Hope"
+   ],
+   "a": 2,
+   "why": "Euphoria. They buy near the peak, when risk is highest."
+  },
+  {
+   "id": "psych-n18",
+   "q": "At which point in the emotion cycle do most investors sell?",
+   "o": [
+    "At the peak",
+    "In recovery",
+    "In a rising market",
+    "Near the bottom, in panic or despondency"
+   ],
+   "a": 3,
+   "why": "At which point do most investors sell? Near the bottom, in panic or despondency."
+  },
+  {
+   "id": "psych-n19",
+   "q": "In the falling-market phase, what should we do?",
+   "o": [
+    "Wait for clients to call",
+    "Switch everyone to debt",
+    "Call proactively and reconnect to goals",
+    "Send a market-outlook newsletter"
+   ],
+   "a": 2,
+   "why": "Falling market: anxiety → fear; investors check daily; we call proactively and reconnect to goals."
+  }
+ ],
+ "card_ids": [
+  "psych-c19",
+  "psych-c20"
+ ],
+ "words": 214
+}

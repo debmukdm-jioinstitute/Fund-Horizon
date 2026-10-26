@@ -1,0 +1,76 @@
+{
+ "id": "goals-01",
+ "title": "What a goal is: four answers, three horizons, five steps",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Turn a wish into a goal with four answers: what, how much, when, how important.",
+  "Name the three horizon bands and the main risk of each."
+ ],
+ "body_md": "A wish (“I want to retire comfortably”) becomes a goal when it has four things: what exactly the money is for (a daughter's engineering degree), how much it costs in today's rupees (₹20 lakh), when it is needed (15 years), and how important it is (must, should or nice-to-have).\n\n| Element | Question | Example |\n| --- | --- | --- |\n| What | What exactly is the money for? | Daughter's engineering degree |\n| How much | What does it cost in today's rupees? | ₹20 lakh |\n| When | In how many years is the money needed? | 15 years |\n| How important | Is it a must, a should or a nice-to-have? | Must-have |\n\nGoal types by horizon: short (under 3 years — emergency fund, vacation, car, wedding expenses soon; main risk: losing capital just before the money is needed), medium (3–7 years — house down payment, higher studies abroad, starting a business; main risk: a market fall close to the goal date), long (7+ years — children's education, retirement, financial freedom; main risk: inflation, and not taking enough growth). The five-step goal process: Discover (list every goal with the client and their family), Quantify (inflation-adjusted target and date), Prioritise (must-haves first; foundation before everything), Plan (asset mix, then funds, then monthly SIP), Review (every year, and adjust).\n\n| Horizon | Typical goals | Main risk to manage |\n| --- | --- | --- |\n| Short (under 3 years) | Emergency fund, vacation, car, wedding expenses soon | Losing capital just before the money is needed |\n| Medium (3–7 years) | House down payment, higher studies abroad, starting a business | A market fall close to the goal date |\n| Long (7+ years) | Children's education, retirement, financial freedom | Inflation, and not taking enough growth |\n\n> **Talk-track:** “Before we talk about funds, let's talk about what this money is for and when you'll need it. That decides everything else.”\n\n> **Investor takeaway:** A goal needs an amount, a date and a priority. Without them, no fund can be judged right or wrong.",
+ "key_terms": [
+  "Goal",
+  "Horizon",
+  "Must-have / should-have / nice-to-have"
+ ],
+ "example": "Daughter's engineering degree: ₹20 lakh today, 15 years away, must-have — that is a goal; “retire comfortably” is not yet one.",
+ "say": [
+  "Start with the goal, not the fund.",
+  "A goal needs an amount, a date and a priority."
+ ],
+ "never": [
+  "A fund name is a goal.",
+  "A wish is already a goal."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Start with the goal",
+   "text": "Before we talk about funds, let's talk about what this money is for and when you'll need it. That decides everything else."
+  }
+ ],
+ "check": [
+  {
+   "id": "goals-q1",
+   "q": "A goal needs:",
+   "o": [
+    "Only an amount",
+    "An amount, a date and a priority",
+    "A fund name",
+    "A market forecast"
+   ],
+   "a": 1,
+   "why": "An amount, a date and a priority. Plus what it's for."
+  },
+  {
+   "id": "goals-q11",
+   "q": "The right order is:",
+   "o": [
+    "Fund → goal → mix",
+    "Goal → time frame → asset mix → funds",
+    "Mix → fund → goal",
+    "Fund → mix → goal"
+   ],
+   "a": 1,
+   "why": "Goal → time frame → asset mix → funds. Start with the goal."
+  },
+  {
+   "id": "goals-n01",
+   "q": "Which horizon band carries the main risk of losing capital just before the money is needed?",
+   "o": [
+    "Short (under 3 years)",
+    "Medium (3–7 years)",
+    "Long (7+ years)",
+    "Any horizon"
+   ],
+   "a": 0,
+   "why": "Short (under 3 years): main risk to manage is losing capital just before the money is needed."
+  }
+ ],
+ "card_ids": [
+  "goals-c1",
+  "goals-c2"
+ ],
+ "words": 305
+}

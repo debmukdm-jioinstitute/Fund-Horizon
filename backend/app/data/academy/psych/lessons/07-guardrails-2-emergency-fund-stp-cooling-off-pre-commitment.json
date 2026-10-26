@@ -1,0 +1,71 @@
+{
+ "id": "psych-07",
+ "title": "Guardrails (2): emergency fund, STP, cooling-off, pre-commitment",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "Set up the emergency fund, STP and cooling-off rule at onboarding.",
+  "Run the pre-commitment conversation in writing."
+ ],
+ "body_md": "Emergency fund kept separately: short-term needs never force equity sales — counters panic selling. STP for large sums: lump sums enter equity over 6–12 months — counters regret aversion. “Cooling-off” rule: no switch or redemption decided on the same day as a big market move — counters panic and FOMO.\n\n| Guardrail | How it works | Bias it counters |\n| --- | --- | --- |\n| Emergency fund kept separately | Short-term needs never force equity sales | Panic selling |\n| STP for large sums | Lump sums enter equity over 6–12 months | Regret aversion |\n| \"Cooling-off\" rule | No switch or redemption decided on the same day as a big market move | Panic, FOMO |\n\nThe pre-commitment conversation: at onboarding, agree in writing what the client will do if markets fall 20%, and what they will not do. Clients are far more likely to stay the course when they are reminded of a decision they made themselves.\n\n> **Investor takeaway:** Decide your rules in calm times and follow them in volatile times.",
+ "key_terms": [
+  "Emergency fund",
+  "STP",
+  "Cooling-off rule",
+  "Pre-commitment"
+ ],
+ "example": "Client agrees in writing: “If markets fall 20%, I will keep SIPs running and call you before selling.” In the fall, that sentence does the work.",
+ "say": [
+  "No switch or redemption decided on the same day as a big market move.",
+  "Clients stay the course when reminded of a decision they made themselves."
+ ],
+ "never": [
+  "Decide switches on the day of a big market move.",
+  "STP guarantees better returns."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q10",
+   "q": "Which guardrail best counters regret aversion when investing a large lump sum?",
+   "o": [
+    "A cooling-off rule",
+    "An STP over 6–12 months",
+    "Checking the portfolio daily",
+    "A sector fund"
+   ],
+   "a": 1,
+   "why": "An STP over 6–12 months. Staggering entry means no single day decides the outcome."
+  },
+  {
+   "id": "psych-n13",
+   "q": "What does the cooling-off rule say?",
+   "o": [
+    "No switch or redemption on the same day as a big market move",
+    "Wait 30 days before any SIP",
+    "Review weekly",
+    "Invest only after a 10% fall"
+   ],
+   "a": 0,
+   "why": "Cooling-off rule: no switch or redemption decided on the same day as a big market move."
+  },
+  {
+   "id": "psych-n14",
+   "q": "Which guardrail best counters regret aversion for a large lump sum?",
+   "o": [
+    "A cooling-off rule",
+    "Checking daily",
+    "A sector fund",
+    "An STP over 6–12 months"
+   ],
+   "a": 3,
+   "why": "STP for large sums: lump sums enter equity over 6–12 months. Counters regret aversion."
+  }
+ ],
+ "card_ids": [
+  "psych-c13",
+  "psych-c14"
+ ],
+ "words": 156
+}

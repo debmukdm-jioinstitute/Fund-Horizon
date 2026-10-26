@@ -1,0 +1,70 @@
+{
+ "id": "goals-05",
+ "title": "Prioritising goals: must, should, nice-to-have",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Sort goals into must-have, should-have and nice-to-have, and fund in that order.",
+  "Explain the education-vs-retirement conflict honestly."
+ ],
+ "body_md": "Must-have: retirement, children's education — fund first; protect with the right asset mix. Should-have: house, car upgrade — fund next; dates can flex. Nice-to-have: foreign holiday, second home — fund with what's left; adjust freely.\n\n| Priority | Examples | How to treat it |\n| --- | --- | --- |\n| Must-have | Retirement, children's education | Fund first; protect with the right asset mix |\n| Should-have | House, car upgrade | Fund next; dates can flex |\n| Nice-to-have | Foreign holiday, second home | Fund with what's left; adjust freely |\n\nA common conflict: parents often put children's education above their own retirement. A useful reminder: education can be part-funded by a loan; retirement cannot.",
+ "key_terms": [
+  "Must-have",
+  "Should-have",
+  "Nice-to-have"
+ ],
+ "example": "A couple funding an MBA in 12 years and retirement in 20: quantify both with inflation, prioritise, and discuss the education-loan vs retirement trade-off openly.",
+ "say": [
+  "Fund must-haves first; dates for should-haves can flex.",
+  "Education can be part-funded by a loan; retirement cannot."
+ ],
+ "never": [
+  "Fund goals in order of excitement.",
+  "Parents should always fund education before retirement."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q19",
+   "q": "Why are parents often advised to prioritise retirement over education funding?",
+   "o": [
+    "Education is free",
+    "Education can be part-funded by a loan; retirement cannot",
+    "Retirement needs less money",
+    "Loans are banned for education"
+   ],
+   "a": 1,
+   "why": "Prioritise retirement accordingly."
+  },
+  {
+   "id": "goals-n06",
+   "q": "Which priority is “fund first; protect with the right asset mix”?",
+   "o": [
+    "Should-have",
+    "Nice-to-have",
+    "Any goal with the highest return",
+    "Must-have (retirement, children's education)"
+   ],
+   "a": 3,
+   "why": "Must-have: retirement, children's education. Fund first; protect with the right asset mix."
+  },
+  {
+   "id": "goals-n07",
+   "q": "Why is retirement often prioritised over education funding?",
+   "o": [
+    "Education is free",
+    "Retirement needs less money",
+    "Education can be part-funded by a loan; retirement cannot",
+    "Loans are banned for education"
+   ],
+   "a": 2,
+   "why": "Education can be part-funded by a loan; retirement can't."
+  }
+ ],
+ "card_ids": [
+  "goals-c9",
+  "goals-c10"
+ ],
+ "words": 97
+}

@@ -1,0 +1,70 @@
+{
+ "id": "overlap-03",
+ "title": "SEBI's 2026 overlap limits within fund houses",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "State SEBI's February 2026 overlap rules, how they are measured, and the compliance window.",
+  "Say why a client's own portfolio still needs checking."
+ ],
+ "body_md": "SEBI's circular of 26 February 2026 on categorisation and rationalisation of schemes: value and contra funds — an AMC may offer both only if their portfolio overlap is no more than 50%. Sectoral and thematic funds — no more than 50% overlap with the AMC's other equity schemes (large-cap schemes excepted). How it is measured: quarterly, using the average of daily overlap values. Time to comply: existing sectoral/thematic schemes have 3 years; those still breaching must be merged. Disclosure: AMCs disclose category-wise overlap levels on their websites every month.\n\n| Rule | Detail |\n| --- | --- |\n| Value and contra funds | An AMC may offer both only if their portfolio overlap is no more than 50% |\n| Sectoral and thematic funds | No more than 50% overlap with the AMC's other equity schemes (large-cap schemes excepted) |\n| How it is measured | Quarterly, using the average of daily overlap values |\n| Time to comply | Existing sectoral/thematic schemes have 3 years; those still breaching must be merged |\n| Disclosure | AMCs disclose category-wise overlap levels on their websites every month |\n\nThese rules apply within one fund house. A client holding funds from different AMCs can still have high overlap, so checking the client's own portfolio remains our job.",
+ "key_terms": [
+  "SEBI overlap limits",
+  "Value and contra",
+  "Sectoral and thematic"
+ ],
+ "example": "An AMC's sectoral fund at 60% overlap with its other equity schemes: it has 3 years to come within 50%, or be merged.",
+ "say": [
+  "SEBI's limits apply within one fund house.",
+  "A client across AMCs can still have high overlap."
+ ],
+ "never": [
+  "SEBI's limits prevent all client overlap.",
+  "Sectoral funds have no overlap limit."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q6",
+   "q": "Under SEBI’s February 2026 circular, an AMC’s value and contra funds may overlap by no more than…",
+   "o": [
+    "25%",
+    "50%",
+    "75%",
+    "No limit"
+   ],
+   "a": 1,
+   "why": "50%. Both can be offered only within this limit."
+  },
+  {
+   "id": "overlap-q7",
+   "q": "The 50% overlap cap with other equity schemes applies to…",
+   "o": [
+    "Liquid funds",
+    "Sectoral and thematic schemes",
+    "Index funds only",
+    "Debt funds"
+   ],
+   "a": 1,
+   "why": "Sectoral and thematic schemes. Large-cap schemes are excepted from the comparison."
+  },
+  {
+   "id": "overlap-q8",
+   "q": "Do SEBI’s overlap limits prevent overlap across different AMCs?",
+   "o": [
+    "Yes, fully",
+    "No, they apply within one AMC",
+    "Only for index funds",
+    "Only for ELSS"
+   ],
+   "a": 1,
+   "why": "No, they apply within one AMC. We still need to check the client’s portfolio."
+  }
+ ],
+ "card_ids": [
+  "overlap-c5",
+  "overlap-c6"
+ ],
+ "words": 194
+}

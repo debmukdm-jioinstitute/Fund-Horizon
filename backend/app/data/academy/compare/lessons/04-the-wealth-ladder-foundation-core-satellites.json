@@ -1,0 +1,77 @@
+{
+ "id": "compare-04",
+ "title": "The wealth ladder: foundation, core, satellites",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Place a client on the wealth ladder and say what each rung is.",
+  "Explain why each rung sits on the one below and never replaces it."
+ ],
+ "body_md": "Clients climb a wealth ladder: mutual funds form the core for everyone, PMS and AIFs are optional layers on top, added only when surplus, horizon and risk tolerance justify them. Foundation: emergency fund, insurance, costly debt cleared. Core (everyone): diversified mutual funds across equity, debt and hybrid, matched to goals. Satellite, listed (PMS): when investible surplus is well above ₹50 lakh and the client wants a concentrated, personalised portfolio and can handle bigger swings. Satellite, private (AIF): when the client can commit ₹1 crore or more, lock it up for years, and wants exposure to private equity, private credit, real estate or complex strategies. Each rung sits on top of the one below; it never replaces it.\n\n> **Talk-track:** “Mutual funds are your foundation. PMS and AIFs can sit on top once that's solid and you can lock some money away for longer.”\n\n> **Investor takeaway:** Build the core first. Add PMS or AIFs only with money you won't need for years.",
+ "key_terms": [
+  "Wealth ladder",
+  "Foundation",
+  "Core",
+  "Satellite"
+ ],
+ "example": "₹60 lakh investor with no MF core asking for PMS: eligible, not suitable — build the core first; PMS only as a slice later.",
+ "say": [
+  "Mutual funds are your foundation.",
+  "Each rung sits on the one below; it never replaces it."
+ ],
+ "never": [
+  "PMS replaces the mutual fund core.",
+  "AIFs suit money needed next year."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Foundation first",
+   "text": "Mutual funds are your foundation. PMS and AIFs can sit on top once that's solid and you can lock some money away for longer."
+  }
+ ],
+ "check": [
+  {
+   "id": "compare-q14",
+   "q": "What should every client have before adding PMS or AIF?",
+   "o": [
+    "A Cat III AIF",
+    "A diversified MF core and emergency fund",
+    "A home loan",
+    "Direct equity only"
+   ],
+   "a": 1,
+   "why": "A diversified MF core and emergency fund. Each rung of the ladder sits on the one below."
+  },
+  {
+   "id": "compare-n01",
+   "q": "What sits at the bottom of the wealth ladder?",
+   "o": [
+    "Foundation: emergency fund, insurance, costly debt cleared",
+    "PMS",
+    "AIF",
+    "Sectoral funds"
+   ],
+   "a": 0,
+   "why": "Foundation: emergency fund, insurance, costly debt cleared."
+  },
+  {
+   "id": "compare-n02",
+   "q": "When is a PMS satellite justified?",
+   "o": [
+    "For any investor",
+    "For emergency money",
+    "For goals under 3 years",
+    "When investible surplus is well above ₹50 lakh and the client wants a concentrated, personalised portfolio and can handle bigger swings"
+   ],
+   "a": 3,
+   "why": "Satellite, listed (PMS): when investible surplus is well above ₹50 lakh and the client wants a concentrated, personalised portfolio and can handle bigger swings."
+  }
+ ],
+ "card_ids": [
+  "compare-c7",
+  "compare-c8"
+ ],
+ "words": 160
+}

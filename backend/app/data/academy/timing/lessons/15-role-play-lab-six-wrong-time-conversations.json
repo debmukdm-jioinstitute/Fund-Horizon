@@ -1,0 +1,71 @@
+{
+ "id": "timing-15",
+ "title": "Role-play lab: six “wrong time” conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six “wrong time” conversations with diagnosis, not prediction.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example.\n\n| Client says | Explain |\n| --- | --- |\n| “I invested ₹10 lakh last year and it's down 12%. I picked the wrong time. Should I exit?” | Diagnose the cause and discuss the horizon. |\n| “The market fell 15%. Should I stop my SIP until it settles?” | Explain why SIPs work through falls. |\n| “I have ₹25 lakh from a property sale. I'll wait for a crash before investing.” | Discuss the cost of waiting and offer an STP. |\n| “My fund is down but so is everything. Should I switch funds?” | Compare with the benchmark and category. |\n| A retiree's portfolio fell 20% just after retirement. | Discuss sequence risk, the income buffer and the SWP amount. |\n| “I just want my money back, then I'll get out.” | Address loss aversion and anchoring. |\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Diagnosis",
+  "STP",
+  "Sequence risk"
+ ],
+ "example": "Role-play the peak investor: acknowledge first, then horizon, benchmark, keep SIPs going, add gradually if comfortable.",
+ "say": [
+  "Acknowledge the client's frustration before explaining.",
+  "Diagnose before recommending action."
+ ],
+ "never": [
+  "Predict when the market will recover.",
+  "Dismiss the client's concern as irrational."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "timing-q21",
+   "q": "Mr. Rao invested ₹10 L as a lump sum in January 2020 and is down sharply in March. He wants to exit. His goal is 10 years away. What do you do?",
+   "o": [
+    "Advise exiting to stop the loss",
+    "Acknowledge the frustration; confirm the 10-year horizon; compare the fund with its benchmark; explain the fall is market-wide; keep SIPs going and, if comfortable, add gradually; share history with “no guarantee”; record the discussion",
+    "Predict a recovery date",
+    "Switch to a sectoral fund"
+   ],
+   "a": 1,
+   "why": "Acknowledge the frustration; confirm the 10-year horizon; compare the fund with its benchmark from the same date; explain that the fall is market-wide; keep his SIPs going and, if comfortable, add gradually. Share history with “no guarantee”. Record the discussion."
+  },
+  {
+   "id": "timing-q22",
+   "q": "Ms. Shah has ₹25 L from a property sale and says she’ll invest “after the next crash”. What do you offer?",
+   "o": [
+    "Agree to wait for the crash",
+    "Show the cost of waiting with an illustrative example; offer an STP from a liquid fund over 6–12 months to reduce regret, or agree written trigger rules; don’t predict a crash or promise better timing",
+    "Promise a crash is coming",
+    "Invest it all in small caps now"
+   ],
+   "a": 1,
+   "why": "Show the cost of waiting with an illustrative example; offer an STP from a liquid fund over 6–12 months to reduce regret; or agree written trigger rules. Don’t predict a crash or promise better timing."
+  },
+  {
+   "id": "timing-q23",
+   "q": "A client put her daughter’s wedding money (needed in 14 months) into a mid-cap fund, which has now fallen 15%. What is the plan?",
+   "o": [
+    "Wait for it to recover, however long it takes",
+    "Diagnose: wrong category for a short horizon. Plan a move towards debt or liquid funds on a schedule, considering tax and exit loads, rather than panic-selling in one go; document the reasoning",
+    "Add more to the mid-cap fund",
+    "Switch to another mid-cap fund"
+   ],
+   "a": 1,
+   "why": "Diagnose: wrong category for a short horizon. Plan a move towards debt or liquid funds on a schedule, considering tax and exit loads, rather than panic-selling in one go. Document the reasoning."
+  }
+ ],
+ "card_ids": [
+  "timing-c29",
+  "timing-c30"
+ ],
+ "words": 165
+}

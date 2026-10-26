@@ -1,0 +1,71 @@
+{
+ "id": "bonds-12",
+ "title": "Rate cycles, rebalancing and red flags",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "R",
+ "objectives": [
+  "Say how falling, stable and rising rates affect long- vs short-duration funds.",
+  "Describe the glide path and name four red flags to act on."
+ ],
+ "body_md": "Rates falling: longer-duration funds gain prices on top of interest; shorter-duration funds stay steady with lower returns. Rates stable: both earn roughly their yield. Rates rising: longer-duration funds' prices fall and returns can turn negative for a while; shorter-duration funds take a small impact and new money is reinvested at higher rates. No one predicts rates reliably. The safer rule is to match duration to the goal, not to a forecast. Clients who want to take a rate view can use a dynamic bond fund and accept that the manager may be wrong. Rebalancing: as a goal comes closer, move money from longer to shorter duration (a “glide path”). Use debt to rebalance an equity–debt mix back to target after big market moves. Rebalancing triggers tax and exit loads; check both first. Red flags to act on: a rating downgrade of a large holding; a fund suddenly far ahead of its category on yield; a side-pocket created; heavy redemptions or restrictions on withdrawals.\n\n| Rate environment | Longer-duration funds | Shorter-duration funds |\n| --- | --- | --- |\n| Rates falling | Prices rise; gains on top of interest | Steady, lower returns |\n| Rates stable | Earn roughly their yield | Earn roughly their yield |\n| Rates rising | Prices fall; returns can turn negative for a while | Small impact; new money reinvested at higher rates |",
+ "key_terms": [
+  "Rate cycle",
+  "Glide path",
+  "Rebalancing",
+  "Side-pocketing"
+ ],
+ "example": "Rates rising: a long-duration fund can go negative for a while, while a short-duration fund reinvests new money at higher rates — duration, not prediction, is the defence.",
+ "say": [
+  "Match duration to the goal, not to a forecast.",
+  "Check tax and exit loads before rebalancing."
+ ],
+ "never": [
+  "Predict rates to choose duration.",
+  "Rebalancing is free of tax and exit loads."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-n18",
+   "q": "Rates are rising. Which fund is hit hardest?",
+   "o": [
+    "Shorter-duration funds",
+    "Overnight funds",
+    "Money market funds",
+    "Longer-duration funds: prices fall and returns can turn negative for a while"
+   ],
+   "a": 3,
+   "why": "Rates rising: longer-duration funds' prices fall; returns can turn negative for a while."
+  },
+  {
+   "id": "bonds-n19",
+   "q": "As a goal comes closer, the glide path means:",
+   "o": [
+    "Moving everything to equity",
+    "Increasing duration",
+    "Moving gradually from longer to shorter duration",
+    "Stopping all SIPs"
+   ],
+   "a": 2,
+   "why": "As a goal comes closer, move money from longer to shorter duration (a “glide path”)."
+  },
+  {
+   "id": "bonds-n20",
+   "q": "Which is a red flag to act on?",
+   "o": [
+    "A fund matching its category on yield",
+    "A rating downgrade of a large holding",
+    "Steady AUM",
+    "A duration matched to the goal"
+   ],
+   "a": 1,
+   "why": "Red flags: a rating downgrade of a large holding; a fund suddenly far ahead on yield; a side-pocket; heavy redemptions."
+  }
+ ],
+ "card_ids": [
+  "bonds-c23",
+  "bonds-c24"
+ ],
+ "words": 210
+}

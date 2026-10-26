@@ -1,0 +1,71 @@
+{
+ "id": "bonds-07",
+ "title": "Duration and the PRC matrix",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Use modified duration to estimate a price move for a 1% rate change.",
+  "Read a debt scheme's PRC cell, and say how it differs from the riskometer."
+ ],
+ "body_md": "Duration in one line: a fund's modified duration tells you roughly how much its price moves for a 1% change in rates. Duration 4 → rates up 1% means price down about 4%; rates down 1% means price up about 4%. Every debt scheme also discloses the maximum interest-rate and credit risk it is allowed to take, as a cell in SEBI's 3×3 Potential Risk Class (PRC) matrix: interest-rate Classes I (Macaulay duration up to 1 year), II (up to 3 years), III (any duration) against credit Classes A (relatively low), B (moderate), C (relatively high). A-I is the most conservative cell; C-III the most aggressive. The PRC shows the scheme's limit; the riskometer shows its current portfolio. Check both.\n\n| Interest-rate risk ↓ / Credit risk → | Class A: relatively low | Class B: moderate | Class C: relatively high |\n| --- | --- | --- | --- |\n| Class I (Macaulay duration up to 1 year) | A-I | B-I | C-I |\n| Class II (up to 3 years) | A-II | B-II | C-II |\n| Class III (any duration) | A-III | B-III | C-III |\n\n> **Investor takeaway:** Duration should match the goal date; credit quality should match how essential the money is.",
+ "key_terms": [
+  "Modified duration",
+  "Macaulay duration",
+  "PRC matrix",
+  "Riskometer"
+ ],
+ "example": "Duration 6, rates fall 1%: price rises about 6%. A scheme in cell C-III may take relatively high credit risk at any duration.",
+ "say": [
+  "PRC is the limit; the riskometer is the portfolio today. Check both.",
+  "A-I is the most conservative PRC cell."
+ ],
+ "never": [
+  "The PRC shows past returns.",
+  "A-III is more conservative than A-I."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q6",
+   "q": "A fund with modified duration 6 will, if rates fall 1%, roughly:",
+   "o": [
+    "Fall 6%",
+    "Rise 6%",
+    "Rise 1%",
+    "Not change"
+   ],
+   "a": 1,
+   "why": "Rise 6%. Price moves opposite to rates by about the duration."
+  },
+  {
+   "id": "bonds-q7",
+   "q": "The most conservative cell in the PRC matrix is:",
+   "o": [
+    "A-I",
+    "C-III",
+    "B-II",
+    "A-III"
+   ],
+   "a": 0,
+   "why": "A-I. Low credit risk, duration up to 1 year."
+  },
+  {
+   "id": "bonds-q15",
+   "q": "The PRC matrix shows a debt scheme's:",
+   "o": [
+    "Past returns",
+    "Maximum interest-rate and credit risk",
+    "Expense ratio",
+    "Fund manager's rating"
+   ],
+   "a": 1,
+   "why": "Maximum interest-rate and credit risk. The riskometer shows today's portfolio risk."
+  }
+ ],
+ "card_ids": [
+  "bonds-c13",
+  "bonds-c14"
+ ],
+ "words": 182
+}

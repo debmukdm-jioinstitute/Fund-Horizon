@@ -1,0 +1,70 @@
+{
+ "id": "psych-09",
+ "title": "Review rhythm: calendar, less checking, rebalance by rule",
+ "minutes": 4,
+ "level": "intermediate",
+ "stage": "R",
+ "objectives": [
+  "Set a fixed review calendar and a checking cadence for clients.",
+  "Explain why frequent checking makes normal swings feel like losses."
+ ],
+ "body_md": "Review rhythm. Fixed calendar: a full review once or twice a year, on dates agreed in advance, not triggered by headlines. Encourage less checking: suggest clients look at their portfolio monthly or quarterly, not daily. Frequent checking makes normal swings feel like losses. Rebalance by rule: use the agreed band, which forces selling some of what has risen and buying what has fallen, the opposite of what emotions suggest.\n\n> **Investor takeaway:** Check progress against your goal, not the daily news.",
+ "key_terms": [
+  "Review calendar",
+  "Myopic loss aversion",
+  "Rebalance by rule"
+ ],
+ "example": "Client checking daily and stressed: move to quarterly reviews — daily moves are noise for a 10-year goal.",
+ "say": [
+  "A full review once or twice a year, on agreed dates.",
+  "Frequent checking makes normal swings feel like losses."
+ ],
+ "never": [
+  "Trigger reviews on headlines.",
+  "Check the portfolio daily for a 10-year goal."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "psych-q6",
+   "q": "\"I check my portfolio every day and it stresses me.\" Which bias?",
+   "o": [
+    "Overconfidence",
+    "Myopic loss aversion",
+    "Confirmation",
+    "Present bias"
+   ],
+   "a": 1,
+   "why": "Myopic loss aversion. Frequent checking makes normal swings feel like losses."
+  },
+  {
+   "id": "psych-q19",
+   "q": "Rebalancing by rule usually means:",
+   "o": [
+    "Buying more of what rose",
+    "Trimming some of what has risen and adding to what fell",
+    "Selling everything",
+    "Holding only cash"
+   ],
+   "a": 1,
+   "why": "It forces “sell high, buy low”, the opposite of instinct."
+  },
+  {
+   "id": "psych-n17",
+   "q": "Why encourage clients to check less often?",
+   "o": [
+    "Frequent checking makes normal swings feel like losses and triggers emotional decisions",
+    "It saves data",
+    "It hides losses",
+    "It is required by SEBI"
+   ],
+   "a": 0,
+   "why": "Frequent checking makes normal swings feel like losses (myopic loss aversion) and triggers emotional decisions."
+  }
+ ],
+ "card_ids": [
+  "psych-c17",
+  "psych-c18"
+ ],
+ "words": 80
+}

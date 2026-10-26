@@ -1,0 +1,72 @@
+{
+ "id": "compare-08",
+ "title": "Distributor requirements and selling rules",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "A",
+ "objectives": [
+  "State certification, registration, commission and marketing rules for all three.",
+  "Say why AIF social-media offers are a red flag."
+ ],
+ "body_md": "Certification: MF NISM V-A; PMS NISM XXI-A; AIF NISM XIX-A (Cat I & II) / XIX-B (Cat III). Registration: MF AMFI (ARN); PMS APMI (APRN); AIF must be a SEBI-registered intermediary route. Commission: MF trail only; PMS trail only; AIF Cat III trail only; Cat I & II up to one-third upfront, rest as trail over the tenure. Marketing: MF public advertising allowed within rules; PMS through registered distributors; AIF private placement only, no public invitation or mass marketing.\n\n|  | MF | PMS | AIF |\n| --- | --- | --- | --- |\n| Certification | NISM V-A | NISM XXI-A | NISM XIX-A (Cat I & II) / XIX-B (Cat III) |\n| Registration | AMFI (ARN) | APMI (APRN) | Must be a SEBI-registered intermediary route |\n| Commission | Trail only | Trail only | Cat III: trail only; Cat I & II: up to one-third upfront, rest as trail over the tenure |\n| Marketing | Public advertising allowed within rules | Through registered distributors | Private placement only; no public invitation or mass marketing |",
+ "key_terms": [
+  "NISM V-A",
+  "NISM XXI-A",
+  "NISM XIX-A / XIX-B",
+  "APMI",
+  "Trail commission"
+ ],
+ "example": "An “AIF with 18% fixed returns” advertised on social media: AIFs can't be publicly advertised or promise returns — treat it as a red flag and verify registration.",
+ "say": [
+  "Sell AIFs only through private placement, to eligible investors.",
+  "Disclose commission and the direct option."
+ ],
+ "never": [
+  "Advertise AIFs publicly.",
+  "Sell a product you're not certified for."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q10",
+   "q": "Which NISM certification is needed to distribute Category III AIFs?",
+   "o": [
+    "V-A",
+    "XXI-A",
+    "XIX-A",
+    "XIX-B"
+   ],
+   "a": 3,
+   "why": "XIX-B. XIX-A is for Category I & II."
+  },
+  {
+   "id": "compare-q11",
+   "q": "How is distributor commission paid on Category III AIFs?",
+   "o": [
+    "Fully upfront",
+    "Trail only",
+    "Half upfront",
+    "No commission allowed"
+   ],
+   "a": 1,
+   "why": "Trail only. No upfront fee for Cat III; Cat I & II may pay up to one-third upfront."
+  },
+  {
+   "id": "compare-q20",
+   "q": "A social media post offers an “AIF with fixed 18% returns”. What is it?",
+   "o": [
+    "A good opportunity",
+    "A red flag: AIFs cannot be publicly advertised or promise returns",
+    "A Category III feature",
+    "SEBI-approved marketing"
+   ],
+   "a": 1,
+   "why": "AIFs cannot be publicly advertised or promise returns."
+  }
+ ],
+ "card_ids": [
+  "compare-c15",
+  "compare-c16"
+ ],
+ "words": 149
+}

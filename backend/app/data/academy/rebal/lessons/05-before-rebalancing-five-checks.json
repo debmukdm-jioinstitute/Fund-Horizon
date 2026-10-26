@@ -1,0 +1,72 @@
+{
+ "id": "rebal-05",
+ "title": "Before rebalancing: five checks",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Run the five pre-rebalancing checks.",
+  "Explain why no written target means no rebalance yet."
+ ],
+ "body_md": "Rebalancing only makes sense against a target the client has agreed to. Check five things first.\n\n| Check | Question | Why it matters |\n| --- | --- | --- |\n| Target mix | Is there a written target for each goal? | No target means nothing to rebalance to; set one first (Module 13) |\n| Whole portfolio | Have we counted EPF, PPF, FDs and holdings elsewhere? | Drift is measured on the total, not just the funds we manage |\n| Drift size | How far is each asset class from target, in percentage points? | Small drifts aren't worth the cost of acting |\n| Costs | Will selling trigger exit loads or short-term gains? | Costs can outweigh the benefit of a small rebalance |\n| Client situation | Any goal near, or change in income or risk profile? | That may call for a new target, not a rebalance |",
+ "key_terms": [
+  "Target mix",
+  "Whole portfolio",
+  "Drift size",
+  "Costs",
+  "Client situation"
+ ],
+ "example": "No written target? Set one first (Module 13) — there is nothing to rebalance to.",
+ "say": [
+  "No target means nothing to rebalance to; set one first.",
+  "Drift is measured on the total, not just the funds we manage."
+ ],
+ "never": [
+  "Rebalance without a target.",
+  "Ignore holdings outside the funds we manage."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-n07",
+   "q": "What is the first thing to check before rebalancing?",
+   "o": [
+    "Last year's returns",
+    "The fund manager",
+    "Is there a written target for each goal?",
+    "The NAV"
+   ],
+   "a": 2,
+   "why": "Target mix: is there a written target for each goal? No target means nothing to rebalance to; set one first (Module 13)."
+  },
+  {
+   "id": "rebal-n08",
+   "q": "Drift should be measured on:",
+   "o": [
+    "Only the funds we manage",
+    "The whole portfolio, including EPF, PPF, FDs and holdings elsewhere",
+    "Only equity funds",
+    "Only the latest SIP"
+   ],
+   "a": 1,
+   "why": "Whole portfolio: have we counted EPF, PPF, FDs and holdings elsewhere? Drift is measured on the total, not just the funds we manage."
+  },
+  {
+   "id": "rebal-n09",
+   "q": "A goal is near, or income/risk profile changed. That means:",
+   "o": [
+    "That may call for a new target, not a rebalance",
+    "Rebalance immediately",
+    "Ignore it",
+    "Change the fund"
+   ],
+   "a": 0,
+   "why": "Client situation: any goal near, or change in income or risk profile? That may call for a new target, not a rebalance."
+  }
+ ],
+ "card_ids": [
+  "rebal-c9",
+  "rebal-c10"
+ ],
+ "words": 127
+}

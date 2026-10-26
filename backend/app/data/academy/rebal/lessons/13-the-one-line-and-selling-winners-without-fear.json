@@ -1,0 +1,69 @@
+{
+ "id": "rebal-13",
+ "title": "The one line, and selling winners without fear",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "N",
+ "objectives": [
+  "Use the one line to answer any rebalancing pushback.",
+  "Explain why trimming winners is not abandoning equity."
+ ],
+ "body_md": "The one line to remember: rebalancing is a promise kept to the client's own risk choice. Trimming equity back to 60% is not abandoning equity — the client still holds 60% in equity. Buying debt after a fall is not “putting money into something falling” — it is following the rule agreed while things were calm, buying at lower prices without guessing the bottom. Debt earns its place in bad years: it is what we use to buy equity after a fall.\n\n> **Investor takeaway:** Rebalancing is a promise kept to the client's own risk choice.",
+ "key_terms": [
+  "One line",
+  "Trimming winners"
+ ],
+ "example": "“Why put more into something that's falling?” → “This is the rule we agreed while things were calm. It buys at lower prices, without guessing the bottom.”",
+ "say": [
+  "We're only trimming back to the mix you chose.",
+  "Debt is what we use to buy equity after a fall."
+ ],
+ "never": [
+  "Trimming winners means abandoning equity.",
+  "Debt earns no place in a portfolio."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q24",
+   "q": "Arun's funds look 80% equity, but he has ₹30 L in PPF and FDs. What do you do?",
+   "o": [
+    "Rebalance the funds to 60/40 immediately",
+    "Measure drift on the whole portfolio; his total mix may already be near target",
+    "Ignore the PPF and FDs",
+    "Sell the PPF"
+   ],
+   "a": 1,
+   "why": "Measure drift on the whole portfolio; his total mix may already be near target."
+  },
+  {
+   "id": "rebal-n17",
+   "q": "What is the one line to remember in this module?",
+   "o": [
+    "Rebalancing is a promise kept to the client's own risk choice",
+    "Rebalancing guarantees returns",
+    "Rebalancing beats the market",
+    "Rebalancing is tax-free"
+   ],
+   "a": 0,
+   "why": "The one line to remember: rebalancing is a promise kept to the client's own risk choice."
+  },
+  {
+   "id": "rebal-n18",
+   "q": "“Debt has done nothing; let's drop it” is best answered:",
+   "o": [
+    "“Agreed, drop debt.”",
+    "“Debt never helps.”",
+    "“Keep debt only in good years.”",
+    "“Debt is what we use to buy equity after a fall. It earns its place in bad years.”"
+   ],
+   "a": 3,
+   "why": "Recency bias: “Debt has done nothing; let's drop it.” Say: “Debt is what we use to buy equity after a fall. It earns its place in bad years.”"
+  }
+ ],
+ "card_ids": [
+  "rebal-c25",
+  "rebal-c26"
+ ],
+ "words": 95
+}

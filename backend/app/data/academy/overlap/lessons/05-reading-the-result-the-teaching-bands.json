@@ -1,0 +1,69 @@
+{
+ "id": "overlap-05",
+ "title": "Reading the result: the teaching bands",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Read an overlap figure with the under-30 / 30–50 / over-50 bands.",
+  "Say when high overlap is acceptable anyway."
+ ],
+ "body_md": "Reading the result (rule of thumb, not a regulation): under 30% — funds are genuinely different; fine to hold both. 30–50% — meaningful common core; ask what each fund adds. Over 50% — largely the same portfolio; consider keeping one.\n\n| Overlap between two funds | What it usually means | Typical response |\n| --- | --- | --- |\n| Under 30% | Funds are genuinely different | Fine to hold both |\n| 30–50% | Meaningful common core | Ask what each fund adds |\n| Over 50% | Largely the same portfolio | Consider keeping one |\n\nBands are an internal teaching guide. Use judgement: two index funds on different indices can overlap heavily and still have a clear role each.",
+ "key_terms": [
+  "Overlap bands",
+  "Judgement"
+ ],
+ "example": "Two funds at 55% overlap: largely the same portfolio — consider keeping one, unless each has a clear distinct role.",
+ "say": [
+  "Under 30%: genuinely different. Over 50%: consider keeping one.",
+  "Bands are a teaching guide, not a regulation."
+ ],
+ "never": [
+  "Over 50% overlap always means sell immediately.",
+  "Bands are SEBI regulations."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q9",
+   "q": "In our teaching guide, overlap above 50% between two funds suggests…",
+   "o": [
+    "Buy a third fund",
+    "Consider keeping one of them",
+    "Ignore it",
+    "Switch to debt"
+   ],
+   "a": 1,
+   "why": "Consider keeping one of them. They are largely the same portfolio."
+  },
+  {
+   "id": "overlap-n05",
+   "q": "Two funds overlap 35%. What does that usually mean?",
+   "o": [
+    "Meaningful common core — ask what each fund adds",
+    "Genuinely different",
+    "Largely the same portfolio",
+    "No overlap"
+   ],
+   "a": 0,
+   "why": "30–50%: meaningful common core. Ask what each fund adds."
+  },
+  {
+   "id": "overlap-n06",
+   "q": "Two index funds on different indices overlap heavily. What then?",
+   "o": [
+    "Always sell one",
+    "Ignore the bands entirely",
+    "They must be identical",
+    "Use judgement: they can still have a clear role each"
+   ],
+   "a": 3,
+   "why": "Bands are an internal teaching guide. Use judgement: two index funds on different indices can overlap heavily and still have a clear role each."
+  }
+ ],
+ "card_ids": [
+  "overlap-c9",
+  "overlap-c10"
+ ],
+ "words": 102
+}

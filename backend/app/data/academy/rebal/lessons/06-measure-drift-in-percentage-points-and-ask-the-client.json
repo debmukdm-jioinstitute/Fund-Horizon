@@ -1,0 +1,69 @@
+{
+ "id": "rebal-06",
+ "title": "Measure drift in percentage points, and ask the client",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Measure drift: current share minus target share.",
+  "Ask the four pre-rebalancing questions."
+ ],
+ "body_md": "How to measure drift: current share of an asset class minus its target share. A 60% target now at 66% has drifted +6 points. Measure each goal's pot separately when goals have different mixes. Questions to ask the client: “Do you remember the mix we agreed, and why?” “Has anything changed in your goals, income or comfort with risk?” “Are you adding new money soon (SIPs, bonus, maturity)?” “Do you hold investments elsewhere that we should count?”\n\n> **Investor takeaway:** A 60% target at 66% has drifted +6 points.",
+ "key_terms": [
+  "Drift measurement",
+  "Percentage points"
+ ],
+ "example": "Target 60%, current 66% → drift +6 points. Same fund for two goals with different mixes? Measure each goal's pot separately.",
+ "say": [
+  "Current share minus target share, in percentage points.",
+  "Measure each goal's pot separately when mixes differ."
+ ],
+ "never": [
+  "Drift is measured in rupees.",
+  "One measurement covers all goals."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q5",
+   "q": "A 60% target is now 66%. The drift is…",
+   "o": [
+    "+6 points",
+    "+10%",
+    "−6 points",
+    "+66 points"
+   ],
+   "a": 0,
+   "why": "+6 points. Current share minus target share."
+  },
+  {
+   "id": "rebal-n10",
+   "q": "A 60% target is now at 66%. The drift is:",
+   "o": [
+    "+10%",
+    "−6 points",
+    "+66 points",
+    "+6 points"
+   ],
+   "a": 3,
+   "why": "A 60% target now at 66% has drifted +6 points. Current share minus target share."
+  },
+  {
+   "id": "rebal-n11",
+   "q": "When goals have different mixes, measure drift:",
+   "o": [
+    "Only for the largest goal",
+    "Only on the total",
+    "For each goal's pot separately",
+    "Only for equity goals"
+   ],
+   "a": 2,
+   "why": "Measure each goal's pot separately when goals have different mixes."
+  }
+ ],
+ "card_ids": [
+  "rebal-c11",
+  "rebal-c12"
+ ],
+ "words": 88
+}

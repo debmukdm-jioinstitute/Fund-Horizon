@@ -1,0 +1,69 @@
+{
+ "id": "rebal-02",
+ "title": "Drift in a single year: up and down",
+ "minutes": 4,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Read the single-year drift table both ways.",
+  "State how much money moves in each case."
+ ],
+ "body_md": "Same ₹20 L, 60/40 starting portfolio. Illustrative.\n\n| After a year when… | Equity share becomes | Rebalancing means |\n| --- | --- | --- |\n| Equity +30%, debt +7% | ≈ 65% | Move about ₹1.1 L from equity to debt |\n| Equity −25%, debt +7% | ≈ 51% | Move about ₹1.5 L from debt to equity |",
+ "key_terms": [
+  "Drift",
+  "Single-year drift"
+ ],
+ "example": "Equity +30%, debt +7% → ≈ 65% equity, move about ₹1.1 L from equity to debt. Equity −25%, debt +7% → ≈ 51% equity, move about ₹1.5 L from debt to equity.",
+ "say": [
+  "After a strong year, rebalancing sells equity.",
+  "After a fall, rebalancing buys equity."
+ ],
+ "never": [
+  "Rebalancing always sells equity.",
+  "A fall means selling more equity."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q4",
+   "q": "The main job of rebalancing is…",
+   "o": [
+    "Higher returns",
+    "Risk control",
+    "Tax saving",
+    "Beating the index"
+   ],
+   "a": 1,
+   "why": "Risk control. It keeps risk at the agreed level."
+  },
+  {
+   "id": "rebal-n01",
+   "q": "After equity +30% and debt +7%, a 60/40 portfolio is about:",
+   "o": [
+    "65% equity",
+    "60%",
+    "70%",
+    "51%"
+   ],
+   "a": 0,
+   "why": "After a year when equity +30%, debt +7%: equity share becomes ≈ 65%."
+  },
+  {
+   "id": "rebal-n02",
+   "q": "After equity −25% and debt +7%, rebalancing means:",
+   "o": [
+    "Selling more equity",
+    "Moving all to cash",
+    "Doing nothing ever",
+    "Moving about ₹1.5 L from debt to equity"
+   ],
+   "a": 3,
+   "why": "Equity −25%, debt +7%: ≈ 51%; rebalancing means moving about ₹1.5 L from debt to equity."
+  }
+ ],
+ "card_ids": [
+  "rebal-c3",
+  "rebal-c4"
+ ],
+ "words": 44
+}

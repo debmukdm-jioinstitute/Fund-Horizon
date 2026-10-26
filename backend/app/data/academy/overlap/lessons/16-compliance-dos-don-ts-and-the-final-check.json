@@ -1,0 +1,70 @@
+{
+ "id": "overlap-16",
+ "title": "Compliance: dos, don'ts and the final check",
+ "minutes": 4,
+ "level": "advanced",
+ "stage": "Compliance",
+ "objectives": [
+  "Apply the module's compliance rules to any overlap recommendation.",
+  "Pass the trainer's final check: explain, measure and fix overlap, and handle “more funds is safer” within compliance."
+ ],
+ "body_md": "Do: check overlap before recommending any new fund. Base consolidation on the client's goals, risk profile and costs. Explain exit loads and that redemptions may be taxed; refer tax to a CA. Use overlap data from published portfolios and name the date. Record reasons for each fund kept or dropped, with client approval.\n\n| Do | Don't |\n| --- | --- |\n| Check overlap before recommending any new fund | Add funds to a portfolio without checking what it already holds |\n| Base consolidation on the client's goals, risk profile and costs | Recommend switches mainly to earn commission or move assets to one AMC |\n| Explain exit loads and that redemptions may be taxed; refer tax to a CA | Give tax advice or ignore switching costs |\n| Use overlap data from published portfolios and name the date | Claim a fund is “better” without a fair, like-for-like comparison |\n| Record reasons for each fund kept or dropped, with client approval | Redeem or switch without documented consent |\n\n> **Investor takeaway:** Standard disclaimer: mutual fund investments are subject to market risks; read all scheme-related documents carefully. Past performance does not guarantee future returns. Final check for trainers: a new joiner passes this module when they can explain what portfolio overlap is and why it happens; measure overlap between two funds and read an overlap tool's output; judge when overlap is a real problem and when it is acceptable; consolidate a cluttered portfolio into a simple core-and-satellite structure; check the cost of switching before recommending any change; and handle the “more funds is safer” belief, within compliance.",
+ "key_terms": [
+  "Compliance",
+  "Overlap tool date",
+  "Client approval"
+ ],
+ "example": "A trainee measures overlap from published portfolios, names the date, checks loads and tax, and records keep/drop reasons with approval.",
+ "say": [
+  "Use overlap data from published portfolios and name the date.",
+  "Record reasons for each fund kept or dropped, with approval."
+ ],
+ "never": [
+  "Claim a fund is “better” without a fair comparison.",
+  "Redeem or switch without documented consent."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q15",
+   "q": "Which statement is compliant?",
+   "o": [
+    "“Switch all 9 funds today.”",
+    "“Let’s check overlap, costs and your goals, then decide which funds to keep, with your approval.”",
+    "“Redemptions are tax-free.”",
+    "“This fund is better, trust me.”"
+   ],
+   "a": 1,
+   "why": "“Let’s check overlap, costs and your goals, then decide which funds to keep, with your approval.”. Base changes on goals, risk and costs; record approval."
+  },
+  {
+   "id": "overlap-q24",
+   "q": "Kiran holds many employer shares via ESOPs, and his funds also hold that stock. What do you do?",
+   "o": [
+    "Ignore the ESOPs",
+    "Count the direct holding; review sector and stock concentration; consider funds with less exposure to that sector",
+    "Buy more of the employer's stock",
+    "Sell all funds at once"
+   ],
+   "a": 1,
+   "why": "Count the direct holding; review sector and stock concentration; consider funds with less exposure to that sector."
+  },
+  {
+   "id": "overlap-n26",
+   "q": "Which of these is compliant?",
+   "o": [
+    "“Switch all 9 funds today.”",
+    "“Redemptions are tax-free.”",
+    "“This fund is better, trust me.”",
+    "“Let's check overlap, costs and your goals, then decide which funds to keep, with your approval.”"
+   ],
+   "a": 3,
+   "why": "Base changes on goals, risk and costs; record approval."
+  }
+ ],
+ "card_ids": [
+  "overlap-c31",
+  "overlap-c32"
+ ],
+ "words": 250
+}

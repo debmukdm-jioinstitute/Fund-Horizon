@@ -1,0 +1,72 @@
+{
+ "id": "terms-11",
+ "title": "Judging performance: alpha, tracking error, overlap, rebalancing, Rule of 72",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "R",
+ "objectives": [
+  "Explain alpha, tracking error and portfolio overlap in one sentence each.",
+  "Say when rebalancing is due and how the Rule of 72 estimates doubling time."
+ ],
+ "body_md": "Alpha is return above what the benchmark (adjusted for risk) delivered. Tracking error shows how closely an index fund follows its index; lower is better. Portfolio overlap shows how much two funds hold the same stocks — two large-cap funds with 70% overlap add little diversification. Portfolio turnover is how often the manager buys and sells; high turnover means higher hidden trading costs. Rebalancing brings the asset mix back to target after markets move it. A fund should be judged against its TRI over 3–5 years, not one year. The Rule of 72 estimates doubling time: 72 ÷ yearly return = years to double.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Alpha | Return above what the benchmark (adjusted for risk) delivered | Fund 14%, benchmark 12% → roughly 2% alpha |\n| Tracking error | How closely an index fund follows its index; lower is better | 0.05% vs 0.5% tracking error |\n| Portfolio overlap | How much two funds hold the same stocks | Two large-cap funds with 70% overlap add little diversification |\n| Portfolio turnover | How often the fund manager buys and sells; high turnover means higher hidden trading costs | Turnover 30% vs 150% |\n| Rebalancing | Bringing the asset mix back to target after markets move it | 60:40 drifted to 72:28 → move some gains back to debt |\n| Benchmark-beating | Fund return after costs compared with TRI over 3–5 years, not one year | One bad year is not a reason to exit |\n| Rule of 72 | Quick estimate: 72 ÷ yearly return = years to double | At 12%, money doubles in about 6 years |\n\n> **Investor takeaway:** Compare like with like: XIRR for SIPs, CAGR for lump sums, against the TRI benchmark, over at least 3–5 years.",
+ "key_terms": [
+  "Alpha",
+  "Tracking error",
+  "Portfolio overlap",
+  "Rebalancing",
+  "Rule of 72"
+ ],
+ "example": "At 12% a year, money doubles in about 6 years by the Rule of 72; a 60:40 mix drifted to 72:28 is rebalanced by moving some gains back to debt.",
+ "say": [
+  "One bad year is not a reason to exit a fund.",
+  "Compare a fund with its TRI over 3–5 years, not one year."
+ ],
+ "never": [
+  "A fund that beat its benchmark last year is proven better.",
+  "Rebalancing means chasing the best-performing asset."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "terms-q15",
+   "q": "Using the Rule of 72, money growing at 12% doubles in about:",
+   "o": [
+    "3 years",
+    "6 years",
+    "9 years",
+    "12 years"
+   ],
+   "a": 1,
+   "why": "6 years. 72 ÷ 12 = 6."
+  },
+  {
+   "id": "terms-n17",
+   "q": "What does “Alpha” mean in plain language?",
+   "o": [
+    "Return above what the benchmark (adjusted for risk) delivered",
+    "How closely an index fund follows its index; lower is better",
+    "How much two funds hold the same stocks",
+    "How often the fund manager buys and sells; high turnover means higher hidden trading costs"
+   ],
+   "a": 0,
+   "why": "Alpha: Return above what the benchmark (adjusted for risk) delivered Example: Fund 14%, benchmark 12% → roughly 2% alpha"
+  },
+  {
+   "id": "terms-n18",
+   "q": "What does “Rebalancing” mean in plain language?",
+   "o": [
+    "Return above what the benchmark (adjusted for risk) delivered",
+    "How closely an index fund follows its index; lower is better",
+    "How much two funds hold the same stocks",
+    "Bringing the asset mix back to target after markets move it"
+   ],
+   "a": 3,
+   "why": "Rebalancing: Bringing the asset mix back to target after markets move it Example: 60:40 drifted to 72:28 → move some gains back to debt"
+  }
+ ],
+ "card_ids": [
+  "terms-c21",
+  "terms-c22"
+ ],
+ "words": 273
+}

@@ -1,0 +1,69 @@
+{
+ "id": "overlap-02",
+ "title": "How overlap is measured, with a worked example",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Calculate overlap by adding the smaller weight of each shared stock.",
+  "Work the four-stock example to 24%."
+ ],
+ "body_md": "The common method adds up, for every stock both funds hold, the smaller of its two weights. Worked example (illustrative, top holdings only): Bank 1: 9% in Fund A, 8% in Fund B, counted 8%. IT company 1: 7% and 6%, counted 6%. Bank 2: 6% and 7%, counted 6%. Energy company: 5% and 4%, counted 4%. Consumer company: 4% and 0%, counted 0%. Overlap from these stocks: 24%. Across the full portfolios, other shared stocks would add to this figure. Overlap tools on fund-research websites do this calculation from the latest published portfolios.\n\n| Stock | Weight in Fund A | Weight in Fund B | Counted (smaller) |\n| --- | --- | --- | --- |\n| Bank 1 | 9% | 8% | 8% |\n| IT company 1 | 7% | 6% | 6% |\n| Bank 2 | 6% | 7% | 6% |\n| Energy company | 5% | 4% | 4% |\n| Consumer company | 4% | 0% | 0% |\n| Overlap from these stocks |  |  | 24% |\n\n> **Investor takeaway:** Note the portfolio date when using an overlap tool: portfolios change as managers trade.",
+ "key_terms": [
+  "Overlap measurement",
+  "Smaller weight"
+ ],
+ "example": "Shared stocks counted at 8% + 6% + 6% + 4% = 24% overlap from four top holdings alone.",
+ "say": [
+  "Add the smaller weight of each shared stock.",
+  "A stock held by only one fund counts 0%."
+ ],
+ "never": [
+  "Add the larger weights.",
+  "Count shared stocks only, ignoring weights."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-q2",
+   "q": "How is overlap between two funds usually calculated?",
+   "o": [
+    "Add the larger weights of shared stocks",
+    "Add the smaller weights of shared stocks",
+    "Count shared stocks only",
+    "Compare NAVs"
+   ],
+   "a": 1,
+   "why": "Add the smaller weights of shared stocks. Sum of the smaller weight for each common stock."
+  },
+  {
+   "id": "overlap-q3",
+   "q": "Shared stocks at 8%, 6%, 6%, 4% (smaller weights) give overlap of…",
+   "o": [
+    "14%",
+    "24%",
+    "30%",
+    "48%"
+   ],
+   "a": 1,
+   "why": "24%. 8 + 6 + 6 + 4 = 24%."
+  },
+  {
+   "id": "overlap-n01",
+   "q": "A stock is 9% in Fund A and 8% in Fund B. How much counts toward overlap?",
+   "o": [
+    "8% — the smaller weight",
+    "9%",
+    "17%",
+    "0%"
+   ],
+   "a": 0,
+   "why": "For every stock both funds hold, add up the smaller of its two weights."
+  }
+ ],
+ "card_ids": [
+  "overlap-c3",
+  "overlap-c4"
+ ],
+ "words": 152
+}

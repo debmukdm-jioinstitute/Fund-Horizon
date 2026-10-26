@@ -1,0 +1,70 @@
+{
+ "id": "goals-02",
+ "title": "The maths of a goal: inflate the cost, then find the SIP",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "L",
+ "objectives": [
+  "Apply the future-cost formula with a goal-specific inflation rate.",
+  "Explain how a goal calculator turns a future cost into a monthly SIP."
+ ],
+ "body_md": "Step 1: inflate the cost. Future cost = today's cost × (1 + inflation)^years. Use a goal-specific inflation rate: education and healthcare costs often rise faster than general prices. The rates below are assumptions for illustration, not forecasts. Step 2: find the monthly SIP. Use a goal calculator (or a spreadsheet's PMT function) with the future cost, the years, and an assumed return suited to the asset mix.\n\n> **Investor takeaway:** Always plan for the future cost, not today's price tag.",
+ "key_terms": [
+  "Future cost",
+  "Goal-specific inflation",
+  "PMT"
+ ],
+ "example": "₹20 lakh today at 8% inflation for 15 years: 20 × 1.08^15 ≈ ₹63.4 lakh. Planning for ₹20 lakh would guarantee falling short.",
+ "say": [
+  "Always show the future cost, not today's price tag.",
+  "Label every assumption; returns are not guaranteed."
+ ],
+ "never": [
+  "Planning for today's cost is enough.",
+  "Use one inflation rate for every goal."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "goals-q2",
+   "q": "₹20 lakh today at 8% inflation for 15 years becomes about:",
+   "o": [
+    "₹20 lakh",
+    "₹32 lakh",
+    "₹63 lakh",
+    "₹120 lakh"
+   ],
+   "a": 2,
+   "why": "₹63 lakh. 20 × 1.08^15 ≈ 63.4."
+  },
+  {
+   "id": "goals-n02",
+   "q": "Future cost = today's cost × (1 + inflation)^years. ₹20 lakh at 8% for 15 years is about:",
+   "o": [
+    "₹20 lakh",
+    "₹32 lakh",
+    "₹120 lakh",
+    "₹63.4 lakh"
+   ],
+   "a": 3,
+   "why": "20 × 1.08^15 ≈ 63.4."
+  },
+  {
+   "id": "goals-n03",
+   "q": "Why use a goal-specific inflation rate?",
+   "o": [
+    "SEBI requires one rate per goal",
+    "General inflation ignores education",
+    "Education and healthcare costs often rise faster than general prices",
+    "It lowers the SIP"
+   ],
+   "a": 2,
+   "why": "Use a goal-specific inflation rate: education and healthcare costs often rise faster than general prices."
+  }
+ ],
+ "card_ids": [
+  "goals-c3",
+  "goals-c4"
+ ],
+ "words": 80
+}

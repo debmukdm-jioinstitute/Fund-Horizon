@@ -1,0 +1,72 @@
+{
+ "id": "bonds-17",
+ "title": "Role-play lab: six debt client conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six debt client conversations using duration, credit quality and tax.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example.\n\n| Client says | Explain |\n| --- | --- |\n| “My debt fund fell 2% this month. I thought debt was safe.” | Find out whether it is a rate move or a credit event, and explain duration. |\n| “This credit risk fund shows a 9% yield and my FD gives 7%. Why not put everything there?” | Explain the yield–risk trade-off and sizing: a small slice at most, never essential money. |\n| A retiree wants monthly income from ₹60 lakh. | Compare an SWP from a conservative debt fund, a bond ladder and government schemes, without quoting rates you haven't checked. |\n| “I need this money for my daughter's college fees in 2 years.” | Choose the category and explain why long duration doesn't fit: short duration, banking & PSU, or a target maturity fund matched to the date. |\n| “What happened in the Franklin Templeton case? Could it happen to me?” | Explain liquidity risk and today's safeguards honestly: side-pocketing, the PRC matrix, stricter liquidity requirements. |\n| “A website is selling a bank bond at 10%. It's a bank, so it's safe, right?” | Check whether it's an AT1 bond and explain write-off risk: a bank bond is not automatically safe. |\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Duration",
+  "Credit risk",
+  "SWP",
+  "AT1"
+ ],
+ "example": "Role-play the 9% yield question: the extra 2% over an FD is payment for default and liquidity risk — ask what the fund holds to earn it.",
+ "say": [
+  "Match duration to the goal date, credit quality to how essential the money is.",
+  "Check current rates rather than quoting from memory."
+ ],
+ "never": [
+  "Sell a credit risk fund on yield alone.",
+  "Predict interest-rate moves as a reason to buy."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "bonds-q21",
+   "q": "A client says, “My debt fund fell 2% this month. I thought debt was safe.” How do you respond?",
+   "o": [
+    "Promise a recovery by next month",
+    "Check whether it is a rate move or a credit event; explain duration and the seesaw; review duration vs goal; no promise of recovery",
+    "Advise selling everything at once",
+    "Say debt funds cannot fall"
+   ],
+   "a": 1,
+   "why": "Checks whether it is a rate move or a credit event; explains duration and the seesaw; reviews duration vs goal; no promise of recovery."
+  },
+  {
+   "id": "bonds-q22",
+   "q": "A client wants to move all their FD money into a credit risk fund showing a 9% yield. What do you explain?",
+   "o": [
+    "That 9% is guaranteed",
+    "The yield–risk trade-off; default and liquidity risk; sizing as a small slice at most; not for essential money",
+    "That credit risk funds never default",
+    "That FDs are riskier"
+   ],
+   "a": 1,
+   "why": "Yield–risk trade-off; default and liquidity risk; sizing as a small slice at most; not for essential money."
+  },
+  {
+   "id": "bonds-q23",
+   "q": "A retiree wants monthly income from ₹60 lakh. What do you outline?",
+   "o": [
+    "Only the highest-yield bond available",
+    "SWP from a conservative debt fund, a bond ladder, and eligible government schemes; check current rates rather than quoting from memory; tax via CA",
+    "A credit risk fund for the full amount",
+    "An equity fund for regular income"
+   ],
+   "a": 1,
+   "why": "SWP from a conservative debt fund, bond ladder, eligible government schemes; checks current rates rather than quoting from memory; tax via CA."
+  }
+ ],
+ "card_ids": [
+  "bonds-c31",
+  "bonds-c32"
+ ],
+ "words": 229
+}

@@ -1,0 +1,70 @@
+{
+ "id": "rebal-14",
+ "title": "Role-play lab: six rebalancing conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six rebalancing conversations using bands, costs and client approval.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example. Scenarios: The happy winner — Rohan's 60/40 is at 68/32 and he doesn't want to sell equity. After a fall — Leela's 60/40 is at 50/50 and she wants to wait. Small drift — a client at 62/38 asks to rebalance. Hidden holdings — Arun's funds look 80% equity, but he has ₹30 L in PPF and FDs. Goal near — Priya's goal is 2 years away; she asks to “rebalance to 60/40”. Recent SIP units — a rebalance would redeem units bought 6 months ago.\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Bands",
+  "Client approval"
+ ],
+ "example": "Role-play Rohan: band breached (68/32 vs ±5), new money first, then partial switch/STP, check loads and tax, record his decision.",
+ "say": [
+  "Explain the band, use new money first, check costs, record the decision.",
+  "Within the band: costs may outweigh benefits."
+ ],
+ "never": [
+  "Rebalance on request regardless of the band.",
+  "Change targets on market views."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "rebal-q21",
+   "q": "After a strong year, Rohan's 60/40 portfolio is at 68/32 and he doesn't want to sell equity. What do you do?",
+   "o": [
+    "Leave it alone",
+    "Explain the band was breached; use new money first, then a partial switch or STP; check loads and tax; record his decision",
+    "Sell all equity at once",
+    "Move everything to debt"
+   ],
+   "a": 1,
+   "why": "Explain the band was breached; use new money first, then a partial switch or STP; check loads and tax; record his decision."
+  },
+  {
+   "id": "rebal-q22",
+   "q": "Leela's 60/40 is at 50/50 after a sharp fall and she wants to wait. What do you say?",
+   "o": [
+    "Agree to wait indefinitely",
+    "Remind her of the agreed rule; explain buying lower without predicting the bottom; consider staging the move; no market predictions",
+    "Sell all debt now",
+    "Promise a recovery"
+   ],
+   "a": 1,
+   "why": "Remind her of the agreed rule; explain buying lower without predicting the bottom; consider staging the move; no market predictions."
+  },
+  {
+   "id": "rebal-q23",
+   "q": "A client at 62/38 asks to rebalance immediately. What do you explain?",
+   "o": [
+    "Rebalance immediately",
+    "It is within the ±5-point band; costs may outweigh benefits; direct new SIP money if anything",
+    "Change the target to 62/38",
+    "Ignore the request"
+   ],
+   "a": 1,
+   "why": "Explain it is within the ±5-point band; costs may outweigh benefits; use new SIP money if anything."
+  }
+ ],
+ "card_ids": [
+  "rebal-c27",
+  "rebal-c28"
+ ],
+ "words": 130
+}

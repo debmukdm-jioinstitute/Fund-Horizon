@@ -1,0 +1,77 @@
+{
+ "id": "idcw-05",
+ "title": "IDCW vs SWP vs growth",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "E",
+ "objectives": [
+  "Compare IDCW payout, SWP from growth and growth on who decides, predictability, tax and TDS.",
+  "Say which option fits regular income and which fits wealth building."
+ ],
+ "body_md": "Who decides the amount: the fund's trustees (IDCW payout), the investor (SWP from growth), nobody — no payout (growth). Predictability: IDCW is not guaranteed and can be cut or skipped; SWP is a fixed amount on a fixed date as long as units remain. What is taxed: the whole IDCW payout at the slab rate; only the gain inside each SWP withdrawal, as capital gains; nothing in growth until redemption. TDS: yes for IDCW above the yearly threshold; generally none for SWP for resident investors; none for growth.\n\n|  | IDCW payout | SWP (from growth option) | Growth option |\n| --- | --- | --- | --- |\n| Who decides the amount | The fund's trustees | The investor | — (no payout) |\n| Predictability | Not guaranteed; can be cut or skipped | Fixed amount on a fixed date, as long as units remain | — |\n| What is taxed | The whole payout, at the investor's slab rate | Only the gain inside each withdrawal, as capital gains | Nothing until the investor redeems |\n| TDS | Yes, above the yearly threshold | Generally none for resident investors | None |\n| Best for | Rare cases where the client accepts irregular payouts | Regular income: retirees, rent, fees | Long-term wealth building; no cash needed |\n\n> **Talk-track:** “If you need income, let's set up an SWP: you choose the amount and the date, and you're taxed only on the gain part. IDCW gives the fund that choice, and the whole payout is taxed.”\n\n> **Investor takeaway:** For regular income, an SWP usually beats IDCW on both control and tax.",
+ "key_terms": [
+  "IDCW payout",
+  "SWP (from growth option)",
+  "Growth option",
+  "TDS"
+ ],
+ "example": "Same ₹3 lakh a year out: IDCW taxes the whole ₹3 lakh; an SWP where 20% is gain taxes only about ₹60,000 as gain (illustrative; confirm with a CA).",
+ "say": [
+  "SWP: you choose the amount and date; tax only on the gain part.",
+  "IDCW gives the fund the choice, and the whole payout is taxed."
+ ],
+ "never": [
+  "IDCW is more predictable than an SWP.",
+  "Growth and IDCW options hold different portfolios."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "Choose the amount and date",
+   "text": "If you need income, let's set up an SWP: you choose the amount and the date, and you're taxed only on the gain part. IDCW gives the fund that choice, and the whole payout is taxed."
+  }
+ ],
+ "check": [
+  {
+   "id": "idcw-q7",
+   "q": "Which option lets the investor choose a fixed monthly amount?",
+   "o": [
+    "IDCW payout",
+    "IDCW reinvestment",
+    "SWP from growth",
+    "IDCW transfer"
+   ],
+   "a": 2,
+   "why": "SWP from growth. The investor sets amount and date."
+  },
+  {
+   "id": "idcw-q8",
+   "q": "In an SWP, what is taxed?",
+   "o": [
+    "The whole withdrawal",
+    "Only the gain portion",
+    "Nothing",
+    "Only the capital"
+   ],
+   "a": 1,
+   "why": "Only the gain portion. Each withdrawal is part capital, part gain."
+  },
+  {
+   "id": "idcw-q12",
+   "q": "Which client is usually best served by an SWP?",
+   "o": [
+    "A 25-year-old building wealth",
+    "A retiree needing fixed monthly income",
+    "A day trader",
+    "An NFO investor"
+   ],
+   "a": 1,
+   "why": "A retiree needing fixed monthly income. Control and tax efficiency."
+  }
+ ],
+ "card_ids": [
+  "idcw-c9",
+  "idcw-c10"
+ ],
+ "words": 238
+}

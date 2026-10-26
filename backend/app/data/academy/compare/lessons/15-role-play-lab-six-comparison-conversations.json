@@ -1,0 +1,68 @@
+{
+ "id": "compare-15",
+ "title": "Role-play lab: six comparison conversations",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Practice",
+ "objectives": [
+  "Answer six MF/PMS/AIF conversations in plain words in under two minutes.",
+  "Use the module's scenario answers (Q21–Q25) as trainer-marked practice."
+ ],
+ "body_md": "In pairs. One person plays the client, the other explains — in plain words, with a rupee example.\n\n| # | Scenario | What a good response includes |\n| --- | --- | --- |\n| 1 | A client asks, \"What's the difference between MF, PMS and AIF, in simple words?\" | Minimum ticket, ownership, liquidity, cost and tax, in under two minutes; no jargon. |\n| 2 | A ₹60 lakh investor with no MF core wants a PMS \"because it's better\". | Eligible vs suitable; builds the MF core first; PMS only as a slice later. |\n| 3 | A ₹5 crore client wants to put ₹2 crore into a private equity AIF and may need ₹50 lakh in two years for a house. | Explains the lock-in and drawdowns; sizes the AIF so the house money stays liquid. |\n| 4 | A client's VC AIF shows a negative return after 18 months; they want out. | Explains the J-curve and closed-ended structure; reviews against the fund's plan; no promises. |\n| 5 | A client saw an \"AIF with 18% fixed returns\" advertised on social media. | Flags that AIFs can't be publicly advertised or promise returns; advises caution; verifies registration. |\n| 6 | A client asks why they should keep mutual funds now that they're \"wealthy enough\" for PMS and AIFs. | Liquidity, cost, diversification and tax efficiency of the MF core; ladder, not replacement. |\n\n> **Investor takeaway:** Quiz scenarios Q21–Q25 (trainer-marked): a scenario answer earns its mark if it covers at least three model points and makes no promise of returns.",
+ "key_terms": [
+  "Role-play",
+  "Wealth ladder",
+  "J-curve",
+  "Private placement"
+ ],
+ "example": "Role-play the two-minute difference: ticket, ownership, liquidity, cost, tax — ₹100s vs ₹50 lakh vs ₹1 crore, units vs own demat vs units.",
+ "say": [
+  "Minimum ticket, ownership, liquidity, cost and tax, in under two minutes.",
+  "Eligible is not suitable."
+ ],
+ "never": [
+  "Promise returns or exit dates.",
+  "Move clients up the ladder for commission."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "compare-q21",
+   "q": "A client asks, “What's the difference between MF, PMS and AIF?” Explain in under two minutes.",
+   "o": [
+    "Only the minimum ticket matters",
+    "Minimum ticket (₹100s / ₹50 lakh / ₹1 crore), ownership (units vs own demat vs units), liquidity, costs and tax, in plain words",
+    "Only the tax treatment matters",
+    "They are identical except for the name"
+   ],
+   "a": 1,
+   "why": "Covers minimum ticket (₹100s / ₹50 L / ₹1 Cr), ownership (units vs own demat vs units), liquidity, costs and tax, in plain words."
+  },
+  {
+   "id": "compare-q22",
+   "q": "A ₹60 lakh investor with no mutual fund core wants a PMS “because it's better”. How do you respond?",
+   "o": [
+    "Agree — PMS is always better",
+    "Eligible is not suitable; build the MF core and emergency fund first; PMS only later as a slice",
+    "Invest everything in the PMS now",
+    "Skip the emergency fund"
+   ],
+   "a": 1,
+   "why": "Eligible is not suitable; build the MF core and emergency fund first; PMS only later as a slice."
+  },
+  {
+   "id": "compare-q23",
+   "q": "A ₹5 crore client wants ₹2 crore in a private equity AIF but may need ₹50 lakh in two years for a house. What do you do?",
+   "o": [
+    "Invest the full ₹2 crore including house money",
+    "Explain the lock-in and drawdowns; keep the house money liquid; size the AIF only from money not needed for years",
+    "Promise an exit in two years",
+    "Use the house money for the AIF"
+   ],
+   "a": 1,
+   "why": "Explains lock-in and capital calls; keeps the house money liquid; sizes the AIF only from money not needed for years."
+  }
+ ],
+ "card_ids": [],
+ "words": 235
+}

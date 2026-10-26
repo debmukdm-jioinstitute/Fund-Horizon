@@ -1,0 +1,78 @@
+{
+ "id": "terms-15",
+ "title": "Debt terms (2): credit quality and strategy",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Niche",
+ "objectives": [
+  "Explain credit rating, credit spread and gilt funds in plain words.",
+  "Say why a downgrade can cut a NAV in a day."
+ ],
+ "body_md": "Credit rating is an agency's grade of how likely a borrower is to repay. AAA is highest; below BBB− is below investment grade. Credit risk (default risk) is the chance a borrower delays or fails to repay, causing a sudden fall in NAV — a downgrade can cut NAV in a day. Credit spread is the extra yield a lower-rated bond pays over a government bond for its extra risk. Gilt (G-sec) funds hold government bonds: almost no credit risk, but still interest-rate risk. Reinvestment risk is having to reinvest maturing money at lower rates. An accrual strategy earns mainly from interest; a duration strategy also aims to gain from rate falls.\n\n| Term | Plain meaning | Example |\n| --- | --- | --- |\n| Credit rating | An agency's grade of how likely a borrower is to repay. AAA is highest; below BBB− is below investment grade | AAA PSU bond vs A-rated company bond |\n| Credit risk / default risk | The chance a borrower delays or fails to repay, causing a sudden fall in NAV | A downgrade can cut NAV in a day |\n| Credit spread | Extra yield a lower-rated bond pays over a government bond for its extra risk | Higher yield usually means higher risk |\n| Gilt / G-sec | Government bonds: almost no credit risk, but still interest-rate risk | Gilt fund NAV can fall when rates rise |\n| Reinvestment risk | When bonds mature, the money may have to be reinvested at lower rates | FD renewals at lower rates |\n| Accrual vs duration strategy | Accrual earns mainly from interest; duration also aims to gain from rate falls | Short-term fund vs dynamic bond fund |\n\n> **Talk-track:** “A debt fund is not an FD. Its return depends on two things: how sensitive it is to interest rates, which is its duration, and how safe its borrowers are, which is its credit quality. Let's match the duration to when you need the money.”",
+ "key_terms": [
+  "Credit rating",
+  "Credit risk / default risk",
+  "Credit spread",
+  "Gilt / G-sec",
+  "Reinvestment risk",
+  "Accrual vs duration strategy"
+ ],
+ "example": "AAA PSU bond vs A-rated company bond: the A-rated bond pays more yield because it carries more credit risk.",
+ "say": [
+  "Higher yield usually means higher risk — ask why it is high.",
+  "A downgrade can cut NAV in a day."
+ ],
+ "never": [
+  "AAA means a bond cannot fail.",
+  "Gilt funds cannot fall in value."
+ ],
+ "talk_track": [
+  {
+   "n": 1,
+   "title": "A debt fund is not an FD",
+   "text": "A debt fund is not an FD. Its return depends on two things: how sensitive it is to interest rates, which is its duration, and how safe its borrowers are, which is its credit quality. Let's match the duration to when you need the money."
+  }
+ ],
+ "check": [
+  {
+   "id": "terms-q17",
+   "q": "A debt fund shows a high YTM. What does that guarantee?",
+   "o": [
+    "The return, if held to maturity",
+    "Nothing — YTM is indicative; rate moves and credit events can change returns",
+    "A return above FD rates",
+    "That the NAV cannot fall"
+   ],
+   "a": 1,
+   "why": "YTM is indicative; prices and credit can change."
+  },
+  {
+   "id": "terms-n25",
+   "q": "What does “Credit rating” mean in plain language?",
+   "o": [
+    "An agency's grade of how likely a borrower is to repay. AAA is highest; below BBB− is below investment grade",
+    "The chance a borrower delays or fails to repay, causing a sudden fall in NAV",
+    "Extra yield a lower-rated bond pays over a government bond for its extra risk",
+    "Government bonds: almost no credit risk, but still interest-rate risk"
+   ],
+   "a": 0,
+   "why": "Credit rating: An agency's grade of how likely a borrower is to repay. AAA is highest; below BBB− is below investment grade Example: AAA PSU bond vs A-rated company bond"
+  },
+  {
+   "id": "terms-n26",
+   "q": "What does “Credit spread” mean in plain language?",
+   "o": [
+    "An agency's grade of how likely a borrower is to repay. AAA is highest; below BBB− is below investment grade",
+    "The chance a borrower delays or fails to repay, causing a sudden fall in NAV",
+    "Government bonds: almost no credit risk, but still interest-rate risk",
+    "Extra yield a lower-rated bond pays over a government bond for its extra risk"
+   ],
+   "a": 3,
+   "why": "Credit spread: Extra yield a lower-rated bond pays over a government bond for its extra risk Example: Higher yield usually means higher risk"
+  }
+ ],
+ "card_ids": [
+  "terms-c28"
+ ],
+ "words": 305
+}

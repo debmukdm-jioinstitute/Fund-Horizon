@@ -1,0 +1,70 @@
+{
+ "id": "overlap-04",
+ "title": "How to check a client's overlap",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "E",
+ "objectives": [
+  "Run the four checking steps, starting from the CAS.",
+  "Look beyond fund pairs at the combined portfolio and direct holdings."
+ ],
+ "body_md": "How to check: list every equity fund the client holds, across all platforms and AMCs (the CAS helps). Run the main pairs through an overlap tool, starting with the largest holdings. Also look at the combined portfolio: top 10 stocks, sector weights and market-cap split. Check whether the client also holds the same stocks directly, through ESOPs or a PMS.\n\n> **Investor takeaway:** Start every overlap check from the CAS: it shows funds across all AMCs.",
+ "key_terms": [
+  "CAS",
+  "Overlap tool",
+  "Combined portfolio"
+ ],
+ "example": "CAS shows 9 equity funds across 4 AMCs: run the largest pairs first, then look at the combined top 10 stocks.",
+ "say": [
+  "List every fund across all platforms and AMCs.",
+  "Check direct holdings too: ESOPs and PMS stocks count."
+ ],
+ "never": [
+  "Check only funds from one AMC.",
+  "Ignore direct holdings."
+ ],
+ "talk_track": [],
+ "check": [
+  {
+   "id": "overlap-n02",
+   "q": "What is the first step in checking a client's overlap?",
+   "o": [
+    "Run one fund pair",
+    "Check only the largest fund",
+    "Ask the AMC",
+    "List every equity fund held, across all platforms and AMCs (the CAS helps)"
+   ],
+   "a": 3,
+   "why": "List every equity fund the client holds, across all platforms and AMCs (the CAS helps)."
+  },
+  {
+   "id": "overlap-n03",
+   "q": "Beyond fund pairs, what else should you look at?",
+   "o": [
+    "Only the NAVs",
+    "Only the expense ratios",
+    "The combined portfolio: top 10 stocks, sector weights and market-cap split",
+    "Only the fund managers"
+   ],
+   "a": 2,
+   "why": "Also look at the combined portfolio: top 10 stocks, sector weights and market-cap split."
+  },
+  {
+   "id": "overlap-n04",
+   "q": "A client holds ESOPs in his employer, which his funds also hold. You should:",
+   "o": [
+    "Ignore the ESOPs",
+    "Count the direct holding when assessing concentration",
+    "Sell all funds",
+    "Buy more of the employer's stock"
+   ],
+   "a": 1,
+   "why": "Check whether the client also holds the same stocks directly, through ESOPs or a PMS."
+  }
+ ],
+ "card_ids": [
+  "overlap-c7",
+  "overlap-c8"
+ ],
+ "words": 75
+}

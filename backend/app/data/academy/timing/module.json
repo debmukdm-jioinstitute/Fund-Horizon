@@ -1,0 +1,734 @@
+{
+ "id": "timing",
+ "title": "Wrong Time to Invest?",
+ "code": "Module 11",
+ "blurb": "Why waiting for the right time usually costs more than staying invested — with the numbers to show it.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "New employees (all sections), sales team (talk-tracks, role-plays, niche topics); investors as awareness material"
+   ],
+   [
+    "Duration",
+    "About 75 minutes of lessons, plus role-play and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "Module 1"
+   ],
+   [
+    "Format",
+    "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
+   ]
+  ]
+ },
+ "sources": [
+  "SEBI Master Circular for Mutual Funds (current edition)"
+ ],
+ "lessons": [
+  {
+   "id": "timing-01",
+   "title": "Falls are normal: dips, corrections, bear markets, crashes",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "timing-02",
+   "title": "Why timing is so hard, and when the entry date matters",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "timing-03",
+   "title": "Worked example: a SIP through a fall",
+   "minutes": 4,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "timing-04",
+   "title": "Worked examples: a peak lump sum, and waiting in cash",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "L"
+  },
+  {
+   "id": "timing-05",
+   "title": "Diagnosing disappointment: six possible causes",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "timing-06",
+   "title": "Questions to ask, and the diagnosis talk-track",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "E"
+  },
+  {
+   "id": "timing-07",
+   "title": "Investing a lump sum without worrying about timing",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "timing-08",
+   "title": "Keep SIPs going through falls",
+   "minutes": 4,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "timing-09",
+   "title": "What to tell a client who invested at a peak",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "A"
+  },
+  {
+   "id": "timing-10",
+   "title": "The post-fall review in five checks",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "timing-11",
+   "title": "Rebalancing: a built-in way to “buy low”",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "R"
+  },
+  {
+   "id": "timing-12",
+   "title": "The psychology of “wrong time”: six biases",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "timing-13",
+   "title": "Myths of timing to correct",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "N"
+  },
+  {
+   "id": "timing-14",
+   "title": "Niche topics people miss",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Niche"
+  },
+  {
+   "id": "timing-15",
+   "title": "Role-play lab: six “wrong time” conversations",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Practice"
+  },
+  {
+   "id": "timing-16",
+   "title": "Compliance: dos, don'ts and the final check",
+   "minutes": 4,
+   "level": "advanced",
+   "stage": "Compliance"
+  }
+ ],
+ "cards": [
+  {
+   "id": "timing-c1",
+   "q": "The one idea",
+   "a": [
+    "Time in the market matters more than timing the market. Nobody can reliably pick the best day to invest."
+   ]
+  },
+  {
+   "id": "timing-c2",
+   "q": "Why falls feel worse",
+   "a": [
+    "Loss aversion: a loss hurts roughly twice as much as an equal gain feels good, so recent falls dominate how clients judge a decision."
+   ]
+  },
+  {
+   "id": "timing-c3",
+   "q": "Covid fall, 2020 (historical)",
+   "a": [
+    "Nifty 50 fell from about 12,168 (Jan 2020) to about 7,511 (Mar 2020), roughly −38%, and was back above 12,000 by Nov 2020. No guarantee this repeats."
+   ]
+  },
+  {
+   "id": "timing-c4",
+   "q": "Falls are normal",
+   "a": [
+    "Equity markets have had sharp falls many times; a fall is a normal feature of equity, not proof of a wrong decision."
+   ]
+  },
+  {
+   "id": "timing-c5",
+   "q": "SIP through a fall (illustrative)",
+   "a": [
+    "₹10,000 a month for 24 months through a V-shaped fall: ₹2.4 L invested, about ₹3.07 L at the end, because low prices bought more units."
+   ]
+  },
+  {
+   "id": "timing-c6",
+   "q": "Lump sum at a peak (illustrative)",
+   "a": [
+    "Investing at a peak vs a better day can mean a lower result (≈₹24.8 L vs ≈₹31.1 L), yet still well above the amount invested over a long horizon."
+   ]
+  },
+  {
+   "id": "timing-c7",
+   "q": "Cost of waiting (illustrative)",
+   "a": [
+    "Sitting in cash for a year waiting for a dip gave ≈₹29.4 L vs ≈₹31.1 L invested on day one: waiting has a cost too."
+   ]
+  },
+  {
+   "id": "timing-c8",
+   "q": "Diagnose first",
+   "a": [
+    "Before acting, find the cause: market-wide fall, wrong category, short horizon, too much equity, weak fund, or unrealistic expectations."
+   ]
+  },
+  {
+   "id": "timing-c9",
+   "q": "Three lump-sum routes",
+   "a": [
+    "All at once (long horizon, comfortable with swings); STP over 6–12 months (nervous clients, large sums); staggered by agreed triggers (rules in writing)."
+   ]
+  },
+  {
+   "id": "timing-c10",
+   "q": "What STP really does",
+   "a": [
+    "A systematic transfer plan mainly reduces regret if a fall comes soon after investing. It does not guarantee a better return."
+   ]
+  },
+  {
+   "id": "timing-c11",
+   "q": "“I invested at the peak”: five steps",
+   "a": [
+    "Acknowledge → check horizon → compare with benchmark from the same date → keep SIPs / add gradually → fix real problems on a plan."
+   ]
+  },
+  {
+   "id": "timing-c12",
+   "q": "SIPs and falls",
+   "a": [
+    "SIPs are designed for falls: the same amount buys more units when prices are low. If cash is tight, pause briefly; don’t redeem."
+   ]
+  },
+  {
+   "id": "timing-c13",
+   "q": "Rebalancing",
+   "a": [
+    "Bringing the mix back to target (e.g. 50:50 after a fall → 60:40) moves money into equity after prices fall. Do it on a schedule or 5–10 point drift; check tax and exit loads."
+   ]
+  },
+  {
+   "id": "timing-c14",
+   "q": "When timing really matters",
+   "a": [
+    "Under 1 year: a lot (so no equity). 3–5 years: somewhat. 7+ years: much less."
+   ]
+  },
+  {
+   "id": "timing-c15",
+   "q": "Sequence-of-returns risk",
+   "a": [
+    "A fall near a goal, or early in retirement withdrawals, can do lasting damage. Glide paths and 1–2 year income buffers manage it."
+   ]
+  },
+  {
+   "id": "timing-c16",
+   "q": "Compliance line",
+   "a": [
+    "Never predict falls or recoveries or promise a comeback by a date. Use history with “no guarantee”, and record decisions."
+   ]
+  },
+  {
+   "id": "timing-c17",
+   "q": "Market-wide fall",
+   "a": [
+    "The whole market fell, not just the client’s fund.",
+    "Example: Fund −18%, Nifty TRI −20% over the same period.",
+    "Remember: Compare with the benchmark before blaming the fund."
+   ]
+  },
+  {
+   "id": "timing-c18",
+   "q": "Wrong category",
+   "a": [
+    "The fund doesn’t match the goal’s horizon or risk.",
+    "Example: Small-cap fund used for a 2-year house deposit.",
+    "Remember: Fix the mismatch on a plan, not in panic."
+   ]
+  },
+  {
+   "id": "timing-c19",
+   "q": "Short horizon",
+   "a": [
+    "Money needed soon was put in equity.",
+    "Example: Wedding in 12 months, money in a flexi-cap fund.",
+    "Remember: Under a year, equity doesn’t belong."
+   ]
+  },
+  {
+   "id": "timing-c20",
+   "q": "Hindsight bias",
+   "a": [
+    "Believing a past fall was obvious.",
+    "Example: “Everyone knew the market would crash.”",
+    "Remember: It only looks obvious afterwards."
+   ]
+  },
+  {
+   "id": "timing-c21",
+   "q": "Loss aversion",
+   "a": [
+    "Losses hurt more than equal gains please.",
+    "Example: “I just want my money back, then I’ll exit.”",
+    "Remember: Decide by the goal, not by breaking even."
+   ]
+  },
+  {
+   "id": "timing-c22",
+   "q": "Anchoring",
+   "a": [
+    "Fixing on a past price.",
+    "Example: “I bought at ₹50; I’ll sell at ₹50.”",
+    "Remember: The purchase price doesn’t decide suitability today."
+   ]
+  },
+  {
+   "id": "timing-c23",
+   "q": "Recency bias",
+   "a": [
+    "Assuming recent trends will continue.",
+    "Example: “Markets fell last month, so they’ll keep falling.”",
+    "Remember: Look at the full history, not the last few weeks."
+   ]
+  },
+  {
+   "id": "timing-c24",
+   "q": "Waiting for perfect",
+   "a": [
+    "Holding cash for the ideal entry.",
+    "Example: “I’ll invest after the next dip.”",
+    "Remember: Show the cost of waiting; offer an STP."
+   ]
+  },
+  {
+   "id": "timing-c25",
+   "q": "Regret",
+   "a": [
+    "Pain of a decision that turned out badly.",
+    "Example: Lump sum invested a week before a fall.",
+    "Remember: STP reduces regret; it doesn’t guarantee returns."
+   ]
+  },
+  {
+   "id": "timing-c26",
+   "q": "Lump sum: all at once",
+   "a": [
+    "Full amount invested on day one.",
+    "Example: Long horizon, client comfortable with swings.",
+    "Remember: Over long periods this has often done well; no guarantee."
+   ]
+  },
+  {
+   "id": "timing-c27",
+   "q": "STP",
+   "a": [
+    "Park in a liquid fund; transfer a fixed amount to equity regularly.",
+    "Example: ₹12 L moved over 12 months.",
+    "Remember: Suits nervous clients and large sums."
+   ]
+  },
+  {
+   "id": "timing-c28",
+   "q": "Staggered by trigger",
+   "a": [
+    "Part now, more if the market falls by agreed amounts.",
+    "Example: 40% now, 30% more at −10%, rest at −20% or month 6.",
+    "Remember: Agree and record the rules in writing."
+   ]
+  },
+  {
+   "id": "timing-c29",
+   "q": "Rebalancing",
+   "a": [
+    "Bringing the asset mix back to target.",
+    "Example: 60:40 drifts to 50:50 after a fall; move debt to equity.",
+    "Remember: On a schedule; check tax and exit loads."
+   ]
+  },
+  {
+   "id": "timing-c30",
+   "q": "Glide path",
+   "a": [
+    "Gradually moving to safer assets as a goal nears.",
+    "Example: Equity cut from 70% to 30% over the last 3 years.",
+    "Remember: Protects against a fall just before the goal."
+   ]
+  },
+  {
+   "id": "timing-c31",
+   "q": "Income buffer",
+   "a": [
+    "1–2 years of withdrawals kept in debt or liquid funds.",
+    "Example: Retiree draws from the buffer during a fall.",
+    "Remember: Avoids selling equity at low prices."
+   ]
+  },
+  {
+   "id": "timing-c32",
+   "q": "Post-fall review",
+   "a": [
+    "A calm checklist after any fall.",
+    "Example: Benchmark, category, goal date, mix, client comfort.",
+    "Remember: Don’t switch funds just because they fell with the market."
+   ]
+  }
+ ],
+ "final": {
+  "id": "timing-final",
+  "title": "Wrong Time to Invest? final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "timing-q1",
+    "sec": "N: Navigate Behaviour",
+    "q": "Which line best sums up this module?",
+    "o": [
+     "Buy only after a 20% fall",
+     "Time in the market matters more than timing the market",
+     "Always invest in debt first",
+     "Exit when the market looks expensive"
+    ],
+    "a": 1,
+    "why": "Time in the market matters more than timing the market. No one can reliably pick the best day; staying invested for the goal matters more."
+   },
+   {
+    "id": "timing-q2",
+    "sec": "L: Learn the Basics",
+    "q": "Roughly how far did the Nifty 50 fall between January and March 2020?",
+    "o": [
+     "About 10%",
+     "About 20%",
+     "About 38%",
+     "About 60%"
+    ],
+    "a": 2,
+    "why": "About 38%. From about 12,168 to about 7,511, roughly −38%, recovering above 12,000 by November 2020."
+   },
+   {
+    "id": "timing-q3",
+    "sec": "E: Evaluate the Client",
+    "q": "A client’s fund fell 18% while its benchmark fell 20% over the same period. What is the most likely cause?",
+    "o": [
+     "A weak fund",
+     "A market-wide fall",
+     "High expense ratio",
+     "Wrong NAV"
+    ],
+    "a": 1,
+    "why": "A market-wide fall. The fund did slightly better than its benchmark; the whole market fell."
+   },
+   {
+    "id": "timing-q4",
+    "sec": "L: Learn the Basics",
+    "q": "Why can a SIP end up ahead after a V-shaped fall?",
+    "o": [
+     "Lower expense ratio during falls",
+     "The same amount buys more units at low prices",
+     "The AMC guarantees recovery",
+     "SIPs skip falling months"
+    ],
+    "a": 1,
+    "why": "The same amount buys more units at low prices. Low prices mean more units, which lowers the average cost."
+   },
+   {
+    "id": "timing-q5",
+    "sec": "A: Act Right",
+    "q": "What does an STP mainly do?",
+    "o": [
+     "Guarantees higher returns",
+     "Reduces regret if a fall comes soon after investing",
+     "Avoids all tax",
+     "Removes market risk"
+    ],
+    "a": 1,
+    "why": "Reduces regret if a fall comes soon after investing. STP spreads entry over time; it reduces regret but does not guarantee a better result."
+   },
+   {
+    "id": "timing-q6",
+    "sec": "A: Act Right",
+    "q": "A client wants to invest ₹20 L but is very nervous. Which approach fits best?",
+    "o": [
+     "All at once in small-cap",
+     "STP from a liquid fund over 6–12 months",
+     "Wait in cash for a big fall",
+     "Split across ten sectoral funds"
+    ],
+    "a": 1,
+    "why": "STP from a liquid fund over 6–12 months. STP suits nervous clients and large amounts."
+   },
+   {
+    "id": "timing-q7",
+    "sec": "A: Act Right",
+    "q": "What is the first step when a client says “I invested at the peak”?",
+    "o": [
+     "Recommend switching funds",
+     "Acknowledge the frustration",
+     "Stop the SIP",
+     "Predict when the market will recover"
+    ],
+    "a": 1,
+    "why": "Acknowledge the frustration. Acknowledge first, then check horizon, compare fairly, keep investing and fix real problems."
+   },
+   {
+    "id": "timing-q8",
+    "sec": "R: Review & Rebalance",
+    "q": "A target 60:40 equity:debt mix drifts to 50:50 after a fall. Rebalancing means…",
+    "o": [
+     "Selling equity",
+     "Moving money from debt into equity",
+     "Moving everything to cash",
+     "Doing nothing ever"
+    ],
+    "a": 1,
+    "why": "Moving money from debt into equity. Rebalancing back to 60:40 buys equity after prices have fallen."
+   },
+   {
+    "id": "timing-q9",
+    "sec": "L: Learn the Basics",
+    "q": "For which horizon does the entry date matter most?",
+    "o": [
+     "Under 1 year",
+     "7 years",
+     "10 years",
+     "15 years"
+    ],
+    "a": 0,
+    "why": "Under 1 year. Short horizons leave no time to recover, which is why equity doesn’t belong there."
+   },
+   {
+    "id": "timing-q10",
+    "sec": "Niche: Niche Topics",
+    "q": "Sequence-of-returns risk is greatest…",
+    "o": [
+     "At the start of a 20-year SIP",
+     "Near a goal or early in retirement withdrawals",
+     "In liquid funds",
+     "Only for debt funds"
+    ],
+    "a": 1,
+    "why": "Near a goal or early in retirement withdrawals. Money coming out when prices are low can do lasting damage."
+   },
+   {
+    "id": "timing-q11",
+    "sec": "N: Navigate Behaviour",
+    "q": "“I bought at ₹50, so I’ll sell when it’s back to ₹50” is an example of…",
+    "o": [
+     "Anchoring",
+     "Diversification",
+     "Rebalancing",
+     "Compounding"
+    ],
+    "a": 0,
+    "why": "Anchoring. Fixing on a past price is anchoring."
+   },
+   {
+    "id": "timing-q12",
+    "sec": "N: Navigate Behaviour",
+    "q": "“It was obvious the market would crash” reflects…",
+    "o": [
+     "Recency bias",
+     "Hindsight bias",
+     "Herding",
+     "Overconfidence in SIPs"
+    ],
+    "a": 1,
+    "why": "Hindsight bias. Events look predictable only after they happen."
+   },
+   {
+    "id": "timing-q13",
+    "sec": "A: Act Right",
+    "q": "A client’s cash is genuinely tight during a fall. What’s the better option for the SIP?",
+    "o": [
+     "Redeem the whole fund",
+     "Pause the SIP briefly rather than redeem",
+     "Switch to a sectoral fund",
+     "Increase the SIP"
+    ],
+    "a": 1,
+    "why": "Pause the SIP briefly rather than redeem. Pausing keeps existing units invested; redeeming locks in the fall."
+   },
+   {
+    "id": "timing-q14",
+    "sec": "Compliance: Compliance",
+    "q": "Which statement is compliant?",
+    "o": [
+     "“The market will recover by March.”",
+     "“Historically markets have recovered from falls, but there’s no guarantee.”",
+     "“This fund can’t fall further.”",
+     "“Stop your SIPs until things settle.”"
+    ],
+    "a": 1,
+    "why": "“Historically markets have recovered from falls, but there’s no guarantee.”. Use history with a clear “no guarantee”; never predict or promise."
+   },
+   {
+    "id": "timing-q15",
+    "sec": "L: Learn the Basics",
+    "q": "In the illustration, waiting a year in cash for a dip ended at ≈₹29.4 L versus ≈₹31.1 L invested on day one. The lesson is…",
+    "o": [
+     "Waiting always wins",
+     "Waiting has a cost too",
+     "Cash is risk-free so better",
+     "Timing is easy"
+    ],
+    "a": 1,
+    "why": "Waiting has a cost too. Missing time in the market can cost more than investing on a bad day."
+   },
+   {
+    "id": "timing-q16",
+    "sec": "E: Evaluate the Client",
+    "q": "A client's fund fell 12% in a year. What should you do first?",
+    "o": [
+     "Conclude the investment was a mistake",
+     "Diagnose the cause: measure, horizon, expectation, market, fund",
+     "Switch funds immediately",
+     "Stop the SIP"
+    ],
+    "a": 1,
+    "why": "Falls are a normal feature of equity; diagnose the cause first."
+   },
+   {
+    "id": "timing-q17",
+    "sec": "A: Act Right",
+    "q": "What does an STP guarantee?",
+    "o": [
+     "A better return than a lump sum",
+     "Nothing — it mainly reduces regret if a fall comes soon after investing",
+     "No tax on transfers",
+     "No risk at all"
+    ],
+    "a": 1,
+    "why": "It mainly reduces regret; no method guarantees a better result."
+   },
+   {
+    "id": "timing-q18",
+    "sec": "L: Learn the Basics",
+    "q": "Money needed within a year generally should not be in equity because:",
+    "o": [
+     "Equity funds refuse short-term money",
+     "Short horizons leave no time to recover from a fall",
+     "Debt always beats equity over short periods",
+     "SEBI bans it"
+    ],
+    "a": 1,
+    "why": "Over short horizons the entry date matters a lot and there is no time to recover."
+   },
+   {
+    "id": "timing-q19",
+    "sec": "R: Review & Rebalance",
+    "q": "A 60:40 mix drifted to 50:50 after a fall. Rebalancing back means:",
+    "o": [
+     "Selling equity",
+     "Moving money from debt into equity",
+     "Moving everything to cash",
+     "Doing nothing"
+    ],
+    "a": 1,
+    "why": "Restoring the target mix moves money from debt into equity after a fall."
+   },
+   {
+    "id": "timing-q20",
+    "sec": "Compliance: Compliance",
+    "q": "A distributor tells a client the market will recover by March. Is that compliant?",
+    "o": [
+     "Yes, if they sound confident",
+     "No — never predict recoveries or promise a comeback by a date",
+     "Yes, for diversified funds",
+     "Only if put in writing"
+    ],
+    "a": 1,
+    "why": "Never predict recoveries or promise a comeback by a date."
+   },
+   {
+    "id": "timing-q21",
+    "sec": "Practice: Role-Play",
+    "q": "Mr. Rao invested ₹10 L as a lump sum in January 2020 and is down sharply in March. He wants to exit. His goal is 10 years away. What do you do?",
+    "o": [
+     "Advise exiting to stop the loss",
+     "Acknowledge the frustration; confirm the 10-year horizon; compare the fund with its benchmark; explain the fall is market-wide; keep SIPs going and, if comfortable, add gradually; share history with “no guarantee”; record the discussion",
+     "Predict a recovery date",
+     "Switch to a sectoral fund"
+    ],
+    "a": 1,
+    "why": "Acknowledge the frustration; confirm the 10-year horizon; compare the fund with its benchmark from the same date; explain that the fall is market-wide; keep his SIPs going and, if comfortable, add gradually. Share history with “no guarantee”. Record the discussion."
+   },
+   {
+    "id": "timing-q22",
+    "sec": "Practice: Role-Play",
+    "q": "Ms. Shah has ₹25 L from a property sale and says she’ll invest “after the next crash”. What do you offer?",
+    "o": [
+     "Agree to wait for the crash",
+     "Show the cost of waiting with an illustrative example; offer an STP from a liquid fund over 6–12 months to reduce regret, or agree written trigger rules; don’t predict a crash or promise better timing",
+     "Promise a crash is coming",
+     "Invest it all in small caps now"
+    ],
+    "a": 1,
+    "why": "Show the cost of waiting with an illustrative example; offer an STP from a liquid fund over 6–12 months to reduce regret; or agree written trigger rules. Don’t predict a crash or promise better timing."
+   },
+   {
+    "id": "timing-q23",
+    "sec": "Practice: Role-Play",
+    "q": "A client put her daughter’s wedding money (needed in 14 months) into a mid-cap fund, which has now fallen 15%. What is the plan?",
+    "o": [
+     "Wait for it to recover, however long it takes",
+     "Diagnose: wrong category for a short horizon. Plan a move towards debt or liquid funds on a schedule, considering tax and exit loads, rather than panic-selling in one go; document the reasoning",
+     "Add more to the mid-cap fund",
+     "Switch to another mid-cap fund"
+    ],
+    "a": 1,
+    "why": "Diagnose: wrong category for a short horizon. Plan a move towards debt or liquid funds on a schedule, considering tax and exit loads, rather than panic-selling in one go. Document the reasoning."
+   },
+   {
+    "id": "timing-q24",
+    "sec": "Practice: Role-Play",
+    "q": "A 60:40 client’s portfolio drifted to 48:52 after a fall. He wants to move everything to debt “until things settle”. What do you say?",
+    "o": [
+     "Agree — move everything to debt",
+     "Explain the agreed target mix: rebalancing back to 60:40 means buying equity at lower prices; review goal date and comfort; avoid all-or-nothing moves; check tax and exit loads",
+     "Move everything to equity instead",
+     "Do nothing ever"
+    ],
+    "a": 1,
+    "why": "Explain the agreed target mix and that rebalancing back to 60:40 means buying equity at lower prices; review goal date and comfort; avoid all-or-nothing moves; check tax and exit loads."
+   },
+   {
+    "id": "timing-q25",
+    "sec": "Practice: Role-Play",
+    "q": "A retired client draws ₹50,000 a month from an equity-heavy portfolio and is worried about a falling market. What do you set up?",
+    "o": [
+     "A larger equity SIP",
+     "Explain sequence-of-returns risk; set up a 1–2 year income buffer in debt or liquid funds so withdrawals don’t force equity sales at low prices; review the overall mix; make no market predictions",
+     "Stop all withdrawals at once",
+     "Move everything to a credit risk fund"
+    ],
+    "a": 1,
+    "why": "Explain sequence-of-returns risk; set up a 1–2 year income buffer in debt or liquid funds so withdrawals don’t force equity sales at low prices; review the overall mix. Make no market predictions."
+   }
+  ]
+ },
+ "role_play": null
+}

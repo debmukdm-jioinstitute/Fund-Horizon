@@ -8,6 +8,8 @@ interface Bucket { name: string; invested: number; current: number; xirr: number
 interface Pms { invested: number; current: number; xirr: number | null }
 interface Fact { source: string; items: { label: string; value: string }[] }
 interface Valuation { invested: number; value: number; gain: number; xirr: number | null; date: string; rows: number }
+interface FileResult { name: string; kind: "monthly" | "valuation" | "factsheet" | "unrecognised" | "error"; method: "text" | "ocr" | ""; buckets: number; valuation_rows: number; factsheet_items: number }
+interface StagedFile { id: number; file: File }
 interface HistoryRow { id: string; report_month: string; value_as_on: string; emailed_at: string | null; created_at: string }
 interface Report {
   client: { name: string; date: string; arn: string; phone: string };
@@ -17,6 +19,7 @@ interface Report {
 
 const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
 const CUSTOM = "__custom__";
+const PREFILL = "Valuation total (split into buckets)";
 const inr = (v: number, d = 0) => v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d });
 const cell = "w-full rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-1.5 py-1 text-[12.5px] tabular-nums";
 const card = "rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]";
@@ -83,6 +86,12 @@ export default function PaperworkReport() {
   const [report, setReport] = useState<Report | null>(null);
   const [valuation, setValuation] = useState<Valuation | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
+  // Staged multi-file upload: files are listed first, then parsed together
+  // in ONE call. Re-parsing after adding files merges into the draft instead
+  // of replacing it (see parseStaged).
+  const [staged, setStaged] = useState<StagedFile[]>([]);
+  const [fileResults, setFileResults] = useState<FileResult[]>([]);
+  const nextStagedId = useRef(1);
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -105,7 +114,7 @@ export default function PaperworkReport() {
     const preserve = preserveDraftRef.current;
     preserveDraftRef.current = false;
     setDetail(null); setHistory([]);
-    if (!preserve) { setReport(null); setValuation(null); setWarnings([]); }
+    if (!preserve) { setReport(null); setValuation(null); setWarnings([]); setFileResults([]); }
     if (!hhId || isCustom) return;
     fetchHouseholdDetail(hhId).then((d) => { if (live) setDetail(d); }).catch(() => undefined);
     return () => { live = false; };
@@ -136,27 +145,93 @@ export default function PaperworkReport() {
     setReport((r) => r && { ...r, month: `${MONTHS[month]} ${year}` });
   };
 
-  const upload = (files: FileList | null) => files?.length && run("parse", async () => {
+  const addStaged = (files: FileList | null) => files?.length && setStaged((xs) => {
+    // Same file twice is one staged entry (name + size is enough to spot it).
+    const fresh = Array.from(files).filter((f) => !xs.some((s) => s.file.name === f.name && s.file.size === f.size));
+    return fresh.length ? [...xs, ...fresh.map((file) => ({ id: nextStagedId.current++, file }))] : xs;
+  });
+
+  const resultText = (r: FileResult) => {
+    const kind = r.kind === "monthly" ? "monthly report"
+      : r.kind === "valuation" ? "valuation (cross-check)"
+      : r.kind === "factsheet" ? "factsheet"
+      : r.kind === "error" ? "could not be read" : "not recognised";
+    const method = r.method === "ocr" ? "read by OCR" : r.method === "text" ? "read from text" : "";
+    const count = r.buckets ? `${r.buckets} buckets`
+      : r.valuation_rows ? `${r.valuation_rows} funds`
+      : r.factsheet_items ? `${r.factsheet_items} figures` : "";
+    return [kind, method, count].filter(Boolean).join(" · ");
+  };
+
+  const parseStaged = () => staged.length && run("parse", async () => {
     const fd = new FormData();
-    Array.from(files).forEach((f) => fd.append("files", f));
-    const d = await call<Report & { valuation: Valuation | null; warnings: string[] }>("/parse", { method: "POST", body: fd });
+    staged.forEach((s) => fd.append("files", s.file));
+    const d = await call<Report & { valuation: Valuation | null; warnings: string[]; file_results: FileResult[] }>("/parse", { method: "POST", body: fd });
     setWarnings(d.warnings);
-    setValuation(d.valuation);
+    setFileResults(d.file_results ?? []);
+    // Keep the previous valuation when the new batch has none — a monthly-only
+    // file must not wipe the cross-check, and vice versa.
+    if (d.valuation) setValuation(d.valuation);
     if (d.buckets.length) {
       const month = `${MONTHS[monthPick.month]} ${monthPick.year}`;
-      // Custom mode: a typed custom name always wins over the file header
-      // name; when nothing is typed yet, prefill the custom name from the
-      // file. The file header phone is never used as the client phone in
-      // custom mode — it is the firm's number, not the client's.
-      const client = isCustom
-        ? { ...d.client, name: customName.trim() || d.client.name, phone: customMobile }
-        : d.client;
-      if (isCustom && !customName.trim() && d.client.name) setCustomName(d.client.name);
-      setReport({
-        client, month, inception: d.inception, total_xirr: d.total_xirr,
-        buckets: d.buckets, pms: d.pms, factsheets: d.factsheets,
-      });
-      if (d.client.date) setMsg({ ok: true, text: "Figures loaded. Check every value before creating the report." });
+      const isPrefill = (bs: Bucket[]) => bs.length === 1 && bs[0].name === PREFILL;
+      if (!report) {
+        // Custom mode: a typed custom name always wins over the file header
+        // name; when nothing is typed yet, prefill the custom name from the
+        // file. The file header phone is never used as the client phone in
+        // custom mode — it is the firm's number, not the client's.
+        const client = isCustom
+          ? { ...d.client, name: customName.trim() || d.client.name, phone: customMobile }
+          : d.client;
+        if (isCustom && !customName.trim() && d.client.name) setCustomName(d.client.name);
+        setReport({
+          client, month, inception: d.inception, total_xirr: d.total_xirr,
+          buckets: d.buckets, pms: d.pms, factsheets: d.factsheets,
+        });
+        setMsg({
+          ok: true,
+          text: isPrefill(d.buckets)
+            ? "Valuation total loaded as a single bucket. Split it into buckets, then check every value before creating the report."
+            : "Figures loaded. Check every value before creating the report.",
+        });
+      } else {
+        // Merge into the existing draft, never replace it: manual bucket
+        // edits stay, new buckets are added only when their name is new, a
+        // real monthly report replaces the valuation-total placeholder, the
+        // placeholder never lands on top of real buckets, factsheets are
+        // appended without duplicates, and empty client/date/inception
+        // fields are the only ones filled in.
+        if (isCustom && !customName.trim() && d.client.name) setCustomName(d.client.name);
+        setReport((prev) => {
+          if (!prev) return prev;
+          let buckets: Bucket[];
+          if (prev.buckets.length === 0 || isPrefill(prev.buckets)) buckets = d.buckets;
+          else if (isPrefill(d.buckets)) buckets = prev.buckets;
+          else {
+            const names = new Set(prev.buckets.map((b) => b.name));
+            buckets = [...prev.buckets, ...d.buckets.filter((b) => !names.has(b.name))];
+          }
+          const pms = (prev.pms.invested === 0 && prev.pms.current === 0) ? d.pms : prev.pms;
+          const sources = new Set(prev.factsheets.map((f) => f.source));
+          const factsheets = [...prev.factsheets, ...d.factsheets.filter((f) => !sources.has(f.source))];
+          const client = {
+            ...prev.client,
+            name: prev.client.name.trim() ? prev.client.name : d.client.name,
+            date: prev.client.date.trim() ? prev.client.date : d.client.date,
+            arn: prev.client.arn || d.client.arn,
+          };
+          const merged: Report = {
+            ...prev,
+            client,
+            inception: prev.inception || d.inception,
+            total_xirr: prev.total_xirr ?? d.total_xirr,
+            buckets, pms, factsheets,
+          };
+          if (isCustom) merged.client = { ...merged.client, name: customName.trim() || merged.client.name, phone: customMobile };
+          return merged;
+        });
+        setMsg({ ok: true, text: "Merged into the existing draft — manual edits were kept. Check every value before creating the report." });
+      }
     } else if (d.valuation) {
       setMsg({ ok: false, text: "No monthly bucket rows found in these files. The valuation total below is a cross-check only. Add bucket rows by hand, or upload last month's monthly report." });
     } else {
@@ -249,9 +324,10 @@ export default function PaperworkReport() {
       <div className={`${card} p-5`}>
         <h2 className="text-lg font-bold">Paperwork Processing — monthly client report</h2>
         <p className="mt-1 text-[13.5px] text-[#667085] dark:text-[#9AA3B2]">
-          Upload PMS factsheets, a folio-wise valuation, or last month&apos;s monthly report. Text is read
-          directly, or by built-in OCR for scans. Check the tables, fix any value, then create the report:
-          it downloads, is saved to the client CRM record, and can be emailed to the client.
+          Stage PMS factsheets, a folio-wise valuation, or last month&apos;s monthly report, then parse
+          them together. Text is read directly, or by built-in OCR for scans — each staged file shows
+          whether it was read by OCR or from text. Check the tables, fix any value, then create the
+          report: it downloads, is saved to the client CRM record, and can be emailed to the client.
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <label htmlFor="ppClient" className="text-[12px] font-bold uppercase tracking-wider text-[#006F64] dark:text-[#75E1CE]">Client / Household</label>
@@ -285,9 +361,15 @@ export default function PaperworkReport() {
         )}
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border-[1.5px] border-dashed border-[#006F64] px-3.5 py-2 text-[13.5px] font-bold text-[#006F64] dark:text-[#75E1CE]">
-            {busy === "parse" ? "Reading…" : "⬆ Upload factsheets & valuation files"}
-            <input type="file" multiple accept="application/pdf,image/png,image/jpeg" className="hidden" disabled={busy !== null} onChange={(e) => { const f = e.target.files; upload(f); e.target.value = ""; }} />
+            {busy === "parse" ? "Reading…" : "⬆ Add files to stage"}
+            <input type="file" multiple accept="application/pdf,image/png,image/jpeg" className="hidden" disabled={busy !== null} onChange={(e) => { const f = e.target.files; addStaged(f); e.target.value = ""; }} />
           </label>
+          <button type="button" className={btnPrimary} onClick={parseStaged} disabled={busy !== null || staged.length === 0}>
+            {busy === "parse" ? "Reading…" : `Parse staged files (${staged.length})`}
+          </button>
+          <button type="button" className={btn} onClick={() => setStaged([])} disabled={busy !== null || staged.length === 0}>
+            Clear staged files
+          </button>
           <button type="button" className={btn} onClick={startFromLast} disabled={busy !== null || !customerId} title={isCustom ? "Create a report for this custom client first — it will then appear as a household" : customerId ? undefined : "Pick a client household first"}>
             {busy === "latest" ? "Loading…" : "Start from last month's report"}
           </button>
@@ -295,7 +377,27 @@ export default function PaperworkReport() {
             Start with empty buckets
           </button>
         </div>
-        {warnings.map((w) => <p key={w} className="mt-2 text-[12.5px] text-[#9A6700] dark:text-[#F5C451]">{w}</p>)}
+        {staged.length > 0 && (
+          <ul className="mt-2 space-y-1 text-[13px]">
+            {staged.map((s) => {
+              const r = fileResults.find((x) => x.name === s.file.name);
+              return (
+                <li key={s.id} className="flex items-center gap-2">
+                  <span className="flex-1 truncate">{s.file.name} ({Math.round(s.file.size / 1024)} KB){r ? ` — ${resultText(r)}` : ""}</span>
+                  <button type="button" aria-label={`Remove ${s.file.name}`} className="rounded px-1.5 py-0.5 text-[12px] font-bold hover:bg-[#F3F6FC] dark:hover:bg-[#2B3644]" onClick={() => setStaged((xs) => xs.filter((x) => x.id !== s.id))} disabled={busy !== null}>✕</button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {warnings.length > 0 && (
+          <div role="alert" className="mt-3 rounded-xl border border-[#E8B84B] bg-[#FFF8E6] px-3.5 py-2.5 text-[13px] dark:border-[#8A6A1A] dark:bg-[#2A2210]">
+            <b>Check these before creating the report:</b>
+            <ul className="mt-1 list-disc space-y-0.5 pl-5">
+              {warnings.map((w) => <li key={w}>{w}</li>)}
+            </ul>
+          </div>
+        )}
         {msg && <p role="status" className={`mt-2 text-[13px] ${msg.ok ? "text-[#147A3D] dark:text-[#6EE7A0]" : "text-[#B42318] dark:text-[#FF7D86]"}`}>{msg.text}</p>}
         {valuation && (
           <div className="mt-3 rounded-xl bg-[#F8FAFB] dark:bg-[#1B2432] px-3.5 py-2.5 text-[13px]">

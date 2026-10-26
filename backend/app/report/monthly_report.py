@@ -11,10 +11,22 @@ Totals rule that matters: a bucket XIRR is a cash-flow figure for that bucket, s
 portfolio XIRR is carried from the source (or typed in) and is never an average of
 the bucket XIRRs. Gains and weights, by contrast, are always recomputed from the
 invested and current amounts.
+
+Valuation-only uploads are prefilled, never split by guesswork: when no monthly
+bucket rows are found but a folio-wise valuation total exists, the draft gets one
+bucket named ``PREFILL_BUCKET_NAME`` carrying the valuation total. The preparer
+splits it by hand — the September buckets are vintage/STP groupings, not fund
+categories, so no Debt/Equity split is ever invented from fund names.
+
+The generated PDF carries the official Fund Horizon logo from
+``backend/app/report/assets/fund-horizon-logo.png`` (a copy of the frontend's
+official logo, since the backend cannot see frontend/public at runtime). If the
+file is missing the PDF still builds, text-only, rather than failing.
 """
 
 import io
 import re
+from pathlib import Path
 from typing import Any
 
 from app.config.disclosures import ARN
@@ -22,9 +34,25 @@ from app.report.client_report import NOTES, extract_text, ind, parse_factsheet, 
 from app.report.fmt import xml_escape
 from app.report.fonts import BODY_FONT, BOLD_FONT
 
+LOGO_PATH = Path(__file__).resolve().parent / "assets" / "fund-horizon-logo.png"
+PREFILL_BUCKET_NAME = "Valuation total (split into buckets)"
+
 _NUM = re.compile(r"^[₹(]?-?[\d,]*\d(?:\.\d+)?%?\)?$")
-_VALUE_ON = re.compile(r"Value As On[^0-9]*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})", re.IGNORECASE)
-_INCEPTION = re.compile(r"Inception Date[^A-Za-z0-9]*(\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4})", re.IGNORECASE)
+_VALUE_ON = re.compile(r"Value\s*As\s*On[^0-9]*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})", re.IGNORECASE)
+_INCEPTION = re.compile(r"Inception\s*Date[^A-Za-z0-9]*(\d{1,2}\s*[A-Za-z]{3,9}\s*\d{4})", re.IGNORECASE)
+
+
+def _despace(s: str) -> str:
+    """Re-insert spaces OCR dropped between words: 'DebtPortfolio' -> 'Debt Portfolio'.
+
+    Only splits at case/digit boundaries where no space exists, so text-layer
+    names pass through unchanged. Applied to bucket and client names only —
+    never to numbers, where a glued token cannot be split unambiguously.
+    """
+    s = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", s)
+    s = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", s)
+    s = re.sub(r"(?<=[A-Za-z])(?=\d)", " ", s)
+    return s
 
 
 def _num(tok: str) -> float:
@@ -45,17 +73,19 @@ def _trailing5(tokens: list[str]) -> tuple[str, list[float]] | None:
 def parse_monthly_buckets(text: str) -> dict[str, Any] | None:
     """Bucket table -> client header + buckets + PMS row + portfolio XIRR. None when no bucket rows."""
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
-    title_i = next((i for i, ln in enumerate(lines) if "portfolio xirr" in ln.lower()), -1)
+    # OCR often drops the space inside a heading ('PORTFOLIOXIRR'), so marker
+    # matching is done on the space-stripped line, not the raw line.
+    title_i = next((i for i, ln in enumerate(lines) if "portfolioxirr" in ln.lower().replace(" ", "")), -1)
     # A folio-wise valuation also has 5-number trailing runs, so a monthly report
     # is only recognised by its own markers, never by number shape alone.
-    if title_i < 0 and "complete portfolio" not in text.lower():
+    if title_i < 0 and "completeportfolio" not in text.lower().replace(" ", ""):
         return None
     scan = lines[title_i + 1:] if title_i >= 0 else lines
     name = ""
     if title_i >= 0 and title_i + 1 < len(lines):
         nxt = lines[title_i + 1]
-        if not re.search(r"(?i)value as on|inception|investments", nxt):
-            name = nxt
+        if "valueason" not in nxt.lower().replace(" ", "") and "inception" not in nxt.lower() and "investments" not in nxt.lower():
+            name = _despace(nxt)
     value_on = _VALUE_ON.search(text)
     inception = _INCEPTION.search(text)
     buckets: list[dict[str, Any]] = []
@@ -65,7 +95,7 @@ def parse_monthly_buckets(text: str) -> dict[str, Any] | None:
     in_complete = False
     for ln in scan:
         low = ln.lower()
-        if "complete portfolio" in low:
+        if "completeportfolio" in low.replace(" ", ""):
             in_complete = True
             continue
         if not in_complete:
@@ -76,16 +106,16 @@ def parse_monthly_buckets(text: str) -> dict[str, Any] | None:
                     totals = {"invested": vals[0], "current": vals[1], "gain": vals[2]}
                     total_xirr = vals[4]
                 continue
-            if re.search(r"(?i)portfolio xirr|investments|invested amount|mutual funds$", ln) and not _trailing5(ln.split()):
+            if re.search(r"(?i)portfolioxirr|investments|investedamount|mutualfunds", low.replace(" ", "")) and not _trailing5(ln.split()):
                 continue
             if ln.split()[0].isdigit():
                 continue  # folio-wise serial row, not a bucket
             parsed = _trailing5(ln.split())
             if parsed:
                 bname, vals = parsed
-                if bname.lower() in ("mutual funds",):
+                if bname.lower().replace(" ", "") in ("mutualfunds",):
                     continue
-                buckets.append({"name": bname, "invested": vals[0], "current": vals[1], "xirr": vals[4]})
+                buckets.append({"name": _despace(bname), "invested": vals[0], "current": vals[1], "xirr": vals[4]})
             continue
         # COMPLETE PORTFOLIO section: only the PMS row carries new information.
         if re.match(r"(?i)^pms\b", ln):
@@ -109,19 +139,46 @@ def parse_monthly_buckets(text: str) -> dict[str, Any] | None:
     }
 
 
+def _extraction_method(fname: str, data: bytes) -> str:
+    """How extract_text read this file: 'ocr' for images and scanned PDFs, else 'text'.
+
+    Mirrors extract_text's own branch (image -> OCR; PDF text layer >= 80 chars ->
+    text, otherwise OCR) without re-running OCR. Falls back to 'text' when the
+    input cannot be inspected (e.g. a fixture in tests), so the method label
+    never blocks a parse.
+    """
+    if fname.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
+        return "ocr"
+    try:
+        from pypdf import PdfReader
+
+        pages = [p.extract_text(extraction_mode="layout") or "" for p in PdfReader(io.BytesIO(data)).pages]
+        return "text" if len("".join(pages).strip()) >= 80 else "ocr"
+    except Exception:
+        return "text"
+
+
 def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
-    """Parse uploaded monthly reports, folio-wise valuations (cross-check only) and factsheets."""
+    """Parse uploaded monthly reports, folio-wise valuations (cross-check only) and factsheets.
+
+    Each file also gets a ``file_results`` entry (name, kind, read method, counts)
+    so the frontend can show exactly which files were read by OCR vs text. Files
+    may arrive in any order — monthly + valuation in either order gives the same
+    buckets + cross-check.
+    """
     out: dict[str, Any] = {
         "client": {"name": "", "date": "", "arn": "", "phone": ""},
         "inception": "", "buckets": [], "pms": {"invested": 0.0, "current": 0.0, "xirr": None},
-        "total_xirr": None, "valuation": None, "factsheets": [], "warnings": [],
+        "total_xirr": None, "valuation": None, "factsheets": [], "warnings": [], "file_results": [],
     }
     for fname, data in files:
         try:
             text = extract_text(fname, data)
         except ValueError as e:
             out["warnings"].append(str(e))
+            out["file_results"].append({"name": fname, "kind": "error", "method": "", "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
             continue
+        method = _extraction_method(fname, data)
         monthly = parse_monthly_buckets(text)
         if monthly:
             if out["buckets"]:
@@ -134,6 +191,7 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
                 out["client"] = {k: out["client"][k] or v for k, v in monthly["client"].items()}
                 if not (out["client"]["name"] and out["client"]["date"]):
                     out["warnings"].append(f"{fname}: client name or value-as-on date not detected; please fill them in. Review all values.")
+            out["file_results"].append({"name": fname, "kind": "monthly", "method": method, "buckets": len(monthly["buckets"]), "valuation_rows": 0, "factsheet_items": 0})
             continue
         statement = parse_statement(text)
         if statement:
@@ -147,12 +205,23 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
                     "rows": len(statement["rows"]),
                 }
                 out["client"] = {k: out["client"][k] or v for k, v in statement["client"].items()}
+            out["file_results"].append({"name": fname, "kind": "valuation", "method": method, "buckets": 0, "valuation_rows": len(statement["rows"]), "factsheet_items": 0})
             continue
         fact = parse_factsheet(fname, text)
         if fact:
             out["factsheets"].append(fact)
+            out["file_results"].append({"name": fname, "kind": "factsheet", "method": method, "buckets": 0, "valuation_rows": 0, "factsheet_items": len(fact["items"])})
         else:
             out["warnings"].append(f"{fname}: no monthly bucket rows, fund statement rows, or factsheet figures recognised.")
+            out["file_results"].append({"name": fname, "kind": "unrecognised", "method": method, "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
+    if not out["buckets"] and out["valuation"] is not None:
+        # Valuation-only upload: prefill ONE honestly-labelled bucket carrying
+        # the valuation total, so the draft is not empty. Never split it by
+        # guessing categories from fund names — the preparer splits it by hand.
+        v = out["valuation"]
+        out["buckets"] = [{"name": PREFILL_BUCKET_NAME, "invested": v["invested"], "current": v["value"], "xirr": v["xirr"]}]
+        if out["total_xirr"] is None:
+            out["total_xirr"] = v["xirr"]
     if not out["client"]["arn"]:
         out["client"]["arn"] = ARN.replace("ARN ", "")
     return out
@@ -206,14 +275,41 @@ def build_monthly_report(data: dict[str, Any]) -> bytes:
     small = ParagraphStyle("mrs", parent=body, fontSize=8, textColor=colors.HexColor("#5B6577"))
     P = lambda s, st=body: Paragraph(xml_escape(str(s)), st)  # noqa: E731
 
-    story: list[Any] = [
+    title_block: list[Any] = [
         P("PORTFOLIO XIRR", ParagraphStyle("t", parent=bold, fontSize=16, leading=20)),
         P(c["name"], ParagraphStyle("n", parent=bold, fontSize=12, leading=15)),
         P(f"Value As On- {c['date']}", body),
         P(f"Inception Date - {inception}", body),
-        Spacer(1, 6),
-        P("Mutual funds", bold),
     ]
+    # Official logo in the header, kept small so the report stays on one page.
+    # Missing logo file must never break the PDF — it falls back to text-only.
+    logo = None
+    try:
+        if LOGO_PATH.exists():
+            from PIL import Image as PILImage
+            from reportlab.platypus import Image as RLImage
+
+            with PILImage.open(LOGO_PATH) as im:
+                w, h = im.size
+            width = 26 * mm
+            height = width * h / w
+            if height > 14 * mm:
+                height = 14 * mm
+                width = height * w / h
+            logo = RLImage(str(LOGO_PATH), width=width, height=height)
+            logo.hAlign = "LEFT"
+    except Exception:
+        logo = None
+    story: list[Any] = []
+    if logo is not None:
+        header = Table([[logo, title_block]], colWidths=[30 * mm, 150 * mm])
+        header.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                                    ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                                    ("TOPPADDING", (0, 0), (-1, -1), 0), ("BOTTOMPADDING", (0, 0), (-1, -1), 0)]))
+        story.append(header)
+    else:
+        story.extend(title_block)
+    story += [Spacer(1, 6), P("Mutual funds", bold)]
     cols = ["Investments", "Invested amount", "Current value", "Gain/losses", "Weightage (%)", "XIRR"]
     rows = [[P(h, head) for h in cols]]
     for b in data["buckets"]:

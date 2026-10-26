@@ -521,7 +521,17 @@ the name (mobile and email are optional, name is the only required detail). At C
 client is moved into the CRM properly — an existing record is reused when the entered email or mobile
 already matches one, otherwise a proper CRM customer + household record is created (household named as
 entered, new customer as primary member) and the normal household report flow then applies. A custom
-client gets no portal login unless separately invited.
+client gets no portal login unless separately invited. Files are staged first (add, remove, then parse
+the whole set in one call); re-parsing after adding files merges into the draft instead of replacing
+it — manual bucket edits are kept, the previous valuation is kept when the new batch has none, and
+factsheets are appended without duplicates. A valuation uploaded on its own now prefills one bucket
+named "Valuation total (split into buckets)" carrying the valuation total, so the draft is never
+empty; the preparer splits it by hand — no Debt/Equity split is ever guessed from fund names, because
+the report's buckets are vintage/STP groupings, not fund categories. Each staged file shows whether
+it was read from text or by OCR, and extraction warnings appear in a prominent box, not small print.
+The generated PDF carries the official Fund Horizon logo in the header
+(`backend/app/report/assets/fund-horizon-logo.png`, a backend copy of the frontend's official logo),
+kept small so the report stays on one page; a missing logo file never breaks the PDF.
 
 ### 11. Security and access
 

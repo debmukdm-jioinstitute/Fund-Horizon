@@ -1,0 +1,46 @@
+name: Deploy API (AWS)
+
+# Deploys the API on every push to main that touches backend/, deploy/ or data/, by running deploy/redeploy.sh on the
+# EC2 instance through AWS Systems Manager (no SSH, no manual Session Manager). Skipped until the repo secrets exist.
+# Needs repo secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY (IAM user allowed ssm:SendCommand, ssm:GetCommandInvocation
+# on the instance + AWS-RunShellScript, ec2:DescribeInstances). Optional variable AWS_REGION (default ap-south-1).
+
+on:
+  push:
+    branches: [main]
+    paths: ["backend/**", "deploy/**", "data/**", ".github/workflows/deploy-api.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION || 'ap-south-1' }}
+    steps:
+      - name: Skip when AWS secrets are not set
+        if: env.AWS_ACCESS_KEY_ID == ''
+        run: echo "AWS secrets missing: API not deployed by Actions (server timer may still deploy it)."
+      - name: Run redeploy.sh on the API instance
+        if: env.AWS_ACCESS_KEY_ID != ''
+        run: |
+          set -euo pipefail
+          id=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=fund-horizon-api" "Name=instance-state-name,Values=running" --query 'Reservations[0].Instances[0].InstanceId' --output text)
+          cmd=$(aws ssm send-command --instance-ids "$id" --document-name AWS-RunShellScript --timeout-seconds 1200 \
+            --parameters 'commands=["curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh | sudo -iu ubuntu bash"]' \
+            --query Command.CommandId --output text)
+          for _ in $(seq 1 120); do
+            st=$(aws ssm get-command-invocation --command-id "$cmd" --instance-id "$id" --query Status --output text 2>/dev/null || echo Pending)
+            case "$st" in Success) break ;; Failed|Cancelled|TimedOut) aws ssm get-command-invocation --command-id "$cmd" --instance-id "$id" --query '[StandardOutputContent,StandardErrorContent]' --output text | tail -40; exit 1 ;; esac
+            sleep 10
+          done
+          [ "$st" = Success ]
+      - name: Check API health
+        if: env.AWS_ACCESS_KEY_ID != ''
+        run: curl -sf https://api.fundhorizon.website/health

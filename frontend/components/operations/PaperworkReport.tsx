@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
 
@@ -16,6 +16,7 @@ interface Report {
 }
 
 const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+const CUSTOM = "__custom__";
 const inr = (v: number, d = 0) => v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d });
 const cell = "w-full rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-1.5 py-1 text-[12.5px] tabular-nums";
 const card = "rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]";
@@ -72,7 +73,13 @@ function downloadBlob(blob: Blob, name: string) {
 export default function PaperworkReport() {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [hhId, setHhId] = useState("");
+  const [customName, setCustomName] = useState("");
+  const [customMobile, setCustomMobile] = useState("");
+  const [customEmail, setCustomEmail] = useState("");
   const [detail, setDetail] = useState<HouseholdDetail | null>(null);
+  // After a custom Create switches the picker to the newly created household,
+  // keep the just-created report on screen instead of clearing the draft.
+  const preserveDraftRef = useRef(false);
   const [report, setReport] = useState<Report | null>(null);
   const [valuation, setValuation] = useState<Valuation | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
@@ -85,23 +92,39 @@ export default function PaperworkReport() {
     return { month: d.getMonth(), year: d.getFullYear() };
   });
 
+  const isCustom = hhId === CUSTOM;
   const member = detail ? detail.members.find((x) => x.role === "primary") ?? detail.members[0] : undefined;
-  const customerId = member?.customer_id;
-  const customerEmail = member?.email ?? null;
+  const customerId = isCustom ? undefined : member?.customer_id;
+  const customerEmail = isCustom ? (customEmail.trim() || null) : member?.email ?? null;
+  const canCreate = !!(report && (customerId || (isCustom && customName.trim())));
   const t = useMemo(() => (report ? totals(report.buckets, report.pms) : null), [report]);
 
   useEffect(() => { fetchHouseholds().then(setHouseholds).catch(() => undefined); }, []);
   useEffect(() => {
     let live = true;
-    setDetail(null); setReport(null); setValuation(null); setHistory([]); setWarnings([]);
-    if (!hhId) return;
+    const preserve = preserveDraftRef.current;
+    preserveDraftRef.current = false;
+    setDetail(null); setHistory([]);
+    if (!preserve) { setReport(null); setValuation(null); setWarnings([]); }
+    if (!hhId || isCustom) return;
     fetchHouseholdDetail(hhId).then((d) => { if (live) setDetail(d); }).catch(() => undefined);
     return () => { live = false; };
-  }, [hhId]);
+  }, [hhId, isCustom]);
 
   const loadHistory = () => customerId && call<HistoryRow[]>(`/customers/${customerId}`, {})
     .then(setHistory).catch(() => undefined);
   useEffect(() => { if (customerId) loadHistory(); }, [customerId, detail]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Custom name / mobile are the source of truth in custom mode: keep the
+  // report's client fields in step with them.
+  const setCustomNameAndReport = (v: string) => {
+    setCustomName(v);
+    setReport((r) => r && { ...r, client: { ...r.client, name: v } });
+  };
+  const setCustomMobileAndReport = (v: string) => {
+    setCustomMobile(v);
+    setReport((r) => r && { ...r, client: { ...r.client, phone: v } });
+  };
 
   const run = async (label: string, fn: () => Promise<void>) => {
     setBusy(label); setMsg(null);
@@ -121,8 +144,16 @@ export default function PaperworkReport() {
     setValuation(d.valuation);
     if (d.buckets.length) {
       const month = `${MONTHS[monthPick.month]} ${monthPick.year}`;
+      // Custom mode: a typed custom name always wins over the file header
+      // name; when nothing is typed yet, prefill the custom name from the
+      // file. The file header phone is never used as the client phone in
+      // custom mode — it is the firm's number, not the client's.
+      const client = isCustom
+        ? { ...d.client, name: customName.trim() || d.client.name, phone: customMobile }
+        : d.client;
+      if (isCustom && !customName.trim() && d.client.name) setCustomName(d.client.name);
       setReport({
-        client: d.client, month, inception: d.inception, total_xirr: d.total_xirr,
+        client, month, inception: d.inception, total_xirr: d.total_xirr,
         buckets: d.buckets, pms: d.pms, factsheets: d.factsheets,
       });
       if (d.client.date) setMsg({ ok: true, text: "Figures loaded. Check every value before creating the report." });
@@ -136,7 +167,7 @@ export default function PaperworkReport() {
   const startEmpty = () => {
     const month = `${MONTHS[monthPick.month]} ${monthPick.year}`;
     setReport({
-      client: { name: detail?.household.name ?? "", date: valuation?.date ?? "", arn: "345439", phone: "" },
+      client: { name: isCustom ? customName : detail?.household.name ?? "", date: valuation?.date ?? "", arn: "345439", phone: isCustom ? customMobile : "" },
       month, inception: "", total_xirr: null,
       buckets: [{ name: "New bucket", invested: 0, current: 0, xirr: null }],
       pms: { invested: 0, current: 0, xirr: null }, factsheets: [],
@@ -154,22 +185,36 @@ export default function PaperworkReport() {
     downloadBlob(blob, filename(report));
   });
 
-  const create = () => report && customerId && run("create", async () => {
+  const create = () => report && canCreate && run("create", async () => {
     const blob = await call<Blob>("/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload(report)) }, true);
     downloadBlob(blob, filename(report));
-    const r = await call<{ id: string; emailed: boolean; email_error: string | null }>("/push", {
+    const body = isCustom
+      ? { customer_id: null, custom_client: { name: customName.trim(), mobile: customMobile.trim(), email: customEmail.trim() }, household_id: null, report: payload(report), send_email: email }
+      : { customer_id: customerId, household_id: hhId || null, report: payload(report), send_email: email };
+    const r = await call<{ id: string; emailed: boolean; email_error: string | null; customer_id: string; household_id: string; matched_existing: boolean }>("/push", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ customer_id: customerId, household_id: hhId || null, report: payload(report), send_email: email }),
+      body: JSON.stringify(body),
     });
+    const savedText = "saved to the client CRM record";
     setMsg({
       ok: true,
-      text: r.emailed
-        ? "Report downloaded, saved to the client CRM record, and emailed."
+      text: (r.emailed
+        ? `Report downloaded, ${savedText}, and emailed.`
         : r.email_error
-          ? `Report downloaded and saved to the client CRM record. Email was not sent: ${r.email_error}`
-          : "Report downloaded and saved to the client CRM record.",
+          ? `Report downloaded and ${savedText}. Email was not sent: ${r.email_error}`
+          : `Report downloaded and ${savedText}.`)
+        + (isCustom && r.matched_existing ? " An existing CRM record was matched — no duplicate was created." : "")
+        + (isCustom && !r.matched_existing ? " The custom client was created as a CRM customer + household record." : ""),
     });
-    loadHistory();
+    if (isCustom && r.household_id) {
+      // Switch the picker to the new household so its history shows at once.
+      // The draft is preserved (see preserveDraftRef), not cleared.
+      fetchHouseholds().then(setHouseholds).catch(() => undefined);
+      preserveDraftRef.current = true;
+      setHhId(r.household_id);
+    } else {
+      loadHistory();
+    }
   });
 
   const reDownload = (id: string, month: string) => run("redownload", async () => {
@@ -193,8 +238,10 @@ export default function PaperworkReport() {
         checks.push(`Valuation file total differs from the bucket total by ₹${inr(di, 2)} invested and ₹${inr(dc, 2)} current. This is expected when part of the portfolio (for example an offline bucket) is not in the valuation file — check the offline and PMS rows.`);
       }
     }
-    if (email && !customerEmail) checks.push("Email is ticked but the CRM record has no email address for this client. The report will still be saved and downloaded.");
-    if (!customerId) checks.push("Pick a client household above to save the report to the CRM record.");
+    if (email && isCustom && !customEmail.trim()) checks.push("Email is ticked and no email was entered — it will only be sent if the matched CRM record has an email address. The report will still be saved and downloaded.");
+    if (email && !isCustom && !customerEmail) checks.push("Email is ticked but the CRM record has no email address for this client. The report will still be saved and downloaded.");
+    if (isCustom && !customName.trim()) checks.push("Enter a client name below for the custom client. Name is the only required detail.");
+    if (!isCustom && !customerId) checks.push("Pick a client household above to save the report to the CRM record.");
   }
 
   return (
@@ -211,18 +258,37 @@ export default function PaperworkReport() {
           <select id="ppClient" value={hhId} onChange={(e) => setHhId(e.target.value)}
             className="min-w-[220px] flex-1 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-2.5 py-2 text-[14px] font-semibold">
             <option value="">Pick a client household</option>
+            <option value={CUSTOM}>Custom client — enter details</option>
             {households.map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}
           </select>
           <span className={`text-[13.5px] ${ink}`}>
-            {member ? <>{member.name}{customerEmail ? <> · {customerEmail}</> : " · no email on file"}</> : "No client picked yet. Changing the client clears the draft."}
+            {isCustom
+              ? <>{customName.trim() || "Custom client — enter the name below"}{customEmail.trim() ? <> · {customEmail.trim()}</> : " · no email entered"}</>
+              : member ? <>{member.name}{customerEmail ? <> · {customerEmail}</> : " · no email on file"}</> : "No client picked yet. Changing the client clears the draft."}
           </span>
         </div>
+        {isCustom && (
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <label className="text-[12px] font-semibold">Client name *
+              <input className={`${cell} mt-1`} value={customName} onChange={(e) => setCustomNameAndReport(e.target.value)} placeholder="e.g. Satish Nandlal Vora" aria-required="true" />
+            </label>
+            <label className="text-[12px] font-semibold">Mobile (optional)
+              <input className={`${cell} mt-1`} value={customMobile} onChange={(e) => setCustomMobileAndReport(e.target.value)} inputMode="tel" placeholder="Optional" />
+            </label>
+            <label className="text-[12px] font-semibold">Email (optional)
+              <input className={`${cell} mt-1`} type="email" value={customEmail} onChange={(e) => setCustomEmail(e.target.value)} placeholder="Optional — needed only if email is ticked" />
+            </label>
+          </div>
+        )}
+        {isCustom && (
+          <p className={`mt-2 text-[12.5px] ${muted}`}>A custom client becomes a CRM customer + household record (household named as entered, new customer as primary member). It does not get a portal login unless separately invited.</p>
+        )}
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border-[1.5px] border-dashed border-[#006F64] px-3.5 py-2 text-[13.5px] font-bold text-[#006F64] dark:text-[#75E1CE]">
             {busy === "parse" ? "Reading…" : "⬆ Upload factsheets & valuation files"}
             <input type="file" multiple accept="application/pdf,image/png,image/jpeg" className="hidden" disabled={busy !== null} onChange={(e) => { const f = e.target.files; upload(f); e.target.value = ""; }} />
           </label>
-          <button type="button" className={btn} onClick={startFromLast} disabled={busy !== null || !customerId} title={customerId ? undefined : "Pick a client household first"}>
+          <button type="button" className={btn} onClick={startFromLast} disabled={busy !== null || !customerId} title={isCustom ? "Create a report for this custom client first — it will then appear as a household" : customerId ? undefined : "Pick a client household first"}>
             {busy === "latest" ? "Loading…" : "Start from last month's report"}
           </button>
           <button type="button" className={btn} onClick={startEmpty} disabled={busy !== null}>
@@ -360,7 +426,7 @@ export default function PaperworkReport() {
           )}
 
           <div className="flex flex-wrap items-center gap-3 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-3">
-            <button type="button" className={btnPrimary} onClick={create} disabled={busy !== null || !customerId} title={customerId ? undefined : "Pick a client household first"}>
+            <button type="button" className={btnPrimary} onClick={create} disabled={busy !== null || !canCreate} title={canCreate ? undefined : isCustom ? "Enter a custom client name first" : "Pick a client household first"}>
               {busy === "create" ? "Creating…" : "Create Report"}
             </button>
             <button type="button" className={btn} onClick={downloadPdf} disabled={busy !== null}>{busy === "pdf" ? "Building…" : "⬇ Download PDF only"}</button>

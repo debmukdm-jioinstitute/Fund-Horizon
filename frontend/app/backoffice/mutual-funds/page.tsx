@@ -284,7 +284,7 @@ function MutualFunds() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2.5">
+      <div className="relative flex flex-wrap items-center gap-2.5">
         <input
           type="text"
           value={query}
@@ -293,7 +293,7 @@ function MutualFunds() {
           aria-label="Search fund, AMC or scheme code"
           className="terminal-input flex-1 min-w-[220px] text-[13px] py-2 px-3"
         />
-        <div className="relative">
+        <div className="contents">
           <button
             type="button"
             aria-haspopup="true"
@@ -308,7 +308,7 @@ function MutualFunds() {
           {catOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setCatOpen(false)} />
-              <div className="absolute left-0 top-full mt-1.5 w-[min(92vw,640px)] rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-2.5">
+              <div className="absolute left-0 top-full mt-1.5 w-full max-w-[760px] max-h-[70vh] overflow-y-auto rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-2.5">
 
         <div role="tablist" className="flex flex-wrap gap-1">
           {groups.map((g) => (
@@ -328,7 +328,7 @@ function MutualFunds() {
             Also selected from other groups (kept, not cleared): {otherGroupSelected.map((c) => c.label).join(", ")}.
           </p>
         )}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-2">
           <label className="flex items-center gap-2 text-[12px] font-medium text-[#0176D3] dark:text-[#1B96FF] cursor-pointer">
             <input
               type="checkbox"

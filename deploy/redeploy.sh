@@ -12,6 +12,9 @@ H=/home/ubuntu
 exec 8>$H/.redeploy.lock; flock 8
 REPO=https://github.com/debmukdm-jioinstitute/Fund-Horizon
 PX=$H/fh-proxy
+# Every run builds the newest main, so a run queued behind the lock is redundant once that main is already live.
+remote=$(git ls-remote $REPO refs/heads/main | cut -f1)
+[ -n "$remote" ] && [ "$remote" = "$(cat $H/.deploy-ok-sha 2>/dev/null)" ] && { echo "main $remote is already live; nothing to do"; exit 0; }
 D="sudo docker"
 
 start_api() {  # $1 = container name, $2 = image
@@ -75,6 +78,7 @@ else
     -v $PX/default.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine >/dev/null
 fi
 echo $new > $PX/active
+git rev-parse HEAD > $H/.deploy-ok-sha
 $D tag fh-api:new fh-api:latest
 [ "$cur" != none ] && { sleep 15; $D rm -f fh-api-$cur >/dev/null 2>&1 || true; }  # let in-flight requests finish
 echo "API up on $(git rev-parse --short HEAD) (fh-api-$new)"

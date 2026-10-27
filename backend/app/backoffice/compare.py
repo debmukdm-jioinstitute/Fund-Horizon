@@ -8,6 +8,7 @@ from typing import Any, Literal
 import pandas as pd
 from fastapi import HTTPException
 
+from app.backoffice import mf_screener
 from app.backoffice.providers.mfapi import MfapiProvider
 from app.backoffice.repository import BackofficeRepository
 from app.data.loader import load_metrics, load_nav
@@ -153,6 +154,35 @@ def _mf_nav_for_code(code: str) -> tuple[pd.Series, str]:
     return pd.Series(vals, index=idx).sort_index(), "mfapi"
 
 
+_MF_SCREENER_FRAME: dict[str, Any] = {}
+
+
+def _screener_row_for_code(repo: BackofficeRepository, code: str) -> dict[str, Any] | None:
+    """One screener-frame row for a scheme (manager, computed quartile 2Y, AUM).
+
+    The frame is rebuilt only when the TER map changes, so a 4-fund compare does
+    not rescore the whole universe per fund. mf_screener imports only the data
+    loader, so importing it here cannot cycle back into compare.
+    """
+    try:
+        ter = repo.mf_ter_by_code()
+        fingerprint = tuple(sorted(ter.items()))
+        if _MF_SCREENER_FRAME.get("fingerprint") != fingerprint:
+            manager_map = {
+                str(c): (m.get("manager_name"), m.get("manager_start"))
+                for c, m in repo.list_mf_managers().items()
+            }
+            _MF_SCREENER_FRAME["fingerprint"] = fingerprint
+            _MF_SCREENER_FRAME["frame"] = mf_screener.all_frame(ter, manager_map=manager_map)
+        frame = _MF_SCREENER_FRAME["frame"]
+        match = frame[frame["code"] == str(code)]
+        if match.empty:
+            return None
+        return mf_screener.records(match)[0]
+    except Exception:
+        return None
+
+
 def _mf_item(repo: BackofficeRepository, code: str) -> dict[str, Any]:
     metrics_df = load_metrics()
     row = metrics_df.loc[metrics_df["scheme_code"] == str(code)]
@@ -215,6 +245,36 @@ def _mf_item(repo: BackofficeRepository, code: str) -> dict[str, Any]:
         if db_rows:
             metrics["ter"] = _nan_none(db_rows[0].get("ter_pct"))
         source = "derived"
+
+    # MF Research V1 (MF path only): join the same screener frame / manager table as the
+    # fund dialog, so manager, tenure, computed quartile 2Y and AUM match the screener row
+    # instead of showing "Not available". AMFI fallback covers the manager name only.
+    frame_row = _screener_row_for_code(repo, str(code))
+    if frame_row is not None:
+        metrics["manager"] = frame_row.get("manager_name")
+        metrics["manager_tenure"] = frame_row.get("manager_tenure_years")
+        metrics["quartile"] = frame_row.get("quartile_2y")
+        metrics["aum"] = frame_row.get("aum_cr")
+    else:
+        try:
+            seeded = repo.list_mf_managers().get(str(code)) or {}
+            metrics["manager"] = seeded.get("manager_name")
+            start = seeded.get("manager_start")
+            if start and len(nav):
+                try:
+                    days = (nav.index[-1] - pd.Timestamp(start)).days
+                    metrics["manager_tenure"] = round(days / 365.25, 4) if days >= 0 else None
+                except (ValueError, TypeError):
+                    pass
+        except Exception:
+            pass
+    if metrics.get("manager") is None:
+        try:
+            from app.backoffice import mf_reference
+
+            metrics["manager"] = mf_reference.manager_for_scheme(str(code))
+        except Exception:
+            pass
 
     inc_ts = _parse_inception(str(inception) if inception else None)
     return {

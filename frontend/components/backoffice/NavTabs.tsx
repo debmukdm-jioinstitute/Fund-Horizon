@@ -10,7 +10,75 @@ import { CSS } from "@dnd-kit/utilities";
 
 const STORAGE_KEY = "fh-backoffice-nav-order";
 
-export interface NavTab { href: string; label: string; icon?: (p: { className?: string }) => React.JSX.Element }
+export interface NavTab {
+  href: string;
+  label: string;
+  icon?: (p: { className?: string }) => React.JSX.Element;
+  /** Dropdown children: never draggable out of the group; drag-reorder applies to the parent only. */
+  children?: NavTab[];
+}
+
+/** Parent tab with a dropdown. Parent label click goes to the parent route; the chevron opens the dropdown. */
+function DropdownTab({ tab, on, isActive, pathname }: { tab: NavTab; on: boolean; isActive: (href: string) => boolean; pathname: string }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const Icon = tab.icon;
+  const base = "relative flex min-w-[76px] shrink-0 flex-col items-center justify-center gap-1 rounded-lg px-3 py-2 text-[12px] font-semibold whitespace-nowrap transition-colors";
+  useEffect(() => { setOpen(false); }, [pathname]);
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (root.current && !root.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [open ]);
+  const moveFocus = (dir: 1 | -1) => {
+    const links = Array.from(root.current?.querySelectorAll<HTMLElement>("a[data-child]") ?? []);
+    const idx = links.indexOf(document.activeElement as HTMLElement);
+    const next = links[(idx + dir + links.length) % links.length];
+    next?.focus();
+  };
+  return (
+    <div ref={root} className="relative shrink-0" onKeyDown={(e) => {
+      if (e.key === "ArrowDown") { e.preventDefault(); if (!open) setOpen(true); else moveFocus(1); }
+      if (e.key === "ArrowUp") { e.preventDefault(); if (open) moveFocus(-1); }
+    }}>
+      <div className={`flex items-stretch rounded-lg ${on ? "bg-gradient-to-b from-[#1B96FF] to-[#0176D3] text-white shadow-[0_3px_0_#00A1E0]" : "text-[#032D60] dark:text-[#CFE6FC] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F]"}`}>
+        <Link href={tab.href} aria-current={on ? "page" : undefined} data-active={on || undefined} className={`${base} pr-1`}>
+          {Icon && <Icon className="h-6 w-6" />}
+          {tab.label}
+        </Link>
+        <button
+          type="button" aria-haspopup="true" aria-expanded={open} aria-label={`Show ${tab.label} pages`}
+          onClick={() => setOpen((o) => !o)}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen((o) => !o); } }}
+          className="px-1.5 rounded-r-lg hover:bg-black/10 dark:hover:bg-white/10"
+        >
+          <span aria-hidden>{open ? "▴" : "▾"}</span>
+        </button>
+      </div>
+      {open && (
+        <div role="menu" className="absolute left-0 top-full z-50 mt-1 min-w-[200px] rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-1 shadow-xl">
+          {(tab.children ?? []).map((c) => {
+            const active = isActive(c.href);
+            return (
+              <Link
+                key={c.href} href={c.href} data-child role="menuitem" aria-current={active ? "page" : undefined}
+                onClick={() => setOpen(false)}
+                className={`block rounded px-3 py-2 text-[13px] font-medium ${active ? "bg-[#0176D3] text-white" : "text-[#181818] dark:text-[#EDF2F7] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F]"}`}
+              >
+                {c.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function readOrder(): string[] {
   try {
@@ -94,7 +162,9 @@ export default function NavTabs({ items, pathname, isActive }: { items: NavTab[]
       <div ref={scroller} className="flex min-w-0 flex-1 gap-1 overflow-x-auto overscroll-x-contain">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
           <SortableContext items={ordered.map((t) => t.href)} strategy={horizontalListSortingStrategy}>
-            {ordered.map((t) => <SortableTab key={t.href} tab={t} on={isActive(t.href)} editing={editing} />)}
+            {ordered.map((t) => (t.children?.length && !editing
+              ? <DropdownTab key={t.href} tab={t} on={isActive(t.href) || t.children.some((c) => isActive(c.href))} isActive={isActive} pathname={pathname} />
+              : <SortableTab key={t.href} tab={t} on={isActive(t.href)} editing={editing} />))}
           </SortableContext>
         </DndContext>
       </div>

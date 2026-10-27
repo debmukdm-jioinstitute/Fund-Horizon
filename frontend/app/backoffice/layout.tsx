@@ -70,6 +70,10 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
 
   const allowed = !customer || canAccessPage(customer.pages, customer.role, pathname);
   const navItems = customer ? NAV_ITEMS.filter((i) => canAccessPage(customer.pages, customer.role, i.href.split("?")[0])) : NAV_ITEMS;
+  // App Launcher + Command Palette: flatten dropdown children (group = parent label) without adding a top-level tab.
+  // canAccessPage prefix rule: parent allowed ⇒ child allowed (path starts with parent + "/"); parent denied ⇒
+  // the parent is filtered out above, so its children never appear. Verified in code; staff login not available here.
+  const flatNavItems = navItems.flatMap((i) => (i.children?.length ? [i, ...i.children.map((c) => ({ ...c, icon: c.icon ?? i.icon, group: i.label }))] : [i]));
   useEffect(() => {
     if (!isRiskProfiling && !loading && customer && !allowed && navItems[0]) router.replace(navItems[0].href);
   }, [isRiskProfiling, loading, customer, allowed, navItems, router]);
@@ -192,13 +196,13 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
               </button>
             </div>
             <div className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3">
-              {navItems.map((item) => {
+              {flatNavItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link key={item.href} href={item.href} onClick={() => setMobileDrawerOpen(false)} className="flex items-start gap-3 rounded border border-[#E5E5E5] dark:border-[#2B3644] p-3 hover:border-[#0176D3] hover:bg-[#F3F9FE] dark:hover:bg-[#11304F]">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#0176D3] text-white"><Icon className="w-5 h-5" /></span>
                     <span className="min-w-0">
-                      <span className="block text-[13px] font-semibold text-[#0176D3] dark:text-[#1B96FF]">{item.label}</span>
+                      <span className="block text-[13px] font-semibold text-[#0176D3] dark:text-[#1B96FF]">{item.label}{"group" in item && item.group ? <span className="ml-1.5 text-[11px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">· {String(item.group)}</span> : null}</span>
                       <span className="block text-[12px] text-[#706E6B] dark:text-[#A8B4C4] line-clamp-2">{item.description}</span>
                     </span>
                   </Link>
@@ -213,7 +217,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
         <div className="max-w-[1600px] mx-auto">{allowed ? children : null}</div>
       </main>
 
-      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={navItems} />
+      <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={flatNavItems} />
       {emailOpen && <EmailDialog onClose={() => setEmailOpen(false)} />}
     </div>
   );

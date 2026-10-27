@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRecommended } from "@/lib/recommended";
 import Link from "next/link";
-import { getMutualFundPerformance, getMfNavPairCheck, getMfManager, MfManagerInfo, MfPerformance, MutualFundItem } from "@/lib/backoffice";
+import { getMutualFundPerformance, getMfNavPairCheck, getMfManager, getMfResearchDetail, addMfShortlist, MfManagerInfo, MfPerformance, MfResearchDetail, MutualFundItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
 import FactsheetList from "@/components/backoffice/FactsheetList";
@@ -24,6 +24,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
   const [navPairSiblings, setNavPairSiblings] = useState<string[]>([]);
   const [manager, setManager] = useState<MfManagerInfo | null>(null);
   const [managerOpen, setManagerOpen] = useState(false);
+  const [researchDetail, setResearchDetail] = useState<MfResearchDetail | null>(null);
+  const [shortlistMsg, setShortlistMsg] = useState("");
   const rec = useRecommended();
   const code = scheme?.scheme_code;
 
@@ -32,11 +34,16 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
     setNavPairSiblings([]);
     setManager(null);
     setManagerOpen(false);
+    setResearchDetail(null);
+    setShortlistMsg("");
     if (!code) return;
     let cancelled = false;
     getMfManager(code)
       .then((m) => !cancelled && setManager(m))
       .catch(() => !cancelled && setManager(null));
+    getMfResearchDetail(code)
+      .then((d) => !cancelled && setResearchDetail(d))
+      .catch(() => !cancelled && setResearchDetail(null));
     getMutualFundPerformance(code)
       .then((p) => !cancelled && setPerf(p))
       .catch(() => !cancelled && setPerf(null));
@@ -239,6 +246,12 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                         {manager.tenure_years != null ? ` · ${manager.tenure_years} yrs` : ""}
                       </div>
                     )}
+                    <Link
+                      href={`/backoffice/mutual-funds/research?tab=managers&manager=${encodeURIComponent(manager.manager_name)}`}
+                      className="mt-1 inline-block text-[12px] text-[#0176D3] dark:text-[#1B96FF] hover:underline"
+                    >
+                      View all funds by this manager →
+                    </Link>
                   </>
                 ) : (
                   <div className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">Not on file</div>
@@ -380,6 +393,82 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               <FundQuartile name={scheme.scheme_name} cat={scheme.cat_key ?? scheme.category} />
             </div>
 
+            {/* MF Research blocks (additive): consistency, peer percentiles, computed quartile history. */}
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Consistency — how steady the fund has been</div>
+              {researchDetail ? (
+                <div className="grid grid-cols-2 gap-2.5 text-[12px]">
+                  {([
+                    ["Rolling 1Y win % (vs category median, last 5Y, monthly windows)", researchDetail.roll_win_pct, "%"],
+                    ["Calendar years in top quartile (completed years)", researchDetail.cal_topq_years, ""],
+                    ["Calendar win % (vs category median, completed years)", researchDetail.cal_win_pct, "%"],
+                    ["Downside deviation 3Y (annualised, returns below 0)", researchDetail.downside_dev_3y, "%"],
+                    ["SIP CAGR 3Y (monthly instalment, month-end NAV)", researchDetail.sip_cagr_3y, "%"],
+                    ["SIP CAGR 5Y (monthly instalment, month-end NAV)", researchDetail.sip_cagr_5y, "%"],
+                    ["Calmar 3Y (3Y CAGR divided by 3Y max drawdown)", researchDetail.calmar_3y, ""],
+                  ] as const).map(([label, v, unit]) => (
+                    <div key={label}>
+                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
+                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? `${v.toFixed(2)}${unit}` : "—"}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Consistency data is not available for this scheme.</div>
+              )}
+            </div>
+
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Peer percentiles — better than X% of category + plan peers</div>
+              {researchDetail ? (
+                <div className="grid grid-cols-2 gap-2.5 text-[12px]">
+                  {([
+                    ["Sharpe 3Y", researchDetail.pct_sharpe_3y],
+                    ["Sortino 3Y", researchDetail.pct_sortino_3y],
+                    ["Alpha 3Y (vs category median)", researchDetail.pct_alpha_3y],
+                    ["Volatility 3Y", researchDetail.pct_vol_3y],
+                    ["Max drawdown 3Y", researchDetail.pct_max_dd_3y],
+                    ["1Y return", researchDetail.pct_ret_1y],
+                    ["3Y CAGR", researchDetail.pct_cagr_3y],
+                    ["5Y CAGR", researchDetail.pct_cagr_5y],
+                  ] as const).map(([label, v]) => (
+                    <div key={label}>
+                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
+                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? `Better than ${v.toFixed(0)}% of category + plan peers` : "—"}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Peer percentiles are not available for this scheme.</div>
+              )}
+            </div>
+
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Quartile history (computed, in-house)</div>
+              <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                Computed quartiles rank the fund against its category + plan peers. This is separate from the Advisorkhoj quartile section above, which uses Advisorkhoj figures.
+              </p>
+              {researchDetail ? (
+                <div className="flex flex-wrap gap-2 text-[12px]">
+                  {([
+                    ["1Y", researchDetail.quartile_1y],
+                    ["2Y", researchDetail.quartile_2y],
+                    ["3Y", researchDetail.quartile_3y],
+                    ["5Y", researchDetail.quartile_5y],
+                  ] as const).map(([label, v]) => (
+                    <span key={label} className="rounded border border-[#E5E5E5] dark:border-[#2B3644] px-2 py-1">
+                      {label}: <span className="font-mono font-medium">{typeof v === "number" ? `Q${v} (computed)` : "—"}</span>
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Computed quartile history is not available for this scheme.</div>
+              )}
+              {researchDetail?.reason && (
+                <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{researchDetail.reason}</p>
+              )}
+            </div>
+
             {/* Quick Link Cards */}
             <div className="terminal-panel p-3.5 space-y-2.5">
               <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">
@@ -451,6 +540,23 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
             </button>
 
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  const reason = window.prompt("Why does this fund belong on the shortlist?", "");
+                  if (reason === null) return;
+                  try {
+                    await addMfShortlist(scheme.scheme_code, reason.trim() || undefined);
+                    setShortlistMsg("Added to the shortlist.");
+                  } catch (e) {
+                    setShortlistMsg(e instanceof Error ? e.message : "Could not add to the shortlist.");
+                  }
+                }}
+                className="terminal-btn text-[12px] py-1.5 px-3"
+              >
+                Add to shortlist
+              </button>
+              {shortlistMsg && <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{shortlistMsg}</span>}
               <Link
                 href={`/backoffice/research?target_type=mutual_fund&target_id=${encodeURIComponent(scheme.scheme_code)}`}
                 className="terminal-btn text-[12px] py-1.5 px-3"

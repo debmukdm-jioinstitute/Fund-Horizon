@@ -38,6 +38,14 @@ def test_7_peers_unavailable():
         assert q is None
 
 
+def test_tied_returns_share_quartile():
+    # Top two returns tie: average rank 1.5 -> both Q1; next two tie at 3.5 -> both Q2.
+    scheme_returns = {f"s{i}": v for i, v in enumerate([0.10, 0.10, 0.08, 0.08, 0.05, 0.04, 0.03, 0.02])}
+    q_map = compute_category_quartiles(scheme_returns, min_peers=8)
+    assert q_map["s0"] == q_map["s1"] == 1
+    assert q_map["s2"] == q_map["s3"] == 2
+
+
 def test_quartile_cascade():
     # External available
     q, src = resolve_quartile_cascade("1", computed_q=2, external_q=1, external_source="advisorkhoj")

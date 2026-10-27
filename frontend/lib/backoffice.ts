@@ -1533,12 +1533,23 @@ export interface MfScreenerGroup {
   categories: { key: string; label: string; count: number }[];
 }
 
+/** Per-source as-of dates from the screener response meta object (any may be null). */
+export interface MfScreenerFreshness {
+  nav_as_of?: string | null;
+  aum_as_of?: string | null;
+  ter_as_of?: string | null;
+  managers_as_of?: string | null;
+  quartile_as_of?: string | null;
+}
+
 export interface MfScreenerResult {
   data: MfScreenerRow[];
   total: number;
   as_of?: string | null;
   groups: MfScreenerGroup[];
   meta?: Record<string, InfoTipMeta>;
+  /** Parsed from the response `meta` object when it carries as-of dates; null fields stay null. */
+  screenerMeta?: MfScreenerFreshness;
 }
 
 export interface MfScreenerQuery {
@@ -1551,6 +1562,14 @@ export interface MfScreenerQuery {
   recommended?: boolean;
   limit?: number;
   offset?: number;
+  /** MF Research filters (backend contract): repeated params. */
+  amc?: string[];
+  manager?: string;
+  min_tenure?: number;
+  include_unknown?: boolean;
+  quartile?: number[];
+  quartile_period?: string;
+  include_unavailable?: boolean;
 }
 
 export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
@@ -1559,6 +1578,13 @@ export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
   o.plan.forEach((p) => q.append("plan", p));
   if (o.search) q.set("search", o.search);
   if (o.recommended) q.set("recommended", "true");
+  (o.amc ?? []).forEach((a) => q.append("amc", a));
+  if (o.manager) q.set("manager", o.manager);
+  if (o.min_tenure != null) q.set("min_tenure", String(o.min_tenure));
+  if (o.include_unknown === false) q.set("include_unknown", "false");
+  (o.quartile ?? []).forEach((v) => q.append("quartile", String(v)));
+  if (o.quartile_period) q.set("quartile_period", o.quartile_period);
+  if (o.include_unavailable === false) q.set("include_unavailable", "false");
   Object.entries(o.ranges).forEach(([k, r]) => {
     if (r.min || r.max) q.append("f", `${k}:${r.min ?? ""}:${r.max ?? ""}`);
   });
@@ -1567,11 +1593,26 @@ export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
   return q;
 }
 
-export const getMfScreener = (o: MfScreenerQuery, signal?: AbortSignal): Promise<MfScreenerResult> => {
+export const getMfScreener = async (o: MfScreenerQuery, signal?: AbortSignal): Promise<MfScreenerResult> => {
   const q = mfScreenerParams(o);
   q.set("limit", String(o.limit ?? 25));
   q.set("offset", String(o.offset ?? 0));
-  return boFetch<MfScreenerResult>(`/api/backoffice/mutual-funds/screener?${q.toString()}`, { signal });
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/screener?${q.toString()}`, { signal });
+  const metaRaw = obj(raw.meta);
+  const hasFreshness = ["nav_as_of", "aum_as_of", "ter_as_of", "managers_as_of", "quartile_as_of"].some((k) => k in metaRaw);
+  const base = raw as unknown as MfScreenerResult;
+  return hasFreshness
+    ? {
+        ...base,
+        screenerMeta: {
+          nav_as_of: (metaRaw.nav_as_of as string | null) ?? null,
+          aum_as_of: (metaRaw.aum_as_of as string | null) ?? null,
+          ter_as_of: (metaRaw.ter_as_of as string | null) ?? null,
+          managers_as_of: (metaRaw.managers_as_of as string | null) ?? null,
+          quartile_as_of: (metaRaw.quartile_as_of as string | null) ?? null,
+        },
+      }
+    : base;
 };
 
 export interface MfQuartileData {
@@ -1598,3 +1639,148 @@ export const mfScreenerCsvUrl = (o: MfScreenerQuery): string => {
 
 // AMFI/SEBI reference data is served from the public fund endpoint:
 // GET /api/funds/{scheme_code}/reference (see lib/api.ts getFundReferenceServer).
+
+/* ---- MF Research V1: managers directory, research detail, shortlist ---- */
+
+export interface MfManagerDirectoryRow {
+  manager_name: string | null;
+  schemes: number;
+  portfolios: number;
+  longest_tenure_years?: number | null;
+  avg_tenure_years?: number | null;
+  aum_estimate_cr?: number | null;
+  aum_incomplete?: boolean;
+  needs_data?: boolean;
+}
+
+export interface MfManagersResult {
+  data: MfManagerDirectoryRow[];
+  total: number;
+}
+
+export const getMfManagers = async (o: {
+  search?: string;
+  min_tenure?: number;
+  sort?: string;
+  order?: "asc" | "desc";
+  limit?: number;
+  offset?: number;
+}, signal?: AbortSignal): Promise<MfManagersResult> => {
+  const q = new URLSearchParams();
+  if (o.search) q.set("search", o.search);
+  if (o.min_tenure != null) q.set("min_tenure", String(o.min_tenure));
+  if (o.sort) q.set("sort", o.sort);
+  if (o.order) q.set("order", o.order);
+  q.set("limit", String(o.limit ?? 25));
+  q.set("offset", String(o.offset ?? 0));
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/managers?${q.toString()}`, { signal });
+  return {
+    data: arr(raw.data).map((r) => ({
+      manager_name: typeof r.manager_name === "string" ? r.manager_name : null,
+      schemes: num(r.schemes) ?? 0,
+      portfolios: num(r.portfolios) ?? 0,
+      longest_tenure_years: num(r.longest_tenure_years),
+      avg_tenure_years: num(r.avg_tenure_years),
+      aum_estimate_cr: num(r.aum_estimate_cr),
+      aum_incomplete: r.aum_incomplete === true,
+      needs_data: r.needs_data === true,
+    })),
+    total: num(raw.total) ?? 0,
+  };
+};
+
+/** Consistency / percentile / quartile-history detail for one fund (drawer only). Null fields stay null. */
+export interface MfResearchDetail {
+  roll_win_pct?: number | null;
+  cal_topq_years?: number | null;
+  cal_win_pct?: number | null;
+  downside_dev_3y?: number | null;
+  sip_cagr_3y?: number | null;
+  sip_cagr_5y?: number | null;
+  quartile_1y?: number | null;
+  quartile_2y?: number | null;
+  quartile_3y?: number | null;
+  quartile_5y?: number | null;
+  quartile_source?: string | null;
+  pct_sharpe_3y?: number | null;
+  pct_sortino_3y?: number | null;
+  pct_alpha_3y?: number | null;
+  pct_vol_3y?: number | null;
+  pct_max_dd_3y?: number | null;
+  pct_ret_1y?: number | null;
+  pct_cagr_3y?: number | null;
+  pct_cagr_5y?: number | null;
+  manager_name?: string | null;
+  manager_start?: string | null;
+  manager_tenure_years?: number | null;
+  calmar_3y?: number | null;
+  reason?: string | null;
+}
+
+export const getMfResearchDetail = async (code: string, signal?: AbortSignal): Promise<MfResearchDetail | null> => {
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/${encodeURIComponent(code)}/research-detail`, { signal });
+  const d = obj(raw.data);
+  if (Object.keys(d).length === 0) return null;
+  const pick = (k: string) => num(d[k]);
+  return {
+    roll_win_pct: pick("roll_win_pct"),
+    cal_topq_years: pick("cal_topq_years"),
+    cal_win_pct: pick("cal_win_pct"),
+    downside_dev_3y: pick("downside_dev_3y"),
+    sip_cagr_3y: pick("sip_cagr_3y"),
+    sip_cagr_5y: pick("sip_cagr_5y"),
+    quartile_1y: pick("quartile_1y"),
+    quartile_2y: pick("quartile_2y"),
+    quartile_3y: pick("quartile_3y"),
+    quartile_5y: pick("quartile_5y"),
+    quartile_source: str(d.quartile_source),
+    pct_sharpe_3y: pick("pct_sharpe_3y"),
+    pct_sortino_3y: pick("pct_sortino_3y"),
+    pct_alpha_3y: pick("pct_alpha_3y"),
+    pct_vol_3y: pick("pct_vol_3y"),
+    pct_max_dd_3y: pick("pct_max_dd_3y"),
+    pct_ret_1y: pick("pct_ret_1y"),
+    pct_cagr_3y: pick("pct_cagr_3y"),
+    pct_cagr_5y: pick("pct_cagr_5y"),
+    manager_name: str(d.manager_name),
+    manager_start: str(d.manager_start),
+    manager_tenure_years: pick("manager_tenure_years"),
+    calmar_3y: pick("calmar_3y"),
+    reason: str(d.reason),
+  };
+};
+
+export interface MfShortlistItem {
+  id?: string | number;
+  scheme_code: string;
+  reason?: string | null;
+  created_at?: string | null;
+  /** Screener fields joined by the backend; any may be absent. */
+  [field: string]: string | number | boolean | null | undefined;
+}
+
+export const listMfShortlist = async (): Promise<MfShortlistItem[]> => {
+  const raw = await boFetch<Json>("/api/backoffice/mf-research/shortlist");
+  return arr(raw.data).map((r) => {
+    const out: MfShortlistItem = { scheme_code: String(r.scheme_code ?? "") };
+    for (const [k, v] of Object.entries(r)) {
+      if (typeof v === "string" || typeof v === "number" || typeof v === "boolean" || v === null) out[k] = v;
+    }
+    return out;
+  });
+};
+
+export const addMfShortlist = async (schemeCode: string, reason?: string): Promise<void> => {
+  await boFetch<Json>("/api/backoffice/mf-research/shortlist", {
+    method: "POST",
+    body: JSON.stringify({ scheme_code: schemeCode, reason: reason || null }),
+  });
+};
+
+export const removeMfShortlist = async (id: string | number): Promise<void> => {
+  await boFetch<Json>(`/api/backoffice/mf-research/shortlist/${encodeURIComponent(String(id))}`, { method: "DELETE" });
+};
+
+/** Same-origin CSV export URL for the staff shortlist. */
+export const mfShortlistCsvUrl = (): string =>
+  resolveApiUrl(`${API_URL}/api/backoffice/mf-research/shortlist?format=csv`);

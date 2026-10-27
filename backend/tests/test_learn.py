@@ -278,3 +278,16 @@ def test_retry_wrong_only_is_partial_and_never_pays_or_passes(client, admin):
     # the failed full attempt was the first counting one, so a later perfect run earns the pass XP but not the "first try" bonus
     _, full = play(client, "mf-final")
     assert 50 <= full.json()["xp_awarded"] < 150
+
+
+def test_admin_user_detail(client, admin):
+    play(client, "mf-final")
+    sid = client.get("/api/learn/leaderboard?period=all").json()["top"][0]["id"]
+    d = client.get(f"/api/learn/admin/user/{sid}").json()
+    mf = next(m for m in d["modules"] if m["id"] == "mf")
+    final = next(t for t in mf["tests"] if t["quiz_id"] == "mf-final")
+    assert final["attempted"] and not next(t for t in mf["tests"] if t["quiz_id"] == "mf-mock")["attempted"]
+    assert d["attempts"] and d["xp"] > 0
+    assert client.get("/api/learn/admin/user/nope").status_code == 404
+    _login(client, _make_customer("compliance"))
+    assert client.get(f"/api/learn/admin/user/{sid}").status_code == 403

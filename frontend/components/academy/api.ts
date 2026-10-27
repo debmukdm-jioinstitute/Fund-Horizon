@@ -51,8 +51,15 @@ export interface QuizResult extends Reward {
 }
 export interface DueCard { id: string; fsrs: Record<string, unknown> | null; due: string | null }
 export interface Board {
-  period: "week" | "all"; top: { rank: number; name: string; xp: number; you: boolean }[];
-  you: { rank: number; xp: number } | null; hidden: boolean;
+  period: "week" | "all"; top: { rank: number; name: string; xp: number; you: boolean; id?: string }[];
+  you: { rank: number; xp: number } | null; hidden: boolean; admin: boolean;
+}
+export interface AdminTest { quiz_id: string; title: string; attempted: boolean; attempts: number; best: QuizBest | null; last_at: string | null }
+export interface AdminUser extends Me {
+  email: string | null; role: string | null; cards_total: number;
+  modules: { id: string; code: string; title: string; tests: AdminTest[]; lessons: { id: string; title: string; done: boolean }[] }[];
+  attempts: { quiz_id: string; mode: string; score: number | null; total: number | null; started_at: string; finished_at: string | null }[];
+  xp_events: { kind: string; ref: string; xp: number; ts: string }[];
 }
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
@@ -88,6 +95,7 @@ export const academy = {
     req<{ cards: DueCard[]; reviewed_today: number }>(`/cards/due?module=${m}&deck=${deck}${lesson ? `&lesson=${lesson}` : ""}`),
   reviewCard: (id: string, rating: number, fsrs: unknown, due: string) => post<Reward>(`/cards/${id}/review`, { rating, fsrs, due }),
   leaderboard: (period: "week" | "all") => req<Board>(`/leaderboard?period=${period}`),
+  adminUser: (id: string) => req<AdminUser>(`/admin/user/${id}`),
   setOptOut: (v: boolean) => req<{ leaderboard_optout: boolean }>("/prefs", { method: "PUT", body: JSON.stringify({ leaderboard_optout: v }) }),
   migrate: (body: unknown) => post<{ migrated: boolean }>("/migrate-local", body),
 };

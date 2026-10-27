@@ -29,7 +29,7 @@ if not on_workers():
 if not on_workers():
     from sqlalchemy.orm import Session
 
-from app.api.auth import require_staff
+from app.api.auth import require_role, require_staff
 from app.db import sqlite
 from app.db.models import Base
 from app.models.learn import (
@@ -45,6 +45,7 @@ from app.repo_crm_core import IST, _get_engine
 
 router = APIRouter(prefix="/api/learn", tags=["learn"])
 Staff = Annotated[dict, Depends(require_staff)]
+Admin = Annotated[dict, Depends(require_role("admin"))]
 
 DATA = Path(__file__).resolve().parent.parent / "data" / "academy"
 XP = {"lesson": 10, "check": 5, "card": 2, "quiz_pass": 50, "perfect": 100, "daily": 20}
@@ -282,8 +283,11 @@ def _due_ids(s: Session, staff: str, module: str | None = None, daily_cards: int
 
 @router.get("/me")
 def me(staff: Staff):
+    return _profile(staff["id"], staff.get("name") or staff.get("email"))
+
+
+def _profile(sid: str, name: str | None) -> dict[str, Any]:
     c = _content()
-    sid = staff["id"]
     with _db() as s:
         xp = _xp_total(s, sid)
         lvl = level_for(xp)
@@ -319,7 +323,7 @@ def me(staff: Staff):
             completed_lessons=sorted(done), progress=progress, quiz_best=best, certificate=cert if len(cert) == len(c["mods"]) else None,
             next_lesson=dict(module=nxt[0], lesson_id=nxt[1]["id"], title=nxt[1]["title"], minutes=nxt[1]["minutes"]) if nxt else None,
             new_here=not done and xp == 0, leaderboard_optout=bool(prefs and prefs.leaderboard_optout), migrated=bool(prefs and prefs.migrated_at),
-            name=staff.get("name") or staff.get("email"),
+            name=name,
         )
 
 
@@ -634,10 +638,44 @@ def leaderboard(staff: Staff, period: str = Query("week", pattern="^(week|all)$"
         top = []
         for i, (sid, xp) in enumerate(board[:10], 1):
             who = sqlite.get_customer_by_id(sid) or {}
-            top.append(dict(rank=i, name=who.get("name") or "Staff member", xp=xp, you=sid == staff["id"]))
+            top.append(dict(rank=i, name=who.get("name") or "Staff member", xp=xp, you=sid == staff["id"],
+                            **(dict(id=sid) if staff["role"] == "admin" else {})))
         mine = next(((i, xp) for i, (sid, xp) in enumerate(board, 1) if sid == staff["id"]), None)
         prefs = s.get(LearnPrefsModel, staff["id"])
-        return dict(period=period, top=top, you=dict(rank=mine[0], xp=mine[1]) if mine else None, hidden=bool(prefs and prefs.leaderboard_optout))
+        return dict(period=period, top=top, you=dict(rank=mine[0], xp=mine[1]) if mine else None, hidden=bool(prefs and prefs.leaderboard_optout), admin=staff["role"] == "admin")
+
+
+@router.get("/admin/user/{sid}")
+def admin_user(sid: str, _: Admin):
+    """Full Academy picture for one staff member: profile, every test (attempted or not) and every attempt."""
+    who = sqlite.get_customer_by_id(sid)
+    if not who:
+        raise HTTPException(404, "Unknown user.")
+    out = _profile(sid, who.get("name") or who.get("email"))
+    c = _content()
+    with _db() as s:
+        atts = s.scalars(select(QuizAttemptModel).where(QuizAttemptModel.staff_id == sid).order_by(QuizAttemptModel.started_at)).all()
+        by_quiz: dict[str, list[QuizAttemptModel]] = {}
+        for a in atts:
+            by_quiz.setdefault(a.quiz_id, []).append(a)
+        modules = []
+        for mid, m in c["mods"].items():
+            qids = [f"{mid}-cp{k}" for k in range(1, len(m["_lessons"]) // 3 + 1)] + [f"{mid}-final", f"{mid}-mock"]
+            tests = []
+            for qid in qids:
+                fin = [a for a in by_quiz.get(qid, []) if a.finished_at]
+                best = out["quiz_best"].get(qid)
+                tests.append(dict(quiz_id=qid, title=_quiz_spec(qid)["title"], attempted=bool(fin), attempts=len(fin),
+                                  best=best, last_at=fin[-1].finished_at if fin else None))
+            modules.append(dict(id=mid, code=m["code"], title=m["title"], tests=tests,
+                                lessons=[dict(id=les["id"], title=les["title"], done=les["id"] in out["completed_lessons"]) for les in m["_lessons"]]))
+        out.update(
+            email=who.get("email"), role=who.get("role"), modules=modules,
+            attempts=[dict(quiz_id=a.quiz_id, mode=a.mode, score=a.score, total=a.total, started_at=a.started_at, finished_at=a.finished_at) for a in reversed(atts)],
+            xp_events=[dict(kind=e.kind, ref=e.ref_id, xp=e.xp, ts=e.ts) for e in s.scalars(select(XpEventModel).where(XpEventModel.staff_id == sid).order_by(XpEventModel.ts.desc()).limit(50))],
+            cards_total=s.scalar(select(func.count()).select_from(CardReviewModel).where(CardReviewModel.staff_id == sid)) or 0,
+        )
+    return out
 
 
 class PrefsBody(BaseModel):

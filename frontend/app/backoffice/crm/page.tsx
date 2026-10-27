@@ -9,6 +9,7 @@ import PipelinesTab from "@/components/crm/PipelinesTab";
 import ActivitiesTab from "@/components/crm/ActivitiesTab";
 import ImportTab from "@/components/crm/ImportTab";
 import DeadlinesTab from "@/components/crm/DeadlinesTab";
+import ChatsTab from "@/components/crm/ChatsTab";
 import { ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
 import NewContactForm from "@/components/crm/NewContactForm";
 import NewOpportunityForm from "@/components/crm/NewOpportunityForm";
@@ -101,6 +102,7 @@ function CrmTabs() {
       {tab === "home" && <CrmHome />}
       {tab === "households" && <HouseholdsTab />}
       {tab === "contacts" && <ContactsTab />}
+      {tab === "chats" && <ChatsTab />}
       {tab === "leads" && <TableOrBoard defaultView="table" boardLabel="Board & new lead" newLabel="New lead" table={<LeadsList />} board={<LeadsTab />} />}
       {tab === "opportunities" && <OpportunitiesTab />}
       {tab === "activities" && <TableOrBoard defaultView="table" boardLabel="Agenda & new task" newLabel="New task" table={<TasksList />} board={<ActivitiesTab />} />}

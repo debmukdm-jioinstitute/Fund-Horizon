@@ -3,6 +3,7 @@ export const CRM_TABS = [
   ["home", "Home"],
   ["households", "Households"],
   ["contacts", "Contacts"],
+  ["chats", "Chats"],
   ["leads", "Leads"],
   ["opportunities", "Opportunities"],
   ["activities", "Tasks"],

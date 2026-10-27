@@ -49,3 +49,12 @@ def test_provider_statement_feeds_buckets_and_contact(monkeypatch):
     assert out["contact"]["email"] == "jane.sample@example.com" and out["client"]["name"] == "Jane Q Sample"
     assert out["buckets"] == [{"name": "Proaffluence mutual funds", "invested": 636011.0, "current": 1060832.0, "xirr": 14.26}]
     assert out["total_xirr"] == 14.26 and out["file_results"][0]["kind"] == "statement"
+
+
+def test_multiple_statements_combine_and_warn_on_different_clients(monkeypatch):
+    other = PRO.replace("Jane Q Sample", "Bob Other").replace("ABCDE1234F", "ZZZZZ9999Z")
+    texts = iter([PRO, other])
+    monkeypatch.setattr("app.report.monthly_report.extract_text", lambda n, d: next(texts))
+    out = parse_monthly_files([("a.pdf", b""), ("b.pdf", b"")])
+    assert [b["name"] for b in out["buckets"]] == ["Proaffluence mutual funds", "Proaffluence mutual funds (Bob Other)"]
+    assert out["total_xirr"] is None and any("different clients" in w for w in out["warnings"])

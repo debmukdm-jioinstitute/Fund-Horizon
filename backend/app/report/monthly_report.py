@@ -229,7 +229,14 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
         # Provider statements: one bucket per FundsIndia portfolio, one per Proaffluence grand total.
         for st in out["statements"]:
             for c in st["categories"] or [{"name": f"{st['provider']} mutual funds", **st["grand_total"], "ann_ret": st["grand_total"]["xirr"]}]:
-                out["buckets"].append({"name": c["name"], "invested": c["invested"], "current": c["current"], "xirr": c["ann_ret"]})
+                n, names = c["name"], {x["name"] for x in out["buckets"]}
+                if n in names:  # same provider twice (e.g. two accounts): keep both buckets, never merge by name
+                    n = f"{n} ({st['client']['name'] or st['file']})"
+                out["buckets"].append({"name": n, "invested": c["invested"], "current": c["current"], "xirr": c["ann_ret"]})
+        owners = {frozenset(st["client"]["name"].lower().split()) for st in out["statements"] if st["client"]["name"]}
+        if len(owners) > 1 and not any(x <= y for x in owners for y in owners if x is not y):
+            out["warnings"].append("These statements name different clients (" + ", ".join(st["client"]["name"] for st in out["statements"]) +
+                                   "). They are combined into one report; parse each client separately if that is not intended.")
         if len(out["statements"]) == 1:
             out["total_xirr"] = out["statements"][0]["grand_total"]["xirr"]
         out["client"] = {**out["client"], "name": out["client"]["name"] or out["contact"]["name"],

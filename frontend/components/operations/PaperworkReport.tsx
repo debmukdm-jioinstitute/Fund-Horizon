@@ -235,7 +235,8 @@ export default function PaperworkReport() {
             ...prev,
             client,
             inception: prev.inception || d.inception,
-            total_xirr: prev.total_xirr ?? d.total_xirr,
+            // A combined portfolio's XIRR is not an average: clear it when statements join an existing draft.
+            total_xirr: d.statements.length ? null : prev.total_xirr ?? d.total_xirr,
             buckets, pms, factsheets,
           };
           if (isCustom) merged.client = { ...merged.client, name: customName.trim() || merged.client.name, phone: customMobile };

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import ChatThread from "@/components/ChatThread";
 import { getStaffChats, getStaffThread, sendStaffReply, type ChatThread as Thread } from "@/lib/api";
 
-/** Customer chats, shared by the CRM Chats tab and the standalone /backoffice/chats page. */
+/** Customer chats, shown as the CRM Chats tab. */
 export default function ChatsTab() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [sel, setSel] = useState<Thread | null>(null);

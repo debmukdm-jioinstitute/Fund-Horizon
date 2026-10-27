@@ -78,6 +78,16 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
     return <>{children}</>;
   }
 
+  // Staff with no allowed nav item at all used to still see the page content
+  // (the redirect above only fires when navItems[0] exists). Deny instead.
+  if (!loading && customer && customer.is_staff && !allowed && navItems.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] dark:bg-[#10151C] text-[#706E6B] dark:text-[#A8B4C4]">
+        <p className="text-[13px] font-medium">You don&apos;t have access to this page. Ask an admin to update your page access.</p>
+      </div>
+    );
+  }
+
   if (loading || !customer || !customer.is_staff) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFFFFF] dark:bg-[#10151C] text-[#706E6B] dark:text-[#A8B4C4]">

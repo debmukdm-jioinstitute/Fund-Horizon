@@ -120,16 +120,6 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/backoffice/chats",
-    label: "Customer chats",
-    description: "Messages from customers; reply as the Fund Horizon team",
-    icon: (p) => (
-      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 10h8M8 14h5m-9 6l3-3h11a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v13z" />
-      </svg>
-    ),
-  },
-  {
     href: "/backoffice/risk-profiling",
     label: "Risk profiling",
     description: "SEBI/AMFI suitability scoring, risk capacity vs tolerance, and asset allocation",
@@ -165,5 +155,7 @@ export const NAV_ITEMS: NavItem[] = [
 /** Pages a login may open. Empty/absent list = unrestricted. Admins are never restricted. */
 export function canAccessPage(pages: string[] | undefined, role: string | undefined, path: string): boolean {
   if (role === "admin" || !pages?.length) return true;
+  // The old chats URL is a redirect into CRM, so CRM access is what gates it.
+  if (path === "/backoffice/chats" && pages.includes("/backoffice/crm")) return true;
   return pages.some((p) => path === p || (p !== "/backoffice" && path.startsWith(`${p}/`)));
 }

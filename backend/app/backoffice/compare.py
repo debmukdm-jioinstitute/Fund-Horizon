@@ -190,9 +190,26 @@ def _screener_row_for_code(repo: BackofficeRepository, code: str) -> dict[str, A
         return None
 
 
+def _dataset_ratio(row: pd.DataFrame, col: str) -> float | None:
+    """Dataset 3Y ratio for a scheme, rounded exactly like the screener frame.
+
+    The research row and fund dialog show these values: mf_screener._base_frame
+    copies sharpe_3y/sortino_3y straight from this same dataset CSV, and
+    mf_screener.records() rounds them to 4 decimals. Reading them here, instead
+    of only via the heavy screener-frame rebuild, is what keeps Compare equal
+    to the row even when that rebuild fails or is stale (see below).
+    """
+    if row.empty or col not in row.columns:
+        return None
+    v = _nan_none(row.iloc[0][col])
+    return round(v, 4) if v is not None else None
+
+
 def _mf_item(repo: BackofficeRepository, code: str) -> dict[str, Any]:
     metrics_df = load_metrics()
     row = metrics_df.loc[metrics_df["scheme_code"] == str(code)]
+    dataset_sharpe = _dataset_ratio(row, "sharpe_3y")
+    dataset_sortino = _dataset_ratio(row, "sortino_3y")
     nav, nav_source = _mf_nav_for_code(code)
     if row.empty:
         db_rows = repo.get_mf_schemes_by_codes([str(code)])
@@ -256,11 +273,17 @@ def _mf_item(repo: BackofficeRepository, code: str) -> dict[str, Any]:
     # MF Research V1 (MF path only): join the same screener frame / manager table as the
     # fund dialog, so manager, tenure, computed quartile 2Y and AUM match the screener row
     # instead of showing "Not available". AMFI fallback covers the manager name only.
-    # V1 live-check fix: Sharpe/Sortino ALSO come from the frame (the dataset 3Y
-    # values the research row and fund dialog show). The live-NAV computation above
-    # (3Y trailing, 6.5% risk-free rate) gave different numbers (e.g. HDFC Flexi Cap
-    # 0.56/0.65 vs the row/dialog 0.61/0.79) with no label saying so; it now survives
-    # only as the fallback when the dataset value is missing, flagged live-nav.
+    # Sharpe/Sortino: the dataset row read above IS the same source the research
+    # row uses, so it is authoritative here and is applied unconditionally below,
+    # not only when the frame lookup succeeds. That is the fix for the 27 Oct
+    # live re-check: Compare showed the live-NAV values (HDFC Flexi Cap
+    # 0.56/0.65 vs the row/dialog 0.61/0.79) — the frame-only override in PR #44
+    # never fired in production, and _screener_row_for_code swallows every
+    # exception, so the fallback fired silently. The frame override below is
+    # kept (it yields the same values when it succeeds) but can no longer
+    # decide whether Compare matches the row. The live-NAV computation above
+    # survives only as the fallback when the dataset value is genuinely
+    # missing, flagged live-nav.
     frame_row = _screener_row_for_code(repo, str(code))
     _from_dataset = {"sharpe": False, "sortino": False}
     if frame_row is not None:
@@ -287,6 +310,14 @@ def _mf_item(repo: BackofficeRepository, code: str) -> dict[str, Any]:
                     pass
         except Exception:
             pass
+    # Dataset row is authoritative and independent of the frame lookup above:
+    # it applies even when the frame row is None or the frame build failed.
+    if dataset_sharpe is not None:
+        metrics["sharpe"] = dataset_sharpe
+        _from_dataset["sharpe"] = True
+    if dataset_sortino is not None:
+        metrics["sortino"] = dataset_sortino
+        _from_dataset["sortino"] = True
     metrics["sharpe_source"] = (
         "dataset" if all(_from_dataset.values())
         else "mixed" if any(_from_dataset.values())

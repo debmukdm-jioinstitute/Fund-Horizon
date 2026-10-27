@@ -99,3 +99,58 @@ def test_compare_matches_screener_frame_for_tenure_and_sharpe(client):
         else:
             assert m["sharpe_source"] in ("live-nav", "mixed")
     assert dataset_proven >= 1, "no seeded code carried dataset ratios to prove the dataset path"
+
+
+def test_compare_sharpe_matches_row_for_live_recheck_funds(client):
+    """27 Oct live re-check regression: HDFC Flexi Cap Regular (101762) vs
+    Parag Parikh Flexi Cap Regular (122640) showed Compare 0.56/0.65 and
+    0.54/0.83 against row/dialog 0.61/0.79 and 0.55/0.76. Compare must equal
+    the screener row exactly, with source reported as dataset."""
+    sid = _create_staff()
+    _login_staff(client, sid)
+    codes = ["101762", "122640"]
+    by_code: dict[str, dict] = {}
+    for code in codes:
+        found = [r for r in client.get(
+            f"/api/backoffice/mutual-funds/screener?search={code}&limit=200").json()["data"]
+            if str(r["code"]) == code]
+        assert found, f"screener row missing for {code}"
+        by_code[code] = found[0]
+    body = client.get(f"/api/backoffice/compare?type=mf&ids={','.join(codes)}")
+    assert body.status_code == 200, body.text
+    by_id = {str(it["id"]): it["metrics"] for it in body.json()["items"]}
+    for code in codes:
+        s, m = by_code[code], by_id[code]
+        assert s["sharpe_3y"] is not None and s["sortino_3y"] is not None
+        assert m["sharpe"] == s["sharpe_3y"], (code, m, s)
+        assert m["sortino"] == s["sortino_3y"], (code, m, s)
+        assert m["sharpe_source"] == "dataset", (code, m)
+
+
+def test_compare_sharpe_uses_dataset_when_frame_lookup_fails(client, monkeypatch):
+    """The frame lookup swallows every exception, so on the old code a failed
+    or stale frame silently fell back to live-NAV values that differ from the
+    row. Compare must still return the dataset values when the frame lookup
+    returns nothing at all."""
+    from app.backoffice import compare as compare_mod
+
+    sid = _create_staff()
+    _login_staff(client, sid)
+    compare_mod._CACHE.clear()
+    monkeypatch.setattr(compare_mod, "_screener_row_for_code", lambda repo, code: None)
+    codes = ["101762", "122640"]
+    by_code: dict[str, dict] = {}
+    for code in codes:
+        found = [r for r in client.get(
+            f"/api/backoffice/mutual-funds/screener?search={code}&limit=200").json()["data"]
+            if str(r["code"]) == code]
+        assert found, f"screener row missing for {code}"
+        by_code[code] = found[0]
+    body = client.get(f"/api/backoffice/compare?type=mf&ids={','.join(codes)}")
+    assert body.status_code == 200, body.text
+    by_id = {str(it["id"]): it["metrics"] for it in body.json()["items"]}
+    for code in codes:
+        s, m = by_code[code], by_id[code]
+        assert m["sharpe"] == s["sharpe_3y"], (code, m, s)
+        assert m["sortino"] == s["sortino_3y"], (code, m, s)
+        assert m["sharpe_source"] == "dataset", (code, m)

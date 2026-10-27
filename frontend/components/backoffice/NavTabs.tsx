@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent,
 } from "@dnd-kit/core";
@@ -22,21 +23,45 @@ export interface NavTab {
 function DropdownTab({ tab, on, isActive, pathname }: { tab: NavTab; on: boolean; isActive: (href: string) => boolean; pathname: string }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
+  const tile = useRef<HTMLDivElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ left: number; top: number; width: number } | null>(null);
   const Icon = tab.icon;
   const base = "relative flex min-w-[76px] shrink-0 flex-col items-center justify-center gap-1 rounded-lg px-3 py-2 text-[12px] font-semibold whitespace-nowrap transition-colors";
   useEffect(() => { setOpen(false); }, [pathname]);
+  // The menu used to be an absolutely-positioned div inside the tab bar's
+  // overflow-x-auto scroller: a non-visible overflow on one axis forces the
+  // other axis to auto, so the menu below the bar was clipped to the
+  // scroller's height and never painted — expanded in state, invisible on
+  // screen, which is exactly the reported "MF Research missing" symptom.
+  // It now renders in a fixed-position portal on document.body, measured
+  // from the tile, so it always paints below the tile over the page content.
   useEffect(() => {
     if (!open) return;
+    const place = () => {
+      const r = tile.current?.getBoundingClientRect();
+      if (r) setPos({ left: Math.max(8, Math.min(r.left, window.innerWidth - 208)), top: r.bottom + 4, width: Math.max(200, r.width) });
+    };
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
     const onDoc = (e: MouseEvent) => {
-      if (root.current && !root.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (root.current?.contains(t) || menu.current?.contains(t)) return;
+      setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("mousedown", onDoc);
     document.addEventListener("keydown", onKey);
-    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [open ]);
   const moveFocus = (dir: 1 | -1) => {
-    const links = Array.from(root.current?.querySelectorAll<HTMLElement>("a[data-child]") ?? []);
+    const links = Array.from(menu.current?.querySelectorAll<HTMLElement>("a[data-child]") ?? []);
     const idx = links.indexOf(document.activeElement as HTMLElement);
     const next = links[(idx + dir + links.length) % links.length];
     next?.focus();
@@ -46,7 +71,7 @@ function DropdownTab({ tab, on, isActive, pathname }: { tab: NavTab; on: boolean
       if (e.key === "ArrowDown") { e.preventDefault(); if (!open) setOpen(true); else moveFocus(1); }
       if (e.key === "ArrowUp") { e.preventDefault(); if (open) moveFocus(-1); }
     }}>
-      <div className={`flex items-stretch rounded-lg ${on ? "bg-gradient-to-b from-[#1B96FF] to-[#0176D3] text-white shadow-[0_3px_0_#00A1E0]" : "text-[#032D60] dark:text-[#CFE6FC] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F]"}`}>
+      <div ref={tile} className={`flex items-stretch rounded-lg ${on ? "bg-gradient-to-b from-[#1B96FF] to-[#0176D3] text-white shadow-[0_3px_0_#00A1E0]" : "text-[#032D60] dark:text-[#CFE6FC] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F]"}`}>
         <Link href={tab.href} aria-current={on ? "page" : undefined} data-active={on || undefined} className={`${base} pr-1`}>
           {Icon && <Icon className="h-6 w-6" />}
           {tab.label}
@@ -60,8 +85,9 @@ function DropdownTab({ tab, on, isActive, pathname }: { tab: NavTab; on: boolean
           <span aria-hidden>{open ? "▴" : "▾"}</span>
         </button>
       </div>
-      {open && (
-        <div role="menu" className="absolute left-0 top-full z-50 mt-1 min-w-[200px] rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-1 shadow-xl">
+      {open && pos && createPortal(
+        <div ref={menu} role="menu" style={{ position: "fixed", left: pos.left, top: pos.top, width: pos.width, zIndex: 100 }}
+          className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-1 shadow-xl">
           {(tab.children ?? []).map((c) => {
             const active = isActive(c.href);
             return (
@@ -74,7 +100,8 @@ function DropdownTab({ tab, on, isActive, pathname }: { tab: NavTab; on: boolean
               </Link>
             );
           })}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

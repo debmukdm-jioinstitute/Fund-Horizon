@@ -1,7 +1,7 @@
 """Crawl AdvisorKhoj's Market Capture Ratio tool and write data/fundhorizon_mf_rag_dataset/capture_ratio.json (keyed by AMFI scheme code).
 
-Run on a dev machine (`make capture`, ~10 min); commit the JSON. AdvisorKhoj has no API: the page is server-rendered from
-GET /mutual-funds-research/market-capture-ratio?category=..&schemes=a,b,..&period=N and covers equity categories only.
+Run on a dev machine (`make capture`, ~25 min; pass category keys to refresh only those); commit the JSON. AdvisorKhoj has no API: the page is server-rendered from
+GET /mutual-funds-research/market-capture-ratio?category=..&schemes=a,b,..&period=N and covers equity and hybrid categories only.
 Funds are joined to our AMFI codes by normalised fund name + plan (unmatched funds are listed, not guessed).
 """
 from __future__ import annotations
@@ -23,17 +23,21 @@ BASE = "https://www.advisorkhoj.com/mutual-funds-research"
 OUT = Path(__file__).resolve().parents[2] / "data" / "fundhorizon_mf_rag_dataset" / "capture_ratio.json"
 PERIODS = (1, 3, 5, 10)
 BATCH = 8  # the page's own form allows 5; larger batches still work, 8 keeps URLs short
-# Our category key -> AdvisorKhoj category names.
+# Our category key -> AdvisorKhoj category names (equity and hybrid; it has no debt categories).
+_EQ = lambda *n: [f"Equity: {x}" for x in n]
 AK_CATS: dict[str, list[str]] = {
-    "contra": ["Contra"], "dividend_yield": ["Dividend Yield"], "elss": ["ELSS"], "flexi_cap": ["Flexi Cap"],
-    "focused": ["Focused"], "large_mid_cap": ["Large and Mid Cap"], "large_cap": ["Large Cap"], "mid_cap": ["Mid Cap"],
-    "multi_cap": ["Multi Cap"], "small_cap": ["Small Cap"], "value": ["Value"],
-    "sectoral_thematic": [
+    "contra": _EQ("Contra"), "dividend_yield": _EQ("Dividend Yield"), "elss": _EQ("ELSS"), "flexi_cap": _EQ("Flexi Cap"),
+    "focused": _EQ("Focused"), "large_mid_cap": _EQ("Large and Mid Cap"), "large_cap": _EQ("Large Cap"),
+    "mid_cap": _EQ("Mid Cap"), "multi_cap": _EQ("Multi Cap"), "small_cap": _EQ("Small Cap"), "value": _EQ("Value"),
+    "sectoral_thematic": _EQ(
         "Sectoral-Banking and Financial Services", "Sectoral-FMCG", "Sectoral-Infrastructure",
         "Sectoral-Pharma and Healthcare", "Sectoral-Technology", "Thematic-Consumption", "Thematic-Energy", "Thematic-ESG",
         "Thematic-International", "Thematic-Manufacturing", "Thematic-MNC", "Thematic-Others", "Thematic-PSU",
         "Thematic-Quantitative", "Thematic-Transportation",
-    ],
+    ),
+    "aggressive_hybrid": ["Hybrid: Aggressive"], "arbitrage": ["Hybrid: Arbitrage"],
+    "conservative_hybrid": ["Hybrid: Conservative"], "balanced_advantage": ["Hybrid: Dynamic Asset Allocation"],
+    "equity_savings": ["Hybrid: Equity Savings"], "multi_asset": ["Hybrid: Multi Asset Allocation"],
 }
 _NOISE = {"fund", "plan", "option", "growth", "gr", "regular", "reg", "direct", "dir", "the", "and", "of", "a"}
 _S = requests.Session()
@@ -42,7 +46,7 @@ _S.headers["User-Agent"] = "Mozilla/5.0"
 
 def norm_key(text: str) -> tuple[str, str]:
     """(name with filler words removed and spaces collapsed, plan) from an AK slug or one of our scheme names."""
-    words = re.findall(r"[a-z0-9]+", text.lower().replace("&", " and "))
+    words = re.findall(r"[a-z0-9]+", re.sub(r"\(.*?\)", "", text).lower().replace("&", " and "))
     plan = "Direct" if {"direct", "dir"} & set(words) else "Regular"
     return "".join(w for w in words if w not in _NOISE), plan
 
@@ -77,13 +81,17 @@ def _num(s: str) -> float | None:
 def main() -> None:
     df = mf_screener._base_frame()
     ours = {norm_key(n): c for n, c in zip(df["name"], df["code"])}
-    out: dict[str, dict[str, list[float | None]]] = {}
+    # Optional category keys on the command line refresh only those, merging into the existing file.
+    only = set(sys.argv[1:])
+    out: dict[str, dict[str, list[float | None]]] = json.loads(OUT.read_text())["data"] if only and OUT.exists() else {}
     seen_slugs: set[str] = set()
     for key, ak_cats in AK_CATS.items():
+        if only and key not in only:
+            continue
         names = df.loc[df["cat"] == key, "name"]
         queries = {" ".join(re.findall(r"[A-Za-z0-9]+", n)[:k]) for n in names for k in (1, 2, 3)}
         for ak in ak_cats:
-            category = f"Equity: {ak}"
+            category = ak
             shorts: list[str] = []
             for q in sorted(queries) + list("abcdefghijklmnopqrstuvwxyz"):
                 shorts += [s for s in suggest(q, category) if s not in shorts and "," not in s]

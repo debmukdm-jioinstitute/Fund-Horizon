@@ -26,6 +26,10 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
   const [managerOpen, setManagerOpen] = useState(false);
   const [researchDetail, setResearchDetail] = useState<MfResearchDetail | null>(null);
   const [shortlistMsg, setShortlistMsg] = useState("");
+  // In-page reason form, never window.prompt (auto-dismissed by automated
+  // browsers, which silently aborted every dialog add in the V1 live check).
+  const [shortlistForm, setShortlistForm] = useState(false);
+  const [shortlistReason, setShortlistReason] = useState("");
   const rec = useRecommended();
   const code = scheme?.scheme_code;
 
@@ -36,6 +40,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
     setManagerOpen(false);
     setResearchDetail(null);
     setShortlistMsg("");
+    setShortlistForm(false);
+    setShortlistReason("");
     if (!code) return;
     let cancelled = false;
     getMfManager(code)
@@ -649,23 +655,42 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               )}
             </button>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={async () => {
-                  const reason = window.prompt("Why does this fund belong on the shortlist?", "");
-                  if (reason === null) return;
-                  try {
-                    await addMfShortlist(scheme.scheme_code, reason.trim() || undefined);
-                    setShortlistMsg("Added to the shortlist.");
-                  } catch (e) {
-                    setShortlistMsg(e instanceof Error ? e.message : "Could not add to the shortlist.");
-                  }
-                }}
-                className="terminal-btn text-[12px] py-1.5 px-3"
-              >
-                Add to shortlist
-              </button>
+            <div className="flex flex-wrap items-center gap-2">
+              {!shortlistForm ? (
+                <button
+                  type="button"
+                  onClick={() => { setShortlistReason(""); setShortlistForm(true); }}
+                  className="terminal-btn text-[12px] py-1.5 px-3"
+                >
+                  Add to shortlist
+                </button>
+              ) : (
+                <span className="flex flex-wrap items-center gap-2">
+                  <input aria-label="Shortlist reason" value={shortlistReason}
+                    onChange={(e) => setShortlistReason(e.target.value)}
+                    placeholder="Why does this fund belong here? (optional)"
+                    className="terminal-input text-[12px] py-1 px-2 w-64" />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await addMfShortlist(scheme.scheme_code, shortlistReason.trim() || undefined);
+                        setShortlistMsg("Added to the shortlist.");
+                        setShortlistForm(false);
+                      } catch (e) {
+                        setShortlistMsg(e instanceof Error ? e.message : "Could not add to the shortlist.");
+                      }
+                    }}
+                    className="terminal-btn-accent text-[12px] py-1.5 px-3"
+                  >
+                    Add
+                  </button>
+                  <button type="button" onClick={() => setShortlistForm(false)}
+                    className="terminal-btn text-[12px] py-1.5 px-3">
+                    Cancel
+                  </button>
+                </span>
+              )}
               {shortlistMsg && <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{shortlistMsg}</span>}
               <Link
                 href={`/backoffice/research?target_type=mutual_fund&target_id=${encodeURIComponent(scheme.scheme_code)}`}

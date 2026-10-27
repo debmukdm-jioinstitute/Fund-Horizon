@@ -53,3 +53,49 @@ def test_backoffice_compare_mf_two_known_schemes(client):
     assert body["type"] == "mf"
     assert len(body["items"]) == 2
     assert all("series" in it for it in body["items"])
+
+
+def test_compare_matches_screener_frame_for_tenure_and_sharpe(client):
+    """V1 live-check fix 2: compare tenure and Sharpe/Sortino must equal the
+    research row/dialog values (screener frame), never a silent second value.
+    Managers are seeded so tenure is present; at least one seeded code must
+    carry dataset ratios to prove the dataset path."""
+    from app.backoffice.repository import BackofficeRepository
+
+    sid = _create_staff()
+    _login_staff(client, sid)
+    codes = [str(c) for c in eligible_funds()["scheme_code"].head(4).tolist()]
+    repo = BackofficeRepository()
+    conn = repo._conn()
+    with conn:
+        for code in codes:
+            conn.execute(
+                """INSERT OR REPLACE INTO mf_managers
+                   (scheme_code, manager_name, manager_start, source, provenance, updated_at)
+                   VALUES (?, ?, '2019-01-01', 'manual_import', 'manual', '2026-10-14T00:00:00Z')""",
+                (code, "Test Manager"),
+            )
+    by_code: dict[str, dict] = {}
+    for code in codes:
+        found = [r for r in client.get(
+            f"/api/backoffice/mutual-funds/screener?search={code}&limit=200").json()["data"]
+            if str(r["code"]) == code]
+        assert found, f"screener row missing for {code}"
+        by_code[code] = found[0]
+    body = client.get(f"/api/backoffice/compare?type=mf&ids={','.join(codes)}")
+    assert body.status_code == 200, body.text
+    by_id = {str(it["id"]): it["metrics"] for it in body.json()["items"]}
+    assert len(by_id) == len(codes)
+    dataset_proven = 0
+    for code in codes:
+        s = by_code[code]
+        m = by_id[code]
+        assert m["manager_tenure"] == s["manager_tenure_years"], (code, m, s)
+        if s.get("sharpe_3y") is not None and s.get("sortino_3y") is not None:
+            assert m["sharpe"] == s["sharpe_3y"], (code, m, s)
+            assert m["sortino"] == s["sortino_3y"], (code, m, s)
+            assert m["sharpe_source"] == "dataset"
+            dataset_proven += 1
+        else:
+            assert m["sharpe_source"] in ("live-nav", "mixed")
+    assert dataset_proven >= 1, "no seeded code carried dataset ratios to prove the dataset path"

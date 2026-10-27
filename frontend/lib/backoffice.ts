@@ -225,8 +225,13 @@ export interface CompareMetrics {
   aum: number | null;
   nav_or_min_ticket: number | null;
   manager: string | null;
-  manager_tenure: string | null;
+  // Numeric years from the backend (V1 live-check fix: the old mapping ran this
+  // through str(), which drops numbers, so every tenure rendered "—").
+  manager_tenure: number | string | null;
   quartile: number | null;
+  // "dataset" = the dataset 3Y values matching the research row/dialog;
+  // "live-nav" = computed live from NAV where the dataset value is missing.
+  sharpe_source?: string | null;
 }
 
 export interface ComparePayload {
@@ -924,8 +929,9 @@ export const getBackofficeCompare = async (type: "mf" | "pms", ids: string[]): P
       aum: num(m.aum) ?? null,
       nav_or_min_ticket: num(m.nav_or_min_ticket) ?? null,
       manager: str(m.manager) ?? null,
-      manager_tenure: str(m.manager_tenure) ?? null,
+      manager_tenure: num(m.manager_tenure) ?? (str(m.manager_tenure) ?? null),
       quartile: num(m.quartile) ?? null,
+      sharpe_source: str(m.sharpe_source) ?? null,
     };
     const series = arr(it.series)
       .map((pt) => {

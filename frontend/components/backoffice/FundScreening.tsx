@@ -146,17 +146,80 @@ export default function FundScreening() {
     }
   }
 
+  // Preset note: exactly what a research-shaped preset carried into the funnel
+  // and what did not (V1 live-check fix: research presets never appeared to
+  // carry over, because selecting one spread its research keys straight into
+  // funnel state without translating them, so the run ignored them).
+  const [presetNote, setPresetNote] = useState<string | null>(null);
+
+  // Translate an MF Research preset's filter shape to funnel state (mirrors the
+  // server's normalise_research_filters; the run re-normalises, so this is
+  // idempotent). Returns the note text for what did not carry over.
+  function translateResearchPreset(f: Record<string, unknown>, name: string): { next: ScreeningFiltersState; note: string } {
+    const strArr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+    const numArr = (v: unknown): number[] => (Array.isArray(v) ? v.map((x) => Number(x)).filter((n) => [1, 2, 3, 4].includes(n)) : []);
+    const applied: string[] = [];
+    const notApplied: string[] = [];
+    const next: ScreeningFiltersState = { ...DEFAULT_FILTERS, bounds: { ...DEFAULT_FILTERS.bounds } };
+    const cats = strArr(f.category ?? f.cat);
+    if (cats.length === 1) { next.cat = cats[0]; applied.push(`category ${cats[0]}`); }
+    else if (cats.length > 1) { next.cat = cats[0]; notApplied.push(`categories beyond the first (${cats.slice(1).join(", ")}): the funnel filter holds one category, so this run covers ${cats[0]} only`); }
+    else { next.cat = undefined; applied.push("all categories"); }
+    const amcs = strArr(f.amc);
+    if (amcs.length === 1) { next.amc = amcs[0]; applied.push(`fund house ${amcs[0]}`); }
+    else if (amcs.length > 1) { next.amc = amcs[0]; notApplied.push(`fund houses beyond the first (${amcs.slice(1).join(", ")}): this run covers ${amcs[0]} only`); }
+    if (typeof f.search === "string" && f.search) { next.q_search = f.search; applied.push("search"); }
+    const ranges = (f.ranges ?? {}) as Record<string, { min?: number | null; max?: number | null }>;
+    const rangeToBound: Record<string, string> = { sharpe_3y: "sharpe", sortino_3y: "sortino", ter_gap_pp: "ter_gap_pp" };
+    for (const p of ["1y", "3y", "5y", "10y"]) {
+      rangeToBound[`cap_up_${p}`] = "up_capture";
+      rangeToBound[`cap_down_${p}`] = "down_capture";
+      rangeToBound[`cap_spread_${p}`] = "capture_spread";
+    }
+    const bounds: ScreeningFiltersState["bounds"] = { ...next.bounds };
+    for (const [key, r] of Object.entries(ranges)) {
+      const target = rangeToBound[key];
+      if (!target || !r || typeof r !== "object") { if (key.startsWith("ret_") || key === "ter" || key === "aum_cr") notApplied.push(`${key} range (research-table-only field)`); continue; }
+      const conv: { min?: number | null; max?: number | null } = {};
+      for (const side of ["min", "max"] as const) {
+        const v = r[side];
+        if (v === null || v === undefined) continue;
+        conv[side] = key.startsWith("cap_") ? Number(v) / 100 : Number(v);
+      }
+      if (Object.keys(conv).length) { bounds[target] = conv; applied.push(`${target} bound`); }
+    }
+    next.bounds = bounds;
+    const qs = numArr(f.quartile);
+    if (qs.length) { next.quartiles_action = qs; applied.push(`quartiles ${qs.join(", ")}`); }
+    if (typeof f.quartile_period === "string" && f.quartile_period) { (next as Record<string, unknown>).quartile_period = f.quartile_period; applied.push(`quartile period ${f.quartile_period}`); }
+    if (typeof f.manager === "string" && f.manager.trim()) { (next as Record<string, unknown>).manager_search = f.manager.trim(); applied.push(`manager name "${f.manager.trim()}" (applied on run; the funnel has no manager field)`); }
+    const mt = f.min_tenure;
+    if (mt !== null && mt !== undefined && mt !== "" && Number.isFinite(Number(mt))) { next.min_tenure_years = Number(mt); applied.push(`minimum tenure ${Number(mt)} yrs`); }
+    if (Array.isArray(f.plan) && f.plan.length) notApplied.push("plan (funnel metrics carry no plan)");
+    if (f.include_unavailable === false || f.include_unknown === false) notApplied.push("include toggles (the funnel keeps its own include-missing rule)");
+    const note = `Preset "${name}" — carried into the funnel: ${applied.length ? applied.join("; ") : "nothing the funnel can apply"}. NOT carried over: ${notApplied.length ? notApplied.join("; ") : "none"}. Presets live in one shared list: research-saved presets appear here and funnel-saved presets appear on the MF Research page. Funnel results for the same preset name are never claimed identical to research results.`;
+    return { next, note };
+  }
+
   // Handle Preset Select
   function handleSelectPreset(preset: ScreeningPresetItem) {
     setCurrentPresetId(preset.id);
-    if (preset.filters) {
-      const pb = (preset.filters.bounds ?? {}) as ScreeningFiltersState["bounds"];
-      setFilters({
-        ...DEFAULT_FILTERS,
-        ...preset.filters,
-        bounds: { ...DEFAULT_FILTERS.bounds, ...pb },
-      });
+    if (!preset.filters) { setPresetNote(null); return; }
+    const f = preset.filters as Record<string, unknown>;
+    const isResearchShaped = f.ranges !== undefined || f.quartile !== undefined || f.manager !== undefined || f.min_tenure !== undefined || Array.isArray(f.category) || Array.isArray(f.amc);
+    if (isResearchShaped) {
+      const { next, note } = translateResearchPreset(f, preset.name);
+      setFilters(next);
+      setPresetNote(note);
+      return;
     }
+    const pb = (f.bounds ?? {}) as ScreeningFiltersState["bounds"];
+    setFilters({
+      ...DEFAULT_FILTERS,
+      ...f,
+      bounds: { ...DEFAULT_FILTERS.bounds, ...pb },
+    });
+    setPresetNote(null);
   }
 
   // Handle Preset Delete
@@ -165,7 +228,7 @@ export default function FundScreening() {
     try {
       await deleteScreeningPreset(id);
       setPresets(presets.filter((p) => p.id !== id));
-      if (currentPresetId === id) setCurrentPresetId(null);
+      if (currentPresetId === id) { setCurrentPresetId(null); setPresetNote(null); }
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : "Failed to delete preset");
     }
@@ -270,6 +333,10 @@ export default function FundScreening() {
         onSelectPreset={handleSelectPreset}
         onDeletePreset={handleDeletePreset}
       />
+
+      {presetNote && (
+        <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] px-1">{presetNote}</p>
+      )}
 
       {/* Table Action Header & Export Link */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">

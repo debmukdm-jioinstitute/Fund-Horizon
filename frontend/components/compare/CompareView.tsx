@@ -389,6 +389,13 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
                           <tr>
                             <td colSpan={payload.items.length + 1} className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] py-1.5 px-4">
                               {(() => {
+                                // The dataset claim is only made when every item actually
+                                // reports it. An absent sharpe_source (e.g. a backend
+                                // older than the source field) must NOT read as
+                                // "dataset values" — that false claim is what the
+                                // 27 Oct live re-check caught.
+                                const unknown = payload.items.filter((it) => !it.metrics.sharpe_source);
+                                if (unknown.length) return `Sharpe/Sortino source was not reported by the backend for ${unknown.map((it) => it.name).join(", ")}; do not assume these match the research row — they may be computed live from NAV (3Y, 6.5% risk-free rate).`;
                                 const live = payload.items.filter((it) => it.metrics.sharpe_source === "live-nav" || it.metrics.sharpe_source === "mixed");
                                 if (!live.length) return "Sharpe/Sortino are the dataset 3Y values, matching the research row and fund dialog.";
                                 return `Sharpe/Sortino match the research row and fund dialog (dataset 3Y values) except for ${live.map((it) => it.name).join(", ")}, where the dataset value is missing so the figure is computed live from NAV (3Y, 6.5% risk-free rate).`;

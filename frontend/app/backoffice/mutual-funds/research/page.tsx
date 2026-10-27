@@ -419,6 +419,49 @@ function MfResearch() {
   };
 
   const catLabel = (key: string) => groups.flatMap((g) => g.categories).find((c) => c.key === key)?.label ?? key;
+
+  // Fund universe redesign (UI only): the summary dropdowns and panels below
+  // read and write the SAME filters state, URL sync and presets as the old
+  // checkbox rows did — no filter semantic changes.
+  const [universePanel, setUniversePanel] = useState<"category" | "amc" | "age" | null>(null);
+  const [universeGroup, setUniverseGroup] = useState("Equity");
+  const universeRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!universePanel) return;
+    const onDoc = (e: MouseEvent) => { if (universeRef.current && !universeRef.current.contains(e.target as Node)) setUniversePanel(null); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setUniversePanel(null); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [universePanel]);
+  const AGE_BANDS: { id: string; label: string; range: Range }[] = [
+    { id: "any", label: "Any age", range: {} },
+    { id: "under1", label: "Under 1 year", range: { max: "1" } },
+    { id: "1-3", label: "1–3 years", range: { min: "1", max: "3" } },
+    { id: "3-5", label: "3–5 years", range: { min: "3", max: "5" } },
+    { id: "5plus", label: "5 years and over", range: { min: "5" } },
+  ];
+  const ageRange = filters.ranges.history_years;
+  const ageBandId = AGE_BANDS.find((b) => (b.range.min ?? undefined) === (ageRange?.min ?? undefined) && (b.range.max ?? undefined) === (ageRange?.max ?? undefined))?.id ?? "custom";
+  const ageSummary = ageBandId === "custom"
+    ? `${ageRange?.min ?? "0"}–${ageRange?.max ?? "∞"} yrs`
+    : (AGE_BANDS.find((b) => b.id === ageBandId)?.label ?? "Any age");
+  const categorySummary = filters.category.length === 0 ? "All categories" : filters.category.length === 1 ? catLabel(filters.category[0]) : `${filters.category.length} categories`;
+  const amcSummary = filters.amc.length === 0 ? "All AMCs" : filters.amc.length === 1 ? normalizeDisplayName(filters.amc[0]) : `${filters.amc.length} AMCs`;
+  const activeGroup = groups.find((g) => g.group === universeGroup) ?? groups[0];
+  const clearAge = () => setFilters((f) => { const rest = { ...f.ranges }; delete rest.history_years; return { ...f, ranges: rest }; });
+  const resetUniverse = () => {
+    setFilters((f) => { const rest = { ...f.ranges }; delete rest.history_years; return { ...f, category: [], plan: [...PLANS], amc: [], search: "", ranges: rest }; });
+    setQuery("");
+    setUniversePanel(null);
+  };
+  const universeChips: { key: string; label: string; onRemove: () => void }[] = [
+    ...filters.category.map((c) => ({ key: `cat:${c}`, label: catLabel(c), onRemove: () => setFilters((f) => ({ ...f, category: f.category.filter((x) => x !== c) })) })),
+    ...filters.amc.map((a) => ({ key: `amc:${a}`, label: normalizeDisplayName(a), onRemove: () => setFilters((f) => ({ ...f, amc: f.amc.filter((x) => x !== a) })) })),
+    ...(filters.plan.length < PLANS.length ? filters.plan.map((p) => ({ key: `plan:${p}`, label: p, onRemove: () => setFilters((f) => ({ ...f, plan: f.plan.filter((x) => x !== p) })) })) : []),
+    ...(ageRange && (ageRange.min || ageRange.max) ? [{ key: "age", label: `Age: ${ageSummary}`, onRemove: clearAge }] : []),
+  ];
+  const summaryBtn = "flex items-center gap-1.5 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] px-3 py-2 text-[13px] text-[#181818] dark:text-[#EDF2F7]";
   const visibleCols = ALL_COLUMNS.filter((c) => columns.includes(c.key));
   const pageCount = Math.max(1, Math.ceil(total / pageSize));
   const page = Math.floor(offset / pageSize);
@@ -439,19 +482,78 @@ function MfResearch() {
   const universeLine = `${filters.category.length ? filters.category.map(catLabel).join(", ") : "All categories"} · ${filters.plan.join(" + ")} plans`;
   const fresh = freshness ?? { nav_as_of: asOf ?? null };
 
-  const rangeField = (key: string, label: string) => (
-    <div key={key} className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-      <div className="mb-1">{label}</div>
-      <div className="flex gap-1.5">
-        {(["min", "max"] as const).map((side) => (
-          <input key={side} type="number" inputMode="decimal" placeholder={side} aria-label={`${label} ${side}`}
-            value={filters.ranges[key]?.[side] ?? ""}
-            onChange={(e) => setRange(key, side, e.target.value)}
-            className="terminal-input w-full text-[12px] py-1 px-2" />
-        ))}
+  // Slider bounds per range field, in the field's own units as the backend
+  // applies them (returns/CAGR/alpha/volatility/drawdown in %, Sharpe/Sortino/
+  // beta unit-free, capture in %, spread and TER gap in pp, AUM in Rs cr).
+  // Bounds come from the shipped dataset's spread (1st–99th percentile, with
+  // headroom for outliers); a typed value outside the bounds still works in
+  // the number box — the thumb only pins at the bound and never overwrites it.
+  const sliderBounds = (key: string): { lo: number; hi: number; step: number } | null => {
+    const byKey: Record<string, { lo: number; hi: number; step: number }> = {
+      history_years: { lo: 0, hi: 25, step: 0.5 },
+      ret_1y: { lo: -30, hi: 100, step: 1 },
+      cagr_3y: { lo: -10, hi: 70, step: 1 },
+      cagr_5y: { lo: -5, hi: 40, step: 1 },
+      sharpe_3y: { lo: -6, hi: 4, step: 0.05 },
+      sortino_3y: { lo: -5, hi: 10, step: 0.1 },
+      alpha_3y: { lo: -20, hi: 50, step: 0.5 },
+      beta_3y: { lo: 0, hi: 3.5, step: 0.05 },
+      vol_3y: { lo: 0, hi: 45, step: 0.5 },
+      max_dd_3y: { lo: -50, hi: 0, step: 1 },
+      ter: { lo: 0, hi: 3, step: 0.05 },
+      ter_gap_pp: { lo: -3, hi: 3, step: 0.1 },
+      aum_cr: { lo: 0, hi: 50000, step: 100 },
+    };
+    if (byKey[key]) return byKey[key];
+    if (key.startsWith("cap_up_") || key.startsWith("cap_down_")) return { lo: 0, hi: 200, step: 1 };
+    if (key.startsWith("cap_spread_")) return { lo: -50, hi: 100, step: 1 };
+    return null;
+  };
+
+  const rangeField = (key: string, label: string) => {
+    const bounds = sliderBounds(key);
+    const rawMin = filters.ranges[key]?.min;
+    const rawMax = filters.ranges[key]?.max;
+    const minNum = rawMin !== undefined && rawMin !== "" && Number.isFinite(Number(rawMin)) ? Number(rawMin) : undefined;
+    const maxNum = rawMax !== undefined && rawMax !== "" && Number.isFinite(Number(rawMax)) ? Number(rawMax) : undefined;
+    // Thumbs pin at the bounds for display only; the typed box value is untouched.
+    const dispMin = bounds ? (minNum === undefined ? bounds.lo : Math.min(Math.max(minNum, bounds.lo), bounds.hi)) : 0;
+    const dispMax = bounds ? (maxNum === undefined ? bounds.hi : Math.min(Math.max(maxNum, bounds.lo), bounds.hi)) : 0;
+    const pct = bounds ? (v: number) => ((v - bounds.lo) / (bounds.hi - bounds.lo)) * 100 : () => 0;
+    const thumbCls = "absolute inset-x-0 top-1/2 -translate-y-1/2 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#0176D3] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#0176D3] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white";
+    return (
+      <div key={key} className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+        <div className="mb-1">{label}</div>
+        <div className="flex gap-1.5">
+          {(["min", "max"] as const).map((side) => (
+            <input key={side} type="number" inputMode="decimal" placeholder={side} aria-label={`${label} ${side}`}
+              value={filters.ranges[key]?.[side] ?? ""}
+              onChange={(e) => setRange(key, side, e.target.value)}
+              className="terminal-input w-full text-[12px] py-1 px-2" />
+          ))}
+        </div>
+        {bounds && (
+          <div className="mt-1.5">
+            <div className="relative h-5">
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1.5 rounded bg-[#E5E5E5] dark:bg-[#2B3644]" />
+              <div className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded bg-[#0176D3]" style={{ left: `${pct(dispMin)}%`, right: `${100 - pct(dispMax)}%` }} />
+              <input type="range" min={bounds.lo} max={bounds.hi} step={bounds.step} value={dispMin} aria-label={`${label} minimum`}
+                onChange={(e) => setRange(key, "min", String(Math.min(Number(e.target.value), maxNum ?? bounds.hi)))}
+                className={thumbCls} />
+              <input type="range" min={bounds.lo} max={bounds.hi} step={bounds.step} value={dispMax} aria-label={`${label} maximum`}
+                onChange={(e) => setRange(key, "max", String(Math.max(Number(e.target.value), minNum ?? bounds.lo)))}
+                className={thumbCls} />
+            </div>
+            <div className="flex justify-between text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+              <span>{bounds.lo}</span>
+              <span>{minNum !== undefined || maxNum !== undefined ? `${minNum ?? "—"} – ${maxNum ?? "—"}` : "drag either thumb"}</span>
+              <span>{bounds.hi}</span>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
@@ -493,46 +595,112 @@ function MfResearch() {
       {tab === "research" && (
         <>
           <div className="terminal-panel p-2.5 space-y-3">
-            <div>
-              <div className="text-[12px] font-semibold mb-1.5">Universe — category, plan, fund house, search, fund age</div>
-              <div className="space-y-1.5">
-                {groups.map((g) => (
-                  <div key={g.group} className="flex flex-wrap items-center gap-1.5 text-[12px]">
-                    <span className="font-medium w-20 shrink-0">{g.group}</span>
-                    {g.categories.map((c) => (
-                      <label key={c.key} className="flex items-center gap-1 cursor-pointer">
-                        <input type="checkbox" className="h-4 w-4 accent-[#0176D3]" checked={filters.category.includes(c.key)}
-                          onChange={() => setFilters((f) => ({ ...f, category: toggle(f.category, c.key) }))} />
-                        {c.label} <span className="text-[#706E6B] dark:text-[#A8B4C4]">({c.count})</span>
+            <div ref={universeRef} className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-4 space-y-3">
+              <div>
+                <h2 className="text-[20px] font-bold text-[#181818] dark:text-[#EDF2F7]">Fund universe</h2>
+                <p className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4]">Find and filter mutual funds</p>
+              </div>
+              <div className="relative">
+                <svg aria-hidden className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#706E6B] dark:text-[#A8B4C4]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path strokeLinecap="round" d="M20 20l-3.5-3.5" /></svg>
+                <input type="text" value={query} onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search funds or AMCs" aria-label="Search funds or AMCs"
+                  className="terminal-input w-full py-2.5 pl-9 pr-3 text-[13px]" />
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" aria-label={`Category filter: ${categorySummary}`} aria-expanded={universePanel === "category"} className={summaryBtn}
+                  onClick={() => setUniversePanel((p) => (p === "category" ? null : "category"))}>{categorySummary} <span aria-hidden>▾</span></button>
+                <button type="button" aria-label={`Fund house filter: ${amcSummary}`} aria-expanded={universePanel === "amc"} className={summaryBtn}
+                  onClick={() => setUniversePanel((p) => (p === "amc" ? null : "amc"))}>{amcSummary} <span aria-hidden>▾</span></button>
+                <button type="button" aria-label={`Fund age filter: ${ageSummary}`} aria-expanded={universePanel === "age"} className={summaryBtn}
+                  onClick={() => setUniversePanel((p) => (p === "age" ? null : "age"))}>{ageSummary} <span aria-hidden>▾</span></button>
+                {PLANS.map((p) => {
+                  const selected = filters.plan.includes(p);
+                  return (
+                    <button key={p} type="button" aria-pressed={selected}
+                      className={`rounded-lg border px-3 py-2 text-[13px] ${selected ? "border-[#0176D3] bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] font-semibold" : "border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] text-[#181818] dark:text-[#EDF2F7]"}`}
+                      onClick={() => setFilters((f) => ({ ...f, plan: toggle(f.plan, p) }))}>{selected ? "✓ " : ""}{p}</button>
+                  );
+                })}
+                <button type="button" className="ml-auto text-[13px] font-medium text-[#0176D3] dark:text-[#1B96FF]" onClick={resetUniverse}>Reset filters</button>
+              </div>
+              {universePanel === "category" && (
+                <div className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27]">
+                  <div className="flex flex-col sm:flex-row">
+                    <div className="shrink-0 sm:w-44 border-b sm:border-b-0 sm:border-r border-[#E5E5E5] dark:border-[#2B3644] p-1.5 space-y-0.5">
+                      {groups.map((g) => (
+                        <button key={g.group} type="button" onClick={() => setUniverseGroup(g.group)}
+                          className={`block w-full text-left rounded px-3 py-2 text-[13px] ${activeGroup?.group === g.group ? "bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] font-semibold" : "text-[#181818] dark:text-[#EDF2F7] hover:bg-[#F5F5F5] dark:hover:bg-[#202936]"}`}>{g.group}</button>
+                      ))}
+                      {groups.length === 0 && <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] px-3 py-2">Loading categories…</div>}
+                    </div>
+                    <div className="flex-1 p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-[14px] text-[#181818] dark:text-[#EDF2F7]">{activeGroup?.group ?? "Categories"}</span>
+                        <button type="button" disabled={!activeGroup} className="text-[13px] font-medium text-[#0176D3] dark:text-[#1B96FF] disabled:opacity-50"
+                          onClick={() => activeGroup && setFilters((f) => ({ ...f, category: Array.from(new Set([...f.category, ...activeGroup.categories.map((c) => c.key)])) }))}>Select all</button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-[13px]">
+                        {(activeGroup?.categories ?? []).map((c) => (
+                          <label key={c.key} className="flex items-center gap-1.5 cursor-pointer text-[#181818] dark:text-[#EDF2F7]">
+                            <input type="checkbox" className="h-4 w-4 shrink-0 accent-[#0176D3]" checked={filters.category.includes(c.key)}
+                              onChange={() => setFilters((f) => ({ ...f, category: toggle(f.category, c.key) }))} />
+                            {c.label} <span className="text-[#706E6B] dark:text-[#A8B4C4]">({c.count})</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-[#E5E5E5] dark:border-[#2B3644] px-3 py-2">
+                    <span className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Choose one or more categories</span>
+                    <button type="button" className="terminal-btn-accent text-[13px] py-1.5 px-4" onClick={() => setUniversePanel(null)}>Done</button>
+                  </div>
+                </div>
+              )}
+              {universePanel === "amc" && (
+                <div className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-[14px] text-[#181818] dark:text-[#EDF2F7]">Fund houses</span>
+                    <button type="button" disabled={amcs.length === 0} className="text-[13px] font-medium text-[#0176D3] dark:text-[#1B96FF] disabled:opacity-50"
+                      onClick={() => setFilters((f) => ({ ...f, amc: [...amcs] }))}>Select all</button>
+                  </div>
+                  {amcs.length === 0 && <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Loading fund houses…</div>}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-[13px]">
+                    {amcs.map((a) => (
+                      <label key={a} className="flex items-center gap-1.5 cursor-pointer text-[#181818] dark:text-[#EDF2F7]">
+                        <input type="checkbox" className="h-4 w-4 shrink-0 accent-[#0176D3]" checked={filters.amc.includes(a)}
+                          onChange={() => setFilters((f) => ({ ...f, amc: toggle(f.amc, a) }))} /> {normalizeDisplayName(a)}
                       </label>
                     ))}
                   </div>
-                ))}
-                {groups.length === 0 && <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Loading categories…</div>}
+                  <div className="flex items-center justify-between border-t border-[#E5E5E5] dark:border-[#2B3644] mt-3 pt-2">
+                    <span className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Choose one or more fund houses</span>
+                    <button type="button" className="terminal-btn-accent text-[13px] py-1.5 px-4" onClick={() => setUniversePanel(null)}>Done</button>
+                  </div>
+                </div>
+              )}
+              {universePanel === "age" && (
+                <div className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-1.5">
+                  {AGE_BANDS.map((b) => (
+                    <button key={b.id} type="button" onClick={() => { setFilters((f) => ({ ...f, ranges: { ...f.ranges, history_years: { ...b.range } } })); setUniversePanel(null); }}
+                      className={`block w-full text-left rounded px-3 py-2 text-[13px] ${ageBandId === b.id ? "bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] font-semibold" : "text-[#181818] dark:text-[#EDF2F7] hover:bg-[#F5F5F5] dark:hover:bg-[#202936]"}`}>{ageBandId === b.id ? "✓ " : ""}{b.label}</button>
+                  ))}
+                </div>
+              )}
+              {universeChips.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4]">Active filters:</span>
+                  {universeChips.map((chip) => (
+                    <span key={chip.key} className="flex items-center gap-1 rounded-full border border-[#B9DCF7] dark:border-[#2B4A66] bg-[#EAF5FE] dark:bg-[#11304F] px-2 py-0.5 text-[#032D60] dark:text-[#CFE6FC]">
+                      {chip.label}
+                      <button type="button" aria-label={`Remove ${chip.label}`} onClick={chip.onRemove} className="font-bold">×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                {rangeField("history_years", "Fund age (years) — exact range")}
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <button type="button" className="terminal-btn text-[12px] py-1 px-2" onClick={() => setFilters((f) => ({ ...f, category: groups.flatMap((g) => g.categories.map((c) => c.key)) }))}>All categories</button>
-                <button type="button" className="terminal-btn text-[12px] py-1 px-2" onClick={() => setFilters((f) => ({ ...f, category: [] }))}>No category filter</button>
-                {PLANS.map((p) => (
-                  <label key={p} className="flex items-center gap-1.5 text-[12px] cursor-pointer">
-                    <input type="checkbox" className="h-4 w-4 accent-[#0176D3]" checked={filters.plan.includes(p)}
-                      onChange={() => setFilters((f) => ({ ...f, plan: toggle(f.plan, p) }))} /> {p}
-                  </label>
-                ))}
-              </div>
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                <span className="text-[12px] font-medium">Fund house (AMC):</span>
-                {amcs.length === 0 && <span className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Loading fund houses…</span>}
-                {amcs.map((a) => (
-                  <label key={a} className="flex items-center gap-1 text-[12px] cursor-pointer">
-                    <input type="checkbox" className="h-4 w-4 accent-[#0176D3]" checked={filters.amc.includes(a)}
-                      onChange={() => setFilters((f) => ({ ...f, amc: toggle(f.amc, a) }))} /> {normalizeDisplayName(a)}
-                  </label>
-                ))}
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 mt-2">
-                {rangeField("history_years", "Fund age (years)")}
-              </div>
+              <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">The Fund age dropdown is a shortcut; the range above (with its slider) keeps exact entry.</p>
             </div>
 
             <div>
@@ -648,8 +816,6 @@ function MfResearch() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <input type="text" value={query} onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search fund, fund house or scheme code…" className="terminal-input max-w-md flex-1 text-[12px] py-1 px-2.5" />
               <button type="button" className="terminal-btn text-[12px] py-1 px-3" onClick={() => setShowColumns((v) => !v)} aria-expanded={showColumns}>
                 Columns ({columns.length})
               </button>
@@ -855,6 +1021,9 @@ function MfResearch() {
             <label className="flex items-center gap-1.5">
               Min tenure (years)
               <input type="number" inputMode="decimal" value={mgrMinTenure} onChange={(e) => setMgrMinTenure(e.target.value)} className="terminal-input w-20 py-1 px-2" />
+              <input type="range" min={0} max={30} step={0.5} aria-label="Minimum tenure slider (years)"
+                value={mgrMinTenure.trim() === "" || !Number.isFinite(Number(mgrMinTenure)) ? 0 : Math.min(Math.max(Number(mgrMinTenure), 0), 30)}
+                onChange={(e) => setMgrMinTenure(e.target.value)} className="w-[120px] accent-[#0176D3]" />
             </label>
             <label className="flex items-center gap-1.5">
               Sort

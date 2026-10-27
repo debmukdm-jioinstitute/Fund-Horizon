@@ -312,7 +312,17 @@ function MfResearch() {
           if (derived.length) setAmcs(derived);
         }
       })
-      .catch((e: unknown) => { if (!ctl.signal.aborted) setError(e instanceof Error ? e.message : "Failed to load research funds"); })
+      .catch((e: unknown) => {
+        if (ctl.signal.aborted) return;
+        const msg = e instanceof Error ? e.message : "Failed to load research funds";
+        // Deploy skew, not a data gap: "Unknown filter column" means the backend
+        // is still serving pre-V1 code while this frontend is already V1 (the V1
+        // live check saw exactly this until the EC2 backend deploy landed). Say so
+        // instead of showing a bare 422.
+        setError(msg.includes("Unknown filter column")
+          ? "The backend is still on an older version and does not know this filter yet — wait for the backend deploy to finish, then retry."
+          : msg);
+      })
       .finally(() => { if (!ctl.signal.aborted) setLoading(false); });
     return () => ctl.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -350,12 +360,22 @@ function MfResearch() {
   };
   const arrow = (key: string) => (sort === key ? (order === "asc" ? " ▲" : " ▼") : "");
 
-  const addToShortlist = async (code: string, name: string) => {
-    const reason = window.prompt(`Why does this fund belong on the shortlist? (${name})`, "");
-    if (reason === null) return;
+  // Shortlist reason dialog (in-page, never window.prompt: prompt dialogs are
+  // auto-dismissed by automated browsers, which silently aborted every add —
+  // the V1 live check saw four adds produce no entry and no prompt at all).
+  // The reason is optional; Add posts even with an empty reason.
+  const [shortlistDialog, setShortlistDialog] = useState<{ code: string; name: string } | null>(null);
+  const [shortlistReason, setShortlistReason] = useState("");
+  const addToShortlist = (code: string, name: string) => {
+    setShortlistReason("");
+    setShortlistDialog({ code, name });
+  };
+  const confirmAddToShortlist = async () => {
+    if (!shortlistDialog) return;
     try {
-      await addMfShortlist(code, reason.trim() || undefined);
+      await addMfShortlist(shortlistDialog.code, shortlistReason.trim() || undefined);
       setShortMsg("Added to the shortlist.");
+      setShortlistDialog(null);
       if (tab === "shortlist") loadShortlist();
     } catch (e) { setShortMsg(e instanceof Error ? e.message : "Could not add to the shortlist."); }
   };
@@ -404,10 +424,15 @@ function MfResearch() {
   const page = Math.floor(offset / pageSize);
   const mgrPageCount = Math.max(1, Math.ceil(mgrTotal / mgrPageSize));
   const mgrPage = Math.floor(mgrPageSize ? mgrOffset / mgrPageSize : 0);
+  // CSV must carry every filter the JSON view does (V1 live-check fix: this
+  // object used to omit min_tenure, so a tenure-filtered view exported the
+  // unfiltered set).
+  const csvMinTenure = filters.minTenure.trim() ? Number(filters.minTenure) : undefined;
   const qKeyForCsv = {
     category: filters.category, plan: filters.plan, search: filters.search || undefined,
     sort: sort === "quartile_period" ? quartileKey(filters.quartilePeriod) : sort, order,
     ranges: filters.ranges, amc: filters.amc, manager: filters.manager.trim() || undefined,
+    min_tenure: Number.isFinite(csvMinTenure) ? csvMinTenure : undefined,
     quartile: filters.quartile, quartile_period: filters.quartilePeriod,
     include_unknown: filters.includeUnknown, include_unavailable: filters.includeUnavailable,
   };
@@ -449,6 +474,21 @@ function MfResearch() {
           </button>
         ))}
       </div>
+
+      {shortlistDialog && (
+        <div role="dialog" aria-label="Add to shortlist" className="terminal-panel p-3 space-y-2">
+          <div className="text-[13px] font-semibold">Add to shortlist — {shortlistDialog.name}</div>
+          <label className="block text-[12px]">
+            <span className="text-[#706E6B] dark:text-[#A8B4C4]">Why does this fund belong on the shortlist? (optional)</span>
+            <input aria-label="Shortlist reason" value={shortlistReason} onChange={(e) => setShortlistReason(e.target.value)}
+              placeholder="e.g. Consistent top-quartile returns, low TER" className="terminal-input w-full text-[12px] py-1 px-2 mt-1" />
+          </label>
+          <div className="flex gap-2">
+            <button type="button" onClick={confirmAddToShortlist} className="terminal-btn-accent text-[12px] py-1 px-3">Add to shortlist</button>
+            <button type="button" onClick={() => setShortlistDialog(null)} className="terminal-btn text-[12px] py-1 px-3">Cancel</button>
+          </div>
+        </div>
+      )}
 
       {tab === "research" && (
         <>

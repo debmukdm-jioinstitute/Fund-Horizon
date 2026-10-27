@@ -166,12 +166,19 @@ def _screener_row_for_code(repo: BackofficeRepository, code: str) -> dict[str, A
     """
     try:
         ter = repo.mf_ter_by_code()
-        fingerprint = tuple(sorted(ter.items()))
+        manager_map = {
+            str(c): (m.get("manager_name"), m.get("manager_start"))
+            for c, m in repo.list_mf_managers().items()
+        }
+        # V1 live-check fix: the fingerprint used to cover only the TER map, so
+        # a frame built before managers were seeded was reused forever (the
+        # full-suite run proved it: compare tenure went stale while the
+        # screener row showed the seeded tenure). Managers are part of the key.
+        fingerprint = (
+            tuple(sorted(ter.items())),
+            tuple(sorted((c, str(v[0]), str(v[1])) for c, v in manager_map.items())),
+        )
         if _MF_SCREENER_FRAME.get("fingerprint") != fingerprint:
-            manager_map = {
-                str(c): (m.get("manager_name"), m.get("manager_start"))
-                for c, m in repo.list_mf_managers().items()
-            }
             _MF_SCREENER_FRAME["fingerprint"] = fingerprint
             _MF_SCREENER_FRAME["frame"] = mf_screener.all_frame(ter, manager_map=manager_map)
         frame = _MF_SCREENER_FRAME["frame"]
@@ -249,12 +256,24 @@ def _mf_item(repo: BackofficeRepository, code: str) -> dict[str, Any]:
     # MF Research V1 (MF path only): join the same screener frame / manager table as the
     # fund dialog, so manager, tenure, computed quartile 2Y and AUM match the screener row
     # instead of showing "Not available". AMFI fallback covers the manager name only.
+    # V1 live-check fix: Sharpe/Sortino ALSO come from the frame (the dataset 3Y
+    # values the research row and fund dialog show). The live-NAV computation above
+    # (3Y trailing, 6.5% risk-free rate) gave different numbers (e.g. HDFC Flexi Cap
+    # 0.56/0.65 vs the row/dialog 0.61/0.79) with no label saying so; it now survives
+    # only as the fallback when the dataset value is missing, flagged live-nav.
     frame_row = _screener_row_for_code(repo, str(code))
+    _from_dataset = {"sharpe": False, "sortino": False}
     if frame_row is not None:
         metrics["manager"] = frame_row.get("manager_name")
         metrics["manager_tenure"] = frame_row.get("manager_tenure_years")
         metrics["quartile"] = frame_row.get("quartile_2y")
         metrics["aum"] = frame_row.get("aum_cr")
+        if frame_row.get("sharpe_3y") is not None:
+            metrics["sharpe"] = _nan_none(frame_row.get("sharpe_3y"))
+            _from_dataset["sharpe"] = True
+        if frame_row.get("sortino_3y") is not None:
+            metrics["sortino"] = _nan_none(frame_row.get("sortino_3y"))
+            _from_dataset["sortino"] = True
     else:
         try:
             seeded = repo.list_mf_managers().get(str(code)) or {}
@@ -268,6 +287,11 @@ def _mf_item(repo: BackofficeRepository, code: str) -> dict[str, Any]:
                     pass
         except Exception:
             pass
+    metrics["sharpe_source"] = (
+        "dataset" if all(_from_dataset.values())
+        else "mixed" if any(_from_dataset.values())
+        else "live-nav"
+    )
     if metrics.get("manager") is None:
         try:
             from app.backoffice import mf_reference

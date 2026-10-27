@@ -260,3 +260,67 @@ def test_v2_client_overlap_unknown_contact_and_no_writes(client):
     client.cookies.clear()
     assert client.get(
         f"/api/backoffice/mf-research/client-overlap?scheme_code={code}&contact_id=x").status_code in (401, 403)
+
+
+def test_shortlist_add_without_reason_reads_back(client):
+    """V1 live-check fix: the new in-page reason dialog posts with an empty reason,
+    so the API must accept reason null and the entry must read back."""
+    _login_staff(client, _create_staff())
+    code = ITI_PAIR[0]
+    r = client.post("/api/backoffice/mf-research/shortlist", json={"scheme_code": code, "reason": None})
+    assert r.status_code == 201, r.text
+    rows = client.get("/api/backoffice/mf-research/shortlist").json()["data"]
+    assert len(rows) == 1 and rows[0]["scheme_code"] == code and rows[0]["reason"] is None
+    assert client.delete(f"/api/backoffice/mf-research/shortlist/{code}").status_code == 200
+    assert client.get("/api/backoffice/mf-research/shortlist").json()["data"] == []
+
+
+def test_research_csv_matches_json_rows_and_header(client):
+    """V1 live-check fix 4: the CSV export must carry the same filters as the JSON
+    view (including min_tenure, which the CSV link used to drop) and its header
+    and rows must match the on-screen filtered set, including computed quartile
+    and capture-spread columns."""
+    import csv
+    import io
+
+    _login_staff(client, _create_staff())
+    params = {
+        "category": ["flexi_cap"],
+        "quartile": [1],
+        "quartile_period": "2y",
+        "min_tenure": 3,
+        "limit": 200,
+    }
+    j = client.get("/api/backoffice/mutual-funds/screener", params=params)
+    assert j.status_code == 200, j.text
+    total = j.json()["total"]
+    json_codes = [str(r["code"]) for r in j.json()["data"]]
+    csv_params = dict(params)
+    csv_params["format"] = "csv"
+    c = client.get("/api/backoffice/mutual-funds/screener", params=csv_params)
+    assert c.status_code == 200, c.text
+    assert "text/csv" in c.headers.get("content-type", "")
+    reader = csv.DictReader(io.StringIO(c.text))
+    assert reader.fieldnames is not None
+    for col in ("Scheme Code", "Fund Name", "Quartile 2Y (computed)", "Quartile Source",
+                "Capture Spread 3Y (pp)", "TER vs Category+Plan Median (pp)",
+                "Fund Manager", "Manager Tenure (years)", "AUM Cr"):
+        assert col in reader.fieldnames, reader.fieldnames
+    rows = list(reader)
+    assert len(rows) == total
+    csv_codes = [r["Scheme Code"] for r in rows]
+    if total <= 200:
+        assert sorted(csv_codes) == sorted(json_codes)
+    else:
+        assert set(json_codes) <= set(csv_codes)
+
+
+def test_research_filters_cap_spread_and_ter_gap_accepted(client):
+    """V1 live-check fix 5: cap_spread_3y / ter_gap_pp must never 422 with
+    'Unknown filter column' on current code (that error proves a pre-V1 backend)."""
+    _login_staff(client, _create_staff())
+    r = client.get(
+        "/api/backoffice/mutual-funds/screener"
+        "?category=flexi_cap&f=cap_spread_3y:10:&f=ter_gap_pp:0.5:&limit=5"
+    )
+    assert r.status_code == 200, r.text

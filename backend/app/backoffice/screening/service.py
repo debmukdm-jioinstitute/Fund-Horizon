@@ -285,20 +285,24 @@ class ScreeningService:
 
             run_id = f"run_{_new_id()}"
             now = _utcnow()
-            conn.execute(
-                """
-                INSERT INTO screening_runs (id, staff_id, preset_id, filters_json, stage_counts_json, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    run_id,
-                    staff_id,
-                    preset_id,
-                    json.dumps(filters),
-                    json.dumps(res["counts"]),
-                    now,
-                ),
-            )
+            # V1 live-check fix: this INSERT used to run without a commit, so the
+            # finally-close rolled it back and GET /screening/runs/{id} always
+            # 404d — runs were never actually persisted.
+            with conn:
+                conn.execute(
+                    """
+                    INSERT INTO screening_runs (id, staff_id, preset_id, filters_json, stage_counts_json, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        run_id,
+                        staff_id,
+                        preset_id,
+                        json.dumps(filters),
+                        json.dumps(res["counts"]),
+                        now,
+                    ),
+                )
 
             today = datetime.now(UTC).strftime("%Y-%m-%d")
             as_of_val = max((r["as_of"] for r in rows if r["as_of"] <= today), default=today)

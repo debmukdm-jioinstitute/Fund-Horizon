@@ -224,3 +224,69 @@ def test_mf_manager_profile_one_row_per_fund_with_metrics():
     names = [f["scheme_name"] for f in funds]
     assert len(names) == len(set(names)) > 1  # plan/option codes collapsed
     assert any(f.get("cagr_3y") is not None for f in funds)
+
+
+def test_research_shaped_preset_lists_in_funnel_and_runs_normalised(client, seeded_screening):
+    """V1 live-check fix 3: a preset saved from MF Research (research filter shape)
+    must appear in the funnel's preset list (one shared /screening/presets list)
+    and, when run, its fields must be normalised to funnel shape instead of
+    being silently ignored."""
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    research_filters = {
+        "category": ["mid_cap"], "plan": ["Regular"], "amc": [], "search": "",
+        "ranges": {"sharpe_3y": {"min": 1.0}, "cap_spread_3y": {"min": 10}},
+        "quartile": [1], "quartile_period": "2y",
+        "include_unavailable": True, "manager": "Chirag Setalvad",
+        "min_tenure": "3", "include_unknown": True,
+    }
+    r = client.post("/api/backoffice/screening/presets",
+                    json={"name": "Research carryover", "filters": research_filters})
+    assert r.status_code == 200, r.text
+    lst = client.get("/api/backoffice/screening/presets").json()["data"]
+    assert any(p["name"] == "Research carryover" for p in lst)
+    run = client.post("/api/backoffice/screening/run",
+                      json={"preset_id": None, "filters": research_filters})
+    assert run.status_code == 200, run.text
+    run_id = run.json()["data"]["run_id"]
+    details_r = client.get(f"/api/backoffice/screening/runs/{run_id}")
+    assert details_r.status_code == 200, details_r.text
+    details = details_r.json()["data"]
+    f = details["filters"]
+    assert f["bounds"]["sharpe"]["min"] == 1.0
+    assert f["bounds"]["capture_spread"]["min"] == 0.1  # research percent -> funnel fraction
+    assert f["quartiles_action"] == [1]
+    assert f["manager_search"] == "Chirag Setalvad"
+    assert f["min_tenure_years"] == 3.0
+    assert f["quartile_period"] == "2y"
+
+
+def test_refresh_self_populates_managers_and_screening_gate(client):
+    """V1 live-check fix 5: the deploy/refresh path itself populates research
+    data — managers seed from the repo CSV when the table is empty, and the
+    collector loop gates the screening refresh until AMFI + TER have run in
+    this process (so it never runs once on deploy with an empty TER table)."""
+    from app.backoffice import collectors
+    from app.backoffice.repository import BackofficeRepository
+    from app.backoffice.screening.jobs import seed_managers
+
+    _login_staff(client, _create_staff("analyst"))
+    repo = BackofficeRepository()
+    assert repo.list_mf_managers() == {}
+    seeded = seed_managers(repo)
+    assert seeded > 0
+    assert repo.list_mf_managers(), "seed CSV must populate the managers table"
+    assert seed_managers(repo) == 0, "a non-empty table must not be re-seeded"
+
+    saved = dict(collectors._LAST_RUN)
+    try:
+        collectors._LAST_RUN.clear()
+        assert "SRC_SCREENING" not in collectors._due_sources()
+        import time as _time
+
+        collectors._LAST_RUN["SRC_AMFI"] = _time.monotonic()
+        collectors._LAST_RUN["SRC_AMFI_TER"] = _time.monotonic()
+        assert "SRC_SCREENING" in collectors._due_sources()
+    finally:
+        collectors._LAST_RUN.clear()
+        collectors._LAST_RUN.update(saved)

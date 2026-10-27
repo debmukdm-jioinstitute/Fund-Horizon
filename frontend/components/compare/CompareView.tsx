@@ -18,7 +18,7 @@ const CHART_COLORS = ["#0176D3", "#2170E4", "#D97706", "#7C3AED"];
 
 type Period = "1Y" | "3Y" | "5Y" | "Max";
 
-const METRIC_GROUPS: { title: string; rows: { key: keyof ComparePayload["items"][0]["metrics"]; label: string; higherBetter: boolean; format: "pct" | "num" | "inr_cr" | "plain"; tip?: string }[] }[] = [
+const METRIC_GROUPS: { title: string; rows: { key: keyof ComparePayload["items"][0]["metrics"]; label: string; higherBetter: boolean; format: "pct" | "num" | "inr_cr" | "plain" | "yrs"; tip?: string }[] }[] = [
   {
     title: "Returns",
     rows: [
@@ -39,8 +39,8 @@ const METRIC_GROUPS: { title: string; rows: { key: keyof ComparePayload["items"]
   {
     title: "Risk-adjusted",
     rows: [
-      { key: "sharpe", label: "Sharpe", higherBetter: true, format: "num", tip: "sharpe" },
-      { key: "sortino", label: "Sortino", higherBetter: true, format: "num", tip: "sortino" },
+      { key: "sharpe", label: "Sharpe 3Y", higherBetter: true, format: "num", tip: "sharpe" },
+      { key: "sortino", label: "Sortino 3Y", higherBetter: true, format: "num", tip: "sortino" },
       { key: "alpha", label: "Alpha", higherBetter: true, format: "pct", tip: "alpha" },
       { key: "beta", label: "Beta", higherBetter: false, format: "num", tip: "beta" },
       { key: "up_capture", label: "Up capture", higherBetter: true, format: "pct", tip: "up_capture" },
@@ -59,7 +59,7 @@ const METRIC_GROUPS: { title: string; rows: { key: keyof ComparePayload["items"]
     title: "Manager",
     rows: [
       { key: "manager", label: "Manager", higherBetter: true, format: "plain" },
-      { key: "manager_tenure", label: "Tenure", higherBetter: true, format: "plain" },
+      { key: "manager_tenure", label: "Tenure", higherBetter: true, format: "yrs" },
       { key: "quartile", label: "Quartile", higherBetter: true, format: "plain", tip: "quartile_rank" },
     ],
   },
@@ -75,6 +75,7 @@ function formatCell(v: number | string | null | undefined, format: string): stri
   if (format === "pct" && typeof v === "number") return `${v.toFixed(2)}%`;
   if (format === "inr_cr" && typeof v === "number") return `₹${v.toLocaleString("en-IN")} Cr`;
   if (format === "num" && typeof v === "number") return v.toFixed(2);
+  if (format === "yrs" && typeof v === "number") return `${v.toFixed(1)} yrs`;
   return String(v);
 }
 
@@ -384,6 +385,17 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
                               </tr>
                             );
                           })}
+                        {!collapsed[group.title] && type === "mf" && group.title === "Risk-adjusted" && (
+                          <tr>
+                            <td colSpan={payload.items.length + 1} className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] py-1.5 px-4">
+                              {(() => {
+                                const live = payload.items.filter((it) => it.metrics.sharpe_source === "live-nav" || it.metrics.sharpe_source === "mixed");
+                                if (!live.length) return "Sharpe/Sortino are the dataset 3Y values, matching the research row and fund dialog.";
+                                return `Sharpe/Sortino match the research row and fund dialog (dataset 3Y values) except for ${live.map((it) => it.name).join(", ")}, where the dataset value is missing so the figure is computed live from NAV (3Y, 6.5% risk-free rate).`;
+                              })()}
+                            </td>
+                          </tr>
+                        )}
                       </React.Fragment>
                     ))}
                     {type === "mf" && ids.some((id) => quartiles[id]) && (

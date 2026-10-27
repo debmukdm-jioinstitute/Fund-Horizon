@@ -508,23 +508,6 @@ export interface MicroIssuerData {
   }>;
 }
 
-export interface ImpactAnalysisData {
-  pair_a: string;
-  pair_b: string;
-  sample_size: number;
-  paired_ratio_pct: number;
-  correlation?: number | null;
-  beta?: number | null;
-  status?: string;
-  message?: string;
-}
-
-export interface ImpactScenarioData {
-  delta_yield_decimal?: number;
-  estimated_price_change_pct: number;
-  formula?: string;
-}
-
 export interface WatchlistItem {
   id: string;
   name: string;
@@ -1004,60 +987,6 @@ export const getMicroIssuer = async (id: string): Promise<BackofficeEnvelope<Mic
       }
     : null;
   return envelope(raw, data, "unavailable");
-};
-
-export const analyzeImpact = async (body: {
-  pair_a: string;
-  pair_b: string;
-  window_sessions?: number;
-}): Promise<BackofficeEnvelope<ImpactAnalysisData>> => {
-  // Page labels A as the dependent variable (Y) and B as the driver (X); backend regresses y on x.
-  const raw = await boFetch<Json>("/api/backoffice/impact/analyze", {
-    method: "POST",
-    body: JSON.stringify({
-      series_x_id: body.pair_b,
-      series_y_id: body.pair_a,
-      horizon_days: body.window_sessions ?? 60,
-    }),
-  });
-  const align = obj(raw.alignment);
-  const stats = obj(raw.statistics);
-  const data: ImpactAnalysisData = {
-    pair_a: body.pair_a,
-    pair_b: body.pair_b,
-    sample_size: num(align.n) ?? 0,
-    paired_ratio_pct: num(align.coverage_pct) ?? 0,
-    correlation: num(stats.correlation) ?? null,
-    beta: num(stats.beta) ?? null,
-    status: str(stats.status) ?? str(align.status),
-    message: str(stats.message),
-  };
-  return envelope(raw, data);
-};
-
-export const simulateScenario = async (body: {
-  bond_duration?: number;
-  yield_shift_bps?: number;
-  fx_shift_pct?: number;
-}): Promise<BackofficeEnvelope<ImpactScenarioData>> => {
-  const raw = await boFetch<Json>("/api/backoffice/impact/scenario", {
-    method: "POST",
-    body: JSON.stringify({
-      modified_duration: body.bond_duration ?? 6.5,
-      us_yield_shock_bps: body.yield_shift_bps ?? 0,
-      usd_shock_pct: body.fx_shift_pct ?? 0,
-      oil_shock_pct: 0,
-    }),
-  });
-  const impacts = obj(raw.impacts);
-  const shocks = obj(raw.shocks);
-  const bps = num(shocks.us_10y_yield_shift_bps) ?? 0;
-  const data: ImpactScenarioData = {
-    delta_yield_decimal: bps / 10000,
-    estimated_price_change_pct: num(impacts.bond_portfolio_price_change_pct) ?? 0,
-    formula: "ΔP/P ≈ -D_mod * (Δbps / 10000)",
-  };
-  return envelope(raw, data);
 };
 
 const briefingDirection = (v: unknown): BriefingItem["direction"] => {

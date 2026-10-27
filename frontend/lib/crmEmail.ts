@@ -53,7 +53,7 @@ export async function fetchOutbox(offset: number, limit = 50): Promise<{ rows: O
   return { rows, total: Number(res.headers.get("X-Total-Count") ?? rows.length) };
 }
 
-export interface EmailSuggestion { client_name: string | null; first_name: string | null; doc_type: string | null; period: string | null; email: string | null; subject: string; message: string }
+export interface EmailSuggestion { client_name: string | null; first_name: string | null; doc_type: string | null; period: string | null; subject: string; message: string }
 
 /** Local OCR on the backend reads the file and suggests client, subject and message. Best effort: null on any failure. */
 export async function extractEmailFields(file: File): Promise<EmailSuggestion | null> {

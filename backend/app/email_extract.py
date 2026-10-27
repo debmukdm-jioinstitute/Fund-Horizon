@@ -20,14 +20,17 @@ DOC_TYPES: list[tuple[str, tuple[str, ...]]] = [
     ("Account statement", ("statement of account", "account statement", "transaction statement")),
     ("KYC document", ("kyc", "know your customer", "aadhaar", "pan card", "permanent account number")),
     ("Invoice", ("invoice", "tax invoice")),
-    ("Fund factsheet", ("factsheet", "fact sheet")),
+    ("Portfolio summary", ("mf summary", "portfolio summary", "summary report")),
+    ("Portfolio factsheet", ("factsheet", "fact sheet")),
     ("Application form", ("application form", "mandate form", "nomination")),
 ]
 NAME_RE = re.compile(
     r"(?i:investor|client|account holder|name of (?:the )?(?:investor|holder)|holder|dear|name)(?i:\s*name)?[ \t]*[:\-]?[ \t]*"
     r"((?i:mr|mrs|ms|shri|smt|dr)\.?[ \t]+)?([A-Z][A-Za-z.']+(?:[ \t]+[A-Z][A-Za-z.']+){0,3})"
 )
-EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
+# Layouts seen in the wild: "Account: 100537 - NAME - CODE" (PMS) and a name line right above "(PAN)" (MF summary).
+ACCOUNT_RE = re.compile(r"Account:?[ \t]*\w+[ \t]*-[ \t]*([A-Za-z][A-Za-z .']+?)[ \t]*-")
+PAN_RE = re.compile(r"^([A-Za-z][A-Za-z .']{2,60}?)[ \t]*\n[ \t]*\(?[A-Z]{5}\d{4}[A-Z]\)?", re.M)
 PERIOD_RE = re.compile(
     r"(?:as\s*on|as\s*of|for the (?:month|period|year)(?: of| ended)?|period)\s*[:\-]?\s*"
     r"(\d{1,2}[-/ .][A-Za-z0-9]{1,9}[-/ .]\d{2,4}|[A-Za-z]{3,9}\s+\d{4})",
@@ -94,14 +97,12 @@ def extract_text(name: str, data: bytes) -> str:
 
 
 def suggest(name: str, text: str) -> dict:
-    low = text.lower()
-    doc_type = next((label for label, kws in DOC_TYPES if any(k in low for k in kws)), None)
-    client = next(
-        (m.group(2).strip() for m in NAME_RE.finditer(text) if m.group(2).split()[0].lower() not in _STOP),
-        None,
+    # the filename is the stronger signal (a factsheet can mention "portfolio summary" in its body)
+    doc_type = next((l for hay in (name.lower(), text.lower()) for l, kws in DOC_TYPES if any(k in hay for k in kws)), None)
+    client = next((m.group(1).strip() for r in (ACCOUNT_RE, PAN_RE) if (m := r.search(text))), None) or next(
+        (m.group(2).strip() for m in NAME_RE.finditer(text) if m.group(2).split()[0].lower() not in _STOP), None
     )
     period = (m.group(1).strip() if (m := PERIOD_RE.search(text)) else None)
-    email = (m.group(0).lower() if (m := EMAIL_RE.search(text)) else None)
     label = doc_type or re.sub(r"[_\-]+", " ", name.rsplit(".", 1)[0]).strip().title() or "document"
     first = client.split()[0].title() if client else None
     subject = f"Your {label.lower()}" + (f" – {period}" if period else "") + " from Fund Horizon"
@@ -110,4 +111,4 @@ def suggest(name: str, text: str) -> dict:
         + " attached. Do take a look and tell us if anything looks off.\n\nRegards,\nFund Horizon"
     )
     return {"client_name": client, "first_name": first, "doc_type": doc_type, "period": period,
-            "email": email, "subject": subject, "message": body}
+            "subject": subject, "message": body}

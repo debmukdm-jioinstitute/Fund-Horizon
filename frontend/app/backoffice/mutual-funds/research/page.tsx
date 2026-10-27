@@ -6,8 +6,9 @@ import { useRecommended } from "@/lib/recommended";
 import {
   getMfScreener, getScreeningMetrics, listScreeningPresets, saveScreeningPreset, deleteScreeningPreset,
   getMfManagers, listMfShortlist, addMfShortlist, removeMfShortlist, mfShortlistCsvUrl, mfScreenerCsvUrl,
+  getMfClientOverlap,
   type MfScreenerGroup, type MfScreenerRow, type MfManagerDirectoryRow, type MfShortlistItem,
-  type ScreeningPresetItem, type MutualFundItem, type MfScreenerFreshness,
+  type ScreeningPresetItem, type MutualFundItem, type MfScreenerFreshness, type MfClientOverlap,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
@@ -79,6 +80,16 @@ const ALL_COLUMNS: { key: string; label: string; sortable?: string; pct?: boolea
   { key: "pct_alpha_3y", label: "Alpha 3Y percentile", sortable: "pct_alpha_3y", digits: 0 },
   { key: "pct_cagr_3y", label: "3Y CAGR percentile", sortable: "pct_cagr_3y", digits: 0 },
   { key: "pct_cagr_5y", label: "5Y CAGR percentile", sortable: "pct_cagr_5y", digits: 0 },
+  { key: "roll_win_pct", label: "Rolling 1Y win % (vs category median, precomputed)", sortable: "roll_win_pct", pct: true },
+  { key: "cal_topq_years", label: "Calendar top-quartile years (precomputed)", sortable: "cal_topq_years", digits: 0 },
+  { key: "cal_win_pct", label: "Calendar win % (vs category median, precomputed)", sortable: "cal_win_pct", pct: true },
+  { key: "downside_dev_3y", label: "Downside deviation 3Y % (precomputed)", sortable: "downside_dev_3y", pct: true },
+  { key: "sip_cagr_3y", label: "SIP CAGR 3Y % (precomputed)", sortable: "sip_cagr_3y", pct: true },
+  { key: "sip_cagr_5y", label: "SIP CAGR 5Y % (precomputed)", sortable: "sip_cagr_5y", pct: true },
+  { key: "idx_alpha_3y", label: "Alpha 3Y % (vs index TRI — null until a TRI series is ingested)", sortable: "idx_alpha_3y", pct: true },
+  { key: "idx_beta_3y", label: "Beta 3Y (vs index TRI — null until a TRI series is ingested)", sortable: "idx_beta_3y" },
+  { key: "idx_tracking_error_3y", label: "Tracking error 3Y % (vs index TRI — null until a TRI series is ingested)", sortable: "idx_tracking_error_3y", pct: true },
+  { key: "idx_information_ratio_3y", label: "Information ratio 3Y (vs index TRI — null until a TRI series is ingested)", sortable: "idx_information_ratio_3y" },
   { key: "manager", label: "Manager + tenure" },
 ];
 
@@ -215,6 +226,13 @@ function MfResearch() {
   const [shortlist, setShortlist] = useState<MfShortlistItem[]>([]);
   const [shortLoading, setShortLoading] = useState(false);
   const [shortMsg, setShortMsg] = useState("");
+  // Client check (read-only): shortlisted fund vs one client's CRM holdings.
+  const [clientContact, setClientContact] = useState("");
+  const [clientHorizon, setClientHorizon] = useState("");
+  const [clientFund, setClientFund] = useState("");
+  const [clientResult, setClientResult] = useState<MfClientOverlap | null>(null);
+  const [clientLoading, setClientLoading] = useState(false);
+  const [clientError, setClientError] = useState("");
 
   const synced = useRef(false);
   const fKey = JSON.stringify(filters);
@@ -420,7 +438,7 @@ function MfResearch() {
         <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
           Freshness — NAV: {fmtAsOf(fresh.nav_as_of)} · AUM: {fmtAsOf(fresh.aum_as_of)} · Expense ratio: {fmtAsOf(fresh.ter_as_of)} · Managers: {fmtAsOf(fresh.managers_as_of)} · Quartile (computed): {fmtAsOf(fresh.quartile_as_of)}
         </p>
-        <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">Past performance is not a guide to future returns. FH Star Rating is our own risk-adjusted rank, not Morningstar&apos;s. Alpha, beta and Treynor are vs category median, never vs an index.</p>
+        <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">Past performance is not a guide to future returns. FH Star Rating is our own risk-adjusted rank, not Morningstar&apos;s. Alpha, beta and Treynor are vs category median; the separate &ldquo;vs index TRI&rdquo; columns stay empty until a real total-return index series is ingested, and are never filled with the tracker-fund proxy.</p>
       </div>
 
       <div role="tablist" className="flex flex-wrap gap-1">
@@ -552,6 +570,25 @@ function MfResearch() {
             </div>
 
             <div>
+              <div className="text-[12px] font-semibold mb-1.5">Portfolio — holdings and sector (not yet available)</div>
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                Sector filter is shown here but disabled: no portfolio holdings snapshot is on file yet. AMFI monthly portfolio
+                disclosures live on each fund house&apos;s website in its own format, and none has been ingested, so holdings,
+                sector percentages, market-cap mix, turnover, cash %, style, concentration and fund-to-fund overlap are all
+                shown as unavailable — never estimated. Open any fund dialog for the per-fund portfolio status.
+              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-2 text-[12px]">
+                <label className="flex items-center gap-1.5">
+                  Sector
+                  <select disabled aria-label="Sector filter (unavailable)" className="terminal-input text-[12px] py-1 px-2 opacity-50">
+                    <option>Sector data unavailable</option>
+                  </select>
+                </label>
+                <span className="text-[#706E6B] dark:text-[#A8B4C4]">Filtering by sector needs an ingested holdings snapshot; until then this filter stays off rather than returning a partial list.</span>
+              </div>
+            </div>
+
+            <div>
               <div className="text-[12px] font-semibold mb-1.5">Manager</div>
               <div className="flex flex-wrap items-center gap-2 text-[12px]">
                 <input type="text" value={filters.manager} onChange={(e) => setFilters((f) => ({ ...f, manager: e.target.value }))}
@@ -634,9 +671,15 @@ function MfResearch() {
               {presetMsg && <span className="text-[#706E6B] dark:text-[#A8B4C4]">{presetMsg}</span>}
             </div>
             <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-              Presets are shared with the screening funnel: a preset saved here appears there and vice versa. The funnel applies only the fields it shares
-              (category, fund house, search) — computed quartile, capture spread and TER gap filters are research-only and are not reproduced by the funnel,
-              so funnel results for the same preset name may differ.
+              Presets are shared with the screening funnel: a preset saved here appears there and vice versa. What the funnel carries over:
+              category (one or several), fund house (one or several), search, quartile period and quartile set, manager name search,
+              minimum manager tenure, and bounds for Sharpe, Sortino, up/down capture, capture spread, TER gap (funnel: vs category
+              median; this table: vs category + plan median) and the precomputed consistency metrics. What it does not carry over, so funnel results for the same preset name may still differ: plan
+              (the funnel&apos;s metrics carry no plan), return / TER / AUM ranges (research-table-only fields), the include-unknown
+              and include-unavailable toggles (the funnel keeps missing-data funds flagged under its own rule instead), and the
+              quartile definition itself — the funnel ranks quartiles per category with its external-first cascade, while this
+              table ranks per category + plan from computed returns, and the funnel always retains Q1 funds even when a preset&apos;s
+              quartile set excludes Q1, so a funnel run may include Q1 funds the research filter left out.
             </p>
             <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
               Missing values show as —, never 0. Quartile values here are computed in-house (category + plan peers); the screener&apos;s Quartile Rankings tab
@@ -867,6 +910,73 @@ function MfResearch() {
             <a href={mfShortlistCsvUrl()} download className="terminal-btn text-[12px] py-1 px-3 no-underline">Export CSV</a>
             <button type="button" className="terminal-btn text-[12px] py-1 px-3" onClick={loadShortlist}>Refresh</button>
             {shortMsg && <span className="text-[#706E6B] dark:text-[#A8B4C4]">{shortMsg}</span>}
+          </div>
+          <div className="terminal-panel p-2.5 space-y-2">
+            <div className="text-[12px] font-semibold">Client check — read-only: does a shortlisted fund duplicate what a client already holds?</div>
+            <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Nothing here changes client data, sends anything, or marks a pick. Enter a CRM contact id, pick a shortlisted fund, and optionally a goal horizon in years.</p>
+            <div className="flex flex-wrap items-center gap-2 text-[12px]">
+              <input type="text" value={clientContact} onChange={(e) => setClientContact(e.target.value)} placeholder="CRM contact id"
+                className="terminal-input py-1 px-2 max-w-[220px]" />
+              <select value={clientFund} onChange={(e) => setClientFund(e.target.value)} className="terminal-input py-1 px-2 max-w-[300px]">
+                <option value="">Pick a shortlisted fund…</option>
+                {shortlist.map((item) => (
+                  <option key={item.scheme_code} value={item.scheme_code}>{shortDisplayName(strOf(item.name ?? item.scheme_name) || item.scheme_code)}</option>
+                ))}
+              </select>
+              <label className="flex items-center gap-1.5">
+                Goal horizon (years)
+                <input type="number" inputMode="decimal" value={clientHorizon} onChange={(e) => setClientHorizon(e.target.value)} className="terminal-input w-20 py-1 px-2" />
+              </label>
+              <button type="button" className="terminal-btn-accent text-[12px] py-1 px-3" disabled={!clientContact.trim() || !clientFund || clientLoading}
+                onClick={async () => {
+                  setClientLoading(true); setClientError(""); setClientResult(null);
+                  try {
+                    const horizon = clientHorizon.trim() ? Number(clientHorizon) : undefined;
+                    const res = await getMfClientOverlap({
+                      scheme_code: clientFund, contact_id: clientContact.trim(),
+                      horizon_years: Number.isFinite(horizon) ? horizon : undefined,
+                    });
+                    if (!res) setClientError("No result returned.");
+                    else setClientResult(res);
+                  } catch (e) { setClientError(e instanceof Error ? e.message : "Could not run the client check."); }
+                  finally { setClientLoading(false); }
+                }}>
+                {clientLoading ? "Checking…" : "Check client overlap"}
+              </button>
+            </div>
+            {clientError && <p className="text-[12px] text-[#B42332] dark:text-[#FF7D86]">{clientError}</p>}
+            {clientResult && (
+              <div className="text-[12px] space-y-1.5">
+                <div><span className="font-medium">{clientResult.fund ?? clientResult.scheme_code}</span>
+                  {clientResult.contact_name ? ` · Client: ${clientResult.contact_name}` : ""} · Holdings on file: {clientResult.holdings_count}</div>
+                {clientResult.crm_error && <p className="text-[#706E6B] dark:text-[#A8B4C4]">{clientResult.crm_error}</p>}
+                {clientResult.overlap && <p>{clientResult.overlap.duplication_note}</p>}
+                {clientResult.overlap && clientResult.overlap.same_category_holdings.length > 0 && (
+                  <p className="text-[#706E6B] dark:text-[#A8B4C4]">Same-category holdings on file: {clientResult.overlap.same_category_holdings.map((h) => String(h.scheme_name ?? h.scheme_code)).join(", ")}</p>
+                )}
+                {clientResult.horizon?.level && <p>Horizon flag ({clientResult.horizon.level}): {clientResult.horizon.message ?? "No concern from the simple horizon rule."}</p>}
+                {clientResult.suitability && <p>Risk-profile flag ({clientResult.suitability.level}): {clientResult.suitability.message ?? "Within the client's recorded risk limit."}</p>}
+                {clientResult.replacement_candidates && clientResult.replacement_candidates.length > 0 && (
+                  <div>
+                    <div className="font-medium">Replacement candidates (same category, higher checklist score, lower expense ratio, longer manager tenure):</div>
+                    <ul className="list-disc ml-5">
+                      {clientResult.replacement_candidates.map((r) => (
+                        <li key={String(r.scheme_code)}>{String(r.fund)} · Score {String(r.score)} · TER {String(r.ter)}% · Manager {String(r.manager_name)} ({String(r.manager_tenure_years)} yrs)</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {clientResult.tax_notes && clientResult.tax_notes.length > 0 && (
+                  <div>
+                    <div className="font-medium">Tax notes (general information, not advice):</div>
+                    <ul className="list-disc ml-5 text-[#706E6B] dark:text-[#A8B4C4]">
+                      {clientResult.tax_notes.map((n, i) => <li key={i}>{n}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {clientResult.scope_note && <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{clientResult.scope_note}</p>}
+              </div>
+            )}
           </div>
           <div className="terminal-panel overflow-hidden">
             <div className="overflow-x-auto">

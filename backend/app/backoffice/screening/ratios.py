@@ -9,6 +9,26 @@ import pandas as pd
 from app.engine import analytics as an
 
 
+def compute_consistency_metrics(
+    fund_monthly_nav: pd.Series,
+    median_monthly_returns: pd.Series | None,
+    peer_cal_by_year: dict[int, dict[str, float]] | None,
+    scheme_code: str,
+) -> dict[str, Any]:
+    """MF Research V2 precompute: rolling-win, calendar-win/top-quartile,
+    downside deviation and SIP CAGR vs the category median, from the NAV
+    series the nightly refresh already holds in memory. Delegates to the
+    single implementation in mf_research_v2 so the refresh, the detail
+    fallback and the tests can never drift apart."""
+    from app.backoffice.mf_research_v2 import compute_consistency
+    from app.backoffice.screening.quartiles import compute_category_quartiles
+
+    return compute_consistency(
+        fund_monthly_nav, median_monthly_returns, peer_cal_by_year,
+        scheme_code, quartile_fn=compute_category_quartiles,
+    )
+
+
 def rolling_consistency(fund: pd.Series, bench: pd.Series | None) -> float | None:
     """Share of rolling 1Y windows (monthly step, last 5Y) where the fund beat the benchmark."""
     if bench is None or bench.empty:

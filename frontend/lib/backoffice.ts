@@ -1689,8 +1689,53 @@ export const getMfManagers = async (o: {
   };
 };
 
+/** MF Research V2 blocks carried on the research detail payload. Null fields stay null. */
+export interface MfCoManager {
+  manager_id?: string | null;
+  name?: string | null;
+  designation?: string | null;
+  role_as_stated?: string | null;
+  start_date?: string | null;
+  start_date_as_stated?: string | null;
+  end_date?: string | null;
+  tenure_years?: number | null;
+}
+export interface MfResearchV2Blocks {
+  co_managers?: {
+    managers: MfCoManager[];
+    is_co_managed: boolean;
+    shared_record_note?: string | null;
+  } | null;
+  manager_changes?: { old_manager?: string | null; new_manager?: string | null; effective_date?: string | null; notice_url?: string | null }[];
+  manager_bio?: {
+    name?: string | null; firm?: string | null; current_title?: string | null; education?: string | null;
+    years_experience?: number | null; bio_summary?: string | null; investment_philosophy?: string | null;
+    career_history?: unknown[]; sources?: { label?: string; url?: string }[];
+  } | null;
+  operations?: {
+    available: boolean; reason?: string | null; as_of?: string | null; source?: string | null;
+    launch_date?: string | null; exit_load?: string | null; minimum_investment_inr?: string | null;
+    minimum_application_text?: string | null; riskometer?: string | null; riskometer_level?: number | null;
+    benchmark_tri?: string | null; ter_regular_pct?: string | null; ter_direct_pct?: string | null;
+    ter_date?: string | null; aum_inr_crore?: string | null; aum_date?: string | null;
+    history_unavailable?: Record<string, string>;
+  } | null;
+  portfolio?: {
+    available: boolean; holdings: unknown[]; sectors: unknown[]; reason?: string | null;
+    source?: string | null; sector_available: boolean;
+  } | null;
+  index?: {
+    index_name?: string | null; instrument_id?: string | null; points?: number | null;
+    proxy_retired?: boolean; reason?: string | null;
+    alpha_3y_pct?: number | null; beta_3y?: number | null; tracking_error_3y_pct?: number | null;
+    information_ratio_3y?: number | null; index_ret_3y_pct?: number | null; fund_ret_3y_pct?: number | null;
+  } | null;
+  benchmark_tri_name?: string | null;
+}
+
 /** Consistency / percentile / quartile-history detail for one fund (drawer only). Null fields stay null. */
-export interface MfResearchDetail {
+export interface MfResearchDetail extends MfResearchV2Blocks {
+  consistency_source?: string | null;
   roll_win_pct?: number | null;
   cal_topq_years?: number | null;
   cal_win_pct?: number | null;
@@ -1747,7 +1792,50 @@ export const getMfResearchDetail = async (code: string, signal?: AbortSignal): P
     manager_tenure_years: pick("manager_tenure_years"),
     calmar_3y: pick("calmar_3y"),
     reason: str(d.reason),
+    consistency_source: str(d.consistency_source),
+    co_managers: (d.co_managers as MfResearchV2Blocks["co_managers"]) ?? null,
+    manager_changes: (d.manager_changes as MfResearchV2Blocks["manager_changes"]) ?? [],
+    manager_bio: (d.manager_bio as MfResearchV2Blocks["manager_bio"]) ?? null,
+    operations: (d.operations as MfResearchV2Blocks["operations"]) ?? null,
+    portfolio: (d.portfolio as MfResearchV2Blocks["portfolio"]) ?? null,
+    index: (d.index as MfResearchV2Blocks["index"]) ?? null,
+    benchmark_tri_name: str(d.benchmark_tri_name),
   };
+};
+
+export interface MfClientOverlap {
+  scheme_code: string;
+  fund?: string | null;
+  category?: string | null;
+  plan?: string | null;
+  contact_id: string;
+  contact_name?: string | null;
+  holdings_count: number;
+  holdings: Record<string, unknown>[];
+  overlap?: {
+    already_held: boolean;
+    exact_holdings: Record<string, unknown>[];
+    same_category_holdings: Record<string, unknown>[];
+    same_amc_other_category_holdings: Record<string, unknown>[];
+    duplication_note?: string | null;
+  } | null;
+  horizon?: { level?: string | null; message?: string | null; reason?: string | null } | null;
+  suitability?: { level?: string | null; message?: string | null; gap?: number | null } | null;
+  tax_notes?: string[];
+  replacement_candidates?: Record<string, unknown>[];
+  crm_error?: string | null;
+  scope_note?: string | null;
+}
+
+export const getMfClientOverlap = async (o: {
+  scheme_code: string; contact_id: string; horizon_years?: number;
+}, signal?: AbortSignal): Promise<MfClientOverlap | null> => {
+  const q = new URLSearchParams({ scheme_code: o.scheme_code, contact_id: o.contact_id });
+  if (o.horizon_years != null) q.set("horizon_years", String(o.horizon_years));
+  const raw = await boFetch<Json>(`/api/backoffice/mf-research/client-overlap?${q.toString()}`, { signal });
+  const d = obj(raw.data);
+  if (Object.keys(d).length === 0) return null;
+  return d as unknown as MfClientOverlap;
 };
 
 export interface MfShortlistItem {

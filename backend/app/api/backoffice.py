@@ -6,6 +6,7 @@ import io
 import json
 import re
 import secrets
+from functools import lru_cache as _lru_cache
 from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 from pathlib import Path
@@ -52,7 +53,9 @@ from app.backoffice.schemas import (
     StaffMemberUpdateRequest,
     WatchlistCreateRequest,
 )
+from app.backoffice import index_tri as index_tri_module
 from app.backoffice import mf_reference, mf_screener
+from app.backoffice import mf_research_v2 as mf_v2
 from app.backoffice.screening.quartiles import compute_category_quartiles
 from app.backoffice.screening.service import ScreeningService
 from app.engine import analytics as engine_analytics
@@ -859,11 +862,17 @@ def backoffice_mf_screener(
         except ValueError:
             raise HTTPException(422, f"Bad range for {key}") from None
     ter = _REPO.mf_ter_by_code()
+    # MF Research V2: precomputed consistency from the nightly screening
+    # refresh (single query, never per-fund NAV loads at request time).
+    try:
+        consistency_map = _REPO.screening_consistency_map()
+    except Exception:
+        consistency_map = {}
     df = mf_screener.screen(
         ter, category, plans, search, ranges, sort, order == "desc",
         amcs=amc, manager=manager, min_tenure=min_tenure, include_unknown=include_unknown,
         quartiles=quartile, quartile_period=quartile_period, include_unavailable=include_unavailable,
-        manager_map=_mf_manager_map(),
+        manager_map=_mf_manager_map(), consistency_map=consistency_map,
     )
     df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES))
     if recommended:
@@ -891,6 +900,14 @@ def backoffice_mf_screener(
             "ter_as_of": None,
             "managers_as_of": None,
             "quartile_as_of": as_of,
+            # MF Research V2 availability: sector/portfolio data is not
+            # ingested (no holdings snapshots on file), and no TRI series
+            # is stored yet, so vs-index columns are null by design.
+            "sector_available": False,
+            "portfolio_available": False,
+            "portfolio_reason": "No portfolio holdings snapshot on file. AMFI monthly portfolio disclosures live on each AMC's website (listed at amfiindia.com/onlinecenter/portfoliodisclosure) in per-AMC formats; no snapshot has been ingested yet.",
+            "index_series_available": _REPO.benchmark_nav_count() > 0,
+            "consistency_precomputed": len(consistency_map),
         },
         "groups": mf_screener.facets(mf_screener.all_frame(ter)),
         "availability": "ready" if len(df) else "unavailable",
@@ -1009,6 +1026,89 @@ def _calendar_year_returns(monthly: pd.Series) -> dict[int, float]:
     return out
 
 
+@_lru_cache(maxsize=1)
+def _manager_profiles() -> list[dict[str, Any]]:
+    """Published manager bios (data/mf_manager_profiles.json); empty on any read failure."""
+    try:
+        raw = json.loads((data_dir().parent / "mf_manager_profiles.json").read_text())
+        return raw if isinstance(raw, list) else []
+    except Exception:
+        return []
+
+
+def _v2_blocks(scheme_code: str, row: dict[str, Any], monthly: pd.Series | None) -> dict[str, Any]:
+    """MF Research V2 blocks for one fund: co-managers + changes + bio,
+    operations snapshot, portfolio coverage, and vs-index metrics.
+
+    Everything here is read-only and sourced, never invented. Portfolio
+    holdings have no snapshot on file, so that block is always the
+    coverage/unavailable payload until an ingestion lands. The index block
+    computes vs-index metrics only when a real TRI series is stored; until
+    then it says so and the one-pager tracker-fund proxy line stays.
+    """
+    blocks: dict[str, Any] = {
+        "co_managers": None, "manager_changes": [], "manager_bio": None,
+        "operations": mf_v2.operations_from_reference(None),
+        "portfolio": {
+            "available": False, "holdings": [], "sectors": [],
+            "reason": "No portfolio holdings snapshot on file. AMFI monthly portfolio disclosures live on each AMC's website (listed at amfiindia.com/onlinecenter/portfoliodisclosure) in per-AMC formats; no snapshot has been ingested yet, so holdings, sector percentages, market-cap mix, turnover, cash %, style, concentration and fund overlap cannot be computed — they are shown as unavailable, never estimated.",
+            "source": "https://www.amfiindia.com/onlinecenter/portfoliodisclosure",
+            "sector_available": False,
+        },
+        "index": None, "benchmark_tri_name": None,
+    }
+    ref = None
+    try:
+        ref = mf_reference.scheme_reference(str(scheme_code))
+    except Exception:
+        ref = None
+    nav_as_of = None
+    try:
+        parsed = pd.to_datetime(row.get("nav_date"), format="%d-%b-%Y", errors="coerce")
+        nav_as_of = parsed.date().isoformat() if pd.notna(parsed) else None
+    except Exception:
+        nav_as_of = None
+    if ref:
+        blocks["co_managers"] = mf_v2.co_managers_from_reference(ref.get("managers") or [], nav_as_of)
+        names = {m.get("manager_id"): m.get("full_name") for m in (ref.get("managers") or []) if m.get("manager_id")}
+        blocks["manager_changes"] = mf_v2.manager_changes_from_reference(ref.get("manager_changes") or [], names)
+        blocks["operations"] = mf_v2.operations_from_reference(ref.get("scheme"))
+        blocks["benchmark_tri_name"] = (ref.get("scheme") or {}).get("benchmark_index_tri")
+    if not blocks["benchmark_tri_name"]:
+        blocks["benchmark_tri_name"] = mf_screener.BENCHMARKS.get(row.get("cat") or "")
+    bio_name = None
+    if blocks["co_managers"] and blocks["co_managers"]["managers"]:
+        bio_name = blocks["co_managers"]["managers"][0].get("name")
+    blocks["manager_bio"] = mf_v2.manager_bio_from_profiles(bio_name or row.get("manager_name"), _manager_profiles())
+    cat = row.get("cat") or ""
+    tri_name = index_tri_module.NSE_TRI_BY_CATEGORY.get(cat)
+    if tri_name:
+        iid = index_tri_module.instrument_id_for(tri_name)
+        try:
+            pts = _REPO.benchmark_series(iid)
+        except Exception:
+            pts = []
+        if pts and monthly is not None and len(monthly) >= 2:
+            idx_series = pd.Series({pd.Timestamp(p["date"]): float(p["value"]) for p in pts}).sort_index()
+            blocks["index"] = {
+                "index_name": f"{tri_name} TRI", "instrument_id": iid, "points": len(pts),
+                "proxy_retired": True,
+                **mf_v2.index_metrics(monthly, idx_series),
+            }
+        elif pts:
+            blocks["index"] = {"index_name": f"{tri_name} TRI", "instrument_id": iid, "points": len(pts),
+                               "proxy_retired": False,
+                               "reason": "TRI series is stored but the fund's NAV series is unavailable, so vs-index metrics cannot be computed."}
+        else:
+            blocks["index"] = {"index_name": f"{tri_name} TRI", "instrument_id": iid, "points": 0,
+                               "proxy_retired": False,
+                               "reason": "No TRI series ingested yet for this index. The one-pager tracker-fund proxy line is retained with its disclosure until a real series is stored."}
+    else:
+        blocks["index"] = {"index_name": blocks["benchmark_tri_name"], "proxy_retired": False,
+                           "reason": "No free machine-readable TRI series source for this category's benchmark (CRISIL/BSE/composite); the tracker-fund proxy line is retained with its disclosure."}
+    return blocks
+
+
 @router.get("/mutual-funds/{scheme_code}/research-detail")
 def backoffice_mf_research_detail(
     scheme_code: str,
@@ -1061,22 +1161,41 @@ def backoffice_mf_research_detail(
         "sip_cagr_3y": None,
         "sip_cagr_5y": None,
         "reason": None,
+        "consistency_source": None,
     }
+    # MF Research V2: prefer the nightly precomputed consistency (no
+    # per-peer NAV loads at request time). The live-NAV path below is only
+    # the fallback until the first V2 refresh has run.
+    try:
+        precomputed = _REPO.screening_consistency_map().get(str(scheme_code))
+    except Exception:
+        precomputed = None
+    if precomputed:
+        for key in ("roll_win_pct", "cal_topq_years", "cal_win_pct",
+                    "downside_dev_3y", "sip_cagr_3y", "sip_cagr_5y"):
+            data[key] = precomputed.get(key)
+        data["consistency_source"] = "precomputed"
     try:
         nav = load_nav(str(scheme_code))
     except (FileNotFoundError, OSError, ValueError):
         nav = pd.Series(dtype=float)
     if nav is None or len(nav) < 2:
         data["reason"] = "NAV series unavailable"
+        data.update(_v2_blocks(str(scheme_code), row, None))
         return {"data": data, "availability": "partial"}
     monthly = _month_end_series(nav)
+    if precomputed:
+        data.update(_v2_blocks(str(scheme_code), row, monthly))
+        return {"data": data, "availability": "ready"}
     try:
         median = category_median_series(load_metrics(), str(row["cat"]), min_funds=3)
     except Exception:
         median = pd.Series(dtype=float)
     if median is None or median.dropna().empty:
         data["reason"] = "Category median series unavailable"
+        data.update(_v2_blocks(str(scheme_code), row, monthly))
         return {"data": data, "availability": "partial"}
+    data["consistency_source"] = "live-nav"
     # Rolling 1Y win rate vs category median: monthly step, windows ending in the last 5Y.
     fund_roll = monthly / monthly.shift(12) - 1.0
     med_roll = (1.0 + median).rolling(12).apply(lambda x: float(pd.Series(x).prod()) - 1.0, raw=True)
@@ -1122,7 +1241,118 @@ def backoffice_mf_research_detail(
         if len(window) >= months:
             val = engine_analytics.sip_xirr(window)
             data[field] = round(float(val) * 100, 2) if val is not None else None
+    data.update(_v2_blocks(str(scheme_code), row, monthly))
     return {"data": data, "availability": "ready"}
+
+
+@router.get("/mutual-funds/{scheme_code}/research-v2")
+def backoffice_mf_research_v2(
+    scheme_code: str,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """MF Research V2 blocks for one fund (same payload the research detail
+    carries): co-managers + change history + bio, operations snapshot,
+    portfolio coverage, and vs-index metrics. Read-only."""
+    ter = _REPO.mf_ter_by_code()
+    frame = mf_screener.all_frame(ter, manager_map=_mf_manager_map())
+    match = frame[frame["code"] == str(scheme_code)]
+    if match.empty:
+        raise HTTPException(404, "Scheme not found")
+    row = mf_screener.records(match)[0]
+    try:
+        monthly = _month_end_series(load_nav(str(scheme_code)))
+    except (FileNotFoundError, OSError, ValueError):
+        monthly = None
+    blocks = _v2_blocks(str(scheme_code), row, monthly)
+    return {"data": {"scheme_code": str(scheme_code), "fund": row["name"], "category": row["cat_label"],
+                     "cat": row["cat"], "plan": row["plan"], **blocks},
+            "availability": "ready"}
+
+
+@router.get("/mutual-funds/portfolio-overlap")
+def backoffice_mf_portfolio_overlap(
+    staff: Annotated[dict, Depends(require_staff)],
+    code_a: str = Query(...),
+    code_b: str = Query(...),
+):
+    """Overlap between two funds' holdings. No portfolio snapshot is on file
+    for any fund yet, so this honestly returns the coverage payload with a
+    reason instead of a fabricated 0% overlap. When snapshots land, the
+    shared-holdings computation is mf_research_v2.fund_overlap."""
+    return {"data": {
+        "code_a": code_a, "code_b": code_b,
+        "overlap": mf_v2.fund_overlap([], []),
+        "portfolio_available": False,
+        "reason": "No portfolio holdings snapshot on file for either fund (see research-v2 portfolio block).",
+    }, "availability": "partial"}
+
+
+@router.get("/mf-research/client-overlap")
+def backoffice_mf_client_overlap(
+    staff: Annotated[dict, Depends(require_staff)],
+    scheme_code: str = Query(...),
+    contact_id: str = Query(...),
+    horizon_years: float | None = Query(None, ge=0),
+):
+    """Read-only client check for one shortlisted fund: duplication against
+    the contact's CRM holdings, goal-horizon rule flag, suitability flag from
+    the client's recorded risk assessment, tax notes, and replacement
+    candidates. Nothing here writes, emails, or changes client data.
+
+    Scope note: backoffice staff auth is separate from the CRM RM-book
+    scope, so this staff-only read does not apply the CRM RM-book filter;
+    it shows the contact's holdings as stored. That scoping gap is flagged
+    in the response and in the V2 report for the parent to confirm.
+    """
+    ter = _REPO.mf_ter_by_code()
+    frame = mf_screener.all_frame(
+        ter, manager_map=_mf_manager_map(),
+        consistency_map=_REPO.screening_consistency_map(),
+    )
+    match = frame[frame["code"] == str(scheme_code)]
+    if match.empty:
+        raise HTTPException(404, "Scheme not found")
+    candidate = mf_screener.records(match)[0]
+    holdings: list[dict[str, Any]] = []
+    contact: dict[str, Any] | None = None
+    crm_error: str | None = None
+    try:
+        from app import repo_crm_phase3 as p3
+
+        contact = p3.get_contact(contact_id)
+        if contact is None:
+            raise HTTPException(404, "Contact not found")
+        holdings = p3.list_holdings(contact_ids=[contact_id])
+    except HTTPException:
+        raise
+    except Exception as e:  # CRM store unavailable in this deployment: partial, never a crash
+        crm_error = f"CRM holdings unavailable: {e}"
+    overlap = mf_v2.client_overlap(candidate, holdings) if not crm_error else None
+    suitability = None
+    if not crm_error and contact is not None:
+        try:
+            from app import repo_crm_phase3 as p3
+
+            ops = _v2_blocks(str(scheme_code), candidate, None)["operations"]
+            suitability = p3.suitability_check(ops.get("riskometer_level"), contact.get("customer_id") or contact_id)
+        except Exception:
+            suitability = None
+    replacements = mf_v2.replacement_candidates(
+        candidate, mf_screener.records(frame[frame["cat"] == candidate["cat"]]))
+    return {"data": {
+        "scheme_code": str(scheme_code), "fund": candidate["name"], "category": candidate["cat_label"],
+        "cat": candidate["cat"], "plan": candidate["plan"],
+        "contact_id": contact_id, "contact_name": (contact or {}).get("name"),
+        "holdings_count": len(holdings),
+        "holdings": holdings,
+        "overlap": overlap,
+        "horizon": mf_v2.horizon_flag(candidate["cat"], horizon_years),
+        "suitability": suitability,
+        "tax_notes": mf_v2.tax_notes_for_category(candidate["cat"], candidate["plan"]),
+        "replacement_candidates": replacements,
+        "crm_error": crm_error,
+        "scope_note": "Staff-only read: CRM RM-book scoping is not applied here because backoffice staff auth is separate from CRM auth. Confirm RM-book rules before wider use.",
+    }, "availability": "partial" if crm_error else "ready"}
 
 
 class MfResearchShortlistCreateRequest(BaseModel):
@@ -1135,6 +1365,9 @@ _SHORTLIST_CSV_COLS = [
     ("score", "FH Checklist Score"), ("ret_1y", "1Y %"), ("cagr_3y", "3Y CAGR %"), ("cagr_5y", "5Y CAGR %"),
     ("sharpe_3y", "Sharpe 3Y"), ("cap_spread_3y", "Capture Spread 3Y (pp)"), ("quartile_2y", "Quartile 2Y (computed)"),
     ("manager_name", "Fund Manager"), ("manager_tenure_years", "Manager Tenure (years)"),
+    ("roll_win_pct", "Rolling 1Y Win % (vs category median, precomputed)"),
+    ("cal_win_pct", "Calendar Win % (vs category median, precomputed)"),
+    ("downside_dev_3y", "Downside Deviation 3Y % (precomputed)"),
     ("reason", "Reason"), ("date_added", "Date Added"),
 ]
 
@@ -1142,7 +1375,9 @@ _SHORTLIST_CSV_COLS = [
 def _shortlist_rows(staff_id: str) -> list[dict[str, Any]]:
     """Active shortlist rows joined to the screener frame. Never reads FH Recommended state."""
     items = _REPO.list_mf_research_shortlist(staff_id)
-    frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map())
+    frame = mf_screener.all_frame(
+        _REPO.mf_ter_by_code(), manager_map=_mf_manager_map(),
+        consistency_map=_REPO.screening_consistency_map())
     lookup: dict[str, dict[str, Any]] = {}
     if items:
         codes = [it["scheme_code"] for it in items]
@@ -1167,6 +1402,9 @@ def _shortlist_rows(staff_id: str) -> list[dict[str, Any]]:
             "quartile_2y": f.get("quartile_2y"),
             "manager_name": f.get("manager_name"),
             "manager_tenure_years": f.get("manager_tenure_years"),
+            "roll_win_pct": f.get("roll_win_pct"),
+            "cal_win_pct": f.get("cal_win_pct"),
+            "downside_dev_3y": f.get("downside_dev_3y"),
             "reason": it.get("reason"),
             "date_added": it.get("created_at"),
             "status": it.get("status"),

@@ -178,6 +178,8 @@ function MutualFunds() {
   const [ranges, setRanges] = useState<Record<string, { min?: string; max?: string }>>({});
   const [draft, setDraft] = useState<Record<string, { min?: string; max?: string }>>({});
   const [showFilter, setShowFilter] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
   const rec = useRecommended();
   const [recDropdownOpen, setRecDropdownOpen] = useState(false);
   const [newRecCode, setNewRecCode] = useState("");
@@ -205,7 +207,7 @@ function MutualFunds() {
   // Panels close on Escape; Quick Filter also closes on outside click (backdrop below).
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") { setShowFilter(false); setRecDropdownOpen(false); }
+      if (e.key === "Escape") { setShowFilter(false); setRecDropdownOpen(false); setCatOpen(false); setPlanOpen(false); }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -246,7 +248,8 @@ function MutualFunds() {
   const group = groups.find((g) => g.group === activeGroup);
   const groupKeys = group?.categories.map((c) => c.key) ?? [];
   const allSelected = groupKeys.length > 0 && groupKeys.every((k) => category.includes(k));
-  const selectedLabels = groups.flatMap((g) => g.categories).filter((c) => category.includes(c.key)).map((c) => c.label);
+  const selectedCats = groups.flatMap((g) => g.categories).filter((c) => category.includes(c.key));
+  const selectedLabels = selectedCats.map((c) => c.label);
   // Phase 0 (a): keep the selection on asset-class tab switch, but never let heading, tab and list
   // silently disagree — selected categories from other groups are named in a note below.
   const otherGroupSelected = groups.filter((g) => g.group !== activeGroup).flatMap((g) => g.categories).filter((c) => category.includes(c.key));
@@ -268,26 +271,45 @@ function MutualFunds() {
 
   return (
     <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
-          <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
-            {selectedLabels.length ? `Top ${selectedLabels.slice(0, 3).join(", ")}${selectedLabels.length > 3 ? " & more" : ""} mutual funds` : "Mutual funds"}
-          </h1>
-          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-            Compare Growth-option schemes by returns, risk, expense ratio and FH checklist score. NAV as of {asOf ? formatISTDate(asOf) : "-"}. Source: AMFI + mfapi.in.
+          <h1 className="text-[24px] font-semibold text-[#181818] dark:text-[#EDF2F7] tracking-tight">Mutual fund screener</h1>
+          <p className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
+            {selectedLabels.length ? selectedLabels.join(" & ") : "All categories"} · Growth option
           </p>
         </div>
-        <button
-          type="button"
-          disabled={compare.selectedIds.length < 2}
-          onClick={compare.openCompare}
-          className="terminal-btn-accent text-[12px] py-1 px-3 disabled:opacity-40"
-        >
-          Compare{compare.selectedIds.length ? ` (${compare.selectedIds.length})` : ""}
-        </button>
+        <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] sm:text-right">
+          <div>NAV as of {asOf ? formatISTDate(asOf) : "-"}</div>
+          <div>Source: AMFI + mfapi.in</div>
+        </div>
       </div>
 
-      <div className="terminal-panel p-2.5 space-y-2.5">
+      <div className="flex flex-wrap items-center gap-2.5">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search fund, AMC or scheme code…"
+          aria-label="Search fund, AMC or scheme code"
+          className="terminal-input flex-1 min-w-[220px] text-[13px] py-2 px-3"
+        />
+        <div className="relative">
+          <button
+            type="button"
+            aria-haspopup="true"
+            aria-expanded={catOpen}
+            onClick={() => { setCatOpen((v) => !v); setPlanOpen(false); }}
+            className="terminal-btn text-[13px] py-2 px-3 flex items-center gap-2"
+          >
+            Categories
+            {category.length > 0 && <span className="rounded-full bg-[#D8E9FB] text-[#0176D3] dark:bg-[#1B3A5C] dark:text-[#1B96FF] text-[12px] px-2 leading-5">{category.length}</span>}
+            <span className="text-[10px]">▾</span>
+          </button>
+          {catOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setCatOpen(false)} />
+              <div className="absolute left-0 top-full mt-1.5 w-[min(92vw,640px)] rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-2.5">
+
         <div role="tablist" className="flex flex-wrap gap-1">
           {groups.map((g) => (
             <button
@@ -330,10 +352,119 @@ function MutualFunds() {
             </label>
           ))}
         </div>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="relative">
+          <button
+            type="button"
+            aria-haspopup="true"
+            aria-expanded={planOpen}
+            onClick={() => { setPlanOpen((v) => !v); setCatOpen(false); }}
+            className="terminal-btn text-[13px] py-2 px-3 flex items-center gap-2"
+          >
+            <span className="text-[#706E6B] dark:text-[#A8B4C4]">Plan</span>
+            {plan.length ? plan.join(" + ") : "None"}
+            <span className="text-[10px]">▾</span>
+          </button>
+          {planOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setPlanOpen(false)} />
+              <div className="absolute left-0 top-full mt-1.5 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-2 text-[13px] text-[#181818] dark:text-[#EDF2F7]">
+                {PLANS.map((p) => (
+                  <label key={p} className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="h-4 w-4 accent-[#0176D3]" checked={plan.includes(p)} onChange={() => setUrl({ plan: toggle(plan, p) })} />
+                    {p}
+                  </label>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        <button type="button" aria-expanded={showFilter} onClick={() => setShowFilter((v) => !v)} className="terminal-btn text-[13px] py-2 px-3">
+          ⚟ More filters{activeFilters ? ` (${activeFilters})` : ""}
+        </button>
+        <button
+          type="button"
+          className="text-[13px] font-medium text-[#0176D3] dark:text-[#1B96FF] px-2 hover:underline"
+          onClick={() => {
+            setUrl({ category: DEFAULT_CATEGORIES, plan: PLANS });
+            setQuery("");
+            setRecommended(false);
+            setRanges({});
+            setDraft({});
+          }}
+        >
+          Reset
+        </button>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2.5">
-        <div role="tablist" className="flex flex-wrap items-center gap-1">
+      <div className="flex flex-wrap items-center gap-2">
+        {selectedCats.map((c) => (
+          <span key={c.key} className="inline-flex items-center gap-2 rounded-md bg-[#D8E9FB] text-[#0176D3] dark:bg-[#1B3A5C] dark:text-[#1B96FF] text-[13px] py-1.5 px-3">
+            {c.label}
+            <button type="button" aria-label={`Remove ${c.label}`} onClick={() => setUrl({ category: toggle(category, c.key) })} className="cursor-pointer leading-none">
+              ✕
+            </button>
+          </span>
+        ))}
+        <button
+          type="button"
+          aria-pressed={recommended}
+          onClick={() => setRecommended((v) => !v)}
+          className={`${recommended ? "terminal-btn-accent" : "terminal-btn"} text-[13px] py-1.5 px-3`}
+        >
+          ☆ FH Recommended ({Object.keys(rec.mfMap).length})
+        </button>
+      </div>
+
+
+      {showFilter && (
+        <>
+        <div className="fixed inset-0 z-40" onClick={() => setShowFilter(false)} />
+        <div className="terminal-panel p-2.5 space-y-2.5 relative z-50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            {FILTERABLE.map((f) => (
+              <div key={f.key} className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                <div className="mb-1">{f.label}</div>
+                <div className="flex gap-1.5">
+                  {(["min", "max"] as const).map((side) => (
+                    <input
+                      key={side}
+                      type="number"
+                      inputMode="decimal"
+                      placeholder={side}
+                      aria-label={`${f.label} ${side}`}
+                      value={draft[f.key]?.[side] ?? ""}
+                      onChange={(e) => setDraft((d) => ({ ...d, [f.key]: { ...d[f.key], [side]: e.target.value } }))}
+                      className="terminal-input w-full text-[12px] py-1 px-2"
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button type="button" className="terminal-btn-accent text-[12px] py-1 px-3" onClick={() => setRanges(draft)}>
+              Apply
+            </button>
+            <button
+              type="button"
+              className="terminal-btn text-[12px] py-1 px-3"
+              onClick={() => {
+                setDraft({});
+                setRanges({});
+              }}
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+        </>
+      )}
+
+      <div role="tablist" className="flex flex-wrap items-center gap-1 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           {SECTIONS.map((s) => (
             <button
               key={s}
@@ -348,25 +479,15 @@ function MutualFunds() {
               }}
               className={`text-[13px] py-1 px-3 border-b-2 ${section === s ? "border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] font-medium" : "border-transparent text-[#706E6B] dark:text-[#A8B4C4]"}`}
             >
-              {s}
+              {s.replace("Vs", "vs")}
             </button>
           ))}
-        </div>
-        <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#181818] dark:text-[#EDF2F7]">
-          {PLANS.map((p) => (
-            <label key={p} className="flex items-center gap-1.5 cursor-pointer">
-              <input type="checkbox" className="h-4 w-4 accent-[#0176D3]" checked={plan.includes(p)} onChange={() => setUrl({ plan: toggle(plan, p) })} />
-              {p}
-            </label>
-          ))}
-          <button
-            type="button"
-            aria-pressed={recommended}
-            onClick={() => setRecommended((v) => !v)}
-            className={`${recommended ? "terminal-btn-accent" : "terminal-btn"} text-[12px] py-1 px-3`}
-          >
-            ★ FH Recommended ({Object.keys(rec.mfMap).length})
-          </button>
+      </div>
+
+      <div className="flex flex-wrap items-start justify-between gap-2.5">
+        <div className="text-[16px] text-[#706E6B] dark:text-[#A8B4C4] pt-2">{loading ? "Loading…" : `${total.toLocaleString("en-IN")} funds`}</div>
+        <div className="flex flex-wrap items-start justify-end gap-2">
+
           <div className="relative">
             <button
               type="button"
@@ -442,81 +563,24 @@ function MutualFunds() {
               </>
             )}
           </div>
-          <button
-            type="button"
-            className="terminal-btn text-[12px] py-1 px-3"
-            onClick={() => {
-              setUrl({ category: [], plan: [] });
-              setRecommended(false);
-              setRanges({});
-              setDraft({});
-            }}
-          >
-            Clear all
-          </button>
-          <button type="button" aria-expanded={showFilter} onClick={() => setShowFilter((v) => !v)} className="terminal-btn text-[12px] py-1 px-3">
-            Quick Filter{activeFilters ? ` (${activeFilters})` : ""}
-          </button>
-          <a href={mfScreenerCsvUrl(q)} download className="terminal-btn text-[12px] py-1 px-3 no-underline">
-            Export CSV
-          </a>
-        </div>
-      </div>
 
-      {showFilter && (
-        <>
-        <div className="fixed inset-0 z-40" onClick={() => setShowFilter(false)} />
-        <div className="terminal-panel p-2.5 space-y-2.5 relative z-50">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-            {FILTERABLE.map((f) => (
-              <div key={f.key} className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                <div className="mb-1">{f.label}</div>
-                <div className="flex gap-1.5">
-                  {(["min", "max"] as const).map((side) => (
-                    <input
-                      key={side}
-                      type="number"
-                      inputMode="decimal"
-                      placeholder={side}
-                      aria-label={`${f.label} ${side}`}
-                      value={draft[f.key]?.[side] ?? ""}
-                      onChange={(e) => setDraft((d) => ({ ...d, [f.key]: { ...d[f.key], [side]: e.target.value } }))}
-                      className="terminal-input w-full text-[12px] py-1 px-2"
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <button type="button" className="terminal-btn-accent text-[12px] py-1 px-3" onClick={() => setRanges(draft)}>
-              Apply
-            </button>
+          <a href={mfScreenerCsvUrl(q)} download className="terminal-btn text-[13px] py-2 px-3 no-underline">
+            ⤓ Export CSV
+          </a>
+          <div className="flex flex-col items-end gap-1">
             <button
               type="button"
-              className="terminal-btn text-[12px] py-1 px-3"
-              onClick={() => {
-                setDraft({});
-                setRanges({});
-              }}
+              disabled={compare.selectedIds.length < 2}
+              onClick={compare.openCompare}
+              className="terminal-btn-accent text-[13px] py-2 px-3 disabled:opacity-40"
             >
-              Reset
+              Compare ({compare.selectedIds.length})
             </button>
+            {compare.selectedIds.length < 2 && <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Select at least 2 funds to compare</span>}
           </div>
         </div>
-        </>
-      )}
-
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search fund, AMC or scheme code…"
-          className="terminal-input w-full max-w-md text-[12px] py-1 px-2.5"
-        />
-        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{loading ? "Loading…" : `${total.toLocaleString("en-IN")} funds`}</div>
       </div>
+
 
       {error && (
         <div className="terminal-panel p-3 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px] flex flex-wrap items-center justify-between gap-2">

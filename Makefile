@@ -1,4 +1,4 @@
-.PHONY: setup dev test lint
+.PHONY: setup dev test lint forms capture
 
 PY := backend/.venv/bin/python
 
@@ -18,3 +18,12 @@ test:
 lint:
 	cd backend && .venv/bin/ruff check app tests
 	cd frontend && npm run lint && npx tsc --noEmit && node scripts/check-copy.mjs && node scripts/check-fonts.mjs
+
+# Refresh data/fundhorizon_mf_rag_dataset/capture_ratio.json from AdvisorKhoj's Market Capture Ratio tool (~10 min), then commit it.
+capture:
+	cd backend && python3 scripts/build_capture_ratio.py
+
+# Needs a visible Chrome window (headless is blocked by several AMC sites); run on a dev machine.
+forms:
+	node scripts/harvest_amc_forms.mjs
+	$(PY) backend/scripts/build_official_forms.py

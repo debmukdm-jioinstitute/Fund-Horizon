@@ -7,13 +7,14 @@ scheme's AMFI category and plan (no index data). The star rating is FH's own (ri
 """
 
 import io
+import json
 from functools import lru_cache
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
-from app.data.loader import load_metrics
+from app.data.loader import data_dir, load_metrics
 
 # Trendlyne-style groups -> (canonical category key, label). Keys come from app.data.categories.
 CATEGORY_GROUPS: dict[str, list[tuple[str, str]]] = {
@@ -82,11 +83,14 @@ _PCT = {
 }
 # Unit-free ratios copied as is.
 _RAW = ["sharpe_{}y", "sortino_{}y", "beta_{}y"]
+# AdvisorKhoj market capture ratios (equity categories only), written by scripts/build_capture_ratio.py: up %, down %, up/down.
+_CAPTURE = ("cap_up", "cap_down", "cap_ratio")
 _AVG_COLS = ["ret_1m", "ret_3m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_10y"]
 NUMERIC_KEYS = (
     ["out_1y", "out_3y", "out_5y", "score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
     + list(_PCT.values())
     + [t.format(y) for y in _YEARS for t in _RAW]
+    + [f"{k}_{y}y" for y in _YEARS for k in _CAPTURE]
 )
 SORT_KEYS = set(NUMERIC_KEYS) | {"name"}
 
@@ -124,6 +128,12 @@ def _label(points: float, good: str, mid: str, weak: str) -> str:
 
 
 @lru_cache(maxsize=1)
+def _capture_data() -> dict[str, dict[str, list[float | None]]]:
+    path = data_dir() / "capture_ratio.json"
+    return json.loads(path.read_text())["data"] if path.exists() else {}
+
+
+@lru_cache(maxsize=1)
 def _base_frame() -> pd.DataFrame:
     src = load_metrics()
     df = pd.DataFrame({
@@ -138,6 +148,10 @@ def _base_frame() -> pd.DataFrame:
     for y in _YEARS:
         for t in _RAW:
             df[t.format(y)] = src[t.format(y)]
+    cap = _capture_data()
+    for y in _YEARS:
+        for i, k in enumerate(_CAPTURE):
+            df[f"{k}_{y}y"] = [(cap.get(c, {}).get(f"{y}y") or [None] * 3)[i] for c in df["code"]]
     key = df["cat"] + "|" + df["plan"]
     for col in _AVG_COLS + ["ret_2y"]:
         df[f"{col}_cat"] = df.groupby(key)[col].transform("mean")
@@ -239,6 +253,8 @@ def to_csv(df: pd.DataFrame) -> str:
         **{f"{k}_{y}y": f"{lbl} {y}Y" for y in _YEARS for k, lbl in (
             ("alpha", "Alpha %"), ("beta", "Beta"), ("sharpe", "Sharpe"), ("sortino", "Sortino"),
             ("treynor", "Treynor %"), ("vol", "Std Dev %"))},
+        **{f"{k}_{y}y": f"{lbl} {y}Y" for y in _YEARS for k, lbl in (
+            ("cap_up", "Up Capture %"), ("cap_down", "Down Capture %"), ("cap_ratio", "Capture Ratio"))},
         "max_dd_3y": "Max Drawdown 3Y %", "max_dd_all": "Max Drawdown All %", "isin": "ISIN",
     }
     buf = io.StringIO()

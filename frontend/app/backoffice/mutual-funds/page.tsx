@@ -22,7 +22,7 @@ import CompareView from "@/components/compare/CompareView";
 import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import InfoTip from "@/components/InfoTip";
 
-const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "One-Pager", "Quartile Rankings"] as const;
+const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "Capture Ratio", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
 const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
 const DEFAULT_CATEGORIES = ["flexi_cap", "multi_cap"];
@@ -91,6 +91,11 @@ const COLUMNS: Record<Section, Col[]> = {
     pct("cagr_si", "Since inception CAGR %"),
     { key: "hi52", label: "NAV 52W High", kind: "num", digits: 2, date: "hi52_date" },
     { key: "lo52", label: "NAV 52W Low", kind: "num", digits: 2, date: "lo52_date" },
+  ],
+  "Capture Ratio": [
+    ...perYear("cap_up", "Up Capture", "pct", true),
+    ...perYear("cap_down", "Down Capture", "pct", true),
+    ...perYear("cap_ratio", "Capture Ratio", "num"),
   ],
   "Risk Vs Reward": [
     ...perYear("alpha", "Alpha %", "pct"),
@@ -317,7 +322,7 @@ function MutualFunds() {
               aria-selected={section === s}
               onClick={() => {
                 setUrl({ section: s });
-                setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Returns" ? "cagr_3y" : "score");
+                setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Capture Ratio" ? "cap_ratio_3y" : s === "Returns" ? "cagr_3y" : "score");
                 setOrder("desc");
               }}
               className={`text-[13px] py-1 px-3 border-b-2 ${section === s ? "border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] font-medium" : "border-transparent text-[#706E6B] dark:text-[#A8B4C4]"}`}

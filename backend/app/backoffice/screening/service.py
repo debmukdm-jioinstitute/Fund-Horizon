@@ -18,6 +18,54 @@ def _utcnow() -> str:
     return datetime.now(UTC).isoformat()
 
 
+def normalise_research_filters(filters: dict[str, Any]) -> dict[str, Any]:
+    """Translate a research-page preset's filter shape to funnel shape.
+
+    Research presets carry category/amc arrays, a ranges map (capture in
+    percent, period-suffixed keys), a quartile list, a manager string and a
+    min_tenure string. The funnel takes single/list category/amc, a bounds
+    map (capture as fractions, bare keys), a quartiles_action list, a
+    manager_search string and min_tenure_years. Unmapped research ranges
+    (returns, TER, AUM) are dropped: they are research-table-only fields.
+    Pure function, unit-tested in test_mf_research_v2.py.
+    """
+    norm = dict(filters)
+    if isinstance(norm.get("ranges"), dict) and not norm.get("bounds"):
+        _range_to_bound = {"sharpe_3y": "sharpe", "sortino_3y": "sortino",
+                           "ter_gap_pp": "ter_gap_pp"}
+        for period in ("1y", "3y", "5y", "10y"):
+            _range_to_bound[f"cap_up_{period}"] = "up_capture"
+            _range_to_bound[f"cap_down_{period}"] = "down_capture"
+            _range_to_bound[f"cap_spread_{period}"] = "capture_spread"
+        bounds: dict[str, dict[str, Any]] = {}
+        for key, val in norm["ranges"].items():
+            if not isinstance(val, dict) or key not in _range_to_bound:
+                continue
+            target = _range_to_bound[key]
+            converted: dict[str, Any] = {}
+            for side in ("min", "max"):
+                if val.get(side) in (None, ""):
+                    continue
+                try:
+                    num = float(val[side])
+                except (TypeError, ValueError):
+                    continue
+                converted[side] = num / 100.0 if key.startswith("cap_") else num
+            if converted:
+                bounds[target] = converted
+        norm["bounds"] = bounds
+    if isinstance(norm.get("quartile"), list):
+        norm["quartiles_action"] = [int(q) for q in norm["quartile"] if int(q) in (1, 2, 3, 4)]
+    if isinstance(norm.get("manager"), str) and norm["manager"].strip():
+        norm.setdefault("manager_search", norm["manager"].strip())
+    if norm.get("min_tenure") is not None and norm.get("min_tenure_years") is None:
+        try:
+            norm["min_tenure_years"] = float(norm["min_tenure"])
+        except (TypeError, ValueError):
+            pass
+    return norm
+
+
 def _new_id() -> str:
     return uuid.uuid4().hex
 
@@ -133,13 +181,40 @@ class ScreeningService:
 
             filters = filters or {}
 
+            # MF Research V2 preset parity: normalise a research-page
+            # preset to funnel shape before running, so the funnel applies
+            # the shared fields instead of silently ignoring them. Fields
+            # the funnel genuinely cannot apply (plan — screening rows
+            # carry no plan; include_unknown/include_unavailable — the
+            # funnel has its own include_missing rule) are left out and
+            # are named in the research page's preset copy.
+            filters = normalise_research_filters(filters)
+
             # Load S0 metrics
             rows = [dict(r) for r in conn.execute("SELECT * FROM mf_screening_metrics").fetchall()]
             for r in rows:
                 try:
-                    r["roll_consistency"] = json.loads(r.get("provenance_json") or "{}").get("roll_consistency")
+                    prov = json.loads(r.get("provenance_json") or "{}")
                 except Exception:
-                    r["roll_consistency"] = None
+                    prov = {}
+                r["roll_consistency"] = prov.get("roll_consistency")
+                # MF Research V2: hydrate the funnel with the precomputed
+                # consistency metrics, capture spread, category-median TER
+                # gap and non-2Y quartiles, so research presets that use
+                # them apply in the funnel instead of being silently ignored.
+                # TER gap here is vs the category median (screening rows
+                # carry no plan); the research table's TER gap is vs the
+                # category + plan median — the preset copy says so.
+                cons = prov.get("consistency") or {}
+                for k in ("roll_win_pct", "cal_topq_years", "cal_win_pct",
+                          "downside_dev_3y", "sip_cagr_3y", "sip_cagr_5y"):
+                    r[k] = cons.get(k)
+                r["capture_spread"] = prov.get("capture_spread")
+                if r.get("up_capture") is not None and r.get("down_capture") is not None:
+                    r["capture_spread"] = float(r["up_capture"]) - float(r["down_capture"])
+                r["ter_gap_pp"] = prov.get("ter_gap_cat_pp")
+                for period, q in (prov.get("quartiles") or {}).items():
+                    r[f"quartile_{period}"] = q
 
             # Extract category median TERs
             cat_median_ters: dict[str, float] = {}
@@ -164,9 +239,26 @@ class ScreeningService:
                     mid = len(sorted_ters) // 2
                     cat_median_ters[cat] = (sorted_ters[mid] if len(sorted_ters) % 2 != 0 else (sorted_ters[mid - 1] + sorted_ters[mid]) / 2.0)
 
-            # Apply funnel to the selected category / AMC only so stage counts match what the user sees
-            pool = [r for r in rows if (not filters.get("cat") or r["cat"] == filters["cat"])
-                    and (not filters.get("amc") or r["amc"] == filters["amc"])]
+            # Apply funnel to the selected category / AMC only so stage counts match what the user sees.
+            # Category / AMC may be a single value (funnel presets) or a
+            # list (research presets); search is a name/AMC/code substring.
+            def _pool_match(value: Any, wanted: Any) -> bool:
+                if not wanted:
+                    return True
+                if isinstance(wanted, list):
+                    return value in wanted
+                return value == wanted
+
+            search = (filters.get("search") or "").strip().lower() if isinstance(filters.get("search"), str) else ""
+            pool = []
+            for r in rows:
+                if not _pool_match(r["cat"], filters.get("cat") or filters.get("category")):
+                    continue
+                if not _pool_match(r["amc"], filters.get("amc")):
+                    continue
+                if search and search not in f"{r.get('scheme_name', '')} {r.get('amc', '')} {r.get('scheme_code', '')}".lower():
+                    continue
+                pool.append(r)
             res = apply_funnel(pool, filters=filters, cat_median_ters=cat_median_ters,
                                weights=self.cfg.get("score_weights"))
 
@@ -259,6 +351,15 @@ class ScreeningService:
             if not row:
                 return None
             data = dict(row)
+            # MF Research V2: precomputed consistency from the nightly
+            # refresh, so fund detail need not recompute it from NAV series.
+            try:
+                prov = json.loads(data.get("provenance_json") or "{}")
+                data["consistency"] = prov.get("consistency")
+                data["consistency_source"] = "precomputed" if prov.get("consistency") else None
+            except Exception:
+                data["consistency"] = None
+                data["consistency_source"] = None
 
             # Manager details
             mgr = conn.execute(

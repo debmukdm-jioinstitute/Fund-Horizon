@@ -659,6 +659,78 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def screening_consistency_map(self) -> dict[str, dict[str, Any]]:
+        """MF Research V2: {scheme_code: consistency dict} from the nightly
+        screening refresh. The metrics live inside mf_screening_metrics'
+        provenance_json (no schema change, so existing databases need no
+        migration); rows from before the V2 refresh simply have no entry and
+        callers fall back to the live-NAV computation with a reason."""
+        import json
+
+        conn = self._conn()
+        try:
+            try:
+                rows = conn.execute(
+                    "SELECT scheme_code, provenance_json FROM mf_screening_metrics"
+                ).fetchall()
+            except Exception:
+                return {}
+            out: dict[str, dict[str, Any]] = {}
+            for r in rows:
+                try:
+                    prov = json.loads(r["provenance_json"] or "{}")
+                except Exception:
+                    continue
+                cons = prov.get("consistency")
+                if isinstance(cons, dict):
+                    out[str(r["scheme_code"])] = cons
+            return out
+        finally:
+            conn.close()
+
+    def upsert_benchmark_nav(self, instrument_id: str, points: list[dict[str, Any]]) -> int:
+        """MF Research V2: store a TRI series in mf_benchmark_nav (date, value).
+        Replaces the instrument's rows in one transaction; a failure writes
+        nothing, so a half-downloaded series can never replace a good one."""
+        conn = self._conn()
+        try:
+            with conn:
+                conn.execute("DELETE FROM mf_benchmark_nav WHERE instrument_id = ?", (instrument_id,))
+                for p in points:
+                    conn.execute(
+                        "INSERT INTO mf_benchmark_nav (instrument_id, date, nav, provenance) VALUES (?, ?, ?, ?)",
+                        (instrument_id, p["date"], float(p["value"]), "niftyindices_tri"),
+                    )
+            return len(points)
+        finally:
+            conn.close()
+
+    def benchmark_series(self, instrument_id: str) -> list[dict[str, Any]]:
+        """MF Research V2: stored TRI points for one instrument, oldest first."""
+        conn = self._conn()
+        try:
+            try:
+                rows = conn.execute(
+                    "SELECT date, nav FROM mf_benchmark_nav WHERE instrument_id = ? ORDER BY date ASC",
+                    (instrument_id,),
+                ).fetchall()
+            except Exception:
+                return []
+            return [{"date": r["date"], "value": float(r["nav"])} for r in rows]
+        finally:
+            conn.close()
+
+    def benchmark_nav_count(self) -> int:
+        """MF Research V2: total stored TRI points (0 until the first ingest)."""
+        conn = self._conn()
+        try:
+            try:
+                return int(conn.execute("SELECT COUNT(*) FROM mf_benchmark_nav").fetchone()[0])
+            except Exception:
+                return 0
+        finally:
+            conn.close()
+
     def get_mf_schemes_by_codes(self, codes: list[str]) -> list[dict[str, Any]]:
         if not codes:
             return []

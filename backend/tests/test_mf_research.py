@@ -162,3 +162,101 @@ def test_compare_joins_screener_frame(client):
     assert first["quartile"] == frame_rows[codes[0]]["quartile_2y"]
     assert first["aum"] == frame_rows[codes[0]]["aum_cr"]
     assert first["manager_tenure"] == frame_rows[codes[0]]["manager_tenure_years"]
+
+
+# ---------------------------------------------------------------------------
+# MF Research V2 API tests
+# ---------------------------------------------------------------------------
+
+def _snapshot_codes_with_exit_load():
+    """{code: exit_load} from the bundled static reference CSV (no DB load)."""
+    import csv
+    import gzip
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[2] / "data" / "India_MF_Static_Reference_Consolidated.csv.gz"
+    if not path.exists():
+        return {}
+    out = {}
+    with gzip.open(path, "rt", encoding="utf-8-sig") as fh:
+        for row in csv.DictReader(fh):
+            if row["record_type"] == "scheme_master" and row.get("exit_load"):
+                out[row["amfi_scheme_code"]] = row["exit_load"]
+    return out
+
+
+def test_v2_research_blocks_and_screener_columns(client):
+    _login_staff(client, _create_staff())
+    from app.backoffice import mf_screener as ms
+
+    frame = ms.all_frame({})
+    snap = _snapshot_codes_with_exit_load()
+    picked = next((c for c in frame["code"].astype(str) if c in snap), None)
+    assert picked, "no screener fund found in the reference snapshot"
+    r = client.get(f"/api/backoffice/mutual-funds/{picked}/research-v2")
+    assert r.status_code == 200, r.text
+    d = r.json()["data"]
+    # Operations come from the snapshot row, exactly as published.
+    assert d["operations"]["available"] is True
+    assert d["operations"]["exit_load"] == snap[picked]
+    assert d["operations"]["history_unavailable"]["aum_history"]
+    # Portfolio: honestly unavailable, never a fabricated sector split.
+    assert d["portfolio"]["available"] is False
+    assert d["portfolio"]["sector_available"] is False
+    assert d["portfolio"]["holdings"] == []
+    # Index: no TRI series stored in a fresh test DB, so the proxy stays.
+    assert d["index"]["proxy_retired"] is False
+    assert d["index"]["reason"]
+    # Screener rows carry the V2 columns (null until the V2 refresh runs)
+    # and the screener CSV headers match the on-screen columns.
+    s = client.get("/api/backoffice/mutual-funds/screener?limit=1").json()
+    row = s["data"][0]
+    for col in ("roll_win_pct", "cal_topq_years", "cal_win_pct", "downside_dev_3y",
+                "sip_cagr_3y", "sip_cagr_5y", "idx_alpha_3y", "idx_beta_3y"):
+        assert col in row
+    assert s["meta"]["sector_available"] is False
+    assert s["meta"]["portfolio_available"] is False
+    csv_r = client.get("/api/backoffice/mutual-funds/screener?format=csv&limit=1")
+    assert csv_r.status_code == 200
+    assert "Rolling 1Y Win %" in csv_r.text and "vs index TRI" in csv_r.text
+    # Research detail carries the same V2 blocks + a consistency source flag.
+    detail = client.get(f"/api/backoffice/mutual-funds/{picked}/research-detail").json()["data"]
+    assert detail["consistency_source"] in ("precomputed", "live-nav")
+    assert detail["portfolio"]["available"] is False
+    assert detail["operations"]["available"] is True
+    client.cookies.clear()
+    assert client.get(f"/api/backoffice/mutual-funds/{picked}/research-v2").status_code in (401, 403)
+
+
+def test_v2_portfolio_overlap_honest_unavailable(client):
+    _login_staff(client, _create_staff())
+    r = client.get("/api/backoffice/mutual-funds/portfolio-overlap?code_a=148535&code_b=148534")
+    assert r.status_code == 200
+    d = r.json()["data"]
+    assert d["portfolio_available"] is False
+    assert d["overlap"]["shared_weight_in_a_pct"] is None
+    assert d["overlap"]["reason"]
+    client.cookies.clear()
+    assert client.get("/api/backoffice/mutual-funds/portfolio-overlap?code_a=1&code_b=2").status_code in (401, 403)
+
+
+def test_v2_client_overlap_unknown_contact_and_no_writes(client):
+    _login_staff(client, _create_staff())
+    code = ITI_PAIR[0]
+    r = client.get(f"/api/backoffice/mf-research/client-overlap?scheme_code={code}&contact_id=does-not-exist")
+    # Either the CRM store answers 404 for an unknown contact, or it is
+    # unavailable in this deployment and the endpoint reports partial —
+    # in neither case may it invent holdings or write anything.
+    if r.status_code == 200:
+        d = r.json()["data"]
+        assert d["scope_note"] and d["tax_notes"]
+        assert d["replacement_candidates"] == [] or all(
+            x["score"] is not None for x in d["replacement_candidates"])
+        r2 = client.get(f"/api/backoffice/mf-research/client-overlap?scheme_code={code}&contact_id=does-not-exist")
+        assert r2.json() == r.json()
+    else:
+        assert r.status_code == 404
+    assert client.get("/api/backoffice/mutual-funds/screener?search=148535&limit=1").status_code == 200
+    client.cookies.clear()
+    assert client.get(
+        f"/api/backoffice/mf-research/client-overlap?scheme_code={code}&contact_id=x").status_code in (401, 403)

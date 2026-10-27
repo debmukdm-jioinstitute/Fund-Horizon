@@ -85,6 +85,12 @@ def apply_funnel(
     min_tenure_years = float(filters.get("min_tenure_years", 3.0))
     bounds = filters.get("bounds") or {}
     quartiles_action = filters.get("quartiles_action", [2, 3])
+    # MF Research V2 preset parity: a research preset may carry a quartile
+    # period other than 2Y and a manager name search. Both apply only when
+    # present, so existing funnel runs (and their tests) are unchanged.
+    quartile_period = str(filters.get("quartile_period", "2y"))
+    quartile_col = f"quartile_{quartile_period}" if quartile_period != "2y" else "quartile_2y"
+    manager_search = (filters.get("manager_search") or "").strip().lower() or None
     include_missing = bool(filters.get("include_missing", True))
     cat_median_ters = cat_median_ters or {}
 
@@ -128,6 +134,9 @@ def apply_funnel(
     # S1: Manager filter
     s1_pass: list[dict[str, Any]] = []
     for r in s0_rows:
+        if manager_search and manager_search not in (r.get("manager_name") or "").lower():
+            drop(r, "s1", "manager does not match search", r.get("manager_name") or "unknown manager")
+            continue
         if gap(r, "s1", ("manager_name", "manager_tenure_years")):
             continue
         t = r.get("manager_tenure_years")
@@ -138,7 +147,19 @@ def apply_funnel(
 
     # S2: Ratios filter (subset of S1)
     s2_pass: list[dict[str, Any]] = []
-    active_bounds = {k: v for k, v in bounds.items() if isinstance(v, dict) and (v.get("min") is not None or v.get("max") is not None)}
+    # Only bounds for fields the screening rows actually carry are applied.
+    # A research preset may carry ranges for research-table-only fields
+    # (returns, TER, AUM); applying those here would drop every fund as
+    # "insufficient history", so they are ignored by the funnel, not failed.
+    _KNOWN_BOUND_KEYS = {
+        "sharpe", "sortino", "up_capture", "down_capture", "capture_spread",
+        "ter_gap_pp", "expense_ratio", "tenure_ratio", "manager_tenure_years",
+        "roll_consistency", "roll_win_pct", "cal_win_pct", "downside_dev_3y",
+        "sip_cagr_3y", "sip_cagr_5y",
+    }
+    active_bounds = {k: v for k, v in bounds.items()
+                     if k in _KNOWN_BOUND_KEYS and isinstance(v, dict)
+                     and (v.get("min") is not None or v.get("max") is not None)}
     for r in s1_pass:
         if gap(r, "s2", tuple(active_bounds)):
             continue
@@ -165,9 +186,16 @@ def apply_funnel(
     down_bound = bound("down_capture", "max", 1.0)
 
     for r in s2_pass:
-        if gap(r, "s3", ("up_capture", "down_capture", "quartile_2y")):
+        # 2Y keeps the existing rule (a missing cascade quartile drops the
+        # fund as insufficient history). Other periods come from the V2
+        # provenance quartiles and may legitimately be unavailable, so an
+        # unavailable quartile passes flagged instead of dropping the fund.
+        gap_fields = ("up_capture", "down_capture", quartile_col) if quartile_period == "2y" else ("up_capture", "down_capture")
+        if gap(r, "s3", gap_fields):
             continue
-        up, down, q = r.get("up_capture"), r.get("down_capture"), r.get("quartile_2y")
+        up, down, q = r.get("up_capture"), r.get("down_capture"), r.get(quartile_col)
+        if q is None and quartile_period != "2y":
+            r["needs_data"] = sorted(set(r.get("needs_data", [])) | {quartile_col})
         if up is not None and not float(up) > up_bound:
             drop(r, "s3", f"up_capture <= {up_bound:g}", f"{float(up):.2f}")
         elif down is not None and not float(down) < down_bound:

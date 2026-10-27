@@ -87,11 +87,21 @@ _RAW = ["sharpe_{}y", "sortino_{}y", "beta_{}y"]
 _CAPTURE = ("cap_up", "cap_down", "cap_ratio")
 _AVG_COLS = ["ret_1m", "ret_3m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_10y"]
 _QUARTILE_RET = {"1y": "ret_1y", "2y": "ret_2y", "3y": "cagr_3y", "5y": "cagr_5y"}
+# MF Research V2 columns: precomputed consistency (from the nightly
+# screening refresh via consistency_map) and vs-index metrics (from
+# index_map, populated only when a real TRI series is ingested; until then
+# every value is null and the UI says so — never a proxy figure).
+_V2_NUMERIC_KEYS = [
+    "roll_win_pct", "cal_topq_years", "cal_win_pct", "downside_dev_3y",
+    "sip_cagr_3y", "sip_cagr_5y",
+    "idx_alpha_3y", "idx_beta_3y", "idx_tracking_error_3y", "idx_information_ratio_3y",
+]
 _NEW_NUMERIC_KEYS = (
     [f"quartile_{p}" for p in _QUARTILE_RET]
     + [f"cap_spread_{y}y" for y in _YEARS]
     + ["ter_gap_pp", "calmar_3y", "manager_tenure_years"]
     + [f"pct_{m}" for m in ("sharpe_3y", "sortino_3y", "alpha_3y", "vol_3y", "max_dd_3y", "ret_1y", "cagr_3y", "cagr_5y")]
+    + _V2_NUMERIC_KEYS
 )
 NUMERIC_KEYS = (
     ["out_1y", "out_3y", "out_5y", "score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
@@ -182,7 +192,12 @@ def _manager_series(manager_map: dict[str, Any] | None, df: pd.DataFrame, field:
     return pd.Series(out, index=df.index, dtype=object)
 
 
-def _scored(ter: dict[str, float], manager_map: dict[str, Any] | None = None) -> pd.DataFrame:
+def _scored(
+    ter: dict[str, float],
+    manager_map: dict[str, Any] | None = None,
+    consistency_map: dict[str, dict[str, Any]] | None = None,
+    index_map: dict[str, dict[str, Any]] | None = None,
+) -> pd.DataFrame:
     df = _base_frame().copy()
     df["ter"] = df["code"].map(ter)
     df["cat_label"] = df["cat"].map(_LABELS).fillna(df["cat"])
@@ -257,6 +272,22 @@ def _scored(ter: dict[str, float], manager_map: dict[str, Any] | None = None) ->
     starts = pd.to_datetime(_cleaned_start, errors="coerce")
     tenure_days = (nav_as_of - starts).dt.days
     df["manager_tenure_years"] = (tenure_days / 365.25).where(starts.notna() & tenure_days.ge(0))
+    # --- MF Research V2 columns (precomputed maps passed in by the caller,
+    # same pattern as manager_map; absent map entries stay null). ---
+    for col in ("roll_win_pct", "cal_topq_years", "cal_win_pct", "downside_dev_3y", "sip_cagr_3y", "sip_cagr_5y"):
+        if consistency_map:
+            df[col] = [ (consistency_map.get(str(c)) or {}).get(col) for c in df["code"] ]
+        else:
+            df[col] = None
+    _idx_cols = {
+        "idx_alpha_3y": "alpha_3y_pct", "idx_beta_3y": "beta_3y",
+        "idx_tracking_error_3y": "tracking_error_3y_pct", "idx_information_ratio_3y": "information_ratio_3y",
+    }
+    for col, src in _idx_cols.items():
+        if index_map:
+            df[col] = [(index_map.get(str(c)) or {}).get(src) for c in df["code"]]
+        else:
+            df[col] = None
     return df
 
 
@@ -276,8 +307,10 @@ def screen(
     quartile_period: str = "2y",
     include_unavailable: bool = True,
     manager_map: dict[str, Any] | None = None,
+    consistency_map: dict[str, dict[str, Any]] | None = None,
+    index_map: dict[str, dict[str, Any]] | None = None,
 ) -> pd.DataFrame:
-    df = _scored(ter, manager_map=manager_map)
+    df = _scored(ter, manager_map=manager_map, consistency_map=consistency_map, index_map=index_map)
     if categories:
         df = df[df["cat"].isin(categories)]
     if plans:
@@ -316,8 +349,13 @@ def facets(df_all: pd.DataFrame) -> list[dict[str, Any]]:
     ]
 
 
-def all_frame(ter: dict[str, float], manager_map: dict[str, Any] | None = None) -> pd.DataFrame:
-    return _scored(ter, manager_map=manager_map)
+def all_frame(
+    ter: dict[str, float],
+    manager_map: dict[str, Any] | None = None,
+    consistency_map: dict[str, dict[str, Any]] | None = None,
+    index_map: dict[str, dict[str, Any]] | None = None,
+) -> pd.DataFrame:
+    return _scored(ter, manager_map=manager_map, consistency_map=consistency_map, index_map=index_map)
 
 
 def records(df: pd.DataFrame) -> list[dict[str, Any]]:
@@ -353,6 +391,16 @@ def to_csv(df: pd.DataFrame) -> str:
         "calmar_3y": "Calmar 3Y",
         "manager_name": "Fund Manager", "manager_start": "Manager Since",
         "manager_tenure_years": "Manager Tenure (years)",
+        "roll_win_pct": "Rolling 1Y Win % (vs category median, precomputed)",
+        "cal_topq_years": "Calendar Top-Quartile Years (precomputed)",
+        "cal_win_pct": "Calendar Win % (vs category median, precomputed)",
+        "downside_dev_3y": "Downside Deviation 3Y % (precomputed)",
+        "sip_cagr_3y": "SIP CAGR 3Y % (precomputed)",
+        "sip_cagr_5y": "SIP CAGR 5Y % (precomputed)",
+        "idx_alpha_3y": "Alpha 3Y % (vs index TRI, null until a TRI series is ingested)",
+        "idx_beta_3y": "Beta 3Y (vs index TRI, null until a TRI series is ingested)",
+        "idx_tracking_error_3y": "Tracking Error 3Y % (vs index TRI, null until a TRI series is ingested)",
+        "idx_information_ratio_3y": "Information Ratio 3Y (vs index TRI, null until a TRI series is ingested)",
         **{f"pct_{m}": f"{lbl} Percentile (vs category + plan peers)" for m, lbl in (
             ("sharpe_3y", "Sharpe 3Y"), ("sortino_3y", "Sortino 3Y"), ("alpha_3y", "Alpha 3Y"),
             ("vol_3y", "Volatility 3Y"), ("max_dd_3y", "Max Drawdown 3Y"),

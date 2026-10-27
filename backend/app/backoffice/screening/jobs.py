@@ -13,11 +13,12 @@ import pandas as pd
 from app.backoffice.db import _utcnow
 from app.backoffice.providers.amfi_ter import base_key as mf_base_key
 from app.backoffice.repository import BackofficeRepository
+from app.backoffice.mf_research_v2 import calendar_year_returns
 from app.backoffice.screening.quartiles import (
     compute_category_quartiles,
     resolve_quartile_cascade,
 )
-from app.backoffice.screening.ratios import compute_scheme_metrics
+from app.backoffice.screening.ratios import compute_consistency_metrics, compute_scheme_metrics
 from app.config import load_screening
 from app.data.loader import data_dir, eligible_funds, load_nav
 from app.engine import analytics as an
@@ -163,6 +164,10 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
     cat_benchmarks: dict[str, pd.Series] = {}
     cat_bench_sources: dict[str, str] = {}
     cat_returns_2y: dict[str, dict[str, float | None]] = {}
+    # MF Research V2 precompute inputs: median monthly returns per category
+    # (for rolling/calendar consistency) and peer calendar-year returns.
+    cat_med_returns: dict[str, pd.Series] = {}
+    cat_peer_cal: dict[str, dict[int, dict[str, float]]] = {}
 
     for cat, codes in cat_peers.items():
         cat_returns_2y[cat] = {}
@@ -170,6 +175,7 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
             # Build category median returns series
             rets_df = pd.concat({c: nav_cache[c].pct_change() for c in codes}, axis=1)
             med_rets = rets_df.median(axis=1).dropna()
+            cat_med_returns[cat] = med_rets
             # Convert to pseudo-NAV series for compounding calculations
             bench_series = pd.Series(100.0 * np.cumprod(1.0 + med_rets), index=med_rets.index)
             cat_benchmarks[cat] = bench_series
@@ -183,10 +189,27 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
             r2y = an.trailing_return(s, years=2)
             cat_returns_2y[cat][c] = r2y
 
+        # Peer calendar-year returns for this category (from the same cache,
+        # never a per-fund file load at request time).
+        peer_cal: dict[int, dict[str, float]] = {}
+        for c in codes:
+            for year, ret in calendar_year_returns(nav_cache[c]).items():
+                peer_cal.setdefault(year, {})[c] = ret
+        cat_peer_cal[cat] = peer_cal
+
     # Compute quartiles per category
     cat_computed_q: dict[str, dict[str, int | None]] = {}
     for cat in cats:
         cat_computed_q[cat] = compute_category_quartiles(cat_returns_2y.get(cat, {}), min_peers=8)
+    # MF Research V2: computed quartiles for the other research periods too,
+    # stored in provenance so the funnel can honour a research preset's
+    # quartile period instead of silently falling back to 2Y.
+    cat_quartiles_by_period: dict[str, dict[str, dict[str, int | None]]] = {}
+    for period, years in (("1y", 1), ("3y", 3), ("5y", 5)):
+        cat_quartiles_by_period[period] = {}
+        for cat in cats:
+            rets = {c: an.trailing_return(nav_cache[c], years=years) for c in cat_peers.get(cat, [])}
+            cat_quartiles_by_period[period][cat] = compute_category_quartiles(rets, min_peers=8)
 
     # Compute scheme preliminary metrics to get category averages (1Y, 3Y, 5Y, SI) and median TER
     cat_metrics_acc: dict[str, dict[str, list[float]]] = {
@@ -273,14 +296,33 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
         m_row["quartile_2y"] = final_q
         m_row["quartile_source"] = q_source
 
+        # MF Research V2 precompute: consistency metrics, quartile periods,
+        # capture spread and category-median TER gap, all from the NAV cache
+        # above. Stored in provenance_json (existing TEXT column) so no
+        # database migration is needed on existing volumes.
+        try:
+            consistency = compute_consistency_metrics(
+                s_nav, cat_med_returns.get(cat), cat_peer_cal.get(cat, {}), code
+            )
+        except Exception:
+            consistency = {}
+        up_c, down_c = m_row.get("up_capture"), m_row.get("down_capture")
+        med_ter = cat_median_ters.get(cat)
         provenance = {
             "updated_at": now_str,
             "rf": rf,
             "rf_source": rf_source,
             "benchmark_source": b_src,
             "quartile_source": q_source,
-            "cat_median_ter": cat_median_ters.get(cat),
-            "roll_consistency": m_row.get("roll_consistency"),  # shortcut: kept in provenance, no column; promote if filtered on
+            "cat_median_ter": med_ter,
+            "roll_consistency": m_row.get("roll_consistency"),
+            "consistency": consistency,
+            "quartiles": {
+                period: cat_quartiles_by_period[period].get(cat, {}).get(code)
+                for period in ("1y", "3y", "5y")
+            },
+            "capture_spread": (float(up_c) - float(down_c)) if up_c is not None and down_c is not None else None,
+            "ter_gap_cat_pp": (float(ter_val) - float(med_ter)) if ter_val is not None and med_ter is not None else None,
         }
         m_row["provenance_json"] = json.dumps(provenance)
         screening_rows.append(m_row)

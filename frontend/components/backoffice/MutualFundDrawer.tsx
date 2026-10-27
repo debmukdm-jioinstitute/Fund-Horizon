@@ -469,6 +469,116 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               )}
             </div>
 
+            {/* MF Research V2 blocks: co-managers + changes + bio, operations, portfolio, vs-index. */}
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Managers — everyone managing this scheme</div>
+              {researchDetail?.co_managers ? (
+                <div className="space-y-1.5 text-[12px]">
+                  {researchDetail.co_managers.managers.length === 0 && (
+                    <div className="text-[#706E6B] dark:text-[#A8B4C4]">No manager roster on file in the AMFI/SEBI reference snapshot for this scheme.</div>
+                  )}
+                  {researchDetail.co_managers.managers.map((m) => (
+                    <div key={m.manager_id ?? m.name ?? "unknown"}>
+                      <span className="font-medium">{m.name ?? "—"}</span>
+                      {m.designation ? <span className="text-[#706E6B] dark:text-[#A8B4C4]"> · {m.designation}</span> : null}
+                      {m.role_as_stated ? <span className="text-[#706E6B] dark:text-[#A8B4C4]"> · {m.role_as_stated}</span> : null}
+                      {m.start_date ? <span className="text-[#706E6B] dark:text-[#A8B4C4]"> · since {m.start_date}</span> : null}
+                      {typeof m.tenure_years === "number" ? <span className="text-[#706E6B] dark:text-[#A8B4C4]"> · {m.tenure_years.toFixed(1)} yrs</span> : null}
+                    </div>
+                  ))}
+                  {researchDetail.co_managers.shared_record_note && (
+                    <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{researchDetail.co_managers.shared_record_note}</p>
+                  )}
+                  {researchDetail.manager_changes && researchDetail.manager_changes.length > 0 && (
+                    <div>
+                      <div className="font-medium mt-1">Manager changes on file</div>
+                      {researchDetail.manager_changes.map((c, i) => (
+                        <div key={i} className="text-[#706E6B] dark:text-[#A8B4C4]">
+                          {c.effective_date ?? "—"}: {c.old_manager ?? "—"} → {c.new_manager ?? "—"}
+                          {c.notice_url ? <> · <a href={c.notice_url} target="_blank" rel="noreferrer" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline">AMC notice</a></> : null}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {researchDetail.manager_bio && (
+                    <div className="text-[#706E6B] dark:text-[#A8B4C4]">
+                      {researchDetail.manager_bio.education ? <div>Education: {researchDetail.manager_bio.education}</div> : null}
+                      {researchDetail.manager_bio.bio_summary ? <div>{researchDetail.manager_bio.bio_summary}</div> : null}
+                      {researchDetail.manager_bio.sources && researchDetail.manager_bio.sources.length > 0 && (
+                        <div>Sources: {researchDetail.manager_bio.sources.map((s) => s.label ?? s.url).filter(Boolean).join(" · ")}</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Manager roster is not available for this scheme.</div>
+              )}
+            </div>
+
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Operations — what it costs and how it works</div>
+              {researchDetail?.operations?.available ? (
+                <div className="grid grid-cols-2 gap-2.5 text-[12px]">
+                  {([
+                    ["Launch date", researchDetail.operations.launch_date],
+                    ["Exit load", researchDetail.operations.exit_load],
+                    ["Minimum investment (Rs)", researchDetail.operations.minimum_investment_inr],
+                    ["Riskometer", researchDetail.operations.riskometer],
+                    ["Benchmark (total-return index, as named in the scheme document)", researchDetail.operations.benchmark_tri],
+                    ["Expense ratio, Regular %", researchDetail.operations.ter_regular_pct],
+                    ["Expense ratio, Direct %", researchDetail.operations.ter_direct_pct],
+                    ["Expense ratio as of", researchDetail.operations.ter_date],
+                  ] as const).map(([label, v]) => (
+                    <div key={label}>
+                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
+                      <div className="font-mono font-medium text-[13px]">{v ?? "—"}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{researchDetail?.operations?.reason ?? "Operations data is not available for this scheme."}</div>
+              )}
+              <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                AUM history, investor flows, folio counts and expense-ratio history are not in the reference snapshot, so they are shown as unavailable rather than estimated.
+                Past performance is not a guide to future returns.
+              </p>
+            </div>
+
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Portfolio — holdings and sector</div>
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                {researchDetail?.portfolio?.reason ?? "No portfolio holdings snapshot on file for this scheme, so holdings, sector percentages, market-cap mix, turnover, cash %, style and concentration are unavailable — never estimated."}
+              </p>
+              <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Source when ingested: AMFI monthly portfolio disclosures on each fund house&apos;s website (listed at amfiindia.com/onlinecenter/portfoliodisclosure).</p>
+            </div>
+
+            <div className="terminal-panel p-3.5 space-y-2">
+              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Benchmark — vs the real total-return index</div>
+              {researchDetail?.index && researchDetail.index.alpha_3y_pct != null ? (
+                <div className="grid grid-cols-2 gap-2.5 text-[12px]">
+                  {([
+                    ["Index", researchDetail.index.index_name],
+                    ["Alpha 3Y % (vs index)", researchDetail.index.alpha_3y_pct],
+                    ["Beta 3Y (vs index)", researchDetail.index.beta_3y],
+                    ["Tracking error 3Y % (vs index)", researchDetail.index.tracking_error_3y_pct],
+                    ["Information ratio 3Y (vs index)", researchDetail.index.information_ratio_3y],
+                    ["Index 3Y return %", researchDetail.index.index_ret_3y_pct],
+                    ["Fund 3Y return %", researchDetail.index.fund_ret_3y_pct],
+                  ] as const).map(([label, v]) => (
+                    <div key={label}>
+                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
+                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? v.toFixed(2) : (v ?? "—")}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                  {researchDetail?.index?.reason ?? "No real total-return index series is stored for this fund's benchmark yet, so vs-index figures are empty. The one-pager's tracker-fund proxy line is kept with its disclosure until a real series is ingested."}
+                </div>
+              )}
+              <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">These columns are kept separate from the vs-category-median columns above. Past performance is not a guide to future returns.</p>
+            </div>
+
             {/* Quick Link Cards */}
             <div className="terminal-panel p-3.5 space-y-2.5">
               <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">

@@ -23,13 +23,6 @@
   "One mix for all your money keeps it simple.",
   "The wedding is two years away; equity will be fine."
  ],
- "talk_track": [
-  {
-   "n": 7,
-   "title": "One client, separate pots, separate mixes",
-   "text": "Never apply one mix to all of a client's money. One client can have three separate pots. An emergency fund, needed at any time, goes entirely into cash or liquid funds. A house down payment due in three years is a near-term must-have, so it's mostly in debt. And retirement twenty-five years away can be mostly equity."
-  }
- ],
  "check": [
   {
    "id": "alloc-q25x",

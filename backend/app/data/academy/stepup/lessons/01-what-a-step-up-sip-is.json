@@ -23,18 +23,6 @@
   "A step-up guarantees you'll reach the goal.",
   "Just double your SIP today."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Welcome to Module 14",
-   "text": "Welcome to Module 14 of the Fund Horizon training series: the SIP step-up. A step-up SIP raises the monthly amount automatically, usually once a year. It's the simplest way to keep a SIP in line with rising income and rising costs, and over a long goal it can roughly double the outcome."
-  },
-  {
-   "n": 13,
-   "title": "The one line to remember",
-   "text": "If you remember one line from this module, make it this one: save more tomorrow, automatically. Tie each step-up to a raise, so the client never feels the money go. A step-up decided once and applied automatically beats good intentions every single year."
-  }
- ],
  "check": [
   {
    "id": "stepup-q1",

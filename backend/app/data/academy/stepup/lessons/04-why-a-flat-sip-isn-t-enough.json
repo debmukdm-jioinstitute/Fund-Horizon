@@ -23,13 +23,6 @@
   "Your SIP is fine as it is; inflation is only 6%.",
   "The step-up will double your money."
  ],
- "talk_track": [
-  {
-   "n": 4,
-   "title": "Why a flat SIP isn't enough",
-   "text": "Why isn't a flat SIP enough? Three reasons. First, inflation erodes it. At six percent inflation, ten thousand rupees a month in twenty years buys only what about three thousand one hundred buys today. Second, income usually grows, so a SIP that stays flat becomes a smaller and smaller share of income each year. And third, compounding rewards stepping up: the later, bigger instalments still have years to grow."
-  }
- ],
  "check": [
   {
    "id": "stepup-q10",

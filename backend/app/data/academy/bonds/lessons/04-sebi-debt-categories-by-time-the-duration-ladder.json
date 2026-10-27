@@ -27,7 +27,6 @@
   "Choose a debt fund by last year's return.",
   "Long duration suits money needed next month."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "bonds-q3",

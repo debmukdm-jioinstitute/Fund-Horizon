@@ -24,7 +24,6 @@
   "Call a low-NAV fund cheap.",
   "Present IDCW as extra income."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "terms-n30",

@@ -23,7 +23,6 @@
   "Switches are tax-free always.",
   "Recent units never carry loads."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-q10",

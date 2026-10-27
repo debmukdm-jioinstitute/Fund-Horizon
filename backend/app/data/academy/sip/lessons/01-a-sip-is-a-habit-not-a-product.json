@@ -23,18 +23,6 @@
   "Your SIP will take care of itself now.",
   "Just keep paying and don't ask questions."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Welcome to Module 12",
-   "text": "Welcome to Module 12 of the Fund Horizon training series: SIP, what next? Starting a SIP is the easy part. Over ten or twenty years, every SIP investor faces a series of decisions: whether to step up, what to do in a cash crunch, what happens when the SIP's end date arrives, how to protect the money as a goal approaches, and how to draw it out once the goal arrives. Getting these decisions right is where we add the most value."
-  },
-  {
-   "n": 14,
-   "title": "The one line to remember",
-   "text": "If you remember one line from this module, make it this one: a SIP is a habit, not a product. Selling the SIP is just the start. Our real job is to protect the habit: step it up as income grows, renew it when the end date arrives, glide it down into debt as the goal nears, and help the client draw it out wisely once the goal arrives."
-  }
- ],
  "check": [
   {
    "id": "sip-q1x",

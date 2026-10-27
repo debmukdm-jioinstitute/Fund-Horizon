@@ -22,7 +22,6 @@
   "Run the SWP from a small-cap fund.",
   "Set the inflation increase and forget it."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q11",

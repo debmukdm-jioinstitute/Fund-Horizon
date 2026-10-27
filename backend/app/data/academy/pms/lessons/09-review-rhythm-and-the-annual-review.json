@@ -23,13 +23,6 @@
   "Ignore the factsheet number, it doesn't matter.",
   "One quarter tells us everything."
  ],
- "talk_track": [
-  {
-   "n": 13,
-   "title": "Strategy return is not your return",
-   "text": "This is the most common PMS review complaint: \"The factsheet says forty percent, so why have I only made twelve?\" Look at the chart. The strategy launched at one hundred and is at one forty today. Client A joined at launch and is up forty percent. Client B joined at month twelve, after a strong run, at one twenty-five, and is up only twelve percent. Same strategy, same fees, different entry point. In every review, show the client their own account's return after all fees, against the benchmark over the same period, not the strategy's headline number. These are hypothetical values for illustration."
-  }
- ],
  "check": [
   {
    "id": "pms-q16",

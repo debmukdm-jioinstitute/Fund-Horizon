@@ -23,13 +23,6 @@
   "Everyone should step up 10% a year.",
   "A retiree should step up to beat inflation."
  ],
- "talk_track": [
-  {
-   "n": 6,
-   "title": "Who a step-up suits less",
-   "text": "A step-up suits clients whose income is likely to grow. It suits retirees on fixed income less, and clients with very irregular earnings, where a fixed-amount step-up or occasional lump sums may fit better. Goals only one to three years away gain little from a step-up."
-  }
- ],
  "check": [
   {
    "id": "stepup-q22",

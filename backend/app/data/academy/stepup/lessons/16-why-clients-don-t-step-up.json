@@ -23,13 +23,6 @@
   "Let's wait until the market settles.",
   "You'll increase it when you feel ready."
  ],
- "talk_track": [
-  {
-   "n": 12,
-   "title": "Why clients don't step up, and what to say",
-   "text": "Most clients agree a step-up makes sense, then never do it. Lifestyle creep: “the raise just disappeared”. Suggest sending a slice of every raise to the SIP first, before it reaches their account. Present bias: “I'll increase it next year”. Set it now, and it happens on its own. Fear of commitment: set a cap, and remind them it can be paused or reduced. Anchoring: ten thousand is much smaller as a share of income now. And waiting for markets: a step-up is about income, not the market."
-  }
- ],
  "check": [
   {
    "id": "stepup-q35",

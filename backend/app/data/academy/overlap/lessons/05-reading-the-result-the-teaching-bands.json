@@ -22,7 +22,6 @@
   "Over 50% overlap always means sell immediately.",
   "Bands are SEBI regulations."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q9",

@@ -25,7 +25,6 @@
   "Unclaimed IDCW is lost forever with no claim process.",
   "NRI TDS on IDCW is lower than for residents."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "idcw-q20",

@@ -23,13 +23,6 @@
   "₹11,500 will get you ₹1 crore.",
   "The step-up removes the need to review the goal."
  ],
- "talk_track": [
-  {
-   "n": 7,
-   "title": "₹1 crore in 15 years: start where you can",
-   "text": "The most practical use of a step-up is making a goal reachable. Say a client wants one crore rupees in fifteen years, at an assumed twelve percent a year. With a flat SIP, they'd need about nineteen thousand eight hundred a month from day one. With a ten percent yearly step-up, they can start at about eleven thousand five hundred and grow into it. A step-up lets a young client start with what they can afford today, and let rising income do the rest."
-  }
- ],
  "check": [
   {
    "id": "stepup-q27",

@@ -24,13 +24,6 @@
   "PMS replaces the mutual fund core.",
   "AIFs suit money needed next year."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Foundation first",
-   "text": "Mutual funds are your foundation. PMS and AIFs can sit on top once that's solid and you can lock some money away for longer."
-  }
- ],
  "check": [
   {
    "id": "compare-q14",

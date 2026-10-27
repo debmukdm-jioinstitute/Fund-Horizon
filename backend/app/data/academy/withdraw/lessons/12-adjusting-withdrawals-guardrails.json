@@ -22,7 +22,6 @@
   "Always increase the SWP for inflation.",
   "Sell growth assets low in a fall."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q12",

@@ -23,13 +23,6 @@
   "Rely on willpower in a crisis.",
   "Rebalance only when you feel like it."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Write it down now",
-   "text": "Let's write down your plan now, while markets are calm, so we can follow it when they're not."
-  }
- ],
  "check": [
   {
    "id": "psych-q11",

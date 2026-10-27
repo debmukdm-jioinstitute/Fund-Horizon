@@ -21,7 +21,6 @@
   "The rate is expenses divided by income.",
   "Other income doesn't reduce the gap."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "withdraw-q9",

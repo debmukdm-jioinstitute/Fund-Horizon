@@ -23,7 +23,6 @@
   "Rebalance on request regardless of the band.",
   "Change targets on market views."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-q21",

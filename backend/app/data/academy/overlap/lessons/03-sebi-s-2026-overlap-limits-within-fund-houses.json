@@ -23,7 +23,6 @@
   "SEBI's limits prevent all client overlap.",
   "Sectoral funds have no overlap limit."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "overlap-q6",

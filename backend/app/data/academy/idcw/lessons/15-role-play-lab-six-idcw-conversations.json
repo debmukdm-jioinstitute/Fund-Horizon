@@ -24,7 +24,6 @@
   "Promise a fixed IDCW amount.",
   "Suggest buying before a record date to “earn” the payout."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "idcw-q21",

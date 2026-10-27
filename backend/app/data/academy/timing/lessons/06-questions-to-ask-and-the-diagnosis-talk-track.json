@@ -22,13 +22,6 @@
   "Decide first, diagnose later.",
   "Compare the fund with last year's top fund."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Four checks first",
-   "text": "Let's check four things before deciding anything: the right return measure, the time it's had, the benchmark, and your goal date. Then we'll know whether there's really a problem."
-  }
- ],
  "check": [
   {
    "id": "timing-n09",

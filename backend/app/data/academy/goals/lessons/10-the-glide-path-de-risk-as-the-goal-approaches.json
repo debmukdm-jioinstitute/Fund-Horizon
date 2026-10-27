@@ -22,7 +22,6 @@
   "Hold 80% equity until the goal year.",
   "Move everything to debt in one panic sale."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "goals-q7",

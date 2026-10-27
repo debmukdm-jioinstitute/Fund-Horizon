@@ -23,13 +23,6 @@
   "A hybrid fund is safer than equity.",
   "The balanced advantage fund always holds 65% equity."
  ],
- "talk_track": [
-  {
-   "n": 11,
-   "title": "Then choose products for each part",
-   "text": "There are two valid ways to hold a mix: separate funds, which give more control but need you to rebalance, or a single hybrid fund, which is simpler because the fund rebalances inside. Under SEBI rules, a multi-asset allocation fund must hold at least ten percent in each of at least three asset classes."
-  }
- ],
  "check": [
   {
    "id": "alloc-q16x",

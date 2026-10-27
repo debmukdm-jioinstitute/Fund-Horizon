@@ -24,18 +24,6 @@
   "Your SIP is running, so there's nothing to do.",
   "We only need to meet when markets fall."
  ],
- "talk_track": [
-  {
-   "n": 10,
-   "title": "\"My SIP is running. What next?\"",
-   "text": "Stage four, Review and rebalance, is our answer to the most common question: \"My SIP is running, what next?\" Every client gets a structured review at least once a year, in eight steps. One, a life update. Two, goal progress in rupees and percentage. Three, performance: XIRR against each fund's benchmark and category. Four, allocation: bring it back to target if markets have pushed it off. Five, overlap: if several funds hold the same stocks, consolidate. Six, step up SIPs with income. Seven, housekeeping: KYC, nominees and mandates. And eight, send a written summary of next actions. Talk-track: \"Your SIP is on track. This year let's step it up by 10% and bring equity back to your 60% target.\""
-  },
-  {
-   "n": 11,
-   "title": "A yearly step-up nearly doubles the outcome",
-   "text": "Here's the single most useful review action: the step-up. Two clients both start a ₹10,000 monthly SIP and earn the same assumed 12% a year. One keeps it flat for 20 years and ends with about ₹1 crore. The other raises the SIP by 10% every year, in line with salary growth, and ends with about ₹1.99 crore. Yes, they invest more, ₹68.7 lakh against ₹24 lakh, but it is spread over rising income and they barely feel it. This is what \"my SIP is running, what next?\" should lead to in every annual review. Remember, the 12% is an assumption for illustration, not a promise."
-  }
- ],
  "check": [
   {
    "id": "mf-q16",

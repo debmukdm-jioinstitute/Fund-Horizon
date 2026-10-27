@@ -23,13 +23,6 @@
   "The step-up runs on its own; no review needed.",
   "If you can't afford it this year, cancel the SIP."
  ],
- "talk_track": [
-  {
-   "n": 11,
-   "title": "Keep the step-up realistic as life changes",
-   "text": "The step-up needs a review. At every annual review, check income, comfort, goal progress, the cap, the mandate limit and the asset mix. If the goal is ahead of plan, the step-up can slow down. If the cap has been reached, decide whether to raise it, keep it, or start a new SIP."
-  }
- ],
  "check": [
   {
    "id": "stepup-q39",

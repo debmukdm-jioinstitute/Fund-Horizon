@@ -24,13 +24,6 @@
   "You must go through us to invest in PMS.",
   "There is no commission."
  ],
- "talk_track": [
-  {
-   "n": 5,
-   "title": "Three steps before selling any PMS",
-   "text": "Before anyone at Fund Horizon talks to a client about PMS, three things must be in place. First, the NISM Series XXI-A PMS Distributors certification. Second, registration with APMI and an APRN, the APMI Registration Number. Since 31st July 2025, distributors without an APRN cannot bring in new PMS business or receive commission. Third, an EUIN for each employee of a non-individual distributor. Two more rules shape every conversation: we earn trail commission only, never upfront; and every client can choose to onboard directly with the portfolio manager. So we must be clear about the value we add."
-  }
- ],
  "check": [
   {
    "id": "pms-q4",

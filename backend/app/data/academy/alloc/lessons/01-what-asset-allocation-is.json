@@ -23,18 +23,6 @@
   "The mix doesn't matter; the fund does.",
   "This is my view of where the market is going."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Welcome to Module 13",
-   "text": "Welcome to Module 13 of the Fund Horizon training series: asset allocation. How a client's money is split between equity, debt, gold and cash usually matters more than which fund they pick. In this module you'll learn what asset allocation is, why mixing assets helps, how to set the right mix for each client, how to keep it on track, and how to handle the behaviour that breaks a good mix."
-  },
-  {
-   "n": 2,
-   "title": "Asset allocation is the first decision",
-   "text": "Asset allocation is deciding what share of a client's money goes into each asset class. For example, an illustrative moderate mix might be half in equity, forty percent in debt and ten percent in gold. The mix is based on the client's goals, time horizon and ability to handle losses. It's the first investment decision, made before choosing any fund. And research since the nineteen-eighties has found that the mix explains most of how much a portfolio's value swings over time."
-  }
- ],
  "check": [
   {
    "id": "alloc-q1",

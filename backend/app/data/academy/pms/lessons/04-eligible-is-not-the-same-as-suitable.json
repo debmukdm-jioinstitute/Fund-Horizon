@@ -23,18 +23,6 @@
   "You have the ₹50 lakh, so PMS is right for you.",
   "PMS replaces your mutual funds."
  ],
- "talk_track": [
-  {
-   "n": 6,
-   "title": "Eligible is not the same as suitable",
-   "text": "This is the most important idea in the module: meeting the fifty lakh minimum makes a client eligible, not suitable. Look at the first client. They have about three crore invested: an emergency and debt cushion, a solid mutual fund core, some other holdings, and PMS as a seventeen percent slice on top. That's suitable. Now the second client: fifty-five lakh in total savings, and they want fifty lakh of it in PMS. That's ninety-one percent of everything they have, with no core portfolio and no emergency buffer. They are eligible, but this is a red flag. For them, the right advice is mutual funds first, PMS later."
-  },
-  {
-   "n": 7,
-   "title": "Five suitability checks",
-   "text": "Use these five checks with every PMS prospect. Surplus: the fifty lakh should be a slice of a larger portfolio, not most of their wealth. Core portfolio: they should already have mutual funds, debt and an emergency fund; PMS should never be someone's first equity investment. Horizon: three to five years or more without needing the money. Drawdowns: ask what they did in March 2020. If they stayed invested through a thirty percent fall, good. If they've never seen one, or sold in one, be careful. And tax: they must understand that every trade the manager makes is taxed in their hands. A useful question to ask: \"If this portfolio fell thirty percent in a year while the Nifty fell fifteen, how would you react?\""
-  }
- ],
  "check": [
   {
    "id": "pms-q6",

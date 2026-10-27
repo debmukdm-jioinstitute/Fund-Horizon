@@ -24,13 +24,6 @@
   "A low NAV means this fund is cheap.",
   "This NFO at ₹10 is a bargain."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "The shared basket",
-   "text": "Think of a mutual fund as a shared basket. Your money buys units in it. The NAV is today's price of one unit; it moves because the things in the basket move."
-  }
- ],
  "check": [
   {
    "id": "terms-q1",

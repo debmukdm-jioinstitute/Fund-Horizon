@@ -130,17 +130,6 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
         </section>
       </div>
 
-      {lesson.talk_track.length > 0 && (
-        <details className={`${card} p-4`}>
-          <summary className="cursor-pointer text-[15px] font-semibold">Talk track (video script)</summary>
-          <div className="mt-3 space-y-3">
-            {lesson.talk_track.map((t) => (
-              <div key={t.n}><h4 className="text-[15px] font-medium">{t.title}</h4><p className={`text-[15px] leading-relaxed ${muted}`}>{t.text}</p></div>
-            ))}
-          </div>
-        </details>
-      )}
-
       <QuickCheck key={lesson.id} lesson={lesson} />
 
       <div className="flex flex-wrap items-center justify-between gap-3">

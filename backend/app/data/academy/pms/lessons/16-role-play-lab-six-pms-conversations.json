@@ -23,18 +23,6 @@
   "Let's exit now.",
   "Don't worry, nothing is wrong."
  ],
- "talk_track": [
-  {
-   "n": 18,
-   "title": "Eligible is not the same as suitable.",
-   "text": "If you remember one thing from this module, remember this: eligible is not the same as suitable. Fifty lakh rupees opens the door to PMS. Our job is to decide, honestly, whether the client should walk through it."
-  },
-  {
-   "n": 20,
-   "title": "Practise, then prove it",
-   "text": "That brings us to the end of Module 2. Practise in pairs with the six PMS role-play scenarios from the training manual, then take the thirty-question quiz. The pass mark is eighty percent. Our next module covers Investor Psychology. Thank you."
-  }
- ],
  "check": [
   {
    "id": "pms-q6",

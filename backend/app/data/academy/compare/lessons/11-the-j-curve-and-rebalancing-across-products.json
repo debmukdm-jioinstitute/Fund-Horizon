@@ -22,13 +22,6 @@
   "Explain the J-curve only after the first bad statement.",
   "Withdraw AIF money to rebalance."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Flat in year two is expected",
-   "text": "Your AIF is in its second year, so returns are expected to look flat. We judge it over the full life of the fund, not one statement."
-  }
- ],
  "check": [
   {
    "id": "compare-n13",

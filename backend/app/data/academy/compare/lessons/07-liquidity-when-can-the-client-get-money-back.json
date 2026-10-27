@@ -23,13 +23,6 @@
   "Cat II AIFs can be exited any business day.",
   "PMS can never be exited."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Cost, lock-in, tax",
-   "text": "Here's what each option would cost you in rupees, how long your money is locked, and how it's taxed. Let's compare before you decide."
-  }
- ],
  "check": [
   {
    "id": "compare-q17",

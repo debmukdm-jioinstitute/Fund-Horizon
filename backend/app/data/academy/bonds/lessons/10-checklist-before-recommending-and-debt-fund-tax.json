@@ -25,13 +25,6 @@
   "Recommend a debt fund on last year's return alone.",
   "Quote tax rules from memory without checking current rules."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Three numbers I check",
-   "text": "Here are the three numbers I check for any debt fund: its yield, its duration and its credit quality. Let me show you each in rupees."
-  }
- ],
  "check": [
   {
    "id": "bonds-q14",

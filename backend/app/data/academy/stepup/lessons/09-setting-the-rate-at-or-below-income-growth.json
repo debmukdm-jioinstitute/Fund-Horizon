@@ -22,13 +22,6 @@
   "Let's do 20% so you catch up faster.",
   "The rate doesn't matter; the fund's return does."
  ],
- "talk_track": [
-  {
-   "n": 6,
-   "title": "The rule of thumb for the rate",
-   "text": "The rule of thumb: step up at or below the client's expected income growth. If income grows eight to ten percent a year, a five to ten percent step-up is usually comfortable. A step-up faster than income growth will squeeze the budget within a few years."
-  }
- ],
  "check": [
   {
    "id": "stepup-q30x",

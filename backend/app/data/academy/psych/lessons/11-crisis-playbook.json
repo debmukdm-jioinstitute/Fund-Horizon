@@ -22,13 +22,6 @@
   "Wait for clients to call.",
   "Promise markets will recover."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Built for exactly this",
-   "text": "In 2020, investors who stayed invested through the fall came out ahead of those who sold at the bottom. Your plan was built for exactly this."
-  }
- ],
  "check": [
   {
    "id": "psych-q13",

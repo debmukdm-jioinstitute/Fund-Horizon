@@ -22,13 +22,6 @@
   "You're comfortable with risk, aren't you?",
   "Just tick the form, I'll pick the fund."
  ],
- "talk_track": [
-  {
-   "n": 7,
-   "title": "Five discovery questions",
-   "text": "Here are five discovery questions every sales conversation should include. One: what is this money for, and when will you need it? Two: have you invested before, and what happened in the last market fall? Their answer tells you more about risk tolerance than any questionnaire. Three: if this investment fell 20% next year, what would you do? Four: who else in the family is involved in money decisions? Often the real decision-maker isn't in the room. Five: what do you already hold, including EPF, PPF, fixed deposits and property? Talk-track: \"Before we talk about any fund, let's understand what this money is for and when you'll need it.\""
-  }
- ],
  "check": [
   {
    "id": "mf-q9",

@@ -22,7 +22,6 @@
   "Present a projected amount as guaranteed.",
   "Use high return assumptions to make a SIP look affordable."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "goals-n10",

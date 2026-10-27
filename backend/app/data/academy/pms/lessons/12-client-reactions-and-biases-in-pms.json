@@ -22,13 +22,6 @@
   "Yes, tell the manager to sell it.",
   "Your friend's PMS is clearly better."
  ],
- "talk_track": [
-  {
-   "n": 16,
-   "title": "When the PMS client says…",
-   "text": "Here are three things PMS clients often say. \"This stock is down forty percent, tell the manager to sell it.\" That's loss aversion and the illusion of control. Respond: you're paying the manager for the whole portfolio, so let's judge the portfolio against its benchmark, not one stock. \"My friend's PMS made sixty percent last year, let's move.\" That's recency and herd behaviour. Respond: let's compare both on after-fee returns over five years, including their worst year. \"The market is up, but my PMS isn't.\" That's short-term framing. Respond: this style lags in some phases, so here's how it did across a full cycle. And when a dip is within what you discussed at onboarding, say so: exiting now would lock in both the loss and the tax."
-  }
- ],
  "check": [
   {
    "id": "pms-q22",

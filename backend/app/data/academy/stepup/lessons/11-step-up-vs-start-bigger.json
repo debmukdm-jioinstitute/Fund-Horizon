@@ -22,13 +22,6 @@
   "Stepping up always beats starting bigger.",
   "The final value is the only thing that matters."
  ],
- "talk_track": [
-  {
-   "n": 9,
-   "title": "Step up, or start bigger?",
-   "text": "Should a client step up, or simply start bigger? Compare fifteen thousand rupees flat for twenty years with ten thousand stepped up by ten percent a year. Fifteen thousand flat invests thirty-six lakh and reaches about one and a half crore: more money is working from the start, which suits a client with a stable, higher income today. Ten thousand with a step-up invests about sixty-nine lakh and reaches about two crore. It ends with more, but only because far more is invested later, so it suits a client whose income will grow."
-  }
- ],
  "check": [
   {
    "id": "stepup-q30",

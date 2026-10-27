@@ -22,7 +22,6 @@
   "Skip recording when nothing is done.",
   "A review must always end in a trade."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-q13",

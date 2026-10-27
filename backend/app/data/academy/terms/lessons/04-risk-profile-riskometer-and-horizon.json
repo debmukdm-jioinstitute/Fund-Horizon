@@ -24,13 +24,6 @@
   "Most equity funds are low risk because they are regulated.",
   "Horizon doesn't matter if the fund is good."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Return and risk",
-   "text": "Return is what you hope for; risk is what you might live through on the way. Let's check you can live through the bumpy part."
-  }
- ],
  "check": [
   {
    "id": "terms-q12",

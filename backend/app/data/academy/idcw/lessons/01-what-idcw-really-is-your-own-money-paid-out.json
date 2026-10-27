@@ -23,13 +23,6 @@
   "IDCW is extra income on top of your investment.",
   "A fund that pays IDCW is a better fund."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "It moves money",
-   "text": "When the fund pays IDCW, the NAV drops by the same amount. You haven't earned anything extra; part of your investment has come back to your bank, and it's taxed."
-  }
- ],
  "check": [
   {
    "id": "idcw-q1",

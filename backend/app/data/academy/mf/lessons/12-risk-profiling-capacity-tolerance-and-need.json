@@ -22,13 +22,6 @@
   "You can afford the risk, so you should take it.",
   "The questionnaire says Aggressive, so that is what you are."
  ],
- "talk_track": [
-  {
-   "n": 6,
-   "title": "Two questions decide the risk profile",
-   "text": "Stage two is Evaluate, and no fund is suggested until this is done. First check the foundation: emergency fund, term and health cover, and costly debt being cleared. Then two questions decide the risk profile. Risk capacity: how much loss can the client afford, given age, income, dependants and horizon? Risk tolerance: how much loss can they emotionally handle? Look at the matrix. Only when both are high do we build a growth portfolio. If either one is low, the lower one sets the limit. A wealthy client who panics in falls is still a moderate investor. Re-profile after big life events."
-  }
- ],
  "check": [
   {
    "id": "mf-q7",

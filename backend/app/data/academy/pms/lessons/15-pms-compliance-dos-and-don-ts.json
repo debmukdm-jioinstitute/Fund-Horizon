@@ -24,13 +24,6 @@
   "Source PMS business without an APRN.",
   "Quote only pre-fee returns."
  ],
- "talk_track": [
-  {
-   "n": 19,
-   "title": "Dos and don'ts",
-   "text": "Finally, compliance. Do: hold NISM XXI-A and a valid APRN; document suitability for every client; explain every fee in rupees; show returns net of fees, against the benchmark and peers; mention the direct onboarding option; record the reasons for every recommendation and exit; and share the escalation path for complaints. Don't: source PMS business without an APRN; treat the fifty lakh minimum as proof of suitability; quote headline or pre-fee returns; cherry-pick periods or strategies; take or imply upfront commission; recommend switches for commission; or promise returns or recovery timelines."
-  }
- ],
  "check": [
   {
    "id": "pms-q29",

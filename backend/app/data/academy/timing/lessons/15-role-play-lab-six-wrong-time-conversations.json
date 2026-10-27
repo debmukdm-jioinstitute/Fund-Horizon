@@ -24,7 +24,6 @@
   "Predict when the market will recover.",
   "Dismiss the client's concern as irrational."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "timing-q21",

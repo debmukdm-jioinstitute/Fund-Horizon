@@ -22,13 +22,6 @@
   "You can step up whenever it feels comfortable.",
   "The later years matter most for compounding."
  ],
- "talk_track": [
-  {
-   "n": 8,
-   "title": "\"I'll step up later\" is expensive",
-   "text": "“I'll step up later” is one of the most expensive sentences in investing. Take ten thousand rupees a month for twenty years, with a ten percent step-up, at an assumed twelve percent a year. If the step-up starts in year two, it grows to about two crore. If the client waits five flat years first, it reaches about one point four five crore. That delay costs roughly fifty-four lakh. So set the step-up together with the SIP, and time it to just after the client's annual raise."
-  }
- ],
  "check": [
   {
    "id": "stepup-q16",

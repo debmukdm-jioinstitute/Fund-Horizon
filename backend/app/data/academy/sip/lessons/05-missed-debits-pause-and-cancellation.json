@@ -23,13 +23,6 @@
   "One missed instalment will cancel the SIP.",
   "A cancellation takes about ten working days."
  ],
- "talk_track": [
-  {
-   "n": 5,
-   "title": "Pause, don't stop",
-   "text": "Pause, don't stop: many fund houses and platforms allow a SIP to be paused for a few months; terms vary, so check them. A six-month pause in a fifteen-year SIP cost only about two lakh of final value in our illustration, while stopping costs the habit itself."
-  }
- ],
  "check": [
   {
    "id": "sip-q2",

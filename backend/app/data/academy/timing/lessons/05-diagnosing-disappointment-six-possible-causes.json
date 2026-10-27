@@ -26,7 +26,6 @@
   "Agree “wrong time” before checking anything.",
   "A fund down 10% while its benchmark is up 5% is a market-wide fall."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "timing-q3",

@@ -22,7 +22,6 @@
   "Start by recommending a switch.",
   "Predict when the market will recover."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "timing-q7",

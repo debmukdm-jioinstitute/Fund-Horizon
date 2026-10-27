@@ -23,13 +23,6 @@
   "You're young, so 90% equity is fine.",
   "Nervous clients should stay in FDs."
  ],
- "talk_track": [
-  {
-   "n": 6,
-   "title": "Capacity vs tolerance: build for the lower one",
-   "text": "Capacity and tolerance often disagree, and when they do, build for the lower one. High capacity but low tolerance, like a young, well-paid client who sold in the 2020 fall: build for their tolerance, and educate them over time. High tolerance but low capacity, like a client keen on risk who has dependants and loans: build for their capacity. And neither able nor willing to take losses: that client needs the most conservative mix."
-  }
- ],
  "check": [
   {
    "id": "alloc-q5",

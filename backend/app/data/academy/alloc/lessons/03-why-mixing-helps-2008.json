@@ -22,13 +22,6 @@
   "A mixed portfolio cannot fall.",
   "Gold and equity always move in opposite directions."
  ],
- "talk_track": [
-  {
-   "n": 4,
-   "title": "2008: assets don't move together",
-   "text": "Why does mixing help? Because assets don't move together. In 2008, the Nifty 50 fell about fifty-two percent, while gold in rupees rose about twenty-seven percent. Now look at three illustrative portfolios of ten lakh rupees. All in equity, it fell to about four point eight lakh. A mix of sixty percent equity, thirty percent debt and ten percent gold fell to about seven point four lakh. And a forty, fifty, ten mix fell only to about eight and a half lakh."
-  }
- ],
  "check": [
   {
    "id": "alloc-q3",

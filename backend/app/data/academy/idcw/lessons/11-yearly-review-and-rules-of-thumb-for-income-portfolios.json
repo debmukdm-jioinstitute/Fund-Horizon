@@ -23,7 +23,6 @@
   "Review income portfolios only when payouts stop.",
   "Equity should always be sold first in a fall."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "idcw-q17",

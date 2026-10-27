@@ -25,13 +25,6 @@
   "Ratings never change quickly.",
   "Liquidity risk only affects equity funds."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Quieter, but can be sudden",
-   "text": "In equity, the risk is volatility. In debt, the risk is usually quieter but can be sudden. Our job is to know which risk you're taking and to be paid fairly for it."
-  }
- ],
  "check": [
   {
    "id": "bonds-q8",

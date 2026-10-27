@@ -23,13 +23,6 @@
   "Lead with the latest market headline.",
   "List red and green funds first."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "62% of the way there",
-   "text": "Forget today's market. You're 62% of the way to your house goal, right on plan."
-  }
- ],
  "check": [
   {
    "id": "psych-q12",

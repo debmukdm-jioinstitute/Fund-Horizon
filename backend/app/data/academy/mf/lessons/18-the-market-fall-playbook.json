@@ -24,28 +24,6 @@
   "Markets will recover soon, I promise.",
   "Sell now and come back later."
  ],
- "talk_track": [
-  {
-   "n": 13,
-   "title": "March 2020: the test every investor faced",
-   "text": "Every distributor remembers March 2020. The Nifty 50 fell close to 40% in about a month, closing at 7,610 on 23rd March. Phones rang non-stop, and many clients wanted to stop their SIPs or redeem everything. Yet less than a year later, by February 2021, the index had nearly doubled from that low. Clients who stopped or redeemed at the bottom locked in their losses and missed the rebound. Clients whose distributors called them early and kept them invested came out ahead. We can't promise any future fall will recover the same way, but this is exactly the moment where our value shows."
-  },
-  {
-   "n": 14,
-   "title": "The investor emotion cycle",
-   "text": "This is the investor emotion cycle, and every client goes around it. As markets rise, optimism turns to excitement, and at the very top, euphoria. That is when most investors pile in, exactly when risk is highest. Then the market turns: anxiety, fear, panic, and at the bottom, despondency. That is when most investors sell, often just before the recovery begins with hope and optimism again. Our job is to move clients against their own emotions: calm at the peak, steady at the bottom. When a client tells you how they feel, you can usually place them on this curve."
-  },
-  {
-   "n": 15,
-   "title": "A falling NAV buys more units",
-   "text": "Here's how to explain the SIP advantage in a fall. Take a ₹10,000 monthly SIP over twelve hypothetical months. The NAV falls from 100 to 70, then recovers to 108. Look at the bars: as the NAV falls, the same ₹10,000 buys more units, peaking at 143 units when the NAV is 70. Because of this, the average cost per unit is ₹85.6, lower than the average NAV of ₹87.3. And the result: ₹1.2 lakh invested is worth about ₹1.51 lakh, even though the NAV ended only 8% above where it started. The months that felt worst did the most work. That's why stopping a SIP in a fall is the costliest mistake."
-  },
-  {
-   "n": 16,
-   "title": "The market-fall playbook",
-   "text": "Stage five, Navigate behaviour, is where a distributor earns trust for life. When markets fall sharply, follow six steps. One, call first, before clients call you in panic, starting with recent and first-time investors. Two, reconnect them to their goal and horizon, not today's loss. Three, explain that their SIP is now buying more units at lower prices. Four, use history to show falls are normal, but never promise when or whether markets will recover. Five, act only if the plan says so: rebalance by rule, never make emotional switches. Six, record the conversation and follow up in writing."
-  }
- ],
  "check": [
   {
    "id": "mf-q21",

@@ -24,7 +24,6 @@
   "Call a debt fund safe or like an FD.",
   "Predict rate moves as a reason to buy."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "bonds-n29",

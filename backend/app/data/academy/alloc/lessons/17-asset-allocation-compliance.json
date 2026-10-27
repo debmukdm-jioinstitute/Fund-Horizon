@@ -23,13 +23,6 @@
   "This mix can't lose money.",
   "Hybrid funds are safe."
  ],
- "talk_track": [
-  {
-   "n": 15,
-   "title": "Compliance: what we say, and what we never say",
-   "text": "Do complete a risk profile before suggesting any mix. Do label every mix and projection as illustrative, with its assumptions. Do match products to the client's risk profile and the scheme's risk-o-meter. Do explain that rebalancing may trigger exit loads and tax, and refer tax questions to a CA. And do record the agreed target mix and rebalancing rules in writing. Don't set a mix from a market view or to push a product. Don't promise returns or say a mix can't lose. Don't call debt, gold or hybrid funds safe or guaranteed."
-  }
- ],
  "check": [
   {
    "id": "alloc-q15",

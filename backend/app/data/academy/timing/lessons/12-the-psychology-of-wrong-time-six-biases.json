@@ -25,13 +25,6 @@
   "Dismiss the client's concern as irrational.",
   "Agree that the fall was obvious in advance."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "No perfect day",
-   "text": "Nobody can pick the perfect day. What we can control is staying invested for your goal, adding when prices are low, and not making a permanent decision in a temporary fall."
-  }
- ],
  "check": [
   {
    "id": "timing-q11",

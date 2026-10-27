@@ -23,13 +23,6 @@
   "A fund name is a goal.",
   "A wish is already a goal."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Start with the goal",
-   "text": "Before we talk about funds, let's talk about what this money is for and when you'll need it. That decides everything else."
-  }
- ],
  "check": [
   {
    "id": "goals-q1",

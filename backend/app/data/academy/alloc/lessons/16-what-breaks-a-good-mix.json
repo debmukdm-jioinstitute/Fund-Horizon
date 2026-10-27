@@ -23,13 +23,6 @@
   "Gold is the place to be now.",
   "Debt is a waste of money in a bull market."
  ],
- "talk_track": [
-  {
-   "n": 13,
-   "title": "What breaks a good mix",
-   "text": "A well-built mix fails only when the client abandons it. Six patterns to watch for. Chasing winners: “gold did twenty percent, move it all”. Each asset has its year, and the mix means we don't have to guess which is next. Debt as a drag: debt is what lets them sleep in a bad year, and what we use to buy equity after a fall. All in FDs: FDs carry inflation risk. Concentration in one company's shares or one property: count it in the mix. Mental accounting: EPF and PPF are debt. And resisting rebalancing: we're returning to the agreed mix, not predicting a fall."
-  }
- ],
  "check": [
   {
    "id": "alloc-q46",

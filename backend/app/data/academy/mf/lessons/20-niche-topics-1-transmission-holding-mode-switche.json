@@ -26,13 +26,6 @@
   "Nominees are a formality.",
   "A switch within the same AMC has no tax."
  ],
- "talk_track": [
-  {
-   "n": 18,
-   "title": "What clients miss, and complain about later",
-   "text": "These are the niche topics that rarely come up at onboarding but cause the most service problems later. Transmission after death: a registered nominee makes the claim far faster than going through legal heirs. Minor folios need KYC updated when the child turns 18. A switch is legally a sale, so it can trigger tax and exit load. Each SIP instalment has its own exit load period and its own ELSS lock-in. Many fund houses let you pause a SIP rather than cancel it. With SWP, only the gain portion of each withdrawal is taxed. A ten-rupee NFO is not cheap, just untested. And the Consolidated Account Statement shows every folio across fund houses in one place. Cover these in your reviews."
-  }
- ],
  "check": [
   {
    "id": "mf-q26",

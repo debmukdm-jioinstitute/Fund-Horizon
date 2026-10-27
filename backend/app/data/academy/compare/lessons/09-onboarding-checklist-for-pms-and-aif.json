@@ -23,7 +23,6 @@
   "Treat the minimum ticket as proof of suitability.",
   "Skip the drawdown schedule."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "compare-n09",

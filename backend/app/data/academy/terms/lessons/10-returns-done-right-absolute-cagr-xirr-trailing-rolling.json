@@ -24,13 +24,6 @@
   "A 100% return over 5 years means 20% a year.",
   "A SIP's absolute return is the right yearly figure."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Turn the big number into XIRR",
-   "text": "Your statement shows a big absolute number. Let's turn it into XIRR so you can compare it fairly with a fixed deposit or the index."
-  }
- ],
  "check": [
   {
    "id": "terms-q3",

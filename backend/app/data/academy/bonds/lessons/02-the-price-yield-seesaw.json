@@ -23,7 +23,6 @@
   "When rates rise, existing bond prices rise too.",
   "A bond's price never moves before maturity."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "bonds-q1",

@@ -23,13 +23,6 @@
   "Let's redeem it all today and park it in a savings account.",
   "Withdrawals from your SIP are tax-free."
  ],
- "talk_track": [
-  {
-   "n": 10,
-   "title": "Goal reached: staged redemption or SWP",
-   "text": "When the goal is reached and the client needs regular income, such as in retirement, we use a systematic withdrawal plan, which redeems a fixed amount every month. For a one-time goal, redeem from the safe portion as payments fall due, and keep the rest invested until its turn."
-  }
- ],
  "check": [
   {
    "id": "sip-q21x",

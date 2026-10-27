@@ -22,13 +22,6 @@
   "This mix will give you ₹45 lakh.",
   "The aggressive mix is the best choice for everyone."
  ],
- "talk_track": [
-  {
-   "n": 10,
-   "title": "What the mix means in rupees",
-   "text": "What does the mix mean in rupees? Take ten lakh rupees for fifteen years, with assumed returns of twelve percent for equity, seven for debt, eight for gold and six and a half for a fixed deposit, rebalanced every year, before tax. All in fixed deposits, it grows to about twenty-six lakh. The conservative mix reaches about thirty-four and a half lakh. The moderate mix, about forty lakh. And the aggressive mix, about forty-five lakh. More equity means a higher expected result, and bigger falls on the way."
-  }
- ],
  "check": [
   {
    "id": "alloc-q14",

@@ -25,7 +25,6 @@
   "Rebalance without a target.",
   "Ignore holdings outside the funds we manage."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-n07",

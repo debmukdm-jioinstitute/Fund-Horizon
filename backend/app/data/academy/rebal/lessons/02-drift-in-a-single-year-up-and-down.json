@@ -22,7 +22,6 @@
   "Rebalancing always sells equity.",
   "A fall means selling more equity."
  ],
- "talk_track": [],
  "check": [
   {
    "id": "rebal-q4",

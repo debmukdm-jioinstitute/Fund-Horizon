@@ -23,13 +23,6 @@
   "You can afford it; let's double the SIP.",
   "The emergency fund can wait until later."
  ],
- "talk_track": [
-  {
-   "n": 6,
-   "title": "Four checks before a step-up",
-   "text": "Run four checks before suggesting a step-up. Income growth: regular raises or a growing business is a green light; a fixed pension or irregular income calls for caution. Basics: an emergency fund of six months and no costly debt. Budget room: ideally a third to half of each raise is free to save. And time left: a goal seven or more years away benefits most; under three years, a step-up adds little."
-  }
- ],
  "check": [
   {
    "id": "stepup-q19",

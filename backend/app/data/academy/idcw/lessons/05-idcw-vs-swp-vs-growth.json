@@ -24,13 +24,6 @@
   "IDCW is more predictable than an SWP.",
   "Growth and IDCW options hold different portfolios."
  ],
- "talk_track": [
-  {
-   "n": 1,
-   "title": "Choose the amount and date",
-   "text": "If you need income, let's set up an SWP: you choose the amount and the date, and you're taxed only on the gain part. IDCW gives the fund that choice, and the whole payout is taxed."
-  }
- ],
  "check": [
   {
    "id": "idcw-q7",

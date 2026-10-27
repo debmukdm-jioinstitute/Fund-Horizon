@@ -52,3 +52,15 @@ export async function fetchOutbox(offset: number, limit = 50): Promise<{ rows: O
   const rows = (await res.json()) as OutboxRow[];
   return { rows, total: Number(res.headers.get("X-Total-Count") ?? rows.length) };
 }
+
+export interface EmailSuggestion { client_name: string | null; first_name: string | null; doc_type: string | null; period: string | null; email: string | null; subject: string; message: string }
+
+/** Local OCR on the backend reads the file and suggests client, subject and message. Best effort: null on any failure. */
+export async function extractEmailFields(file: File): Promise<EmailSuggestion | null> {
+  const fd = new FormData();
+  fd.set("file", file);
+  try {
+    const res = await fetch(resolveApiUrl(`${API_URL}/api/crm/email/extract`), { method: "POST", body: fd, credentials: "include" });
+    return res.ok ? ((await res.json()) as EmailSuggestion) : null;
+  } catch { return null; }
+}

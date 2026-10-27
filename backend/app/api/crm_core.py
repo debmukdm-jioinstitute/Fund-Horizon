@@ -1292,6 +1292,22 @@ def _parse_send_at(value: str | None) -> str | None:
     return at.astimezone(UTC).isoformat()
 
 
+@router.post("/email/extract")
+async def email_extract(me: Me, file: Annotated[UploadFile, File()]):
+    """Suggest client / document type / subject / message from an attachment (local OCR, nothing is stored or sent)."""
+    from starlette.concurrency import run_in_threadpool
+
+    from app.email_extract import extract_text, suggest
+
+    name = re.sub(r"[^\w.\- ]", "_", (file.filename or "file").rsplit("/", 1)[-1])[:120]
+    if name.rsplit(".", 1)[-1].lower() not in EMAIL_EXTS:
+        raise HTTPException(422, "Unsupported file type.")
+    data = await file.read(EMAIL_MAX_BYTES + 1)
+    if len(data) > EMAIL_MAX_BYTES:
+        raise HTTPException(422, "File is over 15 MB.")
+    return suggest(name, await run_in_threadpool(extract_text, name, data))
+
+
 @router.post("/email")
 async def email_customers(
     me: Me,

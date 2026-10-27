@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { fetchHouseholdDetail } from "../../lib/crmApi";
-import { CUSTOM, EMAIL_ACCEPT, EMAIL_MAX_BYTES, EMAIL_TEMPLATES, isEmail, sendClientEmail, type EmailOutcome } from "../../lib/crmEmail";
+import { CUSTOM, EMAIL_ACCEPT, EMAIL_MAX_BYTES, EMAIL_TEMPLATES, extractEmailFields, isEmail, sendClientEmail, type EmailOutcome } from "../../lib/crmEmail";
 import { searchCrm, type SearchResult } from "../../lib/crmListApi";
 import { fetchContact } from "../../lib/crmPhase3Api";
 import { btnCls, errCls, ghostBtnCls, inputCls, mutedCls } from "./ui";
@@ -21,6 +21,7 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
   const [statement, setStatement] = useState(false);
   const [later, setLater] = useState(false);
   const [sendAt, setSendAt] = useState("");
+  const [reading, setReading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<EmailOutcome | null>(null);
@@ -60,6 +61,21 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
     if (next.length > 5) return setError("At most 5 attachments.");
     if (next.reduce((n, f) => n + f.size, 0) > EMAIL_MAX_BYTES) return setError("Attachments are over 15 MB in total.");
     setError(null); setFiles(next);
+    if (list?.[0]) void autofill(list[0]);
+  };
+
+  // Fill only what the user has not typed; the client is added only when search finds exactly one match.
+  const autofill = async (f: File) => {
+    setReading(true);
+    const s = await extractEmailFields(f);
+    setReading(false);
+    if (!s) return;
+    setSubject((cur) => cur || s.subject);
+    setMessage((cur) => cur || s.message);
+    if (!fixed && s.client_name && !to.length) {
+      const m = (await searchCrm(s.client_name).catch(() => [])).filter((x) => x.type === "contact");
+      if (m.length === 1) void add(m[0]);
+    }
   };
 
   const sendable = to.filter(usable);
@@ -128,6 +144,7 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
             <div>
               <label className={label} htmlFor="em-files">Attachments (statements, PDFs, sheets · up to 5, 15 MB)</label>
               <input id="em-files" type="file" multiple accept={EMAIL_ACCEPT} onChange={(e) => { pickFiles(e.target.files); e.target.value = ""; }} className="text-xs" />
+              {reading && <p role="status" className={`mt-1 text-[11px] ${mutedCls}`}>Reading document…</p>}
               {files.map((f) => <div key={f.name + f.size} className="mt-1 flex items-center gap-2 text-xs">{f.name} <span className={mutedCls}>{(f.size / 1024).toFixed(0)} KB</span><button type="button" aria-label={`Remove ${f.name}`} onClick={() => setFiles(files.filter((x) => x !== f))}>×</button></div>)}
             </div>
             {filing && <p className="text-xs">Attached: filled form “{filing.title}” (PDF)</p>}

@@ -8,7 +8,7 @@ interface Bucket { name: string; invested: number; current: number; xirr: number
 interface Pms { invested: number; current: number; xirr: number | null }
 interface Fact { source: string; items: { label: string; value: string }[] }
 interface Valuation { invested: number; value: number; gain: number; xirr: number | null; date: string; rows: number }
-interface FileResult { name: string; kind: "monthly" | "valuation" | "statement" | "factsheet" | "unrecognised" | "error"; method: "text" | "ocr" | ""; buckets: number; valuation_rows: number; factsheet_items: number }
+interface FileResult { name: string; kind: "monthly" | "valuation" | "statement" | "pms" | "factsheet" | "unrecognised" | "error"; method: "text" | "ocr" | ""; buckets: number; valuation_rows: number; factsheet_items: number }
 interface StmtFund { name: string; invested: number; current: number; gain: number; ann_ret: number | null; check: string }
 interface StmtCategory { name: string; invested: number; current: number; gain: number; ann_ret: number | null; has_total: boolean; funds: StmtFund[] }
 interface Statement {
@@ -16,6 +16,7 @@ interface Statement {
   client: { name: string; email: string; mobile: string; pan: string };
   grand_total: { invested: number; current: number; gain: number; abs_ret: number | null; xirr: number | null };
   categories: StmtCategory[];
+  pms?: { strategy: string; account: string; inception: string; contribution: number; withdrawal: number; profit: number; value: number; returns: { name: string; values: Record<string, number> }[] };
 }
 interface StagedFile { id: number; file: File }
 interface HistoryRow { id: string; report_month: string; value_as_on: string; emailed_at: string | null; created_at: string }
@@ -164,6 +165,7 @@ export default function PaperworkReport() {
     const kind = r.kind === "monthly" ? "monthly report"
       : r.kind === "valuation" ? "valuation (cross-check)"
       : r.kind === "statement" ? "portfolio statement"
+      : r.kind === "pms" ? "PMS factsheet"
       : r.kind === "factsheet" ? "factsheet"
       : r.kind === "error" ? "could not be read" : "not recognised";
     const method = r.method === "ocr" ? "read by OCR" : r.method === "text" ? "read from text" : "";
@@ -183,7 +185,8 @@ export default function PaperworkReport() {
     // Keep the previous valuation when the new batch has none — a monthly-only
     // file must not wipe the cross-check, and vice versa.
     if (d.valuation) setValuation(d.valuation);
-    if (d.buckets.length) {
+    const hasPms = d.pms.invested !== 0 || d.pms.current !== 0;
+    if (d.buckets.length || hasPms) {
       const month = `${MONTHS[monthPick.month]} ${monthPick.year}`;
       const isPrefill = (bs: Bucket[]) => bs.length === 1 && bs[0].name === PREFILL;
       if (!report) {
@@ -197,7 +200,8 @@ export default function PaperworkReport() {
         if (isCustom && !customName.trim() && d.client.name) setCustomName(d.client.name);
         setReport({
           client, month, inception: d.inception, total_xirr: d.total_xirr,
-          buckets: d.buckets, pms: d.pms, factsheets: d.factsheets,
+          buckets: d.buckets.length ? d.buckets : [{ name: "New bucket", invested: 0, current: 0, xirr: null }],
+          pms: d.pms, factsheets: d.factsheets,
         });
         setMsg({
           ok: true,
@@ -216,13 +220,15 @@ export default function PaperworkReport() {
         setReport((prev) => {
           if (!prev) return prev;
           let buckets: Bucket[];
-          if (prev.buckets.length === 0 || isPrefill(prev.buckets)) buckets = d.buckets;
+          if (!d.buckets.length) buckets = prev.buckets;
+          else if (prev.buckets.length === 0 || isPrefill(prev.buckets)) buckets = d.buckets;
           else if (isPrefill(d.buckets)) buckets = prev.buckets;
           else {
             const names = new Set(prev.buckets.map((b) => b.name));
             buckets = [...prev.buckets, ...d.buckets.filter((b) => !names.has(b.name))];
           }
-          const pms = (prev.pms.invested === 0 && prev.pms.current === 0) ? d.pms : prev.pms;
+          // All staged files are parsed together, so a PMS factsheet in this batch already holds the full PMS total.
+          const pms = (d.statements.some((x) => x.pms) || (prev.pms.invested === 0 && prev.pms.current === 0)) ? d.pms : prev.pms;
           const sources = new Set(prev.factsheets.map((f) => f.source));
           const factsheets = [...prev.factsheets, ...d.factsheets.filter((f) => !sources.has(f.source))];
           const client = {
@@ -429,6 +435,21 @@ export default function PaperworkReport() {
               <b>{st.categories.length ? "Statement total" : "Grand total"}:</b> invested ₹{inr(st.grand_total.invested)} · current ₹{inr(st.grand_total.current)} · gain ₹{inr(st.grand_total.gain)}
               {st.grand_total.abs_ret != null ? ` (${st.grand_total.abs_ret.toFixed(2)}%)` : ""}{st.grand_total.xirr != null ? ` · XIRR ${st.grand_total.xirr}%` : ""}
             </div>
+            {st.pms && (
+              <div className="mt-2 overflow-x-auto">
+                <div className="tabular-nums">
+                  {st.pms.strategy}{st.pms.account ? ` · account ${st.pms.account}` : ""}{st.pms.inception ? ` · since ${st.pms.inception}` : ""} ·
+                  <b> contribution ₹{inr(st.pms.contribution)}</b> · withdrawal ₹{inr(st.pms.withdrawal)} · profit ₹{inr(st.pms.profit)} ·
+                  <b> portfolio value ₹{inr(st.pms.value)}</b> (as on {st.as_on})
+                </div>
+                {st.pms.returns.length > 0 && (
+                  <table className="mt-1 min-w-[420px] border-collapse text-[12.5px] tabular-nums">
+                    <thead><tr className="bg-[#E8EEFB] dark:bg-[#1B2740]"><th className="border border-[#C9D2E3] dark:border-[#2B3644] px-1.5 py-1 text-left font-semibold">IRR %</th>{Object.keys(st.pms.returns[0].values).map((k) => <th key={k} className="border border-[#C9D2E3] dark:border-[#2B3644] px-1.5 py-1 text-right font-semibold">{k}</th>)}</tr></thead>
+                    <tbody>{st.pms.returns.map((r) => <tr key={r.name}><td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5">{r.name}</td>{Object.entries(r.values).map(([k, v]) => <td key={k} className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-right">{v}</td>)}</tr>)}</tbody>
+                  </table>
+                )}
+              </div>
+            )}
             {st.categories.length > 0 && (
               <div className="mt-2 overflow-x-auto">
                 <table className="w-full min-w-[640px] border-collapse text-[12.5px] tabular-nums">

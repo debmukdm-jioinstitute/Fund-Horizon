@@ -15,7 +15,7 @@ import io
 import re
 from typing import Any
 
-from app.report.client_report import _ocr_boxes
+from app.report.client_report import _ocr_boxes, ind
 from app.report.monthly_report import _despace
 
 W = 842.0  # FundsIndia print page width; the x zones below are in these units
@@ -196,6 +196,70 @@ def parse_fundsindia(pages: list[list[tuple[float, float, str]]]) -> dict[str, A
     }
 
 
+# ---------- PMS factsheets (text PDF; any manager that prints a Portfolio Summary) ----------
+
+_NUMBER = r"₹?\s*(-?[\d,]+(?:\.\d+)?)"
+_PMS_IN = r"(?:Total\s+)?(?:Contribution|Capital\s+Contributed|Amount\s+Invested|Total\s+Investment|Corpus)"
+_PMS_VAL = r"(?:Net\s+)?(?:Portfolio|Closing|Current|Market)\s+Value"
+_PCT_ROW = re.compile(r"(?m)^[ \t]*([A-Za-z][^%\n]*?)[ \t]+((?:-?\d+(?:\.\d+)?%[ \t]*){3,})")
+
+
+def parse_pms(text: str) -> dict[str, Any] | None:
+    """Portfolio Summary (contribution, withdrawal, profit, value) + Performance(IRR) rows. None if not a PMS factsheet."""
+    t = re.sub(r"[ \t]+", " ", text)
+    inv = re.search(rf"(?im)^\s*{_PMS_IN}\s*{_NUMBER}", t)
+    val = re.search(rf"(?im)^\s*{_PMS_VAL}\s*(?:\(([\d/.-]+)\))?\s*{_NUMBER}", t)
+    if not (inv and val):
+        return None
+    wd = re.search(rf"(?im)^\s*Withdrawals?\s*{_NUMBER}", t)
+    pl = re.search(rf"(?im)^\s*Profit\s*/?\s*Loss\s*{_NUMBER}", t)
+    contribution, value = _f(inv[1]), _f(val[2])
+    withdrawal = _f(wd[1]) if wd else 0.0
+    profit = _f(pl[1]) if pl else value + withdrawal - contribution
+    warnings = []
+    if pl and abs(value + withdrawal - contribution - profit) > 2:
+        warnings.append("Contribution, withdrawal, profit and portfolio value do not reconcile; check the figures.")
+    perf = re.search(r"(?i)Performance", t)
+    tail = t[perf.end():] if perf else t
+    rows = list(_PCT_ROW.finditer(tail))
+    cols: list[str] = []
+    if rows:
+        cols = [re.sub(r"\s+", " ", c).title() if c.lower().startswith("since") else c.lower()
+                for c in re.findall(r"(?i)\b\d+\s?[my]\b|since(?:\s+\d{2}/\d{2}/\d{2,4})?|ytd", tail[:rows[0].start()])]
+    returns = []
+    for r in rows:
+        vals = [float(v) for v in re.findall(r"-?\d+(?:\.\d+)?", r[2])]
+        returns.append({"name": r[1].strip(), "values": dict(zip(cols if len(cols) == len(vals) else [f"p{i + 1}" for i in range(len(vals))], vals))})
+    acct = re.search(r"(?m)^[ \t]*Account(?: Name)?:?[ \t]*(.+?)(?:[ \t]{2,}|$)", text)
+    parts = [p.strip() for p in acct[1].split(" - ")] if acct else []
+    number = parts[0] if parts and parts[0].isdigit() else ""
+    name = (parts[1] if number and len(parts) > 1 else parts[0] if parts else "").title()
+    strategy = re.search(r"(?m)^[ \t]*Strategy:?[ \t]*(.+?)(?:[ \t]{2,}|$)", text)
+    inception = re.search(r"Inception\s*Date:?\s*(\d{1,2}/\d{1,2}/\d{2,4})", t)
+    on = re.search(r"As\s+of\s*(\d{1,2}/\d{1,2}/\d{2,4})", t)
+    first = next((ln.strip() for ln in text.splitlines() if ln.strip()), "PMS")
+    since = returns[0]["values"] if returns else {}
+    return {
+        "provider": first[:60], "kind": "pms",
+        "client": {"name": name, "pan": "", "mobile": "", "email": ""},
+        "as_on": _dmy(on[1]) if on else (_dmy(val[1]) if val[1] else ""),
+        "grand_total": _total(contribution, value, xirr=list(since.values())[-1] if since else None) | {"gain": profit},
+        "categories": [], "warnings": warnings,
+        "pms": {"strategy": strategy[1].strip() if strategy else "", "account": number, "inception": _dmy(inception[1]) if inception else "",
+                "contribution": contribution, "withdrawal": withdrawal, "profit": profit, "value": value, "returns": returns},
+    }
+
+
+def pms_factsheet(st: dict[str, Any]) -> dict[str, Any]:
+    """Key PMS metrics as report 'Factsheet highlights' rows (label/value pairs)."""
+    p = st["pms"]
+    items = [("Strategy", p["strategy"]), ("Inception Date", p["inception"]),
+             ("Contribution", f"₹ {ind(p['contribution'], 0)}"), ("Withdrawal", f"₹ {ind(p['withdrawal'], 0)}"),
+             ("Profit / Loss", f"₹ {ind(p['profit'], 0)}"), (f"Portfolio Value (as on {st['as_on']})", f"₹ {ind(p['value'], 0)}")]
+    items += [(f"{r['name']} returns (IRR)", " | ".join(f"{k} {v}%" for k, v in r["values"].items())) for r in p["returns"]]
+    return {"source": f"{st['provider']} - {p['strategy'] or 'PMS'}"[:120], "items": [{"label": k[:80], "value": v[:120]} for k, v in items if v]}
+
+
 def fundsindia_pages(name: str, data: bytes) -> list[list[tuple[float, float, str]]]:
     """OCR each page (PDF or screenshot) at 3x and scale x to the print width."""
     if name.lower().endswith(".pdf"):
@@ -220,4 +284,4 @@ def parse_provider_statement(name: str, data: bytes, text: str) -> dict[str, Any
         return parse_proaffluence(text)
     if re.search(r"funds[il1]ndia", low):
         return parse_fundsindia(fundsindia_pages(name, data))
-    return None
+    return parse_pms(text)

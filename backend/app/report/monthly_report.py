@@ -166,7 +166,7 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
     may arrive in any order — monthly + valuation in either order gives the same
     buckets + cross-check.
     """
-    from app.report.statements import parse_provider_statement
+    from app.report.statements import parse_provider_statement, pms_factsheet
 
     out: dict[str, Any] = {
         "client": {"name": "", "date": "", "arn": "", "phone": ""},
@@ -187,7 +187,8 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
             out["statements"].append({**stmt, "file": fname})
             out["contact"] = {k: out["contact"][k] or v for k, v in stmt["client"].items()}
             out["warnings"] += [f"{fname}: {w}" for w in stmt["warnings"]]
-            out["file_results"].append({"name": fname, "kind": "statement", "method": method, "buckets": max(len(stmt["categories"]), 1),
+            out["file_results"].append({"name": fname, "kind": "pms" if "pms" in stmt else "statement", "method": method,
+                                        "buckets": 0 if "pms" in stmt else max(len(stmt["categories"]), 1),
                                         "valuation_rows": 0, "factsheet_items": 0})
             continue
         monthly = parse_monthly_buckets(text)
@@ -225,22 +226,32 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
         else:
             out["warnings"].append(f"{fname}: no monthly bucket rows, fund statement rows, or factsheet figures recognised.")
             out["file_results"].append({"name": fname, "kind": "unrecognised", "method": method, "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
-    if not out["buckets"] and out["statements"]:
+    mf = [st for st in out["statements"] if "pms" not in st]
+    pms = [st for st in out["statements"] if "pms" in st]
+    if pms:  # PMS factsheets are the source of truth for the PMS row; their IRR is not summable
+        out["pms"] = {"invested": sum(st["grand_total"]["invested"] for st in pms),
+                      "current": sum(st["grand_total"]["current"] for st in pms),
+                      "xirr": pms[0]["grand_total"]["xirr"] if len(pms) == 1 else None}
+        out["factsheets"] += [pms_factsheet(st) for st in pms]
+        if len(pms) > 1:
+            out["warnings"].append("Several PMS factsheets were added up in the PMS row; enter the combined PMS IRR by hand.")
+    if out["statements"]:
+        owners = {frozenset(st["client"]["name"].lower().split()) for st in out["statements"] if st["client"]["name"]}
+        if len(owners) > 1 and not any(x <= y for x in owners for y in owners if x is not y):
+            out["warnings"].append("These statements name different clients (" + ", ".join(st["client"]["name"] for st in out["statements"]) +
+                                   "). They are combined into one report; parse each client separately if that is not intended.")
+        out["client"] = {**out["client"], "name": out["client"]["name"] or out["contact"]["name"],
+                         "date": out["client"]["date"] or out["statements"][0]["as_on"]}
+    if not out["buckets"]:
         # Provider statements: one bucket per FundsIndia portfolio, one per Proaffluence grand total.
-        for st in out["statements"]:
+        for st in mf:
             for c in st["categories"] or [{"name": f"{st['provider']} mutual funds", **st["grand_total"], "ann_ret": st["grand_total"]["xirr"]}]:
                 n, names = c["name"], {x["name"] for x in out["buckets"]}
                 if n in names:  # same provider twice (e.g. two accounts): keep both buckets, never merge by name
                     n = f"{n} ({st['client']['name'] or st['file']})"
                 out["buckets"].append({"name": n, "invested": c["invested"], "current": c["current"], "xirr": c["ann_ret"]})
-        owners = {frozenset(st["client"]["name"].lower().split()) for st in out["statements"] if st["client"]["name"]}
-        if len(owners) > 1 and not any(x <= y for x in owners for y in owners if x is not y):
-            out["warnings"].append("These statements name different clients (" + ", ".join(st["client"]["name"] for st in out["statements"]) +
-                                   "). They are combined into one report; parse each client separately if that is not intended.")
-        if len(out["statements"]) == 1:
-            out["total_xirr"] = out["statements"][0]["grand_total"]["xirr"]
-        out["client"] = {**out["client"], "name": out["client"]["name"] or out["contact"]["name"],
-                         "date": out["client"]["date"] or out["statements"][0]["as_on"]}
+        if len(out["statements"]) == 1 and mf:
+            out["total_xirr"] = mf[0]["grand_total"]["xirr"]
     if not out["buckets"] and out["valuation"] is not None:
         # Valuation-only upload: prefill ONE honestly-labelled bucket carrying
         # the valuation total, so the draft is not empty. Never split it by

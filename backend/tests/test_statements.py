@@ -58,3 +58,30 @@ def test_multiple_statements_combine_and_warn_on_different_clients(monkeypatch):
     out = parse_monthly_files([("a.pdf", b""), ("b.pdf", b"")])
     assert [b["name"] for b in out["buckets"]] == ["Proaffluence mutual funds", "Proaffluence mutual funds (Bob Other)"]
     assert out["total_xirr"] is None and any("different clients" in w for w in out["warnings"])
+
+
+PMS = """Acme Asset Private Limited
+As of 11/10/2026
+Strategy:  ACME CORE FUND   Portfolio Holdings
+Account:  100537 - JANE Q SAMPLE - SAC573   Sr.  Security
+Inception Date:  09/11/2021
+Portfolio Summary
+Since 09/11/2021   Amount(INR)
+Contribution   11,033,696
+Withdrawal   2,353
+Profit/Loss   11,240,392
+Portfolio Value(11/10/2026)   22,271,735
+Performance(IRR)
+   1m   3m   1y   Since
+Portfolio   -2.38%   7.25%   15.74%   27.14%
+BSE 500 TRI   -4.41%   -6.10%   -7.11%   7.77%
+"""
+
+
+def test_pms_factsheet_fills_pms_row_and_highlights(monkeypatch):
+    monkeypatch.setattr("app.report.monthly_report.extract_text", lambda n, d: PMS)
+    out = parse_monthly_files([("pms.pdf", b"")])
+    assert out["pms"] == {"invested": 11033696.0, "current": 22271735.0, "xirr": 27.14}
+    assert out["client"]["name"] == "Jane Q Sample" and out["client"]["date"] == "11-10-2026" and out["buckets"] == []
+    assert not out["warnings"] and out["file_results"][0]["kind"] == "pms"
+    assert any(i["label"] == "Portfolio returns (IRR)" and i["value"].endswith("Since 27.14%") for i in out["factsheets"][0]["items"])

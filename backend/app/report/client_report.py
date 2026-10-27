@@ -37,7 +37,7 @@ def ind(v: float | None, d: int = 2) -> str:
 
 # ---------- text extraction (text layer first, OCR fallback) ----------
 
-def _ocr_lines(img: Any) -> list[str]:
+def _ocr_raw(img: Any) -> list:
     try:
         import numpy as np
         from rapidocr_onnxruntime import RapidOCR
@@ -46,6 +46,16 @@ def _ocr_lines(img: Any) -> list[str]:
     global _OCR
     _OCR = globals().get("_OCR") or RapidOCR()
     res, _ = _OCR(np.asarray(img.convert("RGB")))
+    return res or []
+
+
+def _ocr_boxes(img: Any) -> list[tuple[float, float, str]]:
+    """(left x, centre y, text) per OCR box, in image pixels."""
+    return [(b[0][0], (b[0][1] + b[3][1]) / 2, t) for b, t, _ in _ocr_raw(img)]
+
+
+def _ocr_lines(img: Any) -> list[str]:
+    res = _ocr_raw(img)
     boxes = sorted(((sum(p[1] for p in b) / 4, b[0][0], t, abs(b[3][1] - b[0][1])) for b, t, _ in (res or [])), key=lambda r: (r[0], r[1]))
     lines: list[list[tuple[float, str]]] = []
     ys: list[float] = []

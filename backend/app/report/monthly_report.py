@@ -166,10 +166,13 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
     may arrive in any order — monthly + valuation in either order gives the same
     buckets + cross-check.
     """
+    from app.report.statements import parse_provider_statement
+
     out: dict[str, Any] = {
         "client": {"name": "", "date": "", "arn": "", "phone": ""},
         "inception": "", "buckets": [], "pms": {"invested": 0.0, "current": 0.0, "xirr": None},
         "total_xirr": None, "valuation": None, "factsheets": [], "warnings": [], "file_results": [],
+        "statements": [], "contact": {"name": "", "email": "", "mobile": "", "pan": ""},
     }
     for fname, data in files:
         try:
@@ -179,6 +182,14 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
             out["file_results"].append({"name": fname, "kind": "error", "method": "", "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
             continue
         method = _extraction_method(fname, data)
+        stmt = parse_provider_statement(fname, data, text)
+        if stmt:
+            out["statements"].append({**stmt, "file": fname})
+            out["contact"] = {k: out["contact"][k] or v for k, v in stmt["client"].items()}
+            out["warnings"] += [f"{fname}: {w}" for w in stmt["warnings"]]
+            out["file_results"].append({"name": fname, "kind": "statement", "method": method, "buckets": max(len(stmt["categories"]), 1),
+                                        "valuation_rows": 0, "factsheet_items": 0})
+            continue
         monthly = parse_monthly_buckets(text)
         if monthly:
             if out["buckets"]:
@@ -214,6 +225,15 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
         else:
             out["warnings"].append(f"{fname}: no monthly bucket rows, fund statement rows, or factsheet figures recognised.")
             out["file_results"].append({"name": fname, "kind": "unrecognised", "method": method, "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
+    if not out["buckets"] and out["statements"]:
+        # Provider statements: one bucket per FundsIndia portfolio, one per Proaffluence grand total.
+        for st in out["statements"]:
+            for c in st["categories"] or [{"name": f"{st['provider']} mutual funds", **st["grand_total"], "ann_ret": st["grand_total"]["xirr"]}]:
+                out["buckets"].append({"name": c["name"], "invested": c["invested"], "current": c["current"], "xirr": c["ann_ret"]})
+        if len(out["statements"]) == 1:
+            out["total_xirr"] = out["statements"][0]["grand_total"]["xirr"]
+        out["client"] = {**out["client"], "name": out["client"]["name"] or out["contact"]["name"],
+                         "date": out["client"]["date"] or out["statements"][0]["as_on"]}
     if not out["buckets"] and out["valuation"] is not None:
         # Valuation-only upload: prefill ONE honestly-labelled bucket carrying
         # the valuation total, so the draft is not empty. Never split it by

@@ -86,11 +86,19 @@ _RAW = ["sharpe_{}y", "sortino_{}y", "beta_{}y"]
 # AdvisorKhoj market capture ratios (equity categories only), written by scripts/build_capture_ratio.py: up %, down %, up/down.
 _CAPTURE = ("cap_up", "cap_down", "cap_ratio")
 _AVG_COLS = ["ret_1m", "ret_3m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_10y"]
+_QUARTILE_RET = {"1y": "ret_1y", "2y": "ret_2y", "3y": "cagr_3y", "5y": "cagr_5y"}
+_NEW_NUMERIC_KEYS = (
+    [f"quartile_{p}" for p in _QUARTILE_RET]
+    + [f"cap_spread_{y}y" for y in _YEARS]
+    + ["ter_gap_pp", "calmar_3y", "manager_tenure_years"]
+    + [f"pct_{m}" for m in ("sharpe_3y", "sortino_3y", "alpha_3y", "vol_3y", "max_dd_3y", "ret_1y", "cagr_3y", "cagr_5y")]
+)
 NUMERIC_KEYS = (
     ["out_1y", "out_3y", "out_5y", "score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
     + list(_PCT.values())
     + [t.format(y) for y in _YEARS for t in _RAW]
     + [f"{k}_{y}y" for y in _YEARS for k in _CAPTURE]
+    + _NEW_NUMERIC_KEYS
 )
 SORT_KEYS = set(NUMERIC_KEYS) | {"name"}
 
@@ -158,7 +166,23 @@ def _base_frame() -> pd.DataFrame:
     return df.reset_index(drop=True)
 
 
-def _scored(ter: dict[str, float]) -> pd.DataFrame:
+def _manager_series(manager_map: dict[str, Any] | None, df: pd.DataFrame, field: str, pos: int) -> pd.Series:
+    """Manager name/start per scheme code. manager_map values are (name, start) tuples or dict rows."""
+    if not manager_map:
+        return pd.Series([None] * len(df), index=df.index, dtype=object)
+    out = []
+    for code in df["code"]:
+        row = manager_map.get(str(code))
+        if row is None:
+            out.append(None)
+        elif isinstance(row, dict):
+            out.append(row.get("manager_name" if field == "name" else "manager_start"))
+        else:
+            out.append(row[pos])
+    return pd.Series(out, index=df.index, dtype=object)
+
+
+def _scored(ter: dict[str, float], manager_map: dict[str, Any] | None = None) -> pd.DataFrame:
     df = _base_frame().copy()
     df["ter"] = df["code"].map(ter)
     df["cat_label"] = df["cat"].map(_LABELS).fillna(df["cat"])
@@ -189,6 +213,50 @@ def _scored(ter: dict[str, float]) -> pd.DataFrame:
     df["perf_label"] = [_label(p, "GOOD RETURNS", "AVERAGE RETURNS", "POOR RETURNS") for p in df["perf"].fillna(0)]
     df["risk_label"] = [_label(p, "GOOD RISK REWARD", "FAIR RISK REWARD", "POOR RISK REWARD") for p in df["risk"].fillna(0)]
     df["ops_label"] = [_label(p, "HIGH RANK", "MEDIUM RANK", "WEAK RANK") for p in df["ops"].fillna(0)]
+    # --- MF Research V1 columns (computed on this cached frame, never per request per row). ---
+    # Computed quartiles: category + plan peer group, min 8 peers, ties averaged.
+    # Imported lazily: app.backoffice.screening.__init__ pulls the screening service/jobs
+    # chain, so mf_screener keeps its import-time dependencies to the data loader only.
+    from app.backoffice.screening.quartiles import compute_category_quartiles
+
+    for period, ret_col in _QUARTILE_RET.items():
+        mapping: dict[str, int | None] = {}
+        for _keyval, grp in df.groupby(key):
+            rets = {str(c): (float(v) if pd.notna(v) else None) for c, v in zip(grp["code"], grp[ret_col])}
+            mapping.update(compute_category_quartiles(rets, min_peers=8))
+        df[f"quartile_{period}"] = df["code"].map(mapping)
+    df["quartile_source"] = np.where(df["quartile_2y"].notna(), "computed", "unavailable")
+    # Capture spread (percentage points) from the single Advisorkhoj capture source already in the frame.
+    for y in _YEARS:
+        df[f"cap_spread_{y}y"] = df[f"cap_up_{y}y"] - df[f"cap_down_{y}y"]
+    # TER gap vs the category + plan median TER, in percentage points.
+    df["ter_gap_pp"] = df["ter"] - df.groupby(key)["ter"].transform("median")
+    # Peer percentiles 0-100 (1 decimal) via the existing _pillar rank; lower-is-better where noted.
+    _pct_defs = [
+        ("pct_sharpe_3y", "sharpe_3y", True), ("pct_sortino_3y", "sortino_3y", True),
+        ("pct_alpha_3y", "alpha_3y", True), ("pct_vol_3y", "vol_3y", False),
+        ("pct_max_dd_3y", "max_dd_3y", True), ("pct_ret_1y", "ret_1y", True),
+        ("pct_cagr_3y", "cagr_3y", True), ("pct_cagr_5y", "cagr_5y", True),
+    ]
+    for out_col, src_col, higher_better in _pct_defs:
+        df[out_col] = (_pillar(df[src_col], key, higher_better=higher_better) * 100).round(1)
+    # Calmar 3Y: 3Y CAGR / |3Y max drawdown|; both frame columns are in percent, so the ratio is unit-free.
+    df["calmar_3y"] = (df["cagr_3y"] / df["max_dd_3y"].abs()).where(
+        df["cagr_3y"].notna() & df["max_dd_3y"].notna() & df["max_dd_3y"].ne(0))
+    # Manager fields from the repo managers table passed in by the caller. No AMFI fallback here:
+    # mf_reference pulls the API auth chain into this data module, so the fallback lives at the
+    # API/compare layer instead (see api/backoffice.py and compare.py); without a seed row the
+    # fund is "Unknown" (manager_name None, tenure None), never an invented name.
+    df["manager_name"] = _manager_series(manager_map, df, "name", 0)
+    df["manager_start"] = _manager_series(manager_map, df, "start", 1)
+    nav_as_of = pd.to_datetime(df["nav_date"], format="%d-%b-%Y", errors="coerce").max()
+    _cleaned_start = df["manager_start"].where(
+        df["manager_start"].isna(),
+        df["manager_start"].astype(str).str.replace(r"(?<=\d)(st|nd|rd|th)", "", regex=True),
+    )
+    starts = pd.to_datetime(_cleaned_start, errors="coerce")
+    tenure_days = (nav_as_of - starts).dt.days
+    df["manager_tenure_years"] = (tenure_days / 365.25).where(starts.notna() & tenure_days.ge(0))
     return df
 
 
@@ -200,16 +268,37 @@ def screen(
     ranges: dict[str, tuple[float | None, float | None]],
     sort: str,
     descending: bool,
+    amcs: list[str] | None = None,
+    manager: str | None = None,
+    min_tenure: float | None = None,
+    include_unknown: bool = True,
+    quartiles: list[int] | None = None,
+    quartile_period: str = "2y",
+    include_unavailable: bool = True,
+    manager_map: dict[str, Any] | None = None,
 ) -> pd.DataFrame:
-    df = _scored(ter)
+    df = _scored(ter, manager_map=manager_map)
     if categories:
         df = df[df["cat"].isin(categories)]
     if plans:
         df = df[df["plan"].isin(plans)]
+    if amcs:
+        df = df[df["amc"].isin(amcs)]
     if search:
         s = search.strip().lower()
         df = df[df["name"].str.lower().str.contains(s, regex=False) | df["code"].str.contains(s, regex=False)
                 | df["amc"].fillna("").str.lower().str.contains(s, regex=False)]
+    if manager:
+        m = manager.strip().lower()
+        df = df[df["manager_name"].fillna("").str.lower().str.contains(m, regex=False)]
+    if min_tenure is not None:
+        known = df["manager_tenure_years"] >= min_tenure
+        df = df[known | (df["manager_tenure_years"].isna() & include_unknown)]
+    if quartiles:
+        if quartile_period not in _QUARTILE_RET:
+            raise ValueError(f"Unknown quartile period: {quartile_period}")
+        qcol = f"quartile_{quartile_period}"
+        df = df[df[qcol].isin(quartiles) | (df[qcol].isna() & include_unavailable)]
     for key, (lo, hi) in ranges.items():
         if lo is not None:
             df = df[df[key] >= lo]
@@ -227,8 +316,8 @@ def facets(df_all: pd.DataFrame) -> list[dict[str, Any]]:
     ]
 
 
-def all_frame(ter: dict[str, float]) -> pd.DataFrame:
-    return _scored(ter)
+def all_frame(ter: dict[str, float], manager_map: dict[str, Any] | None = None) -> pd.DataFrame:
+    return _scored(ter, manager_map=manager_map)
 
 
 def records(df: pd.DataFrame) -> list[dict[str, Any]]:
@@ -238,6 +327,8 @@ def records(df: pd.DataFrame) -> list[dict[str, Any]]:
         for k, v in r.items():
             if isinstance(v, (np.floating, float)) and v is not None:
                 r[k] = round(float(v), 4)
+            if k.startswith("quartile_") and r[k] is not None and k != "quartile_source":
+                r[k] = int(r[k])
     return rows
 
 
@@ -255,6 +346,17 @@ def to_csv(df: pd.DataFrame) -> str:
             ("treynor", "Treynor %"), ("vol", "Std Dev %"))},
         **{f"{k}_{y}y": f"{lbl} {y}Y" for y in _YEARS for k, lbl in (
             ("cap_up", "Up Capture %"), ("cap_down", "Down Capture %"), ("cap_ratio", "Capture Ratio"))},
+        **{f"cap_spread_{y}y": f"Capture Spread {y}Y (pp)" for y in _YEARS},
+        **{f"quartile_{p}": f"Quartile {p.upper()} (computed)" for p in _QUARTILE_RET},
+        "quartile_source": "Quartile Source",
+        "ter_gap_pp": "TER vs Category+Plan Median (pp)",
+        "calmar_3y": "Calmar 3Y",
+        "manager_name": "Fund Manager", "manager_start": "Manager Since",
+        "manager_tenure_years": "Manager Tenure (years)",
+        **{f"pct_{m}": f"{lbl} Percentile (vs category + plan peers)" for m, lbl in (
+            ("sharpe_3y", "Sharpe 3Y"), ("sortino_3y", "Sortino 3Y"), ("alpha_3y", "Alpha 3Y"),
+            ("vol_3y", "Volatility 3Y"), ("max_dd_3y", "Max Drawdown 3Y"),
+            ("ret_1y", "Return 1Y"), ("cagr_3y", "CAGR 3Y"), ("cagr_5y", "CAGR 5Y"))},
         "max_dd_3y": "Max Drawdown 3Y %", "max_dd_all": "Max Drawdown All %", "isin": "ISIN",
     }
     buf = io.StringIO()

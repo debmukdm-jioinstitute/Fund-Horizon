@@ -15,6 +15,7 @@ import {
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
+import { shortDisplayName } from "@/components/backoffice/mfDisplayName";
 import MfOnePager from "@/components/backoffice/MfOnePager";
 import MfQuartileRankings from "@/components/backoffice/MfQuartileRankings";
 import CompareTray from "@/components/compare/CompareTray";
@@ -199,6 +200,16 @@ function MutualFunds() {
     const t = setTimeout(() => setSearch(query.trim()), 300);
     return () => clearTimeout(t);
   }, [query]);
+  // Phase 0: clearing the box (debounced) resets the applied search filter — the
+  // effect above sets search to "" and mfScreenerParams omits an empty search.
+  // Panels close on Escape; Quick Filter also closes on outside click (backdrop below).
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") { setShowFilter(false); setRecDropdownOpen(false); }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => setOffset(0), [qKey, pageSize]);
 
@@ -236,6 +247,9 @@ function MutualFunds() {
   const groupKeys = group?.categories.map((c) => c.key) ?? [];
   const allSelected = groupKeys.length > 0 && groupKeys.every((k) => category.includes(k));
   const selectedLabels = groups.flatMap((g) => g.categories).filter((c) => category.includes(c.key)).map((c) => c.label);
+  // Phase 0 (a): keep the selection on asset-class tab switch, but never let heading, tab and list
+  // silently disagree — selected categories from other groups are named in a note below.
+  const otherGroupSelected = groups.filter((g) => g.group !== activeGroup).flatMap((g) => g.categories).filter((c) => category.includes(c.key));
   const quartileCategories = groups.flatMap((g) => g.categories).filter((c) => category.includes(c.key)).map((c) => ({ key: c.key, label: c.label }));
 
   function onSort(key: string) {
@@ -287,6 +301,11 @@ function MutualFunds() {
             </button>
           ))}
         </div>
+        {otherGroupSelected.length > 0 && (
+          <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+            Also selected from other groups (kept, not cleared): {otherGroupSelected.map((c) => c.label).join(", ")}.
+          </p>
+        )}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5">
           <label className="flex items-center gap-2 text-[12px] font-medium text-[#0176D3] dark:text-[#1B96FF] cursor-pointer">
             <input
@@ -322,6 +341,8 @@ function MutualFunds() {
               aria-selected={section === s}
               onClick={() => {
                 setUrl({ section: s });
+                setShowFilter(false);
+                setRecDropdownOpen(false);
                 setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Capture Ratio" ? "cap_ratio_3y" : s === "Returns" ? "cagr_3y" : "score");
                 setOrder("desc");
               }}
@@ -443,7 +464,9 @@ function MutualFunds() {
       </div>
 
       {showFilter && (
-        <div className="terminal-panel p-2.5 space-y-2.5">
+        <>
+        <div className="fixed inset-0 z-40" onClick={() => setShowFilter(false)} />
+        <div className="terminal-panel p-2.5 space-y-2.5 relative z-50">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {FILTERABLE.map((f) => (
               <div key={f.key} className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
@@ -481,6 +504,7 @@ function MutualFunds() {
             </button>
           </div>
         </div>
+        </>
       )}
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -516,7 +540,7 @@ function MutualFunds() {
                 className={`text-left terminal-panel p-3 border-l-4 border-l-[#0176D3] hover:shadow-md cursor-pointer space-y-2 ${loading ? "opacity-50" : ""}`}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <div className="font-medium text-[13px] text-[#0176D3] dark:text-[#1B96FF] leading-snug">{r.name.replace(/ - (Direct|Regular) Plan - Growth$/i, "")}</div>
+                  <div className="font-medium text-[13px] text-[#0176D3] dark:text-[#1B96FF] leading-snug">{shortDisplayName(r.name)}</div>
                   {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0176D3] text-white shrink-0">★ FH</span>}
                 </div>
                 <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] flex items-center gap-1.5">
@@ -587,7 +611,7 @@ function MutualFunds() {
                           onClick={() => setSelected(toItem(r))}
                           className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug"
                         >
-                          {r.name.replace(/ - (Direct|Regular) Plan - Growth$/i, "")}
+                          {shortDisplayName(r.name)}
                         </button>
                         {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && (
                           <button

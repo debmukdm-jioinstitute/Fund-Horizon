@@ -1,0 +1,164 @@
+"""MF Research V1 API: managers directory, research detail, shortlist scoping, compare join.
+
+Separate file from the screener/quartile unit tests because these need a TestClient,
+staff sessions and a seeded managers table, not just the data frame.
+"""
+from __future__ import annotations
+
+from app.backoffice.repository import BackofficeRepository
+from tests.test_backoffice_compare import _create_staff, _login_staff
+
+ITI_PAIR = ("148535", "148534")  # Regular + Direct rows of one ITI Banking & PSU portfolio
+
+
+def _seed_iti_manager():
+    BackofficeRepository().upsert_mf_managers([
+        {"scheme_code": code, "manager_name": "Test Manager", "manager_start": "2020-01-15"}
+        for code in ITI_PAIR
+    ])
+
+
+def test_managers_requires_staff(client):
+    client.cookies.clear()
+    assert client.get("/api/backoffice/mutual-funds/managers").status_code in (401, 403)
+
+
+def test_managers_directory_dedup_and_filters(client):
+    _login_staff(client, _create_staff())
+    _seed_iti_manager()
+    r = client.get("/api/backoffice/mutual-funds/managers?limit=200")
+    assert r.status_code == 200
+    rows = r.json()["data"]
+    by_name = {row["manager_name"]: row for row in rows}
+    assert "Test Manager" in by_name and None in by_name
+    mgr = by_name["Test Manager"]
+    # Regular + Direct rows of one fund: 2 schemes, 1 portfolio, AUM counted once.
+    assert mgr["schemes"] == 2 and mgr["portfolios"] == 1
+    assert mgr["aum_incomplete"] is False
+    assert 6.7 < mgr["longest_tenure_years"] < 6.8
+    assert mgr["avg_tenure_years"] == mgr["longest_tenure_years"]
+    assert mgr["needs_data"] is False
+    unknown = by_name[None]
+    assert unknown["needs_data"] is True
+    total_funds = client.get("/api/backoffice/mutual-funds/screener?limit=1").json()["total"]
+    assert unknown["schemes"] == total_funds - 2
+    # AUM estimate equals the first row's AUM for the portfolio (Regular row first in frame order).
+    from app.backoffice import mf_screener as ms
+
+    frame = ms.all_frame({}, manager_map={"148535": ("Test Manager", "2020-01-15"),
+                                          "148534": ("Test Manager", "2020-01-15")})
+    first_aum = float(frame[frame["code"] == "148535"]["aum_cr"].iloc[0])
+    assert abs(mgr["aum_estimate_cr"] - round(first_aum, 2)) < 0.01
+    # Search, min_tenure, sort and pagination.
+    s = client.get("/api/backoffice/mutual-funds/managers?search=Test%20Manager").json()
+    assert [row["manager_name"] for row in s["data"]] == ["Test Manager"]
+    assert client.get("/api/backoffice/mutual-funds/managers?search=Unknown").json()["data"]
+    assert client.get("/api/backoffice/mutual-funds/managers?min_tenure=50").json()["data"] == []
+    assert client.get("/api/backoffice/mutual-funds/managers?min_tenure=5").json()["total"] >= 1
+    page = client.get("/api/backoffice/mutual-funds/managers?sort=name&order=asc&limit=1&offset=0").json()
+    assert len(page["data"]) == 1 and page["total"] == len(rows)
+
+
+def test_research_detail_consistency_block(client):
+    _login_staff(client, _create_staff())
+    from app.backoffice import mf_screener as ms
+    from app.data.loader import load_nav
+
+    frame = ms.all_frame({})
+    picked = None
+    for _, row in frame[(frame["cat"] == "banking_psu") & (frame["plan"] == "Direct")].sort_values(
+            "history_years", ascending=False).iterrows():
+        try:
+            if len(load_nav(str(row["code"]))) >= 84:
+                picked = str(row["code"])
+                break
+        except (FileNotFoundError, OSError, ValueError):
+            continue
+    assert picked, "no banking_psu Direct fund with 7+ years of monthly NAV in the fixture data"
+    BackofficeRepository().upsert_mf_managers(
+        [{"scheme_code": picked, "manager_name": "Detail Manager", "manager_start": "2019-06-01"}])
+    r = client.get(f"/api/backoffice/mutual-funds/{picked}/research-detail")
+    assert r.status_code == 200, r.text
+    d = r.json()["data"]
+    assert d["scheme_code"] == picked and d["manager_name"] == "Detail Manager"
+    assert d["manager_tenure_years"] is not None and d["manager_tenure_years"] > 5
+    assert d["quartile_basis"] == "computed" and d["median_basis"] == "vs category median"
+    assert d["quartile_source"] in ("computed", "unavailable")
+    assert d["quartile_2y"] in (None, 1, 2, 3, 4)
+    assert d["reason"] is None
+    # A 7+ year fund has enough windows for every NAV-derived field.
+    assert d["roll_win_pct"] is not None and 0 <= d["roll_win_pct"] <= 100
+    assert d["cal_win_pct"] is not None and 0 <= d["cal_win_pct"] <= 100
+    assert d["cal_topq_years"] is not None and d["cal_topq_years"] >= 0
+    assert d["downside_dev_3y"] is not None and d["downside_dev_3y"] >= 0
+    assert d["sip_cagr_3y"] is not None and d["sip_cagr_5y"] is not None
+    for col in ("pct_sharpe_3y", "pct_sortino_3y", "pct_alpha_3y", "pct_vol_3y",
+                "pct_max_dd_3y", "pct_ret_1y", "pct_cagr_3y", "pct_cagr_5y"):
+        assert d[col] is None or 0 <= d[col] <= 100
+    assert client.get("/api/backoffice/mutual-funds/999999999/research-detail").status_code == 404
+    client.cookies.clear()
+    assert client.get(f"/api/backoffice/mutual-funds/{picked}/research-detail").status_code in (401, 403)
+
+
+def test_shortlist_scoping_reactivation_csv_and_no_recommended_touch(client):
+    staff_a = _create_staff()
+    staff_b = _create_staff()
+    _login_staff(client, staff_a)
+    code = ITI_PAIR[0]
+
+    def screener_flag():
+        rows = client.get(f"/api/backoffice/mutual-funds/screener?search={code}&limit=50").json()["data"]
+        return next(x["is_fh_recommended"] for x in rows if x["code"] == code)
+
+    before = screener_flag()
+    r = client.post("/api/backoffice/mf-research/shortlist", json={"scheme_code": code, "reason": "Why it fits"})
+    assert r.status_code == 201, r.text
+    rows = client.get("/api/backoffice/mf-research/shortlist").json()["data"]
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["scheme_code"] == code and row["reason"] == "Why it fits"
+    assert row["fund"] and row["category"] and row["plan"] == "Regular"
+    assert row["quartile_2y"] in (None, 1, 2, 3, 4) and row["date_added"]
+    assert screener_flag() == before  # shortlist add never touches FH Recommended
+    # Staff B cannot see staff A's row.
+    _login_staff(client, staff_b)
+    assert client.get("/api/backoffice/mf-research/shortlist").json()["data"] == []
+    # Staff A: remove, re-add reactivates the same single row with the new reason.
+    _login_staff(client, staff_a)
+    assert client.delete(f"/api/backoffice/mf-research/shortlist/{code}").status_code == 200
+    assert client.get("/api/backoffice/mf-research/shortlist").json()["data"] == []
+    assert client.delete(f"/api/backoffice/mf-research/shortlist/{code}").status_code == 404
+    assert client.post("/api/backoffice/mf-research/shortlist",
+                       json={"scheme_code": code, "reason": "Second look"}).status_code == 201
+    rows = client.get("/api/backoffice/mf-research/shortlist").json()["data"]
+    assert len(rows) == 1 and rows[0]["reason"] == "Second look"
+    csv_r = client.get("/api/backoffice/mf-research/shortlist?format=csv")
+    assert csv_r.status_code == 200 and "Reason" in csv_r.text and "Date Added" in csv_r.text
+    assert code in csv_r.text and "Second look" in csv_r.text
+    client.cookies.clear()
+    assert client.get("/api/backoffice/mf-research/shortlist").status_code in (401, 403)
+    assert client.post("/api/backoffice/mf-research/shortlist",
+                       json={"scheme_code": code}).status_code in (401, 403)
+
+
+def test_compare_joins_screener_frame(client):
+    from app.backoffice import compare as compare_mod
+    from app.backoffice import mf_screener as ms
+    from app.data.loader import eligible_funds
+
+    compare_mod._CACHE.clear()
+    compare_mod._MF_SCREENER_FRAME.clear()
+    _login_staff(client, _create_staff())
+    codes = eligible_funds()["scheme_code"].head(2).tolist()
+    BackofficeRepository().upsert_mf_managers(
+        [{"scheme_code": codes[0], "manager_name": "Compare Manager", "manager_start": "2021-03-01"}])
+    r = client.get(f"/api/backoffice/compare?type=mf&ids={','.join(codes)}")
+    assert r.status_code == 200, r.text
+    items = {it["id"]: it for it in r.json()["items"]}
+    frame = ms.all_frame({}, manager_map={codes[0]: ("Compare Manager", "2021-03-01")})
+    frame_rows = {row["code"]: row for row in ms.records(frame[frame["code"].isin(codes)])}
+    first = items[codes[0]]["metrics"]
+    assert first["manager"] == "Compare Manager"
+    assert first["quartile"] == frame_rows[codes[0]]["quartile_2y"]
+    assert first["aum"] == frame_rows[codes[0]]["aum_cr"]
+    assert first["manager_tenure"] == frame_rows[codes[0]]["manager_tenure_years"]

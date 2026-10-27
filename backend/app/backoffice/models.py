@@ -411,3 +411,23 @@ class ScreeningRunModel(Base):
     filters_json: Mapped[str] = mapped_column(Text, nullable=False)
     stage_counts_json: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+
+class MfResearchShortlistModel(Base):
+    """MF Research shortlist (staff-private, distinct from the FH Recommended flag).
+
+    One row per staff member per scheme; re-adding a removed scheme reactivates
+    the same row. Never read or written by the FH Recommended code path.
+    """
+
+    __tablename__ = "mf_research_shortlist"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    staff_id: Mapped[str] = mapped_column(String(36), index=True, nullable=False)
+    scheme_code: Mapped[str] = mapped_column(String(64), nullable=False)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="active")
+    created_at: Mapped[str] = mapped_column(String(50), nullable=False)
+    updated_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+    __table_args__ = (UniqueConstraint("staff_id", "scheme_code", name="uq_mf_research_shortlist_staff_scheme"),)

@@ -188,6 +188,17 @@ CREATE TABLE IF NOT EXISTS briefings (
     payload_json TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_briefings_date ON briefings(brief_date DESC);
+CREATE TABLE IF NOT EXISTS mf_research_shortlist (
+    id TEXT PRIMARY KEY,
+    staff_id TEXT NOT NULL,
+    scheme_code TEXT NOT NULL,
+    reason TEXT,
+    status TEXT NOT NULL DEFAULT 'active',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE (staff_id, scheme_code)
+);
+CREATE INDEX IF NOT EXISTS ix_mf_research_shortlist_staff ON mf_research_shortlist(staff_id, status);
 """
 _LIVE_TABLES_READY: set[str] = set()
 
@@ -1408,6 +1419,60 @@ class BackofficeRepository:
         try:
             with conn:
                 cur = conn.execute("DELETE FROM watchlists WHERE id = ? AND staff_id = ?", (item_id, staff_id))
+                return cur.rowcount > 0
+        finally:
+            conn.close()
+
+    # --- MF Research shortlist (staff-private; never touches FH Recommended state) ---
+    def list_mf_research_shortlist(self, staff_id: str) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM mf_research_shortlist WHERE staff_id = ? AND status = 'active' ORDER BY created_at DESC",
+                (staff_id,),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def add_mf_research_shortlist(self, staff_id: str, scheme_code: str, reason: str | None = None) -> dict[str, Any]:
+        conn = self._conn()
+        now = _utcnow()
+        try:
+            with conn:
+                existing = conn.execute(
+                    "SELECT * FROM mf_research_shortlist WHERE staff_id = ? AND scheme_code = ?",
+                    (staff_id, scheme_code),
+                ).fetchone()
+                if existing:
+                    # Re-adding a removed scheme reactivates the same row (one active row per staff + code).
+                    conn.execute(
+                        "UPDATE mf_research_shortlist SET status = 'active', reason = ?, updated_at = ? WHERE id = ?",
+                        (reason if reason is not None else existing["reason"], now, existing["id"]),
+                    )
+                    row = dict(existing)
+                    row.update({"status": "active", "reason": reason if reason is not None else existing["reason"], "updated_at": now})
+                    return row
+                sid = _new_id()
+                conn.execute(
+                    "INSERT INTO mf_research_shortlist (id, staff_id, scheme_code, reason, status, created_at, updated_at)"
+                    " VALUES (?, ?, ?, ?, 'active', ?, ?)",
+                    (sid, staff_id, scheme_code, reason, now, now),
+                )
+                return {"id": sid, "staff_id": staff_id, "scheme_code": scheme_code, "reason": reason,
+                        "status": "active", "created_at": now, "updated_at": now}
+        finally:
+            conn.close()
+
+    def remove_mf_research_shortlist(self, staff_id: str, scheme_code: str) -> bool:
+        conn = self._conn()
+        try:
+            with conn:
+                cur = conn.execute(
+                    "UPDATE mf_research_shortlist SET status = 'removed', updated_at = ?"
+                    " WHERE staff_id = ? AND scheme_code = ? AND status = 'active'",
+                    (_utcnow(), staff_id, scheme_code),
+                )
                 return cur.rowcount > 0
         finally:
             conn.close()

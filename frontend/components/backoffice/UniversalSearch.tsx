@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AmcLogo, PmsLogo } from "@/components/BrandLogo";
 import { fetchSearchScopes, universalSearch, type SearchHit, type SearchScope } from "@/lib/universalSearch";
 
-export interface SearchModule { href: string; label: string; description: string }
+export interface SearchModule { href: string; label: string; description: string; group?: string }
 
 const MODULES_SCOPE: SearchScope = { key: "modules", label: "Modules" };
 const ALL: SearchScope = { key: "all", label: "All" };
@@ -122,7 +122,7 @@ export default function UniversalSearch({
                 <Command.Group heading="Modules" className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-[#706E6B]">
                   {mods.map((m) => (
                     <Command.Item key={m.href} value={`module:${m.href}`} onSelect={() => go(m.href)} className="flex cursor-pointer flex-col rounded p-2.5 text-[#181818] dark:text-[#EDF2F7] data-[selected=true]:bg-[#EAF5FE] dark:data-[selected=true]:bg-[#11304F]">
-                      <span className="text-[13px] font-medium">{m.label}</span>
+                      <span className="text-[13px] font-medium">{m.label}{m.group ? <span className="ml-2 text-[11px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">· {m.group}</span> : null}</span>
                       <span className="truncate text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{m.description}</span>
                     </Command.Item>
                   ))}

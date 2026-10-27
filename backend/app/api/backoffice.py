@@ -1,6 +1,8 @@
 from __future__ import annotations
 """FastAPI router for Fund Horizon Internal Backoffice."""
 
+import csv
+import io
 import json
 import re
 import secrets
@@ -51,7 +53,10 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice import mf_reference, mf_screener
+from app.backoffice.screening.quartiles import compute_category_quartiles
 from app.backoffice.screening.service import ScreeningService
+from app.engine import analytics as engine_analytics
+from app.engine.stress import category_median_series
 from app.backoffice.compare import build_compare_payload
 from app.backoffice import search as universal_search
 from app.backoffice.service import BackofficeService
@@ -806,6 +811,14 @@ def backoffice_mf_tracker(
     return with_meta(res, "amfi", facets.get("as_of"))
 
 
+def _mf_manager_map() -> dict[str, tuple[str | None, str | None]]:
+    """{scheme_code: (manager_name, manager_start)} from the repo managers table (seed data)."""
+    return {
+        str(code): (m.get("manager_name"), m.get("manager_start"))
+        for code, m in _REPO.list_mf_managers().items()
+    }
+
+
 @router.get("/mutual-funds/screener")
 def backoffice_mf_screener(
     staff: Annotated[dict, Depends(require_staff)],
@@ -819,10 +832,21 @@ def backoffice_mf_screener(
     format: str = Query("json", pattern="^(json|csv)$"),
     limit: int = Query(25, ge=1, le=200),
     offset: int = Query(0, ge=0),
+    amc: list[str] | None = Query(None, description="AMC multi-select"),
+    manager: str | None = Query(None, max_length=120, description="Manager name substring"),
+    min_tenure: float | None = Query(None, ge=0, description="Minimum manager tenure in years"),
+    include_unknown: bool = Query(True, description="Keep unknown-manager rows under a min_tenure filter"),
+    quartile: list[int] | None = Query(None, description="Computed quartile filter, 1-4"),
+    quartile_period: str = Query("2y", description="Quartile period: 1y, 2y, 3y or 5y"),
+    include_unavailable: bool = Query(True, description="Keep null-quartile rows under a quartile filter"),
 ):
     """Trendlyne-style screener over the AMFI + mfapi.in dataset: categories, returns, risk, FH checklist score."""
     if sort not in mf_screener.SORT_KEYS:
         raise HTTPException(422, "Unknown sort column.")
+    if quartile_period not in {"1y", "2y", "3y", "5y"}:
+        raise HTTPException(422, "Unknown quartile period.")
+    if quartile and any(q not in (1, 2, 3, 4) for q in quartile):
+        raise HTTPException(422, "Quartile must be 1, 2, 3 or 4.")
     plans = [p.strip().title() for p in plan or [] if p.strip().title() in {"Direct", "Regular"}]
     ranges: dict[str, tuple[float | None, float | None]] = {}
     for item in f or []:
@@ -835,7 +859,12 @@ def backoffice_mf_screener(
         except ValueError:
             raise HTTPException(422, f"Bad range for {key}") from None
     ter = _REPO.mf_ter_by_code()
-    df = mf_screener.screen(ter, category, plans, search, ranges, sort, order == "desc")
+    df = mf_screener.screen(
+        ter, category, plans, search, ranges, sort, order == "desc",
+        amcs=amc, manager=manager, min_tenure=min_tenure, include_unknown=include_unknown,
+        quartiles=quartile, quartile_period=quartile_period, include_unavailable=include_unavailable,
+        manager_map=_mf_manager_map(),
+    )
     df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES))
     if recommended:
         df = df[df["is_fh_recommended"]]
@@ -847,15 +876,347 @@ def backoffice_mf_screener(
         )
     page = df.iloc[offset: offset + limit]
     as_of = pd.to_datetime(df["nav_date"], format="%d-%b-%Y").max().date().isoformat() if len(df) else None
+    # Per-source freshness: only NAV/quartile dates are recorded in the dataset frame, so the
+    # other sources are null ("Not recorded" in the UI) rather than invented dates. with_meta
+    # merges its provenance entry alongside these keys under "_default".
     return with_meta({
         "data": mf_screener.records(page),
         "total": int(len(df)),
         "limit": limit,
         "offset": offset,
         "as_of": as_of,
+        "meta": {
+            "nav_as_of": as_of,
+            "aum_as_of": None,
+            "ter_as_of": None,
+            "managers_as_of": None,
+            "quartile_as_of": as_of,
+        },
         "groups": mf_screener.facets(mf_screener.all_frame(ter)),
         "availability": "ready" if len(df) else "unavailable",
     }, "amfi", as_of)
+
+
+# ---------------------------------------------------------------------------
+# MF Research V1: managers directory, research detail, research shortlist
+# ---------------------------------------------------------------------------
+
+_PORTFOLIO_SUFFIXES = (" - Direct Plan - Growth", " - Regular Plan - Growth")
+
+
+def _portfolio_key(name: str) -> str:
+    for suffix in _PORTFOLIO_SUFFIXES:
+        if name.endswith(suffix):
+            return name[: -len(suffix)]
+    return name
+
+
+def _round_or_none(v: Any, ndigits: int = 2) -> float | None:
+    if v is None:
+        return None
+    try:
+        if pd.isna(v):
+            return None
+    except TypeError:
+        pass
+    return round(float(v), ndigits)
+
+
+@router.get("/mutual-funds/managers")
+def backoffice_mf_managers(
+    staff: Annotated[dict, Depends(require_staff)],
+    search: str | None = Query(None, max_length=120),
+    min_tenure: float | None = Query(None, ge=0),
+    sort: str = Query("schemes", pattern="^(schemes|tenure|aum_estimate|name)$"),
+    order: str = Query("desc", pattern="^(asc|desc)$"),
+    limit: int = Query(25, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+):
+    """Manager directory: repo managers joined to the screener frame.
+
+    AUM estimate sums AUM over distinct portfolios (scheme name minus the plan
+    suffix), taking the first row's AUM per key, so a fund's Regular + Direct
+    rows are never double-counted. Funds with no manager seed row aggregate
+    under one "Unknown manager" row (manager_name None).
+    """
+    ter = _REPO.mf_ter_by_code()
+    frame = mf_screener.all_frame(ter, manager_map=_mf_manager_map())
+    grouped: dict[str | None, dict[str, Any]] = {}
+    for r in frame.itertuples(index=False):
+        name = getattr(r, "manager_name")
+        key_name = str(name).strip() if isinstance(name, str) and name.strip() else None
+        g = grouped.setdefault(key_name, {"schemes": 0, "portfolios": {}, "tenures": [], "needs_data": False})
+        g["schemes"] += 1
+        pkey = _portfolio_key(str(getattr(r, "name")))
+        if pkey not in g["portfolios"]:
+            g["portfolios"][pkey] = getattr(r, "aum_cr")
+        tenure = getattr(r, "manager_tenure_years")
+        if tenure is not None and not (isinstance(tenure, float) and pd.isna(tenure)):
+            g["tenures"].append(float(tenure))
+        start = getattr(r, "manager_start")
+        if start is None or (isinstance(start, float) and pd.isna(start)):
+            g["needs_data"] = True
+    rows: list[dict[str, Any]] = []
+    for mgr_name, g in grouped.items():
+        aums = list(g["portfolios"].values())
+        rows.append({
+            "manager_name": mgr_name,
+            "schemes": int(g["schemes"]),
+            "portfolios": len(g["portfolios"]),
+            "longest_tenure_years": _round_or_none(max(g["tenures"])) if g["tenures"] else None,
+            "avg_tenure_years": _round_or_none(sum(g["tenures"]) / len(g["tenures"])) if g["tenures"] else None,
+            "aum_estimate_cr": _round_or_none(sum(float(a) for a in aums if a is not None and not pd.isna(a))),
+            "aum_incomplete": any(a is None or pd.isna(a) for a in aums),
+            "needs_data": bool(g["needs_data"]),
+        })
+    if search:
+        s = search.strip().lower()
+        rows = [r for r in rows if (r["manager_name"] and s in r["manager_name"].lower())
+                or (r["manager_name"] is None and "unknown" in s)]
+    if min_tenure is not None:
+        rows = [r for r in rows if r["longest_tenure_years"] is not None and r["longest_tenure_years"] >= min_tenure]
+    sort_key = {
+        "schemes": lambda r: r["schemes"],
+        "tenure": lambda r: r["longest_tenure_years"] if r["longest_tenure_years"] is not None else float("-inf"),
+        "aum_estimate": lambda r: r["aum_estimate_cr"] if r["aum_estimate_cr"] is not None else float("-inf"),
+        "name": lambda r: (r["manager_name"] or ""),
+    }[sort]
+    rows.sort(key=sort_key, reverse=(order == "desc"))
+    return {
+        "data": rows[offset: offset + limit],
+        "total": len(rows),
+        "limit": limit,
+        "offset": offset,
+        "availability": "ready",
+    }
+
+
+def _month_end_series(nav: pd.Series) -> pd.Series:
+    return nav.sort_index().resample("ME").last().dropna()
+
+
+def _calendar_year_returns(monthly: pd.Series) -> dict[int, float]:
+    """Calendar-year return per year with a full year of month-end NAVs (Dec prior year + all 12 months)."""
+    points = {(d.year, d.month): float(v) for d, v in monthly.items()}
+    out: dict[int, float] = {}
+    for year in sorted({d.year for d in monthly.index}):
+        if (year - 1, 12) not in points:
+            continue
+        if any((year, m) not in points for m in range(1, 13)):
+            continue
+        dec = monthly[(monthly.index.year == year) & (monthly.index.month == 12)].iloc[0]
+        out[year] = float(dec) / points[(year - 1, 12)] - 1.0
+    return out
+
+
+@router.get("/mutual-funds/{scheme_code}/research-detail")
+def backoffice_mf_research_detail(
+    scheme_code: str,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """One fund's research detail: computed quartiles/percentiles/manager from the
+    screener frame, plus NAV-derived consistency metrics vs the category median.
+
+    Alpha/beta/Treynor in the frame are vs the category median, never vs an index.
+    If the category median series is unavailable, the NAV-derived fields are None
+    with a reason string, never an error. Fund-only metrics (downside deviation,
+    SIP) are returned as None in that case too, so the consistency block is never
+    shown half-populated without its median comparison.
+    """
+    ter = _REPO.mf_ter_by_code()
+    manager_map = _mf_manager_map()
+    frame = mf_screener.all_frame(ter, manager_map=manager_map)
+    match = frame[frame["code"] == str(scheme_code)]
+    if match.empty:
+        raise HTTPException(404, "Scheme not found")
+    row = mf_screener.records(match)[0]
+    data: dict[str, Any] = {
+        "scheme_code": str(scheme_code),
+        "fund": row["name"],
+        "category": row["cat_label"],
+        "cat": row["cat"],
+        "plan": row["plan"],
+        "quartile_1y": row["quartile_1y"],
+        "quartile_2y": row["quartile_2y"],
+        "quartile_3y": row["quartile_3y"],
+        "quartile_5y": row["quartile_5y"],
+        "quartile_source": row["quartile_source"],
+        "quartile_basis": "computed",
+        "median_basis": "vs category median",
+        "pct_sharpe_3y": row["pct_sharpe_3y"],
+        "pct_sortino_3y": row["pct_sortino_3y"],
+        "pct_alpha_3y": row["pct_alpha_3y"],
+        "pct_vol_3y": row["pct_vol_3y"],
+        "pct_max_dd_3y": row["pct_max_dd_3y"],
+        "pct_ret_1y": row["pct_ret_1y"],
+        "pct_cagr_3y": row["pct_cagr_3y"],
+        "pct_cagr_5y": row["pct_cagr_5y"],
+        "manager_name": row["manager_name"],
+        "manager_start": row["manager_start"],
+        "manager_tenure_years": row["manager_tenure_years"],
+        "roll_win_pct": None,
+        "cal_topq_years": None,
+        "cal_win_pct": None,
+        "downside_dev_3y": None,
+        "sip_cagr_3y": None,
+        "sip_cagr_5y": None,
+        "reason": None,
+    }
+    try:
+        nav = load_nav(str(scheme_code))
+    except (FileNotFoundError, OSError, ValueError):
+        nav = pd.Series(dtype=float)
+    if nav is None or len(nav) < 2:
+        data["reason"] = "NAV series unavailable"
+        return {"data": data, "availability": "partial"}
+    monthly = _month_end_series(nav)
+    try:
+        median = category_median_series(load_metrics(), str(row["cat"]), min_funds=3)
+    except Exception:
+        median = pd.Series(dtype=float)
+    if median is None or median.dropna().empty:
+        data["reason"] = "Category median series unavailable"
+        return {"data": data, "availability": "partial"}
+    # Rolling 1Y win rate vs category median: monthly step, windows ending in the last 5Y.
+    fund_roll = monthly / monthly.shift(12) - 1.0
+    med_roll = (1.0 + median).rolling(12).apply(lambda x: float(pd.Series(x).prod()) - 1.0, raw=True)
+    end = monthly.index[-1]
+    both = pd.DataFrame({"fund": fund_roll, "med": med_roll}).dropna()
+    both = both[(both.index > end - pd.DateOffset(years=5)) & (both.index <= end)]
+    if len(both) >= 12:
+        data["roll_win_pct"] = round(float((both["fund"] > both["med"]).mean()) * 100, 1)
+    # Calendar years: fund return vs compounded category-median monthly returns; top-quartile
+    # years rank the fund against same category + plan peers with a full year of NAV.
+    fund_cal = _calendar_year_returns(monthly)
+    med_monthly = median.dropna()
+    med_cal: dict[int, float] = {}
+    for year in fund_cal:
+        seg = med_monthly[(med_monthly.index.year == year)]
+        if len(seg) >= 12:
+            med_cal[year] = float((1.0 + seg).prod() - 1.0)
+    completed = sorted(set(fund_cal) & set(med_cal))
+    if len(completed) >= 3:
+        data["cal_win_pct"] = round(float(sum(fund_cal[y] > med_cal[y] for y in completed) / len(completed)) * 100, 1)
+    peers = frame[(frame["cat"] == row["cat"]) & (frame["plan"] == row["plan"])]
+    topq = 0
+    for year in completed:
+        peer_rets: dict[str, float | None] = {}
+        for code in peers["code"].astype(str):
+            try:
+                peer_rets[code] = _calendar_year_returns(_month_end_series(load_nav(code))).get(year)
+            except (FileNotFoundError, OSError, ValueError):
+                continue
+        peer_rets = {c: v for c, v in peer_rets.items() if v is not None}
+        if len(peer_rets) >= 8 and str(scheme_code) in peer_rets:
+            if compute_category_quartiles(peer_rets, min_peers=8).get(str(scheme_code)) == 1:
+                topq += 1
+    data["cal_topq_years"] = topq if completed else None
+    # Downside deviation 3Y (annualised, monthly returns below 0), in percent per annum.
+    rets_3y = monthly.pct_change().dropna().tail(36)
+    if len(rets_3y) >= 12:
+        downside = rets_3y.clip(upper=0.0)
+        data["downside_dev_3y"] = round(float((downside ** 2).mean() ** 0.5 * (12 ** 0.5)) * 100, 2)
+    # Monthly SIP XIRR from month-end NAV: 36 instalments need 37 points, 60 need 61.
+    for months, field in ((37, "sip_cagr_3y"), (61, "sip_cagr_5y")):
+        window = monthly.tail(months)
+        if len(window) >= months:
+            val = engine_analytics.sip_xirr(window)
+            data[field] = round(float(val) * 100, 2) if val is not None else None
+    return {"data": data, "availability": "ready"}
+
+
+class MfResearchShortlistCreateRequest(BaseModel):
+    scheme_code: str = Field(..., min_length=1, max_length=16)
+    reason: str | None = Field(None, max_length=500)
+
+
+_SHORTLIST_CSV_COLS = [
+    ("scheme_code", "Scheme Code"), ("fund", "Fund Name"), ("category", "Category"), ("plan", "Plan"),
+    ("score", "FH Checklist Score"), ("ret_1y", "1Y %"), ("cagr_3y", "3Y CAGR %"), ("cagr_5y", "5Y CAGR %"),
+    ("sharpe_3y", "Sharpe 3Y"), ("cap_spread_3y", "Capture Spread 3Y (pp)"), ("quartile_2y", "Quartile 2Y (computed)"),
+    ("manager_name", "Fund Manager"), ("manager_tenure_years", "Manager Tenure (years)"),
+    ("reason", "Reason"), ("date_added", "Date Added"),
+]
+
+
+def _shortlist_rows(staff_id: str) -> list[dict[str, Any]]:
+    """Active shortlist rows joined to the screener frame. Never reads FH Recommended state."""
+    items = _REPO.list_mf_research_shortlist(staff_id)
+    frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map())
+    lookup: dict[str, dict[str, Any]] = {}
+    if items:
+        codes = [it["scheme_code"] for it in items]
+        sub = frame[frame["code"].isin(codes)]
+        lookup = {r["code"]: r for r in mf_screener.records(sub)}
+    out = []
+    for it in items:
+        f = lookup.get(it["scheme_code"], {})
+        out.append({
+            "id": it["id"],
+            "scheme_code": it["scheme_code"],
+            "fund": f.get("name"),
+            "category": f.get("cat_label"),
+            "cat": f.get("cat"),
+            "plan": f.get("plan"),
+            "score": f.get("score"),
+            "ret_1y": f.get("ret_1y"),
+            "cagr_3y": f.get("cagr_3y"),
+            "cagr_5y": f.get("cagr_5y"),
+            "sharpe_3y": f.get("sharpe_3y"),
+            "cap_spread_3y": f.get("cap_spread_3y"),
+            "quartile_2y": f.get("quartile_2y"),
+            "manager_name": f.get("manager_name"),
+            "manager_tenure_years": f.get("manager_tenure_years"),
+            "reason": it.get("reason"),
+            "date_added": it.get("created_at"),
+            "status": it.get("status"),
+        })
+    return out
+
+
+@router.get("/mf-research/shortlist")
+def list_mf_research_shortlist(
+    staff: Annotated[dict, Depends(require_staff)],
+    format: str = Query("json", pattern="^(json|csv)$"),
+):
+    """Staff-private research shortlist, joined to the screener frame."""
+    rows = _shortlist_rows(staff["id"])
+    if format == "csv":
+        buf = io.StringIO()
+        writer = csv.DictWriter(buf, fieldnames=[h for _, h in _SHORTLIST_CSV_COLS])
+        writer.writeheader()
+        for r in rows:
+            writer.writerow({h: r.get(k) for k, h in _SHORTLIST_CSV_COLS})
+        return PlainTextResponse(
+            buf.getvalue(), media_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="fund-horizon-research-shortlist.csv"'},
+        )
+    return {"data": rows, "total": len(rows), "availability": "ready"}
+
+
+@router.post("/mf-research/shortlist", status_code=201)
+def add_mf_research_shortlist(
+    body: MfResearchShortlistCreateRequest,
+    request: Request,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Add (or reactivate) a scheme on the staff member's research shortlist.
+    Adding here never marks anything FH Recommended, and vice versa."""
+    verify_csrf(request)
+    return _REPO.add_mf_research_shortlist(staff["id"], body.scheme_code.strip(), body.reason)
+
+
+@router.delete("/mf-research/shortlist/{scheme_code}")
+def remove_mf_research_shortlist(
+    scheme_code: str,
+    request: Request,
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Soft-remove a scheme from the staff member's research shortlist."""
+    verify_csrf(request)
+    if not _REPO.remove_mf_research_shortlist(staff["id"], scheme_code):
+        raise HTTPException(404, "Shortlist item not found")
+    return {"success": True}
 
 
 @router.get("/mutual-funds/quartile-ranking")

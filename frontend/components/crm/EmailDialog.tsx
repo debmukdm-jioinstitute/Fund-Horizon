@@ -27,8 +27,9 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
   const [outcome, setOutcome] = useState<EmailOutcome | null>(null);
   const first = useRef<HTMLElement | null>(null);
 
+  useEffect(() => { first.current?.focus(); }, []); // once: onClose is a new function each render, so it must not drive the focus
+
   useEffect(() => {
-    first.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

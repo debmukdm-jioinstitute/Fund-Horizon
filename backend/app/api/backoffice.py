@@ -1177,7 +1177,7 @@ STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance"
 BACKOFFICE_PAGES = (
     "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/macro", "/backoffice/micro",
     "/backoffice/derivatives", "/backoffice/flows", "/backoffice/research",
-    "/backoffice/data-health", "/backoffice/crm", "/backoffice/operations", "/backoffice/chats",
+    "/backoffice/data-health", "/backoffice/crm", "/backoffice/operations",
     "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/settings",
 )
 

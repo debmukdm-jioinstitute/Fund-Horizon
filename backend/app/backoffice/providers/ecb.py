@@ -78,7 +78,7 @@ class EcbProvider(BaseProvider):
         )
 
     def fetch(self, cursor: str | None = None) -> FetchResult:
-        """Fetch the last ~90 business days so the impact engine has history, not just today's fixing."""
+        """Fetch the last ~90 business days so series history is available, not just today's fixing."""
         try:
             res = self._http_get_with_retry(ECB_HIST_URL)
             if res.status_code == 200:

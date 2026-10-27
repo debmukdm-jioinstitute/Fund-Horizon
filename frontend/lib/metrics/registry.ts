@@ -996,7 +996,7 @@ export const METRICS: Record<string, MetricDef> = {
   },
 
   // ---------------------------------------------------------------------------
-  // Impact Engine & Scenario Stress Simulation
+  // Correlation & scenario metrics
   // ---------------------------------------------------------------------------
   correlation_r: {
     key: "correlation_r",

@@ -22,15 +22,6 @@ class MarketResponseEnvelope(BaseModel, Generic[T]):
     coverage: str | None = None
     method_version: str = "1.0.0"
 
-
-class ImpactAnalyzeRequest(BaseModel):
-    series_x_id: str = "FX:USDINR"
-    series_y_id: str = "VOL:US:VIX"
-    horizon_days: int = 60  # 20, 60, 120
-    lag_days: int = 0
-
-
-class ImpactScenarioRequest(BaseModel):
     usd_shock_pct: float = 1.0  # e.g. +1%
     us_yield_shock_bps: float = 25.0  # e.g. +25 bps
     oil_shock_pct: float = 10.0  # e.g. +10%

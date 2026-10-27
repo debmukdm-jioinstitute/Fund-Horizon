@@ -82,21 +82,6 @@ def test_backoffice_derivatives_api(client):
     assert body["underlying"] == "NIFTY"
 
 
-def test_backoffice_impact_simulation_apis(client):
-    sid = _create_staff("analyst")
-    _login_staff(client, sid)
-
-    # Scenario simulation
-    scen_req = {
-        "usd_shock_pct": 1.0,
-        "us_yield_shock_bps": 25.0,
-        "oil_shock_pct": 10.0,
-        "modified_duration": 6.0,
-    }
-    r = client.post("/api/backoffice/impact/scenario", json=scen_req)
-    assert r.status_code == 200
-    body = r.json()
-    assert body["impacts"]["bond_portfolio_price_change_pct"] == -1.5
 
 
 def test_backoffice_briefing_api(client):

@@ -9,13 +9,6 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from app.backoffice.analytics.derivatives_math import calculate_pcr, compute_max_pain
-from app.backoffice.analytics.impact_engine import (
-    align_paired_series,
-    calculate_bps_changes,
-    calculate_log_returns,
-    compute_bond_price_sensitivity,
-    compute_correlation_and_beta,
-)
 from app.backoffice.analytics.yields_math import (
     calculate_spread_bps,
     compute_cross_country_spread,
@@ -368,87 +361,6 @@ class BackofficeService:
         }
         _ISSUER_CACHE[symbol] = (time.monotonic(), data)
         return data
-
-    def analyze_impact(
-        self,
-        series_x_id: str,
-        series_y_id: str,
-        horizon_days: int = 60,
-        lag_days: int = 0,
-    ) -> dict[str, Any]:
-        """Perform regression and rolling relationship between two series."""
-        obs_x = self.repo.get_observations_series(series_x_id, limit=horizon_days * 2)
-        obs_y = self.repo.get_observations_series(series_y_id, limit=horizon_days * 2)
-
-        data_x = [(o["observed_at"], o["value_numeric"]) for o in obs_x if o.get("value_numeric") is not None]
-        data_y = [(o["observed_at"], o["value_numeric"]) for o in obs_y if o.get("value_numeric") is not None]
-
-        # Use log returns if prices/FX, or bps changes if yields
-        ret_x = calculate_bps_changes(data_x) if "YIELD" in series_x_id else calculate_log_returns(data_x)
-        ret_y = calculate_bps_changes(data_y) if "YIELD" in series_y_id else calculate_log_returns(data_y)
-
-        # Lag series Y if lag_days > 0
-        if lag_days > 0 and len(ret_y) > lag_days:
-            ret_y = ret_y[lag_days:]
-            ret_x = ret_x[:len(ret_y)]
-
-        alignment = align_paired_series(ret_x, ret_y)
-        stats = compute_correlation_and_beta(alignment["paired_x"], alignment["paired_y"])
-
-        return {
-            "series_x_id": series_x_id,
-            "series_y_id": series_y_id,
-            "horizon_days": horizon_days,
-            "lag_days": lag_days,
-            "alignment": {
-                "n": alignment["n"],
-                "coverage_pct": alignment["coverage_pct"],
-                "status": alignment["status"],
-            },
-            "statistics": stats,
-            "paired_sample": [
-                {"date": d, "x": round(x, 6), "y": round(y, 6)}
-                for d, x, y in zip(alignment["dates"][-30:], alignment["paired_x"][-30:], alignment["paired_y"][-30:])
-            ],
-            "method_version": "OLS Empirical Elasticity Engine 1.0 (No Look-Ahead)",
-        }
-
-    def simulate_scenario(
-        self,
-        usd_shock_pct: float,
-        us_yield_shock_bps: float,
-        oil_shock_pct: float,
-        modified_duration: float = 6.5,
-    ) -> dict[str, Any]:
-        """Simulate macro shocks across fixed income, equities, and FX."""
-        # 1. Bond price impact
-        bond_impact = compute_bond_price_sensitivity(modified_duration, us_yield_shock_bps)
-
-        # 2. INR sensitivity (empirical: +1% USD broad rally typically induces -0.35% to -0.65% INR pressure)
-        inr_impact_pct = round(-0.45 * usd_shock_pct, 4)
-
-        # 3. Oil inflation pass-through
-        oil_cpi_bps = round(oil_shock_pct * 1.8, 2)  # ~18 bps per 10% oil rise
-
-        return {
-            "shocks": {
-                "usd_rally_pct": usd_shock_pct,
-                "us_10y_yield_shift_bps": us_yield_shock_bps,
-                "crude_oil_shock_pct": oil_shock_pct,
-                "assumed_portfolio_duration": modified_duration,
-            },
-            "impacts": {
-                "bond_portfolio_price_change_pct": bond_impact["estimated_price_change_pct"],
-                "bond_duration_effect_pct": bond_impact["duration_effect_pct"],
-                "inr_fx_shift_pct": inr_impact_pct,
-                "india_cpi_inflation_impact_bps": oil_cpi_bps,
-            },
-            "explanation": (
-                f"A +{us_yield_shock_bps} bps yield shock reduces a {modified_duration:.1f}-year duration "
-                f"bond portfolio value by {abs(bond_impact['estimated_price_change_pct']):.2f}%. "
-                f"A +{usd_shock_pct}% USD dollar index rally transmits approximately {inr_impact_pct}% to USD/INR."
-            ),
-        }
 
     def commit_manual_import(self, import_type: str, filename: str, csv_content: str, staff_id: str) -> dict[str, Any]:
         """Validate and atomically commit manual import rows into the repository."""

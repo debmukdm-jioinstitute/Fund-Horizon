@@ -14,7 +14,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from app.data.loader import data_dir, load_metrics
+from app.data.loader import data_dir, load_metrics, load_nav
 
 # Trendlyne-style groups -> (canonical category key, label). Keys come from app.data.categories.
 CATEGORY_GROUPS: dict[str, list[tuple[str, str]]] = {
@@ -200,6 +200,41 @@ def _base_frame() -> pd.DataFrame:
     return df.reset_index(drop=True)
 
 
+@lru_cache(maxsize=2)
+def _calendar_quartiles(nav_asof: str) -> dict[str, dict[str, int | None]]:
+    """Computed quartiles for YTD, previous and prior calendar year, per category + plan peer group (min 8 peers).
+
+    Built from the shipped month-end NAV files (about 10s once per NAV date) so the FH score does not wait for the
+    nightly screening refresh. The nightly value, when present, takes precedence.
+    """
+    from app.backoffice.mf_research_v2 import calendar_year_returns
+    from app.backoffice.screening.quartiles import compute_category_quartiles
+
+    base = _base_frame()
+    out: dict[str, dict[str, int | None]] = {}
+    for _k, grp in base.groupby(base["cat"] + "|" + base["plan"]):
+        rets: dict[str, dict[str, float]] = {"ytd": {}, "py1": {}, "py2": {}}
+        for code in grp["code"]:
+            try:
+                nav = load_nav(str(code))
+            except OSError:
+                continue
+            if nav.empty:
+                continue
+            ry = int(nav.index[-1].year)
+            cal = calendar_year_returns(nav)
+            for k, y in (("py1", ry - 1), ("py2", ry - 2)):
+                if y in cal:
+                    rets[k][str(code)] = cal[y]
+            dec = nav[(nav.index.year == ry - 1) & (nav.index.month == 12)]
+            if len(dec) and nav.index[-1].year > dec.index[-1].year:
+                rets["ytd"][str(code)] = float(nav.iloc[-1] / dec.iloc[-1] - 1.0)
+        for k, r in rets.items():
+            for code, q in compute_category_quartiles(r, min_peers=8).items():
+                out.setdefault(code, {})[k] = q
+    return out
+
+
 def _manager_series(manager_map: dict[str, Any] | None, df: pd.DataFrame, field: str, pos: int) -> pd.Series:
     """Manager name/start per scheme code. manager_map values are (name, start) tuples or dict rows."""
     if not manager_map:
@@ -308,8 +343,12 @@ def _scored(
     # FH score engine (app.backoffice.fh_score): calendar-year quartiles come from the nightly screening refresh.
     from app.backoffice import fh_score
 
+    computed = _calendar_quartiles(str(nav_as_of))
     for key in ("ytd", "py1", "py2"):
-        df[f"cal_q_{key}"] = [((consistency_map or {}).get(str(c)) or {}).get("cal_quartiles", {}).get(key) for c in df["code"]]
+        df[f"cal_q_{key}"] = [
+            (((consistency_map or {}).get(str(c)) or {}).get("cal_quartiles") or {}).get(key) or computed.get(str(c), {}).get(key)
+            for c in df["code"]
+        ]
     return fh_score.score_frame(df, ref=nav_as_of if pd.notna(nav_as_of) else None)
 
 

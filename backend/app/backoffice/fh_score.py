@@ -26,8 +26,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "weights_off": {"history": 20, "quartile": 20, "ratios": 25, "outperf": 20, "excess": 15},
     "weights_on": {"history": 20, "quartile": 20, "ratios": 20, "outperf": 15, "excess": 15, "drawdown": 10},
     "period_weights": {"1": 0.2, "3": 0.4, "5": 0.4},
-    # Filter 1. Thresholds are provisional until `confirmed` is true; auto-recommendation is blocked meanwhile.
-    "history": {"confirmed": False, "manager_tenure_years": 3.0, "fund_history_years": 5.0},
+    # Filter 1. Owner delegated the choice (2026-10-28): manager tenure >= 3y and fund age >= 5y. Set confirmed false to block auto-recommendation.
+    "history": {"confirmed": True, "manager_tenure_years": 3.0, "fund_history_years": 5.0},
     # Filter 2. Preference order is intentional: Q2/Q3 best, Q1 lower, Q4 lowest.
     "quartile": {
         "points": {"1": 0.6, "2": 1.0, "3": 1.0, "4": 0.0},
@@ -56,7 +56,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
 }
 
 PROVISIONAL = [
-    "Filter 1 (fund manager and history): the source's two history criteria and the '20+3' example are undefined. Thresholds are placeholders (manager tenure 3y, fund history 5y) and auto-recommendation stays blocked until `history.confirmed` is set.",
+    "Filter 1 (fund manager and history): the source's two history criteria and the '20+3' example are undefined. The owner delegated the call, so the working definition is manager tenure >= 3 years and fund history >= 5 years (`history.confirmed` is true). Change both in config if the source meant something else.",
     "Filter weights beyond history 20 and quartile 20 (ratios 25, outperformance 20, excess 15; with drawdown 20/15/15/10) are proposed defaults.",
     "Quartile points (Q2/Q3 1.0, Q1 0.6, Q4 0), period weights and 'two qualifying periods = full credit' are proposed defaults.",
     "Capture ratio = Advisorkhoj up-capture % divided by down-capture %; unavailable when down-capture is zero, negative or missing. Bounded: 1.0 scores 0.5, 1.5 or more scores full.",

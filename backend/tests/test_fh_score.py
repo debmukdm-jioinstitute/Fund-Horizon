@@ -32,7 +32,7 @@ def _frame(target: dict, cfg=None, peers=8):
 def test_strong_fund_recommended_at_boundary_and_blocked_when_unconfirmed():
     r = _frame({})
     assert r["fh_score"] >= 80 and r["fh_auto"] and r["fh_blockers"] == []
-    cfg = fh_score.load_config()  # history.confirmed defaults to False
+    cfg = {**CFG_OK, "history": {**CFG_OK["history"], "confirmed": False}}
     r2 = _frame({}, cfg)
     assert not r2["fh_auto"] and "history_criteria_unconfirmed" in r2["fh_blockers"]
     cfg3 = {**CFG_OK, "recommend": {**CFG_OK["recommend"], "threshold": r["fh_score"] + 0.01}}

@@ -53,6 +53,7 @@ function PageEditor({ current, onSave }: { current: string[]; onSave: (v: string
 export default function SettingsPage() {
   const { customer } = useAuth();
   const isAdmin = customer?.role === "admin";
+  const [activeTab, setActiveTab] = useState<'lead'|'staff'|'recommended'|'watchlists'>('lead');
 
   // Watchlist state
   const [watchlists, setWatchlists] = useState<WatchlistItem[]>([]);
@@ -246,26 +247,68 @@ export default function SettingsPage() {
     }
   }
 
+  const activeCls = "bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] font-medium";
+  const inactiveCls = "text-[#706E6B] dark:text-[#A8B4C4] hover:bg-[#F3F3F3] dark:hover:bg-[#171E27]";
+
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
-              Settings, Lead Generation &amp; Terminal Administration
-            </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
-              Terminal Configuration
-            </span>
-          </div>
-          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-            Client intake QR generator, FH Recommended fund curation, watchlists, and operator permissions
-          </p>
-        </div>
+      <div className="pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mb-1">Backoffice / Settings</div>
+        <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">Settings</h1>
+        <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
+          Manage lead capture, staff access and your research lists.
+        </p>
       </div>
 
-      {/* Client Intake QR Code & Lead Capture Section */}
+      {/* Layout: sidebar + content */}
+      <div className="flex gap-6 items-start">
+        {/* Sidebar */}
+        <nav className="w-40 shrink-0 flex flex-col gap-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab("lead")}
+            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "lead" ? activeCls : inactiveCls}`}
+          >
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+            <span>Lead generation</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("staff")}
+            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "staff" ? activeCls : inactiveCls}`}
+          >
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 13c0-3 2-5 6-5s6 2 6 5"/></svg>
+            <span>Staff &amp; permissions</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("recommended")}
+            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "recommended" ? activeCls : inactiveCls}`}
+          >
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="2" rx="1"/><rect x="2" y="6" width="8" height="2" rx="1"/><rect x="2" y="10" width="10" height="2" rx="1"/></svg>
+            <div>
+              <div>FH Recommended</div>
+              <div className="text-[10px] opacity-70">{Object.keys(rec.mfMap).length} MF · {Object.keys(rec.pmsMap).length} PMS</div>
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("watchlists")}
+            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "watchlists" ? activeCls : inactiveCls}`}
+          >
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10a1 1 0 011 1v11l-5-3-5 3V3a1 1 0 011-1z"/></svg>
+            <div>
+              <div>Watchlists</div>
+              <div className="text-[10px] opacity-70">{watchlists.length}</div>
+            </div>
+          </button>
+        </nav>
+
+        {/* Main content */}
+        <div className="flex-1 min-w-0 space-y-4">
+
+      {activeTab === "lead" && <>{/* Lead Generation Section */}
       <div className="terminal-panel p-4 space-y-4 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C5DDF7] dark:border-[#1F4A74]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           <div>
@@ -431,9 +474,10 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      </>}
 
       {/* Admin-only Staff Provisioning */}
-      {isAdmin && (
+      {activeTab === "staff" && isAdmin && (
         <div className="terminal-panel p-3.5 space-y-3">
           <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
             <div>
@@ -590,7 +634,7 @@ export default function SettingsPage() {
       )}
 
       {/* FH Recommended Picks Manager */}
-      <div className="terminal-panel p-3.5 space-y-3">
+      {activeTab === "recommended" && <div className="terminal-panel p-3.5 space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           <div>
             <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] flex items-center gap-1.5">
@@ -710,10 +754,10 @@ export default function SettingsPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>}
 
       {/* Watchlist Manager */}
-      <div className="terminal-panel p-3.5 space-y-3">
+      {activeTab === "watchlists" && <div className="terminal-panel p-3.5 space-y-3">
         <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           <div>
             <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
@@ -810,7 +854,9 @@ export default function SettingsPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>}
+        </div>{/* flex-1 */}
+      </div>{/* flex */}
     </div>
   );
 }

@@ -1859,6 +1859,36 @@ export const getMfPortfolioCoverage = async (signal?: AbortSignal): Promise<MfPo
   };
 };
 
+/** Fund-vs-fund portfolio overlap for exactly two schemes (Compare only). */
+export interface MfFundOverlap {
+  code_a: string;
+  code_b: string;
+  portfolio_available: boolean;
+  missing_codes: string[];
+  as_of_a: string | null;
+  as_of_b: string | null;
+  source: string | null;
+  reason: string | null;
+  funds: { code: string; available: boolean; scheme_name?: string | null; amc?: string | null; as_of?: string | null }[];
+  overlap: {
+    shared_count: number;
+    shared_weight_in_a_pct: number | null;
+    shared_weight_in_b_pct: number | null;
+    reason: string | null;
+    shared_holdings: { name?: string | null; isin?: string | null; weight_in_a_pct?: number | null; weight_in_b_pct?: number | null }[];
+  } | null;
+}
+
+export const getMfFundOverlap = async (
+  codeA: string, codeB: string, signal?: AbortSignal,
+): Promise<MfFundOverlap | null> => {
+  const q = new URLSearchParams({ code_a: codeA, code_b: codeB });
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/portfolio-overlap?${q.toString()}`, { signal });
+  const d = obj(raw.data);
+  if (Object.keys(d).length === 0) return null;
+  return d as unknown as MfFundOverlap;
+};
+
 export interface MfClientOverlap {
   scheme_code: string;
   fund?: string | null;

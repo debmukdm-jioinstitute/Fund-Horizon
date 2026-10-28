@@ -1,33 +1,28 @@
 "use client";
 
 import { Suspense, useMemo } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
+import { useParams, useSearchParams } from "next/navigation";
+import FundDetailPage from "@/components/backoffice/FundDetailPage";
 import type { MutualFundItem } from "@/lib/backoffice";
 
-function FundDetail() {
+function Detail() {
   const { code } = useParams<{ code: string }>();
   const sp = useSearchParams();
-  const router = useRouter();
-  const scheme = useMemo<MutualFundItem>(() => {
+  // The screener sends the row in ?s= so the page opens with name, NAV and fees at once; a bare code still works.
+  const scheme = useMemo(() => {
     try {
       return JSON.parse(sp.get("s") ?? "") as MutualFundItem;
     } catch {
       return { scheme_code: code, scheme_name: code } as MutualFundItem;
     }
   }, [sp, code]);
-  // window.close only works for script-opened tabs; fall back to the list.
-  const onClose = () => {
-    window.close();
-    router.push("/backoffice/mutual-funds");
-  };
-  return <MutualFundDrawer scheme={scheme} onClose={onClose} />;
+  return <FundDetailPage scheme={scheme} />;
 }
 
 export default function MutualFundDetailPage() {
   return (
     <Suspense fallback={null}>
-      <FundDetail />
+      <Detail />
     </Suspense>
   );
 }

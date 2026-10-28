@@ -143,7 +143,7 @@ function toItem(r: MfScreenerRow): MutualFundItem {
 }
 
 // Opens the staff detail view in a new tab; the row travels in ?s= so the page needs no extra fetch.
-const fundHref = (r: MfScreenerRow) => `/backoffice/mutual-funds/${encodeURIComponent(r.code)}?s=${encodeURIComponent(JSON.stringify(toItem(r)))}`;
+const fundHref = (r: MfScreenerRow) => `/backoffice/mutual-funds/${encodeURIComponent(r.code)}?s=${encodeURIComponent(JSON.stringify({ ...toItem(r), fh_status: r.fh_status }))}`;
 
 export default function MutualFundsPage() {
   return (

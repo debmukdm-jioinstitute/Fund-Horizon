@@ -12,7 +12,6 @@ import {
   type MfPortfolioCoverage,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
-import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
 import MfOnePager from "@/components/backoffice/MfOnePager";
 import CompareTray from "@/components/compare/CompareTray";
@@ -165,6 +164,10 @@ function initialFilters(params: URLSearchParams): ResearchFilters {
   };
 }
 
+// Opens the full fund detail page in a new tab; the row travels in ?s= so the page opens with name, NAV and fees at once.
+const openFund = (it: MutualFundItem) =>
+  window.open(`/backoffice/mutual-funds/${encodeURIComponent(it.scheme_code)}?s=${encodeURIComponent(JSON.stringify(it))}`, "_blank", "noopener,noreferrer");
+
 export default function MfResearchPage() {
   return (
     <Suspense fallback={null}>
@@ -210,7 +213,6 @@ function MfResearch() {
   const [presetMsg, setPresetMsg] = useState("");
   const [presetToDelete, setPresetToDelete] = useState("");
 
-  const [selected, setSelected] = useState<MutualFundItem | null>(null);
   const [onePager, setOnePager] = useState<MfScreenerRow | null>(null);
 
   // Managers tab state
@@ -977,7 +979,7 @@ function MfResearch() {
                           if (c.key === "fund") {
                             return (
                               <td key={c.key}>
-                                <button type="button" onClick={() => setSelected(toItem(r))}
+                                <button type="button" onClick={() => openFund(toItem(r))}
                                   className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug">
                                   {shortDisplayName(r.name)}
                                 </button>
@@ -1254,7 +1256,7 @@ function MfResearch() {
                     return (
                       <tr key={String(item.id ?? item.scheme_code)}>
                         <td>
-                          <button type="button" onClick={() => setSelected(shortlistItem(r))}
+                          <button type="button" onClick={() => openFund(shortlistItem(r))}
                             className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline leading-snug">
                             {shortDisplayName(r.name)}
                           </button>
@@ -1306,7 +1308,6 @@ function MfResearch() {
         onRemove={compare.remove} onClear={compare.clear} onCompare={compare.openCompare}
       />
       <CompareView open={compare.compareOpen} type="mf" ids={compare.selectedIds} onClose={compare.closeCompare} onRemoveId={compare.remove} resolveLabel={compare.resolveLabel} />
-      <MutualFundDrawer scheme={selected} onClose={() => setSelected(null)} />
       <MfOnePager row={onePager} onClose={() => setOnePager(null)} />
       {mgrDrawer && <MfManagerDrawer manager={mgrDrawer} onClose={() => setMgrDrawer(null)} />}
     </div>

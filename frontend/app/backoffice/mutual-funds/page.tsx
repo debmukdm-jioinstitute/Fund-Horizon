@@ -16,6 +16,7 @@ import {
 import { formatISTDate } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
 import { shortDisplayName } from "@/components/backoffice/mfDisplayName";
+import MfMetricExplain from "@/components/backoffice/MfMetricExplain";
 import MfOnePager from "@/components/backoffice/MfOnePager";
 import MfQuartileRankings from "@/components/backoffice/MfQuartileRankings";
 import CompareTray from "@/components/compare/CompareTray";
@@ -163,6 +164,7 @@ function MutualFunds() {
   const router = useRouter();
   const params = useSearchParams();
   const compare = useCompareSelection("mf");
+  const [explain, setExplain] = useState<{ metric: Col; row: MfScreenerRow } | null>(null);
 
   const category = useMemo(() => (params.has("category") ? params.getAll("category") : params.has("q") || params.has("section") ? [] : DEFAULT_CATEGORIES), [params]);
   const plan = useMemo(() => (params.has("plan") || params.has("section") ? params.getAll("plan") : PLANS), [params]);
@@ -698,7 +700,7 @@ function MutualFunds() {
                         </div>
                       </td>
                       {cols.map((c) => (
-                        <Cell key={c.key} col={c} row={r} />
+                        <Cell key={c.key} col={c} row={r} onExplain={() => setExplain({ metric: c, row: r })} />
                       ))}
                     </tr>
                   );
@@ -754,20 +756,27 @@ function MutualFunds() {
         resolveLabel={compare.resolveLabel}
       />
       <MutualFundDrawer scheme={selected} onClose={() => setSelected(null)} />
+      <MfMetricExplain metric={explain?.metric ?? null} row={explain?.row ?? null} onClose={() => setExplain(null)} />
       <MfOnePager row={onePager} onClose={() => setOnePager(null)} />
     </div>
   );
 }
 
-function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
+function Cell({ col, row, onExplain }: { col: Col; row: MfScreenerRow; onExplain: () => void }) {
   const v = row[col.key];
+  // Whole cell opens the plain-language explanation; keyboard users get Enter/Space.
+  const click = {
+    role: "button" as const, tabIndex: 0, onClick: onExplain,
+    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onExplain(); } },
+  };
+  const cls = "cursor-pointer hover:bg-[#EAF5FE] dark:hover:bg-[#10243A] ";
   if (col.kind === "score") {
     const max = col.key === "score" ? 100 : 25;
     const label =
       col.key === "perf" ? row.perf_label : col.key === "ops" ? row.ops_label : col.key === "risk" ? row.risk_label : col.key === "port" ? row.port_label : null;
     const w = typeof v === "number" ? Math.max(0, Math.min(100, (v / max) * 100)) : 0;
     return (
-      <td className="text-right whitespace-nowrap">
+      <td {...click} title="Click to see why" className={cls + "text-right whitespace-nowrap"}>
         {label && <span className="mr-2 text-[10px] uppercase text-[#706E6B] dark:text-[#A8B4C4]">{label}</span>}
         <span className="font-medium tabular-nums">{typeof v === "number" ? v : "-"}</span>
         <div className="mt-1 ml-auto h-1 w-20 rounded bg-[#E5E5E5] dark:bg-[#2B3644]" aria-hidden>
@@ -779,7 +788,7 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
   if (col.kind === "stars") {
     const n = typeof v === "number" ? v : 0;
     return (
-      <td className="text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]" title={n ? `${n} of 5 (FH rating, not Morningstar)${row.stars_provisional ? ". Provisional: under 3 years of history, ranked on 1Y Sharpe" : ""}` : "Not rated"}>
+      <td {...click} className={cls + "text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]"} title={n ? `${n} of 5 (FH rating, not Morningstar)${row.stars_provisional ? ". Provisional: under 3 years of history, ranked on 1Y Sharpe" : ""}` : "Not rated"}>
         {n ? "★".repeat(n) + "☆".repeat(5 - n) : <span className="text-[#706E6B] dark:text-[#A8B4C4]">-</span>}
         {n > 0 && row.stars_provisional ? <sup className="ml-0.5 text-[9px]">P</sup> : null}
       </td>
@@ -787,16 +796,16 @@ function Cell({ col, row }: { col: Col; row: MfScreenerRow }) {
   }
   if (col.kind === "text")
     return (
-      <td className="min-w-[200px]">
+      <td {...click} title="Click to see why" className={cls + "min-w-[200px]"}>
         <div>{String(v ?? "-")}</div>
         <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Benchmark: {String(row.benchmark ?? "-")}</div>
       </td>
     );
-  if (col.kind === "aum") return <td className="text-right tabular-nums">{fmt(v, 0)}</td>;
+  if (col.kind === "aum") return <td {...click} title="Click to see why" className={cls + "text-right tabular-nums"}>{fmt(v, 0)}</td>;
   const avg = col.avg ? row[col.avg] : undefined;
   const when = col.date ? row[col.date] : undefined;
   return (
-    <td className={`text-right tabular-nums ${col.kind === "pct" && !col.plain ? tone(v) : ""}`}>
+    <td {...click} title="Click to see why" className={`${cls}text-right tabular-nums ${col.kind === "pct" && !col.plain ? tone(v) : ""}`}>
       {fmt(v, col.digits)}
       {col.kind === "pct" && typeof v === "number" ? "%" : ""}
       {typeof when === "string" && when && <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(when)}</div>}

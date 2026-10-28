@@ -273,6 +273,7 @@ export default function SettingsPage() {
             <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
             <span>Lead generation</span>
           </button>
+          {isAdmin && (
           <button
             type="button"
             onClick={() => setActiveTab("staff")}
@@ -281,6 +282,7 @@ export default function SettingsPage() {
             <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 13c0-3 2-5 6-5s6 2 6 5"/></svg>
             <span>Staff &amp; permissions</span>
           </button>
+          )}
           <button
             type="button"
             onClick={() => setActiveTab("recommended")}
@@ -308,173 +310,381 @@ export default function SettingsPage() {
         {/* Main content */}
         <div className="flex-1 min-w-0 space-y-4">
 
-      {activeTab === "lead" && <>{/* Lead Generation Section */}
-      <div className="terminal-panel p-4 space-y-4 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C5DDF7] dark:border-[#1F4A74]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[14px]">📱</span>
-              <div className="text-[14px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
-                Client Intake QR Code &amp; Lead Generation
-              </div>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#EAF5FE] dark:bg-[#10372A] text-[#0176D3] dark:text-[#7FE0B5] border border-[#C5DDF7] dark:border-[#1F4A74]">
-                Live CRM Sync
-              </span>
+      {activeTab === "lead" && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-[18px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Lead generation</h2>
+              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">Two ways to bring new enquiries into your CRM.</p>
             </div>
-            <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-              When prospective clients scan this QR code on their phone, it opens the branded Fund Horizon intake form. All submissions automatically sync to your Backoffice CRM.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Link
-              href="/lead"
-              target="_blank"
-              className="terminal-btn text-[11px] py-1 px-2.5 text-[#0176D3] dark:text-[#1B96FF] border-[#C5DDF7] dark:border-[#1F4A74] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F] font-medium flex items-center gap-1"
-            >
-              <span>Test Intake Form</span>
-              <span>↗</span>
-            </Link>
             <Link
               href="/backoffice/crm?tab=leads"
-              className="terminal-btn text-[11px] py-1 px-2.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium flex items-center gap-1"
+              className="px-3 py-1.5 rounded-lg border border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F] text-[12px] font-medium flex items-center gap-1 transition"
             >
-              <span>View in CRM</span>
-              <span>→</span>
+              View CRM ↗
             </Link>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
-          {/* QR Card */}
-          <div className="md:col-span-4 flex flex-col items-center text-center p-4 bg-white dark:bg-[#111722] rounded-xl border border-[#D8E3E0] dark:border-[#25373E] shadow-sm">
-            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E5E5E5] flex items-center justify-center">
-              {qrDataUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={qrDataUrl}
-                  alt="Fund Horizon Client Intake QR Code"
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <div className="text-xs text-[#706E6B] animate-pulse">Generating QR…</div>
-              )}
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Card 1: Client intake */}
+            <div className="bg-white dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] rounded-xl p-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[15px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Client intake</span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] border border-[#C5DDF7] dark:border-[#1F4A74]">CRM sync</span>
+                  </div>
+                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Collect contact details and investment interests.</p>
+                </div>
+              </div>
 
-            <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0176D3] dark:bg-[#1B96FF]" />
-              SCAN WITH PHONE CAMERA
-            </div>
+              {/* QR Preview box with corner viewfinder brackets */}
+              <div className="flex flex-col items-center justify-center py-2">
+                <div className="relative w-32 h-32 flex items-center justify-center p-3">
+                  <span className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-[#94A3B8] dark:border-[#64748B]" />
+                  <span className="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-[#94A3B8] dark:border-[#64748B]" />
+                  <span className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-[#94A3B8] dark:border-[#64748B]" />
+                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-[#94A3B8] dark:border-[#64748B]" />
 
-            {qrDataUrl && (
-              <a
-                href={qrDataUrl}
-                download="fund-horizon-intake-qr.png"
-                className="mt-2.5 text-[11px] text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium flex items-center gap-1"
-              >
-                <span>↓ Download QR (PNG)</span>
-              </a>
-            )}
-          </div>
+                  {qrDataUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={qrDataUrl} alt="Client intake QR" className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2 text-[#94A3B8]">
+                      <div className="w-4 h-4 border-2 border-current rounded-sm flex items-center justify-center"><div className="w-1.5 h-1.5 bg-current" /></div>
+                      <div className="w-4 h-4 border-2 border-current rounded-sm flex items-center justify-center"><div className="w-1.5 h-1.5 bg-current" /></div>
+                      <div className="w-4 h-4 border-2 border-current rounded-sm flex items-center justify-center"><div className="w-1.5 h-1.5 bg-current" /></div>
+                      <div className="w-4 h-4 flex flex-wrap gap-1 p-0.5"><div className="w-1 h-1 bg-current" /><div className="w-1 h-1 bg-current" /></div>
+                    </div>
+                  )}
+                </div>
 
-          {/* Details & Copy Link */}
-          <div className="md:col-span-8 space-y-3.5">
-            <div>
-              <label className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
-                Client Intake URL
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={leadUrl}
-                  className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F3F3F3] dark:bg-[#111722]"
-                />
+                <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-2">QR preview</div>
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Use original QR when implementing</div>
+
+                <div className="flex items-center gap-3 mt-3">
+                  <a
+                    href={qrDataUrl || "#"}
+                    download="fund-horizon-intake-qr.png"
+                    className="px-3 py-1.5 rounded-lg border border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F] text-[12px] font-medium flex items-center gap-1.5 transition"
+                  >
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download QR
+                  </a>
+                  <Link
+                    href="/lead"
+                    target="_blank"
+                    className="text-[12px] text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium flex items-center gap-1"
+                  >
+                    Test form ↗
+                  </Link>
+                </div>
+              </div>
+
+              {/* URL bar */}
+              <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#F8FAFC] dark:bg-[#111722] border border-[#E2E8F0] dark:border-[#2B3644] text-[12px]">
+                <div className="flex items-center gap-2 text-[#536176] dark:text-[#A8B4C4] font-mono truncate">
+                  <svg className="w-4 h-4 shrink-0 text-[#706E6B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  <span className="truncate">fundhorizon.website/lead</span>
+                </div>
                 <button
                   type="button"
                   onClick={copyLeadUrl}
-                  className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-semibold shrink-0 transition"
+                  title="Copy link"
+                  className="p-1 text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#0176D3] dark:hover:text-[#1B96FF] transition shrink-0"
                 >
-                  {copiedLink ? "✓ Copied!" : "Copy Link"}
+                  {copiedLink ? (
+                    <svg className="w-4 h-4 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="8" y="8" width="12" height="12" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2" />
+                    </svg>
+                  )}
                 </button>
               </div>
-            </div>
 
-            <div className="p-3.5 rounded-lg bg-[#F3F3F3] dark:bg-[#111722] border border-[#E5E5E5] dark:border-[#2B3644] space-y-2 text-[12px]">
-              <div className="font-semibold text-[#181818] dark:text-[#EDF2F7] flex items-center gap-1.5">
-                <span>📋</span>
-                <span>Collected Customer Information</span>
+              {/* Information collected */}
+              <div className="pt-2">
+                <div className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7] mb-2.5">Information collected</div>
+                <div className="grid grid-cols-2 gap-y-2.5 gap-x-3 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Full name</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                    <span>Mobile number</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>Email address</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+                      <polyline points="12 6 12 12 16 14" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span>Investment interest</span>
+                  </div>
+                </div>
               </div>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
-                  <span><strong>Customer Name</strong> (Full Legal Name)</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
-                  <span><strong>Phone Number</strong> (10-Digit Mobile)</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
-                  <span><strong>Email Address</strong> (Direct Correspondence)</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#0176D3] dark:text-[#1B96FF]">✓</span>
-                  <span><strong>Investment Interest</strong> (MF, PMS, Advisory)</span>
-                </li>
-              </ul>
+
+              {/* Flow diagram */}
+              <div className="pt-4 border-t border-[#E5E5E5] dark:border-[#2B3644]">
+                <div className="flex flex-col items-center">
+                  <div className="px-3 py-1 rounded-full text-[11px] font-semibold text-[#0176D3] dark:text-[#1B96FF] bg-[#EAF5FE] dark:bg-[#11304F] border border-[#C5DDF7] dark:border-[#1F4A74]">
+                    Client intake
+                  </div>
+                  <div className="w-full max-w-[280px] flex flex-col items-center">
+                    <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    <div className="w-[180px] border-t border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    <div className="w-[180px] flex justify-between">
+                      <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                      <div className="w-px h-2.5 border-r border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-3 w-full">
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-dashed border-[#0176D3] dark:border-[#1B96FF] bg-white dark:bg-[#10151C] text-[11px] text-[#181818] dark:text-[#EDF2F7]">
+                      <svg className="w-3 h-3 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Contact details
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-dashed border-[#0176D3] dark:border-[#1B96FF] bg-white dark:bg-[#10151C] text-[11px] text-[#181818] dark:text-[#EDF2F7]">
+                      <svg className="w-3 h-3 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      Investment interest
+                    </div>
+                  </div>
+                  <div className="w-full max-w-[280px] flex flex-col items-center">
+                    <div className="w-[180px] flex justify-between">
+                      <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                      <div className="w-px h-2.5 border-r border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    </div>
+                    <div className="w-[180px] border-b border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                  </div>
+                  <div className="mt-0.5 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#EAF5FE] dark:bg-[#11304F] border border-[#0176D3] dark:border-[#1B96FF] text-[#0176D3] dark:text-[#1B96FF]">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <ellipse cx="12" cy="5" rx="9" ry="3" />
+                      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                    </svg>
+                    CRM lead • New
+                  </div>
+                  <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] mt-1">Source: qr_code</span>
+                </div>
+              </div>
             </div>
 
-            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] leading-relaxed">
-              💡 <strong>Usage Tip:</strong> Print or place this QR code on reception desks, presentation slides, or client brochures. When scanned, leads flow directly into the CRM with source tag <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-semibold">qr_code</span> and status <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-semibold">new</span>.
-            </div>
-          </div>
-        </div>
-      </div>
+            {/* Card 2: Cross₹word */}
+            <div className="bg-white dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] rounded-xl p-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect x="2" y="6" width="20" height="12" rx="6" />
+                    <circle cx="8" cy="12" r="1.5" />
+                    <circle cx="16" cy="12" r="1.5" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[15px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Cross₹word</span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] border border-[#C5DDF7] dark:border-[#1F4A74]">Lead magnet</span>
+                  </div>
+                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">A 2-minute financial word-search game.</p>
+                </div>
+              </div>
 
-      {/* Cross₹word Game QR */}
-      <div className="terminal-panel p-4 space-y-3 bg-gradient-to-br from-white to-[#F7FAF9] dark:from-[#171E27] dark:to-[#111A24] border-[#C5DDF7] dark:border-[#1F4A74]">
-        <div className="flex items-center gap-2 pb-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
-          <span className="text-[14px]">🧩</span>
-          <div className="text-[14px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Cross₹word Game QR</div>
-          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#EAF5FE] dark:bg-[#10372A] text-[#0176D3] dark:text-[#7FE0B5] border border-[#C5DDF7] dark:border-[#1F4A74]">Lead Magnet</span>
-        </div>
-        <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-          Scanners play a 2-minute word-search of basic financial terms (1 of 20, random each scan), get a token to screenshot, and are saved to CRM Leads with source <span className="font-mono font-semibold text-[#0176D3] dark:text-[#1B96FF]">crossword</span> plus words-correct score.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
-          <div className="md:col-span-4 flex flex-col items-center p-4 bg-white dark:bg-[#111722] rounded-xl border border-[#D8E3E0] dark:border-[#25373E]">
-            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white p-2 rounded-lg border border-[#E5E5E5] flex items-center justify-center">
-              {gameQr ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={gameQr} alt="Fund Horizon Crossword Game QR Code" className="w-full h-full object-contain" />
-              ) : (
-                <div className="text-xs text-[#706E6B] animate-pulse">Generating QR…</div>
-              )}
+              {/* QR Preview box with corner viewfinder brackets */}
+              <div className="flex flex-col items-center justify-center py-2">
+                <div className="relative w-32 h-32 flex items-center justify-center p-3">
+                  <span className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-[#94A3B8] dark:border-[#64748B]" />
+                  <span className="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-[#94A3B8] dark:border-[#64748B]" />
+                  <span className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-[#94A3B8] dark:border-[#64748B]" />
+                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-[#94A3B8] dark:border-[#64748B]" />
+
+                  {gameQr ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={gameQr} alt="Crossword game QR" className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2 text-[#94A3B8]">
+                      <div className="w-4 h-4 border-2 border-current rounded-sm flex items-center justify-center"><div className="w-1.5 h-1.5 bg-current" /></div>
+                      <div className="w-4 h-4 border-2 border-current rounded-sm flex items-center justify-center"><div className="w-1.5 h-1.5 bg-current" /></div>
+                      <div className="w-4 h-4 border-2 border-current rounded-sm flex items-center justify-center"><div className="w-1.5 h-1.5 bg-current" /></div>
+                      <div className="w-4 h-4 flex flex-wrap gap-1 p-0.5"><div className="w-1 h-1 bg-current" /><div className="w-1 h-1 bg-current" /></div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-2">QR preview</div>
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Use original QR when implementing</div>
+
+                <div className="flex items-center gap-3 mt-3">
+                  <a
+                    href={gameQr || "#"}
+                    download="fund-horizon-crossword-qr.png"
+                    className="px-3 py-1.5 rounded-lg border border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F] text-[12px] font-medium flex items-center gap-1.5 transition"
+                  >
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download QR
+                  </a>
+                  <Link
+                    href="/crossword"
+                    target="_blank"
+                    className="text-[12px] text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium flex items-center gap-1"
+                  >
+                    Test game ↗
+                  </Link>
+                </div>
+              </div>
+
+              {/* URL bar */}
+              <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#F8FAFC] dark:bg-[#111722] border border-[#E2E8F0] dark:border-[#2B3644] text-[12px]">
+                <div className="flex items-center gap-2 text-[#536176] dark:text-[#A8B4C4] font-mono truncate">
+                  <svg className="w-4 h-4 shrink-0 text-[#706E6B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  <span className="truncate">fundhorizon.website/crossword</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(gameUrl);
+                    setCopiedGame(true);
+                    setTimeout(() => setCopiedGame(false), 2000);
+                  }}
+                  title="Copy link"
+                  className="p-1 text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#0176D3] dark:hover:text-[#1B96FF] transition shrink-0"
+                >
+                  {copiedGame ? (
+                    <svg className="w-4 h-4 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="8" y="8" width="12" height="12" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+
+              {/* Game experience */}
+              <div className="pt-2">
+                <div className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7] mb-2.5">Game experience</div>
+                <div className="space-y-2.5 text-[12px] text-[#536176] dark:text-[#A8B4C4]">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="8" y1="6" x2="21" y2="6" strokeLinecap="round" strokeLinejoin="round" />
+                      <line x1="8" y1="12" x2="21" y2="12" strokeLinecap="round" strokeLinejoin="round" />
+                      <line x1="8" y1="18" x2="21" y2="18" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="4" cy="6" r="1.5" fill="currentColor" />
+                      <circle cx="4" cy="12" r="1.5" fill="currentColor" />
+                      <circle cx="4" cy="18" r="1.5" fill="currentColor" />
+                    </svg>
+                    <span>Random game from 20 puzzles</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                      <polyline points="21 15 16 10 5 21" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span>Screenshot token on completion</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="20" x2="18" y2="10" strokeLinecap="round" strokeLinejoin="round" />
+                      <line x1="12" y1="20" x2="12" y2="4" strokeLinecap="round" strokeLinejoin="round" />
+                      <line x1="6" y1="20" x2="6" y2="14" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <span>Words-correct score saved to CRM</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Flow diagram */}
+              <div className="pt-4 border-t border-[#E5E5E5] dark:border-[#2B3644]">
+                <div className="flex flex-col items-center">
+                  <div className="px-3 py-1 rounded-full text-[11px] font-semibold text-[#0176D3] dark:text-[#1B96FF] bg-[#EAF5FE] dark:bg-[#11304F] border border-[#C5DDF7] dark:border-[#1F4A74]">
+                    Cross₹word
+                  </div>
+                  <div className="w-full max-w-[280px] flex flex-col items-center">
+                    <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    <div className="w-[180px] border-t border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    <div className="w-[180px] flex justify-between">
+                      <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                      <div className="w-px h-2.5 border-r border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-3 w-full">
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-dashed border-[#0176D3] dark:border-[#1B96FF] bg-white dark:bg-[#10151C] text-[11px] text-[#181818] dark:text-[#EDF2F7]">
+                      <svg className="w-3 h-3 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Player details
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-dashed border-[#0176D3] dark:border-[#1B96FF] bg-white dark:bg-[#10151C] text-[11px] text-[#181818] dark:text-[#EDF2F7]">
+                      <svg className="w-3 h-3 text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                      </svg>
+                      Game score
+                    </div>
+                  </div>
+                  <div className="w-full max-w-[280px] flex flex-col items-center">
+                    <div className="w-[180px] flex justify-between">
+                      <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                      <div className="w-px h-2.5 border-r border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    </div>
+                    <div className="w-[180px] border-b border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                    <div className="w-px h-2.5 border-l border-dashed border-[#0176D3] dark:border-[#1B96FF]" />
+                  </div>
+                  <div className="mt-0.5 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#EAF5FE] dark:bg-[#11304F] border border-[#0176D3] dark:border-[#1B96FF] text-[#0176D3] dark:text-[#1B96FF]">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <ellipse cx="12" cy="5" rx="9" ry="3" />
+                      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                    </svg>
+                    CRM lead
+                  </div>
+                  <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4] mt-1">Source: crossword</span>
+                </div>
+              </div>
             </div>
-            {gameQr && (
-              <a href={gameQr} download="fund-horizon-crossword-qr.png" className="mt-2.5 text-[11px] text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">↓ Download QR (PNG)</a>
-            )}
           </div>
-          <div className="md:col-span-8 space-y-3">
-            <label className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4] block">Game URL</label>
-            <div className="flex gap-2">
-              <input type="text" readOnly value={gameUrl} className="terminal-input w-full text-[12px] py-1.5 px-2.5 font-mono bg-[#F3F3F3] dark:bg-[#111722]" />
-              <button
-                type="button"
-                onClick={() => { navigator.clipboard.writeText(gameUrl); setCopiedGame(true); setTimeout(() => setCopiedGame(false), 2000); }}
-                className="terminal-btn text-[12px] py-1.5 px-3.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-semibold shrink-0"
-              >
-                {copiedGame ? "✓ Copied!" : "Copy Link"}
-              </button>
-            </div>
-            <div className="flex gap-2">
-              <Link href="/crossword" target="_blank" className="terminal-btn text-[11px] py-1 px-2.5 text-[#0176D3] dark:text-[#1B96FF] border-[#C5DDF7] dark:border-[#1F4A74] font-medium">Test Game ↗</Link>
-              <Link href="/backoffice/crm?tab=leads" className="terminal-btn text-[11px] py-1 px-2.5 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium">View in CRM →</Link>
-            </div>
+
+          {/* Tip Banner */}
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-[#EBF6FE] dark:bg-[#112438] border border-[#C5DDF7] dark:border-[#1F4A74] text-[12px] text-[#0176D3] dark:text-[#1B96FF]">
+            <span className="text-[14px]">💡</span>
+            <span>Place QR codes on reception desks, brochures or presentation slides.</span>
           </div>
         </div>
-      </div>
-      </>}
+      )}
 
       {/* Admin-only Staff Provisioning */}
       {activeTab === "staff" && isAdmin && (

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import secrets
 from datetime import UTC, datetime, timedelta
 
@@ -271,6 +272,26 @@ def test_admin_staff_update_deactivate_and_reset(client):
     assert client.patch(f"/api/backoffice/staff/{other}", json={"status": "inactive"}, headers=h).json()["staff_member"]["status"] == "inactive"
     assert client.patch(f"/api/backoffice/staff/{other}", json={"role": "bogus"}, headers=h).status_code == 422
     assert client.patch(f"/api/backoffice/staff/{admin_id}", json={"status": "inactive"}, headers=h).status_code == 422
+
+def test_admin_staff_update_pages_guard(client):
+    admin_id = _create_staff("admin")
+    _login_staff(client, admin_id)
+    h = {"sec-fetch-site": "same-origin"}
+    other = _create_staff("analyst")
+
+    # Non-admin with zero pages is rejected, exactly as at provision time.
+    assert client.patch(f"/api/backoffice/staff/{other}", json={"pages": []}, headers=h).status_code == 422
+    assert client.patch(f"/api/backoffice/staff/{other}", json={"pages": ["/nope"]}, headers=h).status_code == 422
+    # A real page set is accepted and stored.
+    r = client.patch(f"/api/backoffice/staff/{other}", json={"pages": ["/backoffice", "/backoffice/learn"]}, headers=h)
+    assert r.status_code == 200
+    raw_pages = r.json()["staff_member"]["pages"]
+    assert json.loads(raw_pages) == ["/backoffice", "/backoffice/learn"]
+    # An admin with zero pages stays unrestricted (empty list = all pages).
+    r = client.patch(f"/api/backoffice/staff/{admin_id}", json={"pages": []}, headers=h)
+    assert r.status_code == 200
+    admin_pages = r.json()["staff_member"]["pages"]
+    assert admin_pages in ([], None) or json.loads(admin_pages) == []
 
 
 def test_mutual_fund_tracker_pagination_dates_and_plan_filter(client):

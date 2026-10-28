@@ -556,6 +556,8 @@ export interface StaffMemberItem {
 export interface StaffProvisionResponse {
   staff_member: StaffMemberItem;
   temporary_password: string | null;
+  /** "created" or "promoted" (an existing account given staff access). */
+  action?: string;
 }
 
 type Json = Record<string, unknown>;
@@ -1192,6 +1194,7 @@ export const createStaffMember = async (body: {
       role: str(m.role) ?? body.role,
     },
     temporary_password: str(raw.temporary_password) ?? null,
+    action: typeof raw.action === "string" ? raw.action : undefined,
   };
 };
 

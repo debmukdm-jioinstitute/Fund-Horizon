@@ -1,0 +1,12 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+109830,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.41,debt
+109830,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.41,debt
+109830,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.34,debt
+109830,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.34,debt
+109830,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.27,debt
+109830,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.27,debt
+109830,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.27,debt
+109830,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.21,debt
+109830,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.2,debt
+109830,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,23.92,cash
+109830,NCA-NET CURRENT ASSETS,,,-15.66,cash

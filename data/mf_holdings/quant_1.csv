@@ -1,0 +1,1931 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+151853,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,9.69,equity
+151853,Zydus Lifesciences Limited,INE010B01027,N.A.,9.39,equity
+151853,Strides Pharma Science Ltd,INE939A01011,N.A.,9.04,equity
+151853,Pfizer Ltd,INE182A01018,N.A.,7.37,equity
+151853,Alivus Life Sciences,INE03Q201024,N.A.,6.21,equity
+151853,IPCA Laboratories Ltd,INE571A01038,N.A.,5.98,equity
+151853,Aurobindo Pharma Limited,INE406A01037,N.A.,5.09,equity
+151853,Zydus Wellness Ltd,INE768C01028,N.A.,4.9,equity
+151853,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,3.45,equity
+151853,Natco Pharma Ltd,INE987B01026,N.A.,3.01,equity
+151853,Dr. Reddy's Laboratories Limited,INE089A01031,N.A.,2.33,equity
+151853,LG Electronics India Limited,INE324D01010,N.A.,0.59,equity
+151853,Heubach Colorants India Limited,INE258G01013,N.A.,0.26,equity
+151853,Divi's Laboratories Ltd.,INE361B01024,N.A.,9.63,equity
+151853,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,9.34,equity
+151853,Torrent Pharmaceuticals Ltd.,INE685A01028,N.A.,8.62,equity
+151853,Aurobindo Pharma Ltd.,INE406A01037,N.A.,4.52,equity
+151853,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.71,debt
+151853,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.7,debt
+151853,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.7,debt
+151853,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.7,debt
+151853,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.7,debt
+151853,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.7,debt
+151853,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.7,debt
+151853,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.7,debt
+151853,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.7,debt
+151853,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,26.57,cash
+151853,NCA-NET CURRENT ASSETS,,,-32.3,cash
+151855,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,9.69,equity
+151855,Zydus Lifesciences Limited,INE010B01027,N.A.,9.39,equity
+151855,Strides Pharma Science Ltd,INE939A01011,N.A.,9.04,equity
+151855,Pfizer Ltd,INE182A01018,N.A.,7.37,equity
+151855,Alivus Life Sciences,INE03Q201024,N.A.,6.21,equity
+151855,IPCA Laboratories Ltd,INE571A01038,N.A.,5.98,equity
+151855,Aurobindo Pharma Limited,INE406A01037,N.A.,5.09,equity
+151855,Zydus Wellness Ltd,INE768C01028,N.A.,4.9,equity
+151855,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,3.45,equity
+151855,Natco Pharma Ltd,INE987B01026,N.A.,3.01,equity
+151855,Dr. Reddy's Laboratories Limited,INE089A01031,N.A.,2.33,equity
+151855,LG Electronics India Limited,INE324D01010,N.A.,0.59,equity
+151855,Heubach Colorants India Limited,INE258G01013,N.A.,0.26,equity
+151855,Divi's Laboratories Ltd.,INE361B01024,N.A.,9.63,equity
+151855,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,9.34,equity
+151855,Torrent Pharmaceuticals Ltd.,INE685A01028,N.A.,8.62,equity
+151855,Aurobindo Pharma Ltd.,INE406A01037,N.A.,4.52,equity
+151855,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.71,debt
+151855,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.7,debt
+151855,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.7,debt
+151855,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.7,debt
+151855,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.7,debt
+151855,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.7,debt
+151855,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.7,debt
+151855,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.7,debt
+151855,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.7,debt
+151855,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,26.57,cash
+151855,NCA-NET CURRENT ASSETS,,,-32.3,cash
+106170,Samvardhana Motherson International Ltd,INE775A01035,N.A.,9.74,equity
+106170,Adani Green Energy Limited,INE364U01010,N.A.,8.26,equity
+106170,Kalyani Steels Ltd,INE907A01026,N.A.,7.72,equity
+106170,Adani Power Limited,INE814H01029,N.A.,6.63,equity
+106170,Adani Enterprises Limited,INE423A01024,N.A.,6.11,equity
+106170,Indus Towers Limited,INE121J01017,N.A.,4.94,equity
+106170,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,4.85,equity
+106170,NCC Ltd,INE868B01028,N.A.,3.65,equity
+106170,Afcons Infrastructure Limited,INE101I01011,N.A.,3.48,equity
+106170,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,3.12,equity
+106170,Adani Energy Solutions Limited,INE931S01010,N.A.,3.06,equity
+106170,Lloyds Metals And Energy Limited,INE281B01032,N.A.,2.89,equity
+106170,Mangalam Cement Limited,INE347A01017,N.A.,2.81,equity
+106170,Simplex Infrastructures Limited,INE059B01024,N.A.,2.8,equity
+106170,Tata Power Company Limited,INE245A01021,N.A.,2.48,equity
+106170,Swan Corp Limited,INE665A01038,N.A.,1.09,equity
+106170,OM INFRA LIMITED,INE239D01028,N.A.,0.95,equity
+106170,Bharat Bijlee Limited,INE464A01036,N.A.,0.88,equity
+106170,The Orissa Minerals Development Co Ltd,INE725E01024,N.A.,0.57,equity
+106170,Ravindra Energy Limited,INE206N01018,N.A.,0.16,equity
+106170,Bharti Airtel Ltd.,INE397D01024,N.A.,7.25,equity
+106170,Tata Power Co. Ltd.,INE245A01021,N.A.,2.69,equity
+106170,Adani Power Ltd.,INE814H01029,N.A.,2.45,equity
+106170,Cochin Shipyard Ltd.,INE704P01025,N.A.,2.24,equity
+106170,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.87,debt
+106170,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.8,debt
+106170,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+106170,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.65,debt
+106170,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.65,debt
+106170,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.64,debt
+106170,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.64,debt
+106170,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.49,debt
+106170,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.48,debt
+106170,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.33,debt
+106170,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.16,debt
+106170,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,16.82,cash
+106170,India Grid Trust (InvIT),INE219X23014,,0.65,other
+106170,NCA-NET CURRENT ASSETS,,,-14.74,cash
+120833,Samvardhana Motherson International Ltd,INE775A01035,N.A.,9.74,equity
+120833,Adani Green Energy Limited,INE364U01010,N.A.,8.26,equity
+120833,Kalyani Steels Ltd,INE907A01026,N.A.,7.72,equity
+120833,Adani Power Limited,INE814H01029,N.A.,6.63,equity
+120833,Adani Enterprises Limited,INE423A01024,N.A.,6.11,equity
+120833,Indus Towers Limited,INE121J01017,N.A.,4.94,equity
+120833,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,4.85,equity
+120833,NCC Ltd,INE868B01028,N.A.,3.65,equity
+120833,Afcons Infrastructure Limited,INE101I01011,N.A.,3.48,equity
+120833,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,3.12,equity
+120833,Adani Energy Solutions Limited,INE931S01010,N.A.,3.06,equity
+120833,Lloyds Metals And Energy Limited,INE281B01032,N.A.,2.89,equity
+120833,Mangalam Cement Limited,INE347A01017,N.A.,2.81,equity
+120833,Simplex Infrastructures Limited,INE059B01024,N.A.,2.8,equity
+120833,Tata Power Company Limited,INE245A01021,N.A.,2.48,equity
+120833,Swan Corp Limited,INE665A01038,N.A.,1.09,equity
+120833,OM INFRA LIMITED,INE239D01028,N.A.,0.95,equity
+120833,Bharat Bijlee Limited,INE464A01036,N.A.,0.88,equity
+120833,The Orissa Minerals Development Co Ltd,INE725E01024,N.A.,0.57,equity
+120833,Ravindra Energy Limited,INE206N01018,N.A.,0.16,equity
+120833,Bharti Airtel Ltd.,INE397D01024,N.A.,7.25,equity
+120833,Tata Power Co. Ltd.,INE245A01021,N.A.,2.69,equity
+120833,Adani Power Ltd.,INE814H01029,N.A.,2.45,equity
+120833,Cochin Shipyard Ltd.,INE704P01025,N.A.,2.24,equity
+120833,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.87,debt
+120833,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.8,debt
+120833,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+120833,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.65,debt
+120833,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.65,debt
+120833,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.64,debt
+120833,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.64,debt
+120833,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.49,debt
+120833,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.48,debt
+120833,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.33,debt
+120833,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.16,debt
+120833,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,16.82,cash
+120833,India Grid Trust (InvIT),INE219X23014,,0.65,other
+120833,NCA-NET CURRENT ASSETS,,,-14.74,cash
+151190,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,98.54,cash
+151190,NCA-NET CURRENT ASSETS,,,1.46,cash
+151195,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,98.54,cash
+151195,NCA-NET CURRENT ASSETS,,,1.46,cash
+148925,Adani Enterprises Limited,INE423A01024,N.A.,9.07,equity
+148925,Adani Green Energy Limited,INE364U01010,N.A.,9.04,equity
+148925,Piramal Finance Ltd,INE202B01038,N.A.,8.87,equity
+148925,Aurobindo Pharma Limited,INE406A01037,N.A.,7.27,equity
+148925,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,6.61,equity
+148925,Indus Towers Limited,INE121J01017,N.A.,5.49,equity
+148925,ICICI Prudential AMC Ltd,INE346A01027,N.A.,4.58,equity
+148925,Zydus Lifesciences Limited,INE010B01027,N.A.,4.52,equity
+148925,Adani Power Limited,INE814H01029,N.A.,4.23,equity
+148925,LTM Limited,INE214T01019,N.A.,4.13,equity
+148925,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,2.9,equity
+148925,Black Box Limited,INE676A01027,N.A.,1.92,equity
+148925,Bharti Airtel Limited,INE397D01024,N.A.,1.89,equity
+148925,Reliance Industries Ltd.,INE002A01018,N.A.,8.58,equity
+148925,Bharti Airtel Ltd.,INE397D01024,N.A.,7.06,equity
+148925,HCL Technologies Ltd.,INE860A01027,N.A.,2.89,equity
+148925,Adani Energy Solutions Ltd.,INE931S01010,N.A.,2.82,equity
+148925,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,1.45,equity
+148925,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.84,debt
+148925,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.8,debt
+148925,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.77,debt
+148925,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.77,debt
+148925,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.77,debt
+148925,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.77,debt
+148925,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.77,debt
+148925,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.77,debt
+148925,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.77,debt
+148925,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.77,debt
+148925,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.9,cash
+148925,NCA-NET CURRENT ASSETS,,,-23.02,cash
+148923,Adani Enterprises Limited,INE423A01024,N.A.,9.07,equity
+148923,Adani Green Energy Limited,INE364U01010,N.A.,9.04,equity
+148923,Piramal Finance Ltd,INE202B01038,N.A.,8.87,equity
+148923,Aurobindo Pharma Limited,INE406A01037,N.A.,7.27,equity
+148923,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,6.61,equity
+148923,Indus Towers Limited,INE121J01017,N.A.,5.49,equity
+148923,ICICI Prudential AMC Ltd,INE346A01027,N.A.,4.58,equity
+148923,Zydus Lifesciences Limited,INE010B01027,N.A.,4.52,equity
+148923,Adani Power Limited,INE814H01029,N.A.,4.23,equity
+148923,LTM Limited,INE214T01019,N.A.,4.13,equity
+148923,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,2.9,equity
+148923,Black Box Limited,INE676A01027,N.A.,1.92,equity
+148923,Bharti Airtel Limited,INE397D01024,N.A.,1.89,equity
+148923,Reliance Industries Ltd.,INE002A01018,N.A.,8.58,equity
+148923,Bharti Airtel Ltd.,INE397D01024,N.A.,7.06,equity
+148923,HCL Technologies Ltd.,INE860A01027,N.A.,2.89,equity
+148923,Adani Energy Solutions Ltd.,INE931S01010,N.A.,2.82,equity
+148923,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,1.45,equity
+148923,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.84,debt
+148923,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.8,debt
+148923,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.77,debt
+148923,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.77,debt
+148923,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.77,debt
+148923,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.77,debt
+148923,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.77,debt
+148923,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.77,debt
+148923,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.77,debt
+148923,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.77,debt
+148923,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.9,cash
+148923,NCA-NET CURRENT ASSETS,,,-23.02,cash
+151758,Aurobindo Pharma Limited,INE406A01037,N.A.,10.38,equity
+151758,Piramal Finance Ltd,INE202B01038,N.A.,9.23,equity
+151758,Adani Green Energy Limited,INE364U01010,N.A.,9.07,equity
+151758,Indus Towers Limited,INE121J01017,N.A.,8.7,equity
+151758,LG Electronics India Limited,INE324D01010,N.A.,5.65,equity
+151758,Adani Enterprises Limited,INE423A01024,N.A.,5.11,equity
+151758,Samvardhana Motherson International Ltd,INE775A01035,N.A.,4.85,equity
+151758,Lloyds Metals And Energy Limited,INE281B01032,N.A.,4.65,equity
+151758,Premier Energies Limited,INE0BS701011,N.A.,4.23,equity
+151758,Adani Power Limited,INE814H01029,N.A.,3.43,equity
+151758,Zydus Wellness Ltd,INE768C01028,N.A.,3.24,equity
+151758,BROOKS Laboratories Limited,INE650L01011,N.A.,1.75,equity
+151758,Reliance Industries Ltd.,INE002A01018,N.A.,8.98,equity
+151758,Sona BLW Precision Forgings Ltd.,INE073K01018,N.A.,2.92,equity
+151758,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,2.9,equity
+151758,Zydus Lifesciences Ltd.,INE010B01027,N.A.,2.8,equity
+151758,LTM Ltd.,INE214T01019,N.A.,2.15,equity
+151758,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.86,debt
+151758,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.8,debt
+151758,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.8,debt
+151758,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.75,debt
+151758,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.75,debt
+151758,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.75,debt
+151758,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+151758,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.74,debt
+151758,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.64,debt
+151758,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,23.09,cash
+151758,NCA-NET CURRENT ASSETS,,,-19.96,cash
+151757,Aurobindo Pharma Limited,INE406A01037,N.A.,10.38,equity
+151757,Piramal Finance Ltd,INE202B01038,N.A.,9.23,equity
+151757,Adani Green Energy Limited,INE364U01010,N.A.,9.07,equity
+151757,Indus Towers Limited,INE121J01017,N.A.,8.7,equity
+151757,LG Electronics India Limited,INE324D01010,N.A.,5.65,equity
+151757,Adani Enterprises Limited,INE423A01024,N.A.,5.11,equity
+151757,Samvardhana Motherson International Ltd,INE775A01035,N.A.,4.85,equity
+151757,Lloyds Metals And Energy Limited,INE281B01032,N.A.,4.65,equity
+151757,Premier Energies Limited,INE0BS701011,N.A.,4.23,equity
+151757,Adani Power Limited,INE814H01029,N.A.,3.43,equity
+151757,Zydus Wellness Ltd,INE768C01028,N.A.,3.24,equity
+151757,BROOKS Laboratories Limited,INE650L01011,N.A.,1.75,equity
+151757,Reliance Industries Ltd.,INE002A01018,N.A.,8.98,equity
+151757,Sona BLW Precision Forgings Ltd.,INE073K01018,N.A.,2.92,equity
+151757,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,2.9,equity
+151757,Zydus Lifesciences Ltd.,INE010B01027,N.A.,2.8,equity
+151757,LTM Ltd.,INE214T01019,N.A.,2.15,equity
+151757,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.86,debt
+151757,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.8,debt
+151757,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.8,debt
+151757,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.75,debt
+151757,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.75,debt
+151757,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.75,debt
+151757,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+151757,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.74,debt
+151757,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.64,debt
+151757,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,23.09,cash
+151757,NCA-NET CURRENT ASSETS,,,-19.96,cash
+148560,Indus Towers Limited,INE121J01017,,9.48,equity
+148560,Adani Enterprises Limited,INE423A01024,,8.21,equity
+148560,HFCL Limited,INE548A01028,,7.8,equity
+148560,Adani Green Energy Limited,INE364U01010,,7.53,equity
+148560,LG Electronics India Limited,INE324D01010,,7.45,equity
+148560,Piramal Finance Ltd,INE202B01038,,7.16,equity
+148560,Nippon Life India Asset Management Ltd,INE298J01013,,6.16,equity
+148560,Capri Global Capital Limited,INE180C01042,,5.98,equity
+148560,Aurobindo Pharma Limited,INE406A01037,,5.64,equity
+148560,Black Box Limited,INE676A01027,,4.03,equity
+148560,Aequs Ltd,INE947N01017,,3.73,equity
+148560,BLACKBUCK LIMITED,INE0UIZ01018,,1.21,equity
+148560,Reliance Industries Ltd.,INE002A01018,,8.2,equity
+148560,Info Edge (India) Ltd.,INE663F01032,,5.43,equity
+148560,Aurobindo Pharma Ltd.,INE406A01037,,3.57,equity
+148560,HCL Technologies Ltd.,INE860A01027,,2.84,equity
+148560,Colgate Palmolive (India) Ltd.,INE259A01022,,0.78,equity
+148560,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.76,debt
+148560,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.76,debt
+148560,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.76,debt
+148560,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.76,debt
+148560,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.75,debt
+148560,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.75,debt
+148560,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.75,debt
+148560,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.61,debt
+148560,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.61,debt
+148560,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.61,debt
+148560,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,14.83,cash
+148560,NCA-NET CURRENT ASSETS,,,-17.14,cash
+148564,Indus Towers Limited,INE121J01017,,9.48,equity
+148564,Adani Enterprises Limited,INE423A01024,,8.21,equity
+148564,HFCL Limited,INE548A01028,,7.8,equity
+148564,Adani Green Energy Limited,INE364U01010,,7.53,equity
+148564,LG Electronics India Limited,INE324D01010,,7.45,equity
+148564,Piramal Finance Ltd,INE202B01038,,7.16,equity
+148564,Nippon Life India Asset Management Ltd,INE298J01013,,6.16,equity
+148564,Capri Global Capital Limited,INE180C01042,,5.98,equity
+148564,Aurobindo Pharma Limited,INE406A01037,,5.64,equity
+148564,Black Box Limited,INE676A01027,,4.03,equity
+148564,Aequs Ltd,INE947N01017,,3.73,equity
+148564,BLACKBUCK LIMITED,INE0UIZ01018,,1.21,equity
+148564,Reliance Industries Ltd.,INE002A01018,,8.2,equity
+148564,Info Edge (India) Ltd.,INE663F01032,,5.43,equity
+148564,Aurobindo Pharma Ltd.,INE406A01037,,3.57,equity
+148564,HCL Technologies Ltd.,INE860A01027,,2.84,equity
+148564,Colgate Palmolive (India) Ltd.,INE259A01022,,0.78,equity
+148564,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.76,debt
+148564,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.76,debt
+148564,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.76,debt
+148564,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.76,debt
+148564,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.75,debt
+148564,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.75,debt
+148564,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.75,debt
+148564,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.61,debt
+148564,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.61,debt
+148564,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.61,debt
+148564,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,14.83,cash
+148564,NCA-NET CURRENT ASSETS,,,-17.14,cash
+154657,Quant Arbitrage Fund -Direct Plan Growth,INF966L01DW8,,56.65,mf_units
+154657,Quant Liquid Fund-Growth -Direct Plan,INF966L01820,,41.13,mf_units
+154657,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,2.22,cash
+154657,NCA-NET CURRENT ASSETS,,,-0.0,cash
+154658,Quant Arbitrage Fund -Direct Plan Growth,INF966L01DW8,,56.65,mf_units
+154658,Quant Liquid Fund-Growth -Direct Plan,INF966L01820,,41.13,mf_units
+154658,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,2.22,cash
+154658,NCA-NET CURRENT ASSETS,,,-0.0,cash
+109275,ICICI Prudential AMC Ltd,INE346A01027,N.A.,9.91,equity
+109275,LG Electronics India Limited,INE324D01010,N.A.,9.71,equity
+109275,Adani Green Energy Limited,INE364U01010,N.A.,9.02,equity
+109275,Adani Enterprises Limited,INE423A01024,N.A.,8.74,equity
+109275,Adani Energy Solutions Limited,INE931S01010,N.A.,8.03,equity
+109275,Samvardhana Motherson International Ltd,INE775A01035,N.A.,7.55,equity
+109275,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,6.35,equity
+109275,Divi's Laboratories Limited,INE361B01024,N.A.,5.99,equity
+109275,Capri Global Capital Limited,INE180C01042,N.A.,5.23,equity
+109275,HFCL Limited,INE548A01028,N.A.,3.68,equity
+109275,Reliance Industries Ltd.,INE002A01018,N.A.,8.9,equity
+109275,Bharti Airtel Ltd.,INE397D01024,N.A.,8.4,equity
+109275,Adani Power Ltd.,INE814H01029,N.A.,5.71,equity
+109275,Coal India Ltd.,INE522F01014,N.A.,1.16,equity
+109275,Divi's Laboratories Ltd.,INE361B01024,N.A.,0.59,equity
+109275,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.85,debt
+109275,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.78,debt
+109275,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+109275,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.78,debt
+109275,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.73,debt
+109275,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.73,debt
+109275,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.72,debt
+109275,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.72,debt
+109275,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.72,debt
+109275,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.72,debt
+109275,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,18.38,cash
+109275,NCA-NET CURRENT ASSETS,,,-24.9,cash
+120834,ICICI Prudential AMC Ltd,INE346A01027,N.A.,9.91,equity
+120834,LG Electronics India Limited,INE324D01010,N.A.,9.71,equity
+120834,Adani Green Energy Limited,INE364U01010,N.A.,9.02,equity
+120834,Adani Enterprises Limited,INE423A01024,N.A.,8.74,equity
+120834,Adani Energy Solutions Limited,INE931S01010,N.A.,8.03,equity
+120834,Samvardhana Motherson International Ltd,INE775A01035,N.A.,7.55,equity
+120834,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,6.35,equity
+120834,Divi's Laboratories Limited,INE361B01024,N.A.,5.99,equity
+120834,Capri Global Capital Limited,INE180C01042,N.A.,5.23,equity
+120834,HFCL Limited,INE548A01028,N.A.,3.68,equity
+120834,Reliance Industries Ltd.,INE002A01018,N.A.,8.9,equity
+120834,Bharti Airtel Ltd.,INE397D01024,N.A.,8.4,equity
+120834,Adani Power Ltd.,INE814H01029,N.A.,5.71,equity
+120834,Coal India Ltd.,INE522F01014,N.A.,1.16,equity
+120834,Divi's Laboratories Ltd.,INE361B01024,N.A.,0.59,equity
+120834,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.85,debt
+120834,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.78,debt
+120834,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+120834,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.78,debt
+120834,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.73,debt
+120834,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.73,debt
+120834,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.72,debt
+120834,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.72,debt
+120834,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.72,debt
+120834,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.72,debt
+120834,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,18.38,cash
+120834,NCA-NET CURRENT ASSETS,,,-24.9,cash
+120841,Aurobindo Pharma Limited,INE406A01037,N.A.,10.71,equity
+120841,Lloyds Metals And Energy Limited,INE281B01032,N.A.,9.04,equity
+120841,Tata Communications Limited,INE151A01013,N.A.,8.49,equity
+120841,Indus Towers Limited,INE121J01017,N.A.,6.01,equity
+120841,IRB Infrastructure Developers Limited,INE821I01022,N.A.,5.7,equity
+120841,LG Electronics India Limited,INE324D01010,N.A.,5.09,equity
+120841,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,5.03,equity
+120841,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,4.67,equity
+120841,Premier Energies Limited,INE0BS701011,N.A.,4.59,equity
+120841,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,4.04,equity
+120841,Linde India Ltd.,INE473A01011,N.A.,3.55,equity
+120841,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,3.22,equity
+120841,Zydus Lifesciences Limited,INE010B01027,N.A.,3.13,equity
+120841,Adani Energy Solutions Limited,INE931S01010,N.A.,2.97,equity
+120841,IPCA Laboratories Ltd,INE571A01038,N.A.,2.01,equity
+120841,Persistent Systems Limited,INE262H01021,N.A.,1.72,equity
+120841,Container Corporation of India Ltd,INE111A01025,N.A.,1.65,equity
+120841,AWL Agri Business Limited,INE699H01024,N.A.,1.15,equity
+120841,UNITED BREWERIES LIMITED,INE686F01025,N.A.,1.13,equity
+120841,Welspun Corp Limited,INE191B01025,N.A.,1.09,equity
+120841,Cochin Shipyard Limited,INE704P01025,N.A.,0.86,equity
+120841,IDBI Bank Limited,INE008A01015,N.A.,0.47,equity
+120841,Godrej Properties Limited,INE484J01027,N.A.,0.44,equity
+120841,Godrej Properties Ltd.,INE484J01027,N.A.,3.04,equity
+120841,Zydus Lifesciences Ltd.,INE010B01027,N.A.,2.44,equity
+120841,Cochin Shipyard Ltd.,INE704P01025,N.A.,1.84,equity
+120841,Torrent Pharmaceuticals Ltd.,INE685A01028,N.A.,0.7,equity
+120841,Sona BLW Precision Forgings Ltd.,INE073K01018,N.A.,0.56,equity
+120841,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.52,debt
+120841,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.52,debt
+120841,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.45,debt
+120841,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.39,debt
+120841,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.39,debt
+120841,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.39,debt
+120841,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.32,debt
+120841,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.26,debt
+120841,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.26,debt
+120841,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.26,debt
+120841,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,9.46,cash
+120841,NCA-NET CURRENT ASSETS,,,-8.56,cash
+101065,Aurobindo Pharma Limited,INE406A01037,N.A.,10.71,equity
+101065,Lloyds Metals And Energy Limited,INE281B01032,N.A.,9.04,equity
+101065,Tata Communications Limited,INE151A01013,N.A.,8.49,equity
+101065,Indus Towers Limited,INE121J01017,N.A.,6.01,equity
+101065,IRB Infrastructure Developers Limited,INE821I01022,N.A.,5.7,equity
+101065,LG Electronics India Limited,INE324D01010,N.A.,5.09,equity
+101065,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,5.03,equity
+101065,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,4.67,equity
+101065,Premier Energies Limited,INE0BS701011,N.A.,4.59,equity
+101065,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,4.04,equity
+101065,Linde India Ltd.,INE473A01011,N.A.,3.55,equity
+101065,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,3.22,equity
+101065,Zydus Lifesciences Limited,INE010B01027,N.A.,3.13,equity
+101065,Adani Energy Solutions Limited,INE931S01010,N.A.,2.97,equity
+101065,IPCA Laboratories Ltd,INE571A01038,N.A.,2.01,equity
+101065,Persistent Systems Limited,INE262H01021,N.A.,1.72,equity
+101065,Container Corporation of India Ltd,INE111A01025,N.A.,1.65,equity
+101065,AWL Agri Business Limited,INE699H01024,N.A.,1.15,equity
+101065,UNITED BREWERIES LIMITED,INE686F01025,N.A.,1.13,equity
+101065,Welspun Corp Limited,INE191B01025,N.A.,1.09,equity
+101065,Cochin Shipyard Limited,INE704P01025,N.A.,0.86,equity
+101065,IDBI Bank Limited,INE008A01015,N.A.,0.47,equity
+101065,Godrej Properties Limited,INE484J01027,N.A.,0.44,equity
+101065,Godrej Properties Ltd.,INE484J01027,N.A.,3.04,equity
+101065,Zydus Lifesciences Ltd.,INE010B01027,N.A.,2.44,equity
+101065,Cochin Shipyard Ltd.,INE704P01025,N.A.,1.84,equity
+101065,Torrent Pharmaceuticals Ltd.,INE685A01028,N.A.,0.7,equity
+101065,Sona BLW Precision Forgings Ltd.,INE073K01018,N.A.,0.56,equity
+101065,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.52,debt
+101065,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.52,debt
+101065,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.45,debt
+101065,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.39,debt
+101065,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.39,debt
+101065,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.39,debt
+101065,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.32,debt
+101065,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.26,debt
+101065,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.26,debt
+101065,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.26,debt
+101065,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,9.46,cash
+101065,NCA-NET CURRENT ASSETS,,,-8.56,cash
+152070,Bharti Airtel Limited,INE397D01024,N.A.,8.88,equity
+152070,Sonata Software Limited,INE269A01021,N.A.,8.88,equity
+152070,Aequs Ltd,INE947N01017,N.A.,8.22,equity
+152070,Black Box Limited,INE676A01027,N.A.,7.58,equity
+152070,Hexaware Technologies Limited,INE093A01041,N.A.,7.34,equity
+152070,HCL Technologies Limited,INE860A01027,N.A.,6.58,equity
+152070,Indus Towers Limited,INE121J01017,N.A.,6.57,equity
+152070,HFCL Limited,INE548A01028,N.A.,6.28,equity
+152070,Mphasis Ltd,INE356A01018,N.A.,5.16,equity
+152070,Digitide Solutions Limited,INE0U4701011,N.A.,4.99,equity
+152070,Persistent Systems Limited,INE262H01021,N.A.,2.82,equity
+152070,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,0.87,equity
+152070,Reliance Industries Ltd.,INE002A01018,N.A.,9.29,equity
+152070,LTM Ltd.,INE214T01019,N.A.,8.19,equity
+152070,HCL Technologies Ltd.,INE860A01027,N.A.,3.02,equity
+152070,Info Edge (India) Ltd.,INE663F01032,N.A.,1.27,equity
+152070,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.82,debt
+152070,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.82,debt
+152070,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.82,debt
+152070,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.82,debt
+152070,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.82,debt
+152070,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.81,debt
+152070,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.81,debt
+152070,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.81,debt
+152070,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.41,debt
+152070,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,16.0,cash
+152070,NCA-NET CURRENT ASSETS,,,-18.87,cash
+152067,Bharti Airtel Limited,INE397D01024,N.A.,8.88,equity
+152067,Sonata Software Limited,INE269A01021,N.A.,8.88,equity
+152067,Aequs Ltd,INE947N01017,N.A.,8.22,equity
+152067,Black Box Limited,INE676A01027,N.A.,7.58,equity
+152067,Hexaware Technologies Limited,INE093A01041,N.A.,7.34,equity
+152067,HCL Technologies Limited,INE860A01027,N.A.,6.58,equity
+152067,Indus Towers Limited,INE121J01017,N.A.,6.57,equity
+152067,HFCL Limited,INE548A01028,N.A.,6.28,equity
+152067,Mphasis Ltd,INE356A01018,N.A.,5.16,equity
+152067,Digitide Solutions Limited,INE0U4701011,N.A.,4.99,equity
+152067,Persistent Systems Limited,INE262H01021,N.A.,2.82,equity
+152067,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,0.87,equity
+152067,Reliance Industries Ltd.,INE002A01018,N.A.,9.29,equity
+152067,LTM Ltd.,INE214T01019,N.A.,8.19,equity
+152067,HCL Technologies Ltd.,INE860A01027,N.A.,3.02,equity
+152067,Info Edge (India) Ltd.,INE663F01032,N.A.,1.27,equity
+152067,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.82,debt
+152067,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.82,debt
+152067,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.82,debt
+152067,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.82,debt
+152067,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.82,debt
+152067,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.81,debt
+152067,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.81,debt
+152067,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.81,debt
+152067,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.41,debt
+152067,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,16.0,cash
+152067,NCA-NET CURRENT ASSETS,,,-18.87,cash
+151713,Aurobindo Pharma Limited,INE406A01037,N.A.,10.25,equity
+151713,Bharti Airtel Limited,INE397D01024,N.A.,9.59,equity
+151713,Adani Green Energy Limited,INE364U01010,N.A.,9.5,equity
+151713,Adani Enterprises Limited,INE423A01024,N.A.,9.45,equity
+151713,Indus Towers Limited,INE121J01017,N.A.,9.21,equity
+151713,Ventive Hospitality Limited,INE781S01027,N.A.,5.47,equity
+151713,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,2.82,equity
+151713,Reliance Industries Limited,INE002A01018,N.A.,1.94,equity
+151713,Heubach Colorants India Limited,INE258G01013,N.A.,0.81,equity
+151713,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,0.44,equity
+151713,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,0.0,equity
+151713,Bagmane Prime Office REIT,INE2OVN25015,,8.7,other
+151713,Reliance Industries Ltd.,INE002A01018,N.A.,7.33,equity
+151713,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.86,debt
+151713,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.86,debt
+151713,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.8,debt
+151713,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.8,debt
+151713,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.8,debt
+151713,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.74,debt
+151713,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.73,debt
+151713,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.73,debt
+151713,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.73,debt
+151713,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.73,debt
+151713,Quant Arbitrage Fund -Direct Plan Growth,INF966L01DW8,,3.6,mf_units
+151713,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,20.54,cash
+151713,NCA-NET CURRENT ASSETS,,,-7.44,cash
+151714,Aurobindo Pharma Limited,INE406A01037,N.A.,10.25,equity
+151714,Bharti Airtel Limited,INE397D01024,N.A.,9.59,equity
+151714,Adani Green Energy Limited,INE364U01010,N.A.,9.5,equity
+151714,Adani Enterprises Limited,INE423A01024,N.A.,9.45,equity
+151714,Indus Towers Limited,INE121J01017,N.A.,9.21,equity
+151714,Ventive Hospitality Limited,INE781S01027,N.A.,5.47,equity
+151714,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,2.82,equity
+151714,Reliance Industries Limited,INE002A01018,N.A.,1.94,equity
+151714,Heubach Colorants India Limited,INE258G01013,N.A.,0.81,equity
+151714,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,0.44,equity
+151714,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,0.0,equity
+151714,Bagmane Prime Office REIT,INE2OVN25015,,8.7,other
+151714,Reliance Industries Ltd.,INE002A01018,N.A.,7.33,equity
+151714,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.86,debt
+151714,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.86,debt
+151714,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.8,debt
+151714,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.8,debt
+151714,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.8,debt
+151714,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.74,debt
+151714,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.73,debt
+151714,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.73,debt
+151714,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.73,debt
+151714,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.73,debt
+151714,Quant Arbitrage Fund -Direct Plan Growth,INF966L01DW8,,3.6,mf_units
+151714,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,20.54,cash
+151714,NCA-NET CURRENT ASSETS,,,-7.44,cash
+151228,6.36% GOI 16-Feb-2031,IN0020250141,,20.13,other
+151228,7.68% Karnataka SDL - 21-Dec-2034,IN1920220127,,13.62,other
+151228,7.46% Maharashtra SDL - 13-Sep-2033,IN2220230113,,10.3,other
+151228,7.49% Tamil Nadu SDL - 24-Apr-2034,IN3120240038,,8.64,other
+151228,7.29% GOI  SGRB MAT 27-Jan-2033,IN0020220144,,6.87,other
+151228,7.46% Madhya Pradesh SDL - 14-Sep-2032,IN2120220024,,6.77,other
+151228,7.23% Andhra Pradesh SDL - 04-Sep-2034,IN1020240488,,4.79,other
+151228,8.23% GOI 12-FEB-2027,IN0020060029,,1.38,other
+151228,0% GS2027 CSTRIP 12 Sep 2027,IN000927C052,,7.11,debt
+151228,Gsec Strip Mat 12/03/28,IN000328C053,,2.49,debt
+151228,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,16.98,cash
+151228,NCA-NET CURRENT ASSETS,,,0.93,cash
+151230,6.36% GOI 16-Feb-2031,IN0020250141,,20.13,other
+151230,7.68% Karnataka SDL - 21-Dec-2034,IN1920220127,,13.62,other
+151230,7.46% Maharashtra SDL - 13-Sep-2033,IN2220230113,,10.3,other
+151230,7.49% Tamil Nadu SDL - 24-Apr-2034,IN3120240038,,8.64,other
+151230,7.29% GOI  SGRB MAT 27-Jan-2033,IN0020220144,,6.87,other
+151230,7.46% Madhya Pradesh SDL - 14-Sep-2032,IN2120220024,,6.77,other
+151230,7.23% Andhra Pradesh SDL - 04-Sep-2034,IN1020240488,,4.79,other
+151230,8.23% GOI 12-FEB-2027,IN0020060029,,1.38,other
+151230,0% GS2027 CSTRIP 12 Sep 2027,IN000927C052,,7.11,debt
+151230,Gsec Strip Mat 12/03/28,IN000328C053,,2.49,debt
+151230,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,16.98,cash
+151230,NCA-NET CURRENT ASSETS,,,0.93,cash
+101072,Reliance Industries Limited,INE002A01018,N.A.,8.5,equity
+101072,Bharti Airtel Limited,INE397D01024,N.A.,8.38,equity
+101072,Adani Enterprises Limited,INE423A01024,N.A.,6.89,equity
+101072,Adani Green Energy Limited,INE364U01010,N.A.,6.15,equity
+101072,ICICI Bank Limited,INE090A01021,N.A.,5.2,equity
+101072,Indus Towers Limited,INE121J01017,N.A.,4.59,equity
+101072,Aurobindo Pharma Limited,INE406A01037,N.A.,4.55,equity
+101072,ICICI Prudential AMC Ltd,INE346A01027,N.A.,3.08,equity
+101072,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,2.76,equity
+101072,Oil and Natural Gas Corporation Ltd.,INE213A01029,N.A.,2.46,equity
+101072,Zydus Lifesciences Limited,INE010B01027,N.A.,2.39,equity
+101072,HDFC Bank Limited,INE040A01034,N.A.,2.06,equity
+101072,Black Box Limited,INE676A01027,N.A.,1.72,equity
+101072,Larsen & Toubro Limited,INE018A01030,N.A.,1.47,equity
+101072,Tata Steel Limited,INE081A01020,N.A.,1.07,equity
+101072,Premier Energies Limited,INE0BS701011,N.A.,1.03,equity
+101072,DLF Limited,INE271C01023,N.A.,0.82,equity
+101072,Tata Motors Passenger Vehicles Limited,INE155A01022,N.A.,0.69,equity
+101072,Ventive Hospitality Limited,INE781S01027,N.A.,0.67,equity
+101072,Adani Energy Solutions Limited,INE931S01010,N.A.,0.56,equity
+101072,Bajaj Finserv Ltd.,INE918I01026,N.A.,0.48,equity
+101072,Biocon Ltd,INE376G01013,N.A.,0.47,equity
+101072,Varun Beverages Limited,INE200M01039,N.A.,0.46,equity
+101072,Godrej Properties Limited,INE484J01027,N.A.,0.45,equity
+101072,Anand Rathi Share & Stock Brokers Ltd,INE549H01021,N.A.,0.38,equity
+101072,ITC Limited,INE154A01025,N.A.,0.24,equity
+101072,ITC Ltd.,INE154A01025,N.A.,-0.24,equity
+101072,Godrej Properties Ltd.,INE484J01027,N.A.,-0.45,equity
+101072,Varun Beverages Ltd.,INE200M01039,N.A.,-0.46,equity
+101072,Biocon Ltd.,INE376G01013,N.A.,-0.48,equity
+101072,Bajaj Finserv Ltd.,INE918I01026,N.A.,-0.48,equity
+101072,Tata Motors Passenger Vehicles Ltd.,INE155A01022,N.A.,-0.69,equity
+101072,Premier Energies Ltd.,INE0BS701011,N.A.,-0.8,equity
+101072,DLF Ltd.,INE271C01023,N.A.,-0.81,equity
+101072,Tata Steel Ltd.,INE081A01020,N.A.,-1.08,equity
+101072,Larsen & Toubro Ltd.,INE018A01030,N.A.,-1.47,equity
+101072,HDFC Bank Ltd.,INE040A01034,N.A.,-2.08,equity
+101072,ICICI Bank Ltd.,INE090A01021,N.A.,-5.23,equity
+101072,6.92% GOI  18-Nov-2039,IN0020240134,,0.96,other
+101072,6.79% GOI - 07-OCT-2034,IN0020240126,,0.52,other
+101072,6.36% GOI 16-Feb-2031,IN0020250141,,0.37,other
+101072,7.27% Gujarat SDL - 17-Dec-2034,IN1520250227,,0.37,other
+101072,7.23% Maharashtra SDL - 04-Sep-2035,IN2220240229,,0.36,other
+101072,6.48% GOI 06-Oct-2035,IN0020250091,,0.29,other
+101072,5.74% GOI - 15-Nov-2026,IN0020210186,,0.24,other
+101072,6.64% GOI - 16-Jun-2035,IN0020210020,,0.17,other
+101072,7.26% GOI MAT 06-Feb-2033,IN0020220151,,0.15,other
+101072,7.29% GOI  SGRB MAT 27-Jan-2033,IN0020220144,,0.15,other
+101072,Northern Arc Capital Ltd CP 04-Mar-2027,INE850M14CX6,,0.36,debt
+101072,NABARD CD 19-Jan-2027,INE261F16AE9,,1.48,debt
+101072,EXIM Bank CD 11-Nov-2026,INE514E16CN1,,1.13,debt
+101072,Canara Bank CD 28-Jan-2027,INE476A16G28,,0.74,debt
+101072,SIDBI CD 25-Mar-2027,INE556F16CD0,,0.59,debt
+101072,Canara Bank CD 29-Jun-2027,INE476A16K22,,0.57,debt
+101072,SIDBI CD 27-Oct-2026,INE556F16BN1,,0.15,debt
+101072,182 Days Treasury Bill 19-Nov-2026,IN002026Y071,,0.75,debt
+101072,364 Days Treasury Bill  15-JAN-2027,IN002025Z419,,0.74,debt
+101072,0% GS2027 CSTRIP 12 Sep 2027,IN000927C052,,0.29,debt
+101072,364 Days Treasury Bill  19-Mar-2027,IN002025Z500,,0.03,debt
+101072,Nippon India ETF Gold Bees,INF204KB17I5,,8.5,mf_units
+101072,quant Silver ETF - Direct Growth,INF966L01EI5,,2.19,mf_units
+101072,QUANT GILT FUND -DIRECT PLAN-GROWTH,INF966L01BF7,,0.02,mf_units
+101072,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.08,cash
+101072,NCA-NET CURRENT ASSETS,,,15.54,cash
+120821,Reliance Industries Limited,INE002A01018,N.A.,8.5,equity
+120821,Bharti Airtel Limited,INE397D01024,N.A.,8.38,equity
+120821,Adani Enterprises Limited,INE423A01024,N.A.,6.89,equity
+120821,Adani Green Energy Limited,INE364U01010,N.A.,6.15,equity
+120821,ICICI Bank Limited,INE090A01021,N.A.,5.2,equity
+120821,Indus Towers Limited,INE121J01017,N.A.,4.59,equity
+120821,Aurobindo Pharma Limited,INE406A01037,N.A.,4.55,equity
+120821,ICICI Prudential AMC Ltd,INE346A01027,N.A.,3.08,equity
+120821,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,2.76,equity
+120821,Oil and Natural Gas Corporation Ltd.,INE213A01029,N.A.,2.46,equity
+120821,Zydus Lifesciences Limited,INE010B01027,N.A.,2.39,equity
+120821,HDFC Bank Limited,INE040A01034,N.A.,2.06,equity
+120821,Black Box Limited,INE676A01027,N.A.,1.72,equity
+120821,Larsen & Toubro Limited,INE018A01030,N.A.,1.47,equity
+120821,Tata Steel Limited,INE081A01020,N.A.,1.07,equity
+120821,Premier Energies Limited,INE0BS701011,N.A.,1.03,equity
+120821,DLF Limited,INE271C01023,N.A.,0.82,equity
+120821,Tata Motors Passenger Vehicles Limited,INE155A01022,N.A.,0.69,equity
+120821,Ventive Hospitality Limited,INE781S01027,N.A.,0.67,equity
+120821,Adani Energy Solutions Limited,INE931S01010,N.A.,0.56,equity
+120821,Bajaj Finserv Ltd.,INE918I01026,N.A.,0.48,equity
+120821,Biocon Ltd,INE376G01013,N.A.,0.47,equity
+120821,Varun Beverages Limited,INE200M01039,N.A.,0.46,equity
+120821,Godrej Properties Limited,INE484J01027,N.A.,0.45,equity
+120821,Anand Rathi Share & Stock Brokers Ltd,INE549H01021,N.A.,0.38,equity
+120821,ITC Limited,INE154A01025,N.A.,0.24,equity
+120821,ITC Ltd.,INE154A01025,N.A.,-0.24,equity
+120821,Godrej Properties Ltd.,INE484J01027,N.A.,-0.45,equity
+120821,Varun Beverages Ltd.,INE200M01039,N.A.,-0.46,equity
+120821,Biocon Ltd.,INE376G01013,N.A.,-0.48,equity
+120821,Bajaj Finserv Ltd.,INE918I01026,N.A.,-0.48,equity
+120821,Tata Motors Passenger Vehicles Ltd.,INE155A01022,N.A.,-0.69,equity
+120821,Premier Energies Ltd.,INE0BS701011,N.A.,-0.8,equity
+120821,DLF Ltd.,INE271C01023,N.A.,-0.81,equity
+120821,Tata Steel Ltd.,INE081A01020,N.A.,-1.08,equity
+120821,Larsen & Toubro Ltd.,INE018A01030,N.A.,-1.47,equity
+120821,HDFC Bank Ltd.,INE040A01034,N.A.,-2.08,equity
+120821,ICICI Bank Ltd.,INE090A01021,N.A.,-5.23,equity
+120821,6.92% GOI  18-Nov-2039,IN0020240134,,0.96,other
+120821,6.79% GOI - 07-OCT-2034,IN0020240126,,0.52,other
+120821,6.36% GOI 16-Feb-2031,IN0020250141,,0.37,other
+120821,7.27% Gujarat SDL - 17-Dec-2034,IN1520250227,,0.37,other
+120821,7.23% Maharashtra SDL - 04-Sep-2035,IN2220240229,,0.36,other
+120821,6.48% GOI 06-Oct-2035,IN0020250091,,0.29,other
+120821,5.74% GOI - 15-Nov-2026,IN0020210186,,0.24,other
+120821,6.64% GOI - 16-Jun-2035,IN0020210020,,0.17,other
+120821,7.26% GOI MAT 06-Feb-2033,IN0020220151,,0.15,other
+120821,7.29% GOI  SGRB MAT 27-Jan-2033,IN0020220144,,0.15,other
+120821,Northern Arc Capital Ltd CP 04-Mar-2027,INE850M14CX6,,0.36,debt
+120821,NABARD CD 19-Jan-2027,INE261F16AE9,,1.48,debt
+120821,EXIM Bank CD 11-Nov-2026,INE514E16CN1,,1.13,debt
+120821,Canara Bank CD 28-Jan-2027,INE476A16G28,,0.74,debt
+120821,SIDBI CD 25-Mar-2027,INE556F16CD0,,0.59,debt
+120821,Canara Bank CD 29-Jun-2027,INE476A16K22,,0.57,debt
+120821,SIDBI CD 27-Oct-2026,INE556F16BN1,,0.15,debt
+120821,182 Days Treasury Bill 19-Nov-2026,IN002026Y071,,0.75,debt
+120821,364 Days Treasury Bill  15-JAN-2027,IN002025Z419,,0.74,debt
+120821,0% GS2027 CSTRIP 12 Sep 2027,IN000927C052,,0.29,debt
+120821,364 Days Treasury Bill  19-Mar-2027,IN002025Z500,,0.03,debt
+120821,Nippon India ETF Gold Bees,INF204KB17I5,,8.5,mf_units
+120821,quant Silver ETF - Direct Growth,INF966L01EI5,,2.19,mf_units
+120821,QUANT GILT FUND -DIRECT PLAN-GROWTH,INF966L01BF7,,0.02,mf_units
+120821,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.08,cash
+120821,NCA-NET CURRENT ASSETS,,,15.54,cash
+104513,Aurobindo Pharma Limited,INE406A01037,N.A.,9.76,equity
+104513,Lloyds Metals And Energy Limited,INE281B01032,N.A.,9.74,equity
+104513,Samvardhana Motherson International Ltd,INE775A01035,N.A.,8.02,equity
+104513,Adani Enterprises Limited,INE423A01024,N.A.,6.74,equity
+104513,Adani Green Energy Limited,INE364U01010,N.A.,6.17,equity
+104513,Adani Power Limited,INE814H01029,N.A.,5.47,equity
+104513,Zydus Lifesciences Limited,INE010B01027,N.A.,3.66,equity
+104513,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,3.29,equity
+104513,Premier Energies Limited,INE0BS701011,N.A.,3.1,equity
+104513,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,3.08,equity
+104513,K.P.R. Mill Limited,INE930H01031,N.A.,2.98,equity
+104513,Tata Communications Limited,INE151A01013,N.A.,2.9,equity
+104513,JSW Infrastructure Limited,INE880J01026,N.A.,1.86,equity
+104513,Adani Energy Solutions Limited,INE931S01010,N.A.,1.64,equity
+104513,AWL Agri Business Limited,INE699H01024,N.A.,1.5,equity
+104513,3M India Limited,INE470A01017,N.A.,1.16,equity
+104513,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,1.15,equity
+104513,Hexaware Technologies Limited,INE093A01041,N.A.,0.83,equity
+104513,Procter & Gamble Health Limited,INE179A01014,N.A.,0.28,equity
+104513,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,0.0,equity
+104513,Bharti Airtel Ltd.,INE397D01024,N.A.,5.34,equity
+104513,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,3.98,equity
+104513,LTM Ltd.,INE214T01019,N.A.,2.69,equity
+104513,Info Edge (India) Ltd.,INE663F01032,N.A.,2.44,equity
+104513,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.73,debt
+104513,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.73,debt
+104513,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.73,debt
+104513,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.73,debt
+104513,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.59,debt
+104513,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.58,debt
+104513,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.44,debt
+104513,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.44,debt
+104513,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.15,debt
+104513,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.85,cash
+104513,NCA-NET CURRENT ASSETS,,,-14.78,cash
+120826,Aurobindo Pharma Limited,INE406A01037,N.A.,9.76,equity
+120826,Lloyds Metals And Energy Limited,INE281B01032,N.A.,9.74,equity
+120826,Samvardhana Motherson International Ltd,INE775A01035,N.A.,8.02,equity
+120826,Adani Enterprises Limited,INE423A01024,N.A.,6.74,equity
+120826,Adani Green Energy Limited,INE364U01010,N.A.,6.17,equity
+120826,Adani Power Limited,INE814H01029,N.A.,5.47,equity
+120826,Zydus Lifesciences Limited,INE010B01027,N.A.,3.66,equity
+120826,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,3.29,equity
+120826,Premier Energies Limited,INE0BS701011,N.A.,3.1,equity
+120826,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,3.08,equity
+120826,K.P.R. Mill Limited,INE930H01031,N.A.,2.98,equity
+120826,Tata Communications Limited,INE151A01013,N.A.,2.9,equity
+120826,JSW Infrastructure Limited,INE880J01026,N.A.,1.86,equity
+120826,Adani Energy Solutions Limited,INE931S01010,N.A.,1.64,equity
+120826,AWL Agri Business Limited,INE699H01024,N.A.,1.5,equity
+120826,3M India Limited,INE470A01017,N.A.,1.16,equity
+120826,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,1.15,equity
+120826,Hexaware Technologies Limited,INE093A01041,N.A.,0.83,equity
+120826,Procter & Gamble Health Limited,INE179A01014,N.A.,0.28,equity
+120826,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,0.0,equity
+120826,Bharti Airtel Ltd.,INE397D01024,N.A.,5.34,equity
+120826,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,3.98,equity
+120826,LTM Ltd.,INE214T01019,N.A.,2.69,equity
+120826,Info Edge (India) Ltd.,INE663F01032,N.A.,2.44,equity
+120826,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.73,debt
+120826,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.73,debt
+120826,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.73,debt
+120826,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.73,debt
+120826,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.59,debt
+120826,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.58,debt
+120826,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.44,debt
+120826,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.44,debt
+120826,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.15,debt
+120826,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.85,cash
+120826,NCA-NET CURRENT ASSETS,,,-14.78,cash
+151916,Aurobindo Pharma Limited,INE406A01037,N.A.,9.94,equity
+151916,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,9.47,equity
+151916,Adani Enterprises Limited,INE423A01024,N.A.,9.12,equity
+151916,Ador Welding Limited,INE045A01017,N.A.,8.47,equity
+151916,Lloyds Metals And Energy Limited,INE281B01032,N.A.,8.08,equity
+151916,Adani Green Energy Limited,INE364U01010,N.A.,7.85,equity
+151916,Zydus Wellness Ltd,INE768C01028,N.A.,7.6,equity
+151916,Ravindra Energy Limited,INE206N01018,N.A.,6.02,equity
+151916,Gujarat Themis Biosyn Ltd,INE942C01045,N.A.,5.42,equity
+151916,Heubach Colorants India Limited,INE258G01013,N.A.,3.88,equity
+151916,LG Electronics India Limited,INE324D01010,N.A.,2.86,equity
+151916,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,1.35,equity
+151916,Pfizer Ltd,INE182A01018,N.A.,1.18,equity
+151916,PTC India Limited,INE877F01012,N.A.,0.45,equity
+151916,Reliance Industries Ltd.,INE002A01018,N.A.,8.93,equity
+151916,Divi's Laboratories Ltd.,INE361B01024,N.A.,7.45,equity
+151916,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,1.43,equity
+151916,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-9.47,equity
+151916,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.77,debt
+151916,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.77,debt
+151916,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.76,debt
+151916,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.7,debt
+151916,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.7,debt
+151916,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.7,debt
+151916,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.7,debt
+151916,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.7,debt
+151916,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.7,debt
+151916,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.69,debt
+151916,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.69,debt
+151916,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.88,cash
+151916,NCA-NET CURRENT ASSETS,,,-8.79,cash
+151913,Aurobindo Pharma Limited,INE406A01037,N.A.,9.94,equity
+151913,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,9.47,equity
+151913,Adani Enterprises Limited,INE423A01024,N.A.,9.12,equity
+151913,Ador Welding Limited,INE045A01017,N.A.,8.47,equity
+151913,Lloyds Metals And Energy Limited,INE281B01032,N.A.,8.08,equity
+151913,Adani Green Energy Limited,INE364U01010,N.A.,7.85,equity
+151913,Zydus Wellness Ltd,INE768C01028,N.A.,7.6,equity
+151913,Ravindra Energy Limited,INE206N01018,N.A.,6.02,equity
+151913,Gujarat Themis Biosyn Ltd,INE942C01045,N.A.,5.42,equity
+151913,Heubach Colorants India Limited,INE258G01013,N.A.,3.88,equity
+151913,LG Electronics India Limited,INE324D01010,N.A.,2.86,equity
+151913,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,1.35,equity
+151913,Pfizer Ltd,INE182A01018,N.A.,1.18,equity
+151913,PTC India Limited,INE877F01012,N.A.,0.45,equity
+151913,Reliance Industries Ltd.,INE002A01018,N.A.,8.93,equity
+151913,Divi's Laboratories Ltd.,INE361B01024,N.A.,7.45,equity
+151913,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,1.43,equity
+151913,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-9.47,equity
+151913,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.77,debt
+151913,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.77,debt
+151913,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.76,debt
+151913,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.7,debt
+151913,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.7,debt
+151913,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.7,debt
+151913,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.7,debt
+151913,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.7,debt
+151913,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.7,debt
+151913,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.69,debt
+151913,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.69,debt
+151913,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.88,cash
+151913,NCA-NET CURRENT ASSETS,,,-8.79,cash
+120847,Samvardhana Motherson International Ltd,INE775A01035,N.A.,9.37,equity
+120847,Adani Power Limited,INE814H01029,N.A.,9.09,equity
+120847,Aurobindo Pharma Limited,INE406A01037,N.A.,8.49,equity
+120847,ICICI Prudential AMC Ltd,INE346A01027,N.A.,7.56,equity
+120847,LG Electronics India Limited,INE324D01010,N.A.,4.89,equity
+120847,Adani Green Energy Limited,INE364U01010,N.A.,4.78,equity
+120847,Tata Power Company Limited,INE245A01021,N.A.,4.38,equity
+120847,Bharti Airtel Limited,INE397D01024,N.A.,4.18,equity
+120847,Divi's Laboratories Limited,INE361B01024,N.A.,4.12,equity
+120847,Adani Energy Solutions Limited,INE931S01010,N.A.,3.93,equity
+120847,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,3.73,equity
+120847,Premier Energies Limited,INE0BS701011,N.A.,3.46,equity
+120847,Adani Enterprises Limited,INE423A01024,N.A.,2.85,equity
+120847,Capri Global Capital Limited,INE180C01042,N.A.,2.39,equity
+120847,Infosys Limited,INE009A01021,N.A.,2.34,equity
+120847,Reliance Industries Limited,INE002A01018,N.A.,1.8,equity
+120847,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,1.77,equity
+120847,Zydus Lifesciences Limited,INE010B01027,N.A.,1.6,equity
+120847,Swan Defence and Heavy Industries Ltd,INE542F01020,N.A.,1.38,equity
+120847,Lloyds Metals And Energy Limited,INE281B01032,N.A.,0.94,equity
+120847,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,0.81,equity
+120847,Indus Towers Limited,INE121J01017,N.A.,0.78,equity
+120847,Coal India Ltd,INE522F01014,N.A.,0.7,equity
+120847,Glenmark Pharmaceuticals Ltd,INE935A01035,N.A.,0.65,equity
+120847,Ventive Hospitality Limited,INE781S01027,N.A.,0.59,equity
+120847,Welspun Living Limited,INE192B01031,N.A.,0.56,equity
+120847,LTM Limited,INE214T01019,N.A.,0.53,equity
+120847,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,0.37,equity
+120847,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,0.34,equity
+120847,Krystal Integrated Services Limited,INE0QN801017,N.A.,0.25,equity
+120847,Afcons Infrastructure Limited,INE101I01011,N.A.,0.23,equity
+120847,Embassy Developments Limited,INE069I01010,N.A.,0.23,equity
+120847,Juniper Hotels Limited,INE696F01016,N.A.,0.22,equity
+120847,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.52,cash
+120847,NCA-NET CURRENT ASSETS,,,0.16,cash
+100175,Samvardhana Motherson International Ltd,INE775A01035,N.A.,9.37,equity
+100175,Adani Power Limited,INE814H01029,N.A.,9.09,equity
+100175,Aurobindo Pharma Limited,INE406A01037,N.A.,8.49,equity
+100175,ICICI Prudential AMC Ltd,INE346A01027,N.A.,7.56,equity
+100175,LG Electronics India Limited,INE324D01010,N.A.,4.89,equity
+100175,Adani Green Energy Limited,INE364U01010,N.A.,4.78,equity
+100175,Tata Power Company Limited,INE245A01021,N.A.,4.38,equity
+100175,Bharti Airtel Limited,INE397D01024,N.A.,4.18,equity
+100175,Divi's Laboratories Limited,INE361B01024,N.A.,4.12,equity
+100175,Adani Energy Solutions Limited,INE931S01010,N.A.,3.93,equity
+100175,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,3.73,equity
+100175,Premier Energies Limited,INE0BS701011,N.A.,3.46,equity
+100175,Adani Enterprises Limited,INE423A01024,N.A.,2.85,equity
+100175,Capri Global Capital Limited,INE180C01042,N.A.,2.39,equity
+100175,Infosys Limited,INE009A01021,N.A.,2.34,equity
+100175,Reliance Industries Limited,INE002A01018,N.A.,1.8,equity
+100175,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,1.77,equity
+100175,Zydus Lifesciences Limited,INE010B01027,N.A.,1.6,equity
+100175,Swan Defence and Heavy Industries Ltd,INE542F01020,N.A.,1.38,equity
+100175,Lloyds Metals And Energy Limited,INE281B01032,N.A.,0.94,equity
+100175,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,0.81,equity
+100175,Indus Towers Limited,INE121J01017,N.A.,0.78,equity
+100175,Coal India Ltd,INE522F01014,N.A.,0.7,equity
+100175,Glenmark Pharmaceuticals Ltd,INE935A01035,N.A.,0.65,equity
+100175,Ventive Hospitality Limited,INE781S01027,N.A.,0.59,equity
+100175,Welspun Living Limited,INE192B01031,N.A.,0.56,equity
+100175,LTM Limited,INE214T01019,N.A.,0.53,equity
+100175,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,0.37,equity
+100175,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,0.34,equity
+100175,Krystal Integrated Services Limited,INE0QN801017,N.A.,0.25,equity
+100175,Afcons Infrastructure Limited,INE101I01011,N.A.,0.23,equity
+100175,Embassy Developments Limited,INE069I01010,N.A.,0.23,equity
+100175,Juniper Hotels Limited,INE696F01016,N.A.,0.22,equity
+100175,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.52,cash
+100175,NCA-NET CURRENT ASSETS,,,0.16,cash
+151791,ICICI Prudential AMC Ltd,INE346A01027,N.A.,10.28,equity
+151791,Capri Global Capital Limited,INE180C01042,N.A.,9.6,equity
+151791,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,9.52,equity
+151791,LIC Housing Finance Ltd,INE115A01026,N.A.,9.18,equity
+151791,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,9.12,equity
+151791,Piramal Finance Ltd,INE202B01038,N.A.,9.05,equity
+151791,Manappuram Finance Ltd,INE522D01027,N.A.,8.67,equity
+151791,Karnataka Bank Ltd,INE614B01018,N.A.,5.24,equity
+151791,TSF INVESTMENTS LIMITED,INE202Z01029,N.A.,4.94,equity
+151791,ICICI Bank Limited,INE090A01021,N.A.,1.98,equity
+151791,ICICI Prudential Life Insurance Co Ltd,INE726G01019,N.A.,1.16,equity
+151791,Multi Commodity Exchange of India Ltd.,INE745G01043,N.A.,7.78,equity
+151791,ICICI Prudential Life Insurance Company Ltd.,INE726G01019,N.A.,5.41,equity
+151791,Manappuram Finance Ltd.,INE522D01027,N.A.,0.57,equity
+151791,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.78,debt
+151791,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.78,debt
+151791,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+151791,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.78,debt
+151791,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.77,debt
+151791,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.72,debt
+151791,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.72,debt
+151791,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.72,debt
+151791,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.72,debt
+151791,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.67,debt
+151791,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,8.17,cash
+151791,NCA-NET CURRENT ASSETS,,,-8.12,cash
+151788,ICICI Prudential AMC Ltd,INE346A01027,N.A.,10.28,equity
+151788,Capri Global Capital Limited,INE180C01042,N.A.,9.6,equity
+151788,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,9.52,equity
+151788,LIC Housing Finance Ltd,INE115A01026,N.A.,9.18,equity
+151788,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,9.12,equity
+151788,Piramal Finance Ltd,INE202B01038,N.A.,9.05,equity
+151788,Manappuram Finance Ltd,INE522D01027,N.A.,8.67,equity
+151788,Karnataka Bank Ltd,INE614B01018,N.A.,5.24,equity
+151788,TSF INVESTMENTS LIMITED,INE202Z01029,N.A.,4.94,equity
+151788,ICICI Bank Limited,INE090A01021,N.A.,1.98,equity
+151788,ICICI Prudential Life Insurance Co Ltd,INE726G01019,N.A.,1.16,equity
+151788,Multi Commodity Exchange of India Ltd.,INE745G01043,N.A.,7.78,equity
+151788,ICICI Prudential Life Insurance Company Ltd.,INE726G01019,N.A.,5.41,equity
+151788,Manappuram Finance Ltd.,INE522D01027,N.A.,0.57,equity
+151788,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.78,debt
+151788,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.78,debt
+151788,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+151788,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.78,debt
+151788,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.77,debt
+151788,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.72,debt
+151788,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.72,debt
+151788,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.72,debt
+151788,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.72,debt
+151788,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.67,debt
+151788,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,8.17,cash
+151788,NCA-NET CURRENT ASSETS,,,-8.12,cash
+152338,ICICI Prudential AMC Ltd,INE346A01027,N.A.,10.44,equity
+152338,LG Electronics India Limited,INE324D01010,N.A.,9.33,equity
+152338,Capri Global Capital Limited,INE180C01042,N.A.,9.03,equity
+152338,Aurobindo Pharma Limited,INE406A01037,N.A.,8.94,equity
+152338,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,8.77,equity
+152338,Ventive Hospitality Limited,INE781S01027,N.A.,8.03,equity
+152338,Zydus Lifesciences Limited,INE010B01027,N.A.,7.16,equity
+152338,Bharti Airtel Limited,INE397D01024,N.A.,4.57,equity
+152338,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,4.53,equity
+152338,Emami Limited,INE548C01032,N.A.,4.06,equity
+152338,Adani Power Limited,INE814H01029,N.A.,3.41,equity
+152338,Procter & Gamble Health Limited,INE179A01014,N.A.,2.17,equity
+152338,Zydus Wellness Ltd,INE768C01028,N.A.,1.86,equity
+152338,Reliance Industries Ltd.,INE002A01018,N.A.,8.62,equity
+152338,Adani Power Ltd.,INE814H01029,N.A.,6.45,equity
+152338,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,0.84,equity
+152338,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,1.11,debt
+152338,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.83,debt
+152338,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.83,debt
+152338,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.83,debt
+152338,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.83,debt
+152338,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.83,debt
+152338,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.83,debt
+152338,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.82,debt
+152338,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.8,cash
+152338,NCA-NET CURRENT ASSETS,,,-15.93,cash
+152336,ICICI Prudential AMC Ltd,INE346A01027,N.A.,10.44,equity
+152336,LG Electronics India Limited,INE324D01010,N.A.,9.33,equity
+152336,Capri Global Capital Limited,INE180C01042,N.A.,9.03,equity
+152336,Aurobindo Pharma Limited,INE406A01037,N.A.,8.94,equity
+152336,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,8.77,equity
+152336,Ventive Hospitality Limited,INE781S01027,N.A.,8.03,equity
+152336,Zydus Lifesciences Limited,INE010B01027,N.A.,7.16,equity
+152336,Bharti Airtel Limited,INE397D01024,N.A.,4.57,equity
+152336,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,4.53,equity
+152336,Emami Limited,INE548C01032,N.A.,4.06,equity
+152336,Adani Power Limited,INE814H01029,N.A.,3.41,equity
+152336,Procter & Gamble Health Limited,INE179A01014,N.A.,2.17,equity
+152336,Zydus Wellness Ltd,INE768C01028,N.A.,1.86,equity
+152336,Reliance Industries Ltd.,INE002A01018,N.A.,8.62,equity
+152336,Adani Power Ltd.,INE814H01029,N.A.,6.45,equity
+152336,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,0.84,equity
+152336,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,1.11,debt
+152336,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.83,debt
+152336,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.83,debt
+152336,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.83,debt
+152336,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.83,debt
+152336,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.83,debt
+152336,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.83,debt
+152336,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.82,debt
+152336,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.8,cash
+152336,NCA-NET CURRENT ASSETS,,,-15.93,cash
+100177,HFCL Limited,INE548A01028,N.A.,6.1,equity
+100177,RBL Bank Limited,INE976G01028,N.A.,4.78,equity
+100177,Adani Enterprises Limited,INE423A01024,N.A.,4.36,equity
+100177,Adani Power Limited,INE814H01029,N.A.,3.56,equity
+100177,Aegis Logistics Limited,INE208C01025,N.A.,3.5,equity
+100177,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,3.11,equity
+100177,Anand Rathi Wealth Limited,INE463V01026,N.A.,2.83,equity
+100177,Welspun Corp Limited,INE191B01025,N.A.,2.76,equity
+100177,Adani Green Energy Limited,INE364U01010,N.A.,2.61,equity
+100177,SUN TV Network Limited,INE424H01027,N.A.,2.49,equity
+100177,Piramal Finance Ltd,INE202B01038,N.A.,2.49,equity
+100177,Manappuram Finance Ltd,INE522D01027,N.A.,2.4,equity
+100177,Capri Global Capital Limited,INE180C01042,N.A.,2.31,equity
+100177,Arvind Limited,INE034A01011,N.A.,2.25,equity
+100177,Aster DM Healthcare Limited,INE914M01019,N.A.,2.09,equity
+100177,Poly Medicure Limited,INE205C01021,N.A.,2.05,equity
+100177,Pfizer Ltd,INE182A01018,N.A.,1.77,equity
+100177,Karnataka Bank Ltd,INE614B01018,N.A.,1.62,equity
+100177,Indegene Limited,INE065X01017,N.A.,1.51,equity
+100177,Usha Martin Limited,INE228A01035,N.A.,1.5,equity
+100177,Welspun Living Limited,INE192B01031,N.A.,1.43,equity
+100177,Welspun Enterprises Limited,INE625G01013,N.A.,1.4,equity
+100177,Ventive Hospitality Limited,INE781S01027,N.A.,1.32,equity
+100177,Zydus Wellness Ltd,INE768C01028,N.A.,1.3,equity
+100177,Bikaji Foods International Limited,INE00E101023,N.A.,1.27,equity
+100177,Strides Pharma Science Ltd,INE939A01011,N.A.,1.24,equity
+100177,Samvardhana Motherson International Ltd,INE775A01035,N.A.,1.22,equity
+100177,Bayer Cropscience Ltd,INE462A01022,N.A.,1.06,equity
+100177,Hexaware Technologies Limited,INE093A01041,N.A.,1.05,equity
+100177,EPL Limited,INE255A01020,N.A.,1.05,equity
+100177,Orchid Pharma Limited,INE191A01027,N.A.,0.97,equity
+100177,Alivus Life Sciences,INE03Q201024,N.A.,0.86,equity
+100177,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.86,equity
+100177,Jubilant Pharmova Limited,INE700A01033,N.A.,0.85,equity
+100177,Just Dial Limited,INE599M01018,N.A.,0.73,equity
+100177,Marathon Nextgen Realty Limited,INE182D01020,N.A.,0.73,equity
+100177,Black Box Limited,INE676A01027,N.A.,0.72,equity
+100177,KEYSTONE REALTORS LIMITED,INE263M01029,N.A.,0.63,equity
+100177,NCC Ltd,INE868B01028,N.A.,0.63,equity
+100177,JM FINANCIAL LIMITED,INE780C01023,N.A.,0.61,equity
+100177,Gujarat Themis Biosyn Ltd,INE942C01045,N.A.,0.59,equity
+100177,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,0.49,equity
+100177,TVS Srichakra Limited,INE421C01016,N.A.,0.47,equity
+100177,Afcons Infrastructure Limited,INE101I01011,N.A.,0.46,equity
+100177,Nitin Spinners Limited,INE229H01012,N.A.,0.46,equity
+100177,IRB Infrastructure Developers Limited,INE821I01022,N.A.,0.44,equity
+100177,LIC Housing Finance Ltd,INE115A01026,N.A.,0.43,equity
+100177,Apollo Tyres Ltd,INE438A01022,N.A.,0.42,equity
+100177,Aurobindo Pharma Limited,INE406A01037,N.A.,0.42,equity
+100177,Lloyds Metals And Energy Limited,INE281B01032,N.A.,0.41,equity
+100177,ETHOS LIMITED,INE04TZ01018,N.A.,0.38,equity
+100177,Redington Limited,INE891D01026,N.A.,0.37,equity
+100177,National Building Construction Corp,INE095N01031,N.A.,0.36,equity
+100177,Juniper Hotels Limited,INE696F01016,N.A.,0.36,equity
+100177,Gabriel India Limited,INE524A01029,N.A.,0.32,equity
+100177,Apeejay Surrendra Park Hotels Limited,INE988S01028,N.A.,0.32,equity
+100177,INDOCO REMEDIES LIMITED,INE873D01024,N.A.,0.31,equity
+100177,Sonata Software Limited,INE269A01021,N.A.,0.3,equity
+100177,Gujarat State Fert & Chemicals Ltd,INE026A01025,N.A.,0.28,equity
+100177,Maharashtra Seamless Ltd,INE271B01025,N.A.,0.27,equity
+100177,Aditya Birla Fashion And Retail Ltd,INE647O01011,N.A.,0.24,equity
+100177,Bandhan Bank Ltd.,INE545U01014,N.A.,0.23,equity
+100177,KPIT Technologies Limited,INE04I401011,N.A.,0.22,equity
+100177,S. P. Apparels Limited,INE212I01016,N.A.,0.22,equity
+100177,K.P.R. Mill Limited,INE930H01031,N.A.,0.22,equity
+100177,Heubach Colorants India Limited,INE258G01013,N.A.,0.2,equity
+100177,Castrol India Limited,INE172A01027,N.A.,0.2,equity
+100177,Info Edge (India) Ltd,INE663F01032,N.A.,0.19,equity
+100177,Emami Limited,INE548C01032,N.A.,0.17,equity
+100177,Bata India Ltd,INE176A01028,N.A.,0.15,equity
+100177,Max Estates Limited,INE03EI01018,N.A.,0.14,equity
+100177,Prime Securities Limited,INE032B01021,N.A.,0.14,equity
+100177,Triveni Turbine Limited,INE152M01016,N.A.,0.14,equity
+100177,Embassy Developments Limited,INE069I01010,N.A.,0.13,equity
+100177,Bharti Airtel Limited,INE397D01024,N.A.,0.12,equity
+100177,Ravindra Energy Limited,INE206N01018,N.A.,0.11,equity
+100177,The Orissa Minerals Development Co Ltd,INE725E01024,N.A.,0.11,equity
+100177,Delhivery Limited,INE148O01028,N.A.,0.11,equity
+100177,Capacite Infraprojects Limited,INE264T01014,N.A.,0.1,equity
+100177,Graphite India Limited,INE371A01025,N.A.,0.09,equity
+100177,Intellect Design Arena Limited,INE306R01017,N.A.,0.09,equity
+100177,Sula Vineyards Limited,INE142Q01026,N.A.,0.08,equity
+100177,Oriental Hotels Limited,INE750A01020,N.A.,0.08,equity
+100177,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,0.08,equity
+100177,RISHABH INSTRUMENTS LIMITED,INE0N2P01017,N.A.,0.08,equity
+100177,Sudarshan Chemical Industries Limited,INE659A01023,N.A.,0.07,equity
+100177,Newgen Software Technologies Limited,INE619B01017,N.A.,0.07,equity
+100177,SANOFI INDIA LIMITED,INE058A01010,N.A.,0.05,equity
+100177,Digitide Solutions Limited,INE0U4701011,N.A.,0.05,equity
+100177,Mahindra Holidays & Resorts Ind Ltd,INE998I01010,N.A.,0.05,equity
+100177,Aequs Ltd,INE947N01017,N.A.,0.05,equity
+100177,PTC India Limited,INE877F01012,N.A.,0.05,equity
+100177,Sudeep Pharma Limited,INE0QPI01025,N.A.,0.05,equity
+100177,Sai Silks (Kalamandir) Limited,INE438K01021,N.A.,0.04,equity
+100177,Vishnu Prakash R Punglia Limited,INE0AE001013,N.A.,0.04,equity
+100177,Best Agrolife Limited,INE052T01021,N.A.,0.04,equity
+100177,PUNJAB ALKALIES AND CHEMICALS LTD,INE607A01022,N.A.,0.03,equity
+100177,Gillette India Ltd,INE322A01010,N.A.,0.03,equity
+100177,Safari Industries (India) Limited,INE429E01023,N.A.,0.03,equity
+100177,Prabha Energy Limited,INE0I0M01023,N.A.,0.03,equity
+100177,Moneyview Limited,INE0PTN01011,N.A.,0.01,equity
+100177,Kalyani Steels Ltd,INE907A01026,N.A.,0.01,equity
+100177,Caliber Mining and Logistics Limited,INE11XY01018,N.A.,0.01,equity
+100177,OM INFRA LIMITED,INE239D01028,N.A.,0.0,equity
+100177,KPIT Technologies Ltd.,INE04I401011,N.A.,-0.01,equity
+100177,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-0.08,equity
+100177,LIC Housing Finance Ltd.,INE115A01026,N.A.,-0.1,equity
+100177,Delhivery Ltd.,INE148O01028,N.A.,-0.11,equity
+100177,RBL Bank Ltd.,INE976G01028,N.A.,-0.11,equity
+100177,Bandhan Bank Ltd.,INE545U01014,N.A.,-0.23,equity
+100177,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.15,debt
+100177,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.14,debt
+100177,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.14,debt
+100177,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.13,debt
+100177,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.11,debt
+100177,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.1,debt
+100177,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.1,debt
+100177,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.1,debt
+100177,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.08,debt
+100177,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.08,debt
+100177,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.48,cash
+100177,NCA-NET CURRENT ASSETS,,,0.75,cash
+120828,HFCL Limited,INE548A01028,N.A.,6.1,equity
+120828,RBL Bank Limited,INE976G01028,N.A.,4.78,equity
+120828,Adani Enterprises Limited,INE423A01024,N.A.,4.36,equity
+120828,Adani Power Limited,INE814H01029,N.A.,3.56,equity
+120828,Aegis Logistics Limited,INE208C01025,N.A.,3.5,equity
+120828,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,3.11,equity
+120828,Anand Rathi Wealth Limited,INE463V01026,N.A.,2.83,equity
+120828,Welspun Corp Limited,INE191B01025,N.A.,2.76,equity
+120828,Adani Green Energy Limited,INE364U01010,N.A.,2.61,equity
+120828,SUN TV Network Limited,INE424H01027,N.A.,2.49,equity
+120828,Piramal Finance Ltd,INE202B01038,N.A.,2.49,equity
+120828,Manappuram Finance Ltd,INE522D01027,N.A.,2.4,equity
+120828,Capri Global Capital Limited,INE180C01042,N.A.,2.31,equity
+120828,Arvind Limited,INE034A01011,N.A.,2.25,equity
+120828,Aster DM Healthcare Limited,INE914M01019,N.A.,2.09,equity
+120828,Poly Medicure Limited,INE205C01021,N.A.,2.05,equity
+120828,Pfizer Ltd,INE182A01018,N.A.,1.77,equity
+120828,Karnataka Bank Ltd,INE614B01018,N.A.,1.62,equity
+120828,Indegene Limited,INE065X01017,N.A.,1.51,equity
+120828,Usha Martin Limited,INE228A01035,N.A.,1.5,equity
+120828,Welspun Living Limited,INE192B01031,N.A.,1.43,equity
+120828,Welspun Enterprises Limited,INE625G01013,N.A.,1.4,equity
+120828,Ventive Hospitality Limited,INE781S01027,N.A.,1.32,equity
+120828,Zydus Wellness Ltd,INE768C01028,N.A.,1.3,equity
+120828,Bikaji Foods International Limited,INE00E101023,N.A.,1.27,equity
+120828,Strides Pharma Science Ltd,INE939A01011,N.A.,1.24,equity
+120828,Samvardhana Motherson International Ltd,INE775A01035,N.A.,1.22,equity
+120828,Bayer Cropscience Ltd,INE462A01022,N.A.,1.06,equity
+120828,Hexaware Technologies Limited,INE093A01041,N.A.,1.05,equity
+120828,EPL Limited,INE255A01020,N.A.,1.05,equity
+120828,Orchid Pharma Limited,INE191A01027,N.A.,0.97,equity
+120828,Alivus Life Sciences,INE03Q201024,N.A.,0.86,equity
+120828,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.86,equity
+120828,Jubilant Pharmova Limited,INE700A01033,N.A.,0.85,equity
+120828,Just Dial Limited,INE599M01018,N.A.,0.73,equity
+120828,Marathon Nextgen Realty Limited,INE182D01020,N.A.,0.73,equity
+120828,Black Box Limited,INE676A01027,N.A.,0.72,equity
+120828,KEYSTONE REALTORS LIMITED,INE263M01029,N.A.,0.63,equity
+120828,NCC Ltd,INE868B01028,N.A.,0.63,equity
+120828,JM FINANCIAL LIMITED,INE780C01023,N.A.,0.61,equity
+120828,Gujarat Themis Biosyn Ltd,INE942C01045,N.A.,0.59,equity
+120828,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,0.49,equity
+120828,TVS Srichakra Limited,INE421C01016,N.A.,0.47,equity
+120828,Afcons Infrastructure Limited,INE101I01011,N.A.,0.46,equity
+120828,Nitin Spinners Limited,INE229H01012,N.A.,0.46,equity
+120828,IRB Infrastructure Developers Limited,INE821I01022,N.A.,0.44,equity
+120828,LIC Housing Finance Ltd,INE115A01026,N.A.,0.43,equity
+120828,Apollo Tyres Ltd,INE438A01022,N.A.,0.42,equity
+120828,Aurobindo Pharma Limited,INE406A01037,N.A.,0.42,equity
+120828,Lloyds Metals And Energy Limited,INE281B01032,N.A.,0.41,equity
+120828,ETHOS LIMITED,INE04TZ01018,N.A.,0.38,equity
+120828,Redington Limited,INE891D01026,N.A.,0.37,equity
+120828,National Building Construction Corp,INE095N01031,N.A.,0.36,equity
+120828,Juniper Hotels Limited,INE696F01016,N.A.,0.36,equity
+120828,Gabriel India Limited,INE524A01029,N.A.,0.32,equity
+120828,Apeejay Surrendra Park Hotels Limited,INE988S01028,N.A.,0.32,equity
+120828,INDOCO REMEDIES LIMITED,INE873D01024,N.A.,0.31,equity
+120828,Sonata Software Limited,INE269A01021,N.A.,0.3,equity
+120828,Gujarat State Fert & Chemicals Ltd,INE026A01025,N.A.,0.28,equity
+120828,Maharashtra Seamless Ltd,INE271B01025,N.A.,0.27,equity
+120828,Aditya Birla Fashion And Retail Ltd,INE647O01011,N.A.,0.24,equity
+120828,Bandhan Bank Ltd.,INE545U01014,N.A.,0.23,equity
+120828,KPIT Technologies Limited,INE04I401011,N.A.,0.22,equity
+120828,S. P. Apparels Limited,INE212I01016,N.A.,0.22,equity
+120828,K.P.R. Mill Limited,INE930H01031,N.A.,0.22,equity
+120828,Heubach Colorants India Limited,INE258G01013,N.A.,0.2,equity
+120828,Castrol India Limited,INE172A01027,N.A.,0.2,equity
+120828,Info Edge (India) Ltd,INE663F01032,N.A.,0.19,equity
+120828,Emami Limited,INE548C01032,N.A.,0.17,equity
+120828,Bata India Ltd,INE176A01028,N.A.,0.15,equity
+120828,Max Estates Limited,INE03EI01018,N.A.,0.14,equity
+120828,Prime Securities Limited,INE032B01021,N.A.,0.14,equity
+120828,Triveni Turbine Limited,INE152M01016,N.A.,0.14,equity
+120828,Embassy Developments Limited,INE069I01010,N.A.,0.13,equity
+120828,Bharti Airtel Limited,INE397D01024,N.A.,0.12,equity
+120828,Ravindra Energy Limited,INE206N01018,N.A.,0.11,equity
+120828,The Orissa Minerals Development Co Ltd,INE725E01024,N.A.,0.11,equity
+120828,Delhivery Limited,INE148O01028,N.A.,0.11,equity
+120828,Capacite Infraprojects Limited,INE264T01014,N.A.,0.1,equity
+120828,Graphite India Limited,INE371A01025,N.A.,0.09,equity
+120828,Intellect Design Arena Limited,INE306R01017,N.A.,0.09,equity
+120828,Sula Vineyards Limited,INE142Q01026,N.A.,0.08,equity
+120828,Oriental Hotels Limited,INE750A01020,N.A.,0.08,equity
+120828,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,0.08,equity
+120828,RISHABH INSTRUMENTS LIMITED,INE0N2P01017,N.A.,0.08,equity
+120828,Sudarshan Chemical Industries Limited,INE659A01023,N.A.,0.07,equity
+120828,Newgen Software Technologies Limited,INE619B01017,N.A.,0.07,equity
+120828,SANOFI INDIA LIMITED,INE058A01010,N.A.,0.05,equity
+120828,Digitide Solutions Limited,INE0U4701011,N.A.,0.05,equity
+120828,Mahindra Holidays & Resorts Ind Ltd,INE998I01010,N.A.,0.05,equity
+120828,Aequs Ltd,INE947N01017,N.A.,0.05,equity
+120828,PTC India Limited,INE877F01012,N.A.,0.05,equity
+120828,Sudeep Pharma Limited,INE0QPI01025,N.A.,0.05,equity
+120828,Sai Silks (Kalamandir) Limited,INE438K01021,N.A.,0.04,equity
+120828,Vishnu Prakash R Punglia Limited,INE0AE001013,N.A.,0.04,equity
+120828,Best Agrolife Limited,INE052T01021,N.A.,0.04,equity
+120828,PUNJAB ALKALIES AND CHEMICALS LTD,INE607A01022,N.A.,0.03,equity
+120828,Gillette India Ltd,INE322A01010,N.A.,0.03,equity
+120828,Safari Industries (India) Limited,INE429E01023,N.A.,0.03,equity
+120828,Prabha Energy Limited,INE0I0M01023,N.A.,0.03,equity
+120828,Moneyview Limited,INE0PTN01011,N.A.,0.01,equity
+120828,Kalyani Steels Ltd,INE907A01026,N.A.,0.01,equity
+120828,Caliber Mining and Logistics Limited,INE11XY01018,N.A.,0.01,equity
+120828,OM INFRA LIMITED,INE239D01028,N.A.,0.0,equity
+120828,KPIT Technologies Ltd.,INE04I401011,N.A.,-0.01,equity
+120828,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-0.08,equity
+120828,LIC Housing Finance Ltd.,INE115A01026,N.A.,-0.1,equity
+120828,Delhivery Ltd.,INE148O01028,N.A.,-0.11,equity
+120828,RBL Bank Ltd.,INE976G01028,N.A.,-0.11,equity
+120828,Bandhan Bank Ltd.,INE545U01014,N.A.,-0.23,equity
+120828,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.15,debt
+120828,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.14,debt
+120828,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.14,debt
+120828,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.13,debt
+120828,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.11,debt
+120828,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.1,debt
+120828,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.1,debt
+120828,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.1,debt
+120828,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.08,debt
+120828,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.08,debt
+120828,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,10.48,cash
+120828,NCA-NET CURRENT ASSETS,,,0.75,cash
+150440,ICICI Prudential AMC Ltd,INE346A01027,N.A.,9.9,equity
+150440,Adani Green Energy Limited,INE364U01010,N.A.,8.48,equity
+150440,Adani Enterprises Limited,INE423A01024,N.A.,8.17,equity
+150440,Divi's Laboratories Limited,INE361B01024,N.A.,7.43,equity
+150440,LG Electronics India Limited,INE324D01010,N.A.,7.39,equity
+150440,Samvardhana Motherson International Ltd,INE775A01035,N.A.,4.53,equity
+150440,Capri Global Capital Limited,INE180C01042,N.A.,3.96,equity
+150440,Adani Energy Solutions Limited,INE931S01010,N.A.,3.63,equity
+150440,Bharti Airtel Limited,INE397D01024,N.A.,3.21,equity
+150440,Infosys Limited,INE009A01021,N.A.,3.12,equity
+150440,Reliance Industries Limited,INE002A01018,N.A.,3.08,equity
+150440,Coal India Ltd,INE522F01014,N.A.,2.89,equity
+150440,Zydus Lifesciences Limited,INE010B01027,N.A.,2.77,equity
+150440,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,1.14,equity
+150440,HCL Technologies Ltd.,INE860A01027,N.A.,6.02,equity
+150440,Reliance Industries Ltd.,INE002A01018,N.A.,5.44,equity
+150440,Bharti Airtel Ltd.,INE397D01024,N.A.,4.84,equity
+150440,Adani Energy Solutions Ltd.,INE931S01010,N.A.,3.74,equity
+150440,Coal India Ltd.,INE522F01014,N.A.,2.94,equity
+150440,Divi's Laboratories Ltd.,INE361B01024,N.A.,2.01,equity
+150440,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.75,debt
+150440,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.68,debt
+150440,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.68,debt
+150440,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.67,debt
+150440,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.67,debt
+150440,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.65,debt
+150440,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.54,debt
+150440,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.54,debt
+150440,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.41,debt
+150440,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.41,debt
+150440,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.41,debt
+150440,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.14,debt
+150440,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,24.19,cash
+150440,NCA-NET CURRENT ASSETS,,,-25.43,cash
+150441,ICICI Prudential AMC Ltd,INE346A01027,N.A.,9.9,equity
+150441,Adani Green Energy Limited,INE364U01010,N.A.,8.48,equity
+150441,Adani Enterprises Limited,INE423A01024,N.A.,8.17,equity
+150441,Divi's Laboratories Limited,INE361B01024,N.A.,7.43,equity
+150441,LG Electronics India Limited,INE324D01010,N.A.,7.39,equity
+150441,Samvardhana Motherson International Ltd,INE775A01035,N.A.,4.53,equity
+150441,Capri Global Capital Limited,INE180C01042,N.A.,3.96,equity
+150441,Adani Energy Solutions Limited,INE931S01010,N.A.,3.63,equity
+150441,Bharti Airtel Limited,INE397D01024,N.A.,3.21,equity
+150441,Infosys Limited,INE009A01021,N.A.,3.12,equity
+150441,Reliance Industries Limited,INE002A01018,N.A.,3.08,equity
+150441,Coal India Ltd,INE522F01014,N.A.,2.89,equity
+150441,Zydus Lifesciences Limited,INE010B01027,N.A.,2.77,equity
+150441,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,1.14,equity
+150441,HCL Technologies Ltd.,INE860A01027,N.A.,6.02,equity
+150441,Reliance Industries Ltd.,INE002A01018,N.A.,5.44,equity
+150441,Bharti Airtel Ltd.,INE397D01024,N.A.,4.84,equity
+150441,Adani Energy Solutions Ltd.,INE931S01010,N.A.,3.74,equity
+150441,Coal India Ltd.,INE522F01014,N.A.,2.94,equity
+150441,Divi's Laboratories Ltd.,INE361B01024,N.A.,2.01,equity
+150441,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.75,debt
+150441,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.68,debt
+150441,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.68,debt
+150441,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.67,debt
+150441,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.67,debt
+150441,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.65,debt
+150441,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.54,debt
+150441,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.54,debt
+150441,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.41,debt
+150441,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.41,debt
+150441,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.41,debt
+150441,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.14,debt
+150441,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,24.19,cash
+150441,NCA-NET CURRENT ASSETS,,,-25.43,cash
+120823,Aurobindo Pharma Limited,INE406A01037,N.A.,9.49,equity
+120823,Adani Power Limited,INE814H01029,N.A.,5.12,equity
+120823,Adani Enterprises Limited,INE423A01024,N.A.,4.63,equity
+120823,JSW Infrastructure Limited,INE880J01026,N.A.,4.19,equity
+120823,Adani Green Energy Limited,INE364U01010,N.A.,3.87,equity
+120823,Samvardhana Motherson International Ltd,INE775A01035,N.A.,3.81,equity
+120823,Zydus Lifesciences Limited,INE010B01027,N.A.,3.66,equity
+120823,LG Electronics India Limited,INE324D01010,N.A.,3.08,equity
+120823,SUN TV Network Limited,INE424H01027,N.A.,2.63,equity
+120823,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,2.51,equity
+120823,Swan Corp Limited,INE665A01038,N.A.,2.44,equity
+120823,Strides Pharma Science Ltd,INE939A01011,N.A.,2.12,equity
+120823,AWL Agri Business Limited,INE699H01024,N.A.,2.11,equity
+120823,IRB Infrastructure Developers Limited,INE821I01022,N.A.,2.1,equity
+120823,CRISIL Limited,INE007A01025,N.A.,2.07,equity
+120823,LIC Housing Finance Ltd,INE115A01026,N.A.,1.96,equity
+120823,K.P.R. Mill Limited,INE930H01031,N.A.,1.94,equity
+120823,Embassy Developments Limited,INE069I01010,N.A.,1.78,equity
+120823,Adani Energy Solutions Limited,INE931S01010,N.A.,1.75,equity
+120823,Bharti Airtel Limited,INE397D01024,N.A.,1.49,equity
+120823,Torrent Pharmaceuticals Ltd,INE685A01028,N.A.,1.41,equity
+120823,ICICI Prudential AMC Ltd,INE346A01027,N.A.,1.38,equity
+120823,Maharashtra Seamless Ltd,INE271B01025,N.A.,1.36,equity
+120823,Welspun Corp Limited,INE191B01025,N.A.,1.36,equity
+120823,Lloyds Metals And Energy Limited,INE281B01032,N.A.,1.32,equity
+120823,Premier Energies Limited,INE0BS701011,N.A.,1.27,equity
+120823,Century Enka Limited,INE485A01015,N.A.,1.27,equity
+120823,Zydus Wellness Ltd,INE768C01028,N.A.,1.15,equity
+120823,Tata Communications Limited,INE151A01013,N.A.,1.1,equity
+120823,Honda India Power Products Limited,INE634A01018,N.A.,1.08,equity
+120823,HFCL Limited,INE548A01028,N.A.,1.05,equity
+120823,Juniper Hotels Limited,INE696F01016,N.A.,0.92,equity
+120823,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,0.87,equity
+120823,Divi's Laboratories Limited,INE361B01024,N.A.,0.65,equity
+120823,NCC Ltd,INE868B01028,N.A.,0.62,equity
+120823,Poly Medicure Limited,INE205C01021,N.A.,0.59,equity
+120823,IDBI Bank Limited,INE008A01015,N.A.,0.58,equity
+120823,Indo Count Industries Limited,INE483B01026,N.A.,0.57,equity
+120823,Gujarat State Fert & Chemicals Ltd,INE026A01025,N.A.,0.56,equity
+120823,Persistent Systems Limited,INE262H01021,N.A.,0.53,equity
+120823,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.51,equity
+120823,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,0.34,equity
+120823,3M India Limited,INE470A01017,N.A.,0.31,equity
+120823,Pfizer Ltd,INE182A01018,N.A.,0.28,equity
+120823,Info Edge (India) Ltd,INE663F01032,N.A.,0.16,equity
+120823,Digitide Solutions Limited,INE0U4701011,N.A.,0.14,equity
+120823,Container Corporation of India Ltd,INE111A01025,N.A.,0.09,equity
+120823,Lancer Container Lines Ltd.,INE359U01028,N.A.,0.09,equity
+120823,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,0.08,equity
+120823,Aditya Birla Fashion And Retail Ltd,INE647O01011,N.A.,0.07,equity
+120823,Mahindra Holidays & Resorts Ind Ltd,INE998I01010,N.A.,0.05,equity
+120823,Rossell India Limited,INE847C01020,N.A.,0.01,equity
+120823,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,2.42,equity
+120823,Divi's Laboratories Ltd.,INE361B01024,N.A.,1.36,equity
+120823,Tata Power Co. Ltd.,INE245A01021,N.A.,1.35,equity
+120823,Info Edge (India) Ltd.,INE663F01032,N.A.,1.34,equity
+120823,Bharti Airtel Ltd.,INE397D01024,N.A.,0.95,equity
+120823,LTM Ltd.,INE214T01019,N.A.,0.93,equity
+120823,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.53,debt
+120823,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.46,debt
+120823,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.4,debt
+120823,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.4,debt
+120823,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.4,debt
+120823,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.4,debt
+120823,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.33,debt
+120823,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.33,debt
+120823,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.27,debt
+120823,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.27,debt
+120823,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.2,debt
+120823,QUANT HEALTHCARE -DIRECT PLAN-GROWTH,INF966L01CD0,,0.36,mf_units
+120823,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,11.29,cash
+120823,NCA-NET CURRENT ASSETS,,,-8.52,cash
+100631,Aurobindo Pharma Limited,INE406A01037,N.A.,9.49,equity
+100631,Adani Power Limited,INE814H01029,N.A.,5.12,equity
+100631,Adani Enterprises Limited,INE423A01024,N.A.,4.63,equity
+100631,JSW Infrastructure Limited,INE880J01026,N.A.,4.19,equity
+100631,Adani Green Energy Limited,INE364U01010,N.A.,3.87,equity
+100631,Samvardhana Motherson International Ltd,INE775A01035,N.A.,3.81,equity
+100631,Zydus Lifesciences Limited,INE010B01027,N.A.,3.66,equity
+100631,LG Electronics India Limited,INE324D01010,N.A.,3.08,equity
+100631,SUN TV Network Limited,INE424H01027,N.A.,2.63,equity
+100631,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,2.51,equity
+100631,Swan Corp Limited,INE665A01038,N.A.,2.44,equity
+100631,Strides Pharma Science Ltd,INE939A01011,N.A.,2.12,equity
+100631,AWL Agri Business Limited,INE699H01024,N.A.,2.11,equity
+100631,IRB Infrastructure Developers Limited,INE821I01022,N.A.,2.1,equity
+100631,CRISIL Limited,INE007A01025,N.A.,2.07,equity
+100631,LIC Housing Finance Ltd,INE115A01026,N.A.,1.96,equity
+100631,K.P.R. Mill Limited,INE930H01031,N.A.,1.94,equity
+100631,Embassy Developments Limited,INE069I01010,N.A.,1.78,equity
+100631,Adani Energy Solutions Limited,INE931S01010,N.A.,1.75,equity
+100631,Bharti Airtel Limited,INE397D01024,N.A.,1.49,equity
+100631,Torrent Pharmaceuticals Ltd,INE685A01028,N.A.,1.41,equity
+100631,ICICI Prudential AMC Ltd,INE346A01027,N.A.,1.38,equity
+100631,Maharashtra Seamless Ltd,INE271B01025,N.A.,1.36,equity
+100631,Welspun Corp Limited,INE191B01025,N.A.,1.36,equity
+100631,Lloyds Metals And Energy Limited,INE281B01032,N.A.,1.32,equity
+100631,Premier Energies Limited,INE0BS701011,N.A.,1.27,equity
+100631,Century Enka Limited,INE485A01015,N.A.,1.27,equity
+100631,Zydus Wellness Ltd,INE768C01028,N.A.,1.15,equity
+100631,Tata Communications Limited,INE151A01013,N.A.,1.1,equity
+100631,Honda India Power Products Limited,INE634A01018,N.A.,1.08,equity
+100631,HFCL Limited,INE548A01028,N.A.,1.05,equity
+100631,Juniper Hotels Limited,INE696F01016,N.A.,0.92,equity
+100631,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,0.87,equity
+100631,Divi's Laboratories Limited,INE361B01024,N.A.,0.65,equity
+100631,NCC Ltd,INE868B01028,N.A.,0.62,equity
+100631,Poly Medicure Limited,INE205C01021,N.A.,0.59,equity
+100631,IDBI Bank Limited,INE008A01015,N.A.,0.58,equity
+100631,Indo Count Industries Limited,INE483B01026,N.A.,0.57,equity
+100631,Gujarat State Fert & Chemicals Ltd,INE026A01025,N.A.,0.56,equity
+100631,Persistent Systems Limited,INE262H01021,N.A.,0.53,equity
+100631,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.51,equity
+100631,Glaxosmithkline Pharmaceuticals Ltd,INE159A01016,N.A.,0.34,equity
+100631,3M India Limited,INE470A01017,N.A.,0.31,equity
+100631,Pfizer Ltd,INE182A01018,N.A.,0.28,equity
+100631,Info Edge (India) Ltd,INE663F01032,N.A.,0.16,equity
+100631,Digitide Solutions Limited,INE0U4701011,N.A.,0.14,equity
+100631,Container Corporation of India Ltd,INE111A01025,N.A.,0.09,equity
+100631,Lancer Container Lines Ltd.,INE359U01028,N.A.,0.09,equity
+100631,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,0.08,equity
+100631,Aditya Birla Fashion And Retail Ltd,INE647O01011,N.A.,0.07,equity
+100631,Mahindra Holidays & Resorts Ind Ltd,INE998I01010,N.A.,0.05,equity
+100631,Rossell India Limited,INE847C01020,N.A.,0.01,equity
+100631,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,2.42,equity
+100631,Divi's Laboratories Ltd.,INE361B01024,N.A.,1.36,equity
+100631,Tata Power Co. Ltd.,INE245A01021,N.A.,1.35,equity
+100631,Info Edge (India) Ltd.,INE663F01032,N.A.,1.34,equity
+100631,Bharti Airtel Ltd.,INE397D01024,N.A.,0.95,equity
+100631,LTM Ltd.,INE214T01019,N.A.,0.93,equity
+100631,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.53,debt
+100631,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.46,debt
+100631,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.4,debt
+100631,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.4,debt
+100631,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.4,debt
+100631,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.4,debt
+100631,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.33,debt
+100631,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.33,debt
+100631,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.27,debt
+100631,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.27,debt
+100631,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.2,debt
+100631,QUANT HEALTHCARE -DIRECT PLAN-GROWTH,INF966L01CD0,,0.36,mf_units
+100631,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,11.29,cash
+100631,NCA-NET CURRENT ASSETS,,,-8.52,cash
+152415,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,9.97,equity
+152415,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,9.96,equity
+152415,Adani Green Energy Limited,INE364U01010,N.A.,9.77,equity
+152415,LIC Housing Finance Ltd,INE115A01026,N.A.,9.75,equity
+152415,PTC India Limited,INE877F01012,N.A.,9.3,equity
+152415,Container Corporation of India Ltd,INE111A01025,N.A.,9.25,equity
+152415,Cochin Shipyard Limited,INE704P01025,N.A.,8.15,equity
+152415,Power Finance Corporation Ltd.,INE134E01011,N.A.,6.36,equity
+152415,Coal India Ltd,INE522F01014,N.A.,4.87,equity
+152415,NHPC Ltd.,INE848E01016,N.A.,9.81,equity
+152415,Coal India Ltd.,INE522F01014,N.A.,4.84,equity
+152415,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,3.81,equity
+152415,Power Finance Corporation Ltd.,INE134E01011,N.A.,2.83,equity
+152415,Cochin Shipyard Ltd.,INE704P01025,N.A.,1.06,equity
+152415,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-9.97,equity
+152415,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,1.0,debt
+152415,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.99,debt
+152415,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.87,debt
+152415,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.75,debt
+152415,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.74,debt
+152415,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.74,debt
+152415,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.74,debt
+152415,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.74,debt
+152415,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+152415,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.74,debt
+152415,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,14.85,cash
+152415,NCA-NET CURRENT ASSETS,,,-12.67,cash
+152413,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,9.97,equity
+152413,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,9.96,equity
+152413,Adani Green Energy Limited,INE364U01010,N.A.,9.77,equity
+152413,LIC Housing Finance Ltd,INE115A01026,N.A.,9.75,equity
+152413,PTC India Limited,INE877F01012,N.A.,9.3,equity
+152413,Container Corporation of India Ltd,INE111A01025,N.A.,9.25,equity
+152413,Cochin Shipyard Limited,INE704P01025,N.A.,8.15,equity
+152413,Power Finance Corporation Ltd.,INE134E01011,N.A.,6.36,equity
+152413,Coal India Ltd,INE522F01014,N.A.,4.87,equity
+152413,NHPC Ltd.,INE848E01016,N.A.,9.81,equity
+152413,Coal India Ltd.,INE522F01014,N.A.,4.84,equity
+152413,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,3.81,equity
+152413,Power Finance Corporation Ltd.,INE134E01011,N.A.,2.83,equity
+152413,Cochin Shipyard Ltd.,INE704P01025,N.A.,1.06,equity
+152413,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-9.97,equity
+152413,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,1.0,debt
+152413,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.99,debt
+152413,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.87,debt
+152413,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.75,debt
+152413,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.74,debt
+152413,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.74,debt
+152413,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.74,debt
+152413,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.74,debt
+152413,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+152413,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.74,debt
+152413,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,14.85,cash
+152413,NCA-NET CURRENT ASSETS,,,-12.67,cash
+120819,Zydus Lifesciences Limited,INE010B01027,N.A.,9.62,equity
+120819,Adani Enterprises Limited,INE423A01024,N.A.,9.3,equity
+120819,Adani Green Energy Limited,INE364U01010,N.A.,8.25,equity
+120819,Aurobindo Pharma Limited,INE406A01037,N.A.,8.03,equity
+120819,Divi's Laboratories Limited,INE361B01024,N.A.,7.8,equity
+120819,Adani Power Limited,INE814H01029,N.A.,6.68,equity
+120819,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,5.94,equity
+120819,Reliance Industries Limited,INE002A01018,N.A.,4.54,equity
+120819,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,3.82,equity
+120819,Infosys Limited,INE009A01021,N.A.,2.42,equity
+120819,LTM Limited,INE214T01019,N.A.,1.55,equity
+120819,Reliance Industries Ltd.,INE002A01018,N.A.,3.74,equity
+120819,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-3.82,equity
+120819,7.23% Maharashtra SDL - 04-Sep-2035,IN2220240229,,2.29,other
+120819,6.79% GOI - 07-OCT-2034,IN0020240126,,1.62,other
+120819,9% Capri Global Capital Ltd 30Apr2028,INE180C07288,,1.18,other
+120819,7.26% GOI MAT 06-Feb-2033,IN0020220151,,0.96,other
+120819,6.64% GOI - 16-Jun-2035,IN0020210020,,0.84,other
+120819,7.29% GOI  SGRB MAT 27-Jan-2033,IN0020220144,,0.48,other
+120819,5.74% GOI - 15-Nov-2026,IN0020210186,,0.19,other
+120819,SIDBI CD 10-Nov-2026,INE556F16BR2,,4.71,debt
+120819,364 Days Treasury Bill  19-Feb-2027,IN002025Z468,,4.64,debt
+120819,182 Days Treasury Bill 19-Nov-2026,IN002026Y071,,2.36,debt
+120819,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,1.17,debt
+120819,Gsec Strip Mat 12/03/28,IN000328C053,,0.8,debt
+120819,QUANT GILT FUND -DIRECT PLAN-GROWTH,INF966L01BF7,,0.3,mf_units
+120819,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,8.55,cash
+120819,IRB InvIT Fund (InvIT),INE183W23014,,1.45,other
+120819,Raajmarg Infra Investment Trust  (InvIT),INE2PB023011,,0.52,other
+120819,NCA-NET CURRENT ASSETS,,,0.07,cash
+101070,Zydus Lifesciences Limited,INE010B01027,N.A.,9.62,equity
+101070,Adani Enterprises Limited,INE423A01024,N.A.,9.3,equity
+101070,Adani Green Energy Limited,INE364U01010,N.A.,8.25,equity
+101070,Aurobindo Pharma Limited,INE406A01037,N.A.,8.03,equity
+101070,Divi's Laboratories Limited,INE361B01024,N.A.,7.8,equity
+101070,Adani Power Limited,INE814H01029,N.A.,6.68,equity
+101070,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,5.94,equity
+101070,Reliance Industries Limited,INE002A01018,N.A.,4.54,equity
+101070,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,3.82,equity
+101070,Infosys Limited,INE009A01021,N.A.,2.42,equity
+101070,LTM Limited,INE214T01019,N.A.,1.55,equity
+101070,Reliance Industries Ltd.,INE002A01018,N.A.,3.74,equity
+101070,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-3.82,equity
+101070,7.23% Maharashtra SDL - 04-Sep-2035,IN2220240229,,2.29,other
+101070,6.79% GOI - 07-OCT-2034,IN0020240126,,1.62,other
+101070,9% Capri Global Capital Ltd 30Apr2028,INE180C07288,,1.18,other
+101070,7.26% GOI MAT 06-Feb-2033,IN0020220151,,0.96,other
+101070,6.64% GOI - 16-Jun-2035,IN0020210020,,0.84,other
+101070,7.29% GOI  SGRB MAT 27-Jan-2033,IN0020220144,,0.48,other
+101070,5.74% GOI - 15-Nov-2026,IN0020210186,,0.19,other
+101070,SIDBI CD 10-Nov-2026,INE556F16BR2,,4.71,debt
+101070,364 Days Treasury Bill  19-Feb-2027,IN002025Z468,,4.64,debt
+101070,182 Days Treasury Bill 19-Nov-2026,IN002026Y071,,2.36,debt
+101070,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,1.17,debt
+101070,Gsec Strip Mat 12/03/28,IN000328C053,,0.8,debt
+101070,QUANT GILT FUND -DIRECT PLAN-GROWTH,INF966L01BF7,,0.3,mf_units
+101070,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,8.55,cash
+101070,IRB InvIT Fund (InvIT),INE183W23014,,1.45,other
+101070,Raajmarg Infra Investment Trust  (InvIT),INE2PB023011,,0.52,other
+101070,NCA-NET CURRENT ASSETS,,,0.07,cash
+152190,Indus Towers Limited,INE121J01017,N.A.,9.39,equity
+152190,Aurobindo Pharma Limited,INE406A01037,N.A.,9.34,equity
+152190,Adani Enterprises Limited,INE423A01024,N.A.,9.06,equity
+152190,Piramal Finance Ltd,INE202B01038,N.A.,8.83,equity
+152190,Adani Green Energy Limited,INE364U01010,N.A.,8.33,equity
+152190,Reliance Industries Limited,INE002A01018,N.A.,6.71,equity
+152190,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,4.91,equity
+152190,Hexaware Technologies Limited,INE093A01041,N.A.,4.05,equity
+152190,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,3.84,equity
+152190,HFCL Limited,INE548A01028,N.A.,3.45,equity
+152190,Bharti Airtel Limited,INE397D01024,N.A.,3.03,equity
+152190,Torrent Pharmaceuticals Ltd,INE685A01028,N.A.,2.95,equity
+152190,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,3.86,equity
+152190,LTM Ltd.,INE214T01019,N.A.,3.8,equity
+152190,Reliance Industries Ltd.,INE002A01018,N.A.,2.28,equity
+152190,Life Insurance Corporation of India,INE0J1Y01017,N.A.,1.13,equity
+152190,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-3.33,equity
+152190,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.79,debt
+152190,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.79,debt
+152190,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.78,debt
+152190,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.78,debt
+152190,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.78,debt
+152190,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+152190,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.78,debt
+152190,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.78,debt
+152190,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.78,debt
+152190,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.78,debt
+152190,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,18.47,cash
+152190,NCA-NET CURRENT ASSETS,,,-7.9,cash
+152189,Indus Towers Limited,INE121J01017,N.A.,9.39,equity
+152189,Aurobindo Pharma Limited,INE406A01037,N.A.,9.34,equity
+152189,Adani Enterprises Limited,INE423A01024,N.A.,9.06,equity
+152189,Piramal Finance Ltd,INE202B01038,N.A.,8.83,equity
+152189,Adani Green Energy Limited,INE364U01010,N.A.,8.33,equity
+152189,Reliance Industries Limited,INE002A01018,N.A.,6.71,equity
+152189,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,4.91,equity
+152189,Hexaware Technologies Limited,INE093A01041,N.A.,4.05,equity
+152189,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,3.84,equity
+152189,HFCL Limited,INE548A01028,N.A.,3.45,equity
+152189,Bharti Airtel Limited,INE397D01024,N.A.,3.03,equity
+152189,Torrent Pharmaceuticals Ltd,INE685A01028,N.A.,2.95,equity
+152189,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,3.86,equity
+152189,LTM Ltd.,INE214T01019,N.A.,3.8,equity
+152189,Reliance Industries Ltd.,INE002A01018,N.A.,2.28,equity
+152189,Life Insurance Corporation of India,INE0J1Y01017,N.A.,1.13,equity
+152189,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-3.33,equity
+152189,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.79,debt
+152189,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.79,debt
+152189,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.78,debt
+152189,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.78,debt
+152189,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.78,debt
+152189,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+152189,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.78,debt
+152189,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.78,debt
+152189,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.78,debt
+152189,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.78,debt
+152189,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,18.47,cash
+152189,NCA-NET CURRENT ASSETS,,,-7.9,cash
+149335,Adani Enterprises Limited,INE423A01024,N.A.,9.32,equity
+149335,Piramal Finance Ltd,INE202B01038,N.A.,9.13,equity
+149335,Adani Green Energy Limited,INE364U01010,N.A.,8.18,equity
+149335,Indus Towers Limited,INE121J01017,N.A.,7.31,equity
+149335,Adani Power Limited,INE814H01029,N.A.,7.13,equity
+149335,HFCL Limited,INE548A01028,N.A.,6.52,equity
+149335,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,4.68,equity
+149335,Aurobindo Pharma Limited,INE406A01037,N.A.,4.32,equity
+149335,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,2.76,equity
+149335,Manappuram Finance Ltd,INE522D01027,N.A.,2.41,equity
+149335,Tata Power Company Limited,INE245A01021,N.A.,2.31,equity
+149335,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,2.3,equity
+149335,SUN TV Network Limited,INE424H01027,N.A.,1.82,equity
+149335,Mangalam Cement Limited,INE347A01017,N.A.,1.5,equity
+149335,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,1.43,equity
+149335,LIC Housing Finance Ltd,INE115A01026,N.A.,1.35,equity
+149335,Capri Global Capital Limited,INE180C01042,N.A.,1.26,equity
+149335,NCC Ltd,INE868B01028,N.A.,1.15,equity
+149335,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.71,equity
+149335,Digitide Solutions Limited,INE0U4701011,N.A.,0.56,equity
+149335,Gujarat Themis Biosyn Ltd,INE942C01045,N.A.,0.52,equity
+149335,Life Insurance Corporation of India,INE0J1Y01017,N.A.,5.46,equity
+149335,Adani Power Ltd.,INE814H01029,N.A.,2.53,equity
+149335,LTM Ltd.,INE214T01019,N.A.,2.06,equity
+149335,Cochin Shipyard Ltd.,INE704P01025,N.A.,1.8,equity
+149335,Coal India Ltd.,INE522F01014,N.A.,1.51,equity
+149335,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-3.11,equity
+149335,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.78,debt
+149335,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+149335,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.77,debt
+149335,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.77,debt
+149335,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.75,debt
+149335,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.75,debt
+149335,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.73,debt
+149335,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.72,debt
+149335,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.72,debt
+149335,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.62,debt
+149335,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.26,debt
+149335,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,15.73,cash
+149335,NCA-NET CURRENT ASSETS,,,-10.32,cash
+149337,Adani Enterprises Limited,INE423A01024,N.A.,9.32,equity
+149337,Piramal Finance Ltd,INE202B01038,N.A.,9.13,equity
+149337,Adani Green Energy Limited,INE364U01010,N.A.,8.18,equity
+149337,Indus Towers Limited,INE121J01017,N.A.,7.31,equity
+149337,Adani Power Limited,INE814H01029,N.A.,7.13,equity
+149337,HFCL Limited,INE548A01028,N.A.,6.52,equity
+149337,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,4.68,equity
+149337,Aurobindo Pharma Limited,INE406A01037,N.A.,4.32,equity
+149337,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,2.76,equity
+149337,Manappuram Finance Ltd,INE522D01027,N.A.,2.41,equity
+149337,Tata Power Company Limited,INE245A01021,N.A.,2.31,equity
+149337,BLACKBUCK LIMITED,INE0UIZ01018,N.A.,2.3,equity
+149337,SUN TV Network Limited,INE424H01027,N.A.,1.82,equity
+149337,Mangalam Cement Limited,INE347A01017,N.A.,1.5,equity
+149337,Life Insurance Corporation Of India,INE0J1Y01017,N.A.,1.43,equity
+149337,LIC Housing Finance Ltd,INE115A01026,N.A.,1.35,equity
+149337,Capri Global Capital Limited,INE180C01042,N.A.,1.26,equity
+149337,NCC Ltd,INE868B01028,N.A.,1.15,equity
+149337,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.71,equity
+149337,Digitide Solutions Limited,INE0U4701011,N.A.,0.56,equity
+149337,Gujarat Themis Biosyn Ltd,INE942C01045,N.A.,0.52,equity
+149337,Life Insurance Corporation of India,INE0J1Y01017,N.A.,5.46,equity
+149337,Adani Power Ltd.,INE814H01029,N.A.,2.53,equity
+149337,LTM Ltd.,INE214T01019,N.A.,2.06,equity
+149337,Cochin Shipyard Ltd.,INE704P01025,N.A.,1.8,equity
+149337,Coal India Ltd.,INE522F01014,N.A.,1.51,equity
+149337,Bharat Heavy Electricals Ltd.,INE257A01026,N.A.,-3.11,equity
+149337,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.78,debt
+149337,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.78,debt
+149337,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.77,debt
+149337,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.77,debt
+149337,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.75,debt
+149337,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.75,debt
+149337,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.73,debt
+149337,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.72,debt
+149337,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.72,debt
+149337,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.62,debt
+149337,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.26,debt
+149337,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,15.73,cash
+149337,NCA-NET CURRENT ASSETS,,,-10.32,cash
+152255,Adani Enterprises Limited,INE423A01024,N.A.,9.72,equity
+152255,Kalyani Steels Ltd,INE907A01026,N.A.,9.7,equity
+152255,Adani Energy Solutions Limited,INE931S01010,N.A.,9.38,equity
+152255,Adani Green Energy Limited,INE364U01010,N.A.,9.33,equity
+152255,Lloyds Metals And Energy Limited,INE281B01032,N.A.,8.15,equity
+152255,HFCL Limited,INE548A01028,N.A.,6.55,equity
+152255,Heubach Colorants India Limited,INE258G01013,N.A.,5.3,equity
+152255,Premier Energies Limited,INE0BS701011,N.A.,4.71,equity
+152255,Adani Power Limited,INE814H01029,N.A.,3.39,equity
+152255,Coal India Ltd,INE522F01014,N.A.,1.06,equity
+152255,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,0.45,equity
+152255,Reliance Industries Ltd.,INE002A01018,N.A.,8.75,equity
+152255,Coal India Ltd.,INE522F01014,N.A.,8.32,equity
+152255,Tata Power Co. Ltd.,INE245A01021,N.A.,7.55,equity
+152255,Adani Power Ltd.,INE814H01029,N.A.,6.4,equity
+152255,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,0.69,equity
+152255,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.89,debt
+152255,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.89,debt
+152255,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.74,debt
+152255,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.74,debt
+152255,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.74,debt
+152255,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.74,debt
+152255,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.74,debt
+152255,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+152255,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.74,debt
+152255,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,25.34,cash
+152255,NCA-NET CURRENT ASSETS,,,-31.73,cash
+152256,Adani Enterprises Limited,INE423A01024,N.A.,9.72,equity
+152256,Kalyani Steels Ltd,INE907A01026,N.A.,9.7,equity
+152256,Adani Energy Solutions Limited,INE931S01010,N.A.,9.38,equity
+152256,Adani Green Energy Limited,INE364U01010,N.A.,9.33,equity
+152256,Lloyds Metals And Energy Limited,INE281B01032,N.A.,8.15,equity
+152256,HFCL Limited,INE548A01028,N.A.,6.55,equity
+152256,Heubach Colorants India Limited,INE258G01013,N.A.,5.3,equity
+152256,Premier Energies Limited,INE0BS701011,N.A.,4.71,equity
+152256,Adani Power Limited,INE814H01029,N.A.,3.39,equity
+152256,Coal India Ltd,INE522F01014,N.A.,1.06,equity
+152256,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,0.45,equity
+152256,Reliance Industries Ltd.,INE002A01018,N.A.,8.75,equity
+152256,Coal India Ltd.,INE522F01014,N.A.,8.32,equity
+152256,Tata Power Co. Ltd.,INE245A01021,N.A.,7.55,equity
+152256,Adani Power Ltd.,INE814H01029,N.A.,6.4,equity
+152256,Colgate Palmolive (India) Ltd.,INE259A01022,N.A.,0.69,equity
+152256,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.89,debt
+152256,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.89,debt
+152256,91 Days Treasury Bill 05-Nov-2026,IN002026X180,,0.74,debt
+152256,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.74,debt
+152256,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.74,debt
+152256,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.74,debt
+152256,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.74,debt
+152256,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.74,debt
+152256,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.74,debt
+152256,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,25.34,cash
+152256,NCA-NET CURRENT ASSETS,,,-31.73,cash
+148510,REC Ltd CP 22-Oct-2026,INE020B14714,,8.67,debt
+148510,PNB Housing Finance Ltd CP 27-Oct-2026,INE572E14KQ0,,8.66,debt
+148510,Godrej Industries Ltd CP 23-Oct-2026,INE233A149O7,,6.5,debt
+148510,Bajaj Finance Limited CP 05-Nov-2026,INE296A14J09,,6.48,debt
+148510,Mirae Asset Fin Services CP -27-Oct-2026,INE0JRU14529,,4.33,debt
+148510,L&T Finance Ltd CP 05-Nov-2026,INE498L14GG2,,4.32,debt
+148510,Bank Of Baroda CD 06-Nov-2026,INE028A16KI3,,8.65,debt
+148510,Kotak Mahindra Bank Ltd CD 18-Dec-2026,INE237AD6109,,6.44,debt
+148510,HDFC Bank Ltd CD 16-Oct-2026,INE040A16JT7,,4.34,debt
+148510,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,8.67,debt
+148510,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,8.61,debt
+148510,182 Days Treasury Bill 22-Oct-2026,IN002026Y030,,2.17,debt
+148510,Corp Debt Mkt Devlop Fund (SBI AIF Fund) (Category I),INF0RQ622028,,0.67,other
+148510,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.39,cash
+148510,NCA-NET CURRENT ASSETS,,,0.07,cash
+148513,REC Ltd CP 22-Oct-2026,INE020B14714,,8.67,debt
+148513,PNB Housing Finance Ltd CP 27-Oct-2026,INE572E14KQ0,,8.66,debt
+148513,Godrej Industries Ltd CP 23-Oct-2026,INE233A149O7,,6.5,debt
+148513,Bajaj Finance Limited CP 05-Nov-2026,INE296A14J09,,6.48,debt
+148513,Mirae Asset Fin Services CP -27-Oct-2026,INE0JRU14529,,4.33,debt
+148513,L&T Finance Ltd CP 05-Nov-2026,INE498L14GG2,,4.32,debt
+148513,Bank Of Baroda CD 06-Nov-2026,INE028A16KI3,,8.65,debt
+148513,Kotak Mahindra Bank Ltd CD 18-Dec-2026,INE237AD6109,,6.44,debt
+148513,HDFC Bank Ltd CD 16-Oct-2026,INE040A16JT7,,4.34,debt
+148513,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,8.67,debt
+148513,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,8.61,debt
+148513,182 Days Treasury Bill 22-Oct-2026,IN002026Y030,,2.17,debt
+148513,Corp Debt Mkt Devlop Fund (SBI AIF Fund) (Category I),INF0RQ622028,,0.67,other
+148513,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.39,cash
+148513,NCA-NET CURRENT ASSETS,,,0.07,cash
+120837,REC Ltd CP 22-Oct-2026,INE020B14714,,8.67,debt
+120837,PNB Housing Finance Ltd CP 27-Oct-2026,INE572E14KQ0,,8.66,debt
+120837,Godrej Industries Ltd CP 23-Oct-2026,INE233A149O7,,6.5,debt
+120837,Bajaj Finance Limited CP 05-Nov-2026,INE296A14J09,,6.48,debt
+120837,Mirae Asset Fin Services CP -27-Oct-2026,INE0JRU14529,,4.33,debt
+120837,L&T Finance Ltd CP 05-Nov-2026,INE498L14GG2,,4.32,debt
+120837,Bank Of Baroda CD 06-Nov-2026,INE028A16KI3,,8.65,debt
+120837,Kotak Mahindra Bank Ltd CD 18-Dec-2026,INE237AD6109,,6.44,debt
+120837,HDFC Bank Ltd CD 16-Oct-2026,INE040A16JT7,,4.34,debt
+120837,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,8.67,debt
+120837,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,8.61,debt
+120837,182 Days Treasury Bill 22-Oct-2026,IN002026Y030,,2.17,debt
+120837,Corp Debt Mkt Devlop Fund (SBI AIF Fund) (Category I),INF0RQ622028,,0.67,other
+120837,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.39,cash
+120837,NCA-NET CURRENT ASSETS,,,0.07,cash
+103225,REC Ltd CP 22-Oct-2026,INE020B14714,,8.67,debt
+103225,PNB Housing Finance Ltd CP 27-Oct-2026,INE572E14KQ0,,8.66,debt
+103225,Godrej Industries Ltd CP 23-Oct-2026,INE233A149O7,,6.5,debt
+103225,Bajaj Finance Limited CP 05-Nov-2026,INE296A14J09,,6.48,debt
+103225,Mirae Asset Fin Services CP -27-Oct-2026,INE0JRU14529,,4.33,debt
+103225,L&T Finance Ltd CP 05-Nov-2026,INE498L14GG2,,4.32,debt
+103225,Bank Of Baroda CD 06-Nov-2026,INE028A16KI3,,8.65,debt
+103225,Kotak Mahindra Bank Ltd CD 18-Dec-2026,INE237AD6109,,6.44,debt
+103225,HDFC Bank Ltd CD 16-Oct-2026,INE040A16JT7,,4.34,debt
+103225,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,8.67,debt
+103225,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,8.61,debt
+103225,182 Days Treasury Bill 22-Oct-2026,IN002026Y030,,2.17,debt
+103225,Corp Debt Mkt Devlop Fund (SBI AIF Fund) (Category I),INF0RQ622028,,0.67,other
+103225,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.39,cash
+103225,NCA-NET CURRENT ASSETS,,,0.07,cash
+148512,REC Ltd CP 22-Oct-2026,INE020B14714,,8.67,debt
+148512,PNB Housing Finance Ltd CP 27-Oct-2026,INE572E14KQ0,,8.66,debt
+148512,Godrej Industries Ltd CP 23-Oct-2026,INE233A149O7,,6.5,debt
+148512,Bajaj Finance Limited CP 05-Nov-2026,INE296A14J09,,6.48,debt
+148512,Mirae Asset Fin Services CP -27-Oct-2026,INE0JRU14529,,4.33,debt
+148512,L&T Finance Ltd CP 05-Nov-2026,INE498L14GG2,,4.32,debt
+148512,Bank Of Baroda CD 06-Nov-2026,INE028A16KI3,,8.65,debt
+148512,Kotak Mahindra Bank Ltd CD 18-Dec-2026,INE237AD6109,,6.44,debt
+148512,HDFC Bank Ltd CD 16-Oct-2026,INE040A16JT7,,4.34,debt
+148512,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,8.67,debt
+148512,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,8.61,debt
+148512,182 Days Treasury Bill 22-Oct-2026,IN002026Y030,,2.17,debt
+148512,Corp Debt Mkt Devlop Fund (SBI AIF Fund) (Category I),INF0RQ622028,,0.67,other
+148512,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,21.39,cash
+148512,NCA-NET CURRENT ASSETS,,,0.07,cash
+120843,Samvardhana Motherson International Ltd,INE775A01035,N.A.,9.28,equity
+120843,Adani Enterprises Limited,INE423A01024,N.A.,8.05,equity
+120843,Adani Power Limited,INE814H01029,N.A.,8.01,equity
+120843,Aurobindo Pharma Limited,INE406A01037,N.A.,6.87,equity
+120843,ICICI Prudential AMC Ltd,INE346A01027,N.A.,6.38,equity
+120843,Adani Green Energy Limited,INE364U01010,N.A.,3.67,equity
+120843,Adani Energy Solutions Limited,INE931S01010,N.A.,3.18,equity
+120843,Tata Power Company Limited,INE245A01021,N.A.,2.88,equity
+120843,Bharti Airtel Limited,INE397D01024,N.A.,2.77,equity
+120843,Zydus Lifesciences Limited,INE010B01027,N.A.,2.75,equity
+120843,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,2.43,equity
+120843,Alivus Life Sciences,INE03Q201024,N.A.,2.05,equity
+120843,K.P.R. Mill Limited,INE930H01031,N.A.,1.99,equity
+120843,JSW Infrastructure Limited,INE880J01026,N.A.,1.95,equity
+120843,Swan Corp Limited,INE665A01038,N.A.,1.62,equity
+120843,LG Electronics India Limited,INE324D01010,N.A.,1.39,equity
+120843,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,1.32,equity
+120843,Indus Towers Limited,INE121J01017,N.A.,1.18,equity
+120843,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,1.07,equity
+120843,Piramal Finance Ltd,INE202B01038,N.A.,1.04,equity
+120843,LIC Housing Finance Ltd,INE115A01026,N.A.,0.76,equity
+120843,Lloyds Metals And Energy Limited,INE281B01032,N.A.,0.66,equity
+120843,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.42,equity
+120843,Tata Communications Limited,INE151A01013,N.A.,0.3,equity
+120843,IRB Infrastructure Developers Limited,INE821I01022,N.A.,0.28,equity
+120843,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,0.24,equity
+120843,Reliance Industries Ltd.,INE002A01018,N.A.,4.94,equity
+120843,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,3.44,equity
+120843,Tata Power Co. Ltd.,INE245A01021,N.A.,3.38,equity
+120843,Divi's Laboratories Ltd.,INE361B01024,N.A.,1.96,equity
+120843,Sona BLW Precision Forgings Ltd.,INE073K01018,N.A.,1.75,equity
+120843,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.54,debt
+120843,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.47,debt
+120843,91 Days Treasury Bill 19-Nov-2026,IN002026X206,,0.41,debt
+120843,91 Days Treasury Bill 17-Dec-2026,IN002026X248,,0.41,debt
+120843,91 Days Treasury Bill 29-Oct-2026,IN002026X172,,0.34,debt
+120843,91 Days Treasury Bill 10-Dec-2026,IN002026X230,,0.34,debt
+120843,91 Days Treasury Bill 01-Oct-2026,IN002026X131,,0.27,debt
+120843,91 Days Treasury Bill 15-Oct-2026,IN002026X156,,0.27,debt
+120843,91 Days Treasury Bill 22-Oct-2026,IN002026X164,,0.27,debt
+120843,91 Days Treasury Bill 08-Oct-2026,IN002026X149,,0.21,debt
+120843,91 Days Treasury Bill 27-Nov-2026,IN002026X214,,0.2,debt
+120843,TREPS 01-Oct-2026 DEPO 10,INCBLO011026,,23.92,cash
+120843,NCA-NET CURRENT ASSETS,,,-15.66,cash
+109830,Samvardhana Motherson International Ltd,INE775A01035,N.A.,9.28,equity
+109830,Adani Enterprises Limited,INE423A01024,N.A.,8.05,equity
+109830,Adani Power Limited,INE814H01029,N.A.,8.01,equity
+109830,Aurobindo Pharma Limited,INE406A01037,N.A.,6.87,equity
+109830,ICICI Prudential AMC Ltd,INE346A01027,N.A.,6.38,equity
+109830,Adani Green Energy Limited,INE364U01010,N.A.,3.67,equity
+109830,Adani Energy Solutions Limited,INE931S01010,N.A.,3.18,equity
+109830,Tata Power Company Limited,INE245A01021,N.A.,2.88,equity
+109830,Bharti Airtel Limited,INE397D01024,N.A.,2.77,equity
+109830,Zydus Lifesciences Limited,INE010B01027,N.A.,2.75,equity
+109830,Nippon Life India Asset Management Ltd,INE298J01013,N.A.,2.43,equity
+109830,Alivus Life Sciences,INE03Q201024,N.A.,2.05,equity
+109830,K.P.R. Mill Limited,INE930H01031,N.A.,1.99,equity
+109830,JSW Infrastructure Limited,INE880J01026,N.A.,1.95,equity
+109830,Swan Corp Limited,INE665A01038,N.A.,1.62,equity
+109830,LG Electronics India Limited,INE324D01010,N.A.,1.39,equity
+109830,Sona BLW Precision Forgings Limited,INE073K01018,N.A.,1.32,equity
+109830,Indus Towers Limited,INE121J01017,N.A.,1.18,equity
+109830,Bharat Heavy Electricals Ltd,INE257A01026,N.A.,1.07,equity
+109830,Piramal Finance Ltd,INE202B01038,N.A.,1.04,equity
+109830,LIC Housing Finance Ltd,INE115A01026,N.A.,0.76,equity
+109830,Lloyds Metals And Energy Limited,INE281B01032,N.A.,0.66,equity
+109830,Aditya Birla Lifestyle Brands Limited,INE14LE01019,N.A.,0.42,equity
+109830,Tata Communications Limited,INE151A01013,N.A.,0.3,equity
+109830,IRB Infrastructure Developers Limited,INE821I01022,N.A.,0.28,equity
+109830,Colgate-Palmolive (India) Ltd,INE259A01022,N.A.,0.24,equity
+109830,Reliance Industries Ltd.,INE002A01018,N.A.,4.94,equity
+109830,Glenmark Pharmaceuticals Ltd.,INE935A01035,N.A.,3.44,equity
+109830,Tata Power Co. Ltd.,INE245A01021,N.A.,3.38,equity
+109830,Divi's Laboratories Ltd.,INE361B01024,N.A.,1.96,equity
+109830,Sona BLW Precision Forgings Ltd.,INE073K01018,N.A.,1.75,equity
+109830,91 Days Treasury Bill 24-Dec-2026,IN002026X255,,0.54,debt
+109830,91 Days Treasury Bill 03-Dec-2026,IN002026X222,,0.47,debt

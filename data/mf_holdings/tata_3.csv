@@ -1,0 +1,1452 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+153134,Metals & Minerals Trading,INE423A01024,Metals & Minerals Trading,2.82,equity
+153134,IT - Software,INE669C01036,IT - Software,2.8,equity
+153134,Power,INE814H01029,Power,2.48,equity
+153134,"Agricultural, Commercial & Construction Vehicles",INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",2.01,equity
+153134,Retailing,INE849A01020,Retailing,1.97,equity
+153134,Leisure Services,INE053A01029,Leisure Services,1.46,equity
+153134,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,1.39,equity
+153134,Automobiles,INE155A01022,Automobiles,1.36,equity
+153134,Power,INE245A01021,Power,1.36,equity
+153134,Power,INE364U01010,Power,1.21,equity
+153134,Ferrous Metals,INE749A01030,Ferrous Metals,1.19,equity
+153134,Power,INE931S01010,Power,1.15,equity
+153134,IT - Software,INE214T01019,IT - Software,1.06,equity
+153134,Telecom - Services,INE669E01016,Telecom - Services,1.01,equity
+153134,Power,INE121E01018,Power,0.85,equity
+153134,Ferrous Metals,INE220G01021,Ferrous Metals,0.67,equity
+153134,Cement & Cement Products,INE079A01024,Cement & Cement Products,0.66,equity
+153134,Consumer Durables,INE226A01021,Consumer Durables,0.55,equity
+153134,Telecom - Services,INE151A01013,Telecom - Services,0.44,equity
+153420,Diversified FMCG,INE154A01025,Diversified FMCG,5.29,equity
+153420,Automobiles,INE158A01026,Automobiles,5.24,equity
+153420,Capital Markets,INE745G01043,Capital Markets,5.18,equity
+153420,Diversified FMCG,INE030A01027,Diversified FMCG,5.07,equity
+153420,IT - Software,INE009A01021,IT - Software,5.04,equity
+153420,Consumer Durables,INE935N01020,Consumer Durables,4.98,equity
+153420,Food Products,INE216A01030,Food Products,4.94,equity
+153420,Food Products,INE239A01024,Food Products,4.94,equity
+153420,Capital Markets,INE127D01025,Capital Markets,4.93,equity
+153420,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,4.9,equity
+153420,Aerospace & Defense,INE066F01020,Aerospace & Defense,4.87,equity
+153420,IT - Software,INE467B01029,IT - Software,4.86,equity
+153420,Electrical Equipment,INE200A01026,Electrical Equipment,4.68,equity
+153420,Electrical Equipment,INE117A01022,Electrical Equipment,4.06,equity
+153420,Electrical Equipment,INE1NPP01017,Electrical Equipment,3.26,equity
+153420,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,3.13,equity
+153420,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,3.07,equity
+153420,IT - Software,INE881D01027,IT - Software,2.95,equity
+153420,Personal Products,INE259A01022,Personal Products,2.71,equity
+153420,Textiles & Apparels,INE761H01022,Textiles & Apparels,2.65,equity
+153420,Capital Markets,INE298J01013,Capital Markets,2.24,equity
+153420,Capital Markets,INE346A01027,Capital Markets,2.17,equity
+153420,Non - Ferrous Metals,INE531E01026,Non - Ferrous Metals,1.82,equity
+153420,Leisure Services,INE335Y01020,Leisure Services,1.62,equity
+153420,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,1.31,equity
+153420,Petroleum Products,INE172A01027,Petroleum Products,1.11,equity
+153420,Finance,INE007A01025,Finance,1.09,equity
+153420,Personal Products,INE179A01014,Personal Products,0.75,equity
+153420,Personal Products,INE322A01010,Personal Products,0.67,equity
+153420,Fertilizers & Agrochemicals,INE462A01022,Fertilizers & Agrochemicals,0.52,equity
+153425,Diversified FMCG,INE154A01025,Diversified FMCG,5.29,equity
+153425,Automobiles,INE158A01026,Automobiles,5.24,equity
+153425,Capital Markets,INE745G01043,Capital Markets,5.18,equity
+153425,Diversified FMCG,INE030A01027,Diversified FMCG,5.07,equity
+153425,IT - Software,INE009A01021,IT - Software,5.04,equity
+153425,Consumer Durables,INE935N01020,Consumer Durables,4.98,equity
+153425,Food Products,INE216A01030,Food Products,4.94,equity
+153425,Food Products,INE239A01024,Food Products,4.94,equity
+153425,Capital Markets,INE127D01025,Capital Markets,4.93,equity
+153425,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,4.9,equity
+153425,Aerospace & Defense,INE066F01020,Aerospace & Defense,4.87,equity
+153425,IT - Software,INE467B01029,IT - Software,4.86,equity
+153425,Electrical Equipment,INE200A01026,Electrical Equipment,4.68,equity
+153425,Electrical Equipment,INE117A01022,Electrical Equipment,4.06,equity
+153425,Electrical Equipment,INE1NPP01017,Electrical Equipment,3.26,equity
+153425,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,3.13,equity
+153425,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,3.07,equity
+153425,IT - Software,INE881D01027,IT - Software,2.95,equity
+153425,Personal Products,INE259A01022,Personal Products,2.71,equity
+153425,Textiles & Apparels,INE761H01022,Textiles & Apparels,2.65,equity
+153425,Capital Markets,INE298J01013,Capital Markets,2.24,equity
+153425,Capital Markets,INE346A01027,Capital Markets,2.17,equity
+153425,Non - Ferrous Metals,INE531E01026,Non - Ferrous Metals,1.82,equity
+153425,Leisure Services,INE335Y01020,Leisure Services,1.62,equity
+153425,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,1.31,equity
+153425,Petroleum Products,INE172A01027,Petroleum Products,1.11,equity
+153425,Finance,INE007A01025,Finance,1.09,equity
+153425,Personal Products,INE179A01014,Personal Products,0.75,equity
+153425,Personal Products,INE322A01010,Personal Products,0.67,equity
+153425,Fertilizers & Agrochemicals,INE462A01022,Fertilizers & Agrochemicals,0.52,equity
+154064,Automobiles,INE101A01026,Automobiles,5.26,equity
+154064,Diversified FMCG,INE154A01025,Diversified FMCG,5.07,equity
+154064,Retailing,INE758T01015,Retailing,4.61,equity
+154064,Consumer Durables,INE280A01028,Consumer Durables,3.74,equity
+154064,Diversified FMCG,INE030A01027,Diversified FMCG,3.35,equity
+154064,Automobiles,INE585B01010,Automobiles,3.07,equity
+154064,Retailing,INE956O01016,Retailing,2.42,equity
+154064,Retailing,INE0VDM01015,Retailing,2.33,equity
+154064,Automobiles,INE917I01010,Automobiles,2.3,equity
+154064,Consumer Durables,INE021A01026,Consumer Durables,2.17,equity
+154064,Automobiles,INE0LEZ01016,Automobiles,2.02,equity
+154064,Automobiles,INE066A01021,Automobiles,1.95,equity
+154064,Automobiles,INE494B01023,Automobiles,1.9,equity
+154064,Food Products,INE239A01024,Food Products,1.87,equity
+154064,Automobiles,INE158A01026,Automobiles,1.76,equity
+154064,Retailing,INE849A01020,Retailing,1.73,equity
+154064,Auto Components,INE775A01035,Auto Components,1.44,equity
+154064,Consumer Durables,INE935N01020,Consumer Durables,1.43,equity
+154064,Auto Components,INE465A01025,Auto Components,1.35,equity
+154064,Leisure Services,INE053A01029,Leisure Services,1.28,equity
+154064,Retailing,INE192R01011,Retailing,1.24,equity
+154064,Retailing,INE663F01032,Retailing,1.23,equity
+154064,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,1.22,equity
+154064,Automobiles,INE155A01022,Automobiles,1.19,equity
+154064,Beverages,INE200M01039,Beverages,1.16,equity
+154064,Retailing,INE388Y01029,Retailing,1.16,equity
+154064,Food Products,INE216A01030,Food Products,1.13,equity
+154064,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,1.1,equity
+154064,Consumer Durables,INE371P01015,Consumer Durables,1.09,equity
+154064,Consumer Durables,INE299U01018,Consumer Durables,1.01,equity
+154064,Auto Components,INE073K01018,Auto Components,0.98,equity
+154064,Retailing,INE00H001014,Retailing,0.98,equity
+154064,Realty,INE211B01039,Realty,0.95,equity
+154064,Beverages,INE944F01028,Beverages,0.89,equity
+154064,Realty,INE271C01023,Realty,0.86,equity
+154064,Auto Components,INE439A01020,Auto Components,0.86,equity
+154064,Realty,INE791I01019,Realty,0.8,equity
+154064,Auto Components,INE323A01026,Auto Components,0.8,equity
+154064,Auto Components,INE342J01019,Auto Components,0.8,equity
+154064,Beverages,INE854D01024,Beverages,0.78,equity
+154064,Consumer Durables,INE217B01036,Consumer Durables,0.76,equity
+154064,Retailing,INE01EA01019,Retailing,0.75,equity
+154064,Agricultural Food & other Products,INE699H01024,Agricultural Food & other Products,0.73,equity
+154064,Auto Components,INE885A01032,Auto Components,0.69,equity
+154064,Entertainment,INE367G01038,Entertainment,0.68,equity
+154064,Personal Products,INE102D01028,Personal Products,0.68,equity
+154064,Realty,INE670K01029,Realty,0.68,equity
+154064,Realty,INE242C01024,Realty,0.68,equity
+154064,Consumer Durables,INE176B01034,Consumer Durables,0.67,equity
+154064,Auto Components,INE883A01011,Auto Components,0.67,equity
+154064,Auto Components,INE974X01010,Auto Components,0.66,equity
+154064,Realty,INE811K01011,Realty,0.65,equity
+154064,Auto Components,INE0FS801015,Auto Components,0.64,equity
+154064,Automobiles,INE0LXG01040,Automobiles,0.64,equity
+154064,Consumer Durables,INE226A01021,Consumer Durables,0.63,equity
+154064,Automobiles,INE451A01017,Automobiles,0.61,equity
+154064,Personal Products,INE259A01022,Personal Products,0.61,equity
+154064,Consumer Durables,INE457L01029,Consumer Durables,0.59,equity
+154064,Textiles & Apparels,INE761H01022,Textiles & Apparels,0.59,equity
+154064,Personal Products,INE016A01026,Personal Products,0.59,equity
+154064,Personal Products,INE548C01032,Personal Products,0.56,equity
+154064,Automobiles,INE0V6F01027,Automobiles,0.56,equity
+154064,Auto Components,INE405E01023,Auto Components,0.56,equity
+154064,Consumer Durables,INE303R01014,Consumer Durables,0.56,equity
+154064,Realty,INE093I01010,Realty,0.54,equity
+154064,Realty,INE484J01027,Realty,0.54,equity
+154064,Other Consumer Services,INE0LP301011,Other Consumer Services,0.54,equity
+154064,Food Products,INE126A01031,Food Products,0.53,equity
+154064,Consumer Durables,INE472A01039,Consumer Durables,0.51,equity
+154064,Auto Components,INE302A01020,Auto Components,0.49,equity
+154064,Leisure Services,INE379A01028,Leisure Services,0.48,equity
+154064,Leisure Services,INE797F01020,Leisure Services,0.47,equity
+154064,Consumer Durables,INE324D01010,Consumer Durables,0.46,equity
+154064,Leisure Services,INE427F01016,Leisure Services,0.46,equity
+154064,Entertainment,INE424H01027,Entertainment,0.45,equity
+154064,Auto Components,INE787D01026,Auto Components,0.44,equity
+154064,Leisure Services,INE230A01023,Leisure Services,0.44,equity
+154064,Personal Products,INE322A01010,Personal Products,0.43,equity
+154064,Auto Components,INE513A01022,Auto Components,0.42,equity
+154064,Leisure Services,INE872J01023,Leisure Services,0.41,equity
+154064,Retailing,INE0CAZ01013,Retailing,0.4,equity
+154064,Consumer Durables,INE133A01011,Consumer Durables,0.4,equity
+154064,Textiles & Apparels,INE825A01020,Textiles & Apparels,0.39,equity
+154064,Auto Components,INE19RI01016,Auto Components,0.38,equity
+154064,Leisure Services,INE335Y01020,Leisure Services,0.36,equity
+154064,Auto Components,INE438A01022,Auto Components,0.34,equity
+154064,Consumer Durables,INE463A01038,Consumer Durables,0.33,equity
+154064,Agricultural Food & other Products,INE619A01035,Agricultural Food & other Products,0.33,equity
+154064,Retailing,INE14LE01019,Retailing,0.33,equity
+154064,Textiles & Apparels,INE930H01031,Textiles & Apparels,0.32,equity
+154064,Retailing,INE02RE01045,Retailing,0.3,equity
+154064,Food Products,INE00E101023,Food Products,0.25,equity
+154064,Auto Components,INE913H01037,Auto Components,0.24,equity
+154064,Retailing,INE825V01034,Retailing,0.24,equity
+154064,Realty,INE903U01023,Realty,0.22,equity
+154064,Beverages,INE686F01025,Beverages,0.22,equity
+154064,Textiles & Apparels,INE064C01022,Textiles & Apparels,0.21,equity
+154064,Cigarettes & Tobacco Products,INE260B01028,Cigarettes & Tobacco Products,0.2,equity
+154064,Personal Products,INE179A01014,Personal Products,0.17,equity
+154064,Auto Components,INE927D01051,Auto Components,0.17,equity
+154066,Automobiles,INE101A01026,Automobiles,5.26,equity
+154066,Diversified FMCG,INE154A01025,Diversified FMCG,5.07,equity
+154066,Retailing,INE758T01015,Retailing,4.61,equity
+154066,Consumer Durables,INE280A01028,Consumer Durables,3.74,equity
+154066,Diversified FMCG,INE030A01027,Diversified FMCG,3.35,equity
+154066,Automobiles,INE585B01010,Automobiles,3.07,equity
+154066,Retailing,INE956O01016,Retailing,2.42,equity
+154066,Retailing,INE0VDM01015,Retailing,2.33,equity
+154066,Automobiles,INE917I01010,Automobiles,2.3,equity
+154066,Consumer Durables,INE021A01026,Consumer Durables,2.17,equity
+154066,Automobiles,INE0LEZ01016,Automobiles,2.02,equity
+154066,Automobiles,INE066A01021,Automobiles,1.95,equity
+154066,Automobiles,INE494B01023,Automobiles,1.9,equity
+154066,Food Products,INE239A01024,Food Products,1.87,equity
+154066,Automobiles,INE158A01026,Automobiles,1.76,equity
+154066,Retailing,INE849A01020,Retailing,1.73,equity
+154066,Auto Components,INE775A01035,Auto Components,1.44,equity
+154066,Consumer Durables,INE935N01020,Consumer Durables,1.43,equity
+154066,Auto Components,INE465A01025,Auto Components,1.35,equity
+154066,Leisure Services,INE053A01029,Leisure Services,1.28,equity
+154066,Retailing,INE192R01011,Retailing,1.24,equity
+154066,Retailing,INE663F01032,Retailing,1.23,equity
+154066,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,1.22,equity
+154066,Automobiles,INE155A01022,Automobiles,1.19,equity
+154066,Beverages,INE200M01039,Beverages,1.16,equity
+154066,Retailing,INE388Y01029,Retailing,1.16,equity
+154066,Food Products,INE216A01030,Food Products,1.13,equity
+154066,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,1.1,equity
+154066,Consumer Durables,INE371P01015,Consumer Durables,1.09,equity
+154066,Consumer Durables,INE299U01018,Consumer Durables,1.01,equity
+154066,Auto Components,INE073K01018,Auto Components,0.98,equity
+154066,Retailing,INE00H001014,Retailing,0.98,equity
+154066,Realty,INE211B01039,Realty,0.95,equity
+154066,Beverages,INE944F01028,Beverages,0.89,equity
+154066,Realty,INE271C01023,Realty,0.86,equity
+154066,Auto Components,INE439A01020,Auto Components,0.86,equity
+154066,Realty,INE791I01019,Realty,0.8,equity
+154066,Auto Components,INE323A01026,Auto Components,0.8,equity
+154066,Auto Components,INE342J01019,Auto Components,0.8,equity
+154066,Beverages,INE854D01024,Beverages,0.78,equity
+154066,Consumer Durables,INE217B01036,Consumer Durables,0.76,equity
+154066,Retailing,INE01EA01019,Retailing,0.75,equity
+154066,Agricultural Food & other Products,INE699H01024,Agricultural Food & other Products,0.73,equity
+154066,Auto Components,INE885A01032,Auto Components,0.69,equity
+154066,Entertainment,INE367G01038,Entertainment,0.68,equity
+154066,Personal Products,INE102D01028,Personal Products,0.68,equity
+154066,Realty,INE670K01029,Realty,0.68,equity
+154066,Realty,INE242C01024,Realty,0.68,equity
+154066,Consumer Durables,INE176B01034,Consumer Durables,0.67,equity
+154066,Auto Components,INE883A01011,Auto Components,0.67,equity
+154066,Auto Components,INE974X01010,Auto Components,0.66,equity
+154066,Realty,INE811K01011,Realty,0.65,equity
+154066,Auto Components,INE0FS801015,Auto Components,0.64,equity
+154066,Automobiles,INE0LXG01040,Automobiles,0.64,equity
+154066,Consumer Durables,INE226A01021,Consumer Durables,0.63,equity
+154066,Automobiles,INE451A01017,Automobiles,0.61,equity
+154066,Personal Products,INE259A01022,Personal Products,0.61,equity
+154066,Consumer Durables,INE457L01029,Consumer Durables,0.59,equity
+154066,Textiles & Apparels,INE761H01022,Textiles & Apparels,0.59,equity
+154066,Personal Products,INE016A01026,Personal Products,0.59,equity
+154066,Personal Products,INE548C01032,Personal Products,0.56,equity
+154066,Automobiles,INE0V6F01027,Automobiles,0.56,equity
+154066,Auto Components,INE405E01023,Auto Components,0.56,equity
+154066,Consumer Durables,INE303R01014,Consumer Durables,0.56,equity
+154066,Realty,INE093I01010,Realty,0.54,equity
+154066,Realty,INE484J01027,Realty,0.54,equity
+154066,Other Consumer Services,INE0LP301011,Other Consumer Services,0.54,equity
+154066,Food Products,INE126A01031,Food Products,0.53,equity
+154066,Consumer Durables,INE472A01039,Consumer Durables,0.51,equity
+154066,Auto Components,INE302A01020,Auto Components,0.49,equity
+154066,Leisure Services,INE379A01028,Leisure Services,0.48,equity
+154066,Leisure Services,INE797F01020,Leisure Services,0.47,equity
+154066,Consumer Durables,INE324D01010,Consumer Durables,0.46,equity
+154066,Leisure Services,INE427F01016,Leisure Services,0.46,equity
+154066,Entertainment,INE424H01027,Entertainment,0.45,equity
+154066,Auto Components,INE787D01026,Auto Components,0.44,equity
+154066,Leisure Services,INE230A01023,Leisure Services,0.44,equity
+154066,Personal Products,INE322A01010,Personal Products,0.43,equity
+154066,Auto Components,INE513A01022,Auto Components,0.42,equity
+154066,Leisure Services,INE872J01023,Leisure Services,0.41,equity
+154066,Retailing,INE0CAZ01013,Retailing,0.4,equity
+154066,Consumer Durables,INE133A01011,Consumer Durables,0.4,equity
+154066,Textiles & Apparels,INE825A01020,Textiles & Apparels,0.39,equity
+154066,Auto Components,INE19RI01016,Auto Components,0.38,equity
+154066,Leisure Services,INE335Y01020,Leisure Services,0.36,equity
+154066,Auto Components,INE438A01022,Auto Components,0.34,equity
+154066,Consumer Durables,INE463A01038,Consumer Durables,0.33,equity
+154066,Agricultural Food & other Products,INE619A01035,Agricultural Food & other Products,0.33,equity
+154066,Retailing,INE14LE01019,Retailing,0.33,equity
+154066,Textiles & Apparels,INE930H01031,Textiles & Apparels,0.32,equity
+154066,Retailing,INE02RE01045,Retailing,0.3,equity
+154066,Food Products,INE00E101023,Food Products,0.25,equity
+154066,Auto Components,INE913H01037,Auto Components,0.24,equity
+154066,Retailing,INE825V01034,Retailing,0.24,equity
+154066,Realty,INE903U01023,Realty,0.22,equity
+154066,Beverages,INE686F01025,Beverages,0.22,equity
+154066,Textiles & Apparels,INE064C01022,Textiles & Apparels,0.21,equity
+154066,Cigarettes & Tobacco Products,INE260B01028,Cigarettes & Tobacco Products,0.2,equity
+154066,Personal Products,INE179A01014,Personal Products,0.17,equity
+154066,Auto Components,INE927D01051,Auto Components,0.17,equity
+135793,Banks,INE040A01034,Banks,11.94,equity
+135793,Banks,INE090A01021,Banks,10.39,equity
+135793,Banks,INE062A01020,Banks,7.2,equity
+135793,Banks,INE238A01034,Banks,6.75,equity
+135793,Banks,INE237A01036,Banks,5.61,equity
+135793,Finance,INE296A01032,Finance,4.49,equity
+135793,Insurance,INE123W01016,Insurance,3.73,equity
+135793,Finance,INE721A01047,Finance,2.97,equity
+135793,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),2.81,equity
+135793,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),2.8,equity
+135793,Finance,INE572E01012,Finance,2.56,equity
+135793,Capital Markets,INE745G01043,Capital Markets,2.45,equity
+135793,Insurance,INE575P01011,Insurance,2.25,equity
+135793,Finance,INE202B01038,Finance,2.13,equity
+135793,Banks,INE491A01021,Banks,2.07,equity
+135793,Finance,INE12F801023,Finance,2.03,equity
+135793,Banks,INE503A01015,Banks,1.92,equity
+135793,Banks,INE976G01028,Banks,1.62,equity
+135793,Insurance,INE180A01020,Insurance,1.61,equity
+135793,Insurance,INE01TY01017,Insurance,1.61,equity
+135793,Banks,INE949L01017,Banks,1.57,equity
+135793,Insurance,INE0J1Y01017,Insurance,1.56,equity
+135793,Banks,INE036D01028,Banks,1.56,equity
+135793,Capital Markets,INE466L01038,Capital Markets,1.48,equity
+135793,Capital Markets,INE00F201020,Capital Markets,1.45,equity
+135793,Finance,INE08KJ01020,Finance,1.42,equity
+135793,Banks,INE095A01012,Banks,1.35,equity
+135793,Finance,INE774D01024,Finance,1.21,equity
+135793,Finance,INE121A01024,Finance,1.13,equity
+135793,Banks,INE551W01018,Banks,1.13,equity
+135793,Finance,INE128S01021,Finance,1.09,equity
+135793,Capital Markets,INE404A01024,Capital Markets,1.07,equity
+135793,Finance,INE477A01020,Finance,0.99,equity
+135793,Capital Markets,INE640G01020,Capital Markets,0.92,equity
+135793,Capital Markets,INE721I01024,Capital Markets,0.92,equity
+135793,Finance,INE883F01010,Finance,0.86,equity
+135794,Banks,INE040A01034,Banks,11.94,equity
+135794,Banks,INE090A01021,Banks,10.39,equity
+135794,Banks,INE062A01020,Banks,7.2,equity
+135794,Banks,INE238A01034,Banks,6.75,equity
+135794,Banks,INE237A01036,Banks,5.61,equity
+135794,Finance,INE296A01032,Finance,4.49,equity
+135794,Insurance,INE123W01016,Insurance,3.73,equity
+135794,Finance,INE721A01047,Finance,2.97,equity
+135794,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),2.81,equity
+135794,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),2.8,equity
+135794,Finance,INE572E01012,Finance,2.56,equity
+135794,Capital Markets,INE745G01043,Capital Markets,2.45,equity
+135794,Insurance,INE575P01011,Insurance,2.25,equity
+135794,Finance,INE202B01038,Finance,2.13,equity
+135794,Banks,INE491A01021,Banks,2.07,equity
+135794,Finance,INE12F801023,Finance,2.03,equity
+135794,Banks,INE503A01015,Banks,1.92,equity
+135794,Banks,INE976G01028,Banks,1.62,equity
+135794,Insurance,INE180A01020,Insurance,1.61,equity
+135794,Insurance,INE01TY01017,Insurance,1.61,equity
+135794,Banks,INE949L01017,Banks,1.57,equity
+135794,Insurance,INE0J1Y01017,Insurance,1.56,equity
+135794,Banks,INE036D01028,Banks,1.56,equity
+135794,Capital Markets,INE466L01038,Capital Markets,1.48,equity
+135794,Capital Markets,INE00F201020,Capital Markets,1.45,equity
+135794,Finance,INE08KJ01020,Finance,1.42,equity
+135794,Banks,INE095A01012,Banks,1.35,equity
+135794,Finance,INE774D01024,Finance,1.21,equity
+135794,Finance,INE121A01024,Finance,1.13,equity
+135794,Banks,INE551W01018,Banks,1.13,equity
+135794,Finance,INE128S01021,Finance,1.09,equity
+135794,Capital Markets,INE404A01024,Capital Markets,1.07,equity
+135794,Finance,INE477A01020,Finance,0.99,equity
+135794,Capital Markets,INE640G01020,Capital Markets,0.92,equity
+135794,Capital Markets,INE721I01024,Capital Markets,0.92,equity
+135794,Finance,INE883F01010,Finance,0.86,equity
+146010,Petroleum Products,INE002A01018,Petroleum Products,4.21,equity
+146010,Banks,INE040A01034,Banks,3.07,equity
+146010,Telecom - Services,INE397D01024,Telecom - Services,3.01,equity
+146010,Banks,INE090A01021,Banks,2.44,equity
+146010,Construction,INE018A01030,Construction,2.0,equity
+146010,Healthcare Services,INE437A01024,Healthcare Services,1.96,equity
+146010,Finance,INE721A01047,Finance,1.87,equity
+146010,Realty,INE484J01027,Realty,1.57,equity
+146010,Banks,INE062A01020,Banks,1.56,equity
+146010,Transport Infrastructure,INE742F01042,Transport Infrastructure,1.55,equity
+146010,Healthcare Services,INE600L01024,Healthcare Services,1.52,equity
+146010,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,1.47,equity
+146010,Banks,INE171A01029,Banks,1.46,equity
+146010,Automobiles,INE101A01026,Automobiles,1.45,equity
+146010,Industrial Products,INE298A01020,Industrial Products,1.43,equity
+146010,Finance,INE918I01026,Finance,1.42,equity
+146010,Banks,INE238A01034,Banks,1.35,equity
+146010,Finance,INE976I01016,Finance,1.32,equity
+146010,Ferrous Metals,INE081A01020,Ferrous Metals,1.29,equity
+146010,Power,INE733E01010,Power,1.26,equity
+146010,Metals & Minerals Trading,INE423A01024,Metals & Minerals Trading,1.26,equity
+146010,Finance,INE296A01032,Finance,1.26,equity
+146010,IT - Software,INE009A01021,IT - Software,1.22,equity
+146010,Diversified FMCG,INE030A01027,Diversified FMCG,1.2,equity
+146010,Cement & Cement Products,INE070A01015,Cement & Cement Products,1.2,equity
+146010,Insurance,INE995S01015,Insurance,1.16,equity
+146010,Insurance,INE180A01020,Insurance,1.12,equity
+146010,Auto Components,INE19RI01016,Auto Components,1.07,equity
+146010,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),1.01,equity
+146010,Oil,INE213A01029,Oil,1.01,equity
+146010,Transport Services,INE148O01028,Transport Services,1.01,equity
+146010,IT - Software,INE669C01036,IT - Software,0.99,equity
+146010,IT - Services,INE115Q01022,IT - Services,0.96,equity
+146010,Cement & Cement Products,INE079A01024,Cement & Cement Products,0.95,equity
+146010,Beverages,INE200M01039,Beverages,0.91,equity
+146010,Insurance,INE795G01014,Insurance,0.9,equity
+146010,Realty,INE811K01011,Realty,0.89,equity
+146010,Insurance,INE765G01017,Insurance,0.88,equity
+146010,Petroleum Products,INE029A01011,Petroleum Products,0.88,equity
+146010,Power,INE931S01010,Power,0.82,equity
+146010,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),0.82,equity
+146010,Auto Components,INE00XB01019,Auto Components,0.79,equity
+146010,Retailing,INE01EA01019,Retailing,0.76,equity
+146010,Retailing,INE290S01011,Retailing,0.76,equity
+146010,Insurance,INE0J1Y01017,Insurance,0.75,equity
+146010,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.73,equity
+146010,Capital Markets,INE721I01024,Capital Markets,0.59,equity
+146010,Construction,INE389H01022,Construction,0.52,equity
+146010,Personal Products,INE016A01026,Personal Products,0.49,equity
+146010,Healthcare Services,INE112L01020,Healthcare Services,0.45,equity
+146010,Non - Ferrous Metals,INE16W401027,Non - Ferrous Metals,0.44,equity
+146010,Power,INE752E01010,Power,0.35,equity
+146010,Aerospace & Defense,INE263A01024,Aerospace & Defense,0.15,equity
+146010,Industrial Products,INE455K01017,Industrial Products,0.11,equity
+146010,Auto Components,INE405E01023,Auto Components,0.02,equity
+146010,Healthcare Services,INE027H01010,Healthcare Services,0.0,equity
+146010,Banks,INE095A01012,Banks,0.0,equity
+146010,Diversified FMCG,INE154A01025,Diversified FMCG,0.0,equity
+146010,Banks,INE062A01020,Banks,0.0,equity
+146010,Petroleum Products,INE002A01018,Petroleum Products,0.0,equity
+146010,Petroleum Products,INE002A01018,Petroleum Products,0.0,equity
+146010,Banks,INE062A01020,Banks,0.0,equity
+146010,Finance,INE296A01032,Finance,-0.03,equity
+146010,Automobiles,INE101A01026,Automobiles,-0.05,equity
+146010,Industrial Products,INE455K01017,Industrial Products,-0.11,equity
+146010,Aerospace & Defense,INE263A01024,Aerospace & Defense,-0.15,equity
+146010,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),-0.27,equity
+146010,Diversified FMCG,INE030A01027,Diversified FMCG,-0.29,equity
+146010,Power,INE752E01010,Power,-0.34,equity
+146010,Realty,INE0FDU25010,,1.74,other
+146010,Realty,INE0NDH25011,,1.26,other
+146010,Telecom - Services,INE0BWS23018,,1.12,other
+146010,SOV,IN0020240035,,2.26,other
+146010,SOV,IN0020210244,,1.96,other
+146010,SOV,IN0020240118,,1.75,other
+146010,SOV,IN0020250042,,1.18,other
+146010,SOV,IN1020250123,,1.16,other
+146010,SOV,IN0020240019,,1.0,other
+146010,SOV,IN0020230135,,0.95,other
+146010,SOV,IN1520180333,,0.64,other
+146010,SOV,IN1020230620,,0.63,other
+146010,SOV,IN1720200030,,0.62,other
+146010,SOV,IN1920200053,,0.61,other
+146010,SOV,IN0020240134,,0.61,other
+146010,SOV,IN3120190068,,0.56,other
+146010,SOV,IN0020230085,,0.44,other
+146010,SOV,IN3120200339,,0.3,other
+146010,SOV,IN0020260025,,0.29,other
+146010,SOV,IN2220200025,,0.19,other
+146010,SOV,IN1520200354,,0.18,other
+146010,SOV,IN0020250091,,0.18,other
+146010,SOV,IN1620170101,,0.06,other
+146010,SOV,IN0020220037,,0.06,other
+146010,SOV,IN3120210106,,0.06,other
+146010,SOV,IN1920230175,,0.0,other
+146010,SOV,IN3320230185,,0.0,other
+146010,SOV,IN0020200153,,0.0,other
+146010,CRISIL-AAA,INE151A08356,,1.23,other
+146010,CRISIL-AA+,INE205A08103,,0.94,other
+146010,CRISIL-AA,INE814H07208,,0.93,other
+146010,CRISIL-AA,INE2QI808033,,0.65,other
+146010,CRISIL-AAA,INE950O07545,,0.64,other
+146010,CRISIL-AA+,INE414G07KC4,,0.62,other
+146010,CRISIL-AAA,INE511C07979,,0.62,other
+146010,CRISIL-AA-,INE0GCN07054,,0.62,other
+146010,ICRA-AAA,INE0FDU07018,,0.61,other
+146010,CRISIL-AAA,INE134E08NU7,,0.6,other
+146010,ICRA-AA+,INE484J08089,,0.5,other
+146010,CRISIL-AAA,INE511C07938,,0.31,other
+146010,CRISIL-AAA,INE134E08NP7,,0.31,other
+146010,CRISIL-AAA,INE002A08708,,0.31,other
+146010,CRISIL-AAA,INE134E08NO0,,0.31,other
+146010,CRISIL-AAA,INE261F08ET6,,0.31,other
+146010,CRISIL-AA+,INE414G07JS2,,0.31,other
+146010,CRISIL-AAA,INE261F08EP4,,0.31,other
+146010,CRISIL-AA,INE725H08238,,0.25,other
+146010,ICRA-AA+,INE685A07132,,0.19,other
+146010,CRISIL-AAA,INE511C07AA1,,0.12,other
+146010,CRISIL-AA-,INE776C08083,,0.07,other
+146010,ICRA-AAA,INE848E07BA1,,0.06,other
+146010,CRISIL-AAA,INE514E08GD0,,0.03,other
+146010,CRISIL-AAA,INE053F08536,,0.01,other
+146010,IND-AAA(SO),INE16J715035,,0.48,other
+146010,CRISIL-AAA(SO),INE1WMT15017,,0.33,other
+146010,CRISIL-AAA(SO),INE2R5L15013,,0.21,other
+146010,CRISIL-AAA(SO),INE0YWN15017,,0.14,other
+146010,CRISIL-AAA(SO),INE1CBK15037,,0.08,other
+146007,Petroleum Products,INE002A01018,Petroleum Products,4.21,equity
+146007,Banks,INE040A01034,Banks,3.07,equity
+146007,Telecom - Services,INE397D01024,Telecom - Services,3.01,equity
+146007,Banks,INE090A01021,Banks,2.44,equity
+146007,Construction,INE018A01030,Construction,2.0,equity
+146007,Healthcare Services,INE437A01024,Healthcare Services,1.96,equity
+146007,Finance,INE721A01047,Finance,1.87,equity
+146007,Realty,INE484J01027,Realty,1.57,equity
+146007,Banks,INE062A01020,Banks,1.56,equity
+146007,Transport Infrastructure,INE742F01042,Transport Infrastructure,1.55,equity
+146007,Healthcare Services,INE600L01024,Healthcare Services,1.52,equity
+146007,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,1.47,equity
+146007,Banks,INE171A01029,Banks,1.46,equity
+146007,Automobiles,INE101A01026,Automobiles,1.45,equity
+146007,Industrial Products,INE298A01020,Industrial Products,1.43,equity
+146007,Finance,INE918I01026,Finance,1.42,equity
+146007,Banks,INE238A01034,Banks,1.35,equity
+146007,Finance,INE976I01016,Finance,1.32,equity
+146007,Ferrous Metals,INE081A01020,Ferrous Metals,1.29,equity
+146007,Power,INE733E01010,Power,1.26,equity
+146007,Metals & Minerals Trading,INE423A01024,Metals & Minerals Trading,1.26,equity
+146007,Finance,INE296A01032,Finance,1.26,equity
+146007,IT - Software,INE009A01021,IT - Software,1.22,equity
+146007,Diversified FMCG,INE030A01027,Diversified FMCG,1.2,equity
+146007,Cement & Cement Products,INE070A01015,Cement & Cement Products,1.2,equity
+146007,Insurance,INE995S01015,Insurance,1.16,equity
+146007,Insurance,INE180A01020,Insurance,1.12,equity
+146007,Auto Components,INE19RI01016,Auto Components,1.07,equity
+146007,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),1.01,equity
+146007,Oil,INE213A01029,Oil,1.01,equity
+146007,Transport Services,INE148O01028,Transport Services,1.01,equity
+146007,IT - Software,INE669C01036,IT - Software,0.99,equity
+146007,IT - Services,INE115Q01022,IT - Services,0.96,equity
+146007,Cement & Cement Products,INE079A01024,Cement & Cement Products,0.95,equity
+146007,Beverages,INE200M01039,Beverages,0.91,equity
+146007,Insurance,INE795G01014,Insurance,0.9,equity
+146007,Realty,INE811K01011,Realty,0.89,equity
+146007,Insurance,INE765G01017,Insurance,0.88,equity
+146007,Petroleum Products,INE029A01011,Petroleum Products,0.88,equity
+146007,Power,INE931S01010,Power,0.82,equity
+146007,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),0.82,equity
+146007,Auto Components,INE00XB01019,Auto Components,0.79,equity
+146007,Retailing,INE01EA01019,Retailing,0.76,equity
+146007,Retailing,INE290S01011,Retailing,0.76,equity
+146007,Insurance,INE0J1Y01017,Insurance,0.75,equity
+146007,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.73,equity
+146007,Capital Markets,INE721I01024,Capital Markets,0.59,equity
+146007,Construction,INE389H01022,Construction,0.52,equity
+146007,Personal Products,INE016A01026,Personal Products,0.49,equity
+146007,Healthcare Services,INE112L01020,Healthcare Services,0.45,equity
+146007,Non - Ferrous Metals,INE16W401027,Non - Ferrous Metals,0.44,equity
+146007,Power,INE752E01010,Power,0.35,equity
+146007,Aerospace & Defense,INE263A01024,Aerospace & Defense,0.15,equity
+146007,Industrial Products,INE455K01017,Industrial Products,0.11,equity
+146007,Auto Components,INE405E01023,Auto Components,0.02,equity
+146007,Healthcare Services,INE027H01010,Healthcare Services,0.0,equity
+146007,Banks,INE095A01012,Banks,0.0,equity
+146007,Diversified FMCG,INE154A01025,Diversified FMCG,0.0,equity
+146007,Banks,INE062A01020,Banks,0.0,equity
+146007,Petroleum Products,INE002A01018,Petroleum Products,0.0,equity
+146007,Petroleum Products,INE002A01018,Petroleum Products,0.0,equity
+146007,Banks,INE062A01020,Banks,0.0,equity
+146007,Finance,INE296A01032,Finance,-0.03,equity
+146007,Automobiles,INE101A01026,Automobiles,-0.05,equity
+146007,Industrial Products,INE455K01017,Industrial Products,-0.11,equity
+146007,Aerospace & Defense,INE263A01024,Aerospace & Defense,-0.15,equity
+146007,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),-0.27,equity
+146007,Diversified FMCG,INE030A01027,Diversified FMCG,-0.29,equity
+146007,Power,INE752E01010,Power,-0.34,equity
+146007,Realty,INE0FDU25010,,1.74,other
+146007,Realty,INE0NDH25011,,1.26,other
+146007,Telecom - Services,INE0BWS23018,,1.12,other
+146007,SOV,IN0020240035,,2.26,other
+146007,SOV,IN0020210244,,1.96,other
+146007,SOV,IN0020240118,,1.75,other
+146007,SOV,IN0020250042,,1.18,other
+146007,SOV,IN1020250123,,1.16,other
+146007,SOV,IN0020240019,,1.0,other
+146007,SOV,IN0020230135,,0.95,other
+146007,SOV,IN1520180333,,0.64,other
+146007,SOV,IN1020230620,,0.63,other
+146007,SOV,IN1720200030,,0.62,other
+146007,SOV,IN1920200053,,0.61,other
+146007,SOV,IN0020240134,,0.61,other
+146007,SOV,IN3120190068,,0.56,other
+146007,SOV,IN0020230085,,0.44,other
+146007,SOV,IN3120200339,,0.3,other
+146007,SOV,IN0020260025,,0.29,other
+146007,SOV,IN2220200025,,0.19,other
+146007,SOV,IN1520200354,,0.18,other
+146007,SOV,IN0020250091,,0.18,other
+146007,SOV,IN1620170101,,0.06,other
+146007,SOV,IN0020220037,,0.06,other
+146007,SOV,IN3120210106,,0.06,other
+146007,SOV,IN1920230175,,0.0,other
+146007,SOV,IN3320230185,,0.0,other
+146007,SOV,IN0020200153,,0.0,other
+146007,CRISIL-AAA,INE151A08356,,1.23,other
+146007,CRISIL-AA+,INE205A08103,,0.94,other
+146007,CRISIL-AA,INE814H07208,,0.93,other
+146007,CRISIL-AA,INE2QI808033,,0.65,other
+146007,CRISIL-AAA,INE950O07545,,0.64,other
+146007,CRISIL-AA+,INE414G07KC4,,0.62,other
+146007,CRISIL-AAA,INE511C07979,,0.62,other
+146007,CRISIL-AA-,INE0GCN07054,,0.62,other
+146007,ICRA-AAA,INE0FDU07018,,0.61,other
+146007,CRISIL-AAA,INE134E08NU7,,0.6,other
+146007,ICRA-AA+,INE484J08089,,0.5,other
+146007,CRISIL-AAA,INE511C07938,,0.31,other
+146007,CRISIL-AAA,INE134E08NP7,,0.31,other
+146007,CRISIL-AAA,INE002A08708,,0.31,other
+146007,CRISIL-AAA,INE134E08NO0,,0.31,other
+146007,CRISIL-AAA,INE261F08ET6,,0.31,other
+146007,CRISIL-AA+,INE414G07JS2,,0.31,other
+146007,CRISIL-AAA,INE261F08EP4,,0.31,other
+146007,CRISIL-AA,INE725H08238,,0.25,other
+146007,ICRA-AA+,INE685A07132,,0.19,other
+146007,CRISIL-AAA,INE511C07AA1,,0.12,other
+146007,CRISIL-AA-,INE776C08083,,0.07,other
+146007,ICRA-AAA,INE848E07BA1,,0.06,other
+146007,CRISIL-AAA,INE514E08GD0,,0.03,other
+146007,CRISIL-AAA,INE053F08536,,0.01,other
+146007,IND-AAA(SO),INE16J715035,,0.48,other
+146007,CRISIL-AAA(SO),INE1WMT15017,,0.33,other
+146007,CRISIL-AAA(SO),INE2R5L15013,,0.21,other
+146007,CRISIL-AAA(SO),INE0YWN15017,,0.14,other
+146007,CRISIL-AAA(SO),INE1CBK15037,,0.08,other
+119053,Banks,INE090A01021,Banks,4.31,equity
+119053,Telecom - Services,INE397D01024,Telecom - Services,3.53,equity
+119053,Banks,INE040A01034,Banks,2.85,equity
+119053,IT - Software,INE591G01025,IT - Software,2.2,equity
+119053,Banks,INE238A01034,Banks,2.15,equity
+119053,Automobiles,INE101A01026,Automobiles,1.93,equity
+119053,Petroleum Products,INE002A01018,Petroleum Products,1.79,equity
+119053,Banks,INE237A01036,Banks,1.78,equity
+119053,Food Products,INE216A01030,Food Products,1.76,equity
+119053,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,1.74,equity
+119053,Healthcare Services,INE075I01017,Healthcare Services,1.67,equity
+119053,IT - Software,INE009A01021,IT - Software,1.62,equity
+119053,Electrical Equipment,INE257A01026,Electrical Equipment,1.56,equity
+119053,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,1.56,equity
+119053,Automobiles,INE585B01010,Automobiles,1.5,equity
+119053,Aerospace & Defense,INE066F01020,Aerospace & Defense,1.47,equity
+119053,Banks,INE062A01020,Banks,1.45,equity
+119053,Power,INE931S01010,Power,1.44,equity
+119053,Auto Components,INE775A01035,Auto Components,1.43,equity
+119053,Cement & Cement Products,INE718I01012,Cement & Cement Products,1.42,equity
+119053,Construction,INE018A01030,Construction,1.42,equity
+119053,Capital Markets,INE0HOQ01053,Capital Markets,1.39,equity
+119053,Capital Markets,INE346A01027,Capital Markets,1.38,equity
+119053,Industrial Manufacturing,INE011K01018,Industrial Manufacturing,1.33,equity
+119053,Finance,INE121A01024,Finance,1.32,equity
+119053,Banks,INE092T01019,Banks,1.3,equity
+119053,Telecom - Services,INE151A01013,Telecom - Services,1.25,equity
+119053,Retailing,INE758T01015,Retailing,1.21,equity
+119053,Banks,INE028A01039,Banks,1.16,equity
+119053,Transport Services,INE646L01027,Transport Services,1.13,equity
+119053,Finance,INE721A01047,Finance,1.11,equity
+119053,Chemicals & Petrochemicals,INE09N301011,Chemicals & Petrochemicals,1.11,equity
+119053,Beverages,INE200M01039,Beverages,1.08,equity
+119053,Pharmaceuticals & Biotechnology,INE089A01031,Pharmaceuticals & Biotechnology,1.08,equity
+119053,Banks,INE614B01018,Banks,1.05,equity
+119053,Consumer Durables,INE280A01028,Consumer Durables,1.04,equity
+119053,Power,INE814H01029,Power,1.02,equity
+119053,Metals & Minerals Trading,INE423A01024,Metals & Minerals Trading,1.01,equity
+119053,Electrical Equipment,INE117A01022,Electrical Equipment,1.0,equity
+119053,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,0.99,equity
+119053,Cement & Cement Products,INE481G01011,Cement & Cement Products,0.96,equity
+119053,Diversified FMCG,INE030A01027,Diversified FMCG,0.94,equity
+119053,Electrical Equipment,INE0BS701011,Electrical Equipment,0.92,equity
+119053,Petroleum Products,INE029A01011,Petroleum Products,0.91,equity
+119053,Retailing,INE955V01021,Retailing,0.89,equity
+119053,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.67,equity
+119053,Agricultural Food & other Products,INE0MWH01014,Agricultural Food & other Products,0.66,equity
+119053,Consumer Durables,INE0G5901015,Consumer Durables,0.41,equity
+119053,SOV,IN0020260025,,2.84,other
+119053,SOV,IN0020230085,,0.94,other
+119053,SOV,IN0020220037,,0.89,other
+119053,SOV,IN0020230135,,0.64,other
+119053,SOV,IN0020230036,,0.63,other
+119053,SOV,IN0020250091,,0.6,other
+119053,SOV,IN0020240118,,0.59,other
+119053,SOV,IN0020240142,,0.58,other
+119053,SOV,IN1520170151,,0.25,other
+119053,SOV,IN2220230295,,0.24,other
+119053,SOV,IN2220250012,,0.23,other
+119053,SOV,IN0020220060,,0.13,other
+119053,SOV,IN3120240103,,0.12,other
+119053,SOV,IN0020250141,,0.12,other
+119053,SOV,IN3320230227,,0.11,other
+119053,SOV,IN0020240076,,0.11,other
+119053,SOV,IN2220230196,,0.07,other
+119053,SOV,IN2220230204,,0.07,other
+119053,SOV,IN2220230220,,0.07,other
+119053,SOV,IN3320170167,,0.05,other
+119053,SOV,IN3420230317,,0.04,other
+119053,SOV,IN1520230187,,0.03,other
+119053,SOV,IN0020150044,,0.02,other
+119053,SOV,IN3120240012,,0.02,other
+119053,SOV,IN0020230044,,0.02,other
+119053,SOV,IN0020100031,,0.02,other
+119053,SOV,IN2220240146,,0.02,other
+119053,SOV,IN0020200096,,0.01,other
+119053,SOV,IN0020180454,,0.01,other
+119053,SOV,IN2220170103,,0.0,other
+119053,SOV,IN0020160100,,0.0,other
+119053,SOV,IN0020240134,,0.0,other
+119053,SOV,IN0020260041,,0.0,other
+119053,CRISIL-AAA,INE115A07NP6,,1.08,other
+119053,CRISIL-AA-,INE776C08083,,0.67,other
+119053,ICRA-AA+,INE484J08089,,0.63,other
+119053,ICRA-AA+,INE121A07SG2,,0.63,other
+119053,CRISIL-AA,INE814H07208,,0.62,other
+119053,CRISIL-AA-,INE0GCN07054,,0.62,other
+119053,CRISIL-AAA,INE556F08KS8,,0.62,other
+119053,CRISIL-AAA,INE282H07042,,0.6,other
+119053,ICRA-AA+,INE121A08PP7,,0.3,other
+119053,CRISIL-AAA,INE071G07660,,0.13,other
+119053,CRISIL-AAA,INE225R08048,,0.12,other
+119053,ICRA-AAA,INE848E07BB9,,0.12,other
+119053,CRISIL-AAA,INE053F08122,,0.1,other
+119053,CRISIL-AAA(SO),INE1WMT15017,,0.73,other
+119053,CRISIL-AAA,INE2I7G15010,,0.6,other
+119053,CRISIL-A1+,INE02FN14853,,1.21,other
+119053,CRISIL-A1+,INE09OL14JA2,,1.21,other
+119053,CAPITAL MARKETS,INF277KA1FB5,,2.64,other
+119053,CAPITAL MARKETS,INF277KA1224,,1.43,other
+100414,Banks,INE090A01021,Banks,4.31,equity
+100414,Telecom - Services,INE397D01024,Telecom - Services,3.53,equity
+100414,Banks,INE040A01034,Banks,2.85,equity
+100414,IT - Software,INE591G01025,IT - Software,2.2,equity
+100414,Banks,INE238A01034,Banks,2.15,equity
+100414,Automobiles,INE101A01026,Automobiles,1.93,equity
+100414,Petroleum Products,INE002A01018,Petroleum Products,1.79,equity
+100414,Banks,INE237A01036,Banks,1.78,equity
+100414,Food Products,INE216A01030,Food Products,1.76,equity
+100414,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,1.74,equity
+100414,Healthcare Services,INE075I01017,Healthcare Services,1.67,equity
+100414,IT - Software,INE009A01021,IT - Software,1.62,equity
+100414,Electrical Equipment,INE257A01026,Electrical Equipment,1.56,equity
+100414,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,1.56,equity
+100414,Automobiles,INE585B01010,Automobiles,1.5,equity
+100414,Aerospace & Defense,INE066F01020,Aerospace & Defense,1.47,equity
+100414,Banks,INE062A01020,Banks,1.45,equity
+100414,Power,INE931S01010,Power,1.44,equity
+100414,Auto Components,INE775A01035,Auto Components,1.43,equity
+100414,Cement & Cement Products,INE718I01012,Cement & Cement Products,1.42,equity
+100414,Construction,INE018A01030,Construction,1.42,equity
+100414,Capital Markets,INE0HOQ01053,Capital Markets,1.39,equity
+100414,Capital Markets,INE346A01027,Capital Markets,1.38,equity
+100414,Industrial Manufacturing,INE011K01018,Industrial Manufacturing,1.33,equity
+100414,Finance,INE121A01024,Finance,1.32,equity
+100414,Banks,INE092T01019,Banks,1.3,equity
+100414,Telecom - Services,INE151A01013,Telecom - Services,1.25,equity
+100414,Retailing,INE758T01015,Retailing,1.21,equity
+100414,Banks,INE028A01039,Banks,1.16,equity
+100414,Transport Services,INE646L01027,Transport Services,1.13,equity
+100414,Finance,INE721A01047,Finance,1.11,equity
+100414,Chemicals & Petrochemicals,INE09N301011,Chemicals & Petrochemicals,1.11,equity
+100414,Beverages,INE200M01039,Beverages,1.08,equity
+100414,Pharmaceuticals & Biotechnology,INE089A01031,Pharmaceuticals & Biotechnology,1.08,equity
+100414,Banks,INE614B01018,Banks,1.05,equity
+100414,Consumer Durables,INE280A01028,Consumer Durables,1.04,equity
+100414,Power,INE814H01029,Power,1.02,equity
+100414,Metals & Minerals Trading,INE423A01024,Metals & Minerals Trading,1.01,equity
+100414,Electrical Equipment,INE117A01022,Electrical Equipment,1.0,equity
+100414,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,0.99,equity
+100414,Cement & Cement Products,INE481G01011,Cement & Cement Products,0.96,equity
+100414,Diversified FMCG,INE030A01027,Diversified FMCG,0.94,equity
+100414,Electrical Equipment,INE0BS701011,Electrical Equipment,0.92,equity
+100414,Petroleum Products,INE029A01011,Petroleum Products,0.91,equity
+100414,Retailing,INE955V01021,Retailing,0.89,equity
+100414,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.67,equity
+100414,Agricultural Food & other Products,INE0MWH01014,Agricultural Food & other Products,0.66,equity
+100414,Consumer Durables,INE0G5901015,Consumer Durables,0.41,equity
+100414,SOV,IN0020260025,,2.84,other
+100414,SOV,IN0020230085,,0.94,other
+100414,SOV,IN0020220037,,0.89,other
+100414,SOV,IN0020230135,,0.64,other
+100414,SOV,IN0020230036,,0.63,other
+100414,SOV,IN0020250091,,0.6,other
+100414,SOV,IN0020240118,,0.59,other
+100414,SOV,IN0020240142,,0.58,other
+100414,SOV,IN1520170151,,0.25,other
+100414,SOV,IN2220230295,,0.24,other
+100414,SOV,IN2220250012,,0.23,other
+100414,SOV,IN0020220060,,0.13,other
+100414,SOV,IN3120240103,,0.12,other
+100414,SOV,IN0020250141,,0.12,other
+100414,SOV,IN3320230227,,0.11,other
+100414,SOV,IN0020240076,,0.11,other
+100414,SOV,IN2220230196,,0.07,other
+100414,SOV,IN2220230204,,0.07,other
+100414,SOV,IN2220230220,,0.07,other
+100414,SOV,IN3320170167,,0.05,other
+100414,SOV,IN3420230317,,0.04,other
+100414,SOV,IN1520230187,,0.03,other
+100414,SOV,IN0020150044,,0.02,other
+100414,SOV,IN3120240012,,0.02,other
+100414,SOV,IN0020230044,,0.02,other
+100414,SOV,IN0020100031,,0.02,other
+100414,SOV,IN2220240146,,0.02,other
+100414,SOV,IN0020200096,,0.01,other
+100414,SOV,IN0020180454,,0.01,other
+100414,SOV,IN2220170103,,0.0,other
+100414,SOV,IN0020160100,,0.0,other
+100414,SOV,IN0020240134,,0.0,other
+100414,SOV,IN0020260041,,0.0,other
+100414,CRISIL-AAA,INE115A07NP6,,1.08,other
+100414,CRISIL-AA-,INE776C08083,,0.67,other
+100414,ICRA-AA+,INE484J08089,,0.63,other
+100414,ICRA-AA+,INE121A07SG2,,0.63,other
+100414,CRISIL-AA,INE814H07208,,0.62,other
+100414,CRISIL-AA-,INE0GCN07054,,0.62,other
+100414,CRISIL-AAA,INE556F08KS8,,0.62,other
+100414,CRISIL-AAA,INE282H07042,,0.6,other
+100414,ICRA-AA+,INE121A08PP7,,0.3,other
+100414,CRISIL-AAA,INE071G07660,,0.13,other
+100414,CRISIL-AAA,INE225R08048,,0.12,other
+100414,ICRA-AAA,INE848E07BB9,,0.12,other
+100414,CRISIL-AAA,INE053F08122,,0.1,other
+100414,CRISIL-AAA(SO),INE1WMT15017,,0.73,other
+100414,CRISIL-AAA,INE2I7G15010,,0.6,other
+100414,CRISIL-A1+,INE02FN14853,,1.21,other
+100414,CRISIL-A1+,INE09OL14JA2,,1.21,other
+100414,CAPITAL MARKETS,INF277KA1FB5,,2.64,other
+100414,CAPITAL MARKETS,INF277KA1224,,1.43,other
+154405,CAPITAL MARKETS,INF277KA1BG3,,13.55,other
+154405,CAPITAL MARKETS,INF277KA1EP8,,11.19,other
+154405,CAPITAL MARKETS,INF277KA1AO9,,10.88,other
+154405,CAPITAL MARKETS,INF277KA1AU6,,10.85,other
+154405,CAPITAL MARKETS,INF277KA1BM1,,10.05,other
+154405,CAPITAL MARKETS,INF277KA1364,,9.53,other
+154405,CAPITAL MARKETS,INF277KA1CC0,,9.16,other
+154405,CAPITAL MARKETS,INF277K010X4,,8.26,other
+154405,Capital Markets,INF247L01DJ0,,8.21,other
+154405,CAPITAL MARKETS,INF277KA1BA6,,7.59,other
+154409,CAPITAL MARKETS,INF277KA1BG3,,13.55,other
+154409,CAPITAL MARKETS,INF277KA1EP8,,11.19,other
+154409,CAPITAL MARKETS,INF277KA1AO9,,10.88,other
+154409,CAPITAL MARKETS,INF277KA1AU6,,10.85,other
+154409,CAPITAL MARKETS,INF277KA1BM1,,10.05,other
+154409,CAPITAL MARKETS,INF277KA1364,,9.53,other
+154409,CAPITAL MARKETS,INF277KA1CC0,,9.16,other
+154409,CAPITAL MARKETS,INF277K010X4,,8.26,other
+154409,Capital Markets,INF247L01DJ0,,8.21,other
+154409,CAPITAL MARKETS,INF277KA1BA6,,7.59,other
+102672,SOV,IN0020230119,,1.11,other
+102672,SOV,IN3120160137,,0.09,other
+102672,SOV,IN1520220154,,0.04,other
+102672,SOV,IN1920160034,,0.04,other
+102672,SOV,IN1920160018,,0.04,other
+102672,SOV,IN002026X206,,3.75,other
+102672,CARE-A1+,INE028A16NA4,,3.46,other
+102672,CRISIL-A1+,INE483A16KY7,,3.37,other
+102672,SOV,IN002026X230,,2.91,other
+102672,CRISIL-A1+,INE040A16JX9,,2.75,other
+102672,CRISIL-A1+,INE002A14LS0,,2.73,other
+102672,CRISIL-A1+,INE528G16X94,,2.65,other
+102672,CRISIL-A1+,INE700G14VN6,,2.65,other
+102672,CRISIL-A1+,INE476A16L05,,2.65,other
+102672,SOV,IN002026X248,,2.64,other
+102672,CRISIL-A1+,INE556F14MT0,,2.64,other
+102672,CRISIL-A1+,INE020B14722,,2.47,other
+102672,SOV,IN002026X222,,2.39,other
+102672,CRISIL-A1+,INE261F14QF7,,2.38,other
+102672,CRISIL-A1+,INE514E14TR1,,2.38,other
+102672,SOV,IN002026X198,,2.13,other
+102672,CRISIL-A1+,INE742F14RK4,,1.78,other
+102672,CRISIL-A1+,INE556F14MO1,,1.78,other
+102672,CRISIL-A1+,INE040A16HU9,,1.77,other
+102672,CRISIL-A1+,INE572E14KR8,,1.77,other
+102672,CRISIL-A1+,INE338I14NB3,,1.77,other
+102672,CRISIL-A1+,INE261F14QA8,,1.77,other
+102672,CRISIL-A1+,INE029A14BX4,,1.77,other
+102672,CRISIL-A1+,INE261F14QC4,,1.77,other
+102672,CRISIL-A1+,INE296A14J74,,1.77,other
+102672,CRISIL-A1+,INE514E14TT7,,1.76,other
+102672,CRISIL-A1+,INE084A16GH6,,1.76,other
+102672,CRISIL-A1+,INE040A16KB3,,1.76,other
+102672,CRISIL-A1+,INE296A14J90,,1.76,other
+102672,CRISIL-A1+,INE040A16KE7,,1.76,other
+102672,ICRA-A1+,INE732I14DU8,,1.76,other
+102672,ICRA-A1+,INE732I14DV6,,1.76,other
+102672,CRISIL-A1+,INE514E16CN1,,1.68,other
+102672,CRISIL-A1+,INE733E14CE1,,1.51,other
+102672,CRISIL-A1+,INE296A14I75,,1.24,other
+102672,CRISIL-A1+,INE002A14LU6,,1.23,other
+102672,CRISIL-A1+,INE530B14IU0,,1.23,other
+102672,SOV,IN002026X172,,1.08,other
+102672,CRISIL-A1+,INE831R14GK3,,1.06,other
+102672,CRISIL-A1+,INE700G14VR7,,1.06,other
+102672,CRISIL-A1+,INE941D14782,,1.06,other
+102672,CRISIL-A1+,INE514E14TW1,,1.06,other
+102672,CRISIL-A1+,INE491A16193,,1.06,other
+102672,CRISIL-A1+,INE530B14IX4,,1.05,other
+102672,IND-A1+,INE028A16KK9,,0.88,other
+102672,CRISIL-A1+,INE377Y14CI6,,0.88,other
+102672,CRISIL-A1+,INE01C314HD4,,0.88,other
+102672,CRISIL-A1+,INE562A16QO6,,0.88,other
+102672,CRISIL-A1+,INE489L14991,,0.88,other
+102672,ICRA-A1+,INE732I14DQ6,,0.71,other
+102672,CRISIL-A1+,INE040A16HW5,,0.71,other
+102672,CRISIL-A1+,INE647O14FL0,,0.7,other
+102672,CRISIL-A1+,INE238AD6CB1,,0.7,other
+102672,SOV,IN002026X214,,0.65,other
+102672,CRISIL-A1+,INE674K14CR6,,0.53,other
+102672,CRISIL-A1+,INE549K14CD0,,0.53,other
+102672,CRISIL-A1+,INE477L14FZ8,,0.53,other
+102672,CRISIL-A1+,INE514E14TQ3,,0.53,other
+102672,CRISIL-A1+,INE477L14GA9,,0.53,other
+102672,ICRA-A1+,INE732I14DW4,,0.53,other
+102672,CRISIL-A1+,INE414G14VB9,,0.44,other
+102672,CRISIL-A1+,INE523L14BU9,,0.35,other
+102672,CRISIL-A1+,INE338I14NK4,,0.35,other
+102672,CRISIL-A1+,INE879F14ME8,,0.35,other
+102672,CRISIL-A1+,INE489L14AA7,,0.35,other
+102672,CRISIL-A1+,INE556F16BQ4,,0.27,other
+102672,CRISIL-A1+,INE549K14CF5,,0.18,other
+102672,CRISIL-A1+,INE489L14AC3,,0.18,other
+119861,SOV,IN0020230119,,1.11,other
+119861,SOV,IN3120160137,,0.09,other
+119861,SOV,IN1520220154,,0.04,other
+119861,SOV,IN1920160034,,0.04,other
+119861,SOV,IN1920160018,,0.04,other
+119861,SOV,IN002026X206,,3.75,other
+119861,CARE-A1+,INE028A16NA4,,3.46,other
+119861,CRISIL-A1+,INE483A16KY7,,3.37,other
+119861,SOV,IN002026X230,,2.91,other
+119861,CRISIL-A1+,INE040A16JX9,,2.75,other
+119861,CRISIL-A1+,INE002A14LS0,,2.73,other
+119861,CRISIL-A1+,INE528G16X94,,2.65,other
+119861,CRISIL-A1+,INE700G14VN6,,2.65,other
+119861,CRISIL-A1+,INE476A16L05,,2.65,other
+119861,SOV,IN002026X248,,2.64,other
+119861,CRISIL-A1+,INE556F14MT0,,2.64,other
+119861,CRISIL-A1+,INE020B14722,,2.47,other
+119861,SOV,IN002026X222,,2.39,other
+119861,CRISIL-A1+,INE261F14QF7,,2.38,other
+119861,CRISIL-A1+,INE514E14TR1,,2.38,other
+119861,SOV,IN002026X198,,2.13,other
+119861,CRISIL-A1+,INE742F14RK4,,1.78,other
+119861,CRISIL-A1+,INE556F14MO1,,1.78,other
+119861,CRISIL-A1+,INE040A16HU9,,1.77,other
+119861,CRISIL-A1+,INE572E14KR8,,1.77,other
+119861,CRISIL-A1+,INE338I14NB3,,1.77,other
+119861,CRISIL-A1+,INE261F14QA8,,1.77,other
+119861,CRISIL-A1+,INE029A14BX4,,1.77,other
+119861,CRISIL-A1+,INE261F14QC4,,1.77,other
+119861,CRISIL-A1+,INE296A14J74,,1.77,other
+119861,CRISIL-A1+,INE514E14TT7,,1.76,other
+119861,CRISIL-A1+,INE084A16GH6,,1.76,other
+119861,CRISIL-A1+,INE040A16KB3,,1.76,other
+119861,CRISIL-A1+,INE296A14J90,,1.76,other
+119861,CRISIL-A1+,INE040A16KE7,,1.76,other
+119861,ICRA-A1+,INE732I14DU8,,1.76,other
+119861,ICRA-A1+,INE732I14DV6,,1.76,other
+119861,CRISIL-A1+,INE514E16CN1,,1.68,other
+119861,CRISIL-A1+,INE733E14CE1,,1.51,other
+119861,CRISIL-A1+,INE296A14I75,,1.24,other
+119861,CRISIL-A1+,INE002A14LU6,,1.23,other
+119861,CRISIL-A1+,INE530B14IU0,,1.23,other
+119861,SOV,IN002026X172,,1.08,other
+119861,CRISIL-A1+,INE831R14GK3,,1.06,other
+119861,CRISIL-A1+,INE700G14VR7,,1.06,other
+119861,CRISIL-A1+,INE941D14782,,1.06,other
+119861,CRISIL-A1+,INE514E14TW1,,1.06,other
+119861,CRISIL-A1+,INE491A16193,,1.06,other
+119861,CRISIL-A1+,INE530B14IX4,,1.05,other
+119861,IND-A1+,INE028A16KK9,,0.88,other
+119861,CRISIL-A1+,INE377Y14CI6,,0.88,other
+119861,CRISIL-A1+,INE01C314HD4,,0.88,other
+119861,CRISIL-A1+,INE562A16QO6,,0.88,other
+119861,CRISIL-A1+,INE489L14991,,0.88,other
+119861,ICRA-A1+,INE732I14DQ6,,0.71,other
+119861,CRISIL-A1+,INE040A16HW5,,0.71,other
+119861,CRISIL-A1+,INE647O14FL0,,0.7,other
+119861,CRISIL-A1+,INE238AD6CB1,,0.7,other
+119861,SOV,IN002026X214,,0.65,other
+119861,CRISIL-A1+,INE674K14CR6,,0.53,other
+119861,CRISIL-A1+,INE549K14CD0,,0.53,other
+119861,CRISIL-A1+,INE477L14FZ8,,0.53,other
+119861,CRISIL-A1+,INE514E14TQ3,,0.53,other
+119861,CRISIL-A1+,INE477L14GA9,,0.53,other
+119861,ICRA-A1+,INE732I14DW4,,0.53,other
+119861,CRISIL-A1+,INE414G14VB9,,0.44,other
+119861,CRISIL-A1+,INE523L14BU9,,0.35,other
+119861,CRISIL-A1+,INE338I14NK4,,0.35,other
+119861,CRISIL-A1+,INE879F14ME8,,0.35,other
+119861,CRISIL-A1+,INE489L14AA7,,0.35,other
+119861,CRISIL-A1+,INE556F16BQ4,,0.27,other
+119861,CRISIL-A1+,INE549K14CF5,,0.18,other
+119861,CRISIL-A1+,INE489L14AC3,,0.18,other
+146075,CRISIL-AAA,INE261F08EF5,,4.63,other
+146075,CRISIL-AA,INE814H07190,,2.76,other
+146075,CRISIL-AAA,INE020B08AH8,,2.69,other
+146075,CRISIL-AAA,INE020B08EW9,,2.32,other
+146075,CRISIL-AA+,INE414G07JQ6,,1.93,other
+146075,CRISIL-AA,INE248U07GJ0,,1.86,other
+146075,CRISIL-AAA,INE053F07983,,1.86,other
+146075,CRISIL-AA+,INE202B07JR4,,1.86,other
+146075,CRISIL-AA-,INE896L07AR1,,1.85,other
+146075,CRISIL-AA-,INE0GCN07054,,1.83,other
+146075,ICRA-AA+,INE484J08055,,1.67,other
+146075,ICRA-AA,INE539K07320,,1.38,other
+146075,CRISIL-AA,INE248U07GI2,,1.38,other
+146075,CRISIL-AA+,INE414G07JM5,,1.11,other
+146075,CRISIL-AA+,INE289B07149,,1.03,other
+146075,CRISIL-AAA,INE020B08FA2,,0.92,other
+146075,CRISIL-AAA,INE134E08JC3,,0.92,other
+146075,CRISIL-AA-,INE896L07AQ3,,0.83,other
+146075,CRISIL-AA+,INE414G07JL7,,0.74,other
+146075,CRISIL-AA+,INE140A07831,,0.65,other
+146075,CRISIL-AA+,INE414G07JI3,,0.46,other
+146075,CRISIL-AAA,INE115A07QO2,,0.46,other
+146075,CRISIL-AA+,INE202B07JW4,,0.09,other
+146075,CRISIL-AA,INE814H07208,,0.09,other
+146075,CRISIL-AAA(SO),INE2R5L15013,,2.18,other
+146075,CRISIL-A1+,INE040A16KD9,,9.98,other
+146075,SOV,IN002026X180,,5.06,other
+146075,CRISIL-A1+,INE476A16H43,,4.95,other
+146075,CRISIL-A1+,INE528G16X52,,4.49,other
+146075,CRISIL-A1+,INE551W16CK1,,4.02,other
+146075,CRISIL-A1+,INE556F16CE8,,3.96,other
+146075,CRISIL-A1+,INE063P16BM9,,3.57,other
+146075,CRISIL-A1+,INE476A16G28,,3.17,other
+146075,CRISIL-A1+,INE289B14KD5,,2.71,other
+146075,CRISIL-A1+,INE530B14JC6,,2.68,other
+146075,CRISIL-A1+,INE160A16UE2,,2.26,other
+146075,CRISIL-A1+,INE171A16NX4,,2.2,other
+146075,CRISIL-A1+,INE549K14CJ7,,1.8,other
+146075,CRISIL-A1+,INE171A16NL9,,1.8,other
+146075,CRISIL-A1+,INE549K14CL3,,1.8,other
+146075,CRISIL-A1+,INE556F16BV4,,0.91,other
+146075,ICRA-A1+,INE692A16LM6,,0.9,other
+146075,CRISIL-A1+,INE160A16UQ6,,0.9,other
+146075,CRISIL-A1+,INE377Y14CA3,,0.9,other
+146075,CRISIL-A1+,INE528G16X11,,0.45,other
+146075,CRISIL-A1+,INE514E16CP6,,0.45,other
+146070,CRISIL-AAA,INE261F08EF5,,4.63,other
+146070,CRISIL-AA,INE814H07190,,2.76,other
+146070,CRISIL-AAA,INE020B08AH8,,2.69,other
+146070,CRISIL-AAA,INE020B08EW9,,2.32,other
+146070,CRISIL-AA+,INE414G07JQ6,,1.93,other
+146070,CRISIL-AA,INE248U07GJ0,,1.86,other
+146070,CRISIL-AAA,INE053F07983,,1.86,other
+146070,CRISIL-AA+,INE202B07JR4,,1.86,other
+146070,CRISIL-AA-,INE896L07AR1,,1.85,other
+146070,CRISIL-AA-,INE0GCN07054,,1.83,other
+146070,ICRA-AA+,INE484J08055,,1.67,other
+146070,ICRA-AA,INE539K07320,,1.38,other
+146070,CRISIL-AA,INE248U07GI2,,1.38,other
+146070,CRISIL-AA+,INE414G07JM5,,1.11,other
+146070,CRISIL-AA+,INE289B07149,,1.03,other
+146070,CRISIL-AAA,INE020B08FA2,,0.92,other
+146070,CRISIL-AAA,INE134E08JC3,,0.92,other
+146070,CRISIL-AA-,INE896L07AQ3,,0.83,other
+146070,CRISIL-AA+,INE414G07JL7,,0.74,other
+146070,CRISIL-AA+,INE140A07831,,0.65,other
+146070,CRISIL-AA+,INE414G07JI3,,0.46,other
+146070,CRISIL-AAA,INE115A07QO2,,0.46,other
+146070,CRISIL-AA+,INE202B07JW4,,0.09,other
+146070,CRISIL-AA,INE814H07208,,0.09,other
+146070,CRISIL-AAA(SO),INE2R5L15013,,2.18,other
+146070,CRISIL-A1+,INE040A16KD9,,9.98,other
+146070,SOV,IN002026X180,,5.06,other
+146070,CRISIL-A1+,INE476A16H43,,4.95,other
+146070,CRISIL-A1+,INE528G16X52,,4.49,other
+146070,CRISIL-A1+,INE551W16CK1,,4.02,other
+146070,CRISIL-A1+,INE556F16CE8,,3.96,other
+146070,CRISIL-A1+,INE063P16BM9,,3.57,other
+146070,CRISIL-A1+,INE476A16G28,,3.17,other
+146070,CRISIL-A1+,INE289B14KD5,,2.71,other
+146070,CRISIL-A1+,INE530B14JC6,,2.68,other
+146070,CRISIL-A1+,INE160A16UE2,,2.26,other
+146070,CRISIL-A1+,INE171A16NX4,,2.2,other
+146070,CRISIL-A1+,INE549K14CJ7,,1.8,other
+146070,CRISIL-A1+,INE171A16NL9,,1.8,other
+146070,CRISIL-A1+,INE549K14CL3,,1.8,other
+146070,CRISIL-A1+,INE556F16BV4,,0.91,other
+146070,ICRA-A1+,INE692A16LM6,,0.9,other
+146070,CRISIL-A1+,INE160A16UQ6,,0.9,other
+146070,CRISIL-A1+,INE377Y14CA3,,0.9,other
+146070,CRISIL-A1+,INE528G16X11,,0.45,other
+146070,CRISIL-A1+,INE514E16CP6,,0.45,other
+119256,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,1.5,equity
+119256,Banks,INE090A01021,Banks,1.44,equity
+119256,Retailing,INE758T01015,Retailing,1.22,equity
+119256,Petroleum Products,INE002A01018,Petroleum Products,1.16,equity
+119256,Capital Markets,INE745G01043,Capital Markets,1.09,equity
+119256,Automobiles,INE0LEZ01016,Automobiles,1.07,equity
+119256,Consumable Fuels,INE522F01014,Consumable Fuels,0.99,equity
+119256,Consumer Durables,INE935N01020,Consumer Durables,0.78,equity
+119256,Transport Infrastructure,INE742F01042,Transport Infrastructure,0.78,equity
+119256,Household Products,INE321T01012,Household Products,0.76,equity
+119256,Beverages,INE944F01028,Beverages,0.71,equity
+119256,Auto Components,INE302A01020,Auto Components,0.7,equity
+119256,Banks,INE237A01036,Banks,0.68,equity
+119256,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),0.64,equity
+119256,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,0.61,equity
+119256,Capital Markets,INE466L01038,Capital Markets,0.6,equity
+119256,Consumer Durables,INE280A01028,Consumer Durables,0.6,equity
+119256,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,0.59,equity
+119256,Industrial Products,INE455K01017,Industrial Products,0.58,equity
+119256,Capital Markets,INE298J01013,Capital Markets,0.58,equity
+119256,Food Products,INE00E101023,Food Products,0.57,equity
+119256,Electrical Equipment,INE12UR01024,Electrical Equipment,0.56,equity
+119256,Capital Markets,INE118H01025,Capital Markets,0.55,equity
+119256,Capital Markets,INE0HOQ01053,Capital Markets,0.53,equity
+119256,Banks,INE036D01028,Banks,0.53,equity
+119256,Food Products,INE239A01024,Food Products,0.53,equity
+119256,Oil,INE274J01014,Oil,0.53,equity
+119256,IT - Software,INE860A01027,IT - Software,0.47,equity
+119256,Industrial Products,INE811A01038,Industrial Products,0.41,equity
+119256,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.41,equity
+119256,Healthcare Services,INE437A01024,Healthcare Services,0.4,equity
+119256,Healthcare Services,INE961O01016,Healthcare Services,0.39,equity
+119256,Industrial Products,INE536A01023,Industrial Products,0.37,equity
+119256,Power,INE814H01029,Power,0.34,equity
+119256,IT - Software,INE467B01029,IT - Software,0.33,equity
+119256,Finance,INE721A01047,Finance,0.32,equity
+119256,Finance,INE414G01012,Finance,0.31,equity
+119256,Beverages,INE200M01039,Beverages,0.31,equity
+119256,Cement & Cement Products,INE331A01037,Cement & Cement Products,0.28,equity
+119256,Finance,INE522D01027,Finance,0.27,equity
+119256,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.27,equity
+119256,Automobiles,INE585B01010,Automobiles,0.26,equity
+119256,Diversified,INE233A01035,Diversified,0.25,equity
+119256,Food Products,INE850D01014,Food Products,0.23,equity
+119256,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.2,equity
+119256,IT - Software,INE520A01027,IT - Software,0.18,equity
+119256,Power,INE931S01010,Power,0.14,equity
+119256,Electrical Equipment,INE989C01038,Electrical Equipment,0.09,equity
+119256,Banks,INE976G01028,Banks,0.04,equity
+119256,SOV,IN0020240126,,20.67,other
+119256,SOV,IN0020230036,,9.15,other
+119256,SOV,IN0020220037,,9.14,other
+119256,SOV,IN0020250141,,8.89,other
+119256,SOV,IN0020220086,,5.85,other
+119256,SOV,IN0020250018,,5.42,other
+119256,CRISIL-AAA,INE2I7G15010,,2.88,other
+115944,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,1.5,equity
+115944,Banks,INE090A01021,Banks,1.44,equity
+115944,Retailing,INE758T01015,Retailing,1.22,equity
+115944,Petroleum Products,INE002A01018,Petroleum Products,1.16,equity
+115944,Capital Markets,INE745G01043,Capital Markets,1.09,equity
+115944,Automobiles,INE0LEZ01016,Automobiles,1.07,equity
+115944,Consumable Fuels,INE522F01014,Consumable Fuels,0.99,equity
+115944,Consumer Durables,INE935N01020,Consumer Durables,0.78,equity
+115944,Transport Infrastructure,INE742F01042,Transport Infrastructure,0.78,equity
+115944,Household Products,INE321T01012,Household Products,0.76,equity
+115944,Beverages,INE944F01028,Beverages,0.71,equity
+115944,Auto Components,INE302A01020,Auto Components,0.7,equity
+115944,Banks,INE237A01036,Banks,0.68,equity
+115944,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),0.64,equity
+115944,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,0.61,equity
+115944,Capital Markets,INE466L01038,Capital Markets,0.6,equity
+115944,Consumer Durables,INE280A01028,Consumer Durables,0.6,equity
+115944,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,0.59,equity
+115944,Industrial Products,INE455K01017,Industrial Products,0.58,equity
+115944,Capital Markets,INE298J01013,Capital Markets,0.58,equity
+115944,Food Products,INE00E101023,Food Products,0.57,equity
+115944,Electrical Equipment,INE12UR01024,Electrical Equipment,0.56,equity
+115944,Capital Markets,INE118H01025,Capital Markets,0.55,equity
+115944,Capital Markets,INE0HOQ01053,Capital Markets,0.53,equity
+115944,Banks,INE036D01028,Banks,0.53,equity
+115944,Food Products,INE239A01024,Food Products,0.53,equity
+115944,Oil,INE274J01014,Oil,0.53,equity
+115944,IT - Software,INE860A01027,IT - Software,0.47,equity
+115944,Industrial Products,INE811A01038,Industrial Products,0.41,equity
+115944,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.41,equity
+115944,Healthcare Services,INE437A01024,Healthcare Services,0.4,equity
+115944,Healthcare Services,INE961O01016,Healthcare Services,0.39,equity
+115944,Industrial Products,INE536A01023,Industrial Products,0.37,equity
+115944,Power,INE814H01029,Power,0.34,equity
+115944,IT - Software,INE467B01029,IT - Software,0.33,equity
+115944,Finance,INE721A01047,Finance,0.32,equity
+115944,Finance,INE414G01012,Finance,0.31,equity
+115944,Beverages,INE200M01039,Beverages,0.31,equity
+115944,Cement & Cement Products,INE331A01037,Cement & Cement Products,0.28,equity
+115944,Finance,INE522D01027,Finance,0.27,equity
+115944,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.27,equity
+115944,Automobiles,INE585B01010,Automobiles,0.26,equity
+115944,Diversified,INE233A01035,Diversified,0.25,equity
+115944,Food Products,INE850D01014,Food Products,0.23,equity
+115944,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.2,equity
+115944,IT - Software,INE520A01027,IT - Software,0.18,equity
+115944,Power,INE931S01010,Power,0.14,equity
+115944,Electrical Equipment,INE989C01038,Electrical Equipment,0.09,equity
+115944,Banks,INE976G01028,Banks,0.04,equity
+115944,SOV,IN0020240126,,20.67,other
+115944,SOV,IN0020230036,,9.15,other
+115944,SOV,IN0020220037,,9.14,other
+115944,SOV,IN0020250141,,8.89,other
+115944,SOV,IN0020220086,,5.85,other
+115944,SOV,IN0020250018,,5.42,other
+115944,CRISIL-AAA,INE2I7G15010,,2.88,other
+150330,SOV,IN3120170094,,8.65,other
+150330,SOV,IN1520170136,,6.27,other
+150330,SOV,IN3320170167,,5.96,other
+150330,SOV,IN1920170116,,5.57,other
+150330,SOV,IN3420170158,,4.7,other
+150330,SOV,IN3320170142,,3.91,other
+150330,SOV,IN1520170128,,3.57,other
+150330,SOV,IN2920170122,,3.15,other
+150330,SOV,IN1520170151,,3.14,other
+150330,SOV,IN1920170074,,2.51,other
+150330,SOV,IN2920170098,,2.35,other
+150330,SOV,IN1920170132,,1.57,other
+150330,SOV,IN3120170102,,1.57,other
+150330,SOV,IN3420170133,,1.56,other
+150330,SOV,IN2920170106,,1.56,other
+150330,SOV,IN1920170108,,0.78,other
+150330,SOV,IN1920170066,,0.78,other
+150330,SOV,IN2920170114,,0.78,other
+150330,SOV,IN0020220037,,0.63,other
+150330,SOV,IN1920170124,,0.31,other
+150330,SOV,IN1520190126,,0.14,other
+150330,SOV,IN1520170144,,0.05,other
+150330,CRISIL-AAA,INE020B08AQ9,,12.89,other
+150330,CRISIL-AAA,INE053F07AD1,,8.84,other
+150330,CRISIL-AAA,INE752E07OF7,,6.06,other
+150330,CRISIL-AAA,INE752E07OG5,,5.73,other
+150330,CRISIL-AAA,INE134E08JG4,,3.63,other
+150326,SOV,IN3120170094,,8.65,other
+150326,SOV,IN1520170136,,6.27,other
+150326,SOV,IN3320170167,,5.96,other
+150326,SOV,IN1920170116,,5.57,other
+150326,SOV,IN3420170158,,4.7,other
+150326,SOV,IN3320170142,,3.91,other
+150326,SOV,IN1520170128,,3.57,other
+150326,SOV,IN2920170122,,3.15,other
+150326,SOV,IN1520170151,,3.14,other
+150326,SOV,IN1920170074,,2.51,other
+150326,SOV,IN2920170098,,2.35,other
+150326,SOV,IN1920170132,,1.57,other
+150326,SOV,IN3120170102,,1.57,other
+150326,SOV,IN3420170133,,1.56,other
+150326,SOV,IN2920170106,,1.56,other
+150326,SOV,IN1920170108,,0.78,other
+150326,SOV,IN1920170066,,0.78,other
+150326,SOV,IN2920170114,,0.78,other
+150326,SOV,IN0020220037,,0.63,other
+150326,SOV,IN1920170124,,0.31,other
+150326,SOV,IN1520190126,,0.14,other
+150326,SOV,IN1520170144,,0.05,other
+150326,CRISIL-AAA,INE020B08AQ9,,12.89,other
+150326,CRISIL-AAA,INE053F07AD1,,8.84,other
+150326,CRISIL-AAA,INE752E07OF7,,6.06,other
+150326,CRISIL-AAA,INE752E07OG5,,5.73,other
+150326,CRISIL-AAA,INE134E08JG4,,3.63,other
+151273,SOV,IN0020220011,,50.87,other
+151273,SOV,IN0020160118,,46.22,other
+151275,SOV,IN0020220011,,50.87,other
+151275,SOV,IN0020160118,,46.22,other
+151301,SOV,IN0020140060,,78.75,other
+151301,SOV,IN0020210186,,17.82,other
+151306,SOV,IN0020140060,,78.75,other
+151306,SOV,IN0020210186,,17.82,other
+119424,SOV,IN1920160117,,1.7,other
+119424,SOV,IN1620160243,,0.3,other
+119424,SOV,IN0020060078,,0.08,other
+119424,SOV,IN2920200614,,0.08,other
+119424,SOV,IN3420160134,,0.06,other
+119424,CRISIL-A1+,INE556F16CI9,,5.75,other
+119424,CRISIL-A1+,INE237AD6133,,3.7,other
+119424,CRISIL-A1+,INE528G16X52,,3.6,other
+119424,CRISIL-A1+,INE040A16IU7,,3.45,other
+119424,SOV,IN002026Y212,,3.39,other
+119424,CRISIL-A1+,INE261F16AG4,,3.32,other
+119424,CRISIL-A1+,INE565A16BS2,,3.07,other
+119424,CRISIL-A1+,INE115A14FQ6,,3.06,other
+119424,SOV,IN002026Y170,,2.63,other
+119424,CRISIL-A1+,INE092T16ZX6,,2.32,other
+119424,CRISIL-A1+,INE168A16NM3,,2.3,other
+119424,ICRA-A1+,INE692A16MA9,,2.28,other
+119424,CRISIL-A1+,INE261F16AH2,,2.16,other
+119424,CRISIL-A1+,INE565A16BU8,,2.15,other
+119424,CRISIL-A1+,INE020B14748,,2.14,other
+119424,CRISIL-A1+,INE238AD6CP1,,1.93,other
+119424,CRISIL-A1+,INE095A168C9,,1.85,other
+119424,CRISIL-A1+,INE063P16BK3,,1.83,other
+119424,CRISIL-A1+,INE514E14TQ3,,1.79,other
+119424,CRISIL-A1+,INE171A16NL9,,1.69,other
+119424,CRISIL-A1+,INE040A16KD9,,1.55,other
+119424,CRISIL-A1+,INE377Y14BW9,,1.54,other
+119424,CRISIL-A1+,INE261F16AM2,,1.53,other
+119424,CRISIL-A1+,INE763G14F92,,1.53,other
+119424,CRISIL-A1+,INE261F16AO8,,1.53,other
+119424,CRISIL-A1+,INE168A16NO9,,1.53,other
+119424,CRISIL-A1+,INE556F16BW2,,1.39,other
+119424,CRISIL-A1+,INE556F16CE8,,1.28,other
+119424,CRISIL-A1+,INE040A16IM4,,1.23,other
+119424,CRISIL-A1+,INE01WN14BX7,,1.23,other
+119424,CRISIL-A1+,INE211H14BF0,,1.22,other
+119424,CRISIL-A1+,INE02FN14846,,1.22,other
+119424,CRISIL-A1+,INE417C14AO8,,1.15,other
+119424,CRISIL-A1+,INE476A16G44,,1.08,other
+119424,SOV,IN002025Z385,,0.98,other
+119424,SOV,IN002026Y113,,0.98,other
+119424,CRISIL-A1+,INE879F14MJ7,,0.93,other
+119424,CRISIL-A1+,INE338I14LR3,,0.92,other
+119424,SOV,IN002026Y238,,0.92,other
+119424,CRISIL-A1+,INE732I14CX4,,0.92,other
+119424,CRISIL-A1+,INE0DZE14339,,0.92,other
+119424,CRISIL-A1+,INE549K14CN9,,0.91,other
+119424,SOV,IN002026Y162,,0.9,other
+119424,CRISIL-A1+,INE144H14ID3,,0.77,other
+119424,CRISIL-A1+,INE248U14SV6,,0.77,other
+119424,CRISIL-A1+,INE338I14LQ5,,0.77,other
+119424,CRISIL-A1+,INE774D14TW3,,0.77,other
+119424,CRISIL-A1+,INE160A16UQ6,,0.77,other
+119424,CRISIL-A1+,INE040A16IZ6,,0.77,other
+119424,CRISIL-A1+,INE774D14TO0,,0.77,other
+119424,ICRA-A1+,INE019516124,,0.76,other
+119424,SOV,IN002026Y204,,0.69,other
+119424,CRISIL-A1+,INE950O14CA8,,0.62,other
+119424,CRISIL-A1+,INE824H14TK2,,0.62,other
+119424,CRISIL-A1+,INE115A14FS2,,0.62,other
+119424,CRISIL-A1+,INE549K14CI9,,0.62,other
+119424,CRISIL-A1+,INE0T2V14160,,0.61,other
+119424,CRISIL-A1+,INE261F16AQ3,,0.61,other
+119424,CRISIL-A1+,INE523L14CA9,,0.61,other
+119424,CRISIL-A1+,INE476A16H43,,0.54,other
+119424,SOV,IN002026Y154,,0.48,other
+119424,CRISIL-A1+,INE790I14HJ0,,0.46,other
+119424,CRISIL-A1+,INE466L14FS6,,0.46,other
+119424,CRISIL-A1+,INE09OL14IH9,,0.39,other
+119424,CRISIL-A1+,INE790I14HK8,,0.39,other
+119424,SOV,IN002026Y121,,0.31,other
+119424,CRISIL-A1+,INE556F16BY8,,0.31,other
+119424,SOV,IN002026Y220,,0.31,other
+119424,CRISIL-A1+,INE523L14AW7,,0.31,other
+119424,CRISIL-A1+,INE0BJN16036,,0.31,other
+119424,SOV,IN002026X248,,0.22,other
+119424,CRISIL-A1+,INE0AD514339,,0.16,other
+119424,CRISIL-A1+,INE476A16G28,,0.15,other
+119424,CRISIL-A1+,INE918K14CY3,,0.15,other
+119424,CRISIL-A1+,INE040A16IT9,,0.15,other
+119424,ICRA-A1+,INE692A16LS3,,0.15,other
+119424,CRISIL-A1+,INE531F14FN0,,0.15,other
+119424,CRISIL-A1+,INE549K14CE8,,0.08,other
+119424,ICRA-A1+,INE608A16SW6,,0.08,other
+119424,SOV,IN002025Z344,,0.0,other
+101847,SOV,IN1920160117,,1.7,other
+101847,SOV,IN1620160243,,0.3,other
+101847,SOV,IN0020060078,,0.08,other
+101847,SOV,IN2920200614,,0.08,other
+101847,SOV,IN3420160134,,0.06,other
+101847,CRISIL-A1+,INE556F16CI9,,5.75,other
+101847,CRISIL-A1+,INE237AD6133,,3.7,other
+101847,CRISIL-A1+,INE528G16X52,,3.6,other
+101847,CRISIL-A1+,INE040A16IU7,,3.45,other
+101847,SOV,IN002026Y212,,3.39,other
+101847,CRISIL-A1+,INE261F16AG4,,3.32,other
+101847,CRISIL-A1+,INE565A16BS2,,3.07,other
+101847,CRISIL-A1+,INE115A14FQ6,,3.06,other
+101847,SOV,IN002026Y170,,2.63,other
+101847,CRISIL-A1+,INE092T16ZX6,,2.32,other
+101847,CRISIL-A1+,INE168A16NM3,,2.3,other
+101847,ICRA-A1+,INE692A16MA9,,2.28,other
+101847,CRISIL-A1+,INE261F16AH2,,2.16,other
+101847,CRISIL-A1+,INE565A16BU8,,2.15,other
+101847,CRISIL-A1+,INE020B14748,,2.14,other
+101847,CRISIL-A1+,INE238AD6CP1,,1.93,other
+101847,CRISIL-A1+,INE095A168C9,,1.85,other
+101847,CRISIL-A1+,INE063P16BK3,,1.83,other
+101847,CRISIL-A1+,INE514E14TQ3,,1.79,other
+101847,CRISIL-A1+,INE171A16NL9,,1.69,other
+101847,CRISIL-A1+,INE040A16KD9,,1.55,other
+101847,CRISIL-A1+,INE377Y14BW9,,1.54,other
+101847,CRISIL-A1+,INE261F16AM2,,1.53,other
+101847,CRISIL-A1+,INE763G14F92,,1.53,other
+101847,CRISIL-A1+,INE261F16AO8,,1.53,other
+101847,CRISIL-A1+,INE168A16NO9,,1.53,other
+101847,CRISIL-A1+,INE556F16BW2,,1.39,other
+101847,CRISIL-A1+,INE556F16CE8,,1.28,other
+101847,CRISIL-A1+,INE040A16IM4,,1.23,other
+101847,CRISIL-A1+,INE01WN14BX7,,1.23,other
+101847,CRISIL-A1+,INE211H14BF0,,1.22,other
+101847,CRISIL-A1+,INE02FN14846,,1.22,other
+101847,CRISIL-A1+,INE417C14AO8,,1.15,other
+101847,CRISIL-A1+,INE476A16G44,,1.08,other
+101847,SOV,IN002025Z385,,0.98,other
+101847,SOV,IN002026Y113,,0.98,other
+101847,CRISIL-A1+,INE879F14MJ7,,0.93,other
+101847,CRISIL-A1+,INE338I14LR3,,0.92,other
+101847,SOV,IN002026Y238,,0.92,other
+101847,CRISIL-A1+,INE732I14CX4,,0.92,other
+101847,CRISIL-A1+,INE0DZE14339,,0.92,other
+101847,CRISIL-A1+,INE549K14CN9,,0.91,other
+101847,SOV,IN002026Y162,,0.9,other
+101847,CRISIL-A1+,INE144H14ID3,,0.77,other
+101847,CRISIL-A1+,INE248U14SV6,,0.77,other
+101847,CRISIL-A1+,INE338I14LQ5,,0.77,other
+101847,CRISIL-A1+,INE774D14TW3,,0.77,other
+101847,CRISIL-A1+,INE160A16UQ6,,0.77,other
+101847,CRISIL-A1+,INE040A16IZ6,,0.77,other
+101847,CRISIL-A1+,INE774D14TO0,,0.77,other
+101847,ICRA-A1+,INE019516124,,0.76,other
+101847,SOV,IN002026Y204,,0.69,other
+101847,CRISIL-A1+,INE950O14CA8,,0.62,other
+101847,CRISIL-A1+,INE824H14TK2,,0.62,other
+101847,CRISIL-A1+,INE115A14FS2,,0.62,other
+101847,CRISIL-A1+,INE549K14CI9,,0.62,other
+101847,CRISIL-A1+,INE0T2V14160,,0.61,other
+101847,CRISIL-A1+,INE261F16AQ3,,0.61,other
+101847,CRISIL-A1+,INE523L14CA9,,0.61,other
+101847,CRISIL-A1+,INE476A16H43,,0.54,other
+101847,SOV,IN002026Y154,,0.48,other
+101847,CRISIL-A1+,INE790I14HJ0,,0.46,other
+101847,CRISIL-A1+,INE466L14FS6,,0.46,other
+101847,CRISIL-A1+,INE09OL14IH9,,0.39,other
+101847,CRISIL-A1+,INE790I14HK8,,0.39,other
+101847,SOV,IN002026Y121,,0.31,other
+101847,CRISIL-A1+,INE556F16BY8,,0.31,other
+101847,SOV,IN002026Y220,,0.31,other
+101847,CRISIL-A1+,INE523L14AW7,,0.31,other
+101847,CRISIL-A1+,INE0BJN16036,,0.31,other
+101847,SOV,IN002026X248,,0.22,other
+101847,CRISIL-A1+,INE0AD514339,,0.16,other
+101847,CRISIL-A1+,INE476A16G28,,0.15,other
+101847,CRISIL-A1+,INE918K14CY3,,0.15,other
+101847,CRISIL-A1+,INE040A16IT9,,0.15,other
+101847,ICRA-A1+,INE692A16LS3,,0.15,other
+101847,CRISIL-A1+,INE531F14FN0,,0.15,other
+101847,CRISIL-A1+,INE549K14CE8,,0.08,other
+101847,ICRA-A1+,INE608A16SW6,,0.08,other
+101847,SOV,IN002025Z344,,0.0,other
+119953,SOV,IN0020260041,,42.97,other
+119953,SOV,IN0020250018,,40.82,other
+119953,SOV,IN0020240118,,6.08,other
+119953,SOV,IN0020230085,,3.26,other
+119953,SOV,IN0020240019,,3.24,other
+101042,SOV,IN0020260041,,42.97,other
+101042,SOV,IN0020250018,,40.82,other
+101042,SOV,IN0020240118,,6.08,other
+101042,SOV,IN0020230085,,3.26,other
+101042,SOV,IN0020240019,,3.24,other
+149007,SOV,IN1020230620,,8.82,other
+149007,SOV,IN1520180317,,4.47,other
+149007,SOV,IN2220200215,,4.34,other
+149007,SOV,IN0020250141,,4.28,other
+149007,CRISIL-AAA,INE557F08FZ1,,8.74,other
+149007,CRISIL-AAA,INE514E08GE8,,8.7,other
+149007,CRISIL-AAA,INE511C07912,,8.68,other
+149007,CRISIL-AAA,INE053F08510,,8.58,other
+149007,ICRA-AA+,INE484J08055,,4.38,other
+149007,ICRA-AAA,INE477A07423,,4.38,other
+149007,CRISIL-AAA,INE00V208124,,4.35,other
+149007,CRISIL-AA,INE725H08238,,4.35,other
+149007,CRISIL-AAA,INE0NR607058,,4.33,other
+149007,CRISIL-AAA,INE115A07MW4,,3.5,other
+149007,CRISIL-AA+,INE414G07KC4,,3.5,other
+149007,CRISIL-AAA,INE261F08DV4,,3.49,other
+149007,CRISIL-AAA(SO),INE1WMT15017,,2.53,other
+149003,SOV,IN1020230620,,8.82,other
+149003,SOV,IN1520180317,,4.47,other
+149003,SOV,IN2220200215,,4.34,other
+149003,SOV,IN0020250141,,4.28,other
+149003,CRISIL-AAA,INE557F08FZ1,,8.74,other
+149003,CRISIL-AAA,INE514E08GE8,,8.7,other
+149003,CRISIL-AAA,INE511C07912,,8.68,other
+149003,CRISIL-AAA,INE053F08510,,8.58,other
+149003,ICRA-AA+,INE484J08055,,4.38,other
+149003,ICRA-AAA,INE477A07423,,4.38,other
+149003,CRISIL-AAA,INE00V208124,,4.35,other
+149003,CRISIL-AA,INE725H08238,,4.35,other
+149003,CRISIL-AAA,INE0NR607058,,4.33,other
+149003,CRISIL-AAA,INE115A07MW4,,3.5,other
+149003,CRISIL-AA+,INE414G07KC4,,3.5,other
+149003,CRISIL-AAA,INE261F08DV4,,3.49,other
+149003,CRISIL-AAA(SO),INE1WMT15017,,2.53,other

@@ -1,0 +1,604 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+119767,POONAWALLA FINCORP LIMITED,INE511C01022,Finance,0.99,equity
+119767,Apar Industries Ltd.,INE372A01015,Electrical Equipment,0.95,equity
+119767,SWIGGY LTD,INE00H001014,Retailing,0.94,equity
+119767,Schaeffler India Ltd,INE513A01022,Auto Components,0.91,equity
+119767,SUN PHARMACEUTICAL INDUSTRIES LTD.,INE044A01036,Pharmaceuticals and Biotechnology,0.9,equity
+119767,TORRENT PHARMACEUTICALS LTD.,INE685A01028,Pharmaceuticals and Biotechnology,0.9,equity
+119767,Minda Industries Ltd.,INE405E01023,Auto Components,0.89,equity
+119767,Techno Electric & Engineering Company Limited,INE285K01026,Construction,0.89,equity
+119767,Max Healthcare Institute Ltd.,INE027H01010,Healthcare Services,0.88,equity
+119767,Prudent Corporate Advisory Services Ltd.,INE00F201020,Capital Markets,0.78,equity
+119767,JK Cement Ltd.,INE823G01014,Cement and Cement Products,0.75,equity
+119767,BHARAT PETROLEUM CORPORATION  LTD.,INE029A01011,Petroleum Products,0.72,equity
+119767,NUVAMA WEALTH MANAGEMENT LIMITED,INE531F01023,Capital Markets,0.71,equity
+119767,REC LTD,INE020B01018,Finance,0.71,equity
+119767,RELIANCE INDUSTRIES LTD.,INE002A01018,Petroleum Products,0.71,equity
+119767,polycab India Limited,INE455K01017,Industrial Products,0.7,equity
+119767,P I Industries Ltd,INE603J01030,Fertilizers and Agrochemicals,0.68,equity
+119767,AVANTI FEEDS LTD,INE871C01038,Food Products,0.62,equity
+119767,Deepak Nitrite Ltd.,INE288B01029,Chemicals and Petrochemicals,0.6,equity
+119767,Oberoi Realty Limited,INE093I01010,Realty,0.6,equity
+119767,TATA CAPITAL LTD.,INE976I01016,Finance,0.57,equity
+119767,Tech Mahindra Ltd.,INE669C01036,IT - Software,0.54,equity
+119767,MRF Ltd.,INE883A01011,Auto Components,0.46,equity
+119767,Birlasoft LImited,INE836A01035,IT - Software,0.41,equity
+119767,BSE LTD,INE118H01025,Capital Markets,0.38,equity
+119767,NATIONAL STOCK EXCHANGE OF INDIA LIMITED (NSE),INE721I01024,Capital Markets,0.34,equity
+119767,V.S.T Tillers Tractors Ltd,INE764D01017,"Agricultural, Commercial and Constr",0.26,equity
+119767,L&T FINANCE LTD,INE498L01015,Finance,0.17,equity
+119767,360 ONE PRIME LTD.**,INE248U07GJ0,,0.56,other
+119767,REC LTD**,INE020B08FJ3,,0.36,other
+119767,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA,INE556F08KM1,,0.28,other
+119767,MUTHOOT FINANCE LTD.(^)**,INE414G07JZ7,,0.28,other
+119767,Power Finance Corporation Ltd.**,INE134E08MA1,,0.27,other
+119767,TELANGANA STATE INDUSTRIAL INFRASTRUCTURE CORPORATION LTD.**,INE1C3207057,,0.2,other
+119767,TATA CAPITAL HOUSING FINANCE LTD.**,INE033L07HQ8,,0.17,other
+119767,ANDHRA PRADESH STATE BEVERAGES CORPORATION LIMITED**,INE0M2307321,,0.13,other
+119767,REC LTD**,INE020B08EW9,,0.11,other
+119767,Kotak Mahindra Prime Ltd.**,INE916DA7SL3,,0.11,other
+119767,MUTHOOT FINANCE LTD.,INE414G07JQ6,,0.11,other
+119767,KOTAK MAHINDRA INVESTMENTS LTD.**,INE975F07JB0,,0.11,other
+119767,ANDHRA PRADESH STATE BEVERAGES CORPORATION LIMITED**,INE0M2307362,,0.1,other
+119767,ADITYA BIRLA CAPITAL LTD**,INE860H07IQ0,,0.08,other
+119767,Power Finance Corporation Ltd.**,INE134E08FQ1,,0.07,other
+119767,Central Government - 2064,IN0020240035,,1.97,other
+119767,Central Government - 2055,IN0020250075,,1.15,other
+119767,Central Government - 2065,IN0020250018,,0.96,other
+119767,Tamil Nadu State Govt - 2036 - Tamil Nadu,IN3120250706,,0.6,other
+119767,Central Government - 2034,IN0020240126,,0.22,other
+119767,Karnataka State Govt - 2032 - Karnataka,IN1920210326,,0.11,other
+119767,Central Government - 2053,IN0020230051,,0.11,other
+119767,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120180036,,0.06,other
+119767,Kerala State Govt - 2028 - Kerala,IN2020180013,,0.06,other
+119767,Punjab State Govt - 2027 - Punjab,IN2820170180,,0.06,other
+119767,Haryana State Govt - 2031 - Haryana,IN1620220351,,0.06,other
+119767,Central Government - 2033,IN0020220151,,0.03,other
+119767,Gujarat State Govt - 2033 - Gujarat,IN1520220253,,0.02,other
+119767,Tamil Nadu State Govt - 2033 - Tamil Nadu,IN3120230179,,0.02,other
+119767,Rajasthan State Govt - 2033 - Rajasthan,IN2920220349,,0.02,other
+119767,Andhra Pradesh State Govt - 2033 - Andhra Pradesh,IN1020220670,,0.02,other
+119767,Rajasthan State Govt - 2031 - Rajasthan,IN2920210258,,0.01,other
+119767,Central Government - 2074,IN0020240142,,0.01,other
+119767,GS CG 22/10/2038 - (STRIPS),IN001038C032,,0.14,other
+119767,GS CG 15/10/2038 - (STRIPS),IN001038C040,,0.14,other
+119767,GS CG 15/04/2036 - (STRIPS),IN000436C047,,0.08,other
+119767,GS CG 22/10/2036 - (STRIPS),IN001036C036,,0.05,other
+119767,GS CG 22/10/2039 - (STRIPS),IN001039C030,,0.04,other
+119767,GS CG 19/06/2036 - (STRIPS),IN000636C091,,0.03,other
+119767,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA,INE556F16BO9,,1.1,other
+119767,BANK OF BARODA**,INE028A16KO1,,1.09,other
+119767,HDFC BANK LTD.**,INE040A16IJ0,,0.82,other
+119767,HDFC BANK LTD.**,INE040A16IO0,,0.54,other
+119767,HDFC BANK LTD.**,INE040A16HW5,,0.27,other
+119767,AXIS BANK LTD.**,INE238AD6BO6,,0.27,other
+119767,BANK OF BARODA**,INE028A16LE0,,0.27,other
+119767,BHARAT PETROLEUM CORPORATION  LTD.**,INE029A14BY2,,0.55,other
+119767,SUNDARAM FINANCE LTD.**,INE660A14YX8,,0.16,other
+119767,Triparty Repo,,,7.83,cash
+153877,REC LTD**,INE020B08FF1,,11.3,other
+153877,LIC HOUSING FINANCE LTD.,INE115A07RH4,,8.97,other
+153877,BAJAJ HOUSING FINANCE LTD.**,INE377Y07482,,6.78,other
+153877,TATA CAPITAL LTD.**,INE976I07DC3,,4.53,other
+153877,National Housing Bank**,INE557F08FZ1,,4.53,other
+153877,TOYOTA FINANCIAL SERVICES INDIA LTD.**,INE692Q07480,,2.26,other
+153877,TATA CAPITAL HOUSING FINANCE LTD.**,INE033L07HU0,,2.26,other
+153877,Kotak Mahindra Prime Ltd.**,INE916DA7RX0,,2.26,other
+153877,Power Finance Corporation Ltd.,INE134E08JE9,,2.26,other
+153877,BANK OF BARODA,INE028A16LD2,,4.43,other
+153877,CANARA BANK,INE476A16H43,,4.39,other
+153877,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA,INE556F16CF5,,4.24,other
+153877,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA,INE556F16CI9,,4.23,other
+153877,HDFC BANK LTD.**,INE040A16IT9,,2.63,other
+153877,CANARA BANK**,INE476A16H92,,2.19,other
+153877,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA**,INE556F16CC2,,1.76,other
+153877,BAJAJ FINANCE LTD.**,INE296A14K30,,10.53,other
+153877,L & T FINANCE LTD.**,INE498L14GP3,,8.42,other
+153877,TATA CAPITAL LTD.**,INE976I14RW7,,8.42,other
+153877,Mahindra & Mahindra Financial Services Ltd.**,INE774D14TO0,,2.19,other
+153877,Triparty Repo,,,5.06,cash
+153875,REC LTD**,INE020B08FF1,,11.3,other
+153875,LIC HOUSING FINANCE LTD.,INE115A07RH4,,8.97,other
+153875,BAJAJ HOUSING FINANCE LTD.**,INE377Y07482,,6.78,other
+153875,TATA CAPITAL LTD.**,INE976I07DC3,,4.53,other
+153875,National Housing Bank**,INE557F08FZ1,,4.53,other
+153875,TOYOTA FINANCIAL SERVICES INDIA LTD.**,INE692Q07480,,2.26,other
+153875,TATA CAPITAL HOUSING FINANCE LTD.**,INE033L07HU0,,2.26,other
+153875,Kotak Mahindra Prime Ltd.**,INE916DA7RX0,,2.26,other
+153875,Power Finance Corporation Ltd.,INE134E08JE9,,2.26,other
+153875,BANK OF BARODA,INE028A16LD2,,4.43,other
+153875,CANARA BANK,INE476A16H43,,4.39,other
+153875,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA,INE556F16CF5,,4.24,other
+153875,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA,INE556F16CI9,,4.23,other
+153875,HDFC BANK LTD.**,INE040A16IT9,,2.63,other
+153875,CANARA BANK**,INE476A16H92,,2.19,other
+153875,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA**,INE556F16CC2,,1.76,other
+153875,BAJAJ FINANCE LTD.**,INE296A14K30,,10.53,other
+153875,L & T FINANCE LTD.**,INE498L14GP3,,8.42,other
+153875,TATA CAPITAL LTD.**,INE976I14RW7,,8.42,other
+153875,Mahindra & Mahindra Financial Services Ltd.**,INE774D14TO0,,2.19,other
+153875,Triparty Repo,,,5.06,cash
+153680,TATA CAPITAL LTD.**,INE306N07NI9,,8.7,other
+153680,BAJAJ FINANCE LTD.,INE296A07TF2,,8.7,other
+153680,ADITYA BIRLA HOUSING FINANCE LTD**,INE831R07516,,8.69,other
+153680,HDB FINANCIAL SERVICES LTD.**,INE756I07FB6,,7.13,other
+153680,LIC HOUSING FINANCE LTD.**,INE115A07QW5,,6.97,other
+153680,TATA CAPITAL HOUSING FINANCE LTD.**,INE033L07IK9,,6.94,other
+153680,BAJAJ HOUSING FINANCE LTD.**,INE377Y07532,,6.94,other
+153680,REC LTD**,INE020B08FW6,,6.88,other
+153680,Mahindra & Mahindra Financial Services Ltd.**,INE774D07VG6,,5.75,other
+153680,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EK5,,5.21,other
+153680,REC LTD**,INE020B08EH0,,4.89,other
+153680,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EM1,,3.48,other
+153680,LIC HOUSING FINANCE LTD.**,INE115A07MW4,,1.75,other
+153680,Power Finance Corporation Ltd.**,INE134E08LX5,,1.74,other
+153680,Triparty Repo,,,11.76,cash
+153683,TATA CAPITAL LTD.**,INE306N07NI9,,8.7,other
+153683,BAJAJ FINANCE LTD.,INE296A07TF2,,8.7,other
+153683,ADITYA BIRLA HOUSING FINANCE LTD**,INE831R07516,,8.69,other
+153683,HDB FINANCIAL SERVICES LTD.**,INE756I07FB6,,7.13,other
+153683,LIC HOUSING FINANCE LTD.**,INE115A07QW5,,6.97,other
+153683,TATA CAPITAL HOUSING FINANCE LTD.**,INE033L07IK9,,6.94,other
+153683,BAJAJ HOUSING FINANCE LTD.**,INE377Y07532,,6.94,other
+153683,REC LTD**,INE020B08FW6,,6.88,other
+153683,Mahindra & Mahindra Financial Services Ltd.**,INE774D07VG6,,5.75,other
+153683,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EK5,,5.21,other
+153683,REC LTD**,INE020B08EH0,,4.89,other
+153683,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EM1,,3.48,other
+153683,LIC HOUSING FINANCE LTD.**,INE115A07MW4,,1.75,other
+153683,Power Finance Corporation Ltd.**,INE134E08LX5,,1.74,other
+153683,Triparty Repo,,,11.76,cash
+153375,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08EF5,,4.23,other
+153375,Power Finance Corporation Ltd.**,INE134E08IX1,,2.12,other
+153375,REC LTD**,INE020B08EW9,,2.12,other
+153375,Power Finance Corporation Ltd.**,INE134E08IR3,,2.11,other
+153375,Mahindra & Mahindra Financial Services Ltd.**,INE774D07VE1,,1.7,other
+153375,Kotak Mahindra Prime Ltd.**,INE916DA7SP4,,1.06,other
+153375,HDFC BANK LTD.**,INE040A16IT9,,10.26,other
+153375,PUNJAB NATIONAL BANK,INE160A16UV6,,10.26,other
+153375,UNION BANK OF INDIA,INE692A16LU9,,6.16,other
+153375,CANARA BANK**,INE476A16H92,,6.16,other
+153375,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA**,INE556F16CD0,,6.14,other
+153375,ICICI BANK LTD.**,INE090AD6295,,2.05,other
+153375,AXIS BANK LTD.,INE238AD6CH8,,2.05,other
+153375,ADITYA BIRLA CAPITAL LTD**,INE674K14BS6,,10.3,other
+153375,Export-Import Bank of India,INE514E14TU5,,10.26,other
+153375,LIC HOUSING FINANCE LTD.**,INE115A14FT0,,10.26,other
+153375,BAJAJ HOUSING FINANCE LTD.**,INE377Y14CA3,,10.25,other
+153375,Triparty Repo,,,1.86,cash
+153372,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08EF5,,4.23,other
+153372,Power Finance Corporation Ltd.**,INE134E08IX1,,2.12,other
+153372,REC LTD**,INE020B08EW9,,2.12,other
+153372,Power Finance Corporation Ltd.**,INE134E08IR3,,2.11,other
+153372,Mahindra & Mahindra Financial Services Ltd.**,INE774D07VE1,,1.7,other
+153372,Kotak Mahindra Prime Ltd.**,INE916DA7SP4,,1.06,other
+153372,HDFC BANK LTD.**,INE040A16IT9,,10.26,other
+153372,PUNJAB NATIONAL BANK,INE160A16UV6,,10.26,other
+153372,UNION BANK OF INDIA,INE692A16LU9,,6.16,other
+153372,CANARA BANK**,INE476A16H92,,6.16,other
+153372,SMALL INDUSTRIES DEVELOPMENT BANK OF INDIA**,INE556F16CD0,,6.14,other
+153372,ICICI BANK LTD.**,INE090AD6295,,2.05,other
+153372,AXIS BANK LTD.,INE238AD6CH8,,2.05,other
+153372,ADITYA BIRLA CAPITAL LTD**,INE674K14BS6,,10.3,other
+153372,Export-Import Bank of India,INE514E14TU5,,10.26,other
+153372,LIC HOUSING FINANCE LTD.**,INE115A14FT0,,10.26,other
+153372,BAJAJ HOUSING FINANCE LTD.**,INE377Y14CA3,,10.25,other
+153372,Triparty Repo,,,1.86,cash
+153313,INDIAN RAILWAY FINANCE CORPORATION LTD.**,INE053F08338,,13.38,other
+153313,LIC HOUSING FINANCE LTD.**,INE115A07RA9,,13.37,other
+153313,SUNDARAM FINANCE LTD.**,INE660A07RU2,,12.58,other
+153313,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08ED0,,11.93,other
+153313,HDB FINANCIAL SERVICES LTD.**,INE756I07EU9,,11.14,other
+153313,ADITYA BIRLA HOUSING FINANCE LTD**,INE831R07474,,7.81,other
+153313,AXIS Finance Ltd.**,INE891K07721,,5.56,other
+153313,REC LTD**,INE020B08AC9,,4.46,other
+153313,Kotak Mahindra Prime Ltd.**,INE916DA7SP4,,4.46,other
+153313,ADITYA BIRLA CAPITAL LTD**,INE860H07IQ0,,3.54,other
+153313,REC LTD**,INE020B08AA3,,3.34,other
+153313,TATA CAPITAL LTD.**,INE306N07NO7,,1.11,other
+153313,KOTAK MAHINDRA INVESTMENTS LTD.**,INE975F07IO5,,0.56,other
+153313,Triparty Repo,,,1.11,cash
+153311,INDIAN RAILWAY FINANCE CORPORATION LTD.**,INE053F08338,,13.38,other
+153311,LIC HOUSING FINANCE LTD.**,INE115A07RA9,,13.37,other
+153311,SUNDARAM FINANCE LTD.**,INE660A07RU2,,12.58,other
+153311,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08ED0,,11.93,other
+153311,HDB FINANCIAL SERVICES LTD.**,INE756I07EU9,,11.14,other
+153311,ADITYA BIRLA HOUSING FINANCE LTD**,INE831R07474,,7.81,other
+153311,AXIS Finance Ltd.**,INE891K07721,,5.56,other
+153311,REC LTD**,INE020B08AC9,,4.46,other
+153311,Kotak Mahindra Prime Ltd.**,INE916DA7SP4,,4.46,other
+153311,ADITYA BIRLA CAPITAL LTD**,INE860H07IQ0,,3.54,other
+153311,REC LTD**,INE020B08AA3,,3.34,other
+153311,TATA CAPITAL LTD.**,INE306N07NO7,,1.11,other
+153311,KOTAK MAHINDRA INVESTMENTS LTD.**,INE975F07IO5,,0.56,other
+153311,Triparty Repo,,,1.11,cash
+152866,BAJAJ FINANCE LTD.**,INE296A07TC9,,11.59,other
+152866,REC LTD**,INE020B08FF1,,9.07,other
+152866,LIC HOUSING FINANCE LTD.,INE115A07RH4,,8.18,other
+152866,HDB FINANCIAL SERVICES LTD.**,INE756I07EJ2,,7.81,other
+152866,AXIS Finance Ltd.**,INE891K07952,,7.63,other
+152866,ADITYA BIRLA HOUSING FINANCE LTD**,INE831R07466,,7.43,other
+152866,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EI9,,7.42,other
+152866,TATA CAPITAL LTD.**,INE857Q07273,,6.59,other
+152866,Kotak Mahindra Prime Ltd.**,INE916DA7RX0,,5.77,other
+152866,Mahindra & Mahindra Financial Services Ltd.**,INE774D07UM6,,4.73,other
+152866,BAJAJ HOUSING FINANCE LTD.**,INE377Y07482,,4.16,other
+152866,TATA CAPITAL LTD.**,INE976I07CY9,,4.13,other
+152866,National Housing Bank**,INE557F08FZ1,,3.3,other
+152866,National Housing Bank**,INE557F08FY4,,2.48,other
+152866,TATA CAPITAL LTD.**,INE306N07NA6,,2.47,other
+152866,TATA CAPITAL HOUSING FINANCE LTD.**,INE033L07HU0,,1.65,other
+152866,L & T FINANCE LTD.**,INE498L07038,,0.41,other
+152866,Triparty Repo,,,4.67,cash
+152869,BAJAJ FINANCE LTD.**,INE296A07TC9,,11.59,other
+152869,REC LTD**,INE020B08FF1,,9.07,other
+152869,LIC HOUSING FINANCE LTD.,INE115A07RH4,,8.18,other
+152869,HDB FINANCIAL SERVICES LTD.**,INE756I07EJ2,,7.81,other
+152869,AXIS Finance Ltd.**,INE891K07952,,7.63,other
+152869,ADITYA BIRLA HOUSING FINANCE LTD**,INE831R07466,,7.43,other
+152869,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EI9,,7.42,other
+152869,TATA CAPITAL LTD.**,INE857Q07273,,6.59,other
+152869,Kotak Mahindra Prime Ltd.**,INE916DA7RX0,,5.77,other
+152869,Mahindra & Mahindra Financial Services Ltd.**,INE774D07UM6,,4.73,other
+152869,BAJAJ HOUSING FINANCE LTD.**,INE377Y07482,,4.16,other
+152869,TATA CAPITAL LTD.**,INE976I07CY9,,4.13,other
+152869,National Housing Bank**,INE557F08FZ1,,3.3,other
+152869,National Housing Bank**,INE557F08FY4,,2.48,other
+152869,TATA CAPITAL LTD.**,INE306N07NA6,,2.47,other
+152869,TATA CAPITAL HOUSING FINANCE LTD.**,INE033L07HU0,,1.65,other
+152869,L & T FINANCE LTD.**,INE498L07038,,0.41,other
+152869,Triparty Repo,,,4.67,cash
+152098,Central Government - 2033,IN0020220151,,67.13,other
+152098,Central Government - 2032,IN0020220060,,30.07,other
+152098,Triparty Repo,,,0.47,cash
+152100,Central Government - 2033,IN0020220151,,67.13,other
+152100,Central Government - 2032,IN0020220060,,30.07,other
+152100,Triparty Repo,,,0.47,cash
+151417,Maharashtra State Govt - 2033 - Maharashtra,IN2220220163,,18.66,other
+151417,Uttar Pradesh State Govt - 2033 - Uttar Pradesh,IN3320220186,,11.36,other
+151417,Andhra Pradesh State Govt - 2033 - Andhra Pradesh,IN1020250230,,8.53,other
+151417,Maharashtra State Govt - 2033 - Maharashtra,IN2220220189,,8.52,other
+151417,Bihar State Govt - 2033 - Bihar,IN1320220180,,8.49,other
+151417,Tamil Nadu State Govt - 2033 - Tamil Nadu,IN3120230047,,8.34,other
+151417,Andhra Pradesh State Govt - 2033 - Andhra Pradesh,IN1020220670,,7.07,other
+151417,Bihar State Govt - 2033 - Bihar,IN1320220222,,5.66,other
+151417,Tamil Nadu State Govt - 2033 - Tamil Nadu,IN3120230013,,5.6,other
+151417,Assam State Govt - 2033 - Assam,IN1220230024,,5.57,other
+151417,Tamil Nadu State Govt - 2033 - Tamil Nadu,IN3120240574,,5.52,other
+151417,Andhra Pradesh State Govt - 2033 - Andhra Pradesh,IN1020230034,,2.83,other
+151417,Triparty Repo,,,2.26,cash
+151420,Maharashtra State Govt - 2033 - Maharashtra,IN2220220163,,18.66,other
+151420,Uttar Pradesh State Govt - 2033 - Uttar Pradesh,IN3320220186,,11.36,other
+151420,Andhra Pradesh State Govt - 2033 - Andhra Pradesh,IN1020250230,,8.53,other
+151420,Maharashtra State Govt - 2033 - Maharashtra,IN2220220189,,8.52,other
+151420,Bihar State Govt - 2033 - Bihar,IN1320220180,,8.49,other
+151420,Tamil Nadu State Govt - 2033 - Tamil Nadu,IN3120230047,,8.34,other
+151420,Andhra Pradesh State Govt - 2033 - Andhra Pradesh,IN1020220670,,7.07,other
+151420,Bihar State Govt - 2033 - Bihar,IN1320220222,,5.66,other
+151420,Tamil Nadu State Govt - 2033 - Tamil Nadu,IN3120230013,,5.6,other
+151420,Assam State Govt - 2033 - Assam,IN1220230024,,5.57,other
+151420,Tamil Nadu State Govt - 2033 - Tamil Nadu,IN3120240574,,5.52,other
+151420,Andhra Pradesh State Govt - 2033 - Andhra Pradesh,IN1020230034,,2.83,other
+151420,Triparty Repo,,,2.26,cash
+150723,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08DV4,,7.49,other
+150723,REC LTD**,INE020B08EH0,,6.97,other
+150723,Power Finance Corporation Ltd.**,INE134E08MJ2,,3.98,other
+150723,REC LTD**,INE020B08AY3,,3.61,other
+150723,Power Finance Corporation Ltd.**,INE134E08LX5,,3.58,other
+150723,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08AD8,,2.01,other
+150723,Power Finance Corporation Ltd.**,INE134E08JI0,,1.93,other
+150723,REC LTD**,INE020B08EA5,,1.79,other
+150723,REC LTD**,INE020B08EK4,,0.99,other
+150723,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EK5,,0.99,other
+150723,Power Finance Corporation Ltd.**,INE134E08FQ1,,0.81,other
+150723,Power Grid Corporation of India Ltd.**,INE752E07MU0,,0.67,other
+150723,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08AA4,,0.6,other
+150723,Power Finance Corporation Ltd.**,INE134E08JP5,,0.6,other
+150723,Power Grid Corporation of India Ltd.**,INE752E07KZ3,,0.5,other
+150723,REC LTD**,INE020B08FR6,,0.4,other
+150723,Power Grid Corporation of India Ltd.**,INE752E07NU8,,0.3,other
+150723,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120180036,,17.63,other
+150723,Maharashtra State Govt - 2028 - Maharashtra,IN2220180037,,6.34,other
+150723,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120170151,,5.96,other
+150723,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120180010,,5.75,other
+150723,Gujarat State Govt - 2028 - Gujarat,IN1520170227,,5.07,other
+150723,Rajasthan State Govt - 2028 - Rajasthan,IN2920180030,,3.04,other
+150723,Maharashtra State Govt - 2028 - Maharashtra,IN2220200116,,2.94,other
+150723,Uttar Pradesh State Govt - 2028 - Uttar Pradesh,IN3320180026,,1.83,other
+150723,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120170144,,1.73,other
+150723,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120170128,,1.7,other
+150723,Rajasthan State Govt - 2028 - Rajasthan,IN2920180121,,1.22,other
+150723,Gujarat State Govt - 2028 - Gujarat,IN1520180036,,1.12,other
+150723,Karnataka State Govt - 2028 - Karnataka,IN1920170157,,0.86,other
+150723,Rajasthan State Govt - 2028 - Rajasthan,IN2920180139,,0.69,other
+150723,Rajasthan State Govt - 2027 - Rajasthan,IN2920170122,,0.6,other
+150723,Gujarat State Govt - 2028 - Gujarat,IN1520180044,,0.15,other
+150723,Gujarat State Govt - 2028 - Gujarat,IN1520170235,,0.1,other
+150723,Karnataka State Govt - 2027 - Karnataka,IN1920170132,,0.01,other
+150723,Triparty Repo,,,3.26,cash
+150725,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08DV4,,7.49,other
+150725,REC LTD**,INE020B08EH0,,6.97,other
+150725,Power Finance Corporation Ltd.**,INE134E08MJ2,,3.98,other
+150725,REC LTD**,INE020B08AY3,,3.61,other
+150725,Power Finance Corporation Ltd.**,INE134E08LX5,,3.58,other
+150725,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08AD8,,2.01,other
+150725,Power Finance Corporation Ltd.**,INE134E08JI0,,1.93,other
+150725,REC LTD**,INE020B08EA5,,1.79,other
+150725,REC LTD**,INE020B08EK4,,0.99,other
+150725,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT,INE261F08EK5,,0.99,other
+150725,Power Finance Corporation Ltd.**,INE134E08FQ1,,0.81,other
+150725,Power Grid Corporation of India Ltd.**,INE752E07MU0,,0.67,other
+150725,NATIONAL BANK FOR AGRICULTURE & RURAL DEVELOPMENT**,INE261F08AA4,,0.6,other
+150725,Power Finance Corporation Ltd.**,INE134E08JP5,,0.6,other
+150725,Power Grid Corporation of India Ltd.**,INE752E07KZ3,,0.5,other
+150725,REC LTD**,INE020B08FR6,,0.4,other
+150725,Power Grid Corporation of India Ltd.**,INE752E07NU8,,0.3,other
+150725,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120180036,,17.63,other
+150725,Maharashtra State Govt - 2028 - Maharashtra,IN2220180037,,6.34,other
+150725,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120170151,,5.96,other
+150725,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120180010,,5.75,other
+150725,Gujarat State Govt - 2028 - Gujarat,IN1520170227,,5.07,other
+150725,Rajasthan State Govt - 2028 - Rajasthan,IN2920180030,,3.04,other
+150725,Maharashtra State Govt - 2028 - Maharashtra,IN2220200116,,2.94,other
+150725,Uttar Pradesh State Govt - 2028 - Uttar Pradesh,IN3320180026,,1.83,other
+150725,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120170144,,1.73,other
+150725,Tamil Nadu State Govt - 2028 - Tamil Nadu,IN3120170128,,1.7,other
+150725,Rajasthan State Govt - 2028 - Rajasthan,IN2920180121,,1.22,other
+150725,Gujarat State Govt - 2028 - Gujarat,IN1520180036,,1.12,other
+150725,Karnataka State Govt - 2028 - Karnataka,IN1920170157,,0.86,other
+150725,Rajasthan State Govt - 2028 - Rajasthan,IN2920180139,,0.69,other
+150725,Rajasthan State Govt - 2027 - Rajasthan,IN2920170122,,0.6,other
+150725,Gujarat State Govt - 2028 - Gujarat,IN1520180044,,0.15,other
+150725,Gujarat State Govt - 2028 - Gujarat,IN1520170235,,0.1,other
+150725,Karnataka State Govt - 2027 - Karnataka,IN1920170132,,0.01,other
+150725,Triparty Repo,,,3.26,cash
+149862,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020230026,,18.07,other
+149862,Maharashtra State Govt - 2032 - Maharashtra,IN2220220254,,16.25,other
+149862,Maharashtra State Govt - 2032 - Maharashtra,IN2220220239,,13.07,other
+149862,Gujarat State Govt - 2032 - Gujarat,IN1520220204,,11.46,other
+149862,Karnataka State Govt - 2032 - Karnataka,IN1920210243,,7.65,other
+149862,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020220688,,5.05,other
+149862,Gujarat State Govt - 2032 - Gujarat,IN1520220196,,4.46,other
+149862,Tamil Nadu State Govt - 2032 - Tamil Nadu,IN3120250722,,2.89,other
+149862,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020220746,,1.91,other
+149862,Rajasthan State Govt - 2032 - Rajasthan,IN2920210514,,1.53,other
+149862,Rajasthan State Govt - 2032 - Rajasthan,IN2920210498,,1.52,other
+149862,Karnataka State Govt - 2032 - Karnataka,IN1920210219,,1.36,other
+149862,Rajasthan State Govt - 2032 - Rajasthan,IN2920190484,,1.24,other
+149862,Karnataka State Govt - 2032 - Karnataka,IN1920210326,,1.02,other
+149862,Haryana State Govt - 2032 - Haryana,IN1620220443,,0.99,other
+149862,Karnataka State Govt - 2032 - Karnataka,IN1920210342,,0.92,other
+149862,Tamil Nadu State Govt - 2032 - Tamil Nadu,IN3120210510,,0.89,other
+149862,Karnataka State Govt - 2031 - Karnataka,IN1920250132,,0.8,other
+149862,Gujarat State Govt - 2032 - Gujarat,IN1520210239,,0.68,other
+149862,West Bengal State Govt - 2032 - West Bengal,IN3420210293,,0.57,other
+149862,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020230679,,0.51,other
+149862,Madhya Pradesh State Govt - 2032 - Madhya Pradesh,IN2120240279,,0.51,other
+149862,West Bengal State Govt - 2032 - West Bengal,IN3420210269,,0.35,other
+149862,Karnataka State Govt - 2032 - Karnataka,IN1920230373,,0.34,other
+149862,Tamil Nadu State Govt - 2032 - Tamil Nadu,IN3120210379,,0.34,other
+149862,Rajasthan State Govt - 2031 - Rajasthan,IN2920210233,,0.34,other
+149862,Karnataka State Govt - 2032 - Karnataka,IN1920240174,,0.34,other
+149862,Haryana State Govt - 2032 - Haryana,IN1620210170,,0.19,other
+149862,Rajasthan State Govt - 2031 - Rajasthan,IN2920200788,,0.17,other
+149862,Gujarat State Govt - 2032 - Gujarat,IN1520210205,,0.17,other
+149862,Punjab State Govt - 2032 - Punjab,IN2820210135,,0.14,other
+149862,Uttar Pradesh State Govt - 2030 - Uttar Pradesh,IN3320200212,,0.13,other
+149862,Rajasthan State Govt - 2031 - Rajasthan,IN2920210258,,0.12,other
+149862,Tamil Nadu State Govt - 2031 - Tamil Nadu,IN3120210114,,0.1,other
+149862,Kerala State Govt - 2032 - Kerala,IN2020210182,,0.1,other
+149862,Uttar Pradesh State Govt - 2031 - Uttar Pradesh,IN3320210096,,0.07,other
+149862,Maharashtra State Govt - 2031 - Maharashtra,IN2220210198,,0.07,other
+149862,Madhya Pradesh State Govt - 2031 - Madhya Pradesh,IN2120210033,,0.07,other
+149862,Karnataka State Govt - 2031 - Karnataka,IN1920200368,,0.07,other
+149862,Gujarat State Govt - 2031 - Gujarat,IN1520200255,,0.06,other
+149862,Haryana State Govt - 2032 - Haryana,IN1620210139,,0.06,other
+149862,Rajasthan State Govt - 2031 - Rajasthan,IN2920210266,,0.05,other
+149862,Tamil Nadu State Govt - 2031 - Tamil Nadu,IN3120200339,,0.04,other
+149862,Andhra Pradesh State Govt - 2031 - Andhra Pradesh,IN1020180411,,0.03,other
+149862,Karnataka State Govt - 2031 - Karnataka,IN1920200285,,0.03,other
+149862,Punjab State Govt - 2032 - Punjab,IN2820240017,,0.01,other
+149862,Gujarat State Govt - 2031 - Gujarat,IN1520210080,,0.01,other
+149862,Triparty Repo,,,2.0,cash
+149865,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020230026,,18.07,other
+149865,Maharashtra State Govt - 2032 - Maharashtra,IN2220220254,,16.25,other
+149865,Maharashtra State Govt - 2032 - Maharashtra,IN2220220239,,13.07,other
+149865,Gujarat State Govt - 2032 - Gujarat,IN1520220204,,11.46,other
+149865,Karnataka State Govt - 2032 - Karnataka,IN1920210243,,7.65,other
+149865,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020220688,,5.05,other
+149865,Gujarat State Govt - 2032 - Gujarat,IN1520220196,,4.46,other
+149865,Tamil Nadu State Govt - 2032 - Tamil Nadu,IN3120250722,,2.89,other
+149865,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020220746,,1.91,other
+149865,Rajasthan State Govt - 2032 - Rajasthan,IN2920210514,,1.53,other
+149865,Rajasthan State Govt - 2032 - Rajasthan,IN2920210498,,1.52,other
+149865,Karnataka State Govt - 2032 - Karnataka,IN1920210219,,1.36,other
+149865,Rajasthan State Govt - 2032 - Rajasthan,IN2920190484,,1.24,other
+149865,Karnataka State Govt - 2032 - Karnataka,IN1920210326,,1.02,other
+149865,Haryana State Govt - 2032 - Haryana,IN1620220443,,0.99,other
+149865,Karnataka State Govt - 2032 - Karnataka,IN1920210342,,0.92,other
+149865,Tamil Nadu State Govt - 2032 - Tamil Nadu,IN3120210510,,0.89,other
+149865,Karnataka State Govt - 2031 - Karnataka,IN1920250132,,0.8,other
+149865,Gujarat State Govt - 2032 - Gujarat,IN1520210239,,0.68,other
+149865,West Bengal State Govt - 2032 - West Bengal,IN3420210293,,0.57,other
+149865,Andhra Pradesh State Govt - 2032 - Andhra Pradesh,IN1020230679,,0.51,other
+149865,Madhya Pradesh State Govt - 2032 - Madhya Pradesh,IN2120240279,,0.51,other
+149865,West Bengal State Govt - 2032 - West Bengal,IN3420210269,,0.35,other
+149865,Karnataka State Govt - 2032 - Karnataka,IN1920230373,,0.34,other
+149865,Tamil Nadu State Govt - 2032 - Tamil Nadu,IN3120210379,,0.34,other
+149865,Rajasthan State Govt - 2031 - Rajasthan,IN2920210233,,0.34,other
+149865,Karnataka State Govt - 2032 - Karnataka,IN1920240174,,0.34,other
+149865,Haryana State Govt - 2032 - Haryana,IN1620210170,,0.19,other
+149865,Rajasthan State Govt - 2031 - Rajasthan,IN2920200788,,0.17,other
+149865,Gujarat State Govt - 2032 - Gujarat,IN1520210205,,0.17,other
+149865,Punjab State Govt - 2032 - Punjab,IN2820210135,,0.14,other
+149865,Uttar Pradesh State Govt - 2030 - Uttar Pradesh,IN3320200212,,0.13,other
+149865,Rajasthan State Govt - 2031 - Rajasthan,IN2920210258,,0.12,other
+149865,Tamil Nadu State Govt - 2031 - Tamil Nadu,IN3120210114,,0.1,other
+149865,Kerala State Govt - 2032 - Kerala,IN2020210182,,0.1,other
+149865,Uttar Pradesh State Govt - 2031 - Uttar Pradesh,IN3320210096,,0.07,other
+149865,Maharashtra State Govt - 2031 - Maharashtra,IN2220210198,,0.07,other
+149865,Madhya Pradesh State Govt - 2031 - Madhya Pradesh,IN2120210033,,0.07,other
+149865,Karnataka State Govt - 2031 - Karnataka,IN1920200368,,0.07,other
+149865,Gujarat State Govt - 2031 - Gujarat,IN1520200255,,0.06,other
+149865,Haryana State Govt - 2032 - Haryana,IN1620210139,,0.06,other
+149865,Rajasthan State Govt - 2031 - Rajasthan,IN2920210266,,0.05,other
+149865,Tamil Nadu State Govt - 2031 - Tamil Nadu,IN3120200339,,0.04,other
+149865,Andhra Pradesh State Govt - 2031 - Andhra Pradesh,IN1020180411,,0.03,other
+149865,Karnataka State Govt - 2031 - Karnataka,IN1920200285,,0.03,other
+149865,Punjab State Govt - 2032 - Punjab,IN2820240017,,0.01,other
+149865,Gujarat State Govt - 2031 - Gujarat,IN1520210080,,0.01,other
+149865,Triparty Repo,,,2.0,cash
+149855,Karnataka State Govt - 2027 - Karnataka,IN1920160091,,8.43,other
+149855,Karnataka State Govt - 2027 - Karnataka,IN1920160125,,7.88,other
+149855,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120161424,,6.4,other
+149855,West Bengal State Govt - 2027 - West Bengal,IN3420160167,,6.19,other
+149855,Gujarat State Govt - 2027 - Gujarat,IN1520200347,,5.35,other
+149855,Gujarat State Govt - 2027 - Gujarat,IN1520160194,,5.27,other
+149855,Karnataka State Govt - 2027 - Karnataka,IN1920160109,,4.96,other
+149855,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320170019,,4.43,other
+149855,Gujarat State Govt - 2027 - Gujarat,IN1520160202,,4.12,other
+149855,Haryana State Govt - 2027 - Haryana,IN1620160292,,4.07,other
+149855,Karnataka State Govt - 2027 - Karnataka,IN1920160117,,3.86,other
+149855,Rajasthan State Govt - 2027 - Rajasthan,IN2920200036,,3.7,other
+149855,West Bengal State Govt - 2027 - West Bengal,IN3420160183,,3.45,other
+149855,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160317,,3.03,other
+149855,West Bengal State Govt - 2027 - West Bengal,IN3420160175,,2.57,other
+149855,Madhya Pradesh State Govt - 2027 - Madhya Pradesh,IN2120160105,,2.46,other
+149855,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120161317,,2.46,other
+149855,Rajasthan State Govt - 2027 - Rajasthan,IN2920160446,,2.46,other
+149855,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120160194,,2.36,other
+149855,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160341,,2.12,other
+149855,Maharashtra State Govt - 2027 - Maharashtra,IN2220210271,,1.61,other
+149855,Rajasthan State Govt - 2027 - Rajasthan,IN2920160438,,1.4,other
+149855,Madhya Pradesh State Govt - 2027 - Madhya Pradesh,IN2120160097,,1.36,other
+149855,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160358,,1.26,other
+149855,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120160186,,1.07,other
+149855,Haryana State Govt - 2027 - Haryana,IN1620160276,,0.91,other
+149855,Gujarat State Govt - 2027 - Gujarat,IN1520170011,,0.85,other
+149855,West Bengal State Govt - 2027 - West Bengal,IN3420160159,,0.82,other
+149855,Andhra Pradesh State Govt - 2027 - Andhra Pradesh,IN1020160462,,0.66,other
+149855,Rajasthan State Govt - 2027 - Rajasthan,IN2920160420,,0.66,other
+149855,Kerala State Govt - 2027 - Kerala,IN2020160155,,0.57,other
+149855,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120161309,,0.33,other
+149855,Bihar State Govt - 2027 - Bihar,IN1320160154,,0.25,other
+149855,Bihar State Govt - 2027 - Bihar,IN1320160188,,0.16,other
+149855,Kerala State Govt - 2027 - Kerala,IN2020160148,,0.16,other
+149855,Andhra Pradesh State Govt - 2027 - Andhra Pradesh,IN1020200086,,0.16,other
+149855,Kerala State Govt - 2027 - Kerala,IN2020170014,,0.11,other
+149855,Bihar State Govt - 2027 - Bihar,IN1320160162,,0.08,other
+149855,Bihar State Govt - 2026 - Bihar,IN1320160139,,0.08,other
+149855,Kerala State Govt - 2026 - Kerala,IN2020160122,,0.08,other
+149855,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160309,,0.08,other
+149855,Andhra Pradesh State Govt - 2027 - Andhra Pradesh,IN1020160421,,0.05,other
+149855,West Bengal State Govt - 2026 - West Bengal,IN3420160100,,0.03,other
+149855,Karnataka State Govt - 2027 - Karnataka,IN1920160083,,0.03,other
+149855,Karnataka State Govt - 2027 - Karnataka,IN1920160075,,0.01,other
+149855,Andhra Pradesh State Govt - 2026 - Andhra Pradesh,IN1020160355,,0.01,other
+149855,Triparty Repo,,,0.83,cash
+149852,Karnataka State Govt - 2027 - Karnataka,IN1920160091,,8.43,other
+149852,Karnataka State Govt - 2027 - Karnataka,IN1920160125,,7.88,other
+149852,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120161424,,6.4,other
+149852,West Bengal State Govt - 2027 - West Bengal,IN3420160167,,6.19,other
+149852,Gujarat State Govt - 2027 - Gujarat,IN1520200347,,5.35,other
+149852,Gujarat State Govt - 2027 - Gujarat,IN1520160194,,5.27,other
+149852,Karnataka State Govt - 2027 - Karnataka,IN1920160109,,4.96,other
+149852,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320170019,,4.43,other
+149852,Gujarat State Govt - 2027 - Gujarat,IN1520160202,,4.12,other
+149852,Haryana State Govt - 2027 - Haryana,IN1620160292,,4.07,other
+149852,Karnataka State Govt - 2027 - Karnataka,IN1920160117,,3.86,other
+149852,Rajasthan State Govt - 2027 - Rajasthan,IN2920200036,,3.7,other
+149852,West Bengal State Govt - 2027 - West Bengal,IN3420160183,,3.45,other
+149852,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160317,,3.03,other
+149852,West Bengal State Govt - 2027 - West Bengal,IN3420160175,,2.57,other
+149852,Madhya Pradesh State Govt - 2027 - Madhya Pradesh,IN2120160105,,2.46,other
+149852,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120161317,,2.46,other
+149852,Rajasthan State Govt - 2027 - Rajasthan,IN2920160446,,2.46,other
+149852,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120160194,,2.36,other
+149852,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160341,,2.12,other
+149852,Maharashtra State Govt - 2027 - Maharashtra,IN2220210271,,1.61,other
+149852,Rajasthan State Govt - 2027 - Rajasthan,IN2920160438,,1.4,other
+149852,Madhya Pradesh State Govt - 2027 - Madhya Pradesh,IN2120160097,,1.36,other
+149852,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160358,,1.26,other
+149852,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120160186,,1.07,other
+149852,Haryana State Govt - 2027 - Haryana,IN1620160276,,0.91,other
+149852,Gujarat State Govt - 2027 - Gujarat,IN1520170011,,0.85,other
+149852,West Bengal State Govt - 2027 - West Bengal,IN3420160159,,0.82,other
+149852,Andhra Pradesh State Govt - 2027 - Andhra Pradesh,IN1020160462,,0.66,other
+149852,Rajasthan State Govt - 2027 - Rajasthan,IN2920160420,,0.66,other
+149852,Kerala State Govt - 2027 - Kerala,IN2020160155,,0.57,other
+149852,Tamil Nadu State Govt - 2027 - Tamil Nadu,IN3120161309,,0.33,other
+149852,Bihar State Govt - 2027 - Bihar,IN1320160154,,0.25,other
+149852,Bihar State Govt - 2027 - Bihar,IN1320160188,,0.16,other
+149852,Kerala State Govt - 2027 - Kerala,IN2020160148,,0.16,other
+149852,Andhra Pradesh State Govt - 2027 - Andhra Pradesh,IN1020200086,,0.16,other
+149852,Kerala State Govt - 2027 - Kerala,IN2020170014,,0.11,other
+149852,Bihar State Govt - 2027 - Bihar,IN1320160162,,0.08,other
+149852,Bihar State Govt - 2026 - Bihar,IN1320160139,,0.08,other
+149852,Kerala State Govt - 2026 - Kerala,IN2020160122,,0.08,other
+149852,Uttar Pradesh State Govt - 2027 - Uttar Pradesh,IN3320160309,,0.08,other
+149852,Andhra Pradesh State Govt - 2027 - Andhra Pradesh,IN1020160421,,0.05,other
+149852,West Bengal State Govt - 2026 - West Bengal,IN3420160100,,0.03,other
+149852,Karnataka State Govt - 2027 - Karnataka,IN1920160083,,0.03,other
+149852,Karnataka State Govt - 2027 - Karnataka,IN1920160075,,0.01,other
+149852,Andhra Pradesh State Govt - 2026 - Andhra Pradesh,IN1020160355,,0.01,other
+149852,Triparty Repo,,,0.83,cash
+154389,TORRENT PHARMACEUTICALS LTD.,INE685A01028,Pharmaceuticals and Biotechnology,4.73,equity
+154389,NTPC LTD,INE733E01010,Power,4.11,equity
+154389,Bajaj Auto Ltd.,INE917I01010,Automobiles,4.01,equity
+154389,MARICO LTD.,INE196A01026,Agricultural Food and other Product,3.99,equity
+154389,Apollo Hospitals Enterprise Ltd.,INE437A01024,Healthcare Services,3.93,equity
+154389,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,3.81,equity
+154389,ICICI BANK LTD.,INE090A01021,Banks,3.78,equity
+154389,Nestle India Ltd.,INE239A01024,Food Products,3.72,equity
+154389,JSW Steel Ltd.,INE019A01038,Ferrous Metals,3.62,equity
+154389,Grasim Industries Ltd.,INE047A01021,Cement and Cement Products,3.61,equity
+154389,SUN PHARMACEUTICAL INDUSTRIES LTD.,INE044A01036,Pharmaceuticals and Biotechnology,3.61,equity
+154389,FEDERAL BANK LTD.,INE171A01029,Banks,3.55,equity
+154389,SBI Life Insurance Company Ltd,INE123W01016,Insurance,3.54,equity
+154389,Cummins India Ltd.,INE298A01020,Industrial Products,3.5,equity
+154389,BHARTI AIRTEL LTD.,INE397D01024,Telecom - Services,3.33,equity
+154389,TITAN COMPANY LTD.,INE280A01028,Consumer Durables,3.27,equity
+154389,Lupin Ltd.,INE326A01037,Pharmaceuticals and Biotechnology,3.24,equity
+154389,TVS Motor Company Ltd.,INE494B01023,Automobiles,3.23,equity
+154389,STATE BANK OF INDIA.,INE062A01020,Banks,3.15,equity
+154389,Pidilite Industries Ltd.,INE318A01026,Chemicals and Petrochemicals,3.06,equity
+154389,Coal India Limited,INE522F01014,Consumable Fuels,3.05,equity
+154389,Eicher Motors Ltd.,INE066A01021,Automobiles,3.04,equity
+154389,Britannia Industries Ltd.,INE216A01030,Food Products,2.91,equity
+154389,RELIANCE INDUSTRIES LTD.,INE002A01018,Petroleum Products,2.82,equity
+154389,Zydus Lifesciences Ltd.,INE010B01027,Pharmaceuticals and Biotechnology,2.79,equity
+154389,Ultratech Cement Ltd.,INE481G01011,Cement and Cement Products,2.75,equity
+154389,Asian Paints(India) Ltd.,INE021A01026,Consumer Durables,2.72,equity
+154389,Maruti Suzuki India Limited,INE585B01010,Automobiles,2.51,equity
+154389,TATA CONSUMER PRODUCTS LTD.,INE192A01025,Agricultural Food and other Product,2.49,equity
+154389,Max Financial Services Ltd,INE180A01020,Insurance,2.19,equity
+154388,TORRENT PHARMACEUTICALS LTD.,INE685A01028,Pharmaceuticals and Biotechnology,4.73,equity
+154388,NTPC LTD,INE733E01010,Power,4.11,equity
+154388,Bajaj Auto Ltd.,INE917I01010,Automobiles,4.01,equity
+154388,MARICO LTD.,INE196A01026,Agricultural Food and other Product,3.99,equity
+154388,Apollo Hospitals Enterprise Ltd.,INE437A01024,Healthcare Services,3.93,equity
+154388,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,3.81,equity
+154388,ICICI BANK LTD.,INE090A01021,Banks,3.78,equity
+154388,Nestle India Ltd.,INE239A01024,Food Products,3.72,equity
+154388,JSW Steel Ltd.,INE019A01038,Ferrous Metals,3.62,equity
+154388,Grasim Industries Ltd.,INE047A01021,Cement and Cement Products,3.61,equity
+154388,SUN PHARMACEUTICAL INDUSTRIES LTD.,INE044A01036,Pharmaceuticals and Biotechnology,3.61,equity
+154388,FEDERAL BANK LTD.,INE171A01029,Banks,3.55,equity
+154388,SBI Life Insurance Company Ltd,INE123W01016,Insurance,3.54,equity
+154388,Cummins India Ltd.,INE298A01020,Industrial Products,3.5,equity
+154388,BHARTI AIRTEL LTD.,INE397D01024,Telecom - Services,3.33,equity
+154388,TITAN COMPANY LTD.,INE280A01028,Consumer Durables,3.27,equity
+154388,Lupin Ltd.,INE326A01037,Pharmaceuticals and Biotechnology,3.24,equity
+154388,TVS Motor Company Ltd.,INE494B01023,Automobiles,3.23,equity
+154388,STATE BANK OF INDIA.,INE062A01020,Banks,3.15,equity
+154388,Pidilite Industries Ltd.,INE318A01026,Chemicals and Petrochemicals,3.06,equity
+154388,Coal India Limited,INE522F01014,Consumable Fuels,3.05,equity
+154388,Eicher Motors Ltd.,INE066A01021,Automobiles,3.04,equity
+154388,Britannia Industries Ltd.,INE216A01030,Food Products,2.91,equity
+154388,RELIANCE INDUSTRIES LTD.,INE002A01018,Petroleum Products,2.82,equity
+154388,Zydus Lifesciences Ltd.,INE010B01027,Pharmaceuticals and Biotechnology,2.79,equity
+154388,Ultratech Cement Ltd.,INE481G01011,Cement and Cement Products,2.75,equity
+154388,Asian Paints(India) Ltd.,INE021A01026,Consumer Durables,2.72,equity
+154388,Maruti Suzuki India Limited,INE585B01010,Automobiles,2.51,equity
+154388,TATA CONSUMER PRODUCTS LTD.,INE192A01025,Agricultural Food and other Product,2.49,equity
+154388,Max Financial Services Ltd,INE180A01020,Insurance,2.19,equity

@@ -1,0 +1,65 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+153738,Welspun Corp Limited,INE191B01025,Industrial Products,6.31,equity
+153738,Laurus Labs Limited,INE947Q01028,Pharmaceuticals & Biotechnology,4.42,equity
+153738,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,3.9,equity
+153738,Bank of Maharashtra,INE457A01014,Banks,3.79,equity
+153738,The Federal Bank Limited,INE171A01029,Banks,3.65,equity
+153738,R R Kabel Limited,INE777K01022,Industrial Products,3.54,equity
+153738,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,3.47,equity
+153738,Karur Vysya Bank Limited,INE036D01028,Banks,3.33,equity
+153738,The Karnataka Bank Limited,INE614B01018,Banks,3.3,equity
+153738,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,3.28,equity
+153738,Anand Rathi Wealth Limited,INE463V01026,Capital Markets,3.28,equity
+153738,Radico Khaitan Limited,INE944F01028,Beverages,3.21,equity
+153738,Granules India Limited,INE101D01020,Pharmaceuticals & Biotechnology,3.2,equity
+153738,Bajaj Auto Limited,INE917I01010,Automobiles,3.18,equity
+153738,Samvardhana Motherson International Limited,INE775A01035,Auto Components,3.16,equity
+153738,RBL Bank Limited,INE976G01028,Banks,3.07,equity
+153738,Bosch Limited,INE323A01026,Auto Components,3.06,equity
+153738,Sona BLW Precision Forgings Limited,INE073K01018,Auto Components,3.05,equity
+153738,Titan Company Limited,INE280A01028,Consumer Durables,3.03,equity
+153738,Sai Life Sciences Limited,INE570L01029,Pharmaceuticals & Biotechnology,3.02,equity
+153738,PNB Housing Finance Limited,INE572E01012,Finance,2.99,equity
+153738,Aurobindo Pharma Limited,INE406A01037,Pharmaceuticals & Biotechnology,2.95,equity
+153738,FSN E-Commerce Ventures Limited,INE388Y01029,Retailing,2.89,equity
+153738,Bharat Forge Limited,INE465A01025,Auto Components,2.88,equity
+153738,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,2.81,equity
+153738,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,2.78,equity
+153738,Himadri Speciality Chemical Limited,INE019C01026,Chemicals & Petrochemicals,2.77,equity
+153738,Zydus Lifesciences Limited,INE010B01027,Pharmaceuticals & Biotechnology,2.76,equity
+153738,Grasim Industries Limited,INE047A01021,Cement & Cement Products,2.51,equity
+153738,Oracle Financial Services Software Limited,INE881D01027,IT - Software,0.43,equity
+153738,364 Days Tbill (MD 25/12/2026),IN002025Z393,,0.07,debt
+153738,Net Receivables / (Payables),,,-0.26,cash
+153739,Welspun Corp Limited,INE191B01025,Industrial Products,6.31,equity
+153739,Laurus Labs Limited,INE947Q01028,Pharmaceuticals & Biotechnology,4.42,equity
+153739,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,3.9,equity
+153739,Bank of Maharashtra,INE457A01014,Banks,3.79,equity
+153739,The Federal Bank Limited,INE171A01029,Banks,3.65,equity
+153739,R R Kabel Limited,INE777K01022,Industrial Products,3.54,equity
+153739,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,3.47,equity
+153739,Karur Vysya Bank Limited,INE036D01028,Banks,3.33,equity
+153739,The Karnataka Bank Limited,INE614B01018,Banks,3.3,equity
+153739,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,3.28,equity
+153739,Anand Rathi Wealth Limited,INE463V01026,Capital Markets,3.28,equity
+153739,Radico Khaitan Limited,INE944F01028,Beverages,3.21,equity
+153739,Granules India Limited,INE101D01020,Pharmaceuticals & Biotechnology,3.2,equity
+153739,Bajaj Auto Limited,INE917I01010,Automobiles,3.18,equity
+153739,Samvardhana Motherson International Limited,INE775A01035,Auto Components,3.16,equity
+153739,RBL Bank Limited,INE976G01028,Banks,3.07,equity
+153739,Bosch Limited,INE323A01026,Auto Components,3.06,equity
+153739,Sona BLW Precision Forgings Limited,INE073K01018,Auto Components,3.05,equity
+153739,Titan Company Limited,INE280A01028,Consumer Durables,3.03,equity
+153739,Sai Life Sciences Limited,INE570L01029,Pharmaceuticals & Biotechnology,3.02,equity
+153739,PNB Housing Finance Limited,INE572E01012,Finance,2.99,equity
+153739,Aurobindo Pharma Limited,INE406A01037,Pharmaceuticals & Biotechnology,2.95,equity
+153739,FSN E-Commerce Ventures Limited,INE388Y01029,Retailing,2.89,equity
+153739,Bharat Forge Limited,INE465A01025,Auto Components,2.88,equity
+153739,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,2.81,equity
+153739,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,2.78,equity
+153739,Himadri Speciality Chemical Limited,INE019C01026,Chemicals & Petrochemicals,2.77,equity
+153739,Zydus Lifesciences Limited,INE010B01027,Pharmaceuticals & Biotechnology,2.76,equity
+153739,Grasim Industries Limited,INE047A01021,Cement & Cement Products,2.51,equity
+153739,Oracle Financial Services Software Limited,INE881D01027,IT - Software,0.43,equity
+153739,364 Days Tbill (MD 25/12/2026),IN002025Z393,,0.07,debt
+153739,Net Receivables / (Payables),,,-0.26,cash

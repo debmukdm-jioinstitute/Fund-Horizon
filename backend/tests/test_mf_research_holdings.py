@@ -270,7 +270,7 @@ def test_snapshot_default_path_is_repo_data_dir():
     snap = mf_holdings.load_snapshot()
     assert len(snap["schemes"]) == len(manifest["schemes"]) > 0
     assert snap["as_of"] == manifest["as_of"]
-    assert snap["amcs"] == ["Motilal Oswal Mutual Fund"]
+    assert "Motilal Oswal Mutual Fund" in snap["amcs"]
 
 
 def test_portfolio_summary_cash_by_instrument_type():
@@ -293,7 +293,7 @@ def test_api_portfolio_coverage_sector_filter_detail_and_overlap(client):
     cov_data = cov.json()["data"]
     assert cov_data["schemes_covered"] > 0
     assert cov_data["as_of"] == "2026-09-30"
-    assert cov_data["amcs"] == ["Motilal Oswal Mutual Fund"]
+    assert "Motilal Oswal Mutual Fund" in cov_data["amcs"]
     assert "Banks" in cov_data["sectors"]
 
     # Sector filter: every returned fund must hold the sector in its snapshot
@@ -335,7 +335,8 @@ def test_api_portfolio_coverage_sector_filter_detail_and_overlap(client):
     import csv as _csv
 
     with open(repo / "data" / "fundhorizon_mf_rag_dataset" / "all_schemes_metrics.csv") as fh:
-        non_motilal = next(x["scheme_code"] for x in _csv.DictReader(fh) if x["amc"] != "Motilal Oswal Mutual Fund")
+        covered = mf_holdings.load_snapshot()["schemes"]
+        non_motilal = next(x["scheme_code"] for x in _csv.DictReader(fh) if x["scheme_code"] not in covered)
     d2 = client.get(f"/api/backoffice/mutual-funds/{non_motilal}/research-detail")
     assert d2.status_code == 200
     assert d2.json()["data"]["portfolio"]["available"] is False

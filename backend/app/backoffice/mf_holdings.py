@@ -112,7 +112,14 @@ def load_snapshot(data_dir: Path | None = None) -> dict[str, Any]:
                     "weight_pct": round(weight, 2),
                     "instrument_type": (row.get("instrument_type") or "other").strip() or "other",
                 }
+                if holding["instrument_type"] != "equity":
+                    holding["sector"] = None  # debt rows carry a credit rating (CRISIL AAA...) in that column, not an industry
                 schemes.setdefault(code, {"holdings": []})["holdings"].append(holding)
+    canon = _sector_canon({h["sector"] for sc in schemes.values() for h in sc["holdings"] if h.get("sector")})
+    for sc in schemes.values():
+        for h in sc["holdings"]:
+            if h.get("sector"):
+                h["sector"] = canon[h["sector"]]
     sectors: set[str] = set()
     amcs: set[str] = set()
     as_of_values: set[str] = set()
@@ -139,6 +146,29 @@ def load_snapshot(data_dir: Path | None = None) -> dict[str, Any]:
     }
     _MANIFEST_CACHE[cache_key] = {"mtime": mtime, "snapshot": snapshot}
     return snapshot
+
+
+def _sector_key(s: str) -> str:
+    return "".join(ch for ch in s.lower().replace("&", "and") if ch.isalnum())
+
+
+def _sector_canon(labels: set[str]) -> dict[str, str]:
+    """AMCs spell the same industry differently ("&" vs "and", truncated labels): map each to one display label.
+
+    Same label after folding "&"/punctuation/case -> most common spelling's longest form; a label that is only a
+    truncated prefix of exactly one longer label (>= 12 chars) joins that label. Nothing else is merged.
+    """
+    groups: dict[str, list[str]] = {}
+    for lab in sorted(labels):
+        groups.setdefault(_sector_key(lab), []).append(lab)
+    keys = sorted(groups)
+    target = {k: k for k in keys}
+    for k in keys:
+        longer = [o for o in keys if o != k and o.startswith(k) and len(k) >= 12]
+        if len(longer) == 1:
+            target[k] = longer[0]
+    display = {k: max(v, key=lambda x: (("and" in x.lower()), len(x))) for k, v in groups.items()}
+    return {lab: display[target[k]] for k, labs in groups.items() for lab in labs}
 
 
 def clear_snapshot_cache() -> None:

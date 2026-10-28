@@ -1,0 +1,1608 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+120465,InterGlobe Aviation Limited,INE646L01027,Transport Services,2.64,equity
+120465,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,2.56,equity
+120465,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,2.18,equity
+120465,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,1.99,equity
+120465,The Indian Hotels Company Limited,INE053A01029,Leisure Services,1.93,equity
+120465,Shriram Finance Limited,INE721A01047,Finance,1.86,equity
+120465,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,1.85,equity
+120465,TVS Motor Company Limited,INE494B01023,Automobiles,1.78,equity
+120465,Infosys Limited,INE009A01021,IT - Software,1.57,equity
+120465,State Bank of India,INE062A01020,Banks,1.52,equity
+120465,Samvardhana Motherson International Limited,INE775A01035,Auto Components,1.52,equity
+120465,Hyundai Motor India Ltd,INE0V6F01027,Automobiles,1.45,equity
+120465,Tech Mahindra Limited,INE669C01036,IT - Software,1.34,equity
+120465,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,1.29,equity
+120465,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,1.07,equity
+120465,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.04,equity
+120465,United Spirits Limited,INE854D01024,Beverages,1.02,equity
+120465,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,0.97,equity
+120465,Tata Consumer Products Limited,INE192A01025,Agricultural Food & other Products,0.95,equity
+120465,HCL Technologies Limited,INE860A01027,IT - Software,0.93,equity
+120465,Tata Consultancy Services Limited,INE467B01029,IT - Software,0.82,equity
+120465,Britannia Industries Limited,INE216A01030,Food Products,0.76,equity
+120465,Trent Limited,INE849A01020,Retailing,0.71,equity
+120465,Grasim Industries Limited,INE047A01021,Cement & Cement Products,0.53,equity
+120465,Cummins India Limited,INE298A01020,Industrial Products,0.52,equity
+120465,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,0.52,equity
+120465,Avenue Supermarts Limited,INE192R01011,Retailing,0.46,equity
+120465,Varun Beverages Limited,INE200M01039,Beverages,0.43,equity
+120465,LG Electronics India Ltd,INE324D01010,Consumer Durables,0.32,equity
+120465,Max Healthcare Institute Limited,INE027H01010,Healthcare Services,0.24,equity
+120465,National Stock Exchange Of India Ltd,INE721I01024,Capital Markets,0.22,equity
+120465,Maruti Suzuki India Limited,INE585B01010,Automobiles,0.16,equity
+120465,SBI Funds Management Limited,INE640G01020,Capital Markets,0.15,equity
+120465,Dr. Reddy's Laboratories Limited,INE089A01031,Pharmaceuticals & Biotechnology,0.13,equity
+120465,Axis Money Market Fund - Direct Plan - Growth Option,INF846K01Q62,,1.25,mf_units
+120465,Net Receivables / (Payables),,,0.56,cash
+112277,ICICI Bank Limited,INE090A01021,Banks,9.29,equity
+112277,HDFC Bank Limited,INE040A01034,Banks,8.25,equity
+112277,Bharti Airtel Limited,INE397D01024,Telecom - Services,5.07,equity
+112277,Bajaj Finance Limited,INE296A01032,Finance,4.94,equity
+112277,Eternal Limited,INE758T01015,Retailing,4.27,equity
+112277,Mahindra & Mahindra Limited,INE101A01026,Automobiles,3.85,equity
+112277,Larsen & Toubro Limited,INE018A01030,Construction,3.26,equity
+112277,Reliance Industries Limited,INE002A01018,Petroleum Products,3.25,equity
+112277,Axis Bank Limited,INE238A01034,Banks,3.23,equity
+112277,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,2.91,equity
+112277,Titan Company Limited,INE280A01028,Consumer Durables,2.88,equity
+112277,Kotak Mahindra Bank Limited,INE237A01036,Banks,2.74,equity
+112277,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,2.72,equity
+112277,InterGlobe Aviation Limited,INE646L01027,Transport Services,2.64,equity
+112277,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,2.56,equity
+112277,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,2.18,equity
+112277,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,1.99,equity
+112277,The Indian Hotels Company Limited,INE053A01029,Leisure Services,1.93,equity
+112277,Shriram Finance Limited,INE721A01047,Finance,1.86,equity
+112277,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,1.85,equity
+112277,TVS Motor Company Limited,INE494B01023,Automobiles,1.78,equity
+112277,Infosys Limited,INE009A01021,IT - Software,1.57,equity
+112277,State Bank of India,INE062A01020,Banks,1.52,equity
+112277,Samvardhana Motherson International Limited,INE775A01035,Auto Components,1.52,equity
+112277,Hyundai Motor India Ltd,INE0V6F01027,Automobiles,1.45,equity
+112277,Tech Mahindra Limited,INE669C01036,IT - Software,1.34,equity
+112277,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,1.29,equity
+112277,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,1.07,equity
+112277,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.04,equity
+112277,United Spirits Limited,INE854D01024,Beverages,1.02,equity
+112277,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,0.97,equity
+112277,Tata Consumer Products Limited,INE192A01025,Agricultural Food & other Products,0.95,equity
+112277,HCL Technologies Limited,INE860A01027,IT - Software,0.93,equity
+112277,Tata Consultancy Services Limited,INE467B01029,IT - Software,0.82,equity
+112277,Britannia Industries Limited,INE216A01030,Food Products,0.76,equity
+112277,Trent Limited,INE849A01020,Retailing,0.71,equity
+112277,Grasim Industries Limited,INE047A01021,Cement & Cement Products,0.53,equity
+112277,Cummins India Limited,INE298A01020,Industrial Products,0.52,equity
+112277,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,0.52,equity
+112277,Avenue Supermarts Limited,INE192R01011,Retailing,0.46,equity
+112277,Varun Beverages Limited,INE200M01039,Beverages,0.43,equity
+112277,LG Electronics India Ltd,INE324D01010,Consumer Durables,0.32,equity
+112277,Max Healthcare Institute Limited,INE027H01010,Healthcare Services,0.24,equity
+112277,National Stock Exchange Of India Ltd,INE721I01024,Capital Markets,0.22,equity
+112277,Maruti Suzuki India Limited,INE585B01010,Automobiles,0.16,equity
+112277,SBI Funds Management Limited,INE640G01020,Capital Markets,0.15,equity
+112277,Dr. Reddy's Laboratories Limited,INE089A01031,Pharmaceuticals & Biotechnology,0.13,equity
+112277,Axis Money Market Fund - Direct Plan - Growth Option,INF846K01Q62,,1.25,mf_units
+112277,Net Receivables / (Payables),,,0.56,cash
+147928,Reliance Industries Limited,INE002A01018,Petroleum Products,8.25,equity
+147928,Clean Max Enviro Energy Solutions Limited,INE647U01026,Power,6.94,equity
+147928,ICICI Bank Limited,INE090A01021,Banks,6.21,equity
+147928,Bajaj Finance Limited,INE296A01032,Finance,5.66,equity
+147928,Titan Company Limited,INE280A01028,Consumer Durables,5.08,equity
+147928,Shriram Finance Limited,INE721A01047,Finance,4.29,equity
+147928,Axis Bank Limited,INE238A01034,Banks,3.7,equity
+147928,Piramal Finance Limited,INE202B01038,Finance,3.05,equity
+147928,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,2.95,equity
+147928,PVR INOX Limited,INE191H01014,Entertainment,2.8,equity
+147928,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,2.74,equity
+147928,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.58,equity
+147928,Biocon Limited,INE376G01013,Pharmaceuticals & Biotechnology,2.33,equity
+147928,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,2.33,equity
+147928,Coforge Limited,INE591G01025,IT - Software,2.32,equity
+147928,Varun Beverages Limited,INE200M01039,Beverages,2.28,equity
+147928,Arvind Limited,INE034A01011,Textiles & Apparels,2.15,equity
+147928,The Indian Hotels Company Limited,INE053A01029,Leisure Services,1.83,equity
+147928,Chalet Hotels Limited,INE427F01016,Leisure Services,1.79,equity
+147928,Metropolis Healthcare Limited,INE112L01020,Healthcare Services,1.7,equity
+147928,TBO Tek Limited,INE673O01025,Leisure Services,1.7,equity
+147928,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,1.68,equity
+147928,Cummins India Limited,INE298A01020,Industrial Products,1.44,equity
+147928,Star Health And Allied Insurance Company Limited,INE575P01011,Insurance,1.38,equity
+147928,IPCA Laboratories Limited,INE571A01038,Pharmaceuticals & Biotechnology,1.31,equity
+147928,Eicher Motors Limited,INE066A01021,Automobiles,1.17,equity
+147928,TD Power Systems Limited,INE419M01035,Electrical Equipment,1.1,equity
+147928,SBI Life Insurance Company Limited,INE123W01016,Insurance,1.03,equity
+147928,IIFL Finance Limited,INE530B01024,Finance,1.03,equity
+147928,National Stock Exchange Of India Ltd,INE721I01024,Capital Markets,0.97,equity
+147928,Tata Motors Ltd,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.93,equity
+147928,Supreme Industries Limited,INE195A01028,Industrial Products,0.87,equity
+147928,Alkem Laboratories Limited,INE540L01014,Pharmaceuticals & Biotechnology,0.71,equity
+147928,Craftsman Automation Limited,INE00LO01017,Auto Components,0.58,equity
+147928,Crompton Greaves Consumer Electricals Limited,INE299U01018,Consumer Durables,0.55,equity
+147928,Astral Limited,INE006I01046,Industrial Products,0.52,equity
+147928,Gland Pharma Limited,INE068V01023,Pharmaceuticals & Biotechnology,0.35,equity
+147928,Apar Industries Limited,INE372A01015,Electrical Equipment,0.13,equity
+147928,Symphony Limited,INE225D01027,Consumer Durables,0.12,equity
+147928,Tata Consumer Products Limited,INE192A01025,Agricultural Food & other Products,0.05,equity
+147928,P N Gadgil Jewellers Limited,INE953R01016,Consumer Durables,0.01,equity
+147928,Net Receivables / (Payables),,,0.73,cash
+147929,Reliance Industries Limited,INE002A01018,Petroleum Products,8.25,equity
+147929,Clean Max Enviro Energy Solutions Limited,INE647U01026,Power,6.94,equity
+147929,ICICI Bank Limited,INE090A01021,Banks,6.21,equity
+147929,Bajaj Finance Limited,INE296A01032,Finance,5.66,equity
+147929,Titan Company Limited,INE280A01028,Consumer Durables,5.08,equity
+147929,Shriram Finance Limited,INE721A01047,Finance,4.29,equity
+147929,Axis Bank Limited,INE238A01034,Banks,3.7,equity
+147929,Piramal Finance Limited,INE202B01038,Finance,3.05,equity
+147929,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,2.95,equity
+147929,PVR INOX Limited,INE191H01014,Entertainment,2.8,equity
+147929,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,2.74,equity
+147929,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.58,equity
+147929,Biocon Limited,INE376G01013,Pharmaceuticals & Biotechnology,2.33,equity
+147929,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,2.33,equity
+147929,Coforge Limited,INE591G01025,IT - Software,2.32,equity
+147929,Varun Beverages Limited,INE200M01039,Beverages,2.28,equity
+147929,Arvind Limited,INE034A01011,Textiles & Apparels,2.15,equity
+147929,The Indian Hotels Company Limited,INE053A01029,Leisure Services,1.83,equity
+147929,Chalet Hotels Limited,INE427F01016,Leisure Services,1.79,equity
+147929,Metropolis Healthcare Limited,INE112L01020,Healthcare Services,1.7,equity
+147929,TBO Tek Limited,INE673O01025,Leisure Services,1.7,equity
+147929,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,1.68,equity
+147929,Cummins India Limited,INE298A01020,Industrial Products,1.44,equity
+147929,Star Health And Allied Insurance Company Limited,INE575P01011,Insurance,1.38,equity
+147929,IPCA Laboratories Limited,INE571A01038,Pharmaceuticals & Biotechnology,1.31,equity
+147929,Eicher Motors Limited,INE066A01021,Automobiles,1.17,equity
+147929,TD Power Systems Limited,INE419M01035,Electrical Equipment,1.1,equity
+147929,SBI Life Insurance Company Limited,INE123W01016,Insurance,1.03,equity
+147929,IIFL Finance Limited,INE530B01024,Finance,1.03,equity
+147929,National Stock Exchange Of India Ltd,INE721I01024,Capital Markets,0.97,equity
+147929,Tata Motors Ltd,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.93,equity
+147929,Supreme Industries Limited,INE195A01028,Industrial Products,0.87,equity
+147929,Alkem Laboratories Limited,INE540L01014,Pharmaceuticals & Biotechnology,0.71,equity
+147929,Craftsman Automation Limited,INE00LO01017,Auto Components,0.58,equity
+147929,Crompton Greaves Consumer Electricals Limited,INE299U01018,Consumer Durables,0.55,equity
+147929,Astral Limited,INE006I01046,Industrial Products,0.52,equity
+147929,Gland Pharma Limited,INE068V01023,Pharmaceuticals & Biotechnology,0.35,equity
+147929,Apar Industries Limited,INE372A01015,Electrical Equipment,0.13,equity
+147929,Symphony Limited,INE225D01027,Consumer Durables,0.12,equity
+147929,Tata Consumer Products Limited,INE192A01025,Agricultural Food & other Products,0.05,equity
+147929,P N Gadgil Jewellers Limited,INE953R01016,Consumer Durables,0.01,equity
+147929,Net Receivables / (Payables),,,0.73,cash
+120468,ICICI Bank Limited,INE090A01021,Banks,8.13,equity
+120468,Eternal Limited,INE758T01015,Retailing,7.85,equity
+120468,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,6.5,equity
+120468,Bajaj Finance Limited,INE296A01032,Finance,5.34,equity
+120468,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,5.14,equity
+120468,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,5.06,equity
+120468,Apar Industries Limited,INE372A01015,Electrical Equipment,4.9,equity
+120468,TVS Motor Company Limited,INE494B01023,Automobiles,4.53,equity
+120468,State Bank of India,INE062A01020,Banks,4.22,equity
+120468,InterGlobe Aviation Limited,INE646L01027,Transport Services,3.56,equity
+120468,Mahindra & Mahindra Limited,INE101A01026,Automobiles,3.43,equity
+120468,Axis Bank Limited,INE238A01034,Banks,3.24,equity
+120468,HDFC Bank Limited,INE040A01034,Banks,3.2,equity
+120468,Hindustan Aeronautics Limited,INE066F01020,Aerospace & Defense,2.91,equity
+120468,Cummins India Limited,INE298A01020,Industrial Products,2.69,equity
+120468,Bharti Airtel Limited,INE397D01024,Telecom - Services,2.6,equity
+120468,PB Fintech Limited,INE417T01026,Financial Technology (Fintech),2.59,equity
+120468,TD Power Systems Limited,INE419M01035,Electrical Equipment,2.32,equity
+120468,Titan Company Limited,INE280A01028,Consumer Durables,2.32,equity
+120468,Infosys Limited,INE009A01021,IT - Software,2.15,equity
+120468,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.15,equity
+120468,Hyundai Motor India Ltd,INE0V6F01027,Automobiles,2.08,equity
+120468,United Spirits Limited,INE854D01024,Beverages,2.06,equity
+120468,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,1.67,equity
+120468,Torrent Power Limited,INE813H01021,Power,1.51,equity
+120468,Kaynes Technology India Limited,INE918Z01012,Industrial Manufacturing,0.99,equity
+120468,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),0.66,equity
+120468,91 Days Tbill (MD 31/12/2026),IN002026X263,,2.82,debt
+120468,Net Receivables / (Payables),,,-2.88,cash
+117560,ICICI Bank Limited,INE090A01021,Banks,8.13,equity
+117560,Eternal Limited,INE758T01015,Retailing,7.85,equity
+117560,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,6.5,equity
+117560,Bajaj Finance Limited,INE296A01032,Finance,5.34,equity
+117560,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,5.14,equity
+117560,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,5.06,equity
+117560,Apar Industries Limited,INE372A01015,Electrical Equipment,4.9,equity
+117560,TVS Motor Company Limited,INE494B01023,Automobiles,4.53,equity
+117560,State Bank of India,INE062A01020,Banks,4.22,equity
+117560,InterGlobe Aviation Limited,INE646L01027,Transport Services,3.56,equity
+117560,Mahindra & Mahindra Limited,INE101A01026,Automobiles,3.43,equity
+117560,Axis Bank Limited,INE238A01034,Banks,3.24,equity
+117560,HDFC Bank Limited,INE040A01034,Banks,3.2,equity
+117560,Hindustan Aeronautics Limited,INE066F01020,Aerospace & Defense,2.91,equity
+117560,Cummins India Limited,INE298A01020,Industrial Products,2.69,equity
+117560,Bharti Airtel Limited,INE397D01024,Telecom - Services,2.6,equity
+117560,PB Fintech Limited,INE417T01026,Financial Technology (Fintech),2.59,equity
+117560,TD Power Systems Limited,INE419M01035,Electrical Equipment,2.32,equity
+117560,Titan Company Limited,INE280A01028,Consumer Durables,2.32,equity
+117560,Infosys Limited,INE009A01021,IT - Software,2.15,equity
+117560,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.15,equity
+117560,Hyundai Motor India Ltd,INE0V6F01027,Automobiles,2.08,equity
+117560,United Spirits Limited,INE854D01024,Beverages,2.06,equity
+117560,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,1.67,equity
+117560,Torrent Power Limited,INE813H01021,Power,1.51,equity
+117560,Kaynes Technology India Limited,INE918Z01012,Industrial Manufacturing,0.99,equity
+117560,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),0.66,equity
+117560,91 Days Tbill (MD 31/12/2026),IN002026X263,,2.82,debt
+117560,Net Receivables / (Payables),,,-2.88,cash
+149048,Indus Infra Trust,INE0NHL23019,,2.93,other
+149048,Cube Highways Trust-InvIT Fund,INE0NR623014,,2.05,other
+149048,Citius Transnet Investment Trust,INE2Q7823014,,0.5,other
+149048,6.94% Government of India (11/05/2036),IN0020260025,,9.89,other
+149048,6.95% REC Limited (18/02/2028) **,INE020B08GB8,,6.64,other
+149048,7.34% Government of India (22/04/2064),IN0020240035,,5.95,other
+149048,Jubilant Bevco Limited (31/05/2028) (ZCB),INE1D4P08019,,3.77,other
+149048,Jubilant Beverages Limited (31/05/2028) (ZCB) **,INE1D4O08012,,3.75,other
+149048,360 One Prime Limited (25/07/2028) (FRN) **,INE248U07GJ0,,3.37,other
+149048,7.96% Pipeline Infrastructure Private Limited (11/03/2028) **,INE01XX07042,,3.36,other
+149048,8.75% Piramal Finance Limited (29/10/2027) **,INE202B07JW4,,3.36,other
+149048,Cholamandalam Investment and Finance Company Ltd (27/02/2029) (FRN) **,INE121A07SU3,,3.35,other
+149048,7.71% Government of India (18/05/2066),IN0020260033,,3.35,other
+149048,7.48% National Bank For Agriculture and Rural Development (15/09/2028),INE261F08EO7,,3.33,other
+149048,7.38% REC Limited (28/02/2029),INE020B08GD4,,3.33,other
+149048,7.88% Muthoot Finance Limited (22/11/2028),INE414G07JS2,,3.29,other
+149048,7.10% Bajaj Housing Finance Limited (16/10/2028) **,INE377Y07607,,3.29,other
+149048,6.89% Indian Railway Finance Corporation Limited (18/07/2031) **,INE053F08106,,3.23,other
+149048,7.43% Maharashtra State Development Loans (03/12/2040),IN2220250392,,3.22,other
+149048,7.11% Power Finance Corporation Limited (30/06/2036) **,INE134E08LI6,,3.17,other
+149048,7.96% Pipeline Infrastructure Private Limited (11/03/2027) **,INE01XX07059,,2.02,other
+149048,6.96% Power Finance Corporation Limited (02/03/2028) **,INE134E08OC3,,1.66,other
+149048,Bank of Baroda (11/03/2027),INE028A16LW2,,6.51,debt
+149048,HDFC Bank Limited (02/03/2027) **,INE040A16IQ5,,3.26,debt
+149048,Canara Bank (12/03/2027) **,INE476A16H92,,3.25,debt
+149048,Tata Teleservices Limited (12/02/2027) **,INE037E14AV5,,3.26,debt
+149048,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.93,other
+149048,Net Receivables / (Payables),,,2.75,cash
+149049,Indus Infra Trust,INE0NHL23019,,2.93,other
+149049,Cube Highways Trust-InvIT Fund,INE0NR623014,,2.05,other
+149049,Citius Transnet Investment Trust,INE2Q7823014,,0.5,other
+149049,6.94% Government of India (11/05/2036),IN0020260025,,9.89,other
+149049,6.95% REC Limited (18/02/2028) **,INE020B08GB8,,6.64,other
+149049,7.34% Government of India (22/04/2064),IN0020240035,,5.95,other
+149049,Jubilant Bevco Limited (31/05/2028) (ZCB),INE1D4P08019,,3.77,other
+149049,Jubilant Beverages Limited (31/05/2028) (ZCB) **,INE1D4O08012,,3.75,other
+149049,360 One Prime Limited (25/07/2028) (FRN) **,INE248U07GJ0,,3.37,other
+149049,7.96% Pipeline Infrastructure Private Limited (11/03/2028) **,INE01XX07042,,3.36,other
+149049,8.75% Piramal Finance Limited (29/10/2027) **,INE202B07JW4,,3.36,other
+149049,Cholamandalam Investment and Finance Company Ltd (27/02/2029) (FRN) **,INE121A07SU3,,3.35,other
+149049,7.71% Government of India (18/05/2066),IN0020260033,,3.35,other
+149049,7.48% National Bank For Agriculture and Rural Development (15/09/2028),INE261F08EO7,,3.33,other
+149049,7.38% REC Limited (28/02/2029),INE020B08GD4,,3.33,other
+149049,7.88% Muthoot Finance Limited (22/11/2028),INE414G07JS2,,3.29,other
+149049,7.10% Bajaj Housing Finance Limited (16/10/2028) **,INE377Y07607,,3.29,other
+149049,6.89% Indian Railway Finance Corporation Limited (18/07/2031) **,INE053F08106,,3.23,other
+149049,7.43% Maharashtra State Development Loans (03/12/2040),IN2220250392,,3.22,other
+149049,7.11% Power Finance Corporation Limited (30/06/2036) **,INE134E08LI6,,3.17,other
+149049,7.96% Pipeline Infrastructure Private Limited (11/03/2027) **,INE01XX07059,,2.02,other
+149049,6.96% Power Finance Corporation Limited (02/03/2028) **,INE134E08OC3,,1.66,other
+149049,Bank of Baroda (11/03/2027),INE028A16LW2,,6.51,debt
+149049,HDFC Bank Limited (02/03/2027) **,INE040A16IQ5,,3.26,debt
+149049,Canara Bank (12/03/2027) **,INE476A16H92,,3.25,debt
+149049,Tata Teleservices Limited (12/02/2027) **,INE037E14AV5,,3.26,debt
+149049,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.93,other
+149049,Net Receivables / (Payables),,,2.75,cash
+153880,7.8% National Bank For Agriculture and Rural Development (15/03/2027),INE261F08EF5,,11.46,other
+153880,7.73% LIC Housing Finance Limited (18/03/2027) **,INE115A07RE1,,11.46,other
+153880,7.14% Bajaj Housing Finance Limited (26/02/2027) **,INE377Y07557,,11.43,other
+153880,7.54% REC Limited (30/12/2026) **,INE020B08AC9,,2.29,other
+153880,Small Industries Dev Bank of India (18/02/2027) **,INE556F16CB4,,11.15,debt
+153880,Bank of Baroda (05/03/2027) **,INE028A16LR2,,4.45,debt
+153880,Union Bank of India (19/01/2027),INE692A16KU1,,2.24,debt
+153880,Punjab National Bank (28/01/2027) **,INE160A16UC6,,2.24,debt
+153880,Canara Bank (28/01/2027),INE476A16G28,,2.24,debt
+153880,HDFC Bank Limited (24/02/2027) **,INE040A16IO0,,2.23,debt
+153880,ICICI Bank Limited (08/03/2027) **,INE090AD6295,,2.22,debt
+153880,Bank of Baroda (12/02/2027) **,INE028A16LI1,,1.34,debt
+153880,Mahindra & Mahindra Financial Services Limited (25/02/2027) **,INE774D14TW3,,11.12,debt
+153880,Aditya Birla Capital Limited (26/02/2027) **,INE674K14BX6,,11.12,debt
+153880,REC Limited (08/03/2027) **,INE020B14730,,11.12,debt
+153880,Net Receivables / (Payables),,,1.54,cash
+153879,7.8% National Bank For Agriculture and Rural Development (15/03/2027),INE261F08EF5,,11.46,other
+153879,7.73% LIC Housing Finance Limited (18/03/2027) **,INE115A07RE1,,11.46,other
+153879,7.14% Bajaj Housing Finance Limited (26/02/2027) **,INE377Y07557,,11.43,other
+153879,7.54% REC Limited (30/12/2026) **,INE020B08AC9,,2.29,other
+153879,Small Industries Dev Bank of India (18/02/2027) **,INE556F16CB4,,11.15,debt
+153879,Bank of Baroda (05/03/2027) **,INE028A16LR2,,4.45,debt
+153879,Union Bank of India (19/01/2027),INE692A16KU1,,2.24,debt
+153879,Punjab National Bank (28/01/2027) **,INE160A16UC6,,2.24,debt
+153879,Canara Bank (28/01/2027),INE476A16G28,,2.24,debt
+153879,HDFC Bank Limited (24/02/2027) **,INE040A16IO0,,2.23,debt
+153879,ICICI Bank Limited (08/03/2027) **,INE090AD6295,,2.22,debt
+153879,Bank of Baroda (12/02/2027) **,INE028A16LI1,,1.34,debt
+153879,Mahindra & Mahindra Financial Services Limited (25/02/2027) **,INE774D14TW3,,11.12,debt
+153879,Aditya Birla Capital Limited (26/02/2027) **,INE674K14BX6,,11.12,debt
+153879,REC Limited (08/03/2027) **,INE020B14730,,11.12,debt
+153879,Net Receivables / (Payables),,,1.54,cash
+148699,Schroder ISF Greater China Class X Acc,LU2289884996,,98.76,mf_units
+148699,Net Receivables / (Payables),,,-0.28,cash
+148701,Schroder ISF Greater China Class X Acc,LU2289884996,,98.76,mf_units
+148701,Net Receivables / (Payables),,,-0.28,cash
+148485,Schroder ISF Global Equity Alpha Class X1 Acc,LU2225036040,,99.05,mf_units
+148485,Net Receivables / (Payables),,,-0.1,cash
+148486,Schroder ISF Global Equity Alpha Class X1 Acc,LU2225036040,,99.05,mf_units
+148486,Net Receivables / (Payables),,,-0.1,cash
+148954,Schroder International Selection Fund Global innovation,LU2340194146,,99.13,mf_units
+148954,Net Receivables / (Payables),,,-0.28,cash
+148953,Schroder International Selection Fund Global innovation,LU2340194146,,99.13,mf_units
+148953,Net Receivables / (Payables),,,-0.28,cash
+120473,Axis Gold ETF,INF846K01W80,,100.06,other
+120473,Net Receivables / (Payables),,,-0.24,cash
+115897,Axis Gold ETF,INF846K01W80,,100.06,other
+115897,Net Receivables / (Payables),,,-0.24,cash
+145112,ICICI Bank Limited,INE090A01021,Banks,4.43,equity
+145112,HDFC Bank Limited,INE040A01034,Banks,3.38,equity
+145112,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,2.76,equity
+145112,Eternal Limited,INE758T01015,Retailing,2.68,equity
+145112,Sona BLW Precision Forgings Limited,INE073K01018,Auto Components,2.44,equity
+145112,Bharti Airtel Limited,INE397D01024,Telecom - Services,2.28,equity
+145112,Reliance Industries Limited,INE002A01018,Petroleum Products,2.19,equity
+145112,Axis Bank Limited,INE238A01034,Banks,2.03,equity
+145112,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,2.01,equity
+145112,GE Vernova T&D India Limited,INE200A01026,Electrical Equipment,1.92,equity
+145112,Apar Industries Limited,INE372A01015,Electrical Equipment,1.79,equity
+145112,Larsen & Toubro Limited,INE018A01030,Construction,1.68,equity
+145112,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,1.67,equity
+145112,Samvardhana Motherson International Limited,INE775A01035,Auto Components,1.6,equity
+145112,Shriram Finance Limited,INE721A01047,Finance,1.54,equity
+145112,Coforge Limited,INE591G01025,IT - Software,1.45,equity
+145112,Fortis Healthcare Limited,INE061F01013,Healthcare Services,1.42,equity
+145112,Minda Corporation Limited,INE842C01021,Auto Components,1.41,equity
+145112,IndusInd Bank Limited,INE095A01012,Banks,1.37,equity
+145112,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,1.33,equity
+145112,BSE Limited,INE118H01025,Capital Markets,1.3,equity
+145112,RBL Bank Limited,INE976G01028,Banks,1.29,equity
+145112,Bajaj Finance Limited,INE296A01032,Finance,1.28,equity
+145112,Radico Khaitan Limited,INE944F01028,Beverages,1.27,equity
+145112,Mahindra & Mahindra Limited,INE101A01026,Automobiles,1.25,equity
+145112,The Federal Bank Limited,INE171A01029,Banks,1.24,equity
+145112,Indus Towers Limited,INE121J01017,Telecom - Services,1.21,equity
+145112,The Phoenix Mills Limited,INE211B01039,Realty,1.16,equity
+145112,TD Power Systems Limited,INE419M01035,Electrical Equipment,1.13,equity
+145112,State Bank of India,INE062A01020,Banks,1.12,equity
+145112,The Indian Hotels Company Limited,INE053A01029,Leisure Services,1.09,equity
+145112,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,1.09,equity
+145112,Ather Energy Limited,INE0LEZ01016,Automobiles,1.02,equity
+145112,SRF Limited,INE647A01010,Chemicals & Petrochemicals,1.01,equity
+145112,InterGlobe Aviation Limited,INE646L01027,Transport Services,0.99,equity
+145112,TVS Motor Company Limited,INE494B01023,Automobiles,0.98,equity
+145112,Varun Beverages Limited,INE200M01039,Beverages,0.95,equity
+145112,Gland Pharma Limited,INE068V01023,Pharmaceuticals & Biotechnology,0.95,equity
+145112,FSN E-Commerce Ventures Limited,INE388Y01029,Retailing,0.93,equity
+145112,AU Small Finance Bank Limited,INE949L01017,Banks,0.93,equity
+145112,United Spirits Limited,INE854D01024,Beverages,0.92,equity
+145112,Page Industries Limited,INE761H01022,Textiles & Apparels,0.91,equity
+145112,Titan Company Limited,INE280A01028,Consumer Durables,0.89,equity
+145112,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,0.88,equity
+145112,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,0.87,equity
+145112,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,0.83,equity
+145112,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.83,equity
+145112,Premier Energies Limited,INE0BS701011,Electrical Equipment,0.82,equity
+145112,Mphasis Limited,INE356A01018,IT - Software,0.8,equity
+145112,Swiggy Limited,INE00H001014,Retailing,0.8,equity
+145112,UNO Minda Limited,INE405E01023,Auto Components,0.77,equity
+145112,Supreme Industries Limited,INE195A01028,Industrial Products,0.74,equity
+145112,Cummins India Limited,INE298A01020,Industrial Products,0.73,equity
+145112,Sundaram Finance Limited,INE660A01013,Finance,0.73,equity
+145112,Lenskart Solutions Limited,INE956O01016,Retailing,0.71,equity
+145112,PB Fintech Limited,INE417T01026,Financial Technology (Fintech),0.69,equity
+145112,Amber Enterprises India Limited,INE371P01015,Consumer Durables,0.67,equity
+145112,Schaeffler India Limited,INE513A01022,Auto Components,0.64,equity
+145112,Mahindra & Mahindra Financial Services Limited,INE774D01024,Finance,0.63,equity
+145112,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,0.59,equity
+145112,Berger Paints (I) Limited,INE463A01038,Consumer Durables,0.59,equity
+145112,Tech Mahindra Limited,INE669C01036,IT - Software,0.56,equity
+145112,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,0.56,equity
+145112,Kirloskar Oil Engines Limited,INE146L01010,Industrial Products,0.55,equity
+145112,Torrent Power Limited,INE813H01021,Power,0.54,equity
+145112,Vishal Mega Mart Limited,INE01EA01019,Retailing,0.54,equity
+145112,Blue Star Limited,INE472A01039,Consumer Durables,0.53,equity
+145112,Maruti Suzuki India Limited,INE585B01010,Automobiles,0.53,equity
+145112,Vijaya Diagnostic Centre Limited,INE043W01024,Healthcare Services,0.53,equity
+145112,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,0.46,equity
+145112,Voltas Limited,INE226A01021,Consumer Durables,0.46,equity
+145112,Glenmark Pharmaceuticals Limited,INE935A01035,Pharmaceuticals & Biotechnology,0.46,equity
+145112,Persistent Systems Limited,INE262H01021,IT - Software,0.46,equity
+145112,Marico Limited,INE196A01026,Agricultural Food & other Products,0.43,equity
+145112,ITC Hotels Limited,INE379A01028,Leisure Services,0.43,equity
+145112,Coromandel International Limited,INE169A01031,Fertilizers & Agrochemicals,0.42,equity
+145112,Triveni Turbine Limited,INE152M01016,Electrical Equipment,0.41,equity
+145112,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,0.4,equity
+145112,Tata Capital Limited,INE976I01016,Finance,0.4,equity
+145112,Bharat Forge Limited,INE465A01025,Auto Components,0.38,equity
+145112,Manipal Health Enterprises Ltd,INE459N01021,Healthcare Services,0.37,equity
+145112,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,0.33,equity
+145112,Jubilant Foodworks Limited,INE797F01020,Leisure Services,0.32,equity
+145112,KEI Industries Limited,INE878B01027,Industrial Products,0.26,equity
+145112,Cyient Dlm Ltd,INE055S01018,Aerospace & Defense,0.16,equity
+145112,Aditya Infotech Limited,INE819V01029,Industrial Manufacturing,0.05,equity
+145112,Indo-MIM Limited,INE084101034,Industrial Manufacturing,0.02,equity
+145112,Alphabet Inc A,US02079K3059,,1.05,other
+145112,Nvidia Corp Com,US67066G1040,,0.71,other
+145112,Taiwan Semiconductor Sp ADR,US8740391003,,0.7,other
+145112,Astrazeneca PLC,GB0009895292,,0.4,other
+145112,TJX ORD,US8725401090,,0.38,other
+145112,Microsoft Corp,US5949181045,,0.33,other
+145112,Visa Inc,US92826C8394,,0.33,other
+145112,Meta Platforms Registered Shares A,US30303M1027,,0.3,other
+145112,Parker-Hannifin Corp,US7010941042,,0.3,other
+145112,Coca Cola Co.,US1912161007,,0.18,other
+145112,Arista Networks Inc,US0404132054,,0.17,other
+145112,KLA Corporation,US4824801009,,0.14,other
+145112,Autozone Inc,US0533321024,,0.12,other
+145112,Uber Technologies Inc,US90353T1007,,0.1,other
+145112,91 Days Tbill (MD 15/10/2026),IN002026X156,,0.18,debt
+145112,iShares VII PLC - iShares NASDAQ 100 UCITS ETF,IE00B53SZB19,,0.8,other
+145112,ISHARES CORE S&P 500 (USD) UCITS ETF,IE00B5BMR087,,0.67,other
+145112,Net Receivables / (Payables),,,0.4,cash
+145110,ICICI Bank Limited,INE090A01021,Banks,4.43,equity
+145110,HDFC Bank Limited,INE040A01034,Banks,3.38,equity
+145110,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,2.76,equity
+145110,Eternal Limited,INE758T01015,Retailing,2.68,equity
+145110,Sona BLW Precision Forgings Limited,INE073K01018,Auto Components,2.44,equity
+145110,Bharti Airtel Limited,INE397D01024,Telecom - Services,2.28,equity
+145110,Reliance Industries Limited,INE002A01018,Petroleum Products,2.19,equity
+145110,Axis Bank Limited,INE238A01034,Banks,2.03,equity
+145110,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,2.01,equity
+145110,GE Vernova T&D India Limited,INE200A01026,Electrical Equipment,1.92,equity
+145110,Apar Industries Limited,INE372A01015,Electrical Equipment,1.79,equity
+145110,Larsen & Toubro Limited,INE018A01030,Construction,1.68,equity
+145110,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,1.67,equity
+145110,Samvardhana Motherson International Limited,INE775A01035,Auto Components,1.6,equity
+145110,Shriram Finance Limited,INE721A01047,Finance,1.54,equity
+145110,Coforge Limited,INE591G01025,IT - Software,1.45,equity
+145110,Fortis Healthcare Limited,INE061F01013,Healthcare Services,1.42,equity
+145110,Minda Corporation Limited,INE842C01021,Auto Components,1.41,equity
+145110,IndusInd Bank Limited,INE095A01012,Banks,1.37,equity
+145110,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,1.33,equity
+145110,BSE Limited,INE118H01025,Capital Markets,1.3,equity
+145110,RBL Bank Limited,INE976G01028,Banks,1.29,equity
+145110,Bajaj Finance Limited,INE296A01032,Finance,1.28,equity
+145110,Radico Khaitan Limited,INE944F01028,Beverages,1.27,equity
+145110,Mahindra & Mahindra Limited,INE101A01026,Automobiles,1.25,equity
+145110,The Federal Bank Limited,INE171A01029,Banks,1.24,equity
+145110,Indus Towers Limited,INE121J01017,Telecom - Services,1.21,equity
+145110,The Phoenix Mills Limited,INE211B01039,Realty,1.16,equity
+145110,TD Power Systems Limited,INE419M01035,Electrical Equipment,1.13,equity
+145110,State Bank of India,INE062A01020,Banks,1.12,equity
+145110,The Indian Hotels Company Limited,INE053A01029,Leisure Services,1.09,equity
+145110,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,1.09,equity
+145110,Ather Energy Limited,INE0LEZ01016,Automobiles,1.02,equity
+145110,SRF Limited,INE647A01010,Chemicals & Petrochemicals,1.01,equity
+145110,InterGlobe Aviation Limited,INE646L01027,Transport Services,0.99,equity
+145110,TVS Motor Company Limited,INE494B01023,Automobiles,0.98,equity
+145110,Varun Beverages Limited,INE200M01039,Beverages,0.95,equity
+145110,Gland Pharma Limited,INE068V01023,Pharmaceuticals & Biotechnology,0.95,equity
+145110,FSN E-Commerce Ventures Limited,INE388Y01029,Retailing,0.93,equity
+145110,AU Small Finance Bank Limited,INE949L01017,Banks,0.93,equity
+145110,United Spirits Limited,INE854D01024,Beverages,0.92,equity
+145110,Page Industries Limited,INE761H01022,Textiles & Apparels,0.91,equity
+145110,Titan Company Limited,INE280A01028,Consumer Durables,0.89,equity
+145110,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,0.88,equity
+145110,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,0.87,equity
+145110,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,0.83,equity
+145110,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.83,equity
+145110,Premier Energies Limited,INE0BS701011,Electrical Equipment,0.82,equity
+145110,Mphasis Limited,INE356A01018,IT - Software,0.8,equity
+145110,Swiggy Limited,INE00H001014,Retailing,0.8,equity
+145110,UNO Minda Limited,INE405E01023,Auto Components,0.77,equity
+145110,Supreme Industries Limited,INE195A01028,Industrial Products,0.74,equity
+145110,Cummins India Limited,INE298A01020,Industrial Products,0.73,equity
+145110,Sundaram Finance Limited,INE660A01013,Finance,0.73,equity
+145110,Lenskart Solutions Limited,INE956O01016,Retailing,0.71,equity
+145110,PB Fintech Limited,INE417T01026,Financial Technology (Fintech),0.69,equity
+145110,Amber Enterprises India Limited,INE371P01015,Consumer Durables,0.67,equity
+145110,Schaeffler India Limited,INE513A01022,Auto Components,0.64,equity
+145110,Mahindra & Mahindra Financial Services Limited,INE774D01024,Finance,0.63,equity
+145110,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,0.59,equity
+145110,Berger Paints (I) Limited,INE463A01038,Consumer Durables,0.59,equity
+145110,Tech Mahindra Limited,INE669C01036,IT - Software,0.56,equity
+145110,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,0.56,equity
+145110,Kirloskar Oil Engines Limited,INE146L01010,Industrial Products,0.55,equity
+145110,Torrent Power Limited,INE813H01021,Power,0.54,equity
+145110,Vishal Mega Mart Limited,INE01EA01019,Retailing,0.54,equity
+145110,Blue Star Limited,INE472A01039,Consumer Durables,0.53,equity
+145110,Maruti Suzuki India Limited,INE585B01010,Automobiles,0.53,equity
+145110,Vijaya Diagnostic Centre Limited,INE043W01024,Healthcare Services,0.53,equity
+145110,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,0.46,equity
+145110,Voltas Limited,INE226A01021,Consumer Durables,0.46,equity
+145110,Glenmark Pharmaceuticals Limited,INE935A01035,Pharmaceuticals & Biotechnology,0.46,equity
+145110,Persistent Systems Limited,INE262H01021,IT - Software,0.46,equity
+145110,Marico Limited,INE196A01026,Agricultural Food & other Products,0.43,equity
+145110,ITC Hotels Limited,INE379A01028,Leisure Services,0.43,equity
+145110,Coromandel International Limited,INE169A01031,Fertilizers & Agrochemicals,0.42,equity
+145110,Triveni Turbine Limited,INE152M01016,Electrical Equipment,0.41,equity
+145110,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,0.4,equity
+145110,Tata Capital Limited,INE976I01016,Finance,0.4,equity
+145110,Bharat Forge Limited,INE465A01025,Auto Components,0.38,equity
+145110,Manipal Health Enterprises Ltd,INE459N01021,Healthcare Services,0.37,equity
+145110,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,0.33,equity
+145110,Jubilant Foodworks Limited,INE797F01020,Leisure Services,0.32,equity
+145110,KEI Industries Limited,INE878B01027,Industrial Products,0.26,equity
+145110,Cyient Dlm Ltd,INE055S01018,Aerospace & Defense,0.16,equity
+145110,Aditya Infotech Limited,INE819V01029,Industrial Manufacturing,0.05,equity
+145110,Indo-MIM Limited,INE084101034,Industrial Manufacturing,0.02,equity
+145110,Alphabet Inc A,US02079K3059,,1.05,other
+145110,Nvidia Corp Com,US67066G1040,,0.71,other
+145110,Taiwan Semiconductor Sp ADR,US8740391003,,0.7,other
+145110,Astrazeneca PLC,GB0009895292,,0.4,other
+145110,TJX ORD,US8725401090,,0.38,other
+145110,Microsoft Corp,US5949181045,,0.33,other
+145110,Visa Inc,US92826C8394,,0.33,other
+145110,Meta Platforms Registered Shares A,US30303M1027,,0.3,other
+145110,Parker-Hannifin Corp,US7010941042,,0.3,other
+145110,Coca Cola Co.,US1912161007,,0.18,other
+145110,Arista Networks Inc,US0404132054,,0.17,other
+145110,KLA Corporation,US4824801009,,0.14,other
+145110,Autozone Inc,US0533321024,,0.12,other
+145110,Uber Technologies Inc,US90353T1007,,0.1,other
+145110,91 Days Tbill (MD 15/10/2026),IN002026X156,,0.18,debt
+145110,iShares VII PLC - iShares NASDAQ 100 UCITS ETF,IE00B53SZB19,,0.8,other
+145110,ISHARES CORE S&P 500 (USD) UCITS ETF,IE00B5BMR087,,0.67,other
+145110,Net Receivables / (Payables),,,0.4,cash
+154078,Axis Gold ETF,INF846K01W80,,58.68,other
+154078,Axis Silver ETF,INF846K011K1,,41.33,other
+154078,Net Receivables / (Payables),,,-0.24,cash
+154077,Axis Gold ETF,INF846K01W80,,58.68,other
+154077,Axis Silver ETF,INF846K011K1,,41.33,other
+154077,Net Receivables / (Payables),,,-0.24,cash
+153927,Axis CRISIL-IBX AAA Bond NBFC - Jun 2027 Index Fund - Direct Plan - Growth Option,INF846K017X1,,63.6,mf_units
+153927,Axis Arbitrage Fund Direct Plan Growth,INF846K01PZ1,,35.57,mf_units
+153927,Net Receivables / (Payables),,,-0.06,cash
+153924,Axis CRISIL-IBX AAA Bond NBFC - Jun 2027 Index Fund - Direct Plan - Growth Option,INF846K017X1,,63.6,mf_units
+153924,Axis Arbitrage Fund Direct Plan Growth,INF846K01PZ1,,35.57,mf_units
+153924,Net Receivables / (Payables),,,-0.06,cash
+116894,IndiGrid Infrastructure Trust,INE219X23014,,1.12,other
+116894,Raajmarg Infra Investment Trust,INE2PB023011,,1.08,other
+116894,Capital Infra Trust,INE0Z8Z23013,,1.03,other
+116894,Knowledge Realty Trust,INE1JAR25012,,0.25,other
+116894,Citius Transnet Investment Trust,INE2Q7823014,,0.13,other
+116894,Embassy Office Parks REIT,INE041025011,,0.06,other
+116894,Cube Highways Trust-InvIT Fund,INE0NR623014,,0.04,other
+116894,Indus Infra Trust,INE0NHL23019,,0.02,other
+116894,6.94% Government of India (11/05/2036),IN0020260025,,8.85,other
+116894,Jubilant Beverages Limited (31/05/2028) (ZCB) **,INE1D4O08012,,3.69,other
+116894,8.58% GMR Hyderabad International Airport Limited (28/03/2034) **,INE802J07035,,3.29,other
+116894,7.18% Tamilnadu State Development Loans (03/12/2033),IN3120250458,,3.14,other
+116894,Jubilant Bevco Limited (31/05/2028) (ZCB),INE1D4P08019,,3.14,other
+116894,8% Adani Power Limited (27/01/2028) **,INE814H07190,,3.03,other
+116894,9.5% Delhi International Airport Limited (22/03/2034) **,INE657H08043,,2.84,other
+116894,8.8% Aditya Birla Digital Fashion Ventures Limited (26/08/2027) **,INE0M8D08016,,2.78,other
+116894,9.01% Hiranandani Financial Services Private Limited (30/03/2029) **,INE07UF07034,,2.61,other
+116894,8.65% Aadhar Housing Finance Limited (20/08/2027) **,INE883F07330,,2.55,other
+116894,Aadhar Housing Fin FRN 3MTBIL+2.5% Aadhar Housing Finance Limited (03/08/2029) (FRN) **,INE883F07413,,2.54,other
+116894,8.45% Adani Airport Holdings Limited (12/02/2029) **,INE0GCN07054,,2.51,other
+116894,JSW Kalinga Steel Limited (23/03/2029) (ZCB),INE2QI808033,,2.37,other
+116894,Cholamandalam Investment and Finance Company Ltd (27/02/2029) (FRN) **,INE121A07SU3,,2.28,other
+116894,9.40% Vedanta Aluminium Metal Limited (20/02/2027),INE205A08038,,2.19,other
+116894,5% GMR Airports Limited (13/02/2027) **,INE776C08083,,2.15,other
+116894,7.96% Lodha Developers Limited (07/07/2028) **,INE670K07299,,2.13,other
+116894,Bamboo Hotel And Global Centre (Delhi) Private limited (31/01/2028) **,INE755L07015,,2.03,other
+116894,10.5% Navi Finserv Limited (01/06/2028) **,INE342T07734,,2.03,other
+116894,8.8% 360 One Prime Limited (22/06/2028) **,INE248U07GG6,,2.02,other
+116894,9.5% Kogta Financial (India) Limited (30/10/2027) **,INE192U07376,,2.01,other
+116894,6.9% Government of India (15/04/2065),IN0020250018,,1.96,other
+116894,5% GMR Airports Limited (13/08/2028) **,INE776C08075,,1.79,other
+116894,9.4% IndoStar Capital Finance Limited (18/06/2027) **,INE896L07AL4,,1.78,other
+116894,8.60% Aditya Birla Renewables Limited (24/09/2027) **,INE01QP08016,,1.77,other
+116894,8.95% Aptus Finance India Private Limited (06/03/2029) **,INE04MH07059,,1.59,other
+116894,9.4% IKF Finance Limited (12/08/2027) **,INE859C07246,,1.52,other
+116894,JTPM Metal Traders Limited (29/09/2028) (ZCB) **,INE02PE08036,,1.37,other
+116894,7.1% Government of India (08/04/2034),IN0020240019,,1.37,other
+116894,8.3% Tata Projects Limited (07/01/2028) **,INE725H08238,,1.26,other
+116894,8.15% Godrej Industries Limited (22/11/2029) **,INE233A08147,,1.25,other
+116894,6.28% Government of India (14/07/2032),IN0020250059,,1.22,other
+116894,6.94% Power Grid Corporation of India Limited (15/04/2035) **,INE752E08783,,1.2,other
+116894,9.5% Keystone Realtors Limited (29/09/2028) **,INE263M07109,,1.2,other
+116894,6.68% Government of India (07/07/2040),IN0020250042,,1.2,other
+116894,7.71% Government of India (18/05/2066),IN0020260033,,1.01,other
+116894,9% IKF Finance Limited (12/09/2028) **,INE859C07303,,1.01,other
+116894,7.73% Embassy Office Parks REIT (14/12/2029) **,INE041007159,,1.01,other
+116894,8.85% Veritas Finance Private Limited (19/09/2029) **,INE448U07307,,1.0,other
+116894,7.55% L&T Metro Rail (Hyderabad) Limited (28/04/2035) **,INE128M08094,,0.98,other
+116894,8.65% TVS Holdings Limited (07/06/2029) **,INE105A08022,,0.76,other
+116894,8.11% Pilani Investment and Industries Corporation Limited (24/04/2029) **,INE417C08019,,0.75,other
+116894,7.80% Mahanagar Telephone Nigam Limited (07/11/2033) **,INE153A08170,,0.75,other
+116894,9.31% Vedanta Limited (03/12/2027) **,INE205A08046,,0.51,other
+116894,7.26% Government of India (06/02/2033),IN0020220151,,0.51,other
+116894,7.86% Jharkhand State Development Loans (09/11/2034),IN3720220018,,0.51,other
+116894,9% Aditya Birla Digital Fashion Ventures Limited (20/07/2029) **,INE0M8D08032,,0.5,other
+116894,7.20% National Bank For Agriculture and Rural Development (21/10/2031) **,INE261F08691,,0.5,other
+116894,7.45% Altius Telecom Infrastructure Trust (20/04/2035) **,INE0BWS07045,,0.49,other
+116894,8.75% Aptus Value Housing Finance India Limited (11/03/2030) **,INE852O07154,,0.33,other
+116894,7.44% Maharashtra State Development Loans (04/02/2034),IN2220250434,,0.32,other
+116894,7.57% Government of India (17/06/2033),IN0020190065,,0.16,other
+116894,6.48% Government of India (06/10/2035),IN0020250091,,0.15,other
+116894,7.34% Government of India (22/04/2064),IN0020240035,,0.14,other
+116894,7.26% Government of India (22/08/2032),IN0020220060,,0.1,other
+116894,7.46% Karnataka State Development Loans (20/03/2038),IN1920230365,,0.09,other
+116894,7.88% Government of India (19/03/2030),IN0020150028,,0.08,other
+116894,8.49% National Highways Authority Of India (05/02/2029) **,INE906B07GO3,,0.06,other
+116894,7.1% Government of India (18/04/2029),IN0020220011,,0.05,other
+116894,7.23% Government of India (15/04/2039),IN0020240027,,0.05,other
+116894,7.26% Government of India (14/01/2029),IN0020180454,,0.03,other
+116894,5.79% Government of India (11/05/2030),IN0020200070,,0.02,other
+116894,8.60% Government of India (02/06/2028),IN0020140011,,0.02,other
+116894,6.79% Government of India (07/10/2034),IN0020240126,,0.02,other
+116894,7.35% Embassy Office Parks REIT (05/04/2027) **,INE041007092,,0.01,other
+116894,Siddhivinayak Securitisation Trust (28/09/2030) **,INE2I7F15012,,0.92,debt
+116894,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,0.92,debt
+116894,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,0.58,debt
+116894,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.32,other
+116894,Net Receivables / (Payables),,,1.01,cash
+120475,IndiGrid Infrastructure Trust,INE219X23014,,1.12,other
+120475,Raajmarg Infra Investment Trust,INE2PB023011,,1.08,other
+120475,Capital Infra Trust,INE0Z8Z23013,,1.03,other
+120475,Knowledge Realty Trust,INE1JAR25012,,0.25,other
+120475,Citius Transnet Investment Trust,INE2Q7823014,,0.13,other
+120475,Embassy Office Parks REIT,INE041025011,,0.06,other
+120475,Cube Highways Trust-InvIT Fund,INE0NR623014,,0.04,other
+120475,Indus Infra Trust,INE0NHL23019,,0.02,other
+120475,6.94% Government of India (11/05/2036),IN0020260025,,8.85,other
+120475,Jubilant Beverages Limited (31/05/2028) (ZCB) **,INE1D4O08012,,3.69,other
+120475,8.58% GMR Hyderabad International Airport Limited (28/03/2034) **,INE802J07035,,3.29,other
+120475,7.18% Tamilnadu State Development Loans (03/12/2033),IN3120250458,,3.14,other
+120475,Jubilant Bevco Limited (31/05/2028) (ZCB),INE1D4P08019,,3.14,other
+120475,8% Adani Power Limited (27/01/2028) **,INE814H07190,,3.03,other
+120475,9.5% Delhi International Airport Limited (22/03/2034) **,INE657H08043,,2.84,other
+120475,8.8% Aditya Birla Digital Fashion Ventures Limited (26/08/2027) **,INE0M8D08016,,2.78,other
+120475,9.01% Hiranandani Financial Services Private Limited (30/03/2029) **,INE07UF07034,,2.61,other
+120475,8.65% Aadhar Housing Finance Limited (20/08/2027) **,INE883F07330,,2.55,other
+120475,Aadhar Housing Fin FRN 3MTBIL+2.5% Aadhar Housing Finance Limited (03/08/2029) (FRN) **,INE883F07413,,2.54,other
+120475,8.45% Adani Airport Holdings Limited (12/02/2029) **,INE0GCN07054,,2.51,other
+120475,JSW Kalinga Steel Limited (23/03/2029) (ZCB),INE2QI808033,,2.37,other
+120475,Cholamandalam Investment and Finance Company Ltd (27/02/2029) (FRN) **,INE121A07SU3,,2.28,other
+120475,9.40% Vedanta Aluminium Metal Limited (20/02/2027),INE205A08038,,2.19,other
+120475,5% GMR Airports Limited (13/02/2027) **,INE776C08083,,2.15,other
+120475,7.96% Lodha Developers Limited (07/07/2028) **,INE670K07299,,2.13,other
+120475,Bamboo Hotel And Global Centre (Delhi) Private limited (31/01/2028) **,INE755L07015,,2.03,other
+120475,10.5% Navi Finserv Limited (01/06/2028) **,INE342T07734,,2.03,other
+120475,8.8% 360 One Prime Limited (22/06/2028) **,INE248U07GG6,,2.02,other
+120475,9.5% Kogta Financial (India) Limited (30/10/2027) **,INE192U07376,,2.01,other
+120475,6.9% Government of India (15/04/2065),IN0020250018,,1.96,other
+120475,5% GMR Airports Limited (13/08/2028) **,INE776C08075,,1.79,other
+120475,9.4% IndoStar Capital Finance Limited (18/06/2027) **,INE896L07AL4,,1.78,other
+120475,8.60% Aditya Birla Renewables Limited (24/09/2027) **,INE01QP08016,,1.77,other
+120475,8.95% Aptus Finance India Private Limited (06/03/2029) **,INE04MH07059,,1.59,other
+120475,9.4% IKF Finance Limited (12/08/2027) **,INE859C07246,,1.52,other
+120475,JTPM Metal Traders Limited (29/09/2028) (ZCB) **,INE02PE08036,,1.37,other
+120475,7.1% Government of India (08/04/2034),IN0020240019,,1.37,other
+120475,8.3% Tata Projects Limited (07/01/2028) **,INE725H08238,,1.26,other
+120475,8.15% Godrej Industries Limited (22/11/2029) **,INE233A08147,,1.25,other
+120475,6.28% Government of India (14/07/2032),IN0020250059,,1.22,other
+120475,6.94% Power Grid Corporation of India Limited (15/04/2035) **,INE752E08783,,1.2,other
+120475,9.5% Keystone Realtors Limited (29/09/2028) **,INE263M07109,,1.2,other
+120475,6.68% Government of India (07/07/2040),IN0020250042,,1.2,other
+120475,7.71% Government of India (18/05/2066),IN0020260033,,1.01,other
+120475,9% IKF Finance Limited (12/09/2028) **,INE859C07303,,1.01,other
+120475,7.73% Embassy Office Parks REIT (14/12/2029) **,INE041007159,,1.01,other
+120475,8.85% Veritas Finance Private Limited (19/09/2029) **,INE448U07307,,1.0,other
+120475,7.55% L&T Metro Rail (Hyderabad) Limited (28/04/2035) **,INE128M08094,,0.98,other
+120475,8.65% TVS Holdings Limited (07/06/2029) **,INE105A08022,,0.76,other
+120475,8.11% Pilani Investment and Industries Corporation Limited (24/04/2029) **,INE417C08019,,0.75,other
+120475,7.80% Mahanagar Telephone Nigam Limited (07/11/2033) **,INE153A08170,,0.75,other
+120475,9.31% Vedanta Limited (03/12/2027) **,INE205A08046,,0.51,other
+120475,7.26% Government of India (06/02/2033),IN0020220151,,0.51,other
+120475,7.86% Jharkhand State Development Loans (09/11/2034),IN3720220018,,0.51,other
+120475,9% Aditya Birla Digital Fashion Ventures Limited (20/07/2029) **,INE0M8D08032,,0.5,other
+120475,7.20% National Bank For Agriculture and Rural Development (21/10/2031) **,INE261F08691,,0.5,other
+120475,7.45% Altius Telecom Infrastructure Trust (20/04/2035) **,INE0BWS07045,,0.49,other
+120475,8.75% Aptus Value Housing Finance India Limited (11/03/2030) **,INE852O07154,,0.33,other
+120475,7.44% Maharashtra State Development Loans (04/02/2034),IN2220250434,,0.32,other
+120475,7.57% Government of India (17/06/2033),IN0020190065,,0.16,other
+120475,6.48% Government of India (06/10/2035),IN0020250091,,0.15,other
+120475,7.34% Government of India (22/04/2064),IN0020240035,,0.14,other
+120475,7.26% Government of India (22/08/2032),IN0020220060,,0.1,other
+120475,7.46% Karnataka State Development Loans (20/03/2038),IN1920230365,,0.09,other
+120475,7.88% Government of India (19/03/2030),IN0020150028,,0.08,other
+120475,8.49% National Highways Authority Of India (05/02/2029) **,INE906B07GO3,,0.06,other
+120475,7.1% Government of India (18/04/2029),IN0020220011,,0.05,other
+120475,7.23% Government of India (15/04/2039),IN0020240027,,0.05,other
+120475,7.26% Government of India (14/01/2029),IN0020180454,,0.03,other
+120475,5.79% Government of India (11/05/2030),IN0020200070,,0.02,other
+120475,8.60% Government of India (02/06/2028),IN0020140011,,0.02,other
+120475,6.79% Government of India (07/10/2034),IN0020240126,,0.02,other
+120475,7.35% Embassy Office Parks REIT (05/04/2027) **,INE041007092,,0.01,other
+120475,Siddhivinayak Securitisation Trust (28/09/2030) **,INE2I7F15012,,0.92,debt
+120475,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,0.92,debt
+120475,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,0.58,debt
+120475,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.32,other
+120475,Net Receivables / (Payables),,,1.01,cash
+152202,Mahindra & Mahindra Limited,INE101A01026,Automobiles,4.82,equity
+152202,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,3.61,equity
+152202,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,3.57,equity
+152202,Sona BLW Precision Forgings Limited,INE073K01018,Auto Components,3.21,equity
+152202,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,2.95,equity
+152202,Reliance Industries Limited,INE002A01018,Petroleum Products,2.81,equity
+152202,TVS Motor Company Limited,INE494B01023,Automobiles,2.81,equity
+152202,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,2.48,equity
+152202,Cummins India Limited,INE298A01020,Industrial Products,2.39,equity
+152202,Hindalco Industries Limited,INE038A01020,Non - Ferrous Metals,2.26,equity
+152202,Samvardhana Motherson International Limited,INE775A01035,Auto Components,2.26,equity
+152202,TD Power Systems Limited,INE419M01035,Electrical Equipment,2.12,equity
+152202,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,2.11,equity
+152202,Craftsman Automation Limited,INE00LO01017,Auto Components,2.11,equity
+152202,Apar Industries Limited,INE372A01015,Electrical Equipment,2.11,equity
+152202,GE Vernova T&D India Limited,INE200A01026,Electrical Equipment,2.1,equity
+152202,Sansera Engineering Limited,INE953O01021,Auto Components,2.05,equity
+152202,Ather Energy Limited,INE0LEZ01016,Automobiles,1.98,equity
+152202,Welspun Corp Limited,INE191B01025,Industrial Products,1.79,equity
+152202,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,1.78,equity
+152202,Maruti Suzuki India Limited,INE585B01010,Automobiles,1.76,equity
+152202,Hindustan Aeronautics Limited,INE066F01020,Aerospace & Defense,1.75,equity
+152202,Hyundai Motor India Ltd,INE0V6F01027,Automobiles,1.59,equity
+152202,Bajaj Auto Limited,INE917I01010,Automobiles,1.56,equity
+152202,Indo-MIM Limited,INE084101034,Industrial Manufacturing,1.49,equity
+152202,Tata Steel Limited,INE081A01020,Ferrous Metals,1.46,equity
+152202,Bharat Forge Limited,INE465A01025,Auto Components,1.44,equity
+152202,Minda Corporation Limited,INE842C01021,Auto Components,1.41,equity
+152202,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,1.37,equity
+152202,Vedanta Aluminium Metal Limited,INE1CDF01017,Non - Ferrous Metals,1.32,equity
+152202,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,1.3,equity
+152202,Dixon Technologies (India) Limited,INE935N01020,Consumer Durables,1.24,equity
+152202,Gland Pharma Limited,INE068V01023,Pharmaceuticals & Biotechnology,1.21,equity
+152202,Happy Forgings Limited,INE330T01021,Industrial Products,1.2,equity
+152202,Premier Energies Limited,INE0BS701011,Electrical Equipment,1.19,equity
+152202,Amber Enterprises India Limited,INE371P01015,Consumer Durables,1.08,equity
+152202,JSW Steel Limited,INE019A01038,Ferrous Metals,1.08,equity
+152202,Schaeffler India Limited,INE513A01022,Auto Components,1.07,equity
+152202,Sai Life Sciences Limited,INE570L01029,Pharmaceuticals & Biotechnology,1.07,equity
+152202,Jindal Steel Limited,INE749A01030,Ferrous Metals,1.05,equity
+152202,Bharat Petroleum Corporation Limited,INE029A01011,Petroleum Products,1.02,equity
+152202,Carborundum Universal Limited,INE120A01034,Industrial Products,0.99,equity
+152202,IPCA Laboratories Limited,INE571A01038,Pharmaceuticals & Biotechnology,0.96,equity
+152202,ABB India Limited,INE117A01022,Electrical Equipment,0.89,equity
+152202,Laurus Labs Limited,INE947Q01028,Pharmaceuticals & Biotechnology,0.89,equity
+152202,Syrma SGS Technology Limited,INE0DYJ01015,Industrial Manufacturing,0.87,equity
+152202,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,0.85,equity
+152202,Blue Star Limited,INE472A01039,Consumer Durables,0.84,equity
+152202,Dhoot Transmission Ltd,INE01NH01023,Auto Components,0.81,equity
+152202,Azad Engineering Ltd,INE02IJ01035,Electrical Equipment,0.79,equity
+152202,Aditya Infotech Limited,INE819V01029,Industrial Manufacturing,0.64,equity
+152202,Radico Khaitan Limited,INE944F01028,Beverages,0.63,equity
+152202,Ashok Leyland Limited,INE208A01029,"Agricultural, Commercial & Construction Vehicles",0.62,equity
+152202,Cyient Dlm Ltd,INE055S01018,Aerospace & Defense,0.59,equity
+152202,Voltas Limited,INE226A01021,Consumer Durables,0.55,equity
+152202,Piramal Pharma Limited,INE0DK501011,Pharmaceuticals & Biotechnology,0.55,equity
+152202,Triveni Turbine Limited,INE152M01016,Electrical Equipment,0.54,equity
+152202,Bosch Limited,INE323A01026,Auto Components,0.53,equity
+152202,Kirloskar Oil Engines Limited,INE146L01010,Industrial Products,0.52,equity
+152202,SRF Limited,INE647A01010,Chemicals & Petrochemicals,0.52,equity
+152202,Glenmark Pharmaceuticals Limited,INE935A01035,Pharmaceuticals & Biotechnology,0.5,equity
+152202,Tenneco Clean Air India Limited,INE19RI01016,Auto Components,0.49,equity
+152202,K.P.R. Mill Limited,INE930H01031,Textiles & Apparels,0.44,equity
+152202,MTAR Technologies Limited,INE864I01014,Electrical Equipment,0.44,equity
+152202,PG Electroplast Limited,INE457L01029,Consumer Durables,0.43,equity
+152202,Aether Industries Limited,INE0BWX01014,Chemicals & Petrochemicals,0.36,equity
+152202,Avalon Technologies Limited,INE0LCL01028,Electrical Equipment,0.33,equity
+152202,Grindwell Norton Limited,INE536A01023,Industrial Products,0.31,equity
+152202,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,0.28,equity
+152202,Voltamp Transformers Limited,INE540H01012,Electrical Equipment,0.24,equity
+152202,KEI Industries Limited,INE878B01027,Industrial Products,0.2,equity
+152202,Rubicon Research Limited,INE506V01022,Pharmaceuticals & Biotechnology,0.19,equity
+152202,PI Industries Limited,INE603J01030,Fertilizers & Agrochemicals,0.16,equity
+152202,Net Receivables / (Payables),,,-0.06,cash
+152205,Mahindra & Mahindra Limited,INE101A01026,Automobiles,4.82,equity
+152205,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,3.61,equity
+152205,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,3.57,equity
+152205,Sona BLW Precision Forgings Limited,INE073K01018,Auto Components,3.21,equity
+152205,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,2.95,equity
+152205,Reliance Industries Limited,INE002A01018,Petroleum Products,2.81,equity
+152205,TVS Motor Company Limited,INE494B01023,Automobiles,2.81,equity
+152205,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,2.48,equity
+152205,Cummins India Limited,INE298A01020,Industrial Products,2.39,equity
+152205,Hindalco Industries Limited,INE038A01020,Non - Ferrous Metals,2.26,equity
+152205,Samvardhana Motherson International Limited,INE775A01035,Auto Components,2.26,equity
+152205,TD Power Systems Limited,INE419M01035,Electrical Equipment,2.12,equity
+152205,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,2.11,equity
+152205,Craftsman Automation Limited,INE00LO01017,Auto Components,2.11,equity
+152205,Apar Industries Limited,INE372A01015,Electrical Equipment,2.11,equity
+152205,GE Vernova T&D India Limited,INE200A01026,Electrical Equipment,2.1,equity
+152205,Sansera Engineering Limited,INE953O01021,Auto Components,2.05,equity
+152205,Ather Energy Limited,INE0LEZ01016,Automobiles,1.98,equity
+152205,Welspun Corp Limited,INE191B01025,Industrial Products,1.79,equity
+152205,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,1.78,equity
+152205,Maruti Suzuki India Limited,INE585B01010,Automobiles,1.76,equity
+152205,Hindustan Aeronautics Limited,INE066F01020,Aerospace & Defense,1.75,equity
+152205,Hyundai Motor India Ltd,INE0V6F01027,Automobiles,1.59,equity
+152205,Bajaj Auto Limited,INE917I01010,Automobiles,1.56,equity
+152205,Indo-MIM Limited,INE084101034,Industrial Manufacturing,1.49,equity
+152205,Tata Steel Limited,INE081A01020,Ferrous Metals,1.46,equity
+152205,Bharat Forge Limited,INE465A01025,Auto Components,1.44,equity
+152205,Minda Corporation Limited,INE842C01021,Auto Components,1.41,equity
+152205,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,1.37,equity
+152205,Vedanta Aluminium Metal Limited,INE1CDF01017,Non - Ferrous Metals,1.32,equity
+152205,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,1.3,equity
+152205,Dixon Technologies (India) Limited,INE935N01020,Consumer Durables,1.24,equity
+152205,Gland Pharma Limited,INE068V01023,Pharmaceuticals & Biotechnology,1.21,equity
+152205,Happy Forgings Limited,INE330T01021,Industrial Products,1.2,equity
+152205,Premier Energies Limited,INE0BS701011,Electrical Equipment,1.19,equity
+152205,Amber Enterprises India Limited,INE371P01015,Consumer Durables,1.08,equity
+152205,JSW Steel Limited,INE019A01038,Ferrous Metals,1.08,equity
+152205,Schaeffler India Limited,INE513A01022,Auto Components,1.07,equity
+152205,Sai Life Sciences Limited,INE570L01029,Pharmaceuticals & Biotechnology,1.07,equity
+152205,Jindal Steel Limited,INE749A01030,Ferrous Metals,1.05,equity
+152205,Bharat Petroleum Corporation Limited,INE029A01011,Petroleum Products,1.02,equity
+152205,Carborundum Universal Limited,INE120A01034,Industrial Products,0.99,equity
+152205,IPCA Laboratories Limited,INE571A01038,Pharmaceuticals & Biotechnology,0.96,equity
+152205,ABB India Limited,INE117A01022,Electrical Equipment,0.89,equity
+152205,Laurus Labs Limited,INE947Q01028,Pharmaceuticals & Biotechnology,0.89,equity
+152205,Syrma SGS Technology Limited,INE0DYJ01015,Industrial Manufacturing,0.87,equity
+152205,Pidilite Industries Limited,INE318A01026,Chemicals & Petrochemicals,0.85,equity
+152205,Blue Star Limited,INE472A01039,Consumer Durables,0.84,equity
+152205,Dhoot Transmission Ltd,INE01NH01023,Auto Components,0.81,equity
+152205,Azad Engineering Ltd,INE02IJ01035,Electrical Equipment,0.79,equity
+152205,Aditya Infotech Limited,INE819V01029,Industrial Manufacturing,0.64,equity
+152205,Radico Khaitan Limited,INE944F01028,Beverages,0.63,equity
+152205,Ashok Leyland Limited,INE208A01029,"Agricultural, Commercial & Construction Vehicles",0.62,equity
+152205,Cyient Dlm Ltd,INE055S01018,Aerospace & Defense,0.59,equity
+152205,Voltas Limited,INE226A01021,Consumer Durables,0.55,equity
+152205,Piramal Pharma Limited,INE0DK501011,Pharmaceuticals & Biotechnology,0.55,equity
+152205,Triveni Turbine Limited,INE152M01016,Electrical Equipment,0.54,equity
+152205,Bosch Limited,INE323A01026,Auto Components,0.53,equity
+152205,Kirloskar Oil Engines Limited,INE146L01010,Industrial Products,0.52,equity
+152205,SRF Limited,INE647A01010,Chemicals & Petrochemicals,0.52,equity
+152205,Glenmark Pharmaceuticals Limited,INE935A01035,Pharmaceuticals & Biotechnology,0.5,equity
+152205,Tenneco Clean Air India Limited,INE19RI01016,Auto Components,0.49,equity
+152205,K.P.R. Mill Limited,INE930H01031,Textiles & Apparels,0.44,equity
+152205,MTAR Technologies Limited,INE864I01014,Electrical Equipment,0.44,equity
+152205,PG Electroplast Limited,INE457L01029,Consumer Durables,0.43,equity
+152205,Aether Industries Limited,INE0BWX01014,Chemicals & Petrochemicals,0.36,equity
+152205,Avalon Technologies Limited,INE0LCL01028,Electrical Equipment,0.33,equity
+152205,Grindwell Norton Limited,INE536A01023,Industrial Products,0.31,equity
+152205,Anthem Biosciences Limited,INE0CZ201020,Pharmaceuticals & Biotechnology,0.28,equity
+152205,Voltamp Transformers Limited,INE540H01012,Electrical Equipment,0.24,equity
+152205,KEI Industries Limited,INE878B01027,Industrial Products,0.2,equity
+152205,Rubicon Research Limited,INE506V01022,Pharmaceuticals & Biotechnology,0.19,equity
+152205,PI Industries Limited,INE603J01030,Fertilizers & Agrochemicals,0.16,equity
+152205,Net Receivables / (Payables),,,-0.06,cash
+130314,Capital Infra Trust,INE0Z8Z23013,,1.72,other
+130314,Raajmarg Infra Investment Trust,INE2PB023011,,1.58,other
+130314,Cube Highways Trust-InvIT Fund,INE0NR623014,,1.46,other
+130314,Indus Infra Trust,INE0NHL23019,,1.42,other
+130314,IndiGrid Infrastructure Trust,INE219X23014,,1.13,other
+130314,Knowledge Realty Trust,INE1JAR25012,,0.97,other
+130314,Embassy Office Parks REIT,INE041025011,,0.18,other
+130314,Citius Transnet Investment Trust,INE2Q7823014,,0.16,other
+130314,Jubilant Bevco Limited (31/05/2028) (ZCB),INE1D4P08019,,4.46,other
+130314,JTPM Metal Traders Limited (29/09/2028) (ZCB) **,INE02PE08036,,4.28,other
+130314,8.4% Narayana Hrudayalaya Limited (15/02/2030) **,INE410P08024,,3.95,other
+130314,8.8% Aditya Birla Digital Fashion Ventures Limited (26/08/2027) **,INE0M8D08016,,3.95,other
+130314,6.94% Government of India (11/05/2036),IN0020260025,,3.9,other
+130314,7.45% Altius Telecom Infrastructure Trust (20/04/2035) **,INE0BWS07045,,3.84,other
+130314,7.68% Godrej Seeds & Genetics Limited (27/10/2028) **,INE316Z08014,,3.25,other
+130314,9.40% Vedanta Aluminium Metal Limited (20/02/2027),INE205A08038,,3.18,other
+130314,8.45% Adani Airport Holdings Limited (12/02/2029) **,INE0GCN07054,,3.14,other
+130314,5% GMR Airports Limited (13/02/2027) **,INE776C08083,,2.81,other
+130314,JSW Kalinga Steel Limited (23/03/2029) (ZCB),INE2QI808033,,2.75,other
+130314,9.5% Delhi International Airport Limited (22/03/2034) **,INE657H08043,,2.69,other
+130314,Bamboo Hotel And Global Centre (Delhi) Private limited (31/01/2028) **,INE755L07015,,2.65,other
+130314,Aadhar Housing Fin FRN 3MTBIL+2.5% Aadhar Housing Finance Limited (03/08/2029) (FRN) **,INE883F07413,,2.65,other
+130314,10.5% Navi Finserv Limited (01/06/2028) **,INE342T07734,,2.64,other
+130314,8.58% GMR Hyderabad International Airport Limited (28/03/2034) **,INE802J07035,,2.64,other
+130314,8.8% 360 One Prime Limited (22/06/2028) **,INE248U07GG6,,2.63,other
+130314,8.20% Adani Power Limited (25/01/2029) **,INE814H07208,,2.63,other
+130314,9.5% Kogta Financial (India) Limited (30/10/2027) **,INE192U07376,,2.62,other
+130314,8.85% Veritas Finance Private Limited (19/09/2029) **,INE448U07307,,2.61,other
+130314,7.96% Lodha Developers Limited (07/07/2028) **,INE670K07299,,2.12,other
+130314,9.01% Hiranandani Financial Services Private Limited (30/03/2029) **,INE07UF07034,,2.09,other
+130314,5% GMR Airports Limited (13/08/2028) **,INE776C08075,,1.98,other
+130314,9.4% IKF Finance Limited (12/08/2027) **,INE859C07246,,1.76,other
+130314,8.95% Aptus Finance India Private Limited (06/03/2029) **,INE04MH07059,,1.65,other
+130314,9.5% Keystone Realtors Limited (29/09/2028) **,INE263M07109,,1.57,other
+130314,8.75% Aptus Value Housing Finance India Limited (11/03/2030) **,INE852O07154,,1.48,other
+130314,Jubilant Beverages Limited (31/05/2028) (ZCB) **,INE1D4O08012,,1.48,other
+130314,9.31% Vedanta Limited (03/12/2027) **,INE205A08046,,1.33,other
+130314,360 One Prime Limited (25/07/2028) (FRN) **,INE248U07GJ0,,1.33,other
+130314,8.60% Aditya Birla Renewables Limited (24/09/2027) **,INE01QP08016,,1.32,other
+130314,9% IKF Finance Limited (12/09/2028) **,INE859C07303,,1.32,other
+130314,7.18% Government of India (14/08/2033),IN0020230085,,0.53,other
+130314,7.18% Tamilnadu State Development Loans (27/08/2036),IN3120240582,,0.35,other
+130314,7.26% Government of India (06/02/2033),IN0020220151,,0.13,other
+130314,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,1.76,debt
+130314,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,0.76,debt
+130314,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.49,other
+130314,Net Receivables / (Payables),,,1.34,cash
+130309,Capital Infra Trust,INE0Z8Z23013,,1.72,other
+130309,Raajmarg Infra Investment Trust,INE2PB023011,,1.58,other
+130309,Cube Highways Trust-InvIT Fund,INE0NR623014,,1.46,other
+130309,Indus Infra Trust,INE0NHL23019,,1.42,other
+130309,IndiGrid Infrastructure Trust,INE219X23014,,1.13,other
+130309,Knowledge Realty Trust,INE1JAR25012,,0.97,other
+130309,Embassy Office Parks REIT,INE041025011,,0.18,other
+130309,Citius Transnet Investment Trust,INE2Q7823014,,0.16,other
+130309,Jubilant Bevco Limited (31/05/2028) (ZCB),INE1D4P08019,,4.46,other
+130309,JTPM Metal Traders Limited (29/09/2028) (ZCB) **,INE02PE08036,,4.28,other
+130309,8.4% Narayana Hrudayalaya Limited (15/02/2030) **,INE410P08024,,3.95,other
+130309,8.8% Aditya Birla Digital Fashion Ventures Limited (26/08/2027) **,INE0M8D08016,,3.95,other
+130309,6.94% Government of India (11/05/2036),IN0020260025,,3.9,other
+130309,7.45% Altius Telecom Infrastructure Trust (20/04/2035) **,INE0BWS07045,,3.84,other
+130309,7.68% Godrej Seeds & Genetics Limited (27/10/2028) **,INE316Z08014,,3.25,other
+130309,9.40% Vedanta Aluminium Metal Limited (20/02/2027),INE205A08038,,3.18,other
+130309,8.45% Adani Airport Holdings Limited (12/02/2029) **,INE0GCN07054,,3.14,other
+130309,5% GMR Airports Limited (13/02/2027) **,INE776C08083,,2.81,other
+130309,JSW Kalinga Steel Limited (23/03/2029) (ZCB),INE2QI808033,,2.75,other
+130309,9.5% Delhi International Airport Limited (22/03/2034) **,INE657H08043,,2.69,other
+130309,Bamboo Hotel And Global Centre (Delhi) Private limited (31/01/2028) **,INE755L07015,,2.65,other
+130309,Aadhar Housing Fin FRN 3MTBIL+2.5% Aadhar Housing Finance Limited (03/08/2029) (FRN) **,INE883F07413,,2.65,other
+130309,10.5% Navi Finserv Limited (01/06/2028) **,INE342T07734,,2.64,other
+130309,8.58% GMR Hyderabad International Airport Limited (28/03/2034) **,INE802J07035,,2.64,other
+130309,8.8% 360 One Prime Limited (22/06/2028) **,INE248U07GG6,,2.63,other
+130309,8.20% Adani Power Limited (25/01/2029) **,INE814H07208,,2.63,other
+130309,9.5% Kogta Financial (India) Limited (30/10/2027) **,INE192U07376,,2.62,other
+130309,8.85% Veritas Finance Private Limited (19/09/2029) **,INE448U07307,,2.61,other
+130309,7.96% Lodha Developers Limited (07/07/2028) **,INE670K07299,,2.12,other
+130309,9.01% Hiranandani Financial Services Private Limited (30/03/2029) **,INE07UF07034,,2.09,other
+130309,5% GMR Airports Limited (13/08/2028) **,INE776C08075,,1.98,other
+130309,9.4% IKF Finance Limited (12/08/2027) **,INE859C07246,,1.76,other
+130309,8.95% Aptus Finance India Private Limited (06/03/2029) **,INE04MH07059,,1.65,other
+130309,9.5% Keystone Realtors Limited (29/09/2028) **,INE263M07109,,1.57,other
+130309,8.75% Aptus Value Housing Finance India Limited (11/03/2030) **,INE852O07154,,1.48,other
+130309,Jubilant Beverages Limited (31/05/2028) (ZCB) **,INE1D4O08012,,1.48,other
+130309,9.31% Vedanta Limited (03/12/2027) **,INE205A08046,,1.33,other
+130309,360 One Prime Limited (25/07/2028) (FRN) **,INE248U07GJ0,,1.33,other
+130309,8.60% Aditya Birla Renewables Limited (24/09/2027) **,INE01QP08016,,1.32,other
+130309,9% IKF Finance Limited (12/09/2028) **,INE859C07303,,1.32,other
+130309,7.18% Government of India (14/08/2033),IN0020230085,,0.53,other
+130309,7.18% Tamilnadu State Development Loans (27/08/2036),IN3120240582,,0.35,other
+130309,7.26% Government of India (06/02/2033),IN0020220151,,0.13,other
+130309,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,1.76,debt
+130309,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,0.76,debt
+130309,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.49,other
+130309,Net Receivables / (Payables),,,1.34,cash
+112924,Reliance Industries Limited,INE002A01018,Petroleum Products,1.76,equity
+112924,ICICI Bank Limited,INE090A01021,Banks,1.59,equity
+112924,HDFC Bank Limited,INE040A01034,Banks,1.51,equity
+112924,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,1.12,equity
+112924,Infosys Limited,INE009A01021,IT - Software,1.12,equity
+112924,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.01,equity
+112924,NTPC Limited,INE733E01010,Power,0.91,equity
+112924,Kotak Mahindra Bank Limited,INE237A01036,Banks,0.9,equity
+112924,State Bank of India,INE062A01020,Banks,0.84,equity
+112924,Bharti Airtel Limited,INE397D01024,Telecom - Services,0.84,equity
+112924,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,0.63,equity
+112924,Larsen & Toubro Limited,INE018A01030,Construction,0.55,equity
+112924,Mahindra & Mahindra Limited,INE101A01026,Automobiles,0.54,equity
+112924,ITC Limited,INE154A01025,Diversified FMCG,0.51,equity
+112924,HDFC Life Insurance Company Limited,INE795G01014,Insurance,0.49,equity
+112924,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,0.49,equity
+112924,Britannia Industries Limited,INE216A01030,Food Products,0.47,equity
+112924,Titan Company Limited,INE280A01028,Consumer Durables,0.47,equity
+112924,LTM Limited,INE214T01019,IT - Software,0.44,equity
+112924,Axis Bank Limited,INE238A01034,Banks,0.33,equity
+112924,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,0.28,equity
+112924,Tech Mahindra Limited,INE669C01036,IT - Software,0.24,equity
+112924,Tata Consultancy Services Limited,INE467B01029,IT - Software,0.22,equity
+112924,Bajaj Finance Limited,INE296A01032,Finance,0.18,equity
+112924,Hindustan Unilever Limited,INE030A01027,Diversified FMCG,0.15,equity
+112924,InterGlobe Aviation Limited,INE646L01027,Transport Services,0.14,equity
+112924,HCL Technologies Limited,INE860A01027,IT - Software,0.09,equity
+112924,Bharat Petroleum Corporation Limited,INE029A01011,Petroleum Products,0.07,equity
+112924,Sundaram Finance Limited,INE660A01013,Finance,0.03,equity
+112924,Tata Motors Ltd,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.03,equity
+112924,7.18% Government of India (14/08/2033),IN0020230085,,15.71,other
+112924,6.94% Government of India (11/05/2036),IN0020260025,,13.59,other
+112924,6.79% Government of India (07/10/2034),IN0020240126,,11.7,other
+112924,7.64% Power Finance Corporation Limited (22/02/2033) **,INE134E08MA1,,6.82,other
+112924,7.18% Government of India (24/07/2037),IN0020230077,,4.13,other
+112924,5% GMR Airports Limited (13/02/2027) **,INE776C08083,,2.45,other
+112924,Bamboo Hotel And Global Centre (Delhi) Private limited (31/01/2028) **,INE755L07015,,2.31,other
+112924,Muthoot Finance Limited (26/07/2029) (FRN) **,INE414G07JZ7,,2.3,other
+112924,7.1% Government of India (08/04/2034),IN0020240019,,2.3,other
+112924,7.44% National Bank For Agriculture and Rural Development (17/07/2029),INE261F08EU4,,2.28,other
+112924,9.01% Hiranandani Financial Services Private Limited (30/03/2029) **,INE07UF07034,,2.28,other
+112924,8.11% Pilani Investment and Industries Corporation Limited (24/04/2029) **,INE417C08019,,2.27,other
+112924,8.75% Aptus Value Housing Finance India Limited (11/03/2030) **,INE852O07154,,1.85,other
+112924,9.4% IKF Finance Limited (12/08/2027) **,INE859C07246,,1.54,other
+112924,8.95% Aptus Finance India Private Limited (06/03/2029) **,INE04MH07059,,1.44,other
+112924,7.23% Government of India (15/04/2039),IN0020240027,,1.38,other
+112924,6.19% Government of India (16/09/2034),IN0020200096,,0.09,other
+112924,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.6,other
+112924,Net Receivables / (Payables),,,1.9,cash
+120480,Reliance Industries Limited,INE002A01018,Petroleum Products,1.76,equity
+120480,ICICI Bank Limited,INE090A01021,Banks,1.59,equity
+120480,HDFC Bank Limited,INE040A01034,Banks,1.51,equity
+120480,Cholamandalam Investment and Finance Company Ltd,INE121A01024,Finance,1.12,equity
+120480,Infosys Limited,INE009A01021,IT - Software,1.12,equity
+120480,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.01,equity
+120480,NTPC Limited,INE733E01010,Power,0.91,equity
+120480,Kotak Mahindra Bank Limited,INE237A01036,Banks,0.9,equity
+120480,State Bank of India,INE062A01020,Banks,0.84,equity
+120480,Bharti Airtel Limited,INE397D01024,Telecom - Services,0.84,equity
+120480,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,0.63,equity
+120480,Larsen & Toubro Limited,INE018A01030,Construction,0.55,equity
+120480,Mahindra & Mahindra Limited,INE101A01026,Automobiles,0.54,equity
+120480,ITC Limited,INE154A01025,Diversified FMCG,0.51,equity
+120480,HDFC Life Insurance Company Limited,INE795G01014,Insurance,0.49,equity
+120480,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,0.49,equity
+120480,Britannia Industries Limited,INE216A01030,Food Products,0.47,equity
+120480,Titan Company Limited,INE280A01028,Consumer Durables,0.47,equity
+120480,LTM Limited,INE214T01019,IT - Software,0.44,equity
+120480,Axis Bank Limited,INE238A01034,Banks,0.33,equity
+120480,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,0.28,equity
+120480,Tech Mahindra Limited,INE669C01036,IT - Software,0.24,equity
+120480,Tata Consultancy Services Limited,INE467B01029,IT - Software,0.22,equity
+120480,Bajaj Finance Limited,INE296A01032,Finance,0.18,equity
+120480,Hindustan Unilever Limited,INE030A01027,Diversified FMCG,0.15,equity
+120480,InterGlobe Aviation Limited,INE646L01027,Transport Services,0.14,equity
+120480,HCL Technologies Limited,INE860A01027,IT - Software,0.09,equity
+120480,Bharat Petroleum Corporation Limited,INE029A01011,Petroleum Products,0.07,equity
+120480,Sundaram Finance Limited,INE660A01013,Finance,0.03,equity
+120480,Tata Motors Ltd,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.03,equity
+120480,7.18% Government of India (14/08/2033),IN0020230085,,15.71,other
+120480,6.94% Government of India (11/05/2036),IN0020260025,,13.59,other
+120480,6.79% Government of India (07/10/2034),IN0020240126,,11.7,other
+120480,7.64% Power Finance Corporation Limited (22/02/2033) **,INE134E08MA1,,6.82,other
+120480,7.18% Government of India (24/07/2037),IN0020230077,,4.13,other
+120480,5% GMR Airports Limited (13/02/2027) **,INE776C08083,,2.45,other
+120480,Bamboo Hotel And Global Centre (Delhi) Private limited (31/01/2028) **,INE755L07015,,2.31,other
+120480,Muthoot Finance Limited (26/07/2029) (FRN) **,INE414G07JZ7,,2.3,other
+120480,7.1% Government of India (08/04/2034),IN0020240019,,2.3,other
+120480,7.44% National Bank For Agriculture and Rural Development (17/07/2029),INE261F08EU4,,2.28,other
+120480,9.01% Hiranandani Financial Services Private Limited (30/03/2029) **,INE07UF07034,,2.28,other
+120480,8.11% Pilani Investment and Industries Corporation Limited (24/04/2029) **,INE417C08019,,2.27,other
+120480,8.75% Aptus Value Housing Finance India Limited (11/03/2030) **,INE852O07154,,1.85,other
+120480,9.4% IKF Finance Limited (12/08/2027) **,INE859C07246,,1.54,other
+120480,8.95% Aptus Finance India Private Limited (06/03/2029) **,INE04MH07059,,1.44,other
+120480,7.23% Government of India (15/04/2039),IN0020240027,,1.38,other
+120480,6.19% Government of India (16/09/2034),IN0020200096,,0.09,other
+120480,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.6,other
+120480,Net Receivables / (Payables),,,1.9,cash
+151179,7.34% Government of India (22/04/2064),IN0020240035,,22.94,other
+151179,7.25% Government of India (12/06/2063),IN0020230044,,21.35,other
+151179,7.36% Government of India (12/09/2052),IN0020220086,,20.67,other
+151179,7.09% Government of India (05/08/2054),IN0020240118,,18.16,other
+151179,7.24% Government of India (18/08/2055),IN0020250075,,9.22,other
+151179,7.3% Government of India (19/06/2053),IN0020230051,,0.94,other
+151179,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,1.05,other
+151179,Net Receivables / (Payables),,,1.8,cash
+151178,7.34% Government of India (22/04/2064),IN0020240035,,22.94,other
+151178,7.25% Government of India (12/06/2063),IN0020230044,,21.35,other
+151178,7.36% Government of India (12/09/2052),IN0020220086,,20.67,other
+151178,7.09% Government of India (05/08/2054),IN0020240118,,18.16,other
+151178,7.24% Government of India (18/08/2055),IN0020250075,,9.22,other
+151178,7.3% Government of India (19/06/2053),IN0020230051,,0.94,other
+151178,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,1.05,other
+151178,Net Receivables / (Payables),,,1.8,cash
+120389,8.0956% Aditya Birla Housing Finance Limited (22/12/2026) **,INE831R07474,,0.13,other
+120389,7.69% LIC Housing Finance Limited (11/12/2026) **,INE115A07RA9,,0.09,other
+120389,6.55% ICICI Home Finance Company Limited (23/12/2026) **,INE071G07462,,0.02,other
+120389,7.68% Indian Railway Finance Corporation Limited (24/11/2026) **,INE053F08338,,0.01,other
+120389,HDFC Bank Limited (16/10/2026) **,INE040A16JT7,,3.73,debt
+120389,HDFC Bank Limited (14/12/2026) **,INE040A16IJ0,,2.17,debt
+120389,Canara Bank (23/11/2026) **,INE476A16K97,,1.85,debt
+120389,Canara Bank (25/11/2026) **,INE476A16L13,,1.85,debt
+120389,HDFC Bank Limited (27/10/2026) **,INE040A16JZ4,,1.77,debt
+120389,Canara Bank (18/11/2026) **,INE476A16K89,,1.48,debt
+120389,Union Bank of India (23/10/2026) **,INE692A16MZ6,,1.4,debt
+120389,Union Bank of India (26/10/2026) **,INE692A16NA7,,1.4,debt
+120389,Central Bank of India (09/12/2026) **,INE483A16LG2,,1.39,debt
+120389,Small Industries Dev Bank of India (13/10/2026) **,INE556F16BL5,,1.07,debt
+120389,Canara Bank (30/11/2026) **,INE476A16K06,,1.02,debt
+120389,Small Industries Dev Bank of India (18/12/2026) **,INE556F16BU6,,0.97,debt
+120389,IDFC First Bank Limited (26/10/2026) **,INE092T16A19,,0.93,debt
+120389,Bank of Baroda (11/11/2026) **,INE028A16MW0,,0.93,debt
+120389,Bank of India (04/12/2026) **,INE084A16GI4,,0.92,debt
+120389,HDFC Bank Limited (17/12/2026) **,INE040A16KC1,,0.92,debt
+120389,Punjab & Sind Bank (22/12/2026) **,INE608A16TS2,,0.92,debt
+120389,Small Industries Dev Bank of India (28/10/2026),INE556F16BO9,,0.84,debt
+120389,Kotak Mahindra Bank Limited (27/11/2026),INE237AD6091,,0.83,debt
+120389,Indian Bank (06/11/2026) **,INE562A16PT7,,0.56,debt
+120389,Union Bank of India (19/10/2026) **,INE692A16MV5,,0.47,debt
+120389,IDFC First Bank Limited (23/10/2026) **,INE092T16A01,,0.47,debt
+120389,Karur Vysya Bank Limited (23/11/2026) **,INE036D16JK8,,0.46,debt
+120389,Karur Vysya Bank Limited (27/11/2026) **,INE036D16JL6,,0.46,debt
+120389,City Union Bank Ltd (04/12/2026) **,INE491A16193,,0.46,debt
+120389,Bank of Baroda (07/12/2026) **,INE028A16MQ2,,0.37,debt
+120389,Bank of Baroda (15/12/2026) **,INE028A16KW4,,0.37,debt
+120389,Bank of India (15/12/2026) **,INE084A16GM6,,0.37,debt
+120389,Small Industries Dev Bank of India (27/10/2026),INE556F16BN1,,0.33,debt
+120389,Union Bank of India (10/12/2026) **,INE692A16KQ9,,0.28,debt
+120389,Small Industries Dev Bank of India (04/12/2026) **,INE556F16BS0,,0.26,debt
+120389,HDFC Bank Limited (19/11/2026) **,INE040A16HY1,,0.22,debt
+120389,HDFC Bank Limited (02/11/2026) **,INE040A16JX9,,0.19,debt
+120389,HDFC Bank Limited (13/11/2026) **,INE040A16HW5,,0.19,debt
+120389,Indian Bank (04/12/2026),INE562A16QM0,,0.18,debt
+120389,HDFC Bank Limited (15/12/2026) **,INE040A16KE7,,0.18,debt
+120389,Bank of Baroda (25/11/2026) **,INE028A16KK9,,0.14,debt
+120389,Indian Bank (10/12/2026) **,INE562A16QO6,,0.14,debt
+120389,Canara Bank (18/12/2026) **,INE476A16F78,,0.14,debt
+120389,Small Industries Dev Bank of India (06/11/2026) **,INE556F16BQ4,,0.09,debt
+120389,Indian Bank (15/12/2026) **,INE562A16QN8,,0.09,debt
+120389,Small Industries Dev Bank of India (16/12/2026) **,INE556F16BT8,,0.09,debt
+120389,HDFC Bank Limited (06/11/2026) **,INE040A16HU9,,0.05,debt
+120389,HDFC Bank Limited (04/11/2026) **,INE040A16JY7,,0.04,debt
+120389,Small Industries Dev Bank of India (02/12/2026) **,INE556F14MR4,,3.05,debt
+120389,National Bank For Agriculture and Rural Development (30/11/2026) **,INE261F14QE0,,2.78,debt
+120389,LIC Housing Finance Limited (11/11/2026) **,INE115A14FZ7,,2.18,debt
+120389,NTPC Limited (06/11/2026) **,INE733E14CH4,,1.86,debt
+120389,Hindustan Petroleum Corporation Limited (02/12/2026) **,INE094A14KO8,,1.85,debt
+120389,Reliance Retail Ventures Limited (06/11/2026) **,INE929O14FO6,,1.81,debt
+120389,Tata Teleservices (Maharashtra) Limited (17/11/2026) **,INE517B14AG3,,1.48,debt
+120389,Tata Steel Limited (02/12/2026) **,INE081A14HM5,,1.48,debt
+120389,Titan Company Limited (19/10/2026) **,INE280A14591,,1.4,debt
+120389,LIC Housing Finance Limited (26/11/2026) **,INE115A14FY0,,1.39,debt
+120389,Reliance Retail Ventures Limited (02/12/2026) **,INE929O14FI8,,1.39,debt
+120389,ICICI Securities Limited (26/11/2026) **,INE763G14N01,,1.02,debt
+120389,Export Import Bank of India (14/12/2026) **,INE514E14TQ3,,0.96,debt
+120389,National Bank For Agriculture and Rural Development (01/10/2026),INE261F14PX2,,0.94,debt
+120389,ICICI Securities Limited (05/11/2026) **,INE763G14M51,,0.93,debt
+120389,Bharat Petroleum Corporation Limited (13/11/2026) **,INE029A14BX4,,0.93,debt
+120389,JIO Credit Limited (09/11/2026) **,INE282H14154,,0.93,debt
+120389,Cholamandalam Investment and Finance Company Ltd (12/11/2026) **,INE121A14YX1,,0.93,debt
+120389,Bajaj Finance Limited (16/11/2026) **,INE296A14I83,,0.93,debt
+120389,Aditya Birla Capital Limited (17/11/2026) **,INE674K14CW6,,0.93,debt
+120389,Tata Capital Limited (23/11/2026) **,INE976I14RV9,,0.93,debt
+120389,National Bank For Agriculture and Rural Development (02/12/2026) **,INE261F14QF7,,0.93,debt
+120389,Kotak Securities Limited (01/12/2026) **,INE028E14WV8,,0.92,debt
+120389,Grasim Industries Limited (11/12/2026) **,INE047A14BH9,,0.92,debt
+120389,ICICI Securities Limited (04/12/2026) **,INE763G14N35,,0.92,debt
+120389,Small Industries Dev Bank of India (17/12/2026) **,INE556F14MT0,,0.92,debt
+120389,ICICI Securities Limited (15/12/2026) **,INE763G14O00,,0.92,debt
+120389,HDFC Securities Limited (18/12/2026) **,INE700G14WI4,,0.92,debt
+120389,Birla Group Holdings Private Limited (10/12/2026) **,INE09OL14JW6,,0.78,debt
+120389,HDFC Securities Limited (18/11/2026) **,INE700G14VQ9,,0.74,debt
+120389,Bajaj Finance Limited (18/11/2026) **,INE296A14J66,,0.65,debt
+120389,Kotak Securities Limited (22/12/2026) **,INE028E14YP6,,0.64,debt
+120389,TATA Realty & Infrastructure Limited (19/10/2026) **,INE371K14DR7,,0.59,debt
+120389,IIFL Finance Limited (06/10/2026) **,INE530B14IA2,,0.56,debt
+120389,Network18 Media & Investments Limited (03/12/2026) **,INE870H14XV4,,0.55,debt
+120389,Sikka Ports and Terminals Limited (04/12/2026) **,INE941D14782,,0.55,debt
+120389,Kotak Securities Limited (02/12/2026) **,INE028E14YA8,,0.55,debt
+120389,Reliance Industries Limited (11/12/2026) **,INE002A14LU6,,0.55,debt
+120389,DSP Finance Private Limited (11/11/2026) **,INE422H14586,,0.46,debt
+120389,National Bank For Agriculture and Rural Development (23/11/2026) **,INE261F14QC4,,0.46,debt
+120389,ICICI Securities Limited (02/12/2026) **,INE763G14N27,,0.46,debt
+120389,Motilal Oswal Financial Services Limited (03/12/2026) **,INE338I14NL2,,0.46,debt
+120389,Kotak Securities Limited (09/12/2026) **,INE028E14YI1,,0.46,debt
+120389,Nuvama Clearing Services Ltd (26/10/2026) **,INE525L14257,,0.37,debt
+120389,Angel One Limited (03/11/2026) **,INE732I14DR4,,0.37,debt
+120389,IIFL Finance Limited (03/11/2026) **,INE530B14HH9,,0.37,debt
+120389,HDFC Securities Limited (17/11/2026) **,INE700G14VP1,,0.37,debt
+120389,Bajaj Financial Securities Limited (17/11/2026) **,INE01C314GW6,,0.37,debt
+120389,Bajaj Financial Securities Limited (18/11/2026) **,INE01C314GX4,,0.37,debt
+120389,HDFC Securities Limited (23/11/2026) **,INE700G14VT3,,0.37,debt
+120389,Kotak Securities Limited (03/12/2026) **,INE028E14YC4,,0.37,debt
+120389,Bharat Petroleum Corporation Limited (11/12/2026) **,INE029A14BY2,,0.37,debt
+120389,Motilal Oswal Financial Services Limited (04/12/2026) **,INE338I14NM0,,0.37,debt
+120389,Tata Projects Limited (11/12/2026) **,INE725H14DS8,,0.37,debt
+120389,DSP Finance Private Limited (02/12/2026) **,INE422H14651,,0.37,debt
+120389,Sharekhan Limited (11/12/2026) **,INE211H14BJ2,,0.37,debt
+120389,Muthoot Fincorp Ltd (03/11/2026) **,INE549K14CD0,,0.28,debt
+120389,Aditya Birla Money Limited (26/11/2026) **,INE865C14RB9,,0.28,debt
+120389,Angel One Limited (26/11/2026) **,INE732I14DT0,,0.28,debt
+120389,ICICI Securities Limited (08/12/2026) **,INE763G14N68,,0.28,debt
+120389,Aditya Birla Housing Finance Limited (23/11/2026) **,INE831R14GN7,,0.23,debt
+120389,Aditya Birla Money Limited (03/11/2026) **,INE865C14QV9,,0.19,debt
+120389,Nuvama Wealth And Investment Ltd (03/11/2026) **,INE523L14BS3,,0.19,debt
+120389,TVS Credit Services Limited (12/11/2026) **,INE729N14IT5,,0.19,debt
+120389,Muthoot Fincorp Ltd (12/11/2026) **,INE549K14CU4,,0.19,debt
+120389,Bajaj Finance Limited (04/12/2026) **,INE296A14J90,,0.18,debt
+120389,Export Import Bank of India (11/12/2026) **,INE514E14TR1,,0.18,debt
+120389,Reliance Industries Limited (10/12/2026),INE002A14LT8,,0.18,debt
+120389,Bajaj Finance Limited (07/12/2026) **,INE296A14K22,,0.18,debt
+120389,Infina Finance Private Limited (04/12/2026) **,INE879F14NM9,,0.18,debt
+120389,Nuvama Wealth And Investment Ltd (03/12/2026) **,INE523L14BZ8,,0.18,debt
+120389,Muthoot Fincorp Ltd (09/12/2026) **,INE549K14CX8,,0.14,debt
+120389,Bajaj Finance Limited (04/11/2026) **,INE296A14D13,,0.09,debt
+120389,HDFC Securities Limited (26/11/2026) **,INE700G14VU1,,0.09,debt
+120389,Nuvama Wealth Finance Limited (04/12/2026) **,INE918K14DU9,,0.09,debt
+120389,Kotak Mahindra Prime Limited (16/10/2026) **,INE916D146P1,,0.05,debt
+120389,HDFC Securities Limited (22/10/2026) **,INE700G14UZ2,,0.02,debt
+120389,Piramal Finance Limited (30/10/2026) **,INE202B14PO4,,0.01,debt
+120389,91 Days Tbill (MD 31/12/2026),IN002026X263,,4.15,debt
+120389,91 Days Tbill (MD 15/10/2026),IN002026X156,,2.75,debt
+120389,91 Days Tbill (MD 19/11/2026),IN002026X206,,1.87,debt
+120389,91 Days Tbill (MD 22/10/2026),IN002026X164,,0.93,debt
+120389,182 Days Tbill (MD 19/11/2026),IN002026Y071,,0.14,debt
+120389,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.24,other
+120389,Net Receivables / (Payables),,,-4.26,cash
+112210,8.0956% Aditya Birla Housing Finance Limited (22/12/2026) **,INE831R07474,,0.13,other
+112210,7.69% LIC Housing Finance Limited (11/12/2026) **,INE115A07RA9,,0.09,other
+112210,6.55% ICICI Home Finance Company Limited (23/12/2026) **,INE071G07462,,0.02,other
+112210,7.68% Indian Railway Finance Corporation Limited (24/11/2026) **,INE053F08338,,0.01,other
+112210,HDFC Bank Limited (16/10/2026) **,INE040A16JT7,,3.73,debt
+112210,HDFC Bank Limited (14/12/2026) **,INE040A16IJ0,,2.17,debt
+112210,Canara Bank (23/11/2026) **,INE476A16K97,,1.85,debt
+112210,Canara Bank (25/11/2026) **,INE476A16L13,,1.85,debt
+112210,HDFC Bank Limited (27/10/2026) **,INE040A16JZ4,,1.77,debt
+112210,Canara Bank (18/11/2026) **,INE476A16K89,,1.48,debt
+112210,Union Bank of India (23/10/2026) **,INE692A16MZ6,,1.4,debt
+112210,Union Bank of India (26/10/2026) **,INE692A16NA7,,1.4,debt
+112210,Central Bank of India (09/12/2026) **,INE483A16LG2,,1.39,debt
+112210,Small Industries Dev Bank of India (13/10/2026) **,INE556F16BL5,,1.07,debt
+112210,Canara Bank (30/11/2026) **,INE476A16K06,,1.02,debt
+112210,Small Industries Dev Bank of India (18/12/2026) **,INE556F16BU6,,0.97,debt
+112210,IDFC First Bank Limited (26/10/2026) **,INE092T16A19,,0.93,debt
+112210,Bank of Baroda (11/11/2026) **,INE028A16MW0,,0.93,debt
+112210,Bank of India (04/12/2026) **,INE084A16GI4,,0.92,debt
+112210,HDFC Bank Limited (17/12/2026) **,INE040A16KC1,,0.92,debt
+112210,Punjab & Sind Bank (22/12/2026) **,INE608A16TS2,,0.92,debt
+112210,Small Industries Dev Bank of India (28/10/2026),INE556F16BO9,,0.84,debt
+112210,Kotak Mahindra Bank Limited (27/11/2026),INE237AD6091,,0.83,debt
+112210,Indian Bank (06/11/2026) **,INE562A16PT7,,0.56,debt
+112210,Union Bank of India (19/10/2026) **,INE692A16MV5,,0.47,debt
+112210,IDFC First Bank Limited (23/10/2026) **,INE092T16A01,,0.47,debt
+112210,Karur Vysya Bank Limited (23/11/2026) **,INE036D16JK8,,0.46,debt
+112210,Karur Vysya Bank Limited (27/11/2026) **,INE036D16JL6,,0.46,debt
+112210,City Union Bank Ltd (04/12/2026) **,INE491A16193,,0.46,debt
+112210,Bank of Baroda (07/12/2026) **,INE028A16MQ2,,0.37,debt
+112210,Bank of Baroda (15/12/2026) **,INE028A16KW4,,0.37,debt
+112210,Bank of India (15/12/2026) **,INE084A16GM6,,0.37,debt
+112210,Small Industries Dev Bank of India (27/10/2026),INE556F16BN1,,0.33,debt
+112210,Union Bank of India (10/12/2026) **,INE692A16KQ9,,0.28,debt
+112210,Small Industries Dev Bank of India (04/12/2026) **,INE556F16BS0,,0.26,debt
+112210,HDFC Bank Limited (19/11/2026) **,INE040A16HY1,,0.22,debt
+112210,HDFC Bank Limited (02/11/2026) **,INE040A16JX9,,0.19,debt
+112210,HDFC Bank Limited (13/11/2026) **,INE040A16HW5,,0.19,debt
+112210,Indian Bank (04/12/2026),INE562A16QM0,,0.18,debt
+112210,HDFC Bank Limited (15/12/2026) **,INE040A16KE7,,0.18,debt
+112210,Bank of Baroda (25/11/2026) **,INE028A16KK9,,0.14,debt
+112210,Indian Bank (10/12/2026) **,INE562A16QO6,,0.14,debt
+112210,Canara Bank (18/12/2026) **,INE476A16F78,,0.14,debt
+112210,Small Industries Dev Bank of India (06/11/2026) **,INE556F16BQ4,,0.09,debt
+112210,Indian Bank (15/12/2026) **,INE562A16QN8,,0.09,debt
+112210,Small Industries Dev Bank of India (16/12/2026) **,INE556F16BT8,,0.09,debt
+112210,HDFC Bank Limited (06/11/2026) **,INE040A16HU9,,0.05,debt
+112210,HDFC Bank Limited (04/11/2026) **,INE040A16JY7,,0.04,debt
+112210,Small Industries Dev Bank of India (02/12/2026) **,INE556F14MR4,,3.05,debt
+112210,National Bank For Agriculture and Rural Development (30/11/2026) **,INE261F14QE0,,2.78,debt
+112210,LIC Housing Finance Limited (11/11/2026) **,INE115A14FZ7,,2.18,debt
+112210,NTPC Limited (06/11/2026) **,INE733E14CH4,,1.86,debt
+112210,Hindustan Petroleum Corporation Limited (02/12/2026) **,INE094A14KO8,,1.85,debt
+112210,Reliance Retail Ventures Limited (06/11/2026) **,INE929O14FO6,,1.81,debt
+112210,Tata Teleservices (Maharashtra) Limited (17/11/2026) **,INE517B14AG3,,1.48,debt
+112210,Tata Steel Limited (02/12/2026) **,INE081A14HM5,,1.48,debt
+112210,Titan Company Limited (19/10/2026) **,INE280A14591,,1.4,debt
+112210,LIC Housing Finance Limited (26/11/2026) **,INE115A14FY0,,1.39,debt
+112210,Reliance Retail Ventures Limited (02/12/2026) **,INE929O14FI8,,1.39,debt
+112210,ICICI Securities Limited (26/11/2026) **,INE763G14N01,,1.02,debt
+112210,Export Import Bank of India (14/12/2026) **,INE514E14TQ3,,0.96,debt
+112210,National Bank For Agriculture and Rural Development (01/10/2026),INE261F14PX2,,0.94,debt
+112210,ICICI Securities Limited (05/11/2026) **,INE763G14M51,,0.93,debt
+112210,Bharat Petroleum Corporation Limited (13/11/2026) **,INE029A14BX4,,0.93,debt
+112210,JIO Credit Limited (09/11/2026) **,INE282H14154,,0.93,debt
+112210,Cholamandalam Investment and Finance Company Ltd (12/11/2026) **,INE121A14YX1,,0.93,debt
+112210,Bajaj Finance Limited (16/11/2026) **,INE296A14I83,,0.93,debt
+112210,Aditya Birla Capital Limited (17/11/2026) **,INE674K14CW6,,0.93,debt
+112210,Tata Capital Limited (23/11/2026) **,INE976I14RV9,,0.93,debt
+112210,National Bank For Agriculture and Rural Development (02/12/2026) **,INE261F14QF7,,0.93,debt
+112210,Kotak Securities Limited (01/12/2026) **,INE028E14WV8,,0.92,debt
+112210,Grasim Industries Limited (11/12/2026) **,INE047A14BH9,,0.92,debt
+112210,ICICI Securities Limited (04/12/2026) **,INE763G14N35,,0.92,debt
+112210,Small Industries Dev Bank of India (17/12/2026) **,INE556F14MT0,,0.92,debt
+112210,ICICI Securities Limited (15/12/2026) **,INE763G14O00,,0.92,debt
+112210,HDFC Securities Limited (18/12/2026) **,INE700G14WI4,,0.92,debt
+112210,Birla Group Holdings Private Limited (10/12/2026) **,INE09OL14JW6,,0.78,debt
+112210,HDFC Securities Limited (18/11/2026) **,INE700G14VQ9,,0.74,debt
+112210,Bajaj Finance Limited (18/11/2026) **,INE296A14J66,,0.65,debt
+112210,Kotak Securities Limited (22/12/2026) **,INE028E14YP6,,0.64,debt
+112210,TATA Realty & Infrastructure Limited (19/10/2026) **,INE371K14DR7,,0.59,debt
+112210,IIFL Finance Limited (06/10/2026) **,INE530B14IA2,,0.56,debt
+112210,Network18 Media & Investments Limited (03/12/2026) **,INE870H14XV4,,0.55,debt
+112210,Sikka Ports and Terminals Limited (04/12/2026) **,INE941D14782,,0.55,debt
+112210,Kotak Securities Limited (02/12/2026) **,INE028E14YA8,,0.55,debt
+112210,Reliance Industries Limited (11/12/2026) **,INE002A14LU6,,0.55,debt
+112210,DSP Finance Private Limited (11/11/2026) **,INE422H14586,,0.46,debt
+112210,National Bank For Agriculture and Rural Development (23/11/2026) **,INE261F14QC4,,0.46,debt
+112210,ICICI Securities Limited (02/12/2026) **,INE763G14N27,,0.46,debt
+112210,Motilal Oswal Financial Services Limited (03/12/2026) **,INE338I14NL2,,0.46,debt
+112210,Kotak Securities Limited (09/12/2026) **,INE028E14YI1,,0.46,debt
+112210,Nuvama Clearing Services Ltd (26/10/2026) **,INE525L14257,,0.37,debt
+112210,Angel One Limited (03/11/2026) **,INE732I14DR4,,0.37,debt
+112210,IIFL Finance Limited (03/11/2026) **,INE530B14HH9,,0.37,debt
+112210,HDFC Securities Limited (17/11/2026) **,INE700G14VP1,,0.37,debt
+112210,Bajaj Financial Securities Limited (17/11/2026) **,INE01C314GW6,,0.37,debt
+112210,Bajaj Financial Securities Limited (18/11/2026) **,INE01C314GX4,,0.37,debt
+112210,HDFC Securities Limited (23/11/2026) **,INE700G14VT3,,0.37,debt
+112210,Kotak Securities Limited (03/12/2026) **,INE028E14YC4,,0.37,debt
+112210,Bharat Petroleum Corporation Limited (11/12/2026) **,INE029A14BY2,,0.37,debt
+112210,Motilal Oswal Financial Services Limited (04/12/2026) **,INE338I14NM0,,0.37,debt
+112210,Tata Projects Limited (11/12/2026) **,INE725H14DS8,,0.37,debt
+112210,DSP Finance Private Limited (02/12/2026) **,INE422H14651,,0.37,debt
+112210,Sharekhan Limited (11/12/2026) **,INE211H14BJ2,,0.37,debt
+112210,Muthoot Fincorp Ltd (03/11/2026) **,INE549K14CD0,,0.28,debt
+112210,Aditya Birla Money Limited (26/11/2026) **,INE865C14RB9,,0.28,debt
+112210,Angel One Limited (26/11/2026) **,INE732I14DT0,,0.28,debt
+112210,ICICI Securities Limited (08/12/2026) **,INE763G14N68,,0.28,debt
+112210,Aditya Birla Housing Finance Limited (23/11/2026) **,INE831R14GN7,,0.23,debt
+112210,Aditya Birla Money Limited (03/11/2026) **,INE865C14QV9,,0.19,debt
+112210,Nuvama Wealth And Investment Ltd (03/11/2026) **,INE523L14BS3,,0.19,debt
+112210,TVS Credit Services Limited (12/11/2026) **,INE729N14IT5,,0.19,debt
+112210,Muthoot Fincorp Ltd (12/11/2026) **,INE549K14CU4,,0.19,debt
+112210,Bajaj Finance Limited (04/12/2026) **,INE296A14J90,,0.18,debt
+112210,Export Import Bank of India (11/12/2026) **,INE514E14TR1,,0.18,debt
+112210,Reliance Industries Limited (10/12/2026),INE002A14LT8,,0.18,debt
+112210,Bajaj Finance Limited (07/12/2026) **,INE296A14K22,,0.18,debt
+112210,Infina Finance Private Limited (04/12/2026) **,INE879F14NM9,,0.18,debt
+112210,Nuvama Wealth And Investment Ltd (03/12/2026) **,INE523L14BZ8,,0.18,debt
+112210,Muthoot Fincorp Ltd (09/12/2026) **,INE549K14CX8,,0.14,debt
+112210,Bajaj Finance Limited (04/11/2026) **,INE296A14D13,,0.09,debt
+112210,HDFC Securities Limited (26/11/2026) **,INE700G14VU1,,0.09,debt
+112210,Nuvama Wealth Finance Limited (04/12/2026) **,INE918K14DU9,,0.09,debt
+112210,Kotak Mahindra Prime Limited (16/10/2026) **,INE916D146P1,,0.05,debt
+112210,HDFC Securities Limited (22/10/2026) **,INE700G14UZ2,,0.02,debt
+112210,Piramal Finance Limited (30/10/2026) **,INE202B14PO4,,0.01,debt
+112210,91 Days Tbill (MD 31/12/2026),IN002026X263,,4.15,debt
+112210,91 Days Tbill (MD 15/10/2026),IN002026X156,,2.75,debt
+112210,91 Days Tbill (MD 19/11/2026),IN002026X206,,1.87,debt
+112210,91 Days Tbill (MD 22/10/2026),IN002026X164,,0.93,debt
+112210,182 Days Tbill (MD 19/11/2026),IN002026Y071,,0.14,debt
+112210,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.24,other
+112210,Net Receivables / (Payables),,,-4.26,cash
+112713,8.0956% Aditya Birla Housing Finance Limited (22/12/2026) **,INE831R07474,,0.13,other
+112713,7.69% LIC Housing Finance Limited (11/12/2026) **,INE115A07RA9,,0.09,other
+112713,6.55% ICICI Home Finance Company Limited (23/12/2026) **,INE071G07462,,0.02,other
+112713,7.68% Indian Railway Finance Corporation Limited (24/11/2026) **,INE053F08338,,0.01,other
+112713,HDFC Bank Limited (16/10/2026) **,INE040A16JT7,,3.73,debt
+112713,HDFC Bank Limited (14/12/2026) **,INE040A16IJ0,,2.17,debt
+112713,Canara Bank (23/11/2026) **,INE476A16K97,,1.85,debt
+112713,Canara Bank (25/11/2026) **,INE476A16L13,,1.85,debt
+112713,HDFC Bank Limited (27/10/2026) **,INE040A16JZ4,,1.77,debt
+112713,Canara Bank (18/11/2026) **,INE476A16K89,,1.48,debt
+112713,Union Bank of India (23/10/2026) **,INE692A16MZ6,,1.4,debt
+112713,Union Bank of India (26/10/2026) **,INE692A16NA7,,1.4,debt
+112713,Central Bank of India (09/12/2026) **,INE483A16LG2,,1.39,debt
+112713,Small Industries Dev Bank of India (13/10/2026) **,INE556F16BL5,,1.07,debt
+112713,Canara Bank (30/11/2026) **,INE476A16K06,,1.02,debt
+112713,Small Industries Dev Bank of India (18/12/2026) **,INE556F16BU6,,0.97,debt
+112713,IDFC First Bank Limited (26/10/2026) **,INE092T16A19,,0.93,debt
+112713,Bank of Baroda (11/11/2026) **,INE028A16MW0,,0.93,debt
+112713,Bank of India (04/12/2026) **,INE084A16GI4,,0.92,debt
+112713,HDFC Bank Limited (17/12/2026) **,INE040A16KC1,,0.92,debt
+112713,Punjab & Sind Bank (22/12/2026) **,INE608A16TS2,,0.92,debt
+112713,Small Industries Dev Bank of India (28/10/2026),INE556F16BO9,,0.84,debt
+112713,Kotak Mahindra Bank Limited (27/11/2026),INE237AD6091,,0.83,debt
+112713,Indian Bank (06/11/2026) **,INE562A16PT7,,0.56,debt
+112713,Union Bank of India (19/10/2026) **,INE692A16MV5,,0.47,debt
+112713,IDFC First Bank Limited (23/10/2026) **,INE092T16A01,,0.47,debt
+112713,Karur Vysya Bank Limited (23/11/2026) **,INE036D16JK8,,0.46,debt
+112713,Karur Vysya Bank Limited (27/11/2026) **,INE036D16JL6,,0.46,debt
+112713,City Union Bank Ltd (04/12/2026) **,INE491A16193,,0.46,debt
+112713,Bank of Baroda (07/12/2026) **,INE028A16MQ2,,0.37,debt
+112713,Bank of Baroda (15/12/2026) **,INE028A16KW4,,0.37,debt
+112713,Bank of India (15/12/2026) **,INE084A16GM6,,0.37,debt
+112713,Small Industries Dev Bank of India (27/10/2026),INE556F16BN1,,0.33,debt
+112713,Union Bank of India (10/12/2026) **,INE692A16KQ9,,0.28,debt
+112713,Small Industries Dev Bank of India (04/12/2026) **,INE556F16BS0,,0.26,debt
+112713,HDFC Bank Limited (19/11/2026) **,INE040A16HY1,,0.22,debt
+112713,HDFC Bank Limited (02/11/2026) **,INE040A16JX9,,0.19,debt
+112713,HDFC Bank Limited (13/11/2026) **,INE040A16HW5,,0.19,debt
+112713,Indian Bank (04/12/2026),INE562A16QM0,,0.18,debt
+112713,HDFC Bank Limited (15/12/2026) **,INE040A16KE7,,0.18,debt
+112713,Bank of Baroda (25/11/2026) **,INE028A16KK9,,0.14,debt
+112713,Indian Bank (10/12/2026) **,INE562A16QO6,,0.14,debt
+112713,Canara Bank (18/12/2026) **,INE476A16F78,,0.14,debt
+112713,Small Industries Dev Bank of India (06/11/2026) **,INE556F16BQ4,,0.09,debt
+112713,Indian Bank (15/12/2026) **,INE562A16QN8,,0.09,debt
+112713,Small Industries Dev Bank of India (16/12/2026) **,INE556F16BT8,,0.09,debt
+112713,HDFC Bank Limited (06/11/2026) **,INE040A16HU9,,0.05,debt
+112713,HDFC Bank Limited (04/11/2026) **,INE040A16JY7,,0.04,debt
+112713,Small Industries Dev Bank of India (02/12/2026) **,INE556F14MR4,,3.05,debt
+112713,National Bank For Agriculture and Rural Development (30/11/2026) **,INE261F14QE0,,2.78,debt
+112713,LIC Housing Finance Limited (11/11/2026) **,INE115A14FZ7,,2.18,debt
+112713,NTPC Limited (06/11/2026) **,INE733E14CH4,,1.86,debt
+112713,Hindustan Petroleum Corporation Limited (02/12/2026) **,INE094A14KO8,,1.85,debt
+112713,Reliance Retail Ventures Limited (06/11/2026) **,INE929O14FO6,,1.81,debt
+112713,Tata Teleservices (Maharashtra) Limited (17/11/2026) **,INE517B14AG3,,1.48,debt
+112713,Tata Steel Limited (02/12/2026) **,INE081A14HM5,,1.48,debt
+112713,Titan Company Limited (19/10/2026) **,INE280A14591,,1.4,debt
+112713,LIC Housing Finance Limited (26/11/2026) **,INE115A14FY0,,1.39,debt
+112713,Reliance Retail Ventures Limited (02/12/2026) **,INE929O14FI8,,1.39,debt
+112713,ICICI Securities Limited (26/11/2026) **,INE763G14N01,,1.02,debt
+112713,Export Import Bank of India (14/12/2026) **,INE514E14TQ3,,0.96,debt
+112713,National Bank For Agriculture and Rural Development (01/10/2026),INE261F14PX2,,0.94,debt
+112713,ICICI Securities Limited (05/11/2026) **,INE763G14M51,,0.93,debt
+112713,Bharat Petroleum Corporation Limited (13/11/2026) **,INE029A14BX4,,0.93,debt
+112713,JIO Credit Limited (09/11/2026) **,INE282H14154,,0.93,debt
+112713,Cholamandalam Investment and Finance Company Ltd (12/11/2026) **,INE121A14YX1,,0.93,debt
+112713,Bajaj Finance Limited (16/11/2026) **,INE296A14I83,,0.93,debt
+112713,Aditya Birla Capital Limited (17/11/2026) **,INE674K14CW6,,0.93,debt
+112713,Tata Capital Limited (23/11/2026) **,INE976I14RV9,,0.93,debt
+112713,National Bank For Agriculture and Rural Development (02/12/2026) **,INE261F14QF7,,0.93,debt
+112713,Kotak Securities Limited (01/12/2026) **,INE028E14WV8,,0.92,debt
+112713,Grasim Industries Limited (11/12/2026) **,INE047A14BH9,,0.92,debt
+112713,ICICI Securities Limited (04/12/2026) **,INE763G14N35,,0.92,debt
+112713,Small Industries Dev Bank of India (17/12/2026) **,INE556F14MT0,,0.92,debt
+112713,ICICI Securities Limited (15/12/2026) **,INE763G14O00,,0.92,debt
+112713,HDFC Securities Limited (18/12/2026) **,INE700G14WI4,,0.92,debt
+112713,Birla Group Holdings Private Limited (10/12/2026) **,INE09OL14JW6,,0.78,debt
+112713,HDFC Securities Limited (18/11/2026) **,INE700G14VQ9,,0.74,debt
+112713,Bajaj Finance Limited (18/11/2026) **,INE296A14J66,,0.65,debt
+112713,Kotak Securities Limited (22/12/2026) **,INE028E14YP6,,0.64,debt
+112713,TATA Realty & Infrastructure Limited (19/10/2026) **,INE371K14DR7,,0.59,debt
+112713,IIFL Finance Limited (06/10/2026) **,INE530B14IA2,,0.56,debt
+112713,Network18 Media & Investments Limited (03/12/2026) **,INE870H14XV4,,0.55,debt
+112713,Sikka Ports and Terminals Limited (04/12/2026) **,INE941D14782,,0.55,debt
+112713,Kotak Securities Limited (02/12/2026) **,INE028E14YA8,,0.55,debt
+112713,Reliance Industries Limited (11/12/2026) **,INE002A14LU6,,0.55,debt
+112713,DSP Finance Private Limited (11/11/2026) **,INE422H14586,,0.46,debt
+112713,National Bank For Agriculture and Rural Development (23/11/2026) **,INE261F14QC4,,0.46,debt
+112713,ICICI Securities Limited (02/12/2026) **,INE763G14N27,,0.46,debt
+112713,Motilal Oswal Financial Services Limited (03/12/2026) **,INE338I14NL2,,0.46,debt
+112713,Kotak Securities Limited (09/12/2026) **,INE028E14YI1,,0.46,debt
+112713,Nuvama Clearing Services Ltd (26/10/2026) **,INE525L14257,,0.37,debt
+112713,Angel One Limited (03/11/2026) **,INE732I14DR4,,0.37,debt
+112713,IIFL Finance Limited (03/11/2026) **,INE530B14HH9,,0.37,debt
+112713,HDFC Securities Limited (17/11/2026) **,INE700G14VP1,,0.37,debt
+112713,Bajaj Financial Securities Limited (17/11/2026) **,INE01C314GW6,,0.37,debt
+112713,Bajaj Financial Securities Limited (18/11/2026) **,INE01C314GX4,,0.37,debt
+112713,HDFC Securities Limited (23/11/2026) **,INE700G14VT3,,0.37,debt
+112713,Kotak Securities Limited (03/12/2026) **,INE028E14YC4,,0.37,debt
+112713,Bharat Petroleum Corporation Limited (11/12/2026) **,INE029A14BY2,,0.37,debt
+112713,Motilal Oswal Financial Services Limited (04/12/2026) **,INE338I14NM0,,0.37,debt
+112713,Tata Projects Limited (11/12/2026) **,INE725H14DS8,,0.37,debt
+112713,DSP Finance Private Limited (02/12/2026) **,INE422H14651,,0.37,debt
+112713,Sharekhan Limited (11/12/2026) **,INE211H14BJ2,,0.37,debt
+112713,Muthoot Fincorp Ltd (03/11/2026) **,INE549K14CD0,,0.28,debt
+112713,Aditya Birla Money Limited (26/11/2026) **,INE865C14RB9,,0.28,debt
+112713,Angel One Limited (26/11/2026) **,INE732I14DT0,,0.28,debt
+112713,ICICI Securities Limited (08/12/2026) **,INE763G14N68,,0.28,debt
+112713,Aditya Birla Housing Finance Limited (23/11/2026) **,INE831R14GN7,,0.23,debt
+112713,Aditya Birla Money Limited (03/11/2026) **,INE865C14QV9,,0.19,debt
+112713,Nuvama Wealth And Investment Ltd (03/11/2026) **,INE523L14BS3,,0.19,debt
+112713,TVS Credit Services Limited (12/11/2026) **,INE729N14IT5,,0.19,debt
+112713,Muthoot Fincorp Ltd (12/11/2026) **,INE549K14CU4,,0.19,debt
+112713,Bajaj Finance Limited (04/12/2026) **,INE296A14J90,,0.18,debt
+112713,Export Import Bank of India (11/12/2026) **,INE514E14TR1,,0.18,debt
+112713,Reliance Industries Limited (10/12/2026),INE002A14LT8,,0.18,debt
+112713,Bajaj Finance Limited (07/12/2026) **,INE296A14K22,,0.18,debt
+112713,Infina Finance Private Limited (04/12/2026) **,INE879F14NM9,,0.18,debt
+112713,Nuvama Wealth And Investment Ltd (03/12/2026) **,INE523L14BZ8,,0.18,debt
+112713,Muthoot Fincorp Ltd (09/12/2026) **,INE549K14CX8,,0.14,debt
+112713,Bajaj Finance Limited (04/11/2026) **,INE296A14D13,,0.09,debt
+112713,HDFC Securities Limited (26/11/2026) **,INE700G14VU1,,0.09,debt
+112713,Nuvama Wealth Finance Limited (04/12/2026) **,INE918K14DU9,,0.09,debt
+112713,Kotak Mahindra Prime Limited (16/10/2026) **,INE916D146P1,,0.05,debt
+112713,HDFC Securities Limited (22/10/2026) **,INE700G14UZ2,,0.02,debt
+112713,Piramal Finance Limited (30/10/2026) **,INE202B14PO4,,0.01,debt
+112713,91 Days Tbill (MD 31/12/2026),IN002026X263,,4.15,debt
+112713,91 Days Tbill (MD 15/10/2026),IN002026X156,,2.75,debt
+112713,91 Days Tbill (MD 19/11/2026),IN002026X206,,1.87,debt
+112713,91 Days Tbill (MD 22/10/2026),IN002026X164,,0.93,debt
+112713,182 Days Tbill (MD 19/11/2026),IN002026Y071,,0.14,debt
+112713,SBI - Corporate Debt Market Development Fund (CDMDF) - Class A2,INF0RQ622028,,0.24,other
+112713,Net Receivables / (Payables),,,-4.26,cash
+116471,6.94% Government of India (11/05/2036),IN0020260025,,34.04,other
+116471,7.24% Government of India (18/08/2055),IN0020250075,,11.14,other
+116471,7.09% Government of India (05/08/2054),IN0020240118,,6.95,other
+116471,7.06% Government of India (27/07/2041),IN0020260041,,3.72,other
+116471,7.63% Government of India (15/09/2056),IN0020260082,,3.49,other
+116471,7.34% Government of India (22/04/2064),IN0020240035,,2.81,other
+116471,7.46% Government of India (06/11/2073),IN0020230127,,1.44,other
+116471,7.49% Haryana State Development Loans (27/03/2035),IN1620230426,,1.4,other
+116471,6.76% Maharashtra State Development Loans (23/04/2037),IN2220250012,,1.16,other
+116471,7.91% Punjab State Development Loans (08/04/2036),IN2820260015,,1.0,other
+116471,7.43% Maharashtra State Development Loans (03/12/2040),IN2220250392,,0.91,other
+116471,6.68% Government of India (07/07/2040),IN0020250042,,0.75,other
+116471,7.39% Chhatisgarh State Development Loans (13/03/2033),IN3520230241,,0.69,other
+116471,7.18% Government of India (14/08/2033),IN0020230085,,0.6,other
+116471,7.05% Andhra Pradesh State Development Loans (01/09/2035),IN1020210234,,0.56,other
+116471,7.09% Government of India (25/11/2074),IN0020240142,,0.39,other
+116471,6.79% Government of India (07/10/2034),IN0020240126,,0.33,other
+116471,6.33% Government of India (05/05/2035),IN0020250026,,0.28,other
+116471,6.9% Government of India (15/04/2065),IN0020250018,,0.21,other
+116471,364 Days Tbill (MD 10/12/2026),IN002025Z377,,7.36,debt
+116471,91 Days Tbill (MD 10/12/2026),IN002026X230,,7.36,debt
+116471,364 Days Tbill (MD 02/10/2026),IN002025Z278,,2.97,debt
+116471,364 Days Tbill (MD 15/10/2026),IN002025Z294,,2.97,debt
+116471,91 Days Tbill (MD 22/10/2026),IN002026X164,,2.96,debt
+116471,364 Days Tbill (MD 23/10/2026),IN002025Z302,,1.48,debt
+116471,Net Receivables / (Payables),,,-3.9,cash
+120447,6.94% Government of India (11/05/2036),IN0020260025,,34.04,other
+120447,7.24% Government of India (18/08/2055),IN0020250075,,11.14,other
+120447,7.09% Government of India (05/08/2054),IN0020240118,,6.95,other
+120447,7.06% Government of India (27/07/2041),IN0020260041,,3.72,other
+120447,7.63% Government of India (15/09/2056),IN0020260082,,3.49,other
+120447,7.34% Government of India (22/04/2064),IN0020240035,,2.81,other
+120447,7.46% Government of India (06/11/2073),IN0020230127,,1.44,other
+120447,7.49% Haryana State Development Loans (27/03/2035),IN1620230426,,1.4,other
+120447,6.76% Maharashtra State Development Loans (23/04/2037),IN2220250012,,1.16,other
+120447,7.91% Punjab State Development Loans (08/04/2036),IN2820260015,,1.0,other
+120447,7.43% Maharashtra State Development Loans (03/12/2040),IN2220250392,,0.91,other
+120447,6.68% Government of India (07/07/2040),IN0020250042,,0.75,other
+120447,7.39% Chhatisgarh State Development Loans (13/03/2033),IN3520230241,,0.69,other
+120447,7.18% Government of India (14/08/2033),IN0020230085,,0.6,other
+120447,7.05% Andhra Pradesh State Development Loans (01/09/2035),IN1020210234,,0.56,other
+120447,7.09% Government of India (25/11/2074),IN0020240142,,0.39,other
+120447,6.79% Government of India (07/10/2034),IN0020240126,,0.33,other
+120447,6.33% Government of India (05/05/2035),IN0020250026,,0.28,other
+120447,6.9% Government of India (15/04/2065),IN0020250018,,0.21,other
+120447,364 Days Tbill (MD 10/12/2026),IN002025Z377,,7.36,debt
+120447,91 Days Tbill (MD 10/12/2026),IN002026X230,,7.36,debt
+120447,364 Days Tbill (MD 02/10/2026),IN002025Z278,,2.97,debt
+120447,364 Days Tbill (MD 15/10/2026),IN002025Z294,,2.97,debt
+120447,91 Days Tbill (MD 22/10/2026),IN002026X164,,2.96,debt
+120447,364 Days Tbill (MD 23/10/2026),IN002025Z302,,1.48,debt
+120447,Net Receivables / (Payables),,,-3.9,cash
+153960,Axis Gold ETF,INF846K01W80,,13.07,other
+153960,Axis Silver ETF,INF846K011K1,,3.12,other
+153960,Axis Large & Mid Cap Fund - Direct Plan - Growth,INF846K01J46,,11.31,mf_units
+153960,Axis Liquid Fund - Direct Plan - Growth Option,INF846K01CX4,,10.48,mf_units
+153960,Axis Medium Term Fund-Direct Plan-Growth Option,INF846K01DT0,,9.6,mf_units
+153960,Axis Value Fund - Direct Plan - Growth,INF846K010C0,,8.95,mf_units
+153960,ICICI Prudential Banking and Financial Services Fund - Direct Plan -  Growth,INF109K013J1,,8.77,mf_units
+153960,Axis India Manufacturing Fund - Direct Plan - Growth,INF846K016S3,,8.41,mf_units
+153960,Axis Flexi Cap Fund - Direct Plan - Growth,INF846K01B28,,7.35,mf_units
+153960,ICICI Prudential Technology Fund - Direct Plan -  Growth,INF109K01Z48,,3.81,mf_units
+153960,Kotak Banking & Financial Services Fund - Direct Plan - Growth,INF174KA1MD1,,2.81,mf_units
+153960,ICICI Prudential Infrastructure Fund Direct Growth,INF109K018M4,,2.19,mf_units
+153960,Axis Nifty India Defence Index Fund - Direct Plan - Growth,INF846KA1523,,1.77,mf_units
+153960,HDFC Pharma and Healthcare Fund - Growth Option - Direct Plan,INF179KC1HO1,,1.77,mf_units
+153960,Axis Innovation Fund - Direct Plan - Growth Option,INF846K01X71,,1.73,mf_units
+153960,Axis Large Cap Fund - Direct Plan - Growth,INF846K01DP8,,1.39,mf_units
+153960,Axis Nifty Capital Markets Index Fund- Direct Plan,INF846KA1549,,0.7,mf_units
+153960,Net Receivables / (Payables),,,-0.32,cash
+153963,Axis Gold ETF,INF846K01W80,,13.07,other
+153963,Axis Silver ETF,INF846K011K1,,3.12,other
+153963,Axis Large & Mid Cap Fund - Direct Plan - Growth,INF846K01J46,,11.31,mf_units
+153963,Axis Liquid Fund - Direct Plan - Growth Option,INF846K01CX4,,10.48,mf_units
+153963,Axis Medium Term Fund-Direct Plan-Growth Option,INF846K01DT0,,9.6,mf_units
+153963,Axis Value Fund - Direct Plan - Growth,INF846K010C0,,8.95,mf_units
+153963,ICICI Prudential Banking and Financial Services Fund - Direct Plan -  Growth,INF109K013J1,,8.77,mf_units
+153963,Axis India Manufacturing Fund - Direct Plan - Growth,INF846K016S3,,8.41,mf_units
+153963,Axis Flexi Cap Fund - Direct Plan - Growth,INF846K01B28,,7.35,mf_units
+153963,ICICI Prudential Technology Fund - Direct Plan -  Growth,INF109K01Z48,,3.81,mf_units
+153963,Kotak Banking & Financial Services Fund - Direct Plan - Growth,INF174KA1MD1,,2.81,mf_units
+153963,ICICI Prudential Infrastructure Fund Direct Growth,INF109K018M4,,2.19,mf_units
+153963,Axis Nifty India Defence Index Fund - Direct Plan - Growth,INF846KA1523,,1.77,mf_units
+153963,HDFC Pharma and Healthcare Fund - Growth Option - Direct Plan,INF179KC1HO1,,1.77,mf_units
+153963,Axis Innovation Fund - Direct Plan - Growth Option,INF846K01X71,,1.73,mf_units
+153963,Axis Large Cap Fund - Direct Plan - Growth,INF846K01DP8,,1.39,mf_units
+153963,Axis Nifty Capital Markets Index Fund- Direct Plan,INF846KA1549,,0.7,mf_units
+153963,Net Receivables / (Payables),,,-0.32,cash
+120505,The Federal Bank Limited,INE171A01029,Banks,3.98,equity
+120505,Apar Industries Limited,INE372A01015,Electrical Equipment,2.84,equity
+120505,Sona BLW Precision Forgings Limited,INE073K01018,Auto Components,2.69,equity
+120505,Fortis Healthcare Limited,INE061F01013,Healthcare Services,2.61,equity
+120505,GE Vernova T&D India Limited,INE200A01026,Electrical Equipment,2.41,equity
+120505,The Indian Hotels Company Limited,INE053A01029,Leisure Services,2.38,equity
+120505,IPCA Laboratories Limited,INE571A01038,Pharmaceuticals & Biotechnology,2.3,equity
+120505,The Phoenix Mills Limited,INE211B01039,Realty,2.29,equity
+120505,Lenskart Solutions Limited,INE956O01016,Retailing,2.22,equity
+120505,Eternal Limited,INE758T01015,Retailing,2.06,equity
+120505,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,1.94,equity
+120505,Bharat Forge Limited,INE465A01025,Auto Components,1.88,equity
+120505,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,1.86,equity
+120505,Radico Khaitan Limited,INE944F01028,Beverages,1.79,equity
+120505,ICICI Bank Limited,INE090A01021,Banks,1.71,equity
+120505,FSN E-Commerce Ventures Limited,INE388Y01029,Retailing,1.68,equity
+120505,Cummins India Limited,INE298A01020,Industrial Products,1.67,equity
+120505,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,1.62,equity
+120505,Marico Limited,INE196A01026,Agricultural Food & other Products,1.58,equity
+120505,Dixon Technologies (India) Limited,INE935N01020,Consumer Durables,1.57,equity
+120505,UNO Minda Limited,INE405E01023,Auto Components,1.55,equity
+120505,Coforge Limited,INE591G01025,IT - Software,1.52,equity
+120505,Schaeffler India Limited,INE513A01022,Auto Components,1.52,equity
+120505,PB Fintech Limited,INE417T01026,Financial Technology (Fintech),1.44,equity
+120505,Alkem Laboratories Limited,INE540L01014,Pharmaceuticals & Biotechnology,1.37,equity
+120505,Bajaj Finance Limited,INE296A01032,Finance,1.35,equity
+120505,Premier Energies Limited,INE0BS701011,Electrical Equipment,1.34,equity
+120505,AU Small Finance Bank Limited,INE949L01017,Banks,1.23,equity
+120505,Indo-MIM Limited,INE084101034,Industrial Manufacturing,1.23,equity
+120505,Torrent Power Limited,INE813H01021,Power,1.18,equity
+120505,Ather Energy Limited,INE0LEZ01016,Automobiles,1.13,equity
+120505,Info Edge (India) Limited,INE663F01032,Retailing,1.12,equity
+120505,Abbott India Limited,INE358A01014,Pharmaceuticals & Biotechnology,1.1,equity
+120505,JK Cement Limited,INE823G01014,Cement & Cement Products,1.1,equity
+120505,TVS Motor Company Limited,INE494B01023,Automobiles,1.07,equity
+120505,Vishal Mega Mart Limited,INE01EA01019,Retailing,1.04,equity
+120505,ICICI Lombard General Insurance Company Limited,INE765G01017,Insurance,1.04,equity
+120505,BSE Limited,INE118H01025,Capital Markets,1.03,equity
+120505,SRF Limited,INE647A01010,Chemicals & Petrochemicals,1.03,equity
+120505,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),1.01,equity
+120505,InterGlobe Aviation Limited,INE646L01027,Transport Services,1.0,equity
+120505,Coromandel International Limited,INE169A01031,Fertilizers & Agrochemicals,0.97,equity
+120505,Supreme Industries Limited,INE195A01028,Industrial Products,0.97,equity
+120505,K.P.R. Mill Limited,INE930H01031,Textiles & Apparels,0.95,equity
+120505,Page Industries Limited,INE761H01022,Textiles & Apparels,0.91,equity
+120505,Bharti Hexacom Limited,INE343G01021,Telecom - Services,0.91,equity
+120505,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,0.87,equity
+120505,Dhoot Transmission Ltd,INE01NH01023,Auto Components,0.86,equity
+120505,Gland Pharma Limited,INE068V01023,Pharmaceuticals & Biotechnology,0.78,equity
+120505,Meesho Ltd,INE0VDM01015,Retailing,0.77,equity
+120505,Bosch Limited,INE323A01026,Auto Components,0.72,equity
+120505,Torrent Pharmaceuticals Limited,INE685A01028,Pharmaceuticals & Biotechnology,0.72,equity
+120505,L&T Finance Limited,INE498L01015,Finance,0.71,equity
+120505,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,0.69,equity
+120505,Mphasis Limited,INE356A01018,IT - Software,0.66,equity

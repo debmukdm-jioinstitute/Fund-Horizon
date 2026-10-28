@@ -1,0 +1,91 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+154372,TREPS,,,5.62,cash
+154372,Net Receivable / Payable,,,0.22,cash
+154362,6.10% CGL 2031,IN0020210095,,76.5,debt
+154362,7.02% CGL 2031,IN0020240076,,17.66,debt
+154362,TREPS,,,5.62,cash
+154362,Net Receivable / Payable,,,0.22,cash
+154618,Wheels India Ltd.,INE715A01015,Auto Components,1.88,equity
+154618,Sedemac Mechatronics Ltd.,INE00XB01019,Auto Components,1.77,equity
+154618,Aequs Ltd.,INE947N01017,Aerospace & Defense,1.73,equity
+154618,HDFC Bank Ltd.,INE040A01034,Banks,1.72,equity
+154618,Kotak Mahindra Bank Ltd.,INE237A01036,Banks,1.69,equity
+154618,Sundaram Finance Ltd.,INE660A01013,Finance,1.65,equity
+154618,Innova Captab Ltd.,INE0DUT01020,Pharmaceuticals & Biotechnology,1.63,equity
+154618,Solar Industries India Ltd.,INE343H01029,Chemicals & Petrochemicals,1.59,equity
+154618,Corona Remedies Ltd.,INE02ZQ01018,Pharmaceuticals & Biotechnology,1.59,equity
+154618,Bajaj Finance Ltd.,INE296A01032,Finance,1.55,equity
+154618,Navin Fluorine International Ltd.,INE048G01026,Chemicals & Petrochemicals,1.5,equity
+154618,Cholamandalam Investment & Finance Co. Ltd.,INE121A01024,Finance,1.47,equity
+154618,Sun Pharmaceutical Industries Ltd.,INE044A01036,Pharmaceuticals & Biotechnology,1.38,equity
+154618,Craftsman Automation Ltd.,INE00LO01017,Auto Components,1.32,equity
+154618,Eicher Motors Ltd.,INE066A01021,Automobiles,1.3,equity
+154618,Vedanta Aluminium Metal Ltd.,INE1CDF01017,Non - Ferrous Metals,1.25,equity
+154618,Elgi Equipments Ltd.,INE285A01027,Industrial Products,1.23,equity
+154618,Torrent Pharmaceuticals Ltd.,INE685A01028,Pharmaceuticals & Biotechnology,1.21,equity
+154618,Bosch Ltd.,INE323A01026,Auto Components,1.19,equity
+154618,Divi's Laboratories Ltd.,INE361B01024,Pharmaceuticals & Biotechnology,1.17,equity
+154618,Adani Enterprises Ltd.,INE423A01024,Metals & Minerals Trading,1.17,equity
+154618,BSE Ltd.,INE118H01025,Capital Markets,1.17,equity
+154618,Cohance Lifesciences Ltd.,INE03QK01018,Pharmaceuticals & Biotechnology,1.12,equity
+154618,Triveni Turbine Ltd.,INE152M01016,Electrical Equipment,1.09,equity
+154618,Balkrishna Industries Ltd.,INE787D01026,Auto Components,1.07,equity
+154618,Minda Corporation Ltd.,INE842C01021,Auto Components,1.04,equity
+154618,Tenneco Clean Air India Ltd.,INE19RI01016,Auto Components,1.03,equity
+154618,Hyundai Motor India Ltd.,INE0V6F01027,Automobiles,1.03,equity
+154618,Tata Motors Ltd.,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",1.02,equity
+154618,Fortis Healthcare Ltd.,INE061F01013,Healthcare Services,0.97,equity
+154618,Concord Biotech Ltd.,INE338H01029,Pharmaceuticals & Biotechnology,0.83,equity
+154618,Kingfa Science & Technology India Ltd.,INE473D01015,Industrial Products,0.4,equity
+154618,Powerica Ltd.,INE921L01032,Electrical Equipment,0.03,equity
+154618,Cholamandalam Investment & Finance Co. Ltd.Perpetual,INE121A08QA7,,6.19,debt
+154618,Interise Trust,INE790Z07103,,4.55,debt
+154618,Bharti Telecom Ltd.,INE403D08272,,3.76,debt
+154618,TVS Credit Services Ltd.,INE729N08071,,2.55,debt
+154618,L&T Metro Rail (Hyderabad) Ltd.,INE128M14BM2,,4.99,debt
+154618,Indian Overseas Bank,INE565A16BV6,,7.58,debt
+154618,HDFC Bank Ltd.,INE040A16JS9,,7.58,debt
+154618,TREPS,,,22.63,cash
+154618,Net Receivable / Payable,,,-1.62,cash
+154615,Wheels India Ltd.,INE715A01015,Auto Components,1.88,equity
+154615,Sedemac Mechatronics Ltd.,INE00XB01019,Auto Components,1.77,equity
+154615,Aequs Ltd.,INE947N01017,Aerospace & Defense,1.73,equity
+154615,HDFC Bank Ltd.,INE040A01034,Banks,1.72,equity
+154615,Kotak Mahindra Bank Ltd.,INE237A01036,Banks,1.69,equity
+154615,Sundaram Finance Ltd.,INE660A01013,Finance,1.65,equity
+154615,Innova Captab Ltd.,INE0DUT01020,Pharmaceuticals & Biotechnology,1.63,equity
+154615,Solar Industries India Ltd.,INE343H01029,Chemicals & Petrochemicals,1.59,equity
+154615,Corona Remedies Ltd.,INE02ZQ01018,Pharmaceuticals & Biotechnology,1.59,equity
+154615,Bajaj Finance Ltd.,INE296A01032,Finance,1.55,equity
+154615,Navin Fluorine International Ltd.,INE048G01026,Chemicals & Petrochemicals,1.5,equity
+154615,Cholamandalam Investment & Finance Co. Ltd.,INE121A01024,Finance,1.47,equity
+154615,Sun Pharmaceutical Industries Ltd.,INE044A01036,Pharmaceuticals & Biotechnology,1.38,equity
+154615,Craftsman Automation Ltd.,INE00LO01017,Auto Components,1.32,equity
+154615,Eicher Motors Ltd.,INE066A01021,Automobiles,1.3,equity
+154615,Vedanta Aluminium Metal Ltd.,INE1CDF01017,Non - Ferrous Metals,1.25,equity
+154615,Elgi Equipments Ltd.,INE285A01027,Industrial Products,1.23,equity
+154615,Torrent Pharmaceuticals Ltd.,INE685A01028,Pharmaceuticals & Biotechnology,1.21,equity
+154615,Bosch Ltd.,INE323A01026,Auto Components,1.19,equity
+154615,Divi's Laboratories Ltd.,INE361B01024,Pharmaceuticals & Biotechnology,1.17,equity
+154615,Adani Enterprises Ltd.,INE423A01024,Metals & Minerals Trading,1.17,equity
+154615,BSE Ltd.,INE118H01025,Capital Markets,1.17,equity
+154615,Cohance Lifesciences Ltd.,INE03QK01018,Pharmaceuticals & Biotechnology,1.12,equity
+154615,Triveni Turbine Ltd.,INE152M01016,Electrical Equipment,1.09,equity
+154615,Balkrishna Industries Ltd.,INE787D01026,Auto Components,1.07,equity
+154615,Minda Corporation Ltd.,INE842C01021,Auto Components,1.04,equity
+154615,Tenneco Clean Air India Ltd.,INE19RI01016,Auto Components,1.03,equity
+154615,Hyundai Motor India Ltd.,INE0V6F01027,Automobiles,1.03,equity
+154615,Tata Motors Ltd.,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",1.02,equity
+154615,Fortis Healthcare Ltd.,INE061F01013,Healthcare Services,0.97,equity
+154615,Concord Biotech Ltd.,INE338H01029,Pharmaceuticals & Biotechnology,0.83,equity
+154615,Kingfa Science & Technology India Ltd.,INE473D01015,Industrial Products,0.4,equity
+154615,Powerica Ltd.,INE921L01032,Electrical Equipment,0.03,equity
+154615,Cholamandalam Investment & Finance Co. Ltd.Perpetual,INE121A08QA7,,6.19,debt
+154615,Interise Trust,INE790Z07103,,4.55,debt
+154615,Bharti Telecom Ltd.,INE403D08272,,3.76,debt
+154615,TVS Credit Services Ltd.,INE729N08071,,2.55,debt
+154615,L&T Metro Rail (Hyderabad) Ltd.,INE128M14BM2,,4.99,debt
+154615,Indian Overseas Bank,INE565A16BV6,,7.58,debt
+154615,HDFC Bank Ltd.,INE040A16JS9,,7.58,debt
+154615,TREPS,,,22.63,cash
+154615,Net Receivable / Payable,,,-1.62,cash

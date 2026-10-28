@@ -1,0 +1,1816 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+152293,CAPITAL MARKETS,INF277KA1984,,99.96,other
+152297,CAPITAL MARKETS,INF277KA1984,,99.96,other
+152287,CAPITAL MARKETS,INF277KA1976,,99.89,other
+152290,CAPITAL MARKETS,INF277KA1976,,99.89,other
+153513,CAPITAL MARKETS,INF277KA1224,,60.18,other
+153513,CAPITAL MARKETS,INF277K017Q3,,39.8,other
+153511,CAPITAL MARKETS,INF277KA1224,,60.18,other
+153511,CAPITAL MARKETS,INF277K017Q3,,39.8,other
+101672,Banks,INE090A01021,Banks,9.1,equity
+101672,Finance,INE721A01047,Finance,6.01,equity
+101672,Consumable Fuels,INE522F01014,Consumable Fuels,5.41,equity
+101672,Capital Markets,INE338I01027,Capital Markets,5.31,equity
+101672,Telecom - Services,INE121J01017,Telecom - Services,4.48,equity
+101672,Banks,INE237A01036,Banks,4.42,equity
+101672,Finance,INE414G01012,Finance,4.34,equity
+101672,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,4.33,equity
+101672,Petroleum Products,INE029A01011,Petroleum Products,4.11,equity
+101672,Automobiles,INE158A01026,Automobiles,3.63,equity
+101672,Power,INE733E01010,Power,3.53,equity
+101672,Diversified FMCG,INE154A01025,Diversified FMCG,3.44,equity
+101672,Retailing,INE758T01015,Retailing,2.9,equity
+101672,Beverages,INE944F01028,Beverages,2.84,equity
+101672,Banks,INE040A01034,Banks,2.53,equity
+101672,Oil,INE274J01014,Oil,2.45,equity
+101672,Power,INE752E01010,Power,2.3,equity
+101672,Insurance,INE0J1Y01017,Insurance,2.03,equity
+101672,Banks,INE171A01029,Banks,1.91,equity
+101672,Aerospace & Defense,INE066F01020,Aerospace & Defense,1.78,equity
+101672,Auto Components,INE482A01020,Auto Components,1.73,equity
+101672,Retailing,INE290S01011,Retailing,1.7,equity
+101672,Consumer Durables,INE935N01020,Consumer Durables,1.57,equity
+101672,Construction,INE510A01028,Construction,1.53,equity
+101672,Gas,INE347G01014,Gas,1.46,equity
+101672,Entertainment,INE424H01027,Entertainment,1.43,equity
+101672,IT - Software,INE009A01021,IT - Software,1.42,equity
+101672,Power,INE931S01010,Power,1.18,equity
+101672,Diversified Metals,INE205A01025,Diversified Metals,0.96,equity
+101672,IT - Software,INE467B01029,IT - Software,0.96,equity
+101672,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.93,equity
+101672,Auto Components,INE573A01042,Auto Components,0.85,equity
+101672,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,0.7,equity
+101672,Industrial Products,INE508G01029,Industrial Products,0.66,equity
+101672,Food Products,INE00E101023,Food Products,0.23,equity
+101672,Consumer Durables,INE1RDG01013,Consumer Durables,0.22,equity
+101672,Electrical Equipment,INE0BS701011,Electrical Equipment,0.19,equity
+119231,Banks,INE090A01021,Banks,9.1,equity
+119231,Finance,INE721A01047,Finance,6.01,equity
+119231,Consumable Fuels,INE522F01014,Consumable Fuels,5.41,equity
+119231,Capital Markets,INE338I01027,Capital Markets,5.31,equity
+119231,Telecom - Services,INE121J01017,Telecom - Services,4.48,equity
+119231,Banks,INE237A01036,Banks,4.42,equity
+119231,Finance,INE414G01012,Finance,4.34,equity
+119231,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,4.33,equity
+119231,Petroleum Products,INE029A01011,Petroleum Products,4.11,equity
+119231,Automobiles,INE158A01026,Automobiles,3.63,equity
+119231,Power,INE733E01010,Power,3.53,equity
+119231,Diversified FMCG,INE154A01025,Diversified FMCG,3.44,equity
+119231,Retailing,INE758T01015,Retailing,2.9,equity
+119231,Beverages,INE944F01028,Beverages,2.84,equity
+119231,Banks,INE040A01034,Banks,2.53,equity
+119231,Oil,INE274J01014,Oil,2.45,equity
+119231,Power,INE752E01010,Power,2.3,equity
+119231,Insurance,INE0J1Y01017,Insurance,2.03,equity
+119231,Banks,INE171A01029,Banks,1.91,equity
+119231,Aerospace & Defense,INE066F01020,Aerospace & Defense,1.78,equity
+119231,Auto Components,INE482A01020,Auto Components,1.73,equity
+119231,Retailing,INE290S01011,Retailing,1.7,equity
+119231,Consumer Durables,INE935N01020,Consumer Durables,1.57,equity
+119231,Construction,INE510A01028,Construction,1.53,equity
+119231,Gas,INE347G01014,Gas,1.46,equity
+119231,Entertainment,INE424H01027,Entertainment,1.43,equity
+119231,IT - Software,INE009A01021,IT - Software,1.42,equity
+119231,Power,INE931S01010,Power,1.18,equity
+119231,Diversified Metals,INE205A01025,Diversified Metals,0.96,equity
+119231,IT - Software,INE467B01029,IT - Software,0.96,equity
+119231,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.93,equity
+119231,Auto Components,INE573A01042,Auto Components,0.85,equity
+119231,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,0.7,equity
+119231,Industrial Products,INE508G01029,Industrial Products,0.66,equity
+119231,Food Products,INE00E101023,Food Products,0.23,equity
+119231,Consumer Durables,INE1RDG01013,Consumer Durables,0.22,equity
+119231,Electrical Equipment,INE0BS701011,Electrical Equipment,0.19,equity
+145206,Chemicals & Petrochemicals,INE659A01023,Chemicals & Petrochemicals,4.54,equity
+145206,Industrial Products,INE228A01035,Industrial Products,4.38,equity
+145206,Industrial Products,INE811A01038,Industrial Products,4.3,equity
+145206,Industrial Manufacturing,INE011K01018,Industrial Manufacturing,4.15,equity
+145206,Banks,INE092T01019,Banks,3.68,equity
+145206,Pharmaceuticals & Biotechnology,INE049B01025,Pharmaceuticals & Biotechnology,3.36,equity
+145206,Diversified,INE233A01035,Diversified,3.11,equity
+145206,Cement & Cement Products,INE331A01037,Cement & Cement Products,2.51,equity
+145206,Consumer Durables,INE0LMW01024,Consumer Durables,2.49,equity
+145206,Commercial Services & Supplies,INE615P01015,Commercial Services & Supplies,2.34,equity
+145206,Retailing,INE290S01011,Retailing,2.33,equity
+145206,Industrial Products,INE120A01034,Industrial Products,2.26,equity
+145206,Chemicals & Petrochemicals,INE280B01018,Chemicals & Petrochemicals,2.19,equity
+145206,Agricultural Food & other Products,INE119A01028,Agricultural Food & other Products,2.14,equity
+145206,Financial Technology (Fintech),INE0FFK01017,Financial Technology (Fintech),2.05,equity
+145206,Commercial Services & Supplies,INE891D01026,Commercial Services & Supplies,1.99,equity
+145206,Chemicals & Petrochemicals,INE373A01013,Chemicals & Petrochemicals,1.99,equity
+145206,Industrial Products,INE508G01029,Industrial Products,1.96,equity
+145206,Realty,INE242C01024,Realty,1.86,equity
+145206,IT - Software,INE0BV301023,IT - Software,1.82,equity
+145206,Banks,INE503A01015,Banks,1.75,equity
+145206,Industrial Products,INE371A01025,Industrial Products,1.68,equity
+145206,Retailing,INE498B01024,Retailing,1.66,equity
+145206,Leisure Services,INE066O01014,Leisure Services,1.63,equity
+145206,Consumer Durables,INE461C01038,Consumer Durables,1.59,equity
+145206,Auto Components,INE491J01022,Auto Components,1.53,equity
+145206,Industrial Products,INE999A01023,Industrial Products,1.5,equity
+145206,Ferrous Metals,INE884B01025,Ferrous Metals,1.49,equity
+145206,Auto Components,INE0Q3R01026,Auto Components,1.43,equity
+145206,Leisure Services,INE08U801020,Leisure Services,1.38,equity
+145206,Transport Infrastructure,INE517F01014,Transport Infrastructure,1.37,equity
+145206,Healthcare Services,INE08LI01020,Healthcare Services,1.11,equity
+145206,Chemicals & Petrochemicals,INE602A01031,Chemicals & Petrochemicals,1.09,equity
+145206,Consumer Durables,INE054A01027,Consumer Durables,1.03,equity
+145206,Food Products,INE209A01019,Food Products,1.01,equity
+145206,Industrial Products,INE235A01022,Industrial Products,0.99,equity
+145206,Power,INE622W01025,Power,0.96,equity
+145206,Auto Components,INE536H01010,Auto Components,0.95,equity
+145206,Industrial Manufacturing,INE835D01023,Industrial Manufacturing,0.94,equity
+145206,Commercial Services & Supplies,INE0U4101014,Commercial Services & Supplies,0.9,equity
+145206,Commercial Services & Supplies,INE0NAZ01010,Commercial Services & Supplies,0.85,equity
+145206,Non - Ferrous Metals,INE16W401027,Non - Ferrous Metals,0.82,equity
+145206,Textiles & Apparels,INE887G01027,Textiles & Apparels,0.78,equity
+145206,Realty,INE263M01029,Realty,0.75,equity
+145206,Industrial Manufacturing,INE634A01018,Industrial Manufacturing,0.74,equity
+145206,Industrial Products,INE050M01012,Industrial Products,0.72,equity
+145206,Auto Components,INE227C01017,Auto Components,0.71,equity
+145206,Consumer Durables,INE133A01011,Consumer Durables,0.67,equity
+145206,Pharmaceuticals & Biotechnology,INE475B01022,Pharmaceuticals & Biotechnology,0.54,equity
+145206,Other Construction Materials,INE614A01028,Other Construction Materials,0.53,equity
+145206,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,0.52,equity
+145206,Transport Services,INE688A01022,Transport Services,0.52,equity
+145206,Textiles & Apparels,INE845D01014,Textiles & Apparels,0.44,equity
+145206,Household Products,INE128A01029,Household Products,0.43,equity
+145206,Consumer Durables,INE0KCE01017,Consumer Durables,0.31,equity
+145206,IT - Services,INE0U4701011,IT - Services,0.26,equity
+145206,Auto Components,INE449A01011,Auto Components,0.19,equity
+145206,Transport Services,INE1YPB01014,Transport Services,0.17,equity
+145206,Transport Services,INE418H01029,Transport Services,0.13,equity
+145206,Entertainment,INE979A01025,Entertainment,0.11,equity
+145206,Fertilizers & Agrochemicals,INE613A01020,Fertilizers & Agrochemicals,0.08,equity
+145206,Transport Services,INE0O3901029,Transport Services,0.07,equity
+145206,Power,INE0GGX23010,,0.08,other
+145208,Chemicals & Petrochemicals,INE659A01023,Chemicals & Petrochemicals,4.54,equity
+145208,Industrial Products,INE228A01035,Industrial Products,4.38,equity
+145208,Industrial Products,INE811A01038,Industrial Products,4.3,equity
+145208,Industrial Manufacturing,INE011K01018,Industrial Manufacturing,4.15,equity
+145208,Banks,INE092T01019,Banks,3.68,equity
+145208,Pharmaceuticals & Biotechnology,INE049B01025,Pharmaceuticals & Biotechnology,3.36,equity
+145208,Diversified,INE233A01035,Diversified,3.11,equity
+145208,Cement & Cement Products,INE331A01037,Cement & Cement Products,2.51,equity
+145208,Consumer Durables,INE0LMW01024,Consumer Durables,2.49,equity
+145208,Commercial Services & Supplies,INE615P01015,Commercial Services & Supplies,2.34,equity
+145208,Retailing,INE290S01011,Retailing,2.33,equity
+145208,Industrial Products,INE120A01034,Industrial Products,2.26,equity
+145208,Chemicals & Petrochemicals,INE280B01018,Chemicals & Petrochemicals,2.19,equity
+145208,Agricultural Food & other Products,INE119A01028,Agricultural Food & other Products,2.14,equity
+145208,Financial Technology (Fintech),INE0FFK01017,Financial Technology (Fintech),2.05,equity
+145208,Commercial Services & Supplies,INE891D01026,Commercial Services & Supplies,1.99,equity
+145208,Chemicals & Petrochemicals,INE373A01013,Chemicals & Petrochemicals,1.99,equity
+145208,Industrial Products,INE508G01029,Industrial Products,1.96,equity
+145208,Realty,INE242C01024,Realty,1.86,equity
+145208,IT - Software,INE0BV301023,IT - Software,1.82,equity
+145208,Banks,INE503A01015,Banks,1.75,equity
+145208,Industrial Products,INE371A01025,Industrial Products,1.68,equity
+145208,Retailing,INE498B01024,Retailing,1.66,equity
+145208,Leisure Services,INE066O01014,Leisure Services,1.63,equity
+145208,Consumer Durables,INE461C01038,Consumer Durables,1.59,equity
+145208,Auto Components,INE491J01022,Auto Components,1.53,equity
+145208,Industrial Products,INE999A01023,Industrial Products,1.5,equity
+145208,Ferrous Metals,INE884B01025,Ferrous Metals,1.49,equity
+145208,Auto Components,INE0Q3R01026,Auto Components,1.43,equity
+145208,Leisure Services,INE08U801020,Leisure Services,1.38,equity
+145208,Transport Infrastructure,INE517F01014,Transport Infrastructure,1.37,equity
+145208,Healthcare Services,INE08LI01020,Healthcare Services,1.11,equity
+145208,Chemicals & Petrochemicals,INE602A01031,Chemicals & Petrochemicals,1.09,equity
+145208,Consumer Durables,INE054A01027,Consumer Durables,1.03,equity
+145208,Food Products,INE209A01019,Food Products,1.01,equity
+145208,Industrial Products,INE235A01022,Industrial Products,0.99,equity
+145208,Power,INE622W01025,Power,0.96,equity
+145208,Auto Components,INE536H01010,Auto Components,0.95,equity
+145208,Industrial Manufacturing,INE835D01023,Industrial Manufacturing,0.94,equity
+145208,Commercial Services & Supplies,INE0U4101014,Commercial Services & Supplies,0.9,equity
+145208,Commercial Services & Supplies,INE0NAZ01010,Commercial Services & Supplies,0.85,equity
+145208,Non - Ferrous Metals,INE16W401027,Non - Ferrous Metals,0.82,equity
+145208,Textiles & Apparels,INE887G01027,Textiles & Apparels,0.78,equity
+145208,Realty,INE263M01029,Realty,0.75,equity
+145208,Industrial Manufacturing,INE634A01018,Industrial Manufacturing,0.74,equity
+145208,Industrial Products,INE050M01012,Industrial Products,0.72,equity
+145208,Auto Components,INE227C01017,Auto Components,0.71,equity
+145208,Consumer Durables,INE133A01011,Consumer Durables,0.67,equity
+145208,Pharmaceuticals & Biotechnology,INE475B01022,Pharmaceuticals & Biotechnology,0.54,equity
+145208,Other Construction Materials,INE614A01028,Other Construction Materials,0.53,equity
+145208,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,0.52,equity
+145208,Transport Services,INE688A01022,Transport Services,0.52,equity
+145208,Textiles & Apparels,INE845D01014,Textiles & Apparels,0.44,equity
+145208,Household Products,INE128A01029,Household Products,0.43,equity
+145208,Consumer Durables,INE0KCE01017,Consumer Durables,0.31,equity
+145208,IT - Services,INE0U4701011,IT - Services,0.26,equity
+145208,Auto Components,INE449A01011,Auto Components,0.19,equity
+145208,Transport Services,INE1YPB01014,Transport Services,0.17,equity
+145208,Transport Services,INE418H01029,Transport Services,0.13,equity
+145208,Entertainment,INE979A01025,Entertainment,0.11,equity
+145208,Fertilizers & Agrochemicals,INE613A01020,Fertilizers & Agrochemicals,0.08,equity
+145208,Transport Services,INE0O3901029,Transport Services,0.07,equity
+145208,Power,INE0GGX23010,,0.08,other
+115942,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,5.39,equity
+115942,Banks,INE090A01021,Banks,4.97,equity
+115942,Retailing,INE758T01015,Retailing,4.11,equity
+115942,Capital Markets,INE745G01043,Capital Markets,3.81,equity
+115942,Petroleum Products,INE002A01018,Petroleum Products,3.66,equity
+115942,Beverages,INE944F01028,Beverages,3.17,equity
+115942,Transport Infrastructure,INE742F01042,Transport Infrastructure,2.46,equity
+115942,Banks,INE237A01036,Banks,2.28,equity
+115942,Capital Markets,INE466L01038,Capital Markets,2.25,equity
+115942,Banks,INE036D01028,Banks,2.14,equity
+115942,Healthcare Services,INE961O01016,Healthcare Services,2.14,equity
+115942,Auto Components,INE302A01020,Auto Components,2.12,equity
+115942,Consumable Fuels,INE522F01014,Consumable Fuels,2.05,equity
+115942,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,2.02,equity
+115942,Consumer Durables,INE935N01020,Consumer Durables,2.02,equity
+115942,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),2.01,equity
+115942,Consumer Durables,INE280A01028,Consumer Durables,1.96,equity
+115942,Electrical Equipment,INE12UR01024,Electrical Equipment,1.89,equity
+115942,Capital Markets,INE298J01013,Capital Markets,1.88,equity
+115942,Capital Markets,INE118H01025,Capital Markets,1.85,equity
+115942,Industrial Products,INE455K01017,Industrial Products,1.83,equity
+115942,Capital Markets,INE0HOQ01053,Capital Markets,1.82,equity
+115942,Industrial Products,INE811A01038,Industrial Products,1.77,equity
+115942,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,1.73,equity
+115942,Household Products,INE321T01012,Household Products,1.71,equity
+115942,IT - Software,INE860A01027,IT - Software,1.68,equity
+115942,Food Products,INE239A01024,Food Products,1.68,equity
+115942,Oil,INE274J01014,Oil,1.63,equity
+115942,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),1.55,equity
+115942,Automobiles,INE0LEZ01016,Automobiles,1.51,equity
+115942,Power,INE814H01029,Power,1.5,equity
+115942,Healthcare Services,INE437A01024,Healthcare Services,1.4,equity
+115942,Finance,INE414G01012,Finance,1.38,equity
+115942,Food Products,INE00E101023,Food Products,1.34,equity
+115942,Cement & Cement Products,INE047A01021,Cement & Cement Products,1.31,equity
+115942,Industrial Products,INE536A01023,Industrial Products,1.28,equity
+115942,Diversified,INE233A01035,Diversified,1.25,equity
+115942,Banks,INE976G01028,Banks,1.15,equity
+115942,Power,INE931S01010,Power,1.12,equity
+115942,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,1.04,equity
+115942,Cement & Cement Products,INE331A01037,Cement & Cement Products,1.01,equity
+115942,Finance,INE721A01047,Finance,1.01,equity
+115942,Beverages,INE200M01039,Beverages,1.0,equity
+115942,Automobiles,INE585B01010,Automobiles,0.92,equity
+115942,Electrical Equipment,INE989C01038,Electrical Equipment,0.9,equity
+115942,IT - Software,INE467B01029,IT - Software,0.88,equity
+115942,Finance,INE741K01010,Finance,0.87,equity
+115942,Finance,INE522D01027,Finance,0.68,equity
+115942,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.65,equity
+115942,IT - Software,INE520A01027,IT - Software,0.6,equity
+115942,Food Products,INE850D01014,Food Products,0.57,equity
+115942,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.56,equity
+119251,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,5.39,equity
+119251,Banks,INE090A01021,Banks,4.97,equity
+119251,Retailing,INE758T01015,Retailing,4.11,equity
+119251,Capital Markets,INE745G01043,Capital Markets,3.81,equity
+119251,Petroleum Products,INE002A01018,Petroleum Products,3.66,equity
+119251,Beverages,INE944F01028,Beverages,3.17,equity
+119251,Transport Infrastructure,INE742F01042,Transport Infrastructure,2.46,equity
+119251,Banks,INE237A01036,Banks,2.28,equity
+119251,Capital Markets,INE466L01038,Capital Markets,2.25,equity
+119251,Banks,INE036D01028,Banks,2.14,equity
+119251,Healthcare Services,INE961O01016,Healthcare Services,2.14,equity
+119251,Auto Components,INE302A01020,Auto Components,2.12,equity
+119251,Consumable Fuels,INE522F01014,Consumable Fuels,2.05,equity
+119251,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,2.02,equity
+119251,Consumer Durables,INE935N01020,Consumer Durables,2.02,equity
+119251,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),2.01,equity
+119251,Consumer Durables,INE280A01028,Consumer Durables,1.96,equity
+119251,Electrical Equipment,INE12UR01024,Electrical Equipment,1.89,equity
+119251,Capital Markets,INE298J01013,Capital Markets,1.88,equity
+119251,Capital Markets,INE118H01025,Capital Markets,1.85,equity
+119251,Industrial Products,INE455K01017,Industrial Products,1.83,equity
+119251,Capital Markets,INE0HOQ01053,Capital Markets,1.82,equity
+119251,Industrial Products,INE811A01038,Industrial Products,1.77,equity
+119251,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,1.73,equity
+119251,Household Products,INE321T01012,Household Products,1.71,equity
+119251,IT - Software,INE860A01027,IT - Software,1.68,equity
+119251,Food Products,INE239A01024,Food Products,1.68,equity
+119251,Oil,INE274J01014,Oil,1.63,equity
+119251,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),1.55,equity
+119251,Automobiles,INE0LEZ01016,Automobiles,1.51,equity
+119251,Power,INE814H01029,Power,1.5,equity
+119251,Healthcare Services,INE437A01024,Healthcare Services,1.4,equity
+119251,Finance,INE414G01012,Finance,1.38,equity
+119251,Food Products,INE00E101023,Food Products,1.34,equity
+119251,Cement & Cement Products,INE047A01021,Cement & Cement Products,1.31,equity
+119251,Industrial Products,INE536A01023,Industrial Products,1.28,equity
+119251,Diversified,INE233A01035,Diversified,1.25,equity
+119251,Banks,INE976G01028,Banks,1.15,equity
+119251,Power,INE931S01010,Power,1.12,equity
+119251,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,1.04,equity
+119251,Cement & Cement Products,INE331A01037,Cement & Cement Products,1.01,equity
+119251,Finance,INE721A01047,Finance,1.01,equity
+119251,Beverages,INE200M01039,Beverages,1.0,equity
+119251,Automobiles,INE585B01010,Automobiles,0.92,equity
+119251,Electrical Equipment,INE989C01038,Electrical Equipment,0.9,equity
+119251,IT - Software,INE467B01029,IT - Software,0.88,equity
+119251,Finance,INE741K01010,Finance,0.87,equity
+119251,Finance,INE522D01027,Finance,0.68,equity
+119251,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.65,equity
+119251,IT - Software,INE520A01027,IT - Software,0.6,equity
+119251,Food Products,INE850D01014,Food Products,0.57,equity
+119251,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.56,equity
+119255,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,4.74,equity
+119255,Banks,INE090A01021,Banks,4.27,equity
+119255,Retailing,INE758T01015,Retailing,3.49,equity
+119255,Petroleum Products,INE002A01018,Petroleum Products,3.23,equity
+119255,Capital Markets,INE745G01043,Capital Markets,3.23,equity
+119255,Beverages,INE944F01028,Beverages,2.6,equity
+119255,Transport Infrastructure,INE742F01042,Transport Infrastructure,2.07,equity
+119255,Capital Markets,INE466L01038,Capital Markets,1.97,equity
+119255,Industrial Products,INE811A01038,Industrial Products,1.95,equity
+119255,Banks,INE036D01028,Banks,1.93,equity
+119255,Banks,INE237A01036,Banks,1.9,equity
+119255,Auto Components,INE302A01020,Auto Components,1.81,equity
+119255,Consumable Fuels,INE522F01014,Consumable Fuels,1.75,equity
+119255,Healthcare Services,INE961O01016,Healthcare Services,1.73,equity
+119255,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),1.71,equity
+119255,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,1.7,equity
+119255,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,1.68,equity
+119255,Consumer Durables,INE280A01028,Consumer Durables,1.64,equity
+119255,Consumer Durables,INE935N01020,Consumer Durables,1.62,equity
+119255,Capital Markets,INE298J01013,Capital Markets,1.59,equity
+119255,Capital Markets,INE118H01025,Capital Markets,1.58,equity
+119255,Capital Markets,INE0HOQ01053,Capital Markets,1.53,equity
+119255,Industrial Products,INE455K01017,Industrial Products,1.48,equity
+119255,Household Products,INE321T01012,Household Products,1.46,equity
+119255,Food Products,INE239A01024,Food Products,1.45,equity
+119255,Oil,INE274J01014,Oil,1.44,equity
+119255,Auto Components,INE726V01018,Auto Components,1.42,equity
+119255,IT - Software,INE860A01027,IT - Software,1.41,equity
+119255,Electrical Equipment,INE12UR01024,Electrical Equipment,1.37,equity
+119255,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),1.27,equity
+119255,Finance,INE414G01012,Finance,1.22,equity
+119255,Diversified,INE233A01035,Diversified,1.18,equity
+119255,Automobiles,INE0LEZ01016,Automobiles,1.16,equity
+119255,Food Products,INE00E101023,Food Products,1.15,equity
+119255,Healthcare Services,INE437A01024,Healthcare Services,1.15,equity
+119255,Power,INE814H01029,Power,1.08,equity
+119255,Cement & Cement Products,INE047A01021,Cement & Cement Products,1.04,equity
+119255,Banks,INE976G01028,Banks,0.96,equity
+119255,Power,INE931S01010,Power,0.9,equity
+119255,Beverages,INE200M01039,Beverages,0.85,equity
+119255,Finance,INE721A01047,Finance,0.84,equity
+119255,Cement & Cement Products,INE331A01037,Cement & Cement Products,0.83,equity
+119255,IT - Software,INE467B01029,IT - Software,0.79,equity
+119255,Automobiles,INE585B01010,Automobiles,0.76,equity
+119255,Industrial Products,INE536A01023,Industrial Products,0.68,equity
+119255,Electrical Equipment,INE989C01038,Electrical Equipment,0.66,equity
+119255,Finance,INE522D01027,Finance,0.54,equity
+119255,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.53,equity
+119255,IT - Software,INE520A01027,IT - Software,0.52,equity
+119255,Food Products,INE850D01014,Food Products,0.52,equity
+119255,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.51,equity
+119255,Finance,INE741K01010,Finance,0.19,equity
+119255,SOV,IN0020250141,,2.09,other
+119255,SOV,IN0020260025,,1.77,other
+119255,SOV,IN0020220037,,1.43,other
+119255,SOV,IN0020240126,,1.39,other
+119255,SOV,IN0020160118,,0.95,other
+119255,SOV,IN0020250091,,0.68,other
+119255,SOV,IN0020210095,,0.53,other
+119255,SOV,IN0020220086,,0.46,other
+119255,SOV,IN0020180454,,0.1,other
+119255,CRISIL-AA+,INE205A08103,,1.18,other
+119255,CRISIL-AAA,INE261F08EK5,,1.18,other
+119255,CRISIL-AAA,INE040A08666,,1.17,other
+119255,ICRA-AAA,INE848E07BB9,,0.23,other
+119255,CRISIL-AAA,INE2I7G15010,,0.9,other
+115943,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,4.74,equity
+115943,Banks,INE090A01021,Banks,4.27,equity
+115943,Retailing,INE758T01015,Retailing,3.49,equity
+115943,Petroleum Products,INE002A01018,Petroleum Products,3.23,equity
+115943,Capital Markets,INE745G01043,Capital Markets,3.23,equity
+115943,Beverages,INE944F01028,Beverages,2.6,equity
+115943,Transport Infrastructure,INE742F01042,Transport Infrastructure,2.07,equity
+115943,Capital Markets,INE466L01038,Capital Markets,1.97,equity
+115943,Industrial Products,INE811A01038,Industrial Products,1.95,equity
+115943,Banks,INE036D01028,Banks,1.93,equity
+115943,Banks,INE237A01036,Banks,1.9,equity
+115943,Auto Components,INE302A01020,Auto Components,1.81,equity
+115943,Consumable Fuels,INE522F01014,Consumable Fuels,1.75,equity
+115943,Healthcare Services,INE961O01016,Healthcare Services,1.73,equity
+115943,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),1.71,equity
+115943,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,1.7,equity
+115943,Agricultural Food & other Products,INE192A01025,Agricultural Food & other Products,1.68,equity
+115943,Consumer Durables,INE280A01028,Consumer Durables,1.64,equity
+115943,Consumer Durables,INE935N01020,Consumer Durables,1.62,equity
+115943,Capital Markets,INE298J01013,Capital Markets,1.59,equity
+115943,Capital Markets,INE118H01025,Capital Markets,1.58,equity
+115943,Capital Markets,INE0HOQ01053,Capital Markets,1.53,equity
+115943,Industrial Products,INE455K01017,Industrial Products,1.48,equity
+115943,Household Products,INE321T01012,Household Products,1.46,equity
+115943,Food Products,INE239A01024,Food Products,1.45,equity
+115943,Oil,INE274J01014,Oil,1.44,equity
+115943,Auto Components,INE726V01018,Auto Components,1.42,equity
+115943,IT - Software,INE860A01027,IT - Software,1.41,equity
+115943,Electrical Equipment,INE12UR01024,Electrical Equipment,1.37,equity
+115943,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),1.27,equity
+115943,Finance,INE414G01012,Finance,1.22,equity
+115943,Diversified,INE233A01035,Diversified,1.18,equity
+115943,Automobiles,INE0LEZ01016,Automobiles,1.16,equity
+115943,Food Products,INE00E101023,Food Products,1.15,equity
+115943,Healthcare Services,INE437A01024,Healthcare Services,1.15,equity
+115943,Power,INE814H01029,Power,1.08,equity
+115943,Cement & Cement Products,INE047A01021,Cement & Cement Products,1.04,equity
+115943,Banks,INE976G01028,Banks,0.96,equity
+115943,Power,INE931S01010,Power,0.9,equity
+115943,Beverages,INE200M01039,Beverages,0.85,equity
+115943,Finance,INE721A01047,Finance,0.84,equity
+115943,Cement & Cement Products,INE331A01037,Cement & Cement Products,0.83,equity
+115943,IT - Software,INE467B01029,IT - Software,0.79,equity
+115943,Automobiles,INE585B01010,Automobiles,0.76,equity
+115943,Industrial Products,INE536A01023,Industrial Products,0.68,equity
+115943,Electrical Equipment,INE989C01038,Electrical Equipment,0.66,equity
+115943,Finance,INE522D01027,Finance,0.54,equity
+115943,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.53,equity
+115943,IT - Software,INE520A01027,IT - Software,0.52,equity
+115943,Food Products,INE850D01014,Food Products,0.52,equity
+115943,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.51,equity
+115943,Finance,INE741K01010,Finance,0.19,equity
+115943,SOV,IN0020250141,,2.09,other
+115943,SOV,IN0020260025,,1.77,other
+115943,SOV,IN0020220037,,1.43,other
+115943,SOV,IN0020240126,,1.39,other
+115943,SOV,IN0020160118,,0.95,other
+115943,SOV,IN0020250091,,0.68,other
+115943,SOV,IN0020210095,,0.53,other
+115943,SOV,IN0020220086,,0.46,other
+115943,SOV,IN0020180454,,0.1,other
+115943,CRISIL-AA+,INE205A08103,,1.18,other
+115943,CRISIL-AAA,INE261F08EK5,,1.18,other
+115943,CRISIL-AAA,INE040A08666,,1.17,other
+115943,ICRA-AAA,INE848E07BB9,,0.23,other
+115943,CRISIL-AAA,INE2I7G15010,,0.9,other
+135813,Cement & Cement Products,INE481G01011,Cement & Cement Products,5.51,equity
+135813,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,5.05,equity
+135813,Power,INE931S01010,Power,4.62,equity
+135813,Ferrous Metals,INE081A01020,Ferrous Metals,4.37,equity
+135813,Cement & Cement Products,INE079A01024,Cement & Cement Products,3.76,equity
+135813,Power,INE814H01029,Power,3.67,equity
+135813,Petroleum Products,INE002A01018,Petroleum Products,3.58,equity
+135813,Oil,INE213A01029,Oil,3.57,equity
+135813,Petroleum Products,INE029A01011,Petroleum Products,3.27,equity
+135813,Power,INE733E01010,Power,3.25,equity
+135813,Ferrous Metals,INE749A01030,Ferrous Metals,2.94,equity
+135813,Textiles & Apparels,INE845D01014,Textiles & Apparels,2.88,equity
+135813,Ferrous Metals,INE019A01038,Ferrous Metals,2.7,equity
+135813,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,2.44,equity
+135813,"Paper, Forest & Jute Products",INE976A01021,"Paper, Forest & Jute Products",2.44,equity
+135813,Industrial Manufacturing,INE841L01016,Industrial Manufacturing,2.43,equity
+135813,Chemicals & Petrochemicals,INE048G01026,Chemicals & Petrochemicals,2.37,equity
+135813,Industrial Products,INE616N01034,Industrial Products,2.21,equity
+135813,Industrial Manufacturing,INE084101034,Industrial Manufacturing,2.07,equity
+135813,Consumable Fuels,INE522F01014,Consumable Fuels,1.83,equity
+135813,Power,INE848E01016,Power,1.83,equity
+135813,Gas,INE002S01010,Gas,1.71,equity
+135813,Petroleum Products,INE094A01015,Petroleum Products,1.64,equity
+135813,Fertilizers & Agrochemicals,INE258G01013,Fertilizers & Agrochemicals,1.63,equity
+135813,Fertilizers & Agrochemicals,INE462A01022,Fertilizers & Agrochemicals,1.56,equity
+135813,Cement & Cement Products,INE047A01021,Cement & Cement Products,1.54,equity
+135813,Electrical Equipment,INE12UR01024,Electrical Equipment,1.53,equity
+135813,Minerals & Mining,INE490G01020,Minerals & Mining,1.53,equity
+135813,Chemicals & Petrochemicals,INE236E01022,Chemicals & Petrochemicals,1.45,equity
+135813,Petroleum Products,INE172A01027,Petroleum Products,1.44,equity
+135813,Minerals & Mining,INE584A01023,Minerals & Mining,1.38,equity
+135813,Cement & Cement Products,INE118D01016,Cement & Cement Products,1.33,equity
+135813,Non - Ferrous Metals,INE038A01020,Non - Ferrous Metals,1.32,equity
+135813,Chemicals & Petrochemicals,INE769A01020,Chemicals & Petrochemicals,1.25,equity
+135813,Industrial Products,INE702C01027,Industrial Products,1.16,equity
+135813,Power,INE486A01021,Power,1.15,equity
+135813,Power,INE752E01010,Power,1.12,equity
+135813,Petroleum Products,INE242A01010,Petroleum Products,1.07,equity
+135813,Oil,INE274J01014,Oil,1.03,equity
+135813,Ferrous Metals,INE220G01021,Ferrous Metals,0.94,equity
+135813,Industrial Products,INE703B01027,Industrial Products,0.85,equity
+135813,Cement & Cement Products,INE070A01015,Cement & Cement Products,0.83,equity
+135813,Chemicals & Petrochemicals,INE647A01010,Chemicals & Petrochemicals,0.73,equity
+135813,Chemicals & Petrochemicals,INE09N301011,Chemicals & Petrochemicals,0.47,equity
+135815,Cement & Cement Products,INE481G01011,Cement & Cement Products,5.51,equity
+135815,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,5.05,equity
+135815,Power,INE931S01010,Power,4.62,equity
+135815,Ferrous Metals,INE081A01020,Ferrous Metals,4.37,equity
+135815,Cement & Cement Products,INE079A01024,Cement & Cement Products,3.76,equity
+135815,Power,INE814H01029,Power,3.67,equity
+135815,Petroleum Products,INE002A01018,Petroleum Products,3.58,equity
+135815,Oil,INE213A01029,Oil,3.57,equity
+135815,Petroleum Products,INE029A01011,Petroleum Products,3.27,equity
+135815,Power,INE733E01010,Power,3.25,equity
+135815,Ferrous Metals,INE749A01030,Ferrous Metals,2.94,equity
+135815,Textiles & Apparels,INE845D01014,Textiles & Apparels,2.88,equity
+135815,Ferrous Metals,INE019A01038,Ferrous Metals,2.7,equity
+135815,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,2.44,equity
+135815,"Paper, Forest & Jute Products",INE976A01021,"Paper, Forest & Jute Products",2.44,equity
+135815,Industrial Manufacturing,INE841L01016,Industrial Manufacturing,2.43,equity
+135815,Chemicals & Petrochemicals,INE048G01026,Chemicals & Petrochemicals,2.37,equity
+135815,Industrial Products,INE616N01034,Industrial Products,2.21,equity
+135815,Industrial Manufacturing,INE084101034,Industrial Manufacturing,2.07,equity
+135815,Consumable Fuels,INE522F01014,Consumable Fuels,1.83,equity
+135815,Power,INE848E01016,Power,1.83,equity
+135815,Gas,INE002S01010,Gas,1.71,equity
+135815,Petroleum Products,INE094A01015,Petroleum Products,1.64,equity
+135815,Fertilizers & Agrochemicals,INE258G01013,Fertilizers & Agrochemicals,1.63,equity
+135815,Fertilizers & Agrochemicals,INE462A01022,Fertilizers & Agrochemicals,1.56,equity
+135815,Cement & Cement Products,INE047A01021,Cement & Cement Products,1.54,equity
+135815,Electrical Equipment,INE12UR01024,Electrical Equipment,1.53,equity
+135815,Minerals & Mining,INE490G01020,Minerals & Mining,1.53,equity
+135815,Chemicals & Petrochemicals,INE236E01022,Chemicals & Petrochemicals,1.45,equity
+135815,Petroleum Products,INE172A01027,Petroleum Products,1.44,equity
+135815,Minerals & Mining,INE584A01023,Minerals & Mining,1.38,equity
+135815,Cement & Cement Products,INE118D01016,Cement & Cement Products,1.33,equity
+135815,Non - Ferrous Metals,INE038A01020,Non - Ferrous Metals,1.32,equity
+135815,Chemicals & Petrochemicals,INE769A01020,Chemicals & Petrochemicals,1.25,equity
+135815,Industrial Products,INE702C01027,Industrial Products,1.16,equity
+135815,Power,INE486A01021,Power,1.15,equity
+135815,Power,INE752E01010,Power,1.12,equity
+135815,Petroleum Products,INE242A01010,Petroleum Products,1.07,equity
+135815,Oil,INE274J01014,Oil,1.03,equity
+135815,Ferrous Metals,INE220G01021,Ferrous Metals,0.94,equity
+135815,Industrial Products,INE703B01027,Industrial Products,0.85,equity
+135815,Cement & Cement Products,INE070A01015,Cement & Cement Products,0.83,equity
+135815,Chemicals & Petrochemicals,INE647A01010,Chemicals & Petrochemicals,0.73,equity
+135815,Chemicals & Petrochemicals,INE09N301011,Chemicals & Petrochemicals,0.47,equity
+152595,Petroleum Products,INE002A01018,Petroleum Products,9.89,equity
+152595,Telecom - Services,INE397D01024,Telecom - Services,9.72,equity
+152595,Construction,INE018A01030,Construction,8.01,equity
+152595,Power,INE733E01010,Power,2.79,equity
+152595,Transport Infrastructure,INE742F01042,Transport Infrastructure,2.56,equity
+152595,Cement & Cement Products,INE481G01011,Cement & Cement Products,2.36,equity
+152595,Leisure Services,INE053A01029,Leisure Services,2.29,equity
+152595,Electrical Equipment,INE257A01026,Electrical Equipment,2.16,equity
+152595,Power,INE752E01010,Power,2.15,equity
+152595,Cement & Cement Products,INE047A01021,Cement & Cement Products,2.1,equity
+152595,Transport Services,INE646L01027,Transport Services,2.05,equity
+152595,Auto Components,INE465A01025,Auto Components,1.91,equity
+152595,Electrical Equipment,INE200A01026,Electrical Equipment,1.86,equity
+152595,Electrical Equipment,INE040H01021,Electrical Equipment,1.72,equity
+152595,Telecom - Services,INE121J01017,Telecom - Services,1.72,equity
+152595,Auto Components,INE073K01018,Auto Components,1.68,equity
+152595,Oil,INE213A01029,Oil,1.6,equity
+152595,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.58,equity
+152595,Power,INE814H01029,Power,1.54,equity
+152595,Healthcare Services,INE437A01024,Healthcare Services,1.53,equity
+152595,Healthcare Services,INE061F01013,Healthcare Services,1.43,equity
+152595,Realty,INE211B01039,Realty,1.29,equity
+152595,Healthcare Services,INE027H01010,Healthcare Services,1.26,equity
+152595,Realty,INE670K01029,Realty,1.21,equity
+152595,Petroleum Products,INE094A01015,Petroleum Products,1.2,equity
+152595,Transport Infrastructure,INE776C01039,Transport Infrastructure,1.18,equity
+152595,Transport Services,INE148O01028,Transport Services,1.11,equity
+152595,Petroleum Products,INE029A01011,Petroleum Products,1.11,equity
+152595,Power,INE245A01021,Power,1.1,equity
+152595,Power,INE121E01018,Power,1.08,equity
+152595,Cement & Cement Products,INE070A01015,Cement & Cement Products,1.07,equity
+152595,Telecom - Services,INE548A01028,Telecom - Services,1.05,equity
+152595,Power,INE848E01016,Power,0.98,equity
+152595,Auto Components,INE974X01010,Auto Components,0.91,equity
+152595,Auto Components,INE953O01021,Auto Components,0.9,equity
+152595,Healthcare Services,INE967H01025,Healthcare Services,0.9,equity
+152595,Realty,INE811K01011,Realty,0.89,equity
+152595,Oil,INE274J01014,Oil,0.87,equity
+152595,Industrial Products,INE146L01010,Industrial Products,0.86,equity
+152595,Electrical Equipment,INE419M01035,Electrical Equipment,0.81,equity
+152595,Realty,INE484J01027,Realty,0.79,equity
+152595,Gas,INE208C01025,Gas,0.78,equity
+152595,Gas,INE347G01014,Gas,0.76,equity
+152595,Auto Components,INE405E01023,Auto Components,0.76,equity
+152595,Realty,INE093I01010,Realty,0.74,equity
+152595,Auto Components,INE00LO01017,Auto Components,0.71,equity
+152595,Construction,INE220B01022,Construction,0.7,equity
+152595,Transport Services,INE017A01032,Transport Services,0.7,equity
+152595,Industrial Products,INE285A01027,Industrial Products,0.59,equity
+152595,Auto Components,INE438A01022,Auto Components,0.59,equity
+152595,Transport Services,INE111A01025,Transport Services,0.55,equity
+152595,Auto Components,INE439A01020,Auto Components,0.52,equity
+152595,Industrial Manufacturing,INE918Z01012,Industrial Manufacturing,0.49,equity
+152595,Cement & Cement Products,INE331A01037,Cement & Cement Products,0.48,equity
+152595,Realty,INE791I01019,Realty,0.48,equity
+152595,Auto Components,INE342J01019,Auto Components,0.48,equity
+152595,Gas,INE203G01027,Gas,0.46,equity
+152595,Industrial Manufacturing,INE704P01025,Industrial Manufacturing,0.45,equity
+152595,Petroleum Products,INE172A01027,Petroleum Products,0.43,equity
+152595,Auto Components,INE885A01032,Auto Components,0.42,equity
+152595,Construction,INE415G01027,Construction,0.41,equity
+152595,Industrial Manufacturing,INE980O01024,Industrial Manufacturing,0.4,equity
+152595,Auto Components,INE0FS801015,Auto Components,0.39,equity
+152595,Power,INE486A01021,Power,0.38,equity
+152595,Construction,INE095N01031,Construction,0.37,equity
+152595,"Agricultural, Commercial & Construction Vehicles",INE258A01024,"Agricultural, Commercial & Construction Vehicles",0.34,equity
+152595,Power,INE351F01018,Power,0.33,equity
+152595,Electrical Equipment,INE066P01011,Electrical Equipment,0.3,equity
+152595,Industrial Manufacturing,INE615H01020,Industrial Manufacturing,0.3,equity
+152595,Gas,INE002S01010,Gas,0.27,equity
+152595,Leisure Services,INE230A01023,Leisure Services,0.27,equity
+152595,Realty,INE055A01016,Realty,0.27,equity
+152595,Power,INE614G01033,Power,0.26,equity
+152595,Construction,INE389H01022,Construction,0.22,equity
+152596,Petroleum Products,INE002A01018,Petroleum Products,9.89,equity
+152596,Telecom - Services,INE397D01024,Telecom - Services,9.72,equity
+152596,Construction,INE018A01030,Construction,8.01,equity
+152596,Power,INE733E01010,Power,2.79,equity
+152596,Transport Infrastructure,INE742F01042,Transport Infrastructure,2.56,equity
+152596,Cement & Cement Products,INE481G01011,Cement & Cement Products,2.36,equity
+152596,Leisure Services,INE053A01029,Leisure Services,2.29,equity
+152596,Electrical Equipment,INE257A01026,Electrical Equipment,2.16,equity
+152596,Power,INE752E01010,Power,2.15,equity
+152596,Cement & Cement Products,INE047A01021,Cement & Cement Products,2.1,equity
+152596,Transport Services,INE646L01027,Transport Services,2.05,equity
+152596,Auto Components,INE465A01025,Auto Components,1.91,equity
+152596,Electrical Equipment,INE200A01026,Electrical Equipment,1.86,equity
+152596,Electrical Equipment,INE040H01021,Electrical Equipment,1.72,equity
+152596,Telecom - Services,INE121J01017,Telecom - Services,1.72,equity
+152596,Auto Components,INE073K01018,Auto Components,1.68,equity
+152596,Oil,INE213A01029,Oil,1.6,equity
+152596,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.58,equity
+152596,Power,INE814H01029,Power,1.54,equity
+152596,Healthcare Services,INE437A01024,Healthcare Services,1.53,equity
+152596,Healthcare Services,INE061F01013,Healthcare Services,1.43,equity
+152596,Realty,INE211B01039,Realty,1.29,equity
+152596,Healthcare Services,INE027H01010,Healthcare Services,1.26,equity
+152596,Realty,INE670K01029,Realty,1.21,equity
+152596,Petroleum Products,INE094A01015,Petroleum Products,1.2,equity
+152596,Transport Infrastructure,INE776C01039,Transport Infrastructure,1.18,equity
+152596,Transport Services,INE148O01028,Transport Services,1.11,equity
+152596,Petroleum Products,INE029A01011,Petroleum Products,1.11,equity
+152596,Power,INE245A01021,Power,1.1,equity
+152596,Power,INE121E01018,Power,1.08,equity
+152596,Cement & Cement Products,INE070A01015,Cement & Cement Products,1.07,equity
+152596,Telecom - Services,INE548A01028,Telecom - Services,1.05,equity
+152596,Power,INE848E01016,Power,0.98,equity
+152596,Auto Components,INE974X01010,Auto Components,0.91,equity
+152596,Auto Components,INE953O01021,Auto Components,0.9,equity
+152596,Healthcare Services,INE967H01025,Healthcare Services,0.9,equity
+152596,Realty,INE811K01011,Realty,0.89,equity
+152596,Oil,INE274J01014,Oil,0.87,equity
+152596,Industrial Products,INE146L01010,Industrial Products,0.86,equity
+152596,Electrical Equipment,INE419M01035,Electrical Equipment,0.81,equity
+152596,Realty,INE484J01027,Realty,0.79,equity
+152596,Gas,INE208C01025,Gas,0.78,equity
+152596,Gas,INE347G01014,Gas,0.76,equity
+152596,Auto Components,INE405E01023,Auto Components,0.76,equity
+152596,Realty,INE093I01010,Realty,0.74,equity
+152596,Auto Components,INE00LO01017,Auto Components,0.71,equity
+152596,Construction,INE220B01022,Construction,0.7,equity
+152596,Transport Services,INE017A01032,Transport Services,0.7,equity
+152596,Industrial Products,INE285A01027,Industrial Products,0.59,equity
+152596,Auto Components,INE438A01022,Auto Components,0.59,equity
+152596,Transport Services,INE111A01025,Transport Services,0.55,equity
+152596,Auto Components,INE439A01020,Auto Components,0.52,equity
+152596,Industrial Manufacturing,INE918Z01012,Industrial Manufacturing,0.49,equity
+152596,Cement & Cement Products,INE331A01037,Cement & Cement Products,0.48,equity
+152596,Realty,INE791I01019,Realty,0.48,equity
+152596,Auto Components,INE342J01019,Auto Components,0.48,equity
+152596,Gas,INE203G01027,Gas,0.46,equity
+152596,Industrial Manufacturing,INE704P01025,Industrial Manufacturing,0.45,equity
+152596,Petroleum Products,INE172A01027,Petroleum Products,0.43,equity
+152596,Auto Components,INE885A01032,Auto Components,0.42,equity
+152596,Construction,INE415G01027,Construction,0.41,equity
+152596,Industrial Manufacturing,INE980O01024,Industrial Manufacturing,0.4,equity
+152596,Auto Components,INE0FS801015,Auto Components,0.39,equity
+152596,Power,INE486A01021,Power,0.38,equity
+152596,Construction,INE095N01031,Construction,0.37,equity
+152596,"Agricultural, Commercial & Construction Vehicles",INE258A01024,"Agricultural, Commercial & Construction Vehicles",0.34,equity
+152596,Power,INE351F01018,Power,0.33,equity
+152596,Electrical Equipment,INE066P01011,Electrical Equipment,0.3,equity
+152596,Industrial Manufacturing,INE615H01020,Industrial Manufacturing,0.3,equity
+152596,Gas,INE002S01010,Gas,0.27,equity
+152596,Leisure Services,INE230A01023,Leisure Services,0.27,equity
+152596,Realty,INE055A01016,Realty,0.27,equity
+152596,Power,INE614G01033,Power,0.26,equity
+152596,Construction,INE389H01022,Construction,0.22,equity
+152590,Petroleum Products,INE002A01018,Petroleum Products,9.93,equity
+152590,Automobiles,INE101A01026,Automobiles,5.89,equity
+152590,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,4.3,equity
+152590,Automobiles,INE585B01010,Automobiles,3.48,equity
+152590,Ferrous Metals,INE081A01020,Ferrous Metals,3.42,equity
+152590,Aerospace & Defense,INE263A01024,Aerospace & Defense,3.11,equity
+152590,Non - Ferrous Metals,INE038A01020,Non - Ferrous Metals,3.05,equity
+152590,Ferrous Metals,INE019A01038,Ferrous Metals,2.7,equity
+152590,Automobiles,INE917I01010,Automobiles,2.65,equity
+152590,Pharmaceuticals & Biotechnology,INE361B01024,Pharmaceuticals & Biotechnology,2.64,equity
+152590,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,2.35,equity
+152590,Automobiles,INE066A01021,Automobiles,2.2,equity
+152590,Automobiles,INE158A01026,Automobiles,2.07,equity
+152590,Aerospace & Defense,INE066F01020,Aerospace & Defense,1.98,equity
+152590,Electrical Equipment,INE257A01026,Electrical Equipment,1.84,equity
+152590,Pharmaceuticals & Biotechnology,INE059A01026,Pharmaceuticals & Biotechnology,1.69,equity
+152590,Pharmaceuticals & Biotechnology,INE089A01031,Pharmaceuticals & Biotechnology,1.68,equity
+152590,Consumer Durables,INE935N01020,Consumer Durables,1.66,equity
+152590,Auto Components,INE465A01025,Auto Components,1.63,equity
+152590,Electrical Equipment,INE200A01026,Electrical Equipment,1.58,equity
+152590,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,1.5,equity
+152590,Electrical Equipment,INE040H01021,Electrical Equipment,1.46,equity
+152590,Auto Components,INE073K01018,Auto Components,1.44,equity
+152590,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,1.41,equity
+152590,Industrial Products,INE191B01025,Industrial Products,1.37,equity
+152590,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.34,equity
+152590,Automobiles,INE155A01022,Automobiles,1.32,equity
+152590,Industrial Products,INE702C01027,Industrial Products,1.21,equity
+152590,Chemicals & Petrochemicals,INE048G01026,Chemicals & Petrochemicals,1.17,equity
+152590,Chemicals & Petrochemicals,INE647A01010,Chemicals & Petrochemicals,1.09,equity
+152590,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,1.07,equity
+152590,Automobiles,INE0LEZ01016,Automobiles,1.04,equity
+152590,Petroleum Products,INE094A01015,Petroleum Products,1.02,equity
+152590,Pharmaceuticals & Biotechnology,INE540L01014,Pharmaceuticals & Biotechnology,0.95,equity
+152590,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,0.93,equity
+152590,Fertilizers & Agrochemicals,INE628A01036,Fertilizers & Agrochemicals,0.92,equity
+152590,Pharmaceuticals & Biotechnology,INE068V01023,Pharmaceuticals & Biotechnology,0.89,equity
+152590,Pharmaceuticals & Biotechnology,INE634S01028,Pharmaceuticals & Biotechnology,0.86,equity
+152590,Industrial Products,INE878B01027,Industrial Products,0.84,equity
+152590,Pharmaceuticals & Biotechnology,INE570L01029,Pharmaceuticals & Biotechnology,0.81,equity
+152590,Consumer Durables,INE176B01034,Consumer Durables,0.78,equity
+152590,Auto Components,INE974X01010,Auto Components,0.77,equity
+152590,Consumer Durables,INE226A01021,Consumer Durables,0.74,equity
+152590,Industrial Products,INE146L01010,Industrial Products,0.74,equity
+152590,Pharmaceuticals & Biotechnology,INE794A01010,Pharmaceuticals & Biotechnology,0.71,equity
+152590,Textiles & Apparels,INE761H01022,Textiles & Apparels,0.7,equity
+152590,Industrial Products,INE195A01028,Industrial Products,0.68,equity
+152590,Pharmaceuticals & Biotechnology,INE049B01025,Pharmaceuticals & Biotechnology,0.67,equity
+152590,Pharmaceuticals & Biotechnology,INE00FF01025,Pharmaceuticals & Biotechnology,0.66,equity
+152590,Chemicals & Petrochemicals,INE019C01026,Chemicals & Petrochemicals,0.62,equity
+152590,Fertilizers & Agrochemicals,INE603J01030,Fertilizers & Agrochemicals,0.57,equity
+152590,Consumer Durables,INE371P01015,Consumer Durables,0.56,equity
+152590,Industrial Products,INE120A01034,Industrial Products,0.56,equity
+152590,Consumer Durables,INE299U01018,Consumer Durables,0.52,equity
+152590,Industrial Products,INE285A01027,Industrial Products,0.5,equity
+152590,Auto Components,INE438A01022,Auto Components,0.5,equity
+152590,Pharmaceuticals & Biotechnology,INE0DK501011,Pharmaceuticals & Biotechnology,0.49,equity
+152590,Pharmaceuticals & Biotechnology,INE101D01020,Pharmaceuticals & Biotechnology,0.48,equity
+152590,Pharmaceuticals & Biotechnology,INE013P01021,Pharmaceuticals & Biotechnology,0.46,equity
+152590,Auto Components,INE439A01020,Auto Components,0.45,equity
+152590,Industrial Products,INE325A01013,Industrial Products,0.43,equity
+152590,Industrial Manufacturing,INE918Z01012,Industrial Manufacturing,0.42,equity
+152590,Auto Components,INE342J01019,Auto Components,0.41,equity
+152590,Chemicals & Petrochemicals,INE288B01029,Chemicals & Petrochemicals,0.4,equity
+152590,Consumer Durables,INE217B01036,Consumer Durables,0.39,equity
+152590,Chemicals & Petrochemicals,INE769A01020,Chemicals & Petrochemicals,0.38,equity
+152590,Chemicals & Petrochemicals,INE092A01019,Chemicals & Petrochemicals,0.37,equity
+152590,Petroleum Products,INE172A01027,Petroleum Products,0.37,equity
+152590,Chemicals & Petrochemicals,INE100A01010,Chemicals & Petrochemicals,0.36,equity
+152590,Auto Components,INE885A01032,Auto Components,0.36,equity
+152590,Auto Components,INE0FS801015,Auto Components,0.33,equity
+152590,Automobiles,INE451A01017,Automobiles,0.32,equity
+152590,Consumer Durables,INE457L01029,Consumer Durables,0.31,equity
+152590,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,0.29,equity
+152590,Electrical Equipment,INE066P01011,Electrical Equipment,0.26,equity
+152588,Petroleum Products,INE002A01018,Petroleum Products,9.93,equity
+152588,Automobiles,INE101A01026,Automobiles,5.89,equity
+152588,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,4.3,equity
+152588,Automobiles,INE585B01010,Automobiles,3.48,equity
+152588,Ferrous Metals,INE081A01020,Ferrous Metals,3.42,equity
+152588,Aerospace & Defense,INE263A01024,Aerospace & Defense,3.11,equity
+152588,Non - Ferrous Metals,INE038A01020,Non - Ferrous Metals,3.05,equity
+152588,Ferrous Metals,INE019A01038,Ferrous Metals,2.7,equity
+152588,Automobiles,INE917I01010,Automobiles,2.65,equity
+152588,Pharmaceuticals & Biotechnology,INE361B01024,Pharmaceuticals & Biotechnology,2.64,equity
+152588,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,2.35,equity
+152588,Automobiles,INE066A01021,Automobiles,2.2,equity
+152588,Automobiles,INE158A01026,Automobiles,2.07,equity
+152588,Aerospace & Defense,INE066F01020,Aerospace & Defense,1.98,equity
+152588,Electrical Equipment,INE257A01026,Electrical Equipment,1.84,equity
+152588,Pharmaceuticals & Biotechnology,INE059A01026,Pharmaceuticals & Biotechnology,1.69,equity
+152588,Pharmaceuticals & Biotechnology,INE089A01031,Pharmaceuticals & Biotechnology,1.68,equity
+152588,Consumer Durables,INE935N01020,Consumer Durables,1.66,equity
+152588,Auto Components,INE465A01025,Auto Components,1.63,equity
+152588,Electrical Equipment,INE200A01026,Electrical Equipment,1.58,equity
+152588,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,1.5,equity
+152588,Electrical Equipment,INE040H01021,Electrical Equipment,1.46,equity
+152588,Auto Components,INE073K01018,Auto Components,1.44,equity
+152588,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,1.41,equity
+152588,Industrial Products,INE191B01025,Industrial Products,1.37,equity
+152588,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.34,equity
+152588,Automobiles,INE155A01022,Automobiles,1.32,equity
+152588,Industrial Products,INE702C01027,Industrial Products,1.21,equity
+152588,Chemicals & Petrochemicals,INE048G01026,Chemicals & Petrochemicals,1.17,equity
+152588,Chemicals & Petrochemicals,INE647A01010,Chemicals & Petrochemicals,1.09,equity
+152588,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,1.07,equity
+152588,Automobiles,INE0LEZ01016,Automobiles,1.04,equity
+152588,Petroleum Products,INE094A01015,Petroleum Products,1.02,equity
+152588,Pharmaceuticals & Biotechnology,INE540L01014,Pharmaceuticals & Biotechnology,0.95,equity
+152588,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,0.93,equity
+152588,Fertilizers & Agrochemicals,INE628A01036,Fertilizers & Agrochemicals,0.92,equity
+152588,Pharmaceuticals & Biotechnology,INE068V01023,Pharmaceuticals & Biotechnology,0.89,equity
+152588,Pharmaceuticals & Biotechnology,INE634S01028,Pharmaceuticals & Biotechnology,0.86,equity
+152588,Industrial Products,INE878B01027,Industrial Products,0.84,equity
+152588,Pharmaceuticals & Biotechnology,INE570L01029,Pharmaceuticals & Biotechnology,0.81,equity
+152588,Consumer Durables,INE176B01034,Consumer Durables,0.78,equity
+152588,Auto Components,INE974X01010,Auto Components,0.77,equity
+152588,Consumer Durables,INE226A01021,Consumer Durables,0.74,equity
+152588,Industrial Products,INE146L01010,Industrial Products,0.74,equity
+152588,Pharmaceuticals & Biotechnology,INE794A01010,Pharmaceuticals & Biotechnology,0.71,equity
+152588,Textiles & Apparels,INE761H01022,Textiles & Apparels,0.7,equity
+152588,Industrial Products,INE195A01028,Industrial Products,0.68,equity
+152588,Pharmaceuticals & Biotechnology,INE049B01025,Pharmaceuticals & Biotechnology,0.67,equity
+152588,Pharmaceuticals & Biotechnology,INE00FF01025,Pharmaceuticals & Biotechnology,0.66,equity
+152588,Chemicals & Petrochemicals,INE019C01026,Chemicals & Petrochemicals,0.62,equity
+152588,Fertilizers & Agrochemicals,INE603J01030,Fertilizers & Agrochemicals,0.57,equity
+152588,Consumer Durables,INE371P01015,Consumer Durables,0.56,equity
+152588,Industrial Products,INE120A01034,Industrial Products,0.56,equity
+152588,Consumer Durables,INE299U01018,Consumer Durables,0.52,equity
+152588,Industrial Products,INE285A01027,Industrial Products,0.5,equity
+152588,Auto Components,INE438A01022,Auto Components,0.5,equity
+152588,Pharmaceuticals & Biotechnology,INE0DK501011,Pharmaceuticals & Biotechnology,0.49,equity
+152588,Pharmaceuticals & Biotechnology,INE101D01020,Pharmaceuticals & Biotechnology,0.48,equity
+152588,Pharmaceuticals & Biotechnology,INE013P01021,Pharmaceuticals & Biotechnology,0.46,equity
+152588,Auto Components,INE439A01020,Auto Components,0.45,equity
+152588,Industrial Products,INE325A01013,Industrial Products,0.43,equity
+152588,Industrial Manufacturing,INE918Z01012,Industrial Manufacturing,0.42,equity
+152588,Auto Components,INE342J01019,Auto Components,0.41,equity
+152588,Chemicals & Petrochemicals,INE288B01029,Chemicals & Petrochemicals,0.4,equity
+152588,Consumer Durables,INE217B01036,Consumer Durables,0.39,equity
+152588,Chemicals & Petrochemicals,INE769A01020,Chemicals & Petrochemicals,0.38,equity
+152588,Chemicals & Petrochemicals,INE092A01019,Chemicals & Petrochemicals,0.37,equity
+152588,Petroleum Products,INE172A01027,Petroleum Products,0.37,equity
+152588,Chemicals & Petrochemicals,INE100A01010,Chemicals & Petrochemicals,0.36,equity
+152588,Auto Components,INE885A01032,Auto Components,0.36,equity
+152588,Auto Components,INE0FS801015,Auto Components,0.33,equity
+152588,Automobiles,INE451A01017,Automobiles,0.32,equity
+152588,Consumer Durables,INE457L01029,Consumer Durables,0.31,equity
+152588,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,0.29,equity
+152588,Electrical Equipment,INE066P01011,Electrical Equipment,0.26,equity
+152836,Capital Markets,INE745G01043,Capital Markets,5.1,equity
+152836,Electrical Equipment,INE257A01026,Electrical Equipment,5.1,equity
+152836,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,5.07,equity
+152836,Finance,INE721A01047,Finance,4.8,equity
+152836,Telecom - Services,INE669E01016,Telecom - Services,4.67,equity
+152836,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,4.62,equity
+152836,Power,INE931S01010,Power,4.38,equity
+152836,Auto Components,INE775A01035,Auto Components,4.35,equity
+152836,Auto Components,INE465A01025,Auto Components,4.35,equity
+152836,Banks,INE171A01029,Banks,4.15,equity
+152836,Diversified Metals,INE205A01025,Diversified Metals,3.75,equity
+152836,Electrical Equipment,INE07Y701011,Electrical Equipment,3.71,equity
+152836,Power,INE814H01029,Power,3.33,equity
+152836,Ferrous Metals,INE114A01011,Ferrous Metals,3.21,equity
+152836,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,3.06,equity
+152836,Electrical Equipment,INE200A01026,Electrical Equipment,3.03,equity
+152836,Capital Markets,INE118H01025,Capital Markets,3.01,equity
+152836,Banks,INE457A01014,Banks,3.0,equity
+152836,Banks,INE692A01016,Banks,2.71,equity
+152836,Banks,INE949L01017,Banks,2.71,equity
+152836,Finance,INE674K01013,Finance,2.67,equity
+152836,Finance,INE498L01015,Finance,2.57,equity
+152836,Retailing,INE388Y01029,Retailing,2.57,equity
+152836,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),2.45,equity
+152836,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",2.27,equity
+152836,Non - Ferrous Metals,INE038A01020,Non - Ferrous Metals,2.13,equity
+152836,Banks,INE562A01011,Banks,2.04,equity
+152836,Power,INE364U01010,Power,1.95,equity
+152836,Industrial Products,INE455K01017,Industrial Products,1.62,equity
+152836,Industrial Products,INE298A01020,Industrial Products,1.6,equity
+152834,Capital Markets,INE745G01043,Capital Markets,5.1,equity
+152834,Electrical Equipment,INE257A01026,Electrical Equipment,5.1,equity
+152834,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,5.07,equity
+152834,Finance,INE721A01047,Finance,4.8,equity
+152834,Telecom - Services,INE669E01016,Telecom - Services,4.67,equity
+152834,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,4.62,equity
+152834,Power,INE931S01010,Power,4.38,equity
+152834,Auto Components,INE775A01035,Auto Components,4.35,equity
+152834,Auto Components,INE465A01025,Auto Components,4.35,equity
+152834,Banks,INE171A01029,Banks,4.15,equity
+152834,Diversified Metals,INE205A01025,Diversified Metals,3.75,equity
+152834,Electrical Equipment,INE07Y701011,Electrical Equipment,3.71,equity
+152834,Power,INE814H01029,Power,3.33,equity
+152834,Ferrous Metals,INE114A01011,Ferrous Metals,3.21,equity
+152834,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,3.06,equity
+152834,Electrical Equipment,INE200A01026,Electrical Equipment,3.03,equity
+152834,Capital Markets,INE118H01025,Capital Markets,3.01,equity
+152834,Banks,INE457A01014,Banks,3.0,equity
+152834,Banks,INE692A01016,Banks,2.71,equity
+152834,Banks,INE949L01017,Banks,2.71,equity
+152834,Finance,INE674K01013,Finance,2.67,equity
+152834,Finance,INE498L01015,Finance,2.57,equity
+152834,Retailing,INE388Y01029,Retailing,2.57,equity
+152834,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),2.45,equity
+152834,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",2.27,equity
+152834,Non - Ferrous Metals,INE038A01020,Non - Ferrous Metals,2.13,equity
+152834,Banks,INE562A01011,Banks,2.04,equity
+152834,Power,INE364U01010,Power,1.95,equity
+152834,Industrial Products,INE455K01017,Industrial Products,1.62,equity
+152834,Industrial Products,INE298A01020,Industrial Products,1.6,equity
+152570,Realty,INE271C01023,Realty,20.39,equity
+152570,Realty,INE211B01039,Realty,17.06,equity
+152570,Realty,INE670K01029,Realty,15.91,equity
+152570,Realty,INE811K01011,Realty,11.79,equity
+152570,Realty,INE484J01027,Realty,10.39,equity
+152570,Realty,INE093I01010,Realty,9.81,equity
+152570,Realty,INE791I01019,Realty,5.03,equity
+152570,Realty,INE242C01024,Realty,4.31,equity
+152570,Realty,INE055A01016,Realty,2.81,equity
+152570,Realty,INE671H01015,Realty,2.57,equity
+152573,Realty,INE271C01023,Realty,20.39,equity
+152573,Realty,INE211B01039,Realty,17.06,equity
+152573,Realty,INE670K01029,Realty,15.91,equity
+152573,Realty,INE811K01011,Realty,11.79,equity
+152573,Realty,INE484J01027,Realty,10.39,equity
+152573,Realty,INE093I01010,Realty,9.81,equity
+152573,Realty,INE791I01019,Realty,5.03,equity
+152573,Realty,INE242C01024,Realty,4.31,equity
+152573,Realty,INE055A01016,Realty,2.81,equity
+152573,Realty,INE671H01015,Realty,2.57,equity
+153855,Pharmaceuticals & Biotechnology,INE361B01024,Pharmaceuticals & Biotechnology,4.87,equity
+153855,Automobiles,INE494B01023,Automobiles,3.97,equity
+153855,Aerospace & Defense,INE066F01020,Aerospace & Defense,3.65,equity
+153855,"Agricultural, Commercial & Construction Vehicles",INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",3.63,equity
+153855,Power,INE814H01029,Power,3.5,equity
+153855,Auto Components,INE775A01035,Auto Components,2.97,equity
+153855,Pharmaceuticals & Biotechnology,INE685A01028,Pharmaceuticals & Biotechnology,2.91,equity
+153855,Finance,INE121A01024,Finance,2.89,equity
+153855,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,2.88,equity
+153855,Industrial Products,INE298A01020,Industrial Products,2.65,equity
+153855,Retailing,INE192R01011,Retailing,2.53,equity
+153855,Petroleum Products,INE029A01011,Petroleum Products,2.51,equity
+153855,Power,INE245A01021,Power,2.48,equity
+153855,Beverages,INE200M01039,Beverages,2.43,equity
+153855,Electrical Equipment,INE067A01029,Electrical Equipment,2.41,equity
+153855,Food Products,INE216A01030,Food Products,2.34,equity
+153855,Petroleum Products,INE242A01010,Petroleum Products,2.08,equity
+153855,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,1.98,equity
+153855,Finance,INE134E01011,Finance,1.95,equity
+153855,Finance,INE118A01012,Finance,1.92,equity
+153855,Capital Markets,INE127D01025,Capital Markets,1.92,equity
+153855,Gas,INE129A01019,Gas,1.9,equity
+153855,Diversified Metals,INE205A01025,Diversified Metals,1.88,equity
+153855,Chemicals & Petrochemicals,INE318A01026,Chemicals & Petrochemicals,1.87,equity
+153855,Realty,INE271C01023,Realty,1.78,equity
+153855,IT - Software,INE075A01022,IT - Software,1.77,equity
+153855,Industrial Products,INE455K01017,Industrial Products,1.77,equity
+153855,Power,INE931S01010,Power,1.77,equity
+153855,Power,INE364U01010,Power,1.77,equity
+153855,Banks,INE028A01039,Banks,1.76,equity
+153855,Ferrous Metals,INE749A01030,Ferrous Metals,1.73,equity
+153855,Auto Components,INE323A01026,Auto Components,1.68,equity
+153855,Banks,INE476A01022,Banks,1.65,equity
+153855,Electrical Equipment,INE07Y701011,Electrical Equipment,1.6,equity
+153855,Banks,INE160A01022,Banks,1.6,equity
+153855,IT - Software,INE214T01019,IT - Software,1.55,equity
+153855,Telecom - Services,INE669E01016,Telecom - Services,1.47,equity
+153855,Electrical Equipment,INE117A01022,Electrical Equipment,1.47,equity
+153855,Personal Products,INE102D01028,Personal Products,1.41,equity
+153855,Banks,INE692A01016,Banks,1.36,equity
+153855,Electrical Equipment,INE003A01024,Electrical Equipment,1.36,equity
+153855,Finance,INE414G01012,Finance,1.21,equity
+153855,Automobiles,INE0V6F01027,Automobiles,1.19,equity
+153855,Pharmaceuticals & Biotechnology,INE010B01027,Pharmaceuticals & Biotechnology,1.19,equity
+153855,Electrical Equipment,INE1NPP01017,Electrical Equipment,1.17,equity
+153855,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,1.12,equity
+153855,Cement & Cement Products,INE079A01024,Cement & Cement Products,0.96,equity
+153855,Finance,INE976I01016,Finance,0.74,equity
+153855,Finance,INE053F01010,Finance,0.73,equity
+153855,Industrial Manufacturing,INE249Z01020,Industrial Manufacturing,0.66,equity
+153858,Pharmaceuticals & Biotechnology,INE361B01024,Pharmaceuticals & Biotechnology,4.87,equity
+153858,Automobiles,INE494B01023,Automobiles,3.97,equity
+153858,Aerospace & Defense,INE066F01020,Aerospace & Defense,3.65,equity
+153858,"Agricultural, Commercial & Construction Vehicles",INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",3.63,equity
+153858,Power,INE814H01029,Power,3.5,equity
+153858,Auto Components,INE775A01035,Auto Components,2.97,equity
+153858,Pharmaceuticals & Biotechnology,INE685A01028,Pharmaceuticals & Biotechnology,2.91,equity
+153858,Finance,INE121A01024,Finance,2.89,equity
+153858,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,2.88,equity
+153858,Industrial Products,INE298A01020,Industrial Products,2.65,equity
+153858,Retailing,INE192R01011,Retailing,2.53,equity
+153858,Petroleum Products,INE029A01011,Petroleum Products,2.51,equity
+153858,Power,INE245A01021,Power,2.48,equity
+153858,Beverages,INE200M01039,Beverages,2.43,equity
+153858,Electrical Equipment,INE067A01029,Electrical Equipment,2.41,equity
+153858,Food Products,INE216A01030,Food Products,2.34,equity
+153858,Petroleum Products,INE242A01010,Petroleum Products,2.08,equity
+153858,Chemicals & Petrochemicals,INE343H01029,Chemicals & Petrochemicals,1.98,equity
+153858,Finance,INE134E01011,Finance,1.95,equity
+153858,Finance,INE118A01012,Finance,1.92,equity
+153858,Capital Markets,INE127D01025,Capital Markets,1.92,equity
+153858,Gas,INE129A01019,Gas,1.9,equity
+153858,Diversified Metals,INE205A01025,Diversified Metals,1.88,equity
+153858,Chemicals & Petrochemicals,INE318A01026,Chemicals & Petrochemicals,1.87,equity
+153858,Realty,INE271C01023,Realty,1.78,equity
+153858,IT - Software,INE075A01022,IT - Software,1.77,equity
+153858,Industrial Products,INE455K01017,Industrial Products,1.77,equity
+153858,Power,INE931S01010,Power,1.77,equity
+153858,Power,INE364U01010,Power,1.77,equity
+153858,Banks,INE028A01039,Banks,1.76,equity
+153858,Ferrous Metals,INE749A01030,Ferrous Metals,1.73,equity
+153858,Auto Components,INE323A01026,Auto Components,1.68,equity
+153858,Banks,INE476A01022,Banks,1.65,equity
+153858,Electrical Equipment,INE07Y701011,Electrical Equipment,1.6,equity
+153858,Banks,INE160A01022,Banks,1.6,equity
+153858,IT - Software,INE214T01019,IT - Software,1.55,equity
+153858,Telecom - Services,INE669E01016,Telecom - Services,1.47,equity
+153858,Electrical Equipment,INE117A01022,Electrical Equipment,1.47,equity
+153858,Personal Products,INE102D01028,Personal Products,1.41,equity
+153858,Banks,INE692A01016,Banks,1.36,equity
+153858,Electrical Equipment,INE003A01024,Electrical Equipment,1.36,equity
+153858,Finance,INE414G01012,Finance,1.21,equity
+153858,Automobiles,INE0V6F01027,Automobiles,1.19,equity
+153858,Pharmaceuticals & Biotechnology,INE010B01027,Pharmaceuticals & Biotechnology,1.19,equity
+153858,Electrical Equipment,INE1NPP01017,Electrical Equipment,1.17,equity
+153858,Non - Ferrous Metals,INE267A01025,Non - Ferrous Metals,1.12,equity
+153858,Cement & Cement Products,INE079A01024,Cement & Cement Products,0.96,equity
+153858,Finance,INE976I01016,Finance,0.74,equity
+153858,Finance,INE053F01010,Finance,0.73,equity
+153858,Industrial Manufacturing,INE249Z01020,Industrial Manufacturing,0.66,equity
+152564,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,11.84,equity
+152564,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,7.57,equity
+152564,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,7.09,equity
+152564,Healthcare Services,INE061F01013,Healthcare Services,6.16,equity
+152564,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,5.4,equity
+152564,Pharmaceuticals & Biotechnology,INE540L01014,Pharmaceuticals & Biotechnology,4.78,equity
+152564,Pharmaceuticals & Biotechnology,INE634S01028,Pharmaceuticals & Biotechnology,4.36,equity
+152564,Pharmaceuticals & Biotechnology,INE571A01038,Pharmaceuticals & Biotechnology,4.11,equity
+152564,Pharmaceuticals & Biotechnology,INE376G01013,Pharmaceuticals & Biotechnology,3.96,equity
+152564,Pharmaceuticals & Biotechnology,INE068V01023,Pharmaceuticals & Biotechnology,3.55,equity
+152564,Pharmaceuticals & Biotechnology,INE570L01029,Pharmaceuticals & Biotechnology,3.24,equity
+152564,Healthcare Services,INE967H01025,Healthcare Services,3.06,equity
+152564,Healthcare Services,INE914M01019,Healthcare Services,2.86,equity
+152564,Pharmaceuticals & Biotechnology,INE794A01010,Pharmaceuticals & Biotechnology,2.83,equity
+152564,Pharmaceuticals & Biotechnology,INE049B01025,Pharmaceuticals & Biotechnology,2.68,equity
+152564,Pharmaceuticals & Biotechnology,INE00FF01025,Pharmaceuticals & Biotechnology,2.61,equity
+152564,Pharmaceuticals & Biotechnology,INE031B01049,Pharmaceuticals & Biotechnology,2.53,equity
+152564,Healthcare Services,INE600L01024,Healthcare Services,2.38,equity
+152564,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,2.17,equity
+152564,Pharmaceuticals & Biotechnology,INE0DK501011,Pharmaceuticals & Biotechnology,1.97,equity
+152564,Pharmaceuticals & Biotechnology,INE101D01020,Pharmaceuticals & Biotechnology,1.92,equity
+152564,Healthcare Services,INE410P01011,Healthcare Services,1.9,equity
+152564,Healthcare Services,INE474Q01031,Healthcare Services,1.86,equity
+152564,Pharmaceuticals & Biotechnology,INE013P01021,Pharmaceuticals & Biotechnology,1.84,equity
+152564,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,1.76,equity
+152564,Pharmaceuticals & Biotechnology,INE0CZ201020,Pharmaceuticals & Biotechnology,1.42,equity
+152564,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,1.14,equity
+152564,Pharmaceuticals & Biotechnology,INE03QK01018,Pharmaceuticals & Biotechnology,1.11,equity
+152564,Healthcare Services,INE398R01022,Healthcare Services,1.06,equity
+152564,Healthcare Equipment & Supplies,INE205C01021,Healthcare Equipment & Supplies,0.98,equity
+152567,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,11.84,equity
+152567,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,7.57,equity
+152567,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,7.09,equity
+152567,Healthcare Services,INE061F01013,Healthcare Services,6.16,equity
+152567,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,5.4,equity
+152567,Pharmaceuticals & Biotechnology,INE540L01014,Pharmaceuticals & Biotechnology,4.78,equity
+152567,Pharmaceuticals & Biotechnology,INE634S01028,Pharmaceuticals & Biotechnology,4.36,equity
+152567,Pharmaceuticals & Biotechnology,INE571A01038,Pharmaceuticals & Biotechnology,4.11,equity
+152567,Pharmaceuticals & Biotechnology,INE376G01013,Pharmaceuticals & Biotechnology,3.96,equity
+152567,Pharmaceuticals & Biotechnology,INE068V01023,Pharmaceuticals & Biotechnology,3.55,equity
+152567,Pharmaceuticals & Biotechnology,INE570L01029,Pharmaceuticals & Biotechnology,3.24,equity
+152567,Healthcare Services,INE967H01025,Healthcare Services,3.06,equity
+152567,Healthcare Services,INE914M01019,Healthcare Services,2.86,equity
+152567,Pharmaceuticals & Biotechnology,INE794A01010,Pharmaceuticals & Biotechnology,2.83,equity
+152567,Pharmaceuticals & Biotechnology,INE049B01025,Pharmaceuticals & Biotechnology,2.68,equity
+152567,Pharmaceuticals & Biotechnology,INE00FF01025,Pharmaceuticals & Biotechnology,2.61,equity
+152567,Pharmaceuticals & Biotechnology,INE031B01049,Pharmaceuticals & Biotechnology,2.53,equity
+152567,Healthcare Services,INE600L01024,Healthcare Services,2.38,equity
+152567,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,2.17,equity
+152567,Pharmaceuticals & Biotechnology,INE0DK501011,Pharmaceuticals & Biotechnology,1.97,equity
+152567,Pharmaceuticals & Biotechnology,INE101D01020,Pharmaceuticals & Biotechnology,1.92,equity
+152567,Healthcare Services,INE410P01011,Healthcare Services,1.9,equity
+152567,Healthcare Services,INE474Q01031,Healthcare Services,1.86,equity
+152567,Pharmaceuticals & Biotechnology,INE013P01021,Pharmaceuticals & Biotechnology,1.84,equity
+152567,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,1.76,equity
+152567,Pharmaceuticals & Biotechnology,INE0CZ201020,Pharmaceuticals & Biotechnology,1.42,equity
+152567,Pharmaceuticals & Biotechnology,INE987B01026,Pharmaceuticals & Biotechnology,1.14,equity
+152567,Pharmaceuticals & Biotechnology,INE03QK01018,Pharmaceuticals & Biotechnology,1.11,equity
+152567,Healthcare Services,INE398R01022,Healthcare Services,1.06,equity
+152567,Healthcare Equipment & Supplies,INE205C01021,Healthcare Equipment & Supplies,0.98,equity
+150738,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,7.01,equity
+150738,Capital Markets,INE745G01043,Capital Markets,5.99,equity
+150738,Banks,INE171A01029,Banks,4.6,equity
+150738,Electrical Equipment,INE257A01026,Electrical Equipment,4.45,equity
+150738,Electrical Equipment,INE200A01026,Electrical Equipment,4.28,equity
+150738,Capital Markets,INE118H01025,Capital Markets,4.1,equity
+150738,Auto Components,INE465A01025,Auto Components,3.9,equity
+150738,Electrical Equipment,INE07Y701011,Electrical Equipment,3.53,equity
+150738,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,3.21,equity
+150738,Industrial Products,INE455K01017,Industrial Products,3.03,equity
+150738,Banks,INE949L01017,Banks,2.68,equity
+150738,Telecom - Services,INE669E01016,Telecom - Services,2.47,equity
+150738,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,2.35,equity
+150738,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,2.22,equity
+150738,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,2.2,equity
+150738,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,2.15,equity
+150738,Banks,INE095A01012,Banks,2.14,equity
+150738,Ferrous Metals,INE114A01011,Ferrous Metals,2.06,equity
+150738,Telecom - Services,INE121J01017,Telecom - Services,1.95,equity
+150738,Electrical Equipment,INE372A01015,Electrical Equipment,1.9,equity
+150738,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),1.87,equity
+150738,Industrial Products,INE878B01027,Industrial Products,1.74,equity
+150738,Healthcare Services,INE061F01013,Healthcare Services,1.69,equity
+150738,Retailing,INE388Y01029,Retailing,1.65,equity
+150738,Finance,INE674K01013,Finance,1.65,equity
+150738,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.63,equity
+150738,Beverages,INE944F01028,Beverages,1.61,equity
+150738,Minerals & Mining,INE281B01032,Minerals & Mining,1.53,equity
+150738,Power,INE121E01018,Power,1.51,equity
+150738,Minerals & Mining,INE584A01023,Minerals & Mining,1.33,equity
+150738,Industrial Products,INE702C01027,Industrial Products,1.24,equity
+150738,IT - Software,INE881D01027,IT - Software,1.22,equity
+150738,Pharmaceuticals & Biotechnology,INE376G01013,Pharmaceuticals & Biotechnology,1.2,equity
+150738,Electrical Equipment,INE152A01029,Electrical Equipment,1.15,equity
+150738,Insurance,INE180A01020,Insurance,1.11,equity
+150738,Finance,INE498L01015,Finance,1.08,equity
+150738,Capital Markets,INE298J01013,Capital Markets,1.08,equity
+150738,Banks,INE562A01011,Banks,1.07,equity
+150738,Banks,INE457A01014,Banks,1.05,equity
+150738,Oil,INE274J01014,Oil,1.0,equity
+150738,Transport Infrastructure,INE776C01039,Transport Infrastructure,0.99,equity
+150738,Industrial Products,INE212H01026,Industrial Products,0.76,equity
+150738,Telecom - Services,INE151A01013,Telecom - Services,0.73,equity
+150738,Pharmaceuticals & Biotechnology,INE031B01049,Pharmaceuticals & Biotechnology,0.69,equity
+150738,Gas,INE399L01023,Gas,0.68,equity
+150738,Power,INE589A01014,Power,0.63,equity
+150738,Ferrous Metals,INE220G01021,Ferrous Metals,0.52,equity
+150738,Chemicals & Petrochemicals,INE473A01011,Chemicals & Petrochemicals,0.52,equity
+150738,Banks,INE084A01016,Banks,0.45,equity
+150738,Diversified,INE470A01017,Diversified,0.25,equity
+150741,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,7.01,equity
+150741,Capital Markets,INE745G01043,Capital Markets,5.99,equity
+150741,Banks,INE171A01029,Banks,4.6,equity
+150741,Electrical Equipment,INE257A01026,Electrical Equipment,4.45,equity
+150741,Electrical Equipment,INE200A01026,Electrical Equipment,4.28,equity
+150741,Capital Markets,INE118H01025,Capital Markets,4.1,equity
+150741,Auto Components,INE465A01025,Auto Components,3.9,equity
+150741,Electrical Equipment,INE07Y701011,Electrical Equipment,3.53,equity
+150741,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,3.21,equity
+150741,Industrial Products,INE455K01017,Industrial Products,3.03,equity
+150741,Banks,INE949L01017,Banks,2.68,equity
+150741,Telecom - Services,INE669E01016,Telecom - Services,2.47,equity
+150741,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,2.35,equity
+150741,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,2.22,equity
+150741,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,2.2,equity
+150741,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,2.15,equity
+150741,Banks,INE095A01012,Banks,2.14,equity
+150741,Ferrous Metals,INE114A01011,Ferrous Metals,2.06,equity
+150741,Telecom - Services,INE121J01017,Telecom - Services,1.95,equity
+150741,Electrical Equipment,INE372A01015,Electrical Equipment,1.9,equity
+150741,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),1.87,equity
+150741,Industrial Products,INE878B01027,Industrial Products,1.74,equity
+150741,Healthcare Services,INE061F01013,Healthcare Services,1.69,equity
+150741,Retailing,INE388Y01029,Retailing,1.65,equity
+150741,Finance,INE674K01013,Finance,1.65,equity
+150741,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.63,equity
+150741,Beverages,INE944F01028,Beverages,1.61,equity
+150741,Minerals & Mining,INE281B01032,Minerals & Mining,1.53,equity
+150741,Power,INE121E01018,Power,1.51,equity
+150741,Minerals & Mining,INE584A01023,Minerals & Mining,1.33,equity
+150741,Industrial Products,INE702C01027,Industrial Products,1.24,equity
+150741,IT - Software,INE881D01027,IT - Software,1.22,equity
+150741,Pharmaceuticals & Biotechnology,INE376G01013,Pharmaceuticals & Biotechnology,1.2,equity
+150741,Electrical Equipment,INE152A01029,Electrical Equipment,1.15,equity
+150741,Insurance,INE180A01020,Insurance,1.11,equity
+150741,Finance,INE498L01015,Finance,1.08,equity
+150741,Capital Markets,INE298J01013,Capital Markets,1.08,equity
+150741,Banks,INE562A01011,Banks,1.07,equity
+150741,Banks,INE457A01014,Banks,1.05,equity
+150741,Oil,INE274J01014,Oil,1.0,equity
+150741,Transport Infrastructure,INE776C01039,Transport Infrastructure,0.99,equity
+150741,Industrial Products,INE212H01026,Industrial Products,0.76,equity
+150741,Telecom - Services,INE151A01013,Telecom - Services,0.73,equity
+150741,Pharmaceuticals & Biotechnology,INE031B01049,Pharmaceuticals & Biotechnology,0.69,equity
+150741,Gas,INE399L01023,Gas,0.68,equity
+150741,Power,INE589A01014,Power,0.63,equity
+150741,Ferrous Metals,INE220G01021,Ferrous Metals,0.52,equity
+150741,Chemicals & Petrochemicals,INE473A01011,Chemicals & Petrochemicals,0.52,equity
+150741,Banks,INE084A01016,Banks,0.45,equity
+150741,Diversified,INE470A01017,Diversified,0.25,equity
+153581,Capital Markets,INE745G01043,Capital Markets,2.08,equity
+153581,Banks,INE171A01029,Banks,1.94,equity
+153581,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,1.91,equity
+153581,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),1.78,equity
+153581,Automobiles,INE158A01026,Automobiles,1.68,equity
+153581,Leisure Services,INE053A01029,Leisure Services,1.58,equity
+153581,IT - Software,INE591G01025,IT - Software,1.5,equity
+153581,Electrical Equipment,INE257A01026,Electrical Equipment,1.5,equity
+153581,Banks,INE095A01012,Banks,1.47,equity
+153581,Banks,INE949L01017,Banks,1.45,equity
+153581,IT - Software,INE262H01021,IT - Software,1.42,equity
+153581,Consumer Durables,INE935N01020,Consumer Durables,1.35,equity
+153581,Banks,INE092T01019,Banks,1.34,equity
+153581,Auto Components,INE465A01025,Auto Components,1.32,equity
+153581,Electrical Equipment,INE200A01026,Electrical Equipment,1.29,equity
+153581,Retailing,INE956O01016,Retailing,1.24,equity
+153581,Insurance,INE0J1Y01017,Insurance,1.24,equity
+153581,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,1.22,equity
+153581,Electrical Equipment,INE040H01021,Electrical Equipment,1.19,equity
+153581,Telecom - Services,INE121J01017,Telecom - Services,1.19,equity
+153581,Retailing,INE663F01032,Retailing,1.17,equity
+153581,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,1.14,equity
+153581,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.09,equity
+153581,Retailing,INE388Y01029,Retailing,1.08,equity
+153581,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,1.03,equity
+153581,Healthcare Services,INE061F01013,Healthcare Services,0.99,equity
+153581,Beverages,INE854D01024,Beverages,0.99,equity
+153581,Industrial Products,INE702C01027,Industrial Products,0.98,equity
+153581,Insurance,INE765G01017,Insurance,0.96,equity
+153581,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.93,equity
+153581,Retailing,INE00H001014,Retailing,0.93,equity
+153581,Finance,INE020B01018,Finance,0.92,equity
+153581,Banks,INE528G01035,Banks,0.91,equity
+153581,Insurance,INE180A01020,Insurance,0.9,equity
+153581,Realty,INE211B01039,Realty,0.89,equity
+153581,Chemicals & Petrochemicals,INE647A01010,Chemicals & Petrochemicals,0.89,equity
+153581,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,0.87,equity
+153581,Beverages,INE944F01028,Beverages,0.85,equity
+153581,Realty,INE670K01029,Realty,0.83,equity
+153581,Petroleum Products,INE094A01015,Petroleum Products,0.83,equity
+153581,Transport Infrastructure,INE776C01039,Transport Infrastructure,0.82,equity
+153581,Finance,INE674K01013,Finance,0.8,equity
+153581,Electrical Equipment,INE372A01015,Electrical Equipment,0.8,equity
+153581,Pharmaceuticals & Biotechnology,INE540L01014,Pharmaceuticals & Biotechnology,0.77,equity
+153581,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,0.76,equity
+153581,Power,INE121E01018,Power,0.75,equity
+153581,Fertilizers & Agrochemicals,INE628A01036,Fertilizers & Agrochemicals,0.75,equity
+153581,Finance,INE660A01013,Finance,0.74,equity
+153581,Cement & Cement Products,INE070A01015,Cement & Cement Products,0.74,equity
+153581,IT - Software,INE356A01018,IT - Software,0.7,equity
+153581,Banks,INE562A01011,Banks,0.7,equity
+153581,Pharmaceuticals & Biotechnology,INE634S01028,Pharmaceuticals & Biotechnology,0.7,equity
+153581,Retailing,INE01EA01019,Retailing,0.7,equity
+153581,Industrial Products,INE878B01027,Industrial Products,0.68,equity
+153581,Power,INE848E01016,Power,0.68,equity
+153581,Capital Markets,INE466L01038,Capital Markets,0.67,equity
+153581,Pharmaceuticals & Biotechnology,INE571A01038,Pharmaceuticals & Biotechnology,0.66,equity
+153581,Minerals & Mining,INE584A01023,Minerals & Mining,0.65,equity
+153581,Capital Markets,INE0HOQ01053,Capital Markets,0.65,equity
+153581,Ferrous Metals,INE114A01011,Ferrous Metals,0.65,equity
+153581,Pharmaceuticals & Biotechnology,INE376G01013,Pharmaceuticals & Biotechnology,0.64,equity
+153581,Minerals & Mining,INE281B01032,Minerals & Mining,0.64,equity
+153581,Consumer Durables,INE176B01034,Consumer Durables,0.63,equity
+153581,IT - Software,INE881D01027,IT - Software,0.63,equity
+153581,Auto Components,INE883A01011,Auto Components,0.63,equity
+153581,Auto Components,INE974X01010,Auto Components,0.63,equity
+153581,Realty,INE811K01011,Realty,0.62,equity
+153581,Oil,INE274J01014,Oil,0.6,equity
+153581,Consumer Durables,INE226A01021,Consumer Durables,0.6,equity
+153581,Power,INE813H01021,Power,0.59,equity
+153581,Ferrous Metals,INE220G01021,Ferrous Metals,0.58,equity
+153581,Personal Products,INE259A01022,Personal Products,0.57,equity
+153581,Textiles & Apparels,INE761H01022,Textiles & Apparels,0.57,equity
+153581,Electrical Equipment,INE377N01017,Electrical Equipment,0.56,equity
+153581,Finance,INE498L01015,Finance,0.56,equity
+153581,Personal Products,INE016A01026,Personal Products,0.55,equity
+153581,Industrial Products,INE195A01028,Industrial Products,0.55,equity
+153581,Realty,INE484J01027,Realty,0.54,equity
+153581,Finance,INE774D01024,Finance,0.53,equity
+153581,Gas,INE347G01014,Gas,0.53,equity
+153581,Auto Components,INE405E01023,Auto Components,0.53,equity
+153581,Transport Infrastructure,INE880J01026,Transport Infrastructure,0.53,equity
+153581,Consumer Durables,INE303R01014,Consumer Durables,0.53,equity
+153581,Cement & Cement Products,INE823G01014,Cement & Cement Products,0.52,equity
+153581,Fertilizers & Agrochemicals,INE169A01031,Fertilizers & Agrochemicals,0.52,equity
+153581,Retailing,INE0VDM01015,Retailing,0.52,equity
+153581,Realty,INE093I01010,Realty,0.51,equity
+153581,Consumer Durables,INE472A01039,Consumer Durables,0.49,equity
+153581,Telecom - Services,INE151A01013,Telecom - Services,0.48,equity
+153581,Capital Markets,INE298J01013,Capital Markets,0.48,equity
+153581,Auto Components,INE302A01020,Auto Components,0.46,equity
+153581,Fertilizers & Agrochemicals,INE603J01030,Fertilizers & Agrochemicals,0.46,equity
+153581,Healthcare Services,INE914M01019,Healthcare Services,0.46,equity
+153581,Chemicals & Petrochemicals,INE09N301011,Chemicals & Petrochemicals,0.46,equity
+153581,Leisure Services,INE379A01028,Leisure Services,0.45,equity
+153581,Capital Markets,INE346A01027,Capital Markets,0.45,equity
+153581,Non - Ferrous Metals,INE531E01026,Non - Ferrous Metals,0.45,equity
+153581,Leisure Services,INE797F01020,Leisure Services,0.44,equity
+153581,Insurance,INE726G01019,Insurance,0.44,equity
+153581,Consumer Durables,INE324D01010,Consumer Durables,0.43,equity
+153581,Finance,INE018E01016,Finance,0.42,equity
+153581,Auto Components,INE787D01026,Auto Components,0.42,equity
+153581,Industrial Products,INE006I01046,Industrial Products,0.41,equity
+153581,Pharmaceuticals & Biotechnology,INE031B01049,Pharmaceuticals & Biotechnology,0.41,equity
+153581,Gas,INE399L01023,Gas,0.41,equity
+153581,Banks,INE457A01014,Banks,0.4,equity
+153581,Finance,INE115A01026,Finance,0.39,equity
+153581,Capital Markets,INE338I01027,Capital Markets,0.39,equity
+153581,Banks,INE084A01016,Banks,0.39,equity
+153581,Auto Components,INE513A01022,Auto Components,0.39,equity
+153581,Transport Services,INE111A01025,Transport Services,0.38,equity
+153581,Industrial Products,INE212H01026,Industrial Products,0.37,equity
+153581,Finance,INE206F01022,Finance,0.36,equity
+153581,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,0.35,equity
+153581,Leisure Services,INE335Y01020,Leisure Services,0.34,equity
+153581,Cement & Cement Products,INE00R701025,Cement & Cement Products,0.33,equity
+153581,Chemicals & Petrochemicals,INE473A01011,Chemicals & Petrochemicals,0.33,equity
+153581,Finance,INE756I01012,Finance,0.33,equity
+153581,Insurance,INE481Y01014,Insurance,0.32,equity
+153581,Electrical Equipment,INE152A01029,Electrical Equipment,0.32,equity
+153581,Consumer Durables,INE463A01038,Consumer Durables,0.32,equity
+153581,Industrial Manufacturing,INE704P01025,Industrial Manufacturing,0.31,equity
+153581,Electrical Equipment,INE0BS701011,Electrical Equipment,0.31,equity
+153581,Agricultural Food & other Products,INE619A01035,Agricultural Food & other Products,0.31,equity
+153581,Healthcare Services,INE410P01011,Healthcare Services,0.31,equity
+153581,Textiles & Apparels,INE930H01031,Textiles & Apparels,0.3,equity
+153581,Healthcare Services,INE474Q01031,Healthcare Services,0.3,equity
+153581,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.28,equity
+153581,Construction,INE415G01027,Construction,0.28,equity
+153581,Finance,INE007A01025,Finance,0.27,equity
+153581,Telecom - Services,INE343G01021,Telecom - Services,0.26,equity
+153581,Aerospace & Defense,INE171Z01026,Aerospace & Defense,0.25,equity
+153581,Power,INE589A01014,Power,0.24,equity
+153581,Auto Components,INE913H01037,Auto Components,0.23,equity
+153581,Pharmaceuticals & Biotechnology,INE0CZ201020,Pharmaceuticals & Biotechnology,0.23,equity
+153581,Finance,INE377Y01014,Finance,0.22,equity
+153581,"Agricultural, Commercial & Construction Vehicles",INE042A01014,"Agricultural, Commercial & Construction Vehicles",0.22,equity
+153581,IT - Services,INE010V01017,IT - Services,0.22,equity
+153581,Finance,INE202E01016,Finance,0.22,equity
+153581,Power,INE0ONG01011,Power,0.21,equity
+153581,Beverages,INE686F01025,Beverages,0.21,equity
+153581,Finance,INE031A01017,Finance,0.21,equity
+153581,Finance,INE672A01026,Finance,0.2,equity
+153581,Cigarettes & Tobacco Products,INE260B01028,Cigarettes & Tobacco Products,0.19,equity
+153581,IT - Software,INE093A01041,IT - Software,0.18,equity
+153581,Fertilizers & Agrochemicals,INE188A01015,Fertilizers & Agrochemicals,0.12,equity
+153581,Banks,INE565A01014,Banks,0.11,equity
+153581,Diversified,INE233A01035,Diversified,0.11,equity
+153581,Realty,INE041025011,,0.94,other
+153580,Capital Markets,INE745G01043,Capital Markets,2.08,equity
+153580,Banks,INE171A01029,Banks,1.94,equity
+153580,Pharmaceuticals & Biotechnology,INE947Q01028,Pharmaceuticals & Biotechnology,1.91,equity
+153580,Financial Technology (Fintech),INE982J01020,Financial Technology (Fintech),1.78,equity
+153580,Automobiles,INE158A01026,Automobiles,1.68,equity
+153580,Leisure Services,INE053A01029,Leisure Services,1.58,equity
+153580,IT - Software,INE591G01025,IT - Software,1.5,equity
+153580,Electrical Equipment,INE257A01026,Electrical Equipment,1.5,equity
+153580,Banks,INE095A01012,Banks,1.47,equity
+153580,Banks,INE949L01017,Banks,1.45,equity
+153580,IT - Software,INE262H01021,IT - Software,1.42,equity
+153580,Consumer Durables,INE935N01020,Consumer Durables,1.35,equity
+153580,Banks,INE092T01019,Banks,1.34,equity
+153580,Auto Components,INE465A01025,Auto Components,1.32,equity
+153580,Electrical Equipment,INE200A01026,Electrical Equipment,1.29,equity
+153580,Retailing,INE956O01016,Retailing,1.24,equity
+153580,Insurance,INE0J1Y01017,Insurance,1.24,equity
+153580,Pharmaceuticals & Biotechnology,INE326A01037,Pharmaceuticals & Biotechnology,1.22,equity
+153580,Electrical Equipment,INE040H01021,Electrical Equipment,1.19,equity
+153580,Telecom - Services,INE121J01017,Telecom - Services,1.19,equity
+153580,Retailing,INE663F01032,Retailing,1.17,equity
+153580,Pharmaceuticals & Biotechnology,INE406A01037,Pharmaceuticals & Biotechnology,1.14,equity
+153580,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",1.09,equity
+153580,Retailing,INE388Y01029,Retailing,1.08,equity
+153580,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,1.03,equity
+153580,Healthcare Services,INE061F01013,Healthcare Services,0.99,equity
+153580,Beverages,INE854D01024,Beverages,0.99,equity
+153580,Industrial Products,INE702C01027,Industrial Products,0.98,equity
+153580,Insurance,INE765G01017,Insurance,0.96,equity
+153580,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.93,equity
+153580,Retailing,INE00H001014,Retailing,0.93,equity
+153580,Finance,INE020B01018,Finance,0.92,equity
+153580,Banks,INE528G01035,Banks,0.91,equity
+153580,Insurance,INE180A01020,Insurance,0.9,equity
+153580,Realty,INE211B01039,Realty,0.89,equity
+153580,Chemicals & Petrochemicals,INE647A01010,Chemicals & Petrochemicals,0.89,equity
+153580,Pharmaceuticals & Biotechnology,INE935A01035,Pharmaceuticals & Biotechnology,0.87,equity
+153580,Beverages,INE944F01028,Beverages,0.85,equity
+153580,Realty,INE670K01029,Realty,0.83,equity
+153580,Petroleum Products,INE094A01015,Petroleum Products,0.83,equity
+153580,Transport Infrastructure,INE776C01039,Transport Infrastructure,0.82,equity
+153580,Finance,INE674K01013,Finance,0.8,equity
+153580,Electrical Equipment,INE372A01015,Electrical Equipment,0.8,equity
+153580,Pharmaceuticals & Biotechnology,INE540L01014,Pharmaceuticals & Biotechnology,0.77,equity
+153580,Non - Ferrous Metals,INE139A01034,Non - Ferrous Metals,0.76,equity
+153580,Power,INE121E01018,Power,0.75,equity
+153580,Fertilizers & Agrochemicals,INE628A01036,Fertilizers & Agrochemicals,0.75,equity
+153580,Finance,INE660A01013,Finance,0.74,equity
+153580,Cement & Cement Products,INE070A01015,Cement & Cement Products,0.74,equity
+153580,IT - Software,INE356A01018,IT - Software,0.7,equity
+153580,Banks,INE562A01011,Banks,0.7,equity
+153580,Pharmaceuticals & Biotechnology,INE634S01028,Pharmaceuticals & Biotechnology,0.7,equity
+153580,Retailing,INE01EA01019,Retailing,0.7,equity
+153580,Industrial Products,INE878B01027,Industrial Products,0.68,equity
+153580,Power,INE848E01016,Power,0.68,equity
+153580,Capital Markets,INE466L01038,Capital Markets,0.67,equity
+153580,Pharmaceuticals & Biotechnology,INE571A01038,Pharmaceuticals & Biotechnology,0.66,equity
+153580,Minerals & Mining,INE584A01023,Minerals & Mining,0.65,equity
+153580,Capital Markets,INE0HOQ01053,Capital Markets,0.65,equity
+153580,Ferrous Metals,INE114A01011,Ferrous Metals,0.65,equity
+153580,Pharmaceuticals & Biotechnology,INE376G01013,Pharmaceuticals & Biotechnology,0.64,equity
+153580,Minerals & Mining,INE281B01032,Minerals & Mining,0.64,equity
+153580,Consumer Durables,INE176B01034,Consumer Durables,0.63,equity
+153580,IT - Software,INE881D01027,IT - Software,0.63,equity
+153580,Auto Components,INE883A01011,Auto Components,0.63,equity
+153580,Auto Components,INE974X01010,Auto Components,0.63,equity
+153580,Realty,INE811K01011,Realty,0.62,equity
+153580,Oil,INE274J01014,Oil,0.6,equity
+153580,Consumer Durables,INE226A01021,Consumer Durables,0.6,equity
+153580,Power,INE813H01021,Power,0.59,equity
+153580,Ferrous Metals,INE220G01021,Ferrous Metals,0.58,equity
+153580,Personal Products,INE259A01022,Personal Products,0.57,equity
+153580,Textiles & Apparels,INE761H01022,Textiles & Apparels,0.57,equity
+153580,Electrical Equipment,INE377N01017,Electrical Equipment,0.56,equity
+153580,Finance,INE498L01015,Finance,0.56,equity
+153580,Personal Products,INE016A01026,Personal Products,0.55,equity
+153580,Industrial Products,INE195A01028,Industrial Products,0.55,equity
+153580,Realty,INE484J01027,Realty,0.54,equity
+153580,Finance,INE774D01024,Finance,0.53,equity
+153580,Gas,INE347G01014,Gas,0.53,equity
+153580,Auto Components,INE405E01023,Auto Components,0.53,equity
+153580,Transport Infrastructure,INE880J01026,Transport Infrastructure,0.53,equity
+153580,Consumer Durables,INE303R01014,Consumer Durables,0.53,equity
+153580,Cement & Cement Products,INE823G01014,Cement & Cement Products,0.52,equity
+153580,Fertilizers & Agrochemicals,INE169A01031,Fertilizers & Agrochemicals,0.52,equity
+153580,Retailing,INE0VDM01015,Retailing,0.52,equity
+153580,Realty,INE093I01010,Realty,0.51,equity
+153580,Consumer Durables,INE472A01039,Consumer Durables,0.49,equity
+153580,Telecom - Services,INE151A01013,Telecom - Services,0.48,equity
+153580,Capital Markets,INE298J01013,Capital Markets,0.48,equity
+153580,Auto Components,INE302A01020,Auto Components,0.46,equity
+153580,Fertilizers & Agrochemicals,INE603J01030,Fertilizers & Agrochemicals,0.46,equity
+153580,Healthcare Services,INE914M01019,Healthcare Services,0.46,equity
+153580,Chemicals & Petrochemicals,INE09N301011,Chemicals & Petrochemicals,0.46,equity
+153580,Leisure Services,INE379A01028,Leisure Services,0.45,equity
+153580,Capital Markets,INE346A01027,Capital Markets,0.45,equity
+153580,Non - Ferrous Metals,INE531E01026,Non - Ferrous Metals,0.45,equity
+153580,Leisure Services,INE797F01020,Leisure Services,0.44,equity
+153580,Insurance,INE726G01019,Insurance,0.44,equity
+153580,Consumer Durables,INE324D01010,Consumer Durables,0.43,equity
+153580,Finance,INE018E01016,Finance,0.42,equity
+153580,Auto Components,INE787D01026,Auto Components,0.42,equity
+153580,Industrial Products,INE006I01046,Industrial Products,0.41,equity
+153580,Pharmaceuticals & Biotechnology,INE031B01049,Pharmaceuticals & Biotechnology,0.41,equity
+153580,Gas,INE399L01023,Gas,0.41,equity
+153580,Banks,INE457A01014,Banks,0.4,equity
+153580,Finance,INE115A01026,Finance,0.39,equity
+153580,Capital Markets,INE338I01027,Capital Markets,0.39,equity
+153580,Banks,INE084A01016,Banks,0.39,equity
+153580,Auto Components,INE513A01022,Auto Components,0.39,equity
+153580,Transport Services,INE111A01025,Transport Services,0.38,equity
+153580,Industrial Products,INE212H01026,Industrial Products,0.37,equity
+153580,Finance,INE206F01022,Finance,0.36,equity
+153580,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,0.35,equity
+153580,Leisure Services,INE335Y01020,Leisure Services,0.34,equity
+153580,Cement & Cement Products,INE00R701025,Cement & Cement Products,0.33,equity
+153580,Chemicals & Petrochemicals,INE473A01011,Chemicals & Petrochemicals,0.33,equity
+153580,Finance,INE756I01012,Finance,0.33,equity
+153580,Insurance,INE481Y01014,Insurance,0.32,equity
+153580,Electrical Equipment,INE152A01029,Electrical Equipment,0.32,equity
+153580,Consumer Durables,INE463A01038,Consumer Durables,0.32,equity
+153580,Industrial Manufacturing,INE704P01025,Industrial Manufacturing,0.31,equity
+153580,Electrical Equipment,INE0BS701011,Electrical Equipment,0.31,equity
+153580,Agricultural Food & other Products,INE619A01035,Agricultural Food & other Products,0.31,equity
+153580,Healthcare Services,INE410P01011,Healthcare Services,0.31,equity
+153580,Textiles & Apparels,INE930H01031,Textiles & Apparels,0.3,equity
+153580,Healthcare Services,INE474Q01031,Healthcare Services,0.3,equity
+153580,Pharmaceuticals & Biotechnology,INE159A01016,Pharmaceuticals & Biotechnology,0.28,equity
+153580,Construction,INE415G01027,Construction,0.28,equity
+153580,Finance,INE007A01025,Finance,0.27,equity
+153580,Telecom - Services,INE343G01021,Telecom - Services,0.26,equity
+153580,Aerospace & Defense,INE171Z01026,Aerospace & Defense,0.25,equity
+153580,Power,INE589A01014,Power,0.24,equity
+153580,Auto Components,INE913H01037,Auto Components,0.23,equity
+153580,Pharmaceuticals & Biotechnology,INE0CZ201020,Pharmaceuticals & Biotechnology,0.23,equity
+153580,Finance,INE377Y01014,Finance,0.22,equity
+153580,"Agricultural, Commercial & Construction Vehicles",INE042A01014,"Agricultural, Commercial & Construction Vehicles",0.22,equity
+153580,IT - Services,INE010V01017,IT - Services,0.22,equity
+153580,Finance,INE202E01016,Finance,0.22,equity
+153580,Power,INE0ONG01011,Power,0.21,equity
+153580,Beverages,INE686F01025,Beverages,0.21,equity
+153580,Finance,INE031A01017,Finance,0.21,equity
+153580,Finance,INE672A01026,Finance,0.2,equity
+153580,Cigarettes & Tobacco Products,INE260B01028,Cigarettes & Tobacco Products,0.19,equity
+153580,IT - Software,INE093A01041,IT - Software,0.18,equity
+153580,Fertilizers & Agrochemicals,INE188A01015,Fertilizers & Agrochemicals,0.12,equity
+153580,Banks,INE565A01014,Banks,0.11,equity
+153580,Diversified,INE233A01035,Diversified,0.11,equity
+153580,Realty,INE041025011,,0.94,other
+152742,Transport Services,INE646L01027,Transport Services,20.38,equity
+152742,Leisure Services,INE053A01029,Leisure Services,20.25,equity
+152742,Transport Infrastructure,INE776C01039,Transport Infrastructure,18.12,equity
+152742,Leisure Services,INE379A01028,Leisure Services,10.09,equity
+152742,Leisure Services,INE797F01020,Leisure Services,9.84,equity
+152742,Leisure Services,INE335Y01020,Leisure Services,7.54,equity
+152742,Leisure Services,INE230A01023,Leisure Services,3.27,equity
+152742,Leisure Services,INE673O01025,Leisure Services,3.19,equity
+152742,Leisure Services,INE872J01023,Leisure Services,3.04,equity
+152742,Leisure Services,INE970X01018,Leisure Services,2.84,equity
+152742,Leisure Services,INE153T01027,Leisure Services,1.45,equity
+152746,Transport Services,INE646L01027,Transport Services,20.38,equity
+152746,Leisure Services,INE053A01029,Leisure Services,20.25,equity
+152746,Transport Infrastructure,INE776C01039,Transport Infrastructure,18.12,equity
+152746,Leisure Services,INE379A01028,Leisure Services,10.09,equity
+152746,Leisure Services,INE797F01020,Leisure Services,9.84,equity
+152746,Leisure Services,INE335Y01020,Leisure Services,7.54,equity
+152746,Leisure Services,INE230A01023,Leisure Services,3.27,equity
+152746,Leisure Services,INE673O01025,Leisure Services,3.19,equity
+152746,Leisure Services,INE872J01023,Leisure Services,3.04,equity
+152746,Leisure Services,INE970X01018,Leisure Services,2.84,equity
+152746,Leisure Services,INE153T01027,Leisure Services,1.45,equity
+150345,CAPITAL MARKETS,INF277KA1364,,99.95,other
+150344,CAPITAL MARKETS,INF277KA1364,,99.95,other
+152574,Banks,INE040A01034,Banks,18.64,equity
+152574,Banks,INE090A01021,Banks,14.2,equity
+152574,Banks,INE238A01034,Banks,10.18,equity
+152574,Banks,INE237A01036,Banks,10.11,equity
+152574,Banks,INE062A01020,Banks,9.94,equity
+152574,Finance,INE296A01032,Finance,8.62,equity
+152574,Finance,INE721A01047,Finance,4.53,equity
+152574,Capital Markets,INE118H01025,Capital Markets,4.16,equity
+152574,Finance,INE918I01026,Finance,3.31,equity
+152574,Insurance,INE123W01016,Insurance,2.51,equity
+152574,Finance,INE758E01017,Finance,2.34,equity
+152574,Finance,INE121A01024,Finance,2.31,equity
+152574,Insurance,INE795G01014,Insurance,1.85,equity
+152574,Finance,INE134E01011,Finance,1.56,equity
+152574,Insurance,INE765G01017,Insurance,1.25,equity
+152574,Finance,INE020B01018,Finance,1.23,equity
+152574,Insurance,INE180A01020,Insurance,1.18,equity
+152574,Finance,INE414G01012,Finance,0.98,equity
+152574,Finance,INE018E01016,Finance,0.58,equity
+152574,Finance,INE115A01026,Finance,0.53,equity
+152577,Banks,INE040A01034,Banks,18.64,equity
+152577,Banks,INE090A01021,Banks,14.2,equity
+152577,Banks,INE238A01034,Banks,10.18,equity
+152577,Banks,INE237A01036,Banks,10.11,equity
+152577,Banks,INE062A01020,Banks,9.94,equity
+152577,Finance,INE296A01032,Finance,8.62,equity
+152577,Finance,INE721A01047,Finance,4.53,equity
+152577,Capital Markets,INE118H01025,Capital Markets,4.16,equity
+152577,Finance,INE918I01026,Finance,3.31,equity
+152577,Insurance,INE123W01016,Insurance,2.51,equity
+152577,Finance,INE758E01017,Finance,2.34,equity
+152577,Finance,INE121A01024,Finance,2.31,equity
+152577,Insurance,INE795G01014,Insurance,1.85,equity
+152577,Finance,INE134E01011,Finance,1.56,equity
+152577,Insurance,INE765G01017,Insurance,1.25,equity
+152577,Finance,INE020B01018,Finance,1.23,equity
+152577,Insurance,INE180A01020,Insurance,1.18,equity
+152577,Finance,INE414G01012,Finance,0.98,equity
+152577,Finance,INE018E01016,Finance,0.58,equity
+152577,Finance,INE115A01026,Finance,0.53,equity
+152954,Capital Markets,INE118H01025,Capital Markets,20.02,equity
+152954,Capital Markets,INE745G01043,Capital Markets,18.88,equity
+152954,Capital Markets,INE127D01025,Capital Markets,10.44,equity
+152954,Capital Markets,INE466L01038,Capital Markets,6.07,equity
+152954,Capital Markets,INE0HOQ01053,Capital Markets,5.9,equity
+152954,Capital Markets,INE736A01011,Capital Markets,5.05,equity
+152954,Capital Markets,INE463V01026,Capital Markets,4.35,equity
+152954,Capital Markets,INE298J01013,Capital Markets,4.33,equity
+152954,Capital Markets,INE346A01027,Capital Markets,4.11,equity
+152954,Capital Markets,INE732I01021,Capital Markets,4.01,equity
+152954,Capital Markets,INE596I01020,Capital Markets,3.62,equity
+152954,Capital Markets,INE338I01027,Capital Markets,3.54,equity
+152954,Capital Markets,INE531F01023,Capital Markets,2.99,equity
+152954,Capital Markets,INE138Y01010,Capital Markets,2.52,equity
+152954,Capital Markets,INE022Q01020,Capital Markets,1.91,equity
+152954,Capital Markets,INE404A01024,Capital Markets,1.63,equity
+152954,Capital Markets,INE094J01016,Capital Markets,0.83,equity
+152951,Capital Markets,INE118H01025,Capital Markets,20.02,equity
+152951,Capital Markets,INE745G01043,Capital Markets,18.88,equity
+152951,Capital Markets,INE127D01025,Capital Markets,10.44,equity
+152951,Capital Markets,INE466L01038,Capital Markets,6.07,equity
+152951,Capital Markets,INE0HOQ01053,Capital Markets,5.9,equity
+152951,Capital Markets,INE736A01011,Capital Markets,5.05,equity
+152951,Capital Markets,INE463V01026,Capital Markets,4.35,equity
+152951,Capital Markets,INE298J01013,Capital Markets,4.33,equity
+152951,Capital Markets,INE346A01027,Capital Markets,4.11,equity
+152951,Capital Markets,INE732I01021,Capital Markets,4.01,equity
+152951,Capital Markets,INE596I01020,Capital Markets,3.62,equity
+152951,Capital Markets,INE338I01027,Capital Markets,3.54,equity
+152951,Capital Markets,INE531F01023,Capital Markets,2.99,equity
+152951,Capital Markets,INE138Y01010,Capital Markets,2.52,equity
+152951,Capital Markets,INE022Q01020,Capital Markets,1.91,equity
+152951,Capital Markets,INE404A01024,Capital Markets,1.63,equity
+152951,Capital Markets,INE094J01016,Capital Markets,0.83,equity
+152557,Automobiles,INE101A01026,Automobiles,22.28,equity
+152557,Automobiles,INE585B01010,Automobiles,13.15,equity
+152557,Automobiles,INE917I01010,Automobiles,10.03,equity
+152557,Automobiles,INE066A01021,Automobiles,8.34,equity
+152557,Automobiles,INE494B01023,Automobiles,8.15,equity
+152557,Auto Components,INE775A01035,Auto Components,6.1,equity
+152557,Automobiles,INE158A01026,Automobiles,5.75,equity
+152557,Automobiles,INE155A01022,Automobiles,5.01,equity
+152557,Auto Components,INE465A01025,Auto Components,4.52,equity
+152557,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",3.73,equity
+152557,Auto Components,INE323A01026,Auto Components,3.45,equity
+152557,Auto Components,INE073K01018,Auto Components,3.15,equity
+152557,Automobiles,INE0V6F01027,Automobiles,2.44,equity
+152557,Auto Components,INE974X01010,Auto Components,2.14,equity
+152557,Auto Components,INE405E01023,Auto Components,1.8,equity
+152560,Automobiles,INE101A01026,Automobiles,22.28,equity
+152560,Automobiles,INE585B01010,Automobiles,13.15,equity
+152560,Automobiles,INE917I01010,Automobiles,10.03,equity
+152560,Automobiles,INE066A01021,Automobiles,8.34,equity
+152560,Automobiles,INE494B01023,Automobiles,8.15,equity
+152560,Auto Components,INE775A01035,Auto Components,6.1,equity
+152560,Automobiles,INE158A01026,Automobiles,5.75,equity
+152560,Automobiles,INE155A01022,Automobiles,5.01,equity
+152560,Auto Components,INE465A01025,Auto Components,4.52,equity
+152560,"Agricultural, Commercial & Construction Vehicles",INE208A01029,"Agricultural, Commercial & Construction Vehicles",3.73,equity
+152560,Auto Components,INE323A01026,Auto Components,3.45,equity
+152560,Auto Components,INE073K01018,Auto Components,3.15,equity
+152560,Automobiles,INE0V6F01027,Automobiles,2.44,equity
+152560,Auto Components,INE974X01010,Auto Components,2.14,equity
+152560,Auto Components,INE405E01023,Auto Components,1.8,equity
+151232,Banks,INE040A01034,Banks,7.22,equity
+151232,Transport Infrastructure,INE742F01042,Transport Infrastructure,3.69,equity
+151232,Petroleum Products,INE002A01018,Petroleum Products,2.44,equity
+151232,Power,INE733E01010,Power,2.2,equity
+151232,Textiles & Apparels,INE940H01022,Textiles & Apparels,2.18,equity
+151232,Banks,INE238A01034,Banks,2.16,equity
+151232,Banks,INE090A01021,Banks,2.0,equity
+151232,Healthcare Services,INE600L01024,Healthcare Services,1.98,equity
+151232,Banks,INE237A01036,Banks,1.83,equity
+151232,Telecom - Services,INE397D01024,Telecom - Services,1.8,equity
+151232,Consumer Durables,INE935N01020,Consumer Durables,1.76,equity
+151232,Automobiles,INE585B01010,Automobiles,1.76,equity
+151232,Retailing,INE01EA01019,Retailing,1.75,equity
+151232,Healthcare Services,INE112L01020,Healthcare Services,1.74,equity
+151232,Automobiles,INE101A01026,Automobiles,1.69,equity
+151232,Auto Components,INE526E01018,Auto Components,1.67,equity
+151232,Beverages,INE854D01024,Beverages,1.59,equity
+151232,Banks,INE545U01014,Banks,1.57,equity
+151232,Leisure Services,INE053A01029,Leisure Services,1.51,equity
+151232,Telecom - Services,INE121J01017,Telecom - Services,1.37,equity
+151232,Industrial Products,INE228A01035,Industrial Products,1.35,equity
+151232,Healthcare Services,INE075I01017,Healthcare Services,1.33,equity
+151232,Healthcare Services,INE914M01019,Healthcare Services,1.33,equity
+151232,Banks,INE562A01011,Banks,1.3,equity
+151232,Commercial Services & Supplies,INE684F01012,Commercial Services & Supplies,1.29,equity
+151232,IT - Software,INE591G01025,IT - Software,1.27,equity
+151232,Auto Components,INE405E01023,Auto Components,1.25,equity
+151232,Banks,INE171A01029,Banks,1.21,equity
+151232,IT - Software,INE009A01021,IT - Software,1.18,equity
+151232,Finance,INE721A01047,Finance,1.15,equity
+151232,Finance,INE018E01016,Finance,1.09,equity
+151232,Leisure Services,INE673O01025,Leisure Services,1.09,equity
+151232,Consumer Durables,INE176B01034,Consumer Durables,1.08,equity
+151232,Insurance,INE765G01017,Insurance,1.06,equity
+151232,Auto Components,INE775A01035,Auto Components,1.05,equity
+151232,Power,INE931S01010,Power,1.01,equity
+151232,Finance,INE477A01020,Finance,1.01,equity
+151232,Pharmaceuticals & Biotechnology,INE089A01031,Pharmaceuticals & Biotechnology,0.99,equity
+151232,Minerals & Mining,INE024L01027,Minerals & Mining,0.99,equity
+151232,Capital Markets,INE404A01024,Capital Markets,0.96,equity
+151232,Banks,INE062A01020,Banks,0.96,equity
+151232,Auto Components,INE342J01019,Auto Components,0.95,equity
+151232,Beverages,INE944F01028,Beverages,0.94,equity
+151232,Automobiles,INE0LEZ01016,Automobiles,0.93,equity
+151232,Auto Components,INE00LO01017,Auto Components,0.92,equity
+151232,Industrial Products,INE298A01020,Industrial Products,0.91,equity
+151232,Finance,INE572E01012,Finance,0.91,equity
+151232,Commercial Services & Supplies,INE085001019,Commercial Services & Supplies,0.9,equity
+151232,Metals & Minerals Trading,INE423A01024,Metals & Minerals Trading,0.89,equity
+151232,Fertilizers & Agrochemicals,INE603J01030,Fertilizers & Agrochemicals,0.88,equity
+151232,Healthcare Services,INE043W01024,Healthcare Services,0.87,equity
+151232,Healthcare Services,INE437A01024,Healthcare Services,0.86,equity
+151232,Transport Services,INE688A01022,Transport Services,0.86,equity
+151232,Realty,INE811K01011,Realty,0.85,equity
+151232,Industrial Products,INE811A01038,Industrial Products,0.83,equity
+151232,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,0.83,equity
+151232,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.82,equity
+151232,Banks,INE063P01018,Banks,0.81,equity
+151232,Consumer Durables,INE226A01021,Consumer Durables,0.78,equity
+151232,Beverages,INE200M01039,Beverages,0.78,equity
+151232,Auto Components,INE787D01026,Auto Components,0.75,equity
+151232,Retailing,INE00H001014,Retailing,0.73,equity
+151232,Industrial Products,INE212H01026,Industrial Products,0.7,equity
+151232,Minerals & Mining,INE584A01023,Minerals & Mining,0.68,equity
+151232,Industrial Products,INE702C01027,Industrial Products,0.66,equity
+151232,IT - Software,INE356A01018,IT - Software,0.63,equity
+151232,Industrial Products,INE878B01027,Industrial Products,0.62,equity
+151232,Consumer Durables,INE142Z01019,Consumer Durables,0.53,equity
+151232,Realty,INE484J01027,Realty,0.53,equity
+151232,Banks,INE551W01018,Banks,0.5,equity
+151232,IT - Software,INE262H01021,IT - Software,0.48,equity
+151232,Diversified FMCG,INE154A01025,Diversified FMCG,0.46,equity
+151232,Healthcare Services,INE961O01016,Healthcare Services,0.45,equity
+151232,Finance,INE883F01010,Finance,0.44,equity
+151232,Pharmaceuticals & Biotechnology,INE182A01018,Pharmaceuticals & Biotechnology,0.44,equity
+151232,IT - Software,INE759A01021,IT - Software,0.42,equity
+151232,Finance,INE202B01038,Finance,0.4,equity
+151232,IT - Services,INE010V01017,IT - Services,0.28,equity
+151232,Consumer Durables,INE935N01020,Consumer Durables,-0.15,equity
+151235,Banks,INE040A01034,Banks,7.22,equity
+151235,Transport Infrastructure,INE742F01042,Transport Infrastructure,3.69,equity
+151235,Petroleum Products,INE002A01018,Petroleum Products,2.44,equity
+151235,Power,INE733E01010,Power,2.2,equity
+151235,Textiles & Apparels,INE940H01022,Textiles & Apparels,2.18,equity
+151235,Banks,INE238A01034,Banks,2.16,equity
+151235,Banks,INE090A01021,Banks,2.0,equity
+151235,Healthcare Services,INE600L01024,Healthcare Services,1.98,equity
+151235,Banks,INE237A01036,Banks,1.83,equity
+151235,Telecom - Services,INE397D01024,Telecom - Services,1.8,equity
+151235,Consumer Durables,INE935N01020,Consumer Durables,1.76,equity
+151235,Automobiles,INE585B01010,Automobiles,1.76,equity
+151235,Retailing,INE01EA01019,Retailing,1.75,equity
+151235,Healthcare Services,INE112L01020,Healthcare Services,1.74,equity
+151235,Automobiles,INE101A01026,Automobiles,1.69,equity
+151235,Auto Components,INE526E01018,Auto Components,1.67,equity
+151235,Beverages,INE854D01024,Beverages,1.59,equity
+151235,Banks,INE545U01014,Banks,1.57,equity
+151235,Leisure Services,INE053A01029,Leisure Services,1.51,equity
+151235,Telecom - Services,INE121J01017,Telecom - Services,1.37,equity
+151235,Industrial Products,INE228A01035,Industrial Products,1.35,equity
+151235,Healthcare Services,INE075I01017,Healthcare Services,1.33,equity
+151235,Healthcare Services,INE914M01019,Healthcare Services,1.33,equity
+151235,Banks,INE562A01011,Banks,1.3,equity
+151235,Commercial Services & Supplies,INE684F01012,Commercial Services & Supplies,1.29,equity
+151235,IT - Software,INE591G01025,IT - Software,1.27,equity
+151235,Auto Components,INE405E01023,Auto Components,1.25,equity
+151235,Banks,INE171A01029,Banks,1.21,equity
+151235,IT - Software,INE009A01021,IT - Software,1.18,equity
+151235,Finance,INE721A01047,Finance,1.15,equity
+151235,Finance,INE018E01016,Finance,1.09,equity
+151235,Leisure Services,INE673O01025,Leisure Services,1.09,equity
+151235,Consumer Durables,INE176B01034,Consumer Durables,1.08,equity
+151235,Insurance,INE765G01017,Insurance,1.06,equity
+151235,Auto Components,INE775A01035,Auto Components,1.05,equity
+151235,Power,INE931S01010,Power,1.01,equity
+151235,Finance,INE477A01020,Finance,1.01,equity
+151235,Pharmaceuticals & Biotechnology,INE089A01031,Pharmaceuticals & Biotechnology,0.99,equity
+151235,Minerals & Mining,INE024L01027,Minerals & Mining,0.99,equity
+151235,Capital Markets,INE404A01024,Capital Markets,0.96,equity
+151235,Banks,INE062A01020,Banks,0.96,equity
+151235,Auto Components,INE342J01019,Auto Components,0.95,equity
+151235,Beverages,INE944F01028,Beverages,0.94,equity
+151235,Automobiles,INE0LEZ01016,Automobiles,0.93,equity
+151235,Auto Components,INE00LO01017,Auto Components,0.92,equity
+151235,Industrial Products,INE298A01020,Industrial Products,0.91,equity
+151235,Finance,INE572E01012,Finance,0.91,equity
+151235,Commercial Services & Supplies,INE085001019,Commercial Services & Supplies,0.9,equity
+151235,Metals & Minerals Trading,INE423A01024,Metals & Minerals Trading,0.89,equity
+151235,Fertilizers & Agrochemicals,INE603J01030,Fertilizers & Agrochemicals,0.88,equity
+151235,Healthcare Services,INE043W01024,Healthcare Services,0.87,equity
+151235,Healthcare Services,INE437A01024,Healthcare Services,0.86,equity
+151235,Transport Services,INE688A01022,Transport Services,0.86,equity
+151235,Realty,INE811K01011,Realty,0.85,equity
+151235,Industrial Products,INE811A01038,Industrial Products,0.83,equity
+151235,Pharmaceuticals & Biotechnology,INE358A01014,Pharmaceuticals & Biotechnology,0.83,equity
+151235,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,0.82,equity
+151235,Banks,INE063P01018,Banks,0.81,equity
+151235,Consumer Durables,INE226A01021,Consumer Durables,0.78,equity
+151235,Beverages,INE200M01039,Beverages,0.78,equity
+151235,Auto Components,INE787D01026,Auto Components,0.75,equity
+151235,Retailing,INE00H001014,Retailing,0.73,equity
+151235,Industrial Products,INE212H01026,Industrial Products,0.7,equity
+151235,Minerals & Mining,INE584A01023,Minerals & Mining,0.68,equity
+151235,Industrial Products,INE702C01027,Industrial Products,0.66,equity
+151235,IT - Software,INE356A01018,IT - Software,0.63,equity
+151235,Industrial Products,INE878B01027,Industrial Products,0.62,equity
+151235,Consumer Durables,INE142Z01019,Consumer Durables,0.53,equity
+151235,Realty,INE484J01027,Realty,0.53,equity
+151235,Banks,INE551W01018,Banks,0.5,equity
+151235,IT - Software,INE262H01021,IT - Software,0.48,equity
+151235,Diversified FMCG,INE154A01025,Diversified FMCG,0.46,equity
+151235,Healthcare Services,INE961O01016,Healthcare Services,0.45,equity
+151235,Finance,INE883F01010,Finance,0.44,equity
+151235,Pharmaceuticals & Biotechnology,INE182A01018,Pharmaceuticals & Biotechnology,0.44,equity
+151235,IT - Software,INE759A01021,IT - Software,0.42,equity
+151235,Finance,INE202B01038,Finance,0.4,equity
+151235,IT - Services,INE010V01017,IT - Services,0.28,equity
+151235,Consumer Durables,INE935N01020,Consumer Durables,-0.15,equity
+148050,CAPITAL MARKETS,INF277KA1976,,6.04,other
+148050,Petroleum Products,INE002A01018,Petroleum Products,3.81,equity
+148050,Banks,INE040A01034,Banks,3.58,equity
+148050,Banks,INE090A01021,Banks,3.15,equity
+148050,Telecom - Services,INE397D01024,Telecom - Services,2.66,equity
+148050,CAPITAL MARKETS,INF277KA1984,,2.26,other
+148050,Banks,INE237A01036,Banks,2.03,equity
+148050,Banks,INE238A01034,Banks,1.73,equity
+148050,Banks,INE062A01020,Banks,1.55,equity
+148050,Healthcare Services,INE943P01029,Healthcare Services,1.53,equity
+148050,Banks,INE171A01029,Banks,1.47,equity
+148050,Insurance,INE995S01015,Insurance,1.39,equity
+148050,Non - Ferrous Metals,INE1CDF01017,Non - Ferrous Metals,1.37,equity
+148050,Transport Infrastructure,INE742F01042,Transport Infrastructure,1.33,equity
+148050,Construction,INE018A01030,Construction,1.3,equity
+148050,Power,INE622W01025,Power,1.29,equity
+148050,Banks,INE976G01028,Banks,1.22,equity
+148050,Automobiles,INE155A01022,Automobiles,1.08,equity
+148050,Insurance,INE180A01020,Insurance,1.08,equity
+148050,Ferrous Metals,INE081A01020,Ferrous Metals,1.07,equity
+148050,Retailing,INE758T01015,Retailing,1.07,equity
+148050,Healthcare Services,INE600L01024,Healthcare Services,1.06,equity
+148050,Industrial Products,INE298A01020,Industrial Products,1.04,equity
+148050,Ferrous Metals,INE749A01030,Ferrous Metals,1.03,equity
+148050,Power,INE931S01010,Power,0.97,equity
+148050,Financial Technology (Fintech),INE417T01026,Financial Technology (Fintech),0.96,equity
+148050,Automobiles,INE101A01026,Automobiles,0.93,equity
+148050,Cement & Cement Products,INE481G01011,Cement & Cement Products,0.88,equity
+148050,Automobiles,INE158A01026,Automobiles,0.88,equity
+148050,Power,INE733E01010,Power,0.87,equity
+148050,Pharmaceuticals & Biotechnology,INE049B01025,Pharmaceuticals & Biotechnology,0.83,equity
+148050,Industrial Manufacturing,INE011K01018,Industrial Manufacturing,0.81,equity
+148050,Agricultural Food & other Products,INE196A01026,Agricultural Food & other Products,0.78,equity
+148050,Finance,INE498L01015,Finance,0.77,equity
+148050,Power,INE814H01029,Power,0.74,equity
+148050,Healthcare Services,INE437A01024,Healthcare Services,0.73,equity
+148050,IT - Software,INE009A01021,IT - Software,0.73,equity
+148050,Banks,INE028A01039,Banks,0.73,equity
+148050,Finance,INE148G01016,Finance,0.73,equity
+148050,Leisure Services,INE0HV901016,Leisure Services,0.72,equity
+148050,Financial Technology (Fintech),INE15B701018,Financial Technology (Fintech),0.72,equity
+148050,Pharmaceuticals & Biotechnology,INE044A01036,Pharmaceuticals & Biotechnology,0.72,equity
+148050,Finance,INE976I01016,Finance,0.7,equity
+148050,Insurance,INE575P01011,Insurance,0.7,equity
+148050,Finance,INE296A01032,Finance,0.68,equity
+148050,Oil,INE274J01014,Oil,0.67,equity
+148050,Construction,INE101I01011,Construction,0.66,equity
+148050,IT - Software,INE467B01029,IT - Software,0.63,equity
+148050,Other Consumer Services,INE0LP301011,Other Consumer Services,0.62,equity
+148050,Industrial Products,INE371A01025,Industrial Products,0.62,equity
+148050,Telecom - Services,INE121J01017,Telecom - Services,0.62,equity
+148050,Cement & Cement Products,INE331A01037,Cement & Cement Products,0.62,equity
+148050,IT - Software,INE669C01036,IT - Software,0.6,equity
+148050,Realty,INE484J01027,Realty,0.59,equity
+148050,Healthcare Services,INE075I01017,Healthcare Services,0.57,equity
+148050,Petroleum Products,INE029A01011,Petroleum Products,0.56,equity
+148050,Fertilizers & Agrochemicals,INE088F01024,Fertilizers & Agrochemicals,0.56,equity
+148050,Insurance,INE765G01017,Insurance,0.55,equity
+148050,Realty,INE811K01011,Realty,0.55,equity
+148050,Electrical Equipment,INE152A01029,Electrical Equipment,0.55,equity
+148050,Electrical Equipment,INE003A01024,Electrical Equipment,0.51,equity

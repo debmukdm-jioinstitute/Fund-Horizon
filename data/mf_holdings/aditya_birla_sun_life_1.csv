@@ -1,0 +1,1634 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+120517,ICICI Bank Ltd.,INE090A01021,Banks,6.12,equity
+120517,HDFC Bank Ltd.,INE040A01034,Banks,4.88,equity
+120517,Reliance Industries Ltd.,INE002A01018,Petroleum Products,3.61,equity
+120517,Bharti Airtel Ltd.,INE397D01024,Telecom - Services,2.98,equity
+120517,State Bank of India,INE062A01020,Banks,2.65,equity
+120517,Axis Bank Ltd.,INE238A01034,Banks,2.63,equity
+120517,Kotak Mahindra Bank Ltd.,INE237A01036,Banks,1.97,equity
+120517,Bajaj Finance Ltd.,INE296A01032,Finance,1.93,equity
+120517,Infosys Ltd.,INE009A01021,IT - Software,1.74,equity
+120517,Larsen & Toubro Ltd.,INE018A01030,Construction,1.71,equity
+120517,Mahindra & Mahindra Ltd.,INE101A01026,Automobiles,1.67,equity
+120517,Eternal Ltd.,INE758T01015,Retailing,1.64,equity
+120517,Sun Pharmaceutical Industries Ltd.,INE044A01036,Pharmaceuticals & Biotechnology,1.46,equity
+120517,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,1.38,equity
+120517,United Spirits Ltd.,INE854D01024,Beverages,1.17,equity
+120517,Sona Blw Precision Forgings Ltd.,INE073K01018,Auto Components,1.09,equity
+120517,Meesho Ltd.,INE0VDM01015,Retailing,1.04,equity
+120517,Shriram Finance Ltd.,INE721A01047,Finance,1.02,equity
+120517,The Federal Bank Ltd.,INE171A01029,Banks,0.99,equity
+120517,Cholamandalam Investment & Finance Co. Ltd.,INE121A01024,Finance,0.98,equity
+120517,Bharat Electronics Ltd.,INE263A01024,Aerospace & Defense,0.97,equity
+120517,Gland Pharma Ltd.,INE068V01023,Pharmaceuticals & Biotechnology,0.93,equity
+120517,Cyient DLM Ltd.,INE055S01018,Aerospace & Defense,0.91,equity
+120517,Tata Consumer Products Ltd.,INE192A01025,Agricultural Food & other Products,0.91,equity
+120517,Lenskart Solutions Ltd.,INE956O01016,Retailing,0.9,equity
+120517,GMR Airports Ltd.,INE776C01039,Transport Infrastructure,0.86,equity
+120517,Persistent Systems Ltd.,INE262H01021,IT - Software,0.85,equity
+120517,Jindal Steel Ltd.,INE749A01030,Ferrous Metals,0.83,equity
+120517,Godrej Consumer Products Ltd.,INE102D01028,Personal Products,0.82,equity
+120517,UNO Minda Ltd.,INE405E01023,Auto Components,0.82,equity
+120517,Coforge Ltd.,INE591G01025,IT - Software,0.81,equity
+120517,Tata Motors Ltd.,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.78,equity
+120517,Tech Mahindra Ltd.,INE669C01036,IT - Software,0.77,equity
+120517,Avenue Supermarts Ltd.,INE192R01011,Retailing,0.72,equity
+120517,Apollo Hospitals Enterprise Ltd.,INE437A01024,Healthcare Services,0.72,equity
+120517,Ajanta Pharma Ltd.,INE031B01049,Pharmaceuticals & Biotechnology,0.71,equity
+120517,Nexus Select Trust,INE0NDH25011,,0.7,other
+120517,Siemens Ltd.,INE003A01024,Electrical Equipment,0.69,equity
+120517,Adani Enterprises Ltd.,INE423A01024,Metals & Minerals Trading,0.66,equity
+120517,Eris Lifesciences Ltd.,INE406M01024,Pharmaceuticals & Biotechnology,0.66,equity
+120517,Adani Energy Solutions Ltd.,INE931S01010,Power,0.66,equity
+120517,SRF Ltd.,INE647A01010,Chemicals & Petrochemicals,0.65,equity
+120517,Anthem Biosciences Ltd.,INE0CZ201020,Pharmaceuticals & Biotechnology,0.65,equity
+120517,Titan Company Ltd.,INE280A01028,Consumer Durables,0.64,equity
+120517,Grasim Industries Ltd.,INE047A01021,Cement & Cement Products,0.64,equity
+120517,Sundram Fasteners Ltd.,INE387A01021,Auto Components,0.63,equity
+120517,Timken India Ltd.,INE325A01013,Industrial Products,0.61,equity
+120517,Ambuja Cements Ltd.,INE079A01024,Cement & Cement Products,0.6,equity
+120517,JK Cement Ltd.,INE823G01014,Cement & Cement Products,0.55,equity
+120517,LTM Ltd.,INE214T01019,IT - Software,0.55,equity
+120517,Atul Ltd.,INE100A01010,Chemicals & Petrochemicals,0.55,equity
+120517,ICICI Lombard General Insurance Company Ltd.,INE765G01017,Insurance,0.52,equity
+120517,Bajaj Finserv Ltd.,INE918I01026,Finance,0.51,equity
+120517,Bharat Forge Ltd.,INE465A01025,Auto Components,0.51,equity
+120517,360 ONE WAM Ltd.,INE466L01038,Capital Markets,0.48,equity
+120517,Vedanta Aluminium Metal Ltd.,INE1CDF01017,Non - Ferrous Metals,0.48,equity
+120517,Sumitomo Chemical India Ltd.,INE258G01013,Fertilizers & Agrochemicals,0.48,equity
+120517,Container Corporation of India Ltd.,INE111A01025,Transport Services,0.46,equity
+120517,Adani Ports and Special Economic Zone Ltd.,INE742F01042,Transport Infrastructure,0.42,equity
+120517,Dynamatic Technologies Ltd.,INE221B01012,Industrial Manufacturing,0.42,equity
+120517,PNB Housing Finance Ltd.,INE572E01012,Finance,0.42,equity
+120517,Devyani International Ltd.,INE872J01023,Leisure Services,0.42,equity
+120517,SBI Life Insurance Co. Ltd.,INE123W01016,Insurance,0.41,equity
+120517,AIA Engineering Ltd.,INE212H01026,Industrial Products,0.4,equity
+120517,Tube Investments of India Ltd.,INE974X01010,Auto Components,0.4,equity
+120517,Trent Ltd.,INE849A01020,Retailing,0.39,equity
+120517,Swiggy Ltd.,INE00H001014,Retailing,0.37,equity
+120517,Sanofi Consumer Healthcare India Ltd.,INE0UOS01011,Pharmaceuticals & Biotechnology,0.35,equity
+120517,Gokaldas Exports Ltd.,INE887G01027,Textiles & Apparels,0.35,equity
+120517,Hindustan Aeronautics Ltd.,INE066F01020,Aerospace & Defense,0.34,equity
+120517,Cyient Ltd.,INE136B01020,IT - Services,0.32,equity
+120517,Voltas Ltd.,INE226A01021,Consumer Durables,0.31,equity
+120517,SPR Auto Technologies Ltd.,INE526E01018,Auto Components,0.31,equity
+120517,Jubilant Foodworks Ltd.,INE797F01020,Leisure Services,0.28,equity
+120517,Biocon Ltd.,INE376G01013,Pharmaceuticals & Biotechnology,0.28,equity
+120517,Whirlpool of India Ltd.,INE716A01013,Consumer Durables,0.27,equity
+120517,Inventurus Knowledge Solutions Ltd.,INE115Q01022,IT - Services,0.25,equity
+120517,Indiqube Spaces Ltd.,INE06ST01018,Commercial Services & Supplies,0.25,equity
+120517,Ultratech Cement Ltd.,INE481G01011,Cement & Cement Products,0.24,equity
+120517,Interglobe Aviation Ltd.,INE646L01027,Transport Services,0.11,equity
+120517,8.92% Cholamandalam Investment & Finance Co. Ltd. (02/12/2034) **,INE121A08PR3,,2.09,other
+120517,7.30% Bharti Telecom Ltd. (01/12/2027) **,INE403D08306,,1.81,other
+120517,8.22% Aditya Birla Housing Finance Ltd. (05/06/2029) **,INE831R07656,,0.88,other
+120517,9.10% Cholamandalam Investment & Finance Co. Ltd. (27/06/2031) **,INE121A08PP7,,0.73,other
+120517,7.55% Poonawalla Fincorp Ltd. (25/03/2027) **,INE511C07946,,0.73,other
+120517,8.88% Cholamandalam Investment & Finance Co. Ltd. (25/06/2033) **,INE121A08PZ6,,0.72,other
+120517,7.79% Tata Capital Housing Finance Ltd. (18/06/2030) **,INE033L07IU8,,0.72,other
+120517,7.42% State Bank of India (29/08/2039) **,INE062A08447,,0.71,other
+120517,8.02% Cholamandalam Investment & Finance Co. Ltd. (27/02/2029) (FRN) **,INE121A07SU3,,0.66,other
+120517,7.53% Bajaj Housing Finance Ltd. (28/09/2029),INE377Y07672,,0.57,other
+120517,6.64% Housing and Urban Development Corporation Ltd. (17/07/2028) **,INE031A08996,,0.43,other
+120517,7.81% ICICI Home Finance Co. Ltd. (12/04/2028) **,INE071G07793,,0.36,other
+120517,7.34% TATA Capital Ltd. (21/02/2029) (FRN) **,INE976I07DE9,,0.36,other
+120517,7.70% Small Industries Development Bank of India (10/10/2029) **,INE556F08LH9,,0.36,other
+120517,7.20% Knowledge Realty Trust (26/09/2028) **,INE1JAR07010,,0.36,other
+120517,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,0.36,other
+120517,8.31% Aditya Birla Capital Ltd. (11/07/2034) **,INE860H08EL8,,0.36,other
+120517,7.87% Bajaj Finance Ltd. (08/02/2034) **,INE296A07SU3,,0.36,other
+120517,7.79% Bajaj Finance Ltd. (04/07/2036) **,INE296A07UC7,,0.35,other
+120517,7.84% Bajaj Housing Finance Ltd. (23/09/2032) **,INE377Y07367,,0.21,other
+120517,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,0.18,other
+120517,7.64% Bajaj Housing Finance Ltd. (01/07/2030),INE377Y07664,,0.18,other
+120517,8.37% REC Ltd. (07/12/2028) **,INE020B08BH6,,0.15,other
+120517,7.77% LIC Housing Finance Ltd. (11/08/2028) **,INE115A07QM6,,0.15,other
+120517,7.89% Bajaj Housing Finance Ltd. (08/09/2032) **,INE377Y07359,,0.14,other
+120517,7.85% Tata Capital Housing Finance Ltd. (13/09/2032) **,INE033L07HW6,,0.14,other
+120517,7.10% National Bank for Agriculture and Rural Development (08/02/2030) **,INE261F08BY2,,0.1,other
+120517,7.71% Tata Capital Housing Finance Ltd. (14/01/2028) **,INE033L07IK9,,0.07,other
+120517,7.40% Bajaj Finance Ltd. (12/03/2029) **,INE296A07TV9,,0.07,other
+120517,7.82% Bajaj Finance Ltd. (08/09/2032) **,INE296A07SD9,,0.07,other
+120517,7.44% TATA Capital Ltd. (24/11/2031) **,INE306N08441,,0.07,other
+120517,7.27% National Bank for Agriculture and Rural Development (14/02/2030) **,INE261F08BZ9,,0.06,other
+120517,7.99% LIC Housing Finance Ltd. (12/07/2029) **,INE115A07OF5,,0.03,other
+120517,7.71% LIC Housing Finance Ltd. (09/05/2033) **,INE115A07QI4,,0.03,other
+120517,8.24% National Bank for Agriculture and Rural Development (22/03/2029) **,INE261F08BF1,,0.01,other
+120517,India Universal Trust AL2 (21/11/2030) **,INE1CBK15037,,0.3,debt
+120517,India Universal Trust AL2 (21/09/2027) **,INE1CBK15029,,0.19,debt
+120517,State Government Securities  (29/03/2034),IN3320220194,,0.44,debt
+120517,State Government Securities  (13/07/2039),IN1020220316,,0.34,debt
+120517,State Government Securities  (18/03/2030),IN2620250059,,0.27,debt
+120517,Government of India (22/09/2033) (FRB),IN0020200120,,0.23,debt
+120517,Government of India (11/05/2036),IN0020260025,,0.22,debt
+120517,Government of India (27/07/2041),IN0020260041,,0.21,debt
+120517,State Government Securities  (08/01/2038),IN2220240369,,0.21,debt
+120517,State Government Securities  (12/06/2032),IN3120240111,,0.15,debt
+120517,State Government Securities  (27/03/2033),IN1920230381,,0.14,debt
+120517,State Government Securities  (29/05/2029),IN3120240061,,0.14,debt
+120517,State Government Securities  (04/09/2034),IN1020240488,,0.14,debt
+120517,State Government Securities  (14/08/2029),IN1520240038,,0.07,debt
+120517,State Government Securities  (24/04/2034),IN3120240038,,0.07,debt
+120517,State Government Securities  (18/04/2034),IN1620240011,,0.07,debt
+120517,State Government Securities  (26/03/2039),IN1620240367,,0.07,debt
+120517,State Government Securities  (25/01/2027),IN3320160309,,0.06,debt
+120517,Government of India (24/11/2026),IN0020140060,,0.04,debt
+120517,State Government Securities  (14/06/2033),IN3120230070,,0.03,debt
+120517,State Government Securities  (19/09/2034),IN3120240293,,0.03,debt
+120517,Government of India (01/12/2044),IN0020140078,,0.01,debt
+120517,Government of India (25/11/2074),IN0020240142,,0.01,debt
+120517,State Government Securities  (29/05/2034),IN3120240087,,0.01,debt
+120517,National Bank for Financing Infrastructure and Development (04/03/2027) **#,INE0KUG16020,,0.18,debt
+120517,National Bank for Agriculture and Rural Development (14/01/2027) **#,INE261F16AD1,,0.07,debt
+120517,0% GOI  -  (16/12/2030) STRIPS,IN001230C076,,0.22,other
+120517,0% GOI  -  (15/04/2035) STRIPS,IN000435C049,,0.18,other
+120517,0% GOI  -  (12/09/2027) STRIPS,IN000927C052,,0.08,other
+120517,0% GOI  -  (15/12/2029) STRIPS,IN001229C052,,0.06,other
+120517,0% GOI  -  (19/03/2029) STRIPS,IN000329C044,,0.02,other
+120517,Aditya Birla Sun Life Crisil-IBX Financial Services 3 To 6 Months Debt Index Fund - Direct Plan - Growth,INF209KC1456,,0.4,mf_units
+120517,Aditya Birla Sun Life Crisil-IBX AAA Financial Services Index-Sep 2027 Fund - Direct Plan - Growth,INF209KC1290,,0.04,mf_units
+120517,IRB Invit Fund,INE183W23014,,1.58,other
+120517,Indus Infra Trust,INE0NHL23019,,0.51,other
+120517,IndiGrid Infrastructure Trust,INE219X23014,,0.39,other
+120517,TREPS,,,1.13,cash
+120517,Net Receivable / Payable,,,0.84,cash
+103155,ICICI Bank Ltd.,INE090A01021,Banks,6.12,equity
+103155,HDFC Bank Ltd.,INE040A01034,Banks,4.88,equity
+103155,Reliance Industries Ltd.,INE002A01018,Petroleum Products,3.61,equity
+103155,Bharti Airtel Ltd.,INE397D01024,Telecom - Services,2.98,equity
+103155,State Bank of India,INE062A01020,Banks,2.65,equity
+103155,Axis Bank Ltd.,INE238A01034,Banks,2.63,equity
+103155,Kotak Mahindra Bank Ltd.,INE237A01036,Banks,1.97,equity
+103155,Bajaj Finance Ltd.,INE296A01032,Finance,1.93,equity
+103155,Infosys Ltd.,INE009A01021,IT - Software,1.74,equity
+103155,Larsen & Toubro Ltd.,INE018A01030,Construction,1.71,equity
+103155,Mahindra & Mahindra Ltd.,INE101A01026,Automobiles,1.67,equity
+103155,Eternal Ltd.,INE758T01015,Retailing,1.64,equity
+103155,Sun Pharmaceutical Industries Ltd.,INE044A01036,Pharmaceuticals & Biotechnology,1.46,equity
+103155,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,1.38,equity
+103155,United Spirits Ltd.,INE854D01024,Beverages,1.17,equity
+103155,Sona Blw Precision Forgings Ltd.,INE073K01018,Auto Components,1.09,equity
+103155,Meesho Ltd.,INE0VDM01015,Retailing,1.04,equity
+103155,Shriram Finance Ltd.,INE721A01047,Finance,1.02,equity
+103155,The Federal Bank Ltd.,INE171A01029,Banks,0.99,equity
+103155,Cholamandalam Investment & Finance Co. Ltd.,INE121A01024,Finance,0.98,equity
+103155,Bharat Electronics Ltd.,INE263A01024,Aerospace & Defense,0.97,equity
+103155,Gland Pharma Ltd.,INE068V01023,Pharmaceuticals & Biotechnology,0.93,equity
+103155,Cyient DLM Ltd.,INE055S01018,Aerospace & Defense,0.91,equity
+103155,Tata Consumer Products Ltd.,INE192A01025,Agricultural Food & other Products,0.91,equity
+103155,Lenskart Solutions Ltd.,INE956O01016,Retailing,0.9,equity
+103155,GMR Airports Ltd.,INE776C01039,Transport Infrastructure,0.86,equity
+103155,Persistent Systems Ltd.,INE262H01021,IT - Software,0.85,equity
+103155,Jindal Steel Ltd.,INE749A01030,Ferrous Metals,0.83,equity
+103155,Godrej Consumer Products Ltd.,INE102D01028,Personal Products,0.82,equity
+103155,UNO Minda Ltd.,INE405E01023,Auto Components,0.82,equity
+103155,Coforge Ltd.,INE591G01025,IT - Software,0.81,equity
+103155,Tata Motors Ltd.,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.78,equity
+103155,Tech Mahindra Ltd.,INE669C01036,IT - Software,0.77,equity
+103155,Avenue Supermarts Ltd.,INE192R01011,Retailing,0.72,equity
+103155,Apollo Hospitals Enterprise Ltd.,INE437A01024,Healthcare Services,0.72,equity
+103155,Ajanta Pharma Ltd.,INE031B01049,Pharmaceuticals & Biotechnology,0.71,equity
+103155,Nexus Select Trust,INE0NDH25011,,0.7,other
+103155,Siemens Ltd.,INE003A01024,Electrical Equipment,0.69,equity
+103155,Adani Enterprises Ltd.,INE423A01024,Metals & Minerals Trading,0.66,equity
+103155,Eris Lifesciences Ltd.,INE406M01024,Pharmaceuticals & Biotechnology,0.66,equity
+103155,Adani Energy Solutions Ltd.,INE931S01010,Power,0.66,equity
+103155,SRF Ltd.,INE647A01010,Chemicals & Petrochemicals,0.65,equity
+103155,Anthem Biosciences Ltd.,INE0CZ201020,Pharmaceuticals & Biotechnology,0.65,equity
+103155,Titan Company Ltd.,INE280A01028,Consumer Durables,0.64,equity
+103155,Grasim Industries Ltd.,INE047A01021,Cement & Cement Products,0.64,equity
+103155,Sundram Fasteners Ltd.,INE387A01021,Auto Components,0.63,equity
+103155,Timken India Ltd.,INE325A01013,Industrial Products,0.61,equity
+103155,Ambuja Cements Ltd.,INE079A01024,Cement & Cement Products,0.6,equity
+103155,JK Cement Ltd.,INE823G01014,Cement & Cement Products,0.55,equity
+103155,LTM Ltd.,INE214T01019,IT - Software,0.55,equity
+103155,Atul Ltd.,INE100A01010,Chemicals & Petrochemicals,0.55,equity
+103155,ICICI Lombard General Insurance Company Ltd.,INE765G01017,Insurance,0.52,equity
+103155,Bajaj Finserv Ltd.,INE918I01026,Finance,0.51,equity
+103155,Bharat Forge Ltd.,INE465A01025,Auto Components,0.51,equity
+103155,360 ONE WAM Ltd.,INE466L01038,Capital Markets,0.48,equity
+103155,Vedanta Aluminium Metal Ltd.,INE1CDF01017,Non - Ferrous Metals,0.48,equity
+103155,Sumitomo Chemical India Ltd.,INE258G01013,Fertilizers & Agrochemicals,0.48,equity
+103155,Container Corporation of India Ltd.,INE111A01025,Transport Services,0.46,equity
+103155,Adani Ports and Special Economic Zone Ltd.,INE742F01042,Transport Infrastructure,0.42,equity
+103155,Dynamatic Technologies Ltd.,INE221B01012,Industrial Manufacturing,0.42,equity
+103155,PNB Housing Finance Ltd.,INE572E01012,Finance,0.42,equity
+103155,Devyani International Ltd.,INE872J01023,Leisure Services,0.42,equity
+103155,SBI Life Insurance Co. Ltd.,INE123W01016,Insurance,0.41,equity
+103155,AIA Engineering Ltd.,INE212H01026,Industrial Products,0.4,equity
+103155,Tube Investments of India Ltd.,INE974X01010,Auto Components,0.4,equity
+103155,Trent Ltd.,INE849A01020,Retailing,0.39,equity
+103155,Swiggy Ltd.,INE00H001014,Retailing,0.37,equity
+103155,Sanofi Consumer Healthcare India Ltd.,INE0UOS01011,Pharmaceuticals & Biotechnology,0.35,equity
+103155,Gokaldas Exports Ltd.,INE887G01027,Textiles & Apparels,0.35,equity
+103155,Hindustan Aeronautics Ltd.,INE066F01020,Aerospace & Defense,0.34,equity
+103155,Cyient Ltd.,INE136B01020,IT - Services,0.32,equity
+103155,Voltas Ltd.,INE226A01021,Consumer Durables,0.31,equity
+103155,SPR Auto Technologies Ltd.,INE526E01018,Auto Components,0.31,equity
+103155,Jubilant Foodworks Ltd.,INE797F01020,Leisure Services,0.28,equity
+103155,Biocon Ltd.,INE376G01013,Pharmaceuticals & Biotechnology,0.28,equity
+103155,Whirlpool of India Ltd.,INE716A01013,Consumer Durables,0.27,equity
+103155,Inventurus Knowledge Solutions Ltd.,INE115Q01022,IT - Services,0.25,equity
+103155,Indiqube Spaces Ltd.,INE06ST01018,Commercial Services & Supplies,0.25,equity
+103155,Ultratech Cement Ltd.,INE481G01011,Cement & Cement Products,0.24,equity
+103155,Interglobe Aviation Ltd.,INE646L01027,Transport Services,0.11,equity
+103155,8.92% Cholamandalam Investment & Finance Co. Ltd. (02/12/2034) **,INE121A08PR3,,2.09,other
+103155,7.30% Bharti Telecom Ltd. (01/12/2027) **,INE403D08306,,1.81,other
+103155,8.22% Aditya Birla Housing Finance Ltd. (05/06/2029) **,INE831R07656,,0.88,other
+103155,9.10% Cholamandalam Investment & Finance Co. Ltd. (27/06/2031) **,INE121A08PP7,,0.73,other
+103155,7.55% Poonawalla Fincorp Ltd. (25/03/2027) **,INE511C07946,,0.73,other
+103155,8.88% Cholamandalam Investment & Finance Co. Ltd. (25/06/2033) **,INE121A08PZ6,,0.72,other
+103155,7.79% Tata Capital Housing Finance Ltd. (18/06/2030) **,INE033L07IU8,,0.72,other
+103155,7.42% State Bank of India (29/08/2039) **,INE062A08447,,0.71,other
+103155,8.02% Cholamandalam Investment & Finance Co. Ltd. (27/02/2029) (FRN) **,INE121A07SU3,,0.66,other
+103155,7.53% Bajaj Housing Finance Ltd. (28/09/2029),INE377Y07672,,0.57,other
+103155,6.64% Housing and Urban Development Corporation Ltd. (17/07/2028) **,INE031A08996,,0.43,other
+103155,7.81% ICICI Home Finance Co. Ltd. (12/04/2028) **,INE071G07793,,0.36,other
+103155,7.34% TATA Capital Ltd. (21/02/2029) (FRN) **,INE976I07DE9,,0.36,other
+103155,7.70% Small Industries Development Bank of India (10/10/2029) **,INE556F08LH9,,0.36,other
+103155,7.20% Knowledge Realty Trust (26/09/2028) **,INE1JAR07010,,0.36,other
+103155,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,0.36,other
+103155,8.31% Aditya Birla Capital Ltd. (11/07/2034) **,INE860H08EL8,,0.36,other
+103155,7.87% Bajaj Finance Ltd. (08/02/2034) **,INE296A07SU3,,0.36,other
+103155,7.79% Bajaj Finance Ltd. (04/07/2036) **,INE296A07UC7,,0.35,other
+103155,7.84% Bajaj Housing Finance Ltd. (23/09/2032) **,INE377Y07367,,0.21,other
+103155,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,0.18,other
+103155,7.64% Bajaj Housing Finance Ltd. (01/07/2030),INE377Y07664,,0.18,other
+103155,8.37% REC Ltd. (07/12/2028) **,INE020B08BH6,,0.15,other
+103155,7.77% LIC Housing Finance Ltd. (11/08/2028) **,INE115A07QM6,,0.15,other
+103155,7.89% Bajaj Housing Finance Ltd. (08/09/2032) **,INE377Y07359,,0.14,other
+103155,7.85% Tata Capital Housing Finance Ltd. (13/09/2032) **,INE033L07HW6,,0.14,other
+103155,7.10% National Bank for Agriculture and Rural Development (08/02/2030) **,INE261F08BY2,,0.1,other
+103155,7.71% Tata Capital Housing Finance Ltd. (14/01/2028) **,INE033L07IK9,,0.07,other
+103155,7.40% Bajaj Finance Ltd. (12/03/2029) **,INE296A07TV9,,0.07,other
+103155,7.82% Bajaj Finance Ltd. (08/09/2032) **,INE296A07SD9,,0.07,other
+103155,7.44% TATA Capital Ltd. (24/11/2031) **,INE306N08441,,0.07,other
+103155,7.27% National Bank for Agriculture and Rural Development (14/02/2030) **,INE261F08BZ9,,0.06,other
+103155,7.99% LIC Housing Finance Ltd. (12/07/2029) **,INE115A07OF5,,0.03,other
+103155,7.71% LIC Housing Finance Ltd. (09/05/2033) **,INE115A07QI4,,0.03,other
+103155,8.24% National Bank for Agriculture and Rural Development (22/03/2029) **,INE261F08BF1,,0.01,other
+103155,India Universal Trust AL2 (21/11/2030) **,INE1CBK15037,,0.3,debt
+103155,India Universal Trust AL2 (21/09/2027) **,INE1CBK15029,,0.19,debt
+103155,State Government Securities  (29/03/2034),IN3320220194,,0.44,debt
+103155,State Government Securities  (13/07/2039),IN1020220316,,0.34,debt
+103155,State Government Securities  (18/03/2030),IN2620250059,,0.27,debt
+103155,Government of India (22/09/2033) (FRB),IN0020200120,,0.23,debt
+103155,Government of India (11/05/2036),IN0020260025,,0.22,debt
+103155,Government of India (27/07/2041),IN0020260041,,0.21,debt
+103155,State Government Securities  (08/01/2038),IN2220240369,,0.21,debt
+103155,State Government Securities  (12/06/2032),IN3120240111,,0.15,debt
+103155,State Government Securities  (27/03/2033),IN1920230381,,0.14,debt
+103155,State Government Securities  (29/05/2029),IN3120240061,,0.14,debt
+103155,State Government Securities  (04/09/2034),IN1020240488,,0.14,debt
+103155,State Government Securities  (14/08/2029),IN1520240038,,0.07,debt
+103155,State Government Securities  (24/04/2034),IN3120240038,,0.07,debt
+103155,State Government Securities  (18/04/2034),IN1620240011,,0.07,debt
+103155,State Government Securities  (26/03/2039),IN1620240367,,0.07,debt
+103155,State Government Securities  (25/01/2027),IN3320160309,,0.06,debt
+103155,Government of India (24/11/2026),IN0020140060,,0.04,debt
+103155,State Government Securities  (14/06/2033),IN3120230070,,0.03,debt
+103155,State Government Securities  (19/09/2034),IN3120240293,,0.03,debt
+103155,Government of India (01/12/2044),IN0020140078,,0.01,debt
+103155,Government of India (25/11/2074),IN0020240142,,0.01,debt
+103155,State Government Securities  (29/05/2034),IN3120240087,,0.01,debt
+103155,National Bank for Financing Infrastructure and Development (04/03/2027) **#,INE0KUG16020,,0.18,debt
+103155,National Bank for Agriculture and Rural Development (14/01/2027) **#,INE261F16AD1,,0.07,debt
+103155,0% GOI  -  (16/12/2030) STRIPS,IN001230C076,,0.22,other
+103155,0% GOI  -  (15/04/2035) STRIPS,IN000435C049,,0.18,other
+103155,0% GOI  -  (12/09/2027) STRIPS,IN000927C052,,0.08,other
+103155,0% GOI  -  (15/12/2029) STRIPS,IN001229C052,,0.06,other
+103155,0% GOI  -  (19/03/2029) STRIPS,IN000329C044,,0.02,other
+103155,Aditya Birla Sun Life Crisil-IBX Financial Services 3 To 6 Months Debt Index Fund - Direct Plan - Growth,INF209KC1456,,0.4,mf_units
+103155,Aditya Birla Sun Life Crisil-IBX AAA Financial Services Index-Sep 2027 Fund - Direct Plan - Growth,INF209KC1290,,0.04,mf_units
+103155,IRB Invit Fund,INE183W23014,,1.58,other
+103155,Indus Infra Trust,INE0NHL23019,,0.51,other
+103155,IndiGrid Infrastructure Trust,INE219X23014,,0.39,other
+103155,TREPS,,,1.13,cash
+103155,Net Receivable / Payable,,,0.84,cash
+119436,ICICI Bank Ltd.,INE090A01021,Banks,3.87,equity
+119436,AU Small Finance Bank Ltd.,INE949L01017,Banks,3.45,equity
+119436,APL Apollo Tubes Ltd.,INE702C01027,Industrial Products,2.81,equity
+119436,JK Cement Ltd.,INE823G01014,Cement & Cement Products,2.77,equity
+119436,Navin Fluorine International Ltd.,INE048G01026,Chemicals & Petrochemicals,2.7,equity
+119436,Samvardhana Motherson International Ltd.,INE775A01035,Auto Components,2.65,equity
+119436,Astral Ltd.,INE006I01046,Industrial Products,2.32,equity
+119436,Ajanta Pharma Ltd.,INE031B01049,Pharmaceuticals & Biotechnology,2.27,equity
+119436,UNO Minda Ltd.,INE405E01023,Auto Components,2.2,equity
+119436,Max Financial Services Ltd.,INE180A01020,Insurance,2.14,equity
+119436,TVS Motor Company Ltd.,INE494B01023,Automobiles,2.04,equity
+119436,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,2.02,equity
+119436,GMR Airports Ltd.,INE776C01039,Transport Infrastructure,2.01,equity
+119436,Eternal Ltd.,INE758T01015,Retailing,1.92,equity
+119436,Bajaj Finance Ltd.,INE296A01032,Finance,1.91,equity
+119436,KEI Industries Ltd.,INE878B01027,Industrial Products,1.91,equity
+119436,One 97 Communications Ltd.,INE982J01020,Financial Technology (Fintech),1.88,equity
+119436,Bharat Electronics Ltd.,INE263A01024,Aerospace & Defense,1.86,equity
+119436,Titan Company Ltd.,INE280A01028,Consumer Durables,1.8,equity
+119436,Coforge Ltd.,INE591G01025,IT - Software,1.78,equity
+119436,State Bank of India,INE062A01020,Banks,1.64,equity
+119436,Hindustan Aeronautics Ltd.,INE066F01020,Aerospace & Defense,1.64,equity
+119436,Schaeffler India Ltd.,INE513A01022,Auto Components,1.61,equity
+119436,Jindal Steel Ltd.,INE749A01030,Ferrous Metals,1.58,equity
+119436,Mankind Pharma Ltd.,INE634S01028,Pharmaceuticals & Biotechnology,1.54,equity
+119436,K.P.R. Mill Ltd.,INE930H01031,Textiles & Apparels,1.48,equity
+119436,Mahindra & Mahindra Ltd.,INE101A01026,Automobiles,1.45,equity
+119436,Meesho Ltd.,INE0VDM01015,Retailing,1.4,equity
+119436,Sona Blw Precision Forgings Ltd.,INE073K01018,Auto Components,1.32,equity
+119436,Five Star Business Finance Ltd.,INE128S01021,Finance,1.31,equity
+119436,Trent Ltd.,INE849A01020,Retailing,1.31,equity
+119436,Axis Bank Ltd.,INE238A01034,Banks,1.2,equity
+119436,Amber Enterprises India Ltd.,INE371P01015,Consumer Durables,1.17,equity
+119436,Fortis Healthcare Ltd.,INE061F01013,Healthcare Services,1.16,equity
+119436,Syrma SGS Technology Ltd.,INE0DYJ01015,Industrial Manufacturing,1.15,equity
+119436,ABB India Ltd.,INE117A01022,Electrical Equipment,1.13,equity
+119436,Karur Vysya Bank Ltd.,INE036D01028,Banks,1.12,equity
+119436,Metropolis Healthcare Ltd.,INE112L01020,Healthcare Services,1.1,equity
+119436,Gokaldas Exports Ltd.,INE887G01027,Textiles & Apparels,1.04,equity
+119436,Persistent Systems Ltd.,INE262H01021,IT - Software,1.01,equity
+119436,Samhi Hotels Ltd.,INE08U801020,Leisure Services,1.01,equity
+119436,Interglobe Aviation Ltd.,INE646L01027,Transport Services,1.01,equity
+119436,Brigade Enterprises Ltd.,INE791I01019,Realty,0.99,equity
+119436,Max Healthcare Institute Ltd.,INE027H01010,Healthcare Services,0.98,equity
+119436,Apollo Hospitals Enterprise Ltd.,INE437A01024,Healthcare Services,0.98,equity
+119436,Home First Finance Company India Ltd.,INE481N01025,Finance,0.97,equity
+119436,Vedanta Aluminium Metal Ltd.,INE1CDF01017,Non - Ferrous Metals,0.97,equity
+119436,Emcure Pharmaceuticals Ltd.,INE168P01015,Pharmaceuticals & Biotechnology,0.96,equity
+119436,Bajaj Finserv Ltd.,INE918I01026,Finance,0.93,equity
+119436,Larsen & Toubro Ltd.,INE018A01030,Construction,0.93,equity
+119436,Fractal Analytics Ltd.,INE212S01015,IT - Software,0.87,equity
+119436,Belrise Industries Ltd.,INE894V01022,Auto Components,0.86,equity
+119436,Tata Consumer Products Ltd.,INE192A01025,Agricultural Food & other Products,0.83,equity
+119436,CG Power and Industrial Solutions Ltd.,INE067A01029,Electrical Equipment,0.81,equity
+119436,Bharti Airtel Ltd.,INE397D01024,Telecom - Services,0.77,equity
+119436,Adani Energy Solutions Ltd.,INE931S01010,Power,0.76,equity
+119436,Gland Pharma Ltd.,INE068V01023,Pharmaceuticals & Biotechnology,0.74,equity
+119436,Inox India Ltd.,INE616N01034,Industrial Products,0.72,equity
+119436,Tech Mahindra Ltd.,INE669C01036,IT - Software,0.72,equity
+119436,Jubilant Foodworks Ltd.,INE797F01020,Leisure Services,0.7,equity
+119436,JSW Energy Ltd.,INE121E01018,Power,0.68,equity
+119436,Kfin Technologies Ltd.,INE138Y01010,Capital Markets,0.63,equity
+119436,Tata Motors Ltd.,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.61,equity
+119436,SBFC Finance Ltd.,INE423Y01016,Finance,0.6,equity
+119436,PB Fintech Ltd.,INE417T01026,Financial Technology (Fintech),0.59,equity
+119436,Mphasis Ltd.,INE356A01018,IT - Software,0.54,equity
+119436,Bank of Maharashtra,INE457A01014,Banks,0.5,equity
+119436,Aditya Vision Ltd.,INE679V01027,Retailing,0.48,equity
+119436,Apar Industries Ltd.,INE372A01015,Electrical Equipment,0.48,equity
+119436,Hexaware Technologies Ltd.,INE093A01041,IT - Software,0.42,equity
+119436,Dynamatic Technologies Ltd.,INE221B01012,Industrial Manufacturing,0.42,equity
+119436,Hindustan Petroleum Corporation Ltd.,INE094A01015,Petroleum Products,0.41,equity
+119436,HDFC Life Insurance Company Ltd.,INE795G01014,Insurance,0.39,equity
+119436,Vedanta Ltd.,INE205A01025,Diversified Metals,0.38,equity
+119436,Aditya Infotech Ltd.,INE819V01029,Industrial Manufacturing,0.37,equity
+119436,Varun Beverages Ltd.,INE200M01039,Beverages,0.34,equity
+119436,Vedanta Power Ltd.,INE694L01019,Power,0.27,equity
+119436,Cohance Lifesciences Ltd.,INE03QK01018,Pharmaceuticals & Biotechnology,0.18,equity
+119436,Kirloskar Brothers Ltd.,INE732A01036,Industrial Products,0.14,equity
+119436,TREPS,,,0.37,cash
+119436,Net Receivable / Payable,,,0.51,cash
+100033,ICICI Bank Ltd.,INE090A01021,Banks,3.87,equity
+100033,AU Small Finance Bank Ltd.,INE949L01017,Banks,3.45,equity
+100033,APL Apollo Tubes Ltd.,INE702C01027,Industrial Products,2.81,equity
+100033,JK Cement Ltd.,INE823G01014,Cement & Cement Products,2.77,equity
+100033,Navin Fluorine International Ltd.,INE048G01026,Chemicals & Petrochemicals,2.7,equity
+100033,Samvardhana Motherson International Ltd.,INE775A01035,Auto Components,2.65,equity
+100033,Astral Ltd.,INE006I01046,Industrial Products,2.32,equity
+100033,Ajanta Pharma Ltd.,INE031B01049,Pharmaceuticals & Biotechnology,2.27,equity
+100033,UNO Minda Ltd.,INE405E01023,Auto Components,2.2,equity
+100033,Max Financial Services Ltd.,INE180A01020,Insurance,2.14,equity
+100033,TVS Motor Company Ltd.,INE494B01023,Automobiles,2.04,equity
+100033,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,2.02,equity
+100033,GMR Airports Ltd.,INE776C01039,Transport Infrastructure,2.01,equity
+100033,Eternal Ltd.,INE758T01015,Retailing,1.92,equity
+100033,Bajaj Finance Ltd.,INE296A01032,Finance,1.91,equity
+100033,KEI Industries Ltd.,INE878B01027,Industrial Products,1.91,equity
+100033,One 97 Communications Ltd.,INE982J01020,Financial Technology (Fintech),1.88,equity
+100033,Bharat Electronics Ltd.,INE263A01024,Aerospace & Defense,1.86,equity
+100033,Titan Company Ltd.,INE280A01028,Consumer Durables,1.8,equity
+100033,Coforge Ltd.,INE591G01025,IT - Software,1.78,equity
+100033,State Bank of India,INE062A01020,Banks,1.64,equity
+100033,Hindustan Aeronautics Ltd.,INE066F01020,Aerospace & Defense,1.64,equity
+100033,Schaeffler India Ltd.,INE513A01022,Auto Components,1.61,equity
+100033,Jindal Steel Ltd.,INE749A01030,Ferrous Metals,1.58,equity
+100033,Mankind Pharma Ltd.,INE634S01028,Pharmaceuticals & Biotechnology,1.54,equity
+100033,K.P.R. Mill Ltd.,INE930H01031,Textiles & Apparels,1.48,equity
+100033,Mahindra & Mahindra Ltd.,INE101A01026,Automobiles,1.45,equity
+100033,Meesho Ltd.,INE0VDM01015,Retailing,1.4,equity
+100033,Sona Blw Precision Forgings Ltd.,INE073K01018,Auto Components,1.32,equity
+100033,Five Star Business Finance Ltd.,INE128S01021,Finance,1.31,equity
+100033,Trent Ltd.,INE849A01020,Retailing,1.31,equity
+100033,Axis Bank Ltd.,INE238A01034,Banks,1.2,equity
+100033,Amber Enterprises India Ltd.,INE371P01015,Consumer Durables,1.17,equity
+100033,Fortis Healthcare Ltd.,INE061F01013,Healthcare Services,1.16,equity
+100033,Syrma SGS Technology Ltd.,INE0DYJ01015,Industrial Manufacturing,1.15,equity
+100033,ABB India Ltd.,INE117A01022,Electrical Equipment,1.13,equity
+100033,Karur Vysya Bank Ltd.,INE036D01028,Banks,1.12,equity
+100033,Metropolis Healthcare Ltd.,INE112L01020,Healthcare Services,1.1,equity
+100033,Gokaldas Exports Ltd.,INE887G01027,Textiles & Apparels,1.04,equity
+100033,Persistent Systems Ltd.,INE262H01021,IT - Software,1.01,equity
+100033,Samhi Hotels Ltd.,INE08U801020,Leisure Services,1.01,equity
+100033,Interglobe Aviation Ltd.,INE646L01027,Transport Services,1.01,equity
+100033,Brigade Enterprises Ltd.,INE791I01019,Realty,0.99,equity
+100033,Max Healthcare Institute Ltd.,INE027H01010,Healthcare Services,0.98,equity
+100033,Apollo Hospitals Enterprise Ltd.,INE437A01024,Healthcare Services,0.98,equity
+100033,Home First Finance Company India Ltd.,INE481N01025,Finance,0.97,equity
+100033,Vedanta Aluminium Metal Ltd.,INE1CDF01017,Non - Ferrous Metals,0.97,equity
+100033,Emcure Pharmaceuticals Ltd.,INE168P01015,Pharmaceuticals & Biotechnology,0.96,equity
+100033,Bajaj Finserv Ltd.,INE918I01026,Finance,0.93,equity
+100033,Larsen & Toubro Ltd.,INE018A01030,Construction,0.93,equity
+100033,Fractal Analytics Ltd.,INE212S01015,IT - Software,0.87,equity
+100033,Belrise Industries Ltd.,INE894V01022,Auto Components,0.86,equity
+100033,Tata Consumer Products Ltd.,INE192A01025,Agricultural Food & other Products,0.83,equity
+100033,CG Power and Industrial Solutions Ltd.,INE067A01029,Electrical Equipment,0.81,equity
+100033,Bharti Airtel Ltd.,INE397D01024,Telecom - Services,0.77,equity
+100033,Adani Energy Solutions Ltd.,INE931S01010,Power,0.76,equity
+100033,Gland Pharma Ltd.,INE068V01023,Pharmaceuticals & Biotechnology,0.74,equity
+100033,Inox India Ltd.,INE616N01034,Industrial Products,0.72,equity
+100033,Tech Mahindra Ltd.,INE669C01036,IT - Software,0.72,equity
+100033,Jubilant Foodworks Ltd.,INE797F01020,Leisure Services,0.7,equity
+100033,JSW Energy Ltd.,INE121E01018,Power,0.68,equity
+100033,Kfin Technologies Ltd.,INE138Y01010,Capital Markets,0.63,equity
+100033,Tata Motors Ltd.,INE1TAE01010,"Agricultural, Commercial & Construction Vehicles",0.61,equity
+100033,SBFC Finance Ltd.,INE423Y01016,Finance,0.6,equity
+100033,PB Fintech Ltd.,INE417T01026,Financial Technology (Fintech),0.59,equity
+100033,Mphasis Ltd.,INE356A01018,IT - Software,0.54,equity
+100033,Bank of Maharashtra,INE457A01014,Banks,0.5,equity
+100033,Aditya Vision Ltd.,INE679V01027,Retailing,0.48,equity
+100033,Apar Industries Ltd.,INE372A01015,Electrical Equipment,0.48,equity
+100033,Hexaware Technologies Ltd.,INE093A01041,IT - Software,0.42,equity
+100033,Dynamatic Technologies Ltd.,INE221B01012,Industrial Manufacturing,0.42,equity
+100033,Hindustan Petroleum Corporation Ltd.,INE094A01015,Petroleum Products,0.41,equity
+100033,HDFC Life Insurance Company Ltd.,INE795G01014,Insurance,0.39,equity
+100033,Vedanta Ltd.,INE205A01025,Diversified Metals,0.38,equity
+100033,Aditya Infotech Ltd.,INE819V01029,Industrial Manufacturing,0.37,equity
+100033,Varun Beverages Ltd.,INE200M01039,Beverages,0.34,equity
+100033,Vedanta Power Ltd.,INE694L01019,Power,0.27,equity
+100033,Cohance Lifesciences Ltd.,INE03QK01018,Pharmaceuticals & Biotechnology,0.18,equity
+100033,Kirloskar Brothers Ltd.,INE732A01036,Industrial Products,0.14,equity
+100033,TREPS,,,0.37,cash
+100033,Net Receivable / Payable,,,0.51,cash
+100038,7.17% Tata Capital Housing Finance Ltd. (21/05/2030) **,INE033L07IP8,,4.18,other
+100038,7.71% Tata Capital Housing Finance Ltd. (14/01/2028) **,INE033L07IK9,,2.87,other
+100038,7.44% National Bank for Agriculture and Rural Development (17/07/2029),INE261F08EU4,,2.86,other
+100038,7.27% National Bank for Agriculture and Rural Development (23/02/2029) **,INE261F08ER0,,2.85,other
+100038,7.38% REC Ltd. (28/02/2029),INE020B08GD4,,2.58,other
+100038,8.07% SMFG India Home Finance Co. Ltd. (10/09/2027) **,INE213W07293,,1.44,other
+100038,8.12% L&T Finance Ltd. (29/06/2029) **,INE498L07210,,1.44,other
+100038,7.68% National Bank for Agriculture and Rural Development (30/04/2029) **,INE261F08EG3,,1.44,other
+100038,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,1.43,other
+100038,7.62% National Bank for Agriculture and Rural Development (10/05/2029) **,INE261F08EH1,,1.43,other
+100038,7.21% Embassy Office Parks Reit (17/03/2028) **,INE041007167,,1.43,other
+100038,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,1.42,other
+100038,7.19% ICICI Home Finance Co. Ltd. (22/08/2028) **,INE071G07843,,1.42,other
+100038,7.34% REC Ltd. (30/04/2030) **,INE020B08FL9,,1.42,other
+100038,7.17% REC Ltd. (01/07/2031) **,INE020B08GF9,,1.4,other
+100038,6.92% Indian Railway Finance Corporation Ltd. (29/08/2031) **,INE053F08122,,1.39,other
+100038,7.45% Bharti Telecom Ltd. (15/12/2028) **,INE403D08280,,1.13,other
+100038,7.55% REC Ltd. (10/05/2030) **,INE020B08CU7,,0.29,other
+100038,Siddhivinayak Securitisation Trust (28/09/2030) **,INE2I7F15012,,1.38,debt
+100038,Government of India (22/04/2064),IN0020240035,,12.47,debt
+100038,Government of India (18/05/2066),IN0020260033,,6.06,debt
+100038,State Government Securities  (27/03/2033),IN1920230381,,3.11,debt
+100038,State Government Securities  (04/09/2033),IN1920250264,,2.83,debt
+100038,State Government Securities  (13/03/2034),IN1920230316,,2.82,debt
+100038,State Government Securities  (04/06/2038),IN1020250149,,2.65,debt
+100038,Government of India (12/06/2063),IN0020230044,,2.44,debt
+100038,Government of India (19/06/2053),IN0020230051,,1.94,debt
+100038,Government of India (18/08/2055),IN0020250075,,1.56,debt
+100038,State Government Securities  (06/03/2034),IN1620180118,,1.49,debt
+100038,State Government Securities  (03/09/2033),IN1320250088,,1.43,debt
+100038,State Government Securities  (10/06/2037),IN1520260051,,1.42,debt
+100038,State Government Securities  (18/03/2032),IN1220250238,,1.41,debt
+100038,State Government Securities  (22/02/2038),IN2120220081,,1.41,debt
+100038,State Government Securities  (04/09/2034),IN1920250272,,1.41,debt
+100038,State Government Securities  (03/12/2032),IN3120250441,,1.41,debt
+100038,State Government Securities  (03/12/2033),IN3120250458,,1.4,debt
+100038,State Government Securities  (03/12/2033),IN2120250252,,1.4,debt
+100038,State Government Securities  (03/12/2035),IN1320250195,,1.4,debt
+100038,State Government Securities  (30/07/2035),IN3620250032,,1.36,debt
+100038,State Government Securities  (27/03/2034),IN3520230316,,1.02,debt
+100038,State Government Securities  (27/03/2033),IN3520230308,,0.91,debt
+100038,Government of India (08/04/2034),IN0020240019,,0.86,debt
+100038,State Government Securities  (07/02/2034),IN3320230250,,0.85,debt
+100038,State Government Securities  (03/06/2036),IN1520260036,,0.77,debt
+100038,State Government Securities  (25/06/2038),IN2220250103,,0.66,debt
+100038,Government of India (27/07/2041),IN0020260041,,0.62,debt
+100038,State Government Securities  (03/09/2035),IN1220250105,,0.57,debt
+100038,State Government Securities  (22/07/2035),IN3420260041,,0.51,debt
+100038,State Government Securities  (03/12/2034),IN2220250384,,0.45,debt
+100038,Government of India (11/05/2036),IN0020260025,,0.21,debt
+100038,Government of India (19/01/2039),IN0020080050,,0.17,debt
+100038,Government of India (25/11/2074),IN0020240142,,0.15,debt
+100038,State Government Securities  (27/03/2035),IN3520230324,,0.14,debt
+100038,State Government Securities  (27/03/2033),IN2920230546,,0.08,debt
+100038,State Government Securities  (15/04/2030),IN4520200028,,0.06,debt
+100038,State Government Securities  (15/04/2030),IN3320200014,,0.06,debt
+100038,State Government Securities  (09/02/2027),IN2220210271,,0.05,debt
+100038,State Government Securities  (29/03/2034),IN3320220194,,0.05,debt
+100038,Government of India (15/11/2026),IN0020210186,,0.03,debt
+100038,State Government Securities  (07/10/2027),IN3120200305,,0.02,debt
+100038,State Government Securities  (15/03/2027),IN3520160034,,0.01,debt
+100038,Small Industries Development Bank of India (03/09/2027) #,INE556F16CI9,,1.35,debt
+100038,0% GOI  -  (17/12/2027) STRIPS,IN001227C031,,0.01,other
+100038,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.39,other
+100038,TREPS,,,2.75,cash
+100038,Net Receivable / Payable,,,2.02,cash
+119657,7.17% Tata Capital Housing Finance Ltd. (21/05/2030) **,INE033L07IP8,,4.18,other
+119657,7.71% Tata Capital Housing Finance Ltd. (14/01/2028) **,INE033L07IK9,,2.87,other
+119657,7.44% National Bank for Agriculture and Rural Development (17/07/2029),INE261F08EU4,,2.86,other
+119657,7.27% National Bank for Agriculture and Rural Development (23/02/2029) **,INE261F08ER0,,2.85,other
+119657,7.38% REC Ltd. (28/02/2029),INE020B08GD4,,2.58,other
+119657,8.07% SMFG India Home Finance Co. Ltd. (10/09/2027) **,INE213W07293,,1.44,other
+119657,8.12% L&T Finance Ltd. (29/06/2029) **,INE498L07210,,1.44,other
+119657,7.68% National Bank for Agriculture and Rural Development (30/04/2029) **,INE261F08EG3,,1.44,other
+119657,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,1.43,other
+119657,7.62% National Bank for Agriculture and Rural Development (10/05/2029) **,INE261F08EH1,,1.43,other
+119657,7.21% Embassy Office Parks Reit (17/03/2028) **,INE041007167,,1.43,other
+119657,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,1.42,other
+119657,7.19% ICICI Home Finance Co. Ltd. (22/08/2028) **,INE071G07843,,1.42,other
+119657,7.34% REC Ltd. (30/04/2030) **,INE020B08FL9,,1.42,other
+119657,7.17% REC Ltd. (01/07/2031) **,INE020B08GF9,,1.4,other
+119657,6.92% Indian Railway Finance Corporation Ltd. (29/08/2031) **,INE053F08122,,1.39,other
+119657,7.45% Bharti Telecom Ltd. (15/12/2028) **,INE403D08280,,1.13,other
+119657,7.55% REC Ltd. (10/05/2030) **,INE020B08CU7,,0.29,other
+119657,Siddhivinayak Securitisation Trust (28/09/2030) **,INE2I7F15012,,1.38,debt
+119657,Government of India (22/04/2064),IN0020240035,,12.47,debt
+119657,Government of India (18/05/2066),IN0020260033,,6.06,debt
+119657,State Government Securities  (27/03/2033),IN1920230381,,3.11,debt
+119657,State Government Securities  (04/09/2033),IN1920250264,,2.83,debt
+119657,State Government Securities  (13/03/2034),IN1920230316,,2.82,debt
+119657,State Government Securities  (04/06/2038),IN1020250149,,2.65,debt
+119657,Government of India (12/06/2063),IN0020230044,,2.44,debt
+119657,Government of India (19/06/2053),IN0020230051,,1.94,debt
+119657,Government of India (18/08/2055),IN0020250075,,1.56,debt
+119657,State Government Securities  (06/03/2034),IN1620180118,,1.49,debt
+119657,State Government Securities  (03/09/2033),IN1320250088,,1.43,debt
+119657,State Government Securities  (10/06/2037),IN1520260051,,1.42,debt
+119657,State Government Securities  (18/03/2032),IN1220250238,,1.41,debt
+119657,State Government Securities  (22/02/2038),IN2120220081,,1.41,debt
+119657,State Government Securities  (04/09/2034),IN1920250272,,1.41,debt
+119657,State Government Securities  (03/12/2032),IN3120250441,,1.41,debt
+119657,State Government Securities  (03/12/2033),IN3120250458,,1.4,debt
+119657,State Government Securities  (03/12/2033),IN2120250252,,1.4,debt
+119657,State Government Securities  (03/12/2035),IN1320250195,,1.4,debt
+119657,State Government Securities  (30/07/2035),IN3620250032,,1.36,debt
+119657,State Government Securities  (27/03/2034),IN3520230316,,1.02,debt
+119657,State Government Securities  (27/03/2033),IN3520230308,,0.91,debt
+119657,Government of India (08/04/2034),IN0020240019,,0.86,debt
+119657,State Government Securities  (07/02/2034),IN3320230250,,0.85,debt
+119657,State Government Securities  (03/06/2036),IN1520260036,,0.77,debt
+119657,State Government Securities  (25/06/2038),IN2220250103,,0.66,debt
+119657,Government of India (27/07/2041),IN0020260041,,0.62,debt
+119657,State Government Securities  (03/09/2035),IN1220250105,,0.57,debt
+119657,State Government Securities  (22/07/2035),IN3420260041,,0.51,debt
+119657,State Government Securities  (03/12/2034),IN2220250384,,0.45,debt
+119657,Government of India (11/05/2036),IN0020260025,,0.21,debt
+119657,Government of India (19/01/2039),IN0020080050,,0.17,debt
+119657,Government of India (25/11/2074),IN0020240142,,0.15,debt
+119657,State Government Securities  (27/03/2035),IN3520230324,,0.14,debt
+119657,State Government Securities  (27/03/2033),IN2920230546,,0.08,debt
+119657,State Government Securities  (15/04/2030),IN4520200028,,0.06,debt
+119657,State Government Securities  (15/04/2030),IN3320200014,,0.06,debt
+119657,State Government Securities  (09/02/2027),IN2220210271,,0.05,debt
+119657,State Government Securities  (29/03/2034),IN3320220194,,0.05,debt
+119657,Government of India (15/11/2026),IN0020210186,,0.03,debt
+119657,State Government Securities  (07/10/2027),IN3120200305,,0.02,debt
+119657,State Government Securities  (15/03/2027),IN3520160034,,0.01,debt
+119657,Small Industries Development Bank of India (03/09/2027) #,INE556F16CI9,,1.35,debt
+119657,0% GOI  -  (17/12/2027) STRIPS,IN001227C031,,0.01,other
+119657,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.39,other
+119657,TREPS,,,2.75,cash
+119657,Net Receivable / Payable,,,2.02,cash
+119544,ICICI Bank Ltd.,INE090A01021,Banks,7.55,equity
+119544,HDFC Bank Ltd.,INE040A01034,Banks,6.3,equity
+119544,Axis Bank Ltd.,INE238A01034,Banks,3.85,equity
+119544,Reliance Industries Ltd.,INE002A01018,Petroleum Products,3.73,equity
+119544,State Bank of India,INE062A01020,Banks,3.43,equity
+119544,Eternal Ltd.,INE758T01015,Retailing,3.31,equity
+119544,The Federal Bank Ltd.,INE171A01029,Banks,2.87,equity
+119544,Bharti Airtel Ltd.,INE397D01024,Telecom - Services,2.8,equity
+119544,Mahindra & Mahindra Ltd.,INE101A01026,Automobiles,2.75,equity
+119544,Tech Mahindra Ltd.,INE669C01036,IT - Software,2.59,equity
+119544,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,2.31,equity
+119544,TVS Holdings Ltd.,INE105A01035,Finance,2.0,equity
+119544,Larsen & Toubro Ltd.,INE018A01030,Construction,1.97,equity
+119544,Emcure Pharmaceuticals Ltd.,INE168P01015,Pharmaceuticals & Biotechnology,1.93,equity
+119544,Varun Beverages Ltd.,INE200M01039,Beverages,1.93,equity
+119544,Cummins India Ltd.,INE298A01020,Industrial Products,1.89,equity
+119544,Bosch Ltd.,INE323A01026,Auto Components,1.88,equity
+119544,Bajaj Finance Ltd.,INE296A01032,Finance,1.82,equity
+119544,Infosys Ltd.,INE009A01021,IT - Software,1.82,equity
+119544,Fortis Healthcare Ltd.,INE061F01013,Healthcare Services,1.7,equity
+119544,Ambuja Cements Ltd.,INE079A01024,Cement & Cement Products,1.68,equity
+119544,Cholamandalam Investment & Finance Co. Ltd.,INE121A01024,Finance,1.61,equity
+119544,Titan Company Ltd.,INE280A01028,Consumer Durables,1.59,equity
+119544,Adani Power Ltd.,INE814H01029,Power,1.59,equity
+119544,Meesho Ltd.,INE0VDM01015,Retailing,1.58,equity
+119544,Thyrocare Technologies Ltd.,INE594H01019,Healthcare Services,1.58,equity
+119544,Godrej Consumer Products Ltd.,INE102D01028,Personal Products,1.55,equity
+119544,Computer Age Management Services Ltd.,INE596I01020,Capital Markets,1.49,equity
+119544,NTPC Ltd.,INE733E01010,Power,1.35,equity
+119544,SBFC Finance Ltd.,INE423Y01016,Finance,1.34,equity
+119544,Avenue Supermarts Ltd.,INE192R01011,Retailing,1.33,equity
+119544,Adani Ports and Special Economic Zone Ltd.,INE742F01042,Transport Infrastructure,1.33,equity
+119544,L&T Finance Ltd.,INE498L01015,Finance,1.25,equity
+119544,Balrampur Chini Mills Ltd.,INE119A01028,Agricultural Food & other Products,1.23,equity
+119544,Gillette India Ltd.,INE322A01010,Personal Products,1.22,equity
+119544,Dixon Technologies (India) Ltd.,INE935N01020,Consumer Durables,1.18,equity
+119544,Sumitomo Chemical India Ltd.,INE258G01013,Fertilizers & Agrochemicals,1.0,equity
+119544,Max Financial Services Ltd.,INE180A01020,Insurance,0.96,equity
+119544,Home First Finance Company India Ltd.,INE481N01025,Finance,0.89,equity
+119544,Hindustan Unilever Ltd.,INE030A01027,Diversified FMCG,0.88,equity
+119544,Thomas Cook (India) Ltd.,INE332A01027,Leisure Services,0.87,equity
+119544,Persistent Systems Ltd.,INE262H01021,IT - Software,0.86,equity
+119544,Aditya Birla Real Estate Ltd.,INE055A01016,Realty,0.84,equity
+119544,Medi Assist Healthcare Services Ltd.,INE456Z01021,Insurance,0.8,equity
+119544,Sai Life Sciences Ltd.,INE570L01029,Pharmaceuticals & Biotechnology,0.78,equity
+119544,Mankind Pharma Ltd.,INE634S01028,Pharmaceuticals & Biotechnology,0.73,equity
+119544,Nippon Life India Asset Management Ltd.,INE298J01013,Capital Markets,0.72,equity
+119544,Corona Remedies Ltd.,INE02ZQ01018,Pharmaceuticals & Biotechnology,0.71,equity
+119544,GO Digit General Insurance Ltd.,INE03JT01014,Insurance,0.71,equity
+119544,Chalet Hotels Ltd.,INE427F01016,Leisure Services,0.68,equity
+119544,Vinati Organics Ltd.,INE410B01037,Chemicals & Petrochemicals,0.67,equity
+119544,Kirloskar Brothers Ltd.,INE732A01036,Industrial Products,0.62,equity
+119544,Prestige Estates Projects Ltd.,INE811K01011,Realty,0.62,equity
+119544,V-Guard Industries Ltd.,INE951I01027,Consumer Durables,0.51,equity
+119544,Ajanta Pharma Ltd.,INE031B01049,Pharmaceuticals & Biotechnology,0.5,equity
+119544,Ather Energy Ltd.,INE0LEZ01016,Automobiles,0.48,equity
+119544,Apar Industries Ltd.,INE372A01015,Electrical Equipment,0.48,equity
+119544,LG Electronics India Ltd.,INE324D01010,Consumer Durables,0.44,equity
+119544,Suraksha Diagnostic Ltd.,INE877V01027,Healthcare Services,0.43,equity
+119544,Urban Company Ltd.,INE0CAZ01013,Retailing,0.41,equity
+119544,Arvind Ltd.,INE034A01011,Textiles & Apparels,0.4,equity
+119544,Sedemac Mechatronics Ltd.,INE00XB01019,Auto Components,0.32,equity
+119544,TVS Holdings Ltd. (Non-convertible Preference Share) A**,INE105A04039,,0.07,other
+119544,TREPS,,,1.58,cash
+119544,Net Receivable / Payable,,,-0.27,cash
+107745,ICICI Bank Ltd.,INE090A01021,Banks,7.55,equity
+107745,HDFC Bank Ltd.,INE040A01034,Banks,6.3,equity
+107745,Axis Bank Ltd.,INE238A01034,Banks,3.85,equity
+107745,Reliance Industries Ltd.,INE002A01018,Petroleum Products,3.73,equity
+107745,State Bank of India,INE062A01020,Banks,3.43,equity
+107745,Eternal Ltd.,INE758T01015,Retailing,3.31,equity
+107745,The Federal Bank Ltd.,INE171A01029,Banks,2.87,equity
+107745,Bharti Airtel Ltd.,INE397D01024,Telecom - Services,2.8,equity
+107745,Mahindra & Mahindra Ltd.,INE101A01026,Automobiles,2.75,equity
+107745,Tech Mahindra Ltd.,INE669C01036,IT - Software,2.59,equity
+107745,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,2.31,equity
+107745,TVS Holdings Ltd.,INE105A01035,Finance,2.0,equity
+107745,Larsen & Toubro Ltd.,INE018A01030,Construction,1.97,equity
+107745,Emcure Pharmaceuticals Ltd.,INE168P01015,Pharmaceuticals & Biotechnology,1.93,equity
+107745,Varun Beverages Ltd.,INE200M01039,Beverages,1.93,equity
+107745,Cummins India Ltd.,INE298A01020,Industrial Products,1.89,equity
+107745,Bosch Ltd.,INE323A01026,Auto Components,1.88,equity
+107745,Bajaj Finance Ltd.,INE296A01032,Finance,1.82,equity
+107745,Infosys Ltd.,INE009A01021,IT - Software,1.82,equity
+107745,Fortis Healthcare Ltd.,INE061F01013,Healthcare Services,1.7,equity
+107745,Ambuja Cements Ltd.,INE079A01024,Cement & Cement Products,1.68,equity
+107745,Cholamandalam Investment & Finance Co. Ltd.,INE121A01024,Finance,1.61,equity
+107745,Titan Company Ltd.,INE280A01028,Consumer Durables,1.59,equity
+107745,Adani Power Ltd.,INE814H01029,Power,1.59,equity
+107745,Meesho Ltd.,INE0VDM01015,Retailing,1.58,equity
+107745,Thyrocare Technologies Ltd.,INE594H01019,Healthcare Services,1.58,equity
+107745,Godrej Consumer Products Ltd.,INE102D01028,Personal Products,1.55,equity
+107745,Computer Age Management Services Ltd.,INE596I01020,Capital Markets,1.49,equity
+107745,NTPC Ltd.,INE733E01010,Power,1.35,equity
+107745,SBFC Finance Ltd.,INE423Y01016,Finance,1.34,equity
+107745,Avenue Supermarts Ltd.,INE192R01011,Retailing,1.33,equity
+107745,Adani Ports and Special Economic Zone Ltd.,INE742F01042,Transport Infrastructure,1.33,equity
+107745,L&T Finance Ltd.,INE498L01015,Finance,1.25,equity
+107745,Balrampur Chini Mills Ltd.,INE119A01028,Agricultural Food & other Products,1.23,equity
+107745,Gillette India Ltd.,INE322A01010,Personal Products,1.22,equity
+107745,Dixon Technologies (India) Ltd.,INE935N01020,Consumer Durables,1.18,equity
+107745,Sumitomo Chemical India Ltd.,INE258G01013,Fertilizers & Agrochemicals,1.0,equity
+107745,Max Financial Services Ltd.,INE180A01020,Insurance,0.96,equity
+107745,Home First Finance Company India Ltd.,INE481N01025,Finance,0.89,equity
+107745,Hindustan Unilever Ltd.,INE030A01027,Diversified FMCG,0.88,equity
+107745,Thomas Cook (India) Ltd.,INE332A01027,Leisure Services,0.87,equity
+107745,Persistent Systems Ltd.,INE262H01021,IT - Software,0.86,equity
+107745,Aditya Birla Real Estate Ltd.,INE055A01016,Realty,0.84,equity
+107745,Medi Assist Healthcare Services Ltd.,INE456Z01021,Insurance,0.8,equity
+107745,Sai Life Sciences Ltd.,INE570L01029,Pharmaceuticals & Biotechnology,0.78,equity
+107745,Mankind Pharma Ltd.,INE634S01028,Pharmaceuticals & Biotechnology,0.73,equity
+107745,Nippon Life India Asset Management Ltd.,INE298J01013,Capital Markets,0.72,equity
+107745,Corona Remedies Ltd.,INE02ZQ01018,Pharmaceuticals & Biotechnology,0.71,equity
+107745,GO Digit General Insurance Ltd.,INE03JT01014,Insurance,0.71,equity
+107745,Chalet Hotels Ltd.,INE427F01016,Leisure Services,0.68,equity
+107745,Vinati Organics Ltd.,INE410B01037,Chemicals & Petrochemicals,0.67,equity
+107745,Kirloskar Brothers Ltd.,INE732A01036,Industrial Products,0.62,equity
+107745,Prestige Estates Projects Ltd.,INE811K01011,Realty,0.62,equity
+107745,V-Guard Industries Ltd.,INE951I01027,Consumer Durables,0.51,equity
+107745,Ajanta Pharma Ltd.,INE031B01049,Pharmaceuticals & Biotechnology,0.5,equity
+107745,Ather Energy Ltd.,INE0LEZ01016,Automobiles,0.48,equity
+107745,Apar Industries Ltd.,INE372A01015,Electrical Equipment,0.48,equity
+107745,LG Electronics India Ltd.,INE324D01010,Consumer Durables,0.44,equity
+107745,Suraksha Diagnostic Ltd.,INE877V01027,Healthcare Services,0.43,equity
+107745,Urban Company Ltd.,INE0CAZ01013,Retailing,0.41,equity
+107745,Arvind Ltd.,INE034A01011,Textiles & Apparels,0.4,equity
+107745,Sedemac Mechatronics Ltd.,INE00XB01019,Auto Components,0.32,equity
+107745,TVS Holdings Ltd. (Non-convertible Preference Share) A**,INE105A04039,,0.07,other
+107745,TREPS,,,1.58,cash
+107745,Net Receivable / Payable,,,-0.27,cash
+103178,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,4.77,other
+103178,7.30% Bharti Telecom Ltd. (01/12/2027) **,INE403D08306,,2.94,other
+103178,7.44% National Bank for Agriculture and Rural Development (17/07/2029),INE261F08EU4,,2.81,other
+103178,7.43% Jamnagar Utilities & Power Pvt. Ltd. (24/10/2034),INE936D07190,,2.3,other
+103178,6.66% National Bank for Agriculture and Rural Development (12/10/2028) **,INE261F08EP4,,2.14,other
+103178,7.80% Bajaj Housing Finance Ltd. (09/02/2034) **,INE377Y07458,,2.13,other
+103178,7.23% Housing and Urban Development Corporation Ltd. (18/07/2029) **,INE031A08AC8,,1.85,other
+103178,7.35% Bharti Telecom Ltd. (15/10/2027) **,INE403D08272,,1.81,other
+103178,7.62% Summit Digitel Infrastructure Pvt. Ltd. (22/11/2030) **,INE507T07088,,1.74,other
+103178,7.49% Embassy Office Parks Reit (22/06/2029) **,INE041007217,,1.74,other
+103178,7.29% Small Industries Development Bank of India (09/11/2029) **,INE556F08LG1,,1.71,other
+103178,7.55% Poonawalla Fincorp Ltd. (25/03/2027) **,INE511C07946,,1.32,other
+103178,7.60% Power Finance Corporation Ltd. (13/04/2029) **,INE134E08MX3,,1.32,other
+103178,7.42% Power Finance Corporation Ltd. (15/04/2028) **,INE134E08NL6,,1.31,other
+103178,7.32% Axis Finance Ltd. (11/01/2029) (FRN) **,INE891K07AM5,,1.31,other
+103178,7.78% Jio Credit Ltd. (07/07/2029) **,INE282H07075,,1.3,other
+103178,7.90% Jamnagar Utilities & Power Pvt. Ltd. (10/08/2028) **,INE936D07182,,1.24,other
+103178,8.12% L&T Finance Ltd. (29/06/2029) **,INE498L07210,,1.21,other
+103178,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,1.19,other
+103178,Indian Railway Finance Corporation Ltd. (01/12/2035) (ZCB) **,INE053F08536,,1.17,other
+103178,7.96% Embassy Office Parks Reit (27/09/2027) **,INE041007142,,1.12,other
+103178,7.77% LIC Housing Finance Ltd. (11/08/2028) **,INE115A07QM6,,1.1,other
+103178,7.58% Poonawalla Fincorp Ltd. (08/09/2028) **,INE511C07938,,1.1,other
+103178,8.10% RJ Corp Ltd. (24/09/2029) **,INE460K08061,,1.09,other
+103178,6.64% Housing and Urban Development Corporation Ltd. (17/07/2028) **,INE031A08996,,1.08,other
+103178,7.87% Bajaj Housing Finance Ltd. (04/08/2036) **,INE377Y07680,,1.06,other
+103178,7.21% Embassy Office Parks Reit (17/03/2028) **,INE041007167,,0.99,other
+103178,6.87% REC Ltd. (31/05/2030) **,INE020B08FU0,,0.92,other
+103178,7.73% Axis Finance Ltd. (12/06/2028) **,INE891K07AF9,,0.87,other
+103178,7.86% Tata Capital Housing Finance Ltd. (21/09/2029),INE033L07IJ1,,0.87,other
+103178,7.90% Aditya Birla Housing Finance Ltd. (08/06/2027) **,INE831R07557,,0.84,other
+103178,8.50% TATA Capital Ltd. (06/11/2029) **,INE306N07LO1,,0.8,other
+103178,6.59% Power Finance Corporation Ltd. (15/10/2030) **,INE134E08NU7,,0.78,other
+103178,7.60% Poonawalla Fincorp Ltd. (28/05/2027) **,INE511C07870,,0.77,other
+103178,6.64% Power Finance Corporation Ltd. (15/07/2030) **,INE134E08NR3,,0.74,other
+103178,6.73% Power Finance Corporation Ltd. (15/10/2027) **,INE134E08NW3,,0.72,other
+103178,7.38% REC Ltd. (28/02/2029),INE020B08GD4,,0.7,other
+103178,8.05% Summit Digitel Infrastructure Pvt. Ltd. (31/05/2027) **,INE507T07096,,0.66,other
+103178,7.79% Reliance Industries Ltd. (10/11/2033) **,INE002A07809,,0.66,other
+103178,7.63% Mindspace Business Parks Reit (26/09/2028) **,INE0CCU08015,,0.66,other
+103178,7.01% National Bank for Agriculture and Rural Development (16/03/2029) **,INE261F08ES8,,0.65,other
+103178,7.93% Bajaj Finance Ltd. (02/05/2034) **,INE296A07SY5,,0.6,other
+103178,7.53% Poonawalla Fincorp Ltd. (24/09/2027) **,INE511C07912,,0.59,other
+103178,7.37% National Bank for Financing Infrastructure and Development (16/07/2029) **,INE0KUG08142,,0.59,other
+103178,7.89% Bajaj Housing Finance Ltd. (14/07/2034) **,INE377Y07508,,0.58,other
+103178,7.42% State Bank of India (29/08/2039) **,INE062A08447,,0.57,other
+103178,6.60% REC Ltd. (30/06/2027),INE020B08FZ9,,0.55,other
+103178,7.19% Housing and Urban Development Corporation Ltd. (27/03/2035) **,INE031A08954,,0.53,other
+103178,7.40% ICICI Bank Ltd. (28/11/2040) **,INE090A08UN9,,0.52,other
+103178,7.86% HDFC Bank Ltd. (02/12/2032) **,INE040A08427,,0.46,other
+103178,7.69% Nexus Select Trust (28/05/2027) **,INE0NDH07043,,0.44,other
+103178,7.70% LIC Housing Finance Ltd. (16/05/2028) **,INE115A07QJ2,,0.44,other
+103178,7.70% Small Industries Development Bank of India (10/10/2029) **,INE556F08LH9,,0.44,other
+103178,7.34% Small Industries Development Bank of India (26/02/2029) **,INE556F08KS8,,0.44,other
+103178,7.34% REC Ltd. (30/04/2030) **,INE020B08FL9,,0.43,other
+103178,6.77% Tata Communications Ltd. (07/08/2028) **,INE151A08356,,0.43,other
+103178,7.16% National Bank for Agriculture and Rural Development (14/12/2029),INE261F08EV2,,0.43,other
+103178,7.34% Punjab National Bank (14/02/2035) **,INE160A08324,,0.42,other
+103178,6.65% Rajgarh Transmission Ltd. (05/06/2030) **,INE0N1Z07015,,0.42,other
+103178,7.27% Axis Bank Ltd. (26/11/2035) **,INE238A08518,,0.42,other
+103178,7.59% Indian Renewable Energy Development Agency Ltd. (26/07/2034) **,INE202E08193,,0.41,other
+103178,7.49% Mindspace Business Parks Reit (03/08/2028) **,INE0CCU07215,,0.39,other
+103178,7.40% Bharti Telecom Ltd. (01/02/2029),INE403D08298,,0.39,other
+103178,7.87% Bajaj Finance Ltd. (08/02/2034) **,INE296A07SU3,,0.37,other
+103178,7.19% ICICI Home Finance Co. Ltd. (22/08/2028) **,INE071G07843,,0.37,other
+103178,8.54% REC Ltd. (15/11/2028) **,INE020B08BE3,,0.34,other
+103178,8.20% RJ Corp Ltd. (24/09/2029) **,INE460K08079,,0.33,other
+103178,7.58% REC Ltd. (31/05/2029) **,INE020B08FD6,,0.33,other
+103178,7.47% Small Industries Development Bank of India (05/09/2029) **,INE556F08KR0,,0.33,other
+103178,7.65% Sundaram Home Finance Ltd. (29/10/2029) **,INE667F07IW1,,0.33,other
+103178,6.47% Indian Railway Finance Corporation Ltd. (30/05/2028) **,INE053F08510,,0.32,other
+103178,7.29% Housing and Urban Development Corporation Ltd. (12/02/2035) **,INE031A08939,,0.32,other
+103178,7.55% Bajaj Finance Ltd. (03/04/2035) **,INE296A07TH8,,0.31,other
+103178,7.75% Bharti Telecom Ltd. (29/02/2028) **,INE403D08314,,0.31,other
+103178,6.66% Small Industries Development Bank of India (25/10/2028) **,INE556F08KZ3,,0.28,other
+103178,7.81% Axis Finance Ltd. (03/08/2029),INE891K07AN3,,0.27,other
+103178,8.52% Housing and Urban Development Corporation Ltd. (28/11/2028) **,INE031A08624,,0.27,other
+103178,7.90% Reliance Industries Ltd. (01/10/2036) **,INE002A08716,,0.26,other
+103178,6.92% REC Ltd. (20/03/2032) **,INE020B08DV3,,0.25,other
+103178,7.93% Power Finance Corporation Ltd. (31/12/2029) **,INE134E08KI8,,0.22,other
+103178,8.19% Summit Digitel Infrastructure Pvt. Ltd. (01/11/2026) **,INE507T07112,,0.22,other
+103178,8.05% Aditya Birla Housing Finance Ltd. (03/12/2027) **,INE831R07482,,0.22,other
+103178,7.53% National Bank for Agriculture and Rural Development (24/03/2028),INE261F08EM1,,0.22,other
+103178,7.68% National Bank for Agriculture and Rural Development (30/04/2029) **,INE261F08EG3,,0.22,other
+103178,7.51% Small Industries Development Bank of India (12/06/2028),INE556F08KU4,,0.22,other
+103178,7.44% Small Industries Development Bank of India (10/04/2028),INE556F08KT6,,0.22,other
+103178,7.41% Power Finance Corporation Ltd. (25/02/2030) **,INE134E08KL2,,0.22,other
+103178,7.22% Small Industries Development Bank of India (10/04/2029),INE556F08LC0,,0.22,other
+103178,7.10% National Bank for Agriculture and Rural Development (29/03/2029) **,INE261F08ET6,,0.22,other
+103178,6.61% Power Finance Corporation Ltd. (15/07/2028) **,INE134E08NS1,,0.22,other
+103178,7.77% REC Ltd. (31/03/2028) **,INE020B08EH0,,0.2,other
+103178,7.90% Sundaram Home Finance Ltd. (24/09/2027) **,INE667F07IV3,,0.2,other
+103178,7.41% Bank of Baroda (28/11/2039) **,INE028A08364,,0.19,other
+103178,8.56% REC Ltd. (29/11/2028) **,INE020B08BG8,,0.18,other
+103178,7.30% SMFG India Credit Company Ltd. (10/07/2028) **,INE535H07CQ1,,0.17,other
+103178,7.57% Power Finance Corporation Ltd. (12/07/2033) **,INE134E08MQ7,,0.17,other
+103178,7.45% Bharti Telecom Ltd. (15/12/2028) **,INE403D08280,,0.17,other
+103178,7.87% Summit Digitel Infrastructure Pvt. Ltd. (15/03/2030) **,INE507T07146,,0.16,other
+103178,8.23% Kotak Mahindra Prime Ltd. (21/12/2026) **,INE916DA7SP4,,0.15,other
+103178,7.26% NTPC Ltd. (20/03/2040) **,INE733E08262,,0.15,other
+103178,8.62% National Bank for Agriculture and Rural Development (14/03/2034) **,INE261F08BE4,,0.14,other
+103178,8.49% National Highways Authority of India (05/02/2029) **,INE906B07GO3,,0.13,other
+103178,7.75% Hindustan Zinc Ltd. (20/03/2027) **,INE267A08038,,0.11,other
+103178,7.23% Power Finance Corporation Ltd. (05/01/2027) **,INE134E08IO0,,0.11,other
+103178,6.96% ICICI Home Finance Co. Ltd. (25/02/2028) (FRN) **,INE071G07777,,0.11,other
+103178,7.61% Small Industries Development Bank of India (10/08/2029) **,INE556F08LD8,,0.11,other
+103178,7.49% Small Industries Development Bank of India (11/06/2029) **,INE556F08KX8,,0.11,other
+103178,6.85% National Bank for Agriculture and Rural Development (19/01/2029),INE261F08EQ2,,0.11,other
+103178,7.40% Power Finance Corporation Ltd. (15/01/2035) **,INE134E08NN2,,0.11,other
+103178,6.92% Indian Railway Finance Corporation Ltd. (29/08/2031) **,INE053F08122,,0.11,other
+103178,6.73% Indian Railway Finance Corporation Ltd. (06/07/2035) **,INE053F07CQ9,,0.1,other
+103178,7.79% Power Finance Corporation Ltd. (22/07/2030) **,INE134E08KU3,,0.1,other
+103178,7.22% Embassy Office Parks Reit (16/05/2028) **,INE041007175,,0.08,other
+103178,7.92% REC Ltd. (31/03/2030) **,INE020B08CJ0,,0.07,other
+103178,7.61% LIC Housing Finance Ltd. (29/08/2034) **,INE115A07QV7,,0.06,other
+103178,8.34% Vertis Infrastructure Trust (18/01/2027) **,INE0KXY07034,,0.06,other
+103178,7.25% Cube Highways Trust (25/04/2028) **,INE0NR607058,,0.04,other
+103178,7.97% TATA Capital Ltd. (19/07/2028) **,INE306N07NP4,,0.04,other
+103178,7.62% National Bank for Agriculture and Rural Development (10/05/2029) **,INE261F08EH1,,0.04,other
+103178,7.68% LIC Housing Finance Ltd. (29/05/2034) **,INE115A07QR5,,0.04,other
+103178,8.44% HDFC Bank Ltd. (28/12/2028) **,INE040A08393,,0.02,other
+103178,8.33% Aditya Birla Capital Ltd. (19/05/2027) **,INE860H07IY4,,0.02,other
+103178,7.99% TATA Capital Ltd. (08/02/2034) **,INE306N07NN9,,0.02,other
+103178,7.79% Bajaj Finance Ltd. (20/09/2033) **,INE296A07SP3,,0.02,other
+103178,7.24% Power Finance Corporation Ltd. (15/01/2035) **,INE134E08NJ0,,0.02,other
+103178,8.38% Kotak Mahindra Investments Ltd. (21/06/2027) **,INE975F07IR8,,0.01,other
+103178,8.33% HDB Financial Services Ltd. (10/05/2027) **,INE756I07EY1,,0.01,other
+103178,8.12% Kotak Mahindra Prime Ltd. (21/06/2027) **,INE916DA7SU4,,0.01,other
+103178,7.97% Kotak Mahindra Prime Ltd. (24/08/2029) **,INE916DA7TM9,,0.01,other
+103178,Siddhivinayak Securitisation Trust (28/09/2030) **,INE2I7F15012,,1.32,debt
+103178,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,0.5,debt
+103178,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,0.32,debt
+103178,India Universal Trust AL2 (21/11/2030) **,INE1CBK15037,,0.31,debt
+103178,India Universal Trust AL2 (21/09/2027) **,INE1CBK15029,,0.18,debt
+103178,Government of India (11/05/2036),IN0020260025,,5.99,debt
+103178,Government of India (27/07/2041),IN0020260041,,2.49,debt
+103178,Government of India (07/07/2040),IN0020250042,,1.23,debt
+103178,Government of India (28/08/2032),IN0020020106,,0.92,debt
+103178,Government of India (30/10/2034) (FRB),IN0020210137,,0.71,debt
+103178,State Government Securities  (24/12/2033),IN1320250211,,0.28,debt
+103178,Government of India (02/12/2034),IN0020240159,,0.28,debt
+103178,State Government Securities  (06/03/2034),IN1620180118,,0.2,debt
+103178,State Government Securities  (04/03/2038),IN4920250250,,0.13,debt
+103178,State Government Securities  (22/07/2035),IN3420260041,,0.11,debt
+103178,State Government Securities  (20/03/2033),IN3520230274,,0.11,debt
+103178,Government of India (17/04/2030),IN0020230036,,0.06,debt
+103178,Government of India (26/12/2029),IN0020160118,,0.04,debt
+103178,State Government Securities  (29/04/2036),IN3520260032,,0.04,debt
+103178,State Government Securities  (16/07/2047),IN2220250186,,0.04,debt
+103178,Government of India (17/06/2033),IN0020190065,,0.03,debt
+103178,Government of India (08/04/2034),IN0020240019,,0.03,debt
+103178,Government of India (07/10/2034),IN0020240126,,0.02,debt
+103178,State Government Securities  (08/09/2031),IN2920210266,,0.02,debt
+103178,Government of India (17/12/2050),IN0020200252,,0.01,debt
+103178,Government of India (18/11/2039),IN0020240134,,0.01,debt
+103178,Government of India (23/10/2028),IN0020230101,,0.01,debt
+103178,7.80% Reliance Life Sciences Pvt. Ltd. (05/11/2027) **,INE11LM07031,,0.22,other
+103178,REC Ltd. (19/03/2027),INE020B14748,,0.85,debt
+103178,Canara Bank (10/02/2027) **#,INE476A16L54,,1.72,debt
+103178,Small Industries Development Bank of India (04/02/2027) **#,INE556F16BY8,,0.64,debt
+103178,Small Industries Development Bank of India (29/01/2027) **#,INE556F16BX0,,0.43,debt
+103178,Union Bank of India (10/02/2027) #,INE692A16NK6,,0.21,debt
+103178,0% GOI  -  (15/04/2037) STRIPS,IN000437C045,,0.14,other
+103178,0% GOI  -  (15/10/2037) STRIPS,IN001037C042,,0.11,other
+103178,0% GOI  -  (16/06/2027) STRIPS,IN000627C074,,0.06,other
+103178,0% GOI  -  (15/04/2036) STRIPS,IN000436C047,,0.05,other
+103178,0% GOI  -  (15/10/2036) STRIPS,IN001036C044,,0.05,other
+103178,Notes:,IN000438C043,,0.04,other
+103178,0% GOI  -  (15/04/2039) STRIPS,IN000439C041,,0.03,other
+103178,0% GOI  -  (15/10/2039) STRIPS,IN001039C048,,0.03,other
+103178,0% GOI  -  (16/06/2028) STRIPS,IN000628C072,,0.02,other
+103178,0% GOI  -  (16/12/2028) STRIPS,IN001228C070,,0.02,other
+103178,0% GOI  -  (16/12/2029) STRIPS,IN001229C078,,0.02,other
+103178,0% GOI  -  (16/06/2030) STRIPS,IN000630C078,,0.02,other
+103178,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.38,other
+103178,TREPS,,,0.51,cash
+103178,Net Receivable / Payable,,,2.03,cash
+119533,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,4.77,other
+119533,7.30% Bharti Telecom Ltd. (01/12/2027) **,INE403D08306,,2.94,other
+119533,7.44% National Bank for Agriculture and Rural Development (17/07/2029),INE261F08EU4,,2.81,other
+119533,7.43% Jamnagar Utilities & Power Pvt. Ltd. (24/10/2034),INE936D07190,,2.3,other
+119533,6.66% National Bank for Agriculture and Rural Development (12/10/2028) **,INE261F08EP4,,2.14,other
+119533,7.80% Bajaj Housing Finance Ltd. (09/02/2034) **,INE377Y07458,,2.13,other
+119533,7.23% Housing and Urban Development Corporation Ltd. (18/07/2029) **,INE031A08AC8,,1.85,other
+119533,7.35% Bharti Telecom Ltd. (15/10/2027) **,INE403D08272,,1.81,other
+119533,7.62% Summit Digitel Infrastructure Pvt. Ltd. (22/11/2030) **,INE507T07088,,1.74,other
+119533,7.49% Embassy Office Parks Reit (22/06/2029) **,INE041007217,,1.74,other
+119533,7.29% Small Industries Development Bank of India (09/11/2029) **,INE556F08LG1,,1.71,other
+119533,7.55% Poonawalla Fincorp Ltd. (25/03/2027) **,INE511C07946,,1.32,other
+119533,7.60% Power Finance Corporation Ltd. (13/04/2029) **,INE134E08MX3,,1.32,other
+119533,7.42% Power Finance Corporation Ltd. (15/04/2028) **,INE134E08NL6,,1.31,other
+119533,7.32% Axis Finance Ltd. (11/01/2029) (FRN) **,INE891K07AM5,,1.31,other
+119533,7.78% Jio Credit Ltd. (07/07/2029) **,INE282H07075,,1.3,other
+119533,7.90% Jamnagar Utilities & Power Pvt. Ltd. (10/08/2028) **,INE936D07182,,1.24,other
+119533,8.12% L&T Finance Ltd. (29/06/2029) **,INE498L07210,,1.21,other
+119533,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,1.19,other
+119533,Indian Railway Finance Corporation Ltd. (01/12/2035) (ZCB) **,INE053F08536,,1.17,other
+119533,7.96% Embassy Office Parks Reit (27/09/2027) **,INE041007142,,1.12,other
+119533,7.77% LIC Housing Finance Ltd. (11/08/2028) **,INE115A07QM6,,1.1,other
+119533,7.58% Poonawalla Fincorp Ltd. (08/09/2028) **,INE511C07938,,1.1,other
+119533,8.10% RJ Corp Ltd. (24/09/2029) **,INE460K08061,,1.09,other
+119533,6.64% Housing and Urban Development Corporation Ltd. (17/07/2028) **,INE031A08996,,1.08,other
+119533,7.87% Bajaj Housing Finance Ltd. (04/08/2036) **,INE377Y07680,,1.06,other
+119533,7.21% Embassy Office Parks Reit (17/03/2028) **,INE041007167,,0.99,other
+119533,6.87% REC Ltd. (31/05/2030) **,INE020B08FU0,,0.92,other
+119533,7.73% Axis Finance Ltd. (12/06/2028) **,INE891K07AF9,,0.87,other
+119533,7.86% Tata Capital Housing Finance Ltd. (21/09/2029),INE033L07IJ1,,0.87,other
+119533,7.90% Aditya Birla Housing Finance Ltd. (08/06/2027) **,INE831R07557,,0.84,other
+119533,8.50% TATA Capital Ltd. (06/11/2029) **,INE306N07LO1,,0.8,other
+119533,6.59% Power Finance Corporation Ltd. (15/10/2030) **,INE134E08NU7,,0.78,other
+119533,7.60% Poonawalla Fincorp Ltd. (28/05/2027) **,INE511C07870,,0.77,other
+119533,6.64% Power Finance Corporation Ltd. (15/07/2030) **,INE134E08NR3,,0.74,other
+119533,6.73% Power Finance Corporation Ltd. (15/10/2027) **,INE134E08NW3,,0.72,other
+119533,7.38% REC Ltd. (28/02/2029),INE020B08GD4,,0.7,other
+119533,8.05% Summit Digitel Infrastructure Pvt. Ltd. (31/05/2027) **,INE507T07096,,0.66,other
+119533,7.79% Reliance Industries Ltd. (10/11/2033) **,INE002A07809,,0.66,other
+119533,7.63% Mindspace Business Parks Reit (26/09/2028) **,INE0CCU08015,,0.66,other
+119533,7.01% National Bank for Agriculture and Rural Development (16/03/2029) **,INE261F08ES8,,0.65,other
+119533,7.93% Bajaj Finance Ltd. (02/05/2034) **,INE296A07SY5,,0.6,other
+119533,7.53% Poonawalla Fincorp Ltd. (24/09/2027) **,INE511C07912,,0.59,other
+119533,7.37% National Bank for Financing Infrastructure and Development (16/07/2029) **,INE0KUG08142,,0.59,other
+119533,7.89% Bajaj Housing Finance Ltd. (14/07/2034) **,INE377Y07508,,0.58,other
+119533,7.42% State Bank of India (29/08/2039) **,INE062A08447,,0.57,other
+119533,6.60% REC Ltd. (30/06/2027),INE020B08FZ9,,0.55,other
+119533,7.19% Housing and Urban Development Corporation Ltd. (27/03/2035) **,INE031A08954,,0.53,other
+119533,7.40% ICICI Bank Ltd. (28/11/2040) **,INE090A08UN9,,0.52,other
+119533,7.86% HDFC Bank Ltd. (02/12/2032) **,INE040A08427,,0.46,other
+119533,7.69% Nexus Select Trust (28/05/2027) **,INE0NDH07043,,0.44,other
+119533,7.70% LIC Housing Finance Ltd. (16/05/2028) **,INE115A07QJ2,,0.44,other
+119533,7.70% Small Industries Development Bank of India (10/10/2029) **,INE556F08LH9,,0.44,other
+119533,7.34% Small Industries Development Bank of India (26/02/2029) **,INE556F08KS8,,0.44,other
+119533,7.34% REC Ltd. (30/04/2030) **,INE020B08FL9,,0.43,other
+119533,6.77% Tata Communications Ltd. (07/08/2028) **,INE151A08356,,0.43,other
+119533,7.16% National Bank for Agriculture and Rural Development (14/12/2029),INE261F08EV2,,0.43,other
+119533,7.34% Punjab National Bank (14/02/2035) **,INE160A08324,,0.42,other
+119533,6.65% Rajgarh Transmission Ltd. (05/06/2030) **,INE0N1Z07015,,0.42,other
+119533,7.27% Axis Bank Ltd. (26/11/2035) **,INE238A08518,,0.42,other
+119533,7.59% Indian Renewable Energy Development Agency Ltd. (26/07/2034) **,INE202E08193,,0.41,other
+119533,7.49% Mindspace Business Parks Reit (03/08/2028) **,INE0CCU07215,,0.39,other
+119533,7.40% Bharti Telecom Ltd. (01/02/2029),INE403D08298,,0.39,other
+119533,7.87% Bajaj Finance Ltd. (08/02/2034) **,INE296A07SU3,,0.37,other
+119533,7.19% ICICI Home Finance Co. Ltd. (22/08/2028) **,INE071G07843,,0.37,other
+119533,8.54% REC Ltd. (15/11/2028) **,INE020B08BE3,,0.34,other
+119533,8.20% RJ Corp Ltd. (24/09/2029) **,INE460K08079,,0.33,other
+119533,7.58% REC Ltd. (31/05/2029) **,INE020B08FD6,,0.33,other
+119533,7.47% Small Industries Development Bank of India (05/09/2029) **,INE556F08KR0,,0.33,other
+119533,7.65% Sundaram Home Finance Ltd. (29/10/2029) **,INE667F07IW1,,0.33,other
+119533,6.47% Indian Railway Finance Corporation Ltd. (30/05/2028) **,INE053F08510,,0.32,other
+119533,7.29% Housing and Urban Development Corporation Ltd. (12/02/2035) **,INE031A08939,,0.32,other
+119533,7.55% Bajaj Finance Ltd. (03/04/2035) **,INE296A07TH8,,0.31,other
+119533,7.75% Bharti Telecom Ltd. (29/02/2028) **,INE403D08314,,0.31,other
+119533,6.66% Small Industries Development Bank of India (25/10/2028) **,INE556F08KZ3,,0.28,other
+119533,7.81% Axis Finance Ltd. (03/08/2029),INE891K07AN3,,0.27,other
+119533,8.52% Housing and Urban Development Corporation Ltd. (28/11/2028) **,INE031A08624,,0.27,other
+119533,7.90% Reliance Industries Ltd. (01/10/2036) **,INE002A08716,,0.26,other
+119533,6.92% REC Ltd. (20/03/2032) **,INE020B08DV3,,0.25,other
+119533,7.93% Power Finance Corporation Ltd. (31/12/2029) **,INE134E08KI8,,0.22,other
+119533,8.19% Summit Digitel Infrastructure Pvt. Ltd. (01/11/2026) **,INE507T07112,,0.22,other
+119533,8.05% Aditya Birla Housing Finance Ltd. (03/12/2027) **,INE831R07482,,0.22,other
+119533,7.53% National Bank for Agriculture and Rural Development (24/03/2028),INE261F08EM1,,0.22,other
+119533,7.68% National Bank for Agriculture and Rural Development (30/04/2029) **,INE261F08EG3,,0.22,other
+119533,7.51% Small Industries Development Bank of India (12/06/2028),INE556F08KU4,,0.22,other
+119533,7.44% Small Industries Development Bank of India (10/04/2028),INE556F08KT6,,0.22,other
+119533,7.41% Power Finance Corporation Ltd. (25/02/2030) **,INE134E08KL2,,0.22,other
+119533,7.22% Small Industries Development Bank of India (10/04/2029),INE556F08LC0,,0.22,other
+119533,7.10% National Bank for Agriculture and Rural Development (29/03/2029) **,INE261F08ET6,,0.22,other
+119533,6.61% Power Finance Corporation Ltd. (15/07/2028) **,INE134E08NS1,,0.22,other
+119533,7.77% REC Ltd. (31/03/2028) **,INE020B08EH0,,0.2,other
+119533,7.90% Sundaram Home Finance Ltd. (24/09/2027) **,INE667F07IV3,,0.2,other
+119533,7.41% Bank of Baroda (28/11/2039) **,INE028A08364,,0.19,other
+119533,8.56% REC Ltd. (29/11/2028) **,INE020B08BG8,,0.18,other
+119533,7.30% SMFG India Credit Company Ltd. (10/07/2028) **,INE535H07CQ1,,0.17,other
+119533,7.57% Power Finance Corporation Ltd. (12/07/2033) **,INE134E08MQ7,,0.17,other
+119533,7.45% Bharti Telecom Ltd. (15/12/2028) **,INE403D08280,,0.17,other
+119533,7.87% Summit Digitel Infrastructure Pvt. Ltd. (15/03/2030) **,INE507T07146,,0.16,other
+119533,8.23% Kotak Mahindra Prime Ltd. (21/12/2026) **,INE916DA7SP4,,0.15,other
+119533,7.26% NTPC Ltd. (20/03/2040) **,INE733E08262,,0.15,other
+119533,8.62% National Bank for Agriculture and Rural Development (14/03/2034) **,INE261F08BE4,,0.14,other
+119533,8.49% National Highways Authority of India (05/02/2029) **,INE906B07GO3,,0.13,other
+119533,7.75% Hindustan Zinc Ltd. (20/03/2027) **,INE267A08038,,0.11,other
+119533,7.23% Power Finance Corporation Ltd. (05/01/2027) **,INE134E08IO0,,0.11,other
+119533,6.96% ICICI Home Finance Co. Ltd. (25/02/2028) (FRN) **,INE071G07777,,0.11,other
+119533,7.61% Small Industries Development Bank of India (10/08/2029) **,INE556F08LD8,,0.11,other
+119533,7.49% Small Industries Development Bank of India (11/06/2029) **,INE556F08KX8,,0.11,other
+119533,6.85% National Bank for Agriculture and Rural Development (19/01/2029),INE261F08EQ2,,0.11,other
+119533,7.40% Power Finance Corporation Ltd. (15/01/2035) **,INE134E08NN2,,0.11,other
+119533,6.92% Indian Railway Finance Corporation Ltd. (29/08/2031) **,INE053F08122,,0.11,other
+119533,6.73% Indian Railway Finance Corporation Ltd. (06/07/2035) **,INE053F07CQ9,,0.1,other
+119533,7.79% Power Finance Corporation Ltd. (22/07/2030) **,INE134E08KU3,,0.1,other
+119533,7.22% Embassy Office Parks Reit (16/05/2028) **,INE041007175,,0.08,other
+119533,7.92% REC Ltd. (31/03/2030) **,INE020B08CJ0,,0.07,other
+119533,7.61% LIC Housing Finance Ltd. (29/08/2034) **,INE115A07QV7,,0.06,other
+119533,8.34% Vertis Infrastructure Trust (18/01/2027) **,INE0KXY07034,,0.06,other
+119533,7.25% Cube Highways Trust (25/04/2028) **,INE0NR607058,,0.04,other
+119533,7.97% TATA Capital Ltd. (19/07/2028) **,INE306N07NP4,,0.04,other
+119533,7.62% National Bank for Agriculture and Rural Development (10/05/2029) **,INE261F08EH1,,0.04,other
+119533,7.68% LIC Housing Finance Ltd. (29/05/2034) **,INE115A07QR5,,0.04,other
+119533,8.44% HDFC Bank Ltd. (28/12/2028) **,INE040A08393,,0.02,other
+119533,8.33% Aditya Birla Capital Ltd. (19/05/2027) **,INE860H07IY4,,0.02,other
+119533,7.99% TATA Capital Ltd. (08/02/2034) **,INE306N07NN9,,0.02,other
+119533,7.79% Bajaj Finance Ltd. (20/09/2033) **,INE296A07SP3,,0.02,other
+119533,7.24% Power Finance Corporation Ltd. (15/01/2035) **,INE134E08NJ0,,0.02,other
+119533,8.38% Kotak Mahindra Investments Ltd. (21/06/2027) **,INE975F07IR8,,0.01,other
+119533,8.33% HDB Financial Services Ltd. (10/05/2027) **,INE756I07EY1,,0.01,other
+119533,8.12% Kotak Mahindra Prime Ltd. (21/06/2027) **,INE916DA7SU4,,0.01,other
+119533,7.97% Kotak Mahindra Prime Ltd. (24/08/2029) **,INE916DA7TM9,,0.01,other
+119533,Siddhivinayak Securitisation Trust (28/09/2030) **,INE2I7F15012,,1.32,debt
+119533,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,0.5,debt
+119533,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,0.32,debt
+119533,India Universal Trust AL2 (21/11/2030) **,INE1CBK15037,,0.31,debt
+119533,India Universal Trust AL2 (21/09/2027) **,INE1CBK15029,,0.18,debt
+119533,Government of India (11/05/2036),IN0020260025,,5.99,debt
+119533,Government of India (27/07/2041),IN0020260041,,2.49,debt
+119533,Government of India (07/07/2040),IN0020250042,,1.23,debt
+119533,Government of India (28/08/2032),IN0020020106,,0.92,debt
+119533,Government of India (30/10/2034) (FRB),IN0020210137,,0.71,debt
+119533,State Government Securities  (24/12/2033),IN1320250211,,0.28,debt
+119533,Government of India (02/12/2034),IN0020240159,,0.28,debt
+119533,State Government Securities  (06/03/2034),IN1620180118,,0.2,debt
+119533,State Government Securities  (04/03/2038),IN4920250250,,0.13,debt
+119533,State Government Securities  (22/07/2035),IN3420260041,,0.11,debt
+119533,State Government Securities  (20/03/2033),IN3520230274,,0.11,debt
+119533,Government of India (17/04/2030),IN0020230036,,0.06,debt
+119533,Government of India (26/12/2029),IN0020160118,,0.04,debt
+119533,State Government Securities  (29/04/2036),IN3520260032,,0.04,debt
+119533,State Government Securities  (16/07/2047),IN2220250186,,0.04,debt
+119533,Government of India (17/06/2033),IN0020190065,,0.03,debt
+119533,Government of India (08/04/2034),IN0020240019,,0.03,debt
+119533,Government of India (07/10/2034),IN0020240126,,0.02,debt
+119533,State Government Securities  (08/09/2031),IN2920210266,,0.02,debt
+119533,Government of India (17/12/2050),IN0020200252,,0.01,debt
+119533,Government of India (18/11/2039),IN0020240134,,0.01,debt
+119533,Government of India (23/10/2028),IN0020230101,,0.01,debt
+119533,7.80% Reliance Life Sciences Pvt. Ltd. (05/11/2027) **,INE11LM07031,,0.22,other
+119533,REC Ltd. (19/03/2027),INE020B14748,,0.85,debt
+119533,Canara Bank (10/02/2027) **#,INE476A16L54,,1.72,debt
+119533,Small Industries Development Bank of India (04/02/2027) **#,INE556F16BY8,,0.64,debt
+119533,Small Industries Development Bank of India (29/01/2027) **#,INE556F16BX0,,0.43,debt
+119533,Union Bank of India (10/02/2027) #,INE692A16NK6,,0.21,debt
+119533,0% GOI  -  (15/04/2037) STRIPS,IN000437C045,,0.14,other
+119533,0% GOI  -  (15/10/2037) STRIPS,IN001037C042,,0.11,other
+119533,0% GOI  -  (16/06/2027) STRIPS,IN000627C074,,0.06,other
+119533,0% GOI  -  (15/04/2036) STRIPS,IN000436C047,,0.05,other
+119533,0% GOI  -  (15/10/2036) STRIPS,IN001036C044,,0.05,other
+119533,Notes:,IN000438C043,,0.04,other
+119533,0% GOI  -  (15/04/2039) STRIPS,IN000439C041,,0.03,other
+119533,0% GOI  -  (15/10/2039) STRIPS,IN001039C048,,0.03,other
+119533,0% GOI  -  (16/06/2028) STRIPS,IN000628C072,,0.02,other
+119533,0% GOI  -  (16/12/2028) STRIPS,IN001228C070,,0.02,other
+119533,0% GOI  -  (16/12/2029) STRIPS,IN001229C078,,0.02,other
+119533,0% GOI  -  (16/06/2030) STRIPS,IN000630C078,,0.02,other
+119533,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.38,other
+119533,TREPS,,,0.51,cash
+119533,Net Receivable / Payable,,,2.03,cash
+100047,7.41% Indian Railway Finance Corporation Ltd. (15/10/2026) **,INE053F08312,,0.33,other
+100047,7.91% Sundaram Home Finance Ltd. (27/11/2026) **,INE667F07IU5,,0.25,other
+100047,7.55% REC Ltd. (31/10/2026) **,INE020B08FH7,,0.1,other
+100047,8.09% Kotak Mahindra Prime Ltd. (09/11/2026) **,INE916DA7SL3,,0.04,other
+100047,State Government Securities  (29/11/2026),IN1520230104,,0.2,debt
+100047,State Government Securities  (09/11/2026),IN3420160092,,0.17,debt
+100047,State Government Securities  (14/12/2026),IN1920160059,,0.17,debt
+100047,State Government Securities  (14/12/2026),IN1520160152,,0.14,debt
+100047,State Government Securities  (14/12/2026),IN2720160075,,0.01,debt
+100047,Hindustan Petroleum Corporation Ltd. (30/10/2026) **,INE094A14KQ3,,1.79,debt
+100047,Export-Import Bank of India (04/11/2026),INE514E14TS9,,1.58,debt
+100047,Reliance Retail Ventures Ltd. (27/11/2026) **,INE929O14FM0,,1.5,debt
+100047,Reliance Industries Ltd. (11/12/2026) **,INE002A14LU6,,1.45,debt
+100047,Tata Steel Ltd. (05/11/2026) **,INE081A14HN3,,1.3,debt
+100047,National Bank for Agriculture and Rural Development (01/10/2026),INE261F14PX2,,1.27,debt
+100047,National Bank for Agriculture and Rural Development (30/11/2026) **,INE261F14QE0,,1.17,debt
+100047,LIC Housing Finance Ltd. (09/12/2026) **,INE115A14GB6,,1.17,debt
+100047,Bajaj Financial Securities Ltd. (09/12/2026) **,INE01C314HI3,,1.13,debt
+100047,Motilal Oswal Financial Services Ltd. (17/12/2026) **,INE338I14NT5,,1.09,debt
+100047,Tata Teleservices Ltd. (17/11/2026) **,INE037E14AT9,,1.05,debt
+100047,Adani Ports and Special Economic Zone Ltd. (06/11/2026) **,INE742F14RL2,,0.81,debt
+100047,JM Financial Credit Solutions Ltd. (11/11/2026) **,INE651J14AZ3,,0.81,debt
+100047,JSW Energy Ltd. (17/11/2026) **,INE121E14466,,0.81,debt
+100047,JSW Energy Ltd. (07/12/2026) **,INE121E14474,,0.81,debt
+100047,ICICI Securities Ltd. (07/12/2026) **,INE763G14N50,,0.81,debt
+100047,IIFL Finance Ltd. (07/12/2026) **,INE530B14IW6,,0.8,debt
+100047,IIFL Finance Ltd. (10/12/2026) **,INE530B14IZ9,,0.8,debt
+100047,Can Fin Homes Ltd. (23/12/2026) **,INE477A14ER1,,0.77,debt
+100047,Motilal Oswal Financial Services Ltd. (04/12/2026) **,INE338I14NM0,,0.65,debt
+100047,Tata Realty and Infrastructure Ltd. (04/12/2026) **,INE371K14DX5,,0.6,debt
+100047,Tata Housing Development Co. Ltd. (30/11/2026) **,INE582L14JX2,,0.57,debt
+100047,ICICI Securities Ltd. (10/12/2026) **,INE763G14N84,,0.56,debt
+100047,Nuvama Wealth Finance Ltd. (04/12/2026) **,INE918K14DU9,,0.56,debt
+100047,Angel One Ltd. (08/12/2026) **,INE732I14DW4,,0.56,debt
+100047,L&T Metro Rail (Hyderabad) Ltd. [Guaranteed by Larsen & Toubro Ltd.] (09/11/2026) **,INE128M14BK6,,0.56,debt
+100047,Export-Import Bank of India (11/12/2026) **,INE514E14TR1,,0.52,debt
+100047,NTPC Ltd. (05/10/2026) **,INE733E14CE1,,0.49,debt
+100047,Knowledge Realty Trust (06/11/2026) **,INE1JAR14024,,0.49,debt
+100047,LIC Housing Finance Ltd. (11/11/2026) **,INE115A14FZ7,,0.49,debt
+100047,DSP Finance Pvt. Ltd. (17/11/2026) **,INE422H14610,,0.49,debt
+100047,SBICAP Securities Ltd. (11/12/2026) **,INE212K14FB2,,0.48,debt
+100047,360 ONE WAM Ltd. (07/12/2026) **,INE466L14GD6,,0.48,debt
+100047,JSW Energy Ltd. (16/12/2026) **,INE121E14482,,0.48,debt
+100047,National Bank for Agriculture and Rural Development (13/11/2026),INE261F14QB6,,0.41,debt
+100047,Tata Communications Ltd. (17/11/2026) **,INE151A14339,,0.41,debt
+100047,Small Industries Development Bank of India (01/12/2026) **,INE556F14MQ6,,0.4,debt
+100047,Tata Realty and Infrastructure Ltd. (30/11/2026) **,INE371K14DW7,,0.4,debt
+100047,Titan Company Ltd. (03/12/2026) **,INE280A14633,,0.4,debt
+100047,Indian Oil Corporation Ltd. (08/12/2026) **,INE242A14ZC6,,0.4,debt
+100047,Infina Finance Pvt. Ltd. (30/11/2026) **,INE879F14MC2,,0.4,debt
+100047,Reliance Industries Ltd. (10/12/2026),INE002A14LT8,,0.4,debt
+100047,ICICI Securities Ltd. (04/12/2026) **,INE763G14N35,,0.4,debt
+100047,Kotak Securities Ltd. (09/12/2026) **,INE028E14YI1,,0.4,debt
+100047,Can Fin Homes Ltd. (15/12/2026) **,INE477A14EQ3,,0.4,debt
+100047,Nuvama Wealth & Investment Ltd. (03/12/2026) **,INE523L14BZ8,,0.4,debt
+100047,ICICI Securities Ltd. (11/12/2026) **,INE763G14N92,,0.4,debt
+100047,DSP Finance Pvt. Ltd. (07/12/2026) **,INE422H14685,,0.4,debt
+100047,Torrent Pharmaceuticals Ltd. (22/12/2026) **,INE685A14187,,0.4,debt
+100047,Manappuram Finance Ltd. (17/12/2026) **,INE522D14QB6,,0.4,debt
+100047,DSP Finance Pvt. Ltd. (24/12/2026) **,INE422H14735,,0.4,debt
+100047,JM Financial Services Ltd. (05/11/2026) **,INE012I14SW9,,0.37,debt
+100047,Muthoot Finance Ltd. (23/11/2026) **,INE414G14UZ0,,0.36,debt
+100047,Tata Housing Development Co. Ltd. (16/12/2026) **,INE582L14KB6,,0.36,debt
+100047,Tata Projects Ltd. (09/10/2026) **,INE725H14EG1,,0.33,debt
+100047,Angel One Ltd. (04/11/2026) **,INE732I14DS2,,0.32,debt
+100047,Bajaj Financial Securities Ltd. (12/11/2026) **,INE01C314GL9,,0.32,debt
+100047,Bajaj Financial Securities Ltd. (13/11/2026) **,INE01C314GT2,,0.32,debt
+100047,Avenue Supermarts Ltd. (18/11/2026) **,INE192R14378,,0.32,debt
+100047,DSP Finance Pvt. Ltd. (12/11/2026) **,INE422H14594,,0.32,debt
+100047,Manappuram Finance Ltd. (16/11/2026) **,INE522D14PV6,,0.32,debt
+100047,Sharekhan Ltd. (27/11/2026) **,INE211H14BB9,,0.32,debt
+100047,HDFC Securities Ltd. (04/12/2026) **,INE700G14VX5,,0.32,debt
+100047,SBICAP Securities Ltd. (04/12/2026) **,INE212K14EX9,,0.32,debt
+100047,CESC Ltd. (15/12/2026) **,INE486A14GK2,,0.32,debt
+100047,DSP Finance Pvt. Ltd. (04/12/2026) **,INE422H14677,,0.32,debt
+100047,Godrej Properties Ltd. (17/12/2026) **,INE484J14H53,,0.32,debt
+100047,DSP Finance Pvt. Ltd. (14/12/2026) **,INE422H14693,,0.32,debt
+100047,DSP Finance Pvt. Ltd. (16/12/2026) **,INE422H14701,,0.32,debt
+100047,DSP Finance Pvt. Ltd. (18/12/2026) **,INE422H14727,,0.32,debt
+100047,360 One Prime Ltd. (24/12/2026) **,INE248U14TZ5,,0.32,debt
+100047,DSP Finance Pvt. Ltd. (22/12/2026) **,INE422H14503,,0.28,debt
+100047,Tata Housing Development Co. Ltd. (11/11/2026) **,INE582L14JU8,,0.27,debt
+100047,Manappuram Finance Ltd. (30/10/2026) **,INE522D14PW4,,0.24,debt
+100047,Fedbank Financial Services Ltd. (17/11/2026) **,INE007N14FO3,,0.24,debt
+100047,GIC Housing Finance Ltd. (27/11/2026) **,INE289B14KH6,,0.24,debt
+100047,Godrej Properties Ltd. (10/12/2026) **,INE484J14G96,,0.24,debt
+100047,Alembic Pharmaceuticals Ltd. (10/12/2026) **,INE901L14CR1,,0.24,debt
+100047,Aseem Infrastructure Finance Ltd. (04/12/2026),INE0AD514339,,0.24,debt
+100047,Bahadur Chand Investments Pvt. Ltd. (04/12/2026) **,INE087M14CA3,,0.24,debt
+100047,Nuvama Wealth & Investment Ltd. (17/12/2026) **,INE523L14CC5,,0.24,debt
+100047,Angel One Ltd. (17/12/2026) **,INE732I14DY0,,0.24,debt
+100047,Tata Housing Development Co. Ltd. (16/11/2026) **,INE582L14JV6,,0.23,debt
+100047,DSP Finance Pvt. Ltd. (21/12/2026) **,INE422H14719,,0.2,debt
+100047,Nirma Ltd. (07/12/2026) **,INE091A14EZ3,,0.19,debt
+100047,Cholamandalam Securities Ltd. (04/12/2026) **,INE04JX14223,,0.18,debt
+100047,SBICAP Securities Ltd. (27/11/2026) **,INE212K14EV3,,0.16,debt
+100047,Julius Baer Capital (India) Pvt. Ltd. (30/11/2026) **,INE824H14SY5,,0.16,debt
+100047,Godrej Properties Ltd. (08/12/2026) **,INE484J14H20,,0.16,debt
+100047,Godrej Properties Ltd. (09/12/2026) **,INE484J14G88,,0.16,debt
+100047,Manappuram Finance Ltd. (03/12/2026) **,INE522D14OZ0,,0.16,debt
+100047,Godrej Properties Ltd. (11/12/2026) **,INE484J14H04,,0.16,debt
+100047,SBICAP Securities Ltd. (08/12/2026) **,INE212K14EZ4,,0.16,debt
+100047,SBICAP Securities Ltd. (10/12/2026) **,INE212K14FA4,,0.16,debt
+100047,Godrej Industries Ltd. (16/12/2026) **,INE233AD4124,,0.12,debt
+100047,Godrej Industries Ltd. (17/12/2026) **,INE233AD4132,,0.12,debt
+100047,JM Financial Services Ltd. (11/12/2026) **,INE012I14TF2,,0.12,debt
+100047,Godrej Industries Ltd. (23/12/2026) **,INE233AD4173,,0.12,debt
+100047,JM Financial Services Ltd. (16/12/2026) **,INE012I14TH8,,0.12,debt
+100047,Tata Teleservices (Maharastra) Ltd. (09/11/2026) **,INE517B14AL3,,0.11,debt
+100047,Small Industries Development Bank of India (28/10/2026) **,INE556F14MO1,,0.08,debt
+100047,IDBI Capital Markets & Securities Ltd. (06/11/2026) **,INE835F14195,,0.08,debt
+100047,Infina Finance Pvt. Ltd. (04/12/2026) **,INE879F14NM9,,0.08,debt
+100047,Mirae Asset Financial Service (03/12/2026) **,INE0JRU14545,,0.08,debt
+100047,Tata Housing Development Co. Ltd. (15/12/2026) **,INE582L14KA8,,0.08,debt
+100047,Manappuram Finance Ltd. (16/12/2026) **,INE522D14QD2,,0.08,debt
+100047,Bajaj Finance Ltd. (04/11/2026) **,INE296A14D13,,0.04,debt
+100047,IDBI Capital Markets & Securities Ltd. (14/12/2026) **,INE835F14211,,0.04,debt
+100047,Axis Bank Ltd. (26/11/2026) **#,INE238AD6BO6,,2.15,debt
+100047,HDFC Bank Ltd. (14/12/2026) **#,INE040A16IJ0,,2.06,debt
+100047,HDFC Bank Ltd. (06/11/2026) **#,INE040A16HU9,,1.87,debt
+100047,City Union Bank Ltd. (08/12/2026) **#,INE491A16201,,1.85,debt
+100047,Union Bank of India (01/10/2026) #,INE692A16MR3,,1.72,debt
+100047,Punjab & Sind Bank (11/12/2026) **#,INE608A16TO1,,1.61,debt
+100047,The Jammu & Kashmir Bank Ltd. (09/12/2026) **#,INE168A16NR2,,1.61,debt
+100047,IndusInd Bank Ltd. (14/12/2026) **#,INE095A167D9,,1.61,debt
+100047,Central Bank of India (02/12/2026) **#,INE483A16LE7,,1.58,debt
+100047,Punjab & Sind Bank (17/11/2026) **#,INE608A16TM5,,1.22,debt
+100047,Yes Bank Ltd. (18/11/2026) **#,INE528G16Y10,,1.22,debt
+100047,The Federal Bank Ltd. (11/11/2026) **#,INE171A16OC6,,1.14,debt
+100047,Central Bank of India (04/12/2026) **#,INE483A16LF4,,1.13,debt
+100047,Bank of Baroda (04/12/2026) **#,INE028A16KO1,,1.05,debt
+100047,Union Bank of India (12/10/2026) **#,INE692A16MS1,,0.9,debt
+100047,Karur Vysya Bank Ltd. (17/11/2026) **#,INE036D16KO8,,0.81,debt
+100047,Yes Bank Ltd. (17/11/2026) **#,INE528G16Y02,,0.81,debt
+100047,Central Bank of India (27/11/2026) **#,INE483A16LD9,,0.81,debt
+100047,Bank of India (03/12/2026) **#,INE084A16GH6,,0.81,debt
+100047,Karur Vysya Bank Ltd. (07/12/2026) **#,INE036D16KQ3,,0.81,debt
+100047,HDFC Bank Ltd. (15/12/2026) **#,INE040A16KE7,,0.81,debt
+100047,Axis Bank Ltd. (16/12/2026) **#,INE238AD6CA3,,0.77,debt
+100047,DCB Bank Ltd. (30/11/2026) **#,INE503A16ID0,,0.65,debt
+100047,Yes Bank Ltd. (09/12/2026) **#,INE528G16Y36,,0.65,debt
+100047,UCO Bank (04/11/2026) **#,INE691A16ML8,,0.53,debt
+100047,National Bank for Agriculture and Rural Development (10/11/2026) **#,INE261F16AC3,,0.49,debt
+100047,AU Small Finance Bank Ltd. (04/12/2026) **#,INE949L16ER1,,0.48,debt
+100047,The Federal Bank Ltd. (15/10/2026) **#,INE171A16OA0,,0.41,debt
+100047,Canara Bank (23/11/2026) **#,INE476A16K97,,0.41,debt
+100047,Karur Vysya Bank Ltd. (23/11/2026) **#,INE036D16JK8,,0.4,debt
+100047,Central Bank of India (11/12/2026) **#,INE483A16LH0,,0.4,debt
+100047,Kotak Mahindra Bank Ltd. (21/12/2026) #,INE237AD6158,,0.4,debt
+100047,Indian Bank (04/12/2026) #,INE562A16QM0,,0.36,debt
+100047,Small Industries Development Bank of India (04/12/2026) **#,INE556F16BS0,,0.36,debt
+100047,DCB Bank Ltd. (02/12/2026) **#,INE503A16IE8,,0.32,debt
+100047,Small Industries Development Bank of India (06/11/2026) **#,INE556F16BQ4,,0.31,debt
+100047,Bank of Baroda (05/11/2026) **#,INE028A16KH5,,0.28,debt
+100047,AU Small Finance Bank Ltd. (06/11/2026) **#,INE949L16DZ6,,0.28,debt
+100047,Indian Bank (15/12/2026) **#,INE562A16QN8,,0.28,debt
+100047,Axis Bank Ltd. (07/12/2026) #,INE238AD6CN6,,0.25,debt
+100047,Bank of Baroda (25/11/2026) **#,INE028A16KK9,,0.24,debt
+100047,CTBC Bank Ltd. (01/12/2026) **#,INE019516116,,0.24,debt
+100047,AU Small Finance Bank Ltd. (03/12/2026) **#,INE949L16EC3,,0.24,debt
+100047,Indian Bank (06/11/2026) **#,INE562A16PT7,,0.2,debt
+100047,Small Industries Development Bank of India (27/10/2026) #,INE556F16BN1,,0.16,debt
+100047,Bank of Baroda (07/12/2026) **#,INE028A16MQ2,,0.12,debt
+100047,Punjab National Bank (15/12/2026) **#,INE160A16TZ9,,0.12,debt
+100047,Small Industries Development Bank of India (10/11/2026) **#,INE556F16BR2,,0.08,debt
+100047,HDFC Bank Ltd. (19/11/2026) **#,INE040A16HY1,,0.08,debt
+100047,Axis Bank Ltd. (27/11/2026) **#,INE238AD6BP3,,0.08,debt
+100047,AU Small Finance Bank Ltd. (25/11/2026) **#,INE949L16EB5,,0.08,debt
+100047,Canara Bank (08/12/2026) #,INE476A16J90,,0.08,debt
+100047,Bank of Baroda (15/12/2026) **#,INE028A16KW4,,0.04,debt
+100047,91 DAY T-BILL 05.11.26,IN002026X180,,3.74,debt
+100047,91 DAY T-BILL 12.11.26,IN002026X198,,1.91,debt
+100047,182 DAY T-BILL 08.10.26,IN002026Y014,,1.67,debt
+100047,364 DAY T-BILL 08.10.26,IN002025Z286,,1.63,debt
+100047,91 DAY T-BILL 08.10.26,IN002026X149,,1.59,debt
+100047,91 DAY T-BILL 10.12.26,IN002026X230,,1.53,debt
+100047,182 DAY T-BILL 17.12.26,IN002026Y113,,1.5,debt
+100047,91 DAY T-BILL 24.12.26,IN002026X255,,1.45,debt
+100047,91 DAY T-BILL 19.11.26,IN002026X206,,1.3,debt
+100047,364 DAY T-BILL 12.11.26,IN002025Z336,,0.81,debt
+100047,182 DAY T-BILL 29.10.26,IN002026Y048,,0.49,debt
+100047,182 DAY T-BILL 27.11.26,IN002026Y089,,0.49,debt
+100047,91 DAY T-BILL 01.10.26,IN002026X131,,0.38,debt
+100047,91 DAY T-BILL 17.12.26,IN002026X248,,0.35,debt
+100047,91 DAY T-BILL 27.11.26,IN002026X214,,0.32,debt
+100047,91 DAY T-BILL 29.10.26,IN002026X172,,0.24,debt
+100047,182 DAY T-BILL 19.11.26,IN002026Y071,,0.22,debt
+100047,182 DAY T-BILL 05.11.26,IN002026Y055,,0.15,debt
+100047,364 DAY T-BILL 23.10.26,IN002025Z302,,0.1,debt
+100047,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.28,other
+100047,Reverse Repo,GSECREPO1139,,0.8,cash
+100047,Reverse Repo,GSECREPO1118,,0.11,cash
+100047,Net Receivable / Payable,,,-8.31,cash
+119568,7.41% Indian Railway Finance Corporation Ltd. (15/10/2026) **,INE053F08312,,0.33,other
+119568,7.91% Sundaram Home Finance Ltd. (27/11/2026) **,INE667F07IU5,,0.25,other
+119568,7.55% REC Ltd. (31/10/2026) **,INE020B08FH7,,0.1,other
+119568,8.09% Kotak Mahindra Prime Ltd. (09/11/2026) **,INE916DA7SL3,,0.04,other
+119568,State Government Securities  (29/11/2026),IN1520230104,,0.2,debt
+119568,State Government Securities  (09/11/2026),IN3420160092,,0.17,debt
+119568,State Government Securities  (14/12/2026),IN1920160059,,0.17,debt
+119568,State Government Securities  (14/12/2026),IN1520160152,,0.14,debt
+119568,State Government Securities  (14/12/2026),IN2720160075,,0.01,debt
+119568,Hindustan Petroleum Corporation Ltd. (30/10/2026) **,INE094A14KQ3,,1.79,debt
+119568,Export-Import Bank of India (04/11/2026),INE514E14TS9,,1.58,debt
+119568,Reliance Retail Ventures Ltd. (27/11/2026) **,INE929O14FM0,,1.5,debt
+119568,Reliance Industries Ltd. (11/12/2026) **,INE002A14LU6,,1.45,debt
+119568,Tata Steel Ltd. (05/11/2026) **,INE081A14HN3,,1.3,debt
+119568,National Bank for Agriculture and Rural Development (01/10/2026),INE261F14PX2,,1.27,debt
+119568,National Bank for Agriculture and Rural Development (30/11/2026) **,INE261F14QE0,,1.17,debt
+119568,LIC Housing Finance Ltd. (09/12/2026) **,INE115A14GB6,,1.17,debt
+119568,Bajaj Financial Securities Ltd. (09/12/2026) **,INE01C314HI3,,1.13,debt
+119568,Motilal Oswal Financial Services Ltd. (17/12/2026) **,INE338I14NT5,,1.09,debt
+119568,Tata Teleservices Ltd. (17/11/2026) **,INE037E14AT9,,1.05,debt
+119568,Adani Ports and Special Economic Zone Ltd. (06/11/2026) **,INE742F14RL2,,0.81,debt
+119568,JM Financial Credit Solutions Ltd. (11/11/2026) **,INE651J14AZ3,,0.81,debt
+119568,JSW Energy Ltd. (17/11/2026) **,INE121E14466,,0.81,debt
+119568,JSW Energy Ltd. (07/12/2026) **,INE121E14474,,0.81,debt
+119568,ICICI Securities Ltd. (07/12/2026) **,INE763G14N50,,0.81,debt
+119568,IIFL Finance Ltd. (07/12/2026) **,INE530B14IW6,,0.8,debt
+119568,IIFL Finance Ltd. (10/12/2026) **,INE530B14IZ9,,0.8,debt
+119568,Can Fin Homes Ltd. (23/12/2026) **,INE477A14ER1,,0.77,debt
+119568,Motilal Oswal Financial Services Ltd. (04/12/2026) **,INE338I14NM0,,0.65,debt
+119568,Tata Realty and Infrastructure Ltd. (04/12/2026) **,INE371K14DX5,,0.6,debt
+119568,Tata Housing Development Co. Ltd. (30/11/2026) **,INE582L14JX2,,0.57,debt
+119568,ICICI Securities Ltd. (10/12/2026) **,INE763G14N84,,0.56,debt
+119568,Nuvama Wealth Finance Ltd. (04/12/2026) **,INE918K14DU9,,0.56,debt
+119568,Angel One Ltd. (08/12/2026) **,INE732I14DW4,,0.56,debt
+119568,L&T Metro Rail (Hyderabad) Ltd. [Guaranteed by Larsen & Toubro Ltd.] (09/11/2026) **,INE128M14BK6,,0.56,debt
+119568,Export-Import Bank of India (11/12/2026) **,INE514E14TR1,,0.52,debt
+119568,NTPC Ltd. (05/10/2026) **,INE733E14CE1,,0.49,debt
+119568,Knowledge Realty Trust (06/11/2026) **,INE1JAR14024,,0.49,debt
+119568,LIC Housing Finance Ltd. (11/11/2026) **,INE115A14FZ7,,0.49,debt
+119568,DSP Finance Pvt. Ltd. (17/11/2026) **,INE422H14610,,0.49,debt
+119568,SBICAP Securities Ltd. (11/12/2026) **,INE212K14FB2,,0.48,debt
+119568,360 ONE WAM Ltd. (07/12/2026) **,INE466L14GD6,,0.48,debt
+119568,JSW Energy Ltd. (16/12/2026) **,INE121E14482,,0.48,debt
+119568,National Bank for Agriculture and Rural Development (13/11/2026),INE261F14QB6,,0.41,debt
+119568,Tata Communications Ltd. (17/11/2026) **,INE151A14339,,0.41,debt
+119568,Small Industries Development Bank of India (01/12/2026) **,INE556F14MQ6,,0.4,debt
+119568,Tata Realty and Infrastructure Ltd. (30/11/2026) **,INE371K14DW7,,0.4,debt
+119568,Titan Company Ltd. (03/12/2026) **,INE280A14633,,0.4,debt
+119568,Indian Oil Corporation Ltd. (08/12/2026) **,INE242A14ZC6,,0.4,debt
+119568,Infina Finance Pvt. Ltd. (30/11/2026) **,INE879F14MC2,,0.4,debt
+119568,Reliance Industries Ltd. (10/12/2026),INE002A14LT8,,0.4,debt
+119568,ICICI Securities Ltd. (04/12/2026) **,INE763G14N35,,0.4,debt
+119568,Kotak Securities Ltd. (09/12/2026) **,INE028E14YI1,,0.4,debt
+119568,Can Fin Homes Ltd. (15/12/2026) **,INE477A14EQ3,,0.4,debt
+119568,Nuvama Wealth & Investment Ltd. (03/12/2026) **,INE523L14BZ8,,0.4,debt
+119568,ICICI Securities Ltd. (11/12/2026) **,INE763G14N92,,0.4,debt
+119568,DSP Finance Pvt. Ltd. (07/12/2026) **,INE422H14685,,0.4,debt
+119568,Torrent Pharmaceuticals Ltd. (22/12/2026) **,INE685A14187,,0.4,debt
+119568,Manappuram Finance Ltd. (17/12/2026) **,INE522D14QB6,,0.4,debt
+119568,DSP Finance Pvt. Ltd. (24/12/2026) **,INE422H14735,,0.4,debt
+119568,JM Financial Services Ltd. (05/11/2026) **,INE012I14SW9,,0.37,debt
+119568,Muthoot Finance Ltd. (23/11/2026) **,INE414G14UZ0,,0.36,debt
+119568,Tata Housing Development Co. Ltd. (16/12/2026) **,INE582L14KB6,,0.36,debt
+119568,Tata Projects Ltd. (09/10/2026) **,INE725H14EG1,,0.33,debt
+119568,Angel One Ltd. (04/11/2026) **,INE732I14DS2,,0.32,debt
+119568,Bajaj Financial Securities Ltd. (12/11/2026) **,INE01C314GL9,,0.32,debt
+119568,Bajaj Financial Securities Ltd. (13/11/2026) **,INE01C314GT2,,0.32,debt
+119568,Avenue Supermarts Ltd. (18/11/2026) **,INE192R14378,,0.32,debt
+119568,DSP Finance Pvt. Ltd. (12/11/2026) **,INE422H14594,,0.32,debt
+119568,Manappuram Finance Ltd. (16/11/2026) **,INE522D14PV6,,0.32,debt
+119568,Sharekhan Ltd. (27/11/2026) **,INE211H14BB9,,0.32,debt
+119568,HDFC Securities Ltd. (04/12/2026) **,INE700G14VX5,,0.32,debt
+119568,SBICAP Securities Ltd. (04/12/2026) **,INE212K14EX9,,0.32,debt
+119568,CESC Ltd. (15/12/2026) **,INE486A14GK2,,0.32,debt
+119568,DSP Finance Pvt. Ltd. (04/12/2026) **,INE422H14677,,0.32,debt
+119568,Godrej Properties Ltd. (17/12/2026) **,INE484J14H53,,0.32,debt
+119568,DSP Finance Pvt. Ltd. (14/12/2026) **,INE422H14693,,0.32,debt
+119568,DSP Finance Pvt. Ltd. (16/12/2026) **,INE422H14701,,0.32,debt
+119568,DSP Finance Pvt. Ltd. (18/12/2026) **,INE422H14727,,0.32,debt
+119568,360 One Prime Ltd. (24/12/2026) **,INE248U14TZ5,,0.32,debt
+119568,DSP Finance Pvt. Ltd. (22/12/2026) **,INE422H14503,,0.28,debt
+119568,Tata Housing Development Co. Ltd. (11/11/2026) **,INE582L14JU8,,0.27,debt
+119568,Manappuram Finance Ltd. (30/10/2026) **,INE522D14PW4,,0.24,debt
+119568,Fedbank Financial Services Ltd. (17/11/2026) **,INE007N14FO3,,0.24,debt
+119568,GIC Housing Finance Ltd. (27/11/2026) **,INE289B14KH6,,0.24,debt
+119568,Godrej Properties Ltd. (10/12/2026) **,INE484J14G96,,0.24,debt
+119568,Alembic Pharmaceuticals Ltd. (10/12/2026) **,INE901L14CR1,,0.24,debt
+119568,Aseem Infrastructure Finance Ltd. (04/12/2026),INE0AD514339,,0.24,debt
+119568,Bahadur Chand Investments Pvt. Ltd. (04/12/2026) **,INE087M14CA3,,0.24,debt
+119568,Nuvama Wealth & Investment Ltd. (17/12/2026) **,INE523L14CC5,,0.24,debt
+119568,Angel One Ltd. (17/12/2026) **,INE732I14DY0,,0.24,debt
+119568,Tata Housing Development Co. Ltd. (16/11/2026) **,INE582L14JV6,,0.23,debt
+119568,DSP Finance Pvt. Ltd. (21/12/2026) **,INE422H14719,,0.2,debt
+119568,Nirma Ltd. (07/12/2026) **,INE091A14EZ3,,0.19,debt
+119568,Cholamandalam Securities Ltd. (04/12/2026) **,INE04JX14223,,0.18,debt
+119568,SBICAP Securities Ltd. (27/11/2026) **,INE212K14EV3,,0.16,debt
+119568,Julius Baer Capital (India) Pvt. Ltd. (30/11/2026) **,INE824H14SY5,,0.16,debt
+119568,Godrej Properties Ltd. (08/12/2026) **,INE484J14H20,,0.16,debt
+119568,Godrej Properties Ltd. (09/12/2026) **,INE484J14G88,,0.16,debt
+119568,Manappuram Finance Ltd. (03/12/2026) **,INE522D14OZ0,,0.16,debt
+119568,Godrej Properties Ltd. (11/12/2026) **,INE484J14H04,,0.16,debt
+119568,SBICAP Securities Ltd. (08/12/2026) **,INE212K14EZ4,,0.16,debt
+119568,SBICAP Securities Ltd. (10/12/2026) **,INE212K14FA4,,0.16,debt
+119568,Godrej Industries Ltd. (16/12/2026) **,INE233AD4124,,0.12,debt
+119568,Godrej Industries Ltd. (17/12/2026) **,INE233AD4132,,0.12,debt
+119568,JM Financial Services Ltd. (11/12/2026) **,INE012I14TF2,,0.12,debt
+119568,Godrej Industries Ltd. (23/12/2026) **,INE233AD4173,,0.12,debt
+119568,JM Financial Services Ltd. (16/12/2026) **,INE012I14TH8,,0.12,debt
+119568,Tata Teleservices (Maharastra) Ltd. (09/11/2026) **,INE517B14AL3,,0.11,debt
+119568,Small Industries Development Bank of India (28/10/2026) **,INE556F14MO1,,0.08,debt
+119568,IDBI Capital Markets & Securities Ltd. (06/11/2026) **,INE835F14195,,0.08,debt
+119568,Infina Finance Pvt. Ltd. (04/12/2026) **,INE879F14NM9,,0.08,debt
+119568,Mirae Asset Financial Service (03/12/2026) **,INE0JRU14545,,0.08,debt
+119568,Tata Housing Development Co. Ltd. (15/12/2026) **,INE582L14KA8,,0.08,debt
+119568,Manappuram Finance Ltd. (16/12/2026) **,INE522D14QD2,,0.08,debt
+119568,Bajaj Finance Ltd. (04/11/2026) **,INE296A14D13,,0.04,debt
+119568,IDBI Capital Markets & Securities Ltd. (14/12/2026) **,INE835F14211,,0.04,debt
+119568,Axis Bank Ltd. (26/11/2026) **#,INE238AD6BO6,,2.15,debt
+119568,HDFC Bank Ltd. (14/12/2026) **#,INE040A16IJ0,,2.06,debt
+119568,HDFC Bank Ltd. (06/11/2026) **#,INE040A16HU9,,1.87,debt
+119568,City Union Bank Ltd. (08/12/2026) **#,INE491A16201,,1.85,debt
+119568,Union Bank of India (01/10/2026) #,INE692A16MR3,,1.72,debt
+119568,Punjab & Sind Bank (11/12/2026) **#,INE608A16TO1,,1.61,debt
+119568,The Jammu & Kashmir Bank Ltd. (09/12/2026) **#,INE168A16NR2,,1.61,debt
+119568,IndusInd Bank Ltd. (14/12/2026) **#,INE095A167D9,,1.61,debt
+119568,Central Bank of India (02/12/2026) **#,INE483A16LE7,,1.58,debt
+119568,Punjab & Sind Bank (17/11/2026) **#,INE608A16TM5,,1.22,debt
+119568,Yes Bank Ltd. (18/11/2026) **#,INE528G16Y10,,1.22,debt
+119568,The Federal Bank Ltd. (11/11/2026) **#,INE171A16OC6,,1.14,debt
+119568,Central Bank of India (04/12/2026) **#,INE483A16LF4,,1.13,debt
+119568,Bank of Baroda (04/12/2026) **#,INE028A16KO1,,1.05,debt
+119568,Union Bank of India (12/10/2026) **#,INE692A16MS1,,0.9,debt
+119568,Karur Vysya Bank Ltd. (17/11/2026) **#,INE036D16KO8,,0.81,debt
+119568,Yes Bank Ltd. (17/11/2026) **#,INE528G16Y02,,0.81,debt
+119568,Central Bank of India (27/11/2026) **#,INE483A16LD9,,0.81,debt
+119568,Bank of India (03/12/2026) **#,INE084A16GH6,,0.81,debt
+119568,Karur Vysya Bank Ltd. (07/12/2026) **#,INE036D16KQ3,,0.81,debt
+119568,HDFC Bank Ltd. (15/12/2026) **#,INE040A16KE7,,0.81,debt
+119568,Axis Bank Ltd. (16/12/2026) **#,INE238AD6CA3,,0.77,debt
+119568,DCB Bank Ltd. (30/11/2026) **#,INE503A16ID0,,0.65,debt
+119568,Yes Bank Ltd. (09/12/2026) **#,INE528G16Y36,,0.65,debt
+119568,UCO Bank (04/11/2026) **#,INE691A16ML8,,0.53,debt
+119568,National Bank for Agriculture and Rural Development (10/11/2026) **#,INE261F16AC3,,0.49,debt
+119568,AU Small Finance Bank Ltd. (04/12/2026) **#,INE949L16ER1,,0.48,debt
+119568,The Federal Bank Ltd. (15/10/2026) **#,INE171A16OA0,,0.41,debt
+119568,Canara Bank (23/11/2026) **#,INE476A16K97,,0.41,debt
+119568,Karur Vysya Bank Ltd. (23/11/2026) **#,INE036D16JK8,,0.4,debt
+119568,Central Bank of India (11/12/2026) **#,INE483A16LH0,,0.4,debt
+119568,Kotak Mahindra Bank Ltd. (21/12/2026) #,INE237AD6158,,0.4,debt
+119568,Indian Bank (04/12/2026) #,INE562A16QM0,,0.36,debt
+119568,Small Industries Development Bank of India (04/12/2026) **#,INE556F16BS0,,0.36,debt
+119568,DCB Bank Ltd. (02/12/2026) **#,INE503A16IE8,,0.32,debt
+119568,Small Industries Development Bank of India (06/11/2026) **#,INE556F16BQ4,,0.31,debt
+119568,Bank of Baroda (05/11/2026) **#,INE028A16KH5,,0.28,debt
+119568,AU Small Finance Bank Ltd. (06/11/2026) **#,INE949L16DZ6,,0.28,debt
+119568,Indian Bank (15/12/2026) **#,INE562A16QN8,,0.28,debt
+119568,Axis Bank Ltd. (07/12/2026) #,INE238AD6CN6,,0.25,debt
+119568,Bank of Baroda (25/11/2026) **#,INE028A16KK9,,0.24,debt
+119568,CTBC Bank Ltd. (01/12/2026) **#,INE019516116,,0.24,debt
+119568,AU Small Finance Bank Ltd. (03/12/2026) **#,INE949L16EC3,,0.24,debt
+119568,Indian Bank (06/11/2026) **#,INE562A16PT7,,0.2,debt
+119568,Small Industries Development Bank of India (27/10/2026) #,INE556F16BN1,,0.16,debt
+119568,Bank of Baroda (07/12/2026) **#,INE028A16MQ2,,0.12,debt
+119568,Punjab National Bank (15/12/2026) **#,INE160A16TZ9,,0.12,debt
+119568,Small Industries Development Bank of India (10/11/2026) **#,INE556F16BR2,,0.08,debt
+119568,HDFC Bank Ltd. (19/11/2026) **#,INE040A16HY1,,0.08,debt
+119568,Axis Bank Ltd. (27/11/2026) **#,INE238AD6BP3,,0.08,debt
+119568,AU Small Finance Bank Ltd. (25/11/2026) **#,INE949L16EB5,,0.08,debt
+119568,Canara Bank (08/12/2026) #,INE476A16J90,,0.08,debt
+119568,Bank of Baroda (15/12/2026) **#,INE028A16KW4,,0.04,debt
+119568,91 DAY T-BILL 05.11.26,IN002026X180,,3.74,debt
+119568,91 DAY T-BILL 12.11.26,IN002026X198,,1.91,debt
+119568,182 DAY T-BILL 08.10.26,IN002026Y014,,1.67,debt
+119568,364 DAY T-BILL 08.10.26,IN002025Z286,,1.63,debt
+119568,91 DAY T-BILL 08.10.26,IN002026X149,,1.59,debt
+119568,91 DAY T-BILL 10.12.26,IN002026X230,,1.53,debt
+119568,182 DAY T-BILL 17.12.26,IN002026Y113,,1.5,debt
+119568,91 DAY T-BILL 24.12.26,IN002026X255,,1.45,debt
+119568,91 DAY T-BILL 19.11.26,IN002026X206,,1.3,debt
+119568,364 DAY T-BILL 12.11.26,IN002025Z336,,0.81,debt
+119568,182 DAY T-BILL 29.10.26,IN002026Y048,,0.49,debt
+119568,182 DAY T-BILL 27.11.26,IN002026Y089,,0.49,debt
+119568,91 DAY T-BILL 01.10.26,IN002026X131,,0.38,debt
+119568,91 DAY T-BILL 17.12.26,IN002026X248,,0.35,debt
+119568,91 DAY T-BILL 27.11.26,IN002026X214,,0.32,debt
+119568,91 DAY T-BILL 29.10.26,IN002026X172,,0.24,debt
+119568,182 DAY T-BILL 19.11.26,IN002026Y071,,0.22,debt
+119568,182 DAY T-BILL 05.11.26,IN002026Y055,,0.15,debt
+119568,364 DAY T-BILL 23.10.26,IN002025Z302,,0.1,debt
+119568,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.28,other
+119568,Reverse Repo,GSECREPO1139,,0.8,cash
+119568,Reverse Repo,GSECREPO1118,,0.11,cash
+119568,Net Receivable / Payable,,,-8.31,cash
+119523,7.30% Bharti Telecom Ltd. (01/12/2027) **,INE403D08306,,6.36,other
+119523,Jubilant Bevco Ltd. (31/05/2028) (ZCB),INE1D4P08019,,4.29,other
+119523,JTPM Metal Traders Ltd. (29/09/2028) (ZCB) **,INE02PE08036,,3.36,other
+119523,6.47% Indian Railway Finance Corporation Ltd. (30/05/2028) **,INE053F08510,,2.89,other
+119523,8.10% Tata Capital Housing Finance Ltd. (13/12/2028) **,INE033L07IB8,,2.66,other
+119523,7.19% ICICI Home Finance Co. Ltd. (22/08/2028) **,INE071G07843,,2.63,other
+119523,6.66% National Bank for Agriculture and Rural Development (12/10/2028) **,INE261F08EP4,,2.4,other
+119523,7.09% ICICI Home Finance Co. Ltd. (12/11/2027) (FRN) **,INE071G07751,,2.28,other
+119523,7.56% REC Ltd. (31/08/2027) **,INE020B08FF1,,1.96,other
+119523,7.21% Embassy Office Parks Reit (17/03/2028) **,INE041007167,,1.91,other
+119523,7.31% Aditya Birla Housing Finance Ltd. (22/05/2028) **,INE831R07581,,1.88,other
+119523,7.20% Knowledge Realty Trust (26/09/2028) **,INE1JAR07010,,1.65,other
+119523,7.35% Bharti Telecom Ltd. (15/10/2027) **,INE403D08272,,1.62,other
+119523,7.55% Poonawalla Fincorp Ltd. (25/03/2027) **,INE511C07946,,1.58,other
+119523,9.25% Hinduja Leyland Finance Ltd. (09/07/2031),INE146O08399,,1.41,other
+119523,8.40% Hinduja Leyland Finance Ltd. (06/05/2027) **,INE146O07557,,1.36,other
+119523,7.44% Small Industries Development Bank of India (10/04/2028),INE556F08KT6,,1.35,other
+119523,7.65% Poonawalla Fincorp Ltd. (19/06/2028) **,INE511C07862,,1.35,other
+119523,9.09% Muthoot Finance Ltd. (01/06/2029) **,INE414G07JG7,,1.1,other
+119523,6.64% Housing and Urban Development Corporation Ltd. (17/07/2028) **,INE031A08996,,1.07,other
+119523,7.03% National Bank for Financing Infrastructure and Development (08/04/2030) **,INE0KUG08076,,1.06,other
+119523,8.07% SMFG India Home Finance Co. Ltd. (10/09/2027) **,INE213W07293,,0.98,other
+119523,7.77% REC Ltd. (31/03/2028) **,INE020B08EH0,,0.82,other
+119523,9.00% Hinduja Leyland Finance Ltd. (14/11/2027) **,INE146O07508,,0.69,other
+119523,8.32% Hero Housing Finance Ltd. (30/08/2027) **,INE800X07097,,0.65,other
+119523,9.15% Piramal Finance Ltd. (17/06/2027) **,INE202B07JR4,,0.55,other
+119523,6.60% REC Ltd. (30/06/2027),INE020B08FZ9,,0.54,other
+119523,6.70% REC Ltd. (31/12/2029) **,INE020B08FY2,,0.53,other
+119523,9.40% 360 One Prime Ltd. (04/03/2027),INE248U07FU9,,0.49,other
+119523,6.85% National Bank for Agriculture and Rural Development (19/01/2029),INE261F08EQ2,,0.48,other
+119523,8.65% Bharti Telecom Ltd. (05/11/2027) **,INE403D08231,,0.33,other
+119523,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,0.32,other
+119523,7.46% REC Ltd. (30/06/2028) **,INE020B08EK4,,0.27,other
+119523,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,0.27,other
+119523,6.95% REC Ltd. (18/02/2028) **,INE020B08GB8,,0.27,other
+119523,7.12% L&T Finance Ltd. (25/09/2028) **,INE498L07178,,0.27,other
+119523,8.05% Summit Digitel Infrastructure Pvt. Ltd. (31/05/2027) **,INE507T07096,,0.22,other
+119523,6.66% Small Industries Development Bank of India (25/10/2028) **,INE556F08KZ3,,0.21,other
+119523,7.22% Embassy Office Parks Reit (16/05/2028) **,INE041007175,,0.19,other
+119523,6.74% Small Industries Development Bank of India (10/01/2029) **,INE556F08LA4,,0.16,other
+119523,7.80% National Bank for Agriculture and Rural Development (15/03/2027),INE261F08EF5,,0.03,other
+119523,7.70% National Bank for Agriculture and Rural Development (30/09/2027),INE261F08EI9,,0.03,other
+119523,7.25% RJ Corp Ltd. (08/12/2028) **,INE460K08053,,0.03,other
+119523,9.31% Vedanta Ltd. (03/12/2027) **,INE205A08046,,0.02,other
+119523,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,2.43,debt
+119523,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,1.41,debt
+119523,India Universal Trust AL2 (21/09/2027) **,INE1CBK15029,,1.07,debt
+119523,REC Ltd. (19/03/2027),INE020B14748,,2.9,debt
+119523,Export-Import Bank of India (12/03/2027),INE514E14TU5,,0.53,debt
+119523,Small Industries Development Bank of India (20/08/2027) **#,INE556F16CG3,,4.85,debt
+119523,National Bank for Agriculture and Rural Development (03/02/2027) **#,INE261F16AI0,,3.72,debt
+119523,Kotak Mahindra Bank Ltd. (04/02/2027) #,INE237AD6133,,2.13,debt
+119523,Punjab National Bank (10/02/2027) #,INE160A16UI3,,1.86,debt
+119523,Punjab National Bank (04/02/2027) **#,INE160A16UD4,,1.28,debt
+119523,HDFC Bank Ltd. (15/01/2027) #,INE040A16KD9,,1.12,debt
+119523,Punjab National Bank (28/01/2027) **#,INE160A16UC6,,1.07,debt
+119523,Small Industries Development Bank of India (28/01/2027) **#,INE556F16BW2,,1.06,debt
+119523,Canara Bank (02/02/2027) **#,INE476A16G44,,1.06,debt
+119523,Indian Bank (05/02/2027) **#,INE562A16QI8,,1.06,debt
+119523,Indian Bank (09/02/2027) **#,INE562A16QJ6,,1.06,debt
+119523,Small Industries Development Bank of India (18/02/2027) **#,INE556F16CB4,,1.06,debt
+119523,Canara Bank (12/03/2027) **#,INE476A16H92,,1.06,debt
+119523,ICICI Bank Ltd. (08/03/2027) **#,INE090AD6295,,0.79,debt
+119523,ICICI Bank Ltd. (27/01/2027) **#,INE090AD6279,,0.53,debt
+119523,Union Bank of India (19/01/2027) #,INE692A16KU1,,0.37,debt
+119523,HDFC Bank Ltd. (09/03/2027) **#,INE040A16IT9,,0.37,debt
+119523,Punjab National Bank (09/02/2027) **#,INE160A16UH5,,0.27,debt
+119523,HDFC Bank Ltd. (24/02/2027) **#,INE040A16IO0,,0.26,debt
+119523,91 DAY T-BILL 31.12.26,IN002026X263,,4.3,debt
+119523,364 DAY T-BILL 19.02.27,IN002025Z468,,1.33,debt
+119523,91 DAY T-BILL 24.12.26,IN002026X255,,0.01,debt
+119523,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.44,other
+119523,TREPS,,,8.61,cash
+119523,Net Receivable / Payable,,,-2.53,cash
+103192,7.30% Bharti Telecom Ltd. (01/12/2027) **,INE403D08306,,6.36,other
+103192,Jubilant Bevco Ltd. (31/05/2028) (ZCB),INE1D4P08019,,4.29,other
+103192,JTPM Metal Traders Ltd. (29/09/2028) (ZCB) **,INE02PE08036,,3.36,other
+103192,6.47% Indian Railway Finance Corporation Ltd. (30/05/2028) **,INE053F08510,,2.89,other
+103192,8.10% Tata Capital Housing Finance Ltd. (13/12/2028) **,INE033L07IB8,,2.66,other
+103192,7.19% ICICI Home Finance Co. Ltd. (22/08/2028) **,INE071G07843,,2.63,other
+103192,6.66% National Bank for Agriculture and Rural Development (12/10/2028) **,INE261F08EP4,,2.4,other
+103192,7.09% ICICI Home Finance Co. Ltd. (12/11/2027) (FRN) **,INE071G07751,,2.28,other
+103192,7.56% REC Ltd. (31/08/2027) **,INE020B08FF1,,1.96,other
+103192,7.21% Embassy Office Parks Reit (17/03/2028) **,INE041007167,,1.91,other
+103192,7.31% Aditya Birla Housing Finance Ltd. (22/05/2028) **,INE831R07581,,1.88,other
+103192,7.20% Knowledge Realty Trust (26/09/2028) **,INE1JAR07010,,1.65,other
+103192,7.35% Bharti Telecom Ltd. (15/10/2027) **,INE403D08272,,1.62,other
+103192,7.55% Poonawalla Fincorp Ltd. (25/03/2027) **,INE511C07946,,1.58,other
+103192,9.25% Hinduja Leyland Finance Ltd. (09/07/2031),INE146O08399,,1.41,other
+103192,8.40% Hinduja Leyland Finance Ltd. (06/05/2027) **,INE146O07557,,1.36,other
+103192,7.44% Small Industries Development Bank of India (10/04/2028),INE556F08KT6,,1.35,other
+103192,7.65% Poonawalla Fincorp Ltd. (19/06/2028) **,INE511C07862,,1.35,other
+103192,9.09% Muthoot Finance Ltd. (01/06/2029) **,INE414G07JG7,,1.1,other
+103192,6.64% Housing and Urban Development Corporation Ltd. (17/07/2028) **,INE031A08996,,1.07,other
+103192,7.03% National Bank for Financing Infrastructure and Development (08/04/2030) **,INE0KUG08076,,1.06,other
+103192,8.07% SMFG India Home Finance Co. Ltd. (10/09/2027) **,INE213W07293,,0.98,other
+103192,7.77% REC Ltd. (31/03/2028) **,INE020B08EH0,,0.82,other
+103192,9.00% Hinduja Leyland Finance Ltd. (14/11/2027) **,INE146O07508,,0.69,other
+103192,8.32% Hero Housing Finance Ltd. (30/08/2027) **,INE800X07097,,0.65,other
+103192,9.15% Piramal Finance Ltd. (17/06/2027) **,INE202B07JR4,,0.55,other
+103192,6.60% REC Ltd. (30/06/2027),INE020B08FZ9,,0.54,other
+103192,6.70% REC Ltd. (31/12/2029) **,INE020B08FY2,,0.53,other
+103192,9.40% 360 One Prime Ltd. (04/03/2027),INE248U07FU9,,0.49,other
+103192,6.85% National Bank for Agriculture and Rural Development (19/01/2029),INE261F08EQ2,,0.48,other
+103192,8.65% Bharti Telecom Ltd. (05/11/2027) **,INE403D08231,,0.33,other
+103192,7.28% REC Ltd. (31/08/2029) **,INE020B08GI3,,0.32,other
+103192,7.46% REC Ltd. (30/06/2028) **,INE020B08EK4,,0.27,other
+103192,7.48% National Bank for Agriculture and Rural Development (15/09/2028),INE261F08EO7,,0.27,other
+103192,6.95% REC Ltd. (18/02/2028) **,INE020B08GB8,,0.27,other
+103192,7.12% L&T Finance Ltd. (25/09/2028) **,INE498L07178,,0.27,other
+103192,8.05% Summit Digitel Infrastructure Pvt. Ltd. (31/05/2027) **,INE507T07096,,0.22,other
+103192,6.66% Small Industries Development Bank of India (25/10/2028) **,INE556F08KZ3,,0.21,other
+103192,7.22% Embassy Office Parks Reit (16/05/2028) **,INE041007175,,0.19,other
+103192,6.74% Small Industries Development Bank of India (10/01/2029) **,INE556F08LA4,,0.16,other
+103192,7.80% National Bank for Agriculture and Rural Development (15/03/2027),INE261F08EF5,,0.03,other
+103192,7.70% National Bank for Agriculture and Rural Development (30/09/2027),INE261F08EI9,,0.03,other
+103192,7.25% RJ Corp Ltd. (08/12/2028) **,INE460K08053,,0.03,other
+103192,9.31% Vedanta Ltd. (03/12/2027) **,INE205A08046,,0.02,other
+103192,Shivshakti Securitisation Trust (28/09/2029) **,INE2I7G15010,,2.43,debt
+103192,Radhakrishna Securitisation Trust (28/09/2028) **,INE2I7H15018,,1.41,debt
+103192,India Universal Trust AL2 (21/09/2027) **,INE1CBK15029,,1.07,debt
+103192,REC Ltd. (19/03/2027),INE020B14748,,2.9,debt
+103192,Export-Import Bank of India (12/03/2027),INE514E14TU5,,0.53,debt
+103192,Small Industries Development Bank of India (20/08/2027) **#,INE556F16CG3,,4.85,debt
+103192,National Bank for Agriculture and Rural Development (03/02/2027) **#,INE261F16AI0,,3.72,debt
+103192,Kotak Mahindra Bank Ltd. (04/02/2027) #,INE237AD6133,,2.13,debt
+103192,Punjab National Bank (10/02/2027) #,INE160A16UI3,,1.86,debt
+103192,Punjab National Bank (04/02/2027) **#,INE160A16UD4,,1.28,debt
+103192,HDFC Bank Ltd. (15/01/2027) #,INE040A16KD9,,1.12,debt
+103192,Punjab National Bank (28/01/2027) **#,INE160A16UC6,,1.07,debt
+103192,Small Industries Development Bank of India (28/01/2027) **#,INE556F16BW2,,1.06,debt
+103192,Canara Bank (02/02/2027) **#,INE476A16G44,,1.06,debt
+103192,Indian Bank (05/02/2027) **#,INE562A16QI8,,1.06,debt
+103192,Indian Bank (09/02/2027) **#,INE562A16QJ6,,1.06,debt
+103192,Small Industries Development Bank of India (18/02/2027) **#,INE556F16CB4,,1.06,debt
+103192,Canara Bank (12/03/2027) **#,INE476A16H92,,1.06,debt
+103192,ICICI Bank Ltd. (08/03/2027) **#,INE090AD6295,,0.79,debt
+103192,ICICI Bank Ltd. (27/01/2027) **#,INE090AD6279,,0.53,debt
+103192,Union Bank of India (19/01/2027) #,INE692A16KU1,,0.37,debt
+103192,HDFC Bank Ltd. (09/03/2027) **#,INE040A16IT9,,0.37,debt
+103192,Punjab National Bank (09/02/2027) **#,INE160A16UH5,,0.27,debt
+103192,HDFC Bank Ltd. (24/02/2027) **#,INE040A16IO0,,0.26,debt
+103192,91 DAY T-BILL 31.12.26,IN002026X263,,4.3,debt
+103192,364 DAY T-BILL 19.02.27,IN002025Z468,,1.33,debt
+103192,91 DAY T-BILL 24.12.26,IN002026X255,,0.01,debt
+103192,Corporate Debt Mkt Devp. Fund-A2,INF0RQ622028,,0.44,other
+103192,TREPS,,,8.61,cash
+103192,Net Receivable / Payable,,,-2.53,cash
+120564,ICICI Bank Ltd.,INE090A01021,Banks,5.6,equity
+120564,HDFC Bank Ltd.,INE040A01034,Banks,3.91,equity
+120564,Kotak Mahindra Bank Ltd.,INE237A01036,Banks,3.55,equity
+120564,Reliance Industries Ltd.,INE002A01018,Petroleum Products,2.42,equity
+120564,State Bank of India,INE062A01020,Banks,2.09,equity
+120564,Infosys Ltd.,INE009A01021,IT - Software,2.01,equity
+120564,Sona Blw Precision Forgings Ltd.,INE073K01018,Auto Components,1.99,equity
+120564,Bharat Forge Ltd.,INE465A01025,Auto Components,1.93,equity
+120564,Lenskart Solutions Ltd.,INE956O01016,Retailing,1.9,equity
+120564,Mankind Pharma Ltd.,INE634S01028,Pharmaceuticals & Biotechnology,1.85,equity
+120564,United Spirits Ltd.,INE854D01024,Beverages,1.81,equity
+120564,HCL Technologies Ltd.,INE860A01027,IT - Software,1.8,equity
+120564,Shriram Finance Ltd.,INE721A01047,Finance,1.76,equity
+120564,Trent Ltd.,INE849A01020,Retailing,1.73,equity
+120564,Hindalco Industries Ltd.,INE038A01020,Non - Ferrous Metals,1.72,equity

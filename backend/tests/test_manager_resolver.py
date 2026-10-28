@@ -49,13 +49,17 @@ def test_cache_csv_dir_is_read(monkeypatch, tmp_path):
 
 class FakeRepo:
     def __init__(self, stored):
-        self.stored, self.upserts = stored, []
+        self.stored, self.upserts, self.updates = stored, [], []
 
     def list_mf_managers(self):
         return self.stored
 
     def upsert_mf_managers(self, rows):
         self.upserts = rows
+        return len(rows)
+
+    def update_mf_manager_start(self, rows):
+        self.updates.extend(rows)
         return len(rows)
 
 
@@ -68,3 +72,50 @@ def test_sync_never_overwrites_existing_rows(monkeypatch):
     assert mr.sync_managers(repo) == 2  # code 3 from seed, code 2 as sibling of 1
     assert {r["scheme_code"] for r in repo.upserts} == {"2", "3"}
     assert next(r for r in repo.upserts if r["scheme_code"] == "2")["manager_name"] == "Staff edit"
+
+
+def test_sync_fills_missing_start_on_same_name(monkeypatch):
+    from app.backoffice import mf_screener
+
+    _no_sources(monkeypatch, cached={"1": _row("Ravi Kumar", "amc_site:sbi", "2021-04-01")})
+    monkeypatch.setattr(mf_screener, "_base_frame", lambda: UNI)
+    repo = FakeRepo({"1": _row("Mr. Ravi Kumar", "amfi_snapshot", None)})
+    mr.sync_managers(repo)
+    assert len(repo.updates) == 1
+    assert repo.updates[0]["scheme_code"] == "1"
+    assert repo.updates[0]["manager_start"] == "2021-04-01"
+    assert repo.updates[0]["source"] == "amc_site:sbi"
+    assert repo.stored["1"]["manager_start"] == "2021-04-01"
+
+
+def test_sync_does_not_change_when_names_differ(monkeypatch):
+    from app.backoffice import mf_screener
+
+    _no_sources(monkeypatch, cached={"1": _row("Sanjay Doshi", "amc_site:sbi", "2021-04-01")})
+    monkeypatch.setattr(mf_screener, "_base_frame", lambda: UNI)
+    repo = FakeRepo({"1": _row("Ravi Kumar", "amfi_snapshot", None)})
+    mr.sync_managers(repo)
+    assert len(repo.updates) == 0
+    assert repo.stored["1"]["manager_start"] is None
+
+
+def test_sync_never_touches_manual_import(monkeypatch):
+    from app.backoffice import mf_screener
+
+    _no_sources(monkeypatch, cached={"1": _row("Ravi Kumar", "amc_site:sbi", "2021-04-01")})
+    monkeypatch.setattr(mf_screener, "_base_frame", lambda: UNI)
+    repo = FakeRepo({"1": _row("Ravi Kumar", "manual_import", None)})
+    mr.sync_managers(repo)
+    assert len(repo.updates) == 0
+    assert repo.stored["1"]["manager_start"] is None
+
+
+def test_sync_does_not_overwrite_existing_start(monkeypatch):
+    from app.backoffice import mf_screener
+
+    _no_sources(monkeypatch, cached={"1": _row("Ravi Kumar", "amc_site:sbi", "2021-04-01")})
+    monkeypatch.setattr(mf_screener, "_base_frame", lambda: UNI)
+    repo = FakeRepo({"1": _row("Ravi Kumar", "amfi_snapshot", "2018-01-01")})
+    mr.sync_managers(repo)
+    assert len(repo.updates) == 0
+    assert repo.stored["1"]["manager_start"] == "2018-01-01"

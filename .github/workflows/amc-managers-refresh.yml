@@ -1,0 +1,60 @@
+name: Monthly AMC Managers Refresh
+
+# Ingests AMC monthly factsheets / disclosures into data/mf_manager_cache/
+# Runs on the 1st of each month (plus workflow_dispatch for manual runs).
+# Disclosures are rate-limited, respecting robots.txt and civil polite delay.
+# Fails if covered count drops below quality threshold.
+
+on:
+  schedule:
+    - cron: '0 3 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: amc-managers-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pypdfium2 pandas requests
+
+      - name: Collect AMC fund managers
+        run: |
+          PYTHONPATH=backend python backend/scripts/collect_amc_managers.py
+
+      - name: Quality check (verify manager start coverage threshold)
+        run: |
+          PYTHONPATH=backend python -c '
+          from app.backoffice import mf_screener, manager_resolver
+          import sys
+          base = mf_screener._base_frame()
+          res = manager_resolver.resolve(base, {})
+          with_start = sum(1 for v in res.values() if v.get("manager_start"))
+          print(f"Quality Check: covered={len(res)}, with_start={with_start} of {len(base)}")
+          if with_start < 2500:
+              print(f"FAILED: with_start {with_start} < 2500 threshold!", file=sys.stderr)
+              sys.exit(1)
+          '
+
+      - name: Commit refreshed manager caches
+        run: |
+          git config user.name "fh-data-bot"
+          git config user.email "fh-data-bot@users.noreply.github.com"
+          git add data/mf_manager_cache/*.csv
+          git diff --cached --quiet || (git commit -m "data: monthly AMC fund managers cache refresh" && git pull --rebase origin main && git push)

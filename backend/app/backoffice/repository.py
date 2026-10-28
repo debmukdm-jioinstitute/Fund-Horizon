@@ -1276,6 +1276,32 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def update_mf_manager_start(self, updates: list[dict[str, Any]]) -> int:
+        conn = self._conn()
+        now = _utcnow()
+        count = 0
+        try:
+            with conn:
+                for u in updates:
+                    cur = conn.execute(
+                        """
+                        UPDATE mf_managers
+                        SET manager_start = ?, source = ?, provenance = ?, updated_at = ?
+                        WHERE scheme_code = ?
+                        """,
+                        (
+                            u["manager_start"],
+                            u.get("source"),
+                            u.get("provenance"),
+                            now,
+                            str(u["scheme_code"]),
+                        ),
+                    )
+                    count += cur.rowcount
+            return count
+        finally:
+            conn.close()
+
     def list_external_quartiles(self, window_years: int = 2) -> dict[str, dict[str, Any]]:
         conn = self._conn()
         try:

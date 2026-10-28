@@ -1,10 +1,26 @@
 scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+154370,6.77% State Government of Tamil Nadu 2029,IN3120250482,,25.13,debt
+154370,6.75% State Government of Himachal Pradesh 2029,IN1720250118,,12.55,debt
+154370,6.55% State Government of Tamil Nadu 2029,IN3120250391,,12.49,debt
+154370,7.24% State Government of Gujarat 2029,IN1520190142,,3.82,debt
+154370,7.17% State Government of Tamil Nadu 2029,IN3120190217,,2.54,debt
+154370,7.29% State Government of Uttar Pradesh 2029,IN3320190157,,1.27,debt
+154370,TREPS,,,8.76,cash
+154370,Net Receivable / Payable,,,-3.54,cash
+154372,6.10% CGL 2031,IN0020210095,,76.5,debt
+154372,7.02% CGL 2031,IN0020240076,,17.66,debt
 154372,TREPS,,,5.62,cash
 154372,Net Receivable / Payable,,,0.22,cash
 154362,6.10% CGL 2031,IN0020210095,,76.5,debt
 154362,7.02% CGL 2031,IN0020240076,,17.66,debt
 154362,TREPS,,,5.62,cash
 154362,Net Receivable / Payable,,,0.22,cash
+154526,SBI Nifty Midcap 150 Momentum 50 ETF,INF200KB1AJ0,,100.03,mf_units
+154526,TREPS,,,0.33,cash
+154526,Net Receivable / Payable,,,-0.36,cash
+154523,SBI Nifty Midcap 150 Momentum 50 ETF,INF200KB1AJ0,,100.03,mf_units
+154523,TREPS,,,0.33,cash
+154523,Net Receivable / Payable,,,-0.36,cash
 154618,Wheels India Ltd.,INE715A01015,Auto Components,1.88,equity
 154618,Sedemac Mechatronics Ltd.,INE00XB01019,Auto Components,1.77,equity
 154618,Aequs Ltd.,INE947N01017,Aerospace & Defense,1.73,equity

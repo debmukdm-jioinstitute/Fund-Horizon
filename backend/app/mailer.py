@@ -23,13 +23,18 @@ class MailerError(Exception):
 
 
 def send_email(to: str, subject: str, text: str, attachments: list[tuple[str, bytes]] | None = None,
-               scheduled_at: str | None = None, headers: dict[str, str] | None = None) -> str:
-    """Send a plain-text message (also rendered as simple HTML) with optional (filename, bytes) attachments. Returns Resend's email id."""
+               scheduled_at: str | None = None, headers: dict[str, str] | None = None,
+               html: str | None = None) -> str:
+    """Send a message with optional (filename, bytes) attachments. Returns Resend's email id.
+
+    ``text`` is always the plain-text body. ``html``, when given, is used verbatim as the
+    HTML body (callers must sanitise it first); otherwise the text is rendered as simple HTML.
+    """
     key, sender = os.environ.get("RESEND_API_KEY"), os.environ.get("EMAIL_FROM")
     if not key or not sender:
         raise MailerError("Email is not configured (set RESEND_API_KEY and EMAIL_FROM).", configured=False)
     payload = {"from": sender, "to": [to], "subject": subject, "text": text,
-               "html": f"<div style=\"white-space:pre-wrap\">{escape(text)}</div>"}
+               "html": html if html is not None else f"<div style=\"white-space:pre-wrap\">{escape(text)}</div>"}
     if scheduled_at:
         payload["scheduled_at"] = scheduled_at  # ISO 8601, up to 30 days ahead; Resend holds and sends it
     if headers:

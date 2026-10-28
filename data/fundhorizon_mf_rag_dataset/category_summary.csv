@@ -1,93 +1,93 @@
 category,n_schemes,ret_1y,cagr_3y,cagr_5y,cagr_10y,vol_3y,sharpe_3y,max_drawdown_3y
-Children’s Fund - Childrens' Fund,4,-0.0517,0.0703,0.0444,0.0936,0.1018,0.0971,-0.1252
-Debt Scheme - Banking and PSU Fund,8,0.038,0.068,0.0606,0.069,0.0107,0.2976,-0.0069
-Debt Scheme - Corporate Bond Fund,24,0.0343,0.0673,0.06,0.0685,0.0116,0.1761,-0.0077
-Debt Scheme - Credit Risk Fund,12,0.0647,0.083,0.0736,0.0772,0.0138,1.1473,-0.0055
-Debt Scheme - Dynamic Bond,2,0.0123,0.0647,0.058,0.0664,0.0233,-0.0096,-0.0205
-Debt Scheme - Gilt Fund,28,0.0081,0.0568,0.0525,0.066,0.0304,-0.2855,-0.0385
-Debt Scheme - Liquid Fund,50,0.0636,0.0681,0.0629,0.0604,0.0017,1.7712,-0.0001
-Debt Scheme - Medium Duration Fund,2,0.0447,0.0812,0.0665,0.0684,0.0146,1.1149,-0.0109
-Debt Scheme - Money Market Fund,29,0.0623,0.0717,0.0658,0.0658,0.0043,1.5023,-0.0015
-Debt Scheme - Overnight Fund,45,0.052,0.0598,0.057,0.053,0.0011,-4.7408,0.0
-Debt Scheme - Short Duration Fund,6,0.0414,0.0695,0.0622,0.0683,0.01,0.4449,-0.0061
-Debt Scheme - Ultra Short Duration Fund,8,0.0602,0.0685,0.0626,0.0532,0.0039,0.8196,-0.001
-ELSS,11,-0.0505,0.1166,0.1003,0.0901,0.1511,0.3439,-0.2219
-Equity Scheme - Contra Fund,5,-0.0783,0.106,0.1228,0.143,0.1358,0.3487,-0.1756
-Equity Scheme - Dividend Yield Fund,18,-0.0532,0.0945,0.1041,0.1228,0.1423,0.2628,-0.2019
-Equity Scheme - ELSS,34,-0.0857,0.0851,0.0853,0.1208,0.1358,0.2014,-0.1783
-Equity Scheme - Flexi Cap Fund,60,-0.0585,0.0953,0.0855,0.1185,0.1417,0.2569,-0.1852
-Equity Scheme - Focused Fund,36,-0.0425,0.1069,0.0894,0.1221,0.1469,0.324,-0.1784
-Equity Scheme - Large & Mid Cap Fund,42,-0.0424,0.11,0.0957,0.1239,0.1495,0.3533,-0.1878
-Equity Scheme - Large Cap Fund,46,-0.0884,0.0861,0.0698,0.1083,0.1327,0.1882,-0.1679
-Equity Scheme - Mid Cap Fund,38,-0.0273,0.1243,0.1145,0.1336,0.1578,0.4213,-0.211
-Equity Scheme - Multi Cap Fund,34,-0.015,0.1096,0.0991,0.1461,0.1526,0.3595,-0.2008
-Equity Scheme - Sectoral/ Thematic,338,-0.0405,0.1066,0.0948,0.1276,0.1559,0.321,-0.2079
-Equity Scheme - Small Cap Fund,48,0.0436,0.1229,0.1358,0.1528,0.1688,0.4086,-0.2434
-Equity Scheme - Value Fund,29,-0.0674,0.1019,0.1039,0.128,0.1473,0.2925,-0.1831
-Equity Schemes - Contra Fund,4,-0.0776,0.124,0.1056,0.1426,0.1502,0.4346,-0.1884
-Equity Schemes - Dividend Yield Fund,6,-0.0825,0.1152,0.1106,0.1304,0.128,0.4393,-0.1724
-Equity Schemes - ELSS- Tax Saver Fund,43,-0.0667,0.0972,0.0853,0.1243,0.1428,0.2635,-0.1859
-Equity Schemes - Flexi Cap Fund,30,-0.0513,0.1116,0.0922,0.1248,0.1439,0.3824,-0.1881
-Equity Schemes - Focused Fund,20,-0.0767,0.0969,0.0915,0.1241,0.1387,0.2776,-0.193
-Equity Schemes - Large & Mid Cap Fund,28,-0.0555,0.1109,0.1055,0.1395,0.1519,0.345,-0.1892
-Equity Schemes - Large Cap Fund,22,-0.0865,0.0804,0.0675,0.1124,0.1347,0.1513,-0.1611
-Equity Schemes - Mid Cap Fund,28,-0.0154,0.149,0.1372,0.1585,0.1685,0.5529,-0.215
-Equity Schemes - Multi Cap Fund,29,-0.0491,0.1234,0.1284,0.1337,0.1495,0.4659,-0.1879
-Equity Schemes - Sectoral Fund,38,-0.0192,0.1366,0.1317,0.1418,0.1617,0.4702,-0.1746
-Equity Schemes - Small Cap Fund,22,0.0246,0.1137,0.1277,0.1598,0.1662,0.3695,-0.2298
-Equity Schemes - Thematic Fund,118,-0.0579,0.1239,0.1015,0.1414,0.1618,0.3842,-0.2344
-Equity Schemes - Value Fund,16,-0.0542,0.1038,0.1051,0.1229,0.1401,0.3404,-0.183
-Exchange Traded Funds (ETFs) - Debt ETF,5,0.0374,,,,,,
-Exchange Traded Funds (ETFs) - Equity ETF,9,-0.0502,0.1246,0.0883,0.1125,0.1706,0.4064,-0.2068
-Exchange Traded Funds (ETFs) - Gold ETF,5,0.1169,0.3163,0.2329,0.1574,0.1969,1.2795,-0.2106
+Children’s Fund - Childrens' Fund,4,-0.0526,0.0793,0.0437,0.0943,0.1016,0.1406,-0.1252
+Debt Scheme - Banking and PSU Fund,8,0.0377,0.0675,0.0605,0.0689,0.0108,0.2636,-0.0071
+Debt Scheme - Corporate Bond Fund,24,0.035,0.0669,0.0598,0.0686,0.0116,0.1539,-0.0077
+Debt Scheme - Credit Risk Fund,12,0.0639,0.0825,0.0735,0.0773,0.0138,1.1266,-0.0064
+Debt Scheme - Dynamic Bond,2,0.0143,0.0638,0.0579,0.0664,0.0232,-0.0518,-0.0217
+Debt Scheme - Gilt Fund,28,0.0113,0.0559,0.0523,0.0659,0.0304,-0.3236,-0.0385
+Debt Scheme - Liquid Fund,49,0.0638,0.0681,0.0632,0.0604,0.0017,1.7353,-0.0001
+Debt Scheme - Medium Duration Fund,2,0.0431,0.0803,0.0661,0.0683,0.0146,1.0468,-0.0125
+Debt Scheme - Money Market Fund,29,0.0624,0.0717,0.066,0.0659,0.0043,1.5322,-0.0015
+Debt Scheme - Overnight Fund,45,0.052,0.0597,0.0571,0.053,0.0011,-4.7924,0.0
+Debt Scheme - Short Duration Fund,6,0.041,0.0689,0.0621,0.0683,0.01,0.3958,-0.0065
+Debt Scheme - Ultra Short Duration Fund,8,0.0601,0.0683,0.0628,0.0533,0.0039,0.8364,-0.001
+ELSS,11,-0.0507,0.1281,0.0972,0.0923,0.152,0.359,-0.2219
+Equity Scheme - Contra Fund,5,-0.0893,0.1123,0.1195,0.1433,0.1358,0.3451,-0.1756
+Equity Scheme - Dividend Yield Fund,18,-0.0642,0.1043,0.103,0.1217,0.1421,0.2792,-0.2019
+Equity Scheme - ELSS,34,-0.083,0.0962,0.0841,0.122,0.1355,0.2233,-0.1783
+Equity Scheme - Flexi Cap Fund,60,-0.0549,0.105,0.0844,0.121,0.1418,0.2865,-0.1852
+Equity Scheme - Focused Fund,36,-0.0502,0.1158,0.0868,0.1235,0.1467,0.3389,-0.1784
+Equity Scheme - Large & Mid Cap Fund,42,-0.0512,0.1195,0.0965,0.1258,0.1495,0.3617,-0.1878
+Equity Scheme - Large Cap Fund,46,-0.0861,0.0947,0.0691,0.1103,0.1325,0.2113,-0.1679
+Equity Scheme - Mid Cap Fund,37,-0.0322,0.1353,0.1139,0.1379,0.1581,0.4366,-0.2122
+Equity Scheme - Multi Cap Fund,34,-0.0103,0.1206,0.0992,0.1485,0.1527,0.3873,-0.2008
+Equity Scheme - Sectoral/ Thematic,338,-0.0437,0.1162,0.0914,0.1304,0.1558,0.3326,-0.2079
+Equity Scheme - Small Cap Fund,48,0.029,0.1346,0.1335,0.155,0.169,0.4038,-0.2434
+Equity Scheme - Value Fund,29,-0.0728,0.1081,0.1017,0.1294,0.1474,0.2905,-0.1831
+Equity Schemes - Contra Fund,4,-0.0774,0.1332,0.1041,0.1448,0.1502,0.4538,-0.1884
+Equity Schemes - Dividend Yield Fund,6,-0.089,0.1235,0.1096,0.1321,0.1278,0.4616,-0.1724
+Equity Schemes - ELSS- Tax Saver Fund,43,-0.065,0.1072,0.0842,0.1264,0.1425,0.2815,-0.1859
+Equity Schemes - Flexi Cap Fund,32,-0.0496,0.1228,0.0909,0.1268,0.1439,0.4057,-0.1881
+Equity Schemes - Focused Fund,20,-0.0786,0.1074,0.0904,0.1259,0.1385,0.3031,-0.193
+Equity Schemes - Large & Mid Cap Fund,28,-0.0547,0.1209,0.1058,0.1421,0.1519,0.3689,-0.1892
+Equity Schemes - Large Cap Fund,22,-0.0846,0.0904,0.0664,0.1142,0.1343,0.1877,-0.1611
+Equity Schemes - Mid Cap Fund,28,-0.0138,0.1631,0.1392,0.1606,0.1688,0.5746,-0.215
+Equity Schemes - Multi Cap Fund,29,-0.0502,0.1346,0.1262,0.1359,0.1499,0.46,-0.1879
+Equity Schemes - Sectoral Fund,40,-0.0348,0.1488,0.1327,0.1442,0.1619,0.4695,-0.1746
+Equity Schemes - Small Cap Fund,22,0.0118,0.1237,0.1266,0.1617,0.1668,0.3692,-0.2298
+Equity Schemes - Thematic Fund,118,-0.0595,0.1339,0.1015,0.1435,0.1623,0.3907,-0.2344
+Equity Schemes - Value Fund,16,-0.0693,0.1118,0.1029,0.1249,0.14,0.3448,-0.183
+Exchange Traded Funds (ETFs) - Debt ETF,5,0.0389,,,,,,
+Exchange Traded Funds (ETFs) - Equity ETF,9,-0.065,0.1356,0.084,0.1138,0.1705,0.4099,-0.2068
+Exchange Traded Funds (ETFs) - Gold ETF,5,0.1543,0.3061,0.23,0.1554,0.197,1.2233,-0.2106
 Exchange Traded Funds (ETFs) - Other ETF,1,,,,,,,
-Exchange Traded Funds (ETFs) - Silver ETF,2,0.2595,0.389,,,0.3714,0.8739,-0.464
-Fund of Funds Scheme (Domestic) - Fund of Funds Scheme (Domestic),125,0.042,0.1542,0.0949,0.1137,0.2086,0.7332,-0.2359
-Hybrid Scheme - Aggressive Hybrid Fund,27,-0.0466,0.0919,0.0841,0.1034,0.1072,0.3063,-0.1345
-Hybrid Scheme - Arbitrage Fund,44,0.0638,0.068,0.0622,0.06,0.011,0.2533,-0.0045
+Exchange Traded Funds (ETFs) - Silver ETF,2,0.3076,0.3765,,,0.3719,0.8376,-0.4867
+Fund of Funds Scheme (Domestic) - Fund of Funds Scheme (Domestic),125,0.0421,0.1599,0.0933,0.1145,0.2087,0.7006,-0.2359
+Hybrid Scheme - Aggressive Hybrid Fund,27,-0.0416,0.0999,0.0811,0.1037,0.1072,0.3282,-0.1345
+Hybrid Scheme - Arbitrage Fund,44,0.0639,0.0682,0.0623,0.0601,0.0111,0.2732,-0.0045
 Hybrid Scheme - Balanced Hybrid Fund,2,,,,,,,
-Hybrid Scheme - Conservative Hybrid Fund,12,0.0035,0.067,0.057,0.0632,0.0356,0.0864,-0.0357
-Hybrid Scheme - Dynamic Asset Allocation or Balanced Advantage,44,-0.0274,0.0782,0.0734,0.0915,0.0852,0.2108,-0.0912
-Hybrid Scheme - Equity Savings,28,0.0084,0.0694,0.0651,0.0785,0.0434,0.1856,-0.0402
-Hybrid Scheme - Multi Asset Allocation,36,0.0073,0.1282,0.1192,0.1112,0.1009,0.6735,-0.1085
-Hybrid Schemes - Aggressive Hybrid Fund,32,-0.0525,0.0882,0.0756,0.1105,0.107,0.2552,-0.1349
-Hybrid Schemes - Arbitrage Fund,33,0.0615,0.0672,0.0636,0.0577,0.0111,0.1946,-0.0044
-Hybrid Schemes - Balanced Advantage Fund/ Dynamic Asset Allocation,30,-0.0352,0.0827,0.0776,0.0938,0.084,0.241,-0.1008
-Hybrid Schemes - Balanced Hybrid Fund,6,-0.0108,0.0906,,,0.0724,0.4016,-0.0696
-Hybrid Schemes - Conservative Hybrid Fund,23,0.0032,0.0715,0.0661,0.071,0.0373,0.2049,-0.0368
-Hybrid Schemes - Equity Savings Fund,16,0.0126,0.0829,0.0715,0.0859,0.0537,0.3694,-0.0538
-Hybrid Schemes - Multi Asset Allocation Fund,34,0.0072,0.1224,0.1052,0.1076,0.0894,0.6435,-0.0978
-Income,42,0.0554,0.0746,0.0626,0.0611,0.0066,1.5298,-0.0016
-Income/Debt Oriented Schemes - 10-year Constant Maturity Gilt Fund,10,0.0076,0.0646,0.0531,0.0701,0.0277,-0.0064,-0.0331
-Income/Debt Oriented Schemes - Banking and PSU Debt Fund,32,0.0369,0.067,0.0586,0.0666,0.0107,0.1818,-0.0069
-Income/Debt Oriented Schemes - Corporate Bond Fund,19,0.0378,0.0693,0.0595,0.0667,0.0113,0.3585,-0.0065
-Income/Debt Oriented Schemes - Credit Risk Fund,10,0.0568,0.0789,0.069,0.0647,0.01,1.0367,-0.0045
-Income/Debt Oriented Schemes - Dynamic Term Fund,44,0.0242,0.0644,0.0568,0.0644,0.0204,-0.0292,-0.0212
-Income/Debt Oriented Schemes - Fixed Term Plan,2,0.0509,0.0747,,,0.0094,1.0426,-0.0032
-Income/Debt Oriented Schemes - Floating Interest Rates Fund,24,0.0512,0.0721,0.0648,0.0692,0.0081,0.8031,-0.0049
-Income/Debt Oriented Schemes - Gilt Fund,26,0.0038,0.0581,0.0503,0.0606,0.0308,-0.2256,-0.0358
-Income/Debt Oriented Schemes - Liquid Fund,46,0.0636,0.0682,0.0632,0.0603,0.0017,1.8017,-0.0001
-Income/Debt Oriented Schemes - Long Term Fund,22,-0.0116,0.0567,0.0509,0.0612,0.0383,-0.2281,-0.0525
-Income/Debt Oriented Schemes - Medium Term Fund,22,0.0447,0.0697,0.0598,0.0689,0.0125,0.3866,-0.0091
-Income/Debt Oriented Schemes - Medium to Long Term Fund,27,0.02,0.0627,0.0525,0.0578,0.0207,-0.1093,-0.02
-Income/Debt Oriented Schemes - Money Market Fund,27,0.0622,0.0717,0.0648,0.065,0.0043,1.514,-0.0015
-Income/Debt Oriented Schemes - Other Debt Scheme,3,0.0514,0.0613,0.0575,0.0554,0.0027,-1.4289,-0.0002
-Income/Debt Oriented Schemes - Overnight Fund,36,0.0519,0.0595,0.0569,,0.0012,-4.2268,0.0
+Hybrid Scheme - Conservative Hybrid Fund,12,0.003,0.0685,0.0566,0.0637,0.0356,0.0911,-0.0371
+Hybrid Scheme - Dynamic Asset Allocation or Balanced Advantage,44,-0.0329,0.0812,0.0729,0.0921,0.0854,0.2287,-0.0915
+Hybrid Scheme - Equity Savings,28,0.0074,0.0717,0.065,0.0794,0.0434,0.2123,-0.0402
+Hybrid Scheme - Multi Asset Allocation,36,0.0123,0.1351,0.1167,0.1101,0.101,0.6578,-0.1085
+Hybrid Schemes - Aggressive Hybrid Fund,32,-0.0536,0.0968,0.0751,0.1115,0.1068,0.2867,-0.1349
+Hybrid Schemes - Arbitrage Fund,33,0.0618,0.0674,0.0637,0.0577,0.0112,0.2201,-0.0044
+Hybrid Schemes - Balanced Advantage Fund/ Dynamic Asset Allocation,30,-0.0333,0.0878,0.0772,0.0954,0.084,0.2626,-0.1008
+Hybrid Schemes - Balanced Hybrid Fund,6,-0.0107,0.0954,,,0.0724,0.4195,-0.0696
+Hybrid Schemes - Conservative Hybrid Fund,23,0.0032,0.0735,0.0655,0.0712,0.0373,0.2179,-0.0368
+Hybrid Schemes - Equity Savings Fund,16,0.013,0.0858,0.0707,0.0862,0.0536,0.3738,-0.0538
+Hybrid Schemes - Multi Asset Allocation Fund,35,0.0215,0.1296,0.1085,0.1094,0.0894,0.6728,-0.0971
+Income,40,0.0552,0.0748,0.063,0.0611,0.0067,1.4571,-0.0016
+Income/Debt Oriented Schemes - 10-year Constant Maturity Gilt Fund,9,0.0099,0.0641,0.0527,0.0694,0.0277,-0.0324,-0.0343
+Income/Debt Oriented Schemes - Banking and PSU Debt Fund,32,0.0368,0.0667,0.0586,0.0666,0.0107,0.1501,-0.0071
+Income/Debt Oriented Schemes - Corporate Bond Fund,19,0.0375,0.069,0.0595,0.0667,0.0113,0.3456,-0.0066
+Income/Debt Oriented Schemes - Credit Risk Fund,10,0.0566,0.0785,0.0689,0.0647,0.01,1.0363,-0.0046
+Income/Debt Oriented Schemes - Dynamic Term Fund,44,0.0254,0.0634,0.0563,0.0645,0.0204,-0.0847,-0.0214
+Income/Debt Oriented Schemes - Fixed Term Plan,2,0.0517,0.0743,,,0.0094,0.9943,-0.0032
+Income/Debt Oriented Schemes - Floating Interest Rates Fund,24,0.0512,0.0717,0.0648,0.0691,0.0081,0.7694,-0.0049
+Income/Debt Oriented Schemes - Gilt Fund,26,0.0095,0.0573,0.0501,0.0607,0.0308,-0.2543,-0.0358
+Income/Debt Oriented Schemes - Liquid Fund,44,0.0637,0.0682,0.0633,0.0603,0.0017,1.7983,-0.0001
+Income/Debt Oriented Schemes - Long Term Fund,22,-0.0073,0.055,0.0494,0.061,0.0383,-0.2676,-0.0525
+Income/Debt Oriented Schemes - Medium Term Fund,22,0.0454,0.0692,0.0596,0.069,0.0125,0.3538,-0.0098
+Income/Debt Oriented Schemes - Medium to Long Term Fund,27,0.0216,0.0614,0.0525,0.0577,0.0207,-0.183,-0.0207
+Income/Debt Oriented Schemes - Money Market Fund,27,0.0623,0.0717,0.0651,0.065,0.0043,1.5578,-0.0015
+Income/Debt Oriented Schemes - Other Debt Scheme,3,0.0511,0.0612,0.0576,0.0555,0.0027,-1.404,-0.0002
+Income/Debt Oriented Schemes - Overnight Fund,36,0.0519,0.0594,0.057,,0.0012,-4.1615,0.0
 Income/Debt Oriented Schemes - Sectoral Fund,2,,,,,,,
-Income/Debt Oriented Schemes - Short Term Fund,43,0.0402,0.0693,0.0607,0.0638,0.0096,0.4482,-0.0056
-Income/Debt Oriented Schemes - Ultra Short Term Fund,43,0.0616,0.0696,0.0633,0.0637,0.0037,1.1944,-0.001
-Income/Debt Oriented Schemes - Ultra Short to Short Term Fund,56,0.0562,0.0699,0.0631,0.064,0.0049,0.9461,-0.0023
-Index Funds - Debt Funds,37,0.0489,0.073,,,0.0099,0.8257,-0.0069
-Index Funds - Equity Funds,137,-0.0687,0.0922,0.1003,,0.1814,0.24,-0.221
+Income/Debt Oriented Schemes - Short Term Fund,43,0.0403,0.0688,0.0607,0.0638,0.0096,0.409,-0.0057
+Income/Debt Oriented Schemes - Ultra Short Term Fund,43,0.0617,0.0695,0.0635,0.0637,0.0037,1.2282,-0.001
+Income/Debt Oriented Schemes - Ultra Short to Short Term Fund,56,0.0559,0.0697,0.0633,0.0641,0.0049,0.937,-0.0023
+Index Funds - Debt Funds,37,0.049,0.0727,,,0.0099,0.8183,-0.0069
+Index Funds - Equity Funds,137,-0.0682,0.1012,0.0985,,0.1794,0.2636,-0.215
 Index Funds - Hybrid Fund,3,,,,,,,
 Life Cycle Funds - Life Cycle Fund with Maturity of 10 Years,1,,,,,,,
 Life Cycle Funds - Life Cycle Fund with Maturity of 15 Years,1,,,,,,,
-Other Scheme - FoF Domestic,172,0.0325,0.1072,0.09,0.1019,0.1127,0.5709,-0.1478
-Other Scheme - FoF Overseas,60,0.16,0.2325,0.1174,0.1227,0.1852,0.8963,-0.1979
-Other Scheme - Gold ETF,6,0.117,0.3168,0.2333,0.1565,0.1948,1.2972,-0.2226
-Other Scheme - Index Funds,527,-0.0438,0.0735,0.0597,0.108,0.1337,0.2971,-0.1565
-Other Scheme - Other  ETFs,26,-0.0509,0.0748,0.0576,0.1124,0.1409,0.0948,-0.1992
-Overseas Fund of Funds - Fund of Funds investing overseas,38,0.2201,0.2492,0.1125,0.1141,0.1873,1.0452,-0.2256
-Solution Oriented Scheme - Children’s Fund,21,-0.0381,0.0762,0.0819,0.1007,0.1264,0.1468,-0.1574
-Solution Oriented Scheme - Retirement Fund,44,-0.027,0.0757,0.0725,0.0834,0.084,0.1813,-0.0994
-Solution Oriented Schemes ** - Retirement Fund,14,-0.0621,0.0691,0.0637,0.111,0.1029,0.0855,-0.1334
+Other Scheme - FoF Domestic,172,0.0332,0.1117,0.0888,0.1032,0.1126,0.5506,-0.1478
+Other Scheme - FoF Overseas,60,0.1266,0.2331,0.1134,0.1224,0.1856,0.9345,-0.1979
+Other Scheme - Gold ETF,6,0.1546,0.3066,0.2304,0.1545,0.1949,1.2402,-0.2226
+Other Scheme - Index Funds,527,-0.0481,0.0741,0.0594,0.1092,0.1334,0.3075,-0.1565
+Other Scheme - Other  ETFs,26,-0.0673,0.0841,0.0569,0.1137,0.1407,0.1179,-0.1992
+Overseas Fund of Funds - Fund of Funds investing overseas,38,0.1766,0.2498,0.0992,0.1123,0.1879,1.0096,-0.2256
+Solution Oriented Scheme - Children’s Fund,21,-0.0425,0.08,0.0797,0.1006,0.1263,0.1554,-0.1574
+Solution Oriented Scheme - Retirement Fund,44,-0.0274,0.0789,0.071,0.0835,0.0839,0.1979,-0.0994
+Solution Oriented Schemes ** - Retirement Fund,14,-0.0616,0.0754,0.0638,0.1125,0.1028,0.1023,-0.1334

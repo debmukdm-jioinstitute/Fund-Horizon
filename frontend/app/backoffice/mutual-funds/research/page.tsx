@@ -2,6 +2,7 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Breadcrumb from "@/components/Breadcrumb";
 import { useRecommended } from "@/lib/recommended";
 import {
   getMfScreener, getScreeningMetrics, listScreeningPresets, saveScreeningPreset, deleteScreeningPreset,
@@ -567,6 +568,7 @@ function MfResearch() {
 
   return (
     <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
+      <Breadcrumb tone="blue" items={[{ label: "Mutual funds", href: "/backoffice/mutual-funds" }, { label: "MF Research" }]} />
       <div className="pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">MF Research</h1>
         <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">

@@ -187,3 +187,15 @@ def test_screener_meta_and_new_query_params(client):
     assert client.get("/api/backoffice/mutual-funds/screener?quartile=5").status_code == 422
     assert client.get("/api/backoffice/mutual-funds/screener?f=quartile_2y:1:2&limit=5").status_code == 200
     assert client.get("/api/backoffice/mutual-funds/screener?f=cap_spread_3y:0:&limit=5").status_code == 200
+
+
+def test_explain_is_live_and_matches_table(client):
+    _login_staff(client, _create_staff())
+    row = client.get("/api/backoffice/mutual-funds/screener?category=flexi_cap&limit=1").json()["data"][0]
+    for m in ("perf", "risk", "port", "ops", "score", "stars", "ret_1y", "vol_3y"):
+        e = client.get(f"/api/backoffice/mutual-funds/screener/explain?code={row['code']}&metric={m}")
+        assert e.status_code == 200, m
+        assert e.json()["peers"] > 0
+    perf = client.get(f"/api/backoffice/mutual-funds/screener/explain?code={row['code']}&metric=perf").json()
+    assert perf["points"] == row["perf"] and len(perf["parts"]) == 3
+    assert client.get("/api/backoffice/mutual-funds/screener/explain?code=nope&metric=perf").status_code == 404

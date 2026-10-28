@@ -118,8 +118,30 @@ def _pillar(values: pd.Series, groups: pd.Series, higher_better: bool = True) ->
     return values.groupby(groups).rank(pct=True, ascending=higher_better)
 
 
+# Scoring rules live here once: scoring and the explain endpoint both read them, so an edit shows up in both.
+PILLAR_MAX = 25
+LABEL_TOP, LABEL_MID = 19, 12
+# pillar -> [(column, higher_is_better, plain name)]; each pillar is the mean peer percentile of its inputs.
+PILLAR_INPUTS: dict[str, list[tuple[str, bool, str]]] = {
+    "perf": [("ret_1y", True, "1-year return"), ("cagr_3y", True, "3-year CAGR"), ("cagr_5y", True, "5-year CAGR")],
+    "risk": [("sharpe_3y", True, "3-year Sharpe"), ("sortino_3y", True, "3-year Sortino"),
+             ("max_dd_3y", True, "3-year max drawdown"), ("vol_3y", False, "3-year volatility")],
+    "port": [("aum_cr", True, "Fund size (AUM)"), ("alpha_3y", True, "3-year alpha")],
+}
+COST_WEIGHT, AGE_WEIGHT, AGE_CAP_YEARS = 0.6, 0.4, 5
+STAR_WEIGHTS = {"sharpe_3y": 0.2, "sharpe_5y": 0.3, "sharpe_10y": 0.5}
+STAR_CUTS = (0.9, 0.675, 0.325, 0.1)  # percentile above each cut -> 5, 4, 3, 2 stars; else 1
+LOWER_BETTER = ("vol_", "cap_down_", "ter", "ter_gap_pp")
+NO_RANK = ("beta_", "nav", "hi52", "lo52", "day_chg", "week_chg", "cat_label")
+PILLAR_TITLES = {"perf": "Performance", "port": "Portfolio", "ops": "Operations", "risk": "Risk vs Reward"}
+
+
 def _bucket(p: pd.Series) -> pd.Series:
-    return pd.Series(np.select([p > 0.9, p > 0.675, p > 0.325, p > 0.1], [5, 4, 3, 2], 1), index=p.index, dtype="float")
+    return pd.Series(np.select([p > c for c in STAR_CUTS], [5, 4, 3, 2], 1), index=p.index, dtype="float")
+
+
+def _pillar_mean(df: pd.DataFrame, key: pd.Series, name: str) -> pd.Series:
+    return pd.concat([_pillar(df[c], key, hb) for c, hb, _ in PILLAR_INPUTS[name]], axis=1).mean(axis=1)
 
 
 def _stars(df: pd.DataFrame, key: pd.Series) -> tuple[pd.Series, pd.Series]:
@@ -128,7 +150,7 @@ def _stars(df: pd.DataFrame, key: pd.Series) -> tuple[pd.Series, pd.Series]:
     Funds under 3 years (no 3Y Sharpe) get a provisional rating from the percentile of their 1Y Sharpe instead,
     returned as the second series so the UI can flag it. Stale / flat-NAV funds stay unrated.
     """
-    w = {"sharpe_3y": 0.2, "sharpe_5y": 0.3, "sharpe_10y": 0.5}
+    w = STAR_WEIGHTS
     have = pd.concat([df[c].notna() * x for c, x in w.items()], axis=1).sum(axis=1)
     raw = sum(df[c].fillna(0) * x for c, x in w.items()) / have.where(have > 0)
     raw = raw.where(df["sharpe_3y"].notna())
@@ -142,7 +164,7 @@ def _stars(df: pd.DataFrame, key: pd.Series) -> tuple[pd.Series, pd.Series]:
 
 
 def _label(points: float, good: str, mid: str, weak: str) -> str:
-    return good if points >= 19 else mid if points >= 12 else weak
+    return good if points >= LABEL_TOP else mid if points >= LABEL_MID else weak
 
 
 @lru_cache(maxsize=1)
@@ -206,19 +228,12 @@ def _scored(
     for y, (r, c) in {1: ("ret_1y", "ret_1y_cat"), 3: ("cagr_3y", "cagr_3y_cat"), 5: ("cagr_5y", "cagr_5y_cat")}.items():
         df[f"out_{y}y"] = df[r] - df[c]
     key = df["cat"] + "|" + df["plan"]
-    perf = pd.concat([_pillar(df[c], key) for c in ("ret_1y", "cagr_3y", "cagr_5y")], axis=1).mean(axis=1)
-    risk = pd.concat([
-        _pillar(df["sharpe_3y"], key), _pillar(df["sortino_3y"], key),
-        _pillar(df["max_dd_3y"], key), _pillar(df["vol_3y"], key, higher_better=False),
-    ], axis=1).mean(axis=1)
-    cost = _pillar(df["ter"], key, higher_better=False)
-    age = (df["history_years"].clip(upper=5) / 5).fillna(0)
     # No holdings data, so the portfolio pillar is fund size (AUM) and 3Y alpha rank instead of stock-level quality.
-    port = pd.concat([_pillar(df["aum_cr"], key), _pillar(df["alpha_3y"], key)], axis=1).mean(axis=1)
-    df["perf"] = (perf * 25).round()
-    df["risk"] = (risk * 25).round()
-    df["port"] = (port * 25).round()
-    df["ops"] = ((cost.fillna(0.5) * 0.6 + age * 0.4) * 25).round()
+    cost = _pillar(df["ter"], key, higher_better=False)
+    age = (df["history_years"].clip(upper=AGE_CAP_YEARS) / AGE_CAP_YEARS).fillna(0)
+    for name in PILLAR_INPUTS:
+        df[name] = (_pillar_mean(df, key, name) * PILLAR_MAX).round()
+    df["ops"] = ((cost.fillna(0.5) * COST_WEIGHT + age * AGE_WEIGHT) * PILLAR_MAX).round()
     pillars = df[["perf", "port", "ops", "risk"]]
     seen = pillars.notna().sum(axis=1)
     # A fund missing one pillar (e.g. too young for alpha) is scored on the rest, scaled to 100.
@@ -410,3 +425,57 @@ def to_csv(df: pd.DataFrame) -> str:
     buf = io.StringIO()
     df[list(cols)].rename(columns=cols).round(4).to_csv(buf, index=False)
     return buf.getvalue()
+
+
+def _num(v: Any) -> float | None:
+    return float(v) if isinstance(v, (int, float, np.integer, np.floating)) and np.isfinite(v) else None
+
+
+def _part(grp: pd.DataFrame, code: str, col: str, hb: bool | None, label: str, weight: float | None = None) -> dict[str, Any]:
+    """One input's standing inside the peer group (category + plan), computed from the live frame."""
+    vals = pd.to_numeric(grp[col], errors="coerce")
+    mine = _num(vals[grp["code"] == code].iloc[0])
+    peers = vals.dropna()
+    out: dict[str, Any] = {"key": col, "label": label, "value": mine, "weight": weight, "peers_with_data": int(len(peers)),
+                           "median": _num(peers.median()) if len(peers) else None}
+    if hb is not None and mine is not None and len(peers):
+        better = int((peers > mine).sum() if hb else (peers < mine).sum())
+        out.update(rank=better + 1, percentile=round(float(_pillar(vals, pd.Series(0, index=vals.index), hb)[grp["code"] == code].iloc[0]) * 100, 1),
+                   best=_num(peers.max() if hb else peers.min()), higher_better=hb)
+    return out
+
+
+def explain(df: pd.DataFrame, code: str, metric: str) -> dict[str, Any] | None:
+    """Live, per-fund breakdown of one screener value: its inputs, peer ranks and the rule that produced it."""
+    me = df[df["code"] == code]
+    if me.empty or metric not in df.columns:
+        return None
+    r = me.iloc[0]
+    grp = df[(df["cat"] == r["cat"]) & (df["plan"] == r["plan"])]
+    out: dict[str, Any] = {
+        "metric": metric, "code": code, "name": r["name"], "plan": r["plan"], "category": r["cat_label"], "peers": int(len(grp)),
+        "nav_date": r["nav_date"], "value": _num(r[metric]) if metric != "cat_label" else r[metric],
+        "bands": {"top": LABEL_TOP, "mid": LABEL_MID, "max": PILLAR_MAX},
+    }
+    if metric in PILLAR_INPUTS or metric == "ops":
+        if metric == "ops":
+            parts = [_part(grp, code, "ter", False, "Expense ratio (lower ranks better)", COST_WEIGHT),
+                     _part(grp, code, "history_years", None, f"Track record (capped at {AGE_CAP_YEARS} years)", AGE_WEIGHT)]
+            out["rule"] = f"{COST_WEIGHT:.0%} cost rank + {AGE_WEIGHT:.0%} age, scaled to {PILLAR_MAX}. Unknown cost counts as average."
+        else:
+            parts = [_part(grp, code, c, hb, lbl) for c, hb, lbl in PILLAR_INPUTS[metric]]
+            out["rule"] = f"Average peer percentile of {len(parts)} measures, scaled to {PILLAR_MAX}."
+        out.update(parts=parts, points=_num(r[metric]), label=r[f"{metric}_label"])
+    elif metric == "score":
+        out["parts"] = [{"key": k, "label": PILLAR_TITLES[k], "value": _num(r[k]), "max": PILLAR_MAX, "label_text": r[f"{k}_label"]} for k in PILLAR_TITLES]
+        out["rule"] = "Sum of the four pillars scaled to 100; a missing pillar is scaled up. Needs at least 3 pillars."
+    elif metric == "stars":
+        out["parts"] = [_part(grp, code, c, True, c.replace("_", " ").title(), w) for c, w in STAR_WEIGHTS.items()]
+        out.update(rule=f"Weighted Sharpe ranked in the peer group; percentile cut-offs {STAR_CUTS} give 5/4/3/2 stars, else 1. Needs 3+ peers.",
+                   provisional=bool(r["stars_provisional"]))
+    else:
+        hb = None if metric.startswith(NO_RANK) else not metric.startswith(LOWER_BETTER)
+        out["parts"] = [_part(grp, code, metric, hb, metric)] if metric != "cat_label" else []
+        cat_avg = r.get(f"{metric}_cat")
+        out["category_avg"] = _num(cat_avg)
+    return out

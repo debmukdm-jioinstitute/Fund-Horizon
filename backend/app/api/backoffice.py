@@ -861,6 +861,19 @@ def _tri_seed_available() -> bool:
         return False
 
 
+@router.get("/mutual-funds/screener/explain")
+def backoffice_mf_explain(
+    staff: Annotated[dict, Depends(require_staff)],
+    code: str = Query(..., max_length=32),
+    metric: str = Query(..., max_length=40),
+):
+    """Why a fund has a given screener value, computed live from the same frame the table uses."""
+    res = mf_screener.explain(mf_screener.all_frame(_REPO.mf_ter_by_code()), code, metric)
+    if res is None:
+        raise HTTPException(404, "Unknown fund or metric.")
+    return res
+
+
 @router.get("/mutual-funds/screener")
 def backoffice_mf_screener(
     staff: Annotated[dict, Depends(require_staff)],

@@ -1624,6 +1624,20 @@ export const getMfScreener = async (o: MfScreenerQuery, signal?: AbortSignal): P
     : base;
 };
 
+export interface MfExplainPart {
+  key: string; label: string; value: number | null; weight?: number | null; max?: number; label_text?: string;
+  peers_with_data?: number; median?: number | null; rank?: number; percentile?: number; best?: number | null; higher_better?: boolean;
+}
+export interface MfExplain {
+  metric: string; code: string; name: string; plan: string; category: string; peers: number; nav_date: string | null;
+  value: number | string | null; bands: { top: number; mid: number; max: number }; parts: MfExplainPart[];
+  rule?: string; points?: number | null; label?: string; provisional?: boolean; category_avg?: number | null;
+}
+
+/** Live per-fund breakdown of one screener value, computed by the backend from the same frame as the table. */
+export const getMfExplain = (code: string, metric: string, signal?: AbortSignal) =>
+  boFetch<MfExplain>(`/api/backoffice/mutual-funds/screener/explain?${new URLSearchParams({ code, metric }).toString()}`, { signal });
+
 export interface MfQuartileData {
   categories: string[];
   columns: string[];

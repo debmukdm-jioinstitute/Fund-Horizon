@@ -1,20 +1,17 @@
 "use client";
 
-import React from "react";
-import type { MfScreenerRow } from "@/lib/backoffice";
+import React, { useEffect, useState } from "react";
+import { getMfExplain, type MfExplain, type MfExplainPart, type MfScreenerRow } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 
-type Row = MfScreenerRow & Record<string, unknown>;
-interface Explain { what: string; how: string; read: string; inputs?: [string, string][] }
-
-const n = (v: unknown, d = 2, suffix = "") => (typeof v === "number" && Number.isFinite(v) ? `${v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d })}${suffix}` : "not available");
+const n = (v: unknown, d = 2) => (typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d }) : "not available");
 const PERIOD = (k: string) => {
   const m = k.match(/_(\d+)([ym])$/);
   return m ? `${m[1]} ${m[2] === "y" ? "year" : "month"}${m[1] === "1" ? "" : "s"}` : k.endsWith("_si") ? "since launch" : k.endsWith("_all") ? "the fund's whole life" : "";
 };
 
-/** Layman glossary keyed by the metric's base name (period suffix stripped). */
-const GLOSSARY: Record<string, Omit<Explain, "inputs">> = {
+/** Plain meaning of each measure. Only definitions live here; every number, rank, weight and rule comes from the backend. */
+const GLOSSARY: Record<string, { what: string; how: string; read: string }> = {
   ret: { what: "How much the fund's NAV (unit price) grew over this period.", how: "(Latest NAV ÷ NAV at the start of the period − 1) × 100. Not annualised.", read: "Higher is better, but compare with the category average shown under the number; a fund that beat its peers is more skilful than one that just rode a rising market." },
   cagr: { what: "The steady yearly growth rate that would turn the starting NAV into today's NAV.", how: "(Latest NAV ÷ starting NAV)^(1 ÷ years) − 1. It smooths out the ups and downs into one yearly number.", read: "Higher is better. Always compare with the category average; 12% a year is great in a weak market and poor in a strong one." },
   out: { what: "How much better or worse the fund did than the average of its peers.", how: "Fund return minus the average return of funds in the same category and plan (Direct/Regular), in percentage points.", read: "Positive means the fund beat its peers; negative means it lagged. There is no market-index series yet, so peers are the yardstick." },
@@ -44,44 +41,42 @@ const baseKey = (k: string) => {
   return s.startsWith("ret_") ? "ret" : s.startsWith("cagr_") ? "cagr" : s.startsWith("out_") ? "out" : s;
 };
 
-function pillar(key: string, r: Row): Explain {
-  const pts = r[key] as number | undefined;
-  const common = "Each pillar is out of 25. It is built from percentile ranks (0 to 1) against funds in the same category and plan, so 25 would be best in the peer group and 12 about average.";
-  const defs: Record<string, Explain> = {
-    perf: { what: "How well the fund's returns compare with its peers.", how: `Average of the fund's peer rank on 1-year, 3-year and 5-year returns, × 25. ${common}`, read: "19+ is Good Returns, 12–18 Average, below 12 Poor.", inputs: [["1Y return", n(r.ret_1y, 2, "%")], ["3Y CAGR", n(r.cagr_3y, 2, "%")], ["5Y CAGR", n(r.cagr_5y, 2, "%")], ["3Y category avg", n(r.cagr_3y_cat, 2, "%")]] },
-    risk: { what: "Whether the fund paid you well for the risk it took.", how: `Average of the peer rank on 3-year Sharpe, Sortino, max drawdown and volatility (lower volatility ranks better), × 25. ${common}`, read: "19+ is Good Risk Reward, 12–18 Fair, below 12 Poor.", inputs: [["Sharpe 3Y", n(r.sharpe_3y)], ["Sortino 3Y", n(r.sortino_3y)], ["Max drawdown 3Y", n(r.max_dd_3y, 2, "%")], ["Volatility 3Y", n(r.vol_3y, 2, "%")]] },
-    port: { what: "Size and skill signals for the fund's portfolio.", how: `We have no stock-level holdings data yet, so this is the average of the peer rank on fund size (AUM) and 3-year alpha, × 25. ${common}`, read: "19+ is High Rank, 12–18 Medium, below 12 Weak.", inputs: [["AUM", n(r.aum_cr, 0, " cr")], ["Alpha 3Y", n(r.alpha_3y, 2, "%")]] },
-    ops: { what: "How cheaply and how maturely the fund is run.", how: `60% weight on cost (lower expense ratio ranks better; unknown cost is treated as average) and 40% on track record (age capped at 5 years), × 25. ${common}`, read: "19+ is High Rank, 12–18 Medium, below 12 Weak.", inputs: [["Expense ratio", n(r.ter, 2, "%")], ["Fund age", n(r.history_years, 1, " yrs")]] },
-  };
-  if (key !== "score") return { ...defs[key], inputs: [["Points", typeof pts === "number" ? `${pts} / 25` : "not available"], ...(defs[key].inputs ?? [])] };
-  return {
-    what: "Our overall 0 to 100 quality score for the fund.",
-    how: "Performance + Portfolio + Operations + Risk vs Reward (25 each). If one pillar is missing, for example a young fund with no alpha, the rest are scaled up to 100. A score needs at least 3 pillars.",
-    read: "Relative, not absolute: it ranks the fund among its own category and plan peers. It is a screening aid, not advice.",
-    inputs: [["Performance", `${n(r.perf, 0)} / 25`], ["Portfolio", `${n(r.port, 0)} / 25`], ["Operations", `${n(r.ops, 0)} / 25`], ["Risk vs Reward", `${n(r.risk, 0)} / 25`]],
-  };
-}
-
-function build(key: string, r: Row): Explain {
-  if (["score", "perf", "port", "ops", "risk"].includes(key)) return pillar(key, r);
-  if (key === "stars") {
-    return {
-      what: "Our own 1 to 5 star rating of risk-adjusted returns. It is not Morningstar's.",
-      how: "Weighted Sharpe ratio (3Y 20%, 5Y 30%, 10Y 50%) ranked within category and plan: top 10% get 5 stars, next 25% get 4, middle 35% get 3, next 22.5% get 2, rest 1. Funds under 3 years old get a provisional rating from 1Y Sharpe (marked P). Needs 3+ peers; stale or flat-NAV funds stay unrated.",
-      read: r.stars_provisional ? "This rating is provisional because the fund has under 3 years of history." : "More stars means better return per unit of risk versus peers.",
-      inputs: [["Stars", typeof r.stars === "number" && r.stars ? `${r.stars} of 5` : "Not rated"], ["Sharpe 3Y", n(r.sharpe_3y)], ["Sharpe 5Y", n(r.sharpe_5y)], ["Sharpe 10Y", n(r.sharpe_10y)]],
-    };
-  }
-  const g = GLOSSARY[baseKey(key)] ?? { what: "Metric computed from the fund's NAV history.", how: "See the column heading.", read: "Compare with peers in the same category." };
-  const avg = r[`${key}_cat`];
-  return { ...g, inputs: [["This fund", key === "cat_label" ? String(r.cat_label ?? "-") : n(r[key])], ...(typeof avg === "number" ? [["Category average", n(avg)] as [string, string]] : [])] };
+function PartRow({ p }: { p: MfExplainPart }) {
+  const pct = p.percentile;
+  return (
+    <li className="px-2 py-1.5 space-y-0.5">
+      <div className="flex justify-between gap-3">
+        <span>{p.label}{p.weight != null ? ` (weight ${Math.round(p.weight * 100)}%)` : ""}</span>
+        <span className="font-medium tabular-nums">{p.max != null ? `${n(p.value, 0)} / ${p.max} · ${p.label_text}` : n(p.value)}</span>
+      </div>
+      {pct != null && (
+        <>
+          <div className="h-1 rounded bg-[#E5E5E5] dark:bg-[#2B3644]" aria-hidden><div className="h-1 rounded bg-[#0176D3] dark:bg-[#1B96FF]" style={{ width: `${pct}%` }} /></div>
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+            Rank {p.rank} of {p.peers_with_data} peers, better than {n(pct, 0)}% of them. Peer median {n(p.median)}, best {n(p.best)}.
+          </p>
+        </>
+      )}
+      {pct == null && p.median != null && <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Peer median {n(p.median)} across {p.peers_with_data} peers.</p>}
+    </li>
+  );
 }
 
 export default function MfMetricExplain({ metric, row, onClose }: { metric: { key: string; label: string } | null; row: MfScreenerRow | null; onClose: () => void }) {
+  const [data, setData] = useState<MfExplain | null>(null);
+  const [err, setErr] = useState("");
+  const key = metric?.key, code = row?.code;
+  useEffect(() => {
+    if (!key || !code) return;
+    const ac = new AbortController();
+    setData(null); setErr("");
+    getMfExplain(code, key, ac.signal).then(setData).catch((e) => { if (!ac.signal.aborted) setErr(e instanceof Error ? e.message : "Could not load the explanation."); });
+    return () => ac.abort();
+  }, [key, code]);
   if (!metric || !row) return null;
-  const r = row as Row;
-  const e = build(metric.key, r);
+  const g = GLOSSARY[baseKey(metric.key)];
   const period = PERIOD(metric.key);
+  const pillar = data?.points != null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div role="dialog" aria-label={`${metric.label} explained`} onClick={(ev) => ev.stopPropagation()}
@@ -89,25 +84,43 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="text-[15px] font-semibold">{metric.label}{period && ` (${period})`}</h2>
-            <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{row.name} · {row.plan} · {String(r.cat_label ?? row.cat)}</p>
+            <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{row.name} · {row.plan}</p>
           </div>
           <button type="button" aria-label="Close" onClick={onClose} className="terminal-btn text-[12px] py-0.5 px-2">✕</button>
         </div>
-        {([["What it is", e.what], ["How it is worked out", e.how], ["How to read it", e.read]] as const).map(([h, t]) => (
-          <section key={h}><h3 className="font-semibold">{h}</h3><p>{t}</p></section>
-        ))}
-        {e.inputs && (
-          <section>
-            <h3 className="font-semibold">Why this fund got this value</h3>
-            <dl className="mt-1 divide-y divide-[#E5E5E5] dark:divide-[#2B3644] border border-[#E5E5E5] dark:border-[#2B3644] rounded">
-              {e.inputs.map(([k, v]) => (
-                <div key={k} className="flex justify-between gap-3 px-2 py-1"><dt className="text-[#706E6B] dark:text-[#A8B4C4]">{k}</dt><dd className="font-medium tabular-nums">{v}</dd></div>
-              ))}
-            </dl>
-          </section>
+        {err && <p role="alert" className="text-[#9B1C2E] dark:text-[#FFA9B5]">{err}</p>}
+        {!data && !err && <p className="text-[#706E6B] dark:text-[#A8B4C4]">Computing live from the latest data…</p>}
+        {data && (
+          <>
+            {pillar && (
+              <section>
+                <h3 className="font-semibold">Result</h3>
+                <p>{n(data.points, 0)} out of {data.bands.max}: <strong>{data.label}</strong>. {data.bands.top}+ is the top band, {data.bands.mid}+ the middle, anything lower the weak band.</p>
+              </section>
+            )}
+            {data.metric === "stars" && (
+              <section>
+                <h3 className="font-semibold">Result</h3>
+                <p>{typeof data.value === "number" && data.value ? `${data.value} of 5 stars${data.provisional ? " (provisional: under 3 years of history)" : ""}.` : "Not rated: too little history or too few peers."}</p>
+              </section>
+            )}
+            {g && <section><h3 className="font-semibold">What it is</h3><p>{g.what}</p><p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">{g.read}</p></section>}
+            {data.rule && <section><h3 className="font-semibold">How this score is worked out</h3><p>{data.rule}</p></section>}
+            {data.parts.length > 0 && (
+              <section>
+                <h3 className="font-semibold">Why this fund got this value</h3>
+                <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Compared with {data.peers} {data.category} funds in the {data.plan} plan.</p>
+                <ul className="mt-1 divide-y divide-[#E5E5E5] dark:divide-[#2B3644] border border-[#E5E5E5] dark:border-[#2B3644] rounded">
+                  {data.parts.map((p) => <PartRow key={p.key} p={p} />)}
+                </ul>
+              </section>
+            )}
+            {data.category_avg != null && <p>Category-plan average: <strong>{n(data.category_avg)}</strong>.</p>}
+            {typeof data.value === "string" && <p>{data.value}</p>}
+          </>
         )}
         <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-          Data as of NAV date {row.nav_date ? formatISTDate(String(row.nav_date)) : "not recorded"}. Compared only with {String(r.cat_label ?? row.cat)} funds in the {row.plan} plan. Past performance is not a guide to future returns; descriptive data, not investment advice.
+          Computed live from the latest NAV data{data?.nav_date ? ` (NAV as of ${formatISTDate(String(data.nav_date))})` : ""}. Past performance is not a guide to future returns; descriptive data, not investment advice.
         </p>
       </div>
     </div>

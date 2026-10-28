@@ -120,12 +120,12 @@ def test_research_manager_tenure_rules():
 
     from app.backoffice import mf_screener as ms
 
-    as_of = pd.Timestamp("2026-10-22")
     mm = {
         "148535": ("Test Manager", "2020-01-15"),
         "148534": ("Future Manager", "2027-01-01"),  # start after as-of -> tenure None
     }
     df = ms._scored({}, manager_map=mm)
+    as_of = pd.to_datetime(df["nav_date"], format="%d-%b-%Y", errors="coerce").max()  # the dataset refreshes daily
     row = df[df["code"] == "148535"].iloc[0]
     assert row["manager_name"] == "Test Manager"
     assert abs(row["manager_tenure_years"] - (as_of - pd.Timestamp("2020-01-15")).days / 365.25) < 1e-6

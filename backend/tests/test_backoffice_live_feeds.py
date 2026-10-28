@@ -69,14 +69,21 @@ def test_fii_dii_maps_categories_and_negative_net():
 
 
 def test_option_chain_skips_empty_expiry_and_parses_legs():
+    from datetime import datetime, timedelta
+
+    from app.backoffice.providers.nse import IST
+
+    # Expiries are relative to today: NSE code drops series that already expired.
+    d1, d2 = (datetime.now(IST) + timedelta(days=n) for n in (7, 14))
+    e1, e2 = d1.strftime("%d-%b-%Y"), d2.strftime("%d-%b-%Y")
     leg = lambda t, strike, oi: {  # noqa: E731
-        "strikePrice": strike, "expiryDate": "27-10-2026", "openInterest": oi, "changeinOpenInterest": 5,
+        "strikePrice": strike, "expiryDate": e2, "openInterest": oi, "changeinOpenInterest": 5,
         "totalTradedVolume": 100, "impliedVolatility": 12.5, "lastPrice": 10.0, "identifier": f"X{t}{strike}",
     }
     client = _StubNse({
-        "/api/option-chain-contract-info": {"expiryDates": ["13-Oct-2026", "27-Oct-2026"]},
-        "/api/option-chain-v3?13-Oct-2026": {"records": {"data": [], "expiryDates": []}},
-        "/api/option-chain-v3?27-Oct-2026": {
+        "/api/option-chain-contract-info": {"expiryDates": [e1, e2]},
+        f"/api/option-chain-v3?{e1}": {"records": {"data": [], "expiryDates": []}},
+        f"/api/option-chain-v3?{e2}": {
             "records": {
                 "timestamp": "13-Oct-2026 13:46:15",
                 "underlyingValue": 55114.5,
@@ -85,7 +92,7 @@ def test_option_chain_skips_empty_expiry_and_parses_legs():
         },
     })
     chain = client.fetch_option_chain("BANKNIFTY")
-    assert chain["expiry"] == "2026-10-27" and chain["underlying_price"] == 55114.5
+    assert chain["expiry"] == d2.strftime("%Y-%m-%d") and chain["underlying_price"] == 55114.5
     assert {c["option_type"] for c in chain["contracts"]} == {"CE", "PE"}
     assert chain["contracts"][0]["implied_vol"] == 12.5
 

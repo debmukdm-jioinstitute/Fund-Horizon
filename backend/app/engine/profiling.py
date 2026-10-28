@@ -175,6 +175,7 @@ def risk_capacity(client: Client, assumptions: dict | None = None) -> dict:
             {
                 "term_multiple": round(client.term_cover / (client.monthly_income * 12.0), 2) if client.monthly_income > 0 else 0.0,
                 "term_cover": client.term_cover,
+                "term_need": round(need),
                 "health_cover": client.health_cover,
             },
         ),

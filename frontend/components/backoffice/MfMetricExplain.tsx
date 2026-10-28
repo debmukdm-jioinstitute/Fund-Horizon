@@ -70,7 +70,7 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
     if (!key || !code) return;
     const ac = new AbortController();
     setData(null); setErr("");
-    getMfExplain(code, key, ac.signal).then(setData).catch((e) => { if (!ac.signal.aborted) setErr(e instanceof Error ? e.message : "Could not load the explanation."); });
+    getMfExplain(code, key, ac.signal).then(setData).catch((e) => { if (!ac.signal.aborted) setErr(e instanceof Error && e.message !== "Not Found" ? e.message : "The live breakdown is not available right now (the server may be updating). Close this and try again in a few minutes."); });
     return () => ac.abort();
   }, [key, code]);
   if (!metric || !row) return null;

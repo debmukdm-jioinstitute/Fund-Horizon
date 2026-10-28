@@ -7,48 +7,9 @@ import {
   getWatchlists,
   createWatchlist,
   deleteWatchlist,
-  listStaffMembers,
-  createStaffMember,
-  updateStaffMember,
   WatchlistItem,
-  StaffMemberItem,
 } from "@/lib/backoffice";
 import { useAuth } from "@/components/AuthContext";
-import { NAV_ITEMS } from "@/components/backoffice/navItems";
-
-const PAGE_OPTIONS = NAV_ITEMS.map((i) => ({ href: i.href.split("?")[0], label: i.label }));
-
-function PagePicker({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
-  return (
-    <div className="flex flex-wrap gap-x-3 gap-y-1">
-      <button type="button" className="text-[12px] underline" onClick={() => onChange(value.length === PAGE_OPTIONS.length ? [] : PAGE_OPTIONS.map((o) => o.href))}>
-        {value.length === PAGE_OPTIONS.length ? "Clear all" : "All pages"}
-      </button>
-      {PAGE_OPTIONS.map((o) => (
-        <label key={o.href} className="flex items-center gap-1 text-[12px]">
-          <input
-            type="checkbox"
-            checked={value.includes(o.href)}
-            onChange={(e) => onChange(e.target.checked ? [...value, o.href] : value.filter((h) => h !== o.href))}
-          />
-          {o.label}
-        </label>
-      ))}
-    </div>
-  );
-}
-
-function PageEditor({ current, onSave }: { current: string[]; onSave: (v: string[]) => void }) {
-  const [sel, setSel] = useState(current);
-  return (
-    <div className="mt-1 space-y-1.5">
-      <PagePicker value={sel} onChange={setSel} />
-      <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" disabled={!sel.length} onClick={() => onSave(sel)}>
-        Save pages
-      </button>
-    </div>
-  );
-}
 
 export default function SettingsPage() {
   const { customer } = useAuth();
@@ -138,37 +99,14 @@ export default function SettingsPage() {
     }
   }
 
-  // Staff provisioning state (admin only)
-  const [staffList, setStaffList] = useState<StaffMemberItem[]>([]);
-  const [staffName, setStaffName] = useState("");
-  const [staffEmail, setStaffEmail] = useState("");
-  const [staffRole, setStaffRole] = useState("analyst");
-  const [staffMobile, setStaffMobile] = useState("");
-  const [staffPassword, setStaffPassword] = useState("");
-  const [staffPages, setStaffPages] = useState<string[]>([]);
-  const [staffNotice, setStaffNotice] = useState<string | null>(null);
-  const [savingStaff, setSavingStaff] = useState(false);
-
   useEffect(() => {
     loadWatchlists();
-    if (isAdmin) {
-      loadStaff();
-    }
-  }, [isAdmin]);
+  }, []);
 
   async function loadWatchlists() {
     try {
       const data = await getWatchlists();
       setWatchlists(data);
-    } catch {
-      /* fallback */
-    }
-  }
-
-  async function loadStaff() {
-    try {
-      const data = await listStaffMembers();
-      setStaffList(data);
     } catch {
       /* fallback */
     }
@@ -199,51 +137,6 @@ export default function SettingsPage() {
       await loadWatchlists();
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : "Failed to remove watchlist item");
-    }
-  }
-
-  async function changeStaff(id: string, body: Parameters<typeof updateStaffMember>[1]) {
-    try {
-      const r = await updateStaffMember(id, body);
-      setStaffNotice(r.temporary_password ? `New temporary password ${r.temporary_password} (shown once, share securely)` : "Updated.");
-      await loadStaff();
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Update failed");
-    }
-  }
-
-  async function handleProvisionStaff(e: React.FormEvent) {
-    e.preventDefault();
-    if (!staffEmail.trim() || !staffName.trim()) return;
-    if (staffRole !== "admin" && !staffPages.length) {
-      alert("Tick at least one allowed page.");
-      return;
-    }
-    try {
-      setSavingStaff(true);
-      const res = await createStaffMember({
-        name: staffName.trim(),
-        email: staffEmail.trim(),
-        role: staffRole,
-        mobile: staffMobile.trim() || "",
-        password: staffPassword || undefined,
-        pages: staffPages,
-      });
-      setStaffNotice(
-        res.temporary_password
-          ? `Login ${staffEmail.trim().toLowerCase()} · temporary password ${res.temporary_password} (shown once, share securely)`
-          : `Account created. Login ${staffEmail.trim().toLowerCase()} with the password you set.`,
-      );
-      setStaffPassword("");
-      setStaffPages([]);
-      setStaffName("");
-      setStaffEmail("");
-      setStaffMobile("");
-      await loadStaff();
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Failed to provision staff member");
-    } finally {
-      setSavingStaff(false);
     }
   }
 
@@ -686,160 +579,32 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Admin-only Staff Provisioning */}
-      {activeTab === "staff" && isAdmin && (
+      {/* Staff & permissions now lives on its own page — one provisioning path, no duplicated form. */}
+      {activeTab === "staff" && (
         <div className="terminal-panel p-3.5 space-y-3">
           <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
             <div>
               <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
-                Staff Account Management (Admin Scope)
+                Staff &amp; permissions
               </div>
               <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                Provision internal operator credentials with role-based permissions
+                Manage your team and their access.
               </div>
             </div>
-            <span className="text-[10px] font-mono uppercase bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] px-1.5 py-0.5 rounded font-medium">
-              Admin Exclusive
-            </span>
+            {isAdmin && (
+              <span className="text-[10px] font-mono uppercase bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] px-1.5 py-0.5 rounded font-medium">
+                Admin Exclusive
+              </span>
+            )}
           </div>
-
-          {staffNotice && (
-            <div className="rounded border border-[#C5DDF7] bg-[#EAF5FE] p-2 text-[12px] font-mono break-all dark:border-[#1F4A74] dark:bg-[#0F2A45]/40">
-              {staffNotice} <button type="button" className="ml-2 underline" onClick={() => setStaffNotice(null)}>dismiss</button>
-            </div>
+          {isAdmin ? (
+            <Link href="/backoffice/settings/staff" className="block rounded border border-[#E5E5E5] dark:border-[#2B3644] px-3 py-2.5 hover:border-[#0176D3] dark:hover:border-[#1B96FF]">
+              <span className="text-[13px] font-medium text-[#0176D3] dark:text-[#1B96FF]">Staff &amp; permissions — manage team and access →</span>
+              <span className="block text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">Search staff, filter by role and status, add staff with the step-by-step wizard, and manage each member&apos;s pages.</span>
+            </Link>
+          ) : (
+            <p className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4]">Staff &amp; permissions is managed by administrators.</p>
           )}
-
-          {/* Provision Form */}
-          <form onSubmit={handleProvisionStaff} className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-            <div>
-              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Full Name</label>
-              <input
-                type="text"
-                value={staffName}
-                onChange={(e) => setStaffName(e.target.value)}
-                placeholder="Staff Member Name"
-                className="terminal-input w-full text-[12px] py-1 px-2"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Email / Username</label>
-              <input
-                type="text"
-                value={staffEmail}
-                onChange={(e) => setStaffEmail(e.target.value)}
-                placeholder="staff@fundhorizon.com or username"
-                className="terminal-input w-full text-[12px] py-1 px-2"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Password (blank = generate)</label>
-              <input
-                type="password"
-                autoComplete="new-password"
-                value={staffPassword}
-                onChange={(e) => setStaffPassword(e.target.value)}
-                placeholder="blank = generate"
-                className="terminal-input w-full text-[12px] py-1 px-2"
-              />
-            </div>
-            <div>
-              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Assigned Role</label>
-              <select
-                value={staffRole}
-                onChange={(e) => setStaffRole(e.target.value)}
-                className="terminal-input w-full text-[12px] py-1 px-2"
-              >
-                <option value="analyst">Analyst (Research &amp; Terminal)</option>
-                <option value="rm">Relationship Manager (Client Portfolios)</option>
-                <option value="operations">Operations (Data Management)</option>
-                <option value="compliance">Compliance (Audit &amp; Oversight)</option>
-                <option value="read_only">Read-only (Academy / viewing)</option>
-                <option value="admin">System Administrator</option>
-              </select>
-            </div>
-            <div className="sm:col-span-4">
-              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
-                Allowed pages (required; ignored for System Administrator)
-              </label>
-              <PagePicker value={staffPages} onChange={setStaffPages} />
-            </div>
-            <div>
-              <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">Mobile</label>
-              <div className="flex gap-2">
-                <input
-                  type="tel"
-                  value={staffMobile}
-                  onChange={(e) => setStaffMobile(e.target.value)}
-                  placeholder="9876543210"
-                  className="terminal-input w-full text-[12px] py-1 px-2"
-                />
-                <button
-                  type="submit"
-                  disabled={savingStaff}
-                  className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium shrink-0"
-                >
-                  {savingStaff ? "Saving…" : "Provision"}
-                </button>
-              </div>
-            </div>
-          </form>
-
-          {/* Staff Table */}
-          <div className="terminal-panel overflow-hidden mt-3">
-            <table className="terminal-table">
-              <thead>
-                <tr>
-                  <th className="w-[30%]">Staff Member</th>
-                  <th className="w-[25%]">Role</th>
-                  <th className="w-[25%]">Contact</th>
-                  <th className="w-[20%] text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {staffList.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="py-6 text-center text-[#706E6B] dark:text-[#A8B4C4]">
-                      No additional staff members provisioned yet.
-                    </td>
-                  </tr>
-                ) : (
-                  staffList.map((s) => (
-                    <tr key={s.id}>
-                      <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">
-                        {s.name}
-                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-normal">{s.email}</div>
-                        {s.role !== "admin" && (
-                          <details className="text-[11px] font-normal">
-                            <summary className="cursor-pointer text-[#0176D3] dark:text-[#1B96FF]">
-                              Pages: {s.pages?.length ? s.pages.map((h) => PAGE_OPTIONS.find((o) => o.href === h)?.label ?? h).join(", ") : "all"}
-                            </summary>
-                            <PageEditor current={s.pages ?? []} onSave={(v) => changeStaff(s.id, { pages: v })} />
-                          </details>
-                        )}
-                      </td>
-                      <td>
-                        <span className="font-mono uppercase text-[10px] px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644]">
-                          {s.role}
-                        </span>
-                      </td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{s.mobile || "–"}</td>
-                      <td className="text-right whitespace-nowrap">
-                        <span className="text-[11px] text-[#0176D3] dark:text-[#1B96FF] font-medium mr-2">{s.status}</span>
-                        <button type="button" className="terminal-btn text-[11px] py-0.5 px-2 mr-1" onClick={() => changeStaff(s.id, { status: s.status === "inactive" ? "active" : "inactive" })}>
-                          {s.status === "inactive" ? "Activate" : "Deactivate"}
-                        </button>
-                        <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" onClick={() => confirm(`Reset password for ${s.name}? They will be signed out.`) && changeStaff(s.id, { reset_password: true })}>
-                          Reset password
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
         </div>
       )}
 

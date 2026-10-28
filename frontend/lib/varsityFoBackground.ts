@@ -1,0 +1,10 @@
+// F&O background chapter lists, used ONLY inside the Taxation section's F&O
+// page as background reading. These are not hub modules: no mindmap, no
+// illustration, no progress tracking. Titles only; no chapter URLs were
+// collected for these modules, so the page links to the Varsity modules
+// index instead of per-chapter links.
+export interface FoChapter { n: number; title: string; }
+export const FO_BACKGROUND: { slug: string; title: string; chapters: FoChapter[] }[] = [
+  {slug:"futures-trading",title:"Futures Trading",chapters:[{n:1,title:"Background – Forwards Market"}, {n:2,title:"Introducing Futures Contract"}, {n:3,title:"The Futures Trade"}, {n:4,title:"Leverage & Payoff"}, {n:5,title:"Margin & M2M"}, {n:6,title:"Margin Calculator (Part 1)"}, {n:7,title:"Margin Calculator (Part 2)"}, {n:8,title:"All about Shorting"}, {n:9,title:"The Nifty Futures"}, {n:10,title:"The Futures Pricing"}, {n:11,title:"Hedging with Futures"}, {n:12,title:"Open Interest"}, {n:13,title:"Quick Note on Physical Settlement"}]},
+  {slug:"options-theory-for-professional-trading",title:"Options Theory for Professional Trading",chapters:[{n:1,title:"Call Option Basics"}, {n:2,title:"Basic Option Jargons"}, {n:3,title:"Buying a Call Option"}, {n:4,title:"Selling/Writing a Call Option"}, {n:5,title:"The Put Option Buying"}, {n:6,title:"The Put Option selling"}, {n:7,title:"Summarizing Call & Put Options"}, {n:8,title:"Moneyness of an Option Contract"}, {n:9,title:"The Option Greeks (Delta) Part 1"}, {n:10,title:"Delta (Part 2)"}, {n:11,title:"Delta (Part 3)"}, {n:12,title:"Gamma (Part 1)"}, {n:13,title:"Gamma (Part 2)"}, {n:14,title:"Theta"}, {n:15,title:"Volatility Basics"}, {n:16,title:"Volatility Calculation (Historical)"}, {n:17,title:"Volatility & Normal Distribution"}, {n:18,title:"Volatility Applications"}, {n:19,title:"Vega"}, {n:20,title:"Greek Interactions"}, {n:21,title:"Greek Calculator"}, {n:22,title:"Re-introducing Call & Put Options"}, {n:23,title:"Case studies – wrapping it all up!"}, {n:24,title:"Quick note on Physical Settlement"}, {n:25,title:"Options M2M and P&L calculation"}]},
+];

@@ -153,8 +153,7 @@ export function VarsityHub() {
         <p className="text-[15px]">
           Overall: <strong>{readStored} / {storedTotal}</strong> listed chapters marked read.
           <span className={`block text-sm ${muted}`}>
-            Progress counts only the {storedTotal} chapters whose titles are listed here. Introduction to Stock Markets (15 chapters) has no chapter list yet —
-            collection was stopped by a rate limit — so it is not in this count.
+            Progress counts only the {storedTotal} chapters whose titles are listed here.
           </span>
         </p>
         {syncNote && (

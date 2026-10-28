@@ -395,8 +395,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
             </div>
 
             <div className="terminal-panel p-3.5 space-y-2">
-              <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Quartile rankings</div>
-              <FundQuartile name={scheme.scheme_name} cat={scheme.cat_key ?? scheme.category} />
+              <FundQuartile name={scheme.scheme_name} cat={scheme.cat_key ?? scheme.category} plan={classified.plan} />
             </div>
 
             {/* MF Research blocks (additive): consistency, peer percentiles, computed quartile history. */}

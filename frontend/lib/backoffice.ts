@@ -1977,3 +1977,22 @@ export const removeMfShortlist = async (id: string | number): Promise<void> => {
 /** Same-origin CSV export URL for the staff shortlist. */
 export const mfShortlistCsvUrl = (): string =>
   resolveApiUrl(`${API_URL}/api/backoffice/mf-research/shortlist?format=csv`);
+
+/** Screener row -> the scheme summary the fund detail page opens with. */
+export const mfRowToItem = (r: MfScreenerRow): MutualFundItem => ({
+  scheme_code: r.code,
+  scheme_name: r.name,
+  amc_name: r.amc ?? undefined,
+  cat_key: r.cat,
+  plan: r.plan,
+  option: "Growth",
+  latest_nav: typeof r.nav === "number" ? r.nav : undefined,
+  nav_date: r.nav_date ?? undefined,
+  ter_pct: typeof r.ter === "number" ? r.ter : undefined,
+  isin_growth: r.isin ?? undefined,
+  is_fh_recommended: r.is_fh_recommended,
+});
+
+/** Fund detail page path. Pass the summary to open instantly; without it the page looks the fund up by code. */
+export const mfDetailPath = (code: string, item?: MutualFundItem & { fh_status?: unknown }) =>
+  `/backoffice/mutual-funds/${encodeURIComponent(code)}${item ? `?s=${encodeURIComponent(JSON.stringify(item))}` : ""}`;

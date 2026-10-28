@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getMfManagerProfile, MfManagedFund, MfManagerInfo } from "@/lib/backoffice";
+import { getMfManagerProfile, mfDetailPath, MfManagedFund, MfManagerInfo } from "@/lib/backoffice";
 import { PmsManagerProfile } from "@/lib/pms-managers";
 import { avatarBgFor, initialsOf } from "@/components/backoffice/PmsManagerDrawer";
 import SignedValue from "@/components/terminal/SignedValue";
@@ -124,7 +124,7 @@ export default function MfManagerDrawer({ manager, onClose }: MfManagerDrawerPro
                       {funds.map((f) => (
                         <tr key={f.scheme_code}>
                           <td>
-                            <div className="font-medium leading-snug">{f.scheme_name}</div>
+                            <a href={mfDetailPath(f.scheme_code)} target="_blank" rel="noopener noreferrer" className="font-medium leading-snug text-[#0176D3] dark:text-[#1B96FF] hover:underline">{f.scheme_name}</a>
                             <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">{f.category ?? "—"}</div>
                           </td>
                           <td className="font-mono">{f.manager_start ?? "—"}</td>

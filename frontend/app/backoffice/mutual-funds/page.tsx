@@ -11,12 +11,12 @@ import {
   MfScreenerGroup,
   MfScreenerQuery,
   MfScreenerRow,
-  MutualFundItem,
+  mfDetailPath,
+  mfRowToItem,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import { shortDisplayName } from "@/components/backoffice/mfDisplayName";
 import MfMetricExplain from "@/components/backoffice/MfMetricExplain";
-import MfOnePager from "@/components/backoffice/MfOnePager";
 import MfQuartileRankings from "@/components/backoffice/MfQuartileRankings";
 import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
@@ -126,24 +126,8 @@ function tone(v: unknown): string {
   return v > 0 ? "text-[#0B7A4B] dark:text-[#5FD3A2]" : v < 0 ? "text-[#B42332] dark:text-[#FF7D86]" : "";
 }
 
-function toItem(r: MfScreenerRow): MutualFundItem {
-  return {
-    scheme_code: r.code,
-    scheme_name: r.name,
-    amc_name: r.amc ?? undefined,
-    cat_key: r.cat,
-    plan: r.plan,
-    option: "Growth",
-    latest_nav: typeof r.nav === "number" ? r.nav : undefined,
-    nav_date: r.nav_date ?? undefined,
-    ter_pct: typeof r.ter === "number" ? r.ter : undefined,
-    isin_growth: r.isin ?? undefined,
-    is_fh_recommended: r.is_fh_recommended,
-  };
-}
-
 // Opens the staff detail view in a new tab; the row travels in ?s= so the page needs no extra fetch.
-const fundHref = (r: MfScreenerRow) => `/backoffice/mutual-funds/${encodeURIComponent(r.code)}?s=${encodeURIComponent(JSON.stringify({ ...toItem(r), fh_status: r.fh_status }))}`;
+const fundHref = (r: MfScreenerRow) => mfDetailPath(r.code, { ...mfRowToItem(r), fh_status: r.fh_status });
 
 export default function MutualFundsPage() {
   return (
@@ -198,7 +182,6 @@ function MutualFunds() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
-  const [onePager, setOnePager] = useState<MfScreenerRow | null>(null);
 
   const q: MfScreenerQuery = { category, plan, search, sort, order, ranges, recommended };
   const qKey = JSON.stringify(q);
@@ -576,7 +559,7 @@ function MutualFunds() {
                       <div key={code} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
                         <div className="truncate">
                           <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-medium mr-1.5">{code}</span>
-                          <span className="text-[#181818] dark:text-[#EDF2F7] truncate">{name}</span>
+                          <a href={mfDetailPath(code)} target="_blank" rel="noopener noreferrer" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline truncate">{name}</a>
                         </div>
                         <button
                           type="button"
@@ -664,11 +647,12 @@ function MutualFunds() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 p-2.5 min-h-[420px] content-start">
             {!loading && rows.length === 0 && <div className="col-span-full py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">No funds match the current categories and filters.</div>}
             {rows.map((r) => (
-              <button
+              <a
                 key={r.code}
-                type="button"
-                onClick={() => setOnePager(r)}
-                className={`text-left terminal-panel p-3 border-l-4 border-l-[#0176D3] hover:shadow-md cursor-pointer space-y-2 ${loading ? "opacity-50" : ""}`}
+                href={fundHref(r)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`block text-left terminal-panel p-3 border-l-4 border-l-[#0176D3] hover:shadow-md cursor-pointer space-y-2 ${loading ? "opacity-50" : ""}`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="font-medium text-[13px] text-[#0176D3] dark:text-[#1B96FF] leading-snug">{shortDisplayName(r.name)}</div>
@@ -686,7 +670,7 @@ function MutualFunds() {
                     </div>
                   ))}
                 </div>
-              </button>
+              </a>
             ))}
           </div>
         )}
@@ -901,7 +885,6 @@ function MutualFunds() {
         resolveLabel={compare.resolveLabel}
       />
       <MfMetricExplain metric={explain?.metric ?? null} row={explain?.row ?? null} onClose={() => setExplain(null)} />
-      <MfOnePager row={onePager} onClose={() => setOnePager(null)} />
     </div>
   );
 }

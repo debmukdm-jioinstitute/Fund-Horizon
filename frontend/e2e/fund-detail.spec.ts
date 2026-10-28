@@ -26,3 +26,15 @@ test("fund detail page: header, stat strip, tabs and NAV history", async ({ page
   await page.getByRole("tab", { name: "Fund details" }).click();
   await expect(page.getByRole("heading", { name: "Identification & settlement" })).toBeVisible();
 });
+
+test("fund detail page: a bare link (no ?s=) looks the fund up by code", async ({ page }) => {
+  await page.route("**/api/auth/me", (r) => r.fulfill(json({ id: "1", name: "Staff", email: "s@x.in", mobile: "", role: "admin", is_staff: true })));
+  await page.route("**/api/backoffice/**", (r) => {
+    if (r.request().url().includes("/screener"))
+      return r.fulfill(json({ data: [{ code: "101209", name: "Taurus Large Cap Fund - Regular Plan - Growth", amc: "Taurus Mutual Fund", plan: "Regular", cat: "large_cap", nav: 165.58, nav_date: "27-Oct-2026", ter: 2.73 }], total: 1, groups: [] }));
+    return r.fulfill(json({ data: {} }));
+  });
+  await page.goto("/backoffice/mutual-funds/101209");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Taurus Large Cap Fund");
+  await expect(page.getByText("2.73%").first()).toBeVisible();
+});

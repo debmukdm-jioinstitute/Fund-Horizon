@@ -3,6 +3,7 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 
 import { useCallback, useState } from "react";
+import BackBar from "@/components/BackBar";
 import {
   CashflowCard, EmergencyCard, FALLBACK_SCHEME_DOCS, FALLBACK_SUCCESS_NOTE, FundComparisons, FundTable, GoalCard,
   InsuranceCard, InsuranceSuggestions, PlanLinkCard, ProfileCard, SanityBanner, SectionTitle, emergencyReserved,
@@ -53,6 +54,7 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
 
   return (
     <div className="space-y-10">
+      <BackBar fallback="/account/plans" label="Back" />
       {error && (
         <div className="card" role="alert">
           <p className="font-semibold text-rose-700">{error}</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ApiError, getPortalDashboard, patchPortalPlan } from "@/lib/api";
 import { inr, pct } from "@/lib/format";
@@ -124,6 +125,7 @@ export default function PortalGoalsPage() {
         <p className="mt-2 text-sm text-navy-700">
           This link may be mistyped or the plan may no longer exist.
         </p>
+        <Link href="/" className="btn-primary mt-5 inline-block text-sm">Go to the home page</Link>
       </div>
     );
   }
@@ -136,6 +138,7 @@ export default function PortalGoalsPage() {
         <button onClick={() => setAttempt((a) => a + 1)} className="btn-primary mt-5 text-sm">
           Try again
         </button>
+        <Link href={`/portal/${id}`} className="mt-3 block text-sm font-medium text-teal-700 hover:underline">&larr; Back to portal</Link>
       </div>
     );
   }
@@ -144,6 +147,9 @@ export default function PortalGoalsPage() {
 
   return (
     <div className="space-y-4">
+      <Link href={`/portal/${id}`} className="text-sm font-medium text-teal-700 underline-offset-2 hover:underline">
+        &larr; Back to portal
+      </Link>
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-navy-950">My Goals</h1>
         <p className="mt-1 text-sm text-navy-600">

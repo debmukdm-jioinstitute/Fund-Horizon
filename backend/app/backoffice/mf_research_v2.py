@@ -16,6 +16,7 @@ from typing import Any
 
 import pandas as pd
 
+from app.backoffice.mf_holdings import normalize_holding_name
 from app.engine import analytics as an
 
 # ---------------------------------------------------------------------------
@@ -88,8 +89,22 @@ def riskometer_level(text: str | None) -> int | None:
 # Portfolio look-through (holdings in, aggregates out)
 # ---------------------------------------------------------------------------
 
+def _holding_isin(h: dict[str, Any]) -> str:
+    return str(h.get("isin") or "").strip().upper()
+
+
 def _holding_key(h: dict[str, Any]) -> str:
-    return str(h.get("isin") or h.get("name") or "").strip().lower()
+    """ISIN-first holding key, falling back to the normalised holding name.
+
+    An ISIN, when present, is the key (prefixed so it can never collide
+    with a name string); a holding without an ISIN keys on its normalised
+    name (mf_holdings.normalize_holding_name: case/punctuation/& folded).
+    Never fuzzy: two names match only when their normalised forms agree.
+    """
+    isin = _holding_isin(h)
+    if isin:
+        return f"isin:{isin}"
+    return f"name:{normalize_holding_name(h.get('name'))}"
 
 
 def sector_aggregation(holdings: list[dict[str, Any]]) -> dict[str, Any]:
@@ -157,6 +172,10 @@ def fund_overlap(
     Returns shared holdings with their weight in each fund, plus the shared
     weight totals. Empty input on either side yields shared weight None with
     a reason, never 0% (0% would claim "no overlap" from missing data).
+    Matching: an ISIN in fund A matches only the same ISIN in fund B; a
+    holding with no ISIN falls back to its normalised name. An ISIN
+    mismatch is never rescued by a name match — different ISINs are
+    different securities even when the names look alike.
     """
     if not holdings_a or not holdings_b:
         return {
@@ -164,11 +183,14 @@ def fund_overlap(
             "shared_weight_in_a_pct": None, "shared_weight_in_b_pct": None,
             "reason": "Portfolio snapshot unavailable for one or both funds",
         }
-    b_by_key = {_holding_key(h): h for h in holdings_b}
+    b_by_isin = {_holding_isin(h): h for h in holdings_b if _holding_isin(h)}
+    b_by_name = {normalize_holding_name(h.get("name")): h
+                 for h in holdings_b if normalize_holding_name(h.get("name"))}
     shared = []
     wa = wb = 0.0
     for h in holdings_a:
-        other = b_by_key.get(_holding_key(h))
+        isin = _holding_isin(h)
+        other = b_by_isin.get(isin) if isin else b_by_name.get(normalize_holding_name(h.get("name")))
         if other is None:
             continue
         wa += float(h.get("weight_pct") or 0)

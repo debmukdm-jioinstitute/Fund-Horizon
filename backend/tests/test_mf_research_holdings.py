@@ -165,6 +165,57 @@ def test_snapshot_write_load_sector_and_overlap(tmp_path):
                               mf_holdings.overlap_holdings(snapshot, "1001"))["shared_weight_in_a_pct"] is None
 
 
+def test_fund_overlap_isin_first_then_normalised_name():
+    # ISIN match wins even when the names differ in wording.
+    ov = mf_v2.fund_overlap(
+        [{"name": "HDFC Bank Limited", "isin": "INE040A01034", "weight_pct": 8.5}],
+        [{"name": "HDFC Bank Ltd", "isin": "INE040A01034", "weight_pct": 6.0}])
+    assert ov["shared_count"] == 1
+    assert ov["shared_weight_in_b_pct"] == 6.0
+    # No ISIN on either side: "&" vs "and" and punctuation fold to one name.
+    ov = mf_v2.fund_overlap(
+        [{"name": "ICICI Bank & Co.", "isin": None, "weight_pct": 5.0}],
+        [{"name": "ICICI Bank and Co", "isin": "", "weight_pct": 4.0}])
+    assert ov["shared_count"] == 1
+    # ISIN mismatch is never rescued by a matching name: different securities.
+    ov = mf_v2.fund_overlap(
+        [{"name": "HDFC Bank Limited", "isin": "INE040A01034", "weight_pct": 8.5}],
+        [{"name": "HDFC Bank Limited", "isin": "INE999A01034", "weight_pct": 6.0}])
+    assert ov["shared_count"] == 0
+    assert ov["shared_weight_in_a_pct"] == 0.0
+    # Cash rows must be excluded before overlap, never counted as shared.
+    ov = mf_v2.fund_overlap(
+        mf_holdings.overlap_holdings(
+            {"schemes": {"1": {"holdings": [{"name": "Triparty Repo", "isin": None, "weight_pct": 1.0, "instrument_type": "cash"}]}}}, "1"),
+        mf_holdings.overlap_holdings(
+            {"schemes": {"2": {"holdings": [{"name": "Triparty Repo", "isin": None, "weight_pct": 2.0, "instrument_type": "cash"}]}}}, "2"))
+    assert ov["shared_count"] == 0
+
+
+def test_portfolio_overlap_endpoint_missing_side_is_honest(client):
+    from tests.test_backoffice_compare import _create_staff, _login_staff
+
+    _login_staff(client, _create_staff())
+    # 129046 has a snapshot on file; an un-covered code must not read as 0%.
+    ov = client.get("/api/backoffice/mutual-funds/portfolio-overlap?code_a=129046&code_b=999999")
+    assert ov.status_code == 200
+    data = ov.json()["data"]
+    assert data["portfolio_available"] is False
+    assert data["missing_codes"] == ["999999"]
+    assert data["funds"][0]["available"] is True
+    assert data["funds"][1]["available"] is False
+    assert data["overlap"]["shared_weight_in_a_pct"] is None
+    assert "999999" in (data["reason"] or "")
+    ov = client.get("/api/backoffice/mutual-funds/portfolio-overlap?code_a=129046&code_b=122387")
+    assert ov.status_code == 200
+    data = ov.json()["data"]
+    assert data["portfolio_available"] is True
+    assert data["missing_codes"] == []
+    assert data["overlap"]["shared_count"] > 0
+    assert data["as_of_a"] and data["as_of_b"]
+    assert data["source"] == "Monthly portfolio disclosure"
+
+
 def test_tri_month_end_resampling():
     daily = [
         {"date": "01-Sep-2026", "value": 100.0},

@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ComparePayload, getBackofficeCompare } from "@/lib/backoffice";
+import { ComparePayload, getBackofficeCompare, getMfFundOverlap, type MfFundOverlap } from "@/lib/backoffice";
 import InfoTip from "@/components/InfoTip";
 import { FundQuartiles, getFundQuartiles } from "@/lib/api";
 
@@ -140,6 +140,9 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
   const [error, setError] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [quartiles, setQuartiles] = useState<Record<string, FundQuartiles | null>>({});
+  const [fundOverlap, setFundOverlap] = useState<MfFundOverlap | null>(null);
+  const [fundOverlapLoading, setFundOverlapLoading] = useState(false);
+  const [fundOverlapError, setFundOverlapError] = useState<string | null>(null);
 
   const load = React.useCallback(async () => {
     if (ids.length < 2) return;
@@ -186,6 +189,29 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, type, idsKey]);
+
+  // Fund-vs-fund shared holdings: exactly two MF funds only. With any other
+  // count, or for PMS, nothing overlap-related renders at all.
+  useEffect(() => {
+    if (!open || type !== "mf" || ids.length !== 2) {
+      setFundOverlap(null);
+      setFundOverlapError(null);
+      setFundOverlapLoading(false);
+      return;
+    }
+    let off = false;
+    const ctl = new AbortController();
+    setFundOverlapLoading(true);
+    setFundOverlapError(null);
+    getMfFundOverlap(ids[0], ids[1], ctl.signal)
+      .then((res) => !off && setFundOverlap(res))
+      .catch((e: unknown) => !off && setFundOverlapError(e instanceof Error ? e.message : "Failed to load shared holdings"))
+      .finally(() => !off && setFundOverlapLoading(false));
+    return () => {
+      off = true;
+      ctl.abort();
+    };
+  }, [open, type, ids.length, idsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const chartData = useMemo(() => (payload ? buildChartRows(payload, period) : []), [payload, period]);
 
@@ -429,6 +455,67 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
                   </tbody>
                 </table>
               </div>
+
+              {type === "mf" && ids.length === 2 && (
+                <div className="mt-8">
+                  <h3 className="text-[14px] font-medium text-[#172033] dark:text-[#EDF2F7]">Shared holdings</h3>
+                  {fundOverlapLoading && (
+                    <p className="mt-2 text-[13px] text-[#536176] dark:text-[#A8B4C4]">Loading shared holdings…</p>
+                  )}
+                  {fundOverlapError && (
+                    <p className="mt-2 text-[13px] text-[#B42332] dark:text-[#FF7D86]">{fundOverlapError}</p>
+                  )}
+                  {!fundOverlapLoading && !fundOverlapError && fundOverlap && !fundOverlap.portfolio_available && (
+                    <p className="mt-2 text-[13px] text-[#536176] dark:text-[#A8B4C4]">
+                      {fundOverlap.reason || fundOverlap.overlap?.reason || "No portfolio holdings snapshot on file for one or both funds, so shared holdings cannot be shown."}
+                    </p>
+                  )}
+                  {!fundOverlapLoading && !fundOverlapError && fundOverlap && fundOverlap.portfolio_available && fundOverlap.overlap && (
+                    <>
+                      <p className="mt-2 text-[13px] text-[#536176] dark:text-[#A8B4C4]">
+                        {fundOverlap.overlap.shared_count} shared holding{fundOverlap.overlap.shared_count === 1 ? "" : "s"} —{" "}
+                        {fundOverlap.overlap.shared_weight_in_a_pct != null ? `${fundOverlap.overlap.shared_weight_in_a_pct.toFixed(2)}%` : "—"} of{" "}
+                        {payload.items[0]?.name ?? resolveLabel(ids[0])} and{" "}
+                        {fundOverlap.overlap.shared_weight_in_b_pct != null ? `${fundOverlap.overlap.shared_weight_in_b_pct.toFixed(2)}%` : "—"} of{" "}
+                        {payload.items[1]?.name ?? resolveLabel(ids[1])}. Cash rows (TREPS, net receivables) are excluded, so sharing them never counts as overlap.
+                      </p>
+                      {fundOverlap.overlap.shared_holdings.length > 0 ? (
+                        <div className="mt-4 overflow-x-auto">
+                          <table className="terminal-table min-w-full">
+                            <thead>
+                              <tr>
+                                <th>Holding</th>
+                                <th className="text-right">Weight in {payload.items[0]?.name ?? resolveLabel(ids[0])}</th>
+                                <th className="text-right">Weight in {payload.items[1]?.name ?? resolveLabel(ids[1])}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {fundOverlap.overlap.shared_holdings.map((h) => (
+                                <tr key={h.isin || h.name || ""}>
+                                  <td className="py-2.5 px-4">{h.name ?? "—"}</td>
+                                  <td className="text-right tabular-nums py-2.5 px-4">{h.weight_in_a_pct != null ? `${h.weight_in_a_pct.toFixed(2)}%` : "—"}</td>
+                                  <td className="text-right tabular-nums py-2.5 px-4">{h.weight_in_b_pct != null ? `${h.weight_in_b_pct.toFixed(2)}%` : "—"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <p className="mt-2 text-[13px] text-[#536176] dark:text-[#A8B4C4]">
+                          {fundOverlap.overlap.reason ?? "These two funds share no non-cash holdings in their snapshots."}
+                        </p>
+                      )}
+                      <p className="mt-2 text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                        Source: monthly portfolio disclosure
+                        {fundOverlap.as_of_a || fundOverlap.as_of_b
+                          ? ` • As of ${fundOverlap.as_of_a ?? "—"} (${payload.items[0]?.name ?? resolveLabel(ids[0])}), ${fundOverlap.as_of_b ?? "—"} (${payload.items[1]?.name ?? resolveLabel(ids[1])})`
+                          : ""}
+                        . Matched by ISIN first, then by holding name (case and punctuation folded); no estimated figures.
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
             </>
           )}
         </div>

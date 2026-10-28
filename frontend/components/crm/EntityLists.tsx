@@ -2,8 +2,9 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import type { Activity, Household, Lead, Opportunity } from "../../lib/crmApi";
-import { LEAD_STATUSES } from "../../lib/crmApi";
+import { LEAD_STATUSES, patchActivity } from "../../lib/crmApi";
 import { formatRupeesFromPaise, PRODUCT_LINES, STAGES_BY_LINE, stageLabel } from "../../lib/crmProductsApi";
 import ListView, { type FilterDef, type ListColumn } from "./ListView";
 import OwnerAvatar from "./OwnerAvatar";
@@ -160,8 +161,81 @@ export const OpportunitiesList = ({ reloadKey }: { reloadKey?: number }) => (
 );
 
 /* ---------------- Tasks (activities) ---------------- */
-const taskColumns: ListColumn<Activity>[] = [
-  { id: "subject", header: "Subject", sortKey: "subject", cell: (a) => a.subject },
+const isOverdue = (a: Activity) => !a.done_at && !!a.due_at && a.due_at.slice(0, 10) < new Date(Date.now() + 19800000).toISOString().slice(0, 10);
+
+/** What the RM should do next, from the task's state, owner and type. */
+function nextStep(a: Activity): string {
+  if (a.done_at) return "Completed. Nothing more to do; reopen it if follow-up is still needed.";
+  const owned = a.assigned_rm_id ? "" : "Assign an owner first. ";
+  const overdue = isOverdue(a) ? "Overdue: do this today. " : "";
+  const byKind: Record<string, string> = {
+    email: "Check the client received it and replied; log any response, then mark done.",
+    review: "Open the linked record, complete the review, record the outcome, then mark done.",
+    note: "Read the note. If it needs action, create a follow-up task; otherwise mark done.",
+    call: "Call the client, log the outcome in a note, then mark done.",
+    meeting: "Prepare the agenda, hold the meeting, log the outcome, then mark done.",
+  };
+  return owned + overdue + (byKind[a.kind] ?? "Complete the task, then mark done.");
+}
+
+function TaskDetail({ a, onClose, onChanged }: { a: Activity; onClose: () => void; onChanged: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const toggle = async () => {
+    setBusy(true); setErr("");
+    try {
+      await patchActivity(a.id, { done_at: a.done_at ? null : new Date().toISOString() });
+      onChanged(); onClose();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not update the task.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const links = [
+    a.household_id && { href: `/backoffice/crm/households/${a.household_id}`, text: "Household" },
+    a.opportunity_id && { href: `/backoffice/crm/opportunities/${a.opportunity_id}`, text: "Opportunity" },
+  ].filter(Boolean) as { href: string; text: string }[];
+  const row = (k: string, v: React.ReactNode) => (
+    <div className="flex gap-3 text-[13px]"><dt className="w-20 shrink-0 text-[#706E6B] dark:text-[#A8B4C4]">{k}</dt><dd className="min-w-0 break-words">{v}</dd></div>
+  );
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div role="dialog" aria-label="Task details" onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-lg bg-white dark:bg-[#10161D] border border-[#E5E5E5] dark:border-[#2B3644] p-4 space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <h2 className="text-[15px] font-semibold break-words">{a.subject}</h2>
+          <button type="button" aria-label="Close" onClick={onClose} className="terminal-btn text-[12px] py-0.5 px-2">✕</button>
+        </div>
+        <dl className="space-y-1.5">
+          {row("Type", <Badge>{a.kind}</Badge>)}
+          {row("Status", a.done_at ? <Badge tone="good">Done {fmtDate(a.done_at, true)}</Badge> : <Badge tone={isOverdue(a) ? "bad" : "neutral"}>{isOverdue(a) ? "Overdue" : "Open"}</Badge>)}
+          {row("Due", fmtDate(a.due_at, true))}
+          {row("Owner", owner(a.assigned_rm_id))}
+          {row("Created", fmtDate(a.created_at, true))}
+          {row("Details", a.body ? <span className="whitespace-pre-wrap">{a.body}</span> : "No details recorded.")}
+          {links.length > 0 && row("Related", <span className="flex gap-3">{links.map((l) => <Link key={l.href} href={l.href} className="text-[#0176D3] dark:text-[#1B96FF] hover:underline">{l.text}</Link>)}</span>)}
+        </dl>
+        <div className="rounded border border-[#0176D3]/30 bg-[#EAF5FE] dark:bg-[#10243A] p-2.5 text-[13px]">
+          <div className="font-semibold mb-0.5">What to do next</div>{nextStep(a)}
+        </div>
+        {err && <p role="alert" className="text-[12px] text-[#9B1C2E] dark:text-[#FFA9B5]">{err}</p>}
+        <div className="flex gap-2">
+          <button type="button" disabled={busy} onClick={toggle} className="terminal-btn-accent text-[12px] py-1 px-3">
+            {busy ? "Saving…" : a.done_at ? "Reopen" : "Mark done"}
+          </button>
+          <button type="button" onClick={onClose} className="terminal-btn text-[12px] py-1 px-3">Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const taskColumns = (open: (a: Activity) => void): ListColumn<Activity>[] => [
+  {
+    id: "subject", header: "Subject", sortKey: "subject",
+    cell: (a) => <button type="button" onClick={() => open(a)} className="text-left font-semibold text-[#0176D3] dark:text-[#1B96FF] hover:underline">{a.subject}</button>,
+  },
   { id: "kind", header: "Type", sortKey: "kind", cell: (a) => <Badge>{a.kind}</Badge> },
   { id: "due", header: "Due", sortKey: "due_at", cell: (a) => fmtDate(a.due_at, true) },
   {
@@ -171,9 +245,13 @@ const taskColumns: ListColumn<Activity>[] = [
   { id: "owner", header: "Owner", sortKey: "assigned_rm_id", cell: (a) => owner(a.assigned_rm_id) },
   { id: "created", header: "Created", sortKey: "created_at", hiddenByDefault: true, cell: (a) => fmtDate(a.created_at) },
 ];
-export const TasksList = ({ reloadKey }: { reloadKey?: number }) => (
+export function TasksList({ reloadKey = 0 }: { reloadKey?: number }) {
+  const [sel, setSel] = useState<Activity | null>(null);
+  const [bump, setBump] = useState(0);
+  const columns = useMemo(() => taskColumns(setSel), []);
+  return (<>
   <ListView<Activity>
-    entity="activities" columns={taskColumns} reloadKey={reloadKey}
+    entity="activities" columns={columns} reloadKey={reloadKey + bump}
     filters={[
       { key: "done", label: "Status", type: "select", options: [{ value: "false", label: "Open" }, { value: "true", label: "Done" }] },
       { key: "overdue", label: "Overdue only", type: "toggle" },
@@ -181,6 +259,8 @@ export const TasksList = ({ reloadKey }: { reloadKey?: number }) => (
     ]}
     searchPlaceholder="Search tasks…"
   />
-);
+  {sel && <TaskDetail a={sel} onClose={() => setSel(null)} onChanged={() => setBump((n) => n + 1)} />}
+  </>);
+}
 
 /* ---------------- Cases ---------------- */

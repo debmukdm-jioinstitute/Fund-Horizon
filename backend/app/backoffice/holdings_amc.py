@@ -27,7 +27,8 @@ _TITLE_PATTERNS = (
     re.compile(r"portfolio of\s+(.+?)\s+as on", re.I),
     re.compile(r"scheme name\s*:?\s*([^\s:].*)", re.I),
 )
-_ASON = re.compile(r"as on\s+([A-Za-z]+)\s+(\d{1,2}),?\s*(\d{4})|as on\s+(\d{1,2})[-/ ]([A-Za-z]+)[-/ ](\d{4})", re.I)
+_ASON = re.compile(r"as on\s+([A-Za-z]+)\s+(\d{1,2}),?\s*(\d{4})|as on\s+(\d{1,2})[-/ ]([A-Za-z]+)[-/ ](\d{4})|as of\s+(\d{1,2})[-/](\d{1,2})[-/](\d{4})", re.I)
+_SCHEME_MARKER = re.compile(r"^scheme\s*:\s*(.+?)\s*$", re.I)
 
 
 def _s(v: Any) -> str:
@@ -58,7 +59,9 @@ def _find_header(rows: list[tuple]) -> tuple[int, dict[str, int]] | None:
         nm = next((j for j, c in enumerate(cells) if "name of" in c), None)
         if isin is not None and wt is not None:
             sector = next((j for j, c in enumerate(cells) if "industry" in c or "rating" in c), None)
-            return i, {"name_after_isin": nm is not None and nm > isin, "isin": isin, "weight": wt, "sector": sector if sector is not None else -1}
+            # The holding-name column is the "Name of ..." column itself when the header has one (UTI puts ISIN
+            # far to the right of the weight, so "the column before ISIN" is not the name column there).
+            return i, {"name": nm if nm is not None else -1, "name_after_isin": nm is not None and nm > isin, "isin": isin, "weight": wt, "sector": sector if sector is not None else -1}
     return None
 
 
@@ -77,8 +80,10 @@ def _title_and_date(rows: list[tuple]) -> tuple[str | None, str | None]:
                 try:
                     if m.group(1):
                         as_of = date(int(m.group(3)), _MON.index(m.group(1)[:3].lower()) + 1, int(m.group(2))).isoformat()
-                    else:
+                    elif m.group(4):
                         as_of = date(int(m.group(6)), _MON.index(m.group(5)[:3].lower()) + 1, int(m.group(4))).isoformat()
+                    else:  # "AS OF 30/09/2026" (UTI)
+                        as_of = date(int(m.group(9)), int(m.group(8)), int(m.group(7))).isoformat()
                 except ValueError:
                     pass
             if name is None:
@@ -104,46 +109,90 @@ def _title_and_date(rows: list[tuple]) -> tuple[str | None, str | None]:
     return name or fallback, as_of
 
 
-def parse_sheet(rows: list[tuple]) -> dict[str, Any] | None:
-    """One scheme sheet -> {"scheme_name", "as_of", "holdings", "weight_sum"}; None when it is not a scheme sheet."""
+def parse_sheet(rows: list[tuple], scheme_name: str | None = None) -> dict[str, Any] | None:
+    """One scheme sheet -> {"scheme_name", "as_of", "holdings", "weight_sum"}; None when it is not a scheme sheet.
+
+    scheme_name overrides the title detection (used for stacked sheets, where each scheme block starts with a
+    "SCHEME: <name>" marker row and the title area above the header also contains code rows like
+    "SCHEME CODE002STARTS" that must not be mistaken for the scheme name).
+    """
     hdr = _find_header(rows)
     if hdr is None:
         return None
     idx, col = hdr
     after = col.pop("name_after_isin")
+    hdr_name = col.pop("name")
+    base_name = hdr_name if hdr_name >= 0 else (col["isin"] + 1 if after else max(col["isin"] - 1, 0))
+    base = dict(col)
+    base["name"] = base_name
     # Data rows often carry an extra leading code column the header lacks (SBI, Axis): anchor on where ISINs really sit.
+    # But the shift is not always uniform: UTI's header leaves empty columns before ISIN that its fund-of-funds rows
+    # omit, so the ISIN moves while name/weight stay put. Try the header columns first and fall back to the shifted
+    # columns only when the header columns yield no holdings at all — that keeps Axis/SBI working and fixes UTI FoFs.
+    candidates = [base]
     real = next((j for row in rows[idx + 1: idx + 60] for j, c in enumerate(row) if isinstance(c, str) and _ISIN.fullmatch(c.strip())), None)
     if real is not None and real != col["isin"]:
         shift = real - col["isin"]
-        col = {k: (v + shift if v >= 0 else v) for k, v in col.items()}
-    col["name"] = col["isin"] + 1 if after else max(col["isin"] - 1, 0)
+        shifted = {k: (v + shift if v >= 0 else v) for k, v in col.items()}
+        shifted["name"] = base_name + shift
+        if shifted["name"] >= 0:  # a negative name column means this shift is not a uniform row shift; skip it
+            candidates.append(shifted)
+        isin_only = dict(base)
+        isin_only["isin"] = real
+        candidates.append(isin_only)
+    col = candidates[0]
     scheme, as_of = _title_and_date(rows[:idx])
+    if scheme_name:
+        scheme = scheme_name
     if not scheme:
         return None
+    scheme = re.sub(r"^scheme\s*:\s*", "", scheme.strip(), flags=re.I)  # UTI marker text, if title detection picked it up
     scheme = re.sub(r"^[A-Z]{1,4}\d{1,3}\s*-\s*(?=[A-Za-z])", "", scheme.strip())  # Groww: "IB01-Groww Large Cap Fund"
     scheme = re.sub(r"\s*\((?:erstwhile|formerly)[^)]*\)\s*", "", scheme, flags=re.I)
     scheme = re.sub(r"\s*(?:\(|-\s+)(?:an?\s+)?(?:open|close|interval)[- ]?ended.*$", "", scheme, flags=re.I).strip()  # name annotation, not a different scheme
-    holdings: list[dict[str, Any]] = []
-    section = ""
-    for row in rows[idx + 1:]:
-        n = len(row)
-        name = _s(row[col["name"]]) if col["name"] < n else ""
-        w = row[col["weight"]] if col["weight"] < n else None
-        if name and not isinstance(w, (int, float)):
-            others = [c for c in row if c not in (None, "") and not isinstance(c, (int, float))]
-            if len(others) == 1:  # a section heading row, e.g. "Equity & Equity related"
-                section = name
-            continue
-        if not name or isinstance(w, bool) or not isinstance(w, (int, float)) or _TOTAL.search(name):
-            continue
-        isin = _s(row[col["isin"]]) if col["isin"] < n else ""
-        sector = _s(row[col["sector"]]) if 0 <= col["sector"] < n else ""
-        inst = _instrument(section, name, isin)
-        # Derivative / hedge / summary tables below the main one use other columns: a holding needs an ISIN (cash rows excepted).
-        if (not isin and inst != "cash") or abs(w) > 100:
-            continue
-        holdings.append({"name": name, "isin": isin or None, "sector": sector or None, "weight_pct": float(w),
-                         "instrument_type": inst})
+    # Score candidates by how many holdings carry a well-formed ISIN (cash rows excepted): the header columns can
+    # yield spurious "holdings" (scheme codes as names, company names in the ISIN column, market values as weights)
+    # for Axis/Nippon-style sheets, so first-nonempty is not enough — the shifted columns win there on score.
+    tries: list[tuple[list[dict[str, Any]], int]] = []
+    for ci, col in enumerate(candidates):
+        holdings = []
+        section = ""
+        for row in rows[idx + 1:]:
+            n = len(row)
+            name = _s(row[col["name"]]) if col["name"] < n else ""
+            w = row[col["weight"]] if col["weight"] < n else None
+            if name and not isinstance(w, (int, float)):
+                others = [c for c in row if c not in (None, "") and not isinstance(c, (int, float))]
+                if len(others) == 1:  # a section heading row, e.g. "Equity & Equity related"
+                    section = name
+                continue
+            if not name or isinstance(w, bool) or not isinstance(w, (int, float)) or _TOTAL.search(name):
+                continue
+            isin = _s(row[col["isin"]]) if col["isin"] < n else ""
+            sector = _s(row[col["sector"]]) if 0 <= col["sector"] < n else ""
+            inst = _instrument(section, name, isin)
+            # Interest-rate swaps are derivative notional exposure, not portfolio holdings: Tata's floating-rate
+            # and ultra-short sheets list IRS rows (identifier IRSSWAP...) with weights up to 26%, which inflates
+            # those funds' sums to 121–161% and gets them dropped as bad_weight. Skip swap rows outright.
+            if re.match(r"IRS\b", name, re.I) or isin.upper().startswith("IRS"):
+                continue
+            # Derivative / hedge / summary tables below the main one use other columns: a holding needs an ISIN (cash rows excepted).
+            # A single weight above 100 is possible (UTI fund-of-funds hold one MF unit at ~100.35% against negative
+            # net current assets); market-value columns mistaken for weights are in lacs and far larger, so 150 is the
+            # guard, and the fund-total check still rejects a misread sheet.
+            if (not isin and inst != "cash") or abs(w) > 150:
+                continue
+            holdings.append({"name": name, "isin": isin or None, "sector": sector or None, "weight_pct": float(w),
+                             "instrument_type": inst})
+        score = sum(1 for h in holdings if h["instrument_type"] == "cash" or (h["isin"] and _ISIN.fullmatch(h["isin"])))
+        tries.append((holdings, score))
+    scored = [(h, s) for h, s in tries if s > 0]
+    if scored:
+        holdings = max(scored, key=lambda t: t[1])[0]  # max keeps the first candidate on a tie
+    elif len(tries) > 1:
+        holdings = tries[1][0]  # no well-formed ISIN anywhere: pre-fix selection was the shifted columns
+    else:
+        holdings = tries[0][0] if tries else []
     if not holdings:
         return None
     total = sum(h["weight_pct"] for h in holdings)
@@ -156,6 +205,37 @@ def parse_sheet(rows: list[tuple]) -> dict[str, Any] | None:
         if h["instrument_type"] != "equity":
             h["sector"] = None  # debt rows carry a credit rating in that column, not a sector
     return {"scheme_name": scheme, "as_of": as_of, "holdings": holdings, "weight_sum": round(total, 2)}
+
+
+def _marker_name(row: tuple) -> str | None:
+    for c in row:
+        t = _s(c)
+        m = _SCHEME_MARKER.match(t) if t else None
+        if m:
+            return m.group(1)
+    return None
+
+
+def parse_sheet_all(rows: list[tuple]) -> list[dict[str, Any]]:
+    """One sheet -> every scheme it holds.
+
+    Most AMCs publish one scheme per sheet, but UTI publishes one stacked sheet whose schemes follow one another,
+    each starting with a "SCHEME: <name>" marker row. Parsing such a sheet as one scheme concatenates every
+    scheme's holdings into one pseudo-scheme whose weights sum to ~10x a portfolio — that was the UTI bug.
+    Splitting on the markers (preamble before the first marker belongs to no scheme and is dropped) fixes it;
+    a sheet with no markers parses exactly as parse_sheet did.
+    """
+    markers = [(i, name) for i, row in enumerate(rows) if (name := _marker_name(row))]
+    if not markers:
+        parsed = parse_sheet(rows)
+        return [parsed] if parsed else []
+    out = []
+    for k, (i, name) in enumerate(markers):
+        end = markers[k + 1][0] if k + 1 < len(markers) else len(rows)
+        parsed = parse_sheet(rows[i:end], scheme_name=name)
+        if parsed:
+            out.append(parsed)
+    return out
 
 
 def _xls_sheets(data: bytes) -> list[list[tuple]]:
@@ -192,9 +272,7 @@ def parse_workbook(data: bytes) -> list[dict[str, Any]]:
         sheets = ([tuple(r) for r in ws.iter_rows(values_only=True)] for ws in wb.worksheets)
     out = []
     for rows in sheets:
-        parsed = parse_sheet(rows)
-        if parsed:
-            out.append(parsed)
+        out.extend(parse_sheet_all(rows))
     return out
 
 
@@ -256,7 +334,9 @@ def _page_links(page: str, base: str) -> list[str]:
     found = []
     for href in re.findall(r"[\"'(=]([^\"'<> ()]+\.(?:xlsx?|zip)(?:\?[^\"'<> ()]*)?)", page, re.I):
         url = urljoin(base, _html.unescape(href))
-        if url not in found and re.search(r"portfolio|disclos|statutory|monthly|ir-", url, re.I) and not re.search(r"fortnight|nav_|ter_|dividend|riskometer|branch", url, re.I):
+        # NB: "ir-" (information-ratio workbooks, e.g. HSBC's ir-hsbc-mf-*.xlsx) is deliberately NOT a
+        # portfolio signal: treating it as one made discovery pick a fund-performance file with no holdings.
+        if url not in found and re.search(r"portfolio|disclos|statutory|monthly", url, re.I) and not re.search(r"fortnight|nav_|ter_|dividend|riskometer|branch", url, re.I):
             found.append(url)
     return found
 

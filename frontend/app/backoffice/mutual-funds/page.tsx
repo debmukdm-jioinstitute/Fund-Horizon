@@ -26,7 +26,7 @@ import InfoTip from "@/components/InfoTip";
 
 const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "Capture Ratio", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
-const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
+const PAGE_SIZES = [5, 8, 10, 20, 25, 50, 100];
 const DEFAULT_CATEGORIES = ["flexi_cap", "multi_cap"];
 const PLANS = ["Regular", "Direct"];
 
@@ -55,23 +55,14 @@ const COLUMNS: Record<Section, Col[]> = {
   "One-Pager": [],
   "Quartile Rankings": [],
   Summary: [
-    { key: "cat_label", label: "Category / Benchmark", kind: "text" },
-    pct("out_1y", "1Yr vs Category Avg", undefined, "Fund 1Yr return minus its category-plan average, in percentage points"),
-    pct("out_3y", "3Yr vs Category Avg"),
-    pct("out_5y", "5Yr vs Category Avg"),
-    { key: "score", label: "FH Checklist Score / 100", kind: "score" },
-    { key: "stars", label: "FH Star Rating", kind: "stars" },
-    { key: "aum_cr", label: "AUM Cr", kind: "aum" },
-    num("ter", "Net Expense Ratio"),
-    num("nav", "Current NAV"),
-    pct("day_chg", "Day change %"),
-    pct("week_chg", "Week change %"),
-    pct("ret_1m", "Month change %"),
-    pct("ret_3m", "Returns 3M %"),
-    pct("ret_1y", "Returns 1Yr %"),
-    pct("ret_2y", "2Yr CAGR %"),
-    pct("cagr_3y", "3Yr CAGR %"),
-    pct("cagr_5y", "5Yr CAGR %"),
+    { key: "cat_label", label: "Category", kind: "text" },
+    pct("out_1y", "1Y", undefined, "Fund 1Yr return minus its category-plan average, in percentage points"),
+    pct("out_3y", "3Y"),
+    pct("out_5y", "5Y"),
+    { key: "score", label: "FH score / 100", kind: "score" },
+    { key: "stars", label: "FH rating", kind: "stars" },
+    { key: "aum_cr", label: "AUM (\u20B9 Cr)", kind: "aum" },
+    num("ter", "Expense (%)"),
   ],
   Checklist: [
     { key: "score", label: "FH Checklist Score / 100", kind: "score" },
@@ -172,7 +163,7 @@ function MutualFunds() {
 
   const [sort, setSort] = useState("score");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(8);
   const [offset, setOffset] = useState(0);
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [search, setSearch] = useState((params.get("q") ?? "").trim());
@@ -181,7 +172,18 @@ function MutualFunds() {
   const [draft, setDraft] = useState<Record<string, { min?: string; max?: string }>>({});
   const [showFilter, setShowFilter] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
-  const [planOpen, setPlanOpen] = useState(false);
+  const [planSelectOpen, setPlanSelectOpen] = useState(false);
+  const [colsOpen, setColsOpen] = useState(false);
+  const [hiddenCols, setHiddenCols] = useState<string[]>(() => {
+    try {
+      if (typeof window === "undefined") return [];
+      const raw = window.localStorage.getItem("fh-mf-columns");
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    } catch {
+      return [];
+    }
+  });
   const rec = useRecommended();
   const [recDropdownOpen, setRecDropdownOpen] = useState(false);
   const [newRecCode, setNewRecCode] = useState("");
@@ -209,13 +211,21 @@ function MutualFunds() {
   // Panels close on Escape; Quick Filter also closes on outside click (backdrop below).
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") { setShowFilter(false); setRecDropdownOpen(false); setCatOpen(false); setPlanOpen(false); }
+      if (e.key === "Escape") { setShowFilter(false); setRecDropdownOpen(false); setCatOpen(false); setPlanSelectOpen(false); setPlanSelectOpen(false); setColsOpen(false); }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   useEffect(() => setOffset(0), [qKey, pageSize]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("fh-mf-columns", JSON.stringify(hiddenCols));
+    } catch {
+      /* private mode: column choice just does not persist */
+    }
+  }, [hiddenCols]);
 
   useEffect(() => {
     const ctl = new AbortController();
@@ -267,7 +277,18 @@ function MutualFunds() {
   const arrow = (key: string) => (sort === key ? (order === "asc" ? " ▲" : " ▼") : <span className="opacity-30"> ⇅</span>);
 
   const cols = COLUMNS[section];
-  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const visibleCols = cols.filter((c) => !hiddenCols.includes(c.key));
+  const isSummary = section === "Summary";
+  const visibleOutCols = visibleCols.filter((c) => c.key.startsWith("out_"));
+  const visibleNonOutCols = visibleCols.filter((c) => !c.key.startsWith("out_") && c.key !== "cat_label");
+  const planValue = plan.length === 2 ? "Both" : plan[0] === "Regular" ? "Regular" : plan[0] === "Direct" ? "Direct" : "Both";
+  const planButtonLabel = planValue === "Both" ? "Both" : planValue === "Regular" ? "Regular only" : "Direct only";
+  const colDisplayLabel = (c: Col) =>
+    c.key === "out_1y" ? "Return vs category average \u2014 1Y" :
+    c.key === "out_3y" ? "Return vs category average \u2014 3Y" :
+    c.key === "out_5y" ? "Return vs category average \u2014 5Y" : c.label;
+  const showingFrom = total === 0 ? 0 : offset + 1;
+  const showingTo = Math.min(offset + pageSize, total);
   const page = Math.floor(offset / pageSize);
   const activeFilters = Object.values(ranges).filter((r) => r.min || r.max).length;
 
@@ -286,21 +307,13 @@ function MutualFunds() {
         </div>
       </div>
 
-      <div className="relative flex flex-wrap items-center gap-2.5">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search fund, AMC or scheme code…"
-          aria-label="Search fund, AMC or scheme code"
-          className="terminal-input flex-1 min-w-[220px] text-[13px] py-2 px-3"
-        />
+      <div className="relative flex flex-wrap items-center gap-2">
         <div className="contents">
           <button
             type="button"
             aria-haspopup="true"
             aria-expanded={catOpen}
-            onClick={() => { setCatOpen((v) => !v); setPlanOpen(false); }}
+            onClick={() => { setCatOpen((v) => !v); setPlanSelectOpen(false); }}
             className="terminal-btn text-[13px] py-2 px-3 flex items-center gap-2"
           >
             Categories
@@ -358,51 +371,6 @@ function MutualFunds() {
             </>
           )}
         </div>
-        <div className="relative">
-          <button
-            type="button"
-            aria-haspopup="true"
-            aria-expanded={planOpen}
-            onClick={() => { setPlanOpen((v) => !v); setCatOpen(false); }}
-            className="terminal-btn text-[13px] py-2 px-3 flex items-center gap-2"
-          >
-            <span className="text-[#706E6B] dark:text-[#A8B4C4]">Plan</span>
-            {plan.length ? plan.join(" + ") : "None"}
-            <span className="text-[10px]">▾</span>
-          </button>
-          {planOpen && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setPlanOpen(false)} />
-              <div className="absolute left-0 top-full mt-1.5 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-2 text-[13px] text-[#181818] dark:text-[#EDF2F7]">
-                {PLANS.map((p) => (
-                  <label key={p} className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="h-4 w-4 accent-[#0176D3]" checked={plan.includes(p)} onChange={() => setUrl({ plan: toggle(plan, p) })} />
-                    {p}
-                  </label>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-        <button type="button" aria-expanded={showFilter} onClick={() => setShowFilter((v) => !v)} className="terminal-btn text-[13px] py-2 px-3">
-          ⚟ More filters{activeFilters ? ` (${activeFilters})` : ""}
-        </button>
-        <button
-          type="button"
-          className="text-[13px] font-medium text-[#0176D3] dark:text-[#1B96FF] px-2 hover:underline"
-          onClick={() => {
-            setUrl({ category: DEFAULT_CATEGORIES, plan: PLANS });
-            setQuery("");
-            setRecommended(false);
-            setRanges({});
-            setDraft({});
-          }}
-        >
-          Reset
-        </button>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2">
         {selectedCats.map((c) => (
           <span key={c.key} className="inline-flex items-center gap-2 rounded-md bg-[#D8E9FB] text-[#0176D3] dark:bg-[#1B3A5C] dark:text-[#1B96FF] text-[13px] py-1.5 px-3">
             {c.label}
@@ -411,16 +379,101 @@ function MutualFunds() {
             </button>
           </span>
         ))}
+      </div>
+
+      <div role="tablist" className="flex flex-wrap items-center gap-1 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+          {SECTIONS.map((s) => (
+            <button
+              key={s}
+              role="tab"
+              aria-selected={section === s}
+              onClick={() => {
+                setUrl({ section: s });
+                setShowFilter(false);
+                setRecDropdownOpen(false);
+                setPlanSelectOpen(false);
+                setColsOpen(false);
+                setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Capture Ratio" ? "cap_ratio_3y" : s === "Returns" ? "cagr_3y" : "score");
+                setOrder("desc");
+              }}
+              className={`text-[13px] py-1 px-3 border-b-2 ${section === s ? "border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] font-medium" : "border-transparent text-[#706E6B] dark:text-[#A8B4C4]"}`}
+            >
+              {s.replace("Vs", "vs")}
+            </button>
+          ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2.5">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search fund, AMC or scheme code"
+          aria-label="Search fund, AMC or scheme code"
+          className="terminal-input flex-1 min-w-[220px] text-[13px] py-2 px-3"
+        />
+        <div className="relative">
+          <button
+            type="button"
+            aria-haspopup="true"
+            aria-expanded={planSelectOpen}
+            onClick={() => { setPlanSelectOpen((v) => !v); setCatOpen(false); setColsOpen(false); }}
+            className="terminal-btn text-[13px] py-2 px-3 flex items-center gap-2"
+          >
+            <span className="text-[#706E6B] dark:text-[#A8B4C4]">Plan:</span> {planButtonLabel}
+            <span className="text-[10px]">▾</span>
+          </button>
+          {planSelectOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setPlanSelectOpen(false)} />
+              <div className="absolute left-0 top-full mt-1.5 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-1.5 shadow-2xl z-50 text-[13px] text-[#181818] dark:text-[#EDF2F7] min-w-[160px]">
+                {([
+                  ["Both", PLANS],
+                  ["Regular only", ["Regular"]],
+                  ["Direct only", ["Direct"]],
+                ] as const).map(([label, value]) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => { setUrl({ plan: [...value] }); setPlanSelectOpen(false); }}
+                    className="w-full flex items-center justify-between px-2.5 py-1.5 rounded hover:bg-[#F0F4F8] dark:hover:bg-[#1D2733] text-left"
+                  >
+                    {label}
+                    {planValue === label.replace(" only", "") || (label === "Both" && planValue === "Both") ? <span aria-hidden>✓</span> : null}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
         <button
           type="button"
           aria-pressed={recommended}
           onClick={() => setRecommended((v) => !v)}
-          className={`${recommended ? "terminal-btn-accent" : "terminal-btn"} text-[13px] py-1.5 px-3`}
+          className={`${recommended ? "terminal-btn-accent" : "terminal-btn"} text-[13px] py-2 px-3`}
         >
           ☆ FH Recommended ({Object.keys(rec.mfMap).length})
         </button>
+        <button type="button" aria-expanded={showFilter} onClick={() => setShowFilter((v) => !v)} className="terminal-btn text-[13px] py-2 px-3">
+          Filters{activeFilters ? ` (${activeFilters})` : ""} <span className="text-[10px]">▾</span>
+        </button>
+        <button
+          type="button"
+          className="text-[13px] font-medium text-[#0176D3] dark:text-[#1B96FF] px-2 hover:underline"
+          onClick={() => {
+            setQuery("");
+            setRecommended(false);
+            setRanges({});
+            setDraft({});
+            setSort("score");
+            setOrder("desc");
+            setShowFilter(false);
+            setUrl({ plan: PLANS });
+          }}
+        >
+          Reset
+        </button>
       </div>
-
 
       {showFilter && (
         <>
@@ -466,30 +519,9 @@ function MutualFunds() {
         </>
       )}
 
-      <div role="tablist" className="flex flex-wrap items-center gap-1 border-b border-[#E5E5E5] dark:border-[#2B3644]">
-          {SECTIONS.map((s) => (
-            <button
-              key={s}
-              role="tab"
-              aria-selected={section === s}
-              onClick={() => {
-                setUrl({ section: s });
-                setShowFilter(false);
-                setRecDropdownOpen(false);
-                setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Capture Ratio" ? "cap_ratio_3y" : s === "Returns" ? "cagr_3y" : "score");
-                setOrder("desc");
-              }}
-              className={`text-[13px] py-1 px-3 border-b-2 ${section === s ? "border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] font-medium" : "border-transparent text-[#706E6B] dark:text-[#A8B4C4]"}`}
-            >
-              {s.replace("Vs", "vs")}
-            </button>
-          ))}
-      </div>
-
       <div className="flex flex-wrap items-start justify-between gap-2.5">
-        <div className="text-[16px] text-[#706E6B] dark:text-[#A8B4C4] pt-2">{loading ? "Loading…" : `${total.toLocaleString("en-IN")} funds`}</div>
+        <div className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] pt-2">{loading ? "Loading\u2026" : `${total.toLocaleString("en-IN")} funds`}</div>
         <div className="flex flex-wrap items-start justify-end gap-2">
-
           <div className="relative">
             <button
               type="button"
@@ -566,6 +598,39 @@ function MutualFunds() {
             )}
           </div>
 
+          <div className="relative">
+            <button
+              type="button"
+              aria-haspopup="true"
+              aria-expanded={colsOpen}
+              onClick={() => { setColsOpen((v) => !v); setPlanSelectOpen(false); }}
+              className="terminal-btn text-[13px] py-2 px-3 flex items-center gap-2"
+            >
+              Columns
+              <span className="text-[10px]">▾</span>
+            </button>
+            {colsOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setColsOpen(false)} />
+                <div className="absolute right-0 top-full mt-1.5 w-72 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-1.5 text-left">
+                  {cols.map((c) => (
+                    <label key={c.key} className="flex items-center gap-2 text-[12px] text-[#181818] dark:text-[#EDF2F7] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 accent-[#0176D3]"
+                        checked={!hiddenCols.includes(c.key)}
+                        onChange={(e) => setHiddenCols((h) => e.target.checked ? h.filter((x) => x !== c.key) : [...h, c.key])}
+                      />
+                      {colDisplayLabel(c)}
+                    </label>
+                  ))}
+                  <button type="button" onClick={() => setHiddenCols([])} className="text-[12px] font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline pt-1">
+                    Show all columns
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
           <a href={mfScreenerCsvUrl(q)} download className="terminal-btn text-[13px] py-2 px-3 no-underline">
             ⤓ Export CSV
           </a>
@@ -582,7 +647,6 @@ function MutualFunds() {
           </div>
         </div>
       </div>
-
 
       {error && (
         <div className="terminal-panel p-3 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px] flex flex-wrap items-center justify-between gap-2">
@@ -628,30 +692,78 @@ function MutualFunds() {
         <div className={`overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px] ${section === "One-Pager" || section === "Quartile Rankings" ? "hidden" : ""}`}>
           <table className="terminal-table">
             <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
-              <tr>
-                <th className="w-[40px]" aria-label="Compare" />
-                <th className="min-w-[240px]">
-                  <button type="button" onClick={() => onSort("name")} className="hover:underline cursor-pointer text-left">
-                    Fund Name{arrow("name")}
-                  </button>
-                </th>
-                {cols.map((c) => (
-                  <th key={c.key} className="text-right whitespace-nowrap">
-                    <div className="inline-flex items-center justify-end gap-1">
-                      <button type="button" onClick={() => onSort(c.key)} className="hover:underline cursor-pointer" title={`Sort by ${c.label}`}>
-                        {c.label}
-                        {arrow(c.key)}
+              {isSummary ? (
+                <>
+                  <tr>
+                    <th rowSpan={2} className="w-[40px]" aria-label="Compare" />
+                    <th rowSpan={2} className="min-w-[240px]">
+                      <button type="button" onClick={() => onSort("name")} className="hover:underline cursor-pointer text-left">
+                        Fund / Plan{arrow("name")}
                       </button>
-                      <InfoTip metric={c.tip ?? c.key} />
-                    </div>
+                    </th>
+                    {!hiddenCols.includes("cat_label") && (
+                      <th rowSpan={2} className="whitespace-nowrap">
+                        Category{" "}
+                        <span className="text-[#706E6B] dark:text-[#A8B4C4]" title="The fund's category, e.g. Flexi Cap" aria-label="About Category">ⓘ</span>
+                      </th>
+                    )}
+                    {visibleOutCols.length > 0 && (
+                      <th colSpan={visibleOutCols.length} className="text-center whitespace-nowrap" title="Fund return minus its category-plan average, in percentage points">
+                        Return vs category average
+                        <div className="relative mx-1 mt-1 h-3" aria-hidden>
+                          <div className="absolute left-0 right-0 top-1/2 border-t border-dotted border-[#706E6B] dark:border-[#A8B4C4]" />
+                          {visibleOutCols.map((c, i) => (
+                            <span key={c.key} className="absolute top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#706E6B] dark:bg-[#A8B4C4]" style={{ left: `${((i + 0.5) / visibleOutCols.length) * 100}%` }} />
+                          ))}
+                        </div>
+                      </th>
+                    )}
+                    {visibleNonOutCols.map((c) => (
+                      <th key={c.key} rowSpan={2} className="text-right whitespace-nowrap">
+                        <button type="button" onClick={() => onSort(c.key)} className="hover:underline cursor-pointer" title={`Sort by ${c.label}`}>
+                          {c.label}
+                          {c.key === "score" ? (sort === "score" ? (order === "asc" ? " \u2191" : " \u2193") : <span className="opacity-30"> \u21c5</span>) : arrow(c.key)}
+                        </button>
+                      </th>
+                    ))}
+                  </tr>
+                  <tr>
+                    {visibleOutCols.map((c) => (
+                      <th key={c.key} className="text-right whitespace-nowrap">
+                        <button type="button" onClick={() => onSort(c.key)} className="hover:underline cursor-pointer" title={`Sort by ${c.label}`}>
+                          {c.label}
+                          {arrow(c.key)}
+                        </button>
+                      </th>
+                    ))}
+                  </tr>
+                </>
+              ) : (
+                <tr>
+                  <th className="w-[40px]" aria-label="Compare" />
+                  <th className="min-w-[240px]">
+                    <button type="button" onClick={() => onSort("name")} className="hover:underline cursor-pointer text-left">
+                      Fund Name{arrow("name")}
+                    </button>
                   </th>
-                ))}
-              </tr>
+                  {visibleCols.map((c) => (
+                    <th key={c.key} className="text-right whitespace-nowrap">
+                      <div className="inline-flex items-center justify-end gap-1">
+                        <button type="button" onClick={() => onSort(c.key)} className="hover:underline cursor-pointer" title={`Sort by ${c.label}`}>
+                          {c.label}
+                          {arrow(c.key)}
+                        </button>
+                        <InfoTip metric={c.tip ?? c.key} />
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              )}
             </thead>
             <tbody>
               {!loading && rows.length === 0 ? (
                 <tr>
-                  <td colSpan={cols.length + 2} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
+                  <td colSpan={visibleCols.length + 2} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
                     No funds match the current categories and filters.
                   </td>
                 </tr>
@@ -671,36 +783,67 @@ function MutualFunds() {
                           onChange={() => compare.toggle(cid, r.name)}
                         />
                       </td>
-                      <td>
-                        <button
-                          type="button"
-                          onClick={() => setSelected(toItem(r))}
-                          className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug"
-                        >
-                          {shortDisplayName(r.name)}
-                        </button>
-                        {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && (
+                      {isSummary ? (
+                        <td>
+                          <div className="flex items-start gap-2">
+                            {r.amc ? <AmcLogo amc={r.amc} className="h-8 min-w-8 max-w-[4rem] text-[9px] shrink-0" /> : null}
+                            <div className="min-w-0">
+                              <button
+                                type="button"
+                                onClick={() => setSelected(toItem(r))}
+                                className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug"
+                              >
+                                {shortDisplayName(r.name)}
+                              </button>
+                              {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    rec.toggleMf(r.code, r.name);
+                                  }}
+                                  title="Click to toggle FH Recommended status"
+                                  className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] hover:opacity-85 cursor-pointer align-middle"
+                                >
+                                  ★ FH
+                                </button>
+                              )}
+                              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{r.amc ?? "-"} · {r.plan}</div>
+                            </div>
+                          </div>
+                        </td>
+                      ) : (
+                        <td>
                           <button
                             type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              rec.toggleMf(r.code, r.name);
-                            }}
-                            title="Click to toggle FH Recommended status"
-                            className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] hover:opacity-85 cursor-pointer align-middle"
+                            onClick={() => setSelected(toItem(r))}
+                            className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug"
                           >
-                            ★ FH
+                            {shortDisplayName(r.name)}
                           </button>
-                        )}
-                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                          <span className="inline-flex items-center gap-1.5">
-                            {r.amc ? <AmcLogo amc={r.amc} className="h-5 min-w-5 max-w-[4rem] text-[8px]" /> : null}
-                            {r.amc ?? "-"} · {r.plan}
-                          </span>
-                        </div>
-                      </td>
-                      {cols.map((c) => (
-                        <Cell key={c.key} col={c} row={r} onExplain={() => setExplain({ metric: c, row: r })} />
+                          {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                rec.toggleMf(r.code, r.name);
+                              }}
+                              title="Click to toggle FH Recommended status"
+                              className="ml-2 text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] hover:opacity-85 cursor-pointer align-middle"
+                            >
+                              ★ FH
+                            </button>
+                          )}
+                          <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                            <span className="inline-flex items-center gap-1.5">
+                              {r.amc ? <AmcLogo amc={r.amc} className="h-5 min-w-5 max-w-[4rem] text-[8px]" /> : null}
+                              {r.amc ?? "-"} · {r.plan}
+                            </span>
+                          </div>
+                        </td>
+                      )}
+                      {visibleCols.map((c) => (
+                        <Cell key={c.key} col={c} row={r} summary={isSummary} onExplain={() => setExplain({ metric: c, row: r })} />
                       ))}
                     </tr>
                   );
@@ -709,26 +852,26 @@ function MutualFunds() {
             </tbody>
           </table>
         </div>
-        <div className="px-3 py-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] text-[#706E6B] dark:text-[#A8B4C4] flex flex-wrap items-center justify-between gap-2">
-          <label className="flex items-center gap-1.5">
-            Rows
-            <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))} className="terminal-input text-[11px] py-0.5 px-1.5">
-              {PAGE_SIZES.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="flex items-center gap-1.5">
-            <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" disabled={page <= 0 || loading} onClick={() => setOffset(offset - pageSize)}>
-              Previous
+        <div className="px-3 py-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[12px] text-[#706E6B] dark:text-[#A8B4C4] flex flex-wrap items-center justify-between gap-2">
+          <div>
+            Showing {showingFrom.toLocaleString("en-IN")}–{showingTo.toLocaleString("en-IN")} of {total.toLocaleString("en-IN")}
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="flex items-center gap-1.5">
+              Rows
+              <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))} className="terminal-input text-[11px] py-0.5 px-1.5">
+                {PAGE_SIZES.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="button" aria-label="Previous page" className="terminal-btn text-[13px] py-0.5 px-2" disabled={page <= 0 || loading} onClick={() => setOffset(offset - pageSize)}>
+              ‹
             </button>
-            <span>
-              Page {page + 1} of {pageCount}
-            </span>
-            <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" disabled={offset + pageSize >= total || loading} onClick={() => setOffset(offset + pageSize)}>
-              Next
+            <button type="button" aria-label="Next page" className="terminal-btn text-[13px] py-0.5 px-2" disabled={offset + pageSize >= total || loading} onClick={() => setOffset(offset + pageSize)}>
+              ›
             </button>
           </div>
         </div>
@@ -762,7 +905,7 @@ function MutualFunds() {
   );
 }
 
-function Cell({ col, row, onExplain }: { col: Col; row: MfScreenerRow; onExplain: () => void }) {
+function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; summary?: boolean; onExplain: () => void }) {
   const v = row[col.key];
   // Whole cell opens the plain-language explanation; keyboard users get Enter/Space.
   const click = {
@@ -770,6 +913,13 @@ function Cell({ col, row, onExplain }: { col: Col; row: MfScreenerRow; onExplain
     onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onExplain(); } },
   };
   const cls = "cursor-pointer hover:bg-[#EAF5FE] dark:hover:bg-[#10243A] ";
+  if (col.kind === "score" && summary) {
+    return (
+      <td {...click} title="Click to see why" className={cls + "text-right whitespace-nowrap"}>
+        <span className="font-medium tabular-nums">{typeof v === "number" ? v : "-"}</span>
+      </td>
+    );
+  }
   if (col.kind === "score") {
     const max = col.key === "score" ? 100 : 25;
     const label =
@@ -788,12 +938,27 @@ function Cell({ col, row, onExplain }: { col: Col; row: MfScreenerRow; onExplain
   if (col.kind === "stars") {
     const n = typeof v === "number" ? v : 0;
     return (
-      <td {...click} className={cls + "text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]"} title={n ? `${n} of 5 (FH rating, not Morningstar)${row.stars_provisional ? ". Provisional: under 3 years of history, ranked on 1Y Sharpe" : ""}` : "Not rated"}>
-        {n ? "★".repeat(n) + "☆".repeat(5 - n) : <span className="text-[#706E6B] dark:text-[#A8B4C4]">-</span>}
+      <td {...click} className={cls + "text-right whitespace-nowrap"} title={n ? `${n} of 5 (FH rating, not Morningstar)${row.stars_provisional ? ". Provisional: under 3 years of history, ranked on 1Y Sharpe" : ""}` : "Not rated"}>
+        {n ? (
+          <>
+            <span className="text-[#E8A317] dark:text-[#FBBF24]">★</span> <span className="tabular-nums text-[#181818] dark:text-[#EDF2F7]">{n}/5</span>
+          </>
+        ) : (
+          <span className="text-[#706E6B] dark:text-[#A8B4C4]">-</span>
+        )}
         {n > 0 && row.stars_provisional ? <sup className="ml-0.5 text-[9px]">P</sup> : null}
       </td>
     );
   }
+  if (col.kind === "text" && summary)
+    return (
+      <td {...click} title="Click to see why" className={cls}>
+        <div className="flex items-center gap-1">
+          {String(v ?? "-")}
+          <span className="text-[#706E6B] dark:text-[#A8B4C4]" title={`Benchmark: ${String(row.benchmark ?? "-")}`} aria-label="About Category">ⓘ</span>
+        </div>
+      </td>
+    );
   if (col.kind === "text")
     return (
       <td {...click} title="Click to see why" className={cls + "min-w-[200px]"}>
@@ -802,6 +967,7 @@ function Cell({ col, row, onExplain }: { col: Col; row: MfScreenerRow; onExplain
       </td>
     );
   if (col.kind === "aum") return <td {...click} title="Click to see why" className={cls + "text-right tabular-nums"}>{fmt(v, 0)}</td>;
+  if (summary && col.kind === "pct" && typeof v !== "number") return <td {...click} title="Click to see why" className={cls + "text-right tabular-nums"}>–</td>;
   const avg = col.avg ? row[col.avg] : undefined;
   const when = col.date ? row[col.date] : undefined;
   return (

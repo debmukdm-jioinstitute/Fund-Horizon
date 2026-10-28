@@ -466,7 +466,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={flows?.fii_net} unit="₹ Cr" />
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">{flows?.fii_net != null && flows?.fii_prev != null ? <SignedValue value={flows.fii_net - flows.fii_prev} unit="₹ Cr" /> : "—"}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">NSE</td>
               </tr>
@@ -478,7 +478,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={flows?.dii_net} unit="₹ Cr" />
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">{flows?.dii_net != null && flows?.dii_prev != null ? <SignedValue value={flows.dii_net - flows.dii_prev} unit="₹ Cr" /> : "—"}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(flows?.latest_date)}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">NSE</td>
               </tr>

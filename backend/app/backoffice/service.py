@@ -134,6 +134,10 @@ class BackofficeService:
         same_day = [f for f in flows if f.get("report_date") == latest_date]
         fii_net = next((f.get("net") for f in same_day if f.get("category") in ("FII", "FPI")), None)
         dii_net = next((f.get("net") for f in same_day if f.get("category") == "DII"), None)
+        prev_date = next((f.get("report_date") for f in flows if f.get("report_date") != latest_date), None)
+        prev_day = [f for f in flows if f.get("report_date") == prev_date] if prev_date else []
+        fii_prev = next((f.get("net") for f in prev_day if f.get("category") in ("FII", "FPI")), None)
+        dii_prev = next((f.get("net") for f in prev_day if f.get("category") == "DII"), None)
 
         sources = self.repo.list_sources()
         sources_ready = sum(1 for s in sources if s.get("health_status") == "ready")
@@ -175,6 +179,8 @@ class BackofficeService:
                 "latest_date": latest_date,
                 "fii_net": fii_net,
                 "dii_net": dii_net,
+                "fii_prev": fii_prev,
+                "dii_prev": dii_prev,
                 "unit": "inr_crore",
                 "status": "ready" if flows else "awaiting_ingestion",
             },

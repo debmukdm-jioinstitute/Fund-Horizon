@@ -268,31 +268,6 @@ def _init_backoffice_schema_raw(conn: sqlite3.Connection) -> None:
 
     conn.execute(
         """
-        CREATE TABLE IF NOT EXISTS issuer_fundamentals (
-            id TEXT PRIMARY KEY,
-            isin_or_symbol TEXT NOT NULL,
-            company_name TEXT NOT NULL,
-            sector TEXT,
-            fiscal_period TEXT NOT NULL,
-            revenue_crore REAL,
-            ebitda_crore REAL,
-            pat_crore REAL,
-            operating_margin_pct REAL,
-            net_margin_pct REAL,
-            total_debt_crore REAL,
-            cash_crore REAL,
-            roe_pct REAL,
-            pe_ratio REAL,
-            scope TEXT NOT NULL DEFAULT 'consolidated',
-            source TEXT,
-            created_at TEXT NOT NULL
-        )
-        """
-    )
-    conn.execute("CREATE INDEX IF NOT EXISTS ix_fundamentals_symbol ON issuer_fundamentals(isin_or_symbol, fiscal_period)")
-
-    conn.execute(
-        """
         CREATE TABLE IF NOT EXISTS watchlists (
             id TEXT PRIMARY KEY,
             staff_id TEXT NOT NULL,
@@ -418,7 +393,6 @@ def _seed_default_registries_raw(conn: sqlite3.Connection) -> None:
         ("SRC_FACTSHEETS", "Official Factsheets (AMC / PMS publishers)", "https://www.amfiindia.com/", "factsheet_discovery", "1.0.0", "Links to each publisher's own monthly factsheet PDF, verified live (HTTP 200 + PDF) before recording. Publishers whose pages need a browser are not covered yet.", "public_view_only", 1, 4, "Asia/Kolkata", "daily", "ready"),
         ("SRC_RSS", "Open RSS News Feeds", "https://www.rbi.org.in/", "rss_feeds", "1.0.0", "RBI, SEBI, PIB, ET, Mint, Business Standard, BusinessLine, Moneycontrol and Google News public RSS feeds. Headlines and links only.", "public_view_only", 1, 6, "Asia/Kolkata", "intraday", "ready"),
         ("SRC_TREASURY", "US Treasury Par Yield Curve", "https://home.treasury.gov/resource-center/data-chart-center/interest-rates", "us_treasury", "1.0.0", "Official US Treasury daily par yield curve. No key required.", "public_view_only", 1, 4, "America/New_York", "daily", "ready"),
-        ("SRC_CORP_FILINGS", "Corporate Fundamentals & Filings", "https://www.bseindia.com/corporates", "corp_filings", "1.0.0", "Quarterly financial results & disclosures.", "manual_only", 1, 10, "Asia/Kolkata", "quarterly", "manual_only"),
         ("SRC_SCREENING", "Fund Horizon Screening Engine", "https://fundhorizon.in/backoffice/research?tab=screening", "screening_engine", "1.0.0", "Internal MF Regular Growth funnel metrics.", "public_view_only", 1, 1, "Asia/Kolkata", "daily", "ready"),
         ("SRC_ADVISORKHOJ", "Advisorkhoj Public Research", "https://www.advisorkhoj.com/", "advisorkhoj", "1.0.0", "Public HTML fund quartile rankings under robots.txt Allow: /; fallback to computed.", "public_view_only", 1, 2, "Asia/Kolkata", "daily", "ready"),
     ]

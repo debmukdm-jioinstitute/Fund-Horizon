@@ -17,7 +17,6 @@ Fund Horizon operates under a strict **₹0 incremental spend** constraint for d
 | **Indian Index Derivatives & PCR** | [NSE Derivative Reports](https://www.nseindia.com/all-reports-derivatives) | EOD / Snapshot | `manual_only` | No | Unauthenticated option-chain scraper endpoints (e.g. `/api/option-chain-indices`) frequently return HTTP 404 or block without authenticated session cookies. Validated EOD CSV import is supported out-of-the-box. |
 | **FII / DII Institutional Flows** | [NSE FII/DII Reports](https://www.nseindia.com/reports/fii-dii) | Daily reported/provisional | `ready` / `manual_only` | No | Daily reported/provisional cash-market combined figures in ₹ Crore. Preserves provisional vs final status. |
 | **PMS Strategy Returns & AUM** | [APMI Performance Portal](https://www.apmiindia.org/apmi/welcomeiaperformance.htm?action=PMSmenu) | Monthly disclosures | `manual_only` | No | Strategy-level disclosures published monthly. Direct CSV/XLSX import supported with provider, approach, AUM, and return horizon mappings. |
-| **Issuer Corporate Fundamentals** | Official BSE/NSE filings | Quarterly / Annual | `manual_only` | No | Normalized revenue, EBITDA, PAT, debt/equity, and mutual fund look-through coverage. |
 
 ---
 
@@ -59,9 +58,3 @@ report_date,category,segment,buy_crore,sell_crore,net_crore,provisional
 2026-10-09,DII,Cash,8940.1,7120.5,1819.6,false
 ```
 
-### D. Issuer Corporate Fundamentals (`fundamentals`)
-```csv
-symbol,company_name,fiscal_period,reporting_scope,revenue_crore,ebitda_crore,ebitda_margin_pct,pat_crore,net_debt_crore,debt_equity_ratio,mf_lookthrough_weight_pct,filing_id
-INFY,Infosys Limited,Q1 FY27,Consolidated,39315.0,9820.0,25.0,6370.0,-14500.0,0.00,4.8,BSE_CORP_20260718
-TCS,Tata Consultancy Services,Q1 FY27,Consolidated,62613.0,16500.0,26.3,12100.0,-18200.0,0.00,5.2,BSE_CORP_20260712
-```

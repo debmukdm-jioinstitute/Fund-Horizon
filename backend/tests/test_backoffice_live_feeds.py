@@ -108,22 +108,6 @@ def test_option_chain_rejects_non_nse_underlying():
         _StubNse({}).fetch_option_chain("SENSEX")
 
 
-def test_quarterly_results_convert_lakh_to_crore_and_derive_ebitda():
-    client = _StubNse({
-        "/api/results-comparision": {
-            "resCmpData": [
-                {"re_to_dt": "31-DEC-2024", "re_net_sale": "3491500", "re_net_profit": "635800",
-                 "re_pro_loss_bef_tax": "884400", "re_int_new": "5000", "re_depr_und_exp": "66100",
-                 "re_oth_inc_new": "100100", "re_seq_num": "1"},
-            ]
-        }
-    })
-    q = client.fetch_quarterly_results("INFY")[0]
-    assert q["period_end"] == "2024-12-31"
-    assert q["revenue_crore"] == 34915.0 and q["ebitda_crore"] == 8554.0 and q["pat_crore"] == 6358.0
-    assert q["ebitda_margin_pct"] == pytest.approx(24.5, abs=0.01)
-
-
 def test_yields_board_has_no_invented_india_curve(client):
     from tests.test_backoffice_api import _create_staff, _login_staff
 

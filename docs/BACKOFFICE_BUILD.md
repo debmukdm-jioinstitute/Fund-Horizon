@@ -59,7 +59,7 @@ Revisions:
 - [x] Database engine pooling & schema caching (eliminated per-request schema DDL and connection pool re-creation in SQLite and PostgreSQL).
 - [x] Normalized backoffice schemas & Alembic revision `0005_internal_backoffice`.
 - [x] Atomic data collectors & adapters (AMFI 8-column header parser, ECB reference rates, Cboe VIX history, MFapi cache, FRED registered keyless fallback / needs_key).
-- [x] Manual import engine (PMS strategies, client holdings & cash flows, option chains, FII/DII flows, corporate fundamentals) with preview, row validation, formula injection defense, and atomic rollback.
+- [x] Manual import engine (PMS strategies, client holdings & cash flows, option chains, FII/DII flows) with preview, row validation, formula injection defense, and atomic rollback.
 - [x] PMS tracker: Strategy research + Scoped client portfolio tracking (XIRR, Modified Dietz, HWM fee estimates).
 - [x] Mutual Fund tracker: Daily AMFI NAV 8-column ingestion, scheme comparison, Direct/Regular plan distinctions, portfolio reconciliation.
 - [x] Macro/Yields/Micro/Flows/Derivatives boards: 10Y-2Y curves, canonical 300 bps spread calculations (`(Y_a - Y_b) * 100`), PCR (OI/volume) with complete snapshot guarantees, cash-index N/A.

@@ -240,42 +240,6 @@ class NseClient:
             }
         raise NseError(f"NSE returned no option-chain rows for {symbol}")
 
-    # --- Quarterly results -------------------------------------------------------------------------------
-
-    def fetch_quarterly_results(self, symbol: str) -> list[dict[str, Any]]:
-        """Recent quarterly results (newest first). Money fields are converted from INR lakh to INR crore."""
-        payload = self.get_json(
-            "/api/results-comparision", {"symbol": symbol.upper()}, referer="https://www.nseindia.com/get-quotes/equity"
-        )
-        rows = (payload or {}).get("resCmpData") or []
-        quarters: list[dict[str, Any]] = []
-        for r in rows:
-            sales, pat = _num(r.get("re_net_sale")), _num(r.get("re_net_profit"))
-            to_dt = r.get("re_to_dt")
-            if sales is None or not to_dt:
-                continue
-            try:
-                period_end = parse_nse_date(str(to_dt).title())
-            except ValueError:
-                continue
-            pbt = _num(r.get("re_pro_loss_bef_tax"))
-            interest = _num(r.get("re_int_new")) or 0.0
-            depreciation = _num(r.get("re_depr_und_exp")) or 0.0
-            other_income = _num(r.get("re_oth_inc_new")) or 0.0
-            ebitda = (pbt + interest + depreciation - other_income) if pbt is not None else None
-            quarters.append(
-                {
-                    "period_end": period_end,
-                    "revenue_crore": round(sales / 100.0, 2),
-                    "ebitda_crore": round(ebitda / 100.0, 2) if ebitda is not None else None,
-                    "ebitda_margin_pct": round(ebitda / sales * 100.0, 2) if ebitda is not None and sales else None,
-                    "pat_crore": round(pat / 100.0, 2) if pat is not None else None,
-                    "filing_id": str(r.get("re_seq_num") or "") or None,
-                }
-            )
-        quarters.sort(key=lambda q: q["period_end"], reverse=True)
-        return quarters
-
 
 _NSE = NseClient()
 

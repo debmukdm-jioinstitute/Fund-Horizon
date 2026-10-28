@@ -6,7 +6,6 @@ Supports:
 - Client PMS portfolio holdings & cash flows
 - Indian Index Option chains (NSE/BSE)
 - FII / DII flows
-- Issuer corporate fundamentals & filings
 
 Features:
 - In-memory parsing
@@ -85,16 +84,6 @@ IMPORT_TEMPLATES: dict[str, dict[str, Any]] = {
         ],
         "example_row": [
             "2026-10-09", "FII", "equity_cash", "12500.50", "10250.25", "2250.25", "inr_crore", "final"
-        ],
-    },
-    "issuer_fundamentals": {
-        "headers": [
-            "ISIN/Symbol", "Company Name", "Sector", "Fiscal Period",
-            "Revenue (Cr)", "EBITDA (Cr)", "PAT (Cr)", "Total Debt (Cr)", "Cash (Cr)", "Scope"
-        ],
-        "example_row": [
-            "INE002A01018", "Reliance Industries Ltd", "Oil & Gas / Retail", "FY26-Q1",
-            "235000.00", "42000.00", "19500.00", "315000.00", "185000.00", "consolidated"
         ],
     },
     "mf_managers": {
@@ -217,10 +206,6 @@ class ManualImportValidator:
                 float(row.get("Gross Buy", 0))
                 float(row.get("Gross Sell", 0))
                 float(row.get("Net", 0))
-
-            elif import_type == "issuer_fundamentals":
-                if not row.get("ISIN/Symbol"):
-                    return "ISIN/Symbol is required"
 
             elif import_type == "mf_managers":
                 if not row.get("scheme_code") or not row.get("manager_name"):

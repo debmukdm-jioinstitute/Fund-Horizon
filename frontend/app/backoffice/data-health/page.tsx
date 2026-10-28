@@ -292,7 +292,6 @@ export default function DataHealthPage() {
                   className="terminal-input w-full text-[12px] py-1 px-2"
                 >
                   <option value="pms_strategies">PMS Strategy Performance</option>
-                  <option value="issuer_fundamentals">Issuer Financial Statements</option>
                   <option value="macro_yields">Macro Sovereign Yield Series</option>
                   <option value="derivative_reports">Derivatives EOD Bhavcopy</option>
                 </select>

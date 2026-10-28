@@ -187,7 +187,7 @@ TABLE_COVERAGE: dict[str, str] = {
     **{t: _SERIES for t in (
         "observations", "flows", "option_contracts", "option_snapshots", "nav_monthly", "mf_benchmark_nav", "mf_ter",
         "metrics", "funds", "fund_holdings", "pms_strategy_observations", "portfolio_valuations", "portfolio_cashflows",
-        "issuer_fundamentals", "instrument_registry")},
+        "instrument_registry")},
     **{t: _SYSTEM for t in (
         "audit_events", "audit_log", "collector_runs", "source_registry", "sessions", "cas_sessions", "import_jobs",
         "screening_runs", "screening_presets", "plans", "briefings", "factsheets", "crm_list_views", "watchlists",

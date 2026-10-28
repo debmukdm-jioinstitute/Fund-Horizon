@@ -8,7 +8,7 @@ Covers:
 - flows (FII / DII gross & net)
 - pms_strategy_observations
 - portfolio_positions, portfolio_cashflows, portfolio_valuations
-- fund_holdings & issuer_fundamentals
+- fund_holdings
 - watchlists, research_notes, saved_views, import_jobs, audit_events, collector_runs
 """
 
@@ -221,28 +221,6 @@ class FundHoldingModel(Base):
     asset_class: Mapped[str] = mapped_column(String(32), nullable=False, default="equity")
     weight_pct: Mapped[float] = mapped_column(Float, nullable=False)
     rating: Mapped[str | None] = mapped_column(String(32), nullable=True)
-    created_at: Mapped[str] = mapped_column(String(50), nullable=False)
-
-
-class IssuerFundamentalModel(Base):
-    __tablename__ = "issuer_fundamentals"
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True)
-    isin_or_symbol: Mapped[str] = mapped_column(String(32), index=True, nullable=False)
-    company_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    sector: Mapped[str | None] = mapped_column(String(120), index=True, nullable=True)
-    fiscal_period: Mapped[str] = mapped_column(String(32), index=True, nullable=False)
-    revenue_crore: Mapped[float | None] = mapped_column(Float, nullable=True)
-    ebitda_crore: Mapped[float | None] = mapped_column(Float, nullable=True)
-    pat_crore: Mapped[float | None] = mapped_column(Float, nullable=True)
-    operating_margin_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
-    net_margin_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
-    total_debt_crore: Mapped[float | None] = mapped_column(Float, nullable=True)
-    cash_crore: Mapped[float | None] = mapped_column(Float, nullable=True)
-    roe_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
-    pe_ratio: Mapped[float | None] = mapped_column(Float, nullable=True)
-    scope: Mapped[str] = mapped_column(String(32), nullable=False, default="consolidated")
-    source: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[str] = mapped_column(String(50), nullable=False)
 
 

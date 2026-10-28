@@ -552,10 +552,62 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
 
             <div className="terminal-panel p-3.5 space-y-2">
               <div className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">Portfolio — holdings and sector</div>
-              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                {researchDetail?.portfolio?.reason ?? "No portfolio holdings snapshot on file for this scheme, so holdings, sector percentages, market-cap mix, turnover, cash %, style and concentration are unavailable — never estimated."}
-              </p>
-              <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Source when ingested: AMFI monthly portfolio disclosures on each fund house&apos;s website (listed at amfiindia.com/onlinecenter/portfoliodisclosure).</p>
+              {researchDetail?.portfolio?.available ? (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2.5 text-[12px]">
+                    {([
+                      ["Holdings in snapshot", researchDetail.portfolio.summary?.holdings_count],
+                      ["Top 10 holdings %", researchDetail.portfolio.summary?.top10_concentration_pct],
+                      ["Largest holding %", researchDetail.portfolio.summary?.top_holding_pct],
+                      ["Total weight %", researchDetail.portfolio.summary?.total_weight_pct],
+                    ] as const).map(([label, v]) => (
+                      <div key={label}>
+                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
+                        <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? v.toFixed(2) : "—"}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {researchDetail.portfolio.sectors && researchDetail.portfolio.sectors.length > 0 && (
+                    <div className="text-[12px]">
+                      <div className="font-medium mb-1">Sector mix (% of net assets, from the disclosure&apos;s own Industry column)</div>
+                      {researchDetail.portfolio.sectors.map((s, i) => (
+                        <div key={i} className="flex justify-between text-[#706E6B] dark:text-[#A8B4C4]">
+                          <span>{s.sector ?? "Unclassified"}</span>
+                          <span className="font-mono">{typeof s.weight_pct === "number" ? s.weight_pct.toFixed(2) : "—"}</span>
+                        </div>
+                      ))}
+                      {typeof researchDetail.portfolio.unclassified_pct === "number" && researchDetail.portfolio.unclassified_pct !== 0 && (
+                        <div className="flex justify-between text-[#706E6B] dark:text-[#A8B4C4]">
+                          <span>Unclassified (cash and money-market rows, no sector)</span>
+                          <span className="font-mono">{researchDetail.portfolio.unclassified_pct.toFixed(2)}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {researchDetail.portfolio.holdings && researchDetail.portfolio.holdings.length > 0 && (
+                    <div className="text-[12px]">
+                      <div className="font-medium mb-1">Largest holdings (top 10 of {researchDetail.portfolio.holdings.length})</div>
+                      {researchDetail.portfolio.holdings.slice(0, 10).map((h, i) => (
+                        <div key={i} className="flex justify-between gap-2 text-[#706E6B] dark:text-[#A8B4C4]">
+                          <span className="truncate">{h.name ?? "—"}{h.sector ? ` · ${h.sector}` : ""}</span>
+                          <span className="font-mono shrink-0">{typeof h.weight_pct === "number" ? h.weight_pct.toFixed(2) : "—"}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                    As of {researchDetail.portfolio.as_of ?? "—"} · {researchDetail.portfolio.amc ?? ""} monthly portfolio disclosure.
+                    Market-cap mix, turnover and style are not in the monthly disclosure, so they stay unavailable. Past performance is not a guide to future returns.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                    {researchDetail?.portfolio?.reason ?? "No portfolio holdings snapshot on file for this scheme, so holdings, sector percentages, market-cap mix, turnover, cash %, style and concentration are unavailable — never estimated."}
+                  </p>
+                  <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Source when ingested: AMFI monthly portfolio disclosures on each fund house&apos;s website.</p>
+                </>
+              )}
             </div>
 
             <div className="terminal-panel p-3.5 space-y-2">

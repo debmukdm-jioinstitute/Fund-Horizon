@@ -200,10 +200,19 @@ def test_v2_research_blocks_and_screener_columns(client):
     assert d["operations"]["available"] is True
     assert d["operations"]["exit_load"] == snap[picked]
     assert d["operations"]["history_unavailable"]["aum_history"]
-    # Portfolio: honestly unavailable, never a fabricated sector split.
-    assert d["portfolio"]["available"] is False
-    assert d["portfolio"]["sector_available"] is False
-    assert d["portfolio"]["holdings"] == []
+    # Portfolio: available exactly for funds with a holdings snapshot on
+    # file, honestly unavailable (never a fabricated sector split) otherwise.
+    # A committed snapshot now ships in the repo, so the meta flags are True.
+    from app.backoffice import mf_holdings
+
+    snapshot = mf_holdings.load_snapshot()
+    assert d["portfolio"]["available"] is (picked in snapshot["schemes"])
+    if picked in snapshot["schemes"]:
+        assert d["portfolio"]["sector_available"] is True
+        assert d["portfolio"]["holdings"] and d["portfolio"]["sectors"]
+    else:
+        assert d["portfolio"]["sector_available"] is False
+        assert d["portfolio"]["holdings"] == []
     # Index: no TRI series stored in a fresh test DB, so the proxy stays.
     assert d["index"]["proxy_retired"] is False
     assert d["index"]["reason"]
@@ -214,15 +223,15 @@ def test_v2_research_blocks_and_screener_columns(client):
     for col in ("roll_win_pct", "cal_topq_years", "cal_win_pct", "downside_dev_3y",
                 "sip_cagr_3y", "sip_cagr_5y", "idx_alpha_3y", "idx_beta_3y"):
         assert col in row
-    assert s["meta"]["sector_available"] is False
-    assert s["meta"]["portfolio_available"] is False
+    assert s["meta"]["sector_available"] is True
+    assert s["meta"]["portfolio_available"] is True
     csv_r = client.get("/api/backoffice/mutual-funds/screener?format=csv&limit=1")
     assert csv_r.status_code == 200
     assert "Rolling 1Y Win %" in csv_r.text and "vs index TRI" in csv_r.text
     # Research detail carries the same V2 blocks + a consistency source flag.
     detail = client.get(f"/api/backoffice/mutual-funds/{picked}/research-detail").json()["data"]
     assert detail["consistency_source"] in ("precomputed", "live-nav")
-    assert detail["portfolio"]["available"] is False
+    assert detail["portfolio"]["available"] is (picked in snapshot["schemes"])
     assert detail["operations"]["available"] is True
     client.cookies.clear()
     assert client.get(f"/api/backoffice/mutual-funds/{picked}/research-v2").status_code in (401, 403)

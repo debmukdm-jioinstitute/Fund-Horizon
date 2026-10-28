@@ -267,6 +267,44 @@ def fund_quartiles_route(scheme_code: str):
     return {"data": data}
 
 
+@router.get("/api/funds/{scheme_code}/portfolio")
+def fund_portfolio(scheme_code: str):
+    """Holdings + sector split from the committed monthly-disclosure snapshot (public); ``data`` is null when the fund has none."""
+    from app.backoffice import mf_holdings
+    from app.backoffice import mf_research_v2 as mf_v2
+
+    try:
+        entry = mf_holdings.holdings_for_scheme(mf_holdings.load_snapshot(), scheme_code)
+    except Exception:
+        entry = None
+    if entry is None:
+        return {"data": None}
+    hs = entry.get("holdings") or []
+    rows = [{"name": h.get("name"), "isin": h.get("isin"), "sector": h.get("sector"),
+             "weight_pct": h.get("weight_pct"), "instrument_type": h.get("instrument_type")} for h in hs]
+    return clean({"data": {
+        "holdings": rows, **mf_v2.sector_aggregation(rows), "summary": mf_v2.portfolio_summary(rows),
+        "as_of": entry.get("as_of"), "source": entry.get("source_url"), "amc": entry.get("amc"),
+        "coverage_pct": entry.get("coverage_pct"), "note": entry.get("note"),
+    }})
+
+
+@router.get("/api/funds/{scheme_code}/peers")
+def fund_peers(scheme_code: str, request: Request, limit: int = Query(8, ge=1, le=20)):
+    """Same-category eligible funds ranked by 3Y CAGR, with this fund's own rank (public)."""
+    eligible = request.app.state.eligible
+    me = eligible[eligible["scheme_code"] == scheme_code]
+    if me.empty:
+        raise HTTPException(404, "Scheme not found")
+    grp = eligible[eligible["cat"] == me.iloc[0]["cat"]].dropna(subset=["cagr_3y"]).sort_values("cagr_3y", ascending=False)
+    rank = grp["scheme_code"].tolist().index(scheme_code) + 1 if scheme_code in set(grp["scheme_code"]) else None
+    keep = ["scheme_code", "scheme_name", "amc", "ret_1y", "cagr_3y", "cagr_5y", "vol_3y", "sharpe_3y"]
+    top = grp.head(limit)
+    if rank and rank > limit:
+        top = pd.concat([top, grp[grp["scheme_code"] == scheme_code]])
+    return clean({"peers": top[keep].to_dict("records"), "rank": rank, "count": int(len(grp))})
+
+
 @router.get("/api/funds/{scheme_code}/analytics")
 def fund_analytics(scheme_code: str, request: Request):
     """Deep analytics for a fund: CAGR, rolling returns, SIP XIRR, drawdown, and capture ratios."""

@@ -262,3 +262,6 @@ html.dark .sf {
 .sf .terminal-btn-accent:hover { background-color: #014486; border-color: #014486; opacity: 1; }
 html.dark .sf .terminal-btn-accent { color: #10151C; background-color: #1B96FF; border-color: #1B96FF; }
 .sf .terminal-btn, .sf .terminal-input, .sf .terminal-panel { border-radius: 4px; }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

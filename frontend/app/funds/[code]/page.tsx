@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import { notFound } from "next/navigation";
-import { getFundAnalyticsServer, getFundDetailServer, getFundQuartiles, getFundReferenceServer } from "@/lib/api";
+import { getFundAnalyticsServer, getFundDetailServer, getFundPeers, getFundPortfolio, getFundQuartiles, getFundReferenceServer } from "@/lib/api";
 import type { FundReference, MfRefRow } from "@/lib/types";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
 import ExplainModal from "@/components/ExplainModal";
@@ -17,6 +17,8 @@ import {
 } from "@/components/FundCharts";
 import { computeDrawdownEpisodes } from "@/lib/drawdown";
 import InfoTip from "@/components/InfoTip";
+import FundTabs from "@/components/fund/FundTabs";
+import { AssetAllocation, HoldingsTable, PeerTable, ReturnsCalculator, SectorAllocation } from "@/components/fund/FundExtras";
 
 /* ---- AMFI/SEBI reference detail (everything the reference snapshot holds for a scheme) ---- */
 const REF_ACRONYMS: Record<string, string> = {
@@ -170,6 +172,13 @@ function ReferenceDetails({ reference }: { reference: FundReference }) {
   );
 }
 
+const TABS = [
+  { id: "fund-price", label: "Fund Price" }, { id: "performance", label: "Performance" }, { id: "peers", label: "Peer Comparison" },
+  { id: "calculator", label: "Calculator" }, { id: "asset-allocation", label: "Asset Allocation" }, { id: "sector-allocation", label: "Sector Allocation" },
+  { id: "holdings", label: "Holdings" }, { id: "fund-overview", label: "Overview" }, { id: "about", label: "About" },
+  { id: "compare", label: "Compare Funds" }, { id: "faqs", label: "FAQs" },
+];
+
 interface PageProps {
   params: Promise<{ code: string }>;
 }
@@ -188,11 +197,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function FundDetailPage({ params }: PageProps) {
   const { code } = await params;
-  const [detail, analytics, reference, quartiles] = await Promise.all([
+  const [detail, analytics, reference, quartiles, portfolio, peers] = await Promise.all([
     getFundDetailServer(code),
     getFundAnalyticsServer(code),
     getFundReferenceServer(code),
     getFundQuartiles(code),
+    getFundPortfolio(code),
+    getFundPeers(code),
   ]);
 
   if (!detail || !analytics) {
@@ -218,6 +229,14 @@ export default async function FundDetailPage({ params }: PageProps) {
   const maxDdEp = episodesByDrop[0];
   const longestEp = dd?.longest_underwater || episodesByDuration[0];
 
+  const f = (v: number | null) => (v !== null ? pct(v) : "not available");
+  const faqs: [string, string][] = [
+    [`What are the returns of ${detail.scheme_name}?`, `1Y ${f(ret.cagr_1y)}, 3Y CAGR ${f(ret.cagr_3y)}, 5Y CAGR ${f(ret.cagr_5y)}, computed from published NAV to ${analytics.last_nav_date}. Past performance is not a guide to future returns.`],
+    ["How risky is this fund?", `3Y annualised volatility ${f(risk.annualized_volatility_3y)}, maximum historical drawdown ${f(risk.max_drawdown)}.`],
+    ["What does it hold?", portfolio ? `${portfolio.summary.holdings_count} holdings as of ${portfolio.as_of ?? "the latest disclosure"}; see Holdings and Sector Allocation above.` : "Its monthly portfolio file is not ingested yet, so holdings are shown as unavailable rather than estimated."],
+    ["How do I invest?", "Fund Horizon distributes Regular plans as an AMFI-registered Mutual Fund Distributor (ARN 345439). Contact us to start a SIP or lumpsum."],
+  ];
+
   return (
     <div className="w-full space-y-6">
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: detail.scheme_name }]} />
@@ -238,10 +257,10 @@ export default async function FundDetailPage({ params }: PageProps) {
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-navy-950 sm:text-3xl">
               {detail.scheme_name}
             </h1>
-            <p className="mt-1 text-sm text-navy-700">
+            <div className="mt-1 text-sm text-navy-700">
               AMC: <AmcName amc={detail.amc} className="h-10 min-w-10" /> · Data as of{" "}
               {analytics.last_nav_date}
-            </p>
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ExplainModal
@@ -299,11 +318,10 @@ export default async function FundDetailPage({ params }: PageProps) {
         </div>
       </header>
 
-      {/* Consolidated AMFI/SEBI reference detail: everything on the mf-reference snapshot */}
-      {reference && <ReferenceDetails reference={reference} />}
+      <FundTabs tabs={TABS} />
 
       {/* NAV History Chart */}
-      <section className="card space-y-4">
+      <section id="fund-price" className="card scroll-mt-16 space-y-4">
         <div className="flex items-center gap-1.5">
           <h2 className="text-lg font-bold text-navy-950">NAV History</h2>
           <InfoTip metric="nav" meta={mfMeta} />
@@ -311,6 +329,7 @@ export default async function FundDetailPage({ params }: PageProps) {
         <NavChart navs={detail.nav_monthly} />
       </section>
 
+      <div id="performance" className="scroll-mt-16 space-y-6">
       {/* Rolling Returns Analysis */}
       <section className="card space-y-4">
         <div>
@@ -496,6 +515,62 @@ export default async function FundDetailPage({ params }: PageProps) {
           )}
         </section>
       )}
+
+      </div>
+
+      <section id="peers" className="card scroll-mt-16 space-y-3">
+        <h2 className="text-lg font-bold text-navy-950">Peer Comparison</h2>
+        {peers && peers.peers.length > 0 ? <PeerTable data={peers} code={detail.scheme_code} /> : <p className="text-sm text-navy-700">Peer data is not available for this category.</p>}
+      </section>
+
+      <section id="calculator" className="card scroll-mt-16 space-y-3">
+        <h2 className="text-lg font-bold text-navy-950">Returns Calculator</h2>
+        <ReturnsCalculator cagr={{ "3Y": ret.cagr_3y, "5Y": ret.cagr_5y }} />
+      </section>
+
+      <section id="asset-allocation" className="card scroll-mt-16 space-y-3">
+        <h2 className="text-lg font-bold text-navy-950">Asset Allocation</h2>
+        <AssetAllocation p={portfolio} />
+      </section>
+
+      <section id="sector-allocation" className="card scroll-mt-16 space-y-3">
+        <h2 className="text-lg font-bold text-navy-950">Sector Allocation</h2>
+        <SectorAllocation p={portfolio} />
+      </section>
+
+      <section id="holdings" className="card scroll-mt-16 space-y-3">
+        <h2 className="text-lg font-bold text-navy-950">Holdings</h2>
+        <HoldingsTable p={portfolio} />
+      </section>
+
+      <div id="fund-overview" className="scroll-mt-16">
+        {reference ? <ReferenceDetails reference={reference} /> : <section className="card"><h2 className="text-lg font-bold text-navy-950">Overview</h2><p className="mt-1 text-sm text-navy-700">No AMFI/SEBI reference record on file for this scheme.</p></section>}
+      </div>
+
+      <section id="about" className="card scroll-mt-16 space-y-2">
+        <h2 className="text-lg font-bold text-navy-950">About {detail.scheme_name}</h2>
+        <p className="text-sm text-navy-800">
+          {detail.scheme_name} is an open-ended {CATEGORY_LABELS[detail.cat] ?? detail.category} scheme from {detail.amc}, offered here as the Regular plan ({detail.option}). NAV history runs {detail.nav_monthly.length} months, last published {analytics.last_nav_date}.
+        </p>
+      </section>
+
+      <section id="compare" className="card scroll-mt-16 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-bold text-navy-950">Compare Funds</h2>
+          <p className="text-sm text-navy-700">Put this fund side by side with others on returns, risk and rolling consistency.</p>
+        </div>
+        <Link href={`/funds/compare?codes=${detail.scheme_code}`} className="rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-800">Compare →</Link>
+      </section>
+
+      <section id="faqs" className="card scroll-mt-16 space-y-2">
+        <h2 className="text-lg font-bold text-navy-950">Frequently Asked Questions</h2>
+        {faqs.map(([q, a]) => (
+          <details key={q} className="group border-b border-navy-100 py-2">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-navy-950">{q}<span className="ml-2 text-navy-600 transition-transform group-open:rotate-45">+</span></summary>
+            <p className="mt-1.5 text-sm text-navy-800">{a}</p>
+          </details>
+        ))}
+      </section>
 
       {/* Statutory Disclaimers */}
       <footer className="card bg-navy-50 text-xs text-navy-700 space-y-2">

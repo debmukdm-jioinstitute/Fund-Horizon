@@ -7,6 +7,8 @@ import type {
   ExplainResponse,
   FundAnalytics,
   FundDetail,
+  FundPeers,
+  FundPortfolio,
   FundReference,
   LoginCustomerBody,
   Meta,
@@ -165,6 +167,27 @@ export async function getFundQuartiles(code: string): Promise<FundQuartiles | nu
     const path = `/api/funds/${code}/quartiles`;
     const res = await fetch(typeof window === "undefined" ? SERVER_API_URL + path : resolveApiUrl(API_URL + path), { cache: "no-store" });
     return res.ok ? (((await res.json()) as { data: FundQuartiles | null }).data ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Public holdings/sector snapshot for one scheme (null when none on file). Works on server and client. */
+export async function getFundPortfolio(code: string): Promise<FundPortfolio | null> {
+  try {
+    const path = `/api/funds/${code}/portfolio`;
+    const res = await fetch(typeof window === "undefined" ? SERVER_API_URL + path : resolveApiUrl(API_URL + path), { cache: "no-store" });
+    return res.ok ? (((await res.json()) as { data: FundPortfolio | null }).data ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Same-category funds ranked by 3Y CAGR (null on any failure). */
+export async function getFundPeers(code: string): Promise<FundPeers | null> {
+  try {
+    const res = await fetch(`${SERVER_API_URL}/api/funds/${code}/peers`, { cache: "no-store" });
+    return res.ok ? ((await res.json()) as FundPeers) : null;
   } catch {
     return null;
   }

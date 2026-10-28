@@ -671,3 +671,22 @@ export interface MyPlan {
   risk_band?: string;
   [key: string]: unknown;
 }
+
+export interface FundPortfolio {
+  holdings: { name: string | null; isin: string | null; sector: string | null; weight_pct: number | null; instrument_type: string | null }[];
+  sectors: { sector: string; weight_pct: number }[];
+  unclassified_pct: number;
+  total_weight_pct: number;
+  summary: { holdings_count: number; top10_concentration_pct: number | null; top_holding_pct: number | null; cash_pct: number | null };
+  as_of: string | null;
+  source: string | null;
+  amc: string | null;
+  coverage_pct: number | null;
+  note: string | null;
+}
+
+export interface FundPeers {
+  peers: { scheme_code: string; scheme_name: string; amc: string; ret_1y: number | null; cagr_3y: number | null; cagr_5y: number | null; vol_3y: number | null; sharpe_3y: number | null }[];
+  rank: number | null;
+  count: number;
+}

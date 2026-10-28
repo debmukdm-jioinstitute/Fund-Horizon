@@ -1,4 +1,7 @@
 scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+149132,Tube Investments of India Ltd.,INE974X01010,Auto Components,0.02,equity
+149132,Crompton Greaves Consumer Electricals Ltd.,INE299U01018,Consumer Durables,0.02,equity
+149132,HDFC Life Insurance Company Ltd.,INE795G01014,Insurance,0.01,equity
 149132,Brookfield India Real Estate Trust,INE0FDU25010,,1.32,other
 149132,Knowledge Realty Trust,INE1JAR25012,,1.02,other
 149132,Embassy Office Parks Reit,INE041025011,,0.89,other
@@ -240,6 +243,10 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 149134,IndusInd Bank Ltd. 27.10.2026,Short,,-0.02,other
 149134,HDFC Life Insurance Company Ltd. 27.10.2026,Short,,-0.01,other
 149134,ITC Ltd. 27.10.2026,Short,,-0.01,other
+149472,TREPS,,,100.12,cash
+149472,Net Receivable / Payable,,,-0.12,cash
+149474,TREPS,,,100.12,cash
+149474,Net Receivable / Payable,,,-0.12,cash
 149882,ICICI Bank Ltd.,INE090A01021,Banks,3.94,equity
 149882,Adani Power Ltd.,INE814H01029,Power,3.48,equity
 149882,Adani Enterprises Ltd.,INE423A01024,Metals & Minerals Trading,3.47,equity
@@ -1667,6 +1674,12 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 152725,Silver,IDIA00500002,,97.9,other
 152725,TREPS,,,0.01,cash
 152725,Net Receivable / Payable,,,2.09,cash
+152735,SBI Silver ETF,INF200KB1217,,100.17,mf_units
+152735,TREPS,,,0.33,cash
+152735,Net Receivable / Payable,,,-0.5,cash
+152733,SBI Silver ETF,INF200KB1217,,100.17,mf_units
+152733,TREPS,,,0.33,cash
+152733,Net Receivable / Payable,,,-0.5,cash
 152774,Eternal Ltd.,INE758T01015,Retailing,9.05,equity
 152774,TBO Tek Ltd.,INE673O01025,Leisure Services,6.63,equity
 152774,Divi's Laboratories Ltd.,INE361B01024,Pharmaceuticals & Biotechnology,5.44,equity
@@ -1713,12 +1726,3 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 152776,Divi's Laboratories Ltd.,INE361B01024,Pharmaceuticals & Biotechnology,5.44,equity
 152776,Meesho Ltd.,INE0VDM01015,Retailing,5.29,equity
 152776,FSN E-Commerce Ventures Ltd.,INE388Y01029,Retailing,5.0,equity
-152776,BlackBuck Ltd.,INE0UIZ01018,Transport Services,4.74,equity
-152776,Bajaj Finance Ltd.,INE296A01032,Finance,4.68,equity
-152776,Ather Energy Ltd.,INE0LEZ01016,Automobiles,4.59,equity
-152776,Sun Pharmaceutical Industries Ltd.,INE044A01036,Pharmaceuticals & Biotechnology,3.54,equity
-152776,Urban Company Ltd.,INE0CAZ01013,Retailing,3.53,equity
-152776,Firstsource Solutions Ltd.,INE684F01012,Commercial Services & Supplies,3.49,equity
-152776,Swiggy Ltd.,INE00H001014,Retailing,3.42,equity
-152776,Amagi Media Labs Ltd.,INE121R01077,IT - Services,3.14,equity
-152776,Sedemac Mechatronics Ltd.,INE00XB01019,Auto Components,3.1,equity

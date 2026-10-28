@@ -1,4 +1,13 @@
 scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+152776,BlackBuck Ltd.,INE0UIZ01018,Transport Services,4.74,equity
+152776,Bajaj Finance Ltd.,INE296A01032,Finance,4.68,equity
+152776,Ather Energy Ltd.,INE0LEZ01016,Automobiles,4.59,equity
+152776,Sun Pharmaceutical Industries Ltd.,INE044A01036,Pharmaceuticals & Biotechnology,3.54,equity
+152776,Urban Company Ltd.,INE0CAZ01013,Retailing,3.53,equity
+152776,Firstsource Solutions Ltd.,INE684F01012,Commercial Services & Supplies,3.49,equity
+152776,Swiggy Ltd.,INE00H001014,Retailing,3.42,equity
+152776,Amagi Media Labs Ltd.,INE121R01077,IT - Services,3.14,equity
+152776,Sedemac Mechatronics Ltd.,INE00XB01019,Auto Components,3.1,equity
 152776,Info Edge (India) Ltd.,INE663F01032,Retailing,2.86,equity
 152776,Coforge Ltd.,INE591G01025,IT - Software,2.73,equity
 152776,One 97 Communications Ltd.,INE982J01020,Financial Technology (Fintech),2.66,equity
@@ -1710,13 +1719,3 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 154363,Net Receivable / Payable,,,-3.54,cash
 154370,6.79% CGL 2029,IN0020160118,,11.5,debt
 154370,7.26% State Government of Gujarat 2029,IN1520190159,,25.48,debt
-154370,6.77% State Government of Tamil Nadu 2029,IN3120250482,,25.13,debt
-154370,6.75% State Government of Himachal Pradesh 2029,IN1720250118,,12.55,debt
-154370,6.55% State Government of Tamil Nadu 2029,IN3120250391,,12.49,debt
-154370,7.24% State Government of Gujarat 2029,IN1520190142,,3.82,debt
-154370,7.17% State Government of Tamil Nadu 2029,IN3120190217,,2.54,debt
-154370,7.29% State Government of Uttar Pradesh 2029,IN3320190157,,1.27,debt
-154370,TREPS,,,8.76,cash
-154370,Net Receivable / Payable,,,-3.54,cash
-154372,6.10% CGL 2031,IN0020210095,,76.5,debt
-154372,7.02% CGL 2031,IN0020240076,,17.66,debt

@@ -210,6 +210,12 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 113099,364 DAY T-BILL 19.11.26,IN002025Z344,,0.08,debt
 113099,TREPS,,,1.33,cash
 113099,Net Receivable / Payable,,,-0.09,cash
+119788,SBI Gold ETF,INF200KA16D8,,100.16,mf_units
+119788,TREPS,,,0.29,cash
+119788,Net Receivable / Payable,,,-0.45,cash
+115676,SBI Gold ETF,INF200KA16D8,,100.16,mf_units
+115676,TREPS,,,0.29,cash
+115676,Net Receivable / Payable,,,-0.45,cash
 125497,Ather Energy Ltd.,INE0LEZ01016,Automobiles,3.51,equity
 125497,Navin Fluorine International Ltd.,INE048G01026,Chemicals & Petrochemicals,3.28,equity
 125497,City Union Bank Ltd.,INE491A01021,Banks,2.89,equity
@@ -1798,6 +1804,3 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 149132,ICICI Prudential Asset Management Company Ltd.,INE346A01027,Capital Markets,0.06,equity
 149132,SBI Life Insurance Co. Ltd.,INE123W01016,Insurance,0.03,equity
 149132,Shriram Finance Ltd.,INE721A01047,Finance,0.03,equity
-149132,Tube Investments of India Ltd.,INE974X01010,Auto Components,0.02,equity
-149132,Crompton Greaves Consumer Electricals Ltd.,INE299U01018,Consumer Durables,0.02,equity
-149132,HDFC Life Insurance Company Ltd.,INE795G01014,Insurance,0.01,equity

@@ -131,10 +131,14 @@ def portfolio_summary(holdings: list[dict[str, Any]]) -> dict[str, Any]:
         (float(h["weight_pct"]) for h in holdings if h.get("weight_pct") is not None),
         reverse=True,
     )
+    # Cash by name (legacy fixtures) or by the snapshot's instrument_type
+    # (real disclosures label the row "TREPS / Reverse Repo" or
+    # "Net Receivables / (Payables)", which the name list does not cover).
     cash = sum(
         float(h["weight_pct"]) for h in holdings
         if h.get("weight_pct") is not None
-        and str(h.get("name") or "").strip().lower() in {"cash", "cash & equivalents", "cash and equivalents", "net receivables"}
+        and (str(h.get("name") or "").strip().lower() in {"cash", "cash & equivalents", "cash and equivalents", "net receivables"}
+             or h.get("instrument_type") == "cash")
     )
     return {
         "holdings_count": len(holdings),

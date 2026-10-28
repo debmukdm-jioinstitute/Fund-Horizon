@@ -1570,6 +1570,8 @@ export interface MfScreenerQuery {
   offset?: number;
   /** MF Research filters (backend contract): repeated params. */
   amc?: string[];
+  /** Sector filter: only funds with a holdings snapshot holding this sector. */
+  sector?: string;
   manager?: string;
   min_tenure?: number;
   include_unknown?: boolean;
@@ -1585,6 +1587,7 @@ export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
   if (o.search) q.set("search", o.search);
   if (o.recommended) q.set("recommended", "true");
   (o.amc ?? []).forEach((a) => q.append("amc", a));
+  if (o.sector) q.set("sector", o.sector);
   if (o.manager) q.set("manager", o.manager);
   if (o.min_tenure != null) q.set("min_tenure", String(o.min_tenure));
   if (o.include_unknown === false) q.set("include_unknown", "false");
@@ -1727,8 +1730,15 @@ export interface MfResearchV2Blocks {
     history_unavailable?: Record<string, string>;
   } | null;
   portfolio?: {
-    available: boolean; holdings: unknown[]; sectors: unknown[]; reason?: string | null;
+    available: boolean;
+    holdings: { name?: string | null; isin?: string | null; sector?: string | null; weight_pct?: number | null; instrument_type?: string | null }[];
+    sectors: { sector?: string | null; weight_pct?: number | null }[];
+    reason?: string | null;
     source?: string | null; sector_available: boolean;
+    as_of?: string | null; amc?: string | null;
+    unclassified_pct?: number | null; total_weight_pct?: number | null; sector_coverage?: string | null;
+    summary?: { holdings_count?: number | null; top10_concentration_pct?: number | null; top_holding_pct?: number | null; cash_pct?: number | null; total_weight_pct?: number | null } | null;
+    note?: string | null;
   } | null;
   index?: {
     index_name?: string | null; instrument_id?: string | null; points?: number | null;
@@ -1806,6 +1816,29 @@ export const getMfResearchDetail = async (code: string, signal?: AbortSignal): P
     portfolio: (d.portfolio as MfResearchV2Blocks["portfolio"]) ?? null,
     index: (d.index as MfResearchV2Blocks["index"]) ?? null,
     benchmark_tri_name: str(d.benchmark_tri_name),
+  };
+};
+
+/** Holdings snapshot coverage for the research page sector filter. */
+export interface MfPortfolioCoverage {
+  schemes_covered: number;
+  sectors: string[];
+  amcs: string[];
+  as_of: string | null;
+  generated_at: string | null;
+}
+
+export const getMfPortfolioCoverage = async (signal?: AbortSignal): Promise<MfPortfolioCoverage | null> => {
+  const raw = await boFetch<Json>(`/api/backoffice/mutual-funds/portfolio-coverage`, { signal });
+  const d = obj(raw.data);
+  if (Object.keys(d).length === 0) return null;
+  const arr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+  return {
+    schemes_covered: num(d.schemes_covered) ?? 0,
+    sectors: arr(d.sectors),
+    amcs: arr(d.amcs),
+    as_of: typeof d.as_of === "string" ? d.as_of : null,
+    generated_at: typeof d.generated_at === "string" ? d.generated_at : null,
   };
 };
 

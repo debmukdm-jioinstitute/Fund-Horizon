@@ -1,0 +1,482 @@
+{
+ "as_of": "2026-09-30",
+ "files": [
+  "motilal_oswal_1.csv",
+  "motilal_oswal_2.csv",
+  "motilal_oswal_3.csv",
+  "motilal_oswal_4.csv",
+  "motilal_oswal_5.csv"
+ ],
+ "generated_at": "2026-10-28T04:51:48.785138+00:00",
+ "schemes": {
+  "122387": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Focused Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO05.xlsx"
+  },
+  "122389": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Focused Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO05.xlsx"
+  },
+  "124233": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Ultra Short Term Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO06.xlsx"
+  },
+  "124234": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Ultra Short Term Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO06.xlsx"
+  },
+  "129046": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Flexicap Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO08.xlsx"
+  },
+  "129048": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Flexicap Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO08.xlsx"
+  },
+  "133385": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal ELSS Tax Saver Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO09.xlsx"
+  },
+  "133386": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal ELSS Tax Saver Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO09.xlsx"
+  },
+  "139870": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Balanced Advantage Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO10.xlsx"
+  },
+  "139872": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Balanced Advantage Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO10.xlsx"
+  },
+  "147619": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Bank Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO19.xlsx"
+  },
+  "147620": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Bank Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO19.xlsx"
+  },
+  "147621": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Midcap 150 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO16.xlsx"
+  },
+  "147622": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Midcap 150 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO16.xlsx"
+  },
+  "147623": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Smallcap 250 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO17.xlsx"
+  },
+  "147624": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Smallcap 250 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO17.xlsx"
+  },
+  "147625": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty 500 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO18.xlsx"
+  },
+  "147626": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty 500 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO18.xlsx"
+  },
+  "147701": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Large and Midcap Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO20.xlsx"
+  },
+  "147704": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Large and Midcap Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO20.xlsx"
+  },
+  "147794": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty 50 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO21.xlsx"
+  },
+  "147795": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty 50 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO21.xlsx"
+  },
+  "147796": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Next 50 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO22.xlsx"
+  },
+  "147797": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Next 50 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO22.xlsx"
+  },
+  "149240": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal 5 Year G-Sec Fund of Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO28.xlsx"
+  },
+  "149241": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal 5 Year G-Sec Fund of Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO28.xlsx"
+  },
+  "149800": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty 200 Momentum 30 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO32.xlsx"
+  },
+  "151814": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Microcap 250 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO43.xlsx"
+  },
+  "151815": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Microcap 250 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO43.xlsx"
+  },
+  "152232": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "MOTILAL OSWAL SMALL CAP FUND",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO46.xlsx"
+  },
+  "152237": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "MOTILAL OSWAL SMALL CAP FUND",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO46.xlsx"
+  },
+  "152692": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Quant Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO50.xlsx"
+  },
+  "152694": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Quant Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO50.xlsx"
+  },
+  "152711": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty India Defence Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO52.xlsx"
+  },
+  "152712": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty India Defence Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO52.xlsx"
+  },
+  "152875": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty 500 Momentum 50 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO56.xlsx"
+  },
+  "152876": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty 500 Momentum 50 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO56.xlsx"
+  },
+  "152964": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Digital India Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO58.xlsx"
+  },
+  "152965": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Digital India Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO58.xlsx"
+  },
+  "152966": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Digital India Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO58.xlsx"
+  },
+  "152967": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Digital India Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO58.xlsx"
+  },
+  "153022": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty MidSmall Healthcare Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO61.xlsx"
+  },
+  "153023": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty MidSmall Healthcare Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO61.xlsx"
+  },
+  "153024": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty MidSmall India Consumption Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO60.xlsx"
+  },
+  "153025": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty MidSmall India Consumption Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO60.xlsx"
+  },
+  "153028": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty MidSmall IT and Telecom Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO62.xlsx"
+  },
+  "153137": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Capital Market Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO63.xlsx"
+  },
+  "153138": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Nifty Capital Market Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO63.xlsx"
+  },
+  "153187": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Arbitrage Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO64.xlsx"
+  },
+  "153188": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Arbitrage Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO64.xlsx"
+  },
+  "153256": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Innovation Opportunities Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO65.xlsx"
+  },
+  "153258": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Innovation Opportunities Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO65.xlsx"
+  },
+  "153364": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Active Momentum Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO66.xlsx"
+  },
+  "153365": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Active Momentum Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO66.xlsx"
+  },
+  "153482": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Infrastructure Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO68.xlsx"
+  },
+  "153484": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Infrastructure Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO68.xlsx"
+  },
+  "153558": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal\u00a0Services Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO72.xlsx"
+  },
+  "153561": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal\u00a0Services Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO72.xlsx"
+  },
+  "153596": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal BSE 1000 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO78.xlsx"
+  },
+  "153597": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal BSE 1000 Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO78.xlsx"
+  },
+  "153749": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Special Opportunities Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO80.xlsx"
+  },
+  "153751": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Special Opportunities Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO80.xlsx"
+  },
+  "153916": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Consumption Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO82.xlsx"
+  },
+  "154137": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Financial Services Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO89.xlsx"
+  },
+  "154142": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal Financial Services Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO89.xlsx"
+  },
+  "154338": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "MOTILAL OSWAL CONTRA FUND",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO92.xlsx"
+  },
+  "154364": {
+   "amc": "Motilal Oswal Mutual Fund",
+   "amc_slug": "motilal_oswal",
+   "as_of": "2026-09-30",
+   "scheme_name": "Motilal Oswal BSE Clean Environment Index Fund",
+   "source_url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/sheets/fund-csvs/Month_End_Portfolio_September_2026/YO93.xlsx"
+  }
+ }
+}

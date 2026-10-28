@@ -6,9 +6,10 @@ import { useRecommended } from "@/lib/recommended";
 import {
   getMfScreener, getScreeningMetrics, listScreeningPresets, saveScreeningPreset, deleteScreeningPreset,
   getMfManagers, listMfShortlist, addMfShortlist, removeMfShortlist, mfShortlistCsvUrl, mfScreenerCsvUrl,
-  getMfClientOverlap,
+  getMfClientOverlap, getMfPortfolioCoverage,
   type MfScreenerGroup, type MfScreenerRow, type MfManagerDirectoryRow, type MfShortlistItem,
   type ScreeningPresetItem, type MutualFundItem, type MfScreenerFreshness, type MfClientOverlap,
+  type MfPortfolioCoverage,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import MutualFundDrawer from "@/components/backoffice/MutualFundDrawer";
@@ -32,6 +33,7 @@ interface ResearchFilters {
   category: string[];
   plan: string[];
   amc: string[];
+  sector: string;
   search: string;
   ranges: Ranges;
   quartile: number[];
@@ -150,6 +152,7 @@ function initialFilters(params: URLSearchParams): ResearchFilters {
     category: params.getAll("category"),
     plan: params.has("plan") ? params.getAll("plan") : [...PLANS],
     amc: params.getAll("amc"),
+    sector: params.get("sector") ?? "",
     search: params.get("search") ?? "",
     ranges: parseRanges(params),
     quartile: q,
@@ -190,6 +193,7 @@ function MfResearch() {
   const [freshness, setFreshness] = useState<MfScreenerFreshness | null>(null);
   const [asOf, setAsOf] = useState<string | null | undefined>();
   const [amcs, setAmcs] = useState<string[]>([]);
+  const [coverage, setCoverage] = useState<MfPortfolioCoverage | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
@@ -257,6 +261,7 @@ function MfResearch() {
     filters.category.forEach((c) => p.append("category", c));
     filters.plan.forEach((x) => p.append("plan", x));
     filters.amc.forEach((a) => p.append("amc", a));
+    if (filters.sector) p.set("sector", filters.sector);
     if (filters.search) p.set("search", filters.search);
     if (filters.manager) p.set("manager", filters.manager);
     if (filters.minTenure) p.set("min_tenure", filters.minTenure);
@@ -272,6 +277,9 @@ function MfResearch() {
   }, [fKey, tab]);
 
   useEffect(() => {
+    getMfPortfolioCoverage()
+      .then((res) => setCoverage(res))
+      .catch(() => setCoverage(null));
     getScreeningMetrics()
       .then((res) => setAmcs(res.data?.facets?.amcs ?? []))
       .catch(() => setAmcs([]));
@@ -288,7 +296,7 @@ function MfResearch() {
     getMfScreener({
       category: filters.category, plan: filters.plan, search: filters.search || undefined,
       sort: sortKey, order, ranges: filters.ranges, limit: pageSize, offset,
-      amc: filters.amc, manager: filters.manager.trim() || undefined,
+      amc: filters.amc, sector: filters.sector || undefined, manager: filters.manager.trim() || undefined,
       min_tenure: Number.isFinite(minTenure) ? minTenure : undefined,
       include_unknown: filters.includeUnknown, quartile: filters.quartile,
       quartile_period: filters.quartilePeriod, include_unavailable: filters.includeUnavailable,
@@ -778,21 +786,48 @@ function MfResearch() {
             </div>
 
             <div>
-              <div className="text-[12px] font-semibold mb-1.5">Portfolio — holdings and sector (not yet available)</div>
-              <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                Sector filter is shown here but disabled: no portfolio holdings snapshot is on file yet. AMFI monthly portfolio
-                disclosures live on each fund house&apos;s website in its own format, and none has been ingested, so holdings,
-                sector percentages, market-cap mix, turnover, cash %, style, concentration and fund-to-fund overlap are all
-                shown as unavailable — never estimated. Open any fund dialog for the per-fund portfolio status.
-              </p>
+              <div className="text-[12px] font-semibold mb-1.5">Portfolio — holdings and sector</div>
+              {coverage && coverage.schemes_covered > 0 ? (
+                <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                  Holdings on file for {coverage.schemes_covered} funds ({coverage.amcs.join(", ")}, as of {fmtAsOf(coverage.as_of)}),
+                  from those fund houses&apos; monthly portfolio disclosures. Funds from other fund houses have no snapshot yet, so their
+                  holdings and sector data stay unavailable — never estimated. Market-cap mix, turnover and style are not in the
+                  monthly disclosure, so they stay unavailable everywhere. Open any fund dialog for the per-fund portfolio status.
+                </p>
+              ) : (
+                <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                  No portfolio holdings snapshot is on file yet. AMFI monthly portfolio disclosures live on each fund house&apos;s
+                  website in its own format; until a fund house&apos;s format is ingested, its funds&apos; holdings, sector
+                  percentages, concentration and fund-to-fund overlap are shown as unavailable — never estimated. Open any fund
+                  dialog for the per-fund portfolio status.
+                </p>
+              )}
               <div className="flex flex-wrap items-center gap-2 mt-2 text-[12px]">
                 <label className="flex items-center gap-1.5">
                   Sector
-                  <select disabled aria-label="Sector filter (unavailable)" className="terminal-input text-[12px] py-1 px-2 opacity-50">
-                    <option>Sector data unavailable</option>
-                  </select>
+                  {coverage && coverage.sectors.length > 0 ? (
+                    <select
+                      value={filters.sector}
+                      onChange={(e) => setFilters((f) => ({ ...f, sector: e.target.value }))}
+                      aria-label="Sector filter"
+                      className="terminal-input text-[12px] py-1 px-2"
+                    >
+                      <option value="">All sectors</option>
+                      {coverage.sectors.map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <select disabled aria-label="Sector filter (unavailable)" className="terminal-input text-[12px] py-1 px-2 opacity-50">
+                      <option>Sector data unavailable</option>
+                    </select>
+                  )}
                 </label>
-                <span className="text-[#706E6B] dark:text-[#A8B4C4]">Filtering by sector needs an ingested holdings snapshot; until then this filter stays off rather than returning a partial list.</span>
+                <span className="text-[#706E6B] dark:text-[#A8B4C4]">
+                  {filters.sector
+                    ? "Showing only funds with a holdings snapshot holding this sector. Funds without a snapshot are left out of a sector-filtered list, never silently included."
+                    : "A sector filter only matches funds with a holdings snapshot on file."}
+                </span>
               </div>
             </div>
 

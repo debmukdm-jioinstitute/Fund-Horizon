@@ -54,7 +54,7 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice import index_tri as index_tri_module
-from app.backoffice import mf_reference, mf_screener
+from app.backoffice import mf_holdings, mf_reference, mf_screener
 from app.backoffice import mf_research_v2 as mf_v2
 from app.backoffice.screening.quartiles import compute_category_quartiles
 from app.backoffice.screening.service import ScreeningService
@@ -822,9 +822,49 @@ def _mf_manager_map() -> dict[str, tuple[str | None, str | None]]:
     }
 
 
+def _holdings_snapshot() -> dict[str, Any]:
+    """Holdings snapshot, never raising: an unreadable snapshot renders as
+    'unavailable' everywhere instead of failing the research page."""
+    try:
+        return mf_holdings.load_snapshot()
+    except Exception:
+        return {"schemes": {}, "sectors": [], "as_of": None, "amcs": [], "generated_at": None}
+
+
+def _ensure_benchmark_seed(instrument_id: str) -> None:
+    """Seed mf_benchmark_nav from the committed TRI seed file when the
+    database has no series for this instrument (the scheduled job commits
+    the seed; the API host cannot be written to from GitHub Actions).
+    Best-effort and idempotent: any failure leaves the DB untouched and
+    the caller falls back to the 'not yet ingested' state."""
+    try:
+        if _REPO.benchmark_series(instrument_id):
+            return
+        seed = index_tri_module.load_tri_seed()
+        series = seed.get(instrument_id)
+        if series and series.get("points"):
+            _REPO.upsert_benchmark_nav(instrument_id, series["points"])
+    except Exception:
+        pass
+
+
+def _tri_seed_available() -> bool:
+    """True when any TRI series exists in the DB or the committed seed."""
+    try:
+        if _REPO.benchmark_nav_count() > 0:
+            return True
+    except Exception:
+        pass
+    try:
+        return bool(index_tri_module.load_tri_seed())
+    except Exception:
+        return False
+
+
 @router.get("/mutual-funds/screener")
 def backoffice_mf_screener(
     staff: Annotated[dict, Depends(require_staff)],
+    sector: str | None = Query(None, max_length=120, description="Sector filter: only funds with a holdings snapshot holding this sector"),
     category: list[str] | None = Query(None, description="Canonical category keys; omit for all"),
     plan: list[str] | None = Query(None, description="Direct and/or Regular"),
     search: str | None = Query(None, max_length=80),
@@ -877,6 +917,13 @@ def backoffice_mf_screener(
     df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES))
     if recommended:
         df = df[df["is_fh_recommended"]]
+    snapshot = _holdings_snapshot()
+    if sector:
+        # Sector filter applies ONLY to funds with a holdings snapshot on
+        # file: unpopulated funds are excluded by this filter (never
+        # silently included), and the UI says so next to the filter.
+        codes_with_sector = mf_holdings.schemes_with_sector(snapshot, sector)
+        df = df[df["code"].isin(codes_with_sector)]
     if format == "csv":
         return PlainTextResponse(
             mf_screener.to_csv(df),
@@ -903,13 +950,24 @@ def backoffice_mf_screener(
             "ter_as_of": max(ter_dates, default=None),
             "managers_as_of": max(mgr_dates, default=None),
             "quartile_as_of": as_of,
-            # MF Research V2 availability: sector/portfolio data is not
-            # ingested (no holdings snapshots on file), and no TRI series
-            # is stored yet, so vs-index columns are null by design.
-            "sector_available": False,
-            "portfolio_available": False,
-            "portfolio_reason": "No portfolio holdings snapshot on file. AMFI monthly portfolio disclosures live on each AMC's website (listed at amfiindia.com/onlinecenter/portfoliodisclosure) in per-AMC formats; no snapshot has been ingested yet.",
-            "index_series_available": _REPO.benchmark_nav_count() > 0,
+            # Holdings snapshot coverage (partial by design: only AMCs with
+            # a proven parser are ingested; the rest stay unavailable).
+            "sector_available": bool(snapshot.get("sectors")),
+            "portfolio_available": bool(snapshot.get("schemes")),
+            "portfolio_coverage": {
+                "schemes_covered": len(snapshot.get("schemes") or {}),
+                "sectors": snapshot.get("sectors") or [],
+                "amcs": snapshot.get("amcs") or [],
+                "as_of": snapshot.get("as_of"),
+            },
+            "portfolio_reason": (
+                f"Holdings on file for {len(snapshot.get('schemes') or {})} funds "
+                f"({', '.join(snapshot.get('amcs') or [])}, as of {snapshot.get('as_of')}). "
+                "Funds from other fund houses have no snapshot yet, so their holdings and sector data are shown as unavailable — never estimated."
+                if snapshot.get("schemes") else
+                "No portfolio holdings snapshot on file. AMFI monthly portfolio disclosures live on each AMC's website in per-AMC formats; no snapshot has been ingested yet."
+            ),
+            "index_series_available": _tri_seed_available(),
             "consistency_precomputed": len(consistency_map),
         },
         "groups": mf_screener.facets(mf_screener.all_frame(ter)),
@@ -1043,21 +1101,49 @@ def _v2_blocks(scheme_code: str, row: dict[str, Any], monthly: pd.Series | None)
     """MF Research V2 blocks for one fund: co-managers + changes + bio,
     operations snapshot, portfolio coverage, and vs-index metrics.
 
-    Everything here is read-only and sourced, never invented. Portfolio
-    holdings have no snapshot on file, so that block is always the
-    coverage/unavailable payload until an ingestion lands. The index block
-    computes vs-index metrics only when a real TRI series is stored; until
+    Everything here is read-only and sourced, never invented. The
+    portfolio block is populated only for funds with a holdings snapshot
+    on file (see mf_holdings); every other fund keeps the honest
+    unavailable payload. The index block computes vs-index metrics only
+    when a real TRI series is stored (database or committed seed); until
     then it says so and the one-pager tracker-fund proxy line stays.
     """
+    snapshot = _holdings_snapshot()
+    snap_entry = mf_holdings.holdings_for_scheme(snapshot, str(scheme_code))
+    if snap_entry is not None:
+        snap_holdings = snap_entry.get("holdings") or []
+        sector_agg = mf_v2.sector_aggregation([
+            {"name": h.get("name"), "isin": h.get("isin"), "sector": h.get("sector"), "weight_pct": h.get("weight_pct")}
+            for h in snap_holdings
+        ])
+        portfolio_block: dict[str, Any] = {
+            "available": True, "holdings": snap_holdings,
+            "sectors": sector_agg["sectors"],
+            "unclassified_pct": sector_agg["unclassified_pct"],
+            "total_weight_pct": sector_agg["total_weight_pct"],
+            "sector_coverage": sector_agg["coverage"],
+            "summary": mf_v2.portfolio_summary([
+                {"name": h.get("name"), "weight_pct": h.get("weight_pct"),
+                 "instrument_type": h.get("instrument_type")} for h in snap_holdings
+            ]),
+            "reason": None,
+            "source": snap_entry.get("source_url"),
+            "as_of": snap_entry.get("as_of"),
+            "amc": snap_entry.get("amc"),
+            "sector_available": True,
+            "note": "Sector is the disclosure's own Industry column. Market-cap mix, turnover and style are not in the monthly disclosure, so they stay unavailable. Cash rows (TREPS, net receivables) have no sector and sit in the unclassified share.",
+        }
+    else:
+        portfolio_block = {
+            "available": False, "holdings": [], "sectors": [],
+            "reason": "No portfolio holdings snapshot on file for this scheme. AMFI monthly portfolio disclosures live on each AMC's website in per-AMC formats; only fund houses with a proven parser are ingested, so holdings, sector percentages, concentration and fund overlap cannot be computed for this fund — they are shown as unavailable, never estimated.",
+            "source": None,
+            "sector_available": False,
+        }
     blocks: dict[str, Any] = {
         "co_managers": None, "manager_changes": [], "manager_bio": None,
         "operations": mf_v2.operations_from_reference(None),
-        "portfolio": {
-            "available": False, "holdings": [], "sectors": [],
-            "reason": "No portfolio holdings snapshot on file. AMFI monthly portfolio disclosures live on each AMC's website (listed at amfiindia.com/onlinecenter/portfoliodisclosure) in per-AMC formats; no snapshot has been ingested yet, so holdings, sector percentages, market-cap mix, turnover, cash %, style, concentration and fund overlap cannot be computed — they are shown as unavailable, never estimated.",
-            "source": "https://www.amfiindia.com/onlinecenter/portfoliodisclosure",
-            "sector_available": False,
-        },
+        "portfolio": portfolio_block,
         "index": None, "benchmark_tri_name": None,
     }
     ref = None
@@ -1087,12 +1173,26 @@ def _v2_blocks(scheme_code: str, row: dict[str, Any], monthly: pd.Series | None)
     tri_name = index_tri_module.NSE_TRI_BY_CATEGORY.get(cat)
     if tri_name:
         iid = index_tri_module.instrument_id_for(tri_name)
+        _ensure_benchmark_seed(iid)
         try:
             pts = _REPO.benchmark_series(iid)
         except Exception:
             pts = []
+        if not pts:
+            # DB empty but the committed seed may still carry this series
+            # (e.g. the seed upsert has not run yet): serve it directly
+            # rather than claiming nothing is ingested, and let the next
+            # call seed the DB. Never a substitute series, only this index.
+            seed = index_tri_module.load_tri_seed()
+            series = seed.get(iid)
+            if series and series.get("points"):
+                pts = series["points"]
         if pts and monthly is not None and len(monthly) >= 2:
             idx_series = pd.Series({pd.Timestamp(p["date"]): float(p["value"]) for p in pts}).sort_index()
+            # Month-end convention: stored points are month-end labelled;
+            # resampling a daily-labelled legacy series the same way keeps
+            # beta / tracking error on monthly-vs-monthly footing.
+            idx_series = idx_series.resample("ME").last().dropna()
             blocks["index"] = {
                 "index_name": f"{tri_name} TRI", "instrument_id": iid, "points": len(pts),
                 "proxy_retired": True,
@@ -1272,22 +1372,48 @@ def backoffice_mf_research_v2(
             "availability": "ready"}
 
 
+@router.get("/mutual-funds/portfolio-coverage")
+def backoffice_mf_portfolio_coverage(
+    staff: Annotated[dict, Depends(require_staff)],
+):
+    """Holdings snapshot coverage for the research page sector filter:
+    which fund houses and sectors are on file, and the snapshot date.
+    Funds outside this coverage keep 'Sector data unavailable'."""
+    snapshot = _holdings_snapshot()
+    return {"data": {
+        "schemes_covered": len(snapshot.get("schemes") or {}),
+        "sectors": snapshot.get("sectors") or [],
+        "amcs": snapshot.get("amcs") or [],
+        "as_of": snapshot.get("as_of"),
+        "generated_at": snapshot.get("generated_at"),
+    }, "availability": "ready" if snapshot.get("schemes") else "partial"}
+
+
 @router.get("/mutual-funds/portfolio-overlap")
 def backoffice_mf_portfolio_overlap(
     staff: Annotated[dict, Depends(require_staff)],
     code_a: str = Query(...),
     code_b: str = Query(...),
 ):
-    """Overlap between two funds' holdings. No portfolio snapshot is on file
-    for any fund yet, so this honestly returns the coverage payload with a
-    reason instead of a fabricated 0% overlap. When snapshots land, the
-    shared-holdings computation is mf_research_v2.fund_overlap."""
+    """Overlap between two funds' holdings, from their snapshots.
+
+    Missing a snapshot on either side honestly returns the coverage
+    payload with a reason instead of a fabricated 0% overlap. Cash rows
+    (TREPS, net receivables) are excluded from both sides: every fund
+    holds them, so sharing them is not a real portfolio overlap."""
+    snapshot = _holdings_snapshot()
+    hold_a = mf_holdings.overlap_holdings(snapshot, code_a)
+    hold_b = mf_holdings.overlap_holdings(snapshot, code_b)
+    missing = [c for c, h in ((code_a, hold_a), (code_b, hold_b)) if not h]
     return {"data": {
         "code_a": code_a, "code_b": code_b,
-        "overlap": mf_v2.fund_overlap([], []),
-        "portfolio_available": False,
-        "reason": "No portfolio holdings snapshot on file for either fund (see research-v2 portfolio block).",
-    }, "availability": "partial"}
+        "overlap": mf_v2.fund_overlap(hold_a, hold_b) if not missing else mf_v2.fund_overlap([], []),
+        "portfolio_available": not missing,
+        "reason": None if not missing else (
+            f"No portfolio holdings snapshot on file for fund(s) {', '.join(missing)} "
+            "(see research-v2 portfolio block)."
+        ),
+    }, "availability": "ready" if not missing else "partial"}
 
 
 @router.get("/mf-research/client-overlap")

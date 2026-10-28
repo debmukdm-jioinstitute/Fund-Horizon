@@ -66,17 +66,10 @@ def check_coverage(rows: list[dict[str, Any]], equity_cats: set[str]) -> dict[st
 
 
 def seed_managers(repo: BackofficeRepository) -> int:
-    """Load data/mf_managers_seed.csv (scheme_code, manager_name, manager_start) when the table is empty."""
-    seed = data_dir().parent / "mf_managers_seed.csv"
-    if not seed.exists() or repo.list_mf_managers():
-        return 0
-    with seed.open(newline="") as f:
-        rows = [
-            {"scheme_code": r["scheme_code"].strip(), "manager_name": r["manager_name"].strip(),
-             "manager_start": (r.get("manager_start") or "").strip() or None, "source": "seed", "provenance": seed.name}
-            for r in csv.DictReader(f) if r.get("scheme_code") and r.get("manager_name")
-        ]
-    return repo.upsert_mf_managers(rows) if rows else 0
+    """Fill mf_managers from every compliant source (seed, cached pulls, AMFI snapshot, plan siblings); never overwrites existing rows."""
+    from app.backoffice.manager_resolver import sync_managers
+
+    return sync_managers(repo)
 
 
 def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any]:

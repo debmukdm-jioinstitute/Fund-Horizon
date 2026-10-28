@@ -148,6 +148,20 @@ async def lifespan(app: FastAPI):
 
         collector_task = asyncio.create_task(run_collector_loop())
 
+        # Warm the scored mutual-fund frame so the first backoffice screener request is not the one that pays for it.
+        def _warm_screener() -> None:
+            try:
+                from app.api.backoffice import _REPO, _fh_frame
+                from app.backoffice.manager_resolver import sync_managers
+
+                sync_managers(_REPO)  # fills missing managers from seed, cached pulls, AMFI snapshot and plan siblings
+                _fh_frame()
+            except Exception:  # noqa: BLE001
+                logging.getLogger(__name__).exception("Screener warm-up failed")
+
+        asyncio.get_running_loop().run_in_executor(None, _warm_screener)
+
+
         # Daily briefing: build/refresh on startup so updated filtering applies
         # (idempotent upsert; the scheduled loop keeps it fresh afterwards).
         from app.backoffice.collectors import build_daily_briefing
@@ -156,17 +170,6 @@ async def lifespan(app: FastAPI):
             await asyncio.to_thread(build_daily_briefing)
         except Exception:
             logging.getLogger(__name__).exception("Startup briefing build failed")
-
-    # Warm the scored mutual-fund frame so the first backoffice screener request is not the one that pays for it.
-    def _warm_screener() -> None:
-        try:
-            from app.api.backoffice import _fh_frame
-
-            _fh_frame()
-        except Exception:  # noqa: BLE001
-            logging.getLogger(__name__).exception("Screener warm-up failed")
-
-    asyncio.get_running_loop().run_in_executor(None, _warm_screener)
 
     try:
         yield

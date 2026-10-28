@@ -10,11 +10,14 @@ import {
   WatchlistItem,
 } from "@/lib/backoffice";
 import { useAuth } from "@/components/AuthContext";
+import { canAccessPage } from "@/components/backoffice/navItems";
+import DataHealthPage from "../data-health/page";
 
 export default function SettingsPage() {
   const { customer } = useAuth();
   const isAdmin = customer?.role === "admin";
-  const [activeTab, setActiveTab] = useState<'lead'|'staff'|'recommended'|'watchlists'>('lead');
+  const canHealth = !customer || canAccessPage(customer.pages, customer.role, "/backoffice/data-health");
+  const [activeTab, setActiveTab] = useState<'lead'|'staff'|'recommended'|'watchlists'|'health'>('lead');
 
   // Watchlist state
   const [watchlists, setWatchlists] = useState<WatchlistItem[]>([]);
@@ -198,10 +201,22 @@ export default function SettingsPage() {
               <div className="text-[10px] opacity-70">{watchlists.length}</div>
             </div>
           </button>
+          {canHealth && (
+          <button
+            type="button"
+            onClick={() => setActiveTab("health")}
+            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "health" ? activeCls : inactiveCls}`}
+          >
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l6 2v4c0 4-3 7-6 8-3-1-6-4-6-8V3z"/></svg>
+            <span>Data health</span>
+          </button>
+          )}
         </nav>
 
         {/* Main content */}
         <div className="flex-1 min-w-0 space-y-4">
+
+      {activeTab === "health" && canHealth && <DataHealthPage />}
 
       {activeTab === "lead" && (
         <div className="space-y-4">

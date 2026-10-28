@@ -490,29 +490,6 @@ export interface NewsItem {
   published_at?: string;
 }
 
-export interface MicroIssuerData {
-  symbol: string;
-  name?: string;
-  reporting_scope?: string;
-  fiscal_period?: string;
-  revenue_crore?: number;
-  ebitda_crore?: number;
-  ebitda_margin_pct?: number;
-  pat_crore?: number;
-  net_debt_crore?: number;
-  debt_equity_ratio?: number;
-  mf_lookthrough_weight_pct?: number;
-  filing_id?: string;
-  quarters?: Array<{
-    period_end: string;
-    revenue_crore?: number;
-    ebitda_crore?: number;
-    ebitda_margin_pct?: number;
-    pat_crore?: number;
-    filing_id?: string;
-  }>;
-}
-
 export interface WatchlistItem {
   id: string;
   name: string;
@@ -969,32 +946,6 @@ export const getBackofficeCompare = async (type: "mf" | "pms", ids: string[]): P
     benchmark: { name: str(bench.name) ?? "Benchmark", series: benchSeries },
     meta: { fetched_at: str(meta.fetched_at) ?? "", source: str(meta.source) ?? "" },
   };
-};
-
-export const getMicroIssuer = async (id: string): Promise<BackofficeEnvelope<MicroIssuerData | null>> => {
-  const raw = await boFetch<Json>(`/api/backoffice/micro/issuers/${encodeURIComponent(id)}`);
-  const d = raw.data ? obj(raw.data) : null;
-  const data: MicroIssuerData | null = d
-    ? {
-        symbol: str(d.symbol) ?? id,
-        reporting_scope: str(d.reporting_scope),
-        fiscal_period: str(d.fiscal_period),
-        revenue_crore: num(d.revenue_crore),
-        ebitda_crore: num(d.ebitda_crore),
-        ebitda_margin_pct: num(d.ebitda_margin_pct),
-        pat_crore: num(d.pat_crore),
-        filing_id: str(d.filing_id),
-        quarters: arr(d.quarters).map((q) => ({
-          period_end: str(q.period_end) ?? "—",
-          revenue_crore: num(q.revenue_crore),
-          ebitda_crore: num(q.ebitda_crore),
-          ebitda_margin_pct: num(q.ebitda_margin_pct),
-          pat_crore: num(q.pat_crore),
-          filing_id: str(q.filing_id),
-        })),
-      }
-    : null;
-  return envelope(raw, data, "unavailable");
 };
 
 const briefingDirection = (v: unknown): BriefingItem["direction"] => {

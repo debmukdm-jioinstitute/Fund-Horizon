@@ -45,7 +45,6 @@ export const PAGE_GROUPS: PageGroup[] = [
       { href: "/backoffice/pms", label: "PMS tracker" },
       { href: "/backoffice/mutual-funds", label: "Mutual funds" },
       { href: "/backoffice/macro", label: "Macro & yields" },
-      { href: "/backoffice/micro", label: "Fundamentals" },
       { href: "/backoffice/derivatives", label: "Derivatives & PCR" },
       { href: "/backoffice/flows", label: "Institutional flows" },
       { href: "/backoffice/research", label: "Briefings" },

@@ -30,8 +30,6 @@ _OPTION_LOCK = threading.Lock()
 _OPTION_FAILURES: dict[str, tuple[float, str]] = {}
 _OPTION_EXPIRIES: dict[str, list[str]] = {}
 
-_ISSUER_TTL_SECONDS = 6 * 3600.0
-_ISSUER_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 
 
 _OVERVIEW_SERIES = (
@@ -355,31 +353,6 @@ class BackofficeService:
             "status": "ready" if us_curve else "unavailable",
             "as_of": as_of,
         }
-
-    # Issuer fundamentals (NSE quarterly results) --------------------------------------------------------
-
-    def get_issuer_fundamentals(self, symbol: str) -> dict[str, Any] | None:
-        symbol = symbol.upper()
-        cached = _ISSUER_CACHE.get(symbol)
-        if cached and time.monotonic() - cached[0] < _ISSUER_TTL_SECONDS:
-            return cached[1]
-        quarters = get_nse_client().fetch_quarterly_results(symbol)
-        if not quarters:
-            return None
-        latest = quarters[0]
-        data = {
-            "symbol": symbol,
-            "reporting_scope": "As filed on NSE",
-            "fiscal_period": latest["period_end"],
-            "revenue_crore": latest["revenue_crore"],
-            "ebitda_crore": latest["ebitda_crore"],
-            "ebitda_margin_pct": latest["ebitda_margin_pct"],
-            "pat_crore": latest["pat_crore"],
-            "filing_id": latest["filing_id"],
-            "quarters": quarters,
-        }
-        _ISSUER_CACHE[symbol] = (time.monotonic(), data)
-        return data
 
     def commit_manual_import(self, import_type: str, filename: str, csv_content: str, staff_id: str) -> dict[str, Any]:
         """Validate and atomically commit manual import rows into the repository."""

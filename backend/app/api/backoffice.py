@@ -43,7 +43,6 @@ from app.backoffice.providers import advisorkhoj as advisorkhoj_provider
 from app.backoffice.providers import apmi as apmi_provider
 from app.backoffice.providers import factsheets as factsheets_provider
 from app.backoffice.providers.manual import ManualImportValidator, get_template_csv
-from app.backoffice.providers.nse import NseError
 from app.backoffice.repository import BackofficeRepository
 from app.backoffice.schemas import (
     ImportCommitRequest,
@@ -513,29 +512,6 @@ def _enrich_pms_tracker(tracker: dict[str, Any]) -> dict[str, Any]:
         "hwm_fee": {"hwm_exceeded": fee.get("hwm_exceeded", False), "estimated_fee_paise": fee.get("estimated_fee_paise", 0)},
         "holdings_coverage": {"total_coverage_pct": latest.get("holdings_coverage_pct", 100.0) if latest else 100.0},
     }
-
-
-# ---------------------------------------------------------------------------
-# Micro / Issuer Fundamentals
-# ---------------------------------------------------------------------------
-
-@router.get("/micro/issuers/{symbol}")
-def backoffice_micro_issuer(symbol: str, staff: Annotated[dict, Depends(require_staff)]):
-    """Latest quarterly results for a listed issuer, fetched live from NSE (cached six hours)."""
-    try:
-        data = _SERVICE.get_issuer_fundamentals(symbol)
-    except NseError as e:
-        return {"data": None, "symbol": symbol.upper(), "availability": e.status, "freshness": "stale", "message": str(e)}
-    if data is None:
-        return {
-            "data": None,
-            "symbol": symbol.upper(),
-            "availability": "unavailable",
-            "freshness": "current",
-            "message": f"NSE has no quarterly results for {symbol.upper()}.",
-        }
-    res = {"data": data, "as_of": data["fiscal_period"], "availability": "ready", "freshness": "current", "frequency": "quarterly"}
-    return with_meta(res, "nse", data.get("fiscal_period"))
 
 
 # ---------------------------------------------------------------------------
@@ -2033,7 +2009,7 @@ def provision_staff_member(
 
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 BACKOFFICE_PAGES = (
-    "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/macro", "/backoffice/micro",
+    "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/macro",
     "/backoffice/derivatives", "/backoffice/flows", "/backoffice/research",
     "/backoffice/data-health", "/backoffice/crm", "/backoffice/operations",
     "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/settings",

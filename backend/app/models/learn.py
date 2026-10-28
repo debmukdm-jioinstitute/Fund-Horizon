@@ -19,6 +19,20 @@ if not on_workers():
         staff_id: Mapped[str] = mapped_column(String(36), primary_key=True)
         lesson_id: Mapped[str] = mapped_column(String(32), primary_key=True)
         completed_at: Mapped[str] = mapped_column(String(50), nullable=False)
+
+    class VarsityProgressModel(Base):
+        """Per-staff read state for external Zerodha Varsity chapters.
+
+        Kept in its own table on purpose: Varsity ids are longer than the
+        32-char lesson_id column, and Varsity reads must never appear in
+        internal lesson completion, XP, streaks or badges.
+        """
+
+        __tablename__ = "learn_varsity_progress"
+
+        staff_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+        chapter_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+        completed_at: Mapped[str] = mapped_column(String(50), nullable=False)
     
     
     class QuizAttemptModel(Base):
@@ -74,12 +88,13 @@ if not on_workers():
         migrated_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
     
     
-    LEARN_TABLES = [m.__table__ for m in (LearnProgressModel, QuizAttemptModel, CardReviewModel, XpEventModel, BadgeModel, LearnPrefsModel)]
+    LEARN_TABLES = [m.__table__ for m in (LearnProgressModel, VarsityProgressModel, QuizAttemptModel, CardReviewModel, XpEventModel, BadgeModel, LearnPrefsModel)]
 else:
     class QuizAttemptModel: pass
     class BadgeModel: pass
     class LearnPrefsModel: pass
     class LearnProgressModel: pass
+    class VarsityProgressModel: pass
     class CardReviewModel: pass
     class XpEventModel: pass
     LEARN_TABLES = []

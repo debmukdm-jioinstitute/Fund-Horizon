@@ -103,6 +103,29 @@ export function Home() {
 
       {me.certificate && <Certificate />}
 
+      <section aria-label="Taxation guide" className={`${card} p-6 space-y-3`}>
+        <p className="text-xs font-bold uppercase tracking-wider text-[#0176D3]">Fund Horizon material</p>
+        <h3 className="text-lg font-semibold">Taxation guide — PMS, mutual funds, equity and F&O</h3>
+        <p className={`text-[15px] ${muted}`}>
+          Four plain-English guides with rates for FY 2026-27, worked examples and return forms. Reading material only — it tracks nothing and earns no XP.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button className={btnPrimary} onClick={() => go({ tax: "1" })}>Open taxation guides →</button>
+        </div>
+      </section>
+
+      <section aria-label="Varsity external learning" className={`${card} border-dashed p-6 space-y-3`}>
+        <p className="text-xs font-bold uppercase tracking-wider text-[#B45309]">External learning · Not FH training</p>
+        <h3 className="text-lg font-semibold">Zerodha Varsity library</h3>
+        <p className={`text-[15px] ${muted}`}>
+          Eight focus modules listed in full, with chapters linked to the original pages on zerodha.com; seven more modules are shown in a “Later” section and
+          come in a later release. Reading Varsity chapters tracks progress but does not earn XP.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button className={btnPrimary} onClick={() => go({ varsity: "1" })}>Open Varsity library →</button>
+        </div>
+      </section>
+
       <section aria-label="Badges" className={`${card} p-6 space-y-4`}>
         <h3 className="text-lg font-semibold">Badges</h3>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

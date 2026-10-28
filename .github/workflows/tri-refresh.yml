@@ -1,0 +1,53 @@
+name: TRI Refresh
+
+# Refreshes the NSE total-return index series into the committed seed
+# file data/mf_benchmark_tri.json (see backend/scripts/refresh_tri.py).
+# The API upserts the seed into mf_benchmark_nav on first use, because
+# the production SQLite lives on the EC2 host and this job cannot write
+# it directly.
+#
+# FULLY AUTOMATED — no manual trigger, by standing rule: no manual
+# workflows in website operations. Runs monthly on the 16th, after the
+# holdings refresh. As of 2026-10-28 the NSE Backpage TRI endpoint
+# answers every anonymous POST with a 302 to a Sitefinity login page,
+# so runs will fail and log that wall until NSE restores anonymous
+# access — at which point the next scheduled run succeeds on its own,
+# with no human step. Never substitute a price-return series for a
+# TRI series.
+
+on:
+  schedule:
+    # 03:30 UTC on the 16th of each month (after the holdings refresh)
+    - cron: '30 3 16 * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tri-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install ingest dependencies
+        run: pip install httpx
+
+      - name: Refresh TRI seed
+        run: python backend/scripts/refresh_tri.py --years 5
+
+      - name: Commit refreshed seed
+        run: |
+          git config user.name "fh-data-bot"
+          git config user.email "fh-data-bot@users.noreply.github.com"
+          git add data/mf_benchmark_tri.json
+          git diff --cached --quiet || (git commit -m "data: NSE TRI series refresh" && git pull --rebase origin main && git push)

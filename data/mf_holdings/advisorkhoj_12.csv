@@ -1,0 +1,1961 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+105417,Ultratech Cement Limited,,Cement and Cement Products,3.8,equity
+105417,Reliance Industries Limited,,,7.05,equity
+105417,Afcons Infrastructure Limited,,,1.72,equity
+105417,Bharat Petroleum Corporation Ltd.,,Petroleum Products,2.58,equity
+105417,Hindustan Petroleum Corporation Limited,,Petroleum Products,2.05,equity
+105417,Mahindra And Mahindra Limited,,Automobiles,1.9,equity
+105417,Oil And Natural Gas Corporation Limited,,,3.15,equity
+105417,Power Grid Corporation Of India Limited,,Power,5.43,equity
+105417,A-One Steels India Ltd.,,,0.44,equity
+105417,Ahluwalia Contracts India Limited,,Construction,1.36,equity
+105417,Arkade Developers Ltd.,,,0.89,equity
+105417,Beml Limited,,"Agricultural, Commercial and Construction Vehicles",3.27,equity
+105417,Ceigall India Ltd,,Construction,3.31,equity
+105417,Chemtech Industrial Valves Limited,,,0.11,equity
+105417,Ge T&D India Limited,,Electrical Equipment,0.98,equity
+105417,Grasim Industries Limited,,Cement and Cement Products,0.97,equity
+105417,Hbl Power Systems Limited,,Auto Components,1.03,equity
+105417,Indian Energy Exchange Limited,,Capital Markets,2.04,equity
+105417,Interarch Building Products Private Limited,,Construction,2.57,equity
+105417,Insolation Energy Ltd.,,,2.49,equity
+105417,Le Travenues Technology Limited,,Leisure Services,3.75,equity
+105417,Mazagon Dock Shipbuilders Limited,,Industrial Manufacturing,2.07,equity
+105417,National Aluminium Company Limited,,NON - FERROUS METALS,0.97,equity
+105417,Nesco Limited,,Commercial Services and Supplies,1.05,equity
+105417,Pranav Constructions Ltd,,Realty,2.49,equity
+105417,Rites Limited,,Construction,3.14,equity
+105417,Samhi Hotels Limited,,Leisure Services,2.94,equity
+105417,Steel Authority Of India Limited,,FERROUS METALS,2.87,equity
+105417,Skyways Air Services Ltd,,Transport Services,4.2,equity
+105417,Vodafone Idea Limited,,TELECOM - SERVICES,3.29,equity
+102395,Bharti Airtel Limited,,,13.01,equity
+102395,Interglobe Aviation Limited,,Transport Services,3.18,equity
+102395,Larsen And Toubro Limited,,,8.82,equity
+102395,Ntpc Limited,,Power,3.58,equity
+102395,Ultratech Cement Limited,,Cement and Cement Products,4.24,equity
+102395,Bharat Electronics Limited,,Aerospace and Defense,1.11,equity
+102395,Cummins India Limited,,Industrial Products,1.55,equity
+102395,Gspl Transmission Ltd. A**,,,0.23,equity
+102395,Gujarat Gas Limited,,Gas,1.11,equity
+102395,Indo-Mim Limited,,Industrial Manufacturing,2.25,equity
+102395,Reliance Industries Limited,,,8.6,equity
+102395,Adani Ports And Special Economic Zone Limited,,Transport Infrastructure,4.88,equity
+102395,Axis Bank Limited,,BANKS,2.73,equity
+102395,Bharat Forge Limited,,,0.58,equity
+102395,Bharat Petroleum Corporation Ltd.,,Petroleum Products,0.93,equity
+102395,Container Corporation Of India Ltd.,,,0.09,equity
+102395,Crompton Greaves Consumer Electricals Limited,,CONSUMER DURABLES,1.18,equity
+102395,Hindustan Petroleum Corporation Limited,,Petroleum Products,0.19,equity
+102395,Hindustan Aeronautics Ltd,,Aerospace and Defense,2.35,equity
+102395,Icici Bank Limited,,,2.04,equity
+102395,Jsw Steel Limited,,FERROUS METALS,0.38,equity
+102395,Kirloskar Oil Engines Limited,,Industrial Products,0.57,equity
+102395,Oil And Natural Gas Corporation Limited,,,3.42,equity
+102395,Power Grid Corporation Of India Limited,,Power,1.29,equity
+102395,Prestige Estates Projects Limited,,Realty,0.52,equity
+102395,Rhi Magnesita India Limited,,Industrial Products,0.38,equity
+102395,Tata Communications Limited,,,0.81,equity
+102395,Td Power Systems Limited,,Electrical Equipment,1.07,equity
+102395,Titagarh Wagons Limited,,,0.42,equity
+102395,Tml Commercial Vehicles Ltd.,,"Agricultural, Commercial and Construction Vehicles",0.6,equity
+102395,Triveni Turbine Limited,,,1.19,equity
+102395,Voltamp Transformers Limited,,Electrical Equipment,1.18,equity
+102395,3M India Limited,,,0.89,equity
+102395,Adani Enterprises Limited,,,1.3,equity
+102395,Acme Solar Holdings Ltd,,Power,0.4,equity
+102395,Adani Power Limited,,,0.52,equity
+102395,Blue Star Limited,,CONSUMER DURABLES,0.92,equity
+102395,Brigade Enterprises Limited,,Realty,2.02,equity
+102395,Dlf Limited,,,0.38,equity
+102395,Engineers India Limited,,Construction,0.05,equity
+102395,G R Infraprojects Limited,,Construction,0.8,equity
+102395,Grindwell Norton Limited,,Industrial Products,0.86,equity
+102395,Gulf Oil Lubricants India Limited,,Petroleum Products,0.48,equity
+102395,H.G. Infra Engineering Limited,,Construction,0.56,equity
+102395,J. Kumar Infraprojects Limited,,Construction,1.67,equity
+102395,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,0.38,equity
+102395,Kirlosakar Pneumatic Company Ltd,,Industrial Products,0.92,equity
+102395,Mahanagar Gas Limited,,Gas,0.64,equity
+102395,Mahindra Logistics Limited,,Transport Services,1.21,equity
+102395,Oil India Ltd.,,Oil,0.45,equity
+102395,Petronet Lng Limited,,Gas,0.03,equity
+102395,Pitti Engineering Limited,,Industrial Manufacturing,0.34,equity
+102395,Pnc Infratech Limited,,Construction,0.54,equity
+102395,Polycab India Limited,,Industrial Products,0.47,equity
+102395,Praj Industries Limited,,Industrial Manufacturing,1.5,equity
+102395,Shivalik Bimetal Controls Limited,,Industrial Products,0.18,equity
+102395,Shree Cement Limited,,Cement and Cement Products,0.63,equity
+102395,Siemens Limited,,Electrical Equipment,0.29,equity
+102395,Skf India Limited,,,0.17,equity
+102395,Suzlon Energy Limited,,Electrical Equipment,1.79,equity
+102395,Tube Investments Of India Limited,,Auto Components,0.41,equity
+102395,Vedanta Aluminium Metal Ltd.,,NON - FERROUS METALS,1.31,equity
+102395,Zf Commercial Vehicle Control Systems India Limited,,Auto Components,0.51,equity
+120728,Bharti Airtel Limited,,,13.01,equity
+120728,Interglobe Aviation Limited,,Transport Services,3.18,equity
+120728,Larsen And Toubro Limited,,,8.82,equity
+120728,Ntpc Limited,,Power,3.58,equity
+120728,Ultratech Cement Limited,,Cement and Cement Products,4.24,equity
+120728,Bharat Electronics Limited,,Aerospace and Defense,1.11,equity
+120728,Cummins India Limited,,Industrial Products,1.55,equity
+120728,Gspl Transmission Ltd. A**,,,0.23,equity
+120728,Gujarat Gas Limited,,Gas,1.11,equity
+120728,Indo-Mim Limited,,Industrial Manufacturing,2.25,equity
+120728,Reliance Industries Limited,,,8.6,equity
+120728,Adani Ports And Special Economic Zone Limited,,Transport Infrastructure,4.88,equity
+120728,Axis Bank Limited,,BANKS,2.73,equity
+120728,Bharat Forge Limited,,,0.58,equity
+120728,Bharat Petroleum Corporation Ltd.,,Petroleum Products,0.93,equity
+120728,Container Corporation Of India Ltd.,,,0.09,equity
+120728,Crompton Greaves Consumer Electricals Limited,,CONSUMER DURABLES,1.18,equity
+120728,Hindustan Petroleum Corporation Limited,,Petroleum Products,0.19,equity
+120728,Hindustan Aeronautics Ltd,,Aerospace and Defense,2.35,equity
+120728,Icici Bank Limited,,,2.04,equity
+120728,Jsw Steel Limited,,FERROUS METALS,0.38,equity
+120728,Kirloskar Oil Engines Limited,,Industrial Products,0.57,equity
+120728,Oil And Natural Gas Corporation Limited,,,3.42,equity
+120728,Power Grid Corporation Of India Limited,,Power,1.29,equity
+120728,Prestige Estates Projects Limited,,Realty,0.52,equity
+120728,Rhi Magnesita India Limited,,Industrial Products,0.38,equity
+120728,Tata Communications Limited,,,0.81,equity
+120728,Td Power Systems Limited,,Electrical Equipment,1.07,equity
+120728,Titagarh Wagons Limited,,,0.42,equity
+120728,Tml Commercial Vehicles Ltd.,,"Agricultural, Commercial and Construction Vehicles",0.6,equity
+120728,Triveni Turbine Limited,,,1.19,equity
+120728,Voltamp Transformers Limited,,Electrical Equipment,1.18,equity
+120728,3M India Limited,,,0.89,equity
+120728,Adani Enterprises Limited,,,1.3,equity
+120728,Acme Solar Holdings Ltd,,Power,0.4,equity
+120728,Adani Power Limited,,,0.52,equity
+120728,Blue Star Limited,,CONSUMER DURABLES,0.92,equity
+120728,Brigade Enterprises Limited,,Realty,2.02,equity
+120728,Dlf Limited,,,0.38,equity
+120728,Engineers India Limited,,Construction,0.05,equity
+120728,G R Infraprojects Limited,,Construction,0.8,equity
+120728,Grindwell Norton Limited,,Industrial Products,0.86,equity
+120728,Gulf Oil Lubricants India Limited,,Petroleum Products,0.48,equity
+120728,H.G. Infra Engineering Limited,,Construction,0.56,equity
+120728,J. Kumar Infraprojects Limited,,Construction,1.67,equity
+120728,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,0.38,equity
+120728,Kirlosakar Pneumatic Company Ltd,,Industrial Products,0.92,equity
+120728,Mahanagar Gas Limited,,Gas,0.64,equity
+120728,Mahindra Logistics Limited,,Transport Services,1.21,equity
+120728,Oil India Ltd.,,Oil,0.45,equity
+120728,Petronet Lng Limited,,Gas,0.03,equity
+120728,Pitti Engineering Limited,,Industrial Manufacturing,0.34,equity
+120728,Pnc Infratech Limited,,Construction,0.54,equity
+120728,Polycab India Limited,,Industrial Products,0.47,equity
+120728,Praj Industries Limited,,Industrial Manufacturing,1.5,equity
+120728,Shivalik Bimetal Controls Limited,,Industrial Products,0.18,equity
+120728,Shree Cement Limited,,Cement and Cement Products,0.63,equity
+120728,Siemens Limited,,Electrical Equipment,0.29,equity
+120728,Skf India Limited,,,0.17,equity
+120728,Suzlon Energy Limited,,Electrical Equipment,1.79,equity
+120728,Tube Investments Of India Limited,,Auto Components,0.41,equity
+120728,Vedanta Aluminium Metal Ltd.,,NON - FERROUS METALS,1.31,equity
+120728,Zf Commercial Vehicle Control Systems India Limited,,Auto Components,0.51,equity
+153972,Apollo Hospitals Enterprise Limited,,Healthcare Services,5.75,equity
+153972,Divis Laboratories Limited,,,4.27,equity
+153972,Glenmark Pharmaceuticals Limited,,,2.14,equity
+153972,Max Healthcare Institute Limited,,Healthcare Services,5.27,equity
+153972,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,9.74,equity
+153972,Torrent Pharmaceuticals Limited,,,3.23,equity
+153972,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,3.11,equity
+153972,Global Health Limited,,Healthcare Services,1.88,equity
+153972,Ipca Laboratories Limited,,,1.48,equity
+153972,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.17,equity
+153972,Aurobindo Pharma Limited,,,4.1,equity
+153972,Cipla Limited,,Pharmaceuticals and Biotechnology,6.18,equity
+153972,Dr. Reddys Laboratories Ltd,,,3.78,equity
+153972,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,2.19,equity
+153972,Lupin Limited,,Pharmaceuticals and Biotechnology,4.35,equity
+153972,Zydus Lifesciences Limited,,,2.82,equity
+153972,Dr. Lal Pathlabs Limited,,Healthcare Services,0.91,equity
+153972,Jubilant Pharmova Limited,,,1.26,equity
+153972,Novartis India Limited,,Pharmaceuticals and Biotechnology,1.88,equity
+153972,Shilpa Medicare Limited,,Pharmaceuticals and Biotechnology,4.17,equity
+153972,Syngene International Limited,,Healthcare Services,2.46,equity
+153972,Thyrocare Technologies Limited,,Healthcare Services,1.31,equity
+153972,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,1.22,equity
+153972,Astrazeneca Pharma India Limited,,Pharmaceuticals and Biotechnology,1.14,equity
+153972,Glaxosmithkline Pharmaceuticals Ltd,,,3.39,equity
+153972,Glenmark Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.15,equity
+153972,Healthcare Global Enterprises Ltd,,Healthcare Services,1.33,equity
+153972,Medi Assist Healthcare Services Limited,,Insurance,0.83,equity
+153972,Narayana Hrudayalaya Limited,,Healthcare Services,2.74,equity
+153972,Orchid Pharma Limited,,,1.13,equity
+153972,Pfizer Limited,,,1.54,equity
+153972,Rainbow Childrens Medicare Limited,,Healthcare Services,2.21,equity
+153972,Sanofi India Limited,,,1.5,equity
+153972,Sequent Scientific Limited,,Pharmaceuticals and Biotechnology,0.77,equity
+153972,Sai Parenterals Limited,,,1.15,equity
+153974,Apollo Hospitals Enterprise Limited,,Healthcare Services,5.75,equity
+153974,Divis Laboratories Limited,,,4.27,equity
+153974,Glenmark Pharmaceuticals Limited,,,2.14,equity
+153974,Max Healthcare Institute Limited,,Healthcare Services,5.27,equity
+153974,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,9.74,equity
+153974,Torrent Pharmaceuticals Limited,,,3.23,equity
+153974,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,3.11,equity
+153974,Global Health Limited,,Healthcare Services,1.88,equity
+153974,Ipca Laboratories Limited,,,1.48,equity
+153974,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.17,equity
+153974,Aurobindo Pharma Limited,,,4.1,equity
+153974,Cipla Limited,,Pharmaceuticals and Biotechnology,6.18,equity
+153974,Dr. Reddys Laboratories Ltd,,,3.78,equity
+153974,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,2.19,equity
+153974,Lupin Limited,,Pharmaceuticals and Biotechnology,4.35,equity
+153974,Zydus Lifesciences Limited,,,2.82,equity
+153974,Dr. Lal Pathlabs Limited,,Healthcare Services,0.91,equity
+153974,Jubilant Pharmova Limited,,,1.26,equity
+153974,Novartis India Limited,,Pharmaceuticals and Biotechnology,1.88,equity
+153974,Shilpa Medicare Limited,,Pharmaceuticals and Biotechnology,4.17,equity
+153974,Syngene International Limited,,Healthcare Services,2.46,equity
+153974,Thyrocare Technologies Limited,,Healthcare Services,1.31,equity
+153974,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,1.22,equity
+153974,Astrazeneca Pharma India Limited,,Pharmaceuticals and Biotechnology,1.14,equity
+153974,Glaxosmithkline Pharmaceuticals Ltd,,,3.39,equity
+153974,Glenmark Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.15,equity
+153974,Healthcare Global Enterprises Ltd,,Healthcare Services,1.33,equity
+153974,Medi Assist Healthcare Services Limited,,Insurance,0.83,equity
+153974,Narayana Hrudayalaya Limited,,Healthcare Services,2.74,equity
+153974,Orchid Pharma Limited,,,1.13,equity
+153974,Pfizer Limited,,,1.54,equity
+153974,Rainbow Childrens Medicare Limited,,Healthcare Services,2.21,equity
+153974,Sanofi India Limited,,,1.5,equity
+153974,Sequent Scientific Limited,,Pharmaceuticals and Biotechnology,0.77,equity
+153974,Sai Parenterals Limited,,,1.15,equity
+152082,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.69,equity
+152082,Divis Laboratories Limited,,,9.39,equity
+152082,Glenmark Pharmaceuticals Limited,,,2.09,equity
+152082,Max Healthcare Institute Limited,,Healthcare Services,3.61,equity
+152082,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,8.28,equity
+152082,Torrent Pharmaceuticals Limited,,,3.65,equity
+152082,Aster Dm Healthcare Limited,,,3.56,equity
+152082,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,1.78,equity
+152082,Global Health Limited,,Healthcare Services,2.72,equity
+152082,Ipca Laboratories Limited,,,2.98,equity
+152082,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.58,equity
+152082,Biocon Limited,,,1.47,equity
+152082,Cipla Limited,,Pharmaceuticals and Biotechnology,4.15,equity
+152082,Dr. Reddys Laboratories Ltd,,,3.19,equity
+152082,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,0.92,equity
+152082,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,2.1,equity
+152082,Lupin Limited,,Pharmaceuticals and Biotechnology,3.55,equity
+152082,Zydus Lifesciences Limited,,,1.82,equity
+152082,Alkem Laboratories Limited,,Pharmaceuticals and Biotechnology,4.64,equity
+152082,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,3.17,equity
+152082,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,1.04,equity
+152082,Jubilant Pharmova Limited,,,0.93,equity
+152082,Metropolis Healthcare Limited,,Healthcare Services,1.67,equity
+152082,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,2.01,equity
+152082,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,3.24,equity
+152082,Novartis India Limited,,Pharmaceuticals and Biotechnology,0.55,equity
+152082,Shilpa Medicare Limited,,Pharmaceuticals and Biotechnology,3.23,equity
+152082,Suven Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,0.32,equity
+152082,Symbiotec Pharmalab Limited,,Pharmaceuticals and Biotechnology,1.36,equity
+152082,Thyrocare Technologies Limited,,Healthcare Services,1.1,equity
+152082,Ami Organics Limited,,Pharmaceuticals and Biotechnology,3.18,equity
+152082,Bajaj Healthcare Limited,,,0.53,equity
+152082,Entero Healthcare Solutions Private Limited,,Retailing,1.01,equity
+152082,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,1.68,equity
+152082,Laxmi Dental Limited,,Healthcare Equipment and Supplies,0.35,equity
+152082,Rubicon Research Ltd.,,Pharmaceuticals and Biotechnology,2.52,equity
+152082,Vijaya Diagnostic Centre Limited,,Healthcare Services,2.0,equity
+152082,Wockhardt Limited,,Pharmaceuticals and Biotechnology,1.71,equity
+152084,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.69,equity
+152084,Divis Laboratories Limited,,,9.39,equity
+152084,Glenmark Pharmaceuticals Limited,,,2.09,equity
+152084,Max Healthcare Institute Limited,,Healthcare Services,3.61,equity
+152084,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,8.28,equity
+152084,Torrent Pharmaceuticals Limited,,,3.65,equity
+152084,Aster Dm Healthcare Limited,,,3.56,equity
+152084,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,1.78,equity
+152084,Global Health Limited,,Healthcare Services,2.72,equity
+152084,Ipca Laboratories Limited,,,2.98,equity
+152084,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.58,equity
+152084,Biocon Limited,,,1.47,equity
+152084,Cipla Limited,,Pharmaceuticals and Biotechnology,4.15,equity
+152084,Dr. Reddys Laboratories Ltd,,,3.19,equity
+152084,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,0.92,equity
+152084,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,2.1,equity
+152084,Lupin Limited,,Pharmaceuticals and Biotechnology,3.55,equity
+152084,Zydus Lifesciences Limited,,,1.82,equity
+152084,Alkem Laboratories Limited,,Pharmaceuticals and Biotechnology,4.64,equity
+152084,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,3.17,equity
+152084,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,1.04,equity
+152084,Jubilant Pharmova Limited,,,0.93,equity
+152084,Metropolis Healthcare Limited,,Healthcare Services,1.67,equity
+152084,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,2.01,equity
+152084,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,3.24,equity
+152084,Novartis India Limited,,Pharmaceuticals and Biotechnology,0.55,equity
+152084,Shilpa Medicare Limited,,Pharmaceuticals and Biotechnology,3.23,equity
+152084,Suven Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,0.32,equity
+152084,Symbiotec Pharmalab Limited,,Pharmaceuticals and Biotechnology,1.36,equity
+152084,Thyrocare Technologies Limited,,Healthcare Services,1.1,equity
+152084,Ami Organics Limited,,Pharmaceuticals and Biotechnology,3.18,equity
+152084,Bajaj Healthcare Limited,,,0.53,equity
+152084,Entero Healthcare Solutions Private Limited,,Retailing,1.01,equity
+152084,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,1.68,equity
+152084,Laxmi Dental Limited,,Healthcare Equipment and Supplies,0.35,equity
+152084,Rubicon Research Ltd.,,Pharmaceuticals and Biotechnology,2.52,equity
+152084,Vijaya Diagnostic Centre Limited,,Healthcare Services,2.0,equity
+152084,Wockhardt Limited,,Pharmaceuticals and Biotechnology,1.71,equity
+154547,Apollo Hospitals Enterprise Limited,,Healthcare Services,8.03,equity
+154547,Divis Laboratories Limited,,,7.85,equity
+154547,Glenmark Pharmaceuticals Limited,,,4.86,equity
+154547,Max Healthcare Institute Limited,,Healthcare Services,9.58,equity
+154547,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,8.99,equity
+154547,Torrent Pharmaceuticals Limited,,,4.93,equity
+154547,Aster Dm Healthcare Limited,,,1.99,equity
+154547,Global Health Limited,,Healthcare Services,7.0,equity
+154547,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,8.63,equity
+154547,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,4.72,equity
+154547,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,6.13,equity
+154547,Dr Agarwals Health Care Ltd.,,Healthcare Services,6.32,equity
+154547,Manipal Health Enterprises Ltd. A**,,,7.98,equity
+154545,Apollo Hospitals Enterprise Limited,,Healthcare Services,8.03,equity
+154545,Divis Laboratories Limited,,,7.85,equity
+154545,Glenmark Pharmaceuticals Limited,,,4.86,equity
+154545,Max Healthcare Institute Limited,,Healthcare Services,9.58,equity
+154545,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,8.99,equity
+154545,Torrent Pharmaceuticals Limited,,,4.93,equity
+154545,Aster Dm Healthcare Limited,,,1.99,equity
+154545,Global Health Limited,,Healthcare Services,7.0,equity
+154545,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,8.63,equity
+154545,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,4.72,equity
+154545,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,6.13,equity
+154545,Dr Agarwals Health Care Ltd.,,Healthcare Services,6.32,equity
+154545,Manipal Health Enterprises Ltd. A**,,,7.98,equity
+152025,Apollo Hospitals Enterprise Limited,,Healthcare Services,5.75,equity
+152025,Divis Laboratories Limited,,,9.07,equity
+152025,Glenmark Pharmaceuticals Limited,,,2.61,equity
+152025,Max Healthcare Institute Limited,,Healthcare Services,2.99,equity
+152025,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,9.59,equity
+152025,Torrent Pharmaceuticals Limited,,,6.04,equity
+152025,Aster Dm Healthcare Limited,,,4.61,equity
+152025,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,3.2,equity
+152025,Global Health Limited,,Healthcare Services,2.59,equity
+152025,Ipca Laboratories Limited,,,2.33,equity
+152025,Aurobindo Pharma Limited,,,5.23,equity
+152025,Biocon Limited,,,2.37,equity
+152025,Zydus Lifesciences Limited,,,4.97,equity
+152025,Dr Agarwals Health Care Ltd.,,Healthcare Services,2.46,equity
+152025,Fortis Healthcare Limited.,,Healthcare Services,3.77,equity
+152025,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,3.11,equity
+152025,Metropolis Healthcare Limited,,Healthcare Services,3.35,equity
+152025,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,6.14,equity
+152025,Stelis Biopharma Limited,,,2.3,equity
+152025,Suven Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,2.95,equity
+152025,Syngene International Limited,,Healthcare Services,1.38,equity
+152025,Artemis Medicare Services Limited,,Healthcare Services,1.26,equity
+152025,Navin Fluorine International Ltd,,Chemicals and Petrochemicals,4.98,equity
+152025,Nephrocare Health Services Ltd,,Healthcare Services,3.05,equity
+152025,Piramal Pharma Limited,,Pharmaceuticals and Biotechnology,1.43,equity
+152024,Apollo Hospitals Enterprise Limited,,Healthcare Services,5.75,equity
+152024,Divis Laboratories Limited,,,9.07,equity
+152024,Glenmark Pharmaceuticals Limited,,,2.61,equity
+152024,Max Healthcare Institute Limited,,Healthcare Services,2.99,equity
+152024,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,9.59,equity
+152024,Torrent Pharmaceuticals Limited,,,6.04,equity
+152024,Aster Dm Healthcare Limited,,,4.61,equity
+152024,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,3.2,equity
+152024,Global Health Limited,,Healthcare Services,2.59,equity
+152024,Ipca Laboratories Limited,,,2.33,equity
+152024,Aurobindo Pharma Limited,,,5.23,equity
+152024,Biocon Limited,,,2.37,equity
+152024,Zydus Lifesciences Limited,,,4.97,equity
+152024,Dr Agarwals Health Care Ltd.,,Healthcare Services,2.46,equity
+152024,Fortis Healthcare Limited.,,Healthcare Services,3.77,equity
+152024,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,3.11,equity
+152024,Metropolis Healthcare Limited,,Healthcare Services,3.35,equity
+152024,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,6.14,equity
+152024,Stelis Biopharma Limited,,,2.3,equity
+152024,Suven Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,2.95,equity
+152024,Syngene International Limited,,Healthcare Services,1.38,equity
+152024,Artemis Medicare Services Limited,,Healthcare Services,1.26,equity
+152024,Navin Fluorine International Ltd,,Chemicals and Petrochemicals,4.98,equity
+152024,Nephrocare Health Services Ltd,,Healthcare Services,3.05,equity
+152024,Piramal Pharma Limited,,Pharmaceuticals and Biotechnology,1.43,equity
+143783,Apollo Hospitals Enterprise Limited,,Healthcare Services,5.62,equity
+143783,Divis Laboratories Limited,,,9.79,equity
+143783,Glenmark Pharmaceuticals Limited,,,4.78,equity
+143783,Max Healthcare Institute Limited,,Healthcare Services,2.35,equity
+143783,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,10.15,equity
+143783,Torrent Pharmaceuticals Limited,,,6.8,equity
+143783,Aster Dm Healthcare Limited,,,3.32,equity
+143783,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,2.69,equity
+143783,Ipca Laboratories Limited,,,3.39,equity
+143783,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,3.23,equity
+143783,Aurobindo Pharma Limited,,,3.78,equity
+143783,Biocon Limited,,,2.0,equity
+143783,Cipla Limited,,Pharmaceuticals and Biotechnology,2.63,equity
+143783,Dr. Reddys Laboratories Ltd,,,4.84,equity
+143783,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,2.39,equity
+143783,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,3.39,equity
+143783,Lupin Limited,,Pharmaceuticals and Biotechnology,2.27,equity
+143783,Alkem Laboratories Limited,,Pharmaceuticals and Biotechnology,3.76,equity
+143783,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,0.93,equity
+143783,Dr. Lal Pathlabs Limited,,Healthcare Services,2.9,equity
+143783,Fortis Healthcare Limited.,,Healthcare Services,2.94,equity
+143783,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,2.24,equity
+143783,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,1.77,equity
+143783,Stelis Biopharma Limited,,,3.01,equity
+143783,Symbiotec Pharmalab Limited,,Pharmaceuticals and Biotechnology,1.6,equity
+143783,Deepak Nitrite Limited,,Chemicals and Petrochemicals,0.4,equity
+143783,Laurus Labs Limited,,Pharmaceuticals and Biotechnology,5.51,equity
+143783,Neogen Chemicals Limited,,Chemicals and Petrochemicals,1.5,equity
+143785,Apollo Hospitals Enterprise Limited,,Healthcare Services,5.62,equity
+143785,Divis Laboratories Limited,,,9.79,equity
+143785,Glenmark Pharmaceuticals Limited,,,4.78,equity
+143785,Max Healthcare Institute Limited,,Healthcare Services,2.35,equity
+143785,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,10.15,equity
+143785,Torrent Pharmaceuticals Limited,,,6.8,equity
+143785,Aster Dm Healthcare Limited,,,3.32,equity
+143785,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,2.69,equity
+143785,Ipca Laboratories Limited,,,3.39,equity
+143785,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,3.23,equity
+143785,Aurobindo Pharma Limited,,,3.78,equity
+143785,Biocon Limited,,,2.0,equity
+143785,Cipla Limited,,Pharmaceuticals and Biotechnology,2.63,equity
+143785,Dr. Reddys Laboratories Ltd,,,4.84,equity
+143785,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,2.39,equity
+143785,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,3.39,equity
+143785,Lupin Limited,,Pharmaceuticals and Biotechnology,2.27,equity
+143785,Alkem Laboratories Limited,,Pharmaceuticals and Biotechnology,3.76,equity
+143785,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,0.93,equity
+143785,Dr. Lal Pathlabs Limited,,Healthcare Services,2.9,equity
+143785,Fortis Healthcare Limited.,,Healthcare Services,2.94,equity
+143785,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,2.24,equity
+143785,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,1.77,equity
+143785,Stelis Biopharma Limited,,,3.01,equity
+143785,Symbiotec Pharmalab Limited,,Pharmaceuticals and Biotechnology,1.6,equity
+143785,Deepak Nitrite Limited,,Chemicals and Petrochemicals,0.4,equity
+143785,Laurus Labs Limited,,Pharmaceuticals and Biotechnology,5.51,equity
+143785,Neogen Chemicals Limited,,Chemicals and Petrochemicals,1.5,equity
+153039,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,4.96,equity
+153039,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,1.81,equity
+153039,Cipla Limited,,Pharmaceuticals and Biotechnology,2.04,equity
+153039,Divis Laboratories Limited,,,10.36,equity
+153039,Dr. Lal Pathlabs Limited,,Healthcare Services,4.33,equity
+153039,Fortis Healthcare Limited.,,Healthcare Services,1.46,equity
+153039,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,1.5,equity
+153039,Global Health Limited,,Healthcare Services,1.52,equity
+153039,Ipca Laboratories Limited,,,1.92,equity
+153039,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,1.46,equity
+153039,Max Healthcare Institute Limited,,Healthcare Services,4.71,equity
+153039,Manipal Health Enterprises Ltd. A**,,,3.68,equity
+153039,Orchid Pharma Limited,,,0.79,equity
+153039,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,10.25,equity
+153039,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,2.54,equity
+153039,Aster Dm Healthcare Limited,,,2.56,equity
+153039,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,2.99,equity
+153039,Lupin Limited,,Pharmaceuticals and Biotechnology,1.93,equity
+153039,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,4.04,equity
+153039,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,0.8,equity
+153039,Navin Fluorine International Ltd,,Chemicals and Petrochemicals,3.24,equity
+153039,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,2.91,equity
+153039,Torrent Pharmaceuticals Limited,,,8.49,equity
+153039,Zydus Lifesciences Limited,,,2.04,equity
+153039,Abbott India Limited,,Pharmaceuticals and Biotechnology,3.12,equity
+153039,Dr. Agarwals Eye Hospital Limited,,,1.86,equity
+153039,Icici Lombard Gen Insurance Co Ltd,,,2.1,equity
+153039,Lenskart Solutions Private Limited,,Retailing,0.99,equity
+153039,Rubicon Research Ltd.,,Pharmaceuticals and Biotechnology,2.99,equity
+153039,Sagility India Private Limited,,IT - Services,0.4,equity
+153039,Symbiotec Pharmalab Limited,,Pharmaceuticals and Biotechnology,1.1,equity
+153040,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,4.96,equity
+153040,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,1.81,equity
+153040,Cipla Limited,,Pharmaceuticals and Biotechnology,2.04,equity
+153040,Divis Laboratories Limited,,,10.36,equity
+153040,Dr. Lal Pathlabs Limited,,Healthcare Services,4.33,equity
+153040,Fortis Healthcare Limited.,,Healthcare Services,1.46,equity
+153040,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,1.5,equity
+153040,Global Health Limited,,Healthcare Services,1.52,equity
+153040,Ipca Laboratories Limited,,,1.92,equity
+153040,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,1.46,equity
+153040,Max Healthcare Institute Limited,,Healthcare Services,4.71,equity
+153040,Manipal Health Enterprises Ltd. A**,,,3.68,equity
+153040,Orchid Pharma Limited,,,0.79,equity
+153040,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,10.25,equity
+153040,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,2.54,equity
+153040,Aster Dm Healthcare Limited,,,2.56,equity
+153040,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,2.99,equity
+153040,Lupin Limited,,Pharmaceuticals and Biotechnology,1.93,equity
+153040,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,4.04,equity
+153040,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,0.8,equity
+153040,Navin Fluorine International Ltd,,Chemicals and Petrochemicals,3.24,equity
+153040,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,2.91,equity
+153040,Torrent Pharmaceuticals Limited,,,8.49,equity
+153040,Zydus Lifesciences Limited,,,2.04,equity
+153040,Abbott India Limited,,Pharmaceuticals and Biotechnology,3.12,equity
+153040,Dr. Agarwals Eye Hospital Limited,,,1.86,equity
+153040,Icici Lombard Gen Insurance Co Ltd,,,2.1,equity
+153040,Lenskart Solutions Private Limited,,Retailing,0.99,equity
+153040,Rubicon Research Ltd.,,Pharmaceuticals and Biotechnology,2.99,equity
+153040,Sagility India Private Limited,,IT - Services,0.4,equity
+153040,Symbiotec Pharmalab Limited,,Pharmaceuticals and Biotechnology,1.1,equity
+100807,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,4.81,equity
+100807,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,1.8,equity
+100807,Cipla Limited,,Pharmaceuticals and Biotechnology,1.41,equity
+100807,Divis Laboratories Limited,,,6.15,equity
+100807,Dr. Lal Pathlabs Limited,,Healthcare Services,1.67,equity
+100807,Fortis Healthcare Limited.,,Healthcare Services,2.02,equity
+100807,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,4.06,equity
+100807,Global Health Limited,,Healthcare Services,2.96,equity
+100807,Ipca Laboratories Limited,,,2.81,equity
+100807,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,2.09,equity
+100807,Max Healthcare Institute Limited,,Healthcare Services,2.8,equity
+100807,Manipal Health Enterprises Ltd. A**,,,1.05,equity
+100807,Orchid Pharma Limited,,,0.71,equity
+100807,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,7.62,equity
+100807,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.26,equity
+100807,Aarti Pharmalabs Limited,,Pharmaceuticals and Biotechnology,1.0,equity
+100807,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.03,equity
+100807,Aster Dm Healthcare Limited,,,1.76,equity
+100807,Aurobindo Pharma Limited,,,2.07,equity
+100807,Biocon Limited,,,1.62,equity
+100807,Lupin Limited,,Pharmaceuticals and Biotechnology,2.89,equity
+100807,Laxmi Dental Limited,,Healthcare Equipment and Supplies,1.08,equity
+100807,Procter & Gamble Health Limited,,,1.95,equity
+100807,Rainbow Childrens Medicare Limited,,Healthcare Services,2.21,equity
+100807,Sudeep Pharma Limited,,,1.28,equity
+100807,Vijaya Diagnostic Centre Limited,,Healthcare Services,1.33,equity
+100807,Alembic Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,1.4,equity
+100807,Alkem Laboratories Limited,,Pharmaceuticals and Biotechnology,3.7,equity
+100807,Blue Jet Healthcare Private Limited,,Pharmaceuticals and Biotechnology,1.41,equity
+100807,Caplin Point Laboratories Limited,,Pharmaceuticals and Biotechnology,3.02,equity
+100807,Dr. Reddys Laboratories Ltd,,,5.24,equity
+100807,Emcure Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,0.2,equity
+100807,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,1.13,equity
+100807,Glenmark Pharmaceuticals Limited,,,2.12,equity
+100807,Indegene Limited,,,0.5,equity
+100807,Jubilant Pharmova Limited,,,0.65,equity
+100807,Marksans Pharma Ltd.,,Pharmaceuticals and Biotechnology,2.25,equity
+100807,Metropolis Healthcare Limited,,Healthcare Services,1.47,equity
+100807,Pfizer Limited,,,0.93,equity
+100807,Sanofi Consumer Healthcare India Limited,,Pharmaceuticals and Biotechnology,0.67,equity
+100807,Sequent Scientific Limited,,Pharmaceuticals and Biotechnology,1.39,equity
+100807,Suven Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,2.79,equity
+100807,Syngene International Limited,,Healthcare Services,0.42,equity
+100807,Windlas Biotech Limited,,,1.42,equity
+120782,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,4.81,equity
+120782,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,1.8,equity
+120782,Cipla Limited,,Pharmaceuticals and Biotechnology,1.41,equity
+120782,Divis Laboratories Limited,,,6.15,equity
+120782,Dr. Lal Pathlabs Limited,,Healthcare Services,1.67,equity
+120782,Fortis Healthcare Limited.,,Healthcare Services,2.02,equity
+120782,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,4.06,equity
+120782,Global Health Limited,,Healthcare Services,2.96,equity
+120782,Ipca Laboratories Limited,,,2.81,equity
+120782,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,2.09,equity
+120782,Max Healthcare Institute Limited,,Healthcare Services,2.8,equity
+120782,Manipal Health Enterprises Ltd. A**,,,1.05,equity
+120782,Orchid Pharma Limited,,,0.71,equity
+120782,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,7.62,equity
+120782,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,1.26,equity
+120782,Aarti Pharmalabs Limited,,Pharmaceuticals and Biotechnology,1.0,equity
+120782,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.03,equity
+120782,Aster Dm Healthcare Limited,,,1.76,equity
+120782,Aurobindo Pharma Limited,,,2.07,equity
+120782,Biocon Limited,,,1.62,equity
+120782,Lupin Limited,,Pharmaceuticals and Biotechnology,2.89,equity
+120782,Laxmi Dental Limited,,Healthcare Equipment and Supplies,1.08,equity
+120782,Procter & Gamble Health Limited,,,1.95,equity
+120782,Rainbow Childrens Medicare Limited,,Healthcare Services,2.21,equity
+120782,Sudeep Pharma Limited,,,1.28,equity
+120782,Vijaya Diagnostic Centre Limited,,Healthcare Services,1.33,equity
+120782,Alembic Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,1.4,equity
+120782,Alkem Laboratories Limited,,Pharmaceuticals and Biotechnology,3.7,equity
+120782,Blue Jet Healthcare Private Limited,,Pharmaceuticals and Biotechnology,1.41,equity
+120782,Caplin Point Laboratories Limited,,Pharmaceuticals and Biotechnology,3.02,equity
+120782,Dr. Reddys Laboratories Ltd,,,5.24,equity
+120782,Emcure Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,0.2,equity
+120782,Eris Lifesciences Limited,,Pharmaceuticals and Biotechnology,1.13,equity
+120782,Glenmark Pharmaceuticals Limited,,,2.12,equity
+120782,Indegene Limited,,,0.5,equity
+120782,Jubilant Pharmova Limited,,,0.65,equity
+120782,Marksans Pharma Ltd.,,Pharmaceuticals and Biotechnology,2.25,equity
+120782,Metropolis Healthcare Limited,,Healthcare Services,1.47,equity
+120782,Pfizer Limited,,,0.93,equity
+120782,Sanofi Consumer Healthcare India Limited,,Pharmaceuticals and Biotechnology,0.67,equity
+120782,Sequent Scientific Limited,,Pharmaceuticals and Biotechnology,1.39,equity
+120782,Suven Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,2.79,equity
+120782,Syngene International Limited,,Healthcare Services,0.42,equity
+120782,Windlas Biotech Limited,,,1.42,equity
+152348,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,2.01,equity
+152348,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,1.57,equity
+152348,Cipla Limited,,Pharmaceuticals and Biotechnology,3.68,equity
+152348,Divis Laboratories Limited,,,8.36,equity
+152348,Dr. Lal Pathlabs Limited,,Healthcare Services,2.35,equity
+152348,Fortis Healthcare Limited.,,Healthcare Services,1.36,equity
+152348,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,0.93,equity
+152348,Global Health Limited,,Healthcare Services,1.82,equity
+152348,Ipca Laboratories Limited,,,2.88,equity
+152348,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,0.73,equity
+152348,Max Healthcare Institute Limited,,Healthcare Services,1.84,equity
+152348,Manipal Health Enterprises Ltd. A**,,,0.52,equity
+152348,Orchid Pharma Limited,,,0.41,equity
+152348,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,7.11,equity
+152348,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,3.28,equity
+152348,Aarti Pharmalabs Limited,,Pharmaceuticals and Biotechnology,1.2,equity
+152348,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.75,equity
+152348,Aurobindo Pharma Limited,,,2.09,equity
+152348,Biocon Limited,,,0.42,equity
+152348,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,1.85,equity
+152348,Laxmi Dental Limited,,Healthcare Equipment and Supplies,0.23,equity
+152348,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,1.2,equity
+152348,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,1.15,equity
+152348,Navin Fluorine International Ltd,,Chemicals and Petrochemicals,1.41,equity
+152348,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,2.6,equity
+152348,Procter & Gamble Health Limited,,,1.18,equity
+152348,Rainbow Childrens Medicare Limited,,Healthcare Services,1.15,equity
+152348,Sudeep Pharma Limited,,,0.46,equity
+152348,Torrent Pharmaceuticals Limited,,,6.26,equity
+152348,Vijaya Diagnostic Centre Limited,,Healthcare Services,1.56,equity
+152348,Zydus Lifesciences Limited,,,2.81,equity
+152348,Aether Industries Limited,,Chemicals and Petrochemicals,1.05,equity
+152348,Ami Organics Limited,,Pharmaceuticals and Biotechnology,1.45,equity
+152348,Bharat Parenterals Limited,,,0.1,equity
+152348,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,2.34,equity
+152348,Innova Captab Limited,,Pharmaceuticals and Biotechnology,0.63,equity
+152348,Kovai Medical Center & Hospital Limited,,Healthcare Services,0.95,equity
+152348,Laurus Labs Limited,,Pharmaceuticals and Biotechnology,3.91,equity
+152348,Narayana Hrudayalaya Limited,,Healthcare Services,1.61,equity
+152348,Novartis India Limited,,Pharmaceuticals and Biotechnology,0.24,equity
+152348,Nephrocare Health Services Ltd,,Healthcare Services,0.57,equity
+152348,Piramal Pharma Limited,,Pharmaceuticals and Biotechnology,1.06,equity
+152348,Senores Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,0.8,equity
+152348,Stelis Biopharma Limited,,,1.55,equity
+152348,Supriya Lifescience Limited,,Pharmaceuticals and Biotechnology,0.69,equity
+152348,Shaily Engineering Plastics Limited,,CONSUMER DURABLES,1.84,equity
+152348,Tatva Chintan Pharma Chem Limited,,Chemicals and Petrochemicals,0.42,equity
+152348,Thyrocare Technologies Limited,,Healthcare Services,2.27,equity
+152348,Vimta Labs Limited,,,0.67,equity
+152348,Zota Health Care Limited,,,0.4,equity
+152349,Ajanta Pharma Limited,,Pharmaceuticals and Biotechnology,2.01,equity
+152349,Anthem Biosciences Private Limited,,Pharmaceuticals and Biotechnology,1.57,equity
+152349,Cipla Limited,,Pharmaceuticals and Biotechnology,3.68,equity
+152349,Divis Laboratories Limited,,,8.36,equity
+152349,Dr. Lal Pathlabs Limited,,Healthcare Services,2.35,equity
+152349,Fortis Healthcare Limited.,,Healthcare Services,1.36,equity
+152349,Gland Pharma Limited,,Pharmaceuticals and Biotechnology,0.93,equity
+152349,Global Health Limited,,Healthcare Services,1.82,equity
+152349,Ipca Laboratories Limited,,,2.88,equity
+152349,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,0.73,equity
+152349,Max Healthcare Institute Limited,,Healthcare Services,1.84,equity
+152349,Manipal Health Enterprises Ltd. A**,,,0.52,equity
+152349,Orchid Pharma Limited,,,0.41,equity
+152349,Sun Pharmaceutical Industries Ltd.,,Pharmaceuticals and Biotechnology,7.11,equity
+152349,Sai Life Sciences Limited,,Pharmaceuticals and Biotechnology,3.28,equity
+152349,Aarti Pharmalabs Limited,,Pharmaceuticals and Biotechnology,1.2,equity
+152349,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.75,equity
+152349,Aurobindo Pharma Limited,,,2.09,equity
+152349,Biocon Limited,,,0.42,equity
+152349,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,1.85,equity
+152349,Laxmi Dental Limited,,Healthcare Equipment and Supplies,0.23,equity
+152349,Mankind Pharma Limited,,Pharmaceuticals and Biotechnology,1.2,equity
+152349,Molbio Diagnostics Limited,,Healthcare Equipment and Supplies,1.15,equity
+152349,Navin Fluorine International Ltd,,Chemicals and Petrochemicals,1.41,equity
+152349,Neuland Laboratories Limited,,Pharmaceuticals and Biotechnology,2.6,equity
+152349,Procter & Gamble Health Limited,,,1.18,equity
+152349,Rainbow Childrens Medicare Limited,,Healthcare Services,1.15,equity
+152349,Sudeep Pharma Limited,,,0.46,equity
+152349,Torrent Pharmaceuticals Limited,,,6.26,equity
+152349,Vijaya Diagnostic Centre Limited,,Healthcare Services,1.56,equity
+152349,Zydus Lifesciences Limited,,,2.81,equity
+152349,Aether Industries Limited,,Chemicals and Petrochemicals,1.05,equity
+152349,Ami Organics Limited,,Pharmaceuticals and Biotechnology,1.45,equity
+152349,Bharat Parenterals Limited,,,0.1,equity
+152349,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,2.34,equity
+152349,Innova Captab Limited,,Pharmaceuticals and Biotechnology,0.63,equity
+152349,Kovai Medical Center & Hospital Limited,,Healthcare Services,0.95,equity
+152349,Laurus Labs Limited,,Pharmaceuticals and Biotechnology,3.91,equity
+152349,Narayana Hrudayalaya Limited,,Healthcare Services,1.61,equity
+152349,Novartis India Limited,,Pharmaceuticals and Biotechnology,0.24,equity
+152349,Nephrocare Health Services Ltd,,Healthcare Services,0.57,equity
+152349,Piramal Pharma Limited,,Pharmaceuticals and Biotechnology,1.06,equity
+152349,Senores Pharmaceuticals Limited,,Pharmaceuticals and Biotechnology,0.8,equity
+152349,Stelis Biopharma Limited,,,1.55,equity
+152349,Supriya Lifescience Limited,,Pharmaceuticals and Biotechnology,0.69,equity
+152349,Shaily Engineering Plastics Limited,,CONSUMER DURABLES,1.84,equity
+152349,Tatva Chintan Pharma Chem Limited,,Chemicals and Petrochemicals,0.42,equity
+152349,Thyrocare Technologies Limited,,Healthcare Services,2.27,equity
+152349,Vimta Labs Limited,,,0.67,equity
+152349,Zota Health Care Limited,,,0.4,equity
+152437,Bharti Airtel Limited,,,8.64,equity
+152437,Coforge Limited,,IT - Software,3.63,equity
+152437,Infosys Limited,,,6.19,equity
+152437,Pb Fintech Limited,,Financial Technology (Fintech),1.5,equity
+152437,Persistent Systems Ltd,,,3.67,equity
+152437,Tech Mahindra Limited,,IT - Software,5.61,equity
+152437,Zomato Limited,,Retailing,3.5,equity
+152437,Firstsource Solutions Limited,,Commercial Services and Supplies,1.87,equity
+152437,Mphasis Limited,,,4.52,equity
+152437,Tata Consultancy Services Limited,,IT - Software,1.35,equity
+152437,Hcl Technologies Limited,,,3.59,equity
+152437,Indus Towers Limited,,,0.69,equity
+152437,Sagility India Private Limited,,IT - Services,0.99,equity
+152437,Zensar Technologies Limited,,IT - Software,1.08,equity
+152437,Dixon Technologies (India) Limited,,CONSUMER DURABLES,1.21,equity
+152437,Inventurus Knowledge Solutions Limited,,IT - Services,0.95,equity
+152437,Kpit Technologies Limited,,,0.25,equity
+152437,Netweb Technologies India Limited,,IT - Services,0.76,equity
+152437,Oracle Financial Services Software Limited,,IT - Software,1.43,equity
+152437,Tbo Tek Limited,,Leisure Services,0.73,equity
+152437,Abb India Limited,,Electrical Equipment,0.59,equity
+152437,Ather Energy Private Limited,,Automobiles,5.97,equity
+152437,Birlasoft Limited New,,,0.68,equity
+152437,Data Patterns (India) Limited,,Aerospace and Defense,1.47,equity
+152437,Home First Finance Company India Limited,,Finance,1.19,equity
+152437,Jsw Energy Limited,,Power,1.33,equity
+152437,Larsen And Toubro Limited,,,1.11,equity
+152437,Ltimindtree Limited,,IT - Software,3.15,equity
+152437,Sona Blw Precision Forgings Limited,,,1.4,equity
+152437,Team Lease Services Limited,,Commercial Services and Supplies,0.43,equity
+152437,Tml Commercial Vehicles Ltd.,,"Agricultural, Commercial and Construction Vehicles",0.19,equity
+152439,Bharti Airtel Limited,,,8.64,equity
+152439,Coforge Limited,,IT - Software,3.63,equity
+152439,Infosys Limited,,,6.19,equity
+152439,Pb Fintech Limited,,Financial Technology (Fintech),1.5,equity
+152439,Persistent Systems Ltd,,,3.67,equity
+152439,Tech Mahindra Limited,,IT - Software,5.61,equity
+152439,Zomato Limited,,Retailing,3.5,equity
+152439,Firstsource Solutions Limited,,Commercial Services and Supplies,1.87,equity
+152439,Mphasis Limited,,,4.52,equity
+152439,Tata Consultancy Services Limited,,IT - Software,1.35,equity
+152439,Hcl Technologies Limited,,,3.59,equity
+152439,Indus Towers Limited,,,0.69,equity
+152439,Sagility India Private Limited,,IT - Services,0.99,equity
+152439,Zensar Technologies Limited,,IT - Software,1.08,equity
+152439,Dixon Technologies (India) Limited,,CONSUMER DURABLES,1.21,equity
+152439,Inventurus Knowledge Solutions Limited,,IT - Services,0.95,equity
+152439,Kpit Technologies Limited,,,0.25,equity
+152439,Netweb Technologies India Limited,,IT - Services,0.76,equity
+152439,Oracle Financial Services Software Limited,,IT - Software,1.43,equity
+152439,Tbo Tek Limited,,Leisure Services,0.73,equity
+152439,Abb India Limited,,Electrical Equipment,0.59,equity
+152439,Ather Energy Private Limited,,Automobiles,5.97,equity
+152439,Birlasoft Limited New,,,0.68,equity
+152439,Data Patterns (India) Limited,,Aerospace and Defense,1.47,equity
+152439,Home First Finance Company India Limited,,Finance,1.19,equity
+152439,Jsw Energy Limited,,Power,1.33,equity
+152439,Larsen And Toubro Limited,,,1.11,equity
+152439,Ltimindtree Limited,,IT - Software,3.15,equity
+152439,Sona Blw Precision Forgings Limited,,,1.4,equity
+152439,Team Lease Services Limited,,Commercial Services and Supplies,0.43,equity
+152439,Tml Commercial Vehicles Ltd.,,"Agricultural, Commercial and Construction Vehicles",0.19,equity
+152058,Bharti Airtel Limited,,,13.74,equity
+152058,Coforge Limited,,IT - Software,4.56,equity
+152058,Infosys Limited,,,11.14,equity
+152058,Pb Fintech Limited,,Financial Technology (Fintech),0.87,equity
+152058,Persistent Systems Ltd,,,1.07,equity
+152058,Tech Mahindra Limited,,IT - Software,5.12,equity
+152058,Zomato Limited,,Retailing,3.94,equity
+152058,Firstsource Solutions Limited,,Commercial Services and Supplies,4.3,equity
+152058,Mphasis Limited,,,5.03,equity
+152058,Tata Consultancy Services Limited,,IT - Software,9.16,equity
+152058,Eclerx Services Limited,,Commercial Services and Supplies,3.06,equity
+152058,Hcl Technologies Limited,,,7.6,equity
+152058,Indus Towers Limited,,,1.32,equity
+152058,Sagility India Private Limited,,IT - Services,2.5,equity
+152058,Zensar Technologies Limited,,IT - Software,3.12,equity
+152058,Bharti Hexacom Limited,,TELECOM - SERVICES,1.12,equity
+152058,Eq - Info-Edge (India) Ltd.,,,4.64,equity
+152058,Hexaware Technologies Limited,,,3.54,equity
+152058,Sonata Software Limited,,,2.54,equity
+152058,Tata Communications Limited,,,1.42,equity
+152058,Amagi Media Labs Private Limited,,IT - Services,2.55,equity
+152058,Brainbees Solutions Private Limited,,Retailing,1.03,equity
+152058,Moneyview Limited,,,1.46,equity
+152058,Pvr Limited,,Entertainment,0.5,equity
+152058,Redington Limited,,,0.92,equity
+152058,Shiprocket Limited,,Transport Services,1.81,equity
+152058,Unicommerce Esolutions Limited,,,0.44,equity
+152059,Bharti Airtel Limited,,,13.74,equity
+152059,Coforge Limited,,IT - Software,4.56,equity
+152059,Infosys Limited,,,11.14,equity
+152059,Pb Fintech Limited,,Financial Technology (Fintech),0.87,equity
+152059,Persistent Systems Ltd,,,1.07,equity
+152059,Tech Mahindra Limited,,IT - Software,5.12,equity
+152059,Zomato Limited,,Retailing,3.94,equity
+152059,Firstsource Solutions Limited,,Commercial Services and Supplies,4.3,equity
+152059,Mphasis Limited,,,5.03,equity
+152059,Tata Consultancy Services Limited,,IT - Software,9.16,equity
+152059,Eclerx Services Limited,,Commercial Services and Supplies,3.06,equity
+152059,Hcl Technologies Limited,,,7.6,equity
+152059,Indus Towers Limited,,,1.32,equity
+152059,Sagility India Private Limited,,IT - Services,2.5,equity
+152059,Zensar Technologies Limited,,IT - Software,3.12,equity
+152059,Bharti Hexacom Limited,,TELECOM - SERVICES,1.12,equity
+152059,Eq - Info-Edge (India) Ltd.,,,4.64,equity
+152059,Hexaware Technologies Limited,,,3.54,equity
+152059,Sonata Software Limited,,,2.54,equity
+152059,Tata Communications Limited,,,1.42,equity
+152059,Amagi Media Labs Private Limited,,IT - Services,2.55,equity
+152059,Brainbees Solutions Private Limited,,Retailing,1.03,equity
+152059,Moneyview Limited,,,1.46,equity
+152059,Pvr Limited,,Entertainment,0.5,equity
+152059,Redington Limited,,,0.92,equity
+152059,Shiprocket Limited,,Transport Services,1.81,equity
+152059,Unicommerce Esolutions Limited,,,0.44,equity
+152863,Bharti Airtel Limited,,,5.32,equity
+152863,Coforge Limited,,IT - Software,7.96,equity
+152863,Infosys Limited,,,8.84,equity
+152863,Pb Fintech Limited,,Financial Technology (Fintech),1.64,equity
+152863,Persistent Systems Ltd,,,7.05,equity
+152863,Tech Mahindra Limited,,IT - Software,7.71,equity
+152863,Zomato Limited,,Retailing,6.05,equity
+152863,Firstsource Solutions Limited,,Commercial Services and Supplies,2.78,equity
+152863,Mphasis Limited,,,3.48,equity
+152863,Eclerx Services Limited,,Commercial Services and Supplies,1.18,equity
+152863,Fsn E-Commerce Ventures Limited,,Retailing,4.01,equity
+152863,Zensar Technologies Limited,,IT - Software,0.94,equity
+152863,Affle (India) Limited,,IT - Services,1.75,equity
+152863,Bse Limited,,Capital Markets,3.18,equity
+152863,Dixon Technologies (India) Limited,,CONSUMER DURABLES,2.46,equity
+152863,Fractal Analytics Private Limited,,IT - Software,1.3,equity
+152863,Hexaware Technologies Limited,,,3.21,equity
+152863,Kpit Technologies Limited,,,0.99,equity
+152863,L&T Technology Services Limited,,IT - Services,1.68,equity
+152863,Multi Commodity Exchange Of India L,,,4.37,equity
+152863,Netweb Technologies India Limited,,IT - Services,3.75,equity
+152863,Sonata Software Limited,,,1.17,equity
+152863,Fashnear Technologies Private Limited,,,4.68,equity
+152863,Hitachi Energy India Limited,,Electrical Equipment,2.71,equity
+152863,Indegene Limited,,,3.03,equity
+152863,Physicswallah Private Limited,,Other Consumer Services,1.79,equity
+152863,Sedemac Mechatronics Ltd.,,Auto Components,2.95,equity
+152863,Swiggy Pvt Ltd,,Retailing,2.44,equity
+152862,Bharti Airtel Limited,,,5.32,equity
+152862,Coforge Limited,,IT - Software,7.96,equity
+152862,Infosys Limited,,,8.84,equity
+152862,Pb Fintech Limited,,Financial Technology (Fintech),1.64,equity
+152862,Persistent Systems Ltd,,,7.05,equity
+152862,Tech Mahindra Limited,,IT - Software,7.71,equity
+152862,Zomato Limited,,Retailing,6.05,equity
+152862,Firstsource Solutions Limited,,Commercial Services and Supplies,2.78,equity
+152862,Mphasis Limited,,,3.48,equity
+152862,Eclerx Services Limited,,Commercial Services and Supplies,1.18,equity
+152862,Fsn E-Commerce Ventures Limited,,Retailing,4.01,equity
+152862,Zensar Technologies Limited,,IT - Software,0.94,equity
+152862,Affle (India) Limited,,IT - Services,1.75,equity
+152862,Bse Limited,,Capital Markets,3.18,equity
+152862,Dixon Technologies (India) Limited,,CONSUMER DURABLES,2.46,equity
+152862,Fractal Analytics Private Limited,,IT - Software,1.3,equity
+152862,Hexaware Technologies Limited,,,3.21,equity
+152862,Kpit Technologies Limited,,,0.99,equity
+152862,L&T Technology Services Limited,,IT - Services,1.68,equity
+152862,Multi Commodity Exchange Of India L,,,4.37,equity
+152862,Netweb Technologies India Limited,,IT - Services,3.75,equity
+152862,Sonata Software Limited,,,1.17,equity
+152862,Fashnear Technologies Private Limited,,,4.68,equity
+152862,Hitachi Energy India Limited,,Electrical Equipment,2.71,equity
+152862,Indegene Limited,,,3.03,equity
+152862,Physicswallah Private Limited,,Other Consumer Services,1.79,equity
+152862,Sedemac Mechatronics Ltd.,,Auto Components,2.95,equity
+152862,Swiggy Pvt Ltd,,Retailing,2.44,equity
+154247,Bharti Airtel Limited,,,9.04,equity
+154247,Coforge Limited,,IT - Software,3.01,equity
+154247,Infosys Limited,,,7.38,equity
+154247,Pb Fintech Limited,,Financial Technology (Fintech),1.3,equity
+154247,Persistent Systems Ltd,,,6.48,equity
+154247,Tech Mahindra Limited,,IT - Software,5.1,equity
+154247,Zomato Limited,,Retailing,5.51,equity
+154247,Mphasis Limited,,,2.87,equity
+154247,Tata Consultancy Services Limited,,IT - Software,4.79,equity
+154247,Fsn E-Commerce Ventures Limited,,Retailing,2.23,equity
+154247,Indus Towers Limited,,,1.65,equity
+154247,Affle (India) Limited,,IT - Services,2.36,equity
+154247,Bse Limited,,Capital Markets,2.55,equity
+154247,Cartrade Tech Limited,,Retailing,1.51,equity
+154247,L&T Technology Services Limited,,IT - Services,1.23,equity
+154247,Lenskart Solutions Private Limited,,Retailing,2.44,equity
+154247,Multi Commodity Exchange Of India L,,,3.63,equity
+154247,Tata Communications Limited,,,3.63,equity
+154247,Apar Industries Limited,,Electrical Equipment,2.17,equity
+154247,Cummins India Limited,,Industrial Products,1.63,equity
+154247,Delhivery Limited,,,2.73,equity
+154247,Ge T&D India Limited,,Electrical Equipment,1.56,equity
+154247,Lg Electronics India Ltd.,,,2.11,equity
+154247,National Stock Exchange Of India Ltd,,Capital Markets,0.43,equity
+154247,One 97 Communications Limited,,Financial Technology (Fintech),1.31,equity
+154247,Polycab India Limited,,Industrial Products,0.8,equity
+154247,Rategain Travel Technologies Limited,,IT - Software,3.98,equity
+154247,Schneider Electric Infrastructure Limited,,Electrical Equipment,1.49,equity
+154247,Siemens Energy India Limited,,Electrical Equipment,1.21,equity
+154247,Techno Electric & Engineering Company Limited,,Construction,1.43,equity
+154244,Bharti Airtel Limited,,,9.04,equity
+154244,Coforge Limited,,IT - Software,3.01,equity
+154244,Infosys Limited,,,7.38,equity
+154244,Pb Fintech Limited,,Financial Technology (Fintech),1.3,equity
+154244,Persistent Systems Ltd,,,6.48,equity
+154244,Tech Mahindra Limited,,IT - Software,5.1,equity
+154244,Zomato Limited,,Retailing,5.51,equity
+154244,Mphasis Limited,,,2.87,equity
+154244,Tata Consultancy Services Limited,,IT - Software,4.79,equity
+154244,Fsn E-Commerce Ventures Limited,,Retailing,2.23,equity
+154244,Indus Towers Limited,,,1.65,equity
+154244,Affle (India) Limited,,IT - Services,2.36,equity
+154244,Bse Limited,,Capital Markets,2.55,equity
+154244,Cartrade Tech Limited,,Retailing,1.51,equity
+154244,L&T Technology Services Limited,,IT - Services,1.23,equity
+154244,Lenskart Solutions Private Limited,,Retailing,2.44,equity
+154244,Multi Commodity Exchange Of India L,,,3.63,equity
+154244,Tata Communications Limited,,,3.63,equity
+154244,Apar Industries Limited,,Electrical Equipment,2.17,equity
+154244,Cummins India Limited,,Industrial Products,1.63,equity
+154244,Delhivery Limited,,,2.73,equity
+154244,Ge T&D India Limited,,Electrical Equipment,1.56,equity
+154244,Lg Electronics India Ltd.,,,2.11,equity
+154244,National Stock Exchange Of India Ltd,,Capital Markets,0.43,equity
+154244,One 97 Communications Limited,,Financial Technology (Fintech),1.31,equity
+154244,Polycab India Limited,,Industrial Products,0.8,equity
+154244,Rategain Travel Technologies Limited,,IT - Software,3.98,equity
+154244,Schneider Electric Infrastructure Limited,,Electrical Equipment,1.49,equity
+154244,Siemens Energy India Limited,,Electrical Equipment,1.21,equity
+154244,Techno Electric & Engineering Company Limited,,Construction,1.43,equity
+152914,Bharti Airtel Limited,,,17.84,equity
+152914,Coforge Limited,,IT - Software,6.15,equity
+152914,Infosys Limited,,,3.95,equity
+152914,Pb Fintech Limited,,Financial Technology (Fintech),0.25,equity
+152914,Persistent Systems Ltd,,,6.13,equity
+152914,Tech Mahindra Limited,,IT - Software,6.14,equity
+152914,Zomato Limited,,Retailing,8.24,equity
+152914,Firstsource Solutions Limited,,Commercial Services and Supplies,2.72,equity
+152914,Tata Consultancy Services Limited,,IT - Software,2.86,equity
+152914,Eclerx Services Limited,,Commercial Services and Supplies,3.31,equity
+152914,Fsn E-Commerce Ventures Limited,,Retailing,2.26,equity
+152914,Hcl Technologies Limited,,,2.21,equity
+152914,Sagility India Private Limited,,IT - Services,2.6,equity
+152914,Bharti Hexacom Limited,,TELECOM - SERVICES,1.55,equity
+152914,Cartrade Tech Limited,,Retailing,1.98,equity
+152914,Eq - Info-Edge (India) Ltd.,,,4.25,equity
+152914,Fractal Analytics Private Limited,,IT - Software,2.56,equity
+152914,Inventurus Knowledge Solutions Limited,,IT - Services,0.8,equity
+152914,Lenskart Solutions Private Limited,,Retailing,2.29,equity
+152914,Oracle Financial Services Software Limited,,IT - Software,0.19,equity
+152914,Tbo Tek Limited,,Leisure Services,1.73,equity
+152914,Billionbrains Garage Ventures Ltd.,,Capital Markets,1.82,equity
+152914,Honasa Consumer Limited,,Personal Products,1.86,equity
+152914,Intellect Design Arena Limited,,,1.81,equity
+152914,Krn Heat Exchanger And Refrigeration Limited,,Industrial Products,2.07,equity
+152914,Latent View Analytics Limited,,IT - Software,0.78,equity
+152914,Le Travenues Technology Limited,,Leisure Services,0.14,equity
+152914,Mastek Limited,,IT - Software,0.8,equity
+152914,Newgen Software Technologies Ltd.,,,1.1,equity
+152914,Tips Industries Limited,,Entertainment,0.51,equity
+152914,Urbanclap Technologies India Private Limited,,,0.01,equity
+152915,Bharti Airtel Limited,,,17.84,equity
+152915,Coforge Limited,,IT - Software,6.15,equity
+152915,Infosys Limited,,,3.95,equity
+152915,Pb Fintech Limited,,Financial Technology (Fintech),0.25,equity
+152915,Persistent Systems Ltd,,,6.13,equity
+152915,Tech Mahindra Limited,,IT - Software,6.14,equity
+152915,Zomato Limited,,Retailing,8.24,equity
+152915,Firstsource Solutions Limited,,Commercial Services and Supplies,2.72,equity
+152915,Tata Consultancy Services Limited,,IT - Software,2.86,equity
+152915,Eclerx Services Limited,,Commercial Services and Supplies,3.31,equity
+152915,Fsn E-Commerce Ventures Limited,,Retailing,2.26,equity
+152915,Hcl Technologies Limited,,,2.21,equity
+152915,Sagility India Private Limited,,IT - Services,2.6,equity
+152915,Bharti Hexacom Limited,,TELECOM - SERVICES,1.55,equity
+152915,Cartrade Tech Limited,,Retailing,1.98,equity
+152915,Eq - Info-Edge (India) Ltd.,,,4.25,equity
+152915,Fractal Analytics Private Limited,,IT - Software,2.56,equity
+152915,Inventurus Knowledge Solutions Limited,,IT - Services,0.8,equity
+152915,Lenskart Solutions Private Limited,,Retailing,2.29,equity
+152915,Oracle Financial Services Software Limited,,IT - Software,0.19,equity
+152915,Tbo Tek Limited,,Leisure Services,1.73,equity
+152915,Billionbrains Garage Ventures Ltd.,,Capital Markets,1.82,equity
+152915,Honasa Consumer Limited,,Personal Products,1.86,equity
+152915,Intellect Design Arena Limited,,,1.81,equity
+152915,Krn Heat Exchanger And Refrigeration Limited,,Industrial Products,2.07,equity
+152915,Latent View Analytics Limited,,IT - Software,0.78,equity
+152915,Le Travenues Technology Limited,,Leisure Services,0.14,equity
+152915,Mastek Limited,,IT - Software,0.8,equity
+152915,Newgen Software Technologies Ltd.,,,1.1,equity
+152915,Tips Industries Limited,,Entertainment,0.51,equity
+152915,Urbanclap Technologies India Private Limited,,,0.01,equity
+118273,Bharti Airtel Limited,,,6.05,equity
+118273,Mahindra And Mahindra Limited,,Automobiles,5.01,equity
+118273,Titan Company Limited,,CONSUMER DURABLES,3.01,equity
+118273,Trent Limited,,Retailing,2.21,equity
+118273,Zomato Limited,,Retailing,8.03,equity
+118273,Britannia Industries Limited,,Food Products,3.57,equity
+118273,Maruti Suzuki India Limited,,Automobiles,4.12,equity
+118273,Metro Brands Limited,,CONSUMER DURABLES,0.94,equity
+118273,Tvs Motor Company Limited,,Automobiles,1.21,equity
+118273,Varun Beverages Ltd,,,3.0,equity
+118273,Asian Paints Limited,,CONSUMER DURABLES,1.92,equity
+118273,Bajaj Auto Limited,,Automobiles,2.17,equity
+118273,Fsn E-Commerce Ventures Limited,,Retailing,0.96,equity
+118273,Interglobe Aviation Limited,,Transport Services,1.89,equity
+118273,Itc Limited,,,1.58,equity
+118273,Jubilant Foodworks Limited,,Leisure Services,1.9,equity
+118273,United Spirits Limited,,Beverages,2.24,equity
+118273,Vishal Mega Mart Private Limited,,Retailing,1.46,equity
+118273,Eq - Info-Edge (India) Ltd.,,,1.88,equity
+118273,Lenskart Solutions Private Limited,,Retailing,3.48,equity
+118273,Samvardhana Motherson International Limited,,,3.52,equity
+118273,Shoppers Stop Limited,,Retailing,0.49,equity
+118273,The Indian Hotels Company Limited,,Leisure Services,2.28,equity
+118273,Vedant Fashions Limited,,Retailing,0.5,equity
+118273,Voltas Limited,,CONSUMER DURABLES,1.4,equity
+118273,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,1.13,equity
+118273,Angel One Limited,,Capital Markets,1.54,equity
+118273,Bse Limited,,Capital Markets,1.68,equity
+118273,Bajaj Finance Limited,,Finance,4.25,equity
+118273,Cholamandalam Financial Holdings Limited,,Finance,1.71,equity
+118273,Crompton Greaves Consumer Electricals Limited,,CONSUMER DURABLES,1.42,equity
+118273,Eih Limited,,Leisure Services,1.13,equity
+118273,Hdfc Bank Limited,,,4.82,equity
+118273,Icici Bank Limited,,,2.79,equity
+118273,Icici Lombard Gen Insurance Co Ltd,,,0.42,equity
+118273,Jyothy Labs Limited,,Household Products,0.87,equity
+118273,Kansai Nerolac Paints Limited,,CONSUMER DURABLES,0.71,equity
+118273,Kei Industries Limited New,,,1.14,equity
+118273,Max Financial Services Limited,,Insurance,1.56,equity
+118273,Mrs. Bectors Food Specialities Limited,,Food Products,1.24,equity
+118273,One 97 Communications Limited,,Financial Technology (Fintech),0.22,equity
+118273,Pnb Housing Finance Ltd,,Finance,1.79,equity
+118273,Pvr Limited,,Entertainment,1.84,equity
+118273,Sun Tv Network Limited,,,1.32,equity
+112152,Bharti Airtel Limited,,,6.05,equity
+112152,Mahindra And Mahindra Limited,,Automobiles,5.01,equity
+112152,Titan Company Limited,,CONSUMER DURABLES,3.01,equity
+112152,Trent Limited,,Retailing,2.21,equity
+112152,Zomato Limited,,Retailing,8.03,equity
+112152,Britannia Industries Limited,,Food Products,3.57,equity
+112152,Maruti Suzuki India Limited,,Automobiles,4.12,equity
+112152,Metro Brands Limited,,CONSUMER DURABLES,0.94,equity
+112152,Tvs Motor Company Limited,,Automobiles,1.21,equity
+112152,Varun Beverages Ltd,,,3.0,equity
+112152,Asian Paints Limited,,CONSUMER DURABLES,1.92,equity
+112152,Bajaj Auto Limited,,Automobiles,2.17,equity
+112152,Fsn E-Commerce Ventures Limited,,Retailing,0.96,equity
+112152,Interglobe Aviation Limited,,Transport Services,1.89,equity
+112152,Itc Limited,,,1.58,equity
+112152,Jubilant Foodworks Limited,,Leisure Services,1.9,equity
+112152,United Spirits Limited,,Beverages,2.24,equity
+112152,Vishal Mega Mart Private Limited,,Retailing,1.46,equity
+112152,Eq - Info-Edge (India) Ltd.,,,1.88,equity
+112152,Lenskart Solutions Private Limited,,Retailing,3.48,equity
+112152,Samvardhana Motherson International Limited,,,3.52,equity
+112152,Shoppers Stop Limited,,Retailing,0.49,equity
+112152,The Indian Hotels Company Limited,,Leisure Services,2.28,equity
+112152,Vedant Fashions Limited,,Retailing,0.5,equity
+112152,Voltas Limited,,CONSUMER DURABLES,1.4,equity
+112152,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,1.13,equity
+112152,Angel One Limited,,Capital Markets,1.54,equity
+112152,Bse Limited,,Capital Markets,1.68,equity
+112152,Bajaj Finance Limited,,Finance,4.25,equity
+112152,Cholamandalam Financial Holdings Limited,,Finance,1.71,equity
+112152,Crompton Greaves Consumer Electricals Limited,,CONSUMER DURABLES,1.42,equity
+112152,Eih Limited,,Leisure Services,1.13,equity
+112152,Hdfc Bank Limited,,,4.82,equity
+112152,Icici Bank Limited,,,2.79,equity
+112152,Icici Lombard Gen Insurance Co Ltd,,,0.42,equity
+112152,Jyothy Labs Limited,,Household Products,0.87,equity
+112152,Kansai Nerolac Paints Limited,,CONSUMER DURABLES,0.71,equity
+112152,Kei Industries Limited New,,,1.14,equity
+112152,Max Financial Services Limited,,Insurance,1.56,equity
+112152,Mrs. Bectors Food Specialities Limited,,Food Products,1.24,equity
+112152,One 97 Communications Limited,,Financial Technology (Fintech),0.22,equity
+112152,Pnb Housing Finance Ltd,,Finance,1.79,equity
+112152,Pvr Limited,,Entertainment,1.84,equity
+112152,Sun Tv Network Limited,,,1.32,equity
+153214,Bharti Airtel Limited,,,5.85,equity
+153214,Mahindra And Mahindra Limited,,Automobiles,7.62,equity
+153214,Titan Company Limited,,CONSUMER DURABLES,5.83,equity
+153214,Trent Limited,,Retailing,1.08,equity
+153214,Zomato Limited,,Retailing,7.64,equity
+153214,Britannia Industries Limited,,Food Products,1.94,equity
+153214,Maruti Suzuki India Limited,,Automobiles,4.48,equity
+153214,Metro Brands Limited,,CONSUMER DURABLES,1.54,equity
+153214,Varun Beverages Ltd,,,1.64,equity
+153214,Asian Paints Limited,,CONSUMER DURABLES,3.31,equity
+153214,Ather Energy Private Limited,,Automobiles,1.85,equity
+153214,Bajaj Auto Limited,,Automobiles,2.02,equity
+153214,Devyani International Limited,,Leisure Services,0.58,equity
+153214,Eicher Motors Limited,,Automobiles,2.84,equity
+153214,Fashnear Technologies Private Limited,,,1.28,equity
+153214,Fsn E-Commerce Ventures Limited,,Retailing,1.05,equity
+153214,Itc Limited,,,3.51,equity
+153214,Jubilant Foodworks Limited,,Leisure Services,1.69,equity
+153214,Radico Khaitan Limited,,Beverages,2.2,equity
+153214,Tata Consumer Products Limited,,Agricultural Food & Other Products,2.24,equity
+153214,Vishal Mega Mart Private Limited,,Retailing,1.32,equity
+153214,Apollo Hospitals Enterprise Limited,,Healthcare Services,1.89,equity
+153214,Bikaji Foods International Limited,,,0.84,equity
+153214,Ceat Limited,,Auto Components,0.67,equity
+153214,Delhivery Limited,,,1.66,equity
+153214,Entero Healthcare Solutions Private Limited,,Retailing,1.1,equity
+153214,Hindustan Unilever Limited,,Diversified FMCG,3.87,equity
+153214,Lenskart Solutions Private Limited,,Retailing,2.46,equity
+153214,Lg Electronics India Ltd.,,,3.66,equity
+153214,Marico Limited New,,,1.98,equity
+153214,Nestle India Ltd,,Food Products,2.2,equity
+153214,Samvardhana Motherson International Limited,,,1.86,equity
+153214,Ss Retail Limited,,,0.75,equity
+153214,The Indian Hotels Company Limited,,Leisure Services,1.44,equity
+153214,Bharti Hexacom Limited,,TELECOM - SERVICES,0.96,equity
+153214,Century Plyboards India Limited,,CONSUMER DURABLES,1.71,equity
+153214,Epl Limited,,,1.29,equity
+153214,K.P.R. Mill Limited,,,0.88,equity
+153214,Page Industries Limited,,Textiles and Apparels,2.43,equity
+153214,Physicswallah Private Limited,,Other Consumer Services,0.25,equity
+153214,Pidilite Industries Limited,,Chemicals and Petrochemicals,2.26,equity
+153214,Shadowfax Technologies Private Limited,,Transport Services,1.43,equity
+153214,Shriram Pistons & Rings Limited,,Auto Components,0.91,equity
+153214,The Phoenix Mills Limited,,Realty,1.73,equity
+153255,Bharti Airtel Limited,,,5.85,equity
+153255,Mahindra And Mahindra Limited,,Automobiles,7.62,equity
+153255,Titan Company Limited,,CONSUMER DURABLES,5.83,equity
+153255,Trent Limited,,Retailing,1.08,equity
+153255,Zomato Limited,,Retailing,7.64,equity
+153255,Britannia Industries Limited,,Food Products,1.94,equity
+153255,Maruti Suzuki India Limited,,Automobiles,4.48,equity
+153255,Metro Brands Limited,,CONSUMER DURABLES,1.54,equity
+153255,Varun Beverages Ltd,,,1.64,equity
+153255,Asian Paints Limited,,CONSUMER DURABLES,3.31,equity
+153255,Ather Energy Private Limited,,Automobiles,1.85,equity
+153255,Bajaj Auto Limited,,Automobiles,2.02,equity
+153255,Devyani International Limited,,Leisure Services,0.58,equity
+153255,Eicher Motors Limited,,Automobiles,2.84,equity
+153255,Fashnear Technologies Private Limited,,,1.28,equity
+153255,Fsn E-Commerce Ventures Limited,,Retailing,1.05,equity
+153255,Itc Limited,,,3.51,equity
+153255,Jubilant Foodworks Limited,,Leisure Services,1.69,equity
+153255,Radico Khaitan Limited,,Beverages,2.2,equity
+153255,Tata Consumer Products Limited,,Agricultural Food & Other Products,2.24,equity
+153255,Vishal Mega Mart Private Limited,,Retailing,1.32,equity
+153255,Apollo Hospitals Enterprise Limited,,Healthcare Services,1.89,equity
+153255,Bikaji Foods International Limited,,,0.84,equity
+153255,Ceat Limited,,Auto Components,0.67,equity
+153255,Delhivery Limited,,,1.66,equity
+153255,Entero Healthcare Solutions Private Limited,,Retailing,1.1,equity
+153255,Hindustan Unilever Limited,,Diversified FMCG,3.87,equity
+153255,Lenskart Solutions Private Limited,,Retailing,2.46,equity
+153255,Lg Electronics India Ltd.,,,3.66,equity
+153255,Marico Limited New,,,1.98,equity
+153255,Nestle India Ltd,,Food Products,2.2,equity
+153255,Samvardhana Motherson International Limited,,,1.86,equity
+153255,Ss Retail Limited,,,0.75,equity
+153255,The Indian Hotels Company Limited,,Leisure Services,1.44,equity
+153255,Bharti Hexacom Limited,,TELECOM - SERVICES,0.96,equity
+153255,Century Plyboards India Limited,,CONSUMER DURABLES,1.71,equity
+153255,Epl Limited,,,1.29,equity
+153255,K.P.R. Mill Limited,,,0.88,equity
+153255,Page Industries Limited,,Textiles and Apparels,2.43,equity
+153255,Physicswallah Private Limited,,Other Consumer Services,0.25,equity
+153255,Pidilite Industries Limited,,Chemicals and Petrochemicals,2.26,equity
+153255,Shadowfax Technologies Private Limited,,Transport Services,1.43,equity
+153255,Shriram Pistons & Rings Limited,,Auto Components,0.91,equity
+153255,The Phoenix Mills Limited,,Realty,1.73,equity
+151803,Bharti Airtel Limited,,,5.21,equity
+151803,Mahindra And Mahindra Limited,,Automobiles,8.26,equity
+151803,Titan Company Limited,,CONSUMER DURABLES,3.22,equity
+151803,Trent Limited,,Retailing,2.04,equity
+151803,Zomato Limited,,Retailing,9.56,equity
+151803,Britannia Industries Limited,,Food Products,2.63,equity
+151803,Maruti Suzuki India Limited,,Automobiles,3.62,equity
+151803,Metro Brands Limited,,CONSUMER DURABLES,0.09,equity
+151803,Tvs Motor Company Limited,,Automobiles,3.1,equity
+151803,Varun Beverages Ltd,,,2.06,equity
+151803,Asian Paints Limited,,CONSUMER DURABLES,3.05,equity
+151803,Bajaj Auto Limited,,Automobiles,3.64,equity
+151803,Devyani International Limited,,Leisure Services,0.65,equity
+151803,Dhoot Transmission Limited,,Auto Components,0.36,equity
+151803,Eicher Motors Limited,,Automobiles,2.85,equity
+151803,Global Health Limited,,Healthcare Services,0.27,equity
+151803,Godrej Consumer Products Limited,,Personal Products,3.7,equity
+151803,Interglobe Aviation Limited,,Transport Services,1.39,equity
+151803,Rentomojo Limited,,Commercial Services and Supplies,1.19,equity
+151803,Tata Consumer Products Limited,,Agricultural Food & Other Products,0.95,equity
+151803,United Spirits Limited,,Beverages,2.65,equity
+151803,Vishal Mega Mart Private Limited,,Retailing,3.99,equity
+151803,Apollo Hospitals Enterprise Limited,,Healthcare Services,2.05,equity
+151803,Chalet Hotels Limited,,Leisure Services,2.66,equity
+151803,Eq - Info-Edge (India) Ltd.,,,1.55,equity
+151803,Hindustan Unilever Limited,,Diversified FMCG,7.39,equity
+151803,Marico Limited New,,,0.51,equity
+151803,Max Healthcare Institute Limited,,Healthcare Services,1.08,equity
+151803,Nestle India Ltd,,Food Products,1.78,equity
+151803,Shoppers Stop Limited,,Retailing,0.72,equity
+151803,Sedemac Mechatronics Ltd.,,Auto Components,0.75,equity
+151803,Vedant Fashions Limited,,Retailing,0.56,equity
+151803,Wakefit Innovations Private Limited,,CONSUMER DURABLES,1.28,equity
+151803,Akzo Nobel India Limited,,,1.61,equity
+151803,Adani Power Limited,,,1.07,equity
+151803,Augmont Enterprises Limited,,NON - FERROUS METALS,1.45,equity
+151803,Brainbees Solutions Private Limited,,Retailing,0.79,equity
+151803,Colgate-Palmolive (India) Limited,,,0.52,equity
+151803,Dabur India Limited,,Personal Products,1.39,equity
+151803,Emami Limited,,,0.34,equity
+151803,Godavari Biorefineries Limited,,Diversified FMCG,0.02,equity
+151803,Hyundai Motor India Ltd,,Automobiles,1.19,equity
+151803,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,1.7,equity
+151803,Laxmi Dental Limited,,Healthcare Equipment and Supplies,0.22,equity
+151803,Studds Accessories Limited,,Auto Components,0.52,equity
+151803,Sula Vineyards Limited,,,0.4,equity
+151803,Sapphire Foods India Limited,,Leisure Services,0.48,equity
+151803,The Tata Power Company Limited,,,0.85,equity
+151803,Tenneco Clean Air India Ltd,,Auto Components,0.43,equity
+151803,Vijaya Diagnostic Centre Limited,,Healthcare Services,0.88,equity
+151804,Bharti Airtel Limited,,,5.21,equity
+151804,Mahindra And Mahindra Limited,,Automobiles,8.26,equity
+151804,Titan Company Limited,,CONSUMER DURABLES,3.22,equity
+151804,Trent Limited,,Retailing,2.04,equity
+151804,Zomato Limited,,Retailing,9.56,equity
+151804,Britannia Industries Limited,,Food Products,2.63,equity
+151804,Maruti Suzuki India Limited,,Automobiles,3.62,equity
+151804,Metro Brands Limited,,CONSUMER DURABLES,0.09,equity
+151804,Tvs Motor Company Limited,,Automobiles,3.1,equity
+151804,Varun Beverages Ltd,,,2.06,equity
+151804,Asian Paints Limited,,CONSUMER DURABLES,3.05,equity
+151804,Bajaj Auto Limited,,Automobiles,3.64,equity
+151804,Devyani International Limited,,Leisure Services,0.65,equity
+151804,Dhoot Transmission Limited,,Auto Components,0.36,equity
+151804,Eicher Motors Limited,,Automobiles,2.85,equity
+151804,Global Health Limited,,Healthcare Services,0.27,equity
+151804,Godrej Consumer Products Limited,,Personal Products,3.7,equity
+151804,Interglobe Aviation Limited,,Transport Services,1.39,equity
+151804,Rentomojo Limited,,Commercial Services and Supplies,1.19,equity
+151804,Tata Consumer Products Limited,,Agricultural Food & Other Products,0.95,equity
+151804,United Spirits Limited,,Beverages,2.65,equity
+151804,Vishal Mega Mart Private Limited,,Retailing,3.99,equity
+151804,Apollo Hospitals Enterprise Limited,,Healthcare Services,2.05,equity
+151804,Chalet Hotels Limited,,Leisure Services,2.66,equity
+151804,Eq - Info-Edge (India) Ltd.,,,1.55,equity
+151804,Hindustan Unilever Limited,,Diversified FMCG,7.39,equity
+151804,Marico Limited New,,,0.51,equity
+151804,Max Healthcare Institute Limited,,Healthcare Services,1.08,equity
+151804,Nestle India Ltd,,Food Products,1.78,equity
+151804,Shoppers Stop Limited,,Retailing,0.72,equity
+151804,Sedemac Mechatronics Ltd.,,Auto Components,0.75,equity
+151804,Vedant Fashions Limited,,Retailing,0.56,equity
+151804,Wakefit Innovations Private Limited,,CONSUMER DURABLES,1.28,equity
+151804,Akzo Nobel India Limited,,,1.61,equity
+151804,Adani Power Limited,,,1.07,equity
+151804,Augmont Enterprises Limited,,NON - FERROUS METALS,1.45,equity
+151804,Brainbees Solutions Private Limited,,Retailing,0.79,equity
+151804,Colgate-Palmolive (India) Limited,,,0.52,equity
+151804,Dabur India Limited,,Personal Products,1.39,equity
+151804,Emami Limited,,,0.34,equity
+151804,Godavari Biorefineries Limited,,Diversified FMCG,0.02,equity
+151804,Hyundai Motor India Ltd,,Automobiles,1.19,equity
+151804,Jupiter Life Line Hospitals Ltd.,,Healthcare Services,1.7,equity
+151804,Laxmi Dental Limited,,Healthcare Equipment and Supplies,0.22,equity
+151804,Studds Accessories Limited,,Auto Components,0.52,equity
+151804,Sula Vineyards Limited,,,0.4,equity
+151804,Sapphire Foods India Limited,,Leisure Services,0.48,equity
+151804,The Tata Power Company Limited,,,0.85,equity
+151804,Tenneco Clean Air India Ltd,,Auto Components,0.43,equity
+151804,Vijaya Diagnostic Centre Limited,,Healthcare Services,0.88,equity
+152027,Bharti Airtel Limited,,,4.5,equity
+152027,Mahindra And Mahindra Limited,,Automobiles,2.9,equity
+152027,Titan Company Limited,,CONSUMER DURABLES,4.23,equity
+152027,Trent Limited,,Retailing,2.08,equity
+152027,Zomato Limited,,Retailing,7.0,equity
+152027,Britannia Industries Limited,,Food Products,1.96,equity
+152027,Maruti Suzuki India Limited,,Automobiles,4.12,equity
+152027,Metro Brands Limited,,CONSUMER DURABLES,0.66,equity
+152027,Tvs Motor Company Limited,,Automobiles,3.19,equity
+152027,Varun Beverages Ltd,,,3.25,equity
+152027,Ather Energy Private Limited,,Automobiles,3.25,equity
+152027,Devyani International Limited,,Leisure Services,1.87,equity
+152027,Dhoot Transmission Limited,,Auto Components,0.76,equity
+152027,Fashnear Technologies Private Limited,,,1.63,equity
+152027,Global Health Limited,,Healthcare Services,3.09,equity
+152027,Godrej Consumer Products Limited,,Personal Products,1.61,equity
+152027,Jubilant Foodworks Limited,,Leisure Services,0.92,equity
+152027,Radico Khaitan Limited,,Beverages,4.99,equity
+152027,Rentomojo Limited,,Commercial Services and Supplies,1.12,equity
+152027,United Spirits Limited,,Beverages,0.48,equity
+152027,Amber Enterprises India Limited,,CONSUMER DURABLES,2.46,equity
+152027,Bikaji Foods International Limited,,,1.5,equity
+152027,Ccl Products (India) Limited,,Agricultural Food & Other Products,1.75,equity
+152027,Craftsman Automation Limited,,Auto Components,2.5,equity
+152027,Entero Healthcare Solutions Private Limited,,Retailing,1.02,equity
+152027,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,2.07,equity
+152027,Lg Electronics India Ltd.,,,1.09,equity
+152027,Milky Mist Dairy Food Limited,,Food Products,3.37,equity
+152027,Safari Industries (India) Limited,,,0.69,equity
+152027,Swiggy Pvt Ltd,,Retailing,1.85,equity
+152027,Voltas Limited,,CONSUMER DURABLES,1.09,equity
+152027,Wakefit Innovations Private Limited,,CONSUMER DURABLES,0.81,equity
+152027,Ashok Leyland Limited,,"Agricultural, Commercial and Construction Vehicles",1.04,equity
+152027,Awfis Space Solutions Private Limited,,Commercial Services and Supplies,0.43,equity
+152027,Dixon Technologies (India) Limited,,CONSUMER DURABLES,2.41,equity
+152027,Electronics Mart India Limited,,Retailing,1.9,equity
+152027,Endurance Technologies Limited,,Auto Components,1.28,equity
+152027,Globus Spirits Limited,,Beverages,0.45,equity
+152027,Hindustan Foods Limited,,Diversified FMCG,1.01,equity
+152027,Kalyan Jewellers India Limited,,CONSUMER DURABLES,2.48,equity
+152027,Kaynes Technology India Limited,,Industrial Manufacturing,1.04,equity
+152027,Ksh International Ltd.,,Industrial Products,0.59,equity
+152027,Lemon Tree Hotels Limited,,Leisure Services,1.61,equity
+152027,Mold-Tek Packaging Limited,,Industrial Products,0.62,equity
+152027,Motilal Oswal Financial Services Limited,,Capital Markets,0.81,equity
+152027,Multi Commodity Exchange Of India L,,,2.7,equity
+152027,Nippon Life India Asset Management Limited,,,0.63,equity
+152027,Pb Fintech Limited,,Financial Technology (Fintech),1.09,equity
+152027,Sobha Limited,,Realty,1.35,equity
+152027,Tbo Tek Limited,,Leisure Services,1.37,equity
+152027,Thanga Mayil Jewellery Limited,,CONSUMER DURABLES,1.49,equity
+152032,Bharti Airtel Limited,,,4.5,equity
+152032,Mahindra And Mahindra Limited,,Automobiles,2.9,equity
+152032,Titan Company Limited,,CONSUMER DURABLES,4.23,equity
+152032,Trent Limited,,Retailing,2.08,equity
+152032,Zomato Limited,,Retailing,7.0,equity
+152032,Britannia Industries Limited,,Food Products,1.96,equity
+152032,Maruti Suzuki India Limited,,Automobiles,4.12,equity
+152032,Metro Brands Limited,,CONSUMER DURABLES,0.66,equity
+152032,Tvs Motor Company Limited,,Automobiles,3.19,equity
+152032,Varun Beverages Ltd,,,3.25,equity
+152032,Ather Energy Private Limited,,Automobiles,3.25,equity
+152032,Devyani International Limited,,Leisure Services,1.87,equity
+152032,Dhoot Transmission Limited,,Auto Components,0.76,equity
+152032,Fashnear Technologies Private Limited,,,1.63,equity
+152032,Global Health Limited,,Healthcare Services,3.09,equity
+152032,Godrej Consumer Products Limited,,Personal Products,1.61,equity
+152032,Jubilant Foodworks Limited,,Leisure Services,0.92,equity
+152032,Radico Khaitan Limited,,Beverages,4.99,equity
+152032,Rentomojo Limited,,Commercial Services and Supplies,1.12,equity
+152032,United Spirits Limited,,Beverages,0.48,equity
+152032,Amber Enterprises India Limited,,CONSUMER DURABLES,2.46,equity
+152032,Bikaji Foods International Limited,,,1.5,equity
+152032,Ccl Products (India) Limited,,Agricultural Food & Other Products,1.75,equity
+152032,Craftsman Automation Limited,,Auto Components,2.5,equity
+152032,Entero Healthcare Solutions Private Limited,,Retailing,1.02,equity
+152032,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,2.07,equity
+152032,Lg Electronics India Ltd.,,,1.09,equity
+152032,Milky Mist Dairy Food Limited,,Food Products,3.37,equity
+152032,Safari Industries (India) Limited,,,0.69,equity
+152032,Swiggy Pvt Ltd,,Retailing,1.85,equity
+152032,Voltas Limited,,CONSUMER DURABLES,1.09,equity
+152032,Wakefit Innovations Private Limited,,CONSUMER DURABLES,0.81,equity
+152032,Ashok Leyland Limited,,"Agricultural, Commercial and Construction Vehicles",1.04,equity
+152032,Awfis Space Solutions Private Limited,,Commercial Services and Supplies,0.43,equity
+152032,Dixon Technologies (India) Limited,,CONSUMER DURABLES,2.41,equity
+152032,Electronics Mart India Limited,,Retailing,1.9,equity
+152032,Endurance Technologies Limited,,Auto Components,1.28,equity
+152032,Globus Spirits Limited,,Beverages,0.45,equity
+152032,Hindustan Foods Limited,,Diversified FMCG,1.01,equity
+152032,Kalyan Jewellers India Limited,,CONSUMER DURABLES,2.48,equity
+152032,Kaynes Technology India Limited,,Industrial Manufacturing,1.04,equity
+152032,Ksh International Ltd.,,Industrial Products,0.59,equity
+152032,Lemon Tree Hotels Limited,,Leisure Services,1.61,equity
+152032,Mold-Tek Packaging Limited,,Industrial Products,0.62,equity
+152032,Motilal Oswal Financial Services Limited,,Capital Markets,0.81,equity
+152032,Multi Commodity Exchange Of India L,,,2.7,equity
+152032,Nippon Life India Asset Management Limited,,,0.63,equity
+152032,Pb Fintech Limited,,Financial Technology (Fintech),1.09,equity
+152032,Sobha Limited,,Realty,1.35,equity
+152032,Tbo Tek Limited,,Leisure Services,1.37,equity
+152032,Thanga Mayil Jewellery Limited,,CONSUMER DURABLES,1.49,equity
+153900,Bharti Airtel Limited,,,3.39,equity
+153900,Mahindra And Mahindra Limited,,Automobiles,3.41,equity
+153900,Titan Company Limited,,CONSUMER DURABLES,2.89,equity
+153900,Trent Limited,,Retailing,2.8,equity
+153900,Zomato Limited,,Retailing,6.16,equity
+153900,Tvs Motor Company Limited,,Automobiles,3.45,equity
+153900,Ather Energy Private Limited,,Automobiles,1.39,equity
+153900,Dhoot Transmission Limited,,Auto Components,2.89,equity
+153900,Eicher Motors Limited,,Automobiles,2.42,equity
+153900,Fashnear Technologies Private Limited,,,1.28,equity
+153900,Fsn E-Commerce Ventures Limited,,Retailing,2.46,equity
+153900,Global Health Limited,,Healthcare Services,1.21,equity
+153900,Godrej Consumer Products Limited,,Personal Products,1.0,equity
+153900,Interglobe Aviation Limited,,Transport Services,2.89,equity
+153900,Itc Limited,,,1.72,equity
+153900,Radico Khaitan Limited,,Beverages,2.07,equity
+153900,Rentomojo Limited,,Commercial Services and Supplies,1.67,equity
+153900,Tata Consumer Products Limited,,Agricultural Food & Other Products,1.29,equity
+153900,Amber Enterprises India Limited,,CONSUMER DURABLES,2.52,equity
+153900,Ccl Products (India) Limited,,Agricultural Food & Other Products,2.58,equity
+153900,Ceat Limited,,Auto Components,1.57,equity
+153900,Chalet Hotels Limited,,Leisure Services,2.03,equity
+153900,Craftsman Automation Limited,,Auto Components,2.96,equity
+153900,Delhivery Limited,,,2.34,equity
+153900,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,3.03,equity
+153900,Max Healthcare Institute Limited,,Healthcare Services,2.2,equity
+153900,Milky Mist Dairy Food Limited,,Food Products,4.14,equity
+153900,Safari Industries (India) Limited,,,1.44,equity
+153900,Ss Retail Limited,,,2.52,equity
+153900,Sedemac Mechatronics Ltd.,,Auto Components,3.3,equity
+153900,Swiggy Pvt Ltd,,Retailing,1.34,equity
+153900,Avenue Supermarts Limited,,Retailing,1.47,equity
+153900,Aditya Infotech Limited,,Industrial Manufacturing,3.38,equity
+153900,Blue Star Limited,,CONSUMER DURABLES,1.08,equity
+153900,Belrise Industries Limited,,Auto Components,1.81,equity
+153900,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,2.74,equity
+153900,Dr Agarwals Health Care Ltd.,,Healthcare Services,2.4,equity
+153900,Gabriel India Limited,,,2.03,equity
+153900,Godfrey Phillips India Limited,,Cigarettes and Tobacco Products,1.0,equity
+153900,Gaja Alternative Amc Limited,,,0.81,equity
+153900,Prestige Estates Projects Limited,,Realty,1.39,equity
+153900,Shaily Engineering Plastics Limited,,CONSUMER DURABLES,1.73,equity
+153900,Torrent Pharmaceuticals Limited,,,1.9,equity
+153900,Wework India Management Private Limited,,Commercial Services and Supplies,1.33,equity
+153902,Bharti Airtel Limited,,,3.39,equity
+153902,Mahindra And Mahindra Limited,,Automobiles,3.41,equity
+153902,Titan Company Limited,,CONSUMER DURABLES,2.89,equity
+153902,Trent Limited,,Retailing,2.8,equity
+153902,Zomato Limited,,Retailing,6.16,equity
+153902,Tvs Motor Company Limited,,Automobiles,3.45,equity
+153902,Ather Energy Private Limited,,Automobiles,1.39,equity
+153902,Dhoot Transmission Limited,,Auto Components,2.89,equity
+153902,Eicher Motors Limited,,Automobiles,2.42,equity
+153902,Fashnear Technologies Private Limited,,,1.28,equity
+153902,Fsn E-Commerce Ventures Limited,,Retailing,2.46,equity
+153902,Global Health Limited,,Healthcare Services,1.21,equity
+153902,Godrej Consumer Products Limited,,Personal Products,1.0,equity
+153902,Interglobe Aviation Limited,,Transport Services,2.89,equity
+153902,Itc Limited,,,1.72,equity
+153902,Radico Khaitan Limited,,Beverages,2.07,equity
+153902,Rentomojo Limited,,Commercial Services and Supplies,1.67,equity
+153902,Tata Consumer Products Limited,,Agricultural Food & Other Products,1.29,equity
+153902,Amber Enterprises India Limited,,CONSUMER DURABLES,2.52,equity
+153902,Ccl Products (India) Limited,,Agricultural Food & Other Products,2.58,equity
+153902,Ceat Limited,,Auto Components,1.57,equity
+153902,Chalet Hotels Limited,,Leisure Services,2.03,equity
+153902,Craftsman Automation Limited,,Auto Components,2.96,equity
+153902,Delhivery Limited,,,2.34,equity
+153902,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,3.03,equity
+153902,Max Healthcare Institute Limited,,Healthcare Services,2.2,equity
+153902,Milky Mist Dairy Food Limited,,Food Products,4.14,equity
+153902,Safari Industries (India) Limited,,,1.44,equity
+153902,Ss Retail Limited,,,2.52,equity
+153902,Sedemac Mechatronics Ltd.,,Auto Components,3.3,equity
+153902,Swiggy Pvt Ltd,,Retailing,1.34,equity
+153902,Avenue Supermarts Limited,,Retailing,1.47,equity
+153902,Aditya Infotech Limited,,Industrial Manufacturing,3.38,equity
+153902,Blue Star Limited,,CONSUMER DURABLES,1.08,equity
+153902,Belrise Industries Limited,,Auto Components,1.81,equity
+153902,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,2.74,equity
+153902,Dr Agarwals Health Care Ltd.,,Healthcare Services,2.4,equity
+153902,Gabriel India Limited,,,2.03,equity
+153902,Godfrey Phillips India Limited,,Cigarettes and Tobacco Products,1.0,equity
+153902,Gaja Alternative Amc Limited,,,0.81,equity
+153902,Prestige Estates Projects Limited,,Realty,1.39,equity
+153902,Shaily Engineering Plastics Limited,,CONSUMER DURABLES,1.73,equity
+153902,Torrent Pharmaceuticals Limited,,,1.9,equity
+153902,Wework India Management Private Limited,,Commercial Services and Supplies,1.33,equity
+153948,Bharti Airtel Limited,,,3.45,equity
+153948,Mahindra And Mahindra Limited,,Automobiles,1.94,equity
+153948,Titan Company Limited,,CONSUMER DURABLES,1.31,equity
+153948,Varun Beverages Ltd,,,1.17,equity
+153948,Zomato Limited,,Retailing,5.28,equity
+153948,Fsn E-Commerce Ventures Limited,,Retailing,0.51,equity
+153948,Lenskart Solutions Private Limited,,Retailing,0.59,equity
+153948,Lg Electronics India Ltd.,,,2.79,equity
+153948,Marico Limited New,,,2.09,equity
+153948,Pidilite Industries Limited,,Chemicals and Petrochemicals,1.32,equity
+153948,Trent Limited,,Retailing,2.03,equity
+153948,Tvs Motor Company Limited,,Automobiles,2.41,equity
+153948,Vishal Mega Mart Private Limited,,Retailing,2.38,equity
+153948,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,2.17,equity
+153948,Eicher Motors Limited,,Automobiles,1.73,equity
+153948,Interglobe Aviation Limited,,Transport Services,1.76,equity
+153948,Metro Brands Limited,,CONSUMER DURABLES,1.69,equity
+153948,Radico Khaitan Limited,,Beverages,1.31,equity
+153948,Safari Industries (India) Limited,,,1.74,equity
+153948,Schloss Bangalore Private Limited,,,2.67,equity
+153948,Apollo Hospitals Enterprise Limited,,Healthcare Services,1.13,equity
+153948,Aster Dm Healthcare Limited,,,1.41,equity
+153948,Bikaji Foods International Limited,,,0.84,equity
+153948,Britannia Industries Limited,,Food Products,1.4,equity
+153948,Bajaj Finance Limited,,Finance,1.65,equity
+153948,Campus Activewear Limited,,CONSUMER DURABLES,0.26,equity
+153948,Eureka Forbes Limited,,CONSUMER DURABLES,2.46,equity
+153948,Hdfc Asset Management Company Ltd,,Capital Markets,1.04,equity
+153948,Hdfc Life Insurance Company Limited,,Insurance,1.52,equity
+153948,Hyundai Motor India Ltd,,Automobiles,1.73,equity
+153948,Orkla India Ltd.,,Food Products,1.17,equity
+153948,Torrent Pharmaceuticals Limited,,,2.2,equity
+153948,Abbott India Limited,,Pharmaceuticals and Biotechnology,1.99,equity
+153948,Affle (India) Limited,,IT - Services,1.97,equity
+153948,Allied Blenders And Distillers Limited,,Beverages,1.39,equity
+153948,Arvind Limited,,,1.04,equity
+153948,Axis Bank Limited,,BANKS,2.16,equity
+153948,Delhivery Limited,,,0.72,equity
+153948,Dr Agarwals Health Care Ltd.,,Healthcare Services,1.12,equity
+153948,Ethos Limited,,,2.03,equity
+153948,Godfrey Phillips India Limited,,Cigarettes and Tobacco Products,2.41,equity
+153948,Icici Lombard Gen Insurance Co Ltd,,,1.58,equity
+153948,Itc Hotels Ltd.,,Leisure Services,2.99,equity
+153948,J.K.Cement Limited,,Cement and Cement Products,2.64,equity
+153948,Metropolis Healthcare Limited,,Healthcare Services,1.58,equity
+153948,Muthoot Finance Limited,,Finance,1.49,equity
+153948,Mrs. Bectors Food Specialities Limited,,Food Products,2.71,equity
+153948,Multi Commodity Exchange Of India L,,,0.99,equity
+153948,National Stock Exchange Of India Ltd,,Capital Markets,0.45,equity
+153948,Pfizer Limited,,,1.31,equity
+153948,Star Cement Limited,,Cement and Cement Products,1.12,equity
+153948,Swiggy Pvt Ltd,,Retailing,1.5,equity
+153948,The Indian Hotels Company Limited,,Leisure Services,3.54,equity
+153950,Bharti Airtel Limited,,,3.45,equity
+153950,Mahindra And Mahindra Limited,,Automobiles,1.94,equity
+153950,Titan Company Limited,,CONSUMER DURABLES,1.31,equity
+153950,Varun Beverages Ltd,,,1.17,equity
+153950,Zomato Limited,,Retailing,5.28,equity
+153950,Fsn E-Commerce Ventures Limited,,Retailing,0.51,equity
+153950,Lenskart Solutions Private Limited,,Retailing,0.59,equity
+153950,Lg Electronics India Ltd.,,,2.79,equity
+153950,Marico Limited New,,,2.09,equity
+153950,Pidilite Industries Limited,,Chemicals and Petrochemicals,1.32,equity
+153950,Trent Limited,,Retailing,2.03,equity
+153950,Tvs Motor Company Limited,,Automobiles,2.41,equity
+153950,Vishal Mega Mart Private Limited,,Retailing,2.38,equity
+153950,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,2.17,equity
+153950,Eicher Motors Limited,,Automobiles,1.73,equity
+153950,Interglobe Aviation Limited,,Transport Services,1.76,equity
+153950,Metro Brands Limited,,CONSUMER DURABLES,1.69,equity
+153950,Radico Khaitan Limited,,Beverages,1.31,equity
+153950,Safari Industries (India) Limited,,,1.74,equity
+153950,Schloss Bangalore Private Limited,,,2.67,equity
+153950,Apollo Hospitals Enterprise Limited,,Healthcare Services,1.13,equity
+153950,Aster Dm Healthcare Limited,,,1.41,equity
+153950,Bikaji Foods International Limited,,,0.84,equity
+153950,Britannia Industries Limited,,Food Products,1.4,equity
+153950,Bajaj Finance Limited,,Finance,1.65,equity
+153950,Campus Activewear Limited,,CONSUMER DURABLES,0.26,equity
+153950,Eureka Forbes Limited,,CONSUMER DURABLES,2.46,equity
+153950,Hdfc Asset Management Company Ltd,,Capital Markets,1.04,equity
+153950,Hdfc Life Insurance Company Limited,,Insurance,1.52,equity
+153950,Hyundai Motor India Ltd,,Automobiles,1.73,equity
+153950,Orkla India Ltd.,,Food Products,1.17,equity
+153950,Torrent Pharmaceuticals Limited,,,2.2,equity
+153950,Abbott India Limited,,Pharmaceuticals and Biotechnology,1.99,equity
+153950,Affle (India) Limited,,IT - Services,1.97,equity
+153950,Allied Blenders And Distillers Limited,,Beverages,1.39,equity
+153950,Arvind Limited,,,1.04,equity
+153950,Axis Bank Limited,,BANKS,2.16,equity
+153950,Delhivery Limited,,,0.72,equity
+153950,Dr Agarwals Health Care Ltd.,,Healthcare Services,1.12,equity
+153950,Ethos Limited,,,2.03,equity
+153950,Godfrey Phillips India Limited,,Cigarettes and Tobacco Products,2.41,equity
+153950,Icici Lombard Gen Insurance Co Ltd,,,1.58,equity
+153950,Itc Hotels Ltd.,,Leisure Services,2.99,equity
+153950,J.K.Cement Limited,,Cement and Cement Products,2.64,equity
+153950,Metropolis Healthcare Limited,,Healthcare Services,1.58,equity
+153950,Muthoot Finance Limited,,Finance,1.49,equity
+153950,Mrs. Bectors Food Specialities Limited,,Food Products,2.71,equity
+153950,Multi Commodity Exchange Of India L,,,0.99,equity
+153950,National Stock Exchange Of India Ltd,,Capital Markets,0.45,equity
+153950,Pfizer Limited,,,1.31,equity
+153950,Star Cement Limited,,Cement and Cement Products,1.12,equity
+153950,Swiggy Pvt Ltd,,Retailing,1.5,equity
+153950,The Indian Hotels Company Limited,,Leisure Services,3.54,equity
+118837,Bharti Airtel Limited,,,5.0,equity
+118837,Mahindra And Mahindra Limited,,Automobiles,6.68,equity
+118837,Titan Company Limited,,CONSUMER DURABLES,5.8,equity
+118837,Varun Beverages Ltd,,,3.18,equity
+118837,Zomato Limited,,Retailing,8.39,equity
+118837,Fashnear Technologies Private Limited,,,1.79,equity
+118837,Fsn E-Commerce Ventures Limited,,Retailing,0.98,equity
+118837,Lenskart Solutions Private Limited,,Retailing,1.6,equity
+118837,Lg Electronics India Ltd.,,,2.1,equity
+118837,Marico Limited New,,,1.03,equity
+118837,Maruti Suzuki India Limited,,Automobiles,6.05,equity
+118837,Trent Limited,,Retailing,3.48,equity
+118837,Tvs Motor Company Limited,,Automobiles,2.81,equity
+118837,Vishal Mega Mart Private Limited,,Retailing,1.98,equity
+118837,Eicher Motors Limited,,Automobiles,3.91,equity
+118837,Honasa Consumer Limited,,Personal Products,1.99,equity
+118837,Interglobe Aviation Limited,,Transport Services,0.8,equity
+118837,Itc Limited,,,1.15,equity
+118837,Safari Industries (India) Limited,,,1.14,equity
+118837,Schloss Bangalore Private Limited,,,2.23,equity
+118837,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.25,equity
+118837,Avenue Supermarts Limited,,Retailing,3.16,equity
+118837,Bluestone Jewellery And Lifestyle Private Limited,,CONSUMER DURABLES,2.11,equity
+118837,Britannia Industries Limited,,Food Products,1.87,equity
+118837,Campus Activewear Limited,,CONSUMER DURABLES,1.74,equity
+118837,Greenply Industries Limited,,CONSUMER DURABLES,1.34,equity
+118837,International Gemmological Institute (India) Limited,,Commercial Services and Supplies,1.03,equity
+118837,Pb Fintech Limited,,Financial Technology (Fintech),0.95,equity
+118837,Ss Retail Limited,,,1.2,equity
+118837,Asian Paints Limited,,CONSUMER DURABLES,4.1,equity
+118837,Bata India Limited,,,0.57,equity
+118837,Ceat Limited,,Auto Components,1.41,equity
+118837,Century Plyboards India Limited,,CONSUMER DURABLES,1.57,equity
+118837,Crompton Greaves Consumer Electricals Limited,,CONSUMER DURABLES,1.93,equity
+118837,Diamond Power Infrastructure Limited,,Electrical Equipment,2.02,equity
+118837,Godrej Consumer Products Limited,,Personal Products,1.88,equity
+118837,Prince Pipes And Fittings Limited,,Industrial Products,0.41,equity
+118837,Rentomojo Limited,,Commercial Services and Supplies,1.66,equity
+118837,Sapphire Foods India Limited,,Leisure Services,1.74,equity
+118837,Wakefit Innovations Private Limited,,CONSUMER DURABLES,1.03,equity
+118837,Westlife Development Limited,,Leisure Services,1.61,equity
+118837,Whirlpool Of India Limited,,CONSUMER DURABLES,1.02,equity
+114931,Bharti Airtel Limited,,,5.0,equity
+114931,Mahindra And Mahindra Limited,,Automobiles,6.68,equity
+114931,Titan Company Limited,,CONSUMER DURABLES,5.8,equity
+114931,Varun Beverages Ltd,,,3.18,equity
+114931,Zomato Limited,,Retailing,8.39,equity
+114931,Fashnear Technologies Private Limited,,,1.79,equity
+114931,Fsn E-Commerce Ventures Limited,,Retailing,0.98,equity
+114931,Lenskart Solutions Private Limited,,Retailing,1.6,equity
+114931,Lg Electronics India Ltd.,,,2.1,equity
+114931,Marico Limited New,,,1.03,equity
+114931,Maruti Suzuki India Limited,,Automobiles,6.05,equity
+114931,Trent Limited,,Retailing,3.48,equity
+114931,Tvs Motor Company Limited,,Automobiles,2.81,equity
+114931,Vishal Mega Mart Private Limited,,Retailing,1.98,equity
+114931,Eicher Motors Limited,,Automobiles,3.91,equity
+114931,Honasa Consumer Limited,,Personal Products,1.99,equity
+114931,Interglobe Aviation Limited,,Transport Services,0.8,equity
+114931,Itc Limited,,,1.15,equity
+114931,Safari Industries (India) Limited,,,1.14,equity
+114931,Schloss Bangalore Private Limited,,,2.23,equity
+114931,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.25,equity
+114931,Avenue Supermarts Limited,,Retailing,3.16,equity
+114931,Bluestone Jewellery And Lifestyle Private Limited,,CONSUMER DURABLES,2.11,equity
+114931,Britannia Industries Limited,,Food Products,1.87,equity
+114931,Campus Activewear Limited,,CONSUMER DURABLES,1.74,equity
+114931,Greenply Industries Limited,,CONSUMER DURABLES,1.34,equity
+114931,International Gemmological Institute (India) Limited,,Commercial Services and Supplies,1.03,equity
+114931,Pb Fintech Limited,,Financial Technology (Fintech),0.95,equity
+114931,Ss Retail Limited,,,1.2,equity
+114931,Asian Paints Limited,,CONSUMER DURABLES,4.1,equity
+114931,Bata India Limited,,,0.57,equity
+114931,Ceat Limited,,Auto Components,1.41,equity
+114931,Century Plyboards India Limited,,CONSUMER DURABLES,1.57,equity
+114931,Crompton Greaves Consumer Electricals Limited,,CONSUMER DURABLES,1.93,equity
+114931,Diamond Power Infrastructure Limited,,Electrical Equipment,2.02,equity
+114931,Godrej Consumer Products Limited,,Personal Products,1.88,equity
+114931,Prince Pipes And Fittings Limited,,Industrial Products,0.41,equity
+114931,Rentomojo Limited,,Commercial Services and Supplies,1.66,equity
+114931,Sapphire Foods India Limited,,Leisure Services,1.74,equity
+114931,Wakefit Innovations Private Limited,,CONSUMER DURABLES,1.03,equity
+114931,Westlife Development Limited,,Leisure Services,1.61,equity
+114931,Whirlpool Of India Limited,,CONSUMER DURABLES,1.02,equity
+154020,Bharti Airtel Limited,,,7.05,equity
+154020,Mahindra And Mahindra Limited,,Automobiles,5.27,equity
+154020,Titan Company Limited,,CONSUMER DURABLES,3.63,equity
+154020,Varun Beverages Ltd,,,3.79,equity
+154020,Zomato Limited,,Retailing,7.22,equity
+154020,Fashnear Technologies Private Limited,,,1.45,equity
+154020,Fsn E-Commerce Ventures Limited,,Retailing,2.85,equity
+154020,Lenskart Solutions Private Limited,,Retailing,1.59,equity
+154020,Lg Electronics India Ltd.,,,2.94,equity
+154020,Marico Limited New,,,2.51,equity
+154020,Maruti Suzuki India Limited,,Automobiles,4.78,equity
+154020,Pidilite Industries Limited,,Chemicals and Petrochemicals,2.03,equity
+154020,Trent Limited,,Retailing,3.65,equity
+154020,Tvs Motor Company Limited,,Automobiles,1.65,equity
+154020,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,1.63,equity
+154020,Berger Paints India Limited,,CONSUMER DURABLES,1.66,equity
+154020,Hindustan Unilever Limited,,Diversified FMCG,1.95,equity
+154020,Honasa Consumer Limited,,Personal Products,2.67,equity
+154020,Interglobe Aviation Limited,,Transport Services,1.21,equity
+154020,Itc Limited,,,1.42,equity
+154020,Metro Brands Limited,,CONSUMER DURABLES,1.45,equity
+154020,Nestle India Ltd,,Food Products,0.37,equity
+154020,Radico Khaitan Limited,,Beverages,3.3,equity
+154020,Tata Consumer Products Limited,,Agricultural Food & Other Products,2.34,equity
+154020,Ather Energy Private Limited,,Automobiles,2.7,equity
+154020,Blue Star Limited,,CONSUMER DURABLES,1.59,equity
+154020,Cartrade Tech Limited,,Retailing,1.49,equity
+154020,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,0.75,equity
+154020,Dixon Technologies (India) Limited,,CONSUMER DURABLES,0.42,equity
+154020,Doms Industries Private Limited,,Household Products,1.12,equity
+154020,Greenply Industries Limited,,CONSUMER DURABLES,1.12,equity
+154020,Hdfc Life Insurance Company Limited,,Insurance,0.5,equity
+154020,Hyundai Motor India Ltd,,Automobiles,0.84,equity
+154020,Icici Bank Limited,,,2.37,equity
+154020,The Phoenix Mills Limited,,Realty,2.04,equity
+154020,Dr. Lal Pathlabs Limited,,Healthcare Services,2.15,equity
+154020,Kei Industries Limited New,,,0.5,equity
+154020,Milky Mist Dairy Food Limited,,Food Products,0.81,equity
+154020,Nippon Life India Asset Management Limited,,,1.62,equity
+154020,One 97 Communications Limited,,Financial Technology (Fintech),2.6,equity
+154020,Prestige Estates Projects Limited,,Realty,0.33,equity
+154020,Shadowfax Technologies Private Limited,,Transport Services,1.52,equity
+154020,Sky Gold Limited,,,0.19,equity
+154020,Shiprocket Limited,,Transport Services,1.97,equity
+154020,Zf Commercial Vehicle Control Systems India Limited,,Auto Components,0.82,equity
+154020,Zydus Wellness Ltd,,,2.83,equity
+154022,Bharti Airtel Limited,,,7.05,equity
+154022,Mahindra And Mahindra Limited,,Automobiles,5.27,equity
+154022,Titan Company Limited,,CONSUMER DURABLES,3.63,equity
+154022,Varun Beverages Ltd,,,3.79,equity
+154022,Zomato Limited,,Retailing,7.22,equity
+154022,Fashnear Technologies Private Limited,,,1.45,equity
+154022,Fsn E-Commerce Ventures Limited,,Retailing,2.85,equity
+154022,Lenskart Solutions Private Limited,,Retailing,1.59,equity
+154022,Lg Electronics India Ltd.,,,2.94,equity
+154022,Marico Limited New,,,2.51,equity
+154022,Maruti Suzuki India Limited,,Automobiles,4.78,equity
+154022,Pidilite Industries Limited,,Chemicals and Petrochemicals,2.03,equity
+154022,Trent Limited,,Retailing,3.65,equity
+154022,Tvs Motor Company Limited,,Automobiles,1.65,equity
+154022,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,1.63,equity
+154022,Berger Paints India Limited,,CONSUMER DURABLES,1.66,equity
+154022,Hindustan Unilever Limited,,Diversified FMCG,1.95,equity
+154022,Honasa Consumer Limited,,Personal Products,2.67,equity
+154022,Interglobe Aviation Limited,,Transport Services,1.21,equity
+154022,Itc Limited,,,1.42,equity
+154022,Metro Brands Limited,,CONSUMER DURABLES,1.45,equity
+154022,Nestle India Ltd,,Food Products,0.37,equity
+154022,Radico Khaitan Limited,,Beverages,3.3,equity
+154022,Tata Consumer Products Limited,,Agricultural Food & Other Products,2.34,equity
+154022,Ather Energy Private Limited,,Automobiles,2.7,equity
+154022,Blue Star Limited,,CONSUMER DURABLES,1.59,equity
+154022,Cartrade Tech Limited,,Retailing,1.49,equity
+154022,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,0.75,equity
+154022,Dixon Technologies (India) Limited,,CONSUMER DURABLES,0.42,equity
+154022,Doms Industries Private Limited,,Household Products,1.12,equity
+154022,Greenply Industries Limited,,CONSUMER DURABLES,1.12,equity
+154022,Hdfc Life Insurance Company Limited,,Insurance,0.5,equity
+154022,Hyundai Motor India Ltd,,Automobiles,0.84,equity
+154022,Icici Bank Limited,,,2.37,equity
+154022,The Phoenix Mills Limited,,Realty,2.04,equity
+154022,Dr. Lal Pathlabs Limited,,Healthcare Services,2.15,equity
+154022,Kei Industries Limited New,,,0.5,equity
+154022,Milky Mist Dairy Food Limited,,Food Products,0.81,equity
+154022,Nippon Life India Asset Management Limited,,,1.62,equity
+154022,One 97 Communications Limited,,Financial Technology (Fintech),2.6,equity
+154022,Prestige Estates Projects Limited,,Realty,0.33,equity
+154022,Shadowfax Technologies Private Limited,,Transport Services,1.52,equity
+154022,Sky Gold Limited,,,0.19,equity
+154022,Shiprocket Limited,,Transport Services,1.97,equity
+154022,Zf Commercial Vehicle Control Systems India Limited,,Auto Components,0.82,equity
+154022,Zydus Wellness Ltd,,,2.83,equity
+120780,Bharti Airtel Limited,,,5.6,equity
+120780,Mahindra And Mahindra Limited,,Automobiles,9.22,equity
+120780,Titan Company Limited,,CONSUMER DURABLES,7.43,equity
+120780,Varun Beverages Ltd,,,1.69,equity
+120780,Zomato Limited,,Retailing,9.4,equity
+120780,Fashnear Technologies Private Limited,,,0.39,equity
+120780,Lg Electronics India Ltd.,,,0.55,equity
+120780,Maruti Suzuki India Limited,,Automobiles,5.23,equity
+120780,Pidilite Industries Limited,,Chemicals and Petrochemicals,1.41,equity
+120780,Trent Limited,,Retailing,4.03,equity
+120780,Tvs Motor Company Limited,,Automobiles,3.66,equity
+120780,Vishal Mega Mart Private Limited,,Retailing,1.19,equity
+120780,Berger Paints India Limited,,CONSUMER DURABLES,1.09,equity
+120780,Eicher Motors Limited,,Automobiles,4.66,equity
+120780,Hindustan Unilever Limited,,Diversified FMCG,2.13,equity
+120780,Itc Limited,,,2.84,equity
+120780,Metro Brands Limited,,CONSUMER DURABLES,1.31,equity
+120780,Nestle India Ltd,,Food Products,3.1,equity
+120780,Radico Khaitan Limited,,Beverages,0.45,equity
+120780,Tata Consumer Products Limited,,Agricultural Food & Other Products,2.86,equity
+120780,Aster Dm Healthcare Limited,,,0.73,equity
+120780,Avenue Supermarts Limited,,Retailing,1.23,equity
+120780,Bikaji Foods International Limited,,,0.83,equity
+120780,Blue Star Limited,,CONSUMER DURABLES,1.03,equity
+120780,Bajaj Finance Limited,,Finance,1.87,equity
+120780,Dixon Technologies (India) Limited,,CONSUMER DURABLES,1.67,equity
+120780,Hdfc Asset Management Company Ltd,,Capital Markets,0.71,equity
+120780,Pb Fintech Limited,,Financial Technology (Fintech),1.08,equity
+120780,The Phoenix Mills Limited,,Realty,2.16,equity
+120780,Astral Limited,,Industrial Products,0.81,equity
+120780,Barbeque-Nation Hospitality Limited,,Leisure Services,0.84,equity
+120780,Brigade Enterprises Limited,,Realty,1.24,equity
+120780,Eq - Info-Edge (India) Ltd.,,,1.82,equity
+120780,Global Health Limited,,Healthcare Services,1.81,equity
+120780,Havells India Limited,,CONSUMER DURABLES,0.56,equity
+120780,Hdfc Bank Limited,,,1.35,equity
+120780,Hero Motocorp Limited,,Automobiles,2.35,equity
+120780,Jubilant Foodworks Limited,,Leisure Services,1.72,equity
+120780,Polycab India Limited,,Industrial Products,2.0,equity
+120780,Sbi Funds Management Ltd.,,Capital Markets,0.59,equity
+120780,Tips Industries Limited,,Entertainment,0.94,equity
+120780,United Spirits Limited,,Beverages,1.14,equity
+120780,V-Mart Retail Limited,,Retailing,1.32,equity
+106425,Bharti Airtel Limited,,,5.6,equity
+106425,Mahindra And Mahindra Limited,,Automobiles,9.22,equity
+106425,Titan Company Limited,,CONSUMER DURABLES,7.43,equity
+106425,Varun Beverages Ltd,,,1.69,equity
+106425,Zomato Limited,,Retailing,9.4,equity
+106425,Fashnear Technologies Private Limited,,,0.39,equity
+106425,Lg Electronics India Ltd.,,,0.55,equity
+106425,Maruti Suzuki India Limited,,Automobiles,5.23,equity
+106425,Pidilite Industries Limited,,Chemicals and Petrochemicals,1.41,equity
+106425,Trent Limited,,Retailing,4.03,equity
+106425,Tvs Motor Company Limited,,Automobiles,3.66,equity
+106425,Vishal Mega Mart Private Limited,,Retailing,1.19,equity
+106425,Berger Paints India Limited,,CONSUMER DURABLES,1.09,equity
+106425,Eicher Motors Limited,,Automobiles,4.66,equity
+106425,Hindustan Unilever Limited,,Diversified FMCG,2.13,equity
+106425,Itc Limited,,,2.84,equity
+106425,Metro Brands Limited,,CONSUMER DURABLES,1.31,equity
+106425,Nestle India Ltd,,Food Products,3.1,equity
+106425,Radico Khaitan Limited,,Beverages,0.45,equity
+106425,Tata Consumer Products Limited,,Agricultural Food & Other Products,2.86,equity
+106425,Aster Dm Healthcare Limited,,,0.73,equity
+106425,Avenue Supermarts Limited,,Retailing,1.23,equity
+106425,Bikaji Foods International Limited,,,0.83,equity
+106425,Blue Star Limited,,CONSUMER DURABLES,1.03,equity
+106425,Bajaj Finance Limited,,Finance,1.87,equity
+106425,Dixon Technologies (India) Limited,,CONSUMER DURABLES,1.67,equity
+106425,Hdfc Asset Management Company Ltd,,Capital Markets,0.71,equity
+106425,Pb Fintech Limited,,Financial Technology (Fintech),1.08,equity
+106425,The Phoenix Mills Limited,,Realty,2.16,equity
+106425,Astral Limited,,Industrial Products,0.81,equity
+106425,Barbeque-Nation Hospitality Limited,,Leisure Services,0.84,equity
+106425,Brigade Enterprises Limited,,Realty,1.24,equity
+106425,Eq - Info-Edge (India) Ltd.,,,1.82,equity
+106425,Global Health Limited,,Healthcare Services,1.81,equity
+106425,Havells India Limited,,CONSUMER DURABLES,0.56,equity
+106425,Hdfc Bank Limited,,,1.35,equity
+106425,Hero Motocorp Limited,,Automobiles,2.35,equity
+106425,Jubilant Foodworks Limited,,Leisure Services,1.72,equity
+106425,Polycab India Limited,,Industrial Products,2.0,equity
+106425,Sbi Funds Management Ltd.,,Capital Markets,0.59,equity
+106425,Tips Industries Limited,,Entertainment,0.94,equity
+106425,United Spirits Limited,,Beverages,1.14,equity
+106425,V-Mart Retail Limited,,Retailing,1.32,equity
+154161,Bharti Airtel Limited,,,7.76,equity
+154161,Mahindra And Mahindra Limited,,Automobiles,6.4,equity
+154161,Titan Company Limited,,CONSUMER DURABLES,4.89,equity
+154161,Varun Beverages Ltd,,,0.61,equity
+154161,Zomato Limited,,Retailing,7.52,equity
+154161,Fashnear Technologies Private Limited,,,0.98,equity
+154161,Fsn E-Commerce Ventures Limited,,Retailing,0.95,equity
+154161,Lenskart Solutions Private Limited,,Retailing,2.09,equity
+154161,Marico Limited New,,,2.84,equity
+154161,Maruti Suzuki India Limited,,Automobiles,3.36,equity
+154161,Pidilite Industries Limited,,Chemicals and Petrochemicals,1.55,equity
+154161,Vishal Mega Mart Private Limited,,Retailing,2.31,equity
+154161,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,0.79,equity
+154161,Berger Paints India Limited,,CONSUMER DURABLES,0.67,equity
+154161,Hindustan Unilever Limited,,Diversified FMCG,1.47,equity
+154161,Honasa Consumer Limited,,Personal Products,1.73,equity
+154161,Nestle India Ltd,,Food Products,7.6,equity
+154161,Safari Industries (India) Limited,,,1.27,equity
+154161,Schloss Bangalore Private Limited,,,1.66,equity
+154161,Tata Consumer Products Limited,,Agricultural Food & Other Products,1.74,equity
+154161,Ather Energy Private Limited,,Automobiles,0.05,equity
+154161,Bluestone Jewellery And Lifestyle Private Limited,,CONSUMER DURABLES,0.93,equity
+154161,Cartrade Tech Limited,,Retailing,1.6,equity
+154161,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,1.52,equity
+154161,Doms Industries Private Limited,,Household Products,1.51,equity
+154161,Eureka Forbes Limited,,CONSUMER DURABLES,1.04,equity
+154161,Icici Bank Limited,,,1.4,equity
+154161,International Gemmological Institute (India) Limited,,Commercial Services and Supplies,1.32,equity
+154161,Orkla India Ltd.,,Food Products,1.29,equity
+154161,Ss Retail Limited,,,1.31,equity
+154161,Torrent Pharmaceuticals Limited,,,1.73,equity
+154161,Dodla Dairy Limited,,Food Products,0.52,equity
+154161,Gillette India Limited,,,1.73,equity
+154161,Indigo Paints Limited,,CONSUMER DURABLES,2.35,equity
+154161,Kansai Nerolac Paints Limited,,CONSUMER DURABLES,1.22,equity
+154161,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,1.31,equity
+154161,Max Healthcare Institute Limited,,Healthcare Services,2.25,equity
+154161,Manorama Industries Limited,,Food Products,0.94,equity
+154161,Procter & Gamble Hygiene And Health Care Limited,,Personal Products,0.79,equity
+154161,Tbo Tek Limited,,Leisure Services,1.42,equity
+154161,Timex Group India Limited,,CONSUMER DURABLES,3.52,equity
+154161,Travel Food Services Limited,,Leisure Services,0.67,equity
+154161,Vedant Fashions Limited,,Retailing,1.39,equity
+154162,Bharti Airtel Limited,,,7.76,equity
+154162,Mahindra And Mahindra Limited,,Automobiles,6.4,equity
+154162,Titan Company Limited,,CONSUMER DURABLES,4.89,equity
+154162,Varun Beverages Ltd,,,0.61,equity
+154162,Zomato Limited,,Retailing,7.52,equity
+154162,Fashnear Technologies Private Limited,,,0.98,equity
+154162,Fsn E-Commerce Ventures Limited,,Retailing,0.95,equity
+154162,Lenskart Solutions Private Limited,,Retailing,2.09,equity
+154162,Marico Limited New,,,2.84,equity
+154162,Maruti Suzuki India Limited,,Automobiles,3.36,equity
+154162,Pidilite Industries Limited,,Chemicals and Petrochemicals,1.55,equity
+154162,Vishal Mega Mart Private Limited,,Retailing,2.31,equity
+154162,Arvind Fashions Limited (Formerly Arvind J&M Limited),,,0.79,equity
+154162,Berger Paints India Limited,,CONSUMER DURABLES,0.67,equity
+154162,Hindustan Unilever Limited,,Diversified FMCG,1.47,equity
+154162,Honasa Consumer Limited,,Personal Products,1.73,equity
+154162,Nestle India Ltd,,Food Products,7.6,equity
+154162,Safari Industries (India) Limited,,,1.27,equity
+154162,Schloss Bangalore Private Limited,,,1.66,equity
+154162,Tata Consumer Products Limited,,Agricultural Food & Other Products,1.74,equity
+154162,Ather Energy Private Limited,,Automobiles,0.05,equity
+154162,Bluestone Jewellery And Lifestyle Private Limited,,CONSUMER DURABLES,0.93,equity
+154162,Cartrade Tech Limited,,Retailing,1.6,equity
+154162,Corona Remedies Private Limited,,Pharmaceuticals and Biotechnology,1.52,equity
+154162,Doms Industries Private Limited,,Household Products,1.51,equity
+154162,Eureka Forbes Limited,,CONSUMER DURABLES,1.04,equity
+154162,Icici Bank Limited,,,1.4,equity
+154162,International Gemmological Institute (India) Limited,,Commercial Services and Supplies,1.32,equity
+154162,Orkla India Ltd.,,Food Products,1.29,equity
+154162,Ss Retail Limited,,,1.31,equity
+154162,Torrent Pharmaceuticals Limited,,,1.73,equity
+154162,Dodla Dairy Limited,,Food Products,0.52,equity
+154162,Gillette India Limited,,,1.73,equity
+154162,Indigo Paints Limited,,CONSUMER DURABLES,2.35,equity
+154162,Kansai Nerolac Paints Limited,,CONSUMER DURABLES,1.22,equity
+154162,Krishna Institute Of Medical Sciences Limited,,Healthcare Services,1.31,equity
+154162,Max Healthcare Institute Limited,,Healthcare Services,2.25,equity
+154162,Manorama Industries Limited,,Food Products,0.94,equity
+154162,Procter & Gamble Hygiene And Health Care Limited,,Personal Products,0.79,equity
+154162,Tbo Tek Limited,,Leisure Services,1.42,equity
+154162,Timex Group India Limited,,CONSUMER DURABLES,3.52,equity
+154162,Travel Food Services Limited,,Leisure Services,0.67,equity
+154162,Vedant Fashions Limited,,Retailing,1.39,equity
+148751,Bharti Airtel Limited,,,4.95,equity
+148751,Coforge Limited,,IT - Software,1.65,equity
+148751,Hdfc Bank Limited,,,4.11,equity
+148751,Icici Bank Limited,,,6.74,equity
+148751,Infosys Limited,,,3.45,equity
+148751,Kotak Mahindra Bank Limited,,BANKS,3.22,equity
+148751,Nestle India Ltd,,Food Products,1.4,equity
+148751,Tech Mahindra Limited,,IT - Software,3.38,equity
+148751,Titan Company Limited,,CONSUMER DURABLES,4.0,equity
+148751,Torrent Pharmaceuticals Limited,,,3.28,equity
+148751,Zomato Limited,,Retailing,3.82,equity
+148751,Amber Enterprises India Limited,,CONSUMER DURABLES,1.16,equity
+148751,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.28,equity
+148751,Axis Bank Limited,,BANKS,4.03,equity
+148751,Bse Limited,,Capital Markets,1.98,equity
+148751,Bajaj Finance Limited,,Finance,4.81,equity
+148751,Cg Power And Industrial Solutions Limited,,Electrical Equipment,2.49,equity
+148751,Chalet Hotels Limited,,Leisure Services,1.42,equity
+148751,Cholamandalam Investment And Fin. Co. Ltd,,,2.39,equity
+148751,Computer Age Management Services Limited,,Capital Markets,0.96,equity
+148751,Divis Laboratories Limited,,,2.86,equity
+148751,Eicher Motors Limited,,Automobiles,2.98,equity
+148751,Grindwell Norton Limited,,Industrial Products,1.18,equity
+148751,Home First Finance Company India Limited,,Finance,1.45,equity
+148751,Honeywell Automation India Limited,,Industrial Manufacturing,1.56,equity
+148751,Interglobe Aviation Limited,,Transport Services,2.21,equity
+148751,Jyoti Cnc Automation Ltd,,Industrial Manufacturing,1.34,equity
+148751,Kfin Technologies Limited,,Capital Markets,1.13,equity
+148751,Ltimindtree Limited,,IT - Software,1.55,equity
+148751,Mphasis Limited,,,1.77,equity
+148751,Multi Commodity Exchange Of India L,,,0.92,equity
+148751,Nuvama Wealth Management Limited,,Capital Markets,3.16,equity
+148751,Oberoi Realty Limited,,Realty,1.03,equity
+148751,Rbl Bank Limited,,,1.53,equity
+148751,Samvardhana Motherson International Limited,,,2.04,equity
+148751,Sbi Life Insurance Company Limited,,Insurance,1.58,equity
+148751,Shriram Finance Limited,,Finance,2.5,equity
+148751,Trualt Bioenergy Limited,,,1.6,equity
+148751,Tvs Motor Company Limited,,Automobiles,1.85,equity
+148751,Zf Commercial Vehicle Control Systems India Limited,,Auto Components,1.65,equity
+148753,Bharti Airtel Limited,,,4.95,equity
+148753,Coforge Limited,,IT - Software,1.65,equity
+148753,Hdfc Bank Limited,,,4.11,equity
+148753,Icici Bank Limited,,,6.74,equity
+148753,Infosys Limited,,,3.45,equity
+148753,Kotak Mahindra Bank Limited,,BANKS,3.22,equity
+148753,Nestle India Ltd,,Food Products,1.4,equity
+148753,Tech Mahindra Limited,,IT - Software,3.38,equity
+148753,Titan Company Limited,,CONSUMER DURABLES,4.0,equity
+148753,Torrent Pharmaceuticals Limited,,,3.28,equity
+148753,Zomato Limited,,Retailing,3.82,equity
+148753,Amber Enterprises India Limited,,CONSUMER DURABLES,1.16,equity
+148753,Apollo Hospitals Enterprise Limited,,Healthcare Services,3.28,equity
+148753,Axis Bank Limited,,BANKS,4.03,equity
+148753,Bse Limited,,Capital Markets,1.98,equity
+148753,Bajaj Finance Limited,,Finance,4.81,equity
+148753,Cg Power And Industrial Solutions Limited,,Electrical Equipment,2.49,equity
+148753,Chalet Hotels Limited,,Leisure Services,1.42,equity
+148753,Cholamandalam Investment And Fin. Co. Ltd,,,2.39,equity
+148753,Computer Age Management Services Limited,,Capital Markets,0.96,equity
+148753,Divis Laboratories Limited,,,2.86,equity
+148753,Eicher Motors Limited,,Automobiles,2.98,equity

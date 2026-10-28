@@ -20,6 +20,8 @@ from app.backoffice.holdings_ingest import _DEBT_KEYWORDS, _MONTH_NAMES
 _MON = [x[:3].lower() for x in _MONTH_NAMES]
 _ISIN = re.compile(r"IN[A-Z0-9]{10}")
 _CASH = ("treps", "tri-party", "triparty", "tri party", "reverse repo", "repo", "net receivable", "cblo", "net current assets", "cash & cash")
+_NOT_TITLE = re.compile(r"mutual fund|asset management|portfolio|as on|statement|live schemes|registered office|toll free|e-mail|www\.", re.I)
+_SCHEMEISH = re.compile(r"\b(fund|etf|fof|scheme|plan)\b", re.I)
 _TOTAL = re.compile(r"\b(sub\s*total|grand\s*total|total)\b", re.I)
 _TITLE_PATTERNS = (
     re.compile(r"portfolio of\s+(.+?)\s+as on", re.I),
@@ -88,15 +90,16 @@ def _title_and_date(rows: list[tuple]) -> tuple[str | None, str | None]:
         # "SCHEME NAME :" label with the name in the next cell
         if name is None and vals and _s(vals[0]).lower().startswith("scheme name") and len(vals) > 1:
             name = _s(vals[1])
-        # Nippon style: [code, scheme name (long description), "Index" link]
-        if name is None and len(vals) == 3 and _s(vals[2]) == "Index" and isinstance(vals[1], str):
-            name = vals[1].strip()
-        # Axis style: [short code, scheme name]
-        if name is None and len(vals) == 2 and all(isinstance(v, str) for v in vals) and " " not in vals[0].strip() and " " in vals[1].strip():
+        # [code?, scheme name, "Index"] link row (Nippon, LIC)
+        if name is None and len(vals) >= 2 and _s(vals[-1]) == "Index" and isinstance(vals[-2], str) and not _NOT_TITLE.search(vals[-2]):
+            name = vals[-2].strip()
+        # Axis / Mahindra style: [short code, scheme name]; AMC banners and "Monthly Portfolio Statement" lines are not names
+        if name is None and len(vals) == 2 and all(isinstance(v, str) for v in vals) and vals[0].strip() and " " not in vals[0].strip() \
+                and " " in vals[1].strip() and not _NOT_TITLE.search(vals[1]):
             name = vals[1].strip()
         if name is None and len(vals) == 1 and isinstance(vals[0], str):
             t = vals[0].strip()
-            if t and not re.search(r"mutual fund$|portfolio|as on|statement", t, re.I):
+            if t and _SCHEMEISH.search(t) and not _NOT_TITLE.search(t) and not t.startswith("("):
                 fallback = fallback or t
     return name or fallback, as_of
 
@@ -117,6 +120,7 @@ def parse_sheet(rows: list[tuple]) -> dict[str, Any] | None:
     scheme, as_of = _title_and_date(rows[:idx])
     if not scheme:
         return None
+    scheme = re.sub(r"^[A-Z]{1,4}\d{1,3}\s*-\s*(?=[A-Za-z])", "", scheme.strip())  # Groww: "IB01-Groww Large Cap Fund"
     scheme = re.sub(r"\s*\((?:erstwhile|formerly)[^)]*\)\s*", "", scheme, flags=re.I)
     scheme = re.sub(r"\s*(?:\(|-\s+)(?:an?\s+)?(?:open|close|interval)[- ]?ended.*$", "", scheme, flags=re.I).strip()  # name annotation, not a different scheme
     holdings: list[dict[str, Any]] = []
@@ -226,22 +230,75 @@ def list_amcs(fetch) -> list[str]:
     return [n.strip() for n in re.findall(r"<option[^>]*>([^<]+)</option>", sel.group(0)) if "Mutual Fund" in n] if sel else []
 
 
-def latest_disclosure_url(fetch, amc_name: str, year: int | None = None) -> str | None:
-    """Newest month's workbook/zip link on Advisorkhoj's AMC page (it lists the AMC's own files, newest first).
+_DATE_IN_URL = (
+    (re.compile(r"(\d{2})[-_.](\d{2})[-_.](\d{4})"), lambda m: (m[3], m[2], m[1])),
+    (re.compile(r"(\d{2})(\d{2})(20\d{2})"), lambda m: (m[3], m[2], m[1])),
+    (re.compile(r"(\d{1,2})[-_ .,%20]*([A-Za-z]{3})[a-z]*[-_ .,%20]*(20\d{2})"), lambda m: (m[3], f"{_MON.index(m[2].lower()) + 1:02d}" if m[2].lower() in _MON else "00", m[1])),
+    (re.compile(r"([A-Za-z]{3})[a-z]*[-_ .,%20]*(\d{1,2})[-_ .,%20]*(20\d{2})"), lambda m: (m[3], f"{_MON.index(m[1].lower()) + 1:02d}" if m[1].lower() in _MON else "00", m[2])),
+)
 
-    None when the page links only to the AMC's disclosure web page (no direct file): that AMC is reported, not scraped.
+
+def _link_date(url: str) -> tuple[str, str, str] | None:
+    for rx, fn in _DATE_IN_URL:
+        m = rx.search(url)
+        if m:
+            y, mo, d = fn(m)
+            if mo != "00" and 1 <= int(mo) <= 12:
+                return y, mo.zfill(2), d.zfill(2)
+    return None
+
+
+def _page_links(page: str, base: str) -> list[str]:
+    from urllib.parse import urljoin
+
+    import html as _html
+
+    found = []
+    for href in re.findall(r"[\"'(=]([^\"'<> ()]+\.(?:xlsx?|zip)(?:\?[^\"'<> ()]*)?)", page, re.I):
+        url = urljoin(base, _html.unescape(href))
+        if url not in found and re.search(r"portfolio|disclos|statutory|monthly|ir-", url, re.I) and not re.search(r"fortnight|nav_|ter_|dividend|riskometer|branch", url, re.I):
+            found.append(url)
+    return found
+
+
+def disclosure_urls(fetch, amc_name: str, year: int | None = None) -> tuple[list[str], str | None, bool]:
+    """The AMC's newest monthly file link(s), and a reason when none can be fetched.
+
+    Advisorkhoj's AMC page lists the AMC's own files newest first; when it links only to the AMC's public disclosure page,
+    that page is fetched and its static file links read: the newest dated one wins, several undated ones are all used.
+    A page that blocks automated fetches or builds its list with JavaScript is reported, never worked around.
     """
     import html as _html
 
     year = year or date.today().year
     slug = re.sub(r"\s+", "-", amc_name)
+    pages: list[str] = []
+    files: list[str] = []
     for y in (year, year - 1):
         page = fetch(f"{ADVISORKHOJ}/{slug}/{y}").decode("utf-8", "ignore")
         for href in re.findall(r'href="(https?://(?!www\.advisorkhoj)[^"]+)"', page):
             href = _html.unescape(href)
             if _FILE_LINK.search(href):
-                return href
-    return None
+                files.append(href)
+            if re.search(r"portfolio|disclos", href, re.I) and href not in pages:
+                pages.append(href)
+        if files:
+            # Newest first by the date in the link (Advisorkhoj's own order is not always chronological); the caller uses
+            # the first that parses to a real consolidated file, since some AMCs list non-portfolio files among them.
+            files.sort(key=lambda u: _link_date(u) or ("0000", "00", "00"), reverse=True)
+            return files[:12], None, True
+    for page_url in pages[:2]:
+        try:
+            links = _page_links(fetch(page_url).decode("utf-8", "ignore"), page_url)
+        except Exception as exc:
+            return [], f"disclosure page blocked or unreachable ({str(exc)[:60]})", False
+        dated = [(d, u) for u in links if (d := _link_date(u))]
+        if dated:
+            newest = max(d for d, _ in dated)
+            return [u for d, u in dated if d == newest][:80], None, False
+        if links:
+            return links[:80], None, False
+    return [], "no static file links (page needs JavaScript or blocks automated access)", False
 
 
 def ingest_amc(fetch, amc_name: str, dataset_rows: list[tuple[str, str]], fallback_as_of: str | None = None) -> dict[str, Any]:
@@ -252,16 +309,24 @@ def ingest_amc(fetch, amc_name: str, dataset_rows: list[tuple[str, str]], fallba
     from app.backoffice.mf_holdings import normalize_scheme_name
 
     report: dict[str, Any] = {"amc": amc_name, "source_url": None, "sheets": 0, "matched": [], "unmatched": [], "bad_weight": [], "error": None}
-    url = latest_disclosure_url(fetch, amc_name)
-    if not url:
-        report["error"] = "no direct file link (AMC publishes a web page only)"
+    urls, why, first_only = disclosure_urls(fetch, amc_name)
+    if not urls:
+        report["error"] = why
         return {"rows": [], "schemes_meta": [], "report": report}
-    report["source_url"] = url
-    try:
-        sheets = parse_any(fetch(url))
-    except Exception as exc:  # wall, bad zip or changed layout: record, never half-ingest
-        report["error"] = f"{type(exc).__name__}: {str(exc)[:160]}"
-        return {"rows": [], "schemes_meta": [], "report": report}
+    report["source_url"] = urls[0]
+    sheets: list[dict[str, Any]] = []
+    src: dict[int, str] = {}
+    for url in urls:
+        try:
+            got = parse_any(fetch(url))
+        except Exception as exc:  # wall, bad zip or changed layout: record, never half-ingest
+            report["error"] = f"{type(exc).__name__}: {str(exc)[:160]}"
+            continue
+        for sh in got:
+            src[id(sh)] = url
+        sheets.extend(got)
+        if len(got) >= 3 and first_only:  # a real consolidated file has many scheme sheets; fewer means a stray file
+            break
     report["sheets"] = len(sheets)
     by_key: dict[str, list[tuple[str, str]]] = {}
     for code, name in dataset_rows:
@@ -281,9 +346,9 @@ def ingest_amc(fetch, amc_name: str, dataset_rows: list[tuple[str, str]], fallba
             report["unmatched"].append(sh["scheme_name"])
             continue
         seen.add(key)
-        as_of = sh["as_of"] or fallback_as_of
+        as_of = sh["as_of"] or fallback_as_of or ("-".join(d) if (d := _link_date(report["source_url"] or "")) else None)
         for code, name in codes:
-            meta.append({"scheme_code": code, "scheme_name": sh["scheme_name"], "amc": amc_name, "as_of": as_of, "source_url": url})
+            meta.append({"scheme_code": code, "scheme_name": sh["scheme_name"], "amc": amc_name, "as_of": as_of, "source_url": src.get(id(sh), urls[0])})
             rows.extend({"scheme_code": code, "holding_name": h["name"], "isin": h["isin"] or "", "sector": h["sector"] or "",
                          "weight_pct": h["weight_pct"], "instrument_type": h["instrument_type"]} for h in sh["holdings"])
         report["matched"].append(sh["scheme_name"])

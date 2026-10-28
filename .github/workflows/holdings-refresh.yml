@@ -38,10 +38,22 @@ jobs:
           python-version: '3.12'
 
       - name: Install ingest dependencies
-        run: pip install openpyxl
+        run: pip install openpyxl xlrd pandas numpy requests
 
-      - name: Ingest holdings
+      - name: Ingest Motilal Oswal holdings (its own per-scheme files)
         run: python backend/scripts/ingest_holdings.py
+
+      # Every other AMC: newest monthly file found via Advisorkhoj's AMC pages (or the AMC's static disclosure page).
+      # An AMC whose file is blocked, JavaScript-only or unparsable is logged and skipped; its previous rows stay.
+      - name: Ingest all other AMCs
+        run: python backend/scripts/ingest_holdings_amc.py --all
+        continue-on-error: true
+
+      # Funds no AMC file covered (blocked / JavaScript-only AMC sites): equity holdings from Advisorkhoj's public
+      # common-stocks tool. Must run after the AMC step: it skips funds that now have a full disclosure.
+      - name: Ingest remaining equity funds from Advisorkhoj
+        run: python backend/scripts/ingest_holdings_advisorkhoj.py
+        continue-on-error: true
 
       - name: Commit refreshed snapshot
         run: |

@@ -1,0 +1,695 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+122639,HDFC Bank Limited,INE040A01034,Banks,7.75,equity
+122639,Power Grid Corporation of India Limited,INE752E01010,Power,5.6,equity
+122639,ITC Limited,INE154A01025,Diversified FMCG,5.49,equity
+122639,Coal India Limited,INE522F01014,Consumable Fuels,5.39,equity
+122639,ICICI Bank Limited,INE090A01021,Banks,5.24,equity
+122639,Bajaj Holdings & Investment Limited,INE118A01012,Finance,4.96,equity
+122639,Kotak Mahindra Bank Limited,INE237A01036,Banks,4.44,equity
+122639,HCL Technologies Limited,INE860A01027,IT - Software,3.96,equity
+122639,Mahindra & Mahindra Limited,INE101A01026,Automobiles,3.89,equity
+122639,Infosys Limited,INE009A01021,IT - Software,2.93,equity
+122639,Bharti Airtel Limited,INE397D01024,Telecom - Services,2.91,equity
+122639,Axis Bank Limited,INE238A01034,Banks,2.85,equity
+122639,Tata Consultancy Services Limited,INE467B01029,IT - Software,2.5,equity
+122639,DLF Limited,INE271C01023,Realty,2.45,equity
+122639,Maruti Suzuki India Limited,INE585B01010,Automobiles,2.4,equity
+122639,Zydus Lifesciences Limited,INE010B01027,Pharmaceuticals & Biotechnology,1.54,equity
+122639,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.33,equity
+122639,Dr. Reddy's Laboratories Limited,INE089A01031,Pharmaceuticals & Biotechnology,1.23,equity
+122639,Indraprastha Gas Limited,INE203G01027,Gas,1.22,equity
+122639,Zydus Wellness Limited,INE768C01028,Food Products,0.78,equity
+122639,Indian Energy Exchange Limited,INE022Q01020,Capital Markets,0.62,equity
+122639,Petronet LNG Limited,INE347G01014,Gas,0.6,equity
+122639,EID Parry India Limited,INE126A01031,Food Products,0.52,equity
+122639,Mahanagar Gas Limited,INE002S01010,Gas,0.29,equity
+122639,Narayana Hrudayalaya Limited,INE410P01011,Healthcare Services,0.25,equity
+122639,Central Depository Services (India) Limited,INE736A01011,Capital Markets,0.2,equity
+122639,Indus Towers Limited,INE121J01017,Telecom - Services,0.18,equity
+122639,CIE Automotive India Limited,INE536H01010,Auto Components,0.17,equity
+122639,CMS Info System Limited,INE925R01014,Commercial Services & Supplies,0.15,equity
+122639,Maharashtra Scooters Limited,INE288A01013,Finance,0.1,equity
+122639,ICRA Limited,INE725G01011,Capital Markets,0.08,equity
+122639,Nesco Limited,INE317F01035,Commercial Services & Supplies,0.03,equity
+122639,Swaraj Engines Limited,INE277A01016,Industrial Products,0.01,equity
+122639,Reliance Industries Limited,INE002A01018,Petroleum Products,0.29,equity
+122639,Bajaj Finance Limited,INE296A01032,Finance,0.26,equity
+122639,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,0.12,equity
+122639,Canara Bank,INE476A01022,Banks,0.09,equity
+122639,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,0.09,equity
+122639,Titan Company Limited,INE280A01028,Consumer Durables,0.08,equity
+122639,State Bank of India,INE062A01020,Banks,0.08,equity
+122639,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.06,equity
+122639,Hindustan Aeronautics Limited,INE066F01020,Aerospace & Defense,0.05,equity
+122639,Hindalco Industries Limited,INE038A01020,Non - Ferrous Metals,0.05,equity
+122639,Tata Steel Limited,INE081A01020,Ferrous Metals,0.05,equity
+122639,Oil & Natural Gas Corporation Limited,INE213A01029,Oil,0.05,equity
+122639,Hindustan Unilever Limited,INE030A01027,Diversified FMCG,0.04,equity
+122639,IndusInd Bank Limited,INE095A01012,Banks,0.03,equity
+122639,TVS Motor Company Limited,INE494B01023,Automobiles,0.03,equity
+122639,Eicher Motors Limited,INE066A01021,Automobiles,0.03,equity
+122639,Grasim Industries Limited,INE047A01021,Cement & Cement Products,0.02,equity
+122639,Bajaj Finserv Limited,INE918I01026,Finance,0.01,equity
+122639,JSW Steel Limited,INE019A01038,Ferrous Metals,0.01,equity
+122639,Embassy Office Parks REIT,INE041025011,,2.49,other
+122639,Knowledge Realty Trust,INE1JAR25012,,2.18,other
+122639,Brookfield India Real Estate Trust,INE0FDU25010,,1.6,other
+122639,Alphabet Inc A,US02079K3059,,4.29,other
+122639,Meta Platforms Registered Shares A,US30303M1027,,2.83,other
+122639,Microsoft Corp,US5949181045,,2.48,other
+122639,Amazon Com Inc,US0231351067,,2.3,other
+122639,Canara Bank (18/12/2026),INE476A16F78,,0.31,debt
+122639,Kotak Mahindra Bank Limited (18/12/2026),INE237AD6109,,0.21,debt
+122639,Indian Bank (22/01/2027),INE562A16QG2,,0.2,debt
+122639,Punjab National Bank (01/10/2026) #,INE160A16VR2,,0.17,debt
+122639,National Bank For Agriculture and Rural Development (19/01/2027),INE261F16AE9,,0.17,debt
+122639,National Bank For Agriculture and Rural Development (14/01/2027),INE261F16AD1,,0.15,debt
+122639,Small Industries Dev Bank of India (13/10/2026),INE556F16BL5,,0.14,debt
+122639,Canara Bank (11/11/2026),INE476A16E38,,0.14,debt
+122639,Kotak Mahindra Bank Limited (08/01/2027),INE237AD6117,,0.14,debt
+122639,ICICI Bank Limited (27/01/2027),INE090AD6279,,0.13,debt
+122639,National Bank For Agriculture and Rural Development (22/01/2027),INE261F16AF6,,0.1,debt
+122639,National Bank For Agriculture and Rural Development (28/01/2027),INE261F16AH2,,0.1,debt
+122639,Small Industries Dev Bank of India (10/11/2026),INE556F16BR2,,0.07,debt
+122639,HDFC Bank Limited (13/11/2026),INE040A16HW5,,0.07,debt
+122639,HDFC Bank Limited (22/01/2027),INE040A16IK8,,0.07,debt
+122639,Bank of Baroda (04/02/2027),INE028A16LF7,,0.07,debt
+122639,Bank of Baroda (05/02/2027),INE028A16LH3,,0.07,debt
+122639,Axis Bank Limited (27/11/2026),INE238AD6BP3,,0.03,debt
+122639,Punjab National Bank (05/02/2027),INE160A16UE2,,0.03,debt
+122639,Small Industries Dev Bank of India (11/06/2027) #,INE556F16CE8,,0.03,debt
+122639,Bank of Baroda (25/11/2026),INE028A16KK9,,0.02,debt
+122639,Canara Bank (30/11/2026),INE476A16K06,,0.02,debt
+122639,Bank of Baroda (07/12/2026),INE028A16MQ2,,0.02,debt
+122639,Export Import Bank of India (14/12/2026),INE514E14TQ3,,0.31,debt
+122639,Export Import Bank of India (10/12/2026),INE514E14TW1,,0.17,debt
+122639,Bajaj Finance Limited (26/10/2026),INE296A14I67,,0.14,debt
+122639,Indian Oil Corporation Limited (08/12/2026),INE242A14ZC6,,0.07,debt
+122639,Bharat Petroleum Corporation Limited (11/12/2026),INE029A14BY2,,0.07,debt
+122639,ICICI Securities Limited (11/12/2026),INE763G14N92,,0.07,debt
+122639,Sundaram Finance Limited (17/08/2027),INE660A14ZE5,,0.06,debt
+122639,Bajaj Finance Limited (04/11/2026),INE296A14D13,,0.03,debt
+122639,Power Finance Corporation Limited (18/11/2026),INE134E14AZ1,,0.03,debt
+122639,Bajaj Finance Limited (27/08/2027),INE296A14K48,,0.01,debt
+122639,364 Days Tbill (MD 15/10/2026),IN002025Z294,,0.24,debt
+122639,364 Days Tbill (MD 15/01/2027),IN002025Z419,,0.14,debt
+122639,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.07,debt
+122639,Parag Parikh Liquid Fund- Direct Plan- Growth,INF879O01068,,0.6,mf_units
+122639,Net Receivables / (Payables),,,-0.23,cash
+122640,HDFC Bank Limited,INE040A01034,Banks,7.75,equity
+122640,Power Grid Corporation of India Limited,INE752E01010,Power,5.6,equity
+122640,ITC Limited,INE154A01025,Diversified FMCG,5.49,equity
+122640,Coal India Limited,INE522F01014,Consumable Fuels,5.39,equity
+122640,ICICI Bank Limited,INE090A01021,Banks,5.24,equity
+122640,Bajaj Holdings & Investment Limited,INE118A01012,Finance,4.96,equity
+122640,Kotak Mahindra Bank Limited,INE237A01036,Banks,4.44,equity
+122640,HCL Technologies Limited,INE860A01027,IT - Software,3.96,equity
+122640,Mahindra & Mahindra Limited,INE101A01026,Automobiles,3.89,equity
+122640,Infosys Limited,INE009A01021,IT - Software,2.93,equity
+122640,Bharti Airtel Limited,INE397D01024,Telecom - Services,2.91,equity
+122640,Axis Bank Limited,INE238A01034,Banks,2.85,equity
+122640,Tata Consultancy Services Limited,INE467B01029,IT - Software,2.5,equity
+122640,DLF Limited,INE271C01023,Realty,2.45,equity
+122640,Maruti Suzuki India Limited,INE585B01010,Automobiles,2.4,equity
+122640,Zydus Lifesciences Limited,INE010B01027,Pharmaceuticals & Biotechnology,1.54,equity
+122640,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.33,equity
+122640,Dr. Reddy's Laboratories Limited,INE089A01031,Pharmaceuticals & Biotechnology,1.23,equity
+122640,Indraprastha Gas Limited,INE203G01027,Gas,1.22,equity
+122640,Zydus Wellness Limited,INE768C01028,Food Products,0.78,equity
+122640,Indian Energy Exchange Limited,INE022Q01020,Capital Markets,0.62,equity
+122640,Petronet LNG Limited,INE347G01014,Gas,0.6,equity
+122640,EID Parry India Limited,INE126A01031,Food Products,0.52,equity
+122640,Mahanagar Gas Limited,INE002S01010,Gas,0.29,equity
+122640,Narayana Hrudayalaya Limited,INE410P01011,Healthcare Services,0.25,equity
+122640,Central Depository Services (India) Limited,INE736A01011,Capital Markets,0.2,equity
+122640,Indus Towers Limited,INE121J01017,Telecom - Services,0.18,equity
+122640,CIE Automotive India Limited,INE536H01010,Auto Components,0.17,equity
+122640,CMS Info System Limited,INE925R01014,Commercial Services & Supplies,0.15,equity
+122640,Maharashtra Scooters Limited,INE288A01013,Finance,0.1,equity
+122640,ICRA Limited,INE725G01011,Capital Markets,0.08,equity
+122640,Nesco Limited,INE317F01035,Commercial Services & Supplies,0.03,equity
+122640,Swaraj Engines Limited,INE277A01016,Industrial Products,0.01,equity
+122640,Reliance Industries Limited,INE002A01018,Petroleum Products,0.29,equity
+122640,Bajaj Finance Limited,INE296A01032,Finance,0.26,equity
+122640,Sun Pharmaceutical Industries Limited,INE044A01036,Pharmaceuticals & Biotechnology,0.12,equity
+122640,Canara Bank,INE476A01022,Banks,0.09,equity
+122640,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,0.09,equity
+122640,Titan Company Limited,INE280A01028,Consumer Durables,0.08,equity
+122640,State Bank of India,INE062A01020,Banks,0.08,equity
+122640,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.06,equity
+122640,Hindustan Aeronautics Limited,INE066F01020,Aerospace & Defense,0.05,equity
+122640,Hindalco Industries Limited,INE038A01020,Non - Ferrous Metals,0.05,equity
+122640,Tata Steel Limited,INE081A01020,Ferrous Metals,0.05,equity
+122640,Oil & Natural Gas Corporation Limited,INE213A01029,Oil,0.05,equity
+122640,Hindustan Unilever Limited,INE030A01027,Diversified FMCG,0.04,equity
+122640,IndusInd Bank Limited,INE095A01012,Banks,0.03,equity
+122640,TVS Motor Company Limited,INE494B01023,Automobiles,0.03,equity
+122640,Eicher Motors Limited,INE066A01021,Automobiles,0.03,equity
+122640,Grasim Industries Limited,INE047A01021,Cement & Cement Products,0.02,equity
+122640,Bajaj Finserv Limited,INE918I01026,Finance,0.01,equity
+122640,JSW Steel Limited,INE019A01038,Ferrous Metals,0.01,equity
+122640,Embassy Office Parks REIT,INE041025011,,2.49,other
+122640,Knowledge Realty Trust,INE1JAR25012,,2.18,other
+122640,Brookfield India Real Estate Trust,INE0FDU25010,,1.6,other
+122640,Alphabet Inc A,US02079K3059,,4.29,other
+122640,Meta Platforms Registered Shares A,US30303M1027,,2.83,other
+122640,Microsoft Corp,US5949181045,,2.48,other
+122640,Amazon Com Inc,US0231351067,,2.3,other
+122640,Canara Bank (18/12/2026),INE476A16F78,,0.31,debt
+122640,Kotak Mahindra Bank Limited (18/12/2026),INE237AD6109,,0.21,debt
+122640,Indian Bank (22/01/2027),INE562A16QG2,,0.2,debt
+122640,Punjab National Bank (01/10/2026) #,INE160A16VR2,,0.17,debt
+122640,National Bank For Agriculture and Rural Development (19/01/2027),INE261F16AE9,,0.17,debt
+122640,National Bank For Agriculture and Rural Development (14/01/2027),INE261F16AD1,,0.15,debt
+122640,Small Industries Dev Bank of India (13/10/2026),INE556F16BL5,,0.14,debt
+122640,Canara Bank (11/11/2026),INE476A16E38,,0.14,debt
+122640,Kotak Mahindra Bank Limited (08/01/2027),INE237AD6117,,0.14,debt
+122640,ICICI Bank Limited (27/01/2027),INE090AD6279,,0.13,debt
+122640,National Bank For Agriculture and Rural Development (22/01/2027),INE261F16AF6,,0.1,debt
+122640,National Bank For Agriculture and Rural Development (28/01/2027),INE261F16AH2,,0.1,debt
+122640,Small Industries Dev Bank of India (10/11/2026),INE556F16BR2,,0.07,debt
+122640,HDFC Bank Limited (13/11/2026),INE040A16HW5,,0.07,debt
+122640,HDFC Bank Limited (22/01/2027),INE040A16IK8,,0.07,debt
+122640,Bank of Baroda (04/02/2027),INE028A16LF7,,0.07,debt
+122640,Bank of Baroda (05/02/2027),INE028A16LH3,,0.07,debt
+122640,Axis Bank Limited (27/11/2026),INE238AD6BP3,,0.03,debt
+122640,Punjab National Bank (05/02/2027),INE160A16UE2,,0.03,debt
+122640,Small Industries Dev Bank of India (11/06/2027) #,INE556F16CE8,,0.03,debt
+122640,Bank of Baroda (25/11/2026),INE028A16KK9,,0.02,debt
+122640,Canara Bank (30/11/2026),INE476A16K06,,0.02,debt
+122640,Bank of Baroda (07/12/2026),INE028A16MQ2,,0.02,debt
+122640,Export Import Bank of India (14/12/2026),INE514E14TQ3,,0.31,debt
+122640,Export Import Bank of India (10/12/2026),INE514E14TW1,,0.17,debt
+122640,Bajaj Finance Limited (26/10/2026),INE296A14I67,,0.14,debt
+122640,Indian Oil Corporation Limited (08/12/2026),INE242A14ZC6,,0.07,debt
+122640,Bharat Petroleum Corporation Limited (11/12/2026),INE029A14BY2,,0.07,debt
+122640,ICICI Securities Limited (11/12/2026),INE763G14N92,,0.07,debt
+122640,Sundaram Finance Limited (17/08/2027),INE660A14ZE5,,0.06,debt
+122640,Bajaj Finance Limited (04/11/2026),INE296A14D13,,0.03,debt
+122640,Power Finance Corporation Limited (18/11/2026),INE134E14AZ1,,0.03,debt
+122640,Bajaj Finance Limited (27/08/2027),INE296A14K48,,0.01,debt
+122640,364 Days Tbill (MD 15/10/2026),IN002025Z294,,0.24,debt
+122640,364 Days Tbill (MD 15/01/2027),IN002025Z419,,0.14,debt
+122640,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.07,debt
+122640,Parag Parikh Liquid Fund- Direct Plan- Growth,INF879O01068,,0.6,mf_units
+122640,Net Receivables / (Payables),,,-0.23,cash
+143269,8.95% Bharti Telecom NCD Ser XVII (MD 04/12/2026),INE403D08207,,2.2,other
+143269,7.39% Haryana SDL (MD 09/11/2026),IN1620160227,,0.48,other
+143269,7.37% Rajasthan SDL (MD 09/11/2026),IN2920160180,,0.48,other
+143269,7.4% Madhya Pradesh SDL (MD 09/11/2026),IN2120160071,,0.48,other
+143269,7.57% Gujarat SDL (MD 09/11/2026),IN1520220154,,0.19,other
+143269,7.42% Andhra Pradesh SDL (MD 09/11/2026),IN1020160371,,0.1,other
+143269,Canara Bank (23/11/2026),INE476A16K97,,4.74,debt
+143269,Axis Bank Limited (26/11/2026),INE238AD6BO6,,4.74,debt
+143269,HDFC Bank Limited (04/11/2026),INE040A16JY7,,3.8,debt
+143269,HDFC Bank Limited (19/11/2026),INE040A16HY1,,3.79,debt
+143269,Canara Bank (18/12/2026),INE476A16F78,,3.77,debt
+143269,Small Industries Dev Bank of India (18/12/2026),INE556F16BU6,,3.3,debt
+143269,Bank of Baroda (07/12/2026),INE028A16MQ2,,3.21,debt
+143269,Indian Bank (10/12/2026),INE562A16QO6,,2.36,debt
+143269,Bank of Baroda (11/11/2026),INE028A16MW0,,1.9,debt
+143269,Axis Bank Limited (16/12/2026),INE238AD6CA3,,1.89,debt
+143269,Axis Bank Limited (17/12/2026),INE238AD6CB1,,1.89,debt
+143269,Kotak Mahindra Bank Limited (21/12/2026) #,INE237AD6158,,1.7,debt
+143269,Small Industries Dev Bank of India (10/11/2026),INE556F16BR2,,1.42,debt
+143269,Axis Bank Limited (27/11/2026),INE238AD6BP3,,1.42,debt
+143269,Small Industries Dev Bank of India (13/10/2026),INE556F16BL5,,0.95,debt
+143269,Canara Bank (08/12/2026) #,INE476A16J90,,0.47,debt
+143269,Export Import Bank of India (04/11/2026) #,INE514E14TS9,,4.75,debt
+143269,Small Industries Dev Bank of India (02/12/2026),INE556F14MR4,,4.73,debt
+143269,LIC Housing Finance Limited (26/11/2026),INE115A14FY0,,3.79,debt
+143269,Power Finance Corporation Limited (09/12/2026),INE134E14BA2,,3.78,debt
+143269,Tata Capital Limited (04/12/2026),INE976I14RX5,,3.78,debt
+143269,National Bank For Agriculture and Rural Development (11/12/2026),INE261F14QG5,,3.78,debt
+143269,National Bank For Agriculture and Rural Development (27/11/2026),INE261F14QD2,,2.84,debt
+143269,ICICI Securities Limited (22/12/2026),INE763G14O34,,2.82,debt
+143269,Tata Capital Limited (23/11/2026),INE976I14RV9,,1.89,debt
+143269,HDFC Securities Limited (26/11/2026),INE700G14VU1,,1.89,debt
+143269,Kotak Securities Limited (27/11/2026),INE028E14XX2,,1.89,debt
+143269,Export Import Bank of India (04/12/2026),INE514E14TT7,,1.89,debt
+143269,Bajaj Finance Limited (03/12/2026),INE296A14K14,,1.89,debt
+143269,Bajaj Finance Limited (04/11/2026),INE296A14D13,,0.95,debt
+143269,Bajaj Finance Limited (07/12/2026),INE296A14K22,,0.47,debt
+143269,182 Days Tbill (MD 22/10/2026),IN002026Y030,,1.91,debt
+143269,91 Days Tbill (MD 15/10/2026),IN002026X156,,1.34,debt
+143269,Corporate Debt Market Development Fund - Class A2 Units,INF0RQ622028,,0.29,debt
+143269,Net Receivables / (Payables),,,0.19,cash
+143260,8.95% Bharti Telecom NCD Ser XVII (MD 04/12/2026),INE403D08207,,2.2,other
+143260,7.39% Haryana SDL (MD 09/11/2026),IN1620160227,,0.48,other
+143260,7.37% Rajasthan SDL (MD 09/11/2026),IN2920160180,,0.48,other
+143260,7.4% Madhya Pradesh SDL (MD 09/11/2026),IN2120160071,,0.48,other
+143260,7.57% Gujarat SDL (MD 09/11/2026),IN1520220154,,0.19,other
+143260,7.42% Andhra Pradesh SDL (MD 09/11/2026),IN1020160371,,0.1,other
+143260,Canara Bank (23/11/2026),INE476A16K97,,4.74,debt
+143260,Axis Bank Limited (26/11/2026),INE238AD6BO6,,4.74,debt
+143260,HDFC Bank Limited (04/11/2026),INE040A16JY7,,3.8,debt
+143260,HDFC Bank Limited (19/11/2026),INE040A16HY1,,3.79,debt
+143260,Canara Bank (18/12/2026),INE476A16F78,,3.77,debt
+143260,Small Industries Dev Bank of India (18/12/2026),INE556F16BU6,,3.3,debt
+143260,Bank of Baroda (07/12/2026),INE028A16MQ2,,3.21,debt
+143260,Indian Bank (10/12/2026),INE562A16QO6,,2.36,debt
+143260,Bank of Baroda (11/11/2026),INE028A16MW0,,1.9,debt
+143260,Axis Bank Limited (16/12/2026),INE238AD6CA3,,1.89,debt
+143260,Axis Bank Limited (17/12/2026),INE238AD6CB1,,1.89,debt
+143260,Kotak Mahindra Bank Limited (21/12/2026) #,INE237AD6158,,1.7,debt
+143260,Small Industries Dev Bank of India (10/11/2026),INE556F16BR2,,1.42,debt
+143260,Axis Bank Limited (27/11/2026),INE238AD6BP3,,1.42,debt
+143260,Small Industries Dev Bank of India (13/10/2026),INE556F16BL5,,0.95,debt
+143260,Canara Bank (08/12/2026) #,INE476A16J90,,0.47,debt
+143260,Export Import Bank of India (04/11/2026) #,INE514E14TS9,,4.75,debt
+143260,Small Industries Dev Bank of India (02/12/2026),INE556F14MR4,,4.73,debt
+143260,LIC Housing Finance Limited (26/11/2026),INE115A14FY0,,3.79,debt
+143260,Power Finance Corporation Limited (09/12/2026),INE134E14BA2,,3.78,debt
+143260,Tata Capital Limited (04/12/2026),INE976I14RX5,,3.78,debt
+143260,National Bank For Agriculture and Rural Development (11/12/2026),INE261F14QG5,,3.78,debt
+143260,National Bank For Agriculture and Rural Development (27/11/2026),INE261F14QD2,,2.84,debt
+143260,ICICI Securities Limited (22/12/2026),INE763G14O34,,2.82,debt
+143260,Tata Capital Limited (23/11/2026),INE976I14RV9,,1.89,debt
+143260,HDFC Securities Limited (26/11/2026),INE700G14VU1,,1.89,debt
+143260,Kotak Securities Limited (27/11/2026),INE028E14XX2,,1.89,debt
+143260,Export Import Bank of India (04/12/2026),INE514E14TT7,,1.89,debt
+143260,Bajaj Finance Limited (03/12/2026),INE296A14K14,,1.89,debt
+143260,Bajaj Finance Limited (04/11/2026),INE296A14D13,,0.95,debt
+143260,Bajaj Finance Limited (07/12/2026),INE296A14K22,,0.47,debt
+143260,182 Days Tbill (MD 22/10/2026),IN002026Y030,,1.91,debt
+143260,91 Days Tbill (MD 15/10/2026),IN002026X156,,1.34,debt
+143260,Corporate Debt Market Development Fund - Class A2 Units,INF0RQ622028,,0.29,debt
+143260,Net Receivables / (Payables),,,0.19,cash
+147481,HDFC Bank Limited,INE040A01034,Banks,7.57,equity
+147481,Bajaj Holdings & Investment Limited,INE118A01012,Finance,7.05,equity
+147481,Power Grid Corporation of India Limited,INE752E01010,Power,6.58,equity
+147481,Coal India Limited,INE522F01014,Consumable Fuels,6.46,equity
+147481,Maharashtra Scooters Limited,INE288A01013,Finance,5.5,equity
+147481,ITC Limited,INE154A01025,Diversified FMCG,5.02,equity
+147481,ICICI Bank Limited,INE090A01021,Banks,4.86,equity
+147481,Kotak Mahindra Bank Limited,INE237A01036,Banks,4.7,equity
+147481,HCL Technologies Limited,INE860A01027,IT - Software,4.36,equity
+147481,Axis Bank Limited,INE238A01034,Banks,3.63,equity
+147481,Maruti Suzuki India Limited,INE585B01010,Automobiles,3.53,equity
+147481,Mahindra & Mahindra Limited,INE101A01026,Automobiles,3.51,equity
+147481,Bharti Airtel Limited,INE397D01024,Telecom - Services,3.41,equity
+147481,Infosys Limited,INE009A01021,IT - Software,3.13,equity
+147481,CCL Products (India) Limited,INE421D01022,Agricultural Food & other Products,2.65,equity
+147481,CMS Info System Limited,INE925R01014,Commercial Services & Supplies,2.48,equity
+147481,Zydus Lifesciences Limited,INE010B01027,Pharmaceuticals & Biotechnology,1.75,equity
+147481,Tata Consultancy Services Limited,INE467B01029,IT - Software,1.73,equity
+147481,Dr. Reddy's Laboratories Limited,INE089A01031,Pharmaceuticals & Biotechnology,1.39,equity
+147481,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.37,equity
+147481,Wipro Limited,INE075A01022,IT - Software,1.37,equity
+147481,West Coast Paper Mills Limited,INE976A01021,"Paper, Forest & Jute Products",1.29,equity
+147481,Seshaasai Technologies Limited,INE04VU01023,Financial Technology (Fintech),1.18,equity
+147481,Zydus Wellness Limited,INE768C01028,Food Products,1.1,equity
+147481,VST Industries Limited,INE710A01016,Cigarettes & Tobacco Products,0.87,equity
+147481,Indian Energy Exchange Limited,INE022Q01020,Capital Markets,0.78,equity
+147481,Sharda Motor Industries Ltd.,INE597I01028,Auto Components,0.66,equity
+147481,DLF Limited,INE271C01023,Realty,0.56,equity
+147481,Indraprastha Gas Limited,INE203G01027,Gas,0.48,equity
+147481,EID Parry India Limited,INE126A01031,Food Products,0.45,equity
+147481,Narayana Hrudayalaya Limited,INE410P01011,Healthcare Services,0.35,equity
+147481,Sundrop Brands Ltd,INE209A01019,Food Products,0.26,equity
+147481,Central Depository Services (India) Limited,INE736A01011,Capital Markets,0.24,equity
+147481,Swaraj Engines Limited,INE277A01016,Industrial Products,0.21,equity
+147481,Petronet LNG Limited,INE347G01014,Gas,0.11,equity
+147481,Indus Towers Limited,INE121J01017,Telecom - Services,0.1,equity
+147481,Mahanagar Gas Limited,INE002S01010,Gas,0.08,equity
+147481,CIE Automotive India Limited,INE536H01010,Auto Components,0.05,equity
+147481,ICRA Limited,INE725G01011,Capital Markets,0.05,equity
+147481,Nesco Limited,INE317F01035,Commercial Services & Supplies,0.03,equity
+147481,Siyaram Silk Mills Limited,INE076B01028,Textiles & Apparels,0.02,equity
+147481,Embassy Office Parks REIT,INE041025011,,2.58,other
+147481,Brookfield India Real Estate Trust,INE0FDU25010,,2.53,other
+147481,Knowledge Realty Trust,INE1JAR25012,,0.52,other
+147481,Siyaram Silk Mills Limited (Preference Share),INE076B04022,,0.0,debt
+147481,Siyaram Silk Mills Limited (Preference Share),INE076B04014,,0.0,debt
+147481,364 Days Tbill (MD 15/01/2027),IN002025Z419,,0.18,debt
+147481,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.09,debt
+147481,Net Receivables / (Payables),,,0.0,cash
+147482,HDFC Bank Limited,INE040A01034,Banks,7.57,equity
+147482,Bajaj Holdings & Investment Limited,INE118A01012,Finance,7.05,equity
+147482,Power Grid Corporation of India Limited,INE752E01010,Power,6.58,equity
+147482,Coal India Limited,INE522F01014,Consumable Fuels,6.46,equity
+147482,Maharashtra Scooters Limited,INE288A01013,Finance,5.5,equity
+147482,ITC Limited,INE154A01025,Diversified FMCG,5.02,equity
+147482,ICICI Bank Limited,INE090A01021,Banks,4.86,equity
+147482,Kotak Mahindra Bank Limited,INE237A01036,Banks,4.7,equity
+147482,HCL Technologies Limited,INE860A01027,IT - Software,4.36,equity
+147482,Axis Bank Limited,INE238A01034,Banks,3.63,equity
+147482,Maruti Suzuki India Limited,INE585B01010,Automobiles,3.53,equity
+147482,Mahindra & Mahindra Limited,INE101A01026,Automobiles,3.51,equity
+147482,Bharti Airtel Limited,INE397D01024,Telecom - Services,3.41,equity
+147482,Infosys Limited,INE009A01021,IT - Software,3.13,equity
+147482,CCL Products (India) Limited,INE421D01022,Agricultural Food & other Products,2.65,equity
+147482,CMS Info System Limited,INE925R01014,Commercial Services & Supplies,2.48,equity
+147482,Zydus Lifesciences Limited,INE010B01027,Pharmaceuticals & Biotechnology,1.75,equity
+147482,Tata Consultancy Services Limited,INE467B01029,IT - Software,1.73,equity
+147482,Dr. Reddy's Laboratories Limited,INE089A01031,Pharmaceuticals & Biotechnology,1.39,equity
+147482,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,1.37,equity
+147482,Wipro Limited,INE075A01022,IT - Software,1.37,equity
+147482,West Coast Paper Mills Limited,INE976A01021,"Paper, Forest & Jute Products",1.29,equity
+147482,Seshaasai Technologies Limited,INE04VU01023,Financial Technology (Fintech),1.18,equity
+147482,Zydus Wellness Limited,INE768C01028,Food Products,1.1,equity
+147482,VST Industries Limited,INE710A01016,Cigarettes & Tobacco Products,0.87,equity
+147482,Indian Energy Exchange Limited,INE022Q01020,Capital Markets,0.78,equity
+147482,Sharda Motor Industries Ltd.,INE597I01028,Auto Components,0.66,equity
+147482,DLF Limited,INE271C01023,Realty,0.56,equity
+147482,Indraprastha Gas Limited,INE203G01027,Gas,0.48,equity
+147482,EID Parry India Limited,INE126A01031,Food Products,0.45,equity
+147482,Narayana Hrudayalaya Limited,INE410P01011,Healthcare Services,0.35,equity
+147482,Sundrop Brands Ltd,INE209A01019,Food Products,0.26,equity
+147482,Central Depository Services (India) Limited,INE736A01011,Capital Markets,0.24,equity
+147482,Swaraj Engines Limited,INE277A01016,Industrial Products,0.21,equity
+147482,Petronet LNG Limited,INE347G01014,Gas,0.11,equity
+147482,Indus Towers Limited,INE121J01017,Telecom - Services,0.1,equity
+147482,Mahanagar Gas Limited,INE002S01010,Gas,0.08,equity
+147482,CIE Automotive India Limited,INE536H01010,Auto Components,0.05,equity
+147482,ICRA Limited,INE725G01011,Capital Markets,0.05,equity
+147482,Nesco Limited,INE317F01035,Commercial Services & Supplies,0.03,equity
+147482,Siyaram Silk Mills Limited,INE076B01028,Textiles & Apparels,0.02,equity
+147482,Embassy Office Parks REIT,INE041025011,,2.58,other
+147482,Brookfield India Real Estate Trust,INE0FDU25010,,2.53,other
+147482,Knowledge Realty Trust,INE1JAR25012,,0.52,other
+147482,Siyaram Silk Mills Limited (Preference Share),INE076B04022,,0.0,debt
+147482,Siyaram Silk Mills Limited (Preference Share),INE076B04014,,0.0,debt
+147482,364 Days Tbill (MD 15/01/2027),IN002025Z419,,0.18,debt
+147482,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.09,debt
+147482,Net Receivables / (Payables),,,0.0,cash
+148958,Petronet LNG Limited,INE347G01014,Gas,2.09,equity
+148958,Coal India Limited,INE522F01014,Consumable Fuels,2.07,equity
+148958,ITC Limited,INE154A01025,Diversified FMCG,2.02,equity
+148958,Power Grid Corporation of India Limited,INE752E01010,Power,1.97,equity
+148958,Power Finance Corporation Limited,INE134E01011,Finance,0.97,equity
+148958,Swaraj Engines Limited,INE277A01016,Industrial Products,0.64,equity
+148958,Indus Towers Limited,INE121J01017,Telecom - Services,0.07,equity
+148958,Brookfield India Real Estate Trust,INE0FDU25010,,5.06,other
+148958,Embassy Office Parks REIT,INE041025011,,5.01,other
+148958,Knowledge Realty Trust,INE1JAR25012,,2.34,other
+148958,7.21% Tamilnadu SDL (MD 21/01/2032),IN3120250623,,5.55,other
+148958,7.08% Uttar Pradesh SDL (MD 17/02/2031),IN3320200295,,4.27,other
+148958,7.08% Karnataka SDL (MD 12/08/2031),IN1920240232,,3.99,other
+148958,7.72% Maharashtra SDL (MD 01/03/2031),IN2220220171,,3.66,other
+148958,7.72% Maharashtra SDL (MD 23/03/2032),IN2220220239,,2.91,other
+148958,7.38% Karnataka SDL (MD 04/09/2034),IN1920250272,,2.69,other
+148958,7.73% Maharashtra SDL (MD 29/03/2032),IN2220220254,,2.48,other
+148958,8.15% Tata Capital Ltd NCD (MD 11/06/2029),INE976I07DF6,,2.46,other
+148958,7.76% Maharashtra SDL (MD 04/10/2030),IN2220220122,,2.2,other
+148958,7.75% LIC Housing Fin Ltd NCD Tr444 (MD23/08/29),INE115A07QU9,,2.16,other
+148958,7.49% SIDBI NCD Ser VIII (MD 11/06/2029),INE556F08KX8,,2.15,other
+148958,7.42% SIDBI NCD Sr VII (MD 12/03/2029),INE556F08KW0,,2.15,other
+148958,7.49% Embassy Off Park RE NCD Sr XVII (22/06/2029),INE041007217,,2.14,other
+148958,6.78% Maharashtra SDL (MD 25/05/2031),IN2220210073,,1.55,other
+148958,7.82% Tamilnadu SDL (MD 27/10/2032),IN3120220188,,1.46,other
+148958,7.61% Gujarat SDL (MD 03/08/2032),IN1520220071,,1.45,other
+148958,7.33% Maharashtra SDL (MD 31/05/2031),IN2220230055,,1.44,other
+148958,7.64% NABARD Sr 25B NCD (MD 06/12/2029),INE261F08EJ7,,1.44,other
+148958,7.3763% Bajaj Fina NCD (MD 26/06/2028) #,INE296A07TJ4,,1.43,other
+148958,7.40 % NABARD NCD Sr 25D (MD 29/04/2030),INE261F08EL3,,1.42,other
+148958,7.01% Gujarat SDL (MD 03/09/2031),IN1520250136,,1.42,other
+148958,7.12% Tamilnadu SDL (MD 18/02/2032),IN3120250722,,1.42,other
+148958,7.36% Karnataka SDL (MD 13/03/2034),IN1920230316,,1.42,other
+148958,7.14% Madhya Pradesh SDL (MD 19/03/2032),IN2120240246,,1.42,other
+148958,7.17% Uttar Pradesh SDL (MD 10/03/2031),IN3320200329,,1.29,other
+148958,7.39% Tamilnadu SDL (MD 10/05/2033),IN3120230021,,1.29,other
+148958,7.7% Karnataka SDL (MD 08/11/2033),IN1920230068,,1.16,other
+148958,7.6% Karnataka SDL (MD 04/01/2033),IN1920220168,,1.01,other
+148958,7.7% Maharashtra SDL (MD 08/03/2031),IN2220220197,,0.73,other
+148958,7.02% GOI (MD 18/06/2031),IN0020240076,,0.73,other
+148958,7.5% Tamilnadu SDL (MD 24/04/2031),IN3120240020,,0.73,other
+148958,7.39% SIDBI NCD Ser IX (MD 21/03/2030),INE556F08KY6,,0.71,other
+148958,7.7% Bajaj Fin Ltd NCD (MD 20/09/2029) #,INE296A07UB9,,0.71,other
+148958,7.16% NABARD NCD SR 27A (MD 14/12/2029) #,INE261F08EV2,,0.71,other
+148958,7.60% Bajaj Fin Ltd NCD Opt 1 (MD 11/02/2030),INE296A07RD1,,0.71,other
+148958,7.03%National Bk Fin Infra tranch I NCD (MD8/4/30),INE0KUG08076,,0.7,other
+148958,7.07% LIC Hsg Fin Tr 455 NCD (MD 29/04/2030),INE115A07RG6,,0.7,other
+148958,7.38% Bajaj Finance Ltd NCD Opt II (MD 28/06/2030) #,INE296A07TL0,,0.7,other
+148958,6.86% National Bk Fin Infra TR I (MD 13/11/2030),INE0KUG08100,,0.7,other
+148958,6.89% Karnataka SDL (MD 15/12/2033),IN1920210169,,0.69,other
+148958,8.48% Kerala SDL (MD 08/08/2030),IN2020180070,,0.45,other
+148958,7.07% IndiGrid Inf NCD SR AF (20/06/2030),INE219X07520,,0.42,other
+148958,6.75% Karnataka SDL (MD 14/10/2033),IN1920200327,,0.41,other
+148958,8.43% Andhra Pradesh SDL (MD 05/12/2030),IN1020180361,,0.3,other
+148958,7.84% Rajasthan SDL (MD 27/10/2032),IN2920220190,,0.29,other
+148958,7.83% Rajasthan SDL (MD 22/06/2032),IN2920220042,,0.29,other
+148958,7.78% Rajasthan SDL (MD 29/03/2033),IN2920220349,,0.29,other
+148958,7.34% Maharashtra SDL (MD 14/06/2031),IN2220230071,,0.29,other
+148958,7.12% Gujarat SDL (MD 02/03/2032),IN1520210213,,0.28,other
+148958,7.1% Tamilnadu SDL (MD 27/11/2032),IN3120240376,,0.28,other
+148958,7.05% Maharashtra SDL (MD 07/10/2032),IN2220200231,,0.28,other
+148958,7.03% Karnataka SDL (MD 26/09/2033),IN1920240331,,0.28,other
+148958,6.88% Karnataka SDL (MD 08/12/2032),IN1920210144,,0.28,other
+148958,7.15% Karnataka SDL (MD 28/07/2031),IN1920250132,,0.17,other
+148958,8.61% Punjab SDL (MD 14/11/2028),IN2820180106,,0.15,other
+148958,8.5% Andhra Pradesh SDL (MD 28/03/2029),IN1020140134,,0.15,other
+148958,7.7% Rajasthan SDL (MD 18/05/2032),IN2920220018,,0.14,other
+148958,7.7% IndiGRID Infra Trust Ser 3 (MD 06/05/2028),INE219X07215,,0.14,other
+148958,7.32% Maharashtra SDL (MD 31/05/2032),IN2220230063,,0.14,other
+148958,7.3% Tamilnadu SDL (MD 30/03/2032),IN3120210510,,0.14,other
+148958,7.22% Karnataka SDL (MD 05/09/2032),IN1920240299,,0.14,other
+148958,7.21% Tamilnadu SDL (MD 05/09/2032),IN3120240616,,0.14,other
+148958,6.97% Tamilnadu SDL (MD 18/08/2031),IN3120210171,,0.14,other
+148958,6.97% Tamilnadu SDL (MD 13/10/2031),IN3120210213,,0.14,other
+148958,6.83% Karnataka SDL (MD 15/12/2031),IN1920210151,,0.14,other
+148958,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.14,debt
+148958,Corporate Debt Market Development Fund - Class A2 Units,INF0RQ622028,,0.28,debt
+148958,Parag Parikh Liquid Fund- Direct Plan- Growth,INF879O01068,,1.01,mf_units
+148958,Net Receivables / (Payables),,,1.23,cash
+148959,Petronet LNG Limited,INE347G01014,Gas,2.09,equity
+148959,Coal India Limited,INE522F01014,Consumable Fuels,2.07,equity
+148959,ITC Limited,INE154A01025,Diversified FMCG,2.02,equity
+148959,Power Grid Corporation of India Limited,INE752E01010,Power,1.97,equity
+148959,Power Finance Corporation Limited,INE134E01011,Finance,0.97,equity
+148959,Swaraj Engines Limited,INE277A01016,Industrial Products,0.64,equity
+148959,Indus Towers Limited,INE121J01017,Telecom - Services,0.07,equity
+148959,Brookfield India Real Estate Trust,INE0FDU25010,,5.06,other
+148959,Embassy Office Parks REIT,INE041025011,,5.01,other
+148959,Knowledge Realty Trust,INE1JAR25012,,2.34,other
+148959,7.21% Tamilnadu SDL (MD 21/01/2032),IN3120250623,,5.55,other
+148959,7.08% Uttar Pradesh SDL (MD 17/02/2031),IN3320200295,,4.27,other
+148959,7.08% Karnataka SDL (MD 12/08/2031),IN1920240232,,3.99,other
+148959,7.72% Maharashtra SDL (MD 01/03/2031),IN2220220171,,3.66,other
+148959,7.72% Maharashtra SDL (MD 23/03/2032),IN2220220239,,2.91,other
+148959,7.38% Karnataka SDL (MD 04/09/2034),IN1920250272,,2.69,other
+148959,7.73% Maharashtra SDL (MD 29/03/2032),IN2220220254,,2.48,other
+148959,8.15% Tata Capital Ltd NCD (MD 11/06/2029),INE976I07DF6,,2.46,other
+148959,7.76% Maharashtra SDL (MD 04/10/2030),IN2220220122,,2.2,other
+148959,7.75% LIC Housing Fin Ltd NCD Tr444 (MD23/08/29),INE115A07QU9,,2.16,other
+148959,7.49% SIDBI NCD Ser VIII (MD 11/06/2029),INE556F08KX8,,2.15,other
+148959,7.42% SIDBI NCD Sr VII (MD 12/03/2029),INE556F08KW0,,2.15,other
+148959,7.49% Embassy Off Park RE NCD Sr XVII (22/06/2029),INE041007217,,2.14,other
+148959,6.78% Maharashtra SDL (MD 25/05/2031),IN2220210073,,1.55,other
+148959,7.82% Tamilnadu SDL (MD 27/10/2032),IN3120220188,,1.46,other
+148959,7.61% Gujarat SDL (MD 03/08/2032),IN1520220071,,1.45,other
+148959,7.33% Maharashtra SDL (MD 31/05/2031),IN2220230055,,1.44,other
+148959,7.64% NABARD Sr 25B NCD (MD 06/12/2029),INE261F08EJ7,,1.44,other
+148959,7.3763% Bajaj Fina NCD (MD 26/06/2028) #,INE296A07TJ4,,1.43,other
+148959,7.40 % NABARD NCD Sr 25D (MD 29/04/2030),INE261F08EL3,,1.42,other
+148959,7.01% Gujarat SDL (MD 03/09/2031),IN1520250136,,1.42,other
+148959,7.12% Tamilnadu SDL (MD 18/02/2032),IN3120250722,,1.42,other
+148959,7.36% Karnataka SDL (MD 13/03/2034),IN1920230316,,1.42,other
+148959,7.14% Madhya Pradesh SDL (MD 19/03/2032),IN2120240246,,1.42,other
+148959,7.17% Uttar Pradesh SDL (MD 10/03/2031),IN3320200329,,1.29,other
+148959,7.39% Tamilnadu SDL (MD 10/05/2033),IN3120230021,,1.29,other
+148959,7.7% Karnataka SDL (MD 08/11/2033),IN1920230068,,1.16,other
+148959,7.6% Karnataka SDL (MD 04/01/2033),IN1920220168,,1.01,other
+148959,7.7% Maharashtra SDL (MD 08/03/2031),IN2220220197,,0.73,other
+148959,7.02% GOI (MD 18/06/2031),IN0020240076,,0.73,other
+148959,7.5% Tamilnadu SDL (MD 24/04/2031),IN3120240020,,0.73,other
+148959,7.39% SIDBI NCD Ser IX (MD 21/03/2030),INE556F08KY6,,0.71,other
+148959,7.7% Bajaj Fin Ltd NCD (MD 20/09/2029) #,INE296A07UB9,,0.71,other
+148959,7.16% NABARD NCD SR 27A (MD 14/12/2029) #,INE261F08EV2,,0.71,other
+148959,7.60% Bajaj Fin Ltd NCD Opt 1 (MD 11/02/2030),INE296A07RD1,,0.71,other
+148959,7.03%National Bk Fin Infra tranch I NCD (MD8/4/30),INE0KUG08076,,0.7,other
+148959,7.07% LIC Hsg Fin Tr 455 NCD (MD 29/04/2030),INE115A07RG6,,0.7,other
+148959,7.38% Bajaj Finance Ltd NCD Opt II (MD 28/06/2030) #,INE296A07TL0,,0.7,other
+148959,6.86% National Bk Fin Infra TR I (MD 13/11/2030),INE0KUG08100,,0.7,other
+148959,6.89% Karnataka SDL (MD 15/12/2033),IN1920210169,,0.69,other
+148959,8.48% Kerala SDL (MD 08/08/2030),IN2020180070,,0.45,other
+148959,7.07% IndiGrid Inf NCD SR AF (20/06/2030),INE219X07520,,0.42,other
+148959,6.75% Karnataka SDL (MD 14/10/2033),IN1920200327,,0.41,other
+148959,8.43% Andhra Pradesh SDL (MD 05/12/2030),IN1020180361,,0.3,other
+148959,7.84% Rajasthan SDL (MD 27/10/2032),IN2920220190,,0.29,other
+148959,7.83% Rajasthan SDL (MD 22/06/2032),IN2920220042,,0.29,other
+148959,7.78% Rajasthan SDL (MD 29/03/2033),IN2920220349,,0.29,other
+148959,7.34% Maharashtra SDL (MD 14/06/2031),IN2220230071,,0.29,other
+148959,7.12% Gujarat SDL (MD 02/03/2032),IN1520210213,,0.28,other
+148959,7.1% Tamilnadu SDL (MD 27/11/2032),IN3120240376,,0.28,other
+148959,7.05% Maharashtra SDL (MD 07/10/2032),IN2220200231,,0.28,other
+148959,7.03% Karnataka SDL (MD 26/09/2033),IN1920240331,,0.28,other
+148959,6.88% Karnataka SDL (MD 08/12/2032),IN1920210144,,0.28,other
+148959,7.15% Karnataka SDL (MD 28/07/2031),IN1920250132,,0.17,other
+148959,8.61% Punjab SDL (MD 14/11/2028),IN2820180106,,0.15,other
+148959,8.5% Andhra Pradesh SDL (MD 28/03/2029),IN1020140134,,0.15,other
+148959,7.7% Rajasthan SDL (MD 18/05/2032),IN2920220018,,0.14,other
+148959,7.7% IndiGRID Infra Trust Ser 3 (MD 06/05/2028),INE219X07215,,0.14,other
+148959,7.32% Maharashtra SDL (MD 31/05/2032),IN2220230063,,0.14,other
+148959,7.3% Tamilnadu SDL (MD 30/03/2032),IN3120210510,,0.14,other
+148959,7.22% Karnataka SDL (MD 05/09/2032),IN1920240299,,0.14,other
+148959,7.21% Tamilnadu SDL (MD 05/09/2032),IN3120240616,,0.14,other
+148959,6.97% Tamilnadu SDL (MD 18/08/2031),IN3120210171,,0.14,other
+148959,6.97% Tamilnadu SDL (MD 13/10/2031),IN3120210213,,0.14,other
+148959,6.83% Karnataka SDL (MD 15/12/2031),IN1920210151,,0.14,other
+148959,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.14,debt
+148959,Corporate Debt Market Development Fund - Class A2 Units,INF0RQ622028,,0.28,debt
+148959,Parag Parikh Liquid Fund- Direct Plan- Growth,INF879O01068,,1.01,mf_units
+148959,Net Receivables / (Payables),,,1.23,cash
+152468,Coal India Limited,INE522F01014,Consumable Fuels,3.02,equity
+152468,Petronet LNG Limited,INE347G01014,Gas,2.81,equity
+152468,Power Grid Corporation of India Limited,INE752E01010,Power,2.61,equity
+152468,ITC Limited,INE154A01025,Diversified FMCG,2.47,equity
+152468,Nesco Limited,INE317F01035,Commercial Services & Supplies,1.06,equity
+152468,Swaraj Engines Limited,INE277A01016,Industrial Products,1.0,equity
+152468,Power Finance Corporation Limited,INE134E01011,Finance,0.96,equity
+152468,VST Industries Limited,INE710A01016,Cigarettes & Tobacco Products,0.72,equity
+152468,Indus Towers Limited,INE121J01017,Telecom - Services,0.05,equity
+152468,HDFC Bank Limited,INE040A01034,Banks,1.62,equity
+152468,Bharti Airtel Limited,INE397D01024,Telecom - Services,1.53,equity
+152468,Reliance Industries Limited,INE002A01018,Petroleum Products,1.52,equity
+152468,Kotak Mahindra Bank Limited,INE237A01036,Banks,0.72,equity
+152468,Coforge Limited,INE591G01025,IT - Software,0.67,equity
+152468,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.35,equity
+152468,Mahindra & Mahindra Limited,INE101A01026,Automobiles,0.32,equity
+152468,Tata Steel Limited,INE081A01020,Ferrous Metals,0.3,equity
+152468,Titan Company Limited,INE280A01028,Consumer Durables,0.16,equity
+152468,NMDC Limited,INE584A01023,Minerals & Mining,0.14,equity
+152468,Bajaj Finserv Limited,INE918I01026,Finance,0.12,equity
+152468,Aditya Birla Capital Limited,INE674K01013,Finance,0.09,equity
+152468,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,0.09,equity
+152468,DLF Limited,INE271C01023,Realty,0.05,equity
+152468,SBI Life Insurance Company Limited,INE123W01016,Insurance,0.04,equity
+152468,Ambuja Cements Limited,INE079A01024,Cement & Cement Products,0.03,equity
+152468,Brookfield India Real Estate Trust,INE0FDU25010,,5.6,other
+152468,Embassy Office Parks REIT,INE041025011,,5.57,other
+152468,Knowledge Realty Trust,INE1JAR25012,,2.5,other
+152468,7.21% Tamilnadu SDL (MD 21/01/2032),IN3120250623,,3.88,other
+152468,7.12% Tamilnadu SDL (MD 18/02/2032),IN3120250722,,3.87,other
+152468,7.72% Maharashtra SDL (MD 01/03/2031),IN2220220171,,2.99,other
+152468,7.49% Embassy Off Park RE NCD Sr XVII (22/06/2029),INE041007217,,2.92,other
+152468,7.6% Karnataka SDL (MD 04/01/2033),IN1920220168,,2.76,other
+152468,7.61% Gujarat SDL (MD 03/08/2032),IN1520220071,,1.97,other
+152468,8.15% Tata Capital Ltd NCD (MD 11/06/2029),INE976I07DF6,,1.97,other
+152468,7.64% NABARD Sr 25B NCD (MD 06/12/2029),INE261F08EJ7,,1.96,other
+152468,7.42% SIDBI NCD Sr VII (MD 12/03/2029),INE556F08KW0,,1.95,other
+152468,7.3763% Bajaj Fina NCD (MD 26/06/2028) #,INE296A07TJ4,,1.95,other
+152468,7.08% Uttar Pradesh SDL (MD 17/02/2031),IN3320200295,,1.94,other
+152468,6.95% Tamilnadu SDL (MD 17/02/2031),IN3120200362,,1.94,other
+152468,7.01% Gujarat SDL (MD 03/09/2031),IN1520250136,,1.94,other
+152468,7.38% Bajaj Finance Ltd NCD Opt II (MD 28/06/2030) #,INE296A07TL0,,1.91,other
+152468,7.81% Gujarat SDL (MD 12/10/2032),IN1520220113,,1.4,other
+152468,7.7% Karnataka SDL (MD 08/11/2033),IN1920230068,,1.38,other
+152468,7.3% Tamilnadu SDL (MD 30/03/2032),IN3120210510,,1.36,other
+152468,7.7% Maharashtra SDL (MD 08/03/2031),IN2220220197,,1.0,other
+152468,7.72% Maharashtra SDL (MD 23/03/2032),IN2220220239,,0.99,other
+152468,7.02% GOI (MD 18/06/2031),IN0020240076,,0.99,other
+152468,7.33% Maharashtra SDL (MD 31/05/2031),IN2220230055,,0.98,other
+152468,7.75% LIC Housing Fin Ltd NCD Tr444 (MD23/08/29),INE115A07QU9,,0.98,other
+152468,7.57% LIC Hsg Fin NCD Tr 447 Op I (MD 18/10/2029),INE115A07QY1,,0.98,other
+152468,7.49% SIDBI NCD Ser VIII (MD 11/06/2029),INE556F08KX8,,0.98,other
+152468,7.39% Tamilnadu SDL (MD 10/05/2033),IN3120230021,,0.97,other
+152468,7.40 % NABARD NCD Sr 25D (MD 29/04/2030),INE261F08EL3,,0.97,other
+152468,7.38% Karnataka SDL (MD 04/09/2034),IN1920250272,,0.97,other
+152468,7.14% Madhya Pradesh SDL (MD 19/03/2032),IN2120240246,,0.97,other
+152468,7.07% LIC Hsg Fin Tr 455 NCD (MD 29/04/2030),INE115A07RG6,,0.96,other
+152468,7.73% Maharashtra SDL (MD 29/03/2032),IN2220220254,,0.91,other
+152468,6.78% Maharashtra SDL (MD 25/05/2031),IN2220210073,,0.77,other
+152468,7.34% Maharashtra SDL (MD 14/06/2031),IN2220230071,,0.59,other
+152468,7.76% Maharashtra SDL (MD 04/10/2030),IN2220220122,,0.4,other
+152468,7.68% Tamilnadu SDL (MD 25/10/2030),IN3120230278,,0.4,other
+152468,7.6% Tamilnadu SDL (MD 31/01/2031),IN3120230401,,0.4,other
+152468,7.79% Rajasthan SDL (MD 04/10/2032),IN2920220174,,0.4,other
+152468,7.38% Tamilnadu SDL (MD 29/05/2033),IN3120240079,,0.39,other
+152468,7.39% Tamilnadu SDL (MD 26/07/2033),IN3120230179,,0.39,other
+152468,7.08% Karnataka SDL (MD 12/08/2031),IN1920240232,,0.39,other
+152468,7.07% IndiGrid Inf NCD SR AF (20/06/2030),INE219X07520,,0.38,other
+152468,6.88% Karnataka SDL (MD 08/12/2032),IN1920210144,,0.38,other
+152468,6.89% Karnataka SDL (MD 15/12/2033),IN1920210169,,0.38,other
+152468,6.62% Karnataka SDL (MD 30/12/2032),IN1920200541,,0.38,other
+152468,7.93% Karnataka SDL (MD 08/04/2031),IN1920200020,,0.2,other
+152468,7.67% Andhra Pradesh SDL (MD 25/05/2031),IN1020220126,,0.2,other
+152468,7.73% Rajasthan SDL (MD 01/11/2033),IN2920230256,,0.2,other
+152468,7.15% Andhra Pradesh SDL (MD 04/03/2031),IN1020190519,,0.19,other
+152468,7.17% Uttar Pradesh SDL (MD 10/03/2031),IN3320200329,,0.19,other
+152468,7.39% Tamilnadu SDL (MD 21/06/2033),IN3120230096,,0.19,other
+152468,6.94% Rajasthan SDL (MD 29/09/2033),IN2920210308,,0.19,other
+152468,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.19,debt
+152468,Parag Parikh Liquid Fund- Direct Plan- Growth,INF879O01068,,2.77,mf_units
+152468,Net Receivables / (Payables),,,0.82,cash
+152464,Coal India Limited,INE522F01014,Consumable Fuels,3.02,equity
+152464,Petronet LNG Limited,INE347G01014,Gas,2.81,equity
+152464,Power Grid Corporation of India Limited,INE752E01010,Power,2.61,equity
+152464,ITC Limited,INE154A01025,Diversified FMCG,2.47,equity
+152464,Nesco Limited,INE317F01035,Commercial Services & Supplies,1.06,equity
+152464,Swaraj Engines Limited,INE277A01016,Industrial Products,1.0,equity
+152464,Power Finance Corporation Limited,INE134E01011,Finance,0.96,equity
+152464,VST Industries Limited,INE710A01016,Cigarettes & Tobacco Products,0.72,equity
+152464,Indus Towers Limited,INE121J01017,Telecom - Services,0.05,equity
+152464,HDFC Bank Limited,INE040A01034,Banks,1.62,equity
+152464,Bharti Airtel Limited,INE397D01024,Telecom - Services,1.53,equity
+152464,Reliance Industries Limited,INE002A01018,Petroleum Products,1.52,equity
+152464,Kotak Mahindra Bank Limited,INE237A01036,Banks,0.72,equity
+152464,Coforge Limited,INE591G01025,IT - Software,0.67,equity
+152464,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.35,equity
+152464,Mahindra & Mahindra Limited,INE101A01026,Automobiles,0.32,equity
+152464,Tata Steel Limited,INE081A01020,Ferrous Metals,0.3,equity
+152464,Titan Company Limited,INE280A01028,Consumer Durables,0.16,equity
+152464,NMDC Limited,INE584A01023,Minerals & Mining,0.14,equity
+152464,Bajaj Finserv Limited,INE918I01026,Finance,0.12,equity
+152464,Aditya Birla Capital Limited,INE674K01013,Finance,0.09,equity
+152464,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,0.09,equity
+152464,DLF Limited,INE271C01023,Realty,0.05,equity
+152464,SBI Life Insurance Company Limited,INE123W01016,Insurance,0.04,equity
+152464,Ambuja Cements Limited,INE079A01024,Cement & Cement Products,0.03,equity
+152464,Brookfield India Real Estate Trust,INE0FDU25010,,5.6,other
+152464,Embassy Office Parks REIT,INE041025011,,5.57,other
+152464,Knowledge Realty Trust,INE1JAR25012,,2.5,other
+152464,7.21% Tamilnadu SDL (MD 21/01/2032),IN3120250623,,3.88,other
+152464,7.12% Tamilnadu SDL (MD 18/02/2032),IN3120250722,,3.87,other
+152464,7.72% Maharashtra SDL (MD 01/03/2031),IN2220220171,,2.99,other
+152464,7.49% Embassy Off Park RE NCD Sr XVII (22/06/2029),INE041007217,,2.92,other
+152464,7.6% Karnataka SDL (MD 04/01/2033),IN1920220168,,2.76,other
+152464,7.61% Gujarat SDL (MD 03/08/2032),IN1520220071,,1.97,other
+152464,8.15% Tata Capital Ltd NCD (MD 11/06/2029),INE976I07DF6,,1.97,other
+152464,7.64% NABARD Sr 25B NCD (MD 06/12/2029),INE261F08EJ7,,1.96,other
+152464,7.42% SIDBI NCD Sr VII (MD 12/03/2029),INE556F08KW0,,1.95,other
+152464,7.3763% Bajaj Fina NCD (MD 26/06/2028) #,INE296A07TJ4,,1.95,other
+152464,7.08% Uttar Pradesh SDL (MD 17/02/2031),IN3320200295,,1.94,other
+152464,6.95% Tamilnadu SDL (MD 17/02/2031),IN3120200362,,1.94,other
+152464,7.01% Gujarat SDL (MD 03/09/2031),IN1520250136,,1.94,other
+152464,7.38% Bajaj Finance Ltd NCD Opt II (MD 28/06/2030) #,INE296A07TL0,,1.91,other
+152464,7.81% Gujarat SDL (MD 12/10/2032),IN1520220113,,1.4,other
+152464,7.7% Karnataka SDL (MD 08/11/2033),IN1920230068,,1.38,other
+152464,7.3% Tamilnadu SDL (MD 30/03/2032),IN3120210510,,1.36,other
+152464,7.7% Maharashtra SDL (MD 08/03/2031),IN2220220197,,1.0,other
+152464,7.72% Maharashtra SDL (MD 23/03/2032),IN2220220239,,0.99,other
+152464,7.02% GOI (MD 18/06/2031),IN0020240076,,0.99,other
+152464,7.33% Maharashtra SDL (MD 31/05/2031),IN2220230055,,0.98,other
+152464,7.75% LIC Housing Fin Ltd NCD Tr444 (MD23/08/29),INE115A07QU9,,0.98,other
+152464,7.57% LIC Hsg Fin NCD Tr 447 Op I (MD 18/10/2029),INE115A07QY1,,0.98,other
+152464,7.49% SIDBI NCD Ser VIII (MD 11/06/2029),INE556F08KX8,,0.98,other
+152464,7.39% Tamilnadu SDL (MD 10/05/2033),IN3120230021,,0.97,other
+152464,7.40 % NABARD NCD Sr 25D (MD 29/04/2030),INE261F08EL3,,0.97,other
+152464,7.38% Karnataka SDL (MD 04/09/2034),IN1920250272,,0.97,other
+152464,7.14% Madhya Pradesh SDL (MD 19/03/2032),IN2120240246,,0.97,other
+152464,7.07% LIC Hsg Fin Tr 455 NCD (MD 29/04/2030),INE115A07RG6,,0.96,other
+152464,7.73% Maharashtra SDL (MD 29/03/2032),IN2220220254,,0.91,other
+152464,6.78% Maharashtra SDL (MD 25/05/2031),IN2220210073,,0.77,other
+152464,7.34% Maharashtra SDL (MD 14/06/2031),IN2220230071,,0.59,other
+152464,7.76% Maharashtra SDL (MD 04/10/2030),IN2220220122,,0.4,other
+152464,7.68% Tamilnadu SDL (MD 25/10/2030),IN3120230278,,0.4,other
+152464,7.6% Tamilnadu SDL (MD 31/01/2031),IN3120230401,,0.4,other
+152464,7.79% Rajasthan SDL (MD 04/10/2032),IN2920220174,,0.4,other
+152464,7.38% Tamilnadu SDL (MD 29/05/2033),IN3120240079,,0.39,other
+152464,7.39% Tamilnadu SDL (MD 26/07/2033),IN3120230179,,0.39,other
+152464,7.08% Karnataka SDL (MD 12/08/2031),IN1920240232,,0.39,other
+152464,7.07% IndiGrid Inf NCD SR AF (20/06/2030),INE219X07520,,0.38,other
+152464,6.88% Karnataka SDL (MD 08/12/2032),IN1920210144,,0.38,other
+152464,6.89% Karnataka SDL (MD 15/12/2033),IN1920210169,,0.38,other
+152464,6.62% Karnataka SDL (MD 30/12/2032),IN1920200541,,0.38,other
+152464,7.93% Karnataka SDL (MD 08/04/2031),IN1920200020,,0.2,other
+152464,7.67% Andhra Pradesh SDL (MD 25/05/2031),IN1020220126,,0.2,other
+152464,7.73% Rajasthan SDL (MD 01/11/2033),IN2920230256,,0.2,other
+152464,7.15% Andhra Pradesh SDL (MD 04/03/2031),IN1020190519,,0.19,other
+152464,7.17% Uttar Pradesh SDL (MD 10/03/2031),IN3320200329,,0.19,other
+152464,7.39% Tamilnadu SDL (MD 21/06/2033),IN3120230096,,0.19,other
+152464,6.94% Rajasthan SDL (MD 29/09/2033),IN2920210308,,0.19,other
+152464,364 Days Tbill (MD 01/07/2027),IN002026Z136,,0.19,debt
+152464,Parag Parikh Liquid Fund- Direct Plan- Growth,INF879O01068,,2.77,mf_units
+152464,Net Receivables / (Payables),,,0.82,cash

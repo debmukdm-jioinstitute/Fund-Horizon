@@ -209,7 +209,9 @@ def test_v2_research_blocks_and_screener_columns(client):
     assert d["portfolio"]["available"] is (picked in snapshot["schemes"])
     if picked in snapshot["schemes"]:
         assert d["portfolio"]["sector_available"] is True
-        assert d["portfolio"]["holdings"] and d["portfolio"]["sectors"]
+        assert d["portfolio"]["holdings"]
+        # Debt-only funds carry ratings, not industries, so sectors exist only when some holding has one.
+        assert bool(d["portfolio"]["sectors"]) == any(h.get("sector") for h in d["portfolio"]["holdings"])
     else:
         assert d["portfolio"]["sector_available"] is False
         assert d["portfolio"]["holdings"] == []
@@ -239,7 +241,12 @@ def test_v2_research_blocks_and_screener_columns(client):
 
 def test_v2_portfolio_overlap_honest_unavailable(client):
     _login_staff(client, _create_staff())
-    r = client.get("/api/backoffice/mutual-funds/portfolio-overlap?code_a=148535&code_b=148534")
+    from app.backoffice import mf_holdings
+    from app.data.loader import load_metrics
+
+    covered = mf_holdings.load_snapshot()["schemes"]
+    a, b = [c for c in load_metrics()["scheme_code"].astype(str) if c not in covered][:2]  # two funds with no snapshot
+    r = client.get(f"/api/backoffice/mutual-funds/portfolio-overlap?code_a={a}&code_b={b}")
     assert r.status_code == 200
     d = r.json()["data"]
     assert d["portfolio_available"] is False

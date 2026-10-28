@@ -101,6 +101,8 @@ def load_snapshot(data_dir: Path | None = None) -> dict[str, Any]:
                 code = (row.get("scheme_code") or "").strip()
                 if not code:
                     continue
+                if path.name.startswith("advisorkhoj_") and (meta.get(code) or {}).get("amc_slug") != "advisorkhoj":
+                    continue  # a full AMC disclosure now owns this fund; the equity-only fallback rows are stale
                 try:
                     weight = float(row.get("weight_pct") or "")
                 except (TypeError, ValueError):
@@ -129,6 +131,8 @@ def load_snapshot(data_dir: Path | None = None) -> dict[str, Any]:
         scheme["amc"] = info.get("amc")
         scheme["as_of"] = info.get("as_of")
         scheme["source_url"] = info.get("source_url")
+        scheme["coverage_pct"] = info.get("coverage_pct")  # set when only part of the NAV is listed (equity-only sources)
+        scheme["note"] = info.get("note")
         scheme["holdings"].sort(key=lambda h: -(h["weight_pct"] or 0))
         if info.get("amc"):
             amcs.add(str(info["amc"]))
@@ -167,7 +171,7 @@ def _sector_canon(labels: set[str]) -> dict[str, str]:
         longer = [o for o in keys if o != k and o.startswith(k) and len(k) >= 12]
         if len(longer) == 1:
             target[k] = longer[0]
-    display = {k: max(v, key=lambda x: (("and" in x.lower()), len(x))) for k, v in groups.items()}
+    display = {k: max(v, key=lambda x: (not x.isupper(), "and" in x.lower(), len(x))) for k, v in groups.items()}
     return {lab: display[target[k]] for k, labs in groups.items() for lab in labs}
 
 

@@ -1,0 +1,53 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+152358,Shriram Finance Limited,INE721A01047,Finance,7.6,equity
+152358,Redington Limited,INE891D01026,Commercial Services & Supplies,6.26,equity
+152358,Aurobindo Pharma Limited,INE406A01037,Pharmaceuticals & Biotechnology,5.99,equity
+152358,Maruti Suzuki India Limited,INE585B01010,Automobiles,5.87,equity
+152358,Bharti Airtel Limited,INE397D01024,Telecom - Services,5.78,equity
+152358,Prestige Estates Projects Limited,INE811K01011,Realty,4.71,equity
+152358,Tata Motors Passenger Vehicles Limited,INE155A01022,Automobiles,4.66,equity
+152358,Ramkrishna Forgings Limited,INE399G01023,Auto Components,4.58,equity
+152358,InterGlobe Aviation Limited,INE646L01027,Transport Services,4.41,equity
+152358,Hindustan Zinc Limited,INE267A01025,Non - Ferrous Metals,4.26,equity
+152358,Radico Khaitan Limited,INE944F01028,Beverages,4.09,equity
+152358,Tata Steel Limited,INE081A01020,Ferrous Metals,3.76,equity
+152358,Alivus Life Sciences Limited,INE03Q201024,Pharmaceuticals & Biotechnology,3.54,equity
+152358,Granules India Limited,INE101D01020,Pharmaceuticals & Biotechnology,3.41,equity
+152358,Axis Bank Limited,INE238A01034,Banks,3.31,equity
+152358,Hindalco Industries Limited,INE038A01020,Non - Ferrous Metals,3.26,equity
+152358,Indian Energy Exchange Limited,INE022Q01020,Capital Markets,2.68,equity
+152358,Jubilant Foodworks Limited,INE797F01020,Leisure Services,2.47,equity
+152358,United Foodbrands Limited,INE382M01027,Leisure Services,2.42,equity
+152358,Action Construction Equipment Limited,INE731H01025,"Agricultural, Commercial & Construction Vehicles",2.28,equity
+152358,Kaveri Seed Company Limited,INE455I01029,Agricultural Food & other Products,2.23,equity
+152358,The Great Eastern Shipping Company Limited,INE017A01032,Transport Services,1.95,equity
+152358,Medi Assist Healthcare Services Limited,INE456Z01021,Insurance,1.53,equity
+152358,Antony Waste Handling Cell Limited,INE01BK01022,Other Utilities,0.71,equity
+152358,Triparty Repo,,,8.53,cash
+152358,Net Receivables / (Payables),,,-0.29,cash
+152361,Shriram Finance Limited,INE721A01047,Finance,7.6,equity
+152361,Redington Limited,INE891D01026,Commercial Services & Supplies,6.26,equity
+152361,Aurobindo Pharma Limited,INE406A01037,Pharmaceuticals & Biotechnology,5.99,equity
+152361,Maruti Suzuki India Limited,INE585B01010,Automobiles,5.87,equity
+152361,Bharti Airtel Limited,INE397D01024,Telecom - Services,5.78,equity
+152361,Prestige Estates Projects Limited,INE811K01011,Realty,4.71,equity
+152361,Tata Motors Passenger Vehicles Limited,INE155A01022,Automobiles,4.66,equity
+152361,Ramkrishna Forgings Limited,INE399G01023,Auto Components,4.58,equity
+152361,InterGlobe Aviation Limited,INE646L01027,Transport Services,4.41,equity
+152361,Hindustan Zinc Limited,INE267A01025,Non - Ferrous Metals,4.26,equity
+152361,Radico Khaitan Limited,INE944F01028,Beverages,4.09,equity
+152361,Tata Steel Limited,INE081A01020,Ferrous Metals,3.76,equity
+152361,Alivus Life Sciences Limited,INE03Q201024,Pharmaceuticals & Biotechnology,3.54,equity
+152361,Granules India Limited,INE101D01020,Pharmaceuticals & Biotechnology,3.41,equity
+152361,Axis Bank Limited,INE238A01034,Banks,3.31,equity
+152361,Hindalco Industries Limited,INE038A01020,Non - Ferrous Metals,3.26,equity
+152361,Indian Energy Exchange Limited,INE022Q01020,Capital Markets,2.68,equity
+152361,Jubilant Foodworks Limited,INE797F01020,Leisure Services,2.47,equity
+152361,United Foodbrands Limited,INE382M01027,Leisure Services,2.42,equity
+152361,Action Construction Equipment Limited,INE731H01025,"Agricultural, Commercial & Construction Vehicles",2.28,equity
+152361,Kaveri Seed Company Limited,INE455I01029,Agricultural Food & other Products,2.23,equity
+152361,The Great Eastern Shipping Company Limited,INE017A01032,Transport Services,1.95,equity
+152361,Medi Assist Healthcare Services Limited,INE456Z01021,Insurance,1.53,equity
+152361,Antony Waste Handling Cell Limited,INE01BK01022,Other Utilities,0.71,equity
+152361,Triparty Repo,,,8.53,cash
+152361,Net Receivables / (Payables),,,-0.29,cash

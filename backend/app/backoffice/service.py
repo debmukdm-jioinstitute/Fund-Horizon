@@ -44,6 +44,22 @@ class BackofficeService:
     def __init__(self, repo: BackofficeRepository | None = None) -> None:
         self.repo = repo or BackofficeRepository()
 
+    def _series_meta(self) -> dict[str, dict[str, Any]]:
+        meta: dict[str, dict[str, Any]] = {}
+        for inst in _OVERVIEW_SERIES:
+            o = self.repo.get_latest_observation(inst)
+            if not o:
+                continue
+            at = o.get("observed_at") or ""
+            p = self.repo.get_previous_observation(inst, at) or {}
+            meta[inst] = {
+                "as_of": at[:10] or None,
+                "source": o.get("provenance"),
+                "prev": p.get("value_numeric"),
+                "prev_as_of": (p.get("observed_at") or "")[:10] or None,
+            }
+        return meta
+
     # Latest observation helpers -------------------------------------------------------------------------
 
     def _latest(self, instrument_ids: tuple[str, ...]) -> tuple[dict[str, float], str | None]:
@@ -178,11 +194,7 @@ class BackofficeService:
                 "india_10y_2y_bps": in_slope,
             },
             # Each indicator's own latest date and provider, so the page never borrows another series' date.
-            "series_meta": {
-                inst: {"as_of": (o.get("observed_at") or "")[:10] or None, "source": o.get("provenance")}
-                for inst in _OVERVIEW_SERIES
-                if (o := self.repo.get_latest_observation(inst))
-            },
+            "series_meta": self._series_meta(),
             "sources_summary": {
                 "total": len(sources),
                 "ready": sources_ready,

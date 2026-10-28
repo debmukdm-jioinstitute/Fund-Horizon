@@ -352,6 +352,18 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def get_previous_observation(self, instrument_id: str, before: str) -> dict[str, Any] | None:
+        conn = self._conn()
+        try:
+            row = conn.execute(
+                "SELECT * FROM observations WHERE instrument_id = ? AND observed_at < ? AND value_numeric IS NOT NULL "
+                "ORDER BY observed_at DESC LIMIT 1",
+                (instrument_id, before),
+            ).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
     def get_observations_series(
         self,
         instrument_id: str,

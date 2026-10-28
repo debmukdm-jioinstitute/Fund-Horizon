@@ -1144,7 +1144,8 @@ def _v2_blocks(scheme_code: str, row: dict[str, Any], monthly: pd.Series | None)
             "as_of": snap_entry.get("as_of"),
             "amc": snap_entry.get("amc"),
             "sector_available": True,
-            "note": "Sector is the disclosure's own Industry column. Market-cap mix, turnover and style are not in the monthly disclosure, so they stay unavailable. Cash rows (TREPS, net receivables) have no sector and sit in the unclassified share.",
+            "coverage_pct": snap_entry.get("coverage_pct"),
+            "note": snap_entry.get("note") or "Sector is the disclosure's own Industry column. Market-cap mix, turnover and style are not in the monthly disclosure, so they stay unavailable. Cash rows (TREPS, net receivables) have no sector and sit in the unclassified share.",
         }
     else:
         portfolio_block = {

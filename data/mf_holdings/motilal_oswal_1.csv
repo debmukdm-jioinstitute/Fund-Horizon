@@ -655,42 +655,6 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 139870,7.12% Tata Capital Limited 2028 **,INE976I07DB5,CRISIL AAA,3.44,debt
 139870,Triparty Repo,,,8.79,cash
 139870,Net Receivables / (Payables),,,5.42,cash
-147701,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),6.11,equity
-147701,Eternal Limited,INE758T01015,Retailing,4.95,equity
-147701,PTC Industries Ltd,INE596F01018,Industrial Products,4.73,equity
-147701,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,4.6,equity
-147701,Sterlite Technologies Limited,INE089C01029,Telecom - Equipment & Accessories,4.32,equity
-147701,Shriram Finance Limited,INE721A01047,Finance,4.13,equity
-147701,Muthoot Finance Limited,INE414G01012,Finance,4.04,equity
-147701,Apar Industries Limited,INE372A01015,Electrical Equipment,4.02,equity
-147701,Gujarat Fluorochemicals Limited,INE09N301011,Chemicals & Petrochemicals,3.99,equity
-147701,GE Vernova T&D India Limited,INE200A01026,Electrical Equipment,3.15,equity
-147701,Premier Energies Limited,INE0BS701011,Electrical Equipment,3.14,equity
-147701,Meesho Ltd,INE0VDM01015,Retailing,3.11,equity
-147701,Zen Technologies Limited,INE251B01027,Aerospace & Defense,3.09,equity
-147701,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.87,equity
-147701,Onesource Specialty Pharma Limited,INE013P01021,Pharmaceuticals & Biotechnology,2.86,equity
-147701,Suzlon Energy Limited,INE040H01021,Electrical Equipment,2.66,equity
-147701,Ola Electric Mobility Ltd,INE0LXG01040,Automobiles,2.63,equity
-147701,Waaree Energies Limited,INE377N01017,Electrical Equipment,2.56,equity
-147701,Samvardhana Motherson International Limited,INE775A01035,Auto Components,2.51,equity
-147701,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,2.46,equity
-147701,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,2.42,equity
-147701,Titan Company Limited,INE280A01028,Consumer Durables,2.38,equity
-147701,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,2.36,equity
-147701,Ather Energy Limited,INE0LEZ01016,Automobiles,2.32,equity
-147701,Jain Resource Recycling Limited,INE0YD401026,Diversified Metals,2.2,equity
-147701,Bajaj Finance Ltd,INE296A01032,Finance,2.13,equity
-147701,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,2.11,equity
-147701,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,1.96,equity
-147701,Bharat Dynamics Limited,INE171Z01026,Aerospace & Defense,1.75,equity
-147701,V2 Retail Limited,INE945H01021,Retailing,1.64,equity
-147701,Cemindia Projects Ltd,INE686A01026,Construction,1.41,equity
-147701,Adani Enterprises Limited,INE423A01024,Metals & Minerals Trading,1.36,equity
-147701,Religare Enterprises Limited,INE621H01010,Finance,0.64,equity
-147701,Max Healthcare Institute Limited,INE027H01010,Healthcare Services,0.1,equity
-147701,Triparty Repo,,,2.77,cash
-147701,Net Receivables / (Payables),,,0.52,cash
 147704,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),6.11,equity
 147704,Eternal Limited,INE758T01015,Retailing,4.95,equity
 147704,PTC Industries Ltd,INE596F01018,Industrial Products,4.73,equity
@@ -727,6 +691,42 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 147704,Max Healthcare Institute Limited,INE027H01010,Healthcare Services,0.1,equity
 147704,Triparty Repo,,,2.77,cash
 147704,Net Receivables / (Payables),,,0.52,cash
+147701,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),6.11,equity
+147701,Eternal Limited,INE758T01015,Retailing,4.95,equity
+147701,PTC Industries Ltd,INE596F01018,Industrial Products,4.73,equity
+147701,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,4.6,equity
+147701,Sterlite Technologies Limited,INE089C01029,Telecom - Equipment & Accessories,4.32,equity
+147701,Shriram Finance Limited,INE721A01047,Finance,4.13,equity
+147701,Muthoot Finance Limited,INE414G01012,Finance,4.04,equity
+147701,Apar Industries Limited,INE372A01015,Electrical Equipment,4.02,equity
+147701,Gujarat Fluorochemicals Limited,INE09N301011,Chemicals & Petrochemicals,3.99,equity
+147701,GE Vernova T&D India Limited,INE200A01026,Electrical Equipment,3.15,equity
+147701,Premier Energies Limited,INE0BS701011,Electrical Equipment,3.14,equity
+147701,Meesho Ltd,INE0VDM01015,Retailing,3.11,equity
+147701,Zen Technologies Limited,INE251B01027,Aerospace & Defense,3.09,equity
+147701,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.87,equity
+147701,Onesource Specialty Pharma Limited,INE013P01021,Pharmaceuticals & Biotechnology,2.86,equity
+147701,Suzlon Energy Limited,INE040H01021,Electrical Equipment,2.66,equity
+147701,Ola Electric Mobility Ltd,INE0LXG01040,Automobiles,2.63,equity
+147701,Waaree Energies Limited,INE377N01017,Electrical Equipment,2.56,equity
+147701,Samvardhana Motherson International Limited,INE775A01035,Auto Components,2.51,equity
+147701,Divi's Laboratories Limited,INE361B01024,Pharmaceuticals & Biotechnology,2.46,equity
+147701,Solar Industries India Limited,INE343H01029,Chemicals & Petrochemicals,2.42,equity
+147701,Titan Company Limited,INE280A01028,Consumer Durables,2.38,equity
+147701,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,2.36,equity
+147701,Ather Energy Limited,INE0LEZ01016,Automobiles,2.32,equity
+147701,Jain Resource Recycling Limited,INE0YD401026,Diversified Metals,2.2,equity
+147701,Bajaj Finance Ltd,INE296A01032,Finance,2.13,equity
+147701,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,2.11,equity
+147701,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,1.96,equity
+147701,Bharat Dynamics Limited,INE171Z01026,Aerospace & Defense,1.75,equity
+147701,V2 Retail Limited,INE945H01021,Retailing,1.64,equity
+147701,Cemindia Projects Ltd,INE686A01026,Construction,1.41,equity
+147701,Adani Enterprises Limited,INE423A01024,Metals & Minerals Trading,1.36,equity
+147701,Religare Enterprises Limited,INE621H01010,Finance,0.64,equity
+147701,Max Healthcare Institute Limited,INE027H01010,Healthcare Services,0.1,equity
+147701,Triparty Repo,,,2.77,cash
+147701,Net Receivables / (Payables),,,0.52,cash
 153023,Laurus Labs Limited,INE947Q01028,Pharmaceuticals & Biotechnology,11.83,equity
 153023,Lupin Limited,INE326A01037,Pharmaceuticals & Biotechnology,7.57,equity
 153023,Aurobindo Pharma Limited,INE406A01037,Pharmaceuticals & Biotechnology,7.09,equity
@@ -820,6 +820,35 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 152964,Net web Technologies India Limited,INE0NT901020,IT - Services,0.2,equity
 152964,Triparty Repo,,,5.06,cash
 152964,Net Receivables / (Payables),,,1.51,cash
+152966,ESDS Software Solution Ltd,INE0DRI01029,IT - Services,15.73,equity
+152966,Eternal Limited,INE758T01015,Retailing,6.37,equity
+152966,Coforge Limited,INE591G01025,IT - Software,5.65,equity
+152966,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),5.48,equity
+152966,Hexaware Technologies Limited,INE093A01041,IT - Software,4.75,equity
+152966,Firstsource Solutions Limited,INE684F01012,Commercial Services & Supplies,4.29,equity
+152966,PB Fintech Limited,INE417T01026,Financial Technology (Fintech),4.2,equity
+152966,Zensar Technologies Limited,INE520A01027,IT - Software,4.19,equity
+152966,Info Edge India Ltd,INE663F01032,Retailing,3.69,equity
+152966,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,3.4,equity
+152966,Meesho Ltd,INE0VDM01015,Retailing,3.36,equity
+152966,eClerx Services Limited,INE738I01010,Commercial Services & Supplies,3.32,equity
+152966,Rategain Travel Technologies Limited,INE0CLI01024,IT - Software,3.12,equity
+152966,Urban Company Ltd,INE0CAZ01013,Retailing,2.92,equity
+152966,Mastek Limited,INE759A01021,IT - Software,2.6,equity
+152966,Le Travenues Technology Ltd,INE0HV901016,Leisure Services,2.51,equity
+152966,Intellect Design Arena Limited,INE306R01017,IT - Software,2.43,equity
+152966,Pine Labs Limited,INE15B701018,Financial Technology (Fintech),2.38,equity
+152966,C.E. Info Systems Limited,INE0BV301023,IT - Software,2.35,equity
+152966,Wework India Management Limited,INE085001019,Commercial Services & Supplies,2.06,equity
+152966,Emmvee Photovoltaic Power Limited,INE1C6T01020,Electrical Equipment,2.06,equity
+152966,Birlasoft Limited,INE836A01035,IT - Software,1.92,equity
+152966,Amagi Media Labs Limited,INE121R01077,IT - Services,1.8,equity
+152966,Fractal Analytics Ltd,INE212S01015,IT - Software,1.68,equity
+152966,GNG Electronics Limited,INE18JU01028,IT - Hardware,0.63,equity
+152966,Sonata Software Limited,INE269A01021,IT - Software,0.34,equity
+152966,Net web Technologies India Limited,INE0NT901020,IT - Services,0.2,equity
+152966,Triparty Repo,,,5.06,cash
+152966,Net Receivables / (Payables),,,1.51,cash
 152965,ESDS Software Solution Ltd,INE0DRI01029,IT - Services,15.73,equity
 152965,Eternal Limited,INE758T01015,Retailing,6.37,equity
 152965,Coforge Limited,INE591G01025,IT - Software,5.65,equity
@@ -878,35 +907,6 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 152967,Net web Technologies India Limited,INE0NT901020,IT - Services,0.2,equity
 152967,Triparty Repo,,,5.06,cash
 152967,Net Receivables / (Payables),,,1.51,cash
-152966,ESDS Software Solution Ltd,INE0DRI01029,IT - Services,15.73,equity
-152966,Eternal Limited,INE758T01015,Retailing,6.37,equity
-152966,Coforge Limited,INE591G01025,IT - Software,5.65,equity
-152966,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),5.48,equity
-152966,Hexaware Technologies Limited,INE093A01041,IT - Software,4.75,equity
-152966,Firstsource Solutions Limited,INE684F01012,Commercial Services & Supplies,4.29,equity
-152966,PB Fintech Limited,INE417T01026,Financial Technology (Fintech),4.2,equity
-152966,Zensar Technologies Limited,INE520A01027,IT - Software,4.19,equity
-152966,Info Edge India Ltd,INE663F01032,Retailing,3.69,equity
-152966,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,3.4,equity
-152966,Meesho Ltd,INE0VDM01015,Retailing,3.36,equity
-152966,eClerx Services Limited,INE738I01010,Commercial Services & Supplies,3.32,equity
-152966,Rategain Travel Technologies Limited,INE0CLI01024,IT - Software,3.12,equity
-152966,Urban Company Ltd,INE0CAZ01013,Retailing,2.92,equity
-152966,Mastek Limited,INE759A01021,IT - Software,2.6,equity
-152966,Le Travenues Technology Ltd,INE0HV901016,Leisure Services,2.51,equity
-152966,Intellect Design Arena Limited,INE306R01017,IT - Software,2.43,equity
-152966,Pine Labs Limited,INE15B701018,Financial Technology (Fintech),2.38,equity
-152966,C.E. Info Systems Limited,INE0BV301023,IT - Software,2.35,equity
-152966,Wework India Management Limited,INE085001019,Commercial Services & Supplies,2.06,equity
-152966,Emmvee Photovoltaic Power Limited,INE1C6T01020,Electrical Equipment,2.06,equity
-152966,Birlasoft Limited,INE836A01035,IT - Software,1.92,equity
-152966,Amagi Media Labs Limited,INE121R01077,IT - Services,1.8,equity
-152966,Fractal Analytics Ltd,INE212S01015,IT - Software,1.68,equity
-152966,GNG Electronics Limited,INE18JU01028,IT - Hardware,0.63,equity
-152966,Sonata Software Limited,INE269A01021,IT - Software,0.34,equity
-152966,Net web Technologies India Limited,INE0NT901020,IT - Services,0.2,equity
-152966,Triparty Repo,,,5.06,cash
-152966,Net Receivables / (Payables),,,1.51,cash
 152712,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,19.97,equity
 152712,Hindustan Aeronautics Limited,INE066F01020,Aerospace & Defense,19.68,equity
 152712,Bharat Forge Limited,INE465A01025,Auto Components,13.28,equity
@@ -955,38 +955,6 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 152711,Unimech Aerospace and Manufacturing Limited,INE0U3I01011,Aerospace & Defense,0.38,equity
 152711,Triparty Repo,,,1.31,cash
 152711,Net Receivables / (Payables),,,-0.6,cash
-133386,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,5.74,equity
-133386,PTC Industries Ltd,INE596F01018,Industrial Products,5.23,equity
-133386,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),4.8,equity
-133386,Sterlite Technologies Limited,INE089C01029,Telecom - Equipment & Accessories,4.54,equity
-133386,MTAR Technologies Limited,INE864I01014,Electrical Equipment,4.32,equity
-133386,Gujarat Fluorochemicals Limited,INE09N301011,Chemicals & Petrochemicals,4.22,equity
-133386,Shaily Engineering Plastics Limited,INE151G01028,Consumer Durables,4.18,equity
-133386,Apar Industries Limited,INE372A01015,Electrical Equipment,3.91,equity
-133386,Zen Technologies Limited,INE251B01027,Aerospace & Defense,3.91,equity
-133386,S.J.S. Enterprises Limited,INE284S01014,Auto Components,3.88,equity
-133386,Ather Energy Limited,INE0LEZ01016,Automobiles,3.79,equity
-133386,Shriram Finance Limited,INE721A01047,Finance,3.42,equity
-133386,Onesource Specialty Pharma Limited,INE013P01021,Pharmaceuticals & Biotechnology,3.39,equity
-133386,Jain Resource Recycling Limited,INE0YD401026,Diversified Metals,3.32,equity
-133386,Muthoot Finance Limited,INE414G01012,Finance,3.29,equity
-133386,ESDS Software Solution Ltd,INE0DRI01029,IT - Services,2.98,equity
-133386,Waaree Energies Limited,INE377N01017,Electrical Equipment,2.91,equity
-133386,Piramal Finance Limited,INE202B01038,Finance,2.88,equity
-133386,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,2.75,equity
-133386,Kalyan Jewellers India Limited,INE303R01014,Consumer Durables,2.69,equity
-133386,Premier Energies Limited,INE0BS701011,Electrical Equipment,2.58,equity
-133386,Ola Electric Mobility Ltd,INE0LXG01040,Automobiles,2.57,equity
-133386,K.P.R. Mill Limited,INE930H01031,Textiles & Apparels,2.53,equity
-133386,KSB Limited,INE999A01023,Industrial Products,2.49,equity
-133386,Data Patterns (India) Limited,INE0IX101010,Aerospace & Defense,2.22,equity
-133386,Nippon Life India Asset Management Limited,INE298J01013,Capital Markets,2.19,equity
-133386,Suzlon Energy Limited,INE040H01021,Electrical Equipment,2.05,equity
-133386,Bharat Dynamics Limited,INE171Z01026,Aerospace & Defense,1.64,equity
-133386,Cemindia Projects Ltd,INE686A01026,Construction,1.55,equity
-133386,Religare Enterprises Limited,INE621H01010,Finance,0.65,equity
-133386,Triparty Repo,,,2.63,cash
-133386,Net Receivables / (Payables),,,0.75,cash
 133385,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,5.74,equity
 133385,PTC Industries Ltd,INE596F01018,Industrial Products,5.23,equity
 133385,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),4.8,equity
@@ -1019,38 +987,38 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 133385,Religare Enterprises Limited,INE621H01010,Finance,0.65,equity
 133385,Triparty Repo,,,2.63,cash
 133385,Net Receivables / (Payables),,,0.75,cash
-122389,ICICI Prudential Asset Management Company Limited,INE346A01027,Capital Markets,3.86,equity
-122389,Sansera Engineering Limited,INE953O01021,Auto Components,3.81,equity
-122389,State Bank of India,INE062A01020,Banks,3.71,equity
-122389,Coforge Limited,INE591G01025,IT - Software,3.71,equity
-122389,Syrma SGS Technology Ltd,INE0DYJ01015,Industrial Manufacturing,3.67,equity
-122389,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),3.53,equity
-122389,Shadowfax Technologies Limited,INE12UN01015,Transport Services,3.53,equity
-122389,Eternal Limited,INE758T01015,Retailing,3.53,equity
-122389,PNB Housing Finance Limited,INE572E01012,Finance,3.45,equity
-122389,Aditya Infotech Limited,INE819V01029,Industrial Manufacturing,3.44,equity
-122389,Titan Company Limited,INE280A01028,Consumer Durables,3.36,equity
-122389,AU Small Finance Bank Limited,INE949L01017,Banks,3.32,equity
-122389,IndusInd Bank Limited,INE095A01012,Banks,3.28,equity
-122389,MTAR Technologies Limited,INE864I01014,Electrical Equipment,3.28,equity
-122389,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,3.25,equity
-122389,Lohia Corp Limited,INE0QJW01029,Industrial Manufacturing,3.18,equity
-122389,Acutaas Chemicals Limited,INE00FF01025,Pharmaceuticals & Biotechnology,3.1,equity
-122389,eClerx Services Limited,INE738I01010,Commercial Services & Supplies,2.88,equity
-122389,Spectrum Electrical Industries Ltd,INE01EO01010,Industrial Manufacturing,2.87,equity
-122389,Rubicon Research Limited,INE506V01022,Pharmaceuticals & Biotechnology,2.82,equity
-122389,PTC Industries Ltd,INE596F01018,Industrial Products,2.8,equity
-122389,Wework India Management Limited,INE085001019,Commercial Services & Supplies,2.75,equity
-122389,UNO Minda Limited,INE405E01023,Auto Components,2.73,equity
-122389,ABB India Limited,INE117A01022,Electrical Equipment,2.68,equity
-122389,Meesho Ltd,INE0VDM01015,Retailing,2.57,equity
-122389,Diamond Power Infrastructure Ltd.,INE989C01038,Electrical Equipment,2.48,equity
-122389,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,2.4,equity
-122389,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.27,equity
-122389,Shriram Finance Limited,INE721A01047,Finance,1.43,equity
-122389,Premier Energies Limited,INE0BS701011,Electrical Equipment,1.41,equity
-122389,Triparty Repo,,,4.85,cash
-122389,Net Receivables / (Payables),,,4.05,cash
+133386,Multi Commodity Exchange of India Limited,INE745G01043,Capital Markets,5.74,equity
+133386,PTC Industries Ltd,INE596F01018,Industrial Products,5.23,equity
+133386,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),4.8,equity
+133386,Sterlite Technologies Limited,INE089C01029,Telecom - Equipment & Accessories,4.54,equity
+133386,MTAR Technologies Limited,INE864I01014,Electrical Equipment,4.32,equity
+133386,Gujarat Fluorochemicals Limited,INE09N301011,Chemicals & Petrochemicals,4.22,equity
+133386,Shaily Engineering Plastics Limited,INE151G01028,Consumer Durables,4.18,equity
+133386,Apar Industries Limited,INE372A01015,Electrical Equipment,3.91,equity
+133386,Zen Technologies Limited,INE251B01027,Aerospace & Defense,3.91,equity
+133386,S.J.S. Enterprises Limited,INE284S01014,Auto Components,3.88,equity
+133386,Ather Energy Limited,INE0LEZ01016,Automobiles,3.79,equity
+133386,Shriram Finance Limited,INE721A01047,Finance,3.42,equity
+133386,Onesource Specialty Pharma Limited,INE013P01021,Pharmaceuticals & Biotechnology,3.39,equity
+133386,Jain Resource Recycling Limited,INE0YD401026,Diversified Metals,3.32,equity
+133386,Muthoot Finance Limited,INE414G01012,Finance,3.29,equity
+133386,ESDS Software Solution Ltd,INE0DRI01029,IT - Services,2.98,equity
+133386,Waaree Energies Limited,INE377N01017,Electrical Equipment,2.91,equity
+133386,Piramal Finance Limited,INE202B01038,Finance,2.88,equity
+133386,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,2.75,equity
+133386,Kalyan Jewellers India Limited,INE303R01014,Consumer Durables,2.69,equity
+133386,Premier Energies Limited,INE0BS701011,Electrical Equipment,2.58,equity
+133386,Ola Electric Mobility Ltd,INE0LXG01040,Automobiles,2.57,equity
+133386,K.P.R. Mill Limited,INE930H01031,Textiles & Apparels,2.53,equity
+133386,KSB Limited,INE999A01023,Industrial Products,2.49,equity
+133386,Data Patterns (India) Limited,INE0IX101010,Aerospace & Defense,2.22,equity
+133386,Nippon Life India Asset Management Limited,INE298J01013,Capital Markets,2.19,equity
+133386,Suzlon Energy Limited,INE040H01021,Electrical Equipment,2.05,equity
+133386,Bharat Dynamics Limited,INE171Z01026,Aerospace & Defense,1.64,equity
+133386,Cemindia Projects Ltd,INE686A01026,Construction,1.55,equity
+133386,Religare Enterprises Limited,INE621H01010,Finance,0.65,equity
+133386,Triparty Repo,,,2.63,cash
+133386,Net Receivables / (Payables),,,0.75,cash
 122387,ICICI Prudential Asset Management Company Limited,INE346A01027,Capital Markets,3.86,equity
 122387,Sansera Engineering Limited,INE953O01021,Auto Components,3.81,equity
 122387,State Bank of India,INE062A01020,Banks,3.71,equity
@@ -1083,6 +1051,38 @@ scheme_code,holding_name,isin,sector,weight_pct,instrument_type
 122387,Premier Energies Limited,INE0BS701011,Electrical Equipment,1.41,equity
 122387,Triparty Repo,,,4.85,cash
 122387,Net Receivables / (Payables),,,4.05,cash
+122389,ICICI Prudential Asset Management Company Limited,INE346A01027,Capital Markets,3.86,equity
+122389,Sansera Engineering Limited,INE953O01021,Auto Components,3.81,equity
+122389,State Bank of India,INE062A01020,Banks,3.71,equity
+122389,Coforge Limited,INE591G01025,IT - Software,3.71,equity
+122389,Syrma SGS Technology Ltd,INE0DYJ01015,Industrial Manufacturing,3.67,equity
+122389,One 97 Communications Limited,INE982J01020,Financial Technology (Fintech),3.53,equity
+122389,Shadowfax Technologies Limited,INE12UN01015,Transport Services,3.53,equity
+122389,Eternal Limited,INE758T01015,Retailing,3.53,equity
+122389,PNB Housing Finance Limited,INE572E01012,Finance,3.45,equity
+122389,Aditya Infotech Limited,INE819V01029,Industrial Manufacturing,3.44,equity
+122389,Titan Company Limited,INE280A01028,Consumer Durables,3.36,equity
+122389,AU Small Finance Bank Limited,INE949L01017,Banks,3.32,equity
+122389,IndusInd Bank Limited,INE095A01012,Banks,3.28,equity
+122389,MTAR Technologies Limited,INE864I01014,Electrical Equipment,3.28,equity
+122389,Billionbrains Garage Ventures Ltd,INE0HOQ01053,Capital Markets,3.25,equity
+122389,Lohia Corp Limited,INE0QJW01029,Industrial Manufacturing,3.18,equity
+122389,Acutaas Chemicals Limited,INE00FF01025,Pharmaceuticals & Biotechnology,3.1,equity
+122389,eClerx Services Limited,INE738I01010,Commercial Services & Supplies,2.88,equity
+122389,Spectrum Electrical Industries Ltd,INE01EO01010,Industrial Manufacturing,2.87,equity
+122389,Rubicon Research Limited,INE506V01022,Pharmaceuticals & Biotechnology,2.82,equity
+122389,PTC Industries Ltd,INE596F01018,Industrial Products,2.8,equity
+122389,Wework India Management Limited,INE085001019,Commercial Services & Supplies,2.75,equity
+122389,UNO Minda Limited,INE405E01023,Auto Components,2.73,equity
+122389,ABB India Limited,INE117A01022,Electrical Equipment,2.68,equity
+122389,Meesho Ltd,INE0VDM01015,Retailing,2.57,equity
+122389,Diamond Power Infrastructure Ltd.,INE989C01038,Electrical Equipment,2.48,equity
+122389,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,2.4,equity
+122389,CG Power and Industrial Solutions Limited,INE067A01029,Electrical Equipment,2.27,equity
+122389,Shriram Finance Limited,INE721A01047,Finance,1.43,equity
+122389,Premier Energies Limited,INE0BS701011,Electrical Equipment,1.41,equity
+122389,Triparty Repo,,,4.85,cash
+122389,Net Receivables / (Payables),,,4.05,cash
 153025,Hero MotoCorp Limited,INE158A01026,Automobiles,7.03,equity
 153025,The Indian Hotels Company Limited,INE053A01029,Leisure Services,6.61,equity
 153025,Dixon Technologies (India) Limited,INE935N01020,Consumer Durables,5.64,equity

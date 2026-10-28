@@ -346,6 +346,7 @@ def write_snapshot(
         manifest["schemes"][str(meta["scheme_code"])] = {
             "scheme_name": meta["scheme_name"], "amc": meta["amc"],
             "amc_slug": amc_slug, "as_of": meta["as_of"], "source_url": meta["source_url"],
+            **{k: meta[k] for k in ("coverage_pct", "note") if meta.get(k) is not None},
         }
     # Chunk rows so no single file exceeds the connector-friendly size.
     header = ["scheme_code", "holding_name", "isin", "sector", "weight_pct", "instrument_type"]

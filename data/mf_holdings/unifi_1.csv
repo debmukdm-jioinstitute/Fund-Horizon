@@ -1,0 +1,165 @@
+scheme_code,holding_name,isin,sector,weight_pct,instrument_type
+153376,HDFC Bank Limited,INE040A01034,BANKS,2.99,equity
+153376,Tata Consultancy Services Limited,INE467B01029,IT - Software,2.73,equity
+153376,Infosys Limited,INE009A01021,IT - Software,2.58,equity
+153376,Kotak Mahindra Bank Limited,INE237A01028,BANKS,2.0,equity
+153376,IDFC First Bank Limited,INE092T01019,BANKS,1.91,equity
+153376,Axis Bank Limited,INE238A01034,BANKS,1.86,equity
+153376,ICICI Bank Limited,INE090A01021,BANKS,1.74,equity
+153376,Bank of Baroda,INE028A01039,BANKS,1.64,equity
+153376,Vodafone Idea Ltd,INE669E01016,TELECOM - SERVICES,1.55,equity
+153376,Samvardhana Motherson International Ltd,INE775A01035,Auto Components,1.53,equity
+153376,Tech Mahindra Limited,INE669C01036,IT - Software,1.39,equity
+153376,HCL Technologies Limited,INE860A01027,IT - Software,1.18,equity
+153376,Tata Consumer Products Limited,INE192A01025,Agricultural Food & other Products,1.13,equity
+153376,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.99,equity
+153376,SBI Life Insurance Company Limited,INE123W01016,Insurance,0.92,equity
+153376,Titan Company Limited,INE280A01028,CONSUMER DURABLES,0.92,equity
+153376,Steel Authority of India Limited,INE114A01011,FERROUS METALS,0.79,equity
+153376,Mahindra & Mahindra Limited,INE101A01026,Automobiles,0.78,equity
+153376,Bharti Airtel Limited,INE397D01024,TELECOM - SERVICES,0.74,equity
+153376,Hindalco Industries Limited,INE038A01020,NON - FERROUS METALS,0.68,equity
+153376,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,0.65,equity
+153376,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,0.57,equity
+153376,Ambuja Cements Limited,INE079A01024,Cement & Cement Products,0.56,equity
+153376,RBL Bank Limited,INE976G01028,Banks,0.54,equity
+153376,Aurobindo Pharma Limited,INE406A01037,Pharmaceuticals & Biotechnology,0.51,equity
+153376,Coal India Limited,INE522F01014,Consumable Fuels,0.5,equity
+153376,Larsen & Toubro Limited,INE018A01030,Construction,0.45,equity
+153376,Hero MotoCorp Limited,INE158A01026,Automobiles,0.44,equity
+153376,Tata Steel Limited,INE081A01020,Ferrous Metals,0.33,equity
+153376,Oil & Natural Gas Corporation Limited,INE213A01029,Oil,0.31,equity
+153376,Bajaj Auto Limited,INE917I01010,Automobiles,0.27,equity
+153376,Tata Chemicals Limited,INE092A01019,Chemicals & Petrochemicals,0.25,equity
+153376,Adani Port & Special Economic Zone Ltd,INE742F01042,Transport Infrastructure,0.2,equity
+153376,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,0.2,equity
+153376,Astral Limited,INE006I01046,Industrial Products,0.18,equity
+153376,Reliance Industries Limited,INE002A01018,Petroleum Products,0.18,equity
+153376,Canara Bank,INE476A01022,Banks,0.17,equity
+153376,JSW Steel Limited,INE019A01038,Ferrous Metals,0.17,equity
+153376,Tata Motors Limited,INE155A01022,Automobiles,0.16,equity
+153376,Adani Green Energy Limited,INE364U01010,Power,0.14,equity
+153376,GMR AIRPORTS LIMITED,INE776C01039,Transport Infrastructure,0.06,equity
+153376,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,0.05,equity
+153376,NTPC Limited,INE733E01010,Power,0.04,equity
+153376,HFCL Limited,INE548A01028,Telecom - Services,0.04,equity
+153376,Manappuram Finance Limited,INE522D01027,Finance,0.04,equity
+153376,REC Limited,INE020B01018,Finance,0.03,equity
+153376,Grasim Industries Limited,INE047A01021,Cement & Cement Products,0.03,equity
+153376,Birlasoft Ltd,INE836A01035,IT - Software,0.03,equity
+153376,Tata Power Company Limited,INE245A01021,Power,0.03,equity
+153376,Jio Financial Services Limited,INE758E01017,Finance,0.01,equity
+153376,Glenmark Pharmaceuticals Limited,INE935A01035,Pharmaceuticals & Biotechnology,0.01,equity
+153376,6.79% GOI - 07-OCT-2034 #,IN0020240126,,4.28,other
+153376,7.17% GOI - 17-APR-2030 #,IN0020230036,,1.73,other
+153376,5.63% GOI - 12-APR-2026 #,IN0020210012,,1.66,other
+153376,7.87% INDIGRID INFRASTRUCTURE TRUST 24-FEB-2027 **,INE219X07454,,4.21,debt
+153376,7.99% MANKIND PHARMA LIMITED 16-OCT-2026 **,INE634S07025,,4.19,debt
+153376,8.30% Tata Projects Ltd. 07-JAN-2028 **,INE725H08238,,4.19,debt
+153376,8.39% JSW Steel Limited 13-MAY-2027 **,INE019A08058,,4.18,debt
+153376,10.40% NAVI FINSERV PRIVATE LIMITED 13-FEB-2026 **,INE342T07528,,2.48,debt
+153376,10.90% EarlySalary Services Pvt. Ltd. 27-MAR-2026 **,INE01YL07292,,1.9,debt
+153376,5.00% GMR AIRPORTS LIMITED 24-NOV-2026 **,INE776C08026,,1.84,debt
+153376,8.17% Godrej Housing Finance SrC4 4-MAR-2030 **,INE02JD07066,,1.7,debt
+153376,8.40% Godrej Properties Limited 25-JAN-2028 **,INE484J08089,,1.69,debt
+153376,8.40% Godrej Industries Ltd 27-AUG-2027 **,INE233A08113,,1.69,debt
+153376,8.30% Godrej Properties Limited 19-MAR-2027 **,INE484J08055,,1.68,debt
+153376,8.10% PNB Housing Finance Limited 20-APR-2028 **,INE572E07209,,1.68,debt
+153376,8.80% TRUHOME FINANCE LTD 01-DEC-2026 **,INE432R07380,,1.67,debt
+153376,7.80% Can Fin Homes Limited 24-NOV-2025 **,INE477A07357,,1.67,debt
+153376,7.65% HDB Financial Services Limited 10-SEP-2027 **,INE756I07EJ2,,1.67,debt
+153376,12.00% KRAZYBEE 13-SEP-2025 **,INE07HK07700,,1.66,debt
+153376,9.50% INCRED FINANCIAL SERVICES LTD 19-JUL-2027 **,INE321N07509,,1.65,debt
+153376,9.65% VISTAAR FINANCIAL SERVICES PVT LTD 19-APR-2027 **,INE016P07211,,1.46,debt
+153376,9.95% IKF FINANCE Ltd NCD 27-MAR-2027 **,INE859C07162,,0.83,debt
+153376,9.80% IKF FINANCE Ltd NCD 26-SEP-2027 **,INE859C07238,,0.83,debt
+153376,9.60% INCRED FINANCIAL SERVICES LTD 16-AUG-2027 **,INE321N07525,,0.83,debt
+153376,9.75% OXYZO FINANCIAL SERVICES PVT LTD 19-MAR-2027,INE04VS07370,,0.82,debt
+153376,12.50% KRAZYBEE 12-DEC-2025 **,INE07HK07734,,0.7,debt
+153376,10.70% INDOSTAR CAPITAL FINANCE LIMITED 25-SEP-2027 **,INE896L07AA7,,0.58,debt
+153376,12.50% ALTUM CREDO HOME FINANCE PRIVATE LIMITED 14-FEB-2028 **&,INE497W07011,,1.68,debt
+153376,TREPS,,,1.99,cash
+153376,Margin Money for Derivatives/ Treps,,,3.0,cash
+153376,Net Current Assets,,,2.66,cash
+153377,HDFC Bank Limited,INE040A01034,BANKS,2.99,equity
+153377,Tata Consultancy Services Limited,INE467B01029,IT - Software,2.73,equity
+153377,Infosys Limited,INE009A01021,IT - Software,2.58,equity
+153377,Kotak Mahindra Bank Limited,INE237A01028,BANKS,2.0,equity
+153377,IDFC First Bank Limited,INE092T01019,BANKS,1.91,equity
+153377,Axis Bank Limited,INE238A01034,BANKS,1.86,equity
+153377,ICICI Bank Limited,INE090A01021,BANKS,1.74,equity
+153377,Bank of Baroda,INE028A01039,BANKS,1.64,equity
+153377,Vodafone Idea Ltd,INE669E01016,TELECOM - SERVICES,1.55,equity
+153377,Samvardhana Motherson International Ltd,INE775A01035,Auto Components,1.53,equity
+153377,Tech Mahindra Limited,INE669C01036,IT - Software,1.39,equity
+153377,HCL Technologies Limited,INE860A01027,IT - Software,1.18,equity
+153377,Tata Consumer Products Limited,INE192A01025,Agricultural Food & other Products,1.13,equity
+153377,UltraTech Cement Limited,INE481G01011,Cement & Cement Products,0.99,equity
+153377,SBI Life Insurance Company Limited,INE123W01016,Insurance,0.92,equity
+153377,Titan Company Limited,INE280A01028,CONSUMER DURABLES,0.92,equity
+153377,Steel Authority of India Limited,INE114A01011,FERROUS METALS,0.79,equity
+153377,Mahindra & Mahindra Limited,INE101A01026,Automobiles,0.78,equity
+153377,Bharti Airtel Limited,INE397D01024,TELECOM - SERVICES,0.74,equity
+153377,Hindalco Industries Limited,INE038A01020,NON - FERROUS METALS,0.68,equity
+153377,Apollo Hospitals Enterprise Limited,INE437A01024,Healthcare Services,0.65,equity
+153377,Bharat Electronics Limited,INE263A01024,Aerospace & Defense,0.57,equity
+153377,Ambuja Cements Limited,INE079A01024,Cement & Cement Products,0.56,equity
+153377,RBL Bank Limited,INE976G01028,Banks,0.54,equity
+153377,Aurobindo Pharma Limited,INE406A01037,Pharmaceuticals & Biotechnology,0.51,equity
+153377,Coal India Limited,INE522F01014,Consumable Fuels,0.5,equity
+153377,Larsen & Toubro Limited,INE018A01030,Construction,0.45,equity
+153377,Hero MotoCorp Limited,INE158A01026,Automobiles,0.44,equity
+153377,Tata Steel Limited,INE081A01020,Ferrous Metals,0.33,equity
+153377,Oil & Natural Gas Corporation Limited,INE213A01029,Oil,0.31,equity
+153377,Bajaj Auto Limited,INE917I01010,Automobiles,0.27,equity
+153377,Tata Chemicals Limited,INE092A01019,Chemicals & Petrochemicals,0.25,equity
+153377,Adani Port & Special Economic Zone Ltd,INE742F01042,Transport Infrastructure,0.2,equity
+153377,Cipla Limited,INE059A01026,Pharmaceuticals & Biotechnology,0.2,equity
+153377,Astral Limited,INE006I01046,Industrial Products,0.18,equity
+153377,Reliance Industries Limited,INE002A01018,Petroleum Products,0.18,equity
+153377,Canara Bank,INE476A01022,Banks,0.17,equity
+153377,JSW Steel Limited,INE019A01038,Ferrous Metals,0.17,equity
+153377,Tata Motors Limited,INE155A01022,Automobiles,0.16,equity
+153377,Adani Green Energy Limited,INE364U01010,Power,0.14,equity
+153377,GMR AIRPORTS LIMITED,INE776C01039,Transport Infrastructure,0.06,equity
+153377,Bharat Heavy Electricals Limited,INE257A01026,Electrical Equipment,0.05,equity
+153377,NTPC Limited,INE733E01010,Power,0.04,equity
+153377,HFCL Limited,INE548A01028,Telecom - Services,0.04,equity
+153377,Manappuram Finance Limited,INE522D01027,Finance,0.04,equity
+153377,REC Limited,INE020B01018,Finance,0.03,equity
+153377,Grasim Industries Limited,INE047A01021,Cement & Cement Products,0.03,equity
+153377,Birlasoft Ltd,INE836A01035,IT - Software,0.03,equity
+153377,Tata Power Company Limited,INE245A01021,Power,0.03,equity
+153377,Jio Financial Services Limited,INE758E01017,Finance,0.01,equity
+153377,Glenmark Pharmaceuticals Limited,INE935A01035,Pharmaceuticals & Biotechnology,0.01,equity
+153377,6.79% GOI - 07-OCT-2034 #,IN0020240126,,4.28,other
+153377,7.17% GOI - 17-APR-2030 #,IN0020230036,,1.73,other
+153377,5.63% GOI - 12-APR-2026 #,IN0020210012,,1.66,other
+153377,7.87% INDIGRID INFRASTRUCTURE TRUST 24-FEB-2027 **,INE219X07454,,4.21,debt
+153377,7.99% MANKIND PHARMA LIMITED 16-OCT-2026 **,INE634S07025,,4.19,debt
+153377,8.30% Tata Projects Ltd. 07-JAN-2028 **,INE725H08238,,4.19,debt
+153377,8.39% JSW Steel Limited 13-MAY-2027 **,INE019A08058,,4.18,debt
+153377,10.40% NAVI FINSERV PRIVATE LIMITED 13-FEB-2026 **,INE342T07528,,2.48,debt
+153377,10.90% EarlySalary Services Pvt. Ltd. 27-MAR-2026 **,INE01YL07292,,1.9,debt
+153377,5.00% GMR AIRPORTS LIMITED 24-NOV-2026 **,INE776C08026,,1.84,debt
+153377,8.17% Godrej Housing Finance SrC4 4-MAR-2030 **,INE02JD07066,,1.7,debt
+153377,8.40% Godrej Properties Limited 25-JAN-2028 **,INE484J08089,,1.69,debt
+153377,8.40% Godrej Industries Ltd 27-AUG-2027 **,INE233A08113,,1.69,debt
+153377,8.30% Godrej Properties Limited 19-MAR-2027 **,INE484J08055,,1.68,debt
+153377,8.10% PNB Housing Finance Limited 20-APR-2028 **,INE572E07209,,1.68,debt
+153377,8.80% TRUHOME FINANCE LTD 01-DEC-2026 **,INE432R07380,,1.67,debt
+153377,7.80% Can Fin Homes Limited 24-NOV-2025 **,INE477A07357,,1.67,debt
+153377,7.65% HDB Financial Services Limited 10-SEP-2027 **,INE756I07EJ2,,1.67,debt
+153377,12.00% KRAZYBEE 13-SEP-2025 **,INE07HK07700,,1.66,debt
+153377,9.50% INCRED FINANCIAL SERVICES LTD 19-JUL-2027 **,INE321N07509,,1.65,debt
+153377,9.65% VISTAAR FINANCIAL SERVICES PVT LTD 19-APR-2027 **,INE016P07211,,1.46,debt
+153377,9.95% IKF FINANCE Ltd NCD 27-MAR-2027 **,INE859C07162,,0.83,debt
+153377,9.80% IKF FINANCE Ltd NCD 26-SEP-2027 **,INE859C07238,,0.83,debt
+153377,9.60% INCRED FINANCIAL SERVICES LTD 16-AUG-2027 **,INE321N07525,,0.83,debt
+153377,9.75% OXYZO FINANCIAL SERVICES PVT LTD 19-MAR-2027,INE04VS07370,,0.82,debt
+153377,12.50% KRAZYBEE 12-DEC-2025 **,INE07HK07734,,0.7,debt
+153377,10.70% INDOSTAR CAPITAL FINANCE LIMITED 25-SEP-2027 **,INE896L07AA7,,0.58,debt
+153377,12.50% ALTUM CREDO HOME FINANCE PRIVATE LIMITED 14-FEB-2028 **&,INE497W07011,,1.68,debt
+153377,TREPS,,,1.99,cash
+153377,Margin Money for Derivatives/ Treps,,,3.0,cash
+153377,Net Current Assets,,,2.66,cash

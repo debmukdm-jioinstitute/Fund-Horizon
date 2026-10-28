@@ -1753,7 +1753,7 @@ export interface MfResearchV2Blocks {
     reason?: string | null;
     source?: string | null; sector_available: boolean;
     as_of?: string | null; amc?: string | null;
-    unclassified_pct?: number | null; total_weight_pct?: number | null; sector_coverage?: string | null;
+    unclassified_pct?: number | null; total_weight_pct?: number | null; sector_coverage?: string | null; coverage_pct?: number | null;
     summary?: { holdings_count?: number | null; top10_concentration_pct?: number | null; top_holding_pct?: number | null; cash_pct?: number | null; total_weight_pct?: number | null } | null;
     note?: string | null;
   } | null;

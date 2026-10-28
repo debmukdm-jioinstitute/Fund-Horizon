@@ -597,7 +597,9 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   )}
                   <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
                     As of {researchDetail.portfolio.as_of ?? "—"} · {researchDetail.portfolio.amc ?? ""} monthly portfolio disclosure.
-                    Market-cap mix, turnover and style are not in the monthly disclosure, so they stay unavailable. Past performance is not a guide to future returns.
+                    {researchDetail.portfolio.coverage_pct != null && ` Partial: these holdings cover ${researchDetail.portfolio.coverage_pct}% of the fund (listed equity only).`}
+                    {researchDetail.portfolio.note ? ` ${researchDetail.portfolio.note}` : ""}
+                    {" "}Market-cap mix, turnover and style are not in the monthly disclosure, so they stay unavailable. Past performance is not a guide to future returns.
                   </p>
                 </div>
               ) : (

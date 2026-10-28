@@ -52,6 +52,12 @@ def main() -> int:
         if not res["rows"]:
             continue
         existing = json.loads(manifest_path.read_text()) if manifest_path.exists() else None
+        slug = amc_slug(name)
+        old = max((m.get("as_of") or "" for m in (existing or {}).get("schemes", {}).values() if m.get("amc_slug") == slug), default="")
+        new = max((m.get("as_of") or "" for m in res["schemes_meta"]), default="")
+        if old and new and new < old:  # Advisorkhoj sometimes links an older file than the one already ingested
+            print(f"  keeping {old} data for {name}; the newest link found was only {new}")
+            continue
         write_snapshot(OUT, amc_slug(name), res["rows"], res["schemes_meta"], datetime.now(UTC).isoformat(), existing)
         ok += 1
     return 0 if ok else 1

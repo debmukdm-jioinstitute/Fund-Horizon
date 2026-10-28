@@ -3,7 +3,7 @@ import { API_URL, ApiError, resolveApiUrl } from "./api";
 
 export interface EmailResult { customer_id: string; name: string | null; ok: boolean; error: string | null }
 export interface EmailOutcome { sent: number; failed: number; scheduled: boolean; results: EmailResult[] }
-export interface EmailExtras { statement?: boolean; filingId?: string; sendAt?: string; emails?: string[] }
+export interface EmailExtras { statement?: boolean; filingId?: string; sendAt?: string; emails?: string[]; messageHtml?: string }
 export const CUSTOM = "email:"; // recipient id prefix for an address that is not a CRM client
 export const isEmail = (v: string) => /^[^@\s<>,;]+@[^@\s<>,;]+\.[^@\s<>,;]+$/.test(v.trim());
 
@@ -24,6 +24,7 @@ export async function sendClientEmail(customerIds: string[], subject: string, me
   const fd = new FormData();
   fd.set("subject", subject);
   fd.set("message", message);
+  if (extras.messageHtml) fd.set("message_html", extras.messageHtml);
   fd.set("customer_ids", JSON.stringify(customerIds));
   if (extras.emails?.length) fd.set("emails", JSON.stringify(extras.emails));
   files.forEach((f) => fd.append("files", f));

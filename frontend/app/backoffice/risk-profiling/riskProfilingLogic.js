@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { API_URL, resolveApiUrl } from "@/lib/api";
 import { pdfBlob, renderCard } from "@/lib/calcExport";
+import { rebalance, adjustedReturn, fundPcts, nudges, ASSET_KEYS } from "./allocEngine.mjs";
 
 export function initRiskProfiling() {
 /* ================= Data — FH Recommended List (Regular Plan, Growth) ================= */
@@ -218,7 +219,7 @@ export function initRiskProfiling() {
       }
 
       /* ================= State ================= */
-      var state = { style: null, goal: "education", target: 2500000, years: 10 };
+      var state = { style: null, goal: "education", target: 2500000, years: 10, excluded: [] };
       var quizAnswers = [0, 0, 0];
 
       /* ================= Helpers ================= */
@@ -285,7 +286,7 @@ export function initRiskProfiling() {
       }
 
       function selectStyle(key, advance) {
-        state.style = key;
+        state.style = key; state.excluded = [];
         var cards = document.querySelectorAll(".style-card");
         for (var i = 0; i < cards.length; i++) {
           cards[i].classList.toggle("selected", cards[i].getAttribute("data-style") === key);
@@ -340,6 +341,7 @@ export function initRiskProfiling() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       $("changeStyleBtn").addEventListener("click", function () { goToStep(1, true); });
+      $("allocReset").addEventListener("click", function () { state.excluded = []; renderPlan(); });
 
       /* ================= Step 2: goals ================= */
       function buildGoals() {
@@ -378,7 +380,7 @@ export function initRiskProfiling() {
         var pills = document.querySelectorAll("[data-pill]");
         for (var i = 0; i < pills.length; i++) {
           pills[i].addEventListener("click", function () {
-            state.style = this.getAttribute("data-pill");
+            state.style = this.getAttribute("data-pill"); state.excluded = [];
             var cards = document.querySelectorAll(".style-card");
             for (var j = 0; j < cards.length; j++) {
               cards[j].classList.toggle("selected", cards[j].getAttribute("data-style") === state.style);
@@ -441,9 +443,17 @@ export function initRiskProfiling() {
         }
       });
 
-      function calcPlan() {
+      /* Rebalanced mix: the style's baseline minus any asset classes staff unticked (see allocEngine.mjs). */
+      function allocView() {
         var s = STYLES[state.style];
-        var annual = s.ret / 100;
+        var r = rebalance(state.style, s.alloc, state.excluded, state.years, state.goal);
+        return { r: r, ret: adjustedReturn(s.ret, s.alloc, r.alloc) };
+      }
+      function curAlloc() { return allocView().r.alloc; }
+      function curRet() { return allocView().ret; }
+
+      function calcPlan(retOverride) {
+        var annual = (retOverride == null ? curRet() : retOverride) / 100;
         var r = annual / 12, n = state.years * 12;
         var sip = state.target * r / ((Math.pow(1 + r, n) - 1) * (1 + r));
         var invested = sip * n;
@@ -455,20 +465,48 @@ export function initRiskProfiling() {
       /* ================= Donut ================= */
       var CIRC = 2 * Math.PI * 84;
       function renderDonut() {
-        var s = STYLES[state.style];
+        var alloc = curAlloc();
         var segs = { equity: $("segEquity"), debt: $("segDebt"), gold: $("segGold"), liquid: $("segLiquid") };
         var offset = 0;
         ASSETS.forEach(function (a) {
-          var frac = s.alloc[a.key] / 100;
+          var frac = alloc[a.key] / 100;
           var len = Math.max(0, frac * CIRC - (frac > 0 ? 2.5 : 0));
           var el = segs[a.key];
           el.style.strokeDasharray = len + " " + (CIRC - len);
           el.style.strokeDashoffset = -offset;
           offset += frac * CIRC;
         });
-        $("donutBig").textContent = s.alloc.equity + "%";
+        $("donutBig").textContent = alloc.equity + "%";
+        var kept = ASSETS.filter(function (a) { return state.excluded.indexOf(a.key) < 0; }).length;
         $("allocLegend").innerHTML = ASSETS.map(function (a) {
-          return '<li><i style="background:' + a.color + '"></i><span class="nm">' + a.label + '</span><span class="pc">' + s.alloc[a.key] + "%</span></li>";
+          var on = state.excluded.indexOf(a.key) < 0;
+          return '<li class="' + (on ? "" : "off") + '"><label class="alloc-opt"><input type="checkbox" data-asset="' + a.key + '"' + (on ? " checked" : "") + (on && kept === 1 ? " disabled" : "") + ' aria-label="Include ' + a.label + '"><i style="background:' + a.color + '"></i><span class="nm">' + a.label + '</span></label><span class="pc">' + alloc[a.key] + "%</span></li>";
+        }).join("");
+        var boxes = $("allocLegend").querySelectorAll("input[data-asset]");
+        for (var b = 0; b < boxes.length; b++) {
+          boxes[b].addEventListener("change", function () {
+            var k = this.getAttribute("data-asset"), i = state.excluded.indexOf(k);
+            if (this.checked && i >= 0) state.excluded.splice(i, 1);
+            else if (!this.checked && i < 0) state.excluded.push(k);
+            renderPlan();
+          });
+        }
+        $("allocReset").style.display = state.excluded.length ? "" : "none";
+      }
+
+      /* ================= Nudges: plain-language guidance on the current mix ================= */
+      function renderNudges(plan) {
+        var s = STYLES[state.style], v = allocView();
+        var goal = GOALS.filter(function (g) { return g.id === state.goal; })[0];
+        var base = calcPlan(s.ret);
+        var list = nudges({
+          style: state.style, styleName: s.name, baseAlloc: s.alloc, alloc: v.r.alloc, excluded: state.excluded, moved: v.r.moved, relaxed: v.r.relaxed,
+          years: state.years, goalId: state.goal, goalName: goal ? goal.name : "", baseRet: s.ret, ret: v.ret, sip: plan.sip, baseSip: base.sip, fmt: fmtINR,
+          fundNote: fundPcts(s.funds, s.alloc, v.r.alloc).note
+        });
+        var icon = { alert: "\u26A0", warn: "\u2757", info: "\u2139" };
+        $("allocNudges").innerHTML = list.map(function (n) {
+          return '<li class="nudge ' + n.level + '"><span class="ni" aria-hidden="true">' + icon[n.level] + "</span><span>" + escHtml(n.text) + "</span></li>";
         }).join("");
       }
 
@@ -478,8 +516,11 @@ export function initRiskProfiling() {
       function escHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
       function renderFunds(sip) {
         var s = STYLES[state.style];
+        var fp = fundPcts(s.funds, s.alloc, curAlloc());
         var html = s.funds.map(function (f, idx) {
-          var amt = sip * f.pct / 100;
+          var fpct = fp.note === "none" ? 0 : fp.pcts[idx];
+          if (!fpct) return "";
+          var amt = sip * fpct / 100;
           var peers = (FH_BY_CATEGORY[f.category] || []).filter(function(x){ return x.code !== f.code; });
           var peersHtml = peers.length ? '<div class="see-all" id="seeall-'+idx+'"><h4>All funds in '+escHtml(f.category)+' — FH Recommended List</h4><ul>'+peers.map(function(p){ return '<li><span>'+escHtml(p.name)+'</span><span>AMFI '+escHtml(p.code)+'</span></li>'; }).join("")+'<li><span>'+escHtml(f.name)+' (in this plan)</span><span>AMFI '+escHtml(f.code)+'</span></li></ul></div>' : '';
           var seeBtn = peers.length ? '<button type="button" class="link-btn secondary" data-seeall="'+idx+'">See all funds in this category</button>' : '';
@@ -487,13 +528,13 @@ export function initRiskProfiling() {
             '<div class="fund-name">' + escHtml(f.name) + (f.pick ? '<span class="pick-tag">Marked pick</span>' : "") + "</div>" +
             '<div class="fund-meta"><b>'+escHtml(f.category)+'</b> · AMFI Scheme Code: '+escHtml(f.code)+' · Regular Plan · Growth</div>' +
             '<div class="fund-desc">' + escHtml(f.desc) + "</div>" +
-            '<div class="fund-bar"><span style="width:' + f.pct + '%"></span></div>' +
+            '<div class="fund-bar"><span style="width:' + fpct + '%"></span></div>' +
             '<div class="fund-actions"><button type="button" class="link-btn" data-explain-fund="'+idx+'">Explain this fund</button>'+seeBtn+'</div>' +
             peersHtml +
             '</div>' +
-            '<div class="fund-amt"><span class="pc">' + f.pct + '%</span><span class="rs">' + fmtINR(amt) + "/mo</span></div></div>";
+            '<div class="fund-amt"><span class="pc">' + fpct + '%</span><span class="rs">' + fmtINR(amt) + "/mo</span></div></div>";
         }).join("");
-        $("fundList").innerHTML = html;
+        $("fundList").innerHTML = html || '<p class="list-note">No FH Recommended funds apply to this mix. See the note above.</p>';
         // wire explain + see-all
         var expBtns = $("fundList").querySelectorAll("[data-explain-fund]");
         for (var i=0;i<expBtns.length;i++){ expBtns[i].addEventListener("click", function(){ var idx=parseInt(this.getAttribute("data-explain-fund"),10); openFundExplain(idx); }); }
@@ -508,13 +549,13 @@ export function initRiskProfiling() {
       }
       function planExplainHTML(){
         var d = currentPlanData(); var s=d.style, plan=d.plan, goal=d.goal;
-        var allocLine = ASSETS.map(function(a){ return a.label+" "+s.alloc[a.key]+"%"; }).join(", ");
+        var allocLine = ASSETS.map(function(a){ return a.label+" "+curAlloc()[a.key]+"%"; }).join(", ");
         var fundLines = s.funds.map(function(f){ var amt=plan.sip*f.pct/100; return "<li><strong>"+escHtml(f.name)+"</strong> ("+escHtml(f.category)+", AMFI "+escHtml(f.code)+") — "+f.pct+"% · <strong>"+fmtINR(amt)+"/month</strong>. "+escHtml(f.desc)+"</li>"; }).join("");
         var why = "";
-        if(state.style==="conservative"){ why = "You picked <strong>Conservative</strong> for <strong>"+escHtml(goal?goal.name:"your goal")+"</strong> — target "+fmtINR(d.target)+" in "+d.years+(d.years===1?" year":" years")+". This style keeps equity low at "+s.alloc.equity+"% and leans on multi-asset and large-cap holdings, so the ride is calmer. At an assumed "+s.ret+"% a year, the maths points to a monthly SIP of <strong>"+fmtINR(plan.sip)+"</strong>."; }
-        else if(state.style==="aggressive"){ why = "You picked <strong>Aggressive</strong> for <strong>"+escHtml(goal?goal.name:"your goal")+"</strong> — target "+fmtINR(d.target)+" in "+d.years+" years. This style puts "+s.alloc.equity+"% in equity for long-term growth, with flexi, mid, small and multi-cap funds doing the heavy lifting. At an assumed "+s.ret+"% a year, the monthly SIP works out to <strong>"+fmtINR(plan.sip)+"</strong>. The longer horizon gives markets more time to recover from falls."; }
-        else { why = "You picked <strong>Moderate</strong> for <strong>"+escHtml(goal?goal.name:"your goal")+"</strong> — target "+fmtINR(d.target)+" in "+d.years+" years. This style balances growth and steadiness with "+s.alloc.equity+"% in equity ("+allocLine+"). At an assumed "+s.ret+"% a year, the monthly SIP works out to <strong>"+fmtINR(plan.sip)+"</strong> — you invest "+fmtINR(plan.invested)+" in total, with "+fmtINR(plan.growth)+" shown as growth in this illustration."; }
-        var riskText = state.style==="aggressive" ? "Values will swing — sometimes sharply. Mid and small-cap parts can fall more than the wider market. If you need this money sooner than planned, or a fall would make you stop the SIP, this mix will feel uncomfortable. Returns are not assured and the assumed "+s.ret+"% may not happen." : (state.style==="conservative" ? "Even a calmer mix can dip for short periods, and multi-asset funds still hold equity. Inflation can also eat into low-risk returns over time. The assumed "+s.ret+"% is an illustration, not a promise — check the plan yearly and keep emergency money separate." : "Markets will fall at times and this mix will fall with them, though the multi-asset and large-cap parts are there to soften it. Returns are not assured and the assumed "+s.ret+"% may not happen. Stopping the SIP during a fall is the most common way this type of plan misses its target.");
+        if(state.style==="conservative"){ why = "You picked <strong>Conservative</strong> for <strong>"+escHtml(goal?goal.name:"your goal")+"</strong> — target "+fmtINR(d.target)+" in "+d.years+(d.years===1?" year":" years")+". This style keeps equity low at "+curAlloc().equity+"% and leans on multi-asset and large-cap holdings, so the ride is calmer. At an assumed "+curRet()+"% a year, the maths points to a monthly SIP of <strong>"+fmtINR(plan.sip)+"</strong>."; }
+        else if(state.style==="aggressive"){ why = "You picked <strong>Aggressive</strong> for <strong>"+escHtml(goal?goal.name:"your goal")+"</strong> — target "+fmtINR(d.target)+" in "+d.years+" years. This style puts "+curAlloc().equity+"% in equity for long-term growth, with flexi, mid, small and multi-cap funds doing the heavy lifting. At an assumed "+curRet()+"% a year, the monthly SIP works out to <strong>"+fmtINR(plan.sip)+"</strong>. The longer horizon gives markets more time to recover from falls."; }
+        else { why = "You picked <strong>Moderate</strong> for <strong>"+escHtml(goal?goal.name:"your goal")+"</strong> — target "+fmtINR(d.target)+" in "+d.years+" years. This style balances growth and steadiness with "+curAlloc().equity+"% in equity ("+allocLine+"). At an assumed "+curRet()+"% a year, the monthly SIP works out to <strong>"+fmtINR(plan.sip)+"</strong> — you invest "+fmtINR(plan.invested)+" in total, with "+fmtINR(plan.growth)+" shown as growth in this illustration."; }
+        var riskText = state.style==="aggressive" ? "Values will swing — sometimes sharply. Mid and small-cap parts can fall more than the wider market. If you need this money sooner than planned, or a fall would make you stop the SIP, this mix will feel uncomfortable. Returns are not assured and the assumed "+curRet()+"% may not happen." : (state.style==="conservative" ? "Even a calmer mix can dip for short periods, and multi-asset funds still hold equity. Inflation can also eat into low-risk returns over time. The assumed "+curRet()+"% is an illustration, not a promise — check the plan yearly and keep emergency money separate." : "Markets will fall at times and this mix will fall with them, though the multi-asset and large-cap parts are there to soften it. Returns are not assured and the assumed "+curRet()+"% may not happen. Stopping the SIP during a fall is the most common way this type of plan misses its target.");
         var pmsPara = "";
         if (pmsState.route === "mix" && isPmsEligible()) {
           var mx = currentMix(); var selList = selectedStrats();
@@ -780,10 +821,10 @@ export function initRiskProfiling() {
         var investPct = Math.min(100, Math.round((plan.invested / d.target) * 100));
         var growthPct = Math.max(0, 100 - investPct);
 
-        var donutSVG = renderPrintDonutSVG(s.alloc);
+        var donutSVG = renderPrintDonutSVG(curAlloc());
 
         var assetBarsHTML = ASSETS.map(function (a) {
-          var val = s.alloc[a.key];
+          var val = curAlloc()[a.key];
           var role = a.key === "equity" ? "Primary Growth Engine" : (a.key === "debt" ? "Capital Stability & Income" : (a.key === "gold" ? "Inflation & Crisis Hedge" : "Emergency & Cash Buffer"));
           return '<div class="pr-asset-row">' +
             '<div class="pr-asset-head"><span><i style="background:' + a.color + '"></i>' + a.label + ' <small>(' + role + ')</small></span><strong>' + val + '%</strong></div>' +
@@ -888,7 +929,7 @@ export function initRiskProfiling() {
             '<div class="pr-kpi">' +
               '<span class="k">One-Time Lumpsum Today</span>' +
               '<span class="v">' + fmtINR(plan.lumpsum) + '</span>' +
-              '<span class="sub-tag">Assumed return ' + s.ret + '% p.a.</span>' +
+              '<span class="sub-tag">Assumed return ' + curRet() + '% p.a.</span>' +
             '</div>' +
           '</div>' +
 
@@ -915,7 +956,7 @@ export function initRiskProfiling() {
             '<div class="pr-alloc-body">' +
               '<div class="pr-donut-col">' +
                 donutSVG +
-                '<div class="pr-donut-lbl"><strong>' + s.alloc.equity + '%</strong><small>in Equity</small></div>' +
+                '<div class="pr-donut-lbl"><strong>' + curAlloc().equity + '%</strong><small>in Equity</small></div>' +
               '</div>' +
               '<div class="pr-bars-col">' +
                 assetBarsHTML +
@@ -1241,7 +1282,7 @@ export function initRiskProfiling() {
         $("bannerStyle").textContent = s.name;
         $("bannerDot").style.background = s.color;
         $("allocSub").textContent = "The " + s.name + " mix — the same split every month.";
-        $("assumptionText").innerHTML = "Assumed return for <strong>" + s.name + ": " + s.ret + "% a year</strong>. Assumed, not assured — real returns move up and down.";
+        $("assumptionText").innerHTML = "Assumed return for <strong>" + s.name + ": " + curRet() + "% a year</strong>. Assumed, not assured — real returns move up and down.";
 
         countUp($("sipValue"), plan.sip, fmtINR);
         countUp($("investedValue"), plan.invested, fmtINR);
@@ -1249,6 +1290,7 @@ export function initRiskProfiling() {
         countUp($("lumpsumValue"), plan.lumpsum, fmtINR);
 
         renderDonut();
+        renderNudges(plan);
         renderFunds(plan.sip);
         renderGuardrail();
         markGoal();
@@ -1378,16 +1420,16 @@ export function initRiskProfiling() {
           });
       }
       function planPdfB64() {
-        var f = planFacts(), cd = contactData(), s = f.s, years = [], inv, val, r = s.ret / 1200;
+        var f = planFacts(), cd = contactData(), s = f.s, years = [], inv, val, r = curRet() / 1200;
         for (var y = 0; y <= state.years; y++) {
           inv = f.plan.sip * 12 * y; val = r === 0 ? inv : f.plan.sip * ((Math.pow(1 + r, 12 * y) - 1) / r) * (1 + r);
           years.push({ x: y, a: inv, b: Math.max(val - inv, 0) });
         }
         return renderCard({
           title: "Your plan at a glance", client: cd.name,
-          inputs: [["Style", s.name], ["Goal", f.goal], ["Target", fmtShort(state.target)], ["Time", state.years + " years"], ["Assumed return", s.ret + "% a year"], ["Route", f.route]],
+          inputs: [["Style", s.name], ["Goal", f.goal], ["Target", fmtShort(state.target)], ["Time", state.years + " years"], ["Assumed return", curRet() + "% a year"], ["Route", f.route]],
           metrics: [{ label: "Monthly SIP needed", text: fmtINR(f.plan.sip) + " / month" }, { label: "You invest", text: fmtINR(f.plan.invested) }, { label: "Growth (market gains)", text: fmtINR(f.plan.growth) }, { label: "Or one-time lumpsum today", text: fmtINR(f.plan.lumpsum) }],
-          viz: { donutTitle: "How your money is split", donut: ASSETS.map(function (a) { return { name: a.label, value: s.alloc[a.key] }; }), growth: { kind: "stack", title: "Year-by-year growth", names: ["Invested", "Growth"], pts: years } }
+          viz: { donutTitle: "How your money is split", donut: ASSETS.map(function (a) { return { name: a.label, value: curAlloc()[a.key] }; }), growth: { kind: "stack", title: "Year-by-year growth", names: ["Invested", "Growth"], pts: years } }
         }).then(pdfBlob).then(function (blob) {
           return new Promise(function (res, rej) { var fr = new FileReader(); fr.onload = function () { res(String(fr.result).split(",")[1]); }; fr.onerror = rej; fr.readAsDataURL(blob); });
         });
@@ -1433,7 +1475,7 @@ export function initRiskProfiling() {
         box.scrollIntoView({ behavior: "smooth", block: "center" });
       });
       $("startOverBtn").addEventListener("click", function () {
-        state.style = null; state.goal = "education"; state.target = 2500000; state.years = 10;
+        state.style = null; state.goal = "education"; state.target = 2500000; state.years = 10; state.excluded = [];
         pmsState = { route: "mf", corpus: 10000000, pmsPct: 30, sel: ["abakkus"], splitFirst: 50 }; lastPmsStyle = null;
         var seeAllPmsEl = $("seeAllPms"); if (seeAllPmsEl) seeAllPmsEl.classList.remove("open");
         var sapBtn = $("seeAllPmsBtn"); if (sapBtn) sapBtn.textContent = "See all PMS on FH list";

@@ -370,8 +370,10 @@ def screen(
     manager_map: dict[str, Any] | None = None,
     consistency_map: dict[str, dict[str, Any]] | None = None,
     index_map: dict[str, dict[str, Any]] | None = None,
+    frame: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
-    df = _scored(ter, manager_map=manager_map, consistency_map=consistency_map, index_map=index_map)
+    """`frame` is an already scored frame (the API caches one); it is only read, never modified."""
+    df = frame if frame is not None else _scored(ter, manager_map=manager_map, consistency_map=consistency_map, index_map=index_map)
     if categories:
         df = df[df["cat"].isin(categories)]
     if plans:

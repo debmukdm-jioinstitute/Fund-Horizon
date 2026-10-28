@@ -157,6 +157,17 @@ async def lifespan(app: FastAPI):
         except Exception:
             logging.getLogger(__name__).exception("Startup briefing build failed")
 
+    # Warm the scored mutual-fund frame so the first backoffice screener request is not the one that pays for it.
+    def _warm_screener() -> None:
+        try:
+            from app.api.backoffice import _fh_frame
+
+            _fh_frame()
+        except Exception:  # noqa: BLE001
+            logging.getLogger(__name__).exception("Screener warm-up failed")
+
+    asyncio.get_running_loop().run_in_executor(None, _warm_screener)
+
     try:
         yield
     finally:

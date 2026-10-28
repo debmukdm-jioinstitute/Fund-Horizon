@@ -7,6 +7,8 @@ import json
 import re
 import secrets
 from functools import lru_cache as _lru_cache
+import threading
+import time
 from datetime import UTC, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from pathlib import Path
@@ -861,30 +863,48 @@ def _tri_seed_available() -> bool:
         return False
 
 
-_FH_KEY: tuple | None = None
+_FH_KEY: object | None = None
+_FRAME_TTL_SECONDS = 300
+_FRAME_CACHE: tuple[float, tuple, pd.DataFrame] | None = None
+_FRAME_LOCK = threading.Lock()
 
 
 def _fh_frame() -> pd.DataFrame:
-    """Full scored frame with the same manager and consistency inputs the screener table uses."""
-    try:
-        consistency_map = _REPO.screening_consistency_map()
-    except Exception:
-        consistency_map = {}
-    return mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map)
+    """Scored screener frame with manager and consistency inputs, cached for 5 minutes.
+
+    Scoring ~3,700 funds costs seconds, so one frame serves every request (and the facets). It is rebuilt when the scoring
+    config file changes or the TTL passes; staff edits to managers or TER show up within the TTL.
+    """
+    global _FRAME_CACHE
+    cfg_file = fh_score.CONFIG_FILE
+    sig = (cfg_file.stat().st_mtime if cfg_file.exists() else 0,)
+    hit = _FRAME_CACHE
+    if hit and hit[1] == sig and time.monotonic() - hit[0] < _FRAME_TTL_SECONDS:
+        return hit[2]
+    with _FRAME_LOCK:
+        hit = _FRAME_CACHE
+        if hit and hit[1] == sig and time.monotonic() - hit[0] < _FRAME_TTL_SECONDS:
+            return hit[2]
+        try:
+            consistency_map = _REPO.screening_consistency_map()
+        except Exception:
+            consistency_map = {}
+        frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map)
+        frame.attrs["consistency_n"] = len(consistency_map)
+        _FRAME_CACHE = (time.monotonic(), sig, frame)
+        return frame
 
 
 def _fh_refresh(frame: pd.DataFrame | None = None, force: bool = False) -> None:
-    """Re-derive score-driven recommendations when data or scoring config changed. Manual overrides are applied on top, never overwritten."""
+    """Re-derive score-driven recommendations when the cached frame (data or scoring config) changed. Manual overrides stay on top."""
     global _FH_KEY
-    cfg_file = fh_score.CONFIG_FILE
-    key = (len(_REPO.screening_consistency_map()), cfg_file.stat().st_mtime if cfg_file.exists() else 0)
-    if not force and key == _FH_KEY:
-        return
     frame = frame if frame is not None else _fh_frame()
+    if not force and _FH_KEY is frame:
+        return
     as_of = pd.to_datetime(frame["nav_date"], format="%d-%b-%Y").max().date().isoformat() if len(frame) else None
     auto = {str(r.code): str(r.name) for r in frame[frame["fh_auto"]].itertuples()}
     fh_recommended.apply_auto(auto, as_of)
-    _FH_KEY = key
+    _FH_KEY = frame
 
 
 def _fh_status(df: pd.DataFrame) -> pd.Series:
@@ -986,21 +1006,16 @@ def backoffice_mf_screener(
             ranges[key] = (float(lo_s) if lo_s else None, float(hi_s) if hi_s else None)
         except ValueError:
             raise HTTPException(422, f"Bad range for {key}") from None
-    ter = _REPO.mf_ter_by_code()
-    # MF Research V2: precomputed consistency from the nightly screening
-    # refresh (single query, never per-fund NAV loads at request time).
-    try:
-        consistency_map = _REPO.screening_consistency_map()
-    except Exception:
-        consistency_map = {}
+    # One cached, scored frame per 5 minutes (see _fh_frame); each request only filters and sorts it.
+    frame = _fh_frame()
     df = mf_screener.screen(
-        ter, category, plans, search, ranges, sort, order == "desc",
+        {}, category, plans, search, ranges, sort, order == "desc",
         amcs=amc, manager=manager, min_tenure=min_tenure, include_unknown=include_unknown,
         quartiles=quartile, quartile_period=quartile_period, include_unavailable=include_unavailable,
-        manager_map=_mf_manager_map(), consistency_map=consistency_map,
+        frame=frame,
     )
     try:
-        _fh_refresh()
+        _fh_refresh(frame)
     except Exception:
         pass
     df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES), fh_status=_fh_status(df))
@@ -1057,9 +1072,9 @@ def backoffice_mf_screener(
                 "No portfolio holdings snapshot on file. AMFI monthly portfolio disclosures live on each AMC's website in per-AMC formats; no snapshot has been ingested yet."
             ),
             "index_series_available": _tri_seed_available(),
-            "consistency_precomputed": len(consistency_map),
+            "consistency_precomputed": frame.attrs.get("consistency_n", 0),
         },
-        "groups": mf_screener.facets(mf_screener.all_frame(ter)),
+        "groups": mf_screener.facets(frame),
         "availability": "ready" if len(df) else "unavailable",
     }, "amfi", as_of)
 

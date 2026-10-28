@@ -651,3 +651,53 @@ def test_mailer_payload_and_errors(monkeypatch):
     monkeypatch.setattr(mailer.httpx, "post", lambda *a, **k: httpx.Response(422, json={"message": "bad"}, request=httpx.Request("POST", "x")))
     with pytest.raises(mailer.MailerError):
         mailer.send_email("a@b.com", "S", "t")
+
+
+def test_email_html_sanitised_reaches_resend_payload(client, admin, monkeypatch):
+    """Formatted HTML survives to the Resend payload, hostile markup does not,
+    and the plain-text fallback carries no tags. {name} is substituted in both."""
+    import httpx
+
+    from app import mailer
+    from app.api.crm_core import sanitize_email_html
+
+    # Unit-level: the allowlist itself.
+    clean = sanitize_email_html(
+        '<p>Hi <strong>{name}</strong></p><script>alert(1)</script>'
+        '<a href="javascript:evil()" onclick="x()">bad link</a>'
+        '<a href="https://example.com">good link</a>'
+        '<span style="color: red; position: absolute; font-size: 18px">coloured</span>'
+        '<img src="http://example.com/x.png"><img src="https://example.com/x.png">'
+    )
+    assert "<strong>{name}</strong>" in clean and "<script" not in clean and "alert" not in clean
+    assert "onclick" not in clean and "javascript:" not in clean and "position" not in clean
+    assert '<a href="https://example.com">good link</a>' in clean
+    assert "color: red" in clean and "font-size: 18px" in clean
+    assert "http://example.com" not in clean and 'src="https://example.com/x.png"' in clean
+
+    # Endpoint-level: HTML reaches send_email, text fallback stays tag-free.
+    seen = []
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m, a=None, **kw: seen.append((to, s, m, kw)) or "em_html")
+    cust = _make_customer(name="Asha Rao")
+    html = '<p>Dear <strong>{name}</strong></p><script>alert(1)</script><a href="javascript:bad()">x</a>'
+    r = client.post("/api/crm/email", data={"subject": "Hi {name}", "message": "Dear {name}, plain.", "message_html": html,
+                                            "customer_ids": json.dumps([cust["id"]])}, headers={"sec-fetch-site": "same-origin"})
+    assert r.status_code == 200, r.text
+    assert r.json()["sent"] == 1
+    to, subj, text, kw = seen[0]
+    assert subj == "Hi Asha" and "<strong>Asha</strong>" in kw["html"]
+    assert "<script" not in kw["html"] and "javascript:" not in kw["html"] and "Unsubscribe" in kw["html"]
+    assert "<strong>" not in text and "<script" not in text and "Dear Asha, plain." in text
+
+    # Mailer-level: an explicit html body is the Resend payload's html, not the escaped text.
+    monkeypatch.setenv("RESEND_API_KEY", "k")
+    monkeypatch.setenv("EMAIL_FROM", "FH <u@example.com>")
+    payload = {}
+
+    def fake_post(url, json, headers, timeout):
+        payload.update(json)
+        return httpx.Response(200, json={"id": "em_html2"}, request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(mailer.httpx, "post", fake_post)
+    assert mailer.send_email("a@b.com", "S", "plain text", html="<p><strong>bold</strong></p>") == "em_html2"
+    assert payload["html"] == "<p><strong>bold</strong></p>" and payload["text"] == "plain text"

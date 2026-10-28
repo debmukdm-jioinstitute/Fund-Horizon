@@ -55,6 +55,7 @@ class BackofficeService:
             meta[inst] = {
                 "as_of": at[:10] or None,
                 "source": o.get("provenance"),
+                "value": o.get("value_numeric"),
                 "prev": p.get("value_numeric"),
                 "prev_as_of": (p.get("observed_at") or "")[:10] or None,
             }

@@ -39,7 +39,7 @@ export interface MarketOverviewData {
   indices?: { "INDEX:IN:NIFTY50"?: number; "INDEX:IN:NIFTYBANK"?: number; "INDEX:IN:SENSEX"?: number; as_of?: string | null };
   flows?: { latest_date?: string | null; fii_net?: number | null; dii_net?: number | null; status?: string };
   vol_as_of?: string;
-  series_meta?: Record<string, { as_of?: string | null; source?: string | null }>;
+  series_meta?: Record<string, { as_of?: string | null; source?: string | null; value?: number | null; prev?: number | null; prev_as_of?: string | null }>;
   yields?: {
     in_10y?: number;
     in_2y?: number;

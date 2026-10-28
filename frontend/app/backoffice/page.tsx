@@ -162,6 +162,21 @@ export default function BackofficeOverviewPage() {
     const raw = meta[IND[key].a]?.source;
     return raw ? SOURCE_LABEL[raw] ?? raw : "—";
   };
+  // Day-over-day move vs the previous stored observation. Spreads need both legs' previous on the same date.
+  const change = (key: string): { v: number; unit: string; dec: number } | undefined => {
+    const spec = IND[key];
+    const legs = [spec.a, spec.b].flatMap((id) => (id ? [meta[id]] : []));
+    if (legs.some((m) => m?.value == null || m?.prev == null) || (legs.length === 2 && legs[0].prev_as_of !== legs[1].prev_as_of)) return undefined;
+    const d = (f: (m: (typeof legs)[number]) => number) => (legs.length === 2 ? f(legs[0]) - f(legs[1]) : f(legs[0]));
+    const diff = d((m) => m.value as number) - d((m) => m.prev as number);
+    if (spec.b) return { v: diff * 100, unit: "bps", dec: 0 };
+    if (spec.unit === "%") return { v: diff * 100, unit: "bps", dec: 1 };
+    return { v: diff, unit: "", dec: spec.decimals ?? 2 };
+  };
+  const Chg = ({ k }: { k: string }) => {
+    const c = change(k);
+    return c ? <SignedValue value={c.v} unit={c.unit} decimals={c.dec} /> : <>—</>;
+  };
   const flows = overview.flows;
   const sourcesSummary = overview.sources_health;
   const dash = (v: number | undefined | null, f: (n: number) => string) => (v === undefined || v === null ? "—" : f(v));
@@ -280,7 +295,7 @@ export default function BackofficeOverviewPage() {
                   {dash(fxRates["FX:USDINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
                 <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
-                  —
+                  <Chg k="usdinr" />
                 </td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("usdinr"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("usdinr")}</td>
@@ -293,7 +308,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.in_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="in10" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("in10"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("in10")}</td>
               </tr>
@@ -305,7 +320,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.in_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="in2" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("in2"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("in2")}</td>
               </tr>
@@ -317,7 +332,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={spreads.india_10y_2y_bps} unit="bps" />
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="inSlope" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("inSlope"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("inSlope")}</td>
               </tr>
@@ -329,7 +344,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={spreads.india_us_10y_bps} unit="bps" />
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="inUs" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("inUs"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("inUs")}</td>
               </tr>
@@ -341,7 +356,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(volData["VOL:IN:INDIAVIX"], (n) => n.toFixed(2))}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="inVix" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("inVix"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("inVix")}</td>
               </tr>
@@ -360,7 +375,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.us_10y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="us10" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("us10"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("us10")}</td>
               </tr>
@@ -372,7 +387,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(overview.yields?.us_2y, (n) => `${n.toFixed(2)}%`)}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="us2" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("us2"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("us2")}</td>
               </tr>
@@ -384,7 +399,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right">
                   <SignedValue value={spreads.us_10y_2y_bps} unit="bps" />
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="usSlope" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("usSlope"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("usSlope")}</td>
               </tr>
@@ -396,7 +411,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:EURINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="eurinr" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("eurinr"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("eurinr")}</td>
               </tr>
@@ -408,7 +423,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:GBPINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="gbpinr" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("gbpinr"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("gbpinr")}</td>
               </tr>
@@ -420,7 +435,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(fxRates["FX:JPYINR"], (n) => `₹${n.toFixed(4)}`)}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="jpyinr" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("jpyinr"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("jpyinr")}</td>
               </tr>
@@ -432,7 +447,7 @@ export default function BackofficeOverviewPage() {
                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
                   {dash(volData["VOL:US:VIX"], (n) => n.toFixed(2))}
                 </td>
-                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
+                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]"><Chg k="usVix" /></td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(asOf("usVix"))}</td>
                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{source("usVix")}</td>
               </tr>

@@ -1414,14 +1414,39 @@ def backoffice_mf_portfolio_overlap(
     Missing a snapshot on either side honestly returns the coverage
     payload with a reason instead of a fabricated 0% overlap. Cash rows
     (TREPS, net receivables) are excluded from both sides: every fund
-    holds them, so sharing them is not a real portfolio overlap."""
+    holds them, so sharing them is not a real portfolio overlap. A fund
+    counts as missing only when it has no snapshot entry at all — a fund
+    on file with no non-cash holdings is a real 0 shared holdings, not a
+    missing snapshot, and is reported as such."""
     snapshot = _holdings_snapshot()
+    entry_a = mf_holdings.holdings_for_scheme(snapshot, code_a)
+    entry_b = mf_holdings.holdings_for_scheme(snapshot, code_b)
     hold_a = mf_holdings.overlap_holdings(snapshot, code_a)
     hold_b = mf_holdings.overlap_holdings(snapshot, code_b)
-    missing = [c for c, h in ((code_a, hold_a), (code_b, hold_b)) if not h]
+    missing = [c for c, e in ((code_a, entry_a), (code_b, entry_b)) if not e]
+    funds = [{
+        "code": code, "available": entry is not None,
+        "scheme_name": (entry or {}).get("scheme_name"),
+        "amc": (entry or {}).get("amc"),
+        "as_of": (entry or {}).get("as_of"),
+        "source": "Monthly portfolio disclosure",
+    } for code, entry in ((code_a, entry_a), (code_b, entry_b))]
+    if missing:
+        overlap = mf_v2.fund_overlap([], [])
+    elif hold_a and hold_b:
+        overlap = mf_v2.fund_overlap(hold_a, hold_b)
+    else:
+        overlap = {
+            "shared_holdings": [], "shared_count": 0,
+            "shared_weight_in_a_pct": 0.0, "shared_weight_in_b_pct": 0.0,
+            "reason": "One or both funds have no non-cash holdings in their snapshot, so there are no holdings to share.",
+        }
     return {"data": {
         "code_a": code_a, "code_b": code_b,
-        "overlap": mf_v2.fund_overlap(hold_a, hold_b) if not missing else mf_v2.fund_overlap([], []),
+        "funds": funds, "missing_codes": missing,
+        "as_of_a": funds[0]["as_of"], "as_of_b": funds[1]["as_of"],
+        "source": "Monthly portfolio disclosure",
+        "overlap": overlap,
         "portfolio_available": not missing,
         "reason": None if not missing else (
             f"No portfolio holdings snapshot on file for fund(s) {', '.join(missing)} "

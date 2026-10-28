@@ -156,6 +156,19 @@ def _sector_key(s: str) -> str:
     return "".join(ch for ch in s.lower().replace("&", "and") if ch.isalnum())
 
 
+def normalize_holding_name(name: str | None) -> str:
+    """Holding-name key for fund-vs-fund overlap matching.
+
+    Same folding as the sector key: lowercase, "&" -> "and", punctuation
+    and spaces removed. Only normalisation: no fuzzy matching, no
+    guessing — two names match only when their normalised forms are
+    identical.
+    """
+    if not name:
+        return ""
+    return _sector_key(str(name))
+
+
 def _sector_canon(labels: set[str]) -> dict[str, str]:
     """AMCs spell the same industry differently ("&" vs "and", truncated labels): map each to one display label.
 

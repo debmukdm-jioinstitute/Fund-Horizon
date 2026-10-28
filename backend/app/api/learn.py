@@ -39,6 +39,7 @@ from app.models.learn import (
     LearnPrefsModel,
     LearnProgressModel,
     QuizAttemptModel,
+    VarsityProgressModel,
     XpEventModel,
 )
 from app.repo_crm_core import IST, _get_engine
@@ -374,6 +375,63 @@ def complete_lesson(lesson_id: str, staff: Staff):
         total = before + gained
         s.commit()
         return dict(xp_awarded=gained, xp=total, level_up=level_for(total) > level_for(before), new_badges=new)
+
+
+# ---------------------------------------------------------------------------
+# Varsity (external Zerodha catalogue) progress
+# ---------------------------------------------------------------------------
+# Chapter ids look like "varsity:<module-slug>:<chapter-number>". They are
+# stored in their own table and deliberately award no XP, badges or streak
+# credit: reading an external page must not be farmable, and these ids must
+# never pass through the internal lesson-completion endpoint (which 404s on
+# any id outside the internal syllabus).
+# Focus scope only: deferred modules have no chapter lists and no progress ids
+# are generated for them, so their slugs are deliberately not accepted here.
+VARSITY_SLUGS = (
+    "introduction-to-stock-markets",
+    "personal-finance-mutual-funds",
+    "personal-finance-insurance",
+    "nps-national-pension-system",
+    "fundamental-analysis",
+    "sector-analysis",
+    "integrated-financial-modelling",
+    "markets-and-taxation",
+)
+
+
+def _varsity_chapter_id(value: str) -> str:
+    import re
+
+    m = re.fullmatch(r"varsity:([a-z0-9-]+):(\d+)", value or "")
+    if not m or m.group(1) not in VARSITY_SLUGS:
+        raise HTTPException(422, "Unknown Varsity chapter.")
+    return value
+
+
+class VarsityProgressBody(BaseModel):
+    chapter_id: str
+    read: bool
+
+
+@router.get("/varsity/progress")
+def varsity_progress(staff: Staff):
+    with _db() as s:
+        ids = sorted(r for r in s.scalars(select(VarsityProgressModel.chapter_id).where(VarsityProgressModel.staff_id == staff["id"])))
+    return {"read": ids}
+
+
+@router.post("/varsity/progress")
+def varsity_progress_set(body: VarsityProgressBody, staff: Staff):
+    chapter_id = _varsity_chapter_id(body.chapter_id)
+    sid = staff["id"]
+    with _db() as s:
+        existing = s.get(VarsityProgressModel, (sid, chapter_id))
+        if body.read and not existing:
+            s.add(VarsityProgressModel(staff_id=sid, chapter_id=chapter_id, completed_at=_iso(_now())))
+        elif not body.read and existing:
+            s.delete(existing)
+        s.commit()
+    return {"chapter_id": chapter_id, "read": body.read}
 
 
 # ---------------------------------------------------------------------------

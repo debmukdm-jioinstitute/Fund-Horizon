@@ -291,3 +291,27 @@ def test_admin_user_detail(client, admin):
     assert client.get("/api/learn/admin/user/nope").status_code == 404
     _login(client, _make_customer("compliance"))
     assert client.get(f"/api/learn/admin/user/{sid}").status_code == 403
+
+
+# --- Varsity (external catalogue) progress ---------------------------------------------------------------
+
+def test_varsity_progress_requires_staff(client):
+    assert client.get("/api/learn/varsity/progress").status_code == 401
+    _login(client, _make_customer("customer"))
+    assert client.get("/api/learn/varsity/progress").status_code == 403
+
+
+def test_varsity_progress_roundtrip_awards_no_xp_and_stays_out_of_lessons(client, admin):
+    assert client.get("/api/learn/varsity/progress").json() == {"read": []}
+    cid = "varsity:fundamental-analysis:3"
+    r = client.post("/api/learn/varsity/progress", json={"chapter_id": cid, "read": True}).json()
+    assert r == {"chapter_id": cid, "read": True}
+    assert client.get("/api/learn/varsity/progress").json() == {"read": [cid]}
+    me = client.get("/api/learn/me").json()
+    assert me["xp"] == 0
+    assert cid not in me["completed_lessons"]
+    assert client.post("/api/learn/varsity/progress", json={"chapter_id": cid, "read": False}).json()["read"] is False
+    assert client.get("/api/learn/varsity/progress").json() == {"read": []}
+    assert client.post("/api/learn/varsity/progress", json={"chapter_id": "varsity:nope:1", "read": True}).status_code == 422
+    assert client.post("/api/learn/varsity/progress", json={"chapter_id": "mf-01", "read": True}).status_code == 422
+    assert client.post(f"/api/learn/lessons/{cid}/complete").status_code == 404

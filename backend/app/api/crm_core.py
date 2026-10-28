@@ -16,6 +16,8 @@ import json
 import os
 import re
 import secrets
+from html import escape as _html_escape
+from html.parser import HTMLParser
 from datetime import UTC, date, datetime, timedelta
 from typing import Annotated, Any, NamedTuple
 from urllib.parse import quote
@@ -1278,6 +1280,90 @@ def _optouts():
     return _REPO
 
 
+# ---------------------------------------------------------------------------
+# Email HTML sanitiser (used by POST /api/crm/email)
+# ---------------------------------------------------------------------------
+# Allowlist ONLY: p, br, strong, b, em, i, u, ul, ol, li, a (http/https/mailto
+# href only), span (font-family, font-size, colour only), div, img (https src
+# only). Everything else — tags, event-handler attributes, script/style
+# contents — is stripped. Text is re-escaped, so no markup survives in text
+# nodes either.
+_EMAIL_HTML_TAGS = {"p", "br", "strong", "b", "em", "i", "u", "ul", "ol", "li", "a", "span", "div", "img"}
+_EMAIL_HTML_DROP_CONTENT = {"script", "style"}
+_EMAIL_SPAN_STYLES = {"font-family", "font-size", "color"}
+
+
+def _clean_span_style(style: str) -> str:
+    kept = []
+    for decl in style.split(";"):
+        if ":" not in decl:
+            continue
+        prop, _, value = decl.partition(":")
+        prop, value = prop.strip().lower(), value.strip()
+        if prop not in _EMAIL_SPAN_STYLES or not value:
+            continue
+        low = value.lower()
+        if any(bad in low for bad in ("url", "expression", "javascript", "<", ">", "/*", "\\")) or "(" in value or ")" in value:
+            continue
+        kept.append(f"{prop}: {value}")
+    return "; ".join(kept)
+
+
+def sanitize_email_html(value: str) -> str:
+    """Return ``value`` reduced to the email HTML allowlist above."""
+    out: list[str] = []
+    drop_depth = 0
+
+    class _Sanitizer(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            nonlocal drop_depth
+            tag = tag.lower()
+            if tag in _EMAIL_HTML_DROP_CONTENT:
+                drop_depth += 1
+                return
+            if drop_depth:
+                return
+            if tag not in _EMAIL_HTML_TAGS:
+                return
+            kept: dict[str, str] = {}
+            for name, val in attrs:
+                name, val = name.lower(), (val or "")
+                if tag == "a" and name == "href":
+                    href = val.strip()
+                    if href.lower().startswith(("http://", "https://", "mailto:")):
+                        kept["href"] = href
+                elif tag == "span" and name == "style":
+                    if cleaned := _clean_span_style(val):
+                        kept["style"] = cleaned
+                elif tag == "img" and name == "src":
+                    if val.strip().lower().startswith("https://"):
+                        kept["src"] = val.strip()
+                elif tag == "img" and name == "alt":
+                    kept["alt"] = val
+            attr_text = "".join(f' {k}="{_html_escape(v, quote=True)}"' for k, v in kept.items())
+            out.append(f"<{tag}{attr_text}>" if tag != "br" else "<br>")
+
+        def handle_startendtag(self, tag, attrs):
+            self.handle_starttag(tag, attrs)
+
+        def handle_endtag(self, tag):
+            nonlocal drop_depth
+            tag = tag.lower()
+            if tag in _EMAIL_HTML_DROP_CONTENT:
+                drop_depth = max(0, drop_depth - 1)
+                return
+            if drop_depth or tag not in _EMAIL_HTML_TAGS or tag in ("br", "img"):
+                return
+            out.append(f"</{tag}>")
+
+        def handle_data(self, data):
+            if not drop_depth:
+                out.append(_html_escape(data))
+
+    _Sanitizer().feed(value or "")
+    return "".join(out)
+
+
 def _parse_send_at(value: str | None) -> str | None:
     if not value:
         return None
@@ -1313,6 +1399,7 @@ async def email_customers(
     me: Me,
     subject: Annotated[str, Form(min_length=1, max_length=200)],
     message: Annotated[str, Form(min_length=1, max_length=10000)],
+    message_html: Annotated[str, Form(max_length=50000, description="Sanitised rich-text body; plain message is the fallback")] = "",
     customer_ids: Annotated[str, Form(description="JSON list of customer ids")] = "[]",
     emails: Annotated[str, Form(description="JSON list of any other email addresses")] = "[]",
     files: Annotated[list[UploadFile], File()] = [],  # noqa: B006 - FastAPI reads, never mutates
@@ -1323,7 +1410,9 @@ async def email_customers(
     """Email one or more customers via Resend: a contact, a household's members, anyone found by search.
 
     Optional attachments: uploaded files, each client's generated holdings statement, or a stored Operations filing.
-    ``{name}`` in subject/message becomes the first name. ``send_at`` schedules it (Resend holds it, max 30 days).
+    ``{name}`` in subject/message (and in message_html, after sanitising) becomes the first name.
+    ``send_at`` schedules it (Resend holds it, max 30 days). When message_html is given it is
+    sanitised (see sanitize_email_html) and sent as the HTML body, with the plain message as fallback.
     One email per recipient, logged on that client's timeline. Opted-out clients are skipped; every email carries a
     one-click unsubscribe. Same visibility rule as activities."""
     try:
@@ -1387,11 +1476,16 @@ async def email_customers(
         first = "there" if custom else (customer["name"] or "").split(" ")[0] or "there"
         subj, text = subject.replace("{name}", first), message.replace("{name}", first)
         unsub = f"{PUBLIC_API_URL}/api/crm/public/unsubscribe?c={quote(cid, safe='')}&t={_unsub_token(cid)}"
+        html_body = None
+        if message_html.strip():
+            html_body = sanitize_email_html(message_html).replace("{name}", _html_escape(first))
+            html_body += f"<p>Don't want these emails? <a href=\"{_html_escape(unsub, quote=True)}\">Unsubscribe</a></p>"
         names = [n for n, _ in attach + own]
         try:
             email_id = send_email(
                 to, subj, f"{text}\n\n--\nDon't want these emails? Unsubscribe: {unsub}", attach + own, scheduled_at=when,
                 headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"},
+                html=html_body,
             )
             note = ("\n\nAttachments: " + ", ".join(names) if names else "") + (f"\n\nScheduled for {when}" if when else "")
             repo.create_activity(kind="email", subject=subj, body=(f"To: {to}\n\n" if custom else "") + text + note,

@@ -77,6 +77,7 @@ export const nameKey = (n: string) => n.toLowerCase().replace(/\b(direct|regular
 export default function MfQuartileRankings({ screenerCategories = [], plans = [], query = "", recommended = false }: { screenerCategories?: { key: string; label: string }[]; plans?: string[]; query?: string; recommended?: boolean }) {
   const [recKeys, setRecKeys] = useState<Set<string> | null>(null);
   const [period, setPeriod] = useState("1y");
+  const [view, setView] = useState<"calendar" | "trailing">("calendar");
   const [data, setData] = useState<MfQuartileData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -99,6 +100,7 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
   }, [recommended]);
 
   useEffect(() => {
+    if (view !== "trailing") return;
     if (!regular || !labels.length) {
       setData(null);
       setLoading(false);
@@ -122,7 +124,7 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
       .finally(() => !ctl.signal.aborted && setLoading(false));
     return () => ctl.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [labelKey, regular, period]);
+  }, [labelKey, regular, period, view]);
 
   const num = (s: string) => parseFloat((s ?? "").replace(/,/g, ""));
   const q = query.trim().toLowerCase();
@@ -166,6 +168,20 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
 
   return (
     <div className="p-2.5 space-y-2.5 min-h-[420px]">
+      <div className="flex flex-wrap items-center gap-2 text-[12px]" role="tablist" aria-label="Quartile view">
+        <span className="text-[#706E6B] dark:text-[#A8B4C4]">View:</span>
+        <button type="button" role="tab" aria-selected={view === "calendar"} onClick={() => setView("calendar")} className={view === "calendar" ? "terminal-btn-accent text-[12px] py-1 px-3" : `${sel} py-1 px-3`}>Calendar years</button>
+        <button type="button" role="tab" aria-selected={view === "trailing"} onClick={() => setView("trailing")} className={view === "trailing" ? "terminal-btn-accent text-[12px] py-1 px-3" : `${sel} py-1 px-3`}>Trailing periods</button>
+      </div>
+      {view === "calendar" ? (
+        <MfQuartileAnnual
+          labels={labels}
+          enabled={regular}
+          recommendedPending={recommended && !recKeys}
+          keep={(n) => (!q || n.toLowerCase().includes(q)) && (!recommended || !!recKeys?.has(nameKey(n)))}
+        />
+      ) : (
+        <>
       <div className="flex flex-wrap items-center gap-2 text-[12px]">
         <select aria-label="Period" className={sel} value={period} onChange={(e) => setPeriod(e.target.value)}>
           {PERIODS.map((p) => <option key={p} value={p}>{periodLabel(p)}</option>)}
@@ -216,14 +232,11 @@ export default function MfQuartileRankings({ screenerCategories = [], plans = []
           </table>
         </div>
       )}
-      <MfQuartileAnnual
-        labels={labels}
-        enabled={regular}
-        keep={(n) => (!q || n.toLowerCase().includes(q)) && (!recommended || !!recKeys?.has(nameKey(n)))}
-      />
       <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
         Note: the return numbers in this table are Advisorkhoj&apos;s figures. They are not the screener&apos;s figures, and they do not use the NAV date shown at the top of this page (that date comes from AMFI / mfapi.in for the screener above).
       </p>
+        </>
+      )}
     </div>
   );
 }

@@ -103,12 +103,14 @@ _NEW_NUMERIC_KEYS = (
     + [f"pct_{m}" for m in ("sharpe_3y", "sortino_3y", "alpha_3y", "vol_3y", "max_dd_3y", "ret_1y", "cagr_3y", "cagr_5y")]
     + _V2_NUMERIC_KEYS
 )
+FH_NUMERIC_KEYS = ["fh_score", "fh_rating", "fh_coverage", "fh_base", "fh_penalties", "fh_adj"]
 NUMERIC_KEYS = (
     ["out_1y", "out_3y", "out_5y", "score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
     + list(_PCT.values())
     + [t.format(y) for y in _YEARS for t in _RAW]
     + [f"{k}_{y}y" for y in _YEARS for k in _CAPTURE]
     + _NEW_NUMERIC_KEYS
+    + FH_NUMERIC_KEYS
 )
 SORT_KEYS = set(NUMERIC_KEYS) | {"name"}
 
@@ -303,7 +305,12 @@ def _scored(
             df[col] = [(index_map.get(str(c)) or {}).get(src) for c in df["code"]]
         else:
             df[col] = None
-    return df
+    # FH score engine (app.backoffice.fh_score): calendar-year quartiles come from the nightly screening refresh.
+    from app.backoffice import fh_score
+
+    for key in ("ytd", "py1", "py2"):
+        df[f"cal_q_{key}"] = [((consistency_map or {}).get(str(c)) or {}).get("cal_quartiles", {}).get(key) for c in df["code"]]
+    return fh_score.score_frame(df, ref=nav_as_of if pd.notna(nav_as_of) else None)
 
 
 def screen(
@@ -374,7 +381,7 @@ def all_frame(
 
 
 def records(df: pd.DataFrame) -> list[dict[str, Any]]:
-    out = df.replace({np.nan: None, np.inf: None, -np.inf: None})
+    out = df.drop(columns=[c for c in df.columns if c.startswith("fhd_")]).replace({np.nan: None, np.inf: None, -np.inf: None})
     rows = out.to_dict("records")
     for r in rows:
         for k, v in r.items():
@@ -457,7 +464,13 @@ def explain(df: pd.DataFrame, code: str, metric: str) -> dict[str, Any] | None:
         "nav_date": r["nav_date"], "value": _num(r[metric]) if metric != "cat_label" else r[metric],
         "bands": {"top": LABEL_TOP, "mid": LABEL_MID, "max": PILLAR_MAX},
     }
-    if metric in PILLAR_INPUTS or metric == "ops":
+    if metric in ("fh_score", "fh_rating"):
+        from app.backoffice import fh_score
+
+        out["fh"] = fh_score.explain_row(r)
+        out["parts"] = []
+        out["rule"] = "FH score: weighted filters, penalties and a consistency adjustment, bounded 0-100. See breakdown."
+    elif metric in PILLAR_INPUTS or metric == "ops":
         if metric == "ops":
             parts = [_part(grp, code, "ter", False, "Expense ratio (lower ranks better)", COST_WEIGHT),
                      _part(grp, code, "history_years", None, f"Track record (capped at {AGE_CAP_YEARS} years)", AGE_WEIGHT)]

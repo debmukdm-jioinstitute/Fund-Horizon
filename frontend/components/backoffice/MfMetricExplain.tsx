@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getMfExplain, type MfExplain, type MfExplainPart, type MfScreenerRow } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
+import FhScorePanel from "./FhScorePanel";
 
 const n = (v: unknown, d = 2) => (typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d }) : "not available");
 const PERIOD = (k: string) => {
@@ -90,7 +91,8 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
         </div>
         {err && <p role="alert" className="text-[#9B1C2E] dark:text-[#FFA9B5]">{err}</p>}
         {!data && !err && <p className="text-[#706E6B] dark:text-[#A8B4C4]">Computing live from the latest data…</p>}
-        {data && (
+        {data?.fh && <FhScorePanel fh={data.fh} row={row} />}
+        {data && !data.fh && (
           <>
             {pillar && (
               <section>

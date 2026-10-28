@@ -18,6 +18,15 @@ export interface InfoTipProps {
   className?: string;
 }
 
+// Cadence per upstream source, shown as "Next run" when a metric does not state its own.
+const SOURCE_NEXT_RUN: Partial<Record<SourceKey, string>> = {
+  amfi: "Weekdays 00:00 IST, after the AMFI NAV release",
+  mfapi: "Weekdays 00:00 IST, with the daily refresh",
+  advisorkhoj: "On demand: crawled by staff, then committed",
+  nse: "Each trading day after market close",
+  derived: "Recalculated whenever its inputs refresh",
+};
+
 function formatIst(dateStr?: string | null): string {
   if (!dateStr || dateStr === "null" || dateStr === "None") {
     return "Not recorded";
@@ -147,7 +156,26 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
   const fetchedText = formatIst(meta?.fetched_at);
   const isStale = Boolean(meta?.stale);
 
-  const extra = (def.method || def.sources || def.refresh) && (
+  // Freshness: age of the last fetch against the stated cadence; unknown stays "Not recorded" rather than guessed.
+  const ageDays = meta?.fetched_at ? Math.floor((Date.now() - new Date(meta.fetched_at).getTime()) / 86_400_000) : null;
+  const freshLabel = isStale ? "Stale" : ageDays === null || Number.isNaN(ageDays) ? "Not recorded" : ageDays <= 0 ? "Fresh (today)" : `${ageDays} day${ageDays === 1 ? "" : "s"} old`;
+  const nextRun = def.nextRun ?? SOURCE_NEXT_RUN[resolvedSourceKey];
+  const freshness = (
+    <div className="space-y-1">
+      <div>Last updated: {fetchedText}</div>
+      <div className="flex items-center">
+        <span>Freshness: {freshLabel}</span>
+        {isStale && (
+          <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400">
+            stale
+          </span>
+        )}
+      </div>
+      {nextRun && <div>Next run: {nextRun}</div>}
+    </div>
+  );
+
+  const extra = (def.method || def.sources || def.refresh || def.relevance) && (
     <div className="space-y-2 border-t border-navy-100 dark:border-navy-800 pt-2 text-[11px] leading-relaxed text-navy-700 dark:text-navy-300">
       {def.method && (
         <div>
@@ -169,6 +197,12 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
         <div>
           <span className="font-semibold text-navy-900 dark:text-white">Refresh: </span>
           {def.refresh}
+        </div>
+      )}
+      {def.relevance && (
+        <div>
+          <span className="font-semibold text-navy-900 dark:text-white">Why it matters: </span>
+          {def.relevance}
         </div>
       )}
     </div>
@@ -272,14 +306,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
                   <span className="font-medium text-navy-700 dark:text-navy-300">{sourceName}</span>
                 )}
               </div>
-              <div className="flex items-center">
-                <span>Last fetched: {fetchedText}</span>
-                {isStale && (
-                  <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400">
-                    stale
-                  </span>
-                )}
-              </div>
+              {freshness}
             </div>
           </div>
 
@@ -357,14 +384,7 @@ export default function InfoTip({ metric, meta, className = "" }: InfoTipProps) 
                   <span className="font-medium text-navy-700 dark:text-navy-300">{sourceName}</span>
                 )}
               </div>
-              <div className="flex items-center">
-                <span>Last fetched: {fetchedText}</span>
-                {isStale && (
-                  <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400">
-                    stale
-                  </span>
-                )}
-              </div>
+              {freshness}
             </div>
           </div>,
           document.body

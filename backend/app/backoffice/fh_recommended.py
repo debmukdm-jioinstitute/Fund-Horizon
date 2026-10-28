@@ -45,6 +45,8 @@ FH_RECOMMENDED_MF_CODES: dict[str, str] = {
     "152065": "Kotak Multi Asset Allocation Fund",
 }
 
+MF_CURATED: dict[str, str] = dict(FH_RECOMMENDED_MF_CODES)  # hand-picked seed list, counted as manual inclusions
+
 # Which publisher's factsheet source covers each curated pick. A pick missing here has no automated source yet
 # (360 ONE and Sundaram publish no public factsheet download); the UI says so instead of showing nothing.
 MF_FACTSHEET_SOURCE: dict[str, str] = {
@@ -73,6 +75,7 @@ import json
 from pathlib import Path
 
 OVERRIDES_FILE = Path(__file__).resolve().parent.parent / "data" / "recommended_overrides.json"
+AUTO_FILE = Path(__file__).resolve().parent.parent / "data" / "fh_auto_recommended.json"
 
 FH_RECOMMENDED_PMS_IDS: dict[str, str] = {
     "174": "Stallion Asset Core Fund",
@@ -143,5 +146,43 @@ def save_recommended_override(kind: str, item_id: str, name: str, recommended: b
             json.dump(data, f, indent=2)
     except Exception:
         pass
+    _rebuild()
+
+def _read(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def manual_state() -> tuple[dict[str, str], set[str]]:
+    """(manual inclusions incl. the curated seed, manual exclusions). Persisted overrides survive every auto refresh."""
+    o = _read(OVERRIDES_FILE)
+    excl = {str(k) for k in o.get("mf_remove", [])}
+    inc = {**{k: v for k, v in MF_CURATED.items() if k not in excl}, **o.get("mf_add", {})}
+    return inc, excl
+
+
+def auto_codes() -> dict[str, str]:
+    return _read(AUTO_FILE).get("codes", {})
+
+
+def _rebuild() -> None:
+    inc, excl = manual_state()
+    FH_RECOMMENDED_MF_CODES.clear()
+    FH_RECOMMENDED_MF_CODES.update({k: v for k, v in auto_codes().items() if k not in excl})
+    FH_RECOMMENDED_MF_CODES.update(inc)
+
+
+def apply_auto(codes: dict[str, str], as_of: str | None) -> bool:
+    """Store the score-driven recommendations and rebuild the live list. Returns True when the stored set changed."""
+    changed = codes != auto_codes()
+    if changed:
+        AUTO_FILE.parent.mkdir(parents=True, exist_ok=True)
+        AUTO_FILE.write_text(json.dumps({"as_of": as_of, "codes": codes}, indent=2), encoding="utf-8")
+    _rebuild()
+    return changed
+
 
 load_overrides()
+_rebuild()

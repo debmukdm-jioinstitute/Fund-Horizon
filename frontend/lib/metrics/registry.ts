@@ -12,10 +12,49 @@ export interface MetricDef {
   method?: string[]; // step-by-step methodology, shown as a numbered list in the info popover
   sources?: string[]; // every data source behind the figure (the primary one is still sourceKey)
   refresh?: string; // how and when the data is refreshed, and what makes it stale
+  nextRun?: string; // when it next updates, overriding the source default
+  relevance?: string; // why a reader should care, and what decision it informs
 }
 
 export const METRICS: Record<string, MetricDef> = {
 
+  fh_score: {
+    key: "fh_score",
+    label: "FH score",
+    what: "Fund Horizon's own 0 to 100 score for a mutual fund, built from five filters (six with the optional drawdown filter), minus penalties for failed tests, plus a consistency adjustment.",
+    formula: "Score = Σ(filter raw score × filter weight) − penalties ± consistency adjustment, bounded 0 to 100",
+    meaning: "80 and above, with enough data and confirmed history criteria, puts a Regular-plan fund on the FH Recommended List automatically. Staff can still add or exclude any fund; those choices are saved and survive every refresh.",
+    direction: "higher",
+    unit: "points / 100",
+    sourceKey: "derived",
+    method: [
+      "Fund manager and history (20): manager tenure and fund age against two thresholds. Thresholds are provisional placeholders until confirmed.",
+      "Quartile consistency (20): year to date, previous and prior calendar year. Second or third quartile scores highest, first lower, fourth lowest. Two qualifying periods give full credit.",
+      "Risk-adjusted ratios (25, or 20 with drawdown on): capture ratio (up ÷ down capture, above 1.0), Sortino (above 1.5) and Sharpe (above 1.0) over 1, 3 and 5 years. Capture weighs most. Each failed Sortino or Sharpe period is flagged and penalised, more steeply for repeats.",
+      "Benchmark and category outperformance (20, or 15): six comparisons (1, 3, 5 years against the benchmark and the category average). Every failed comparison is flagged and penalised. Equal returns count as a fail.",
+      "Magnitude of excess returns (15): size of the lead over the category average, scaled by how widely peers differ, so extreme values cannot dominate.",
+      "Maximum drawdown (optional, 10): 3-year drawdown magnitude against the category-plan average. Off by default; when on, ratio weights shrink so the same risk is not counted twice.",
+      "Consistency adjustment: a bonus when more than two filters are strong, a deduction for each weak later filter. Missing data earns no points and weight is never redistributed.",
+    ],
+    sources: ["AMFI + mfapi.in: NAV, returns, Sharpe, Sortino, drawdown", "Advisorkhoj: up and down capture", "Computed from NAV: calendar-year quartiles against category peers", "Fund Horizon managers table: manager tenure", "Passive index funds standing in for benchmarks"],
+    refresh: "Recalculated on every view from the latest data and scoring configuration. Underlying NAV data refreshes weekdays at 00:00 IST.",
+    nextRun: "Weekdays 00:00 IST (next NAV refresh); quartiles update with the nightly screening run",
+    relevance: "Drives the FH Recommended List, so it decides which funds advisers present first. Treat low data coverage or a Review badge as a reason to look closer, not as a verdict.",
+  },
+  fh_rating: {
+    key: "fh_rating",
+    label: "FH rating",
+    what: "A 1 to 5 star band taken directly from the FH score. It is Fund Horizon's own rating, not Morningstar's.",
+    formula: "5 stars above 80, 4 above 65, 3 above 50, 2 above 35, otherwise 1",
+    meaning: "Shown only when at least 60% of the score's data is available; otherwise the fund is Not rated rather than given a flattering star count.",
+    direction: "higher",
+    unit: "stars",
+    sourceKey: "derived",
+    method: ["Compute the FH score.", "Check data coverage is at least 60%.", "Map the score to a band using the configured cut-offs."],
+    sources: ["Derived entirely from the FH score and its inputs (see FH score)."],
+    refresh: "Recalculated on every view.",
+    relevance: "A quick screen. Use the score breakdown to see which filters earned or lost the stars.",
+  },
   // ---------------------------------------------------------------------------
   // Daily briefing (Research > Briefing)
   // ---------------------------------------------------------------------------

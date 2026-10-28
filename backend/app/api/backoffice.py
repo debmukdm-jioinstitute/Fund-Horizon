@@ -7,7 +7,7 @@ import json
 import re
 import secrets
 from functools import lru_cache as _lru_cache
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -54,7 +54,7 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice import index_tri as index_tri_module
-from app.backoffice import mf_holdings, mf_reference, mf_screener
+from app.backoffice import fh_recommended, fh_score, mf_holdings, mf_reference, mf_screener
 from app.backoffice import mf_research_v2 as mf_v2
 from app.backoffice.screening.quartiles import compute_category_quartiles
 from app.backoffice.screening.service import ScreeningService
@@ -861,6 +861,78 @@ def _tri_seed_available() -> bool:
         return False
 
 
+_FH_KEY: tuple | None = None
+
+
+def _fh_frame() -> pd.DataFrame:
+    """Full scored frame with the same manager and consistency inputs the screener table uses."""
+    try:
+        consistency_map = _REPO.screening_consistency_map()
+    except Exception:
+        consistency_map = {}
+    return mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map)
+
+
+def _fh_refresh(frame: pd.DataFrame | None = None, force: bool = False) -> None:
+    """Re-derive score-driven recommendations when data or scoring config changed. Manual overrides are applied on top, never overwritten."""
+    global _FH_KEY
+    cfg_file = fh_score.CONFIG_FILE
+    key = (len(_REPO.screening_consistency_map()), cfg_file.stat().st_mtime if cfg_file.exists() else 0)
+    if not force and key == _FH_KEY:
+        return
+    frame = frame if frame is not None else _fh_frame()
+    as_of = pd.to_datetime(frame["nav_date"], format="%d-%b-%Y").max().date().isoformat() if len(frame) else None
+    auto = {str(r.code): str(r.name) for r in frame[frame["fh_auto"]].itertuples()}
+    fh_recommended.apply_auto(auto, as_of)
+    _FH_KEY = key
+
+
+def _fh_status(df: pd.DataFrame) -> pd.Series:
+    inc, excl = fh_recommended.manual_state()
+    return pd.Series(
+        [fh_score.status(a, sc, b, set(inc), excl, c) for a, sc, b, c in zip(df["fh_auto"], df["fh_score"], df["fh_blockers"], df["code"])],
+        index=df.index,
+    )
+
+
+@router.get("/mutual-funds/fh-score/methodology")
+def backoffice_fh_methodology(staff: Annotated[dict, Depends(require_staff)]):
+    cfg = fh_score.load_config()
+    cap = data_dir() / "capture_ratio.json"
+    nav = data_dir() / "all_schemes_metrics.csv"
+    now = datetime.now(UTC)
+    nxt = now.replace(hour=18, minute=30, second=0, microsecond=0)
+    while nxt <= now or nxt.weekday() > 4:
+        nxt += timedelta(days=1)
+    ist = timezone(timedelta(hours=5, minutes=30))
+    return {
+        "config": cfg, "weights": fh_score.active_weights(cfg), "provisional": fh_score.PROVISIONAL,
+        "filters": fh_score.FILTERS,
+        "sources": [
+            {"name": "NAV, returns, Sharpe, Sortino, drawdown", "source": "AMFI + mfapi.in", "as_of": datetime.fromtimestamp(nav.stat().st_mtime).date().isoformat() if nav.exists() else None},
+            {"name": "Capture ratios", "source": "Advisorkhoj (crawled, committed JSON)", "as_of": datetime.fromtimestamp(cap.stat().st_mtime).date().isoformat() if cap.exists() else None},
+            {"name": "Calendar-year quartiles", "source": "Computed from NAV vs category peers (min 8) in the nightly screening refresh", "as_of": None},
+            {"name": "Manager tenure", "source": "Fund Horizon managers table (staff-seeded)", "as_of": None},
+            {"name": "Benchmark returns", "source": "Passive index fund tracking each category benchmark (no TRI series ingested)", "as_of": None},
+        ],
+        "refresh": {"cadence": "Weekdays 00:00 IST, after AMFI NAV release", "next_run_ist": nxt.astimezone(ist).strftime("%d-%m-%Y %H:%M IST")},
+    }
+
+
+class FhConfigPatch(BaseModel):
+    patch: dict
+
+
+@router.put("/mutual-funds/fh-score/config")
+def backoffice_fh_config(body: FhConfigPatch, admin: Annotated[dict, Depends(require_role("admin"))]):
+    try:
+        cfg = fh_score.save_config(body.patch)
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None
+    _fh_refresh(force=True)
+    return {"config": cfg}
+
+
 @router.get("/mutual-funds/screener/explain")
 def backoffice_mf_explain(
     staff: Annotated[dict, Depends(require_staff)],
@@ -868,7 +940,7 @@ def backoffice_mf_explain(
     metric: str = Query(..., max_length=40),
 ):
     """Why a fund has a given screener value, computed live from the same frame the table uses."""
-    res = mf_screener.explain(mf_screener.all_frame(_REPO.mf_ter_by_code()), code, metric)
+    res = mf_screener.explain(_fh_frame(), code, metric)
     if res is None:
         raise HTTPException(404, "Unknown fund or metric.")
     return res
@@ -927,7 +999,11 @@ def backoffice_mf_screener(
         quartiles=quartile, quartile_period=quartile_period, include_unavailable=include_unavailable,
         manager_map=_mf_manager_map(), consistency_map=consistency_map,
     )
-    df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES))
+    try:
+        _fh_refresh()
+    except Exception:
+        pass
+    df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES), fh_status=_fh_status(df))
     if recommended:
         df = df[df["is_fh_recommended"]]
     snapshot = _holdings_snapshot()

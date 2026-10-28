@@ -168,6 +168,7 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
     # (for rolling/calendar consistency) and peer calendar-year returns.
     cat_med_returns: dict[str, pd.Series] = {}
     cat_peer_cal: dict[str, dict[int, dict[str, float]]] = {}
+    cat_peer_ytd: dict[str, dict[str, float]] = {}
 
     for cat, codes in cat_peers.items():
         cat_returns_2y[cat] = {}
@@ -196,6 +197,14 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
             for year, ret in calendar_year_returns(nav_cache[c]).items():
                 peer_cal.setdefault(year, {})[c] = ret
         cat_peer_cal[cat] = peer_cal
+        # Year-to-date peer returns (latest NAV vs prior December month-end), for the FH score's quartile filter.
+        ytd: dict[str, float] = {}
+        for c in codes:
+            s_c = nav_cache[c]
+            prior = s_c[(s_c.index.year == s_c.index[-1].year - 1) & (s_c.index.month == 12)] if len(s_c) else s_c
+            if len(prior) and s_c.index[-1].year > prior.index[-1].year:
+                ytd[c] = float(s_c.iloc[-1] / prior.iloc[-1] - 1.0)
+        cat_peer_ytd[cat] = ytd
 
     # Compute quartiles per category
     cat_computed_q: dict[str, dict[str, int | None]] = {}
@@ -210,6 +219,17 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
         for cat in cats:
             rets = {c: an.trailing_return(nav_cache[c], years=years) for c in cat_peers.get(cat, [])}
             cat_quartiles_by_period[period][cat] = compute_category_quartiles(rets, min_peers=8)
+
+    # FH score quartile filter: YTD, previous and prior calendar year (computed, category + all-plan peers, min 8).
+    ref_year = max((s_.index[-1].year for s_ in nav_cache.values() if len(s_)), default=None)
+    cat_cal_q: dict[str, dict[str, dict[str, int | None]]] = {}
+    for cat in cats:
+        cc = cat_peer_cal.get(cat, {})
+        cat_cal_q[cat] = {
+            "ytd": compute_category_quartiles(cat_peer_ytd.get(cat, {}), min_peers=8),
+            "py1": compute_category_quartiles(cc.get(ref_year - 1, {}), min_peers=8) if ref_year else {},
+            "py2": compute_category_quartiles(cc.get(ref_year - 2, {}), min_peers=8) if ref_year else {},
+        }
 
     # Compute scheme preliminary metrics to get category averages (1Y, 3Y, 5Y, SI) and median TER
     cat_metrics_acc: dict[str, dict[str, list[float]]] = {
@@ -306,6 +326,7 @@ def refresh_screening(repo: BackofficeRepository | None = None) -> dict[str, Any
             )
         except Exception:
             consistency = {}
+        consistency["cal_quartiles"] = {k: cat_cal_q.get(cat, {}).get(k, {}).get(code) for k in ("ytd", "py1", "py2")}
         up_c, down_c = m_row.get("up_capture"), m_row.get("down_capture")
         med_ter = cat_median_ters.get(cat)
         provenance = {

@@ -58,8 +58,8 @@ const COLUMNS: Record<Section, Col[]> = {
     pct("out_1y", "1Y", undefined, "Fund 1Yr return minus its category-plan average, in percentage points"),
     pct("out_3y", "3Y"),
     pct("out_5y", "5Y"),
-    { key: "score", label: "FH score / 100", kind: "score" },
-    { key: "stars", label: "FH rating", kind: "stars" },
+    { key: "fh_score", label: "FH score / 100", kind: "score" },
+    { key: "fh_rating", label: "FH rating", kind: "stars" },
     { key: "aum_cr", label: "AUM (\u20B9 Cr)", kind: "aum" },
     num("ter", "Expense (%)"),
   ],
@@ -163,7 +163,7 @@ function MutualFunds() {
   const plan = useMemo(() => (params.has("plan") || params.has("section") ? params.getAll("plan") : PLANS), [params]);
   const section = (SECTIONS.find((s) => s === params.get("section")) ?? "Summary") as Section;
 
-  const [sort, setSort] = useState("score");
+  const [sort, setSort] = useState("fh_score");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [pageSize, setPageSize] = useState(8);
   const [offset, setOffset] = useState(0);
@@ -394,7 +394,7 @@ function MutualFunds() {
                 setRecDropdownOpen(false);
                 setPlanSelectOpen(false);
                 setColsOpen(false);
-                setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Capture Ratio" ? "cap_ratio_3y" : s === "Returns" ? "cagr_3y" : "score");
+                setSort(s === "Risk Vs Reward" ? "sharpe_3y" : s === "Capture Ratio" ? "cap_ratio_3y" : s === "Returns" ? "cagr_3y" : "fh_score");
                 setOrder("desc");
               }}
               className={`text-[13px] py-1 px-3 border-b-2 ${section === s ? "border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] font-medium" : "border-transparent text-[#706E6B] dark:text-[#A8B4C4]"}`}
@@ -466,7 +466,7 @@ function MutualFunds() {
             setRecommended(false);
             setRanges({});
             setDraft({});
-            setSort("score");
+            setSort("fh_score");
             setOrder("desc");
             setShowFilter(false);
             setUrl({ plan: PLANS });
@@ -679,10 +679,10 @@ function MutualFunds() {
                   {r.amc ?? "-"} · {r.plan}
                 </div>
                 <div className="grid grid-cols-4 gap-1 text-center text-[11px]">
-                  {([["Score", "score"], ["1Yr", "ret_1y"], ["3Yr", "cagr_3y"], ["5Yr", "cagr_5y"]] as const).map(([l, k]) => (
+                  {([["Score", "fh_score"], ["1Yr", "ret_1y"], ["3Yr", "cagr_3y"], ["5Yr", "cagr_5y"]] as const).map(([l, k]) => (
                     <div key={k}>
                       <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{l}</div>
-                      <div className={`tabular-nums font-medium ${k === "score" ? "" : tone(r[k])}`}>{fmt(r[k], k === "score" ? 0 : 1)}{k === "score" || typeof r[k] !== "number" ? "" : "%"}</div>
+                      <div className={`tabular-nums font-medium ${k === "fh_score" ? "" : tone(r[k])}`}>{fmt(r[k], k === "fh_score" ? 0 : 1)}{k === "fh_score" || typeof r[k] !== "number" ? "" : "%"}</div>
                     </div>
                   ))}
                 </div>
@@ -723,8 +723,9 @@ function MutualFunds() {
                       <th key={c.key} rowSpan={2} className="text-right whitespace-nowrap">
                         <button type="button" onClick={() => onSort(c.key)} className="hover:underline cursor-pointer" title={`Sort by ${c.label}`}>
                           {c.label}
-                          {c.key === "score" ? (sort === "score" ? (order === "asc" ? " \u2191" : " \u2193") : <span className="opacity-30"> \u21c5</span>) : arrow(c.key)}
+                          {c.key === "fh_score" ? (sort === "fh_score" ? (order === "asc" ? " \u2191" : " \u2193") : <span className="opacity-30"> \u21c5</span>) : arrow(c.key)}
                         </button>
+                        {(c.key === "fh_score" || c.key === "fh_rating") && <InfoTip metric={c.key} meta={{ source: "amfi", fetched_at: asOf ?? null }} />}
                       </th>
                     ))}
                   </tr>
@@ -879,9 +880,9 @@ function MutualFunds() {
       </div>
 
       <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-        FH checklist score (out of 100) ranks each fund against its category and plan on Performance (1Y/3Y/5Y returns), Portfolio (fund size and 3Yr alpha, since
-        holdings are not in the dataset), Operations (expense ratio, track record) and Risk vs Reward (Sharpe, Sortino, drawdown, volatility). FH Star Rating is our own
-        risk-adjusted rank (3Y/5Y/10Y Sharpe within category), not Morningstar&apos;s. Alpha, Beta and Treynor are measured against the median of the fund&apos;s category and plan, not an index.
+        FH score (out of 100) combines fund manager and history, quartile consistency, risk-adjusted ratios, benchmark and category outperformance and the size of excess
+        returns, minus penalties for failed tests plus a consistency adjustment. FH rating (1 to 5) is banded from that score, not Morningstar&apos;s. Click any score for the
+        full breakdown, flags and data coverage, or the info icon for methodology. The Checklist tab keeps the older four-pillar score. Alpha, Beta and Treynor are measured against the median of the fund&apos;s category and plan, not an index.
         AUM is AMFI&apos;s latest quarterly average (all plans). Day, week and 52-week figures use the AMFI NAV history. Past performance is not a guide to future returns.
       </p>
 
@@ -905,6 +906,17 @@ function MutualFunds() {
   );
 }
 
+const FH_STATUS: Record<string, [string, string]> = {
+  auto: ["Auto", "bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C]"],
+  manual_include: ["Manual", "bg-[#2E844A] text-white"],
+  manual_exclude: ["Excluded", "bg-[#B42332] text-white"],
+  blocked: ["Review", "bg-[#E8A317] text-[#181818]"],
+};
+const fhTitle = (row: MfScreenerRow) => {
+  const flags = Array.isArray(row.fh_flags) ? (row.fh_flags as unknown as string[]) : [];
+  return `Click for the full score breakdown${flags.length ? `. Flags: ${flags.join(", ").replaceAll("_", " ")}` : ""}`;
+};
+
 function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; summary?: boolean; onExplain: () => void }) {
   const v = row[col.key];
   // Whole cell opens the plain-language explanation; keyboard users get Enter/Space.
@@ -915,8 +927,11 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
   const cls = "cursor-pointer hover:bg-[#EAF5FE] dark:hover:bg-[#10243A] ";
   if (col.kind === "score" && summary) {
     return (
-      <td {...click} title="Click to see why" className={cls + "text-right whitespace-nowrap"}>
-        <span className="font-medium tabular-nums">{typeof v === "number" ? v : "-"}</span>
+      <td {...click} title={fhTitle(row)} className={cls + "text-right whitespace-nowrap"}>
+        <span className="font-medium tabular-nums">{typeof v === "number" ? v.toFixed(1) : "-"}</span>
+        {FH_STATUS[String(row.fh_status)] && (
+          <span className={`ml-1.5 align-middle rounded px-1 py-0.5 text-[9px] uppercase ${FH_STATUS[String(row.fh_status)][1]}`}>{FH_STATUS[String(row.fh_status)][0]}</span>
+        )}
       </td>
     );
   }
@@ -938,7 +953,7 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
   if (col.kind === "stars") {
     const n = typeof v === "number" ? v : 0;
     return (
-      <td {...click} className={cls + "text-right whitespace-nowrap"} title={n ? `${n} of 5 (FH rating, not Morningstar)${row.stars_provisional ? ". Provisional: under 3 years of history, ranked on 1Y Sharpe" : ""}` : "Not rated"}>
+      <td {...click} className={cls + "text-right whitespace-nowrap"} title={n ? `${n} of 5 (FH rating from the FH score, not Morningstar)` : "Not rated: too little data behind the FH score"}>
         {n ? (
           <>
             <span className="text-[#E8A317] dark:text-[#FBBF24]">★</span> <span className="tabular-nums text-[#181818] dark:text-[#EDF2F7]">{n}/5</span>
@@ -946,7 +961,7 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
         ) : (
           <span className="text-[#706E6B] dark:text-[#A8B4C4]">-</span>
         )}
-        {n > 0 && row.stars_provisional ? <sup className="ml-0.5 text-[9px]">P</sup> : null}
+        
       </td>
     );
   }

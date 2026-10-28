@@ -1635,7 +1635,26 @@ export interface MfExplain {
   metric: string; code: string; name: string; plan: string; category: string; peers: number; nav_date: string | null;
   value: number | string | null; bands: { top: number; mid: number; max: number }; parts: MfExplainPart[];
   rule?: string; points?: number | null; label?: string; provisional?: boolean; category_avg?: number | null;
+  fh?: FhExplain;
 }
+
+export interface FhComponent { label: string; value: number | null; score?: number | null; pass?: boolean | null; threshold?: number; note?: string | null }
+export interface FhFilter { key: string; label: string; weight: number; raw: number | null; points: number | null; coverage: number | null; status: "ok" | "insufficient" | "unconfigured"; components: FhComponent[] }
+export interface FhExplain {
+  score: number | null; rating: number | null; coverage: number | null; base: number | null;
+  penalties: { key: string; points: number | null }[]; penalty_total: number | null;
+  adjustment: { bonus: number | null; malus: number | null; total: number | null };
+  filters: FhFilter[]; drawdown_enabled: boolean;
+  flags: { code: string; text: string }[]; blockers: { code: string; text: string }[];
+  auto_eligible: boolean; provisional: string[];
+}
+export interface FhMethodology {
+  weights: Record<string, number>; provisional: string[]; filters: Record<string, string>;
+  config: { drawdown_enabled: boolean; recommend: { threshold: number; min_coverage: number }; history: { confirmed: boolean } };
+  sources: { name: string; source: string; as_of: string | null }[];
+  refresh: { cadence: string; next_run_ist: string };
+}
+export const getFhMethodology = () => boFetch<FhMethodology>("/api/backoffice/mutual-funds/fh-score/methodology");
 
 /** Live per-fund breakdown of one screener value, computed by the backend from the same frame as the table. */
 export const getMfExplain = (code: string, metric: string, signal?: AbortSignal) =>

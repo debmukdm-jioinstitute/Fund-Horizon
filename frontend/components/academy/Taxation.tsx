@@ -390,7 +390,7 @@ export function TaxationPage({ productId }: { productId: string }) {
           <h3 className="text-lg font-semibold">F&O background chapters on Zerodha Varsity</h3>
           <p className={`text-[15px] ${muted}`}>
             Futures and options background, listed by chapter title. Direct chapter links for these modules were not collected, so the buttons below open the
-            Varsity modules index on Zerodha. These lists are background reading inside this taxation guide — they are not Academy modules and they earn no XP.
+            module page on Zerodha — Options Theory opens its verified module page, and Futures Trading opens the Varsity modules index. These lists are background reading inside this taxation guide — they are not Academy modules and they earn no XP.
           </p>
           {FO_BACKGROUND.map((mod) => (
             <div key={mod.slug} className="space-y-2">
@@ -400,7 +400,7 @@ export function TaxationPage({ productId }: { productId: string }) {
                   <li key={c.n}>{c.title}</li>
                 ))}
               </ol>
-              <a href={VARSITY_MODULES_INDEX} target="_blank" rel="noreferrer" className={btnGhost}>
+              <a href={mod.moduleUrl ?? VARSITY_MODULES_INDEX} target="_blank" rel="noreferrer" className={btnGhost}>
                 Open {mod.title} on Zerodha ↗
               </a>
             </div>

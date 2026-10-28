@@ -11,6 +11,7 @@ import {
   MfScreenerGroup,
   MfScreenerQuery,
   MfScreenerRow,
+  MutualFundItem,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import { shortDisplayName } from "@/components/backoffice/mfDisplayName";
@@ -124,6 +125,25 @@ function tone(v: unknown): string {
   if (typeof v !== "number") return "";
   return v > 0 ? "text-[#0B7A4B] dark:text-[#5FD3A2]" : v < 0 ? "text-[#B42332] dark:text-[#FF7D86]" : "";
 }
+
+function toItem(r: MfScreenerRow): MutualFundItem {
+  return {
+    scheme_code: r.code,
+    scheme_name: r.name,
+    amc_name: r.amc ?? undefined,
+    cat_key: r.cat,
+    plan: r.plan,
+    option: "Growth",
+    latest_nav: typeof r.nav === "number" ? r.nav : undefined,
+    nav_date: r.nav_date ?? undefined,
+    ter_pct: typeof r.ter === "number" ? r.ter : undefined,
+    isin_growth: r.isin ?? undefined,
+    is_fh_recommended: r.is_fh_recommended,
+  };
+}
+
+// Opens the staff detail view in a new tab; the row travels in ?s= so the page needs no extra fetch.
+const fundHref = (r: MfScreenerRow) => `/backoffice/mutual-funds/${encodeURIComponent(r.code)}?s=${encodeURIComponent(JSON.stringify(toItem(r)))}`;
 
 export default function MutualFundsPage() {
   return (
@@ -770,7 +790,7 @@ function MutualFunds() {
                             {r.amc ? <AmcLogo amc={r.amc} className="h-8 min-w-8 max-w-[4rem] text-[9px] shrink-0" /> : null}
                             <div className="min-w-0">
                               <a
-                                href={`/funds/${encodeURIComponent(r.code)}`}
+                                href={fundHref(r)}
                                 target="_blank" rel="noopener noreferrer"
                                 className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug"
                               >
@@ -796,7 +816,7 @@ function MutualFunds() {
                       ) : (
                         <td>
                           <a
-                            href={`/funds/${encodeURIComponent(r.code)}`}
+                            href={fundHref(r)}
                             target="_blank" rel="noopener noreferrer"
                             className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer leading-snug"
                           >

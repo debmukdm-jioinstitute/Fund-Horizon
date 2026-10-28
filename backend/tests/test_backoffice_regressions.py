@@ -58,3 +58,12 @@ def test_staff_list_and_provision_without_password(admin_client):
     listed = admin_client.get("/api/backoffice/staff")
     assert listed.status_code == 200
     assert any(s["email"] == "new.analyst@fundhorizon.internal" for s in listed.json()["data"])
+
+
+def test_backoffice_peers_any_plan(admin_client):
+    from app.data.loader import load_metrics
+
+    code = str(load_metrics().query("plan == 'Direct'").iloc[0]["scheme_code"])
+    r = admin_client.get(f"/api/backoffice/mutual-funds/{code}/peers")
+    assert r.status_code == 200 and r.json()["count"] >= 1
+    assert all(p["scheme_code"] for p in r.json()["peers"])

@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  addMfShortlist, getMfExplain, getMfManager, getMfResearchDetail, getMutualFundPerformance,
+  addMfShortlist, getMfExplain, getMfManager, getMfPeers, getMfResearchDetail, getMutualFundPerformance,
   type FhExplain, type MfManagerInfo, type MfPerformance, type MfResearchDetail, type MfScreenerRow, type MutualFundItem,
 } from "@/lib/backoffice";
 import { useRecommended } from "@/lib/recommended";
@@ -13,13 +13,21 @@ import FhScorePanel from "@/components/backoffice/FhScorePanel";
 import FundQuartile from "@/components/backoffice/FundQuartile";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
 import MfResearchBlocks from "@/components/backoffice/MfResearchBlocks";
+import { NavChart } from "@/components/FundCharts";
+import FundTabs from "@/components/fund/FundTabs";
+import { AssetAllocation, HoldingsTable, PeerTable, ReturnsCalculator, SectorAllocation } from "@/components/fund/FundExtras";
+import type { FundPeers, FundPortfolio } from "@/lib/types";
 import SignedValue from "@/components/terminal/SignedValue";
 import { shortDisplayName } from "@/components/backoffice/mfDisplayName";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 
-const TABS = ["Overview", "Returns", "Risk", "Rankings", "NAV history", "Fund details"] as const;
-type Tab = (typeof TABS)[number];
+const TABS = [
+  { id: "fund-price", label: "Fund Price" }, { id: "performance", label: "Performance" }, { id: "peers", label: "Peer Comparison" },
+  { id: "calculator", label: "Calculator" }, { id: "asset-allocation", label: "Asset Allocation" }, { id: "sector-allocation", label: "Sector Allocation" },
+  { id: "holdings", label: "Holdings" }, { id: "fund-overview", label: "Overview" }, { id: "about", label: "About" },
+  { id: "compare", label: "Compare Funds" }, { id: "faqs", label: "FAQs" },
+];
 const MUTED = "text-[#706E6B] dark:text-[#A8B4C4]";
 const H2 = "text-[20px] sm:text-[22px] font-semibold text-[#181818] dark:text-[#EDF2F7]";
 
@@ -120,7 +128,7 @@ function NavHistory({ perf, code }: { perf: MfPerformance; code: string }) {
 export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { fh_status?: string } }) {
   const code = scheme.scheme_code;
   const rec = useRecommended();
-  const [tab, setTab] = useState<Tab>("Overview");
+  const [peers, setPeers] = useState<FundPeers | null>(null);
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined);
   const [manager, setManager] = useState<MfManagerInfo | null>(null);
   const [managerOpen, setManagerOpen] = useState(false);
@@ -136,6 +144,7 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
     getMutualFundPerformance(code).then((p) => !off && setPerf(p)).catch(() => !off && setPerf(null));
     getMfManager(code).then((m) => !off && setManager(m)).catch(() => undefined);
     getMfResearchDetail(code).then((d) => !off && setDetail(d)).catch(() => undefined);
+    getMfPeers(code).then((p) => !off && setPeers(p)).catch(() => undefined);
     getMfExplain(code, "fh_score").then((e) => !off && setFh(e.fh ?? null)).catch(() => undefined);
     return () => { off = true; };
   }, [code]);
@@ -146,6 +155,24 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
   const mv = (k: string) => (typeof m[k] === "number" ? (m[k] as number) : undefined);
   const nav = scheme.latest_nav != null && scheme.latest_nav !== "" && Number.isFinite(Number(scheme.latest_nav)) ? `₹${formatNumber(Number(scheme.latest_nav), 4)}` : "—";
   const row = { code, name: scheme.scheme_name, plan: scheme.plan ?? "", cat: scheme.cat_key ?? "", is_fh_recommended: false, perf_label: "", risk_label: "", ops_label: "", fh_status: scheme.fh_status } as MfScreenerRow;
+
+  const pf = detail?.portfolio;
+  const portfolio: FundPortfolio | null = pf?.available
+    ? {
+        holdings: pf.holdings.map((h) => ({ name: h.name ?? null, isin: h.isin ?? null, sector: h.sector ?? null, weight_pct: h.weight_pct ?? null, instrument_type: h.instrument_type ?? null })),
+        sectors: pf.sectors.filter((x) => x.sector && x.weight_pct != null).map((x) => ({ sector: x.sector as string, weight_pct: x.weight_pct as number })),
+        unclassified_pct: pf.unclassified_pct ?? 0, total_weight_pct: pf.total_weight_pct ?? 0,
+        summary: { holdings_count: pf.summary?.holdings_count ?? pf.holdings.length, top10_concentration_pct: pf.summary?.top10_concentration_pct ?? null, top_holding_pct: pf.summary?.top_holding_pct ?? null, cash_pct: pf.summary?.cash_pct ?? null },
+        as_of: pf.as_of ?? null, source: pf.source ?? null, amc: pf.amc ?? null, coverage_pct: pf.coverage_pct ?? null, note: pf.note ?? null,
+      }
+    : null;
+  const f = (v?: number) => (v === undefined ? "not available" : `${v.toFixed(1)}%`);
+  const faqs: [string, string][] = [
+    [`What are the returns of ${shortDisplayName(scheme.scheme_name)}?`, `1 year ${f(mv("ret_1y"))}, 3 year CAGR ${f(mv("cagr_3y"))}, 5 year CAGR ${f(mv("cagr_5y"))}${perf ? `, as of ${formatISTDate(perf.as_of)}` : ""}. Past performance is not a guide to future returns.`],
+    ["How risky is this fund?", `3 year volatility ${f(mv("vol_3y"))}; largest fall from a peak over all history ${f(mv("max_drawdown_all"))}.`],
+    ["What is the expense ratio?", scheme.ter_pct ? `${Number(scheme.ter_pct).toFixed(2)}% a year for the ${classified.plan || "listed"} plan.` : "Not on file for this plan."],
+    ["What does it hold?", portfolio ? `${portfolio.summary.holdings_count} holdings as of ${portfolio.as_of ?? "the latest disclosure"}; see Holdings and Sector Allocation above.` : "Its monthly portfolio file is not ingested yet, so holdings are shown as unavailable, never estimated."],
+  ];
 
   const copy = async () => {
     const text = [`Scheme: ${scheme.scheme_name}`, `Code: ${code}`, `AMC: ${scheme.amc_name || "—"}`, `Category: ${scheme.category || "—"}`, `Plan: ${classified.plan || "—"}`, `Option: ${classified.option || "—"}`, `Latest NAV: ${nav}`, `NAV date: ${formatISTDate(scheme.nav_date)}`, `TER: ${scheme.ter_pct ? `${Number(scheme.ter_pct).toFixed(2)}%` : "—"}`, `ISIN Growth: ${blankDash(scheme.isin_growth)}`].join("\n");
@@ -258,56 +285,96 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
         </div>
       </div>
 
-      <div role="tablist" className="sticky top-0 z-20 -mx-4 flex gap-5 overflow-x-auto border-b border-[#E5E5E5] bg-white px-4 dark:border-[#2B3644] dark:bg-[#10151C] sm:-mx-6 sm:px-6">
-        {TABS.map((t) => (
-          <button key={t} role="tab" aria-selected={tab === t} type="button" onClick={() => setTab(t)} className={`shrink-0 border-b-2 py-3 text-[14px] font-medium ${tab === t ? "border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF]" : "border-transparent"}`}>{t}</button>
-        ))}
-      </div>
+      <FundTabs
+        tabs={TABS}
+        barCls="bg-white dark:bg-[#10151C]"
+        activeCls="border-[#0176D3] font-semibold text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF]"
+      />
 
       {perf === undefined && <p className={`text-[13px] ${MUTED}`}>Loading performance…</p>}
       {perf === null && <div className="terminal-panel p-3 text-[13px]"><span className={MUTED}>No performance data: the dataset covers Growth-option, open-ended schemes only.</span></div>}
 
-      {tab === "Overview" && <>{perf && <>{returns}{risk}</>}{score}{rankings}{managerBlock}{identity}</>}
-      {tab === "Returns" && perf && <>
-        {returns}
-        <Section title="Consistency of returns">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <Tile label="Rolling 1Y win %" value={detail?.roll_win_pct ?? undefined} plain digits={1} />
-            <Tile label="Calendar win %" value={detail?.cal_win_pct ?? undefined} plain digits={1} />
-            <Tile label="SIP CAGR 3Y" value={detail?.sip_cagr_3y ?? undefined} />
-            <Tile label="SIP CAGR 5Y" value={detail?.sip_cagr_5y ?? undefined} />
-          </div>
-          <p className={`text-[12px] ${MUTED}`}>Win percentages are against the category median.</p>
-        </Section>
-      </>}
-      {tab === "Risk" && perf && <>
-        {risk}
-        <Section title="Risk against peers">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <Tile label="Downside deviation (3Y)" value={detail?.downside_dev_3y ?? undefined} plain />
-            <Tile label="Calmar (3Y)" value={detail?.calmar_3y ?? undefined} unit="" plain />
-            <Tile label="Sharpe percentile (3Y)" value={detail?.pct_sharpe_3y ?? undefined} unit="" plain digits={0} />
-            <Tile label="Sortino percentile (3Y)" value={detail?.pct_sortino_3y ?? undefined} unit="" plain digits={0} />
-            <Tile label="Alpha percentile (3Y)" value={detail?.pct_alpha_3y ?? undefined} unit="" plain digits={0} />
-            <Tile label="Volatility percentile (3Y)" value={detail?.pct_vol_3y ?? undefined} unit="" plain digits={0} />
-            <Tile label="Drawdown percentile (3Y)" value={detail?.pct_max_dd_3y ?? undefined} unit="" plain digits={0} />
-          </div>
-          <p className={`text-[12px] ${MUTED}`}>Percentiles rank the fund among its category and plan peers; higher is better.</p>
-        </Section>
-      </>}
-      {tab === "Rankings" && <>{rankings}{score}</>}
-      {tab === "NAV history" && (perf ? <NavHistory perf={perf} code={code} /> : <p className={`text-[13px] ${MUTED}`}>No NAV history for this scheme.</p>)}
-      {tab === "Fund details" && <>
+      <div id="fund-price" className="scroll-mt-28 space-y-6">
+        {perf && <Section title="NAV chart"><NavChart navs={[...perf.history].reverse().flatMap((h) => (h.nav == null ? [] : [{ date: h.date, nav: h.nav }]))} /></Section>}
+        {perf ? <NavHistory perf={perf} code={code} /> : <p className={`text-[13px] ${MUTED}`}>No NAV history for this scheme.</p>}
+      </div>
+
+      <div id="performance" className="scroll-mt-28 space-y-6">
+        {perf && <>{returns}{risk}</>}
+        {perf && (
+          <Section title="Consistency of returns">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Tile label="Rolling 1Y win %" value={detail?.roll_win_pct ?? undefined} plain digits={1} />
+              <Tile label="Calendar win %" value={detail?.cal_win_pct ?? undefined} plain digits={1} />
+              <Tile label="SIP CAGR 3Y" value={detail?.sip_cagr_3y ?? undefined} />
+              <Tile label="SIP CAGR 5Y" value={detail?.sip_cagr_5y ?? undefined} />
+            </div>
+            <p className={`text-[12px] ${MUTED}`}>Win percentages are against the category median.</p>
+          </Section>
+        )}
+        {perf && (
+          <Section title="Risk against peers">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Tile label="Downside deviation (3Y)" value={detail?.downside_dev_3y ?? undefined} plain />
+              <Tile label="Calmar (3Y)" value={detail?.calmar_3y ?? undefined} unit="" plain />
+              <Tile label="Sharpe percentile (3Y)" value={detail?.pct_sharpe_3y ?? undefined} unit="" plain digits={0} />
+              <Tile label="Sortino percentile (3Y)" value={detail?.pct_sortino_3y ?? undefined} unit="" plain digits={0} />
+              <Tile label="Alpha percentile (3Y)" value={detail?.pct_alpha_3y ?? undefined} unit="" plain digits={0} />
+              <Tile label="Volatility percentile (3Y)" value={detail?.pct_vol_3y ?? undefined} unit="" plain digits={0} />
+              <Tile label="Drawdown percentile (3Y)" value={detail?.pct_max_dd_3y ?? undefined} unit="" plain digits={0} />
+            </div>
+            <p className={`text-[12px] ${MUTED}`}>Percentiles rank the fund among its category and plan peers; higher is better.</p>
+          </Section>
+        )}
+        {score}
+        {rankings}
+      </div>
+
+      <Section id="peers" title="Peer comparison">
+        {peers?.peers?.length ? <PeerTable data={peers} code={code} hrefBase="/backoffice/mutual-funds" /> : <p className={`text-[13px] ${MUTED}`}>No peers on file for this category and plan.</p>}
+      </Section>
+
+      <Section id="calculator" title="Returns calculator">
+        <ReturnsCalculator cagr={{ "3Y": mv("cagr_3y") != null ? (mv("cagr_3y") as number) / 100 : null, "5Y": mv("cagr_5y") != null ? (mv("cagr_5y") as number) / 100 : null }} />
+      </Section>
+
+      <Section id="asset-allocation" title="Asset allocation"><AssetAllocation p={portfolio} /></Section>
+      <Section id="sector-allocation" title="Sector allocation"><SectorAllocation p={portfolio} /></Section>
+      <Section id="holdings" title="Holdings"><HoldingsTable p={portfolio} /></Section>
+
+      <div id="fund-overview" className="scroll-mt-28 space-y-6">
+        {managerBlock}
+        {identity}
         <Section title="Research coverage" sub="Missing data is shown explicitly, never estimated."><MfResearchBlocks researchDetail={detail} /></Section>
         <Section title="Factsheets"><FactsheetList kind="mf" id={code} /></Section>
-        {identity}
         <Section title="Research & external links">
           <div className="flex flex-wrap gap-2 text-[13px]">
             <a className="terminal-btn px-3 py-1.5" target="_blank" rel="noreferrer" href={`https://api.mfapi.in/mf/${code}`}>Historical NAV feed ↗</a>
             <a className="terminal-btn px-3 py-1.5" target="_blank" rel="noreferrer" href={`https://www.google.com/search?q=${encodeURIComponent([scheme.scheme_name, "NAV google finance"].join(" "))}`}>Google Finance search ↗</a>
           </div>
         </Section>
-      </>}
+      </div>
+
+      <Section id="about" title={`About ${shortDisplayName(scheme.scheme_name)}`}>
+        <p className="text-[14px]">
+          {shortDisplayName(scheme.scheme_name)} is a {scheme.category || "mutual fund"} scheme from {scheme.amc_name || "its fund house"} ({[classified.plan, classified.option].filter(Boolean).join(" · ") || "plan not classified"}).
+          {perf ? ` ${m.history_years ?? "—"} years of NAV history, last published ${formatISTDate(scheme.nav_date)}.` : ""}
+        </p>
+      </Section>
+
+      <Section id="compare" title="Compare funds">
+        <p className={`text-[13px] ${MUTED}`}>Select this fund and others in the screener, then open the comparison tray.</p>
+        <Link href="/backoffice/mutual-funds" className="terminal-btn inline-block px-3 py-1.5 text-[13px]">Open the screener →</Link>
+      </Section>
+
+      <Section id="faqs" title="Frequently asked questions">
+        {faqs.map(([q, a]) => (
+          <details key={q} className="group border-b border-[#E5E5E5] py-2 dark:border-[#2B3644]">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-[14px] font-medium">{q}<span className="ml-2 transition-transform group-open:rotate-45">+</span></summary>
+            <p className={`mt-1.5 text-[13px] ${MUTED}`}>{a}</p>
+          </details>
+        ))}
+      </Section>
 
       <p className={`border-t border-[#E5E5E5] dark:border-[#2B3644] pt-3 text-[12px] ${MUTED}`}>Past performance is not a guide to future returns. Descriptive data, not investment advice. Source: AMFI, mfapi.in, Advisorkhoj.</p>
       {managerOpen && manager && <MfManagerDrawer manager={manager} onClose={() => setManagerOpen(false)} />}

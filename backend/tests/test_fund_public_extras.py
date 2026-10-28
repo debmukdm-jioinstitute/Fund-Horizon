@@ -12,3 +12,4 @@ def test_portfolio_and_peers_public():
             p = c.get(f"/api/funds/{code}/peers")
             assert p.status_code == 200 and p.json()["count"] >= 1
         assert c.get("/api/funds/NOPE/peers").status_code == 404
+

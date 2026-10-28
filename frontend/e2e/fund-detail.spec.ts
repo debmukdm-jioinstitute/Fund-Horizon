@@ -18,13 +18,16 @@ test("fund detail page: header, stat strip, tabs and NAV history", async ({ page
   await expect(page.getByText("Latest NAV")).toBeVisible();
   await expect(page.getByText("Expense ratio (TER)")).toBeVisible();
   await expect(page.getByRole("button", { name: "Anuj Kapil" }).first()).toBeVisible();
-  for (const t of ["Overview", "Returns", "Risk", "Rankings", "NAV history", "Fund details"]) await expect(page.getByRole("tab", { name: t })).toBeVisible();
+  for (const t of ["Fund Price", "Performance", "Peer Comparison", "Calculator", "Asset Allocation", "Sector Allocation", "Holdings", "Overview", "About", "Compare Funds", "FAQs"]) await expect(page.getByRole("tab", { name: t })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Returns across horizons" })).toBeVisible();
-  await page.getByRole("tab", { name: "NAV history" }).click();
+  await page.getByRole("tab", { name: "Fund Price" }).click();
   await expect(page.getByRole("heading", { name: "NAV history" })).toBeVisible();
   await expect(page.getByRole("cell", { name: "165.5800" })).toBeVisible();
-  await page.getByRole("tab", { name: "Fund details" }).click();
+  await page.getByRole("tab", { name: "Overview" }).click();
   await expect(page.getByRole("heading", { name: "Identification & settlement" })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Overview" })).toHaveAttribute("aria-selected", "true");
+  await page.getByRole("tab", { name: "Holdings" }).click();
+  await expect(page.getByText("monthly portfolio file is not ingested").first()).toBeVisible();
 });
 
 test("fund detail page: a bare link (no ?s=) looks the fund up by code", async ({ page }) => {

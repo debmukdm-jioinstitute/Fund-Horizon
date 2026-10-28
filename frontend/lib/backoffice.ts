@@ -1,6 +1,7 @@
 import type { OfficialForm } from "@/lib/officialForms";
 import { ApiError, resolveApiUrl, API_URL } from "./api";
 import type { PmsManagerProfile } from "./pms-managers";
+import type { FundPeers } from "./types";
 
 import type { InfoTipMeta } from "@/components/InfoTip";
 import { isPmsRecommended, isMfRecommended } from "./recommended";
@@ -1947,3 +1948,7 @@ export const mfRowToItem = (r: MfScreenerRow): MutualFundItem => ({
 /** Fund detail page path. Pass the summary to open instantly; without it the page looks the fund up by code. */
 export const mfDetailPath = (code: string, item?: MutualFundItem & { fh_status?: unknown }) =>
   `/backoffice/mutual-funds/${encodeURIComponent(code)}${item ? `?s=${encodeURIComponent(JSON.stringify(item))}` : ""}`;
+
+/** Same-category, same-plan funds ranked by 3Y CAGR (fractions, like the public peers route). */
+export const getMfPeers = async (code: string, signal?: AbortSignal): Promise<FundPeers> =>
+  boFetch<FundPeers>(`/api/backoffice/mutual-funds/${encodeURIComponent(code)}/peers`, { signal });

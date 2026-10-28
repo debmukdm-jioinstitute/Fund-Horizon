@@ -18,6 +18,8 @@ from typing import Annotated, Any
 import pandas as pd
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse, RedirectResponse
+
+from app.api.serialize import clean
 from pydantic import BaseModel, Field
 
 from app.api.auth import (
@@ -605,6 +607,24 @@ def _benchmark_series(cat: str) -> dict | None:
         "proxy_name": re.sub(r" - Direct Plan - Growth$", "", str(name)),
         "history": [{"date": str(d.date()), "nav": _num_or_none(v)} for d, v in nav.items()],
     }
+
+
+@router.get("/mutual-funds/{scheme_code}/peers")
+def backoffice_mf_peers(scheme_code: str, staff: Annotated[dict, Depends(require_staff)], limit: int = Query(8, ge=1, le=20)):
+    """Same-category, same-plan funds ranked by 3Y CAGR, plus this fund's own rank (any plan, unlike the public route)."""
+    if not scheme_code.isdigit() or len(scheme_code) > 8:
+        raise HTTPException(404, "Scheme not found")
+    df = load_metrics()
+    me = df[df["scheme_code"] == scheme_code]
+    if me.empty:
+        return {"peers": [], "rank": None, "count": 0}
+    grp = df[(df["cat"] == me.iloc[0]["cat"]) & (df["plan"] == me.iloc[0]["plan"])].dropna(subset=["cagr_3y"]).sort_values("cagr_3y", ascending=False)
+    rank = grp["scheme_code"].tolist().index(scheme_code) + 1 if scheme_code in set(grp["scheme_code"]) else None
+    top = grp.head(limit)
+    if rank and rank > limit:
+        top = pd.concat([top, grp[grp["scheme_code"] == scheme_code]])
+    keep = ["scheme_code", "scheme_name", "amc", "ret_1y", "cagr_3y", "cagr_5y", "vol_3y", "sharpe_3y"]
+    return clean({"peers": top[keep].to_dict("records"), "rank": rank, "count": int(len(grp))})
 
 
 @router.get("/mutual-funds/{scheme_code}/performance")

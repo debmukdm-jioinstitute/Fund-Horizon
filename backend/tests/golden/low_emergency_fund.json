@@ -1,12 +1,12 @@
 {
   "profile": {
-    "tolerance": 97.5,
+    "tolerance": 87.5,
     "final_score": 53.75,
     "band": "Moderate",
     "priority_actions": [
       "Build emergency fund first",
-      "Close the term cover gap",
-      "Close the health cover gap"
+      "Bridge term life insurance cover shortfall (current: 0.0\u00d7 income; target: 15\u00d7)",
+      "Procure dedicated health insurance cover (target: \u20b925L)"
     ],
     "capacity": 53.75,
     "mismatch": true
@@ -39,7 +39,7 @@
       7.5
     ],
     [
-      "148989",
+      "148405",
       7.5
     ],
     [

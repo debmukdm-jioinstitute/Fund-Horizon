@@ -21,8 +21,9 @@ STABILITY = {
 MISMATCH_GAP = 20.0
 
 ACTION_EMERGENCY = "Build emergency fund first"
-ACTION_TERM_GAP = "Close the term cover gap"
-ACTION_HEALTH_GAP = "Close the health cover gap"
+# Prefixes: the emitted action text appends the live numbers (see priority_actions below).
+ACTION_TERM_GAP = "Bridge term life insurance cover shortfall"
+ACTION_HEALTH_GAP = "Procure dedicated health insurance cover"
 
 
 def _step(value: float, table: list[tuple[float, int]], floor: int) -> int:
@@ -244,10 +245,12 @@ def build_profile(client: Client, answers: dict[str, int], assumptions: dict | N
 
     annual_inc = client.monthly_income * 12.0
     term_mult = client.term_cover / annual_inc if annual_inc > 0 else (15.0 if client.term_cover > 0 else 0.0)
-    if score_term_adequacy(term_mult) < 100:
-        actions.append(f"Bridge term life insurance cover shortfall (current: {term_mult:.1f}× income; target: 15×)")
+    ins = next(f["value"] for f in cap["factors"] if f["factor"] == "insurance")
+    # No term action when the need is already zero (e.g. retired / no dependents / assets cover liabilities).
+    if ins["term_need"] > 0 and score_term_adequacy(term_mult) < 100:
+        actions.append(f"{ACTION_TERM_GAP} (current: {term_mult:.1f}× income; target: 15×)")
     if score_health_cover(client.health_cover) < 100:
-        actions.append("Procure dedicated health insurance cover (target: ₹25L)")
+        actions.append(f"{ACTION_HEALTH_GAP} (target: ₹25L)")
 
     return {
         "capacity": cap,

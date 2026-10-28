@@ -12,6 +12,7 @@ from typing import Any
 
 from app.config import load_allocation
 from app.engine.finmath import indian_format
+from app.engine.pipeline import build_full_plan
 from app.schemas import PlanRequest
 
 _DISCLAIMER = "This is an illustration, not a recommendation."

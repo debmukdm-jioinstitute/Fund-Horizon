@@ -46,7 +46,7 @@ def test_content_is_consistent():
     c = L._content()
     assert set(c["mods"]) == set(MODULES)
     # syllabus order, not directory order: Module 1 must stay the first module a new joiner sees
-    assert list(c["mods"]) == ["mf", "pms", "sip", "alloc", "stepup", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "rebal", "overlap", "withdraw"]
+    assert list(c["mods"]) == ["mf", "pms", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "sip", "alloc", "stepup", "rebal", "overlap", "withdraw"]
     for mid, (n_lessons, code) in MODULES.items():
         mod = c["mods"][mid]
         assert (len(mod["_lessons"]), mod["code"]) == (n_lessons, code), mid

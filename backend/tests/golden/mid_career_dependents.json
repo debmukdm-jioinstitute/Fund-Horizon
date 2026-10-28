@@ -1,14 +1,14 @@
 {
   "profile": {
-    "tolerance": 57.5,
-    "final_score": 57.5,
+    "tolerance": 47.5,
+    "final_score": 47.5,
     "band": "Moderate",
     "priority_actions": [
-      "Close the term cover gap",
-      "Close the health cover gap"
+      "Bridge term life insurance cover shortfall (current: 4.2\u00d7 income; target: 15\u00d7)",
+      "Procure dedicated health insurance cover (target: \u20b925L)"
     ],
-    "capacity": 69.75,
-    "mismatch": false
+    "capacity": 68.75,
+    "mismatch": true
   },
   "asset_class": {
     "equity": 50.0,
@@ -26,7 +26,7 @@
       15.0
     ],
     [
-      "148989",
+      "148405",
       15.0
     ],
     [

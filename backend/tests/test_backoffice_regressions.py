@@ -51,7 +51,7 @@ def test_commit_invalid_rows_returns_422_not_500(admin_client):
 def test_staff_list_and_provision_without_password(admin_client):
     r = admin_client.post(
         "/api/backoffice/staff/provision",
-        json={"name": "New Analyst", "email": "new.analyst@fundhorizon.internal", "mobile": "9000000011", "role": "analyst"},
+        json={"name": "New Analyst", "email": "new.analyst@fundhorizon.internal", "mobile": "9000000011", "role": "analyst", "pages": ["/backoffice/mutual-funds"]},
     )
     assert r.status_code == 201
     assert r.json()["temporary_password"]

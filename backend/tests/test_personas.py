@@ -8,6 +8,10 @@ from app.engine.profiling import ACTION_EMERGENCY, ACTION_HEALTH_GAP, ACTION_TER
 
 GOLD = Path(__file__).parent / "golden"
 NAMES = ["young_aggressive", "mid_career_dependents", "near_retirement", "low_emergency_fund"]
+def has(r: dict, prefix: str) -> bool:
+    return any(a.startswith(prefix) for a in r["profile"]["priority_actions"])
+
+
 EQUITY_CATS = {"large_cap", "flexi_cap", "mid_cap", "small_cap"}
 
 
@@ -51,8 +55,8 @@ def test_young_aggressive(results):
     t = r["planning"]["totals"]
     assert t["unused_surplus"] == t["monthly_surplus"] - t["allocated_sip"]
     assert t["unused_surplus"] > 30_000
-    assert ACTION_TERM_GAP in r["profile"]["priority_actions"]
-    assert ACTION_HEALTH_GAP in r["profile"]["priority_actions"]
+    assert has(r, ACTION_TERM_GAP)
+    assert has(r, ACTION_HEALTH_GAP)
     assert r["allocation"]["weighting"] == "allocated_sip"
     sip = sum(g["allocated_sip"] for g in r["planning"]["goals"])
     sip_eq = sum(g["allocated_sip"] * g["asset_mix"]["equity"] for g in r["planning"]["goals"]) / sip
@@ -71,17 +75,17 @@ def test_near_retirement_two_year_goals_have_no_equity(results):
     r = results["near_retirement"]
     assert all(g["asset_mix"]["equity"] == 0 for g in r["planning"]["goals"])
     assert r["allocation"]["by_asset_class"]["equity"] == 0
-    assert ACTION_TERM_GAP not in r["profile"]["priority_actions"]
-    assert ACTION_HEALTH_GAP in r["profile"]["priority_actions"]
+    assert not has(r, ACTION_TERM_GAP)
+    assert has(r, ACTION_HEALTH_GAP)
     assert r["planning"]["insurance"]["term"]["need"] == 0
     assert r["profile"]["mismatch_note"]
 
 
 def test_low_emergency_fund_flags(results):
     r = results["low_emergency_fund"]
-    assert ACTION_EMERGENCY in r["profile"]["priority_actions"]
-    assert ACTION_TERM_GAP in r["profile"]["priority_actions"]
-    assert ACTION_HEALTH_GAP in r["profile"]["priority_actions"]
+    assert has(r, ACTION_EMERGENCY)
+    assert has(r, ACTION_TERM_GAP)
+    assert has(r, ACTION_HEALTH_GAP)
     assert r["profile"]["band"] in ("Conservative", "Moderately Conservative", "Moderate")
     ef = r["planning"]["emergency_fund"]
     assert ef["gap"] > 0

@@ -21,7 +21,7 @@ export default function GlobalHeader() {
     <header className="h-[52px] border-b border-[#E4E9EF] dark:border-[#2B3644] bg-[#FFFFFF] dark:bg-[#10151C] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40 select-none">
       <div className="flex items-center gap-6">
         <Link href={customer?.is_staff ? "/backoffice" : "/"} className="flex items-center gap-2">
-          <Logo size="sm" showSubtitle={false} />
+          <Logo size="sm" showSubtitle={false} href="" />
           <span className="text-[11px] font-semibold tracking-wider uppercase text-[#006F64] dark:text-[#75E1CE] bg-[#E7F5F2] dark:bg-[#1A3034] px-1.5 py-0.5 rounded">
             Terminal
           </span>

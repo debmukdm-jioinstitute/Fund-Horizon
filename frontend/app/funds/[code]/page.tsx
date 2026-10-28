@@ -321,7 +321,7 @@ export default async function FundDetailPage({ params }: PageProps) {
       <FundTabs tabs={TABS} />
 
       {/* NAV History Chart */}
-      <section id="fund-price" className="card scroll-mt-16 space-y-4">
+      <section id="fund-price" className="card scroll-mt-28 space-y-4">
         <div className="flex items-center gap-1.5">
           <h2 className="text-lg font-bold text-navy-950">NAV History</h2>
           <InfoTip metric="nav" meta={mfMeta} />
@@ -329,7 +329,7 @@ export default async function FundDetailPage({ params }: PageProps) {
         <NavChart navs={detail.nav_monthly} />
       </section>
 
-      <div id="performance" className="scroll-mt-16 space-y-6">
+      <div id="performance" className="scroll-mt-28 space-y-6">
       {/* Rolling Returns Analysis */}
       <section className="card space-y-4">
         <div>
@@ -518,43 +518,43 @@ export default async function FundDetailPage({ params }: PageProps) {
 
       </div>
 
-      <section id="peers" className="card scroll-mt-16 space-y-3">
+      <section id="peers" className="card scroll-mt-28 space-y-3">
         <h2 className="text-lg font-bold text-navy-950">Peer Comparison</h2>
         {peers && peers.peers.length > 0 ? <PeerTable data={peers} code={detail.scheme_code} /> : <p className="text-sm text-navy-700">Peer data is not available for this category.</p>}
       </section>
 
-      <section id="calculator" className="card scroll-mt-16 space-y-3">
+      <section id="calculator" className="card scroll-mt-28 space-y-3">
         <h2 className="text-lg font-bold text-navy-950">Returns Calculator</h2>
         <ReturnsCalculator cagr={{ "3Y": ret.cagr_3y, "5Y": ret.cagr_5y }} />
       </section>
 
-      <section id="asset-allocation" className="card scroll-mt-16 space-y-3">
+      <section id="asset-allocation" className="card scroll-mt-28 space-y-3">
         <h2 className="text-lg font-bold text-navy-950">Asset Allocation</h2>
         <AssetAllocation p={portfolio} />
       </section>
 
-      <section id="sector-allocation" className="card scroll-mt-16 space-y-3">
+      <section id="sector-allocation" className="card scroll-mt-28 space-y-3">
         <h2 className="text-lg font-bold text-navy-950">Sector Allocation</h2>
         <SectorAllocation p={portfolio} />
       </section>
 
-      <section id="holdings" className="card scroll-mt-16 space-y-3">
+      <section id="holdings" className="card scroll-mt-28 space-y-3">
         <h2 className="text-lg font-bold text-navy-950">Holdings</h2>
         <HoldingsTable p={portfolio} />
       </section>
 
-      <div id="fund-overview" className="scroll-mt-16">
+      <div id="fund-overview" className="scroll-mt-28">
         {reference ? <ReferenceDetails reference={reference} /> : <section className="card"><h2 className="text-lg font-bold text-navy-950">Overview</h2><p className="mt-1 text-sm text-navy-700">No AMFI/SEBI reference record on file for this scheme.</p></section>}
       </div>
 
-      <section id="about" className="card scroll-mt-16 space-y-2">
+      <section id="about" className="card scroll-mt-28 space-y-2">
         <h2 className="text-lg font-bold text-navy-950">About {detail.scheme_name}</h2>
         <p className="text-sm text-navy-800">
           {detail.scheme_name} is an open-ended {CATEGORY_LABELS[detail.cat] ?? detail.category} scheme from {detail.amc}, offered here as the Regular plan ({detail.option}). NAV history runs {detail.nav_monthly.length} months, last published {analytics.last_nav_date}.
         </p>
       </section>
 
-      <section id="compare" className="card scroll-mt-16 flex flex-wrap items-center justify-between gap-3">
+      <section id="compare" className="card scroll-mt-28 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-navy-950">Compare Funds</h2>
           <p className="text-sm text-navy-700">Put this fund side by side with others on returns, risk and rolling consistency.</p>
@@ -562,7 +562,7 @@ export default async function FundDetailPage({ params }: PageProps) {
         <Link href={`/funds/compare?codes=${detail.scheme_code}`} className="rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-800">Compare →</Link>
       </section>
 
-      <section id="faqs" className="card scroll-mt-16 space-y-2">
+      <section id="faqs" className="card scroll-mt-28 space-y-2">
         <h2 className="text-lg font-bold text-navy-950">Frequently Asked Questions</h2>
         {faqs.map(([q, a]) => (
           <details key={q} className="group border-b border-navy-100 py-2">

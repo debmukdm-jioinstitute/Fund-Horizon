@@ -191,7 +191,7 @@ TABLE_COVERAGE: dict[str, str] = {
     **{t: _SYSTEM for t in (
         "audit_events", "audit_log", "collector_runs", "source_registry", "sessions", "cas_sessions", "import_jobs",
         "screening_runs", "screening_presets", "plans", "briefings", "factsheets", "crm_list_views", "watchlists",
-        "learn_prefs", "learn_progress", "quiz_attempts", "badges", "card_reviews", "xp_events", "rm_teams", "campaigns",
+        "learn_prefs", "learn_progress", "learn_varsity_progress", "quiz_attempts", "badges", "card_reviews", "xp_events", "rm_teams", "campaigns",
         "campaign_members", "commissions", "disclosure_logs", "consents")},
     **{t: _CRM_CHILD for t in (
         "activities", "kyc_records", "fixed_deposits", "insurance_policies", "portfolio_positions", "holdings",

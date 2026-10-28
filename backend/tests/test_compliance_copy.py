@@ -56,13 +56,18 @@ def test_banned_list_catches_advice_tone():
     assert not BANNED.search("suggested_monthly_sip")
 
 
+def _benign(lit: str) -> bool:
+    """Not advice copy: the internal config key "recommend", a negated disclaimer, and the report's legal declaration."""
+    return lit == "recommend" or "not guaranteed" in lit or "to the best of our knowledge" in lit
+
+
 def test_no_banned_words_in_user_facing_strings():
     offenders = []
     for path in APP.rglob("*.py"):
         if path.name in ("disclosures.py", "_embedded.py"):
             continue
         for lit in literals(path):
-            if BANNED.search(lit):
+            if BANNED.search(lit) and not _benign(lit):
                 offenders.append((path.name, lit[:80]))
     for s in COPY_STRINGS:
         assert not BANNED.search(s), s

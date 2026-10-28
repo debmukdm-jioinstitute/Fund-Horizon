@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 export interface FundTab { id: string; label: string }
 
-const OFFSET = 56; // sticky bar height, so a jumped-to heading is not hidden under it
+const HEADER = 52; // GlobalHeader is sticky above this bar
+const OFFSET = HEADER + 52; // header + this bar, so a jumped-to heading is not hidden under them
 
 /** Sticky section tabs: click smooth-scrolls to the section, scrolling highlights the section in view. */
 export default function FundTabs({ tabs }: { tabs: FundTab[] }) {
@@ -49,7 +50,7 @@ export default function FundTabs({ tabs }: { tabs: FundTab[] }) {
   };
 
   return (
-    <nav aria-label="Fund sections" className="sticky top-0 z-30 -mx-1 bg-[var(--terminal-bg)] px-1 pt-1 shadow-sm">
+    <nav aria-label="Fund sections" className="sticky top-[52px] z-30 -mx-1 bg-[var(--terminal-bg)] px-1 pt-1 shadow-sm">
       <div ref={bar} role="tablist" className="no-scrollbar relative flex gap-6 overflow-x-auto whitespace-nowrap sm:gap-9">
         {tabs.map((t) => (
           <button

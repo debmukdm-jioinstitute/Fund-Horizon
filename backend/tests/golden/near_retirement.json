@@ -1,12 +1,12 @@
 {
   "profile": {
-    "tolerance": 30.0,
-    "final_score": 30.0,
+    "tolerance": 22.5,
+    "final_score": 22.5,
     "band": "Moderately Conservative",
     "priority_actions": [
-      "Close the health cover gap"
+      "Procure dedicated health insurance cover (target: \u20b925L)"
     ],
-    "capacity": 84.0,
+    "capacity": 80.0,
     "mismatch": true
   },
   "asset_class": {

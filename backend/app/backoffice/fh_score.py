@@ -355,7 +355,7 @@ FLAG_TEXT = {
     "outstanding": "Outstanding: score at or above the outstanding threshold with enough data behind it.",
     "poor": "Poor: score below the poor-performance threshold.",
     "concentrated": "Concentrated: two filters supply most of the points, so the score leans on one or two strengths.",
-    "inconsistent": "Inconsistent: the best and worst filters differ widely.",
+    "inconsistent": "Inconsistent: the highest and lowest filter scores differ widely.",
     "missing_data": "Missing data: some inputs were unavailable. They earned no points; weight was not redistributed.",
     "sortino_fail": "Sortino did not exceed the threshold in at least one period (penalty applied).",
     "sharpe_fail": "Sharpe did not exceed the threshold in at least one period (penalty applied).",
@@ -365,7 +365,7 @@ FLAG_TEXT = {
     "pre_manager": "A quartile period predates the current manager, so that result is not credited to them.",
 }
 BLOCKER_TEXT = {
-    "score_below_threshold": "Score is below the auto-recommend threshold.",
+    "score_below_threshold": "Score is below the auto-shortlist threshold.",
     "coverage_below_minimum": "Data coverage is below the minimum for automatic inclusion.",
     "history_criteria_unconfirmed": "History criteria are not confirmed yet.",
     "plan_not_offered": "Only Regular plans are offered.",

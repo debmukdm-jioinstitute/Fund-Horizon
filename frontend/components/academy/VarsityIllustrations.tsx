@@ -24,7 +24,6 @@ const INK = "#334155";
 const BLUE = "#2563eb";
 const GREEN = "#16a34a";
 const AMBER = "#d97706";
-const RED = "#dc2626";
 
 export const VARSITY_ILLUSTRATIONS: Record<string, React.ReactNode> = {
   "introduction-to-stock-markets": (

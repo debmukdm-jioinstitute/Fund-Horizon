@@ -18,6 +18,7 @@ COPY data/official_forms.json data/official_forms.json
 COPY data/mf_manager_profiles.json data/mf_manager_profiles.json
 COPY data/mf_managers_seed.csv data/mf_managers_seed.csv
 COPY data/India_MF_Static_Reference_Consolidated.csv.gz data/India_MF_Static_Reference_Consolidated.csv.gz
+COPY data/mf_holdings data/mf_holdings
 
 ENV FH_DATA_DIR=/srv/data/fundhorizon_mf_rag_dataset
 ENV FH_INTERNAL_ONLY=true

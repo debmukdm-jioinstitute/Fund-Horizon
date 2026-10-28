@@ -95,6 +95,8 @@ export const academy = {
     req<{ cards: DueCard[]; reviewed_today: number }>(`/cards/due?module=${m}&deck=${deck}${lesson ? `&lesson=${lesson}` : ""}`),
   reviewCard: (id: string, rating: number, fsrs: unknown, due: string) => post<Reward>(`/cards/${id}/review`, { rating, fsrs, due }),
   leaderboard: (period: "week" | "all") => req<Board>(`/leaderboard?period=${period}`),
+  varsityProgress: () => req<{ read: string[] }>(`/varsity/progress`),
+  varsityToggle: (chapter_id: string, read: boolean) => post<{ chapter_id: string; read: boolean }>(`/varsity/progress`, { chapter_id, read }),
   adminUser: (id: string) => req<AdminUser>(`/admin/user/${id}`),
   setOptOut: (v: boolean) => req<{ leaderboard_optout: boolean }>("/prefs", { method: "PUT", body: JSON.stringify({ leaderboard_optout: v }) }),
   migrate: (body: unknown) => post<{ migrated: boolean }>("/migrate-local", body),

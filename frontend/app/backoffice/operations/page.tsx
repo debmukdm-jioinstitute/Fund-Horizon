@@ -10,6 +10,7 @@ import PdfFormFiller, { type ClientDetails, type FillContext, type PdfSource } f
 import { FILING_STATUSES, type Filing, getFilings, getOfficialForms, setFilingStatus } from "@/lib/backoffice";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
 import { getKyc } from "@/lib/crmProductsApi";
+import { AmcLogo } from "@/components/BrandLogo";
 import type { OfficialForm } from "@/lib/officialForms";
 import { startDownload, type DownloadResult } from "@/lib/api";
 import { domain, isReference, JOBS, type Job, jobForms } from "@/lib/operations";
@@ -330,7 +331,7 @@ function LibraryTab({ forms, filters, setFilters, fillLabel, fillForm }: {
         <input type="search" value={f.amcQ} onChange={(e) => set({ amcQ: e.target.value })} placeholder="Search AMCs…" aria-label="Search AMCs" className={`${input} mb-1.5`} />
         <div className="max-h-64 overflow-y-auto">
           <button type="button" className={fitem(f.amc === "All")} onClick={() => set({ amc: "All" })}>All AMCs<span className={`ml-auto text-[12px] font-normal ${muted}`}>{forms.length}</span></button>
-          {amcList.map(([k, n]) => <button key={k} type="button" className={fitem(f.amc === k)} onClick={() => set({ amc: k })}>{k}<span className={`ml-auto text-[12px] font-normal ${muted}`}>{n}</span></button>)}
+          {amcList.map(([k, n]) => <button key={k} type="button" className={fitem(f.amc === k)} onClick={() => set({ amc: k })}>{!/^(Common|Stallion|Other)/.test(k) && <AmcLogo amc={k} className="mr-2 h-5 min-w-5 max-w-[3rem] text-[7px]" />}{k}<span className={`ml-auto text-[12px] font-normal ${muted}`}>{n}</span></button>)}
         </div>
         <h3 className={h3}>Category</h3>
         <button type="button" className={fitem(f.cat === "All")} onClick={() => set({ cat: "All" })}>All categories<span className={`ml-auto text-[12px] font-normal ${muted}`}>{forms.length}</span></button>

@@ -37,12 +37,14 @@ function Tile({ label, value, unit = "%", plain = false, digits = 2 }: { label: 
   );
 }
 
-const Section = ({ id, title, sub, children }: { id?: string; title: string; sub?: string; children: React.ReactNode }) => (
+const Section = ({ id, title, sub, children }: { id?: string; title?: string; sub?: string; children: React.ReactNode }) => (
   <section id={id} className="space-y-3 scroll-mt-28">
-    <div>
-      <h2 className={H2}>{title}</h2>
-      {sub && <p className={`text-[13px] ${MUTED}`}>{sub}</p>}
-    </div>
+    {title && (
+      <div>
+        <h2 className={H2}>{title}</h2>
+        {sub && <p className={`text-[13px] ${MUTED}`}>{sub}</p>}
+      </div>
+    )}
     {children}
   </section>
 );
@@ -183,8 +185,8 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
     </Section>
   );
   const rankings = (
-    <Section id="rankings" title="Quartile rankings" sub="Source: Advisorkhoj, category and Regular plan. Computed quartiles use the screener's category and plan peers.">
-      <FundQuartile name={scheme.scheme_name} cat={scheme.cat_key ?? scheme.category} />
+    <Section id="rankings">
+      <FundQuartile name={scheme.scheme_name} cat={scheme.cat_key ?? scheme.category} plan={classified.plan} />
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {([["1Y", detail?.quartile_1y], ["2Y", detail?.quartile_2y], ["3Y", detail?.quartile_3y], ["5Y", detail?.quartile_5y]] as const).map(([l, q]) => (
           <Tile key={l} label={`Computed quartile ${l}`} value={q ?? undefined} unit="" plain digits={0} />

@@ -54,13 +54,15 @@ function Stat({ label, value, sub, signed }: { label: string; value: string; sub
   );
 }
 
-function Panel({ title, note, children }: { title: string; note?: string; children: React.ReactNode }) {
+function Panel({ title, note, children }: { title?: string; note?: string; children: React.ReactNode }) {
   return (
     <div className="terminal-panel overflow-hidden">
-      <div className="px-3 py-2 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-baseline justify-between gap-2">
-        <span className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">{title}</span>
-        {note && <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{note}</span>}
-      </div>
+      {(title || note) && (
+        <div className="px-3 py-2 border-b border-[#E5E5E5] dark:border-[#2B3644] flex items-baseline justify-between gap-2">
+          {title && <span className="text-[12px] font-medium text-[#181818] dark:text-[#EDF2F7]">{title}</span>}
+          {note && <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{note}</span>}
+        </div>
+      )}
       <div className="p-3">{children}</div>
     </div>
   );
@@ -317,8 +319,8 @@ export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null
                 </div>
               </Panel>
 
-              <Panel title="Quartile rankings" note="Advisorkhoj, within category">
-                <FundQuartile name={r.name} cat={r.cat} />
+              <Panel>
+                <FundQuartile name={r.name} cat={r.cat} plan={r.plan} />
               </Panel>
 
               <Panel title="Calendar-year returns" note="From month-end NAV history">

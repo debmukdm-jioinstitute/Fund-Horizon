@@ -162,10 +162,10 @@ def search(q: str, viewer_rm_id: str | None, per_type: int = 5) -> list[dict[str
             else " AND customer_id IN (SELECT m.customer_id FROM household_members m JOIN households h ON h.id = m.household_id WHERE h.rm_id IN :rms)"
         )
         for r in s.execute(
-            _t(f"SELECT id, subject, status FROM cases WHERE (LOWER(subject) LIKE :q ESCAPE '\\' OR LOWER(id) LIKE :q ESCAPE '\\'){case_vis} LIMIT :lim"),
+            _t(f"SELECT id, subject, status, customer_id FROM cases WHERE (LOWER(subject) LIKE :q ESCAPE '\\' OR LOWER(id) LIKE :q ESCAPE '\\'){case_vis} LIMIT :lim"),
             params,
         ):
-            out.append({"type": "case", "id": r[0], "title": r[1], "subtitle": r[2].replace("_", " "), "href": f"/backoffice/crm/cases/{r[0]}"})
+            out.append({"type": "case", "id": r[0], "title": r[1], "subtitle": r[2].replace("_", " "), "href": f"/backoffice/crm/contacts/{r[3]}"})  # no case page: open the case's customer, whose record lists it
     return out
 
 

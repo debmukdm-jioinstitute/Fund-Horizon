@@ -885,9 +885,12 @@ def backoffice_mf_screener(
         )
     page = df.iloc[offset: offset + limit]
     as_of = pd.to_datetime(df["nav_date"], format="%d-%b-%Y").max().date().isoformat() if len(df) else None
-    # Per-source freshness: only NAV/quartile dates are recorded in the dataset frame, so the
-    # other sources are null ("Not recorded" in the UI) rather than invented dates. with_meta
-    # merges its provenance entry alongside these keys under "_default".
+    # Per-source freshness from recorded dates only; a source with no rows stays null ("Not recorded").
+    # AUM has no per-row date, so the metrics CSV build date stands in. with_meta merges its
+    # provenance entry alongside these keys under "_default".
+    ter_dates = [r["as_of"] for r in _REPO.list_mf_ter() if r.get("as_of")]
+    mgr_dates = [m["updated_at"][:10] for m in _REPO.list_mf_managers().values() if m.get("updated_at")]
+    aum_file = data_dir() / "all_schemes_metrics.csv"
     return with_meta({
         "data": mf_screener.records(page),
         "total": int(len(df)),
@@ -896,9 +899,9 @@ def backoffice_mf_screener(
         "as_of": as_of,
         "meta": {
             "nav_as_of": as_of,
-            "aum_as_of": None,
-            "ter_as_of": None,
-            "managers_as_of": None,
+            "aum_as_of": datetime.fromtimestamp(aum_file.stat().st_mtime).date().isoformat() if aum_file.exists() else None,
+            "ter_as_of": max(ter_dates, default=None),
+            "managers_as_of": max(mgr_dates, default=None),
             "quartile_as_of": as_of,
             # MF Research V2 availability: sector/portfolio data is not
             # ingested (no holdings snapshots on file), and no TRI series

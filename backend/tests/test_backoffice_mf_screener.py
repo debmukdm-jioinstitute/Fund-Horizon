@@ -176,7 +176,8 @@ def test_screener_meta_and_new_query_params(client):
     body = r.json()
     meta = body["meta"]
     assert meta["nav_as_of"] == body["as_of"] and meta["quartile_as_of"] == body["as_of"]
-    assert meta["aum_as_of"] is None and meta["ter_as_of"] is None and meta["managers_as_of"] is None
+    assert meta["aum_as_of"]  # metrics CSV build date, always present when the dataset is
+    assert "ter_as_of" in meta and "managers_as_of" in meta  # null only when the table has no dated rows
     # Existing response fields are untouched.
     assert "data" in body and "total" in body and "groups" in body and "availability" in body
     q = client.get("/api/backoffice/mutual-funds/screener?quartile=1&quartile_period=2y&include_unavailable=false&limit=200")

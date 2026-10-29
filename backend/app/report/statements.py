@@ -15,7 +15,7 @@ import io
 import re
 from typing import Any
 
-from app.report.client_report import _ocr_boxes, ind, render_pages
+from app.report.client_report import _ocr_boxes, ind, is_pdf, render_pages
 from app.report.monthly_report import _despace
 
 W = 842.0  # FundsIndia print page width; the x zones below are in these units
@@ -262,7 +262,7 @@ def pms_factsheet(st: dict[str, Any]) -> dict[str, Any]:
 
 def fundsindia_pages(name: str, data: bytes) -> list[list[tuple[float, float, str]]]:
     """OCR each page (PDF or screenshot) at 3x and scale x to the print width."""
-    if name.lower().endswith(".pdf"):
+    if is_pdf(name, data):
         imgs = render_pages(data)
     else:
         from PIL import Image

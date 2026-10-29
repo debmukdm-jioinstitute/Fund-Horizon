@@ -391,7 +391,7 @@ export default function PaperworkReport() {
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border-[1.5px] border-dashed border-[#006F64] px-3.5 py-2 text-[13.5px] font-bold text-[#006F64] dark:text-[#75E1CE]">
             {busy === "parse" ? "Reading…" : "⬆ Add files to stage"}
-            <input type="file" multiple accept="application/pdf,image/png,image/jpeg" className="hidden" disabled={busy !== null} onChange={(e) => { addStaged(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
+            <input type="file" multiple className="hidden" disabled={busy !== null} onChange={(e) => { addStaged(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
           </label>
           <button type="button" className={btnPrimary} onClick={parseStaged} disabled={busy !== null || staged.length === 0}>
             {busy === "parse" ? "Reading…" : `Parse staged files (${staged.length})`}

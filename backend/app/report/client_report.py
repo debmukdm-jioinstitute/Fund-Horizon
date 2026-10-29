@@ -3,9 +3,11 @@ from __future__ import annotations
 "Portfolio Valuation Report - Folio Wise" PDF. Google Sans only (see CLAUDE.md)."""
 
 import hashlib
+import html
 import io
 import re
 import threading
+import zipfile
 from typing import Any
 
 from app.config.disclosures import ARN, FIRM
@@ -51,15 +53,15 @@ def _ocr_raw(img: Any) -> list:
         raise ValueError("OCR engine not installed (pip install rapidocr-onnxruntime pypdfium2).") from e
     rgb = img.convert("RGB")
     key = hashlib.blake2b(rgb.tobytes(), digest_size=16).digest()
-    if key in _OCR_CACHE:
-        return _OCR_CACHE[key]
     global _OCR
-    with _OCR_LOCK:
+    with _OCR_LOCK:  # one OCR at a time: the CPU is already saturated, and identical pages queued behind hit the cache
+        if key in _OCR_CACHE:
+            return _OCR_CACHE[key]
         _OCR = globals().get("_OCR") or RapidOCR()
-    res, _ = _OCR(np.asarray(rgb))
-    if len(_OCR_CACHE) >= 64:
-        _OCR_CACHE.pop(next(iter(_OCR_CACHE)))
-    _OCR_CACHE[key] = res or []
+        res, _ = _OCR(np.asarray(rgb))
+        if len(_OCR_CACHE) >= 64:
+            _OCR_CACHE.pop(next(iter(_OCR_CACHE)))
+        _OCR_CACHE[key] = res or []
     return _OCR_CACHE[key]
 
 
@@ -94,22 +96,125 @@ def render_pages(data: bytes, scale: float = 3) -> list:
         return [pdf[i].render(scale=scale).to_pil() for i in range(len(pdf))]
 
 
+_IMG_EXT = (".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tif", ".tiff")
+_IMG_MAGIC = (b"\x89PNG", b"\xff\xd8\xff", b"GIF8", b"BM", b"II*\x00", b"MM\x00*")
+
+
+def is_pdf(name: str, data: bytes) -> bool:
+    if b"%PDF" in data[:1024]:
+        return True
+    # content wins over the extension: a .docx/.xlsx/image/text file renamed .pdf is not a PDF
+    return name.lower().endswith(".pdf") and not data.startswith((b"PK", b"\xd0\xcf\x11\xe0", *_IMG_MAGIC)) and b"\x00" not in data[:512]
+
+
+def is_image(name: str, data: bytes) -> bool:
+    return name.lower().endswith(_IMG_EXT) or data.startswith(_IMG_MAGIC) or (data[:4] == b"RIFF" and data[8:12] == b"WEBP")
+
+
+def _xml_text(xml: str) -> str:
+    xml = re.sub(r"</(?:w:p|a:p|p|tr|div|br|li|h\d)\s*>|<(?:w:br|br)\s*/?>", "\n", xml)
+    xml = re.sub(r"</(?:w:tc|td|th)\s*>", "   ", xml)
+    return "\n".join(ln.strip() for ln in html.unescape(re.sub(r"<[^>]+>", "", xml)).splitlines() if ln.strip())
+
+
+def _zip_text(name: str, data: bytes) -> str | None:
+    """docx / pptx / odt / xlsx-as-zip -> text. None when the zip is not an office file."""
+    try:
+        z = zipfile.ZipFile(io.BytesIO(data))
+    except zipfile.BadZipFile:
+        return None
+    names = z.namelist()
+    if "word/document.xml" in names:
+        parts = ["word/document.xml"]
+    elif any(n.startswith("ppt/slides/slide") for n in names):
+        parts = sorted((n for n in names if re.match(r"ppt/slides/slide\d+\.xml$", n)), key=lambda n: int(re.findall(r"\d+", n)[0]))
+    elif "content.xml" in names:  # OpenDocument
+        parts = ["content.xml"]
+    else:
+        return None
+    return "\n".join(_xml_text(z.read(n).decode("utf-8", "replace")) for n in parts)
+
+
+def _sheet_text(data: bytes) -> str:
+    import openpyxl
+
+    wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+    return "\n".join("   ".join(str(c) for c in row if c is not None)
+                     for ws in wb.worksheets for row in ws.iter_rows(values_only=True) if any(c is not None for c in row))
+
+
+def _decode(name: str, data: bytes) -> str:
+    for enc in ("utf-8-sig", "utf-16") if data[:2] in (b"\xff\xfe", b"\xfe\xff") else ("utf-8-sig", "cp1252"):
+        try:
+            text = data.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    else:
+        raise ValueError(f"{name}: unsupported file type (not text, PDF, image, Word, Excel or PowerPoint).")
+    if "\x00" in text[:2000] or sum(ch.isprintable() or ch in "\n\r\t" for ch in text[:4000]) < 0.9 * len(text[:4000]):
+        raise ValueError(f"{name}: unsupported binary file type.")
+    low = name.lower()
+    if low.endswith((".csv", ".tsv")):
+        import csv
+
+        return "\n".join("   ".join(c.strip() for c in row if c.strip()) for row in csv.reader(io.StringIO(text), delimiter="\t" if low.endswith(".tsv") else ","))
+    if low.endswith((".html", ".htm", ".xml")) or text.lstrip()[:15].lower().startswith(("<!doctype", "<html")):
+        return _xml_text(re.sub(r"(?is)<(script|style)\b.*?</\1>", "", text))
+    if low.endswith(".rtf") or text.startswith("{\\rtf"):
+        return re.sub(r"\\[a-z]+-?\d* ?|[{}]", "", text.replace("\\par", "\n"))
+    return text  # .md .txt .json .log and anything else that is plain text
+
+
 def extract_text(name: str, data: bytes) -> str:
-    if name.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
+    """Any supported upload -> text. PDF: text layer, else OCR. Image: OCR. Word/Excel/PowerPoint/CSV/HTML/Markdown/plain text: read directly."""
+    if not data:
+        raise ValueError(f"{name}: the file is empty.")
+    if is_image(name, data) and not is_pdf(name, data):
         from PIL import Image
 
-        return "\n".join(_ocr_lines(Image.open(io.BytesIO(data))))
+        try:
+            return "\n".join(_ocr_lines(Image.open(io.BytesIO(data))))
+        except ValueError:
+            raise
+        except Exception as e:
+            raise ValueError(f"{name}: not a readable image ({e}).") from e
+    if not is_pdf(name, data):
+        if data.startswith(b"PK"):
+            if name.lower().endswith((".xlsx", ".xlsm")) or b"xl/" in data[:4096] + data[-4096:]:
+                try:
+                    return _sheet_text(data)
+                except Exception as e:
+                    raise ValueError(f"{name}: not a readable Excel file ({e}).") from e
+            text = _zip_text(name, data)
+            if text is None:
+                raise ValueError(f"{name}: unsupported archive (expected .docx, .xlsx or .pptx).")
+            return text
+        if data.startswith(b"\xd0\xcf\x11\xe0"):  # legacy OLE: .xls / .doc / .ppt
+            if name.lower().endswith(".xls"):
+                try:
+                    import pandas as pd
+
+                    return "\n".join("   ".join(str(c) for c in r if str(c) != "nan") for df in pd.read_excel(io.BytesIO(data), sheet_name=None, header=None).values() for r in df.values.tolist())
+                except Exception as e:
+                    raise ValueError(f"{name}: old .xls could not be read ({e}); save it as .xlsx and retry.") from e
+            raise ValueError(f"{name}: old Word/PowerPoint format; save it as .docx/.pptx or PDF and retry.")
+        return _decode(name, data)
     from pypdf import PdfReader
 
     try:
         reader = PdfReader(io.BytesIO(data))
+        if reader.is_encrypted and not reader.decrypt(""):
+            raise ValueError(f"{name}: the PDF is password-protected; remove the password and retry.")
         pages = [p.extract_text(extraction_mode="layout") or "" for p in reader.pages]
+    except ValueError:
+        raise
     except Exception as e:
-        raise ValueError(f"{name}: not a readable PDF.") from e
+        raise ValueError(f"{name}: not a readable PDF ({type(e).__name__}: {e}).") from e
     if len("".join(pages).strip()) >= 80:
         return "\n".join(pages)
     try:
-        import pypdfium2
+        import pypdfium2  # noqa: F401
     except ImportError as e:  # pragma: no cover
         raise ValueError(f"{name}: scanned PDF needs OCR (pip install pypdfium2 rapidocr-onnxruntime).") from e
     return "\n".join("\n".join(ls) for ls in map(_ocr_lines, render_pages(data)))

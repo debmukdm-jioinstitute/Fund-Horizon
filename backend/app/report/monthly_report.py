@@ -31,7 +31,7 @@ from pathlib import Path
 from typing import Any
 
 from app.config.disclosures import ARN
-from app.report.client_report import NOTES, extract_text, ind, parse_factsheet, parse_statement, summarize
+from app.report.client_report import NOTES, extract_text, is_image, is_pdf, ind, parse_factsheet, parse_statement, summarize
 from app.report.fmt import xml_escape
 from app.report.fonts import BODY_FONT, BOLD_FONT
 
@@ -149,8 +149,10 @@ def _extraction_method(fname: str, data: bytes) -> str:
     input cannot be inspected (e.g. a fixture in tests), so the method label
     never blocks a parse.
     """
-    if fname.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
+    if is_image(fname, data):
         return "ocr"
+    if not is_pdf(fname, data):
+        return "text"
     try:
         from pypdf import PdfReader
 
@@ -168,7 +170,8 @@ def _read(fname: str, data: bytes) -> tuple[str, str, dict[str, Any] | None, str
         text = extract_text(fname, data)
         return text, _extraction_method(fname, data), parse_provider_statement(fname, data, text), ""
     except Exception as e:
-        log.exception("could not read %s", fname)
+        if not isinstance(e, ValueError):  # ValueError = expected, user-facing reason
+            log.exception("could not read %s", fname)
         return "", "", None, f"{type(e).__name__}: {e}"
 
 

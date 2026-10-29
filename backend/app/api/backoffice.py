@@ -57,7 +57,7 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice import index_tri as index_tri_module
-from app.backoffice import fh_recommended, fh_score, mf_holdings, mf_reference, mf_screener
+from app.backoffice import fh_recommended, fh_score, mf_holdings, mf_reference, mf_screener, portfolio_screen
 from app.backoffice import mf_research_v2 as mf_v2
 from app.backoffice.screening.quartiles import compute_category_quartiles
 from app.backoffice.screening.service import ScreeningService
@@ -1079,6 +1079,60 @@ def backoffice_mf_screener(
         "groups": mf_screener.facets(frame),
         "availability": "ready" if len(df) else "unavailable",
     }, "amfi", as_of)
+
+
+class ResolveHoldingRequest(BaseModel):
+    code: str
+    raw_name: str = ""
+    statement_value: float | None = None
+    total_value: float | None = None
+
+
+@router.post("/mutual-funds/portfolio-screen")
+async def backoffice_portfolio_screen(
+    staff: Annotated[dict, Depends(require_staff)],
+    file: Annotated[UploadFile, File(description="Portfolio CAS statement PDF")],
+    password: Annotated[str, Form(description="Optional password for encrypted PDF")] = "",
+):
+    """Internal MF portfolio screening: parse client portfolio PDF in memory, match holdings, assign FH scores and signals."""
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(400, "Uploaded file must be a PDF document.")
+
+    pdf_bytes = await file.read()
+    try:
+        parsed = portfolio_screen.parse_portfolio_pdf_bytes(pdf_bytes, password=password)
+        holdings = portfolio_screen.extract_raw_holdings(parsed)
+    except portfolio_screen.PortfolioPDFError as e:
+        raise HTTPException(e.status_code, {"error": e.code, "message": e.message}) from e
+    finally:
+        del pdf_bytes
+        del password
+
+    if not holdings:
+        raise HTTPException(422, {"error": "no_holdings_found", "message": "No active mutual fund holdings could be identified in this statement."})
+
+    frame = _fh_frame()
+    result = portfolio_screen.match_and_screen_portfolio(holdings, frame)
+    return clean(result)
+
+
+@router.post("/mutual-funds/resolve-holding")
+def backoffice_resolve_holding(
+    staff: Annotated[dict, Depends(require_staff)],
+    body: ResolveHoldingRequest,
+):
+    """Re-score a holding when staff manually assigns an AMFI scheme."""
+    frame = _fh_frame()
+    resolved = portfolio_screen.score_single_scheme_resolution(
+        code=body.code,
+        raw_name=body.raw_name,
+        statement_value=body.statement_value,
+        total_value=body.total_value,
+        frame=frame,
+    )
+    if not resolved:
+        raise HTTPException(404, "Scheme not found in active dataset.")
+    return clean(resolved)
 
 
 # ---------------------------------------------------------------------------

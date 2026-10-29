@@ -53,6 +53,14 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "recommend": {"threshold": 80, "min_coverage": 0.8, "plans": ["Regular"]},
     "rating_bands": [80, 65, 50, 35],  # score above each -> 5, 4, 3, 2 stars; else 1
     "rating_min_coverage": 0.6,
+    # Provisional Buy/Hold/Sell signal mapping based on star rating.
+    "signals": {
+        "provisional": True,
+        "buy_ratings": [4, 5],
+        "hold_ratings": [3],
+        "sell_ratings": [1, 2],
+        "min_coverage": 0.6,
+    },
 }
 
 PROVISIONAL = [
@@ -64,6 +72,7 @@ PROVISIONAL = [
     "Max drawdown uses the 3-year figure only (the only window present for every fund) against the category + plan average.",
     "Penalties, the consistency adjustment, flag thresholds, rating bands and the 80 / 80% coverage recommendation gate are proposed defaults.",
     "Equal returns count as a failed comparison (strict 'beats').",
+    "Provisional Buy/Hold/Sell signal mapping (implementation assumption): 5 or 4 stars -> Buy, 3 stars -> Hold, 2 or 1 star -> Sell. Missing ratings, unsupported categories, or data coverage < 60% show Needs review.",
 ]
 
 FILTERS = {  # key -> (label, short description)
@@ -334,6 +343,10 @@ def score_frame(df: pd.DataFrame, cfg: dict | None = None, ref: pd.Timestamp | N
         blockers.append(b)
     df["fh_blockers"] = blockers
     df["fh_auto"] = [not b for b in blockers]
+
+    min_cov = cfg.get("signals", {}).get("min_coverage", cfg["rating_min_coverage"])
+    df["fh_signal"] = [signal_for_rating(r, c, min_cov) for r, c in zip(df["fh_rating"], cov_total)]
+    df["fh_signal_reasons"] = [generate_signal_reasons(row, sig, cfg=cfg) for (_, row), sig in zip(df.iterrows(), df["fh_signal"])]
     return df.copy()  # defragment the many columns added above
 
 
@@ -381,6 +394,114 @@ def _b(v: Any) -> bool | None:
     return None if v is None or pd.isna(v) else bool(v)
 
 
+def signal_for_rating(rating: float | int | None, coverage: float | None = None, min_coverage: float = 0.6) -> str:
+    """Provisional star rating to internal Buy/Hold/Sell signal mapping.
+
+    Mapping assumption:
+    - 5 or 4 stars: Buy
+    - 3 stars: Hold
+    - 2 or 1 star: Sell
+    - Missing rating, coverage < min_coverage, or unverified: Needs review
+    """
+    if rating is None or pd.isna(rating):
+        return "Needs review"
+    if coverage is not None and not pd.isna(coverage) and coverage < min_coverage:
+        return "Needs review"
+    try:
+        r = int(round(float(rating)))
+    except (ValueError, TypeError):
+        return "Needs review"
+    if r in (4, 5):
+        return "Buy"
+    if r == 3:
+        return "Hold"
+    if r in (1, 2):
+        return "Sell"
+    return "Needs review"
+
+
+def generate_signal_reasons(row: Any, signal: str | None = None, cfg: dict | None = None) -> list[str]:
+    """Generate 2-3 concise, evidence-based bullet reasons for the signal.
+
+    Derived deterministically from underlying metrics, peer comparisons, and thresholds.
+    """
+    cfg = cfg or load_config()
+    min_cov = cfg.get("signals", {}).get("min_coverage", cfg.get("rating_min_coverage", 0.6))
+    score = _n(row.get("fh_score")) if hasattr(row, "get") else None
+    rating = _n(row.get("fh_rating")) if hasattr(row, "get") else None
+    cov = _n(row.get("fh_coverage")) if hasattr(row, "get") else None
+    cat_label = str((row.get("cat_label") if hasattr(row, "get") else None) or (row.get("cat") if hasattr(row, "get") else None) or "category")
+    reasons: list[str] = []
+
+    if signal is None:
+        signal = signal_for_rating(rating, cov, min_cov)
+
+    if signal == "Needs review":
+        if cov is not None and cov < min_cov:
+            reasons.append(f"Screening data coverage ({cov*100:.0f}%) is below the {min_cov*100:.0f}% minimum threshold for reliable scoring.")
+        elif rating is None:
+            reasons.append("Insufficient 3-year performance or peer history to establish a star rating.")
+        blockers = row.get("fh_blockers") if hasattr(row, "get") else []
+        if isinstance(blockers, list) and blockers:
+            b_txt = BLOCKER_TEXT.get(blockers[0].split(":")[0], blockers[0])
+            reasons.append(f"Screening flag: {b_txt}")
+        if not reasons:
+            reasons.append("Requires manual staff verification of fund track record and data inputs.")
+        return reasons[:3]
+
+    # For Buy / Hold / Sell:
+    # 1. Performance vs Category
+    out_3y = _n(row.get("out_3y")) if hasattr(row, "get") else None
+    cagr_3y = _n(row.get("cagr_3y")) if hasattr(row, "get") else None
+    if out_3y is not None:
+        if out_3y >= 1.0:
+            reasons.append(f"3Y CAGR (+{out_3y:.1f}pp) outperforms {cat_label} category average.")
+        elif out_3y <= -1.0:
+            reasons.append(f"3Y CAGR ({out_3y:+.1f}pp) trails {cat_label} category average.")
+        else:
+            reasons.append(f"3Y CAGR ({out_3y:+.1f}pp) performs in line with {cat_label} peers.")
+    elif cagr_3y is not None:
+        reasons.append(f"3Y CAGR delivered {cagr_3y:.1f}%.")
+
+    # 2. Risk-adjusted protection (Sortino / Sharpe / Capture)
+    sortino_3y = _n(row.get("sortino_3y")) if hasattr(row, "get") else None
+    sharpe_3y = _n(row.get("sharpe_3y")) if hasattr(row, "get") else None
+    cap_up = _n(row.get("cap_up_3y")) if hasattr(row, "get") else None
+    cap_down = _n(row.get("cap_down_3y")) if hasattr(row, "get") else None
+
+    if sortino_3y is not None and sortino_3y >= 1.5:
+        reasons.append(f"Sortino 3Y of {sortino_3y:.2f} satisfies downside protection threshold (>= 1.5).")
+    elif cap_up is not None and cap_down is not None and cap_down > 0:
+        c_ratio = cap_up / cap_down
+        if c_ratio >= 1.1:
+            reasons.append(f"Capture ratio 3Y of {c_ratio:.2f} demonstrates favorable up-market participation vs downside.")
+        elif c_ratio < 0.9:
+            reasons.append(f"Capture ratio 3Y of {c_ratio:.2f} indicates higher downside capture ({cap_down:.0f}%).")
+    elif sharpe_3y is not None:
+        if sharpe_3y >= 1.0:
+            reasons.append(f"Sharpe ratio 3Y of {sharpe_3y:.2f} confirms solid risk-adjusted return (>= 1.0).")
+        elif sharpe_3y < 0.5:
+            reasons.append(f"Sharpe ratio 3Y of {sharpe_3y:.2f} reflects below-target risk compensation.")
+
+    # 3. Manager track record / Quartile consistency / Max Drawdown
+    mgr_tenure = _n(row.get("manager_tenure_years")) if hasattr(row, "get") else None
+    q_ytd = _n(row.get("cal_q_ytd")) if hasattr(row, "get") else None
+    q_py1 = _n(row.get("cal_q_py1")) if hasattr(row, "get") else None
+    if mgr_tenure is not None and mgr_tenure >= 3.0:
+        reasons.append(f"Lead fund manager tenure of {mgr_tenure:.1f} years provides stability (target >= 3.0y).")
+    elif q_py1 is not None and q_ytd is not None and int(q_py1) <= 2 and int(q_ytd) <= 2:
+        reasons.append(f"Consistent top-half calendar returns (Q{int(q_py1)} prior year, Q{int(q_ytd)} YTD).")
+    elif q_py1 is not None and int(q_py1) == 4:
+        reasons.append("Ranked in bottom quartile (Q4) during the previous calendar year.")
+    elif mgr_tenure is not None and mgr_tenure < 1.0:
+        reasons.append(f"Recent manager change with only {mgr_tenure:.1f} years tenure.")
+
+    if len(reasons) < 2 and score is not None:
+        reasons.append(f"Composite FH screening score is {score:.1f}/100 based on verified metrics.")
+
+    return reasons[:3]
+
+
 def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
     cfg = cfg or load_config()
     w = active_weights(cfg)
@@ -416,8 +537,11 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
             "components": comps[k],
         })
     flags = list(r["fh_flags"])
+    sig = r.get("fh_signal") or signal_for_rating(_n(r.get("fh_rating")), _n(r.get("fh_coverage")), cfg["rating_min_coverage"])
+    sig_reasons = list(r.get("fh_signal_reasons") or generate_signal_reasons(r, sig, cfg=cfg))
     return {
         "score": _n(r["fh_score"]), "rating": _n(r["fh_rating"]), "coverage": _n(r["fh_coverage"]),
+        "signal": sig, "signal_reasons": sig_reasons,
         "base": _n(r["fh_base"]), "penalties": [{"key": k, "points": _n(r[f"fh_pen_{k}"])} for k in ("sortino", "sharpe", "capture", "outperf")],
         "penalty_total": _n(r["fh_penalties"]),
         "adjustment": {"bonus": _n(r["fh_adj_bonus"]), "malus": _n(r["fh_adj_malus"]), "total": _n(r["fh_adj"])},

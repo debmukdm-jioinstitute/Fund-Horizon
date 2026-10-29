@@ -22,6 +22,7 @@ import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
 import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import InfoTip from "@/components/InfoTip";
+import MfPortfolioScreen from "@/components/backoffice/MfPortfolioScreen";
 
 const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "Capture Ratio", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
@@ -29,7 +30,7 @@ const PAGE_SIZES = [5, 8, 10, 20, 25, 50, 100];
 const DEFAULT_CATEGORIES = ["flexi_cap", "multi_cap"];
 const PLANS = ["Regular", "Direct"];
 
-type Kind = "pct" | "num" | "score" | "stars" | "aum" | "text";
+type Kind = "pct" | "num" | "score" | "stars" | "aum" | "text" | "signal";
 interface Col {
   key: string;
   label: string;
@@ -60,6 +61,7 @@ const COLUMNS: Record<Section, Col[]> = {
     pct("out_5y", "5Y"),
     { key: "fh_score", label: "FH score / 100", kind: "score" },
     { key: "fh_rating", label: "FH rating", kind: "stars" },
+    { key: "fh_signal", label: "FH signal", kind: "signal", tip: "Internal Buy/Hold/Sell screening signal derived from score and star rating." },
     { key: "aum_cr", label: "AUM (\u20B9 Cr)", kind: "aum" },
     num("ter", "Expense (%)"),
   ],
@@ -142,6 +144,7 @@ function MutualFunds() {
   const params = useSearchParams();
   const compare = useCompareSelection("mf");
   const [explain, setExplain] = useState<{ metric: Col; row: MfScreenerRow } | null>(null);
+  const [viewMode, setViewMode] = useState<"screener" | "portfolio">(params.get("view") === "portfolio" ? "portfolio" : "screener");
 
   const category = useMemo(() => (params.has("category") ? params.getAll("category") : params.has("q") || params.has("section") ? [] : DEFAULT_CATEGORIES), [params]);
   const plan = useMemo(() => (params.has("plan") || params.has("section") ? params.getAll("plan") : PLANS), [params]);
@@ -276,6 +279,10 @@ function MutualFunds() {
   const page = Math.floor(offset / pageSize);
   const activeFilters = Object.values(ranges).filter((r) => r.min || r.max).length;
 
+  if (viewMode === "portfolio") {
+    return <MfPortfolioScreen onBackToScreener={() => setViewMode("screener")} />;
+  }
+
   return (
     <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -285,9 +292,18 @@ function MutualFunds() {
             {selectedLabels.length ? selectedLabels.join(" & ") : "All categories"} · Growth option
           </p>
         </div>
-        <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] sm:text-right">
-          <div>NAV as of {asOf ? formatISTDate(asOf) : "-"}</div>
-          <div>Source: AMFI + mfapi.in</div>
+        <div className="flex flex-col sm:items-end gap-2 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+          <button
+            type="button"
+            onClick={() => setViewMode("portfolio")}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#0176D3] text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF] font-medium text-[13px] bg-[#0176D3]/5 hover:bg-[#0176D3]/10 transition-colors shadow-sm cursor-pointer"
+          >
+            <span>📄</span> Upload portfolio PDF
+          </button>
+          <div className="sm:text-right">
+            <div>NAV as of {asOf ? formatISTDate(asOf) : "-"}</div>
+            <div>Source: AMFI + mfapi.in</div>
+          </div>
         </div>
       </div>
 
@@ -944,7 +960,29 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
         ) : (
           <span className="text-[#706E6B] dark:text-[#A8B4C4]">-</span>
         )}
-        
+      </td>
+    );
+  }
+  if (col.kind === "signal") {
+    const s = String(v ?? "Needs review");
+    const reasons = Array.isArray(row.fh_signal_reasons) ? (row.fh_signal_reasons as string[]) : [];
+    const badgeCls =
+      s === "Buy"
+        ? "bg-[#E6F4EA] text-[#137333] border-[#CEEAD6] dark:bg-[#132A1C] dark:text-[#81C995] dark:border-[#1E462A]"
+        : s === "Hold"
+        ? "bg-[#FEF7E0] text-[#B06000] border-[#FEEFC3] dark:bg-[#2C2107] dark:text-[#FDD663] dark:border-[#4B3B10]"
+        : s === "Sell"
+        ? "bg-[#FCE8E6] text-[#C5221F] border-[#FAD2CF] dark:bg-[#2B1414] dark:text-[#F28B82] dark:border-[#481E1E]"
+        : "bg-[#F1F3F4] text-[#5F6368] border-[#DADCE0] dark:bg-[#202124] dark:text-[#9AA0A6] dark:border-[#3C4043]";
+    return (
+      <td
+        {...click}
+        title={reasons.length ? reasons.join(" • ") : "Click for evidence-based explanation"}
+        className={cls + "text-right whitespace-nowrap"}
+      >
+        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold border ${badgeCls}`}>
+          {s}
+        </span>
       </td>
     );
   }

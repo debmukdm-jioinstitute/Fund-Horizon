@@ -112,7 +112,7 @@ NUMERIC_KEYS = (
     + _NEW_NUMERIC_KEYS
     + FH_NUMERIC_KEYS
 )
-SORT_KEYS = set(NUMERIC_KEYS) | {"name"}
+SORT_KEYS = set(NUMERIC_KEYS) | {"name", "fh_signal"}
 
 
 def _pillar(values: pd.Series, groups: pd.Series, higher_better: bool = True) -> pd.Series:
@@ -438,7 +438,7 @@ def to_csv(df: pd.DataFrame) -> str:
         "code": "Scheme Code", "name": "Fund Name", "amc": "AMC", "plan": "Plan", "cat_label": "Category", "benchmark": "Benchmark",
         "out_1y": "1Y vs Category Avg (pp)", "out_3y": "3Y vs Category Avg (pp)", "out_5y": "5Y vs Category Avg (pp)", "score": "FH Checklist Score",
         "perf": "Performance /25", "port": "Portfolio /25", "ops": "Operations /25", "risk": "Risk vs Reward /25",
-        "stars": "FH Star Rating", "aum_cr": "AUM Cr", "ter": "Net Expense Ratio %",
+        "stars": "FH Star Rating", "fh_signal": "FH Signal", "aum_cr": "AUM Cr", "ter": "Net Expense Ratio %",
         "nav": "NAV", "day_chg": "Day %", "week_chg": "Week %", "hi52": "52W High", "hi52_date": "52W High Date",
         "lo52": "52W Low", "lo52_date": "52W Low Date", "ret_1m": "1M %", "ret_3m": "3M %", "ret_6m": "6M %", "ret_1y": "1Y %", "ret_2y": "2Y CAGR %",
         "cagr_3y": "3Y CAGR %", "cagr_5y": "5Y CAGR %", "cagr_7y": "7Y CAGR %", "cagr_10y": "10Y CAGR %",

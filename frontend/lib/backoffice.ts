@@ -1486,7 +1486,73 @@ export interface MfScreenerRow {
   perf_label: string;
   risk_label: string;
   ops_label: string;
-  [metric: string]: string | number | boolean | null | undefined;
+  fh_signal?: "Buy" | "Hold" | "Sell" | "Needs review";
+  fh_signal_reasons?: string[];
+  [metric: string]: string | number | boolean | null | undefined | string[];
+}
+
+export interface PortfolioHoldingCandidate {
+  code: string;
+  name: string;
+  plan: string;
+  cat_label: string;
+  fh_score?: number | null;
+  fh_rating?: number | null;
+  fh_signal?: "Buy" | "Hold" | "Sell" | "Needs review";
+  similarity: number;
+}
+
+export interface PortfolioHolding {
+  id: string;
+  raw_name: string;
+  isin?: string | null;
+  amfi_code?: string | null;
+  canonical_name?: string | null;
+  folio?: string | null;
+  amc?: string | null;
+  plan?: string | null;
+  option?: string | null;
+  category?: string | null;
+  units?: number | null;
+  statement_nav?: number | null;
+  statement_value?: number | null;
+  portfolio_weight_pct?: number | null;
+  valuation_date?: string | null;
+  data_as_of?: string | null;
+  fh_score?: number | null;
+  fh_rating?: number | null;
+  fh_signal: "Buy" | "Hold" | "Sell" | "Needs review";
+  fh_signal_reasons: string[];
+  match_type: "exact_isin" | "exact_code" | "matched_name" | "ambiguous" | "unmatched" | "manual_resolved";
+  candidates?: PortfolioHoldingCandidate[];
+  detail_path?: string | null;
+  underlying_metrics?: {
+    sortino_3y?: number | null;
+    sharpe_3y?: number | null;
+    out_3y?: number | null;
+    out_1y?: number | null;
+    cagr_3y?: number | null;
+    manager_tenure_years?: number | null;
+    ter?: number | null;
+  } | null;
+}
+
+export interface PortfolioScreenSummary {
+  total_value?: number | null;
+  holdings_count: number;
+  matched_count: number;
+  needs_review_count: number;
+  buy_count: number;
+  hold_count: number;
+  sell_count: number;
+  statement_date?: string | null;
+  screening_date?: string | null;
+  is_partial: boolean;
+}
+
+export interface PortfolioScreenResponse {
+  holdings: PortfolioHolding[];
+  summary: PortfolioScreenSummary;
 }
 
 export interface MfScreenerGroup {
@@ -1597,6 +1663,7 @@ export interface FhComponent { label: string; value: number | null; score?: numb
 export interface FhFilter { key: string; label: string; weight: number; raw: number | null; points: number | null; coverage: number | null; status: "ok" | "insufficient" | "unconfigured"; components: FhComponent[] }
 export interface FhExplain {
   score: number | null; rating: number | null; coverage: number | null; base: number | null;
+  signal?: "Buy" | "Hold" | "Sell" | "Needs review"; signal_reasons?: string[];
   penalties: { key: string; points: number | null }[]; penalty_total: number | null;
   adjustment: { bonus: number | null; malus: number | null; total: number | null };
   filters: FhFilter[]; drawdown_enabled: boolean;
@@ -1942,3 +2009,45 @@ export const setMfWatchlistFund = async (id: string, schemeCode: string, present
     ...(present ? { body: JSON.stringify({ scheme_code: schemeCode }) } : {}),
   });
 };
+
+export async function screenPortfolioPdf(file: File, password = ""): Promise<PortfolioScreenResponse> {
+  const form = new FormData();
+  form.append("file", file);
+  if (password) form.append("password", password);
+  const res = await fetch("/api/backoffice/mutual-funds/portfolio-screen", {
+    method: "POST",
+    body: form,
+    credentials: "include",
+  });
+  if (!res.ok) {
+    let errMessage = `Portfolio screening failed (${res.status})`;
+    try {
+      const err = await res.json();
+      if (err.message) errMessage = err.message;
+      else if (err.detail?.message) errMessage = err.detail.message;
+      else if (err.detail && typeof err.detail === "string") errMessage = err.detail;
+    } catch {
+      // ignore json error
+    }
+    throw new Error(errMessage);
+  }
+  return res.json();
+}
+
+export async function resolvePortfolioHolding(payload: {
+  code: string;
+  raw_name: string;
+  statement_value?: number | null;
+  total_value?: number | null;
+}): Promise<PortfolioHolding> {
+  const res = await fetch("/api/backoffice/mutual-funds/resolve-holding", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to resolve holding (${res.status})`);
+  }
+  return res.json();
+}

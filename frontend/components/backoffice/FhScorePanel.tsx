@@ -66,12 +66,43 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
   return (
     <div className="space-y-3">
       <section>
-        <div className="flex flex-wrap items-baseline gap-x-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="text-[22px] font-semibold tabular-nums">{f(fh.score)}</span>
           <span>/ 100</span>
           <span>{fh.rating ? `${fh.rating}/5 rating` : "Not rated"}</span>
+          {fh.signal && (
+            <span
+              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-bold ${
+                fh.signal === "Buy"
+                  ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                  : fh.signal === "Hold"
+                  ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
+                  : fh.signal === "Sell"
+                  ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                  : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+              }`}
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              {fh.signal}
+            </span>
+          )}
           <span className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">data coverage {f((fh.coverage ?? NaN) * 100, 0)}%</span>
         </div>
+        {fh.signal_reasons && fh.signal_reasons.length > 0 && (
+          <div className="mt-2 rounded-lg bg-[#F8FAFC] dark:bg-[#111A24] border border-[#E5E5E5] dark:border-[#2B3644] p-2.5">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] mb-1">
+              Screening Evidence
+            </div>
+            <ul className="space-y-1 text-[12.5px] text-[#344054] dark:text-[#D0D5DD]">
+              {fh.signal_reasons.map((r, i) => (
+                <li key={i} className="flex items-start gap-1.5">
+                  <span className="text-[#0176D3] dark:text-[#1B96FF]">•</span>
+                  <span>{r}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <p className="text-[12px]">{STATUS[status] ?? STATUS.none}.</p>
         <button type="button" disabled={busy} onClick={toggle} className="terminal-btn mt-1.5 text-[12px] py-1 px-2.5">
           {recommended ? "Exclude from FH Recommended" : "Add to FH Recommended"}

@@ -38,6 +38,7 @@ class Bucket(BaseModel):
     invested: float
     current: float
     xirr: float | None = None
+    show: bool = True  # unticked in the UI -> row not printed in the PDF (totals still include it)
 
 
 class PmsRow(BaseModel):
@@ -72,6 +73,7 @@ class MonthlyReport(BaseModel):
     total_xirr: float | None = None
     buckets: list[Bucket] = Field(min_length=1, max_length=100)
     pms: PmsRow = PmsRow()
+    show_mf: bool = True  # Mutual funds row of COMPLETE PORTFOLIO
     factsheets: list[Factsheet] = Field(default_factory=list, max_length=20)
 
 

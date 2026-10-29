@@ -419,3 +419,20 @@ def test_unticked_boxes_are_left_out_of_the_pdf():
     text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(pdf)).pages)
     assert "CORE-SHOWN" in text and "SECRET-HIDDEN" not in text
     assert "1,10,33,696" not in text and "27.14" not in text and "2,22,71,735" in text
+
+
+def test_unticked_bucket_and_mf_row_left_out_of_pdf():
+    import io
+    from pypdf import PdfReader
+
+    from app.api.monthly_report import MonthlyReport
+
+    data = parse_monthly_buckets(MONTHLY_TEXT)
+    data["month"] = "September 2026"
+    data["buckets"][0]["show"] = False
+    data["show_mf"] = False
+    d = MonthlyReport(**data).model_dump()
+    text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(build_monthly_report(d))).pages)
+    assert "Debt Portfolio" not in text and "Equity Portfolio" in text
+    assert text.count("Mutual funds") == 1  # only the section heading; COMPLETE PORTFOLIO row dropped
+    assert "4,43,08,730" in text  # totals still include hidden bucket

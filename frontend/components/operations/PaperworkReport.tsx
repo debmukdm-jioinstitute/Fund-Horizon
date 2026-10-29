@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
 
-interface Bucket { name: string; invested: number; current: number; xirr: number | null }
+interface Bucket { name: string; invested: number; current: number; xirr: number | null; show?: boolean }
 interface Pms { invested: number; current: number; xirr: number | null; hide?: string[] }
 interface Fact { source: string; items: { label: string; value: string; show?: boolean }[] }
 interface Valuation { invested: number; value: number; gain: number; xirr: number | null; date: string; rows: number }
@@ -23,7 +23,7 @@ interface HistoryRow { id: string; report_month: string; value_as_on: string; em
 interface Report {
   client: { name: string; date: string; arn: string; phone: string };
   month: string; inception: string; total_xirr: number | null;
-  buckets: Bucket[]; pms: Pms; factsheets: Fact[];
+  buckets: Bucket[]; pms: Pms; factsheets: Fact[]; show_mf?: boolean;
 }
 
 const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
@@ -75,7 +75,7 @@ function totals(buckets: Bucket[], pms: Pms) {
 function payload(report: Report) {
   return {
     ...report,
-    buckets: report.buckets.map((b) => ({ name: b.name, invested: b.invested, current: b.current, xirr: b.xirr })),
+    buckets: report.buckets.map((b) => ({ name: b.name, invested: b.invested, current: b.current, xirr: b.xirr, show: b.show !== false })),
   };
 }
 
@@ -555,7 +555,8 @@ export default function PaperworkReport() {
                     <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-right tabular-nums">{t.weights[i].toFixed(2)}%</td>
                     <td className="border border-[#E4E9EF] dark:border-[#2B3644] p-0.5"><input className={`${cell} text-right`} inputMode="decimal" value={b.xirr ?? ""} onChange={(e) => patchBucket(i, { xirr: e.target.value === "" || isNaN(+e.target.value) ? null : +e.target.value })} /></td>
                     <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-center">
-                      <button type="button" className="text-[12px] font-semibold text-[#B42318] dark:text-[#FF7D86] disabled:opacity-40" disabled={report.buckets.length <= 1} onClick={() => setReport({ ...report, buckets: report.buckets.filter((_, j) => j !== i) })}>Remove</button>
+                      <div className="flex items-center justify-center gap-2"><Tick on={b.show !== false} what={`bucket ${b.name}`} onClick={() => patchBucket(i, { show: b.show === false })} />
+                      <button type="button" className="text-[12px] font-semibold text-[#B42318] dark:text-[#FF7D86] disabled:opacity-40" disabled={report.buckets.length <= 1} onClick={() => setReport({ ...report, buckets: report.buckets.filter((_, j) => j !== i) })}>Remove</button></div>
                     </td>
                   </tr>
                 ))}
@@ -579,7 +580,7 @@ export default function PaperworkReport() {
               <thead><tr className="bg-[#E8EEFB] dark:bg-[#1B2740]">{["", "Invested amount", "Current value", "Gain / loss", "Weightage %", "XIRR %"].map((h) => <th key={h} className="border border-[#C9D2E3] dark:border-[#2B3644] px-1.5 py-1.5 text-center font-semibold">{h}</th>)}</tr></thead>
               <tbody>
                 <tr>
-                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 font-semibold">Mutual funds</td>
+                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 font-semibold"><div className="flex items-center gap-1.5">Mutual funds <Tick on={report.show_mf !== false} what="Mutual funds row" onClick={() => setReport({ ...report, show_mf: report.show_mf === false })} /></div></td>
                   <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-right tabular-nums">{inr(t.invested)}</td>
                   <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-right tabular-nums">{inr(t.current)}</td>
                   <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-right tabular-nums">{inr(t.gain)}</td>

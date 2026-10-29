@@ -364,7 +364,7 @@ def build_monthly_report(data: dict[str, Any]) -> bytes:
     story += [Spacer(1, 6), P("Mutual funds", bold)]
     cols = ["Investments", "Invested amount", "Current value", "Gain/losses", "Weightage (%)", "XIRR"]
     rows = [[P(h, head) for h in cols]]
-    for b in data["buckets"]:
+    for b in (b for b in data["buckets"] if b.get("show", True)):
         rows.append([P(b["name"]), P(ind(b["invested"], 0), right), P(ind(b["current"], 0), right),
                      P(ind(b["gain"], 0), right), P(f"{b['weight']:.2f}%", right), P(_pct(b["xirr"]), right)])
     rows.append([P("Total", bold), P(ind(t["invested"], 0), right_b), P(ind(t["current"], 0), right_b),
@@ -379,9 +379,9 @@ def build_monthly_report(data: dict[str, Any]) -> bytes:
     comp = t["complete"]
     pms = t["pms"]
     hide = pms.get("hide") or []
-    crows = [[P(h, head) for h in cols],
-             [P("Mutual funds"), P(ind(t["invested"], 0), right), P(ind(t["current"], 0), right),
-              P(ind(t["gain"], 0), right), P(f"{comp['mf_weight']:.2f}%", right), P(_pct(total_xirr), right)],
+    mf_row = [[P("Mutual funds"), P(ind(t["invested"], 0), right), P(ind(t["current"], 0), right),
+              P(ind(t["gain"], 0), right), P(f"{comp['mf_weight']:.2f}%", right), P(_pct(total_xirr), right)]] if data.get("show_mf", True) else []
+    crows = [[P(h, head) for h in cols], *mf_row,
              [P("PMS"), P("-" if "invested" in hide else ind(pms["invested"], 0), right), P("-" if "current" in hide else ind(pms["current"], 0), right),
               P(ind(pms["gain"], 0), right), P(f"{comp['pms_weight']:.2f}%", right), P("-" if "xirr" in hide else _pct(pms["xirr"]), right)],
              [P("Total", bold), P(ind(comp["invested"], 0), right_b), P(ind(comp["current"], 0), right_b),

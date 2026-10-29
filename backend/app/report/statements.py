@@ -15,7 +15,7 @@ import io
 import re
 from typing import Any
 
-from app.report.client_report import _ocr_boxes, ind
+from app.report.client_report import _ocr_boxes, ind, render_pages
 from app.report.monthly_report import _despace
 
 W = 842.0  # FundsIndia print page width; the x zones below are in these units
@@ -263,19 +263,13 @@ def pms_factsheet(st: dict[str, Any]) -> dict[str, Any]:
 def fundsindia_pages(name: str, data: bytes) -> list[list[tuple[float, float, str]]]:
     """OCR each page (PDF or screenshot) at 3x and scale x to the print width."""
     if name.lower().endswith(".pdf"):
-        import pypdfium2
-
-        pdf = pypdfium2.PdfDocument(data)
-        imgs = [pdf[i].render(scale=3).to_pil() for i in range(len(pdf))]
+        imgs = render_pages(data)
     else:
         from PIL import Image
 
         imgs = [Image.open(io.BytesIO(data))]
-    out = []
-    for im in imgs:
-        k = W / im.size[0]
-        out.append([(x * k, y * k, t) for x, y, t in _ocr_boxes(im)])
-    return out
+    return [[(x * W / im.size[0], y * W / im.size[0], t) for x, y, t in boxes]
+            for im, boxes in zip(imgs, map(_ocr_boxes, imgs))]
 
 
 def parse_provider_statement(name: str, data: bytes, text: str) -> dict[str, Any] | None:

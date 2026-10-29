@@ -8,7 +8,7 @@ interface Bucket { name: string; invested: number; current: number; xirr: number
 interface Pms { invested: number; current: number; xirr: number | null }
 interface Fact { source: string; items: { label: string; value: string }[] }
 interface Valuation { invested: number; value: number; gain: number; xirr: number | null; date: string; rows: number }
-interface FileResult { name: string; kind: "monthly" | "valuation" | "statement" | "pms" | "factsheet" | "unrecognised" | "error"; method: "text" | "ocr" | ""; buckets: number; valuation_rows: number; factsheet_items: number }
+interface FileResult { name: string; kind: "monthly" | "valuation" | "statement" | "pms" | "factsheet" | "unrecognised" | "error"; method: "text" | "ocr" | ""; error?: string; buckets: number; valuation_rows: number; factsheet_items: number }
 interface StmtFund { name: string; invested: number; current: number; gain: number; ann_ret: number | null; check: string }
 interface StmtCategory { name: string; invested: number; current: number; gain: number; ann_ret: number | null; has_total: boolean; funds: StmtFund[] }
 interface Statement {
@@ -164,6 +164,7 @@ export default function PaperworkReport() {
   });
 
   const resultText = (r: FileResult) => {
+    if (r.error) return `failed: ${r.error}`;
     const kind = r.kind === "monthly" ? "monthly report"
       : r.kind === "valuation" ? "valuation (cross-check)"
       : r.kind === "statement" ? "portfolio statement"

@@ -388,3 +388,17 @@ def test_ocr_failure_is_a_warning_not_a_500(monkeypatch):
     monkeypatch.setattr(statements, "parse_provider_statement", lambda *a: (_ for _ in ()).throw(RuntimeError("oom")))
     out = m.parse_monthly_files([("FundsIndia - a.pdf", b"x")])
     assert out["file_results"][0]["kind"] == "error" and out["warnings"]
+
+
+def test_error_is_exact_and_files_run_in_parallel(monkeypatch):
+    from app.report import monthly_report as m
+
+    def boom(n, d):
+        if n == "bad.pdf":
+            raise RuntimeError("onnx exploded")
+        return "nothing here"
+
+    monkeypatch.setattr(m, "extract_text", boom)
+    out = m.parse_monthly_files([("bad.pdf", b"x"), ("ok.pdf", b"y")])
+    assert out["file_results"][0]["error"] == "RuntimeError: onnx exploded"
+    assert out["file_results"][1]["kind"] == "unrecognised"

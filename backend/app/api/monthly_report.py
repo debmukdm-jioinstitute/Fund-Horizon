@@ -101,7 +101,10 @@ async def parse(me: Me, files: Annotated[list[UploadFile], File()]):
         if len(b) > MAX_BYTES:
             raise HTTPException(422, f"{f.filename}: larger than 15 MB.")
         blobs.append((f.filename or "file.pdf", b))
-    return await run_in_threadpool(parse_monthly_files, blobs)  # OCR is CPU-bound: keep the event loop free
+    try:  # OCR is CPU-bound: keep the event loop free
+        return await run_in_threadpool(parse_monthly_files, blobs)
+    except Exception as e:  # JSON detail so the page shows the exact reason, not "Request failed (500)"
+        raise HTTPException(500, f"Parsing failed: {type(e).__name__}: {e}") from e
 
 
 @router.post("/pdf")

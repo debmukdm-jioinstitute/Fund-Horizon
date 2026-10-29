@@ -160,6 +160,18 @@ def _extraction_method(fname: str, data: bytes) -> str:
         return "text"
 
 
+def _read(fname: str, data: bytes) -> tuple[str, str, dict[str, Any] | None, str]:
+    """(text, method, provider statement, error). Never raises: the error carries the exact reason."""
+    from app.report.statements import parse_provider_statement
+
+    try:
+        text = extract_text(fname, data)
+        return text, _extraction_method(fname, data), parse_provider_statement(fname, data, text), ""
+    except Exception as e:
+        log.exception("could not read %s", fname)
+        return "", "", None, f"{type(e).__name__}: {e}"
+
+
 def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
     """Parse uploaded monthly reports, folio-wise valuations (cross-check only) and factsheets.
 
@@ -168,7 +180,7 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
     may arrive in any order — monthly + valuation in either order gives the same
     buckets + cross-check.
     """
-    from app.report.statements import parse_provider_statement, pms_factsheet
+    from app.report.statements import pms_factsheet
 
     out: dict[str, Any] = {
         "client": {"name": "", "date": "", "arn": "", "phone": ""},
@@ -176,20 +188,11 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
         "total_xirr": None, "valuation": None, "factsheets": [], "warnings": [], "file_results": [],
         "statements": [], "contact": {"name": "", "email": "", "mobile": "", "pan": ""},
     }
-    for fname, data in files:
-        try:
-            text = extract_text(fname, data)
-        except Exception as e:  # one bad file must never 500 the whole batch
-            out["warnings"].append(str(e) if isinstance(e, ValueError) else f"{fname}: could not be read ({type(e).__name__}).")
-            out["file_results"].append({"name": fname, "kind": "error", "method": "", "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
-            continue
-        method = _extraction_method(fname, data)
-        try:
-            stmt = parse_provider_statement(fname, data, text)
-        except Exception as e:  # OCR missing / out of memory / unreadable page
-            log.exception("statement parse failed: %s", fname)
-            out["warnings"].append(str(e) if isinstance(e, ValueError) else f"{fname}: statement could not be read ({type(e).__name__}); try again or add the figures by hand.")
-            out["file_results"].append({"name": fname, "kind": "error", "method": method, "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
+    reads = [_read(*f) for f in files]
+    for (fname, data), (text, method, stmt, err) in zip(files, reads):
+        if err:  # exact reason, shown to the user per file
+            out["warnings"].append(f"{fname}: {err}")
+            out["file_results"].append({"name": fname, "kind": "error", "method": method, "error": err, "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
             continue
         if stmt:
             out["statements"].append({**stmt, "file": fname})

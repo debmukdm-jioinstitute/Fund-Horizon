@@ -2,8 +2,10 @@ from __future__ import annotations
 """Monthly client report: parse uploaded statements/factsheets (text layer, else OCR) and render the
 "Portfolio Valuation Report - Folio Wise" PDF. Google Sans only (see CLAUDE.md)."""
 
+import hashlib
 import io
 import re
+import threading
 from typing import Any
 
 from app.config.disclosures import ARN, FIRM
@@ -37,16 +39,28 @@ def ind(v: float | None, d: int = 2) -> str:
 
 # ---------- text extraction (text layer first, OCR fallback) ----------
 
+_OCR_LOCK = threading.Lock()
+_OCR_CACHE: dict[bytes, list] = {}  # same page OCR'd twice (text pass + FundsIndia box pass) or re-uploaded -> instant
+
+
 def _ocr_raw(img: Any) -> list:
     try:
         import numpy as np
         from rapidocr_onnxruntime import RapidOCR
     except ImportError as e:  # pragma: no cover - optional heavy dependency
         raise ValueError("OCR engine not installed (pip install rapidocr-onnxruntime pypdfium2).") from e
+    rgb = img.convert("RGB")
+    key = hashlib.blake2b(rgb.tobytes(), digest_size=16).digest()
+    if key in _OCR_CACHE:
+        return _OCR_CACHE[key]
     global _OCR
-    _OCR = globals().get("_OCR") or RapidOCR()
-    res, _ = _OCR(np.asarray(img.convert("RGB")))
-    return res or []
+    with _OCR_LOCK:
+        _OCR = globals().get("_OCR") or RapidOCR()
+    res, _ = _OCR(np.asarray(rgb))
+    if len(_OCR_CACHE) >= 64:
+        _OCR_CACHE.pop(next(iter(_OCR_CACHE)))
+    _OCR_CACHE[key] = res or []
+    return _OCR_CACHE[key]
 
 
 def _ocr_boxes(img: Any) -> list[tuple[float, float, str]]:
@@ -68,6 +82,18 @@ def _ocr_lines(img: Any) -> list[str]:
     return ["   ".join(t for _, t in sorted(ln)) for ln in lines]
 
 
+_PDFIUM_LOCK = threading.Lock()
+
+
+def render_pages(data: bytes, scale: float = 3) -> list:
+    """PDF -> PIL pages. PDFium is not thread-safe, so rendering is serialised; OCR stays parallel."""
+    import pypdfium2
+
+    with _PDFIUM_LOCK:
+        pdf = pypdfium2.PdfDocument(data)
+        return [pdf[i].render(scale=scale).to_pil() for i in range(len(pdf))]
+
+
 def extract_text(name: str, data: bytes) -> str:
     if name.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
         from PIL import Image
@@ -86,8 +112,7 @@ def extract_text(name: str, data: bytes) -> str:
         import pypdfium2
     except ImportError as e:  # pragma: no cover
         raise ValueError(f"{name}: scanned PDF needs OCR (pip install pypdfium2 rapidocr-onnxruntime).") from e
-    pdf = pypdfium2.PdfDocument(data)
-    return "\n".join("\n".join(_ocr_lines(pdf[i].render(scale=2.5).to_pil())) for i in range(len(pdf)))
+    return "\n".join("\n".join(ls) for ls in map(_ocr_lines, render_pages(data)))
 
 
 # ---------- parsing ----------

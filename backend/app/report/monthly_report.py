@@ -25,6 +25,7 @@ file is missing the PDF still builds, text-only, rather than failing.
 """
 
 import io
+import logging
 import re
 from pathlib import Path
 from typing import Any
@@ -34,6 +35,7 @@ from app.report.client_report import NOTES, extract_text, ind, parse_factsheet, 
 from app.report.fmt import xml_escape
 from app.report.fonts import BODY_FONT, BOLD_FONT
 
+log = logging.getLogger(__name__)
 LOGO_PATH = Path(__file__).resolve().parent / "assets" / "fund-horizon-logo.png"
 PREFILL_BUCKET_NAME = "Valuation total (split into buckets)"
 
@@ -177,12 +179,18 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
     for fname, data in files:
         try:
             text = extract_text(fname, data)
-        except ValueError as e:
-            out["warnings"].append(str(e))
+        except Exception as e:  # one bad file must never 500 the whole batch
+            out["warnings"].append(str(e) if isinstance(e, ValueError) else f"{fname}: could not be read ({type(e).__name__}).")
             out["file_results"].append({"name": fname, "kind": "error", "method": "", "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
             continue
         method = _extraction_method(fname, data)
-        stmt = parse_provider_statement(fname, data, text)
+        try:
+            stmt = parse_provider_statement(fname, data, text)
+        except Exception as e:  # OCR missing / out of memory / unreadable page
+            log.exception("statement parse failed: %s", fname)
+            out["warnings"].append(str(e) if isinstance(e, ValueError) else f"{fname}: statement could not be read ({type(e).__name__}); try again or add the figures by hand.")
+            out["file_results"].append({"name": fname, "kind": "error", "method": method, "buckets": 0, "valuation_rows": 0, "factsheet_items": 0})
+            continue
         if stmt:
             out["statements"].append({**stmt, "file": fname})
             out["contact"] = {k: out["contact"][k] or v for k, v in stmt["client"].items()}

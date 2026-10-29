@@ -379,3 +379,12 @@ def test_ocr_on_rendered_september_page_recovers_six_buckets_and_totals():
     assert abs(d["totals"]["invested"] - 44308730.0) / 44308730.0 < 0.02
     assert abs(d["totals"]["current"] - 71033736.0) / 71033736.0 < 0.02
     assert abs((d["total_xirr"] or 0) - 7.49) < 0.5
+
+
+def test_ocr_failure_is_a_warning_not_a_500(monkeypatch):
+    from app.report import monthly_report as m, statements
+
+    monkeypatch.setattr(m, "extract_text", lambda n, d: "FundsIndia portfolio")
+    monkeypatch.setattr(statements, "parse_provider_statement", lambda *a: (_ for _ in ()).throw(RuntimeError("oom")))
+    out = m.parse_monthly_files([("FundsIndia - a.pdf", b"x")])
+    assert out["file_results"][0]["kind"] == "error" and out["warnings"]

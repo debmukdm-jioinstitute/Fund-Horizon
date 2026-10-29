@@ -15,6 +15,7 @@ from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
@@ -100,7 +101,7 @@ async def parse(me: Me, files: Annotated[list[UploadFile], File()]):
         if len(b) > MAX_BYTES:
             raise HTTPException(422, f"{f.filename}: larger than 15 MB.")
         blobs.append((f.filename or "file.pdf", b))
-    return parse_monthly_files(blobs)
+    return await run_in_threadpool(parse_monthly_files, blobs)  # OCR is CPU-bound: keep the event loop free
 
 
 @router.post("/pdf")
@@ -170,6 +171,8 @@ def _push_household(customer_id: str, household_id: str | None, report: MonthlyR
     """
     _visible_customer(customer_id, me)
     customer = sqlite.get_customer_by_id(customer_id)
+    if not customer:
+        raise HTTPException(404, "Client not found")
     pdf = build_monthly_report(report.model_dump())
     rid, now = uuid.uuid4().hex, datetime.now(UTC).isoformat()
     conn = sqlite.get_default_connection()

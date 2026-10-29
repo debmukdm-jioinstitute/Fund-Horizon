@@ -13,6 +13,8 @@ import {
   getPmsAccountTracker,
   PmsStrategyItem,
   PmsAccountTrackerData,
+  evaluatePmsScreening,
+  PMS_BENCHMARKS,
 } from "@/lib/backoffice";
 import { ApiError } from "@/lib/api";
 import { formatCurrencyPaiseToINR, formatCrore, formatISTDate } from "@/lib/terminal-format";
@@ -21,6 +23,7 @@ import PmsStrategyDrawer from "@/components/backoffice/PmsStrategyDrawer";
 import PmsManagerDrawer from "@/components/backoffice/PmsManagerDrawer";
 import PmsDocumentModal from "@/components/backoffice/PmsDocumentModal";
 import PmsMatrixModal from "@/components/backoffice/PmsMatrixModal";
+import PmsMethodologyModal from "@/components/backoffice/PmsMethodologyModal";
 import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
 import {
   approachesMatch,
@@ -29,10 +32,9 @@ import {
   normalizeProviderName,
   pmsReturnWarning,
   pmsCellReturnWarning,
-  sourceBenchmark,
 } from "@/lib/backoffice-display";
 
-type SortKey = "aum" | "return_1m" | "return_1y" | "return_3y" | "name";
+type SortKey = "aum" | "return_1m" | "return_1y" | "return_3y" | "name" | "score";
 const PAGE_SIZE = 50;
 
 function ReturnCell({
@@ -141,6 +143,9 @@ function PmsTracker() {
   const [page, setPage] = useState(0);
   const [docModalOpen, setDocModalOpen] = useState(false);
   const [matrixModalOpen, setMatrixModalOpen] = useState(false);
+  const [selectedBenchmark, setSelectedBenchmark] = useState("BSE 500 TRI");
+  const [methodologyModalOpen, setMethodologyModalOpen] = useState(false);
+  const [methodologyStrategy, setMethodologyStrategy] = useState<PmsStrategyItem | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -197,9 +202,23 @@ function PmsTracker() {
 
   const filtersActive = Boolean(search.trim()) || categoryFilter !== "all" || sortKey !== "aum" || sortDir !== "desc";
 
+  const evaluatedStrategies = useMemo(() => {
+    return strategies.map((s) => {
+      const evalRes = evaluatePmsScreening(s, selectedBenchmark);
+      return {
+        ...s,
+        benchmark_name: selectedBenchmark,
+        fh_score: evalRes.score,
+        fh_rating: evalRes.rating,
+        fh_signal: evalRes.signal,
+        fh_signal_reasons: evalRes.reasons,
+      };
+    });
+  }, [strategies, selectedBenchmark]);
+
   const filteredStrategies = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const rows = strategies.filter((s) => {
+    const rows = evaluatedStrategies.filter((s) => {
       if (isRecommended) {
         if (!isStrategyRecommended(s)) return false;
       } else if (categoryFilter !== "all") {
@@ -221,6 +240,7 @@ function PmsTracker() {
       if (sortKey === "return_1m") return s.return_1m_pct;
       if (sortKey === "return_1y") return s.return_1y_pct;
       if (sortKey === "return_3y") return s.return_3y_cagr_pct;
+      if (sortKey === "score") return s.fh_score;
       return undefined;
     };
     rows.sort((a, b) => {
@@ -237,11 +257,11 @@ function PmsTracker() {
       return dir * ((av as number) - (bv as number));
     });
     return rows;
-  }, [strategies, isRecommended, categoryFilter, search, sortKey, sortDir, isStrategyRecommended]);
+  }, [evaluatedStrategies, isRecommended, categoryFilter, search, sortKey, sortDir, isStrategyRecommended]);
 
   useEffect(() => {
     setPage(0);
-  }, [categoryFilter, search, sortKey, sortDir, isRecommended]);
+  }, [categoryFilter, search, sortKey, sortDir, isRecommended, selectedBenchmark]);
 
   const pageCount = Math.max(1, Math.ceil(filteredStrategies.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount - 1);
@@ -265,7 +285,7 @@ function PmsTracker() {
     setPage(0);
   }
 
-  const colSpan = isRecommended ? 10 : 8;
+  const colSpan = 12;
   const trayVisible = tab === "strategies" && compare.selectedIds.length > 0;
 
   return (
@@ -347,6 +367,34 @@ function PmsTracker() {
               >
                 <span className="text-[12px]">★</span>
                 <span>FH Recommended ({fhRecCount})</span>
+              </button>
+
+              <div className="flex items-center gap-1.5 bg-[#F0F3F6] dark:bg-[#1A2332] px-2.5 py-1 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644]">
+                <span className="text-[11px] font-bold text-[#706E6B] dark:text-[#A8B4C4]">Benchmark:</span>
+                <select
+                  value={selectedBenchmark}
+                  onChange={(e) => setSelectedBenchmark(e.target.value)}
+                  className="bg-transparent text-[11.5px] font-bold text-[#0176D3] dark:text-[#1B96FF] focus:outline-none cursor-pointer"
+                  title="Change comparison benchmark for real-time dynamic score recalculation"
+                >
+                  {Object.keys(PMS_BENCHMARKS).map((b) => (
+                    <option key={b} value={b} className="bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7]">
+                      {b}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMethodologyStrategy(null);
+                  setMethodologyModalOpen(true);
+                }}
+                className="terminal-btn text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                title="Inspect step-by-step mathematical calculations and methodology formulas"
+              >
+                <span>📐 Methodology &amp; Live Formulas</span>
               </button>
 
               <button
@@ -555,16 +603,14 @@ function PmsTracker() {
                         <SortHeader label="3Y" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
                         <th className="text-right">
                           <div className="inline-flex items-center justify-end">
-                            <span>5Y</span>
-                            <InfoTip metric="cagr_5y" meta={meta?.cagr_5y ?? meta?._default} />
-                          </div>
-                        </th>
-                        <th className="text-right">
-                          <div className="inline-flex items-center justify-end">
                             <span>Since Inception</span>
                             <InfoTip metric="ret_si" meta={meta?.ret_si ?? meta?._default} />
                           </div>
                         </th>
+                        <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                        <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
+                        <th>FH Signal</th>
+                        <th>Benchmark</th>
                       </tr>
                     ) : (
                       <tr>
@@ -576,6 +622,9 @@ function PmsTracker() {
                         <th className="text-right">Min Investment</th>
                         <th>Inception</th>
                         <th>Principal Officer</th>
+                        <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                        <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
+                        <th>FH Signal</th>
                         <th>Benchmark</th>
                       </tr>
                     )
@@ -588,8 +637,8 @@ function PmsTracker() {
                       <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
                       <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
                       <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
-                      <th className="text-center">FH Score / 100</th>
-                      <th className="text-center">FH Rating</th>
+                      <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                      <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
                       <th>FH Signal</th>
                       <th>Benchmark</th>
                     </tr>
@@ -613,7 +662,6 @@ function PmsTracker() {
                       {pageRows.map((s, idx) => {
                         const warning = pmsReturnWarning(s);
                         const approach = normalizeApproach(s.investment_approach || s.strategy_type) || "—";
-                        const benchmark = sourceBenchmark(s.benchmark_name);
                         const rowKey = `${s.ia_id || s.strategy_name}-${s.provider_name}-${s.service_type || ""}-${idx}`;
                         const cid = pmsCompareId(s);
                         const checked = compare.selectedIds.includes(cid);
@@ -696,12 +744,58 @@ function PmsTracker() {
                                   <td className="text-right">
                                     <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
                                   </td>
-                                  <td className="text-right">
-                                    <ReturnCell value={s.return_5y_cagr_pct} warning={pmsCellReturnWarning("5y", s.return_5y_cagr_pct)} />
-                                  </td>
                                   <td className="text-right font-medium">
                                     <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} />
                                   </td>
+                                  <td
+                                    className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                    onClick={() => {
+                                      setMethodologyStrategy(s);
+                                      setMethodologyModalOpen(true);
+                                    }}
+                                    title="Click to view step-by-step formula and live calculations"
+                                  >
+                                    {s.fh_score != null ? (
+                                      <span className="text-[#181818] dark:text-[#EDF2F7]">
+                                        {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
+                                      </span>
+                                    ) : (
+                                      <span className="text-[#98A2B3]">—</span>
+                                    )}
+                                  </td>
+                                  <td
+                                    className="text-center font-bold text-[#D97706] text-[12px] cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                    onClick={() => {
+                                      setMethodologyStrategy(s);
+                                      setMethodologyModalOpen(true);
+                                    }}
+                                    title="Click to view ranking methodology & formula breakdown"
+                                  >
+                                    {s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}
+                                  </td>
+                                  <td className="whitespace-nowrap">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setMethodologyStrategy(s);
+                                        setMethodologyModalOpen(true);
+                                      }}
+                                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${
+                                        s.fh_signal === "Buy"
+                                          ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                                          : s.fh_signal === "Hold"
+                                          ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
+                                          : s.fh_signal === "Sell"
+                                          ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                                          : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+                                      }`}
+                                      title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
+                                    >
+                                      <span className="h-1 w-1 rounded-full bg-current" />
+                                      {s.fh_signal || "Needs review"}
+                                    </button>
+                                  </td>
+                                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
                                 </>
                               ) : (
                                 <>
@@ -729,7 +823,55 @@ function PmsTracker() {
                                       <span className="text-[#181818] dark:text-[#EDF2F7]">—</span>
                                     )}
                                   </td>
-                                  <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "BSE 500 TRI"}</td>
+                                  <td
+                                    className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                    onClick={() => {
+                                      setMethodologyStrategy(s);
+                                      setMethodologyModalOpen(true);
+                                    }}
+                                    title="Click to view step-by-step formula and live calculations"
+                                  >
+                                    {s.fh_score != null ? (
+                                      <span className="text-[#181818] dark:text-[#EDF2F7]">
+                                        {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
+                                      </span>
+                                    ) : (
+                                      <span className="text-[#98A2B3]">—</span>
+                                    )}
+                                  </td>
+                                  <td
+                                    className="text-center font-bold text-[#D97706] text-[12px] cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                    onClick={() => {
+                                      setMethodologyStrategy(s);
+                                      setMethodologyModalOpen(true);
+                                    }}
+                                    title="Click to view ranking methodology & formula breakdown"
+                                  >
+                                    {s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}
+                                  </td>
+                                  <td className="whitespace-nowrap">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setMethodologyStrategy(s);
+                                        setMethodologyModalOpen(true);
+                                      }}
+                                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${
+                                        s.fh_signal === "Buy"
+                                          ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                                          : s.fh_signal === "Hold"
+                                          ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
+                                          : s.fh_signal === "Sell"
+                                          ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                                          : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+                                      }`}
+                                      title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
+                                    >
+                                      <span className="h-1 w-1 rounded-full bg-current" />
+                                      {s.fh_signal || "Needs review"}
+                                    </button>
+                                  </td>
+                                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
                                 </>
                               )
                             ) : (
@@ -747,7 +889,14 @@ function PmsTracker() {
                                 <td className="text-right">
                                   <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
                                 </td>
-                                <td className="text-center font-bold tabular-nums">
+                                <td
+                                  className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                  onClick={() => {
+                                    setMethodologyStrategy(s);
+                                    setMethodologyModalOpen(true);
+                                  }}
+                                  title="Click to view step-by-step formula and live calculations"
+                                >
                                   {s.fh_score != null ? (
                                     <span className="text-[#181818] dark:text-[#EDF2F7]">
                                       {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
@@ -756,12 +905,24 @@ function PmsTracker() {
                                     <span className="text-[#98A2B3]">—</span>
                                   )}
                                 </td>
-                                <td className="text-center font-bold text-[#D97706] text-[12px]">
+                                <td
+                                  className="text-center font-bold text-[#D97706] text-[12px] cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                  onClick={() => {
+                                    setMethodologyStrategy(s);
+                                    setMethodologyModalOpen(true);
+                                  }}
+                                  title="Click to view ranking methodology & formula breakdown"
+                                >
                                   {s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}
                                 </td>
                                 <td className="whitespace-nowrap">
-                                  <span
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setMethodologyStrategy(s);
+                                      setMethodologyModalOpen(true);
+                                    }}
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${
                                       s.fh_signal === "Buy"
                                         ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
                                         : s.fh_signal === "Hold"
@@ -774,9 +935,9 @@ function PmsTracker() {
                                   >
                                     <span className="h-1 w-1 rounded-full bg-current" />
                                     {s.fh_signal || "Needs review"}
-                                  </span>
+                                  </button>
                                 </td>
-                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "BSE 500 TRI"}</td>
+                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
                               </>
                             )}
                           </tr>
@@ -1007,6 +1168,18 @@ function PmsTracker() {
       {matrixModalOpen && (
         <PmsMatrixModal
           onClose={() => setMatrixModalOpen(false)}
+        />
+      )}
+
+      {methodologyModalOpen && (
+        <PmsMethodologyModal
+          strategy={methodologyStrategy}
+          initialBenchmark={selectedBenchmark}
+          onClose={() => {
+            setMethodologyModalOpen(false);
+            setMethodologyStrategy(null);
+          }}
+          onBenchmarkChange={(b) => setSelectedBenchmark(b)}
         />
       )}
     </div>

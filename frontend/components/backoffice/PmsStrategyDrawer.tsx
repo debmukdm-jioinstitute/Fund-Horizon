@@ -9,6 +9,7 @@ import FactsheetList from "@/components/backoffice/FactsheetList";
 import { formatCrore, formatISTDate } from "@/lib/terminal-format";
 import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBenchmark } from "@/lib/backoffice-display";
 import { PmsLogo } from "@/components/BrandLogo";
+import PmsMethodologyModal from "@/components/backoffice/PmsMethodologyModal";
 
 interface PmsStrategyDrawerProps {
   strategy: PmsStrategyItem | null;
@@ -21,6 +22,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
   const [copied, setCopied] = useState(false);
   const [detail, setDetail] = useState<PmsStrategyDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [methodologyOpen, setMethodologyOpen] = useState(false);
   const rec = useRecommended();
   const [historyView, setHistoryView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const iaId = strategy?.ia_id;
@@ -204,6 +206,14 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
                       ★ {strategy.fh_rating} / 5
                     </span>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => setMethodologyOpen(true)}
+                    className="ml-2 text-[11px] font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline cursor-pointer"
+                    title="Click to view formulas & step-by-step mathematical calculations"
+                  >
+                    View Calculation →
+                  </button>
                 </div>
               </div>
 
@@ -506,6 +516,14 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
           </div></div>
         </div>
       </div>
+
+      {methodologyOpen && (
+        <PmsMethodologyModal
+          strategy={strategy}
+          initialBenchmark={strategy.benchmark_name || "BSE 500 TRI"}
+          onClose={() => setMethodologyOpen(false)}
+        />
+      )}
     </div>
   );
 }

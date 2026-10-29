@@ -812,110 +812,228 @@ export const getFlows = async (start?: string, end?: string): Promise<Backoffice
   return envelope(raw, data, "unavailable");
 };
 
-/** Client-side fallback PMS screening evaluation if API response omits calculated scores. */
-function computePmsFallback(
-  r1m?: number,
-  r3m?: number,
-  r6m?: number,
-  r1y?: number,
-  r3y?: number,
-  aum?: number,
-  benchName = "BSE 500 TRI"
-): {
+export interface PmsBenchmarkData {
+  id: string;
+  name: string;
+  category: string;
+  return_1m: number;
+  return_3m: number;
+  return_6m: number;
+  return_1y: number;
+  return_3y: number;
+  return_since_inception: number;
+}
+
+export const PMS_BENCHMARKS: Record<string, PmsBenchmarkData> = {
+  "BSE 500 TRI": {
+    id: "bse_500",
+    name: "BSE 500 TRI",
+    category: "Broad Market",
+    return_1m: -5.57,
+    return_3m: -3.59,
+    return_6m: 8.07,
+    return_1y: -2.33,
+    return_3y: 9.20,
+    return_since_inception: 13.72,
+  },
+  "NIFTY 50 TRI": {
+    id: "nifty_50",
+    name: "NIFTY 50 TRI",
+    category: "Large Cap",
+    return_1m: -6.22,
+    return_3m: -4.10,
+    return_6m: 6.85,
+    return_1y: -0.85,
+    return_3y: 11.45,
+    return_since_inception: 14.10,
+  },
+  "NIFTY MIDCAP 150 TRI": {
+    id: "nifty_midcap_150",
+    name: "NIFTY MIDCAP 150 TRI",
+    category: "Mid Cap",
+    return_1m: -5.10,
+    return_3m: -2.90,
+    return_6m: 9.40,
+    return_1y: 5.20,
+    return_3y: 18.60,
+    return_since_inception: 16.80,
+  },
+  "NIFTY SMALLCAP 250 TRI": {
+    id: "nifty_smallcap_250",
+    name: "NIFTY SMALLCAP 250 TRI",
+    category: "Small Cap",
+    return_1m: -4.80,
+    return_3m: -2.20,
+    return_6m: 11.10,
+    return_1y: 7.40,
+    return_3y: 19.80,
+    return_since_inception: 17.20,
+  },
+  "BSE 200 TRI": {
+    id: "bse_200",
+    name: "BSE 200 TRI",
+    category: "Large & Mid Cap",
+    return_1m: -5.80,
+    return_3m: -3.80,
+    return_6m: 7.40,
+    return_1y: -1.50,
+    return_3y: 10.80,
+    return_since_inception: 13.90,
+  },
+};
+
+export interface PmsScreeningBreakdown {
   score?: number;
   rating?: number;
   signal: "Buy" | "Hold" | "Sell" | "Needs review";
   reasons: string[];
-} {
-  const b1m = -5.57;
-  const b1y = -2.33;
-  const b3y = 9.20;
+  benchName: string;
+  benchPerf: PmsBenchmarkData;
+  alpha1y?: number;
+  benchPoints1y: number;
+  alpha3y?: number;
+  benchPoints3y: number;
+  totalBenchPoints: number; // Max 40
+  validHorizonsCount: number;
+  positiveHorizonsCount: number;
+  consistencyRatio: number;
+  totalConsistencyPoints: number; // Max 30
+  downsideResiliencePoints: number;
+  aumScalePoints: number;
+  totalDownsidePoints: number; // Max 30
+  rawScore: number;
+}
+
+export function evaluatePmsScreening(
+  item: {
+    return_1m_pct?: number;
+    return_3m_pct?: number;
+    return_6m_pct?: number;
+    return_1y_pct?: number;
+    return_3y_cagr_pct?: number;
+    aum_crore?: number;
+  },
+  selectedBenchmark = "BSE 500 TRI"
+): PmsScreeningBreakdown {
+  const bench = PMS_BENCHMARKS[selectedBenchmark] || PMS_BENCHMARKS["BSE 500 TRI"];
+  const b1m = bench.return_1m;
+  const b1y = bench.return_1y;
+  const b3y = bench.return_3y;
+
+  const r1m = item.return_1m_pct;
+  const r3m = item.return_3m_pct;
+  const r6m = item.return_6m_pct;
+  const r1y = item.return_1y_pct;
+  const r3y = item.return_3y_cagr_pct;
+  const aum = item.aum_crore;
+
+  const reasons: string[] = [];
 
   if (r1y === undefined || r3y === undefined) {
     return {
       signal: "Needs review",
       reasons: ["Insufficient 3-year performance history to compute reliable screening signal."],
+      benchName: bench.name,
+      benchPerf: bench,
+      benchPoints1y: 0,
+      benchPoints3y: 0,
+      totalBenchPoints: 0,
+      validHorizonsCount: 0,
+      positiveHorizonsCount: 0,
+      consistencyRatio: 0,
+      totalConsistencyPoints: 0,
+      downsideResiliencePoints: 0,
+      aumScalePoints: 0,
+      totalDownsidePoints: 0,
+      rawScore: 0,
     };
   }
 
-  let benchPoints = 0;
-  const reasons: string[] = [];
-
-  const a1y = r1y - b1y;
-  if (a1y >= 10) {
-    benchPoints += 20;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) outperforms ${benchName} (${b1y.toFixed(1)}%) by +${a1y.toFixed(1)}pp.`);
-  } else if (a1y >= 0) {
-    benchPoints += 14 + (a1y / 10) * 6;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) beats ${benchName} by +${a1y.toFixed(1)}pp.`);
-  } else if (a1y >= -5) {
-    benchPoints += 8;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) trails ${benchName} (${b1y.toFixed(1)}%) slightly (${a1y.toFixed(1)}pp).`);
+  // 1. Benchmark-relative performance (40 pts max)
+  let benchPoints1y = 0;
+  const alpha1y = r1y - b1y;
+  if (alpha1y >= 10) {
+    benchPoints1y = 20;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) outperforms ${bench.name} (${b1y.toFixed(1)}%) by +${alpha1y.toFixed(1)}pp.`);
+  } else if (alpha1y >= 0) {
+    benchPoints1y = 14 + (alpha1y / 10) * 6;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) beats ${bench.name} by +${alpha1y.toFixed(1)}pp.`);
+  } else if (alpha1y >= -5) {
+    benchPoints1y = 8;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) trails ${bench.name} (${b1y.toFixed(1)}%) slightly (${alpha1y.toFixed(1)}pp).`);
   } else {
-    benchPoints += 3;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) lags ${benchName} (${b1y.toFixed(1)}%) by ${a1y.toFixed(1)}pp.`);
+    benchPoints1y = 3;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) lags ${bench.name} (${b1y.toFixed(1)}%) by ${alpha1y.toFixed(1)}pp.`);
   }
 
-  const a3y = r3y - b3y;
-  if (a3y >= 10) {
-    benchPoints += 20;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) shows strong active outperformance (+${a3y.toFixed(1)}pp vs benchmark).`);
-  } else if (a3y >= 0) {
-    benchPoints += 14 + (a3y / 10) * 6;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) exceeds ${benchName} (${b3y.toFixed(1)}%) by +${a3y.toFixed(1)}pp.`);
-  } else if (a3y >= -5) {
-    benchPoints += 8;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) trails ${benchName} (${b3y.toFixed(1)}%) by ${a3y.toFixed(1)}pp.`);
+  let benchPoints3y = 0;
+  const alpha3y = r3y - b3y;
+  if (alpha3y >= 10) {
+    benchPoints3y = 20;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) shows strong active outperformance (+${alpha3y.toFixed(1)}pp vs benchmark).`);
+  } else if (alpha3y >= 0) {
+    benchPoints3y = 14 + (alpha3y / 10) * 6;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) exceeds ${bench.name} (${b3y.toFixed(1)}%) by +${alpha3y.toFixed(1)}pp.`);
+  } else if (alpha3y >= -5) {
+    benchPoints3y = 8;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) trails ${bench.name} (${b3y.toFixed(1)}%) by ${alpha3y.toFixed(1)}pp.`);
   } else {
-    benchPoints += 2;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) lags ${benchName} by ${a3y.toFixed(1)}pp.`);
+    benchPoints3y = 2;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) lags ${bench.name} by ${alpha3y.toFixed(1)}pp.`);
   }
+  const totalBenchPoints = benchPoints1y + benchPoints3y;
 
+  // 2. Consistency across rolling/trailing periods (30 pts max)
   const validPeriods = [r1m, r3m, r6m, r1y, r3y].filter((v): v is number => v !== undefined);
-  let consistencyPoints = 0;
+  let totalConsistencyPoints = 0;
+  let consistencyRatio = 0;
+  let positiveCount = 0;
   if (validPeriods.length >= 3) {
-    const pos = validPeriods.filter((v) => v > 0).length;
-    const ratio = pos / validPeriods.length;
-    consistencyPoints = ratio * 30;
-    if (ratio >= 0.6) {
-      reasons.push(`Consistent performance with positive returns across ${pos} of ${validPeriods.length} reported horizons.`);
+    positiveCount = validPeriods.filter((v) => v > 0).length;
+    consistencyRatio = positiveCount / validPeriods.length;
+    totalConsistencyPoints = consistencyRatio * 30;
+    if (consistencyRatio >= 0.6) {
+      reasons.push(`Consistent performance with positive returns across ${positiveCount} of ${validPeriods.length} reported horizons.`);
     }
   }
 
-  let downsidePoints = 0;
+  // 3. Downside protection & operational scale (30 pts max)
+  let downsideResiliencePoints = 0;
   if (r1m !== undefined) {
     if (b1m < 0) {
       if (r1m > b1m) {
-        downsidePoints += 15;
+        downsideResiliencePoints = 15;
         reasons.push(`Demonstrated downside protection in 1M correction (${r1m.toFixed(1)}% vs ${b1m.toFixed(1)}%).`);
       } else {
-        downsidePoints += 5;
+        downsideResiliencePoints = 5;
       }
     } else {
-      downsidePoints += 10;
+      downsideResiliencePoints = 10;
     }
   }
 
+  let aumScalePoints = 0;
   if (aum !== undefined && aum > 0) {
-    if (aum >= 1000) downsidePoints += 15;
-    else if (aum >= 200) downsidePoints += 10;
-    else downsidePoints += 5;
+    if (aum >= 1000) aumScalePoints = 15;
+    else if (aum >= 200) aumScalePoints = 10;
+    else aumScalePoints = 5;
   }
+  const totalDownsidePoints = downsideResiliencePoints + aumScalePoints;
 
-  const total = Math.min(100, Math.max(0, benchPoints + consistencyPoints + downsidePoints));
-  const score = Math.round(total * 10) / 10;
+  const rawScore = Math.min(100, Math.max(0, totalBenchPoints + totalConsistencyPoints + totalDownsidePoints));
+  const score = Math.round(rawScore * 10) / 10;
   let rating = 1;
   let signal: "Buy" | "Hold" | "Sell" = "Sell";
-  if (total >= 80) {
+  if (rawScore >= 80) {
     rating = 5;
     signal = "Buy";
-  } else if (total >= 65) {
+  } else if (rawScore >= 65) {
     rating = 4;
     signal = "Buy";
-  } else if (total >= 50) {
+  } else if (rawScore >= 50) {
     rating = 3;
     signal = "Hold";
-  } else if (total >= 35) {
+  } else if (rawScore >= 35) {
     rating = 2;
     signal = "Sell";
   }
@@ -925,6 +1043,21 @@ function computePmsFallback(
     rating,
     signal,
     reasons: reasons.slice(0, 3),
+    benchName: bench.name,
+    benchPerf: bench,
+    alpha1y,
+    benchPoints1y,
+    alpha3y,
+    benchPoints3y,
+    totalBenchPoints,
+    validHorizonsCount: validPeriods.length,
+    positiveHorizonsCount: positiveCount,
+    consistencyRatio,
+    totalConsistencyPoints,
+    downsideResiliencePoints,
+    aumScalePoints,
+    totalDownsidePoints,
+    rawScore,
   };
 }
 
@@ -944,13 +1077,16 @@ const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
   const r5y = ret(r.return_5y);
   const rsi = ret(r.return_since_inception);
 
-  const fallback = computePmsFallback(r1m, r3m, r6m, r1y, r3y, aum, benchName);
-  const score = num(r.fh_score) ?? fallback.score;
-  const rating = num(r.fh_rating) ?? fallback.rating;
-  const sig = (str(r.fh_signal) as PmsStrategyItem["fh_signal"]) ?? fallback.signal;
+  const evalRes = evaluatePmsScreening(
+    { return_1m_pct: r1m, return_3m_pct: r3m, return_6m_pct: r6m, return_1y_pct: r1y, return_3y_cagr_pct: r3y, aum_crore: aum },
+    benchName
+  );
+  const score = num(r.fh_score) ?? evalRes.score;
+  const rating = num(r.fh_rating) ?? evalRes.rating;
+  const sig = (str(r.fh_signal) as PmsStrategyItem["fh_signal"]) ?? evalRes.signal;
   const reasons = Array.isArray(r.fh_signal_reasons) && r.fh_signal_reasons.length > 0
     ? (r.fh_signal_reasons as string[])
-    : fallback.reasons;
+    : evalRes.reasons;
 
   return {
     id: str(r.ia_id) || `${str(r.provider) ?? "—"}::${str(r.strategy_name) ?? "—"}`,

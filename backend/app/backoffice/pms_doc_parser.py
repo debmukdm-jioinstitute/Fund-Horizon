@@ -148,3 +148,4 @@ def parse_pms_pdf_bytes(pdf_bytes: bytes, password: str = "", filename: str = ""
         "holdings": holdings[:50],
         "extracted_text_chars": len(full_text),
     }
+

@@ -40,3 +40,4 @@ def test_pms_screening_and_matrix_api(client):
     assert att["active_return"] == 3.25
     assert att["sum_effects"] == 3.25
     assert att["residual"] == 0.0
+

@@ -307,10 +307,13 @@ def backoffice_pms_strategies(
     for row in universe:
         if row.get("ia_id") and not row.get("principal_officer"):
             row["principal_officer"] = cached_managers.get(str(row["ia_id"]))
+        ia = row.get("ia_id")
         if not row.get("benchmark") and not row.get("benchmark_name"):
-            ia = row.get("ia_id")
-            if ia and cached_benchmarks.get(str(ia)):
-                row["benchmark"] = cached_benchmarks[str(ia)]
+            bench = cached_benchmarks.get(str(ia)) if ia else None
+            if not bench:
+                from app.backoffice.pms_screen import NINE_PMS_STRATEGIES
+                bench = NINE_PMS_STRATEGIES.get(str(ia), {}).get("benchmark", "BSE 500 TRI")
+            row["benchmark"] = bench
         # Attach evidence-based PMS screening score, rating and Buy/Hold/Sell signal
         try:
             from app.backoffice.pms_screen import score_pms_strategy

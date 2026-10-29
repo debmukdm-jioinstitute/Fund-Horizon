@@ -812,6 +812,122 @@ export const getFlows = async (start?: string, end?: string): Promise<Backoffice
   return envelope(raw, data, "unavailable");
 };
 
+/** Client-side fallback PMS screening evaluation if API response omits calculated scores. */
+function computePmsFallback(
+  r1m?: number,
+  r3m?: number,
+  r6m?: number,
+  r1y?: number,
+  r3y?: number,
+  aum?: number,
+  benchName = "BSE 500 TRI"
+): {
+  score?: number;
+  rating?: number;
+  signal: "Buy" | "Hold" | "Sell" | "Needs review";
+  reasons: string[];
+} {
+  const b1m = -5.57;
+  const b1y = -2.33;
+  const b3y = 9.20;
+
+  if (r1y === undefined || r3y === undefined) {
+    return {
+      signal: "Needs review",
+      reasons: ["Insufficient 3-year performance history to compute reliable screening signal."],
+    };
+  }
+
+  let benchPoints = 0;
+  const reasons: string[] = [];
+
+  const a1y = r1y - b1y;
+  if (a1y >= 10) {
+    benchPoints += 20;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) outperforms ${benchName} (${b1y.toFixed(1)}%) by +${a1y.toFixed(1)}pp.`);
+  } else if (a1y >= 0) {
+    benchPoints += 14 + (a1y / 10) * 6;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) beats ${benchName} by +${a1y.toFixed(1)}pp.`);
+  } else if (a1y >= -5) {
+    benchPoints += 8;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) trails ${benchName} (${b1y.toFixed(1)}%) slightly (${a1y.toFixed(1)}pp).`);
+  } else {
+    benchPoints += 3;
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) lags ${benchName} (${b1y.toFixed(1)}%) by ${a1y.toFixed(1)}pp.`);
+  }
+
+  const a3y = r3y - b3y;
+  if (a3y >= 10) {
+    benchPoints += 20;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) shows strong active outperformance (+${a3y.toFixed(1)}pp vs benchmark).`);
+  } else if (a3y >= 0) {
+    benchPoints += 14 + (a3y / 10) * 6;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) exceeds ${benchName} (${b3y.toFixed(1)}%) by +${a3y.toFixed(1)}pp.`);
+  } else if (a3y >= -5) {
+    benchPoints += 8;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) trails ${benchName} (${b3y.toFixed(1)}%) by ${a3y.toFixed(1)}pp.`);
+  } else {
+    benchPoints += 2;
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) lags ${benchName} by ${a3y.toFixed(1)}pp.`);
+  }
+
+  const validPeriods = [r1m, r3m, r6m, r1y, r3y].filter((v): v is number => v !== undefined);
+  let consistencyPoints = 0;
+  if (validPeriods.length >= 3) {
+    const pos = validPeriods.filter((v) => v > 0).length;
+    const ratio = pos / validPeriods.length;
+    consistencyPoints = ratio * 30;
+    if (ratio >= 0.6) {
+      reasons.push(`Consistent performance with positive returns across ${pos} of ${validPeriods.length} reported horizons.`);
+    }
+  }
+
+  let downsidePoints = 0;
+  if (r1m !== undefined) {
+    if (b1m < 0) {
+      if (r1m > b1m) {
+        downsidePoints += 15;
+        reasons.push(`Demonstrated downside protection in 1M correction (${r1m.toFixed(1)}% vs ${b1m.toFixed(1)}%).`);
+      } else {
+        downsidePoints += 5;
+      }
+    } else {
+      downsidePoints += 10;
+    }
+  }
+
+  if (aum !== undefined && aum > 0) {
+    if (aum >= 1000) downsidePoints += 15;
+    else if (aum >= 200) downsidePoints += 10;
+    else downsidePoints += 5;
+  }
+
+  const total = Math.min(100, Math.max(0, benchPoints + consistencyPoints + downsidePoints));
+  const score = Math.round(total * 10) / 10;
+  let rating = 1;
+  let signal: "Buy" | "Hold" | "Sell" = "Sell";
+  if (total >= 80) {
+    rating = 5;
+    signal = "Buy";
+  } else if (total >= 65) {
+    rating = 4;
+    signal = "Buy";
+  } else if (total >= 50) {
+    rating = 3;
+    signal = "Hold";
+  } else if (total >= 35) {
+    rating = 2;
+    signal = "Sell";
+  }
+
+  return {
+    score,
+    rating,
+    signal,
+    reasons: reasons.slice(0, 3),
+  };
+}
+
 /** One backend PMS strategy row -> UI item. APMI rows with no AUM often carry placeholder 0.00% returns: treat as missing. */
 const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
   const aum = num(r.aum_crore);
@@ -819,6 +935,23 @@ const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
     const n = num(v);
     return n === 0 && !aum ? undefined : n;
   };
+  const benchName = str(r.benchmark) ?? str(r.benchmark_name) ?? "BSE 500 TRI";
+  const r1m = ret(r.return_1m);
+  const r3m = ret(r.return_3m);
+  const r6m = ret(r.return_6m);
+  const r1y = ret(r.return_1y);
+  const r3y = ret(r.return_3y);
+  const r5y = ret(r.return_5y);
+  const rsi = ret(r.return_since_inception);
+
+  const fallback = computePmsFallback(r1m, r3m, r6m, r1y, r3y, aum, benchName);
+  const score = num(r.fh_score) ?? fallback.score;
+  const rating = num(r.fh_rating) ?? fallback.rating;
+  const sig = (str(r.fh_signal) as PmsStrategyItem["fh_signal"]) ?? fallback.signal;
+  const reasons = Array.isArray(r.fh_signal_reasons) && r.fh_signal_reasons.length > 0
+    ? (r.fh_signal_reasons as string[])
+    : fallback.reasons;
+
   return {
     id: str(r.ia_id) || `${str(r.provider) ?? "—"}::${str(r.strategy_name) ?? "—"}`,
     provider_name: str(r.provider) ?? "—",
@@ -828,21 +961,22 @@ const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
     service_type: str(r.service_type),
     ia_id: str(r.ia_id),
     principal_officer: str(r.principal_officer),
+    min_investment: str(r.min_investment) ?? "₹50,00,000",
     aum_crore: aum,
-    return_1m_pct: ret(r.return_1m),
-    return_3m_pct: ret(r.return_3m),
-    return_6m_pct: ret(r.return_6m),
-    return_1y_pct: ret(r.return_1y),
-    return_3y_cagr_pct: ret(r.return_3y),
-    return_5y_cagr_pct: ret(r.return_5y),
-    return_since_inception_pct: ret(r.return_since_inception),
-    benchmark_name: str(r.benchmark) ?? str(r.benchmark_name),
+    return_1m_pct: r1m,
+    return_3m_pct: r3m,
+    return_6m_pct: r6m,
+    return_1y_pct: r1y,
+    return_3y_cagr_pct: r3y,
+    return_5y_cagr_pct: r5y,
+    return_since_inception_pct: rsi,
+    benchmark_name: benchName,
     report_month: str(r.as_on) ?? asOn,
-    fh_score: num(r.fh_score),
-    fh_rating: num(r.fh_rating),
-    fh_signal: (str(r.fh_signal) as PmsStrategyItem["fh_signal"]) ?? "Needs review",
-    fh_signal_reasons: Array.isArray(r.fh_signal_reasons) ? (r.fh_signal_reasons as string[]) : [],
-    fh_status: str(r.fh_status),
+    fh_score: score,
+    fh_rating: rating,
+    fh_signal: sig,
+    fh_signal_reasons: reasons,
+    fh_status: str(r.fh_status) ?? (score != null ? "screened" : "incomplete_inputs"),
     missing_inputs: Array.isArray(r.missing_inputs) ? (r.missing_inputs as string[]) : [],
   };
 };

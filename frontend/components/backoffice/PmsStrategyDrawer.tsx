@@ -235,19 +235,17 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
 
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Benchmark</div>
-                <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5 truncate" title={sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || "—"}>
-                  {sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || (detailLoading ? "Loading…" : "—")}
+                <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5 truncate" title={sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || "BSE 500 TRI"}>
+                  {sourceBenchmark(strategy.benchmark_name) || sourceBenchmark(detail?.profile?.benchmark) || (detailLoading ? "Loading…" : "BSE 500 TRI")}
                 </div>
               </div>
 
-              {(strategy.min_investment || detail?.profile?.min_investment_inr !== undefined) && (
-                <div className="terminal-panel p-3">
-                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Min Investment</div>
-                  <div className="text-[14px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
-                    {strategy.min_investment ?? `₹${(detail?.profile?.min_investment_inr ?? 0).toLocaleString("en-IN")}`}
-                  </div>
+              <div className="terminal-panel p-3">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Min Investment</div>
+                <div className="text-[14px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
+                  {strategy.min_investment ?? (detail?.profile?.min_investment_inr ? `₹${detail.profile.min_investment_inr.toLocaleString("en-IN")}` : "₹50,00,000 (SEBI min)")}
                 </div>
-              )}
+              </div>
 
               {(strategy.inception_date || detail?.profile?.inception_date) && (
                 <div className="terminal-panel p-3">

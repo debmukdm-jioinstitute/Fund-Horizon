@@ -127,3 +127,4 @@ def calculate_portfolio_contribution(
     # Sort descending by contribution
     contributions.sort(key=lambda x: x["contribution"], reverse=True)
     return contributions
+

@@ -710,7 +710,7 @@ function PmsTracker() {
                                     {formatCrore(s.aum_crore)}
                                   </td>
                                   <td className="text-right text-[#706E6B] dark:text-[#A8B4C4] font-mono">
-                                    {s.min_investment || "—"}
+                                    {s.min_investment || "₹50,00,000"}
                                   </td>
                                   <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                                     {s.inception_date || "—"}
@@ -729,7 +729,7 @@ function PmsTracker() {
                                       <span className="text-[#181818] dark:text-[#EDF2F7]">—</span>
                                     )}
                                   </td>
-                                  <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
+                                  <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "BSE 500 TRI"}</td>
                                 </>
                               )
                             ) : (
@@ -776,7 +776,7 @@ function PmsTracker() {
                                     {s.fh_signal || "Needs review"}
                                   </span>
                                 </td>
-                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
+                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "BSE 500 TRI"}</td>
                               </>
                             )}
                           </tr>

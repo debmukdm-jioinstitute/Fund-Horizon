@@ -73,3 +73,4 @@ def test_score_pms_strategy_incomplete_data():
     assert res["score"] is None
     assert res["rating"] is None
     assert len(res["missing_inputs"]) >= 2
+

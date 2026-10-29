@@ -57,3 +57,4 @@ def test_portfolio_contribution():
     # Stock C: 0.05 * -20 = -1.0
     assert contribs[2]["security"] == "Stock C"
     assert contribs[2]["contribution"] == -1.0
+

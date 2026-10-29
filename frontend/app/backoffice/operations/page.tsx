@@ -33,10 +33,10 @@ const ampKey = (f: OfficialForm) => (f.source === "AMC" ? f.amc ?? "Other" : f.s
 const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 const emptyFilters = (): Filters => ({ q: "", sources: new Set(["CAMS", "KFintech", "AMC", "Stallion"]), amc: "All", cat: "All", amcQ: "" });
 
-function FormFilling() {
+function FormFilling({ initialTab = "updates" }: { initialTab?: Tab }) {
   const [forms, setForms] = useState<OfficialForm[]>([]);
   const [loadError, setLoadError] = useState(false);
-  const [tab, setTab] = useState<Tab>("updates");
+  const [tab, setTab] = useState<Tab>(initialTab);
   const [filling, setFilling] = useState<Filling | null>(null);
   const [filings, setFilings] = useState<Filing[]>([]);
   const [registerError, setRegisterError] = useState<string | null>(null);
@@ -406,37 +406,247 @@ function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: str
 /* ------------------------------------------------------------------ landing */
 export default function OperationsPage() {
   const [view, setView] = useState<"home" | "forms" | "download">("home");
-  if (view === "forms") return <div><button type="button" className={`${btn} mb-3`} onClick={() => setView("home")}>← Operations</button><FormFilling /></div>;
-  if (view === "download") return <div className="space-y-4"><button type="button" className={btn} onClick={() => setView("home")}>← Operations</button><DownloadContent /></div>;
-  return (
-    <div className="space-y-5 pb-12">
-      <div>
-        <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Operations</h1>
-        <p className={`mt-1 text-[14px] ${muted}`}>Choose what you want to do.</p>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {([["forms", "Form filling", "Start a task, forms library, pre-filled CAMS, KFintech, AMC and PMS forms, upload your own PDF, and the filings register."]] as const).map(([v, title, text]) => (
-          <button key={v} type="button" onClick={() => setView(v)} className={`${card} p-6 text-left hover:border-[#006F64]`}>
-            <div className={`text-lg font-bold ${ink}`}>{title}</div>
-            <p className={`mt-1.5 text-[13.5px] ${muted}`}>{text}</p>
-          </button>
-        ))}
-        <Link href="/backoffice/operations/paperwork" className={`${card} p-6 text-left hover:border-[#006F64]`}>
-          <div className={`text-lg font-bold ${ink}`}>Paperwork Processing</div>
-          <p className={`mt-1.5 text-[13.5px] ${muted}`}>Build a client&apos;s monthly report from PMS factsheets and portfolio files: check the tables, fix the numbers, download, save to the CRM and email it.</p>
-        </Link>
-        <button type="button" onClick={() => setView("download")} className={`${card} p-6 text-left hover:border-[#006F64]`}>
-          <div className={`text-lg font-bold ${ink}`}>Download Content</div>
-          <p className={`mt-1.5 text-[13.5px] ${muted}`}>Paste a link to save a video, audio or image file.</p>
+  const [initialTab, setInitialTab] = useState<Tab>("updates");
+
+  useEffect(() => {
+    const sync = () => {
+      const h = window.location.hash.slice(1);
+      if (h === "forms" || h === "tasks") {
+        setInitialTab(h === "tasks" ? "tasks" : "updates");
+        setView("forms");
+      } else if (h === "download") {
+        setView("download");
+      } else {
+        setView("home");
+      }
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
+  const go = (next: "home" | "forms" | "download", tab: Tab = "updates") => {
+    setInitialTab(tab);
+    setView(next);
+    window.location.hash = next === "home" ? "" : next === "forms" && tab === "tasks" ? "tasks" : next;
+  };
+
+  if (view === "forms") {
+    return (
+      <div className="space-y-3">
+        <button type="button" className={`${btn} mb-2`} onClick={() => go("home")}>
+          ← Operations
         </button>
-        <Link href="/backoffice/operations/calculators" className={`${card} p-6 text-left hover:border-[#006F64]`}>
-          <div className={`text-lg font-bold ${ink}`}>Calculators</div>
-          <p className={`mt-1.5 text-[13.5px] ${muted}`}>{CALCULATORS.length} calculators: SIP, goal, retirement, SWP, CAGR, rebalancing and term cover.</p>
-        </Link>
-        <Link href="/backoffice/operations/emails" className={`${card} p-6 text-left hover:border-[#006F64]`}>
-          <div className={`text-lg font-bold ${ink}`}>Sent emails</div>
-          <p className={`mt-1.5 text-[13.5px] ${muted}`}>Everything emailed to clients from the CRM: who, when, and what was attached.</p>
-        </Link>
+        <FormFilling initialTab={initialTab} />
+      </div>
+    );
+  }
+
+  if (view === "download") {
+    return (
+      <div className="space-y-4">
+        <button type="button" className={`${btn} mb-2`} onClick={() => go("home")}>
+          ← Operations
+        </button>
+        <DownloadContent />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-5xl py-2 pb-14 space-y-7">
+      {/* Top Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div className="mb-1.5 text-[13px] font-medium text-[#667085] dark:text-[#9AA6B8]">
+            Backoffice <span className="mx-1 text-[#CBD5E1] dark:text-[#475569]">/</span> Operations
+          </div>
+          <h1 className="text-[32px] sm:text-[36px] font-bold tracking-tight text-[#172033] dark:text-[#EDF1F6] leading-tight">
+            Operations
+          </h1>
+          <p className="mt-1 text-[15px] text-[#667085] dark:text-[#9AA6B8]">
+            Choose a task to get started.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => go("forms", "tasks")}
+          className="inline-flex items-center justify-center rounded-lg bg-[#0052CC] hover:bg-[#0747A6] px-5 py-2.5 text-[14px] font-semibold text-white transition-colors shadow-sm self-start"
+        >
+          Start a form
+        </button>
+      </div>
+
+      {/* Categories & Actions List */}
+      <div className="space-y-6 pt-2">
+        {/* Section 1: Client Servicing */}
+        <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8">
+          <div className="w-48 shrink-0 pt-3 text-[11.5px] font-bold uppercase tracking-wider text-[#667085] dark:text-[#9AA6B8]">
+            CLIENT SERVICING
+          </div>
+          <div className="flex-1 space-y-1">
+            <button
+              type="button"
+              onClick={() => go("forms", "updates")}
+              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h7" />
+                  <path d="M14 2v6h6" />
+                  <path d="M18.5 12.5a2.121 2.121 0 0 1 3 3L14 23l-4 1 1-4 7.5-7.5z" />
+                  <path d="M7 13h4" />
+                  <path d="M7 17h3" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                  Form filling
+                </span>
+                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
+                  CAMS, KFintech, AMC and PMS forms · Upload PDF · Filings register
+                </span>
+              </span>
+              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+
+            <Link
+              href="/backoffice/operations/paperwork"
+              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6" />
+                  <path d="M14 2v6h6" />
+                  <path d="M8 12h5" />
+                  <path d="M8 16h3" />
+                  <circle cx="17.5" cy="17.5" r="4.5" fill="currentColor" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M15.5 17.5l1.5 1.5 3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                  Paperwork processing
+                </span>
+                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
+                  Build monthly reports · Review numbers · Download · Save to CRM · Email
+                </span>
+              </span>
+              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+
+        <div className="border-b border-dotted border-[#D4DCE5] dark:border-[#2B3644]" />
+
+        {/* Section 2: Financial Planning */}
+        <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8">
+          <div className="w-48 shrink-0 pt-3 text-[11.5px] font-bold uppercase tracking-wider text-[#667085] dark:text-[#9AA6B8]">
+            FINANCIAL PLANNING
+          </div>
+          <div className="flex-1">
+            <Link
+              href="/backoffice/operations/calculators"
+              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="4" y="2" width="16" height="20" rx="2.5" />
+                  <line x1="8" y1="6" x2="16" y2="6" strokeWidth="2" />
+                  <circle cx="8" cy="11" r="1" fill="currentColor" />
+                  <circle cx="12" cy="11" r="1" fill="currentColor" />
+                  <circle cx="16" cy="11" r="1" fill="currentColor" />
+                  <circle cx="8" cy="15" r="1" fill="currentColor" />
+                  <circle cx="12" cy="15" r="1" fill="currentColor" />
+                  <circle cx="16" cy="15" r="1" fill="currentColor" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                  Calculators
+                </span>
+                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
+                  11 tools: SIP, goals, retirement, SWP, CAGR, rebalancing and term cover
+                </span>
+              </span>
+              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+
+        <div className="border-b border-dotted border-[#D4DCE5] dark:border-[#2B3644]" />
+
+        {/* Section 3: Content Utilities */}
+        <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8">
+          <div className="w-48 shrink-0 pt-3 text-[11.5px] font-bold uppercase tracking-wider text-[#667085] dark:text-[#9AA6B8]">
+            CONTENT UTILITIES
+          </div>
+          <div className="flex-1">
+            <button
+              type="button"
+              onClick={() => go("download")}
+              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                  Download content
+                </span>
+                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
+                  Save video, audio and images from a link
+                </span>
+              </span>
+              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="border-b border-dotted border-[#D4DCE5] dark:border-[#2B3644]" />
+
+        {/* Section 4: Communication */}
+        <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8">
+          <div className="w-48 shrink-0 pt-3 text-[11.5px] font-bold uppercase tracking-wider text-[#667085] dark:text-[#9AA6B8]">
+            COMMUNICATION
+          </div>
+          <div className="flex-1">
+            <Link
+              href="/backoffice/operations/emails"
+              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <polyline points="3 7 12 13 21 7" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                  Sent emails
+                </span>
+                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
+                  View CRM emails, recipients, dates and attachments
+                </span>
+              </span>
+              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

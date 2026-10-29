@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { CALCULATORS } from "@/lib/calculators";
 import EmailDialog, { type Recipient } from "@/components/crm/EmailDialog";
 import UpdatesFeed from "@/components/operations/UpdatesFeed";
 import ClientReport from "@/components/operations/ClientReport";

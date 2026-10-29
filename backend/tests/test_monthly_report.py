@@ -402,3 +402,20 @@ def test_error_is_exact_and_files_run_in_parallel(monkeypatch):
     out = m.parse_monthly_files([("bad.pdf", b"x"), ("ok.pdf", b"y")])
     assert out["file_results"][0]["error"] == "RuntimeError: onnx exploded"
     assert out["file_results"][1]["kind"] == "unrecognised"
+
+
+def test_unticked_boxes_are_left_out_of_the_pdf():
+    import io
+    from pypdf import PdfReader
+
+    from app.api.monthly_report import MonthlyReport
+    from app.report.monthly_report import parse_monthly_buckets
+
+    data = parse_monthly_buckets(MONTHLY_TEXT)
+    data["month"] = "September 2026"
+    data["pms"] = {"invested": 11033696.0, "current": 22271735.0, "xirr": 27.14, "hide": ["xirr", "invested"]}
+    data["factsheets"] = [{"source": "Stallion", "items": [{"label": "Strategy", "value": "CORE-SHOWN"}, {"label": "Inception", "value": "SECRET-HIDDEN", "show": False}]}]
+    pdf = build_monthly_report(MonthlyReport(**data).model_dump())
+    text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(pdf)).pages)
+    assert "CORE-SHOWN" in text and "SECRET-HIDDEN" not in text
+    assert "1,10,33,696" not in text and "27.14" not in text and "2,22,71,735" in text

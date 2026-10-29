@@ -44,6 +44,7 @@ class PmsRow(BaseModel):
     invested: float = 0
     current: float = 0
     xirr: float | None = None
+    hide: list[str] = Field(default_factory=list, max_length=3)  # PMS cells ("invested"/"current"/"xirr") left out of the PDF
 
 
 class Client(BaseModel):
@@ -56,6 +57,7 @@ class Client(BaseModel):
 class FactItem(BaseModel):
     label: str = Field(max_length=80)
     value: str = Field(max_length=120)
+    show: bool = True  # unticked in the UI -> not printed in the PDF
 
 
 class Factsheet(BaseModel):

@@ -5,8 +5,8 @@ import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
 
 interface Bucket { name: string; invested: number; current: number; xirr: number | null }
-interface Pms { invested: number; current: number; xirr: number | null }
-interface Fact { source: string; items: { label: string; value: string }[] }
+interface Pms { invested: number; current: number; xirr: number | null; hide?: string[] }
+interface Fact { source: string; items: { label: string; value: string; show?: boolean }[] }
 interface Valuation { invested: number; value: number; gain: number; xirr: number | null; date: string; rows: number }
 interface FileResult { name: string; kind: "monthly" | "valuation" | "statement" | "pms" | "factsheet" | "unrecognised" | "error"; method: "text" | "ocr" | ""; error?: string; buckets: number; valuation_rows: number; factsheet_items: number }
 interface StmtFund { name: string; invested: number; current: number; gain: number; ann_ret: number | null; check: string }
@@ -45,6 +45,15 @@ async function call<T>(path: string, init: RequestInit, blob = false): Promise<T
     throw new ApiError(msg, res.status);
   }
   return (blob ? res.blob() : res.json()) as Promise<T>;
+}
+
+function Tick({ on, onClick, what }: { on: boolean; onClick: () => void; what: string }) {
+  return (
+    <button type="button" onClick={onClick} aria-pressed={on} aria-label={`${on ? "Hide" : "Show"} ${what} in the PDF`} title={on ? "Shown in the PDF — click to hide" : "Hidden from the PDF — click to show"}
+      className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border text-[13px] font-bold ${on ? "border-[#006F64] bg-[#E6F4F1] text-[#006F64]" : "border-[#C9D2E3] bg-[#F3F6FC] text-[#B42318] dark:border-[#2B3644] dark:bg-[#1B2432]"}`}>
+      {on ? "✓" : "✕"}
+    </button>
+  );
 }
 
 function totals(buckets: Bucket[], pms: Pms) {
@@ -105,7 +114,8 @@ export default function PaperworkReport() {
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [email, setEmail] = useState(true);
+  const [email, setEmail] = useState(false);
+  const [askEmail, setAskEmail] = useState(false);
   const [monthPick, setMonthPick] = useState(() => {
     const d = new Date();
     return { month: d.getMonth(), year: d.getFullYear() };
@@ -289,12 +299,12 @@ export default function PaperworkReport() {
     downloadBlob(blob, filename(report));
   });
 
-  const create = () => report && canCreate && run("create", async () => {
+  const create = (sendEmail: boolean) => report && canCreate && run("create", async () => {
     const blob = await call<Blob>("/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload(report)) }, true);
     downloadBlob(blob, filename(report));
     const body = isCustom
-      ? { customer_id: null, custom_client: { name: customName.trim(), mobile: customMobile.trim(), email: customEmail.trim() }, household_id: null, report: payload(report), send_email: email }
-      : { customer_id: customerId, household_id: hhId || null, report: payload(report), send_email: email };
+      ? { customer_id: null, custom_client: { name: customName.trim(), mobile: customMobile.trim(), email: customEmail.trim() }, household_id: null, report: payload(report), send_email: sendEmail }
+      : { customer_id: customerId, household_id: hhId || null, report: payload(report), send_email: sendEmail };
     const r = await call<{ id: string; emailed: boolean; email_error: string | null; customer_id: string; household_id: string; matched_existing: boolean }>("/push", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -328,6 +338,10 @@ export default function PaperworkReport() {
 
   const patchBucket = (i: number, p: Partial<Bucket>) =>
     setReport((r) => r && { ...r, buckets: r.buckets.map((b, j) => (j === i ? { ...b, ...p } : b)) });
+  const patchItem = (fi: number, ii: number, p: Partial<Fact["items"][number]>) =>
+    setReport((r) => r && { ...r, factsheets: r.factsheets.map((x, a) => (a === fi ? { ...x, items: x.items.map((y, b) => (b === ii ? { ...y, ...p } : y)) } : x)) });
+  const togglePms = (k: string) =>
+    setReport((r) => r && { ...r, pms: { ...r.pms, hide: r.pms.hide?.includes(k) ? r.pms.hide.filter((h) => h !== k) : [...(r.pms.hide ?? []), k] } });
   const num = (v: string) => (v === "" || isNaN(+v) ? 0 : +v);
 
   const checks: string[] = [];
@@ -574,11 +588,11 @@ export default function PaperworkReport() {
                 </tr>
                 <tr>
                   <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 font-semibold">PMS</td>
-                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] p-0.5"><input className={`${cell} text-right`} inputMode="decimal" value={report.pms.invested} onChange={(e) => setReport({ ...report, pms: { ...report.pms, invested: num(e.target.value) } })} /></td>
-                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] p-0.5"><input className={`${cell} text-right`} inputMode="decimal" value={report.pms.current} onChange={(e) => setReport({ ...report, pms: { ...report.pms, current: num(e.target.value) } })} /></td>
+                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] p-0.5"><div className="flex items-center gap-1"><input className={`${cell} text-right`} inputMode="decimal" value={report.pms.invested} onChange={(e) => setReport({ ...report, pms: { ...report.pms, invested: num(e.target.value) } })} /><Tick on={!report.pms.hide?.includes("invested")} what="PMS invested" onClick={() => togglePms("invested")} /></div></td>
+                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] p-0.5"><div className="flex items-center gap-1"><input className={`${cell} text-right`} inputMode="decimal" value={report.pms.current} onChange={(e) => setReport({ ...report, pms: { ...report.pms, current: num(e.target.value) } })} /><Tick on={!report.pms.hide?.includes("current")} what="PMS current" onClick={() => togglePms("current")} /></div></td>
                   <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-right tabular-nums">{inr(t.pmsGain)}</td>
                   <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5 text-right tabular-nums">{t.pmsWeight.toFixed(2)}%</td>
-                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] p-0.5"><input className={`${cell} text-right`} inputMode="decimal" value={report.pms.xirr ?? ""} onChange={(e) => setReport({ ...report, pms: { ...report.pms, xirr: e.target.value === "" || isNaN(+e.target.value) ? null : +e.target.value } })} /></td>
+                  <td className="border border-[#E4E9EF] dark:border-[#2B3644] p-0.5"><div className="flex items-center gap-1"><input className={`${cell} text-right`} inputMode="decimal" value={report.pms.xirr ?? ""} onChange={(e) => setReport({ ...report, pms: { ...report.pms, xirr: e.target.value === "" || isNaN(+e.target.value) ? null : +e.target.value } })} /><Tick on={!report.pms.hide?.includes("xirr")} what="PMS xirr" onClick={() => togglePms("xirr")} /></div></td>
                 </tr>
                 <tr className="bg-[#F3F6FC] dark:bg-[#1B2432] font-bold">
                   <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-1.5">Total</td>
@@ -598,7 +612,8 @@ export default function PaperworkReport() {
               <div className="mt-1 grid gap-1.5 sm:grid-cols-2">
                 {f.items.map((it, ii) => (
                   <div key={ii} className="flex items-center gap-2"><span className="w-40 shrink-0 text-[12.5px]">{it.label}</span>
-                    <input className={cell} value={it.value} onChange={(e) => setReport({ ...report, factsheets: report.factsheets.map((x, a) => (a === fi ? { ...x, items: x.items.map((y, b) => (b === ii ? { ...y, value: e.target.value } : y)) } : x)) })} />
+                    <input className={cell} value={it.value} onChange={(e) => patchItem(fi, ii, { value: e.target.value })} />
+                    <Tick on={it.show !== false} what={it.label} onClick={() => patchItem(fi, ii, { show: it.show === false })} />
                   </div>
                 ))}
               </div>
@@ -613,12 +628,25 @@ export default function PaperworkReport() {
           )}
 
           <div className="flex flex-wrap items-center gap-3 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-3">
-            <button type="button" className={btnPrimary} onClick={create} disabled={busy !== null || !canCreate} title={canCreate ? undefined : isCustom ? "Enter a custom client name first" : "Pick a client household first"}>
+            <button type="button" className={btnPrimary} onClick={() => (email ? create(true) : setAskEmail(true))} disabled={busy !== null || !canCreate} title={canCreate ? undefined : isCustom ? "Enter a custom client name first" : "Pick a client household first"}>
               {busy === "create" ? "Creating…" : "Create Report"}
             </button>
             <button type="button" className={btn} onClick={downloadPdf} disabled={busy !== null}>{busy === "pdf" ? "Building…" : "⬇ Download PDF only"}</button>
             <label className="inline-flex items-center gap-1.5 text-[13px]"><input type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} /> Also email the PDF to the client</label>
-            <span className={`text-[12.5px] ${muted}`}>Create Report downloads the file, then saves it to the client CRM record, then emails it if ticked.</span>
+            <span className={`text-[12.5px] ${muted}`}>Create Report downloads the file, then saves it to the client CRM record, then emails it if ticked. ✓/✕ beside a box shows or hides it in the PDF.</span>
+          </div>
+        </div>
+      )}
+
+      {askEmail && (
+        <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className={`${card} w-full max-w-md p-5`}>
+            <h3 className="text-[15px] font-bold">Email this report to the client?</h3>
+            <p className={`mt-1.5 text-[13px] ${muted}`}>The report will be created and saved to the CRM either way. Choose whether to also email the PDF.</p>
+            <div className="mt-4 flex flex-wrap justify-end gap-2">
+              <button type="button" className={btn} onClick={() => { setAskEmail(false); create(false); }}>No, just create</button>
+              <button type="button" className={btnPrimary} onClick={() => { setAskEmail(false); setEmail(true); create(true); }}>Yes, email it</button>
+            </div>
           </div>
         </div>
       )}

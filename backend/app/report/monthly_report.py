@@ -378,11 +378,12 @@ def build_monthly_report(data: dict[str, Any]) -> bytes:
     story += [table, Spacer(1, 10), P("COMPLETE PORTFOLIO", bold)]
     comp = t["complete"]
     pms = t["pms"]
+    hide = pms.get("hide") or []
     crows = [[P(h, head) for h in cols],
              [P("Mutual funds"), P(ind(t["invested"], 0), right), P(ind(t["current"], 0), right),
               P(ind(t["gain"], 0), right), P(f"{comp['mf_weight']:.2f}%", right), P(_pct(total_xirr), right)],
-             [P("PMS"), P(ind(pms["invested"], 0), right), P(ind(pms["current"], 0), right),
-              P(ind(pms["gain"], 0), right), P(f"{comp['pms_weight']:.2f}%", right), P(_pct(pms["xirr"]), right)],
+             [P("PMS"), P("-" if "invested" in hide else ind(pms["invested"], 0), right), P("-" if "current" in hide else ind(pms["current"], 0), right),
+              P(ind(pms["gain"], 0), right), P(f"{comp['pms_weight']:.2f}%", right), P("-" if "xirr" in hide else _pct(pms["xirr"]), right)],
              [P("Total", bold), P(ind(comp["invested"], 0), right_b), P(ind(comp["current"], 0), right_b),
               P(ind(comp["gain"], 0), right_b), P("100.00%", right_b), P(_pct(total_xirr), right_b)]]
     ctable = Table(crows, colWidths=[52 * mm, 30 * mm, 30 * mm, 30 * mm, 22 * mm, 16 * mm], repeatRows=1)
@@ -395,7 +396,10 @@ def build_monthly_report(data: dict[str, Any]) -> bytes:
               P(NOTES[1], small),
               P(f"AMFI Registered Mutual Fund Distributor, {ARN}.", small)]
     for fs in data.get("factsheets") or []:
-        ft = Table([[P(fs["source"], bold), ""]] + [[P(it["label"]), P(it["value"])] for it in fs["items"]],
+        items = [it for it in fs["items"] if it.get("show", True)]
+        if not items:
+            continue
+        ft = Table([[P(fs["source"], bold), ""]] + [[P(it["label"]), P(it["value"])] for it in items],
                    colWidths=[60 * mm, 120 * mm])
         ft.setStyle(TableStyle([("SPAN", (0, 0), (-1, 0)), ("BACKGROUND", (0, 0), (-1, 0), blue),
                                 ("GRID", (0, 0), (-1, -1), 0.4, grey)]))

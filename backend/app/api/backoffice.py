@@ -1100,8 +1100,7 @@ async def backoffice_portfolio_screen(
 
     pdf_bytes = await file.read()
     try:
-        parsed = portfolio_screen.parse_portfolio_pdf_bytes(pdf_bytes, password=password)
-        holdings = portfolio_screen.extract_raw_holdings(parsed)
+        holdings, st_date = portfolio_screen.parse_portfolio_pdf_bytes(pdf_bytes, password=password)
     except portfolio_screen.PortfolioPDFError as e:
         raise HTTPException(e.status_code, {"error": e.code, "message": e.message}) from e
     finally:
@@ -1112,7 +1111,7 @@ async def backoffice_portfolio_screen(
         raise HTTPException(422, {"error": "no_holdings_found", "message": "No active mutual fund holdings could be identified in this statement."})
 
     frame = _fh_frame()
-    result = portfolio_screen.match_and_screen_portfolio(holdings, frame)
+    result = portfolio_screen.match_and_screen_portfolio(holdings, frame, statement_date=st_date)
     return clean(result)
 
 

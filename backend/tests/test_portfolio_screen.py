@@ -199,3 +199,41 @@ def test_portfolio_screen_api_access_control():
     )
     assert resp.status_code in (401, 403)
 
+
+def test_universal_distributor_statement_extraction():
+    sample_text = """
+    Proaffluence Associates Private Limited
+    AMFI Registered Mutual Fund Distributor
+    Report as on: 26-Oct-2026
+    Aditya Satish Parchure (ATMPP2601B)
+    MF Summary Report - Sub Category wise
+    Equity - Large Cap Fund
+    Mirae Asset Large Cap Fund - Regular Plan - Growth | 70414596465 | Aditya Satish Parchure
+    104.3080
+    23-10-2026
+    10-06-2024 763.647 ₹ 84,011 ₹ 79,654 ₹ -4,357 -5.19 0 -4.53 427
+    Equity - Mid Cap Fund
+    HDFC Mid Cap Fund - Regular Plan - Growth | 15668524/46 | Aditya Satish Parchure
+    192.3300
+    23-10-2026
+    24-04-2019 2,879.186 ₹ 2,70,000 ₹ 5,53,754 ₹ 2,83,754 105.09 0 18.81 1760
+    Equity -Flexi Cap
+    Kotak Flexi Cap Fund - Growth | 5771141 | Aditya Satish Parchure
+    78.8310
+    23-10-2026
+    04-01-2019 5,422.026 ₹ 2,82,000 ₹ 4,27,424 ₹ 1,45,424 51.57 0 10.48 1703
+    Grand total
+    ₹ 6,36,011 ₹ 10,60,832 ₹ 4,24,821 66.79 0 14.26
+    """
+    holdings, st_date = portfolio_screen.extract_universal_from_text(sample_text)
+    assert len(holdings) == 3
+    assert holdings[0]["raw_name"] == "Mirae Asset Large Cap Fund - Regular Plan - Growth"
+    assert holdings[0]["units"] == 763.647
+    assert holdings[0]["statement_value"] == 79654.0
+    assert holdings[1]["raw_name"] == "HDFC Mid Cap Fund - Regular Plan - Growth"
+    assert holdings[1]["statement_value"] == 553754.0
+    assert holdings[2]["raw_name"] == "Kotak Flexi Cap Fund - Growth"
+    assert holdings[2]["statement_value"] == 427424.0
+    assert sum(h["statement_value"] for h in holdings) == 1060832.0
+    assert st_date == "26-Oct-2026"
+

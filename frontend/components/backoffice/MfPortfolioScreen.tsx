@@ -179,7 +179,7 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
             Upload client portfolio statement
           </h2>
           <p className="text-[13.5px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 max-w-md mx-auto">
-            Supports e-CAS PDFs from CAMS, KFintech, CDSL &amp; NSDL. Statements are processed strictly in memory and never stored.
+            Supports CAS statements (CAMS, KFintech, CDSL, NSDL) and distributor/broker portfolio reports. Statements are processed strictly in memory and never stored.
           </p>
 
           <form onSubmit={handleUploadAndScreen} className="mt-6 space-y-4 max-w-md mx-auto">

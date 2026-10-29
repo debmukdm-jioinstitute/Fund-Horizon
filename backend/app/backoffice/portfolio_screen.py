@@ -13,6 +13,7 @@ import re
 from typing import Any
 
 import pandas as pd
+import pypdfium2 as pdfium
 
 from app.backoffice import fh_score
 from app.engine import cas
@@ -132,8 +133,137 @@ def extract_raw_holdings(parsed_cas: dict[str, Any]) -> list[dict[str, Any]]:
     return holdings
 
 
-def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "") -> dict[str, Any]:
-    """Parse statement PDF in memory, enforcing file validations and decryption checks."""
+def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], str | None]:
+    """Universal extractor: identifies mutual fund holdings and valuation figures from any text statement."""
+    holdings: list[dict[str, Any]] = []
+    lines = [l.strip() for l in full_text.splitlines() if l.strip()]
+
+    # Extract overall statement / valuation date if present
+    statement_date = None
+    m_date = re.search(r"(?:Report\s*as\s*on|Statement\s*as\s*of|As\s*on\s*Date|Portfolio\s*as\s*on)\s*[:\-]?\s*([0-9]{1,2}[-/][A-Za-z0-9]+[-/][0-9]{2,4})", full_text, re.I)
+    if m_date:
+        statement_date = m_date.group(1).strip()
+
+    amc_keywords = [
+        "mirae", "hdfc", "kotak", "icici", "sbi", "nippon", "axis", "uti", "bandhan", "tata",
+        "dsp", "franklin", "parag parikh", "motilal", "canara", "quant", "invesco", "sundaram",
+        "hsbc", "pgim", "edelweiss", "whiteoak", "mahindra", "bajaj", "samco", "navi", "ppfas",
+        "baroda", "union", "quantum", "jm", "groww", "helios", "zerodha", "360 one", "aditya birla",
+        "absl", "franklin templeton", "taurus", "iti", "trust", "shriram",
+    ]
+
+    isin_pattern = re.compile(r"\b(INF[A-Z0-9]{9})\b")
+
+    def parse_num(s: str) -> float | None:
+        if not s:
+            return None
+        cleaned = re.sub(r"[^\d.]", "", s)
+        try:
+            return float(cleaned) if cleaned else None
+        except ValueError:
+            return None
+
+    def is_scheme_candidate(line: str) -> bool:
+        ll = line.lower()
+        if any(skip in ll for skip in ["grand total", "sub total", "report as on", "nav/nav date", "scheme name |", "disclaimer", "investments are subject"]):
+            return False
+        has_amc = any(amc in ll for amc in amc_keywords)
+        has_mf_word = any(w in ll for w in ["fund", "growth", "idcw", "dividend", "plan", "cap", "index", "opportunities", "bluechip", "elss", "equity", "debt", "hybrid", "advantage", "arbitrage", "liquid"])
+        has_pipe_holding = "|" in line and (has_amc or has_mf_word)
+        return has_pipe_holding or (has_amc and has_mf_word)
+
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if is_scheme_candidate(line):
+            scheme_name = line
+            folio = None
+            isin = None
+
+            isin_m = isin_pattern.search(line)
+            if isin_m:
+                isin = isin_m.group(1)
+
+            if "|" in line:
+                parts = [p.strip() for p in line.split("|")]
+                scheme_name = parts[0]
+                if len(parts) > 1 and re.match(r"^[\d/\-_A-Za-z]+$", parts[1]) and not any(k in parts[1].lower() for k in ["folio", "scheme", "units", "nav", "plan"]):
+                    folio = parts[1]
+
+            nav = None
+            units = None
+            cur_val = None
+            val_date = None
+
+            # If line itself is a full table row: Scheme | Folio | Units | NAV | Current Value
+            if "|" in line and len(line.split("|")) >= 4:
+                parts = [p.strip() for p in line.split("|")]
+                start_idx = 2 if len(parts) > 2 and re.match(r"^[\d/\-_A-Za-z]+$", parts[1]) and "." not in parts[1] else 1
+                for pt in parts[start_idx:]:
+                    val = parse_num(pt)
+                    if val is not None:
+                        if "." in pt and len(pt.split(".")[1]) >= 3 and units is None:
+                            units = val
+                        elif nav is None and 1 <= val <= 5000 and len(pt.split(".")[1]) <= 2:
+                            nav = val
+                        elif cur_val is None:
+                            cur_val = val
+
+            # Look ahead in subsequent lines for NAV, date, units, values
+            j = i + 1
+            while j < min(len(lines), i + 7):
+                subline = lines[j]
+                if is_scheme_candidate(subline) or "grand total" in subline.lower() or "total portfolio" in subline.lower():
+                    break
+
+                # Row with date, units, invested amount, current value
+                m_row = re.search(r"(?:(\d{2}[-/]\d{2}[-/]\d{4})\s+)?([0-9,]+\.\d{2,4})\s+₹?\s*([0-9,]+(?:\.[0-9]+)?)\s+₹?\s*([0-9,]+(?:\.[0-9]+)?)", subline)
+                if m_row:
+                    if m_row.group(1):
+                        val_date = m_row.group(1)
+                    if units is None:
+                        units = parse_num(m_row.group(2))
+                    if cur_val is None:
+                        cur_val = parse_num(m_row.group(4))
+                else:
+                    m_nav = re.match(r"^([0-9]{1,4}\.[0-9]{2,4})$", subline)
+                    if m_nav and nav is None:
+                        nav = float(m_nav.group(1))
+
+                    m_dt = re.match(r"^(\d{2}[-/]\d{2}[-/]\d{4})$", subline)
+                    if m_dt and val_date is None:
+                        val_date = m_dt.group(1)
+
+                    rupees = re.findall(r"₹\s*([0-9,]+(?:\.[0-9]+)?)", subline)
+                    if len(rupees) >= 2 and cur_val is None:
+                        cur_val = parse_num(rupees[1])
+                    elif len(rupees) == 1 and cur_val is None:
+                        cur_val = parse_num(rupees[0])
+
+                j += 1
+
+            if cur_val is None and units is not None and nav is not None and nav > 0:
+                cur_val = round(units * nav, 2)
+
+            holdings.append({
+                "raw_name": scheme_name,
+                "folio": folio,
+                "isin": isin,
+                "amfi_code": None,
+                "units": units,
+                "statement_nav": nav,
+                "statement_value": cur_val,
+                "valuation_date": val_date or statement_date,
+            })
+            i = j
+        else:
+            i += 1
+
+    return holdings, statement_date
+
+
+def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "") -> tuple[list[dict[str, Any]], str | None]:
+    """Parse statement PDF in memory, supporting standard CAS and any distributor/advisor PDF reports."""
     if not pdf_bytes:
         raise PortfolioPDFError("Uploaded PDF file is empty.", code="empty_file", status_code=400)
 
@@ -147,23 +277,60 @@ def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "") -> dict[str,
     if not pdf_bytes.startswith(b"%PDF"):
         raise PortfolioPDFError("Uploaded file is not a valid PDF document (missing %PDF signature).", code="invalid_pdf", status_code=400)
 
+    # Validate PDF structure and password using pypdfium2
+    full_text = ""
     try:
-        parsed = cas.parse_cas_pdf_bytes(pdf_bytes, password=password)
-        return parsed
-    except cas.CASPasswordError as pe:
-        msg = str(pe)
+        doc = pdfium.PdfDocument(io.BytesIO(pdf_bytes), password=password)
+        pages_text = []
+        for page in doc:
+            tp = page.get_textpage()
+            pages_text.append(tp.get_text_bounded())
+        doc.close()
+        full_text = "\n".join(pages_text)
+    except Exception as pe:
+        msg = str(pe).lower()
+        if "password" in msg:
+            if not password:
+                raise PortfolioPDFError("This portfolio PDF is password-protected. Please enter the password to decrypt.", code="password_required", status_code=400) from pe
+            raise PortfolioPDFError("Incorrect password for this statement. Please verify and try again.", code="incorrect_password", status_code=400) from pe
+        raise PortfolioPDFError(f"Unable to read PDF document: {pe}", code="invalid_pdf", status_code=400) from pe
+
+    # 1. Try standard CAS parser (CAMS, KFintech, CDSL, NSDL)
+    try:
+        parsed_cas = cas.parse_cas_pdf_bytes(pdf_bytes, password=password)
+        cas_holdings = extract_raw_holdings(parsed_cas)
+        if cas_holdings:
+            st_date = parsed_cas.get("statement_period", {}).get("to")
+            return cas_holdings, st_date
+    except cas.CASPasswordError as cpe:
         if not password:
-            raise PortfolioPDFError("This portfolio PDF is password-protected. Please enter the password to decrypt.", code="password_required", status_code=400) from pe
-        raise PortfolioPDFError("Incorrect password for this statement. Please verify and try again.", code="incorrect_password", status_code=400) from pe
-    except cas.CASValidationError as ve:
-        raise PortfolioPDFError(str(ve), code="validation_error", status_code=400) from ve
-    except cas.CASParsingError as cpe:
-        raise PortfolioPDFError("Unable to extract text structure from this statement. If this is a scanned document without a text layer, please upload an electronic e-CAS statement.", code="scanned_or_unsupported", status_code=422) from cpe
-    except Exception as e:
-        raise PortfolioPDFError(f"Statement parsing failed: {e}", code="parse_error", status_code=422) from e
+            raise PortfolioPDFError("This portfolio PDF is password-protected. Please enter the password to decrypt.", code="password_required", status_code=400) from cpe
+        raise PortfolioPDFError("Incorrect password for this statement. Please verify and try again.", code="incorrect_password", status_code=400) from cpe
+    except Exception:
+        # Non-fatal: fallback to universal extractor below
+        pass
+
+    # 2. Universal text-based extractor for distributor, broker, advisor, or custom statements
+    universal_holdings, st_date = extract_universal_from_text(full_text)
+    if universal_holdings:
+        return universal_holdings, st_date
+
+    # 3. If neither found holdings, distinguish scanned PDFs from non-MF PDFs
+    if len(full_text.strip()) < 100:
+        raise PortfolioPDFError(
+            "No readable text found in statement. If this is a scanned document or image PDF, please upload a digital statement with selectable text.",
+            code="scanned_or_unsupported",
+            status_code=422,
+        )
+
+    raise PortfolioPDFError(
+        "No active mutual fund holdings could be identified in this statement. Please verify that the file contains mutual fund holding details.",
+        code="no_holdings_found",
+        status_code=422,
+    )
 
 
-def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFrame) -> dict[str, Any]:
+def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFrame, statement_date: str | None = None) -> dict[str, Any]:
     """Match extracted holdings against the scored screener frame and compile screening signals."""
     # Build fast indexed lookups from frame
     isin_map: dict[str, dict[str, Any]] = {}
@@ -223,6 +390,9 @@ def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFra
                 # Bonus if AMC or main keyphrase aligns
                 if c_norm and norm_raw and (c_norm in norm_raw or norm_raw in c_norm):
                     score = min(1.0, score + 0.15)
+                # When plan is unspecified in holding name, favor Regular plan (industry standard for distributor reports)
+                if det_plan == "Unknown" and c_row.get("plan") == "Regular":
+                    score = min(1.0, score + 0.05)
                 if score >= 0.55:
                     scored_candidates.append((score, c_row))
 
@@ -232,7 +402,7 @@ def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFra
                 top_score, top_row = scored_candidates[0]
                 runner_up = scored_candidates[1][0] if len(scored_candidates) > 1 else 0.0
 
-                if top_score >= 0.82 and (top_score - runner_up >= 0.08 or top_score >= 0.92):
+                if top_score >= 0.80 and (top_score - runner_up >= 0.06 or top_score >= 0.90):
                     matched_row = top_row
                     match_type = "matched_name"
                 else:
@@ -355,7 +525,7 @@ def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFra
         "buy_count": buy_cnt,
         "hold_count": hold_cnt,
         "sell_count": sell_cnt,
-        "statement_date": max(val_dates) if val_dates else None,
+        "statement_date": statement_date or (max(val_dates) if val_dates else None),
         "screening_date": max(asof_dates) if asof_dates else None,
         "is_partial": any(r["statement_value"] is None for r in results),
     }

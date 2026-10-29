@@ -2014,10 +2014,12 @@ export async function screenPortfolioPdf(file: File, password = ""): Promise<Por
   const form = new FormData();
   form.append("file", file);
   if (password) form.append("password", password);
-  const res = await fetch("/api/backoffice/mutual-funds/portfolio-screen", {
+  const targetUrl = resolveApiUrl(`${API_URL}/api/backoffice/mutual-funds/portfolio-screen`);
+  const res = await fetch(targetUrl, {
     method: "POST",
     body: form,
     credentials: "include",
+    headers: { "sec-fetch-site": "same-origin" },
   });
   if (!res.ok) {
     let errMessage = `Portfolio screening failed (${res.status})`;
@@ -2040,9 +2042,10 @@ export async function resolvePortfolioHolding(payload: {
   statement_value?: number | null;
   total_value?: number | null;
 }): Promise<PortfolioHolding> {
-  const res = await fetch("/api/backoffice/mutual-funds/resolve-holding", {
+  const targetUrl = resolveApiUrl(`${API_URL}/api/backoffice/mutual-funds/resolve-holding`);
+  const res = await fetch(targetUrl, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "sec-fetch-site": "same-origin" },
     body: JSON.stringify(payload),
     credentials: "include",
   });

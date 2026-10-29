@@ -151,11 +151,12 @@ async def lifespan(app: FastAPI):
         # Warm the scored mutual-fund frame so the first backoffice screener request is not the one that pays for it.
         def _warm_screener() -> None:
             try:
-                from app.api.backoffice import _REPO, _fh_frame
+                from app.api.backoffice import _REPO, _fh_frame, _holdings_snapshot
                 from app.backoffice.manager_resolver import sync_managers
 
                 sync_managers(_REPO)  # fills missing managers from seed, cached pulls, AMFI snapshot and plan siblings
                 _fh_frame()
+                _holdings_snapshot()
             except Exception:  # noqa: BLE001
                 logging.getLogger(__name__).exception("Screener warm-up failed")
 

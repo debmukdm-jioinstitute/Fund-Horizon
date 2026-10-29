@@ -7,6 +7,7 @@ import json
 import re
 import secrets
 from functools import lru_cache as _lru_cache
+import logging
 import threading
 import time
 from datetime import UTC, datetime, timedelta, timezone
@@ -865,30 +866,52 @@ _FRAME_CACHE: tuple[float, tuple, pd.DataFrame] | None = None
 _FRAME_LOCK = threading.Lock()
 
 
-def _fh_frame() -> pd.DataFrame:
-    """Scored screener frame with manager and consistency inputs, cached for 5 minutes.
-
-    Scoring ~3,700 funds costs seconds, so one frame serves every request (and the facets). It is rebuilt when the scoring
-    config file changes or the TTL passes; staff edits to managers or TER show up within the TTL.
-    """
+def _build_frame(sig: tuple) -> pd.DataFrame:
     global _FRAME_CACHE
+    try:
+        consistency_map = _REPO.screening_consistency_map()
+    except Exception:
+        consistency_map = {}
+    frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map)
+    frame.attrs["consistency_n"] = len(consistency_map)
+    _FRAME_CACHE = (time.monotonic(), sig, frame)
+    return frame
+
+
+def _refresh_in_background(sig: tuple) -> None:
+    if not _FRAME_LOCK.acquire(blocking=False):
+        return  # a rebuild is already running
+
+    def run() -> None:
+        try:
+            _build_frame(sig)
+        except Exception:
+            logging.getLogger(__name__).exception("Screener frame refresh failed")
+        finally:
+            _FRAME_LOCK.release()
+
+    threading.Thread(target=run, daemon=True).start()
+
+
+def _fh_frame() -> pd.DataFrame:
+    """Scored screener frame with manager and consistency inputs.
+
+    Scoring ~3,700 funds costs 10+ seconds, so one frame serves every request (and the facets). After the TTL the stale frame
+    is still served while a background thread rebuilds it, so no request ever waits on the rebuild. Only a cold start or a
+    scoring-config change blocks (the frame would be wrong, not just old).
+    """
     cfg_file = fh_score.CONFIG_FILE
     sig = (cfg_file.stat().st_mtime if cfg_file.exists() else 0,)
     hit = _FRAME_CACHE
-    if hit and hit[1] == sig and time.monotonic() - hit[0] < _FRAME_TTL_SECONDS:
+    if hit and hit[1] == sig:
+        if time.monotonic() - hit[0] >= _FRAME_TTL_SECONDS:
+            _refresh_in_background(sig)
         return hit[2]
     with _FRAME_LOCK:
         hit = _FRAME_CACHE
-        if hit and hit[1] == sig and time.monotonic() - hit[0] < _FRAME_TTL_SECONDS:
+        if hit and hit[1] == sig:
             return hit[2]
-        try:
-            consistency_map = _REPO.screening_consistency_map()
-        except Exception:
-            consistency_map = {}
-        frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map)
-        frame.attrs["consistency_n"] = len(consistency_map)
-        _FRAME_CACHE = (time.monotonic(), sig, frame)
-        return frame
+        return _build_frame(sig)
 
 
 def _fh_refresh(frame: pd.DataFrame | None = None, force: bool = False) -> None:

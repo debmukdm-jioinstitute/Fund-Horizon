@@ -983,6 +983,7 @@ def backoffice_mf_screener(
     quartile: list[int] | None = Query(None, description="Computed quartile filter, 1-4"),
     quartile_period: str = Query("2y", description="Quartile period: 1y, 2y, 3y or 5y"),
     include_unavailable: bool = Query(True, description="Keep null-quartile rows under a quartile filter"),
+    watchlist: str | None = Query(None, max_length=64, description="Restrict to one of the staff member's watchlists"),
 ):
     """Trendlyne-style screener over the AMFI + mfapi.in dataset: categories, returns, risk, FH checklist score."""
     if sort not in mf_screener.SORT_KEYS:
@@ -1017,6 +1018,11 @@ def backoffice_mf_screener(
     df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES), fh_status=_fh_status(df))
     if recommended:
         df = df[df["is_fh_recommended"]]
+    if watchlist:
+        wl_codes = _REPO.mf_watchlist_codes(staff["id"], watchlist)
+        if wl_codes is None:
+            raise HTTPException(404, "Watchlist not found")
+        df = df[df["code"].isin(wl_codes)]
     snapshot = _holdings_snapshot()
     if sector:
         # Sector filter applies ONLY to funds with a holdings snapshot on
@@ -1709,6 +1715,55 @@ def remove_mf_research_shortlist(
     verify_csrf(request)
     if not _REPO.remove_mf_research_shortlist(staff["id"], scheme_code):
         raise HTTPException(404, "Shortlist item not found")
+    return {"success": True}
+
+
+class MfWatchlistRequest(BaseModel):
+    name: str = Field(..., min_length=1, max_length=60)
+
+
+class MfWatchlistItemRequest(BaseModel):
+    scheme_code: str = Field(..., min_length=1, max_length=16)
+
+
+@router.get("/mf-research/watchlists")
+def list_mf_watchlists(staff: Annotated[dict, Depends(require_staff)]):
+    """Staff-private watchlists with their scheme codes (so any fund page can show membership)."""
+    return {"data": _REPO.list_mf_watchlists(staff["id"])}
+
+
+@router.post("/mf-research/watchlists", status_code=201)
+def create_mf_watchlist(body: MfWatchlistRequest, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    w = _REPO.create_mf_watchlist(staff["id"], body.name.strip())
+    if w is None:
+        raise HTTPException(409, "You already have a watchlist with this name")
+    return w
+
+
+@router.delete("/mf-research/watchlists/{watchlist_id}")
+def delete_mf_watchlist(watchlist_id: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    if not _REPO.delete_mf_watchlist(staff["id"], watchlist_id):
+        raise HTTPException(404, "Watchlist not found")
+    return {"success": True}
+
+
+@router.post("/mf-research/watchlists/{watchlist_id}/funds", status_code=201)
+def add_mf_watchlist_fund(watchlist_id: str, body: MfWatchlistItemRequest, request: Request,
+                          staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    if not _REPO.set_mf_watchlist_item(staff["id"], watchlist_id, body.scheme_code.strip(), True):
+        raise HTTPException(404, "Watchlist not found")
+    return {"success": True}
+
+
+@router.delete("/mf-research/watchlists/{watchlist_id}/funds/{scheme_code}")
+def remove_mf_watchlist_fund(watchlist_id: str, scheme_code: str, request: Request,
+                             staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    if not _REPO.set_mf_watchlist_item(staff["id"], watchlist_id, scheme_code, False):
+        raise HTTPException(404, "Watchlist not found")
     return {"success": True}
 
 

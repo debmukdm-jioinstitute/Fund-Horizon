@@ -199,6 +199,19 @@ CREATE TABLE IF NOT EXISTS mf_research_shortlist (
     UNIQUE (staff_id, scheme_code)
 );
 CREATE INDEX IF NOT EXISTS ix_mf_research_shortlist_staff ON mf_research_shortlist(staff_id, status);
+CREATE TABLE IF NOT EXISTS mf_research_watchlists (
+    id TEXT PRIMARY KEY,
+    staff_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (staff_id, name)
+);
+CREATE TABLE IF NOT EXISTS mf_research_watchlist_items (
+    watchlist_id TEXT NOT NULL REFERENCES mf_research_watchlists(id) ON DELETE CASCADE,
+    scheme_code TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (watchlist_id, scheme_code)
+);
 """
 _LIVE_TABLES_READY: set[str] = set()
 
@@ -1584,6 +1597,75 @@ class BackofficeRepository:
                     (_utcnow(), staff_id, scheme_code),
                 )
                 return cur.rowcount > 0
+        finally:
+            conn.close()
+
+    # --- MF Research watchlists (staff-private named lists of schemes) ---
+    def list_mf_watchlists(self, staff_id: str) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            lists = [dict(r) for r in conn.execute(
+                "SELECT id, name, created_at FROM mf_research_watchlists WHERE staff_id = ? ORDER BY created_at",
+                (staff_id,)).fetchall()]
+            for w in lists:
+                w["codes"] = [r["scheme_code"] for r in conn.execute(
+                    "SELECT scheme_code FROM mf_research_watchlist_items WHERE watchlist_id = ? ORDER BY created_at DESC",
+                    (w["id"],)).fetchall()]
+            return lists
+        finally:
+            conn.close()
+
+    def create_mf_watchlist(self, staff_id: str, name: str) -> dict[str, Any] | None:
+        """None when the staff member already has a list with this name."""
+        conn = self._conn()
+        wid, now = _new_id(), _utcnow()
+        try:
+            with conn:
+                conn.execute("INSERT INTO mf_research_watchlists (id, staff_id, name, created_at) VALUES (?, ?, ?, ?)",
+                             (wid, staff_id, name, now))
+            return {"id": wid, "name": name, "created_at": now, "codes": []}
+        except sqlite3.IntegrityError:
+            return None
+        finally:
+            conn.close()
+
+    def delete_mf_watchlist(self, staff_id: str, watchlist_id: str) -> bool:
+        conn = self._conn()
+        try:
+            with conn:
+                conn.execute("DELETE FROM mf_research_watchlist_items WHERE watchlist_id IN "
+                             "(SELECT id FROM mf_research_watchlists WHERE id = ? AND staff_id = ?)", (watchlist_id, staff_id))
+                return conn.execute("DELETE FROM mf_research_watchlists WHERE id = ? AND staff_id = ?",
+                                    (watchlist_id, staff_id)).rowcount > 0
+        finally:
+            conn.close()
+
+    def mf_watchlist_codes(self, staff_id: str, watchlist_id: str) -> list[str] | None:
+        """Scheme codes of one of the staff member's lists; None when it is not theirs."""
+        conn = self._conn()
+        try:
+            if not conn.execute("SELECT 1 FROM mf_research_watchlists WHERE id = ? AND staff_id = ?",
+                                (watchlist_id, staff_id)).fetchone():
+                return None
+            return [r["scheme_code"] for r in conn.execute(
+                "SELECT scheme_code FROM mf_research_watchlist_items WHERE watchlist_id = ?", (watchlist_id,)).fetchall()]
+        finally:
+            conn.close()
+
+    def set_mf_watchlist_item(self, staff_id: str, watchlist_id: str, scheme_code: str, present: bool) -> bool:
+        conn = self._conn()
+        try:
+            with conn:
+                if not conn.execute("SELECT 1 FROM mf_research_watchlists WHERE id = ? AND staff_id = ?",
+                                    (watchlist_id, staff_id)).fetchone():
+                    return False
+                if present:
+                    conn.execute("INSERT OR IGNORE INTO mf_research_watchlist_items (watchlist_id, scheme_code, created_at)"
+                                 " VALUES (?, ?, ?)", (watchlist_id, scheme_code, _utcnow()))
+                else:
+                    conn.execute("DELETE FROM mf_research_watchlist_items WHERE watchlist_id = ? AND scheme_code = ?",
+                                 (watchlist_id, scheme_code))
+                return True
         finally:
             conn.close()
 

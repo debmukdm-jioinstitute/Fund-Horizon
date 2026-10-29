@@ -340,3 +340,27 @@ def test_research_filters_cap_spread_and_ter_gap_accepted(client):
         "?category=flexi_cap&f=cap_spread_3y:10:&f=ter_gap_pp:0.5:&limit=5"
     )
     assert r.status_code == 200, r.text
+
+
+def test_watchlists_scoping_and_screener_filter(client):
+    staff_a, staff_b = _create_staff(), _create_staff()
+    _login_staff(client, staff_a)
+    code = ITI_PAIR[0]
+    w = client.post("/api/backoffice/mf-research/watchlists", json={"name": "Banking"})
+    assert w.status_code == 201, w.text
+    wid = w.json()["id"]
+    assert client.post("/api/backoffice/mf-research/watchlists", json={"name": "Banking"}).status_code == 409
+    assert client.post(f"/api/backoffice/mf-research/watchlists/{wid}/funds", json={"scheme_code": code}).status_code == 201
+    assert client.post(f"/api/backoffice/mf-research/watchlists/{wid}/funds", json={"scheme_code": code}).status_code == 201  # idempotent
+    assert client.get("/api/backoffice/mf-research/watchlists").json()["data"][0]["codes"] == [code]
+    # Same screener filters/columns, restricted to the list.
+    r = client.get(f"/api/backoffice/mutual-funds/screener?watchlist={wid}&limit=50").json()
+    assert [x["code"] for x in r["data"]] == [code]
+    # Another staff member cannot read or touch it.
+    _login_staff(client, staff_b)
+    assert client.get(f"/api/backoffice/mutual-funds/screener?watchlist={wid}").status_code == 404
+    assert client.delete(f"/api/backoffice/mf-research/watchlists/{wid}").status_code == 404
+    _login_staff(client, staff_a)
+    assert client.delete(f"/api/backoffice/mf-research/watchlists/{wid}/funds/{code}").status_code == 200
+    assert client.get(f"/api/backoffice/mutual-funds/screener?watchlist={wid}").json()["total"] == 0
+    assert client.delete(f"/api/backoffice/mf-research/watchlists/{wid}").status_code == 200

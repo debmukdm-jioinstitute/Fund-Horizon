@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import AddToWatchlist from "./AddToWatchlist";
 import {
   addMfShortlist, getMfExplain, getMfManager, getMfPeers, getMfResearchDetail, getMutualFundPerformance,
   type FhExplain, type MfManagerInfo, type MfPerformance, type MfResearchDetail, type MfScreenerRow, type MutualFundItem,
@@ -265,6 +266,7 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
                 <button type="button" onClick={() => setForm(false)} className="terminal-btn text-[13px] py-1 px-2">Cancel</button>
               </span>
             )}
+            <AddToWatchlist code={code} className="terminal-btn text-[13px] py-1.5 px-3" />
             <button type="button" onClick={copy} className="terminal-btn text-[13px] py-1.5 px-3">{copied ? "Copied" : "Copy details"}</button>
             {perf?.publicPage && <a href={`/funds/${code}`} target="_blank" rel="noreferrer" className="terminal-btn text-[13px] py-1.5 px-3">Public page ↗</a>}
           </div>

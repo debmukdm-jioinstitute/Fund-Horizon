@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRecommended } from "@/lib/recommended";
 import Link from "next/link";
+import AddToWatchlist from "./AddToWatchlist";
 import { getMutualFundPerformance, getMfNavPairCheck, getMfManager, getMfResearchDetail, addMfShortlist, MfManagerInfo, MfPerformance, MfResearchDetail, MutualFundItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
@@ -744,6 +745,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
                   </button>
                 </span>
               )}
+              <AddToWatchlist code={scheme.scheme_code} className="terminal-btn text-[12px] py-1.5 px-3" />
               {shortlistMsg && <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{shortlistMsg}</span>}
               <Link
                 href={`/backoffice/research?target_type=mutual_fund&target_id=${encodeURIComponent(scheme.scheme_code)}`}

@@ -7,13 +7,14 @@ import { useRecommended } from "@/lib/recommended";
 import {
   getMfScreener, getScreeningMetrics, listScreeningPresets, saveScreeningPreset, deleteScreeningPreset,
   getMfManagers, listMfShortlist, addMfShortlist, removeMfShortlist, mfShortlistCsvUrl, mfScreenerCsvUrl,
-  getMfClientOverlap, getMfPortfolioCoverage,
+  getMfClientOverlap, getMfPortfolioCoverage, listMfWatchlists, createMfWatchlist, deleteMfWatchlist,
   type MfScreenerGroup, type MfScreenerRow, type MfManagerDirectoryRow, type MfShortlistItem,
   type ScreeningPresetItem, type MutualFundItem, type MfScreenerFreshness, type MfClientOverlap,
-  type MfPortfolioCoverage,
+  type MfPortfolioCoverage, type MfWatchlist,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
+import AddToWatchlist from "@/components/backoffice/AddToWatchlist";
 import MfOnePager from "@/components/backoffice/MfOnePager";
 import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
@@ -183,7 +184,7 @@ function MfResearch() {
   const compare = useCompareSelection("mf");
   const rec = useRecommended();
 
-  const [tab, setTab] = useState<string>(() => (["research", "managers", "shortlist"].includes(params.get("tab") ?? "") ? (params.get("tab") as string) : "research"));
+  const [tab, setTab] = useState<string>(() => (["research", "managers", "shortlist", "watchlists"].includes(params.get("tab") ?? "") ? (params.get("tab") as string) : "research"));
   const [filters, setFilters] = useState<ResearchFilters>(() => initialFilters(params));
   const [query, setQuery] = useState(params.get("search") ?? "");
   const [sort, setSort] = useState("score");
@@ -229,6 +230,11 @@ function MfResearch() {
   const [mgrLoading, setMgrLoading] = useState(false);
   const [mgrDrawer, setMgrDrawer] = useState<{ manager_name: string } | null>(null);
 
+  // Watchlists tab state: same table, filters and columns as Research, restricted to one list.
+  const [watchlists, setWatchlists] = useState<MfWatchlist[]>([]);
+  const [wlId, setWlId] = useState(params.get("watchlist") ?? "");
+  const [wlName, setWlName] = useState("");
+  const [wlMsg, setWlMsg] = useState("");
   // Shortlist tab state
   const [shortlist, setShortlist] = useState<MfShortlistItem[]>([]);
   const [shortLoading, setShortLoading] = useState(false);
@@ -290,7 +296,7 @@ function MfResearch() {
   }, []);
 
   useEffect(() => {
-    if (tab !== "research") return;
+    if (tab !== "research" && !(tab === "watchlists" && wlId)) return;
     const ctl = new AbortController();
     setLoading(true);
     setError(null);
@@ -303,6 +309,7 @@ function MfResearch() {
       min_tenure: Number.isFinite(minTenure) ? minTenure : undefined,
       include_unknown: filters.includeUnknown, quartile: filters.quartile,
       quartile_period: filters.quartilePeriod, include_unavailable: filters.includeUnavailable,
+      watchlist: tab === "watchlists" ? wlId : undefined,
     }, ctl.signal)
       .then((res) => {
         // Stable secondary sort by fund name within the fetched page.
@@ -337,7 +344,7 @@ function MfResearch() {
       .finally(() => { if (!ctl.signal.aborted) setLoading(false); });
     return () => ctl.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fKey, sort, order, pageSize, offset, retry, tab]);
+  }, [fKey, sort, order, pageSize, offset, retry, tab, wlId]);
 
   useEffect(() => {
     if (tab !== "managers") return;
@@ -351,6 +358,18 @@ function MfResearch() {
       .catch(() => { setMgrRows([]); setMgrTotal(0); })
       .finally(() => setMgrLoading(false));
   }, [tab, mgrSearch, mgrMinTenure, mgrSort, mgrOrder, mgrPageSize, mgrOffset]);
+
+  const loadWatchlists = () =>
+    listMfWatchlists()
+      .then((ls) => { setWatchlists(ls); setWlId((id) => (ls.some((w) => w.id === id) ? id : ls[0]?.id ?? "")); })
+      .catch((e) => setWlMsg(e instanceof Error ? e.message : "Could not load watchlists."));
+  useEffect(() => {
+    if (tab !== "watchlists") return;
+    loadWatchlists();
+    // Live view: NAV/metric refreshes and adds from other fund pages show up without a reload.
+    const t = setInterval(() => { loadWatchlists(); setRetry((n) => n + 1); }, 60_000);
+    return () => clearInterval(t);
+  }, [tab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadShortlist = () => {
     setShortLoading(true);
@@ -489,6 +508,7 @@ function MfResearch() {
     min_tenure: Number.isFinite(csvMinTenure) ? csvMinTenure : undefined,
     quartile: filters.quartile, quartile_period: filters.quartilePeriod,
     include_unknown: filters.includeUnknown, include_unavailable: filters.includeUnavailable,
+    watchlist: tab === "watchlists" ? wlId : undefined,
   };
   const universeLine = `${filters.category.length ? filters.category.map(catLabel).join(", ") : "All categories"} · ${filters.plan.join(" + ")} plans`;
   const fresh = freshness ?? { nav_as_of: asOf ?? null };
@@ -572,7 +592,7 @@ function MfResearch() {
       <div className="pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">MF Research</h1>
         <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-          {universeLine} · {loading && tab === "research" ? "Loading…" : `${total.toLocaleString("en-IN")} funds`}
+          {universeLine} · {loading && tab !== "managers" && tab !== "shortlist" ? "Loading…" : `${total.toLocaleString("en-IN")} funds`}
         </p>
         <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
           Freshness — NAV: {fmtAsOf(fresh.nav_as_of)} · AUM: {fmtAsOf(fresh.aum_as_of)} · Expense ratio: {fmtAsOf(fresh.ter_as_of)} · Managers: {fmtAsOf(fresh.managers_as_of)} · Quartile (computed): {fmtAsOf(fresh.quartile_as_of)}
@@ -581,10 +601,10 @@ function MfResearch() {
       </div>
 
       <div role="tablist" className="flex flex-wrap gap-1">
-        {(["research", "managers", "shortlist"] as const).map((t) => (
+        {(["research", "watchlists", "managers", "shortlist"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
             className={`${tab === t ? "terminal-btn-accent" : "terminal-btn"} text-[13px] py-1 px-3 capitalize`}>
-            {t === "research" ? "Research" : t === "managers" ? "Managers" : "Shortlist"}
+            {t === "research" ? "Research" : t === "watchlists" ? "Watchlists" : t === "managers" ? "Managers" : "Shortlist"}
           </button>
         ))}
       </div>
@@ -604,7 +624,42 @@ function MfResearch() {
         </div>
       )}
 
-      {tab === "research" && (
+      {tab === "watchlists" && (
+        <div className="terminal-panel p-2.5 space-y-2">
+          <div className="flex flex-wrap items-center gap-2 text-[13px]">
+            {watchlists.map((w) => (
+              <button key={w.id} type="button" onClick={() => setWlId(w.id)}
+                className={`${wlId === w.id ? "terminal-btn-accent" : "terminal-btn"} text-[12px] py-1 px-3`}>
+                {w.name} <span className="tabular-nums opacity-70">({w.codes.length})</span>
+              </button>
+            ))}
+            <form className="flex gap-1" onSubmit={async (e) => {
+              e.preventDefault();
+              const n = wlName.trim();
+              if (!n) return;
+              try { setWlMsg(""); const w = await createMfWatchlist(n); setWlName(""); setWlId(w.id); await loadWatchlists(); }
+              catch (err) { setWlMsg(err instanceof Error ? err.message : "Could not create the watchlist."); }
+            }}>
+              <input aria-label="New watchlist name" value={wlName} maxLength={60} onChange={(e) => setWlName(e.target.value)}
+                placeholder="New watchlist…" className="terminal-input text-[12px] py-1 px-2 w-44" />
+              <button type="submit" className="terminal-btn text-[12px] py-1 px-3">Create</button>
+            </form>
+            {wlId && (
+              <button type="button" className="terminal-btn text-[12px] py-1 px-3 ml-auto"
+                onClick={async () => {
+                  const w = watchlists.find((x) => x.id === wlId);
+                  if (!w || !window.confirm(`Delete watchlist "${w.name}"? The funds themselves are not affected.`)) return;
+                  try { await deleteMfWatchlist(wlId); setWlId(""); await loadWatchlists(); }
+                  catch (err) { setWlMsg(err instanceof Error ? err.message : "Could not delete the watchlist."); }
+                }}>Delete this watchlist</button>
+            )}
+          </div>
+          {wlMsg && <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{wlMsg}</div>}
+          {!wlId && <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Create a watchlist, then add funds from any fund page or from the Research tab (☆ Watchlist). Everything below (filters, quartile and FSR rankings, scores, all columns, CSV) works on the selected list and refreshes every minute.</div>}
+        </div>
+      )}
+
+      {(tab === "research" || (tab === "watchlists" && wlId)) && (
         <>
           <div className="terminal-panel p-2.5 space-y-3">
             <div ref={universeRef} className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-4 space-y-3">
@@ -1027,7 +1082,8 @@ function MfResearch() {
                         })}
                         <td className="text-right whitespace-nowrap">
                           <button type="button" className="terminal-btn text-[11px] py-0.5 px-2 mr-1" onClick={() => setOnePager(r)}>One-pager</button>
-                          <button type="button" className="terminal-btn text-[11px] py-0.5 px-2" onClick={() => addToShortlist(r.code, shortDisplayName(r.name))}>Add to shortlist</button>
+                          <AddToWatchlist code={r.code} onChange={() => { if (tab === "watchlists") { loadWatchlists(); setRetry((n) => n + 1); } }} />
+                          <button type="button" className="terminal-btn text-[11px] py-0.5 px-2 ml-1" onClick={() => addToShortlist(r.code, shortDisplayName(r.name))}>Add to shortlist</button>
                         </td>
                       </tr>
                     );

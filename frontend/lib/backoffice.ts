@@ -1533,6 +1533,8 @@ export interface MfScreenerQuery {
   quartile?: number[];
   quartile_period?: string;
   include_unavailable?: boolean;
+  /** Restrict to one of the staff member's watchlists (by id). */
+  watchlist?: string;
 }
 
 export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
@@ -1543,6 +1545,7 @@ export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
   if (o.recommended) q.set("recommended", "true");
   (o.amc ?? []).forEach((a) => q.append("amc", a));
   if (o.sector) q.set("sector", o.sector);
+  if (o.watchlist) q.set("watchlist", o.watchlist);
   if (o.manager) q.set("manager", o.manager);
   if (o.min_tenure != null) q.set("min_tenure", String(o.min_tenure));
   if (o.include_unknown === false) q.set("include_unknown", "false");
@@ -1952,3 +1955,25 @@ export const mfDetailPath = (code: string, item?: MutualFundItem & { fh_status?:
 /** Same-category, same-plan funds ranked by 3Y CAGR (fractions, like the public peers route). */
 export const getMfPeers = async (code: string, signal?: AbortSignal): Promise<FundPeers> =>
   boFetch<FundPeers>(`/api/backoffice/mutual-funds/${encodeURIComponent(code)}/peers`, { signal });
+
+/* ---- MF Research watchlists: staff-private named lists, screened with the same filters as Research ---- */
+
+export interface MfWatchlist { id: string; name: string; codes: string[] }
+
+export const listMfWatchlists = async (): Promise<MfWatchlist[]> =>
+  arr((await boFetch<Json>("/api/backoffice/mf-research/watchlists")).data) as unknown as MfWatchlist[];
+
+export const createMfWatchlist = async (name: string): Promise<MfWatchlist> =>
+  boFetch<MfWatchlist>("/api/backoffice/mf-research/watchlists", { method: "POST", body: JSON.stringify({ name }) });
+
+export const deleteMfWatchlist = async (id: string): Promise<void> => {
+  await boFetch<Json>(`/api/backoffice/mf-research/watchlists/${encodeURIComponent(id)}`, { method: "DELETE" });
+};
+
+export const setMfWatchlistFund = async (id: string, schemeCode: string, present: boolean): Promise<void> => {
+  const base = `/api/backoffice/mf-research/watchlists/${encodeURIComponent(id)}/funds`;
+  await boFetch<Json>(present ? base : `${base}/${encodeURIComponent(schemeCode)}`, {
+    method: present ? "POST" : "DELETE",
+    ...(present ? { body: JSON.stringify({ scheme_code: schemeCode }) } : {}),
+  });
+};

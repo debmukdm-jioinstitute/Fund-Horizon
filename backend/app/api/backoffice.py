@@ -20,6 +20,7 @@ import pandas as pd
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse, RedirectResponse
 
+from app.ai.client import call_llm
 from app.api.serialize import clean
 from pydantic import BaseModel, Field
 
@@ -1155,6 +1156,103 @@ def backoffice_resolve_holding(
     if not resolved:
         raise HTTPException(404, "Scheme not found in active dataset.")
     return clean(resolved)
+
+
+class AskAiRequest(BaseModel):
+    code: str = Field(max_length=32)
+    weight_pct: float | None = Field(None, ge=0, le=100)
+
+
+_ASK_AI_SYSTEM = (
+    "You are a senior mutual-fund research analyst helping an AMFI-registered distributor's staff review a client holding. "
+    "You are given the fund's data and a live market snapshot collected by Fund Horizon (index levels, volatility, yields, "
+    "FX, FII/DII flows, latest headlines, each with its date). Judge the current market phase from that snapshot, combined "
+    "with durable principles: valuation versus earnings growth, interest-rate and credit cycles, how this category behaves in "
+    "upturns, downturns and sideways markets, drawdown and recovery, concentration and position size, costs, manager tenure, "
+    "tax and lock-in rules. Use only numbers present in the data or snapshot, never invent one; if the snapshot is missing "
+    "or stale, say so. Reply with one JSON object and nothing else."
+)
+_ASK_AI_STANCES = {"Buy", "Hold", "Sell"}
+
+
+def _ask_ai_json(text: str) -> dict[str, Any] | None:
+    start, end = text.find("{"), text.rfind("}")
+    if start < 0 or end <= start:
+        return None
+    try:
+        out = json.loads(text[start : end + 1])
+    except ValueError:
+        return None
+    if not isinstance(out, dict) or out.get("stance") not in _ASK_AI_STANCES:
+        return None
+    for k in ("reasons", "market_context", "risks"):  # models vary the shape; the UI expects list[str] / str
+        v = out.get(k)
+        out[k] = [str(i) for i in (v if isinstance(v, list) else [v] if v else [])][:6]
+    for k in ("summary", "what_would_change_view"):
+        v = out.get(k)
+        out[k] = " ".join(map(str, v)) if isinstance(v, list) else (str(v) if v else "")
+    c = out.get("confidence")
+    out["confidence"] = c if c in ("Low", "Medium", "High") else ("Low" if isinstance(c, (int, float)) and c < 40 else "High" if isinstance(c, (int, float)) and c >= 70 else "Medium")
+    return out
+
+
+def _market_snapshot() -> dict[str, Any]:
+    """Compact live market context from Fund Horizon's own collectors (indices, VIX, yields, FX, flows, headlines)."""
+    try:
+        o = _SERVICE.get_market_overview()
+        news = [
+            {"date": (n.get("published_at") or "")[:10], "source": n.get("source_name"), "title": n.get("title")}
+            for n in _REPO.list_news(limit=30) if n.get("category") != "regulator"
+        ][:8]
+        return {
+            "collected_at": o.get("generated_at"), "indices": o.get("indices"), "volatility": o.get("volatility"),
+            "yields": o.get("yields"), "usd_inr": (o.get("fx") or {}).get("rates", {}).get("FX:USDINR"),
+            "fii_dii_flows_inr_cr": o.get("flows"), "nifty_pcr_oi": (o.get("derivatives") or {}).get("pcr_oi"),
+            "latest_headlines": news,
+        }
+    except Exception:
+        logging.getLogger(__name__).exception("Ask AI market snapshot failed")
+        return {}
+
+
+@router.post("/mutual-funds/ask-ai")
+def backoffice_ask_ai(staff: Annotated[dict, Depends(require_staff)], body: AskAiRequest):
+    """Staff-only AI second opinion (Buy/Hold/Sell + reasons) for one matched fund. Facts come from the scored frame by
+    scheme code, never from client-supplied text, so a crafted PDF name cannot steer the prompt."""
+    frame = _fh_frame()
+    match = frame[frame["code"].astype(str) == body.code]
+    if match.empty:
+        raise HTTPException(404, "Scheme not found in active dataset.")
+    r = match.iloc[0]
+    facts = {
+        "scheme": str(r["name"]), "category": str(r.get("cat_label") or r.get("cat")), "plan": str(r["plan"]),
+        "nav_date": str(r.get("nav_date")), "fh_score_out_of_100": _round_or_none(r.get("fh_score")),
+        "fh_rating_out_of_5": _round_or_none(r.get("fh_rating")), "fh_signal": str(r.get("fh_signal")),
+        "cagr_3y_pct": _round_or_none(r.get("cagr_3y")), "outperformance_1y_vs_peers_pp": _round_or_none(r.get("out_1y")),
+        "outperformance_3y_vs_peers_pp": _round_or_none(r.get("out_3y")), "sharpe_3y": _round_or_none(r.get("sharpe_3y")),
+        "sortino_3y": _round_or_none(r.get("sortino_3y")),
+        "manager_tenure_years": _round_or_none(r.get("manager_tenure_years")), "expense_ratio_pct": _round_or_none(r.get("ter")),
+        "share_of_client_portfolio_pct": body.weight_pct,
+    }
+    prompt = (
+        f"Today is {datetime.now(UTC).date().isoformat()}. Fund data (None = not recorded):\n{json.dumps(facts)}\n\n"
+        f"Live market snapshot:\n{json.dumps(_market_snapshot(), default=str)}\n\n"
+        "Give a Buy, Hold or Sell stance for this holding. Weigh the data against the market cycle and the portfolio weight. "
+        'JSON keys: "stance" (Buy|Hold|Sell), "confidence" (Low|Medium|High), "summary" (2 sentences), '
+        '"reasons" (3-5 short strings), "market_context" (2-3 strings citing the snapshot figures and dates), '
+        '"risks" (2-4 strings), "what_would_change_view" (1 sentence).'
+    )
+    text, _ = call_llm(prompt, system_prompt=_ASK_AI_SYSTEM, only="deepseek", max_tokens=4000, timeout=90)
+    if not text:
+        raise HTTPException(503, "AI analysis is unavailable right now. Try again shortly.")
+    parsed = _ask_ai_json(text)
+    if not parsed:
+        raise HTTPException(502, "AI returned an unreadable answer. Try again.")
+    parsed["disclaimer"] = (
+        "AI-generated second opinion for staff review, based on Fund Horizon's latest collected market data. "
+        "Not investment advice; verify before acting on a client's portfolio."
+    )
+    return parsed
 
 
 # ---------------------------------------------------------------------------

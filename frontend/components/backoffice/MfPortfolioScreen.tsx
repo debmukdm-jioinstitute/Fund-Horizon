@@ -7,6 +7,8 @@ import InfoTip from "@/components/InfoTip";
 import {
   screenPortfolioPdf,
   resolvePortfolioHolding,
+  askAiAboutFund,
+  type AskAiResult,
   type PortfolioHolding,
   type PortfolioScreenResponse,
   type PortfolioHoldingCandidate,
@@ -38,6 +40,18 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [resolvingId, setResolvingId] = useState<string | null>(null);
+  const [ai, setAi] = useState<Record<string, { loading: boolean; error?: string; result?: AskAiResult }>>({});
+
+  const askAi = async (h: PortfolioHolding) => {
+    if (!h.amfi_code) return;
+    setAi((m) => ({ ...m, [h.id]: { loading: true } }));
+    try {
+      const result = await askAiAboutFund(h.amfi_code, h.portfolio_weight_pct);
+      setAi((m) => ({ ...m, [h.id]: { loading: false, result } }));
+    } catch (e) {
+      setAi((m) => ({ ...m, [h.id]: { loading: false, error: e instanceof Error ? e.message : "AI analysis failed" } }));
+    }
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -606,6 +620,16 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                               Fund detail →
                             </Link>
                           )}
+                          {h.amfi_code && (
+                            <button
+                              type="button"
+                              onClick={() => askAi(h)}
+                              disabled={ai[h.id]?.loading}
+                              className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#0176D3] px-3 py-1 text-[12px] font-semibold text-white hover:bg-[#014486] disabled:opacity-60"
+                            >
+                              {ai[h.id]?.loading ? "Thinking…" : ai[h.id]?.result ? "Ask AI again" : "Ask AI"}
+                            </button>
+                          )}
                         </td>
                       </tr>
 
@@ -758,6 +782,47 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                                 </div>
                               )}
                             </div>
+                          </td>
+                        </tr>
+                      )}
+                      {(ai[h.id]?.result || ai[h.id]?.error) && (
+                        <tr className="bg-[#F8FAFC] dark:bg-[#131B26]">
+                          <td colSpan={9} className="p-4 border-t border-dotted border-[#E5E5E5] dark:border-[#2B3644]">
+                            {ai[h.id]?.error ? (
+                              <div className="text-[13px] text-[#BA0517] dark:text-[#FF8A8A]">{ai[h.id]?.error}</div>
+                            ) : (
+                              ai[h.id]?.result && (
+                                <div className="max-w-4xl space-y-2 text-[13px] text-[#181818] dark:text-[#EDF2F7]">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[11.5px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">AI view</span>
+                                    <span className="rounded-full border border-[#0176D3] px-2.5 py-0.5 text-[12px] font-bold text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF]">
+                                      {ai[h.id]!.result!.stance}
+                                      {ai[h.id]!.result!.confidence ? ` · ${ai[h.id]!.result!.confidence} confidence` : ""}
+                                    </span>
+                                  </div>
+                                  {ai[h.id]!.result!.summary && <p>{ai[h.id]!.result!.summary}</p>}
+                                  {([["Reasons", ai[h.id]!.result!.reasons], ["Market context", ai[h.id]!.result!.market_context], ["Risks", ai[h.id]!.result!.risks]] as const).map(
+                                    ([title, items]) =>
+                                      items && items.length > 0 ? (
+                                        <div key={title}>
+                                          <div className="text-[11.5px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">{title}</div>
+                                          <ul className="list-disc pl-5">
+                                            {items.map((t, i) => (
+                                              <li key={i}>{t}</li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      ) : null,
+                                  )}
+                                  {ai[h.id]!.result!.what_would_change_view && (
+                                    <p>
+                                      <b>What would change this view:</b> {ai[h.id]!.result!.what_would_change_view}
+                                    </p>
+                                  )}
+                                  <p className="text-[11.5px] text-[#706E6B] dark:text-[#A8B4C4]">{ai[h.id]!.result!.disclaimer}</p>
+                                </div>
+                              )
+                            )}
                           </td>
                         </tr>
                       )}

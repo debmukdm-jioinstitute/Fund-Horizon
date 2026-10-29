@@ -2057,3 +2057,28 @@ export async function resolvePortfolioHolding(payload: {
   }
   return res.json();
 }
+
+export interface AskAiResult {
+  stance: "Buy" | "Hold" | "Sell";
+  confidence?: string;
+  summary?: string;
+  reasons?: string[];
+  market_context?: string[];
+  risks?: string[];
+  what_would_change_view?: string;
+  disclaimer: string;
+}
+
+export async function askAiAboutFund(code: string, weightPct?: number | null): Promise<AskAiResult> {
+  const res = await fetch(resolveApiUrl(`${API_URL}/api/backoffice/mutual-funds/ask-ai`), {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "sec-fetch-site": "same-origin" },
+    body: JSON.stringify({ code, weight_pct: weightPct ?? null }),
+    credentials: "include",
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => null);
+    throw new Error(typeof err?.detail === "string" ? err.detail : `AI analysis failed (${res.status})`);
+  }
+  return res.json();
+}

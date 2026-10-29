@@ -199,3 +199,27 @@ def test_explain_is_live_and_matches_table(client):
     perf = client.get(f"/api/backoffice/mutual-funds/screener/explain?code={row['code']}&metric=perf").json()
     assert perf["points"] == row["perf"] and len(perf["parts"]) == 3
     assert client.get("/api/backoffice/mutual-funds/screener/explain?code=nope&metric=perf").status_code == 404
+
+
+def test_ask_ai_returns_parsed_stance_and_disclaimer(client, monkeypatch):
+    _login_staff(client, _create_staff())
+    code = client.get("/api/backoffice/mutual-funds/screener?limit=1").json()["data"][0]["code"]
+    monkeypatch.setenv("FH_MOCK_LLM_RESPONSE", 'x {"stance":"Hold","confidence":"Low","reasons":["a"]} y')
+    r = client.post("/api/backoffice/mutual-funds/ask-ai", json={"code": code, "weight_pct": 5})
+    assert r.status_code == 200 and r.json()["stance"] == "Hold" and "Not investment advice" in r.json()["disclaimer"]
+    monkeypatch.setenv("FH_MOCK_LLM_RESPONSE", "no json here")
+    assert client.post("/api/backoffice/mutual-funds/ask-ai", json={"code": code}).status_code == 502
+    assert client.post("/api/backoffice/mutual-funds/ask-ai", json={"code": "nope"}).status_code == 404
+
+
+def test_ask_ai_requires_staff(client):
+    client.cookies.clear()
+    assert client.post("/api/backoffice/mutual-funds/ask-ai", json={"code": "1"}).status_code in (401, 403)
+
+
+def test_ask_ai_json_normalises_model_shapes():
+    from app.api.backoffice import _ask_ai_json
+
+    out = _ask_ai_json('{"stance":"Sell","confidence":30,"reasons":"one","what_would_change_view":["a","b"]}')
+    assert out["confidence"] == "Low" and out["reasons"] == ["one"] and out["what_would_change_view"] == "a b"
+    assert _ask_ai_json('{"stance":"Maybe"}') is None

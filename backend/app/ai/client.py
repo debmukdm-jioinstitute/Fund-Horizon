@@ -37,17 +37,21 @@ PROVIDER_URLS = {
 def call_llm(
     prompt: str,
     system_prompt: str | None = None,
+    only: str | None = None,
+    max_tokens: int | None = None,
+    timeout: int | None = None,
 ) -> tuple[str | None, str | None]:
     """Attempt completion across configured providers in priority order.
 
     Returns (response_text, provider_name_used) or (None, None) if all fail.
+    `only` restricts to one provider; `max_tokens`/`timeout` override the yaml settings (reasoning models need more of both).
     """
     config = load_ai_config()
     providers = config.get("providers", [])
     settings = config.get("settings", {})
-    timeout = settings.get("timeout_seconds", 15)
+    timeout = timeout or settings.get("timeout_seconds", 15)
     temperature = settings.get("temperature", 0.1)
-    max_tokens = settings.get("max_tokens", 800)
+    max_tokens = max_tokens or settings.get("max_tokens", 800)
 
     if not system_prompt:
         system_prompt = config.get("system_prompt", "")
@@ -64,6 +68,8 @@ def call_llm(
 
     for p in providers:
         name = p.get("name", "unknown")
+        if only and name != only:
+            continue
         raw_model = p.get("model", "")
         # strip provider prefix if present (e.g. groq/llama-3.1-8b-instant -> llama-3.1-8b-instant)
         model = raw_model.split("/", 1)[1] if "/" in raw_model and not raw_model.startswith("openrouter/") else raw_model

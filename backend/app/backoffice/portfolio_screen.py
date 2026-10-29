@@ -136,7 +136,9 @@ def extract_raw_holdings(parsed_cas: dict[str, Any]) -> list[dict[str, Any]]:
 def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], str | None]:
     """Universal extractor: identifies mutual fund holdings and valuation figures from any text statement."""
     holdings: list[dict[str, Any]] = []
-    lines = [l.strip() for l in full_text.splitlines() if l.strip()]
+    # Replace non-printable ASCII / control characters that some PDF generators use for hyphens
+    normalized_text = full_text.replace("\x02", "-").replace("\x00", "")
+    lines = [l.strip() for l in normalized_text.splitlines() if l.strip()]
 
     # Extract overall statement / valuation date if present
     statement_date = None
@@ -147,9 +149,21 @@ def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], s
     amc_keywords = [
         "mirae", "hdfc", "kotak", "icici", "sbi", "nippon", "axis", "uti", "bandhan", "tata",
         "dsp", "franklin", "parag parikh", "motilal", "canara", "quant", "invesco", "sundaram",
-        "hsbc", "pgim", "edelweiss", "whiteoak", "mahindra", "bajaj", "samco", "navi", "ppfas",
+        "hsbc", "pgim", "edelweiss", "whiteoak", "woc", "mahindra", "bajaj", "samco", "navi", "ppfas",
         "baroda", "union", "quantum", "jm", "groww", "helios", "zerodha", "360 one", "aditya birla",
-        "absl", "franklin templeton", "taurus", "iti", "trust", "shriram",
+        "absl", "franklin templeton", "taurus", "iti", "trust", "trustmf", "shriram",
+    ]
+
+    # Non-holding header / footer / disclaimer noise
+    ignore_terms = [
+        "about us", "sebi reg", "amfi-registered", "distributor arn", "arn -", "arn-", "arn:",
+        "wealth india", "disclaimer", "create new portfolio", "grand total", "sub total",
+        "total portfolio", "include zero", "fundsindia portfolio", "external portfolio",
+        "systematic plans", "invested value", "current value", "prev. day", "ann. ret.",
+        "scheme name / folio", "monthly sip", "capital gains", "portfolio deep dive",
+        "invested current gains", "click here to read our full disclaimer",
+        "investments are subject", "mutual fund investments are subject", "nav/nav date",
+        "report as on", "statement as of", "total ₹", "total -", "total -₹",
     ]
 
     isin_pattern = re.compile(r"\b(INF[A-Z0-9]{9})\b")
@@ -163,29 +177,56 @@ def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], s
         except ValueError:
             return None
 
+    def is_noise(text_line: str) -> bool:
+        ll = text_line.lower()
+        if any(ign in ll for ign in ignore_terms):
+            return True
+        if text_line.startswith("http") or text_line.startswith("www."):
+            return True
+        if re.search(r"\b(?:arn\s*[-:]?\s*\d+|sebi\s*reg|inz\d+)\b", ll):
+            return True
+        return False
+
     def is_scheme_candidate(line: str) -> bool:
-        ll = line.lower()
-        if any(skip in ll for skip in ["grand total", "sub total", "report as on", "nav/nav date", "scheme name |", "disclaimer", "investments are subject"]):
+        if is_noise(line):
             return False
+        ll = line.lower()
         has_amc = any(amc in ll for amc in amc_keywords)
         has_mf_word = any(w in ll for w in ["fund", "growth", "idcw", "dividend", "plan", "cap", "index", "opportunities", "bluechip", "elss", "equity", "debt", "hybrid", "advantage", "arbitrage", "liquid"])
         has_pipe_holding = "|" in line and (has_amc or has_mf_word)
-        return has_pipe_holding or (has_amc and has_mf_word)
+        return has_pipe_holding or (has_amc and has_mf_word) or has_amc
 
     i = 0
     while i < len(lines):
         line = lines[i]
+        if is_noise(line):
+            i += 1
+            continue
+
         if is_scheme_candidate(line):
-            scheme_name = line
+            # Check for multi-line scheme name continuation (e.g. 'Helios Small Cap' followed by 'Fund-Reg(G)')
+            scheme_parts = [line]
+            j = i + 1
+            while j < min(len(lines), i + 4):
+                nxt = lines[j]
+                if is_noise(nxt) or "₹" in nxt or re.match(r"^\d{2}[-/]\d{2}[-/]\d{4}", nxt):
+                    break
+                if any(w in nxt.lower() for w in ["fund", "growth", "idcw", "reg", "dir", "plan", "saver", "cap", "tax", "and mid"]):
+                    scheme_parts.append(nxt)
+                    j += 1
+                else:
+                    break
+
+            scheme_name = " ".join(scheme_parts)
             folio = None
             isin = None
 
-            isin_m = isin_pattern.search(line)
+            isin_m = isin_pattern.search(scheme_name)
             if isin_m:
                 isin = isin_m.group(1)
 
-            if "|" in line:
-                parts = [p.strip() for p in line.split("|")]
+            if "|" in scheme_name:
+                parts = [p.strip() for p in scheme_name.split("|")]
                 scheme_name = parts[0]
                 if len(parts) > 1 and re.match(r"^[\d/\-_A-Za-z]+$", parts[1]) and not any(k in parts[1].lower() for k in ["folio", "scheme", "units", "nav", "plan"]):
                     folio = parts[1]
@@ -195,25 +236,14 @@ def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], s
             cur_val = None
             val_date = None
 
-            # If line itself is a full table row: Scheme | Folio | Units | NAV | Current Value
-            if "|" in line and len(line.split("|")) >= 4:
-                parts = [p.strip() for p in line.split("|")]
-                start_idx = 2 if len(parts) > 2 and re.match(r"^[\d/\-_A-Za-z]+$", parts[1]) and "." not in parts[1] else 1
-                for pt in parts[start_idx:]:
-                    val = parse_num(pt)
-                    if val is not None:
-                        if "." in pt and len(pt.split(".")[1]) >= 3 and units is None:
-                            units = val
-                        elif nav is None and 1 <= val <= 5000 and len(pt.split(".")[1]) <= 2:
-                            nav = val
-                        elif cur_val is None:
-                            cur_val = val
-
             # Look ahead in subsequent lines for NAV, date, units, values
-            j = i + 1
-            while j < min(len(lines), i + 7):
-                subline = lines[j]
-                if is_scheme_candidate(subline) or "grand total" in subline.lower() or "total portfolio" in subline.lower():
+            k = j
+            while k < min(len(lines), j + 6):
+                subline = lines[k]
+                if is_noise(subline):
+                    k += 1
+                    continue
+                if is_scheme_candidate(subline) and not ("₹" in subline):
                     break
 
                 # Row with date, units, invested amount, current value
@@ -240,22 +270,24 @@ def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], s
                     elif len(rupees) == 1 and cur_val is None:
                         cur_val = parse_num(rupees[0])
 
-                j += 1
+                k += 1
 
             if cur_val is None and units is not None and nav is not None and nav > 0:
                 cur_val = round(units * nav, 2)
 
-            holdings.append({
-                "raw_name": scheme_name,
-                "folio": folio,
-                "isin": isin,
-                "amfi_code": None,
-                "units": units,
-                "statement_nav": nav,
-                "statement_value": cur_val,
-                "valuation_date": val_date or statement_date,
-            })
-            i = j
+            # Only append if we found an actual financial holding with non-zero investment/current value or units
+            if cur_val or units or nav:
+                holdings.append({
+                    "raw_name": scheme_name,
+                    "folio": folio,
+                    "isin": isin,
+                    "amfi_code": None,
+                    "units": units,
+                    "statement_nav": nav,
+                    "statement_value": cur_val,
+                    "valuation_date": val_date or statement_date,
+                })
+            i = k
         else:
             i += 1
 

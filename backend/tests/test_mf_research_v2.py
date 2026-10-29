@@ -1,4 +1,4 @@
-"""MF Research V2 pure helpers: portfolio, index, consistency, managers, ops, client layer."""
+"""MF Research V2 pure helpers: portfolio, index, consistency, managers, ops."""
 
 from __future__ import annotations
 
@@ -7,20 +7,16 @@ import pytest
 
 from app.backoffice.mf_research_v2 import (
     calendar_year_returns,
-    client_overlap,
     co_managers_from_reference,
     compute_consistency,
     fund_overlap,
-    horizon_flag,
     index_metrics,
     manager_changes_from_reference,
     operations_from_reference,
     parse_ssd_date,
     portfolio_summary,
-    replacement_candidates,
     riskometer_level,
     sector_aggregation,
-    tax_notes_for_category,
 )
 from app.backoffice.screening.funnel import apply_funnel
 from app.backoffice.screening.quartiles import compute_category_quartiles
@@ -159,33 +155,6 @@ def test_operations_snapshot_and_history_flags():
     assert ops["history_unavailable"]["aum_history"]
     assert ops["history_unavailable"]["ter_history"]
     assert operations_from_reference(None)["available"] is False
-
-
-def test_client_overlap_tax_horizon_replacements():
-    candidate = {"code": "111", "cat": "flexi_cap", "amc": "HDFC", "score": 80, "ter": 1.0, "manager_tenure_years": 5.0}
-    holdings = [
-        {"scheme_code": "111", "scheme_name": "Same Fund", "category": "flexi_cap"},
-        {"scheme_code": "222", "scheme_name": "Other Flexi", "category": "flexi_cap"},
-        {"scheme_code": "333", "scheme_name": "Debt Fund", "category": "short_duration", "amc": "HDFC"},
-    ]
-    ov = client_overlap(candidate, holdings)
-    assert ov["already_held"] is True
-    assert len(ov["same_category_holdings"]) == 1
-    notes = tax_notes_for_category("elss")
-    assert any("3 years" in n for n in notes)
-    assert horizon_flag("elss", 2.0)["level"] == "warn"
-    assert horizon_flag("flexi_cap", 10.0)["level"] == "ok"
-    assert horizon_flag("flexi_cap", None)["level"] is None
-    frame = [
-        {"code": "444", "name": "Better", "plan": "Regular", "cat": "flexi_cap", "score": 90, "ter": 0.8,
-         "manager_name": "M", "manager_tenure_years": 8.0, "cagr_3y": 15.0},
-        {"code": "555", "name": "Worse TER", "plan": "Regular", "cat": "flexi_cap", "score": 95, "ter": 1.2,
-         "manager_name": "M", "manager_tenure_years": 9.0, "cagr_3y": 15.0},
-        {"code": "666", "name": "Other Cat", "plan": "Regular", "cat": "large_cap", "score": 99, "ter": 0.5,
-         "manager_name": "M", "manager_tenure_years": 9.0, "cagr_3y": 15.0},
-    ]
-    reps = replacement_candidates(candidate, frame)
-    assert [r["scheme_code"] for r in reps] == ["444"]  # strictly better on all three, same category
 
 
 def _funnel_row(**over):

@@ -1863,41 +1863,6 @@ export const getMfFundOverlap = async (
   return d as unknown as MfFundOverlap;
 };
 
-export interface MfClientOverlap {
-  scheme_code: string;
-  fund?: string | null;
-  category?: string | null;
-  plan?: string | null;
-  contact_id: string;
-  contact_name?: string | null;
-  holdings_count: number;
-  holdings: Record<string, unknown>[];
-  overlap?: {
-    already_held: boolean;
-    exact_holdings: Record<string, unknown>[];
-    same_category_holdings: Record<string, unknown>[];
-    same_amc_other_category_holdings: Record<string, unknown>[];
-    duplication_note?: string | null;
-  } | null;
-  horizon?: { level?: string | null; message?: string | null; reason?: string | null } | null;
-  suitability?: { level?: string | null; message?: string | null; gap?: number | null } | null;
-  tax_notes?: string[];
-  replacement_candidates?: Record<string, unknown>[];
-  crm_error?: string | null;
-  scope_note?: string | null;
-}
-
-export const getMfClientOverlap = async (o: {
-  scheme_code: string; contact_id: string; horizon_years?: number;
-}, signal?: AbortSignal): Promise<MfClientOverlap | null> => {
-  const q = new URLSearchParams({ scheme_code: o.scheme_code, contact_id: o.contact_id });
-  if (o.horizon_years != null) q.set("horizon_years", String(o.horizon_years));
-  const raw = await boFetch<Json>(`/api/backoffice/mf-research/client-overlap?${q.toString()}`, { signal });
-  const d = obj(raw.data);
-  if (Object.keys(d).length === 0) return null;
-  return d as unknown as MfClientOverlap;
-};
-
 export interface MfShortlistItem {
   id?: string | number;
   scheme_code: string;

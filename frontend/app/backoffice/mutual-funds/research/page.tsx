@@ -7,9 +7,9 @@ import { useRecommended } from "@/lib/recommended";
 import {
   getMfScreener, getScreeningMetrics, listScreeningPresets, saveScreeningPreset, deleteScreeningPreset,
   getMfManagers, listMfShortlist, addMfShortlist, removeMfShortlist, mfShortlistCsvUrl, mfScreenerCsvUrl,
-  getMfClientOverlap, getMfPortfolioCoverage, listMfWatchlists, createMfWatchlist, deleteMfWatchlist,
+  getMfPortfolioCoverage, listMfWatchlists, createMfWatchlist, deleteMfWatchlist,
   type MfScreenerGroup, type MfScreenerRow, type MfManagerDirectoryRow, type MfShortlistItem,
-  type ScreeningPresetItem, type MutualFundItem, type MfScreenerFreshness, type MfClientOverlap,
+  type ScreeningPresetItem, type MutualFundItem, type MfScreenerFreshness,
   type MfPortfolioCoverage, type MfWatchlist,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
@@ -239,13 +239,6 @@ function MfResearch() {
   const [shortlist, setShortlist] = useState<MfShortlistItem[]>([]);
   const [shortLoading, setShortLoading] = useState(false);
   const [shortMsg, setShortMsg] = useState("");
-  // Client check (read-only): shortlisted fund vs one client's CRM holdings.
-  const [clientContact, setClientContact] = useState("");
-  const [clientHorizon, setClientHorizon] = useState("");
-  const [clientFund, setClientFund] = useState("");
-  const [clientResult, setClientResult] = useState<MfClientOverlap | null>(null);
-  const [clientLoading, setClientLoading] = useState(false);
-  const [clientError, setClientError] = useState("");
 
   const synced = useRef(false);
   const fKey = JSON.stringify(filters);
@@ -1214,73 +1207,6 @@ function MfResearch() {
             <a href={mfShortlistCsvUrl()} download className="terminal-btn text-[12px] py-1 px-3 no-underline">Export CSV</a>
             <button type="button" className="terminal-btn text-[12px] py-1 px-3" onClick={loadShortlist}>Refresh</button>
             {shortMsg && <span className="text-[#706E6B] dark:text-[#A8B4C4]">{shortMsg}</span>}
-          </div>
-          <div className="terminal-panel p-2.5 space-y-2">
-            <div className="text-[12px] font-semibold">Client check — read-only: does a shortlisted fund duplicate what a client already holds?</div>
-            <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Nothing here changes client data, sends anything, or marks a pick. Enter a CRM contact id, pick a shortlisted fund, and optionally a goal horizon in years.</p>
-            <div className="flex flex-wrap items-center gap-2 text-[12px]">
-              <input type="text" value={clientContact} onChange={(e) => setClientContact(e.target.value)} placeholder="CRM contact id"
-                className="terminal-input py-1 px-2 max-w-[220px]" />
-              <select value={clientFund} onChange={(e) => setClientFund(e.target.value)} className="terminal-input py-1 px-2 max-w-[300px]">
-                <option value="">Pick a shortlisted fund…</option>
-                {shortlist.map((item) => (
-                  <option key={item.scheme_code} value={item.scheme_code}>{shortDisplayName(strOf(item.name ?? item.scheme_name) || item.scheme_code)}</option>
-                ))}
-              </select>
-              <label className="flex items-center gap-1.5">
-                Goal horizon (years)
-                <input type="number" inputMode="decimal" value={clientHorizon} onChange={(e) => setClientHorizon(e.target.value)} className="terminal-input w-20 py-1 px-2" />
-              </label>
-              <button type="button" className="terminal-btn-accent text-[12px] py-1 px-3" disabled={!clientContact.trim() || !clientFund || clientLoading}
-                onClick={async () => {
-                  setClientLoading(true); setClientError(""); setClientResult(null);
-                  try {
-                    const horizon = clientHorizon.trim() ? Number(clientHorizon) : undefined;
-                    const res = await getMfClientOverlap({
-                      scheme_code: clientFund, contact_id: clientContact.trim(),
-                      horizon_years: Number.isFinite(horizon) ? horizon : undefined,
-                    });
-                    if (!res) setClientError("No result returned.");
-                    else setClientResult(res);
-                  } catch (e) { setClientError(e instanceof Error ? e.message : "Could not run the client check."); }
-                  finally { setClientLoading(false); }
-                }}>
-                {clientLoading ? "Checking…" : "Check client overlap"}
-              </button>
-            </div>
-            {clientError && <p className="text-[12px] text-[#B42332] dark:text-[#FF7D86]">{clientError}</p>}
-            {clientResult && (
-              <div className="text-[12px] space-y-1.5">
-                <div><span className="font-medium">{clientResult.fund ?? clientResult.scheme_code}</span>
-                  {clientResult.contact_name ? ` · Client: ${clientResult.contact_name}` : ""} · Holdings on file: {clientResult.holdings_count}</div>
-                {clientResult.crm_error && <p className="text-[#706E6B] dark:text-[#A8B4C4]">{clientResult.crm_error}</p>}
-                {clientResult.overlap && <p>{clientResult.overlap.duplication_note}</p>}
-                {clientResult.overlap && clientResult.overlap.same_category_holdings.length > 0 && (
-                  <p className="text-[#706E6B] dark:text-[#A8B4C4]">Same-category holdings on file: {clientResult.overlap.same_category_holdings.map((h) => String(h.scheme_name ?? h.scheme_code)).join(", ")}</p>
-                )}
-                {clientResult.horizon?.level && <p>Horizon flag ({clientResult.horizon.level}): {clientResult.horizon.message ?? "No concern from the simple horizon rule."}</p>}
-                {clientResult.suitability && <p>Risk-profile flag ({clientResult.suitability.level}): {clientResult.suitability.message ?? "Within the client's recorded risk limit."}</p>}
-                {clientResult.replacement_candidates && clientResult.replacement_candidates.length > 0 && (
-                  <div>
-                    <div className="font-medium">Replacement candidates (same category, higher checklist score, lower expense ratio, longer manager tenure):</div>
-                    <ul className="list-disc ml-5">
-                      {clientResult.replacement_candidates.map((r) => (
-                        <li key={String(r.scheme_code)}>{String(r.fund)} · Score {String(r.score)} · TER {String(r.ter)}% · Manager {String(r.manager_name)} ({String(r.manager_tenure_years)} yrs)</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {clientResult.tax_notes && clientResult.tax_notes.length > 0 && (
-                  <div>
-                    <div className="font-medium">Tax notes (general information, not advice):</div>
-                    <ul className="list-disc ml-5 text-[#706E6B] dark:text-[#A8B4C4]">
-                      {clientResult.tax_notes.map((n, i) => <li key={i}>{n}</li>)}
-                    </ul>
-                  </div>
-                )}
-                {clientResult.scope_note && <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{clientResult.scope_note}</p>}
-              </div>
-            )}
           </div>
           <div className="terminal-panel overflow-hidden">
             <div className="overflow-x-auto">

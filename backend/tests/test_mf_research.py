@@ -256,28 +256,6 @@ def test_v2_portfolio_overlap_honest_unavailable(client):
     assert client.get("/api/backoffice/mutual-funds/portfolio-overlap?code_a=1&code_b=2").status_code in (401, 403)
 
 
-def test_v2_client_overlap_unknown_contact_and_no_writes(client):
-    _login_staff(client, _create_staff())
-    code = ITI_PAIR[0]
-    r = client.get(f"/api/backoffice/mf-research/client-overlap?scheme_code={code}&contact_id=does-not-exist")
-    # Either the CRM store answers 404 for an unknown contact, or it is
-    # unavailable in this deployment and the endpoint reports partial —
-    # in neither case may it invent holdings or write anything.
-    if r.status_code == 200:
-        d = r.json()["data"]
-        assert d["scope_note"] and d["tax_notes"]
-        assert d["replacement_candidates"] == [] or all(
-            x["score"] is not None for x in d["replacement_candidates"])
-        r2 = client.get(f"/api/backoffice/mf-research/client-overlap?scheme_code={code}&contact_id=does-not-exist")
-        assert r2.json() == r.json()
-    else:
-        assert r.status_code == 404
-    assert client.get("/api/backoffice/mutual-funds/screener?search=148535&limit=1").status_code == 200
-    client.cookies.clear()
-    assert client.get(
-        f"/api/backoffice/mf-research/client-overlap?scheme_code={code}&contact_id=x").status_code in (401, 403)
-
-
 def test_shortlist_add_without_reason_reads_back(client):
     """V1 live-check fix: the new in-page reason dialog posts with an empty reason,
     so the API must accept reason null and the entry must read back."""

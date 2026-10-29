@@ -347,10 +347,20 @@ def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "") -> tuple[lis
     if universal_holdings:
         return universal_holdings, st_date
 
-    # 3. If neither found holdings, distinguish scanned PDFs from non-MF PDFs
+    # 3. OCR fallback for scanned images / image-only PDFs lacking a text layer
     if len(full_text.strip()) < 100:
+        try:
+            from app.report.client_report import _ocr_lines, render_pages
+            ocr_text = "\n".join("\n".join(ls) for ls in map(_ocr_lines, render_pages(pdf_bytes)))
+            if ocr_text and len(ocr_text.strip()) >= 50:
+                ocr_holdings, ocr_date = extract_universal_from_text(ocr_text)
+                if ocr_holdings:
+                    return ocr_holdings, ocr_date
+        except Exception:
+            pass
+
         raise PortfolioPDFError(
-            "No readable text found in statement. If this is a scanned document or image PDF, please upload a digital statement with selectable text.",
+            "Scanned document detected but no mutual fund holdings could be identified via OCR. Please upload a clear digital statement or statement with selectable text.",
             code="scanned_or_unsupported",
             status_code=422,
         )

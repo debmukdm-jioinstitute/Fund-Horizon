@@ -272,7 +272,93 @@ export interface PmsStrategyItem {
   benchmark_name?: string;
   report_month?: string;
   is_fh_recommended?: boolean;
+  fh_score?: number | null;
+  fh_rating?: number | null;
+  fh_signal?: "Buy" | "Hold" | "Sell" | "Needs review";
+  fh_signal_reasons?: string[];
+  fh_status?: string;
+  missing_inputs?: string[];
 }
+
+export interface PmsMatrixItem {
+  ia_id: string;
+  strategy_name: string;
+  provider: string;
+  benchmark: string;
+  as_on?: string;
+  aum_crore?: number;
+  inception_date?: string;
+  fund_manager?: string;
+  monthly_history: boolean;
+  turnover_disclosed: boolean;
+  fees_disclosed: boolean;
+  public_factsheet: boolean;
+  score?: number | null;
+  rating?: number | null;
+  signal: "Buy" | "Hold" | "Sell" | "Needs review";
+  reasons: string[];
+  missing_inputs: string[];
+}
+
+export interface PmsAttributionResult {
+  status: string;
+  methodology: string;
+  portfolio_return: number;
+  benchmark_return: number;
+  active_return: number;
+  allocation_effect: number;
+  selection_effect: number;
+  interaction_effect: number;
+  sum_effects: number;
+  residual: number;
+  sectors: Array<{
+    sector: string;
+    portfolio_weight: number;
+    benchmark_weight: number;
+    portfolio_return: number;
+    benchmark_return: number;
+    allocation_effect: number;
+    selection_effect: number;
+    interaction_effect: number;
+    total_effect: number;
+  }>;
+}
+
+export interface PmsUploadResult {
+  status: string;
+  document: {
+    document_type: string;
+    strategy_name: string;
+    provider: string;
+    matched_ia_id?: string | null;
+    valuation_date?: string | null;
+    current_value?: number | null;
+    holdings_count: number;
+    holdings: Array<{ security: string; weight_pct: number; value?: number | null }>;
+  };
+  contributions: Array<{ security: string; sector: string; weight: number; return: number; contribution: number }>;
+  attribution?: PmsAttributionResult | null;
+}
+
+export const getPmsMatrix = async (): Promise<{ as_on?: string; data: PmsMatrixItem[] }> => {
+  return (await boFetch<{ as_on?: string; data: PmsMatrixItem[] }>("/api/backoffice/pms/matrix"));
+};
+
+export const uploadPmsDocument = async (file: File, password = ""): Promise<PmsUploadResult> => {
+  const form = new FormData();
+  form.append("file", file);
+  if (password) form.append("password", password);
+
+  const res = await fetch("/api/backoffice/pms/upload-document", {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error(err.message || err.detail || "Failed to parse PMS document.");
+  }
+  return res.json();
+};
 
 // Curated "FH Recommended" picks, identified by APMI strategy id. Only the flag is stored here:
 // every number shown for them comes from the live APMI feed.
@@ -752,6 +838,12 @@ const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
     return_since_inception_pct: ret(r.return_since_inception),
     benchmark_name: str(r.benchmark) ?? str(r.benchmark_name),
     report_month: str(r.as_on) ?? asOn,
+    fh_score: num(r.fh_score),
+    fh_rating: num(r.fh_rating),
+    fh_signal: (str(r.fh_signal) as PmsStrategyItem["fh_signal"]) ?? "Needs review",
+    fh_signal_reasons: Array.isArray(r.fh_signal_reasons) ? (r.fh_signal_reasons as string[]) : [],
+    fh_status: str(r.fh_status),
+    missing_inputs: Array.isArray(r.missing_inputs) ? (r.missing_inputs as string[]) : [],
   };
 };
 

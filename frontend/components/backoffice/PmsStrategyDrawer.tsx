@@ -172,6 +172,58 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
                 ⚠ {pmsReturnWarning(strategy)}
               </div>
             )}
+            {/* Screening Signal & Score Banner */}
+            <div className="terminal-panel p-3.5 space-y-2 bg-[#F8FAFC] dark:bg-[#131B26]">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
+                    FH Screening Signal:
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-bold ${
+                      strategy.fh_signal === "Buy"
+                        ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                        : strategy.fh_signal === "Hold"
+                        ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
+                        : strategy.fh_signal === "Sell"
+                        ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                        : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+                    }`}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                    {strategy.fh_signal || "Needs review"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[12px]">
+                  <span className="text-[#706E6B] dark:text-[#A8B4C4]">Score:</span>
+                  <span className="font-bold tabular-nums text-[#181818] dark:text-[#EDF2F7]">
+                    {strategy.fh_score != null ? `${strategy.fh_score} / 100` : "—"}
+                  </span>
+                  {strategy.fh_rating != null && (
+                    <span className="font-bold text-[#D97706]">
+                      ★ {strategy.fh_rating} / 5
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {strategy.fh_signal_reasons && strategy.fh_signal_reasons.length > 0 && (
+                <div className="space-y-1">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
+                    Evidence-Based Assessment
+                  </div>
+                  <ul className="space-y-0.5 text-[12px] text-[#344054] dark:text-[#D0D5DD]">
+                    {strategy.fh_signal_reasons.map((r, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <span className="text-[#0176D3] dark:text-[#1B96FF] mt-0.5">•</span>
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-2.5">
               <div className="terminal-panel p-3">

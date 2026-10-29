@@ -311,6 +311,21 @@ def backoffice_pms_strategies(
             ia = row.get("ia_id")
             if ia and cached_benchmarks.get(str(ia)):
                 row["benchmark"] = cached_benchmarks[str(ia)]
+        # Attach evidence-based PMS screening score, rating and Buy/Hold/Sell signal
+        try:
+            from app.backoffice.pms_screen import score_pms_strategy
+            res_eval = score_pms_strategy(row)
+            row["fh_score"] = res_eval["score"]
+            row["fh_rating"] = res_eval["rating"]
+            row["fh_signal"] = res_eval["signal"]
+            row["fh_signal_reasons"] = res_eval["reasons"]
+            row["fh_status"] = res_eval["status"]
+            row["missing_inputs"] = res_eval["missing_inputs"]
+        except Exception:
+            row["fh_score"] = None
+            row["fh_rating"] = None
+            row["fh_signal"] = "Needs review"
+            row["fh_signal_reasons"] = ["Screening policy evaluation deferred."]
     manual = [
         {
             "provider": m["provider"],
@@ -401,6 +416,20 @@ def backoffice_pms_strategy_detail(ia_id: str, staff: Annotated[dict, Depends(re
 
     detail, detail_error = _pms_detail(ia_id)
 
+    # Attach PMS screening evaluation to detail payload
+    screening = None
+    try:
+        from app.backoffice.pms_screen import score_pms_strategy
+        bench_override = None
+        if detail and detail.get("benchmark"):
+            bench_override = {"name": detail["benchmark"]}
+        eval_dict = dict(latest)
+        if detail and detail.get("benchmark"):
+            eval_dict["benchmark"] = detail["benchmark"]
+        screening = score_pms_strategy(eval_dict)
+    except Exception:
+        pass
+
     siblings = _REPO.list_provider_strategies(latest["provider"], latest["as_on"], ia_id)
     res = {
         "data": {
@@ -409,6 +438,7 @@ def backoffice_pms_strategy_detail(ia_id: str, staff: Annotated[dict, Depends(re
             "history": history,
             "detail": detail,
             "detail_error": detail_error,
+            "screening": screening,
             "siblings": siblings,
             "source_url": f"https://www.apmiindia.org/apmi/IaInsight.htm?IAID={ia_id}",
         },
@@ -433,6 +463,105 @@ def backoffice_pms_providers(staff: Annotated[dict, Depends(require_staff)]):
         "freshness": "current",
     }
     return with_meta(res, "apmi", as_on)
+
+
+@router.post("/pms/upload-document")
+async def backoffice_pms_upload_document(
+    staff: Annotated[dict, Depends(require_staff)],
+    file: UploadFile = File(...),
+    password: str = Form(""),
+):
+    """Staff upload of PMS factsheet, WealthSpectrum valuation, or attribution report.
+    Processed strictly in memory with no raw storage of client PDF or passwords.
+    """
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(400, "Uploaded document must be a PDF file.")
+
+    pdf_bytes = await file.read()
+    try:
+        from app.backoffice.pms_doc_parser import parse_pms_pdf_bytes, PmsDocumentError
+        parsed = parse_pms_pdf_bytes(pdf_bytes, password=password, filename=file.filename)
+    except PmsDocumentError as pe:
+        raise HTTPException(pe.status_code, {"error": pe.code, "message": pe.message}) from pe
+    finally:
+        del pdf_bytes
+        del password
+
+    # If document has holdings, compute portfolio contribution & sector attribution if possible
+    contributions = []
+    attribution = None
+    if parsed.get("holdings"):
+        from app.backoffice.analytics.attribution import calculate_portfolio_contribution
+        contributions = calculate_portfolio_contribution(parsed["holdings"])
+
+    return {
+        "status": "success",
+        "document": parsed,
+        "contributions": contributions,
+        "attribution": attribution,
+    }
+
+
+@router.post("/pms/attribution")
+def backoffice_pms_attribution(
+    staff: Annotated[dict, Depends(require_staff)],
+    body: dict[str, Any],
+):
+    """Benchmark-relative Brinson-Fachler attribution given portfolio and benchmark sector weights & returns."""
+    portfolio_sectors = body.get("portfolio_sectors") or []
+    benchmark_sectors = body.get("benchmark_sectors") or []
+    if not portfolio_sectors or not benchmark_sectors:
+        raise HTTPException(400, "Both portfolio_sectors and benchmark_sectors must be provided.")
+
+    from app.backoffice.analytics.attribution import calculate_brinson_fachler
+    res = calculate_brinson_fachler(portfolio_sectors, benchmark_sectors)
+    return res
+
+
+@router.get("/pms/matrix")
+def backoffice_pms_matrix(staff: Annotated[dict, Depends(require_staff)]):
+    """Data availability matrix across the 9 curated PMS strategies."""
+    from app.backoffice.pms_screen import NINE_PMS_STRATEGIES, score_pms_strategy
+    as_on = _REPO.latest_pms_as_on()
+    universe = _REPO.list_pms_universe_strategies(as_on)
+    strat_map = {str(s.get("ia_id")): s for s in universe if s.get("ia_id")}
+
+    matrix = []
+    for ia_id, info in NINE_PMS_STRATEGIES.items():
+        s = strat_map.get(ia_id) or {}
+        cached = _REPO.get_pms_strategy_detail_cache(ia_id)
+        detail = cached[0] if cached else {}
+        screen = score_pms_strategy(s) if s else None
+
+        has_1y = s.get("return_1y") is not None
+        has_3y = s.get("return_3y") is not None
+        has_history = has_1y and has_3y
+
+        matrix.append({
+            "ia_id": ia_id,
+            "strategy_name": info["name"],
+            "provider": info["provider"],
+            "benchmark": info["benchmark"],
+            "as_on": s.get("as_on") or as_on,
+            "aum_crore": s.get("aum_crore") or detail.get("aum_crore"),
+            "inception_date": detail.get("inception_date"),
+            "fund_manager": detail.get("fund_manager") or s.get("principal_officer"),
+            "monthly_history": has_history,
+            "turnover_disclosed": detail.get("turnover_1y") is not None,
+            "fees_disclosed": detail.get("fixed_fees") is not None or detail.get("variable_fees") is not None,
+            "public_factsheet": ia_id not in PMS_NO_PUBLIC_FACTSHEET,
+            "score": screen["score"] if screen else None,
+            "rating": screen["rating"] if screen else None,
+            "signal": screen["signal"] if screen else "Needs review",
+            "reasons": screen["reasons"] if screen else ["Strategy not in current snapshot"],
+            "missing_inputs": screen["missing_inputs"] if screen else ["APMI snapshot observation"],
+        })
+
+    return {
+        "as_on": as_on,
+        "strategies_count": len(matrix),
+        "data": matrix,
+    }
 
 
 @router.get("/pms/accounts")

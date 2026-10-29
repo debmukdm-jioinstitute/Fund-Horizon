@@ -19,6 +19,8 @@ import { formatCurrencyPaiseToINR, formatCrore, formatISTDate } from "@/lib/term
 import SignedValue from "@/components/terminal/SignedValue";
 import PmsStrategyDrawer from "@/components/backoffice/PmsStrategyDrawer";
 import PmsManagerDrawer from "@/components/backoffice/PmsManagerDrawer";
+import PmsDocumentModal from "@/components/backoffice/PmsDocumentModal";
+import PmsMatrixModal from "@/components/backoffice/PmsMatrixModal";
 import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
 import {
   approachesMatch,
@@ -137,6 +139,8 @@ function PmsTracker() {
   const [sortKey, setSortKey] = useState<SortKey>("aum");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(0);
+  const [docModalOpen, setDocModalOpen] = useState(false);
+  const [matrixModalOpen, setMatrixModalOpen] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -343,6 +347,24 @@ function PmsTracker() {
               >
                 <span className="text-[12px]">★</span>
                 <span>FH Recommended ({fhRecCount})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMatrixModalOpen(true)}
+                className="terminal-btn text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                title="View data availability & screening matrix for the 9 curated PMS strategies"
+              >
+                <span>📊 9 Strategies Matrix</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDocModalOpen(true)}
+                className="rounded-lg bg-[#0176D3] text-white px-3 py-1 text-[12px] font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-sm"
+                title="Upload client portfolio report, factsheet or WealthSpectrum PDF"
+              >
+                <span>Upload PMS Document</span>
               </button>
 
               <div className="relative">
@@ -566,6 +588,9 @@ function PmsTracker() {
                       <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
                       <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
                       <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
+                      <th className="text-center">FH Score / 100</th>
+                      <th className="text-center">FH Rating</th>
+                      <th>FH Signal</th>
                       <th>Benchmark</th>
                     </tr>
                   )}
@@ -721,6 +746,35 @@ function PmsTracker() {
                                 </td>
                                 <td className="text-right">
                                   <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
+                                </td>
+                                <td className="text-center font-bold tabular-nums">
+                                  {s.fh_score != null ? (
+                                    <span className="text-[#181818] dark:text-[#EDF2F7]">
+                                      {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
+                                    </span>
+                                  ) : (
+                                    <span className="text-[#98A2B3]">—</span>
+                                  )}
+                                </td>
+                                <td className="text-center font-bold text-[#D97706] text-[12px]">
+                                  {s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}
+                                </td>
+                                <td className="whitespace-nowrap">
+                                  <span
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                                      s.fh_signal === "Buy"
+                                        ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                                        : s.fh_signal === "Hold"
+                                        ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
+                                        : s.fh_signal === "Sell"
+                                        ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                                        : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+                                    }`}
+                                    title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
+                                  >
+                                    <span className="h-1 w-1 rounded-full bg-current" />
+                                    {s.fh_signal || "Needs review"}
+                                  </span>
                                 </td>
                                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{benchmark || "—"}</td>
                               </>
@@ -942,6 +996,19 @@ function PmsTracker() {
           setSelectedStrategy(st);
         }}
       />
+
+      {docModalOpen && (
+        <PmsDocumentModal
+          onClose={() => setDocModalOpen(false)}
+          onUploaded={() => {}}
+        />
+      )}
+
+      {matrixModalOpen && (
+        <PmsMatrixModal
+          onClose={() => setMatrixModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

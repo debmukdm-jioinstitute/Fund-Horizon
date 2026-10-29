@@ -45,3 +45,10 @@ deploy-speed work: build `deploy/api.Dockerfile` in GitHub Actions (layer cache)
 only `docker pull` and do the health-gated blue/green swap (~2-3 min). Keep the zero-downtime swap and auto-rollback;
 never add a hotfix path that skips the health check. Until then, batch backend changes into one push.
 Status: not built yet; the EC2-build flow in `deploy-api.yml` / `redeploy.sh` is still the live one.
+
+## Code style: ponytail (smallest complete change)
+
+Solve the whole problem with the least new code. Reuse existing helpers, then stdlib, then installed packages; never add a
+dependency for a few lines. No unasked abstractions, wrappers or options; deletion beats addition. Non-trivial logic gets
+a small test or self-check. Never cut security, trust-boundary validation or error handling. A shortcut with a known limit
+gets a one-line comment: `shortcut: <limit>, <when to upgrade>`. End replies with what was skipped or not checked.

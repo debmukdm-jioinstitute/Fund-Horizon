@@ -236,7 +236,14 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
   const identity = (
     <Section title="Identification & settlement">
       <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-[14px]">
-        {([["AMFI scheme code", code], ["ISIN (Growth)", blankDash(scheme.isin_growth)], ["ISIN (Dividend)", blankDash(scheme.isin_div)], ["Fund house", scheme.amc_name || "—"], ["Category", scheme.category || "—"]] as const).map(([k, v]) => (
+        {([
+          ["AMFI scheme code", code],
+          ["ISIN (Growth)", blankDash(scheme.isin_growth)],
+          ["ISIN (Dividend)", blankDash(scheme.isin_div)],
+          ["Fund house", scheme.amc_name || "—"],
+          ["Category", scheme.category || "—"],
+          ["Category benchmark", scheme.benchmark || row?.benchmark || "SEBI TRI Benchmark"],
+        ] as const).map(([k, v]) => (
           <React.Fragment key={k}><dt className={MUTED}>{k}</dt><dd className="font-medium">{v}</dd></React.Fragment>
         ))}
       </dl>
@@ -273,7 +280,7 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
         </div>
         {msg && <p className={`text-[12px] ${MUTED}`}>{msg}</p>}
         <div className="flex flex-wrap gap-1.5 text-[12px]">
-          {[scheme.category, classified.plan, classified.option, code].filter(Boolean).map((t) => <span key={String(t)} className="rounded-md bg-[#EEF1F5] dark:bg-[#202936] px-2.5 py-1">{t}</span>)}
+          {[scheme.category, scheme.benchmark || row?.benchmark, classified.plan, classified.option, code].filter(Boolean).map((t) => <span key={String(t)} className="rounded-md bg-[#EEF1F5] dark:bg-[#202936] px-2.5 py-1">{t}</span>)}
           <button type="button" onClick={() => rec.toggleMf(code, scheme.scheme_name)} title="Toggle FH Recommended" className={`rounded-md px-2.5 py-1 ${rec.isMfRecommended(code) ? "bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C]" : "bg-[#EEF1F5] dark:bg-[#202936]"}`}>★ {rec.isMfRecommended(code) ? "FH Recommended" : "Mark recommended"}</button>
           {isNavStale(scheme.nav_date) && <span className="rounded-md bg-[#FFF4D6] px-2.5 py-1 text-[#7A5600] dark:bg-[#3A2E0A] dark:text-[#FBBF24]">Stale NAV</span>}
         </div>

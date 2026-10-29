@@ -330,6 +330,43 @@ def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "") -> tuple[lis
     )
 
 
+def get_benchmark_for_fund(matched_row: dict[str, Any] | None, raw_name: str) -> str:
+    """Return logically correct SEBI category benchmark TRI for a given holding."""
+    if matched_row:
+        b = matched_row.get("benchmark") or matched_row.get("benchmark_name")
+        if b and str(b).strip() and str(b).lower() != "nan":
+            return str(b).strip()
+        cat = str(matched_row.get("cat") or "").lower().replace(" fund", "").replace(" ", "_")
+        try:
+            from app.config import load_sebi_benchmarks
+            benchmarks = load_sebi_benchmarks()
+            if cat in benchmarks and benchmarks[cat].get("name"):
+                return benchmarks[cat]["name"]
+        except Exception:
+            pass
+
+    rn = raw_name.lower()
+    if "large cap" in rn or "largecap" in rn:
+        return "NIFTY 50 TRI"
+    if "mid cap" in rn or "midcap" in rn:
+        return "NIFTY Midcap 150 TRI"
+    if "small cap" in rn or "smallcap" in rn:
+        return "NIFTY Smallcap 250 TRI"
+    if "flexi cap" in rn or "flexicap" in rn:
+        return "NIFTY 500 TRI"
+    if "multi cap" in rn or "multicap" in rn:
+        return "NIFTY 500 Multicap 50:25:25 TRI"
+    if "elss" in rn or "tax" in rn:
+        return "NIFTY 500 TRI"
+    if "arbitrage" in rn:
+        return "NIFTY 50 Arbitrage Index"
+    if "liquid" in rn:
+        return "CRISIL Liquid Fund Index"
+    if "hybrid" in rn or "advantage" in rn or "balanced" in rn:
+        return "CRISIL Hybrid 35+65 Aggressive Index"
+    return "NIFTY 500 TRI"
+
+
 def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFrame, statement_date: str | None = None) -> dict[str, Any]:
     """Match extracted holdings against the scored screener frame and compile screening signals."""
     # Build fast indexed lookups from frame
@@ -468,6 +505,7 @@ def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFra
                     "Check if the holding is an unlisted fund, closed-ended scheme, or new launch.",
                 ]
 
+        bench = get_benchmark_for_fund(matched_row, raw_name)
         results.append({
             "id": f"holding-{idx}",
             "raw_name": raw_name,
@@ -479,6 +517,7 @@ def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFra
             "plan": c_plan,
             "option": det_opt,
             "category": c_cat,
+            "benchmark": bench,
             "units": h.get("units"),
             "statement_nav": h.get("statement_nav"),
             "statement_value": st_val,
@@ -493,6 +532,7 @@ def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFra
             "candidates": candidates,
             "detail_path": f"/backoffice/mutual-funds/{c_code}" if c_code else None,
             "underlying_metrics": {
+                "benchmark": bench,
                 "sortino_3y": matched_row.get("sortino_3y") if matched_row else None,
                 "sharpe_3y": matched_row.get("sharpe_3y") if matched_row else None,
                 "out_3y": matched_row.get("out_3y") if matched_row else None,
@@ -558,6 +598,7 @@ def score_single_scheme_resolution(code: str, raw_name: str, statement_value: fl
             reasons = fh_score.generate_signal_reasons(r, signal)
 
     weight = round((statement_value / total_value * 100), 2) if statement_value and total_value and total_value > 0 else None
+    bench = get_benchmark_for_fund(r, raw_name)
 
     return {
         "amfi_code": str(r["code"]),
@@ -565,6 +606,7 @@ def score_single_scheme_resolution(code: str, raw_name: str, statement_value: fl
         "plan": r["plan"],
         "option": det_opt,
         "category": r.get("cat_label") or r.get("cat"),
+        "benchmark": bench,
         "statement_value": statement_value,
         "portfolio_weight_pct": weight,
         "data_as_of": r.get("nav_date"),
@@ -575,6 +617,7 @@ def score_single_scheme_resolution(code: str, raw_name: str, statement_value: fl
         "match_type": "manual_resolved",
         "detail_path": f"/backoffice/mutual-funds/{r['code']}",
         "underlying_metrics": {
+            "benchmark": bench,
             "sortino_3y": r.get("sortino_3y"),
             "sharpe_3y": r.get("sharpe_3y"),
             "out_3y": r.get("out_3y"),

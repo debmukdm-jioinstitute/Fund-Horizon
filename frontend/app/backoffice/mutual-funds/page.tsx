@@ -60,7 +60,7 @@ const COLUMNS: Record<Section, Col[]> = {
     pct("out_3y", "3Y"),
     pct("out_5y", "5Y"),
     { key: "fh_score", label: "FH score / 100", kind: "score" },
-    { key: "fh_rating", label: "FH rating", kind: "stars" },
+    { key: "fh_rating", label: "FH rating / 5★", kind: "stars" },
     { key: "fh_signal", label: "FH signal", kind: "signal", tip: "Internal Buy/Hold/Sell screening signal derived from score and star rating." },
     { key: "aum_cr", label: "AUM (\u20B9 Cr)", kind: "aum" },
     num("ter", "Expense (%)"),
@@ -704,8 +704,10 @@ function MutualFunds() {
                     </th>
                     {!hiddenCols.includes("cat_label") && (
                       <th rowSpan={2} className="whitespace-nowrap">
-                        Category{" "}
-                        <span className="text-[#706E6B] dark:text-[#A8B4C4]" title="The fund's category, e.g. Flexi Cap" aria-label="About Category">ⓘ</span>
+                        <div className="flex items-center gap-1">
+                          Category
+                          <InfoTip metric="benchmark" />
+                        </div>
                       </th>
                     )}
                     {visibleOutCols.length > 0 && (
@@ -928,6 +930,7 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
     return (
       <td {...click} title={fhTitle(row)} className={cls + "text-right whitespace-nowrap"}>
         <span className="font-medium tabular-nums">{typeof v === "number" ? v.toFixed(1) : "-"}</span>
+        <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]"> / 100</span>
         {FH_STATUS[String(row.fh_status)] && (
           <span className={`ml-1.5 align-middle rounded px-1 py-0.5 text-[9px] uppercase ${FH_STATUS[String(row.fh_status)][1]}`}>{FH_STATUS[String(row.fh_status)][0]}</span>
         )}
@@ -989,10 +992,12 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
   if (col.kind === "text" && summary)
     return (
       <td {...click} title="Click to see why" className={cls}>
-        <div className="flex items-center gap-1">
-          {String(v ?? "-")}
-          <span className="text-[#706E6B] dark:text-[#A8B4C4]" title={`Benchmark: ${String(row.benchmark ?? "-")}`} aria-label="About Category">ⓘ</span>
-        </div>
+        <div className="font-medium text-[#181818] dark:text-[#EDF2F7]">{String(v ?? "-")}</div>
+        {row.benchmark && (
+          <div className="text-[10px] text-[#0176D3] dark:text-[#1B96FF] truncate max-w-[170px]" title={`SEBI Benchmark: ${String(row.benchmark)}`}>
+            Bench: {String(row.benchmark)}
+          </div>
+        )}
       </td>
     );
   if (col.kind === "text")

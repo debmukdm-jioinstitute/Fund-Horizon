@@ -68,8 +68,13 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
       <section>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="text-[22px] font-semibold tabular-nums">{f(fh.score)}</span>
-          <span>/ 100</span>
-          <span>{fh.rating ? `${fh.rating}/5 rating` : "Not rated"}</span>
+          <span className="text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
+          <span className="font-semibold text-[#D97706]">{fh.rating ? `★ ${fh.rating} / 5 stars` : "Not rated"}</span>
+          {row?.benchmark && (
+            <span className="rounded bg-[#EEF1F5] dark:bg-[#202936] px-2 py-0.5 text-[11px] text-[#0176D3] dark:text-[#1B96FF]">
+              Bench: {row.benchmark}
+            </span>
+          )}
           {fh.signal && (
             <span
               className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-bold ${

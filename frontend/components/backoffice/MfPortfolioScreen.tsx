@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { AmcLogo } from "@/components/BrandLogo";
+import InfoTip from "@/components/InfoTip";
 import {
   screenPortfolioPdf,
   resolvePortfolioHolding,
@@ -421,7 +422,10 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                     Fund &amp; Scheme
                   </th>
                   <th className="py-3 px-3 font-bold text-[12px] uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
-                    Category / Plan
+                    <div className="flex items-center gap-1">
+                      Category / Plan
+                      <InfoTip metric="benchmark" />
+                    </div>
                   </th>
                   <th className="py-3 px-3 font-bold text-[12px] uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] text-right">
                     Statement Value
@@ -430,13 +434,22 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                     Weight
                   </th>
                   <th className="py-3 px-3 font-bold text-[12px] uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] text-center">
-                    FH Score
+                    <div className="flex items-center justify-center gap-1">
+                      FH Score / 100
+                      <InfoTip metric="fh_score" />
+                    </div>
                   </th>
                   <th className="py-3 px-3 font-bold text-[12px] uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] text-center">
-                    FH Rating
+                    <div className="flex items-center justify-center gap-1">
+                      FH Rating / 5★
+                      <InfoTip metric="fh_rating" />
+                    </div>
                   </th>
                   <th className="py-3 px-3 font-bold text-[12px] uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
-                    FH Signal
+                    <div className="flex items-center gap-1">
+                      FH Signal
+                      <InfoTip metric="fh_signal" />
+                    </div>
                   </th>
                   <th className="py-3 px-4 font-bold text-[12px] uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
                     Screening Evidence
@@ -498,6 +511,11 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                           <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
                             {h.plan || "—"} · {h.option || "Growth"}
                           </div>
+                          {h.benchmark && (
+                            <div className="text-[11px] text-[#0176D3] dark:text-[#1B96FF] mt-0.5 truncate max-w-[200px]" title={`SEBI Benchmark: ${h.benchmark}`}>
+                              Bench: {h.benchmark}
+                            </div>
+                          )}
                         </td>
 
                         {/* Statement Value */}
@@ -520,9 +538,12 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                         {/* FH Score */}
                         <td className="py-3.5 px-3 align-top text-center tabular-nums">
                           {h.fh_score != null ? (
-                            <span className="font-bold text-[14.5px] text-[#181818] dark:text-[#EDF2F7]">
-                              {Math.round(h.fh_score)}
-                            </span>
+                            <div className="inline-flex flex-col items-center">
+                              <span className="font-bold text-[14.5px] text-[#181818] dark:text-[#EDF2F7]">
+                                {Math.round(h.fh_score)}
+                                <span className="text-[11px] font-normal text-[#706E6B] dark:text-[#A8B4C4]"> / 100</span>
+                              </span>
+                            </div>
                           ) : (
                             <span className="text-[#98A2B3]">—</span>
                           )}
@@ -531,9 +552,14 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                         {/* FH Star Rating */}
                         <td className="py-3.5 px-3 align-top text-center">
                           {h.fh_rating != null ? (
-                            <span className="font-bold text-[#D97706] text-[13.5px]">
-                              {"★".repeat(Math.round(h.fh_rating))}
-                            </span>
+                            <div className="inline-flex flex-col items-center">
+                              <span className="font-bold text-[#D97706] text-[13.5px]">
+                                {"★".repeat(Math.round(h.fh_rating))}
+                              </span>
+                              <span className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4]">
+                                {Math.round(h.fh_rating)} / 5
+                              </span>
+                            </div>
                           ) : (
                             <span className="text-[#98A2B3]">—</span>
                           )}
@@ -598,6 +624,14 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                                   <span className="font-semibold text-[#181818] dark:text-[#EDF2F7]">
                                     {h.valuation_date || "Not recorded"}
                                   </span>
+                                  {h.benchmark && (
+                                    <span>
+                                      {" "}· Category Benchmark:{" "}
+                                      <span className="font-semibold text-[#0176D3] dark:text-[#1B96FF]">
+                                        {h.benchmark}
+                                      </span>
+                                    </span>
+                                  )}
                                 </div>
                                 <div>
                                   Screening metrics date:{" "}
@@ -610,50 +644,80 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                               {/* Underlying Metrics Grid */}
                               {h.underlying_metrics && (
                                 <div>
-                                  <div className="text-[11.5px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] mb-1.5">
-                                    Underlying Metric Contributions
+                                  <div className="text-[11.5px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4] mb-1.5 flex items-center gap-1.5">
+                                    <span>Underlying Metric Contributions &amp; Calculations</span>
                                   </div>
-                                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center text-[12.5px]">
+                                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-2 text-center text-[12.5px]">
                                     <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
-                                      <div className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">Sortino 3Y</div>
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>Sortino 3Y</span>
+                                        <InfoTip metric="sortino_3y" />
+                                      </div>
                                       <div className="font-bold text-[#181818] dark:text-[#EDF2F7]">
                                         {h.underlying_metrics.sortino_3y != null ? h.underlying_metrics.sortino_3y.toFixed(2) : "—"}
                                       </div>
                                     </div>
                                     <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
-                                      <div className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">Sharpe 3Y</div>
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>Sharpe 3Y</span>
+                                        <InfoTip metric="sharpe_3y" />
+                                      </div>
                                       <div className="font-bold text-[#181818] dark:text-[#EDF2F7]">
                                         {h.underlying_metrics.sharpe_3y != null ? h.underlying_metrics.sharpe_3y.toFixed(2) : "—"}
                                       </div>
                                     </div>
                                     <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
-                                      <div className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">3Y vs Category</div>
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>3Y vs Cat</span>
+                                        <InfoTip metric="out_3y" />
+                                      </div>
                                       <div className="font-bold text-[#181818] dark:text-[#EDF2F7]">
                                         {h.underlying_metrics.out_3y != null ? `${h.underlying_metrics.out_3y > 0 ? "+" : ""}${h.underlying_metrics.out_3y.toFixed(1)}%` : "—"}
                                       </div>
                                     </div>
                                     <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
-                                      <div className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">1Y vs Category</div>
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>1Y vs Cat</span>
+                                        <InfoTip metric="out_1y" />
+                                      </div>
                                       <div className="font-bold text-[#181818] dark:text-[#EDF2F7]">
                                         {h.underlying_metrics.out_1y != null ? `${h.underlying_metrics.out_1y > 0 ? "+" : ""}${h.underlying_metrics.out_1y.toFixed(1)}%` : "—"}
                                       </div>
                                     </div>
                                     <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
-                                      <div className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">3Y CAGR</div>
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>3Y CAGR</span>
+                                        <InfoTip metric="cagr_3y" />
+                                      </div>
                                       <div className="font-bold text-[#181818] dark:text-[#EDF2F7]">
                                         {h.underlying_metrics.cagr_3y != null ? `${h.underlying_metrics.cagr_3y.toFixed(1)}%` : "—"}
                                       </div>
                                     </div>
                                     <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
-                                      <div className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">Manager Tenure</div>
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>Tenure</span>
+                                        <InfoTip metric="manager_tenure" />
+                                      </div>
                                       <div className="font-bold text-[#181818] dark:text-[#EDF2F7]">
                                         {h.underlying_metrics.manager_tenure_years != null ? `${h.underlying_metrics.manager_tenure_years.toFixed(1)}y` : "—"}
                                       </div>
                                     </div>
                                     <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
-                                      <div className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">Expense Ratio</div>
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>Expense</span>
+                                        <InfoTip metric="ter" />
+                                      </div>
                                       <div className="font-bold text-[#181818] dark:text-[#EDF2F7]">
                                         {h.underlying_metrics.ter != null ? `${h.underlying_metrics.ter.toFixed(2)}%` : "—"}
+                                      </div>
+                                    </div>
+                                    <div className="rounded-lg bg-white dark:bg-[#171E27] p-2 border border-[#E5E5E5] dark:border-[#2B3644]">
+                                      <div className="flex items-center justify-center gap-1 text-[#706E6B] dark:text-[#A8B4C4] text-[11px]">
+                                        <span>Benchmark</span>
+                                        <InfoTip metric="benchmark" />
+                                      </div>
+                                      <div className="font-bold text-[11px] text-[#0176D3] dark:text-[#1B96FF] truncate" title={h.benchmark || "SEBI TRI"}>
+                                        {h.benchmark ? h.benchmark.replace(" Total Return Index", " TRI") : "SEBI TRI"}
                                       </div>
                                     </div>
                                   </div>

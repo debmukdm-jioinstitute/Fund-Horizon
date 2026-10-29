@@ -332,6 +332,7 @@ export interface MutualFundItem {
   amc_name?: string;
   category?: string;
   cat_key?: string; // screener category key, used to look up Advisorkhoj quartiles
+  benchmark?: string;
   plan?: string;
   option?: string;
   latest_nav?: number | string;
@@ -1513,6 +1514,7 @@ export interface PortfolioHolding {
   plan?: string | null;
   option?: string | null;
   category?: string | null;
+  benchmark?: string | null;
   units?: number | null;
   statement_nav?: number | null;
   statement_value?: number | null;
@@ -1527,6 +1529,7 @@ export interface PortfolioHolding {
   candidates?: PortfolioHoldingCandidate[];
   detail_path?: string | null;
   underlying_metrics?: {
+    benchmark?: string | null;
     sortino_3y?: number | null;
     sharpe_3y?: number | null;
     out_3y?: number | null;

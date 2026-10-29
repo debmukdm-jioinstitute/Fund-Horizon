@@ -1202,8 +1202,8 @@ def _market_snapshot() -> dict[str, Any]:
         o = _SERVICE.get_market_overview()
         news = [
             {"date": (n.get("published_at") or "")[:10], "source": n.get("source_name"), "title": n.get("title")}
-            for n in _REPO.list_news(limit=30) if n.get("category") != "regulator"
-        ][:8]
+            for n in _REPO.list_news(limit=8, category="markets")
+        ]
         return {
             "collected_at": o.get("generated_at"), "indices": o.get("indices"), "volatility": o.get("volatility"),
             "yields": o.get("yields"), "usd_inr": (o.get("fx") or {}).get("rates", {}).get("FX:USDINR"),

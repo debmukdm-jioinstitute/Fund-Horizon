@@ -41,7 +41,7 @@ TERM_PLANS: list[dict] = [
             "Premium-break option of up to 2 years",
             "Critical illness cover for 60 conditions",
         ],
-        "why_included": "Claim-settlement record within 0.02 pp of the leader; low complaint volume.",
+        "why_included": "Claim-settlement record within 0.02% of the leader; low complaint volume.",
         "insurer_key": "hdfc_life",
         "slug": "click-2-protect-super",
         "document_url": "https://www.hdfclife.com/term-insurance-plans/click-2-protect-super",

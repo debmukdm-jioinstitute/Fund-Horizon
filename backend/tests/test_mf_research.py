@@ -297,7 +297,7 @@ def test_research_csv_matches_json_rows_and_header(client):
     reader = csv.DictReader(io.StringIO(c.text))
     assert reader.fieldnames is not None
     for col in ("Scheme Code", "Fund Name", "Quartile 2Y (computed)", "Quartile Source",
-                "Capture Spread 3Y (pp)", "TER vs Category+Plan Median (pp)",
+                "Capture Spread 3Y (%)", "TER vs Category+Plan Median (%)",
                 "Fund Manager", "Manager Tenure (years)", "AUM Cr"):
         assert col in reader.fieldnames, reader.fieldnames
     rows = list(reader)

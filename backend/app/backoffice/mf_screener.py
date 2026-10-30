@@ -451,10 +451,10 @@ def to_csv(df: pd.DataFrame) -> str:
             ("treynor", "Treynor %"), ("vol", "Std Dev %"))},
         **{f"{k}_{y}y": f"{lbl} {y}Y" for y in _YEARS for k, lbl in (
             ("cap_up", "Up Capture %"), ("cap_down", "Down Capture %"), ("cap_ratio", "Capture Ratio"))},
-        **{f"cap_spread_{y}y": f"Capture Spread {y}Y (pp)" for y in _YEARS},
+        **{f"cap_spread_{y}y": f"Capture Spread {y}Y (%)" for y in _YEARS},
         **{f"quartile_{p}": f"Quartile {p.upper()} (computed)" for p in _QUARTILE_RET},
         "quartile_source": "Quartile Source",
-        "ter_gap_pp": "TER vs Category+Plan Median (pp)",
+        "ter_gap_pp": "TER vs Category+Plan Median (%)",
         "calmar_3y": "Calmar 3Y",
         "manager_name": "Fund Manager", "manager_start": "Manager Since",
         "manager_tenure_years": "Manager Tenure (years)",

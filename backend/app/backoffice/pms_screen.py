@@ -72,16 +72,16 @@ def score_pms_strategy(
         alpha_1y = ret_1y - b_1y
         if alpha_1y >= 10.0:
             bench_points += 20.0
-            reasons.append(f"1Y return ({ret_1y:.1f}%) outperforms {bench_name} ({b_1y:.1f}%) by +{alpha_1y:.1f}pp.")
+            reasons.append(f"1Y return ({ret_1y:.1f}%) outperforms {bench_name} ({b_1y:.1f}%) by ▲ {alpha_1y:.1f}%.")
         elif alpha_1y >= 0.0:
             bench_points += 14.0 + (alpha_1y / 10.0) * 6.0
-            reasons.append(f"1Y return ({ret_1y:.1f}%) beats {bench_name} by +{alpha_1y:.1f}pp.")
+            reasons.append(f"1Y return ({ret_1y:.1f}%) beats {bench_name} by ▲ {alpha_1y:.1f}%.")
         elif alpha_1y >= -5.0:
             bench_points += 8.0
-            reasons.append(f"1Y return ({ret_1y:.1f}%) trails {bench_name} ({b_1y:.1f}%) slightly ({alpha_1y:.1f}pp).")
+            reasons.append(f"1Y return ({ret_1y:.1f}%) trails {bench_name} ({b_1y:.1f}%) slightly (▼ {abs(alpha_1y):.1f}%).")
         else:
             bench_points += 3.0
-            reasons.append(f"1Y return ({ret_1y:.1f}%) lags {bench_name} ({b_1y:.1f}%) by {alpha_1y:.1f}pp.")
+            reasons.append(f"1Y return ({ret_1y:.1f}%) lags {bench_name} ({b_1y:.1f}%) by ▼ {abs(alpha_1y):.1f}%.")
     else:
         missing_inputs.append("1Y return vs benchmark")
 
@@ -89,16 +89,16 @@ def score_pms_strategy(
         alpha_3y = ret_3y - b_3y
         if alpha_3y >= 10.0:
             bench_points += 20.0
-            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) shows strong active outperformance (+{alpha_3y:.1f}pp vs benchmark).")
+            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) shows strong active outperformance (▲ {alpha_3y:.1f}% vs benchmark).")
         elif alpha_3y >= 0.0:
             bench_points += 14.0 + (alpha_3y / 10.0) * 6.0
-            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) exceeds {bench_name} ({b_3y:.1f}%) by +{alpha_3y:.1f}pp.")
+            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) exceeds {bench_name} ({b_3y:.1f}%) by ▲ {alpha_3y:.1f}%.")
         elif alpha_3y >= -5.0:
             bench_points += 8.0
-            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) trails {bench_name} ({b_3y:.1f}%) by {alpha_3y:.1f}pp.")
+            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) trails {bench_name} ({b_3y:.1f}%) by ▼ {abs(alpha_3y):.1f}%.")
         else:
             bench_points += 2.0
-            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) lags {bench_name} by {alpha_3y:.1f}pp.")
+            reasons.append(f"3Y CAGR ({ret_3y:.1f}%) lags {bench_name} by ▼ {abs(alpha_3y):.1f}%.")
     else:
         missing_inputs.append("3Y CAGR vs benchmark")
 

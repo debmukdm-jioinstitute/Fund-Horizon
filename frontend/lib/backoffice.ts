@@ -954,32 +954,32 @@ export function evaluatePmsScreening(
   const alpha1y = r1y - b1y;
   if (alpha1y >= 10) {
     benchPoints1y = 20;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) outperforms ${bench.name} (${b1y.toFixed(1)}%) by +${alpha1y.toFixed(1)}pp.`);
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) outperforms ${bench.name} (${b1y.toFixed(1)}%) by ▲ ${alpha1y.toFixed(1)}%.`);
   } else if (alpha1y >= 0) {
     benchPoints1y = 14 + (alpha1y / 10) * 6;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) beats ${bench.name} by +${alpha1y.toFixed(1)}pp.`);
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) beats ${bench.name} by ▲ ${alpha1y.toFixed(1)}%.`);
   } else if (alpha1y >= -5) {
     benchPoints1y = 8;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) trails ${bench.name} (${b1y.toFixed(1)}%) slightly (${alpha1y.toFixed(1)}pp).`);
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) trails ${bench.name} (${b1y.toFixed(1)}%) slightly (▼ ${Math.abs(alpha1y).toFixed(1)}%).`);
   } else {
     benchPoints1y = 3;
-    reasons.push(`1Y return (${r1y.toFixed(1)}%) lags ${bench.name} (${b1y.toFixed(1)}%) by ${alpha1y.toFixed(1)}pp.`);
+    reasons.push(`1Y return (${r1y.toFixed(1)}%) lags ${bench.name} (${b1y.toFixed(1)}%) by ▼ ${Math.abs(alpha1y).toFixed(1)}%.`);
   }
 
   let benchPoints3y = 0;
   const alpha3y = r3y - b3y;
   if (alpha3y >= 10) {
     benchPoints3y = 20;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) shows strong active outperformance (+${alpha3y.toFixed(1)}pp vs benchmark).`);
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) shows strong active outperformance (▲ ${alpha3y.toFixed(1)}% vs benchmark).`);
   } else if (alpha3y >= 0) {
     benchPoints3y = 14 + (alpha3y / 10) * 6;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) exceeds ${bench.name} (${b3y.toFixed(1)}%) by +${alpha3y.toFixed(1)}pp.`);
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) exceeds ${bench.name} (${b3y.toFixed(1)}%) by ▲ ${alpha3y.toFixed(1)}%.`);
   } else if (alpha3y >= -5) {
     benchPoints3y = 8;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) trails ${bench.name} (${b3y.toFixed(1)}%) by ${alpha3y.toFixed(1)}pp.`);
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) trails ${bench.name} (${b3y.toFixed(1)}%) by ▼ ${Math.abs(alpha3y).toFixed(1)}%.`);
   } else {
     benchPoints3y = 2;
-    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) lags ${bench.name} by ${alpha3y.toFixed(1)}pp.`);
+    reasons.push(`3Y CAGR (${r3y.toFixed(1)}%) lags ${bench.name} by ▼ ${Math.abs(alpha3y).toFixed(1)}%.`);
   }
   const totalBenchPoints = benchPoints1y + benchPoints3y;
 

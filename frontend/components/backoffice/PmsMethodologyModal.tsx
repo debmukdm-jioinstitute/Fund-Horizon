@@ -176,7 +176,7 @@ export default function PmsMethodologyModal({
                     <span>Bench: <SignedValue value={benchData.return_1y} unit="%" /></span>
                   </div>
                   <div className="mt-1 font-mono text-[11px] text-[#027A48] dark:text-[#75E1CE] font-bold">
-                    Alpha: {breakdown.alpha1y != null ? `${breakdown.alpha1y > 0 ? "+" : ""}${breakdown.alpha1y.toFixed(2)} pp` : "—"}
+                    Alpha: {breakdown.alpha1y != null ? `${breakdown.alpha1y > 0 ? "▲ " : breakdown.alpha1y < 0 ? "▼ " : ""}${Math.abs(breakdown.alpha1y).toFixed(2)}%` : "—"}
                   </div>
                   <div className="mt-1 text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4]">
                     Points Awarded: <strong className="text-[#181818] dark:text-[#EDF2F7]">{breakdown.benchPoints1y} / 20</strong>
@@ -190,7 +190,7 @@ export default function PmsMethodologyModal({
                     <span>Bench: <SignedValue value={benchData.return_3y} unit="%" /></span>
                   </div>
                   <div className="mt-1 font-mono text-[11px] text-[#027A48] dark:text-[#75E1CE] font-bold">
-                    Alpha: {breakdown.alpha3y != null ? `${breakdown.alpha3y > 0 ? "+" : ""}${breakdown.alpha3y.toFixed(2)} pp` : "—"}
+                    Alpha: {breakdown.alpha3y != null ? `${breakdown.alpha3y > 0 ? "▲ " : breakdown.alpha3y < 0 ? "▼ " : ""}${Math.abs(breakdown.alpha3y).toFixed(2)}%` : "—"}
                   </div>
                   <div className="mt-1 text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4]">
                     Points Awarded: <strong className="text-[#181818] dark:text-[#EDF2F7]">{breakdown.benchPoints3y} / 20</strong>

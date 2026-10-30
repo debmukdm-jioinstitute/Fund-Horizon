@@ -71,9 +71,9 @@ const ALL_COLUMNS: { key: string; label: string; sortable?: string; pct?: boolea
   { key: "max_dd_3y", label: "Max drawdown 3Y %", sortable: "max_dd_3y", pct: true },
   { key: "cap_up_3y", label: "Up capture 3Y %", sortable: "cap_up_3y", pct: true },
   { key: "cap_down_3y", label: "Down capture 3Y %", sortable: "cap_down_3y", pct: true },
-  { key: "cap_spread_3y", label: "Capture spread 3Y (pp)", sortable: "cap_spread_3y" },
+  { key: "cap_spread_3y", label: "Capture spread 3Y (%)", sortable: "cap_spread_3y" },
   { key: "calmar_3y", label: "Calmar 3Y", sortable: "calmar_3y" },
-  { key: "ter_gap_pp", label: "TER gap vs category + plan median (pp)", sortable: "ter_gap_pp" },
+  { key: "ter_gap_pp", label: "TER gap vs category + plan median (%)", sortable: "ter_gap_pp" },
   { key: "ter", label: "Expense ratio (TER) %", sortable: "ter", pct: true },
   { key: "aum_cr", label: "AUM (Rs cr)", sortable: "aum_cr", digits: 0 },
   { key: "history_years", label: "Fund age (years)", sortable: "history_years", digits: 1 },
@@ -508,7 +508,7 @@ function MfResearch() {
 
   // Slider bounds per range field, in the field's own units as the backend
   // applies them (returns/CAGR/alpha/volatility/drawdown in %, Sharpe/Sortino/
-  // beta unit-free, capture in %, spread and TER gap in pp, AUM in Rs cr).
+  // beta unit-free, capture in %, spread and TER gap in %, AUM in Rs cr).
   // Bounds come from the shipped dataset's spread (1st–99th percentile, with
   // headroom for outliers); a typed value outside the bounds still works in
   // the number box — the thumb only pins at the bound and never overwrites it.
@@ -823,7 +823,7 @@ function MfResearch() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 mt-2">
                 {rangeField(`cap_up_${filters.capturePeriod}`, `Up capture ${filters.capturePeriod.toUpperCase()} min %`)}
                 {rangeField(`cap_down_${filters.capturePeriod}`, `Down capture ${filters.capturePeriod.toUpperCase()} max %`)}
-                {rangeField(`cap_spread_${filters.capturePeriod}`, `Capture spread ${filters.capturePeriod.toUpperCase()} min (pp)`)}
+                {rangeField(`cap_spread_${filters.capturePeriod}`, `Capture spread ${filters.capturePeriod.toUpperCase()} min (%)`)}
               </div>
             </div>
 
@@ -831,7 +831,7 @@ function MfResearch() {
               <div className="text-[12px] font-semibold mb-1.5">Cost &amp; size — expense ratio, TER gap, AUM</div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                 {rangeField("ter", "Expense ratio (TER) %")}
-                {rangeField("ter_gap_pp", "TER gap vs category + plan median (pp)")}
+                {rangeField("ter_gap_pp", "TER gap vs category + plan median (%)")}
                 {rangeField("aum_cr", "AUM (Rs cr)")}
               </div>
               <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-1">TER gap = a fund&apos;s expense ratio minus the median expense ratio of its category + plan, in percentage points.</p>
@@ -1221,7 +1221,7 @@ function MfResearch() {
                     <th className="text-right">3Y CAGR %</th>
                     <th className="text-right">5Y CAGR %</th>
                     <th className="text-right">Sharpe 3Y</th>
-                    <th className="text-right">Capture spread 3Y (pp)</th>
+                    <th className="text-right">Capture spread 3Y (%)</th>
                     <th className="text-right">Quartile 2Y (computed)</th>
                     <th>Manager + tenure</th>
                     <th>Reason</th>

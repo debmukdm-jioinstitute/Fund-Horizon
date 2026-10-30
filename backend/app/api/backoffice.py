@@ -1955,7 +1955,7 @@ class MfResearchShortlistCreateRequest(BaseModel):
 _SHORTLIST_CSV_COLS = [
     ("scheme_code", "Scheme Code"), ("fund", "Fund Name"), ("category", "Category"), ("plan", "Plan"),
     ("score", "FH Checklist Score"), ("ret_1y", "1Y %"), ("cagr_3y", "3Y CAGR %"), ("cagr_5y", "5Y CAGR %"),
-    ("sharpe_3y", "Sharpe 3Y"), ("cap_spread_3y", "Capture Spread 3Y (pp)"), ("quartile_2y", "Quartile 2Y (computed)"),
+    ("sharpe_3y", "Sharpe 3Y"), ("cap_spread_3y", "Capture Spread 3Y (%)"), ("quartile_2y", "Quartile 2Y (computed)"),
     ("manager_name", "Fund Manager"), ("manager_tenure_years", "Manager Tenure (years)"),
     ("roll_win_pct", "Rolling 1Y Win % (vs category median, precomputed)"),
     ("cal_win_pct", "Calendar Win % (vs category median, precomputed)"),

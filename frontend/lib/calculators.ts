@@ -201,11 +201,11 @@ const rebalancing: Calculator = {
     const act = maxDev >= v.thr || (base === 0);
     const rows = names.map((n, k) => {
       const target = (total * tgt[k]) / 100, delta = target - cur[k];
-      return [n, base > 0 ? `${((cur[k] / base) * 100).toFixed(1)}%` : "—", `${tgt[k]}%`, `${dev[k] >= 0 ? "+" : ""}${dev[k].toFixed(1)} pp`, act ? target : cur[k], act ? delta : 0];
+      return [n, base > 0 ? `${((cur[k] / base) * 100).toFixed(1)}%` : "—", `${tgt[k]}%`, `${dev[k] >= 0 ? "▲" : "▼"} ${Math.abs(dev[k]).toFixed(1)}%`, act ? target : cur[k], act ? delta : 0];
     });
-    const m: Metric[] = [{ label: "Largest deviation", value: maxDev, kind: "text", text: `${maxDev.toFixed(1)} pp`, hero: true }];
+    const m: Metric[] = [{ label: "Largest deviation", value: maxDev, kind: "text", text: `${maxDev.toFixed(1)}%`, hero: true }];
     for (let k = 0; k < 3; k++) { const d = rows[k][5] as number; m.push({ label: names[k], value: d, kind: "text", text: d === 0 ? "No action" : `${d > 0 ? "Invest" : "Redeem"} ₹${Math.abs(Math.round(d)).toLocaleString("en-IN")}` }); }
-    return { ok: true, metrics: m, notes: act ? ["Fresh money is applied to under-weight classes first; only the remainder needs redemptions."] : [`Largest deviation ${maxDev.toFixed(1)} pp is under your ${v.thr} pp threshold — no rebalancing needed.`],
+    return { ok: true, metrics: m, notes: act ? ["Fresh money is applied to under-weight classes first; only the remainder needs redemptions."] : [`Largest deviation ${maxDev.toFixed(1)}% is under your ${v.thr}% threshold — no rebalancing needed.`],
       steps: ["Total after fresh money = current holdings + fresh investment.", "Target value = total × target %; action = target value − current value (positive = invest, negative = redeem).", "Actions apply only when any class drifts by at least the threshold."],
       table: { cols: ["Asset", "Current %", "Target %", "Deviation", "Value after", "Invest (+) / redeem (−)"], rows, money: [4, 5] } };
   },

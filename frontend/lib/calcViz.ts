@@ -66,6 +66,12 @@ export function vizFor(id: string, v: Values, r: Outcome): Viz {
     }
     case "term-insurance":
       return { donutTitle: "What the cover is made of", donut: [{ name: "Income replacement", value: metric(r, "Income replacement") }, { name: "Unfunded goals", value: metric(r, "Unfunded goals") }, { name: "Net debts", value: metric(r, "Net debts (loans − assets)") }] };
+    case "pms-fees": {
+      const fees = rows.map((row) => Number(row[3]) + Number(row[4]) + Number(row[7]));
+      const perf = rows.map((row) => Number(row[6]));
+      return { donutTitle: "Where the gross value went", donut: [{ name: "Value after fees", value: hero(r) }, { name: "Fixed fees and expenses", value: fees.reduce((a, b) => a + b, 0) }, { name: "Performance fees", value: perf.reduce((a, b) => a + b, 0) }],
+        bars: { title: "Fees each year", cats: rows.map((row) => `Year ${row[0]}`), names: ["Fixed fee, expenses and GST", "Performance fee"], a: fees, b: perf } };
+    }
     default:
       return {};
   }

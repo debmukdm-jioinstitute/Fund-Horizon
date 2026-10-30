@@ -13,11 +13,16 @@ export interface Table { cols: string[]; rows: (string | number)[][]; money?: nu
 export interface Outcome { ok: true; metrics: Metric[]; steps: string[]; notes?: string[]; table?: Table }
 export interface Failure { ok: false; errors: string[] }
 export type Result = Outcome | Failure;
+export interface Preset { label: string; hint: string; vals: Values }
 export interface Calculator {
   id: string; category: Category; title: string; blurb: string; fields: Field[];
+  /** One-click starting points; every field stays editable afterwards. */
+  presets?: Preset[];
+  /** Extra checks on the raw form (blank optional fields are still undefined here). */
+  precheck?: (raw: Partial<Record<string, number>>) => string[];
   run: (v: Values) => Result;
 }
-export type Category = "SIP & investing" | "Goal planning" | "Withdrawals" | "Returns & allocation" | "Protection";
+export type Category = "SIP & investing" | "Goal planning" | "Withdrawals" | "Returns & allocation" | "PMS" | "Protection";
 
 const MAX_AMT = 1e12; // ₹1 lakh crore; above this float error and meaning both vanish
 const err = (...errors: string[]): Failure => ({ ok: false, errors });
@@ -230,12 +235,99 @@ const termInsurance: Calculator = {
   },
 };
 
-export const CALCULATORS: Calculator[] = [sipValue, stepUpSip, sipToTarget, financialGoal, education, retirement, swp, swpTax, cagr, rebalancing, termInsurance];
-export const CATEGORIES: Category[] = ["SIP & investing", "Goal planning", "Withdrawals", "Returns & allocation", "Protection"];
+// PMS fees. Convention matches the common published PMS fee illustration (checked against Geojit's calculator to the rupee):
+//  - returns accrue evenly through the year, so the fixed fee is charged on the average of opening and closing value;
+//  - other expenses are charged on the average of opening value and closing value after the fixed fee;
+//  - performance fee = share × gain above the hurdle, where the hurdle compounds on the high-water mark
+//    (initial investment in year 1), and the high-water mark is the highest value reached before performance fee;
+//  - GST, when entered, is added on all fees and deducted from the portfolio.
+export const PMS_MAX_YEARS = 10;
+const PMS_DEFAULT_RETURNS = [12, -3, 18, 12, 12, 12, 12, 12, 12, 12];
+
+export interface PmsYear { year: number; ret: number; open: number; fixed: number; other: number; hwm: number; perf: number; gst: number; fees: number; close: number }
+/** Year-by-year PMS fee engine. Rates in percent. Pure. */
+export function pmsFees(p: { invest: number; fixedPct: number; perfPct: number; hurdlePct: number; otherPct: number; gstPct: number; returns: number[] }): PmsYear[] {
+  let nav = p.invest, hwm = p.invest;
+  return p.returns.map((r, i) => {
+    const open = nav, gross = open * (1 + r / 100);
+    const fixed = (p.fixedPct / 100) * (open + gross) / 2;
+    const afterFixed = gross - fixed;
+    const other = (p.otherPct / 100) * (open + afterFixed) / 2;
+    const pre = afterFixed - other;
+    const perf = (p.perfPct / 100) * Math.max(0, pre - hwm * (1 + p.hurdlePct / 100));
+    hwm = Math.max(hwm, pre);
+    const gst = (p.gstPct / 100) * (fixed + other + perf);
+    nav = pre - perf - gst;
+    return { year: i + 1, ret: r, open, fixed, other, hwm, perf, gst, fees: fixed + other + perf + gst, close: nav };
+  });
+}
+
+const pmsCalc: Calculator = {
+  id: "pms-fees", category: "PMS", title: "PMS fees", blurb: "Fixed fee, performance fee above a hurdle, other expenses and the high-water mark, year by year.",
+  presets: [
+    { label: "Fixed fee only", hint: "3% fixed, no performance fee", vals: { fixedPct: 3, perfPct: 0, hurdlePct: 0 } },
+    { label: "Fixed + performance (10% hurdle)", hint: "1% fixed + 20% of gains above 10%", vals: { fixedPct: 1, perfPct: 20, hurdlePct: 10 } },
+    { label: "Fixed + performance (15% hurdle)", hint: "2% fixed + 20% of gains above 15%", vals: { fixedPct: 2, perfPct: 20, hurdlePct: 15 } },
+  ],
+  fields: [
+    amt("invest", "Initial investment", { min: 1, def: 5000000, hint: "SEBI minimum for PMS is ₹50 lakh." }),
+    rate("fixedPct", "Fixed (management) fee per year", 1, 10),
+    rate("perfPct", "Performance fee share", 20, 50, { hint: "Share of gains above the hurdle. Use 0 for a fixed-fee plan." }),
+    rate("hurdlePct", "Hurdle rate per year", 10, 50),
+    rate("otherPct", "Other expenses per year", 0.2, 5, { step: 0.05, hint: "Custody, fund accounting and similar; commonly capped at 0.50%." }),
+    rate("gstPct", "GST on fees", 0, 30, { optional: true, hint: "Leave 0 to show fees before GST (18% applies in practice)." }),
+    yrs("years", "Period of investment", PMS_MAX_YEARS, { def: 6 }),
+    ...PMS_DEFAULT_RETURNS.map((d, i) => ({ key: `r${i + 1}`, label: `Year ${i + 1} return`, unit: "%" as const, min: -100, max: 300, step: 0.1, def: d, optional: true,
+      hint: i === 0 ? "Gross portfolio return before fees. Only the years within the period are used." : undefined })),
+  ],
+  precheck: (raw) => {
+    const n = Math.round(raw.years ?? 0);
+    return Array.from({ length: n }, (_, i) => `r${i + 1}`).filter((k) => raw[k] === undefined || Number.isNaN(raw[k])).map((k) => `Year ${k.slice(1)} return: enter a value.`);
+  },
+  run: (v) => {
+    const n = Math.round(v.years);
+    const returns = Array.from({ length: n }, (_, i) => v[`r${i + 1}`]);
+    const rows = pmsFees({ invest: v.invest, fixedPct: v.fixedPct, perfPct: v.perfPct, hurdlePct: v.hurdlePct, otherPct: v.otherPct, gstPct: v.gstPct, returns });
+    const last = rows[rows.length - 1];
+    const grossEnd = returns.reduce((x, r) => x * (1 + r / 100), v.invest);
+    const fees = rows.reduce((s, r) => s + r.fees, 0);
+    const sum = (k: "fixed" | "other" | "perf" | "gst") => rows.reduce((s, r) => s + r[k], 0);
+    const cagr = (end: number) => ((end / v.invest) ** (1 / n) - 1) * 100;
+    const notes: string[] = [];
+    if (v.invest < 5000000) notes.push("The amount is below SEBI's ₹50 lakh PMS minimum; the result is for illustration only.");
+    if (v.otherPct > 0.5) notes.push("Other expenses above 0.50% are higher than PMS providers usually charge.");
+    return { ok: true, notes,
+      metrics: [
+        { label: "Value after all fees", value: last.close, kind: "inr", hero: true },
+        { label: "Total fees paid", value: fees, kind: "inr" },
+        { label: "Value with no fees", value: grossEnd, kind: "inr" },
+        { label: "Fixed fees", value: sum("fixed"), kind: "inr" },
+        { label: "Performance fees", value: sum("perf"), kind: "inr" },
+        { label: "Other expenses", value: sum("other"), kind: "inr" },
+        ...(v.gstPct > 0 ? [{ label: "GST", value: sum("gst"), kind: "inr" as const }] : []),
+        { label: "Yearly return after fees", value: cagr(last.close), kind: "pct" },
+        { label: "Yearly return before fees", value: cagr(grossEnd), kind: "pct" },
+      ],
+      steps: [
+        "Each year's gross value = opening value × (1 + that year's return). Returns are assumed to build up evenly through the year.",
+        "Fixed fee = fixed fee % × average of opening and gross closing value.",
+        "Other expenses = other expenses % × average of opening value and closing value after the fixed fee.",
+        "Performance fee = performance share % × the amount by which value (after fixed fee and expenses) beats the hurdle. The hurdle is the high-water mark grown by the hurdle rate; in year 1 the high-water mark is the investment.",
+        "The high-water mark then becomes the highest value reached so far before performance fee, so no performance fee is charged twice on the same gain.",
+        "GST, when entered, is charged on all fees. Closing value = value after fixed fee and expenses − performance fee − GST, and becomes next year's opening value.",
+        "Fees are shown as charged once a year. Real agreements may charge more often, on closing value, or with different hurdle rules; adjust the inputs to match the agreement.",
+      ],
+      table: { cols: ["Year", "Return", "Opening value", "Fixed fee", "Other expenses", "High-water mark", "Performance fee", "GST", "Total fees", "Closing value"],
+        rows: rows.map((r) => [r.year, `${r.ret}%`, r.open, r.fixed, r.other, r.hwm, r.perf, r.gst, r.fees, r.close]), money: [2, 3, 4, 5, 6, 7, 8, 9] } };
+  },
+};
+
+export const CALCULATORS: Calculator[] = [sipValue, stepUpSip, sipToTarget, financialGoal, education, retirement, swp, swpTax, cagr, rebalancing, pmsCalc, termInsurance];
+export const CATEGORIES: Category[] = ["SIP & investing", "Goal planning", "Withdrawals", "Returns & allocation", "PMS", "Protection"];
 
 /** Validates then runs. Blank optional fields count as 0 (or their default). */
 export function calculate(c: Calculator, raw: Partial<Record<string, number>>): Result {
-  const errors = validate(c.fields, raw);
+  const errors = [...validate(c.fields, raw), ...(c.precheck?.(raw) ?? [])];
   if (errors.length) return err(...errors);
   const v: Values = {};
   for (const f of c.fields) v[f.key] = raw[f.key] ?? 0;

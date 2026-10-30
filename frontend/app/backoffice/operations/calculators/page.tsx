@@ -63,7 +63,7 @@ export default function CalculatorsPage() {
           </ul>
         </div>
       )}
-      <div className="grid gap-4 lg:grid-cols-[250px_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[250px_minmax(0,1fr)]">
         <nav aria-label="Calculators" className={`${card} p-2 lg:self-start`}>
           {CATEGORIES.map((cat) => (
             <div key={cat} className="mb-1">
@@ -99,12 +99,26 @@ function CalcPanel({ calc, client, initial, onSaved }: { calc: Calculator; clien
   const reset = () => { setVals(defaults(calc)); setResult(null); setSnap(null); };
 
   return (
-    <section className="space-y-4" aria-labelledby="calc-title">
+    <section className="min-w-0 space-y-4" aria-labelledby="calc-title">
       <form onSubmit={run} noValidate className={`${card} p-5`}>
         <h2 id="calc-title" className={`text-lg font-bold ${ink}`}>{calc.title}</h2>
         <p className={`mb-4 text-[13.5px] ${muted}`}>{calc.blurb}</p>
+        {calc.presets && (
+          <div className="mb-4 grid gap-2 sm:grid-cols-3" role="group" aria-label="Fee plan presets">
+            {calc.presets.map((p) => {
+              const on = Object.entries(p.vals).every(([k, x]) => Number(vals[k]) === x);
+              return (
+                <button key={p.label} type="button" aria-pressed={on} onClick={() => setVals({ ...vals, ...Object.fromEntries(Object.entries(p.vals).map(([k, x]) => [k, String(x)])) })}
+                  className={`rounded-xl border px-3 py-2.5 text-left ${on ? "border-[#1A73E8] bg-[#E3EEFF] dark:bg-[#11304F]" : "border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]"}`}>
+                  <span className={`block text-[13px] font-semibold ${ink}`}>{p.label}</span>
+                  <span className={`block text-[12px] ${muted}`}>{p.hint}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
         <div className="grid gap-3.5 sm:grid-cols-2">
-          {calc.fields.map((f) => (
+          {calc.fields.filter((f) => !/^r\d+$/.test(f.key) || calc.id !== "pms-fees" || Number(f.key.slice(1)) <= Number(vals.years || 0)).map((f) => (
             <label key={f.key} className="block">
               <span className={`mb-1 block text-[12.5px] font-semibold ${ink}`}>{f.label}{f.optional && <span className={`font-normal ${muted}`}> (optional)</span>}</span>
               <span className="flex overflow-hidden rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] focus-within:border-[#006F64]">

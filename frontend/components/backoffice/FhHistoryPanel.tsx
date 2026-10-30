@@ -48,7 +48,7 @@ export function Comparison({ code }: { code: string }) {
   const facts: [string, string][] = [
     ["Benchmark", d.benchmark],
     ["Stand-in for the benchmark", d.benchmark_fund ? `${d.benchmark_fund}, the index fund that tracks it` : "Not available for this category"],
-    ["Similar funds", `${d.peer_universe.eligible} ${d.category.replace(/_/g, " ")} funds in the ${d.plan} plan, weighted equally, including this fund`],
+    ["Similar funds", `${d.peer_universe?.eligible ?? "n/a"} ${(d.category ?? "similar").replace(/_/g, " ")} funds${d.plan ? ` in the ${d.plan} plan` : ""}, weighted equally, including this fund`],
     ["Data as of", d.as_of ?? "n/a"],
   ];
   return (
@@ -81,14 +81,14 @@ export function Comparison({ code }: { code: string }) {
         <p className={`mt-4 text-[13px] leading-7 ${MUTED}`}>▲ means ahead and ▼ means behind. Periods up to one year show total return, and longer periods show yearly growth.</p>
       </div>
 
-      <div>
+      {(d.risk_comparison?.length ?? 0) > 0 && <div>
         <h4 className="mb-4 text-[16px] font-medium">Risk</h4>
         <div className={WRAP}>
           <table className="w-full min-w-[46rem] border-separate border-spacing-0 tabular-nums">
             <thead><tr className={`${HEAD} ${MUTED}`}>
               <th className={TH}>Measure</th><th className={TH}>This fund</th><th className={TH}>Benchmark</th><th className={TH}>Similar funds</th><th className={TH}>Against benchmark</th><th className={TH}>Against similar funds</th>
             </tr></thead>
-            <tbody>{d.risk_comparison.map((r, i) => (
+            <tbody>{(d.risk_comparison ?? []).map((r, i) => (
               <tr key={r.measure} className={i % 2 ? "bg-white/40 dark:bg-white/[0.03]" : ""}>
                 <td className={`${TD} font-medium`}>{r.measure}</td><td className={TD}>{f(r.fund)}</td><td className={TD}>{f(r.benchmark)}</td><td className={TD}>{f(r.category_average)}</td>
                 <td className={`${TD} font-medium ${ok(r.good_vs_benchmark)}`}>{mark(r.good_vs_benchmark)}</td><td className={`${TD} font-medium ${ok(r.good_vs_category)}`}>{mark(r.good_vs_category)}</td>
@@ -96,7 +96,7 @@ export function Comparison({ code }: { code: string }) {
           </table>
         </div>
         <p className={`mt-4 text-[13px] leading-7 ${MUTED}`}>✓ means the fund is better on that measure. Higher is better for Sharpe and Sortino, lower is better for volatility, and a smaller fall is better for Worst fall.</p>
-      </div>
+      </div>}
 
       <p className={`max-w-4xl text-[13px] leading-7 ${MUTED}`}>
         The benchmark figures come from the stand-in index fund, not the official total-return index, so they can lag slightly. The stand-in is a Direct plan, so Regular plans are measured against a lower-cost comparison.
@@ -197,7 +197,7 @@ export function History({ code }: { code: string }) {
             <>
               <table className="w-full tabular-nums"><thead><tr className={`bg-[#DCE9FF]/70 dark:bg-[#1A73E8]/20 text-left ${MUTED}`}><th className="px-5 py-3 font-medium">What</th><th className="px-5 py-3 font-medium">Then</th><th className="px-5 py-3 font-medium">Now</th><th className="px-5 py-3 font-medium">Change</th></tr></thead>
                 <tbody>{tn.rows.map((r) => <tr key={r.dimension} className="border-t border-white/70 dark:border-white/10"><td className="px-5 py-4">{r.dimension}</td><td className="px-5 py-4">{f(r.then)}</td><td className="px-5 py-4">{f(r.now)}</td><td className={`px-5 py-4 font-medium ${typeof r.change === "number" ? tone(r.change) : ""}`}>{f(r.change)}</td></tr>)}</tbody></table>
-              {tn.qualitative_events.map((e) => <p key={e.type}><strong className="font-medium">{e.type.replace("_", " ")}</strong> ({e.status}): {e.detail}. {e.explanation}</p>)}
+              {tn.qualitative_events.map((e) => <p key={e.type}><strong className="font-medium">{String(e.type).replace("_", " ")}</strong> ({e.status}): {e.detail}. {e.explanation}</p>)}
               <p className={MUTED}>{tn.missing_evidence.join(" ")}</p>
             </>
           )}

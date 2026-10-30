@@ -909,6 +909,7 @@ function MutualFunds() {
 
 const FH_STATUS: Record<string, [string, string]> = {
   auto: ["Auto", "bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C]"],
+  qualifies: ["Meets bar", "bg-[#DCE9FF] text-[#0B3D91]"],
   manual_include: ["Manual", "bg-[#2E844A] text-white"],
   manual_exclude: ["Excluded", "bg-[#B42332] text-white"],
   blocked: ["Review", "bg-[#E8A317] text-[#181818]"],

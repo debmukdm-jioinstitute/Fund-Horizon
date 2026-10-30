@@ -10,8 +10,8 @@
   --terminal-text-primary: #172033;
   --terminal-text-secondary: #536176;
   --terminal-border: #E4E9EF;
-  --terminal-accent: #006F64;
-  --terminal-accent-bg: #E7F5F2;
+  --terminal-accent: #1A73E8;
+  --terminal-accent-bg: #E3EEFF;
   --terminal-positive: #087744;
   --terminal-negative: #B42332;
   /* Tinted glass theme */
@@ -37,8 +37,8 @@ html.dark {
   --terminal-text-primary: #EDF2F7;
   --terminal-text-secondary: #A8B4C4;
   --terminal-border: #2B3644;
-  --terminal-accent: #75E1CE;
-  --terminal-accent-bg: #1A3034;
+  --terminal-accent: #8AB8FF;
+  --terminal-accent-bg: #11304F;
   --terminal-positive: #58D6A0;
   --terminal-negative: #FF7D86;
   --glass: rgba(18, 35, 58, 0.58);
@@ -310,7 +310,9 @@ html:not(.dark) [class~="bg-[#F7F9FB]"],
 html:not(.dark) [class~="bg-[#F2F4F7]"],
 html:not(.dark) [class~="bg-[#ECEBEA]"],
 html:not(.dark) [class~="bg-[#F8F9FA]"],
-html:not(.dark) [class~="bg-[#EEF1F5]"] { background-color: var(--glass-tint); }
+html:not(.dark) [class~="bg-[#EEF1F5]"],
+html:not(.dark) [class~="bg-[#F8FAFB]"] { background-color: var(--glass-tint); }
+html:not(.dark) [class~="hover:bg-[#F8FAFB]"]:hover { background-color: var(--glass-hover); }
 
 html:not(.dark) [class~="hover:bg-[#F3F3F3]"]:hover,
 html:not(.dark) [class~="hover:bg-[#F7F9FB]"]:hover,
@@ -332,11 +334,24 @@ html:not(.dark) [class~="bg-white"][class~="rounded-xl"] { border-radius: 16px; 
 /* Dark mode: the same idea with navy glass. */
 html.dark [class~="dark:bg-[#171E27]"],
 html.dark [class~="dark:bg-[#10161D]"],
-html.dark [class~="dark:bg-[#151C26]"] { background-color: var(--glass); }
+html.dark [class~="dark:bg-[#151C26]"],
+html.dark [class~="dark:bg-[#171E2A]"],
+html.dark [class~="dark:bg-[#1B2432]"] { background-color: var(--glass); }
 html.dark [class~="dark:border-[#2B3644]"] { border-color: var(--glass-line); }
 
 /* Primary blue (was Salesforce #0176D3) becomes the glass gradient. */
 [class~="bg-[#0176D3]"] { background-image: linear-gradient(180deg, #4C9AFF 0%, #1A73E8 100%); border-color: #1A73E8; }
+
+/* The older teal accent (#006F64 and its tints) maps onto the glass blue everywhere, e.g. the calculators and operations pages. */
+[class~="bg-[#006F64]"], [class~="bg-[#00554D]"] { background-color: #1A73E8; background-image: linear-gradient(180deg, #4C9AFF 0%, #1A73E8 100%); border-color: #1A73E8; }
+[class~="hover:bg-[#00554D]"]:hover { background-image: linear-gradient(180deg, #5AA3FF 0%, #1765CC 100%); }
+button[class~="bg-[#006F64]"], a[class~="bg-[#006F64]"], button[class~="rounded-lg"][class~="border"], a[class~="rounded-lg"][class~="border"] { border-radius: 9999px; }
+html:not(.dark) [class~="text-[#006F64]"], html:not(.dark) [class~="hover:text-[#006F64]"]:hover { color: #1A73E8; }
+html:not(.dark) [class~="border-[#006F64]"], html:not(.dark) [class~="hover:border-[#006F64]"]:hover, html:not(.dark) [class~="focus-within:border-[#006F64]"]:focus-within { border-color: #1A73E8; }
+html:not(.dark) [class~="bg-[#E6F2F0]"], html:not(.dark) [class~="bg-[#E7F5F2]"] { background-color: #E3EEFF; }
+html.dark [class~="dark:text-[#75E1CE]"] { color: #8AB8FF; }
+html.dark [class~="dark:bg-[#0C2B28]"] { background-color: #11304F; }
+html.dark [class~="dark:bg-[#75E1CE]"] { background-color: #4C9AFF; }
 
 /* Shell header and sticky bars: frosted. backdrop-filter is safe on these (they hold no fixed-position modals). */
 .sf > header { background-color: rgba(255, 255, 255, 0.62) !important; backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); border-color: var(--glass-border) !important; }

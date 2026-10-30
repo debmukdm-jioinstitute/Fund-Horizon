@@ -5,6 +5,7 @@ import hashlib
 import json
 from typing import Any
 
+from app.ai import control
 from app.ai.client import call_llm
 from app.ai.guardrails import (
     append_statutory_disclosures,
@@ -18,9 +19,22 @@ from app.ai.guardrails import (
 _EXPLANATION_CACHE: dict[str, dict[str, Any]] = {}
 
 
+_CACHE_MAX = 256
+
+
 def _cache_key(kind: str, data: Any) -> str:
-    raw = json.dumps({"kind": kind, "data": data}, sort_keys=True, default=str)
+    # The AI settings version is part of the key, so changing the model order or settings never serves an answer from the old setup.
+    raw = json.dumps({"kind": kind, "data": data, "ai": control.saved()["version"]}, sort_keys=True, default=str)
     return hashlib.sha256(raw.encode()).hexdigest()
+
+
+def _remember(ck: str, res: dict[str, Any]) -> None:
+    """Cache only real AI answers (a template shown because the AI was briefly down must not stick), bounded in size."""
+    if not res.get("ai_generated"):
+        return
+    if len(_EXPLANATION_CACHE) >= _CACHE_MAX:
+        _EXPLANATION_CACHE.pop(next(iter(_EXPLANATION_CACHE)))
+    _EXPLANATION_CACHE[ck] = res
 
 
 def explain_plan(plan_data: dict[str, Any]) -> dict[str, Any]:
@@ -90,7 +104,7 @@ def explain_plan(plan_data: dict[str, Any]) -> dict[str, Any]:
         "ai_generated": ai_generated,
         "provider": provider if ai_generated else "deterministic_template",
     }
-    _EXPLANATION_CACHE[ck] = res
+    _remember(ck, res)
     return res
 
 
@@ -146,7 +160,7 @@ def explain_fund(fund_data: dict[str, Any]) -> dict[str, Any]:
         "ai_generated": ai_generated,
         "provider": provider if ai_generated else "deterministic_template",
     }
-    _EXPLANATION_CACHE[ck] = res
+    _remember(ck, res)
     return res
 
 
@@ -196,7 +210,7 @@ def explain_cas(cas_data: dict[str, Any]) -> dict[str, Any]:
         "ai_generated": ai_generated,
         "provider": provider if ai_generated else "deterministic_template",
     }
-    _EXPLANATION_CACHE[ck] = res
+    _remember(ck, res)
     return res
 
 
@@ -249,5 +263,5 @@ def explain_tax(tax_data: dict[str, Any], nudge_id: str | None = None) -> dict[s
             final_text, ai_generated = append_statutory_disclosures(llm_out), True
     res = {"kind": "tax", "explanation": final_text, "ai_generated": ai_generated,
            "provider": provider if ai_generated else "deterministic_template"}
-    _EXPLANATION_CACHE[ck] = res
+    _remember(ck, res)
     return res

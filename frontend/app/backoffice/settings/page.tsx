@@ -12,12 +12,13 @@ import {
 import { useAuth } from "@/components/AuthContext";
 import { canAccessPage } from "@/components/backoffice/navItems";
 import DataHealthPage from "../data-health/page";
+import AiControlCentre from "@/components/backoffice/AiControlCentre";
 
 export default function SettingsPage() {
   const { customer } = useAuth();
   const isAdmin = customer?.role === "admin";
   const canHealth = !customer || canAccessPage(customer.pages, customer.role, "/backoffice/data-health");
-  const [activeTab, setActiveTab] = useState<'lead'|'staff'|'recommended'|'watchlists'|'health'>('lead');
+  const [activeTab, setActiveTab] = useState<'lead'|'staff'|'recommended'|'watchlists'|'health'|'ai'>('lead');
 
   // Watchlist state
   const [watchlists, setWatchlists] = useState<WatchlistItem[]>([]);
@@ -201,6 +202,16 @@ export default function SettingsPage() {
               <div className="text-[10px] opacity-70">{watchlists.length}</div>
             </div>
           </button>
+          {isAdmin && (
+          <button
+            type="button"
+            onClick={() => setActiveTab("ai")}
+            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "ai" ? activeCls : inactiveCls}`}
+          >
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.6 4.4L14 7l-4.4 1.6L8 13l-1.6-4.4L2 7l4.4-1.6z"/></svg>
+            <span>AI control centre</span>
+          </button>
+          )}
           {canHealth && (
           <button
             type="button"
@@ -217,6 +228,7 @@ export default function SettingsPage() {
         <div className="flex-1 min-w-0 space-y-4">
 
       {activeTab === "health" && canHealth && <DataHealthPage />}
+      {activeTab === "ai" && isAdmin && <AiControlCentre />}
 
       {activeTab === "lead" && (
         <div className="space-y-4">

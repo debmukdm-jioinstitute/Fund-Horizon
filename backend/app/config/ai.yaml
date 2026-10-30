@@ -5,7 +5,7 @@ providers:
     model: groq/llama-3.1-8b-instant
     env_key: GROQ_API_KEY
   - name: gemini
-    model: gemini/gemini-1.5-flash
+    model: gemini/gemini-2.5-flash  # 1.5 models were retired; edit in Settings > AI control centre
     env_key: GEMINI_API_KEY
   - name: openrouter
     model: openrouter/meta-llama/llama-3-8b-instruct:free
@@ -13,6 +13,14 @@ providers:
   - name: deepseek
     model: deepseek/deepseek-flash
     env_key: DEEPSEEK_API_KEY
+    extra:
+      reasoning_effort: low
+  - name: groq-large
+    model: groq/openai/gpt-oss-120b
+    env_key: GROQ_API_KEY
+    api_url: https://api.groq.com/openai/v1/chat/completions
+    extra:
+      reasoning_effort: medium
   - name: ollama
     model: ollama/llama3
     api_base_env: OLLAMA_BASE_URL

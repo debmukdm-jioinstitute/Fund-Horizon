@@ -20,7 +20,9 @@ import pandas as pd
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse, RedirectResponse
 
-from app.ai.client import call_llm
+from app.ai import control as ai_control
+from app.ai.client import call_llm, call_llm_ex, probe_provider as ai_test_provider
+from app.ai.guardrails import extract_numbers_from_payload, verify_number_consistency
 from app.api.serialize import clean
 from pydantic import BaseModel, Field
 
@@ -1242,6 +1244,37 @@ def backoffice_mf_screener(
     }, "amfi", as_of)
 
 
+# --- AI control centre (admin) ------------------------------------------------------------------------------------------
+
+@router.get("/ai/config")
+def backoffice_ai_config(admin: Annotated[dict, Depends(require_role("admin"))]):
+    return ai_control.view()
+
+
+@router.get("/ai/status")
+def backoffice_ai_status(admin: Annotated[dict, Depends(require_role("admin"))]):
+    """Cheap live poll: provider health plus the config version, so the screen refetches the full config only when it changes."""
+    return ai_control.status()
+
+
+@router.put("/ai/config")
+def backoffice_ai_config_save(body: dict, admin: Annotated[dict, Depends(require_role("admin"))]):
+    try:
+        return ai_control.save(body, str(admin.get("email") or admin.get("id") or "admin"))
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None
+
+
+@router.delete("/ai/config")
+def backoffice_ai_config_reset(admin: Annotated[dict, Depends(require_role("admin"))]):
+    return ai_control.reset(str(admin.get("email") or "admin"))
+
+
+@router.post("/ai/test/{provider}")
+def backoffice_ai_test(provider: str, admin: Annotated[dict, Depends(require_role("admin"))]):
+    return ai_test_provider(provider)
+
+
 class ResolveHoldingRequest(BaseModel):
     code: str
     raw_name: str = ""
@@ -1295,24 +1328,33 @@ def backoffice_resolve_holding(
     return clean(resolved)
 
 
-class AskAiRequest(BaseModel):
+class AskAiHolding(BaseModel):
     code: str = Field(max_length=32)
     weight_pct: float | None = Field(None, ge=0, le=100)
 
 
+class AskAiRequest(BaseModel):
+    code: str = Field(max_length=32)
+    weight_pct: float | None = Field(None, ge=0, le=100)
+    portfolio: list[AskAiHolding] = Field(default_factory=list, max_length=100)  # the client's other matched holdings
+
+
 _ASK_AI_SYSTEM = (
-    "You are a senior mutual-fund research analyst helping an AMFI-registered distributor's staff review a client holding. "
-    "You are given the fund's data and a live market snapshot collected by Fund Horizon (index levels, volatility, yields, "
-    "FX, FII/DII flows, latest headlines, each with its date). Judge the current market phase from that snapshot, combined "
-    "with durable principles: valuation versus earnings growth, interest-rate and credit cycles, how this category behaves in "
-    "upturns, downturns and sideways markets, drawdown and recovery, concentration and position size, costs, manager tenure, "
-    "tax and lock-in rules. Use only numbers present in the data or snapshot, never invent one; if the snapshot is missing "
-    "or stale, say so. Reply with one JSON object and nothing else."
+    "You are a senior mutual-fund research analyst advising an admin at an AMFI-registered distributor about one holding in a "
+    "client's portfolio. Write in plain, simple English a non-specialist can follow, and always explain WHY. You are given "
+    "the fund's data (returns history, risk, ranks), how the client's portfolio is split by category, the holdings overlap "
+    "between this fund and the client's other funds, and a live market snapshot collected by Fund Horizon (indices, volatility, "
+    "yields, FX, FII/DII flows, latest market headlines, each dated). Judge the current market phase from that snapshot. "
+    "Use only numbers present in the data; never invent one, and never invent a client target, mandate, risk profile or goal (none is given). If something is missing (no overlap data, no headlines, no "
+    "dedicated IPO feed), say so plainly instead of guessing. Reply with one JSON object and nothing else."
 )
+_ASK_AI_TEXT_KEYS = ("summary", "allocation_view", "historical_view", "macro_view", "micro_view", "cycle_view",
+                     "primary_markets_view", "secondary_markets_view", "flows_view", "rebalancing_view", "what_would_change_view")
 _ASK_AI_STANCES = {"Buy", "Hold", "Sell"}
 
 
 def _ask_ai_json(text: str) -> dict[str, Any] | None:
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)  # reasoning models may emit braces inside their thinking
     start, end = text.find("{"), text.rfind("}")
     if start < 0 or end <= start:
         return None
@@ -1325,7 +1367,7 @@ def _ask_ai_json(text: str) -> dict[str, Any] | None:
     for k in ("reasons", "market_context", "risks"):  # models vary the shape; the UI expects list[str] / str
         v = out.get(k)
         out[k] = [str(i) for i in (v if isinstance(v, list) else [v] if v else [])][:6]
-    for k in ("summary", "what_would_change_view"):
+    for k in _ASK_AI_TEXT_KEYS:
         v = out.get(k)
         out[k] = " ".join(map(str, v)) if isinstance(v, list) else (str(v) if v else "")
     c = out.get("confidence")
@@ -1339,7 +1381,7 @@ def _market_snapshot() -> dict[str, Any]:
         o = _SERVICE.get_market_overview()
         news = [
             {"date": (n.get("published_at") or "")[:10], "source": n.get("source_name"), "title": n.get("title")}
-            for n in _REPO.list_news(limit=8, category="markets")
+            for n in _REPO.list_news(limit=15, category="markets")
         ]
         return {
             "collected_at": o.get("generated_at"), "indices": o.get("indices"), "volatility": o.get("volatility"),
@@ -1352,6 +1394,34 @@ def _market_snapshot() -> dict[str, Any]:
         return {}
 
 
+def _ask_ai_portfolio_context(frame: pd.DataFrame, code: str, holdings: list[AskAiHolding]) -> dict[str, Any]:
+    """Category split of the client's portfolio and this fund's holdings overlap with the others. Categories come from the
+    scored frame by scheme code, never from client-supplied labels."""
+    codes = frame["code"].astype(str)
+    cat_by_code = dict(zip(codes, frame["cat_label"].fillna(frame["cat"])))
+    name_by_code = dict(zip(codes, frame["name"]))
+    split: dict[str, float] = {}
+    for h in holdings:
+        cat = cat_by_code.get(h.code)
+        if cat and h.weight_pct:
+            split[str(cat)] = split.get(str(cat), 0.0) + h.weight_pct
+    snapshot = _holdings_snapshot()
+    mine = mf_holdings.overlap_holdings(snapshot, code)
+    overlaps = []
+    for h in sorted(holdings, key=lambda x: -(x.weight_pct or 0)):
+        if h.code == code or len(overlaps) >= 6:
+            continue
+        other = mf_holdings.overlap_holdings(snapshot, h.code)
+        if mine and other:
+            ov = mf_v2.fund_overlap(mine, other)
+            overlaps.append({"other_fund": name_by_code.get(h.code),
+                             "shared_holdings": ov.get("shared_count"), "shared_weight_in_this_fund_pct": ov.get("shared_weight_in_a_pct")})
+    return {
+        "portfolio_split_by_category_pct": {k: round(v, 1) for k, v in sorted(split.items(), key=lambda kv: -kv[1])},
+        "overlap_with_other_holdings": overlaps or "not available (holdings disclosure missing for this fund or the others)",
+    }
+
+
 @router.post("/mutual-funds/ask-ai")
 def backoffice_ask_ai(staff: Annotated[dict, Depends(require_staff)], body: AskAiRequest):
     """Staff-only AI second opinion (Buy/Hold/Sell + reasons) for one matched fund. Facts come from the scored frame by
@@ -1361,30 +1431,44 @@ def backoffice_ask_ai(staff: Annotated[dict, Depends(require_staff)], body: AskA
     if match.empty:
         raise HTTPException(404, "Scheme not found in active dataset.")
     r = match.iloc[0]
-    facts = {
-        "scheme": str(r["name"]), "category": str(r.get("cat_label") or r.get("cat")), "plan": str(r["plan"]),
-        "nav_date": str(r.get("nav_date")), "fh_score_out_of_100": _round_or_none(r.get("fh_score")),
-        "fh_rating_out_of_5": _round_or_none(r.get("fh_rating")), "fh_signal": str(r.get("fh_signal")),
-        "cagr_3y_pct": _round_or_none(r.get("cagr_3y")), "outperformance_1y_vs_peers_pp": _round_or_none(r.get("out_1y")),
-        "outperformance_3y_vs_peers_pp": _round_or_none(r.get("out_3y")), "sharpe_3y": _round_or_none(r.get("sharpe_3y")),
-        "sortino_3y": _round_or_none(r.get("sortino_3y")),
-        "manager_tenure_years": _round_or_none(r.get("manager_tenure_years")), "expense_ratio_pct": _round_or_none(r.get("ter")),
-        "share_of_client_portfolio_pct": body.weight_pct,
-    }
-    prompt = (
-        f"Today is {datetime.now(UTC).date().isoformat()}. Fund data (None = not recorded):\n{json.dumps(facts)}\n\n"
-        f"Live market snapshot:\n{json.dumps(_market_snapshot(), default=str)}\n\n"
-        "Give a Buy, Hold or Sell stance for this holding. Weigh the data against the market cycle and the portfolio weight. "
-        'JSON keys: "stance" (Buy|Hold|Sell), "confidence" (Low|Medium|High), "summary" (2 sentences), '
-        '"reasons" (3-5 short strings), "market_context" (2-3 strings citing the snapshot figures and dates), '
-        '"risks" (2-4 strings), "what_would_change_view" (1 sentence).'
+    keys = (
+        "fh_score", "fh_rating", "ret_1m", "ret_3m", "ret_6m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_7y",
+        "cagr_10y", "cagr_3y_cat", "cagr_5y_cat", "out_1y", "out_3y", "out_5y", "max_dd_3y", "max_dd_all", "vol_3y", "beta_3y",
+        "sharpe_3y", "sortino_3y", "cap_up_3y", "cap_down_3y", "roll1y_pos", "quartile_1y", "quartile_3y", "quartile_5y",
+        "aum_cr", "hi52", "lo52", "nav", "manager_tenure_years", "ter", "history_years",
     )
-    text, _ = call_llm(prompt, system_prompt=_ASK_AI_SYSTEM, only="deepseek", max_tokens=4000, timeout=90)
-    if not text:
-        raise HTTPException(503, "AI analysis is unavailable right now. Try again shortly.")
-    parsed = _ask_ai_json(text)
+    facts = {"scheme": str(r["name"]), "category": str(r.get("cat_label") or r.get("cat")), "plan": str(r["plan"]),
+             "nav_date": str(r.get("nav_date")), "benchmark": str(r.get("benchmark")), "fh_signal": str(r.get("fh_signal")),
+             "share_of_client_portfolio_pct": body.weight_pct, **{k: _round_or_none(r.get(k)) for k in keys}}
+    context = _ask_ai_portfolio_context(frame, body.code, body.portfolio)
+    market = _market_snapshot()
+    prompt = (
+        f"Today is {datetime.now(UTC).date().isoformat()}. Return percentages are in %, None = not recorded.\n"
+        f"Fund data:\n{json.dumps(facts)}\n\nClient portfolio context:\n{json.dumps(context)}\n\n"
+        f"Live market snapshot:\n{json.dumps(market, default=str)}\n\n"
+        "Analyse this holding and end with a Buy, Hold or Sell verdict. Cover: whether this category weight is right for the "
+        "current phase and why (e.g. why this much in large cap now, or why not); the fund's history across 1m to 10y versus "
+        "its category; macro factors (rates, inflation, currency, growth, global yields) and micro factors (this fund, its "
+        "category, its manager, costs); long-term and short-term cycles; primary markets (IPO and new-issue activity, from "
+        "headlines only) and secondary markets (index levels, volatility, breadth); FII/DII activity using the flows and "
+        "headlines; and whether any rebalancing is needed, using the portfolio split and the overlap. "
+        'JSON keys: "stance" (Buy|Hold|Sell), "confidence" (Low|Medium|High), "summary" (2-3 plain sentences), '
+        '"allocation_view", "historical_view", "macro_view", "micro_view", "cycle_view", "primary_markets_view", '
+        '"secondary_markets_view", "flows_view", "rebalancing_view" (each 2-3 plain sentences citing numbers and dates), '
+        '"reasons" (3-5 short strings), "risks" (2-4 strings), "what_would_change_view" (1 sentence).'
+    )
+    res = call_llm_ex(prompt, system_prompt=_ASK_AI_SYSTEM, max_tokens=7000, timeout=90, chain="ask_ai")  # order comes from Settings > AI
+    if not res["text"]:
+        why = "; ".join(f"{a['provider']}: {a['error']}" for a in res["attempts"]) or "no provider in the Ask AI chain is enabled"
+        raise HTTPException(503, f"AI analysis is unavailable right now ({why}).")
+    parsed = _ask_ai_json(res["text"])
     if not parsed:
         raise HTTPException(502, "AI returned an unreadable answer. Try again.")
+    parsed["model_used"] = f"{res['provider']} / {res['model']}"
+    parsed["fallbacks_tried"] = [a["provider"] for a in res["attempts"] if not a["ok"]]
+    # Soft check: flag (never hide) figures in the answer that are not in the data we sent.
+    sent = extract_numbers_from_payload(json.loads(json.dumps([facts, context, market], default=str)))
+    parsed["numbers_verified"] = verify_number_consistency(" ".join(str(v) for v in parsed.values() if isinstance(v, (str, list))), sent)
     parsed["disclaimer"] = (
         "AI-generated second opinion for staff review, based on Fund Horizon's latest collected market data. "
         "Not investment advice; verify before acting on a client's portfolio."

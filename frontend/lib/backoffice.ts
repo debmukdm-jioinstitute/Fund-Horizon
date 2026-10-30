@@ -2425,6 +2425,15 @@ export interface AskAiResult {
   stance: "Buy" | "Hold" | "Sell";
   confidence?: string;
   summary?: string;
+  allocation_view?: string;
+  historical_view?: string;
+  macro_view?: string;
+  micro_view?: string;
+  cycle_view?: string;
+  primary_markets_view?: string;
+  secondary_markets_view?: string;
+  flows_view?: string;
+  rebalancing_view?: string;
   reasons?: string[];
   market_context?: string[];
   risks?: string[];
@@ -2432,11 +2441,15 @@ export interface AskAiResult {
   disclaimer: string;
 }
 
-export async function askAiAboutFund(code: string, weightPct?: number | null): Promise<AskAiResult> {
+export async function askAiAboutFund(
+  code: string,
+  weightPct: number | null | undefined,
+  portfolio: { code: string; weight_pct: number | null | undefined }[],
+): Promise<AskAiResult> {
   const res = await fetch(resolveApiUrl(`${API_URL}/api/backoffice/mutual-funds/ask-ai`), {
     method: "POST",
     headers: { "Content-Type": "application/json", "sec-fetch-site": "same-origin" },
-    body: JSON.stringify({ code, weight_pct: weightPct ?? null }),
+    body: JSON.stringify({ code, weight_pct: weightPct ?? null, portfolio: portfolio.map((p) => ({ code: p.code, weight_pct: p.weight_pct ?? null })) }),
     credentials: "include",
   });
   if (!res.ok) {
@@ -2461,3 +2474,17 @@ export const getFhHistory = (code: string) => boFetch<FhHistory>(FH(code, "fh-hi
 export const getFhSnapshotAsOf = (code: string, on: string) => boFetch<{ available: boolean; message?: string; snapshot_date?: string; age_days?: number; label?: string }>(`${FH(code, "fh-snapshot")}?on=${on}`);
 export const getFhThenNow = (code: string, then: string, now = "live") => boFetch<FhThenNow>(`${FH(code, "fh-then-now")}?then=${encodeURIComponent(then)}&now=${encodeURIComponent(now)}`);
 export const getFhOutcome = (code: string, start?: string, end?: string) => boFetch<FhOutcome>(`${FH(code, "fh-outcome")}${start ? `?start=${start}${end ? `&end=${end}` : ""}` : ""}`);
+
+// --- AI control centre (admin) ------------------------------------------------------------------------------------------
+export interface AiProvider { name: string; model: string; base_model: string; enabled: boolean; custom: boolean; env_key: string | null; api_url?: string | null; reasoning_effort: string; key_present: boolean }
+export interface AiStat { calls: number; ok: number; fail: number; consecutive_failures: number; cooldown_remaining_s: number; last_ok_at: string | null; last_error: string | null; last_error_at: string | null; last_latency_ms: number | null }
+export interface AiStatus { version: number; updated_at: string | null; updated_by: string | null; stats: Record<string, AiStat>; keys: Record<string, boolean>; server_time: string }
+export interface AiConfig extends AiStatus {
+  providers: AiProvider[]; chains: Record<string, string[]>; chain_labels: Record<string, string>; settings: Record<string, number>; limits: Record<string, [number, number]>;
+  picks: { enabled: boolean; model: string; effort: string }; system_prompt: string; efforts: string[]; mock_active: boolean;
+}
+export const getAiConfig = () => boFetch<AiConfig>("/api/backoffice/ai/config");
+export const getAiStatus = () => boFetch<AiStatus>("/api/backoffice/ai/status");
+export const saveAiConfig = (doc: Record<string, unknown>) => boFetch<AiConfig>("/api/backoffice/ai/config", { method: "PUT", body: JSON.stringify(doc) });
+export const resetAiConfig = () => boFetch<AiConfig>("/api/backoffice/ai/config", { method: "DELETE" });
+export const testAiProvider = (name: string) => boFetch<{ provider: string; ok: boolean; error: string | null; ms: number; model?: string }>(`/api/backoffice/ai/test/${encodeURIComponent(name)}`, { method: "POST" });

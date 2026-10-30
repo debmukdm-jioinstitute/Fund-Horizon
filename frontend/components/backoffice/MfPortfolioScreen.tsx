@@ -46,7 +46,8 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
     if (!h.amfi_code) return;
     setAi((m) => ({ ...m, [h.id]: { loading: true } }));
     try {
-      const result = await askAiAboutFund(h.amfi_code, h.portfolio_weight_pct);
+      const others = (data?.holdings ?? []).filter((x) => x.amfi_code).map((x) => ({ code: x.amfi_code as string, weight_pct: x.portfolio_weight_pct }));
+      const result = await askAiAboutFund(h.amfi_code, h.portfolio_weight_pct, others);
       setAi((m) => ({ ...m, [h.id]: { loading: false, result } }));
     } catch (e) {
       setAi((m) => ({ ...m, [h.id]: { loading: false, error: e instanceof Error ? e.message : "AI analysis failed" } }));
@@ -801,7 +802,25 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                                     </span>
                                   </div>
                                   {ai[h.id]!.result!.summary && <p>{ai[h.id]!.result!.summary}</p>}
-                                  {([["Reasons", ai[h.id]!.result!.reasons], ["Market context", ai[h.id]!.result!.market_context], ["Risks", ai[h.id]!.result!.risks]] as const).map(
+                                  {([
+                                    ["Is this the right allocation now?", ai[h.id]!.result!.allocation_view],
+                                    ["Track record", ai[h.id]!.result!.historical_view],
+                                    ["Macro factors", ai[h.id]!.result!.macro_view],
+                                    ["Fund and category factors", ai[h.id]!.result!.micro_view],
+                                    ["Market cycles", ai[h.id]!.result!.cycle_view],
+                                    ["Primary market (IPOs)", ai[h.id]!.result!.primary_markets_view],
+                                    ["Secondary market", ai[h.id]!.result!.secondary_markets_view],
+                                    ["FII / DII activity", ai[h.id]!.result!.flows_view],
+                                    ["Rebalancing and overlap", ai[h.id]!.result!.rebalancing_view],
+                                  ] as const).map(([title, text]) =>
+                                    text ? (
+                                      <div key={title}>
+                                        <div className="text-[11.5px] font-bold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">{title}</div>
+                                        <p>{text}</p>
+                                      </div>
+                                    ) : null,
+                                  )}
+                                  {([["Reasons", ai[h.id]!.result!.reasons], ["Risks", ai[h.id]!.result!.risks]] as const).map(
                                     ([title, items]) =>
                                       items && items.length > 0 ? (
                                         <div key={title}>

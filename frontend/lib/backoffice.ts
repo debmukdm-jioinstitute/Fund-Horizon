@@ -2034,7 +2034,7 @@ export interface FhExplain {
   filters: FhFilter[]; drawdown_enabled: boolean;
   flags: { code: string; text: string }[]; blockers: { code: string; text: string }[];
   auto_eligible: boolean; provisional: string[];
-  scoring_mode?: "legacy" | "A" | "B"; data_status?: string; data_status_text?: string; review_status?: string;
+  scoring_mode?: "A" | "B"; data_status?: string; data_status_text?: string; review_status?: string;
 }
 export interface FhMethodology {
   weights: Record<string, number>; provisional: string[]; filters: Record<string, string>;
@@ -2488,3 +2488,4 @@ export const getAiStatus = () => boFetch<AiStatus>("/api/backoffice/ai/status");
 export const saveAiConfig = (doc: Record<string, unknown>) => boFetch<AiConfig>("/api/backoffice/ai/config", { method: "PUT", body: JSON.stringify(doc) });
 export const resetAiConfig = () => boFetch<AiConfig>("/api/backoffice/ai/config", { method: "DELETE" });
 export const testAiProvider = (name: string) => boFetch<{ provider: string; ok: boolean; error: string | null; ms: number; model?: string }>(`/api/backoffice/ai/test/${encodeURIComponent(name)}`, { method: "POST" });
+export const setFhScoringMode = (mode: "A" | "B") => boFetch<unknown>("/api/backoffice/mutual-funds/fh-score/config", { method: "PUT", body: JSON.stringify({ patch: { ratios: { mode } } }) });

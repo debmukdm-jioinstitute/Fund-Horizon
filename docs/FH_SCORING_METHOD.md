@@ -4,7 +4,7 @@
 `backend/app/backoffice/fh_score.py`: five filters (history 20, quartile 20, risk ratios 25, outperformance 20, excess 15; drawdown optional),
 absolute-threshold ratios (capture >1.0, Sortino >1.5, Sharpe >1.0, per 1/3/5Y), failure penalties, consistency adjustment, 0-100 score,
 stars, Buy/Hold/Sell. Reproduce: `backend/scripts/fh_scoring_compare.py` (writes `data/fh_scoring_baseline_legacy.json` and
-`docs/FH_SCORING_COMPARISON.md`). Legacy stays the **default** (`ratios.mode = "legacy"`).
+`docs/FH_SCORING_COMPARISON.md`). **Update 2026-10-30:** the legacy absolute-threshold scoring was removed. Mode B is the live default (`ratios.mode`), mode A is selectable, and `data/fh_scoring_baseline_legacy.json` keeps the last legacy scores for reference. Score alone no longer changes the FH list unless `recommend.auto_enabled` is turned on.
 
 ## What is computed where
 Computed internally from NAV (`data/fundhorizon_mf_rag_dataset/build_dataset.py`): returns, volatility, Sharpe, Sortino (rf 6.5%), drawdown.
@@ -23,7 +23,7 @@ benchmark (no TRI series). Category averages are internal equal-weight means.
 - Beta and Treynor: informational (no preferred direction defensible). Treynor needs |beta| >= 0.3.
 - Missing weight is never redistributed.
 
-## Decision needed before changing the default
+## Calibration note
 Side-by-side (see `FH_SCORING_COMPARISON.md`): both new modes lift the average score by about 12 points and move 0 -> ~146 funds to Buy.
 That is a level shift (percentiles give average funds about half the ratios points, the old thresholds gave them near zero), not better
 selection. The 80-point recommend threshold and star bands were set for the legacy scale. Recalibrate them (or keep legacy) as a business call.

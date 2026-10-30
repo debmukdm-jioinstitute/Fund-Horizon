@@ -34,26 +34,23 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "period_weights": {"ytd": 0.25, "py1": 0.375, "py2": 0.375},
         "full_credit_qualifying_periods": 2,
     },
-    # Filter 3. Component weights: capture > sortino > sharpe. Lower capture/sortino/sharpe weights apply with drawdown on.
+    # Filter 3, scored against category peers (fh_catscore). Component weights: capture > sortino > sharpe.
+    # mode "A" = category percentile only; "B" = A plus a bounded bonus for Sharpe/Sortino above the absolute threshold.
     "ratios": {
         "component_weights_off": {"capture": 0.5, "sortino": 0.3, "sharpe": 0.2},
         "component_weights_on": {"capture": 0.4, "sortino": 0.35, "sharpe": 0.25},
-        "capture_threshold": 1.0, "capture_full": 1.5,
-        "sortino_threshold": 1.5, "sortino_full": 3.0,
-        "sharpe_threshold": 1.0, "sharpe_full": 2.0,
-        # "legacy" = absolute thresholds above; "A" = category-relative; "B" = A + bounded absolute-quality bonus (fh_catscore).
-        "mode": "legacy",
+        "mode": "B",
     },
     "catscore": {},  # overrides for fh_catscore.DEFAULTS (min_peers, bonus_fraction, thresholds, ...)
     "drawdown": {"band": 0.5, "min_peers": 5},
     "outperf": {"tie_passes": False},
     "excess": {"sigma_span": 1.5, "min_peers": 5},
-    "penalties": {"per_failure": {"sortino": 2.0, "sharpe": 1.5, "capture": 0.0, "outperf": 1.5}, "escalation": 1.25},
+    "penalties": {"per_failure": {"outperf": 1.5}, "escalation": 1.25},
     "consistency": {"strong": 0.7, "weak": 0.4, "bonus_per_strong_beyond_two": 1.5, "bonus_cap": 5.0,
                     "penalty_per_weak": 2.0, "penalty_cap": 8.0},
     "flags": {"outstanding_score": 90, "poor_score": 40, "concentration_share": 0.7, "inconsistent_spread": 0.6},
     "min_filter_coverage": 0.5,
-    "recommend": {"threshold": 80, "min_coverage": 0.8, "plans": ["Regular"]},
+    "recommend": {"threshold": 80, "min_coverage": 0.8, "plans": ["Regular"], "auto_enabled": False},  # auto_enabled: score alone may add funds to the FH list
     "rating_bands": [80, 65, 50, 35],  # score above each -> 5, 4, 3, 2 stars; else 1
     "rating_min_coverage": 0.6,
     # Provisional Buy/Hold/Sell signal mapping based on star rating.
@@ -70,7 +67,7 @@ PROVISIONAL = [
     "Filter 1 (fund manager and history): the source's two history criteria and the '20+3' example are undefined. The owner delegated the call, so the working definition is manager tenure >= 3 years and fund history >= 5 years (`history.confirmed` is true). Change both in config if the source meant something else.",
     "Filter weights beyond history 20 and quartile 20 (ratios 25, outperformance 20, excess 15; with drawdown 20/15/15/10) are proposed defaults.",
     "Quartile points (Q2/Q3 1.0, Q1 0.6, Q4 0), period weights and 'two qualifying periods = full credit' are proposed defaults.",
-    "Capture ratio = Advisorkhoj up-capture % divided by down-capture %; unavailable when down-capture is zero, negative or missing. Bounded: 1.0 scores 0.5, 1.5 or more scores full.",
+    "Risk ratios (Sharpe, Sortino, capture) are scored by percentile against eligible peers in the same category and plan; mode B adds a bounded bonus for Sharpe or Sortino above 1.0. Down-capture of zero or less is not scored.",
     "Benchmark returns come from the passive index fund that tracks each category's benchmark (no TRI series is ingested); categories without one cannot be compared to a benchmark.",
     "Max drawdown uses the 3-year figure only (the only window present for every fund) against the category + plan average.",
     "Penalties, the consistency adjustment, flag thresholds, rating bands and the 80 / 80% coverage recommendation gate are proposed defaults.",
@@ -96,8 +93,8 @@ def active_weights(cfg: dict) -> dict[str, float]:
 
 
 def validate_config(cfg: dict) -> None:
-    if cfg["ratios"].get("mode", "legacy") not in ("legacy", "A", "B"):
-        raise ValueError("ratios.mode must be legacy, A or B")
+    if cfg["ratios"].get("mode", "B") not in ("A", "B"):
+        raise ValueError("ratios.mode must be A or B")
     for name in ("weights_off", "weights_on"):
         if abs(sum(cfg[name].values()) - 100) > 1e-6:
             raise ValueError(f"{name} must total 100 (got {sum(cfg[name].values())})")
@@ -112,6 +109,8 @@ def load_config() -> dict:
             cfg = _merge(cfg, json.loads(CONFIG_FILE.read_text()))
         except (OSError, ValueError):
             pass
+    if cfg["ratios"].get("mode") not in ("A", "B"):
+        cfg["ratios"]["mode"] = "B"  # the old absolute-threshold mode no longer exists
     validate_config(cfg)
     return cfg
 
@@ -169,39 +168,10 @@ def _f_quartile(df: pd.DataFrame, cfg: dict, ref: pd.Timestamp) -> tuple[pd.Seri
     return raw.clip(0, 1), cov
 
 
-def _ratio_components(df: pd.DataFrame, cfg: dict) -> dict[str, tuple[pd.Series, pd.Series, pd.Series]]:
-    """Per component: (weighted score 0..1, availability weight, failure count) over the 1/3/5Y periods."""
-    r = cfg["ratios"]
-    pw = {int(k): v for k, v in cfg["period_weights"].items()}
-    out = {k: [pd.Series(0.0, index=df.index), pd.Series(0.0, index=df.index), pd.Series(0, index=df.index)] for k in ("capture", "sortino", "sharpe")}
-    for y in PERIODS:
-        up, down = pd.to_numeric(df[f"cap_up_{y}y"], errors="coerce"), pd.to_numeric(df[f"cap_down_{y}y"], errors="coerce")
-        ratio = (up / down).where(up.notna() & down.gt(0))  # zero / negative / missing downside capture -> undefined
-        df[f"fhd_cap_{y}"] = ratio
-        vals = {"capture": ratio, "sortino": pd.to_numeric(df[f"sortino_{y}y"], errors="coerce"), "sharpe": pd.to_numeric(df[f"sharpe_{y}y"], errors="coerce")}
-        for name, v in vals.items():
-            thr = r[f"{name}_threshold"]
-            full = r[f"{name}_full"]
-            ok = v > thr  # strictly greater
-            score = (0.5 + 0.5 * _c((v - thr) / (full - thr))).where(ok, 0.0) if name == "capture" else _c(v / full)
-            score = score.where(v.notna())
-            df[f"fhd_{name}_{y}"], df[f"fhd_{name}_ok_{y}"] = v, ok.where(v.notna())
-            out[name][0] += score.fillna(0) * pw[y]
-            out[name][1] += v.notna() * pw[y]
-            out[name][2] += (v.notna() & ~ok).astype(int)
-    return {k: tuple(v) for k, v in out.items()}
+def _f_ratios(df: pd.DataFrame, cfg: dict) -> tuple[pd.Series, pd.Series]:
+    from app.backoffice import fh_catscore
 
-
-def _f_ratios(df: pd.DataFrame, cfg: dict) -> tuple[pd.Series, pd.Series, dict[str, pd.Series]]:
-    if cfg["ratios"].get("mode", "legacy") in ("A", "B"):
-        from app.backoffice import fh_catscore
-
-        return fh_catscore.ratios_filter(df, cfg, cfg["ratios"]["mode"])
-    comp = _ratio_components(df, cfg)
-    cw = cfg["ratios"]["component_weights_on" if cfg["drawdown_enabled"] else "component_weights_off"]
-    raw = sum(comp[k][0] * w for k, w in cw.items())
-    cov = sum(comp[k][1] * w for k, w in cw.items())
-    return raw.clip(0, 1), cov, {k: comp[k][2] for k in comp}
+    return fh_catscore.ratios_filter(df, cfg, cfg["ratios"].get("mode", "B"))
 
 
 def _bench_returns(df: pd.DataFrame, col: str) -> pd.Series:
@@ -265,12 +235,11 @@ def score_frame(df: pd.DataFrame, cfg: dict | None = None, ref: pd.Timestamp | N
     cfg = cfg or load_config()
     ref = ref if ref is not None else pd.Timestamp.today().normalize()
     w = active_weights(cfg)
-    fails_ratio: dict[str, pd.Series] = {}
     raws: dict[str, pd.Series] = {}
     covs: dict[str, pd.Series] = {}
     raws["history"], covs["history"] = _f_history(df, cfg)
     raws["quartile"], covs["quartile"] = _f_quartile(df, cfg, ref)
-    raws["ratios"], covs["ratios"], fails_ratio = _f_ratios(df, cfg)
+    raws["ratios"], covs["ratios"] = _f_ratios(df, cfg)
     raws["outperf"], covs["outperf"], fail_out = _f_outperf(df, cfg)
     raws["excess"], covs["excess"] = _f_excess(df, cfg)
     if "drawdown" in w:
@@ -282,12 +251,7 @@ def score_frame(df: pd.DataFrame, cfg: dict | None = None, ref: pd.Timestamp | N
     base = pts.sum(axis=1)
 
     pen = cfg["penalties"]
-    pen_parts = {
-        "sortino": _escalate(fails_ratio["sortino"], pen["per_failure"]["sortino"], pen["escalation"]),
-        "sharpe": _escalate(fails_ratio["sharpe"], pen["per_failure"]["sharpe"], pen["escalation"]),
-        "capture": _escalate(fails_ratio["capture"], pen["per_failure"]["capture"], pen["escalation"]),
-        "outperf": _escalate(fail_out, pen["per_failure"]["outperf"], pen["escalation"]),
-    }
+    pen_parts = {"outperf": _escalate(fail_out, pen["per_failure"]["outperf"], pen["escalation"])}  # ratio weakness is already priced into its percentile
     for k, v in pen_parts.items():
         df[f"fh_pen_{k}"] = -v
     penalties = -sum(pen_parts.values())
@@ -325,8 +289,7 @@ def score_frame(df: pd.DataFrame, cfg: dict | None = None, ref: pd.Timestamp | N
         "concentrated": share.ge(fl["concentration_share"]) & base.gt(20) & (len(w) > 2),
         "inconsistent": spread.ge(fl["inconsistent_spread"]),
         "missing_data": cov_total < 0.999,
-        "sortino_fail": fails_ratio["sortino"] > 0, "sharpe_fail": fails_ratio["sharpe"] > 0,
-        "capture_fail": fails_ratio["capture"] > 0, "outperf_fail": fail_out > 0,
+        "outperf_fail": fail_out > 0,
         "history_unconfirmed": pd.Series(not cfg["history"]["confirmed"], index=df.index),
         "pre_manager": df[["fhd_qpre_ytd", "fhd_qpre_py1", "fhd_qpre_py2"]].any(axis=1),
     }
@@ -358,7 +321,7 @@ def score_frame(df: pd.DataFrame, cfg: dict | None = None, ref: pd.Timestamp | N
     df["fh_signal_reasons"] = [generate_signal_reasons(row, sig, cfg=cfg) for (_, row), sig in zip(df.iterrows(), df["fh_signal"])]
     df["fh_data_status"], df["fh_data_reason"] = _data_status(df, cfg, cov_total)
     df["fh_review_status"] = [_review_status(d, s, g) for d, s, g in zip(df["fh_data_status"], df["fh_rating"], df["fh_flags"])]
-    df["fh_scoring_mode"] = cfg["ratios"].get("mode", "legacy")
+    df["fh_scoring_mode"] = cfg["ratios"].get("mode", "B")
     return df.copy()  # defragment the many columns added above
 
 
@@ -423,9 +386,6 @@ FLAG_TEXT = {
     "concentrated": "Concentrated: two filters supply most of the points, so the score leans on one or two strengths.",
     "inconsistent": "Inconsistent: the highest and lowest filter scores differ widely.",
     "missing_data": "Missing data: some inputs were unavailable. They earned no points; weight was not redistributed.",
-    "sortino_fail": "Sortino did not exceed the threshold in at least one period (penalty applied).",
-    "sharpe_fail": "Sharpe did not exceed the threshold in at least one period (penalty applied).",
-    "capture_fail": "Capture ratio did not exceed the threshold in at least one period.",
     "outperf_fail": "The fund failed at least one of the six benchmark / category comparisons (penalty applied).",
     "history_unconfirmed": "History criteria are provisional placeholders, so automatic recommendation is blocked.",
     "pre_manager": "A quartile period predates the current manager, so that result is not credited to them.",
@@ -476,7 +436,7 @@ def signal_for_rating(rating: float | int | None, coverage: float | None = None,
 def generate_signal_reasons(row: Any, signal: str | None = None, cfg: dict | None = None) -> list[str]:
     """Generate 2-3 concise, evidence-based bullet reasons for the signal.
 
-    Derived deterministically from underlying metrics, peer comparisons, and thresholds.
+    Derived deterministically from the fund's own numbers and its category peers.
     """
     cfg = cfg or load_config()
     min_cov = cfg.get("signals", {}).get("min_coverage", cfg.get("rating_min_coverage", 0.6))
@@ -516,25 +476,21 @@ def generate_signal_reasons(row: Any, signal: str | None = None, cfg: dict | Non
     elif cagr_3y is not None:
         reasons.append(f"3Y CAGR delivered {cagr_3y:.1f}%.")
 
-    # 2. Risk-adjusted protection (Sortino / Sharpe / Capture)
-    sortino_3y = _n(row.get("sortino_3y")) if hasattr(row, "get") else None
-    sharpe_3y = _n(row.get("sharpe_3y")) if hasattr(row, "get") else None
-    cap_up = _n(row.get("cap_up_3y")) if hasattr(row, "get") else None
-    cap_down = _n(row.get("cap_down_3y")) if hasattr(row, "get") else None
+    # 2. Risk and reward against the category (3Y): the strongest-ranked measure, or the weakest if none stands out
+    def pct(m):
+        return _n(row.get(f"fhc_{m}_3_pct")) if hasattr(row, "get") else None
 
-    if sortino_3y is not None and sortino_3y >= 1.5:
-        reasons.append(f"Sortino 3Y of {sortino_3y:.2f} satisfies downside protection threshold (>= 1.5).")
-    elif cap_up is not None and cap_down is not None and cap_down > 0:
-        c_ratio = cap_up / cap_down
-        if c_ratio >= 1.1:
-            reasons.append(f"Capture ratio 3Y of {c_ratio:.2f} demonstrates favorable up-market participation vs downside.")
-        elif c_ratio < 0.9:
-            reasons.append(f"Capture ratio 3Y of {c_ratio:.2f} indicates higher downside capture ({cap_down:.0f}%).")
-    elif sharpe_3y is not None:
-        if sharpe_3y >= 1.0:
-            reasons.append(f"Sharpe ratio 3Y of {sharpe_3y:.2f} confirms solid risk-adjusted return (>= 1.0).")
-        elif sharpe_3y < 0.5:
-            reasons.append(f"Sharpe ratio 3Y of {sharpe_3y:.2f} reflects below-target risk compensation.")
+    measured = {m: (pct(m), _n(row.get(f"fhc_{m}_3")), _n(row.get(f"fhc_{m}_3_avg"))) for m in ("sortino", "sharpe")}
+    measured = {m: v for m, v in measured.items() if None not in v}
+    if measured:
+        m, (pc, val, avg) = max(measured.items(), key=lambda kv: kv[1][0])
+        word = "above" if val > avg else "below"
+        reasons.append(f"{m.title()} 3Y of {val:.2f} is {word} the {cat_label} average of {avg:.2f}.")
+    else:
+        up, dn = _n(row.get("fhc_cap_up_3")) if hasattr(row, "get") else None, _n(row.get("fhc_cap_down_3")) if hasattr(row, "get") else None
+        up_avg, dn_avg = (_n(row.get("fhc_cap_up_3_avg")), _n(row.get("fhc_cap_down_3_avg"))) if hasattr(row, "get") else (None, None)
+        if None not in (up, dn, up_avg, dn_avg):
+            reasons.append(f"Captures {up:.2f}x of rising markets and {dn:.2f}x of falling ones; the category averages {up_avg:.2f}x and {dn_avg:.2f}x.")
 
     # 3. Manager track record / Quartile consistency / Max Drawdown
     mgr_tenure = _n(row.get("manager_tenure_years")) if hasattr(row, "get") else None
@@ -558,7 +514,6 @@ def generate_signal_reasons(row: Any, signal: str | None = None, cfg: dict | Non
 def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
     cfg = cfg or load_config()
     w = active_weights(cfg)
-    ratios = cfg["ratios"]
     comps: dict[str, list[dict]] = {
         "history": [
             {"label": f"Manager tenure (years, target {cfg['history']['manager_tenure_years']:g})", "value": _n(r["manager_tenure_years"]), "score": _n(r["fhd_hist_mgr"])},
@@ -569,11 +524,7 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
              "score": _n(r[f"fhd_qp_{k}"]), "note": "Predates current manager" if _b(r[f"fhd_qpre_{k}"]) else None}
             for k in ("ytd", "py1", "py2")
         ],
-        "ratios": [] if cfg["ratios"].get("mode", "legacy") in ("A", "B") else [
-            {"label": f"{n.title()} {y}Y", "value": _n(r[f"fhd_{n}_{y}"]), "score": None, "pass": _b(r[f"fhd_{n}_ok_{y}"]),
-             "threshold": ratios[f"{n}_threshold"]}
-            for n in ("capture", "sortino", "sharpe") for y in PERIODS
-        ],
+        "ratios": [],  # filled from the category-relative breakdown below
         "outperf": [
             {"label": f"{y}Y vs {'benchmark' if n == 'bench' else 'category average'}", "value": _n(r[f"fhd_{n}_ret_{y}"]), "pass": _b(r[f"fhd_{n}_beat_{y}"])}
             for y in PERIODS for n in ("bench", "cat")
@@ -581,11 +532,10 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
         "excess": [{"label": f"{y}Y excess vs category (pp)", "value": _n(r[f"fhd_exc_{y}"]), "score": _n(r[f"fhd_excs_{y}"])} for y in PERIODS],
         "drawdown": [{"label": "3Y max drawdown vs category average (magnitude, %)", "value": _n(r["fhd_dd_mag"]), "score": _n(r["fhd_dd_cat"]), "note": "score column = category average magnitude"}] if "drawdown" in w else [],
     }
-    mode = cfg["ratios"].get("mode", "legacy")
-    if mode in ("A", "B"):
-        from app.backoffice import fh_catscore
+    from app.backoffice import fh_catscore
 
-        comps["ratios"] = fh_catscore.breakdown(r, cfg, mode, w["ratios"], r.get("nav_date"))
+    mode = cfg["ratios"].get("mode", "B")
+    comps["ratios"] = fh_catscore.breakdown(r, cfg, mode, w["ratios"], r.get("nav_date"))
     filters = []
     for k, weight in w.items():
         cov = _n(r[f"fh_{k}_cov"])
@@ -600,7 +550,7 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
     return {
         "score": _n(r["fh_score"]), "rating": _n(r["fh_rating"]), "coverage": _n(r["fh_coverage"]),
         "signal": sig, "signal_reasons": sig_reasons,
-        "base": _n(r["fh_base"]), "penalties": [{"key": k, "points": _n(r[f"fh_pen_{k}"])} for k in ("sortino", "sharpe", "capture", "outperf")],
+        "base": _n(r["fh_base"]), "penalties": [{"key": "outperf", "points": _n(r["fh_pen_outperf"])}],
         "penalty_total": _n(r["fh_penalties"]),
         "adjustment": {"bonus": _n(r["fh_adj_bonus"]), "malus": _n(r["fh_adj_malus"]), "total": _n(r["fh_adj"])},
         "filters": filters, "drawdown_enabled": cfg["drawdown_enabled"],
@@ -609,5 +559,5 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
         "auto_eligible": bool(r["fh_auto"]),
         "scoring_mode": mode, "data_status": r.get("fh_data_status"), "data_status_text": r.get("fh_data_reason"),
         "review_status": r.get("fh_review_status"),
-        "provisional": PROVISIONAL + ([f"Ratios filter uses category-relative scoring mode {mode} (see fh_catscore). Beta and Treynor are informational: the dataset measures them against the category median, not an index."] if mode in ("A", "B") else []),
+        "provisional": PROVISIONAL + ["Beta and Treynor are shown but not scored: the dataset measures them against the category median, not an index."],
     }

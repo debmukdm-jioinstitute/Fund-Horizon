@@ -3,7 +3,7 @@ from __future__ import annotations
 
 Mode "A": each valid metric earns points by its favourable percentile among comparable category peers.
 Mode "B": mode A plus a bounded absolute-quality bonus on Sharpe and Sortino only (threshold is a business rule, not a truth).
-Mode "legacy" (default until the side-by-side report is signed off): the original absolute-threshold scoring in fh_score.
+The earlier absolute-threshold scoring was removed on 2026-10-30; data/fh_scoring_baseline_legacy.json keeps its last scores for reference.
 
 Peer universe = same canonical category + same plan (Direct vs Regular), open-ended, clean NAV data, one row per ISIN
 (Growth only in this dataset, so IDCW options never double-count). The category average is the equal-weight arithmetic mean of
@@ -90,8 +90,8 @@ def category_stats(df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return pd.DataFrame(out, index=df.index)
 
 
-def ratios_filter(df: pd.DataFrame, cfg: dict, mode: str) -> tuple[pd.Series, pd.Series, dict[str, pd.Series]]:
-    """Drop-in for fh_score._f_ratios: (raw 0..1, coverage 0..1, failures). Missing = 0 points, never redistributed."""
+def ratios_filter(df: pd.DataFrame, cfg: dict, mode: str) -> tuple[pd.Series, pd.Series]:
+    """The ratios filter: (raw 0..1, coverage 0..1). Missing = 0 points, never redistributed."""
     s = settings(cfg)
     st = category_stats(df, cfg)
     for c in st.columns:
@@ -115,8 +115,7 @@ def ratios_filter(df: pd.DataFrame, cfg: dict, mode: str) -> tuple[pd.Series, pd
             comp[name][1] += sc.notna() * pw[y]
     raw = sum(comp[k][0] * w for k, w in cw.items())
     cov = sum(comp[k][1] * w for k, w in cw.items())
-    # Ratio-failure penalties are switched off here: percentile points already penalise weak ratios, so keeping them double-counts.
-    return raw.clip(0, 1), cov, {k: pd.Series(0, index=df.index) for k in ("capture", "sortino", "sharpe")}
+    return raw.clip(0, 1), cov  # no separate ratio penalty: a weak percentile already costs points
 
 
 def _fmt(v: float | None) -> str:
@@ -135,15 +134,15 @@ def metric_text(name: str, value, avg, n, pct, higher: bool, thr: float | None, 
     word = ("above" if value > avg else "below") if value != avg else "equal to"
     if name == "cap_down":
         base = f"{'Lower' if better else 'Higher'} downside capture than the category average ({_fmt(value)} vs {_fmt(avg)})."
-    elif better:
-        base = f"Above the category average on a higher-is-better measure ({_fmt(value)} vs {_fmt(avg)})."
+    elif value == avg:
+        base = f"In line with the category average ({_fmt(avg)})."
     else:
-        base = f"{word.capitalize()} the category average ({_fmt(value)} vs {_fmt(avg)}) on a higher-is-better measure." if value != avg else f"In line with the category average ({_fmt(avg)})."
+        base = f"{word.capitalize()} the category average ({_fmt(value)} vs {_fmt(avg)}), which is {'better' if better else 'worse'}."
     if thr is not None:
         gap = "Above the absolute threshold" if value > thr else "Below the absolute threshold"
         conn = "and" if (value > thr) == better else "but"
         base = f"{gap} ({thr:g}), {conn} {base[0].lower()}{base[1:]}"
-    return base + f" Percentile among {int(n)} peers: {pct * 100:.0f}."
+    return base
 
 
 def breakdown(r: pd.Series, cfg: dict, mode: str, weight: float, as_of: str | None) -> list[dict]:

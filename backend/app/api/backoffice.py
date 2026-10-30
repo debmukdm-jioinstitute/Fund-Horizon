@@ -1056,7 +1056,8 @@ def _fh_refresh(frame: pd.DataFrame | None = None, force: bool = False) -> None:
     if not force and _FH_KEY is frame:
         return
     as_of = pd.to_datetime(frame["nav_date"], format="%d-%b-%Y").max().date().isoformat() if len(frame) else None
-    auto = {str(r.code): str(r.name) for r in frame[frame["fh_auto"]].itertuples()}
+    # Score alone adds funds to the FH list only when recommend.auto_enabled is on; otherwise staff decide and the score just informs.
+    auto = {str(r.code): str(r.name) for r in frame[frame["fh_auto"]].itertuples()} if fh_score.load_config()["recommend"].get("auto_enabled") else {}
     fh_recommended.apply_auto(auto, as_of)
     _FH_KEY = frame
     try:  # idempotent: unchanged data stores nothing
@@ -2938,11 +2939,11 @@ def backoffice_fh_reconstructed(code: str, staff: Annotated[dict, Depends(requir
 
 
 @router.get("/mutual-funds/{code}/fh-score-breakdown")
-def backoffice_fh_breakdown(code: str, staff: Annotated[dict, Depends(require_staff)], mode: str = Query("", pattern="^(|legacy|A|B)$")):
-    """Score breakdown with its explanations. `mode` previews another scoring mode without changing the default."""
+def backoffice_fh_breakdown(code: str, staff: Annotated[dict, Depends(require_staff)], mode: str = Query("", pattern="^(|A|B)$")):
+    """Score breakdown with its explanations. `mode` previews the other scoring mode without changing the live one."""
     cfg = fh_score.load_config()
     frame = _fh_frame()
-    if mode and mode != cfg["ratios"].get("mode", "legacy"):
+    if mode and mode != cfg["ratios"].get("mode", "B"):
         cfg = {**cfg, "ratios": {**cfg["ratios"], "mode": mode}}
         frame = _mode_frame(cfg)
     hit = frame[frame["code"] == code]

@@ -1,7 +1,7 @@
 # FH changes for review
 
 ## Recommendation
-Adopt **Mode B** (category-relative scoring plus a small bonus for Sharpe/Sortino above 1.0). It is what was discussed: a fund below 1.0 still earns credit if it beats its category, and a fund above 1.0 gets a bounded extra. Do **not** switch it on yet. It is built and previewable, and the live score is still the old one until the 80-point Buy bar is re-set for the new scale (below).
+Adopt **Mode B** (category-relative scoring plus a small bonus for Sharpe/Sortino above 1.0). It is what was discussed: a fund below 1.0 still earns credit if it beats its category, and a fund above 1.0 gets a bounded extra. Mode B is now the live scoring and the old threshold method is gone (2026-10-30). The 80-point Buy bar was set for the old scale and has not been re-set, so Buy counts are higher than before (below). Score alone no longer adds funds to the FH list.
 
 ## What changed
 | Area | Before | Now |

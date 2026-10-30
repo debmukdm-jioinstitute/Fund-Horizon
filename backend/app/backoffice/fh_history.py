@@ -151,7 +151,7 @@ def build_payload(df: pd.DataFrame, code: str, cfg: dict, note: str = "") -> dic
         "risk_metrics": risk,
         "jensen_alpha_3y": {"value": _v(r.get("alpha_3y")), "basis": "vs category+plan median daily return, not an index"},
         "model": {"score": _v(r["fh_score"]), "rating": _v(r["fh_rating"]), "signal": r["fh_signal"], "coverage": _v(r["fh_coverage"]),
-                  "scoring_mode": cfg["ratios"].get("mode", "legacy"), "filters": [{k: _v(f[k]) for k in ("key", "weight", "points", "coverage", "status")} for f in ex["filters"]],
+                  "scoring_mode": cfg["ratios"].get("mode", "B"), "filters": [{k: _v(f[k]) for k in ("key", "weight", "points", "coverage", "status")} for f in ex["filters"]],
                   "penalty_total": ex["penalty_total"], "adjustment": ex["adjustment"], "flags": [f["code"] for f in ex["flags"]]},
         "metric_breakdown": next((f["components"] for f in ex["filters"] if f["key"] == "ratios"), []),
         "status": {"data": _v(r.get("fh_data_status")), "data_text": _v(r.get("fh_data_reason")), "review": _v(r.get("fh_review_status"))},

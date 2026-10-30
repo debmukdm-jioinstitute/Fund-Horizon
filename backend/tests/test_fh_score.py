@@ -48,25 +48,18 @@ def test_two_qualifying_periods_give_full_credit():
     assert _frame(dict(cal_q_ytd=4, cal_q_py1=2, cal_q_py2=3))["fh_quartile_raw"] == 1.0
 
 
-def test_values_exactly_at_thresholds_fail():
-    r = _frame({f"sortino_{y}y": 1.5 for y in (1, 3, 5)} | {f"sharpe_{y}y": 1.0 for y in (1, 3, 5)}
-               | {f"cap_up_{y}y": 100.0 for y in (1, 3, 5)} | {f"cap_down_{y}y": 100.0 for y in (1, 3, 5)})
-    assert {"sortino_fail", "sharpe_fail", "capture_fail"} <= set(r["fh_flags"])
-    assert r["fh_pen_sortino"] < 0 and r["fh_pen_sharpe"] < 0
+def test_ratios_are_scored_against_category_peers_not_fixed_thresholds():
+    strong = _frame({f"sharpe_{y}y": 5.0 for y in (1, 3, 5)})  # peers sit at 2.5
+    weak = _frame({f"sharpe_{y}y": 0.1 for y in (1, 3, 5)})
+    assert strong["fh_ratios_raw"] > weak["fh_ratios_raw"]
+    assert strong["fhc_sharpe_3_pct"] > weak["fhc_sharpe_3_pct"]
+    assert "sortino_fail" not in strong["fh_flags"] and "fh_pen_sortino" not in strong.index  # no separate ratio penalty
 
 
-def test_single_failed_sortino_period_flags_and_penalises_less_than_two():
-    one = _frame({"sortino_3y": 1.4})
-    two = _frame({"sortino_3y": 1.4, "sortino_5y": 1.4})
-    assert "sortino_fail" in one["fh_flags"] and one["fh_pen_sortino"] < 0
-    assert two["fh_pen_sortino"] < 2 * one["fh_pen_sortino"]  # escalates
-
-
-def test_capture_undefined_for_zero_or_negative_denominator():
+def test_capture_undefined_for_zero_or_negative_downside():
     for bad in (0.0, -5.0, np.nan):
         r = _frame({"cap_down_3y": bad})
-        assert np.isnan(r["fhd_cap_3"])
-        assert "capture_fail" not in r["fh_flags"]  # unavailable is not a failure
+        assert np.isnan(r["fhc_cap_down_3_pct"])  # unavailable is not scored as poor
         assert r["fh_ratios_cov"] < 1
 
 

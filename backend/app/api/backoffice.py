@@ -1069,10 +1069,13 @@ def _fh_refresh(frame: pd.DataFrame | None = None, force: bool = False) -> None:
 
 def _fh_status(df: pd.DataFrame) -> pd.Series:
     inc, excl = fh_recommended.manual_state()
-    return pd.Series(
+    out = pd.Series(
         [fh_score.status(a, sc, b, set(inc), excl, c) for a, sc, b, c in zip(df["fh_auto"], df["fh_score"], df["fh_blockers"], df["code"])],
         index=df.index,
     )
+    if not fh_score.load_config()["recommend"].get("auto_enabled"):
+        out = out.replace("auto", "qualifies")  # meets the score bar, but only staff add funds to the list
+    return out
 
 
 @router.get("/mutual-funds/fh-score/methodology")

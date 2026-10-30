@@ -78,6 +78,30 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
   const g = GLOSSARY[baseKey(metric.key)];
   const period = PERIOD(metric.key);
   const pillar = data?.points != null;
+  if (data?.fh) {
+    // The FH score gets the whole screen: a tinted glass sheet with soft light blobs behind it for depth.
+    return (
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-gradient-to-br from-[#DCE9FF] via-[#EEF4FF] to-[#D5E6FF] dark:from-[#0B1626] dark:via-[#0E1B2E] dark:to-[#0A1422]" role="dialog" aria-label="FH score">
+        <div className="pointer-events-none fixed -top-40 -left-32 h-[28rem] w-[28rem] rounded-full bg-[#7FB2FF]/40 blur-3xl" aria-hidden />
+        <div className="pointer-events-none fixed top-1/3 -right-40 h-[32rem] w-[32rem] rounded-full bg-[#A9D0FF]/50 blur-3xl dark:bg-[#1A73E8]/20" aria-hidden />
+        <header className="sticky top-0 z-10 border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-[#0E1B2E]/60 backdrop-blur-xl">
+          <div className="mx-auto flex max-w-[110rem] items-center justify-between gap-4 px-6 py-4 sm:px-10">
+            <div className="min-w-0">
+              <h2 className="truncate text-[20px] font-medium text-[#1B2B45] dark:text-[#EDF2F7]">{row.name}</h2>
+              <p className="text-[13px] text-[#5B6B85] dark:text-[#A8B4C4]">FH score · {row.plan} plan</p>
+            </div>
+            <button type="button" aria-label="Close" onClick={onClose} className="shrink-0 rounded-full border border-white/70 dark:border-white/10 bg-white/70 dark:bg-white/10 px-4 py-2 text-[13px] shadow-sm backdrop-blur hover:bg-white">Close ✕</button>
+          </div>
+        </header>
+        <main className="relative mx-auto max-w-[110rem] px-6 py-10 sm:px-10">
+          <FhScorePanel fh={data.fh} row={row} />
+          <p className="mt-10 text-[12px] text-[#5B6B85] dark:text-[#A8B4C4]">
+            Computed live from the latest NAV data{data.nav_date ? ` (NAV as of ${formatISTDate(String(data.nav_date))})` : ""}. Past performance is not a guide to future returns. This is descriptive data, not investment advice.
+          </p>
+        </main>
+      </div>
+    );
+  }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div role="dialog" aria-label={`${metric.label} explained`} onClick={(ev) => ev.stopPropagation()}

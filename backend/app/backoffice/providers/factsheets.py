@@ -124,6 +124,8 @@ AMC_SOURCES: dict[str, tuple[str, str | None]] = {
     "Jio BlackRock Mutual Fund": ("jioblackrock", "https://www.jioblackrockamc.com/statutory-disclosure/fund-documents/factsheet"),
     "Kotak Mahindra Mutual Fund": ("kotak", None),
     "LIC Mutual Fund": ("lic", "https://www.licmf.com/downloads/factsheet"),
+    # Launched Sep 2026; its Fact Sheet section is empty until the first monthly factsheet is published.
+    "Lakshya Mutual Fund": ("lakshya", "https://lakshyafunds.com/compliance?tab=fund-docs"),
     "Mahindra Manulife Mutual Fund": ("mahindra", "https://www.mahindramanulife.com/downloads#investor"),
     "Mirae Asset Mutual Fund": ("mirae", "https://www.miraeassetmf.co.in/downloads/factsheet"),
     "Monarch Mutual Fund": ("monarch", None),

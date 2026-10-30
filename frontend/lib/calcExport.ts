@@ -20,7 +20,7 @@ export interface CardData {
 
 const W = 1240, H = 1754, TEAL = "#006F64", INK = "#172033", MUTED = "#667085", LINE = "#E4E9EF";
 const FOOTER_TOP = H - 170; // content must end above this; the footer is drawn here last
-export const PALETTE = ["#006F64", "#F2A33A", "#4C7BD9", "#9AA6B8"];
+export const PALETTE = ["#1A73E8", "#F9AB00", "#8AB4F8", "#1E8E3E"]; // glass theme: blue, amber, light blue, green
 
 function image(src: string): Promise<HTMLImageElement | null> {
   return new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
@@ -162,7 +162,7 @@ class Flow {
       for (let t = 0; t <= 4; t++) {
         const v = (top * t) / 4;
         this.g.strokeStyle = LINE; this.g.lineWidth = 1; this.g.beginPath(); this.g.moveTo(x0, hy(v)); this.g.lineTo(x1, hy(v)); this.g.stroke();
-        this.txt(bars && !growth ? `${Math.round(v)}%` : compact(v), x0 - 12, hy(v) + 7, MUTED, 400, 18, "right");
+        this.txt(bars && !growth && bars.unit !== "₹" ? `${Math.round(v)}%` : compact(v), x0 - 12, hy(v) + 7, MUTED, 400, 18, "right");
       }
       const slot = (x1 - x0) / Math.max(cols, 1);
       if (growth?.kind === "area") {

@@ -201,7 +201,7 @@ function Results({ calc, r, vals, parsed, client, onSaved }: { calc: Calculator;
           {rest.map((m) => (
             <div key={m.label} className={`rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] ${soft} px-3 py-2`}>
               <dt className={`text-[12px] ${muted}`}>{m.label}</dt>
-              <dd className={`text-[15px] font-semibold tabular-nums ${ink}`}>{show(m)}{m.kind === "inr" && words(m.value) && <span className={`ml-1.5 text-[12px] font-normal ${muted}`}>{words(m.value)}</span>}</dd>
+              <dd className={`text-[15px] font-semibold tabular-nums ${ink}`}>{m.text || m.kind === "text" ? show(m) : <CountUp value={m.value} fmt={(n) => show({ ...m, value: n })} />}{m.kind === "inr" && words(m.value) && <span className={`ml-1.5 text-[12px] font-normal ${muted}`}>{words(m.value)}</span>}</dd>
             </div>
           ))}
         </dl>

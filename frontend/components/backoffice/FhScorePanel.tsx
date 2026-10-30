@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getFhMethodology, setFhScoringMode, type FhExplain, type FhFilter, type FhMethodology, type MfScreenerRow, type FhBreakdownRow } from "@/lib/backoffice";
 import { useRecommended } from "@/lib/recommended";
 import { useAuth } from "@/components/AuthContext";
+import { CountUp } from "@/components/operations/CalcCharts";
 import { formatISTDate } from "@/lib/terminal-format";
 import { BOX, MUTED, arrow, Comparison, History, RiskMeasures, StatusChips, Title, useModeExplain } from "./FhHistoryPanel";
 
@@ -108,7 +109,7 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
     <div className="grid grid-cols-1 gap-8 xl:grid-cols-12 text-[15px] text-[#1B2B45] dark:text-[#EDF2F7]">
       <section className={`${BOX} xl:col-span-12`}>
         <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
-          <div><span className="text-[72px] leading-none font-extralight tabular-nums">{f(shown.score)}</span><span className={`ml-2 text-[16px] ${MUTED}`}>out of 100</span></div>
+          <div><span className="text-[72px] leading-none font-extralight tabular-nums">{typeof shown.score === "number" ? <CountUp value={shown.score} fmt={(n) => n.toFixed(1)} /> : f(shown.score)}</span><span className={`ml-2 text-[16px] ${MUTED}`}>out of 100</span></div>
           <div className="pb-2 space-y-2">
             {stars ? <div className="text-[22px] tracking-wider text-[#F29900]" aria-label={`${shown.rating} out of 5 stars`}>{stars}</div> : <div className={MUTED}>Not rated yet</div>}
             {shown.signal && <span className={`inline-block rounded-full px-4 py-1 text-[14px] font-medium shadow-sm ${SIGNAL[shown.signal]}`}>{shown.signal}</span>}

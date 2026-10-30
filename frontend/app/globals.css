@@ -410,6 +410,33 @@ html.dark .dropdown-close { background: rgba(255, 255, 255, 0.08); }
 .sf .terminal-input, .sf .terminal-panel { border-radius: 12px; }
 .sf .terminal-panel { border-radius: 18px; }
 
+/* ---------- Motion: gentle rise-in for cards, hover depth, pressed buttons. Off for reduced-motion users. ---------- */
+@keyframes fh-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .terminal-panel, .card, main [class~="rounded-3xl"] { animation: fh-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .terminal-btn, .terminal-btn-accent, button { transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease, filter 0.15s ease; }
+  .terminal-btn:active, .terminal-btn-accent:active, button:active { transform: scale(0.97); }
+  .terminal-table td, tbody tr { transition: background-color 0.15s ease; }
+}
+/* Hover depth uses shadow only (a transform would trap position:fixed pop-ups inside the panel). */
+.terminal-panel, .card { transition: box-shadow 0.2s ease; }
+.terminal-panel:hover, .card:hover { box-shadow: 0 24px 60px -18px rgba(26, 115, 232, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.95); }
+html.dark .terminal-panel:hover, html.dark .card:hover { box-shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+
+/* ---------- Charts (Recharts) everywhere follow the glass theme ---------- */
+.recharts-cartesian-grid line { stroke: rgba(176, 200, 236, 0.55); }
+.recharts-cartesian-axis-tick text, .recharts-label { fill: #5B6B85; }
+html.dark .recharts-cartesian-axis-tick text, html.dark .recharts-label { fill: #A8B4C4; }
+.recharts-default-tooltip {
+  border-radius: 14px !important; border: 1px solid rgba(176, 200, 236, 0.6) !important;
+  background: rgba(255, 255, 255, 0.94) !important; box-shadow: 0 12px 30px -12px rgba(26, 115, 232, 0.35);
+}
+html.dark .recharts-default-tooltip { background: rgba(18, 35, 58, 0.95) !important; border-color: rgba(255, 255, 255, 0.1) !important; }
+.recharts-bar-rectangle path, .recharts-sector, .fh-slice { transition: filter 0.2s ease, opacity 0.2s ease; }
+.recharts-bar-rectangle:hover path, .recharts-sector:hover, .fh-slice:hover { filter: brightness(1.1) drop-shadow(0 6px 10px rgba(26, 115, 232, 0.35)); }
+.recharts-legend-item { transition: opacity 0.15s ease; }
+.recharts-legend-item:hover { opacity: 0.75; }
+
 @media print {
   body { background: #FFFFFF !important; }
   .terminal-panel, .card { box-shadow: none !important; background: #FFFFFF !important; }

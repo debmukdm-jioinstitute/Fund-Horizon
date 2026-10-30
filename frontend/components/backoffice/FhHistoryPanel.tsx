@@ -6,6 +6,7 @@ import {
   type FhBreakdownRow, type FhComparison, type FhExplain, type FhHistory, type FhOutcome, type FhThenNow,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
+import { CountUp } from "@/components/operations/CalcCharts";
 
 export const MUTED = "text-[#5B6B85] dark:text-[#A8B4C4]";
 // Tinted glass card: frosted blue-white fill, bright top edge, soft blue shadow, small lift on hover. Avoids splitting across printed pages.
@@ -136,7 +137,7 @@ export function RiskMeasures({ rows }: { rows: FhBreakdownRow[] }) {
                 <span className="text-[14px] font-medium">{name}</span>
                 <span className={`text-[12px] tabular-nums ${MUTED}`}>{r.scored && r.points != null ? `${f(r.points, 1)} of ${f(r.max_points, 1)} points` : r.scored ? "not scored" : "for information"}</span>
               </div>
-              <div className="mt-4 flex items-baseline gap-3 tabular-nums"><span className="text-[30px] font-light">{f(r.value)}</span><span className={`text-[12px] ${MUTED}`}>similar funds: {f(r.category_average)}</span></div>
+              <div className="mt-4 flex items-baseline gap-3 tabular-nums"><span className="text-[30px] font-light">{typeof r.value === "number" ? <CountUp value={r.value} fmt={(n) => n.toFixed(2)} /> : f(r.value)}</span><span className={`text-[12px] ${MUTED}`}>similar funds: {f(r.category_average)}</span></div>
               {r.scored && better != null && (
                 <div className="mt-4"><div className="h-2 rounded-full bg-[#CFE0FA]/70 dark:bg-[#2B3644]"><div className="h-2 rounded-full bg-gradient-to-r from-[#4C9AFF] to-[#1A73E8]" style={{ width: `${better}%` }} /></div>
                   <p className={`mt-1 text-[12px] ${MUTED}`}>Ranks ahead of {better}% of {r.peer_count} funds.</p></div>

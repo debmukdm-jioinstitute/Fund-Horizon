@@ -5,7 +5,7 @@ export interface Slice { name: string; value: number }
 export interface Pt { x: number; a: number; b: number }
 /** "stack": a = invested, b = gain (stacked bars). "area": a = balance (declining corpus). */
 export interface Growth { kind: "stack" | "area"; title: string; names: [string, string]; pts: Pt[] }
-export interface Bars { title: string; cats: string[]; names: [string, string]; a: number[]; b: number[] }
+export interface Bars { title: string; cats: string[]; names: [string, string]; a: number[]; b: number[]; unit?: "%" | "₹" }
 export interface Viz { donutTitle?: string; donut?: Slice[]; growth?: Growth; bars?: Bars }
 
 const grow = (p: number, r: number, y: number) => p * (1 + r / 100) ** y;
@@ -70,7 +70,7 @@ export function vizFor(id: string, v: Values, r: Outcome): Viz {
       const fees = rows.map((row) => Number(row[3]) + Number(row[4]) + Number(row[7]));
       const perf = rows.map((row) => Number(row[6]));
       return { donutTitle: "Where the gross value went", donut: [{ name: "Value after fees", value: hero(r) }, { name: "Fixed fees and expenses", value: fees.reduce((a, b) => a + b, 0) }, { name: "Performance fees", value: perf.reduce((a, b) => a + b, 0) }],
-        bars: { title: "Fees each year", cats: rows.map((row) => `Year ${row[0]}`), names: ["Fixed fee, expenses and GST", "Performance fee"], a: fees, b: perf } };
+        bars: { title: "Fees each year", cats: rows.map((row) => `Year ${row[0]}`), names: ["Fixed fee, expenses and GST", "Performance fee"], a: fees, b: perf, unit: "₹" } };
     }
     default:
       return {};

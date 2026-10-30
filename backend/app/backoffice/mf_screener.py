@@ -263,6 +263,7 @@ def _scored(
     df["ter"] = df["code"].map(ter)
     df["cat_label"] = df["cat"].map(_LABELS).fillna(df["cat"])
     df["benchmark"] = df["cat"].map(BENCHMARKS).fillna("Scheme's tracked index")
+    df["benchmark_fund"] = df["cat"].map(BENCHMARK_PROXY).map(dict(zip(df["code"], df["name"])))  # the index fund whose returns stand in for the benchmark
     # Excess return vs the category-plan average (no index series in the dataset), in percentage points.
     for y, (r, c) in {1: ("ret_1y", "ret_1y_cat"), 3: ("cagr_3y", "cagr_3y_cat"), 5: ("cagr_5y", "cagr_5y_cat")}.items():
         df[f"out_{y}y"] = df[r] - df[c]
@@ -439,7 +440,7 @@ def records(df: pd.DataFrame) -> list[dict[str, Any]]:
 def to_csv(df: pd.DataFrame) -> str:
     cols = {
         "code": "Scheme Code", "name": "Fund Name", "amc": "AMC", "plan": "Plan", "cat_label": "Category", "benchmark": "Benchmark",
-        "out_1y": "1Y vs Category Avg (pp)", "out_3y": "3Y vs Category Avg (pp)", "out_5y": "5Y vs Category Avg (pp)", "score": "FH Checklist Score",
+        "out_1y": "1Y vs Category Avg (%)", "out_3y": "3Y vs Category Avg (%)", "out_5y": "5Y vs Category Avg (%)", "score": "FH Checklist Score",
         "perf": "Performance /25", "port": "Portfolio /25", "ops": "Operations /25", "risk": "Risk vs Reward /25",
         "stars": "FH Star Rating", "fh_signal": "FH Signal", "aum_cr": "AUM Cr", "ter": "Net Expense Ratio %",
         "nav": "NAV", "day_chg": "Day %", "week_chg": "Week %", "hi52": "52W High", "hi52_date": "52W High Date",

@@ -5,7 +5,7 @@ import { getFhMethodology, setFhScoringMode, type FhExplain, type FhFilter, type
 import { useRecommended } from "@/lib/recommended";
 import { useAuth } from "@/components/AuthContext";
 import { formatISTDate } from "@/lib/terminal-format";
-import { BOX, MUTED, Comparison, History, RiskMeasures, StatusChips, Title, useModeExplain } from "./FhHistoryPanel";
+import { BOX, MUTED, arrow, Comparison, History, RiskMeasures, StatusChips, Title, useModeExplain } from "./FhHistoryPanel";
 
 const f = (v: number | null | undefined, d = 1) => (typeof v === "number" && Number.isFinite(v) ? v.toFixed(d) : "n/a");
 const sign = (v: number | null | undefined) => (typeof v === "number" && v > 0 ? `+${v.toFixed(1)}` : f(v));
@@ -33,7 +33,30 @@ const MODES: Record<string, [string, string]> = {
   B: ["Ranked, with a quality bonus", "Same ranking, plus a small bonus when Sharpe or Sortino is above 1.0."],
 };
 
-function Part({ fl, note }: { fl: FhFilter; note?: string }) {
+/** Fund return against the benchmark and against similar funds, one row per period, with a tick when the fund is ahead. */
+function OutperfTable({ comps, bench }: { comps: FhFilter["components"]; bench?: string }) {
+  const periods = Array.from(new Set(comps.map((c) => c.period)));
+  const get = (p: string | undefined, a: string) => comps.find((c) => c.period === p && c.against === a);
+  const th = "px-4 py-3 text-left text-[13px] font-medium whitespace-nowrap";
+  const td = "px-4 py-4 text-[14px] whitespace-nowrap";
+  const cell = (c?: { lead?: number | null; pass?: boolean | null }) => (
+    <td className={`${td} font-medium ${c?.pass == null ? "" : c.pass ? "text-[#1E7B3A]" : "text-[#B3261E]"}`}>{arrow(c?.lead)} {c?.pass == null ? "" : c.pass ? "✓" : "✗"}</td>
+  );
+  return (
+    <div>
+      <p className={`mb-3 text-[13px] leading-6 ${MUTED}`}>Benchmark: {bench ?? "not available"}. A tick means the fund finished ahead.</p>
+      <div className="overflow-x-auto rounded-xl border border-white/70 dark:border-white/10">
+        <table className="w-full min-w-[34rem] border-separate border-spacing-0 tabular-nums">
+          <thead><tr className={`bg-[#DCE9FF]/70 dark:bg-[#1A73E8]/20 ${MUTED}`}><th className={th}>Period</th><th className={th}>This fund</th><th className={th}>Benchmark</th><th className={th}>Similar funds</th><th className={th}>Vs benchmark</th><th className={th}>Vs similar funds</th></tr></thead>
+          <tbody>{periods.map((p) => { const b = get(p, "benchmark"), c = get(p, "similar funds"); return (
+            <tr key={p} className="border-t border-white/70"><td className={`${td} font-medium`}>{p}</td><td className={td}>{f(b?.fund ?? c?.fund, 2)}%</td><td className={td}>{f(b?.ref, 2)}%</td><td className={td}>{f(c?.ref, 2)}%</td>{cell(b)}{cell(c)}</tr>); })}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function Part({ fl, note, bench }: { fl: FhFilter; note?: string; bench?: string }) {
   const [open, setOpen] = useState(false);
   const [name, what] = PART[fl.key] ?? [fl.label, ""];
   const pct = fl.weight ? Math.max(0, Math.min(100, ((fl.points ?? 0) / fl.weight) * 100)) : 0;
@@ -50,7 +73,7 @@ function Part({ fl, note }: { fl: FhFilter; note?: string }) {
       {open && (
         <ul className="mt-4 space-y-3 rounded-2xl bg-white/60 dark:bg-white/5 p-5 text-[14px] leading-6">
           {note && <li className={MUTED}>{note}</li>}
-          {fl.key !== "ratios" && fl.components.map((c) => (
+          {fl.key === "outperf" ? <li><OutperfTable comps={fl.components} bench={bench} /></li> : fl.key !== "ratios" && fl.components.map((c) => (
             <li key={c.label} className="flex justify-between gap-3"><span className={MUTED}>{c.label}{c.note ? `, ${c.note.toLowerCase()}` : ""}</span>
               <span className="tabular-nums whitespace-nowrap">{c.value == null ? "not available" : f(c.value, 2)}{c.pass != null && <span className={c.pass ? " text-[#1E7B3A]" : " text-[#B3261E]"}>{c.pass ? " ✓" : " ✗"}</span>}</span></li>
           ))}
@@ -126,7 +149,7 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
       <section className={`${BOX} xl:col-span-7`}>
         <Title hint="Tap a row to see what it is made of.">How the score adds up</Title>
         <ul className="divide-y divide-white/80 dark:divide-white/10">
-          {shown.filters.map((fl) => <Part key={fl.key} fl={fl} note={fl.key === "ratios" ? "The detailed numbers are in the Risk and reward section below." : undefined} />)}
+          {shown.filters.map((fl) => <Part key={fl.key} fl={fl} bench={shown.benchmark ? [shown.benchmark.name, shown.benchmark.stand_in_fund && `tracked here by ${shown.benchmark.stand_in_fund}`].filter(Boolean).join(", ") : undefined} note={fl.key === "ratios" ? "The detailed numbers are in the Risk and reward section below." : undefined} />)}
         </ul>
         <p className={`mt-6 text-[14px] leading-7 ${MUTED}`}>
           The parts add up to {f(shown.base)}. Penalties take off {f(Math.abs(shown.penalty_total ?? 0))}, and the consistency adjustment {sign(shown.adjustment.total)}, which gives {f(shown.score)}, kept between 0 and 100.

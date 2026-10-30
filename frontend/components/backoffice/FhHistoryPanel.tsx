@@ -12,7 +12,9 @@ export const MUTED = "text-[#5B6B85] dark:text-[#A8B4C4]";
 export const BOX = "break-inside-avoid rounded-3xl border border-white/70 dark:border-white/10 bg-white/55 dark:bg-[#12233A]/55 backdrop-blur-xl p-7 sm:p-9 shadow-[0_18px_50px_-18px_rgba(26,115,232,0.35),inset_0_1px_0_rgba(255,255,255,0.95)] transition-transform duration-200 hover:-translate-y-0.5";
 export const PILL = "rounded-full bg-white/70 dark:bg-white/10 border border-white/80 dark:border-white/10 shadow-sm";
 const f = (v: number | string | null | undefined, d = 2) => (typeof v === "number" && Number.isFinite(v) ? v.toFixed(d) : v == null ? "n/a" : String(v));
-const pp = (v: number | null | undefined) => (typeof v === "number" ? `${v > 0 ? "+" : ""}${v.toFixed(2)}` : "n/a");
+/** Signed gap as a symbol and a percent: ▲ 5.37% (ahead), ▼ 1.20% (behind), ● level. */
+export const arrow = (v: number | null | undefined) => (typeof v !== "number" ? "n/a" : v > 0 ? `▲ ${v.toFixed(2)}%` : v < 0 ? `▼ ${Math.abs(v).toFixed(2)}%` : "● 0.00%");
+const mark = (ok: boolean | null | undefined) => (ok == null ? "n/a" : ok ? "✓ Better" : "✗ Worse");
 const tone = (v: number | null | undefined) => (typeof v !== "number" ? "" : v > 0 ? "text-[#1E7B3A] dark:text-[#6FD493]" : v < 0 ? "text-[#B3261E] dark:text-[#F2B8B5]" : "");
 
 export function Title({ children, hint }: { children: React.ReactNode; hint?: string }) {
@@ -33,38 +35,71 @@ export function StatusChips({ data, review, text }: { data?: string; review?: st
   );
 }
 
+const TH = "px-5 py-4 text-left text-[13px] font-medium whitespace-nowrap";
+const TD = "px-5 py-5 text-[15px] whitespace-nowrap";
+const WRAP = "overflow-x-auto rounded-2xl border border-white/70 dark:border-white/10 bg-white/50 dark:bg-white/5";
+const HEAD = "bg-[#DCE9FF]/70 dark:bg-[#1A73E8]/20";
+const ok = (g: boolean | null) => (g == null ? "" : g ? "text-[#1E7B3A] dark:text-[#6FD493]" : "text-[#B3261E] dark:text-[#F2B8B5]");
+
 export function Comparison({ code }: { code: string }) {
   const [d, setD] = useState<FhComparison | null>(null);
   useEffect(() => { getFhComparison(code).then(setD).catch(() => setD(null)); }, [code]);
   if (!d) return null;
-  const th = "px-5 py-4 text-left text-[13px] font-medium whitespace-nowrap";
-  const td = "px-5 py-5 text-[15px] whitespace-nowrap";
+  const facts: [string, string][] = [
+    ["Benchmark", d.benchmark],
+    ["Stand-in for the benchmark", d.benchmark_fund ? `${d.benchmark_fund}, the index fund that tracks it` : "Not available for this category"],
+    ["Similar funds", `${d.peer_universe.eligible} ${d.category.replace(/_/g, " ")} funds in the ${d.plan} plan, weighted equally, including this fund`],
+    ["Data as of", d.as_of ?? "n/a"],
+  ];
   return (
-    <section className={BOX}>
-      <Title hint={`Returns in percent. The benchmark is ${d.benchmark}.`}>How it compares</Title>
-      <div className="overflow-x-auto rounded-2xl border border-white/70 dark:border-white/10 bg-white/50 dark:bg-white/5">
-        <table className="w-full min-w-[44rem] border-separate border-spacing-0 tabular-nums">
-          <thead>
-            <tr className={`bg-[#DCE9FF]/70 dark:bg-[#1A73E8]/20 ${MUTED}`}>
-              <th className={th}>Period</th><th className={th}>This fund</th><th className={th}>Benchmark</th><th className={th}>Similar funds</th><th className={th}>Ahead of benchmark</th><th className={th}>Ahead of similar funds</th>
-            </tr>
-          </thead>
-          <tbody>
-            {d.periods.map((p, i) => (
-              <tr key={p.period} title={p.return_basis} className={i % 2 ? "bg-white/40 dark:bg-white/[0.03]" : ""}>
-                <td className={`${td} font-medium`}>{p.period.toUpperCase()}</td><td className={td}>{f(p.fund)}</td><td className={td}>{f(p.benchmark)}</td><td className={td}>{f(p.category_average)}</td>
-                <td className={`${td} font-medium ${tone(p.excess_vs_benchmark_pp)}`}>{pp(p.excess_vs_benchmark_pp)}</td><td className={`${td} font-medium ${tone(p.excess_vs_category_pp)}`}>{pp(p.excess_vs_category_pp)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <section className={`${BOX} space-y-10`}>
+      <div>
+        <Title hint="Three things are compared: this fund, its benchmark, and similar funds.">How it compares</Title>
+        <div className={WRAP}>
+          <table className="w-full border-separate border-spacing-0">
+            <tbody>{facts.map(([k, v], i) => (
+              <tr key={k} className={i % 2 ? "bg-white/40 dark:bg-white/[0.03]" : ""}><th className={`${TH} w-[16rem] ${MUTED}`}>{k}</th><td className="px-5 py-4 text-[15px]">{v}</td></tr>
+            ))}</tbody>
+          </table>
+        </div>
       </div>
-      <p className={`mt-6 max-w-4xl text-[13px] leading-7 ${MUTED}`}>
-        Periods up to one year show total return, and longer periods show yearly growth.
-        <br />
-        Similar funds are the {d.peer_universe.eligible} funds in the same category and plan, weighted equally, including this one.
-        <br />
-        The benchmark is the closest index fund, not the official total-return index, so it can lag slightly. Data is as of {d.as_of ?? "n/a"}.
+
+      <div>
+        <h4 className="mb-4 text-[16px] font-medium">Returns</h4>
+        <div className={WRAP}>
+          <table className="w-full min-w-[46rem] border-separate border-spacing-0 tabular-nums">
+            <thead><tr className={`${HEAD} ${MUTED}`}>
+              <th className={TH}>Period</th><th className={TH}>This fund</th><th className={TH}>Benchmark</th><th className={TH}>Similar funds</th><th className={TH}>Fund vs benchmark</th><th className={TH}>Fund vs similar funds</th>
+            </tr></thead>
+            <tbody>{d.periods.map((p, i) => (
+              <tr key={p.period} title={p.return_basis} className={i % 2 ? "bg-white/40 dark:bg-white/[0.03]" : ""}>
+                <td className={`${TD} font-medium`}>{p.period.toUpperCase()}</td><td className={TD}>{f(p.fund)}%</td><td className={TD}>{f(p.benchmark)}%</td><td className={TD}>{f(p.category_average)}%</td>
+                <td className={`${TD} font-medium ${tone(p.excess_vs_benchmark_pp)}`}>{arrow(p.excess_vs_benchmark_pp)}</td><td className={`${TD} font-medium ${tone(p.excess_vs_category_pp)}`}>{arrow(p.excess_vs_category_pp)}</td>
+              </tr>))}</tbody>
+          </table>
+        </div>
+        <p className={`mt-4 text-[13px] leading-7 ${MUTED}`}>▲ means ahead and ▼ means behind. Periods up to one year show total return, and longer periods show yearly growth.</p>
+      </div>
+
+      <div>
+        <h4 className="mb-4 text-[16px] font-medium">Risk</h4>
+        <div className={WRAP}>
+          <table className="w-full min-w-[46rem] border-separate border-spacing-0 tabular-nums">
+            <thead><tr className={`${HEAD} ${MUTED}`}>
+              <th className={TH}>Measure</th><th className={TH}>This fund</th><th className={TH}>Benchmark</th><th className={TH}>Similar funds</th><th className={TH}>Against benchmark</th><th className={TH}>Against similar funds</th>
+            </tr></thead>
+            <tbody>{d.risk_comparison.map((r, i) => (
+              <tr key={r.measure} className={i % 2 ? "bg-white/40 dark:bg-white/[0.03]" : ""}>
+                <td className={`${TD} font-medium`}>{r.measure}</td><td className={TD}>{f(r.fund)}</td><td className={TD}>{f(r.benchmark)}</td><td className={TD}>{f(r.category_average)}</td>
+                <td className={`${TD} font-medium ${ok(r.good_vs_benchmark)}`}>{mark(r.good_vs_benchmark)}</td><td className={`${TD} font-medium ${ok(r.good_vs_category)}`}>{mark(r.good_vs_category)}</td>
+              </tr>))}</tbody>
+          </table>
+        </div>
+        <p className={`mt-4 text-[13px] leading-7 ${MUTED}`}>✓ means the fund is better on that measure. Higher is better for Sharpe and Sortino, lower is better for volatility, and a smaller fall is better for Worst fall.</p>
+      </div>
+
+      <p className={`max-w-4xl text-[13px] leading-7 ${MUTED}`}>
+        The benchmark figures come from the stand-in index fund, not the official total-return index, so they can lag slightly. The stand-in is a Direct plan, so Regular plans are measured against a lower-cost comparison.
       </p>
     </section>
   );
@@ -175,7 +210,7 @@ export function History({ code }: { code: string }) {
             <>
               <ul className="space-y-2">{Object.entries(out.periods).map(([k, p]) => (
                 <li key={k}><strong className="font-medium">{k}:</strong>{" "}{p.available && p.while_recommended
-                  ? `the fund returned ${f(p.while_recommended.fund?.return_pct)}% (${p.while_recommended.fund?.basis}), ${pp(p.while_recommended.excess_vs_benchmark_pp)} points against the benchmark and ${pp(p.while_recommended.excess_vs_category_pp)} against similar funds.`
+                  ? `the fund returned ${f(p.while_recommended.fund?.return_pct)}% (${p.while_recommended.fund?.basis}), ${arrow(p.while_recommended.excess_vs_benchmark_pp)} against the benchmark and ${arrow(p.while_recommended.excess_vs_category_pp)} against similar funds.`
                   : p.reason}</li>))}</ul>
               <p className={`text-[12px] ${MUTED}`}>{out.limitations?.join(" ")}</p>
             </>

@@ -2977,7 +2977,8 @@ def backoffice_fh_comparison(code: str, staff: Annotated[dict, Depends(require_s
     """Fund vs benchmark and fund vs category average, as two separate comparisons per period."""
     p = fh_history.build_payload(_fh_frame(), code, fh_score.load_config())
     return clean({"periods": p["returns"], "peer_universe": p["peer_universe"], "as_of": p["timestamps"]["observation"],
-                  "jensen_alpha_3y": p["jensen_alpha_3y"], "benchmark": p["identity"]["benchmark"], "benchmark_basis": fh_history.BENCH_NOTE,
+                  "jensen_alpha_3y": p["jensen_alpha_3y"], "benchmark": p["identity"]["benchmark"], "benchmark_fund": p["identity"]["benchmark_stand_in_fund"], "benchmark_basis": fh_history.BENCH_NOTE,
+                  "risk_comparison": p["risk_comparison"], "category": p["identity"]["category"], "plan": p["identity"]["plan"],
                   "risk_metrics": p["risk_metrics"], "status": p["status"]})
 
 

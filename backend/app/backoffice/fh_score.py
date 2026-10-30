@@ -468,11 +468,11 @@ def generate_signal_reasons(row: Any, signal: str | None = None, cfg: dict | Non
     cagr_3y = _n(row.get("cagr_3y")) if hasattr(row, "get") else None
     if out_3y is not None:
         if out_3y >= 1.0:
-            reasons.append(f"3Y CAGR (+{out_3y:.1f}pp) outperforms {cat_label} category average.")
+            reasons.append(f"3Y CAGR is ▲ {out_3y:.1f}% ahead of the {cat_label} category average.")
         elif out_3y <= -1.0:
-            reasons.append(f"3Y CAGR ({out_3y:+.1f}pp) trails {cat_label} category average.")
+            reasons.append(f"3Y CAGR is ▼ {abs(out_3y):.1f}% behind the {cat_label} category average.")
         else:
-            reasons.append(f"3Y CAGR ({out_3y:+.1f}pp) performs in line with {cat_label} peers.")
+            reasons.append(f"3Y CAGR is in line with {cat_label} peers (within 1%).")
     elif cagr_3y is not None:
         reasons.append(f"3Y CAGR delivered {cagr_3y:.1f}%.")
 
@@ -525,11 +525,14 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
             for k in ("ytd", "py1", "py2")
         ],
         "ratios": [],  # filled from the category-relative breakdown below
-        "outperf": [
-            {"label": f"{y}Y vs {'benchmark' if n == 'bench' else 'category average'}", "value": _n(r[f"fhd_{n}_ret_{y}"]), "pass": _b(r[f"fhd_{n}_beat_{y}"])}
+        "outperf": [  # fund return, what it was compared with, and the lead (fund minus reference), in percent
+            {"label": f"{y}Y vs {'benchmark' if n == 'bench' else 'similar funds'}", "period": f"{y}Y", "against": "benchmark" if n == "bench" else "similar funds",
+             "fund": _n(r[_RET[y][0]]), "ref": _n(r[f"fhd_{n}_ret_{y}"]), "value": _n(r[f"fhd_{n}_ret_{y}"]),
+             "lead": None if _n(r[_RET[y][0]]) is None or _n(r[f"fhd_{n}_ret_{y}"]) is None else round(_n(r[_RET[y][0]]) - _n(r[f"fhd_{n}_ret_{y}"]), 3),
+             "pass": _b(r[f"fhd_{n}_beat_{y}"])}
             for y in PERIODS for n in ("bench", "cat")
         ],
-        "excess": [{"label": f"{y}Y excess vs category (pp)", "value": _n(r[f"fhd_exc_{y}"]), "score": _n(r[f"fhd_excs_{y}"])} for y in PERIODS],
+        "excess": [{"label": f"{y}Y lead over similar funds (%)", "value": _n(r[f"fhd_exc_{y}"]), "score": _n(r[f"fhd_excs_{y}"])} for y in PERIODS],
         "drawdown": [{"label": "3Y max drawdown vs category average (magnitude, %)", "value": _n(r["fhd_dd_mag"]), "score": _n(r["fhd_dd_cat"]), "note": "score column = category average magnitude"}] if "drawdown" in w else [],
     }
     from app.backoffice import fh_catscore
@@ -557,6 +560,7 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
         "flags": [{"code": f, "text": FLAG_TEXT[f]} for f in flags],
         "blockers": [{"code": b, "text": BLOCKER_TEXT.get(b.split(":")[0], b)} for b in r["fh_blockers"]],
         "auto_eligible": bool(r["fh_auto"]),
+        "benchmark": {"name": r.get("benchmark"), "stand_in_fund": r.get("benchmark_fund")},
         "scoring_mode": mode, "data_status": r.get("fh_data_status"), "data_status_text": r.get("fh_data_reason"),
         "review_status": r.get("fh_review_status"),
         "provisional": PROVISIONAL + ["Beta and Treynor are shown but not scored: the dataset measures them against the category median, not an index."],

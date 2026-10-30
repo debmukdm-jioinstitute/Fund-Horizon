@@ -125,6 +125,27 @@ def _bench_returns(df: pd.DataFrame, r: pd.Series) -> dict[str, float | None]:
     return {col: (_v(row.iloc[0][col]) if len(row) else None) for col in _RET.values()}
 
 
+def risk_comparison(df: pd.DataFrame, r: pd.Series) -> list[dict]:
+    """Fund vs the benchmark stand-in fund vs the category-plan average, for a few risk measures. `good` says whether the fund
+    is better than the reference on that measure (direction depends on the measure)."""
+    from app.backoffice import fh_catscore
+    from app.backoffice.mf_screener import BENCHMARK_PROXY
+
+    bench = df[df["code"] == BENCHMARK_PROXY.get(r["cat"])]
+    ok, _ = fh_catscore.peer_eligibility(df)
+    peers = df[(df["cat"] == r["cat"]) & (df["plan"] == r["plan"]) & ok]
+    spec = [(f"sharpe_{y}y", f"Sharpe {y}Y", True) for y in (1, 3, 5)] + [(f"sortino_{y}y", f"Sortino {y}Y", True) for y in (1, 3, 5)] + \
+           [(f"vol_{y}y", f"Volatility {y}Y (%)", False) for y in (1, 3, 5)] + [("max_dd_3y", "Worst fall 3Y (%)", True)]
+    out = []
+    for col, label, higher in spec:
+        fund, b = _v(r.get(col)), (_v(bench.iloc[0][col]) if len(bench) else None)
+        cat = _v(pd.to_numeric(peers[col], errors="coerce").replace([np.inf, -np.inf], np.nan).mean()) if col in peers else None
+        good = lambda ref: None if fund is None or ref is None else (fund > ref if higher else fund < ref)  # noqa: E731
+        out.append({"measure": label, "fund": fund, "benchmark": b, "category_average": cat, "better_is": "higher" if higher else "lower",
+                    "good_vs_benchmark": good(b), "good_vs_category": good(cat)})
+    return out
+
+
 def build_payload(df: pd.DataFrame, code: str, cfg: dict, note: str = "") -> dict:
     """Everything the system knew about a fund now, from the scored frame. Pure; stores nothing."""
     from app.backoffice import fh_catscore, fh_score
@@ -145,10 +166,12 @@ def build_payload(df: pd.DataFrame, code: str, cfg: dict, note: str = "") -> dic
                 if f"fhc_{m}_{y}" in r else {"value": _v(r.get(fh_catscore.METRICS[m][0].format(y)))}
     return {
         "identity": {"scheme_code": str(code), "name": r["name"], "plan": r["plan"], "category": r["cat"], "isin": _v(r.get("isin")),
-                     "benchmark": BENCHMARKS.get(r["cat"], "Scheme's tracked index"), "benchmark_proxy_scheme": BENCHMARK_PROXY.get(r["cat"])},
+                     "benchmark": BENCHMARKS.get(r["cat"], "Scheme's tracked index"), "benchmark_proxy_scheme": BENCHMARK_PROXY.get(r["cat"]),
+                     "benchmark_stand_in_fund": _v(r.get("benchmark_fund"))},
         "manager": {"name": _v(r.get("manager_name")), "start": _v(r.get("manager_start")), "tenure_years": _v(r.get("manager_tenure_years"))},
         "returns": period_comparison(r, _bench_returns(df, r)),
         "risk_metrics": risk,
+        "risk_comparison": risk_comparison(df, r),
         "jensen_alpha_3y": {"value": _v(r.get("alpha_3y")), "basis": "vs category+plan median daily return, not an index"},
         "model": {"score": _v(r["fh_score"]), "rating": _v(r["fh_rating"]), "signal": r["fh_signal"], "coverage": _v(r["fh_coverage"]),
                   "scoring_mode": cfg["ratios"].get("mode", "B"), "filters": [{k: _v(f[k]) for k in ("key", "weight", "points", "coverage", "status")} for f in ex["filters"]],
@@ -355,9 +378,9 @@ def then_vs_now(then: dict, now: dict) -> dict:
         {"dimension": "Data coverage", "then": then["model"]["coverage"], "now": now["model"]["coverage"], "change": _diff(then["model"]["coverage"], now["model"]["coverage"])},
     ]
     for per in ("1y", "3y", "5y"):
-        for k, lab in (("excess_vs_benchmark_pp", "Excess vs benchmark"), ("excess_vs_category_pp", "Excess vs category")):
+        for k, lab in (("excess_vs_benchmark_pp", "Fund vs benchmark"), ("excess_vs_category_pp", "Fund vs similar funds")):
             a, b = ret(then, per, k), ret(now, per, k)
-            rows.append({"dimension": f"{lab} {per} (pp)", "then": a, "now": b, "change": _diff(a, b)})
+            rows.append({"dimension": f"{lab} {per} (%)", "then": a, "now": b, "change": _diff(a, b)})
     for m in ("sharpe", "sortino", "treynor", "beta", "cap_up", "cap_down"):
         a, b = rm(then, f"{m}_3y"), rm(now, f"{m}_3y")
         rows.append({"dimension": f"{m.replace('_', ' ').title()} 3Y", "then": a, "now": b, "change": _diff(a, b)})

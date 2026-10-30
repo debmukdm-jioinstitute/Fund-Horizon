@@ -2024,7 +2024,7 @@ export interface MfExplain {
   fh?: FhExplain;
 }
 
-export interface FhComponent { label: string; value: number | null; score?: number | null; pass?: boolean | null; threshold?: number; note?: string | null }
+export interface FhComponent { label: string; value: number | null; score?: number | null; pass?: boolean | null; threshold?: number; note?: string | null; period?: string; against?: string; fund?: number | null; ref?: number | null; lead?: number | null }
 export interface FhFilter { key: string; label: string; weight: number; raw: number | null; points: number | null; coverage: number | null; status: "ok" | "insufficient" | "unconfigured"; components: FhComponent[] }
 export interface FhExplain {
   score: number | null; rating: number | null; coverage: number | null; base: number | null;
@@ -2034,7 +2034,7 @@ export interface FhExplain {
   filters: FhFilter[]; drawdown_enabled: boolean;
   flags: { code: string; text: string }[]; blockers: { code: string; text: string }[];
   auto_eligible: boolean; provisional: string[];
-  scoring_mode?: "A" | "B"; data_status?: string; data_status_text?: string; review_status?: string;
+  benchmark?: { name: string | null; stand_in_fund: string | null }; scoring_mode?: "A" | "B"; data_status?: string; data_status_text?: string; review_status?: string;
 }
 export interface FhMethodology {
   weights: Record<string, number>; provisional: string[]; filters: Record<string, string>;
@@ -2461,7 +2461,8 @@ export async function askAiAboutFund(
 
 // --- FH comparison, score breakdown and recommendation history --------------------------------------------------------
 export interface FhPeriodRow { period: string; fund: number | null; benchmark: number | null; category_average: number | null; excess_vs_benchmark_pp: number | null; excess_vs_category_pp: number | null; return_basis: string }
-export interface FhComparison { periods: FhPeriodRow[]; peer_universe: { id: string; eligible: number; excluded: Record<string, number>; policy: string }; as_of: string | null; benchmark: string; benchmark_basis: string; jensen_alpha_3y: { value: number | null; basis: string }; status: { data: string | null; data_text: string | null; review: string | null } }
+export interface FhRiskRow { measure: string; fund: number | null; benchmark: number | null; category_average: number | null; better_is: string; good_vs_benchmark: boolean | null; good_vs_category: boolean | null }
+export interface FhComparison { risk_comparison: FhRiskRow[]; benchmark_fund: string | null; category: string; plan: string; periods: FhPeriodRow[]; peer_universe: { id: string; eligible: number; excluded: Record<string, number>; policy: string }; as_of: string | null; benchmark: string; benchmark_basis: string; jensen_alpha_3y: { value: number | null; basis: string }; status: { data: string | null; data_text: string | null; review: string | null } }
 export interface FhBreakdownRow { metric: string; period: string; value: number | null; category_average: number | null; peer_count: number; direction: string; scored: boolean; percentile: number | null; absolute_threshold: number | null; points: number | null; max_points: number; as_of: string | null; text: string }
 export interface FhHistory { episodes: { id: string; started_on: string | null; ended_on: string | null; origin: string; prev_episode_id: string | null }[]; events: { id: string; episode_id: string; event_type: string; event_ts: string; effective_date: string | null; actor: string; reason: string | null; notes: string | null; snapshot_id: string | null }[]; snapshots: { id: string; kind: string; label: string; version: number; captured_at: string }[] }
 export interface FhThenNow { rows: { dimension: string; then: number | string | null; now: number | string | null; change: number | string | null; note?: string }[]; quantitative_changes: unknown[]; qualitative_events: { type: string; status: string; detail: string; explanation?: string }[]; missing_evidence: string[] }

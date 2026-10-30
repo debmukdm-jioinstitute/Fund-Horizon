@@ -11,9 +11,9 @@ export default function BackBar({ fallback, label = "Back" }: { fallback: string
     else router.push(fallback);
   };
   return (
-    <div className="sticky top-0 z-30 border-b border-[#DEE7E0] bg-white/95 backdrop-blur dark:border-[#2B3644] dark:bg-[#10151C]/95">
+    <div className="sticky top-0 z-30 border-b border-white/70 bg-white/60 backdrop-blur-xl dark:border-white/10 dark:bg-[#0B1626]/70">
       <div className="mx-auto flex max-w-[980px] items-center px-4 py-2">
-        <button type="button" onClick={back} className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[14px] font-semibold text-[#0C6B4F] hover:bg-[#E7F3EC] dark:text-[#75E1CE] dark:hover:bg-[#1A3034] focus:outline-none focus:ring-2 focus:ring-[#0C6B4F]">
+        <button type="button" onClick={back} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[14px] font-semibold text-[#1A73E8] hover:bg-[#E3EEFF] dark:text-[#8AB8FF] dark:hover:bg-[#11304F] focus:outline-none focus:ring-2 focus:ring-[#0C6B4F]">
           <span aria-hidden>←</span> {label}
         </button>
       </div>

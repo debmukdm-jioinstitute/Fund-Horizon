@@ -137,21 +137,22 @@ export default function AuthPortal({
 
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#FFFFFF] dark:bg-[#10151C] text-[#101828] dark:text-[#EDF2F7]">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-transparent text-[#101828] dark:text-[#EDF2F7]">
       {/* ================= LEFT BRAND / HERO PANE ================= */}
       <section
         aria-label="Fund Horizon Brand Overview"
-        className="w-full lg:w-[48%] xl:w-[46%] min-h-[480px] lg:min-h-screen relative flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden select-none bg-[#05241B]"
+        className="w-full lg:w-[48%] xl:w-[46%] min-h-[480px] lg:min-h-screen relative flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden select-none bg-[#0B2A5B]"
       >
         {/* Background Artwork: Rolling emerald hills, golden contour curves & glowing sunrise */}
         <div
           className="absolute inset-0 bg-cover bg-bottom opacity-90 transition-transform duration-700 hover:scale-105 pointer-events-none"
           style={{
             backgroundImage: "url('/images/auth-hero-art.jpg')",
+            filter: "hue-rotate(95deg) saturate(0.9)",
           }}
         />
         {/* Subtle Vignette & Dark Overlay for optimal text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#05241B]/90 via-[#05241B]/40 to-[#041F17]/85 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B2A5B]/90 via-[#1A4FB5]/35 to-[#081F45]/85 pointer-events-none" />
 
         {/* Top: Brand Logo */}
         <header className="relative z-10">
@@ -193,7 +194,7 @@ export default function AuthPortal({
 
         {/* Bottom Trust Badge */}
         <footer className="relative z-10 flex items-center gap-3 pt-6 mt-auto">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full border border-[#D5A036] flex items-center justify-center text-[#D5A036] bg-[#05241B]/60">
+          <div className="flex-shrink-0 w-8 h-8 rounded-full border border-[#D5A036] flex items-center justify-center text-[#D5A036] bg-[#0B2A5B]/60">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -210,7 +211,7 @@ export default function AuthPortal({
       </section>
 
       {/* ================= RIGHT FORM / PORTAL PANE ================= */}
-      <main className="w-full lg:w-[52%] xl:w-[54%] min-h-screen bg-[#FFFFFF] dark:bg-[#10151C] flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-12 relative">
+      <main className="w-full lg:w-[52%] xl:w-[54%] min-h-screen bg-transparent flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-12 relative">
         {/* Top Right "Staff access ↗" Link */}
         <div className="absolute top-6 right-6 sm:top-8 sm:right-10 flex items-center gap-3 z-20">
           <button
@@ -219,7 +220,7 @@ export default function AuthPortal({
               setActiveTab("admin");
               setError(null);
             }}
-            className="text-xs sm:text-sm font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline flex items-center gap-1 transition-colors"
+            className="text-xs sm:text-sm font-medium text-[#1A73E8] dark:text-[#8AB8FF] hover:underline flex items-center gap-1 transition-colors"
           >
             Staff access ↗
           </button>
@@ -229,10 +230,10 @@ export default function AuthPortal({
           {/* Subtle Annotations / Callouts (Visible on Desktop >= 1280px) */}
           {/* 1. "Start with your account" */}
           <div className="hidden xl:flex absolute -left-36 top-14 items-center gap-1 pointer-events-none select-none z-10">
-            <span className="bg-[#E4ECE5] text-[#1E3B2E] border border-[#CCD8CF] text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">
+            <span className="bg-[#E3EEFF] text-[#0B3D91] border border-[#BBD4F8] text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">
               Start with your account
             </span>
-            <svg className="w-12 h-10 text-[#006F64] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-12 h-10 text-[#1A73E8] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path strokeDasharray="3 3" d="M2,4 Q24,6 38,32" />
               <polyline points="33,32 38,33 39,26" />
             </svg>
@@ -240,7 +241,7 @@ export default function AuthPortal({
 
           {/* 2. "For the Fund Horizon team" */}
           <div className="hidden xl:flex absolute -right-36 top-8 items-center gap-1 pointer-events-none select-none z-10">
-            <svg className="w-12 h-10 text-[#006F64] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-12 h-10 text-[#1A73E8] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path strokeDasharray="3 3" d="M40,2 Q20,12 6,34" />
               <polyline points="5,27 6,34 13,34" />
             </svg>
@@ -251,10 +252,10 @@ export default function AuthPortal({
 
           {/* 3. "Your registered email" */}
           <div className="hidden xl:flex absolute -left-36 top-[236px] items-center gap-1 pointer-events-none select-none z-10">
-            <span className="bg-[#E4ECE5] text-[#1E3B2E] border border-[#CCD8CF] text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">
+            <span className="bg-[#E3EEFF] text-[#0B3D91] border border-[#BBD4F8] text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">
               Your registered email
             </span>
-            <svg className="w-10 h-8 text-[#006F64] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-10 h-8 text-[#1A73E8] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path strokeDasharray="3 3" d="M2,8 Q18,6 30,22" />
               <polyline points="25,22 30,22 30,16" />
             </svg>
@@ -262,17 +263,17 @@ export default function AuthPortal({
 
           {/* 4. "New here? Begin here" */}
           <div className="hidden xl:flex absolute -left-36 bottom-2 items-center gap-1 pointer-events-none select-none z-10">
-            <span className="bg-[#E4ECE5] text-[#1E3B2E] border border-[#CCD8CF] text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">
+            <span className="bg-[#E3EEFF] text-[#0B3D91] border border-[#BBD4F8] text-[11px] font-medium px-2.5 py-1 rounded-full shadow-sm">
               New here? Begin here
             </span>
-            <svg className="w-10 h-8 text-[#006F64] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg className="w-10 h-8 text-[#1A73E8] overflow-visible" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path strokeDasharray="3 3" d="M2,4 Q18,6 28,24" />
               <polyline points="23,24 28,24 28,18" />
             </svg>
           </div>
 
           {/* Portal Sub-heading Badge */}
-          <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[#006F64] dark:text-[#75E1CE] mb-2">
+          <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[#1A73E8] dark:text-[#8AB8FF] mb-2">
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -294,7 +295,7 @@ export default function AuthPortal({
 
           {/* Switcher Tabs: Customer vs Admin */}
           <div className="mt-6">
-            <div className="grid grid-cols-2 p-1 bg-[#EEF2F6] dark:bg-[#17202C] rounded-xl border border-[#E4E9EF] dark:border-[#2B3644]">
+            <div className="grid grid-cols-2 p-1 bg-white/60 dark:bg-white/5 rounded-full border border-[#E4E9EF] dark:border-[#2B3644]">
               <button
                 type="button"
                 onClick={() => {
@@ -303,7 +304,7 @@ export default function AuthPortal({
                 }}
                 className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all ${
                   activeTab === "customer"
-                    ? "bg-[#064E3B] text-white shadow-sm"
+                    ? "bg-gradient-to-b from-[#4C9AFF] to-[#1A73E8] text-white shadow-sm"
                     : "text-[#475467] dark:text-[#A8B4C4] hover:text-[#101828] dark:hover:text-white"
                 }`}
               >
@@ -326,7 +327,7 @@ export default function AuthPortal({
                 }}
                 className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all ${
                   activeTab === "admin"
-                    ? "bg-[#064E3B] text-white shadow-sm"
+                    ? "bg-gradient-to-b from-[#4C9AFF] to-[#1A73E8] text-white shadow-sm"
                     : "text-[#475467] dark:text-[#A8B4C4] hover:text-[#101828] dark:hover:text-white"
                 }`}
               >
@@ -397,7 +398,7 @@ export default function AuthPortal({
                       : "Enter your staff email"
                   }
                   autoComplete="username"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#D0D5DD] dark:border-[#2B3644] bg-white dark:bg-[#17202C] text-[#101828] dark:text-[#EDF2F7] placeholder-[#98A2B3] text-sm focus:outline-none focus:ring-2 focus:ring-[#006F64] focus:border-transparent transition-all shadow-sm"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#C3D6F2] dark:border-[#2B3644] bg-white dark:bg-[#17202C] text-[#101828] dark:text-[#EDF2F7] placeholder-[#98A2B3] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A73E8] focus:border-transparent transition-all shadow-sm"
                 />
               </div>
             </div>
@@ -428,7 +429,7 @@ export default function AuthPortal({
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   autoComplete="current-password"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[#D0D5DD] dark:border-[#2B3644] bg-white dark:bg-[#17202C] text-[#101828] dark:text-[#EDF2F7] placeholder-[#98A2B3] text-sm focus:outline-none focus:ring-2 focus:ring-[#006F64] focus:border-transparent transition-all shadow-sm"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[#C3D6F2] dark:border-[#2B3644] bg-white dark:bg-[#17202C] text-[#101828] dark:text-[#EDF2F7] placeholder-[#98A2B3] text-sm focus:outline-none focus:ring-2 focus:ring-[#1A73E8] focus:border-transparent transition-all shadow-sm"
                 />
                 <button
                   type="button"
@@ -472,7 +473,7 @@ export default function AuthPortal({
                     setShowForgotModal(true);
                     setForgotSubmitted(false);
                   }}
-                  className="text-xs font-medium text-[#006F64] dark:text-[#75E1CE] hover:underline"
+                  className="text-xs font-medium text-[#1A73E8] dark:text-[#8AB8FF] hover:underline"
                 >
                   Forgot password?
                 </button>
@@ -500,7 +501,7 @@ export default function AuthPortal({
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3 px-4 rounded-xl bg-[#064E3B] hover:bg-[#085a44] text-white font-semibold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-b from-[#4C9AFF] to-[#1A73E8] hover:brightness-105 text-white font-semibold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
             >
               {submitting ? (
                 <>
@@ -529,7 +530,7 @@ export default function AuthPortal({
               <div className="w-full border-t border-[#E4E9EF] dark:border-[#2B3644]" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white dark:bg-[#10151C] px-3 text-[#667085] dark:text-[#A8B4C4]">
+              <span className="rounded-full bg-[#EEF4FF] dark:bg-[#12233A] px-3 py-0.5 text-[#5B6B85] dark:text-[#A8B4C4]">
                 New to Fund Horizon?
               </span>
             </div>
@@ -542,7 +543,7 @@ export default function AuthPortal({
               setShowSignupModal(true);
               setSignupError(null);
             }}
-            className="w-full py-2.5 px-4 rounded-xl border border-[#064E3B] text-[#064E3B] dark:text-[#75E1CE] dark:border-[#75E1CE] hover:bg-[#064E3B]/5 dark:hover:bg-[#75E1CE]/10 font-semibold text-sm transition-all text-center cursor-pointer shadow-sm"
+            className="w-full py-2.5 px-4 rounded-xl border border-[#1A73E8] text-[#1A73E8] dark:text-[#8AB8FF] dark:border-[#8AB8FF] hover:bg-[#1A73E8]/5 dark:hover:bg-[#8AB8FF]/10 font-semibold text-sm transition-all text-center cursor-pointer shadow-sm"
           >
             Create account
           </button>
@@ -570,7 +571,7 @@ export default function AuthPortal({
             </p>
 
             {forgotSubmitted ? (
-              <div className="mt-4 p-3 rounded-xl bg-[#006F64]/10 text-xs text-[#006F64] dark:text-[#75E1CE] leading-relaxed">
+              <div className="mt-4 p-3 rounded-xl bg-[#1A73E8]/10 text-xs text-[#1A73E8] dark:text-[#8AB8FF] leading-relaxed">
                 If an account exists for {forgotEmail}, recovery guidance has been triggered. For security, staff terminal access must be reset via your compliance officer.
               </div>
             ) : (
@@ -597,20 +598,20 @@ export default function AuthPortal({
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     placeholder="you@fundhorizon.com"
-                    className="w-full px-3 py-2 rounded-xl border border-[#D0D5DD] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]"
+                    className="w-full px-3 py-2 rounded-xl border border-[#C3D6F2] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#1A73E8]"
                   />
                 </div>
                 <div className="flex gap-2 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowForgotModal(false)}
-                    className="flex-1 py-2 px-3 rounded-xl border border-[#D0D5DD] text-xs font-semibold text-[#344054] dark:text-[#EDF2F7]"
+                    className="flex-1 py-2 px-3 rounded-xl border border-[#C3D6F2] text-xs font-semibold text-[#344054] dark:text-[#EDF2F7]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2 px-3 rounded-xl bg-[#064E3B] text-white text-xs font-semibold"
+                    className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-b from-[#4C9AFF] to-[#1A73E8] text-white text-xs font-semibold"
                   >
                     Send instructions
                   </button>
@@ -634,7 +635,7 @@ export default function AuthPortal({
             </button>
 
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#006F64] dark:text-[#75E1CE] bg-[#E7F5F2] dark:bg-[#1A3034] px-2 py-0.5 rounded">
+              <span className="text-xs font-semibold tracking-wider uppercase text-[#1A73E8] dark:text-[#8AB8FF] bg-[#E3EEFF] dark:bg-[#11304F] px-2 py-0.5 rounded">
                 NEW CLIENT ONBOARDING
               </span>
             </div>
@@ -661,7 +662,7 @@ export default function AuthPortal({
                   value={signupName}
                   onChange={(e) => setSignupName(e.target.value)}
                   placeholder="e.g. Ramesh Kumar"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D0D5DD] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]"
+                  className="w-full px-3 py-2 rounded-xl border border-[#C3D6F2] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#1A73E8]"
                 />
               </div>
 
@@ -679,7 +680,7 @@ export default function AuthPortal({
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
                   placeholder="ramesh@example.com"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D0D5DD] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]"
+                  className="w-full px-3 py-2 rounded-xl border border-[#C3D6F2] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#1A73E8]"
                 />
               </div>
 
@@ -691,7 +692,7 @@ export default function AuthPortal({
                   Indian Mobile Number
                 </label>
                 <div className="flex items-center">
-                  <span className="px-3 py-2 rounded-l-xl border border-r-0 border-[#D0D5DD] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#10151C] text-xs font-medium text-[#475467] dark:text-[#A8B4C4]">
+                  <span className="px-3 py-2 rounded-l-xl border border-r-0 border-[#C3D6F2] dark:border-[#2B3644] bg-[#F7F9FB] dark:bg-[#10151C] text-xs font-medium text-[#475467] dark:text-[#A8B4C4]">
                     +91
                   </span>
                   <input
@@ -702,7 +703,7 @@ export default function AuthPortal({
                     value={signupMobile}
                     onChange={(e) => setSignupMobile(e.target.value)}
                     placeholder="9876543210"
-                    className="w-full px-3 py-2 rounded-r-xl border border-[#D0D5DD] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]"
+                    className="w-full px-3 py-2 rounded-r-xl border border-[#C3D6F2] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#1A73E8]"
                   />
                 </div>
               </div>
@@ -721,7 +722,7 @@ export default function AuthPortal({
                   value={signupPassword}
                   onChange={(e) => setSignupPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full px-3 py-2 rounded-xl border border-[#D0D5DD] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#006F64]"
+                  className="w-full px-3 py-2 rounded-xl border border-[#C3D6F2] dark:border-[#2B3644] bg-white dark:bg-[#10151C] text-sm text-[#101828] dark:text-[#EDF2F7] focus:outline-none focus:ring-2 focus:ring-[#1A73E8]"
                 />
               </div>
 
@@ -731,7 +732,7 @@ export default function AuthPortal({
                   type="checkbox"
                   checked={signupConsent}
                   onChange={(e) => setSignupConsent(e.target.checked)}
-                  className="mt-0.5 rounded text-[#006F64] focus:ring-[#006F64]"
+                  className="mt-0.5 rounded text-[#1A73E8] focus:ring-[#1A73E8]"
                 />
                 <label
                   htmlFor="su-consent"
@@ -755,7 +756,7 @@ export default function AuthPortal({
                 <button
                   type="submit"
                   disabled={signupSubmitting}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#064E3B] hover:bg-[#085a44] text-white font-semibold text-sm transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-b from-[#4C9AFF] to-[#1A73E8] hover:brightness-105 text-white font-semibold text-sm transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-70"
                 >
                   {signupSubmitting ? "Creating Account…" : "Register & Open Portal →"}
                 </button>

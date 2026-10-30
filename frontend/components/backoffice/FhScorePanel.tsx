@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getFhMethodology, type FhExplain, type FhFilter, type FhMethodology, type MfScreenerRow } from "@/lib/backoffice";
 import { useRecommended } from "@/lib/recommended";
+import FhHistoryPanel, { FhStatusBadges } from "./FhHistoryPanel";
 import { formatISTDate } from "@/lib/terminal-format";
 
 const f = (v: number | null | undefined, d = 1) => (typeof v === "number" && Number.isFinite(v) ? v.toFixed(d) : "n/a");
@@ -108,6 +109,7 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
             </ul>
           </div>
         )}
+        <FhStatusBadges data={fh.data_status} review={fh.review_status} text={fh.data_status_text} />
         <p className="text-[12px]">{STATUS[status] ?? STATUS.none}.</p>
         <button type="button" disabled={busy} onClick={toggle} className="terminal-btn mt-1.5 text-[12px] py-1 px-2.5">
           {recommended ? "Exclude from FH Recommended" : "Add to FH Recommended"}
@@ -129,6 +131,8 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
           </p>
         )}
       </section>
+
+      <FhHistoryPanel code={row.code} mode={fh.scoring_mode} />
 
       {fh.flags.length > 0 && (
         <section>

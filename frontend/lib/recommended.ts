@@ -126,6 +126,17 @@ export async function setRecommendedItem(
   const cleanId = String(id).trim();
   if (!cleanId) return;
 
+  // History needs a short reason for every mutual-fund addition or removal; cancelling leaves the list unchanged.
+  let reason = "";
+  if (kind === "mf") {
+    const hint = recommended
+      ? "Strong category-relative metrics · Consistent top-half returns · Stable management · Client mandate fit"
+      : "Sustained underperformance · Manager change · Mandate or category change · Merger or closure · Risk metrics deteriorated";
+    const input = typeof window !== "undefined" ? window.prompt(`Reason for ${recommended ? "adding" : "removing"} this fund (required).\nSuggestions: ${hint}`, "") : "";
+    if (input === null || input.trim().length < 3) return;
+    reason = input.trim();
+  }
+
   if (kind === "mf") {
     if (recommended) {
       currentMfMap[cleanId] = name || currentMfMap[cleanId] || `Scheme ${cleanId}`;
@@ -153,7 +164,7 @@ export async function setRecommendedItem(
   // Post to backend API
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api-production-f3147.up.railway.app";
   try {
-    await fetch(`${apiUrl}/api/backoffice/recommended`, {
+    const res = await fetch(`${apiUrl}/api/backoffice/recommended`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -162,8 +173,13 @@ export async function setRecommendedItem(
         id: cleanId,
         name,
         recommended,
+        reason,
       }),
     });
+    if (!res.ok && kind === "mf") {
+      const j = await res.json().catch(() => null);
+      window.alert(typeof j?.detail === "string" ? j.detail : "The change was not saved on the server. Reload to see the saved list.");
+    }
   } catch {
     /* saved locally */
   }

@@ -10,7 +10,7 @@ from functools import lru_cache as _lru_cache
 import logging
 import threading
 import time
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -59,7 +59,7 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice import index_tri as index_tri_module
-from app.backoffice import fh_recommended, fh_score, mf_holdings, mf_reference, mf_screener, portfolio_screen
+from app.backoffice import fh_history, fh_recommended, fh_score, mf_holdings, mf_reference, mf_screener, portfolio_screen
 from app.backoffice import mf_research_v2 as mf_v2
 from app.backoffice.screening.quartiles import compute_category_quartiles
 from app.backoffice.screening.service import ScreeningService
@@ -1057,6 +1057,11 @@ def _fh_refresh(frame: pd.DataFrame | None = None, force: bool = False) -> None:
     auto = {str(r.code): str(r.name) for r in frame[frame["fh_auto"]].itertuples()}
     fh_recommended.apply_auto(auto, as_of)
     _FH_KEY = frame
+    try:  # idempotent: unchanged data stores nothing
+        fh_history.migrate_listed(frame, fh_score.load_config(), dict(FH_RECOMMENDED_MF_CODES))
+        fh_history.scheduled_snapshots(frame, fh_score.load_config())
+    except Exception:
+        logging.getLogger(__name__).exception("FH snapshot job failed")
 
 
 def _fh_status(df: pd.DataFrame) -> pd.Series:
@@ -2683,6 +2688,13 @@ class RecommendedUpdateRequest(BaseModel):
     id: str
     name: str = ""
     recommended: bool = True
+    reason: str = ""  # required for mutual-fund additions and removals
+    notes: str = ""
+    effective_date: str | None = None
+
+
+def _actor(staff: dict) -> str:
+    return str(staff.get("email") or staff.get("id") or "staff")
 
 
 @router.get("/recommended")
@@ -2690,20 +2702,186 @@ def backoffice_get_recommended():
     return {
         "mf": dict(FH_RECOMMENDED_MF_CODES),
         "pms": dict(FH_RECOMMENDED_PMS_IDS),
+        "suggested_reasons": fh_history.SUGGESTED_REASONS,
     }
 
 
 @router.post("/recommended")
-def backoffice_update_recommended(req: RecommendedUpdateRequest):
+def backoffice_update_recommended(req: RecommendedUpdateRequest, staff: Annotated[dict, Depends(require_staff)]):
+    event = None
+    if req.kind == "mf":
+        frame = _fh_frame()
+        try:
+            fh_history.migrate_listed(frame, fh_score.load_config(), dict(FH_RECOMMENDED_MF_CODES))  # list members predating history get a baseline first
+            event = fh_history.record_event(frame, fh_score.load_config(), req.id, "Added" if req.recommended else "Removed", _actor(staff),
+                                            req.reason, req.notes, req.effective_date)
+        except KeyError:
+            raise HTTPException(404, "Unknown scheme code.") from None
+        except ValueError as e:
+            raise HTTPException(422, str(e)) from None
     save_recommended_override(req.kind, req.id, req.name, req.recommended)
     return {
         "ok": True,
         "kind": req.kind,
         "id": req.id,
         "recommended": req.recommended,
+        "event": event,
         "mf_count": len(FH_RECOMMENDED_MF_CODES),
         "pms_count": len(FH_RECOMMENDED_PMS_IDS),
     }
+
+
+class FhReviewRequest(BaseModel):
+    event_type: str = "Reviewed"  # Reviewed | Updated
+    reason: str = ""
+    notes: str = ""
+
+
+@router.post("/mutual-funds/{code}/fh-review")
+def backoffice_fh_review(code: str, body: FhReviewRequest, staff: Annotated[dict, Depends(require_staff)]):
+    if body.event_type not in ("Reviewed", "Updated"):
+        raise HTTPException(422, "event_type must be Reviewed or Updated.")
+    try:
+        return fh_history.record_event(_fh_frame(), fh_score.load_config(), code, body.event_type, _actor(staff), body.reason, body.notes)
+    except KeyError:
+        raise HTTPException(404, "Unknown scheme code.") from None
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None
+
+
+@router.get("/mutual-funds/{code}/fh-history")
+def backoffice_fh_history(code: str, staff: Annotated[dict, Depends(require_staff)]):
+    return clean(fh_history.history(code))
+
+
+@router.get("/mutual-funds/{code}/fh-snapshot")
+def backoffice_fh_snapshot(code: str, staff: Annotated[dict, Depends(require_staff)], on: str | None = Query(None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+                           snapshot_id: str | None = Query(None, max_length=64)):
+    """Question A, what did we know then: a stored snapshot by id or as of a date. Never reconstructed."""
+    if snapshot_id:
+        s = fh_history.snapshot(snapshot_id)
+        if not s or s["scheme_code"] != code:
+            raise HTTPException(404, "Snapshot not found.")
+        return clean(s)
+    return clean(fh_history.snapshot_as_of(code, on or date.today().isoformat()))
+
+
+class FhCorrection(BaseModel):
+    reason: str
+    patch: dict
+
+
+@router.post("/mutual-funds/fh-snapshot/{snapshot_id}/correct")
+def backoffice_fh_snapshot_correct(snapshot_id: str, body: FhCorrection, admin: Annotated[dict, Depends(require_role("admin"))]):
+    try:
+        return {"snapshot_id": fh_history.correct_snapshot(snapshot_id, _actor(admin), body.reason, body.patch)}
+    except KeyError:
+        raise HTTPException(404, "Snapshot not found.") from None
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from None
+
+
+@router.get("/mutual-funds/{code}/fh-then-now")
+def backoffice_fh_then_now(code: str, staff: Annotated[dict, Depends(require_staff)],
+                           then: str = Query(..., max_length=64, description="snapshot id or YYYY-MM-DD"),
+                           now: str = Query("live", max_length=64, description="'live', a snapshot id or YYYY-MM-DD")):
+    def pick(ref: str) -> dict:
+        if ref == "live":
+            return fh_history.build_payload(_fh_frame(), code, fh_score.load_config())
+        s = fh_history.snapshot(ref) if len(ref) > 10 else None
+        if s is None and len(ref) == 10:
+            a = fh_history.snapshot_as_of(code, ref)
+            s = a if a["available"] else None
+        if s is None:
+            raise HTTPException(404, f"No stored snapshot for '{ref}'.")
+        return s["payload"]
+
+    try:
+        t, n = pick(then), pick(now)
+    except KeyError:
+        raise HTTPException(404, "Unknown scheme code.") from None
+    notes = [dict(r) for r in fh_history._conn().execute(
+        "SELECT n.* FROM fh_thesis_note n JOIN fh_reco_episode e ON e.id=n.episode_id WHERE e.scheme_code=? ORDER BY n.created_at", (code,))]
+    return clean({**fh_history.then_vs_now(t, n), "analyst_notes": notes})
+
+
+class ThesisNote(BaseModel):
+    episode_id: str
+    review_date: str | None = None
+    missed: str = ""
+    future_selection: str = ""
+    conclusion: str = ""
+
+
+@router.post("/mutual-funds/fh-thesis-note")
+def backoffice_fh_thesis_note(body: ThesisNote, staff: Annotated[dict, Depends(require_staff)]):
+    return {"id": fh_history.add_thesis_note(body.episode_id, _actor(staff), body.review_date, body.missed, body.future_selection, body.conclusion)}
+
+
+@router.get("/mutual-funds/{code}/fh-outcome")
+def backoffice_fh_outcome(code: str, staff: Annotated[dict, Depends(require_staff)], episode_id: str | None = Query(None, max_length=64),
+                          start: str | None = Query(None, pattern=r"^\d{4}-\d{2}-\d{2}$"), end: str | None = Query(None, pattern=r"^\d{4}-\d{2}-\d{2}$")):
+    """Question B, how did it perform after the recommendation. Needs a genuine recorded start; migration baselines have none.
+    A custom start/end range is a retrospective window, not a recommendation record."""
+    h = fh_history.history(code)
+    eps = [e for e in h["episodes"] if (episode_id is None or e["id"] == episode_id) and e["origin"] == "recorded"]
+    if start:
+        return clean({"label": "Custom range (retrospective, not a recommendation record)", **fh_history.outcome(_fh_frame(), code, start, end)})
+    if not eps:
+        return {"available": False, "message": "No recorded recommendation date exists for this fund (migration baselines carry none), so no outcome is computed."}
+    e = eps[-1]
+    return clean({"episode": e, **fh_history.outcome(_fh_frame(), code, e["started_on"], end, e["ended_on"])})
+
+
+@router.get("/mutual-funds/{code}/fh-reconstructed")
+def backoffice_fh_reconstructed(code: str, staff: Annotated[dict, Depends(require_staff)], as_of: str = Query(..., pattern=r"^\d{4}-\d{2}-\d{2}$")):
+    """Question C, labelled reconstruction from stored NAV only."""
+    return clean(fh_history.reconstructed_returns(_fh_frame(), code, as_of))
+
+
+@router.get("/mutual-funds/{code}/fh-score-breakdown")
+def backoffice_fh_breakdown(code: str, staff: Annotated[dict, Depends(require_staff)], mode: str = Query("", pattern="^(|legacy|A|B)$")):
+    """Score breakdown with its explanations. `mode` previews another scoring mode without changing the default."""
+    cfg = fh_score.load_config()
+    frame = _fh_frame()
+    if mode and mode != cfg["ratios"].get("mode", "legacy"):
+        cfg = {**cfg, "ratios": {**cfg["ratios"], "mode": mode}}
+        frame = _mode_frame(cfg)
+    hit = frame[frame["code"] == code]
+    if hit.empty:
+        raise HTTPException(404, "Unknown scheme code.")
+    return clean(fh_score.explain_row(hit.iloc[0], cfg))
+
+
+_MODE_CACHE: dict[str, tuple[float, pd.DataFrame]] = {}
+
+
+def _mode_frame(cfg: dict) -> pd.DataFrame:
+    mode = cfg["ratios"]["mode"]
+    hit = _MODE_CACHE.get(mode)
+    if hit and time.monotonic() - hit[0] < _FRAME_TTL_SECONDS:
+        return hit[1]
+    try:
+        consistency_map = _REPO.screening_consistency_map()
+    except Exception:
+        consistency_map = {}
+    frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map, cfg=cfg)
+    _MODE_CACHE[mode] = (time.monotonic(), frame)
+    return frame
+
+
+@router.get("/mutual-funds/{code}/fh-comparison")
+def backoffice_fh_comparison(code: str, staff: Annotated[dict, Depends(require_staff)]):
+    """Fund vs benchmark and fund vs category average, as two separate comparisons per period."""
+    p = fh_history.build_payload(_fh_frame(), code, fh_score.load_config())
+    return clean({"periods": p["returns"], "peer_universe": p["peer_universe"], "as_of": p["timestamps"]["observation"],
+                  "jensen_alpha_3y": p["jensen_alpha_3y"], "benchmark": p["identity"]["benchmark"], "benchmark_basis": fh_history.BENCH_NOTE,
+                  "risk_metrics": p["risk_metrics"], "status": p["status"]})
+
+
+@router.post("/mutual-funds/fh-snapshots/run")
+def backoffice_fh_snapshots_run(admin: Annotated[dict, Depends(require_role("admin"))]):
+    return fh_history.scheduled_snapshots(_fh_frame(), fh_score.load_config())
 
 
 @router.get("/operations/official-forms")

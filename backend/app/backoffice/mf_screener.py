@@ -182,6 +182,7 @@ def _base_frame() -> pd.DataFrame:
         "code": src["scheme_code"], "name": src["scheme_name"], "amc": src["amc"], "plan": src["plan"],
         "cat": src["cat"], "nav": src["latest_nav"], "nav_date": src["latest_nav_date"],
         "history_years": src["history_years"], "isin": src["isin_growth_or_payout"], "quality": src["data_quality"],
+        "structure": src["structure"],
         "aum_cr": src["aum_cr"], "hi52": src["hi52"], "lo52": src["lo52"],
         "hi52_date": src["hi52_date"], "lo52_date": src["lo52_date"],
     })
@@ -256,6 +257,7 @@ def _scored(
     manager_map: dict[str, Any] | None = None,
     consistency_map: dict[str, dict[str, Any]] | None = None,
     index_map: dict[str, dict[str, Any]] | None = None,
+    cfg: dict | None = None,
 ) -> pd.DataFrame:
     df = _base_frame().copy()
     df["ter"] = df["code"].map(ter)
@@ -349,7 +351,7 @@ def _scored(
             (((consistency_map or {}).get(str(c)) or {}).get("cal_quartiles") or {}).get(key) or computed.get(str(c), {}).get(key)
             for c in df["code"]
         ]
-    return fh_score.score_frame(df, ref=nav_as_of if pd.notna(nav_as_of) else None)
+    return fh_score.score_frame(df, cfg=cfg, ref=nav_as_of if pd.notna(nav_as_of) else None)
 
 
 def screen(
@@ -417,8 +419,9 @@ def all_frame(
     manager_map: dict[str, Any] | None = None,
     consistency_map: dict[str, dict[str, Any]] | None = None,
     index_map: dict[str, dict[str, Any]] | None = None,
+    cfg: dict | None = None,
 ) -> pd.DataFrame:
-    return _scored(ter, manager_map=manager_map, consistency_map=consistency_map, index_map=index_map)
+    return _scored(ter, manager_map=manager_map, consistency_map=consistency_map, index_map=index_map, cfg=cfg)
 
 
 def records(df: pd.DataFrame) -> list[dict[str, Any]]:

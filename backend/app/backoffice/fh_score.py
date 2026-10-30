@@ -41,7 +41,10 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "capture_threshold": 1.0, "capture_full": 1.5,
         "sortino_threshold": 1.5, "sortino_full": 3.0,
         "sharpe_threshold": 1.0, "sharpe_full": 2.0,
+        # "legacy" = absolute thresholds above; "A" = category-relative; "B" = A + bounded absolute-quality bonus (fh_catscore).
+        "mode": "legacy",
     },
+    "catscore": {},  # overrides for fh_catscore.DEFAULTS (min_peers, bonus_fraction, thresholds, ...)
     "drawdown": {"band": 0.5, "min_peers": 5},
     "outperf": {"tie_passes": False},
     "excess": {"sigma_span": 1.5, "min_peers": 5},
@@ -93,6 +96,8 @@ def active_weights(cfg: dict) -> dict[str, float]:
 
 
 def validate_config(cfg: dict) -> None:
+    if cfg["ratios"].get("mode", "legacy") not in ("legacy", "A", "B"):
+        raise ValueError("ratios.mode must be legacy, A or B")
     for name in ("weights_off", "weights_on"):
         if abs(sum(cfg[name].values()) - 100) > 1e-6:
             raise ValueError(f"{name} must total 100 (got {sum(cfg[name].values())})")
@@ -188,6 +193,10 @@ def _ratio_components(df: pd.DataFrame, cfg: dict) -> dict[str, tuple[pd.Series,
 
 
 def _f_ratios(df: pd.DataFrame, cfg: dict) -> tuple[pd.Series, pd.Series, dict[str, pd.Series]]:
+    if cfg["ratios"].get("mode", "legacy") in ("A", "B"):
+        from app.backoffice import fh_catscore
+
+        return fh_catscore.ratios_filter(df, cfg, cfg["ratios"]["mode"])
     comp = _ratio_components(df, cfg)
     cw = cfg["ratios"]["component_weights_on" if cfg["drawdown_enabled"] else "component_weights_off"]
     raw = sum(comp[k][0] * w for k, w in cw.items())
@@ -347,7 +356,49 @@ def score_frame(df: pd.DataFrame, cfg: dict | None = None, ref: pd.Timestamp | N
     min_cov = cfg.get("signals", {}).get("min_coverage", cfg["rating_min_coverage"])
     df["fh_signal"] = [signal_for_rating(r, c, min_cov) for r, c in zip(df["fh_rating"], cov_total)]
     df["fh_signal_reasons"] = [generate_signal_reasons(row, sig, cfg=cfg) for (_, row), sig in zip(df.iterrows(), df["fh_signal"])]
+    df["fh_data_status"], df["fh_data_reason"] = _data_status(df, cfg, cov_total)
+    df["fh_review_status"] = [_review_status(d, s, g) for d, s, g in zip(df["fh_data_status"], df["fh_rating"], df["fh_flags"])]
+    df["fh_scoring_mode"] = cfg["ratios"].get("mode", "legacy")
     return df.copy()  # defragment the many columns added above
+
+
+DATA_STATUS_TEXT = {
+    "complete": "All inputs present and current.",
+    "partial": "Some inputs are missing; the score covers only part of the model.",
+    "insufficient_history": "The fund is too young for the 3-year window; metrics that need it do not exist yet.",
+    "missing_series": "The fund is old enough but its 3-year metrics are absent: the NAV, benchmark or capture series is missing or failed to compute.",
+    "insufficient_peers": "Too few comparable category peers to compute a category-relative figure.",
+    "stale_or_bad_data": "NAV data is stale, adjusted unreliably or flagged by quality checks.",
+}
+MIN_3Y_HISTORY = 3.1  # same cut-off the screening coverage check uses for 3Y metrics
+
+
+def _data_status(df: pd.DataFrame, cfg: dict, cov_total: pd.Series) -> tuple[list[str], list[str]]:
+    """Machine-readable data status (separate from performance). Precedence: quality > history > series > peers > partial."""
+    have3 = df["sharpe_3y"].notna() & df["cagr_3y"].notna()
+    peers = df.get("fhc_sharpe_3_n")
+    out = []
+    for i in range(len(df)):
+        if df["quality"].iat[i] not in ("ok", "split_adjusted"):
+            s = "stale_or_bad_data"
+        elif not have3.iat[i]:
+            s = "insufficient_history" if (df["history_years"].iat[i] or 0) < MIN_3Y_HISTORY else "missing_series"
+        elif peers is not None and peers.iat[i] < cfg.get("catscore", {}).get("min_peers", 5):
+            s = "insufficient_peers"
+        elif cov_total.iat[i] < 0.999:
+            s = "partial"
+        else:
+            s = "complete"
+        out.append(s)
+    return out, [DATA_STATUS_TEXT[s] for s in out]
+
+
+def _review_status(data_status: str, rating: float, flags: list) -> str:
+    """Investment review is triggered by evidence of weak performance only; incomplete data is its own status."""
+    if data_status in ("insufficient_history", "missing_series", "insufficient_peers", "stale_or_bad_data"):
+        return "data_incomplete"
+    weak = (not pd.isna(rating) and rating <= 2) or "poor" in flags
+    return "investment_review_required" if weak else "none"
 
 
 def status(auto: bool, score: float | None, blockers: list[str], includes: set[str], excludes: set[str], code: str) -> str:
@@ -516,7 +567,7 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
              "score": _n(r[f"fhd_qp_{k}"]), "note": "Predates current manager" if _b(r[f"fhd_qpre_{k}"]) else None}
             for k in ("ytd", "py1", "py2")
         ],
-        "ratios": [
+        "ratios": [] if cfg["ratios"].get("mode", "legacy") in ("A", "B") else [
             {"label": f"{n.title()} {y}Y", "value": _n(r[f"fhd_{n}_{y}"]), "score": None, "pass": _b(r[f"fhd_{n}_ok_{y}"]),
              "threshold": ratios[f"{n}_threshold"]}
             for n in ("capture", "sortino", "sharpe") for y in PERIODS
@@ -528,6 +579,11 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
         "excess": [{"label": f"{y}Y excess vs category (pp)", "value": _n(r[f"fhd_exc_{y}"]), "score": _n(r[f"fhd_excs_{y}"])} for y in PERIODS],
         "drawdown": [{"label": "3Y max drawdown vs category average (magnitude, %)", "value": _n(r["fhd_dd_mag"]), "score": _n(r["fhd_dd_cat"]), "note": "score column = category average magnitude"}] if "drawdown" in w else [],
     }
+    mode = cfg["ratios"].get("mode", "legacy")
+    if mode in ("A", "B"):
+        from app.backoffice import fh_catscore
+
+        comps["ratios"] = fh_catscore.breakdown(r, cfg, mode, w["ratios"], r.get("nav_date"))
     filters = []
     for k, weight in w.items():
         cov = _n(r[f"fh_{k}_cov"])
@@ -549,5 +605,7 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
         "flags": [{"code": f, "text": FLAG_TEXT[f]} for f in flags],
         "blockers": [{"code": b, "text": BLOCKER_TEXT.get(b.split(":")[0], b)} for b in r["fh_blockers"]],
         "auto_eligible": bool(r["fh_auto"]),
-        "provisional": PROVISIONAL,
+        "scoring_mode": mode, "data_status": r.get("fh_data_status"), "data_status_text": r.get("fh_data_reason"),
+        "review_status": r.get("fh_review_status"),
+        "provisional": PROVISIONAL + ([f"Ratios filter uses category-relative scoring mode {mode} (see fh_catscore). Beta and Treynor are informational: the dataset measures them against the category median, not an index."] if mode in ("A", "B") else []),
     }

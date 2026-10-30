@@ -231,3 +231,15 @@ export function useModeExplain(code: string, mode: string, live: string, liveExp
   }, [code, mode, live, liveExplain]);
   return { ex, loading };
 }
+
+/** Keeps a failure in the score view from replacing the whole page (for example while the API and web deploys are a version apart). */
+export class PanelBoundary extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch(error: unknown) { console.error("FH score view error:", error); }
+  render() {
+    return this.state.failed
+      ? <div className={`${BOX} text-[14px]`}>The score breakdown could not be shown. The server may still be updating, so please reload in a few minutes. <button type="button" className="terminal-btn ml-2 py-1 px-3" onClick={() => this.setState({ failed: false })}>Try again</button></div>
+      : this.props.children;
+  }
+}

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getMfExplain, type MfExplain, type MfExplainPart, type MfScreenerRow } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import FhScorePanel from "./FhScorePanel";
+import { PanelBoundary } from "./FhHistoryPanel";
 
 const n = (v: unknown, d = 2) => (typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d }) : "not available");
 const PERIOD = (k: string) => {
@@ -94,7 +95,7 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
           </div>
         </header>
         <main className="relative mx-auto max-w-[110rem] px-6 py-10 sm:px-10">
-          <FhScorePanel fh={data.fh} row={row} />
+          <PanelBoundary><FhScorePanel fh={data.fh} row={row} /></PanelBoundary>
           <p className="mt-10 text-[12px] text-[#5B6B85] dark:text-[#A8B4C4]">
             Computed live from the latest NAV data{data.nav_date ? ` (NAV as of ${formatISTDate(String(data.nav_date))})` : ""}. Past performance is not a guide to future returns. This is descriptive data, not investment advice.
           </p>

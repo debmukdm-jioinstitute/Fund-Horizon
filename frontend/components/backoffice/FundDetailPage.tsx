@@ -11,6 +11,7 @@ import { useRecommended } from "@/lib/recommended";
 import { AmcLogo } from "@/components/BrandLogo";
 import FactsheetList from "@/components/backoffice/FactsheetList";
 import FhScorePanel from "@/components/backoffice/FhScorePanel";
+import { PanelBoundary } from "@/components/backoffice/FhHistoryPanel";
 import FundQuartile from "@/components/backoffice/FundQuartile";
 import MfManagerDrawer from "@/components/backoffice/MfManagerDrawer";
 import MfResearchBlocks from "@/components/backoffice/MfResearchBlocks";
@@ -219,7 +220,7 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
   );
   const score = (
     <Section id="fh-score" title="FH score" sub="Our own score out of 100, built by comparing the fund with similar funds.">
-      {fh ? <FhScorePanel fh={fh} row={row} /> : <p className={`text-[13px] ${MUTED}`}>Computing the FH score…</p>}
+      {fh ? <PanelBoundary><FhScorePanel fh={fh} row={row} /></PanelBoundary> : <p className={`text-[13px] ${MUTED}`}>Computing the FH score…</p>}
     </Section>
   );
   const managerBlock = (

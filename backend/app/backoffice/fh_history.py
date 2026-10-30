@@ -11,7 +11,7 @@ import hashlib
 import json
 import sqlite3
 import uuid
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta, timezone
 from typing import Any
 
 import numpy as np
@@ -35,6 +35,7 @@ _DDL = """
 CREATE TABLE IF NOT EXISTS fh_reco_episode (id TEXT PRIMARY KEY, scheme_code TEXT NOT NULL, plan TEXT, started_on TEXT, ended_on TEXT,
   origin TEXT NOT NULL, prev_episode_id TEXT, created_at TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS ix_fh_episode_code ON fh_reco_episode(scheme_code);
+CREATE UNIQUE INDEX IF NOT EXISTS ux_fh_episode_active ON fh_reco_episode(scheme_code) WHERE ended_on IS NULL;
 CREATE TABLE IF NOT EXISTS fh_snapshot (id TEXT PRIMARY KEY, scheme_code TEXT NOT NULL, episode_id TEXT, kind TEXT NOT NULL,
   label TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1, supersedes_id TEXT, captured_at TEXT NOT NULL, as_of TEXT,
   content_hash TEXT NOT NULL, model_version TEXT, config_hash TEXT, payload TEXT NOT NULL);
@@ -65,8 +66,15 @@ def _conn() -> sqlite3.Connection:
     return conn
 
 
+IST = timezone(timedelta(hours=5, minutes=30))
+
+
 def _now() -> str:
     return datetime.now(UTC).isoformat()
+
+
+def today_ist() -> date:
+    return datetime.now(IST).date()
 
 
 def _v(x: Any) -> Any:
@@ -166,8 +174,8 @@ def _hash(payload: dict) -> str:
 
 def _store_snapshot(conn, code: str, episode_id: str | None, kind: str, label: str, payload: dict, supersedes: str | None = None) -> str:
     h = _hash(payload)
-    last = conn.execute("SELECT id, content_hash, version FROM fh_snapshot WHERE scheme_code=? AND kind=? ORDER BY captured_at DESC, rowid DESC LIMIT 1",
-                        (code, kind)).fetchone()
+    last = conn.execute("SELECT id, content_hash, version FROM fh_snapshot WHERE scheme_code=? AND kind=? AND episode_id IS ? ORDER BY captured_at DESC, rowid DESC LIMIT 1",
+                        (code, kind, episode_id)).fetchone()
     if last and last["content_hash"] == h and not supersedes and kind == "scheduled":
         return last["id"]  # idempotent: nothing changed since the last scheduled snapshot
     sid = uuid.uuid4().hex
@@ -196,7 +204,7 @@ def record_event(df: pd.DataFrame, cfg: dict, code: str, event_type: str, actor:
         raise ValueError(f"A reason is required for {event_type}.")
     conn = _conn()
     ep = active_episode(conn, code)
-    eff = effective_date or date.today().isoformat()
+    eff = effective_date or today_ist().isoformat()
     try:
         date.fromisoformat(eff)
     except ValueError:
@@ -212,12 +220,15 @@ def record_event(df: pd.DataFrame, cfg: dict, code: str, event_type: str, actor:
     with conn:
         if event_type in ("Added", "Re-added"):
             eid = uuid.uuid4().hex
-            conn.execute("INSERT INTO fh_reco_episode VALUES(?,?,?,?,?,?,?,?)",
-                         (eid, code, payload["identity"]["plan"], eff, None, "recorded", prev["id"] if prev else None, _now()))
+            try:  # the unique active-episode index makes a concurrent double add fail here
+                conn.execute("INSERT INTO fh_reco_episode VALUES(?,?,?,?,?,?,?,?)",
+                             (eid, code, payload["identity"]["plan"], eff, None, "recorded", prev["id"] if prev else None, _now()))
+            except sqlite3.IntegrityError:
+                raise ValueError("Fund is already on the FH list.") from None
         else:
             eid = ep["id"]
-        if event_type == "Removed":
-            conn.execute("UPDATE fh_reco_episode SET ended_on=? WHERE id=?", (eff, eid))
+        if event_type == "Removed" and conn.execute("UPDATE fh_reco_episode SET ended_on=? WHERE id=? AND ended_on IS NULL", (eff, eid)).rowcount != 1:
+            raise ValueError("Fund was already removed.")
         sid = _store_snapshot(conn, code, eid, event_type.lower(), "recorded", payload)
         ev = uuid.uuid4().hex
         conn.execute("INSERT INTO fh_reco_event VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -234,14 +245,17 @@ def migrate_listed(df: pd.DataFrame, cfg: dict, codes: dict[str, str], actor: st
         if conn.execute("SELECT 1 FROM fh_reco_episode WHERE scheme_code=?", (code,)).fetchone() or df[df["code"] == code].empty:
             continue
         payload = build_payload(df, code, cfg, note="Migration baseline built from current data. Original recommendation date, score and rationale are unknown.")
-        with conn:
-            eid = uuid.uuid4().hex
-            conn.execute("INSERT INTO fh_reco_episode VALUES(?,?,?,?,?,?,?,?)", (eid, code, payload["identity"]["plan"], None, None, "migration", None, _now()))
-            sid = _store_snapshot(conn, code, eid, "migration", "migration", payload)
-            conn.execute("INSERT INTO fh_reco_event VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                         (uuid.uuid4().hex, eid, code, payload["identity"]["plan"], "Added", _now(), None, actor,
-                          "Pre-existing FH list member", "Migration baseline: original date and rationale not recorded.", "unknown", "listed", sid,
-                          MODEL_VERSION, payload["methodology"]["config_hash"]))
+        try:
+            with conn:
+                eid = uuid.uuid4().hex
+                conn.execute("INSERT INTO fh_reco_episode VALUES(?,?,?,?,?,?,?,?)", (eid, code, payload["identity"]["plan"], None, None, "migration", None, _now()))
+                sid = _store_snapshot(conn, code, eid, "migration", "migration", payload)
+                conn.execute("INSERT INTO fh_reco_event VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                             (uuid.uuid4().hex, eid, code, payload["identity"]["plan"], "Added", _now(), None, actor,
+                              "Pre-existing FH list member", "Migration baseline: original date and rationale not recorded.", "unknown", "listed", sid,
+                              MODEL_VERSION, payload["methodology"]["config_hash"]))
+        except sqlite3.IntegrityError:
+            continue  # another worker migrated it first
         done.append(code)
     return done
 
@@ -300,12 +314,14 @@ def snapshot(snapshot_id: str) -> dict | None:
 
 
 def snapshot_as_of(code: str, on: str) -> dict:
-    """Question A: what did we know then? Latest REAL snapshot taken on or before the date; never reconstructed."""
+    """Question A: what did we know then? Latest REAL snapshot taken by the end of that day (IST); never reconstructed."""
     d = date.fromisoformat(on)
-    r = _conn().execute("SELECT * FROM fh_snapshot WHERE scheme_code=? AND substr(captured_at,1,10)<=? ORDER BY captured_at DESC, rowid DESC LIMIT 1", (code, d.isoformat())).fetchone()
+    cutoff = datetime(d.year, d.month, d.day, tzinfo=IST) + timedelta(days=1)
+    r = _conn().execute("SELECT * FROM fh_snapshot WHERE scheme_code=? AND captured_at<? ORDER BY captured_at DESC, rowid DESC LIMIT 1",
+                        (code, cutoff.astimezone(UTC).isoformat())).fetchone()
     if not r:
         return {"available": False, "message": f"No snapshot exists on or before {d.isoformat()}. Nothing is reconstructed here."}
-    taken = date.fromisoformat(r["captured_at"][:10])
+    taken = datetime.fromisoformat(r["captured_at"]).astimezone(IST).date()
     return {"available": True, "snapshot_date": taken.isoformat(), "age_days": (d - taken).days, "label": r["label"], "kind": r["kind"],
             "snapshot_id": r["id"], "payload": json.loads(r["payload"])}
 

@@ -137,6 +137,7 @@ export async function setRecommendedItem(
     reason = input.trim();
   }
 
+  const before = kind === "mf" ? currentMfMap[cleanId] : currentPmsMap[cleanId];
   if (kind === "mf") {
     if (recommended) {
       currentMfMap[cleanId] = name || currentMfMap[cleanId] || `Scheme ${cleanId}`;
@@ -177,6 +178,9 @@ export async function setRecommendedItem(
       }),
     });
     if (!res.ok && kind === "mf") {
+      if (before === undefined) delete currentMfMap[cleanId]; else currentMfMap[cleanId] = before; // server refused: undo the optimistic change
+      localStorage.setItem(MF_STORAGE_KEY, JSON.stringify(currentMfMap));
+      window.dispatchEvent(new CustomEvent(EVENT_NAME));
       const j = await res.json().catch(() => null);
       window.alert(typeof j?.detail === "string" ? j.detail : "The change was not saved on the server. Reload to see the saved list.");
     }

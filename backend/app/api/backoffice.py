@@ -2742,7 +2742,9 @@ def backoffice_fh_review(code: str, body: FhReviewRequest, staff: Annotated[dict
     if body.event_type not in ("Reviewed", "Updated"):
         raise HTTPException(422, "event_type must be Reviewed or Updated.")
     try:
-        return fh_history.record_event(_fh_frame(), fh_score.load_config(), code, body.event_type, _actor(staff), body.reason, body.notes)
+        frame, cfg = _fh_frame(), fh_score.load_config()
+        fh_history.migrate_listed(frame, cfg, dict(FH_RECOMMENDED_MF_CODES))  # listed before history existed: baseline first
+        return fh_history.record_event(frame, cfg, code, body.event_type, _actor(staff), body.reason, body.notes)
     except KeyError:
         raise HTTPException(404, "Unknown scheme code.") from None
     except ValueError as e:
@@ -2763,7 +2765,10 @@ def backoffice_fh_snapshot(code: str, staff: Annotated[dict, Depends(require_sta
         if not s or s["scheme_code"] != code:
             raise HTTPException(404, "Snapshot not found.")
         return clean(s)
-    return clean(fh_history.snapshot_as_of(code, on or date.today().isoformat()))
+    try:
+        return clean(fh_history.snapshot_as_of(code, on or fh_history.today_ist().isoformat()))
+    except ValueError:
+        raise HTTPException(422, "Invalid date.") from None
 
 
 class FhCorrection(BaseModel):
@@ -2790,7 +2795,10 @@ def backoffice_fh_then_now(code: str, staff: Annotated[dict, Depends(require_sta
             return fh_history.build_payload(_fh_frame(), code, fh_score.load_config())
         s = fh_history.snapshot(ref) if len(ref) > 10 else None
         if s is None and len(ref) == 10:
-            a = fh_history.snapshot_as_of(code, ref)
+            try:
+                a = fh_history.snapshot_as_of(code, ref)
+            except ValueError:
+                raise HTTPException(422, "Invalid date.") from None
             s = a if a["available"] else None
         if s is None:
             raise HTTPException(404, f"No stored snapshot for '{ref}'.")
@@ -2826,7 +2834,10 @@ def backoffice_fh_outcome(code: str, staff: Annotated[dict, Depends(require_staf
     h = fh_history.history(code)
     eps = [e for e in h["episodes"] if (episode_id is None or e["id"] == episode_id) and e["origin"] == "recorded"]
     if start:
-        return clean({"label": "Custom range (retrospective, not a recommendation record)", **fh_history.outcome(_fh_frame(), code, start, end)})
+        try:
+            return clean({"label": "Custom range (retrospective, not a recommendation record)", **fh_history.outcome(_fh_frame(), code, start, end)})
+        except (ValueError, IndexError):
+            raise HTTPException(422, "Invalid date range or unknown scheme.") from None
     if not eps:
         return {"available": False, "message": "No recorded recommendation date exists for this fund (migration baselines carry none), so no outcome is computed."}
     e = eps[-1]
@@ -2836,7 +2847,10 @@ def backoffice_fh_outcome(code: str, staff: Annotated[dict, Depends(require_staf
 @router.get("/mutual-funds/{code}/fh-reconstructed")
 def backoffice_fh_reconstructed(code: str, staff: Annotated[dict, Depends(require_staff)], as_of: str = Query(..., pattern=r"^\d{4}-\d{2}-\d{2}$")):
     """Question C, labelled reconstruction from stored NAV only."""
-    return clean(fh_history.reconstructed_returns(_fh_frame(), code, as_of))
+    try:
+        return clean(fh_history.reconstructed_returns(_fh_frame(), code, as_of))
+    except (ValueError, IndexError, KeyError):
+        raise HTTPException(422, "Invalid date or unknown scheme.") from None
 
 
 @router.get("/mutual-funds/{code}/fh-score-breakdown")

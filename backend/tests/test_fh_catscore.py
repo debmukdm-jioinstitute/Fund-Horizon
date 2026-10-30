@@ -65,3 +65,18 @@ def test_downside_capture_text_and_informational_beta():
     s = fh_catscore.settings(CFG)
     assert "Lower downside capture than the category average" in fh_catscore.metric_text("cap_down", 0.8, 0.9, 9, .8, False, None, True, s)
     assert "Informational only" in fh_catscore.metric_text("beta", 1.1, 1.0, 9, np.nan, True, None, False, s)
+
+
+def test_non_finite_inputs_are_invalid_not_extreme():
+    df = _frame()
+    df.loc[0, "sharpe_3y"] = np.inf
+    df.loc[1, "sharpe_3y"] = -np.inf
+    st = fh_catscore.category_stats(df, CFG)
+    assert st["fhc_sharpe_3_pct"][:2].isna().all() and np.isfinite(st["fhc_sharpe_3_avg"].iloc[-1])
+    assert st["fhc_sharpe_3_n"].iloc[-1] == 7
+
+
+def test_insufficient_peers_status_is_reported_in_default_legacy_mode():
+    from tests.test_fh_score import _frame as scored  # one target + a few peers, legacy mode
+    r = scored({}, peers=2)
+    assert r["fh_data_status"] == "insufficient_peers"

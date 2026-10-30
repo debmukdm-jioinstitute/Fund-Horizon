@@ -98,3 +98,38 @@ def test_outcome_splits_active_and_after_removal(frame):
     p = o["periods"]["12m"]
     assert "after_removal" in p and "no longer recommending" in p["after_removal"]["note"]
     assert p["while_recommended"]["fund"]["end_obs"] <= "2025-06-30"
+
+
+def test_concurrent_adds_create_one_active_episode(frame, cfg):
+    import threading
+    res = []
+
+    def go():
+        try:
+            res.append(h.record_event(frame, cfg, CODE, "Added", "x", reason="race test"))
+        except ValueError as e:
+            res.append(e)
+
+    ts = [threading.Thread(target=go) for _ in range(6)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert sum(isinstance(r, dict) for r in res) == 1
+    assert len([e for e in h.history(CODE)["episodes"] if e["ended_on"] is None]) == 1
+
+
+def test_scheduled_snapshot_for_readded_episode_is_not_skipped_by_old_episode(frame, cfg):
+    h.record_event(frame, cfg, CODE, "Added", "x", reason="first add")
+    h.scheduled_snapshots(frame, cfg)
+    h.record_event(frame, cfg, CODE, "Removed", "x", reason="Manager change")
+    h.record_event(frame, cfg, CODE, "Added", "x", reason="Thesis restored")
+    h.scheduled_snapshots(frame, cfg)
+    eps = {e["id"] for e in h.history(CODE)["episodes"]}
+    assert {s["episode_id"] for s in h.history(CODE)["snapshots"] if s["kind"] == "scheduled"} == eps
+
+
+def test_as_of_uses_ist_day_and_rejects_impossible_dates(frame, cfg):
+    h.record_event(frame, cfg, CODE, "Added", "x", reason="ist check")
+    today = h.today_ist().isoformat()
+    assert h.snapshot_as_of(CODE, today)["available"] and h.snapshot_as_of(CODE, today)["age_days"] == 0
+    with pytest.raises(ValueError):
+        h.snapshot_as_of(CODE, "2026-13-45")

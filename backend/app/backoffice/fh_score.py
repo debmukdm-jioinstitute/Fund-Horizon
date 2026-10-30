@@ -376,14 +376,16 @@ MIN_3Y_HISTORY = 3.1  # same cut-off the screening coverage check uses for 3Y me
 def _data_status(df: pd.DataFrame, cfg: dict, cov_total: pd.Series) -> tuple[list[str], list[str]]:
     """Machine-readable data status (separate from performance). Precedence: quality > history > series > peers > partial."""
     have3 = df["sharpe_3y"].notna() & df["cagr_3y"].notna()
-    peers = df.get("fhc_sharpe_3_n")
+    from app.backoffice import fh_catscore
+
+    peers = fh_catscore.peer_count(df, "sharpe_3y")
     out = []
     for i in range(len(df)):
         if df["quality"].iat[i] not in ("ok", "split_adjusted"):
             s = "stale_or_bad_data"
         elif not have3.iat[i]:
             s = "insufficient_history" if (df["history_years"].iat[i] or 0) < MIN_3Y_HISTORY else "missing_series"
-        elif peers is not None and peers.iat[i] < cfg.get("catscore", {}).get("min_peers", 5):
+        elif peers.iat[i] < cfg.get("catscore", {}).get("min_peers", 5):
             s = "insufficient_peers"
         elif cov_total.iat[i] < 0.999:
             s = "partial"

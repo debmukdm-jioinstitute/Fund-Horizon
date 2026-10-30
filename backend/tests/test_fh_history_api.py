@@ -52,3 +52,13 @@ def test_comparison_and_breakdown_modes(client):
     rows = next(f for f in b["filters"] if f["key"] == "ratios")["components"]
     assert b["scoring_mode"] == "B" and rows and all("text" in r and "max_points" in r for r in rows)
     assert client.get(f"/api/backoffice/mutual-funds/{CODE}/fh-score-breakdown?mode=Z").status_code == 422
+
+
+def test_review_on_seeded_fund_without_prior_history_and_bad_dates(client, isolated_list):
+    _login_staff(client, _create_staff())
+    r = client.post(f"/api/backoffice/mutual-funds/{CODE}/fh-review", json={"event_type": "Reviewed", "notes": "quarterly"})
+    assert r.status_code == 200  # migration baseline is created first, so the seeded fund can be reviewed
+    assert client.get(f"/api/backoffice/mutual-funds/{CODE}/fh-snapshot?on=2026-13-45").status_code == 422
+    assert client.get(f"/api/backoffice/mutual-funds/{CODE}/fh-outcome?start=2026-13-45").status_code == 422
+    assert client.get(f"/api/backoffice/mutual-funds/{CODE}/fh-reconstructed?as_of=2026-02-30").status_code == 422
+    assert client.post("/api/backoffice/recommended", json={"kind": "mf", "id": "000000", "recommended": True, "reason": "unknown fund"}).status_code == 404

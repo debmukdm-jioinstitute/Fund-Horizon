@@ -52,7 +52,7 @@ def peer_eligibility(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
 
 def _clean_values(df: pd.DataFrame, metric: str, y: int, s: dict, eligible: pd.Series) -> tuple[pd.Series, pd.Series]:
     """(normalised value for every fund, value usable as a peer observation). Invalid -> NaN, never zero."""
-    v = _num(df, METRICS[metric][0].format(y))
+    v = _num(df, METRICS[metric][0].format(y)).replace([np.inf, -np.inf], np.nan)  # non-finite input is invalid, not a best/worst value
     if metric in ("cap_up", "cap_down"):
         v = (v / 100.0).where(v.le(s["capture_max_pct"]))  # 100% -> 1.0; absurd captures are invalid
     if metric == "cap_down":
@@ -60,6 +60,13 @@ def _clean_values(df: pd.DataFrame, metric: str, y: int, s: dict, eligible: pd.S
     if metric == "treynor":
         v = v.where(_num(df, f"beta_{y}y").abs().ge(s["min_beta_for_treynor"]))
     return v, v.where(eligible)
+
+
+def peer_count(df: pd.DataFrame, col: str) -> pd.Series:
+    """Eligible peers with a finite value of `col`, per fund's category+plan (mode-independent; used for data status)."""
+    eligible, _ = peer_eligibility(df)
+    v = _num(df, col).replace([np.inf, -np.inf], np.nan).where(eligible)
+    return v.groupby(df["cat"] + "|" + df["plan"]).transform("count")
 
 
 def category_stats(df: pd.DataFrame, cfg: dict) -> pd.DataFrame:

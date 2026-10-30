@@ -14,6 +14,20 @@
   --terminal-accent-bg: #E7F5F2;
   --terminal-positive: #087744;
   --terminal-negative: #B42332;
+  /* Tinted glass theme */
+  --glass: rgba(255, 255, 255, 0.66);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-line: rgba(176, 200, 236, 0.55);
+  --glass-hover: rgba(220, 233, 255, 0.55);
+  --glass-tint: rgba(226, 237, 255, 0.72);
+  --table-head: rgba(220, 233, 255, 0.92);
+  --glass-shadow: 0 18px 50px -20px rgba(26, 115, 232, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --page-bg:
+    radial-gradient(40rem 32rem at -6% -8%, rgba(127, 178, 255, 0.38), transparent 62%),
+    radial-gradient(44rem 36rem at 106% 32%, rgba(169, 208, 255, 0.45), transparent 60%),
+    radial-gradient(36rem 30rem at 40% 110%, rgba(196, 222, 255, 0.5), transparent 60%),
+    linear-gradient(135deg, #E3EEFF 0%, #F1F6FF 45%, #DDEAFF 100%);
 }
 
 html.dark {
@@ -27,6 +41,18 @@ html.dark {
   --terminal-accent-bg: #1A3034;
   --terminal-positive: #58D6A0;
   --terminal-negative: #FF7D86;
+  --glass: rgba(18, 35, 58, 0.58);
+  --glass-strong: rgba(24, 44, 72, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-line: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(76, 154, 255, 0.10);
+  --glass-tint: rgba(76, 154, 255, 0.10);
+  --table-head: rgba(22, 42, 70, 0.95);
+  --glass-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --page-bg:
+    radial-gradient(40rem 32rem at -6% -8%, rgba(26, 115, 232, 0.22), transparent 62%),
+    radial-gradient(44rem 36rem at 106% 32%, rgba(76, 154, 255, 0.14), transparent 60%),
+    linear-gradient(135deg, #0B1626 0%, #0E1B2E 50%, #0A1422 100%);
 }
 
 html {
@@ -59,6 +85,8 @@ table {
 
 body {
   background-color: var(--terminal-bg);
+  background-image: var(--page-bg);
+  background-attachment: fixed;
   color: var(--terminal-text-primary);
   font-family: var(--font-google-sans);
   font-feature-settings: 'tnum' 1;
@@ -76,7 +104,7 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--terminal-bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--terminal-border);
@@ -87,27 +115,31 @@ body {
 }
 
 @layer components {
-  /* Terminal Flat Panel */
+  /* Glass panel: frosted blue-white, bright top edge, soft blue shadow. No backdrop-filter on purpose: it would turn the
+     panel into the containing block of any position:fixed modal inside it. */
   .terminal-panel {
-    background-color: var(--terminal-bg);
-    border: 1px solid var(--terminal-border);
-    border-radius: 5px;
+    background-color: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    box-shadow: var(--glass-shadow);
   }
 
-  /* Compact Terminal Button */
+  /* Pill button on glass */
   .terminal-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 32px;
-    padding: 0 0.75rem;
+    gap: 0.375rem;
+    height: 34px;
+    padding: 0 1rem;
     font-size: 13px;
     font-weight: 500;
     color: var(--terminal-text-primary);
-    background-color: var(--terminal-surface);
-    border: 1px solid var(--terminal-border);
-    border-radius: 5px;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    background-color: var(--glass-strong);
+    border: 1px solid var(--glass-border);
+    border-radius: 9999px;
+    box-shadow: 0 2px 8px -3px rgba(26, 115, 232, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
@@ -115,54 +147,57 @@ body {
   /* :where() keeps this hover at base specificity, so the button's own bg and text utilities still win on hover.
      A plain :hover here out-ranks them and turned white-text buttons white-on-white. */
   .terminal-btn:where(:hover) {
-    background-color: var(--terminal-bg);
-    border-color: var(--terminal-text-secondary);
+    background-color: #FFFFFF;
+    box-shadow: 0 6px 16px -6px rgba(26, 115, 232, 0.35), inset 0 1px 0 rgba(255, 255, 255, 1);
   }
   .terminal-btn-accent {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 32px;
-    padding: 0 0.875rem;
+    gap: 0.375rem;
+    height: 34px;
+    padding: 0 1.125rem;
     font-size: 13px;
     font-weight: 500;
     color: #FFFFFF;
-    background-color: #006F64;
-    border: 1px solid #006F64;
-    border-radius: 5px;
-    transition: opacity 0.15s ease;
+    background: linear-gradient(180deg, #4C9AFF 0%, #1A73E8 100%);
+    border: 1px solid #1A73E8;
+    border-radius: 9999px;
+    box-shadow: 0 6px 16px -6px rgba(26, 115, 232, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: filter 0.15s ease;
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
   }
   .dark .terminal-btn-accent {
-    color: #10151C;
-    background-color: #75E1CE;
-    border-color: #75E1CE;
+    color: #0B1626;
+    background: linear-gradient(180deg, #8AB8FF 0%, #4C9AFF 100%);
+    border-color: #4C9AFF;
   }
   .terminal-btn-accent:where(:hover) {
-    opacity: 0.9;
+    filter: brightness(1.06);
   }
 
-  /* Compact Terminal Input */
+  /* Rounded glass input */
   .terminal-input {
-    height: 32px;
-    padding: 0 0.625rem;
+    height: 36px;
+    padding: 0 0.875rem;
     font-size: 13px;
     color: var(--terminal-text-primary);
-    background-color: var(--terminal-bg);
-    border: 1px solid var(--terminal-border);
-    border-radius: 5px;
-    transition: border-color 0.15s ease;
+    background-color: var(--glass-strong);
+    border: 1px solid var(--glass-line);
+    border-radius: 12px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
     font-feature-settings: 'tnum' 1;
     font-variant-numeric: tabular-nums;
   }
   .terminal-input:focus {
     outline: none;
     border-color: var(--terminal-accent);
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.18);
   }
 
-  /* Compact Data Table */
+  /* Airy data table */
   .terminal-table {
     width: 100%;
     border-collapse: separate;
@@ -170,39 +205,37 @@ body {
     font-size: 13px;
   }
   .terminal-table th {
-    height: 32px;
-    padding: 0 0.75rem;
-    font-size: 11px;
+    height: 42px;
+    padding: 0 1rem;
+    font-size: 12px;
     font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
     color: var(--terminal-text-secondary);
-    background-color: var(--terminal-surface);
-    border-bottom: 1px solid var(--terminal-border);
+    background-color: var(--table-head);
+    border-bottom: 1px solid var(--glass-line);
     white-space: nowrap;
     position: sticky;
     top: 0;
     z-index: 10;
-    box-shadow: 0 1px 0 var(--terminal-border);
   }
   .terminal-table td {
-    height: 36px;
-    padding: 0 0.75rem;
-    border-bottom: 1px solid var(--terminal-border);
+    height: 46px;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--glass-line);
     vertical-align: middle;
     font-feature-settings: 'tnum' 1;
     font-variant-numeric: tabular-nums;
   }
   .terminal-table tr:hover td {
-    background-color: var(--terminal-surface);
+    background-color: var(--glass-hover);
   }
 
   /* Backward-compatible utility classes */
   .card {
-    background-color: var(--terminal-bg);
-    border: 1px solid var(--terminal-border);
-    border-radius: 6px;
-    padding: 1rem;
+    background-color: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    box-shadow: var(--glass-shadow);
+    padding: 1.25rem;
   }
   .btn {
     @apply terminal-btn;
@@ -239,29 +272,108 @@ body {
   .mf-onepager .terminal-panel { break-inside: avoid; }
 }
 
-/* Salesforce Lightning palette, scoped to the backoffice shell (class "sf" on its root). */
+/* Backoffice shell palette (class "sf" on its root): tinted blue glass. */
 .sf {
   --terminal-bg: #FFFFFF;
-  --terminal-surface: #F3F3F3;
-  --terminal-text-primary: #181818;
-  --terminal-text-secondary: #706E6B;
-  --terminal-border: #E5E5E5;
-  --terminal-accent: #0176D3;
-  --terminal-accent-bg: #EAF5FE;
+  --terminal-surface: #EEF4FF;
+  --terminal-text-primary: #1B2B45;
+  --terminal-text-secondary: #5B6B85;
+  --terminal-border: #D6E3F7;
+  --terminal-accent: #1A73E8;
+  --terminal-accent-bg: #E3EEFF;
 }
 html.dark .sf {
   --terminal-bg: #10151C;
-  --terminal-surface: #171E27;
+  --terminal-surface: #16243A;
   --terminal-text-primary: #EDF2F7;
   --terminal-text-secondary: #A8B4C4;
-  --terminal-border: #2B3644;
-  --terminal-accent: #1B96FF;
+  --terminal-border: #26344A;
+  --terminal-accent: #4C9AFF;
   --terminal-accent-bg: #11304F;
 }
-.sf .terminal-btn-accent { background-color: #0176D3; border-color: #0176D3; border-radius: 4px; }
-.sf .terminal-btn-accent:hover { background-color: #014486; border-color: #014486; opacity: 1; }
-html.dark .sf .terminal-btn-accent { color: #10151C; background-color: #1B96FF; border-color: #1B96FF; }
-.sf .terminal-btn, .sf .terminal-input, .sf .terminal-panel { border-radius: 4px; }
+
+/*
+ * Site-wide glass restyle. Pages hard-code a small set of Tailwind colours; these selectors map each exact class token
+ * ([class~=...] never matches hover:/dark: variants) onto the glass theme, so every page follows without per-file edits.
+ * Specificity (one attribute + html) beats the single-class utilities.
+ */
+html:not(.dark) [class~="bg-[#F3F3F3]"].sf,
+html:not(.dark) .sf.min-h-screen,
+html.dark .sf.min-h-screen { background: transparent; }
+
+html:not(.dark) [class~="bg-white"],
+html:not(.dark) [class~="bg-[#FFFFFF]"],
+html:not(.dark) [class~="bg-[#FAFAFA]"] { background-color: var(--glass-strong); }
+
+html:not(.dark) [class~="bg-[#F3F3F3]"],
+html:not(.dark) [class~="bg-[#F7F9FB]"],
+html:not(.dark) [class~="bg-[#F2F4F7]"],
+html:not(.dark) [class~="bg-[#ECEBEA]"],
+html:not(.dark) [class~="bg-[#F8F9FA]"],
+html:not(.dark) [class~="bg-[#EEF1F5]"] { background-color: var(--glass-tint); }
+
+html:not(.dark) [class~="hover:bg-[#F3F3F3]"]:hover,
+html:not(.dark) [class~="hover:bg-[#F7F9FB]"]:hover,
+html:not(.dark) [class~="hover:bg-[#EAF5FE]"]:hover { background-color: var(--glass-hover); }
+
+html:not(.dark) [class~="border-[#E5E5E5]"],
+html:not(.dark) [class~="border-[#E4E9EF]"],
+html:not(.dark) [class~="border-[#C9C7C5]"],
+html:not(.dark) [class~="border-[#E3E6EA]"],
+html:not(.dark) [class~="border-[#DDDBDA]"] { border-color: var(--glass-line); }
+html:not(.dark) [class~="divide-[#E5E5E5]"] > * + *,
+html:not(.dark) [class~="divide-[#E4E9EF]"] > * + * { border-color: var(--glass-line); }
+
+/* Bordered white boxes read as glass cards: rounder corners and the soft blue shadow. */
+html:not(.dark) [class~="bg-white"][class~="border"],
+html:not(.dark) [class~="bg-white"][class~="rounded-lg"],
+html:not(.dark) [class~="bg-white"][class~="rounded-xl"] { border-radius: 16px; box-shadow: var(--glass-shadow); }
+
+/* Dark mode: the same idea with navy glass. */
+html.dark [class~="dark:bg-[#171E27]"],
+html.dark [class~="dark:bg-[#10161D]"],
+html.dark [class~="dark:bg-[#151C26]"] { background-color: var(--glass); }
+html.dark [class~="dark:border-[#2B3644]"] { border-color: var(--glass-line); }
+
+/* Primary blue (was Salesforce #0176D3) becomes the glass gradient. */
+[class~="bg-[#0176D3]"] { background-image: linear-gradient(180deg, #4C9AFF 0%, #1A73E8 100%); border-color: #1A73E8; }
+
+/* Shell header and sticky bars: frosted. backdrop-filter is safe on these (they hold no fixed-position modals). */
+.sf > header { background-color: rgba(255, 255, 255, 0.62) !important; backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); border-color: var(--glass-border) !important; }
+html.dark .sf > header { background-color: rgba(11, 22, 38, 0.7) !important; }
+
+/* Form controls everywhere: rounded glass with a blue focus ring; selects get a chevron. */
+select, input[type="text"], input[type="search"], input[type="email"], input[type="number"], input[type="date"],
+input[type="password"], input[type="tel"], textarea {
+  border-radius: 12px;
+  border-color: var(--glass-line);
+  background-color: var(--glass-strong);
+}
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6B85' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+select:focus, input:focus, textarea:focus { outline: none; border-color: var(--terminal-accent); box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.18); }
+
+/* Pop-up menus and lists: glass sheet. */
+[role="menu"], [role="listbox"] {
+  border-radius: 16px !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: 0 24px 60px -20px rgba(26, 115, 232, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.sf .terminal-btn, .sf .terminal-btn-accent { border-radius: 9999px; }
+.sf .terminal-input, .sf .terminal-panel { border-radius: 12px; }
+.sf .terminal-panel { border-radius: 18px; }
+
+@media print {
+  body { background: #FFFFFF !important; }
+  .terminal-panel, .card { box-shadow: none !important; background: #FFFFFF !important; }
+}
 
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }

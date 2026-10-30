@@ -5,6 +5,7 @@ import { getMfExplain, type MfExplain, type MfExplainPart, type MfScreenerRow } 
 import { formatISTDate } from "@/lib/terminal-format";
 import FhScorePanel from "./FhScorePanel";
 import { PanelBoundary } from "./FhHistoryPanel";
+import { AmcLogo } from "@/components/BrandLogo";
 
 const n = (v: unknown, d = 2) => (typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d }) : "not available");
 const PERIOD = (k: string) => {
@@ -87,9 +88,12 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
         <div className="pointer-events-none fixed top-1/3 -right-40 h-[32rem] w-[32rem] rounded-full bg-[#A9D0FF]/50 blur-3xl dark:bg-[#1A73E8]/20" aria-hidden />
         <header className="sticky top-0 z-10 border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-[#0E1B2E]/60 backdrop-blur-xl">
           <div className="mx-auto flex max-w-[110rem] items-center justify-between gap-4 px-6 py-4 sm:px-10">
-            <div className="min-w-0">
+            <div className="flex min-w-0 items-center gap-4">
+              {row.amc && <AmcLogo amc={String(row.amc)} className="h-12 min-w-12 max-w-[5rem] shrink-0 rounded-xl bg-white/80 shadow-sm" />}
+              <div className="min-w-0">
               <h2 className="truncate text-[20px] font-medium text-[#1B2B45] dark:text-[#EDF2F7]">{row.name}</h2>
-              <p className="text-[13px] text-[#5B6B85] dark:text-[#A8B4C4]">FH score · {row.plan} plan</p>
+              <p className="text-[13px] text-[#5B6B85] dark:text-[#A8B4C4]">FH score · {row.amc ? `${row.amc} · ` : ""}{row.plan} plan</p>
+              </div>
             </div>
             <button type="button" aria-label="Close" onClick={onClose} className="shrink-0 rounded-full border border-white/70 dark:border-white/10 bg-white/70 dark:bg-white/10 px-4 py-2 text-[13px] shadow-sm backdrop-blur hover:bg-white">Close ✕</button>
           </div>

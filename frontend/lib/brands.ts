@@ -41,6 +41,7 @@ const AMCS: Record<string, string> = {
   "angel one": "angel-one.png",
   "canara robeco": "canara-robeco.png",
   dsp: "dsp.png",
+  edelweiss: "edelweiss.png",
   groww: "groww.png",
   hdfc: "hdfc.svg",
   helios: "helios.png",

@@ -74,8 +74,8 @@ def test_universe_roundtrip_and_api(client):
     by_strategy = {s["strategy_name"]: s for s in strat["data"]}
     missing = by_strategy["1729 Fundamental value Investing"]
     assert missing["return_1y"] is None and missing["aum_crore"] is None
-    assert missing.get("benchmark") in (None, "")
-    assert missing.get("benchmark_name") in (None, "")
+    assert missing.get("benchmark") == "BSE 500 TRI"  # no stated benchmark: the API fills the default so the cell is never blank
+    assert missing.get("benchmark_name") in (None, "")  # the scraped field itself stays empty
     assert strat["as_of"] == "2026-09-30"
 
 

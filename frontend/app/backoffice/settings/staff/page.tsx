@@ -31,7 +31,7 @@ function Avatar({ name }: { name: string }) {
   );
 }
 
-function DetailPanel({ member, onClose }: { member: StaffMemberItem; onClose: () => void }) {
+function DetailPanel({ member, onClose, onReset }: { member: StaffMemberItem; onClose: () => void; onReset: () => void }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -56,8 +56,17 @@ function DetailPanel({ member, onClose }: { member: StaffMemberItem; onClose: ()
         </div>
         <dl className="mt-4 space-y-2 text-[13px] text-[#181818] dark:text-[#EDF2F7]">
           <div className="flex gap-2">
-            <dt className="w-24 shrink-0 font-semibold">Email</dt>
-            <dd className="break-all">{member.email}</dd>
+            <dt className="w-24 shrink-0 font-semibold">User ID</dt>
+            <dd className="break-all font-semibold select-all">{member.email}</dd>
+          </div>
+          <div className="flex gap-2">
+            <dt className="w-24 shrink-0 font-semibold">Password</dt>
+            <dd>
+              Stored encrypted, cannot be viewed.{" "}
+              <button type="button" onClick={onReset} className="text-[#0176D3] dark:text-[#1B96FF] hover:underline">
+                Reset password
+              </button>
+            </dd>
           </div>
           <div className="flex gap-2">
             <dt className="w-24 shrink-0 font-semibold">Mobile</dt>
@@ -391,7 +400,16 @@ export default function StaffPermissionsPage() {
         <span aria-hidden>ⓘ</span> Open a staff member to view contact details and access.
       </p>
 
-      {detail && <DetailPanel member={detail} onClose={() => setDetail(null)} />}
+      {detail && (
+        <DetailPanel
+          member={detail}
+          onClose={() => setDetail(null)}
+          onReset={async () => {
+            await act(detail, { reset_password: true }, `Reset password for ${detail.name}? They will be signed out.`);
+            setDetail(null);
+          }}
+        />
+      )}
       {drawer && (
         <StaffDrawer
           mode={drawer.mode}

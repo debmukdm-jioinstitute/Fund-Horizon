@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import {
   getFhBreakdown, getFhComparison, getFhHistory, getFhOutcome, getFhSnapshotAsOf, getFhThenNow,
-  type FhBreakdownRow, type FhComparison, type FhHistory, type FhOutcome, type FhThenNow,
+  type FhBreakdownRow, type FhComparison, type FhExplain, type FhHistory, type FhOutcome, type FhThenNow,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 
@@ -47,33 +47,56 @@ function Comparison({ code }: { code: string }) {
   );
 }
 
-function Breakdown({ code, current }: { code: string; current: string }) {
-  const [mode, setMode] = useState(current);
-  const [rows, setRows] = useState<FhBreakdownRow[] | null>(null);
+const MODE_NAME: Record<string, string> = { legacy: "Legacy (fixed thresholds)", A: "Mode A: category-relative", B: "Mode B: category-relative + quality bonus" };
+
+function Breakdown({ code, current, liveScore }: { code: string; current: string; liveScore: number | null }) {
+  const [mode, setMode] = useState(current === "legacy" ? "B" : current);
+  const [ex, setEx] = useState<FhExplain | null>(null);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    getFhBreakdown(code, mode).then((r) => setRows((r.filters.find((x) => x.key === "ratios")?.components as unknown as FhBreakdownRow[]) ?? [])).catch(() => setRows(null));
+    setLoading(true);
+    getFhBreakdown(code, mode).then(setEx).catch(() => setEx(null)).finally(() => setLoading(false));
   }, [code, mode]);
+  const rows = (ex?.filters.find((x) => x.key === "ratios")?.components as unknown as FhBreakdownRow[] | undefined) ?? [];
+  const ratios = ex?.filters.find((x) => x.key === "ratios");
   return (
-    <details>
-      <summary className="cursor-pointer font-semibold text-[13px]">Risk-metric breakdown vs category</summary>
-      <label className="mt-1 block text-[12px]">Scoring mode{" "}
+    <section className={`${BOX} p-3 space-y-2`}>
+      <h3 className="font-semibold">What changed: category-relative risk scoring</h3>
+      <p className="text-[12px]">
+        Sharpe, Sortino and capture used to be judged against fixed numbers (for example Sharpe above 1). The new modes rank the fund against its own category
+        (same category and plan) and give points by how it compares with those peers. A fund below 1.0 still earns credit if it beats its category.
+        The category average is the equal-weight mean of eligible peers, including this fund.
+      </p>
+      <p className={`text-[12px] ${MUTED}`}>Live scoring is <strong>{MODE_NAME[current] ?? current}</strong>. The modes below are previews and do not change the live score or any recommendation until approved.</p>
+      <label className="block text-[12px]">Preview mode{" "}
         <select value={mode} onChange={(e) => setMode(e.target.value)} className="terminal-btn py-0.5 px-1">
-          <option value="legacy">Legacy (absolute thresholds)</option><option value="A">A: category-relative</option><option value="B">B: A + absolute-quality bonus</option>
+          {Object.entries(MODE_NAME).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
       </label>
-      {mode === "legacy" && <p className={`text-[12px] ${MUTED}`}>Legacy scoring has no category percentile; pick A or B to compare.</p>}
-      {mode !== "legacy" && rows && (
-        <ul className={`mt-1 divide-y divide-[#E5E5E5] dark:divide-[#2B3644] ${BOX}`}>
-          {rows.map((r) => (
-            <li key={`${r.metric}${r.period}`} className="px-2 py-1 text-[12px]">
-              <div className="flex justify-between gap-2"><span>{r.metric.replace("_", " ")} {r.period} · {r.direction.replace(/_/g, " ")}</span>
-                <span className="tabular-nums whitespace-nowrap">{r.scored ? `${f(r.points)} / ${f(r.max_points)} pts` : "informational"}</span></div>
-              <div className={`tabular-nums ${MUTED}`}>Fund {f(r.value)} · category {f(r.category_average)} ({r.peer_count} peers){r.percentile != null ? ` · percentile ${f(r.percentile * 100, 0)}` : ""}{r.absolute_threshold != null ? ` · threshold ${r.absolute_threshold}` : ""} · as of {r.as_of ?? "n/a"}</div>
-              <div>{r.text}</div>
-            </li>))}
-        </ul>
+      {loading && <p className={`text-[12px] ${MUTED}`}>Calculating this mode for every fund in the category (the first load can take about 15 seconds)…</p>}
+      {!loading && ex && (
+        <>
+          <p className="text-[13px]">
+            Score in this mode: <strong className="tabular-nums">{f(ex.score, 1)}</strong> ({ex.signal ?? "n/a"}, {ex.rating ? `${ex.rating}★` : "not rated"})
+            {liveScore != null && mode !== current && <> versus <strong className="tabular-nums">{f(liveScore, 1)}</strong> live ({f((ex.score ?? 0) - liveScore, 1)} points). </>}
+            {ratios && <> Risk-adjusted ratios contribute <strong className="tabular-nums">{f(ratios.points, 1)} / {ratios.weight}</strong>.</>}
+          </p>
+          {mode === "legacy" ? (
+            <p className={`text-[12px] ${MUTED}`}>Legacy has no category percentile; the fixed-threshold rows are in the Filters list below.</p>
+          ) : (
+            <ul className={`divide-y divide-[#E5E5E5] dark:divide-[#2B3644] ${BOX}`}>
+              {rows.map((r) => (
+                <li key={`${r.metric}${r.period}`} className="px-2 py-1 text-[12px]">
+                  <div className="flex justify-between gap-2"><span>{r.metric.replace("_", " ")} {r.period} · {r.direction.replace(/_/g, " ")}</span>
+                    <span className="tabular-nums whitespace-nowrap">{r.scored ? `${f(r.points)} / ${f(r.max_points)} pts` : "informational"}</span></div>
+                  <div className={`tabular-nums ${MUTED}`}>Fund {f(r.value)} · category {f(r.category_average)} ({r.peer_count} peers){r.percentile != null ? ` · percentile ${f(r.percentile * 100, 0)}` : ""}{r.absolute_threshold != null ? ` · threshold ${r.absolute_threshold}` : ""} · as of {r.as_of ?? "n/a"}</div>
+                  <div>{r.text}</div>
+                </li>))}
+            </ul>
+          )}
+        </>
       )}
-    </details>
+    </section>
   );
 }
 
@@ -88,7 +111,7 @@ function History({ code }: { code: string }) {
   const ask = () => on && getFhSnapshotAsOf(code, on).then((s) => setSnap(s.available ? `Snapshot taken ${formatISTDate(s.snapshot_date ?? "")} (${s.age_days} days before ${formatISTDate(on)}), ${s.label}.` : s.message ?? "")).catch(() => setSnap("Could not load."));
   const compare = () => then && getFhThenNow(code, then).then(setTn).catch(() => setTn(null));
   return (
-    <details>
+    <details open>
       <summary className="cursor-pointer font-semibold text-[13px]">Recommendation history, then vs now, outcome</summary>
       <div className="mt-1 space-y-2 text-[12px]">
         {h && h.events.length === 0 && <p className={MUTED}>No recommendation events recorded for this fund.</p>}
@@ -132,6 +155,6 @@ function History({ code }: { code: string }) {
   );
 }
 
-export default function FhHistoryPanel({ code, mode }: { code: string; mode?: string }) {
-  return <div className="space-y-3"><Comparison code={code} /><Breakdown code={code} current={mode ?? "legacy"} /><History code={code} /></div>;
+export default function FhHistoryPanel({ code, mode, score }: { code: string; mode?: string; score?: number | null }) {
+  return <div className="space-y-3"><Comparison code={code} /><Breakdown code={code} current={mode ?? "legacy"} liveScore={score ?? null} /><History code={code} /></div>;
 }

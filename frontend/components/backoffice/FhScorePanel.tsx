@@ -117,6 +117,8 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
         <p className="mt-1 text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Manual choices are saved and are never undone by automatic refreshes.</p>
       </section>
 
+      <FhHistoryPanel code={row.code} mode={fh.scoring_mode} score={fh.score} />
+
       <section>
         <h3 className="font-semibold">Filters (raw score × weight = points)</h3>
         <ul className="mt-1 divide-y divide-[#E5E5E5] dark:divide-[#2B3644] border border-[#E5E5E5] dark:border-[#2B3644] rounded">
@@ -131,8 +133,6 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
           </p>
         )}
       </section>
-
-      <FhHistoryPanel code={row.code} mode={fh.scoring_mode} />
 
       {fh.flags.length > 0 && (
         <section>

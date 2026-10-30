@@ -353,6 +353,10 @@ html.dark [class~="dark:text-[#75E1CE]"] { color: #8AB8FF; }
 html.dark [class~="dark:bg-[#0C2B28]"] { background-color: #11304F; }
 html.dark [class~="dark:bg-[#75E1CE]"] { background-color: #4C9AFF; }
 
+/* Full-screen table views opened from a section card: no header or menu, the table gets the whole window. */
+body.fh-full .sf > header { display: none !important; }
+body.fh-full .sf > main { padding-top: 1.25rem; }
+
 /* Shell header and sticky bars: frosted. backdrop-filter is safe on these (they hold no fixed-position modals). */
 .sf > header { background-color: rgba(255, 255, 255, 0.62) !important; backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); border-color: var(--glass-border) !important; }
 html.dark .sf > header { background-color: rgba(11, 22, 38, 0.7) !important; }

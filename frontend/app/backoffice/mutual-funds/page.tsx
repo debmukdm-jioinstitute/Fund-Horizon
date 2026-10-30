@@ -24,6 +24,7 @@ import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import InfoTip from "@/components/InfoTip";
 import MfPortfolioScreen from "@/components/backoffice/MfPortfolioScreen";
 import DropdownClose from "@/components/DropdownClose";
+import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
 
 const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "Capture Ratio", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
@@ -150,6 +151,9 @@ function MutualFunds() {
   const category = useMemo(() => (params.has("category") ? params.getAll("category") : params.has("q") || params.has("section") ? [] : DEFAULT_CATEGORIES), [params]);
   const plan = useMemo(() => (params.has("plan") || params.has("section") ? params.getAll("plan") : PLANS), [params]);
   const section = (SECTIONS.find((s) => s === params.get("section")) ?? "Summary") as Section;
+  // No section in the URL = the screener home: filters plus one card per view. A card opens that view in a new tab, full screen.
+  const home = !params.has("section") && !params.has("q");  // a search link (?q=) goes straight to results
+  useFullScreen(params.get("full") === "1");
 
   const [sort, setSort] = useState("fh_score");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
@@ -157,7 +161,7 @@ function MutualFunds() {
   const [offset, setOffset] = useState(0);
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [search, setSearch] = useState((params.get("q") ?? "").trim());
-  const [recommended, setRecommended] = useState(false);
+  const [recommended, setRecommended] = useState(params.get("rec") === "1");
   const [ranges, setRanges] = useState<Record<string, { min?: string; max?: string }>>({});
   const [draft, setDraft] = useState<Record<string, { min?: string; max?: string }>>({});
   const [showFilter, setShowFilter] = useState(false);
@@ -240,9 +244,29 @@ function MutualFunds() {
     const p = new URLSearchParams();
     (next.category ?? category).forEach((c) => p.append("category", c));
     (next.plan ?? plan).forEach((x) => p.append("plan", x));
-    p.set("section", next.section ?? section);
+    if (next.section || !home) p.set("section", next.section ?? section);
     router.replace(`?${p.toString()}`, { scroll: false });
   }
+
+  const SECTION_TEXT: Record<Section, [string, string]> = {
+    Summary: ["📋", "FH score, rating, signal and returns against the category, one row per fund."],
+    Checklist: ["✅", "The four-pillar checklist score with performance, portfolio, operations and risk."],
+    Returns: ["📈", "Returns from one month to ten years, with day, week and 52-week moves."],
+    "Risk Vs Reward": ["⚖️", "Sharpe, Sortino, volatility, drawdown, alpha, beta and Treynor."],
+    "Capture Ratio": ["🎯", "How much of rising and falling markets each fund captures."],
+    "One-Pager": ["🗂️", "One card per fund with the score and key returns at a glance."],
+    "Quartile Rankings": ["🏅", "Where each fund ranked in its category, period by period."],
+  };
+  const sectionHref = (s: Section) => {
+    const p = new URLSearchParams();
+    category.forEach((c) => p.append("category", c));
+    plan.forEach((x) => p.append("plan", x));
+    p.set("section", s);
+    p.set("full", "1");
+    if (search) p.set("q", search);
+    if (recommended) p.set("rec", "1");
+    return `/backoffice/mutual-funds?${p.toString()}`;
+  };
 
   const toggle = (list: string[], v: string) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
   const group = groups.find((g) => g.group === activeGroup);
@@ -288,7 +312,8 @@ function MutualFunds() {
     <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#181818] dark:text-[#EDF2F7] tracking-tight">Mutual fund screener</h1>
+          {params.get("full") === "1" && <a href="/backoffice/mutual-funds" className="mb-1 inline-block text-[13px] font-medium text-[#1A73E8]">← All views</a>}
+          <h1 className="text-[24px] font-semibold text-[#181818] dark:text-[#EDF2F7] tracking-tight">Mutual fund screener{!home ? ` · ${section.replace("Vs", "vs")}` : ""}</h1>
           <p className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
             {selectedLabels.length ? selectedLabels.join(" & ") : "All categories"} · Growth option
           </p>
@@ -383,6 +408,7 @@ function MutualFunds() {
         ))}
       </div>
 
+      {home ? null : (
       <div role="tablist" className="flex flex-wrap items-center gap-1 border-b border-[#E5E5E5] dark:border-[#2B3644]">
           {SECTIONS.map((s) => (
             <button
@@ -404,6 +430,7 @@ function MutualFunds() {
             </button>
           ))}
       </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-2.5">
         <input
@@ -522,7 +549,9 @@ function MutualFunds() {
         </>
       )}
 
-      <div className="flex flex-wrap items-start justify-between gap-2.5">
+      {home && <SectionLauncher title="Choose a view" items={SECTIONS.map((s) => ({ key: s, title: s.replace("Vs", "vs"), icon: SECTION_TEXT[s][0], text: SECTION_TEXT[s][1], href: sectionHref(s) }))} />}
+
+      <div className={`flex flex-wrap items-start justify-between gap-2.5 ${home ? "hidden" : ""}`}>
         <div className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] pt-2">{loading ? "Loading\u2026" : `${total.toLocaleString("en-IN")} funds`}</div>
         <div className="flex flex-wrap items-start justify-end gap-2">
           <div className="relative">
@@ -662,7 +691,7 @@ function MutualFunds() {
         </div>
       )}
 
-      <div className="terminal-panel overflow-hidden">
+      <div className={`terminal-panel overflow-hidden ${home ? "hidden" : ""}`}>
         {section === "Quartile Rankings" && <MfQuartileRankings screenerCategories={quartileCategories} plans={plan} query={query} recommended={recommended} />}
         {section === "One-Pager" && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 p-2.5 min-h-[420px] content-start">

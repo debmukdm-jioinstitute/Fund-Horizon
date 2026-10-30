@@ -2,6 +2,7 @@
 
 import React, { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
 import { PmsLogo } from "@/components/BrandLogo";
 import Link from "next/link";
 import { useRecommended } from "@/lib/recommended";
@@ -116,13 +117,18 @@ export default function PmsTrackerPage() {
 }
 
 function PmsTracker() {
-  const urlQuery = useSearchParams().get("q") ?? "";
+  const params = useSearchParams();
+  const urlQuery = params.get("q") ?? "";
+  // No section in the URL = PMS home: filters plus one card per view; each card opens its view in a new tab, full screen.
+  const section = params.get("section");
+  const home = !section && !urlQuery;  // a search link (?q=) goes straight to results
+  useFullScreen(params.get("full") === "1");
   const compare = useCompareSelection("pms");
   const rec = useRecommended();
   const [pmsRecDropdownOpen, setPmsRecDropdownOpen] = useState(false);
   const [newPmsId, setNewPmsId] = useState("");
   const [newPmsName, setNewPmsName] = useState("");
-  const [tab, setTab] = useState<"strategies" | "accounts">("strategies");
+  const [tab, setTab] = useState<"strategies" | "accounts">(section === "accounts" ? "accounts" : "strategies");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
   const [asOf, setAsOf] = useState<string | undefined>();
   const [selectedStrategy, setSelectedStrategy] = useState<PmsStrategyItem | null>(null);
@@ -136,15 +142,15 @@ function PmsTracker() {
   const [accountHint, setAccountHint] = useState<string | null>(null);
   const [meta, setMeta] = useState<Record<string, InfoTipMeta> | undefined>();
 
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [fhSubTab, setFhSubTab] = useState<"returns" | "details">("returns");
+  const [categoryFilter, setCategoryFilter] = useState(params.get("approach") ?? (section?.startsWith("fh-") ? "fh-recommended" : "all"));
+  const [fhSubTab, setFhSubTab] = useState<"returns" | "details">(section === "fh-details" ? "details" : "returns");
   const [search, setSearch] = useState(urlQuery);
   const [sortKey, setSortKey] = useState<SortKey>("aum");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(0);
   const [docModalOpen, setDocModalOpen] = useState(false);
   const [matrixModalOpen, setMatrixModalOpen] = useState(false);
-  const [selectedBenchmark, setSelectedBenchmark] = useState("BSE 500 TRI");
+  const [selectedBenchmark, setSelectedBenchmark] = useState(params.get("bench") ?? "BSE 500 TRI");
   const [methodologyModalOpen, setMethodologyModalOpen] = useState(false);
   const [methodologyStrategy, setMethodologyStrategy] = useState<PmsStrategyItem | null>(null);
 
@@ -286,6 +292,20 @@ function PmsTracker() {
     setPage(0);
   }
 
+  const sectionHref = (s: string) => {
+    const p = new URLSearchParams({ section: s, full: "1" });
+    if (search) p.set("q", search);
+    if (categoryFilter !== "all" && !s.startsWith("fh-")) p.set("approach", categoryFilter);
+    if (selectedBenchmark !== "BSE 500 TRI") p.set("bench", selectedBenchmark);
+    return `/backoffice/pms?${p.toString()}`;
+  };
+  const LAUNCH = [
+    { key: "all", icon: "📊", title: "All strategies", text: "Every PMS strategy with returns, AUM, FH rating and signal, sortable and searchable." },
+    { key: "fh-returns", icon: "⭐", title: "FH Recommended: returns", text: "Our recommended strategies against the chosen benchmark, period by period." },
+    { key: "fh-details", icon: "🧾", title: "FH Recommended: details", text: "Structure, fees, manager and inception for each recommended strategy." },
+    { key: "accounts", icon: "👥", title: "Client accounts", text: "Client PMS accounts with XIRR, cash flows and high-water mark fee checks." },
+  ].map((i) => ({ ...i, href: sectionHref(i.key) }));
+
   const colSpan = 12;
   const trayVisible = tab === "strategies" && compare.selectedIds.length > 0;
 
@@ -293,6 +313,7 @@ function PmsTracker() {
     <div className={`space-y-4 ${trayVisible ? "pb-[88px]" : ""}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
+          {params.get("full") === "1" && <a href="/backoffice/pms" className="mb-1 inline-block text-[13px] font-medium text-[#1A73E8]">← All views</a>}
           <div className="flex items-center gap-2">
             <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
               PMS Performance & Account Tracker
@@ -306,7 +327,7 @@ function PmsTracker() {
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 self-start sm:self-auto">
+        <div className={`flex items-center gap-1.5 self-start sm:self-auto ${home ? "hidden" : ""}`}>
           {tab === "strategies" && (
             <button
               type="button"
@@ -517,7 +538,9 @@ function PmsTracker() {
             </div>
           </div>
 
-          {isRecommended && (
+          {home && <SectionLauncher title="Choose a view" items={LAUNCH} />}
+
+          {!home && isRecommended && (
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
               <div className="flex items-center gap-1 bg-[#F0F3F6] dark:bg-[#202936] p-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644]">
                 <button
@@ -549,7 +572,7 @@ function PmsTracker() {
             </div>
           )}
 
-          <div className="terminal-panel overflow-hidden">
+          <div className={`terminal-panel overflow-hidden ${home ? "hidden" : ""}`}>
             <div className="px-3 py-2 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono flex flex-wrap items-center justify-between gap-2">
               <span>
                 {filteredStrategies.length === 0

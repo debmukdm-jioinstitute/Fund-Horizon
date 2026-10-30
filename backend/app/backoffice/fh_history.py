@@ -299,6 +299,15 @@ def scheduled_snapshots(df: pd.DataFrame, cfg: dict) -> dict[str, int]:
     return {"stored": n_new, "unchanged": n_same}
 
 
+def capture_snapshot(df: pd.DataFrame, cfg: dict, code: str, actor: str, note: str = "") -> str:
+    """Staff-requested snapshot of what the system shows today, for any fund (listed or not). Same immutability rules."""
+    conn = _conn()
+    ep = active_episode(conn, code)
+    payload = build_payload(df, code, cfg, note=f"Saved by {actor}. {note}".strip())
+    with conn:
+        return _store_snapshot(conn, code, ep["id"] if ep else None, "manual", "recorded", payload)
+
+
 def correct_snapshot(snapshot_id: str, actor: str, reason: str, patch: dict) -> str:
     """Corrections never edit: they create version n+1 that points at the snapshot it supersedes, with an audit event."""
     if len((reason or "").strip()) < 3:

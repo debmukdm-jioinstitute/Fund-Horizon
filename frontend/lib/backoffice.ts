@@ -2474,6 +2474,7 @@ export const getFhBreakdown = (code: string, mode: string) => boFetch<FhExplain>
 export const getFhHistory = (code: string) => boFetch<FhHistory>(FH(code, "fh-history"));
 export const getFhSnapshotAsOf = (code: string, on: string) => boFetch<{ available: boolean; message?: string; snapshot_date?: string; age_days?: number; label?: string }>(`${FH(code, "fh-snapshot")}?on=${on}`);
 export const getFhThenNow = (code: string, then: string, now = "live") => boFetch<FhThenNow>(`${FH(code, "fh-then-now")}?then=${encodeURIComponent(then)}&now=${encodeURIComponent(now)}`);
+export const saveFhSnapshot = (code: string) => boFetch<{ snapshot_id: string }>(FH(code, "fh-snapshot"), { method: "POST" });
 export const getFhOutcome = (code: string, start?: string, end?: string) => boFetch<FhOutcome>(`${FH(code, "fh-outcome")}${start ? `?start=${start}${end ? `&end=${end}` : ""}` : ""}`);
 
 // --- AI control centre (admin) ------------------------------------------------------------------------------------------

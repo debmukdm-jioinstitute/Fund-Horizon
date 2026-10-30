@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  getFhBreakdown, getFhComparison, getFhHistory, getFhOutcome, getFhSnapshotAsOf, getFhThenNow,
+  getFhBreakdown, getFhComparison, getFhHistory, getFhOutcome, getFhSnapshotAsOf, getFhThenNow, saveFhSnapshot,
   type FhBreakdownRow, type FhComparison, type FhExplain, type FhHistory, type FhOutcome, type FhThenNow,
 } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
@@ -161,9 +161,21 @@ export function History({ code }: { code: string }) {
   const [then, setThen] = useState("");
   const [tn, setTn] = useState<FhThenNow | null>(null);
   const [out, setOut] = useState<FhOutcome | null>(null);
-  useEffect(() => { getFhHistory(code).then(setH).catch(() => setH(null)); getFhOutcome(code).then(setOut).catch(() => setOut(null)); }, [code]);
+  const [note, setNote] = useState("");
+  const loadHistory = useCallback(() => getFhHistory(code).then(setH).catch(() => setH(null)), [code]);
+  useEffect(() => { loadHistory(); getFhOutcome(code).then(setOut).catch(() => setOut(null)); }, [code, loadHistory]);
+  const save = async () => {
+    setNote("Saving…");
+    try { const r = await saveFhSnapshot(code); await loadHistory(); setThen(r.snapshot_id); setNote("Saved. Today's record is selected below; compare it with a later day to see what changed."); }
+    catch (e) { setNote(e instanceof Error ? e.message : "Could not save the record."); }
+  };
+  const snaps = h?.snapshots ?? [];
   const ask = () => on && getFhSnapshotAsOf(code, on).then((s) => setSnap(s.available ? `We have a record from ${formatISTDate(s.snapshot_date ?? "")}, ${s.age_days} days before that date.` : s.message ?? "")).catch(() => setSnap("Could not load."));
-  const compare = () => then && getFhThenNow(code, then).then(setTn).catch(() => setTn(null));
+  const compare = () => {
+    if (!then) { setNote("Choose a saved record first."); return; }
+    setNote("");
+    getFhThenNow(code, then).then(setTn).catch((e) => { setTn(null); setNote(e instanceof Error ? e.message : "Could not compare."); });
+  };
   const tabBtn = (k: Tab, label: string) => (
     <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`rounded-full px-4 py-1 text-[13px] ${tab === k ? "bg-white dark:bg-[#1A73E8] shadow-md font-medium" : MUTED}`}>{label}</button>
   );
@@ -173,7 +185,7 @@ export function History({ code }: { code: string }) {
       <div className="mb-7 inline-flex rounded-full bg-white/50 dark:bg-white/10 border border-white/70 dark:border-white/10 p-1.5 shadow-inner" role="tablist">{tabBtn("timeline", "Timeline")}{tabBtn("then", "Then and now")}{tabBtn("after", "After we recommended")}</div>
       {tab === "timeline" && (
         <div className="space-y-6 text-[14px] leading-7">
-          {h && h.events.length === 0 && <p className={MUTED}>No events have been recorded for this fund yet.</p>}
+          {h && h.events.length === 0 && <p className={MUTED}>No adds, reviews or removals yet. Events appear here when the fund is added to or removed from the FH list.</p>}
           {h && h.events.length > 0 && (
             <ol className="space-y-5 border-l-2 border-[#BBD4F8] dark:border-[#2B3644] pl-6">
               {h.events.map((e) => (
@@ -189,15 +201,29 @@ export function History({ code }: { code: string }) {
       )}
       {tab === "then" && (
         <div className="space-y-6 text-[14px] leading-7">
-          <div className="flex flex-wrap items-center gap-2">
-            <span>Compare this record</span>
-            <select value={then} onChange={(e) => setThen(e.target.value)} className="terminal-btn py-1 px-2"><option value="">choose one</option>{h?.snapshots.map((s) => <option key={s.id} value={s.id}>{formatISTDate(s.captured_at)}, {s.label}</option>)}</select>
-            <span>with today</span><button type="button" className="terminal-btn py-1 px-3" onClick={compare}>Compare</button>
-          </div>
+          {snaps.length === 0 ? (
+            <div className="rounded-2xl bg-white/60 dark:bg-white/5 p-5">
+              <p>No record has been saved for this fund yet, so there is nothing to compare. Records are saved automatically for funds on the FH list, and you can save one for any fund now.</p>
+              <button type="button" className="terminal-btn-accent mt-4" onClick={save}>Save today&apos;s record</button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center gap-3">
+              <span>Compare the record from</span>
+              <select value={then} onChange={(e) => setThen(e.target.value)} className="terminal-input min-w-[14rem]" aria-label="Saved record">
+                <option value="">Choose a saved record</option>
+                {snaps.map((s) => <option key={s.id} value={s.id}>{formatISTDate(s.captured_at)} · {s.label === "migration" ? "baseline" : ({ manual: "saved by staff", scheduled: "automatic" } as Record<string, string>)[s.kind] ?? s.kind}</option>)}
+              </select>
+              <span>with today</span>
+              <button type="button" className="terminal-btn-accent" onClick={compare}>Compare</button>
+              <button type="button" className="terminal-btn" onClick={save}>Save today&apos;s record</button>
+            </div>
+          )}
+          {note && <p className={MUTED}>{note}</p>}
           {tn && (
             <>
               <table className="w-full tabular-nums"><thead><tr className={`bg-[#DCE9FF]/70 dark:bg-[#1A73E8]/20 text-left ${MUTED}`}><th className="px-5 py-3 font-medium">What</th><th className="px-5 py-3 font-medium">Then</th><th className="px-5 py-3 font-medium">Now</th><th className="px-5 py-3 font-medium">Change</th></tr></thead>
                 <tbody>{tn.rows.map((r) => <tr key={r.dimension} className="border-t border-white/70 dark:border-white/10"><td className="px-5 py-4">{r.dimension}</td><td className="px-5 py-4">{f(r.then)}</td><td className="px-5 py-4">{f(r.now)}</td><td className={`px-5 py-4 font-medium ${typeof r.change === "number" ? tone(r.change) : ""}`}>{f(r.change)}</td></tr>)}</tbody></table>
+              {tn.quantitative_changes.length === 0 && <p className={MUTED}>Nothing has changed since that record.</p>}
               {tn.qualitative_events.map((e) => <p key={e.type}><strong className="font-medium">{String(e.type).replace("_", " ")}</strong> ({e.status}): {e.detail}. {e.explanation}</p>)}
               <p className={MUTED}>{tn.missing_evidence.join(" ")}</p>
             </>

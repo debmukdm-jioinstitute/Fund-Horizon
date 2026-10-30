@@ -107,3 +107,14 @@ def test_manual_overrides_survive_auto_refresh(tmp_path, monkeypatch):
     assert "M1" in inc and "A1" in excl
     monkeypatch.undo()
     fh_recommended._rebuild()  # restore live module state for other tests
+
+
+def test_explain_is_json_safe_for_every_fund():
+    import json
+    import warnings
+
+    from app.backoffice import mf_screener
+    warnings.filterwarnings("ignore")
+    df = mf_screener._scored({}, None)
+    for _, row in df.sample(300, random_state=1).iterrows():
+        json.dumps(fh_score.explain_row(row), allow_nan=False)  # a NaN here was a 500 on the score view

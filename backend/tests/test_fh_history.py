@@ -133,3 +133,12 @@ def test_as_of_uses_ist_day_and_rejects_impossible_dates(frame, cfg):
     assert h.snapshot_as_of(CODE, today)["available"] and h.snapshot_as_of(CODE, today)["age_days"] == 0
     with pytest.raises(ValueError):
         h.snapshot_as_of(CODE, "2026-13-45")
+
+
+def test_manual_snapshot_for_unlisted_fund_feeds_then_and_now(frame, cfg):
+    sid = h.capture_snapshot(frame, cfg, CODE, "analyst@x")
+    snap = h.snapshot(sid)
+    assert snap["kind"] == "manual" and snap["episode_id"] is None
+    assert h.history(CODE)["snapshots"][0]["id"] == sid
+    d = h.then_vs_now(snap["payload"], h.build_payload(frame, CODE, cfg))
+    assert d["quantitative_changes"] == []  # same data today: nothing changed

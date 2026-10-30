@@ -560,7 +560,7 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
         "flags": [{"code": f, "text": FLAG_TEXT[f]} for f in flags],
         "blockers": [{"code": b, "text": BLOCKER_TEXT.get(b.split(":")[0], b)} for b in r["fh_blockers"]],
         "auto_eligible": bool(r["fh_auto"]),
-        "benchmark": {"name": r.get("benchmark"), "stand_in_fund": r.get("benchmark_fund")},
+        "benchmark": {k: (v if isinstance(v, str) else None) for k, v in (("name", r.get("benchmark")), ("stand_in_fund", r.get("benchmark_fund")))},  # NaN when no stand-in fund exists
         "scoring_mode": mode, "data_status": r.get("fh_data_status"), "data_status_text": r.get("fh_data_reason"),
         "review_status": r.get("fh_review_status"),
         "provisional": PROVISIONAL + ["Beta and Treynor are shown but not scored: the dataset measures them against the category median, not an index."],

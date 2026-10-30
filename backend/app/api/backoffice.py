@@ -2859,6 +2859,15 @@ def backoffice_fh_snapshot(code: str, staff: Annotated[dict, Depends(require_sta
         raise HTTPException(422, "Invalid date.") from None
 
 
+@router.post("/mutual-funds/{code}/fh-snapshot")
+def backoffice_fh_snapshot_capture(code: str, staff: Annotated[dict, Depends(require_staff)]):
+    """Save what the score view shows today, so it can be compared later (Then and now)."""
+    try:
+        return {"snapshot_id": fh_history.capture_snapshot(_fh_frame(), fh_score.load_config(), code, _actor(staff))}
+    except KeyError:
+        raise HTTPException(404, "Unknown scheme code.") from None
+
+
 class FhCorrection(BaseModel):
     reason: str
     patch: dict

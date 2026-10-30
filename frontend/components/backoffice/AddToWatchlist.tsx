@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { createMfWatchlist, listMfWatchlists, setMfWatchlistFund, type MfWatchlist } from "@/lib/backoffice";
+import DropdownClose from "@/components/DropdownClose";
 
 /** "☆ Watchlist" popover: tick the lists a fund belongs to, or start a new one. Lists load on open so they are always current. */
 export default function AddToWatchlist({ code, onChange, className = "terminal-btn text-[11px] py-0.5 px-2" }: {
@@ -23,6 +24,7 @@ export default function AddToWatchlist({ code, onChange, className = "terminal-b
         onClick={() => { setOpen((o) => !o); if (!open) load(); }}>☆ Watchlist</button>
       {open && (
         <div role="dialog" aria-label="Add to watchlist" className="terminal-panel absolute right-0 z-30 mt-1 w-60 p-2 space-y-1.5 text-[12px] shadow-lg">
+          <DropdownClose onClose={() => setOpen(false)} />
           {lists.length === 0 && <div className="text-[#706E6B] dark:text-[#A8B4C4]">No watchlists yet. Create one below.</div>}
           {lists.map((w) => (
             <label key={w.id} className="flex items-center gap-2 cursor-pointer">

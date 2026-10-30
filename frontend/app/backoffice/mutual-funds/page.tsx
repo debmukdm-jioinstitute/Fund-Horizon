@@ -23,6 +23,7 @@ import CompareView from "@/components/compare/CompareView";
 import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import InfoTip from "@/components/InfoTip";
 import MfPortfolioScreen from "@/components/backoffice/MfPortfolioScreen";
+import DropdownClose from "@/components/DropdownClose";
 
 const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "Capture Ratio", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
@@ -324,6 +325,7 @@ function MutualFunds() {
             <>
               <div className="fixed inset-0 z-40" onClick={() => setCatOpen(false)} />
               <div className="absolute left-0 top-full mt-1.5 w-full max-w-[760px] max-h-[70vh] overflow-y-auto rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-2.5">
+                <DropdownClose onClose={() => setCatOpen(false)} />
 
         <div role="tablist" className="flex flex-wrap gap-1">
           {groups.map((g) => (
@@ -427,6 +429,7 @@ function MutualFunds() {
             <>
               <div className="fixed inset-0 z-40" onClick={() => setPlanSelectOpen(false)} />
               <div className="absolute left-0 top-full mt-1.5 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-1.5 shadow-2xl z-50 text-[13px] text-[#181818] dark:text-[#EDF2F7] min-w-[160px]">
+                <DropdownClose onClose={() => setPlanSelectOpen(false)} />
                 {([
                   ["Both", PLANS],
                   ["Regular only", ["Regular"]],
@@ -538,6 +541,7 @@ function MutualFunds() {
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setRecDropdownOpen(false)} />
                 <div className="absolute right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                  <DropdownClose onClose={() => setRecDropdownOpen(false)} />
                   <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
                     <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
                       ★ FH Recommended Mutual Funds ({Object.keys(rec.mfMap).length})
@@ -613,6 +617,7 @@ function MutualFunds() {
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setColsOpen(false)} />
                 <div className="absolute right-0 top-full mt-1.5 w-72 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3 shadow-2xl z-50 space-y-1.5 text-left">
+                  <DropdownClose onClose={() => setColsOpen(false)} />
                   {cols.map((c) => (
                     <label key={c.key} className="flex items-center gap-2 text-[12px] text-[#181818] dark:text-[#EDF2F7] cursor-pointer">
                       <input

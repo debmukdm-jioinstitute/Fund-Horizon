@@ -10,6 +10,7 @@ import CommandPalette from "@/components/crm/CommandPalette";
 import EmailDialog from "@/components/crm/EmailDialog";
 import { useAuth } from "@/components/AuthContext";
 import { useTheme } from "@/components/terminal/ThemeContext";
+import DropdownClose from "@/components/DropdownClose";
 
 export default function BackofficeLayout({ children }: { children: React.ReactNode }) {
   const { customer, loading, logout } = useAuth();
@@ -157,6 +158,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
               </button>
               {userMenuOpen && (
                 <div className="absolute right-0 top-10 z-50 w-64 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] shadow-lg">
+                  <DropdownClose onClose={() => setUserMenuOpen(false)} />
                   <div className="p-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
                     <div className="text-[13px] font-semibold truncate">{customer.name || customer.email}</div>
                     <div className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] truncate">{customer.email}</div>

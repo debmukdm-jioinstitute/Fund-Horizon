@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { createActivity, createHousehold, fetchActivities } from "@/lib/crmApi";
 import { fetchPage } from "@/lib/crmListApi";
 import { createContact } from "@/lib/crmPhase3Api";
+import DropdownClose from "@/components/DropdownClose";
 
 export interface Client { id: string; name: string; household_id: string; mobile?: string | null; email?: string | null }
 export interface Saved { id: string; calc: string; vals: Record<string, string>; at: string; summary: string }
@@ -83,6 +84,7 @@ export function ClientPicker({ client, onChange }: { client: Client | null; onCh
       </div>
       {open && !client && hits.length > 0 && (
         <ul className="absolute left-5 top-full z-20 mt-1 w-80 overflow-hidden rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] shadow-lg">
+          <DropdownClose onClose={() => setOpen(false)} as="li" />
           {hits.map((h) => (
             <li key={h.id}><button type="button" className="block w-full px-3 py-2 text-left text-[13.5px] text-[#172033] dark:text-[#EDF1F6] hover:bg-[#F8FAFB] dark:hover:bg-[#1B2432]" onClick={() => { onChange(h); setOpen(false); setQ(""); }}>
               {h.name}<span className="ml-2 text-[12px] text-[#667085]">{h.mobile ?? h.email ?? ""}</span></button></li>

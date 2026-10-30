@@ -16,6 +16,7 @@ import {
   updateStaffMember,
   type StaffMemberItem,
 } from "@/lib/backoffice";
+import DropdownClose from "@/components/DropdownClose";
 
 const mutedCls = "text-[#706E6B] dark:text-[#A8B4C4]";
 
@@ -325,6 +326,7 @@ export default function StaffPermissionsPage() {
                         </button>
                         {openMenu === m.id && (
                           <div role="menu" className="absolute right-0 top-9 z-20 w-48 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-1 text-left shadow-xl">
+                            <DropdownClose onClose={() => setOpenMenu(null)} />
                             <button type="button" role="menuitem" onClick={() => { setDetail(m); setOpenMenu(null); }} className="block w-full rounded px-3 py-2 text-left text-[13px] hover:bg-[#F3F3F3] dark:hover:bg-[#10151C]">
                               View details
                             </button>

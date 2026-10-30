@@ -6,6 +6,7 @@ import { CUSTOM, EMAIL_ACCEPT, EMAIL_MAX_BYTES, EMAIL_TEMPLATES, extractEmailFie
 import { searchCrm, type SearchResult } from "../../lib/crmListApi";
 import { fetchContact } from "../../lib/crmPhase3Api";
 import { btnCls, errCls, ghostBtnCls, mutedCls } from "./ui";
+import DropdownClose from "@/components/DropdownClose";
 
 export interface Recipient { customer_id: string; name: string; email: string | null }
 const usable = (r: Recipient) => !!r.email && !r.email.endsWith("@placeholder.invalid");
@@ -252,6 +253,7 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
                       onKeyDown={(e) => { if ((e.key === "Enter" || e.key === ",") && isEmail(q.trim().replace(/,$/, ""))) { e.preventDefault(); addAddress(); } }} />
                     {(hits.length > 0 || isEmail(q.trim().replace(/,$/, ""))) && (
                       <ul className="absolute left-0 right-0 z-30 mt-1 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] shadow-lg">
+                        <DropdownClose onClose={() => setHits([])} as="li" />
                         {isEmail(q.trim().replace(/,$/, "")) && <li><button type="button" onClick={addAddress} className="w-full px-2.5 py-1.5 text-left text-xs hover:bg-[#F0F4F8] dark:hover:bg-[#1D2733]">Send to <b>{q.trim().replace(/,$/, "")}</b> <span className={mutedCls}>any email address</span></button></li>}
                         {hits.map((h) => <li key={`${h.type}-${h.id}`}><button type="button" onClick={() => add(h)} className="w-full px-2.5 py-1.5 text-left text-xs hover:bg-[#F0F4F8] dark:hover:bg-[#1D2733]"><b>{h.title}</b> <span className={mutedCls}>{h.type} · {h.subtitle}</span></button></li>)}
                       </ul>
@@ -276,6 +278,7 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
                 </button>
                 {templateOpen && (
                   <ul role="listbox" className="absolute left-0 z-30 mt-1 w-56 rounded border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] shadow-lg">
+                    <DropdownClose onClose={() => setTemplateOpen(false)} as="li" />
                     <li><button type="button" onClick={() => chooseTemplate("blank")} className="w-full px-3 py-2 text-left text-xs hover:bg-[#F0F4F8] dark:hover:bg-[#1D2733]">Start blank</button></li>
                     {EMAIL_TEMPLATES.map((t) => <li key={t.id}><button type="button" onClick={() => chooseTemplate(t.id)} className="w-full px-3 py-2 text-left text-xs hover:bg-[#F0F4F8] dark:hover:bg-[#1D2733]">{t.label}</button></li>)}
                   </ul>

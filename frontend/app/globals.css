@@ -374,6 +374,27 @@ select {
 }
 select:focus, input:focus, textarea:focus { outline: none; border-color: var(--terminal-accent); box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.18); }
 
+/* Dropdowns and pop-ups must be opaque: a see-through panel lets the page underneath bleed into the list. */
+html:not(.dark) [class~="absolute"][class~="bg-white"],
+html:not(.dark) [class~="fixed"][class~="bg-white"],
+html:not(.dark) [class~="absolute"].terminal-panel,
+html:not(.dark) [role="menu"], html:not(.dark) [role="listbox"] { background-color: #FFFFFF; }
+html.dark [class~="absolute"][class~="dark:bg-[#171E27]"],
+html.dark [class~="absolute"][class~="dark:bg-[#10151C]"],
+html.dark [class~="absolute"][class~="dark:bg-[#171E2A]"],
+html.dark [class~="absolute"].terminal-panel,
+html.dark [role="menu"], html.dark [role="listbox"] { background-color: #12233A; }
+
+/* The ✕ row at the top of every dropdown (components/DropdownClose.tsx). */
+.dropdown-close-row { position: sticky; top: 0; z-index: 2; display: flex; justify-content: flex-end; padding: 6px 6px 2px; background: inherit; list-style: none; }
+.dropdown-close {
+  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 9999px;
+  font-size: 13px; line-height: 1; color: var(--terminal-text-secondary);
+  background: rgba(226, 237, 255, 0.8); border: 1px solid var(--glass-line); cursor: pointer;
+}
+.dropdown-close:hover { background: #DCE9FF; color: var(--terminal-text-primary); }
+html.dark .dropdown-close { background: rgba(255, 255, 255, 0.08); }
+
 /* Pop-up menus and lists: glass sheet. */
 [role="menu"], [role="listbox"] {
   border-radius: 16px !important;

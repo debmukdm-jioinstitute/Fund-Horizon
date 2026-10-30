@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
+import DropdownClose from "@/components/DropdownClose";
 
 /** Header auth entry point.
  * Logged out → a "Log in" link-button to /login (plan-link access lives on the login page).
@@ -91,6 +92,7 @@ export default function CustomerLogin({ className = "" }: { className?: string }
           role="menu"
           className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl border border-navy-100 bg-white py-1 shadow-xl"
         >
+          <DropdownClose onClose={() => setMenuOpen(false)} />
           <Link
             href="/account/plans"
             role="menuitem"

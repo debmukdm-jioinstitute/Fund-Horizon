@@ -33,6 +33,7 @@ import {
   pmsReturnWarning,
   pmsCellReturnWarning,
 } from "@/lib/backoffice-display";
+import DropdownClose from "@/components/DropdownClose";
 
 type SortKey = "aum" | "return_1m" | "return_1y" | "return_3y" | "name" | "score";
 const PAGE_SIZE = 50;
@@ -431,6 +432,7 @@ function PmsTracker() {
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setPmsRecDropdownOpen(false)} />
                     <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                      <DropdownClose onClose={() => setPmsRecDropdownOpen(false)} />
                       <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
                         <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
                           ★ FH Recommended PMS Strategies ({Object.keys(rec.pmsMap).length})

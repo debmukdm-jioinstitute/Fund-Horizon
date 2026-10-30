@@ -27,6 +27,7 @@ import {
   type SavedView,
 } from "../../lib/crmListApi";
 import OwnerAvatar, { useOwners } from "./OwnerAvatar";
+import DropdownClose from "@/components/DropdownClose";
 
 export interface ListColumn<T> {
   id: string;
@@ -372,6 +373,7 @@ export default function ListView<T extends { id: string }>({
             <button type="button" onClick={() => setColMenu((o) => !o)} aria-expanded={colMenu} className={ctl}>Columns</button>
             {colMenu && (
               <div className={`absolute right-0 z-20 mt-1 w-48 rounded border p-2 shadow-lg ${surface}`}>
+                <DropdownClose onClose={() => setColMenu(false)} />
                 {columns.map((c) => (
                   <label key={c.id} className="flex items-center gap-2 py-0.5 text-xs">
                     <input

@@ -1,6 +1,6 @@
 """Crawl AdvisorKhoj's Market Capture Ratio tool and write data/fundhorizon_mf_rag_dataset/capture_ratio.json (keyed by AMFI scheme code).
 
-Run on a dev machine (`make capture`, ~25 min; pass category keys to refresh only those); commit the JSON. AdvisorKhoj has no API: the page is server-rendered from
+Runs monthly in .github/workflows/capture-ratio-refresh.yml (or `make capture`, ~25 min; pass category keys to refresh only those). AdvisorKhoj has no API: the page is server-rendered from
 GET /mutual-funds-research/market-capture-ratio?category=..&schemes=a,b,..&period=N and covers equity and hybrid categories only.
 Funds are joined to our AMFI codes by normalised fund name + plan (unmatched funds are listed, not guessed).
 """
@@ -107,6 +107,9 @@ def main() -> None:
                     time.sleep(0.3)
     miss = sorted(s for s in seen_slugs if norm_key(s) not in ours)
     print(f"matched {len(out)} funds; {len(miss)} AdvisorKhoj slugs unmatched, e.g. {miss[:8]}")
+    before = len(json.loads(OUT.read_text())["data"]) if OUT.exists() else 0
+    if not only and len(out) < 0.8 * before:  # a blocked or changed page must not wipe good data
+        sys.exit(f"refusing to write: only {len(out)} funds matched vs {before} in the current file")
     OUT.write_text(json.dumps({"as_of": date.today().isoformat(), "source": "advisorkhoj.com", "data": out}, separators=(",", ":")))
 
 

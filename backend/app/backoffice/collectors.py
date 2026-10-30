@@ -48,6 +48,9 @@ REFRESH_INTERVALS: dict[str, int] = {
     "SRC_APMI": 12 * 3600,
     "SRC_FACTSHEETS": 6 * 3600,
     "SRC_SCREENING": 24 * 3600,
+    # FH score frame, recommended-list baselines and daily decision snapshots. Without this they only ran when
+    # someone opened the screener, so a quiet day left no snapshot.
+    "SRC_FH_SCORE": 6 * 3600,
 }
 _LAST_RUN: dict[str, float] = {}
 
@@ -175,6 +178,16 @@ def refresh_factsheets() -> dict[str, Any]:
     return {"status": "success", "source_id": source_id, "records_ingested": new, "failed_sources": failed}
 
 
+def refresh_fh_score() -> dict[str, Any]:
+    """Rebuild the scored screener frame, then record baselines and snapshots (idempotent: unchanged data stores nothing)."""
+    from app.api import backoffice as api
+
+    frame = api._build_frame((api.fh_score.CONFIG_FILE.stat().st_mtime if api.fh_score.CONFIG_FILE.exists() else 0,))
+    api._fh_refresh(frame, force=True)
+    _REPO.update_source_health("SRC_FH_SCORE", "ready", success=True)
+    return {"status": "success", "source_id": "SRC_FH_SCORE", "funds": int(len(frame))}
+
+
 def refresh_rss() -> dict[str, Any]:
     source_id = "SRC_RSS"
     items, errors = rss.fetch_all()
@@ -299,6 +312,8 @@ async def _refresh_source(source_id: str, force: bool = False) -> dict[str, Any]
         if source_id == "SRC_SCREENING":
             from app.backoffice.screening.jobs import refresh_screening
             return await loop.run_in_executor(None, refresh_screening)
+        if source_id == "SRC_FH_SCORE":
+            return await loop.run_in_executor(None, refresh_fh_score)
 
         providers = {
             "SRC_IN_YIELDS": IndiaYieldsProvider,

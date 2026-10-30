@@ -1,0 +1,47 @@
+name: Monthly Capture Ratio Refresh
+
+# Rebuilds data/fundhorizon_mf_rag_dataset/capture_ratio.json (up/down market capture used by the FH score and the
+# Capture Ratio view) from Advisorkhoj's public Market Capture Ratio tool. Advisorkhoj updates monthly, so this runs on
+# the 8th. FULLY AUTOMATED, by standing rule: no manual workflows in website operations. The script refuses to write
+# when far fewer funds match than last time (blocked or changed page), so a bad run never wipes good data.
+# The commit touches data/**, which triggers the API deploy.
+
+on:
+  schedule:
+    # 04:00 UTC on the 8th of each month
+    - cron: '0 4 8 * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capture-ratio-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Crawl capture ratios
+        run: python backend/scripts/build_capture_ratio.py
+
+      - name: Commit refreshed capture ratios
+        run: |
+          git config user.name "fh-data-bot"
+          git config user.email "fh-data-bot@users.noreply.github.com"
+          git add data/fundhorizon_mf_rag_dataset/capture_ratio.json
+          git diff --cached --quiet || (git commit -m "data: monthly capture ratio refresh" && git pull --rebase origin main && git push)

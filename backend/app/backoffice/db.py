@@ -394,6 +394,7 @@ def _seed_default_registries_raw(conn: sqlite3.Connection) -> None:
         ("SRC_RSS", "Open RSS News Feeds", "https://www.rbi.org.in/", "rss_feeds", "1.0.0", "RBI, SEBI, PIB, ET, Mint, Business Standard, BusinessLine, Moneycontrol and Google News public RSS feeds. Headlines and links only.", "public_view_only", 1, 6, "Asia/Kolkata", "intraday", "ready"),
         ("SRC_TREASURY", "US Treasury Par Yield Curve", "https://home.treasury.gov/resource-center/data-chart-center/interest-rates", "us_treasury", "1.0.0", "Official US Treasury daily par yield curve. No key required.", "public_view_only", 1, 4, "America/New_York", "daily", "ready"),
         ("SRC_SCREENING", "Fund Horizon Screening Engine", "https://fundhorizon.in/backoffice/research?tab=screening", "screening_engine", "1.0.0", "Internal MF Regular Growth funnel metrics.", "public_view_only", 1, 1, "Asia/Kolkata", "daily", "ready"),
+        ("SRC_FH_SCORE", "FH Score and Recommendation Snapshots", "https://fundhorizon.website/backoffice/mutual-funds", "fh_score_engine", "1.0.0", "FH score frame, FH-list baselines and decision snapshots, every 6 hours.", "public_view_only", 1, 1, "Asia/Kolkata", "6-hourly", "ready"),
         ("SRC_ADVISORKHOJ", "Advisorkhoj Public Research", "https://www.advisorkhoj.com/", "advisorkhoj", "1.0.0", "Public HTML fund quartile rankings under robots.txt Allow: /; fallback to computed.", "public_view_only", 1, 2, "Asia/Kolkata", "daily", "ready"),
     ]
 

@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MARKET_SECTIONS, homeHref, parentHref, sectionIndex } from "./marketDeskNav";
+import { MARKET_SECTIONS, homeHref, parentHref, sectionIndex } from "./marketDeskNavData";
 
 const btn =
   "inline-flex h-8 shrink-0 items-center gap-1.5 rounded border border-[#C9C7C5] bg-white px-2.5 text-[12px] font-semibold text-[#181818] hover:border-[#0176D3] hover:text-[#0176D3] dark:border-[#2B3644] dark:bg-[#171E27] dark:text-[#EDF2F7] dark:hover:border-[#1B96FF] dark:hover:text-[#1B96FF]";

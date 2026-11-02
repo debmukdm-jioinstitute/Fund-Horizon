@@ -63,6 +63,7 @@ export const PAGE_GROUPS: PageGroup[] = [
     label: "Operations & system",
     pages: [
       { href: "/backoffice/operations", label: "Operations" },
+      { href: "/backoffice/hrms", label: "HRMS" },
       { href: "/backoffice/data-health", label: "Data health" },
       { href: "/backoffice/settings", label: "Settings" },
     ],

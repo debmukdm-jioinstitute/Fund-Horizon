@@ -2464,7 +2464,7 @@ BACKOFFICE_PAGES = (
     "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/macro",
     "/backoffice/derivatives", "/backoffice/flows", "/backoffice/research",
     "/backoffice/data-health", "/backoffice/crm", "/backoffice/operations",
-    "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/settings",
+    "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/hrms", "/backoffice/settings",
 )
 
 

@@ -32,7 +32,7 @@ def test_search_endpoint_returns_funds_crm_and_scopes(client):
     _login(client, _make_customer("admin"))
     lead = client.post("/api/crm/leads", json={"name": "Quokka Searchable", "notes": "token FH-777777"}).json()
     scopes = {s["key"] for s in client.get("/api/backoffice/search/scopes").json()["scopes"]}
-    assert {"mutual_funds", "fund_managers", "pms", "amcs", "crm", "news"} <= scopes
+    assert {"mutual_funds", "fund_managers", "pms", "amcs", "crm", "news", "markets"} <= scopes
     crm = client.get("/api/backoffice/search", params={"q": "quokka", "scope": "crm"}).json()["results"]
     assert any(r["id"] == lead["id"] and r["scope"] == "crm" for r in crm)
     funds = client.get("/api/backoffice/search", params={"q": "hdfc", "scope": "mutual_funds"}).json()["results"]
@@ -40,6 +40,14 @@ def test_search_endpoint_returns_funds_crm_and_scopes(client):
     amcs = client.get("/api/backoffice/search", params={"q": "hdfc", "scope": "amcs"}).json()["results"]
     assert amcs
     assert client.get("/api/backoffice/search", params={"q": "x"}).status_code == 422
+
+
+def test_markets_pages_are_searchable():
+    from app.backoffice.search import run
+
+    hits = run("valuation", "markets", None)
+    assert hits and all(h["href"].startswith("/backoffice/markets") for h in hits)
+    assert any("Valuation" in h["title"] for h in hits)
 
 
 def test_official_forms_searchable_by_karvy_alias():

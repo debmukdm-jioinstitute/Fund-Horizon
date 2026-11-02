@@ -76,11 +76,13 @@ function CornerButtons({
   onOverview,
   onExcel,
   excelBusy,
+  searchId,
 }: {
   path: string;
   onOverview: boolean;
   onExcel?: () => void;
   excelBusy?: boolean;
+  searchId: string;
 }) {
   const pathname = usePathname() || "";
   const back = parentHref(path, onOverview);
@@ -96,6 +98,18 @@ function CornerButtons({
         <NavBtn href={back} label="Back" icon={<IconBack />} />
         <NavBtn href={homeIsHere ? null : home} label="Home" icon={<IconHome />} />
       </div>
+      <form action="/backoffice/markets/search" method="get" role="search" className="flex min-w-[140px] max-w-sm flex-1 items-center">
+        <label className="sr-only" htmlFor={searchId}>
+          Search markets
+        </label>
+        <input
+          id={searchId}
+          name="q"
+          type="search"
+          placeholder="Search markets"
+          className="h-8 w-full min-w-0 rounded border border-[#C9C7C5] bg-white px-2.5 text-[12px] text-[#181818] placeholder:text-[#706E6B] dark:border-[#2B3644] dark:bg-[#171E27] dark:text-[#EDF2F7]"
+        />
+      </form>
       <div className="flex min-w-0 items-center gap-1.5">
         <NavBtn href={prev ? prev.href : null} label={prev ? prev.label : "Previous"} icon={<IconPrev />} />
         <NavBtn href={next ? next.href : null} label={next ? next.label : "Next"} icon={<IconNext />} />
@@ -129,7 +143,7 @@ export default function MarketDeskNav({
   if (placement === "top") {
     return (
       <nav aria-label="Market page" className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5E5E5] bg-[#F3F9FE] px-2.5 py-2 dark:border-[#2B3644] dark:bg-[#0F2A45]">
-        <CornerButtons path={path} onOverview={onOverview} onExcel={onExcel} excelBusy={excelBusy} />
+        <CornerButtons path={path} onOverview={onOverview} onExcel={onExcel} excelBusy={excelBusy} searchId="market-q-top" />
       </nav>
     );
   }
@@ -137,7 +151,7 @@ export default function MarketDeskNav({
   return (
     <nav aria-label="Market sections" className="border-t border-[#E5E5E5] bg-[#F3F9FE] px-2.5 py-2 dark:border-[#2B3644] dark:bg-[#0F2A45]">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <CornerButtons path={path} onOverview={onOverview} onExcel={onExcel} excelBusy={excelBusy} />
+        <CornerButtons path={path} onOverview={onOverview} onExcel={onExcel} excelBusy={excelBusy} searchId="market-q-footer" />
       </div>
       <ul className="flex flex-wrap gap-x-3 gap-y-1">
         {MARKET_SECTIONS.map((s) => (

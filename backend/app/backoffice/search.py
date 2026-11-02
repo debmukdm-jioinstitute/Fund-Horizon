@@ -138,6 +138,18 @@ def official_forms() -> list[dict[str, str]]:
     return json.loads((data_dir().parent / "official_forms.json").read_text())
 
 
+@provider("markets", "Markets")
+def markets(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
+    from app.backoffice.market_charts import search_catalog
+
+    out = []
+    for h in search_catalog(q, fetch_live=False)[:limit]:
+        path = h["path"] if h["path"].startswith("/") else f"/{h['path']}"
+        href = "/backoffice/markets" if path in ("/", "") else f"/backoffice/markets{path.rstrip('/')}"
+        out.append(_hit("markets", "page", path, h["title"], h["subtitle"], href))
+    return out
+
+
 @provider("forms", "Official forms")
 def forms(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
     words = q.lower().split()

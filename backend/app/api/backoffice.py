@@ -124,8 +124,11 @@ def backoffice_overview(staff: Annotated[dict, Depends(require_staff)]):
 def _market_desk(request: Request, path: str):
     path = market_desk.safe_path(path)
     q = market_desk.query_string(dict(request.query_params))
-    if (request.query_params.get("format") or "").lower() == "xlsx":
+    fmt = (request.query_params.get("format") or "").lower()
+    if fmt == "xlsx":
         return market_desk.xlsx_response(path, q)
+    if fmt == "csv":
+        return market_desk.csv_response(path, q)
     if market_desk.is_asset(path):
         return market_desk.asset_response(path, q)
     return market_desk.json_payload(path, q)

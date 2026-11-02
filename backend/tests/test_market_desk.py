@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import json
 
 import pytest
 from fastapi import HTTPException
@@ -144,3 +145,91 @@ def test_xlsx_without_tables_is_404():
     with pytest.raises(HTTPException) as err:
         market_desk.build_xlsx([])
     assert err.value.status_code == 404
+
+
+CHART_JSON = {
+    "dates": ["2024-01-05", "2024-06-07", "2025-01-03"],
+    "series": {"trend_india": [100.0, 110.0, 121.0], "n500": [200.0, 210.0, 220.0]},
+}
+CHART_HTML = """<!doctype html><html><body>
+<figure class="chart" data-chart='{"kind":"line","src":"/data/v1/models/demo.json","series":[{"slot":1,"col":"trend_india","label":"Trend India"},{"slot":6,"col":"n500","label":"Nifty 500 (NSE)","tone":"hist"}],"from":"2024-01-05","transform":{"type":"rebase","base":100},"fmt":"num","digits":0,"name":"Trend"}'>
+  <header><h3>Trend</h3></header>
+  <div class="plot"><p class="loading">Loading chart…</p></div>
+  <figcaption>
+    <div class="tools">
+      <button type="button" data-act="table">Table</button>
+      <button type="button" data-act="csv">Download CSV</button>
+      <a class="tool" data-json href="/data/v1/models/demo.json">JSON</a>
+    </div>
+    <div class="tableview" hidden></div>
+  </figcaption>
+</figure>
+<form class="search" action="/search/" method="get"><input id="search-q" name="q" type="search"></form>
+<p class="search-status" data-status></p>
+<ol class="search-results" data-results></ol>
+</body></html>"""
+
+
+def _fake_chart_fetch(path, query=""):
+    if str(path).startswith("data/"):
+        return 200, "application/json", json.dumps(CHART_JSON).encode()
+    return 200, "text/html; charset=utf-8", CHART_HTML.encode()
+
+
+def test_charts_render_svg_and_csv_link(monkeypatch):
+    monkeypatch.setattr(market_desk, "fetch_upstream", _fake_chart_fetch)
+    from app.backoffice.market_charts import enhance_document, json_to_csv, render_chart, search_catalog
+
+    svg = render_chart(
+        {
+            "kind": "line",
+            "series": [{"slot": 1, "col": "trend_india", "label": "Trend India"}],
+            "from": "2024-01-05",
+            "transform": {"type": "rebase", "base": 100},
+            "name": "Trend",
+        },
+        CHART_JSON,
+    )
+    assert "<svg" in svg and "Trend India" in svg
+    assert "Loading chart" not in svg
+
+    body = enhance_document(CHART_HTML, path="search", query="q=trend")
+    assert "Loading chart" not in body
+    assert "<svg" in body
+    assert "format=csv" in body
+    assert "tableview" in body and "Trend India" in body
+    assert 'href="/backoffice/markets/trend/"' in body
+    csv_text = json_to_csv(CHART_JSON, ["trend_india"])
+    assert csv_text.splitlines()[0] == "Date,trend_india"
+    assert "100.0" in csv_text
+    hits = search_catalog("trend")
+    assert any(h["path"] == "/trend/" for h in hits)
+
+
+def test_markets_json_fills_charts(client, monkeypatch):
+    monkeypatch.setattr(market_desk, "fetch_upstream", _fake_chart_fetch)
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    r = client.get("/api/backoffice/markets")
+    assert r.status_code == 200
+    html = r.json()["html"]
+    assert "Loading chart" not in html
+    assert "<svg" in html
+    assert "format=csv" in html
+    _, split_body = market_desk.split_document(CHART_HTML)
+    assert "/backoffice/markets/search/" in split_body
+    assert "/api/backoffice/markets/data/v1/models/demo.json" in split_body
+
+
+def test_csv_endpoint_returns_series(client, monkeypatch):
+    monkeypatch.setattr(market_desk, "fetch_upstream", _fake_chart_fetch)
+    sid = _create_staff("analyst")
+    _login_staff(client, sid)
+    r = client.get("/api/backoffice/markets/data/v1/models/demo.json?format=csv&cols=trend_india")
+    assert r.status_code == 200
+    assert "text/csv" in r.headers["content-type"]
+    assert r.headers["content-disposition"].endswith('.csv"')
+    text = r.content.decode()
+    assert text.splitlines()[0] == "Date,trend_india"
+    assert "121.0" in text
+

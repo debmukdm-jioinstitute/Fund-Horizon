@@ -178,12 +178,15 @@ def json_payload(path: str, query: str) -> dict[str, str]:
         raise HTTPException(415, "Not a page.")
     html = data.decode("utf-8", errors="replace")
     css, body = split_document(html)
+    from app.backoffice.market_charts import enhance_document
+
+    body = enhance_document(body, path, query)
     return {"css": css, "html": body}
 
 
 def asset_response(path: str, query: str) -> Response:
     status, ctype, data = fetch_upstream(path, query)
-    if "html" in ctype.lower() or "javascript" in ctype.lower() or "css" in ctype.lower() or "json" in ctype.lower():
+    if "html" in ctype.lower() or "javascript" in ctype.lower() or "css" in ctype.lower():
         text = data.decode("utf-8", errors="replace")
         if "javascript" in ctype.lower():
             text = text.replace(UPSTREAM, "")
@@ -331,12 +334,39 @@ def xlsx_response(path: str, query: str = "") -> Response:
         raise HTTPException(415, "Not a page.")
     html = data.decode("utf-8", errors="replace")
     _, body = split_document(html)
+    from app.backoffice.market_charts import enhance_document
+
+    body = enhance_document(body, path, query)
     payload = build_xlsx(extract_tables(body))
     return Response(
         content=payload,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
             "Content-Disposition": f'attachment; filename="{xlsx_filename(path)}"',
+            "Cache-Control": "private, no-store",
+        },
+    )
+
+
+def csv_response(path: str, query: str = "") -> Response:
+    from app.backoffice.market_charts import csv_filename, enhance_document, json_csv_response, tables_to_csv
+
+    if is_asset(path) and path.rstrip("/").lower().endswith(".json"):
+        return json_csv_response(path, query)
+    status, ctype, data = fetch_upstream(path, query)
+    if status >= 400:
+        raise HTTPException(status, "Market page unavailable.")
+    if "html" not in ctype.lower():
+        raise HTTPException(415, "Not a page.")
+    html = data.decode("utf-8", errors="replace")
+    _, body = split_document(html)
+    body = enhance_document(body, path, query)
+    payload = tables_to_csv(extract_tables(body)).encode("utf-8")
+    return Response(
+        content=payload,
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="{csv_filename(path)}"',
             "Cache-Control": "private, no-store",
         },
     )

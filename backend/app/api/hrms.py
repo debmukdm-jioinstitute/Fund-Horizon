@@ -234,13 +234,29 @@ def create_employee(req: EmployeeCreate, user: Annotated[dict, Depends(require_s
     )
 
     with get_db() as conn:
+        code_clean = req.emp_code.strip().upper()
+        email_clean = req.email.strip().lower()
+
         # Check emp_code & email uniqueness
-        existing = conn.execute(
-            "SELECT id FROM hrms_employees WHERE emp_code = ? OR email = ?",
-            (req.emp_code.strip(), req.email.strip().lower()),
+        existing_code = conn.execute(
+            "SELECT emp_code, name FROM hrms_employees WHERE emp_code = ?",
+            (code_clean,),
         ).fetchone()
-        if existing:
-            raise HTTPException(status_code=400, detail="Employee code or email already exists")
+        if existing_code:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Employee code '{code_clean}' is already assigned to {existing_code['name']}. Please assign a new code.",
+            )
+
+        existing_email = conn.execute(
+            "SELECT email, name FROM hrms_employees WHERE email = ?",
+            (email_clean,),
+        ).fetchone()
+        if existing_email:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Email '{email_clean}' is already registered for {existing_email['name']}.",
+            )
 
         conn.execute(
             """
@@ -251,11 +267,11 @@ def create_employee(req: EmployeeCreate, user: Annotated[dict, Depends(require_s
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                emp_id, req.emp_code.strip().upper(), req.name.strip(), req.email.strip().lower(),
+                emp_id, code_clean, req.name.strip(), email_clean,
                 req.phone.strip(), req.designation.strip(), req.department.strip(), req.joining_date,
                 req.status, req.manager_name.strip(), req.pan.strip().upper(), req.uan.strip(),
                 req.bank_name.strip(), req.bank_account.strip(), req.bank_ifsc.strip().upper(),
-                req.ctc, basic, hra, special_allowance, now, now
+                int(req.ctc or 0), int(basic or 0), int(hra or 0), int(special_allowance or 0), now, now
             ),
         )
 
@@ -446,6 +462,7 @@ TEMPLATES = {
 
 
 @router.get("/letters/templates")
+@router.get("/templates")
 def get_letter_templates(user: Annotated[dict, Depends(require_staff)]):
     """Return available letter templates with default placeholders and texts."""
     return TEMPLATES
@@ -577,6 +594,7 @@ def list_payroll_runs(user: Annotated[dict, Depends(require_staff)]):
 
 
 @router.post("/payroll/run")
+@router.post("/payroll/runs")
 def create_payroll_run(req: PayrollRunRequest, user: Annotated[dict, Depends(require_staff)]):
     """Execute monthly payroll run for all active and probation staff."""
     init_hrms_tables()
@@ -708,6 +726,7 @@ def create_payroll_run(req: PayrollRunRequest, user: Annotated[dict, Depends(req
 
 
 @router.get("/payslips")
+@router.get("/payroll/slips")
 def list_payslips(
     user: Annotated[dict, Depends(require_staff)],
     run_id: str | None = None,
@@ -742,7 +761,14 @@ def list_payslips(
         return [dict(r) for r in rows]
 
 
+@router.get("/payroll/runs/{run_id}/slips")
+def list_run_slips(run_id: str, user: Annotated[dict, Depends(require_staff)]):
+    """Retrieve all payslips for a given payroll run."""
+    return list_payslips(user=user, run_id=run_id)
+
+
 @router.get("/payslips/{slip_id}/pdf")
+@router.get("/payroll/slips/{slip_id}/pdf")
 def download_payslip_pdf(slip_id: str, user: Annotated[dict, Depends(require_staff)]):
     """Generate and return official monthly salary slip PDF."""
     init_hrms_tables()
@@ -786,15 +812,21 @@ def dispatch_all_payslips(run_id: str, user: Annotated[dict, Depends(require_sta
     init_hrms_tables()
     now = _utcnow()
     with get_db() as conn:
-        conn.execute(
+        cur = conn.execute(
             "UPDATE hrms_payslips SET status = 'dispatched', dispatched_at = ? WHERE run_id = ?",
             (now, run_id),
         )
+        dispatched_count = cur.rowcount
         conn.execute(
             "UPDATE hrms_payroll_runs SET status = 'completed' WHERE id = ?",
             (run_id,),
         )
-        return {"status": "all_dispatched", "run_id": run_id, "dispatched_at": now}
+        return {
+            "status": "all_dispatched",
+            "run_id": run_id,
+            "dispatched_count": dispatched_count,
+            "dispatched_at": now,
+        }
 
 
 # -------------------------------------------------------------------------

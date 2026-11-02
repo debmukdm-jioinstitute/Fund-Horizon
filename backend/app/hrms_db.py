@@ -2,13 +2,22 @@ from __future__ import annotations
 """HRMS database schema, models, and persistence layer for Fund Horizon."""
 
 import json
+import os
 import sqlite3
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-DB_PATH = Path(__file__).resolve().parent.parent / "plans.db"
+
+def get_db_path() -> Path:
+    env_path = os.environ.get("FH_DB_PATH")
+    if env_path:
+        return Path(env_path)
+    return Path(__file__).resolve().parents[2] / "plans.db"
+
+
+DB_PATH = get_db_path()
 
 
 def _utcnow() -> str:
@@ -16,7 +25,9 @@ def _utcnow() -> str:
 
 
 def get_db() -> sqlite3.Connection:
-    conn = sqlite3.connect(str(DB_PATH))
+    p = get_db_path()
+    p.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(p))
     conn.row_factory = sqlite3.Row
     return conn
 

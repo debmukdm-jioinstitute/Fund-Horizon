@@ -183,6 +183,17 @@ export default function HrmsPage() {
     return { monthly_gross, basic, hra, sa, pf, pt, tds, deductions, net };
   }, [editingEmp?.ctc]);
 
+  const getNextEmpCode = () => {
+    const nums = employees
+      .map((e) => {
+        const m = (e.emp_code || "").match(/FH-(\d+)/i);
+        return m ? parseInt(m[1], 10) : 0;
+      })
+      .filter((n) => !isNaN(n) && n > 0);
+    const max = nums.length > 0 ? Math.max(...nums) : 0;
+    return `FH-${String(max + 1).padStart(3, "0")}`;
+  };
+
   // Save employee
   const handleSaveEmployee = async () => {
     if (!editingEmp) return;
@@ -404,7 +415,7 @@ export default function HrmsPage() {
           <button
             onClick={() => {
               setEditingEmp({
-                emp_code: `FH-${String(employees.length + 1).padStart(3, "0")}`,
+                emp_code: getNextEmpCode(),
                 name: "",
                 email: "",
                 phone: "",
@@ -647,7 +658,7 @@ export default function HrmsPage() {
             <button
               onClick={() => {
                 setEditingEmp({
-                  emp_code: `FH-${String(employees.length + 1).padStart(3, "0")}`,
+                  emp_code: getNextEmpCode(),
                   name: "",
                   email: "",
                   phone: "",

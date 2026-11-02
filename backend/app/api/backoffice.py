@@ -68,7 +68,7 @@ from app.backoffice.screening.service import ScreeningService
 from app.engine import analytics as engine_analytics
 from app.engine.stress import category_median_series
 from app.backoffice.compare import build_compare_payload
-from app.backoffice import search as universal_search
+from app.backoffice import market_desk, search as universal_search
 from app.backoffice.service import BackofficeService
 from app.data.loader import data_dir, load_metrics, load_nav
 from app.db import get_repository
@@ -119,6 +119,25 @@ def backoffice_overview(staff: Annotated[dict, Depends(require_staff)]):
         "method_version": "1.0.0",
     }
     return with_meta(res, "derived", overview.get("generated_at"))
+
+
+def _market_desk(request: Request, path: str):
+    path = market_desk.safe_path(path)
+    q = market_desk.query_string(dict(request.query_params))
+    if market_desk.is_asset(path):
+        return market_desk.asset_response(path, q)
+    return market_desk.json_payload(path, q)
+
+
+@router.get("/markets")
+def market_desk_home(request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    """Live market dashboard HTML, served on this origin with third-party chrome stripped."""
+    return _market_desk(request, "")
+
+
+@router.get("/markets/{path:path}")
+def market_desk_path(path: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    return _market_desk(request, path)
 
 
 @router.get("/series/{instrument_id}")

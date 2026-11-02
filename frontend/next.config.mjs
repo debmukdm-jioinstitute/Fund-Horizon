@@ -33,7 +33,6 @@ const securityHeaders = [
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
       `connect-src ${connectSrc()}`,
-      "frame-src https://tipsheet.markets",
       "frame-ancestors 'none'",
     ].join("; "),
   },

@@ -512,6 +512,29 @@ export default function OperationsPage() {
             </button>
 
             <Link
+              href="/backoffice/operations/valuation"
+              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 3v18h18" />
+                  <path d="M7 15l4-4 3 3 5-6" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                  Monthly valuation
+                </span>
+                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
+                  FundsIndia, ProAffluence and Stallion statements · Reconciliation · Consolidated PDF
+                </span>
+              </span>
+              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
+
+            <Link
               href="/backoffice/operations/paperwork"
               className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
             >

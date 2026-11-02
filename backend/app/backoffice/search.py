@@ -198,7 +198,10 @@ TABLE_COVERAGE: dict[str, str] = {
         "sip_schedules", "suitability_records", "mandates", "chat_messages", "client_reports", "monthly_reports")},
     # reached from their own tab, not worth a global search scope
     **{t: "listed on its own page (MF research Shortlist / Operations / plan view)" for t in (
-        "mf_research_shortlist", "operations_filings", "plan_ai_picks")},
+        "mf_research_shortlist", "operations_filings", "plan_ai_picks",
+        # monthly valuation (Operations > Monthly valuation): client-scoped, reached only from that module
+        "val_batches", "val_source_files", "val_accounts", "val_holdings", "val_cashflows", "val_reconciliation", "val_snapshots",
+        "val_report_versions", "val_audit_log")},
     "email_optouts": _SYSTEM,
 }
 

@@ -36,6 +36,16 @@ function isYtd(col: string): boolean {
 function yearDisplay(col: string): string {
   return isYtd(col) ? `${yearOf(col)} YTD` : yearOf(col);
 }
+/** Why a cell has no rank, from the fund's launch date (dd-mm-yyyy) and the column year. Never guessed beyond that. */
+function blankReason(launch: string | undefined, col: string): { short: string; why: string } {
+  const m = (launch ?? "").match(/(\d{2})-(\d{2})-(\d{4})/);
+  const y = parseInt(yearOf(col), 10);
+  if (!m) return { short: "No data", why: "Launch date not published, so the reason for the gap is unknown." };
+  const ly = parseInt(m[3], 10);
+  if (ly > y) return { short: "Not launched", why: `Fund launched on ${launch}, after ${y}.` };
+  if (ly === y) return { short: "Part year", why: `Fund launched on ${launch}; Advisorkhoj ranks only funds with a full calendar year${isYtd(col) ? "" : ", so no rank for the launch year"}.` };
+  return { short: "No data", why: `Fund existed in ${y} (launched ${launch}) but Advisorkhoj published no rank: the source did not report it (renamed, merged or too few peers).` };
+}
 function fmtAum(raw: string | undefined): string {
   const n = parseFloat((raw ?? "").replace(/,/g, ""));
   return Number.isFinite(n) ? n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (raw ?? "—");
@@ -152,7 +162,7 @@ export default function MfQuartileAnnual({ labels, enabled, keep, recommendedPen
     displayedYears.forEach((y) => {
       const pill = pillFor(row[y.i]);
       if (pill) (byPill[pill.label] ??= []).push(yearDisplay(y.c));
-      else unavailable.push(yearDisplay(y.c));
+      else unavailable.push(`${yearDisplay(y.c)} (${blankReason(row[1], y.c).short.toLowerCase()})`);
     });
     const parts = Object.entries(byPill).map(([label, years]) => `${label.replace(" · ", " in ")} ${years.join(", ")}`);
     if (unavailable.length) parts.push(`No ranking in ${unavailable.join(", ")}`);
@@ -262,10 +272,11 @@ export default function MfQuartileAnnual({ labels, enabled, keep, recommendedPen
                       <td className="text-right tabular-nums">{fmtAum(row[2])}</td>
                       {displayedYears.map((y) => {
                         const pill = pillFor(row[y.i]);
+                        const blank = pill ? null : blankReason(row[1], y.c);
                         return (
                           <td key={y.c} className={`text-center ${isYtd(y.c) ? "border-l border-dashed border-[#CBD5E1] dark:border-[#2B3644]" : ""}`}>
-                            <span className={`inline-block rounded-md px-2 py-1 text-[12px] font-medium whitespace-nowrap ${pill ? pill.cls : "bg-[#E9EDF1] text-[#667085] dark:bg-[#222C3D] dark:text-[#9AA6B8]"}`}>
-                              {pill ? pill.label : "—"}
+                            <span title={blank?.why} className={`inline-block rounded-md px-2 py-1 text-[12px] font-medium whitespace-nowrap ${pill ? pill.cls : "bg-[#E9EDF1] text-[#667085] dark:bg-[#222C3D] dark:text-[#9AA6B8]"}`}>
+                              {pill ? pill.label : blank!.short}
                             </span>
                           </td>
                         );

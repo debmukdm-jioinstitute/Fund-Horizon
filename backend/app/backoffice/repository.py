@@ -1056,10 +1056,15 @@ class BackofficeRepository:
             conn.close()
 
     def latest_pms_as_on(self) -> str | None:
+        """Newest month with a usable universe. A month holding under half the strategies of the largest recent month is a
+        partial APMI ingest (it once hid ~1,850 strategies behind a single row), so it is skipped until it fills up."""
         conn = self._conn()
         try:
-            row = conn.execute("SELECT MAX(as_on) AS m FROM pms_apmi_strategies").fetchone()
-            return row["m"] if row and row["m"] else None
+            rows = conn.execute(
+                "SELECT as_on, COUNT(*) AS n FROM pms_apmi_strategies GROUP BY as_on ORDER BY as_on DESC LIMIT 6"
+            ).fetchall()
+            biggest = max((r["n"] for r in rows), default=0)
+            return next((r["as_on"] for r in rows if r["n"] * 2 >= biggest), None)
         finally:
             conn.close()
 

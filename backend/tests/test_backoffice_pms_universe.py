@@ -191,3 +191,16 @@ def test_enrich_strategy_fees_curated_lookup_and_healing():
     assert "15% profit sharing" in missing_detail["variable_fees"]
     assert "1% if redeemed" in missing_detail["exit_load"]
 
+
+
+def test_partial_latest_month_does_not_hide_the_universe(client):
+    from app.backoffice.repository import BackofficeRepository
+
+    repo = BackofficeRepository()
+    rows = apmi.parse_report(REPORT, "Equity", "D")
+    full = [{**r, "strategy_name": f"{r['strategy_name']} {i}"} for i in range(5) for r in rows]  # a normal month
+    repo.replace_pms_universe("2026-09-30", apmi.parse_providers(PAGE), full)
+    repo.replace_pms_universe("2026-10-31", apmi.parse_providers(PAGE), rows[:1])  # half-ingested month: 1 row
+    assert repo.latest_pms_as_on() == "2026-09-30"
+    repo.replace_pms_universe("2026-10-31", apmi.parse_providers(PAGE), full)
+    assert repo.latest_pms_as_on() == "2026-10-31"

@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse, Response
 
 from app.api.portal import router as portal_router
@@ -198,6 +199,7 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json" if docs_enabled else None,
     )
     origins = [o.strip() for o in os.environ.get("FH_CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
+    app.add_middleware(GZipMiddleware, minimum_size=1024)  # the PMS list alone is ~1.4 MB of JSON
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,

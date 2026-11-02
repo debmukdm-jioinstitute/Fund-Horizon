@@ -294,12 +294,21 @@ def backoffice_flows(
 # PMS Trackers: Strategy Research & Scoped Client Portfolios
 # ---------------------------------------------------------------------------
 
+_PMS_LIST_TTL_SECONDS = 60.0
+_PMS_LIST_CACHE: dict[str | None, tuple[float, Any]] = {}  # provider -> (monotonic time, response)
+
+
 @router.get("/pms/strategies")
 def backoffice_pms_strategies(
     staff: Annotated[dict, Depends(require_staff)],
     provider: str | None = Query(None),
 ):
-    """All APMI-reported PMS strategies (latest month) plus any manually imported strategy rows."""
+    """All APMI-reported PMS strategies (latest month) plus any manually imported strategy rows.
+
+    Scoring every strategy and reading three cache tables costs far more than the 60s staleness it saves."""
+    hit = _PMS_LIST_CACHE.get(provider)
+    if hit and time.monotonic() - hit[0] < _PMS_LIST_TTL_SECONDS:
+        return hit[1]
     as_on = _REPO.latest_pms_as_on()
     universe = _REPO.list_pms_universe_strategies(as_on)
     if provider:
@@ -357,7 +366,10 @@ def backoffice_pms_strategies(
         "availability": "ready" if (universe or manual) else "unavailable",
         "freshness": "current" if universe else "stale",
     }
-    return with_meta(res, "apmi", as_on)
+    out = with_meta(res, "apmi", as_on)
+    if len(_PMS_LIST_CACHE) < 64:  # provider is caller-supplied: bound the cache
+        _PMS_LIST_CACHE[provider] = (time.monotonic(), out)
+    return out
 
 
 _PMS_DETAIL_TTL_SECONDS = 24 * 3600.0
@@ -1036,7 +1048,11 @@ def _fh_frame() -> pd.DataFrame:
     scoring-config change blocks (the frame would be wrong, not just old).
     """
     cfg_file = fh_score.CONFIG_FILE
-    sig = (cfg_file.stat().st_mtime if cfg_file.exists() else 0,)
+    try:
+        inputs = _REPO.mf_inputs_stamp()
+    except Exception:
+        inputs = ()
+    sig = (cfg_file.stat().st_mtime if cfg_file.exists() else 0, inputs)
     hit = _FRAME_CACHE
     if hit and hit[1] == sig:
         if time.monotonic() - hit[0] >= _FRAME_TTL_SECONDS:
@@ -1520,8 +1536,7 @@ def backoffice_mf_managers(
     rows are never double-counted. Funds with no manager seed row aggregate
     under one "Unknown manager" row (manager_name None).
     """
-    ter = _REPO.mf_ter_by_code()
-    frame = mf_screener.all_frame(ter, manager_map=_mf_manager_map())
+    frame = _fh_frame()  # cached scored frame; rebuilding it per request cost over a second
     grouped: dict[str | None, dict[str, Any]] = {}
     for r in frame.itertuples(index=False):
         name = getattr(r, "manager_name")
@@ -1730,9 +1745,7 @@ def backoffice_mf_research_detail(
     SIP) are returned as None in that case too, so the consistency block is never
     shown half-populated without its median comparison.
     """
-    ter = _REPO.mf_ter_by_code()
-    manager_map = _mf_manager_map()
-    frame = mf_screener.all_frame(ter, manager_map=manager_map)
+    frame = _fh_frame()
     match = frame[frame["code"] == str(scheme_code)]
     if match.empty:
         raise HTTPException(404, "Scheme not found")
@@ -1860,8 +1873,7 @@ def backoffice_mf_research_v2(
     """MF Research V2 blocks for one fund (same payload the research detail
     carries): co-managers + change history + bio, operations snapshot,
     portfolio coverage, and vs-index metrics. Read-only."""
-    ter = _REPO.mf_ter_by_code()
-    frame = mf_screener.all_frame(ter, manager_map=_mf_manager_map())
+    frame = _fh_frame()
     match = frame[frame["code"] == str(scheme_code)]
     if match.empty:
         raise HTTPException(404, "Scheme not found")
@@ -1965,9 +1977,7 @@ _SHORTLIST_CSV_COLS = [
 def _shortlist_rows(staff_id: str) -> list[dict[str, Any]]:
     """Active shortlist rows joined to the screener frame. Never reads FH Recommended state."""
     items = _REPO.list_mf_research_shortlist(staff_id)
-    frame = mf_screener.all_frame(
-        _REPO.mf_ter_by_code(), manager_map=_mf_manager_map(),
-        consistency_map=_REPO.screening_consistency_map())
+    frame = _fh_frame()
     lookup: dict[str, dict[str, Any]] = {}
     if items:
         codes = [it["scheme_code"] for it in items]

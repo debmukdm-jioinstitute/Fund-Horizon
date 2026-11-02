@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
 import { PmsLogo } from "@/components/BrandLogo";
@@ -195,7 +195,11 @@ function PmsTracker() {
   }
 
   const isRecommended = categoryFilter === "fh-recommended";
-  const isStrategyRecommended = useCallback((s: PmsStrategyItem) => Boolean(s.ia_id && rec.isPmsRecommended(s.ia_id)) || Boolean(s.is_fh_recommended), [rec]);
+  // useRecommended() returns a new object every render, so key on the IDs themselves or the filter+sort below reruns on every render
+  const recKey = Object.keys(rec.pmsMap).sort().join("|");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const isStrategyRecommended = useCallback((s: PmsStrategyItem) => Boolean(s.ia_id && rec.isPmsRecommended(s.ia_id)) || Boolean(s.is_fh_recommended), [recKey]);
+  const deferredSearch = useDeferredValue(search); // keep typing responsive while the list re-filters
   const fhRecCount = strategies.filter(isStrategyRecommended).length;
 
   const approachOptions = useMemo(() => {
@@ -224,7 +228,7 @@ function PmsTracker() {
   }, [strategies, selectedBenchmark]);
 
   const filteredStrategies = useMemo(() => {
-    const q = search.trim().toLowerCase();
+    const q = deferredSearch.trim().toLowerCase();
     const rows = evaluatedStrategies.filter((s) => {
       if (isRecommended) {
         if (!isStrategyRecommended(s)) return false;
@@ -264,7 +268,7 @@ function PmsTracker() {
       return dir * ((av as number) - (bv as number));
     });
     return rows;
-  }, [evaluatedStrategies, isRecommended, categoryFilter, search, sortKey, sortDir, isStrategyRecommended]);
+  }, [evaluatedStrategies, isRecommended, categoryFilter, deferredSearch, sortKey, sortDir, isStrategyRecommended]);
 
   useEffect(() => {
     setPage(0);

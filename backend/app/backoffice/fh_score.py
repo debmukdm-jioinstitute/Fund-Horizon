@@ -279,7 +279,7 @@ def score_frame(df: pd.DataFrame, cfg: dict | None = None, ref: pd.Timestamp | N
 
     # Flags and recommendation blockers
     fl = cfg["flags"]
-    top2 = pts.apply(lambda r: r.nlargest(2).sum(), axis=1)
+    top2 = pd.Series(np.sort(pts.fillna(0).to_numpy(), axis=1)[:, -2:].sum(axis=1), index=pts.index)  # vectorised: sum of the two largest pillars
     share = (top2 / base.where(base > 0)).fillna(0)
     spread = raw_df.max(axis=1) - raw_df.min(axis=1)
     insufficient = pd.DataFrame({k: covs[k] < cfg["min_filter_coverage"] for k in w})

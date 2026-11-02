@@ -1249,6 +1249,16 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def mf_inputs_stamp(self) -> tuple:
+        """Cheap fingerprint of the manager and TER tables that feed the scored screener frame, so a cached frame notices edits."""
+        conn = self._conn()
+        try:
+            m = conn.execute("SELECT COUNT(*), MAX(updated_at) FROM mf_managers").fetchone()
+            t = conn.execute("SELECT COUNT(*), MAX(as_of), SUM(regular_ter_pct), SUM(direct_ter_pct) FROM mf_ter").fetchone()
+            return (*tuple(m), *tuple(t))
+        finally:
+            conn.close()
+
     def list_mf_managers(self) -> dict[str, dict[str, Any]]:
         conn = self._conn()
         try:

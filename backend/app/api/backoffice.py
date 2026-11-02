@@ -1289,16 +1289,14 @@ class ResolveHoldingRequest(BaseModel):
 @router.post("/mutual-funds/portfolio-screen")
 async def backoffice_portfolio_screen(
     staff: Annotated[dict, Depends(require_staff)],
-    file: Annotated[UploadFile, File(description="Portfolio CAS statement PDF")],
+    file: Annotated[UploadFile, File(description="Client portfolio statement: PDF, Excel, CSV, Word, HTML, image or text")],
     password: Annotated[str, Form(description="Optional password for encrypted PDF")] = "",
 ):
-    """Internal MF portfolio screening: parse client portfolio PDF in memory, match holdings, assign FH scores and signals."""
-    if not file.filename or not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(400, "Uploaded file must be a PDF document.")
-
-    pdf_bytes = await file.read()
+    """Internal MF portfolio screening: parse client statement (any file type) in memory, match holdings, assign FH scores and signals."""
+    # read one byte past the limit so an oversized upload is rejected without buffering all of it
+    pdf_bytes = await file.read(portfolio_screen.cas.MAX_CAS_PDF_SIZE_BYTES + 1)
     try:
-        holdings, st_date = portfolio_screen.parse_portfolio_pdf_bytes(pdf_bytes, password=password)
+        holdings, st_date = portfolio_screen.parse_portfolio_pdf_bytes(pdf_bytes, password=password, filename=file.filename or "")
     except portfolio_screen.PortfolioPDFError as e:
         raise HTTPException(e.status_code, {"error": e.code, "message": e.message}) from e
     finally:

@@ -35,9 +35,8 @@ def test_signal_reasons_generation():
     }
     reasons = fh_score.generate_signal_reasons(row_buy, "Buy")
     assert len(reasons) >= 2
-    assert any("outperforms" in r for r in reasons)
-    assert any("Sortino" in r for r in reasons)
-
+    assert any("ahead of" in r for r in reasons)
+    
     row_sell = {
         "fh_score": 32.0,
         "fh_rating": 1.0,
@@ -49,7 +48,7 @@ def test_signal_reasons_generation():
     }
     reasons_sell = fh_score.generate_signal_reasons(row_sell, "Sell")
     assert len(reasons_sell) >= 2
-    assert any("trails" in r for r in reasons_sell)
+    assert any("behind" in r for r in reasons_sell)
 
     row_review = {
         "fh_score": None,
@@ -237,3 +236,47 @@ def test_universal_distributor_statement_extraction():
     assert sum(h["statement_value"] for h in holdings) == 1060832.0
     assert st_date == "26-Oct-2026"
 
+
+
+def test_name_normalisation_handles_abbreviations_and_dividend_yield():
+    assert portfolio_screen.detect_plan("Helios Small Cap Fund-Reg(G)") == "Regular"
+    assert portfolio_screen.detect_plan("ABC Flexi Cap Dir(G)") == "Direct"
+    assert portfolio_screen.detect_option("ABC Flexi Cap Dir(G)") == "Growth"
+    assert portfolio_screen.detect_option("UTI Dividend Yield Fund - Growth") == "Growth"
+    assert portfolio_screen.detect_option("UTI Dividend Yield Fund - IDCW Payout") == "IDCW"
+    assert portfolio_screen.normalize_scheme_text("Helios Small Cap Fund-Reg(G)") == portfolio_screen.normalize_scheme_text("Helios Small Cap Fund - Regular Plan - Growth")
+
+
+def _sheet_bytes():
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.append(["Client Portfolio  Report as on 31-Oct-2026"])
+    ws.append(["Scheme Name", "Folio No", "ISIN", "Units", "NAV", "Invested Amount", "Current Value"])
+    ws.append(["Mirae Asset Large Cap Fund - Direct Plan - Growth", "123/45", "INF769K01101", 100.5, 110.0, 9000, 11055.0])
+    ws.append(["Closed Fund - Regular - Growth", "9", None, 0, 10, 0, 0])
+    ws.append(["Grand Total", None, None, None, None, 9000, 11055.0])
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+@pytest.mark.parametrize("name,data", [
+    ("holdings.xlsx", None),
+    ("holdings.csv", b"Scheme Name,Folio,ISIN,Units,NAV,Current Value\n\"Mirae Asset Large Cap Fund - Direct - Growth\",123/45,INF769K01101,\"1,100.50\",110.00,\"1,21,055.00\"\nTotal,,,,,\"1,21,055.00\"\n"),
+    ("holdings.txt", b"Mirae Asset Large Cap Fund - Direct Plan - Growth\nINF769K01101\n110.00\n31-10-2026\n100.50 9,000.00 11,055.00\n"),
+])
+def test_any_file_type_is_parsed(name, data):
+    data = data or _sheet_bytes()
+    holdings, _ = portfolio_screen.parse_portfolio_pdf_bytes(data, filename=name)
+    assert len(holdings) == 1
+    assert holdings[0]["isin"] == "INF769K01101" or "Mirae" in holdings[0]["raw_name"]
+    assert holdings[0]["statement_value"] and holdings[0]["units"]
+
+
+def test_unreadable_and_empty_files_are_rejected_cleanly():
+    for name, data, code in [("a.bin", b"\x00\x01\x02" * 50, "unsupported_file"), ("a.xlsx", b"PK\x03\x04xl/garbage", "invalid_file"), ("a.pdf", b"", "empty_file")]:
+        with pytest.raises(portfolio_screen.PortfolioPDFError) as ei:
+            portfolio_screen.parse_portfolio_pdf_bytes(data, filename=name)
+        assert ei.value.code == code

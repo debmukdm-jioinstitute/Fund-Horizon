@@ -19,6 +19,8 @@ interface Props {
   onBackToScreener: () => void;
 }
 
+const MAX_FILE_BYTES = 15 * 1024 * 1024; // matches the API limit
+
 const formatCurrency = (val: number | null | undefined): string => {
   if (val === null || val === undefined || isNaN(val)) return "—";
   if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
@@ -56,12 +58,30 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const resetAll = () => {
+    setData(null);
+    setFile(null);
+    setPassword("");
+    setNeedPassword(false);
+    setError(null);
+    setSignalFilter("all");
+    setReviewFilter("all");
+    setSearchQuery("");
+    setExpandedRow(null);
+    setAi({});
+  };
+
   const handleFileSelect = (selectedFile: File) => {
-    if (!selectedFile.name.toLowerCase().endsWith(".pdf")) {
-      setError("Please select a valid PDF portfolio statement.");
+    if (selectedFile.size === 0) {
+      setError("That file is empty.");
+      return;
+    }
+    if (selectedFile.size > MAX_FILE_BYTES) {
+      setError("File is larger than 15 MB. Please upload a smaller statement.");
       return;
     }
     setFile(selectedFile);
+    setPassword("");
     setError(null);
     setData(null);
     setNeedPassword(false);
@@ -82,8 +102,9 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
       setData(res);
       setNeedPassword(false);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to parse and screen portfolio.";
-      if (msg.toLowerCase().includes("password")) {
+      const raw = err instanceof Error ? err.message : "";
+      const msg = raw === "Failed to fetch" || !raw ? "Could not reach the server. Check your connection and try again." : raw;
+      if (/password/i.test(msg)) {
         setNeedPassword(true);
       }
       setError(msg);
@@ -94,6 +115,7 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
 
   const handleCandidateResolve = async (holding: PortfolioHolding, candidate: PortfolioHoldingCandidate) => {
     setResolvingId(holding.id);
+    setError(null);
     try {
       const resolved = await resolvePortfolioHolding({
         code: candidate.code,
@@ -102,29 +124,26 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
         total_value: data?.summary?.total_value,
       });
 
-      if (data) {
-        const updatedHoldings = data.holdings.map((h) => (h.id === holding.id ? { ...h, ...resolved } : h));
-        const matchedCnt = updatedHoldings.filter((h) => h.match_type !== "unmatched" && h.match_type !== "ambiguous").length;
-        const reviewCnt = updatedHoldings.filter((h) => h.fh_signal === "Needs review").length;
-        const buyCnt = updatedHoldings.filter((h) => h.fh_signal === "Buy").length;
-        const holdCnt = updatedHoldings.filter((h) => h.fh_signal === "Hold").length;
-        const sellCnt = updatedHoldings.filter((h) => h.fh_signal === "Sell").length;
-
-        setData({
-          ...data,
+      // functional update: two quick assignments must not overwrite each other
+      setData((cur) => {
+        if (!cur) return cur;
+        const updatedHoldings = cur.holdings.map((h) => (h.id === holding.id ? { ...h, ...resolved, candidates: [] } : h));
+        const count = (sig: string) => updatedHoldings.filter((h) => h.fh_signal === sig).length;
+        return {
+          ...cur,
           holdings: updatedHoldings,
           summary: {
-            ...data.summary,
-            matched_count: matchedCnt,
-            needs_review_count: reviewCnt,
-            buy_count: buyCnt,
-            hold_count: holdCnt,
-            sell_count: sellCnt,
+            ...cur.summary,
+            matched_count: updatedHoldings.filter((h) => h.match_type !== "unmatched" && h.match_type !== "ambiguous").length,
+            needs_review_count: count("Needs review"),
+            buy_count: count("Buy"),
+            hold_count: count("Hold"),
+            sell_count: count("Sell"),
           },
-        });
-      }
+        };
+      });
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Failed to resolve holding.");
+      setError(err instanceof Error ? err.message : "Failed to resolve holding.");
     } finally {
       setResolvingId(null);
     }
@@ -161,17 +180,13 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
             Portfolio Screening
           </h1>
           <p className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-            Upload client statement (CAMS, KFintech, CDSL, NSDL CAS) for instant FH scores, stars, Buy/Hold/Sell signals &amp; reasons.
+            Upload client statement (CAS, broker or distributor report: PDF, Excel, CSV, Word, image) for instant FH scores, stars, Buy/Hold/Sell signals &amp; reasons.
           </p>
         </div>
         {data && (
           <button
             type="button"
-            onClick={() => {
-              setData(null);
-              setFile(null);
-              setPassword("");
-            }}
+            onClick={resetAll}
             className="self-start rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] px-3.5 py-2 text-[13px] font-semibold text-[#181818] dark:text-[#EDF2F7] hover:border-[#0176D3]"
           >
             Upload Another Statement
@@ -181,7 +196,15 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
 
       {/* Upload Zone when no data */}
       {!data && (
-        <div className="rounded-2xl border border-dashed border-[#CBD5E1] dark:border-[#334155] bg-white dark:bg-[#131B26] p-6 sm:p-10 text-center max-w-2xl mx-auto shadow-sm">
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const f = e.dataTransfer.files?.[0];
+            if (f) handleFileSelect(f);
+          }}
+          className="rounded-2xl border border-dashed border-[#CBD5E1] dark:border-[#334155] bg-white dark:bg-[#131B26] p-6 sm:p-10 text-center max-w-2xl mx-auto shadow-sm"
+        >
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] mb-4">
             <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -195,18 +218,18 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
             Upload client portfolio statement
           </h2>
           <p className="text-[13.5px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 max-w-md mx-auto">
-            Supports CAS statements (CAMS, KFintech, CDSL, NSDL) and distributor/broker portfolio reports. Statements are processed strictly in memory and never stored.
+            Supports CAS statements (CAMS, KFintech, CDSL, NSDL) and distributor/broker reports in any format: PDF, Excel, CSV, Word, HTML, text or a photo/scan. Statements are processed strictly in memory and never stored.
           </p>
 
           <form onSubmit={handleUploadAndScreen} className="mt-6 space-y-4 max-w-md mx-auto">
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf,application/pdf"
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
                 if (f) handleFileSelect(f);
+                e.target.value = ""; // allow re-picking the same file after Change / Upload Another
               }}
             />
 
@@ -216,7 +239,7 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                 onClick={() => fileInputRef.current?.click()}
                 className="w-full rounded-xl border border-[#0176D3] bg-[#EAF5FE] dark:bg-[#11304F] py-3 text-[14px] font-bold text-[#0176D3] dark:text-[#1B96FF] hover:bg-[#D5EBFE] transition"
               >
-                Choose PDF Statement
+                Choose Statement File
               </button>
             ) : (
               <div className="rounded-xl border border-[#E5E5E5] dark:border-[#2B3644] bg-[#F8FAFC] dark:bg-[#171E27] p-3 text-left flex items-center justify-between">
@@ -232,6 +255,8 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
                   type="button"
                   onClick={() => {
                     setFile(null);
+                    setPassword("");
+                    setNeedPassword(false);
                     setError(null);
                   }}
                   className="text-[12px] font-semibold text-[#B42332] dark:text-[#FF7D86] hover:underline"
@@ -241,10 +266,10 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
               </div>
             )}
 
-            {(needPassword || file) && (
+            {(needPassword || (file && /\.pdf$/i.test(file.name))) && (
               <div className="text-left space-y-1">
                 <label className="text-[12px] font-bold text-[#706E6B] dark:text-[#A8B4C4] uppercase tracking-wider">
-                  PDF Password {needPassword && <span className="text-[#B42332]">* Required</span>}
+                  PDF Password (if encrypted) {needPassword && <span className="text-[#B42332]">* Required</span>}
                 </label>
                 <input
                   type="password"
@@ -276,6 +301,11 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
       {/* Screened Results View */}
       {data && (
         <div className="space-y-6">
+          {error && (
+            <div className="rounded-lg bg-[#FEF3F2] dark:bg-[#331114] border border-[#FECDCA] dark:border-[#7A271A] p-3 text-[13px] text-[#B42318] dark:text-[#FDA29B]">
+              {error}
+            </div>
+          )}
           {/* Summary KPI Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
             <div className="rounded-xl border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-3.5">

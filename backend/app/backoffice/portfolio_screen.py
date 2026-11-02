@@ -47,33 +47,31 @@ def clean_code(val: Any) -> str | None:
 
 def detect_plan(name: str) -> str:
     n = name.lower()
-    if "direct" in n:
+    if re.search(r"\bdir(?:ect)?\b", n):
         return "Direct"
-    if "regular" in n:
+    if re.search(r"\breg(?:ular)?\b", n):
         return "Regular"
     return "Unknown"
 
 
 def detect_option(name: str) -> str:
     n = name.lower()
-    if "idcw" in n or "dividend" in n:
+    # "Dividend Yield" is a fund theme, not the IDCW option
+    if re.search(r"idcw|payout|reinvest|\(d\)|dividend(?!\s+yield)", n):
         return "IDCW"
-    if "growth" in n:
+    if re.search(r"growth|\(g\)", n):
         return "Growth"
     return "Unknown"
 
 
+_NORM_DROP = re.compile(
+    r"\b(?:mutual|fund|growth|idcw|dividend|payout|reinvestment|direct|regular|dir|reg|plan|option|bonus|retail|institutional|g|d)\b|[-/(),.]"
+)
+
+
 def normalize_scheme_text(text: str) -> str:
-    """Normalize fund name for tolerant name matching."""
-    t = text.lower()
-    tokens_to_remove = [
-        "mutual fund", "fund", "growth", "idcw", "dividend", "payout", "reinvestment",
-        "direct", "regular", "plan", "option", "-", "/", "(", ")", ",", ".", "bonus",
-        "retail", "institutional"
-    ]
-    for tok in tokens_to_remove:
-        t = t.replace(tok, " ")
-    return " ".join(t.split())
+    """Normalize fund name for tolerant name matching (handles 'Fund-Reg(G)' style abbreviations)."""
+    return " ".join(_NORM_DROP.sub(" ", text.lower()).split())
 
 
 def extract_raw_holdings(parsed_cas: dict[str, Any]) -> list[dict[str, Any]]:
@@ -133,6 +131,100 @@ def extract_raw_holdings(parsed_cas: dict[str, Any]) -> list[dict[str, Any]]:
     return holdings
 
 
+_STMT_DATE = re.compile(r"(?:Report\s*as\s*on|Statement\s*as\s*of|As\s*on\s*Date|Portfolio\s*as\s*on)\s*[:\-]?\s*([0-9]{1,2}[-/][A-Za-z0-9]+[-/][0-9]{2,4})", re.I)
+
+
+def _num(v: Any) -> float | None:
+    if v is None or isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return None if v != v else float(v)  # NaN -> None
+    c = re.sub(r"[^\d.\-]", "", str(v).replace("(", "-"))
+    try:
+        return float(c) if c not in ("", "-", ".") else None
+    except ValueError:
+        return None
+
+
+def _col_field(header: Any) -> str | None:
+    """Map a spreadsheet header cell to a holding field."""
+    h = str(header or "").lower()
+    if "isin" in h:
+        return "isin"
+    if re.search(r"invest|cost|purchase|gain|return|xirr|%|date|day|weight|allocation", h):
+        return None
+    if "nav" in h:
+        return "statement_nav"
+    if re.search(r"unit|balance|qty|quantity", h):
+        return "units"
+    if re.search(r"current|market|valuation|value|amount", h):
+        return "statement_value"
+    if re.search(r"scheme|fund|name|particulars|instrument|security", h):
+        return "raw_name"
+    if "folio" in h:
+        return "folio"
+    return None
+
+
+def extract_from_rows(rows: list[list[Any]]) -> tuple[list[dict[str, Any]], str | None]:
+    """Spreadsheet / CSV rows -> holdings, locating the header row and mapping columns by their titles."""
+    st_date = None
+    m = _STMT_DATE.search(" ".join(str(c) for r in rows[:15] for c in r if c is not None))
+    if m:
+        st_date = m.group(1).strip()
+    holdings: list[dict[str, Any]] = []
+    cols: dict[str, int] = {}
+    for r in rows:
+        if not cols:
+            mapped: dict[str, int] = {}
+            for i, c in enumerate(r):
+                f = _col_field(c)
+                if f and f not in mapped:
+                    mapped[f] = i
+            if "raw_name" in mapped and ("units" in mapped or "statement_value" in mapped):
+                cols = mapped
+            continue
+        cell = {f: (r[i] if i < len(r) else None) for f, i in cols.items()}
+        name = str(cell["raw_name"] or "").strip()
+        if len(name) < 4 or not re.search(r"[A-Za-z]{3}", name) or re.match(r"(?i)(grand\s+)?(sub\s*)?total", name):
+            continue
+        units, nav, val = _num(cell.get("units")), _num(cell.get("statement_nav")), _num(cell.get("statement_value"))
+        if (units or 0) <= 0 and (val or 0) <= 0:
+            continue  # closed / blank position
+        if not val and units and nav:
+            val = round(units * nav, 2)
+        isin = clean_isin(cell.get("isin")) or clean_isin((re.search(r"INF[A-Z0-9]{9}", name.upper()) or [None])[0])
+        folio = str(cell.get("folio") or "").strip() or None
+        holdings.append({
+            "raw_name": name, "folio": folio, "isin": isin, "amfi_code": None,
+            "units": units if units and units > 0 else None,
+            "statement_nav": nav if nav and nav > 0 else None,
+            "statement_value": val if val and val > 0 else None,
+            "valuation_date": st_date,
+        })
+    return holdings, st_date
+
+
+def read_table_rows(name: str, data: bytes) -> list[list[list[Any]]] | None:
+    """Excel (.xlsx/.xlsm/.xls) and CSV/TSV -> one row list per sheet. None when the file is not tabular."""
+    low = name.lower()
+    try:
+        if (data.startswith(b"PK") and b"xl/" in data[:4096] + data[-4096:]) or (data.startswith(b"\xd0\xcf\x11\xe0") and low.endswith(".xls")):
+            import pandas as pd
+
+            return [df.astype(object).where(df.notna(), None).values.tolist() for df in pd.read_excel(io.BytesIO(data), sheet_name=None, header=None).values()]
+        if low.endswith((".csv", ".tsv", ".txt")) and b"\x00" not in data[:512]:
+            import csv
+
+            text = data.decode("utf-16" if data[:2] in (b"\xff\xfe", b"\xfe\xff") else "utf-8-sig", "replace")
+            sample = text[:4096]
+            delim = "\t" if sample.count("\t") > sample.count(",") else ("|" if sample.count("|") > sample.count(",") else ",")
+            return [list(csv.reader(io.StringIO(text), delimiter=delim))]
+    except Exception as e:  # corrupt / password-protected workbook: surface as unreadable, not a 500
+        raise PortfolioPDFError(f"Unable to read spreadsheet: {e}", code="invalid_file", status_code=400) from e
+    return None
+
+
 def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], str | None]:
     """Universal extractor: identifies mutual fund holdings and valuation figures from any text statement."""
     holdings: list[dict[str, Any]] = []
@@ -142,7 +234,7 @@ def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], s
 
     # Extract overall statement / valuation date if present
     statement_date = None
-    m_date = re.search(r"(?:Report\s*as\s*on|Statement\s*as\s*of|As\s*on\s*Date|Portfolio\s*as\s*on)\s*[:\-]?\s*([0-9]{1,2}[-/][A-Za-z0-9]+[-/][0-9]{2,4})", full_text, re.I)
+    m_date = _STMT_DATE.search(full_text)
     if m_date:
         statement_date = m_date.group(1).strip()
 
@@ -294,10 +386,12 @@ def extract_universal_from_text(full_text: str) -> tuple[list[dict[str, Any]], s
     return holdings, statement_date
 
 
-def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "") -> tuple[list[dict[str, Any]], str | None]:
-    """Parse statement PDF in memory, supporting standard CAS and any distributor/advisor PDF reports."""
+def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "", filename: str = "") -> tuple[list[dict[str, Any]], str | None]:
+    """Parse a client statement in memory. Any file type: PDF (CAS or distributor report, OCR for scans), Excel, CSV,
+    Word, HTML, image, plain text. Type is sniffed from content, not the extension.
+    shortcut: password applies to PDFs only (encrypted Excel/Word are rejected), add msoffcrypto if clients send them."""
     if not pdf_bytes:
-        raise PortfolioPDFError("Uploaded PDF file is empty.", code="empty_file", status_code=400)
+        raise PortfolioPDFError("Uploaded file is empty.", code="empty_file", status_code=400)
 
     if len(pdf_bytes) > cas.MAX_CAS_PDF_SIZE_BYTES:
         raise PortfolioPDFError(
@@ -306,9 +400,30 @@ def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "") -> tuple[lis
             status_code=400,
         )
 
-    if not pdf_bytes.startswith(b"%PDF"):
-        raise PortfolioPDFError("Uploaded file is not a valid PDF document (missing %PDF signature).", code="invalid_pdf", status_code=400)
+    from app.report import client_report
 
+    if not client_report.is_pdf(filename, pdf_bytes):
+        for rows in read_table_rows(filename, pdf_bytes) or []:
+            holdings, st_date = extract_from_rows(rows)
+            if holdings:
+                return holdings, st_date
+        try:
+            text = client_report.extract_text(filename, pdf_bytes)
+        except ValueError as e:
+            raise PortfolioPDFError(str(e), code="unsupported_file", status_code=415) from e
+        holdings, st_date = extract_universal_from_text(text)
+        if holdings:
+            return holdings, st_date
+        raise PortfolioPDFError(
+            "No active mutual fund holdings could be identified in this file. Please verify that it contains mutual fund holding details.",
+            code="no_holdings_found",
+            status_code=422,
+        )
+
+    return _parse_pdf(pdf_bytes, password)
+
+
+def _parse_pdf(pdf_bytes: bytes, password: str) -> tuple[list[dict[str, Any]], str | None]:
     # Validate PDF structure and password using pypdfium2
     full_text = ""
     try:

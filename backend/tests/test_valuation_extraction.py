@@ -1,4 +1,6 @@
 """Provider adapters, detection, PDF/Excel extraction and normalisation, on synthetic anonymised statements."""
+import io
+
 import pytest
 
 from app.backoffice.valuation import detection, ingestion
@@ -126,3 +128,27 @@ def test_bad_isin_is_flagged_on_the_holding():
     csv = b"Security,ISIN,Qty,Market Price,Market Value\nSome Co Ltd,INE002A01019,10,100,1000\n"
     st = ADAPTERS["stallion"].extract("x.csv", csv)
     assert st.holdings[0].validation_status == "warning" and "ISIN" in st.holdings[0].issues[0]
+
+
+def test_real_statement_layouts_mf_blocks_cards_and_positional_columns():
+    mf = ["Mirae Large Cap Fund - Regular Plan - Growth | 704145 | Some Holder",
+          "   104.3080  10-06-2024  763.647  ₹ 84,011  ₹ 79,654  ₹ -4,357  -5.19  0  -4.53  427",
+          "Grand total", "  ₹ 84,011  ₹ 79,654  ₹ -4,357"]
+    h, tot, _, _ = ingestion.holdings_from_mf_blocks(["\n".join(mf)])
+    assert [(x.account_no, x.quantity, x.market_value) for x in h] == [("704145", 763.647, 79654.0)] and tot["table_total_value"] == 79654.0
+    card = "Invested Value ₹3,00 Current Value ₹5,00\nEsha B 4\nAxis ELSS\nFund￾Reg(G)\n₹96,000 ₹1,06,635\n₹10,635\n...\nTotal ₹96,000 ₹1,06,635"
+    h, tot, _, _ = ingestion.holdings_from_cards([card])
+    assert [(x.security_name, x.market_value) for x in h] == [("Axis ELSS Fund-Reg(G)", 106635.0)]
+    from reportlab.pdfgen import canvas
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf)
+    c.drawString(30, 780, "Account: 100537 side panel")
+    for x, t in ((270, "Sr."), (280, "Security"), (400, "Sector"), (490, "Mkt Value")):
+        c.drawString(x, 770, t)
+    for y, sr, name, sector, mv in ((750, "1", "ALPHA ETF", "Equity", "404,942"), (720, "2", "BETA LTD", "HEAVY", "447,042")):
+        c.drawString(270, y, sr); c.drawString(280, y, name); c.drawString(400, y, sector); c.drawString(490, y, mv)
+    c.drawString(400, 710, "EQUIPMENT")
+    c.drawString(280, 690, "Total"); c.drawString(490, 690, "851,984")
+    c.save()
+    h, tot, _, _ = ingestion.holdings_from_columns(buf.getvalue())
+    assert [(x.security_name, x.market_value) for x in h] == [("ALPHA ETF", 404942.0), ("BETA LTD", 447042.0)] and tot["table_total_value"] == 851984.0

@@ -305,6 +305,177 @@ def holdings_from_text(pages: list[str]) -> tuple[list[HoldingRec], dict[str, fl
     return holdings, totals, warnings, hints
 
 
+# --------------------------------------------------------------------------- real-statement readers
+# Extra readers tried when the header-line reader (holdings_from_text) finds nothing or does not add up to the printed total.
+def pdfium_pages(data: bytes, password: str = "") -> list[str]:
+    import pypdfium2 as pdfium
+
+    try:
+        pdf = pdfium.PdfDocument(data, password=password or None)
+        return [pg.get_textpage().get_text_range().replace("\r", "") for pg in pdf]
+    except Exception:
+        return []
+
+
+def holdings_from_columns(data: bytes, password: str = ""):
+    """Positional reader for multi-column PDFs (side panels, wrapped cells): columns come from the header words' x-range,
+    rows from the market-value cells' y. Wrapped names are joined by nearest row."""
+    import pypdfium2 as pdfium
+
+    holdings: list[HoldingRec] = []
+    hints: list[tuple[HoldingRec, str]] = []
+    totals: dict[str, float | None] = {}
+    warnings: list[str] = []
+    try:
+        pdf = pdfium.PdfDocument(data, password=password or None)
+        pages = [pg.get_textpage() for pg in pdf]
+    except Exception:
+        return holdings, totals, warnings, hints
+    cols: dict[str, tuple[float, float]] = {}
+    name_hi = hdr_y = 0.0
+    for pno, tp in enumerate(pages, 1):
+        spans = []
+        for i in range(tp.count_rects()):
+            l, b, r, t = tp.get_rect(i)
+            txt = tp.get_text_bounded(l, b, r, t).strip()
+            if txt:
+                spans.append(((b + t) / 2, l, r, txt))
+        lines_: list[list] = []
+        for sp in sorted(spans, key=lambda s: -s[0]):
+            if lines_ and lines_[-1][-1][0] - sp[0] <= 2.5:
+                lines_[-1].append(sp)
+            else:
+                lines_.append([sp])
+        for line in lines_:
+            mapped = {}
+            for y, l, r, txt in sorted(line, key=lambda s: s[1]):
+                f = classify_header(txt)
+                if f and f not in mapped and not re.search(r"\d{3,}", txt):
+                    mapped[f] = (y, l, r)
+            if is_holdings_header(mapped):
+                hdr_y = mapped["security_name"][0]
+                cols = {f: (l, r) for f, (y, l, r) in mapped.items()}
+                lefts = sorted(sp[1] for sp in line)
+                nl = cols["security_name"][0]
+                nxt = [x for x in lefts if x > nl + 5]
+                name_hi = (nxt[0] - 2) if nxt else 1e9
+                break
+        else:
+            if not cols:
+                continue
+        mv_l, mv_r = cols["market_value"]
+        anchors = [sp for sp in spans if sp[0] < hdr_y - 3 and sp[2] > mv_l - 6 and sp[1] < mv_r + 6 and to_num(sp[3]) is not None]
+        if not anchors:
+            continue
+        nl = cols["security_name"][0]
+        names = [sp for sp in spans if sp[0] < hdr_y - 3 and nl - 4 <= sp[1] < name_hi]
+        for y, l, r, txt in sorted(anchors, key=lambda a: -a[0]):
+            mine = [n for n in names if min(anchors, key=lambda a: abs(a[0] - n[0])) is (y, l, r, txt) or
+                    min(anchors, key=lambda a: abs(a[0] - n[0]))[0] == y]
+            name = " ".join(n[3] for n in sorted(mine, key=lambda n: -n[0]))
+            if not name:  # a label left of the value column that is not in the name column ("Total")
+                name = " ".join(sp[3] for sp in spans if abs(sp[0] - y) < 3 and sp[2] < mv_l)
+            if _TOTAL_NAME.match(name):
+                totals["table_total_value"] = to_num(txt)
+                continue
+            cell: dict[str, Any] = {"security_name": name, "market_value": txt}
+            for f, (cl, cr) in cols.items():
+                if f in ("security_name", "market_value", "isin", "folio", "asset_type"):
+                    continue
+                hit = next((sp[3] for sp in spans if abs(sp[0] - y) < 4 and sp[2] > cl - 6 and sp[1] < cr + 6), None)
+                if hit is not None:
+                    cell[f] = hit
+            h = _holding_from_cells(cell, f"p{pno}", int(y), warnings)
+            if h:
+                holdings.append(h)
+                hints.append((h, ""))
+    return holdings, totals, warnings, hints
+
+
+_MF_NAME = re.compile(r"^\s*(?P<name>.+?\S)\s*\|\s*(?P<folio>[A-Za-z0-9/\-]+)\s*\|\s*(?P<holder>.+?)\s*$")
+_MF_FIG = re.compile(r"^\s*(?P<nav>\d[\d,]*\.\d+)\s+(?P<date>\d{1,2}-\d{1,2}-\d{4})\s+(?P<units>\d[\d,]*(?:\.\d+)?)\s+₹\s*(?P<inv>-?[\d,.]+)\s+₹\s*(?P<cur>-?[\d,.]+)(?:\s+₹\s*(?P<gain>-?[\d,.]+))?")
+
+
+def holdings_from_mf_blocks(pages: list[str]):
+    """Distributor 'MF summary': '<scheme> | <folio> | <holder>' then 'NAV  date  units  ₹invested  ₹current  ₹gain ...'."""
+    holdings: list[HoldingRec] = []
+    hints: list[tuple[HoldingRec, str]] = []
+    warnings: list[str] = []
+    totals: dict[str, float | None] = {}
+    for pno, text in enumerate(pages, 1):
+        if m := re.search(r"Grand total\s+₹\s*(-?[\d,.]+)\s+₹\s*(-?[\d,.]+)", text, re.I):
+            totals["table_total_invested"], totals["table_total_value"] = to_num(m[1]), to_num(m[2])
+        pending = None
+        for lno, line in enumerate(text.splitlines(), 1):
+            if m := _MF_NAME.match(line):
+                pending = m
+                continue
+            if pending and (f := _MF_FIG.match(line)):
+                nav, units, cur = to_num(f["nav"]), to_num(f["units"]), to_num(f["cur"])
+                h = HoldingRec(security_name=pending["name"], account_no=pending["folio"], quantity=units, price=nav,
+                               invested_amount=to_num(f["inv"]), market_value=cur, unrealised_gain=to_num(f["gain"]),
+                               source_page=f"p{pno}", source_row=lno)
+                holdings.append(h)
+                hints.append((h, "mutual fund"))
+                pending = None
+    return holdings, totals, warnings, hints
+
+
+_CARD_AMT = re.compile(r"^₹(?P<inv>[\d,]+(?:\.\d+)?)\s+₹(?P<cur>[\d,]+(?:\.\d+)?)")
+_CARD_SKIP = re.compile(r"^(invested|current|gains|prev\.? day|change|ann\. ret\.|\.\.\.|all|sort|total\b)", re.I)
+
+
+def holdings_from_cards(pages: list[str]):
+    """Web-page print of a portfolio (FundsIndia): wrapped scheme name lines, then '₹invested ₹current ...'. No units/NAV."""
+    holdings: list[HoldingRec] = []
+    hints: list[tuple[HoldingRec, str]] = []
+    totals: dict[str, float | None] = {}
+    buf: list[str] = []
+    joined = "\n".join(pages)
+    if m := re.search(r"Invested Value\s*₹([\d,.]+)\s*Current Value\s*₹([\d,.]+)", joined):
+        totals["total_invested"], totals["table_total_value"] = to_num(m[1]), to_num(m[2])
+    for pno, text in enumerate(pages, 1):
+        buf = []
+        for lno, raw in enumerate(text.splitlines(), 1):
+            ln = re.sub(r"[\ufffe\uffff\xad]", "-", raw).strip()
+            if not ln:
+                continue
+            if m := _CARD_AMT.match(ln):
+                while len(buf) > 1 and re.search(r"\s\d{1,2}$", buf[0]):  # portfolio / member heading with scheme count
+                    buf.pop(0)
+                name = re.sub(r"\s+", " ", " ".join(buf)).strip()
+                if name and re.search(r"[A-Za-z]{3}", name):
+                    inv, cur = to_num(m["inv"]), to_num(m["cur"])
+                    h = HoldingRec(security_name=name, invested_amount=inv, market_value=cur,
+                                   unrealised_gain=round(cur - inv, 2) if inv is not None and cur is not None else None,
+                                   source_page=f"p{pno}", source_row=lno)
+                    holdings.append(h)
+                    hints.append((h, "mutual fund"))
+                buf = []
+            elif re.match(r"^total\b", ln, re.I) or ln.startswith("...") or re.match(r"^ann\. ret", ln, re.I):
+                buf = []
+            elif re.search(r"market risks?|scheme information|performance is not|disclaimer|SEBI Reg|©|ARN", ln, re.I):
+                continue
+            elif "₹" in ln or _CARD_SKIP.match(ln) or re.search(r"^(dashboard|mutual fund|bonds|equity|fd|nps|msci|portfolio\b|include zero|holdings|summary|performance|deep|dive|capital gains|external|monthly sip|scheme name|https?:|\d+/\d+|\d{2}/\d{2}/\d{4})", ln, re.I):
+                continue
+            else:
+                buf.append(ln)
+    return holdings, totals, [], hints
+
+
+_PRINT_DATE = re.compile(r"(\d{1,2}/\d{1,2}/\d{4}),\s*\d{1,2}:\d{2}")
+
+
+def pick_best(cands: list[tuple]) -> tuple:
+    """Candidate readers' (holdings, totals, warnings, hints): prefer one whose sum matches the printed total, else most rows."""
+    def score(c):
+        hs, tot = c[0], c[1]
+        s, tv = sum(h.market_value or 0 for h in hs), tot.get("table_total_value")
+        ok = bool(hs and tv and abs(s - tv) <= max(1.0, 0.005 * tv))
+        return (ok, len(hs))
+    return max(cands, key=score)
+
+
 # --------------------------------------------------------------------------- labelled scalars
 LABELS: dict[str, str] = {
     "total_value": r"(?:total\s+)?(?:portfolio|market|closing|current|net)\s+(?:value|valuation)|total\s+(?:value|aum)|closing\s+(?:aum|balance|value)|\baum\b|net\s+asset\s+value",
@@ -317,7 +488,7 @@ LABELS: dict[str, str] = {
     "fees": r"(?:total\s+)?(?:management|performance|fees?|charges|brokerage|expenses)(?:\s+(?:fees?|charges))?",
 }
 _LABEL_RES = {k: re.compile(v, re.I) for k, v in LABELS.items()}
-_ACCT = re.compile(r"(?i)\b(?:client|account|a/c|ucc|portfolio|pms|investor)\s*(?:code|no\.?|number|id)\s*[:\-]?\s*((?=[A-Z0-9/\-]*\d)[A-Z0-9][A-Z0-9/\-]{2,})")
+_ACCT = re.compile(r"(?i)\b(?:client|account|a/c|ucc|portfolio|pms|investor)(?:\s*(?:code|no\.?|number|id)\s*[:\-]?|\s*:)\s*((?=[A-Z0-9/\-]*\d)[A-Z0-9][A-Z0-9/\-]{2,})")
 _DATE_KW = re.compile(r"(?i)(?:as\s+(?:on|of|at)|valuation\s+date|statement\s+date|portfolio\s+date|period\s+ended?|for\s+the\s+month\s+ended?|up\s*to|to)\s*[:\-]?\s*(" + DATE_RE + ")")
 _PERIOD = re.compile(r"(?i)(?:period|from)\s*[:\-]?\s*(" + DATE_RE + r")\s*(?:to|-|–)\s*(" + DATE_RE + ")")
 
@@ -347,7 +518,10 @@ def scan_scalars(lines: list[str], skip_prefixes: tuple[str, ...] = ()) -> tuple
                 continue
             tail = s[m.end():]
             tail = re.sub(DATE_RE, " ", tail)
-            nm = re.search(r"[:\-\s]*(?:Rs\.?|₹)?\s*(\(?-?[\d,]+(?:\.\d+)?\)?)", tail)
+            nm = re.search(r"[:\-\s]*(?:Rs\.?|₹)?\s*(\(?-?[\d,]+(?:\.\d+)?\)?)(?!\d|\s*%)", tail)
+            # a bare small integer is a row number / count, not money
+            if nm and not re.search(r"[,.]", nm.group(1)) and abs(to_num(nm.group(1)) or 0) < 1000:
+                continue
             if nm and (v := to_num(nm.group(1))) is not None and s[: m.start()].strip().count(" ") < 3:
                 found.setdefault(key, []).append(v)
                 break

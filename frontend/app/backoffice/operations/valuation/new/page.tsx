@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdMember } from "@/lib/crmApi";
+import { createHousehold, fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdMember } from "@/lib/crmApi";
+import { createContact } from "@/lib/crmPhase3Api";
 import { PROVIDER_LABEL, createBatch, processBatch, setProvider, uploadFiles, type FileRow } from "@/lib/valuationApi";
 import { Badge, Notice, btn, btnPrimary, card, input, muted, td, th } from "@/components/valuation/ui";
 
@@ -25,13 +26,26 @@ export default function NewValuation() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  const NEW = "__new__";
+  const [newName, setNewName] = useState("");
   useEffect(() => { fetchHouseholds().then(setHouseholds).catch((e) => setErr(e.message)); }, []);
   useEffect(() => {
-    setMembers([]); setClient("");
-    if (hh) fetchHouseholdDetail(hh).then((d) => { setMembers(d.members); if (d.members.length === 1) setClient(d.members[0].customer_id); }).catch((e) => setErr(e.message));
+    setMembers([]); setClient(""); setNewName("");
+    if (hh && hh !== NEW) fetchHouseholdDetail(hh).then((d) => { setMembers(d.members); if (d.members.length === 1) setClient(d.members[0].customer_id); }).catch((e) => setErr(e.message));
   }, [hh]);
 
   const run = async (fn: () => Promise<void>) => { setBusy(true); setErr(null); try { await fn(); } catch (e) { setErr((e as Error).message); } finally { setBusy(false); } };
+
+  const loadMembers = async (id: string, pick?: string) => { const d = await fetchHouseholdDetail(id); setMembers(d.members); setClient(pick ?? (d.members.length === 1 ? d.members[0].customer_id : "")); };
+  // Create from the dropdown itself: household first, then a client (contact) inside it.
+  const addHousehold = () => run(async () => {
+    const h = await createHousehold({ name: newName.trim() });
+    setHouseholds((l) => [...l, h]); setHh(h.id); setNewName("");
+  });
+  const addClient = () => run(async () => {
+    const c = await createContact({ name: newName.trim(), household_id: hh });
+    await loadMembers(hh, c.customer_id); setNewName("");
+  });
 
   const upload = () => run(async () => {
     let id = batchId;
@@ -65,13 +79,25 @@ export default function NewValuation() {
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-[12px] font-semibold">Household
             <select className={`${input} mt-1`} value={hh} disabled={!!batchId} onChange={(e) => setHh(e.target.value)}>
-              <option value="">Select household</option>{households.map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}
+              <option value="">Select household</option>{households.map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}<option value={NEW}>+ Create new household…</option>
             </select>
+            {hh === NEW && (
+              <span className="mt-2 flex gap-2">
+                <input className={input} placeholder="New household name" value={newName} onChange={(e) => setNewName(e.target.value)} autoFocus />
+                <button type="button" className={btnPrimary} disabled={busy || !newName.trim()} onClick={addHousehold}>Create</button>
+              </span>
+            )}
           </label>
           <label className="text-[12px] font-semibold">Client
-            <select className={`${input} mt-1`} value={client} disabled={!!batchId || !members.length} onChange={(e) => setClient(e.target.value)}>
-              <option value="">Select client</option>{members.map((m) => <option key={m.customer_id} value={m.customer_id}>{m.name}</option>)}
+            <select className={`${input} mt-1`} value={client} disabled={!!batchId || !hh || hh === NEW} onChange={(e) => setClient(e.target.value)}>
+              <option value="">Select client</option>{members.map((m) => <option key={m.customer_id} value={m.customer_id}>{m.name}</option>)}<option value={NEW}>+ Create new client…</option>
             </select>
+            {client === NEW && (
+              <span className="mt-2 flex gap-2">
+                <input className={input} placeholder="New client name" value={newName} onChange={(e) => setNewName(e.target.value)} autoFocus />
+                <button type="button" className={btnPrimary} disabled={busy || !newName.trim()} onClick={addClient}>Create</button>
+              </span>
+            )}
           </label>
           <label className="text-[12px] font-semibold">Reporting month
             <input type="month" className={`${input} mt-1`} value={month} disabled={!!batchId} onChange={(e) => { setMonth(e.target.value); setVdate(monthEnd(e.target.value)); }} />
@@ -87,7 +113,7 @@ export default function NewValuation() {
           </label>
           {files.length > 0 && <ul className={`mt-2 text-[12.5px] ${muted}`}>{files.map((f, i) => <li key={i}>{f.name} · {(f.size / 1024).toFixed(0)} KB</li>)}</ul>}
         </div>
-        <button className={btnPrimary} disabled={busy || !client || !files.length} onClick={upload}>{busy ? "Working…" : "Upload and extract"}</button>
+        <button className={btnPrimary} disabled={busy || !client || client === NEW || !files.length} onClick={upload}>{busy ? "Working…" : "Upload and extract"}</button>
         <p className={`text-[12px] ${muted}`}>Statements are stored privately on the server. Scanned PDFs are not read automatically; they are flagged for manual handling.</p>
       </div>
 

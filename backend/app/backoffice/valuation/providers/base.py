@@ -30,6 +30,11 @@ class ProviderAdapter:
                 s += w
         return s
 
+    @classmethod
+    def mf_text(cls, pages: list[str]) -> bool:
+        """True when a nominally PMS provider's statement is really a mutual fund report (distributor 'MF summary')."""
+        return False
+
     # ---- provider specific checks, overridden
     @classmethod
     def check(cls, st: ExtractedStatement) -> None:
@@ -41,6 +46,7 @@ class ProviderAdapter:
         st = ExtractedStatement(provider=cls.id, asset_class=cls.asset_class, filename=filename, adapter_version=cls.version)
         kind = ing.kind_of(filename, data)
         holdings, hints, totals, flows = [], [], {}, []
+        default_type = cls.default_asset_type
         if not cls.verified:
             st.warnings.append(f"{cls.label} adapter has only been tested on synthetic samples; verify every figure against the source.")
         if kind == "pdf":
@@ -50,7 +56,15 @@ class ProviderAdapter:
                 st.errors.append("No text layer found (scanned image?). OCR is deliberately not used for financial statements; "
                                  "request a digital statement or enter the figures manually.")
                 return st
-            holdings, tot, warns, hints = ing.holdings_from_text(pages)
+            cands = [ing.holdings_from_text(pages)]
+            ptxt: list[str] = []
+            if cls.asset_class == "mutual_fund" or cls.mf_text(pages):
+                ptxt = ing.pdfium_pages(data, password)
+                cands += [ing.holdings_from_mf_blocks(pages), ing.holdings_from_cards(ptxt)]
+            cands.append(ing.holdings_from_columns(data, password))
+            holdings, tot, warns, hints = ing.pick_best(cands)
+            if cls.mf_text(pages):
+                st.asset_class, default_type = "mutual_fund", "mutual_fund"
             if not holdings and cls.asset_class == "mutual_fund":
                 holdings, hints, warns2 = cls._mf_layout_fallback("\n".join(pages))
                 warns += warns2
@@ -62,6 +76,11 @@ class ProviderAdapter:
             st.warnings += w
             for k in ("statement_date", "period_start", "account_no"):
                 setattr(st, k, meta[k])
+            if ptxt and not st.statement_date and (m := ing._PRINT_DATE.search("\n".join(ptxt))):  # browser print-out header
+                st.statement_date = ing.parse_date(m.group(1))
+            if holdings and not any(h.account_no for h in holdings) and not st.account_no and cls.asset_class == "mutual_fund":
+                st.account_no = f"{cls.label.split(' (')[0]} portfolio"  # web print-outs carry no folio numbers
+                st.warnings.append("No folio numbers in this statement; all holdings are grouped under one account.")
             cls._flows_from_text(st, lines)
         else:
             sheets = ing.read_sheets(filename, data)
@@ -84,7 +103,7 @@ class ProviderAdapter:
         if not holdings and not st.flows and not totals:
             st.needs_manual_review = True
             st.errors.append("No holdings, cash flows or totals could be identified; the layout may not be supported.")
-        finalize(st, hints, cls.default_asset_type)
+        finalize(st, hints, default_type)
         cls.check(st)
         return st
 

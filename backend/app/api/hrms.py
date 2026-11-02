@@ -311,6 +311,39 @@ def delete_employee(emp_id: str, user: Annotated[dict, Depends(require_staff)]):
 # -------------------------------------------------------------------------
 
 TEMPLATES = {
+    "internship_offer": {
+        "title": "Internship Offer - Financial Analyst",
+        "description": "Exact Fund Horizon official internship offer letter with tenure, AI analytics responsibilities, confidentiality, and Mr. Manohar's signature & stamp.",
+        "default_placeholders": {
+            "employee_name": "Debabrata Mukherjee",
+            "subject": "Internship Offer - Financial Analyst",
+            "designation": "Financial Analyst",
+            "department": "Research & Analytics",
+            "duration": "2 months",
+            "date": "October 12, 2026",
+            "joining_date": "October 12, 2026",
+        },
+        "content": (
+            "We are delighted to extend an offer to you for an internship position as a Financial Analyst at Fund Horizon. "
+            "Your skills and academic background have impressed us, and we are confident that you will be a valuable addition to our team.\n\n"
+            "1. Tenure and Schedule\n"
+            "Your internship will span a duration of {{duration}} commencing from {{joining_date}}.\n\n"
+            "2. Role and Responsibilities\n"
+            "During your internship, you will be expected to undertake the following responsibilities:\n"
+            "• Conducting in-depth research and quantitative analysis on Mutual Funds and Portfolio Management Services (PMS).\n"
+            "• Assisting in portfolio management strategies, asset allocation, and tracking fund performance.\n"
+            "• Building and integrating Artificial Intelligence (AI) models and tools to automate research workflows, forecast trends, and enhance decision-making.\n"
+            "• Designing data-driven dashboards and presenting actionable insights to the management team.\n\n"
+            "3. Confidentiality and Policies\n"
+            "As an intern, you will have access to confidential company data, client information, and proprietary workflows. "
+            "You are strictly required to maintain confidentiality and not disclose any sensitive information to third parties during or after your internship tenure. "
+            "All work products, AI tools, and dashboards created during this period will remain the intellectual property of Fund Horizon.\n\n"
+            "4. Conclusion\n"
+            "We hope that this internship will be a mutually beneficial experience, providing you with robust practical exposure to AI-driven financial analytics while contributing significantly to our firm's goals.\n\n"
+            "To accept this offer, please sign and return a copy of this letter. Should you have any queries regarding your onboarding, please feel free to reach out to HR at +91 9702019449 or via email at support@fundhorizon.com.\n\n"
+            "We look forward to welcoming you to the Fund Horizon team!"
+        ),
+    },
     "offer": {
         "title": "Offer of Employment",
         "description": "Formal job offer with role specifics and Indian CTC compensation annexure.",

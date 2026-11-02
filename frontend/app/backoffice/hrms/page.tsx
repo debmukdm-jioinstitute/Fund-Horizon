@@ -64,7 +64,7 @@ export default function HrmsPage() {
   const [editingEmp, setEditingEmp] = useState<Partial<Employee> | null>(null);
 
   // Letter generator states
-  const [selectedLetterType, setSelectedLetterType] = useState<string>("offer");
+  const [selectedLetterType, setSelectedLetterType] = useState<string>("internship_offer");
   const [selectedEmpIdForLetter, setSelectedEmpIdForLetter] = useState<string>("");
   const [letterPlaceholders, setLetterPlaceholders] = useState<Record<string, string>>({});
   const [letterContent, setLetterContent] = useState<string>("");
@@ -774,7 +774,8 @@ export default function HrmsPage() {
                   onChange={(e) => setSelectedLetterType(e.target.value)}
                   className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 text-xs ${INK_CLS}`}
                 >
-                  <option value="offer">Offer Letter (Employment & CTC Annexure)</option>
+                  <option value="internship_offer">Internship Offer Letter (Sample Paper - Mr. Manohar)</option>
+                  <option value="offer">Full-Time Offer of Employment (CTC Annexure A)</option>
                   <option value="promotion">Promotion & Compensation Revision</option>
                   <option value="termination">Termination Notice & Settlement Terms</option>
                   <option value="relieving">Relieving & Experience Certificate</option>
@@ -873,8 +874,8 @@ export default function HrmsPage() {
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-[#E4E9EF] dark:border-[#2B3644] flex items-center justify-between text-xs text-slate-500">
-                <span>Includes official seal & signature stamp</span>
+              <div className="mt-4 pt-4 border-t border-[#E4E9EF] dark:border-[#2B3644] flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                <span>Signatory Authority: <b>Mr. Manohar Hemdev (Partner)</b> · Official Stamp & Signature Auto-Placed</span>
                 <span>Format: ISO A4 High-Resolution Vector PDF</span>
               </div>
             </div>

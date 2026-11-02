@@ -973,6 +973,10 @@ class BackofficeRepository:
         cols = self._PMS_RETURN_COLS
         conn = self._conn()
         try:
+            biggest = conn.execute("SELECT COALESCE(MAX(n), 0) FROM (SELECT COUNT(*) n FROM pms_apmi_strategies WHERE as_on <> ? GROUP BY as_on)", (as_on,)).fetchone()[0]
+            if len(strategies) * 2 < biggest:  # partial APMI scrape: keep what we have rather than shrink the universe
+                logging.getLogger(__name__).warning("APMI %s has %d strategies vs %d in earlier months; not stored", as_on, len(strategies), biggest)
+                return 0
             with conn:
                 conn.execute("DELETE FROM pms_providers")
                 conn.executemany(

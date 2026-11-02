@@ -44,3 +44,8 @@ jobs:
       - name: Check API health
         if: env.AWS_ACCESS_KEY_ID != ''
         run: curl -sf https://api.fundhorizon.website/health
+      - name: Check core data (PMS + mutual funds)
+        if: env.AWS_ACCESS_KEY_ID != ''
+        run: |
+          d=$(curl -sf https://api.fundhorizon.website/health/core); echo "$d"
+          echo "$d" | python3 -c 'import json,sys; d=json.load(sys.stdin); bad=[k for k,m in (("pms_strategies",1000),("pms_recommended",5),("mf_funds",1000)) if (d.get(k) or 0)<m]; sys.exit("Core data below floor: %s" % bad if bad else 0)'

@@ -58,3 +58,16 @@ gets a one-line comment: `shortcut: <limit>, <when to upgrade>`. End replies wit
 Every paginated table, list or "Rows" selector loads **100 rows** by default (`DEFAULT_PAGE_SIZE` in `frontend/lib/pagination.ts`);
 users may still pick a smaller size. Any new table or list must use that constant, never its own number, and the Rows
 dropdown must include 100.
+
+## Core product: PMS and mutual funds come first (never regress them)
+
+PMS and mutual funds (screener, quartiles, FH Recommended, valuation, portfolio screening) are the product. Everything else is
+secondary and must never disturb them.
+
+- Before touching anything on those paths, read the code it feeds; after pushing, **verify on the live site yourself** (live API
+  counts via `https://api.fundhorizon.website/health/core`, then the page) and report the real numbers. Never leave the user to
+  hunt for bugs.
+- Never let a new or partial data month replace a complete one (the 1-row APMI month that hid ~1,850 PMS strategies). Readers pick
+  the newest *complete* month; writers refuse a partial scrape.
+- Every core change ships with a test. A deploy whose `/health/core` counts fall below the floors in `deploy-api.yml` fails CI.
+- Do not bundle unrelated work into core pushes, and do not push without the user's yes.

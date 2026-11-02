@@ -200,7 +200,12 @@ def test_partial_latest_month_does_not_hide_the_universe(client):
     rows = apmi.parse_report(REPORT, "Equity", "D")
     full = [{**r, "strategy_name": f"{r['strategy_name']} {i}"} for i in range(5) for r in rows]  # a normal month
     repo.replace_pms_universe("2026-09-30", apmi.parse_providers(PAGE), full)
-    repo.replace_pms_universe("2026-10-31", apmi.parse_providers(PAGE), rows[:1])  # half-ingested month: 1 row
+    assert repo.replace_pms_universe("2026-10-31", apmi.parse_providers(PAGE), rows[:1]) == 0  # partial scrape is refused
     assert repo.latest_pms_as_on() == "2026-09-30"
     repo.replace_pms_universe("2026-10-31", apmi.parse_providers(PAGE), full)
     assert repo.latest_pms_as_on() == "2026-10-31"
+
+
+def test_core_health_reports_pms_and_mf_counts(client):
+    d = client.get("/health/core").json()
+    assert {"pms_as_on", "pms_strategies", "pms_recommended", "mf_funds"} <= d.keys()

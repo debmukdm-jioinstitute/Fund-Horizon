@@ -302,6 +302,20 @@ def create_app() -> FastAPI:
     app.include_router(valuation_router)
     app.include_router(mf_reference_router)
 
+    @app.get("/health/core")
+    def health_core():
+        """Counts of the core product data (PMS + mutual funds). CI fails a deploy whose counts drop below the floors."""
+        from app.api import backoffice as bo
+
+        pms = bo._REPO.list_pms_universe_strategies()
+        rec_ids = {str(i) for i in bo.FH_RECOMMENDED_PMS_IDS}
+        return {
+            "pms_as_on": bo._REPO.latest_pms_as_on(),
+            "pms_strategies": len(pms),
+            "pms_recommended": sum(1 for r in pms if str(r.get("ia_id")) in rec_ids),
+            "mf_funds": len(bo._fh_frame()),
+        }
+
     @app.get("/health")
     def health_check():
         import shutil

@@ -4,7 +4,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import CasUpload from "@/components/CasUpload";
 
 export const metadata: Metadata = {
-  title: "CAS Portfolio Analysis · Fund Horizon",
+  title: "CAS Portfolio Analysis",
   description:
     "Analyze your mutual fund Consolidated Account Statement (CAS) in memory. Check portfolio XIRR, asset allocation vs targets, and direct vs regular plan distribution. ARN 345439.",
 };

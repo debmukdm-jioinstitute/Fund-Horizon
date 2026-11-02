@@ -270,6 +270,7 @@ def create_app() -> FastAPI:
     from app.api.client_report import router as client_report_router
     from app.api.monthly_report import router as monthly_report_router
     from app.api.valuation import router as valuation_router
+    from app.mcp_server import router as mcp_router
     from app.api.crm_core import router as crm_core_router
     from app.api.crm_extras import router as crm_extras_router
     from app.api.crm_phase3 import router as crm_phase3_router
@@ -300,6 +301,7 @@ def create_app() -> FastAPI:
     app.include_router(client_report_router)
     app.include_router(monthly_report_router)
     app.include_router(valuation_router)
+    app.include_router(mcp_router)
     app.include_router(mf_reference_router)
 
     @app.get("/health/core")

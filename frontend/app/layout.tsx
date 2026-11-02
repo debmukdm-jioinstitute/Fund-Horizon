@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/google-sans";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthContext";
@@ -6,22 +6,28 @@ import { ThemeProvider } from "@/components/terminal/ThemeContext";
 import GlobalHeader from "@/components/terminal/GlobalHeader";
 import GlobalFooter from "@/components/terminal/GlobalFooter";
 import { siteUrl } from "@/lib/site";
+import { BRAND } from "@/lib/brand";
 
 const baseUrl = siteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Fund Horizon — Financial Data Terminal",
-  description: "Internal and client financial data terminal from Fund Horizon.",
+  applicationName: BRAND.name,
+  title: { default: `${BRAND.name} | ${BRAND.descriptor}`, template: `%s | ${BRAND.name}` },
+  description: BRAND.description,
   openGraph: {
-    title: "Fund Horizon — Financial Data Terminal",
-    description: "Internal and client financial data terminal from Fund Horizon.",
+    title: `${BRAND.name} | ${BRAND.tagline}`,
+    description: BRAND.description,
     url: "/",
-    siteName: "Fund Horizon",
+    siteName: BRAND.name,
     locale: "en_IN",
     type: "website",
+    images: [{ url: BRAND.logo, alt: `${BRAND.name} logo` }],
   },
+  twitter: { card: "summary", title: BRAND.name, description: BRAND.description, images: [BRAND.logo] },
 };
+
+export const viewport: Viewport = { themeColor: BRAND.navy, width: "device-width", initialScale: 1 };
 
 export const dynamic = "force-dynamic";
 

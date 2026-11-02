@@ -187,10 +187,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { code } = await params;
   const detail = await getFundDetailServer(code);
   if (!detail) {
-    return { title: "Scheme Not Found · Fund Horizon" };
+    return { title: "Scheme Not Found" };
   }
   return {
-    title: `${detail.scheme_name} · Scheme Analytics · Fund Horizon`,
+    title: `${detail.scheme_name} · Scheme Analytics`,
     description: `Historical metrics, rolling returns, risk indicators, and capture ratios for ${detail.scheme_name}. Regular plan distributed under ARN 345439.`,
   };
 }

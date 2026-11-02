@@ -47,6 +47,9 @@ def personas():
 @pytest.fixture
 def client(tmp_path):
     os.environ["FH_DB_PATH"] = str(tmp_path / "test.db")
+    from app.api import backoffice as _bo
+
+    _bo._PMS_LIST_CACHE.clear()  # in-process 60s cache must not leak one test's data into the next
     old_db_url = os.environ.get("DATABASE_URL")
     os.environ["DATABASE_URL"] = ""
     try:

@@ -18,6 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     { url: `${baseUrl}/tax`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/knowledge`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/knowledge/mcp-setup`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/learn`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

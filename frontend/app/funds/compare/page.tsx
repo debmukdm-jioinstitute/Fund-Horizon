@@ -6,7 +6,7 @@ import { compareFundsServer, getFundDetailServer } from "@/lib/api";
 import { CompareView } from "./CompareView";
 
 export const metadata: Metadata = {
-  title: "Compare Mutual Funds · Fund Horizon",
+  title: "Compare Mutual Funds",
   description:
     "Side-by-side historical performance comparison, risk metrics, and return correlation matrix. Regular plans distributed under ARN 345439.",
 };

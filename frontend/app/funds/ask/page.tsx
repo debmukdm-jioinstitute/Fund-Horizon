@@ -4,7 +4,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import FundRagSearch from "@/components/FundRagSearch";
 
 export const metadata: Metadata = {
-  title: "Ask About Any Fund · Knowledge Base · Fund Horizon",
+  title: "Ask About Any Fund · Knowledge Base",
   description:
     "Search historical returns, volatility, Sharpe ratios, and category medians across 3,600+ mutual fund schemes. Regular plans distributed under ARN 345439.",
 };

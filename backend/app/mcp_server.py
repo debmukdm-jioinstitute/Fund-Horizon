@@ -15,6 +15,7 @@ import hashlib
 import io
 import json
 import logging
+import os
 import re
 import secrets
 import sqlite3
@@ -26,6 +27,8 @@ from zoneinfo import ZoneInfo
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse, Response
+from pathlib import Path
+import zipfile
 from pydantic import BaseModel, Field
 
 from app.api.auth import get_current_customer, require_staff
@@ -562,3 +565,59 @@ def revoke_token(token_id: str, staff: Annotated[dict, Depends(require_staff)]):
         conn.execute("DELETE FROM mcp_tokens WHERE id = ?", (token_id,))
     conn.close()
     return Response(status_code=204)
+
+
+# --------------------------------------------------------------------------- one-click Claude Desktop connector
+MAX_TOKENS_PER_USER = 25
+
+
+def _new_token(staff: dict, label: str, days: int) -> tuple[str, str, str]:
+    conn = _db()
+    n = conn.execute("SELECT COUNT(*) FROM mcp_tokens WHERE customer_id = ?", (staff["id"],)).fetchone()[0]
+    if n >= MAX_TOKENS_PER_USER:
+        conn.close()
+        raise HTTPException(409, "You have 25 connection tokens. Revoke some you no longer use, then try again.")
+    raw = "fhm_" + secrets.token_urlsafe(32)
+    sha = hashlib.sha256(raw.encode()).hexdigest()
+    now = datetime.now(UTC)
+    exp = (now + timedelta(days=days)).isoformat()
+    tid = secrets.token_hex(8)
+    sqlite.create_auth_session(staff["id"], sha, exp)
+    with conn:
+        conn.execute("INSERT INTO mcp_tokens (id, customer_id, label, token_sha256, created_at, expires_at) VALUES (?,?,?,?,?,?)",
+                     (tid, staff["id"], label.strip()[:60], sha, now.isoformat(), exp))
+    conn.close()
+    return tid, raw, exp
+
+
+def build_connector(server_url: str, token: str, who: str) -> bytes:
+    """A .mcpb file: Claude Desktop installs it on double-click. The token is baked in, so the person pastes nothing."""
+    manifest = {
+        "manifest_version": "0.2", "name": "fund-horizon", "display_name": "Fund Horizon", "version": "1.0.0",
+        "description": f"Fund Horizon PMS, mutual fund, valuation and forms tools inside Claude. Made for {who}.",
+        "author": {"name": "Fund Horizon"},
+        "server": {"type": "node", "entry_point": "server/index.js",
+                   "mcp_config": {"command": "node", "args": ["${__dirname}/server/index.js"],
+                                  "env": {"FH_URL": server_url, "FH_TOKEN": token}}},
+        "tools_generated": True,
+    }
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("manifest.json", json.dumps(manifest, indent=2))
+        z.writestr("server/index.js", (Path(__file__).parent / "mcp_assets" / "server.js").read_text())
+    return buf.getvalue()
+
+
+class ConnectorRequest(BaseModel):
+    days: int = Field(90, ge=1, le=180)
+
+
+@router.post("/api/mcp/connector")
+def download_connector(staff: Annotated[dict, Depends(require_staff)], body: ConnectorRequest | None = None):
+    """Create a token and return the personalised one-click connector (.mcpb)."""
+    days = (body.days if body else 90)
+    who = staff.get("name") or "Fund Horizon staff"
+    _, raw, _ = _new_token(staff, "Claude Desktop (one-click)", days)
+    server_url = os.environ.get("FH_MCP_URL", "https://api.fundhorizon.website/mcp")  # fixed, never taken from the request
+    return Response(build_connector(server_url, raw, who), media_type="application/octet-stream",
+                    headers={"Content-Disposition": 'attachment; filename="Fund-Horizon-for-Claude.mcpb"', "Cache-Control": "no-store"})

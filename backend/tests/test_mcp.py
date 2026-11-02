@@ -95,3 +95,19 @@ def test_write_guards_and_errors_are_reported_not_hidden(client):
     assert res["isError"]
     res, _ = _call(client, token, "mf_research_detail", {"scheme_code": "000000"})
     assert res["isError"] and "failed (" in res["content"][0]["text"]  # the API's own status, not a made-up answer
+
+
+def test_one_click_connector_is_a_valid_personalised_bundle_and_its_token_works(client):
+    import io
+    import zipfile
+
+    _login_staff(client, _create_staff("analyst"))
+    r = client.post("/api/mcp/connector", json={})
+    assert r.status_code == 200 and "Fund-Horizon-for-Claude.mcpb" in r.headers["content-disposition"]
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    man = json.loads(z.read("manifest.json"))
+    env = man["server"]["mcp_config"]["env"]
+    assert man["manifest_version"] and env["FH_URL"].endswith("/mcp") and env["FH_TOKEN"].startswith("fhm_")
+    assert "server/index.js" in z.namelist() and b"Authorization" in z.read("server/index.js")
+    client.cookies.clear()
+    assert _rpc(client, env["FH_TOKEN"], "tools/list").json()["result"]["tools"]  # the baked-in token signs in

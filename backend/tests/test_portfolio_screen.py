@@ -311,8 +311,8 @@ def test_folio_wise_valuation_report_pdf_is_parsed():
         y = 720 - i * 20
         c.drawString(30, y, n)
         c.drawString(60, y, name)
-        c.drawString(200, y, folio)
-        c.drawString(280, y, nums)
+        c.drawString(250, y, folio)
+        c.drawString(320, y, nums)
     c.save()
     holdings, st_date = portfolio_screen.parse_portfolio_pdf_bytes(buf.getvalue(), filename="r.pdf")
     assert [h["raw_name"] for h in holdings] == ["Bandhan Value Fund-Reg(G)", "ICICI Pru Small Cap Fund(G)"]

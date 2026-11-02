@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { API_URL, resolveApiUrl } from "@/lib/api";
 import { useTheme } from "@/components/terminal/ThemeContext";
 import MarketDeskNav from "@/components/backoffice/MarketDeskNav";
+import { buildXlsx, sheetsFromRoot, xlsxFilename } from "@/lib/xlsxFromTables";
 
 type Payload = { css: string; html: string };
 
@@ -27,7 +28,7 @@ function deskPath(href: string): string | null {
 }
 
 function tableCount(root: ShadowRoot): number {
-  return Array.from(root.querySelectorAll("table")).filter((t) => t.querySelectorAll("tr").length >= 2).length;
+  return sheetsFromRoot(root).length;
 }
 
 function tableToCsv(table: HTMLTableElement): string {
@@ -194,27 +195,22 @@ export default function MarketDesk({ path = "" }: { path?: string }) {
   const [excelErr, setExcelErr] = useState<string | null>(null);
 
   const downloadExcel = useCallback(() => {
-    const suffix = path.replace(/^\/+|\/+$/g, "");
-    const excelUrl = resolveApiUrl(`${API_URL}/api/backoffice/markets${suffix ? `/${suffix}` : ""}?format=xlsx`);
     setExcelBusy(true);
     setExcelErr(null);
-    fetch(excelUrl, { credentials: "include" })
-      .then(async (r) => {
-        if (!r.ok) throw new Error(r.status === 404 ? "No tables on this page." : "Could not download Excel.");
-        const blob = await r.blob();
-        const name = /filename="([^"]+)"/.exec(r.headers.get("Content-Disposition") ?? "")?.[1] ?? "markets.xlsx";
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(a.href);
-      })
-      .catch((e: unknown) => {
-        setExcelErr(e instanceof Error ? e.message : "Could not download Excel.");
-      })
-      .finally(() => setExcelBusy(false));
+    try {
+      const root = host.current?.shadowRoot;
+      if (!root) throw new Error("Could not download Excel.");
+      const sheets = sheetsFromRoot(root);
+      const bytes = buildXlsx(sheets);
+      if (bytes[0] !== 0x50 || bytes[1] !== 0x4b) throw new Error("Could not download Excel.");
+      const copy = new ArrayBuffer(bytes.byteLength);
+      new Uint8Array(copy).set(bytes);
+      saveBlob(new Blob([copy], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), xlsxFilename(path));
+    } catch (e: unknown) {
+      setExcelErr(e instanceof Error ? e.message : "Could not download Excel.");
+    } finally {
+      setExcelBusy(false);
+    }
   }, [path]);
 
   useEffect(() => {

@@ -334,9 +334,6 @@ def xlsx_response(path: str, query: str = "") -> Response:
         raise HTTPException(415, "Not a page.")
     html = data.decode("utf-8", errors="replace")
     _, body = split_document(html)
-    from app.backoffice.market_charts import enhance_document
-
-    body = enhance_document(body, path, query)
     payload = build_xlsx(extract_tables(body))
     return Response(
         content=payload,

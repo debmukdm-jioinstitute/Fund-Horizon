@@ -23,6 +23,7 @@ import SignedValue from "@/components/terminal/SignedValue";
 import { shortDisplayName } from "@/components/backoffice/mfDisplayName";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
 const TABS = [
   { id: "fund-price", label: "Fund Price" }, { id: "performance", label: "Performance" }, { id: "peers", label: "Peer Comparison" },
@@ -59,12 +60,12 @@ const Section = ({ id, title, sub, children }: { id?: string; title?: string; su
   </section>
 );
 
-const PAGE_SIZES = [5, 10, 25, 50];
+const PAGE_SIZES = [5, 10, 25, 50, 100];
 
 function NavHistory({ perf, code }: { perf: MfPerformance; code: string }) {
   const [view, setView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const [year, setYear] = useState("all");
-  const [size, setSize] = useState(10);
+  const [size, setSize] = useState(DEFAULT_PAGE_SIZE);
   const [page, setPage] = useState(0);
   const years = useMemo(() => Array.from(new Set(perf.history.map((h) => h.date.slice(0, 4)))), [perf.history]);
   const rows = useMemo(

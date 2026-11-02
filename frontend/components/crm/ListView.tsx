@@ -28,6 +28,7 @@ import {
 } from "../../lib/crmListApi";
 import OwnerAvatar, { useOwners } from "./OwnerAvatar";
 import DropdownClose from "@/components/DropdownClose";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
 export interface ListColumn<T> {
   id: string;
@@ -102,7 +103,7 @@ export default function ListView<T extends { id: string }>({
   const [debouncedQ, setDebouncedQ] = useState("");
   const [sort, setSort] = useState<string | undefined>();
   const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   // Dashboard widgets deep-link here (?stage=…&open=true): URL filters seed the list and beat the default saved view.
   const urlParams = useSearchParams();
   const urlFilters = useMemo(() => {

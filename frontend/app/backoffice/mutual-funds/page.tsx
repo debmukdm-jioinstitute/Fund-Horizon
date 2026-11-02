@@ -25,6 +25,8 @@ import InfoTip from "@/components/InfoTip";
 import MfPortfolioScreen from "@/components/backoffice/MfPortfolioScreen";
 import DropdownClose from "@/components/DropdownClose";
 import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
+import { getMfMissingReason } from "@/lib/backoffice-display";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
 const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "Capture Ratio", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
@@ -157,7 +159,7 @@ function MutualFunds() {
 
   const [sort, setSort] = useState("fh_score");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [offset, setOffset] = useState(0);
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [search, setSearch] = useState((params.get("q") ?? "").trim());
@@ -960,6 +962,16 @@ const fhTitle = (row: MfScreenerRow) => {
   return `Click for the full score breakdown${flags.length ? `. Flags: ${flags.join(", ").replaceAll("_", " ")}` : ""}`;
 };
 
+/** Empty metric cell: say why (fund too new, or not in the AMFI feed) instead of a bare dash. */
+function Missing({ col, row }: { col: Col; row: MfScreenerRow }) {
+  const r = getMfMissingReason(col.key, typeof row.history_years === "number" ? row.history_years : null);
+  return (
+    <span title={r.tooltip} className="cursor-help text-[#706E6B] dark:text-[#A8B4C4]">
+      {r.short === "—" ? "—" : <span className="text-[10px] px-1 rounded bg-[#F0F3F6] dark:bg-[#202936] border border-[#E5E5E5] dark:border-[#2B3644]">{r.short}</span>}
+    </span>
+  );
+}
+
 function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; summary?: boolean; onExplain: () => void }) {
   const v = row[col.key];
   // Whole cell opens the plain-language explanation; keyboard users get Enter/Space.
@@ -1049,8 +1061,8 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
         <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Benchmark: {String(row.benchmark ?? "-")}</div>
       </td>
     );
-  if (col.kind === "aum") return <td {...click} title="Click to see why" className={cls + "text-right tabular-nums"}>{fmt(v, 0)}</td>;
-  if (summary && col.kind === "pct" && typeof v !== "number") return <td {...click} title="Click to see why" className={cls + "text-right tabular-nums"}>–</td>;
+  if (col.kind === "aum") return <td {...click} title="Click to see why" className={cls + "text-right tabular-nums"}>{typeof v === "number" ? fmt(v, 0) : <Missing col={col} row={row} />}</td>;
+  if ((col.kind === "pct" || col.kind === "num") && typeof v !== "number") return <td {...click} className={cls + "text-right tabular-nums"}><Missing col={col} row={row} /></td>;
   const avg = col.avg ? row[col.avg] : undefined;
   const when = col.date ? row[col.date] : undefined;
   return (

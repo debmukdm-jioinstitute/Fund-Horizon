@@ -338,6 +338,12 @@ export function getMfMissingReason(
     }
   }
 
+  const months = metricKey.match(/^ret_(\d+)m$/)?.[1];
+  if (months && age !== null && age < Number(months) / 12) {
+    return { short: `< ${months}M record`, tooltip: `Fund is only ${age.toFixed(1)} years old; needs ${months} months of NAV history.` };
+  }
+  if (metricKey === "ter") return { short: "—", tooltip: "Expense ratio not published by the AMC in the AMFI TER file for this scheme and date." };
+  if (age !== null) return { short: "—", tooltip: `Fund is old enough${ageText}, but the AMFI NAV history or category/benchmark data needed for this metric is missing.` };
   return {
     short: "—",
     tooltip: "Data not available in AMFI feed.",

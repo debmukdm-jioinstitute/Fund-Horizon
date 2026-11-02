@@ -36,9 +36,10 @@ import {
   getPmsMissingReturnReason,
 } from "@/lib/backoffice-display";
 import DropdownClose from "@/components/DropdownClose";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
 type SortKey = "aum" | "return_1m" | "return_1y" | "return_3y" | "name" | "score";
-const PAGE_SIZE = 50;
+const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 function ReturnCell({
   value,
@@ -823,7 +824,7 @@ function PmsTracker() {
                                     }}
                                     title="Click to view ranking methodology & formula breakdown"
                                   >
-                                    {s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}
+                                    <span title={s.fh_rating != null ? undefined : "Not rated: too little disclosed data (returns, AUM or track record) to compute the FH score."}>{s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}</span>
                                   </td>
                                   <td className="whitespace-nowrap">
                                     <button
@@ -859,7 +860,7 @@ function PmsTracker() {
                                     {s.min_investment || "₹50,00,000"}
                                   </td>
                                   <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                                    {s.inception_date || "—"}
+                                    <span title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>{s.inception_date || "—"}</span>
                                   </td>
                                   <td className="text-[12px]">
                                     {s.principal_officer ? (
@@ -899,7 +900,7 @@ function PmsTracker() {
                                     }}
                                     title="Click to view ranking methodology & formula breakdown"
                                   >
-                                    {s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}
+                                    <span title={s.fh_rating != null ? undefined : "Not rated: too little disclosed data (returns, AUM or track record) to compute the FH score."}>{s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}</span>
                                   </td>
                                   <td className="whitespace-nowrap">
                                     <button

@@ -22,6 +22,7 @@ import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import { shortDisplayName, normalizeDisplayName } from "@/components/backoffice/mfDisplayName";
 import MfMetricExplain from "@/components/backoffice/MfMetricExplain";
 import { getMfMissingReason } from "@/lib/backoffice-display";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
 const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
 const PLANS = ["Regular", "Direct"];
@@ -192,7 +193,7 @@ function MfResearch() {
   const [query, setQuery] = useState(params.get("search") ?? "");
   const [sort, setSort] = useState("score");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [offset, setOffset] = useState(0);
 
   const [rows, setRows] = useState<MfScreenerRow[]>([]);

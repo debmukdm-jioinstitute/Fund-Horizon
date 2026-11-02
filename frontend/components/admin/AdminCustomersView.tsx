@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import {
   AccountRole,
   CustomerRecord,
@@ -9,7 +10,7 @@ import {
   patchCustomer,
 } from "./account-api";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 const ROLE_STYLES: Record<AccountRole, string> = {
   customer: "bg-sky-50 text-sky-800 border-sky-200",

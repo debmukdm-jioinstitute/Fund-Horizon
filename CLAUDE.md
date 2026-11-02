@@ -52,3 +52,9 @@ Solve the whole problem with the least new code. Reuse existing helpers, then st
 dependency for a few lines. No unasked abstractions, wrappers or options; deletion beats addition. Non-trivial logic gets
 a small test or self-check. Never cut security, trust-boundary validation or error handling. A shortcut with a known limit
 gets a one-line comment: `shortcut: <limit>, <when to upgrade>`. End replies with what was skipped or not checked.
+
+## Tables: 100 rows by default
+
+Every paginated table, list or "Rows" selector loads **100 rows** by default (`DEFAULT_PAGE_SIZE` in `frontend/lib/pagination.ts`);
+users may still pick a smaller size. Any new table or list must use that constant, never its own number, and the Rows
+dropdown must include 100.

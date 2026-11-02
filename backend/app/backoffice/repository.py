@@ -1099,6 +1099,24 @@ class BackofficeRepository:
                 out[str(row["ia_id"])] = name
         return out
 
+    def list_pms_cached_inceptions(self) -> dict[str, str]:
+        """ia_id -> inception date from cached APMI strategy pages."""
+        conn = self._conn()
+        try:
+            rows = conn.execute("SELECT ia_id, detail_json FROM pms_strategy_details").fetchall()
+        finally:
+            conn.close()
+        out: dict[str, str] = {}
+        for row in rows:
+            try:
+                detail = json.loads(row["detail_json"])
+            except (TypeError, ValueError):
+                continue
+            date_val = (detail.get("inception_date") or "").strip() if isinstance(detail, dict) else ""
+            if date_val and date_val.upper() not in {"NA", "N/A", "NIL", "-"}:
+                out[str(row["ia_id"])] = date_val
+        return out
+
     def list_pms_universe_strategies(self, as_on: str | None = None) -> list[dict[str, Any]]:
         as_on = as_on or self.latest_pms_as_on()
         if not as_on:

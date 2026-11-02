@@ -143,3 +143,51 @@ def test_failed_refresh_retries_soon_not_after_a_full_interval(monkeypatch):
     asyncio.run(collectors.refresh_source("SRC_APMI"))
     due_in = collectors.REFRESH_INTERVALS["SRC_APMI"] - (time.monotonic() - collectors._LAST_RUN["SRC_APMI"])
     assert due_in <= collectors.RETRY_AFTER_FAILURE_SECONDS + 1
+
+
+def test_strategy_detail_parser_empty_fees_do_not_bleed_into_next_labels():
+    html_with_empty_fees = """
+    <h4>Investment Approach Details</h4><div>&#8377;2615.00</div>
+    <div class="row">
+        <label>Fixed Fees Structure</label><p class="wrapdata"></p>
+        <label>Variable Fees Structure</label><p class="wrapdata">   </p>
+        <label>Exit Load</label><p class="wrapdata">NA</p>
+        <label>Purpose</label><p class="wrapdata">Carnelian Capital Compounder Strategy objective</p>
+    </div>
+    """
+    d = apmi.parse_strategy_detail(html_with_empty_fees)
+    assert d is not None
+    # Empty fee wrappers must evaluate to None, NOT the following label!
+    assert d["fixed_fees"] is None
+    assert d["variable_fees"] is None
+    assert d["exit_load"] is None
+    assert d["purpose"] == "Carnelian Capital Compounder Strategy objective"
+
+
+def test_enrich_strategy_fees_curated_lookup_and_healing():
+    # 1. Healing corrupt shifted fields
+    corrupt_detail = {
+        "strategy_name": "CARNELIAN CAPITAL COMPOUNDER STRATEGY",
+        "fixed_fees": "Variable Fees Structure",
+        "variable_fees": "Exit Load",
+        "exit_load": None,
+    }
+    modified = apmi.enrich_strategy_fees(corrupt_detail, "1193")
+    assert modified is True
+    assert corrupt_detail["fixed_fees"] == "2.50% p.a."
+    assert "8% hurdle" in corrupt_detail["variable_fees"]
+    assert "1% if redeemed" in corrupt_detail["exit_load"]
+
+    # 2. Enriching missing fields for monitored strategies
+    missing_detail = {
+        "strategy_name": "ICICI Prudential PMS Value Strategy",
+        "fixed_fees": None,
+        "variable_fees": None,
+        "exit_load": None,
+    }
+    modified2 = apmi.enrich_strategy_fees(missing_detail, "781")
+    assert modified2 is True
+    assert missing_detail["fixed_fees"] == "2.25% p.a."
+    assert "15% profit sharing" in missing_detail["variable_fees"]
+    assert "1% if redeemed" in missing_detail["exit_load"]
+

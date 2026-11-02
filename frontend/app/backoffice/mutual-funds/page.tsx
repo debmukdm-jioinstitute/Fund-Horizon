@@ -310,11 +310,18 @@ function MutualFunds() {
 
   return (
     <div className={`space-y-4 ${compare.selectedIds.length ? "pb-[88px]" : ""}`}>
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
-          {params.get("full") === "1" && <a href="/backoffice/mutual-funds" className="mb-1 inline-block text-[13px] font-medium text-[#1A73E8]">← All views</a>}
-          <h1 className="text-[24px] font-semibold text-[#181818] dark:text-[#EDF2F7] tracking-tight">Mutual fund screener{!home ? ` · ${section.replace("Vs", "vs")}` : ""}</h1>
-          <p className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
+          {params.get("full") === "1" && (
+            <a
+              href="/backoffice/mutual-funds"
+              className="mb-1.5 inline-flex items-center gap-1 text-[13px] font-medium text-[#1A73E8] dark:text-[#8AB8FF] hover:underline"
+            >
+              <span aria-hidden>←</span> All views
+            </a>
+          )}
+          <h1 className="text-[24px] font-semibold text-[#181818] dark:text-[#EDF2F7] tracking-tight leading-snug">Mutual fund screener{!home ? ` · ${section.replace("Vs", "vs")}` : ""}</h1>
+          <p className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 leading-normal">
             {selectedLabels.length ? selectedLabels.join(" & ") : "All categories"} · Growth option
           </p>
         </div>

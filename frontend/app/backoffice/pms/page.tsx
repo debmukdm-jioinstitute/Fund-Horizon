@@ -33,6 +33,7 @@ import {
   normalizeProviderName,
   pmsReturnWarning,
   pmsCellReturnWarning,
+  getPmsMissingReturnReason,
 } from "@/lib/backoffice-display";
 import DropdownClose from "@/components/DropdownClose";
 
@@ -42,14 +43,29 @@ const PAGE_SIZE = 50;
 function ReturnCell({
   value,
   warning,
+  horizon,
+  strategy,
 }: {
   value?: number | null;
   warning?: string | null;
+  horizon?: "1m" | "3m" | "6m" | "1y" | "3y" | "5y" | "si";
+  strategy?: PmsStrategyItem;
 }) {
   if (isMissingNumber(value)) {
+    const reason = horizon && strategy ? getPmsMissingReturnReason(horizon, strategy) : null;
+    const badge = reason && reason.short !== "—" ? reason.short : null;
     return (
-      <span className="text-[#706E6B] dark:text-[#A8B4C4] font-normal" title="No data">
-        —
+      <span
+        className="text-[#706E6B] dark:text-[#A8B4C4] font-normal cursor-help inline-flex items-center justify-end"
+        title={reason?.tooltip ?? "No data reported to APMI"}
+      >
+        {badge ? (
+          <span className="text-[10px] px-1 py-0.2 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644]">
+            {badge}
+          </span>
+        ) : (
+          "—"
+        )}
       </span>
     );
   }
@@ -315,18 +331,25 @@ function PmsTracker() {
 
   return (
     <div className={`space-y-4 ${trayVisible ? "pb-[88px]" : ""}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
-          {params.get("full") === "1" && <a href="/backoffice/pms" className="mb-1 inline-block text-[13px] font-medium text-[#1A73E8]">← All views</a>}
+          {params.get("full") === "1" && (
+            <a
+              href="/backoffice/pms"
+              className="mb-1.5 inline-flex items-center gap-1 text-[13px] font-medium text-[#1A73E8] dark:text-[#8AB8FF] hover:underline"
+            >
+              <span aria-hidden>←</span> All views
+            </a>
+          )}
           <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
+            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight leading-snug">
               PMS Performance & Account Tracker
             </h1>
             <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               APMI Standard
             </span>
           </div>
-          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
+          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 leading-normal">
             Portfolio Management Services strategy registry, XIRR returns, and high-water mark fee auditing
           </p>
         </div>
@@ -759,22 +782,22 @@ function PmsTracker() {
                               fhSubTab === "returns" ? (
                                 <>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} />
+                                    <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} horizon="1m" strategy={s} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_3m_pct} warning={pmsCellReturnWarning("3m", s.return_3m_pct)} />
+                                    <ReturnCell value={s.return_3m_pct} warning={pmsCellReturnWarning("3m", s.return_3m_pct)} horizon="3m" strategy={s} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_6m_pct} warning={pmsCellReturnWarning("6m", s.return_6m_pct)} />
+                                    <ReturnCell value={s.return_6m_pct} warning={pmsCellReturnWarning("6m", s.return_6m_pct)} horizon="6m" strategy={s} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} />
+                                    <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} horizon="1y" strategy={s} />
                                   </td>
                                   <td className="text-right">
-                                    <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
+                                    <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} horizon="3y" strategy={s} />
                                   </td>
                                   <td className="text-right font-medium">
-                                    <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} />
+                                    <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} horizon="si" strategy={s} />
                                   </td>
                                   <td
                                     className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
@@ -907,16 +930,22 @@ function PmsTracker() {
                               <>
                                 <td className="text-[#706E6B] dark:text-[#A8B4C4]">{approach}</td>
                                 <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7] font-mono">
-                                  {formatCrore(s.aum_crore)}
+                                  {s.aum_crore != null && s.aum_crore > 0 ? (
+                                    formatCrore(s.aum_crore)
+                                  ) : (
+                                    <span className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px] font-normal cursor-help" title="AUM not disclosed by manager in APMI filing">
+                                      Not disclosed
+                                    </span>
+                                  )}
                                 </td>
                                 <td className="text-right">
-                                  <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} />
+                                  <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} horizon="1m" strategy={s} />
                                 </td>
                                 <td className="text-right">
-                                  <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} />
+                                  <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} horizon="1y" strategy={s} />
                                 </td>
                                 <td className="text-right">
-                                  <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} />
+                                  <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} horizon="3y" strategy={s} />
                                 </td>
                                 <td
                                   className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
@@ -924,14 +953,16 @@ function PmsTracker() {
                                     setMethodologyStrategy(s);
                                     setMethodologyModalOpen(true);
                                   }}
-                                  title="Click to view step-by-step formula and live calculations"
+                                  title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Click to view step-by-step formula and live calculations"}
                                 >
                                   {s.fh_score != null ? (
                                     <span className="text-[#181818] dark:text-[#EDF2F7]">
                                       {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
                                     </span>
                                   ) : (
-                                    <span className="text-[#98A2B3]">—</span>
+                                    <span className="text-[#98A2B3] text-[11px] font-normal cursor-help" title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Requires 3Y performance history to compute quantitative score"}>
+                                      —
+                                    </span>
                                   )}
                                 </td>
                                 <td
@@ -940,9 +971,13 @@ function PmsTracker() {
                                     setMethodologyStrategy(s);
                                     setMethodologyModalOpen(true);
                                   }}
-                                  title="Click to view ranking methodology & formula breakdown"
+                                  title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Click to view ranking methodology & formula breakdown"}
                                 >
-                                  {s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}
+                                  {s.fh_rating != null ? `★ ${s.fh_rating}/5` : (
+                                    <span className="text-[#98A2B3] text-[11px] font-normal cursor-help" title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Requires 3Y performance history to compute rating"}>
+                                      —
+                                    </span>
+                                  )}
                                 </td>
                                 <td className="whitespace-nowrap">
                                   <button

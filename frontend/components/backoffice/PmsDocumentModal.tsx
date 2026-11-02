@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { uploadPmsDocument, type PmsUploadResult } from "@/lib/backoffice";
 import { formatNumber } from "@/lib/terminal-format";
 
@@ -16,6 +17,11 @@ export default function PmsDocumentModal({ onUploaded, onClose }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PmsUploadResult | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +46,9 @@ export default function PmsDocumentModal({ onUploaded, onClose }: Props) {
     }
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 font-sans backdrop-blur-sm">
       <div className="w-full max-w-2xl rounded-2xl bg-white dark:bg-[#131B26] border border-[#E5E5E5] dark:border-[#2B3644] p-6 shadow-2xl space-y-4">
         <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-3">
@@ -188,7 +196,8 @@ export default function PmsDocumentModal({ onUploaded, onClose }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

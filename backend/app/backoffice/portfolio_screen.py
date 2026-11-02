@@ -71,7 +71,11 @@ _NORM_DROP = re.compile(
 
 def normalize_scheme_text(text: str) -> str:
     """Normalize fund name for tolerant name matching (handles 'Fund-Reg(G)' style abbreviations)."""
-    return " ".join(_NORM_DROP.sub(" ", text.lower()).split())
+    t = text.lower().replace("&", " and ")
+    t = re.sub(r"\bpru\b", "prudential", t)
+    t = re.sub(r"\bfin(?:ancial)?\s+serv(?:ices?)?\b", "financial services", t)
+    t = re.sub(r"\b(large|mid|small|multi|flexi)\s+cap\b", r"\1cap", t)  # "Small Cap" == "Smallcap"
+    return " ".join(_NORM_DROP.sub(" ", t).split())
 
 
 def extract_raw_holdings(parsed_cas: dict[str, Any]) -> list[dict[str, Any]]:
@@ -457,7 +461,24 @@ def _parse_pdf(pdf_bytes: bytes, password: str) -> tuple[list[dict[str, Any]], s
         # Non-fatal: fallback to universal extractor below
         pass
 
-    # 2. Universal text-based extractor for distributor, broker, advisor, or custom statements
+    # 2a. Folio-wise valuation reports (FundsIndia style: S.No, fund, folio, 10 numeric columns). pdfium glues their rows
+    # together, so read pypdf's layout text instead. Skipped for password-protected files (pypdf cannot open those here).
+    try:
+        from app.report import client_report
+
+        stmt = client_report.parse_statement(client_report.extract_text("statement.pdf", pdf_bytes))
+    except Exception:
+        stmt = None
+    if stmt:
+        rows = [{
+            "raw_name": r["name"], "folio": r["folio"], "isin": None, "amfi_code": None,
+            "units": r["units"] or None, "statement_nav": r["nav"] or None, "statement_value": r["value"] or None,
+            "valuation_date": stmt["client"]["date"] or None,
+        } for r in stmt["rows"] if (r["value"] or 0) > 0 or (r["units"] or 0) > 0]
+        if rows:
+            return rows, stmt["client"]["date"] or None
+
+    # 2b. Universal text-based extractor for distributor, broker, advisor, or custom statements
     universal_holdings, st_date = extract_universal_from_text(full_text)
     if universal_holdings:
         return universal_holdings, st_date
@@ -584,13 +605,13 @@ def match_and_screen_portfolio(holdings: list[dict[str, Any]], frame: pd.DataFra
                 # Bonus if AMC or main keyphrase aligns
                 if c_norm and norm_raw and (c_norm in norm_raw or norm_raw in c_norm):
                     score = min(1.0, score + 0.15)
-                # When plan is unspecified in holding name, favor Regular plan (industry standard for distributor reports)
-                if det_plan == "Unknown" and c_row.get("plan") == "Regular":
-                    score = min(1.0, score + 0.05)
                 if score >= 0.55:
                     scored_candidates.append((score, c_row))
 
-            scored_candidates.sort(key=lambda x: x[0], reverse=True)
+            # When the plan is unspecified, favour Regular (industry standard for distributor reports). A sort tie-break,
+            # not a score bonus: the bonus was lost to the 1.0 cap, so Direct and Regular tied and Direct came first.
+            prefer_regular = det_plan == "Unknown"
+            scored_candidates.sort(key=lambda x: (round(x[0], 4), prefer_regular and x[1].get("plan") == "Regular"), reverse=True)
 
             if scored_candidates:
                 top_score, top_row = scored_candidates[0]

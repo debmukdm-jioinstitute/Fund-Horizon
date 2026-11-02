@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { getMfExplain, type MfExplain, type MfExplainPart, type MfScreenerRow } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 import FhScorePanel from "./FhScorePanel";
@@ -66,9 +67,23 @@ function PartRow({ p }: { p: MfExplainPart }) {
 }
 
 export default function MfMetricExplain({ metric, row, onClose }: { metric: { key: string; label: string } | null; row: MfScreenerRow | null; onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
   const [data, setData] = useState<MfExplain | null>(null);
   const [err, setErr] = useState("");
   const key = metric?.key, code = row?.code;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   useEffect(() => {
     if (!key || !code) return;
     const ac = new AbortController();
@@ -76,14 +91,16 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
     getMfExplain(code, key, ac.signal).then(setData).catch((e) => { if (!ac.signal.aborted) setErr(e instanceof Error && e.message !== "Not Found" ? e.message : "The live breakdown is not available right now (the server may be updating). Close this and try again in a few minutes."); });
     return () => ac.abort();
   }, [key, code]);
-  if (!metric || !row) return null;
+
+  if (!mounted || !metric || !row) return null;
   const g = GLOSSARY[baseKey(metric.key)];
   const period = PERIOD(metric.key);
   const pillar = data?.points != null;
+
   if (data?.fh) {
     // The FH score gets the whole screen: a tinted glass sheet with soft light blobs behind it for depth.
-    return (
-      <div className="fixed inset-0 z-50 overflow-y-auto bg-gradient-to-br from-[#DCE9FF] via-[#EEF4FF] to-[#D5E6FF] dark:from-[#0B1626] dark:via-[#0E1B2E] dark:to-[#0A1422]" role="dialog" aria-label="FH score">
+    return createPortal(
+      <div className="fixed inset-0 z-[9999] overflow-y-auto bg-gradient-to-br from-[#DCE9FF] via-[#EEF4FF] to-[#D5E6FF] dark:from-[#0B1626] dark:via-[#0E1B2E] dark:to-[#0A1422]" role="dialog" aria-label="FH score">
         <div className="pointer-events-none fixed -top-40 -left-32 h-[28rem] w-[28rem] rounded-full bg-[#7FB2FF]/40 blur-3xl" aria-hidden />
         <div className="pointer-events-none fixed top-1/3 -right-40 h-[32rem] w-[32rem] rounded-full bg-[#A9D0FF]/50 blur-3xl dark:bg-[#1A73E8]/20" aria-hidden />
         <header className="sticky top-0 z-10 border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-[#0E1B2E]/60 backdrop-blur-xl">
@@ -104,11 +121,13 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
             Computed live from the latest NAV data{data.nav_date ? ` (NAV as of ${formatISTDate(String(data.nav_date))})` : ""}. Past performance is not a guide to future returns. This is descriptive data, not investment advice.
           </p>
         </main>
-      </div>
+      </div>,
+      document.body
     );
   }
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div role="dialog" aria-label={`${metric.label} explained`} onClick={(ev) => ev.stopPropagation()}
         className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-lg bg-white dark:bg-[#10161D] border border-[#E5E5E5] dark:border-[#2B3644] p-4 space-y-3 text-[13px]">
         <div className="flex items-start justify-between gap-3">
@@ -154,6 +173,7 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
           Computed live from the latest NAV data{data?.nav_date ? ` (NAV as of ${formatISTDate(String(data.nav_date))})` : ""}. Past performance is not a guide to future returns; descriptive data, not investment advice.
         </p>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

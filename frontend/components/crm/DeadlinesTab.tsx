@@ -8,7 +8,7 @@ import { createFd, createPolicy, formatRupeesFromPaise } from "../../lib/crmProd
 import { btnCls, cardCls, errCls, inputCls, mutedCls, tdCls, thCls, toPaise } from "./ui";
 import { useCanWrite } from "./useCanWrite";
 
-const KINDS = [["renewals", "Policy & SIP renewals"], ["maturities", "FD maturities"]] as const;
+const KINDS = [["renewals", "SIP & Strategy renewals"], ["maturities", "FD maturities"]] as const;
 const DAYS = [30, 60, 90];
 const selCls =
   "px-2.5 py-1.5 text-xs rounded border bg-white dark:bg-[#171E27] border-[#E5E5E5] dark:border-[#2B3644] text-[#181818] dark:text-[#EDF2F7]";
@@ -20,11 +20,6 @@ const POLICY_TYPES = [
   ["top_up", "Top up"],
   ["mf", "MF"],
   ["pms", "PMS"],
-  ["term", "Term life"],
-  ["health", "Health"],
-  ["motor", "Motor"],
-  ["other_general", "Other general"],
-  ["other_life", "Other life"],
 ] as const;
 
 interface InstrumentMeta {
@@ -89,59 +84,9 @@ const INSTRUMENT_META: Record<string, InstrumentMeta> = {
     amountPlaceholder: "e.g. 5000000",
     dateLabel: "Renewal / Review date",
   },
-  term: {
-    label: "Term life",
-    providerLabel: "Insurer",
-    providerPlaceholder: "e.g. HDFC Life",
-    numberLabel: "Policy no.",
-    numberPlaceholder: "e.g. POL-123456",
-    amountLabel: "Premium (₹)",
-    amountPlaceholder: "e.g. 25000",
-    dateLabel: "Renewal date",
-  },
-  health: {
-    label: "Health",
-    providerLabel: "Insurer",
-    providerPlaceholder: "e.g. Care Health Insurance",
-    numberLabel: "Policy no.",
-    numberPlaceholder: "e.g. POL-654321",
-    amountLabel: "Premium (₹)",
-    amountPlaceholder: "e.g. 18000",
-    dateLabel: "Renewal date",
-  },
-  motor: {
-    label: "Motor",
-    providerLabel: "Insurer",
-    providerPlaceholder: "e.g. ICICI Lombard",
-    numberLabel: "Policy no.",
-    numberPlaceholder: "e.g. POL-789012",
-    amountLabel: "Premium (₹)",
-    amountPlaceholder: "e.g. 12000",
-    dateLabel: "Renewal date",
-  },
-  other_general: {
-    label: "Other general",
-    providerLabel: "Insurer",
-    providerPlaceholder: "e.g. New India Assurance",
-    numberLabel: "Policy no.",
-    numberPlaceholder: "e.g. POL-345678",
-    amountLabel: "Premium (₹)",
-    amountPlaceholder: "e.g. 15000",
-    dateLabel: "Renewal date",
-  },
-  other_life: {
-    label: "Other life",
-    providerLabel: "Insurer",
-    providerPlaceholder: "e.g. LIC",
-    numberLabel: "Policy no.",
-    numberPlaceholder: "e.g. POL-901234",
-    amountLabel: "Premium (₹)",
-    amountPlaceholder: "e.g. 30000",
-    dateLabel: "Renewal date",
-  },
 };
 
-/** Record a policy/SIP deadline (with its renewal date) or an FD (with its maturity date) so it shows up in the list above. */
+/** Record a SIP or investment deadline (with its renewal date) or an FD (with its maturity date) so it shows up in the list above. */
 function AddDeadlineForm({ kind, onDone, onCancel }: { kind: "renewals" | "maturities"; onDone: () => void; onCancel: () => void }) {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [f, setF] = useState({ household_id: "", policy_type: "sip", insurer: "", policy_no: "", name: "", amount: "", rate: "", date: "" });
@@ -179,7 +124,7 @@ function AddDeadlineForm({ kind, onDone, onCancel }: { kind: "renewals" | "matur
   };
 
   return (
-    <form onSubmit={submit} className={`${cardCls} grid gap-2 md:grid-cols-3 text-xs`} aria-label={kind === "renewals" ? "Add policy or SIP" : "Add FD"}>
+    <form onSubmit={submit} className={`${cardCls} grid gap-2 md:grid-cols-3 text-xs`} aria-label={kind === "renewals" ? "Add SIP or investment" : "Add FD"}>
       <label>Household
         <select value={f.household_id} onChange={set("household_id")} className={inputCls}>
           <option value="">Select…</option>{households.map((h) => <option key={h.id} value={h.id}>{h.name}</option>)}
@@ -187,7 +132,7 @@ function AddDeadlineForm({ kind, onDone, onCancel }: { kind: "renewals" | "matur
       </label>
       {kind === "renewals" ? (
         <>
-          <label>Policy / Instrument type
+          <label>Instrument type
             <select value={f.policy_type} onChange={set("policy_type")} className={inputCls}>
               {POLICY_TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>

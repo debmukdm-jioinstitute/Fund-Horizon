@@ -7,8 +7,6 @@ import { resolveApiUrl, API_URL, ApiError } from "./api";
 
 export const PRODUCT_LINES = [
   "mutual_fund",
-  "life_insurance",
-  "general_insurance",
   "corporate_fd",
   "pms",
 ] as const;

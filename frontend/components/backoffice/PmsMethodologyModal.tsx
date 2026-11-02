@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   evaluatePmsScreening,
   PMS_BENCHMARKS,
@@ -28,6 +29,12 @@ export default function PmsMethodologyModal({
       : initialBenchmark
   );
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handleBenchmarkSelect = (b: string) => {
     setBenchmark(b);
     if (onBenchmarkChange) onBenchmarkChange(b);
@@ -48,7 +55,9 @@ export default function PmsMethodologyModal({
   const breakdown = evaluatePmsScreening(sampleStrategy, benchmark);
   const benchData = PMS_BENCHMARKS[benchmark] || PMS_BENCHMARKS["BSE 500 TRI"];
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-sans backdrop-blur-sm">
       <div className="w-full max-w-4xl rounded-2xl bg-white dark:bg-[#131B26] border border-[#E5E5E5] dark:border-[#2B3644] shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
         {/* Header */}
@@ -351,6 +360,7 @@ export default function PmsMethodologyModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -143,3 +143,203 @@ export function blankDash(value?: string | null): string {
   if (!v || /^(na|n\/a|n\.a\.|nil|-|—)$/i.test(v)) return "—";
   return v;
 }
+
+export interface MissingReturnReason {
+  short: string;
+  tooltip: string;
+}
+
+/** Determine explicit reason for a missing trailing return (e.g. fund has not reached 5Y). */
+export function getPmsMissingReturnReason(
+  horizon: "1m" | "3m" | "6m" | "1y" | "3y" | "5y" | "si",
+  strategy: {
+    inception_date?: string | null;
+    return_1m_pct?: number | null;
+    return_1y_pct?: number | null;
+    return_3y_cagr_pct?: number | null;
+    return_5y_cagr_pct?: number | null;
+    return_since_inception_pct?: number | null;
+  }
+): MissingReturnReason {
+  const inc = strategy.inception_date;
+  let ageYears: number | null = null;
+  if (inc) {
+    const d = new Date(inc);
+    if (!isNaN(d.getTime())) {
+      ageYears = (Date.now() - d.getTime()) / (365.25 * 24 * 3600 * 1000);
+    }
+  }
+
+  if (horizon === "5y") {
+    if (ageYears !== null && ageYears < 5) {
+      return {
+        short: "< 5Y record",
+        tooltip: `Fund is new (Inception: ${inc}, age: ${ageYears.toFixed(1)}Y) and has not reached 5-year track record.`,
+      };
+    }
+    if (!isMissingNumber(strategy.return_3y_cagr_pct) || !isMissingNumber(strategy.return_1y_pct)) {
+      return {
+        short: "< 5Y record",
+        tooltip: "Fund has not completed 5 years of operations required to calculate 5Y CAGR.",
+      };
+    }
+    return {
+      short: "—",
+      tooltip: "5-year return not disclosed by manager to APMI.",
+    };
+  }
+
+  if (horizon === "3y") {
+    if (ageYears !== null && ageYears < 3) {
+      return {
+        short: "< 3Y record",
+        tooltip: `Fund is new (Inception: ${inc}, age: ${ageYears.toFixed(1)}Y) and has not reached 3-year track record.`,
+      };
+    }
+    if (!isMissingNumber(strategy.return_1y_pct) || !isMissingNumber(strategy.return_1m_pct)) {
+      return {
+        short: "< 3Y record",
+        tooltip: "Fund has not completed 3 years of operations required to calculate 3Y CAGR.",
+      };
+    }
+    return {
+      short: "—",
+      tooltip: "3-year return not disclosed by manager to APMI.",
+    };
+  }
+
+  if (horizon === "1y") {
+    if (ageYears !== null && ageYears < 1) {
+      return {
+        short: "< 1Y record",
+        tooltip: `Fund is new (Inception: ${inc}) and has not completed 1 year of operations.`,
+      };
+    }
+    if (!isMissingNumber(strategy.return_1m_pct)) {
+      return {
+        short: "< 1Y record",
+        tooltip: "Fund has not completed 1 full year of operations required to calculate 1Y return.",
+      };
+    }
+    return {
+      short: "—",
+      tooltip: "1-year return not disclosed by manager to APMI.",
+    };
+  }
+
+  if (horizon === "6m") {
+    if (ageYears !== null && ageYears < 0.5) {
+      return {
+        short: "< 6M record",
+        tooltip: `Fund is new (Inception: ${inc}) and has not reached 6 months.`,
+      };
+    }
+  }
+
+  if (horizon === "3m") {
+    if (ageYears !== null && ageYears < 0.25) {
+      return {
+        short: "< 3M record",
+        tooltip: `Fund is new (Inception: ${inc}) and has not reached 3 months.`,
+      };
+    }
+  }
+
+  return {
+    short: "—",
+    tooltip: "Not disclosed in current APMI monthly filing.",
+  };
+}
+
+/** Determine explicit reason for a missing mutual fund metric (e.g. fund has not reached 2Y/3Y/5Y). */
+export function getMfMissingReason(
+  metricKey: string,
+  historyYears?: number | null,
+  period?: string | number,
+): { short: string; tooltip: string } {
+  const age = typeof historyYears === "number" && !isNaN(historyYears) ? historyYears : null;
+  const ageText = age !== null ? ` (fund age: ${age.toFixed(1)} yrs)` : "";
+
+  if (metricKey === "quartile_period" || metricKey.startsWith("quartile_")) {
+    const pStr = String(period || metricKey.replace("quartile_", "") || "2y").toLowerCase();
+    const reqYears = pStr.includes("5") ? 5 : pStr.includes("3") ? 3 : pStr.includes("1") ? 1 : 2;
+    if (age !== null && age < reqYears) {
+      return {
+        short: `< ${reqYears}Y record`,
+        tooltip: `Fund has only ${age.toFixed(1)} years of history; requires at least ${reqYears} full years to compute quartile ranking.`,
+      };
+    }
+    return {
+      short: "Unavailable",
+      tooltip: "Quartile ranking unavailable (insufficient category peer data or track record).",
+    };
+  }
+
+  // 5-year metrics
+  if (metricKey.includes("5y") || metricKey === "cagr_5y") {
+    if (age !== null && age < 5) {
+      return {
+        short: "< 5Y record",
+        tooltip: `Requires at least 5 years of performance history${ageText}.`,
+      };
+    }
+  }
+
+  // 3-year metrics
+  if (
+    metricKey.includes("3y") ||
+    metricKey === "cagr_3y" ||
+    metricKey === "sharpe_3y" ||
+    metricKey === "sortino_3y" ||
+    metricKey === "alpha_3y" ||
+    metricKey === "beta_3y" ||
+    metricKey === "vol_3y" ||
+    metricKey === "max_dd_3y" ||
+    metricKey === "cap_up_3y" ||
+    metricKey === "cap_down_3y" ||
+    metricKey === "cap_spread_3y" ||
+    metricKey === "calmar_3y"
+  ) {
+    if (age !== null && age < 3) {
+      return {
+        short: "< 3Y record",
+        tooltip: `Requires at least 3 years of performance history${ageText}.`,
+      };
+    }
+  }
+
+  // 2-year metrics
+  if (metricKey.includes("2y") || metricKey === "ret_2y") {
+    if (age !== null && age < 2) {
+      return {
+        short: "< 2Y record",
+        tooltip: `Requires at least 2 years of performance history${ageText}.`,
+      };
+    }
+  }
+
+  // 1-year metrics
+  if (metricKey.includes("1y") || metricKey === "ret_1y") {
+    if (age !== null && age < 1) {
+      return {
+        short: "< 1Y record",
+        tooltip: `Requires at least 1 year of performance history${ageText}.`,
+      };
+    }
+  }
+
+  // 10-year metrics
+  if (metricKey.includes("10y")) {
+    if (age !== null && age < 10) {
+      return {
+        short: "< 10Y record",
+        tooltip: `Requires at least 10 years of performance history${ageText}.`,
+      };
+    }
+  }
+
+  return {
+    short: "—",
+    tooltip: "Data not available in AMFI feed.",
+  };
+}

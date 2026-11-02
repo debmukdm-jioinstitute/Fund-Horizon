@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRecommended } from "@/lib/recommended";
 import Link from "next/link";
 import AddToWatchlist from "./AddToWatchlist";
@@ -20,6 +21,11 @@ interface MutualFundDrawerProps {
 
 export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerProps) {
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined); // undefined = loading, null = no data
   const [view, setView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
   const [navPairSiblings, setNavPairSiblings] = useState<string[]>([]);
@@ -82,7 +88,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
     };
   }, [scheme, onClose, managerOpen]);
 
-  if (!scheme) return null;
+  if (!scheme || !mounted) return null;
 
   async function handleCopy() {
     if (!scheme) return;
@@ -120,7 +126,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
       ? `₹${formatNumber(Number(scheme.latest_nav), 4)}`
       : "—";
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm transition-opacity"
       role="dialog"
@@ -768,6 +774,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
         </div>
       </div>
       {managerOpen && manager && <MfManagerDrawer manager={manager} onClose={() => setManagerOpen(false)} />}
-    </div>
+    </div>,
+    document.body
   );
 }

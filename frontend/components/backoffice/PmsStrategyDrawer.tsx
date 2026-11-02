@@ -1,13 +1,24 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRecommended } from "@/lib/recommended";
 import Link from "next/link";
 import { getPmsStrategyDetail, PmsStrategyDetail, PmsStrategyItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
 import FactsheetList from "@/components/backoffice/FactsheetList";
-import { formatCrore, formatISTDate } from "@/lib/terminal-format";
-import { normalizeApproach, normalizeProviderName, pmsReturnWarning, sourceBenchmark } from "@/lib/backoffice-display";
+import {
+  formatCrore,
+  formatISTDate,
+} from "@/lib/terminal-format";
+import {
+  normalizeApproach,
+  normalizeProviderName,
+  pmsReturnWarning,
+  sourceBenchmark,
+  isMissingNumber,
+  getPmsMissingReturnReason,
+} from "@/lib/backoffice-display";
 import { PmsLogo } from "@/components/BrandLogo";
 import PmsMethodologyModal from "@/components/backoffice/PmsMethodologyModal";
 
@@ -25,7 +36,12 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
   const [methodologyOpen, setMethodologyOpen] = useState(false);
   const rec = useRecommended();
   const [historyView, setHistoryView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
+  const [mounted, setMounted] = useState(false);
   const iaId = strategy?.ia_id;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Pull the full APMI profile (fees, manager, turnover, history) whenever a strategy is opened.
   useEffect(() => {
@@ -56,7 +72,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
     };
   }, [strategy, onClose]);
 
-  if (!strategy) return null;
+  if (!strategy || !mounted) return null;
 
   async function handleCopy() {
     if (!strategy) return;
@@ -101,7 +117,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
     { label: "Since Inception", period: "Full Track Record", val: strategy.return_since_inception_pct },
   ];
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm transition-opacity"
       role="dialog"
@@ -239,7 +255,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
               <div className="terminal-panel p-3">
                 <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">AUM (₹ Crore)</div>
                 <div className="text-[16px] font-mono font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
-                  {strategy.aum_crore != null ? formatCrore(strategy.aum_crore) : "Not Disclosed"}
+                  {strategy.aum_crore != null && strategy.aum_crore > 0 ? formatCrore(strategy.aum_crore) : "Not Disclosed"}
                 </div>
               </div>
 
@@ -257,15 +273,13 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
                 </div>
               </div>
 
-              {(strategy.inception_date || detail?.profile?.inception_date) && (
-                <div className="terminal-panel p-3">
-                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Inception Date</div>
-                  <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
-                    {strategy.inception_date ?? detail?.profile?.inception_date}
-                    {detail?.profile?.age ? ` · ${detail.profile.age}` : ""}
-                  </div>
+              <div className="terminal-panel p-3">
+                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">Inception Date</div>
+                <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] mt-0.5">
+                  {strategy.inception_date ?? detail?.profile?.inception_date ?? "Not disclosed in APMI"}
+                  {detail?.profile?.age ? ` · ${detail.profile.age}` : ""}
                 </div>
-              )}
+              </div>
 
               {(strategy.principal_officer || detail?.profile?.fund_manager) && (
                 <div className="terminal-panel p-3 col-span-2">
@@ -326,12 +340,47 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
                 </thead>
                 <tbody>
                   {horizons.map((h, i) => {
+                    const hKey = h.label.startsWith("1 Month")
+                      ? "1m"
+                      : h.label.startsWith("3 Month")
+                      ? "3m"
+                      : h.label.startsWith("6 Month")
+                      ? "6m"
+                      : h.label.startsWith("1 Year")
+                      ? "1y"
+                      : h.label.startsWith("3 Year")
+                      ? "3y"
+                      : h.label.startsWith("5 Year")
+                      ? "5y"
+                      : "si";
+                    const isMissing = isMissingNumber(h.val);
+                    const missingReason = isMissing
+                      ? getPmsMissingReturnReason(hKey, {
+                          ...strategy,
+                          inception_date: strategy.inception_date ?? detail?.profile?.inception_date,
+                        })
+                      : null;
                     return (
                       <tr key={i}>
                         <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">{h.label}</td>
                         <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{h.period}</td>
                         <td className="text-right font-medium">
-                          <SignedValue value={h.val} unit="%" />
+                          {isMissing ? (
+                            <span
+                              className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-normal cursor-help inline-flex items-center gap-1 justify-end"
+                              title={missingReason?.tooltip}
+                            >
+                              {missingReason?.short && missingReason.short !== "—" ? (
+                                <span className="px-1.5 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[10px] font-medium border border-[#E5E5E5] dark:border-[#2B3644]">
+                                  {missingReason.short}
+                                </span>
+                              ) : (
+                                "—"
+                              )}
+                            </span>
+                          ) : (
+                            <SignedValue value={h.val} unit="%" />
+                          )}
                         </td>
                       </tr>
                     );
@@ -352,9 +401,9 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
                   <div className="p-3 space-y-3">
                     <dl className="grid grid-cols-2 gap-x-3 gap-y-2.5 text-[12px]">
                       {[
-                        ["Fixed fee", detail.profile.fixed_fees ?? "Not disclosed"],
-                        ["Variable fee", detail.profile.variable_fees ?? "Not disclosed"],
-                        ["Exit load", detail.profile.exit_load ?? "Not disclosed"],
+                        ["Fixed fee", detail.profile.fixed_fees ?? "Not disclosed on APMI"],
+                        ["Variable fee", detail.profile.variable_fees ?? "Not disclosed on APMI"],
+                        ["Exit load", detail.profile.exit_load ?? "Not disclosed on APMI"],
                         [
                           `Turnover${detail.profile.turnover_as_on ? ` (${formatISTDate(detail.profile.turnover_as_on)})` : ""}`,
                           detail.profile.turnover_1y !== undefined && detail.profile.turnover_1y !== null
@@ -364,7 +413,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
                       ].map(([k, v]) => (
                         <div key={k as string}>
                           <dt className="text-[#706E6B] dark:text-[#A8B4C4]">{k}</dt>
-                          <dd className="font-medium text-[#181818] dark:text-[#EDF2F7] break-words">{v}</dd>
+                          <dd className="font-medium text-[#181818] dark:text-[#EDF2F7] break-words whitespace-pre-line">{v}</dd>
                         </div>
                       ))}
                     </dl>
@@ -524,6 +573,7 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
           onClose={() => setMethodologyOpen(false)}
         />
       )}
-    </div>
+    </div>,
+    document.body
   );
 }

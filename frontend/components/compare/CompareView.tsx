@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   CartesianGrid,
   Line,
@@ -143,6 +144,11 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
   const [fundOverlap, setFundOverlap] = useState<MfFundOverlap | null>(null);
   const [fundOverlapLoading, setFundOverlapLoading] = useState(false);
   const [fundOverlapError, setFundOverlapError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const load = React.useCallback(async () => {
     if (ids.length < 2) return;
@@ -239,7 +245,7 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
     URL.revokeObjectURL(url);
   }
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   const fetchedIst = payload?.meta.fetched_at
     ? new Date(payload.meta.fetched_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
@@ -250,7 +256,7 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
       ? { href: "https://portal.amfiindia.com/spages/NAVAll.txt", label: "AMFI" }
       : { href: "https://www.apmiindia.org", label: "APMI" };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" onClick={onClose}>
       <div
         className="absolute inset-y-0 right-0 flex w-full max-w-[min(1200px,100vw)] flex-col border-l border-[#E4E9EF] bg-[#FFFFFF] shadow-2xl dark:border-[#2B3644] dark:bg-[#10151C]"
@@ -537,6 +543,7 @@ export default function CompareView({ open, type, ids, onClose, onRemoveId, reso
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

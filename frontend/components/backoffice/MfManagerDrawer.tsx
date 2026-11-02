@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { getMfManagerProfile, mfDetailPath, MfManagedFund, MfManagerInfo } from "@/lib/backoffice";
 import { PmsManagerProfile } from "@/lib/pms-managers";
 import { avatarBgFor, initialsOf } from "@/components/backoffice/PmsManagerDrawer";
@@ -13,7 +14,12 @@ interface MfManagerDrawerProps {
 
 export default function MfManagerDrawer({ manager, onClose }: MfManagerDrawerProps) {
   const [data, setData] = useState<{ profile: PmsManagerProfile | null; funds: MfManagedFund[] } | null | undefined>(undefined);
+  const [mounted, setMounted] = useState(false);
   const name = manager.manager_name;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setData(undefined);
@@ -35,7 +41,9 @@ export default function MfManagerDrawer({ manager, onClose }: MfManagerDrawerPro
   const profile = data?.profile ?? null;
   const funds = data?.funds ?? [];
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-[60] overflow-hidden bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="mf-manager-title" onClick={(e) => { e.stopPropagation(); onClose(); }}>
       <div className="absolute inset-y-0 right-0 flex max-w-full pl-4 sm:pl-10">
         <div className="w-screen max-w-3xl bg-[#FFFFFF] dark:bg-[#10151C] border-l border-[#E5E5E5] dark:border-[#2B3644] flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
@@ -151,6 +159,7 @@ export default function MfManagerDrawer({ manager, onClose }: MfManagerDrawerPro
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

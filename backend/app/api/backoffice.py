@@ -315,9 +315,12 @@ def backoffice_pms_strategies(
         universe = [s for s in universe if s["provider"] == provider]
     cached_benchmarks = _REPO.list_pms_cached_benchmarks()
     cached_managers = _REPO.list_pms_cached_managers()
+    cached_inceptions = _REPO.list_pms_cached_inceptions()
     for row in universe:
         if row.get("ia_id") and not row.get("principal_officer"):
             row["principal_officer"] = cached_managers.get(str(row["ia_id"]))
+        if row.get("ia_id") and not row.get("inception_date"):
+            row["inception_date"] = cached_inceptions.get(str(row["ia_id"]))
         ia = row.get("ia_id")
         if not row.get("benchmark") and not row.get("benchmark_name"):
             bench = cached_benchmarks.get(str(ia)) if ia else None
@@ -381,7 +384,10 @@ def _pms_detail(ia_id: str) -> tuple[dict[str, Any] | None, str | None]:
     detail_error: str | None = None
     cached = _REPO.get_pms_strategy_detail_cache(ia_id)
     if cached and cached[1] < _PMS_DETAIL_TTL_SECONDS:
-        return cached[0], None
+        cached_detail = cached[0]
+        if apmi_provider.enrich_strategy_fees(cached_detail, ia_id):
+            _REPO.put_pms_strategy_detail_cache(ia_id, cached_detail)
+        return cached_detail, None
     try:
         fresh = apmi_provider.fetch_strategy_detail(ia_id)
         if fresh:
@@ -393,6 +399,8 @@ def _pms_detail(ia_id: str) -> tuple[dict[str, Any] | None, str | None]:
         detail_error = f"APMI strategy page unavailable: {e.__class__.__name__}"
     if detail is None and cached:
         detail = cached[0]  # serve stale facts rather than nothing
+        if apmi_provider.enrich_strategy_fees(detail, ia_id):
+            _REPO.put_pms_strategy_detail_cache(ia_id, detail)
     return detail, detail_error
 
 
@@ -548,6 +556,12 @@ def backoffice_pms_matrix(staff: Annotated[dict, Depends(require_staff)]):
         s = strat_map.get(ia_id) or {}
         cached = _REPO.get_pms_strategy_detail_cache(ia_id)
         detail = cached[0] if cached else {}
+        if detail:
+            if apmi_provider.enrich_strategy_fees(detail, ia_id):
+                _REPO.put_pms_strategy_detail_cache(ia_id, detail)
+        else:
+            detail, _ = _pms_detail(ia_id)
+            detail = detail or {}
         screen = score_pms_strategy(s) if s else None
 
         has_1y = s.get("return_1y") is not None

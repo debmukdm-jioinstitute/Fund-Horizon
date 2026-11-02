@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { getPmsMatrix, type PmsMatrixItem } from "@/lib/backoffice";
 import { formatCrore } from "@/lib/terminal-format";
 
@@ -9,6 +10,11 @@ export default function PmsMatrixModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(true);
   const [asOn, setAsOn] = useState<string | undefined>();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     getPmsMatrix()
@@ -27,7 +33,9 @@ export default function PmsMatrixModal({ onClose }: { onClose: () => void }) {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 font-sans backdrop-blur-sm">
       <div className="w-full max-w-5xl rounded-2xl bg-white dark:bg-[#131B26] border border-[#E5E5E5] dark:border-[#2B3644] p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-3 shrink-0">
@@ -160,6 +168,7 @@ export default function PmsMatrixModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

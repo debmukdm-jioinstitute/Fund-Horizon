@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AmcLogo } from "@/components/BrandLogo";
 import { getScreeningFund, ScreeningFundDetail } from "@/lib/backoffice";
 import { findManagerProfile } from "@/lib/pms-managers";
@@ -18,6 +19,11 @@ export default function ScreeningFundDrawer({
   const [data, setData] = useState<ScreeningFundDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!schemeCode) {
@@ -47,14 +53,14 @@ export default function ScreeningFundDrawer({
     };
   }, [schemeCode]);
 
-  if (!schemeCode) return null;
+  if (!schemeCode || !mounted) return null;
 
   const fund = data;
   const managerProfile = fund?.manager_name ? findManagerProfile(fund.manager_name) : null;
   const pmsMatches = data?.pms_matches || [];
   const notes = data?.notes || [];
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm transition-opacity">
       <div className="absolute inset-y-0 right-0 flex max-w-full pl-10">
         <div className="w-screen max-w-xl bg-white dark:bg-[#10151C] shadow-2xl flex flex-col border-l border-[#E5E5E5] dark:border-[#2B3644]">
@@ -334,6 +340,7 @@ export default function ScreeningFundDrawer({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

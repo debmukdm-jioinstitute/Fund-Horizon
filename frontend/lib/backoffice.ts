@@ -1064,10 +1064,7 @@ export function evaluatePmsScreening(
 /** One backend PMS strategy row -> UI item. APMI rows with no AUM often carry placeholder 0.00% returns: treat as missing. */
 const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
   const aum = num(r.aum_crore);
-  const ret = (v: unknown) => {
-    const n = num(v);
-    return n === 0 && !aum ? undefined : n;
-  };
+  const ret = (v: unknown) => num(v);
   const benchName = str(r.benchmark) ?? str(r.benchmark_name) ?? "BSE 500 TRI";
   const r1m = ret(r.return_1m);
   const r3m = ret(r.return_3m);
@@ -1096,6 +1093,7 @@ const mapPmsRow = (r: Json, asOn = ""): PmsStrategyItem => {
     strategy_type: str(r.strategy_type),
     service_type: str(r.service_type),
     ia_id: str(r.ia_id),
+    inception_date: str(r.inception_date),
     principal_officer: str(r.principal_officer),
     min_investment: str(r.min_investment) ?? "₹50,00,000",
     aum_crore: aum,

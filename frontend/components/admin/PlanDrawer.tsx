@@ -1,7 +1,8 @@
 // TODO(owner-compliance-review): this file contains user-facing copy.
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { inr, pct, shortInr } from "@/lib/format";
 import { reportUrl } from "@/lib/api";
@@ -23,7 +24,13 @@ interface PlanDrawerProps {
 
 
 export default function PlanDrawer({ plan, onClose }: PlanDrawerProps) {
-  if (!plan) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!plan || !mounted) return null;
 
   const req = (plan.request as Record<string, unknown>) || {};
   const res = (plan.result as Record<string, unknown>) || {};
@@ -37,7 +44,7 @@ export default function PlanDrawer({ plan, onClose }: PlanDrawerProps) {
 
   const totalCorpus = goals.reduce((acc, g) => acc + (g.future_cost || 0), 0);
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm transition-opacity">
       <div className="absolute inset-y-0 right-0 flex max-w-full pl-10">
         <div className="w-screen max-w-2xl bg-white shadow-2xl flex flex-col">
@@ -181,6 +188,7 @@ export default function PlanDrawer({ plan, onClose }: PlanDrawerProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

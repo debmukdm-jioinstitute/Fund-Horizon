@@ -280,3 +280,41 @@ def test_unreadable_and_empty_files_are_rejected_cleanly():
         with pytest.raises(portfolio_screen.PortfolioPDFError) as ei:
             portfolio_screen.parse_portfolio_pdf_bytes(data, filename=name)
         assert ei.value.code == code
+
+
+def test_abbreviated_names_normalise_and_regular_wins_when_plan_missing():
+    n = portfolio_screen.normalize_scheme_text
+    assert n("ICICI Pru Banking & Fin Serv Fund(G)") == n("ICICI Prudential Banking & Financial Services Fund - Regular Plan - Growth")
+    assert n("ICICI Pru Small Cap Fund(G)") == n("ICICI Prudential Smallcap Fund - Growth")
+    frame = pd.DataFrame([
+        {"code": "1", "name": "Kotak Large Cap Fund - Direct Plan - Growth", "plan": "Direct", "fh_signal": "Buy"},
+        {"code": "2", "name": "Kotak Large Cap Fund - Regular Plan - Growth", "plan": "Regular", "fh_signal": "Hold"},
+    ])
+    res = portfolio_screen.match_and_screen_portfolio([{"raw_name": "Kotak Large Cap Fund(G)", "statement_value": 100.0}], frame)
+    assert res["holdings"][0]["amfi_code"] == "2" and res["holdings"][0]["match_type"] == "matched_name"
+
+
+def test_folio_wise_valuation_report_pdf_is_parsed():
+    from reportlab.pdfgen import canvas
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf)
+    c.drawString(40, 800, "Portfolio Valuation Report - Folio Wise")
+    c.drawString(40, 785, "Test Client")
+    c.drawString(40, 770, "23 Oct 2026")
+    c.drawString(40, 740, "S. No   Fund Name   Folio Number   Total Invested Amount")
+    rows = [
+        ("1", "Bandhan Value Fund-Reg(G)", "2696308/03", "16,49,141.82 16,49,141.82 0.00 0.00 11,940.27 140.83 16,81,523.78 4.10% 1.96% 1.26%"),
+        ("2", "ICICI Pru Small Cap Fund(G)", "14046790/19", "40,959.59 40,959.59 0.00 0.00 913.46 85.27 77,890.82 0.19% 90.16% 13.06%"),
+    ]
+    for i, (n, name, folio, nums) in enumerate(rows):
+        y = 720 - i * 20
+        c.drawString(30, y, n)
+        c.drawString(60, y, name)
+        c.drawString(200, y, folio)
+        c.drawString(280, y, nums)
+    c.save()
+    holdings, st_date = portfolio_screen.parse_portfolio_pdf_bytes(buf.getvalue(), filename="r.pdf")
+    assert [h["raw_name"] for h in holdings] == ["Bandhan Value Fund-Reg(G)", "ICICI Pru Small Cap Fund(G)"]
+    assert holdings[0]["statement_value"] == 1681523.78 and holdings[0]["units"] == 11940.27 and holdings[0]["folio"] == "2696308/03"
+    assert st_date == "23 Oct 2026"

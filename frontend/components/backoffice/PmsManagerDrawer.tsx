@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { PmsLogo } from "@/components/BrandLogo";
 import { getPmsManager, PmsStrategyItem } from "@/lib/backoffice";
 import {
@@ -9,6 +10,7 @@ import {
   PmsManagerProfile,
 } from "@/lib/pms-managers";
 import SignedValue from "@/components/terminal/SignedValue";
+import { isMissingNumber, getPmsMissingReturnReason } from "@/lib/backoffice-display";
 
 interface PmsManagerDrawerProps {
   managerName: string | null;
@@ -34,6 +36,35 @@ const AVATAR_BG = [
   "bg-[#0E7490] dark:bg-[#67E8F9]",
   "bg-[#BE123C] dark:bg-[#FDA4AF]",
 ];
+
+function DrawerReturnCell({
+  value,
+  horizon,
+  strategy,
+}: {
+  value?: number | null;
+  horizon: "1y" | "3y" | "5y" | "si";
+  strategy: PmsStrategyItem;
+}) {
+  if (isMissingNumber(value)) {
+    const reason = getPmsMissingReturnReason(horizon, strategy);
+    return (
+      <span
+        className="text-[#706E6B] dark:text-[#A8B4C4] font-normal cursor-help inline-flex items-center justify-end"
+        title={reason.tooltip}
+      >
+        {reason.short !== "—" ? (
+          <span className="text-[10px] px-1 py-0.5 rounded bg-[#F0F3F6] dark:bg-[#202936] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644]">
+            {reason.short}
+          </span>
+        ) : (
+          "—"
+        )}
+      </span>
+    );
+  }
+  return <SignedValue value={value} unit="%" />;
+}
 
 export function avatarBgFor(name: string): string {
   let h = 0;
@@ -64,6 +95,11 @@ export default function PmsManagerDrawer({
 
   const [remote, setRemote] = useState<{ experience?: string; strategies: PmsStrategyItem[] } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   useEffect(() => {
     setRemote(null);
     if (!managerName || !provider) return;
@@ -78,7 +114,7 @@ export default function PmsManagerDrawer({
     };
   }, [managerName, provider]);
 
-  if (!managerName) return null;
+  if (!managerName || !mounted) return null;
 
   const profile: PmsManagerProfile | null = findManagerProfile(managerName);
   const local = getManagerStrategies(managerName, strategies);
@@ -88,7 +124,7 @@ export default function PmsManagerDrawer({
   const displayName = profile ? profile.name : managerName;
   const asOf = managed.find((s) => s.report_month)?.report_month;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-sm transition-opacity"
       role="dialog"
@@ -261,19 +297,28 @@ export default function PmsManagerDrawer({
                             </div>
                           </td>
                           <td className="text-right font-mono">
-                            {s.aum_crore ? `₹${s.aum_crore.toLocaleString("en-IN")}` : "—"}
+                            {s.aum_crore ? (
+                              `₹${s.aum_crore.toLocaleString("en-IN")}`
+                            ) : (
+                              <span
+                                className="text-[#706E6B] dark:text-[#A8B4C4] cursor-help"
+                                title="AUM not disclosed in latest monthly APMI filing"
+                              >
+                                —
+                              </span>
+                            )}
                           </td>
                           <td className="text-right">
-                            <SignedValue value={s.return_1y_pct} unit="%" />
+                            <DrawerReturnCell value={s.return_1y_pct} horizon="1y" strategy={s} />
                           </td>
                           <td className="text-right">
-                            <SignedValue value={s.return_3y_cagr_pct} unit="%" />
+                            <DrawerReturnCell value={s.return_3y_cagr_pct} horizon="3y" strategy={s} />
                           </td>
                           <td className="text-right">
-                            <SignedValue value={s.return_5y_cagr_pct} unit="%" />
+                            <DrawerReturnCell value={s.return_5y_cagr_pct} horizon="5y" strategy={s} />
                           </td>
                           <td className="text-right">
-                            <SignedValue value={s.return_since_inception_pct} unit="%" />
+                            <DrawerReturnCell value={s.return_since_inception_pct} horizon="si" strategy={s} />
                           </td>
                         </tr>
                       ))}
@@ -318,6 +363,7 @@ export default function PmsManagerDrawer({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -20,6 +20,8 @@ import CompareTray from "@/components/compare/CompareTray";
 import CompareView from "@/components/compare/CompareView";
 import { mfCompareId, useCompareSelection } from "@/lib/compare-selection";
 import { shortDisplayName, normalizeDisplayName } from "@/components/backoffice/mfDisplayName";
+import MfMetricExplain from "@/components/backoffice/MfMetricExplain";
+import { getMfMissingReason } from "@/lib/backoffice-display";
 
 const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
 const PLANS = ["Regular", "Direct"];
@@ -139,6 +141,7 @@ function shortlistRow(item: MfShortlistItem): MfScreenerRow {
     ret_1y: numOf(item.ret_1y), cagr_3y: numOf(item.cagr_3y), cagr_5y: numOf(item.cagr_5y),
     sharpe_3y: numOf(item.sharpe_3y), cap_spread_3y: numOf(item.cap_spread_3y),
     score: numOf(item.score), quartile_2y: numOf(item.quartile_2y),
+    history_years: numOf(item.history_years),
     manager_name: typeof item.manager_name === "string" ? item.manager_name : null,
     manager_tenure_years: numOf(item.manager_tenure_years),
   };
@@ -239,6 +242,8 @@ function MfResearch() {
   const [shortlist, setShortlist] = useState<MfShortlistItem[]>([]);
   const [shortLoading, setShortLoading] = useState(false);
   const [shortMsg, setShortMsg] = useState("");
+
+  const [explain, setExplain] = useState<{ metric: { key: string; label: string }; row: MfScreenerRow } | null>(null);
 
   const synced = useRef(false);
   const fKey = JSON.stringify(filters);
@@ -1042,14 +1047,52 @@ function MfResearch() {
                           }
                           if (c.key === "category") return <td key={c.key}>{catLabel(r.cat)}</td>;
                           if (c.key === "plan") return <td key={c.key}>{r.plan}</td>;
+                          if (c.key === "score") {
+                            const scoreVal = typeof r.score === "number" ? r.score : null;
+                            return (
+                              <td
+                                key={c.key}
+                                className="text-right whitespace-nowrap cursor-pointer hover:bg-[#EAF5FE] dark:hover:bg-[#10243A] transition-colors"
+                                title="Click to view full FH Checklist scoring methodology and pillar breakdown"
+                                onClick={() => setExplain({ metric: { key: "score", label: c.label }, row: r })}
+                              >
+                                <span className="font-semibold text-[#0176D3] dark:text-[#1B96FF] tabular-nums hover:underline">
+                                  {scoreVal !== null ? scoreVal : "—"}
+                                </span>
+                                <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]"> / 100</span>
+                              </td>
+                            );
+                          }
                           if (c.key === "stars") {
                             const n = typeof r.stars === "number" ? r.stars : 0;
-                            return <td key={c.key} className="text-right whitespace-nowrap text-[#B45309] dark:text-[#FBBF24]">{n ? "★".repeat(n) + "☆".repeat(5 - n) : "—"}</td>;
+                            return (
+                              <td
+                                key={c.key}
+                                className="text-right whitespace-nowrap cursor-pointer hover:bg-[#EAF5FE] dark:hover:bg-[#10243A] text-[#B45309] dark:text-[#FBBF24]"
+                                title={n ? `${n} of 5 (FH rating). Click for methodology breakdown` : "Not rated: click for breakdown"}
+                                onClick={() => setExplain({ metric: { key: "stars", label: c.label }, row: r })}
+                              >
+                                {n ? "★".repeat(n) + "☆".repeat(5 - n) : "—"}
+                              </td>
+                            );
                           }
                           if (c.key === "quartile_period") {
+                            if (typeof qv === "number") {
+                              return (
+                                <td key={c.key} className="text-right whitespace-nowrap font-medium">
+                                  Q{qv}
+                                </td>
+                              );
+                            }
+                            const reason = getMfMissingReason("quartile_period", r.history_years as number, filters.quartilePeriod);
                             return (
                               <td key={c.key} className="text-right whitespace-nowrap">
-                                {typeof qv === "number" ? `Q${qv}` : <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4]">Unavailable</span>}
+                                <span
+                                  className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644] cursor-help"
+                                  title={reason.tooltip}
+                                >
+                                  {reason.short}
+                                </span>
                               </td>
                             );
                           }
@@ -1067,6 +1110,25 @@ function MfResearch() {
                             );
                           }
                           const v = r[c.key];
+                          if (v == null || typeof v !== "number" || isNaN(v)) {
+                            const reason = getMfMissingReason(c.key, r.history_years as number);
+                            return (
+                              <td key={c.key} className="text-right whitespace-nowrap">
+                                {reason.short !== "—" ? (
+                                  <span
+                                    className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F8F9FA] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-dashed border-[#E5E5E5] dark:border-[#2B3644] cursor-help"
+                                    title={reason.tooltip}
+                                  >
+                                    {reason.short}
+                                  </span>
+                                ) : (
+                                  <span className="text-[#706E6B] dark:text-[#A8B4C4]" title={reason.tooltip}>
+                                    —
+                                  </span>
+                                )}
+                              </td>
+                            );
+                          }
                           return (
                             <td key={c.key} className="text-right tabular-nums whitespace-nowrap">
                               {fmt(v, c.digits ?? 2)}{c.pct && typeof v === "number" ? "%" : ""}
@@ -1247,13 +1309,70 @@ function MfResearch() {
                         </td>
                         <td>{catLabel(r.cat) || "—"}</td>
                         <td>{r.plan}</td>
-                        <td className="text-right tabular-nums">{fmt(r.score, 0)}</td>
-                        <td className="text-right tabular-nums">{fmt(r.ret_1y)}%</td>
-                        <td className="text-right tabular-nums">{fmt(r.cagr_3y)}%</td>
-                        <td className="text-right tabular-nums">{fmt(r.cagr_5y)}%</td>
-                        <td className="text-right tabular-nums">{fmt(r.sharpe_3y)}</td>
-                        <td className="text-right tabular-nums">{fmt(r.cap_spread_3y)}</td>
-                        <td className="text-right whitespace-nowrap">{typeof qv === "number" ? `Q${qv}` : "—"}</td>
+                        <td
+                          className="text-right tabular-nums cursor-pointer hover:bg-[#EAF5FE] dark:hover:bg-[#10243A] transition-colors"
+                          title="Click to view full FH Checklist scoring methodology and pillar breakdown"
+                          onClick={() => setExplain({ metric: { key: "score", label: "FH Checklist Score / 100" }, row: r })}
+                        >
+                          <span className="font-semibold text-[#0176D3] dark:text-[#1B96FF] hover:underline">
+                            {fmt(r.score, 0)}
+                          </span>
+                          <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]"> / 100</span>
+                        </td>
+                        <td className="text-right tabular-nums whitespace-nowrap">
+                          {typeof r.ret_1y === "number" ? (
+                            `${fmt(r.ret_1y)}%`
+                          ) : (
+                            <span className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F8F9FA] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-dashed border-[#E5E5E5] dark:border-[#2B3644] cursor-help" title={getMfMissingReason("ret_1y", r.history_years as number).tooltip}>
+                              {getMfMissingReason("ret_1y", r.history_years as number).short}
+                            </span>
+                          )}
+                        </td>
+                        <td className="text-right tabular-nums whitespace-nowrap">
+                          {typeof r.cagr_3y === "number" ? (
+                            `${fmt(r.cagr_3y)}%`
+                          ) : (
+                            <span className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F8F9FA] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-dashed border-[#E5E5E5] dark:border-[#2B3644] cursor-help" title={getMfMissingReason("cagr_3y", r.history_years as number).tooltip}>
+                              {getMfMissingReason("cagr_3y", r.history_years as number).short}
+                            </span>
+                          )}
+                        </td>
+                        <td className="text-right tabular-nums whitespace-nowrap">
+                          {typeof r.cagr_5y === "number" ? (
+                            `${fmt(r.cagr_5y)}%`
+                          ) : (
+                            <span className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F8F9FA] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-dashed border-[#E5E5E5] dark:border-[#2B3644] cursor-help" title={getMfMissingReason("cagr_5y", r.history_years as number).tooltip}>
+                              {getMfMissingReason("cagr_5y", r.history_years as number).short}
+                            </span>
+                          )}
+                        </td>
+                        <td className="text-right tabular-nums whitespace-nowrap">
+                          {typeof r.sharpe_3y === "number" ? (
+                            fmt(r.sharpe_3y)
+                          ) : (
+                            <span className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F8F9FA] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-dashed border-[#E5E5E5] dark:border-[#2B3644] cursor-help" title={getMfMissingReason("sharpe_3y", r.history_years as number).tooltip}>
+                              {getMfMissingReason("sharpe_3y", r.history_years as number).short}
+                            </span>
+                          )}
+                        </td>
+                        <td className="text-right tabular-nums whitespace-nowrap">
+                          {typeof r.cap_spread_3y === "number" ? (
+                            fmt(r.cap_spread_3y)
+                          ) : (
+                            <span className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F8F9FA] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-dashed border-[#E5E5E5] dark:border-[#2B3644] cursor-help" title={getMfMissingReason("cap_spread_3y", r.history_years as number).tooltip}>
+                              {getMfMissingReason("cap_spread_3y", r.history_years as number).short}
+                            </span>
+                          )}
+                        </td>
+                        <td className="text-right whitespace-nowrap">
+                          {typeof qv === "number" ? (
+                            `Q${qv}`
+                          ) : (
+                            <span className="inline-flex items-center text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644] cursor-help" title={getMfMissingReason("quartile_period", r.history_years as number, "2y").tooltip}>
+                              {getMfMissingReason("quartile_period", r.history_years as number, "2y").short}
+                            </span>
+                          )}
+                        </td>
                         <td className="whitespace-nowrap">
                           {typeof r.manager_name === "string" && r.manager_name ? normalizeDisplayName(r.manager_name) : "Unknown"}
                           {typeof r.manager_tenure_years === "number" ? ` · ${r.manager_tenure_years.toFixed(1)} yrs` : ""}
@@ -1294,6 +1413,7 @@ function MfResearch() {
       <CompareView open={compare.compareOpen} type="mf" ids={compare.selectedIds} onClose={compare.closeCompare} onRemoveId={compare.remove} resolveLabel={compare.resolveLabel} />
       <MfOnePager row={onePager} onClose={() => setOnePager(null)} />
       {mgrDrawer && <MfManagerDrawer manager={mgrDrawer} onClose={() => setMgrDrawer(null)} />}
+      <MfMetricExplain metric={explain?.metric ?? null} row={explain?.row ?? null} onClose={() => setExplain(null)} />
     </div>
   );
 }

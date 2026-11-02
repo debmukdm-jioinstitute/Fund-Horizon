@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   createStaffMember,
   updateStaffMember,
@@ -44,7 +45,12 @@ export default function StaffDrawer({ mode, member, onClose, onDone }: StaffDraw
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [created, setCreated] = useState<{ login: string; temporaryPassword: string | null; promoted: boolean } | null>(null);
+  const [mounted, setMounted] = useState(false);
   const firstRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const initialRole = member?.role ?? "analyst";
   const initialPages = member?.pages ?? [];
@@ -298,7 +304,9 @@ export default function StaffDrawer({ mode, member, onClose, onDone }: StaffDraw
       </div>
     );
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex justify-end bg-black/40"
       onMouseDown={(e) => {
@@ -529,7 +537,8 @@ export default function StaffDrawer({ mode, member, onClose, onDone }: StaffDraw
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

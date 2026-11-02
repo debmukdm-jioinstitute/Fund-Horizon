@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { getObservationSeries, SeriesPoint } from "@/lib/backoffice";
 
 export interface IndicatorSpec {
@@ -35,6 +36,11 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
   const [points, setPoints] = useState<SeriesPoint[] | null>(null);
   const [error, setError] = useState(false);
   const [view, setView] = useState<View>("daily");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setPoints(null);
@@ -77,7 +83,7 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
     return b.map((p, i) => ({ ...p, change: i > 0 ? p.value - b[i - 1].value : undefined })).reverse();
   }, [points, view]);
 
-  if (!spec) return null;
+  if (!spec || !mounted) return null;
   const dec = spec.decimals ?? 2;
   const fmt = (v: number) => `${v.toFixed(dec)}${spec.unit}`;
   const series = rows.map((r) => r.value).reverse();
@@ -87,7 +93,7 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
     .map((v, i) => `${(i / Math.max(series.length - 1, 1)) * 100},${40 - ((v - min) / (max - min || 1)) * 38 - 1}`)
     .join(" ");
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={spec.title} onClick={onClose}>
       <div className="absolute inset-0 flex">
         <div className="w-full h-full bg-[#FFFFFF] dark:bg-[#10151C] flex flex-col" onClick={(e) => e.stopPropagation()}>
@@ -169,6 +175,7 @@ export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

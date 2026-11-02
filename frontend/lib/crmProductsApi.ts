@@ -49,8 +49,6 @@ export type ProductLine = "mutual_fund" | "life_insurance" | "general_insurance"
 
 export const PRODUCT_LINES: { value: ProductLine; label: string }[] = [
   { value: "mutual_fund", label: "Mutual Funds" },
-  { value: "life_insurance", label: "Life Insurance" },
-  { value: "general_insurance", label: "General Insurance" },
   { value: "corporate_fd", label: "Corporate FDs" },
   { value: "pms", label: "PMS" },
 ];

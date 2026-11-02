@@ -209,6 +209,90 @@ def extract_from_rows(rows: list[list[Any]]) -> tuple[list[dict[str, Any]], str 
     return holdings, st_date
 
 
+_TOK_NUM = re.compile(r"^[₹(]?-?\d[\d,]*(?:\.\d+)?%?\)?$")
+_FOLIO = re.compile(r"^(?=[A-Za-z0-9/\-]*\d)[A-Za-z0-9]+[/\-][A-Za-z0-9/\-]+$|^\d{6,}$")
+_NOISE_NAME = re.compile(r"(?i)\b(grand\s+total|sub\s*total|total|invested|disclaimer|folio|summary)\b")
+_CONT = re.compile(r"(?i)^(?:[-–(]|reg\b|dir\b|direct|regular|plan|fund|growth|idcw|dividend|option|\(?g\)|\(?d\))")
+_DATE_ANY = re.compile(r"\b\d{1,2}[ \-/][A-Za-z]{3}[ \-/]\d{4}\b|\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b")
+
+
+def _val(tok: str) -> float | None:
+    t = tok.replace("₹", "").replace(",", "").strip("()%")
+    try:
+        v = float(t)
+    except ValueError:
+        return None
+    return -v if tok.startswith("(") else v  # "(1,234.00)" is negative; "-12" already parsed negative
+
+
+def _units_nav_value(nums: list[float]) -> tuple[float, float, float] | None:
+    """Find (units, nav, value) with units * nav ~= value. Header-free and order-free, so it identifies the columns of any
+    statement layout, and a line that has no such triple (disclaimer, total, address) is not a holding."""
+    best = None
+    for i, u in enumerate(nums):
+        for j, n in enumerate(nums):
+            if i == j or u <= 0 or n <= 0:
+                continue
+            for k, v in enumerate(nums):
+                if k in (i, j) or v <= 0 or v < n * 0.99:
+                    continue
+                if abs(u * n - v) <= max(1.0, 0.005 * v) and (best is None or v > best[2]):
+                    best = (u, n, v)
+    return best
+
+
+def extract_from_layout_text(text: str) -> tuple[list[dict[str, Any]], str | None]:
+    """Any text layout (PDF layout text, Word/HTML tables, OCR, pasted rows) -> holdings.
+
+    Per line: the last run of numeric tokens is the figures, the tokens before it are [S.No] name [folio]. A line counts only
+    when its figures contain a units x NAV = value triple. A short continuation line ("Reg(G)") joins the row above it.
+    shortcut: a name wrapped ABOVE its figures is not rejoined (the universal extractor handles some of those), and a
+    statement with no units/NAV columns needs a header row (see extract_from_rows)."""
+    lines = [ln.strip() for ln in text.replace("\x02", "-").splitlines()]
+    date_m = _STMT_DATE.search(text) or _DATE_ANY.search("\n".join(lines[:25]))
+    st_date = (date_m.group(1) if date_m and date_m.groups() else date_m.group(0)) if date_m else None
+    holdings: list[dict[str, Any]] = []
+    last_was_row = False
+    for ln in lines:
+        toks = ln.split()
+        end = len(toks)
+        while end and not _TOK_NUM.match(toks[end - 1]):
+            end -= 1  # trailing words after the figures (e.g. "Equity") are ignored
+        start = end
+        while start and _TOK_NUM.match(toks[start - 1]):
+            start -= 1
+        run = toks[start:end]
+        prefix = toks[:start]
+        triple = _units_nav_value([_val(t) for t in run if not t.endswith("%")]) if len(run) >= 3 else None
+        if triple and run[0].isdigit() and len(run[0]) == 4 and prefix:  # "... June 2036" + figures: the year belongs to the name
+            alt = _units_nav_value([_val(t) for t in run[1:] if not t.endswith("%")])
+            if alt:
+                prefix, triple = prefix + [run[0]], alt
+        if not triple:
+            # continuation of the row above ("Reg(G)"), else a non-row line
+            if last_was_row and holdings and ln and len(ln) < 45 and not any(_TOK_NUM.match(t) for t in toks) and _CONT.match(ln):
+                holdings[-1]["raw_name"] += " " + ln
+                continue
+            last_was_row = False
+            continue
+        if prefix and prefix[0].isdigit() and len(prefix) > 2:
+            prefix = prefix[1:]  # S.No
+        folio = None
+        if len(prefix) > 2 and _FOLIO.match(prefix[-1]):
+            folio = prefix[-1]
+            prefix = prefix[:-1]
+        name = " ".join(prefix).strip(" |")
+        isin_m = re.search(r"INF[A-Z0-9]{9}", name.upper())
+        if len(re.findall(r"[A-Za-z]", name)) < 8 or len(name.split()) < 2 or _NOISE_NAME.search(name):
+            last_was_row = False
+            continue
+        units, nav, value = triple
+        holdings.append({"raw_name": name, "folio": folio, "isin": isin_m.group(0) if isin_m else None, "amfi_code": None,
+                         "units": units, "statement_nav": nav, "statement_value": value, "valuation_date": st_date})
+        last_was_row = True
+    return holdings, st_date
+
+
 def read_table_rows(name: str, data: bytes) -> list[list[list[Any]]] | None:
     """Excel (.xlsx/.xlsm/.xls) and CSV/TSV -> one row list per sheet. None when the file is not tabular."""
     low = name.lower()
@@ -217,6 +301,32 @@ def read_table_rows(name: str, data: bytes) -> list[list[list[Any]]] | None:
             import pandas as pd
 
             return [df.astype(object).where(df.notna(), None).values.tolist() for df in pd.read_excel(io.BytesIO(data), sheet_name=None, header=None).values()]
+        if data.startswith(b"PK") and b"word/document.xml" in data[:2_000_000] + data[-2_000:]:
+            import zipfile
+
+            from app.report.client_report import _xml_text
+
+            xml = zipfile.ZipFile(io.BytesIO(data)).read("word/document.xml").decode("utf-8", "replace")
+            # _xml_text puts every cell paragraph on its own line, so read Word tables cell by cell to keep rows together
+            table = [[_xml_text(c).replace("\n", " ") for c in re.findall(r"(?s)<w:tc[ >].*?</w:tc>", tr)] for tr in re.findall(r"(?s)<w:tr[ >].*?</w:tr>", xml)]
+            head = [[ln] for ln in _xml_text(xml).splitlines()[:10]]  # title / "as of" lines for the statement date
+            return [head + table] if table else None
+        if low.endswith(".json") or data.lstrip()[:1] in (b"[", b"{"):
+            import json
+
+            def first_records(o: Any) -> list[dict] | None:
+                if isinstance(o, list) and o and all(isinstance(x, dict) for x in o):
+                    return o
+                for v in (o.values() if isinstance(o, dict) else o if isinstance(o, list) else []):
+                    if (r := first_records(v)) is not None:
+                        return r
+                return None
+
+            recs = first_records(json.loads(data.decode("utf-8-sig")))
+            if recs:
+                keys = list(dict.fromkeys(k for r in recs for k in r))
+                return [[keys] + [[r.get(k) for k in keys] for r in recs]]
+            return None
         if low.endswith((".csv", ".tsv", ".txt")) and b"\x00" not in data[:512]:
             import csv
 
@@ -409,15 +519,18 @@ def parse_portfolio_pdf_bytes(pdf_bytes: bytes, password: str = "", filename: st
     if not client_report.is_pdf(filename, pdf_bytes):
         for rows in read_table_rows(filename, pdf_bytes) or []:
             holdings, st_date = extract_from_rows(rows)
+            if not holdings:  # no recognisable header row: read the sheet as plain lines
+                holdings, st_date = extract_from_layout_text("\n".join("   ".join(str(c) for c in r if c is not None and str(c).strip()) for r in rows))
             if holdings:
                 return holdings, st_date
         try:
             text = client_report.extract_text(filename, pdf_bytes)
         except ValueError as e:
             raise PortfolioPDFError(str(e), code="unsupported_file", status_code=415) from e
-        holdings, st_date = extract_universal_from_text(text)
-        if holdings:
-            return holdings, st_date
+        for extract in (extract_from_layout_text, extract_universal_from_text):
+            holdings, st_date = extract(text)
+            if holdings:
+                return holdings, st_date
         raise PortfolioPDFError(
             "No active mutual fund holdings could be identified in this file. Please verify that it contains mutual fund holding details.",
             code="no_holdings_found",
@@ -478,7 +591,15 @@ def _parse_pdf(pdf_bytes: bytes, password: str) -> tuple[list[dict[str, Any]], s
         if rows:
             return rows, stmt["client"]["date"] or None
 
-    # 2b. Universal text-based extractor for distributor, broker, advisor, or custom statements
+    # 2b. Any other layout: the same figures-based reader over the layout text, then the keyword-based universal extractor
+    try:
+        layout_holdings, layout_date = extract_from_layout_text(client_report.extract_text("statement.pdf", pdf_bytes))
+    except Exception:
+        layout_holdings, layout_date = [], None
+    if layout_holdings:
+        return layout_holdings, layout_date
+
+    # 2c. Universal text-based extractor for distributor, broker, advisor, or custom statements
     universal_holdings, st_date = extract_universal_from_text(full_text)
     if universal_holdings:
         return universal_holdings, st_date

@@ -312,9 +312,53 @@ def test_folio_wise_valuation_report_pdf_is_parsed():
         c.drawString(30, y, n)
         c.drawString(60, y, name)
         c.drawString(250, y, folio)
-        c.drawString(320, y, nums)
+        c.drawString(370, y, nums)
     c.save()
     holdings, st_date = portfolio_screen.parse_portfolio_pdf_bytes(buf.getvalue(), filename="r.pdf")
     assert [h["raw_name"] for h in holdings] == ["Bandhan Value Fund-Reg(G)", "ICICI Pru Small Cap Fund(G)"]
     assert holdings[0]["statement_value"] == 1681523.78 and holdings[0]["units"] == 11940.27 and holdings[0]["folio"] == "2696308/03"
     assert st_date == "23 Oct 2026"
+
+
+def _docx_table(rows):
+    import zipfile
+
+    body = "".join("<w:tr>" + "".join(f"<w:tc><w:p><w:r><w:t>{c}</w:t></w:r></w:p></w:tc>" for c in r) + "</w:tr>" for r in rows)
+    xml = ('<?xml version="1.0"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+           f"<w:p><w:r><w:t>Statement as of 31-10-2026</w:t></w:r></w:p><w:tbl>{body}</w:tbl></w:body></w:document>")
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("word/document.xml", xml)
+        z.writestr("[Content_Types].xml", "<Types/>")
+    return buf.getvalue()
+
+
+def _headerless_xlsx():
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.append(["Mirae Asset Large Cap Fund - Direct Plan - Growth", 100.5, 110.0, 11055.0])
+    ws.append(["Parag Parikh Flexi Cap Fund - Regular Growth", 3355.7, 74.5, 250000.0])
+    ws.append(["TOTAL", None, None, 261055.0])
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+@pytest.mark.parametrize("name,data,names", [
+    ("noheader.xlsx", None, ["Mirae Asset Large Cap Fund - Direct Plan - Growth", "Parag Parikh Flexi Cap Fund - Regular Growth"]),
+    ("odd.csv", b'Holding,Qty,Rate,Mkt Val\n"Axis Bluechip Fund - Regular Growth",1200.55,55.10,66150.31\nTotal,,,66150.31\n', ["Axis Bluechip Fund - Regular Growth"]),
+    ("page.html", b"<h2>As on 31-Oct-2026</h2><table><tr><th>Scheme</th><th>Units</th><th>NAV</th><th>Value</th></tr><tr><td>SBI Small Cap Fund - Direct Plan - Growth</td><td>500.00</td><td>160.20</td><td>80,100.00</td></tr></table>", ["SBI Small Cap Fund - Direct Plan - Growth"]),
+    ("t.docx", "docx", ["HDFC Flexi Cap Fund - Growth Plan"]),
+    ("paste.txt", b"Portfolio 31 Oct 2026\n1 Nippon India Small Cap Fund-Reg(G) 1234567/89 1,000.000 150.5000 1,50,500.00\n2 Quant Active Fund(G) 22.5 600.00 13,500.00\nNotes: investments are subject to market risks 1000 2000 3000\n", ["Nippon India Small Cap Fund-Reg(G)", "Quant Active Fund(G)"]),
+    ("x.json", b'{"holdings":[{"scheme":"Kotak Emerging Equity Fund - Growth","units":100.0,"nav":50.0,"value":5000.0}]}', ["Kotak Emerging Equity Fund - Growth"]),
+])
+def test_unknown_templates_are_read_by_figures_not_headers(name, data, names):
+    if data is None:
+        data = _headerless_xlsx()
+    elif data == "docx":
+        data = _docx_table([["Fund", "Units", "NAV", "Current value"], ["HDFC Flexi Cap Fund - Growth Plan", "300.25", "1,850.40", "5,55,600.01"]])
+    holdings, _ = portfolio_screen.parse_portfolio_pdf_bytes(data, filename=name)
+    assert [h["raw_name"] for h in holdings] == names  # totals / notes / disclaimers are not holdings
+    assert all(h["statement_value"] and h["statement_value"] > 0 for h in holdings)

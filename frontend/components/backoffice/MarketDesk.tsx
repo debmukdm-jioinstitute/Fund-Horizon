@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { API_URL, resolveApiUrl } from "@/lib/api";
 import { useTheme } from "@/components/terminal/ThemeContext";
 import MarketDeskNav from "@/components/backoffice/MarketDeskNav";
@@ -26,11 +26,70 @@ function deskPath(href: string): string | null {
   return `/backoffice/markets${url.pathname}${url.search}${url.hash}`;
 }
 
+function tableCount(root: ShadowRoot): number {
+  return Array.from(root.querySelectorAll("table")).filter((t) => t.querySelectorAll("tr").length >= 2).length;
+}
+
+function attachExcelButtons(root: ShadowRoot, onDownload: () => void) {
+  root.querySelectorAll("table").forEach((table) => {
+    if (table.querySelectorAll("tr").length < 2) return;
+    if (table.parentElement?.getAttribute("data-fh-excel") === "wrap") return;
+    const wrap = document.createElement("div");
+    wrap.setAttribute("data-fh-excel", "wrap");
+    const bar = document.createElement("div");
+    bar.style.cssText = "display:flex;justify-content:flex-end;gap:8px;margin:10px 0 6px;";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Download Excel";
+    btn.setAttribute("aria-label", "Download tables on this page as an Excel file");
+    btn.style.cssText =
+      "display:inline-flex;align-items:center;height:32px;padding:0 10px;border:1px solid #C9C7C5;border-radius:4px;background:#fff;color:#181818;font-size:12px;font-weight:600;cursor:pointer";
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onDownload();
+    });
+    bar.appendChild(btn);
+    const parent = table.parentNode;
+    if (!parent) return;
+    parent.insertBefore(wrap, table);
+    wrap.appendChild(bar);
+    wrap.appendChild(table);
+  });
+}
+
 export default function MarketDesk({ path = "" }: { path?: string }) {
   const host = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(true);
+  const [hasTables, setHasTables] = useState(false);
+  const [excelBusy, setExcelBusy] = useState(false);
+  const [excelErr, setExcelErr] = useState<string | null>(null);
+
+  const downloadExcel = useCallback(() => {
+    const suffix = path.replace(/^\/+|\/+$/g, "");
+    const excelUrl = resolveApiUrl(`${API_URL}/api/backoffice/markets${suffix ? `/${suffix}` : ""}?format=xlsx`);
+    setExcelBusy(true);
+    setExcelErr(null);
+    fetch(excelUrl, { credentials: "include" })
+      .then(async (r) => {
+        if (!r.ok) throw new Error(r.status === 404 ? "No tables on this page." : "Could not download Excel.");
+        const blob = await r.blob();
+        const name = /filename="([^"]+)"/.exec(r.headers.get("Content-Disposition") ?? "")?.[1] ?? "markets.xlsx";
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+      })
+      .catch((e: unknown) => {
+        setExcelErr(e instanceof Error ? e.message : "Could not download Excel.");
+      })
+      .finally(() => setExcelBusy(false));
+  }, [path]);
 
   useEffect(() => {
     const el = host.current;
@@ -40,6 +99,7 @@ export default function MarketDesk({ path = "" }: { path?: string }) {
     const ctl = new AbortController();
     setBusy(true);
     setErr(null);
+    setHasTables(false);
     const suffix = path.replace(/^\/+|\/+$/g, "");
     const qs = new URLSearchParams({ theme: theme === "dark" ? "dark" : "light" });
     const url = resolveApiUrl(`${API_URL}/api/backoffice/markets${suffix ? `/${suffix}` : ""}?${qs}`);
@@ -69,6 +129,8 @@ export default function MarketDesk({ path = "" }: { path?: string }) {
       })
       .then((data) => {
         root.innerHTML = `<style>${data.css}</style><div class="wrap">${data.html}</div>`;
+        attachExcelButtons(root, downloadExcel);
+        setHasTables(tableCount(root) > 0);
         setBusy(false);
       })
       .catch((e: unknown) => {
@@ -81,11 +143,11 @@ export default function MarketDesk({ path = "" }: { path?: string }) {
       root.removeEventListener("click", onNav);
       root.removeEventListener("auxclick", onNav);
     };
-  }, [path, theme]);
+  }, [path, theme, downloadExcel]);
 
   return (
     <div className="relative min-h-[70vh] overflow-hidden rounded-xl border border-[#E5E5E5] bg-white dark:border-[#2B3644] dark:bg-[#151515]">
-      <MarketDeskNav path={path} placement="top" />
+      <MarketDeskNav path={path} placement="top" onExcel={hasTables ? downloadExcel : undefined} excelBusy={excelBusy} />
       {busy && (
         <div className="flex items-center justify-center gap-2 py-16 text-[13px] text-[#706E6B] dark:text-[#A8B4C4]">
           <svg className="h-4 w-4 animate-spin text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none">
@@ -98,8 +160,11 @@ export default function MarketDesk({ path = "" }: { path?: string }) {
       {err && !busy && (
         <div className="p-4 text-[13px] text-[#B42332] dark:text-[#FF7D86]">{err}</div>
       )}
+      {excelErr && !busy && !err && (
+        <div className="px-3 py-2 text-[12px] text-[#B42332] dark:text-[#FF7D86]">{excelErr}</div>
+      )}
       <div ref={host} className={busy || err ? "hidden" : "block"} />
-      <MarketDeskNav path={path} placement="footer" />
+      <MarketDeskNav path={path} placement="footer" onExcel={hasTables ? downloadExcel : undefined} excelBusy={excelBusy} />
     </div>
   );
 }

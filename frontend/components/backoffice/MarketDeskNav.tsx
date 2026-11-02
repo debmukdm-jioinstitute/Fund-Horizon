@@ -61,7 +61,27 @@ function NavBtn({ href, label, icon }: { href: string | null; label: string; ico
   );
 }
 
-function CornerButtons({ path, onOverview }: { path: string; onOverview: boolean }) {
+function IconExcel() {
+  return (
+    <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z" />
+      <path d="M14 3v6h6" />
+      <path d="M8 13h8M8 17h5" />
+    </svg>
+  );
+}
+
+function CornerButtons({
+  path,
+  onOverview,
+  onExcel,
+  excelBusy,
+}: {
+  path: string;
+  onOverview: boolean;
+  onExcel?: () => void;
+  excelBusy?: boolean;
+}) {
   const pathname = usePathname() || "";
   const back = parentHref(path, onOverview);
   const home = homeHref(path, onOverview);
@@ -79,12 +99,28 @@ function CornerButtons({ path, onOverview }: { path: string; onOverview: boolean
       <div className="flex min-w-0 items-center gap-1.5">
         <NavBtn href={prev ? prev.href : null} label={prev ? prev.label : "Previous"} icon={<IconPrev />} />
         <NavBtn href={next ? next.href : null} label={next ? next.label : "Next"} icon={<IconNext />} />
+        {onExcel ? (
+          <button type="button" onClick={onExcel} disabled={excelBusy} className={`${btn} disabled:opacity-40`} aria-label="Download Excel">
+            <IconExcel />
+            {excelBusy ? "Preparing…" : "Download Excel"}
+          </button>
+        ) : null}
       </div>
     </>
   );
 }
 
-export default function MarketDeskNav({ path = "", placement }: { path?: string; placement: "top" | "footer" }) {
+export default function MarketDeskNav({
+  path = "",
+  placement,
+  onExcel,
+  excelBusy,
+}: {
+  path?: string;
+  placement: "top" | "footer";
+  onExcel?: () => void;
+  excelBusy?: boolean;
+}) {
   const pathname = usePathname() || "";
   const onOverview = pathname === "/backoffice" || pathname === "/backoffice/";
   const idx = sectionIndex(onOverview ? "" : path);
@@ -93,7 +129,7 @@ export default function MarketDeskNav({ path = "", placement }: { path?: string;
   if (placement === "top") {
     return (
       <nav aria-label="Market page" className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E5E5E5] bg-[#F3F9FE] px-2.5 py-2 dark:border-[#2B3644] dark:bg-[#0F2A45]">
-        <CornerButtons path={path} onOverview={onOverview} />
+        <CornerButtons path={path} onOverview={onOverview} onExcel={onExcel} excelBusy={excelBusy} />
       </nav>
     );
   }
@@ -101,7 +137,7 @@ export default function MarketDeskNav({ path = "", placement }: { path?: string;
   return (
     <nav aria-label="Market sections" className="border-t border-[#E5E5E5] bg-[#F3F9FE] px-2.5 py-2 dark:border-[#2B3644] dark:bg-[#0F2A45]">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <CornerButtons path={path} onOverview={onOverview} />
+        <CornerButtons path={path} onOverview={onOverview} onExcel={onExcel} excelBusy={excelBusy} />
       </div>
       <ul className="flex flex-wrap gap-x-3 gap-y-1">
         {MARKET_SECTIONS.map((s) => (

@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { API_URL, resolveApiUrl } from "@/lib/api";
 import { useTheme } from "@/components/terminal/ThemeContext";
+import MarketDeskNav from "@/components/backoffice/MarketDeskNav";
 
 type Payload = { css: string; html: string };
 
@@ -84,6 +85,7 @@ export default function MarketDesk({ path = "" }: { path?: string }) {
 
   return (
     <div className="relative min-h-[70vh] overflow-hidden rounded-xl border border-[#E5E5E5] bg-white dark:border-[#2B3644] dark:bg-[#151515]">
+      <MarketDeskNav path={path} placement="top" />
       {busy && (
         <div className="flex items-center justify-center gap-2 py-16 text-[13px] text-[#706E6B] dark:text-[#A8B4C4]">
           <svg className="h-4 w-4 animate-spin text-[#0176D3] dark:text-[#1B96FF]" viewBox="0 0 24 24" fill="none">
@@ -97,6 +99,7 @@ export default function MarketDesk({ path = "" }: { path?: string }) {
         <div className="p-4 text-[13px] text-[#B42332] dark:text-[#FF7D86]">{err}</div>
       )}
       <div ref={host} className={busy || err ? "hidden" : "block"} />
+      <MarketDeskNav path={path} placement="footer" />
     </div>
   );
 }

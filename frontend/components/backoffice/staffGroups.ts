@@ -2,7 +2,7 @@
 // dedicated staff page, the Add staff wizard and the detail view can never
 // drift apart. The hrefs below are exactly the backend's BACKOFFICE_PAGES
 // (validated with a 422 on anything else) — never add a href here that the
-// backend does not know, and never drop one: the four groups total 14 pages.
+// backend does not know, and never drop one: the four groups total 15 pages.
 
 export interface RoleMeta {
   value: string;
@@ -46,6 +46,7 @@ export const PAGE_GROUPS: PageGroup[] = [
       { href: "/backoffice/mutual-funds", label: "Mutual funds" },
       { href: "/backoffice/macro", label: "Macro & yields" },
       { href: "/backoffice/derivatives", label: "Derivatives & PCR" },
+      { href: "/backoffice/trade", label: "Trade" },
       { href: "/backoffice/flows", label: "Institutional flows" },
       { href: "/backoffice/research", label: "Briefings" },
     ],

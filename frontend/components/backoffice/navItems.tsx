@@ -84,6 +84,19 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    href: "/backoffice/trade",
+    label: "Trade",
+    description: "NSE cash day desk: scanner, entry/exit, time machine, risk and paper tickets",
+    icon: (p) => (
+      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Candlestick pair — matches Lightning line-art tabs */}
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 3v3M8 18v3M16 5v2M16 17v2" />
+        <rect x="5.5" y="6" width="5" height="12" rx="1" strokeWidth={1.8} />
+        <rect x="13.5" y="7" width="5" height="10" rx="1" strokeWidth={1.8} />
+      </svg>
+    ),
+  },
+  {
     href: "/backoffice/flows",
     label: "Institutional flows",
     description: "Daily FII and DII net equity and debt transactions in crores",

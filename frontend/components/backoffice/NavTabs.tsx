@@ -158,9 +158,34 @@ export default function NavTabs({ items, pathname, isActive }: { items: NavTab[]
   }, []);
 
   const ordered = useMemo(() => {
+    // Merge a saved order with the canonical list so newly shipped tabs (e.g. Trade)
+    // appear next to their neighbours in NAV_ITEMS instead of vanishing past Settings.
+    if (!saved.length) return items;
     const byHref = new Map(items.map((i) => [i.href, i]));
-    const known = saved.filter((h) => byHref.has(h)).map((h) => byHref.get(h)!);
-    return [...known, ...items.filter((i) => !saved.includes(i.href))]; // tabs added later land at the end
+    const out: NavTab[] = [];
+    const used = new Set<string>();
+    for (const href of saved) {
+      const tab = byHref.get(href);
+      if (!tab || used.has(href)) continue;
+      out.push(tab);
+      used.add(href);
+    }
+    // Insert any tab missing from the saved order after the nearest prior canonical neighbour.
+    items.forEach((tab, idx) => {
+      if (used.has(tab.href)) return;
+      let insertAt = out.length;
+      for (let i = idx - 1; i >= 0; i--) {
+        const prev = items[i].href;
+        const at = out.findIndex((t) => t.href === prev);
+        if (at >= 0) {
+          insertAt = at + 1;
+          break;
+        }
+      }
+      out.splice(insertAt, 0, tab);
+      used.add(tab.href);
+    });
+    return out;
   }, [items, saved]);
 
   // Bring the active tab into view only when the route changes. Doing this on every render (the clock re-renders

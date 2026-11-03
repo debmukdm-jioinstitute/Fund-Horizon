@@ -49,13 +49,16 @@ export default function McpSetup() {
         <li>&quot;Here is my client&apos;s statement. Which funds are in our scored list?&quot; (attach the file in Claude)</li>
         <li>&quot;Make this month&apos;s consolidated valuation for Client X from these statements. Show me the totals first.&quot;</li>
         <li>&quot;Fill the CAMS change of address form for this client.&quot;</li>
+        <li>&quot;Update the units of this client&apos;s HDFC holding to 250 and delete the old SIP.&quot; (Claude shows the change and asks first)</li>
       </ul>
       <p className={p}>Everything in Fund Horizon works this way, and new features we add appear in Claude by themselves. You never reinstall.</p>
 
       <h2 className={h2}>Stay safe and accurate</h2>
       <ul className={`${p} list-disc space-y-1 pl-6`}>
         <li>Claude shows only real Fund Horizon figures with their dates. If something is empty, it says why instead of guessing.</li>
-        <li>Claude cannot delete anything. Before it creates a household, client or report, it asks you. Approving a valuation is permanent, so it always waits for your clear yes.</li>
+        <li>Claude can do everything you can do in Fund Horizon: read, add, change and delete CRM records, holdings (mutual fund, PMS, stocks and others), valuation batches and reports, forms and more. It works with your own permissions, so it can never do more than you can.</li>
+        <li>Before it changes or deletes anything, Claude shows you what will change and waits for your clear yes. Every change is recorded with the old values, so you can ask Claude &quot;show my recent changes&quot; at any time.</li>
+        <li>Approving a valuation is permanent, so Claude asks you first. Login passwords, connection tokens and staff accounts can only be managed inside Fund Horizon itself.</li>
         <li>Your connector file contains your sign-in. Do not share it. If you lose a laptop or shared it by mistake, open Settings, Claude connection, click <b>Remove</b> on that connection, and download a new one.</li>
       </ul>
 

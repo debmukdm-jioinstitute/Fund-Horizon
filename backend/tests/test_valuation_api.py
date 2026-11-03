@@ -376,3 +376,34 @@ def test_xirr_appears_only_after_admin_attests_flows_and_matches_independent_sol
     rm = _user("rm")
     _login(client, rm)
     assert client.post(f"{B}/accounts/{accounts[0]['id']}/attest-flows", json={"reason": "Confirmed complete from inception ledger"}).status_code == 403
+
+
+def test_manual_holding_corrections_are_audited_and_blocked_after_approval(client, admin):
+    cust = _user("customer")
+    bid, _ = _run(client, cust["id"])
+    prev = client.get(f"{B}/batches/{bid}/preview").json()
+    acct = prev["files"][0]["accounts"][0]["id"]
+    rows = client.get(f"{B}/batches/{bid}/holdings").json()["data"]
+    hid, mv = rows[0]["id"], rows[0]["market_value"]
+    # no reason, no change
+    assert client.patch(f"{B}/holdings/{hid}", json={"market_value": 1}).status_code == 422
+    r = client.patch(f"{B}/holdings/{hid}", json={"market_value": mv + 100, "reason": "Corrected from the printed statement"})
+    assert r.status_code == 200 and r.json()["market_value"] == mv + 100 and r.json()["validation_status"] == "warning"
+    assert client.get(f"{B}/batches/{bid}").json()["batch"]["status"] == "processed"  # must be validated again
+    # add and remove a manual holding
+    a = client.post(f"{B}/accounts/{acct}/holdings", json={"security_name": "Manual Co", "market_value": 500, "asset_type": "equity", "reason": "Missing from the statement"})
+    assert a.status_code == 201 and a.json()["source_page"] == "manual"
+    d = client.request("DELETE", f"{B}/holdings/{a.json()['id']}", json={"reason": "Added by mistake earlier"})
+    assert d.status_code == 200
+    with sqlite3.connect(sqlite.db_path()) as c:
+        acts = [x[0] for x in c.execute("SELECT action FROM val_audit_log WHERE batch_id = ?", (bid,))]
+    assert {"holding_edited", "holding_added", "holding_removed"} <= set(acts)
+    # an edit that breaks the provider's totals blocks approval; put the true figure back, then approve
+    assert client.patch(f"{B}/holdings/{hid}", json={"market_value": mv, "reason": "Restored to the statement figure"}).status_code == 200
+    client.post(f"{B}/batches/{bid}/validate")
+    assert client.post(f"{B}/batches/{bid}/approve", json={"generate_report": False}).status_code == 200
+    assert client.patch(f"{B}/holdings/{hid}", json={"market_value": 1, "reason": "Trying after approval"}).status_code == 409
+    # discard an open batch
+    bid2, _ = _run(client, _user("customer")["id"])
+    assert client.request("DELETE", f"{B}/batches/{bid2}", json={"reason": "Wrong client selected"}).status_code == 200
+    assert client.get(f"{B}/batches/{bid2}").json()["batch"]["status"] == "rejected"

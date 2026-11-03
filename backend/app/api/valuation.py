@@ -65,6 +65,25 @@ class AttestIn(BaseModel):
     reason: str = Field(min_length=10, max_length=500)
 
 
+class HoldingEditIn(BaseModel):
+    reason: str = Field(min_length=10, max_length=500, description="Why the figure is being changed; kept in the audit log")
+    security_name: str | None = None
+    isin: str | None = None
+    asset_type: str | None = None
+    quantity: float | None = None
+    avg_cost: float | None = None
+    invested_amount: float | None = None
+    price: float | None = None
+    market_value: float | None = None
+    unrealised_gain: float | None = None
+    realised_gain: float | None = None
+    income: float | None = None
+
+
+class ReasonIn(BaseModel):
+    reason: str = Field(min_length=10, max_length=500)
+
+
 class ApproveIn(BaseModel):
     generate_report: bool = True
 
@@ -216,3 +235,38 @@ def download(version_id: str, me: Me):
 def history(client_id: str, me: Me):
     _visible_customer(client_id, me)
     return {"data": _call(service.history, client_id)}
+
+
+def _fields(body: HoldingEditIn) -> dict:
+    return body.model_dump(exclude_unset=True, exclude={"reason"})
+
+
+@router.patch("/holdings/{holding_id}")
+def edit_holding(holding_id: str, body: HoldingEditIn, request: Request, me: Me):
+    _client_of_batch(_call(service.holding_batch, holding_id), me, request)
+    return _call(service.edit_holding, holding_id, _fields(body), body.reason, me["id"])
+
+
+@router.delete("/holdings/{holding_id}")
+def remove_holding(holding_id: str, body: ReasonIn, request: Request, me: Me):
+    _client_of_batch(_call(service.holding_batch, holding_id), me, request)
+    return _call(service.remove_holding, holding_id, body.reason, me["id"])
+
+
+@router.post("/accounts/{account_id}/holdings", status_code=201)
+def add_holding(account_id: str, body: HoldingEditIn, request: Request, me: Me):
+    _client_of_batch(_call(service.account_batch, account_id), me, request)
+    return _call(service.add_holding, account_id, _fields(body), body.reason, me["id"])
+
+
+@router.delete("/batches/{batch_id}")
+def discard_batch(batch_id: str, body: ReasonIn, request: Request, me: Me):
+    _client_of_batch(batch_id, me, request)
+    return _call(service.discard_batch, batch_id, body.reason, me["id"])
+
+
+@router.get("/batches/{batch_id}/holdings")
+def batch_holdings(batch_id: str, me: Me):
+    _client_of_batch(batch_id, me)
+    rows = _call(service.list_holdings, batch_id)
+    return {"data": rows, "count": len(rows)}

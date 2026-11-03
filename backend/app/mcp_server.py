@@ -4,8 +4,10 @@ Design rules, in order of importance:
 1. **Truth.** Every tool calls the same internal API endpoints the backoffice uses, with the caller's own identity, so numbers,
    permissions and "as on" dates are exactly what the website shows. Nothing is recomputed, defaulted or invented here.
 2. **No silent cuts.** Oversized results are trimmed with an explicit ``_truncated`` notice (shown / total / how to page).
-3. **Safe writes.** Only additive actions (create household/client/batch, upload, process, validate, fill a form). Nothing
-   deletes, and nothing edits the recommended lists. Approving a valuation (immutable) needs ``confirm=true``.
+3. **Full control, deliberate writes.** ``api_catalog`` + ``api_call`` reach every API operation (read, create, update, delete: CRM,
+   holdings, valuation, PMS, mutual funds, ...) with the caller's own permissions, including operations added in the future.
+   Updates, deletes and irreversible actions need ``confirm=true`` and are written to an audit log with the before-state.
+   Credentials (login, tokens, staff accounts) are never reachable.
 4. **Own tokens.** Staff create a personal token (a long-lived session the staff member can revoke) at /backoffice/mcp.
 """
 from __future__ import annotations
@@ -49,7 +51,9 @@ Rules for answering with this server:
 - If a value is null or a cell is empty, say it is not available and give the reason the tool returned (fund too new, not published by AMFI/APMI/Advisorkhoj, etc.).
 - Advisorkhoj publishes no Direct-plan quartiles; Regular-plan only.
 - Tool results marked _truncated are partial: say so, and page with limit/offset or narrow the filter before drawing conclusions.
-- Writes are additive only. Ask the user before creating households, clients or valuation batches, and before approving a valuation (it is immutable).
+- You have full read/write/update/delete control through the named tools and, for anything else, api_catalog (find the operation) + api_call (run it). You act with this user's own permissions.
+- Before any create, update or delete: say exactly what will change and show the current values (read them first). Only after the user clearly agrees, call with confirm=true. Never confirm on your own.
+- Approving a valuation is irreversible; ask twice if unsure. Deletions are recorded with the old values in the audit log (mcp_audit_log).
 - This is research data, not investment advice."""
 
 
@@ -421,13 +425,157 @@ CUSTOM_RUN = {"pms_strategies": _pms_strategies, "form_fields": _form_fields, "f
               "portfolio_screen": _portfolio_screen, "valuation_upload": _valuation_upload}
 
 
+# --------------------------------------------------------------------------- generic gateway: every API operation
+DENY_PREFIXES = ("/api/mcp", "/api/auth", "/mcp", "/docs", "/redoc", "/openapi", "/health", "/api/backoffice/staff")  # credentials and access control
+CONFIRM_METHODS = {"PUT", "PATCH", "DELETE"}
+CONFIRM_WORDS = ("approve", "discard", "remove", "delete", "purge", "reset", "revoke", "archive", "provision")
+_OPS: dict[int, list[dict]] = {}
+
+
+def _schema_props(spec: dict, schema: dict | None) -> dict:
+    if not schema:
+        return {}
+    if "$ref" in schema:
+        schema = spec.get("components", {}).get("schemas", {}).get(schema["$ref"].split("/")[-1], {})
+    req = set(schema.get("required", []))
+    return {k: {"type": v.get("type") or ("ref" if "$ref" in v else "any"), "required": k in req,
+                **({"description": v["description"]} if v.get("description") else {})} for k, v in (schema.get("properties") or {}).items()}
+
+
+def _operations(app) -> list[dict]:
+    key = id(app)
+    if key not in _OPS:
+        spec = app.openapi()
+        ops = []
+        for path, item in spec["paths"].items():
+            if path.startswith(DENY_PREFIXES):
+                continue
+            for method, op in item.items():
+                if method not in ("get", "post", "put", "patch", "delete"):
+                    continue
+                content = (op.get("requestBody") or {}).get("content", {})
+                ctype = next(iter(content), None)
+                ops.append({
+                    "method": method.upper(), "path": path, "summary": op.get("summary") or op.get("operationId", ""),
+                    "description": (op.get("description") or "").strip()[:300], "tags": op.get("tags", []),
+                    "params": [{"name": p["name"], "in": p["in"], "required": p.get("required", False)} for p in op.get("parameters", [])],
+                    "body": _schema_props(spec, content.get(ctype, {}).get("schema")) if ctype else None,
+                    "body_type": "multipart" if ctype and "multipart" in ctype else ("json" if ctype else None),
+                    "rx": re.compile("^" + "".join("[^/]+" if x.startswith("{") else re.escape(x) for x in re.split(r"(\{[^}]+\})", path)) + "$"),
+                })
+        _OPS[key] = ops
+    return _OPS[key]
+
+
+def _public(op: dict) -> dict:
+    return {k: v for k, v in op.items() if k != "rx" and v not in (None, [], {}, "")}
+
+
+async def _api_catalog(request: Request, a: dict) -> dict:
+    ops = _operations(request.app)
+    q = (a.get("search") or "").lower()
+    method = (a.get("method") or "").upper()
+    out = [o for o in ops if (not method or o["method"] == method)
+           and (not q or q in f"{o['path']} {o['summary']} {' '.join(o['tags'])} {o['description']}".lower())]
+    lim, off = min(int(a.get("limit") or 40), 100), int(a.get("offset") or 0)
+    return _ok("api_catalog", {"total": len(out), "offset": off, "operations": [_public(o) for o in out[off: off + lim]],
+                               "how_to_use": "Call api_call with method, the concrete path (fill {params}), query/json/form/files as listed. "
+                                             "PUT/PATCH/DELETE and approve/discard/remove actions need confirm=true after the user agrees."})
+
+
+def _audit(user_id: str, method: str, path: str, status: int | None, args: Any, before: Any) -> None:
+    try:
+        conn = _db()
+        conn.execute("""CREATE TABLE IF NOT EXISTS mcp_audit (id TEXT PRIMARY KEY, at TEXT NOT NULL, customer_id TEXT NOT NULL,
+                        method TEXT NOT NULL, path TEXT NOT NULL, status INTEGER, args_json TEXT, before_json TEXT)""")
+        with conn:
+            conn.execute("INSERT INTO mcp_audit VALUES (?,?,?,?,?,?,?,?)",
+                         (secrets.token_hex(8), datetime.now(UTC).isoformat(), user_id, method, path, status,
+                          json.dumps(args, default=str)[:4000], json.dumps(before, default=str)[:20000] if before is not None else None))
+        conn.close()
+    except Exception:  # noqa: BLE001 - never let the log break the action's reply, but say so loudly
+        logger.exception("mcp audit write failed for %s %s", method, path)
+
+
+async def _api_call(c: httpx.AsyncClient, request: Request, staff: dict, a: dict) -> dict:
+    method, path = str(a.get("method", "")).upper(), str(a.get("path", ""))
+    if not path.startswith("/api/") or path.startswith(DENY_PREFIXES) or ".." in path:
+        return _err("That path is not available through Claude (login, tokens and staff accounts are managed in Fund Horizon itself).")
+    ops = _operations(request.app)
+    op = next((o for o in ops if o["method"] == method and o["rx"].match(path)), None)
+    if not op:
+        return _err(f"No {method} operation at {path}. Use api_catalog to find the exact method and path.")
+    write = method != "GET"
+    risky = method in CONFIRM_METHODS or any(w in path.lower() for w in CONFIRM_WORDS)
+    if risky and a.get("confirm") is not True:
+        return _err(f"{method} {path} changes or removes data. Tell the user what will change (read the current values first), "
+                    "and call again with confirm=true only after they clearly agree.")
+    before = None
+    if method in CONFIRM_METHODS and any(o["method"] == "GET" and o["rx"].match(path) for o in ops):
+        g = await c.get(path)
+        before = g.json() if g.status_code == 200 and "json" in g.headers.get("content-type", "") else None
+    params = [(k, str(i).lower() if isinstance(i, bool) else str(i)) for k, v in (a.get("query") or {}).items() if v is not None
+              for i in (v if isinstance(v, list) else [v])]
+    kw: dict[str, Any] = {"params": params}
+    if a.get("files") or a.get("form"):
+        kw["data"] = {k: str(v) for k, v in (a.get("form") or {}).items()}
+        kw["files"] = [(f["field"], (f["filename"], _decode(f["file_base64"]), "application/octet-stream")) for f in (a.get("files") or [])] or None
+    elif a.get("json") is not None:
+        kw["json"] = a["json"]
+    resp = await c.request(method, path, **kw)
+    if write:
+        _audit(staff["id"], method, path, resp.status_code, {"query": a.get("query"), "json": a.get("json"), "form": a.get("form")}, before)
+    return _from_response(path, resp, "api_call")
+
+
+async def _audit_log(request: Request, staff: dict, a: dict) -> dict:
+    conn = _db()
+    try:
+        rows = conn.execute("SELECT at, method, path, status, args_json, before_json FROM mcp_audit WHERE customer_id = ? ORDER BY at DESC LIMIT ?",
+                            (staff["id"], min(int(a.get("limit") or 50), 200))).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+    conn.close()
+    return _ok("mcp_audit_log", {"entries": [dict(r) for r in rows], "note": "before_json holds the values as they were before an update or delete."})
+
+
+CUSTOM.extend([
+    {"name": "api_catalog",
+     "description": "Find any Fund Horizon API operation (read, create, update, delete) by keyword: CRM, holdings, valuation, PMS, mutual funds, forms, reports. "
+                    "Returns method, path, parameters and body fields. Always use this to discover an operation before api_call.",
+     "inputSchema": {"type": "object", "additionalProperties": False, "properties": {
+         "search": {**S, "description": "e.g. holding, household, valuation, sip, pms"}, "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
+         "limit": {"type": "integer", "minimum": 1, "maximum": 100}, "offset": OFF}}, "write": False},
+    {"name": "api_call",
+     "description": "Run any Fund Horizon API operation as the signed-in user (their permissions apply). GET reads. POST creates. PUT/PATCH update. DELETE removes. "
+                    "Updates, deletes and approve/discard/remove-style actions need confirm=true, which you may set only after the user has clearly agreed "
+                    "to the exact change. The previous values of updated/deleted records are saved to the audit log. Use api_catalog first.",
+     "inputSchema": {"type": "object", "additionalProperties": False, "required": ["method", "path"], "properties": {
+         "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]}, "path": {**S, "description": "Concrete path, e.g. /api/crm/holdings/abc123"},
+         "query": {"type": "object"}, "json": {"description": "JSON body"}, "form": {"type": "object", "description": "Form fields for multipart operations"},
+         "files": {"type": "array", "items": {"type": "object", "required": ["field", "filename", "file_base64"], "properties": {"field": S, "filename": S, "file_base64": FILE}}},
+         "confirm": {**B, "description": "true only after explicit user agreement"}}}, "write": True},
+    {"name": "mcp_audit_log",
+     "description": "The caller's own recent changes made through Claude, with the values as they were before each update or delete.",
+     "inputSchema": {"type": "object", "additionalProperties": False, "properties": {"limit": {"type": "integer", "minimum": 1, "maximum": 200}}}, "write": False},
+])
+ALL_TOOLS = [{k: v for k, v in t.items() if k in ("name", "description", "inputSchema")} for t in TOOLS + CUSTOM]
+WRITE_TOOLS = {t["name"] for t in TOOLS + CUSTOM if t["write"]}
+
+
 async def call_tool(request: Request, token: str, staff: dict, name: str, args: dict) -> dict:
     tool = BY_NAME.get(name)
-    if not tool and name not in CUSTOM_RUN:
+    if not tool and name not in CUSTOM_RUN and name not in ("api_catalog", "api_call", "mcp_audit_log"):
         return _err(f"Unknown tool: {name}")
     logger.info("mcp tool=%s user=%s write=%s args=%s", name, staff.get("id"), name in WRITE_TOOLS, sorted(args))
     try:
         async with _client(request, token) as c:
+            if name == "api_catalog":
+                return await _api_catalog(request, args)
+            if name == "api_call":
+                return await _api_call(c, request, staff, args)
+            if name == "mcp_audit_log":
+                return await _audit_log(request, staff, args)
             if name in CUSTOM_RUN:
                 return await CUSTOM_RUN[name](c, args)
             return await _run_route(c, tool, args)

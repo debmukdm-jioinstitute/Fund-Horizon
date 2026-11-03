@@ -111,3 +111,47 @@ def test_one_click_connector_is_a_valid_personalised_bundle_and_its_token_works(
     assert "server/index.js" in z.namelist() and b"Authorization" in z.read("server/index.js")
     client.cookies.clear()
     assert _rpc(client, env["FH_TOKEN"], "tools/list").json()["result"]["tools"]  # the baked-in token signs in
+
+
+def test_gateway_reaches_every_operation_with_guards(client):
+    token, _ = _token(client)
+    _, env = _call(client, token, "api_catalog", {"search": "holding"})
+    paths = {(o["method"], o["path"]) for o in env["data"]["operations"]}
+    assert ("DELETE", "/api/crm/holdings/{holding_id}") in paths and ("POST", "/api/crm/holdings") in paths
+    assert ("PATCH", "/api/backoffice/valuation/holdings/{holding_id}") in paths  # new edit operations are discoverable
+    # credentials and access control are not reachable
+    for bad in ("/api/auth/login", "/api/mcp/tokens", "/api/backoffice/staff/provision"):
+        res, _ = _call(client, token, "api_call", {"method": "POST", "path": bad, "json": {}, "confirm": True})
+        assert res["isError"], bad
+    # unknown route -> helpful error, no guess
+    res, _ = _call(client, token, "api_call", {"method": "GET", "path": "/api/crm/nothing-here"})
+    assert res["isError"] and "api_catalog" in res["content"][0]["text"]
+    # destructive calls need confirm, and nothing is sent without it
+    res, _ = _call(client, token, "api_call", {"method": "DELETE", "path": "/api/crm/holdings/abc"})
+    assert res["isError"] and "confirm=true" in res["content"][0]["text"]
+    # with confirm the real API answers (404 for a missing holding) and the attempt is audited
+    res, _ = _call(client, token, "api_call", {"method": "DELETE", "path": "/api/crm/holdings/abc", "confirm": True})
+    assert res["isError"] and "404" in res["content"][0]["text"]
+    _, log = _call(client, token, "mcp_audit_log")
+    assert log["data"]["entries"] and log["data"]["entries"][0]["method"] == "DELETE"
+
+
+def test_crm_holding_full_cycle_through_the_gateway(client):
+    token, _ = _token(client)
+    _, env = _call(client, token, "crm_create_household", {"name": "Cycle HH"})
+    hh = env["data"]["id"]
+    _, env = _call(client, token, "crm_create_client", {"household_id": hh, "name": "Cycle Client"})
+    contact = env["data"]["id"]
+    body = {"contact_id": contact, "folio": "F1", "scheme_code": "108466", "scheme_name": "Test Fund", "units": 10, "cost": 1000}
+    res, env = _call(client, token, "api_call", {"method": "POST", "path": "/api/crm/holdings", "json": body})
+    assert not res["isError"] and env["data"]["created"] == 1
+    body["units"] = 25  # update = same upsert
+    _, env = _call(client, token, "api_call", {"method": "POST", "path": "/api/crm/holdings", "json": body})
+    assert env["data"]["updated"] == 1
+    _, env = _call(client, token, "api_call", {"method": "GET", "path": f"/api/crm/contacts/{contact}/holdings"})
+    hold = env["data"]["holdings"][0]
+    assert hold["units"] == 25
+    res, _ = _call(client, token, "api_call", {"method": "DELETE", "path": f"/api/crm/holdings/{hold['id']}", "confirm": True})
+    assert not res["isError"]
+    _, env = _call(client, token, "api_call", {"method": "GET", "path": f"/api/crm/contacts/{contact}/holdings"})
+    assert env["data"]["holdings"] == []

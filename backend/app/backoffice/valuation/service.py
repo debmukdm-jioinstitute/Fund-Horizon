@@ -222,6 +222,114 @@ def remove_file(file_id: str, actor: str) -> None:
         audit(s, actor, "file_removed", b, {"file": f.filename})
 
 
+# ------------------------------------------------------------------ manual corrections (open batches only)
+HOLDING_FIELDS = ("security_name", "isin", "asset_type", "quantity", "avg_cost", "invested_amount", "price", "market_value",
+                  "unrealised_gain", "realised_gain", "income")
+_NUMERIC = {"quantity", "avg_cost", "invested_amount", "price", "market_value", "unrealised_gain", "realised_gain", "income"}
+
+
+def _clean_fields(fields: dict) -> dict:
+    out = {}
+    for k, v in fields.items():
+        if k not in HOLDING_FIELDS:
+            raise ServiceError(422, f"Unknown holding field '{k}'.")
+        if k in _NUMERIC and v is not None:
+            try:
+                v = float(v)
+            except (TypeError, ValueError):
+                raise ServiceError(422, f"'{k}' must be a number.") from None
+        if k == "asset_type" and v not in ("mutual_fund", "equity", "debt", "cash", "other"):
+            raise ServiceError(422, "asset_type must be mutual_fund, equity, debt, cash or other.")
+        if k == "security_name" and not str(v or "").strip():
+            raise ServiceError(422, "security_name cannot be empty.")
+        out[k] = v
+    return out
+
+
+def list_holdings(batch_id: str) -> list[dict]:
+    """Every extracted/edited holding of a batch with its id (needed to correct or remove one)."""
+    with scope() as s:
+        _batch(s, batch_id)
+        return [row(h) for h in s.scalars(select(m.ValHolding).where(m.ValHolding.batch_id == batch_id).order_by(m.ValHolding.account_id, m.ValHolding.source_row))]
+
+
+def holding_batch(holding_id: str) -> str:
+    with scope() as s:
+        h = s.get(m.ValHolding, holding_id)
+        if not h:
+            raise ServiceError(404, "Holding not found.")
+        return h.batch_id
+
+
+def account_batch(account_id: str) -> str:
+    with scope() as s:
+        a = s.get(m.ValAccount, account_id)
+        if not a:
+            raise ServiceError(404, "Account not found.")
+        return a.batch_id
+
+
+def edit_holding(holding_id: str, fields: dict, reason: str, actor: str) -> dict:
+    """Correct a holding. The before/after values and the reason go to the audit log; the batch must be validated again."""
+    fields = _clean_fields(fields)
+    with scope() as s:
+        h = s.get(m.ValHolding, holding_id)
+        if not h:
+            raise ServiceError(404, "Holding not found.")
+        b = _batch(s, h.batch_id)
+        _editable(b)
+        before = {k: getattr(h, k) for k in fields}
+        for k, v in fields.items():
+            setattr(h, k, v)
+        h.validation_status = "warning"  # edited by hand: flagged until reviewed
+        b.status = "processed"
+        audit(s, actor, "holding_edited", b, {"holding": h.id, "security": h.security_name, "before": before, "after": fields, "reason": reason})
+        return row(h)
+
+
+def add_holding(account_id: str, fields: dict, reason: str, actor: str) -> dict:
+    fields = _clean_fields(fields)
+    if not fields.get("security_name"):
+        raise ServiceError(422, "security_name is required.")
+    with scope() as s:
+        a = s.get(m.ValAccount, account_id)
+        if not a:
+            raise ServiceError(404, "Account not found.")
+        b = _batch(s, a.batch_id)
+        _editable(b)
+        h = m.ValHolding(batch_id=b.id, account_id=a.id, source_file_id=a.source_file_id, provider=a.provider,
+                         asset_type=fields.pop("asset_type", "other"), validation_status="warning", source_page="manual", **fields)
+        s.add(h)
+        s.flush()
+        b.status = "processed"
+        audit(s, actor, "holding_added", b, {"holding": h.id, "account": a.id, "values": row(h), "reason": reason})
+        return row(h)
+
+
+def remove_holding(holding_id: str, reason: str, actor: str) -> dict:
+    with scope() as s:
+        h = s.get(m.ValHolding, holding_id)
+        if not h:
+            raise ServiceError(404, "Holding not found.")
+        b = _batch(s, h.batch_id)
+        _editable(b)
+        gone = row(h)
+        s.delete(h)
+        b.status = "processed"
+        audit(s, actor, "holding_removed", b, {"holding": gone, "reason": reason})
+        return gone
+
+
+def discard_batch(batch_id: str, reason: str, actor: str) -> dict:
+    """Withdraw an unapproved batch. It is marked rejected and kept in the audit trail; approved snapshots are never touched."""
+    with scope() as s:
+        b = _batch(s, batch_id)
+        _editable(b)
+        b.status = "rejected"
+        audit(s, actor, "batch_discarded", b, {"reason": reason})
+        return row(b)
+
+
 # ------------------------------------------------------------------ extraction
 def _clear_extraction(s: Session, file_id: str) -> None:
     for t in (m.ValHolding, m.ValCashflow, m.ValAccount):

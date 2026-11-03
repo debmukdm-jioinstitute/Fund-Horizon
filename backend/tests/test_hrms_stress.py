@@ -339,3 +339,79 @@ def test_attendance_and_leave_workflow_stress(client):
     stats = stats_res.json()
     assert stats["total_employees"] >= 1
     assert stats["total_monthly_payroll"] > 0
+
+
+def test_id_cards_issue_dispatch_pdf_and_verification(client):
+    """Test issuing ID cards, dispatch workflow, PDF generation with QR, and public verification."""
+    # Create employee
+    emp_res = client.post(
+        "/api/hrms/employees",
+        json={
+            "emp_code": "FH-ID01",
+            "name": "Manohar Tester",
+            "email": "manohar.tester@fundhorizon.com",
+            "designation": "Associate Partner",
+            "department": "Wealth Advisory",
+            "joining_date": "2026-02-01",
+            "ctc": 1500000,
+        },
+    )
+    assert emp_res.status_code == 200
+    emp = emp_res.json()
+    emp_id = emp["id"]
+
+    # Issue ID card
+    issue_res = client.post(
+        "/api/hrms/id-cards/issue",
+        json={
+            "employee_id": emp_id,
+            "blood_group": "O+ve",
+            "emergency_contact": "+91 9702019449",
+            "validity_years": 3,
+        },
+    )
+    assert issue_res.status_code == 200
+    card = issue_res.json()
+    assert card["card_number"].startswith("IDC-FH-ID01")
+    assert card["status"] == "issued"
+    qr_code = card["qr_verification_code"]
+    card_id = card["id"]
+
+    # Download CR80 PDF
+    pdf_res = client.get(f"/api/hrms/id-cards/{card_id}/pdf?layout=cr80")
+    assert pdf_res.status_code == 200
+    assert pdf_res.headers["content-type"] == "application/pdf"
+    assert pdf_res.content.startswith(b"%PDF-")
+    assert len(pdf_res.content) > 2000
+
+    # Download A4 sheet PDF
+    pdf_a4_res = client.get(f"/api/hrms/id-cards/{card_id}/pdf?layout=a4_sheet")
+    assert pdf_a4_res.status_code == 200
+    assert pdf_a4_res.content.startswith(b"%PDF-")
+
+    # Dispatch ID card
+    dispatch_res = client.post(
+        f"/api/hrms/id-cards/{card_id}/dispatch",
+        json={
+            "tracking_number": "DTDC-99281726",
+            "notes": "Dispatched via DTDC Express Courier",
+        },
+    )
+    assert dispatch_res.status_code == 200
+    assert dispatch_res.json()["status"] == "dispatched"
+    assert dispatch_res.json()["dispatch_tracking_number"] == "DTDC-99281726"
+
+    # Public Verification by QR code
+    verify_res = client.get(f"/api/hrms/public/verify/{qr_code}")
+    assert verify_res.status_code == 200
+    v_data = verify_res.json()
+    assert v_data["verified"] is True
+    assert v_data["employee_name"] == "Manohar Tester"
+    assert v_data["emp_code"] == "FH-ID01"
+    assert v_data["signatory"] == "Mr. Manohar Hemdev (Partner)"
+    assert v_data["card_status"] == "dispatched"
+
+    # Bulk issue test
+    bulk_res = client.post("/api/hrms/id-cards/bulk-issue")
+    assert bulk_res.status_code == 200
+    assert bulk_res.json()["status"] == "success"

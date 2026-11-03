@@ -20,6 +20,7 @@ from app.hrms_db import (
 )
 from app.report.hrms_docs import (
     render_hrms_letter_pdf,
+    render_id_card_pdf,
     render_payslip_pdf,
 )
 
@@ -111,6 +112,23 @@ class LeaveStatusUpdate(BaseModel):
     status: str  # approved, rejected, pending
 
 
+class IdCardIssueRequest(BaseModel):
+    employee_id: str
+    blood_group: str = ""
+    emergency_contact: str = ""
+    validity_years: int = 3
+
+
+class IdCardDispatchRequest(BaseModel):
+    tracking_number: str = ""
+    notes: str = ""
+
+
+class IdCardBulkDispatchRequest(BaseModel):
+    card_ids: list[str]
+    notes: str = ""
+
+
 # -------------------------------------------------------------------------
 # KPI / Dashboard Overview
 # -------------------------------------------------------------------------
@@ -151,6 +169,10 @@ def get_hrms_stats(user: Annotated[dict, Depends(require_staff)]):
         # Recent letters count
         letters_count = conn.execute("SELECT COUNT(*) FROM hrms_letters").fetchone()[0]
 
+        # ID cards stats
+        id_cards_total = conn.execute("SELECT COUNT(*) FROM hrms_id_cards").fetchone()[0]
+        id_cards_dispatched = conn.execute("SELECT COUNT(*) FROM hrms_id_cards WHERE status = 'dispatched'").fetchone()[0]
+
         # Recent payroll run
         last_run = conn.execute(
             "SELECT * FROM hrms_payroll_runs ORDER BY year DESC, month DESC LIMIT 1"
@@ -173,6 +195,8 @@ def get_hrms_stats(user: Annotated[dict, Depends(require_staff)]):
             },
             "pending_leaves": pending_leaves,
             "letters_count": letters_count,
+            "id_cards_total": id_cards_total,
+            "id_cards_dispatched": id_cards_dispatched,
             "last_payroll_run": dict(last_run) if last_run else None,
         }
 
@@ -993,4 +1017,307 @@ def update_leave_status(
         if not row:
             raise HTTPException(status_code=404, detail="Leave request not found")
         return dict(row)
+
+
+# -------------------------------------------------------------------------
+# Employee ID Cards Management & Verification
+# -------------------------------------------------------------------------
+
+@router.get("/id-cards")
+def list_id_cards(
+    user: Annotated[dict, Depends(require_staff)],
+    status: str | None = None,
+    employee_id: str | None = None,
+):
+    """Retrieve list of issued employee ID cards."""
+    init_hrms_tables()
+    with get_db() as conn:
+        q = """
+            SELECT c.*, e.name as emp_name, e.emp_code, e.designation, e.department,
+                   e.status as emp_status, e.phone as emp_phone, e.joining_date
+            FROM hrms_id_cards c
+            JOIN hrms_employees e ON c.employee_id = e.id
+            WHERE 1=1
+        """
+        params: list[Any] = []
+        if status:
+            q += " AND c.status = ?"
+            params.append(status)
+        if employee_id:
+            q += " AND c.employee_id = ?"
+            params.append(employee_id)
+        q += " ORDER BY c.created_at DESC"
+        rows = conn.execute(q, params).fetchall()
+        return [dict(r) for r in rows]
+
+
+@router.post("/id-cards/issue")
+def issue_id_card(req: IdCardIssueRequest, user: Annotated[dict, Depends(require_staff)]):
+    """Issue official Employee ID card with scannable verification QR code."""
+    init_hrms_tables()
+    now = _utcnow()
+    with get_db() as conn:
+        emp_row = conn.execute("SELECT * FROM hrms_employees WHERE id = ?", (req.employee_id,)).fetchone()
+        if not emp_row:
+            raise HTTPException(status_code=404, detail="Employee not found")
+        emp = dict(emp_row)
+
+        # Count existing cards for this employee to determine sequence
+        existing_cnt = conn.execute(
+            "SELECT COUNT(*) FROM hrms_id_cards WHERE employee_id = ?", (req.employee_id,)
+        ).fetchone()[0]
+        card_seq = existing_cnt + 1
+        card_number = f"IDC-{emp['emp_code']}-{card_seq:02d}"
+        card_id = f"idc_{uuid.uuid4().hex[:10]}"
+        qr_code = f"FHV-{uuid.uuid4().hex[:8].upper()}"
+
+        issue_date_obj = date.today()
+        try:
+            valid_until_obj = issue_date_obj.replace(year=issue_date_obj.year + req.validity_years)
+        except ValueError:
+            valid_until_obj = issue_date_obj.replace(month=2, day=28, year=issue_date_obj.year + req.validity_years)
+
+        issue_date_str = issue_date_obj.strftime("%d %b %Y")
+        valid_until_str = valid_until_obj.strftime("%d %b %Y")
+
+        blood_group = (req.blood_group or emp.get("blood_group") or "").strip().upper()
+        emergency_contact = (req.emergency_contact or emp.get("emergency_contact") or emp.get("phone") or "").strip()
+
+        # Update employee record with blood group and emergency contact
+        conn.execute(
+            "UPDATE hrms_employees SET blood_group = ?, emergency_contact = ?, updated_at = ? WHERE id = ?",
+            (blood_group, emergency_contact, now, req.employee_id),
+        )
+
+        conn.execute(
+            """
+            INSERT INTO hrms_id_cards (
+                id, employee_id, card_number, issue_date, valid_until,
+                blood_group, emergency_contact, status, qr_verification_code,
+                created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'issued', ?, ?, ?)
+            """,
+            (
+                card_id, req.employee_id, card_number, issue_date_str, valid_until_str,
+                blood_group, emergency_contact, qr_code, now, now
+            ),
+        )
+
+        row = conn.execute(
+            """
+            SELECT c.*, e.name as emp_name, e.emp_code, e.designation, e.department,
+                   e.status as emp_status, e.phone as emp_phone, e.joining_date
+            FROM hrms_id_cards c
+            JOIN hrms_employees e ON c.employee_id = e.id
+            WHERE c.id = ?
+            """,
+            (card_id,),
+        ).fetchone()
+        return dict(row)
+
+
+@router.post("/id-cards/bulk-issue")
+def bulk_issue_id_cards(user: Annotated[dict, Depends(require_staff)]):
+    """Bulk issue ID cards for all active/probation employees without an active card."""
+    init_hrms_tables()
+    now = _utcnow()
+    issue_date_obj = date.today()
+    try:
+        valid_until_str = issue_date_obj.replace(year=issue_date_obj.year + 3).strftime("%d %b %Y")
+    except ValueError:
+        valid_until_str = issue_date_obj.replace(month=2, day=28, year=issue_date_obj.year + 3).strftime("%d %b %Y")
+    issue_date_str = issue_date_obj.strftime("%d %b %Y")
+
+    with get_db() as conn:
+        active_emps = conn.execute(
+            """
+            SELECT e.* FROM hrms_employees e
+            WHERE e.status IN ('active', 'probation')
+            AND e.id NOT IN (SELECT employee_id FROM hrms_id_cards WHERE status IN ('issued', 'dispatched'))
+            """
+        ).fetchall()
+
+        issued_count = 0
+        for emp_row in active_emps:
+            emp = dict(emp_row)
+            card_id = f"idc_{uuid.uuid4().hex[:10]}"
+            qr_code = f"FHV-{uuid.uuid4().hex[:8].upper()}"
+            existing_cnt = conn.execute(
+                "SELECT COUNT(*) FROM hrms_id_cards WHERE employee_id = ?", (emp["id"],)
+            ).fetchone()[0]
+            card_number = f"IDC-{emp['emp_code']}-{existing_cnt + 1:02d}"
+
+            conn.execute(
+                """
+                INSERT INTO hrms_id_cards (
+                    id, employee_id, card_number, issue_date, valid_until,
+                    blood_group, emergency_contact, status, qr_verification_code,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, 'issued', ?, ?, ?)
+                """,
+                (
+                    card_id, emp["id"], card_number, issue_date_str, valid_until_str,
+                    emp.get("blood_group") or "N/A", emp.get("emergency_contact") or emp.get("phone") or "",
+                    qr_code, now, now
+                ),
+            )
+            issued_count += 1
+
+        return {"status": "success", "issued_count": issued_count}
+
+
+@router.post("/id-cards/{card_id}/dispatch")
+def dispatch_id_card(card_id: str, req: IdCardDispatchRequest, user: Annotated[dict, Depends(require_staff)]):
+    """Mark physical ID card as dispatched with courier tracking / handover notes."""
+    init_hrms_tables()
+    now = _utcnow()
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM hrms_id_cards WHERE id = ?", (card_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="ID card not found")
+
+        conn.execute(
+            """
+            UPDATE hrms_id_cards
+            SET status = 'dispatched', dispatched_at = ?, dispatch_tracking_number = ?, dispatch_notes = ?, updated_at = ?
+            WHERE id = ?
+            """,
+            (now, req.tracking_number.strip(), req.notes.strip(), now, card_id),
+        )
+        updated = conn.execute(
+            """
+            SELECT c.*, e.name as emp_name, e.emp_code, e.designation, e.department
+            FROM hrms_id_cards c
+            JOIN hrms_employees e ON c.employee_id = e.id
+            WHERE c.id = ?
+            """,
+            (card_id,),
+        ).fetchone()
+        return dict(updated)
+
+
+@router.post("/id-cards/bulk-dispatch")
+def bulk_dispatch_id_cards(req: IdCardBulkDispatchRequest, user: Annotated[dict, Depends(require_staff)]):
+    """Bulk dispatch multiple ID cards."""
+    init_hrms_tables()
+    now = _utcnow()
+    with get_db() as conn:
+        if not req.card_ids:
+            return {"status": "no_op", "dispatched_count": 0}
+
+        placeholders = ",".join("?" for _ in req.card_ids)
+        cur = conn.execute(
+            f"""
+            UPDATE hrms_id_cards
+            SET status = 'dispatched', dispatched_at = ?, dispatch_notes = ?, updated_at = ?
+            WHERE id IN ({placeholders})
+            """,
+            [now, req.notes.strip(), now, *req.card_ids],
+        )
+        return {"status": "success", "dispatched_count": cur.rowcount}
+
+
+@router.get("/id-cards/{card_id}/pdf")
+def download_id_card_pdf(
+    card_id: str,
+    layout: str = Query("cr80", pattern="^(cr80|a4_sheet)$"),
+    user: Annotated[dict, Depends(require_staff)] = None,
+):
+    """Download official printable ID badge PDF (CR80 or A4 printable sheet)."""
+    init_hrms_tables()
+    with get_db() as conn:
+        card_row = conn.execute("SELECT * FROM hrms_id_cards WHERE id = ?", (card_id,)).fetchone()
+        if not card_row:
+            raise HTTPException(status_code=404, detail="ID card not found")
+        card = dict(card_row)
+
+        emp_row = conn.execute("SELECT * FROM hrms_employees WHERE id = ?", (card["employee_id"],)).fetchone()
+        if not emp_row:
+            raise HTTPException(status_code=404, detail="Employee not found")
+        emp = dict(emp_row)
+
+        pdf_bytes = render_id_card_pdf(emp=emp, card=card, layout=layout)
+        filename = f"IDCard_{emp['emp_code']}_{layout}.pdf"
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'inline; filename="{filename}"'},
+        )
+
+
+@router.get("/public/verify/{code}")
+def public_verify_employee_credential(code: str):
+    """Public employee credential verification endpoint for QR scanners. No authentication required."""
+    init_hrms_tables()
+    clean_code = code.strip()
+
+    with get_db() as conn:
+        row = conn.execute(
+            """
+            SELECT c.*, e.name as emp_name, e.emp_code, e.designation, e.department,
+                   e.status as emp_status, e.joining_date, e.email as emp_email
+            FROM hrms_id_cards c
+            JOIN hrms_employees e ON c.employee_id = e.id
+            WHERE c.qr_verification_code = ? OR c.card_number = ? OR e.emp_code = ?
+            ORDER BY c.created_at DESC
+            LIMIT 1
+            """,
+            (clean_code, clean_code, clean_code.upper()),
+        ).fetchone()
+
+        if not row:
+            emp_row = conn.execute(
+                "SELECT * FROM hrms_employees WHERE emp_code = ?", (clean_code.upper(),)
+            ).fetchone()
+            if not emp_row:
+                return {
+                    "verified": False,
+                    "status": "not_found",
+                    "detail": f"No employee credential found for verification code '{clean_code}'.",
+                }
+            emp = dict(emp_row)
+            return {
+                "verified": True,
+                "status": "active" if emp["status"] == "active" else "inactive",
+                "employee_name": emp["name"],
+                "emp_code": emp["emp_code"],
+                "designation": emp["designation"],
+                "department": emp["department"],
+                "joining_date": emp["joining_date"],
+                "card_number": "PENDING_ISSUANCE",
+                "issue_date": emp["joining_date"],
+                "valid_until": "Ongoing",
+                "card_status": "active",
+                "issuing_organization": "Fund Horizon Private Limited",
+                "registration": "AMFI Registered Mutual Fund Distributor (ARN-345439)",
+                "signatory": "Mr. Manohar Hemdev (Partner)",
+                "office_address": "Flat No - 502, Whispering Palms, Sector-12, Kharghar, Navi Mumbai - 410210",
+                "contact": "+91 9702019449 | support@fundhorizon.com",
+            }
+
+        rec = dict(row)
+        is_active = rec["emp_status"] in ("active", "probation") and rec["status"] != "revoked"
+
+        return {
+            "verified": True,
+            "status": "valid" if is_active else "inactive",
+            "employee_name": rec["emp_name"],
+            "emp_code": rec["emp_code"],
+            "designation": rec["designation"],
+            "department": rec["department"],
+            "joining_date": rec["joining_date"],
+            "card_number": rec["card_number"],
+            "issue_date": rec["issue_date"],
+            "valid_until": rec["valid_until"],
+            "blood_group": rec["blood_group"] or "N/A",
+            "card_status": rec["status"],
+            "dispatched_at": rec.get("dispatched_at"),
+            "dispatch_tracking_number": rec.get("dispatch_tracking_number"),
+            "issuing_organization": "Fund Horizon Private Limited",
+            "registration": "AMFI Registered Mutual Fund Distributor (ARN-345439)",
+            "signatory": "Mr. Manohar Hemdev (Partner)",
+            "office_address": "Flat No - 502, Whispering Palms, Sector-12, Kharghar, Navi Mumbai - 410210",
+            "contact": "+91 9702019449 | support@fundhorizon.com",
+            "verified_at": _utcnow(),
+        }
 

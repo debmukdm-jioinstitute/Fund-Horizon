@@ -10,6 +10,7 @@ import {
   type Payslip,
   type AttendanceRecord,
   type LeaveRecord,
+  type IdCardRecord,
   fetchHrmsStats,
   fetchEmployees,
   createEmployee,
@@ -32,9 +33,14 @@ import {
   submitLeave,
   updateLeaveStatus,
   formatInr,
+  fetchIdCards,
+  issueIdCard,
+  bulkIssueIdCards,
+  dispatchIdCard,
+  getIdCardPdfUrl,
 } from "@/lib/hrmsApi";
 
-type HrmsTab = "overview" | "employees" | "letters" | "payroll" | "attendance";
+type HrmsTab = "overview" | "employees" | "letters" | "payroll" | "attendance" | "id_cards";
 
 const CARD_CLS = "rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]";
 const SOFT_CLS = "bg-[#F8FAFB] dark:bg-[#1B2432]";
@@ -55,6 +61,7 @@ export default function HrmsPage() {
   const [payslips, setPayslips] = useState<Payslip[]>([]);
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
   const [leaves, setLeaves] = useState<LeaveRecord[]>([]);
+  const [idCards, setIdCards] = useState<IdCardRecord[]>([]);
   const [actionMsg, setActionMsg] = useState<{ text: string; isError?: boolean } | null>(null);
 
   // Filter & modal states
@@ -62,6 +69,28 @@ export default function HrmsPage() {
   const [empDeptFilter, setEmpDeptFilter] = useState("all");
   const [empModalOpen, setEmpModalOpen] = useState(false);
   const [editingEmp, setEditingEmp] = useState<Partial<Employee> | null>(null);
+
+  // ID Cards state
+  const [idCardFilter, setIdCardFilter] = useState<string>("all");
+  const [idCardSearch, setIdCardSearch] = useState<string>("");
+  const [issueCardModalOpen, setIssueCardModalOpen] = useState(false);
+  const [issuingEmpId, setIssuingEmpId] = useState<string>("");
+  const [cardBloodGroup, setCardBloodGroup] = useState<string>("O+");
+  const [cardEmergencyContact, setCardEmergencyContact] = useState<string>("");
+  const [cardValidityYears, setCardValidityYears] = useState<number>(3);
+  const [issuingCard, setIssuingCard] = useState(false);
+
+  // Dispatch modal
+  const [dispatchModalOpen, setDispatchModalOpen] = useState(false);
+  const [dispatchingCard, setDispatchingCard] = useState<IdCardRecord | null>(null);
+  const [dispatchTrackingNo, setDispatchTrackingNo] = useState<string>("");
+  const [dispatchNotes, setDispatchNotes] = useState<string>("");
+  const [submittingDispatch, setSubmittingDispatch] = useState(false);
+
+  // Preview modal
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [previewCard, setPreviewCard] = useState<IdCardRecord | null>(null);
+  const [previewSide, setPreviewSide] = useState<"front" | "back">("front");
 
   // Letter generator states
   const [selectedLetterType, setSelectedLetterType] = useState<string>("internship_offer");
@@ -96,7 +125,7 @@ export default function HrmsPage() {
 
   const loadData = useCallback(async () => {
     try {
-      const [s, emps, tmpls, lets, runs, atts, lvs] = await Promise.all([
+      const [s, emps, tmpls, lets, runs, atts, lvs, cards] = await Promise.all([
         fetchHrmsStats().catch(() => null),
         fetchEmployees().catch(() => []),
         fetchLetterTemplates().catch(() => ({})),
@@ -104,6 +133,7 @@ export default function HrmsPage() {
         fetchPayrollRuns().catch(() => []),
         fetchAttendance({ date: attDate }).catch(() => []),
         fetchLeaves().catch(() => []),
+        fetchIdCards().catch(() => []),
       ]);
       if (s) setStats(s);
       setEmployees(emps);
@@ -112,6 +142,7 @@ export default function HrmsPage() {
       setPayrollRuns(runs);
       setAttendance(atts);
       setLeaves(lvs);
+      setIdCards(cards);
 
       if (runs.length > 0) {
         const targetRun = selectedRunId || runs[0].id;
@@ -362,6 +393,85 @@ export default function HrmsPage() {
     }
   };
 
+  // ID Card handlers
+  const handleIssueCard = async () => {
+    if (!issuingEmpId) {
+      showToast("Please select an employee", true);
+      return;
+    }
+    setIssuingCard(true);
+    try {
+      const card = await issueIdCard({
+        employee_id: issuingEmpId,
+        blood_group: cardBloodGroup,
+        emergency_contact: cardEmergencyContact,
+        validity_years: cardValidityYears,
+      });
+      showToast(`ID Card ${card.card_number} issued successfully!`);
+      setIssueCardModalOpen(false);
+      const updatedCards = await fetchIdCards();
+      setIdCards(updatedCards);
+      loadData();
+    } catch (err: unknown) {
+      showToast(getErrMsg(err), true);
+    } finally {
+      setIssuingCard(false);
+    }
+  };
+
+  const handleBulkIssueCards = async () => {
+    if (!window.confirm("Generate and issue official ID cards for all active staff who do not have an active card yet?")) return;
+    try {
+      const res = await bulkIssueIdCards();
+      showToast(`Bulk ID cards issued: ${res.issued_count} new cards generated!`);
+      const updatedCards = await fetchIdCards();
+      setIdCards(updatedCards);
+      loadData();
+    } catch (err: unknown) {
+      showToast(getErrMsg(err), true);
+    }
+  };
+
+  const handleConfirmDispatch = async () => {
+    if (!dispatchingCard) return;
+    setSubmittingDispatch(true);
+    try {
+      await dispatchIdCard(dispatchingCard.id, {
+        tracking_number: dispatchTrackingNo || undefined,
+        notes: dispatchNotes || undefined,
+      });
+      showToast(`ID Card ${dispatchingCard.card_number} marked as dispatched!`);
+      setDispatchModalOpen(false);
+      setDispatchingCard(null);
+      setDispatchTrackingNo("");
+      setDispatchNotes("");
+      const updatedCards = await fetchIdCards();
+      setIdCards(updatedCards);
+      loadData();
+    } catch (err: unknown) {
+      showToast(getErrMsg(err), true);
+    } finally {
+      setSubmittingDispatch(false);
+    }
+  };
+
+  const filteredCards = useMemo(() => {
+    return idCards.filter((c) => {
+      if (idCardFilter !== "all" && c.status !== idCardFilter) return false;
+      if (idCardSearch) {
+        const s = idCardSearch.toLowerCase();
+        return (
+          c.card_number.toLowerCase().includes(s) ||
+          c.emp_name.toLowerCase().includes(s) ||
+          c.emp_code.toLowerCase().includes(s) ||
+          c.department.toLowerCase().includes(s) ||
+          c.qr_verification_code.toLowerCase().includes(s)
+        );
+      }
+      return true;
+    });
+  }, [idCards, idCardFilter, idCardSearch]);
+
   const filteredEmployees = useMemo(() => {
     return employees.filter((e) => {
       if (empDeptFilter !== "all" && e.department !== empDeptFilter) return false;
@@ -446,14 +556,27 @@ export default function HrmsPage() {
             </svg>
             Letter Generator
           </button>
+          <button
+            onClick={() => {
+              if (employees.length > 0) setIssuingEmpId(employees[0].id);
+              setIssueCardModalOpen(true);
+            }}
+            className={SEC_BTN}
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+            </svg>
+            Issue ID Card
+          </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex border-b border-[#E4E9EF] dark:border-[#2B3644]">
+      <div className="mb-6 flex border-b border-[#E4E9EF] dark:border-[#2B3644] overflow-x-auto">
         {[
           { id: "overview", label: "Overview & KPIs" },
           { id: "employees", label: `Employees (${employees.length})` },
+          { id: "id_cards", label: `ID Cards & QR (${idCards.length})` },
           { id: "letters", label: "Document & Letter Generator" },
           { id: "payroll", label: "Indian Payroll & Payslips" },
           { id: "attendance", label: "Attendance & Leaves" },
@@ -478,7 +601,7 @@ export default function HrmsPage() {
       {tab === "overview" && (
         <div className="space-y-6">
           {/* Top KPI Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div className={`${CARD_CLS} p-5`}>
               <div className="flex items-center justify-between">
                 <span className={`text-xs font-semibold uppercase tracking-wider ${MUTED_CLS}`}>Total Headcount</span>
@@ -537,6 +660,21 @@ export default function HrmsPage() {
               </div>
               <div className={`mt-2 text-3xl font-bold ${INK_CLS}`}>{stats?.pending_leaves ?? 0}</div>
               <div className={`mt-1 text-xs ${MUTED_CLS}`}>Requires managerial review</div>
+            </div>
+
+            <div className={`${CARD_CLS} p-5 cursor-pointer hover:border-[#006F64] transition-colors`} onClick={() => setTab("id_cards")}>
+              <div className="flex items-center justify-between">
+                <span className={`text-xs font-semibold uppercase tracking-wider ${MUTED_CLS}`}>ID Cards & Badges</span>
+                <span className="rounded-full bg-teal-50 p-2 text-[#006F64] dark:bg-teal-950 dark:text-[#75E1CE]">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                  </svg>
+                </span>
+              </div>
+              <div className={`mt-2 text-3xl font-bold ${INK_CLS}`}>{stats?.id_cards_total ?? idCards.length}</div>
+              <div className={`mt-1 text-xs ${MUTED_CLS}`}>
+                {stats?.id_cards_dispatched ?? idCards.filter((c) => c.status === "dispatched").length} Dispatched · QR Verified
+              </div>
             </div>
           </div>
 
@@ -736,6 +874,17 @@ export default function HrmsPage() {
                           className="font-medium text-[#006F64] hover:underline"
                         >
                           Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIssuingEmpId(emp.id);
+                            setCardBloodGroup(emp.blood_group || "O+");
+                            setCardEmergencyContact(emp.emergency_contact || emp.phone || "");
+                            setIssueCardModalOpen(true);
+                          }}
+                          className="font-medium text-emerald-600 hover:underline"
+                        >
+                          ID Card
                         </button>
                         <button
                           onClick={() => {
@@ -1240,6 +1389,222 @@ export default function HrmsPage() {
       )}
 
       {/* ------------------------------------------------------------- */}
+      {/* TAB 6: ID CARDS & QR VERIFICATION */}
+      {/* ------------------------------------------------------------- */}
+      {tab === "id_cards" && (
+        <div className="space-y-6">
+          {/* Header & Action Bar */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className={`text-lg font-bold ${INK_CLS}`}>Employee ID Cards & Verification QR</h2>
+              <p className={`text-xs ${MUTED_CLS}`}>
+                CR80 vertical PVC badges with authorized signatory Mr. Manohar Hemdev and tamper-proof QR credentials.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button onClick={handleBulkIssueCards} className={SEC_BTN}>
+                <svg className="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Bulk Issue for Active Staff
+              </button>
+              <button
+                onClick={() => {
+                  if (employees.length > 0) setIssuingEmpId(employees[0].id);
+                  setIssueCardModalOpen(true);
+                }}
+                className={TEAL_BTN}
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Issue Single ID Card
+              </button>
+            </div>
+          </div>
+
+          {/* Filters Bar */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-1 items-center gap-3">
+              <input
+                type="text"
+                placeholder="Search by card #, employee name, code, dept or QR code..."
+                value={idCardSearch}
+                onChange={(e) => setIdCardSearch(e.target.value)}
+                className={`w-full max-w-md rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-3 py-1.5 text-xs ${INK_CLS} placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#006F64]`}
+              />
+              <select
+                value={idCardFilter}
+                onChange={(e) => setIdCardFilter(e.target.value)}
+                className={`rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-3 py-1.5 text-xs ${INK_CLS} focus:outline-none`}
+              >
+                <option value="all">All Statuses</option>
+                <option value="issued">Pending Dispatch (Issued)</option>
+                <option value="dispatched">Dispatched</option>
+                <option value="revoked">Revoked</option>
+              </select>
+            </div>
+            <span className={`text-xs ${MUTED_CLS}`}>Showing {filteredCards.length} ID cards</span>
+          </div>
+
+          {/* ID Cards Table */}
+          <div className={`${CARD_CLS} overflow-hidden`}>
+            {filteredCards.length === 0 ? (
+              <div className="p-12 text-center">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800">
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                  </svg>
+                </div>
+                <h3 className={`text-sm font-semibold ${INK_CLS}`}>No ID Cards Found</h3>
+                <p className={`mt-1 text-xs ${MUTED_CLS}`}>
+                  Generate individual or bulk ID cards for staff with scannable QR verification.
+                </p>
+                <div className="mt-4 flex justify-center gap-2">
+                  <button onClick={handleBulkIssueCards} className={SEC_BTN}>
+                    Bulk Issue for Active Staff
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (employees.length > 0) setIssuingEmpId(employees[0].id);
+                      setIssueCardModalOpen(true);
+                    }}
+                    className={TEAL_BTN}
+                  >
+                    Issue First ID Card
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className={`border-b border-[#E4E9EF] dark:border-[#2B3644] ${SOFT_CLS}`}>
+                      <th className="py-3 px-4 font-semibold">Card #</th>
+                      <th className="py-3 px-4 font-semibold">Employee</th>
+                      <th className="py-3 px-4 font-semibold">Blood / Emergency</th>
+                      <th className="py-3 px-4 font-semibold">Validity</th>
+                      <th className="py-3 px-4 font-semibold">Status & Dispatch</th>
+                      <th className="py-3 px-4 font-semibold">Verification QR</th>
+                      <th className="py-3 px-4 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E4E9EF] dark:divide-[#2B3644]">
+                    {filteredCards.map((card) => (
+                      <tr key={card.id} className="hover:bg-slate-50/50 dark:hover:bg-[#1B2432]/50">
+                        <td className="py-3 px-4">
+                          <span className={`font-mono font-bold ${INK_CLS}`}>{card.card_number}</span>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className={`font-semibold ${INK_CLS}`}>{card.emp_name}</div>
+                          <div className={`text-[11px] ${MUTED_CLS}`}>
+                            {card.emp_code} · {card.designation} ({card.department})
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-1.5">
+                            <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-800 dark:bg-red-950 dark:text-red-300">
+                              {card.blood_group || "O+"}
+                            </span>
+                            <span className={`text-[11px] ${MUTED_CLS}`}>
+                              {card.emergency_contact || "Emergency: N/A"}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className={INK_CLS}>{card.issue_date}</div>
+                          <div className={`text-[11px] ${MUTED_CLS}`}>Valid to: {card.valid_until}</div>
+                        </td>
+                        <td className="py-3 px-4">
+                          {card.status === "dispatched" ? (
+                            <div>
+                              <span className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                DISPATCHED
+                              </span>
+                              {card.dispatch_tracking_number && (
+                                <div className={`mt-0.5 text-[10px] font-mono ${MUTED_CLS}`}>
+                                  Track: {card.dispatch_tracking_number}
+                                </div>
+                              )}
+                            </div>
+                          ) : card.status === "issued" ? (
+                            <span className="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                              PENDING DISPATCH
+                            </span>
+                          ) : (
+                            <span className="inline-block rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-800 dark:bg-red-950 dark:text-red-300">
+                              REVOKED
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          <a
+                            href={`/verify/employee?code=${card.qr_verification_code}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded bg-[#EBF6F4] dark:bg-[#163330] px-2 py-1 font-mono text-[11px] font-semibold text-[#006F64] dark:text-[#75E1CE] hover:underline"
+                            title="Open public verification page"
+                          >
+                            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {card.qr_verification_code}
+                          </a>
+                        </td>
+                        <td className="py-3 px-4 text-right space-x-2">
+                          <button
+                            onClick={() => {
+                              setPreviewCard(card);
+                              setPreviewSide("front");
+                              setPreviewModalOpen(true);
+                            }}
+                            className="font-medium text-[#006F64] hover:underline"
+                          >
+                            Preview
+                          </button>
+                          <a
+                            href={getIdCardPdfUrl(card.id, "cr80")}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-blue-600 hover:underline"
+                            title="Standard 54x85.6mm PVC Badge PDF"
+                          >
+                            CR80 PDF
+                          </a>
+                          <a
+                            href={getIdCardPdfUrl(card.id, "a4_sheet")}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-slate-600 dark:text-slate-300 hover:underline"
+                            title="A4 Printable Sheet with Front & Back"
+                          >
+                            Print Sheet
+                          </a>
+                          {card.status === "issued" && (
+                            <button
+                              onClick={() => {
+                                setDispatchingCard(card);
+                                setDispatchTrackingNo("");
+                                setDispatchNotes("");
+                                setDispatchModalOpen(true);
+                              }}
+                              className="font-medium text-emerald-600 hover:underline"
+                            >
+                              Dispatch
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
       {/* MODAL: ADD / EDIT EMPLOYEE */}
       {/* ------------------------------------------------------------- */}
       {empModalOpen && editingEmp && (
@@ -1402,6 +1767,34 @@ export default function HrmsPage() {
                     onChange={(e) => setEditingEmp({ ...editingEmp, bank_ifsc: e.target.value.toUpperCase() })}
                     placeholder="HDFC0000123"
                     className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 font-mono ${INK_CLS}`}
+                  />
+                </div>
+              </div>
+
+              {/* Row 5: Emergency & Medical: Blood Group, Emergency Contact */}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label className={`block font-semibold ${INK_CLS} mb-1`}>Blood Group</label>
+                  <select
+                    value={editingEmp.blood_group || "O+"}
+                    onChange={(e) => setEditingEmp({ ...editingEmp, blood_group: e.target.value })}
+                    className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 ${INK_CLS}`}
+                  >
+                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => (
+                      <option key={bg} value={bg}>
+                        {bg}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={`block font-semibold ${INK_CLS} mb-1`}>Emergency Contact Phone</label>
+                  <input
+                    type="text"
+                    value={editingEmp.emergency_contact || ""}
+                    onChange={(e) => setEditingEmp({ ...editingEmp, emergency_contact: e.target.value })}
+                    placeholder="+91 98765 43210"
+                    className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 ${INK_CLS}`}
                   />
                 </div>
               </div>
@@ -1570,6 +1963,389 @@ export default function HrmsPage() {
               <button onClick={handleSubmitLeave} className={TEAL_BTN}>
                 Submit Request
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* MODAL: ISSUE ID CARD */}
+      {/* ------------------------------------------------------------- */}
+      {issueCardModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className={`w-full max-w-md ${CARD_CLS} p-6 shadow-2xl`}>
+            <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-3 mb-4">
+              <div>
+                <h3 className={`text-base font-bold ${INK_CLS}`}>Issue Official ID Card</h3>
+                <p className={`text-[11px] ${MUTED_CLS}`}>
+                  Generates tamper-proof QR code & vertical CR80 badge
+                </p>
+              </div>
+              <button
+                onClick={() => setIssueCardModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs">
+              <div>
+                <label className={`block font-semibold ${INK_CLS} mb-1`}>Select Employee *</label>
+                <select
+                  value={issuingEmpId}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    setIssuingEmpId(id);
+                    const emp = employees.find((x) => x.id === id);
+                    if (emp) {
+                      setCardBloodGroup(emp.blood_group || "O+");
+                      setCardEmergencyContact(emp.emergency_contact || emp.phone || "");
+                    }
+                  }}
+                  className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 ${INK_CLS}`}
+                >
+                  <option value="">-- Choose Employee --</option>
+                  {employees.map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {e.emp_code} - {e.name} ({e.designation})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={`block font-semibold ${INK_CLS} mb-1`}>Blood Group</label>
+                  <select
+                    value={cardBloodGroup}
+                    onChange={(e) => setCardBloodGroup(e.target.value)}
+                    className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 ${INK_CLS}`}
+                  >
+                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => (
+                      <option key={bg} value={bg}>
+                        {bg}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={`block font-semibold ${INK_CLS} mb-1`}>Validity Period</label>
+                  <select
+                    value={cardValidityYears}
+                    onChange={(e) => setCardValidityYears(Number(e.target.value))}
+                    className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 ${INK_CLS}`}
+                  >
+                    <option value={1}>1 Year</option>
+                    <option value={2}>2 Years</option>
+                    <option value={3}>3 Years (Recommended)</option>
+                    <option value={5}>5 Years</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className={`block font-semibold ${INK_CLS} mb-1`}>Emergency Contact Phone</label>
+                <input
+                  type="text"
+                  value={cardEmergencyContact}
+                  onChange={(e) => setCardEmergencyContact(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 ${INK_CLS}`}
+                />
+              </div>
+
+              <div className="rounded-lg bg-teal-50 dark:bg-teal-950/40 p-3 border border-teal-200 dark:border-teal-900/60 text-[11px] text-[#006F64] dark:text-[#75E1CE]">
+                <div className="font-semibold mb-1">Standard Issue Specifications:</div>
+                <ul className="list-disc list-inside space-y-0.5 text-[10.5px]">
+                  <li>Vertical CR80 54mm × 85.6mm PVC layout</li>
+                  <li>Tamper-proof online verification QR integration</li>
+                  <li>Authorized Signatory: Mr. Manohar Hemdev (Partner)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-5 flex items-center justify-end gap-2 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-3">
+              <button onClick={() => setIssueCardModalOpen(false)} className={SEC_BTN}>
+                Cancel
+              </button>
+              <button onClick={handleIssueCard} disabled={issuingCard || !issuingEmpId} className={TEAL_BTN}>
+                {issuingCard ? "Generating..." : "Issue ID Card"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* MODAL: DISPATCH ID CARD */}
+      {/* ------------------------------------------------------------- */}
+      {dispatchModalOpen && dispatchingCard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className={`w-full max-w-md ${CARD_CLS} p-6 shadow-2xl`}>
+            <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-3 mb-4">
+              <div>
+                <h3 className={`text-base font-bold ${INK_CLS}`}>Dispatch Employee ID Card</h3>
+                <p className={`text-[11px] ${MUTED_CLS}`}>
+                  Record courier tracking or physical handover details
+                </p>
+              </div>
+              <button
+                onClick={() => setDispatchModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs">
+              <div className="rounded-lg bg-slate-50 dark:bg-slate-800/60 p-3 border border-slate-200 dark:border-slate-700">
+                <div className="flex justify-between">
+                  <span className={MUTED_CLS}>Card Number:</span>
+                  <span className={`font-mono font-bold ${INK_CLS}`}>{dispatchingCard.card_number}</span>
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span className={MUTED_CLS}>Employee:</span>
+                  <span className={`font-semibold ${INK_CLS}`}>{dispatchingCard.emp_name} ({dispatchingCard.emp_code})</span>
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span className={MUTED_CLS}>Department:</span>
+                  <span className={INK_CLS}>{dispatchingCard.department}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className={`block font-semibold ${INK_CLS} mb-1`}>
+                  Courier Tracking # / Handover Receipt
+                </label>
+                <input
+                  type="text"
+                  value={dispatchTrackingNo}
+                  onChange={(e) => setDispatchTrackingNo(e.target.value)}
+                  placeholder="e.g. DTDC-884920492 / In-Hand Handover"
+                  className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 font-mono ${INK_CLS}`}
+                />
+              </div>
+
+              <div>
+                <label className={`block font-semibold ${INK_CLS} mb-1`}>Handover / Courier Notes</label>
+                <textarea
+                  rows={3}
+                  value={dispatchNotes}
+                  onChange={(e) => setDispatchNotes(e.target.value)}
+                  placeholder="e.g. Dispatched via BlueDart Air to Bangalore office or handed over at Mumbai HQ"
+                  className={`w-full rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-2 ${INK_CLS}`}
+                />
+              </div>
+            </div>
+
+            <div className="mt-5 flex items-center justify-end gap-2 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-3">
+              <button onClick={() => setDispatchModalOpen(false)} className={SEC_BTN}>
+                Cancel
+              </button>
+              <button onClick={handleConfirmDispatch} disabled={submittingDispatch} className={TEAL_BTN}>
+                {submittingDispatch ? "Saving..." : "Confirm Dispatch"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* MODAL: INTERACTIVE CARD PREVIEW */}
+      {/* ------------------------------------------------------------- */}
+      {previewModalOpen && previewCard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
+          <div className={`w-full max-w-lg ${CARD_CLS} p-6 shadow-2xl my-auto`}>
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-3 mb-4">
+              <div>
+                <h3 className={`text-base font-bold ${INK_CLS}`}>ID Badge Preview</h3>
+                <p className={`text-[11px] ${MUTED_CLS}`}>
+                  {previewCard.card_number} · {previewCard.emp_name}
+                </p>
+              </div>
+              <button
+                onClick={() => setPreviewModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Front / Back Switch */}
+            <div className="mb-4 flex justify-center">
+              <div className="inline-flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
+                <button
+                  onClick={() => setPreviewSide("front")}
+                  className={`rounded-md px-4 py-1.5 text-xs font-semibold transition-all ${
+                    previewSide === "front"
+                      ? "bg-white text-[#006F64] shadow dark:bg-[#171E2A] dark:text-[#75E1CE]"
+                      : "text-slate-600 dark:text-slate-400"
+                  }`}
+                >
+                  Front Side (Identity)
+                </button>
+                <button
+                  onClick={() => setPreviewSide("back")}
+                  className={`rounded-md px-4 py-1.5 text-xs font-semibold transition-all ${
+                    previewSide === "back"
+                      ? "bg-white text-[#006F64] shadow dark:bg-[#171E2A] dark:text-[#75E1CE]"
+                      : "text-slate-600 dark:text-slate-400"
+                  }`}
+                >
+                  Back Side (QR & Verification)
+                </button>
+              </div>
+            </div>
+
+            {/* Simulated CR80 Card */}
+            <div className="flex justify-center py-2">
+              <div className="relative w-[280px] h-[440px] rounded-2xl bg-white border border-slate-300 shadow-2xl overflow-hidden flex flex-col justify-between text-slate-900 select-none">
+                {previewSide === "front" ? (
+                  <>
+                    {/* Top Navy Header */}
+                    <div className="bg-[#0B2545] p-3 text-white text-center border-b-2 border-[#BA791A]">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <div className="h-4 w-4 rounded-full bg-[#006F64] flex items-center justify-center text-[10px] font-bold text-white">
+                          FH
+                        </div>
+                        <div className="font-bold tracking-tight text-sm">FUND HORIZON</div>
+                      </div>
+                      <div className="text-[9px] tracking-wider text-slate-300 mt-0.5">
+                        AMFI REG NO: ARN-345439
+                      </div>
+                    </div>
+
+                    {/* Photo + Identity */}
+                    <div className="flex-1 flex flex-col items-center justify-center p-3 text-center">
+                      <div className="w-20 h-24 rounded-lg bg-slate-100 border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 mb-2">
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span className="text-[8px] font-semibold mt-1">STAFF PHOTO</span>
+                      </div>
+
+                      <div className="font-bold text-base text-[#0B2545]">{previewCard.emp_name}</div>
+                      <div className="text-[11px] font-semibold text-[#006F64]">{previewCard.designation}</div>
+                      <div className="text-[10px] text-slate-500">{previewCard.department}</div>
+
+                      {/* Detail Pill Box */}
+                      <div className="w-full mt-3 grid grid-cols-2 gap-1.5 text-left bg-slate-50 rounded-lg p-2 border border-slate-200 text-[9.5px]">
+                        <div>
+                          <span className="text-slate-400 block text-[8px] font-semibold">EMP ID</span>
+                          <span className="font-mono font-bold text-[#0B2545]">{previewCard.emp_code}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[8px] font-semibold">BLOOD GROUP</span>
+                          <span className="font-bold text-red-600">{previewCard.blood_group || "O+"}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[8px] font-semibold">ISSUED</span>
+                          <span className="text-slate-700">{previewCard.issue_date}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[8px] font-semibold">VALID UNTIL</span>
+                          <span className="text-slate-700 font-semibold">{previewCard.valid_until}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Authorized Signatory Footer */}
+                    <div className="border-t border-slate-200 bg-slate-50 p-2 text-center">
+                      <div className="text-[10px] font-serif italic text-slate-800 font-bold">
+                        Manohar Hemdev
+                      </div>
+                      <div className="text-[8px] font-semibold uppercase tracking-wider text-slate-500">
+                        Authorized Signatory · Partner
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Back Header */}
+                    <div className="bg-[#0B2545] p-2 text-white text-center border-b-2 border-[#BA791A]">
+                      <div className="font-bold tracking-wider text-xs">SECURITY & VERIFICATION</div>
+                      <div className="text-[8px] text-slate-300">GOVERNMENT & REGULATORY COMPLIANT</div>
+                    </div>
+
+                    {/* Instructions + QR */}
+                    <div className="flex-1 flex flex-col items-center justify-between p-3 text-center">
+                      <div className="text-[8px] text-slate-500 leading-tight">
+                        This card is official property of Fund Horizon. Loss must be reported immediately. If found, please return to:
+                      </div>
+
+                      <div className="text-[8.5px] font-medium text-slate-700 bg-slate-50 p-1.5 rounded border border-slate-200 w-full text-left leading-tight">
+                        <div className="font-bold text-[#0B2545]">FUND HORIZON</div>
+                        <div>104, 1st Floor, Chirag Infotech, Plot A-201, Road No 16, Wagle Estate, Thane - 400604</div>
+                        <div className="mt-0.5 text-[#006F64] font-semibold">Web: www.fundhorizon.website</div>
+                        <div>Emergency: {previewCard.emergency_contact || "+91 98765 43210"}</div>
+                      </div>
+
+                      {/* QR Box */}
+                      <div className="flex flex-col items-center my-1">
+                        <div className="w-24 h-24 bg-white border-2 border-slate-800 rounded-lg p-1.5 flex flex-col items-center justify-center shadow-inner">
+                          {/* Mini QR representation */}
+                          <div className="w-20 h-20 bg-slate-900 rounded grid grid-cols-5 gap-0.5 p-1">
+                            {Array.from({ length: 25 }).map((_, i) => (
+                              <div
+                                key={i}
+                                className={`rounded-sm ${
+                                  [0, 1, 3, 4, 5, 9, 12, 15, 19, 20, 21, 23, 24].includes(i)
+                                    ? "bg-white"
+                                    : "bg-slate-900"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <div className="mt-1 font-mono text-[9px] font-bold text-[#006F64] bg-[#EBF6F4] px-1.5 py-0.5 rounded">
+                          {previewCard.qr_verification_code}
+                        </div>
+                        <div className="text-[7.5px] text-slate-400 mt-0.5">
+                          Scan to verify online credential
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Back Footer */}
+                    <div className="border-t border-slate-200 bg-slate-50 p-1.5 text-center text-[7.5px] text-slate-400">
+                      CARD NO: {previewCard.card_number} · TAMPER-PROOF RFID/NFC READY
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-3">
+              <a
+                href={`/verify/employee?code=${previewCard.qr_verification_code}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#006F64] dark:text-[#75E1CE] hover:underline"
+              >
+                <span>Verify Online Page ↗</span>
+              </a>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href={getIdCardPdfUrl(previewCard.id, "cr80")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={SEC_BTN}
+                >
+                  CR80 Badge (PDF)
+                </a>
+                <a
+                  href={getIdCardPdfUrl(previewCard.id, "a4_sheet")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={TEAL_BTN}
+                >
+                  A4 Print Sheet (PDF)
+                </a>
+              </div>
             </div>
           </div>
         </div>

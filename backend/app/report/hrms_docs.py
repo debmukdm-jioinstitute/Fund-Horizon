@@ -12,6 +12,10 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, mm
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.graphics import renderPDF
+from reportlab.graphics.barcode import qr
+from reportlab.graphics.shapes import Drawing
+from reportlab.pdfgen import canvas
 from reportlab.platypus import (
     HRFlowable,
     Image as RLImage,
@@ -560,4 +564,271 @@ def render_payslip_pdf(emp: dict[str, Any], slip: dict[str, Any]) -> bytes:
     story.append(ft_table)
 
     doc.build(story)
+    return buf.getvalue()
+
+
+# -------------------------------------------------------------------------
+# Official Employee ID Card Generator (CR80 & A4 Badge Sheet)
+# -------------------------------------------------------------------------
+
+CARD_W = 54 * mm   # 153.07 pt
+CARD_H = 85.6 * mm # 242.65 pt
+
+
+def _draw_id_card_front(c: canvas.Canvas, x: float, y: float, emp: dict[str, Any], card: dict[str, Any]) -> None:
+    """Draw front side of Fund Horizon official ID badge at origin (x, y)."""
+    c.saveState()
+    c.translate(x, y)
+
+    # 1. Outer border & card background
+    c.setFillColor(colors.HexColor("#FFFFFF"))
+    c.setStrokeColor(colors.HexColor("#CBD5E1"))
+    c.setLineWidth(0.8)
+    c.roundRect(0, 0, CARD_W, CARD_H, 6, fill=1, stroke=1)
+
+    # 2. Top Navy header banner
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.roundRect(0, CARD_H - 46, CARD_W, 46, 6, fill=1, stroke=0)
+    c.rect(0, CARD_H - 46, CARD_W, 20, fill=1, stroke=0)  # square off bottom header corners
+
+    # Teal accent line
+    c.setFillColor(colors.HexColor("#006F64"))
+    c.rect(0, CARD_H - 48, CARD_W, 2, fill=1, stroke=0)
+
+    # Logo in header
+    if LOGO_PATH.exists():
+        try:
+            c.drawImage(str(LOGO_PATH), (CARD_W - 75) / 2, CARD_H - 26, width=75, height=18, preserveAspectRatio=True, mask="auto")
+        except Exception:
+            pass
+
+    c.setFillColor(colors.HexColor("#E0E7FF"))
+    c.setFont(BOLD_FONT, 4.8)
+    c.drawCentredString(CARD_W / 2, CARD_H - 34, "AMFI REGISTERED DISTRIBUTOR · ARN-345439")
+
+    c.setFillColor(colors.HexColor("#BA791A"))
+    c.setFont(BOLD_FONT, 5.5)
+    c.drawCentredString(CARD_W / 2, CARD_H - 42, "EMPLOYEE IDENTIFICATION CARD")
+
+    # 3. Avatar Circle with initials
+    avatar_y = CARD_H - 84
+    c.setFillColor(colors.HexColor("#006F64"))
+    c.circle(CARD_W / 2, avatar_y, 22, fill=1, stroke=0)
+    c.setFillColor(colors.HexColor("#F8FAFC"))
+    c.circle(CARD_W / 2, avatar_y, 20.5, fill=1, stroke=0)
+
+    name = (emp.get("name") or "Employee").strip()
+    parts = name.split()
+    initials = (parts[0][0] + (parts[-1][0] if len(parts) > 1 else "")).upper()
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.setFont(BOLD_FONT, 13)
+    c.drawCentredString(CARD_W / 2, avatar_y - 4.5, initials)
+
+    # 4. Employee Name
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.setFont(BOLD_FONT, 9.5)
+    c.drawCentredString(CARD_W / 2, avatar_y - 25, name[:24])
+
+    # 5. Designation & Department
+    desig = (emp.get("designation") or "Associate").strip()
+    c.setFillColor(colors.HexColor("#006F64"))
+    c.setFont(BOLD_FONT, 7)
+    c.drawCentredString(CARD_W / 2, avatar_y - 35, desig[:28])
+
+    dept = (emp.get("department") or "General").strip()
+    c.setFillColor(colors.HexColor("#4A5568"))
+    c.setFont(BODY_FONT, 6)
+    c.drawCentredString(CARD_W / 2, avatar_y - 44, dept[:30])
+
+    # 6. Emp Code Pill
+    badge_w = 64
+    badge_h = 13
+    badge_x = (CARD_W - badge_w) / 2
+    badge_y = avatar_y - 62
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.roundRect(badge_x, badge_y, badge_w, badge_h, 3, fill=1, stroke=0)
+
+    code = emp.get("emp_code") or "FH-000"
+    c.setFillColor(colors.HexColor("#FFFFFF"))
+    c.setFont(BOLD_FONT, 7)
+    c.drawCentredString(CARD_W / 2, badge_y + 3.2, f"ID: {code}")
+
+    # 7. Details card
+    c.setFillColor(colors.HexColor("#F8FAFC"))
+    c.setStrokeColor(colors.HexColor("#E2E8F0"))
+    c.roundRect(8, 12, CARD_W - 16, 32, 4, fill=1, stroke=1)
+
+    j_date = emp.get("joining_date") or "N/A"
+    b_group = card.get("blood_group") or emp.get("blood_group") or "N/A"
+    em_contact = card.get("emergency_contact") or emp.get("emergency_contact") or emp.get("phone") or "+91 9702019449"
+
+    c.setFillColor(colors.HexColor("#64748B"))
+    c.setFont(BODY_FONT, 5)
+    c.drawString(13, 34, "JOINING DATE")
+    c.drawString(13, 25, "BLOOD GROUP")
+    c.drawString(13, 16, "EMERGENCY")
+
+    c.setFillColor(colors.HexColor("#0F172A"))
+    c.setFont(BOLD_FONT, 5)
+    c.drawString(55, 34, f": {j_date}")
+    c.drawString(55, 25, f": {b_group}")
+    c.drawString(55, 16, f": {em_contact[:16]}")
+
+    # 8. Bottom accent
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.roundRect(0, 0, CARD_W, 6, 3, fill=1, stroke=0)
+    c.setFillColor(colors.HexColor("#BA791A"))
+    c.rect(0, 4, CARD_W, 1.5, fill=1, stroke=0)
+
+    c.restoreState()
+
+
+def _draw_id_card_back(c: canvas.Canvas, x: float, y: float, emp: dict[str, Any], card: dict[str, Any]) -> None:
+    """Draw back side of Fund Horizon official ID badge at origin (x, y)."""
+    c.saveState()
+    c.translate(x, y)
+
+    # 1. Outer border & card background
+    c.setFillColor(colors.HexColor("#FFFFFF"))
+    c.setStrokeColor(colors.HexColor("#CBD5E1"))
+    c.setLineWidth(0.8)
+    c.roundRect(0, 0, CARD_W, CARD_H, 6, fill=1, stroke=1)
+
+    # 2. Top header
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.roundRect(0, CARD_H - 18, CARD_W, 18, 6, fill=1, stroke=0)
+    c.rect(0, CARD_H - 18, CARD_W, 10, fill=1, stroke=0)
+    c.setFillColor(colors.HexColor("#FFFFFF"))
+    c.setFont(BOLD_FONT, 6)
+    c.drawCentredString(CARD_W / 2, CARD_H - 12, "VERIFICATION & COMPLIANCE")
+
+    # 3. Verification QR Code
+    qr_code_str = card.get("qr_verification_code") or emp.get("emp_code") or "FH-000"
+    emp_code = emp.get("emp_code", "")
+    verify_url = f"https://fundhorizon.website/verify/employee?code={emp_code}&id={qr_code_str}"
+
+    widget = qr.QrCodeWidget(verify_url)
+    bounds = widget.getBounds()
+    qw = bounds[2] - bounds[0]
+    qh = bounds[3] - bounds[1]
+    qr_size = 54
+    d = Drawing(qr_size, qr_size, transform=[qr_size / qw, 0, 0, qr_size / qh, 0, 0])
+    d.add(widget)
+
+    # Background box around QR
+    c.setFillColor(colors.HexColor("#FFFFFF"))
+    c.setStrokeColor(colors.HexColor("#CBD5E1"))
+    c.roundRect((CARD_W - qr_size - 6) / 2, CARD_H - 82 - 3, qr_size + 6, qr_size + 6, 3, fill=1, stroke=1)
+    renderPDF.draw(d, c, (CARD_W - qr_size) / 2, CARD_H - 82)
+
+    c.setFillColor(colors.HexColor("#006F64"))
+    c.setFont(BOLD_FONT, 5.5)
+    c.drawCentredString(CARD_W / 2, CARD_H - 91, "SCAN TO VERIFY CREDENTIALS")
+
+    valid_until = card.get("valid_until") or "31 Oct 2029"
+    c.setFillColor(colors.HexColor("#64748B"))
+    c.setFont(BODY_FONT, 4.8)
+    c.drawCentredString(CARD_W / 2, CARD_H - 98, f"Card No: {card.get('card_number', 'IDC-001')} · Valid: {valid_until}")
+
+    # 4. Return policy & instructions
+    c.setFillColor(colors.HexColor("#F8FAFC"))
+    c.setStrokeColor(colors.HexColor("#E2E8F0"))
+    c.roundRect(8, CARD_H - 146, CARD_W - 16, 42, 3, fill=1, stroke=1)
+
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.setFont(BOLD_FONT, 5)
+    c.drawCentredString(CARD_W / 2, CARD_H - 110, "RETURN IF FOUND")
+
+    c.setFillColor(colors.HexColor("#475569"))
+    c.setFont(BODY_FONT, 4.5)
+    c.drawCentredString(CARD_W / 2, CARD_H - 118, "This card is property of Fund Horizon.")
+    c.drawCentredString(CARD_W / 2, CARD_H - 125, "502, Whispering Palms, Sector-12,")
+    c.drawCentredString(CARD_W / 2, CARD_H - 132, "Kharghar, Navi Mumbai, Raigad - 410210")
+    c.drawCentredString(CARD_W / 2, CARD_H - 139, "+91 9702019449 | support@fundhorizon.com")
+
+    # 5. Authorized Signatory with Manohar signature/stamp
+    c.setFillColor(colors.HexColor("#64748B"))
+    c.setFont(BODY_FONT, 4.8)
+    c.drawCentredString(CARD_W / 2, 45, "Authorized Signatory")
+
+    if MANOHAR_STAMP_PATH.exists():
+        try:
+            c.drawImage(str(MANOHAR_STAMP_PATH), (CARD_W - 64) / 2, 20, width=64, height=23, preserveAspectRatio=True, mask="auto")
+        except Exception:
+            pass
+
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.setFont(BOLD_FONT, 6)
+    c.drawCentredString(CARD_W / 2, 14, "Mr. Manohar Hemdev")
+
+    c.setFillColor(colors.HexColor("#006F64"))
+    c.setFont(BOLD_FONT, 4.8)
+    c.drawCentredString(CARD_W / 2, 7, "Partner · Fund Horizon (ARN-345439)")
+
+    # Bottom stripe
+    c.setFillColor(colors.HexColor("#0B2545"))
+    c.roundRect(0, 0, CARD_W, 4, 2, fill=1, stroke=0)
+
+    c.restoreState()
+
+
+def render_id_card_pdf(emp: dict[str, Any], card: dict[str, Any], layout: str = "cr80") -> bytes:
+    """Generate official printable ID card PDF with verification QR and Mr. Manohar Hemdev's signature/stamp.
+
+    layout:
+      - 'cr80': Standard 2-page CR80 document (54mm x 85.6mm) ready for direct card/PVC badge printers.
+      - 'a4_sheet': Single A4 page containing both Front and Back cards side-by-side with trim guidelines.
+    """
+    buf = io.BytesIO()
+
+    if layout == "a4_sheet":
+        # A4 page with Front & Back side-by-side
+        a4_w, a4_h = A4
+        c = canvas.Canvas(buf, pagesize=A4)
+
+        # Header title
+        c.setFillColor(colors.HexColor("#0B2545"))
+        c.setFont(BOLD_FONT, 14)
+        c.drawCentredString(a4_w / 2, a4_h - 25 * mm, "FUND HORIZON · OFFICIAL EMPLOYEE IDENTIFICATION BADGE")
+
+        c.setFillColor(colors.HexColor("#64748B"))
+        c.setFont(BODY_FONT, 8.5)
+        c.drawCentredString(a4_w / 2, a4_h - 31 * mm, "Standard CR80 Printable Sheet · Trim along borders and laminate or insert in lanyard badge holder")
+
+        # Position Front and Back side-by-side in center
+        gap = 12 * mm
+        total_w = (CARD_W * 2) + gap
+        start_x = (a4_w - total_w) / 2
+        card_y = a4_h - 45 * mm - CARD_H
+
+        # Draw Front
+        _draw_id_card_front(c, start_x, card_y, emp, card)
+
+        # Draw Back
+        _draw_id_card_back(c, start_x + CARD_W + gap, card_y, emp, card)
+
+        # Labels under cards
+        c.setFillColor(colors.HexColor("#0B2545"))
+        c.setFont(BOLD_FONT, 8)
+        c.drawCentredString(start_x + CARD_W / 2, card_y - 6 * mm, "FRONT SIDE")
+        c.drawCentredString(start_x + CARD_W + gap + CARD_W / 2, card_y - 6 * mm, "BACK SIDE (WITH VERIFICATION QR)")
+
+        # Cutting guidelines box
+        c.setStrokeColor(colors.HexColor("#94A3B8"))
+        c.setDash(2, 2)
+        c.rect(start_x - 3 * mm, card_y - 3 * mm, CARD_W + 6 * mm, CARD_H + 6 * mm, fill=0, stroke=1)
+        c.rect(start_x + CARD_W + gap - 3 * mm, card_y - 3 * mm, CARD_W + 6 * mm, CARD_H + 6 * mm, fill=0, stroke=1)
+        c.setDash()
+
+        c.showPage()
+        c.save()
+    else:
+        # 2-Page dedicated CR80
+        c = canvas.Canvas(buf, pagesize=(CARD_W, CARD_H))
+        _draw_id_card_front(c, 0, 0, emp, card)
+        c.showPage()
+        _draw_id_card_back(c, 0, 0, emp, card)
+        c.showPage()
+        c.save()
+
     return buf.getvalue()

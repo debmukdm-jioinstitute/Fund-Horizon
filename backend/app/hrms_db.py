@@ -130,12 +130,41 @@ def init_hrms_tables() -> None:
                 created_at TEXT NOT NULL
             );
 
+            CREATE TABLE IF NOT EXISTS hrms_id_cards (
+                id TEXT PRIMARY KEY,
+                employee_id TEXT NOT NULL REFERENCES hrms_employees(id),
+                card_number TEXT UNIQUE NOT NULL,
+                issue_date TEXT NOT NULL,
+                valid_until TEXT NOT NULL,
+                blood_group TEXT DEFAULT '',
+                emergency_contact TEXT DEFAULT '',
+                status TEXT NOT NULL DEFAULT 'issued',
+                dispatched_at TEXT,
+                dispatch_tracking_number TEXT,
+                dispatch_notes TEXT,
+                qr_verification_code TEXT UNIQUE NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            );
+
             CREATE INDEX IF NOT EXISTS ix_hrms_emp_dept ON hrms_employees(department, status);
             CREATE INDEX IF NOT EXISTS ix_hrms_payslips_emp ON hrms_payslips(employee_id, year, month);
             CREATE INDEX IF NOT EXISTS ix_hrms_attendance_date ON hrms_attendance(date);
             CREATE INDEX IF NOT EXISTS ix_hrms_leaves_emp ON hrms_leaves(employee_id, status);
+            CREATE INDEX IF NOT EXISTS ix_hrms_id_cards_emp ON hrms_id_cards(employee_id);
+            CREATE INDEX IF NOT EXISTS ix_hrms_id_cards_qr ON hrms_id_cards(qr_verification_code);
             """
         )
+
+        for col, col_def in [
+            ("blood_group", "TEXT DEFAULT ''"),
+            ("emergency_contact", "TEXT DEFAULT ''"),
+            ("photo_url", "TEXT DEFAULT ''"),
+        ]:
+            try:
+                conn.execute(f"ALTER TABLE hrms_employees ADD COLUMN {col} {col_def}")
+            except sqlite3.OperationalError:
+                pass
 
         # Seed initial dummy/starter employees if table is empty
         cnt = conn.execute("SELECT COUNT(*) FROM hrms_employees").fetchone()[0]

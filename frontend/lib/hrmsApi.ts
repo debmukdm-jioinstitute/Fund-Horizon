@@ -32,6 +32,9 @@ export interface Employee {
   basic: number;
   hra: number;
   special_allowance: number;
+  blood_group?: string;
+  emergency_contact?: string;
+  photo_url?: string;
   created_at: string;
   updated_at: string;
   salary_breakdown?: SalaryBreakdown;
@@ -149,7 +152,57 @@ export interface HrmsStats {
   };
   pending_leaves: number;
   letters_count: number;
+  id_cards_total?: number;
+  id_cards_dispatched?: number;
   last_payroll_run: PayrollRun | null;
+}
+
+export interface IdCardRecord {
+  id: string;
+  employee_id: string;
+  card_number: string;
+  issue_date: string;
+  valid_until: string;
+  blood_group: string;
+  emergency_contact: string;
+  status: "issued" | "dispatched" | "revoked";
+  dispatched_at: string | null;
+  dispatch_tracking_number: string | null;
+  dispatch_notes: string | null;
+  qr_verification_code: string;
+  created_at: string;
+  updated_at: string;
+  emp_name: string;
+  emp_code: string;
+  designation: string;
+  department: string;
+  emp_status: string;
+  emp_phone?: string;
+  joining_date?: string;
+}
+
+export interface PublicCredentialVerification {
+  verified: boolean;
+  status: "valid" | "inactive" | "not_found";
+  employee_name?: string;
+  emp_code?: string;
+  designation?: string;
+  department?: string;
+  joining_date?: string;
+  card_number?: string;
+  issue_date?: string;
+  valid_until?: string;
+  blood_group?: string;
+  card_status?: string;
+  dispatched_at?: string;
+  dispatch_tracking_number?: string;
+  issuing_organization?: string;
+  registration?: string;
+  signatory?: string;
+  office_address?: string;
+  contact?: string;
+  verified_at?: string;
+  detail?: string;
 }
 
 async function hrmsRequest<T>(endpoint: string, init?: RequestInit): Promise<T> {
@@ -355,4 +408,70 @@ export function formatInr(val: number | null | undefined): string {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(val);
+}
+
+// -------------------------------------------------------------------------
+// ID Cards & Verification API
+// -------------------------------------------------------------------------
+
+export async function fetchIdCards(params?: {
+  status?: string;
+  employee_id?: string;
+}): Promise<IdCardRecord[]> {
+  const query = new URLSearchParams();
+  if (params?.status) query.set("status", params.status);
+  if (params?.employee_id) query.set("employee_id", params.employee_id);
+  const qs = query.toString();
+  return hrmsRequest<IdCardRecord[]>(`/id-cards${qs ? `?${qs}` : ""}`);
+}
+
+export async function issueIdCard(payload: {
+  employee_id: string;
+  blood_group?: string;
+  emergency_contact?: string;
+  validity_years?: number;
+}): Promise<IdCardRecord> {
+  return hrmsRequest<IdCardRecord>("/id-cards/issue", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function bulkIssueIdCards(): Promise<{ status: string; issued_count: number }> {
+  return hrmsRequest("/id-cards/bulk-issue", {
+    method: "POST",
+  });
+}
+
+export async function dispatchIdCard(
+  cardId: string,
+  payload: { tracking_number?: string; notes?: string }
+): Promise<IdCardRecord> {
+  return hrmsRequest<IdCardRecord>(`/id-cards/${cardId}/dispatch`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function bulkDispatchIdCards(
+  cardIds: string[],
+  notes?: string
+): Promise<{ status: string; dispatched_count: number }> {
+  return hrmsRequest("/id-cards/bulk-dispatch", {
+    method: "POST",
+    body: JSON.stringify({ card_ids: cardIds, notes: notes || "" }),
+  });
+}
+
+export function getIdCardPdfUrl(cardId: string, layout: "cr80" | "a4_sheet" = "cr80"): string {
+  return resolveApiUrl(`/api/hrms/id-cards/${cardId}/pdf?layout=${layout}`);
+}
+
+export async function fetchPublicVerification(code: string): Promise<PublicCredentialVerification> {
+  const targetUrl = resolveApiUrl(`/api/hrms/public/verify/${encodeURIComponent(code)}`);
+  const res = await fetch(targetUrl);
+  if (!res.ok) {
+    throw new ApiError(`Verification lookup failed (${res.status})`, res.status);
+  }
+  return res.json() as Promise<PublicCredentialVerification>;
 }

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import McpCapabilities from "@/components/McpCapabilities";
 import { MCP_URL, createMcpToken, downloadConnector, listMcpTokens, revokeMcpToken, type McpToken } from "@/lib/mcp";
 import { formatISTDate } from "@/lib/terminal-format";
 
@@ -66,6 +67,11 @@ export default function McpSettingsPage() {
         <h2 className="text-[18px] font-semibold">Claude Code (for developers)</h2>
         <button className={big} disabled={!!busy} onClick={claudeCode}>{busy === "code" ? "Preparing…" : "Copy the connect command"}</button>
         <p className={`text-[13px] ${muted}`}>Paste it into your terminal and press Enter. That is all.</p>
+      </section>
+
+      <section className={card}>
+        <h2 className="mb-3 text-[18px] font-semibold">What Claude can and cannot do</h2>
+        <McpCapabilities />
       </section>
 
       <details className={card}>

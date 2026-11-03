@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import McpCapabilities from "@/components/McpCapabilities";
 
 export const metadata: Metadata = {
   title: "Connect Fund Horizon to Claude",
@@ -41,6 +42,9 @@ export default function McpSetup() {
           Click <b>Install</b> in Claude. That is all. Start a new chat and type: <i>&quot;Show me Fund Horizon data health.&quot;</i>
         </Step>
       </ol>
+
+      <h2 className={h2}>What Claude can and cannot do</h2>
+      <div className="mt-3"><McpCapabilities /></div>
 
       <h2 className={h2}>Things to ask</h2>
       <ul className={`${p} list-disc space-y-1 pl-6`}>

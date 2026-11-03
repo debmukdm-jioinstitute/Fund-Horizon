@@ -2489,3 +2489,136 @@ export const saveAiConfig = (doc: Record<string, unknown>) => boFetch<AiConfig>(
 export const resetAiConfig = () => boFetch<AiConfig>("/api/backoffice/ai/config", { method: "DELETE" });
 export const testAiProvider = (name: string) => boFetch<{ provider: string; ok: boolean; error: string | null; ms: number; model?: string }>(`/api/backoffice/ai/test/${encodeURIComponent(name)}`, { method: "POST" });
 export const setFhScoringMode = (mode: "A" | "B") => boFetch<unknown>("/api/backoffice/mutual-funds/fh-score/config", { method: "PUT", body: JSON.stringify({ patch: { ratios: { mode } } }) });
+
+// --- Trade desk (NSE cash, paper by default) ---------------------------------------------------------------------------
+export interface TradeDeskData {
+  config: Record<string, unknown>;
+  universe: string;
+  watchlist: { mode?: string; hits?: TradeHit[]; counts?: Record<string, number>; note?: string } | null;
+  entry: Record<string, unknown> | null;
+  plan: Record<string, unknown> | null;
+  timemachine: { verdict?: string; verdict_notes?: string[]; mc?: Record<string, number>; history?: Record<string, unknown> } | null;
+  orders: { status?: string; orders?: TradeOrder[]; sizing?: Record<string, unknown> } | null;
+  risk: { pass?: number; block?: number; results?: TradeRiskResult[]; warnings?: string[] } | null;
+  portfolio: { cash?: number; positions?: Record<string, number>; currency?: string };
+  broker: { orders?: Record<string, unknown>[] };
+  alerts: Record<string, unknown>[];
+  news: { items?: Record<string, unknown>[]; moves?: Record<string, unknown>[] } | null;
+  session: { tz: string; open: string; close: string; now: string; market: string; currency: string; paper: boolean };
+  disclaimer: string;
+  updated_at?: string | null;
+}
+export interface TradeHit {
+  symbol: string;
+  setups: string[];
+  price: number;
+  rsi?: number | null;
+  volume?: number | null;
+  or_high?: number;
+  or_low?: number;
+  pct_over?: number;
+  at?: string;
+  bar_start?: string;
+}
+export interface TradeOrder {
+  symbol: string;
+  side: string;
+  qty: string;
+  type: string;
+  order_class?: string;
+  limit_price?: string;
+  take_profit_limit_price?: string;
+  stop_loss_stop_price?: string;
+  why?: string;
+  plan?: Record<string, unknown>;
+}
+export interface TradeRiskResult {
+  index: number;
+  symbol: string;
+  verdict: string;
+  reasons: string[];
+  fingerprint: string;
+  plain?: string;
+  max_loss?: number | null;
+}
+export interface TradeTicket {
+  index: number;
+  ready: boolean;
+  status: string;
+  plain: string;
+  fingerprint: string;
+  order: TradeOrder;
+}
+
+export const getTradeDesk = () =>
+  boFetch<{ data: TradeDeskData }>("/api/backoffice/trade").then((r) => r.data);
+
+export const patchTradeConfig = (patch: Record<string, unknown>) =>
+  boFetch<{ success: boolean; data: TradeDeskData }>("/api/backoffice/trade/config", {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+
+export const getTradeUniverse = (kind = "nifty50") =>
+  boFetch<{ kind: string; count: number; symbols: { symbol: string; name: string }[] }>(
+    `/api/backoffice/trade/universe?kind=${encodeURIComponent(kind)}`,
+  );
+
+export const injectTradeBars = (symbol: string, chart: Record<string, unknown>, bars_60d?: unknown[]) =>
+  boFetch<{ ok: boolean }>("/api/backoffice/trade/bars", {
+    method: "POST",
+    body: JSON.stringify({ symbol, chart, bars_60d }),
+  });
+
+export const tradeScanDaily = (body: Record<string, unknown> = {}) =>
+  boFetch<Record<string, unknown>>("/api/backoffice/trade/scan/daily", { method: "POST", body: JSON.stringify(body) });
+
+export const tradeScanOrb = (body: Record<string, unknown> = {}) =>
+  boFetch<Record<string, unknown>>("/api/backoffice/trade/scan/orb", { method: "POST", body: JSON.stringify(body) });
+
+export const tradeEntry = (body: Record<string, unknown>) =>
+  boFetch<Record<string, unknown>>("/api/backoffice/trade/entry", { method: "POST", body: JSON.stringify(body) });
+
+export const tradePlan = (body: Record<string, unknown>) =>
+  boFetch<Record<string, unknown>>("/api/backoffice/trade/plan", { method: "POST", body: JSON.stringify(body) });
+
+export const tradeTimeMachine = (body: Record<string, unknown> = {}) =>
+  boFetch<Record<string, unknown>>("/api/backoffice/trade/timemachine", { method: "POST", body: JSON.stringify(body) });
+
+export const tradeSize = (body: Record<string, unknown> = {}) =>
+  boFetch<Record<string, unknown>>("/api/backoffice/trade/size", { method: "POST", body: JSON.stringify(body) });
+
+export const tradeRisk = (now?: string) =>
+  boFetch<Record<string, unknown>>(`/api/backoffice/trade/risk${now ? `?now=${encodeURIComponent(now)}` : ""}`, {
+    method: "POST",
+  });
+
+export const tradeTickets = () =>
+  boFetch<{ tickets: TradeTicket[]; paper: boolean; note?: string }>("/api/backoffice/trade/tickets");
+
+export const tradeApprove = (index: number, reply: string) =>
+  boFetch<{ ok: boolean; reason?: string }>("/api/backoffice/trade/approve", {
+    method: "POST",
+    body: JSON.stringify({ index, reply }),
+  });
+
+export const tradeFill = (index: number, price?: number) =>
+  boFetch<{ ok: boolean; reason?: string; portfolio?: TradeDeskData["portfolio"] }>("/api/backoffice/trade/fill", {
+    method: "POST",
+    body: JSON.stringify({ index, price }),
+  });
+
+export const tradeFlatten = (symbol: string, price: number) =>
+  boFetch<{ ok: boolean }>("/api/backoffice/trade/flatten", {
+    method: "POST",
+    body: JSON.stringify({ symbol, price }),
+  });
+
+export const tradeReset = () =>
+  boFetch<{ success: boolean; data: TradeDeskData }>("/api/backoffice/trade/reset", { method: "POST" });
+
+export const tradeNews = (items: Record<string, unknown>[], moves?: Record<string, Record<string, unknown>>) =>
+  boFetch<Record<string, unknown>>("/api/backoffice/trade/news", {
+    method: "POST",
+    body: JSON.stringify({ items, moves }),
+  });

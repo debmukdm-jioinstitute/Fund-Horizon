@@ -51,6 +51,7 @@ def test_anonymous_access_denied_on_backoffice(client):
         "/api/backoffice/overview",
         "/api/backoffice/yields",
         "/api/backoffice/derivatives",
+        "/api/backoffice/trade",
         "/api/backoffice/flows",
         "/api/backoffice/pms/strategies",
         "/api/backoffice/pms/accounts",

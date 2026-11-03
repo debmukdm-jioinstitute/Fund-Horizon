@@ -43,6 +43,7 @@ PAGE_API: dict[str, tuple[str, ...]] = {
     "/backoffice/macro": (_B + "yields", _B + "series"),
     "/backoffice/micro": (_B + "micro",),
     "/backoffice/derivatives": (_B + "derivatives",),
+    "/backoffice/trade": (_B + "trade",),
     "/backoffice/flows": (_B + "flows",),
     "/backoffice/research": (_B + "research-notes", _B + "briefing"),
     "/backoffice/data-health": (_B + "data-health",),

@@ -89,7 +89,10 @@ export const NAV_ITEMS: NavItem[] = [
     description: "NSE cash day desk: scanner, entry/exit, time machine, risk and paper tickets",
     icon: (p) => (
       <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 12l3-3 3 3 4-4M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        {/* Candlestick pair — matches Lightning line-art tabs */}
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 3v3M8 18v3M16 5v2M16 17v2" />
+        <rect x="5.5" y="6" width="5" height="12" rx="1" strokeWidth={1.8} />
+        <rect x="13.5" y="7" width="5" height="10" rx="1" strokeWidth={1.8} />
       </svg>
     ),
   },

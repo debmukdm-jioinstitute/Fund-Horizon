@@ -155,3 +155,10 @@ def test_crm_holding_full_cycle_through_the_gateway(client):
     assert not res["isError"]
     _, env = _call(client, token, "api_call", {"method": "GET", "path": f"/api/crm/contacts/{contact}/holdings"})
     assert env["data"]["holdings"] == []
+
+
+def test_token_list_shows_account(client):
+    _login_staff(client, _create_staff("analyst"))
+    client.post("/api/mcp/tokens", json={"label": "test", "days": 7})
+    rows = client.get("/api/mcp/tokens").json()["data"]
+    assert rows and rows[0]["account"]

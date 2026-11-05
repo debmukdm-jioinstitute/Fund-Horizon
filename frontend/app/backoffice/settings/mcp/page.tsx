@@ -91,10 +91,10 @@ export default function McpSettingsPage() {
         <div className="mt-3">
           {tokens.length === 0 ? <p className={`text-[13px] ${muted}`}>None yet.</p> : (
             <table className="terminal-table w-full text-[13px]">
-              <thead><tr><th className="text-left">Name</th><th className="text-left">Created</th><th className="text-left">Expires</th><th className="text-left">Last used</th><th /></tr></thead>
+              <thead><tr><th className="text-left">Name</th><th className="text-left">Account</th><th className="text-left">Created</th><th className="text-left">Expires</th><th className="text-left">Last used</th><th /></tr></thead>
               <tbody>
                 {tokens.map((t) => (
-                  <tr key={t.id}><td>{t.label}</td><td>{formatISTDate(t.created_at)}</td><td>{formatISTDate(t.expires_at)}</td><td>{t.last_used_at ? formatISTDate(t.last_used_at) : "Never"}</td>
+                  <tr key={t.id}><td>{t.label}</td><td>{t.account || "—"}</td><td>{formatISTDate(t.created_at)}</td><td>{formatISTDate(t.expires_at)}</td><td>{t.last_used_at ? formatISTDate(t.last_used_at) : "Never"}</td>
                     <td className="text-right"><button className={small} disabled={!!busy} onClick={() => run("revoke", async () => { await revokeMcpToken(t.id); return "Connection removed. It stopped working immediately."; })}>Remove</button></td></tr>
                 ))}
               </tbody>

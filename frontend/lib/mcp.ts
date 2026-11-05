@@ -3,7 +3,7 @@ import { API_URL, resolveApiUrl } from "./api";
 /** Public address of the Fund Horizon MCP server (the API origin plus /mcp). */
 export const MCP_URL = `${API_URL}/mcp`;
 
-export interface McpToken { id: string; label: string; created_at: string; expires_at: string; last_used_at: string | null }
+export interface McpToken { id: string; label: string; created_at: string; expires_at: string; last_used_at: string | null; account?: string }
 
 async function mcpFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(resolveApiUrl(`${API_URL}${path}`), {

@@ -700,7 +700,8 @@ def list_tokens(staff: Annotated[dict, Depends(require_staff)]):
     rows = conn.execute("SELECT id, label, created_at, expires_at, last_used_at FROM mcp_tokens WHERE customer_id = ? ORDER BY created_at DESC",
                         (staff["id"],)).fetchall()
     conn.close()
-    return {"data": [dict(r) for r in rows], "tools": len(ALL_TOOLS)}
+    account = f'{staff.get("name", "")} ({staff["email"]})' if staff.get("email") else staff.get("name", "")
+    return {"data": [{**dict(r), "account": account} for r in rows], "tools": len(ALL_TOOLS)}
 
 
 @router.delete("/api/mcp/tokens/{token_id}", status_code=204)

@@ -164,6 +164,7 @@ function MutualFunds() {
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [search, setSearch] = useState((params.get("q") ?? "").trim());
   const [recommended, setRecommended] = useState(params.get("rec") === "1");
+  const [custom, setCustom] = useState(params.get("custom") === "1");
   const [ranges, setRanges] = useState<Record<string, { min?: string; max?: string }>>({});
   const [draft, setDraft] = useState<Record<string, { min?: string; max?: string }>>({});
   const [showFilter, setShowFilter] = useState(false);
@@ -193,7 +194,7 @@ function MutualFunds() {
   const [error, setError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
 
-  const q: MfScreenerQuery = { category, plan, search, sort, order, ranges, recommended };
+  const q: MfScreenerQuery = { category, plan, search, sort, order, ranges, recommended, custom };
   const qKey = JSON.stringify(q);
 
   useEffect(() => {
@@ -493,6 +494,15 @@ function MutualFunds() {
         >
           ☆ FH Recommended ({Object.keys(rec.mfMap).length})
         </button>
+        <button
+          type="button"
+          aria-pressed={custom}
+          onClick={() => setCustom((v) => !v)}
+          title="Custom FH score: a fund manager with 3 or more years gets full credit on the manager filter; below 3 years it scales by tenure/3. Fund age is not scored. All other filters are unchanged."
+          className={`${custom ? "terminal-btn-accent" : "terminal-btn"} text-[13px] py-2 px-3`}
+        >
+          Custom: Manager 3y+ = 100%
+        </button>
         <button type="button" aria-expanded={showFilter} onClick={() => setShowFilter((v) => !v)} className="terminal-btn text-[13px] py-2 px-3">
           Filters{activeFilters ? ` (${activeFilters})` : ""} <span className="text-[10px]">▾</span>
         </button>
@@ -502,6 +512,7 @@ function MutualFunds() {
           onClick={() => {
             setQuery("");
             setRecommended(false);
+            setCustom(false);
             setRanges({});
             setDraft({});
             setSort("fh_score");
@@ -945,7 +956,7 @@ function MutualFunds() {
         onRemoveId={compare.remove}
         resolveLabel={compare.resolveLabel}
       />
-      <MfMetricExplain metric={explain?.metric ?? null} row={explain?.row ?? null} onClose={() => setExplain(null)} />
+      <MfMetricExplain metric={explain?.metric ?? null} row={explain?.row ?? null} onClose={() => setExplain(null)} custom={custom} />
     </div>
   );
 }

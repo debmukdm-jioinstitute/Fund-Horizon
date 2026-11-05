@@ -168,6 +168,7 @@ function PmsTracker() {
   const [docModalOpen, setDocModalOpen] = useState(false);
   const [matrixModalOpen, setMatrixModalOpen] = useState(false);
   const [selectedBenchmark, setSelectedBenchmark] = useState(params.get("bench") ?? "BSE 500 TRI");
+  const [customScore, setCustomScore] = useState(params.get("custom") === "1");
   const [methodologyModalOpen, setMethodologyModalOpen] = useState(false);
   const [methodologyStrategy, setMethodologyStrategy] = useState<PmsStrategyItem | null>(null);
 
@@ -232,7 +233,7 @@ function PmsTracker() {
 
   const evaluatedStrategies = useMemo(() => {
     return strategies.map((s) => {
-      const evalRes = evaluatePmsScreening(s, selectedBenchmark);
+      const evalRes = evaluatePmsScreening(s, selectedBenchmark, customScore);
       return {
         ...s,
         benchmark_name: selectedBenchmark,
@@ -242,7 +243,7 @@ function PmsTracker() {
         fh_signal_reasons: evalRes.reasons,
       };
     });
-  }, [strategies, selectedBenchmark]);
+  }, [strategies, selectedBenchmark, customScore]);
 
   const filteredStrategies = useMemo(() => {
     const q = deferredSearch.trim().toLowerCase();
@@ -417,6 +418,16 @@ function PmsTracker() {
               >
                 <span className="text-[12px]">★</span>
                 <span>FH Recommended ({fhRecCount})</span>
+              </button>
+
+              <button
+                type="button"
+                aria-pressed={customScore}
+                onClick={() => setCustomScore((v) => !v)}
+                title="Custom score: a strategy with 3 or more years of track record keeps its full standard score (100% weight); below 3 years the score scales down by tenure/3 on a 20% manager weight. Track record = inception date when disclosed, else the longest reported return horizon (APMI gives no manager start date)."
+                className={`text-[12px] py-1 px-3 font-medium cursor-pointer ${customScore ? "terminal-btn-accent" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"}`}
+              >
+                Custom: Manager 3y+ = 100%
               </button>
 
               <div className="flex items-center gap-1.5 bg-[#F0F3F6] dark:bg-[#1A2332] px-2.5 py-1 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644]">

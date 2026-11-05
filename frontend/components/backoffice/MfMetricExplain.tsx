@@ -66,7 +66,7 @@ function PartRow({ p }: { p: MfExplainPart }) {
   );
 }
 
-export default function MfMetricExplain({ metric, row, onClose }: { metric: { key: string; label: string } | null; row: MfScreenerRow | null; onClose: () => void }) {
+export default function MfMetricExplain({ metric, row, onClose, custom = false }: { metric: { key: string; label: string } | null; row: MfScreenerRow | null; onClose: () => void; custom?: boolean }) {
   const [mounted, setMounted] = useState(false);
   const [data, setData] = useState<MfExplain | null>(null);
   const [err, setErr] = useState("");
@@ -88,9 +88,9 @@ export default function MfMetricExplain({ metric, row, onClose }: { metric: { ke
     if (!key || !code) return;
     const ac = new AbortController();
     setData(null); setErr("");
-    getMfExplain(code, key, ac.signal).then(setData).catch((e) => { if (!ac.signal.aborted) setErr(e instanceof Error && e.message !== "Not Found" ? e.message : "The live breakdown is not available right now (the server may be updating). Close this and try again in a few minutes."); });
+    getMfExplain(code, key, ac.signal, custom).then(setData).catch((e) => { if (!ac.signal.aborted) setErr(e instanceof Error && e.message !== "Not Found" ? e.message : "The live breakdown is not available right now (the server may be updating). Close this and try again in a few minutes."); });
     return () => ac.abort();
-  }, [key, code]);
+  }, [key, code, custom]);
 
   if (!mounted || !metric || !row) return null;
   const g = GLOSSARY[baseKey(metric.key)];

@@ -118,3 +118,19 @@ def test_explain_is_json_safe_for_every_fund():
     df = mf_screener._scored({}, None)
     for _, row in df.sample(300, random_state=1).iterrows():
         json.dumps(fh_score.explain_row(row), allow_nan=False)  # a NaN here was a 500 on the score view
+
+
+def test_custom_score_manager_tenure_full_at_3y_relative_below_and_ignores_fund_age():
+    cust = fh_score.custom_config()
+    assert "manager_only" not in fh_score.load_config()["history"]  # standard config (and its hash) untouched
+    young_fund = dict(history_years=0.5)  # fund age would drag the standard history filter down
+    r3 = _frame(dict(manager_tenure_years=3.0, **young_fund), cust)
+    r8 = _frame(dict(manager_tenure_years=8.0, **young_fund), cust)
+    r15 = _frame(dict(manager_tenure_years=1.5, **young_fund), cust)
+    r0 = _frame(dict(manager_tenure_years=0.0, **young_fund), cust)
+    assert r3["fh_history_raw"] == r8["fh_history_raw"] == 1.0 and r3["fh_score"] == r8["fh_score"]
+    assert r15["fh_history_raw"] == pytest.approx(0.5) and r0["fh_history_raw"] == 0.0
+    assert _frame(dict(manager_tenure_years=3.0, **young_fund))["fh_history_raw"] < 1.0  # standard score still blends fund age
+    assert r3["fh_score"] > r15["fh_score"] > r0["fh_score"]
+    unknown = _frame(dict(manager_tenure_years=np.nan), cust)
+    assert unknown["fh_history_raw"] == 0.0 and unknown["fh_history_cov"] == 0.0  # missing never scores

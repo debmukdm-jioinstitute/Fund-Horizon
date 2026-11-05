@@ -223,3 +223,16 @@ def test_ask_ai_json_normalises_model_shapes():
     out = _ask_ai_json('{"stance":"Sell","confidence":30,"reasons":"one","what_would_change_view":["a","b"]}')
     assert out["confidence"] == "Low" and out["reasons"] == ["one"] and out["what_would_change_view"] == "a b"
     assert _ask_ai_json('{"stance":"Maybe"}') is None
+
+
+def test_custom_score_screener_and_explain(client):
+    _login_staff(client, _create_staff())
+    base = "/api/backoffice/mutual-funds/screener?category=large_cap&plan=Regular&limit=200&sort=fh_score"
+    std = client.get(base).json()["data"]
+    cus = client.get(base + "&custom=true").json()["data"]
+    assert std and len(std) == len(cus)
+    assert all(r["fh_score"] is None or 0 <= r["fh_score"] <= 100 for r in cus)
+    code = cus[0]["code"]
+    ex = client.get(f"/api/backoffice/mutual-funds/screener/explain?code={code}&metric=fh_score&custom=true").json()
+    hist = next(f for f in ex["fh"]["filters"] if f["key"] == "history")
+    assert len(hist["components"]) == 1  # fund age is not a component of the custom score

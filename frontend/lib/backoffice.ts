@@ -904,8 +904,16 @@ export interface PmsScreeningBreakdown {
   rawScore: number;
 }
 
+/** Years of strategy track record, standing in for manager tenure (APMI gives no manager start date): the inception date when disclosed, else the longest reported return horizon (a lower bound). */
+export function pmsTrackYears(item: { inception_date?: string; return_1y_pct?: number; return_3y_cagr_pct?: number }, now = Date.now()): number {
+  const t = item.inception_date ? Date.parse(item.inception_date) : NaN;
+  const fromDate = Number.isNaN(t) ? 0 : Math.max(0, (now - t) / 31557600000);
+  return Math.max(fromDate, item.return_3y_cagr_pct !== undefined ? 3 : item.return_1y_pct !== undefined ? 1 : 0);
+}
+
 export function evaluatePmsScreening(
   item: {
+    inception_date?: string;
     return_1m_pct?: number;
     return_3m_pct?: number;
     return_6m_pct?: number;
@@ -913,7 +921,9 @@ export function evaluatePmsScreening(
     return_3y_cagr_pct?: number;
     aum_crore?: number;
   },
-  selectedBenchmark = "BSE 500 TRI"
+  selectedBenchmark = "BSE 500 TRI",
+  /** Custom score: the standard score is kept whole when the track record is 3 years or more (100% weight) and scaled by 0.8 + 0.2 x years/3 below that. */
+  custom = false
 ): PmsScreeningBreakdown {
   const bench = PMS_BENCHMARKS[selectedBenchmark] || PMS_BENCHMARKS["BSE 500 TRI"];
   const b1m = bench.return_1m;
@@ -1020,7 +1030,8 @@ export function evaluatePmsScreening(
   }
   const totalDownsidePoints = downsideResiliencePoints + aumScalePoints;
 
-  const rawScore = Math.min(100, Math.max(0, totalBenchPoints + totalConsistencyPoints + totalDownsidePoints));
+  const standardScore = Math.min(100, Math.max(0, totalBenchPoints + totalConsistencyPoints + totalDownsidePoints));
+  const rawScore = custom ? standardScore * (0.8 + 0.2 * Math.min(1, pmsTrackYears(item) / 3)) : standardScore;
   const score = Math.round(rawScore * 10) / 10;
   let rating = 1;
   let signal: "Buy" | "Hold" | "Sell" = "Sell";
@@ -1950,6 +1961,8 @@ export interface MfScreenerQuery {
   order: "asc" | "desc";
   ranges: Record<string, { min?: string; max?: string }>;
   recommended?: boolean;
+  /** Custom FH score: manager tenure of 3 years or more earns full credit, below that scales by tenure/3. */
+  custom?: boolean;
   limit?: number;
   offset?: number;
   /** MF Research filters (backend contract): repeated params. */
@@ -1972,6 +1985,7 @@ export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
   o.plan.forEach((p) => q.append("plan", p));
   if (o.search) q.set("search", o.search);
   if (o.recommended) q.set("recommended", "true");
+  if (o.custom) q.set("custom", "true");
   (o.amc ?? []).forEach((a) => q.append("amc", a));
   if (o.sector) q.set("sector", o.sector);
   if (o.watchlist) q.set("watchlist", o.watchlist);
@@ -2043,8 +2057,8 @@ export interface FhMethodology {
 export const getFhMethodology = () => boFetch<FhMethodology>("/api/backoffice/mutual-funds/fh-score/methodology");
 
 /** Live per-fund breakdown of one screener value, computed by the backend from the same frame as the table. */
-export const getMfExplain = (code: string, metric: string, signal?: AbortSignal) =>
-  boFetch<MfExplain>(`/api/backoffice/mutual-funds/screener/explain?${new URLSearchParams({ code, metric }).toString()}`, { signal });
+export const getMfExplain = (code: string, metric: string, signal?: AbortSignal, custom = false) =>
+  boFetch<MfExplain>(`/api/backoffice/mutual-funds/screener/explain?${new URLSearchParams({ code, metric, ...(custom ? { custom: "true" } : {}) }).toString()}`, { signal });
 
 export interface MfQuartileData {
   categories: string[];

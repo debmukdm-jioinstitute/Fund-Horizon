@@ -497,7 +497,7 @@ def _part(grp: pd.DataFrame, code: str, col: str, hb: bool | None, label: str, w
     return out
 
 
-def explain(df: pd.DataFrame, code: str, metric: str) -> dict[str, Any] | None:
+def explain(df: pd.DataFrame, code: str, metric: str, cfg: dict | None = None) -> dict[str, Any] | None:
     """Live, per-fund breakdown of one screener value: its inputs, peer ranks and the rule that produced it."""
     me = df[df["code"] == code]
     if me.empty or metric not in df.columns:
@@ -512,7 +512,7 @@ def explain(df: pd.DataFrame, code: str, metric: str) -> dict[str, Any] | None:
     if metric in ("fh_score", "fh_rating"):
         from app.backoffice import fh_score
 
-        out["fh"] = fh_score.explain_row(r)
+        out["fh"] = fh_score.explain_row(r, cfg)
         out["parts"] = []
         out["rule"] = "FH score: weighted filters, penalties and a consistency adjustment, bounded 0-100. See breakdown."
     elif metric in PILLAR_INPUTS or metric == "ops":

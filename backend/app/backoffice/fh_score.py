@@ -27,7 +27,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "weights_on": {"history": 20, "quartile": 20, "ratios": 20, "outperf": 15, "excess": 15, "drawdown": 10},
     "period_weights": {"1": 0.2, "3": 0.4, "5": 0.4},
     # Filter 1. Owner delegated the choice (2026-10-28): manager tenure >= 3y and fund age >= 5y. Set confirmed false to block auto-recommendation.
-    "history": {"confirmed": True, "manager_tenure_years": 3.0, "fund_history_years": 5.0},
+    "history": {"confirmed": True, "manager_tenure_years": 3.0, "fund_history_years": 5.0},  # custom_config() adds manager_only (not stored here, so the standard config hash is unchanged)
     # Filter 2. Preference order is intentional: Q2/Q3 best, Q1 lower, Q4 lowest.
     "quartile": {
         "points": {"1": 0.6, "2": 1.0, "3": 1.0, "4": 0.0},
@@ -115,6 +115,13 @@ def load_config() -> dict:
     return cfg
 
 
+def custom_config() -> dict:
+    """Standard config with Filter 1 judged on manager tenure alone (>= 3y = 100%, below = tenure/3). Every other filter is unchanged."""
+    cfg = load_config()
+    cfg["history"]["manager_only"] = True
+    return cfg
+
+
 def save_config(patch: dict) -> dict:
     """Persist a partial override; rejects it (nothing written) if the merged weights stop totalling 100."""
     current = _merge(DEFAULT_CONFIG, json.loads(CONFIG_FILE.read_text())) if CONFIG_FILE.exists() else copy.deepcopy(DEFAULT_CONFIG)
@@ -142,6 +149,8 @@ def _f_history(df: pd.DataFrame, cfg: dict) -> tuple[pd.Series, pd.Series]:
     a = _c(df["manager_tenure_years"] / h["manager_tenure_years"])
     b = _c(df["history_years"] / h["fund_history_years"])
     df["fhd_hist_mgr"], df["fhd_hist_age"] = a, b
+    if h.get("manager_only"):  # custom score: tenure >= target earns full credit, below it scales by tenure/target; fund age is ignored
+        return a.fillna(0), a.notna().astype(float)
     return (a.fillna(0) + b.fillna(0)) / 2, (a.notna().astype(float) + b.notna().astype(float)) / 2
 
 
@@ -517,7 +526,8 @@ def explain_row(r: pd.Series, cfg: dict | None = None) -> dict[str, Any]:
     comps: dict[str, list[dict]] = {
         "history": [
             {"label": f"Manager tenure (years, target {cfg['history']['manager_tenure_years']:g})", "value": _n(r["manager_tenure_years"]), "score": _n(r["fhd_hist_mgr"])},
-            {"label": f"Fund history (years, target {cfg['history']['fund_history_years']:g})", "value": _n(r["history_years"]), "score": _n(r["fhd_hist_age"])},
+            *([] if cfg["history"].get("manager_only") else
+              [{"label": f"Fund history (years, target {cfg['history']['fund_history_years']:g})", "value": _n(r["history_years"]), "score": _n(r["fhd_hist_age"])}]),
         ],
         "quartile": [
             {"label": {"ytd": "Year to date", "py1": "Previous calendar year", "py2": "Calendar year before"}[k], "value": _n(r[f"fhd_q_{k}"]),

@@ -1047,29 +1047,29 @@ def _tri_seed_available() -> bool:
 
 _FH_KEY: object | None = None
 _FRAME_TTL_SECONDS = 300
-_FRAME_CACHE: tuple[float, tuple, pd.DataFrame] | None = None
+_FRAME_CACHE: dict[bool, tuple[float, tuple, pd.DataFrame]] = {}  # False = standard FH score, True = custom (manager >= 3y = full credit)
 _FRAME_LOCK = threading.Lock()
 
 
-def _build_frame(sig: tuple) -> pd.DataFrame:
-    global _FRAME_CACHE
+def _build_frame(sig: tuple, custom: bool = False) -> pd.DataFrame:
     try:
         consistency_map = _REPO.screening_consistency_map()
     except Exception:
         consistency_map = {}
-    frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map)
+    frame = mf_screener.all_frame(_REPO.mf_ter_by_code(), manager_map=_mf_manager_map(), consistency_map=consistency_map,
+                                  cfg=fh_score.custom_config() if custom else None)
     frame.attrs["consistency_n"] = len(consistency_map)
-    _FRAME_CACHE = (time.monotonic(), sig, frame)
+    _FRAME_CACHE[custom] = (time.monotonic(), sig, frame)
     return frame
 
 
-def _refresh_in_background(sig: tuple) -> None:
+def _refresh_in_background(sig: tuple, custom: bool = False) -> None:
     if not _FRAME_LOCK.acquire(blocking=False):
         return  # a rebuild is already running
 
     def run() -> None:
         try:
-            _build_frame(sig)
+            _build_frame(sig, custom)
         except Exception:
             logging.getLogger(__name__).exception("Screener frame refresh failed")
         finally:
@@ -1078,7 +1078,7 @@ def _refresh_in_background(sig: tuple) -> None:
     threading.Thread(target=run, daemon=True).start()
 
 
-def _fh_frame() -> pd.DataFrame:
+def _fh_frame(custom: bool = False) -> pd.DataFrame:
     """Scored screener frame with manager and consistency inputs.
 
     Scoring ~3,700 funds costs 10+ seconds, so one frame serves every request (and the facets). After the TTL the stale frame
@@ -1091,16 +1091,16 @@ def _fh_frame() -> pd.DataFrame:
     except Exception:
         inputs = ()
     sig = (cfg_file.stat().st_mtime if cfg_file.exists() else 0, inputs)
-    hit = _FRAME_CACHE
+    hit = _FRAME_CACHE.get(custom)
     if hit and hit[1] == sig:
         if time.monotonic() - hit[0] >= _FRAME_TTL_SECONDS:
-            _refresh_in_background(sig)
+            _refresh_in_background(sig, custom)
         return hit[2]
     with _FRAME_LOCK:
-        hit = _FRAME_CACHE
+        hit = _FRAME_CACHE.get(custom)
         if hit and hit[1] == sig:
             return hit[2]
-        return _build_frame(sig)
+        return _build_frame(sig, custom)
 
 
 def _fh_refresh(frame: pd.DataFrame | None = None, force: bool = False) -> None:
@@ -1175,9 +1175,10 @@ def backoffice_mf_explain(
     staff: Annotated[dict, Depends(require_staff)],
     code: str = Query(..., max_length=32),
     metric: str = Query(..., max_length=40),
+    custom: bool = Query(False, description="Explain the custom score (manager tenure >= 3y = full credit)"),
 ):
     """Why a fund has a given screener value, computed live from the same frame the table uses."""
-    res = mf_screener.explain(_fh_frame(), code, metric)
+    res = mf_screener.explain(_fh_frame(custom), code, metric, fh_score.custom_config() if custom else None)
     if res is None:
         raise HTTPException(404, "Unknown fund or metric.")
     return res
@@ -1205,6 +1206,7 @@ def backoffice_mf_screener(
     quartile_period: str = Query("2y", description="Quartile period: 1y, 2y, 3y or 5y"),
     include_unavailable: bool = Query(True, description="Keep null-quartile rows under a quartile filter"),
     watchlist: str | None = Query(None, max_length=64, description="Restrict to one of the staff member's watchlists"),
+    custom: bool = Query(False, description="Custom FH score: manager tenure >= 3y earns full credit, below 3y scales by tenure/3"),
 ):
     """Trendlyne-style screener over the AMFI + mfapi.in dataset: categories, returns, risk, FH checklist score."""
     if sort not in mf_screener.SORT_KEYS:
@@ -1225,7 +1227,7 @@ def backoffice_mf_screener(
         except ValueError:
             raise HTTPException(422, f"Bad range for {key}") from None
     # One cached, scored frame per 5 minutes (see _fh_frame); each request only filters and sorts it.
-    frame = _fh_frame()
+    frame = _fh_frame(custom)
     df = mf_screener.screen(
         {}, category, plans, search, ranges, sort, order == "desc",
         amcs=amc, manager=manager, min_tenure=min_tenure, include_unknown=include_unknown,
@@ -1233,7 +1235,7 @@ def backoffice_mf_screener(
         frame=frame,
     )
     try:
-        _fh_refresh(frame)
+        _fh_refresh(_fh_frame())  # the FH Recommended list always follows the standard score
     except Exception:
         pass
     df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES), fh_status=_fh_status(df))

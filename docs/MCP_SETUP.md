@@ -62,6 +62,7 @@ Tables (created on first use): `mcp_oauth_clients`, `mcp_oauth_codes`, `mcp_oaut
 | "Couldn't connect" when adding | Address wrong (must end `/mcp`), or proxy not passing `/.well-known`. Run the curl checks above. |
 | Sign-in page says Staff access required | Account is a customer account. |
 | "Invalid email or password" repeatedly | Login is rate-limited per IP; wait a minute. |
+| "Too many wrong passwords" | The account is locked on the MCP sign-in for 15 minutes after 5 wrong passwords (any IP). Wait, then use the right password. |
 | Connector worked, then asks to reconnect | Refresh token expired (90 days) or connection was removed. Reconnect. |
 | 25 connections error | Limit per user. Remove old ones in Settings. |
 

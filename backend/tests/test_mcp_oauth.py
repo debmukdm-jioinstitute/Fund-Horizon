@@ -121,3 +121,16 @@ def test_consent_page_keeps_its_own_csp_so_styles_load(client):
     assert 'type="text"' in r.text  # staff sign in with whatever their login is, not only a strict email
     assert client.get("/oauth/font/GoogleSans-Regular.ttf").status_code == 200
     assert client.get("/oauth/font/../../main.py").status_code == 404
+
+
+def test_account_locks_after_repeated_wrong_passwords(client):
+    from app.api.auth import _reset_auth_rate_limits
+
+    email = _user()
+    cid = _register(client)
+    _, challenge = _pkce()
+    for _ in range(5):
+        _reset_auth_rate_limits()
+        assert _authorize(client, cid, challenge, email, pw="wrong").status_code == 401
+    _reset_auth_rate_limits()
+    assert _authorize(client, cid, challenge, email).status_code == 429  # even the right password waits out the lock

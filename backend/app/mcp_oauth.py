@@ -30,6 +30,8 @@ router = APIRouter(tags=["mcp-oauth"])
 ACCESS_DAYS = 1       # short access token, silently renewed with the refresh token
 REFRESH_DAYS = 90
 CODE_SECONDS = 300
+LOCK_AFTER = 5        # wrong passwords per account ...
+LOCK_MINUTES = 15     # ... inside this window lock the account's MCP sign-in (guessing "admin" from any IP stops here)
 MAX_CLIENTS = 5000    # dynamic registration is open by design; cap it so it cannot fill the disk
 
 
@@ -48,6 +50,7 @@ def _db() -> sqlite3.Connection:
     conn.execute("CREATE TABLE IF NOT EXISTS mcp_oauth_clients (client_id TEXT PRIMARY KEY, name TEXT, redirect_uris TEXT NOT NULL, created_at TEXT NOT NULL)")
     conn.execute("""CREATE TABLE IF NOT EXISTS mcp_oauth_codes (code_sha TEXT PRIMARY KEY, client_id TEXT NOT NULL, customer_id TEXT NOT NULL,
         redirect_uri TEXT NOT NULL, challenge TEXT NOT NULL, expires_at TEXT NOT NULL)""")
+    conn.execute("CREATE TABLE IF NOT EXISTS mcp_oauth_fails (email TEXT NOT NULL, at TEXT NOT NULL)")
     conn.execute("""CREATE TABLE IF NOT EXISTS mcp_oauth_refresh (refresh_sha TEXT PRIMARY KEY, client_id TEXT NOT NULL, customer_id TEXT NOT NULL,
         token_id TEXT NOT NULL, label TEXT NOT NULL, expires_at TEXT NOT NULL)""")
     return conn
@@ -199,10 +202,23 @@ async def authorize_submit(request: Request):
     if form.get("decision") != "allow":
         return go(error="access_denied")
     _check_auth_rate_limit(request)
-    row = sqlite.get_customer_by_email((form.get("email") or "").strip().lower())
+    email = (form.get("email") or "").strip().lower()[:200]
+    since = (_now() - timedelta(minutes=LOCK_MINUTES)).isoformat()
+    conn = _db()
+    with conn:
+        conn.execute("DELETE FROM mcp_oauth_fails WHERE at < ?", (since,))
+    fails = conn.execute("SELECT COUNT(*) FROM mcp_oauth_fails WHERE email = ?", (email,)).fetchone()[0]
+    if fails >= LOCK_AFTER:
+        conn.close()
+        return _page(form, c["name"], f"Too many wrong passwords. Try again in {LOCK_MINUTES} minutes.", 429)
+    row = sqlite.get_customer_by_email(email)
     ok = bool(row) and _verify_password(form.get("password") or "", row["password_hash"])
     if not ok:
+        with conn:
+            conn.execute("INSERT INTO mcp_oauth_fails VALUES (?,?)", (email, _now().isoformat()))
+        conn.close()
         return _page(form, c["name"], "Invalid email or password.", 401)
+    conn.close()
     try:
         require_staff(_public_customer(row))
     except HTTPException as exc:

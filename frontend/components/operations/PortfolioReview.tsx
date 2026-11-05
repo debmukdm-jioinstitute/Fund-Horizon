@@ -113,7 +113,7 @@ export default function PortfolioReview({ customerId, customerName }: { customer
           </table>
         </div>
       )}
-      <details><summary className="cursor-pointer text-[12.5px] font-semibold text-[#006F64] dark:text-[#75E1CE]">Optional: same-instalment comparison data (JSON, computed from the client's Consolidated Account Statement, CAS)</summary>
+      <details><summary className="cursor-pointer text-[12.5px] font-semibold text-[#006F64] dark:text-[#75E1CE]">Optional: same-instalment comparison data (JSON, computed from the client&apos;s Consolidated Account Statement, CAS)</summary>
         <p className={`${hint} mt-1`}>portfolio_xirr = Extended Internal Rate of Return (annualised return on dated investments); nifty50_xirr and nifty500_xirr = the same instalments invested in those indices; ahead_inr_500 and ahead_inr_50 = rupees ahead of the Nifty 500 Total Return Index and the Nifty 50; per_fund = each fund&apos;s lead in % and ₹.</p>
         <textarea className={`${cell} mt-1 h-24`} value={compare} onChange={(e) => setCompare(e.target.value)} placeholder='{"portfolio_xirr":10.42,"nifty50_xirr":5.62,"nifty500_xirr":8.31,"ahead_inr_500":449011,"ahead_inr_50":980886,"funds_ahead_50":22,"per_fund":{"122640":{"pct":3.0,"inr":170029}}}' />
       </details>

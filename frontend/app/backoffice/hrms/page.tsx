@@ -127,13 +127,13 @@ export default function HrmsPage() {
     try {
       const [s, emps, tmpls, lets, runs, atts, lvs, cards] = await Promise.all([
         fetchHrmsStats().catch(() => null),
-        fetchEmployees().catch(() => []),
-        fetchLetterTemplates().catch(() => ({})),
-        fetchLetters().catch(() => []),
-        fetchPayrollRuns().catch(() => []),
-        fetchAttendance({ date: attDate }).catch(() => []),
-        fetchLeaves().catch(() => []),
-        fetchIdCards().catch(() => []),
+        fetchEmployees(),
+        fetchLetterTemplates(),
+        fetchLetters(),
+        fetchPayrollRuns(),
+        fetchAttendance({ date: attDate }),
+        fetchLeaves(),
+        fetchIdCards(),
       ]);
       if (s) setStats(s);
       setEmployees(emps);
@@ -147,7 +147,7 @@ export default function HrmsPage() {
       if (runs.length > 0) {
         const targetRun = selectedRunId || runs[0].id;
         if (!selectedRunId) setSelectedRunId(targetRun);
-        const sls = await fetchPayslips({ run_id: targetRun }).catch(() => []);
+        const sls = await fetchPayslips({ run_id: targetRun });
         setPayslips(sls);
       }
     } catch (err: unknown) {

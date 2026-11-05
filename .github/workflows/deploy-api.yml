@@ -1,7 +1,8 @@
 name: Deploy API (AWS)
 
-# Deploys the API on every push to main that touches backend/, deploy/ or data/, by running deploy/redeploy.sh on the
-# EC2 instance through AWS Systems Manager (no SSH, no manual Session Manager). Skipped until the repo secrets exist.
+# On every push to main that touches backend/, deploy/ or data/: build the image HERE (layer-cached, ~2-4 min), push it to GHCR,
+# then tell the EC2 instance (AWS Systems Manager, no SSH) to pull it and do the health-gated blue/green swap in deploy/redeploy.sh.
+# Nothing is built or installed on the server. Skipped until the repo secrets exist.
 # Needs repo secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY (IAM user allowed ssm:SendCommand, ssm:GetCommandInvocation
 # on the instance + AWS-RunShellScript, ec2:DescribeInstances). Optional variable AWS_REGION (default ap-south-1).
 
@@ -15,10 +16,16 @@ concurrency:
   group: deploy-api
   cancel-in-progress: false
 
+env:
+  IMAGE: ghcr.io/debmukdm-jioinstitute/fund-horizon-api  # GHCR needs lowercase
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -26,21 +33,70 @@ jobs:
     steps:
       - name: Skip when AWS secrets are not set
         if: env.AWS_ACCESS_KEY_ID == ''
-        run: echo "AWS secrets missing, so Actions did not deploy the API (the server timer may still do it)."
-      - name: Run redeploy.sh on the API instance
+        run: echo "AWS secrets missing, so Actions did not build or deploy the API."
+      - uses: actions/checkout@v4
         if: env.AWS_ACCESS_KEY_ID != ''
+      - name: Match the server's CPU (x86_64 or arm64)
+        if: env.AWS_ACCESS_KEY_ID != ''
+        id: arch
+        run: |
+          a=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=fund-horizon-api" "Name=instance-state-name,Values=running" --query 'Reservations[0].Instances[0].Architecture' --output text)
+          case "$a" in arm64) echo "platform=linux/arm64" >> "$GITHUB_OUTPUT" ;; x86_64) echo "platform=linux/amd64" >> "$GITHUB_OUTPUT" ;; *) echo "Unknown instance architecture '$a'"; exit 1 ;; esac
+      - uses: docker/setup-qemu-action@v3
+        if: env.AWS_ACCESS_KEY_ID != '' && steps.arch.outputs.platform == 'linux/arm64'
+      - uses: docker/setup-buildx-action@v3
+        if: env.AWS_ACCESS_KEY_ID != ''
+      - uses: docker/login-action@v3
+        if: env.AWS_ACCESS_KEY_ID != ''
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        if: env.AWS_ACCESS_KEY_ID != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/api.Dockerfile
+          target: lean
+          platforms: ${{ steps.arch.outputs.platform }}
+          push: true
+          tags: ${{ env.IMAGE }}:${{ github.sha }},${{ env.IMAGE }}:latest
+          labels: org.opencontainers.image.source=https://github.com/debmukdm-jioinstitute/Fund-Horizon
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION || 'ap-south-1' }}
+    steps:
+      - name: Pull the image on the API instance and swap
+        if: env.AWS_ACCESS_KEY_ID != ''
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # short-lived, read-only, dies when this job ends
         run: |
           set -euo pipefail
+          echo "::add-mask::$GHCR_TOKEN"
           id=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=fund-horizon-api" "Name=instance-state-name,Values=running" --query 'Reservations[0].Instances[0].InstanceId' --output text)
-          cmd=$(aws ssm send-command --instance-ids "$id" --document-name AWS-RunShellScript --timeout-seconds 2400 \
-            --parameters 'commands=["curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh | sudo -iu ubuntu bash"]' \
-            --query Command.CommandId --output text)
-          for _ in $(seq 1 240); do  # 40 min: a build can queue behind the server's own timer deploy (flock)
+          # The script is fetched at this exact commit so it always matches the image being deployed.
+          cmd_line="curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/${GITHUB_SHA}/deploy/redeploy.sh | sudo -iu ubuntu env FH_IMAGE=${IMAGE}:${GITHUB_SHA} GHCR_TOKEN=${GHCR_TOKEN} bash"
+          params=$(python3 -c 'import json,sys; print(json.dumps({"commands":[sys.argv[1]]}))' "$cmd_line")
+          cmd=$(aws ssm send-command --instance-ids "$id" --document-name AWS-RunShellScript --timeout-seconds 600 \
+            --parameters "$params" --query Command.CommandId --output text)
+          for _ in $(seq 1 60); do  # 10 min
             st=$(aws ssm get-command-invocation --command-id "$cmd" --instance-id "$id" --query Status --output text 2>/dev/null || echo Pending)
             case "$st" in Success) break ;; Failed|Cancelled|TimedOut) aws ssm get-command-invocation --command-id "$cmd" --instance-id "$id" --query '[StandardOutputContent,StandardErrorContent]' --output text | tail -40; exit 1 ;; esac
             sleep 10
           done
-          [ "$st" = Success ] || { echo "Deploy still '$st' after 40 min; check the instance (docker build / disk)."; exit 1; }
+          [ "$st" = Success ] || { echo "Deploy still '$st' after 10 min; check the instance."; exit 1; }
       - name: Check API health
         if: env.AWS_ACCESS_KEY_ID != ''
         run: curl -sf https://api.fundhorizon.website/health

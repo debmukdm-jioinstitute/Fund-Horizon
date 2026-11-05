@@ -1,7 +1,7 @@
 name: Deploy web (Cloudflare)
 
 # Deploys the Next.js app to the fund-horizon-web Worker (fundhorizon.website) on every push to main that touches
-# the frontend. The API deploys itself from the server (deploy/auto-deploy.sh), so it is not handled here.
+# the frontend. The API is built and deployed by deploy-api.yml, so it is not handled here.
 # Needs repo secrets: CLOUDFLARE_API_TOKEN (Workers edit permission) and CLOUDFLARE_ACCOUNT_ID.
 
 on:

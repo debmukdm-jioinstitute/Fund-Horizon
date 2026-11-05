@@ -38,13 +38,13 @@ so there is no CI job. To add a fund house: add its forms page to `AMCS` in `scr
 Never bypass or solve a CAPTCHA or bot check: for a gated site (Kotak) run the harvester with a human at the window, or
 list only the fund house's forms page as a link.
 
-## API deploys: build in GitHub Actions, not on the EC2 box (default)
+## API deploys: build in GitHub Actions, not on the EC2 box
 
-`deploy/redeploy.sh` builds the image on the small EC2 instance, which takes 18-26 min. Default approach for any API
-deploy-speed work: build `deploy/api.Dockerfile` in GitHub Actions (layer cache), push to GHCR, and have the instance
-only `docker pull` and do the health-gated blue/green swap (~2-3 min). Keep the zero-downtime swap and auto-rollback;
-never add a hotfix path that skips the health check. Until then, batch backend changes into one push.
-Status: not built yet; the EC2-build flow in `deploy-api.yml` / `redeploy.sh` is still the live one.
+`.github/workflows/deploy-api.yml` builds `deploy/api.Dockerfile` in GitHub Actions (layer cache), pushes it to GHCR
+(`ghcr.io/debmukdm-jioinstitute/fund-horizon-api:<sha>`), then runs `deploy/redeploy.sh` on the instance through SSM. The instance
+only `docker pull`s and does the health-gated blue/green swap. Nothing is built or installed on EC2, and the old 5-minute
+build timer is retired (`redeploy.sh` removes it). Keep the zero-downtime swap and auto-rollback; never add a hotfix path
+that skips the health check. Details: `docs/DEPLOY.md`.
 
 ## Code style: ponytail (smallest complete change)
 

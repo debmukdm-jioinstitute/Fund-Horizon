@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
-# Zero-downtime API deploy from the latest main. Builds a new container beside the live one, waits until it is
-# healthy, switches a small nginx proxy (reload, no dropped requests), then retires the old container.
-# If the new build is unhealthy it is discarded and the old one keeps serving. Sessions live in the database on
-# /home/ubuntu/fhdata, so nobody is signed out.
-# Manual run (AWS Session Manager, as the ubuntu user; ssm-user cannot touch /home/ubuntu):
-#   curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh | sudo -iu ubuntu bash
-# Normally this runs by itself via deploy/auto-deploy.sh. Secrets stay in /home/ubuntu/fh.env.
+# Zero-downtime API deploy of a PRE-BUILT image. GitHub Actions builds and pushes it to GHCR (deploy-api.yml); this server only
+# pulls it, starts it beside the live one, waits until it is healthy, switches a small nginx proxy (reload, no dropped
+# requests), then retires the old container. If the new image is unhealthy it is discarded and the old one keeps serving.
+# Nothing is built or installed here. Sessions live in the database on /home/ubuntu/fhdata, so nobody is signed out.
+# Needs FH_IMAGE (full image ref) and GHCR_TOKEN (read access to it), both passed in by the workflow. Secrets stay in /home/ubuntu/fh.env.
 set -euo pipefail
 H=/home/ubuntu
-# One deploy at a time: the server timer and the GitHub Actions deploy can fire together; the second waits here.
+# One deploy at a time; a second run waits here.
 exec 8>$H/.redeploy.lock; flock 8
-REPO=https://github.com/debmukdm-jioinstitute/Fund-Horizon
 PX=$H/fh-proxy
-# Every run builds the newest main, so a run queued behind the lock is redundant once that main is already live.
-remote=$(git ls-remote $REPO refs/heads/main | cut -f1)
-[ -n "$remote" ] && [ "$remote" = "$(cat $H/.deploy-ok-sha 2>/dev/null)" ] && { echo "main $remote is already live; nothing to do"; exit 0; }
+# The old 5-minute timer (build on this box) is retired; stop it so it can never fight the Actions deploy.
+sudo rm -f /etc/cron.d/fh-auto-deploy
+if [ -z "${FH_IMAGE:-}" ]; then echo "Deploys now come from GitHub Actions (Deploy API). Nothing to do here."; exit 0; fi
+[ "$FH_IMAGE" = "$(cat $H/.deploy-ok-image 2>/dev/null)" ] && { echo "$FH_IMAGE is already live; nothing to do"; exit 0; }
 D="sudo docker"
 
 start_api() {  # $1 = container name, $2 = image
@@ -48,11 +46,11 @@ server {
 CONF
 }
 
-rm -rf $H/fh-src && git clone --depth 1 $REPO $H/fh-src
-cd $H/fh-src
-git rev-parse HEAD > $H/.last-built-sha
+echo "$GHCR_TOKEN" | $D login ghcr.io -u actions --password-stdin >/dev/null
 $D image inspect fh-api:latest >/dev/null 2>&1 && $D tag fh-api:latest fh-api:prev || true
-$D build -f deploy/api.Dockerfile --target lean -t fh-api:new .
+$D pull -q "$FH_IMAGE"
+$D tag "$FH_IMAGE" fh-api:new
+$D logout ghcr.io >/dev/null
 $D network create fhnet >/dev/null 2>&1 || true
 mkdir -p $PX; touch $PX/default.conf
 
@@ -78,7 +76,8 @@ else
     -v $PX/default.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine >/dev/null
 fi
 echo $new > $PX/active
-git rev-parse HEAD > $H/.deploy-ok-sha
+echo "$FH_IMAGE" > $H/.deploy-ok-image
 $D tag fh-api:new fh-api:latest
 [ "$cur" != none ] && { sleep 15; $D rm -f fh-api-$cur >/dev/null 2>&1 || true; }  # let in-flight requests finish
-echo "API up on $(git rev-parse --short HEAD) (fh-api-$new)"
+$D image prune -f >/dev/null 2>&1 || true  # keep the small disk free
+echo "API up on $FH_IMAGE (fh-api-$new)"

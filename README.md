@@ -121,7 +121,7 @@ flowchart TB
     ACT --> AMFI
     ACT --> FS
     ACT -- "commit refreshed data" --> REPO
-    REPO -- "docker build (redeploy)" --> API
+    REPO -- "Actions build image, EC2 pulls it" --> API
     REPO -- "npm build and wrangler deploy" --> WORKER
 ```
 
@@ -313,7 +313,7 @@ flowchart TB
     W1 -- "all_schemes_metrics.csv<br/>category_summary.csv<br/>nav_monthly/*.csv" --> REPO
     W2 -- "factsheet_links/browser.json" --> REPO
     W3 -- "mf_manager_profiles.json" --> REPO
-    REPO -- "docker build<br/>(redeploy.sh)" --> IMG["API image<br/>dataset baked in"]
+    REPO -- "Actions docker build<br/>(deploy-api.yml)" --> IMG["API image<br/>dataset baked in"]
     IMG --> RUN["Running API<br/>loads the CSVs into memory at start-up"]
 
     subgraph B["Way 2: the API's own collector loop (runs inside the container, writes to SQLite)"]
@@ -549,15 +549,15 @@ kept small so the report stays on one page; a missing logo file never breaks the
 
 ### 12. Deploying and operating
 
-There is **no automatic deploy**. Pushing to `main` updates GitHub only. Two deliberate manual steps put code live.
+The API deploys itself: pushing to `main` runs [`deploy-api.yml`](.github/workflows/deploy-api.yml), which builds the image in GitHub Actions and has the server pull and swap it. The web app is deployed by `deploy-web.yml`. Manual steps below are only a fallback.
 
 ```mermaid
 flowchart LR
     DEV["Developer pushes to main"] --> GHB["GitHub main"]
     GHB --> WEBD["Web: from frontend/<br/>npm run cf:build<br/>npx opennextjs-cloudflare deploy"]
     WEBD --> CFW["Cloudflare Worker updated"]
-    GHB --> APID["API: in AWS Session Manager run<br/>curl .../deploy/redeploy.sh | sudo -iu ubuntu bash"]
-    APID --> EC["On EC2: git clone, docker build,<br/>replace container fh-api"]
+    GHB --> APID["API: Actions builds image,<br/>pushes to GHCR"]
+    APID --> EC["On EC2: docker pull, health check,<br/>blue/green swap"]
 ```
 
 **Deploy the web app** (from `frontend/`, on a machine logged in to Cloudflare with `wrangler`):
@@ -570,15 +570,9 @@ npx opennextjs-cloudflare deploy
 
 The API address is baked in at build time (`https://api.fundhorizon.website`, set in `frontend/package.json` and `frontend/wrangler.jsonc`).
 
-**Deploy the API** (AWS console, then Systems Manager, **Session Manager**, pick `fund-horizon-api`, **Start session**, then paste):
+**Deploy the API:** automatic on push (see [`docs/DEPLOY.md`](docs/DEPLOY.md) for the manual re-run and rollback).
 
-```bash
-curl -sL https://raw.githubusercontent.com/debmukdm-jioinstitute/Fund-Horizon/main/deploy/redeploy.sh | sudo -iu ubuntu bash
-```
-
-> Always keep `sudo -iu ubuntu`. Session Manager logs in as `ssm-user`, which cannot read `/home/ubuntu`; without it the script silently rebuilds the old copy.
-
-The script clones the latest `main`, builds the image from [`deploy/api.Dockerfile`](deploy/api.Dockerfile) (this is where fresh bot data is picked up), and restarts the
+The workflow builds the image from [`deploy/api.Dockerfile`](deploy/api.Dockerfile) (this is where fresh bot data is picked up); the server pulls it and starts the
 container with these settings:
 
 | Setting | Value | Meaning |

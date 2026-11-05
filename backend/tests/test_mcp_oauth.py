@@ -118,3 +118,6 @@ def test_consent_page_keeps_its_own_csp_so_styles_load(client):
     r = client.get("/oauth/authorize", params={"response_type": "code", "client_id": cid, "redirect_uri": CB,
                                                "code_challenge": "c" * 43, "code_challenge_method": "S256"})
     assert r.status_code == 200 and "style-src 'unsafe-inline'" in r.headers["content-security-policy"]
+    assert 'type="text"' in r.text  # staff sign in with whatever their login is, not only a strict email
+    assert client.get("/oauth/font/GoogleSans-Regular.ttf").status_code == 200
+    assert client.get("/oauth/font/../../main.py").status_code == 404

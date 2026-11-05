@@ -14,12 +14,13 @@ import html
 import json
 import os
 import secrets
+from pathlib import Path
 import sqlite3
 from datetime import UTC, datetime, timedelta
 from urllib.parse import urlencode, urlparse
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 
 from app.api.auth import _check_auth_rate_limit, _public_customer, _verify_password, require_staff
 from app.db import sqlite
@@ -125,21 +126,32 @@ def _client(client_id: str) -> dict | None:
 # --------------------------------------------------------------------------- authorize (sign in + approve)
 _PAGE = """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Connect Fund Horizon</title><style>
+@font-face{{font-family:"Google Sans";font-weight:400;src:url(/oauth/font/GoogleSans-Regular.ttf) format("truetype")}}
+@font-face{{font-family:"Google Sans";font-weight:700;src:url(/oauth/font/GoogleSans-Bold.ttf) format("truetype")}}
+*{{font-family:"Google Sans"}}
 body{{font-family:"Google Sans";background:#f4f6f8;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px}}
 main{{background:#fff;border:1px solid #e5e5e5;border-radius:14px;padding:24px;width:100%;max-width:400px;box-sizing:border-box}}
 h1{{font-size:20px;margin:0 0 8px;color:#0b2545}}p{{font-size:15px;line-height:1.5;color:#374151;margin:8px 0}}
 label{{display:block;font-size:14px;font-weight:600;margin-top:14px;color:#181818}}
-input[type=email],input[type=password]{{width:100%;box-sizing:border-box;font-size:16px;padding:12px;margin-top:4px;border:1px solid #c9c9c9;border-radius:8px}}
+input[type=text],input[type=password]{{width:100%;box-sizing:border-box;font-size:16px;padding:12px;margin-top:4px;border:1px solid #c9c9c9;border-radius:8px}}
 button{{width:100%;font-size:16px;font-weight:600;padding:13px;margin-top:16px;border:0;border-radius:8px;cursor:pointer}}
 .ok{{background:#006f64;color:#fff}}.no{{background:#eef0f3;color:#181818}}.err{{color:#b42332;font-size:14px}}
 </style></head><body><main><h1>Connect Fund Horizon to Claude</h1>
 <p><b>{client}</b> wants to use Fund Horizon with your account. It will see and change only what you can, and asks you before any change.</p>
 {error}<form method="post" action="/oauth/authorize">{hidden}
-<label>Email<input type="email" name="email" autocomplete="username" required autofocus></label>
+<label>Email<input type="text" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" name="email" autocomplete="username" required autofocus></label>
 <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
 <button class="ok" name="decision" value="allow">Sign in and allow</button>
 <button class="no" name="decision" value="deny" formnovalidate>Cancel</button></form>
 <p style="font-size:12px;color:#706e6b">Staff accounts only. You can remove this connection any time in Fund Horizon, Settings, Claude connection.</p></main></body></html>"""
+
+@router.get("/oauth/font/{name}")
+def font(name: str):
+    """The project's own Google Sans (same files the PDFs use), so the sign-in page matches the rest of Fund Horizon."""
+    if name not in ("GoogleSans-Regular.ttf", "GoogleSans-Bold.ttf"):
+        raise HTTPException(404, "Not found.")
+    return FileResponse(Path(__file__).parent / "report" / "fonts" / name, media_type="font/ttf", headers={"Cache-Control": "public, max-age=31536000, immutable"})
+
 
 _PARAMS = ("client_id", "redirect_uri", "code_challenge", "state", "scope", "resource")
 
@@ -148,7 +160,7 @@ def _page(p: dict, client: str, error: str = "", status: int = 200) -> HTMLRespo
     hidden = "".join(f'<input type="hidden" name="{k}" value="{html.escape(p.get(k, ""), quote=True)}">' for k in _PARAMS)
     err = f'<p class="err" role="alert">{html.escape(error)}</p>' if error else ""
     return HTMLResponse(_PAGE.format(client=html.escape(client), hidden=hidden, error=err), status_code=status,
-                        headers={"Cache-Control": "no-store", "X-Frame-Options": "DENY", "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'"})
+                        headers={"Cache-Control": "no-store", "X-Frame-Options": "DENY", "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'"})
 
 
 def _validate(p: dict) -> tuple[dict | None, str]:

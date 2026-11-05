@@ -47,6 +47,16 @@ export const NAV_ITEMS: NavItem[] = [
         ),
       },
       {
+        href: "/backoffice/mutual-funds/category-returns",
+        label: "Category Returns",
+        description: "Average, max, min and median return of every fund category, with PDF and Excel",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 20V10m6 10V4m6 16v-7m4 7H2" />
+          </svg>
+        ),
+      },
+      {
         href: "/backoffice/mutual-funds/proposal",
         label: "Investment Proposal",
         description: "Lumpsum proposal for a client: suggested schemes, expected value, returns, allocation and PDF",

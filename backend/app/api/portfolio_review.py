@@ -101,6 +101,10 @@ def live_data(codes: list[str]) -> dict[str, dict]:
     out: dict[str, dict] = {}
     for code, r in fr.iterrows():
         d = {k: (None if r.get(k) != r.get(k) else r.get(k)) for k in _LIVE_COLS}
+        d["name"] = re.sub(r" - (Regular|Direct) Plan.*$", "", str(d["name"] or ""))
+        if isinstance(r.get("quality"), str) and r["quality"] != "ok":  # never show metrics the FH data-quality check excluded
+            out[code] = {"name": d["name"], "cat": d["cat"], "cat_label": d["cat_label"], "nav_date": d["nav_date"], "reason": "Excluded by the FH data-quality check", "falls": {}}
+            continue
         reasons = r.get("fh_signal_reasons")
         d["reason"] = reasons[0] if isinstance(reasons, (list, tuple)) and reasons else ""
         d["recommended"] = bool(d.pop("is_fh_recommended"))

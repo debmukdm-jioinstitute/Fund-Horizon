@@ -14,7 +14,9 @@ FRAME = pd.DataFrame([
     {"code": "122640", "name": "PPFAS Flexi", "cat": "flexi_cap", "cat_label": "Flexi Cap", "nav_date": "04-Nov-2026", "cagr_3y": 11.9, "cap_up_3y": 69.0, "cap_down_3y": 47.0, "cap_ratio_3y": 1.48,
      "max_dd_3y": -11.2, "max_dd_all": -31.3, "history_years": 13.4, "fh_score": 57.5, "fh_signal": "Hold", "fh_signal_reasons": ["in line with peers"], "is_fh_recommended": False},
     {"code": "150579", "name": "Edelweiss G&S", "cat": "gold", "cat_label": "Gold", "nav_date": "04-Nov-2026", "cagr_3y": 33.7, "cap_up_3y": None, "cap_down_3y": None, "cap_ratio_3y": None,
-     "max_dd_3y": -38.8, "max_dd_all": -38.8, "history_years": 4.1, "fh_score": 27.6, "fh_signal": "Sell", "fh_signal_reasons": [], "is_fh_recommended": True}])
+     "max_dd_3y": -38.8, "max_dd_all": -38.8, "history_years": 4.1, "fh_score": 27.6, "fh_signal": "Sell", "fh_signal_reasons": [], "is_fh_recommended": True, "quality": "ok"},
+    {"code": "100177", "name": "Quant Small Cap Fund - Regular Plan - Growth", "cat": "small_cap", "cat_label": "Small Cap", "nav_date": "04-Nov-2026", "cagr_3y": 9.0, "cap_up_3y": 90.0, "cap_down_3y": 90.0,
+     "cap_ratio_3y": 1.0, "max_dd_3y": -20.0, "max_dd_all": -70.0, "history_years": 20.0, "fh_score": 50.0, "fh_signal": "Hold", "fh_signal_reasons": [], "is_fh_recommended": False, "quality": "nav_shock"}])
 
 
 @pytest.fixture
@@ -34,7 +36,8 @@ def test_window_fall_is_the_funds_own_peak_to_trough_and_none_if_too_young():
 def test_pdf_builds_google_sans_only_and_missing_live_data_is_dashed_not_estimated(live):
     rv = api.Review(client={"name": "A B Test", "date": "26 Oct 2026"}, holdings=H)
     live_d = api.live_data([h.code for h in rv.holdings])
-    assert set(live_d) == {"122640", "150579"} and live_d["122640"]["falls"]["covid"] == -11.1 and live_d["150579"]["recommended"] is True
+    q = live_d["100177"]; assert q["reason"] and "fh_score" not in q and q["name"] == "Quant Small Cap Fund"  # excluded fund shows no metrics
+    assert set(live_d) == {"122640", "150579", "100177"} and live_d["122640"]["falls"]["covid"] == -11.1 and live_d["150579"]["recommended"] is True
     d = rv.model_dump(); d["compare"] = {"portfolio_xirr": 1.0, "per_fund": {"122640": {"pct": 1.0, "inr": 1}}, "index_rows": [{"name": "Mirae Large Cap \u2021", "index": "Nifty 50", "period": "p", "ret": 1, "idx": 1, "lead": 0, "inr": 0}]}
     pdf = build_portfolio_review(d, live_d)
     assert pdf.startswith(b"%PDF")

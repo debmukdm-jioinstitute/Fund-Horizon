@@ -275,7 +275,7 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
             f, a = dk.page(); _title(a, "Fund Horizon view on each fund (live, continued)")
         ch = fh_rows[i:i + 13]; rws, cls = [], []
         for h in ch:
-            lv = h["lv"]; sig = lv.get("fh_signal") or ("Not in FH universe" if not lv else "Not scored")
+            lv = h["lv"]; sig = lv.get("fh_signal") or ("Not in FH universe" if not lv else ("Data excluded" if lv.get("reason") else "Not scored"))
             rws.append([h["name"], f"₹{inr(h['value'])}", f"{lv['fh_score']:.1f}" if lv.get("fh_score") is not None else "-", sig, "Yes" if lv.get("recommended") else "-", lv.get("nav_date") or "-", (lv.get("reason") or "")[:95]])
             cls.append([None] * 3 + [SIGNAL_COL.get(sig, GREY), None, None, GREY])
         _table(a, 60, 140, ["Fund", "Value", "FH score", "FH signal", "FH list", "NAV as of", "Basis"], rws, [235, 105, 80, 110, 70, 90, 543], rh=36, fs=9.5, aligns=["l", "r", "c", "c", "c", "c", "l"], colors=cls)
@@ -327,7 +327,7 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
     tk = [("Portfolio today", f"₹{inr(val)} against ₹{inr(inv)} invested: {rs(gain, True)} ({pc(gain/inv*100 if inv else 0)})" + (f"; {xirr:.2f}% a year vs {cmp_.get('nifty500_xirr', 0):.2f}% for the Nifty 500 TRI" if xirr is not None else ""), col(gain)),
           ("Largest holding", f"{top['name']}: ₹{inr(top['value'])} ({top['value']/val*100:.1f}% of the portfolio)", NAVY),
           ("Biggest drag", f"{wk['name']}: {pc(wk['ret'])} on ₹{inr(wk['invested'])} invested", col(wk["ret"])),
-          ("What to act on", recs[0][0] + ": " + recs[0][1][:110], NAVY)]
+          ("What to act on", recs[0][0] + (f" (and {len(recs) - 1} more flag(s) on the recommendations slide)" if len(recs) > 1 else ""), NAVY)]
     for i, (h_, t_, c_) in enumerate(tk):
         x, y = 60 + (i % 2) * 626, 150 + (i // 2) * 270
         a.add_patch(FancyBboxPatch((x, y), 587, 235, boxstyle="round,pad=0,rounding_size=14", fc=LIGHT, ec="none")); a.add_patch(plt.Circle((x + 80, y + 85), 46, fc=c_, ec="none"))

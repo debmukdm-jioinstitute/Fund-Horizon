@@ -1,0 +1,73 @@
+"""Lumpsum investment proposal: rules copied from the original tool, checked against its captured output."""
+from __future__ import annotations
+
+import pytest
+
+from app.backoffice import investment_proposal as ip
+from tests.test_backoffice_compare import _create_staff, _login_staff
+
+
+def test_allocation_grid_matches_original():
+    # Moderate, 10 years (captured from the original): hybrid-aggressive 30, large 30, flexi 15, mid 10, large&mid 15.
+    assert ip.allocation(1_000_000, 10, "Moderate") == {"hagg": 30, "large": 30, "flexi": 15, "mid": 10, "lmc": 15}
+    assert ip.allocation(1_000_000, 1, "Aggressive") == {"liquid": 20, "short": 80}
+    assert ip.allocation(1_000_000, 3, "Conservative") == {"short": 40, "hcons": 40, "large": 20}
+    assert ip.allocation(1_000_000, 20, "Aggressive") == {"mid": 20, "small": 20, "flexi": 30, "lmc": 30}
+    for risk in ip.RISKS:
+        for y in (1, 2, 3, 4, 5, 7, 8, 15, 16):
+            assert sum(ip.allocation(1_000_000, y, risk).values()) == 100
+
+
+def test_small_amounts_collapse_into_fewer_categories_and_still_total_100():
+    for amt, n in ((8_000, 1), (12_000, 2), (20_000, 3), (50_000, 4), (50_001, 5)):
+        mix = ip.allocation(amt, 10, "Moderate")
+        assert len(mix) == n and sum(mix.values()) == 100
+    assert ip.allocation(8_000, 10, "Moderate") == {"hagg": 100}  # mid -> large&mid -> flexi -> large -> hybrid, chained as in the original
+
+
+def test_future_value_matches_original_capture():
+    # Original: weighted 12.50% on Rs.10,00,000 for 10 years -> 32,47,322; its server calc at 11.5% -> 29,69,947.
+    assert ip.future_value(1_000_000, 12.5, 10) == 3_247_322
+    assert ip.future_value(1_000_000, 11.5, 10) == 2_969_947
+    assert ip.future_value(1_000_000, 10, 1) == 1_100_000  # float noise must not push an exact result up
+
+
+def test_validation():
+    with pytest.raises(ip.ProposalError):
+        ip.allocation(1000, 10, "Moderate")
+    with pytest.raises(ip.ProposalError):
+        ip.allocation(100_000, 0, "Moderate")
+    with pytest.raises(ip.ProposalError):
+        ip.allocation(100_000, 10, "Wild")
+
+
+def _client():
+    return None
+
+
+def test_api_suggest_result_pdf(client):
+    _login_staff(client, _create_staff())
+    r = client.post("/api/backoffice/investment-proposal/suggest", json={"amount": 1_000_000, "years": 10, "risk": "Moderate"})
+    assert r.status_code == 200, r.text
+    rows = r.json()["rows"]
+    assert sum(x["amount"] for x in rows) == 1_000_000 and len(rows) >= 5
+    assert all(x["amount"] > 0 for x in rows)
+    one = client.get(f"/api/backoffice/investment-proposal/scheme/{rows[0]['code']}").json()
+    assert one["name"] == rows[0]["name"] and one["exp_ret"] == rows[0]["exp_ret"]
+    assert client.get("/api/backoffice/investment-proposal/scheme/99999999").status_code == 422
+    body = {"years": 10, "rows": [{"code": x["code"], "amount": x["amount"], "exp_ret": x["exp_ret"]} for x in rows], "client": "Test"}
+    res = client.post("/api/backoffice/investment-proposal/result", json=body).json()
+    assert res["amount"] == 1_000_000 and res["future_value"] == ip.future_value(1_000_000, res["expected_return"], 10)
+    assert abs(sum(x["alloc_pct"] for x in res["schemes"]) - 100) < 0.1
+    assert sum(x["pct"] for x in res["category"]) == pytest.approx(100, abs=0.1)
+    pdf = client.post("/api/backoffice/investment-proposal/pdf", json={**body, "risk": "Moderate", "purpose": "Wealth"})
+    assert pdf.status_code == 200 and pdf.content.startswith(b"%PDF") and len(pdf.content) > 5000
+    # exceeding the proposal amount and unknown / duplicate schemes are refused with a readable reason
+    over = client.post("/api/backoffice/investment-proposal/result", json={**body, "amount": 500_000})
+    assert over.status_code == 422 and "exceeds" in over.json()["detail"]
+    bad = client.post("/api/backoffice/investment-proposal/result", json={"years": 5, "rows": [{"code": "99999999", "amount": 1000, "exp_ret": 8}]})
+    assert bad.status_code == 422
+    dup = client.post("/api/backoffice/investment-proposal/result", json={"years": 5, "rows": [body["rows"][0], body["rows"][0]]})
+    assert dup.status_code == 422 and "twice" in dup.json()["detail"]
+    small = client.post("/api/backoffice/investment-proposal/suggest", json={"amount": 8000, "years": 10, "risk": "Moderate"}).json()
+    assert len(small["rows"]) == 1 and small["rows"][0]["amount"] == 8000

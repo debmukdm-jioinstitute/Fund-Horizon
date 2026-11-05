@@ -47,6 +47,16 @@ export const NAV_ITEMS: NavItem[] = [
         ),
       },
       {
+        href: "/backoffice/mutual-funds/proposal",
+        label: "Investment Proposal",
+        description: "Lumpsum proposal for a client: suggested schemes, expected value, returns, allocation and PDF",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12h6m-6 4h6M7 4h7l5 5v11a1 1 0 01-1 1H7a1 1 0 01-1-1V5a1 1 0 011-1z" />
+          </svg>
+        ),
+      },
+      {
         href: "/backoffice/mutual-funds/research",
         label: "MF Research",
         description: "Quartile, capture, manager and shortlist research workspace",

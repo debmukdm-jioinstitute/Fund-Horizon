@@ -5,6 +5,7 @@ import Link from "next/link";
 import EmailDialog, { type Recipient } from "@/components/crm/EmailDialog";
 import UpdatesFeed from "@/components/operations/UpdatesFeed";
 import ClientReport from "@/components/operations/ClientReport";
+import PortfolioReview from "@/components/operations/PortfolioReview";
 import PdfFormFiller, { type ClientDetails, type FillContext, type PdfSource } from "@/components/operations/PdfFormFiller";
 import { FILING_STATUSES, type Filing, getFilings, getOfficialForms, setFilingStatus } from "@/lib/backoffice";
 import { fetchHouseholdDetail, fetchHouseholds, type Household, type HouseholdDetail } from "@/lib/crmApi";
@@ -14,7 +15,7 @@ import type { OfficialForm } from "@/lib/officialForms";
 import { startDownload, type DownloadResult } from "@/lib/api";
 import { domain, isReference, JOBS, type Job, jobForms } from "@/lib/operations";
 
-type Tab = "updates" | "tasks" | "library" | "register" | "report";
+type Tab = "updates" | "tasks" | "library" | "register" | "report" | "review";
 interface Filling { source: PdfSource; prefill?: Partial<ClientDetails>; context?: FillContext }
 interface Filters { q: string; sources: Set<string>; amc: string; cat: string; amcQ: string }
 
@@ -122,7 +123,7 @@ function FormFilling({ initialTab = "updates" }: { initialTab?: Tab }) {
           </label>
         </div>
         <nav className="flex gap-0.5 overflow-x-auto border-t border-[#E4E9EF] dark:border-[#2B3644]" role="tablist" aria-label="Operations sections">
-          {([["updates", "Updates", null], ["tasks", "Start a task", null], ["library", "Forms library", forms.length || null], ["register", "Filings register", openCount ? `${openCount} open` : null], ["report", "Client report", null]] as [Tab, string, string | number | null][]).map(([t, label, cnt]) => (
+          {([["updates", "Updates", null], ["tasks", "Start a task", null], ["library", "Forms library", forms.length || null], ["register", "Filings register", openCount ? `${openCount} open` : null], ["report", "Client report", null], ["review", "Portfolio review", null]] as [Tab, string, string | number | null][]).map(([t, label, cnt]) => (
             <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
               className={`whitespace-nowrap border-b-[3px] px-4 py-3 text-[14.5px] font-semibold ${tab === t ? "border-[#006F64] text-[#006F64] dark:text-[#75E1CE]" : `border-transparent ${muted}`}`}>
               {label}{cnt !== null && <span className={`ml-1.5 rounded-full border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-px text-[11.5px] ${soft}`}>{cnt}</span>}
@@ -135,6 +136,7 @@ function FormFilling({ initialTab = "updates" }: { initialTab?: Tab }) {
 
       {tab === "updates" && <UpdatesFeed />}
       {tab === "report" && <ClientReport customerId={member?.customer_id} customerName={hhName} />}
+      {tab === "review" && <PortfolioReview customerId={member?.customer_id} customerName={hhName} />}
       {tab === "tasks" && (
         <TasksTab forms={mfForms} filings={filings} jobId={jobId} setJobId={setJobId} hhName={hhName} member={member} pan4={pan4} fillLabel={fillLabel}
           fillForm={fillForm} changeClient={() => { clientSelect.current?.focus(); window.scrollTo({ top: 0, behavior: "smooth" }); }} openLibrary={openLibrary} />

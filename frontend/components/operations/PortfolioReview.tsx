@@ -19,7 +19,13 @@ const periodLabel = (from: string, to: string) => (!from ? "" : !to ? `Since ${y
 const hint = "text-[11.5px] font-normal text-[#667085] dark:text-[#9AA3B2]";
 
 async function call<T>(path: string, init: RequestInit = {}, blob = false): Promise<T> {
-  const res = await fetch(resolveApiUrl(`${API_URL}${path}`), { credentials: "include", ...init });
+  const go = () => fetch(resolveApiUrl(`${API_URL}${path}`), { credentials: "include", ...init });
+  let res: Response;
+  try { res = await go(); } catch {
+    // A dropped connection ("Failed to fetch") usually means the server was cold or restarting: retry once, then explain.
+    await new Promise((r) => setTimeout(r, 1500));
+    try { res = await go(); } catch { throw new ApiError("Could not reach the server (it may be restarting). Wait a few seconds and try again.", 0); }
+  }
   if (!res.ok) {
     let msg = `Request failed (${res.status})`;
     try { const j = await res.json(); if (typeof j.detail === "string") msg = j.detail; } catch { /* keep default */ }

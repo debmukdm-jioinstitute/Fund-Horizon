@@ -71,3 +71,16 @@ def test_api_suggest_result_pdf(client):
     assert dup.status_code == 422 and "twice" in dup.json()["detail"]
     small = client.post("/api/backoffice/investment-proposal/suggest", json={"amount": 8000, "years": 10, "risk": "Moderate"}).json()
     assert len(small["rows"]) == 1 and small["rows"][0]["amount"] == 8000
+
+
+def test_pdf_is_branded_with_charts():
+    import re
+    from app.report.investment_proposal import build_pdf
+    r = {"amount": 100000, "years": 5, "expected_return": 10, "future_value": 161051,
+         "schemes": [{"name": "A", "category": "Equity: Flexi Cap", "ret_1y": 1, "ret_3y": 2, "ret_5y": 3, "exp_ret": 10, "amount": 100000, "alloc_pct": 100}],
+         "trailing": [{"name": "A", "category": "Equity: Flexi Cap", "aum_cr": 1, "ter": 1, "peers": 2, "returns": {"1y": 1, "3y": 2, "5y": 3, "10y": None},
+                       "avg": {"1y": 1, "3y": 2, "5y": 3, "10y": None}, "rank": {"1y": 1, "3y": 1, "5y": 1, "10y": None}}], "rolling": [],
+         "amc": [{"name": "X", "amount": 100000, "pct": 100}], "asset": [{"name": "Equity Schemes", "amount": 100000, "pct": 100}],
+         "category": [{"name": "Equity: Flexi Cap", "amount": 100000, "pct": 100}], "holdings": {"sector": [], "equity": [], "debt": [], "coverage_pct": 0, "as_of": None}}
+    pdf = build_pdf(r, "Deb", "Moderate", "Wealth")
+    assert pdf.startswith(b"%PDF") and len(re.findall(rb"/Subtype\s*/Image", pdf)) >= 5  # logo x2 + charts

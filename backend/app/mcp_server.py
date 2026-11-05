@@ -35,6 +35,7 @@ from pydantic import BaseModel, Field
 
 from app.api.auth import get_current_customer, require_staff
 from app.db import sqlite
+from app.mcp_oauth import _db as _oauth_db, resource_metadata_url
 
 logger = logging.getLogger("fh.mcp")
 router = APIRouter(tags=["mcp"])
@@ -622,15 +623,16 @@ def _bearer(request: Request) -> str | None:
 @router.post("/mcp")
 async def mcp_endpoint(request: Request):
     token = _bearer(request)
-    unauth = JSONResponse({"error": "Send 'Authorization: Bearer <token>'. Create a token at /backoffice/mcp."}, status_code=401,
-                          headers={"WWW-Authenticate": 'Bearer realm="Fund Horizon MCP"'})
+    challenge = {"WWW-Authenticate": f'Bearer realm="Fund Horizon MCP", resource_metadata="{resource_metadata_url()}"'}  # OAuth discovery for web/mobile
+    unauth = JSONResponse({"error": "Sign in through OAuth, or send 'Authorization: Bearer <token>' (token from /backoffice/mcp)."}, status_code=401,
+                          headers=challenge)
     if not token:
         return unauth
     try:
         staff = require_staff(get_current_customer(request))
     except HTTPException as exc:
         return JSONResponse({"error": exc.detail}, status_code=exc.status_code if exc.status_code in (401, 403) else 401,
-                            headers={"WWW-Authenticate": 'Bearer realm="Fund Horizon MCP"'})
+                            headers=challenge)
     _touch(token)
     if int(request.headers.get("content-length") or 0) > 3 * MAX_BINARY:
         return JSONResponse(_rpc_error(None, -32600, "Request is larger than the 24 MB limit"), status_code=413)
@@ -712,6 +714,10 @@ def revoke_token(token_id: str, staff: Annotated[dict, Depends(require_staff)]):
     with conn:
         conn.execute("DELETE FROM mcp_tokens WHERE id = ?", (token_id,))
     conn.close()
+    o = _oauth_db()
+    with o:
+        o.execute("DELETE FROM mcp_oauth_refresh WHERE token_id = ?", (token_id,))  # a revoked phone must not refresh itself back in
+    o.close()
     return Response(status_code=204)
 
 

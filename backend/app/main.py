@@ -250,7 +250,7 @@ def create_app() -> FastAPI:
         response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
-        if not request.url.path.startswith(("/docs", "/redoc", "/openapi.json")):
+        if "Content-Security-Policy" not in response.headers and not request.url.path.startswith(("/docs", "/redoc", "/openapi.json")):
             response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
         if is_head:
             return Response(status_code=response.status_code, headers=dict(response.headers))
@@ -271,6 +271,7 @@ def create_app() -> FastAPI:
     from app.api.monthly_report import router as monthly_report_router
     from app.api.valuation import router as valuation_router
     from app.mcp_server import router as mcp_router
+    from app.mcp_oauth import router as mcp_oauth_router
     from app.api.crm_core import router as crm_core_router
     from app.api.crm_extras import router as crm_extras_router
     from app.api.crm_phase3 import router as crm_phase3_router
@@ -304,6 +305,7 @@ def create_app() -> FastAPI:
     app.include_router(monthly_report_router)
     app.include_router(valuation_router)
     app.include_router(mcp_router)
+    app.include_router(mcp_oauth_router)
     app.include_router(mf_reference_router)
     app.include_router(hrms_router)
     app.include_router(trade_router)

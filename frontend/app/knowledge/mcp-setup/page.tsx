@@ -43,6 +43,13 @@ export default function McpSetup() {
         </Step>
       </ol>
 
+      <h2 className={h2}>On your phone (iPhone and Android)</h2>
+      <p className={p}>
+        Connect once on the web and the Claude phone app picks it up. On <b>claude.ai</b> open <b>Settings, Connectors, Add custom connector</b>, name it
+        <b> Fund Horizon</b>, paste the address from <Link className="underline" href="/backoffice/settings/mcp">Settings, Claude connection</Link>, then click <b>Connect</b> and
+        sign in with your Fund Horizon email and password. Open the Claude app on your phone, start a chat, tap <b>+</b> and switch Fund Horizon on. A Claude Pro, Max, Team or Enterprise plan is needed.
+      </p>
+
       <h2 className={h2}>What Claude can and cannot do</h2>
       <div className="mt-3"><McpCapabilities /></div>
 
@@ -69,6 +76,7 @@ export default function McpSetup() {
       <h2 className={h2}>If something does not work</h2>
       <ul className={`${p} list-disc space-y-1 pl-6`}>
         <li><b>Claude says the connector was rejected or expired:</b> download a new one (step 1). Connections last 90 days.</li>
+        <li><b>Phone says it cannot connect:</b> add the connector on claude.ai first (the phone app cannot add new ones), then reopen the app. If sign-in fails, use your staff email and password; customer accounts cannot connect.</li>
         <li><b>Nothing opens when you double-click:</b> open the Claude app, then drag the file into its window.</li>
         <li><b>A fund has blank cells:</b> see <Link className="underline" href="/knowledge/data-guide">Reading the data</Link>.</li>
         <li>Developers using Claude Code get a one-click command on the same Settings page.</li>

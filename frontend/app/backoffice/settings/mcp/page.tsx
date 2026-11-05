@@ -42,6 +42,8 @@ export default function McpSettingsPage() {
     return "Copied. Paste it into your terminal and press Enter.";
   });
 
+  const copyUrl = () => run("url", async () => { await navigator.clipboard.writeText(MCP_URL); return "Address copied."; });
+
   return (
     <div className="mx-auto max-w-[760px] space-y-5 p-4">
       <div>
@@ -61,6 +63,16 @@ export default function McpSettingsPage() {
           <Step n={3}>Click <b>Install</b>. Done. Start a new chat and ask: &quot;Show me Fund Horizon data health&quot;.</Step>
         </ol>
         <p className={`text-[13px] ${muted}`}>The file is made just for you and already contains your sign-in. Do not share it. Need Claude? <a className="underline" href="https://claude.ai/download" target="_blank" rel="noreferrer">Download the Claude app</a>.</p>
+      </section>
+
+      <section className={`${card} space-y-4`}>
+        <h2 className="text-[18px] font-semibold">Claude on your phone and the web (iPhone, Android, claude.ai)</h2>
+        <ol className="space-y-3">
+          <Step n={1}><button className={big} disabled={!!busy} onClick={copyUrl}>Copy the Fund Horizon address</button></Step>
+          <Step n={2}>On <b>claude.ai</b> (phone browser or computer) open <b>Settings, Connectors, Add custom connector</b>. Name it <b>Fund Horizon</b>, paste the address, click <b>Add</b>.</Step>
+          <Step n={3}>Click <b>Connect</b>, sign in with your Fund Horizon email and password, tap <b>Sign in and allow</b>. The connector now also works in the Claude phone app.</Step>
+        </ol>
+        <p className={`text-[13px] ${muted}`}>No file to install and no token to paste. Needs a Claude Pro, Max, Team or Enterprise plan. Your connection appears below and can be removed any time.</p>
       </section>
 
       <section className={`${card} space-y-3`}>

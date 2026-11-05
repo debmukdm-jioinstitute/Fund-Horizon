@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
 
 interface Row { code: string; name: string; invested: string; value: string; from: string; to: string; inst: string }
-interface Hit { id: string; title: string }
+interface Hit { id: string; title: string; sub: string }
 
 const cell = "w-full rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-1.5 py-1 text-[12.5px] tabular-nums";
 const card = "rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]";
@@ -34,6 +34,10 @@ export default function PortfolioReview({ customerId, customerName }: { customer
   const [rows, setRows] = useState<Row[]>([]);
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<Hit[]>([]);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const [searching, setSearching] = useState(false);
+  const seq = useRef(0);
   const [paste, setPaste] = useState("");
   const [compare, setCompare] = useState("");
   const [email, setEmail] = useState(false);
@@ -45,11 +49,23 @@ export default function PortfolioReview({ customerId, customerName }: { customer
     setBusy(label); setMsg(null);
     try { await fn(); } catch (e) { setMsg({ ok: false, text: e instanceof Error ? e.message : "Something went wrong." }); } finally { setBusy(null); }
   };
-  const search = () => q.trim().length > 1 && run("search", async () => {
-    const d = await call<{ results: { scope: string; id: string; title: string }[] }>(`/api/backoffice/search?q=${encodeURIComponent(q.trim())}`);
-    setHits(d.results.filter((r) => r.scope === "mutual_funds" && /Regular/.test(r.title)).slice(0, 8));
-  });
-  const add = (h: Hit) => { setRows((r) => (r.some((x) => x.code === h.id) ? r : [...r, { code: h.id, name: h.title, invested: "", value: "", from: "", to: "", inst: "" }])); setHits([]); setQ(""); };
+  // Type-ahead: after 250 ms of no typing, ask the universal search; a newer keystroke makes older answers stale.
+  useEffect(() => {
+    const term = q.trim();
+    if (term.length < 2) { setHits([]); setSearching(false); return; }
+    const id = ++seq.current;
+    setSearching(true);
+    const t = setTimeout(async () => {
+      try {
+        const d = await call<{ results: { scope: string; id: string; title: string; subtitle?: string }[] }>(`/api/backoffice/search?q=${encodeURIComponent(term)}&scope=mutual_funds`);
+        if (id !== seq.current) return;
+        setHits(d.results.filter((r) => r.scope === "mutual_funds" && /Regular/.test(r.title)).slice(0, 10).map((r) => ({ id: r.id, title: r.title, sub: r.subtitle ?? "" })));
+        setActive(0);
+      } catch { if (id === seq.current) setHits([]); } finally { if (id === seq.current) setSearching(false); }
+    }, 250);
+    return () => clearTimeout(t);
+  }, [q]);
+  const add = (h: Hit) => { setRows((r) => (r.some((x) => x.code === h.id) ? r : [...r, { code: h.id, name: h.title, invested: "", value: "", from: "", to: "", inst: "" }])); setHits([]); setQ(""); setOpen(false); };
   const importPaste = () => {
     const parsed = paste.split("\n").map((l) => l.split(/[,\t]/).map((c) => c.trim().replace(/[₹]/g, ""))).filter((c) => /^\d{4,8}$/.test(c[0] ?? ""))
       .map((c) => ({ code: c[0], name: "", invested: c[1] ?? "", value: c[2] ?? "", from: /^\d{4}-\d{2}$/.test(c[3] ?? "") ? c[3] : "", to: /^\d{4}-\d{2}$/.test(c[4] ?? "") ? c[4] : "", inst: c[5] ?? "" }));
@@ -82,11 +98,30 @@ export default function PortfolioReview({ customerId, customerName }: { customer
         <label className="text-[12px] font-semibold">Valuation date <span className={hint}>(the date the values are as on)</span><input type="date" max={iso(new Date())} className={`${cell} mt-1`} value={date} onChange={(e) => setDate(e.target.value)} /></label>
       </div>
       <div>
-        <div className="flex gap-2">
-          <input className={cell} placeholder="Search a fund, e.g. Parag Parikh Flexi Cap, then pick the Regular plan" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === "Enter" && search()} />
-          <button type="button" className={btn} onClick={search} disabled={busy !== null}>Search</button>
+        <div className="relative">
+          <input className={cell} role="combobox" aria-expanded={open} aria-controls="fund-hits" autoComplete="off" value={q}
+            placeholder="Start typing a fund name or scheme code, e.g. Parag Parikh Flexi Cap"
+            onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => Math.min(a + 1, hits.length - 1)); }
+              else if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); }
+              else if (e.key === "Enter" && hits[active]) { e.preventDefault(); add(hits[active]); }
+              else if (e.key === "Escape") setOpen(false);
+            }} />
+          {open && q.trim().length >= 2 && (
+            <ul id="fund-hits" role="listbox" className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] shadow-lg">
+              {hits.map((h, i) => (
+                <li key={h.id} role="option" aria-selected={i === active}
+                  className={`cursor-pointer px-3 py-1.5 text-[12.5px] ${i === active ? "bg-[#E8F3F1] dark:bg-[#1B2F2C]" : ""} ${rows.some((x) => x.code === h.id) ? "opacity-50" : ""}`}
+                  onMouseEnter={() => setActive(i)} onMouseDown={(e) => { e.preventDefault(); add(h); }}>
+                  <div className="font-semibold">{h.title.replace(/ - (Regular|Direct) Plan.*$/, "")} <span className="font-normal text-[#667085] dark:text-[#9AA3B2]">· {h.id}</span></div>
+                  {h.sub && <div className={hint}>{h.sub}{rows.some((x) => x.code === h.id) ? " · already added" : ""}</div>}
+                </li>
+              ))}
+              {!hits.length && <li className={`px-3 py-2 ${hint}`}>{searching ? "Searching…" : "No Regular-plan fund found. Check the spelling or try the scheme code."}</li>}
+            </ul>
+          )}
         </div>
-        {hits.map((h) => <button key={h.id} type="button" className="mt-1 block w-full rounded border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1 text-left text-[12.5px] hover:border-[#006F64]" onClick={() => add(h)}>{h.title} · {h.id}</button>)}
         <details className="mt-2"><summary className="cursor-pointer text-[12.5px] font-semibold text-[#006F64] dark:text-[#75E1CE]">Paste many funds (scheme code, invested, value, first month, last month, instalments)</summary>
           <textarea className={`${cell} mt-1 h-24`} value={paste} onChange={(e) => setPaste(e.target.value)} placeholder={"122640, 940934, 1600734, 2020-02, 2026-07, 71\n151812, 787969, 741958, 2026-02, 2026-02, 1"} />
           <button type="button" className={`${btn} mt-1`} onClick={importPaste} disabled={!paste.trim()}>Add pasted funds</button>

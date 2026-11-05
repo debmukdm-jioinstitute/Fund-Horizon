@@ -167,7 +167,7 @@ function Results({ calc, r, vals, parsed, client, onSaved }: { calc: Calculator;
     title: calc.title, client: client?.name, viz, notes: r.notes, steps: r.steps, table: r.table,
     inputs: calc.fields.map((f) => {
       const v = parsed[f.key] ?? 0;
-      return [f.label, f.unit === "₹" ? inrExact(v) : f.unit === "age" ? `${v}` : `${v} ${f.unit}`] as [string, string];
+      return [f.label, f.unit === "₹" ? inrExact(v) : f.unit === "age" ? `${v}` : `${v} ${f.unit}`.trim()] as [string, string];
     }),
     metrics: r.metrics.map((m) => ({ label: m.label, text: show(m), words: m.kind === "inr" ? (words(m.value) || undefined) : undefined })),
   };

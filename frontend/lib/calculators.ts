@@ -3,9 +3,11 @@
 //  - SIPs invest at month-end, monthly rate = annual rate / 12 (education example: 10L, 5y, 6%, 12% -> 16,386/month).
 //  - Lump sums and goal/inflation maths compound annually (CAGR 2x in 5y = 14.87%; term cover example 2.77 cr).
 
+import { MORE } from "./calculators-more";
+
 export type Values = Record<string, number>;
 export interface Field {
-  key: string; label: string; unit: "₹" | "%" | "years" | "age";
+  key: string; label: string; unit: "₹" | "%" | "years" | "age" | "months" | "";
   min: number; max: number; step?: number; def?: number; optional?: boolean; hint?: string;
 }
 export interface Metric { label: string; value: number; kind: "inr" | "pct" | "years" | "text"; text?: string; hero?: boolean }
@@ -22,7 +24,7 @@ export interface Calculator {
   precheck?: (raw: Partial<Record<string, number>>) => string[];
   run: (v: Values) => Result;
 }
-export type Category = "SIP & investing" | "Goal planning" | "Withdrawals" | "Returns & allocation" | "PMS" | "Protection";
+export type Category = "SIP & investing" | "Goal planning" | "Withdrawals" | "Returns & allocation" | "Loans & deposits" | "Tax" | "Planning" | "PMS" | "Protection";
 
 const MAX_AMT = 1e12; // ₹1 lakh crore; above this float error and meaning both vanish
 const err = (...errors: string[]): Failure => ({ ok: false, errors });
@@ -322,8 +324,8 @@ const pmsCalc: Calculator = {
   },
 };
 
-export const CALCULATORS: Calculator[] = [sipValue, stepUpSip, sipToTarget, financialGoal, education, retirement, swp, swpTax, cagr, rebalancing, pmsCalc, termInsurance];
-export const CATEGORIES: Category[] = ["SIP & investing", "Goal planning", "Withdrawals", "Returns & allocation", "PMS", "Protection"];
+export const CALCULATORS: Calculator[] = [sipValue, stepUpSip, sipToTarget, financialGoal, education, retirement, swp, swpTax, cagr, rebalancing, pmsCalc, termInsurance, ...MORE];
+export const CATEGORIES: Category[] = ["SIP & investing", "Goal planning", "Withdrawals", "Returns & allocation", "Loans & deposits", "Tax", "Planning", "PMS", "Protection"];
 
 /** Validates then runs. Blank optional fields count as 0 (or their default). */
 export function calculate(c: Calculator, raw: Partial<Record<string, number>>): Result {

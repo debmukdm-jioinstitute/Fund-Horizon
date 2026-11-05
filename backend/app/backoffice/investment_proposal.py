@@ -19,6 +19,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from app.backoffice.category_returns import nav_as_of
+
 RISKS = ["Conservative", "Moderately Conservative", "Moderate", "Moderately Aggressive", "Aggressive"]
 MIN_AMOUNT = 5000  # the original's message says Rs.5000 although its check is 1000; the stated rule is the sensible one
 # Order in which the original picks schemes and, reversed, merges small-amount categories.
@@ -247,6 +249,6 @@ def build(frame: pd.DataFrame, snapshot: dict[str, Any], years: float, rows: lis
         "schemes": schemes, "trailing": trailing, "rolling": rolling,
         "amc": _split(flat, "amc", total), "category": _split(flat, "category", total), "asset": _split(flat, "group", total),
         "holdings": _holdings(snapshot, flat, total),
-        "notes": {"nav_as_of": str(frame["nav_date"].max()), "rolling": "3-year rolling returns on month-end NAV, annualised.",
+        "notes": {"nav_as_of": nav_as_of(frame), "rolling": "3-year rolling returns on month-end NAV, annualised.",
                   "returns": "Returns under 1 year are absolute; over 1 year are annualised (CAGR). Past performance may not be sustained."},
     }

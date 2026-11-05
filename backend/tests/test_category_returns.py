@@ -40,7 +40,8 @@ def test_sectoral_split_by_name_and_empty_types():
 
 def test_period_validation():
     assert cr.parse_periods("1y, 3y ,1y") == ["1y", "3y"]
-    for bad in ("", "1y,3y,5y,10y", "2y"):
+    assert cr.parse_periods("ytd,1w,1m,3m,6m,1y,3y,5y,10y") == ["ytd", "1w", "1m", "3m", "6m", "1y", "3y", "5y", "10y"]  # "select all"
+    for bad in ("", "2y"):
         with pytest.raises(cr.CategoryReturnsError):
             cr.parse_periods(bad)
     with pytest.raises(cr.CategoryReturnsError):
@@ -64,7 +65,16 @@ def test_api_json_xlsx_pdf_and_errors(client):
     assert ws.cell(2, 1).value == "Category" and ws.max_row > 5
     p = client.get(base + "/pdf", params={"period": "1y"})
     assert p.status_code == 200 and p.content.startswith(b"%PDF")
-    for q in ({"period": "1y,3y,5y,10y"}, {"period": ""}, {"period": "zz"}, {"fund_type": "x"}, {"plan": "x"}):
+    allp = client.get(base, params={"period": "ytd,1w,1m,3m,6m,1y,3y,5y,10y"})
+    assert allp.status_code == 200 and len(allp.json()["periods"]) == 9
+    for q in ({"period": ""}, {"period": "zz"}, {"fund_type": "x"}, {"plan": "x"}):
         assert client.get(base, params={"period": "1y", **q}).status_code == 422
     client.cookies.clear()
     assert client.get(base).status_code in (401, 403)
+
+
+def test_nav_date_is_the_real_latest_not_the_text_max():
+    f = pd.DataFrame({"nav_date": ["31-Oct-2025", "04-Nov-2026", "30-Sep-2026"]})
+    assert f["nav_date"].max() == "31-Oct-2025"  # the trap: text order
+    assert cr.nav_as_of(f) == "04-11-2026"
+    assert cr.nav_as_of(pd.DataFrame({"nav_date": [None]})) == "-"

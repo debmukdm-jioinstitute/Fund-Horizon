@@ -14,7 +14,7 @@ import pandas as pd
 
 PERIODS = {"ytd": ("YTD", None), "1w": ("1 Wk", "week_chg"), "1m": ("1 Mon", "ret_1m"), "3m": ("3 Mon", "ret_3m"), "6m": ("6 Mon", "ret_6m"),
            "1y": ("1 Yr", "ret_1y"), "3y": ("3 Yrs", "cagr_3y"), "5y": ("5 Yrs", "cagr_5y"), "10y": ("10 Yrs", "cagr_10y")}
-MAX_PERIODS = 3
+MAX_PERIODS = len(PERIODS)  # "select all" is allowed
 FUND_TYPES: dict[str, tuple[str, ...]] = {
     "Equity Schemes": ("contra", "dividend_yield", "elss", "flexi_cap", "focused", "large_mid_cap", "large_cap", "mid_cap", "multi_cap", "sectoral_thematic", "small_cap", "value"),
     "Hybrid Schemes": ("aggressive_hybrid", "arbitrage", "balanced_advantage", "balanced_hybrid", "conservative_hybrid", "equity_savings", "multi_asset"),
@@ -56,12 +56,16 @@ def _ytd(codes: list[str]) -> dict[str, float]:
     return out
 
 
+def nav_as_of(frame: pd.DataFrame) -> str:
+    """Latest NAV date in the frame as DD-MM-YYYY. nav_date is text like 04-Nov-2026, so it must be parsed: a text max picks 31-Oct-2025."""
+    d = pd.to_datetime(frame["nav_date"], format="%d-%b-%Y", errors="coerce").max()
+    return "-" if pd.isna(d) else d.strftime("%d-%m-%Y")
+
+
 def parse_periods(raw: str) -> list[str]:
     ps = [p.strip().lower() for p in raw.split(",") if p.strip()]
     if not ps:
         raise CategoryReturnsError("Please select period")
-    if len(ps) > MAX_PERIODS:
-        raise CategoryReturnsError("Only 3 period selection is allowed")
     bad = [p for p in ps if p not in PERIODS]
     if bad:
         raise CategoryReturnsError(f"Unknown period: {bad[0]}")
@@ -93,7 +97,7 @@ def build(frame: pd.DataFrame, fund_type: str, periods: list[str], plan: str = "
         rows.append(row)
     rows.sort(key=lambda r: r["category"])
     return {"fund_type": fund_type, "plan": plan, "periods": [{"key": p, "label": PERIODS[p][0]} for p in periods], "rows": rows,
-            "nav_as_of": str(frame["nav_date"].max()), "note": "Returns under 1 year are absolute; 1 year and over are annualised (CAGR). Past performance may not be sustained."}
+            "nav_as_of": nav_as_of(frame), "note": "Returns under 1 year are absolute; 1 year and over are annualised (CAGR). Past performance may not be sustained."}
 
 
 def flat_rows(r: dict[str, Any]) -> tuple[list[str], list[list[Any]]]:

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
+import FundSearch, { type FundHit } from "@/components/backoffice/FundSearch";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
 const RISKS = ["Conservative", "Moderately Conservative", "Moderate", "Moderately Aggressive", "Aggressive"];
@@ -15,7 +16,6 @@ const th = "px-2 py-1.5 text-left text-[11.5px] font-semibold whitespace-nowrap"
 const td = "px-2 py-1.5 text-[12.5px] tabular-nums";
 
 interface Row { code: string; name: string; category: string; amount: string; exp_ret: string }
-interface Hit { id: string; title: string; sub: string }
 interface Split { name: string; amount: number; pct: number }
 interface Trailing { code: string; name: string; category: string; aum_cr: number | null; ter: number | null; peers: number; returns: Record<string, number | null>; avg: Record<string, number | null>; rank: Record<string, number | null> }
 interface Rolling { code: string; name: string; category: string; average: number; median: number; maximum: number; minimum: number; distribution: Record<string, number> }
@@ -86,29 +86,6 @@ export default function InvestmentProposal() {
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState("");
   const [cover, setCover] = useState(true);
-  const [q, setQ] = useState("");
-  const [hits, setHits] = useState<Hit[]>([]);
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(0);
-  const [searching, setSearching] = useState(false);
-  const seq = useRef(0);
-
-  useEffect(() => {
-    const term = q.trim();
-    if (term.length < 2) { setHits([]); setSearching(false); return; }
-    const id = ++seq.current;
-    setSearching(true);
-    const t = setTimeout(async () => {
-      try {
-        const d = await call<{ results: { scope: string; id: string; title: string; subtitle?: string }[] }>(`/api/backoffice/search?q=${encodeURIComponent(term)}&scope=mutual_funds`);
-        if (id !== seq.current) return;
-        setHits(d.results.filter((r) => r.scope === "mutual_funds" && r.title.includes(plan)).slice(0, 10).map((r) => ({ id: r.id, title: r.title, sub: r.subtitle ?? "" })));
-        setActive(0);
-      } catch { if (id === seq.current) setHits([]); } finally { if (id === seq.current) setSearching(false); }
-    }, 250);
-    return () => clearTimeout(t);
-  }, [q, plan]);
-
   const amt = num(amount.replace(/,/g, "")), yrs = num(years);
   const stale = () => setRes(null); // any change to the inputs or the table invalidates the shown result
 
@@ -135,11 +112,10 @@ export default function InvestmentProposal() {
     });
   };
 
-  const add = (h: Hit) => {
-    setHits([]); setQ(""); setOpen(false);
-    if (rows.some((r) => r.code === h.id)) return;
+  const add = (h: FundHit) => {
+    if (rows.some((r) => r.code === h.code)) return;
     void wrap("add", async () => {
-      const s = await call<{ code: string; name: string; category: string; exp_ret: number }>(`/api/backoffice/investment-proposal/scheme/${h.id}`);
+      const s = await call<{ code: string; name: string; category: string; exp_ret: number }>(`/api/backoffice/investment-proposal/scheme/${h.code}`);
       setRows((r) => [...r, { code: s.code, name: s.name, category: s.category, amount: "", exp_ret: custom === "2" ? "8" : String(s.exp_ret) }]);
       stale();
     });
@@ -208,28 +184,7 @@ export default function InvestmentProposal() {
       {rows.length > 0 && (
         <div className={`${card} space-y-3 p-5`}>
           <h3 className="text-[15px] font-bold">Suggested schemes</h3>
-          <div className="relative">
-            <input className={cell} role="combobox" aria-expanded={open} aria-controls="proposal-hits" autoComplete="off" value={q} placeholder={`Add another scheme: type a fund name or scheme code (${plan} plan)`}
-              onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}
-              onKeyDown={(e) => {
-                if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => Math.min(a + 1, hits.length - 1)); }
-                else if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); }
-                else if (e.key === "Enter" && hits[active]) { e.preventDefault(); add(hits[active]); }
-                else if (e.key === "Escape") setOpen(false);
-              }} />
-            {open && q.trim().length >= 2 && (
-              <ul id="proposal-hits" role="listbox" className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] shadow-lg">
-                {hits.map((h, i) => (
-                  <li key={h.id} role="option" aria-selected={i === active} className={`cursor-pointer px-3 py-1.5 text-[12.5px] ${i === active ? "bg-[#E8F3F1] dark:bg-[#1B2F2C]" : ""} ${rows.some((x) => x.code === h.id) ? "opacity-50" : ""}`}
-                    onMouseEnter={() => setActive(i)} onMouseDown={(e) => { e.preventDefault(); add(h); }}>
-                    <div className="font-semibold">{h.title} <span className="font-normal text-[#667085] dark:text-[#9AA3B2]">· {h.id}</span></div>
-                    {h.sub && <div className={hint}>{h.sub}{rows.some((x) => x.code === h.id) ? " · already added" : ""}</div>}
-                  </li>
-                ))}
-                {!hits.length && <li className={`px-3 py-2 ${hint}`}>{searching ? "Searching…" : `No ${plan}-plan fund found. Check the spelling or try the scheme code.`}</li>}
-              </ul>
-            )}
-          </div>
+          <FundSearch id="proposal-hits" plan={plan} exclude={rows.map((r) => r.code)} placeholder={`Add another scheme: type a fund name or scheme code (${plan} plan)`} onPick={add} />
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead><tr className="bg-[#183883] text-white"><th className={th}>Scheme</th><th className={th}>Category</th><th className={`${th} text-right`}>Amount (Rs.)</th><th className={`${th} text-right`}>Expected return (%)</th><th className={th}><span className="sr-only">Remove</span></th></tr></thead>

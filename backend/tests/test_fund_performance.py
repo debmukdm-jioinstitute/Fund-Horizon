@@ -27,6 +27,13 @@ def test_requires_staff(client):
     assert client.get(B + "/trailing", params={"category": CAT}).status_code in (401, 403)
 
 
+def test_nav_date_shown_is_the_latest_real_one(api):
+    import datetime as dt
+    d = dt.datetime.strptime(api("/trailing", category=CAT).json()["as_of"], "%d-%m-%Y")
+    assert d.year >= dt.date.today().year - 1 and (dt.date.today() - d.date()).days < 400  # not the text max (31-Oct-2025)
+    assert d.date() == dt.datetime.strptime(api("/meta").json()["as_of"], "%d-%m-%Y").date()
+
+
 def test_meta(api):
     m = api("/meta").json()
     assert CAT in m["categories"] and m["amcs"][:3] == ["5 Largest Fund Houses", "10 Largest Fund Houses", "15 Largest Fund Houses"] and len(m["amcs"]) > 20
@@ -135,3 +142,49 @@ def test_bad_input_is_a_readable_422(api, path, params):
 def test_direct_plan_and_empty_category_do_not_crash(api):
     assert api("/trailing", category=CAT, plan="Direct").status_code == 200
     assert api("/annual", category="Equity: Contra", plan="Direct").status_code == 200
+
+
+def test_market_cap_breakup(api):
+    j = api("/trailing-mcap", category="Equity: Large Cap").json()
+    assert [c["label"] for c in j["columns"] if c["group"] == "Market cap (%)"] == ["Large", "Mid", "Small", "Other"]
+    have = [r for r in j["rows"] if r["large"] is not None]
+    assert len(have) >= 20
+    for r in have:
+        assert r["large"] + r["mid"] + r["small"] + r["other"] == pytest.approx(100, abs=0.05)
+    assert sum(r["large"] for r in have) / len(have) > 60  # large-cap funds are mostly large caps
+    mid = [r for r in api("/trailing-mcap", category="Equity: Mid Cap").json()["rows"] if r["mid"] is not None]
+    assert sum(r["mid"] for r in mid) / len(mid) > 40 and sum(r["mid"] for r in mid) / len(mid) > sum(r["large"] for r in mid) / len(mid) - 25
+
+
+def test_lumpsum_multi_matches_trailing_cagr(api):
+    j = api("/lumpsum-multi", category=CAT, years=5, amount=10000).json()
+    tr = {r["code"]: r for r in api("/trailing", category=CAT).json()["rows"]}
+    got = [r for r in j["rows"] if r["cagr"] is not None]
+    assert len(got) >= 15 and [r["cagr"] for r in got] == sorted([r["cagr"] for r in got], reverse=True)
+    close = 0
+    for r in got:
+        assert r["value"] == pytest.approx(10000 * (1 + r["cagr"] / 100) ** 5, rel=0.002)
+        if tr[r["code"]]["5y"] is not None and abs(tr[r["code"]]["5y"] - r["cagr"]) < 0.8:  # month-end NAV vs the dataset's daily 5Y
+            close += 1
+    assert close >= len(got) * 0.8
+    assert api("/lumpsum-multi", category=CAT, years=11).status_code == 422
+
+
+def test_compare_per_fund_date_ranges(api):
+    j = api("/compare", codes=f"{F1},{F2}", amount=10000, start=["2023-01-01", "2020-01-01"], end=["2024-01-01", "2025-01-01"]).json()["rows"]
+    assert [r["period"] for r in j] == ["01-01-2023 to 01-01-2024", "01-01-2020 to 01-01-2025"]
+    solo = api("/compare", codes=F2, amount=10000, start="2020-01-01", end="2025-01-01").json()["rows"][0]
+    assert j[1]["value"] == solo["value"]
+    assert api("/compare", codes=f"{F1},{F2}", amount=10000, start=["2023-01-01", "2020-01-01", "2020-02-01"], end=["2024-01-01", "2025-01-01", "2025-01-01"]).status_code == 422
+    assert api("/compare", codes=f"{F1},{F2}", amount=10000, start=["2023-01-01"], end=["2024-01-01"]).json()["rows"][1]["period"] == "01-01-2023 to 01-01-2024"  # one range applies to all
+
+
+def test_pdf_of_every_table_shape(client, api):
+    for path, params in (("/trailing", {"category": CAT}), ("/compare", {"codes": F1, "start": "2024-01-01", "end": "2025-01-01"}), ("/monthly", {"category": CAT, "years": "2025"}),
+                         ("/p2p", {"category": CAT, "start": ["2024-01-01", "2023-01-01"], "end": ["2024-12-31", "2024-12-31"]}), ("/assets", {"code": F1, "start_year": 2015})):
+        t = api(path, **params).json()
+        r = client.post(B + "/pdf", json={k: t[k] for k in ("title", "columns", "rows", "note", "as_of")})
+        assert r.status_code == 200 and r.content.startswith(b"%PDF") and len(r.content) > 3000, path
+    assert client.post(B + "/pdf", json={"title": "x", "columns": [], "rows": []}).status_code == 422
+    client.cookies.clear()
+    assert client.post(B + "/pdf", json={"title": "x", "columns": [{"key": "a", "label": "A"}], "rows": []}).status_code in (401, 403)

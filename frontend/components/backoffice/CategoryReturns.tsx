@@ -59,7 +59,7 @@ export default function CategoryReturns() {
 
   useEffect(() => { // a shared link carries ?etf=…&period=…, as on the original tool
     const p = new URLSearchParams(window.location.search);
-    const a = { fundType: p.get("etf") ?? "Equity Schemes", periods: (p.get("period") ?? "1y").split(",").filter(Boolean).slice(0, 3), plan: p.get("plan") ?? "Regular" };
+    const a = { fundType: p.get("etf") ?? "Equity Schemes", periods: (p.get("period") ?? "1y").split(",").filter(Boolean).slice(0, 9), plan: p.get("plan") ?? "Regular" };
     setFundType(a.fundType); setPeriods(a.periods); setPlan(a.plan); setApplied(a); load(a);
   }, [load]);
 
@@ -69,11 +69,10 @@ export default function CategoryReturns() {
     setApplied(a); load(a);
     window.history.replaceState(null, "", `?${new URLSearchParams({ period: periods.join(","), etf: fundType, plan })}`);
   };
-  const toggle = (k: string) => {
-    if (periods.includes(k)) { setErr(""); return setPeriods(periods.filter((x) => x !== k)); }
-    if (periods.length >= 3) return setErr("Only 3 period selection is allowed");
-    setErr(""); setPeriods([...periods, k]);
-  };
+  const allKeys = (data?.all_periods.map((p) => p.key) ?? FALLBACK_PERIODS.map(([k]) => k));
+  const allSelected = allKeys.every((k) => periods.includes(k));
+  const toggle = (k: string) => { setErr(""); setPeriods(periods.includes(k) ? periods.filter((x) => x !== k) : [...periods, k]); };
+  const toggleAll = () => { setErr(""); setPeriods(allSelected ? [] : allKeys); };
   const exportUrl = (kind: "pdf" | "xlsx") => resolveApiUrl(`${API_URL}/api/backoffice/mutual-funds/category-returns/${kind}?${new URLSearchParams({ fund_type: applied.fundType, period: applied.periods.join(","), plan: applied.plan })}`);
 
   const value = (r: Row, col: string): number | string => {
@@ -98,7 +97,7 @@ export default function CategoryReturns() {
       <div className={`${card} space-y-4 p-5`}>
         <div>
           <h2 className="text-lg font-bold">Mutual fund category returns</h2>
-          <p className="mt-1 text-[13.5px] text-[#667085] dark:text-[#9AA3B2]">Average, maximum, minimum and median return of every category, for one fund type and up to three periods.</p>
+          <p className="mt-1 text-[13.5px] text-[#667085] dark:text-[#9AA3B2]">Average, maximum, minimum and median return of every category, for one fund type and the periods you pick.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-[12px] font-semibold">Fund type
@@ -107,8 +106,10 @@ export default function CategoryReturns() {
             <select className={`${field} mt-1 w-full`} value={plan} onChange={(e) => setPlan(e.target.value)}><option>Regular</option><option>Direct</option><option>Both</option></select></label>
         </div>
         <fieldset>
-          <legend className="text-[12px] font-semibold">Select period <span className={hint}>(max 3)</span></legend>
+          <legend className="text-[12px] font-semibold">Select period</legend>
           <div className="mt-1.5 flex flex-wrap gap-2">
+            <label className={`cursor-pointer rounded-lg border px-3 py-1.5 text-[12.5px] font-semibold ${allSelected ? "border-[#006F64] bg-[#E6F2F0] text-[#006F64] dark:bg-[#0C2B28] dark:text-[#75E1CE]" : "border-[#E4E9EF] dark:border-[#2B3644]"}`}>
+              <input type="checkbox" className="sr-only" checked={allSelected} onChange={toggleAll} />Select all</label>
             {(data?.all_periods.map((p) => [p.key, p.label]) ?? FALLBACK_PERIODS).map(([k, l]) => (
               <label key={k} className={`cursor-pointer rounded-lg border px-3 py-1.5 text-[12.5px] font-semibold ${periods.includes(k) ? "border-[#006F64] bg-[#E6F2F0] text-[#006F64] dark:bg-[#0C2B28] dark:text-[#75E1CE]" : "border-[#E4E9EF] dark:border-[#2B3644]"}`}>
                 <input type="checkbox" className="sr-only" checked={periods.includes(k)} onChange={() => toggle(k)} />{l}</label>

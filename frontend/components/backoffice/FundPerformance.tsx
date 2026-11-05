@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { apiGet } from "@/lib/apiGet";
+import FundSearch from "@/components/backoffice/FundSearch";
+import { apiBlob, apiGet } from "@/lib/apiGet";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
 interface Col { key: string; label: string; group: string | null; kind: string | null }
@@ -11,8 +12,10 @@ interface Table { title: string; columns: Col[]; rows: Record<string, Cell>[]; n
 interface Meta { categories: string[]; amcs: string[] }
 interface Pick { code: string; name: string }
 
-const TABS = [["trailing", "Trailing returns"], ["annual", "Annual returns"], ["compare", "Returns comparison"], ["lumpsum", "Lumpsum returns"], ["consistent", "Consistent performers"],
-  ["assets", "Comparison with asset classes"], ["monthly", "Monthly / quarterly returns"], ["best", "Best performing fund"], ["p2p", "Point to point returns"]] as const;
+const TABS = [["trailing", "Trailing returns"], ["mcap", "Trailing returns with market cap"], ["annual", "Annual returns"], ["compare", "Returns comparison"], ["lumpsum", "Lumpsum returns"],
+  ["lumpsum-multi", "Lumpsum returns, multiple funds"], ["consistent", "Consistent performers"], ["assets", "Comparison with asset classes"], ["monthly", "Monthly / quarterly returns"],
+  ["best", "Best performing fund"], ["p2p", "Point to point returns"]] as const;
+const LUMP_YEARS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20];
 type Tab = (typeof TABS)[number][0];
 const PERIODS = [["ytd", "YTD"], ["1w", "1 Week"], ["1m", "1 Month"], ["3m", "3 Months"], ["6m", "6 Months"], ["1y", "1 Year"], ["3y", "3 Years"], ["5y", "5 Years"], ["10y", "10 Years"], ["si", "Since launch"]];
 const SIZES = [10, 15, 25, 50, DEFAULT_PAGE_SIZE, 0];
@@ -29,40 +32,14 @@ const tone = (v: Cell, kind: string | null) => (kind === "ret" && typeof v === "
 const show = (v: Cell) => (v == null ? "-" : typeof v === "number" ? v.toLocaleString("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: Number.isInteger(v) ? 0 : 2 }) : v);
 
 function FundPicker({ picks, setPicks, max }: { picks: Pick[]; setPicks: (p: Pick[]) => void; max: number }) {
-  const [q, setQ] = useState("");
-  const [hits, setHits] = useState<Pick[]>([]);
-  const [open, setOpen] = useState(false);
-  const seq = useRef(0);
-  useEffect(() => {
-    const term = q.trim();
-    if (term.length < 2) { setHits([]); return; }
-    const id = ++seq.current;
-    const t = setTimeout(() => {
-      apiGet<{ results: { scope: string; id: string; title: string }[] }>(`/api/backoffice/search?q=${encodeURIComponent(term)}&scope=mutual_funds`)
-        .then((d) => { if (id === seq.current) setHits(d.results.filter((r) => r.scope === "mutual_funds").slice(0, 10).map((r) => ({ code: r.id, name: r.title }))); })
-        .catch(() => { if (id === seq.current) setHits([]); });
-    }, 250);
-    return () => clearTimeout(t);
-  }, [q]);
-  const add = (h: Pick) => { setQ(""); setHits([]); setOpen(false); if (picks.length < max && !picks.some((p) => p.code === h.code)) setPicks([...picks, h]); };
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2">
         {picks.map((p) => <span key={p.code} className="inline-flex items-center gap-1.5 rounded-lg bg-[#E6F2F0] px-2.5 py-1 text-[12.5px] font-semibold text-[#006F64] dark:bg-[#0C2B28] dark:text-[#75E1CE]">{p.name}
           <button type="button" aria-label={`Remove ${p.name}`} onClick={() => setPicks(picks.filter((x) => x.code !== p.code))}>×</button></span>)}
       </div>
-      {picks.length < max && (
-        <div className="relative">
-          <input className={`${field} w-full`} role="combobox" aria-expanded={open} aria-controls="perf-fund-hits" autoComplete="off" value={q} placeholder={`Type a fund name or scheme code (${picks.length}/${max})`}
-            onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onBlur={() => setOpen(false)} />
-          {open && q.trim().length >= 2 && (
-            <ul id="perf-fund-hits" role="listbox" className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] shadow-lg">
-              {hits.map((h) => <li key={h.code} role="option" aria-selected={false} className="cursor-pointer px-3 py-1.5 text-[12.5px] hover:bg-[#E8F3F1] dark:hover:bg-[#1B2F2C]" onMouseDown={(e) => { e.preventDefault(); add(h); }}>{h.name} <span className={hint}>· {h.code}</span></li>)}
-              {!hits.length && <li className={`px-3 py-2 ${hint}`}>No fund found.</li>}
-            </ul>
-          )}
-        </div>
-      )}
+      {picks.length < max && <FundSearch id="perf-fund-hits" exclude={picks.map((p) => p.code)} placeholder={`Type a fund name or scheme code (${picks.length}/${max})`}
+        onPick={(h) => { if (!picks.some((p) => p.code === h.code)) setPicks([...picks, { code: h.code, name: h.name }]); }} />}
     </div>
   );
 }
@@ -90,6 +67,15 @@ export function Result({ t }: { t: Table }) {
   const groups: { label: string; span: number }[] = [];
   for (const c of t.columns) { if (!c.group) continue; const l = groups.at(-1); if (l && l.label === c.group && t.columns.indexOf(c) > 0 && t.columns[t.columns.indexOf(c) - 1].group === c.group) l.span++; else groups.push({ label: c.group, span: 1 }); }
   const th = "px-2 py-1.5 text-[11.5px] font-semibold whitespace-nowrap cursor-pointer select-none";
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [pdfErr, setPdfErr] = useState("");
+  const pdf = async () => {
+    setPdfBusy(true); setPdfErr("");
+    try {
+      const blob = await apiBlob("/api/backoffice/mutual-funds/performance/pdf", { title: t.title, columns: t.columns, rows, note: t.note, as_of: t.as_of });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${t.title}.pdf`; a.click(); URL.revokeObjectURL(a.href);
+    } catch (e) { setPdfErr(e instanceof Error ? e.message : "Could not create the PDF."); } finally { setPdfBusy(false); }
+  };
   const sortBy = (key: string) => { setSort((s) => ({ key, dir: s?.key === key && s.dir === 1 ? -1 : 1 })); setPage(0); };
   const download = () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv(t, rows)], { type: "text/csv" })); a.download = `${t.title}.csv`; a.click(); URL.revokeObjectURL(a.href); };
   return (
@@ -100,6 +86,7 @@ export function Result({ t }: { t: Table }) {
           <label className="flex items-center gap-1.5 text-[12.5px]">Show <select className={field} value={size} onChange={(e) => { setSize(Number(e.target.value)); setPage(0); }}>{SIZES.map((n) => <option key={n} value={n}>{n === 0 ? "All" : n}</option>)}</select> entries</label>
           <input className={`${field} w-48`} type="search" aria-label="Search" placeholder="Search" value={q} onChange={(e) => { setQ(e.target.value); setPage(0); }} />
           <button type="button" className={btn} onClick={download} disabled={!rows.length}>Excel (CSV)</button>
+          <button type="button" className={btn} onClick={pdf} disabled={!rows.length || pdfBusy}>{pdfBusy ? "Preparing…" : "PDF"}</button>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -133,6 +120,7 @@ export function Result({ t }: { t: Table }) {
         <span className={hint}>Showing {rows.length ? (size === 0 ? 1 : page * size + 1) : 0} to {size === 0 ? rows.length : Math.min(rows.length, page * size + size)} of {rows.length} entries</span>
         <div className="flex items-center gap-2"><button type="button" className={btn} disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</button><span>{page + 1} / {pages}</span><button type="button" className={btn} disabled={page + 1 >= pages} onClick={() => setPage(page + 1)}>Next</button></div>
       </div>
+      {pdfErr && <p role="alert" className="text-[12.5px] font-medium text-[#B42318]">{pdfErr}</p>}
       <p className={hint}>{t.note}</p>
     </div>
   );
@@ -150,6 +138,9 @@ export default function FundPerformance() {
   const [start, setStart] = useState(yearsAgo(1));
   const [end, setEnd] = useState(today);
   const [ranges, setRanges] = useState<[string, string][]>([[yearsAgo(1), today]]);
+  const [perFund, setPerFund] = useState(false); // one date range per fund instead of one for all
+  const [fundRanges, setFundRanges] = useState<Record<string, [string, string]>>({});
+  const [lumpYears, setLumpYears] = useState("5");
   const [mode, setMode] = useState("Monthly");
   const [years, setYears] = useState<number[]>([new Date().getFullYear() - 1]);
   const [amcs, setAmcs] = useState<string[]>(["5 Largest Fund Houses"]);
@@ -175,12 +166,18 @@ export default function FundPerformance() {
       case "trailing": return `trailing?${P({ category, period, rank, plan })}`;
       case "annual": return `annual?${P({ category, plan })}`;
       case "consistent": return `consistent?${P({ category, plan })}`;
-      case "compare": case "lumpsum":
+      case "compare": case "lumpsum": {
         if (!picks.length) { setErr("Please select a fund."); return null; }
         if (!(amt > 0)) { setErr("Please enter a valid amount."); return null; }
-        if (!start || !end) { setErr("Please select the start and end dates."); return null; }
-        if (end <= start) { setErr("End date must be after the start date."); return null; }
-        return `${tab}?${P({ codes: picks.map((p) => p.code).join(","), amount: String(amt), start, end })}`;
+        const rs: [string, string][] = perFund ? picks.map((p) => fundRanges[p.code] ?? [start, end]) : [[start, end]];
+        if (rs.some(([a, b]) => !a || !b)) { setErr("Please select the start and end dates."); return null; }
+        if (rs.some(([a, b]) => b <= a)) { setErr("End date must be after the start date."); return null; }
+        return `${tab}?${P({ codes: picks.map((p) => p.code).join(","), amount: String(amt) }, rs.flatMap(([a, b]) => [["start", a], ["end", b]] as [string, string][]))}`;
+      }
+      case "mcap": return `trailing-mcap?${P({ category, plan })}`;
+      case "lumpsum-multi":
+        if (!(amt > 0)) { setErr("Please enter a valid amount."); return null; }
+        return `lumpsum-multi?${P({ category, plan, years: lumpYears, amount: String(amt) })}`;
       case "assets":
         if (!picks.length) { setErr("Please select a fund."); return null; }
         if (!(amt > 0)) { setErr("Please enter a valid amount."); return null; }
@@ -228,8 +225,14 @@ export default function FundPerformance() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {tab === "trailing" && <>{catSelect}<label className={lbl}>Period<select className={`${field} mt-1 w-full`} value={period} onChange={(e) => setPeriod(e.target.value)}><option value="gt1y">Greater than 1 year</option><option value="lt1y">Less than 1 year</option></select></label>
             <label className={lbl}>Rank<select className={`${field} mt-1 w-full`} value={rank} onChange={(e) => setRank(e.target.value)}><option value="true">With rank</option><option value="false">Without rank</option></select></label>{planSelect}</>}
-          {(tab === "annual" || tab === "consistent") && <>{catSelect}{planSelect}</>}
-          {(tab === "compare" || tab === "lumpsum") && <>{funds(5)}{amountBox}{dates}</>}
+          {(tab === "annual" || tab === "consistent" || tab === "mcap") && <>{catSelect}{planSelect}</>}
+          {tab === "lumpsum-multi" && <>{catSelect}{planSelect}{amountBox}<label className={lbl}>Period<select className={`${field} mt-1 w-full`} value={lumpYears} onChange={(e) => setLumpYears(e.target.value)}>{LUMP_YEARS.map((y) => <option key={y} value={y}>{y} {y === 1 ? "year" : "years"}</option>)}</select></label></>}
+          {(tab === "compare" || tab === "lumpsum") && <>{funds(5)}{amountBox}
+            <label className="flex items-center gap-2 text-[12.5px] font-semibold sm:col-span-2 lg:col-span-3"><input type="checkbox" checked={perFund} onChange={(e) => setPerFund(e.target.checked)} disabled={picks.length < 2} /> Different dates for each fund</label>
+            {!perFund || picks.length < 2 ? dates : <div className="sm:col-span-2 lg:col-span-3 space-y-2">{picks.map((p) => { const [a, b] = fundRanges[p.code] ?? [start, end]; return (
+              <div key={p.code} className="flex flex-wrap items-center gap-2"><span className="w-full text-[12.5px] font-semibold sm:w-72">{p.name}</span>
+                <input type="date" aria-label={`Start date for ${p.name}`} className={field} max={today} value={a} onChange={(e) => setFundRanges({ ...fundRanges, [p.code]: [e.target.value, b] })} /><span>to</span>
+                <input type="date" aria-label={`End date for ${p.name}`} className={field} max={today} value={b} onChange={(e) => setFundRanges({ ...fundRanges, [p.code]: [a, e.target.value] })} /></div>); })}</div>}</>}
           {tab === "assets" && <>{funds(1)}{amountBox}<label className={lbl}>Start year<select className={`${field} mt-1 w-full`} value={startYear} onChange={(e) => setStartYear(e.target.value)}>{yearList.slice(1).map((y) => <option key={y}>{y}</option>)}</select></label></>}
           {tab === "monthly" && <>{catSelect}<label className={lbl}>Mode<select className={`${field} mt-1 w-full`} value={mode} onChange={(e) => setMode(e.target.value)}><option>Monthly</option><option>Quarterly</option></select></label>{planSelect}
             <fieldset className="sm:col-span-2 lg:col-span-3"><legend className={lbl}>Years <span className={hint}>(up to 3)</span></legend><div className="mt-1 flex flex-wrap gap-2">

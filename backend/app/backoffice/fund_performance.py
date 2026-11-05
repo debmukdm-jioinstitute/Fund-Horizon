@@ -15,6 +15,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from app.backoffice.category_returns import nav_as_of
+
 RF = 6.0  # annual risk-free rate (%) for Sharpe and alpha
 MAX_FUNDS = 5
 MAX_RANGES = 5
@@ -75,7 +77,7 @@ def meta(frame: pd.DataFrame) -> dict[str, Any]:
     f = labelled(frame)
     aum = f.groupby("amc")["aum_cr"].sum().sort_values(ascending=False)
     return {"categories": sorted(f["_cat"].unique()), "amcs": ["5 Largest Fund Houses", "10 Largest Fund Houses", "15 Largest Fund Houses"] + sorted(aum.index),
-            "periods": ["ytd", "1w", "1m", "3m", "6m", "1y", "3y", "5y", "10y", "si"], "as_of": str(frame["nav_date"].max())}
+            "periods": ["ytd", "1w", "1m", "3m", "6m", "1y", "3y", "5y", "10y", "si"], "as_of": nav_as_of(frame)}
 
 
 def _scope(frame: pd.DataFrame, category: str, plan: str, open_only: bool = False) -> pd.DataFrame:
@@ -221,52 +223,61 @@ def _bench(frame: pd.DataFrame, code: str) -> pd.Series | None:
     return pd.concat(ser, axis=1).mean(axis=1) if len(ser) >= 3 else None
 
 
-def compare(frame: pd.DataFrame, codes: list[str], amount: float, start: str, end: str) -> dict[str, Any]:
+def _spans(ranges: list[tuple[str, str]], n: int) -> list[tuple[pd.Timestamp, pd.Timestamp]]:
+    """One (start, end) per fund; a single range applies to every fund."""
+    if len(ranges) not in (1, n):
+        raise PerfError("Give one date range for all funds, or one per fund.")
+    out = []
+    for a, b in ranges:
+        x, y = _date(a, "Start date"), _date(b, "End date")
+        if y <= x:
+            raise PerfError("End date must be after the start date.")
+        out.append((x, y))
+    return out * n if len(out) == 1 else out
+
+
+def compare(frame: pd.DataFrame, codes: list[str], amount: float, ranges: list[tuple[str, str]]) -> dict[str, Any]:
     f = _cols_for(frame, codes)
-    a, b = _date(start, "Start date"), _date(end, "End date")
-    if b <= a:
-        raise PerfError("End date must be after the start date.")
+    spans = _spans(ranges, len(f))
     if not (amount > 0):
         raise PerfError("Please enter a valid amount.")
     latest = pd.to_datetime(frame["nav_date"], format="%d-%b-%Y", errors="coerce").max()
-    years = (b - a).days / 365.25
     launch = _launch_dates()
     rows = []
-    for code, r in f.iterrows():
+    for (code, r), (a, b) in zip(f.iterrows(), spans):
+        years = (b - a).days / 365.25
         s = _nav(code)
         n0, n1 = (_at(s, a, latest), _at(s, b, latest)) if s is not None else (None, None)
         ab, cg = _ret(n0, n1, years)
-        row = {"scheme": _short(r["name"]), "code": code, "launch": dmy(launch.get(code)), "value": _r(amount * n1 / n0) if n0 and n1 else None, "abs": _r(ab), "cagr": _r(cg)}
+        row = {"scheme": _short(r["name"]), "code": code, "launch": dmy(launch.get(code)), "period": f"{dmy(a)} to {dmy(b)}", "value": _r(amount * n1 / n0) if n0 and n1 else None, "abs": _r(ab), "cagr": _r(cg)}
         row.update(_risk(s, _bench(frame, code), a, min(b, latest)) if s is not None and ab is not None else {"mean": None, "sharpe": None, "alpha": None, "beta": None, "std": None})
         rows.append(row)
-    g = f"{dmy(a)} to {dmy(b)}"
-    cols = [("scheme", "Scheme Name"), ("launch", "Launch Date"), ("value", "Growth Value", g), ("abs", "Abs Ret. (%)", g, "ret"), ("cagr", "CAGR (%)", g, "ret"),
+    g = "Growth over the period"
+    cols = [("scheme", "Scheme Name"), ("launch", "Launch Date"), ("period", "Period"), ("value", "Growth Value", g), ("abs", "Abs Ret. (%)", g, "ret"), ("cagr", "CAGR (%)", g, "ret"),
             ("mean", "Mean (% p.a.)", "Risk ratios"), ("sharpe", "Sharpe Ratio", "Risk ratios"), ("alpha", "Alpha", "Risk ratios"), ("beta", "Beta", "Risk ratios"), ("std", "Std. Deviation", "Risk ratios")]
     return _table("Returns comparison", cols, rows, f"Growth of Rs.{amount:,.0f}. Risk ratios use monthly returns in the period (risk-free {RF:g}%, beta and alpha against the category's average). " + TAB_NOTE)
 
 
-def lumpsum(frame: pd.DataFrame, codes: list[str], amount: float, start: str, end: str) -> dict[str, Any]:
+def lumpsum(frame: pd.DataFrame, codes: list[str], amount: float, ranges: list[tuple[str, str]]) -> dict[str, Any]:
     f = _cols_for(frame, codes)
-    a, b = _date(start, "Start date"), _date(end, "End date")
-    if b <= a:
-        raise PerfError("End date must be after the start date.")
+    spans = _spans(ranges, len(f))
     if not (amount >= 1):
         raise PerfError("Please enter a valid amount.")
     latest = pd.to_datetime(frame["nav_date"], format="%d-%b-%Y", errors="coerce").max()
-    years = (b - a).days / 365.25
     launch = _launch_dates()
     lab = labelled(frame).set_index("code")["_cat"]
     rows = []
-    for code, r in f.iterrows():
+    for (code, r), (a, b) in zip(f.iterrows(), spans):
+        years = (b - a).days / 365.25
         s = _nav(code)
         n0, n1 = (_at(s, a, latest), _at(s, b, latest)) if s is not None else (None, None)
         _, cg = _ret(n0, n1, years)
         v = amount * n1 / n0 if n0 and n1 else None
         rows.append({"scheme": _short(r["name"]), "code": code, "category": lab.get(code, ""), "launch": dmy(launch.get(code)), "aum": _r(r["aum_cr"], 0), "ter": _r(r["ter"]),
-                     "invested": amount, "value": _r(v), "profit": _r(v - amount) if v else None, "ret": _r(cg),
+                     "period": f"{dmy(a)} to {dmy(b)}", "invested": amount, "value": _r(v), "profit": _r(v - amount) if v else None, "ret": _r(cg),
                      "note": "Fund started after the start date" if n0 is None and s is not None else None})
-    cols = [("scheme", "Scheme Name"), ("category", "Category"), ("launch", "Launch Date"), ("aum", "AUM (Crore)"), ("ter", "TER (%)"), ("invested", "Amount Invested"),
-            ("value", f"Value as on {dmy(min(b, latest))}"), ("profit", "Profit"), ("ret", "Returns (%)", None, "ret")]
+    cols = [("scheme", "Scheme Name"), ("category", "Category"), ("launch", "Launch Date"), ("aum", "AUM (Crore)"), ("ter", "TER (%)"), ("period", "Period"), ("invested", "Amount Invested"),
+            ("value", "Value at period end"), ("profit", "Profit"), ("ret", "Returns (%)", None, "ret")]
     return _table("Lumpsum returns", cols, rows)
 
 
@@ -416,3 +427,76 @@ def assets(frame: pd.DataFrame, code: str, amount: float, start_year: int) -> di
         rows.append(row)
     cols = [("scheme", "Asset Class"), ("start", "Start Date"), ("end", "End Date"), ("invested", "Invested Amount"), ("value", "Current Value"), ("cagr", "CAGR (%)", None, "ret")]
     return _table("Comparison with asset classes", cols, rows, "Index and gold rows use the NAV of an index fund / gold fund, and debt rows the average of the largest funds in the category, so they trail the true index slightly (fees). " + TAB_NOTE)
+
+
+# ---------------------------------------------------------------- more reports
+@lru_cache(maxsize=2)
+def _mcap_sets(as_of: str) -> dict[str, tuple[frozenset[str], frozenset[str]]]:
+    """Market-cap classes from the holdings of index funds that track NIFTY 100 (large), Midcap 150 (mid) and Smallcap 250 (small): (ISINs, normalised names).
+    Some fund houses disclose holdings without ISINs, so a stock also matches by name."""
+    from app.api.backoffice import _holdings_snapshot
+    from app.backoffice.mf_holdings import normalize_holding_name
+    snap = _holdings_snapshot()
+    out = {}
+    for cls, code in (("large", "147666"), ("mid", "147622"), ("small", "147623")):
+        eq = [h for h in ((snap.get("schemes") or {}).get(code) or {}).get("holdings", []) if h.get("instrument_type") == "equity"]
+        out[cls] = (frozenset(h["isin"] for h in eq if h.get("isin")), frozenset(normalize_holding_name(h.get("name")) for h in eq))
+    return out
+
+
+def trailing_mcap(frame: pd.DataFrame, category: str, plan: str = "Regular") -> dict[str, Any]:
+    from app.api.backoffice import _holdings_snapshot
+    from app.backoffice.mf_holdings import normalize_holding_name
+    f = _scope(frame, category, plan)
+    sets = _mcap_sets(nav_as_of(frame))
+    snap = (_holdings_snapshot().get("schemes") or {})
+    launch = _launch_dates()
+    rows = []
+    for _, r in f.iterrows():
+        h = (snap.get(r["code"]) or {}).get("holdings") or []
+        share = {"large": 0.0, "mid": 0.0, "small": 0.0}
+        eq = 0.0
+        for x in h:
+            if x.get("instrument_type") != "equity":
+                continue
+            w = x.get("weight_pct") or 0
+            eq += w
+            nm = normalize_holding_name(x.get("name"))
+            for cls in ("large", "mid", "small"):
+                if (x.get("isin") and x["isin"] in sets[cls][0]) or (not x.get("isin") and nm in sets[cls][1]):
+                    share[cls] += w
+                    break
+        row = {"scheme": _short(r["name"]), "code": r["code"], "launch": dmy(launch.get(r["code"])), "aum": _r(r["aum_cr"], 0), "ter": _r(r["ter"]),
+               "large": _r(share["large"]) if h else None, "mid": _r(share["mid"]) if h else None, "small": _r(share["small"]) if h else None,
+               "other": _r(max(0.0, 100 - sum(share.values()))) if h else None, "1y": _r(r["ret_1y"]), "2y": _r(r["ret_2y"]), "3y": _r(r["cagr_3y"]), "5y": _r(r["cagr_5y"]), "10y": _r(r["cagr_10y"])}
+        rows.append(row)
+    rows.sort(key=lambda x: (x["1y"] is None, -(x["1y"] or 0)))
+    cols = [("scheme", "Scheme Name"), ("launch", "Launch Date"), ("aum", "AUM (Crore)"), ("ter", "TER (%)")] + [(k, l, "Market cap (%)") for k, l in (("large", "Large"), ("mid", "Mid"), ("small", "Small"), ("other", "Other"))] + \
+           [(k, l, "Return (%)", "ret") for k, l in (("1y", "1 Yr"), ("2y", "2 Yrs"), ("3y", "3 Yrs"), ("5y", "5 Yrs"), ("10y", "10 Yrs"))]
+    return _table("Trailing returns with market cap breakup", cols, rows, "Market cap: a stock is Large if it is in the NIFTY 100, Mid if in the NIFTY Midcap 150, Small if in the NIFTY Smallcap 250 (read from index-fund holdings); Other is everything else, "
+                   "including cash, debt and unlisted stocks. Weights come from the latest portfolio disclosure. " + TAB_NOTE)
+
+
+LUMPSUM_YEARS = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20)
+
+
+def lumpsum_multi(frame: pd.DataFrame, category: str, years: int, amount: float, plan: str = "Regular") -> dict[str, Any]:
+    if years not in LUMPSUM_YEARS:
+        raise PerfError("Select a valid period.")
+    if not (amount >= 1):
+        raise PerfError("Please enter a valid amount.")
+    f = _scope(frame, category, plan)
+    latest = pd.to_datetime(frame["nav_date"], format="%d-%b-%Y", errors="coerce").max()
+    launch = _launch_dates()
+    rows = []
+    for _, r in f.iterrows():
+        s = _nav(r["code"])
+        n0 = _at(s, latest - pd.DateOffset(years=years), latest) if s is not None else None
+        n1 = float(s.iloc[-1]) if s is not None else None
+        ok = n0 is not None and s.index[0] <= latest - pd.DateOffset(years=years) - pd.offsets.MonthEnd(1)
+        ab, cg = _ret(n0, n1, years) if ok else (None, None)
+        rows.append({"scheme": _short(r["name"]), "code": r["code"], "launch": dmy(launch.get(r["code"])), "aum": _r(r["aum_cr"], 0), "ter": _r(r["ter"]), "invested": amount,
+                     "value": _r(amount * n1 / n0) if ok else None, "cagr": _r(cg)})
+    rows.sort(key=lambda x: (x["cagr"] is None, -(x["cagr"] or 0)))
+    cols = [("scheme", "Scheme Name"), ("launch", "Inception Date"), ("aum", "AUM (Crore)"), ("ter", "TER (%)"), ("invested", "Invested Amount"), ("value", f"{years} Yrs: Current value", f"{years} Yrs"), ("cagr", "CAGR (%)", f"{years} Yrs", "ret")]
+    return _table("Lumpsum returns, multiple funds", cols, rows, "Funds with less history than the period are shown with a dash. " + TAB_NOTE)

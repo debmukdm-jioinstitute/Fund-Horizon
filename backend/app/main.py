@@ -273,6 +273,7 @@ def create_app() -> FastAPI:
     from app.api.investment_proposal import router as investment_proposal_router
     from app.api.category_returns import router as category_returns_router
     from app.api.fund_performance import router as fund_performance_router
+    from app.api.fund_tools import router as fund_tools_router
     from app.api.valuation import router as valuation_router
     from app.mcp_server import router as mcp_router
     from app.mcp_oauth import router as mcp_oauth_router
@@ -311,6 +312,7 @@ def create_app() -> FastAPI:
     app.include_router(investment_proposal_router)
     app.include_router(category_returns_router)
     app.include_router(fund_performance_router)
+    app.include_router(fund_tools_router)
     app.include_router(valuation_router)
     app.include_router(mcp_router)
     app.include_router(mcp_oauth_router)

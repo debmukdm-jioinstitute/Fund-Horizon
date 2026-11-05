@@ -57,6 +57,16 @@ export const NAV_ITEMS: NavItem[] = [
         ),
       },
       {
+        href: "/backoffice/mutual-funds/tools",
+        label: "Fund Tools",
+        description: "SIP, STP and SWP simulators, rolling returns, overlap, drawdown, benchmark returns and rankings",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M10.3 4.3a1.7 1.7 0 013.4 0 1.7 1.7 0 002.5 1l.3-.2a1.7 1.7 0 012.3 2.3l-.2.3a1.7 1.7 0 001 2.5 1.7 1.7 0 010 3.4 1.7 1.7 0 00-1 2.5l.2.3a1.7 1.7 0 01-2.3 2.3l-.3-.2a1.7 1.7 0 00-2.5 1 1.7 1.7 0 01-3.4 0 1.7 1.7 0 00-2.5-1l-.3.2a1.7 1.7 0 01-2.3-2.3l.2-.3a1.7 1.7 0 00-1-2.5 1.7 1.7 0 010-3.4 1.7 1.7 0 001-2.5l-.2-.3a1.7 1.7 0 012.3-2.3l.3.2a1.7 1.7 0 002.5-1z M12 15a3 3 0 100-6 3 3 0 000 6z" />
+          </svg>
+        ),
+      },
+      {
         href: "/backoffice/mutual-funds/category-returns",
         label: "Category Returns",
         description: "Average, max, min and median return of every fund category, with PDF and Excel",

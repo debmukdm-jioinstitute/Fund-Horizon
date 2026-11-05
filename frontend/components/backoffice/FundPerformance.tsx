@@ -31,7 +31,7 @@ const yearsAgo = (n: number) => { const d = new Date(); d.setFullYear(d.getFullY
 const tone = (v: Cell, kind: string | null) => (kind === "ret" && typeof v === "number" ? (v < 0 ? "text-[#B42318] dark:text-[#FDA29B]" : "text-[#067647] dark:text-[#75E1A0]") : "");
 const show = (v: Cell) => (v == null ? "-" : typeof v === "number" ? v.toLocaleString("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: Number.isInteger(v) ? 0 : 2 }) : v);
 
-function FundPicker({ picks, setPicks, max }: { picks: Pick[]; setPicks: (p: Pick[]) => void; max: number }) {
+export function FundPicker({ picks, setPicks, max }: { picks: Pick[]; setPicks: (p: Pick[]) => void; max: number }) {
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2">

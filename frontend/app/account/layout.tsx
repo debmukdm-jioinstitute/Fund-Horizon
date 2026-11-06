@@ -9,6 +9,7 @@ import { useAuth } from "@/components/AuthContext";
 const TABS = [
   { href: "/account/plans", label: "My plans" },
   { href: "/account/crm", label: "My CRM" },
+  { href: "/account/finance", label: "My money" },
   { href: "/account/messages", label: "Messages" },
 ];
 

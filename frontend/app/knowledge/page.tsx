@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 
 const ARTICLES = [
   { href: "/knowledge/mcp-setup", title: "Connect Fund Horizon to Claude (MCP)", body: "Create a personal token, connect Claude, and use PMS, mutual fund, valuation and form tools from a chat. Step by step." },
+  { href: "/knowledge/my-money", title: "My money: your personal finance in Fund Horizon", body: "Enter your income, spending, loans and savings, see where your money goes, and ask questions. Nothing is linked to your bank." },
   { href: "/knowledge/data-guide", title: "Reading the data: why a value is empty", body: "What 'Not launched', 'Part year', '< 5Y record' and 'No data' mean, which source each number comes from, and how fresh it is." },
 ];
 

@@ -191,6 +191,24 @@ class SQLiteRepository(DatabaseRepository):
                 conn.execute("CREATE INDEX IF NOT EXISTS ix_chat_customer ON chat_messages (customer_id, created_at)")
                 conn.execute(
                     """
+                    CREATE TABLE IF NOT EXISTS fin_entries (
+                        id TEXT PRIMARY KEY,
+                        customer_id TEXT NOT NULL,
+                        kind TEXT NOT NULL,
+                        label TEXT NOT NULL,
+                        amount INTEGER NOT NULL,
+                        category TEXT NOT NULL DEFAULT '',
+                        monthly_payment INTEGER NOT NULL DEFAULT 0,
+                        apr REAL NOT NULL DEFAULT 0,
+                        due_day INTEGER,
+                        liquid INTEGER NOT NULL DEFAULT 0,
+                        created_at TEXT NOT NULL
+                    )
+                    """
+                )
+                conn.execute("CREATE INDEX IF NOT EXISTS ix_fin_customer ON fin_entries (customer_id)")
+                conn.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS holdings (
                         id TEXT PRIMARY KEY,
                         contact_id TEXT NOT NULL,

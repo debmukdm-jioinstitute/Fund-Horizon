@@ -392,3 +392,18 @@ export const previewAiPicks = (b: { band: string; equity: number; debt: number; 
   request<AiPicks>(`${API_URL}/api/staff/ai-picks`, { method: "POST", body: JSON.stringify(b) });
 export const backtestPicks = (picks: { scheme_code: string; weight_pct: number }[]) =>
   request<{ backtest: Backtest | null }>(`${API_URL}/api/staff/ai-picks/backtest`, { method: "POST", body: JSON.stringify({ picks }) });
+
+export type FinKind = "income" | "expense" | "debt" | "saving" | "goal";
+export interface FinEntry { id: string; kind: FinKind; label: string; amount: number; category: string; monthly_payment: number; apr: number; due_day: number | null; liquid: number }
+export interface FinSummary {
+  monthly_income: number; monthly_expenses: number; monthly_emi: number; monthly_surplus: number;
+  savings_rate_pct: number | null; emi_to_income_pct: number | null; expenses_by_category: Record<string, number>;
+  debt_total: number; interest_per_year: number; emergency_fund: number; emergency_months: number | null;
+  upcoming_payments: { label: string; amount: number; in_days: number }[]; flags: string[]; missing: string[];
+}
+export const getMyFinance = () => authedRequest<{ entries: FinEntry[]; summary: FinSummary }>(`${API_URL}/api/me/finance`);
+export const addFinEntry = (e: Partial<FinEntry> & { kind: FinKind; label: string; amount: number }) =>
+  authedRequest<{ id: string }>(`${API_URL}/api/me/finance`, { method: "POST", body: JSON.stringify(e) });
+export const deleteFinEntry = (id: string) => authedRequest<{ ok: boolean }>(`${API_URL}/api/me/finance/${id}`, { method: "DELETE" });
+export const askFinance = (question: string) =>
+  authedRequest<{ answer: string; ai_generated: boolean }>(`${API_URL}/api/me/finance/ask`, { method: "POST", body: JSON.stringify({ question }) });

@@ -25,7 +25,7 @@ export default function McpSetup() {
       <Link href="/knowledge" className="text-[13px] text-[#536176] underline dark:text-[#A8B4C4]">Knowledge base</Link>
       <h1 className="mt-2 text-3xl font-bold text-[#181818] dark:text-[#EDF2F7]">Use Fund Horizon inside Claude</h1>
       <p className={p}>
-        Ask Claude in plain words: screen mutual funds, research PMS, build a client&apos;s consolidated valuation report, read a client statement, fill a form.
+        Ask Claude in plain words: screen mutual funds, research PMS, build a client&apos;s consolidated valuation report, read a client statement, fill a form, review a client&apos;s personal finance.
         It uses your own Fund Horizon login, so it sees only what you can see. It takes three steps and about one minute.
       </p>
 
@@ -60,6 +60,7 @@ export default function McpSetup() {
         <li>&quot;Here is my client&apos;s statement. Which funds are in our scored list?&quot; (attach the file in Claude)</li>
         <li>&quot;Make this month&apos;s consolidated valuation for Client X from these statements. Show me the totals first.&quot;</li>
         <li>&quot;Fill the CAMS change of address form for this client.&quot;</li>
+        <li>&quot;Look at Client X&apos;s My money numbers. Where is the money going, and what should I ask them next?&quot; (uses finance_summary)</li>
         <li>&quot;Update the units of this client&apos;s HDFC holding to 250 and delete the old SIP.&quot; (Claude shows the change and asks first)</li>
       </ul>
       <p className={p}>Everything in Fund Horizon works this way, and new features we add appear in Claude by themselves. You never reinstall.</p>

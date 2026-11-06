@@ -393,17 +393,28 @@ export const previewAiPicks = (b: { band: string; equity: number; debt: number; 
 export const backtestPicks = (picks: { scheme_code: string; weight_pct: number }[]) =>
   request<{ backtest: Backtest | null }>(`${API_URL}/api/staff/ai-picks/backtest`, { method: "POST", body: JSON.stringify({ picks }) });
 
-export type FinKind = "income" | "expense" | "debt" | "saving" | "goal";
-export interface FinEntry { id: string; kind: FinKind; label: string; amount: number; category: string; monthly_payment: number; apr: number; due_day: number | null; liquid: number }
+export type FinKind = "income" | "expense" | "debt" | "saving" | "goal" | "budget" | "insurance";
+export interface FinEntry { id: string; kind: FinKind; label: string; amount: number; category: string; monthly_payment: number; apr: number; due_day: number | null; liquid: number; years: number | null; saved: number }
 export interface FinSummary {
   monthly_income: number; monthly_expenses: number; monthly_emi: number; monthly_surplus: number;
   savings_rate_pct: number | null; emi_to_income_pct: number | null; expenses_by_category: Record<string, number>;
   debt_total: number; interest_per_year: number; emergency_fund: number; emergency_months: number | null;
   upcoming_payments: { label: string; amount: number; in_days: number }[]; flags: string[]; missing: string[];
+  goal_plan: { label: string; target: number; years: number | null; saved: number; monthly_needed: number | null }[]; goals_monthly_sip_needed: number;
+  debt_plan: { label: string; balance: number; apr: number; emi: number; payoff: { months: number; interest: number } | null; extra_10pct?: { extra_per_month: number; months_saved: number; interest_saved: number } }[];
+  budgets: { category: string; limit: number; spent: number; pct: number }[]; insurance: { life: number; health: number };
+  portfolio_invested: number; portfolio_sip_monthly: number; net_worth: number;
 }
-export const getMyFinance = () => authedRequest<{ entries: FinEntry[]; summary: FinSummary }>(`${API_URL}/api/me/finance`);
+export interface FinChanges { since: string; monthly_expenses: number; monthly_surplus: number; debt_total: number; net_worth: number }
+export const getMyFinance = () => authedRequest<{ entries: FinEntry[]; summary: FinSummary; changes: FinChanges | null }>(`${API_URL}/api/me/finance`);
 export const addFinEntry = (e: Partial<FinEntry> & { kind: FinKind; label: string; amount: number }) =>
   authedRequest<{ id: string }>(`${API_URL}/api/me/finance`, { method: "POST", body: JSON.stringify(e) });
 export const deleteFinEntry = (id: string) => authedRequest<{ ok: boolean }>(`${API_URL}/api/me/finance/${id}`, { method: "DELETE" });
-export const askFinance = (question: string) =>
-  authedRequest<{ answer: string; ai_generated: boolean }>(`${API_URL}/api/me/finance/ask`, { method: "POST", body: JSON.stringify({ question }) });
+const finPost = <T>(path: string, body: unknown = {}) => authedRequest<T>(`${API_URL}/api/me/finance/${path}`, { method: "POST", body: JSON.stringify(body) });
+export const askFinance = (question: string) => finPost<{ answer: string; ai_generated: boolean }>("ask", { question });
+export const importStatement = (csv: string) => finPost<{ added: number; months: number; rows: number; skipped: number }>("import", { csv });
+export const checkAfford = (b: { loan_amount?: number; apr?: number; years?: number; emi?: number }) =>
+  finPost<{ new_emi: number; emi_to_income_pct: number | null; surplus_after: number; verdict: string }>("afford", b);
+export const getTaxView = (b: { age: number; gross_annual?: number; ded_80c?: number }) =>
+  finPost<{ better: string; old_tax: number; new_tax: number; you_save: number; extra_80c_room: number; gross_annual: number }>("tax", b);
+export const shareFinance = () => finPost<{ id: string }>("share");

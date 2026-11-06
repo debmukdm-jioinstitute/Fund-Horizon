@@ -144,8 +144,8 @@ TOOLS: list[dict[str, Any]] = [
     _t("crm_create_client", "WRITE: add a client (person) to a household. Returns the client with customer_id, needed to start a valuation.",
        {"household_id": S, "name": S, "email": S, "mobile": S, "dob": {**S, "description": "YYYY-MM-DD"}, "relation": S},
        ["household_id", "name"], method="POST", path="/api/crm/contacts", body=("household_id", "name", "email", "mobile", "dob", "relation"), write=True),
-    _t("finance_summary", "A customer's self-entered personal finance: entries plus computed income, spending by category, EMIs, surplus, "
-       "interest per year, emergency months, upcoming payments, flags and `missing` questions to ask them. Answer from these figures only; "
+    _t("finance_summary", "A customer's self-entered personal finance: entries plus computed income, spending by category, EMIs, surplus, net worth, "
+       "interest per year, emergency months, upcoming payments, debt_plan (payoff months), goal_plan (monthly SIP per goal), budgets, insurance, flags and `missing` questions to ask them. Answer from these figures only; "
        "if `missing` is non-empty, ask those first. Education, not investment advice.",
        {"customer_id": S}, ["customer_id"], path="/api/staff/finance/{customer_id}"),
     # ---- monthly valuation (consolidated reports)

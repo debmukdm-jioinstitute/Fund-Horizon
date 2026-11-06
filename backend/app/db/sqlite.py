@@ -206,7 +206,15 @@ class SQLiteRepository(DatabaseRepository):
                     )
                     """
                 )
+                fin_cols = {r[1] for r in conn.execute("PRAGMA table_info(fin_entries)")}
+                for col in ("years INTEGER", "saved INTEGER NOT NULL DEFAULT 0"):  # added after first release
+                    if col.split()[0] not in fin_cols:
+                        conn.execute(f"ALTER TABLE fin_entries ADD COLUMN {col}")
                 conn.execute("CREATE INDEX IF NOT EXISTS ix_fin_customer ON fin_entries (customer_id)")
+                conn.execute(
+                    "CREATE TABLE IF NOT EXISTS fin_snapshots (customer_id TEXT NOT NULL, month TEXT NOT NULL, data TEXT NOT NULL, "
+                    "PRIMARY KEY (customer_id, month))"
+                )
                 conn.execute(
                     """
                     CREATE TABLE IF NOT EXISTS holdings (

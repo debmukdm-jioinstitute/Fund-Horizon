@@ -80,5 +80,18 @@ export const getConsolidated = (id: string) => call<Payload>(`/batches/${id}/con
 export const approveBatch = (id: string, generate_report = true) => post<{ snapshot_id: string; report?: ReportVersion }>(`/batches/${id}/approve`, { generate_report });
 export const generateReport = (snapshotId: string) => post<ReportVersion>(`/snapshots/${snapshotId}/report`);
 export const getHistory = (clientId: string) => call<{ data: HistoryRow[] }>(`/clients/${clientId}/history`).then((r) => r.data);
-export const emailReport = (versionId: string) => post<{ emailed: boolean; to: string }>(`/reports/${versionId}/email`, { confirm: true });
+export const emailReport = (versionId: string, include_sources = false) => post<{ emailed: boolean; to: string }>(`/reports/${versionId}/email`, { confirm: true, include_sources });
+export const reportPackUrl = (versionId: string) => resolveApiUrl(`${BASE}/reports/${versionId}/pack`);
+export interface FlowRow { date: string; kind: "deposit" | "withdrawal"; amount: number }
+export const addFlows = (accountId: string, reason: string, flows: FlowRow[]) => post<{ added: FlowRow[] }>(`/accounts/${accountId}/flows`, { reason, flows });
+/** Paste one flow per line: `date, amount` (negative = withdrawal) or `date, deposit|withdrawal, amount`. Throws with the line number. */
+export function parseFlows(text: string): FlowRow[] {
+  return text.split(/\r?\n/).map((l, i) => ({ l: l.trim(), n: i + 1 })).filter((x) => x.l).map(({ l, n }) => {
+    const p = l.split(/[,\t;]+/).map((x) => x.trim());
+    const amt = Number((p[p.length - 1] ?? "").replace(/[₹\s]/g, "").replace(/,/g, ""));
+    const word = p.length >= 3 ? p[1].toLowerCase() : amt < 0 ? "withdrawal" : "deposit";
+    if (!p[0] || !Number.isFinite(amt) || amt === 0 || (word !== "deposit" && word !== "withdrawal")) throw new Error(`Line ${n}: use "date, amount" or "date, deposit|withdrawal, amount".`);
+    return { date: p[0], kind: word, amount: Math.abs(amt) };
+  });
+}
 export const reportDownloadUrl = (versionId: string) => resolveApiUrl(`${BASE}/reports/${versionId}/download`);

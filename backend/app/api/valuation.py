@@ -81,6 +81,18 @@ class HoldingEditIn(BaseModel):
     income: float | None = None
 
 
+class FlowIn(BaseModel):
+    date: str = Field(max_length=32)
+    kind: str = Field(pattern="^(deposit|withdrawal)$")
+    amount: float = Field(gt=0)
+    description: str | None = Field(None, max_length=200)
+
+
+class FlowsIn(BaseModel):
+    reason: str = Field(min_length=10, max_length=500)
+    flows: list[FlowIn] = Field(min_length=1, max_length=2000)
+
+
 class ReasonIn(BaseModel):
     reason: str = Field(min_length=10, max_length=500)
 
@@ -260,6 +272,12 @@ def add_holding(account_id: str, body: HoldingEditIn, request: Request, me: Me):
     return _call(service.add_holding, account_id, _fields(body), body.reason, me["id"])
 
 
+@router.post("/accounts/{account_id}/flows", status_code=201)
+def add_flows(account_id: str, body: FlowsIn, request: Request, me: Me):
+    _client_of_batch(_call(service.account_batch, account_id), me, request)
+    return {"added": _call(service.add_flows, account_id, [f.model_dump() for f in body.flows], body.reason, me["id"])}
+
+
 @router.delete("/batches/{batch_id}")
 def discard_batch(batch_id: str, body: ReasonIn, request: Request, me: Me):
     _client_of_batch(batch_id, me, request)
@@ -275,6 +293,7 @@ def batch_holdings(batch_id: str, me: Me):
 
 class EmailIn(BaseModel):
     confirm: bool = Field(description="Must be true: the report goes to the client's email address held in the CRM")
+    include_sources: bool = Field(False, description="Also attach the original statements the report was built from (total attachments capped at 20 MB)")
 
 
 @router.post("/reports/{version_id}/email")
@@ -298,18 +317,33 @@ def email_report(version_id: str, body: EmailIn, request: Request, me: Me):
     data, rv = _call(service.report_bytes, version_id)
     month = rv["report_month"]
     fname = f"valuation-{month}-v{rv['version_no']}.pdf"
+    attachments = [(fname, data)]
+    if body.include_sources:
+        extra = _call(service.source_files, version_id)
+        if len(data) + sum(len(d) for _n, d in extra) > 20 * 1024 * 1024:
+            raise HTTPException(422, "The statements are too large to attach (20 MB limit). Send the report alone and share the pack download.")
+        attachments += extra
     first = (cust["name"] or "").split(" ")[0] or "there"
     text = (f"Dear {first},\n\nPlease find attached your consolidated portfolio valuation for {month}. Values are as reported by each "
             f"provider on its own valuation date; the report lists every source.\n\nRegards,\nFund Horizon")
     try:
-        email_id = send_email(to, f"Your portfolio valuation - {month}", text, [(fname, data)])
+        email_id = send_email(to, f"Your portfolio valuation - {month}", text, attachments)
     except MailerError as e:
         _call(service.audit_event, me["id"], "report_email_failed", cid, {"report_version_id": version_id, "error": str(e)})
         raise HTTPException(502, str(e)) from None
     _call(service.audit_event, me["id"], "report_emailed", cid, {"report_version_id": version_id, "to": to, "resend_id": email_id, "sha256": rv["pdf_sha256"]})
-    get_crm_repository().create_activity(kind="email", subject=f"Your portfolio valuation - {month}", body=f"To: {to}\n\n{text}\n\nAttachments: {fname}",
+    get_crm_repository().create_activity(kind="email", subject=f"Your portfolio valuation - {month}", body=f"To: {to}\n\n{text}\n\nAttachments: {', '.join(n for n, _d in attachments)}",
                                          customer_id=cid, actor_id=me["id"], source_ref=f"resend:{email_id}" if email_id else None)
     return {"emailed": True, "to": to, "email_id": email_id}
+
+
+@router.get("/reports/{version_id}/pack")
+def download_pack(version_id: str, me: Me):
+    """Month-end client pack: the report PDF plus every original statement it was built from, as one ZIP."""
+    _visible_customer(_call(service.report_client, version_id), me)
+    data, rv = _call(service.pack_bytes, version_id)
+    return Response(data, media_type="application/zip", headers={
+        "Content-Disposition": f'attachment; filename="valuation-pack-{rv["report_month"]}-v{rv["version_no"]}.zip"', "Cache-Control": "private, no-store"})
 
 
 @router.get("/clients/{client_id}/files")

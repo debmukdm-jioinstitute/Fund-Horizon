@@ -122,3 +122,36 @@ def check_flow_completeness(accounts: list[dict]) -> list[Check]:
         return [Check("flows_incomplete", "info", "failed", "Cash-flow history is not confirmed complete for " + ", ".join(bad) +
                       "; since-inception XIRR is shown as unavailable.", "")]
     return [Check("flows_complete", "info", "passed", "Cash-flow history confirmed complete for every account.", "")]
+
+
+_TITLES = {"mr", "mrs", "ms", "miss", "dr", "shri", "smt", "sri", "late"}
+
+
+def _tokens(name: str) -> list[str]:
+    import re
+    return [t for t in re.findall(r"[a-z]+", name.lower()) if len(t) > 1 and t not in _TITLES]
+
+
+def name_matches(client_name: str, text: str) -> bool:
+    """Most name words appear in the statement text (spelling slips like Shivnand/Shivanand tolerated by the 60% rule)."""
+    import re
+    toks = _tokens(client_name)
+    if not toks:
+        return True
+    words = set(re.findall(r"[a-z]+", text.lower()))
+    hit = sum(t in words for t in toks)
+    return hit >= max(1, int(len(toks) * 0.6 + 0.999))
+
+
+def check_client_identity(client_name: str, files: list[tuple[str, str, str | None]]) -> list[Check]:
+    """files: (file_id, filename, text or None when unreadable). A statement of another person must never land in this
+    client's report: no file naming the client is an error (admin override); a single non-matching file is a warning."""
+    readable = [(i, n, t) for i, n, t in files if t]
+    if not readable or not _tokens(client_name):
+        return []
+    miss = [(i, n) for i, n, t in readable if not name_matches(client_name, t)]
+    if len(miss) == len(readable):
+        return [Check("client_identity", "error", "failed", f"None of the statements names the client '{client_name}'. "
+                      "Check that the files belong to this client.", i) for i, _n in miss[:1]]
+    out = [Check("client_identity", "warning", "failed", f"'{n}' does not name '{client_name}'; confirm it belongs to this client.", i) for i, n in miss]
+    return out or [Check("client_identity", "info", "passed", f"Statements name the client '{client_name}'.", "")]

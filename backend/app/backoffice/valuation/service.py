@@ -355,6 +355,37 @@ def add_holding(account_id: str, fields: dict, reason: str, actor: str) -> dict:
         return row(h)
 
 
+def add_flows(account_id: str, rows: list[dict], reason: str, actor: str) -> list[dict]:
+    """Dated external cash flows typed or pasted by an operator (statements without a transaction list carry none). They feed XIRR
+    only after an administrator also attests the history is complete; any change sends the batch back to re-validation."""
+    if not rows or len(rows) > 2000:
+        raise ServiceError(422, "Send 1 to 2000 cash flows.")
+    clean = []
+    for i, r in enumerate(rows, 1):
+        d, k = ingestion.parse_date(r.get("date")), str(r.get("kind", "")).strip().lower()
+        try:
+            amt = round(float(str(r.get("amount")).replace(",", "")), 2)
+        except (TypeError, ValueError):
+            amt = 0.0
+        if not d or k not in ("deposit", "withdrawal") or not amt > 0:
+            raise ServiceError(422, f"Row {i}: need a valid date, kind 'deposit' or 'withdrawal', and a positive amount.")
+        clean.append((d, k, amt, str(r.get("description") or "")[:200] or None))
+    with scope() as s:
+        a = s.get(m.ValAccount, account_id)
+        if not a:
+            raise ServiceError(404, "Account not found.")
+        b = _batch(s, a.batch_id)
+        _editable(b)
+        for d, k, amt, desc in clean:
+            s.add(m.ValCashflow(batch_id=b.id, account_id=a.id, source_file_id=a.source_file_id, flow_date=d, kind=k, amount=amt,
+                                description=desc, source_page="manual"))
+        s.flush()
+        a.flows_complete = 0   # new flows invalidate an earlier completeness attestation
+        b.status = "processed"
+        audit(s, actor, "flows_added", b, {"account": a.id, "count": len(clean), "reason": reason, "net": round(sum(x[2] if x[1] == "deposit" else -x[2] for x in clean), 2)})
+        return [{"date": d, "kind": k, "amount": amt} for d, k, amt, _ in clean]
+
+
 def remove_holding(holding_id: str, reason: str, actor: str) -> dict:
     with scope() as s:
         h = s.get(m.ValHolding, holding_id)
@@ -548,6 +579,7 @@ def reconcile(batch_id: str, actor: str) -> dict:
                 m.ValBatch.status.in_(OPEN), m.ValSourceFile.status == "extracted")):
             for a in s.scalars(select(m.ValAccount).where(m.ValAccount.source_file_id == o.id)):
                 others.append({"provider": a.provider, "account_no": a.account_no, "statement_date": o.statement_date})
+        checks += reconciliation.check_client_identity(_client_name(b.client_id), [(f.id, f.filename, _plain_text(f)) for f in files])
         checks += reconciliation.check_duplicate_statements(file_ctx, others)
         checks += reconciliation.check_dates(b.report_month, b.valuation_date, accounts)
         flows = [row(c) for c in s.scalars(select(m.ValCashflow).where(m.ValCashflow.batch_id == batch_id))]
@@ -579,6 +611,24 @@ def reconcile(batch_id: str, actor: str) -> dict:
         b.status = "reconciled"
         audit(s, actor, "validation_run", b, {"run_no": last + 1, "checks": len(checks)})
     return reconciliation_report(batch_id)
+
+
+def _client_name(client_id: str) -> str:
+    """CRM name, or '' when it cannot be resolved (then the identity check is skipped rather than guessed)."""
+    try:
+        from app.repo_crm_core import get_crm_repository
+        n = get_crm_repository().customer_names({client_id}).get(client_id, "")
+    except Exception:
+        return ""
+    return "" if n == client_id else n
+
+
+def _plain_text(f: m.ValSourceFile) -> str | None:
+    try:
+        data = (cfg.private_dir() / f.storage_key).read_bytes()
+        return " ".join(ingestion.read_pdf_pages(data, "", "plain")) if ingestion.kind_of(f.filename, data) == "pdf" else None
+    except Exception:  # encrypted / unreadable / not a PDF: nothing to compare
+        return None
 
 
 def _detected(f: m.ValSourceFile) -> str | None:
@@ -792,6 +842,39 @@ def file_bytes(file_id: str) -> tuple[bytes, dict]:
         if hashlib.sha256(data).hexdigest() != f.sha256:
             raise ServiceError(500, "Stored file failed its integrity check.")
         return data, row(f)
+
+
+def source_files(version_id: str) -> list[tuple[str, bytes]]:
+    """(filename, bytes) of every statement behind a report version: the files of the batch its snapshot was approved from.
+    Names are made unique (file order) so a repeated name never overwrites another statement."""
+    with scope() as s:
+        rv = s.get(m.ValReportVersion, version_id)
+        sn = s.get(m.ValSnapshot, rv.snapshot_id) if rv else None
+        if not sn:
+            raise ServiceError(404, "Report version not found.")
+        ids = [f.id for f in s.scalars(select(m.ValSourceFile).where(m.ValSourceFile.batch_id == sn.batch_id, m.ValSourceFile.status != "removed")
+                                       .order_by(m.ValSourceFile.created_at))]
+    out, seen = [], {}
+    for i in ids:
+        data, f = file_bytes(i)
+        name = re.sub(r"[\\/:*?\"<>|\r\n]", "_", f["filename"])[:120] or "statement"
+        seen[name] = seen.get(name, 0) + 1
+        out.append((name if seen[name] == 1 else f"{seen[name]}-{name}", data))
+    return out
+
+
+def pack_bytes(version_id: str) -> tuple[bytes, dict]:
+    """Month-end client pack (ZIP): the report PDF (factsheet annexure included) + the original statements it was built from."""
+    import io
+    import zipfile
+
+    pdf, rv = report_bytes(version_id)
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr(f"valuation-{rv['report_month']}-v{rv['version_no']}.pdf", pdf)
+        for name, data in source_files(version_id):
+            z.writestr(f"statements/{name}", data)
+    return buf.getvalue(), rv
 
 
 def client_files(client_id: str) -> dict:

@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 import {
   type Check, type FileRow, type HistoryRow, type Payload, type Preview, type Recon, PROVIDER_LABEL,
-  approveBatch, attestFlows, createBatch, generateReport, getConsolidated, getHistory, getPreview, getRecon, removeFile,
+  addFlows, approveBatch, attestFlows, parseFlows, reportPackUrl, createBatch, generateReport, getConsolidated, getHistory, getPreview, getRecon, removeFile,
   emailReport, reportDownloadUrl, resolveCheck, setProvider, uploadFiles, validateBatch, processBatch,
 } from "@/lib/valuationApi";
 import { Badge, Notice, Stat, Tabs, btn, btnPrimary, card, dateFmt, input, money, monthFmt, muted, num, pct, td, th } from "@/components/valuation/ui";
@@ -82,7 +82,8 @@ export default function BatchWorkspace() {
         <Reconciliation rec={rec} files={pv.files} editable={editable} isAdmin={isAdmin} busy={busy}
           onRun={() => act(() => validateBatch(id))}
           onResolve={(c, action, reason) => act(() => resolveCheck(c.id, action, reason))}
-          onAttest={(accId, reason) => act(() => attestFlows(accId, reason), "Cash-flow history confirmed. Run validation again.")} />
+          onAttest={(accId, reason) => act(() => attestFlows(accId, reason), "Cash-flow history confirmed. Run validation again.")}
+          onFlows={(accId, reason, text) => act(async () => { await addFlows(accId, reason, parseFlows(text)); }, "Cash flows added. Run validation again, then confirm the history is complete.")} />
       )}
 
       {tab === "portfolio" && (port ? <Portfolio p={port} /> : <Notice tone="info">Run validation to see the consolidated portfolio.</Notice>)}
@@ -106,8 +107,8 @@ export default function BatchWorkspace() {
                 <thead><tr>{["Version", "Generated", "Size", ""].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
                 <tbody>{hist?.reports.map((r) => (
                   <tr key={r.id}><td className={td}>v{r.version_no}</td><td className={td}>{dateFmt(r.created_at)}</td><td className={td}>{(r.size_bytes / 1024).toFixed(0)} KB</td>
-                    <td className={`${td} text-right`}><div className="flex justify-end gap-2"><a className={btn} href={reportDownloadUrl(r.id)}>Download PDF</a>
-                      <button className={btn} disabled={busy} onClick={() => { if (window.confirm(`Email report v${r.version_no} to the client's address on file in the CRM?`)) void act(async () => { const e = await emailReport(r.id); setMsg(`Emailed to ${e.to}.`); }); }}>Email to client</button></div></td></tr>
+                    <td className={`${td} text-right`}><div className="flex justify-end gap-2"><a className={btn} href={reportDownloadUrl(r.id)}>Download PDF</a><a className={btn} href={reportPackUrl(r.id)}>Download pack (PDF + statements)</a>
+                      <button className={btn} disabled={busy} onClick={() => { if (window.confirm(`Email report v${r.version_no} to the client's address on file in the CRM?`)) void act(async () => { const e = await emailReport(r.id, window.confirm("Also attach the original statements? OK = report + statements, Cancel = report only.")); setMsg(`Emailed to ${e.to}.`); }); }}>Email to client</button></div></td></tr>
                 ))}</tbody>
               </table>
             </>
@@ -174,10 +175,13 @@ function FilePanel({ f, editable, busy, onProvider, onRemove }: { f: FileRow; ed
   );
 }
 
-function Reconciliation({ rec, files, editable, isAdmin, busy, onRun, onResolve, onAttest }: {
+function Reconciliation({ rec, files, editable, isAdmin, busy, onRun, onResolve, onAttest, onFlows }: {
   rec: Recon | null; files: FileRow[]; editable: boolean; isAdmin: boolean; busy: boolean; onRun: () => void;
-  onResolve: (c: Check, a: "resolved" | "overridden", reason: string) => void; onAttest: (accountId: string, reason: string) => void;
+  onResolve: (c: Check, a: "resolved" | "overridden", reason: string) => void; onAttest: (accountId: string, reason: string) => void; onFlows: (accountId: string, reason: string, text: string) => void;
 }) {
+  const [flowAcc, setFlowAcc] = useState("");
+  const [flowText, setFlowText] = useState("");
+  const [flowReason, setFlowReason] = useState("");
   const [reasons, setReasons] = useState<Record<string, string>>({});
   const [attest, setAttest] = useState("");
   if (!rec || !rec.run_no) return <div className="space-y-3"><Notice tone="info">Validation has not been run.</Notice>{editable && <button className={btnPrimary} disabled={busy} onClick={onRun}>Run validation</button>}</div>;
@@ -219,6 +223,18 @@ function Reconciliation({ rec, files, editable, isAdmin, busy, onRun, onResolve,
         {failed.length === 0 ? <p className={muted}>Nothing outstanding.</p> : <table className="w-full min-w-[900px] border-collapse">{head(true)}<tbody>{failed.map((c) => row(c, true))}</tbody></table>}
       </div>
       {done.length > 0 && <div className={`${card} overflow-x-auto p-4`}><h2 className="mb-2 text-[14px] font-semibold">Resolved or overridden</h2><table className="w-full min-w-[900px] border-collapse">{head(false)}<tbody>{done.map((c) => row(c, false))}</tbody></table></div>}
+      {editable && accounts.length > 0 && (
+        <div className={`${card} space-y-2 p-4`}>
+          <h2 className="text-[14px] font-semibold">Add dated cash flows (for XIRR)</h2>
+          <p className={`text-[12.5px] ${muted}`}>Statements without a transaction list carry no dates, so XIRR cannot be computed from them. Paste the client&apos;s dated contributions and withdrawals, one per line: <code>date, amount</code> (negative = withdrawal), e.g. <code>15-04-2025, 300000</code>.</p>
+          <select className={input} value={flowAcc || accounts[0].id} onChange={(e) => setFlowAcc(e.target.value)} aria-label="Account">
+            {accounts.map((a) => <option key={a.id} value={a.id}>{PROVIDER_LABEL[a.provider] ?? a.provider} {a.account_no ?? ""}</option>)}
+          </select>
+          <textarea className={`${input} min-h-[90px]`} value={flowText} onChange={(e) => setFlowText(e.target.value)} placeholder={"15-04-2025, 300000\n10-01-2026, -50000"} aria-label="Cash flows" />
+          <input className={input} placeholder="Source of these flows, e.g. client ledger (min 10 characters)" value={flowReason} onChange={(e) => setFlowReason(e.target.value)} aria-label="Source of flows" />
+          <button className={btn} disabled={busy || !flowText.trim() || flowReason.trim().length < 10} onClick={() => { onFlows(flowAcc || accounts[0].id, flowReason, flowText); setFlowText(""); }}>Add cash flows</button>
+        </div>
+      )}
       {editable && infoFailed.some((c) => c.check_code === "flows_incomplete") && (
         <div className={`${card} space-y-2 p-4`}>
           <h2 className="text-[14px] font-semibold">Cash-flow history</h2>

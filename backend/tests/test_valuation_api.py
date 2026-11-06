@@ -26,6 +26,8 @@ def client(tmp_path, monkeypatch):
     monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "val.db"))
     monkeypatch.setenv("FH_VAL_STORE", str(tmp_path / "private"))
     monkeypatch.delenv("DATABASE_URL", raising=False)
+    from app.backoffice.valuation import service
+    monkeypatch.setattr(service, "_client_name", lambda cid: "")   # synthetic statements carry no holder name; identity is tested in test_valuation_identity.py
     from app.main import create_app
 
     with TestClient(create_app()) as c:
@@ -419,9 +421,43 @@ def test_email_report_to_crm_address_and_client_file_repository(client, admin, m
     r = client.post(f"{B}/reports/{rid}/email", json={"confirm": True})
     assert r.status_code == 200 and r.json()["to"] == cust["email"] and sent[0][0] == cust["email"]
     assert sent[0][2][0][1].startswith(b"%PDF")
+    r2 = client.post(f"{B}/reports/{rid}/email", json={"confirm": True, "include_sources": True})
+    assert r2.status_code == 200 and len(sent[1][2]) == 4 and sent[1][2][0][1].startswith(b"%PDF")      # report + 3 statements
+    import io, zipfile
+    pack = client.get(f"{B}/reports/{rid}/pack")
+    assert pack.status_code == 200 and pack.headers["content-type"] == "application/zip"
+    names = zipfile.ZipFile(io.BytesIO(pack.content)).namelist()
+    assert len(names) == 4 and sum(n.startswith("statements/") for n in names) == 3
     files = client.get(f"{B}/clients/{cust['id']}/files").json()["data"]
     assert len(files["statements"]) == 3 and len(files["reports"]) == 1
     dl = client.get(f"{B}/files/{files['statements'][0]['id']}/download")
     assert dl.status_code == 200 and hashlib.sha256(dl.content).hexdigest() == files["statements"][0]["sha256"]
     with sqlite3.connect(vcfg.private_dir().parent / "val.db") as c:
-        assert c.execute("select count(*) from val_audit_log where action='report_emailed'").fetchone()[0] == 1
+        assert c.execute("select count(*) from val_audit_log where action='report_emailed'").fetchone()[0] == 2
+
+
+def test_manual_flows_drive_xirr_after_attestation_and_reject_bad_rows(client, admin):
+    from datetime import date
+
+    from scipy.optimize import brentq
+
+    cust = _user("customer")
+    bid, _ = _run(client, cust["id"], files=[("proaffluence_oct.pdf", fx.proaffluence_pdf())])
+    acc = [a for f in client.get(f"{B}/batches/{bid}/preview").json()["files"] for a in f["accounts"]][0]
+    bad = client.post(f"{B}/accounts/{acc['id']}/flows", json={"reason": "typed from client ledger", "flows": [{"date": "31-02-2025", "kind": "deposit", "amount": 1}]})
+    assert bad.status_code == 422 and "Row 1" in bad.text
+    ok = client.post(f"{B}/accounts/{acc['id']}/flows", json={"reason": "typed from client ledger", "flows": [
+        {"date": "15-04-2025", "kind": "deposit", "amount": 300000}, {"date": "2026-01-10", "kind": "deposit", "amount": 100000}]})
+    assert ok.status_code == 201 and len(ok.json()["added"]) == 2
+    assert client.post(f"{B}/accounts/{acc['id']}/attest-flows", json={"reason": "Confirmed complete from client ledger"}).status_code == 200
+    assert client.post(f"{B}/batches/{bid}/validate").json()["summary"]["can_approve"]
+    cons = client.get(f"{B}/batches/{bid}/consolidated").json()
+    a = cons["accounts"][0]
+    got = cons["performance"]["consolidated"]["xirr"]["value"]
+    sign = {"deposit": -1, "withdrawal": 1}
+    cf = [(date.fromisoformat(f["flow_date"]), sign[f["kind"]] * f["amount"]) for f in cons["flows"] if f["kind"] in sign and f["external"]]
+    cf.append((date.fromisoformat(a["valuation_date"]), a["closing_value"]))
+    t0 = min(d for d, _ in cf)
+    assert {f["amount"] for f in cons["flows"]} >= {300000, 100000}                              # manual rows sit beside the statement's own
+    ref = brentq(lambda r: sum(c / (1 + r) ** ((d - t0).days / 365.25) for d, c in cf), -0.9, 50) * 100
+    assert got == pytest.approx(ref, abs=0.01)

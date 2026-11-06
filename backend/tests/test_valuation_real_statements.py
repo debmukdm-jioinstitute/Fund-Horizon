@@ -73,3 +73,14 @@ def test_report_has_provider_returns_dashboard_gap_and_factsheet_annexure(env):
     text = "\n".join(p.extract_text() for p in PdfReader(io.BytesIO(service.report_bytes(rv["id"])[0])).pages)
     for needle in ("Returns printed by providers", "Distributor dashboard cross-check", "Annexure D", "Stallion / STALLION CORE FUND"):
         assert needle in text
+
+
+def test_paperwork_reads_every_section_of_the_bundle_and_flags_mixed_clients():
+    from app.report.monthly_report import parse_monthly_files
+
+    one = parse_monthly_files([(BUNDLE.name, BUNDLE.read_bytes())])
+    assert {b["name"] for b in one["buckets"]} == {"Proaffluence mutual funds", "Direct equity"}
+    assert one["pms"]["invested"] == 72_000_000 - 0 and one["pms"]["current"] == 128_632_974 and one["pms"]["xirr"] == 15.03
+    assert one["total_xirr"] == 14.13 and len(one["factsheets"]) == 2
+    both = parse_monthly_files([(FI.name, FI.read_bytes()), (BUNDLE.name, BUNDLE.read_bytes())])
+    assert any("different clients" in w for w in both["warnings"])

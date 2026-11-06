@@ -150,3 +150,10 @@ Each adapter finds columns by header words and totals by label words; it does no
 4. Frontend: standard Next.js deploy; the new routes are under `/backoffice/operations/valuation` so existing page-permission
    lists are unchanged (staff allowed `/backoffice/operations` can open them).
 5. Smoke test on production with a **test client** only: create batch, upload a synthetic file, validate, do not approve.
+
+## Added 2026-11-06 (bug-fix pass)
+
+* **Client identity check** (`reconciliation.check_client_identity`): at validation, PDF text is searched for the CRM client's name (spelling slips tolerated). No file names the client = blocking error (admin override with reason); one odd file = warning. Skipped when the CRM name cannot be resolved or a file has no readable text.
+* **Dated cash flows for XIRR**: `POST /accounts/{id}/flows` (`date`, `deposit|withdrawal`, `amount`, `reason`) and a paste box on the Reconciliation tab. Adding flows clears the account's completeness attestation; XIRR appears after validation + admin attestation, as before.
+* **Month-end pack**: `GET /reports/{version}/pack` = ZIP of the report PDF (factsheet annexure included) + every original statement of that batch. `POST /reports/{version}/email` takes `include_sources` (attachments capped at 20 MB).
+* **Paperwork Processing** now splits a distributor Summary Report bundle (same splitter as here): MF summary, each PMS factsheet, direct equity; the dashboard's printed portfolio XIRR (and combined PMS XIRR) are used and labelled printed, never averaged. Files that name different clients raise a warning.

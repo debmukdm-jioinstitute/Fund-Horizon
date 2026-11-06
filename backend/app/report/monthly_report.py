@@ -175,6 +175,41 @@ def _read(fname: str, data: bytes) -> tuple[str, str, dict[str, Any] | None, str
         return "", "", None, f"{type(e).__name__}: {e}"
 
 
+def _direct_equity(data: bytes) -> dict | None:
+    """Distributor direct-equity page -> one bucket (invested, current from its own total row; no XIRR is invented)."""
+    from app.backoffice.valuation import ingestion as ing
+    from app.backoffice.valuation import layouts
+
+    try:
+        _, tot, _, _ = layouts.direct_equity(ing.read_pdf_pages(data, "", "plain"))
+    except Exception:  # not a readable PDF: some other reader or the 'unrecognised' warning takes it
+        return None
+    if not tot.get("total_value"):
+        return None
+    return {"name": "Direct equity", "invested": tot["total_invested"], "current": tot["total_value"], "xirr": None}
+
+
+def _expand_bundles(files: list[tuple[str, bytes]]) -> tuple[list[tuple[str, bytes]], dict]:
+    """A distributor 'Summary Report' bundles an MF summary, one factsheet per PMS and direct equity: split it per section
+    (same splitter as Monthly valuation) so every section is read, not just the first. Not a bundle / unreadable = kept as is."""
+    from app.backoffice.valuation import bundle
+
+    out: list[tuple[str, bytes]] = []
+    dash: dict = {}
+    for name, data in files:
+        try:
+            secs, d = bundle.split(data)
+        except Exception:  # encrypted, scanned or malformed: the normal reader reports the exact reason
+            secs, d = [], {}
+        if not secs:
+            out.append((name, data))
+            continue
+        dash = dash or d
+        stem = name.rsplit(".", 1)[0]
+        out += [(f"{stem} - {sec['label']}.pdf", sec["data"]) for sec in secs]
+    return out, dash
+
+
 def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
     """Parse uploaded monthly reports, folio-wise valuations (cross-check only) and factsheets.
 
@@ -191,6 +226,9 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
         "total_xirr": None, "valuation": None, "factsheets": [], "warnings": [], "file_results": [],
         "statements": [], "contact": {"name": "", "email": "", "mobile": "", "pan": ""},
     }
+    files, dash = _expand_bundles(files)
+    names: list[str] = []
+    direct: list[dict] = []
     reads = [_read(*f) for f in files]
     for (fname, data), (text, method, stmt, err) in zip(files, reads):
         if err:  # exact reason, shown to the user per file
@@ -199,6 +237,7 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
             continue
         if stmt:
             out["statements"].append({**stmt, "file": fname})
+            names.append(stmt["client"]["name"])
             out["contact"] = {k: out["contact"][k] or v for k, v in stmt["client"].items()}
             out["warnings"] += [f"{fname}: {w}" for w in stmt["warnings"]]
             out["file_results"].append({"name": fname, "kind": "pms" if "pms" in stmt else "statement", "method": method,
@@ -215,6 +254,7 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
                 out["total_xirr"] = monthly["total_xirr"]
                 out["inception"] = monthly["inception"]
                 out["client"] = {k: out["client"][k] or v for k, v in monthly["client"].items()}
+                names.append(monthly["client"]["name"])
                 if not (out["client"]["name"] and out["client"]["date"]):
                     out["warnings"].append(f"{fname}: client name or value-as-on date not detected; please fill them in. Review all values.")
             out["file_results"].append({"name": fname, "kind": "monthly", "method": method, "buckets": len(monthly["buckets"]), "valuation_rows": 0, "factsheet_items": 0})
@@ -231,7 +271,13 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
                     "rows": len(statement["rows"]),
                 }
                 out["client"] = {k: out["client"][k] or v for k, v in statement["client"].items()}
+                names.append(statement["client"]["name"])
             out["file_results"].append({"name": fname, "kind": "valuation", "method": method, "buckets": 0, "valuation_rows": len(statement["rows"]), "factsheet_items": 0})
+            continue
+        eq = _direct_equity(data)
+        if eq:
+            direct.append(eq)
+            out["file_results"].append({"name": fname, "kind": "statement", "method": method, "buckets": 1, "valuation_rows": 0, "factsheet_items": 0})
             continue
         fact = parse_factsheet(fname, text)
         if fact:
@@ -248,12 +294,16 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
                       "xirr": pms[0]["grand_total"]["xirr"] if len(pms) == 1 else None}
         out["factsheets"] += [pms_factsheet(st) for st in pms]
         if len(pms) > 1:
-            out["warnings"].append("Several PMS factsheets were added up in the PMS row; enter the combined PMS IRR by hand.")
+            dx = (dash.get("xirr_by_class") or {}).get("pms")
+            if dx is not None:  # combined PMS XIRR as printed by the distributor dashboard; never summed or averaged here
+                out["pms"]["xirr"] = float(dx)
+            out["warnings"].append("Several PMS factsheets were added up in the PMS row; " +
+                                   ("the combined PMS XIRR is the distributor dashboard's printed figure." if dx is not None else "enter the combined PMS IRR by hand."))
+    owners = {frozenset(n.lower().split()) for n in names if n and not n.replace(" ", "").isdigit()}
+    if len(owners) > 1 and not any(x <= y for x in owners for y in owners if x is not y):
+        out["warnings"].append("These files name different clients (" + ", ".join(sorted({n for n in names if n and not n.replace(" ", "").isdigit()})) +
+                               "). They are combined into one report; upload each client separately if that is not intended.")
     if out["statements"]:
-        owners = {frozenset(st["client"]["name"].lower().split()) for st in out["statements"] if st["client"]["name"]}
-        if len(owners) > 1 and not any(x <= y for x in owners for y in owners if x is not y):
-            out["warnings"].append("These statements name different clients (" + ", ".join(st["client"]["name"] for st in out["statements"]) +
-                                   "). They are combined into one report; parse each client separately if that is not intended.")
         out["client"] = {**out["client"], "name": out["client"]["name"] or out["contact"]["name"],
                          "date": out["client"]["date"] or out["statements"][0]["as_on"]}
     if not out["buckets"]:
@@ -266,6 +316,7 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
                 out["buckets"].append({"name": n, "invested": c["invested"], "current": c["current"], "xirr": c["ann_ret"]})
         if len(out["statements"]) == 1 and mf:
             out["total_xirr"] = mf[0]["grand_total"]["xirr"]
+    out["buckets"] += [b for b in direct if b["name"] not in {x["name"] for x in out["buckets"]}]
     if not out["buckets"] and out["valuation"] is not None:
         # Valuation-only upload: prefill ONE honestly-labelled bucket carrying
         # the valuation total, so the draft is not empty. Never split it by
@@ -274,6 +325,8 @@ def parse_monthly_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
         out["buckets"] = [{"name": PREFILL_BUCKET_NAME, "invested": v["invested"], "current": v["value"], "xirr": v["xirr"]}]
         if out["total_xirr"] is None:
             out["total_xirr"] = v["xirr"]
+    if dash.get("since_inception_xirr") is not None and out["total_xirr"] is None:  # printed portfolio XIRR; never an average of buckets
+        out["total_xirr"] = float(dash["since_inception_xirr"])
     if not out["client"]["arn"]:
         out["client"]["arn"] = ARN.replace("ARN ", "")
     return out

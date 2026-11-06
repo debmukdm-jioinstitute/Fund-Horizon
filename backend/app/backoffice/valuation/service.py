@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import re
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -14,6 +15,7 @@ from typing import Any
 from sqlalchemy import create_engine, event, func, select
 from sqlalchemy.orm import Session
 
+from app.backoffice.valuation import bundle, factsheets
 from app.backoffice.valuation import config as cfg
 from app.backoffice.valuation import consolidation, detection, ingestion, reconciliation, validation
 from app.backoffice.valuation import models as m
@@ -63,6 +65,17 @@ def row(o) -> dict[str, Any]:
 def audit(s: Session, actor: str, action: str, batch: m.ValBatch | None = None, detail: Any = None, client_id: str | None = None) -> None:
     s.add(m.ValAuditLog(batch_id=batch.id if batch else None, client_id=batch.client_id if batch else client_id, actor_id=actor,
                         action=action, detail=json.dumps(detail, default=str) if detail is not None else None))
+
+
+def _mirror(key: str, data: bytes) -> None:
+    """Second copy of every stored file in R2 when configured (the data volume holds the primary). Never blocks the workflow."""
+    try:
+        from app.storage import r2
+
+        if r2.enabled():
+            r2.put_bytes(data, f"valuation/{key}", "application/octet-stream")
+    except Exception as e:  # noqa: BLE001
+        logging.getLogger(__name__).warning("valuation R2 mirror failed for %s: %s", key, type(e).__name__)
 
 
 def _batch(s: Session, batch_id: str) -> m.ValBatch:
@@ -184,6 +197,7 @@ def add_file(batch_id: str, filename: str, data: bytes, actor: str, provider: st
         if not path.exists():
             path.write_bytes(data)
             path.chmod(0o600)
+            _mirror(key, data)
         f = m.ValSourceFile(batch_id=batch_id, client_id=b.client_id, filename=re.sub(r"[^\w.\- ()]", "_", filename)[:200], sha256=digest,
                             size_bytes=len(data), storage_key=key, provider=provider or detected,
                             provider_source="manual" if provider else "detected", detect_note=note, status=status)
@@ -192,6 +206,36 @@ def add_file(batch_id: str, filename: str, data: bytes, actor: str, provider: st
         s.flush()
         audit(s, actor, "file_added", b, {"file": f.filename, "sha256": digest, "provider": f.provider, "source": f.provider_source})
         return row(f)
+
+
+def add_upload(batch_id: str, filename: str, data: bytes, actor: str, provider: str | None = None, password: str = "") -> list[dict]:
+    """Like add_file, but a bundled distributor report is split into one file per statement section (dashboard figures are
+    attached to every section as provider-reported context). The original bundle is kept in the content-addressed store."""
+    try:
+        secs, dash = bundle.split(data, password) if not provider else ([], {})
+    except ExtractionError:
+        secs, dash = [], {}
+    if not secs:
+        return [add_file(batch_id, filename, data, actor, provider, password)]
+    stem = re.sub(r"\.pdf$", "", filename, flags=re.I)
+    digest = ingestion.sha256(data)
+    path = cfg.private_dir() / f"{digest[:2]}/{digest}.bin"            # keep the original bundle byte-for-byte
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.exists():
+        path.write_bytes(data)
+        path.chmod(0o600)
+        _mirror(f"{digest[:2]}/{digest}.bin", data)
+    out = []
+    for sc in secs:
+        r = add_file(batch_id, f"{stem} - {sc['label']}.pdf", sc["data"], actor, sc["provider"], "")
+        with scope() as s:
+            f = s.get(m.ValSourceFile, r["id"])
+            f.detect_note = f"section of '{filename}' (pages {sc['pages'][0] + 1}-{sc['pages'][-1] + 1}); " + (f.detect_note or "")[:150]
+        out.append(r)
+    with scope() as s:
+        audit(s, actor, "bundle_uploaded", _batch(s, batch_id), {"filename": filename, "sha256": digest, "sections": [x["label"] for x in secs],
+                                                                  "dashboard": dash})
+    return out
 
 
 def set_provider(file_id: str, provider: str, actor: str) -> dict:
@@ -344,7 +388,7 @@ def _store_extraction(s: Session, f: m.ValSourceFile, st: ExtractedStatement) ->
     f.warnings_json, f.errors_json = json.dumps(st.warnings), json.dumps(st.errors)
     f.totals_json = json.dumps({"totals": st.totals, "meta": {
         "account_no": st.account_no, "period_start": st.period_start, "valuation_date": st.valuation_date,
-        "flows_complete": st.flows_complete, "asset_class": st.asset_class}})
+        "flows_complete": st.flows_complete, "asset_class": st.asset_class, "reported": st.reported}})
     f.status = "manual_review" if st.needs_manual_review else ("failed" if st.errors and not st.holdings and not st.flows else "extracted")
     if st.needs_manual_review:
         return
@@ -437,7 +481,7 @@ def _statement(s: Session, f: m.ValSourceFile) -> ExtractedStatement:
                             statement_date=f.statement_date, valuation_date=mt.get("valuation_date"), period_start=mt.get("period_start"),
                             account_no=mt.get("account_no"), totals=meta["totals"], warnings=json.loads(f.warnings_json or "[]"),
                             errors=json.loads(f.errors_json or "[]"), needs_manual_review=f.status in ("manual_review", "failed"),
-                            flows_complete=bool(mt.get("flows_complete")))
+                            flows_complete=bool(mt.get("flows_complete")), reported=mt.get("reported", {}))
     accounts = {a.id: a for a in s.scalars(select(m.ValAccount).where(m.ValAccount.source_file_id == f.id))}
     for h in s.scalars(select(m.ValHolding).where(m.ValHolding.source_file_id == f.id).order_by(m.ValHolding.source_row)):
         st.holdings.append(HoldingRec(security_name=h.security_name, asset_type=h.asset_type, isin=h.isin, account_no=accounts[h.account_id].account_no,
@@ -609,7 +653,16 @@ def _snapshot_payload(s: Session, b: m.ValBatch) -> dict:
     flows = [row(c) for c in s.scalars(select(m.ValCashflow).where(m.ValCashflow.batch_id == b.id).order_by(m.ValCashflow.flow_date))]
     files = [row(f) for f in s.scalars(select(m.ValSourceFile).where(m.ValSourceFile.batch_id == b.id, m.ValSourceFile.status != "removed"))]
     rep = reconciliation_report_in(s, b)
-    return consolidation.consolidate(row(b), accounts, holdings, flows, files, previous_snapshot(s, b.client_id, b.report_month), rep)
+    payload = consolidation.consolidate(row(b), accounts, holdings, flows, files, previous_snapshot(s, b.client_id, b.report_month), rep)
+    dash = next((json.loads(a.detail).get("dashboard") for a in s.scalars(select(m.ValAuditLog).where(
+        m.ValAuditLog.batch_id == b.id, m.ValAuditLog.action == "bundle_uploaded").order_by(m.ValAuditLog.id.desc())) if a.detail), None)
+    payload["reported"] = consolidation.reported_block(files, payload["accounts"], dash)
+    dates = {a["provider"]: a["statement_date"] for a in payload["accounts"]}
+    try:
+        payload["fund_sheets"] = factsheets.fund_sheets(payload["holdings"], dates)
+    except Exception as e:  # dataset unavailable: say so in the payload, never block or guess
+        payload["fund_sheets"], payload["unavailable"]["fund_sheets"] = [], f"Fund data could not be loaded ({type(e).__name__})."
+    return payload
 
 
 def reconciliation_report_in(s: Session, b: m.ValBatch) -> dict:
@@ -666,6 +719,19 @@ def get_snapshot(snapshot_id: str) -> dict:
         return {**row(sn), "payload": json.loads(sn.payload_json), "payload_json": None}
 
 
+def _merge_pdfs(first: bytes, second: bytes) -> bytes:
+    import io
+
+    from pypdf import PdfReader, PdfWriter
+
+    w = PdfWriter()
+    for b in (first, second):
+        w.append(PdfReader(io.BytesIO(b)))
+    out = io.BytesIO()
+    w.write(out)
+    return out.getvalue()
+
+
 def generate_report(snapshot_id: str, actor: str, client_name: str) -> dict:
     from app.backoffice.valuation import report
 
@@ -675,19 +741,62 @@ def generate_report(snapshot_id: str, actor: str, client_name: str) -> dict:
             raise ServiceError(404, "Snapshot not found.")
         n = (s.scalar(select(func.max(m.ValReportVersion.version_no)).where(
             m.ValReportVersion.client_id == sn.client_id, m.ValReportVersion.report_month == sn.report_month)) or 0) + 1
-        pdf = report.build_pdf(json.loads(sn.payload_json), client_name=client_name, version_no=n)
+        payload = json.loads(sn.payload_json)
+        try:
+            fs_pdf, evidence = factsheets.attach_pages(payload.get("fund_sheets") or [], sn.report_month)
+        except Exception as e:  # network/registry trouble must not block the report; the gap is stated in it
+            fs_pdf, evidence = None, [{"scheme": "all", "amc": "-", "status": f"factsheet lookup failed ({type(e).__name__})", "pages": 0}]
+        pdf = report.build_pdf(payload, client_name=client_name, version_no=n, evidence=evidence)
+        if fs_pdf:
+            pdf = _merge_pdfs(pdf, fs_pdf)
         digest = hashlib.sha256(pdf).hexdigest()
         key = f"reports/{sn.client_id}/{sn.report_month}-v{n}-{digest[:12]}.pdf"
         path = cfg.private_dir() / key
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(pdf)
         path.chmod(0o600)
+        _mirror(key, pdf)
         rv = m.ValReportVersion(snapshot_id=sn.id, client_id=sn.client_id, report_month=sn.report_month, version_no=n, storage_key=key,
                                 pdf_sha256=digest, size_bytes=len(pdf), generated_by=actor)
         s.add(rv)
         s.flush()
-        audit(s, actor, "report_generated", None, {"report_version_id": rv.id, "version_no": n, "snapshot_id": sn.id}, client_id=sn.client_id)
+        audit(s, actor, "report_generated", None, {"report_version_id": rv.id, "version_no": n, "snapshot_id": sn.id, "factsheets": evidence}, client_id=sn.client_id)
         return row(rv)
+
+
+def audit_event(actor: str, action: str, client_id: str, detail: Any) -> None:
+    with scope() as s:
+        audit(s, actor, action, None, detail, client_id=client_id)
+
+
+def file_client(file_id: str) -> str:
+    with scope() as s:
+        f = s.get(m.ValSourceFile, file_id)
+        if not f:
+            raise ServiceError(404, "File not found.")
+        return f.client_id
+
+
+def file_bytes(file_id: str) -> tuple[bytes, dict]:
+    with scope() as s:
+        f = s.get(m.ValSourceFile, file_id)
+        if not f:
+            raise ServiceError(404, "File not found.")
+        data = (cfg.private_dir() / f.storage_key).read_bytes()
+        if hashlib.sha256(data).hexdigest() != f.sha256:
+            raise ServiceError(500, "Stored file failed its integrity check.")
+        return data, row(f)
+
+
+def client_files(client_id: str) -> dict:
+    with scope() as s:
+        files = [{k: getattr(f, k) for k in ("id", "batch_id", "filename", "sha256", "size_bytes", "provider", "statement_date", "status", "created_at")}
+                 | {"report_month": b.report_month} for f, b in s.execute(select(m.ValSourceFile, m.ValBatch).join(m.ValBatch, m.ValBatch.id == m.ValSourceFile.batch_id)
+                    .where(m.ValSourceFile.client_id == client_id, m.ValSourceFile.status != "removed").order_by(m.ValBatch.report_month.desc(), m.ValSourceFile.created_at))]
+        reports = [{k: getattr(r, k) for k in ("id", "report_month", "version_no", "pdf_sha256", "size_bytes", "generated_by", "created_at")}
+                   for r in s.scalars(select(m.ValReportVersion).where(m.ValReportVersion.client_id == client_id)
+                                      .order_by(m.ValReportVersion.report_month.desc(), m.ValReportVersion.version_no.desc()))]
+        return {"statements": files, "reports": reports}
 
 
 def report_bytes(version_id: str) -> tuple[bytes, dict]:

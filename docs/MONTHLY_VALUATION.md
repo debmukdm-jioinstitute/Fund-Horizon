@@ -85,6 +85,25 @@ Tolerances (env, defaults): `FH_VAL_ABS_TOL=1.00` rupee, `FH_VAL_REL_TOL=0.0005`
   `FH_VAL_ALLOW_DROP=1` (take a backup first). Prefer leaving the tables in place.
 * Back up before first production use: `cp fund_horizon.db fund_horizon.db.pre-valuation` and keep the previous image tag.
 
+## Real-statement coverage (added 2026-11-06)
+
+Read from two real demo statements (tests: `backend/tests/test_valuation_real_statements.py`, skipped unless `FH_REAL_STATEMENTS` or ~/Downloads holds them; never commit client files):
+
+* **FundsIndia "Portfolio Valuation Report - Folio Wise"** (`valuation/layouts.py::folio_wise_mf`): 23 rows, folio, invested, units, NAV, value, per-row XIRR.
+  Rows sum to the Grand Total (value within 2 paise, invested exact); printed absolute return and units x NAV are re-checked per row.
+* **Distributor "Summary Report" bundle** (`valuation/bundle.py`): split by page into one statement per section: MF summary, each PMS factsheet
+  (Stallion, InCred...), direct-equity page. The dashboard page is kept as provider-reported context. The original bundle stays in the store (audit `bundle_uploaded`).
+* **PMS factsheet** (`layouts.enrich_pms`): invested = contribution - withdrawal; contribution - withdrawal + profit must equal value (else an error).
+  Provider IRR since inception is stored as *reported*, not computed. Equity vs cash comes from the factsheet's sector table; nothing else is guessed.
+* **XIRR**: computed by Fund Horizon only from dated external flows (existing engine). These statements carry none, so the report shows the
+  providers' own printed XIRR/IRR with source, labelled "printed by provider". The distributor dashboard total is cross-checked against the bundle's statements; a gap is shown (demo: 2.67%).
+* **Factsheets** (`valuation/factsheets.py`): each MF line is matched to an AMFI scheme only when name words and NAV agree (NAV fixes Regular/Direct); data points
+  are from the AMFI-sourced dataset with as-on date; NAV is compared with AMFI only when AMFI's NAV date is the statement's NAV date. AMC factsheet pages are cut from the
+  AMC's own PDF (registry `providers/factsheets.py`; needs the registry populated on the server) and appended as Annexure D pages. Unmatched lines show no data.
+* **Email / repository**: `POST /reports/{id}/email` (CRM address, opt-out respected, confirm=true, audited); `GET /clients/{id}/files`, `GET /files/{id}/download`;
+  MCP tools `valuation_email_report`, `valuation_client_files`. Every stored file is mirrored to R2 (`valuation/<key>`) when R2 is configured.
+* Adapters are still `verified = False` until the manual checklist below is done by a person.
+
 ## Provider coverage and known limitations (read before relying on any figure)
 
 **No adapter is verified on real statements.** No representative real FundsIndia, ProAffluence or Stallion statement was

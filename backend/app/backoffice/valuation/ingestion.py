@@ -36,7 +36,7 @@ def kind_of(name: str, data: bytes) -> str:
     raise ExtractionError("unsupported_file", f"{name}: unsupported file type (PDF, XLSX, XLS or CSV expected).")
 
 
-def read_pdf_pages(data: bytes, password: str = "") -> list[str]:
+def read_pdf_pages(data: bytes, password: str = "", mode: str = "layout") -> list[str]:
     from pypdf import PdfReader
     from pypdf.errors import PdfReadError
 
@@ -44,7 +44,7 @@ def read_pdf_pages(data: bytes, password: str = "") -> list[str]:
         rd = PdfReader(io.BytesIO(data))
         if rd.is_encrypted and not rd.decrypt(password or ""):
             raise ExtractionError("password_required", "The PDF is password-protected; supply the correct password.")
-        return [(p.extract_text(extraction_mode="layout") or "") for p in rd.pages]
+        return [(p.extract_text(extraction_mode=mode) or "") for p in rd.pages]
     except ExtractionError:
         raise
     except (PdfReadError, ValueError, KeyError, OSError) as e:

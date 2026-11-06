@@ -80,4 +80,5 @@ export const getConsolidated = (id: string) => call<Payload>(`/batches/${id}/con
 export const approveBatch = (id: string, generate_report = true) => post<{ snapshot_id: string; report?: ReportVersion }>(`/batches/${id}/approve`, { generate_report });
 export const generateReport = (snapshotId: string) => post<ReportVersion>(`/snapshots/${snapshotId}/report`);
 export const getHistory = (clientId: string) => call<{ data: HistoryRow[] }>(`/clients/${clientId}/history`).then((r) => r.data);
+export const emailReport = (versionId: string) => post<{ emailed: boolean; to: string }>(`/reports/${versionId}/email`, { confirm: true });
 export const reportDownloadUrl = (versionId: string) => resolveApiUrl(`${BASE}/reports/${versionId}/download`);

@@ -2,6 +2,7 @@
 Decimal arithmetic throughout; accounts are never merged, holdings are never merged by name across accounts."""
 from __future__ import annotations
 
+import json
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Any
 
@@ -135,3 +136,30 @@ def consolidate(batch: dict, accounts: list[dict], holdings: list[dict], flows: 
         "sources": [{k: f[k] for k in ("id", "filename", "sha256", "provider", "statement_date", "adapter_version")} for f in files],
         "reconciliation": recon_summary,
     }
+
+
+def reported_block(files: list[dict], acc_out: list[dict], dashboard: dict | None) -> dict[str, Any]:
+    """Figures PRINTED by providers (XIRR / IRR, distributor dashboard). Shown with their source, never mixed with computed metrics.
+    The dashboard's latest-year value is cross-checked against the statements of the same bundle; a gap is reported, not hidden."""
+    stmt, holding = [], []
+    for f in files:
+        rep = (json.loads(f["totals_json"] or "{}").get("meta") or {}).get("reported") or {}
+        if rep.get("xirr") is not None:
+            stmt.append({"provider": f["provider"], "source": f["filename"], "xirr_pct": rep["xirr"], "basis": "XIRR printed in the provider report"})
+        if p := rep.get("pms"):
+            stmt.append({"provider": f["provider"], "source": f["filename"], "xirr_pct": p.get("irr_since_inception"), "strategy": p.get("strategy"),
+                         "account_no": p.get("account_no"), "since": p.get("inception"),
+                         "basis": "Strategy IRR since inception printed in the PMS factsheet (after fees and expenses)"})
+        holding += [{**h, "provider": f["provider"]} for h in rep.get("holding_xirr", [])]
+    out: dict[str, Any] = {"statement_xirr": stmt, "holding_xirr": holding, "dashboard": None}
+    if dashboard and dashboard.get("years"):
+        last = dashboard["years"][-1]
+        bundle_ids = {f["id"] for f in files if (f.get("detect_note") or "").startswith("section of")}
+        mine = [a for a in acc_out if a["source_file_id"] in bundle_ids and a["closing_value"] is not None]
+        statements_total = sum((Decimal(str(a["closing_value"])) for a in mine), Decimal(0))
+        out["dashboard"] = {**{k: dashboard.get(k) for k in ("since_inception_xirr", "xirr_by_class", "net_investment", "from", "to")},
+                            "latest_fy": last["fy"], "latest_value": last["value"], "statements_total": r2(statements_total),
+                            "difference": r2(statements_total - Decimal(last["value"])),
+                            "difference_pct": _pct(statements_total - Decimal(last["value"]), Decimal(last["value"])),
+                            "xirr_basis": "XIRR printed in the distributor dashboard; Fund Horizon does not recompute it (no dated transactions in the statements)"}
+    return out

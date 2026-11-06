@@ -27,6 +27,7 @@ class HoldingRec:
     income: float | None = None
     source_page: str | None = None
     source_row: int | None = None
+    reported_xirr: float | None = None   # provider-printed annualised return; kept apart from computed figures
     validation_status: str = "ok"
     issues: list[str] = field(default_factory=list)
 
@@ -58,6 +59,7 @@ class ExtractedStatement:
     totals: dict[str, float | None] = field(default_factory=dict)   # provider-reported, see TOTAL_KEYS
     warnings: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
+    reported: dict[str, Any] = field(default_factory=dict)  # figures PRINTED by the provider (XIRR etc.); never recomputed
     needs_manual_review: bool = False
     flows_complete: bool = False          # only an adapter that SAW inception-to-date history may set this
 

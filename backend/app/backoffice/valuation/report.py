@@ -96,7 +96,7 @@ class _Numbered(rl_canvas.Canvas):
         super().save()
 
 
-def build_pdf(payload: dict, client_name: str, version_no: int = 1) -> bytes:
+def build_pdf(payload: dict, client_name: str, version_no: int = 1, evidence: list[dict] | None = None) -> bytes:
     t, W = payload["totals"], A4[0] - 36 * mm
     un = payload.get("unavailable", {})
     month = _month(payload["report_month"])
@@ -204,6 +204,26 @@ def build_pdf(payload: dict, client_name: str, version_no: int = 1) -> bytes:
     S.append(Paragraph("Consolidated XIRR is computed from the combined dated external cash flows of all accounts; it is never an average of provider "
                        "figures. A metric is shown only when its inputs are complete.", SM))
 
+    # 12b provider-reported returns --------------------------------------------
+    rp = payload.get("reported") or {}
+    S.append(Paragraph("Returns printed by providers", H2))
+    if rp.get("statement_xirr"):
+        S.append(_tbl([["Provider / strategy", "Account", "Return (% p.a.)", "Basis"]] + [
+            [f"{PROVIDER_LABEL.get(r['provider'], r['provider'])}{' / ' + r['strategy'] if r.get('strategy') else ''}", r.get("account_no") or "-",
+             _pct(r["xirr_pct"]), r["basis"] + (f" (since {_dt(r['since'])})" if r.get("since") else "")] for r in rp["statement_xirr"]],
+            [W * .3, W * .14, W * .14, W * .42], 2))
+    d = rp.get("dashboard")
+    if d:
+        S.append(Paragraph("Distributor dashboard cross-check", H2))
+        S.append(_tbl([["Measure", "Value"], ["Dashboard since-inception XIRR (portfolio / MF / PMS / stock)",
+                       " / ".join(_pct(d["xirr_by_class"].get(k)) for k in ("portfolio", "mf", "pms", "stock")) if d.get("xirr_by_class") else "-"],
+                       [f"Dashboard value, FY {d['latest_fy']}", _m(d["latest_value"])], ["Sum of this report's statements from the same bundle", _m(d["statements_total"])],
+                       ["Difference", f"{_m(d['difference'])} ({_pct(d['difference_pct'])})"]], [W * .62, W * .38]))
+        S.append(Paragraph(xml_escape(d["xirr_basis"]) + ". A non-zero difference means the dashboard and the statements use different dates or "
+                           "scope; it has not been adjusted.", SM))
+    S.append(Paragraph("These are the providers' own printed figures, shown with their source. They are not recomputed by Fund Horizon unless "
+                       "dated cash flows are present (see Performance metrics).", SM))
+
     # 13 month on month ------------------------------------------------------
     S.append(Paragraph("Month-on-month comparison", H1))
     mom = payload.get("month_on_month")
@@ -216,6 +236,34 @@ def build_pdf(payload: dict, client_name: str, version_no: int = 1) -> bytes:
                       [W * .65, W * .35]))
         S.append(_tbl([["Provider", "Now", "Previous", "Change"]] + [[PROVIDER_LABEL.get(p["provider"], p["provider"]), _m(p["value"]), _m(p["previous"]),
                                                                        _m(p["change"])] for p in mom["by_provider"]], [W * .34, W * .22, W * .22, W * .22]))
+
+    # Annexure D: fund factsheet data ---------------------------------------------
+    fs = payload.get("fund_sheets") or []
+    if fs:
+        S += [PageBreak(), Paragraph("Annexure D: Mutual fund factsheet data", H1),
+              Paragraph("Each statement line is matched to an AMFI scheme only when its name and its NAV both agree. Figures are from AMFI NAV history "
+                        "(Fund Horizon dataset) as on the date shown; returns above one year are annualised. Lines that could not be matched are listed "
+                        "without data.", SM)]
+        f1 = lambda v, d=2: "-" if v is None else f"{v:.{d}f}"  # noqa: E731
+        S.append(_tbl([["Scheme (AMFI)", "NAV (as on)", "AUM Cr", "1Y %", "3Y %", "5Y %", "10Y %", "Since launch %", "NAV check"]] + [
+            [e["scheme_name"], f"{f1(e['data']['latest_nav'])} ({e['data']['latest_nav_date']})", f1(e["data"]["aum_cr"], 0), f1(e["data"]["ret_1y"]),
+             f1(e["data"]["cagr_3y"]), f1(e["data"]["cagr_5y"]), f1(e["data"]["cagr_10y"]), f1(e["data"]["cagr_since_inception"]),
+             {True: "Agrees", False: f"Differs {e['nav_check'].get('difference_pct')}%"}.get(e["nav_check"].get("ok"), "Not comparable")]
+            for e in fs if e["matched"]], [W * .27, W * .15, W * .08, W * .07, W * .07, W * .07, W * .07, W * .1, W * .12], 1))
+        S.append(Paragraph("Risk (3 years)", H2))
+        S.append(_tbl([["Scheme (AMFI)", "Category", "Volatility %", "Sharpe", "Max drawdown %", "Beta", "Alpha %"]] + [
+            [e["scheme_name"], e["data"]["category"] or "-", f1(e["data"]["vol_3y"]), f1(e["data"]["sharpe_3y"]), f1(e["data"]["max_drawdown_3y"]),
+             f1(e["data"]["beta_3y"]), f1(e["data"]["alpha_3y"])] for e in fs if e["matched"]], [W * .3, W * .2, W * .1, W * .08, W * .12, W * .1, W * .1], 2))
+        miss = [e for e in fs if not e["matched"]]
+        if miss:
+            S.append(Paragraph("Not matched (no data shown)", H2))
+            S.append(_tbl([["Statement line", "Reason"]] + [[e["security_name"], e["match"]] for e in miss], [W * .45, W * .55], 99))
+        if evidence is not None:
+            S.append(Paragraph("Official AMC factsheet pages", H2))
+            S.append(_tbl([["Scheme", "AMC factsheet", "Period", "Status", "Pages"]] + [
+                [e["scheme"], e["amc"], e.get("period") or "-", e["status"], str(e["pages"])] for e in evidence], [W * .3, W * .2, W * .1, W * .32, W * .08], 99))
+            S.append(Paragraph("Pages that follow this report are cut unmodified from the AMC's own factsheet PDF (source URL and SHA-256 are in the "
+                               "report audit record).", SM))
 
     # 14 methodology & disclosures --------------------------------------------
     S += [PageBreak(), Paragraph("Methodology and disclosures", H1)]

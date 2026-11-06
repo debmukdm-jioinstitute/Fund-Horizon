@@ -7,7 +7,7 @@ import { useAuth } from "@/components/AuthContext";
 import {
   type Check, type FileRow, type HistoryRow, type Payload, type Preview, type Recon, PROVIDER_LABEL,
   approveBatch, attestFlows, createBatch, generateReport, getConsolidated, getHistory, getPreview, getRecon, removeFile,
-  reportDownloadUrl, resolveCheck, setProvider, uploadFiles, validateBatch, processBatch,
+  emailReport, reportDownloadUrl, resolveCheck, setProvider, uploadFiles, validateBatch, processBatch,
 } from "@/lib/valuationApi";
 import { Badge, Notice, Stat, Tabs, btn, btnPrimary, card, dateFmt, input, money, monthFmt, muted, num, pct, td, th } from "@/components/valuation/ui";
 
@@ -106,7 +106,8 @@ export default function BatchWorkspace() {
                 <thead><tr>{["Version", "Generated", "Size", ""].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
                 <tbody>{hist?.reports.map((r) => (
                   <tr key={r.id}><td className={td}>v{r.version_no}</td><td className={td}>{dateFmt(r.created_at)}</td><td className={td}>{(r.size_bytes / 1024).toFixed(0)} KB</td>
-                    <td className={`${td} text-right`}><a className={btn} href={reportDownloadUrl(r.id)}>Download PDF</a></td></tr>
+                    <td className={`${td} text-right`}><div className="flex justify-end gap-2"><a className={btn} href={reportDownloadUrl(r.id)}>Download PDF</a>
+                      <button className={btn} disabled={busy} onClick={() => { if (window.confirm(`Email report v${r.version_no} to the client's address on file in the CRM?`)) void act(async () => { const e = await emailReport(r.id); setMsg(`Emailed to ${e.to}.`); }); }}>Email to client</button></div></td></tr>
                 ))}</tbody>
               </table>
             </>

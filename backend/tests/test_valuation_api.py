@@ -407,3 +407,21 @@ def test_manual_holding_corrections_are_audited_and_blocked_after_approval(clien
     bid2, _ = _run(client, _user("customer")["id"])
     assert client.request("DELETE", f"{B}/batches/{bid2}", json={"reason": "Wrong client selected"}).status_code == 200
     assert client.get(f"{B}/batches/{bid2}").json()["batch"]["status"] == "rejected"
+
+
+def test_email_report_to_crm_address_and_client_file_repository(client, admin, monkeypatch):
+    cust = _user("customer")
+    bid, _ = _run(client, cust["id"])
+    rid = client.post(f"{B}/batches/{bid}/approve", json={"generate_report": True}).json()["report"]["id"]
+    sent = []
+    monkeypatch.setattr("app.api.valuation.send_email", lambda to, subj, text, atts=None, **k: sent.append((to, subj, atts)) or "em_1")
+    assert client.post(f"{B}/reports/{rid}/email", json={"confirm": False}).status_code == 422 and not sent   # explicit yes required
+    r = client.post(f"{B}/reports/{rid}/email", json={"confirm": True})
+    assert r.status_code == 200 and r.json()["to"] == cust["email"] and sent[0][0] == cust["email"]
+    assert sent[0][2][0][1].startswith(b"%PDF")
+    files = client.get(f"{B}/clients/{cust['id']}/files").json()["data"]
+    assert len(files["statements"]) == 3 and len(files["reports"]) == 1
+    dl = client.get(f"{B}/files/{files['statements'][0]['id']}/download")
+    assert dl.status_code == 200 and hashlib.sha256(dl.content).hexdigest() == files["statements"][0]["sha256"]
+    with sqlite3.connect(vcfg.private_dir().parent / "val.db") as c:
+        assert c.execute("select count(*) from val_audit_log where action='report_emailed'").fetchone()[0] == 1

@@ -6,6 +6,7 @@ import re
 from typing import ClassVar
 
 from app.backoffice.valuation import ingestion as ing
+from app.backoffice.valuation import layouts
 from app.backoffice.valuation.canonical import ExtractedStatement, ExtractionError
 from app.backoffice.valuation.normalizer import finalize
 
@@ -46,6 +47,7 @@ class ProviderAdapter:
         st = ExtractedStatement(provider=cls.id, asset_class=cls.asset_class, filename=filename, adapter_version=cls.version)
         kind = ing.kind_of(filename, data)
         holdings, hints, totals, flows = [], [], {}, []
+        plain: list[str] = []
         default_type = cls.default_asset_type
         if not cls.verified:
             st.warnings.append(f"{cls.label} adapter has only been tested on synthetic samples; verify every figure against the source.")
@@ -62,7 +64,14 @@ class ProviderAdapter:
                 ptxt = ing.pdfium_pages(data, password)
                 cands += [ing.holdings_from_mf_blocks(pages), ing.holdings_from_cards(ptxt)]
             cands.append(ing.holdings_from_columns(data, password))
+            plain = ing.read_pdf_pages(data, password, "plain")
+            cands.append(layouts.folio_wise_mf(plain))
+            dh, dt, ddate, _ = layouts.direct_equity(plain)
+            cands.append((dh, dt, [], []))
             holdings, tot, warns, hints = ing.pick_best(cands)
+            direct = bool(dh) and holdings is dh
+            if direct:
+                default_type = "equity"
             if cls.mf_text(pages):
                 st.asset_class, default_type = "mutual_fund", "mutual_fund"
             if not holdings and cls.asset_class == "mutual_fund":
@@ -82,6 +91,15 @@ class ProviderAdapter:
                 st.account_no = f"{cls.label.split(' (')[0]} portfolio"  # web print-outs carry no folio numbers
                 st.warnings.append("No folio numbers in this statement; all holdings are grouped under one account.")
             cls._flows_from_text(st, lines)
+            if direct:
+                st.statement_date, st.account_no = ddate, "Direct equity"
+            st.statement_date = st.statement_date or layouts.folio_date(plain)
+            for h in holdings:
+                if h.reported_xirr is not None:
+                    st.reported.setdefault("holding_xirr", []).append(
+                        {"account_no": h.account_no, "name": h.security_name, "xirr": h.reported_xirr})
+            if "reported_xirr" in totals:
+                st.reported["xirr"] = totals["reported_xirr"]
         else:
             sheets = ing.read_sheets(filename, data)
             for name, rows in sheets.items():
@@ -100,6 +118,8 @@ class ProviderAdapter:
                     if not getattr(st, k):
                         setattr(st, k, meta[k])
         st.holdings, st.flows, st.totals = holdings, flows or st.flows, totals
+        if plain and cls.asset_class == "pms" and st.asset_class == "pms":
+            layouts.enrich_pms(st, plain)
         if not holdings and not st.flows and not totals:
             st.needs_manual_review = True
             st.errors.append("No holdings, cash flows or totals could be identified; the layout may not be supported.")

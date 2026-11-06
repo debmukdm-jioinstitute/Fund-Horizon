@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 from app.api.auth import get_optional_customer, verify_csrf
 from app.api.crm_core import Me, _scope, _visible_customer
 from app.backoffice.valuation import service
+from app.mailer import MailerError, send_email
 from app.backoffice.valuation.providers import ADAPTERS
 from app.repo_crm_core import get_crm_repository
 
@@ -129,8 +130,8 @@ async def upload(batch_id: str, request: Request, me: Me, files: Annotated[list[
     for f in files:
         data = await f.read()
         try:
-            r = await run_in_threadpool(service.add_file, batch_id, f.filename or "statement", data, me["id"], provider or None, password)
-            out.append({"ok": True, "file": r})
+            for r in await run_in_threadpool(service.add_upload, batch_id, f.filename or "statement", data, me["id"], provider or None, password):
+                out.append({"ok": True, "file": r})
         except service.ServiceError as e:  # one bad file must not discard the rest of the upload
             out.append({"ok": False, "filename": f.filename, "status": e.status, "error": e.message})
     return {"results": out}
@@ -270,3 +271,57 @@ def batch_holdings(batch_id: str, me: Me):
     _client_of_batch(batch_id, me)
     rows = _call(service.list_holdings, batch_id)
     return {"data": rows, "count": len(rows)}
+
+
+class EmailIn(BaseModel):
+    confirm: bool = Field(description="Must be true: the report goes to the client's email address held in the CRM")
+
+
+@router.post("/reports/{version_id}/email")
+def email_report(version_id: str, body: EmailIn, request: Request, me: Me):
+    """Email one report version to the client. The address always comes from the CRM record (never from an upload); an opted-out
+    or address-less client is refused. Sent and failed attempts are written to the valuation audit log and the CRM activity feed."""
+    verify_csrf(request)
+    if not body.confirm:
+        raise HTTPException(422, "confirm must be true to send the report to the client.")
+    cid = _call(service.report_client, version_id)
+    _visible_customer(cid, me)
+    from app.api.crm_core import _optouts
+    from app.db import sqlite
+
+    cust = sqlite.get_customer_by_id(cid)
+    to = ((cust or {}).get("email") or "").strip()
+    if not cust or not to or to.endswith("@placeholder.invalid"):
+        raise HTTPException(422, "No email address on file for this client.")
+    if _optouts().email_opted_out(cid):
+        raise HTTPException(409, "This client has opted out of emails.")
+    data, rv = _call(service.report_bytes, version_id)
+    month = rv["report_month"]
+    fname = f"valuation-{month}-v{rv['version_no']}.pdf"
+    first = (cust["name"] or "").split(" ")[0] or "there"
+    text = (f"Dear {first},\n\nPlease find attached your consolidated portfolio valuation for {month}. Values are as reported by each "
+            f"provider on its own valuation date; the report lists every source.\n\nRegards,\nFund Horizon")
+    try:
+        email_id = send_email(to, f"Your portfolio valuation - {month}", text, [(fname, data)])
+    except MailerError as e:
+        _call(service.audit_event, me["id"], "report_email_failed", cid, {"report_version_id": version_id, "error": str(e)})
+        raise HTTPException(502, str(e)) from None
+    _call(service.audit_event, me["id"], "report_emailed", cid, {"report_version_id": version_id, "to": to, "resend_id": email_id, "sha256": rv["pdf_sha256"]})
+    get_crm_repository().create_activity(kind="email", subject=f"Your portfolio valuation - {month}", body=f"To: {to}\n\n{text}\n\nAttachments: {fname}",
+                                         customer_id=cid, actor_id=me["id"], source_ref=f"resend:{email_id}" if email_id else None)
+    return {"emailed": True, "to": to, "email_id": email_id}
+
+
+@router.get("/clients/{client_id}/files")
+def client_files(client_id: str, me: Me):
+    """File repository for a client: every uploaded statement (with SHA-256) and every generated report version."""
+    _visible_customer(client_id, me)
+    return {"data": _call(service.client_files, client_id)}
+
+
+@router.get("/files/{file_id}/download")
+def download_file(file_id: str, me: Me):
+    _visible_customer(_call(service.file_client, file_id), me)
+    data, f = _call(service.file_bytes, file_id)
+    return Response(data, media_type="application/pdf" if f["filename"].lower().endswith(".pdf") else "application/octet-stream",
+                    headers={"Content-Disposition": f'attachment; filename="{f["filename"]}"', "Cache-Control": "private, no-store"})

@@ -170,6 +170,12 @@ TOOLS: list[dict[str, Any]] = [
        path="/api/backoffice/valuation/reports/{version_id}/download", binary=True),
     _t("valuation_client_history", "Approved valuation history of a client.", {"client_id": S}, ["client_id"],
        path="/api/backoffice/valuation/clients/{client_id}/history"),
+    _t("valuation_client_files", "File repository of a client: every uploaded statement (SHA-256, provider, month) and every report version.",
+       {"client_id": S}, ["client_id"], path="/api/backoffice/valuation/clients/{client_id}/files"),
+    _t("valuation_email_report", "WRITE, EXTERNAL: email a generated report version (version_id from valuation_client_history/valuation_client_files) to the "
+       "client's address held in the CRM. Say who it goes to and get the user's yes first, then call with confirm=true.",
+       {"version_id": S, "confirm": B}, ["version_id", "confirm"], method="POST", path="/api/backoffice/valuation/reports/{version_id}/email",
+       body=("confirm",), write=True),
     # ---- operations / forms
     _t("official_forms", "Catalogue of official CAMS / KFintech / AMC / PMS forms (title, url, kind).", path="/api/backoffice/operations/official-forms"),
     _t("filings_register", "Register of forms filled and filed.", path="/api/backoffice/operations/filings"),

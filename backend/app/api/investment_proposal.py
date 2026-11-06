@@ -1,5 +1,5 @@
 from __future__ import annotations
-"""Backoffice > Mutual funds > Investment proposal (lumpsum): suggest a split, build the full proposal, download it as PDF."""
+"""Backoffice > Mutual funds > Investment proposal (lumpsum, SIP, STP, SWP, lumpsum + SIP): suggest a split, build the full proposal, download it as PDF."""
 
 import re
 
@@ -14,7 +14,9 @@ router = APIRouter(prefix="/api/backoffice/investment-proposal", tags=["investme
 
 
 class Suggest(BaseModel):
-    amount: float = Field(gt=0, le=1e11)
+    mode: str = Field(default="lumpsum", pattern="^(" + "|".join(ip.MODES) + ")$")
+    amount: float = Field(default=0, ge=0, le=1e11)
+    sip: float = Field(default=0, ge=0, le=1e9)
     years: float = Field(gt=0, le=50)
     risk: str
     plan: str = Field(default="Regular", pattern="^(Regular|Direct)$")
@@ -22,7 +24,8 @@ class Suggest(BaseModel):
 
 class Row(BaseModel):
     code: str = Field(pattern=r"^\d{4,8}$")
-    amount: float = Field(gt=0, le=1e11)
+    amount: float = Field(default=0, ge=0, le=1e11)
+    sip: float = Field(default=0, ge=0, le=1e9)
     exp_ret: float = Field(ge=-50, le=100)
 
 
@@ -34,6 +37,10 @@ class Build(BaseModel):
     risk: str = Field(default="", max_length=40)
     purpose: str = Field(default="", max_length=300)
     cover: bool = True
+    mode: str = Field(default="lumpsum", pattern="^(" + "|".join(ip.MODES) + ")$")
+    sip: float | None = Field(default=None, ge=0, le=1e9)
+    withdraw: float = Field(default=0, ge=0, le=1e11)
+    source: str | None = Field(default=None, pattern=r"^\d{4,8}$")
 
 
 def _inputs():
@@ -50,13 +57,14 @@ def _run(fn):
 
 @router.get("/options")
 def options(me: Me):
-    return {"risks": ip.RISKS, "min_amount": ip.MIN_AMOUNT}
+    return {"risks": ip.RISKS, "min_amount": ip.MIN_AMOUNT, "min_sip": ip.MIN_SIP, "modes": ip.MODES}
 
 
 @router.post("/suggest")
 def suggest(b: Suggest, me: Me):
     frame, _ = _inputs()
-    return {"rows": _run(lambda: ip.suggest(frame, b.amount, b.years, b.risk, b.plan)), "mix": _run(lambda: ip.allocation(b.amount, b.years, b.risk))}
+    rows = _run(lambda: ip.suggest(frame, b.amount, b.years, b.risk, b.plan, b.mode, b.sip))
+    return {"rows": rows, "source": _run(lambda: ip.source_fund(frame, b.plan)) if b.mode == "stp" else None}
 
 
 @router.get("/scheme/{code}")
@@ -69,7 +77,7 @@ def scheme(code: str, me: Me):
 
 def _build(b: Build) -> dict:
     frame, snap = _inputs()
-    return _run(lambda: ip.build(frame, snap, b.years, [r.model_dump() for r in b.rows], b.amount))
+    return _run(lambda: ip.build(frame, snap, b.years, [r.model_dump() for r in b.rows], b.amount, b.mode, b.sip, b.withdraw, b.source))
 
 
 @router.post("/result")

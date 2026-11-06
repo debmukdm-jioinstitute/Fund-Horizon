@@ -76,7 +76,9 @@ def test_api_suggest_result_pdf(client):
 def test_pdf_is_branded_with_charts():
     import re
     from app.report.investment_proposal import build_pdf
-    r = {"amount": 100000, "years": 5, "expected_return": 10, "future_value": 161051,
+    r = {"amount": 100000, "years": 5, "expected_return": 10, "future_value": 161051, "title": "Lumpsum", "mode": "lumpsum", "sip": 0,
+         "kpis": [{"label": "Lumpsum amount", "value": 100000, "fmt": "inr"}, {"label": "Investment period", "value": 5, "fmt": "yrs"},
+                  {"label": "Expected return", "value": 10, "fmt": "pct"}, {"label": "Expected value at maturity", "value": 161051, "fmt": "inr"}],
          "schemes": [{"name": "A", "category": "Equity: Flexi Cap", "ret_1y": 1, "ret_3y": 2, "ret_5y": 3, "exp_ret": 10, "amount": 100000, "alloc_pct": 100}],
          "trailing": [{"name": "A", "category": "Equity: Flexi Cap", "aum_cr": 1, "ter": 1, "peers": 2, "returns": {"1y": 1, "3y": 2, "5y": 3, "10y": None},
                        "avg": {"1y": 1, "3y": 2, "5y": 3, "10y": None}, "rank": {"1y": 1, "3y": 1, "5y": 1, "10y": None}}], "rolling": [],
@@ -84,3 +86,41 @@ def test_pdf_is_branded_with_charts():
          "category": [{"name": "Equity: Flexi Cap", "amount": 100000, "pct": 100}], "holdings": {"sector": [], "equity": [], "debt": [], "coverage_pct": 0, "as_of": None}}
     pdf = build_pdf(r, "Deb", "Moderate", "Wealth")
     assert pdf.startswith(b"%PDF") and len(re.findall(rb"/Subtype\s*/Image", pdf)) >= 5  # logo x2 + charts
+
+
+def test_mode_math():
+    assert ip._sip_fv(10_000, 12, 12) == pytest.approx(10_000 * ((1.01) ** 12 - 1) / 0.01 * 1.01)
+    assert ip._sip_fv(1000, 0, 12) == 12_000
+    rows = [{"amount": 0, "sip": 10_000, "exp_ret": 12}]
+    assert ip._project("sip", rows, 1, 12, 0, 0)["fv"] == 128_094  # ceil(128093.3)
+    lump = [{"amount": 1_000_000, "sip": 0, "exp_ret": 12}]
+    assert ip._project("swp", lump, 10, 12, 5_000, 0)["fv"] > 0
+    r = ip._project("swp", lump, 10, 12, 20_000, 0)
+    assert r["fv"] == 0 and r["months"] < r["planned"] and r["withdrawn"] > 1_000_000
+    assert ip._project("stp", [{"amount": 120_000, "sip": 0, "exp_ret": 0}], 1, 0, 0, 0)["fv"] == 120_000
+    with pytest.raises(ip.ProposalError):
+        ip.check("swp", 100_000, 0, 200_000, 5)
+    with pytest.raises(ip.ProposalError):
+        ip.check("sip", 0, 100, 0, 5)
+    with pytest.raises(ip.ProposalError):
+        ip.check("nope", 100_000, 0, 0, 5)
+
+
+def test_api_all_modes(client):
+    _login_staff(client, _create_staff())
+    u = "/api/backoffice/investment-proposal"
+    cases = {"sip": {"sip": 10_000}, "stp": {"amount": 600_000}, "swp": {"amount": 2_000_000}, "lumpsum_sip": {"amount": 500_000, "sip": 10_000}}
+    for mode, extra in cases.items():
+        s = client.post(f"{u}/suggest", json={"mode": mode, "years": 10, "risk": "Moderate", **extra}).json()
+        rows = s["rows"]
+        assert sum(x["amount"] for x in rows) == extra.get("amount", 0) and sum(x["sip"] for x in rows) == extra.get("sip", 0), mode
+        assert (s["source"] is not None) == (mode == "stp")
+        body = {"mode": mode, "years": 10, "withdraw": 10_000 if mode == "swp" else 0, "source": (s["source"] or {}).get("code"),
+                "rows": [{"code": x["code"], "amount": x["amount"], "sip": x["sip"], "exp_ret": x["exp_ret"]} for x in rows], **extra}
+        res = client.post(f"{u}/result", json=body)
+        assert res.status_code == 200, (mode, res.text)
+        d = res.json()
+        assert d["future_value"] >= 0 and d["kpis"] and d["title"]
+        pdf = client.post(f"{u}/pdf", json={**body, "client": "T", "risk": "Moderate"})
+        assert pdf.status_code == 200 and pdf.content.startswith(b"%PDF"), mode
+    assert client.post(f"{u}/result", json={**body, "mode": "swp", "withdraw": 0}).status_code == 422

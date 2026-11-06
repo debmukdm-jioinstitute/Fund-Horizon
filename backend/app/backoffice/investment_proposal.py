@@ -52,6 +52,12 @@ GROUP_LABEL = {"Equity": "Equity Schemes", "Hybrid": "Hybrid Schemes", "Debt": "
                "Solution Oriented": "Solution Oriented Schemes", "Others": "Other Schemes"}
 
 
+MODES = {"lumpsum": "Lumpsum", "lumpsum_custom": "Lumpsum Custom", "sip": "SIP", "sip_custom": "SIP Custom", "stp": "STP", "swp": "SWP", "lumpsum_sip": "Lumpsum + SIP"}
+MIN_SIP = 500
+_HAS_LUMP = {"lumpsum", "lumpsum_custom", "stp", "swp", "lumpsum_sip"}
+_HAS_SIP = {"sip", "sip_custom", "lumpsum_sip"}
+
+
 class ProposalError(ValueError):
     """Bad input; the message is safe to show to the user."""
 
@@ -67,6 +73,20 @@ def validate(amount: float, years: float, risk: str | None = None) -> None:
         raise ProposalError("Period must be between 1 and 50 years.")
     if risk is not None and risk not in RISKS:
         raise ProposalError("Select a risk profile.")
+
+
+def check(mode: str, amount: float, sip: float, withdraw: float, years: float) -> None:
+    """Per-option input rules (the same messages the original tool shows for each option)."""
+    if mode not in MODES:
+        raise ProposalError("Select an investment option.")
+    if not (0 < years <= 50):
+        raise ProposalError("Period must be between 1 and 50 years.")
+    if mode in _HAS_LUMP and not (amount >= MIN_AMOUNT):
+        raise ProposalError(f"{'Lumpsum' if mode != 'swp' else 'Corpus'} minimum investment amount is Rs.{MIN_AMOUNT}.")
+    if mode in _HAS_SIP and not (sip >= MIN_SIP):
+        raise ProposalError(f"SIP minimum monthly amount is Rs.{MIN_SIP}.")
+    if mode == "swp" and not (0 < withdraw <= amount):
+        raise ProposalError("Enter a monthly withdrawal that is more than zero and not more than the corpus.")
 
 
 def allocation(amount: float, years: float, risk: str) -> dict[str, float]:
@@ -85,28 +105,47 @@ def expected_return(cat_key: str) -> float:
     return float(_EXPECTED.get(cat_key, 12.93))
 
 
-def _round1000(x: float) -> float:
-    return math.floor(x / 1000 + 0.5) * 1000
+def _spread(shares: list[float], total: float, unit: int) -> list[int]:
+    """Split total by share (%), rounded to the nearest unit; the last scheme takes the remainder so rows always add up."""
+    out: list[int] = []
+    used = 0.0
+    for i, pct in enumerate(shares):
+        amt = total - used if i == len(shares) - 1 else min(math.floor(total * pct / 100 / unit + 0.5) * unit, total - used)
+        used += amt
+        out.append(int(round(amt)))
+    return out
 
 
-def suggest(frame: pd.DataFrame, amount: float, years: float, risk: str, plan: str = "Regular") -> list[dict[str, Any]]:
-    """Scheme picks and rupee split. The last scheme takes the remainder so the rows always add up to the amount."""
-    mix = allocation(amount, years, risk)
+def source_fund(frame: pd.DataFrame, plan: str = "Regular") -> dict[str, Any]:
+    """STP source: the top-scored liquid fund."""
+    pool = frame[(frame["plan"] == plan) & (frame["quality"] == "ok") & (frame["cat"] == "liquid")]
+    if pool.empty:
+        raise ProposalError("No liquid scheme available as the STP source right now.")
+    s = pool.sort_values(["fh_score", "aum_cr"], ascending=False, na_position="last").iloc[0]
+    return {"code": s["code"], "name": s["name"], "category": BUCKET["liquid"][1], "exp_ret": expected_return("liquid")}
+
+
+def suggest(frame: pd.DataFrame, amount: float, years: float, risk: str, plan: str = "Regular", mode: str = "lumpsum", sip: float = 0.0) -> list[dict[str, Any]]:
+    """Scheme picks and the split of the lumpsum / monthly SIP. The last scheme takes the remainder so rows add up."""
+    check(mode, amount, sip, 1 if mode == "swp" else 0, years)
+    basis = amount if mode in _HAS_LUMP else sip * 12
+    mix = allocation(basis, years, risk)
+    if mode == "stp":  # liquid is the source, so the targets are the rest of the mix
+        mix = {k: v for k, v in mix.items() if k != "liquid"} or {"short": 100.0}
+        t = sum(mix.values())
+        mix = {k: v * 100 / t for k, v in mix.items()}
     pool = frame[(frame["plan"] == plan) & (frame["quality"] == "ok")]
     picks: list[tuple[str, pd.Series, float]] = []
     for bucket, pct in mix.items():
         cat = BUCKET[bucket][0]
-        top = pool[pool["cat"] == cat].sort_values(["fh_score", "aum_cr"], ascending=False, na_position="last").head(1 if pct <= 15 or amount <= 50000 else 2)
+        top = pool[pool["cat"] == cat].sort_values(["fh_score", "aum_cr"], ascending=False, na_position="last").head(1 if pct <= 15 or basis <= 50000 else 2)
         picks += [(bucket, r, pct / len(top)) for _, r in top.iterrows()]
     if not picks:
         raise ProposalError("No schemes available for this profile right now.")
-    out: list[dict[str, Any]] = []
-    used = 0.0
-    for i, (bucket, r, pct) in enumerate(picks):
-        amt = amount - used if i == len(picks) - 1 else min(_round1000(amount * pct / 100), amount - used)
-        used += amt
-        out.append({"code": r["code"], "name": r["name"], "category": BUCKET[bucket][1], "amount": int(round(amt)), "exp_ret": expected_return(r["cat"])})
-    return out
+    shares = [p[2] for p in picks]
+    lump = _spread(shares, amount, 1000) if mode in _HAS_LUMP else [0] * len(picks)
+    sips = _spread(shares, sip, 100) if mode in _HAS_SIP else [0] * len(picks)
+    return [{"code": r["code"], "name": r["name"], "category": BUCKET[b][1], "amount": lump[i], "sip": sips[i], "exp_ret": expected_return(r["cat"])} for i, (b, r, _) in enumerate(picks)]
 
 
 def lookup(frame: pd.DataFrame, code: str) -> dict[str, Any]:
@@ -194,35 +233,112 @@ def _holdings(snapshot: dict[str, Any], rows: list[dict[str, Any]], total: float
     return {"sector": top(sector), "equity": top(eq), "debt": top(debt), "coverage_pct": round(covered / total * 100, 1), "as_of": snapshot.get("as_of")}
 
 
-def build(frame: pd.DataFrame, snapshot: dict[str, Any], years: float, rows: list[dict[str, Any]], amount: float | None = None) -> dict[str, Any]:
-    """Everything the proposal shows, for the scheme rows the adviser settled on (amount, expected return editable)."""
+def _sip_fv(p: float, rate: float, n: int) -> float:
+    i = rate / 1200  # monthly rate = annual / 12, instalment at the start of each month
+    return p * n if i == 0 else p * ((1 + i) ** n - 1) / i * (1 + i)
+
+
+def _project(mode: str, rows: list[dict[str, Any]], years: float, ret: float, withdraw: float, src_rate: float) -> dict[str, Any]:
+    """Maturity value and the option-specific figures. Lumpsum compounds yearly; SIP/STP/SWP compound monthly."""
+    n = max(1, round(years * 12))
+    lump, sip = sum(r["amount"] for r in rows), sum(r["sip"] for r in rows)
+    x: dict[str, Any] = {"invested": int(lump + sip * n)}
+    if mode in ("lumpsum", "lumpsum_custom"):
+        x["fv"] = future_value(lump, ret, years)
+    elif mode in _HAS_SIP:
+        x["fv"] = math.ceil(sum(r["amount"] * (1 + r["exp_ret"] / 100) ** years + _sip_fv(r["sip"], r["exp_ret"], n) for r in rows))
+    elif mode == "stp":
+        tv = [0.0] * len(rows)
+        src = lump
+        i_s = src_rate / 1200
+        for _ in range(n):
+            for k, r in enumerate(rows):
+                tv[k] += r["amount"] / n
+            src -= lump / n
+            src *= 1 + i_s
+            tv = [v * (1 + r["exp_ret"] / 1200) for v, r in zip(tv, rows)]
+        x["fv"] = math.ceil(sum(tv) + max(src, 0))
+    else:  # swp
+        bal, out, months, i = lump, 0.0, 0, ret / 1200
+        for _ in range(n):
+            w = min(bal, withdraw)
+            if w <= 0:
+                break
+            bal -= w
+            out += w
+            months += 1
+            bal *= 1 + i
+        x.update(fv=math.ceil(bal), withdrawn=int(round(out)), months=months, planned=n)
+    return x
+
+
+def _kpis(mode: str, lump: float, sip: float, years: float, ret: float, x: dict[str, Any], withdraw: float, src_rate: float) -> list[dict[str, Any]]:
+    k = lambda label, value, fmt="inr": {"label": label, "value": value, "fmt": fmt}  # noqa: E731
+    yrs, rt, fv = k("Investment period", years, "yrs"), k("Expected return", ret, "pct"), k("Expected value at maturity", x["fv"])
+    if mode in ("lumpsum", "lumpsum_custom"):
+        return [k("Lumpsum amount", lump), yrs, rt, fv]
+    if mode in ("sip", "sip_custom"):
+        return [k("Monthly SIP", sip), yrs, k("Total invested", x["invested"]), rt, fv]
+    if mode == "lumpsum_sip":
+        return [k("Lumpsum amount", lump), k("Monthly SIP", sip), yrs, k("Total invested", x["invested"]), rt, fv]
+    if mode == "stp":
+        return [k("Amount in source fund", lump), yrs, k("Target return", ret, "pct"), k("Source (liquid) return", src_rate, "pct"), k("Value at end of STP", x["fv"])]
+    lasted = "Whole period" if x["months"] >= x["planned"] else f"{x['months'] / 12:.1f} years"
+    return [k("Corpus", lump), k("Monthly withdrawal", withdraw), yrs, rt, k("Total withdrawn", x["withdrawn"]), k("Corpus left at end", x["fv"]), k("Withdrawals last", lasted, "text")]
+
+
+def build(frame: pd.DataFrame, snapshot: dict[str, Any], years: float, rows: list[dict[str, Any]], amount: float | None = None,
+          mode: str = "lumpsum", sip: float | None = None, withdraw: float = 0.0, source: str | None = None) -> dict[str, Any]:
+    """Everything the proposal shows, for the scheme rows the adviser settled on (amounts, expected return editable)."""
+    if mode not in MODES:
+        raise ProposalError("Select an investment option.")
     if not rows:
         raise ProposalError("Add at least one scheme.")
     by_code = frame.drop_duplicates("code").set_index("code")
+    num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)  # noqa: E731
     clean: list[dict[str, Any]] = []
     for r in rows:
         code = str(r.get("code", "")).strip()
         if code not in by_code.index:
             raise ProposalError(f"Unknown scheme code {code or '(blank)'}.")
-        amt, er = r.get("amount"), r.get("exp_ret")
-        if not isinstance(amt, (int, float)) or isinstance(amt, bool) or not (amt > 0) or not math.isfinite(amt):
-            raise ProposalError(f"Enter an amount for {by_code.at[code, 'name']}.")
-        if not isinstance(er, (int, float)) or isinstance(er, bool) or not (-50 <= er <= 100):
-            raise ProposalError(f"Enter the expected return (%) for {by_code.at[code, 'name']}.")
+        name = by_code.at[code, "name"]
+        amt, sp, er = r.get("amount") or 0, r.get("sip") or 0, r.get("exp_ret")
+        if mode in _HAS_LUMP and mode != "lumpsum_sip" and not (num(amt) and amt > 0):
+            raise ProposalError(f"Enter the {'corpus' if mode == 'swp' else 'amount'} for {name}.")
+        if mode in ("sip", "sip_custom") and not (num(sp) and sp > 0):
+            raise ProposalError(f"Enter the monthly SIP for {name}.")
+        if mode == "lumpsum_sip" and not (num(amt) and num(sp) and amt >= 0 and sp >= 0 and amt + sp > 0):
+            raise ProposalError(f"Enter a lumpsum or a monthly SIP for {name}.")
+        if not num(er) or not (-50 <= er <= 100):
+            raise ProposalError(f"Enter the expected return (%) for {name}.")
         if any(c["code"] == code for c in clean):
-            raise ProposalError(f"{by_code.at[code, 'name']} is added twice.")
+            raise ProposalError(f"{name} is added twice.")
         s = by_code.loc[code]
-        clean.append({"code": code, "name": s["name"], "category": _cat_label(s), "group": _group(s),
-                      "amc": s["amc"], "amount": round(float(amt)), "exp_ret": float(er), "s": s})
+        clean.append({"code": code, "name": name, "category": _cat_label(s), "group": _group(s), "amc": s["amc"],
+                      "amount": round(float(amt)) if mode in _HAS_LUMP else 0, "sip": round(float(sp)) if mode in _HAS_SIP else 0, "exp_ret": float(er), "s": s})
+    n = max(1, round(years * 12))
+    for c in clean:  # weight of each scheme = the money it receives over the whole period
+        c["inv"] = c["amount"] + c["sip"] * n
     total = float(sum(c["amount"] for c in clean))
-    if amount is not None and total > amount + 0.5:
+    sip_total = float(sum(c["sip"] for c in clean))
+    inv_total = float(sum(c["inv"] for c in clean))
+    if amount is not None and mode in _HAS_LUMP and total > amount + 0.5:
         raise ProposalError("Total investment amount exceeds the proposal amount.")
-    ret = round(sum(c["exp_ret"] * c["amount"] / total for c in clean), 2)
+    if sip is not None and mode in _HAS_SIP and sip_total > sip + 0.5:
+        raise ProposalError("Total monthly SIP exceeds the proposal SIP amount.")
+    check(mode, total, sip_total, withdraw, years)
+    ret = round(sum(c["exp_ret"] * c["inv"] / inv_total for c in clean), 2)
+    src = None
+    src_rate = 0.0
+    if mode == "stp":
+        src = source_fund(frame) if not source else {**lookup(frame, source)}
+        src_rate = src["exp_ret"]
+    proj = _project(mode, clean, years, ret, withdraw, src_rate)
     schemes = []
     for c in clean:
         s = c["s"]
         schemes.append({"code": c["code"], "name": c["name"], "category": c["category"], "amc": c["amc"], "amount": c["amount"], "exp_ret": c["exp_ret"],
-                        "alloc_pct": round(c["amount"] / total * 100, 2), "ret_1y": _num(s["ret_1y"]), "ret_3y": _num(s["cagr_3y"]), "ret_5y": _num(s["cagr_5y"])})
+                        "sip": c["sip"], "alloc_pct": round(c["inv"] / inv_total * 100, 2), "ret_1y": _num(s["ret_1y"]), "ret_3y": _num(s["cagr_3y"]), "ret_5y": _num(s["cagr_5y"])})
     trailing = []
     for c in clean:
         s = c["s"]
@@ -243,12 +359,13 @@ def build(frame: pd.DataFrame, snapshot: dict[str, Any], years: float, rows: lis
             x = _rolling(c["code"])
             if x:
                 rolling.append({"code": c["code"], "name": c["name"], "category": c["category"], **x})
-    flat = [{k: v for k, v in c.items() if k != "s"} for c in clean]
+    flat = [{**{k: v for k, v in c.items() if k != "s"}, "amount": c["inv"]} for c in clean]
     return {
-        "amount": int(total), "years": years, "expected_return": ret, "future_value": future_value(total, ret, years),
+        "mode": mode, "title": MODES[mode], "amount": int(total), "sip": int(sip_total), "invested": proj["invested"], "years": years, "expected_return": ret,
+        "future_value": proj["fv"], "kpis": _kpis(mode, total, sip_total, years, ret, proj, withdraw, src_rate), "source": src,
         "schemes": schemes, "trailing": trailing, "rolling": rolling,
-        "amc": _split(flat, "amc", total), "category": _split(flat, "category", total), "asset": _split(flat, "group", total),
-        "holdings": _holdings(snapshot, flat, total),
+        "amc": _split(flat, "amc", inv_total), "category": _split(flat, "category", inv_total), "asset": _split(flat, "group", inv_total),
+        "holdings": _holdings(snapshot, flat, inv_total),
         "notes": {"nav_as_of": nav_as_of(frame), "rolling": "3-year rolling returns on month-end NAV, annualised.",
                   "returns": "Returns under 1 year are absolute; over 1 year are annualised (CAGR). Past performance may not be sustained."},
     }

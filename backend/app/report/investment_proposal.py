@@ -43,12 +43,16 @@ def _row(*cells, widths):
     return t
 
 
+def kpi_text(x: dict) -> str:
+    v = x["value"]
+    return {"inr": lambda: inr(v), "pct": lambda: f"{v:.2f}% p.a.", "yrs": lambda: f"{v:g} years"}.get(x["fmt"], lambda: str(v))()
+
+
 def _kpis(r: dict, W: float) -> Table:
     k = ParagraphStyle("k", parent=BODY, fontName=BOLD_FONT, fontSize=15, leading=19, textColor=NAVY, alignment=1)
     l = ParagraphStyle("l", parent=BODY, fontSize=7.5, textColor=colors.HexColor("#5A6472"), alignment=1)
-    items = [(inr(r["amount"]), "Lumpsum amount"), (f"{r['years']:g} years", "Investment period"),
-             (f"{r['expected_return']:.2f}% p.a.", "Expected return"), (inr(r["future_value"]), "Expected value at maturity")]
-    t = Table([[Paragraph(xml_escape(a), k) for a, _ in items], [Paragraph(b, l) for _, b in items]], colWidths=[W / 4] * 4)
+    items = [(kpi_text(x), x["label"]) for x in r["kpis"]]
+    t = Table([[Paragraph(xml_escape(a), k) for a, _ in items], [Paragraph(b, l) for _, b in items]], colWidths=[W / len(items)] * len(items))
     t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), LIGHT), ("LINEABOVE", (0, 0), (-1, 0), 2, GREEN),
                            ("TOPPADDING", (0, 0), (-1, 0), 8), ("BOTTOMPADDING", (0, 1), (-1, 1), 8), ("VALIGN", (0, 0), (-1, -1), "MIDDLE")]))
     return t
@@ -86,6 +90,7 @@ def build_pdf(r: dict, client: str, risk: str, purpose: str, cover: bool = True)
                             title="Investment Proposal", author="Fund Horizon")
     W = landscape(A4)[0] - 28 * mm
     today = date.today().strftime("%d-%m-%Y")
+    title = r.get("title", "Lumpsum")
 
     def decorate(c, d):
         w, h = landscape(A4)
@@ -95,7 +100,7 @@ def build_pdf(r: dict, client: str, risk: str, purpose: str, cover: bool = True)
                 c.drawImage(str(LOGO), 14 * mm, h - 13 * mm, width=19.4 * mm, height=10 * mm, mask="auto")
             c.setFont(BODY_FONT, 7.5)
             c.setFillColor(NAVY)
-            c.drawRightString(w - 14 * mm, h - 8 * mm, f"Investment Proposal - Lumpsum  |  {canvas_text(client or 'Client')}")
+            c.drawRightString(w - 14 * mm, h - 8 * mm, f"Investment Proposal - {r.get('title', 'Lumpsum')}  |  {canvas_text(client or 'Client')}")
             c.setFillColor(GREEN)
             c.rect(14 * mm, h - 14.5 * mm, w - 28 * mm, 0.8 * mm, stroke=0, fill=1)
         c.setFillColor(colors.HexColor("#5A6472"))
@@ -107,21 +112,26 @@ def build_pdf(r: dict, client: str, risk: str, purpose: str, cover: bool = True)
     s: list = []
     if cover:
         s += [Spacer(1, 12 * mm), _img(LOGO.read_bytes(), 70) if LOGO.exists() else Spacer(1, 1), Spacer(1, 14 * mm),
-              Paragraph("Investment Proposal - Lumpsum", ParagraphStyle("t", parent=H1, fontSize=28, leading=34)),
+              Paragraph(f"Investment Proposal - {title}", ParagraphStyle("t", parent=H1, fontSize=28, leading=34)),
               Paragraph(xml_escape(f"Prepared for {client or 'Client'}"), H2), Paragraph(today, BODY), Spacer(1, 16 * mm), _kpis(r, W), PageBreak()]
-    summary = [["Client", client or "-"], ["Risk profile", risk or "-"], ["Investment purpose", purpose or "-"], ["Lumpsum amount (Rs.)", inr(r["amount"])],
-               ["Period", f"{r['years']:g} years"], ["Expected return (% p.a.)", f"{r['expected_return']:.2f}"], ["Expected value at maturity (Rs.)", inr(r["future_value"])]]
-    s += [Paragraph("Investment Proposal - Lumpsum", H1), _tbl([[_p(a), _p(b)] for a, b in summary], [70 * mm, W - 70 * mm], 1, header=False)]
+    summary = [["Client", client or "-"], ["Risk profile", risk or "-"], ["Investment purpose", purpose or "-"]] + [[x["label"], kpi_text(x)] for x in r["kpis"]]
+    if r.get("source"):
+        summary.append(["STP source fund", r["source"]["name"]])
+    s += [Paragraph(f"Investment Proposal - {title}", H1), _tbl([[_p(a), _p(b)] for a, b in summary], [70 * mm, W - 70 * mm], 1, header=False)]
     s += [Paragraph("Suggested Portfolio Allocation", H2)]
-    head = ["Scheme", "Category", "1 Yr Ret (%)", "3 Yrs Ret (%)", "5 Yrs Ret (%)", "Expected Ret (%)", "Amount (Rs.)", "Allocation (%)"]
-    rows = [head] + [[_p(x["name"]), _p(x["category"]), _f(x["ret_1y"]), _f(x["ret_3y"]), _f(x["ret_5y"]), _f(x["exp_ret"]), inr(x["amount"]), f"{x['alloc_pct']:.2f}"] for x in r["schemes"]]
-    rows.append(["Grand Total", "", "", "", "", f"{r['expected_return']:.2f}", inr(r["amount"]), "100.00"])
-    s += [_tbl(rows, [W - 190 * mm, 40 * mm] + [22 * mm] * 3 + [26 * mm, 30 * mm, 24 * mm], 2)]
+    lump, sip = r["amount"] > 0, r.get("sip", 0) > 0
+    head = ["Scheme", "Category", "1 Yr Ret (%)", "3 Yrs Ret (%)", "5 Yrs Ret (%)", "Expected Ret (%)"] + (["Amount (Rs.)"] if lump else []) + (["SIP (Rs./month)"] if sip else []) + ["Allocation (%)"]
+    rows = [head] + [[_p(x["name"]), _p(x["category"]), _f(x["ret_1y"]), _f(x["ret_3y"]), _f(x["ret_5y"]), _f(x["exp_ret"])]
+                     + ([inr(x["amount"])] if lump else []) + ([inr(x["sip"])] if sip else []) + [f"{x['alloc_pct']:.2f}"] for x in r["schemes"]]
+    rows.append(["Grand Total", "", "", "", "", f"{r['expected_return']:.2f}"] + ([inr(r["amount"])] if lump else []) + ([inr(r["sip"])] if sip else []) + ["100.00"])
+    extra = 28 * mm * (lump + sip)
+    s += [_tbl(rows, [W - 158 * mm - extra, 40 * mm] + [22 * mm] * 3 + [26 * mm] + [28 * mm] * (lump + sip) + [24 * mm], 2)]
     s += [Paragraph(xml_escape(f"Expected value after {r['years']:g} years at {r['expected_return']:.2f}% p.a.: Rs. {inr(r['future_value'])}. "
                                "Expected returns are the category assumptions (mean 10-year rolling returns per AMFI circular 135/BP/109/2023-24) unless changed by the adviser."), BODY)]
     half = (W - 6 * mm) / 2
-    s += [Spacer(1, 3 * mm), _row(_img(charts.growth_chart(r["amount"], r["expected_return"], r["years"]), 105),
-                                  _img(charts.donut({x["name"]: x["pct"] for x in r["category"]}, BRAND), 105), widths=[half + 3 * mm, half - 3 * mm])]
+    donut = _img(charts.donut({x["name"]: x["pct"] for x in r["category"]}, BRAND), 105)
+    growth = _img(charts.growth_chart(r["amount"], r["expected_return"], r["years"]), 105) if r.get("mode", "lumpsum").startswith("lumpsum") and not r.get("sip") else Spacer(1, 1)
+    s += [Spacer(1, 3 * mm), _row(growth, donut, widths=[half + 3 * mm, half - 3 * mm])]
     s += [PageBreak(), Paragraph("Trailing Returns", H2)]
     head = ["Scheme", "AUM (Cr)", "TER (%)"] + [f"{p} Ret (%) / Rank" for p in ("1 Yr", "3 Yrs", "5 Yrs", "10 Yrs")]
     rows = [head]

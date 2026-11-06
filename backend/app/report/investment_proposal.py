@@ -9,7 +9,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import Image, KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import CondPageBreak, Image, KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from app.config.disclosures import ARN, FIRM
 from app.report import charts
@@ -78,8 +78,8 @@ def _tbl(rows, widths, right_from=1, header=True):
     return t
 
 
-def _split(title, rows, W):
-    body = [[title, "Amount (Rs.)", "Allocation (%)"]] + [[_p(r["name"]), inr(r["amount"]), f"{r['pct']:.2f}"] for r in rows]
+def _split(title, rows, W, col="Amount (Rs.)"):
+    body = [[title, col, "Allocation (%)"]] + [[_p(r["name"]), inr(r["amount"]), f"{r['pct']:.2f}"] for r in rows]
     body.append(["Grand Total", inr(sum(r["amount"] for r in rows)), "100.00"])
     return _tbl(body, [W - 70 * mm, 35 * mm, 35 * mm])
 
@@ -109,6 +109,9 @@ def build_pdf(r: dict, client: str, risk: str, purpose: str, cover: bool = True)
         c.drawRightString(w - 14 * mm, 7 * mm, f"Page {d.page}")
         c.restoreState()
 
+    def sec(heading, *flow):  # a heading always travels with its content, so no heading or chart is stranded alone on a page
+        return KeepTogether([Paragraph(xml_escape(heading), H2), *flow])
+
     s: list = []
     if cover:
         s += [Spacer(1, 12 * mm), _img(LOGO.read_bytes(), 70) if LOGO.exists() else Spacer(1, 1), Spacer(1, 14 * mm),
@@ -117,45 +120,48 @@ def build_pdf(r: dict, client: str, risk: str, purpose: str, cover: bool = True)
     summary = [["Client", client or "-"], ["Risk profile", risk or "-"], ["Investment purpose", purpose or "-"]] + [[x["label"], kpi_text(x)] for x in r["kpis"]]
     if r.get("source"):
         summary.append(["STP source fund", r["source"]["name"]])
-    s += [Paragraph(f"Investment Proposal - {title}", H1), _tbl([[_p(a), _p(b)] for a, b in summary], [70 * mm, W - 70 * mm], 1, header=False)]
-    s += [Paragraph("Suggested Portfolio Allocation", H2)]
+    summary += [["", ""]] * (len(summary) % 2)
+    pairs = [[_p(a), _p(b), _p(c), _p(d)] for (a, b), (c, d) in zip(summary[0::2], summary[1::2])]  # two label/value pairs per row keeps page 2 compact
+    s += [Paragraph(f"Investment Proposal - {title}", H1), _tbl(pairs, [42 * mm, W / 2 - 42 * mm, 42 * mm, W / 2 - 42 * mm], 1, header=False)]
     lump, sip = r["amount"] > 0, r.get("sip", 0) > 0
     head = ["Scheme", "Category", "1 Yr Ret (%)", "3 Yrs Ret (%)", "5 Yrs Ret (%)", "Expected Ret (%)"] + (["Amount (Rs.)"] if lump else []) + (["SIP (Rs./month)"] if sip else []) + ["Allocation (%)"]
     rows = [head] + [[_p(x["name"]), _p(x["category"]), _f(x["ret_1y"]), _f(x["ret_3y"]), _f(x["ret_5y"]), _f(x["exp_ret"])]
                      + ([inr(x["amount"])] if lump else []) + ([inr(x["sip"])] if sip else []) + [f"{x['alloc_pct']:.2f}"] for x in r["schemes"]]
     rows.append(["Grand Total", "", "", "", "", f"{r['expected_return']:.2f}"] + ([inr(r["amount"])] if lump else []) + ([inr(r["sip"])] if sip else []) + ["100.00"])
-    extra = 28 * mm * (lump + sip)
-    s += [_tbl(rows, [W - 158 * mm - extra, 40 * mm] + [22 * mm] * 3 + [26 * mm] + [28 * mm] * (lump + sip) + [24 * mm], 2)]
-    s += [Paragraph(xml_escape(f"Expected value after {r['years']:g} years at {r['expected_return']:.2f}% p.a.: Rs. {inr(r['future_value'])}. "
-                               "Expected returns are the category assumptions (mean 10-year rolling returns per AMFI circular 135/BP/109/2023-24) unless changed by the adviser."), BODY)]
+    extra = 26 * mm * (lump + sip)
+    s += [CondPageBreak(60 * mm), sec("Suggested Portfolio Allocation", _tbl(rows, [W - 139 * mm - extra, 38 * mm] + [19 * mm] * 3 + [24 * mm] + [26 * mm] * (lump + sip) + [20 * mm], 2),
+          Spacer(1, 1.5 * mm), Paragraph(xml_escape(f"Expected value after {r['years']:g} years at {r['expected_return']:.2f}% p.a.: Rs. {inr(r['future_value'])}. "
+                                                    "Expected returns are the category assumptions (mean 10-year rolling returns per AMFI circular 135/BP/109/2023-24) unless changed by the adviser."), BODY))]
+    labels = {"stp": ("Value of STP portfolio", "Amount in source fund"), "swp": ("Corpus remaining", "Starting corpus")}.get(r.get("mode"), (f"Projected value @ {r['expected_return']:.2f}% p.a.", "Amount invested"))
     half = (W - 6 * mm) / 2
-    donut = _img(charts.donut({x["name"]: x["pct"] for x in r["category"]}, BRAND), 105)
-    growth = _img(charts.growth_chart(r["amount"], r["expected_return"], r["years"]), 105) if r.get("mode", "lumpsum").startswith("lumpsum") and not r.get("sip") else Spacer(1, 1)
-    s += [Spacer(1, 3 * mm), _row(growth, donut, widths=[half + 3 * mm, half - 3 * mm])]
-    s += [PageBreak(), Paragraph("Trailing Returns", H2)]
+    s += [CondPageBreak(65 * mm), sec("Growth and Category Mix", _row(_img(charts.growth_chart(r["curve"], *labels), 95),
+                                                                       _img(charts.donut({x["name"]: x["pct"] for x in r["category"]}, BRAND), 80), widths=[half + 3 * mm, half - 3 * mm]))]
+
+    rk = lambda t, k: (f"{_f(t['returns'][k])} / {t['rank'][k]}" if t["rank"][k] else _f(t["returns"][k]))  # noqa: E731
     head = ["Scheme", "AUM (Cr)", "TER (%)"] + [f"{p} Ret (%) / Rank" for p in ("1 Yr", "3 Yrs", "5 Yrs", "10 Yrs")]
-    rows = [head]
-    for t in r["trailing"]:
-        rows.append([_p(t["name"]), _f(t["aum_cr"], 0), _f(t["ter"])] + [f"{_f(t['returns'][k])} / {t['rank'][k] or '-'}" for k in ("1y", "3y", "5y", "10y")])
-        rows.append([_p(f"Category average ({t['category']}, {t['peers']} funds)"), "", ""] + [_f(t["avg"][k]) for k in ("1y", "3y", "5y", "10y")])
-    s += [_tbl(rows, [W - 205 * mm, 25 * mm, 20 * mm] + [40 * mm] * 4, 1)]
+    rows = [head] + [[_p(t["name"]), _f(t["aum_cr"], 0), _f(t["ter"])] + [rk(t, k) for k in ("1y", "3y", "5y", "10y")] for t in r["trailing"]]
+    for cat in dict.fromkeys(t["category"] for t in r["trailing"]):  # one average row per category, not one per scheme
+        t = next(x for x in r["trailing"] if x["category"] == cat)
+        rows.append([_p(f"Category average - {cat} ({t['peers']} funds)"), "", ""] + [_f(t["avg"][k]) for k in ("1y", "3y", "5y", "10y")])
+    s += [CondPageBreak(70 * mm), sec("Trailing Returns", _tbl(rows, [W - 205 * mm, 25 * mm, 20 * mm] + [40 * mm] * 4, 1))]
     if any(t["returns"]["3y"] is not None for t in r["trailing"]):
-        s += [Spacer(1, 3 * mm), _img(charts.returns_bar(r["trailing"], "3y"), 120)]
+        s += [sec("3-Year Return vs Category Average", _img(charts.returns_bar(r["trailing"], "3y"), 100))]
     if r["rolling"]:
-        s += [Paragraph("Rolling Return Analysis (Equity & Hybrid Schemes), 3-year rolling", H2)]
         head = ["Scheme", "Average", "Median", "Maximum", "Minimum", "Negative", "0 - 8%", "8 - 12%", "12 - 15%", "15 - 20%", "> 20%"]
         rows = [head] + [[_p(x["name"]), _f(x["average"]), _f(x["median"]), _f(x["maximum"]), _f(x["minimum"])] + [_f(x["distribution"][k]) for k in ("negative", "0-8", "8-12", "12-15", "15-20", ">20")] for x in r["rolling"]]
-        s += [_tbl(rows, [W - 190 * mm] + [19 * mm] * 10, 1)]
-    s += [PageBreak(), Paragraph("Portfolio Composition", H2),
-          _row(_img(charts.donut({x["name"]: x["pct"] for x in r["asset"]}, BRAND), 85), _img(charts.donut({x["name"]: x["pct"] for x in r["amc"]}, BRAND), 85), widths=[W / 2] * 2),
-          Spacer(1, 3 * mm), _split("AMC", r["amc"], W), Spacer(1, 4 * mm), _split("Asset Allocation", r["asset"], W), Spacer(1, 4 * mm),
-          _split("Category", r["category"], W)]
+        s += [CondPageBreak(50 * mm), sec("Rolling Return Analysis (Equity & Hybrid Schemes), 3-year rolling", _tbl(rows, [W - 190 * mm] + [19 * mm] * 10, 1))]
+    col = "Total Invested (Rs.)" if r.get("sip") else "Amount (Rs.)"
+    s += [CondPageBreak(75 * mm), sec("Portfolio Composition", _row(_img(charts.donut({x["name"]: x["pct"] for x in r["asset"]}, BRAND), 85),
+                                                                 _img(charts.donut({x["name"]: x["pct"] for x in r["amc"]}, BRAND), 85), widths=[W / 2] * 2))]
+    for t, k in (("AMC Allocation", "amc"), ("Asset Allocation", "asset"), ("Category Allocation", "category")):
+        s += [Spacer(1, 3 * mm), sec(t, _split(t.replace(" Allocation", ""), r[k], W, col))]
     h = r["holdings"]
     if h["sector"] or h["equity"] or h["debt"]:
-        s += [PageBreak(), Paragraph(f"Portfolio Holdings (disclosures as of {h['as_of'] or '-'}; cover {h['coverage_pct']:.0f}% of the amount)", H2)]
-        for title, key, col in (("Top 10 Sector Allocation", "sector", "Sector"), ("Top 10 Equity Holdings", "equity", "Company"), ("Top 10 Debt Holdings", "debt", "Company")):
+        asof = "-" if not h["as_of"] else "-".join(reversed(str(h["as_of"])[:10].split("-")))
+        s += [Spacer(1, 3 * mm), Paragraph(f"Portfolio holdings: latest disclosures as of {asof}, covering {h['coverage_pct']:.0f}% of the amount.", BODY)]
+        for title_, key, c in (("Top 10 Sector Allocation", "sector", "Sector"), ("Top 10 Equity Holdings", "equity", "Company"), ("Top 10 Debt Holdings", "debt", "Company")):
             if h[key]:
-                s += [Paragraph(title, H2), _tbl([[col, "Allocation (%)"]] + [[_p(x["name"]), f"{x['pct']:.2f}"] for x in h[key]], [W - 40 * mm, 40 * mm])]
-    s += [Spacer(1, 6 * mm), Paragraph("Disclaimer", H2), Paragraph(xml_escape(DISCLAIMER), BODY)]
+                s += [sec(title_, _tbl([[c, "Allocation (%)"]] + [[_p(x["name"]), f"{x['pct']:.2f}"] for x in h[key]], [W - 40 * mm, 40 * mm]))]
+    s += [Spacer(1, 6 * mm), sec("Disclaimer", Paragraph(xml_escape(DISCLAIMER), BODY))]
     doc.build(s, onFirstPage=decorate, onLaterPages=decorate)
     return buf.getvalue()

@@ -5,6 +5,8 @@ from fastapi import HTTPException
 """matplotlib charts rendered offline to PNG bytes (Agg backend)."""
 
 import io
+import re
+import textwrap
 
 if not on_workers():
     import matplotlib
@@ -81,13 +83,14 @@ def fan_chart(fan: list[dict], target: float, title: str) -> bytes:
     return _png(fig)
 
 
-def growth_chart(amount: float, rate: float, years: float) -> bytes:
-    """Invested amount vs projected value at the expected return, year by year."""
-    xs = [i * years / max(int(years), 1) for i in range(max(int(years), 1) + 1)]
+def growth_chart(curve: list[dict], value_label: str = "Projected value", invested_label: str = "Amount invested") -> bytes:
+    """Money put in vs projected value, point by point (curve = [{year, invested, value}])."""
+    xs = [p["year"] for p in curve]
+    vals = [p["value"] for p in curve]
     fig, ax = plt.subplots(figsize=(5.2, 2.6))
-    ax.fill_between(xs, [amount * (1 + rate / 100) ** x for x in xs], amount, color="#5BB031", alpha=0.25)
-    ax.plot(xs, [amount * (1 + rate / 100) ** x for x in xs], color="#183883", lw=1.8, label=f"Projected value @ {rate:.2f}% p.a.")
-    ax.axhline(amount, color=GREY, lw=0.8, ls="--", label="Amount invested")
+    ax.fill_between(xs, vals, [p["invested"] for p in curve], color="#5BB031", alpha=0.25)
+    ax.plot(xs, vals, color="#183883", lw=1.8, label=value_label)
+    ax.plot(xs, [p["invested"] for p in curve], color=GREY, lw=1, ls="--", label=invested_label)
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: short_inr(v)))
     ax.tick_params(labelsize=7)
     ax.set_xlabel("Years", fontsize=7)
@@ -99,14 +102,14 @@ def growth_chart(amount: float, rate: float, years: float) -> bytes:
 def returns_bar(rows: list[dict], period: str = "3y") -> bytes:
     """Scheme return vs category average for one trailing period (rows are the proposal's `trailing` entries)."""
     rows = [r for r in rows if r["returns"].get(period) is not None]
-    fig, ax = plt.subplots(figsize=(5.2, max(1.6, 0.5 * len(rows) + 0.7)))
+    fig, ax = plt.subplots(figsize=(5.2, max(1.6, 0.34 * len(rows) + 0.9)))
     ys = list(range(len(rows)))
     ax.barh([y + 0.2 for y in ys], [r["returns"][period] for r in rows], height=0.36, color="#183883", label="Scheme")
     ax.barh([y - 0.2 for y in ys], [r["avg"][period] or 0 for r in rows], height=0.36, color="#5BB031", label="Category average")
-    ax.set_yticks(ys, [r["name"][:34] for r in rows], fontsize=6.5)
+    ax.set_yticks(ys, [textwrap.shorten(re.sub(r"\s*-\s*(Regular|Direct) Plan.*$", "", r["name"]), 38, placeholder="…") for r in rows], fontsize=6.5)
     ax.invert_yaxis()
     ax.tick_params(axis="x", labelsize=7)
     ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(fontsize=6.5, frameon=False, loc="lower right")
+    ax.legend(fontsize=6.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.08), ncol=2)  # below the bars, never on them
     ax.set_title(f"{period.upper()} return (% p.a.)", fontsize=8, color=NAVY)
     return _png(fig)

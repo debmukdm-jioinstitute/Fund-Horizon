@@ -76,7 +76,7 @@ def test_api_suggest_result_pdf(client):
 def test_pdf_is_branded_with_charts():
     import re
     from app.report.investment_proposal import build_pdf
-    r = {"amount": 100000, "years": 5, "expected_return": 10, "future_value": 161051, "title": "Lumpsum", "mode": "lumpsum", "sip": 0,
+    r = {"amount": 100000, "years": 5, "expected_return": 10, "future_value": 161051, "title": "Lumpsum", "mode": "lumpsum", "sip": 0, "curve": [{"year": 0, "invested": 100000, "value": 100000}, {"year": 5, "invested": 100000, "value": 161051}],
          "kpis": [{"label": "Lumpsum amount", "value": 100000, "fmt": "inr"}, {"label": "Investment period", "value": 5, "fmt": "yrs"},
                   {"label": "Expected return", "value": 10, "fmt": "pct"}, {"label": "Expected value at maturity", "value": 161051, "fmt": "inr"}],
          "schemes": [{"name": "A", "category": "Equity: Flexi Cap", "ret_1y": 1, "ret_3y": 2, "ret_5y": 3, "exp_ret": 10, "amount": 100000, "alloc_pct": 100}],
@@ -121,6 +121,7 @@ def test_api_all_modes(client):
         assert res.status_code == 200, (mode, res.text)
         d = res.json()
         assert d["future_value"] >= 0 and d["kpis"] and d["title"]
+        assert d["curve"][0]["year"] == 0 and d["curve"][-1]["value"] == d["future_value"], mode  # chart ends where the headline figure does
         pdf = client.post(f"{u}/pdf", json={**body, "client": "T", "risk": "Moderate"})
         assert pdf.status_code == 200 and pdf.content.startswith(b"%PDF"), mode
     assert client.post(f"{u}/result", json={**body, "mode": "swp", "withdraw": 0}).status_code == 422

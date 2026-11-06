@@ -13,6 +13,7 @@ table uses month-end NAV; holdings tables come from the shipped portfolio-disclo
 
 import json
 import math
+import re
 from pathlib import Path
 from typing import Any
 
@@ -212,6 +213,7 @@ def _holdings(snapshot: dict[str, Any], rows: list[dict[str, Any]], total: float
     eq: dict[str, float] = {}
     debt: dict[str, float] = {}
     covered = 0.0
+    label: dict[str, tuple[str, float]] = {}
     for r in rows:
         e = mf_holdings.holdings_for_scheme(snapshot, r["code"])
         if not e or not e.get("holdings"):
@@ -222,14 +224,19 @@ def _holdings(snapshot: dict[str, Any], rows: list[dict[str, Any]], total: float
             w = (h.get("weight_pct") or 0) * f
             if w <= 0 or h.get("instrument_type") == "cash":
                 continue
-            name = (h.get("name") or "").strip()
+            name = re.sub(r"(\s*[*#]+)+\s*$", "", (h.get("name") or "").strip())  # drop the disclosure footnote markers (** #)
+            key = re.sub(r"\b(limited|ltd)\b|[^a-z0-9]", "", name.lower())  # "Icici Bank Limited" and "ICICI Bank Ltd." are one company
+            nice = 0 if name.isupper() else sum(c.isupper() for c in name)  # prefer "ICICI Bank Ltd." over "Icici Bank Limited" or all-caps
+            if key and nice > label.get(key, ("", -1))[1]:
+                label[key] = (name, nice)
+            name = key or name
             if h.get("instrument_type") == "equity":
                 eq[name] = eq.get(name, 0) + w
                 if h.get("sector"):
                     sector[h["sector"]] = sector.get(h["sector"], 0) + w
             elif h.get("instrument_type") == "debt":
                 debt[name] = debt.get(name, 0) + w
-    top = lambda d: [{"name": k, "pct": round(v, 2)} for k, v in sorted(d.items(), key=lambda x: -x[1])[:10]]  # noqa: E731
+    top = lambda d: [{"name": label.get(k, (k, 0))[0], "pct": round(v, 2)} for k, v in sorted(d.items(), key=lambda x: -x[1])[:10]]  # noqa: E731
     return {"sector": top(sector), "equity": top(eq), "debt": top(debt), "coverage_pct": round(covered / total * 100, 1), "as_of": snapshot.get("as_of")}
 
 
@@ -238,20 +245,22 @@ def _sip_fv(p: float, rate: float, n: int) -> float:
     return p * n if i == 0 else p * ((1 + i) ** n - 1) / i * (1 + i)
 
 
-def _project(mode: str, rows: list[dict[str, Any]], years: float, ret: float, withdraw: float, src_rate: float) -> dict[str, Any]:
-    """Maturity value and the option-specific figures. Lumpsum compounds yearly; SIP/STP/SWP compound monthly."""
-    n = max(1, round(years * 12))
+def _project(mode: str, rows: list[dict[str, Any]], years: float, ret: float, withdraw: float, src_rate: float, upto: float | None = None) -> dict[str, Any]:
+    """Maturity value and the option-specific figures after `upto` years (default: the whole period). Lumpsum compounds yearly; SIP/STP/SWP monthly."""
+    n = max(1, round(years * 12))  # the STP schedule always spreads over the full period
+    yrs = years if upto is None else upto
+    m = n if upto is None else round(upto * 12)
     lump, sip = sum(r["amount"] for r in rows), sum(r["sip"] for r in rows)
-    x: dict[str, Any] = {"invested": int(lump + sip * n)}
+    x: dict[str, Any] = {"invested": int(lump + sip * m)}
     if mode in ("lumpsum", "lumpsum_custom"):
-        x["fv"] = future_value(lump, ret, years)
+        x["fv"] = future_value(lump, ret, yrs)
     elif mode in _HAS_SIP:
-        x["fv"] = math.ceil(sum(r["amount"] * (1 + r["exp_ret"] / 100) ** years + _sip_fv(r["sip"], r["exp_ret"], n) for r in rows))
+        x["fv"] = math.ceil(sum(r["amount"] * (1 + r["exp_ret"] / 100) ** yrs + _sip_fv(r["sip"], r["exp_ret"], m) for r in rows))
     elif mode == "stp":
         tv = [0.0] * len(rows)
         src = lump
         i_s = src_rate / 1200
-        for _ in range(n):
+        for _ in range(m):
             for k, r in enumerate(rows):
                 tv[k] += r["amount"] / n
             src -= lump / n
@@ -260,7 +269,7 @@ def _project(mode: str, rows: list[dict[str, Any]], years: float, ret: float, wi
         x["fv"] = math.ceil(sum(tv) + max(src, 0))
     else:  # swp
         bal, out, months, i = lump, 0.0, 0, ret / 1200
-        for _ in range(n):
+        for _ in range(m):
             w = min(bal, withdraw)
             if w <= 0:
                 break
@@ -334,6 +343,11 @@ def build(frame: pd.DataFrame, snapshot: dict[str, Any], years: float, rows: lis
         src = source_fund(frame) if not source else {**lookup(frame, source)}
         src_rate = src["exp_ret"]
     proj = _project(mode, clean, years, ret, withdraw, src_rate)
+    pts = sorted({*range(int(years) + 1), years})  # year-by-year path for the growth chart
+    curve = []
+    for y in pts:
+        q = _project(mode, clean, years, ret, withdraw, src_rate, y)
+        curve.append({"year": y, "invested": q["invested"] if mode in _HAS_SIP else int(total), "value": q["fv"]})
     schemes = []
     for c in clean:
         s = c["s"]
@@ -362,7 +376,7 @@ def build(frame: pd.DataFrame, snapshot: dict[str, Any], years: float, rows: lis
     flat = [{**{k: v for k, v in c.items() if k != "s"}, "amount": c["inv"]} for c in clean]
     return {
         "mode": mode, "title": MODES[mode], "amount": int(total), "sip": int(sip_total), "invested": proj["invested"], "years": years, "expected_return": ret,
-        "future_value": proj["fv"], "kpis": _kpis(mode, total, sip_total, years, ret, proj, withdraw, src_rate), "source": src,
+        "future_value": proj["fv"], "curve": curve, "kpis": _kpis(mode, total, sip_total, years, ret, proj, withdraw, src_rate), "source": src,
         "schemes": schemes, "trailing": trailing, "rolling": rolling,
         "amc": _split(flat, "amc", inv_total), "category": _split(flat, "category", inv_total), "asset": _split(flat, "group", inv_total),
         "holdings": _holdings(snapshot, flat, inv_total),

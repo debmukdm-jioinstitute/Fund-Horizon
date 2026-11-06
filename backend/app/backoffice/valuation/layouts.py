@@ -29,8 +29,7 @@ def folio_wise_mf(pages: list[str]):
     text = _clean(" ".join(pages))
     if "Folio Wise" not in text:
         return [], {}, [], []
-    body = re.sub(r"S\. No Fund Name.*?Annualised Return \(%\)", " ", text)  # repeated table headers
-    body = re.sub(r"Portfolio Valuation Report - Folio Wise \|[^|]*\|[^N]*?\d{4}", " ", body)
+    body = text
     holdings, warns, expected, pos = [], [], 1, 0
     while m := re.compile(rf"(?<![\d,.]){expected}{_ROW_TAIL}", re.S).search(body, pos):  # rows are numbered 1..n: anchors on S.No
         expected += 1
@@ -64,8 +63,13 @@ def folio_wise_mf(pages: list[str]):
             warns.append("Report header totals differ from the Grand Total row.")
         tot.setdefault("reported_xirr", hv[4])
         tot["reported_unrealised_gain"] = hv[2]
-    if (n := expected - 1) != len(holdings) or not tot:
-        warns.append("Row count / totals could not be confirmed.")
+    if not tot:
+        warns.append("Row totals could not be confirmed against the provider.")
+    else:  # a row the reader missed shows up as a gap against the provider's own total
+        sv, si = sum(h.market_value for h in holdings), sum(h.invested_amount for h in holdings)
+        if abs(sv - tot["total_value"]) > max(1.0, 0.0001 * sv) or abs(si - tot["total_invested"]) > max(1.0, 0.0001 * si):
+            warns.append(f"Rows read ({len(holdings)}) sum to value {sv:,.2f} / invested {si:,.2f} but the provider total is "
+                         f"{tot['total_value']:,.2f} / {tot['total_invested']:,.2f}: a row may be missing.")
     return holdings, tot, warns, []
 
 
@@ -103,10 +107,11 @@ def direct_equity(pages: list[str]):
         return [], {}, "", None
     body = t.split("Unrealized P&L", 1)[-1]
     holdings = []
-    row = re.compile(r"(.+?) (\d+(?:\.\d+)?) (\d+(?:\.\d+)?) (\d+(?:\.\d+)?) (\d+(?:\.\d+)?) (\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)(?= |$)")
+    n = r"(\d[\d,]*(?:\.\d+)?)"
+    row = re.compile(rf"(.+?) {n} {n} {n} {n} {n} (-?[\d,]+(?:\.\d+)?)(?= |$)")
     pos = 0
     while (m := row.match(body, pos)) and not m.group(1).startswith("Total Holdings"):
-        name, q, avg, inv, px, val, pnl = m.group(1).strip(), *(float(x) for x in m.groups()[1:])
+        name, q, avg, inv, px, val, pnl = m.group(1).strip(), *(float(x.replace(",", "")) for x in m.groups()[1:])
         h = HoldingRec(security_name=name, asset_type="equity", quantity=q, avg_cost=avg, invested_amount=inv, price=px, market_value=val,
                        unrealised_gain=pnl, source_page="6", source_row=len(holdings) + 1)
         if abs(q * px - val) > max(1.0, 0.002 * val):
@@ -114,9 +119,9 @@ def direct_equity(pages: list[str]):
         holdings.append(h)
         pos = m.end()
     tot = {}
-    if m := re.search(r"Total Holdings Value (-?\d+) (-?\d+) (-?\d+)", body):
-        tot = {"table_total_invested": float(m.group(1)), "total_invested": float(m.group(1)),
-               "table_total_value": float(m.group(2)), "total_value": float(m.group(2)), "reported_unrealised_gain": float(m.group(3))}
+    if m := re.search(r"Total Holdings Value (-?[\d,]+) (-?[\d,]+) (-?[\d,]+)", body):
+        a, b, c = (float(x.replace(",", "")) for x in m.groups())
+        tot = {"table_total_invested": a, "total_invested": a, "table_total_value": b, "total_value": b, "reported_unrealised_gain": c}
     d = re.search(r"Holding Date " + _DATE, t)
     return holdings, tot, ing.parse_date(d.group(1)) if d else None, None
 
@@ -163,3 +168,8 @@ def enrich_pms(st, plain: list[str]) -> None:
             h.issues.append("asset_type_hint:cash")
         elif equity_factsheet:
             h.issues.append("asset_type_hint:equity")
+
+
+def is_distributor_report(plain: list[str]) -> bool:
+    """The report is issued by an AMFI-registered mutual fund distributor (so its MF lines are Regular plans)."""
+    return bool(re.search(r"(?i)AMFI Registered Mutual Fund Distributor", "\n".join(plain[:2])))

@@ -68,7 +68,7 @@ def test_report_has_provider_returns_dashboard_gap_and_factsheet_annexure(env):
     assert pl["reported"]["dashboard"]["latest_value"] == 183888226 and abs(pl["reported"]["dashboard"]["difference_pct"] - 2.6693) < 0.001
     assert {r["xirr_pct"] for r in pl["reported"]["statement_xirr"]} == {5.99, 24.32, 3.78}
     matched = [e for e in pl["fund_sheets"] if e["matched"]]
-    assert len(matched) >= 20 and all(e["nav_check"]["ok"] in (True, None) for e in matched)        # no NAV disagreement with AMFI
+    assert len(matched) >= 22 and all(e["nav_check"]["ok"] in (True, None) for e in matched)        # no NAV disagreement with AMFI
     rv = service.generate_report(ap["snapshot_id"], "admin", "Test Client")
     text = "\n".join(p.extract_text() for p in PdfReader(io.BytesIO(service.report_bytes(rv["id"])[0])).pages)
     for needle in ("Returns printed by providers", "Distributor dashboard cross-check", "Annexure D", "Stallion / STALLION CORE FUND"):

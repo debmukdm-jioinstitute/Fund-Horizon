@@ -98,6 +98,8 @@ class ProviderAdapter:
                 if h.reported_xirr is not None:
                     st.reported.setdefault("holding_xirr", []).append(
                         {"account_no": h.account_no, "name": h.security_name, "xirr": h.reported_xirr})
+            if layouts.is_distributor_report(plain):
+                st.reported["distributor"] = True
             if "reported_xirr" in totals:
                 st.reported["xirr"] = totals["reported_xirr"]
         else:

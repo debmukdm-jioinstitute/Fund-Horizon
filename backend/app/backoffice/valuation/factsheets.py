@@ -9,12 +9,14 @@ from __future__ import annotations
 import hashlib
 import io
 import re
+import time
 from datetime import date, datetime, timedelta
 from typing import Any
 
 _ABBR = {"pru": "prudential", "fin": "financial", "serv": "services", "res": "resources", "mgmt": "management", "inf": "infrastructure"}
 _NOISE = {"fund", "reg", "g", "plan", "regular", "growth", "direct", "option", "and", "of", "the", "dir"}
 NAV_TOL = 0.002           # statement NAV vs AMFI NAV on the same date: 0.2% (rounding of a 2-4 dp NAV)
+FETCH_BUDGET_S = 40       # total time allowed for downloading AMC factsheets while building one report
 MAX_NAV_AGE_DAYS = 5      # AMFI date vs statement date for a NAV comparison to be meaningful
 DATA_POINTS = ("latest_nav", "latest_nav_date", "category", "aum_cr", "first_nav_date", "ret_1m", "ret_3m", "ret_6m", "ret_1y", "cagr_3y", "cagr_5y",
                "cagr_10y", "cagr_since_inception", "vol_3y", "sharpe_3y", "max_drawdown_3y", "beta_3y", "alpha_3y")
@@ -42,14 +44,14 @@ def _d(s: Any) -> date | None:
     return None
 
 
-def match_scheme(name: str, nav: float | None, statement_date: str | None, df) -> tuple[dict | None, str]:
+def match_scheme(name: str, nav: float | None, statement_date: str | None, df, default_plan: str | None = None) -> tuple[dict | None, str]:
     """-> (dataset row | None, how). ``how`` is the evidence ('name+NAV') or the reason nothing was matched."""
     want = set(tokens(name))
     if not want:
         return None, "empty name"
     cand = df[df["tok"].map(lambda t: want <= t)]
-    plan = "Regular" if re.search(r"(?i)\breg(ular)?\b", name) else "Direct" if re.search(r"(?i)\bdir(ect)?\b", name) else None
-    if plan and (c2 := cand[cand["plan"] == plan]).size:  # the statement states its plan
+    plan = "Regular" if re.search(r"(?i)\breg(ular)?\b", name) else "Direct" if re.search(r"(?i)\bdir(ect)?\b", name) else default_plan
+    if plan and (c2 := cand[cand["plan"] == plan]).size:  # the statement states its plan, or was issued by a distributor (Regular only)
         cand = c2
     if cand.empty:
         return None, "no AMFI scheme contains every word of the statement name"
@@ -95,14 +97,16 @@ def _frame():
     return df
 
 
-def fund_sheets(holdings: list[dict], statement_dates: dict[str, str | None]) -> list[dict]:
-    """One entry per distinct mutual fund (by account + name) in the valuation. ``holdings``: consolidated holding dicts."""
+def fund_sheets(holdings: list[dict], statement_dates: dict[str, str | None], regular_only: set[str] | frozenset[str] = frozenset()) -> list[dict]:
+    """One entry per mutual fund line in the valuation. ``holdings``: consolidated holding dicts. ``regular_only``: providers whose
+    statements say they come from an AMFI-registered distributor (ARN): distributors can only sell Regular plans."""
     df = _frame()
     out = []
     for h in holdings:
         if h["asset_type"] != "mutual_fund":
             continue
-        row, how = match_scheme(h["security_name"], h.get("price"), statement_dates.get(h["provider"]), df)
+        row, how = match_scheme(h["security_name"], h.get("price"), statement_dates.get(h["provider"]), df,
+                                "Regular" if h["provider"] in regular_only else None)
         e: dict[str, Any] = {"security_name": h["security_name"], "provider": h["provider"], "account_no": h["account_no"],
                              "statement_nav": h.get("price"), "matched": row is not None, "match": how}
         if row:
@@ -119,7 +123,7 @@ def _fetch(url: str) -> bytes | None:
     import httpx
 
     try:
-        r = httpx.get(url, timeout=60, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 FundHorizon"})
+        r = httpx.get(url, timeout=20, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 FundHorizon"})
     except httpx.HTTPError:
         return None
     ok = r.status_code == 200 and r.content[:5] == b"%PDF-" and len(r.content) < 80 * 2**20
@@ -150,35 +154,40 @@ def amc_factsheet(amc: str, report_month: str, repo=None) -> dict | None:
     return None
 
 
-def fund_pages(pdf: bytes, scheme_name: str) -> list[int]:
-    """Pages of an AMC factsheet where the scheme is the subject: its distinctive name words all appear in the page's opening lines."""
+def page_heads(pdf: bytes) -> list[set[str]]:
     from pypdf import PdfReader
 
+    return [set(tokens(" ".join((p.extract_text() or "").split("\n")[:6]))) for p in PdfReader(io.BytesIO(pdf)).pages]
+
+
+def fund_pages(heads: list[set[str]], scheme_name: str) -> list[int]:
+    """Pages of an AMC factsheet where the scheme is the subject: its distinctive name words all appear in the page's opening lines."""
     want = set(tokens(scheme_name))
-    hits = []
-    for i, p in enumerate(PdfReader(io.BytesIO(pdf)).pages):
-        head = " ".join((p.extract_text() or "").split("\n")[:6])
-        if want <= set(tokens(head)):
-            hits.append(i)
-    return hits
+    return [i for i, h in enumerate(heads) if want <= h]
 
 
 def attach_pages(sheets: list[dict], report_month: str, repo=None) -> tuple[bytes | None, list[dict]]:
     """-> (merged PDF of the matched fund pages | None, evidence list). Evidence names every document and what was or was not found."""
     from pypdf import PdfReader, PdfWriter
 
-    w, evidence, cache = PdfWriter(), [], {}
+    w, evidence, cache, heads = PdfWriter(), [], {}, {}
+    deadline = time.monotonic() + FETCH_BUDGET_S                      # the report request must not outlive the tunnel timeout
     for e in sheets:
         if not e["matched"]:
             continue
         if e["amc"] not in cache:
-            cache[e["amc"]] = amc_factsheet(e["amc"], report_month, repo)
+            cache[e["amc"]] = amc_factsheet(e["amc"], report_month, repo) if time.monotonic() < deadline else "late"
         fs = cache[e["amc"]]
+        if fs == "late":
+            evidence.append({"scheme": e["scheme_name"], "amc": e["amc"], "status": "skipped: download time budget used up", "pages": 0})
+            continue
         ev = {"scheme": e["scheme_name"], "amc": e["amc"], "status": "no official factsheet in registry", "pages": 0}
         if fs and not fs["data"]:
             ev.update(status="registry entry found but the PDF could not be downloaded", period=fs["period"], url=fs["url"])
         elif fs:
-            pages = fund_pages(fs["data"], e["scheme_name"])
+            if fs["sha256"] not in heads:
+                heads[fs["sha256"]] = page_heads(fs["data"])
+            pages = fund_pages(heads[fs["sha256"]], e["scheme_name"])
             rd = PdfReader(io.BytesIO(fs["data"]))
             for i in pages:
                 w.add_page(rd.pages[i])

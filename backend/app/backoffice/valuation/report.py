@@ -242,14 +242,14 @@ def build_pdf(payload: dict, client_name: str, version_no: int = 1, evidence: li
     if fs:
         S += [PageBreak(), Paragraph("Annexure D: Mutual fund factsheet data", H1),
               Paragraph("Each statement line is matched to an AMFI scheme only when its name and its NAV both agree. Figures are from AMFI NAV history "
-                        "(Fund Horizon dataset) as on the date shown; returns above one year are annualised. Lines that could not be matched are listed "
-                        "without data.", SM)]
+                        "(Fund Horizon dataset) as on the date shown, which can be later than the statement's own NAV date; returns above one year are "
+                        "annualised. Distributor-issued statements are matched to Regular plans. Lines that could not be matched are listed without data.", SM)]
         f1 = lambda v, d=2: "-" if v is None else f"{v:.{d}f}"  # noqa: E731
-        S.append(_tbl([["Scheme (AMFI)", "NAV (as on)", "AUM Cr", "1Y %", "3Y %", "5Y %", "10Y %", "Since launch %", "NAV check"]] + [
-            [e["scheme_name"], f"{f1(e['data']['latest_nav'])} ({e['data']['latest_nav_date']})", f1(e["data"]["aum_cr"], 0), f1(e["data"]["ret_1y"]),
+        S.append(_tbl([["Scheme (AMFI)", "NAV: statement | AMFI (as on)", "AUM Cr", "1Y %", "3Y %", "5Y %", "10Y %", "Since launch %", "NAV check"]] + [
+            [e["scheme_name"], f"{f1(e['statement_nav'])} | {f1(e['data']['latest_nav'])} ({e['data']['latest_nav_date']})", f1(e["data"]["aum_cr"], 0), f1(e["data"]["ret_1y"]),
              f1(e["data"]["cagr_3y"]), f1(e["data"]["cagr_5y"]), f1(e["data"]["cagr_10y"]), f1(e["data"]["cagr_since_inception"]),
              {True: "Agrees", False: f"Differs {e['nav_check'].get('difference_pct')}%"}.get(e["nav_check"].get("ok"), "Not comparable")]
-            for e in fs if e["matched"]], [W * .27, W * .15, W * .08, W * .07, W * .07, W * .07, W * .07, W * .1, W * .12], 1))
+            for e in fs if e["matched"]], [W * .25, W * .21, W * .07, W * .06, W * .06, W * .06, W * .06, W * .09, W * .14], 1))
         S.append(Paragraph("Risk (3 years)", H2))
         S.append(_tbl([["Scheme (AMFI)", "Category", "Volatility %", "Sharpe", "Max drawdown %", "Beta", "Alpha %"]] + [
             [e["scheme_name"], e["data"]["category"] or "-", f1(e["data"]["vol_3y"]), f1(e["data"]["sharpe_3y"]), f1(e["data"]["max_drawdown_3y"]),

@@ -33,7 +33,10 @@ def split(data: bytes, password: str = "") -> tuple[list[dict], dict]:
         if k is None and secs:
             secs[-1]["pages"].append(i)
         elif k:
-            secs.append({"kind": k, "pages": [i]})
+            if secs and secs[-1]["kind"] == k and k in ("mf", "direct"):   # a header repeated on every page is one section
+                secs[-1]["pages"].append(i)
+            else:
+                secs.append({"kind": k, "pages": [i]})
         else:                                   # leading unmarked page: no section to join, keep it visible
             secs.append({"kind": "unknown", "pages": [i]})
     dash = layouts.dashboard([plain[p] for s in secs if s["kind"] == "dashboard" for p in s["pages"]])

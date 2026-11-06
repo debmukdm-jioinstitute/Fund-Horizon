@@ -226,12 +226,17 @@ def add_upload(batch_id: str, filename: str, data: bytes, actor: str, provider: 
         path.chmod(0o600)
         _mirror(f"{digest[:2]}/{digest}.bin", data)
     out = []
-    for sc in secs:
-        r = add_file(batch_id, f"{stem} - {sc['label']}.pdf", sc["data"], actor, sc["provider"], "")
-        with scope() as s:
-            f = s.get(m.ValSourceFile, r["id"])
-            f.detect_note = f"section of '{filename}' (pages {sc['pages'][0] + 1}-{sc['pages'][-1] + 1}); " + (f.detect_note or "")[:150]
-        out.append(r)
+    try:
+        for sc in secs:
+            r = add_file(batch_id, f"{stem} - {sc['label']}.pdf", sc["data"], actor, sc["provider"], "")
+            out.append(r)
+            with scope() as s:
+                f = s.get(m.ValSourceFile, r["id"])
+                f.detect_note = f"section of '{filename}' (pages {sc['pages'][0] + 1}-{sc['pages'][-1] + 1}); " + (f.detect_note or "")[:150]
+    except ServiceError as e:  # all sections or none: never leave half a report in the batch
+        for r in out:
+            remove_file(r["id"], actor)
+        raise ServiceError(e.status, f"{filename}: {e.message} (no section of this file was added)") from None
     with scope() as s:
         audit(s, actor, "bundle_uploaded", _batch(s, batch_id), {"filename": filename, "sha256": digest, "sections": [x["label"] for x in secs],
                                                                   "dashboard": dash})
@@ -659,7 +664,8 @@ def _snapshot_payload(s: Session, b: m.ValBatch) -> dict:
     payload["reported"] = consolidation.reported_block(files, payload["accounts"], dash)
     dates = {a["provider"]: a["statement_date"] for a in payload["accounts"]}
     try:
-        payload["fund_sheets"] = factsheets.fund_sheets(payload["holdings"], dates)
+        dist = {f["provider"] for f in files if ((json.loads(f["totals_json"] or "{}").get("meta") or {}).get("reported") or {}).get("distributor")}
+        payload["fund_sheets"] = factsheets.fund_sheets(payload["holdings"], dates, dist)
     except Exception as e:  # dataset unavailable: say so in the payload, never block or guess
         payload["fund_sheets"], payload["unavailable"]["fund_sheets"] = [], f"Fund data could not be loaded ({type(e).__name__})."
     return payload

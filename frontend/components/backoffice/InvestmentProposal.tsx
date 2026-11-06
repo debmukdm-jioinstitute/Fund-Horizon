@@ -37,7 +37,7 @@ interface Result {
 }
 
 async function call<T>(path: string, init: RequestInit = {}, blob = false): Promise<T> {
-  const go = () => fetch(resolveApiUrl(`${API_URL}${path}`), { credentials: "include", headers: { "Content-Type": "application/json" }, ...init });
+  const go = () => fetch(resolveApiUrl(`${API_URL}${path}`), { credentials: "include", cache: "no-store", headers: { "Content-Type": "application/json" }, ...init });
   let res: Response;
   try { res = await go(); } catch {
     await new Promise((r) => setTimeout(r, 1500));

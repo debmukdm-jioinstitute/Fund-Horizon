@@ -2,6 +2,7 @@ from __future__ import annotations
 """Backoffice > Mutual funds > Investment proposal (lumpsum, SIP, STP, SWP, lumpsum + SIP): suggest a split, build the full proposal, download it as PDF."""
 
 import re
+from urllib.parse import quote
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
@@ -89,5 +90,6 @@ def result(b: Build, me: Me):
 def pdf(b: Build, me: Me):
     from app.report.investment_proposal import build_pdf
     name = re.sub(r"[^\w.\- ]", "_", f"Investment Proposal - {b.client or 'Client'}")[:100] + ".pdf"
+    ascii_name = name.encode("ascii", "replace").decode().replace("?", "_")  # header values must be latin-1; keep the real name in filename*
     return Response(build_pdf(_build(b), b.client, b.risk, b.purpose, b.cover), media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="{name}"'})
+                    headers={"Content-Disposition": f"attachment; filename=\"{ascii_name}\"; filename*=UTF-8''{quote(name)}"})

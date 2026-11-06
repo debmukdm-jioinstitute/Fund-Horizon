@@ -63,7 +63,7 @@ def parse_statement(text: str) -> dict:
         raise ValueError("Could not find a header row with a Date column.")
     rd = csv.DictReader(lines[start:])
     cols = {(k or "").strip().lower(): k for k in (rd.fieldnames or [])}
-    pick = lambda *keys: next((cols[c] for c in cols for k in keys if k in c), None)  # noqa: E731
+    pick = lambda *keys: next((cols[c] for k in keys for c in cols if re.search(rf"\b{k}", c)), None)  # noqa: E731  (word start: "cr" must not match "description")
     c_date, c_desc = pick("date"), pick("desc", "narration", "particular", "remark", "detail")
     c_dr, c_cr = pick("debit", "withdraw", "dr"), pick("credit", "deposit", "cr")
     c_amt = pick("amount")
@@ -95,6 +95,45 @@ def parse_statement(text: str) -> dict:
     k = max(len(months), 1)
     avg = lambda d: {c: round(v / k) for c, v in d.items() if round(v / k) > 0}  # noqa: E731
     return {"months": len(months), "rows": n - skipped, "skipped": skipped, "expense": avg(spend), "income": avg(earn)}
+
+
+_DATE = r"(\d{1,2}[-/ ](?:\d{1,2}|[A-Za-z]{3})[-/ ]\d{2,4})"
+_AMT = re.compile(r"-?[\d,]+\.\d{2}")
+
+
+def pdf_to_csv(data: bytes, password: str = "") -> str:
+    """Bank statement PDF -> CSV text that parse_statement reads. Text PDFs only (no scans).
+
+    A transaction line starts with a date and ends with amount and running balance. Debit or credit is decided by whether the
+    balance went down or up from the previous line, so no bank-specific column layout is needed.
+    """
+    from pypdf import PdfReader
+
+    try:
+        rd = PdfReader(io.BytesIO(data))
+        if rd.is_encrypted and not rd.decrypt(password or ""):
+            raise ValueError("This PDF is password protected. Download an unprotected copy or upload the CSV.")
+        text = "\n".join(pg.extract_text() or "" for pg in rd.pages)
+    except ValueError:
+        raise
+    except Exception:  # noqa: BLE001 - any unreadable file gets one clear message
+        raise ValueError("Could not open this PDF. Upload the bank's CSV instead.") from None
+    out, prev = [], None
+    for line in text.splitlines():
+        m = re.match(rf"^\s*{_DATE}\s+(.*)$", line)
+        amts = _AMT.findall(m.group(2)) if m else []
+        if not m or len(amts) < 2:
+            continue
+        amount, bal = (float(x.replace(",", "")) for x in amts[-2:])
+        desc = m.group(2)[: m.group(2).index(amts[-2])].strip() or "Transaction"
+        debit = (bal < prev) if prev is not None else not any(w in desc.lower() for w in INCOME_WORDS)
+        prev = bal
+        out.append([m.group(1), desc, f"{amount:.2f}" if debit else "", "" if debit else f"{amount:.2f}"])
+    if not out:
+        raise ValueError("Found no transactions with a date, amount and balance in this PDF. Upload the bank's CSV instead.")
+    buf = io.StringIO()
+    csv.writer(buf).writerows([["Date", "Description", "Debit", "Credit"], *out])
+    return buf.getvalue()
 
 
 def payoff(balance: float, apr: float, emi: float, extra: float = 0.0) -> dict | None:

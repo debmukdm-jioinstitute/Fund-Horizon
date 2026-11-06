@@ -219,10 +219,8 @@ async def authorize_submit(request: Request):
         conn.close()
         return _page(form, c["name"], "Invalid email or password.", 401)
     conn.close()
-    try:
-        require_staff(_public_customer(row))
-    except HTTPException as exc:
-        return _page(form, c["name"], str(exc.detail), 403)
+    if not _active(row):
+        return _page(form, c["name"], "This account is suspended or inactive.", 403)
     code = secrets.token_urlsafe(32)
     conn = _db()
     with conn:
@@ -247,12 +245,14 @@ def _issue(staff: dict, client_id: str, label: str) -> dict:
     return {"access_token": access, "token_type": "Bearer", "expires_in": ACCESS_DAYS * 86400, "refresh_token": refresh}
 
 
+def _active(row: dict | None) -> dict | None:
+    """Any active account may connect: staff get every tool, customers only their own My money tools (enforced in mcp_server)."""
+    pub = _public_customer(row) if row else None
+    return pub if pub and pub.get("status") not in ("inactive", "suspended") else None
+
+
 def _staff(customer_id: str) -> dict | None:
-    row = sqlite.get_customer_by_id(customer_id)
-    try:
-        return require_staff(_public_customer(row)) if row else None
-    except HTTPException:
-        return None
+    return _active(sqlite.get_customer_by_id(customer_id))
 
 
 @router.post("/oauth/token")

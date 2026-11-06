@@ -74,10 +74,16 @@ export default function McpSetup() {
         <li>Your connector file contains your sign-in. Do not share it. If you lose a laptop or shared it by mistake, open Settings, Claude connection, click <b>Remove</b> on that connection, and download a new one.</li>
       </ul>
 
+      <h2 className={h2}>For customers</h2>
+      <p className={p}>
+        Customers can connect Claude too, but only to their own <Link className="underline" href="/knowledge/my-money">My money</Link>. Add the address shown on the My money page as a custom connector in claude.ai and
+        sign in with your Fund Horizon email and password. Claude then has three tools: read your numbers, read the reference rates, and add one entry after your clear yes. It cannot see other customers or any staff screen.
+      </p>
+
       <h2 className={h2}>If something does not work</h2>
       <ul className={`${p} list-disc space-y-1 pl-6`}>
         <li><b>Claude says the connector was rejected or expired:</b> download a new one (step 1). Connections last 90 days.</li>
-        <li><b>Phone says it cannot connect:</b> add the connector on claude.ai first (the phone app cannot add new ones), then reopen the app. If sign-in fails, use your staff email and password; customer accounts cannot connect.</li>
+        <li><b>Phone says it cannot connect:</b> add the connector on claude.ai first (the phone app cannot add new ones), then reopen the app. If sign-in fails, sign in with your Fund Horizon email and password (customers see only their own My money).</li>
         <li><b>Nothing opens when you double-click:</b> open the Claude app, then drag the file into its window.</li>
         <li><b>A fund has blank cells:</b> see <Link className="underline" href="/knowledge/data-guide">Reading the data</Link>.</li>
         <li>Developers using Claude Code get a one-click command on the same Settings page.</li>

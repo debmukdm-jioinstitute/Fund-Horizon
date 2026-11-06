@@ -211,6 +211,8 @@ class SQLiteRepository(DatabaseRepository):
                     if col.split()[0] not in fin_cols:
                         conn.execute(f"ALTER TABLE fin_entries ADD COLUMN {col}")
                 conn.execute("CREATE INDEX IF NOT EXISTS ix_fin_customer ON fin_entries (customer_id)")
+                conn.execute("CREATE TABLE IF NOT EXISTS fin_prefs (customer_id TEXT PRIMARY KEY, reminders INTEGER NOT NULL DEFAULT 0, share_household INTEGER NOT NULL DEFAULT 0)")
+                conn.execute("CREATE TABLE IF NOT EXISTS fin_reminder_log (customer_id TEXT NOT NULL, key TEXT NOT NULL, sent_at TEXT NOT NULL, PRIMARY KEY (customer_id, key))")
                 conn.execute(
                     "CREATE TABLE IF NOT EXISTS fin_snapshots (customer_id TEXT NOT NULL, month TEXT NOT NULL, data TEXT NOT NULL, "
                     "PRIMARY KEY (customer_id, month))"

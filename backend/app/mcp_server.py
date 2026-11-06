@@ -148,6 +148,19 @@ TOOLS: list[dict[str, Any]] = [
        "interest per year, emergency months, upcoming payments, debt_plan (payoff months), goal_plan (monthly SIP per goal), budgets, insurance, flags and `missing` questions to ask them. Answer from these figures only; "
        "if `missing` is non-empty, ask those first. Education, not investment advice.",
        {"customer_id": S}, ["customer_id"], path="/api/staff/finance/{customer_id}"),
+    # ---- customer tools: a customer who connects Claude gets only these, on their own data
+    _t("my_finance", "Your own My money data: entries plus computed income, spending by category, EMIs, left-over, net worth, interest per year, "
+       "emergency-fund months, upcoming payments, loan payoff plan, goal SIPs, limits, insurance, warnings, `missing` questions, and `changes` since last month. "
+       "Answer from these figures only; ask the `missing` questions first when they matter. Education, not investment advice.",
+       path="/api/me/finance"),
+    _t("my_finance_rates", "Official reference rates with their dates: RBI policy rates, PPF, Sukanya, NSC, SCSS, KVP, post office schemes, EPF.",
+       path="/api/me/finance/rates"),
+    _t("my_finance_add", "WRITE: add one entry to your My money. Show the user exactly what will be added and get a clear yes first. "
+       "kind: income, expense, debt, saving, goal, budget or insurance. amount is rupees (monthly for income/expense/budget; balance for debt; total for saving/goal/insurance). "
+       "Debt: monthly_payment, apr. Goal: years, saved. Insurance: category life or health. Budget: category.",
+       {"kind": {"type": "string", "enum": ["income", "expense", "debt", "saving", "goal", "budget", "insurance"]}, "label": S, "amount": I, "category": S,
+        "monthly_payment": I, "apr": {"type": "number"}, "due_day": I, "liquid": B, "years": I, "saved": I}, ["kind", "label", "amount"],
+       method="POST", path="/api/me/finance", body=("kind", "label", "amount", "category", "monthly_payment", "apr", "due_day", "liquid", "years", "saved"), write=True),
     # ---- monthly valuation (consolidated reports)
     _t("valuation_providers", "Statement providers supported by monthly valuation (FundsIndia, ProAffluence, Stallion).", path="/api/backoffice/valuation/providers"),
     _t("valuation_batches", "List monthly valuation batches.", {"limit": LIM}, path="/api/backoffice/valuation/batches", query=("limit",)),
@@ -572,9 +585,19 @@ CUSTOM.extend([
 ])
 ALL_TOOLS = [{k: v for k, v in t.items() if k in ("name", "description", "inputSchema")} for t in TOOLS + CUSTOM]
 WRITE_TOOLS = {t["name"] for t in TOOLS + CUSTOM if t["write"]}
+CUSTOMER_NAMES = {"my_finance", "my_finance_rates", "my_finance_add"}
+STAFF_TOOLS = [t for t in ALL_TOOLS if t["name"] not in CUSTOMER_NAMES]
+CUSTOMER_TOOLS = [t for t in ALL_TOOLS if t["name"] in CUSTOMER_NAMES]
+CUSTOMER_INSTRUCTIONS = (
+    "You are connected to the customer's own Fund Horizon 'My money'. Use my_finance for their numbers and my_finance_rates for official rates. "
+    "Report only figures the tools return, with their dates; if a figure is missing say so and ask for it. Ask the `missing` questions when they "
+    "matter to the answer. Before my_finance_add, state exactly what will be added and wait for a clear yes. You can see only this customer's data. "
+    "This is education, not investment advice, and not a recommendation of any product.")
 
 
-async def call_tool(request: Request, token: str, staff: dict, name: str, args: dict) -> dict:
+async def call_tool(request: Request, token: str, staff: dict, name: str, args: dict, customer: bool = False) -> dict:
+    if customer and name not in CUSTOMER_NAMES:
+        return _err("This tool is only for Fund Horizon staff.")
     tool = BY_NAME.get(name)
     if not tool and name not in CUSTOM_RUN and name not in ("api_catalog", "api_call", "mcp_audit_log"):
         return _err(f"Unknown tool: {name}")
@@ -604,7 +627,7 @@ def _rpc_error(id_: Any, code: int, msg: str) -> dict:
     return {"jsonrpc": "2.0", "id": id_, "error": {"code": code, "message": msg}}
 
 
-async def _handle(request: Request, token: str, staff: dict, msg: dict) -> dict | None:
+async def _handle(request: Request, token: str, staff: dict, msg: dict, customer: bool = False) -> dict | None:
     id_, method, params = msg.get("id"), msg.get("method"), msg.get("params") or {}
     if id_ is None:  # notification
         return None
@@ -612,16 +635,17 @@ async def _handle(request: Request, token: str, staff: dict, msg: dict) -> dict 
         asked = params.get("protocolVersion")
         return {"jsonrpc": "2.0", "id": id_, "result": {
             "protocolVersion": asked if asked in PROTOCOLS else PROTOCOLS[0],
-            "capabilities": {"tools": {"listChanged": False}}, "serverInfo": SERVER_INFO, "instructions": INSTRUCTIONS}}
+            "capabilities": {"tools": {"listChanged": False}}, "serverInfo": SERVER_INFO,
+            "instructions": CUSTOMER_INSTRUCTIONS if customer else INSTRUCTIONS}}
     if method == "ping":
         return {"jsonrpc": "2.0", "id": id_, "result": {}}
     if method == "tools/list":
-        return {"jsonrpc": "2.0", "id": id_, "result": {"tools": ALL_TOOLS}}
+        return {"jsonrpc": "2.0", "id": id_, "result": {"tools": CUSTOMER_TOOLS if customer else STAFF_TOOLS}}
     if method == "tools/call":
         name = params.get("name")
         if not isinstance(name, str):
             return _rpc_error(id_, -32602, "tools/call needs a tool name")
-        return {"jsonrpc": "2.0", "id": id_, "result": await call_tool(request, token, staff, name, params.get("arguments") or {})}
+        return {"jsonrpc": "2.0", "id": id_, "result": await call_tool(request, token, staff, name, params.get("arguments") or {}, customer)}
     return _rpc_error(id_, -32601, f"Method not found: {method}")
 
 
@@ -638,8 +662,15 @@ async def mcp_endpoint(request: Request):
                           headers=challenge)
     if not token:
         return unauth
+    customer = False
     try:
-        staff = require_staff(get_current_customer(request))
+        staff = get_current_customer(request)
+        try:
+            staff = require_staff(staff)
+        except HTTPException as exc:
+            if exc.status_code != 403 or staff.get("status") in ("inactive", "suspended"):
+                raise
+            customer = True  # a customer: only their own My money tools (CUSTOMER_NAMES)
     except HTTPException as exc:
         return JSONResponse({"error": exc.detail}, status_code=exc.status_code if exc.status_code in (401, 403) else 401,
                             headers=challenge)
@@ -651,7 +682,7 @@ async def mcp_endpoint(request: Request):
     except Exception:  # noqa: BLE001
         return JSONResponse(_rpc_error(None, -32700, "Parse error"), status_code=400)
     batch = payload if isinstance(payload, list) else [payload]
-    out = [r for r in [await _handle(request, token, staff, m) for m in batch if isinstance(m, dict)] if r is not None]
+    out = [r for r in [await _handle(request, token, staff, m, customer) for m in batch if isinstance(m, dict)] if r is not None]
     if not out:
         return Response(status_code=202)
     return JSONResponse(out if isinstance(payload, list) else out[0])

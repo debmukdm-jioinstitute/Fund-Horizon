@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
-  addFinEntry, askFinance, checkAfford, deleteFinEntry, getMyFinance, getTaxView, importStatement, shareFinance,
-  type FinChanges, type FinEntry, type FinKind, type FinSummary,
+  addFinEntry, askFinance, checkAfford, deleteFinEntry, getFinPrefs, getFinRates, getHousehold, getMyFinance, getTaxView, importStatement, setFinPrefs, shareFinance,
+  type FinChanges, type FinEntry, type FinKind, type FinPrefs, type FinRates, type FinSummary,
 } from "@/lib/api";
 import { apiBlob } from "@/lib/apiGet";
+import { MCP_URL } from "@/lib/mcp";
 
 const inr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 const sign = (n: number) => `${n > 0 ? "+" : ""}${inr(n)}`;
@@ -21,6 +22,13 @@ const KINDS: { v: FinKind; label: string; hint: string }[] = [
 const box = "rounded border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E27] p-4";
 const muted = "text-[13px] text-[#536176] dark:text-[#A8B4C4]";
 const h3 = "text-[13px] font-semibold mb-1";
+
+const toBase64 = async (file: File) => {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + 0x8000)));
+  return btoa(bin);
+};
 
 async function save(blob: Blob, name: string) {
   const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: name });
@@ -40,8 +48,17 @@ export default function FinancePage() {
   const [tax, setTax] = useState({ age: "35", gross: "" });
   const [taxRes, setTaxRes] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [rates, setRates] = useState<FinRates | null>(null);
+  const [prefs, setPrefs] = useState<FinPrefs>({ reminders: false, share_household: false });
+  const [house, setHouse] = useState<Awaited<ReturnType<typeof getHousehold>> | null>(null);
 
-  const load = useCallback(() => getMyFinance().then(setData).catch((e) => setErr(e.message)), []);
+  const load = useCallback(async () => {
+    try {
+      const [d, p, h] = await Promise.all([getMyFinance(), getFinPrefs(), getHousehold()]);
+      setData(d); setPrefs(p); setHouse(h);
+    } catch (e) { setErr((e as Error).message); }
+  }, []);
+  useEffect(() => { getFinRates().then(setRates).catch(() => undefined); }, []);
   useEffect(() => { void load(); }, [load]);
 
   const run = async (fn: () => Promise<unknown>) => {
@@ -62,7 +79,8 @@ export default function FinancePage() {
   const upload = (file: File | undefined) => {
     if (!file) return;
     void run(async () => {
-      const r = await importStatement(await file.text());
+      const isPdf = /\.pdf$/i.test(file.name) || file.type === "application/pdf";
+      const r = await importStatement(isPdf ? { pdf_b64: await toBase64(file) } : { csv: await file.text() });
       setNote(`Added ${r.added} monthly lines from ${r.rows} transactions over ${r.months} month(s). Delete any that look wrong.`);
     });
   };
@@ -131,9 +149,9 @@ export default function FinancePage() {
       </form>
 
       <div className={`${box} space-y-2`}>
-        <label htmlFor="fin-csv" className="text-[13px] font-semibold">Upload a bank statement (CSV)</label>
-        <p className={muted}>Needs Date, Description and Debit/Credit (or Amount) columns. We turn it into monthly averages by category and replace your last upload.</p>
-        <input id="fin-csv" type="file" accept=".csv,text/csv" className="text-[13px]" disabled={busy} onChange={(e) => { upload(e.target.files?.[0]); e.target.value = ""; }} />
+        <label htmlFor="fin-csv" className="text-[13px] font-semibold">Upload a bank statement (CSV or PDF)</label>
+        <p className={muted}>CSV needs Date, Description and Debit/Credit (or Amount) columns. A PDF must be a text statement (not a scan) that shows each date, amount and balance; password-protected PDFs are not read. We turn it into monthly averages by category and replace your last upload.</p>
+        <input id="fin-csv" type="file" accept=".csv,text/csv,.pdf,application/pdf" className="text-[13px]" disabled={busy} onChange={(e) => { upload(e.target.files?.[0]); e.target.value = ""; }} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -197,6 +215,37 @@ export default function FinancePage() {
           </table>
         </div>
       )}
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className={`${box} space-y-2`}>
+          <div className={h3}>Your choices</div>
+          <label className="text-[13px] flex items-start gap-2"><input type="checkbox" checked={prefs.reminders} disabled={busy} onChange={(e) => void run(async () => setFinPrefs({ reminders: e.target.checked }))} />Email me when a bill is due within 3 days or a limit passes 80% (once a month per item).</label>
+          <label className="text-[13px] flex items-start gap-2"><input type="checkbox" checked={prefs.share_household} disabled={busy} onChange={(e) => void run(async () => setFinPrefs({ share_household: e.target.checked }))} />Include me in my household&apos;s combined view. Only totals are shown, never my entries, and only to members who switch this on too.</label>
+        </div>
+        {house?.enabled && house.summary && (
+          <div className={box}><div className={h3}>Household together ({house.included?.join(", ")})</div>
+            <p className="text-[13px]">Income {inr(house.summary.monthly_income)}, spending {inr(house.summary.monthly_expenses)}, EMIs {inr(house.summary.monthly_emi)}, left over {inr(house.summary.monthly_surplus)} a month. Net worth {inr(house.summary.net_worth)}.</p>
+            {!!house.not_sharing && <p className={muted}>{house.not_sharing} household member(s) have not switched sharing on.</p>}</div>
+        )}
+      </div>
+
+      {rates && (
+        <div className={`${box} overflow-x-auto`}>
+          <div className={h3}>Reference rates (updated {rates.updated})</div>
+          <table className="terminal-table w-full text-[13px]">
+            <thead><tr><th className="text-left">Rate</th><th className="text-right">% a year</th><th className="text-left">As of</th><th className="text-left">Source</th></tr></thead>
+            <tbody>{rates.items.map((r) => (
+              <tr key={r.name}><td>{r.name}</td><td className="text-right tabular-nums">{r.rate}</td><td>{r.as_of}</td><td><a className="underline" href={r.url} target="_blank" rel="noreferrer">{r.source}</a></td></tr>))}</tbody>
+          </table>
+          <p className={muted}>{rates.note}</p>
+        </div>
+      )}
+
+      <div className={`${box} space-y-1`}>
+        <div className={h3}>Ask Claude about your money</div>
+        <p className={muted}>In claude.ai, open Settings, Connectors, Add custom connector. Name it &quot;Fund Horizon&quot;, paste this address, and sign in with your Fund Horizon email and password. Claude can then read your My money numbers, answer questions, and add an entry only after you say yes. It cannot see anyone else&apos;s data or any other part of Fund Horizon.</p>
+        <code className="text-[13px] break-all select-all">{MCP_URL}</code>
+      </div>
 
       <div className="flex gap-2 flex-wrap">
         <button type="button" className="terminal-btn px-3 py-1.5" disabled={busy} onClick={() => void run(async () => save(await apiBlob("/api/me/finance/report.pdf", {}), "my-money.pdf"))}>Download monthly report (PDF)</button>

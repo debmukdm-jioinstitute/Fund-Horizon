@@ -5,9 +5,14 @@ The numbers come from `summarize` (plain arithmetic). The AI only explains them:
 deterministic one if it quotes a number we did not compute or uses banned compliance wording.
 """
 
+import base64
+import binascii
 import json
+import logging
 import uuid
 from datetime import UTC, datetime
+from pathlib import Path
+from zoneinfo import ZoneInfo
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -26,8 +31,12 @@ from app import finance_calc as fc
 from app.api.customer_portal import _post as post_chat
 from app.api.customer_portal import staff_only
 from app.db import get_repository
+from app.mailer import MailerError, send_email
 
 router = APIRouter(tags=["finance"])
+logger = logging.getLogger(__name__)
+IST = ZoneInfo("Asia/Kolkata")
+RATES_FILE = Path(__file__).resolve().parents[1] / "config" / "finance_rates.json"
 
 Kind = Literal["income", "expense", "debt", "saving", "goal", "budget", "insurance"]
 MAX_ENTRIES = 100  # also the table size, so no paging is needed
@@ -51,7 +60,14 @@ class AskIn(BaseModel):
 
 
 class ImportIn(BaseModel):
-    csv: str = Field(min_length=10, max_length=3_000_000)
+    csv: str | None = Field(default=None, min_length=10, max_length=3_000_000)
+    pdf_b64: str | None = Field(default=None, max_length=8_000_000, description="Bank statement PDF, base64")
+    password: str = Field(default="", max_length=100, description="Only for a protected PDF; used once, never stored")
+
+
+class PrefsIn(BaseModel):
+    reminders: bool | None = None
+    share_household: bool | None = None
 
 
 class AffordIn(BaseModel):
@@ -94,7 +110,7 @@ def missing_info(rows: list[dict]) -> list[str]:
 
 def summarize(rows: list[dict], today: datetime | None = None, portfolio: dict | None = None) -> dict:
     """All figures the UI, the AI and MCP use. Rupees and percentages; nothing here is an estimate beyond simple interest."""
-    today = today or datetime.now(UTC)
+    today = today or datetime.now(IST)
     s = lambda k: [r for r in rows if r["kind"] == k]  # noqa: E731
     income = sum(r["amount"] for r in s("income"))
     spend = sum(r["amount"] for r in s("expense"))
@@ -237,9 +253,20 @@ def delete_entry(entry_id: str, me: Annotated[dict, Depends(get_current_customer
 
 @router.post("/api/me/finance/import")
 def import_statement(body: ImportIn, me: Annotated[dict, Depends(get_current_customer)]):
-    """Bank statement CSV -> one monthly-average expense per category and one income line. Replaces the previous import."""
+    """Bank statement CSV or PDF -> one monthly-average expense per category and one income line. Replaces the previous import."""
+    if bool(body.csv) == bool(body.pdf_b64):
+        raise HTTPException(422, "Send either csv or pdf_b64.")
     try:
-        got = fc.parse_statement(body.csv)
+        if body.pdf_b64:
+            try:
+                pdf = base64.b64decode(body.pdf_b64, validate=True)
+            except (binascii.Error, ValueError):
+                raise ValueError("The PDF upload was corrupted. Try again.") from None
+            if pdf[:5] != b"%PDF-":
+                raise ValueError("That file is not a PDF.")
+            got = fc.parse_statement(fc.pdf_to_csv(pdf, body.password))
+        else:
+            got = fc.parse_statement(body.csv)
     except ValueError as e:
         raise HTTPException(400, str(e)) from None
     repo = get_repository()
@@ -303,6 +330,76 @@ def share_with_advisor(me: Annotated[dict, Depends(get_current_customer)]):
             f"left over Rs {sm['monthly_surplus']} a month, debt Rs {sm['debt_total']}, emergency fund {sm['emergency_months']} months. "
             + " ".join(sm["flags"]))[:1900]
     return post_chat(me["id"], me["id"], 0, text)
+
+
+@router.get("/api/me/finance/rates")
+def rates(_: Annotated[dict, Depends(get_current_customer)]):
+    return json.loads(RATES_FILE.read_text())
+
+
+def _prefs(customer_id: str) -> dict:
+    r = get_repository()._first("SELECT reminders, share_household FROM fin_prefs WHERE customer_id = ?", (customer_id,)) or {}
+    return {"reminders": bool(r.get("reminders")), "share_household": bool(r.get("share_household"))}
+
+
+@router.get("/api/me/finance/prefs")
+def get_prefs(me: Annotated[dict, Depends(get_current_customer)]):
+    return _prefs(me["id"])
+
+
+@router.post("/api/me/finance/prefs")
+def set_prefs(body: PrefsIn, me: Annotated[dict, Depends(get_current_customer)]):
+    cur = _prefs(me["id"])
+    new = {k: (cur[k] if getattr(body, k) is None else getattr(body, k)) for k in cur}
+    get_repository()._run("INSERT OR REPLACE INTO fin_prefs (customer_id, reminders, share_household) VALUES (?, ?, ?)",
+                          (me["id"], int(new["reminders"]), int(new["share_household"])))
+    return new
+
+
+@router.get("/api/me/finance/household")
+def household(me: Annotated[dict, Depends(get_current_customer)]):
+    """Combined totals for the household, counting only members who switched sharing on (and only if you did too).
+    Nobody's individual entries are ever shown."""
+    if not _prefs(me["id"])["share_household"]:
+        return {"enabled": False}
+    repo = get_repository()
+    others = repo._all(
+        "SELECT DISTINCT c.id, c.name FROM household_members m JOIN household_members o ON o.household_id = m.household_id "
+        "JOIN customers c ON c.id = o.customer_id JOIN fin_prefs p ON p.customer_id = c.id AND p.share_household = 1 "
+        "WHERE m.customer_id = ? AND o.customer_id != ?", (me["id"], me["id"]))
+    asked = repo._first("SELECT COUNT(DISTINCT o.customer_id) AS n FROM household_members m JOIN household_members o ON o.household_id = m.household_id "
+                        "WHERE m.customer_id = ? AND o.customer_id != ?", (me["id"], me["id"]))["n"]
+    ids = [me["id"], *[o["id"] for o in others]]
+    rows = [r for i in ids for r in _rows(i)]
+    pf = {k: sum(_portfolio(i)[k] for i in ids) for k in ("invested", "sip_monthly")}
+    return {"enabled": True, "included": ["You", *[o["name"] for o in others]], "not_sharing": asked - len(others),
+            "summary": summarize(rows, portfolio=pf)}
+
+
+def send_reminders(today: datetime | None = None) -> int:
+    """Email opted-in customers about bills due in the next 3 days and limits at 80% or more. Each item is sent once a month."""
+    today, sent = today or datetime.now(IST), 0
+    repo = get_repository()
+    for c in repo._all("SELECT c.id, c.email, c.name FROM fin_prefs p JOIN customers c ON c.id = p.customer_id WHERE p.reminders = 1"):
+        sm = summarize(_rows(c["id"]), today)
+        month = today.strftime("%Y-%m")
+        items = [(f"bill:{p['label']}:{month}", f"{p['label']}: Rs {p['amount']} due in {p['in_days']} days") for p in sm["upcoming_payments"] if p["in_days"] <= 3]
+        items += [(f"budget:{b['category']}:{month}", f"{b['category']} spending is {b['pct']}% of its limit of Rs {b['limit']}") for b in sm["budgets"] if b["pct"] >= 80]
+        fresh = [(k, t) for k, t in items if not repo._first("SELECT 1 FROM fin_reminder_log WHERE customer_id = ? AND key = ?", (c["id"], k))]
+        if not fresh:
+            continue
+        try:
+            send_email(c["email"], "Your Fund Horizon money reminders", "Hello " + (c["name"] or "") + ",\n\n" + "\n".join("- " + t for _, t in fresh)
+                       + "\n\nTurn these emails off any time in My money. Education only, not investment advice.")
+        except MailerError as e:
+            if not e.configured:
+                return sent  # email is not set up on this server: try again next cycle, log nothing
+            logger.warning("finance reminder to %s failed: %s", c["id"], e)
+            continue
+        for k, _ in fresh:
+            repo._run("INSERT OR IGNORE INTO fin_reminder_log (customer_id, key, sent_at) VALUES (?, ?, ?)", (c["id"], k, today.isoformat()))
+        sent += 1
+    return sent
 
 
 # ---------------------------------------------------------------- staff (also what the MCP tool calls)

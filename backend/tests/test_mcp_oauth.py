@@ -89,7 +89,7 @@ def test_full_flow_refresh_and_revoke(client):
     assert client.post("/oauth/token", data={"grant_type": "refresh_token", "refresh_token": new["refresh_token"], "client_id": cid}).status_code == 400
 
 
-def test_wrong_verifier_password_and_non_staff_refused(client):
+def test_wrong_verifier_password_refused_and_customer_scoped(client):
     email = _user()
     cid = _register(client)
     _, challenge = _pkce()
@@ -101,8 +101,10 @@ def test_wrong_verifier_password_and_non_staff_refused(client):
     assert bad.status_code == 400
     deny = _authorize(client, cid, challenge, email, decision="deny")
     assert "error=access_denied" in deny.headers["location"]
-    # customer (non-staff) account cannot connect
+    # a customer can connect (the MCP endpoint limits them to their own My money tools); a suspended account cannot
     c = sqlite.create_customer(name="Cust", email="cust_oauth@example.com", mobile="9811122233", password_hash=_hash_password(PW), role="customer")
+    assert _authorize(client, cid, challenge, "cust_oauth@example.com").status_code == 303
+    sqlite.update_customer(c["id"], {"status": "suspended"})
     assert _authorize(client, cid, challenge, "cust_oauth@example.com").status_code == 403
 
 

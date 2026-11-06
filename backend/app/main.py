@@ -143,6 +143,18 @@ async def lifespan(app: FastAPI):
 
     backup_task = asyncio.create_task(_daily_backup())
 
+    async def _finance_reminders() -> None:
+        from app.api.finance import send_reminders
+
+        while True:
+            try:
+                await asyncio.to_thread(send_reminders)
+            except Exception:  # noqa: BLE001 - reminders are best effort
+                logging.getLogger(__name__).exception("finance reminders failed")
+            await asyncio.sleep(6 * 3600)
+
+    reminder_task = asyncio.create_task(_finance_reminders()) if _flag("FH_FINANCE_REMINDERS", "true") else None
+
     collector_task = None
     if _flag("FH_BACKOFFICE_COLLECTORS", "true"):
         from app.backoffice.collectors import run_collector_loop
@@ -177,6 +189,8 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         backup_task.cancel()
+        if reminder_task:
+            reminder_task.cancel()
         try:
             await asyncio.to_thread(backup.backup_sqlite)
         except Exception:  # noqa: BLE001

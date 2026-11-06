@@ -1,0 +1,18 @@
+{
+  "updated": "2026-11-06",
+  "note": "Reference rates for planning, copied from the sources shown. Small-savings rates are set each quarter and EPF each year: check the source before relying on them.",
+  "items": [
+    {"group": "RBI policy rates", "name": "Policy repo rate", "rate": 5.50, "as_of": "2026-11-06", "source": "RBI", "url": "https://www.rbi.org.in/"},
+    {"group": "RBI policy rates", "name": "Standing deposit facility rate", "rate": 5.25, "as_of": "2026-11-06", "source": "RBI", "url": "https://www.rbi.org.in/"},
+    {"group": "RBI policy rates", "name": "Marginal standing facility and Bank Rate", "rate": 5.75, "as_of": "2026-11-06", "source": "RBI", "url": "https://www.rbi.org.in/"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "Public Provident Fund (PPF)", "rate": 7.1, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via PTI)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "Sukanya Samriddhi", "rate": 8.2, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via PTI)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "Senior Citizens Savings Scheme", "rate": 8.2, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via press reports)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "National Savings Certificate", "rate": 7.7, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via PTI)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "Kisan Vikas Patra (matures in 115 months)", "rate": 7.5, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via PTI)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "Post office 3-year term deposit", "rate": 7.1, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via PTI)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "Post office monthly income scheme", "rate": 7.4, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via PTI)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Small savings, Oct to Dec 2026", "name": "Post office savings deposit", "rate": 4.0, "as_of": "2026-10-01", "source": "Finance Ministry notification of 30 Sep 2026 (via PTI)", "url": "https://dea.gov.in/budget-division/475"},
+    {"group": "Provident fund", "name": "EPF for FY 2025-26", "rate": 8.25, "as_of": "2026-07-01", "source": "EPFO notification (PIB: Central Board recommendation)", "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2234502"}
+  ]
+}

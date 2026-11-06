@@ -4,6 +4,17 @@ from __future__ import annotations
 from app.api import finance
 from tests.test_customer_portal import _signup
 
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def _fresh_auth_limit():
+    """Each test signs up its own customer; the shared per-IP auth limit must not carry over between tests."""
+    from app.api import auth
+
+    auth._AUTH_ATTEMPTS.clear()
+
+
 E = lambda **k: {"category": "", "monthly_payment": 0, "apr": 0, "due_day": None, "liquid": 0, **k}  # noqa: E731
 
 
@@ -50,6 +61,7 @@ def test_calc():
 
     got = fc.parse_statement(STMT)
     assert got["months"] == 2 and got["skipped"] == 1 and got["expense"] == {"Food": 600, "Home": 10000} and got["income"] == {"Salary / income": 80000}
+    assert fc.parse_statement("Date,Description,Debit,Credit\n01-10-2026,Salary,,500\n")["income"] == {"Salary / income": 500}  # "cr" is inside "description"
     assert fc.parse_statement("Date,Description,Amount\n01-10-2026,Uber ride,-250\n")["expense"] == {"Travel": 250}
     for bad in ("nothing here", "Date,Foo\n1,2\n3,4"):
         try:
@@ -92,3 +104,114 @@ def test_full_flow(client):
     assert client.post("/api/me/finance/report.pdf").content[:4] == b"%PDF"
     assert client.post("/api/me/finance/share").status_code == 201
     assert "My money summary" in client.get("/api/me/messages").json()["messages"][-1]["body"]
+
+
+def _pdf(lines):
+    import io
+
+    from reportlab.pdfgen import canvas
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf)
+    for i, ln in enumerate(lines):
+        c.drawString(40, 800 - 14 * i, ln)
+    c.save()
+    return buf.getvalue()
+
+
+def test_pdf_statement():
+    from app import finance_calc as fc
+
+    pdf = _pdf(["HDFC Bank Statement", "Date Narration Debit Credit Balance",
+                "01-10-2026 SWIGGY ORDER 500.00 9,500.00", "05-10-2026 SALARY ACME 80,000.00 89,500.00",
+                "10-10-2026 RENT TO LANDLORD 20,000.00 69,500.00"])
+    got = fc.parse_statement(fc.pdf_to_csv(pdf))
+    assert got["expense"] == {"Food": 500, "Home": 20000} and got["income"] == {"Salary / income": 80000}
+    for bad in (b"%PDF-1.4 junk", _pdf(["nothing useful here"])):
+        try:
+            fc.pdf_to_csv(bad)
+            raise AssertionError("should reject")
+        except ValueError:
+            pass
+
+
+def test_rates_file():
+    import json
+
+    d = json.loads(finance.RATES_FILE.read_text())
+    assert d["updated"] and all(i["rate"] > 0 and i["url"].startswith("https://") and i["as_of"] for i in d["items"])
+
+
+def test_pdf_import_api_and_prefs(client):
+    import base64
+
+    _signup(client, 4)
+    pdf = base64.b64encode(_pdf(["01-10-2026 SWIGGY 500.00 9,500.00", "05-10-2026 SALARY ACME 80,000.00 89,500.00"])).decode()
+    assert client.post("/api/me/finance/import", json={"pdf_b64": pdf}).json()["added"] == 2
+    assert client.post("/api/me/finance/import", json={}).status_code == 422
+    assert client.post("/api/me/finance/import", json={"pdf_b64": base64.b64encode(b"not a pdf").decode()}).status_code == 400
+    assert client.get("/api/me/finance/rates").json()["items"]
+    assert client.get("/api/me/finance/prefs").json() == {"reminders": False, "share_household": False}
+    assert client.post("/api/me/finance/prefs", json={"reminders": True}).json() == {"reminders": True, "share_household": False}
+    assert client.get("/api/me/finance/household").json() == {"enabled": False}
+
+
+def test_household_needs_both_opt_ins(client):
+    import uuid
+
+    from app.db import get_repository
+
+    me = _signup(client, 5)
+    repo = get_repository()
+    other = repo.create_customer(name="Spouse", email="sp@example.com", mobile="9000000055", password_hash="x", role="customer")["id"]
+    third = repo.create_customer(name="Silent", email="si@example.com", mobile="9000000056", password_hash="x", role="customer")["id"]
+    for cid in (me, other, third):
+        repo._run("INSERT INTO household_members (id, household_id, customer_id) VALUES (?, 'h1', ?)", (uuid.uuid4().hex, cid))
+    for cid, inc in ((me, 50000), (other, 30000), (third, 99999)):
+        repo._run("INSERT INTO fin_entries (id, customer_id, kind, label, amount, created_at) VALUES (?, ?, 'income', 'Salary', ?, 'x')", (uuid.uuid4().hex, cid, inc))
+    repo._run("INSERT INTO fin_prefs (customer_id, share_household) VALUES (?, 1)", (other,))
+    assert client.get("/api/me/finance/household").json() == {"enabled": False}  # I have not opted in
+    client.post("/api/me/finance/prefs", json={"share_household": True})
+    h = client.get("/api/me/finance/household").json()
+    assert h["included"] == ["You", "Spouse"] and h["not_sharing"] == 1 and h["summary"]["monthly_income"] == 80000  # Silent's 99999 stays out
+    assert "entries" not in h
+
+
+def test_reminders(client, monkeypatch):
+    import uuid
+    from datetime import datetime
+
+    from app.db import get_repository
+
+    me = _signup(client, 6)
+    repo = get_repository()
+    repo._run("INSERT INTO fin_prefs (customer_id, reminders) VALUES (?, 1)", (me,))
+    repo._run("INSERT INTO fin_entries (id, customer_id, kind, label, amount, due_day, created_at) VALUES (?, ?, 'expense', 'Rent', 20000, 5, 'x')", (uuid.uuid4().hex, me))
+    mails = []
+    monkeypatch.setattr(finance, "send_email", lambda to, subj, text, **k: mails.append((to, text)))
+    day = datetime(2026, 11, 3, tzinfo=finance.IST)
+    assert finance.send_reminders(day) == 1 and "Rent: Rs 20000 due in 2 days" in mails[0][1]
+    assert finance.send_reminders(day) == 0 and len(mails) == 1  # once a month per item
+    assert finance.send_reminders(datetime(2026, 11, 20, tzinfo=finance.IST)) == 0  # not due soon
+    monkeypatch.setattr(finance, "send_email", lambda *a, **k: (_ for _ in ()).throw(finance.MailerError("no", configured=False)))
+    repo._run("DELETE FROM fin_reminder_log")
+    assert finance.send_reminders(day) == 0 and repo._first("SELECT 1 FROM fin_reminder_log") is None  # unconfigured: nothing marked sent
+
+
+def test_customer_mcp_is_scoped(client):
+    _signup(client, 7)
+    client.post("/api/me/finance", json={"kind": "income", "label": "Salary", "amount": 70000})
+
+    def rpc(method, params=None):
+        return client.post("/mcp", json={"jsonrpc": "2.0", "id": 1, "method": method, "params": params or {}}, headers={"Authorization": "Bearer " + _token(client)}).json()
+
+    names = {t["name"] for t in rpc("tools/list")["result"]["tools"]}
+    assert names == {"my_finance", "my_finance_rates", "my_finance_add"}
+    res = rpc("tools/call", {"name": "my_finance", "arguments": {}})["result"]
+    assert not res.get("isError") and "70000" in str(res)
+    for blocked in ("api_call", "finance_summary", "crm_households", "mcp_audit_log"):
+        assert rpc("tools/call", {"name": blocked, "arguments": {}})["result"]["isError"] is True
+
+
+def _token(client):
+    return client.cookies.get("fh_session") or next(iter(client.cookies.values()))

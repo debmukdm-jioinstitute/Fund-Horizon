@@ -412,7 +412,13 @@ export const addFinEntry = (e: Partial<FinEntry> & { kind: FinKind; label: strin
 export const deleteFinEntry = (id: string) => authedRequest<{ ok: boolean }>(`${API_URL}/api/me/finance/${id}`, { method: "DELETE" });
 const finPost = <T>(path: string, body: unknown = {}) => authedRequest<T>(`${API_URL}/api/me/finance/${path}`, { method: "POST", body: JSON.stringify(body) });
 export const askFinance = (question: string) => finPost<{ answer: string; ai_generated: boolean }>("ask", { question });
-export const importStatement = (csv: string) => finPost<{ added: number; months: number; rows: number; skipped: number }>("import", { csv });
+export const importStatement = (src: { csv?: string; pdf_b64?: string }) => finPost<{ added: number; months: number; rows: number; skipped: number }>("import", src);
+export interface FinRates { updated: string; note: string; items: { group: string; name: string; rate: number; as_of: string; source: string; url: string }[] }
+export const getFinRates = () => authedRequest<FinRates>(`${API_URL}/api/me/finance/rates`);
+export interface FinPrefs { reminders: boolean; share_household: boolean }
+export const getFinPrefs = () => authedRequest<FinPrefs>(`${API_URL}/api/me/finance/prefs`);
+export const setFinPrefs = (p: Partial<FinPrefs>) => finPost<FinPrefs>("prefs", p);
+export const getHousehold = () => authedRequest<{ enabled: boolean; included?: string[]; not_sharing?: number; summary?: FinSummary }>(`${API_URL}/api/me/finance/household`);
 export const checkAfford = (b: { loan_amount?: number; apr?: number; years?: number; emi?: number }) =>
   finPost<{ new_emi: number; emi_to_income_pct: number | null; surplus_after: number; verdict: string }>("afford", b);
 export const getTaxView = (b: { age: number; gross_annual?: number; ded_80c?: number }) =>

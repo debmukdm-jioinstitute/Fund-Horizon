@@ -21,7 +21,7 @@ export default function MyMoney() {
 
       <h2 className={h2}>Get your numbers in</h2>
       <ul className={`${p} list-disc space-y-1 pl-6`}>
-        <li><b>Upload a bank statement (CSV).</b> It needs Date, Description and Debit/Credit (or one signed Amount) columns. Fund Horizon sorts spending into categories and saves monthly averages. A new upload replaces the last one. Check the lines and remove any that look wrong. PDF statements are not read yet.</li>
+        <li><b>Upload a bank statement (CSV).</b> It needs Date, Description and Debit/Credit (or one signed Amount) columns. Fund Horizon sorts spending into categories and saves monthly averages. A new upload replaces the last one. Check the lines and remove any that look wrong. A PDF works too if it is a text statement (not a scan) that shows each date, amount and running balance; password-protected PDFs are not read, so use the CSV then.</li>
         <li><b>Or type entries in:</b> income, expense (with an optional due day), loan or card due (balance, EMI, yearly rate), savings (tick cash or savings account for your emergency fund), goal (target, years left, amount already saved), monthly limit for a category, and insurance cover (life or health).</li>
         <li>Anything you already hold with Fund Horizon (mutual fund cost and running SIPs) is added to your net worth automatically.</li>
       </ul>
@@ -44,12 +44,16 @@ export default function MyMoney() {
         <li><b>Ask about your money.</b> Type a question such as &quot;Where is my money going?&quot; or &quot;Which loan should I clear first?&quot;. The answer uses only the numbers above. If the AI quotes a figure we did not calculate, Fund Horizon shows the plain calculated summary instead. If something needed is missing, you are asked for it first.</li>
         <li><b>Monthly report (PDF)</b> with where the money goes, goals and what changed since last month.</li>
         <li><b>Bill calendar (.ics)</b> that repeats every month in Google, Apple or Outlook calendar. Bills due on the 29th to 31st show on the 28th.</li>
+        <li><b>Reference rates:</b> RBI policy rates, PPF, Sukanya, NSC, SCSS, KVP, post office schemes and EPF, each with its date and source link. Small-savings rates are set quarterly and EPF yearly, so check the source before relying on one.</li>
+        <li><b>Email reminders (optional, off by default):</b> a bill due within 3 days or a limit at 80% or more, once a month per item. Switch on or off under &quot;Your choices&quot;.</li>
+        <li><b>Household view (optional, off by default):</b> combined income, spending, EMIs and net worth for your household. It counts only members who also switched sharing on, shows totals only, and never shows anyone&apos;s individual entries.</li>
+        <li><b>Ask Claude about your money:</b> add the address shown on the My money page as a custom connector in claude.ai (Settings, Connectors) and sign in with your Fund Horizon login. Claude can read only your own My money numbers and the reference rates, and adds an entry only after you say yes. It cannot reach anyone else&apos;s data or any other part of Fund Horizon.</li>
         <li><b>Share summary with my advisor</b> sends a short summary to the Fund Horizon team in Messages. Nothing is shared unless you press it.</li>
       </ul>
 
       <h2 className={h2}>Privacy and limits</h2>
       <ul className={`${p} list-disc space-y-1 pl-6`}>
-        <li>Only you and Fund Horizon staff serving your account can see your entries. You can remove any entry at any time. Up to 100 entries. Not built yet: automatic bank sync, PDF statements, reminders by email or WhatsApp, and a joint family view.</li>
+        <li>Only you and Fund Horizon staff serving your account can see your entries. You can remove any entry at any time. Up to 100 entries. Not built yet: automatic bank sync, scanned statements, WhatsApp or Telegram reminders, and live gold or currency prices.</li>
         <li>Staff using Claude can read a summary of your entries (the <code>finance_summary</code> tool) to help you; see <Link className="underline" href="/knowledge/mcp-setup">Fund Horizon inside Claude</Link>.</li>
         <li>This is education, not investment advice, and the figures are only as good as what you enter.</li>
       </ul>

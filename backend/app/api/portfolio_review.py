@@ -2,7 +2,6 @@
 and live Fund Horizon analysis, render the 16:9 Portfolio Review PDF deck, and save/email it to the client's CRM record."""
 from __future__ import annotations
 
-import calendar
 import difflib
 import io
 import json
@@ -113,6 +112,7 @@ class MatrixCell(BaseModel):
 class MatrixRow(BaseModel):
     code: str = Field(default="", max_length=16)
     name: str = Field(max_length=120)
+    period: str = Field(default="", max_length=40)
     ret: float
     invested: float = 0
     value: float = 0
@@ -256,9 +256,65 @@ def _index_series(code: str) -> pd.Series | None:
 
 
 def _nav_on(s: pd.Series, d: date) -> float:
-    end_d = date(d.year, d.month, calendar.monthrange(d.year, d.month)[1])
-    v = s.asof(pd.Timestamp(end_d))
-    return float(s.iloc[0] if pd.isna(v) else v)
+    """Exact-date NAV lookup on `s`: interpolates linearly between adjacent NAV observations (or uses exact trading day
+    when present), so an investment on Jan 1 uses the start-of-January NAV (= Dec 31 close) rather than Jan 31's month-end NAV."""
+    if s is None or s.empty:
+        return 1.0
+    ts = pd.Timestamp(d)
+    if ts <= s.index[0]:
+        return float(s.iloc[0])
+    if ts >= s.index[-1]:
+        return float(s.iloc[-1])
+    pos = int(s.index.searchsorted(ts, side="left"))
+    if s.index[pos] == ts:
+        return float(s.iloc[pos])
+    t0, t1 = s.index[pos - 1], s.index[pos]
+    v0, v1 = float(s.iloc[pos - 1]), float(s.iloc[pos])
+    span = (t1 - t0).days
+    if span <= 0:
+        return v1
+    w = (ts - t0).days / span
+    return v0 + w * (v1 - v0)
+
+
+def _solve_implied_date(code: str, val_d: date, inv: float, val: float) -> date | None:
+    """For a holding without explicit transaction dates (e.g. a < 1 year folio-wise row where XIRR == Absolute Return),
+    find the most recent date `d` in the scheme's own NAV history where `NAV(val_d) / NAV(d) == val / inv`."""
+    if inv <= 0 or val <= 0 or not code:
+        return None
+    s = _nav(str(code))
+    if s is None or len(s) < 2:
+        return None
+    nav_end = _nav_on(s, val_d)
+    target_nav = nav_end * (inv / val)
+    ts_val = pd.Timestamp(val_d)
+    sub = s[s.index <= ts_val]
+    if len(sub) < 2:
+        sub = s
+    # Search backwards from the valuation date over the last 18 months for a crossing of `target_nav`
+    pts = list(zip(sub.index, [float(x) for x in sub.values]))
+    if pts[-1][0].date() < val_d:
+        pts.append((ts_val, nav_end))
+    cutoff = ts_val - pd.Timedelta(days=545)
+    best_d: date | None = None
+    best_err = float("inf")
+    for k in range(len(pts) - 1, 0, -1):
+        t0, v0 = pts[k - 1]
+        t1, v1 = pts[k]
+        if t1 < cutoff:
+            break
+        lo, hi = min(v0, v1), max(v0, v1)
+        if lo <= target_nav <= hi and abs(v1 - v0) > 1e-9:
+            frac = (target_nav - v0) / (v1 - v0)
+            cand_ts = t0 + pd.Timedelta(days=round(frac * max((t1 - t0).days, 1)))
+            cand_d = min(cand_ts.date(), val_d - timedelta(days=7))
+            return cand_d
+        for t_pt, v_pt in ((t1, v1), (t0, v0)):
+            err = abs(v_pt - target_nav) / max(target_nav, 1e-9)
+            if err < best_err and t_pt >= cutoff:
+                best_err = err
+                best_d = min(t_pt.date(), val_d - timedelta(days=7))
+    return best_d if best_err <= 0.08 else None
 
 
 def _synth_monthly_flows(invested: float, from_ym: str, to_ym: str, inst_str: str, val_d: date) -> list[tuple[date, float]]:
@@ -275,13 +331,13 @@ def _synth_monthly_flows(invested: float, from_ym: str, to_ym: str, inst_str: st
     months: list[date] = []
     y, m = sy, sm
     while (y, m) <= (ey, em) and len(months) < 480:
-        d = min(date(y, m, 10), val_d)
+        d = min(date(y, m, 1), val_d)
         months.append(d)
         m += 1
         if m > 12:
             y, m = y + 1, 1
     if not months:
-        months = [min(date(sy, sm, 10), val_d)]
+        months = [min(date(sy, sm, 1), val_d)]
     if n <= 0:
         n = len(months)
     if n == 1:
@@ -336,7 +392,10 @@ def _active_flows(h: dict[str, Any], val_d: date) -> list[tuple[date, float]]:
         abs_ret = (val / inv - 1) * 100
         if abs(ret - abs_ret) <= 0.06 and abs(abs_ret) > 0.1:
             h["flag"] = h.get("flag") or "†"
-            eff_d = val_d - timedelta(days=180)
+            eff_d = _solve_implied_date(str(h.get("code") or ""), val_d, inv, val) or (val_d - timedelta(days=180))
+            h["from"] = h.get("from") or eff_d.strftime("%Y-%m")
+            h["to"] = h.get("to") or ""
+            h["period"] = h.get("period") or _period_label(h["from"], h["to"])
             return [(eff_d, inv)]
         if 1 + ret / 100 > 0.1 and val / inv > 0 and abs(ret) > 0.05:
             try:
@@ -350,6 +409,14 @@ def _active_flows(h: dict[str, Any], val_d: date) -> list[tuple[date, float]]:
                 h["period"] = h.get("period") or _period_label(h["from"], "")
                 h["flag"] = h.get("flag") or ("†" if years < 1.0 else "*")
                 return [(eff_d, inv)]
+    if inv > 0 and val > 0:
+        eff_d = _solve_implied_date(str(h.get("code") or ""), val_d, inv, val)
+        if eff_d is not None:
+            h["from"] = h.get("from") or eff_d.strftime("%Y-%m")
+            h["to"] = h.get("to") or ""
+            h["period"] = h.get("period") or _period_label(h["from"], h["to"])
+            h["flag"] = h.get("flag") or ("†" if (val_d - eff_d).days < 365 else "*")
+            return [(eff_d, inv)]
     return []
 
 
@@ -447,7 +514,7 @@ def compute_compare(holdings: list[dict[str, Any]], val_date_str: str, portfolio
                 })
 
         matrix_rows.append({
-            "_val": val, "code": code, "name": fname[:120], "ret": round(f_ret, 2),
+            "_val": val, "code": code, "name": fname[:120], "period": (h.get("period") or "")[:40], "ret": round(f_ret, 2),
             "invested": round(inv, 2), "value": round(val, 2),
             "bench_key": b_key, "bench_label": b_label, "beaten": beaten_cnt, "cells": cells,
         })

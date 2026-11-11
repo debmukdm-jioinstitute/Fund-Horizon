@@ -292,8 +292,13 @@ def _matrix_slides(dk: _Deck, cmp_: dict[str, Any], cl_date: str, inv: float, va
         for r in chunk:
             for i in range(len(widths)):
                 a.add_patch(Rectangle((cx[i], yy), widths[i], rh, fc="white", ec=LINE, lw=0.8))
-            fname = _fit_cell(str(r.get("name") or ""), 23, max_lines=2)
-            a.text(cx[0] + 7, yy + rh / 2, fname, fontsize=8.3, fontweight="bold", color=INK, va="center", ha="left", linespacing=1.08)
+            fname = _fit_cell(str(r.get("name") or ""), 23, max_lines=1 if r.get("period") else 2)
+            prd = str(r.get("period") or "").strip()
+            if prd:
+                a.text(cx[0] + 7, yy + rh * 0.35, fname, fontsize=8.1, fontweight="bold", color=INK, va="center", ha="left")
+                a.text(cx[0] + 7, yy + rh * 0.74, _fit_cell(prd, 26, max_lines=1), fontsize=7.0, color=GREY, va="center", ha="left")
+            else:
+                a.text(cx[0] + 7, yy + rh / 2, fname, fontsize=8.3, fontweight="bold", color=INK, va="center", ha="left", linespacing=1.08)
             a.text((cx[1] + cx[2]) / 2, yy + rh / 2, pc(r.get("ret"), 2, False), fontsize=8.6, fontweight="bold", color=INK, va="center", ha="center")
             cells = r.get("cells") or {}
             for j, (ikey, _ilbl) in enumerate(FOUR_IDX_COLS, start=2):

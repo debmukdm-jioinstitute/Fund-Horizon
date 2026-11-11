@@ -225,4 +225,38 @@ def test_transaction_wise_valuation_report_reconciles_100_percent(monkeypatch):
     assert round(sum(r["value"] for r in cr["rows"]), 2) == 2309320.23
 
 
+def test_parallel_benchmark_dates_and_implied_date_derivation(monkeypatch):
+    # Month-end NAV series: Dec 31 = 100, Jan 31 = 120, Jun 30 = 150, Oct 31 = 180
+    idx_dates = pd.to_datetime(["2025-12-31", "2026-01-31", "2026-06-30", "2026-10-31"])
+    idx_nav = pd.Series([100.0, 120.0, 150.0, 180.0], index=idx_dates)
+    # Fund NAV series: Dec 31 = 50, Mar 31 = 60, Jun 30 = 75, Oct 31 = 90
+    fund_nav = pd.Series([50.0, 60.0, 75.0, 90.0], index=pd.to_datetime(["2025-12-31", "2026-03-31", "2026-06-30", "2026-10-31"]))
+
+    monkeypatch.setattr(api, "_frame", lambda: FRAME)
+    monkeypatch.setattr(api, "_nav", lambda c: fund_nav if c == "122640" else idx_nav)
+
+    # 1) Jan 1 investment must use start-of-January NAV (~100.65, near Dec 31 = 100), never Jan 31's month-end NAV (120)
+    jan1_nav = api._nav_on(idx_nav, pd.Timestamp("2026-01-01").date())
+    assert 100.0 <= jan1_nav < 101.0
+
+    # 2) Two funds with different start dates (Jan-26 vs Jun-26) get distinct benchmark returns in the 4-index matrix
+    holdings = [
+        {"code": "122640", "name": "Fund Jan Start", "typ": "Flexi Cap", "invested": 100000.0, "value": 180000.0, "from": "2026-01", "to": "2026-01", "inst": "1", "ret": 80.0},
+        {"code": "150579", "name": "Fund Jun Start", "typ": "Small Cap", "invested": 100000.0, "value": 125000.0, "from": "2026-06", "to": "2026-06", "inst": "1", "ret": 25.0},
+    ]
+    cmp_, _ = api.build_analysis(holdings, "2026-10-31")
+    rows = {r["code"]: r for r in cmp_["matrix_rows"]}
+    # Jan 1 -> Oct 31 index return (~78.8%) must be much higher than Jun 1 -> Oct 31 index return (~28.2%)
+    assert rows["122640"]["cells"]["n50"]["idx"] > 70.0
+    assert rows["150579"]["cells"]["n50"]["idx"] < 35.0
+    assert rows["122640"]["period"] == "Jan-26 (one-time)" and rows["150579"]["period"] == "Jun-26 (one-time)"
+
+    # 3) Folio-wise <1y holding (where XIRR == Abs Return, e.g. invested at NAV 60 on Mar 31 -> now NAV 90 on Oct 31, +50%)
+    # derives its own start month (2026-03) from the scheme's NAV history instead of a generic 180-day fallback
+    fw_holding = [{"code": "122640", "name": "PPFAS Flexi", "typ": "Flexi Cap", "invested": 100000.0, "value": 150000.0, "from": "", "to": "", "inst": "", "ret": 50.0}]
+    cmp_fw, _ = api.build_analysis(fw_holding, "2026-10-31")
+    assert fw_holding[0]["from"] == "2026-03" and cmp_fw["matrix_rows"][0]["period"] == "Since Mar-26"
+
+
+
 

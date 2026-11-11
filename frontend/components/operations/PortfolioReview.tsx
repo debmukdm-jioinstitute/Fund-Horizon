@@ -19,7 +19,7 @@ interface LiveFund {
 }
 interface MatrixCell { idx: number; lead: number; val?: number; inr?: number }
 interface MatrixRow {
-  code?: string; name: string; ret: number; invested?: number; value?: number;
+  code?: string; name: string; period?: string; ret: number; invested?: number; value?: number;
   bench_key?: string; bench_label?: string; beaten: number;
   cells: Record<string, MatrixCell>;
 }
@@ -672,7 +672,11 @@ export default function PortfolioReview({ customerId, customerName }: { customer
                         <tr key={idx}>
                           <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5 font-semibold">
                             <div>{mr.name}</div>
-                            {mr.bench_label && <div className={hint}>Benchmark: {mr.bench_label}</div>}
+                            {(mr.bench_label || mr.period) && (
+                              <div className={hint}>
+                                {[mr.bench_label ? `Benchmark: ${mr.bench_label}` : "", mr.period ? `Period: ${mr.period}` : ""].filter(Boolean).join(" · ")}
+                              </div>
+                            )}
                           </td>
                           <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5 text-center font-bold">
                             {mr.ret.toFixed(2)}%

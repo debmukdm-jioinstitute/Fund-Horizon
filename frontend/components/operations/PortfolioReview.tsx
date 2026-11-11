@@ -17,11 +17,23 @@ interface LiveFund {
   fh_score?: number | null; fh_signal?: string | null; recommended?: boolean; reason?: string;
   falls?: Record<string, number | null>;
 }
+interface MatrixCell { idx: number; lead: number; val?: number; inr?: number }
+interface MatrixRow {
+  code?: string; name: string; ret: number; invested?: number; value?: number;
+  bench_key?: string; bench_label?: string; beaten: number;
+  cells: Record<string, MatrixCell>;
+}
 interface CompareData {
   portfolio_xirr?: number | null; nifty50_xirr?: number; nifty500_xirr?: number;
-  ahead_inr_500?: number; ahead_inr_50?: number; funds_ahead_50?: number;
+  mid150_xirr?: number; small250_xirr?: number;
+  ahead_inr_500?: number; ahead_inr_50?: number; ahead_inr_mid150?: number; ahead_inr_small250?: number;
+  funds_ahead_50?: number; indices_beaten?: number;
+  primary_bench_key?: string; primary_bench_label?: string; primary_bench_ahead_inr?: number;
+  benchmark_note?: string; total_invested?: number; total_value?: number;
+  index_totals?: Record<string, MatrixCell>;
   per_fund?: Record<string, { pct?: number | null; inr?: number | null }>;
   index_rows?: { name: string; index: string; period: string; ret: number; idx: number; lead: number; inr: number }[];
+  matrix_rows?: MatrixRow[];
 }
 interface Analysis {
   invested: number; value: number; gain: number; abs_ret: number; xirr?: number | null; nav_date?: string | null;
@@ -616,9 +628,127 @@ export default function PortfolioReview({ customerId, customerName }: { customer
       {rows.length > 0 && analysis && (
         <details open className="rounded-xl border border-[#E4E9EF] dark:border-[#2B3644] bg-[#F8FAFB] dark:bg-[#1B2432] p-4">
           <summary className="cursor-pointer text-[13.5px] font-bold text-[#172033] dark:text-[#EDF1F6]">
-            Portfolio analysis preview — market comparison, FH observations &amp; stress test
+            Portfolio analysis preview — 4-index Nifty matrix, official benchmark mapping, FH observations &amp; stress test
           </summary>
           <div className="mt-3 space-y-4">
+            {parsedCompare?.matrix_rows && parsedCompare.matrix_rows.length > 0 && (
+              <div>
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h4 className="text-[13.5px] font-bold text-[#1B2A6B] dark:text-[#75E1CE]">
+                    {parsedCompare.indices_beaten === 4
+                      ? "The portfolio beat all 4 Nifty indices"
+                      : (parsedCompare.indices_beaten ?? 0) > 0
+                        ? `The portfolio beat ${parsedCompare.indices_beaten} of 4 Nifty indices`
+                        : "Your portfolio against all 4 Nifty indices"}
+                  </h4>
+                  {parsedCompare.primary_bench_label && (
+                    <span className={hint}>
+                      Primary benchmark: <b>{parsedCompare.primary_bench_label}</b>
+                      {parsedCompare.primary_bench_ahead_inr != null ? ` (${rsSigned(parsedCompare.primary_bench_ahead_inr)})` : ""}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1.5 overflow-x-auto">
+                  <table className="w-full min-w-[780px] border-collapse bg-white dark:bg-[#171E2A] text-[12px] tabular-nums">
+                    <thead>
+                      <tr className="bg-[#1B2A6B] text-white">
+                        <th className="border border-[#2B3644] px-2 py-1.5 text-left font-semibold">Fund</th>
+                        <th className="border border-[#2B3644] px-2 py-1.5 text-center font-semibold">Your return</th>
+                        {([
+                          ["n50", "Nifty 50"],
+                          ["n500", "Nifty 500 TRI"],
+                          ["mid150", "Nifty Midcap 150 TRI"],
+                          ["small250", "Nifty Smallcap 250 TRI"],
+                        ] as const).map(([k, lbl]) => (
+                          <th key={k} className="border border-[#2B3644] px-2 py-1.5 text-center font-semibold">
+                            {lbl}{parsedCompare.primary_bench_key === k ? "*" : ""}
+                          </th>
+                        ))}
+                        <th className="border border-[#2B3644] px-2 py-1.5 text-center font-semibold">Indices beaten</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {parsedCompare.matrix_rows.map((mr, idx) => (
+                        <tr key={idx}>
+                          <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5 font-semibold">
+                            <div>{mr.name}</div>
+                            {mr.bench_label && <div className={hint}>Benchmark: {mr.bench_label}</div>}
+                          </td>
+                          <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5 text-center font-bold">
+                            {mr.ret.toFixed(2)}%
+                          </td>
+                          {(["n50", "n500", "mid150", "small250"] as const).map((k) => {
+                            const c = mr.cells?.[k];
+                            return (
+                              <td key={k} className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1 text-center">
+                                {c ? (
+                                  <>
+                                    <div className="text-[11px] text-[#667085] dark:text-[#9AA3B2]">{pctSigned(c.idx)}</div>
+                                    <div className={`font-bold ${c.lead >= 0 ? "text-[#147A3D] dark:text-[#6EE7A0]" : "text-[#B42318] dark:text-[#FF7D86]"}`}>
+                                      You {pctSigned(c.lead)}
+                                    </div>
+                                  </>
+                                ) : "—"}
+                              </td>
+                            );
+                          })}
+                          <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5 text-center font-bold">
+                            {mr.beaten} of 4
+                          </td>
+                        </tr>
+                      ))}
+                      {parsedCompare.index_totals && (
+                        <>
+                          <tr className="bg-[#F3F6FC] dark:bg-[#1B2432] font-bold">
+                            <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5">Total portfolio</td>
+                            <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5 text-center">
+                              {(parsedCompare.portfolio_xirr ?? 0).toFixed(2)}%
+                            </td>
+                            {(["n50", "n500", "mid150", "small250"] as const).map((k) => {
+                              const tc = parsedCompare.index_totals?.[k];
+                              return (
+                                <td key={k} className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1 text-center">
+                                  {tc ? (
+                                    <>
+                                      <div className="text-[11px] font-normal text-[#667085] dark:text-[#9AA3B2]">{pctSigned(tc.idx)}</div>
+                                      <div className={tc.lead >= 0 ? "text-[#147A3D] dark:text-[#6EE7A0]" : "text-[#B42318] dark:text-[#FF7D86]"}>
+                                        You {pctSigned(tc.lead)}
+                                      </div>
+                                    </>
+                                  ) : "—"}
+                                </td>
+                              );
+                            })}
+                            <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1.5 text-center">
+                              {parsedCompare.indices_beaten ?? 0} of 4
+                            </td>
+                          </tr>
+                          <tr className="bg-[#E8EEFB]/60 dark:bg-[#1B2740]/60 text-[11.5px]">
+                            <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1">
+                              ₹{((parsedCompare.total_invested ?? totals.inv) / 1e5).toFixed(1)} lakh SIPs worth today
+                            </td>
+                            <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1 text-center font-bold">
+                              ₹{inr(parsedCompare.total_value ?? totals.val)}
+                            </td>
+                            {(["n50", "n500", "mid150", "small250"] as const).map((k) => {
+                              const tc = parsedCompare.index_totals?.[k];
+                              return (
+                                <td key={k} className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1 text-center">
+                                  {tc?.val ? `₹${inr(tc.val)}` : "—"}
+                                </td>
+                              );
+                            })}
+                            <td className="border border-[#E4E9EF] dark:border-[#2B3644] px-2 py-1" />
+                          </tr>
+                        </>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                {parsedCompare.benchmark_note && <p className={`${hint} mt-1 italic`}>{parsedCompare.benchmark_note}</p>}
+              </div>
+            )}
+
             {parsedCompare?.index_rows && parsedCompare.index_rows.length > 0 && (
               <div>
                 <h4 className="text-[12.5px] font-bold uppercase tracking-wider text-[#5B6577] dark:text-[#9AA3B2]">

@@ -38,12 +38,42 @@ _SCHEMA = """CREATE TABLE IF NOT EXISTS portfolio_reviews (
 _LIVE_COLS = ("name", "cat", "cat_label", "nav_date", "cagr_3y", "cap_up_3y", "cap_down_3y", "cap_ratio_3y", "max_dd_3y", "max_dd_all",
               "history_years", "fh_score", "fh_signal", "is_fh_recommended")
 _MON = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-_CAT_INDEX: dict[str, tuple[str, str]] = {
-    "large_cap": ("120716", "Nifty 50"), "index_equity": ("120716", "Nifty 50"), "etf_other": ("120716", "Nifty 50"),
-    "mid_cap": ("147622", "Nifty Midcap 150 TRI"), "small_cap": ("147623", "Nifty Smallcap 250 TRI"),
-    "large_mid_cap": ("152156", "Nifty LargeMidcap 250 TRI"), "multi_cap": ("152751", "Nifty 500 Multicap TRI"),
-    **{c: ("147625", "Nifty 500 TRI") for c in ("flexi_cap", "elss", "focused", "value", "contra", "dividend_yield", "sectoral_thematic")},
+FOUR_INDICES: tuple[tuple[str, str, str], ...] = (
+    ("n50", "120716", "Nifty 50"),
+    ("n500", "147625", "Nifty 500 TRI"),
+    ("mid150", "147622", "Nifty Midcap 150 TRI"),
+    ("small250", "147623", "Nifty Smallcap 250 TRI"),
+)
+_CAT_INDEX: dict[str, tuple[str, str, str]] = {
+    "large_cap": ("120716", "Nifty 50", "n50"),
+    "index_equity": ("120716", "Nifty 50", "n50"),
+    "etf_other": ("120716", "Nifty 50", "n50"),
+    "mid_cap": ("147622", "Nifty Midcap 150 TRI", "mid150"),
+    "small_cap": ("147623", "Nifty Smallcap 250 TRI", "small250"),
+    "large_mid_cap": ("152156", "Nifty LargeMidcap 250 TRI", "n500"),
+    "multi_cap": ("152751", "Nifty 500 Multicap TRI", "n500"),
+    **{c: ("147625", "Nifty 500 TRI", "n500") for c in ("flexi_cap", "elss", "focused", "value", "contra", "dividend_yield", "sectoral_thematic")},
 }
+
+
+def _infer_benchmark(cat: str, name: str, typ: str = "") -> tuple[str, str, str] | None:
+    """Resolve (proxy_code, official_benchmark_label, four_index_key) from fund name/type first, then canonical category."""
+    hay = f"{name} {typ}".lower()
+    if any(k in hay for k in ("gold", "silver", "commodity", "liquid", "overnight", "money market", "gilt", "corporate bond", "banking & psu", "banking and psu", "short duration", "arbitrage", "debt")):
+        return None
+    if re.search(r"\b(small\s*cap|smallcap|micro\s*cap|microcap)\b", hay):
+        return ("147623", "Nifty Smallcap 250 TRI", "small250")
+    if re.search(r"\b(mid\s*cap|midcap)\b", hay) and not re.search(r"large\s*(&|and)\s*mid", hay):
+        return ("147622", "Nifty Midcap 150 TRI", "mid150")
+    if re.search(r"\b(large\s*(&|and)\s*mid|largemid)\b", hay):
+        return ("152156", "Nifty LargeMidcap 250 TRI", "n500")
+    if re.search(r"\b(multi\s*cap|multicap)\b", hay):
+        return ("152751", "Nifty 500 Multicap TRI", "n500")
+    if re.search(r"\b(large\s*cap|largecap|bluechip|top\s*100|nifty\s*50\b|sensex)\b", hay) and "500" not in hay:
+        return ("120716", "Nifty 50", "n50")
+    if cat in _CAT_INDEX:
+        return _CAT_INDEX[cat]
+    return ("147625", "Nifty 500 TRI", "n500")
 
 
 class Holding(BaseModel):
@@ -73,16 +103,48 @@ class IndexRow(BaseModel):
     inr: float
 
 
+class MatrixCell(BaseModel):
+    idx: float
+    lead: float
+    val: float = 0
+    inr: float = 0
+
+
+class MatrixRow(BaseModel):
+    code: str = Field(default="", max_length=16)
+    name: str = Field(max_length=120)
+    ret: float
+    invested: float = 0
+    value: float = 0
+    bench_key: str = Field(default="", max_length=20)
+    bench_label: str = Field(default="", max_length=60)
+    beaten: int = 0
+    cells: dict[str, MatrixCell] = Field(default_factory=dict)
+
+
 class Compare(BaseModel):
     """Optional, computed from instalment-level data (CAS): without it the same-instalment index slides are left out."""
     portfolio_xirr: float | None = None
     nifty50_xirr: float = 0
     nifty500_xirr: float = 0
+    mid150_xirr: float = 0
+    small250_xirr: float = 0
     ahead_inr_500: float = 0
     ahead_inr_50: float = 0
+    ahead_inr_mid150: float = 0
+    ahead_inr_small250: float = 0
     funds_ahead_50: int = 0
+    indices_beaten: int = 0
+    primary_bench_key: str = Field(default="n500", max_length=20)
+    primary_bench_label: str = Field(default="Nifty 500 TRI", max_length=60)
+    primary_bench_ahead_inr: float = 0
+    benchmark_note: str = Field(default="", max_length=240)
+    total_invested: float = 0
+    total_value: float = 0
+    index_totals: dict[str, MatrixCell] = Field(default_factory=dict)
     per_fund: dict[str, PerFund] = Field(default_factory=dict)
-    index_rows: list[IndexRow] = Field(default_factory=list, max_length=12)
+    index_rows: list[IndexRow] = Field(default_factory=list, max_length=30)
+    matrix_rows: list[MatrixRow] = Field(default_factory=list, max_length=50)
 
 
 class Client(BaseModel):
@@ -306,19 +368,30 @@ def _flow_return(flows: list[tuple[date, float]], terminal_val: float, val_d: da
 
 def compute_compare(holdings: list[dict[str, Any]], val_date_str: str, portfolio_xirr: float | None = None,
                     live: dict[str, dict] | None = None) -> dict[str, Any] | None:
-    """Compute same-instalment comparison against Nifty 50, Nifty 500 TRI and matching category Nifty indices."""
+    """Compute same-instalment comparison against all 4 core Nifty indices (Nifty 50, Nifty 500 TRI, Nifty Midcap 150 TRI,
+    Nifty Smallcap 250 TRI) and each fund's official SEBI benchmark."""
     iso_v = ing.parse_date(val_date_str)
     val_d = date.fromisoformat(iso_v) if iso_v else date.today()
-    s500, s50 = _index_series("147625"), _index_series("120716")
-    if s500 is None or s50 is None or s500.empty or s50.empty:
+    four_series: dict[str, pd.Series] = {}
+    for ikey, icode, _ilbl in FOUR_INDICES:
+        s = _index_series(icode)
+        if s is not None and not s.empty:
+            four_series[ikey] = s
+    if "n500" not in four_series or "n50" not in four_series:
         return None
     live = live if live is not None else live_data([str(h["code"]) for h in holdings if h.get("code")])
     per_fund: dict[str, dict[str, float]] = {}
     index_rows: list[dict[str, Any]] = []
+    matrix_rows: list[dict[str, Any]] = []
     all_flows: list[tuple[date, float]] = []
-    tot_val = tot_inv = tot_500 = tot_50 = 0.0
+    tot_val = tot_inv = 0.0
+    tot_idx_val: dict[str, float] = {k: 0.0 for k in four_series}
+    bench_val_by_key: dict[str, float] = {k: 0.0 for k, _, _ in FOUR_INDICES}
+    bench_funds_by_key: dict[str, list[str]] = {k: [] for k, _, _ in FOUR_INDICES}
     ahead_50 = 0
     max_span = 0
+    end_navs = {k: _nav_on(s, val_d) for k, s in four_series.items()}
+
     for h in holdings:
         inv, val = float(h.get("invested") or 0), float(h.get("value") or 0)
         active = _active_flows(h, val_d)
@@ -331,45 +404,112 @@ def compute_compare(holdings: list[dict[str, Any]], val_date_str: str, portfolio
         has_exact_flows = bool(h.get("flows"))
         f_ret = _flow_return(active, val, val_d, span) if (has_exact_flows or h.get("ret") is None) else float(h["ret"])
         h["ret"] = round(f_ret, 2)
-        nav500_end, nav50_end = _nav_on(s500, val_d), _nav_on(s50, val_d)
-        v500 = sum(a * (nav500_end / _nav_on(s500, d)) for d, a in active)
-        v50 = sum(a * (nav50_end / _nav_on(s50, d)) for d, a in active)
-        r500 = _flow_return(active, v500, val_d, span)
-        r50 = _flow_return(active, v50, val_d, span)
         code = str(h["code"])
-        per_fund[code] = {"pct": round(f_ret - r500, 1), "inr": float(round(val - v500))}
-        if f_ret > r50:
-            ahead_50 += 1
         lv = live.get(code) or {}
+        fname_base = str(h.get("name") or lv.get("name") or code)
+        fname = fname_base + (f" {h['flag']}" if h.get("flag") else "")
+
+        cells: dict[str, dict[str, float]] = {}
+        beaten_cnt = 0
+        for ikey, _icode, _ilbl in FOUR_INDICES:
+            s_idx = four_series.get(ikey)
+            if s_idx is None:
+                continue
+            v_idx = sum(a * (end_navs[ikey] / _nav_on(s_idx, d)) for d, a in active)
+            r_idx = _flow_return(active, v_idx, val_d, span)
+            lead = round(f_ret - r_idx, 2)
+            inr_diff = float(round(val - v_idx))
+            if f_ret > r_idx:
+                beaten_cnt += 1
+            cells[ikey] = {"idx": round(r_idx, 2), "lead": lead, "val": float(round(v_idx)), "inr": inr_diff}
+            tot_idx_val[ikey] = tot_idx_val.get(ikey, 0.0) + v_idx
+
+        c500 = cells["n500"]
+        c50 = cells["n50"]
+        per_fund[code] = {"pct": round(c500["lead"], 1), "inr": c500["inr"]}
+        if f_ret > c50["idx"]:
+            ahead_50 += 1
+
         cat = str(lv.get("cat") or "")
-        if cat in _CAT_INDEX:
-            p_code, idx_label = _CAT_INDEX[cat]
+        bm = _infer_benchmark(cat, fname_base, str(h.get("typ") or lv.get("cat_label") or ""))
+        b_key, b_label = "", ""
+        if bm is not None:
+            p_code, idx_label, b_key = bm
+            b_label = idx_label
+            bench_val_by_key[b_key] = bench_val_by_key.get(b_key, 0.0) + val
+            bench_funds_by_key.setdefault(b_key, []).append(fname_base)
             s_cat = _index_series(p_code)
             if s_cat is not None and not s_cat.empty:
                 v_cat = sum(a * (_nav_on(s_cat, val_d) / _nav_on(s_cat, d)) for d, a in active)
                 r_cat = _flow_return(active, v_cat, val_d, span)
-                fname = (h.get("name") or lv.get("name") or code) + (f" {h['flag']}" if h.get("flag") else "")
                 index_rows.append({
                     "_val": val, "name": fname[:120], "index": idx_label[:60], "period": (h.get("period") or "")[:40],
                     "ret": round(f_ret, 2), "idx": round(r_cat, 2), "lead": round(f_ret - r_cat, 1), "inr": float(round(val - v_cat)),
                 })
+
+        matrix_rows.append({
+            "_val": val, "code": code, "name": fname[:120], "ret": round(f_ret, 2),
+            "invested": round(inv, 2), "value": round(val, 2),
+            "bench_key": b_key, "bench_label": b_label, "beaten": beaten_cnt, "cells": cells,
+        })
         all_flows.extend(active)
         tot_inv += inv
         tot_val += val
-        tot_500 += v500
-        tot_50 += v50
+
     if not per_fund or tot_inv <= 0:
         return None
     p_xirr = _flow_return(all_flows, tot_val, val_d, max_span)
     if portfolio_xirr is not None and not any(h.get("flows") for h in holdings):
         p_xirr = round(float(portfolio_xirr), 2)
-    n500_xirr = _flow_return(all_flows, tot_500, val_d, max_span)
-    n50_xirr = _flow_return(all_flows, tot_50, val_d, max_span)
+
+    index_totals: dict[str, dict[str, float]] = {}
+    indices_beaten = 0
+    for ikey, _icode, _ilbl in FOUR_INDICES:
+        if ikey not in tot_idx_val:
+            continue
+        tv = tot_idx_val[ikey]
+        tx = _flow_return(all_flows, tv, val_d, max_span)
+        lead = round(p_xirr - tx, 2)
+        if p_xirr > tx:
+            indices_beaten += 1
+        index_totals[ikey] = {"idx": round(tx, 2), "lead": lead, "val": float(round(tv)), "inr": float(round(tot_val - tv))}
+
+    # Primary portfolio benchmark: the 4-index column carrying the highest matched portfolio value (default n500)
+    primary_key = max(bench_val_by_key.items(), key=lambda kv: (kv[1], kv[0] == "n500"))[0] if any(bench_val_by_key.values()) else "n500"
+    key_to_label = {k: lbl for k, _, lbl in FOUR_INDICES}
+    primary_label = key_to_label.get(primary_key, "Nifty 500 TRI")
+    primary_ahead_inr = index_totals.get(primary_key, index_totals["n500"])["inr"]
+    b_funds = bench_funds_by_key.get(primary_key) or []
+    bench_note = (
+        f"* Official benchmark of {', '.join(b_funds[:4])}" + (f" and {len(b_funds) - 4} more." if len(b_funds) > 4 else ".")
+        if b_funds else f"* {primary_label} is the primary benchmark for this portfolio."
+    )
+
     index_rows.sort(key=lambda r: -r.pop("_val", 0))
+    for mr in matrix_rows:
+        mr.pop("_val", None)
     return Compare(
-        portfolio_xirr=p_xirr, nifty50_xirr=n50_xirr, nifty500_xirr=n500_xirr,
-        ahead_inr_500=float(round(tot_val - tot_500)), ahead_inr_50=float(round(tot_val - tot_50)),
-        funds_ahead_50=ahead_50, per_fund=per_fund, index_rows=index_rows[:12],
+        portfolio_xirr=p_xirr,
+        nifty50_xirr=index_totals["n50"]["idx"],
+        nifty500_xirr=index_totals["n500"]["idx"],
+        mid150_xirr=index_totals.get("mid150", {}).get("idx", 0.0),
+        small250_xirr=index_totals.get("small250", {}).get("idx", 0.0),
+        ahead_inr_500=index_totals["n500"]["inr"],
+        ahead_inr_50=index_totals["n50"]["inr"],
+        ahead_inr_mid150=index_totals.get("mid150", {}).get("inr", 0.0),
+        ahead_inr_small250=index_totals.get("small250", {}).get("inr", 0.0),
+        funds_ahead_50=ahead_50,
+        indices_beaten=indices_beaten,
+        primary_bench_key=primary_key,
+        primary_bench_label=primary_label,
+        primary_bench_ahead_inr=primary_ahead_inr,
+        benchmark_note=bench_note[:240],
+        total_invested=round(tot_inv, 2),
+        total_value=round(tot_val, 2),
+        index_totals=index_totals,
+        per_fund=per_fund,
+        index_rows=index_rows[:25],
+        matrix_rows=matrix_rows[:50],
     ).model_dump()
 
 

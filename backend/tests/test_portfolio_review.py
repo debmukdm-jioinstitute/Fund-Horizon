@@ -127,3 +127,40 @@ def test_parse_mf_summary_and_spreadsheet_and_deduplicate_same_folio(monkeypatch
     assert by_code["150579"]["flag"] == "†"
     assert res["compare"] is not None and set(res["compare"]["per_fund"]) == {"122640", "150579"}
 
+
+def test_four_nifty_indices_matrix_benchmark_mapping_and_pagination(monkeypatch):
+    import io
+    from pypdf import PdfReader
+
+    idx_dates = pd.to_datetime(["2020-01-31", "2024-01-31", "2026-10-31"])
+    nav_by_code = {
+        "120716": pd.Series([100.0, 140.0, 160.0], index=idx_dates),  # Nifty 50
+        "147625": pd.Series([100.0, 150.0, 175.0], index=idx_dates),  # Nifty 500 TRI
+        "147622": pd.Series([100.0, 160.0, 185.0], index=idx_dates),  # Nifty Midcap 150 TRI
+        "147623": pd.Series([100.0, 170.0, 195.0], index=idx_dates),  # Nifty Smallcap 250 TRI
+    }
+    monkeypatch.setattr(api, "_frame", lambda: FRAME)
+    monkeypatch.setattr(api, "_nav", lambda c: nav_by_code.get(c, nav_by_code["147625"]))
+
+    holdings = [
+        {"code": str(1000 + i), "name": f"Small Cap Alpha {i}", "typ": "Small Cap", "invested": 100000.0,
+         "value": 135000.0 + i * 1000, "from": "2024-01", "to": "2026-10", "inst": "34", "ret": 18.5}
+        for i in range(9)
+    ]
+    cmp_, analysis = api.build_analysis(holdings, "2026-10-26")
+    assert cmp_ is not None
+    assert cmp_["primary_bench_key"] == "small250" and cmp_["primary_bench_label"] == "Nifty Smallcap 250 TRI"
+    assert "Official benchmark of Small Cap Alpha 0" in cmp_["benchmark_note"]
+    assert len(cmp_["matrix_rows"]) == 9
+    assert set(cmp_["index_totals"]) == {"n50", "n500", "mid150", "small250"}
+    assert all(set(r["cells"]) == {"n50", "n500", "mid150", "small250"} for r in cmp_["matrix_rows"])
+
+    rv = api.Review(client={"name": "Shravani Sudesh Dalvi", "date": "26 Oct 2026"}, holdings=holdings, compare=cmp_)
+    pdf_bytes = api._pdf(rv)
+    reader = PdfReader(io.BytesIO(pdf_bytes))
+    txt = "\n".join(p.extract_text() or "" for p in reader.pages)
+    assert "Nifty indices" in txt and "SIPs worth today" in txt and "Fund Horizon" in txt
+    fonts = {m.decode() for m in re.findall(rb"/BaseFont\s*/(?:[A-Z]{6}\+)?([A-Za-z0-9_-]+)", pdf_bytes)}
+    assert fonts and all(f.startswith("GoogleSans") for f in fonts), fonts
+
+

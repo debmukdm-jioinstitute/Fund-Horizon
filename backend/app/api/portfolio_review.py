@@ -401,8 +401,7 @@ def compute_compare(holdings: list[dict[str, Any]], val_date_str: str, portfolio
         max_span = max(max_span, span)
         if span < 365 and not h.get("flag"):
             h["flag"] = "†"
-        has_exact_flows = bool(h.get("flows"))
-        f_ret = _flow_return(active, val, val_d, span) if (has_exact_flows or h.get("ret") is None) else float(h["ret"])
+        f_ret = float(h["ret"]) if h.get("ret") is not None else _flow_return(active, val, val_d, span)
         h["ret"] = round(f_ret, 2)
         code = str(h["code"])
         lv = live.get(code) or {}
@@ -459,7 +458,7 @@ def compute_compare(holdings: list[dict[str, Any]], val_date_str: str, portfolio
     if not per_fund or tot_inv <= 0:
         return None
     p_xirr = _flow_return(all_flows, tot_val, val_d, max_span)
-    if portfolio_xirr is not None and not any(h.get("flows") for h in holdings):
+    if portfolio_xirr is not None:
         p_xirr = round(float(portfolio_xirr), 2)
 
     index_totals: dict[str, dict[str, float]] = {}
@@ -519,6 +518,13 @@ _AMC_ALIASES = (
     (r"\bppfas\b", "parag parikh"), (r"\babsl\b", "aditya birla sun life"),
     (r"\baditya\s+birla\b(?!\s+sun)", "aditya birla sun life"), (r"\bwoc\b|\bwhite\s*oak\b", "whiteoak capital"),
     (r"\bmosl\b", "motilal oswal"), (r"\bsbi\s+magnum\b", "sbi"),
+    (r"\bcanara\s+rob\b(?!\s*eco)", "canara robeco"),
+    (r"\bnatural\s+res\b(?!\s*ources)", "natural resources"),
+)
+_AMFI_PREFIX = re.compile(
+    r"^(axis|bandhan|baroda|bajaj|canara|dsp|edelweiss|franklin|groww|hdfc|helios|hsbc|icici|invesco|iti|jm|jio|"
+    r"kotak|lic|mahindra|mirae|motilal|navi|nippon|parag|pgim|ppfas|quant|quantum|samco|sbi|shriram|sundaram|tata|"
+    r"taurus|trust|trustmf|union|uti|whiteoak|woc|zerodha|360|aditya)\b"
 )
 
 
@@ -529,6 +535,34 @@ def _norm_scheme(text: str) -> str:
     return " ".join(t.split())
 
 
+def _lookup_casparser_isin_by_name(raw_name: str, det_plan: str) -> dict[str, Any] | None:
+    """Query `casparser_isin` SQLite catalog for renamed or unlisted AMFI schemes (e.g. HSBC Small Cap Fund)."""
+    raw_low = raw_name.lower()
+    words = [w for w in re.findall(r"[a-z0-9]+", raw_low) if w not in ("mutual", "fund", "plan", "option", "growth", "regular", "direct", "reg", "dir", "idcw", "dividend", "payout", "reinvestment", "the", "and", "of") and len(w) >= 2]
+    if len(words) < 2:
+        return None
+    try:
+        from casparser_isin import MFISINDb
+
+        where = [" AND ".join(f"LOWER(name) LIKE :w{i}" for i in range(min(len(words), 4)))]
+        args: dict[str, Any] = {f"w{i}": f"%{words[i]}%" for i in range(min(len(words), 4))}
+        if det_plan == "Direct":
+            where.append("LOWER(name) LIKE '%direct%'")
+        else:
+            where.append("LOWER(name) NOT LIKE '%direct%'")
+        where.append("LOWER(name) LIKE '%growth%'")
+        sql = f"SELECT name, isin, amfi_code, type FROM scheme WHERE {' AND '.join(where)} ORDER BY id DESC LIMIT 10"
+        with MFISINDb() as db:
+            rows = db.run_query(sql, args)
+        for r in rows or []:
+            ac = str(r.get("amfi_code") or "").strip()
+            if re.fullmatch(r"\d{4,8}", ac):
+                return r
+    except Exception:
+        pass
+    return None
+
+
 def _build_lookups(frame: pd.DataFrame):
     code_map: dict[str, dict[str, Any]] = {}
     isin_map: dict[str, dict[str, Any]] = {}
@@ -537,6 +571,7 @@ def _build_lookups(frame: pd.DataFrame):
         c = str(row.get("code") or "").strip()
         if not c:
             continue
+        row["_from_frame"] = True
         code_map[c] = row
         isin = portfolio_screen.clean_isin(row.get("isin"))
         if isin and isin not in isin_map:
@@ -551,11 +586,24 @@ def _build_lookups(frame: pd.DataFrame):
         mdf = load_metrics()
         for _, mrow in mdf.iterrows():
             sc = str(mrow.get("scheme_code") or "").strip()
-            if sc in code_map:
-                for col in ("isin_growth_or_payout", "isin_reinvest"):
-                    iv = portfolio_screen.clean_isin(mrow.get(col))
-                    if iv and iv not in isin_map:
-                        isin_map[iv] = code_map[sc]
+            if not sc:
+                continue
+            if sc not in code_map:
+                sname = str(mrow.get("scheme_name") or "")
+                splan = str(mrow.get("plan") or "")
+                scat = str(mrow.get("cat") or "")
+                cat_lbl = str(mrow.get("category") or "").split("-")[-1].strip() or scat.replace("_", " ").title()
+                entry_row = {"code": sc, "name": sname, "plan": splan, "cat": scat, "cat_label": cat_lbl}
+                code_map[sc] = entry_row
+                norm = _norm_scheme(sname)
+                entry = (sc, norm, set(norm.split()), entry_row)
+                if splan in pools:
+                    pools[splan].append(entry)
+                pools["All"].append(entry)
+            for col in ("isin_growth_or_payout", "isin_reinvest"):
+                iv = portfolio_screen.clean_isin(mrow.get(col))
+                if iv and iv not in isin_map:
+                    isin_map[iv] = code_map[sc]
     except Exception:
         pass
     return code_map, isin_map, pools
@@ -586,21 +634,35 @@ def _match_scheme(raw_name: str, isin: str | None, amfi: str | None, lookups: tu
         q_toks = set(norm_q.split())
         if not norm_q:
             continue
+        q_amc = ( _AMFI_PREFIX.match(norm_q).group(1) if _AMFI_PREFIX.match(norm_q) else None )
         for _c, c_norm, c_toks, c_row in pool:
             if not c_norm:
                 continue
+            c_amc = (_AMFI_PREFIX.match(c_norm).group(1) if _AMFI_PREFIX.match(c_norm) else None)
+            if q_amc and c_amc and q_amc != c_amc:
+                continue  # never cross-match one AMC's fund to another AMC's fund
             seq = difflib.SequenceMatcher(None, norm_q, c_norm).ratio()
             overlap = len(q_toks & c_toks) / max(len(q_toks), 1) if q_toks else 0.0
             sc = max(seq, 0.55 * seq + 0.45 * overlap)
-            if c_norm in norm_q or norm_q in c_norm:
+            if (c_norm in norm_q or norm_q in c_norm) and (len(c_toks) >= 2 and len(q_toks) >= 2 or c_norm == norm_q):
                 sc = min(1.0, sc + 0.12)
             if prefer_reg and c_row.get("plan") == "Regular":
                 sc += 0.005
+            if c_row.get("_from_frame"):
+                sc += 0.002
             if sc > best_score:
                 best_score, best_row = sc, c_row
     if best_row and best_score >= 0.78:
         return best_row, "matched_name", None
-    if best_row and best_score >= 0.50:
+    # Try casparser_isin SQLite DB before accepting a low-confidence match
+    cp_row = _lookup_casparser_isin_by_name(raw_name, det_plan)
+    if cp_row:
+        cp_code = str(cp_row["amfi_code"]).strip()
+        if cp_code in code_map:
+            return code_map[cp_code], "matched_name", None
+        clean_cp = re.sub(r" - (Regular|Direct) Plan.*$", "", cas.format_scheme_name(raw_name or cp_row.get("name") or cp_code))
+        return {"code": cp_code, "name": clean_cp, "cat_label": cas.infer_scheme_category(clean_cp)}, "matched_name", None
+    if best_row and best_score >= 0.62:
         clean_n = re.sub(r" - (Regular|Direct) Plan.*$", "", str(best_row.get("name") or ""))
         return best_row, "ambiguous", f"'{raw_name}' was matched to {clean_n} ({best_row['code']}); please verify."
     code = c_amfi or f"{990000 + fallback_seq}"
@@ -989,6 +1051,38 @@ def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any
     # 2. ProAffluence MF Summary Report
     if mfs := _parse_mf_summary_report(full_layout) or _parse_mf_summary_report(full_pdfium):
         return {**mfs, "warnings": []}
+
+    # 2.5. 'Portfolio Valuation Report - Transaction Wise' (per-scheme section headers + dated purchase rows + Sub Total)
+    tx_w_h, tx_w_tot, tx_w_warns, _, tx_w_flows, _ = layouts.transaction_wise_mf(plain)
+    if tx_w_h:
+        c_name = ""
+        title_i = next((i for i, ln in enumerate((plain[0] if plain else "").splitlines()) if "valuation report" in ln.lower()), -1)
+        p0_lines = [ln.strip() for ln in (plain[0] if plain else "").splitlines() if ln.strip()]
+        if title_i >= 0 and title_i + 1 < len(p0_lines):
+            c_name = p0_lines[title_i + 1]
+        v_date = layouts.folio_date(plain) or ""
+        p_xirr = tx_w_tot.get("reported_xirr")
+        # Group dated flows per (security_name, account_no)
+        hs_tx: list[dict[str, Any]] = []
+        flow_idx = 0
+        for h in tx_w_h:
+            my_flows: list[tuple[str, float]] = []
+            while flow_idx < len(tx_w_flows) and tx_w_flows[flow_idx].account_no == h.account_no and tx_w_flows[flow_idx].description.startswith(h.security_name[:60]):
+                fl = tx_w_flows[flow_idx]
+                if fl.flow_date and fl.amount:
+                    my_flows.append((fl.flow_date, fl.amount))
+                flow_idx += 1
+            f_ym = my_flows[0][0][:7] if my_flows else ""
+            l_ym = my_flows[-1][0][:7] if my_flows else ""
+            hs_tx.append({
+                "raw_name": h.security_name, "isin": h.isin, "amfi_code": None, "folio": h.account_no,
+                "units": h.quantity, "nav": h.price, "invested": h.invested_amount, "value": h.market_value or 0.0,
+                "from": f_ym, "to": f_ym if len(my_flows) == 1 else l_ym,
+                "inst": str(len(my_flows)) if my_flows else "",
+                "ret": h.reported_xirr, "flag": "†" if h.reported_xirr is None else "",
+                "flows": my_flows,
+            })
+        return {"client_name": c_name, "val_date": v_date, "portfolio_xirr": p_xirr, "holdings": hs_tx, "kind": "mf_txn", "warnings": tx_w_warns}
 
     # 3. FundsIndia Folio-Wise Valuation Report
     fw_h, fw_tot, fw_w, _ = layouts.folio_wise_mf(plain)

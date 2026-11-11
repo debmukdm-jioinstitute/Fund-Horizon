@@ -62,6 +62,8 @@ class ProviderAdapter:
             ptxt: list[str] = []
             plain = ing.read_pdf_pages(data, password, "plain")
             *txn, tx_flows, tx_complete = ing.mf_txn_report(pages)
+            if not txn[0]:
+                *txn, tx_flows, tx_complete = layouts.transaction_wise_mf(plain)
             direct = False
             if txn[0]:  # unambiguous layout: skip the guessing readers
                 holdings, tot, warns, hints = txn

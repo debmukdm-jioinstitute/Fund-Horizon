@@ -73,10 +73,157 @@ def folio_wise_mf(pages: list[str]):
     return holdings, tot, warns, []
 
 
+_TX_WISE_HDR = re.compile(
+    r"^\s*(?P<name>.+?)\s+Unrealised\s+Gain\s*/\s*\(Loss\)\s*:\s*₹?\s*(?P<gain>-?[\d,]+(?:\.\d+)?)"
+    r"\s*\|\s*Absolute\s+Return\s*:\s*(?P<abs>-?[\d.]+)%"
+    r"\s*\|\s*Annualised\s+Return\s*\(XIRR\)\s*:\s*(?P<xirr>-?[\d.]+%?|-)\s*$",
+    re.I,
+)
+_TX_WISE_ROW = re.compile(
+    r"^\s*(?P<sno>\d+)\s+(?P<folio>[A-Za-z0-9/\-]+)\s+(?P<inv>[\d,]+(?:\.\d+)?)\s+(?P<date>\d{2}-\d{2}-\d{4})"
+    r"\s+(?P<div_reinv>[\d,]+(?:\.\d+)?)\s+(?P<pnav>[\d,]+(?:\.\d+)?)\s+(?P<bal>[\d,]+(?:\.\d+)?)"
+    r"\s+(?P<days>\d+)\s+(?P<cnav>[\d,]+(?:\.\d+)?)\s+(?P<val>[\d,]+(?:\.\d+)?)"
+    r"\s+(?P<abs>-?[\d.]+)%\s+(?P<xirr>-?[\d.]+%?|-)\s*$"
+)
+_TX_WISE_SUB = re.compile(
+    r"^\s*Sub\s+Total\s+(?P<inv>[\d,]+(?:\.\d+)?)\s+(?P<units>[\d,]+(?:\.\d+)?)\s+(?P<val>[\d,]+(?:\.\d+)?)"
+    r"\s+(?P<abs>-?[\d.]+)%\s+(?P<xirr>-?[\d.]+%?|-)\s*$",
+    re.I,
+)
+
+
+def transaction_wise_mf(pages: list[str]):
+    """'Portfolio Valuation Report - Transaction Wise': per-(scheme, folio) sections with dated purchase rows and Sub Total row,
+    plus top KPI banner (INVESTED AMOUNT, CURRENT VALUE, UNREALISED GAIN / (LOSS), ABSOLUTE RETURN, ANNUALISED RETURN (XIRR))."""
+    joined = "\n".join(pages)
+    if "Transaction Wise" not in joined and not _TX_WISE_HDR.search(joined):
+        return [], {}, [], [], [], False
+    holdings: list[HoldingRec] = []
+    flows: list[ing.FlowRec] = []
+    warns: list[str] = []
+    tot: dict[str, float | None] = {}
+
+    flat = _clean(" ".join(pages[:2]))
+    head = re.search(
+        rf"INVESTED AMOUNT ₹({_N}) CURRENT VALUE ₹({_N}) UNREALISED GAIN / \(LOSS\) ₹(-?[\d,]+\.\d\d) "
+        rf"ABSOLUTE RETURN ({_PCT}) ANNUALISED RETURN \(XIRR\) ({_PCT})",
+        flat,
+    )
+    if head:
+        hv = [ing.to_num(x.rstrip("%")) for x in head.groups()]
+        tot["table_total_invested"] = tot["total_invested"] = hv[0]
+        tot["table_total_value"] = tot["total_value"] = hv[1]
+        tot["reported_unrealised_gain"] = hv[2]
+        tot["reported_xirr"] = hv[4]
+
+    cur_sec: dict | None = None
+    sections: list[dict] = []
+    expected_sno = 1
+
+    for pno, pg in enumerate(pages, 1):
+        for lno, raw_ln in enumerate(pg.splitlines(), 1):
+            ln = raw_ln.strip()
+            if not ln:
+                continue
+            if m := _TX_WISE_HDR.match(ln):
+                xirr_s = m.group("xirr").rstrip("%").strip()
+                cur_sec = {
+                    "name": _name(m.group("name")),
+                    "gain": ing.to_num(m.group("gain")),
+                    "abs_ret": ing.to_num(m.group("abs")),
+                    "xirr": None if xirr_s == "-" else ing.to_num(xirr_s),
+                    "rows": [],
+                    "sub": None,
+                    "page": f"p{pno}",
+                    "line": lno,
+                }
+                sections.append(cur_sec)
+                continue
+            if m := _TX_WISE_ROW.match(ln):
+                if cur_sec is None:
+                    continue
+                sno = int(m.group("sno"))
+                if sno != expected_sno:
+                    warns.append(f"Transaction row S.No jumped from {expected_sno - 1} to {sno} on p{pno}.")
+                expected_sno = sno + 1
+                xirr_s = m.group("xirr").rstrip("%").strip()
+                cur_sec["rows"].append({
+                    "sno": sno,
+                    "folio": m.group("folio"),
+                    "inv": ing.to_num(m.group("inv")) or 0.0,
+                    "date": ing.parse_date(m.group("date")),
+                    "div_reinv": ing.to_num(m.group("div_reinv")) or 0.0,
+                    "pnav": ing.to_num(m.group("pnav")) or 0.0,
+                    "bal": ing.to_num(m.group("bal")) or 0.0,
+                    "days": int(m.group("days")),
+                    "cnav": ing.to_num(m.group("cnav")) or 0.0,
+                    "val": ing.to_num(m.group("val")) or 0.0,
+                    "abs": ing.to_num(m.group("abs")),
+                    "xirr": None if xirr_s == "-" else ing.to_num(xirr_s),
+                    "page": f"p{pno}",
+                    "line": lno,
+                })
+                continue
+            if m := _TX_WISE_SUB.match(ln):
+                if cur_sec is not None:
+                    xirr_s = m.group("xirr").rstrip("%").strip()
+                    cur_sec["sub"] = {
+                        "inv": ing.to_num(m.group("inv")),
+                        "units": ing.to_num(m.group("units")),
+                        "val": ing.to_num(m.group("val")),
+                        "abs": ing.to_num(m.group("abs")),
+                        "xirr": None if xirr_s == "-" else ing.to_num(xirr_s),
+                    }
+
+    for idx, sec in enumerate(sections, 1):
+        rows = sec["rows"]
+        if not rows:
+            continue
+        folio = rows[-1]["folio"]
+        sum_inv = round(sum(r["inv"] + r["div_reinv"] for r in rows), 2)
+        sum_val = round(sum(r["val"] for r in rows), 2)
+        units = rows[-1]["bal"]
+        cnav = rows[-1]["cnav"]
+        sub = sec["sub"]
+        inv = sub["inv"] if sub and sub.get("inv") is not None else sum_inv
+        val = sub["val"] if sub and sub.get("val") is not None else sum_val
+        h = HoldingRec(
+            security_name=sec["name"], account_no=folio, quantity=units, price=cnav,
+            market_value=val, invested_amount=inv, unrealised_gain=round(val - inv, 2),
+            source_page=sec["page"], source_row=idx,
+        )
+        h.reported_xirr = sec["xirr"] if sec["xirr"] is not None else (sub["xirr"] if sub else None)
+        if sub:
+            if abs(sum_inv - (sub["inv"] or 0)) > 0.05 or abs(sum_val - (sub["val"] or 0)) > 0.05:
+                h.issues.append(f"Row sum ({sum_inv:,.2f} / {sum_val:,.2f}) differs from Sub Total ({sub['inv']:,.2f} / {sub['val']:,.2f}).")
+        for r in rows:
+            if r["date"] and (r["inv"] + r["div_reinv"]) > 0:
+                flows.append(ing.FlowRec(
+                    flow_date=r["date"], kind="deposit", amount=round(r["inv"] + r["div_reinv"], 2),
+                    description=f"{sec['name'][:60]} Purchase", account_no=folio,
+                    source_page=r["page"], source_row=r["line"],
+                ))
+        holdings.append(h)
+
+    if holdings and tot.get("total_value") is not None:
+        sv = round(sum(h.market_value or 0 for h in holdings), 2)
+        si = round(sum(h.invested_amount or 0 for h in holdings), 2)
+        if abs(sv - tot["total_value"]) > max(1.0, 0.0001 * sv) or abs(si - tot["total_invested"]) > max(1.0, 0.0001 * si):
+            warns.append(
+                f"Sections read ({len(holdings)}) sum to value {sv:,.2f} / invested {si:,.2f} "
+                f"but the header total is {tot['total_value']:,.2f} / {tot['total_invested']:,.2f}."
+            )
+        else:
+            tot["table_total_invested"] = si
+            tot["table_total_value"] = sv
+    hints = [(h, "mutual fund") for h in holdings]
+    return holdings, tot, warns, hints, flows, bool(holdings and flows)
+
+
 def folio_date(plain: list[str]) -> str | None:
-    """Report date printed under the investor name on a FundsIndia folio-wise report ('05 Nov 2026')."""
+    """Report date printed under the investor name on a FundsIndia folio-wise or transaction-wise report ('05 Nov 2026')."""
     t = plain[0] if plain else ""
-    m = re.search(r"Folio Wise\n.*\n(\d{1,2} [A-Z][a-z]{2} \d{4})\n", t)
+    m = re.search(r"(?:Folio|Transaction) Wise\n.*\n(\d{1,2} [A-Z][a-z]{2} \d{4})\n", t)
     return ing.parse_date(m.group(1)) if m else None
 
 

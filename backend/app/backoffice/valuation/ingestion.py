@@ -561,6 +561,8 @@ def scan_scalars(lines: list[str], skip_prefixes: tuple[str, ...] = ()) -> tuple
             m = rx.search(s)
             if not m:
                 continue
+            if "|" in s and re.search(r"Absolute\s+Return|Annualised\s+Return", s, re.I):
+                continue  # per-scheme sub-banner in Transaction-Wise reports, not a statement-level scalar
             tail = s[m.end():]
             tail = re.sub(DATE_RE, " ", tail)
             nm = re.search(r"[:\-\s]*(?:Rs\.?|₹)?\s*(\(?-?[\d,]+(?:\.\d+)?\)?)(?!\d|\s*%)", tail)

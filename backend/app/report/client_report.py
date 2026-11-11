@@ -228,8 +228,124 @@ def _trailing_numbers(tokens: list[str], n: int) -> list[str] | None:
 
 
 def parse_statement(text: str) -> dict[str, Any] | None:
-    """Folio-wise valuation table -> client header + rows. None when no fund rows are found."""
+    """Folio-wise or Transaction-wise valuation table -> client header + rows. None when no fund rows are found."""
     lines = [ln.rstrip() for ln in text.splitlines() if ln.strip()]
+    head = "\n".join(lines[:16])
+    title_i = next((i for i, ln in enumerate(lines) if "valuation report" in ln.lower()), -1)
+    name = re.split(r"\s{2,}", lines[title_i + 1].strip())[0] if title_i >= 0 and title_i + 1 < len(lines) else ""
+    date = re.search(r"\b\d{1,2}\s?[A-Z][a-z]{2}\s?\d{4}\b", head)
+    arn, phone = re.search(r"ARN[:\s]*(\d+)", head), re.search(r"Phone[:\s]*(\d{8,})", head)
+    client_hdr = {
+        "name": name, "date": date.group(0) if date else "",
+        "arn": arn.group(1) if arn else ARN.replace("ARN ", ""),
+        "phone": phone.group(1) if phone else "",
+    }
+
+    # 1. Check for 'Portfolio Valuation Report - Transaction Wise' (per-scheme section headers + dated purchase rows + Sub Total)
+    if "Transaction Wise" in head or re.search(r"Unrealised\s+Gain\s*/\s*\(Loss\)\s*:\s*₹", text):
+        from app.backoffice.valuation.layouts import _TX_WISE_HDR, _TX_WISE_ROW, _TX_WISE_SUB
+
+        tx_rows: list[dict[str, Any]] = []
+        kpi_m = re.search(r"ANNUALISED\s+RETURN\s*\(XIRR\)\s*(?:\n|\s)+(-?[\d.]+)%", text[:2500], re.I)
+        tx_xirr = float(kpi_m.group(1)) if kpi_m else None
+        if tx_xirr is None:
+            flat_head = re.sub(r"\s+", " ", head)
+            m_flat = re.search(r"ANNUALISED RETURN \(XIRR\).*?(-?[\d.]+)%", flat_head)
+            if m_flat:
+                all_pcts = re.findall(r"(-?[\d.]+)%", flat_head[flat_head.find("INVESTED AMOUNT"):])
+                if len(all_pcts) >= 2:
+                    tx_xirr = float(all_pcts[1])
+                else:
+                    tx_xirr = float(m_flat.group(1))
+        cur_sec: dict[str, Any] | None = None
+        secs: list[dict[str, Any]] = []
+        for ln in lines:
+            s_ln = ln.strip()
+            if m := _TX_WISE_HDR.match(s_ln):
+                xs = m.group("xirr").rstrip("%").strip()
+                cur_sec = {"name": re.sub(r"\s+", " ", m.group("name")).strip(), "abs_ret": _num(m.group("abs")),
+                           "ann_ret": 0.0 if xs == "-" else _num(xs), "rows": [], "sub": None}
+                secs.append(cur_sec)
+            elif (m := _TX_WISE_ROW.match(s_ln)) and cur_sec is not None:
+                cur_sec["rows"].append({
+                    "folio": m.group("folio"), "inv": _num(m.group("inv")), "div_reinv": _num(m.group("div_reinv")),
+                    "bal": _num(m.group("bal")), "cnav": _num(m.group("cnav")), "val": _num(m.group("val")),
+                })
+            elif (m := _TX_WISE_SUB.match(s_ln)) and cur_sec is not None:
+                xs = m.group("xirr").rstrip("%").strip()
+                cur_sec["sub"] = {"inv": _num(m.group("inv")), "val": _num(m.group("val")),
+                                  "abs_ret": _num(m.group("abs")), "ann_ret": 0.0 if xs == "-" else _num(xs)}
+        for sec in secs:
+            r_list = sec["rows"]
+            if not r_list:
+                continue
+            sub = sec["sub"]
+            div_reinv = round(sum(r["div_reinv"] for r in r_list), 2)
+            investments = round(sum(r["inv"] for r in r_list), 2)
+            invested = sub["inv"] if sub else round(investments + div_reinv, 2)
+            value = sub["val"] if sub else round(sum(r["val"] for r in r_list), 2)
+            tx_rows.append({
+                "name": sec["name"], "folio": r_list[-1]["folio"],
+                "invested": invested, "investments": investments, "div_reinv": div_reinv, "div_payout": 0.0,
+                "units": r_list[-1]["bal"], "nav": r_list[-1]["cnav"], "value": value,
+                "weight": 0.0, "abs_ret": sec["abs_ret"], "ann_ret": sec["ann_ret"],
+            })
+        if tx_rows:
+            tot_v = sum(r["value"] for r in tx_rows)
+            for r in tx_rows:
+                r["weight"] = round(r["value"] / tot_v * 100, 2) if tot_v else 0.0
+            return {"client": client_hdr, "xirr": tx_xirr, "rows": tx_rows}
+
+    # 2. Check for ProAffluence 'MF Summary Report'
+    if "MF Summary Report" in text and "|" in text:
+        pa_rows: list[dict[str, Any]] = []
+        pa_xirr = None
+        if g := re.search(r"Grand\s+total[^\n₹]*₹\s*([^\n]+)", text, re.I):
+            g_nums = [_num(t) for t in re.findall(r"-?[\d,]+(?:\.\d+)?", g.group(1))]
+            if len(g_nums) >= 6:
+                pa_xirr = g_nums[5]
+        elif g_multi := re.search(r"Grand\s+total([\s\S]{1,220})", text, re.I):
+            g_nums = [_num(t) for t in re.findall(r"-?\d[\d,]*(?:\.\d+)?", g_multi.group(1))]
+            if len(g_nums) >= 6:
+                pa_xirr = g_nums[5]
+        c_m = re.search(r"^[ \t]*([A-Za-z][A-Za-z .]{2,50}?)\s*\(([A-Z]{5}\d{4}[A-Z])\)", text, re.M)
+        on_m = re.search(r"Report\s+as\s+on:?\s*(\d{1,2}-[A-Za-z]{3}-\d{4})", text, re.I)
+        hdr_re = re.compile(r"^\s*(?P<name>.+?\S)\s*\|\s*(?P<folio>[A-Za-z0-9/\-]+)\s*\|\s*(?P<holder>[A-Za-z][A-Za-z .]+?)\s*$")
+        for idx, ln in enumerate(lines):
+            hm = hdr_re.match(ln)
+            if not hm:
+                continue
+            fig_ln = next((lines[k] for k in range(idx + 1, min(len(lines), idx + 5)) if "₹" in lines[k]), None)
+            if not fig_ln:
+                continue
+            pre, post = fig_ln.split("₹", 1)
+            pre_clean = re.sub(r"\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b", " ", pre)
+            p_nums = [_num(t) for t in re.findall(r"\d[\d,]*(?:\.\d+)?", pre_clean)]
+            post_nums = [_num(t) for t in re.findall(r"-?[\d,]+(?:\.\d+)?", post)]
+            if len(post_nums) >= 2 and p_nums:
+                inv, val = post_nums[0], post_nums[1]
+                div_pay = post_nums[4] if len(post_nums) >= 5 else 0.0
+                ann = post_nums[5] if len(post_nums) >= 6 else 0.0
+                pa_rows.append({
+                    "name": hm.group("name").strip(), "folio": hm.group("folio").strip(),
+                    "invested": inv, "investments": inv, "div_reinv": 0.0, "div_payout": div_pay,
+                    "units": p_nums[-1], "nav": p_nums[0], "value": val,
+                    "weight": 0.0, "abs_ret": post_nums[3] if len(post_nums) >= 4 else 0.0, "ann_ret": ann,
+                })
+        if pa_rows:
+            tot_v = sum(r["value"] for r in pa_rows)
+            for r in pa_rows:
+                r["weight"] = round(r["value"] / tot_v * 100, 2) if tot_v else 0.0
+            return {
+                "client": {
+                    **client_hdr,
+                    "name": client_hdr["name"] or (c_m.group(1).strip() if c_m else ""),
+                    "date": client_hdr["date"] or (on_m.group(1).replace("-", " ") if on_m else ""),
+                },
+                "xirr": pa_xirr, "rows": pa_rows,
+            }
+
+    # 3. Folio-wise valuation table (10 trailing numeric columns per S.No row)
     rows: list[dict[str, Any]] = []
     xirr = None
     for ln in lines:
@@ -245,15 +361,7 @@ def parse_statement(text: str) -> dict[str, Any] | None:
             rows[-1]["name"] += " " + " ".join(tok)  # wrapped fund name
     if not rows:
         return None
-    head = "\n".join(lines[:12])
-    title_i = next((i for i, ln in enumerate(lines) if "valuation report" in ln.lower()), -1)
-    name = re.split(r"\s{2,}", lines[title_i + 1].strip())[0] if title_i >= 0 and title_i + 1 < len(lines) else ""
-    date = re.search(r"\b\d{1,2}\s?[A-Z][a-z]{2}\s?\d{4}\b", head)
-    arn, phone = re.search(r"ARN[:\s]*(\d+)", head), re.search(r"Phone[:\s]*(\d{8,})", head)
-    return {
-        "client": {"name": name, "date": date.group(0) if date else "", "arn": arn.group(1) if arn else ARN.replace("ARN ", ""), "phone": phone.group(1) if phone else ""},
-        "xirr": xirr, "rows": rows,
-    }
+    return {"client": client_hdr, "xirr": xirr, "rows": rows}
 
 
 def parse_factsheet(name: str, text: str) -> dict[str, Any] | None:
@@ -267,8 +375,23 @@ def parse_factsheet(name: str, text: str) -> dict[str, Any] | None:
 
 
 def parse_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
+    from app.backoffice.valuation import bundle
+    from app.report import statements
+
     out: dict[str, Any] = {"client": {"name": "", "date": "", "arn": ARN.replace("ARN ", ""), "phone": ""}, "xirr": None, "rows": [], "factsheets": [], "warnings": []}
+    expanded: list[tuple[str, bytes, bool]] = []
     for name, data in files:
+        if is_pdf(name, data):
+            try:
+                secs, _ = bundle.split(data)
+            except Exception:
+                secs = []
+            if secs:
+                stem = name.rsplit(".", 1)[0]
+                expanded.extend((f"{stem} - {s['label']}.pdf", s["data"], True) for s in secs)
+                continue
+        expanded.append((name, data, False))
+    for name, data, from_bundle in expanded:
         try:
             text = extract_text(name, data)
         except ValueError as e:
@@ -284,10 +407,14 @@ def parse_files(files: list[tuple[str, bytes]]) -> dict[str, Any]:
             if not (out["client"]["name"] and out["client"]["date"]):
                 out["warnings"].append(f"{name}: client name or date not detected (scan quality?); please fill them in. Review all OCR values.")
             continue
+        pms_st = statements.parse_pms(text)
+        if pms_st:
+            out["factsheets"].append(statements.pms_factsheet(pms_st))
+            continue
         fs = parse_factsheet(name, text)
         if fs:
             out["factsheets"].append(fs)
-        else:
+        elif not from_bundle:
             out["warnings"].append(f"{name}: no fund statement rows or factsheet figures recognised.")
     return out
 

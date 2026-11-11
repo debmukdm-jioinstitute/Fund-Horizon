@@ -11,9 +11,9 @@ H = [{"code": "122640", "invested": 940934, "value": 1600734, "name": "Parag Par
      {"code": "150579", "invested": 999949, "value": 720380, "name": "Edelweiss Gold & Silver", "flag": "†"},
      {"code": "100177", "invested": 209991, "value": 227703, "name": "Quant Small Cap"}]  # last: not in the live frame
 FRAME = pd.DataFrame([
-    {"code": "122640", "name": "PPFAS Flexi", "cat": "flexi_cap", "cat_label": "Flexi Cap", "nav_date": "04-Nov-2026", "cagr_3y": 11.9, "cap_up_3y": 69.0, "cap_down_3y": 47.0, "cap_ratio_3y": 1.48,
+    {"code": "122640", "name": "PPFAS Flexi", "plan": "Regular", "cat": "flexi_cap", "cat_label": "Flexi Cap", "nav_date": "04-Nov-2026", "cagr_3y": 11.9, "cap_up_3y": 69.0, "cap_down_3y": 47.0, "cap_ratio_3y": 1.48,
      "max_dd_3y": -11.2, "max_dd_all": -31.3, "history_years": 13.4, "fh_score": 57.5, "fh_signal": "Hold", "fh_signal_reasons": ["in line with peers"], "is_fh_recommended": False},
-    {"code": "150579", "name": "Edelweiss G&S", "cat": "gold", "cat_label": "Gold", "nav_date": "04-Nov-2026", "cagr_3y": 33.7, "cap_up_3y": None, "cap_down_3y": None, "cap_ratio_3y": None,
+    {"code": "150579", "name": "Edelweiss Gold and Silver ETF Fund of Fund - Regular Plan - Growth", "plan": "Regular", "cat": "gold", "cat_label": "Gold", "nav_date": "04-Nov-2026", "cagr_3y": 33.7, "cap_up_3y": None, "cap_down_3y": None, "cap_ratio_3y": None,
      "max_dd_3y": -38.8, "max_dd_all": -38.8, "history_years": 4.1, "fh_score": 27.6, "fh_signal": "Sell", "fh_signal_reasons": [], "is_fh_recommended": True, "quality": "ok"},
     {"code": "100177", "name": "Quant Small Cap Fund - Regular Plan - Growth", "cat": "small_cap", "cat_label": "Small Cap", "nav_date": "04-Nov-2026", "cagr_3y": 9.0, "cap_up_3y": 90.0, "cap_down_3y": 90.0,
      "cap_ratio_3y": 1.0, "max_dd_3y": -20.0, "max_dd_all": -70.0, "history_years": 20.0, "fh_score": 50.0, "fh_signal": "Hold", "fh_signal_reasons": [], "is_fh_recommended": False, "quality": "nav_shock"}])
@@ -162,5 +162,67 @@ def test_four_nifty_indices_matrix_benchmark_mapping_and_pagination(monkeypatch)
     assert "Nifty indices" in txt and "SIPs worth today" in txt and "Fund Horizon" in txt
     fonts = {m.decode() for m in re.findall(rb"/BaseFont\s*/(?:[A-Z]{6}\+)?([A-Za-z0-9_-]+)", pdf_bytes)}
     assert fonts and all(f.startswith("GoogleSans") for f in fonts), fonts
+
+
+def test_transaction_wise_valuation_report_reconciles_100_percent(monkeypatch):
+    import io
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.pdfgen import canvas
+    from app.backoffice.valuation.providers import ADAPTERS
+    from app.report import client_report as cr_mod
+
+    idx_dates = pd.to_datetime(["2024-01-31", "2024-06-30", "2026-08-31", "2026-11-30"])
+    idx_nav = pd.Series([100.0, 110.0, 140.0, 150.0], index=idx_dates)
+    monkeypatch.setattr(api, "_frame", lambda: FRAME)
+    monkeypatch.setattr(api, "_nav", lambda c: idx_nav)
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=landscape(A4))
+    lines = [
+        "Portfolio Valuation Report - Transaction Wise",
+        "Nithya Karthik",
+        "11 Nov 2026",
+        "Fund Horizon",
+        "ARN: 345439  |  Phone: 9920406408",
+        "AMFI Registered Mutual Fund Distributor",
+        "INVESTED AMOUNT ₹22,79,584.21 CURRENT VALUE ₹23,09,320.23 UNREALISED GAIN / (LOSS) ₹29,736.02 ABSOLUTE RETURN 1.30% ANNUALISED RETURN (XIRR) 8.62%",
+        "S. No Folio Number Invested Amount (₹) Purchase NAV Date Dividend Reinvested (₹) Purchase NAV (₹) Balance Units Transaction Days Current NAV (₹) Current Value (₹) Absolute Return (%) Annualised Return (%)",
+        "PPFAS Flexi Cap Fund-Reg(G) Unrealised Gain / (Loss): ₹44,076.88  |  Absolute Return: 15.77%  |  Annualised Return (XIRR): 6.19%",
+        "1 910184329106 2,79,584.21 03-06-2024 0.00 87.11 3209.583 889 100.84 3,23,661.09 15.77% 6.19%",
+        "Sub Total 2,79,584.21 3,209.58 3,23,661.09 15.77% 6.19%",
+        "Edelweiss Gold & Silver ETF FoF-Reg(G) Unrealised Gain / (Loss): ₹-14,340.86  |  Absolute Return: -0.72%  |  Annualised Return (XIRR): -",
+        "2 9764695/12 10,00,000.00 07-08-2026 0.00 19.10 52356.144 94 18.96 9,92,829.57 -0.72% -",
+        "3 9764695/12 10,00,000.00 14-08-2026 0.00 19.10 104712.289 87 18.96 9,92,829.57 -0.72% -",
+        "Sub Total 20,00,000.00 1,04,712.29 19,85,659.14 -0.72% -",
+    ]
+    y = 550
+    for ln in lines:
+        c.drawString(30, y, ln)
+        y -= 16
+    c.save()
+    pdf_data = buf.getvalue()
+
+    # 1. Portfolio Review extraction: 100% rupee & instalment accuracy
+    res = api.parse_review_files([("tx_wise.pdf", pdf_data)])
+    assert res["client"] == {"name": "Nithya Karthik", "date": "2026-11-11"}
+    assert not res["warnings"]
+    assert len(res["holdings"]) == 2
+    assert res["analysis"]["invested"] == 2279584.21 and res["analysis"]["value"] == 2309320.23
+    assert res["compare"]["portfolio_xirr"] == 8.62
+    by_code = {h["code"]: h for h in res["holdings"]}
+    assert by_code["122640"]["invested"] == 279584.21 and by_code["122640"]["value"] == 323661.09 and by_code["122640"]["ret"] == 6.19
+    assert by_code["150579"]["invested"] == 2000000.00 and by_code["150579"]["value"] == 1985659.14 and by_code["150579"]["inst"] == "2"
+
+    # 2. Valuation adapter extraction: 100% reconciliation
+    st = ADAPTERS["fundsindia"].extract("tx_wise.pdf", pdf_data)
+    assert not st.errors and st.flows_complete and len(st.holdings) == 2 and len(st.flows) == 3
+    assert st.totals["total_invested"] == 2279584.21 and st.totals["total_value"] == 2309320.23
+
+    # 3. Client Report extraction: 100% reconciliation
+    cr = cr_mod.parse_files([("tx_wise.pdf", pdf_data)])
+    assert cr["client"]["name"] == "Nithya Karthik" and cr["xirr"] == 8.62 and len(cr["rows"]) == 2
+    assert round(sum(r["invested"] for r in cr["rows"]), 2) == 2279584.21
+    assert round(sum(r["value"] for r in cr["rows"]), 2) == 2309320.23
+
 
 

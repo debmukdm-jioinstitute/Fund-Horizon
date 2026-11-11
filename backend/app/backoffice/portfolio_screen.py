@@ -73,6 +73,10 @@ def normalize_scheme_text(text: str) -> str:
     """Normalize fund name for tolerant name matching (handles 'Fund-Reg(G)' style abbreviations)."""
     t = text.lower().replace("&", " and ")
     t = re.sub(r"\bpru\b", "prudential", t)
+    t = re.sub(r"\bwoc\b|\bwhite\s*oak\b", "whiteoak capital", t)
+    t = re.sub(r"\bcanara\s+rob\b(?!\s*eco)", "canara robeco", t)
+    t = re.sub(r"\bnatural\s+res\b(?!\s*ources)", "natural resources", t)
+    t = re.sub(r"\babsl\b|\baditya\s+birla\b(?!\s+sun)", "aditya birla sun life", t)
     t = re.sub(r"\bfin(?:ancial)?\s+serv(?:ices?)?\b", "financial services", t)
     t = re.sub(r"\b(large|mid|small|multi|flexi)\s+cap\b", r"\1cap", t)  # "Small Cap" == "Smallcap"
     return " ".join(_NORM_DROP.sub(" ", t).split())
@@ -574,7 +578,29 @@ def _parse_pdf(pdf_bytes: bytes, password: str) -> tuple[list[dict[str, Any]], s
         # Non-fatal: fallback to universal extractor below
         pass
 
-    # 2a. Folio-wise valuation reports (FundsIndia style: S.No, fund, folio, 10 numeric columns). pdfium glues their rows
+    # 1.5. Bundled distributor report (e.g. FY Annual Dashboard + MF Summary + PMS + Direct equity):
+    # extract only the MF section(s) so direct equity / PMS tables are never misread as mutual funds.
+    try:
+        from app.backoffice.valuation import bundle
+
+        secs, _ = bundle.split(pdf_bytes, password)
+    except Exception:
+        secs = []
+    if secs:
+        mf_secs = [s for s in secs if "mf" in s["label"].lower() or s["provider"] == "fundsindia"]
+        out_h: list[dict[str, Any]] = []
+        out_d: str | None = None
+        for s in (mf_secs or secs):
+            try:
+                sh, sd = _parse_pdf(s["data"], "")
+                out_h.extend(sh)
+                out_d = out_d or sd
+            except Exception:
+                continue
+        if out_h:
+            return out_h, out_d
+
+    # 2a. Folio-wise or Transaction-wise valuation reports (FundsIndia style). pdfium glues their rows
     # together, so read pypdf's layout text instead. Skipped for password-protected files (pypdf cannot open those here).
     try:
         from app.report import client_report

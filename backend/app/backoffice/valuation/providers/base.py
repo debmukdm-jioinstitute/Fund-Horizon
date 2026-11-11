@@ -60,18 +60,24 @@ class ProviderAdapter:
                 return st
             cands = [ing.holdings_from_text(pages)]
             ptxt: list[str] = []
-            if cls.asset_class == "mutual_fund" or cls.mf_text(pages):
-                ptxt = ing.pdfium_pages(data, password)
-                cands += [ing.holdings_from_mf_blocks(pages), ing.holdings_from_cards(ptxt)]
-            cands.append(ing.holdings_from_columns(data, password))
             plain = ing.read_pdf_pages(data, password, "plain")
-            cands.append(layouts.folio_wise_mf(plain))
-            dh, dt, ddate, _ = layouts.direct_equity(plain)
-            cands.append((dh, dt, [], []))
-            holdings, tot, warns, hints = ing.pick_best(cands)
-            direct = bool(dh) and holdings is dh
-            if direct:
-                default_type = "equity"
+            *txn, tx_flows = ing.mf_txn_report(pages)
+            direct = False
+            if txn[0]:  # unambiguous layout: skip the guessing readers
+                holdings, tot, warns, hints = txn
+                flows = tx_flows
+            else:
+                if cls.asset_class == "mutual_fund" or cls.mf_text(pages):
+                    ptxt = ing.pdfium_pages(data, password)
+                    cands += [ing.holdings_from_mf_blocks(pages), ing.holdings_from_cards(ptxt)]
+                cands.append(ing.holdings_from_columns(data, password))
+                cands.append(layouts.folio_wise_mf(plain))
+                dh, dt, ddate, _ = layouts.direct_equity(plain)
+                cands.append((dh, dt, [], []))
+                holdings, tot, warns, hints = ing.pick_best(cands)
+                direct = bool(dh) and holdings is dh
+                if direct:
+                    default_type = "equity"
             if cls.mf_text(pages):
                 st.asset_class, default_type = "mutual_fund", "mutual_fund"
             if not holdings and cls.asset_class == "mutual_fund":

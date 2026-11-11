@@ -152,3 +152,17 @@ def test_real_statement_layouts_mf_blocks_cards_and_positional_columns():
     c.save()
     h, tot, _, _ = ingestion.holdings_from_columns(buf.getvalue())
     assert [(x.security_name, x.market_value) for x in h] == [("ALPHA ETF", 404942.0), ("BETA LTD", 447042.0)] and tot["table_total_value"] == 851984.0
+
+
+def test_mf_transaction_report_gives_holding_and_dated_flows():
+    page = "\n".join([
+        "Mirae Asset Large Cap Fund - Regular Plan - Growth | INF769K01010      Avg NAV: 110.01 | Curt NAV: 110.5890 | NAV as on 04-11-2026",
+        "      Amt inv: ₹84,011.17 | Curt val: ₹84,450.96",
+        "   ADITYA PARCHURE(PAN:ABCDE1234F)|70414596465",
+        "   Opening balance   01-01-2016   ₹0   0   0",
+        " 1   SIP   08-01-2019   ₹3,000   47.95   62.565   62.565   2858",
+        " 88  Redemption  19-01-2026  ₹3,49,171  115.352  3,027.000  517.817  290  -",
+    ])
+    h, _, w, _, flows = ingestion.mf_txn_report([page])
+    assert [(x.account_no, x.quantity, x.invested_amount, x.market_value) for x in h] == [("70414596465", 517.817, 84011.17, 84450.96)]
+    assert [(f.flow_date, f.kind, f.amount) for f in flows] == [("2019-01-08", "deposit", 3000.0), ("2026-01-19", "withdrawal", 349171.0)] and not w

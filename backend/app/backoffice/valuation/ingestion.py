@@ -421,6 +421,45 @@ def holdings_from_mf_blocks(pages: list[str]):
     return holdings, totals, warnings, hints
 
 
+_TX_SCHEME = re.compile(r"^\s*(?P<name>.+?)\s*\|\s*(?P<isin>IN[A-Z0-9]{10})\s+Avg NAV:\s*[\d.,]+\s*\|\s*Curt NAV:\s*(?P<nav>[\d.,]+)")
+_TX_VAL = re.compile(r"Amt inv:\s*₹?\s*(?P<inv>[\d,.]+)\s*\|\s*Curt val:\s*₹?\s*(?P<cur>[\d,.]+)")
+_TX_FOLIO = re.compile(r"\(PAN:[^)]*\)\s*\|\s*(?P<folio>[A-Za-z0-9/\-]+)\s*$")
+_TX_ROW = re.compile(r"^\s*\d+\s+(?P<type>[A-Za-z][A-Za-z ./-]*?)\s+(?P<date>\d{1,2}-\d{1,2}-\d{4})\s+₹\s*(?P<amt>[\d,]+(?:\.\d+)?)"
+                     r"\s+(?P<nav>[\d,]+\.?\d*)\s+(?P<units>[\d,]+\.?\d*)\s+(?P<bal>[\d,]+\.?\d*)\s+\d+")
+
+
+def mf_txn_report(pages: list[str]):
+    """Distributor 'MF Transaction Report': per scheme a '<name> | <ISIN> ... Curt NAV' line, an 'Amt inv | Curt val' line, a
+    '<holder>(PAN:..)|<folio>' line, then dated rows. Holding = scheme totals; flows = the dated rows (SIP/purchase in, redemption out)."""
+    holdings: list[HoldingRec] = []
+    flows: list[FlowRec] = []
+    hints: list[tuple[HoldingRec, str]] = []
+    warnings: list[str] = []
+    cur: HoldingRec | None = None
+    for pno, text in enumerate(pages, 1):
+        for lno, line in enumerate(text.splitlines(), 1):
+            if m := _TX_SCHEME.match(line):
+                cur = HoldingRec(security_name=m["name"].strip(), isin=m["isin"], price=to_num(m["nav"]), source_page=f"p{pno}", source_row=lno)
+                holdings.append(cur)
+                hints.append((cur, "mutual fund"))
+            elif cur is None:
+                continue
+            elif m := _TX_VAL.search(line):
+                cur.invested_amount, cur.market_value = to_num(m["inv"]), to_num(m["cur"])
+                cur.unrealised_gain = round(cur.market_value - cur.invested_amount, 2)
+            elif m := _TX_FOLIO.search(line):
+                cur.account_no = m["folio"]
+            elif m := _TX_ROW.match(line):
+                cur.quantity = to_num(m["bal"])
+                kind, amt = classify_flow(m["type"]), to_num(m["amt"])
+                if kind is None:
+                    warnings.append(f"p{pno} line {lno}: transaction '{m['type']}' not classified; flows may be incomplete.")
+                elif amt:
+                    flows.append(FlowRec(flow_date=parse_date(m["date"]), kind=kind, amount=round(amt, 2), description=f"{cur.security_name[:60]} {m['type']}",
+                                         account_no=cur.account_no, source_page=f"p{pno}", source_row=lno))
+    return holdings, {}, warnings, hints, flows
+
+
 _CARD_AMT = re.compile(r"^₹(?P<inv>[\d,]+(?:\.\d+)?)\s+₹(?P<cur>[\d,]+(?:\.\d+)?)")
 _CARD_SKIP = re.compile(r"^(invested|current|gains|prev\.? day|change|ann\. ret\.|\.\.\.|all|sort|total\b)", re.I)
 

@@ -61,11 +61,11 @@ class ProviderAdapter:
             cands = [ing.holdings_from_text(pages)]
             ptxt: list[str] = []
             plain = ing.read_pdf_pages(data, password, "plain")
-            *txn, tx_flows = ing.mf_txn_report(pages)
+            *txn, tx_flows, tx_complete = ing.mf_txn_report(pages)
             direct = False
             if txn[0]:  # unambiguous layout: skip the guessing readers
                 holdings, tot, warns, hints = txn
-                flows = tx_flows
+                flows, st.flows_complete = tx_flows, tx_complete
             else:
                 if cls.asset_class == "mutual_fund" or cls.mf_text(pages):
                     ptxt = ing.pdfium_pages(data, password)

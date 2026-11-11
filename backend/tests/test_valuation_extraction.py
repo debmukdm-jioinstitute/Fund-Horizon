@@ -163,6 +163,6 @@ def test_mf_transaction_report_gives_holding_and_dated_flows():
         " 1   SIP   08-01-2019   ₹3,000   47.95   62.565   62.565   2858",
         " 88  Redemption  19-01-2026  ₹3,49,171  115.352  3,027.000  517.817  290  -",
     ])
-    h, _, w, _, flows = ingestion.mf_txn_report([page])
+    h, _, w, _, flows, complete = ingestion.mf_txn_report([page])
     assert [(x.account_no, x.quantity, x.invested_amount, x.market_value) for x in h] == [("70414596465", 517.817, 84011.17, 84450.96)]
-    assert [(f.flow_date, f.kind, f.amount) for f in flows] == [("2019-01-08", "deposit", 3000.0), ("2026-01-19", "withdrawal", 349171.0)] and not w
+    assert [(f.flow_date, f.kind, f.amount) for f in flows] == [("2019-01-08", "deposit", 3000.0), ("2026-01-19", "withdrawal", 349171.0)] and not w and complete

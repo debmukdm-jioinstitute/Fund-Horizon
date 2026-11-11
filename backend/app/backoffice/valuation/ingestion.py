@@ -424,6 +424,7 @@ def holdings_from_mf_blocks(pages: list[str]):
 _TX_SCHEME = re.compile(r"^\s*(?P<name>.+?)\s*\|\s*(?P<isin>IN[A-Z0-9]{10})\s+Avg NAV:\s*[\d.,]+\s*\|\s*Curt NAV:\s*(?P<nav>[\d.,]+)")
 _TX_VAL = re.compile(r"Amt inv:\s*₹?\s*(?P<inv>[\d,.]+)\s*\|\s*Curt val:\s*₹?\s*(?P<cur>[\d,.]+)")
 _TX_FOLIO = re.compile(r"\(PAN:[^)]*\)\s*\|\s*(?P<folio>[A-Za-z0-9/\-]+)\s*$")
+_TX_OPEN = re.compile(r"Opening balance\s+\d{1,2}-\d{1,2}-\d{4}\s+₹\s*0(?:\.0+)?\s+0\s+0\b")
 _TX_ROW = re.compile(r"^\s*\d+\s+(?P<type>[A-Za-z][A-Za-z ./-]*?)\s+(?P<date>\d{1,2}-\d{1,2}-\d{4})\s+₹\s*(?P<amt>[\d,]+(?:\.\d+)?)"
                      r"\s+(?P<nav>[\d,]+\.?\d*)\s+(?P<units>[\d,]+\.?\d*)\s+(?P<bal>[\d,]+\.?\d*)\s+\d+")
 
@@ -436,9 +437,12 @@ def mf_txn_report(pages: list[str]):
     hints: list[tuple[HoldingRec, str]] = []
     warnings: list[str] = []
     cur: HoldingRec | None = None
+    zero_open = 0
     for pno, text in enumerate(pages, 1):
         for lno, line in enumerate(text.splitlines(), 1):
-            if m := _TX_SCHEME.match(line):
+            if _TX_OPEN.search(line):
+                zero_open += 1
+            elif m := _TX_SCHEME.match(line):
                 cur = HoldingRec(security_name=m["name"].strip(), isin=m["isin"], price=to_num(m["nav"]), source_page=f"p{pno}", source_row=lno)
                 holdings.append(cur)
                 hints.append((cur, "mutual fund"))
@@ -457,7 +461,9 @@ def mf_txn_report(pages: list[str]):
                 elif amt:
                     flows.append(FlowRec(flow_date=parse_date(m["date"]), kind=kind, amount=round(amt, 2), description=f"{cur.security_name[:60]} {m['type']}",
                                          account_no=cur.account_no, source_page=f"p{pno}", source_row=lno))
-    return holdings, {}, warnings, hints, flows
+    # every scheme starts from nil on the report's first date, so the dated rows ARE the full history (shortcut: schemes fully
+    # exited before the holding scheme list cannot be seen here, so the operator still sees the attested-complete flag)
+    return holdings, {}, warnings, hints, flows, bool(holdings) and zero_open == len(holdings)
 
 
 _CARD_AMT = re.compile(r"^₹(?P<inv>[\d,]+(?:\.\d+)?)\s+₹(?P<cur>[\d,]+(?:\.\d+)?)")

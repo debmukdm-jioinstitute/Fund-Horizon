@@ -62,3 +62,68 @@ def test_input_validation_rejects_bad_codes_and_negative_amounts():
         api.Holding(code="122640", invested=1, value=1, flag="\u2021")  # glyph missing from Google Sans
     with pytest.raises(ValidationError):
         api.Review(client={"name": "x", "date": "d"}, holdings=[])
+
+
+def test_parse_mf_transaction_report_scrapes_holdings_instalments_and_computes_compare(monkeypatch):
+    idx_dates = pd.to_datetime(["2018-12-31", "2019-01-31", "2020-01-31", "2024-01-31", "2026-11-30"])
+    idx_nav = pd.Series([100.0, 102.0, 115.0, 180.0, 240.0], index=idx_dates)
+    monkeypatch.setattr(api, "_frame", lambda: FRAME)
+    monkeypatch.setattr(api, "_nav", lambda c: idx_nav)
+    txn_txt = "\n".join([
+        "ProAffluence Associates Private Limited",
+        "Report as on: 04-Nov-2026",
+        "PPFAS Flexi Cap Fund - Regular Plan - Growth | INF879O01019      Avg NAV: 50.00 | Curt NAV: 80.00 | NAV as on 04-11-2026",
+        "      Amt inv: ₹1,00,000.00 | Curt val: ₹1,85,000.00",
+        "   ADITYA PARCHURE(PAN:ABCDE1234F)|70414596465",
+        "   Opening balance   01-01-2016   ₹0   0   0",
+        " 1   SIP   10-01-2019   ₹50,000   40.00   1250.000   1250.000   2855",
+        " 2   SIP   10-01-2020   ₹50,000   50.00   1000.000   2250.000   2490",
+    ]).encode("utf-8")
+    res = api.parse_review_files([("txn_report.txt", txn_txt)])
+    assert res["client"] == {"name": "Aditya Parchure", "date": "2026-11-04"}
+    assert len(res["holdings"]) == 1
+    h = res["holdings"][0]
+    assert h["code"] == "122640" and h["invested"] == 100000.0 and h["value"] == 185000.0
+    assert h["from"] == "2019-01" and h["to"] == "2020-01" and h["inst"] == "2" and h["ret"] is not None
+    cmp_ = res["compare"]
+    assert cmp_ is not None and cmp_["portfolio_xirr"] == h["ret"]
+    assert "122640" in cmp_["per_fund"] and cmp_["index_rows"]
+    assert res["analysis"]["invested"] == 100000.0 and res["analysis"]["value"] == 185000.0
+    assert res["analysis"]["signals"]["Hold"] == 1
+    rv = api.Review(client={"name": res["client"]["name"], "date": "04 Nov 2026"}, holdings=res["holdings"], compare=cmp_)
+    assert api._pdf(rv).startswith(b"%PDF")
+
+
+def test_parse_mf_summary_and_spreadsheet_and_deduplicate_same_folio(monkeypatch):
+    idx_dates = pd.to_datetime(["2018-12-31", "2024-06-30", "2026-10-31"])
+    idx_nav = pd.Series([100.0, 180.0, 220.0], index=idx_dates)
+    monkeypatch.setattr(api, "_frame", lambda: FRAME)
+    monkeypatch.setattr(api, "_nav", lambda c: idx_nav)
+    summary_txt = "\n".join([
+        "Proaffluence Associates Private Limited",
+        "Report as on: 26-Oct-2026",
+        "Debabrata Mukherjee (ABCDE1234F)",
+        "MF Summary Report - Sub Category wise",
+        "PPFAS Flexi | 70414596465 | Debabrata Mukherjee",
+        "104.3080",
+        "23-10-2026",
+        "10-06-2024 763.647 ₹ 84,011 ₹ 1,10,000 ₹ 25,989 30.93 0 12.15 868",
+        "Grand total",
+        "₹ 84,011 ₹ 1,10,000 ₹ 25,989 30.93 0 12.15",
+    ]).encode("utf-8")
+    csv_bytes = (
+        "Scheme Code,Folio,Invested Amount,Current Value,First Month,Last Month,Instalments\n"
+        "122640,70414596465,84011,110000,2024-06,2026-06,25\n"
+        "150579,99887766,50000,45000,2026-05,2026-05,1\n"
+    ).encode("utf-8")
+    res = api.parse_review_files([("summary.txt", summary_txt), ("extra.csv", csv_bytes)])
+    assert res["client"] == {"name": "Debabrata Mukherjee", "date": "2026-10-26"}
+    by_code = {h["code"]: h for h in res["holdings"]}
+    assert set(by_code) == {"122640", "150579"}
+    # Folio 70414596465 appeared in both files: enriched with to/inst, never double-counted
+    assert by_code["122640"]["invested"] == 84011.0 and by_code["122640"]["value"] == 110000.0
+    assert by_code["122640"]["from"] == "2024-06" and by_code["122640"]["to"] == "2026-06" and by_code["122640"]["inst"] == "25"
+    # Under-1-year holding flagged with dagger
+    assert by_code["150579"]["flag"] == "†"
+    assert res["compare"] is not None and set(res["compare"]["per_fund"]) == {"122640", "150579"}
+

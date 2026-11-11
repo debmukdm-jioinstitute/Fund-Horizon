@@ -1,29 +1,49 @@
+"""Backoffice > Operations > Portfolio review: parse uploaded client statements, compute same-instalment market comparisons
+and live Fund Horizon analysis, render the 16:9 Portfolio Review PDF deck, and save/email it to the client's CRM record."""
 from __future__ import annotations
-"""Backoffice > Operations > Portfolio review: render the client Portfolio Review deck from the holdings the adviser enters
-plus live Fund Horizon data, then download it, save it to the client's CRM record and/or email it."""
 
+import calendar
+import difflib
+import io
 import json
+import math
 import re
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
+from typing import Annotated, Any
 
-from fastapi import APIRouter, HTTPException
+import pandas as pd
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
 from app.api.crm_core import Me, _optouts, _visible_customer
-from app.data.loader import load_nav
+from app.backoffice import portfolio_screen
+from app.backoffice.valuation import bundle, layouts
+from app.backoffice.valuation import ingestion as ing
+from app.data.loader import load_metrics, load_nav
 from app.db import sqlite
+from app.engine import analytics as an
+from app.engine import cas
 from app.mailer import MailerError, send_email
 from app.repo_crm_core import get_crm_repository
-from app.report.portfolio_review import STRESS_WINDOWS, build_portfolio_review, window_fall
+from app.report import client_report, statements
+from app.report.portfolio_review import STRESS_WINDOWS, build_portfolio_review, summarize_review, window_fall
 
 router = APIRouter(prefix="/api/backoffice/portfolio-review", tags=["portfolio-review"])
+MAX_FILES, MAX_BYTES = 10, 15 * 1024 * 1024
 _SCHEMA = """CREATE TABLE IF NOT EXISTS portfolio_reviews (
     id TEXT PRIMARY KEY, customer_id TEXT NOT NULL, report_date TEXT, data TEXT NOT NULL, pdf BLOB NOT NULL,
     emailed_at TEXT, created_at TEXT NOT NULL, created_by TEXT)"""
 _LIVE_COLS = ("name", "cat", "cat_label", "nav_date", "cagr_3y", "cap_up_3y", "cap_down_3y", "cap_ratio_3y", "max_dd_3y", "max_dd_all",
               "history_years", "fh_score", "fh_signal", "is_fh_recommended")
+_MON = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+_CAT_INDEX: dict[str, tuple[str, str]] = {
+    "large_cap": ("120716", "Nifty 50"), "index_equity": ("120716", "Nifty 50"), "etf_other": ("120716", "Nifty 50"),
+    "mid_cap": ("147622", "Nifty Midcap 150 TRI"), "small_cap": ("147623", "Nifty Smallcap 250 TRI"),
+    "large_mid_cap": ("152156", "Nifty LargeMidcap 250 TRI"), "multi_cap": ("152751", "Nifty 500 Multicap TRI"),
+    **{c: ("147625", "Nifty 500 TRI") for c in ("flexi_cap", "elss", "focused", "value", "contra", "dividend_yield", "sectoral_thematic")},
+}
 
 
 class Holding(BaseModel):
@@ -82,6 +102,27 @@ class PushIn(BaseModel):
     send_email: bool = False
 
 
+class AnalyzeHolding(BaseModel):
+    code: str = Field(pattern=r"^\d{4,8}$")
+    name: str = Field(default="", max_length=200)
+    typ: str = Field(default="", max_length=60)
+    invested: float = Field(default=0, ge=0)
+    value: float = Field(default=0, ge=0)
+    from_month: str = Field(default="", max_length=10)
+    to_month: str = Field(default="", max_length=10)
+    period: str = Field(default="", max_length=40)
+    inst: str = Field(default="", max_length=10)
+    ret: float | None = None
+    flag: str = Field(default="", pattern="^(\u2020|\\*)?$")
+    flows: list[tuple[str, float]] = Field(default_factory=list, max_length=1000)
+
+
+class AnalyzeIn(BaseModel):
+    date: str = Field(default="", max_length=30)
+    portfolio_xirr: float | None = None
+    holdings: list[AnalyzeHolding] = Field(default_factory=list, max_length=200)
+
+
 def _frame():
     from app.api.backoffice import _fh_frame
     return _fh_frame()
@@ -92,6 +133,18 @@ def _nav(code: str):
         return load_nav(code)
     except (FileNotFoundError, KeyError):
         return None
+
+
+def _ym_label(ym: str) -> str:
+    return f"{_MON[int(ym[5:7]) - 1]}-{ym[2:4]}" if re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", ym or "") else ""
+
+
+def _period_label(from_ym: str, to_ym: str) -> str:
+    if not from_ym:
+        return ""
+    if not to_ym:
+        return f"Since {_ym_label(from_ym)}"
+    return f"{_ym_label(from_ym)} (one-time)" if from_ym == to_ym else f"{_ym_label(from_ym)} – {_ym_label(to_ym)}"
 
 
 def live_data(codes: list[str]) -> dict[str, dict]:
@@ -114,6 +167,952 @@ def live_data(codes: list[str]) -> dict[str, dict]:
     return out
 
 
+# ---------- index NAV series & same-instalment comparison ----------
+
+def _back_extend(primary: pd.Series | None, earlier: pd.Series | None) -> pd.Series | None:
+    if primary is None or primary.empty:
+        return earlier
+    if earlier is None or earlier.empty or earlier.index[0] >= primary.index[0]:
+        return primary
+    first_dt = primary.index[0]
+    ref = earlier.asof(first_dt)
+    if pd.isna(ref) or not ref:
+        return primary
+    pre = earlier[earlier.index < first_dt] * (float(primary.iloc[0]) / float(ref))
+    return pd.concat([pre, primary]).sort_index()
+
+
+def _index_series(code: str) -> pd.Series | None:
+    """Month-end index-fund NAV series for `code`, back-extended for pre-inception dates so early SIPs are priced accurately."""
+    s50 = _back_extend(_nav("120716"), _nav("100822"))
+    if code in ("120716", "100822"):
+        return s50
+    s500 = _back_extend(_nav("147625"), s50)
+    if code == "147625":
+        return s500
+    return _back_extend(_nav(code), s500)
+
+
+def _nav_on(s: pd.Series, d: date) -> float:
+    end_d = date(d.year, d.month, calendar.monthrange(d.year, d.month)[1])
+    v = s.asof(pd.Timestamp(end_d))
+    return float(s.iloc[0] if pd.isna(v) else v)
+
+
+def _synth_monthly_flows(invested: float, from_ym: str, to_ym: str, inst_str: str, val_d: date) -> list[tuple[date, float]]:
+    if invested <= 0 or not re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", from_ym or ""):
+        return []
+    sy, sm = int(from_ym[:4]), int(from_ym[5:7])
+    n = int(inst_str) if str(inst_str or "").strip().isdigit() and int(inst_str) > 0 else 0
+    if re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", to_ym or ""):
+        ey, em = int(to_ym[:4]), int(to_ym[5:7])
+    elif n > 1:
+        ey, em = val_d.year, val_d.month
+    else:
+        ey, em = sy, sm
+    months: list[date] = []
+    y, m = sy, sm
+    while (y, m) <= (ey, em) and len(months) < 480:
+        d = min(date(y, m, 10), val_d)
+        months.append(d)
+        m += 1
+        if m > 12:
+            y, m = y + 1, 1
+    if not months:
+        months = [min(date(sy, sm, 10), val_d)]
+    if n <= 0:
+        n = len(months)
+    if n == 1:
+        return [(months[0], float(invested))]
+    amt = float(invested) / n
+    return [(months[min(round(i * (len(months) - 1) / max(n - 1, 1)), len(months) - 1)], amt) for i in range(n)]
+
+
+def _active_flows(h: dict[str, Any], val_d: date) -> list[tuple[date, float]]:
+    """Dated purchase instalments summing to `h['invested']` (FIFO for redemptions; month range or XIRR-derived date fallback)."""
+    inv, val = float(h.get("invested") or 0), float(h.get("value") or 0)
+    raw_flows = []
+    for dt_s, amt in h.get("flows") or []:
+        iso = ing.parse_date(dt_s)
+        if iso and amt:
+            d = min(date.fromisoformat(iso), val_d)
+            raw_flows.append((d, float(amt)))
+    purchases = sorted([(d, a) for d, a in raw_flows if a > 0], key=lambda x: x[0])
+    redemptions = [abs(a) for _, a in raw_flows if a < 0]
+    if purchases:
+        if inv <= 0:
+            inv = round(max(0.0, sum(a for _, a in purchases) - sum(redemptions)), 2) or round(sum(a for _, a in purchases), 2)
+            h["invested"] = inv
+        if redemptions and inv > 0:
+            rem, kept = inv, []
+            for d, a in reversed(purchases):
+                if rem <= 1e-6:
+                    break
+                take = min(a, rem)
+                kept.append((d, take))
+                rem -= take
+            kept.reverse()
+            s = sum(a for _, a in kept)
+            active = [(d, a * inv / s) for d, a in kept] if s > 0 else []
+        else:
+            s = sum(a for _, a in purchases)
+            active = [(d, a * (inv / s if s > 0 and inv > 0 else 1.0)) for d, a in purchases]
+        if active:
+            f_ym, l_ym = active[0][0].strftime("%Y-%m"), active[-1][0].strftime("%Y-%m")
+            h["from"] = h.get("from") or f_ym
+            h["to"] = h.get("to") or (f_ym if len(active) == 1 else l_ym)
+            h["inst"] = h.get("inst") or str(len(active))
+            h["period"] = _period_label(h["from"], h["to"])
+            return active
+    if h.get("from"):
+        active = _synth_monthly_flows(inv, h["from"], h.get("to") or "", str(h.get("inst") or ""), val_d)
+        if active:
+            h["period"] = h.get("period") or _period_label(h["from"], h.get("to") or "")
+            return active
+    ret = h.get("ret")
+    if ret is not None and inv > 0 and val > 0:
+        abs_ret = (val / inv - 1) * 100
+        if abs(ret - abs_ret) <= 0.06 and abs(abs_ret) > 0.1:
+            h["flag"] = h.get("flag") or "†"
+            eff_d = val_d - timedelta(days=180)
+            return [(eff_d, inv)]
+        if 1 + ret / 100 > 0.1 and val / inv > 0 and abs(ret) > 0.05:
+            try:
+                years = math.log(val / inv) / math.log(1 + ret / 100)
+            except (ValueError, ZeroDivisionError):
+                years = 0.0
+            if 0.15 <= years <= 30:
+                eff_d = val_d - timedelta(days=max(30, round(years * 365.25)))
+                h["from"] = eff_d.strftime("%Y-%m")
+                h["to"] = ""
+                h["period"] = h.get("period") or _period_label(h["from"], "")
+                h["flag"] = h.get("flag") or ("†" if years < 1.0 else "*")
+                return [(eff_d, inv)]
+    return []
+
+
+def _flow_return(flows: list[tuple[date, float]], terminal_val: float, val_d: date, span_days: int) -> float:
+    inv = sum(a for _, a in flows if a > 0)
+    if inv <= 0:
+        return 0.0
+    if span_days >= 365:
+        cf = [(d, -a) for d, a in flows if d < val_d] or [(val_d - timedelta(days=365), -inv)]
+        cf.append((val_d, float(terminal_val)))
+        x = an.xirr(cf)
+        if x is not None:
+            return round(float(x) * 100, 2)
+    return round((terminal_val / inv - 1) * 100, 2)
+
+
+def compute_compare(holdings: list[dict[str, Any]], val_date_str: str, portfolio_xirr: float | None = None,
+                    live: dict[str, dict] | None = None) -> dict[str, Any] | None:
+    """Compute same-instalment comparison against Nifty 50, Nifty 500 TRI and matching category Nifty indices."""
+    iso_v = ing.parse_date(val_date_str)
+    val_d = date.fromisoformat(iso_v) if iso_v else date.today()
+    s500, s50 = _index_series("147625"), _index_series("120716")
+    if s500 is None or s50 is None or s500.empty or s50.empty:
+        return None
+    live = live if live is not None else live_data([str(h["code"]) for h in holdings if h.get("code")])
+    per_fund: dict[str, dict[str, float]] = {}
+    index_rows: list[dict[str, Any]] = []
+    all_flows: list[tuple[date, float]] = []
+    tot_val = tot_inv = tot_500 = tot_50 = 0.0
+    ahead_50 = 0
+    max_span = 0
+    for h in holdings:
+        inv, val = float(h.get("invested") or 0), float(h.get("value") or 0)
+        active = _active_flows(h, val_d)
+        if not active or inv <= 0:
+            continue
+        span = max((val_d - active[0][0]).days, 1)
+        max_span = max(max_span, span)
+        if span < 365 and not h.get("flag"):
+            h["flag"] = "†"
+        has_exact_flows = bool(h.get("flows"))
+        f_ret = _flow_return(active, val, val_d, span) if (has_exact_flows or h.get("ret") is None) else float(h["ret"])
+        h["ret"] = round(f_ret, 2)
+        nav500_end, nav50_end = _nav_on(s500, val_d), _nav_on(s50, val_d)
+        v500 = sum(a * (nav500_end / _nav_on(s500, d)) for d, a in active)
+        v50 = sum(a * (nav50_end / _nav_on(s50, d)) for d, a in active)
+        r500 = _flow_return(active, v500, val_d, span)
+        r50 = _flow_return(active, v50, val_d, span)
+        code = str(h["code"])
+        per_fund[code] = {"pct": round(f_ret - r500, 1), "inr": float(round(val - v500))}
+        if f_ret > r50:
+            ahead_50 += 1
+        lv = live.get(code) or {}
+        cat = str(lv.get("cat") or "")
+        if cat in _CAT_INDEX:
+            p_code, idx_label = _CAT_INDEX[cat]
+            s_cat = _index_series(p_code)
+            if s_cat is not None and not s_cat.empty:
+                v_cat = sum(a * (_nav_on(s_cat, val_d) / _nav_on(s_cat, d)) for d, a in active)
+                r_cat = _flow_return(active, v_cat, val_d, span)
+                fname = (h.get("name") or lv.get("name") or code) + (f" {h['flag']}" if h.get("flag") else "")
+                index_rows.append({
+                    "_val": val, "name": fname[:120], "index": idx_label[:60], "period": (h.get("period") or "")[:40],
+                    "ret": round(f_ret, 2), "idx": round(r_cat, 2), "lead": round(f_ret - r_cat, 1), "inr": float(round(val - v_cat)),
+                })
+        all_flows.extend(active)
+        tot_inv += inv
+        tot_val += val
+        tot_500 += v500
+        tot_50 += v50
+    if not per_fund or tot_inv <= 0:
+        return None
+    p_xirr = _flow_return(all_flows, tot_val, val_d, max_span)
+    if portfolio_xirr is not None and not any(h.get("flows") for h in holdings):
+        p_xirr = round(float(portfolio_xirr), 2)
+    n500_xirr = _flow_return(all_flows, tot_500, val_d, max_span)
+    n50_xirr = _flow_return(all_flows, tot_50, val_d, max_span)
+    index_rows.sort(key=lambda r: -r.pop("_val", 0))
+    return Compare(
+        portfolio_xirr=p_xirr, nifty50_xirr=n50_xirr, nifty500_xirr=n500_xirr,
+        ahead_inr_500=float(round(tot_val - tot_500)), ahead_inr_50=float(round(tot_val - tot_50)),
+        funds_ahead_50=ahead_50, per_fund=per_fund, index_rows=index_rows[:12],
+    ).model_dump()
+
+
+# ---------- scheme matching ----------
+
+_AMC_ALIASES = (
+    (r"\bppfas\b", "parag parikh"), (r"\babsl\b", "aditya birla sun life"),
+    (r"\baditya\s+birla\b(?!\s+sun)", "aditya birla sun life"), (r"\bwoc\b|\bwhite\s*oak\b", "whiteoak capital"),
+    (r"\bmosl\b", "motilal oswal"), (r"\bsbi\s+magnum\b", "sbi"),
+)
+
+
+def _norm_scheme(text: str) -> str:
+    t = portfolio_screen.normalize_scheme_text(text)
+    for rx, rep in _AMC_ALIASES:
+        t = re.sub(rx, rep, t)
+    return " ".join(t.split())
+
+
+def _build_lookups(frame: pd.DataFrame):
+    code_map: dict[str, dict[str, Any]] = {}
+    isin_map: dict[str, dict[str, Any]] = {}
+    pools: dict[str, list[tuple[str, str, set[str], dict[str, Any]]]] = {"Direct": [], "Regular": [], "All": []}
+    for row in frame.to_dict("records"):
+        c = str(row.get("code") or "").strip()
+        if not c:
+            continue
+        code_map[c] = row
+        isin = portfolio_screen.clean_isin(row.get("isin"))
+        if isin and isin not in isin_map:
+            isin_map[isin] = row
+        norm = _norm_scheme(str(row.get("name") or ""))
+        entry = (c, norm, set(norm.split()), row)
+        plan = str(row.get("plan") or "")
+        if plan in pools:
+            pools[plan].append(entry)
+        pools["All"].append(entry)
+    try:
+        mdf = load_metrics()
+        for _, mrow in mdf.iterrows():
+            sc = str(mrow.get("scheme_code") or "").strip()
+            if sc in code_map:
+                for col in ("isin_growth_or_payout", "isin_reinvest"):
+                    iv = portfolio_screen.clean_isin(mrow.get(col))
+                    if iv and iv not in isin_map:
+                        isin_map[iv] = code_map[sc]
+    except Exception:
+        pass
+    return code_map, isin_map, pools
+
+
+def _match_scheme(raw_name: str, isin: str | None, amfi: str | None, lookups: tuple, fallback_seq: int) -> tuple[dict[str, Any], str, str | None]:
+    code_map, isin_map, pools = lookups
+    c_amfi = str(amfi).strip() if amfi and re.fullmatch(r"\d{4,8}", str(amfi).strip()) else None
+    c_isin = portfolio_screen.clean_isin(isin) or portfolio_screen.clean_isin((re.search(r"INF[A-Z0-9]{9}", (raw_name or "").upper()) or [None])[0])
+    if c_amfi and c_amfi in code_map:
+        return code_map[c_amfi], "exact_code", None
+    if c_isin and c_isin in isin_map:
+        return isin_map[c_isin], "exact_isin", None
+    meta = cas.resolve_isin_metadata(c_isin) if c_isin else None
+    if meta:
+        m_code = str(meta.get("amfi_code") or "").strip()
+        if m_code in code_map:
+            return code_map[m_code], "exact_isin", None
+        if not c_amfi and re.fullmatch(r"\d{4,8}", m_code):
+            c_amfi = m_code
+    names_to_try = [n for n in (meta.get("name") if meta else None, raw_name) if n]
+    det_plan = portfolio_screen.detect_plan(raw_name or (meta.get("name") if meta else "") or "")
+    pool = pools.get(det_plan if det_plan in ("Direct", "Regular") else "All") or pools["All"]
+    prefer_reg = det_plan == "Unknown"
+    best_score, best_row = 0.0, None
+    for q_name in names_to_try:
+        norm_q = _norm_scheme(q_name)
+        q_toks = set(norm_q.split())
+        if not norm_q:
+            continue
+        for _c, c_norm, c_toks, c_row in pool:
+            if not c_norm:
+                continue
+            seq = difflib.SequenceMatcher(None, norm_q, c_norm).ratio()
+            overlap = len(q_toks & c_toks) / max(len(q_toks), 1) if q_toks else 0.0
+            sc = max(seq, 0.55 * seq + 0.45 * overlap)
+            if c_norm in norm_q or norm_q in c_norm:
+                sc = min(1.0, sc + 0.12)
+            if prefer_reg and c_row.get("plan") == "Regular":
+                sc += 0.005
+            if sc > best_score:
+                best_score, best_row = sc, c_row
+    if best_row and best_score >= 0.78:
+        return best_row, "matched_name", None
+    if best_row and best_score >= 0.50:
+        clean_n = re.sub(r" - (Regular|Direct) Plan.*$", "", str(best_row.get("name") or ""))
+        return best_row, "ambiguous", f"'{raw_name}' was matched to {clean_n} ({best_row['code']}); please verify."
+    code = c_amfi or f"{990000 + fallback_seq}"
+    clean_raw = re.sub(r" - (Regular|Direct) Plan.*$", "", cas.format_scheme_name(raw_name or (meta.get("name") if meta else "") or code))
+    return {"code": code, "name": clean_raw, "cat_label": cas.infer_scheme_category(clean_raw)}, "unmatched", (
+        f"'{raw_name}' could not be matched to a scored AMFI scheme (assigned code {code}); use the search bar if you wish to replace it."
+    )
+
+
+# ---------- statement extractors ----------
+
+_TX_SCHEME = re.compile(r"^\s*(?P<name>.+?)\s*\|\s*(?P<isin>IN[A-Z0-9]{10})\s+Avg NAV:\s*[\d.,]+\s*\|\s*Curt NAV:\s*(?P<nav>[\d.,]+)(?:\s*\|\s*NAV as on\s*(?P<ndate>\d{1,2}[-/]\d{1,2}[-/]\d{4}))?")
+_TX_VAL = re.compile(r"Amt inv:\s*₹?\s*(?P<inv>[\d,.]+)\s*\|\s*Curt val:\s*₹?\s*(?P<cur>[\d,.]+)")
+_TX_FOLIO = re.compile(r"^\s*(?P<holder>[^(\n]+?)\s*\(PAN:[^)]*\)\s*\|\s*(?P<folio>[A-Za-z0-9/\-]+)\s*$")
+_TX_ROW = re.compile(r"^\s*\d+\s+(?P<type>[A-Za-z][A-Za-z ./-]*?)\s+(?P<date>\d{1,2}-\d{1,2}-\d{4})\s+₹\s*(?P<amt>[\d,]+(?:\.\d+)?)"
+                     r"\s+(?P<nav>[\d,]+\.?\d*)\s+(?P<units>[\d,]+\.?\d*)\s+(?P<bal>[\d,]+\.?\d*)\s+\d+")
+
+
+def _parse_mf_txn_report(pages: list[str]) -> dict[str, Any] | None:
+    """ProAffluence 'MF Transaction Report': per-scheme holdings + dated purchase/SIP/redemption cash flows."""
+    holdings: list[dict[str, Any]] = []
+    cur: dict[str, Any] | None = None
+    client_name, val_date = "", ""
+    full = "\n".join(pages[:2])
+    if m := re.search(r"Report\s+as\s+on:?\s*(" + ing.DATE_RE + ")", full, re.I):
+        val_date = ing.parse_date(m.group(1)) or ""
+    for text in pages:
+        for line in text.splitlines():
+            if m := _TX_SCHEME.match(line):
+                if m.group("ndate") and not val_date:
+                    val_date = ing.parse_date(m.group("ndate")) or ""
+                cur = {"raw_name": m["name"].strip(), "isin": m["isin"], "amfi_code": None, "folio": None,
+                       "nav": ing.to_num(m["nav"]), "units": None, "invested": None, "value": None, "flows": []}
+                holdings.append(cur)
+            elif cur is None:
+                continue
+            elif m := _TX_VAL.search(line):
+                cur["invested"], cur["value"] = ing.to_num(m["inv"]), ing.to_num(m["cur"])
+            elif m := _TX_FOLIO.search(line):
+                cur["folio"] = m["folio"].strip()
+                if not client_name and m["holder"].strip():
+                    client_name = m["holder"].strip().title()
+            elif m := _TX_ROW.match(line):
+                cur["units"] = ing.to_num(m["bal"])
+                kind, amt, dt = ing.classify_flow(m["type"]), ing.to_num(m["amt"]), ing.parse_date(m["date"])
+                if dt and amt and kind in ("deposit", "transfer_in", "withdrawal", "transfer_out"):
+                    cur["flows"].append((dt, round(amt if kind in ("deposit", "transfer_in") else -amt, 2)))
+    holdings = [h for h in holdings if (h.get("value") or 0) > 0 or (h.get("units") or 0) > 0]
+    return {"client_name": client_name, "val_date": val_date, "portfolio_xirr": None, "holdings": holdings, "kind": "mf_txn"} if holdings else None
+
+
+_SUM_HDR = re.compile(r"^\s*(?P<name>.+?\S)\s*\|\s*(?P<folio>[A-Za-z0-9/\-]+)\s*\|\s*(?P<holder>[A-Za-z][A-Za-z .]+?)\s*$")
+
+
+def _parse_mf_summary_report(text: str) -> dict[str, Any] | None:
+    """ProAffluence 'MF Summary Report' (single-line or multi-line layout): holdings with start date, invested, value, XIRR and holding days."""
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    holdings: list[dict[str, Any]] = []
+    client_name, val_date, p_xirr = "", "", None
+    if m := re.search(r"Report\s+as\s+on:?\s*(" + ing.DATE_RE + ")", text, re.I):
+        val_date = ing.parse_date(m.group(1)) or ""
+    if m := re.search(r"^[ \t]*([A-Za-z][A-Za-z .]{2,50}?)\s*\(([A-Z]{5}\d{4}[A-Z])\)", text, re.M):
+        client_name = m.group(1).strip()
+    if g := re.search(r"Grand\s+total[^\n₹]*₹\s*([^\n]+)", text, re.I):
+        g_nums = [ing.to_num(t) for t in re.findall(r"-?[\d,]+(?:\.\d+)?", g.group(1))]
+        if len(g_nums) >= 6 and g_nums[5] is not None:
+            p_xirr = g_nums[5]
+    i = 0
+    while i < len(lines):
+        m = _SUM_HDR.match(lines[i])
+        if not m or any(k in m["folio"].lower() for k in ("folio", "scheme", "units")):
+            i += 1
+            continue
+        name, folio, holder = m["name"].strip(), m["folio"].strip(), m["holder"].strip()
+        if not client_name and holder and not re.search(r"\d", holder):
+            client_name = holder
+        block = lines[i + 1 : min(len(lines), i + 5)]
+        fig_line = next((ln for ln in block if "₹" in ln), None)
+        if not fig_line:
+            i += 1
+            continue
+        pre, post = fig_line.split("₹", 1)
+        all_dates = [ing.parse_date(d) for ln in block[: block.index(fig_line) + 1] for d in re.findall(r"\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b", ln)]
+        all_dates = [d for d in all_dates if d]
+        pre_dates = [ing.parse_date(d) for d in re.findall(r"\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b", pre)]
+        pre_dates = [d for d in pre_dates if d]
+        start_iso = pre_dates[-1] if pre_dates else (min(all_dates) if len(all_dates) >= 2 else None)
+        if not val_date and all_dates:
+            val_date = max(all_dates)
+        pre_clean = re.sub(r"\b\d{1,2}[-/]\d{1,2}[-/]\d{4}\b", " ", pre)
+        pre_nums = [ing.to_num(t) for t in re.findall(r"\d[\d,]*(?:\.\d+)?", pre_clean)]
+        pre_nums = [x for x in pre_nums if x is not None]
+        units = pre_nums[-1] if pre_nums else None
+        nav = pre_nums[0] if len(pre_nums) >= 2 else (ing.to_num(block[0]) if block and block[0] != fig_line else None)
+        post_nums = [ing.to_num(t) for t in re.findall(r"-?[\d,]+(?:\.\d+)?", post)]
+        post_nums = [x for x in post_nums if x is not None]
+        if len(post_nums) >= 2:
+            inv, cur = post_nums[0], post_nums[1]
+            ret = post_nums[5] if len(post_nums) >= 6 else None
+            days = post_nums[6] if len(post_nums) >= 7 else None
+            if not start_iso and days and days > 0 and val_date:
+                start_iso = (date.fromisoformat(val_date) - timedelta(days=int(days))).isoformat()
+            holdings.append({
+                "raw_name": name, "isin": None, "amfi_code": None, "folio": folio,
+                "units": units, "nav": nav, "invested": inv, "value": cur,
+                "from": start_iso[:7] if start_iso else "", "to": "", "inst": "",
+                "ret": ret, "flag": "†" if days is not None and 0 < days < 365 else "", "flows": [],
+            })
+        i += block.index(fig_line) + 2
+    return {"client_name": client_name, "val_date": val_date, "portfolio_xirr": p_xirr, "holdings": holdings, "kind": "mf_summary"} if holdings else None
+
+
+def _cas_scheme_cost_and_flows(s: dict[str, Any]) -> tuple[float | None, list[tuple[str, float]]]:
+    val_obj = s.get("valuation") or {}
+    printed_cost = ing.to_num(val_obj.get("cost")) or ing.to_num(s.get("invested_value"))
+    flows: list[tuple[str, float]] = []
+    run_units = 0.0
+    run_cost = 0.0
+    for tx in s.get("transactions") or []:
+        dt = ing.parse_date(tx.get("date"))
+        amt = ing.to_num(tx.get("amount"))
+        u = ing.to_num(tx.get("units"))
+        tt = str(tx.get("type") or tx.get("description") or "").upper()
+        if not dt or not amt or any(k in tt for k in ("STAMP", "STT", "TAX", "MISC", "REVERSAL", "SEGREGAT")):
+            continue
+        if any(k in tt for k in ("PURCHASE", "SIP", "SWITCH_IN", "SWITCH IN", "ADDITIONAL", "INFUSION", "NEW", "REINVEST")):
+            flows.append((dt, round(abs(amt), 2)))
+            run_cost += abs(amt)
+            if u:
+                run_units += abs(u)
+        elif any(k in tt for k in ("REDEMPTION", "SWITCH_OUT", "SWITCH OUT", "SWP", "WITHDRAW", "PAYOUT")):
+            flows.append((dt, -round(abs(amt), 2)))
+            if u and run_units > 1e-6:
+                frac = min(1.0, abs(u) / run_units)
+                run_cost = max(0.0, run_cost * (1.0 - frac))
+                run_units = max(0.0, run_units - abs(u))
+            else:
+                run_cost = max(0.0, run_cost - abs(amt))
+    if printed_cost is not None and printed_cost > 0:
+        return round(printed_cost, 2), flows
+    if run_cost > 0:
+        return round(run_cost, 2), flows
+    pos_sum = sum(a for _, a in flows if a > 0)
+    return (round(pos_sum, 2) if pos_sum > 0 else None), flows
+
+
+def _parse_cas_pdf(data: bytes, password: str) -> dict[str, Any] | None:
+    """Parse CAMS / KFintech / NSDL / CDSL CAS PDF via casparser (including cost and dated transactions)."""
+    import casparser
+    from casparser.enums import FileType
+
+    cas._apply_casparser_patches()
+    parsed = None
+    for fn in (
+        lambda: casparser.read_cas_pdf(io.BytesIO(data), password=password, output="dict"),
+        lambda: __import__("casparser.parsers.cams_detailed", fromlist=["parse"]).parse(io.BytesIO(data), password, file_type=FileType.CAMS),
+        lambda: __import__("casparser.parsers.cdsl", fromlist=["parse_cdsl"]).parse_cdsl(io.BytesIO(data), password, file_type=FileType.CDSL),
+        lambda: __import__("casparser.parsers.nsdl", fromlist=["parse_nsdl"]).parse_nsdl(io.BytesIO(data), password, file_type=FileType.NSDL),
+        lambda: __import__("casparser.parsers.cams_summary", fromlist=["parse"]).parse(io.BytesIO(data), password, file_type=FileType.CAMS),
+    ):
+        try:
+            cand = cas.normalize_cas_dict(fn())
+            if cand and cand.get("folios"):
+                parsed = cand
+                break
+        except Exception as e:
+            if "password" in str(e).lower():
+                raise
+    if not parsed:
+        return None
+    inv_name = str((parsed.get("investor_info") or {}).get("name") or "").strip()
+    if inv_name.lower() in ("valued investor", "none", "null"):
+        inv_name = ""
+    elif inv_name.isupper():
+        inv_name = inv_name.title()
+    val_date = ing.parse_date((parsed.get("statement_period") or {}).get("to")) or ""
+    holdings: list[dict[str, Any]] = []
+    for folio_obj in parsed.get("folios") or []:
+        f_no = str(folio_obj.get("folio") or "").strip() or None
+        for s in folio_obj.get("schemes") or []:
+            name = str(s.get("scheme") or "").strip()
+            if not name:
+                continue
+            units = float(s.get("close") or 0.0)
+            val_obj = s.get("valuation") or {}
+            nav = float(val_obj.get("nav") or 0.0)
+            val = float(val_obj.get("value") or 0.0)
+            if val <= 0 and units > 0 and nav > 0:
+                val = round(units * nav, 2)
+            if units <= 0 and val <= 0:
+                continue
+            s_date = ing.parse_date(val_obj.get("date"))
+            if s_date and s_date > val_date:
+                val_date = s_date
+            cost, flows = _cas_scheme_cost_and_flows(s)
+            holdings.append({
+                "raw_name": name, "isin": portfolio_screen.clean_isin(s.get("isin")),
+                "amfi_code": portfolio_screen.clean_code(s.get("amfi")), "folio": f_no,
+                "units": round(units, 4) if units > 0 else None, "nav": round(nav, 4) if nav > 0 else None,
+                "invested": cost, "value": round(val, 2), "from": "", "to": "", "inst": "",
+                "ret": None, "flag": "", "flows": flows,
+            })
+    return {"client_name": inv_name, "val_date": val_date, "portfolio_xirr": None, "holdings": holdings, "kind": "cas"} if holdings else None
+
+
+def _col_role(header: Any) -> str | None:
+    h = re.sub(r"\s+", " ", str(header or "").strip().lower())
+    if not h:
+        return None
+    if re.search(r"\b(scheme\s*code|amfi(\s*code)?|^code$)\b", h):
+        return "amfi_code"
+    if "isin" in h:
+        return "isin"
+    if re.search(r"\b(first\s*month|from(\s*month)?|start(\s*date|\s*month)?|period\s*from|inception)\b", h):
+        return "from"
+    if re.search(r"\b(last\s*month|to(\s*month)?|end(\s*date|\s*month)?|period\s*to)\b", h):
+        return "to"
+    if re.search(r"\b(instalments?|installments?|#?\s*inst\.?)\b", h):
+        return "inst"
+    if re.search(r"\b(xirr|ann\.?\s*ret|annuali[sz]ed\s*ret|cagr)\b", h):
+        return "ret"
+    return ing.classify_header(h)
+
+
+def _norm_ym(v: Any) -> str:
+    s = str(v or "").strip()
+    if re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", s):
+        return s
+    iso = ing.parse_date(s)
+    return iso[:7] if iso else ""
+
+
+def _extract_table_rows(rows: list[list[Any]]) -> tuple[list[dict[str, Any]], str, str]:
+    """Spreadsheet / CSV / Word / JSON rows -> holdings, client name and statement date."""
+    head_txt = "\n".join("   ".join(str(c) for c in r if c is not None) for r in rows[:15])
+    _, meta, _ = ing.scan_scalars(head_txt.splitlines())
+    st_date = meta.get("statement_date") or ""
+    if not st_date and (m := portfolio_screen._STMT_DATE.search(head_txt)):
+        st_date = ing.parse_date(m.group(1)) or ""
+    client_name = ""
+    if m := re.search(r"(?:Client|Investor)(?:\s*Name)?\s*[:\-]\s*([A-Za-z][A-Za-z .]{2,50})", head_txt, re.I):
+        client_name = m.group(1).strip()
+    holdings: list[dict[str, Any]] = []
+    cols: dict[str, int] = {}
+    for r in rows:
+        mapped: dict[str, int] = {}
+        for i, c in enumerate(r):
+            f = _col_role(c)
+            if f and f not in mapped:
+                mapped[f] = i
+        if ("security_name" in mapped or "amfi_code" in mapped) and any(k in mapped for k in ("market_value", "quantity", "invested_amount")):
+            cols = mapped
+            continue
+        if not cols:
+            # Check for headerless pasted code rows: code, invested, value[, from, to, inst]
+            cells = [str(c).strip().replace("₹", "") for c in r if c is not None and str(c).strip() != ""]
+            if len(cells) >= 3 and re.fullmatch(r"\d{4,8}", cells[0]):
+                inv, val = ing.to_num(cells[1]), ing.to_num(cells[2])
+                if inv is not None and val is not None and (inv > 0 or val > 0):
+                    holdings.append({
+                        "raw_name": "", "isin": None, "amfi_code": cells[0], "folio": None,
+                        "units": None, "nav": None, "invested": inv, "value": val,
+                        "from": _norm_ym(cells[3]) if len(cells) > 3 else "",
+                        "to": _norm_ym(cells[4]) if len(cells) > 4 else "",
+                        "inst": cells[5] if len(cells) > 5 and cells[5].isdigit() else "",
+                        "ret": None, "flag": "", "flows": [],
+                    })
+            continue
+        cell = {f: (r[i] if i < len(r) else None) for f, i in cols.items()}
+        name = str(cell.get("security_name") or "").strip()
+        amfi = str(cell.get("amfi_code") or "").strip()
+        amfi = amfi if re.fullmatch(r"\d{4,8}", amfi) else None
+        if not amfi and (len(name) < 3 or not re.search(r"[A-Za-z]{2}", name) or ing._TOTAL_NAME.match(name)):
+            continue
+        if cell.get("asset_type") and re.search(r"^(equity\s*share|stock|bond|debenture|cash|pms)", str(cell["asset_type"]).strip(), re.I):
+            continue
+        units, nav = ing.to_num(cell.get("quantity")), ing.to_num(cell.get("price"))
+        inv, val = ing.to_num(cell.get("invested_amount")), ing.to_num(cell.get("market_value"))
+        if val is None and units and nav:
+            val = round(units * nav, 2)
+        if inv is None and units and ing.to_num(cell.get("avg_cost")):
+            inv = round(units * float(ing.to_num(cell.get("avg_cost"))), 2)
+        if (units or 0) <= 0 and (val or 0) <= 0:
+            continue
+        isin = portfolio_screen.clean_isin(cell.get("isin")) or portfolio_screen.clean_isin((re.search(r"INF[A-Z0-9]{9}", name.upper()) or [None])[0])
+        ret_raw = str(cell.get("ret") or "").rstrip("%").strip()
+        holdings.append({
+            "raw_name": name or amfi or "", "isin": isin, "amfi_code": amfi,
+            "folio": str(cell.get("folio") or "").strip() or None,
+            "units": units if units and units > 0 else None, "nav": nav if nav and nav > 0 else None,
+            "invested": inv if inv is not None and inv >= 0 else None,
+            "value": val if val is not None and val >= 0 else 0.0,
+            "from": _norm_ym(cell.get("from")), "to": _norm_ym(cell.get("to")),
+            "inst": str(int(float(cell["inst"]))) if ing.to_num(cell.get("inst")) else "",
+            "ret": ing.to_num(ret_raw), "flag": "", "flows": [],
+        })
+    return holdings, client_name, st_date
+
+
+def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any]:
+    """Extract holdings, flows, client metadata and optional explicit compare JSON from one uploaded file."""
+    if not data:
+        raise ValueError(f"{name}: the file is empty.")
+    # Check if the file is a JSON comparison or review payload
+    if name.lower().endswith(".json") or data.lstrip()[:1] == b"{":
+        try:
+            obj = json.loads(data.decode("utf-8-sig"))
+            if isinstance(obj, dict) and ("per_fund" in obj or "portfolio_xirr" in obj or "nifty500_xirr" in obj) and "holdings" not in obj:
+                return {"client_name": "", "val_date": "", "portfolio_xirr": obj.get("portfolio_xirr"), "holdings": [],
+                        "explicit_compare": Compare(**obj).model_dump(), "kind": "compare_json", "warnings": []}
+        except Exception:
+            pass
+    if not client_report.is_pdf(name, data):
+        sheet_list = portfolio_screen.read_table_rows(name, data)
+        if sheet_list:
+            all_h: list[dict[str, Any]] = []
+            all_flows: list[ing.FlowRec] = []
+            c_name, st_date, warns = "", "", []
+            for idx, rows in enumerate(sheet_list):
+                h, cn, sd = _extract_table_rows(rows)
+                if not h:
+                    l_h, l_sd = portfolio_screen.extract_from_layout_text("\n".join("   ".join(str(c) for c in r if c is not None and str(c).strip()) for r in rows))
+                    h = [{"raw_name": x["raw_name"], "isin": x.get("isin"), "amfi_code": x.get("amfi_code"), "folio": x.get("folio"),
+                          "units": x.get("units"), "nav": x.get("statement_nav"), "invested": None, "value": x.get("statement_value") or 0.0,
+                          "from": "", "to": "", "inst": "", "ret": None, "flag": "", "flows": []} for x in l_h]
+                    sd = sd or (ing.parse_date(l_sd) if l_sd else "")
+                all_h.extend(h)
+                c_name = c_name or cn
+                st_date = st_date or sd
+                fl, fw = ing.flows_from_rows(rows, f"sheet{idx + 1}")
+                all_flows.extend(fl)
+                warns.extend(fw)
+            if all_h:
+                if all_flows and len(all_h) == 1:
+                    all_h[0]["flows"].extend((f.flow_date, f.amount if f.kind in ("deposit", "transfer_in") else -f.amount) for f in all_flows if f.flow_date and f.amount)
+                return {"client_name": c_name, "val_date": st_date, "portfolio_xirr": None, "holdings": all_h, "kind": "spreadsheet", "warnings": warns}
+        text = client_report.extract_text(name, data)
+        for fn in (
+            _parse_mf_summary_report,
+            lambda t: _parse_mf_txn_report([t]),
+        ):
+            res = fn(text)
+            if res:
+                return {**res, "warnings": []}
+        st = client_report.parse_statement(text)
+        if st:
+            return {
+                "client_name": st["client"]["name"], "val_date": ing.parse_date(st["client"]["date"]) or "",
+                "portfolio_xirr": st["xirr"], "kind": "folio_wise", "warnings": [],
+                "holdings": [{"raw_name": r["name"], "isin": None, "amfi_code": None, "folio": r["folio"], "units": r["units"], "nav": r["nav"],
+                              "invested": r["invested"], "value": r["value"], "from": "", "to": "", "inst": "", "ret": r["ann_ret"], "flag": "", "flows": []}
+                             for r in st["rows"] if (r["value"] or 0) > 0 or (r["units"] or 0) > 0],
+            }
+        # Pasted code rows in plain text
+        t_rows = [[c.strip() for c in re.split(r"[,\t]", ln)] for ln in text.splitlines() if ln.strip()]
+        h_paste, cn_p, sd_p = _extract_table_rows(t_rows)
+        if h_paste:
+            return {"client_name": cn_p, "val_date": sd_p, "portfolio_xirr": None, "holdings": h_paste, "kind": "text", "warnings": []}
+        for ext in (portfolio_screen.extract_from_layout_text, portfolio_screen.extract_universal_from_text):
+            eh, esd = ext(text)
+            if eh:
+                return {
+                    "client_name": "", "val_date": ing.parse_date(esd) or "", "portfolio_xirr": None, "kind": "text", "warnings": [],
+                    "holdings": [{"raw_name": x["raw_name"], "isin": x.get("isin"), "amfi_code": x.get("amfi_code"), "folio": x.get("folio"),
+                                  "units": x.get("units"), "nav": x.get("statement_nav"), "invested": None, "value": x.get("statement_value") or 0.0,
+                                  "from": "", "to": "", "inst": "", "ret": None, "flag": "", "flows": []} for x in eh],
+                }
+        raise ValueError(f"{name}: no mutual fund holdings found in this file.")
+
+    # PDF path: check encryption first
+    try:
+        pages = ing.read_pdf_pages(data, password, "layout")
+        plain = ing.read_pdf_pages(data, password, "plain")
+    except ing.ExtractionError as e:
+        if e.code == "password_required":
+            raise PermissionError(f"{name}: PDF is password-protected; enter the password and click Unlock & parse.") from e
+        raise ValueError(f"{name}: {e.args[0]}") from e
+    ptxt = ing.pdfium_pages(data, password)
+    full_layout = "\n".join(pages)
+    full_pdfium = "\n".join(ptxt)
+
+    # 1. ProAffluence MF Transaction Report
+    if txn := _parse_mf_txn_report(pages) or _parse_mf_txn_report(ptxt):
+        return {**txn, "warnings": []}
+
+    # 2. ProAffluence MF Summary Report
+    if mfs := _parse_mf_summary_report(full_layout) or _parse_mf_summary_report(full_pdfium):
+        return {**mfs, "warnings": []}
+
+    # 3. FundsIndia Folio-Wise Valuation Report
+    fw_h, fw_tot, fw_w, _ = layouts.folio_wise_mf(plain)
+    st = client_report.parse_statement(full_layout)
+    if fw_h or st:
+        c_name = (st["client"]["name"] if st else "") or ""
+        v_date = ing.parse_date((st["client"]["date"] if st else None) or layouts.folio_date(plain)) or ""
+        p_xirr = fw_tot.get("reported_xirr") if fw_tot else (st["xirr"] if st else None)
+        if fw_h:
+            hs = [{"raw_name": h.security_name, "isin": h.isin, "amfi_code": None, "folio": h.account_no,
+                   "units": h.quantity, "nav": h.price, "invested": h.invested_amount, "value": h.market_value or 0.0,
+                   "from": "", "to": "", "inst": "", "ret": h.reported_xirr, "flag": "", "flows": []} for h in fw_h]
+        else:
+            hs = [{"raw_name": r["name"], "isin": None, "amfi_code": None, "folio": r["folio"],
+                   "units": r["units"], "nav": r["nav"], "invested": r["invested"], "value": r["value"],
+                   "from": "", "to": "", "inst": "", "ret": r["ann_ret"], "flag": "", "flows": []} for r in st["rows"]]
+        return {"client_name": c_name, "val_date": v_date, "portfolio_xirr": p_xirr, "holdings": hs, "kind": "folio_wise", "warnings": fw_w}
+
+    # 4. CAMS / KFintech / NSDL / CDSL Consolidated Account Statement (CAS)
+    try:
+        if cas_res := _parse_cas_pdf(data, password):
+            return {**cas_res, "warnings": []}
+    except Exception as e:
+        if "password" in str(e).lower():
+            raise PermissionError(f"{name}: incorrect password for this PDF statement.") from e
+
+    # 5. FundsIndia Web Printout / Cards
+    card_h, _, _, _ = ing.holdings_from_cards(ptxt or pages)
+    if card_h:
+        v_date = ""
+        if m := ing._PRINT_DATE.search(full_pdfium or full_layout):
+            v_date = ing.parse_date(m.group(1)) or ""
+        return {
+            "client_name": "", "val_date": v_date, "portfolio_xirr": None, "kind": "cards", "warnings": [],
+            "holdings": [{"raw_name": h.security_name, "isin": h.isin, "amfi_code": None, "folio": h.account_no,
+                          "units": h.quantity, "nav": h.price, "invested": h.invested_amount, "value": h.market_value or 0.0,
+                          "from": "", "to": "", "inst": "", "ret": None, "flag": "", "flows": []} for h in card_h],
+        }
+
+    # 6. Generic tabular PDF (header-driven or positional columns)
+    cands = [ing.holdings_from_text(pages), ing.holdings_from_columns(data, password)]
+    best_h, _, best_w, _ = ing.pick_best(cands)
+    if best_h:
+        _, meta, _ = ing.scan_scalars(full_layout.splitlines())
+        return {
+            "client_name": "", "val_date": meta.get("statement_date") or "", "portfolio_xirr": None, "kind": "table_pdf", "warnings": best_w,
+            "holdings": [{"raw_name": h.security_name, "isin": h.isin, "amfi_code": None, "folio": h.account_no,
+                          "units": h.quantity, "nav": h.price, "invested": h.invested_amount, "value": h.market_value or 0.0,
+                          "from": "", "to": "", "inst": "", "ret": h.reported_xirr, "flag": "", "flows": []}
+                         for h in best_h if (h.market_value or 0) > 0 or (h.quantity or 0) > 0],
+        }
+
+    # 7. Layout / universal text fallback + OCR for scanned PDFs
+    for txt in (full_layout, full_pdfium):
+        for ext in (portfolio_screen.extract_from_layout_text, portfolio_screen.extract_universal_from_text):
+            eh, esd = ext(txt)
+            if eh:
+                return {
+                    "client_name": "", "val_date": ing.parse_date(esd) or "", "portfolio_xirr": None, "kind": "text_pdf", "warnings": [],
+                    "holdings": [{"raw_name": x["raw_name"], "isin": x.get("isin"), "amfi_code": x.get("amfi_code"), "folio": x.get("folio"),
+                                  "units": x.get("units"), "nav": x.get("statement_nav"), "invested": None, "value": x.get("statement_value") or 0.0,
+                                  "from": "", "to": "", "inst": "", "ret": None, "flag": "", "flows": []} for x in eh],
+                }
+    if len((full_layout + full_pdfium).strip()) < 100 or re.search(r"funds[il1]ndia", (full_layout + full_pdfium).lower()):
+        try:
+            fi_ocr = statements.parse_fundsindia(statements.fundsindia_pages(name, data))
+            if fi_ocr and fi_ocr.get("categories"):
+                hs = [{"raw_name": f["name"], "isin": None, "amfi_code": None, "folio": None, "units": None, "nav": None,
+                       "invested": f["invested"], "value": f["current"], "from": "", "to": "", "inst": "", "ret": f.get("ann_ret"), "flag": "", "flows": []}
+                      for c in fi_ocr["categories"] for f in c.get("funds") or []]
+                if hs:
+                    return {"client_name": fi_ocr["client"]["name"], "val_date": ing.parse_date(fi_ocr["as_on"]) or "",
+                            "portfolio_xirr": fi_ocr["grand_total"].get("xirr"), "holdings": hs, "kind": "ocr", "warnings": fi_ocr.get("warnings") or []}
+        except Exception:
+            pass
+    raise ValueError(f"{name}: no active mutual fund holdings could be identified in this statement.")
+
+
+def build_analysis(holdings: list[dict[str, Any]], val_date_str: str, portfolio_xirr: float | None = None,
+                   explicit_compare: dict[str, Any] | None = None) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+    """Compute `compare` and live Fund Horizon `analysis` for the current holdings."""
+    codes = [str(h["code"]) for h in holdings if h.get("code")]
+    live = live_data(codes)
+    for h in holdings:
+        lv = live.get(str(h["code"])) or {}
+        if not h.get("name") and lv.get("name"):
+            h["name"] = lv["name"]
+        if not h.get("typ") and lv.get("cat_label"):
+            h["typ"] = lv["cat_label"]
+        if not h.get("period") and h.get("from"):
+            h["period"] = _period_label(h["from"], h.get("to") or "")
+    cmp_ = explicit_compare or compute_compare(holdings, val_date_str, portfolio_xirr=portfolio_xirr, live=live)
+    rev_dict = {"client": {"name": "Client", "date": val_date_str or date.today().isoformat()}, "holdings": holdings, "compare": cmp_}
+    s = summarize_review(rev_dict, live)
+    sigs = {"Buy": 0, "Hold": 0, "Sell": 0, "Needs review": 0}
+    for h in s["hold"]:
+        sig = h["lv"].get("fh_signal") or "Needs review"
+        sigs[sig if sig in sigs else "Needs review"] += 1
+    analysis = {
+        "invested": round(s["inv"], 2), "value": round(s["val"], 2), "gain": round(s["gain"], 2),
+        "abs_ret": round((s["gain"] / s["inv"]) * 100, 2) if s["inv"] else 0.0,
+        "xirr": s["xirr"], "nav_date": s["nav_date"],
+        "signals": sigs,
+        "buckets": [{"name": k, "value": round(v, 2), "pct": round(v / s["val"] * 100, 1) if s["val"] else 0.0} for k, v in s["order"]],
+        "recommendations": [{"title": t, "body": b} for t, b in s["recs"]],
+        "stress_test": [{"scenario": r[0], "covered": r[1], "change_inr": r[2], "change_pct": r[3]} for r in s["stress_rows"]],
+        "live": {c: {k: v for k, v in d.items() if k != "falls"} | {"falls": d.get("falls") or {}} for c, d in live.items()},
+    }
+    return cmp_, analysis
+
+
+def parse_review_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str, Any]:
+    """Parse 1..MAX_FILES uploaded statements, match schemes, aggregate by scheme code and compute comparison + live analysis."""
+    expanded: list[tuple[str, bytes]] = []
+    dash_xirr: float | None = None
+    warnings: list[str] = []
+    file_results: list[dict[str, Any]] = []
+    for name, data in files:
+        if client_report.is_pdf(name, data):
+            try:
+                secs, dash = bundle.split(data, password)
+            except Exception:
+                secs, dash = [], {}
+            if dash and dash_xirr is None:
+                dash_xirr = (dash.get("xirr_by_class") or {}).get("mf") or dash.get("since_inception_xirr")
+                if dash_xirr is not None:
+                    dash_xirr = float(dash_xirr)
+            if secs:
+                stem = re.sub(r"\.pdf$", "", name, flags=re.I)
+                mf_secs = [s for s in secs if "mf" in s["label"].lower() or s["provider"] == "fundsindia"]
+                skipped = [s["label"] for s in secs if s not in mf_secs]
+                if skipped:
+                    warnings.append(f"{name}: skipped non-mutual-fund section(s) ({', '.join(skipped)}).")
+                for s in (mf_secs or secs):
+                    expanded.append((f"{stem} - {s['label']}.pdf", s["data"]))
+                continue
+        expanded.append((name, data))
+
+    frame = _frame()
+    lookups = _build_lookups(frame)
+    client_name, val_date, p_xirr = "", "", dash_xirr
+    explicit_compare: dict[str, Any] | None = None
+    raw_items: list[dict[str, Any]] = []
+    fallback_seq = 0
+
+    for fname, fbytes in expanded:
+        try:
+            res = _extract_single_file(fname, fbytes, password)
+        except PermissionError as pe:
+            warnings.append(str(pe))
+            file_results.append({"name": fname, "kind": "password_required", "holdings_count": 0, "flows_count": 0, "error": str(pe)})
+            continue
+        except Exception as e:
+            warnings.append(str(e))
+            file_results.append({"name": fname, "kind": "error", "holdings_count": 0, "flows_count": 0, "error": str(e)})
+            continue
+        warnings.extend(f"{fname}: {w}" for w in (res.get("warnings") or []))
+        if res.get("explicit_compare"):
+            explicit_compare = res["explicit_compare"]
+        if res.get("client_name") and not client_name:
+            client_name = res["client_name"]
+        if res.get("val_date") and res["val_date"] > val_date:
+            val_date = res["val_date"]
+        if res.get("portfolio_xirr") is not None and p_xirr is None:
+            p_xirr = float(res["portfolio_xirr"])
+        f_flows = 0
+        for h in res.get("holdings") or []:
+            fallback_seq += 1
+            matched, m_type, m_warn = _match_scheme(h.get("raw_name") or "", h.get("isin"), h.get("amfi_code"), lookups, fallback_seq)
+            if m_warn:
+                warnings.append(f"{fname}: {m_warn}")
+            code = str(matched["code"])
+            clean_name = re.sub(r" - (Regular|Direct) Plan.*$", "", str(matched.get("name") or h.get("raw_name") or code))
+            f_flows += len(h.get("flows") or [])
+            raw_items.append({
+                **h, "code": code, "name": clean_name, "typ": str(matched.get("cat_label") or ""),
+                "match_type": m_type, "_file": fname,
+            })
+        file_results.append({
+            "name": fname, "kind": res.get("kind") or "statement",
+            "holdings_count": len(res.get("holdings") or []), "flows_count": f_flows, "error": None,
+        })
+
+    # Step 1: deduplicate identical (folio, code) across summary + transaction uploads of the same portfolio
+    by_folio_code: list[dict[str, Any]] = []
+    for item in raw_items:
+        f_no, code = item.get("folio"), item["code"]
+        dup = next(
+            (x for x in by_folio_code if x["code"] == code and (
+                (f_no and x.get("folio") == f_no)
+                or (x["_file"] != item["_file"] and (not f_no or not x.get("folio"))
+                    and x.get("value") and item.get("value") and abs(x["value"] - item["value"]) <= max(5.0, 0.02 * x["value"]))
+            )),
+            None,
+        )
+        if dup is not None:
+            if item.get("flows") and not dup.get("flows"):
+                dup["flows"] = item["flows"]
+            if (dup.get("invested") is None or dup["invested"] == 0) and item.get("invested"):
+                dup["invested"] = item["invested"]
+            if item.get("value") and not dup.get("value"):
+                dup["value"] = item["value"]
+            for k in ("from", "to", "inst", "ret", "flag", "folio"):
+                if not dup.get(k) and item.get(k) not in (None, ""):
+                    dup[k] = item[k]
+            continue
+        by_folio_code.append(dict(item))
+
+    # Step 2: combine distinct folios of the same scheme `code` into one Portfolio Review row
+    by_code: dict[str, dict[str, Any]] = {}
+    for item in by_folio_code:
+        code = item["code"]
+        if code not in by_code:
+            by_code[code] = {
+                "code": code, "name": item["name"], "typ": item.get("typ") or "",
+                "invested": float(item.get("invested") or 0.0), "invested_missing": item.get("invested") is None,
+                "value": float(item.get("value") or 0.0), "from": item.get("from") or "", "to": item.get("to") or "",
+                "inst": item.get("inst") or "", "ret": item.get("ret"), "flag": item.get("flag") or "",
+                "flows": list(item.get("flows") or []), "match_type": item.get("match_type") or "matched_name",
+                "_ret_w": (float(item["ret"]) * float(item.get("value") or 0.0)) if item.get("ret") is not None else None,
+            }
+        else:
+            cur = by_code[code]
+            v = float(item.get("value") or 0.0)
+            cur["invested"] = round(cur["invested"] + float(item.get("invested") or 0.0), 2)
+            cur["invested_missing"] = cur["invested_missing"] and (item.get("invested") is None)
+            cur["value"] = round(cur["value"] + v, 2)
+            cur["flows"].extend(item.get("flows") or [])
+            if item.get("from") and (not cur["from"] or item["from"] < cur["from"]):
+                cur["from"] = item["from"]
+            if item.get("to") and (not cur["to"] or item["to"] > cur["to"]):
+                cur["to"] = item["to"]
+            if str(cur["inst"]).isdigit() and str(item.get("inst") or "").isdigit():
+                cur["inst"] = str(int(cur["inst"]) + int(item["inst"]))
+            if item.get("ret") is not None:
+                cur["_ret_w"] = (cur["_ret_w"] or 0.0) + float(item["ret"]) * v
+                if cur["value"] > 0:
+                    cur["ret"] = round(cur["_ret_w"] / cur["value"], 2)
+
+    holdings = list(by_code.values())
+    for h in holdings:
+        h.pop("_ret_w", None)
+        h["invested"] = round(h["invested"], 2)
+        h["value"] = round(h["value"], 2)
+
+    missing_inv = [h["name"] for h in holdings if h.pop("invested_missing", False) and h["invested"] == 0 and not h.get("flows")]
+    if missing_inv:
+        warnings.append(
+            f"Invested amount was not printed in the statement for {len(missing_inv)} fund(s) ({', '.join(missing_inv[:4])}"
+            + ("…" if len(missing_inv) > 4 else "") + "); enter their invested amounts in the table or upload a statement with cost/transactions."
+        )
+
+    eff_date = val_date or date.today().isoformat()
+    cmp_, analysis = build_analysis(holdings, eff_date, portfolio_xirr=p_xirr, explicit_compare=explicit_compare)
+    return {
+        "client": {"name": client_name, "date": eff_date},
+        "holdings": holdings,
+        "compare": cmp_,
+        "analysis": analysis,
+        "warnings": list(dict.fromkeys(warnings)),
+        "file_results": file_results,
+    }
+
+
 def _pdf(rv: Review) -> bytes:
     h = rv.model_dump()
     return build_portfolio_review(h, live_data([x["code"] for x in h["holdings"]]))
@@ -121,6 +1120,30 @@ def _pdf(rv: Review) -> bytes:
 
 def _filename(rv: Review) -> str:
     return re.sub(r"[^\w.\- ]", "_", f"Portfolio Review - {rv.client.name} - {rv.client.date}")[:100] + ".pdf"
+
+
+@router.post("/parse")
+async def parse(me: Me, files: Annotated[list[UploadFile], File()], password: Annotated[str, Form()] = ""):
+    if not files or len(files) > MAX_FILES:
+        raise HTTPException(422, f"Upload 1 to {MAX_FILES} files.")
+    blobs: list[tuple[str, bytes]] = []
+    for f in files:
+        b = await f.read()
+        if len(b) > MAX_BYTES:
+            raise HTTPException(422, f"{f.filename}: larger than 15 MB.")
+        blobs.append((f.filename or "statement.pdf", b))
+    return parse_review_files(blobs, password=password)
+
+
+@router.post("/analyze")
+def analyze(body: AnalyzeIn, me: Me):
+    holdings = [{
+        "code": h.code, "name": h.name, "typ": h.typ, "invested": h.invested, "value": h.value,
+        "from": h.from_month, "to": h.to_month, "period": h.period or _period_label(h.from_month, h.to_month),
+        "inst": h.inst, "ret": h.ret, "flag": h.flag, "flows": [list(x) for x in h.flows],
+    } for h in body.holdings]
+    cmp_, analysis = build_analysis(holdings, body.date or date.today().isoformat(), portfolio_xirr=body.portfolio_xirr)
+    return {"holdings": holdings, "compare": cmp_, "analysis": analysis}
 
 
 @router.post("/pdf")

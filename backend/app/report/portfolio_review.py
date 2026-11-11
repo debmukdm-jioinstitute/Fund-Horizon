@@ -1,6 +1,6 @@
-from __future__ import annotations
 """Client "Portfolio Review" deck (16:9 PDF): holdings, live Fund Horizon view, stress test, recommendations.
 Google Sans only (see CLAUDE.md). Pure rendering: the API layer supplies holdings and live fund data."""
+from __future__ import annotations
 
 import io
 import textwrap
@@ -141,26 +141,69 @@ def _hbar(fig, rect, labels, vals, colors, fmt, xlabel, fs=8.5):
     a.set_xlim(min(0, min(vals)) - span * 0.18, max(0, max(vals)) + span * 0.18); a.set_xlabel(xlabel, fontsize=9); a.tick_params(axis="x", labelsize=8)
 
 
+def summarize_review(d: dict, live: dict[str, dict]) -> dict:
+    """Enrich holdings with live FH data, bucket weights, recommendations and stress-test rows (shared by PDF and UI)."""
+    cmp_ = d.get("compare") or {}
+    pf = cmp_.get("per_fund") or {}
+    hold = []
+    for h in d["holdings"]:
+        lv = live.get(h["code"], {})
+        ret = h.get("ret")
+        c_pf = pf.get(h["code"]) or {}
+        hold.append({**h, "name": h.get("name") or lv.get("name") or h["code"], "typ": h.get("typ") or lv.get("cat_label") or "",
+                     "ret": ret if ret is not None else ((h["value"] / h["invested"] - 1) * 100 if h["invested"] else 0.0),
+                     "ret_is_abs": ret is None, "bucket": BUCKETS.get(lv.get("cat"), "Other"), "flag": h.get("flag", ""),
+                     "v500": c_pf.get("pct"), "v500rs": c_pf.get("inr"), "lv": lv})
+    inv, val = sum(h["invested"] for h in hold), sum(h["value"] for h in hold)
+    bk: dict[str, float] = {}
+    for h in hold:
+        bk[h["bucket"]] = bk.get(h["bucket"], 0) + h["value"]
+    order = sorted(bk.items(), key=lambda kv: -kv[1])
+    def share(b):
+        return sum(h["value"] for h in hold if h["bucket"] == b)
+
+    sells = [h for h in hold if h["lv"].get("fh_signal") == "Sell"]
+    review = [h for h in hold if h["lv"].get("fh_signal") == "Needs review"]
+    recs: list[tuple[str, str]] = []
+    if sells:
+        recs.append(("Review the FH 'Sell' signals", f"{', '.join(h['name'] for h in sells)}: live signal is Sell (below category on 3-yr CAGR / risk-adjusted metrics)." +
+                     (" " + ", ".join(h["name"] for h in sells if h["lv"].get("recommended")) + " is also on the FH recommended list: needs an investment-committee decision." if any(h["lv"].get("recommended") for h in sells) else "")))
+    if review:
+        recs.append(("Funds with thin data", f"{', '.join(h['name'] for h in review)}: FH signal is 'Needs review' (data coverage below the scoring minimum). Do not add until reviewed."))
+    for b, label in (("Gold & silver", "Gold & silver allocation"), ("Small cap", "Small-cap concentration"), ("Sector funds", "Sector funds are a satellite")):
+        n, v = sum(1 for h in hold if h["bucket"] == b), share(b)
+        if n and val and v / val > (0.05 if b != "Small cap" else 0.10):
+            recs.append((label, f"{n} fund(s) hold ₹{v/1e5:.1f} L ({v/val*100:.1f}% of the portfolio). " + ("Confirm a target allocation before adding." if b != "Small cap" else "Consider consolidating similar mandates (check overlap).")))
+    new = [h for h in hold if h["flag"] == "†"]
+    if new:
+        recs.append(("Recent money is still new", f"{len(new)} holding(s) are under one year old; judge on a 3-year view and review in a year."))
+    if not recs:
+        recs.append(("No flags", "No Sell or Needs-review signals and no concentration flags in the live data."))
+    stress_rws = []
+    for k, (_, _, label) in STRESS_WINDOWS.items():
+        cov = [h for h in hold if (h["lv"].get("falls") or {}).get(k) is not None]
+        c = sum(h["value"] for h in cov)
+        loss = sum(h["value"] * h["lv"]["falls"][k] / 100 for h in cov)
+        stress_rws.append([label + ", each fund's own fall", f"{c/val*100:.0f}%" if val else "-", rs(loss) if cov else "-", pc(loss / c * 100, 1) if c else "-"])
+    eq = val - share("Gold & silver")
+    for sh in (10, 20, 30):
+        stress_rws.append([f"All equity funds fall {sh}% (parametric; gold & silver unchanged)", "equity", rs(-eq * sh / 100), f"{MINUS}{sh:.1f}%"])
+    if share("Gold & silver") and val:
+        stress_rws.append(["Gold & silver falls a further 10% (parametric)", f"{share('Gold & silver')/val*100:.0f}%", rs(-share("Gold & silver") * 0.1), f"{MINUS}10.0%"])
+    navd = [h["lv"]["nav_date"] for h in hold if h["lv"].get("nav_date")]
+    return {"hold": hold, "inv": inv, "val": val, "gain": val - inv, "xirr": cmp_.get("portfolio_xirr"), "order": order,
+            "recs": recs[:5], "stress_rows": stress_rws, "nav_date": max(navd) if navd else None}
+
+
 def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
     """d = {client:{name,date}, holdings:[{code,name,invested,value,typ,period,inst,ret,flag}], compare:{...}|None, fetched_at}.
     live[code] = screener-row fields + 'falls'. Funds without live data render '-' (never estimated)."""
     d, live = _clean(d), _clean(live)
     cl, cmp_ = d["client"], d.get("compare") or {}
     ist = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%d %b %Y, %H:%M IST")
-    hold = []
-    for h in d["holdings"]:
-        lv = live.get(h["code"], {})
-        ret = h.get("ret")
-        hold.append({**h, "name": h.get("name") or lv.get("name") or h["code"], "typ": h.get("typ") or lv.get("cat_label") or "",
-                     "ret": ret if ret is not None else ((h["value"] / h["invested"] - 1) * 100 if h["invested"] else 0.0),
-                     "ret_is_abs": ret is None, "bucket": BUCKETS.get(lv.get("cat"), "Other"), "flag": h.get("flag", ""), "lv": lv})
-    inv, val = sum(h["invested"] for h in hold), sum(h["value"] for h in hold)
-    xirr = cmp_.get("portfolio_xirr")
-    pf = cmp_.get("per_fund") or {}
-    for h in hold:
-        h["v500"], h["v500rs"] = (pf.get(h["code"]) or {}).get("pct"), (pf.get(h["code"]) or {}).get("inr")
-    navd = [h["lv"]["nav_date"] for h in hold if h["lv"].get("nav_date")]
-    foot = f"{cl['name']}  ·  Valuation as on {cl['date']}  ·  Live fund data as on {max(navd) if navd else 'n/a'}  ·  Generated {ist}"
+    s = summarize_review(d, live)
+    hold, inv, val, gain, xirr, order, recs, stress_rws = s["hold"], s["inv"], s["val"], s["gain"], s["xirr"], s["order"], s["recs"], s["stress_rows"]
+    foot = f"{cl['name']}  ·  Valuation as on {cl['date']}  ·  Live fund data as on {s['nav_date'] or 'n/a'}  ·  Generated {ist}"
     buf = io.BytesIO(); dk = _Deck(buf, foot)
 
     f, a = dk.page(True)
@@ -170,7 +213,6 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
     a.text(80, 478, f"Live fund data refreshed {ist}", fontsize=12, color="#B8C0E0", va="center")
     dk.save(f)
 
-    gain = val - inv
     f, a = dk.page(); _title(a, f"₹{inv/1e5:.2f} L invested is now ₹{val/1e5:.2f} L" + (f": {xirr:.2f}% a year" if xirr is not None else f": {pc(gain/inv*100 if inv else 0)}"))
     _card(a, 60, 150, 282, 160, f"₹{inr(inv)}", f"invested in {len(hold)} funds")
     _card(a, 370, 150, 282, 160, f"₹{inr(val)}", f"value today · gain\n{rs(gain, True)} ({pc(gain/inv*100 if inv else 0)})")
@@ -180,10 +222,6 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
     else:
         _card(a, 681, 150, 282, 160, pc(gain / inv * 100 if inv else 0), "absolute return (not annualised;\nXIRR needs instalment dates)", col(gain))
         _card(a, 991, 150, 282, 160, f"{sum(1 for h in hold if h['ret'] >= 0)} of {len(hold)}", "funds with a positive return", GREEN)
-    bk: dict[str, float] = {}
-    for h in hold:
-        bk[h["bucket"]] = bk.get(h["bucket"], 0) + h["value"]
-    order = sorted(bk.items(), key=lambda kv: -kv[1])
     a.text(420, 352, "Where the money is today (₹ lakh)", fontsize=13, ha="center")
     _hbar(f, [0.30, 0.13, 0.30, 0.36], [k for k, _ in order], [v / 1e5 for _, v in order], [NAVY] * len(order), lambda v: f"₹{v:.1f} L", "", fs=10.5)
     a.add_patch(FancyBboxPatch((820, 340), 453, 340, boxstyle="round,pad=0,rounding_size=14", fc=LIGHT, ec="none"))
@@ -209,7 +247,8 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
             dk.save(f)
     hold_pages()
 
-    if cmp_ and pf:
+    L = sorted([h for h in hold if h["v500"] is not None], key=lambda h: -h["v500"])
+    if cmp_ and L:
         f, a = dk.page(); _title(a, "Ahead of the Nifty 50 and the Nifty 500 TRI" if (cmp_.get("ahead_inr_500", 0) > 0) else "Against the Nifty 50 and the Nifty 500 TRI")
         a.text(480, 165, "XIRR on the same instalments, % a year", fontsize=13, ha="center")
         _hbar(f, [0.145, 0.16, 0.5, 0.37], ["Your portfolio", "Nifty 50", "Nifty 500 TRI"], [xirr or 0, cmp_.get("nifty50_xirr", 0), cmp_.get("nifty500_xirr", 0)], [GREEN, NAVY, NAVY], lambda v: f"{v:.2f}%", "", fs=12)
@@ -218,7 +257,6 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
             _card(a, 840, 145 + i * 150, 433, 135, big, sm, GREEN if big.startswith("+") else RED, 28)
         _note(a, "Each instalment notionally invested in each index on the same date. Index data: index-fund NAVs (AMFI).")
         dk.save(f)
-        L = sorted([h for h in hold if h["v500"] is not None], key=lambda h: -h["v500"])
         f, a = dk.page(); _title(a, f"{sum(1 for h in L if h['v500'] > 0)} of {len(L)} funds are ahead of the Nifty 500 TRI")
         _hbar(f, [0.17, 0.17, 0.36, 0.65], [h["name"] for h in L], [h["v500"] for h in L], [col(h["v500"]) for h in L], lambda v: f"{'+' if v >= 0 else MINUS}{abs(v):.1f}%", "Your return minus the Nifty 500 TRI on the same instalments (%)", fs=7.5)
         _card(a, 760, 140, 513, 120, f"{cmp_.get('funds_ahead_50', 0)} of {len(L)}", "funds ahead of the Nifty 50", NAVY, 30)
@@ -283,24 +321,7 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
         dk.save(f)
 
     f, a = dk.page(); _title(a, "What we would look at: portfolio recommendations")
-    def share(b): return sum(h["value"] for h in hold if h["bucket"] == b)
-    sells = [h for h in hold if h["lv"].get("fh_signal") == "Sell"]; review = [h for h in hold if h["lv"].get("fh_signal") == "Needs review"]
-    recs = []
-    if sells:
-        recs.append(("Review the FH 'Sell' signals", f"{', '.join(h['name'] for h in sells)}: live signal is Sell (below category on 3-yr CAGR / risk-adjusted metrics)." +
-                     (" " + ", ".join(h["name"] for h in sells if h["lv"].get("recommended")) + " is also on the FH recommended list: needs an investment-committee decision." if any(h["lv"].get("recommended") for h in sells) else "")))
-    if review:
-        recs.append(("Funds with thin data", f"{', '.join(h['name'] for h in review)}: FH signal is 'Needs review' (data coverage below the scoring minimum). Do not add until reviewed."))
-    for b, label in (("Gold & silver", "Gold & silver allocation"), ("Small cap", "Small-cap concentration"), ("Sector funds", "Sector funds are a satellite")):
-        n, v = sum(1 for h in hold if h["bucket"] == b), share(b)
-        if n and v / val > (0.05 if b != "Small cap" else 0.10):
-            recs.append((label, f"{n} fund(s) hold ₹{v/1e5:.1f} L ({v/val*100:.1f}% of the portfolio). " + ("Confirm a target allocation before adding." if b != "Small cap" else "Consider consolidating similar mandates (check overlap).")))
-    new = [h for h in hold if h["flag"] == "†"]
-    if new:
-        recs.append(("Recent money is still new", f"{len(new)} holding(s) are under one year old; judge on a 3-year view and review in a year."))
-    if not recs:
-        recs.append(("No flags", "No Sell or Needs-review signals and no concentration flags in the live data."))
-    for i, (h_, t_) in enumerate(recs[:5]):
+    for i, (h_, t_) in enumerate(recs):
         y = 140 + i * 105
         a.add_patch(FancyBboxPatch((60, y), 1213, 90, boxstyle="round,pad=0,rounding_size=12", fc=LIGHT, ec="none"))
         a.text(85, y + 28, h_, fontsize=15, fontweight="bold", color=NAVY, va="center"); a.text(85, y + 55, wrap(t_, 150), fontsize=11, color=INK, va="center")
@@ -308,17 +329,7 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
     dk.save(f)
 
     f, a = dk.page(); _title(a, "Stress test: what if markets fall again?")
-    rws = []
-    for k, (_, _, label) in STRESS_WINDOWS.items():
-        cov = [h for h in hold if (h["lv"].get("falls") or {}).get(k) is not None]
-        c = sum(h["value"] for h in cov); loss = sum(h["value"] * h["lv"]["falls"][k] / 100 for h in cov)
-        rws.append([label + ", each fund's own fall", f"{c/val*100:.0f}%" if val else "-", rs(loss) if cov else "-", pc(loss / c * 100, 1) if c else "-"])
-    eq = val - share("Gold & silver")
-    for sh in (10, 20, 30):
-        rws.append([f"All equity funds fall {sh}% (parametric; gold & silver unchanged)", "equity", rs(-eq * sh / 100), f"{MINUS}{sh:.1f}%"])
-    if share("Gold & silver"):
-        rws.append(["Gold & silver falls a further 10% (parametric)", f"{share('Gold & silver')/val*100:.0f}%", rs(-share("Gold & silver") * 0.1), f"{MINUS}10.0%"])
-    _table(a, 60, 140, ["Scenario", "Value covered", "Estimated change (₹)", "On covered value"], rws, [640, 170, 230, 173], rh=46, aligns=["l", "c", "r", "r"], colors=[[None, None, RED, RED]] * len(rws))
+    _table(a, 60, 140, ["Scenario", "Value covered", "Estimated change (₹)", "On covered value"], stress_rws, [640, 170, 230, 173], rh=46, aligns=["l", "c", "r", "r"], colors=[[None, None, RED, RED]] * len(stress_rws))
     a.text(60, 560, wrap(f"Portfolio value today: ₹{inr(val)}. Historical rows use each fund's own measured peak-to-trough fall from its month-end NAV history; funds that did not exist in that window are excluded and the covered share is shown. Parametric rows are simple shocks, not forecasts.", 170), fontsize=10, color=GREY, va="top", linespacing=1.4)
     dk.save(f)
 

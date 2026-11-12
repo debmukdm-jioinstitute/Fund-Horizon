@@ -50,6 +50,7 @@ class Row(BaseModel):
     flag: str = Field(default="", max_length=5)
     flows: list[list[Any]] = Field(default_factory=list, max_length=1200)
     source_file: str = Field(default="", max_length=200)
+    lots: list[list[Any]] = Field(default_factory=list, max_length=1200)
 
 
 class SourceFileRef(BaseModel):

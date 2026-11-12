@@ -358,6 +358,12 @@ def parse_statement(text: str) -> dict[str, Any] | None:
             invested = sub["inv"] if sub else round(investments + div_reinv, 2)
             value = sub["val"] if sub else round(sum(r["val"] for r in r_list), 2)
             flows = [(ing.parse_date(r["date"]), round(r["inv"] + r["div_reinv"], 2)) for r in r_list if ing.parse_date(r.get("date")) and (r["inv"] + r["div_reinv"]) > 0]
+            lots, run_bal = [], {}  # "Balance Units" is the running balance per folio, so each lot is the change in balance
+            for r in sorted((x for x in r_list if ing.parse_date(x.get("date"))), key=lambda x: ing.parse_date(x["date"])):
+                delta = r["bal"] - run_bal.get(r["folio"], 0.0)
+                run_bal[r["folio"]] = r["bal"]
+                if abs(delta) > 1e-9:
+                    lots.append((ing.parse_date(r["date"]), round(delta, 4)))
             dates = sorted(d for d, _ in flows if d)
             max_days = max((r.get("days") or 0 for r in r_list), default=0)
             tx_rows.append({
@@ -369,6 +375,7 @@ def parse_statement(text: str) -> dict[str, Any] | None:
                 "days": max_days or None, "inst": str(len(flows)) if flows else "",
                 "flag": "†" if (0 < max_days < 365 or sec["ann_ret"] == 0.0 and abs(sec["abs_ret"]) > 0) else "",
                 "flows": [[d, a] for d, a in flows],
+                "lots": [[d, u] for d, u in lots],
             })
         if tx_rows:
             tot_v = sum(r["value"] for r in tx_rows)
@@ -533,6 +540,7 @@ def _make_row(
     flag: str = "",
     flows: list | None = None,
     source_file: str = "",
+    lots: list | None = None,
 ) -> dict[str, Any]:
     inv = round(float(invested or 0.0), 2)
     val = round(float(value or 0.0), 2)
@@ -563,6 +571,7 @@ def _make_row(
         "flag": flag if flag in ("†", "*") else "",
         "flows": [[str(d), round(float(a), 2)] for d, a in (flows or []) if d and a],
         "source_file": str(source_file or ""),
+        "lots": [[str(d), round(float(u), 4)] for d, u in (lots or []) if d and u],  # (date, units) per purchase lot, when the statement gives them
     }
 
 
@@ -1187,6 +1196,12 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
         "stress_test": (fh_analysis or {}).get("stress_test") or [],
     }
     data["matrices"]["charts"] = build_report_charts(data)
+    try:
+        from app.report.fy_matrix import fy_matrix
+
+        data["matrices"]["fy"] = fy_matrix(data, pr_api._nav)
+    except Exception:
+        data["matrices"]["fy"] = None
     return data
 
 
@@ -1336,7 +1351,7 @@ def _extract_universal_file(name: str, data: bytes, password: str = "", from_bun
             div_reinv=r.get("div_reinv", 0.0), div_payout=r.get("div_payout", 0.0),
             units=r.get("units", 0.0), nav=r.get("nav", 0.0), value=r["value"], ann_ret=r.get("ann_ret", 0.0),
             from_date=r.get("from_date", ""), to_date=r.get("to_date", ""), days=r.get("days"),
-            inst=r.get("inst", ""), flag=r.get("flag", ""), flows=r.get("flows"), source_file=name,
+            inst=r.get("inst", ""), flag=r.get("flag", ""), flows=r.get("flows"), source_file=name, lots=r.get("lots"),
         ) for r in st["rows"]]
         res["kind"] = "transaction_wise" if any(r.get("flows") for r in st["rows"]) else ("mf_summary" if "MF Summary Report" in text else "folio_wise")
         return res
@@ -1647,6 +1662,7 @@ def parse_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str,
                 if dup is not None:
                     if new_row.get("flows") and not dup.get("flows"):
                         dup["flows"] = new_row["flows"]
+                        dup["lots"] = new_row.get("lots") or []
                     for fld in ("from_date", "to_date", "days", "inst", "flag", "isin", "code"):
                         if not dup.get(fld) and new_row.get(fld):
                             dup[fld] = new_row[fld]
@@ -1835,6 +1851,50 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     ]))
 
     story: list[Any] = [top, Spacer(1, 6), kpi, Spacer(1, 8), P("1. Consolidated Portfolio Valuation — Folio & Holding Wise", sec_h), table]
+    fy = mat.get("fy")
+    if fy:
+        from reportlab.platypus import PageBreak
+
+        taupe, peach, line = colors.HexColor("#ECE9E0"), colors.HexColor("#FCE9D9"), colors.HexColor("#B7B7B7")
+        dmy = lambda iso: f"{iso[8:10]}-{iso[5:7]}-{iso[:4]}"  # noqa: E731
+        num = lambda v, f="{:d}": "-" if v is None else f.format(v)  # noqa: E731
+        pct = lambda v: "-" if v is None else f"{v:.2f}"  # noqa: E731
+        yrs = fy["years"]
+        base = [("GRID", (0, 0), (-1, -1), 0.5, line), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6), ("RIGHTPADDING", (0, 0), (-1, -1), 6)]
+
+        def fy_tbl(title, hdr, body_rows, widths, since=True, total=None):
+            cells = [[P(h, center_b) if i else P(h, bold) for i, h in enumerate(hdr)]] + body_rows
+            st = base + [("BACKGROUND", (0, 0), (-1, 0), taupe)]
+            if since:
+                st.append(("BACKGROUND", (0, 1), (-1, 1), peach))
+            if total:
+                cells.append(total)
+                st.append(("BACKGROUND", (0, len(cells) - 1), (-1, len(cells) - 1), taupe))
+            t_ = Table(cells, colWidths=[w * mm for w in widths], repeatRows=1, hAlign="LEFT")
+            t_.setStyle(TableStyle(st))
+            return [P(title, ParagraphStyle("fyt", parent=sec_h, fontSize=9.5, spaceBefore=8)), t_]
+
+        hb = [("Group Head Name :", c.get("name") or "-"), ("Family Member Name :", "All"), ("Category :", "All"),
+              ("Inception Date :", dmy(fy["inception"])), ("From Period :", dmy(fy["from"])), ("To Period :", dmy(fy["to"]))]
+        hbox = Table([[P(k, bold), P(v)] for k, v in hb], colWidths=[77 * mm, 100 * mm], hAlign="LEFT")
+        hbox.setStyle(TableStyle(base + [("BACKGROUND", (0, 0), (0, -1), taupe)]))
+        sm = [[P("Since Inception", bold), P(""), P(""), P(pct(fy["since"].get("PORTFOLIO")), center_b)]] + [
+            [P(y["fy"], bold), P(num(y["value"]), center), P(num(y["new"]), center), P(pct(y["xirr"]["PORTFOLIO"]), center)] for y in yrs]
+        sm_blk = fy_tbl("SUMMARY :", ["Financial Year", f"Value As on 31/03", "New Investments", "XIRR"], sm, [77, 80, 80, 40],
+                        total=[P("Net Investment:", bold), P(""), P(num(fy["net_new"]), center_b), P("")])
+        cls = ["PORTFOLIO", "MF", "PMS", "STOCK"]
+        lbl = {"PORTFOLIO": "Portfolio", "MF": "MF", "PMS": "PMS", "STOCK": "STOCK"}
+        xr = [[P("Since Inception", bold)] + [P(pct(fy["since"].get(g)), center) for g in cls]] + [
+            [P(y["fy"], bold)] + [P(pct(y["xirr"].get(g)), center) for g in cls] for y in yrs]
+        xr_blk = fy_tbl("XIRR :", ["FINANCIAL YEAR"] + [lbl[g] for g in cls], xr, [77] + [200 / len(cls)] * len(cls))
+        ab = [b for b in ("DEBT", "EQUITY", "OTHER") if b != "OTHER" or any((y["alloc"] or {}).get("OTHER") for y in yrs)]
+        al = [[P(y["fy"], bold)] + [P("-" if not y["alloc"] else f"{y['alloc'][b]:.2f}%", center) for b in ab] for y in yrs]
+        al_blk = fy_tbl("Asset Allocation Movement :", ["FINANCIAL YEAR"] + ab, al, [77] + [200 / len(ab)] * len(ab), since=False)
+        note = ("Value As on 31/03 = units held x AMFI month-end NAV (last row: as on the report date). "
+                + ("Units are taken lot-by-lot from the uploaded statement. " if fy["exact"] else "Where a statement gives no lot units, units are rebuilt from dated transactions and NAV. ")
+                + '"-" = history for that holding is not in the uploaded statements; nothing is estimated. XIRR for the first and last (part) years is annualised.')
+        story += [PageBreak(), KeepTogether([P("Financial-Year Summary", sec_h), hbox]), KeepTogether(sm_blk), PageBreak(), KeepTogether(xr_blk), KeepTogether([*al_blk, Spacer(1, 4), P(note, small)]), PageBreak()]
 
     # Section 1B: Visual Portfolio Analytics & Graphs (2x2 Grid of Matplotlib Charts)
     charts_b64 = mat.get("charts") or build_report_charts(data)

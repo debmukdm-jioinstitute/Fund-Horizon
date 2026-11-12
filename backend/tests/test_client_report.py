@@ -1,5 +1,6 @@
 import io
 import re
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -176,3 +177,81 @@ def test_stress_many_files_rows_flows_and_attachments(monkeypatch):
     d["attach_statements"] = False
     assert "Annexure S1" not in "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)
     assert time.time() - t0 < 120
+
+
+def _nav_series(start="2018-01-31", end="2026-11-30"):
+    idx = pd.date_range(start, end, freq="ME")
+    return pd.Series([100 + 1.5 * i for i in range(len(idx))], index=idx), idx
+
+
+def test_fy_summary_from_transaction_wise_statement_is_exact(monkeypatch):
+    """Lots come from the running 'Balance Units'; FY value = units x month-end NAV at 31 Mar; XIRR checked against closed form."""
+    _mock_fh(monkeypatch)
+    nav, idx = _nav_series("2024-01-31")
+    monkeypatch.setattr(pr_api, "_nav", lambda c: nav)
+    text = "\n".join([
+        "Portfolio Valuation Report - Transaction Wise", "Nithya Karthik", "11 Nov 2026", "Fund Horizon",
+        "ARN: 345439  |  Phone: 9920406408", "AMFI Registered Mutual Fund Distributor",
+        "INVESTED AMOUNT ₹1,50,000.00 CURRENT VALUE ₹2,68,600.00 UNREALISED GAIN / (LOSS) ₹1 ABSOLUTE RETURN 1.30% ANNUALISED RETURN (XIRR) 8.62%",
+        "PPFAS Flexi Cap Fund-Reg(G) Unrealised Gain / (Loss): ₹1  |  Absolute Return: 15.77%  |  Annualised Return (XIRR): 6.19%",
+        "1 F1 1,00,000.00 10-06-2024 0.00 100.00 1000.000 889 170.00 1,70,000.00 15.77% 6.19%",
+        "2 F1 50,000.00 10-04-2025 0.00 125.00 1400.000 500 170.00 2,38,000.00 15.77% 6.19%",
+        "3 F1 25,000.00 10-05-2026 0.00 138.89 1580.000 100 170.00 2,68,600.00 15.77% 6.19%",
+        "Sub Total 1,75,000.00 1,580.00 2,68,600.00 53.49% 8.62%",
+    ])
+    monkeypatch.setattr("app.report.client_report.extract_text", lambda n, b: text)
+    d = parse_files([("tx.pdf", b"")])
+    fy = d["matrices"]["fy"]
+    assert [y["fy"] for y in fy["years"]] == ["FY 2024-25", "FY 2025-26", "FY 2026-27"]
+    assert [y["value"] for y in fy["years"]] == [121000, 194600, 268600]  # 1000 x 121, 1400 x 139, closing = statement value
+    assert [y["new"] for y in fy["years"]] == [100000, 50000, 25000] and fy["net_new"] == 175000
+    exp = ((121000 / 100000) ** (365 / (date(2025, 3, 31) - date(2024, 6, 10)).days) - 1) * 100
+    assert abs(fy["years"][0]["xirr"]["MF"] - exp) < 0.02 and fy["years"][0]["xirr"]["PMS"] is None
+    assert fy["years"][2]["alloc"] == {"DEBT": 0.0, "EQUITY": 100.0, "OTHER": 0.0} and fy["exact"] is True
+    from pypdf import PdfReader
+    txt = "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)
+    for s in ("Group Head Name", "Family Member Name", "SUMMARY :", "Value As on 31/03", "Net Investment:", "XIRR :", "Asset Allocation Movement :", "FY 2025-26", "194600", "10-06-2024"):
+        assert s in txt, s
+
+
+def test_fy_summary_never_estimates_holdings_without_history():
+    from app.report.fy_matrix import fy_matrix
+
+    nav, _ = _nav_series()
+    mf = {"asset_class": "Mutual Fund", "category": "Liquid Fund", "code": "1", "value": 120.0, "invested": 100.0, "units": 1.0,
+          "flows": [["2023-06-10", 100.0], ["2024-05-10", -20.0]]}
+    pms = {"asset_class": "PMS", "category": "PMS Strategy", "value": 500.0, "invested": 400.0, "from_date": "2022-04-05", "flows": []}
+    fy = fy_matrix({"client": {"date": "11 Nov 2026"}, "xirr": 9.0, "rows": [mf, pms]}, lambda c: nav)
+    assert fy["inception"] == "2022-04-05" and fy["years"][0]["fy"] == "FY 2022-23"
+    assert all(y["xirr"]["PMS"] is None and y["xirr"]["STOCK"] is None for y in fy["years"])
+    assert all(y["new"] is None and y["xirr"]["PORTFOLIO"] is None for y in fy["years"][:-1])  # PMS has no dated flows
+    assert fy["years"][0]["value"] is None and fy["years"][-1]["value"] == 620  # last FY = statement values, earlier FYs not guessed
+    assert fy["years"][-1]["alloc"] is not None and fy["years"][1]["alloc"] is None
+    assert fy["years"][2]["xirr"]["MF"] is not None  # MF-only column still computed; redemption counted as a negative new investment
+    assert fy["years"][2]["xirr"]["MF"] == fy["years"][2]["xirr"]["MF"]
+
+
+def test_fy_summary_stress_many_years_rows_and_pdf_layout(monkeypatch):
+    from pypdf import PdfReader
+
+    _mock_fh(monkeypatch)
+    nav, _ = _nav_series("2010-01-31")
+    monkeypatch.setattr(pr_api, "_nav", lambda c: nav)
+    rows = []
+    for i in range(150):
+        fl = [[f"{2012 + m // 12}-{m % 12 + 1:02d}-10", 5000.0 + i] for m in range(0, 170, 3)]
+        units = [[d, a / 100] for d, a in fl]
+        rows.append({"name": f"Fund {i} Flexi Cap", "folio": str(i), "asset_class": "Mutual Fund", "category": "Debt" if i % 5 == 0 else "Flexi Cap", "code": "122640",
+                     "invested": sum(a for _, a in fl), "investments": 0, "div_reinv": 0, "div_payout": 0, "units": sum(u for _, u in units), "nav": 170.0, "value": sum(u for _, u in units) * 200,
+                     "weight": 0, "abs_ret": 0, "ann_ret": 0, "flows": fl, "lots": units})
+    d = {"client": {"name": "Stress Client", "date": "11 Nov 2026", "arn": "345439", "phone": "9"}, "xirr": 12.3, "rows": rows, "factsheets": []}
+    enrich_and_compute_matrices(d)
+    fy = d["matrices"]["fy"]
+    assert len(fy["years"]) == 16 and all(y["value"] is not None and y["alloc"] for y in fy["years"])
+    assert all(abs(sum(y["alloc"].values()) - 100) < 0.05 for y in fy["years"])
+    assert fy["years"][-1]["value"] == round(sum(r["value"] for r in rows))
+    pdf = build_client_report(d)
+    pages = PdfReader(io.BytesIO(pdf)).pages
+    assert "FY 2011-12" in "\n".join(p.extract_text() or "" for p in pages)
+    fonts = {m.decode() for m in re.findall(rb"/BaseFont\s*/(?:[A-Z]{6}\+)?([A-Za-z0-9_-]+)", pdf)}
+    assert fonts and all(f.startswith("GoogleSans") for f in fonts), fonts

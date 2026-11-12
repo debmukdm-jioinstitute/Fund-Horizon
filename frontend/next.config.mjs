@@ -33,6 +33,8 @@ const securityHeaders = [
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
       `connect-src ${connectSrc()}`,
+      "frame-src 'self' blob:", // client-report PDF preview iframe
+      "object-src 'self' blob:",
       "frame-ancestors 'none'",
     ].join("; "),
   },

@@ -10,7 +10,6 @@ import html
 import io
 import math
 import re
-import tempfile
 import time
 import threading
 import zipfile
@@ -26,8 +25,6 @@ from app.report.fonts import BODY_FONT, BOLD_FONT
 LOGO_PATH = Path(__file__).resolve().parent / "assets" / "fund-horizon-logo.png"
 LOGO_DARK_PATH = Path(__file__).resolve().parent / "assets" / "logo-header-dark.png"
 
-_STMT_CACHE_DIR = Path(tempfile.gettempdir()) / "fh_client_report_statements"
-_STMT_MEM_CACHE: dict[str, tuple[str, bytes, str]] = {}
 _STMT_TTL = 6 * 3600
 
 HEAT_PALETTE = ("#EA6B66", "#F39075", "#F9C77B", "#FDF2A0", "#D6EDB9", "#A7D89B", "#6CC283")
@@ -50,45 +47,66 @@ def heat_color(val: float | None, col_vals: list[float], invert: bool = False) -
     return HEAT_PALETTE[idx]
 
 
+_STMT_SCHEMA = "CREATE TABLE IF NOT EXISTS client_report_files (id TEXT PRIMARY KEY, name TEXT NOT NULL, data BLOB NOT NULL, created_at REAL NOT NULL)"
+
+
+def _decrypted(name: str, data: bytes, password: str) -> bytes:
+    """An encrypted statement PDF is stored decrypted, so the password is never kept and the attachment survives a restart."""
+    if not password or not data.startswith(b"%PDF"):
+        return data
+    try:
+        from pypdf import PdfReader, PdfWriter
+
+        rd = PdfReader(io.BytesIO(data))
+        if not rd.is_encrypted or not rd.decrypt(password):
+            return data
+        w = PdfWriter()
+        for pg in rd.pages:
+            w.add_page(pg)
+        out = io.BytesIO()
+        w.write(out)
+        return out.getvalue()
+    except Exception:
+        return data
+
+
 def store_statement_blob(name: str, data: bytes, password: str = "") -> str:
-    """Persist uploaded statement bytes in memory + temp dir keyed by SHA-256 prefix so `/pdf` & `/push` can attach it."""
+    """Keep an uploaded statement (SQLite, 6 h) keyed by SHA-256 prefix so `/pdf` and `/push` can attach it, across restarts and deploys."""
     if not data:
         return ""
     fid = hashlib.sha256(data).hexdigest()[:24]
-    _STMT_MEM_CACHE[fid] = (name, data, password or "")
-    while len(_STMT_MEM_CACHE) > 6:  # disk holds the rest; 80 x 15 MB in memory would exhaust the API container
-        _STMT_MEM_CACHE.pop(next(iter(_STMT_MEM_CACHE)))
     try:
-        _STMT_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        cutoff = time.time() - _STMT_TTL
-        for old in _STMT_CACHE_DIR.iterdir():  # client statements must not linger on disk
-            if old.stat().st_mtime < cutoff:
-                old.unlink(missing_ok=True)
-        (_STMT_CACHE_DIR / f"{fid}.bin").write_bytes(data)
-        (_STMT_CACHE_DIR / f"{fid}.meta").write_text(name, encoding="utf-8")  # shortcut: password stays in memory only; encrypted PDFs fall back to text after a restart
+        from app.db import sqlite
+
+        conn = sqlite.get_default_connection()
+        try:
+            with conn:
+                conn.execute(_STMT_SCHEMA)
+                conn.execute("DELETE FROM client_report_files WHERE created_at < ?", (time.time() - _STMT_TTL,))  # client statements must not linger
+                conn.execute("INSERT OR REPLACE INTO client_report_files VALUES (?,?,?,?)", (fid, name[:200], _decrypted(name, data, password), time.time()))
+        finally:
+            conn.close()
     except Exception:
-        pass
+        return ""  # no store (e.g. Workers): the report just goes out without the attachment
     return fid
 
 
 def load_statement_blob(fid: str) -> tuple[str, bytes, str] | None:
     if not fid or not re.fullmatch(r"[0-9a-f]{16,64}", fid):
         return None
-    if fid in _STMT_MEM_CACHE:
-        return _STMT_MEM_CACHE[fid]
     try:
-        bpath = _STMT_CACHE_DIR / f"{fid}.bin"
-        mpath = _STMT_CACHE_DIR / f"{fid}.meta"
-        if bpath.exists() and mpath.exists():
-            lines = mpath.read_text(encoding="utf-8").splitlines()
-            name = lines[0] if lines else "statement.pdf"
-            pw = ""
-            data = bpath.read_bytes()
-            _STMT_MEM_CACHE[fid] = (name, data, pw)
-            return name, data, pw
+        from app.db import sqlite
+
+        conn = sqlite.get_default_connection()
+        try:
+            conn.execute(_STMT_SCHEMA)
+            row = conn.execute("SELECT name, data FROM client_report_files WHERE id=? AND created_at >= ?", (fid, time.time() - _STMT_TTL)).fetchone()
+        finally:
+            conn.close()
+        return (row["name"], bytes(row["data"]), "") if row else None
     except Exception:
-        pass
-    return None
+        return None
+
 
 ROW_FIELDS = ("invested", "investments", "div_reinv", "div_payout", "units", "nav", "value", "weight", "abs_ret", "ann_ret")
 NOTES = [

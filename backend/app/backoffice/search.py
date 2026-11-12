@@ -207,7 +207,7 @@ TABLE_COVERAGE: dict[str, str] = {
         "campaign_members", "commissions", "disclosure_logs", "consents")},
     **{t: _CRM_CHILD for t in (
         "activities", "kyc_records", "fixed_deposits", "insurance_policies", "portfolio_positions", "holdings",
-        "sip_schedules", "suitability_records", "mandates", "chat_messages", "client_reports", "monthly_reports")},
+        "sip_schedules", "suitability_records", "mandates", "chat_messages", "client_reports", "client_report_files", "monthly_reports")},
     # reached from their own tab, not worth a global search scope
     **{t: "listed on its own page (MF research Shortlist / Operations / plan view)" for t in (
         "mf_research_shortlist", "operations_filings", "plan_ai_picks",

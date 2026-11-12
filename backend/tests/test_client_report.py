@@ -334,19 +334,27 @@ def test_pms_and_stock_rows_with_dated_history_are_computed_not_reported():
     assert y["FY 2026-27"]["value"] == 2200 and y["FY 2024-25"]["xirr"]["STOCK"] is not None and not any(x["rep"] for x in fy["years"])
 
 
-def test_statement_cache_prunes_old_files_and_caps_memory(monkeypatch, tmp_path):
-    import os
+def test_statement_store_survives_restart_prunes_old_and_keeps_no_password(monkeypatch, tmp_path):
+    import io
     import time
+
+    from pypdf import PdfReader, PdfWriter
 
     from app.report import client_report as cr
 
-    monkeypatch.setattr(cr, "_STMT_CACHE_DIR", tmp_path)
-    old = tmp_path / "dead.bin"; old.write_bytes(b"x"); os.utime(old, (time.time() - 7 * 3600,) * 2)
-    for i in range(10):
-        cr.store_statement_blob(f"f{i}.csv", f"data{i}".encode())
-    assert not old.exists() and len(cr._STMT_MEM_CACHE) <= 6
-    fid = cr.store_statement_blob("pw.pdf", b"secret", "hunter2")
-    assert "hunter2" not in "".join(p.read_text() for p in tmp_path.glob("*.meta")) and cr.load_statement_blob(fid)[1] == b"secret"
+    monkeypatch.setenv("FH_DB_PATH", str(tmp_path / "t.db"))
+    w = PdfWriter(); w.add_blank_page(100, 100); w.encrypt("hunter2"); buf = io.BytesIO(); w.write(buf)
+    fid = cr.store_statement_blob("pw.pdf", buf.getvalue(), "hunter2")
+    name, data, pw = cr.load_statement_blob(fid)  # a fresh call = what a restarted worker sees
+    assert name == "pw.pdf" and pw == "" and not PdfReader(io.BytesIO(data)).is_encrypted and b"hunter2" not in data
+    old = cr.store_statement_blob("old.csv", b"old")
+    later = time.time() + 7 * 3600
+    monkeypatch.setattr(cr.time, "time", lambda: later)
+    assert cr.load_statement_blob(old) is None and cr.load_statement_blob("zz") is None
+    cr.store_statement_blob("new.csv", b"new")  # storing prunes the expired rows
+    import sqlite3
+    assert sqlite3.connect(tmp_path / "t.db").execute("SELECT COUNT(*) FROM client_report_files").fetchone()[0] == 1
+
 
 
 def test_dashboard_xlsx_and_30_year_stress_pdf(monkeypatch):

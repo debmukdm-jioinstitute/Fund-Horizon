@@ -150,6 +150,7 @@ AMC_SOURCES: dict[str, tuple[str, str | None]] = {
     "Union Mutual Fund": ("union", "https://www.unionmf.com/about-us/downloads/factsheets"),
     "WhiteOak Capital Mutual Fund": ("whiteoak", None),
     "Zerodha Mutual Fund": ("zerodha", "https://www.zerodhafundhouse.com/resources/fund-documents"),
+    "Zerodha CASE Mutual Fund": ("zerodha", "https://www.zerodhafundhouse.com/resources/fund-documents"),  # AMFI lists the same fund house under this name too
     "quant Mutual Fund": ("quant", "https://quantmutual.com/downloads/factsheet"),
 }
 # An AMC without a source of its own yet is still tracked; its links arrive from the browser scraper (links_file).

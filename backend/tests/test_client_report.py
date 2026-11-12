@@ -255,3 +255,128 @@ def test_fy_summary_stress_many_years_rows_and_pdf_layout(monkeypatch):
     assert "FY 2011-12" in "\n".join(p.extract_text() or "" for p in pages)
     fonts = {m.decode() for m in re.findall(rb"/BaseFont\s*/(?:[A-Z]{6}\+)?([A-Za-z0-9_-]+)", pdf)}
     assert fonts and all(f.startswith("GoogleSans") for f in fonts), fonts
+
+
+DASH = """Group Head Name : Shivanand Narsing Gulvady
+Family Member Name : All
+Category : All
+Inception Date : 01-04-2018
+From Period : 01-04-2018
+To Period : 31-10-2026
+SUMMARY :
+Financial Year Value As on 31/03 New Investments XIRR
+Since Inception 14.13
+FY 2017-18 42855418 - -
+FY 2018-19 30808399 -13562648 3.94
+FY 2019-20 78088669 58415267 -24.22
+Net Investment: 44852619
+XIRR :
+FINANCIAL YEAR Portfolio MF PMS STOCK
+Since Inception 14.13 13.24 15.03 17.77
+FY 2018-19 3.94 5.65 0.00 -100.00
+FY 2019-20 -24.22 -23.82 0.00 -27.72
+Asset Allocation Movement :
+FINANCIAL YEAR DEBT EQUITY
+FY 2018-19 36.33% 63.67%
+FY 2019-20 54.87% 45.13%
+"""
+
+
+def test_provider_dashboard_is_parsed_exactly_flat_or_lined():
+    from app.backoffice.valuation.layouts import dashboard
+
+    a, b = dashboard([DASH]), dashboard([DASH.replace("\n", " ")])
+    assert a["table"] == b["table"] and a["header"]["group_head"] == "Shivanand Narsing Gulvady"
+    t = a["table"]
+    assert t["2017-18"] == {"value": 42855418, "new": None, "xirr": None}
+    assert t["2018-19"]["new"] == -13562648 and t["2019-20"]["by_class"] == {"portfolio": -24.22, "mf": -23.82, "pms": 0.0, "stock": -27.72}
+    assert t["2019-20"]["alloc"] == {"debt": 54.87, "equity": 45.13} and a["since"] == {"portfolio": 14.13, "mf": 13.24, "pms": 15.03, "stock": 17.77}
+    assert a["net_investment"] == 44852619
+
+
+def test_dashboard_upload_fills_pms_and_stock_history_and_never_overrides_computed(monkeypatch):
+    from pypdf import PdfReader
+
+    _mock_fh(monkeypatch)
+    nav, _ = _nav_series("2018-01-31")
+    monkeypatch.setattr(pr_api, "_nav", lambda c: nav)
+    only = parse_files([("fy.txt", DASH.encode())])
+    assert only["rows"] == [] and only["dashboard"]["table"] and only["matrices"]["fy"]["years"][0]["fy"] == "FY 2017-18"
+    assert only["client"]["name"] == "Shivanand Narsing Gulvady" and only["file_results"][0]["kind"] == "fy_dashboard"
+
+    mf = {"name": "PPFAS Flexi Cap", "folio": "1", "asset_class": "Mutual Fund", "category": "Flexi Cap", "code": "122640", "invested": 100000, "investments": 0, "div_reinv": 0, "div_payout": 0,
+          "units": 1000.0, "nav": 200.0, "value": 200000.0, "weight": 0, "abs_ret": 0, "ann_ret": 0, "flows": [["2018-06-10", 100000.0]], "lots": [["2018-06-10", 1000.0]]}
+    d = {"client": {"name": "S", "date": "31 Oct 2026", "arn": "1", "phone": "9"}, "xirr": 14.13, "rows": [mf], "factsheets": [], "dashboard": only["dashboard"]}
+    enrich_and_compute_matrices(d)
+    fy = d["matrices"]["fy"]
+    y = {x["fy"]: x for x in fy["years"]}
+    assert "FY 2017-18" in y and y["FY 2017-18"]["value"] == 42855418 and "value" in y["FY 2017-18"]["rep"]  # provider-only year kept
+    assert y["FY 2019-20"]["xirr"]["PMS"] is None and y["FY 2019-20"]["xirr"]["STOCK"] == -27.72 and "xirr.STOCK" in y["FY 2019-20"]["rep"]  # PMS 0.00 = not held
+    assert y["FY 2018-19"]["xirr"]["MF"] is not None and "xirr.MF" not in y["FY 2018-19"]["rep"]  # computed MF wins over the provider's
+    assert y["FY 2019-20"]["alloc"] == {"DEBT": 54.87, "EQUITY": 45.13, "OTHER": 0.0} or y["FY 2019-20"]["alloc"]["DEBT"] == 0.0
+    assert fy["since"]["PMS"] == 15.03 and fy["since"]["STOCK"] == 17.77 and "PMS" in fy["since_rep"] and fy["reported"]
+    txt = "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)
+    assert "†" in txt and "provider FY dashboard" in txt and "42855418" in txt
+
+
+def test_pms_and_stock_rows_with_dated_history_are_computed_not_reported():
+    from app.report.fy_matrix import fy_matrix
+
+    nav, _ = _nav_series()
+    pms = {"asset_class": "PMS", "category": "PMS Strategy", "value": 1500.0, "invested": 1000.0, "from_date": "2023-04-10",
+           "flows": [["2023-04-10", 1000.0], ["2030-01-01", 500.0]], "fy_values": {"2024-03-31": 1100.0, "2025-03-31": 1300.0}}
+    stock = {"asset_class": "Direct Equity", "category": "Direct Equity", "value": 700.0, "invested": 500.0, "flows": [["2024-05-01", 500.0]], "fy_values": {"2025-03-31": 600.0}}
+    fy = fy_matrix({"client": {"date": "11 Nov 2026"}, "xirr": 11.0, "rows": [pms, stock]}, lambda c: nav)
+    y = {x["fy"]: x for x in fy["years"]}
+    assert [x["fy"] for x in fy["years"]][0] == "FY 2023-24" and y["FY 2023-24"]["value"] == 1100 and y["FY 2024-25"]["value"] == 1900
+    assert abs(y["FY 2023-24"]["xirr"]["PMS"] - ((1100 / 1000) ** (365 / (date(2024, 3, 31) - date(2023, 4, 10)).days) - 1) * 100) < 0.02
+    assert y["FY 2025-26"]["value"] is None and y["FY 2025-26"]["new"] == 0  # no 31 Mar 2026 value supplied: never guessed; the 2030 flow is ignored
+    assert y["FY 2026-27"]["value"] == 2200 and y["FY 2024-25"]["xirr"]["STOCK"] is not None and not any(x["rep"] for x in fy["years"])
+
+
+def test_statement_cache_prunes_old_files_and_caps_memory(monkeypatch, tmp_path):
+    import os
+    import time
+
+    from app.report import client_report as cr
+
+    monkeypatch.setattr(cr, "_STMT_CACHE_DIR", tmp_path)
+    old = tmp_path / "dead.bin"; old.write_bytes(b"x"); os.utime(old, (time.time() - 7 * 3600,) * 2)
+    for i in range(10):
+        cr.store_statement_blob(f"f{i}.csv", f"data{i}".encode())
+    assert not old.exists() and len(cr._STMT_MEM_CACHE) <= 6
+    fid = cr.store_statement_blob("pw.pdf", b"secret", "hunter2")
+    assert "hunter2" not in "".join(p.read_text() for p in tmp_path.glob("*.meta")) and cr.load_statement_blob(fid)[1] == b"secret"
+
+
+def test_dashboard_xlsx_and_30_year_stress_pdf(monkeypatch):
+    from pypdf import PdfReader
+
+    _mock_fh(monkeypatch)
+    nav, _ = _nav_series("1996-01-31")
+    monkeypatch.setattr(pr_api, "_nav", lambda c: nav)
+    yrs = range(1996, 2026)  # 30 FYs
+    summ = "\n".join(f"FY {y}-{(y + 1) % 100:02d} {1000000 + 37 * i} {50000 - i} {10 + i % 7}.{i % 100:02d}" for i, y in enumerate(yrs))
+    xirr = "\n".join(f"FY {y}-{(y + 1) % 100:02d} {10 + i % 7}.00 {9 + i % 5}.50 {'0.00' if i < 8 else '12.25'} {'-' if i % 9 == 0 else '-3.10'}" for i, y in enumerate(yrs))
+    alloc = "\n".join(f"FY {y}-{(y + 1) % 100:02d} {i % 40}.00% {100 - i % 40}.00%" for i, y in enumerate(yrs))
+    dash = f"Group Head Name : Big Family\nFamily Member Name : All\nCategory : All\nSUMMARY :\nSince Inception 12.00\n{summ}\nNet Investment: 5\nXIRR :\nSince Inception 12.00 11.00 15.00 17.00\n{xirr}\nAsset Allocation Movement :\n{alloc}\n"
+    d0 = parse_files([("fy.csv", dash.encode())])
+    assert len(d0["dashboard"]["table"]) == 30 and d0["dashboard"]["table"]["2025-26"]["by_class"]["pms"] == 12.25
+    mf = {"name": "PPFAS Flexi Cap", "folio": "1", "asset_class": "Mutual Fund", "category": "Flexi Cap", "code": "122640", "invested": 100000, "investments": 0, "div_reinv": 0, "div_payout": 0,
+          "units": 1000.0, "nav": 200.0, "value": 200000.0, "weight": 0, "abs_ret": 0, "ann_ret": 0, "flows": [["2020-06-10", 100000.0]], "lots": [["2020-06-10", 1000.0]]}
+    d = {"client": {"name": "Big Family", "date": "31 Oct 2026", "arn": "1", "phone": "9"}, "xirr": 12.0, "rows": [mf], "factsheets": [], "dashboard": d0["dashboard"]}
+    enrich_and_compute_matrices(d)
+    assert len(d["matrices"]["fy"]["years"]) == 31
+    pdf = build_client_report(d)
+    txt = "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(pdf)).pages)
+    assert "FY 1996-97" in txt and "FY 2025-26" in txt and "FY 2026-27" in txt and "†" in txt
+    fonts = {m.decode() for m in re.findall(rb"/BaseFont\s*/(?:[A-Z]{6}\+)?([A-Za-z0-9_-]+)", pdf)}
+    assert fonts and all(f.startswith("GoogleSans") for f in fonts), fonts
+
+
+def test_api_report_model_round_trips_history_fields():
+    from app.api.client_report import Report
+
+    row = {"name": "X", "invested": 1, "value": 2, "lots": [["2020-01-01", 5.0]], "fy_values": {"2024-03-31": 3.0}}
+    r = Report(client={"name": "A", "date": "1 Jan 2026"}, rows=[row], dashboard={"table": {"2024-25": {"value": 1}}}).model_dump()
+    assert r["rows"][0]["lots"] == [["2020-01-01", 5.0]] and r["rows"][0]["fy_values"] == {"2024-03-31": 3.0} and r["dashboard"]["table"]

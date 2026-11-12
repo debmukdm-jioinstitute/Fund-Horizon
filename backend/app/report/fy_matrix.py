@@ -55,7 +55,7 @@ def _lots(r: dict[str, Any], nav) -> tuple[list[tuple[str, float]], bool] | None
     return out, False
 
 
-def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
+def _compute(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
     rows = [r for r in (data.get("rows") or []) if float(r.get("value") or 0) > 0 or float(r.get("invested") or 0) > 0]
     cl = data.get("client") or {}
     from app.report.client_report import _iso_date  # local: avoid an import cycle
@@ -69,10 +69,11 @@ def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
                 nav = nav_loader(str(r["code"]))
             except Exception:
                 nav = None
-        fl = [(str(d), float(a)) for d, a in (r.get("flows") or []) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(d))]
+        fl = [(str(d), float(a)) for d, a in (r.get("flows") or []) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(d)) and str(d) <= val_iso]
         lots = _lots(r, nav)
         start = min([d for d, _ in fl] + ([str(r["from_date"])[:10]] if re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(r.get("from_date") or "")[:10]) else []), default=None)
-        pos.append({"cls": _cls(r), "bkt": _bucket(r), "fl": fl, "lots": lots, "nav": nav, "val": float(r.get("value") or 0), "start": start})
+        pos.append({"cls": _cls(r), "bkt": _bucket(r), "fl": fl, "lots": lots, "nav": nav, "val": float(r.get("value") or 0), "start": start,
+                    "fyv": {str(d)[:10]: float(v) for d, v in (r.get("fy_values") or {}).items() if v is not None}})
     starts = [p["start"] for p in pos if p["start"]]
     if not pos or not starts:
         return None
@@ -85,6 +86,8 @@ def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
             return p["val"]
         if p["start"] and p["start"] > d:
             return 0.0
+        if d in p["fyv"]:  # a dated value supplied for this holding (PMS / stock statement, provider sheet)
+            return p["fyv"][d]
         if not p["lots"] or p["nav"] is None:
             return None
         n = _nav_at(p["nav"], d)
@@ -129,4 +132,66 @@ def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
         "since": {"PORTFOLIO": data.get("xirr"), **{g: xirr(ps, None, val_iso) if ps and covered(ps, val_iso) else None for g, ps in groups.items() if g != "PORTFOLIO"}},
         "net_new": None if any(y["new"] is None for y in years) else sum(y["new"] for y in years),
         "classes": [c for c in CLASSES if groups[c]],
+    }
+
+
+def _fy_key(y: int) -> str:
+    return f"{y}-{(y + 1) % 100:02d}"
+
+
+def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
+    """Computed FY table (exact, from statements) topped up with the provider's own FY dashboard where history is missing.
+    Provider-filled cells are listed in year['rep'] so the PDF marks them; computed cells are never overwritten."""
+    comp, dash = _compute(data, nav_loader), (data.get("dashboard") or {})
+    table = dash.get("table") or {}
+    if not comp and not table:
+        return None
+    cyears = {y["fy"][3:]: y for y in (comp or {}).get("years", [])}
+    keys = sorted(set(cyears) | set(table))
+    years = []
+    for k in keys:
+        c, d = cyears.get(k), table.get(k, {})
+        end = (c or {}).get("end") or f"{int(k[:4]) + 1}-03-31"
+        rep: list[str] = []
+        by = d.get("by_class") or {}
+        xr = {}
+        for g in ("PORTFOLIO", *CLASSES):
+            cv = ((c or {}).get("xirr") or {}).get(g)
+            dv = by.get(g.lower())
+            dv = None if g != "PORTFOLIO" and dv == 0 else dv  # a provider's 0.00 for a class not yet held is "no holding", not a 0% return
+            if cv is None and g == "PORTFOLIO":
+                dv = d.get("xirr", dv)
+            xr[g] = cv if cv is not None else dv
+            if cv is None and dv is not None:
+                rep.append(f"xirr.{g}")
+        al = (c or {}).get("alloc")
+        if not al and d.get("alloc"):
+            al = {"DEBT": d["alloc"]["debt"], "EQUITY": d["alloc"]["equity"], "OTHER": 0.0}
+            rep.append("alloc")
+        val = (c or {}).get("value")
+        new = (c or {}).get("new")
+        if val is None and d.get("value") is not None:
+            val = d["value"]; rep.append("value")
+        if new is None and d.get("new") is not None:
+            new = d["new"]; rep.append("new")
+        years.append({"fy": f"FY {k}", "end": end, "value": val, "new": new, "xirr": xr, "alloc": al, "rep": rep})
+    since_d = dash.get("since") or {}
+    since = {"PORTFOLIO": data.get("xirr") if data.get("xirr") is not None else since_d.get("portfolio")}
+    srep = []
+    for g in CLASSES:
+        cv = ((comp or {}).get("since") or {}).get(g)
+        dv = since_d.get(g.lower())
+        dv = None if dv == 0 else dv
+        since[g] = cv if cv is not None else dv
+        if cv is None and dv is not None:
+            srep.append(g)
+    hdr = dash.get("header") or {}
+    inc = (comp or {}).get("inception") or (dash.get("from") or "")
+    news = [y["new"] for y in years]
+    return {
+        "inception": inc, "from": (comp or {}).get("from") or dash.get("from") or inc, "to": (comp or {}).get("to") or dash.get("to") or "",
+        "years": years, "exact": (comp or {}).get("exact", True), "since": since, "since_rep": srep,
+        "net_new": sum(news) if news and all(n is not None for n in news) else dash.get("net_investment"),
+        "classes": (comp or {}).get("classes", []), "header": hdr,
+        "reported": any(y["rep"] for y in years) or bool(srep),
     }

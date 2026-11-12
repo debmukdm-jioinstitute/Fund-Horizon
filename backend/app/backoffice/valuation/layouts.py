@@ -276,7 +276,7 @@ def direct_equity(pages: list[str]):
 def dashboard(pages: list[str]) -> dict:
     """Distributor 'FY ANNUAL - DASHBOARD' page: provider-reported XIRR (client level) and per-year values."""
     t = "\n".join(pages)
-    if "FY ANNUAL - DASHBOARD" not in t:
+    if "FY ANNUAL - DASHBOARD" not in t and not (re.search(r"SUMMARY\s*:", t) and re.search(r"Asset Allocation Movement\s*:", t)):
         return {}
     out: dict = {}
     for k, rx in (("since_inception_xirr", r"Since Inception\s+(-?[\d.]+)\s*\n"), ("net_investment", r"Net Investment:\s*(-?\d+)"),
@@ -291,6 +291,47 @@ def dashboard(pages: list[str]) -> dict:
     for k in ("from", "to"):
         if k in out:
             out[k] = ing.parse_date(out[k])
+    out.update(_dashboard_tables(t))
+    return out
+
+
+_TOK = r"(?:-?\d[\d,]*(?:\.\d+)?%?|-)"
+
+
+def _dashboard_tables(t: str) -> dict:
+    """SUMMARY / XIRR / Asset Allocation Movement tables, per FY, exactly as the provider printed them ('-' = blank)."""
+    out: dict = {}
+    hdr = {k: m.group(1).strip() for k, rx in (("group_head", r"Group Head Name\s*:\s*(.+)"), ("family_member", r"Family Member Name\s*:\s*(.+)"),
+                                              ("category", r"Category\s*:\s*(.+)")) if (m := re.search(rx, t))}
+    if hdr:
+        out["header"] = hdr
+    marks = {k: m.start() for k, rx in (("sum", r"SUMMARY\s*:"), ("xirr", r"(?<![A-Za-z(])XIRR\s*:"), ("alloc", r"Asset Allocation Movement\s*:")) if (m := re.search(rx, t))}
+    order = sorted(marks, key=marks.get)
+    num = lambda x: None if x in ("-", "") else float(x.rstrip("%").replace(",", ""))  # noqa: E731
+    table: dict[str, dict] = {}
+    since: dict = {}
+    for i, k in enumerate(order):
+        sec = t[marks[k]: marks[order[i + 1]] if i + 1 < len(order) else len(t)]
+        for m in re.finditer(rf"(?:FY\s*(\d{{4}})\s*-\s*(\d{{2}})|(Since Inception))((?:[ \t]+{_TOK})+)", sec):
+            vals = [num(x) for x in m.group(4).split()]
+            row = since if m.group(3) else table.setdefault(f"{m.group(1)}-{m.group(2)}", {})
+            if k == "sum" and len(vals) == 3 and not m.group(3):
+                row["value"], row["new"], row["xirr"] = (None if vals[0] is None else int(vals[0])), (None if vals[1] is None else int(vals[1])), vals[2]
+            elif k == "sum" and m.group(3) and len(vals) == 1:
+                since["portfolio"] = vals[0]
+            elif k == "xirr" and len(vals) == 4:
+                if m.group(3):
+                    since.update(zip(("portfolio", "mf", "pms", "stock"), vals))
+                else:
+                    row["by_class"] = dict(zip(("portfolio", "mf", "pms", "stock"), vals))
+            elif k == "alloc" and len(vals) == 2 and not m.group(3):
+                row["alloc"] = dict(zip(("debt", "equity"), vals))
+    if table:
+        out["table"] = table
+    if since:
+        out["since"] = since
+    if m := re.search(r"Net Investment\s*:?\s*(-?\d+)", t):
+        out["net_investment"] = int(m.group(1))
     return out
 
 

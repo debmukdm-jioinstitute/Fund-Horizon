@@ -11,6 +11,7 @@ import io
 import math
 import re
 import tempfile
+import time
 import threading
 import zipfile
 from datetime import date, datetime, timedelta
@@ -27,6 +28,7 @@ LOGO_DARK_PATH = Path(__file__).resolve().parent / "assets" / "logo-header-dark.
 
 _STMT_CACHE_DIR = Path(tempfile.gettempdir()) / "fh_client_report_statements"
 _STMT_MEM_CACHE: dict[str, tuple[str, bytes, str]] = {}
+_STMT_TTL = 6 * 3600
 
 HEAT_PALETTE = ("#EA6B66", "#F39075", "#F9C77B", "#FDF2A0", "#D6EDB9", "#A7D89B", "#6CC283")
 
@@ -54,10 +56,14 @@ def store_statement_blob(name: str, data: bytes, password: str = "") -> str:
         return ""
     fid = hashlib.sha256(data).hexdigest()[:24]
     _STMT_MEM_CACHE[fid] = (name, data, password or "")
-    if len(_STMT_MEM_CACHE) > 80:
+    while len(_STMT_MEM_CACHE) > 6:  # disk holds the rest; 80 x 15 MB in memory would exhaust the API container
         _STMT_MEM_CACHE.pop(next(iter(_STMT_MEM_CACHE)))
     try:
         _STMT_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        cutoff = time.time() - _STMT_TTL
+        for old in _STMT_CACHE_DIR.iterdir():  # client statements must not linger on disk
+            if old.stat().st_mtime < cutoff:
+                old.unlink(missing_ok=True)
         (_STMT_CACHE_DIR / f"{fid}.bin").write_bytes(data)
         (_STMT_CACHE_DIR / f"{fid}.meta").write_text(name, encoding="utf-8")  # shortcut: password stays in memory only; encrypted PDFs fall back to text after a restart
     except Exception:
@@ -1231,6 +1237,18 @@ def _extract_universal_file(name: str, data: bytes, password: str = "", from_bun
         "method": "ocr" if is_image(name, data) else "text",
     }
 
+    if not from_bundle:  # the provider's FY dashboard (SUMMARY / XIRR / Asset Allocation Movement): history for PMS, stock and whole portfolio
+        try:
+            dtxt = "\n".join(ing.read_pdf_pages(data, password, "plain")) if is_pdf(name, data) else extract_text(name, data)
+        except Exception:
+            dtxt = ""
+        dash = layouts.dashboard([dtxt]) if "Asset Allocation Movement" in dtxt else {}
+        if dash.get("table"):
+            res.update({"kind": "fy_dashboard", "dashboard": dash})
+            hdr = dash.get("header") or {}
+            res["client"].update({"name": hdr.get("group_head") or "", "inception": _fmt_date(dash.get("from")), "date": _fmt_date(dash.get("to"))})
+            return res
+
     # A. Non-PDF spreadsheets (XLSX, XLS, CSV, TSV)
     if not is_pdf(name, data) and not is_image(name, data):
         sheet_list = portfolio_screen.read_table_rows(name, data)
@@ -1608,7 +1626,7 @@ def parse_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str,
                 secs, dash = bundle.split(data, password)
             except Exception:
                 secs, dash = [], {}
-            if dash and not out["dashboard"]:
+            if dash and (not out["dashboard"] or (dash.get("table") and not out["dashboard"].get("table"))):
                 out["dashboard"] = dash
                 if dash.get("from") and not out["client"]["inception"]:
                     out["client"]["inception"] = _fmt_date(dash["from"])
@@ -1649,6 +1667,10 @@ def parse_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str,
                 out["client"][k] = v
         if r.get("xirr") is not None and out["xirr"] is None:
             out["xirr"] = float(r["xirr"])
+        if r.get("dashboard") and (not out["dashboard"] or not out["dashboard"].get("table")):
+            out["dashboard"] = r["dashboard"]
+            if r["dashboard"].get("since", {}).get("portfolio") is not None and out["xirr"] is None:
+                out["xirr"] = float(r["dashboard"]["since"]["portfolio"])
         if r.get("rows"):
             # Deduplicate / enrich when both a summary report and a transaction report for the same folio+scheme are uploaded
             for new_row in r["rows"]:
@@ -1875,25 +1897,29 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             t_.setStyle(TableStyle(st))
             return [P(title, ParagraphStyle("fyt", parent=sec_h, fontSize=9.5, spaceBefore=8)), t_]
 
-        hb = [("Group Head Name :", c.get("name") or "-"), ("Family Member Name :", "All"), ("Category :", "All"),
-              ("Inception Date :", dmy(fy["inception"])), ("From Period :", dmy(fy["from"])), ("To Period :", dmy(fy["to"]))]
+        fh = fy.get("header") or {}
+        dm = lambda iso: dmy(iso) if iso else "-"  # noqa: E731
+        hb = [("Group Head Name :", c.get("name") or fh.get("group_head") or "-"), ("Family Member Name :", fh.get("family_member") or "All"), ("Category :", fh.get("category") or "All"),
+              ("Inception Date :", dm(fy["inception"])), ("From Period :", dm(fy["from"])), ("To Period :", dm(fy["to"] or _iso_date(c.get("date"))))]
+        mk = lambda y, key: " †" if key in y["rep"] else ""  # noqa: E731
         hbox = Table([[P(k, bold), P(v)] for k, v in hb], colWidths=[77 * mm, 100 * mm], hAlign="LEFT")
         hbox.setStyle(TableStyle(base + [("BACKGROUND", (0, 0), (0, -1), taupe)]))
         sm = [[P("Since Inception", bold), P(""), P(""), P(pct(fy["since"].get("PORTFOLIO")), center_b)]] + [
-            [P(y["fy"], bold), P(num(y["value"]), center), P(num(y["new"]), center), P(pct(y["xirr"]["PORTFOLIO"]), center)] for y in yrs]
+            [P(y["fy"], bold), P(num(y["value"]) + mk(y, "value"), center), P(num(y["new"]) + mk(y, "new"), center), P(pct(y["xirr"]["PORTFOLIO"]) + mk(y, "xirr.PORTFOLIO"), center)] for y in yrs]
         sm_blk = fy_tbl("SUMMARY :", ["Financial Year", f"Value As on 31/03", "New Investments", "XIRR"], sm, [77, 80, 80, 40],
                         total=[P("Net Investment:", bold), P(""), P(num(fy["net_new"]), center_b), P("")])
         cls = ["PORTFOLIO", "MF", "PMS", "STOCK"]
         lbl = {"PORTFOLIO": "Portfolio", "MF": "MF", "PMS": "PMS", "STOCK": "STOCK"}
-        xr = [[P("Since Inception", bold)] + [P(pct(fy["since"].get(g)), center) for g in cls]] + [
-            [P(y["fy"], bold)] + [P(pct(y["xirr"].get(g)), center) for g in cls] for y in yrs]
+        xr = [[P("Since Inception", bold)] + [P(pct(fy["since"].get(g)) + (" †" if g in fy.get("since_rep", []) else ""), center) for g in cls]] + [
+            [P(y["fy"], bold)] + [P(pct(y["xirr"].get(g)) + mk(y, f"xirr.{g}"), center) for g in cls] for y in yrs]
         xr_blk = fy_tbl("XIRR :", ["FINANCIAL YEAR"] + [lbl[g] for g in cls], xr, [77] + [200 / len(cls)] * len(cls))
         ab = [b for b in ("DEBT", "EQUITY", "OTHER") if b != "OTHER" or any((y["alloc"] or {}).get("OTHER") for y in yrs)]
-        al = [[P(y["fy"], bold)] + [P("-" if not y["alloc"] else f"{y['alloc'][b]:.2f}%", center) for b in ab] for y in yrs]
+        al = [[P(y["fy"], bold)] + [P(("-" if not y["alloc"] else f"{y['alloc'][b]:.2f}%") + mk(y, "alloc"), center) for b in ab] for y in yrs]
         al_blk = fy_tbl("Asset Allocation Movement :", ["FINANCIAL YEAR"] + ab, al, [77] + [200 / len(ab)] * len(ab), since=False)
         note = ("Value As on 31/03 = units held x AMFI month-end NAV (last row: as on the report date). "
                 + ("Units are taken lot-by-lot from the uploaded statement. " if fy["exact"] else "Where a statement gives no lot units, units are rebuilt from dated transactions and NAV. ")
-                + '"-" = history for that holding is not in the uploaded statements; nothing is estimated. XIRR for the first and last (part) years is annualised.')
+                + '"-" = history for that holding is not in the uploaded statements; nothing is estimated. XIRR for the first and last (part) years is annualised.'
+                + (" † = as reported in the uploaded provider FY dashboard (PMS / stock history); figures without † are calculated from the statements." if fy.get("reported") else ""))
         story += [PageBreak(), KeepTogether([P("Financial-Year Summary", sec_h), hbox]), KeepTogether(sm_blk), PageBreak(), KeepTogether(xr_blk), KeepTogether([*al_blk, Spacer(1, 4), P(note, small)]), PageBreak()]
 
     # Section 1B: Visual Portfolio Analytics & Graphs (2x2 Grid of Matplotlib Charts)

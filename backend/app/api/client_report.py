@@ -51,6 +51,7 @@ class Row(BaseModel):
     flows: list[list[Any]] = Field(default_factory=list, max_length=1200)
     source_file: str = Field(default="", max_length=200)
     lots: list[list[Any]] = Field(default_factory=list, max_length=1200)
+    fy_values: dict[str, float] = Field(default_factory=dict, max_length=60)  # dated values (31 Mar) for holdings without NAV history
 
 
 class SourceFileRef(BaseModel):
@@ -89,6 +90,7 @@ class Report(BaseModel):
     matrices: dict[str, Any] | None = None
     source_files: list[SourceFileRef] = Field(default_factory=list, max_length=40)
     attach_statements: bool = True
+    dashboard: dict[str, Any] | None = None  # provider FY dashboard read from an upload (PMS / stock / whole-portfolio history)
 
 
 class PushIn(BaseModel):

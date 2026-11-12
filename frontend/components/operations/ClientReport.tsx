@@ -50,7 +50,7 @@ interface ClientInfo {
 }
 interface Report {
   client: ClientInfo; xirr: number | null; rows: Row[]; factsheets: Fact[]; matrices?: Matrices | null;
-  source_files?: { id: string; name: string; kind: string; size: number }[]; attach_statements?: boolean;
+  dashboard?: { table?: Record<string, unknown> } | null; source_files?: { id: string; name: string; kind: string; size: number }[]; attach_statements?: boolean;
 }
 interface HistoryItem { id: string; report_date: string; emailed_at: string | null; created_at: string }
 
@@ -114,6 +114,7 @@ export default function ClientReport({ customerId, customerName }: { customerId?
   const [warnings, setWarnings] = useState<string[]>([]);
   const [fileResults, setFileResults] = useState<FileRes[]>([]);
   const [password, setPassword] = useState("");
+  const [pendingDash, setPendingDash] = useState<Report["dashboard"]>(null); // provider FY sheet uploaded before any holdings
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [email, setEmail] = useState(true);
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -167,6 +168,7 @@ export default function ClientReport({ customerId, customerName }: { customerId?
           factsheets: mergedFacts,
           source_files: [...(report.source_files ?? []), ...(d.source_files ?? []).filter((f) => !(report.source_files ?? []).some((x) => x.id === f.id))],
           attach_statements: report.attach_statements ?? true,
+          dashboard: report.dashboard?.table ? report.dashboard : (d.dashboard ?? report.dashboard ?? pendingDash),
         };
         const recomputed = await call<Report>("/analyze", {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(nextPayload),
@@ -174,13 +176,18 @@ export default function ClientReport({ customerId, customerName }: { customerId?
         setReport(recomputed);
       } else {
         if (!d.client.name && customerName) d.client.name = customerName;
-        setReport(d);
+        setReport({ ...d, dashboard: d.dashboard ?? pendingDash });
       }
       const flowsTotal = (d.file_results ?? []).reduce((s, f) => s + (f.flows || 0), 0);
       setMsg({
         ok: true,
         text: `Scraped ${d.rows.length} holding(s)${flowsTotal ? ` and ${flowsTotal} dated transaction(s)` : ""}. XIRR and all investment matrices are ready below.`,
       });
+    } else if (d.dashboard?.table) {
+      if (report) {
+        setReport(await call<Report>("/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...report, dashboard: d.dashboard }) }));
+      } else setPendingDash(d.dashboard);
+      setMsg({ ok: true, text: `Read the provider's FY history (${Object.keys(d.dashboard.table).length} years: PMS, stock and portfolio). ${report ? "Financial-year summary updated." : "Now upload the holdings statements."}` });
     } else if (needsPass) {
       setMsg({ ok: false, text: "This statement PDF is password-protected. Enter the PDF password above and click Unlock & parse." });
     } else {
@@ -312,7 +319,7 @@ export default function ClientReport({ customerId, customerName }: { customerId?
             + Add row manually
           </button>
           {report && (
-            <button type="button" className={btn} disabled={busy !== null} onClick={() => { setReport(null); setWarnings([]); setFileResults([]); setMsg(null); }}>
+            <button type="button" className={btn} disabled={busy !== null} onClick={() => { setReport(null); setPendingDash(null); setWarnings([]); setFileResults([]); setMsg(null); }}>
               Clear
             </button>
           )}

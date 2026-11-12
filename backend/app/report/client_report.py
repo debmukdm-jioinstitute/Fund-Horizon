@@ -1872,7 +1872,21 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         ("LEFTPADDING", (0, 0), (-1, -1), 2.5), ("RIGHTPADDING", (0, 0), (-1, -1), 2.5),
     ]))
 
-    story: list[Any] = [top, Spacer(1, 6), kpi, Spacer(1, 8), P("1. Consolidated Portfolio Valuation — Folio & Holding Wise", sec_h), table]
+    # data["sections"] (None = all) picks the sections kept; cut() closes the previous one, dropping it if unticked.
+    on = lambda k: data.get("sections") is None or k in data["sections"]  # noqa: E731
+    cur: list[Any] = ["", 0]
+
+    def cut(nxt: str) -> None:
+        if cur[0] and not on(cur[0]):
+            del story[cur[1]:]
+        cur[:] = [nxt, len(story)]
+
+    story: list[Any] = [top, Spacer(1, 6)]
+    cut("kpi")
+    story += [kpi, Spacer(1, 8)]
+    cut("holdings")
+    story += [P("1. Consolidated Portfolio Valuation — Folio & Holding Wise", sec_h), table]
+    cut("fy")
     fy = mat.get("fy")
     if fy:
         from reportlab.platypus import PageBreak
@@ -1922,6 +1936,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                 + (" † = as reported in the uploaded provider FY dashboard (PMS / stock history); figures without † are calculated from the statements." if fy.get("reported") else ""))
         story += [PageBreak(), KeepTogether([P("Financial-Year Summary", sec_h), hbox]), KeepTogether(sm_blk), PageBreak(), KeepTogether(xr_blk), KeepTogether([*al_blk, Spacer(1, 4), P(note, small)]), PageBreak()]
 
+    cut("charts")
     # Section 1B: Visual Portfolio Analytics & Graphs (2x2 Grid of Matplotlib Charts)
     charts_b64 = mat.get("charts") or build_report_charts(data)
     if charts_b64:
@@ -1961,6 +1976,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             ]))
             story += [Spacer(1, 8), KeepTogether([P("1B. Visual Portfolio Analytics & Performance Graphs", sec_h), c_grid])]
 
+    cut("alloc")
     # Section 2: Asset Class & Category Allocation Matrices (side-by-side)
     alloc_asset = mat.get("asset_allocation") or []
     alloc_cat = mat.get("category_allocation") or []
@@ -1992,6 +2008,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         side.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
         story += [Spacer(1, 8), KeepTogether([P("2. Asset Allocation & Category Matrix", sec_h), side])]
 
+    cut("heatmap")
     # Section 2: ValueMetrics-Style Category-Wise Flows & AUM Heatmap Matrix (Image 1 style)
     cfm = mat.get("category_flow_matrix") or {}
     cfm_groups = cfm.get("groups") or []
@@ -2097,6 +2114,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         cf_tbl.setStyle(TableStyle(cf_styles))
         story += [Spacer(1, 8), KeepTogether([P("2B. Category-Wise Flows, Net Gains & Valuation Matrix (Heatmap)", sec_h), cf_tbl])]
 
+    cut("cashflow")
     # Section 3B: Monthly / Period Cash-Flow & Registration Trend + Category x Month Heatmap (Images 2 & 3 style)
     m_trend = mat.get("monthly_trend") or []
     if len(m_trend) >= 2:
@@ -2181,6 +2199,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         hm_tbl.setStyle(TableStyle(hm_styles))
         story += [Spacer(1, 8), KeepTogether([P("2D. Monthly Category-Wise Gross Inflow Trend (Heatmap)", sec_h), hm_tbl])]
 
+    cut("benchmark")
     # Section 3: 4-Index Nifty Benchmark Comparison Matrix (Same-Instalment XIRR)
     cmp_ = mat.get("compare") or {}
     m_rows = cmp_.get("matrix_rows") or []
@@ -2256,6 +2275,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             P(cmp_.get("benchmark_note") or "Each purchase is notionally invested in each Nifty index on the exact purchase date.", small),
         ])]
 
+    cut("risk")
     # Section 4: Fund Horizon Quality, Risk, Capture Ratios & Drawdown Matrix
     risk_rows = mat.get("risk_matrix") or []
     if risk_rows:
@@ -2293,6 +2313,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         ]))
         story += [Spacer(1, 8), KeepTogether([P("4. Fund Horizon Quality, Risk, Capture Ratios & Drawdown Matrix", sec_h), rt])]
 
+    cut("stress")
     # Section 5: Stress Test Matrix & Portfolio Observations
     stress_rows = mat.get("stress_test") or []
     recs = mat.get("recommendations") or []
@@ -2314,20 +2335,23 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         s5.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
         story += [Spacer(1, 8), KeepTogether([P("5. Stress Test Matrix & Portfolio Observations", sec_h), s5])]
 
+    cut("factsheets")
     # Factsheets (PMS / AMC)
     for fs in data.get("factsheets") or []:
         ft = Table([[P(fs["source"], head_l), P("", head)]] + [[P(it["label"], bold), P(it["value"])] for it in fs["items"]], colWidths=[75 * mm, 202 * mm])
         ft.setStyle(TableStyle([("SPAN", (0, 0), (-1, 0)), ("BACKGROUND", (0, 0), (-1, 0), navy), ("GRID", (0, 0), (-1, -1), 0.35, grey), ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, soft]), ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]))
         story += [Spacer(1, 8), KeepTogether([P("Factsheet & Strategy Highlights", sec_h), ft])]
 
+    cut("notes")
     # Notes & Regulatory Disclosures
     story += [Spacer(1, 6), P("Notes & Regulatory Disclosures:", bold)]
     story += [P(f"{i}. {n}", small) for i, n in enumerate(NOTES, 1)]
     for d_line in DISCLOSURE_LINES[:3]:
         story.append(P(f"• {d_line}", small))
 
+    cut("annex")
     # Annexure: Attached Copies of Uploaded Source Statements (rendered within ReportLab using Google Sans)
-    if data.get("attach_statements", True):
+    if data.get("attach_statements", True) and on("annex"):
         from reportlab.platypus import PageBreak
 
         s_files = data.get("source_files") or []
@@ -2420,6 +2444,8 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                             ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
                         ]))
                         story.append(st_copy)
+
+    cut("")
 
     def decorate_page(cv, doc):
         cv.saveState()

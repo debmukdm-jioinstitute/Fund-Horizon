@@ -54,6 +54,7 @@ interface Report {
 }
 interface HistoryItem { id: string; report_date: string; emailed_at: string | null; created_at: string }
 
+export const PREVIEW_KEY = "fh-report-preview";
 const NUM_COLS = ["invested", "investments", "div_reinv", "div_payout", "units", "nav", "value", "ann_ret"] as const;
 const HEAD = [
   "#", "Scheme / Security", "Folio / A/c", "Period / Timeframe", "Total invested (A+B)", "Investments (A)",
@@ -92,7 +93,7 @@ const btn = "inline-flex items-center gap-1.5 rounded-lg border border-[#E4E9EF]
 const btnPrimary = "inline-flex items-center gap-1.5 rounded-lg bg-[#006F64] px-3 py-1.5 text-[12.5px] font-semibold text-white hover:bg-[#00554D] disabled:opacity-40";
 const hint = "text-[11.5px] font-normal text-[#667085] dark:text-[#9AA3B2]";
 
-async function call<T>(path: string, init: RequestInit = {}, blob = false): Promise<T> {
+export async function call<T>(path: string, init: RequestInit = {}, blob = false): Promise<T> {
   const go = () => fetch(resolveApiUrl(`${API_URL}/api/backoffice/client-report${path}`), { credentials: "include", ...init });
   let res: Response;
   try { res = await go(); } catch {
@@ -218,14 +219,15 @@ export default function ClientReport({ customerId, customerName }: { customerId?
     }
   };
 
-  const download = () => report && run("pdf", async () => {
-    const blob = await call<Blob>("/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(report) }, true);
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `Portfolio Valuation Report - ${report.client.name || "Client"} - ${report.client.date || "Report"}.pdf`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
+  // Hands the report to the live-preview tab (section ticks + download live there). Opened synchronously so popup blockers allow it.
+  const download = () => {
+    if (!report) return;
+    const stash = (r: unknown) => { localStorage.setItem(PREVIEW_KEY, JSON.stringify(r)); return true; };
+    try {
+      try { stash(report); } catch { stash({ ...report, matrices: report.matrices && { ...report.matrices, charts: undefined } }); } // quota: backend rebuilds charts
+    } catch { setMsg({ ok: false, text: "Could not hand the report to the preview tab (browser storage is full or blocked)." }); return; }
+    if (!window.open("/backoffice/operations/report-preview", "_blank")) setMsg({ ok: false, text: "Pop-up blocked: allow pop-ups for this site, then click again." });
+  };
 
   const push = () => report && customerId && run("push", async () => {
     const r = await call<{ emailed: boolean }>("/push", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ customer_id: customerId, report, send_email: email }) });
@@ -792,7 +794,7 @@ export default function ClientReport({ customerId, customerName }: { customerId?
 
           <div className="flex flex-wrap items-center gap-3 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-3">
             <button type="button" className={btn} onClick={download} disabled={busy !== null}>
-              {busy === "pdf" ? "Building…" : "⬇ Download Consolidated PDF"}
+              ⬇ Download Consolidated PDF
             </button>
             <button type="button" className={btnPrimary} onClick={push} disabled={busy !== null || !customerId} title={customerId ? undefined : "Select a client above first"}>
               {busy === "push" ? "Pushing…" : `Push to ${customerName ?? "client"} CRM`}

@@ -380,3 +380,19 @@ def test_api_report_model_round_trips_history_fields():
     row = {"name": "X", "invested": 1, "value": 2, "lots": [["2020-01-01", 5.0]], "fy_values": {"2024-03-31": 3.0}}
     r = Report(client={"name": "A", "date": "1 Jan 2026"}, rows=[row], dashboard={"table": {"2024-25": {"value": 1}}}).model_dump()
     assert r["rows"][0]["lots"] == [["2020-01-01", 5.0]] and r["rows"][0]["fy_values"] == {"2024-03-31": 3.0} and r["dashboard"]["table"]
+
+
+def test_sections_filter_drops_unticked_sections(monkeypatch):
+    _mock_fh(monkeypatch)
+    text = "Portfolio Valuation Report - Folio Wise   Fund Horizon\nA B Test   ARN: 345439  |  Phone: 9920406408\n23 Oct 2026\n1   " + ROWS + \
+        "Grand Total   3,52,103.35   3,52,103.35   0.00   0.00   7,97,440.90   100.00%   126.48%   14.31%\n"
+    monkeypatch.setattr("app.report.client_report.extract_text", lambda n, b: text)
+    d = parse_files([("s.pdf", b"")])
+    pages = lambda pdf: len(re.findall(rb"/Type\s*/Page\b", pdf))  # noqa: E731
+    full, none, one = build_client_report(dict(d)), build_client_report({**d, "sections": []}), build_client_report({**d, "sections": ["holdings"]})
+    assert all(p.startswith(b"%PDF") for p in (full, none, one))
+    assert len(full) > len(one) > len(none) and pages(full) >= pages(one) >= pages(none) >= 1
+    keys = ["kpi", "holdings", "alloc", "charts", "fy", "heatmap", "cashflow", "benchmark", "risk", "stress", "factsheets", "notes", "annex"]
+    for k in keys:  # every section alone builds; two at once too (stress: rapid tick/untick)
+        assert build_client_report({**d, "sections": [k]}).startswith(b"%PDF")
+    assert build_client_report({**d, "sections": keys[::2]}).startswith(b"%PDF") and build_client_report({**d, "sections": ["bogus"]}).startswith(b"%PDF")

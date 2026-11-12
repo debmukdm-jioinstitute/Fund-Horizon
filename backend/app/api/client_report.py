@@ -90,6 +90,7 @@ class Report(BaseModel):
     matrices: dict[str, Any] | None = None
     source_files: list[SourceFileRef] = Field(default_factory=list, max_length=40)
     attach_statements: bool = True
+    sections: list[str] | None = None  # None = every section; else only these keys (see build_client_report cut())
     dashboard: dict[str, Any] | None = None  # provider FY dashboard read from an upload (PMS / stock / whole-portfolio history)
 
 

@@ -4,11 +4,13 @@ calculate XIRR and all investment matrices, and render the Fund Horizon branded 
 Google Sans only (see CLAUDE.md)."""
 from __future__ import annotations
 
+import base64
 import hashlib
 import html
 import io
 import math
 import re
+import tempfile
 import threading
 import zipfile
 from datetime import date, datetime, timedelta
@@ -22,6 +24,65 @@ from app.report.fonts import BODY_FONT, BOLD_FONT
 
 LOGO_PATH = Path(__file__).resolve().parent / "assets" / "fund-horizon-logo.png"
 LOGO_DARK_PATH = Path(__file__).resolve().parent / "assets" / "logo-header-dark.png"
+
+_STMT_CACHE_DIR = Path(tempfile.gettempdir()) / "fh_client_report_statements"
+_STMT_MEM_CACHE: dict[str, tuple[str, bytes, str]] = {}
+
+HEAT_PALETTE = ("#EA6B66", "#F39075", "#F9C77B", "#FDF2A0", "#D6EDB9", "#A7D89B", "#6CC283")
+
+
+def heat_color(val: float | None, col_vals: list[float], invert: bool = False) -> str:
+    """ValueMetrics / Fund Horizon 7-stop diverging heatmap colour (Red -> Amber -> Yellow -> Green)."""
+    if val is None or not col_vals:
+        return "#FFFFFF"
+    clean = [float(x) for x in col_vals if x is not None and not math.isnan(float(x))]
+    if not clean:
+        return "#FFFFFF"
+    lo, hi = min(clean), max(clean)
+    if abs(hi - lo) < 1e-9:
+        return "#D6EDB9" if val >= 0 else "#EA6B66"
+    t = max(0.0, min(1.0, (float(val) - lo) / (hi - lo)))
+    if invert:
+        t = 1.0 - t
+    idx = min(len(HEAT_PALETTE) - 1, int(round(t * (len(HEAT_PALETTE) - 1))))
+    return HEAT_PALETTE[idx]
+
+
+def store_statement_blob(name: str, data: bytes, password: str = "") -> str:
+    """Persist uploaded statement bytes in memory + temp dir keyed by SHA-256 prefix so `/pdf` & `/push` can attach it."""
+    if not data:
+        return ""
+    fid = hashlib.sha256(data).hexdigest()[:24]
+    _STMT_MEM_CACHE[fid] = (name, data, password or "")
+    if len(_STMT_MEM_CACHE) > 80:
+        _STMT_MEM_CACHE.pop(next(iter(_STMT_MEM_CACHE)))
+    try:
+        _STMT_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        (_STMT_CACHE_DIR / f"{fid}.bin").write_bytes(data)
+        (_STMT_CACHE_DIR / f"{fid}.meta").write_text(name, encoding="utf-8")  # shortcut: password stays in memory only; encrypted PDFs fall back to text after a restart
+    except Exception:
+        pass
+    return fid
+
+
+def load_statement_blob(fid: str) -> tuple[str, bytes, str] | None:
+    if not fid or not re.fullmatch(r"[0-9a-f]{16,64}", fid):
+        return None
+    if fid in _STMT_MEM_CACHE:
+        return _STMT_MEM_CACHE[fid]
+    try:
+        bpath = _STMT_CACHE_DIR / f"{fid}.bin"
+        mpath = _STMT_CACHE_DIR / f"{fid}.meta"
+        if bpath.exists() and mpath.exists():
+            lines = mpath.read_text(encoding="utf-8").splitlines()
+            name = lines[0] if lines else "statement.pdf"
+            pw = ""
+            data = bpath.read_bytes()
+            _STMT_MEM_CACHE[fid] = (name, data, pw)
+            return name, data, pw
+    except Exception:
+        pass
+    return None
 
 ROW_FIELDS = ("invested", "investments", "div_reinv", "div_payout", "units", "nav", "value", "weight", "abs_ret", "ann_ret")
 NOTES = [
@@ -97,12 +158,12 @@ def _ocr_lines(img: Any) -> list[str]:
 _PDFIUM_LOCK = threading.Lock()
 
 
-def render_pages(data: bytes, scale: float = 3) -> list:
+def render_pages(data: bytes, scale: float = 3, password: str = "") -> list:
     """PDF -> PIL pages. PDFium is not thread-safe, so rendering is serialised; OCR stays parallel."""
     import pypdfium2
 
     with _PDFIUM_LOCK:
-        pdf = pypdfium2.PdfDocument(data)
+        pdf = pypdfium2.PdfDocument(data, password=password or None)
         return [pdf[i].render(scale=scale).to_pil() for i in range(len(pdf))]
 
 
@@ -471,6 +532,7 @@ def _make_row(
     inst: str = "",
     flag: str = "",
     flows: list | None = None,
+    source_file: str = "",
 ) -> dict[str, Any]:
     inv = round(float(invested or 0.0), 2)
     val = round(float(value or 0.0), 2)
@@ -500,7 +562,162 @@ def _make_row(
         "period": _period_label(str(from_date or ""), str(to_date or ""), int(days) if days and days > 0 else None, str(inst or "")),
         "flag": flag if flag in ("†", "*") else "",
         "flows": [[str(d), round(float(a), 2)] for d, a in (flows or []) if d and a],
+        "source_file": str(source_file or ""),
     }
+
+
+def _classify_asset_group(asset_class: str, category: str) -> str:
+    ac = (asset_class or "").lower()
+    cat = (category or "").lower()
+    if "pms" in ac or "pms" in cat:
+        return "PMS Strategies"
+    if "direct equity" in ac or "direct equity" in cat or ac == "equity":
+        return "Direct Equity"
+    if any(k in cat for k in ("hybrid", "balanced", "multi asset", "arbitrage", "equity savings", "liquid", "overnight", "money market", "bond", "gilt", "debt", "banking", "duration", "gold", "silver", "commodity")):
+        return "Hybrid, Debt & Commodity Schemes"
+    return "Equity Schemes"
+
+
+def _ym_short(ym: str) -> str:
+    mon = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    if len(ym) >= 7 and ym[:4].isdigit() and ym[5:7].isdigit():
+        m = int(ym[5:7])
+        if 1 <= m <= 12:
+            return f"{mon[m - 1]}'{ym[2:4]}"
+    return ym
+
+
+def build_report_charts(data: dict[str, Any]) -> dict[str, str]:
+    """Render 4 analytical charts in Google Sans via matplotlib and return base64 PNG strings."""
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        from matplotlib.ticker import FuncFormatter
+        import app.report.fonts  # noqa: F401
+        from app.report.fmt import short_inr
+    except Exception:
+        return {}
+
+    mat = data.get("matrices") or {}
+    cat_alloc = mat.get("category_allocation") or []
+    cmp_ = mat.get("compare") or {}
+    m_trend = mat.get("monthly_trend") or []
+    rows = data.get("rows") or []
+    out: dict[str, str] = {}
+
+    def _to_b64(fig) -> str:
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png", dpi=150, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+        return base64.b64encode(buf.getvalue()).decode("ascii")
+
+    # 1. Category-wise Invested vs Current Value Horizontal Bar Chart
+    if cat_alloc:
+        top_cats = cat_alloc[:8]
+        fig, ax = plt.subplots(figsize=(5.4, 2.7))
+        ys = list(range(len(top_cats)))
+        inv_vals = [c["invested"] for c in top_cats]
+        cur_vals = [c["value"] for c in top_cats]
+        ax.barh([y + 0.18 for y in ys], inv_vals, height=0.34, color="#6C8EAD", label="Invested Capital")
+        ax.barh([y - 0.18 for y in ys], cur_vals, height=0.34, color="#006F64", label="Current Value")
+        ax.set_yticks(ys, [c["name"][:24] for c in top_cats], fontsize=7.5)
+        ax.invert_yaxis()
+        ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: short_inr(v)))
+        ax.tick_params(axis="x", labelsize=7)
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(axis="x", color="#E8EEFB", lw=0.6)
+        ax.set_axisbelow(True)
+        span = max(cur_vals + inv_vals + [1.0])
+        for y, c in zip(ys, top_cats):
+            ax.text(max(c["value"], c["invested"]) + span * 0.015, y - 0.18, f"{c['abs_ret']:+.1f}%", va="center", fontsize=6.8, fontweight="bold", color="#147A3D" if c["abs_ret"] >= 0 else "#B42318")
+        ax.set_xlim(0, span * 1.18)
+        ax.legend(fontsize=7, frameon=False, loc="lower right")
+        ax.set_title("Category-Wise Invested Capital vs Current Market Value", fontsize=8.8, fontweight="bold", color="#0B2545")
+        out["category_valuation"] = _to_b64(fig)
+
+    # 2. Portfolio Allocation Donut Chart
+    if cat_alloc:
+        top_d = cat_alloc[:7]
+        other_v = sum(c["value"] for c in cat_alloc[7:])
+        items = [(c["name"][:22], c["weight"]) for c in top_d if c["value"] > 0]
+        if other_v > 0 and sum(c["value"] for c in cat_alloc) > 0:
+            items.append(("Other", other_v / sum(c["value"] for c in cat_alloc) * 100))
+        if items:
+            palette = ["#0B2545", "#006F64", "#2E9E44", "#2F6FDE", "#F2A541", "#6C8EAD", "#8E5572", "#98C1D9"]
+            fig, ax = plt.subplots(figsize=(5.0, 2.7))
+            wedges, _ = ax.pie([v for _, v in items], colors=palette[:len(items)], startangle=90, wedgeprops=dict(width=0.42, edgecolor="white"))
+            ax.legend(wedges, [f"{n} ({v:.1f}%)" for n, v in items], loc="center left", bbox_to_anchor=(0.95, 0.5), frameon=False, fontsize=7.2)
+            ax.set(aspect="equal")
+            ax.set_title("Portfolio Allocation by Category (%)", fontsize=8.8, fontweight="bold", color="#0B2545")
+            out["allocation_donut"] = _to_b64(fig)
+
+    # 3. Portfolio XIRR vs 4 Nifty Indices Bar Chart
+    idx_tots = cmp_.get("index_totals") or {}
+    if idx_tots:
+        p_xirr = float(cmp_.get("portfolio_xirr") if cmp_.get("portfolio_xirr") is not None else (data.get("xirr") or 0.0))
+        bars = [("Your Portfolio", p_xirr, "#147A3D" if p_xirr >= 0 else "#B42318")]
+        for ik, ilbl in (("n50", "Nifty 50"), ("n500", "Nifty 500 TRI"), ("mid150", "Nifty Midcap 150 TRI"), ("small250", "Nifty Smallcap 250 TRI")):
+            if ik in idx_tots and idx_tots[ik].get("idx") is not None:
+                bars.append((ilbl, float(idx_tots[ik]["idx"]), "#0B2545"))
+        fig, ax = plt.subplots(figsize=(5.4, 2.6))
+        ys = list(range(len(bars)))
+        vals = [b[1] for b in bars]
+        ax.barh(ys, vals, height=0.52, color=[b[2] for b in bars])
+        ax.set_yticks(ys, [b[0] for b in bars], fontsize=7.5)
+        ax.invert_yaxis()
+        ax.axvline(0, color="#5B6577", lw=0.7)
+        ax.grid(axis="x", color="#E8EEFB", lw=0.6)
+        ax.set_axisbelow(True)
+        ax.spines[["top", "right"]].set_visible(False)
+        span = max([abs(v) for v in vals] + [1.0])
+        for i, v in enumerate(vals):
+            ax.text(v + (span * 0.02 if v >= 0 else -span * 0.02), i, f"{v:.2f}%", va="center", ha="left" if v >= 0 else "right", fontsize=7.2, fontweight="bold", color="#1B2333")
+        ax.set_xlim(min(0.0, min(vals)) - span * 0.18, max(0.0, max(vals)) + span * 0.22)
+        ax.tick_params(axis="x", labelsize=7)
+        ax.set_title("Same-Instalment Return: Portfolio vs 4 Nifty Indices (% p.a.)", fontsize=8.8, fontweight="bold", color="#0B2545")
+        out["benchmark_bars"] = _to_b64(fig)
+
+    # 4. Monthly / Period Cash-Flow & Cumulative Investment Trend OR Top Holdings Return Chart
+    if len(m_trend) >= 2:
+        pts = m_trend[-12:]
+        fig, ax1 = plt.subplots(figsize=(5.4, 2.6))
+        xs = list(range(len(pts)))
+        net_flows = [p["net_inflow"] for p in pts]
+        cum_inv = [p["cum_invested"] for p in pts]
+        ax1.bar(xs, net_flows, width=0.48, color=["#6CC283" if v >= 0 else "#EA6B66" for v in net_flows], label="Net Period Inflow")
+        ax1.set_xticks(xs, [p["month"] for p in pts], rotation=30, ha="right", fontsize=6.5)
+        ax1.yaxis.set_major_formatter(FuncFormatter(lambda v, _: short_inr(v)))
+        ax1.tick_params(axis="y", labelsize=6.8)
+        ax1.spines[["top"]].set_visible(False)
+        ax2 = ax1.twinx()
+        ax2.plot(xs, cum_inv, color="#0B2545", lw=1.8, marker="o", markersize=3.2, label="Cumulative Invested")
+        ax2.yaxis.set_major_formatter(FuncFormatter(lambda v, _: short_inr(v)))
+        ax2.tick_params(axis="y", labelsize=6.8)
+        ax2.spines[["top"]].set_visible(False)
+        ax1.set_title("Period Investment Cash-Flow & Cumulative Capital Trend", fontsize=8.8, fontweight="bold", color="#0B2545")
+        out["trend_or_alpha"] = _to_b64(fig)
+    elif rows:
+        top_r = sorted(rows, key=lambda r: -float(r.get("value") or 0.0))[:8]
+        fig, ax = plt.subplots(figsize=(5.4, 2.6))
+        ys = list(range(len(top_r)))
+        rets = [float(r.get("ann_ret") or r.get("abs_ret") or 0.0) for r in top_r]
+        ax.barh(ys, rets, height=0.52, color=["#2E9E44" if v >= 12 else ("#F2A541" if v >= 0 else "#C0392B") for v in rets])
+        ax.set_yticks(ys, [str(r.get("name") or "")[:24] for r in top_r], fontsize=7.2)
+        ax.invert_yaxis()
+        ax.axvline(0, color="#5B6577", lw=0.7)
+        ax.grid(axis="x", color="#E8EEFB", lw=0.6)
+        ax.set_axisbelow(True)
+        ax.spines[["top", "right"]].set_visible(False)
+        span = max([abs(v) for v in rets] + [1.0])
+        for i, v in enumerate(rets):
+            ax.text(v + (span * 0.02 if v >= 0 else -span * 0.02), i, f"{v:.2f}%", va="center", ha="left" if v >= 0 else "right", fontsize=7.0, fontweight="bold")
+        ax.set_xlim(min(0.0, min(rets)) - span * 0.18, max(0.0, max(rets)) + span * 0.22)
+        ax.tick_params(axis="x", labelsize=7)
+        ax.set_title("Top Holdings Return Profile (% p.a. / Abs)", fontsize=8.8, fontweight="bold", color="#0B2545")
+        out["trend_or_alpha"] = _to_b64(fig)
+
+    return out
 
 
 def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
@@ -794,6 +1011,161 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
         timeframe_str = f"{client['inception']} to {client.get('date') or _fmt_date(latest_date)}"
     client["timeframe"] = client.get("timeframe") or timeframe_str
 
+    # ValueMetrics-style Category Flow & Valuation Matrix (Grouped by Equity, Hybrid/Debt/Commodity, PMS, Direct Equity)
+    tot_inv_all = round(sum(float(r.get("invested") or 0.0) for r in rows), 2)
+    tot_val_all = round(sum(float(r.get("value") or 0.0) for r in rows), 2)
+    tot_gain_all = round(tot_val_all - tot_inv_all, 2)
+    grp_order = ("Equity Schemes", "Hybrid, Debt & Commodity Schemes", "PMS Strategies", "Direct Equity")
+    grp_buckets: dict[str, dict[str, dict[str, Any]]] = {g: {} for g in grp_order}
+    for r in rows:
+        grp = _classify_asset_group(str(r.get("asset_class") or ""), str(r.get("category") or ""))
+        cat_name = str(r.get("category") or r.get("asset_class") or "Other")
+        g_dict = grp_buckets.setdefault(grp, {})
+        c_rec = g_dict.setdefault(cat_name, {"category": cat_name, "gross_invested": 0.0, "net_gain": 0.0, "current_value": 0.0, "schemes_count": 0})
+        inv_v = float(r.get("invested") or 0.0)
+        val_v = float(r.get("value") or 0.0)
+        c_rec["gross_invested"] = round(c_rec["gross_invested"] + inv_v, 2)
+        c_rec["current_value"] = round(c_rec["current_value"] + val_v, 2)
+        c_rec["net_gain"] = round(c_rec["current_value"] - c_rec["gross_invested"], 2)
+        c_rec["schemes_count"] += 1
+
+    cat_flow_groups: list[dict[str, Any]] = []
+    for grp in grp_order:
+        c_map = grp_buckets.get(grp) or {}
+        if not c_map:
+            continue
+        g_inv = round(sum(x["gross_invested"] for x in c_map.values()), 2)
+        g_val = round(sum(x["current_value"] for x in c_map.values()), 2)
+        g_gain = round(g_val - g_inv, 2)
+        g_cnt = sum(x["schemes_count"] for x in c_map.values())
+        g_rows = []
+        for sr_i, item in enumerate(sorted(c_map.values(), key=lambda x: -x["current_value"]), 1):
+            cnt = max(item["schemes_count"], 1)
+            g_rows.append({
+                "sr": sr_i,
+                "category": item["category"],
+                "gross_invested": item["gross_invested"],
+                "gross_share_pct": round(item["gross_invested"] / g_inv * 100, 1) if g_inv > 0 else 0.0,
+                "net_gain": item["net_gain"],
+                "net_gain_share_pct": round(item["net_gain"] / g_gain * 100, 1) if abs(g_gain) > 1.0 else 0.0,
+                "current_value": item["current_value"],
+                "value_share_pct": round(item["current_value"] / g_val * 100, 1) if g_val > 0 else 0.0,
+                "portfolio_share_pct": round(item["current_value"] / tot_val_all * 100, 1) if tot_val_all > 0 else 0.0,
+                "schemes_count": item["schemes_count"],
+                "avg_value": round(item["current_value"] / cnt, 2),
+                "abs_ret": round((item["current_value"] / item["gross_invested"] - 1) * 100, 2) if item["gross_invested"] > 0 else 0.0,
+            })
+        cat_flow_groups.append({
+            "group": grp,
+            "total_label": f"Total {grp}",
+            "rows": g_rows,
+            "subtotal": {
+                "gross_invested": g_inv,
+                "net_gain": g_gain,
+                "current_value": g_val,
+                "schemes_count": g_cnt,
+                "avg_value": round(g_val / max(g_cnt, 1), 2),
+                "abs_ret": round((g_val / g_inv - 1) * 100, 2) if g_inv > 0 else 0.0,
+            },
+        })
+    category_flow_matrix = {
+        "as_on": client.get("date") or _fmt_date(latest_date),
+        "groups": cat_flow_groups,
+        "grand_total": {
+            "label": "Total Portfolio Holdings",
+            "gross_invested": tot_inv_all,
+            "net_gain": tot_gain_all,
+            "current_value": tot_val_all,
+            "schemes_count": len(rows),
+            "avg_value": round(tot_val_all / max(len(rows), 1), 2),
+            "abs_ret": round((tot_val_all / tot_inv_all - 1) * 100, 2) if tot_inv_all > 0 else 0.0,
+        },
+    }
+
+    # Monthly / Period Investment & Cash-Flow Trend (Image 2 & Image 3 layouts)
+    month_events: dict[str, dict[str, Any]] = {}
+    cat_month_events: dict[str, dict[str, float]] = {}
+    for r in rows:
+        cat_name = str(r.get("category") or r.get("asset_class") or "Other")
+        fl_list = r.get("flows") or []
+        if fl_list:
+            for d_str, amt in fl_list:
+                d_iso = _iso_date(str(d_str)) or str(d_str)
+                ym = d_iso[:7] if re.match(r"^\d{4}-\d{2}", d_iso) else ""
+                if not ym:
+                    continue
+                rec = month_events.setdefault(ym, {"in_cnt": 0, "out_cnt": 0, "in_amt": 0.0, "out_amt": 0.0})
+                fv = float(amt or 0.0)
+                if fv >= 0:
+                    rec["in_cnt"] += 1
+                    rec["in_amt"] = round(rec["in_amt"] + fv, 2)
+                    cm = cat_month_events.setdefault(cat_name, {})
+                    cm[ym] = round(cm.get(ym, 0.0) + fv, 2)
+                else:
+                    rec["out_cnt"] += 1
+                    rec["out_amt"] = round(rec["out_amt"] + abs(fv), 2)
+        else:
+            f_iso = _iso_date(r.get("from_date")) or str(r.get("from_date") or "")
+            ym = f_iso[:7] if re.match(r"^\d{4}-\d{2}", f_iso) else val_iso[:7]
+            inv_v = float(r.get("invested") or 0.0)
+            if ym and inv_v > 0:
+                rec = month_events.setdefault(ym, {"in_cnt": 0, "out_cnt": 0, "in_amt": 0.0, "out_amt": 0.0})
+                inst_n = int(r["inst"]) if str(r.get("inst") or "").isdigit() and int(r["inst"]) > 0 else 1
+                rec["in_cnt"] += inst_n
+                rec["in_amt"] = round(rec["in_amt"] + inv_v, 2)
+                cm = cat_month_events.setdefault(cat_name, {})
+                cm[ym] = round(cm.get(ym, 0.0) + inv_v, 2)
+
+    sorted_yms = sorted(month_events.keys())
+    monthly_trend: list[dict[str, Any]] = []
+    cum_inv = 0.0
+    for ym in sorted_yms:
+        ev = month_events[ym]
+        prev_cum = cum_inv
+        net_amt = round(ev["in_amt"] - ev["out_amt"], 2)
+        cum_inv = round(max(0.0, cum_inv + net_amt), 2)
+        active_h = sum(1 for r in rows if ((_iso_date(r.get("from_date")) or val_iso)[:7] <= ym))
+        denom = max(prev_cum, tot_inv_all, 1.0)
+        monthly_trend.append({
+            "ym": ym,
+            "month": _ym_short(ym),
+            "active_holdings": max(active_h, 1),
+            "inflow_count": ev["in_cnt"],
+            "outflow_count": ev["out_cnt"],
+            "net_count": ev["in_cnt"] - ev["out_cnt"],
+            "gross_inflow": ev["in_amt"],
+            "outflow": ev["out_amt"],
+            "net_inflow": net_amt,
+            "cum_invested": cum_inv,
+            "inflow_pct": round(ev["in_amt"] / denom * 100, 1),
+            "outflow_pct": round(ev["out_amt"] / denom * 100, 1),
+            "net_addition_pct": round(net_amt / denom * 100, 1),
+        })
+    monthly_trend = monthly_trend[-18:]  # latest 18 periods for clean display
+
+    # Category x Month Inflow Heatmap Matrix (Image 3 layout: trailing up to 12 active months)
+    hm_yms = sorted_yms[-12:]
+    hm_labels = [_ym_short(y) for y in hm_yms]
+    hm_rows = []
+    for sr_i, c_entry in enumerate(category_allocation, 1):
+        cname = c_entry["name"]
+        cm = cat_month_events.get(cname) or {}
+        vals_by_m = {_ym_short(y): round(cm.get(y, 0.0), 2) for y in hm_yms}
+        row_tot = round(sum(vals_by_m.values()), 2) or c_entry["invested"]
+        hm_rows.append({
+            "sr": sr_i,
+            "category": cname,
+            "cells": vals_by_m,
+            "total": row_tot,
+        })
+    hm_col_totals = {_ym_short(y): round(sum((cat_month_events.get(c["name"]) or {}).get(y, 0.0) for c in category_allocation), 2) for y in hm_yms}
+    category_monthly_heatmap = {
+        "months": hm_labels,
+        "rows": hm_rows,
+        "column_totals": hm_col_totals,
+        "grand_total": round(sum(hm_col_totals.values()), 2) or tot_inv_all,
+    }
+
     data["matrices"] = {
         "timeframe": {
             "inception_date": client.get("inception") or (_fmt_date(earliest_date) if earliest_date else ""),
@@ -805,12 +1177,16 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
         },
         "asset_allocation": asset_allocation,
         "category_allocation": category_allocation,
+        "category_flow_matrix": category_flow_matrix,
+        "monthly_trend": monthly_trend,
+        "category_monthly_heatmap": category_monthly_heatmap,
         "compare": cmp_data,
         "risk_matrix": risk_matrix,
         "signals": (fh_analysis or {}).get("signals") or {},
         "recommendations": (fh_analysis or {}).get("recommendations") or [],
         "stress_test": (fh_analysis or {}).get("stress_test") or [],
     }
+    data["matrices"]["charts"] = build_report_charts(data)
     return data
 
 
@@ -926,8 +1302,22 @@ def _extract_universal_file(name: str, data: bytes, password: str = "", from_bun
     full_plain = "\n".join(pages_plain) if pages_plain else text
     full_pdfium = "\n".join(pages_pdfium) if pages_pdfium else text
 
-    # 1. Folio-wise / Transaction-wise / ProAffluence MF Summary via parse_statement
+    # 1. Folio-wise / Transaction-wise / ProAffluence MF Summary via parse_statement + layouts.folio_wise_mf
     st = parse_statement(text) or (parse_statement(full_plain) if full_plain != text else None)
+    fw_h, fw_tot, _fw_w, _ = layouts.folio_wise_mf(pages_plain) if pages_plain else ([], {}, [], [])
+    if fw_h and (not st or len(fw_h) > len(st.get("rows") or [])):
+        c_info = (st or {}).get("client") or {"name": "", "date": layouts.folio_date(pages_plain) or "", "arn": ARN.replace("ARN ", ""), "phone": ""}
+        res["client"].update({k: v for k, v in c_info.items() if v})
+        if res["client"]["date"]:
+            res["client"]["date"] = _fmt_date(res["client"]["date"])
+        res["xirr"] = fw_tot.get("reported_xirr") or (st or {}).get("xirr")
+        res["rows"] = [_make_row(
+            name=h.security_name, folio=h.account_no or "-", invested=float(h.invested_amount or 0.0),
+            units=float(h.quantity or 0.0), nav=float(h.price or 0.0), value=float(h.market_value or 0.0),
+            ann_ret=float(h.reported_xirr or 0.0), source_file=name,
+        ) for h in fw_h]
+        res["kind"] = "folio_wise"
+        return res
     if st and st.get("rows"):
         c_info = st["client"]
         # Also check ProAffluence client contact info (PAN, email, mobile)
@@ -946,7 +1336,7 @@ def _extract_universal_file(name: str, data: bytes, password: str = "", from_bun
             div_reinv=r.get("div_reinv", 0.0), div_payout=r.get("div_payout", 0.0),
             units=r.get("units", 0.0), nav=r.get("nav", 0.0), value=r["value"], ann_ret=r.get("ann_ret", 0.0),
             from_date=r.get("from_date", ""), to_date=r.get("to_date", ""), days=r.get("days"),
-            inst=r.get("inst", ""), flag=r.get("flag", ""), flows=r.get("flows"),
+            inst=r.get("inst", ""), flag=r.get("flag", ""), flows=r.get("flows"), source_file=name,
         ) for r in st["rows"]]
         res["kind"] = "transaction_wise" if any(r.get("flows") for r in st["rows"]) else ("mf_summary" if "MF Summary Report" in text else "folio_wise")
         return res
@@ -1132,10 +1522,42 @@ def _extract_universal_file(name: str, data: bytes, password: str = "", from_bun
                         invested=float(x.get("invested_value") or 0.0),
                         units=float(x.get("units") or 0.0), nav=float(x.get("statement_nav") or 0.0),
                         value=float(x.get("statement_value") or 0.0),
-                        isin=x.get("isin"), code=x.get("amfi_code"),
+                        isin=x.get("isin"), code=x.get("amfi_code"), source_file=name,
                     ))
                 res["kind"] = "text"
                 return res
+
+    # 8.5. Generic financial / analytical table row fallback (ValueMetrics / custom 2+ column tables without folios or units*NAV)
+    gen_rows: list[dict[str, Any]] = []
+    skip_re = re.compile(r"(?i)^\s*(?:sr\.?\b|s\.?\s*no|total\b|grand\s+total|sub\s*total|month\b|category\s+name|scheme\s+name|fund\s+name|gross\s+flows|net\s+flows|aum\b|numbers\s+in|note\b|disclaimer|amfi|arn\b|page\s+\d)")
+    row_re = re.compile(r"^\s*(?:\d{1,3}\s+)?([A-Za-z][A-Za-z0-9 &/.\-()]{2,65}?)\s+((?:[₹(]?-?\d[\d,]*(?:\.\d+)?%?\)?\s*){2,})$")
+    for ln in text.splitlines():
+        s_ln = ln.strip()
+        if not s_ln or skip_re.match(s_ln):
+            continue
+        m_row = row_re.match(s_ln)
+        if not m_row:
+            continue
+        lbl = re.sub(r"\s+", " ", m_row.group(1)).strip()
+        if len(re.findall(r"[A-Za-z]", lbl)) < 3 or skip_re.match(lbl):
+            continue
+        toks = re.findall(r"[₹(]?-?\d[\d,]*(?:\.\d+)?%?\)?", m_row.group(2))
+        money_nums = [_num(t) for t in toks if not t.endswith("%")]
+        pct_nums = [_num(t) for t in toks if t.endswith("%")]
+        if len(money_nums) >= 2:
+            if len(money_nums) >= 3 and money_nums[2] >= money_nums[0] and abs((money_nums[0] + money_nums[1]) - money_nums[2]) <= max(5.0, 0.25 * money_nums[2]):
+                inv_v, val_v = money_nums[0], money_nums[2]
+            else:
+                inv_v, val_v = money_nums[0], money_nums[1]
+            if inv_v > 0 or val_v > 0:
+                gen_rows.append(_make_row(
+                    name=lbl, folio="-", invested=max(0.0, inv_v), value=max(0.0, val_v),
+                    ann_ret=pct_nums[-1] if pct_nums else 0.0, source_file=name,
+                ))
+    if gen_rows:
+        res["rows"] = gen_rows
+        res["kind"] = "analytical_table"
+        return res
 
     # 9. Factsheet highlights
     fs = parse_factsheet(name, text)
@@ -1159,10 +1581,13 @@ def parse_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str,
         "factsheets": [],
         "warnings": [],
         "file_results": [],
+        "source_files": [],
+        "attach_statements": True,
         "dashboard": None,
     }
-    expanded: list[tuple[str, bytes, bool]] = []
+    expanded: list[tuple[str, bytes, bool, str]] = []
     for name, data in files:
+        orig_fid = store_statement_blob(name, data, password)
         if is_pdf(name, data):
             try:
                 secs, dash = bundle.split(data, password)
@@ -1178,24 +1603,29 @@ def parse_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str,
                     out["xirr"] = float(dash["since_inception_xirr"])
             if secs:
                 stem = name.rsplit(".", 1)[0]
-                expanded.extend((f"{stem} - {s['label']}.pdf", s["data"], True) for s in secs)
+                for s in secs:
+                    sec_name = f"{stem} - {s['label']}.pdf"
+                    sec_fid = store_statement_blob(sec_name, s["data"], "")
+                    expanded.append((sec_name, s["data"], True, sec_fid))
+                if orig_fid:
+                    out["source_files"].append({"id": orig_fid, "name": name, "kind": "bundle", "size": len(data)})
                 continue
-        expanded.append((name, data, False))
+        expanded.append((name, data, False, orig_fid))
 
-    for name, data, from_bundle in expanded:
+    for name, data, from_bundle, fid in expanded:
         try:
             r = _extract_universal_file(name, data, password=password, from_bundle=from_bundle)
         except PermissionError as pe:
             out["warnings"].append(str(pe))
-            out["file_results"].append({"name": name, "kind": "password_required", "method": "text", "rows": 0, "flows": 0, "error": str(pe)})
+            out["file_results"].append({"id": fid, "name": name, "kind": "password_required", "method": "text", "rows": 0, "flows": 0, "error": str(pe)})
             continue
         except ValueError as e:
             out["warnings"].append(str(e))
-            out["file_results"].append({"name": name, "kind": "error", "method": "text", "rows": 0, "flows": 0, "error": str(e)})
+            out["file_results"].append({"id": fid, "name": name, "kind": "error", "method": "text", "rows": 0, "flows": 0, "error": str(e)})
             continue
         except Exception as e:
             out["warnings"].append(f"{name}: {e}")
-            out["file_results"].append({"name": name, "kind": "error", "method": "text", "rows": 0, "flows": 0, "error": str(e)})
+            out["file_results"].append({"id": fid, "name": name, "kind": "error", "method": "text", "rows": 0, "flows": 0, "error": str(e)})
             continue
 
         out["warnings"].extend(r.get("warnings") or [])
@@ -1207,6 +1637,7 @@ def parse_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str,
         if r.get("rows"):
             # Deduplicate / enrich when both a summary report and a transaction report for the same folio+scheme are uploaded
             for new_row in r["rows"]:
+                new_row["source_file"] = new_row.get("source_file") or name
                 dup = next(
                     (ex for ex in out["rows"]
                      if ex.get("folio") not in (None, "", "-") and ex.get("folio") == new_row.get("folio")
@@ -1232,10 +1663,13 @@ def parse_files(files: list[tuple[str, bytes]], password: str = "") -> dict[str,
             existing_src = {f["source"] for f in out["factsheets"]}
             out["factsheets"].extend(f for f in r["factsheets"] if f["source"] not in existing_src)
         flows_cnt = sum(len(x.get("flows") or []) for x in (r.get("rows") or []))
-        out["file_results"].append({
-            "name": name, "kind": r.get("kind") or "statement", "method": r.get("method") or "text",
-            "rows": len(r.get("rows") or []), "flows": flows_cnt, "error": None,
-        })
+        rec_meta = {
+            "id": fid, "name": name, "kind": r.get("kind") or "statement", "method": r.get("method") or "text",
+            "rows": len(r.get("rows") or []), "flows": flows_cnt, "size": len(data), "error": None,
+        }
+        out["file_results"].append(rec_meta)
+        if fid and not from_bundle and not any(sf.get("id") == fid for sf in out["source_files"]):
+            out["source_files"].append({"id": fid, "name": name, "kind": rec_meta["kind"], "size": len(data)})
 
     summarize(out)
     enrich_and_compute_matrices(out)
@@ -1402,6 +1836,45 @@ def build_client_report(data: dict[str, Any]) -> bytes:
 
     story: list[Any] = [top, Spacer(1, 6), kpi, Spacer(1, 8), P("1. Consolidated Portfolio Valuation — Folio & Holding Wise", sec_h), table]
 
+    # Section 1B: Visual Portfolio Analytics & Graphs (2x2 Grid of Matplotlib Charts)
+    charts_b64 = mat.get("charts") or build_report_charts(data)
+    if charts_b64:
+        chart_cells: list[Any] = []
+        for ck in ("category_valuation", "allocation_donut", "benchmark_bars", "trend_or_alpha"):
+            b64 = charts_b64.get(ck)
+            if not b64:
+                continue
+            try:
+                raw_png = base64.b64decode(b64)
+                from PIL import Image as PILImage
+
+                with PILImage.open(io.BytesIO(raw_png)) as pim:
+                    pw, ph = pim.size
+                cw = 134 * mm
+                ch = cw * ph / max(pw, 1)
+                if ch > 62 * mm:
+                    ch = 62 * mm
+                    cw = ch * pw / max(ph, 1)
+                chart_cells.append(RLImage(io.BytesIO(raw_png), width=cw, height=ch))
+            except Exception:
+                continue
+        if chart_cells:
+            grid_rows = []
+            for idx_c in range(0, len(chart_cells), 2):
+                left_c = chart_cells[idx_c]
+                right_c = chart_cells[idx_c + 1] if idx_c + 1 < len(chart_cells) else P("")
+                grid_rows.append([left_c, P(""), right_c])
+            c_grid = Table(grid_rows, colWidths=[136 * mm, 5 * mm, 136 * mm])
+            c_grid.setStyle(TableStyle([
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("BOX", (0, 0), (0, -1), 0.35, grey),
+                ("BOX", (2, 0), (2, -1), 0.35, grey),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ]))
+            story += [Spacer(1, 8), KeepTogether([P("1B. Visual Portfolio Analytics & Performance Graphs", sec_h), c_grid])]
+
     # Section 2: Asset Class & Category Allocation Matrices (side-by-side)
     alloc_asset = mat.get("asset_allocation") or []
     alloc_cat = mat.get("category_allocation") or []
@@ -1432,6 +1905,195 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         side = Table([[t_asset, P(""), t_cat]], colWidths=[136 * mm, 5 * mm, 136 * mm])
         side.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
         story += [Spacer(1, 8), KeepTogether([P("2. Asset Allocation & Category Matrix", sec_h), side])]
+
+    # Section 2: ValueMetrics-Style Category-Wise Flows & AUM Heatmap Matrix (Image 1 style)
+    cfm = mat.get("category_flow_matrix") or {}
+    cfm_groups = cfm.get("groups") or []
+    if cfm_groups:
+        all_gross = [r["gross_invested"] for g in cfm_groups for r in g["rows"]]
+        all_gain = [r["net_gain"] for g in cfm_groups for r in g["rows"]]
+        all_val = [r["current_value"] for g in cfm_groups for r in g["rows"]]
+        all_cnt = [float(r["schemes_count"]) for g in cfm_groups for r in g["rows"]]
+        all_avg = [r["avg_value"] for g in cfm_groups for r in g["rows"]]
+
+        cf_hdr_top = [
+            P("Sr", head), P("Category Name / Holdings (₹)", head_l),
+            P("Gross Invested Capital", head), P("", head),
+            P("Net Unrealised Gain / Flow", head), P("", head),
+            P(f"Current Valuation ({val_date_str})", head), P("", head),
+            P("No. of Schemes", head), P("Avg. Scheme Value (₹)", head), P("Abs. Return %", head),
+        ]
+        cf_hdr_sub = [
+            P("", head), P("", head_l),
+            P("Invested (₹)", head), P("% to Asset Class", head),
+            P("Net Gain (₹)", head), P("% of Gain", head),
+            P("Market Value (₹)", head), P("% to Portfolio", head),
+            P("", head), P("", head), P("", head),
+        ]
+        cf_rows: list[list[Any]] = [cf_hdr_top, cf_hdr_sub]
+        cf_styles: list[tuple] = [
+            ("GRID", (0, 0), (-1, -1), 0.35, grey),
+            ("SPAN", (0, 0), (0, 1)), ("SPAN", (1, 0), (1, 1)),
+            ("SPAN", (2, 0), (3, 0)), ("SPAN", (4, 0), (5, 0)), ("SPAN", (6, 0), (7, 0)),
+            ("SPAN", (8, 0), (8, 1)), ("SPAN", (9, 0), (9, 1)), ("SPAN", (10, 0), (10, 1)),
+            ("BACKGROUND", (0, 0), (1, 1), colors.HexColor("#274E13")),
+            ("BACKGROUND", (2, 0), (3, 1), colors.HexColor("#274E13")),
+            ("BACKGROUND", (4, 0), (5, 1), colors.HexColor("#0B5394")),
+            ("BACKGROUND", (6, 0), (7, 1), colors.HexColor("#38761D")),
+            ("BACKGROUND", (8, 0), (10, 1), colors.HexColor("#5B6577")),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("LEFTPADDING", (0, 0), (-1, -1), 3), ("RIGHTPADDING", (0, 0), (-1, -1), 3),
+        ]
+        r_cursor = 2
+        for g in cfm_groups:
+            for r in g["rows"]:
+                ng = r["net_gain"]
+                ng_str = f"({ind(abs(ng), 0)})" if ng < 0 else ind(ng, 0)
+                cf_rows.append([
+                    P(str(r["sr"]), center),
+                    P(r["category"]),
+                    P(ind(r["gross_invested"], 0), right),
+                    P(f"{r['gross_share_pct']:.0f}%", center),
+                    P(ng_str, right),
+                    P(f"{r['net_gain_share_pct']:.0f}%", center),
+                    P(ind(r["current_value"], 0), right),
+                    P(f"{r['portfolio_share_pct']:.0f}%", center),
+                    P(str(r["schemes_count"]), center),
+                    P(ind(r["avg_value"], 0), right),
+                    P(f"{r['abs_ret']:+.1f}%", right_b),
+                ])
+                c_g = colors.HexColor(heat_color(r["gross_invested"], all_gross))
+                c_n = colors.HexColor(heat_color(r["net_gain"], all_gain))
+                c_v = colors.HexColor(heat_color(r["current_value"], all_val))
+                c_cnt = colors.HexColor(heat_color(float(r["schemes_count"]), all_cnt))
+                c_avg = colors.HexColor(heat_color(r["avg_value"], all_avg))
+                cf_styles += [
+                    ("BACKGROUND", (2, r_cursor), (3, r_cursor), c_g),
+                    ("BACKGROUND", (4, r_cursor), (5, r_cursor), c_n),
+                    ("BACKGROUND", (6, r_cursor), (7, r_cursor), c_v),
+                    ("BACKGROUND", (8, r_cursor), (8, r_cursor), c_cnt),
+                    ("BACKGROUND", (9, r_cursor), (9, r_cursor), c_avg),
+                ]
+                r_cursor += 1
+            sub = g["subtotal"]
+            s_ng = sub["net_gain"]
+            cf_rows.append([
+                P(""), P(g["total_label"], bold),
+                P(ind(sub["gross_invested"], 0), right_b), P("100%", center_b),
+                P(f"({ind(abs(s_ng), 0)})" if s_ng < 0 else ind(s_ng, 0), right_b), P("", center_b),
+                P(ind(sub["current_value"], 0), right_b), P("", center_b),
+                P(str(sub["schemes_count"]), center_b), P(ind(sub["avg_value"], 0), right_b),
+                P(f"{sub['abs_ret']:+.1f}%", right_b),
+            ])
+            cf_styles.append(("BACKGROUND", (0, r_cursor), (-1, r_cursor), soft))
+            r_cursor += 1
+
+        gt = cfm.get("grand_total") or {}
+        gt_ng = float(gt.get("net_gain") or 0.0)
+        head_r = ParagraphStyle("crhr", parent=head, alignment=2)
+        cf_rows.append([
+            P("", head), P(gt.get("label") or "Total Portfolio", head_l),
+            P(ind(gt.get("gross_invested"), 0), head_r), P("", head),
+            P(f"({ind(abs(gt_ng), 0)})" if gt_ng < 0 else ind(gt_ng, 0), head_r), P("", head),
+            P(ind(gt.get("current_value"), 0), head_r), P("100%", head),
+            P(str(gt.get("schemes_count") or len(data["rows"])), head),
+            P(ind(gt.get("avg_value"), 0), head_r),
+            P(f"{float(gt.get('abs_ret') or 0.0):+.1f}%", head_r),
+        ])
+        cf_styles += [
+            ("BACKGROUND", (0, r_cursor), (3, r_cursor), colors.HexColor("#274E13")),
+            ("BACKGROUND", (4, r_cursor), (5, r_cursor), colors.HexColor("#0B5394")),
+            ("BACKGROUND", (6, r_cursor), (10, r_cursor), colors.HexColor("#5B6577")),
+        ]
+        cf_widths = [9, 58, 26, 17, 26, 17, 28, 17, 18, 26, 20]
+        cf_tbl = Table(cf_rows, colWidths=[w * mm for w in cf_widths], repeatRows=2)
+        cf_tbl.setStyle(TableStyle(cf_styles))
+        story += [Spacer(1, 8), KeepTogether([P("2B. Category-Wise Flows, Net Gains & Valuation Matrix (Heatmap)", sec_h), cf_tbl])]
+
+    # Section 3B: Monthly / Period Cash-Flow & Registration Trend + Category x Month Heatmap (Images 2 & 3 style)
+    m_trend = mat.get("monthly_trend") or []
+    if len(m_trend) >= 2:
+        all_act = [float(m["active_holdings"]) for m in m_trend]
+        all_gin = [m["gross_inflow"] for m in m_trend]
+        all_cum = [m["cum_invested"] for m in m_trend]
+        all_npct = [m["net_addition_pct"] for m in m_trend]
+
+        mt_hdr_top = [
+            P("Month", head),
+            P("Activity & Instalment Counts", head), P("", head), P("", head), P("", head),
+            P("Capital Flows (₹)", head), P("", head),
+            P("% of Portfolio Capital", head), P("", head), P("", head),
+        ]
+        mt_hdr_sub = [
+            P("", head),
+            P("Active Schemes", head), P("Purchases / SIPs", head), P("Redemptions", head), P("Net Additions", head),
+            P("Cumulative Invested", head), P("Gross Inflow", head),
+            P("Inflow %", head), P("Outflow %", head), P("Net Addition %", head),
+        ]
+        mt_rows: list[list[Any]] = [mt_hdr_top, mt_hdr_sub]
+        mt_styles: list[tuple] = [
+            ("GRID", (0, 0), (-1, -1), 0.35, grey),
+            ("SPAN", (0, 0), (0, 1)), ("SPAN", (1, 0), (4, 0)), ("SPAN", (5, 0), (6, 0)), ("SPAN", (7, 0), (9, 0)),
+            ("BACKGROUND", (0, 0), (6, 1), navy),
+            ("BACKGROUND", (7, 0), (9, 1), colors.HexColor("#0B5394")),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2),
+        ]
+        for idx_m, m in enumerate(m_trend, 2):
+            mt_rows.append([
+                P(m["month"], center_b),
+                P(str(m["active_holdings"]), center_b),
+                P(str(m["inflow_count"]), center),
+                P(str(m["outflow_count"]), center),
+                P(f"{m['net_count']:+d}" if m["outflow_count"] else str(m["net_count"]), center),
+                P(ind(m["cum_invested"], 0), right),
+                P(ind(m["gross_inflow"], 0), right_b),
+                P(f"{m['inflow_pct']:.1f}%", center_b),
+                P(f"{m['outflow_pct']:.1f}%", center),
+                P(f"{m['net_addition_pct']:+.1f}%", center_b),
+            ])
+            mt_styles += [
+                ("BACKGROUND", (1, idx_m), (1, idx_m), colors.HexColor(heat_color(float(m["active_holdings"]), all_act))),
+                ("BACKGROUND", (5, idx_m), (5, idx_m), colors.HexColor(heat_color(m["cum_invested"], all_cum))),
+                ("BACKGROUND", (6, idx_m), (6, idx_m), colors.HexColor(heat_color(m["gross_inflow"], all_gin))),
+                ("BACKGROUND", (9, idx_m), (9, idx_m), colors.HexColor(heat_color(m["net_addition_pct"], all_npct))),
+            ]
+        mt_widths = [22, 23, 25, 23, 23, 36, 35, 28, 28, 34]
+        mt_tbl = Table(mt_rows, colWidths=[w * mm for w in mt_widths], repeatRows=2)
+        mt_tbl.setStyle(TableStyle(mt_styles))
+        story += [Spacer(1, 8), KeepTogether([P("2C. Period Investment & SIP Cash-Flow Trend Matrix", sec_h), mt_tbl])]
+
+    hm_mat = mat.get("category_monthly_heatmap") or {}
+    hm_months = hm_mat.get("months") or []
+    hm_rows_data = hm_mat.get("rows") or []
+    if len(hm_months) >= 2 and hm_rows_data:
+        hm_hdr = [P("Sr", head), P("Category / Gross Inflow (₹)", head_l)] + [P(m_lbl, head) for m_lbl in hm_months] + [P("Total (₹)", head)]
+        hm_tbl_rows: list[list[Any]] = [hm_hdr]
+        all_cell_vals = [float(v) for r in hm_rows_data for v in (r.get("cells") or {}).values()]
+        hm_styles: list[tuple] = [
+            ("GRID", (0, 0), (-1, -1), 0.35, grey),
+            ("BACKGROUND", (0, 0), (-1, 0), navy),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2),
+        ]
+        for r_idx, hr in enumerate(hm_rows_data, 1):
+            row_c = [P(str(hr["sr"]), center), P(hr["category"], bold)]
+            for c_idx, m_lbl in enumerate(hm_months, 2):
+                v = float((hr.get("cells") or {}).get(m_lbl) or 0.0)
+                row_c.append(P(ind(v, 0) if v > 0 else "-", right if v > 0 else center))
+                hm_styles.append(("BACKGROUND", (c_idx, r_idx), (c_idx, r_idx), colors.HexColor(heat_color(v, all_cell_vals))))
+            row_c.append(P(ind(hr.get("total") or 0.0, 0), right_b))
+            hm_tbl_rows.append(row_c)
+        col_tots = hm_mat.get("column_totals") or {}
+        tot_r = [P(""), P("Total Inflows", bold)] + [P(ind(col_tots.get(m_lbl, 0.0), 0), right_b) for m_lbl in hm_months] + [P(ind(hm_mat.get("grand_total") or 0.0, 0), right_b)]
+        hm_tbl_rows.append(tot_r)
+        hm_styles.append(("BACKGROUND", (0, len(hm_tbl_rows) - 1), (-1, len(hm_tbl_rows) - 1), blue))
+        m_w = max(14.0, min(22.0, (277.0 - 8.0 - 48.0 - 25.0) / max(len(hm_months), 1)))
+        hm_widths = [8.0, 48.0] + [m_w] * len(hm_months) + [25.0]
+        hm_tbl = Table(hm_tbl_rows, colWidths=[w * mm for w in hm_widths], repeatRows=1)
+        hm_tbl.setStyle(TableStyle(hm_styles))
+        story += [Spacer(1, 8), KeepTogether([P("2D. Monthly Category-Wise Gross Inflow Trend (Heatmap)", sec_h), hm_tbl])]
 
     # Section 3: 4-Index Nifty Benchmark Comparison Matrix (Same-Instalment XIRR)
     cmp_ = mat.get("compare") or {}
@@ -1577,6 +2239,101 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     story += [P(f"{i}. {n}", small) for i, n in enumerate(NOTES, 1)]
     for d_line in DISCLOSURE_LINES[:3]:
         story.append(P(f"• {d_line}", small))
+
+    # Annexure: Attached Copies of Uploaded Source Statements (rendered within ReportLab using Google Sans)
+    if data.get("attach_statements", True):
+        from reportlab.platypus import PageBreak
+
+        s_files = data.get("source_files") or []
+        seen_ids: set[str] = set()
+        annex_idx = 0
+        for sf in s_files:
+            fid = str(sf.get("id") or "")
+            if not fid or fid in seen_ids:
+                continue
+            seen_ids.add(fid)
+            loaded = load_statement_blob(fid)
+            if not loaded:
+                continue
+            sf_name, sf_bytes, sf_pw = loaded
+            annex_idx += 1
+            story += [
+                PageBreak(),
+                P(f"Annexure S{annex_idx} — Attached Source Statement Copy: {sf_name}", sec_h),
+                P(f"Original uploaded file ({round(len(sf_bytes) / 1024, 1)} KB) · SHA-256: {fid}… · Verified & consolidated into this report.", small),
+                Spacer(1, 4),
+            ]
+            if is_pdf(sf_name, sf_bytes):
+                try:
+                    pil_pages = render_pages(sf_bytes, scale=2.0, password=sf_pw)
+                except Exception:
+                    pil_pages = []
+                if pil_pages:
+                    for p_no, pim in enumerate(pil_pages[:20], 1):
+                        if p_no > 1:
+                            story += [PageBreak(), P(f"Annexure S{annex_idx} (cont.) — {sf_name} (Page {p_no} of {len(pil_pages)})", sec_h), Spacer(1, 3)]
+                        img_buf = io.BytesIO()
+                        pim.convert("RGB").save(img_buf, format="JPEG", quality=86)
+                        pw, ph = pim.size
+                        max_w, max_h = 268 * mm, 160 * mm
+                        scale_f = min(max_w / max(pw, 1), max_h / max(ph, 1))
+                        story.append(RLImage(io.BytesIO(img_buf.getvalue()), width=pw * scale_f, height=ph * scale_f))
+                else:
+                    try:
+                        raw_t = extract_text(sf_name, sf_bytes)
+                    except Exception:
+                        raw_t = ""
+                    for ln in (raw_t or "PDF statement attached.").splitlines()[:120]:
+                        story.append(P(ln, small))
+            elif is_image(sf_name, sf_bytes):
+                try:
+                    from PIL import Image as PILImage
+
+                    with PILImage.open(io.BytesIO(sf_bytes)) as pim:
+                        rgb_im = pim.convert("RGB")
+                        pw, ph = rgb_im.size
+                        img_buf = io.BytesIO()
+                        rgb_im.save(img_buf, format="JPEG", quality=88)
+                    max_w, max_h = 268 * mm, 160 * mm
+                    scale_f = min(max_w / max(pw, 1), max_h / max(ph, 1))
+                    story.append(RLImage(io.BytesIO(img_buf.getvalue()), width=pw * scale_f, height=ph * scale_f))
+                except Exception:
+                    story.append(P(f"Attached image statement: {sf_name}", body))
+            else:
+                # Spreadsheet / CSV / Word / Text statement copy rendered as a clean table
+                from app.backoffice import portfolio_screen
+
+                sheet_rows = portfolio_screen.read_table_rows(sf_name, sf_bytes)
+                if sheet_rows and sheet_rows[0]:
+                    raw_r = [r for r in sheet_rows[0] if any(c is not None and str(c).strip() for c in r)][:80]
+                    max_c = min(max((len(r) for r in raw_r), default=1), 12)
+                    t_data = [[P(str(r[c_i] if c_i < len(r) and r[c_i] is not None else ""), head if r_i == 0 else body) for c_i in range(max_c)] for r_i, r in enumerate(raw_r)]
+                    if t_data:
+                        cw = 275 * mm / max(max_c, 1)
+                        st_copy = Table(t_data, colWidths=[cw] * max_c, repeatRows=1)
+                        st_copy.setStyle(TableStyle([
+                            ("GRID", (0, 0), (-1, -1), 0.35, grey),
+                            ("BACKGROUND", (0, 0), (-1, 0), navy),
+                            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, soft]),
+                            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                            ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                        ]))
+                        story.append(st_copy)
+                else:
+                    try:
+                        raw_t = extract_text(sf_name, sf_bytes)
+                    except Exception:
+                        raw_t = ""
+                    line_rows = [[P(ln[:180], body)] for ln in (raw_t or "").splitlines() if ln.strip()][:90]
+                    if line_rows:
+                        st_copy = Table([[P(f"Statement Transcript — {sf_name}", head_l)]] + line_rows, colWidths=[275 * mm], repeatRows=1)
+                        st_copy.setStyle(TableStyle([
+                            ("GRID", (0, 0), (-1, -1), 0.3, grey),
+                            ("BACKGROUND", (0, 0), (-1, 0), navy),
+                            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, soft]),
+                            ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                        ]))
+                        story.append(st_copy)
 
     def decorate_page(cv, doc):
         cv.saveState()

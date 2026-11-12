@@ -19,7 +19,7 @@ from app.repo_crm_core import get_crm_repository
 from app.report.client_report import build_client_report, enrich_and_compute_matrices, parse_files, summarize
 
 router = APIRouter(prefix="/api/backoffice/client-report", tags=["client-report"])
-MAX_FILES, MAX_BYTES = 10, 15 * 1024 * 1024
+MAX_FILES, MAX_BYTES = 20, 15 * 1024 * 1024
 _SCHEMA = """CREATE TABLE IF NOT EXISTS client_reports (
     id TEXT PRIMARY KEY, customer_id TEXT NOT NULL, report_date TEXT, data TEXT NOT NULL, pdf BLOB NOT NULL,
     emailed_at TEXT, created_at TEXT NOT NULL, created_by TEXT)"""
@@ -49,6 +49,14 @@ class Row(BaseModel):
     period: str = Field(default="", max_length=60)
     flag: str = Field(default="", max_length=5)
     flows: list[list[Any]] = Field(default_factory=list, max_length=1200)
+    source_file: str = Field(default="", max_length=200)
+
+
+class SourceFileRef(BaseModel):
+    id: str = Field(default="", max_length=64)
+    name: str = Field(default="", max_length=200)
+    kind: str = Field(default="statement", max_length=40)
+    size: int = 0
 
 
 class Client(BaseModel):
@@ -78,6 +86,8 @@ class Report(BaseModel):
     rows: list[Row] = Field(min_length=1, max_length=400)
     factsheets: list[Factsheet] = Field(default_factory=list, max_length=30)
     matrices: dict[str, Any] | None = None
+    source_files: list[SourceFileRef] = Field(default_factory=list, max_length=40)
+    attach_statements: bool = True
 
 
 class PushIn(BaseModel):

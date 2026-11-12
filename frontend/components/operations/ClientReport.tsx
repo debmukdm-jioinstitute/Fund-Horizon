@@ -50,6 +50,7 @@ interface ClientInfo {
 }
 interface Report {
   client: ClientInfo; xirr: number | null; rows: Row[]; factsheets: Fact[]; matrices?: Matrices | null;
+  source_files?: { id: string; name: string; kind: string; size: number }[]; attach_statements?: boolean;
 }
 interface HistoryItem { id: string; report_date: string; emailed_at: string | null; created_at: string }
 
@@ -164,6 +165,8 @@ export default function ClientReport({ customerId, customerName }: { customerId?
           xirr: report.xirr ?? d.xirr,
           rows: mergedRows,
           factsheets: mergedFacts,
+          source_files: [...(report.source_files ?? []), ...(d.source_files ?? []).filter((f) => !(report.source_files ?? []).some((x) => x.id === f.id))],
+          attach_statements: report.attach_statements ?? true,
         };
         const recomputed = await call<Report>("/analyze", {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(nextPayload),
@@ -787,6 +790,9 @@ export default function ClientReport({ customerId, customerName }: { customerId?
             <button type="button" className={btnPrimary} onClick={push} disabled={busy !== null || !customerId} title={customerId ? undefined : "Select a client above first"}>
               {busy === "push" ? "Pushing…" : `Push to ${customerName ?? "client"} CRM`}
             </button>
+            <label className="inline-flex items-center gap-1.5 text-[13px]">
+              <input type="checkbox" checked={report?.attach_statements ?? true} onChange={(e) => report && setReport({ ...report, attach_statements: e.target.checked })} /> Attach the uploaded statements to the PDF
+            </label>
             <label className="inline-flex items-center gap-1.5 text-[13px]">
               <input type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} /> Also email the PDF to the client
             </label>

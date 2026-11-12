@@ -142,3 +142,37 @@ def test_sample_pdf_if_present(monkeypatch):
     f = Path("/Users/debabrata/Downloads/portfolio-valuation_1078116_FOLIO_WISE_20261023.pdf")
     if f.exists():
         assert len(parse_files([(f.name, f.read_bytes())])["rows"]) == 22
+
+
+def test_stress_many_files_rows_flows_and_attachments(monkeypatch):
+    """20 mixed statements, 150 holdings with 5 years of monthly flows: parses, attaches every copy, stays Google Sans only."""
+    import time
+
+    from pypdf import PdfReader
+    from reportlab.pdfgen import canvas
+
+    _mock_fh(monkeypatch)
+    files = []
+    for i in range(18):
+        csv = "Scheme Code,Folio,Invested Amount,Current Value,First Month,Last Month,Instalments\n" + "".join(
+            f"{c},{i}{n}/0{n},{100000 + n * 1000},{150000 + n * 1700},2021-0{1 + n % 9},2026-10,{40 + n}\n" for n, c in enumerate(("108466", "122640") * 4))
+        files.append((f"stmt{i}.csv", csv.encode()))
+    buf = io.BytesIO(); c = canvas.Canvas(buf); c.drawString(72, 700, "Portfolio Valuation Report"); c.showPage(); c.showPage(); c.save()
+    files += [("scan.pdf", buf.getvalue()), ("odd.png", b"not-an-image")]  # unreadable image must not break the build
+    t0 = time.time()
+    d = parse_files(files)
+    assert len(d["rows"]) >= 100 and len(d["source_files"]) >= 18
+    d["rows"] = d["rows"][:150]
+    for r in d["rows"]:  # 5 years of monthly SIPs per holding
+        r["flows"] = [[f"{2021 + m // 12}-{m % 12 + 1:02d}-10", 5000.0] for m in range(60)]
+    summarize(d); enrich_and_compute_matrices(d)
+    assert len(d["matrices"]["monthly_trend"]) <= 18 and d["matrices"]["charts"]
+    pdf = build_client_report(d)
+    pages = PdfReader(io.BytesIO(pdf)).pages
+    txt = "\n".join(p.extract_text() or "" for p in pages)
+    assert "Annexure S1" in txt and "Category-Wise Flows" in txt and len(pages) > 20
+    fonts = {m.decode() for m in re.findall(rb"/BaseFont\s*/(?:[A-Z]{6}\+)?([A-Za-z0-9_-]+)", pdf)}
+    assert fonts and all(f.startswith("GoogleSans") for f in fonts), fonts
+    d["attach_statements"] = False
+    assert "Annexure S1" not in "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)
+    assert time.time() - t0 < 120

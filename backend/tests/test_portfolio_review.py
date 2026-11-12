@@ -45,6 +45,13 @@ def test_pdf_builds_google_sans_only_and_missing_live_data_is_dashed_not_estimat
     assert fonts and all(f.startswith("GoogleSans") for f in fonts), fonts
 
 
+def test_branding_flag_removes_logo(live):
+    rv = api.Review(client={"name": "A", "date": "01 Jan 2026"}, holdings=H)
+    live_d, d = api.live_data([h.code for h in rv.holdings]), rv.model_dump()
+    assert d["branding"] is True
+    assert len(build_portfolio_review({**d, "branding": False}, live_d)) < len(build_portfolio_review(d, live_d))
+
+
 def test_comparison_slides_only_with_instalment_data(live):
     base = api.Review(client={"name": "A B Test", "date": "26 Oct 2026"}, holdings=H)
     cmp_ = {"portfolio_xirr": 10.42, "nifty50_xirr": 5.62, "nifty500_xirr": 8.31, "ahead_inr_500": 449011, "ahead_inr_50": 980886, "funds_ahead_50": 2,

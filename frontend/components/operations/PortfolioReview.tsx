@@ -111,6 +111,7 @@ export default function PortfolioReview({ customerId, customerName }: { customer
   const [paste, setPaste] = useState("");
   const [compare, setCompare] = useState("");
   const [email, setEmail] = useState(false);
+  const [branding, setBranding] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -328,7 +329,7 @@ export default function PortfolioReview({ customerId, customerName }: { customer
     if (!name.trim() || !holdings.length || holdings.some((h) => !(h.invested >= 0) || !(h.value >= 0) || Number.isNaN(h.invested) || Number.isNaN(h.value))) {
       throw new Error("Enter the client name and, for every fund, the invested amount and today's value.");
     }
-    return { client: { name: name.trim(), date: longDate(date) }, holdings, compare: compare.trim() ? JSON.parse(compare) : null };
+    return { client: { name: name.trim(), date: longDate(date) }, holdings, compare: compare.trim() ? JSON.parse(compare) : null, branding };
   };
   const json = { method: "POST", headers: { "Content-Type": "application/json" } };
   const download = () => run("pdf", async () => {
@@ -842,6 +843,7 @@ export default function PortfolioReview({ customerId, customerName }: { customer
       <div className="flex flex-wrap items-center gap-3 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-3">
         <button type="button" className={btn} onClick={download} disabled={busy !== null || !rows.length}>{busy === "pdf" ? "Building…" : "⬇ Download PDF"}</button>
         <button type="button" className={btnPrimary} onClick={push} disabled={busy !== null || !rows.length || !customerId} title={customerId ? undefined : "Select a client above first"}>{busy === "push" ? "Saving…" : `Save to ${customerName ?? "client"} CRM`}</button>
+        <label className="inline-flex items-center gap-1.5 text-[13px]"><input type="checkbox" checked={branding} onChange={(e) => setBranding(e.target.checked)} /> Do you want Fund Horizon branding on the PDF?</label>
         <label className="inline-flex items-center gap-1.5 text-[13px]"><input type="checkbox" checked={email} onChange={(e) => setEmail(e.target.checked)} /> Also email the PDF to the client</label>
         {!customerId && <span className="text-[12.5px] text-[#9A6700] dark:text-[#F5C451]">Select a Client / Household above to save.</span>}
       </div>

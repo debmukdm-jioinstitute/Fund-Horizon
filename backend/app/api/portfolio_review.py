@@ -156,6 +156,7 @@ class Review(BaseModel):
     client: Client
     holdings: list[Holding] = Field(min_length=1, max_length=200)
     compare: Compare | None = None
+    branding: bool = True  # False: PDF has no Fund Horizon logo or footer name
 
 
 class PushIn(BaseModel):
@@ -630,7 +631,13 @@ def _lookup_casparser_isin_by_name(raw_name: str, det_plan: str) -> dict[str, An
     return None
 
 
+_LOOKUPS_CACHE: tuple[int, tuple] | None = None
+
+
 def _build_lookups(frame: pd.DataFrame):
+    global _LOOKUPS_CACHE
+    if _LOOKUPS_CACHE is not None and _LOOKUPS_CACHE[0] == id(frame):
+        return _LOOKUPS_CACHE[1]
     code_map: dict[str, dict[str, Any]] = {}
     isin_map: dict[str, dict[str, Any]] = {}
     pools: dict[str, list[tuple[str, str, set[str], dict[str, Any]]]] = {"Direct": [], "Regular": [], "All": []}
@@ -673,7 +680,9 @@ def _build_lookups(frame: pd.DataFrame):
                     isin_map[iv] = code_map[sc]
     except Exception:
         pass
-    return code_map, isin_map, pools
+    res = (code_map, isin_map, pools)
+    _LOOKUPS_CACHE = (id(frame), res)
+    return res
 
 
 def _match_scheme(raw_name: str, isin: str | None, amfi: str | None, lookups: tuple, fallback_seq: int) -> tuple[dict[str, Any], str, str | None]:

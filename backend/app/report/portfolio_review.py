@@ -74,8 +74,8 @@ def _load_logo() -> np.ndarray | None:
     return None
 
 
-def _draw_logo(fig, dark: bool = False) -> None:
-    arr = _load_logo()
+def _draw_logo(fig, dark: bool = False, branded: bool = True) -> None:
+    arr = _load_logo() if branded else None
     if arr is None:
         return
     if dark:
@@ -150,8 +150,8 @@ def window_fall(nav, start: str, end: str) -> float | None:
 
 
 class _Deck:
-    def __init__(self, buf: io.BytesIO, foot: str):
-        self.pdf, self.foot, self.n = PdfPages(buf), foot, 0
+    def __init__(self, buf: io.BytesIO, foot: str, branded: bool = True):
+        self.pdf, self.foot, self.n, self.branded = PdfPages(buf), foot, 0, branded
 
     def page(self, dark: bool = False):
         fig = plt.figure(figsize=(13.33, 7.5), dpi=100)
@@ -164,7 +164,7 @@ class _Deck:
         if not dark:
             ax.text(60, 718, self.foot, fontsize=9, color=GREY, va="center")
             ax.text(1273, 718, str(self.n), fontsize=10, fontweight="bold", color=INK, ha="right", va="center")
-        _draw_logo(fig, dark=dark)
+        _draw_logo(fig, dark=dark, branded=self.branded)
         return fig, ax
 
     def save(self, fig):
@@ -443,9 +443,10 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
     ist = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%d %b %Y, %H:%M IST")
     s = summarize_review(d, live)
     hold, inv, val, gain, xirr, order, recs, stress_rws = s["hold"], s["inv"], s["val"], s["gain"], s["xirr"], s["order"], s["recs"], s["stress_rows"]
-    foot = f"Fund Horizon  ·  {cl['name']}  ·  Valuation as on {cl['date']}" + (f"  ·  Live NAV as on {s['nav_date']}" if s["nav_date"] else "")
+    branded = d.get("branding", True)
+    foot = ("Fund Horizon  ·  " if branded else "") + f"{cl['name']}  ·  Valuation as on {cl['date']}" + (f"  ·  Live NAV as on {s['nav_date']}" if s["nav_date"] else "")
     buf = io.BytesIO()
-    dk = _Deck(buf, foot)
+    dk = _Deck(buf, foot, branded)
 
     # Slide 1: Cover
     f, a = dk.page(True)

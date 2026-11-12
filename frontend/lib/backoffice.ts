@@ -904,6 +904,12 @@ export interface PmsScreeningBreakdown {
   rawScore: number;
 }
 
+/** Years since the disclosed inception date (null when APMI gives none): the Since Inception column's track record; never a guess. */
+export function pmsInceptionYears(inception?: string, now = Date.now()): number | null {
+  const t = inception ? Date.parse(inception) : NaN;
+  return Number.isNaN(t) || t > now ? null : (now - t) / 31557600000;
+}
+
 /** Years of strategy track record, standing in for manager tenure (APMI gives no manager start date): the inception date when disclosed, else the longest reported return horizon (a lower bound). */
 export function pmsTrackYears(item: { inception_date?: string; return_1y_pct?: number; return_3y_cagr_pct?: number }, now = Date.now()): number {
   const t = item.inception_date ? Date.parse(item.inception_date) : NaN;

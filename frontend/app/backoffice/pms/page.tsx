@@ -15,6 +15,7 @@ import {
   PmsStrategyItem,
   PmsAccountTrackerData,
   evaluatePmsScreening,
+  pmsInceptionYears,
   PMS_BENCHMARKS,
 } from "@/lib/backoffice";
 import { ApiError } from "@/lib/api";
@@ -38,7 +39,7 @@ import {
 import DropdownClose from "@/components/DropdownClose";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
-type SortKey = "aum" | "return_1m" | "return_1y" | "return_3y" | "name" | "score";
+type SortKey = "aum" | "return_1m" | "return_1y" | "return_3y" | "return_si" | "track" | "name" | "score";
 const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 function ReturnCell({
@@ -269,6 +270,8 @@ function PmsTracker() {
       if (sortKey === "return_1m") return s.return_1m_pct;
       if (sortKey === "return_1y") return s.return_1y_pct;
       if (sortKey === "return_3y") return s.return_3y_cagr_pct;
+      if (sortKey === "return_si") return s.return_since_inception_pct;
+      if (sortKey === "track") return pmsInceptionYears(s.inception_date) ?? undefined;
       if (sortKey === "score") return s.fh_score;
       return undefined;
     };
@@ -701,6 +704,8 @@ function PmsTracker() {
                       <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
                       <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
                       <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
+                      <SortHeader label="Since Inception" column="return_si" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_si" meta={meta?.ret_si ?? meta?._default} />
+                      <SortHeader label="Inception · Track" column="track" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
                       <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
                       <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
                       <th>FH Signal</th>
@@ -958,6 +963,17 @@ function PmsTracker() {
                                 </td>
                                 <td className="text-right">
                                   <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} horizon="3y" strategy={s} />
+                                </td>
+                                <td className="text-right">
+                                  <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} horizon="si" strategy={s} />
+                                </td>
+                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] whitespace-nowrap" title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>
+                                  {pmsInceptionYears(s.inception_date) !== null ? (
+                                    <>
+                                      {formatISTDate(s.inception_date)}
+                                      <span className="block text-[11px] tabular-nums">{pmsInceptionYears(s.inception_date)!.toFixed(1)} yrs</span>
+                                    </>
+                                  ) : "—"}
                                 </td>
                                 <td
                                   className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"

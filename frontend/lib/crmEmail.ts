@@ -8,7 +8,8 @@ export const CUSTOM = "email:"; // recipient id prefix for an address that is no
 export const isEmail = (v: string) => /^[^@\s<>,;]+@[^@\s<>,;]+\.[^@\s<>,;]+$/.test(v.trim());
 
 export const EMAIL_ACCEPT = ".pdf,.xlsx,.xls,.csv,.docx,.png,.jpg,.jpeg,.txt";
-export const EMAIL_MAX_BYTES = 15 * 1024 * 1024;
+export const EMAIL_MAX_BYTES = 30 * 1024 * 1024; // Resend rejects >40 MB after base64
+export const AUTOFILL_MAX_BYTES = 15 * 1024 * 1024;
 
 export const EMAIL_TEMPLATES: { id: string; label: string; subject: string; body: string }[] = [
   { id: "statement", label: "Share statement", subject: "Your statement from Fund Horizon",

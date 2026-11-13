@@ -44,7 +44,7 @@ def send_email(to: str, subject: str, text: str, attachments: list[tuple[str, by
     if os.environ.get("EMAIL_REPLY_TO"):
         payload["reply_to"] = os.environ["EMAIL_REPLY_TO"]
     try:
-        r = httpx.post(RESEND_URL, json=payload, headers={"Authorization": f"Bearer {key}"}, timeout=10)
+        r = httpx.post(RESEND_URL, json=payload, headers={"Authorization": f"Bearer {key}"}, timeout=60)  # large attachments upload slowly
     except httpx.HTTPError as e:
         raise MailerError(f"Could not reach Resend: {e.__class__.__name__}") from e
     if r.status_code >= 400:

@@ -13,6 +13,7 @@ import base64
 import hashlib
 import hmac
 import json
+import logging
 import os
 import re
 import secrets
@@ -34,6 +35,8 @@ from app.db import sqlite
 from app.mailer import MailerError, send_email
 from app.repo_crm_core import IST, CrmCoreError, Page, get_crm_repository, month_start_utc, today_ist
 from app.repo_crm_extras import find_duplicates
+
+log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/crm", tags=["crm"])
 
@@ -1264,7 +1267,9 @@ def create_activity(body: ActivityCreate, me: Me):
 
 
 EMAIL_EXTS = {"pdf", "xlsx", "xls", "csv", "docx", "png", "jpg", "jpeg", "txt"}
-EMAIL_MAX_FILES, EMAIL_MAX_BYTES, EMAIL_MAX_RECIPIENTS = 5, 15 * 1024 * 1024, 50
+# No file-count cap. Resend rejects a message over 40 MB after base64 (x4/3), so ~30 MB raw is the real ceiling.
+EMAIL_MAX_BYTES, EMAIL_MAX_RECIPIENTS = 30 * 1024 * 1024, 50
+EXTRACT_MAX_BYTES = 15 * 1024 * 1024  # OCR autofill only; sending is not limited by this
 EMAIL_RE = re.compile(r"[^@\s<>,;]+@[^@\s<>,;]+\.[^@\s<>,;]+")
 PUBLIC_API_URL = os.environ.get("PUBLIC_API_URL", "https://api.fundhorizon.website")
 
@@ -1388,9 +1393,9 @@ async def email_extract(me: Me, file: Annotated[UploadFile, File()]):
     name = re.sub(r"[^\w.\- ]", "_", (file.filename or "file").rsplit("/", 1)[-1])[:120]
     if name.rsplit(".", 1)[-1].lower() not in EMAIL_EXTS:
         raise HTTPException(422, "Unsupported file type.")
-    data = await file.read(EMAIL_MAX_BYTES + 1)
-    if len(data) > EMAIL_MAX_BYTES:
-        raise HTTPException(422, "File is over 15 MB.")
+    data = await file.read(EXTRACT_MAX_BYTES + 1)
+    if len(data) > EXTRACT_MAX_BYTES:
+        raise HTTPException(422, "File is too large to read automatically.")
     return suggest(name, await run_in_threadpool(extract_text, name, data))
 
 
@@ -1427,6 +1432,8 @@ async def email_customers(
     if len(ids) > EMAIL_MAX_RECIPIENTS:
         raise HTTPException(422, f"At most {EMAIL_MAX_RECIPIENTS} recipients per send.")
     when = _parse_send_at(send_at)
+    if when and (statement or filing_id or any(f.filename for f in files)):
+        raise HTTPException(422, "Resend cannot schedule emails with attachments. Send now, or remove the attachments.")
     files = [f for f in files if f.filename]
     attach: list[tuple[str, bytes]] = []
     for f in files:
@@ -1440,8 +1447,8 @@ async def email_customers(
         if pdf is None or filing is None:
             raise HTTPException(404, "Filing not found")
         attach.append((re.sub(r"[^\w.\- ]", "_", filing["form_title"])[:100] + ".pdf", pdf))
-    if len(attach) > EMAIL_MAX_FILES or sum(len(b) for _, b in attach) > EMAIL_MAX_BYTES:
-        raise HTTPException(422, f"At most {EMAIL_MAX_FILES} attachments, 15 MB in total.")
+    if sum(len(b) for _, b in attach) > EMAIL_MAX_BYTES:
+        raise HTTPException(422, f"Attachments total over {EMAIL_MAX_BYTES // 1024 // 1024} MB, the most an email can carry.")
     scope, repo = _scope(me), get_crm_repository()
     results = []
     for cid in ids:
@@ -1467,7 +1474,11 @@ async def email_customers(
             if rows:
                 from app.report.statement_doc import build_holdings_statement
 
-                own = [("Holdings statement.pdf", build_holdings_statement(customer["name"], rows))]
+                try:
+                    own = [("Holdings statement.pdf", build_holdings_statement(customer["name"], rows))]
+                except Exception:  # one bad statement must not abort the rest of the batch
+                    log.exception("statement build failed for %s", cid)
+                    entry["error"] = "Could not build the holdings statement."
             else:
                 entry["error"] = "No holdings on file to build a statement."
         if entry["error"]:
@@ -1487,11 +1498,14 @@ async def email_customers(
                 headers={"List-Unsubscribe": f"<{unsub}>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"},
                 html=html_body,
             )
+            entry["ok"] = True  # delivered; a logging failure below must not report it as failed or stop the batch
             note = ("\n\nAttachments: " + ", ".join(names) if names else "") + (f"\n\nScheduled for {when}" if when else "")
-            repo.create_activity(kind="email", subject=subj, body=(f"To: {to}\n\n" if custom else "") + text + note,
-                                 customer_id=None if custom else cid, assigned_rm_id=me["id"] if custom else None,
-                                 source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"])
-            entry["ok"] = True
+            try:
+                repo.create_activity(kind="email", subject=subj, body=(f"To: {to}\n\n" if custom else "") + text + note,
+                                     customer_id=None if custom else cid, assigned_rm_id=me["id"] if custom else None,
+                                     source_ref=f"resend:{email_id}" if email_id else None, actor_id=me["id"])
+            except Exception:
+                log.exception("email sent to %s but timeline log failed", cid)
         except MailerError as e:
             entry["error"] = str(e)
             if not e.configured:  # same for every recipient: stop and say so

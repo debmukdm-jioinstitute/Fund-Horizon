@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { fetchHouseholdDetail } from "../../lib/crmApi";
-import { CUSTOM, EMAIL_ACCEPT, EMAIL_MAX_BYTES, EMAIL_TEMPLATES, extractEmailFields, isEmail, sendClientEmail, type EmailOutcome } from "../../lib/crmEmail";
+import { CUSTOM, AUTOFILL_MAX_BYTES, EMAIL_ACCEPT, EMAIL_MAX_BYTES, EMAIL_TEMPLATES, extractEmailFields, isEmail, sendClientEmail, type EmailOutcome } from "../../lib/crmEmail";
 import { searchCrm, type SearchResult } from "../../lib/crmListApi";
 import { fetchContact } from "../../lib/crmPhase3Api";
 import { btnCls, errCls, ghostBtnCls, mutedCls } from "./ui";
@@ -152,10 +152,9 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
 
   const pickFiles = (list: FileList | null) => {
     const next = [...files, ...Array.from(list ?? [])];
-    if (next.length > 5) return setError("At most 5 attachments.");
-    if (next.reduce((n, f) => n + f.size, 0) > EMAIL_MAX_BYTES) return setError("Attachments are over 15 MB in total.");
+    if (next.reduce((n, f) => n + f.size, 0) > EMAIL_MAX_BYTES) return setError(`Attachments are over ${EMAIL_MAX_BYTES / 1024 / 1024} MB in total, the most an email can carry.`);
     setError(null); setFiles(next);
-    if (list?.[0]) void autofill(list[0]);
+    if (list?.[0] && list[0].size <= AUTOFILL_MAX_BYTES) void autofill(list[0]);
   };
 
   // Fill only what the user has not typed; the client is added only when search finds exactly one match.
@@ -336,7 +335,6 @@ export default function EmailDialog({ recipients: fixed, filing, onClose, onSent
                 <span className={`block text-[11px] ${mutedCls}`}>Generated separately from CRM holdings.</span>
               </span>
             </label>
-            <p className={`mt-2 text-xs ${mutedCls}`}>Attachments: up to 5 files · 15 MB limit</p>
             {filing && <p className="mt-1 text-xs">Attached: filled form “{filing.title}” (PDF)</p>}
             {reading && <p role="status" className={`mt-1 text-[11px] ${mutedCls}`}>Reading document…</p>}
             {files.length > 0 && (

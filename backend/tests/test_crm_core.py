@@ -558,6 +558,18 @@ def test_email_partial_failure_validation_and_rbac(client, admin, monkeypatch):
     assert _email(client, [good["id"]]).json()["results"][0]["error"].startswith("You do not have permission")
 
 
+def test_email_many_attachments_ok_scheduled_with_attachment_rejected(client, admin, monkeypatch):
+    from datetime import UTC, datetime, timedelta
+
+    sent = []
+    monkeypatch.setattr("app.api.crm_core.send_email", lambda to, s, m, a=None, **kw: sent.append(a) or "em_m")
+    c = _make_customer()
+    files = [("files", (f"f{i}.pdf", b"%PDF", "application/pdf")) for i in range(8)]
+    assert _email(client, [c["id"]], files=files).json()["sent"] == 1 and len(sent[-1]) == 8
+    fut = (datetime.now(UTC) + timedelta(days=2)).isoformat()
+    assert _email(client, [c["id"]], data_extra={"send_at": fut}, files=files[:1]).status_code == 422
+
+
 def test_email_unconfigured_is_503(client, admin, monkeypatch):
     monkeypatch.delenv("RESEND_API_KEY", raising=False)
     assert _email(client, [_make_customer()["id"]]).status_code == 503

@@ -1,0 +1,70 @@
+{
+ "id": "nismder-03",
+ "title": "Pricing futures: cost of carry and basis",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Futures",
+ "objectives": [
+  "Compute fair futures price.",
+  "Explain basis, contango and backwardation."
+ ],
+ "body_md": "## Cost of carry\n\n**Fair futures price F = S × (1 + r × t)** (simple) or **S × e^(r t)** (continuous), less the present value of any **dividends** expected before expiry.\n\nExample: S = 100, r = 8% a year, t = 3 months: F = 100 × (1 + 0.08 × 0.25) = **102**.\n\n## Basis\n\n**Basis = spot − futures** (some texts use futures − spot; read the question). Basis **converges to zero** at expiry.\n\n| State | Meaning |\n|---|---|\n| **Contango** | Futures above spot (normal, cost of carry positive) |\n| **Backwardation** | Futures below spot |\n\n## Cash-and-carry arbitrage\n\nIf the futures price is **above** fair value: buy spot, sell futures, hold to expiry, pocket the difference. If **below**: reverse (sell spot, buy futures).\n\n## Factors\n\nInterest rates, dividends, time to expiry, demand for hedging.\n\n> **Exam tip:** Dividends reduce fair futures price; higher interest raises it.",
+ "key_terms": [
+  "cost of carry",
+  "basis",
+  "contango",
+  "backwardation",
+  "cash-and-carry"
+ ],
+ "example": "Spot 200, r = 6%, t = 6 months, no dividends: F = 200 × (1 + 0.06 × 0.5) = 206. If the market price is 210, buy spot, sell the future and lock in 4.",
+ "say": [
+  "The futures price reflects financing cost, not a forecast.",
+  "At expiry, the future and spot converge."
+ ],
+ "never": [
+  "Futures predict where the price will be.",
+  "Basis never changes."
+ ],
+ "check": [
+  {
+   "id": "nismder-q7",
+   "q": "Spot 100, r 8%, 3 months, no dividend. Fair futures price is:",
+   "o": [
+    "100",
+    "102",
+    "108",
+    "98"
+   ],
+   "a": 1,
+   "why": "100 × (1 + 0.08 × 0.25) = 102."
+  },
+  {
+   "id": "nismder-q8",
+   "q": "Futures trading above spot is called:",
+   "o": [
+    "Backwardation",
+    "Contango",
+    "Basis zero",
+    "Parity"
+   ],
+   "a": 1,
+   "why": "Contango means futures above spot."
+  },
+  {
+   "id": "nismder-q9",
+   "q": "Dividends expected before expiry make the fair futures price:",
+   "o": [
+    "Higher",
+    "Lower",
+    "Unchanged",
+    "Zero"
+   ],
+   "a": 1,
+   "why": "Dividends reduce the cost of carry."
+  }
+ ],
+ "card_ids": [
+  "nismder-c3"
+ ],
+ "words": 155
+}

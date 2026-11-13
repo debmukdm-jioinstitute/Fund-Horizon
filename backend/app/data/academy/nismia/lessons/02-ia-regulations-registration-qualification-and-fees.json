@@ -1,0 +1,69 @@
+{
+ "id": "nismia-02",
+ "title": "IA regulations: registration, qualification and fees",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Regulation",
+ "objectives": [
+  "List registration conditions.",
+  "Explain the two fee modes and caps."
+ ],
+ "body_md": "Under the **SEBI (Investment Advisers) Regulations, 2013**:\n\n## Registration\n\n- Individuals need the prescribed **qualification** and **NISM certification** (X-A and X-B in the current structure), and relevant experience.\n- Non-individuals must meet **net worth** norms and have qualified principal officers.\n- IAs must be **fit and proper**, have the infrastructure to maintain records, and renew certification before it lapses.\n\n## Fees\n\n| Mode | Notes |\n|---|---|\n| **Fixed fee** | Flat annual amount, subject to a cap per family |\n| **Assets under advice (AUA)** | Percentage of assets advised on, subject to a cap |\n\n- Fees are charged **in advance for up to a limited period** and refunded pro rata if the agreement ends early.\n- Fees are paid by cheque or electronic modes, **not in cash**.\n- Fee caps are revised periodically: **verify current limits**.\n\n## Continuing duties\n\nMaintain records for at least **five years**, undergo periodic audit, and maintain a **client agreement**, **risk profile** and **rationale** for each piece of advice.\n\n> **Exam tip:** Fee is from the client only, never from products.",
+ "key_terms": [
+  "fixed fee",
+  "assets under advice",
+  "fit and proper",
+  "client agreement"
+ ],
+ "example": "An IA charges 1% of the ₹40 lakh assets advised on. That is the AUA mode. If the agreement ends after six months of a one-year fee, the unused part is refunded.",
+ "say": [
+  "My fee is fixed in advance and written in the agreement.",
+  "If we end early, the unused fee is returned."
+ ],
+ "never": [
+  "I will take a cash fee, no receipt needed.",
+  "I also earn commission from the funds I recommend."
+ ],
+ "check": [
+  {
+   "id": "nismia-q4",
+   "q": "Which fee modes are available to an IA?",
+   "o": [
+    "Fixed fee and AUA-based fee",
+    "Only commission",
+    "Only performance bonus",
+    "Only brokerage"
+   ],
+   "a": 0,
+   "why": "Fixed fee or a percentage of assets under advice, both within caps."
+  },
+  {
+   "id": "nismia-q5",
+   "q": "An IA should keep records for at least:",
+   "o": [
+    "6 months",
+    "1 year",
+    "Five years",
+    "Not required"
+   ],
+   "a": 2,
+   "why": "Five years is the minimum record retention."
+  },
+  {
+   "id": "nismia-q6",
+   "q": "An IA may receive fees:",
+   "o": [
+    "In cash without receipt",
+    "By cheque or electronic mode",
+    "From product issuers",
+    "From the exchange"
+   ],
+   "a": 1,
+   "why": "Fees come from the client through traceable modes."
+  }
+ ],
+ "card_ids": [
+  "nismia-c2"
+ ],
+ "words": 178
+}

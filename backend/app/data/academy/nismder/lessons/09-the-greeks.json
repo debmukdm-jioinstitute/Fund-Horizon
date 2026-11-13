@@ -1,0 +1,70 @@
+{
+ "id": "nismder-09",
+ "title": "The Greeks",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Options",
+ "objectives": [
+  "Define delta, gamma, theta, vega and rho.",
+  "Interpret the signs for long options."
+ ],
+ "body_md": "The **Greeks** measure the sensitivity of premium to its inputs.\n\n| Greek | Sensitivity to | Long call | Long put |\n|---|---|---|---|\n| **Delta** | Spot price | 0 to +1 | −1 to 0 |\n| **Gamma** | Change in delta | Positive | Positive |\n| **Theta** | Time passing | Negative | Negative |\n| **Vega** | Volatility | Positive | Positive |\n| **Rho** | Interest rate | Positive | Negative |\n\n## Reading them\n\n- **Delta** also approximates the probability of finishing ITM; ATM options are near 0.5.\n- **Gamma** is highest for ATM options close to expiry.\n- **Theta** (time decay) hurts buyers and helps sellers; it speeds up near expiry.\n- **Vega** is highest for ATM options with more time to expiry.\n\n## Delta hedging\n\nHolding delta-neutral positions removes small price risk; it needs constant adjustment because gamma changes delta.\n\nExample: a call with delta 0.6: if spot rises ₹1, premium rises about ₹0.60.\n\n> **Exam tip:** Long options have positive gamma and vega, negative theta.",
+ "key_terms": [
+  "delta",
+  "gamma",
+  "theta",
+  "vega",
+  "rho"
+ ],
+ "example": "A trader holds 10 lots of calls with delta 0.5 and lot size 100. Position delta = 10 × 100 × 0.5 = 500 shares equivalent.",
+ "say": [
+  "Time decay works against buyers every day.",
+  "Delta tells you how much the premium moves for a ₹1 spot move."
+ ],
+ "never": [
+  "Theta helps option buyers.",
+  "Delta of a call can be above 1."
+ ],
+ "check": [
+  {
+   "id": "nismder-q25",
+   "q": "A long call's delta lies between:",
+   "o": [
+    "−1 and 0",
+    "0 and +1",
+    "1 and 2",
+    "−2 and 2"
+   ],
+   "a": 1,
+   "why": "Call delta ranges from 0 to +1."
+  },
+  {
+   "id": "nismder-q26",
+   "q": "Time decay is measured by:",
+   "o": [
+    "Delta",
+    "Gamma",
+    "Theta",
+    "Vega"
+   ],
+   "a": 2,
+   "why": "Theta is the sensitivity to time."
+  },
+  {
+   "id": "nismder-q27",
+   "q": "Long options have:",
+   "o": [
+    "Negative gamma",
+    "Positive gamma and vega",
+    "Zero theta",
+    "Negative vega"
+   ],
+   "a": 1,
+   "why": "Buyers are long gamma and vega, short theta."
+  }
+ ],
+ "card_ids": [
+  "nismder-c9"
+ ],
+ "words": 174
+}

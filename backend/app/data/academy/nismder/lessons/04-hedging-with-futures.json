@@ -1,0 +1,70 @@
+{
+ "id": "nismder-04",
+ "title": "Hedging with futures",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Futures",
+ "objectives": [
+  "Compute the number of index futures to hedge a portfolio.",
+  "Explain long and short hedges."
+ ],
+ "body_md": "## Short hedge\n\nA holder of shares fears a fall and **sells** futures. A loss on the portfolio is offset by a gain on the short futures.\n\n## Long hedge\n\nA buyer who will need shares later **buys** futures to fix the price.\n\n## Portfolio hedge using index futures\n\n**Number of contracts = β × Portfolio value ÷ (Futures price × Lot size)**\n\nExample: portfolio ₹1 crore, β = 1.2, Nifty futures 20,000, lot 50. Contracts = 1.2 × 1,00,00,000 ÷ (20,000 × 50) = **12**.\n\n## Imperfect hedges\n\n- **Basis risk:** futures and spot do not move one-for-one.\n- **Beta mismatch:** portfolio β differs from the index.\n- **Rollover:** contracts expire; rolling costs money.\n\n## Changing portfolio beta\n\nSelling futures lowers beta; buying raises it, without trading the shares.\n\n> **Exam tip:** Hedging reduces risk and also caps the gain.",
+ "key_terms": [
+  "short hedge",
+  "long hedge",
+  "beta",
+  "basis risk",
+  "rollover"
+ ],
+ "example": "A ₹50 lakh portfolio with β = 1 and Nifty futures notional of ₹10 lakh per lot needs 5 short lots to fully hedge.",
+ "say": [
+  "A hedge protects the downside but also limits the upside.",
+  "Basis risk means the hedge is not perfect."
+ ],
+ "never": [
+  "A hedge removes all risk.",
+  "Hedging has no cost."
+ ],
+ "check": [
+  {
+   "id": "nismder-q10",
+   "q": "To hedge a share portfolio against a fall, one should:",
+   "o": [
+    "Buy index futures",
+    "Sell index futures",
+    "Buy more shares",
+    "Do nothing"
+   ],
+   "a": 1,
+   "why": "A short hedge offsets losses."
+  },
+  {
+   "id": "nismder-q11",
+   "q": "Contracts to hedge = β × portfolio value ÷:",
+   "o": [
+    "Lot size only",
+    "Futures price × lot size",
+    "Spot price",
+    "Margin"
+   ],
+   "a": 1,
+   "why": "Divide by the notional value of one contract."
+  },
+  {
+   "id": "nismder-q12",
+   "q": "Basis risk arises because:",
+   "o": [
+    "Spot and futures do not move perfectly together",
+    "Brokers change",
+    "Tax changes",
+    "NAV changes"
+   ],
+   "a": 0,
+   "why": "The hedge is not exact."
+  }
+ ],
+ "card_ids": [
+  "nismder-c4"
+ ],
+ "words": 141
+}

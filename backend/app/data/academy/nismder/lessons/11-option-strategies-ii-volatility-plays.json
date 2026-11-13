@@ -1,0 +1,69 @@
+{
+ "id": "nismder-11",
+ "title": "Option strategies II: volatility plays",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Strategies",
+ "objectives": [
+  "Build straddles and strangles.",
+  "Know when to use a short volatility view."
+ ],
+ "body_md": "## Long straddle\n\nBuy a call and a put at the **same strike and expiry**. Profits from a **large move** either way.\n\nExample: K = 100, call 6 + put 5 = cost 11. **Breakevens: 89 and 111.** Max loss 11 at 100.\n\n## Long strangle\n\nBuy an OTM call and an OTM put. Cheaper than a straddle but needs a bigger move.\n\n## Short straddle / strangle\n\nSell both. Profits if the price **stays range-bound**; risk is **unlimited**. Needs margin and strict risk limits.\n\n## Butterfly and condor\n\nLimited-risk range strategies using four options; they profit if the price stays near the middle.\n\n## Choosing\n\n| View | Strategy |\n|---|---|\n| Big move, direction unknown | Long straddle or strangle |\n| Quiet market | Short straddle (high risk), iron condor (limited risk) |\n| Volatility expected to fall | Short vega positions |\n\n> **Exam tip:** Calculate straddle breakevens as K ± total premium.",
+ "key_terms": [
+  "straddle",
+  "strangle",
+  "butterfly",
+  "iron condor"
+ ],
+ "example": "Before results a trader expects a big move. Buying a 500 straddle for 40 profits if the stock goes below 460 or above 540.",
+ "say": [
+  "A short straddle can lose without limit; position size matters.",
+  "A straddle needs a big enough move to beat the premium."
+ ],
+ "never": [
+  "A short straddle has limited risk.",
+  "A long straddle profits if nothing moves."
+ ],
+ "check": [
+  {
+   "id": "nismder-q31",
+   "q": "Long straddle K = 100, total premium 11. Upper breakeven is:",
+   "o": [
+    "100",
+    "111",
+    "89",
+    "122"
+   ],
+   "a": 1,
+   "why": "100 + 11 = 111."
+  },
+  {
+   "id": "nismder-q32",
+   "q": "A short straddle profits when:",
+   "o": [
+    "The price moves a lot",
+    "The price stays near the strike",
+    "Volatility rises",
+    "Rates fall"
+   ],
+   "a": 1,
+   "why": "Short straddles gain from a quiet market."
+  },
+  {
+   "id": "nismder-q33",
+   "q": "A long strangle compared with a straddle is:",
+   "o": [
+    "Costlier",
+    "Cheaper but needs a bigger move",
+    "Risk free",
+    "Unlimited loss"
+   ],
+   "a": 1,
+   "why": "OTM strikes cut the cost but widen breakevens."
+  }
+ ],
+ "card_ids": [
+  "nismder-c11"
+ ],
+ "words": 157
+}

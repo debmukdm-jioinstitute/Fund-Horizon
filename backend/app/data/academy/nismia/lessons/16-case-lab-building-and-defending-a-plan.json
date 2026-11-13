@@ -1,0 +1,69 @@
+{
+ "id": "nismia-16",
+ "title": "Case lab: building and defending a plan",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Ethics and review",
+ "objectives": [
+  "Walk through a full advice case.",
+  "Spot compliance gaps."
+ ],
+ "body_md": "## The client\n\nAsha, 38, earns ₹18 lakh, has a ₹30 lakh home loan, two children (aged 6 and 9), ₹12 lakh in a savings account, ₹8 lakh in an old endowment plan, and no health cover beyond her employer's.\n\n## Steps\n\n1. **Onboard:** agreement, KYC, profile, goals (education in 9 and 12 years, retirement at 60, emergency fund).\n2. **Protect:** buy term cover (about 12 times income, adjusted for the loan) and a family health policy with a super top-up. Keep the endowment or surrender after cost analysis.\n3. **Emergency fund:** six months in liquid funds.\n4. **Allocate by goal:** retirement 70% equity, education goals shift to debt as dates near.\n5. **Select:** Direct plans, index and flexi cap core, short-duration debt, small gold slice.\n6. **Tax:** compare regimes; use 80C and 80D where they fit goals.\n7. **Document:** rationale, risk disclosure, fee agreement.\n8. **Review:** yearly and on life events.\n\n## Compliance check\n\nNo commission from products, no distribution through family, records filed.\n\n> **Exam tip:** Order matters: protect, then invest; goals first, products last.",
+ "key_terms": [
+  "goal-based plan",
+  "emergency fund",
+  "protection",
+  "suitability"
+ ],
+ "example": "A plan that jumps straight to funds without insurance or an emergency fund would fail the process even if the funds are good.",
+ "say": [
+  "First protection, then investment, goal by goal.",
+  "Each recommendation comes with its reason in writing."
+ ],
+ "never": [
+  "Skip insurance, put it all in equity.",
+  "Keep no record of why."
+ ],
+ "check": [
+  {
+   "id": "nismia-q46",
+   "q": "Which comes first in a plan?",
+   "o": [
+    "Product selection",
+    "Protection and emergency fund",
+    "Tax saving",
+    "Derivatives"
+   ],
+   "a": 1,
+   "why": "Protect first, then invest."
+  },
+  {
+   "id": "nismia-q47",
+   "q": "Education goals 9 years away should shift to debt:",
+   "o": [
+    "Never",
+    "As the date nears",
+    "Right away",
+    "After the goal"
+   ],
+   "a": 1,
+   "why": "Reduce risk as the goal approaches."
+  },
+  {
+   "id": "nismia-q48",
+   "q": "Documentation should include:",
+   "o": [
+    "Rationale and risk disclosure",
+    "Nothing",
+    "Only the fee",
+    "Only NAV"
+   ],
+   "a": 0,
+   "why": "Rationale and disclosures are essential."
+  }
+ ],
+ "card_ids": [
+  "nismia-c16"
+ ],
+ "words": 177
+}

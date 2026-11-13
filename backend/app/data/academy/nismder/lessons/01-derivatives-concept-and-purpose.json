@@ -1,0 +1,70 @@
+{
+ "id": "nismder-01",
+ "title": "Derivatives: concept and purpose",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Basics",
+ "objectives": [
+  "Define a derivative and list its three uses.",
+  "Compare forwards with futures."
+ ],
+ "body_md": "A **derivative** is a contract whose value **derives from an underlying** such as a stock, an index, a commodity, a currency or an interest rate.\n\n## Uses\n\n1. **Hedging:** reduce risk on an existing position.\n2. **Speculation:** take a view with leverage.\n3. **Arbitrage:** lock in a riskless profit from mispricing.\n\n## Forwards vs futures\n\n| Feature | Forward | Future |\n|---|---|---|\n| Trading | OTC, customised | Exchange traded, standardised |\n| Counterparty risk | Yes | Removed by the clearing corporation |\n| Settlement | At maturity | Daily mark-to-market, then final settlement |\n| Liquidity | Low | High |\n\n## Participants\n\n**Hedgers**, **speculators**, **arbitrageurs**, plus market makers and clearing members.\n\n## Why leverage matters\n\nA small margin controls a large exposure, so both gains and losses are magnified.\n\n> **Exam tip:** Futures are exchange-traded forwards with daily settlement.",
+ "key_terms": [
+  "derivative",
+  "underlying",
+  "hedger",
+  "speculator",
+  "arbitrage"
+ ],
+ "example": "A farmer sells wheat forward to lock a price. A fund buys index futures to hedge a portfolio. A trader buys a stock future to bet on a rise.",
+ "say": [
+  "Derivatives can hedge or speculate; the leverage cuts both ways.",
+  "Exchange-traded contracts are guaranteed by the clearing corporation."
+ ],
+ "never": [
+  "Futures are risk free because they are on an exchange.",
+  "A small margin means a small risk."
+ ],
+ "check": [
+  {
+   "id": "nismder-q1",
+   "q": "A derivative's value is based on:",
+   "o": [
+    "Its own supply",
+    "An underlying asset",
+    "The broker",
+    "The exchange profit"
+   ],
+   "a": 1,
+   "why": "Derivatives derive their value from an underlying."
+  },
+  {
+   "id": "nismder-q2",
+   "q": "Which is a key difference of futures from forwards?",
+   "o": [
+    "Futures are OTC",
+    "Futures are standardised and exchange traded",
+    "Futures have no expiry",
+    "Futures need no margin"
+   ],
+   "a": 1,
+   "why": "Futures are standardised and cleared by the exchange."
+  },
+  {
+   "id": "nismder-q3",
+   "q": "Locking in a riskless profit from mispricing is:",
+   "o": [
+    "Hedging",
+    "Arbitrage",
+    "Speculation",
+    "Rebalancing"
+   ],
+   "a": 1,
+   "why": "Arbitrage exploits price differences."
+  }
+ ],
+ "card_ids": [
+  "nismder-c1"
+ ],
+ "words": 143
+}

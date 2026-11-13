@@ -1,0 +1,617 @@
+{
+ "id": "nismder",
+ "title": "NISM Equity Derivatives (Series VIII)",
+ "code": "Module 21 · NISM VIII",
+ "track": "NISM",
+ "blurb": "Exam prep for NISM-Series-VIII: futures, options, pricing, Greeks, strategies, margins, clearing, settlement, regulation and risk.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "Dealers, advisers, RMs and anyone preparing for NISM-Series-VIII"
+   ],
+   [
+    "Duration",
+    "About 100 minutes of lessons, then cards, checkpoints and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "None. Basic equity market knowledge helps"
+   ],
+   [
+    "Format",
+    "15 short lessons in 6 stages, each ending with three exam-style checks"
+   ]
+  ],
+  "outcomes": [
+   "Explain forwards, futures and options and compute their payoffs.",
+   "Price futures with cost of carry and explain what drives option premiums.",
+   "Use the Greeks and build common option strategies.",
+   "Describe margining, mark-to-market, clearing and settlement.",
+   "Apply the regulatory and risk-management rules for derivatives dealing."
+  ]
+ },
+ "sources": [
+  "NISM-Series-VIII: Equity Derivatives Certification Examination workbook (current edition)",
+  "SEBI circulars on derivatives segment: contract specifications, margins, position limits, risk disclosure",
+  "NSE and BSE derivatives contract specifications (lot sizes and expiries change: always check the current circulars)",
+  "Practice exam only: confirm the current NISM exam format before booking"
+ ],
+ "lessons": [
+  {
+   "id": "nismder-01",
+   "title": "Derivatives: concept and purpose",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Basics"
+  },
+  {
+   "id": "nismder-02",
+   "title": "Index and stock futures: mechanics",
+   "minutes": 7,
+   "level": "beginner",
+   "stage": "Futures"
+  },
+  {
+   "id": "nismder-03",
+   "title": "Pricing futures: cost of carry and basis",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Futures"
+  },
+  {
+   "id": "nismder-04",
+   "title": "Hedging with futures",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Futures"
+  },
+  {
+   "id": "nismder-05",
+   "title": "Open interest, rollover and market indicators",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Futures"
+  },
+  {
+   "id": "nismder-06",
+   "title": "Options: calls, puts and payoffs",
+   "minutes": 7,
+   "level": "beginner",
+   "stage": "Options"
+  },
+  {
+   "id": "nismder-07",
+   "title": "Option premium: intrinsic value, time value and moneyness",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Options"
+  },
+  {
+   "id": "nismder-08",
+   "title": "Option pricing models and put-call parity",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Options"
+  },
+  {
+   "id": "nismder-09",
+   "title": "The Greeks",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Options"
+  },
+  {
+   "id": "nismder-10",
+   "title": "Option strategies I: directional and income",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Strategies"
+  },
+  {
+   "id": "nismder-11",
+   "title": "Option strategies II: volatility plays",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Strategies"
+  },
+  {
+   "id": "nismder-12",
+   "title": "Trading system, clearing and settlement",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Market operations"
+  },
+  {
+   "id": "nismder-13",
+   "title": "Margining and risk management",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Market operations"
+  },
+  {
+   "id": "nismder-14",
+   "title": "Regulation, taxation and ethics in derivatives",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Regulation and risk"
+  },
+  {
+   "id": "nismder-15",
+   "title": "Worked cases and exam-style problems",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Regulation and risk"
+  }
+ ],
+ "cards": [
+  {
+   "id": "nismder-c1",
+   "q": "Three uses of derivatives?",
+   "a": [
+    "Hedging.",
+    "Speculation.",
+    "Arbitrage."
+   ]
+  },
+  {
+   "id": "nismder-c2",
+   "q": "Futures mechanics?",
+   "a": [
+    "Lot size and expiry.",
+    "Initial plus MTM margin.",
+    "Index cash settled."
+   ]
+  },
+  {
+   "id": "nismder-c3",
+   "q": "Futures price rule?",
+   "a": [
+    "F = S(1 + rt) minus dividends.",
+    "Basis converges to zero.",
+    "Contango: futures above spot."
+   ]
+  },
+  {
+   "id": "nismder-c4",
+   "q": "Hedge ratio?",
+   "a": [
+    "N = β × V ÷ (F × lot).",
+    "Sell futures to hedge a long portfolio.",
+    "Basis risk remains."
+   ]
+  },
+  {
+   "id": "nismder-c5",
+   "q": "Price and OI reading?",
+   "a": [
+    "Up, up: fresh longs.",
+    "Up, down: short covering.",
+    "Down, up: fresh shorts; down, down: unwinding."
+   ]
+  },
+  {
+   "id": "nismder-c6",
+   "q": "Call/put payoffs?",
+   "a": [
+    "Call buyer: unlimited gain.",
+    "Put buyer: gain as price falls.",
+    "Sellers: premium is the max gain."
+   ]
+  },
+  {
+   "id": "nismder-c7",
+   "q": "Premium formula?",
+   "a": [
+    "Intrinsic + time value.",
+    "OTM: time value only.",
+    "Volatility up, premium up."
+   ]
+  },
+  {
+   "id": "nismder-c8",
+   "q": "Black-Scholes inputs?",
+   "a": [
+    "Spot, strike, time.",
+    "Rate, dividends.",
+    "Volatility (estimated)."
+   ]
+  },
+  {
+   "id": "nismder-c9",
+   "q": "Greeks in one line each?",
+   "a": [
+    "Delta: price.",
+    "Gamma: delta change; theta: time.",
+    "Vega: volatility; rho: rates."
+   ]
+  },
+  {
+   "id": "nismder-c10",
+   "q": "Directional strategies?",
+   "a": [
+    "Protective put: insurance.",
+    "Covered call: income, cap.",
+    "Spreads: cheaper, capped."
+   ]
+  },
+  {
+   "id": "nismder-c11",
+   "q": "Volatility strategies?",
+   "a": [
+    "Long straddle: big move.",
+    "Strangle: cheaper, wider.",
+    "Short straddle: range, unlimited risk."
+   ]
+  },
+  {
+   "id": "nismder-c12",
+   "q": "Clearing flow?",
+   "a": [
+    "Order, match.",
+    "Novation by clearing corporation.",
+    "Daily MTM, final settlement."
+   ]
+  },
+  {
+   "id": "nismder-c13",
+   "q": "Margin parts?",
+   "a": [
+    "SPAN plus exposure.",
+    "Extreme loss, MTM.",
+    "Premium for buyers."
+   ]
+  },
+  {
+   "id": "nismder-c14",
+   "q": "Compliance basics?",
+   "a": [
+    "Risk disclosure and KYC.",
+    "No assured returns.",
+    "Tax: non-speculative business income."
+   ]
+  },
+  {
+   "id": "nismder-c15",
+   "q": "Problem checklist?",
+   "a": [
+    "Instrument and direction.",
+    "Lot size and units.",
+    "Signs and breakeven."
+   ]
+  }
+ ],
+ "final": {
+  "id": "nismder-final",
+  "title": "NISM Equity Derivatives (Series VIII) final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "nismder-q1",
+    "q": "A derivative's value is based on:",
+    "o": [
+     "Its own supply",
+     "An underlying asset",
+     "The broker",
+     "The exchange profit"
+    ],
+    "a": 1,
+    "why": "Derivatives derive their value from an underlying.",
+    "sec": "Basics"
+   },
+   {
+    "id": "nismder-q2",
+    "q": "Which is a key difference of futures from forwards?",
+    "o": [
+     "Futures are OTC",
+     "Futures are standardised and exchange traded",
+     "Futures have no expiry",
+     "Futures need no margin"
+    ],
+    "a": 1,
+    "why": "Futures are standardised and cleared by the exchange.",
+    "sec": "Basics"
+   },
+   {
+    "id": "nismder-q4",
+    "q": "Long future bought at 500, expiry price 520, lot 100. Profit is:",
+    "o": [
+     "₹2,000",
+     "₹52,000",
+     "₹200",
+     "₹20"
+    ],
+    "a": 0,
+    "why": "20 × 100 = ₹2,000.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q5",
+    "q": "MTM stands for:",
+    "o": [
+     "Mark-to-market",
+     "Margin to maturity",
+     "Money transfer mode",
+     "Market trading method"
+    ],
+    "a": 0,
+    "why": "Daily settlement of gains and losses.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q7",
+    "q": "Spot 100, r 8%, 3 months, no dividend. Fair futures price is:",
+    "o": [
+     "100",
+     "102",
+     "108",
+     "98"
+    ],
+    "a": 1,
+    "why": "100 × (1 + 0.08 × 0.25) = 102.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q8",
+    "q": "Futures trading above spot is called:",
+    "o": [
+     "Backwardation",
+     "Contango",
+     "Basis zero",
+     "Parity"
+    ],
+    "a": 1,
+    "why": "Contango means futures above spot.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q10",
+    "q": "To hedge a share portfolio against a fall, one should:",
+    "o": [
+     "Buy index futures",
+     "Sell index futures",
+     "Buy more shares",
+     "Do nothing"
+    ],
+    "a": 1,
+    "why": "A short hedge offsets losses.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q11",
+    "q": "Contracts to hedge = β × portfolio value ÷:",
+    "o": [
+     "Lot size only",
+     "Futures price × lot size",
+     "Spot price",
+     "Margin"
+    ],
+    "a": 1,
+    "why": "Divide by the notional value of one contract.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q13",
+    "q": "Price up and OI up suggests:",
+    "o": [
+     "Short covering",
+     "Fresh long positions",
+     "Long unwinding",
+     "No change"
+    ],
+    "a": 1,
+    "why": "New money is entering on the long side.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q14",
+    "q": "PCR is computed as:",
+    "o": [
+     "Call OI ÷ put OI",
+     "Put OI ÷ call OI",
+     "Put price ÷ call price",
+     "Volume ÷ OI"
+    ],
+    "a": 1,
+    "why": "Put-call ratio = puts divided by calls.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q16",
+    "q": "Long call, K = 100, premium 5, spot 112 at expiry. Profit per unit is:",
+    "o": [
+     "12",
+     "7",
+     "5",
+     "17"
+    ],
+    "a": 1,
+    "why": "12 − 5 = 7.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q17",
+    "q": "Maximum loss for a call buyer is:",
+    "o": [
+     "Unlimited",
+     "The premium",
+     "The strike",
+     "Zero"
+    ],
+    "a": 1,
+    "why": "A buyer cannot lose more than the premium.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q19",
+    "q": "Call K = 100, spot 108, premium 11. Time value is:",
+    "o": [
+     "8",
+     "3",
+     "11",
+     "0"
+    ],
+    "a": 1,
+    "why": "11 − 8 = 3.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q20",
+    "q": "A call is ITM when:",
+    "o": [
+     "S > K",
+     "S < K",
+     "S = 0",
+     "K = 0"
+    ],
+    "a": 0,
+    "why": "A call is in the money when spot exceeds strike.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q22",
+    "q": "Put-call parity (European, no dividends) is:",
+    "o": [
+     "C − P = S − PV(K)",
+     "C + P = S",
+     "C × P = K",
+     "C = P"
+    ],
+    "a": 0,
+    "why": "Call minus put equals spot minus the present value of the strike.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q23",
+    "q": "Which Black-Scholes input is not directly observed?",
+    "o": [
+     "Spot",
+     "Strike",
+     "Volatility",
+     "Time"
+    ],
+    "a": 2,
+    "why": "Volatility must be estimated.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q25",
+    "q": "A long call's delta lies between:",
+    "o": [
+     "−1 and 0",
+     "0 and +1",
+     "1 and 2",
+     "−2 and 2"
+    ],
+    "a": 1,
+    "why": "Call delta ranges from 0 to +1.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q26",
+    "q": "Time decay is measured by:",
+    "o": [
+     "Delta",
+     "Gamma",
+     "Theta",
+     "Vega"
+    ],
+    "a": 2,
+    "why": "Theta is the sensitivity to time.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q28",
+    "q": "Bull call spread: buy 100 call @8, sell 110 call @3. Maximum loss is:",
+    "o": [
+     "5",
+     "8",
+     "3",
+     "10"
+    ],
+    "a": 0,
+    "why": "Net debit 8 − 3 = 5.",
+    "sec": "Strategies"
+   },
+   {
+    "id": "nismder-q29",
+    "q": "A protective put is:",
+    "o": [
+     "Own stock and buy a put",
+     "Sell stock and sell a put",
+     "Buy two calls",
+     "Sell futures"
+    ],
+    "a": 0,
+    "why": "It insures a holding.",
+    "sec": "Strategies"
+   },
+   {
+    "id": "nismder-q31",
+    "q": "Long straddle K = 100, total premium 11. Upper breakeven is:",
+    "o": [
+     "100",
+     "111",
+     "89",
+     "122"
+    ],
+    "a": 1,
+    "why": "100 + 11 = 111.",
+    "sec": "Strategies"
+   },
+   {
+    "id": "nismder-q34",
+    "q": "Novation means the clearing corporation:",
+    "o": [
+     "Becomes counterparty to both sides",
+     "Sets prices",
+     "Lends shares",
+     "Pays dividends"
+    ],
+    "a": 0,
+    "why": "It guarantees trades by becoming the counterparty.",
+    "sec": "Market operations"
+   },
+   {
+    "id": "nismder-q37",
+    "q": "SPAN margin estimates:",
+    "o": [
+     "Largest likely one-day loss",
+     "Brokerage",
+     "Tax",
+     "Premium"
+    ],
+    "a": 0,
+    "why": "SPAN simulates risk scenarios to find the worst one-day loss.",
+    "sec": "Market operations"
+   },
+   {
+    "id": "nismder-q40",
+    "q": "F&O income is generally taxed as:",
+    "o": [
+     "Capital gains only",
+     "Non-speculative business income",
+     "Salary",
+     "Exempt"
+    ],
+    "a": 1,
+    "why": "It is typically business income, non-speculative.",
+    "sec": "Regulation and risk"
+   },
+   {
+    "id": "nismder-q43",
+    "q": "Buy 2 lots (lot 50) at 400, close 410. Profit is:",
+    "o": [
+     "₹500",
+     "₹1,000",
+     "₹2,000",
+     "₹100"
+    ],
+    "a": 1,
+    "why": "10 × 50 × 2 = ₹1,000.",
+    "sec": "Regulation and risk"
+   }
+  ]
+ },
+ "role_play": null
+}

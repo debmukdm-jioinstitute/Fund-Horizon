@@ -1,0 +1,70 @@
+{
+ "id": "nismia-05",
+ "title": "Time value of money and financial maths",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Advice process",
+ "objectives": [
+  "Compute FV, PV, annuity and EMI-style problems.",
+  "Use real return and the rule of 72."
+ ],
+ "body_md": "## Core formulas\n\n- **FV = PV × (1 + r)^n**; **PV = FV ÷ (1 + r)^n**.\n- **Annuity FV** (SIP, end of period): P × [((1 + r)^n − 1) ÷ r].\n- **EMI** = P × r × (1 + r)^n ÷ ((1 + r)^n − 1) (r per period).\n- **Rule of 72:** doubling time ≈ 72 ÷ rate %.\n- **Real return** = (1 + nominal) ÷ (1 + inflation) − 1.\n- **Effective annual rate** = (1 + r/m)^m − 1.\n\n## Examples\n\n| Problem | Answer |\n|---|---|\n| ₹1 lakh at 10% for 3 years | ₹1.331 lakh |\n| ₹12 lakh needed in 5 years at 10% (lump sum today) | PV = 12 ÷ 1.6105 ≈ ₹7.45 lakh |\n| Real return at 10% nominal, 6% inflation | 1.10 ÷ 1.06 − 1 ≈ 3.8% |\n\n## Goal funding\n\nInflate the goal cost to the goal date, then compute the required lump sum or monthly SIP.\n\n> **Exam tip:** Do the inflation step first; the number must be in future rupees.",
+ "key_terms": [
+  "future value",
+  "present value",
+  "annuity",
+  "EMI",
+  "real return"
+ ],
+ "example": "A degree costs ₹20 lakh today and education inflation is 8%. In 10 years it costs 20 × 1.08^10 ≈ ₹43.2 lakh. The SIP needed is computed against that number.",
+ "say": [
+  "Your goal is ₹43 lakh in future rupees, not ₹20 lakh.",
+  "At this return, the monthly SIP required is shown here."
+ ],
+ "never": [
+  "Ignore inflation, it is small.",
+  "Return is guaranteed, so plan to the rupee."
+ ],
+ "check": [
+  {
+   "id": "nismia-q13",
+   "q": "₹1 lakh at 10% for 3 years becomes:",
+   "o": [
+    "₹1.30 lakh",
+    "₹1.331 lakh",
+    "₹1.5 lakh",
+    "₹1.1 lakh"
+   ],
+   "a": 1,
+   "why": "1 × 1.1³ = 1.331."
+  },
+  {
+   "id": "nismia-q14",
+   "q": "Real return when nominal is 10% and inflation 6% is about:",
+   "o": [
+    "16%",
+    "4%",
+    "3.8%",
+    "6%"
+   ],
+   "a": 2,
+   "why": "1.10 ÷ 1.06 − 1 ≈ 3.8%."
+  },
+  {
+   "id": "nismia-q15",
+   "q": "A goal cost must first be:",
+   "o": [
+    "Ignored",
+    "Inflated to the goal date",
+    "Halved",
+    "Converted to gold"
+   ],
+   "a": 1,
+   "why": "Plan in future rupees."
+  }
+ ],
+ "card_ids": [
+  "nismia-c5"
+ ],
+ "words": 181
+}

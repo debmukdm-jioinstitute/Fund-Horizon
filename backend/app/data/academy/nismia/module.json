@@ -1,0 +1,660 @@
+{
+ "id": "nismia",
+ "title": "NISM Investment Adviser (Series X-A and X-B)",
+ "code": "Module 20 · NISM X-A/X-B",
+ "track": "NISM",
+ "blurb": "Exam prep for the Investment Adviser certification: SEBI IA rules, fee-only advice, risk profiling, financial planning, tax, insurance, retirement and products.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "Aspiring SEBI-registered investment advisers and anyone giving personalised, fee-based advice"
+   ],
+   [
+    "Duration",
+    "About 100 minutes of lessons, then cards, checkpoints and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "None. Module 19 (NISM V-A) helps with product basics"
+   ],
+   [
+    "Format",
+    "16 short lessons in 4 stages, each ending with three exam-style checks"
+   ]
+  ],
+  "outcomes": [
+   "Explain who must register as an investment adviser and the fee-only rule.",
+   "Run client onboarding, risk profiling and suitability with proper records.",
+   "Build a goal-based plan using time value of money, insurance, tax and retirement logic.",
+   "Compare equity, debt, mutual fund, PMS, AIF and REIT options for a client.",
+   "Handle conflicts, segregation and disclosures correctly."
+  ]
+ },
+ "sources": [
+  "SEBI (Investment Advisers) Regulations, 2013 and later amendments and circulars (check the current text)",
+  "NISM-Series-X-A and X-B: Investment Adviser (Level 1 and Level 2) workbooks (current editions)",
+  "Income-tax Act provisions: rates and limits change, verify before advising",
+  "IRDAI rules for insurance products",
+  "Practice exam only: confirm the current NISM exam format and eligibility before booking"
+ ],
+ "lessons": [
+  {
+   "id": "nismia-01",
+   "title": "Who is an investment adviser",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismia-02",
+   "title": "IA regulations: registration, qualification and fees",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismia-03",
+   "title": "Segregation, conflicts and disclosures",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismia-04",
+   "title": "Client onboarding, risk profiling and suitability",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Advice process"
+  },
+  {
+   "id": "nismia-05",
+   "title": "Time value of money and financial maths",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Advice process"
+  },
+  {
+   "id": "nismia-06",
+   "title": "Insurance planning",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Advice process"
+  },
+  {
+   "id": "nismia-07",
+   "title": "Tax planning basics",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Advice process"
+  },
+  {
+   "id": "nismia-08",
+   "title": "Retirement and estate planning",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Advice process"
+  },
+  {
+   "id": "nismia-09",
+   "title": "Asset allocation and portfolio construction",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Products and portfolio"
+  },
+  {
+   "id": "nismia-10",
+   "title": "Equity and mutual fund advice",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Products and portfolio"
+  },
+  {
+   "id": "nismia-11",
+   "title": "Debt, bonds and fixed-income advice",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Products and portfolio"
+  },
+  {
+   "id": "nismia-12",
+   "title": "PMS, AIF, REIT, InvIT and other products",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Products and portfolio"
+  },
+  {
+   "id": "nismia-13",
+   "title": "Derivatives, commodities and gold for advisers",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Products and portfolio"
+  },
+  {
+   "id": "nismia-14",
+   "title": "Behavioural finance and client management",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Ethics and review"
+  },
+  {
+   "id": "nismia-15",
+   "title": "Ethics, record keeping and grievance",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Ethics and review"
+  },
+  {
+   "id": "nismia-16",
+   "title": "Case lab: building and defending a plan",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Ethics and review"
+  }
+ ],
+ "cards": [
+  {
+   "id": "nismia-c1",
+   "q": "IA in one line?",
+   "a": [
+    "Personalised, fee-only, non-discretionary.",
+    "Registered with SEBI.",
+    "No product commissions."
+   ]
+  },
+  {
+   "id": "nismia-c2",
+   "q": "IA fee rules?",
+   "a": [
+    "Fixed or AUA, within caps.",
+    "Client pays, traceable mode.",
+    "Pro rata refund; records five years."
+   ]
+  },
+  {
+   "id": "nismia-c3",
+   "q": "Segregation rule?",
+   "a": [
+    "No distribution to advisory clients.",
+    "Same for family and associates.",
+    "Direct plans, no provider payments."
+   ]
+  },
+  {
+   "id": "nismia-c4",
+   "q": "Three risk questions?",
+   "a": [
+    "Capacity: can bear.",
+    "Tolerance: will bear.",
+    "Required: must earn."
+   ]
+  },
+  {
+   "id": "nismia-c5",
+   "q": "Goal maths steps?",
+   "a": [
+    "Inflate the goal.",
+    "Choose the return.",
+    "Solve for lump sum or SIP."
+   ]
+  },
+  {
+   "id": "nismia-c6",
+   "q": "Insurance first?",
+   "a": [
+    "Term for life.",
+    "Base plus super top-up for health.",
+    "Keep investing separate."
+   ]
+  },
+  {
+   "id": "nismia-c7",
+   "q": "Tax advice rules?",
+   "a": [
+    "Goal first, tax second.",
+    "Compare regimes yearly.",
+    "Verify rates."
+   ]
+  },
+  {
+   "id": "nismia-c8",
+   "q": "Retirement steps?",
+   "a": [
+    "Expense at retirement.",
+    "Corpus and duration.",
+    "Income sources, risks, estate."
+   ]
+  },
+  {
+   "id": "nismia-c9",
+   "q": "Rebalance how?",
+   "a": [
+    "Calendar or threshold.",
+    "Use new money first.",
+    "Check tax and loads."
+   ]
+  },
+  {
+   "id": "nismia-c10",
+   "q": "Fund checks?",
+   "a": [
+    "Category fit.",
+    "Consistency and risk-adjusted return.",
+    "Cost and overlap."
+   ]
+  },
+  {
+   "id": "nismia-c11",
+   "q": "Debt checks?",
+   "a": [
+    "Rating before yield.",
+    "Duration for rate risk.",
+    "Match maturity to need."
+   ]
+  },
+  {
+   "id": "nismia-c12",
+   "q": "Pooled products?",
+   "a": [
+    "PMS: segregated portfolio.",
+    "AIF: three categories.",
+    "REIT/InvIT: listed, distributions."
+   ]
+  },
+  {
+   "id": "nismia-c13",
+   "q": "High-risk guardrails?",
+   "a": [
+    "Check profile and experience.",
+    "Written risk disclosure.",
+    "Small satellite only."
+   ]
+  },
+  {
+   "id": "nismia-c14",
+   "q": "Common biases?",
+   "a": [
+    "Loss aversion.",
+    "Overconfidence and herd.",
+    "Recency, anchoring, confirmation."
+   ]
+  },
+  {
+   "id": "nismia-c15",
+   "q": "Ethics checks?",
+   "a": [
+    "No assured returns.",
+    "Disclose conflicts and fees.",
+    "Records five years; SCORES route."
+   ]
+  },
+  {
+   "id": "nismia-c16",
+   "q": "Plan order?",
+   "a": [
+    "Onboard, protect.",
+    "Emergency fund, allocate.",
+    "Select, tax, document, review."
+   ]
+  }
+ ],
+ "final": {
+  "id": "nismia-final",
+  "title": "NISM Investment Adviser (Series X-A and X-B) final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "nismia-q1",
+    "q": "Personalised advice on securities for a fee requires registration as:",
+    "o": [
+     "Distributor",
+     "Investment adviser",
+     "Merchant banker",
+     "Custodian"
+    ],
+    "a": 1,
+    "why": "Personalised advice for consideration falls under the IA regulations.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q2",
+    "q": "Investment adviser advice is:",
+    "o": [
+     "Discretionary",
+     "Non-discretionary",
+     "Free",
+     "Anonymous"
+    ],
+    "a": 1,
+    "why": "The client decides and executes.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q4",
+    "q": "Which fee modes are available to an IA?",
+    "o": [
+     "Fixed fee and AUA-based fee",
+     "Only commission",
+     "Only performance bonus",
+     "Only brokerage"
+    ],
+    "a": 0,
+    "why": "Fixed fee or a percentage of assets under advice, both within caps.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q5",
+    "q": "An IA should keep records for at least:",
+    "o": [
+     "6 months",
+     "1 year",
+     "Five years",
+     "Not required"
+    ],
+    "a": 2,
+    "why": "Five years is the minimum record retention.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q7",
+    "q": "An individual IA offering distribution to advisory clients is:",
+    "o": [
+     "Permitted",
+     "Prohibited",
+     "Permitted with a disclaimer",
+     "Required"
+    ],
+    "a": 1,
+    "why": "Advice and distribution must be separate.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q8",
+    "q": "When advising on mutual funds, an IA should prefer:",
+    "o": [
+     "Regular plans",
+     "Direct plans",
+     "NFOs only",
+     "Closed-ended funds only"
+    ],
+    "a": 1,
+    "why": "Direct plans carry no distributor commission.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q10",
+    "q": "Risk capacity is:",
+    "o": [
+     "Willingness to take risk",
+     "Ability to bear loss",
+     "Return needed",
+     "Fund rating"
+    ],
+    "a": 1,
+    "why": "Capacity is the ability to absorb losses.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q11",
+    "q": "When capacity is lower than tolerance, advice should follow:",
+    "o": [
+     "Tolerance",
+     "Capacity",
+     "The higher",
+     "Neither"
+    ],
+    "a": 1,
+    "why": "Use the lower of the two.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q13",
+    "q": "₹1 lakh at 10% for 3 years becomes:",
+    "o": [
+     "₹1.30 lakh",
+     "₹1.331 lakh",
+     "₹1.5 lakh",
+     "₹1.1 lakh"
+    ],
+    "a": 1,
+    "why": "1 × 1.1³ = 1.331.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q14",
+    "q": "Real return when nominal is 10% and inflation 6% is about:",
+    "o": [
+     "16%",
+     "4%",
+     "3.8%",
+     "6%"
+    ],
+    "a": 2,
+    "why": "1.10 ÷ 1.06 − 1 ≈ 3.8%.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q16",
+    "q": "The most cost-efficient life cover for income replacement is:",
+    "o": [
+     "Endowment",
+     "Term insurance",
+     "ULIP",
+     "Money-back"
+    ],
+    "a": 1,
+    "why": "Term insurance is pure protection at the lowest cost.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q17",
+    "q": "Human life value is based on:",
+    "o": [
+     "Present value of future income",
+     "Number of children",
+     "Home value",
+     "Fund NAV"
+    ],
+    "a": 0,
+    "why": "HLV discounts the income the family depends on.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q19",
+    "q": "Under the old regime, deductions include:",
+    "o": [
+     "Section 80C and 80D",
+     "None",
+     "Only HRA",
+     "Only NPS"
+    ],
+    "a": 0,
+    "why": "The old regime allows deductions such as 80C and 80D.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q20",
+    "q": "Tax-saving investments should be chosen:",
+    "o": [
+     "Only for the deduction",
+     "For the goal first, then tax",
+     "At random",
+     "By commission"
+    ],
+    "a": 1,
+    "why": "Goal fit comes first.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q22",
+    "q": "A 4% withdrawal rate on ₹8 lakh annual need gives a corpus of:",
+    "o": [
+     "₹32 lakh",
+     "₹2 crore",
+     "₹20 lakh",
+     "₹80 lakh"
+    ],
+    "a": 1,
+    "why": "8 ÷ 0.04 = 200 lakh = ₹2 crore.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q23",
+    "q": "Sequence risk is:",
+    "o": [
+     "Poor returns early in retirement withdrawals",
+     "A tax",
+     "A KYC error",
+     "A fee"
+    ],
+    "a": 0,
+    "why": "Early losses while withdrawing hurt more.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q25",
+    "q": "A long-term target mix is:",
+    "o": [
+     "Tactical allocation",
+     "Strategic allocation",
+     "Random",
+     "Hedging"
+    ],
+    "a": 1,
+    "why": "Strategic allocation is the long-term policy mix.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q26",
+    "q": "Diversification mainly reduces:",
+    "o": [
+     "Systematic risk",
+     "Unsystematic risk",
+     "Inflation",
+     "Tax"
+    ],
+    "a": 1,
+    "why": "Specific risk can be diversified away.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q28",
+    "q": "Overlap between funds means:",
+    "o": [
+     "Shared holdings",
+     "Shared AMC",
+     "Shared NAV",
+     "Shared tax"
+    ],
+    "a": 0,
+    "why": "Overlap is the same stocks held in several funds.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q29",
+    "q": "A low tracking error is preferred for:",
+    "o": [
+     "Active funds",
+     "Index funds and ETFs",
+     "Liquid funds",
+     "Credit funds"
+    ],
+    "a": 1,
+    "why": "Index products should follow their index closely.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q31",
+    "q": "When yields rise, bond prices:",
+    "o": [
+     "Rise",
+     "Fall",
+     "Stay",
+     "Double"
+    ],
+    "a": 1,
+    "why": "Prices move opposite to yields.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q32",
+    "q": "A credit rating measures:",
+    "o": [
+     "Interest rate risk",
+     "Default risk",
+     "Tax",
+     "Liquidity only"
+    ],
+    "a": 1,
+    "why": "Ratings assess the likelihood of default.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q34",
+    "q": "The PMS minimum investment (per current rules) is:",
+    "o": [
+     "₹5 lakh",
+     "₹10 lakh",
+     "₹50 lakh",
+     "₹1 crore"
+    ],
+    "a": 2,
+    "why": "The PMS minimum is ₹50 lakh.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q37",
+    "q": "Using options to protect a portfolio is:",
+    "o": [
+     "Speculation",
+     "Hedging",
+     "Arbitrage only",
+     "Illegal"
+    ],
+    "a": 1,
+    "why": "Protection against loss is hedging.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q40",
+    "q": "Selling in a panic after a fall is linked to:",
+    "o": [
+     "Loss aversion",
+     "Diversification",
+     "Inflation",
+     "Alpha"
+    ],
+    "a": 0,
+    "why": "Loss aversion makes losses feel larger than gains.",
+    "sec": "Ethics and review"
+   },
+   {
+    "id": "nismia-q43",
+    "q": "Which is prohibited in an IA's advertising?",
+    "o": [
+     "Risk statements",
+     "Guaranteed returns",
+     "Factual information",
+     "Fee disclosure"
+    ],
+    "a": 1,
+    "why": "Guaranteed returns are prohibited.",
+    "sec": "Ethics and review"
+   },
+   {
+    "id": "nismia-q46",
+    "q": "Which comes first in a plan?",
+    "o": [
+     "Product selection",
+     "Protection and emergency fund",
+     "Tax saving",
+     "Derivatives"
+    ],
+    "a": 1,
+    "why": "Protect first, then invest.",
+    "sec": "Ethics and review"
+   }
+  ]
+ },
+ "role_play": null
+}

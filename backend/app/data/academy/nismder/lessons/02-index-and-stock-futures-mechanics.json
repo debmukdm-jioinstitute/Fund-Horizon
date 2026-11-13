@@ -1,0 +1,70 @@
+{
+ "id": "nismder-02",
+ "title": "Index and stock futures: mechanics",
+ "minutes": 7,
+ "level": "beginner",
+ "stage": "Futures",
+ "objectives": [
+  "Describe contract specifications and the long/short payoff.",
+  "Explain mark-to-market and margin."
+ ],
+ "body_md": "## Contract basics\n\n- Each contract has a **lot size**, an **expiry date**, a **tick size** and an underlying. Lot sizes and expiries are revised by the exchanges: check current circulars.\n- A **long** future profits when the price rises; a **short** when it falls.\n- **Payoff at expiry (long)** = (spot at expiry − entry price) × lot size.\n\n## Margins\n\n| Margin | Meaning |\n|---|---|\n| **Initial margin** | Collateral to open a position, based on risk (SPAN plus exposure) |\n| **Mark-to-market (MTM) margin** | Daily settlement of gains and losses |\n| **Margin call** | Demand to top up if the balance falls |\n\n## Example\n\nBuy 1 lot (lot = 50) at 20,000. The close is 20,100: MTM gain = 100 × 50 = ₹5,000 credited. If the next close is 19,950, loss = 150 × 50 = ₹7,500 debited.\n\n## Settlement\n\nIndex futures settle in **cash**; stock futures are **physically settled** under the current framework (verify).\n\n> **Exam tip:** Futures P&L is realised every day through MTM.",
+ "key_terms": [
+  "lot size",
+  "initial margin",
+  "mark-to-market",
+  "SPAN",
+  "long and short"
+ ],
+ "example": "Long 2 lots (lot = 25) at ₹1,000. Expiry price ₹1,040. Profit = 40 × 25 × 2 = ₹2,000.",
+ "say": [
+  "Your losses are collected daily; keep a margin buffer.",
+  "Index futures settle in cash."
+ ],
+ "never": [
+  "You only lose the margin.",
+  "Gains and losses are settled only at expiry."
+ ],
+ "check": [
+  {
+   "id": "nismder-q4",
+   "q": "Long future bought at 500, expiry price 520, lot 100. Profit is:",
+   "o": [
+    "₹2,000",
+    "₹52,000",
+    "₹200",
+    "₹20"
+   ],
+   "a": 0,
+   "why": "20 × 100 = ₹2,000."
+  },
+  {
+   "id": "nismder-q5",
+   "q": "MTM stands for:",
+   "o": [
+    "Mark-to-market",
+    "Margin to maturity",
+    "Money transfer mode",
+    "Market trading method"
+   ],
+   "a": 0,
+   "why": "Daily settlement of gains and losses."
+  },
+  {
+   "id": "nismder-q6",
+   "q": "A margin call is a demand to:",
+   "o": [
+    "Close the account",
+    "Top up margin",
+    "Pay tax",
+    "Change the lot"
+   ],
+   "a": 1,
+   "why": "The member must add funds when margin falls."
+  }
+ ],
+ "card_ids": [
+  "nismder-c2"
+ ],
+ "words": 174
+}

@@ -1,0 +1,70 @@
+{
+ "id": "nismia-10",
+ "title": "Equity and mutual fund advice",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Products and portfolio",
+ "objectives": [
+  "Evaluate equity funds and direct stocks for a client.",
+  "Apply selection criteria and costs."
+ ],
+ "body_md": "## Direct equity or funds\n\nDirect stocks need time and skill; **mutual funds** give diversification and professional management. For most clients, funds form the core.\n\n## Fund selection\n\n- **Category** fit to the goal and horizon.\n- **Consistency** (rolling returns), risk-adjusted measures (Sharpe, alpha), downside capture.\n- **Cost** (TER), **portfolio quality**, turnover, manager tenure and process.\n- **Overlap** with existing holdings.\n- Prefer **Direct plans** in advisory.\n\n## Index funds and ETFs\n\nLow cost and tracking error; good for the core when active funds struggle to beat the benchmark after costs.\n\n## Valuation inputs\n\n- **P/E, P/B, EV/EBITDA**, earnings growth and ROE.\n- Compare with history and peers; valuation sets the **margin of safety**.\n\n> **Exam tip:** Cost and consistency beat last year's return.",
+ "key_terms": [
+  "TER",
+  "tracking error",
+  "rolling returns",
+  "overlap",
+  "margin of safety"
+ ],
+ "example": "A client holds three large-cap funds with 70% of the same stocks. Adding a fourth adds little. Replace one with a mid-cap or index fund to cut overlap.",
+ "say": [
+  "We pick funds on category, consistency, cost and overlap.",
+  "Past one-year return is only one data point."
+ ],
+ "never": [
+  "Buy the top performer of last year.",
+  "More funds always mean more diversification."
+ ],
+ "check": [
+  {
+   "id": "nismia-q28",
+   "q": "Overlap between funds means:",
+   "o": [
+    "Shared holdings",
+    "Shared AMC",
+    "Shared NAV",
+    "Shared tax"
+   ],
+   "a": 0,
+   "why": "Overlap is the same stocks held in several funds."
+  },
+  {
+   "id": "nismia-q29",
+   "q": "A low tracking error is preferred for:",
+   "o": [
+    "Active funds",
+    "Index funds and ETFs",
+    "Liquid funds",
+    "Credit funds"
+   ],
+   "a": 1,
+   "why": "Index products should follow their index closely."
+  },
+  {
+   "id": "nismia-q30",
+   "q": "An adviser should prefer which plan?",
+   "o": [
+    "Regular",
+    "Direct",
+    "IDCW only",
+    "Any"
+   ],
+   "a": 1,
+   "why": "Direct plans carry no commission."
+  }
+ ],
+ "card_ids": [
+  "nismia-c10"
+ ],
+ "words": 124
+}

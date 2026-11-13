@@ -108,6 +108,18 @@
   "hint": "Pass the NISM MF Distributor final quiz."
  },
  {
+  "id": "grad_nismia",
+  "name": "Module Graduate (NISM Investment Adviser)",
+  "icon": "🎓",
+  "hint": "Pass the NISM Investment Adviser final quiz."
+ },
+ {
+  "id": "grad_nismder",
+  "name": "Module Graduate (NISM Equity Derivatives)",
+  "icon": "🎓",
+  "hint": "Pass the NISM Equity Derivatives final quiz."
+ },
+ {
   "id": "streak_7",
   "name": "7-Day Streak",
   "icon": "🔥",

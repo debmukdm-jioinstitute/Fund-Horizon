@@ -1,0 +1,71 @@
+{
+ "id": "nismder-07",
+ "title": "Option premium: intrinsic value, time value and moneyness",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Options",
+ "objectives": [
+  "Split premium into intrinsic and time value.",
+  "Classify ITM, ATM and OTM."
+ ],
+ "body_md": "**Premium = intrinsic value + time value.**\n\n- **Intrinsic value (call)** = max(S − K, 0); **(put)** = max(K − S, 0).\n- **Time value** = premium − intrinsic value; it decays to zero at expiry.\n\n## Moneyness\n\n| State | Call | Put |\n|---|---|---|\n| **ITM** (in the money) | S > K | S < K |\n| **ATM** (at the money) | S ≈ K | S ≈ K |\n| **OTM** (out of the money) | S < K | S > K |\n\n## What raises premium\n\n| Factor | Call | Put |\n|---|---|---|\n| Spot price up | Up | Down |\n| Strike higher | Down | Up |\n| **Volatility up** | Up | Up |\n| **Time to expiry longer** | Up | Up |\n| Interest rate up | Up (slightly) | Down |\n| Dividends expected | Down | Up |\n\nExample: call K = 100, spot 108, premium 11: intrinsic 8, time value 3.\n\n> **Exam tip:** OTM options have only time value.",
+ "key_terms": [
+  "intrinsic value",
+  "time value",
+  "ITM",
+  "ATM",
+  "OTM",
+  "volatility"
+ ],
+ "example": "Put K = 50, spot 46, premium 6.5. Intrinsic = 4, time value = 2.5. The put is in the money.",
+ "say": [
+  "Time value decays every day; buyers fight the clock.",
+  "Higher volatility makes both calls and puts more expensive."
+ ],
+ "never": [
+  "OTM options have intrinsic value.",
+  "Time value rises as expiry nears."
+ ],
+ "check": [
+  {
+   "id": "nismder-q19",
+   "q": "Call K = 100, spot 108, premium 11. Time value is:",
+   "o": [
+    "8",
+    "3",
+    "11",
+    "0"
+   ],
+   "a": 1,
+   "why": "11 − 8 = 3."
+  },
+  {
+   "id": "nismder-q20",
+   "q": "A call is ITM when:",
+   "o": [
+    "S > K",
+    "S < K",
+    "S = 0",
+    "K = 0"
+   ],
+   "a": 0,
+   "why": "A call is in the money when spot exceeds strike."
+  },
+  {
+   "id": "nismder-q21",
+   "q": "Higher volatility generally makes option premiums:",
+   "o": [
+    "Lower",
+    "Higher",
+    "Unchanged",
+    "Zero"
+   ],
+   "a": 1,
+   "why": "More volatility raises the chance of a big move."
+  }
+ ],
+ "card_ids": [
+  "nismder-c7"
+ ],
+ "words": 177
+}

@@ -1,0 +1,70 @@
+{
+ "id": "nismia-07",
+ "title": "Tax planning basics",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Advice process",
+ "objectives": [
+  "Explain capital gains by asset type and the old vs new regime choice.",
+  "Use tax-efficient instruments sensibly."
+ ],
+ "body_md": "Tax rules change by year: **verify rates and limits before advising.**\n\n## Income heads\n\nSalary, house property, business or profession, capital gains, other sources.\n\n## Capital gains (framework)\n\n| Asset | Short term | Long term |\n|---|---|---|\n| Listed equity and equity funds | Held up to 12 months, special rate | Over 12 months, lower rate above an annual exemption |\n| Debt funds bought from April 2023 | Slab rate | Slab rate |\n| Property, unlisted assets | Different holding periods and rates | Verify current rules |\n\n## Regimes\n\n- **New regime:** lower slab rates, few deductions.\n- **Old regime:** higher slabs with deductions (80C, 80D, HRA, home loan interest).\n- Compare both each year for the client.\n\n## Instruments\n\nPPF, EPF, NPS (extra deduction under the old regime), ELSS, tax-free bonds, insurance premiums: choose for the **goal**, not just the deduction.\n\n> **Exam tip:** Do not let tax drive a product choice that fails the goal.",
+ "key_terms": [
+  "capital gains",
+  "old regime",
+  "new regime",
+  "Section 80C",
+  "NPS"
+ ],
+ "example": "A client invests in a lock-in product only for the tax deduction, but needs the money in two years. The deduction does not justify the liquidity problem.",
+ "say": [
+  "We will compare both tax regimes for you every year.",
+  "A deduction is a bonus, not the reason to invest."
+ ],
+ "never": [
+  "Buy this just to save tax, whatever it is.",
+  "Tax rules never change."
+ ],
+ "check": [
+  {
+   "id": "nismia-q19",
+   "q": "Under the old regime, deductions include:",
+   "o": [
+    "Section 80C and 80D",
+    "None",
+    "Only HRA",
+    "Only NPS"
+   ],
+   "a": 0,
+   "why": "The old regime allows deductions such as 80C and 80D."
+  },
+  {
+   "id": "nismia-q20",
+   "q": "Tax-saving investments should be chosen:",
+   "o": [
+    "Only for the deduction",
+    "For the goal first, then tax",
+    "At random",
+    "By commission"
+   ],
+   "a": 1,
+   "why": "Goal fit comes first."
+  },
+  {
+   "id": "nismia-q21",
+   "q": "Tax rates and limits:",
+   "o": [
+    "Never change",
+    "Change often and must be verified",
+    "Are fixed by the AMC",
+    "Are set by NISM"
+   ],
+   "a": 1,
+   "why": "Verify the current Finance Act."
+  }
+ ],
+ "card_ids": [
+  "nismia-c7"
+ ],
+ "words": 162
+}

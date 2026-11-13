@@ -1,0 +1,69 @@
+{
+ "id": "nismia-01",
+ "title": "Who is an investment adviser",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Regulation",
+ "objectives": [
+  "Define investment advice and who must register.",
+  "Contrast an investment adviser with a distributor and a research analyst."
+ ],
+ "body_md": "**Investment advice** is advising on investing in securities or investment products, or on portfolio management, in a way that is **personalised** to a client's goals, for consideration. A person who does this must be a **SEBI-registered investment adviser (IA)**.\n\n| Role | What they do | Paid by |\n|---|---|---|\n| **Investment adviser** | Personalised advice, suitable to the client | The client, a fee |\n| **Distributor** | Sells products, incidental advice | Commission from the product provider |\n| **Research analyst** | Publishes research, no personalised advice | Subscription or fee |\n| **Portfolio manager** | Manages money with discretion | Client fee |\n\n## Key points\n\n- IA advice is **non-discretionary**: the client decides and executes.\n- Advice is given for a **fee paid by the client**, not commission from products.\n- IA includes individuals and non-individuals (firms).\n- Calling yourself a \"financial planner\" does not avoid registration if you give securities advice.\n\n> **Exam tip:** Personalised plus fee equals investment adviser.",
+ "key_terms": [
+  "investment adviser",
+  "non-discretionary",
+  "personalised advice",
+  "fee-only"
+ ],
+ "example": "A person tells clients exactly which funds to buy for their goals and charges ₹25,000 a year. That is personalised advice for a fee, so SEBI IA registration is needed.",
+ "say": [
+  "I am paid only by you, not by any product company.",
+  "The decision and the execution stay with you."
+ ],
+ "never": [
+  "I am a free planner; the fund house pays me.",
+  "I will manage your portfolio and decide trades for you."
+ ],
+ "check": [
+  {
+   "id": "nismia-q1",
+   "q": "Personalised advice on securities for a fee requires registration as:",
+   "o": [
+    "Distributor",
+    "Investment adviser",
+    "Merchant banker",
+    "Custodian"
+   ],
+   "a": 1,
+   "why": "Personalised advice for consideration falls under the IA regulations."
+  },
+  {
+   "id": "nismia-q2",
+   "q": "Investment adviser advice is:",
+   "o": [
+    "Discretionary",
+    "Non-discretionary",
+    "Free",
+    "Anonymous"
+   ],
+   "a": 1,
+   "why": "The client decides and executes."
+  },
+  {
+   "id": "nismia-q3",
+   "q": "An IA is paid by:",
+   "o": [
+    "Product commissions",
+    "The client's fee",
+    "The AMC",
+    "The exchange"
+   ],
+   "a": 1,
+   "why": "Fee-only: paid by the client."
+  }
+ ],
+ "card_ids": [
+  "nismia-c1"
+ ],
+ "words": 165
+}

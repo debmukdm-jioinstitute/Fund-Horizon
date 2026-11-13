@@ -14,7 +14,10 @@ export function Leaderboard() {
   const open = (id: string) => academy.adminUser(id).then(setDetail).catch((e: Error) => setErr(e.message));
   useEffect(() => {
     setBoard(null);
-    academy.leaderboard(period).then(setBoard).catch((e: Error) => setErr(e.message));
+    const load = () => academy.leaderboard(period).then(setBoard).catch((e: Error) => setErr(e.message));
+    void load();
+    const t = window.setInterval(() => { if (document.visibilityState === "visible") void load(); }, 30000); // live ranks
+    return () => window.clearInterval(t);
   }, [period]);
   const toggle = async (hide: boolean) => {
     await academy.setOptOut(hide);

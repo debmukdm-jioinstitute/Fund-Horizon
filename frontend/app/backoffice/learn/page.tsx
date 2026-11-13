@@ -31,7 +31,7 @@ function useSticky<T>(value: T, active: boolean): T {
 
 function Shell() {
   const sp = useSearchParams();
-  const { me, loadModule, openGlossary, go } = useAcademy();
+  const { me, loadModule, openGlossary, go, updated } = useAcademy();
   const m = sp.get("m");
   const varsity = sp.get("varsity");
   const vm = sp.get("vm");
@@ -73,6 +73,7 @@ function Shell() {
         <div>
           <h1 className="text-2xl font-semibold">FH Academy</h1>
           <p className={`text-[15px] ${muted}`}>L.E.A.R.N. training for the whole team: funds, behaviour, goals, debt, rebalancing and withdrawals.</p>
+          {updated && <p className={`text-sm ${muted}`} role="status">● Live · updated {updated.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour12: false })} IST</p>}
         </div>
         <nav aria-label="Academy" className="flex flex-wrap items-center gap-2">
           <button className={btnGhost} aria-current={home ? "page" : undefined} onClick={() => go({})}>Home</button>

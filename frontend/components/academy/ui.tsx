@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export const card = "border border-[#E4E9EF] dark:border-[#2B3644] rounded-lg bg-[#FFFFFF] dark:bg-[#10151C]";
 export const muted = "text-[#536176] dark:text-[#A8B4C4]";
@@ -52,3 +52,25 @@ export function Spinner({ label = "Loading" }: { label?: string }) {
 }
 
 export const LEVEL_LABEL: Record<string, string> = { beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced" };
+
+/** Collapsible block. Open/closed state is remembered per id in this browser (best effort). */
+export function Collapse({ id, title, meta, defaultOpen = true, children }: { id: string; title: React.ReactNode; meta?: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode }) {
+  const key = `fh-academy-open:${id}`;
+  const [open, setOpen] = useState(defaultOpen);
+  useEffect(() => {
+    try { const v = localStorage.getItem(key); if (v !== null) setOpen(v === "1"); } catch { /* storage blocked */ }
+  }, [key]);
+  const flip = () => {
+    setOpen(!open);
+    try { localStorage.setItem(key, open ? "0" : "1"); } catch { /* storage blocked */ }
+  };
+  return (
+    <section aria-label={typeof title === "string" ? title : id} className="space-y-3">
+      <button type="button" onClick={flip} aria-expanded={open} className="flex w-full min-h-10 items-center justify-between gap-3 text-left">
+        <span className="text-lg font-semibold">{open ? "−" : "+"} {title}</span>
+        {meta && <span className={`text-sm ${muted}`}>{meta}</span>}
+      </button>
+      {open && children}
+    </section>
+  );
+}

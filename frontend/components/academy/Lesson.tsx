@@ -5,7 +5,7 @@ import { useAcademy } from "./AcademyContext";
 import { academy, type AnswerResult, type Lesson as LessonT, type ModuleContent, type QuizStart } from "./api";
 import { Markdown } from "./Markdown";
 import { stageLabel } from "./ModulePath";
-import { LEVEL_LABEL, accent, btnGhost, btnPrimary, card, muted } from "./ui";
+import { Collapse, LEVEL_LABEL, accent, btnGhost, btnPrimary, card, muted } from "./ui";
 
 function useReadingProgress(ref: React.RefObject<HTMLElement>) {
   const [p, setP] = useState(0);
@@ -114,18 +114,17 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
         <button className={btnGhost} onClick={() => openGlossary()}>📖 Glossary</button>
       </header>
 
-      <section aria-label="Objectives" className={`${card} p-4`}>
-        <h3 className="text-[15px] font-semibold mb-2">After this lesson you can</h3>
-        <ul className="list-disc pl-6 text-[15px] space-y-1">{lesson.objectives.map((o) => <li key={o}>{o}</li>)}</ul>
-      </section>
+      <Collapse id="lesson-objectives" title="After this lesson you can">
+        <ul className={`${card} list-disc p-4 pl-10 text-[15px] space-y-1`}>{lesson.objectives.map((o) => <li key={o}>{o}</li>)}</ul>
+      </Collapse>
 
       <Markdown text={lesson.body_md} terms={lesson.key_terms} />
 
-      <section aria-label="Worked example" className={`${card} p-4 border-l-4 border-l-[#0176D3] dark:border-l-[#1B96FF]`}>
-        <h3 className="text-[15px] font-semibold mb-1">Worked example</h3>
-        <p className="text-base leading-relaxed">{lesson.example}</p>
-      </section>
+      <Collapse id="lesson-example" title="Worked example">
+        <p className={`${card} p-4 border-l-4 border-l-[#0176D3] dark:border-l-[#1B96FF] text-base leading-relaxed`}>{lesson.example}</p>
+      </Collapse>
 
+      <Collapse id="lesson-talk" title="Talk-track: say and never say">
       <div className="grid gap-4 sm:grid-cols-2">
         <section aria-label="Say this to clients" className={`${card} p-4`}>
           <h3 className={`text-[15px] font-semibold mb-2 ${accent}`}>✓ Say this to clients</h3>
@@ -136,6 +135,7 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
           <ul className="space-y-2 text-[15px]">{lesson.never.map((s) => <li key={s}>“{s}”</li>)}</ul>
         </section>
       </div>
+      </Collapse>
 
       <QuickCheck key={lesson.id} lesson={lesson} />
 

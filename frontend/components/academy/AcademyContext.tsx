@@ -15,6 +15,7 @@ interface Ctx {
   glossary: GlossaryEntry[];
   openGlossary: (term?: string) => void;
   go: Go;
+  updated: Date | null;
 }
 
 const AcademyCtx = createContext<Ctx | null>(null);
@@ -28,6 +29,7 @@ export function AcademyProvider({ go, children }: { go: Go; children: React.Reac
   const [me, setMe] = useState<Me | null>(null);
   const [glossary, setGlossary] = useState<GlossaryEntry[]>([]);
   const [toast, setToast] = useState("");
+  const [updated, setUpdated] = useState<Date | null>(null);
   const [drawer, setDrawer] = useState<string | null>(null);
   const cache = useRef<Record<string, Promise<ModuleContent>>>({});
 
@@ -35,12 +37,21 @@ export function AcademyProvider({ go, children }: { go: Go; children: React.Reac
     try {
       const m = await academy.me();
       setMe(m);
+      setUpdated(new Date());
       return m;
     } catch {
       return null;
     }
   }, []);
-  useEffect(() => { void refresh(); }, [refresh]);
+  useEffect(() => {
+    void refresh();
+    // live: re-fetch progress, XP, streak and due cards every 30s while the tab is visible, and when it regains focus
+    const tick = () => { if (document.visibilityState === "visible") void refresh(); };
+    const t = window.setInterval(tick, 30000);
+    document.addEventListener("visibilitychange", tick);
+    window.addEventListener("focus", tick);
+    return () => { window.clearInterval(t); document.removeEventListener("visibilitychange", tick); window.removeEventListener("focus", tick); };
+  }, [refresh]);
 
   const loadModule = useCallback((id: string) => {
     cache.current[id] ??= academy.content(id).then((c) => {
@@ -61,7 +72,7 @@ export function AcademyProvider({ go, children }: { go: Go; children: React.Reac
     void refresh();
   }, [refresh]);
 
-  const value = useMemo(() => ({ me, refresh, reward, loadModule, glossary, openGlossary: (t?: string) => { if (!glossary.length) void loadModule("mf"); setDrawer(t ?? ""); }, go }), [me, refresh, reward, loadModule, glossary, go]);
+  const value = useMemo(() => ({ me, refresh, reward, loadModule, glossary, openGlossary: (t?: string) => { if (!glossary.length) void loadModule("mf"); setDrawer(t ?? ""); }, go, updated }), [me, refresh, reward, loadModule, glossary, go, updated]);
 
   return (
     <AcademyCtx.Provider value={value}>

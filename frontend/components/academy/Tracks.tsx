@@ -3,7 +3,7 @@
 import React from "react";
 import { useAcademy } from "./AcademyContext";
 import type { ModuleProgress, Track } from "./api";
-import { Bar, Ring, Spinner, accent, btnGhost, btnPrimary, card, muted } from "./ui";
+import { Bar, Collapse, Ring, Spinner, accent, btnGhost, btnPrimary, card, muted } from "./ui";
 
 const PATH = ["Beginner", "Intermediate", "Expert"];
 
@@ -59,20 +59,18 @@ export function TrackSection({ track }: { track: Track }) {
   const { ms, done, total } = sums(track, me.progress);
   if (!ms.length) return null;
   return (
-    <section id={`track-${track.id}`} aria-label={track.title} className="space-y-4 scroll-mt-20">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="max-w-2xl">
-          <h2 className="text-xl font-semibold">{track.title}</h2>
-          <p className={`text-[15px] ${muted}`}>{track.blurb}</p>
+    <div id={`track-${track.id}`} className="scroll-mt-20">
+      <Collapse id={`track-${track.id}`} title={track.title} meta={`${done}/${total} lessons · ${ms.length} modules`}>
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <p className={`max-w-2xl text-[15px] ${muted}`}>{track.blurb}</p>
+            <button className={btnGhost} onClick={() => go({ t: track.id })}>Open track →</button>
+          </div>
+          <Bar value={total ? done / total : 0} label={`${track.title} progress`} />
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{ms.map((id) => <ModuleCard key={id} mid={id} p={me.progress[id]} />)}</div>
         </div>
-        <div className="flex items-center gap-3">
-          <span className={`text-sm ${muted}`}>{done}/{total} lessons · {ms.length} modules</span>
-          <button className={btnGhost} onClick={() => go({ t: track.id })}>Open track →</button>
-        </div>
-      </div>
-      <Bar value={total ? done / total : 0} label={`${track.title} progress`} />
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{ms.map((id) => <ModuleCard key={id} mid={id} p={me.progress[id]} />)}</div>
-    </section>
+      </Collapse>
+    </div>
   );
 }
 

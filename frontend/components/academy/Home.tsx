@@ -4,7 +4,7 @@ import React from "react";
 import { useAcademy } from "./AcademyContext";
 import { Certificate } from "./Certificate";
 import { ModuleCard, TrackSection } from "./Tracks";
-import { Bar, Spinner, accent, btnGhost, btnPrimary, card, muted } from "./ui";
+import { Bar, Collapse, Spinner, accent, btnGhost, btnPrimary, card, muted } from "./ui";
 
 export function Home() {
   const { me, go } = useAcademy();
@@ -43,6 +43,7 @@ export function Home() {
         </button>
       </section>
 
+      <Collapse id="home-stats" title="Your stats" meta={`${me.streak}-day streak · ${me.xp} XP`}>
       <section aria-label="Your stats" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className={`${card} p-4`}>
           <div className={`text-sm ${muted}`}>🔥 Streak</div>
@@ -66,6 +67,7 @@ export function Home() {
           <div className={`text-sm ${accent}`}>{me.week_xp} XP this week →</div>
         </button>
       </section>
+      </Collapse>
 
       {me.tracks?.length > 0 ? (
         <>
@@ -82,6 +84,7 @@ export function Home() {
 
       {me.certificate && <Certificate />}
 
+      <Collapse id="home-tax" title="Taxation guide" defaultOpen={false}>
       <section aria-label="Taxation guide" className={`${card} p-6 space-y-3`}>
         <p className="text-xs font-bold uppercase tracking-wider text-[#0176D3]">Fund Horizon material</p>
         <h3 className="text-lg font-semibold">Taxation guide — PMS, mutual funds, equity and F&O</h3>
@@ -92,7 +95,9 @@ export function Home() {
           <button className={btnPrimary} onClick={() => go({ tax: "1" })}>Open taxation guides →</button>
         </div>
       </section>
+      </Collapse>
 
+      <Collapse id="home-varsity" title="Zerodha Varsity library" defaultOpen={false}>
       <section aria-label="Varsity external learning" className={`${card} border-dashed p-6 space-y-3`}>
         <p className="text-xs font-bold uppercase tracking-wider text-[#B45309]">External learning · Not FH training</p>
         <h3 className="text-lg font-semibold">Zerodha Varsity library</h3>
@@ -104,9 +109,10 @@ export function Home() {
           <button className={btnPrimary} onClick={() => go({ varsity: "1" })}>Open Varsity library →</button>
         </div>
       </section>
+      </Collapse>
 
+      <Collapse id="home-badges" title="Badges" meta={`${earned.size}/${me.badge_defs.length} earned`} defaultOpen={false}>
       <section aria-label="Badges" className={`${card} p-6 space-y-4`}>
-        <h3 className="text-lg font-semibold">Badges</h3>
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {me.badge_defs.map((b) => {
             const on = earned.has(b.id);
@@ -122,6 +128,7 @@ export function Home() {
           })}
         </ul>
       </section>
+      </Collapse>
     </div>
   );
 }

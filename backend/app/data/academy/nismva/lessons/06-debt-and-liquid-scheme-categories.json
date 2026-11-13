@@ -1,0 +1,69 @@
+{
+ "id": "nismva-06",
+ "title": "Debt and liquid scheme categories",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Schemes",
+ "objectives": [
+  "Order debt categories by duration and risk.",
+  "Explain credit risk, interest rate risk and segregated portfolios."
+ ],
+ "body_md": "Debt schemes differ mainly by **maturity or duration** and **credit quality**.\n\n| Category | Typical feature |\n|---|---|\n| **Overnight** | Invests in securities maturing in 1 day |\n| **Liquid** | Maturity up to 91 days |\n| **Ultra short** | Macaulay duration 3 to 6 months |\n| **Low duration** | 6 to 12 months |\n| **Money market** | Money market instruments up to 1 year |\n| **Short duration** | 1 to 3 years |\n| **Medium duration** | 3 to 4 years |\n| **Long duration** | Over 7 years |\n| **Gilt** | At least 80% in government securities |\n| **Credit risk** | At least 65% in lower-rated (below the highest) papers |\n| **Corporate bond** | At least 80% in AA+ and above |\n\n## Risks\n\n- **Interest rate risk:** prices fall when rates rise; longer duration, bigger fall.\n- **Credit risk:** a borrower may default or be downgraded.\n- **Liquidity risk:** hard to sell some papers.\n\n## Segregated portfolio (side pocket)\n\nWhen a paper is downgraded to below investment grade or defaults, the scheme may separate it from the main portfolio so that existing unitholders keep their share of recovery, and new investors are not hit.\n\n> **Exam tip:** Longer duration means more rate risk; lower rating means more credit risk.",
+ "key_terms": [
+  "duration",
+  "credit risk",
+  "gilt fund",
+  "segregated portfolio"
+ ],
+ "example": "Rates rise by 1%. A fund with duration 5 years falls roughly 5%, while a fund with duration 0.25 year falls about 0.25%.",
+ "say": [
+  "Debt funds are not risk free: rates and credit quality both matter.",
+  "A liquid fund suits short parking of surplus, not long-term growth."
+ ],
+ "never": [
+  "Debt funds never lose money.",
+  "Credit risk funds are as safe as liquid funds."
+ ],
+ "check": [
+  {
+   "id": "nismva-q16",
+   "q": "A liquid fund invests in securities maturing up to:",
+   "o": [
+    "30 days",
+    "91 days",
+    "1 year",
+    "3 years"
+   ],
+   "a": 1,
+   "why": "Liquid funds hold papers up to 91 days."
+  },
+  {
+   "id": "nismva-q17",
+   "q": "A gilt fund invests at least 80% in:",
+   "o": [
+    "Corporate bonds",
+    "Government securities",
+    "Equity",
+    "Gold"
+   ],
+   "a": 1,
+   "why": "Gilt funds buy government securities."
+  },
+  {
+   "id": "nismva-q18",
+   "q": "Rates rise. Which fund typically falls most?",
+   "o": [
+    "Overnight",
+    "Liquid",
+    "Long duration",
+    "Money market"
+   ],
+   "a": 2,
+   "why": "Longer duration means greater price sensitivity."
+  }
+ ],
+ "card_ids": [
+  "nismva-c6"
+ ],
+ "words": 220
+}

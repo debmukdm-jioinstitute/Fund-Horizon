@@ -1,0 +1,69 @@
+{
+ "id": "nismva-14",
+ "title": "Financial planning basics",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Planning and conduct",
+ "objectives": [
+  "Use time value of money for goals.",
+  "Build a simple goal-based plan."
+ ],
+ "body_md": "## Time value of money\n\n- **Future value = PV × (1 + r)^n**; **present value = FV ÷ (1 + r)^n**.\n- **Rule of 72:** years to double ≈ 72 ÷ return %. At 12%, about 6 years.\n- **Inflation** erodes buying power: ₹100 at 6% inflation buys about ₹56 worth in 10 years.\n- **Real return** ≈ nominal return − inflation.\n\n## Planning steps\n\n1. Set **goals** with an amount, a date and a priority.\n2. Build an **emergency fund** (3 to 6 months of expenses) in liquid assets.\n3. Make sure of adequate **insurance** (term life and health).\n4. Choose an **asset allocation** for each goal.\n5. **Invest** with SIPs and monitor.\n6. **Review** at least yearly.\n\n## Life stages\n\n| Stage | Focus |\n|---|---|\n| Early career | Build habit, emergency fund, higher equity |\n| Family | Education and housing goals, insurance |\n| Pre-retirement | Reduce risk, plan income |\n| Retirement | Income, SWP, protect capital |\n\n> **Exam tip:** Rule of 72 and inflation erosion are quick exam calculations.",
+ "key_terms": [
+  "time value of money",
+  "rule of 72",
+  "real return",
+  "emergency fund"
+ ],
+ "example": "At 8% a year money doubles in about 72 ÷ 8 = 9 years. With 6% inflation, a real return on an 8% investment is about 2%.",
+ "say": [
+  "Let us set the goals, the amounts and the dates first.",
+  "Keep an emergency fund and insurance before you invest for growth."
+ ],
+ "never": [
+  "Insurance and an emergency fund are not needed.",
+  "Inflation does not matter for long-term goals."
+ ],
+ "check": [
+  {
+   "id": "nismva-q40",
+   "q": "By the rule of 72, money at 12% doubles in about:",
+   "o": [
+    "3 years",
+    "6 years",
+    "12 years",
+    "72 years"
+   ],
+   "a": 1,
+   "why": "72 ÷ 12 = 6 years."
+  },
+  {
+   "id": "nismva-q41",
+   "q": "Real return is approximately:",
+   "o": [
+    "Nominal return + inflation",
+    "Nominal return − inflation",
+    "Inflation − tax",
+    "Nominal return × 2"
+   ],
+   "a": 1,
+   "why": "Real return ≈ nominal return minus inflation."
+  },
+  {
+   "id": "nismva-q42",
+   "q": "A typical emergency fund covers:",
+   "o": [
+    "1 week of expenses",
+    "3 to 6 months of expenses",
+    "10 years",
+    "Nothing"
+   ],
+   "a": 1,
+   "why": "Three to six months of expenses is the standard guide."
+  }
+ ],
+ "card_ids": [
+  "nismva-c14"
+ ],
+ "words": 178
+}

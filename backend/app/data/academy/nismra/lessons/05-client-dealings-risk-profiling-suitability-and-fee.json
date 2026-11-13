@@ -1,0 +1,69 @@
+{
+ "id": "nismra-05",
+ "title": "Client dealings: risk profiling, suitability and fees",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "Regulation",
+ "objectives": [
+  "Explain how to assess a client before sharing recommendations.",
+  "Describe fee and record-keeping rules for RA services."
+ ],
+ "body_md": "When an RA serves identified clients (not just a public audience), the relationship has rules.\n\n## Know your client\n\n- Collect basic KYC and a **risk profile**: age, income, horizon, experience, risk tolerance.\n- Share recommendations that are **appropriate** for the client; avoid giving high-risk ideas to someone with low risk capacity.\n- Use a written **agreement** that states the services, fees, conflicts and complaint route.\n\n## Fees\n\n- Charges must be **disclosed** up front and are paid by the client directly, not hidden in a trade.\n- Do not take commission or referral fees tied to client trades; that mixes research with sales.\n\n## Records and complaints\n\n- Keep client agreements, risk profiles and each communication of a recommendation.\n- Have a grievance process and tell clients about **SEBI SCORES** and Smart ODR.\n\n> **Exam tip:** Remember the line between *research analyst* (reports, no execution) and *investment adviser* (personalised advice, fee-only). A client who needs personalised advice needs an IA.",
+ "key_terms": [
+  "risk profile",
+  "suitability",
+  "SCORES",
+  "fee disclosure"
+ ],
+ "example": "A retired client with low risk tolerance asks for stock picks. An RA can share research. If the client wants a personalised portfolio plan, a registered investment adviser is the right route.",
+ "say": [
+  "Here is how we are paid, and here is how to complain if you are not satisfied.",
+  "This research is general; for a personal plan please see an investment adviser."
+ ],
+ "never": [
+  "I get a commission when you trade, so it is free for you.",
+  "Skip the risk form, you know the market."
+ ],
+ "check": [
+  {
+   "id": "nismra-q13",
+   "q": "Personalised, fee-only advice to a client needs registration as a(n):",
+   "o": [
+    "Research analyst",
+    "Investment adviser",
+    "Broker",
+    "Merchant banker"
+   ],
+   "a": 1,
+   "why": "Personalised advice falls under the Investment Advisers regulations."
+  },
+  {
+   "id": "nismra-q14",
+   "q": "Fees for RA services must be:",
+   "o": [
+    "Hidden",
+    "Disclosed up front",
+    "Paid through brokerage only",
+    "Waived for large clients"
+   ],
+   "a": 1,
+   "why": "Fees are disclosed and charged directly."
+  },
+  {
+   "id": "nismra-q15",
+   "q": "Where can a client escalate an unresolved complaint?",
+   "o": [
+    "Only to the firm",
+    "SEBI SCORES / Smart ODR",
+    "A newspaper",
+    "No route exists"
+   ],
+   "a": 1,
+   "why": "SCORES and Smart ODR are the investor grievance routes."
+  }
+ ],
+ "card_ids": [
+  "nismra-c5"
+ ],
+ "words": 161
+}

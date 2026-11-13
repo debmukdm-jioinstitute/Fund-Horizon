@@ -1,0 +1,69 @@
+{
+ "id": "nismra-01",
+ "title": "Who is a research analyst and who must register",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Regulation",
+ "objectives": [
+  "Define a research analyst and a research report under the SEBI regulations.",
+  "Say who must be registered and who is exempt."
+ ],
+ "body_md": "A **research analyst (RA)** is a person who prepares or publishes a research report, gives a recommendation or target price on a security, or does so in a public appearance. A **research report** is any written or electronic analysis of securities that includes a recommendation, rating or target price.\n\n## Who must register\n\n| Case | Registration needed? |\n|---|---|\n| Individual or firm publishing recommendations to clients | Yes, with SEBI |\n| Employee of a registered RA entity, writing under it | Covered by the entity, but needs the prescribed qualification |\n| Media or public appearance giving buy/sell views | Yes, unless an exemption applies |\n| Broker research for own clients, as a registered intermediary | Covered by the intermediary's own regime, with RA rules on report content |\n\n## Why it matters\n\n- Unregistered recommendations are a violation, however informal the channel (WhatsApp, Telegram, YouTube).\n- Registration brings a code of conduct, record keeping and disclosure duties.\n\n> **Exam tip:** NISM-Series-XV tests definitions. Learn \"research report\", \"research analyst\", \"associate\" and \"research entity\".",
+ "key_terms": [
+  "research analyst",
+  "research report",
+  "associate",
+  "research entity"
+ ],
+ "example": "A YouTuber says 'buy this stock, target ₹900' to 50,000 followers. That is a recommendation with a target price in a public appearance. Without registration it is a violation.",
+ "say": [
+  "I am registered with SEBI; my registration number is on every report.",
+  "This is research, not a guarantee of returns."
+ ],
+ "never": [
+  "I am not registered, but my tips are free so it is fine.",
+  "Everyone in the group chat knows it is only my opinion."
+ ],
+ "check": [
+  {
+   "id": "nismra-q1",
+   "q": "A recommendation with a target price on a stock, given to the public, is:",
+   "o": [
+    "Free speech with no rules",
+    "Research that needs a registered RA",
+    "Only a tip if it is free",
+    "Allowed for any graduate"
+   ],
+   "a": 1,
+   "why": "Recommendations and target prices fall under the RA regulations whatever the channel."
+  },
+  {
+   "id": "nismra-q2",
+   "q": "A research report is best described as:",
+   "o": [
+    "Any news article",
+    "Analysis of securities with a recommendation, rating or target price",
+    "A company annual report",
+    "An exchange circular"
+   ],
+   "a": 1,
+   "why": "The defining feature is the recommendation, rating or target price."
+  },
+  {
+   "id": "nismra-q3",
+   "q": "Giving paid buy/sell calls on Telegram without registration is:",
+   "o": [
+    "Acceptable if disclosed in the group",
+    "A violation of the RA regulations",
+    "Allowed below 1,000 members",
+    "Allowed on weekends"
+   ],
+   "a": 1,
+   "why": "Channel and group size do not remove the need for registration."
+  }
+ ],
+ "card_ids": [
+  "nismra-c1"
+ ],
+ "words": 177
+}

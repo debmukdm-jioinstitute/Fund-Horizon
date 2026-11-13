@@ -1,0 +1,70 @@
+{
+ "id": "nismva-02",
+ "title": "Fund structure and constituents",
+ "minutes": 6,
+ "level": "beginner",
+ "stage": "Foundations",
+ "objectives": [
+  "Name the sponsor, trust, trustees, AMC, custodian and RTA with their roles.",
+  "State who holds the assets."
+ ],
+ "body_md": "Mutual funds in India use a **three-tier structure**: sponsor, trust and AMC.\n\n| Constituent | Role |\n|---|---|\n| **Sponsor** | Sets up the fund; must have a sound track record and contribute to the AMC's net worth |\n| **Trust / Trustees** | Hold the fund's property in trust for unitholders; oversee the AMC; a majority are independent of the sponsor |\n| **AMC** | Appointed by the trustees; manages schemes; files offer documents; independent directors required |\n| **Custodian** | Holds the securities; independent of the sponsor and the AMC |\n| **RTA** | Registrar and transfer agent (CAMS, KFintech): records, statements, transactions |\n| **Auditor, bankers, brokers** | Independent audit and operations |\n\n## Key points\n\n- The **trust owns** the assets; unitholders are the beneficiaries.\n- The **custodian** holds the securities; the AMC cannot hold them directly.\n- The AMC **earns a fee** (a part of the expense ratio) from the scheme.\n- **Trustees' duty** is to protect unitholders, review AMC performance and ensure compliance.\n\n> **Exam tip:** Sponsor sets up, trustees protect, AMC manages, custodian holds, RTA records.",
+ "key_terms": [
+  "sponsor",
+  "trustee",
+  "AMC",
+  "custodian",
+  "RTA"
+ ],
+ "example": "An AMC manager buys a stock for a scheme. The securities are delivered to the custodian, not to the AMC. The scheme's units are recorded by the RTA.",
+ "say": [
+  "The custodian, not the AMC or the distributor, holds the securities.",
+  "Trustees watch over the AMC on behalf of unitholders."
+ ],
+ "never": [
+  "The AMC holds your securities in its own vault.",
+  "The distributor looks after your money."
+ ],
+ "check": [
+  {
+   "id": "nismva-q4",
+   "q": "Which entity holds the securities of a scheme?",
+   "o": [
+    "AMC",
+    "Custodian",
+    "Distributor",
+    "Sponsor"
+   ],
+   "a": 1,
+   "why": "An independent custodian holds the securities."
+  },
+  {
+   "id": "nismva-q5",
+   "q": "Who appoints the AMC?",
+   "o": [
+    "SEBI",
+    "Trustees",
+    "AMFI",
+    "The RTA"
+   ],
+   "a": 1,
+   "why": "The trustees appoint the AMC with SEBI approval."
+  },
+  {
+   "id": "nismva-q6",
+   "q": "CAMS and KFintech are examples of:",
+   "o": [
+    "Custodians",
+    "Registrar and transfer agents",
+    "Sponsors",
+    "Auditors"
+   ],
+   "a": 1,
+   "why": "They are RTAs that maintain investor records."
+  }
+ ],
+ "card_ids": [
+  "nismva-c2"
+ ],
+ "words": 183
+}

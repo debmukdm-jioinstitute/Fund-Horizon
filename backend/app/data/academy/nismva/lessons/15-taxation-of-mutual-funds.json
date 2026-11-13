@@ -1,0 +1,69 @@
+{
+ "id": "nismva-15",
+ "title": "Taxation of mutual funds",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Planning and conduct",
+ "objectives": [
+  "Explain how equity, debt and hybrid funds are taxed.",
+  "Know that rates change and must be verified."
+ ],
+ "body_md": "Tax depends on the fund's **equity share** and the **holding period**. Rates change often: **verify the current Finance Act before advising.**\n\n## Classification (current framework, verify)\n\n| Fund type | Test | Treatment |\n|---|---|---|\n| **Equity-oriented** | At least 65% in domestic equity | Short-term (held up to 12 months) at a special higher rate; long-term (over 12 months) at a lower rate above an annual exemption limit |\n| **Specified mutual fund (debt-oriented)** | Not more than 35% in domestic equity | Gains taxed at the investor's slab rate, regardless of holding period (for purchases from April 2023) |\n| **Other hybrids** | Between the two | Long-term after 24 months at a special rate; short-term at slab rate |\n\n## Other points\n\n- **IDCW** is taxed at the investor's slab rate; TDS applies above a threshold.\n- **STT** applies on redemption of equity-oriented funds.\n- **ELSS** gains follow equity rules; the deduction applies only under the old tax regime.\n- **Switches** and **SWP** are redemptions and can trigger tax.\n- Losses can be set off and carried forward under the Act.\n\n> **Exam tip:** Understand the 65% and 35% tests; the exact rates change by year.",
+ "key_terms": [
+  "equity-oriented fund",
+  "specified mutual fund",
+  "holding period",
+  "STT"
+ ],
+ "example": "An investor redeems an equity fund after 14 months: long-term. After 8 months: short-term. A debt fund bought in 2024 is taxed at slab rate however long it is held.",
+ "say": [
+  "Tax depends on fund type and holding period; I will confirm today's rates before you decide.",
+  "Switching funds is a sale, so tax may apply."
+ ],
+ "never": [
+  "Mutual fund gains are always tax-free.",
+  "Debt funds still get indexation benefit."
+ ],
+ "check": [
+  {
+   "id": "nismva-q43",
+   "q": "An equity-oriented fund holds at least what share in domestic equity?",
+   "o": [
+    "35%",
+    "50%",
+    "65%",
+    "90%"
+   ],
+   "a": 2,
+   "why": "At least 65% in domestic equity makes it equity-oriented for tax."
+  },
+  {
+   "id": "nismva-q44",
+   "q": "IDCW is taxed at the investor's:",
+   "o": [
+    "Fixed 0%",
+    "Slab rate",
+    "Only 5%",
+    "Zero for senior citizens"
+   ],
+   "a": 1,
+   "why": "IDCW is added to income and taxed at the slab rate."
+  },
+  {
+   "id": "nismva-q45",
+   "q": "A switch between schemes is treated as:",
+   "o": [
+    "A non-event",
+    "A redemption and a fresh purchase",
+    "A gift",
+    "A free service"
+   ],
+   "a": 1,
+   "why": "Switching is a redemption and a purchase, so tax can arise."
+  }
+ ],
+ "card_ids": [
+  "nismva-c15"
+ ],
+ "words": 199
+}

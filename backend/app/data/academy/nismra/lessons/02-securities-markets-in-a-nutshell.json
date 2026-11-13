@@ -1,0 +1,69 @@
+{
+ "id": "nismra-02",
+ "title": "Securities markets in a nutshell",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Regulation",
+ "objectives": [
+  "Separate the primary and secondary markets and name the main intermediaries.",
+  "Explain where research fits in market efficiency."
+ ],
+ "body_md": "The **primary market** is where securities are first issued (IPO, FPO, rights issue, private placement). The **secondary market** is where existing securities trade on exchanges such as NSE and BSE. Settlement is T+1 for equities.\n\n## Key players\n\n- **SEBI:** regulator for securities markets.\n- **Stock exchanges and clearing corporations:** trading and settlement.\n- **Depositories (NSDL, CDSL):** hold securities in demat form.\n- **Brokers, merchant bankers, RAs, investment advisers, mutual funds:** intermediaries and institutions.\n- **FPIs and DIIs:** large institutional investors whose flows move prices.\n\n## Where research fits\n\nPrices reflect information. In a **semi-strong efficient** market, public information is already in the price, so an analyst earns value by interpreting information better or earlier, not by reading headlines. In a **weak-form** market, past prices alone give no edge, which is why technical analysis is debated.\n\n> **Exam tip:** Know the three forms of market efficiency: weak, semi-strong, strong.",
+ "key_terms": [
+  "primary market",
+  "secondary market",
+  "T+1",
+  "efficient market"
+ ],
+ "example": "A company lists through an IPO (primary market). A year later an investor sells those shares on NSE to another investor (secondary market). The company receives nothing from that second trade.",
+ "say": [
+  "The IPO price is set by the book-building process, not by me.",
+  "Analysts help interpret public information, they do not predict the future."
+ ],
+ "never": [
+  "Research can tell you exactly where the price will be.",
+  "Secondary market trades give money to the company."
+ ],
+ "check": [
+  {
+   "id": "nismra-q4",
+   "q": "Shares sold by one investor to another on an exchange are traded in the:",
+   "o": [
+    "Primary market",
+    "Secondary market",
+    "Money market",
+    "Grey market"
+   ],
+   "a": 1,
+   "why": "Secondary markets trade existing securities; the issuer gets no proceeds."
+  },
+  {
+   "id": "nismra-q5",
+   "q": "Which form of efficiency says all public information is already in the price?",
+   "o": [
+    "Weak form",
+    "Semi-strong form",
+    "Strong form",
+    "No form"
+   ],
+   "a": 1,
+   "why": "Semi-strong: public information is reflected; strong adds private information."
+  },
+  {
+   "id": "nismra-q6",
+   "q": "Equity trades on Indian exchanges settle on:",
+   "o": [
+    "T+3",
+    "T+2",
+    "T+1",
+    "Same minute"
+   ],
+   "a": 2,
+   "why": "Indian equity moved to T+1 settlement."
+  }
+ ],
+ "card_ids": [
+  "nismra-c2"
+ ],
+ "words": 149
+}

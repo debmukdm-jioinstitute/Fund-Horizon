@@ -1,0 +1,744 @@
+{
+ "id": "nismra",
+ "title": "NISM Research Analyst (Series XV)",
+ "code": "Module 18 · NISM XV",
+ "track": "NISM",
+ "blurb": "Exam prep for NISM-Series-XV: SEBI RA rules, conduct, economy, industry, company analysis, valuation, technicals and report writing.",
+ "overview": {
+  "rows": [
+   [
+    "Audience",
+    "Anyone who writes, reviews or publishes research, and RAs preparing for NISM-Series-XV"
+   ],
+   [
+    "Duration",
+    "About 110 minutes of lessons, then cards, checkpoints and the final quiz"
+   ],
+   [
+    "Prerequisite",
+    "None. Basic comfort with percentages and financial statements helps"
+   ],
+   [
+    "Format",
+    "18 short lessons in 6 stages, each ending with three exam-style checks"
+   ]
+  ],
+  "outcomes": [
+   "Explain who needs SEBI research analyst registration and what the regulations require.",
+   "Apply the conduct, disclosure and trading-restriction rules to real situations.",
+   "Read macro data, industry structure and financial statements to form a view.",
+   "Value a company with DCF and relative multiples and state the assumptions.",
+   "Write a research report with rating, target price, risks and the mandatory disclosures."
+  ]
+ },
+ "sources": [
+  "SEBI (Research Analysts) Regulations, 2014 and later amendments and circulars (check the current text)",
+  "NISM-Series-XV: Research Analyst Certification Examination workbook (current edition)",
+  "SEBI (Prohibition of Insider Trading) Regulations, 2015; SEBI PFUTP Regulations, 2003",
+  "RBI monetary policy framework; MoSPI release calendar for GDP and CPI",
+  "Practice exam only: confirm the current NISM exam format, marks and pass mark before booking"
+ ],
+ "lessons": [
+  {
+   "id": "nismra-01",
+   "title": "Who is a research analyst and who must register",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismra-02",
+   "title": "Securities markets in a nutshell",
+   "minutes": 5,
+   "level": "beginner",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismra-03",
+   "title": "SEBI (Research Analysts) Regulations, 2014: registration and eligibility",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismra-04",
+   "title": "Conduct, conflicts and trading restrictions",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismra-05",
+   "title": "Client dealings: risk profiling, suitability and fees",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismra-06",
+   "title": "Macroeconomic analysis: GDP, inflation and rates",
+   "minutes": 6,
+   "level": "beginner",
+   "stage": "Economy and industry"
+  },
+  {
+   "id": "nismra-07",
+   "title": "Industry analysis: structure, cycles and competitive forces",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Economy and industry"
+  },
+  {
+   "id": "nismra-08",
+   "title": "Reading financial statements",
+   "minutes": 6,
+   "level": "beginner",
+   "stage": "Company analysis"
+  },
+  {
+   "id": "nismra-09",
+   "title": "Ratio analysis and DuPont",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Company analysis"
+  },
+  {
+   "id": "nismra-10",
+   "title": "Quality of earnings and red flags",
+   "minutes": 5,
+   "level": "advanced",
+   "stage": "Company analysis"
+  },
+  {
+   "id": "nismra-11",
+   "title": "Valuation I: discounted cash flow",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Valuation"
+  },
+  {
+   "id": "nismra-12",
+   "title": "Valuation II: relative multiples",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Valuation"
+  },
+  {
+   "id": "nismra-13",
+   "title": "Technical analysis basics",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Technicals and instruments"
+  },
+  {
+   "id": "nismra-14",
+   "title": "Derivatives and fixed income for analysts",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Technicals and instruments"
+  },
+  {
+   "id": "nismra-15",
+   "title": "Writing the research report",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Report and conduct"
+  },
+  {
+   "id": "nismra-16",
+   "title": "Insider information, market abuse and ethics",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Report and conduct"
+  },
+  {
+   "id": "nismra-17",
+   "title": "Compliance lab: spot the violation",
+   "minutes": 6,
+   "level": "advanced",
+   "stage": "Report and conduct"
+  },
+  {
+   "id": "nismra-18",
+   "title": "Putting it together: a worked stock review",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Report and conduct"
+  }
+ ],
+ "cards": [
+  {
+   "id": "nismra-c1",
+   "q": "Who needs SEBI RA registration?",
+   "a": [
+    "Anyone issuing recommendations or target prices on securities, in writing or in public appearances.",
+    "Unregistered tips are a violation on any channel.",
+    "Employees of a registered entity still need the prescribed qualification."
+   ]
+  },
+  {
+   "id": "nismra-c2",
+   "q": "Name the three forms of market efficiency.",
+   "a": [
+    "Weak: past prices only.",
+    "Semi-strong: all public information.",
+    "Strong: public plus private information."
+   ]
+  },
+  {
+   "id": "nismra-c3",
+   "q": "What must an RA keep, and for how long?",
+   "a": [
+    "Reports, rationale and client communications.",
+    "At least five years.",
+    "Make them available for SEBI inspection."
+   ]
+  },
+  {
+   "id": "nismra-c4",
+   "q": "What must an RA disclose in a report?",
+   "a": [
+    "Holdings of 1% or more.",
+    "Compensation from the company in the last 12 months.",
+    "Roles as director, officer, market maker or client relationship."
+   ]
+  },
+  {
+   "id": "nismra-c5",
+   "q": "Where does an RA end and an IA begin?",
+   "a": [
+    "RA: reports and recommendations.",
+    "IA: personalised, fee-only advice.",
+    "Do not mix with trade-linked commission."
+   ]
+  },
+  {
+   "id": "nismra-c6",
+   "q": "What is RBI's inflation target?",
+   "a": [
+    "4% CPI inflation.",
+    "Tolerance band ±2% (2% to 6%).",
+    "The MPC sets the repo rate to meet it."
+   ]
+  },
+  {
+   "id": "nismra-c7",
+   "q": "List Porter's five forces.",
+   "a": [
+    "New entrants, suppliers, buyers.",
+    "Substitutes, rivalry.",
+    "Strong forces mean thin industry returns."
+   ]
+  },
+  {
+   "id": "nismra-c8",
+   "q": "What is free cash flow?",
+   "a": [
+    "CFO minus capex.",
+    "Cash left after sustaining and growing the business.",
+    "Compare it with PAT every year."
+   ]
+  },
+  {
+   "id": "nismra-c9",
+   "q": "State the DuPont identity.",
+   "a": [
+    "ROE = net margin × asset turnover × equity multiplier.",
+    "Margin = profitability; turnover = efficiency.",
+    "Multiplier = leverage."
+   ]
+  },
+  {
+   "id": "nismra-c10",
+   "q": "Name three accounting red flags.",
+   "a": [
+    "CFO far below PAT.",
+    "Receivables rising faster than sales.",
+    "Auditor resignation or heavy promoter pledge."
+   ]
+  },
+  {
+   "id": "nismra-c11",
+   "q": "Write WACC and CAPM.",
+   "a": [
+    "WACC = E/V·Re + D/V·Rd·(1−t).",
+    "Re = Rf + β(Rm − Rf).",
+    "TV = FCF(1+g)/(WACC−g)."
+   ]
+  },
+  {
+   "id": "nismra-c12",
+   "q": "Which multiple for which firm?",
+   "a": [
+    "P/E: stable earners.",
+    "EV/EBITDA: capital intensive.",
+    "P/B: banks and NBFCs."
+   ]
+  },
+  {
+   "id": "nismra-c13",
+   "q": "RSI thresholds?",
+   "a": [
+    "Above 70: overbought.",
+    "Below 30: oversold.",
+    "Usually a 14-period setting."
+   ]
+  },
+  {
+   "id": "nismra-c14",
+   "q": "Bond rule of thumb?",
+   "a": [
+    "Yields up, price down.",
+    "Longer duration, bigger price swings.",
+    "Credit spread pays for default risk."
+   ]
+  },
+  {
+   "id": "nismra-c15",
+   "q": "What goes in every report?",
+   "a": [
+    "Rating, target price, horizon.",
+    "Thesis, valuation, risks.",
+    "Sources, date and disclosures."
+   ]
+  },
+  {
+   "id": "nismra-c16",
+   "q": "What is UPSI?",
+   "a": [
+    "Non-public information that can move prices.",
+    "Do not trade or share it.",
+    "Tell compliance."
+   ]
+  },
+  {
+   "id": "nismra-c17",
+   "q": "Four questions for any case?",
+   "a": [
+    "Is it a recommendation?",
+    "Is there a conflict?",
+    "Is the information public and the claim fair?"
+   ]
+  },
+  {
+   "id": "nismra-c18",
+   "q": "How does a stock review flow?",
+   "a": [
+    "Macro, industry, company.",
+    "Valuation and risks.",
+    "Conduct check and disclosures."
+   ]
+  }
+ ],
+ "final": {
+  "id": "nismra-final",
+  "title": "NISM Research Analyst (Series XV) final quiz",
+  "pass_pct": 80,
+  "questions": [
+   {
+    "id": "nismra-q1",
+    "q": "A recommendation with a target price on a stock, given to the public, is:",
+    "o": [
+     "Free speech with no rules",
+     "Research that needs a registered RA",
+     "Only a tip if it is free",
+     "Allowed for any graduate"
+    ],
+    "a": 1,
+    "why": "Recommendations and target prices fall under the RA regulations whatever the channel.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q2",
+    "q": "A research report is best described as:",
+    "o": [
+     "Any news article",
+     "Analysis of securities with a recommendation, rating or target price",
+     "A company annual report",
+     "An exchange circular"
+    ],
+    "a": 1,
+    "why": "The defining feature is the recommendation, rating or target price.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q4",
+    "q": "Shares sold by one investor to another on an exchange are traded in the:",
+    "o": [
+     "Primary market",
+     "Secondary market",
+     "Money market",
+     "Grey market"
+    ],
+    "a": 1,
+    "why": "Secondary markets trade existing securities; the issuer gets no proceeds.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q5",
+    "q": "Which form of efficiency says all public information is already in the price?",
+    "o": [
+     "Weak form",
+     "Semi-strong form",
+     "Strong form",
+     "No form"
+    ],
+    "a": 1,
+    "why": "Semi-strong: public information is reflected; strong adds private information.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q7",
+    "q": "Which certification is expected of a research analyst?",
+    "o": [
+     "NISM-Series-V-A",
+     "NISM-Series-XV",
+     "NISM-Series-VIII",
+     "Any CA exam"
+    ],
+    "a": 1,
+    "why": "NISM-Series-XV is the research analyst certification.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q8",
+    "q": "Records of research and rationale should be kept for at least:",
+    "o": [
+     "6 months",
+     "1 year",
+     "Five years",
+     "Never required"
+    ],
+    "a": 2,
+    "why": "The regulations require a minimum five-year record.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q10",
+    "q": "Trading ahead of a published recommendation is called:",
+    "o": [
+     "Hedging",
+     "Front running",
+     "Arbitrage",
+     "Averaging"
+    ],
+    "a": 1,
+    "why": "Front running exploits knowledge of an upcoming recommendation.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q11",
+    "q": "A report must disclose analyst or relatives' holdings of at least:",
+    "o": [
+     "25%",
+     "10%",
+     "1%",
+     "50%"
+    ],
+    "a": 2,
+    "why": "A holding of 1% or more must be disclosed.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q13",
+    "q": "Personalised, fee-only advice to a client needs registration as a(n):",
+    "o": [
+     "Research analyst",
+     "Investment adviser",
+     "Broker",
+     "Merchant banker"
+    ],
+    "a": 1,
+    "why": "Personalised advice falls under the Investment Advisers regulations.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q14",
+    "q": "Fees for RA services must be:",
+    "o": [
+     "Hidden",
+     "Disclosed up front",
+     "Paid through brokerage only",
+     "Waived for large clients"
+    ],
+    "a": 1,
+    "why": "Fees are disclosed and charged directly.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismra-q16",
+    "q": "The policy rate at which RBI lends to banks is the:",
+    "o": [
+     "Bank rate only",
+     "Repo rate",
+     "CRR",
+     "SLR"
+    ],
+    "a": 1,
+    "why": "Repo is the key short-term lending rate.",
+    "sec": "Economy and industry"
+   },
+   {
+    "id": "nismra-q17",
+    "q": "A weaker rupee typically benefits:",
+    "o": [
+     "Importers of crude",
+     "Exporters such as IT",
+     "Airlines",
+     "Oil marketing companies"
+    ],
+    "a": 1,
+    "why": "Exporters earn in foreign currency, so a weaker rupee lifts rupee revenue.",
+    "sec": "Economy and industry"
+   },
+   {
+    "id": "nismra-q19",
+    "q": "Which is NOT one of Porter's five forces?",
+    "o": [
+     "Threat of substitutes",
+     "Rivalry among firms",
+     "Dividend yield",
+     "Bargaining power of buyers"
+    ],
+    "a": 2,
+    "why": "Dividend yield is a valuation metric, not a force.",
+    "sec": "Economy and industry"
+   },
+   {
+    "id": "nismra-q20",
+    "q": "Which sector is typically defensive?",
+    "o": [
+     "Metals",
+     "Autos",
+     "FMCG",
+     "Capital goods"
+    ],
+    "a": 2,
+    "why": "FMCG demand is stable through cycles.",
+    "sec": "Economy and industry"
+   },
+   {
+    "id": "nismra-q22",
+    "q": "EBITDA minus depreciation is:",
+    "o": [
+     "PAT",
+     "EBIT",
+     "Net worth",
+     "CFO"
+    ],
+    "a": 1,
+    "why": "EBIT = EBITDA − depreciation and amortisation.",
+    "sec": "Company analysis"
+   },
+   {
+    "id": "nismra-q23",
+    "q": "Free cash flow is typically:",
+    "o": [
+     "Revenue − costs",
+     "CFO − capex",
+     "PAT + dividends",
+     "Assets − liabilities"
+    ],
+    "a": 1,
+    "why": "FCF = operating cash flow less capital expenditure.",
+    "sec": "Company analysis"
+   },
+   {
+    "id": "nismra-q25",
+    "q": "DuPont ROE equals:",
+    "o": [
+     "Margin × turnover × equity multiplier",
+     "Margin + turnover + leverage",
+     "PAT ÷ revenue only",
+     "EBIT ÷ interest"
+    ],
+    "a": 0,
+    "why": "ROE is the product of margin, asset turnover and leverage.",
+    "sec": "Company analysis"
+   },
+   {
+    "id": "nismra-q26",
+    "q": "Interest coverage is calculated as:",
+    "o": [
+     "PAT ÷ interest",
+     "EBIT ÷ interest",
+     "Debt ÷ equity",
+     "CA ÷ CL"
+    ],
+    "a": 1,
+    "why": "Interest coverage = EBIT ÷ interest expense.",
+    "sec": "Company analysis"
+   },
+   {
+    "id": "nismra-q28",
+    "q": "CFO persistently far below PAT suggests:",
+    "o": [
+     "Strong earnings quality",
+     "Possible weak earnings quality",
+     "Lower tax",
+     "Higher dividends"
+    ],
+    "a": 1,
+    "why": "Profit not converting to cash is a classic warning sign.",
+    "sec": "Company analysis"
+   },
+   {
+    "id": "nismra-q29",
+    "q": "Receivables growing much faster than sales may indicate:",
+    "o": [
+     "Efficient collection",
+     "Aggressive revenue recognition",
+     "Lower leverage",
+     "Higher margins"
+    ],
+    "a": 1,
+    "why": "It can signal stretched credit terms or early revenue booking.",
+    "sec": "Company analysis"
+   },
+   {
+    "id": "nismra-q31",
+    "q": "In the Gordon growth model, terminal value equals:",
+    "o": [
+     "FCF × (1 + g) ÷ (WACC − g)",
+     "FCF ÷ (WACC + g)",
+     "FCF × WACC × g",
+     "FCF − g"
+    ],
+    "a": 0,
+    "why": "TV = FCF₁ ÷ (WACC − g).",
+    "sec": "Valuation"
+   },
+   {
+    "id": "nismra-q32",
+    "q": "CAPM cost of equity is:",
+    "o": [
+     "Rf + β(Rm − Rf)",
+     "Rf × β",
+     "Rm − Rf",
+     "β ÷ Rf"
+    ],
+    "a": 0,
+    "why": "Cost of equity = risk-free rate + beta × market risk premium.",
+    "sec": "Valuation"
+   },
+   {
+    "id": "nismra-q34",
+    "q": "Enterprise value equals:",
+    "o": [
+     "Market cap + debt − cash",
+     "Market cap − debt",
+     "Book value + debt",
+     "Revenue − costs"
+    ],
+    "a": 0,
+    "why": "EV = market cap + debt − cash (and minorities).",
+    "sec": "Valuation"
+   },
+   {
+    "id": "nismra-q35",
+    "q": "Which multiple suits banks best?",
+    "o": [
+     "EV/EBITDA",
+     "P/B",
+     "EV/Sales",
+     "Dividend payout"
+    ],
+    "a": 1,
+    "why": "For lenders, book value and returns on equity matter most.",
+    "sec": "Valuation"
+   },
+   {
+    "id": "nismra-q37",
+    "q": "An RSI above 70 is usually read as:",
+    "o": [
+     "Oversold",
+     "Overbought",
+     "Neutral",
+     "A crash signal"
+    ],
+    "a": 1,
+    "why": "RSI over 70 suggests the move may be stretched.",
+    "sec": "Technicals and instruments"
+   },
+   {
+    "id": "nismra-q38",
+    "q": "A 'golden cross' is when:",
+    "o": [
+     "50-day MA crosses above 200-day MA",
+     "200-day MA crosses above 50-day",
+     "Price touches support",
+     "Volume halves"
+    ],
+    "a": 0,
+    "why": "The short average crossing above the long one is a bullish signal.",
+    "sec": "Technicals and instruments"
+   },
+   {
+    "id": "nismra-q40",
+    "q": "The maximum loss for an option buyer is:",
+    "o": [
+     "Unlimited",
+     "The premium paid",
+     "The strike price",
+     "Zero"
+    ],
+    "a": 1,
+    "why": "A buyer can lose only the premium.",
+    "sec": "Technicals and instruments"
+   },
+   {
+    "id": "nismra-q43",
+    "q": "A research report should always state:",
+    "o": [
+     "Rating, target price and horizon with risks",
+     "Only the price",
+     "Only the logo",
+     "Only the client name"
+    ],
+    "a": 0,
+    "why": "Rating, target price, horizon and risks give the reader the full picture.",
+    "sec": "Report and conduct"
+   },
+   {
+    "id": "nismra-q46",
+    "q": "UPSI stands for:",
+    "o": [
+     "Unpublished price sensitive information",
+     "Unlimited public stock index",
+     "Unified price standard indicator",
+     "Unverified public statement"
+    ],
+    "a": 0,
+    "why": "UPSI is non-public information that could move a price.",
+    "sec": "Report and conduct"
+   },
+   {
+    "id": "nismra-q49",
+    "q": "Giving a preview of a report only to some clients is:",
+    "o": [
+     "Good service",
+     "Selective disclosure",
+     "Hedging",
+     "Required"
+    ],
+    "a": 1,
+    "why": "All clients should receive research at the same time.",
+    "sec": "Report and conduct"
+   },
+   {
+    "id": "nismra-q52",
+    "q": "A good worked review should connect:",
+    "o": [
+     "Only the chart",
+     "Macro, industry, company, valuation and conduct",
+     "Only price",
+     "Only news"
+    ],
+    "a": 1,
+    "why": "Strong research builds from the top down and ends with conduct checks.",
+    "sec": "Report and conduct"
+   }
+  ]
+ },
+ "role_play": null
+}

@@ -1,0 +1,69 @@
+{
+ "id": "nismva-11",
+ "title": "Measuring returns",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Performance and risk",
+ "objectives": [
+  "Compute absolute return and CAGR.",
+  "Know when to use XIRR and TRI benchmarks."
+ ],
+ "body_md": "## Types of return\n\n| Measure | Formula / use |\n|---|---|\n| **Absolute return** | (End value − start value) ÷ start value; for periods up to a year |\n| **CAGR** | (End ÷ Start)^(1/years) − 1; for lump sums over more than a year |\n| **XIRR** | Annualised return for investments with several dates, such as SIPs |\n| **Trailing return** | Return up to today over 1, 3, 5 years |\n| **Rolling return** | Returns across many start dates; shows consistency |\n\n## Benchmarks\n\n- A fund should be compared with a **benchmark** that matches its category.\n- SEBI requires use of **Total Return Index (TRI)**, which includes dividends, not just the price index.\n\n## Pitfalls\n\n- A one-year figure is a poor basis for choosing a fund.\n- Returns of a Regular plan are lower than a Direct plan; compare like with like.\n- Past performance is not a guide to the future.\n\n> **Exam tip:** ₹1,000 to ₹1,210 over 2 years: CAGR = (1.21)^(1/2) − 1 = 10%.",
+ "key_terms": [
+  "CAGR",
+  "XIRR",
+  "TRI",
+  "rolling return"
+ ],
+ "example": "₹1 lakh grows to ₹1.69 lakh in 4 years. CAGR = 1.69^(1/4) − 1 ≈ 14%.",
+ "say": [
+  "We compare this fund with its TRI benchmark over several periods.",
+  "Past returns do not guarantee the future."
+ ],
+ "never": [
+  "Pick the fund with the best one-year return.",
+  "Compare a Direct plan return with a Regular plan return and call it equal."
+ ],
+ "check": [
+  {
+   "id": "nismva-q31",
+   "q": "For a SIP with many cash flows, the best return measure is:",
+   "o": [
+    "Absolute return",
+    "XIRR",
+    "Dividend yield",
+    "NAV"
+   ],
+   "a": 1,
+   "why": "XIRR handles irregular dates and amounts."
+  },
+  {
+   "id": "nismva-q32",
+   "q": "₹1,000 becomes ₹1,210 in two years. CAGR is:",
+   "o": [
+    "5%",
+    "10%",
+    "21%",
+    "15%"
+   ],
+   "a": 1,
+   "why": "(1.21)^(1/2) − 1 = 10%."
+  },
+  {
+   "id": "nismva-q33",
+   "q": "SEBI requires benchmarking against:",
+   "o": [
+    "Price index only",
+    "Total Return Index",
+    "Gold price",
+    "Bank FD rate"
+   ],
+   "a": 1,
+   "why": "TRI includes dividends and is a fairer comparison."
+  }
+ ],
+ "card_ids": [
+  "nismva-c11"
+ ],
+ "words": 176
+}

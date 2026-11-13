@@ -1,0 +1,69 @@
+{
+ "id": "nismva-01",
+ "title": "Concept and role of mutual funds",
+ "minutes": 5,
+ "level": "beginner",
+ "stage": "Foundations",
+ "objectives": [
+  "Explain how a mutual fund pools money and issues units.",
+  "List the advantages and the limits for an investor."
+ ],
+ "body_md": "A **mutual fund** is a trust that pools money from many investors and invests it in securities according to a stated objective. Investors receive **units**, so each holds a proportional share of the portfolio.\n\n## Advantages\n\n- **Professional management** by a fund manager.\n- **Diversification** even with small amounts.\n- **Liquidity** in open-ended schemes, through purchase and redemption at NAV.\n- **Affordability:** SIPs can start at small amounts.\n- **Transparency:** regular portfolio and NAV disclosure.\n- **Regulation** by SEBI.\n\n## Limits\n\n| Limit | Why it matters |\n|---|---|\n| Market risk remains | Units can fall in value |\n| Costs | The expense ratio is charged every day, inside the NAV |\n| No guaranteed return | Past performance does not predict the future |\n| Tax on gains | Capital gains are taxed |\n\n## Who benefits\n\nInvestors who lack the time or skills to pick securities directly, and who want a disciplined, diversified route to goals.\n\n> **Exam tip:** Remember \"pooling, professional management, diversification, liquidity, regulation\".",
+ "key_terms": [
+  "unit",
+  "pooling",
+  "diversification",
+  "NAV"
+ ],
+ "example": "Ten thousand investors put in ₹100 crore. The fund buys 60 companies. A small investor with ₹5,000 owns a slice of all 60, which she could not afford to buy individually.",
+ "say": [
+  "Your money is invested across many securities, but it is still subject to market risk.",
+  "Costs are charged inside the NAV every day."
+ ],
+ "never": [
+  "Mutual funds guarantee returns.",
+  "There are no costs in mutual funds."
+ ],
+ "check": [
+  {
+   "id": "nismva-q1",
+   "q": "Investors in a mutual fund hold:",
+   "o": [
+    "Shares of the AMC",
+    "Units of the scheme",
+    "Bonds of the sponsor",
+    "Deposits with the RTA"
+   ],
+   "a": 1,
+   "why": "Investors own units of the scheme in proportion to their investment."
+  },
+  {
+   "id": "nismva-q2",
+   "q": "Which is an advantage of a mutual fund?",
+   "o": [
+    "Guaranteed returns",
+    "Professional management and diversification",
+    "No market risk",
+    "No costs"
+   ],
+   "a": 1,
+   "why": "Professional management and diversification are core benefits."
+  },
+  {
+   "id": "nismva-q3",
+   "q": "Mutual fund investments are:",
+   "o": [
+    "Free of market risk",
+    "Subject to market risk",
+    "Insured by SEBI",
+    "Guaranteed by AMFI"
+   ],
+   "a": 1,
+   "why": "All mutual fund investments carry market risk."
+  }
+ ],
+ "card_ids": [
+  "nismva-c1"
+ ],
+ "words": 170
+}

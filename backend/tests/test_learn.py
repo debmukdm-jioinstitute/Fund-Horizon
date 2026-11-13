@@ -39,14 +39,16 @@ MODULES = {"mf": (22, "Module 1"), "pms": (16, "Module 2"), "sip": (18, "Module 
            "psych": (17, "Module 3"), "compare": (16, "Module 4"), "terms": (18, "Module 5"),
            "bonds": (18, "Module 6"), "idcw": (16, "Module 8"), "goals": (16, "Module 9"),
            "timing": (16, "Module 11"), "rebal": (16, "Module 15"), "overlap": (16, "Module 16"),
-           "withdraw": (16, "Module 17")}
+           "withdraw": (16, "Module 17"),
+           "nismra": (18, "Module 18 · NISM XV"), "nismva": (17, "Module 19 · NISM V-A")}
+CORE = [m for m in MODULES if not m.startswith("nism")]
 
 
 def test_content_is_consistent():
     c = L._content()
     assert set(c["mods"]) == set(MODULES)
     # syllabus order, not directory order: Module 1 must stay the first module a new joiner sees
-    assert list(c["mods"]) == ["mf", "pms", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "sip", "alloc", "stepup", "rebal", "overlap", "withdraw"]
+    assert list(c["mods"]) == ["mf", "pms", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "sip", "alloc", "stepup", "rebal", "overlap", "withdraw", "nismra", "nismva"]
     for mid, (n_lessons, code) in MODULES.items():
         mod = c["mods"][mid]
         assert (len(mod["_lessons"]), mod["code"]) == (n_lessons, code), mid
@@ -88,11 +90,11 @@ def test_certificate_needs_all_thirteen_finals_and_names_them(client, admin):
     for mid in ("pms", "sip", "alloc", "stepup", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "rebal", "overlap", "withdraw"):
         play(client, f"{mid}-final")
     me = client.get("/api/learn/me").json()
-    assert set(me["certificate"]) == set(MODULES)
+    assert set(me["certificate"]) == set(CORE)  # NISM exam-prep tracks stay outside the core certificate
     mods = L._content()["mods"]
     assert all(c["score"] == len(mods[m]["final"]["questions"]) and c["title"] for m, c in me["certificate"].items())
     badges = {b["id"] for b in me["badges"]}
-    assert {f"grad_{m}" for m in MODULES} | {"full_stack"} <= badges
+    assert {f"grad_{m}" for m in CORE} | {"full_stack"} <= badges
 
 
 # --- pure helpers ----------------------------------------------------------------------------------------

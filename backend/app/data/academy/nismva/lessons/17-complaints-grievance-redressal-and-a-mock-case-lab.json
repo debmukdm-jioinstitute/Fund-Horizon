@@ -1,0 +1,69 @@
+{
+ "id": "nismva-17",
+ "title": "Complaints, grievance redressal and a mock case lab",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Planning and conduct",
+ "objectives": [
+  "Describe the complaint route for investors.",
+  "Solve short cases using the AMFI code."
+ ],
+ "body_md": "## Grievance route\n\n1. Complain first to the **distributor or AMC** (and the RTA for service issues).\n2. If unresolved, escalate to **SEBI SCORES** (online).\n3. Then **Smart ODR** (online dispute resolution), a structured process with conciliation and arbitration.\n\nAMCs have investor service teams and a compliance officer; trustees review complaints.\n\n## Short cases\n\n**Case 1.** A client wants the fund 'that doubled last year'. *Principle:* past returns are not a promise; match to goal and risk.\n\n**Case 2.** A client in his 60s asks to put his emergency fund in a small-cap fund. *Principle:* suitability; short-term money belongs in low-risk schemes.\n\n**Case 3.** A colleague suggests using one client's PAN for another to save paperwork. *Principle:* never; KYC must be accurate.\n\n**Case 4.** An investor misses the 3 pm cut-off by ten minutes. *Principle:* next business day's NAV; no exception.\n\n**Case 5.** A client asks if SIP returns are guaranteed. *Principle:* SIP builds discipline, not a guarantee.\n\n## Remember\n\nRecord every recommendation and the reason. If in doubt, disclose and escalate.\n\n> **Exam tip:** Complaint order: AMC/distributor, then SCORES, then Smart ODR.",
+ "key_terms": [
+  "SCORES",
+  "Smart ODR",
+  "suitability",
+  "cut-off"
+ ],
+ "example": "A client's redemption proceeds are delayed beyond the stated period. She complains to the AMC; without a satisfactory answer she files on SEBI SCORES and, if still unresolved, Smart ODR.",
+ "say": [
+  "If you are not satisfied, you can complain to us, then SEBI SCORES, then Smart ODR.",
+  "I will record why this fund suits your goal."
+ ],
+ "never": [
+  "Don't complain, I will sort it out privately.",
+  "Use his PAN, it is quicker."
+ ],
+ "check": [
+  {
+   "id": "nismva-q49",
+   "q": "The online SEBI platform for investor complaints is:",
+   "o": [
+    "SCORES",
+    "NACH",
+    "UPI",
+    "EPFO"
+   ],
+   "a": 0,
+   "why": "SCORES is SEBI's complaint redress system."
+  },
+  {
+   "id": "nismva-q50",
+   "q": "An application received after the cut-off gets:",
+   "o": [
+    "Same-day NAV",
+    "Next business day's NAV",
+    "A special NAV",
+    "No NAV"
+   ],
+   "a": 1,
+   "why": "Late applications use the next business day's NAV."
+  },
+  {
+   "id": "nismva-q51",
+   "q": "Using one person's PAN for another's account is:",
+   "o": [
+    "Acceptable",
+    "A KYC violation",
+    "A shortcut",
+    "Recommended"
+   ],
+   "a": 1,
+   "why": "KYC must be accurate and genuine."
+  }
+ ],
+ "card_ids": [
+  "nismva-c17"
+ ],
+ "words": 183
+}

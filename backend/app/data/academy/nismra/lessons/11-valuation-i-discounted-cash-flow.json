@@ -1,0 +1,70 @@
+{
+ "id": "nismra-11",
+ "title": "Valuation I: discounted cash flow",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Valuation",
+ "objectives": [
+  "Build a simple DCF with WACC and terminal value.",
+  "State what drives the answer and where it goes wrong."
+ ],
+ "body_md": "A DCF values a business at the **present value of its future free cash flows**.\n\n## Steps\n\n1. Forecast **FCFF** for an explicit period (5 to 10 years).\n2. Estimate **WACC**, the discount rate.\n3. Estimate **terminal value** at the end of the period.\n4. Discount everything, add up, subtract net debt, divide by shares.\n\n## WACC\n\n**WACC = E/V × Re + D/V × Rd × (1 − tax)**\n\nCost of equity from CAPM: **Re = Rf + β × (Rm − Rf)**.\n\n## Terminal value (Gordon growth)\n\n**TV = FCF × (1 + g) ÷ (WACC − g)**\n\nThe terminal growth *g* must be below long-run nominal GDP growth; otherwise the firm outgrows the economy.\n\n## Pitfalls\n\n| Issue | Effect |\n|---|---|\n| Terminal value is 60 to 80% of value | Small changes in *g* or WACC swing the answer |\n| Over-optimistic growth | Inflated value |\n| Ignoring capex needs | Overstated FCF |\n\n> **Exam tip:** Recompute WACC from the formula; the exam tests the arithmetic.",
+ "key_terms": [
+  "FCFF",
+  "WACC",
+  "CAPM",
+  "terminal value",
+  "beta"
+ ],
+ "example": "FCF next year ₹100 crore, g = 5%, WACC = 10%. Terminal value at that point = 100 ÷ (0.10 − 0.05) = ₹2,000 crore. Always discount it back to today.",
+ "say": [
+  "Our DCF assumes WACC of 11% and terminal growth of 5%; here is the sensitivity table.",
+  "The result is a range, not a single number."
+ ],
+ "never": [
+  "The DCF gives the exact price.",
+  "Set terminal growth at 15% to make it work."
+ ],
+ "check": [
+  {
+   "id": "nismra-q31",
+   "q": "In the Gordon growth model, terminal value equals:",
+   "o": [
+    "FCF × (1 + g) ÷ (WACC − g)",
+    "FCF ÷ (WACC + g)",
+    "FCF × WACC × g",
+    "FCF − g"
+   ],
+   "a": 0,
+   "why": "TV = FCF₁ ÷ (WACC − g)."
+  },
+  {
+   "id": "nismra-q32",
+   "q": "CAPM cost of equity is:",
+   "o": [
+    "Rf + β(Rm − Rf)",
+    "Rf × β",
+    "Rm − Rf",
+    "β ÷ Rf"
+   ],
+   "a": 0,
+   "why": "Cost of equity = risk-free rate + beta × market risk premium."
+  },
+  {
+   "id": "nismra-q33",
+   "q": "Terminal growth should be:",
+   "o": [
+    "Above WACC",
+    "Below long-run nominal GDP growth",
+    "Always 10%",
+    "Equal to ROE"
+   ],
+   "a": 1,
+   "why": "A firm cannot grow faster than the economy for ever."
+  }
+ ],
+ "card_ids": [
+  "nismra-c11"
+ ],
+ "words": 173
+}

@@ -96,6 +96,18 @@
   "hint": "Pass the Withdrawal Planning final quiz."
  },
  {
+  "id": "grad_nismra",
+  "name": "Module Graduate (NISM Research Analyst)",
+  "icon": "🎓",
+  "hint": "Pass the NISM Research Analyst final quiz."
+ },
+ {
+  "id": "grad_nismva",
+  "name": "Module Graduate (NISM MF Distributor)",
+  "icon": "🎓",
+  "hint": "Pass the NISM MF Distributor final quiz."
+ },
+ {
   "id": "streak_7",
   "name": "7-Day Streak",
   "icon": "🔥",

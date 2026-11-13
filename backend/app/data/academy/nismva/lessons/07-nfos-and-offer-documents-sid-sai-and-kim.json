@@ -1,0 +1,70 @@
+{
+ "id": "nismva-07",
+ "title": "NFOs and offer documents: SID, SAI and KIM",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "Schemes",
+ "objectives": [
+  "Explain what each offer document contains.",
+  "Apply the NFO rules."
+ ],
+ "body_md": "## Documents\n\n| Document | Content |\n|---|---|\n| **SID** (Scheme Information Document) | Scheme-specific: objective, asset allocation, risks, costs, loads |\n| **SAI** (Statement of Additional Information) | Fund-wide: constitution, AMC, trustees, legal |\n| **KIM** (Key Information Memorandum) | Summary of the SID and SAI; given with the application form |\n| **Addendum** | Notifies changes during the life of the scheme |\n\n## NFO basics\n\n- A **New Fund Offer** raises money for a new scheme at a face value of **₹10** per unit (typical).\n- The NFO must be open for no more than **15 days**.\n- Units are allotted within **five working days** of closing.\n- An NFO is **not cheaper** because the price is ₹10; the NAV only starts there.\n- Many categories already exist; an NFO should fill a real need, not just follow a trend.\n\n## Advertising rules\n\nAds must be **fair, not misleading** and carry the standard risk statement: *Mutual fund investments are subject to market risks, read all scheme related documents carefully.*\n\n> **Exam tip:** SID is scheme-specific, SAI is fund-wide, KIM is the summary.",
+ "key_terms": [
+  "SID",
+  "SAI",
+  "KIM",
+  "NFO",
+  "addendum"
+ ],
+ "example": "A client says an NFO at ₹10 is cheaper than a ₹150 NAV fund. A ₹10 NAV simply means fewer rupees per unit; it does not mean better value.",
+ "say": [
+  "The KIM comes with the form; please read the SID for the scheme's risks and costs.",
+  "An NFO at ₹10 is not a bargain; compare it with existing funds."
+ ],
+ "never": [
+  "Buy the NFO, it is only ₹10 per unit.",
+  "No need to read the documents."
+ ],
+ "check": [
+  {
+   "id": "nismva-q19",
+   "q": "The document with scheme-specific details is the:",
+   "o": [
+    "SAI",
+    "SID",
+    "Trust deed",
+    "Annual report"
+   ],
+   "a": 1,
+   "why": "The SID holds scheme-specific information."
+  },
+  {
+   "id": "nismva-q20",
+   "q": "The maximum period an NFO can stay open is:",
+   "o": [
+    "7 days",
+    "15 days",
+    "30 days",
+    "90 days"
+   ],
+   "a": 1,
+   "why": "An NFO can be open for at most 15 days."
+  },
+  {
+   "id": "nismva-q21",
+   "q": "A ₹10 NAV compared with ₹150 NAV means the NFO is:",
+   "o": [
+    "Cheaper in value",
+    "Not necessarily cheaper; unit price only",
+    "Guaranteed to rise",
+    "Free of cost"
+   ],
+   "a": 1,
+   "why": "Unit price does not show value."
+  }
+ ],
+ "card_ids": [
+  "nismva-c7"
+ ],
+ "words": 185
+}

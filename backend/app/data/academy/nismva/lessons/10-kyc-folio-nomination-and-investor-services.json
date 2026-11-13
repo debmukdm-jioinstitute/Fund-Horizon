@@ -1,0 +1,70 @@
+{
+ "id": "nismva-10",
+ "title": "KYC, folio, nomination and investor services",
+ "minutes": 6,
+ "level": "beginner",
+ "stage": "Costs and transactions",
+ "objectives": [
+  "List the onboarding documents and the role of KYC.",
+  "Explain folios, nomination and statements."
+ ],
+ "body_md": "## KYC and onboarding\n\n- **KYC** is mandatory for every investor, done once through a KYC Registration Agency (KRA).\n- Documents: **PAN**, proof of identity and address, photo, bank details.\n- **FATCA/CRS** declarations identify tax residence.\n- **Minors** invest through a guardian; **joint holders** can be 'any one or survivor' or 'joint'.\n\n## Folio\n\nA **folio** is the investor's account number with an AMC. One investor may hold several folios across AMCs.\n\n## Nomination\n\nNomination (or a declaration to opt out) is required. A nominee receives the units on the death of the holder.\n\n## Statements\n\n- **Account statement** after each transaction.\n- **Consolidated Account Statement (CAS)** across AMCs, monthly when there are transactions.\n- Half-yearly portfolio and annual reports.\n\n## Changes\n\nUpdating address, bank mandate or nominee needs proper documentation.\n\n> **Exam tip:** KYC is a one-time process; a folio is per AMC.",
+ "key_terms": [
+  "KYC",
+  "KRA",
+  "folio",
+  "nomination",
+  "CAS"
+ ],
+ "example": "An investor invests with two AMCs. She has two folios but one KYC and one CAS that shows both.",
+ "say": [
+  "You need KYC once; it works across fund houses.",
+  "Please add a nominee so your family can claim easily."
+ ],
+ "never": [
+  "Nomination is not necessary.",
+  "A separate KYC is needed for every fund house."
+ ],
+ "check": [
+  {
+   "id": "nismva-q28",
+   "q": "A folio is:",
+   "o": [
+    "A type of fund",
+    "An investor's account with an AMC",
+    "A bank account",
+    "A tax form"
+   ],
+   "a": 1,
+   "why": "A folio is the investor's account number with an AMC."
+  },
+  {
+   "id": "nismva-q29",
+   "q": "A CAS shows:",
+   "o": [
+    "Only one AMC",
+    "Holdings across AMCs",
+    "Only SIPs",
+    "Only tax"
+   ],
+   "a": 1,
+   "why": "A consolidated account statement covers multiple AMCs."
+  },
+  {
+   "id": "nismva-q30",
+   "q": "Nominee receives the units:",
+   "o": [
+    "When the holder wishes",
+    "On the holder's death",
+    "After one year",
+    "Never"
+   ],
+   "a": 1,
+   "why": "The nominee claims the units on death of the holder."
+  }
+ ],
+ "card_ids": [
+  "nismva-c10"
+ ],
+ "words": 144
+}

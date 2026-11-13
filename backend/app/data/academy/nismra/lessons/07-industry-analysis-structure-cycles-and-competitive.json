@@ -1,0 +1,69 @@
+{
+ "id": "nismra-07",
+ "title": "Industry analysis: structure, cycles and competitive forces",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Economy and industry",
+ "objectives": [
+  "Apply Porter's five forces and the industry life cycle.",
+  "Separate cyclical, defensive and growth industries."
+ ],
+ "body_md": "After the economy, study the **industry**.\n\n## Porter's five forces\n\n1. **Threat of new entrants:** low barriers mean lower margins.\n2. **Bargaining power of suppliers.**\n3. **Bargaining power of buyers.**\n4. **Threat of substitutes.**\n5. **Rivalry among existing firms.**\n\nA high score on these forces means a tough industry with thin returns.\n\n## Industry life cycle\n\n| Stage | Features |\n|---|---|\n| Start-up | Small, losses, high risk |\n| Growth | Fast sales, new entrants, rising capex |\n| Maturity | Slower growth, consolidation, dividends |\n| Decline | Falling demand, exits |\n\n## Cyclical vs defensive\n\n- **Cyclical** industries (autos, metals, capital goods) swing with the economy.\n- **Defensive** industries (FMCG, pharma, utilities) hold up better in slowdowns.\n\nLook at **market share**, **pricing power**, **regulation**, **capacity utilisation** and **entry barriers**.\n\n> **Exam tip:** Match each force to an example; the exam tests recognition.",
+ "key_terms": [
+  "Porter's five forces",
+  "industry life cycle",
+  "cyclical",
+  "entry barriers"
+ ],
+ "example": "Telecom has few large players, heavy spectrum costs and strong regulation: high entry barriers but fierce rivalry, so returns depend on pricing discipline.",
+ "say": [
+  "We assess the industry before the company, using structure, cycle and regulation.",
+  "A good company in a poor industry still struggles."
+ ],
+ "never": [
+  "Growth industries always give high returns.",
+  "Industry analysis is a waste of time."
+ ],
+ "check": [
+  {
+   "id": "nismra-q19",
+   "q": "Which is NOT one of Porter's five forces?",
+   "o": [
+    "Threat of substitutes",
+    "Rivalry among firms",
+    "Dividend yield",
+    "Bargaining power of buyers"
+   ],
+   "a": 2,
+   "why": "Dividend yield is a valuation metric, not a force."
+  },
+  {
+   "id": "nismra-q20",
+   "q": "Which sector is typically defensive?",
+   "o": [
+    "Metals",
+    "Autos",
+    "FMCG",
+    "Capital goods"
+   ],
+   "a": 2,
+   "why": "FMCG demand is stable through cycles."
+  },
+  {
+   "id": "nismra-q21",
+   "q": "High entry barriers generally:",
+   "o": [
+    "Lower returns for incumbents",
+    "Protect incumbent margins",
+    "Remove regulation",
+    "Cause losses"
+   ],
+   "a": 1,
+   "why": "Barriers keep new rivals away and support margins."
+  }
+ ],
+ "card_ids": [
+  "nismra-c7"
+ ],
+ "words": 146
+}

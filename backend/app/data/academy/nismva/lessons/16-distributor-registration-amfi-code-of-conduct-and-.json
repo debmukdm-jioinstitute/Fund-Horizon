@@ -1,0 +1,70 @@
+{
+ "id": "nismva-16",
+ "title": "Distributor registration, AMFI code of conduct and ethics",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Planning and conduct",
+ "objectives": [
+  "Explain ARN, EUIN and the NISM requirement.",
+  "Apply the AMFI code of conduct."
+ ],
+ "body_md": "## Becoming a distributor\n\n- Pass **NISM-Series-V-A** and register with **AMFI** to get an **ARN** (AMFI Registration Number).\n- Each employee or sub-broker who sells uses an **EUIN** (Employee Unique Identification Number) to trace the advice.\n- Certification and ARN must be **renewed**.\n\n## What a distributor may and may not do\n\n| Allowed | Not allowed |\n|---|---|\n| Sell and service MF products | Handle client money (cheques go to the AMC) |\n| Give **incidental advice** on products | Give personalised portfolio advice for a fee without IA registration |\n| Earn commission disclosed to clients | Promise returns |\n| Provide statements and service | Churn clients for commission |\n\n## AMFI code of conduct (principles)\n\n- Act in the client's interest; know the product and the client.\n- Disclose all commission and conflicts; give the **correct risk disclosure**.\n- Use only **approved** and accurate marketing material.\n- Maintain confidentiality; refer complaints on time.\n- Never mis-sell, rebate against the rules, or spread rumours.\n\n> **Exam tip:** ARN for the firm, EUIN for the person.",
+ "key_terms": [
+  "ARN",
+  "EUIN",
+  "AMFI code of conduct",
+  "mis-selling",
+  "churning"
+ ],
+ "example": "A distributor moves a client from one fund to another to earn a higher commission without a client reason. That is churning and breaches the code.",
+ "say": [
+  "I earn a trail commission from the AMC; Direct plans cost less.",
+  "Please write cheques to the fund, not to me."
+ ],
+ "never": [
+  "Give me a cheque in my name and I will invest it for you.",
+  "This fund will give 18% every year."
+ ],
+ "check": [
+  {
+   "id": "nismva-q46",
+   "q": "EUIN stands for:",
+   "o": [
+    "Employee Unique Identification Number",
+    "Equity Unit Index Number",
+    "Exchange User ID Number",
+    "Evaluated Unit Investor Name"
+   ],
+   "a": 0,
+   "why": "EUIN identifies the individual who sold the product."
+  },
+  {
+   "id": "nismva-q47",
+   "q": "A distributor should take cheques made out to:",
+   "o": [
+    "The distributor",
+    "The mutual fund scheme",
+    "A personal account",
+    "A friend"
+   ],
+   "a": 1,
+   "why": "Cheques go to the scheme; distributors never handle client money."
+  },
+  {
+   "id": "nismva-q48",
+   "q": "Switching a client purely to earn a higher commission is:",
+   "o": [
+    "Rebalancing",
+    "Churning",
+    "Hedging",
+    "Good practice"
+   ],
+   "a": 1,
+   "why": "Churning is trading in the distributor's interest, not the client's."
+  }
+ ],
+ "card_ids": [
+  "nismva-c16"
+ ],
+ "words": 179
+}

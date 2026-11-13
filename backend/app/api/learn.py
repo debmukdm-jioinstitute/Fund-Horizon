@@ -55,7 +55,7 @@ CHECKPOINT_PASS, MOCK_PASS, MOCK_SIZE, MOCK_SECONDS, GRACE_SECONDS = 70, 50, 50,
 STAGE_OF_SECTION = {"L": "L", "E": "E", "A": "A", "R": "R", "N": "N", "Niche": "Niche"}
 # Syllabus order a new joiner follows. Module directories are loaded in this order (not alphabetically),
 # so /me progress, "next lesson" and the Home page cards all read in teaching order.
-MODULE_ORDER = ["mf", "pms", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "sip", "alloc", "stepup", "rebal", "overlap", "withdraw"]  # Module 1..17
+MODULE_ORDER = ["mf", "pms", "psych", "compare", "terms", "bonds", "idcw", "goals", "timing", "sip", "alloc", "stepup", "rebal", "overlap", "withdraw", "nismra", "nismva"]  # Module 1..17, then NISM exam-prep tracks
 _ENSURED: set[int] = set()
 
 
@@ -235,7 +235,8 @@ def _check_badges(s: Session, staff: str, extra: dict[str, bool] | None = None) 
     passed = [mid for mid in c["mods"] if _passed(s, staff, f"{mid}-final")]
     for mid in passed:
         _badge(s, staff, f"grad_{mid}", new)
-    if passed and len(passed) == len(c["mods"]):
+    core = [mid for mid in c["mods"] if not c["mods"][mid].get("track")]  # NISM exam-prep tracks sit outside the core certificate
+    if passed and set(core) <= set(passed):
         _badge(s, staff, "full_stack", new)
     streak, _ = streak_for(_activity_days(s, staff), datetime.now(IST).date().isoformat())
     if streak >= 7:
@@ -313,6 +314,7 @@ def _profile(sid: str, name: str | None) -> dict[str, Any]:
                                  next=dict(lesson_id=left[0]["id"], title=left[0]["title"], minutes=left[0]["minutes"]) if left else None)
         nxt = next(((m["id"], les) for m in c["mods"].values() for les in m["_lessons"] if les["id"] not in done), None)
         cert = {}
+        core_mods = [m for m, x in c["mods"].items() if not x.get("track")]
         for mid in c["mods"]:
             b = best.get(f"{mid}-final")
             if b and b["passed"]:
@@ -321,7 +323,7 @@ def _profile(sid: str, name: str | None) -> dict[str, Any]:
             xp=xp, level=lvl, level_name=level_name(lvl), level_floor_xp=level_xp(lvl) if lvl > 1 else 0, next_level_xp=level_xp(lvl + 1),
             streak=streak, freezes=freezes, week_xp=week, week_rank=rank, due_count=len(_due_ids(s, sid)),
             badges=[dict(id=k, earned_at=v) for k, v in badges.items()], badge_defs=c["badges"],
-            completed_lessons=sorted(done), progress=progress, quiz_best=best, certificate=cert if len(cert) == len(c["mods"]) else None,
+            completed_lessons=sorted(done), progress=progress, quiz_best=best, certificate=cert if all(m in cert for m in core_mods) else None,
             next_lesson=dict(module=nxt[0], lesson_id=nxt[1]["id"], title=nxt[1]["title"], minutes=nxt[1]["minutes"]) if nxt else None,
             new_here=not done and xp == 0, leaderboard_optout=bool(prefs and prefs.leaderboard_optout), migrated=bool(prefs and prefs.migrated_at),
             name=name,

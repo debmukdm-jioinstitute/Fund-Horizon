@@ -2,6 +2,7 @@
 render the Fund Horizon consolidated PDF, and push to CRM + email."""
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import uuid
@@ -126,9 +127,18 @@ def analyze(report: Report, me: Me):
     return {**data, "summary": summarize(data)}
 
 
+_PDF_CACHE: dict[str, bytes] = {}  # shortcut: per-process, FIFO 24 entries; upgrade if workers multiply
+
+
 @router.post("/pdf")
 def render(report: Report, me: Me):
-    pdf = build_client_report(report.model_dump())
+    d = report.model_dump()
+    key = hashlib.sha1(json.dumps(d, sort_keys=True, default=str).encode()).hexdigest()
+    pdf = _PDF_CACHE.get(key)
+    if pdf is None:  # preview re-ticks and the final download send the same body: build once
+        pdf = _PDF_CACHE[key] = build_client_report(d)
+        while len(_PDF_CACHE) > 24:
+            _PDF_CACHE.pop(next(iter(_PDF_CACHE)))
     return Response(pdf, media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{_filename(report)}"'})
 
 

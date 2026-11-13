@@ -14,9 +14,12 @@ import time
 import threading
 import zipfile
 from datetime import date, datetime, timedelta
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
+
+from reportlab import rl_config
 
 from app.config.disclosures import ARN, DISCLOSURE_LINES, FIRM
 from app.report.fmt import xml_escape
@@ -1746,6 +1749,20 @@ def summarize(data: dict[str, Any]) -> dict[str, Any]:
             "investments": sum(r["investments"] for r in rows), "div_reinv": sum(r["div_reinv"] for r in rows), "div_payout": sum(r["div_payout"] for r in rows)}
 
 
+rl_config.useA85 = 0  # raw binary streams: ASCII85-encoding annex JPEGs was ~85% of a warm build
+
+
+@lru_cache(maxsize=16)
+def _annex_jpegs(fid: str, name: str, data: bytes, pw: str) -> tuple:
+    """Render + JPEG-encode a statement once; every preview rebuild reuses it (the slow part of a 20-page report)."""
+    out = []
+    for pim in render_pages(data, scale=2.0, password=pw)[:20]:
+        buf = io.BytesIO()
+        pim.convert("RGB").save(buf, format="JPEG", quality=86)
+        out.append((buf.getvalue(), *pim.size))
+    return tuple(out)
+
+
 def build_client_report(data: dict[str, Any]) -> bytes:
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4, landscape
@@ -1775,7 +1792,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     right_b = ParagraphStyle("crrb", parent=right, fontName=BOLD_FONT)
     head = ParagraphStyle("crh", parent=bold, alignment=1, fontSize=6.6, leading=8.4, textColor=colors.white)
     head_l = ParagraphStyle("crhl", parent=head, alignment=0)
-    sec_h = ParagraphStyle("crsh", parent=bold, fontSize=10.5, leading=14, textColor=navy, spaceBefore=6, spaceAfter=3)
+    sec_h = ParagraphStyle("crsh", parent=bold, fontSize=10.5, leading=14, textColor=navy, spaceBefore=6, spaceAfter=3, keepWithNext=1)
     small = ParagraphStyle("crs", parent=body, fontSize=6.5, leading=8.5, textColor=muted)
     P = lambda s, st=body: Paragraph(xml_escape(str(s if s is not None else "")), st)  # noqa: E731
 
@@ -1907,8 +1924,6 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     cut("fy")
     fy = mat.get("fy")
     if fy:
-        from reportlab.platypus import PageBreak
-
         taupe, peach, line = colors.HexColor("#ECE9E0"), colors.HexColor("#FCE9D9"), colors.HexColor("#B7B7B7")
         dmy = lambda iso: f"{iso[8:10]}-{iso[5:7]}-{iso[:4]}"  # noqa: E731
         num = lambda v, f="{:d}": "-" if v is None else f.format(v)  # noqa: E731
@@ -1952,7 +1967,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                 + ("Units are taken lot-by-lot from the uploaded statement. " if fy["exact"] else "Where a statement gives no lot units, units are rebuilt from dated transactions and NAV. ")
                 + '"-" = history for that holding is not in the uploaded statements; nothing is estimated. XIRR for the first and last (part) years is annualised.'
                 + (" † = as reported in the uploaded provider FY dashboard (PMS / stock history); figures without † are calculated from the statements." if fy.get("reported") else ""))
-        story += [PageBreak(), KeepTogether([P("Financial-Year Summary", sec_h), hbox]), KeepTogether(sm_blk), PageBreak(), KeepTogether(xr_blk), KeepTogether([*al_blk, Spacer(1, 4), P(note, small)]), PageBreak()]
+        story += [Spacer(1, 8), KeepTogether([P("Financial-Year Summary", sec_h), hbox]), KeepTogether(sm_blk), KeepTogether(xr_blk), KeepTogether([*al_blk, Spacer(1, 4), P(note, small)])]
 
     cut("charts")
     # Section 1B: Visual Portfolio Analytics & Graphs (2x2 Grid of Matplotlib Charts)
@@ -2130,7 +2145,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         cf_widths = [9, 58, 26, 17, 26, 17, 28, 17, 18, 26, 20]
         cf_tbl = Table(cf_rows, colWidths=[w * mm for w in cf_widths], repeatRows=2)
         cf_tbl.setStyle(TableStyle(cf_styles))
-        story += [Spacer(1, 8), KeepTogether([P("2B. Category-Wise Flows, Net Gains & Valuation Matrix (Heatmap)", sec_h), cf_tbl])]
+        story += [Spacer(1, 8), P("2B. Category-Wise Flows, Net Gains & Valuation Matrix (Heatmap)", sec_h), cf_tbl]
 
     cut("cashflow")
     # Section 3B: Monthly / Period Cash-Flow & Registration Trend + Category x Month Heatmap (Images 2 & 3 style)
@@ -2184,7 +2199,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         mt_widths = [22, 23, 25, 23, 23, 36, 35, 28, 28, 34]
         mt_tbl = Table(mt_rows, colWidths=[w * mm for w in mt_widths], repeatRows=2)
         mt_tbl.setStyle(TableStyle(mt_styles))
-        story += [Spacer(1, 8), KeepTogether([P("2C. Period Investment & SIP Cash-Flow Trend Matrix", sec_h), mt_tbl])]
+        story += [Spacer(1, 8), P("2C. Period Investment & SIP Cash-Flow Trend Matrix", sec_h), mt_tbl]
 
     hm_mat = mat.get("category_monthly_heatmap") or {}
     hm_months = hm_mat.get("months") or []
@@ -2215,7 +2230,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         hm_widths = [8.0, 48.0] + [m_w] * len(hm_months) + [25.0]
         hm_tbl = Table(hm_tbl_rows, colWidths=[w * mm for w in hm_widths], repeatRows=1)
         hm_tbl.setStyle(TableStyle(hm_styles))
-        story += [Spacer(1, 8), KeepTogether([P("2D. Monthly Category-Wise Gross Inflow Trend (Heatmap)", sec_h), hm_tbl])]
+        story += [Spacer(1, 8), P("2D. Monthly Category-Wise Gross Inflow Trend (Heatmap)", sec_h), hm_tbl]
 
     cut("benchmark")
     # Section 3: 4-Index Nifty Benchmark Comparison Matrix (Same-Instalment XIRR)
@@ -2329,7 +2344,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
             ("LEFTPADDING", (0, 0), (-1, -1), 2.5), ("RIGHTPADDING", (0, 0), (-1, -1), 2.5),
         ]))
-        story += [Spacer(1, 8), KeepTogether([P("4. Fund Horizon Quality, Risk, Capture Ratios & Drawdown Matrix", sec_h), rt])]
+        story += [Spacer(1, 8), P("4. Fund Horizon Quality, Risk, Capture Ratios & Drawdown Matrix", sec_h), rt]
 
     cut("stress")
     # Section 5: Stress Test Matrix & Portfolio Observations
@@ -2351,14 +2366,14 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             rec_box.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), soft), ("BOX", (0, 0), (-1, -1), 0.35, grey), ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("LEFTPADDING", (0, 0), (-1, -1), 5), ("RIGHTPADDING", (0, 0), (-1, -1), 5)]))
         s5 = Table([[st_tbl, P(""), rec_box]], colWidths=[136 * mm, 5 * mm, 136 * mm])
         s5.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
-        story += [Spacer(1, 8), KeepTogether([P("5. Stress Test Matrix & Portfolio Observations", sec_h), s5])]
+        story += [Spacer(1, 8), P("5. Stress Test Matrix & Portfolio Observations", sec_h), s5]
 
     cut("factsheets")
     # Factsheets (PMS / AMC)
     for fs in data.get("factsheets") or []:
         ft = Table([[P(fs["source"], head_l), P("", head)]] + [[P(it["label"], bold), P(it["value"])] for it in fs["items"]], colWidths=[75 * mm, 202 * mm])
         ft.setStyle(TableStyle([("SPAN", (0, 0), (-1, 0)), ("BACKGROUND", (0, 0), (-1, 0), navy), ("GRID", (0, 0), (-1, -1), 0.35, grey), ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, soft]), ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]))
-        story += [Spacer(1, 8), KeepTogether([P("Factsheet & Strategy Highlights", sec_h), ft])]
+        story += [Spacer(1, 8), P("Factsheet & Strategy Highlights", sec_h), ft]
 
     cut("notes")
     # Notes & Regulatory Disclosures
@@ -2370,8 +2385,6 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     cut("annex")
     # Annexure: Attached Copies of Uploaded Source Statements (rendered within ReportLab using Google Sans)
     if data.get("attach_statements", True) and on("annex"):
-        from reportlab.platypus import PageBreak
-
         s_files = data.get("source_files") or []
         seen_ids: set[str] = set()
         annex_idx = 0
@@ -2386,26 +2399,22 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             sf_name, sf_bytes, sf_pw = loaded
             annex_idx += 1
             story += [
-                PageBreak(),
+                Spacer(1, 10),
                 P(f"Annexure S{annex_idx} — Attached Source Statement Copy: {sf_name}", sec_h),
                 P(f"Original uploaded file ({round(len(sf_bytes) / 1024, 1)} KB) · SHA-256: {fid}… · Verified & consolidated into this report.", small),
                 Spacer(1, 4),
             ]
             if is_pdf(sf_name, sf_bytes):
                 try:
-                    pil_pages = render_pages(sf_bytes, scale=2.0, password=sf_pw)
+                    jpegs = _annex_jpegs(fid, sf_name, sf_bytes, sf_pw)
                 except Exception:
-                    pil_pages = []
-                if pil_pages:
-                    for p_no, pim in enumerate(pil_pages[:20], 1):
-                        if p_no > 1:
-                            story += [PageBreak(), P(f"Annexure S{annex_idx} (cont.) — {sf_name} (Page {p_no} of {len(pil_pages)})", sec_h), Spacer(1, 3)]
-                        img_buf = io.BytesIO()
-                        pim.convert("RGB").save(img_buf, format="JPEG", quality=86)
-                        pw, ph = pim.size
-                        max_w, max_h = 268 * mm, 160 * mm
-                        scale_f = min(max_w / max(pw, 1), max_h / max(ph, 1))
-                        story.append(RLImage(io.BytesIO(img_buf.getvalue()), width=pw * scale_f, height=ph * scale_f))
+                    jpegs = []
+                if jpegs:
+                    for p_no in range(1, len(jpegs) + 1):
+                        jpg, pw, ph = jpegs[p_no - 1]
+                        scale_f = min(268 * mm / max(pw, 1), 160 * mm / max(ph, 1))
+                        img = RLImage(io.BytesIO(jpg), width=pw * scale_f, height=ph * scale_f)
+                        story.append(img if p_no == 1 else KeepTogether([P(f"Annexure S{annex_idx} (cont.) — {sf_name} (Page {p_no} of {len(jpegs)})", sec_h), Spacer(1, 3), img]))
                 else:
                     try:
                         raw_t = extract_text(sf_name, sf_bytes)

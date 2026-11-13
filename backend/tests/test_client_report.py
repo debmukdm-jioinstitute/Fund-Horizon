@@ -404,3 +404,22 @@ def test_sections_filter_drops_unticked_sections(monkeypatch):
     for k in keys:  # every section alone builds; two at once too (stress: rapid tick/untick)
         assert build_client_report({**d, "sections": [k]}).startswith(b"%PDF")
     assert build_client_report({**d, "sections": keys[::2]}).startswith(b"%PDF") and build_client_report({**d, "sections": ["bogus"]}).startswith(b"%PDF")
+
+
+def test_no_forced_page_breaks_and_repeat_builds_are_fast(monkeypatch):
+    import inspect
+    import time
+
+    import app.report.client_report as cr
+
+    assert "PageBreak()" not in inspect.getsource(cr.build_client_report)  # content flows; no forced breaks
+    _mock_fh(monkeypatch)
+    text = "Portfolio Valuation Report - Folio Wise   Fund Horizon\nA B Test   ARN: 345439  |  Phone: 9920406408\n23 Oct 2026\n1   " + ROWS + \
+        "Grand Total   3,52,103.35   3,52,103.35   0.00   0.00   7,97,440.90   100.00%   126.48%   14.31%\n"
+    monkeypatch.setattr("app.report.client_report.extract_text", lambda n, b: text)
+    d = parse_files([("s.pdf", b"")])
+    build_client_report(dict(d))
+    t = time.perf_counter()
+    for _ in range(20):
+        build_client_report(dict(d))
+    assert (time.perf_counter() - t) / 20 < 0.5  # warm rebuild: well under half a second

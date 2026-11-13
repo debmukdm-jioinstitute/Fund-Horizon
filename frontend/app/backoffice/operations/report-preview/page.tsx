@@ -37,7 +37,7 @@ export default function ReportPreview() {
     if (r?.attach_statements === false) setPicked((p) => { const n = new Set(p); n.delete("annex"); return n; });
   }, []);
 
-  // Rebuild the PDF 400 ms after the last tick; a newer tick aborts the in-flight build.
+  // Rebuild the PDF 120 ms after the last tick; a newer tick aborts the in-flight build.
   useEffect(() => {
     if (!report || !picked.size) return;
     const ctl = new AbortController();
@@ -55,7 +55,7 @@ export default function ReportPreview() {
       } catch (e) {
         if (!ctl.signal.aborted) setErr(e instanceof Error ? e.message : "Could not build the PDF.");
       } finally { if (!ctl.signal.aborted) setBusy(false); }
-    }, 400);
+    }, 120);
     return () => { clearTimeout(t); ctl.abort(); };
   }, [report, picked]);
 

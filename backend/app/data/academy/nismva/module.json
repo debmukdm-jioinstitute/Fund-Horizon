@@ -12,7 +12,7 @@
    ],
    [
     "Duration",
-    "About 90 minutes of lessons, then cards, checkpoints and the final quiz"
+    "About 136 minutes of lessons, then cards, checkpoints and the final quiz"
    ],
    [
     "Prerequisite",
@@ -20,7 +20,7 @@
    ],
    [
     "Format",
-    "17 short lessons in 5 stages, each ending with three exam-style checks"
+    "22 short lessons in 5 stages, each ending with three exam-style checks"
    ]
   ],
   "outcomes": [
@@ -39,6 +39,100 @@
   "Income-tax Act provisions for mutual funds: rates change often, verify before advising",
   "Practice exam only: confirm the current NISM exam format, marks and pass mark before booking"
  ],
+ "syllabus": [
+  {
+   "topic": "Concept and role of mutual funds",
+   "lessons": [
+    "nismva-01"
+   ]
+  },
+  {
+   "topic": "Fund structure, governance and accounting",
+   "lessons": [
+    "nismva-02",
+    "nismva-03"
+   ]
+  },
+  {
+   "topic": "Regulation and unitholder rights",
+   "lessons": [
+    "nismva-04"
+   ]
+  },
+  {
+   "topic": "Securities market basics and instruments",
+   "lessons": [
+    "nismva-05"
+   ]
+  },
+  {
+   "topic": "Scheme types and SEBI categories",
+   "lessons": [
+    "nismva-06",
+    "nismva-07",
+    "nismva-08"
+   ]
+  },
+  {
+   "topic": "Passive, international and newer products",
+   "lessons": [
+    "nismva-09",
+    "nismva-11"
+   ]
+  },
+  {
+   "topic": "Offer documents and NFOs",
+   "lessons": [
+    "nismva-10"
+   ]
+  },
+  {
+   "topic": "NAV, valuation, expenses and loads",
+   "lessons": [
+    "nismva-12"
+   ]
+  },
+  {
+   "topic": "Transactions and investor services",
+   "lessons": [
+    "nismva-13",
+    "nismva-14"
+   ]
+  },
+  {
+   "topic": "Measuring return and risk",
+   "lessons": [
+    "nismva-15",
+    "nismva-16"
+   ]
+  },
+  {
+   "topic": "Scheme selection and financial planning",
+   "lessons": [
+    "nismva-17",
+    "nismva-18"
+   ]
+  },
+  {
+   "topic": "Taxation",
+   "lessons": [
+    "nismva-19"
+   ]
+  },
+  {
+   "topic": "Distribution, commissions and AMFI code of conduct",
+   "lessons": [
+    "nismva-20",
+    "nismva-21"
+   ]
+  },
+  {
+   "topic": "Complaints and grievance redressal",
+   "lessons": [
+    "nismva-22"
+   ]
+  }
+ ],
  "lessons": [
   {
    "id": "nismva-01",
@@ -56,104 +150,139 @@
   },
   {
    "id": "nismva-03",
-   "title": "Regulatory framework and unitholder rights",
+   "title": "Fund governance, accounting and portfolio disclosures",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Foundations"
   },
   {
    "id": "nismva-04",
+   "title": "Regulatory framework and unitholder rights",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Foundations"
+  },
+  {
+   "id": "nismva-05",
+   "title": "Market basics for fund investors: equity, debt instruments and indices",
+   "minutes": 6,
+   "level": "beginner",
+   "stage": "Foundations"
+  },
+  {
+   "id": "nismva-06",
    "title": "Scheme types and the SEBI categories",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Schemes"
   },
   {
-   "id": "nismva-05",
+   "id": "nismva-07",
    "title": "Equity and hybrid scheme categories",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Schemes"
   },
   {
-   "id": "nismva-06",
+   "id": "nismva-08",
    "title": "Debt and liquid scheme categories",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Schemes"
   },
   {
-   "id": "nismva-07",
+   "id": "nismva-09",
+   "title": "ETFs, index funds, fund of funds and international funds",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Schemes"
+  },
+  {
+   "id": "nismva-10",
    "title": "NFOs and offer documents: SID, SAI and KIM",
    "minutes": 5,
    "level": "intermediate",
    "stage": "Schemes"
   },
   {
-   "id": "nismva-08",
+   "id": "nismva-11",
+   "title": "Specialised Investment Funds and other newer products",
+   "minutes": 5,
+   "level": "intermediate",
+   "stage": "Schemes"
+  },
+  {
+   "id": "nismva-12",
    "title": "NAV, valuation, expenses and loads",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Costs and transactions"
   },
   {
-   "id": "nismva-09",
+   "id": "nismva-13",
    "title": "Transactions: purchase, redemption, cut-offs, SIP, STP and SWP",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Costs and transactions"
   },
   {
-   "id": "nismva-10",
+   "id": "nismva-14",
    "title": "KYC, folio, nomination and investor services",
    "minutes": 6,
    "level": "beginner",
    "stage": "Costs and transactions"
   },
   {
-   "id": "nismva-11",
+   "id": "nismva-15",
    "title": "Measuring returns",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Performance and risk"
   },
   {
-   "id": "nismva-12",
+   "id": "nismva-16",
    "title": "Measuring risk and risk-adjusted return",
    "minutes": 7,
    "level": "advanced",
    "stage": "Performance and risk"
   },
   {
-   "id": "nismva-13",
+   "id": "nismva-17",
    "title": "Scheme selection and model portfolios",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Planning and conduct"
   },
   {
-   "id": "nismva-14",
+   "id": "nismva-18",
    "title": "Financial planning basics",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Planning and conduct"
   },
   {
-   "id": "nismva-15",
+   "id": "nismva-19",
    "title": "Taxation of mutual funds",
    "minutes": 6,
    "level": "advanced",
    "stage": "Planning and conduct"
   },
   {
-   "id": "nismva-16",
+   "id": "nismva-20",
+   "title": "Distribution channels, commissions and disclosures",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Planning and conduct"
+  },
+  {
+   "id": "nismva-21",
    "title": "Distributor registration, AMFI code of conduct and ethics",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Planning and conduct"
   },
   {
-   "id": "nismva-17",
+   "id": "nismva-22",
    "title": "Complaints, grievance redressal and a mock case lab",
    "minutes": 6,
    "level": "advanced",
@@ -181,6 +310,15 @@
   },
   {
    "id": "nismva-c3",
+   "q": "MF oversight?",
+   "a": [
+    "Trustees supervise the AMC.",
+    "Custodian holds securities.",
+    "NAV is net of expenses."
+   ]
+  },
+  {
+   "id": "nismva-c4",
    "q": "Regulator vs industry body?",
    "a": [
     "SEBI: regulator.",
@@ -189,7 +327,16 @@
    ]
   },
   {
-   "id": "nismva-c4",
+   "id": "nismva-c5",
+   "q": "Money-market instruments?",
+   "a": [
+    "T-bill, CP, CD, repo.",
+    "Maturity up to 1 year.",
+    "Rated AAA to D."
+   ]
+  },
+  {
+   "id": "nismva-c6",
    "q": "Five SEBI scheme groups?",
    "a": [
     "Equity, debt, hybrid.",
@@ -198,7 +345,7 @@
    ]
   },
   {
-   "id": "nismva-c5",
+   "id": "nismva-c7",
    "q": "Key numbers for categories?",
    "a": [
     "Large cap 80%.",
@@ -207,7 +354,7 @@
    ]
   },
   {
-   "id": "nismva-c6",
+   "id": "nismva-c8",
    "q": "Debt fund risk rule?",
    "a": [
     "Longer duration, more rate risk.",
@@ -216,7 +363,16 @@
    ]
   },
   {
-   "id": "nismva-c7",
+   "id": "nismva-c9",
+   "q": "Passive products?",
+   "a": [
+    "ETF on exchange, index fund at NAV.",
+    "Tracking error vs difference.",
+    "FoF double cost."
+   ]
+  },
+  {
+   "id": "nismva-c10",
    "q": "SID vs SAI vs KIM?",
    "a": [
     "SID: scheme details.",
@@ -225,7 +381,16 @@
    ]
   },
   {
-   "id": "nismva-c8",
+   "id": "nismva-c11",
+   "q": "Newer products?",
+   "a": [
+    "SIF: higher ticket.",
+    "Retirement scheme lock-in about 5 years.",
+    "FMP closed-ended."
+   ]
+  },
+  {
+   "id": "nismva-c12",
    "q": "NAV formula?",
    "a": [
     "(Assets − liabilities) ÷ units.",
@@ -234,7 +399,7 @@
    ]
   },
   {
-   "id": "nismva-c9",
+   "id": "nismva-c13",
    "q": "Cut-offs?",
    "a": [
     "3:00 pm: equity and most debt.",
@@ -243,7 +408,7 @@
    ]
   },
   {
-   "id": "nismva-c10",
+   "id": "nismva-c14",
    "q": "What does every investor need?",
    "a": [
     "KYC once.",
@@ -252,7 +417,7 @@
    ]
   },
   {
-   "id": "nismva-c11",
+   "id": "nismva-c15",
    "q": "Which return measure when?",
    "a": [
     "Absolute: up to a year.",
@@ -261,7 +426,7 @@
    ]
   },
   {
-   "id": "nismva-c12",
+   "id": "nismva-c16",
    "q": "Sharpe vs Treynor?",
    "a": [
     "Sharpe: per unit of total risk (SD).",
@@ -270,7 +435,7 @@
    ]
   },
   {
-   "id": "nismva-c13",
+   "id": "nismva-c17",
    "q": "Selection order?",
    "a": [
     "Goal and horizon.",
@@ -279,7 +444,7 @@
    ]
   },
   {
-   "id": "nismva-c14",
+   "id": "nismva-c18",
    "q": "Planning order?",
    "a": [
     "Goals, emergency fund, insurance.",
@@ -288,7 +453,7 @@
    ]
   },
   {
-   "id": "nismva-c15",
+   "id": "nismva-c19",
    "q": "Tax tests?",
    "a": [
     "65% domestic equity: equity-oriented.",
@@ -297,7 +462,16 @@
    ]
   },
   {
-   "id": "nismva-c16",
+   "id": "nismva-c20",
+   "q": "Distribution rules?",
+   "a": [
+    "Trail from TER.",
+    "No upfront commission.",
+    "Disclose ARN, EUIN, conflicts."
+   ]
+  },
+  {
+   "id": "nismva-c21",
    "q": "ARN and EUIN?",
    "a": [
     "ARN: AMFI registration of the distributor.",
@@ -306,7 +480,7 @@
    ]
   },
   {
-   "id": "nismva-c17",
+   "id": "nismva-c22",
    "q": "Escalation order?",
    "a": [
     "AMC or distributor.",
@@ -374,6 +548,32 @@
    },
    {
     "id": "nismva-q7",
+    "q": "Who safekeeps the scheme's securities?",
+    "o": [
+     "The AMC",
+     "The custodian",
+     "The sponsor",
+     "The distributor"
+    ],
+    "a": 1,
+    "why": "The custodian holds the securities.",
+    "sec": "Foundations"
+   },
+   {
+    "id": "nismva-q8",
+    "q": "Assets 1,050, liabilities 10, units 100 crore. NAV is:",
+    "o": [
+     "10.50",
+     "10.40",
+     "10.00",
+     "11.40"
+    ],
+    "a": 1,
+    "why": "(1,050 − 10) ÷ 100 = 10.40.",
+    "sec": "Foundations"
+   },
+   {
+    "id": "nismva-q10",
     "q": "The regulator of mutual funds in India is:",
     "o": [
      "AMFI",
@@ -386,7 +586,7 @@
     "sec": "Foundations"
    },
    {
-    "id": "nismva-q8",
+    "id": "nismva-q11",
     "q": "A change in fundamental attributes gives unitholders:",
     "o": [
      "No rights",
@@ -399,7 +599,33 @@
     "sec": "Foundations"
    },
    {
-    "id": "nismva-q10",
+    "id": "nismva-q13",
+    "q": "Treasury bills are issued at:",
+    "o": [
+     "Face value with a coupon",
+     "A discount to face value",
+     "A premium",
+     "Any price the buyer likes"
+    ],
+    "a": 1,
+    "why": "T-bills are zero-coupon and discounted.",
+    "sec": "Foundations"
+   },
+   {
+    "id": "nismva-q14",
+    "q": "The highest credit rating category is:",
+    "o": [
+     "D",
+     "BBB",
+     "AAA",
+     "A"
+    ],
+    "a": 2,
+    "why": "AAA is the highest; D is default.",
+    "sec": "Foundations"
+   },
+   {
+    "id": "nismva-q16",
     "q": "Units of a closed-ended scheme are usually:",
     "o": [
      "Redeemable daily at NAV",
@@ -412,7 +638,7 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q11",
+    "id": "nismva-q17",
     "q": "Which is NOT one of the five SEBI scheme groups?",
     "o": [
      "Equity",
@@ -425,7 +651,7 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q13",
+    "id": "nismva-q19",
     "q": "A large-cap fund must invest at least what share in large caps?",
     "o": [
      "50%",
@@ -438,7 +664,7 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q14",
+    "id": "nismva-q20",
     "q": "A focused fund may hold at most:",
     "o": [
      "10 stocks",
@@ -451,7 +677,7 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q16",
+    "id": "nismva-q22",
     "q": "A liquid fund invests in securities maturing up to:",
     "o": [
      "30 days",
@@ -464,7 +690,7 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q17",
+    "id": "nismva-q23",
     "q": "A gilt fund invests at least 80% in:",
     "o": [
      "Corporate bonds",
@@ -477,7 +703,33 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q19",
+    "id": "nismva-q25",
+    "q": "Which product is bought and sold on a stock exchange?",
+    "o": [
+     "Index fund",
+     "ETF",
+     "Debt fund",
+     "ELSS"
+    ],
+    "a": 1,
+    "why": "ETFs trade on the exchange.",
+    "sec": "Schemes"
+   },
+   {
+    "id": "nismva-q26",
+    "q": "Tracking error measures:",
+    "o": [
+     "Fund expense only",
+     "Volatility of the gap between fund and index returns",
+     "The dividend",
+     "The NAV"
+    ],
+    "a": 1,
+    "why": "It is the standard deviation of the return difference.",
+    "sec": "Schemes"
+   },
+   {
+    "id": "nismva-q28",
     "q": "The document with scheme-specific details is the:",
     "o": [
      "SAI",
@@ -490,7 +742,7 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q20",
+    "id": "nismva-q29",
     "q": "The maximum period an NFO can stay open is:",
     "o": [
      "7 days",
@@ -503,7 +755,33 @@
     "sec": "Schemes"
    },
    {
-    "id": "nismva-q22",
+    "id": "nismva-q31",
+    "q": "An FMP is generally:",
+    "o": [
+     "Open-ended with no exit rules",
+     "Closed-ended debt scheme",
+     "An equity scheme",
+     "A gold ETF"
+    ],
+    "a": 1,
+    "why": "FMPs are closed-ended.",
+    "sec": "Schemes"
+   },
+   {
+    "id": "nismva-q32",
+    "q": "A segregated portfolio is used to:",
+    "o": [
+     "Raise the TER",
+     "Isolate a defaulted or downgraded security",
+     "Hide the NAV",
+     "Merge funds"
+    ],
+    "a": 1,
+    "why": "It side-pockets stressed paper.",
+    "sec": "Schemes"
+   },
+   {
+    "id": "nismva-q34",
     "q": "Assets ₹300 crore, liabilities ₹10 crore, units 29 crore. NAV is:",
     "o": [
      "₹10",
@@ -516,7 +794,7 @@
     "sec": "Costs and transactions"
    },
    {
-    "id": "nismva-q23",
+    "id": "nismva-q35",
     "q": "Entry load was abolished in:",
     "o": [
      "1996",
@@ -529,7 +807,7 @@
     "sec": "Costs and transactions"
    },
    {
-    "id": "nismva-q25",
+    "id": "nismva-q37",
     "q": "The normal cut-off for equity fund purchase is:",
     "o": [
      "10 am",
@@ -542,7 +820,7 @@
     "sec": "Costs and transactions"
    },
    {
-    "id": "nismva-q26",
+    "id": "nismva-q38",
     "q": "An STP transfers money:",
     "o": [
      "From one scheme to another within the same AMC",
@@ -555,7 +833,7 @@
     "sec": "Costs and transactions"
    },
    {
-    "id": "nismva-q28",
+    "id": "nismva-q40",
     "q": "A folio is:",
     "o": [
      "A type of fund",
@@ -568,7 +846,7 @@
     "sec": "Costs and transactions"
    },
    {
-    "id": "nismva-q29",
+    "id": "nismva-q41",
     "q": "A CAS shows:",
     "o": [
      "Only one AMC",
@@ -581,7 +859,7 @@
     "sec": "Costs and transactions"
    },
    {
-    "id": "nismva-q31",
+    "id": "nismva-q43",
     "q": "For a SIP with many cash flows, the best return measure is:",
     "o": [
      "Absolute return",
@@ -594,7 +872,7 @@
     "sec": "Performance and risk"
    },
    {
-    "id": "nismva-q32",
+    "id": "nismva-q44",
     "q": "₹1,000 becomes ₹1,210 in two years. CAGR is:",
     "o": [
      "5%",
@@ -607,7 +885,7 @@
     "sec": "Performance and risk"
    },
    {
-    "id": "nismva-q34",
+    "id": "nismva-q46",
     "q": "Sharpe ratio divides excess return by:",
     "o": [
      "Beta",
@@ -620,7 +898,7 @@
     "sec": "Performance and risk"
    },
    {
-    "id": "nismva-q35",
+    "id": "nismva-q47",
     "q": "A beta of 1.3 means the fund is:",
     "o": [
      "Less volatile than the market",
@@ -633,7 +911,7 @@
     "sec": "Performance and risk"
    },
    {
-    "id": "nismva-q37",
+    "id": "nismva-q49",
     "q": "Which scheme suits parking money for 3 months?",
     "o": [
      "Small cap fund",
@@ -646,7 +924,20 @@
     "sec": "Planning and conduct"
    },
    {
-    "id": "nismva-q40",
+    "id": "nismva-q50",
+    "q": "The first step in scheme selection is:",
+    "o": [
+     "Pick the best fund",
+     "Understand goal and horizon",
+     "Check last week's return",
+     "Choose the AMC"
+    ],
+    "a": 1,
+    "why": "Goal, horizon and risk come first.",
+    "sec": "Planning and conduct"
+   },
+   {
+    "id": "nismva-q52",
     "q": "By the rule of 72, money at 12% doubles in about:",
     "o": [
      "3 years",
@@ -659,7 +950,7 @@
     "sec": "Planning and conduct"
    },
    {
-    "id": "nismva-q43",
+    "id": "nismva-q55",
     "q": "An equity-oriented fund holds at least what share in domestic equity?",
     "o": [
      "35%",
@@ -672,7 +963,20 @@
     "sec": "Planning and conduct"
    },
    {
-    "id": "nismva-q46",
+    "id": "nismva-q58",
+    "q": "Trail commission is paid out of:",
+    "o": [
+     "The investor's pocket separately",
+     "The scheme's TER",
+     "The exchange",
+     "SEBI"
+    ],
+    "a": 1,
+    "why": "Trail comes from the scheme's expense ratio.",
+    "sec": "Planning and conduct"
+   },
+   {
+    "id": "nismva-q61",
     "q": "EUIN stands for:",
     "o": [
      "Employee Unique Identification Number",
@@ -685,7 +989,7 @@
     "sec": "Planning and conduct"
    },
    {
-    "id": "nismva-q49",
+    "id": "nismva-q64",
     "q": "The online SEBI platform for investor complaints is:",
     "o": [
      "SCORES",

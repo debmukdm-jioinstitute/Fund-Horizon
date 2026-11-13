@@ -1,0 +1,70 @@
+{
+ "id": "nismra-17",
+ "title": "Valuation II: relative multiples",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Valuation",
+ "objectives": [
+  "Use P/E, EV/EBITDA, P/B and PEG on peer sets.",
+  "Choose the right multiple for the sector."
+ ],
+ "body_md": "Relative valuation compares a company with **peers** or its own history.\n\n## Common multiples\n\n| Multiple | Formula | Best for |\n|---|---|---|\n| **P/E** | Price ÷ EPS | Profitable, stable firms |\n| **EV/EBITDA** | EV ÷ EBITDA | Capital intensive or leveraged firms |\n| **P/B** | Price ÷ book value per share | Banks, NBFCs, insurers |\n| **PEG** | P/E ÷ growth rate | Growth stocks |\n| **EV/Sales** | EV ÷ revenue | Loss-making firms |\n| **Dividend yield** | DPS ÷ price | Mature payers |\n\n**EV = market cap + debt − cash (+ minorities).**\n\n## Good practice\n\n- Pick **true peers** (same business, size, growth).\n- Use consistent periods (trailing vs forward).\n- Adjust for one-offs.\n- A multiple is only meaningful against growth, returns and risk.\n\n> **Exam tip:** Banks use P/B, not EV/EBITDA, because debt is their raw material.",
+ "key_terms": [
+  "P/E",
+  "EV/EBITDA",
+  "P/B",
+  "PEG",
+  "enterprise value"
+ ],
+ "example": "Two firms trade at P/E 20. One grows 25% a year, the other 8%. PEG is 0.8 versus 2.5, so the first is cheaper relative to growth.",
+ "say": [
+  "We value on EV/EBITDA against five peers and cross-check with DCF.",
+  "A cheap multiple can be cheap for a reason."
+ ],
+ "never": [
+  "Low P/E always means undervalued.",
+  "Use EV/EBITDA for banks."
+ ],
+ "check": [
+  {
+   "id": "nismra-q49",
+   "q": "Enterprise value equals:",
+   "o": [
+    "Market cap + debt − cash",
+    "Market cap − debt",
+    "Book value + debt",
+    "Revenue − costs"
+   ],
+   "a": 0,
+   "why": "EV = market cap + debt − cash (and minorities)."
+  },
+  {
+   "id": "nismra-q50",
+   "q": "Which multiple suits banks best?",
+   "o": [
+    "EV/EBITDA",
+    "P/B",
+    "EV/Sales",
+    "Dividend payout"
+   ],
+   "a": 1,
+   "why": "For lenders, book value and returns on equity matter most."
+  },
+  {
+   "id": "nismra-q51",
+   "q": "PEG ratio equals:",
+   "o": [
+    "P/E ÷ growth",
+    "P/E × growth",
+    "Price ÷ book",
+    "EPS ÷ price"
+   ],
+   "a": 0,
+   "why": "PEG = P/E divided by the growth rate."
+  }
+ ],
+ "card_ids": [
+  "nismra-c17"
+ ],
+ "words": 150
+}

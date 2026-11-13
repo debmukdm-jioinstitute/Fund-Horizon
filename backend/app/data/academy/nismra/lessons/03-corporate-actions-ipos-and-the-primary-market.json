@@ -1,0 +1,70 @@
+{
+ "id": "nismra-03",
+ "title": "Corporate actions, IPOs and the primary market",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Regulation",
+ "objectives": [
+  "Describe how an IPO, rights issue and buyback work.",
+  "Explain how dividends, bonus and splits change the share price and count."
+ ],
+ "body_md": "## Primary market routes\n\n| Route | What happens |\n|---|---|\n| **IPO** | Fresh issue and/or offer for sale (OFS) to the public, usually by **book building** with a price band |\n| **Rights issue** | Existing holders get the right to buy more at a discount |\n| **QIP / preferential** | Private placement to institutions or chosen investors |\n| **Buyback** | Company repurchases its own shares (tender or open market) |\n\nIn a book-built IPO the **cap of the price band cannot exceed 120% of the floor**. Allotment follows the investor-category quotas in the offer document (retail, non-institutional, QIB). Listing follows within a few days of issue close (**T+3**, verify).\n\n## Corporate actions and their price effect\n\n- **Dividend:** cash paid out. Price falls by about the dividend on the **ex-date**. Under T+1 the ex-date and record date fall together (verify).\n- **Bonus:** free extra shares (1:1 doubles the count). Price adjusts down; **total value is unchanged**.\n- **Split:** face value is cut (₹10 to ₹2 gives 5 shares for 1). Value unchanged, liquidity often improves.\n- **Rights:** dilutes holders who do not subscribe.\n- **Buyback:** reduces share count, can lift EPS.\n- **Merger / demerger:** swap ratio decides value.\n\n## Why analysts care\n\nAlways adjust historical prices, EPS and DPS for splits and bonuses before computing growth or multiples. Unadjusted series show false crashes.\n\n> **Exam tip:** Bonus and split change the share count and price, not the market capitalisation.",
+ "key_terms": [
+  "IPO",
+  "book building",
+  "bonus",
+  "stock split",
+  "ex-date"
+ ],
+ "example": "A stock at ₹1,200 announces a 1:1 bonus. Holders with 100 shares now have 200 shares; the price adjusts to about ₹600. Value stays ₹1,20,000.",
+ "say": [
+  "Corporate actions change the share count, so I adjust the history before comparing.",
+  "A bonus is not free value; the price adjusts."
+ ],
+ "never": [
+  "A bonus issue makes the investor richer.",
+  "A split changes the company value."
+ ],
+ "check": [
+  {
+   "id": "nismra-q7",
+   "q": "A 1:1 bonus issue does what to the market capitalisation?",
+   "o": [
+    "Doubles it",
+    "Halves it",
+    "Leaves it unchanged",
+    "Cuts it by a quarter"
+   ],
+   "a": 2,
+   "why": "More shares at a proportionately lower price: value is unchanged."
+  },
+  {
+   "id": "nismra-q8",
+   "q": "In a book-built IPO the price band cap can be at most:",
+   "o": [
+    "110% of the floor",
+    "120% of the floor",
+    "150% of the floor",
+    "200% of the floor"
+   ],
+   "a": 1,
+   "why": "ICDR limits the cap to 120% of the floor price."
+  },
+  {
+   "id": "nismra-q9",
+   "q": "A split from face value ₹10 to ₹2 gives how many shares per old share?",
+   "o": [
+    "2",
+    "5",
+    "10",
+    "1"
+   ],
+   "a": 1,
+   "why": "10 divided by 2 is 5."
+  }
+ ],
+ "card_ids": [
+  "nismra-c3"
+ ],
+ "words": 245
+}

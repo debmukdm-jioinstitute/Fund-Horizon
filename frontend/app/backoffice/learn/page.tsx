@@ -14,9 +14,10 @@ import { Quiz } from "@/components/academy/Quiz";
 import { Spinner, accent, btnGhost, muted } from "@/components/academy/ui";
 import { VarsityDetail, VarsityHub } from "@/components/academy/Varsity";
 import { TaxationHub, TaxationPage } from "@/components/academy/Taxation";
+import { TrackPage } from "@/components/academy/Tracks";
 
 /* FH Academy. All navigation state lives in the URL: /backoffice/learn?m=mf&l=<lessonId>&v=read|cards|quiz
-   (plus v=board, q=<quizId>, mode=practice|exam, deck=due|lesson|all|unknown). The read, cards and quiz views stay
+   (plus t=<trackId>, v=board, q=<quizId>, mode=practice|exam, deck=due|lesson|all|unknown). The read, cards and quiz views stay
    mounted once opened, so switching between them keeps half-finished answers. */
 
 const VIEWS = ["read", "cards", "quiz"] as const;
@@ -36,6 +37,7 @@ function Shell() {
   const vm = sp.get("vm");
   const tax = sp.get("tax");
   const tp = sp.get("tp");
+  const t = sp.get("t");
   const v = sp.get("v") ?? (sp.get("l") ? "read" : "");
   const l = sp.get("l");
   const [content, setContent] = useState<ModuleContent | null>(null);
@@ -58,7 +60,8 @@ function Shell() {
   const board = v === "board";
   const varsityView = Boolean(varsity) && !m;
   const taxView = Boolean(tax) && !m && !varsityView;
-  const home = !m && !board && !varsityView && !taxView;
+  const trackView = Boolean(t) && !m && !board && !varsityView && !taxView;
+  const home = !m && !board && !varsityView && !taxView && !trackView;
   const show = (k: string) => seen.includes(k) || v === k;
   const lesson = useSticky(lessonId, v === "read");
   const cardsP = useSticky({ deck: sp.get("deck") ?? (l ? "lesson" : "due"), l: l ?? undefined }, v === "cards");
@@ -82,6 +85,7 @@ function Shell() {
       </header>
 
       {home && <Home />}
+      {trackView && <TrackPage id={t!} />}
       {board && <Leaderboard />}
       {varsityView && !vm && <VarsityHub />}
       {varsityView && vm && <VarsityDetail slug={vm} ch={sp.get("ch")} />}

@@ -1,0 +1,70 @@
+{
+ "id": "nismva-06",
+ "title": "Scheme types and the SEBI categories",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Schemes",
+ "objectives": [
+  "Differentiate open-ended, closed-ended and interval schemes.",
+  "Name the five SEBI scheme groups."
+ ],
+ "body_md": "## By structure\n\n| Type | Features |\n|---|---|\n| **Open-ended** | Buy and sell any time at NAV; no fixed maturity |\n| **Closed-ended** | Fixed tenure; units are listed on an exchange (or repurchase offered); bought only in the NFO |\n| **Interval** | Combines both; opens for trading at specified intervals |\n\n## SEBI categories (October 2017)\n\nSEBI grouped schemes into five groups and made each AMC offer **one scheme per category** (with limited exceptions).\n\n1. **Equity** schemes\n2. **Debt** schemes\n3. **Hybrid** schemes\n4. **Solution-oriented** schemes (retirement, children's)\n5. **Other** schemes (index funds, ETFs, fund of funds)\n\n## Plans and options\n\n- **Direct** and **Regular** plans; the direct plan has a lower expense ratio.\n- **Growth** and **IDCW** (income distribution cum capital withdrawal) options; IDCW is paid from the scheme's own money and is not a guaranteed return.\n\n> **Exam tip:** Dividend is now called IDCW; payouts reduce NAV.",
+ "key_terms": [
+  "open-ended",
+  "closed-ended",
+  "interval fund",
+  "IDCW",
+  "direct plan"
+ ],
+ "example": "A closed-ended fund can be bought only in its NFO. After that, the investor sells on the exchange at the market price, which may be below NAV.",
+ "say": [
+  "Direct plans have lower costs because they carry no distributor commission.",
+  "IDCW is paid out of your own investment; it is not extra return."
+ ],
+ "never": [
+  "Dividend means free extra money.",
+  "Closed-ended funds can be redeemed at NAV any day."
+ ],
+ "check": [
+  {
+   "id": "nismva-q16",
+   "q": "Units of a closed-ended scheme are usually:",
+   "o": [
+    "Redeemable daily at NAV",
+    "Listed on a stock exchange",
+    "Unavailable",
+    "Tax-free"
+   ],
+   "a": 1,
+   "why": "Closed-ended units are listed (or repurchase offers are made)."
+  },
+  {
+   "id": "nismva-q17",
+   "q": "Which is NOT one of the five SEBI scheme groups?",
+   "o": [
+    "Equity",
+    "Debt",
+    "Commodity futures",
+    "Solution-oriented"
+   ],
+   "a": 2,
+   "why": "The five groups are equity, debt, hybrid, solution-oriented and other."
+  },
+  {
+   "id": "nismva-q18",
+   "q": "IDCW stands for:",
+   "o": [
+    "Income distribution cum capital withdrawal",
+    "Interest deposit cum cash window",
+    "Index dividend cum cap weight",
+    "Investor deposit and credit window"
+   ],
+   "a": 0,
+   "why": "IDCW replaced the term 'dividend' for MF payouts."
+  }
+ ],
+ "card_ids": [
+  "nismva-c6"
+ ],
+ "words": 153
+}

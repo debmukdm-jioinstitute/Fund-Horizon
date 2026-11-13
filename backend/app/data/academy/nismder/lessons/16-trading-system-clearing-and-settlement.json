@@ -1,0 +1,70 @@
+{
+ "id": "nismder-16",
+ "title": "Trading system, clearing and settlement",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Market operations",
+ "objectives": [
+  "Explain how a trade gets cleared and settled.",
+  "Name the roles of clearing members."
+ ],
+ "body_md": "## Flow\n\n1. **Order** placed through a trading member on the exchange's screen.\n2. **Matching** by price-time priority.\n3. **Novation:** the clearing corporation (NSCCL / ICCL) becomes the counterparty to both sides, removing counterparty risk.\n4. **Clearing** by clearing members: trading members (TM), clearing members (CM) and professional clearing members (PCM).\n5. **MTM** daily, **final settlement** at expiry.\n\n## Settlement\n\n| Product | Settlement |\n|---|---|\n| Index futures and options | Cash settled at the closing index value on expiry |\n| Stock futures and options | Physically settled under current framework |\n| Premium | Paid on T+1 for options |\n\n## Expiry and exercise\n\nIndex options are **European**; ITM options on expiry are **auto-exercised**. Expiry days and contract cycles are set by the exchange.\n\n## Safeguards\n\nSettlement guarantee fund, **default waterfall**, margin collection, position limits.\n\n> **Exam tip:** Novation is the key risk-removing step.",
+ "key_terms": [
+  "novation",
+  "clearing member",
+  "clearing corporation",
+  "physical settlement",
+  "auto-exercise"
+ ],
+ "example": "Two traders deal anonymously. After novation, the clearing corporation owes each of them; neither depends on the other's solvency.",
+ "say": [
+  "The clearing corporation guarantees the trade.",
+  "ITM index options are settled in cash at expiry."
+ ],
+ "never": [
+  "If your counterparty defaults, you lose.",
+  "Index options require delivery of shares."
+ ],
+ "check": [
+  {
+   "id": "nismder-q46",
+   "q": "Novation means the clearing corporation:",
+   "o": [
+    "Becomes counterparty to both sides",
+    "Sets prices",
+    "Lends shares",
+    "Pays dividends"
+   ],
+   "a": 0,
+   "why": "It guarantees trades by becoming the counterparty."
+  },
+  {
+   "id": "nismder-q47",
+   "q": "Index derivatives in India are settled:",
+   "o": [
+    "Physically",
+    "In cash",
+    "By barter",
+    "In gold"
+   ],
+   "a": 1,
+   "why": "Index contracts are cash settled."
+  },
+  {
+   "id": "nismder-q48",
+   "q": "ITM options at expiry are:",
+   "o": [
+    "Lapsed",
+    "Automatically exercised",
+    "Rolled",
+    "Cancelled"
+   ],
+   "a": 1,
+   "why": "Auto-exercise applies for ITM contracts."
+  }
+ ],
+ "card_ids": [
+  "nismder-c16"
+ ],
+ "words": 147
+}

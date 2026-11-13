@@ -40,9 +40,28 @@ MODULES = {"mf": (22, "Module 1"), "pms": (16, "Module 2"), "sip": (18, "Module 
            "bonds": (18, "Module 6"), "idcw": (16, "Module 8"), "goals": (16, "Module 9"),
            "timing": (16, "Module 11"), "rebal": (16, "Module 15"), "overlap": (16, "Module 16"),
            "withdraw": (16, "Module 17"),
-           "nismra": (18, "Module 18 · NISM XV"), "nismva": (17, "Module 19 · NISM V-A"),
-           "nismia": (16, "Module 20 · NISM X-A/X-B"), "nismder": (15, "Module 21 · NISM VIII")}
+           "nismra": (23, "Module 18 · NISM XV"), "nismva": (22, "Module 19 · NISM V-A"),
+           "nismia": (21, "Module 20 · NISM X-A/X-B"), "nismder": (20, "Module 21 · NISM VIII")}
 CORE = [m for m in MODULES if not m.startswith("nism")]
+
+
+def test_catalog_syllabus_and_links():
+    """Every module sits in exactly one track; prereq/related ids exist; NISM syllabus covers every lesson; every module states outcomes."""
+    c = L._content()
+    cat = c["catalog"]
+    placed = [m for t in cat["tracks"] for m in t["modules"]]
+    assert sorted(placed) == sorted(c["mods"]) and len(placed) == len(set(placed))
+    for mid, nav in cat["modules"].items():
+        assert mid in c["mods"] and all(x in c["mods"] and x != mid for x in nav["prereq"] + nav["related"]), mid
+    for mid, mod in c["mods"].items():
+        assert len(mod["overview"].get("outcomes", [])) >= 5, mid
+        if mod.get("track"):
+            ids = {x["id"] for x in mod["_lessons"]}
+            covered = {i for s in mod["syllabus"] for i in s["lessons"]}
+            assert covered == ids, (mid, ids - covered)
+    for les in c["lessons"].values():
+        assert len(les["see_also"]) <= 3 and all(x["module"] != les["module"] and x["id"] in c["lessons"] for x in les["see_also"])
+    assert sum(1 for les in c["lessons"].values() if les["see_also"]) > 100  # links exist for a good share of lessons
 
 
 def test_content_is_consistent():

@@ -1,0 +1,69 @@
+{
+ "id": "nismva-17",
+ "title": "Scheme selection and model portfolios",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Planning and conduct",
+ "objectives": [
+  "Match scheme types to client goals and risk.",
+  "Build a simple core-and-satellite portfolio."
+ ],
+ "body_md": "Scheme selection follows the client, not the fund.\n\n## Steps\n\n1. **Goal and horizon:** short (under 3 years), medium (3 to 7), long (over 7).\n2. **Risk capacity and tolerance.**\n3. **Choose the asset mix**, then the categories, then the schemes.\n4. **Check** past consistency, costs, manager and fund house, portfolio fit, and overlap.\n\n## Matching\n\n| Horizon | Typical categories |\n|---|---|\n| Under 1 year | Overnight, liquid, ultra short, money market |\n| 1 to 3 years | Short duration, corporate bond, conservative hybrid |\n| 3 to 7 years | Balanced and aggressive hybrid, large-cap, flexi cap |\n| Over 7 years | Equity: large, mid, flexi, index; limited small cap |\n\n## Core and satellite\n\n- **Core** (60 to 80%): broad, low-cost funds (index, large, flexi).\n- **Satellite** (20 to 40%): focused themes, mid and small caps.\n\n## Review\n\nRebalance when the mix drifts by more than a set band, or when goals change.\n\n> **Exam tip:** Goal first, asset allocation second, scheme last.",
+ "key_terms": [
+  "asset allocation",
+  "core and satellite",
+  "overlap",
+  "rebalancing"
+ ],
+ "example": "A 35-year-old saving for retirement in 25 years: 70% equity (core: index and flexi cap; satellite: mid cap), 30% debt. A 55-year-old saving for a house in 2 years: mostly short duration and liquid funds.",
+ "say": [
+  "We start from your goal and horizon, then pick the mix, then the funds.",
+  "Too many funds with the same stocks does not add diversification."
+ ],
+ "never": [
+  "Put everything in the top-ranked fund.",
+  "Small cap funds suit a 1-year goal."
+ ],
+ "check": [
+  {
+   "id": "nismva-q49",
+   "q": "Which scheme suits parking money for 3 months?",
+   "o": [
+    "Small cap fund",
+    "Liquid or overnight fund",
+    "ELSS",
+    "Sectoral fund"
+   ],
+   "a": 1,
+   "why": "Short horizons need low-volatility, high-liquidity funds."
+  },
+  {
+   "id": "nismva-q50",
+   "q": "The first step in scheme selection is:",
+   "o": [
+    "Pick the best fund",
+    "Understand goal and horizon",
+    "Check last week's return",
+    "Choose the AMC"
+   ],
+   "a": 1,
+   "why": "Goal, horizon and risk come first."
+  },
+  {
+   "id": "nismva-q51",
+   "q": "In core and satellite, the core is usually:",
+   "o": [
+    "Thematic funds",
+    "Broad, low-cost funds",
+    "Penny stocks",
+    "Cash"
+   ],
+   "a": 1,
+   "why": "The core holds broad, diversified, low-cost funds."
+  }
+ ],
+ "card_ids": [
+  "nismva-c17"
+ ],
+ "words": 169
+}

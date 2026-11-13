@@ -1,0 +1,69 @@
+{
+ "id": "nismia-12",
+ "title": "Asset allocation and portfolio construction",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Products and portfolio",
+ "objectives": [
+  "Choose strategic and tactical allocation.",
+  "Rebalance with rules."
+ ],
+ "body_md": "**Asset allocation** explains most of long-run portfolio variability, more than individual security picks.\n\n## Approaches\n\n| Approach | Idea |\n|---|---|\n| **Strategic** | Long-term target mix by risk and goal |\n| **Tactical** | Short-term tilts around the strategic mix |\n| **Goal-based** | A bucket per goal with its own mix |\n| **Core and satellite** | Low-cost core plus selective satellites |\n\n## Rules of thumb\n\n- Equity share rises with horizon and risk capacity.\n- Keep **emergency** and short-term money outside equity.\n- Use **correlation**: combine assets that do not move together.\n\n## Rebalancing\n\n- **Calendar** (e.g. yearly) or **threshold** (e.g. drift of 5 percentage points).\n- Consider tax and exit loads before selling; use new money to rebalance when possible.\n\n## Risk and return\n\nDiversification reduces unsystematic risk; **systematic (market) risk** remains.\n\n> **Exam tip:** Strategic is the long-term plan; tactical is the short-term deviation.",
+ "key_terms": [
+  "strategic allocation",
+  "tactical allocation",
+  "rebalancing",
+  "correlation"
+ ],
+ "example": "A 60:40 portfolio drifts to 70:30 after an equity rally. The adviser sells 10 points of equity (or directs new money to debt) to return to the target.",
+ "say": [
+  "We rebalance by rule, not by emotion.",
+  "Diversification lowers specific risk, not market risk."
+ ],
+ "never": [
+  "Move everything to what did best this year.",
+  "Diversification removes all risk."
+ ],
+ "check": [
+  {
+   "id": "nismia-q34",
+   "q": "A long-term target mix is:",
+   "o": [
+    "Tactical allocation",
+    "Strategic allocation",
+    "Random",
+    "Hedging"
+   ],
+   "a": 1,
+   "why": "Strategic allocation is the long-term policy mix."
+  },
+  {
+   "id": "nismia-q35",
+   "q": "Diversification mainly reduces:",
+   "o": [
+    "Systematic risk",
+    "Unsystematic risk",
+    "Inflation",
+    "Tax"
+   ],
+   "a": 1,
+   "why": "Specific risk can be diversified away."
+  },
+  {
+   "id": "nismia-q36",
+   "q": "A threshold rebalancing rule triggers when:",
+   "o": [
+    "The calendar says so",
+    "Drift exceeds a set band",
+    "A friend recommends",
+    "Tax is due"
+   ],
+   "a": 1,
+   "why": "Rebalance when the mix drifts beyond the band."
+  }
+ ],
+ "card_ids": [
+  "nismia-c12"
+ ],
+ "words": 150
+}

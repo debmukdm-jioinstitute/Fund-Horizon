@@ -3,8 +3,11 @@ import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
 /* Typed client for /api/learn/* (FH Academy). Cookie auth; every progress write happens on the server. */
 
 export interface BadgeDef { id: string; name: string; icon: string; hint: string }
+export interface Track { id: string; title: string; blurb: string; modules: string[] }
+export interface ModuleNav { prereq: string[]; related: string[] }
 export interface ModuleProgress {
   code: string;
+  track: string | null;
   title: string;
   blurb: string;
   done: number;
@@ -16,7 +19,7 @@ export interface QuizBest { score: number; total: number; passed: boolean; finis
 export interface Me {
   xp: number; level: number; level_name: string; level_floor_xp: number; next_level_xp: number;
   streak: number; freezes: number; week_xp: number; week_rank: number | null; due_count: number;
-  badges: { id: string; earned_at: string }[]; badge_defs: BadgeDef[];
+  badges: { id: string; earned_at: string }[]; badge_defs: BadgeDef[]; tracks: Track[]; nav: Record<string, ModuleNav>;
   completed_lessons: string[]; progress: Record<string, ModuleProgress>; quiz_best: Record<string, QuizBest>;
   certificate: Record<string, { title: string; score: number; total: number; date: string }> | null;
   next_lesson: { module: string; lesson_id: string; title: string; minutes: number } | null;
@@ -26,12 +29,13 @@ export interface Mcq { id: string; q: string; o: string[] }
 export interface Lesson {
   id: string; module: string; title: string; minutes: number; level: string; stage: string;
   objectives: string[]; body_md: string; key_terms: string[]; example: string; say: string[]; never: string[];
-  check: Mcq[]; card_ids: string[];
+  check: Mcq[]; card_ids: string[]; see_also?: { id: string; module: string; title: string }[];
 }
 export interface Card { id: string; q: string; a: string[] }
 export interface GlossaryEntry { term: string; aliases: string[]; definition: string }
 export interface ModuleHead {
-  id: string; title: string; code: string; blurb: string; sources: string[];
+  id: string; title: string; code: string; track?: string; blurb: string; sources: string[];
+  syllabus?: { topic: string; lessons: string[] }[]; nav?: ModuleNav;
   overview: { rows: string[][]; outcomes?: string[] };
   lessons: { id: string; title: string; minutes: number; level: string; stage: string }[];
   checkpoints: { id: string; after: string }[];

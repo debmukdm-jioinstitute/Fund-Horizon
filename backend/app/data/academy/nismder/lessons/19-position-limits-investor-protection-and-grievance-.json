@@ -1,0 +1,70 @@
+{
+ "id": "nismder-19",
+ "title": "Position limits, investor protection and grievance redressal",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Regulation and risk",
+ "objectives": [
+  "Describe position limits and the safeguards that protect derivatives traders.",
+  "Use the grievance and arbitration routes."
+ ],
+ "body_md": "## Position limits\n\nSEBI and the exchanges set limits at three levels to curb manipulation and systemic risk:\n\n| Level | Idea |\n|---|---|\n| **Client** | Cap on a client's net or gross open position in an underlying |\n| **Trading member** | Cap on the member's positions across clients |\n| **Market-wide (MWPL)** | Cap on total open interest in an underlying, used for the ban rule |\n\nIndex option limits are set on net and gross notional positions and are reviewed by circular; check the current numbers.\n\n## Investor protection layers\n\n- **Clearing corporation guarantee:** it becomes the counterparty to every trade.\n- **Settlement guarantee fund (SGF):** pooled resources to complete settlement if a member defaults.\n- **Investor Protection Fund (IPF):** compensation to investors of defaulting members, up to a limit.\n- **Margins and mark-to-market** reduce default risk daily.\n\n## Grievance path\n\n1. Complain to the **broker** and its compliance officer.\n2. Escalate to the **exchange** investor grievance cell.\n3. Use **SEBI SCORES** or the **SMART ODR** portal.\n4. **Arbitration** under exchange rules, with limits on the claim period.\n\n## Dealer duties\n\nObtain a **risk disclosure document**, sign the client agreement, apply KYC, and tell clients that most retail F&O traders lose money.\n\n> **Exam tip:** The clearing corporation guarantees settlement; SGF and IPF are the backstops.",
+ "key_terms": [
+  "position limit",
+  "settlement guarantee fund",
+  "IPF",
+  "SCORES",
+  "arbitration"
+ ],
+ "example": "A client's broker defaults: the investor claims through the IPF after the exchange's process, while the clearing corporation completes market settlements.",
+ "say": [
+  "Your trades are guaranteed by the clearing corporation, not by me personally.",
+  "If you have a complaint, SCORES and the exchange both have a route."
+ ],
+ "never": [
+  "There are no limits on how big a position you can take.",
+  "Complaints must be settled only with the broker."
+ ],
+ "check": [
+  {
+   "id": "nismder-q55",
+   "q": "Who becomes the counterparty to every trade at clearing?",
+   "o": [
+    "The broker",
+    "The clearing corporation",
+    "The AMC",
+    "The depository"
+   ],
+   "a": 1,
+   "why": "The clearing corporation guarantees settlement."
+  },
+  {
+   "id": "nismder-q56",
+   "q": "Compensation to investors of a defaulting member comes from the:",
+   "o": [
+    "IPF",
+    "Dividend pool",
+    "AMFI",
+    "RBI"
+   ],
+   "a": 0,
+   "why": "The Investor Protection Fund."
+  },
+  {
+   "id": "nismder-q57",
+   "q": "An unresolved broker complaint can be escalated to:",
+   "o": [
+    "Nobody",
+    "SEBI SCORES or SMART ODR",
+    "A newspaper",
+    "The AMC"
+   ],
+   "a": 1,
+   "why": "SCORES and SMART ODR are official routes."
+  }
+ ],
+ "card_ids": [
+  "nismder-c19"
+ ],
+ "words": 220
+}

@@ -1,0 +1,70 @@
+{
+ "id": "nismva-05",
+ "title": "Market basics for fund investors: equity, debt instruments and indices",
+ "minutes": 6,
+ "level": "beginner",
+ "stage": "Foundations",
+ "objectives": [
+  "Name the main money-market and debt instruments and their features.",
+  "Explain how indices and credit ratings are used."
+ ],
+ "body_md": "## Where funds invest\n\n**Equity:** shares bought in the **primary market** (IPO) or **secondary market** (exchanges), settled in the demat form on a **T+1** cycle (verify).\n\n**Money-market instruments** mature in up to one year:\n\n| Instrument | Issuer | Note |\n|---|---|---|\n| **Treasury bills** | Government | 91, 182 or 364 days, issued at a discount, no credit risk |\n| **Commercial paper (CP)** | Companies | Unsecured, short term |\n| **Certificate of deposit (CD)** | Banks | Short-term deposit certificate |\n| **Repo / TREPS** | Collateralised lending | Overnight or short, very low risk |\n\n**Longer-term debt:** government securities (**G-Secs**), state development loans, corporate bonds and NCDs.\n\n## Credit ratings\n\nAgencies rate the issuer's ability to repay: **AAA** is the highest, **D** is default. Lower ratings pay higher yields for higher credit risk.\n\n## Indices\n\nAn index tracks a basket: **Nifty 50**, **Sensex 30**, broad and sectoral indices. Most are **free-float market-cap weighted**. Index funds and ETFs copy them; the **TRI** includes dividends and is the fair benchmark.\n\n## Why it matters\n\nThe scheme's category, risk and return all follow from what it holds.\n\n> **Exam tip:** T-bills are zero-coupon, sold at a discount; ratings AAA to D.",
+ "key_terms": [
+  "T-bill",
+  "commercial paper",
+  "G-Sec",
+  "credit rating",
+  "free-float"
+ ],
+ "example": "A 91-day T-bill with face value ₹100 issued at ₹98.50 earns ₹1.50 over three months, with no coupon.",
+ "say": [
+  "The fund's holdings decide its risk, so I always check them.",
+  "Higher yield usually comes with lower credit quality."
+ ],
+ "never": [
+  "AAA means no risk at all.",
+  "All debt funds are safe because they hold bonds."
+ ],
+ "check": [
+  {
+   "id": "nismva-q13",
+   "q": "Treasury bills are issued at:",
+   "o": [
+    "Face value with a coupon",
+    "A discount to face value",
+    "A premium",
+    "Any price the buyer likes"
+   ],
+   "a": 1,
+   "why": "T-bills are zero-coupon and discounted."
+  },
+  {
+   "id": "nismva-q14",
+   "q": "The highest credit rating category is:",
+   "o": [
+    "D",
+    "BBB",
+    "AAA",
+    "A"
+   ],
+   "a": 2,
+   "why": "AAA is the highest; D is default."
+  },
+  {
+   "id": "nismva-q15",
+   "q": "Money-market instruments mature in up to:",
+   "o": [
+    "1 month",
+    "1 year",
+    "5 years",
+    "10 years"
+   ],
+   "a": 1,
+   "why": "Money-market maturity is up to one year."
+  }
+ ],
+ "card_ids": [
+  "nismva-c5"
+ ],
+ "words": 202
+}

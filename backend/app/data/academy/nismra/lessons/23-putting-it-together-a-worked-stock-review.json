@@ -1,0 +1,68 @@
+{
+ "id": "nismra-23",
+ "title": "Putting it together: a worked stock review",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Report and conduct",
+ "objectives": [
+  "Walk through macro, industry, company, valuation and conduct for one stock.",
+  "Prepare for the exam's case style."
+ ],
+ "body_md": "A worked outline for a fictional company, **AlphaFoods Ltd**.\n\n## 1. Macro and industry\n\nInflation is easing and rural demand is recovering. Packaged food is a **defensive** industry with moderate entry barriers and strong brands.\n\n## 2. Company\n\nSales grew 12% a year, net margin 9%, ROE 20% with a modest equity multiplier. CFO is 95% of PAT, so earnings quality is good. Related-party transactions are small.\n\n## 3. Valuation\n\n- DCF with WACC 11% and terminal growth 5% gives ₹820 per share.\n- Peers trade at 28× P/E; AlphaFoods trades at 24× with similar growth.\n- Blend: target price ₹800, 12-month horizon.\n\n## 4. Risks\n\nRaw material inflation, intense competition from regional brands, a slower rural recovery.\n\n## 5. Conduct check\n\nNo holdings by the analyst, no compensation from the company, trading window respected, disclosures attached.\n\n## Result\n\n**Rating: Buy; target ₹800; horizon 12 months**, with a sensitivity table and a clear list of what would change the view.\n\n> **Exam tip:** Case questions weave several lessons together; tag each fact to its stage.",
+ "key_terms": [
+  "target price",
+  "sensitivity",
+  "earnings quality"
+ ],
+ "example": "If WACC rises from 11% to 12%, the DCF value drops. The analyst shows both values in a sensitivity table so the reader sees how fragile the target is.",
+ "say": [
+  "Our target is ₹800 with a sensitivity range; the key risks are on page 4.",
+  "We have no holdings and no compensation from the company."
+ ],
+ "never": [
+  "Our target is exactly ₹800.37 and cannot be wrong.",
+  "Risks are not worth mentioning."
+ ],
+ "check": [
+  {
+   "id": "nismra-q67",
+   "q": "A good worked review should connect:",
+   "o": [
+    "Only the chart",
+    "Macro, industry, company, valuation and conduct",
+    "Only price",
+    "Only news"
+   ],
+   "a": 1,
+   "why": "Strong research builds from the top down and ends with conduct checks."
+  },
+  {
+   "id": "nismra-q68",
+   "q": "A sensitivity table shows:",
+   "o": [
+    "How value changes with assumptions",
+    "The client list",
+    "Tax rates only",
+    "Broker fees"
+   ],
+   "a": 0,
+   "why": "It shows how the target moves with WACC and growth."
+  },
+  {
+   "id": "nismra-q69",
+   "q": "CFO at about 95% of PAT suggests:",
+   "o": [
+    "Poor earnings quality",
+    "Good earnings quality",
+    "Fraud for sure",
+    "No profit"
+   ],
+   "a": 1,
+   "why": "Profit that converts to cash is a sign of quality."
+  }
+ ],
+ "card_ids": [
+  "nismra-c23"
+ ],
+ "words": 175
+}

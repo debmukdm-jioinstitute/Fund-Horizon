@@ -1,0 +1,69 @@
+{
+ "id": "nismia-08",
+ "title": "Insurance planning",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Advice process",
+ "objectives": [
+  "Size term and health cover.",
+  "Distinguish pure protection from investment-linked insurance."
+ ],
+ "body_md": "Insurance protects the plan from shocks. Check it **before** investing.\n\n## Life cover\n\n- **Term insurance** is pure protection and the most cost-efficient for income replacement.\n- **Human life value (HLV)** method: present value of future income that the family depends on. A common shortcut is 10 to 15 times annual income, adjusted for debts and goals.\n- **Endowment, money-back, ULIP** mix insurance with investment; costs are higher. Treat the two needs separately.\n\n## Health cover\n\n| Item | Note |\n|---|---|\n| Base policy + **super top-up** | Cost-efficient way to raise cover |\n| **Waiting periods** | For pre-existing diseases and some treatments |\n| **Co-pay, sub-limits, room rent caps** | Check before buying |\n| **Portability** | Move insurers without losing credits |\n\n## Others\n\nPersonal accident, critical illness, home and motor cover as relevant.\n\n> **Exam tip:** Insure first with term and health; invest separately.",
+ "key_terms": [
+  "term insurance",
+  "human life value",
+  "super top-up",
+  "ULIP"
+ ],
+ "example": "A 35-year-old earns ₹12 lakh and has a ₹40 lakh home loan. Cover of about 12 times income plus the loan, minus existing assets, is a starting point.",
+ "say": [
+  "Keep insurance and investment separate; term cover is the cheapest protection.",
+  "Check waiting periods and sub-limits in the health policy."
+ ],
+ "never": [
+  "Buy an endowment plan, it is both insurance and investment.",
+  "Health cover from your employer is enough forever."
+ ],
+ "check": [
+  {
+   "id": "nismia-q22",
+   "q": "The most cost-efficient life cover for income replacement is:",
+   "o": [
+    "Endowment",
+    "Term insurance",
+    "ULIP",
+    "Money-back"
+   ],
+   "a": 1,
+   "why": "Term insurance is pure protection at the lowest cost."
+  },
+  {
+   "id": "nismia-q23",
+   "q": "Human life value is based on:",
+   "o": [
+    "Present value of future income",
+    "Number of children",
+    "Home value",
+    "Fund NAV"
+   ],
+   "a": 0,
+   "why": "HLV discounts the income the family depends on."
+  },
+  {
+   "id": "nismia-q24",
+   "q": "A super top-up policy is used to:",
+   "o": [
+    "Increase health cover cheaply",
+    "Replace term life",
+    "Invest in equity",
+    "Pay tax"
+   ],
+   "a": 0,
+   "why": "Super top-ups add high cover at low premium."
+  }
+ ],
+ "card_ids": [
+  "nismia-c8"
+ ],
+ "words": 149
+}

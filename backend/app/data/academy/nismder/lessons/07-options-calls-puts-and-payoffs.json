@@ -1,0 +1,70 @@
+{
+ "id": "nismder-07",
+ "title": "Options: calls, puts and payoffs",
+ "minutes": 7,
+ "level": "beginner",
+ "stage": "Options",
+ "objectives": [
+  "Define call and put and compute buyer and seller payoffs.",
+  "State maximum loss and gain."
+ ],
+ "body_md": "An **option** gives the buyer a **right** (not an obligation) to buy or sell at the **strike price**, in exchange for a **premium**.\n\n| Position | Right / obligation | Max loss | Max gain |\n|---|---|---|---|\n| **Long call** | Right to buy | Premium | Unlimited |\n| **Short call** | Obligation to sell | Unlimited | Premium |\n| **Long put** | Right to sell | Premium | Strike − premium (price to zero) |\n| **Short put** | Obligation to buy | Strike − premium | Premium |\n\n## Payoffs at expiry (per unit)\n\n- Long call = max(S − K, 0) − premium\n- Long put = max(K − S, 0) − premium\n- **Breakeven**: call = K + premium; put = K − premium\n\n## Style\n\n**European** options exercise only at expiry; **American** any time. Index options in India are European; stock options in India are European as well (verify).\n\nExample: call K = 100, premium 5, spot 112 at expiry: profit = 12 − 5 = **7**; breakeven 105.\n\n> **Exam tip:** Buyer's loss is capped at premium; the seller's isn't.",
+ "key_terms": [
+  "call",
+  "put",
+  "strike",
+  "premium",
+  "breakeven"
+ ],
+ "example": "Long put K = 500, premium 15. At expiry spot = 460: payoff 40 − 15 = 25 profit. At spot 520: lose the 15 premium.",
+ "say": [
+  "As a buyer your maximum loss is the premium paid.",
+  "A seller can lose far more than the premium received."
+ ],
+ "never": [
+  "Option buyers can lose more than the premium.",
+  "Selling an option has limited risk."
+ ],
+ "check": [
+  {
+   "id": "nismder-q19",
+   "q": "Long call, K = 100, premium 5, spot 112 at expiry. Profit per unit is:",
+   "o": [
+    "12",
+    "7",
+    "5",
+    "17"
+   ],
+   "a": 1,
+   "why": "12 − 5 = 7."
+  },
+  {
+   "id": "nismder-q20",
+   "q": "Maximum loss for a call buyer is:",
+   "o": [
+    "Unlimited",
+    "The premium",
+    "The strike",
+    "Zero"
+   ],
+   "a": 1,
+   "why": "A buyer cannot lose more than the premium."
+  },
+  {
+   "id": "nismder-q21",
+   "q": "Breakeven for a long put is:",
+   "o": [
+    "K + premium",
+    "K − premium",
+    "K",
+    "Premium"
+   ],
+   "a": 1,
+   "why": "A put breaks even at strike minus premium."
+  }
+ ],
+ "card_ids": [
+  "nismder-c7"
+ ],
+ "words": 188
+}

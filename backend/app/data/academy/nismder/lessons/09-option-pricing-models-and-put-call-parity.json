@@ -1,0 +1,70 @@
+{
+ "id": "nismder-09",
+ "title": "Option pricing models and put-call parity",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Options",
+ "objectives": [
+  "List Black-Scholes inputs.",
+  "Apply put-call parity."
+ ],
+ "body_md": "## Black-Scholes (European options)\n\nInputs: **spot, strike, time to expiry, volatility, risk-free rate, dividends**. Volatility is the only unobservable input, so the market quotes **implied volatility (IV)**, backed out from the premium.\n\n## Binomial model\n\nBuilds a tree of up and down moves and values the option backwards; useful for American options.\n\n## Put-call parity (European, no dividends)\n\n**C − P = S − K × e^(−rt)** (or S − PV of K).\n\nExample: S = 100, K = 100, PV of K = 97, P = 4: C = 4 + (100 − 97) = **7**.\n\nIf parity breaks, an arbitrage exists: buy the cheap side, sell the expensive side.\n\n## Volatility types\n\n| Type | Meaning |\n|---|---|\n| **Historical** | Computed from past prices |\n| **Implied** | Backed out of option prices |\n| **India VIX** | Exchange index of expected near-term volatility |\n\n> **Exam tip:** The one input to estimate in Black-Scholes is volatility.",
+ "key_terms": [
+  "Black-Scholes",
+  "implied volatility",
+  "put-call parity",
+  "India VIX",
+  "binomial"
+ ],
+ "example": "VIX jumps from 12 to 20: options become more expensive across the board, as the market expects larger moves.",
+ "say": [
+  "Implied volatility is what the market expects, not a prediction.",
+  "Put-call parity links calls, puts, spot and strike."
+ ],
+ "never": [
+  "Implied volatility is guaranteed.",
+  "Parity never breaks, so no need to check."
+ ],
+ "check": [
+  {
+   "id": "nismder-q25",
+   "q": "Put-call parity (European, no dividends) is:",
+   "o": [
+    "C − P = S − PV(K)",
+    "C + P = S",
+    "C × P = K",
+    "C = P"
+   ],
+   "a": 0,
+   "why": "Call minus put equals spot minus the present value of the strike."
+  },
+  {
+   "id": "nismder-q26",
+   "q": "Which Black-Scholes input is not directly observed?",
+   "o": [
+    "Spot",
+    "Strike",
+    "Volatility",
+    "Time"
+   ],
+   "a": 2,
+   "why": "Volatility must be estimated."
+  },
+  {
+   "id": "nismder-q27",
+   "q": "India VIX measures:",
+   "o": [
+    "Expected near-term volatility",
+    "Gold price",
+    "Interest rate",
+    "Volume"
+   ],
+   "a": 0,
+   "why": "VIX reflects expected market volatility."
+  }
+ ],
+ "card_ids": [
+  "nismder-c9"
+ ],
+ "words": 160
+}

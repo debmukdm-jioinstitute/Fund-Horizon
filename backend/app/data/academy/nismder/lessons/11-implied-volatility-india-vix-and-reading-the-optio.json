@@ -1,0 +1,70 @@
+{
+ "id": "nismder-11",
+ "title": "Implied volatility, India VIX and reading the option chain",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Options",
+ "objectives": [
+  "Explain implied volatility and the India VIX.",
+  "Read open interest and the put-call ratio without over-reading them."
+ ],
+ "body_md": "## Implied volatility (IV)\n\n**IV** is the volatility that, put into the pricing model, gives today's market premium. Higher IV means **dearer options**; sellers collect more, buyers pay more. IV tends to rise before events and in falling markets.\n\n## India VIX\n\nA measure of **expected annualised volatility** of the Nifty over the next 30 days, computed from Nifty option prices.\n\n- VIX of 15 means the market expects about 15% a year.\n- Monthly one-standard-deviation move ≈ 15 ÷ √12 ≈ **4.3%**.\n- High VIX: fear and expensive options. Low VIX: calm and cheap options.\n\n## Reading the option chain\n\n| Item | Reading |\n|---|---|\n| **Open interest (OI)** | Outstanding contracts per strike |\n| **Change in OI** | New positions being added or closed |\n| **Put-call ratio (PCR)** | Total put OI ÷ total call OI |\n| **Max pain** | Strike where option buyers lose the most at expiry |\n\nHeavy **call OI** at a strike is often treated as **resistance**; heavy **put OI** as **support**. These are heuristics: writers may be hedged or rolling.\n\n## Good practice\n\n- Compare IV with its **own history** before buying or selling options.\n- Use the chain for context, not as a sole trade signal.\n\n> **Exam tip:** VIX is a forward-looking, option-implied number, not past volatility.",
+ "key_terms": [
+  "implied volatility",
+  "India VIX",
+  "open interest",
+  "put-call ratio",
+  "max pain"
+ ],
+ "example": "VIX at 18 suggests a one-month Nifty move of about 18 ÷ 3.46 ≈ 5.2% in either direction at one standard deviation.",
+ "say": [
+  "Premiums look expensive because implied volatility is high.",
+  "Open interest shows where positions sit, not what will happen."
+ ],
+ "never": [
+  "High call OI guarantees the index will stop there.",
+  "VIX shows last month's realised volatility."
+ ],
+ "check": [
+  {
+   "id": "nismder-q31",
+   "q": "India VIX is based on:",
+   "o": [
+    "Past price moves",
+    "Nifty option prices",
+    "Bond yields",
+    "Gold"
+   ],
+   "a": 1,
+   "why": "It is derived from Nifty option prices."
+  },
+  {
+   "id": "nismder-q32",
+   "q": "A VIX of 15 implies a rough monthly 1-SD move of:",
+   "o": [
+    "15%",
+    "4.3%",
+    "1.25%",
+    "0.5%"
+   ],
+   "a": 1,
+   "why": "15 ÷ √12 ≈ 4.3%."
+  },
+  {
+   "id": "nismder-q33",
+   "q": "Put-call ratio is:",
+   "o": [
+    "Call OI ÷ put OI",
+    "Put OI ÷ call OI",
+    "Put premium ÷ call premium",
+    "Strike ÷ spot"
+   ],
+   "a": 1,
+   "why": "PCR = put open interest ÷ call open interest."
+  }
+ ],
+ "card_ids": [
+  "nismder-c11"
+ ],
+ "words": 220
+}

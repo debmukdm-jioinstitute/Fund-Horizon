@@ -1,0 +1,70 @@
+{
+ "id": "nismder-15",
+ "title": "Stock derivatives, contract specifications and physical settlement",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Market operations",
+ "objectives": [
+  "Differentiate index and stock derivatives settlement.",
+  "Explain contract specifications, eligibility and the ban period."
+ ],
+ "body_md": "## Settlement difference\n\n| Segment | Settlement |\n|---|---|\n| **Index futures and options** | **Cash settled** |\n| **Stock futures and options** | **Physically settled** (delivery of shares) on expiry |\n\nOn expiry a stock-futures buyer must **take delivery** and pay, and the seller must **deliver**, or both must square off before. Options in the money at expiry are exercised into delivery. Margins rise as expiry approaches to support this.\n\n## Contract specification\n\nEach contract defines the **underlying, lot size, expiry, tick size and strike interval**. Exchanges set the **lot size** so that contract value stays within a SEBI-specified range, and revise it periodically. Expiry days and the number of weekly contracts change by circular: always check the current exchange notice.\n\n## Eligibility\n\nStocks enter the F&O segment on **market-cap, liquidity and free-float criteria** and exit if they fall short.\n\n## Market-wide position limit and ban\n\nIf the market-wide open interest in a stock crosses **95% of the market-wide position limit (MWPL)**, the stock enters the **ban period**: only positions that reduce open interest are allowed until it falls to a lower threshold.\n\n## Practical points\n\nSquare off before expiry unless delivery is intended; hold enough funds and shares for delivery obligations.\n\n> **Exam tip:** Index derivatives are cash settled; stock derivatives are physically settled.",
+ "key_terms": [
+  "physical settlement",
+  "cash settlement",
+  "lot size",
+  "MWPL",
+  "ban period"
+ ],
+ "example": "A trader holds a long stock future into expiry without squaring off: the position converts to delivery, and the full share value is payable.",
+ "say": [
+  "Stock F&O ends in delivery, so close the position if you do not want shares.",
+  "Check the lot size and expiry in the current exchange notice."
+ ],
+ "never": [
+  "Stock futures are cash settled like index futures.",
+  "The ban period stops all trading in the stock."
+ ],
+ "check": [
+  {
+   "id": "nismder-q43",
+   "q": "Stock options in India settle by:",
+   "o": [
+    "Cash",
+    "Physical delivery",
+    "Gold",
+    "Bond"
+   ],
+   "a": 1,
+   "why": "Stock derivatives are physically settled."
+  },
+  {
+   "id": "nismder-q44",
+   "q": "A stock enters the F&O ban when open interest crosses what share of MWPL?",
+   "o": [
+    "50%",
+    "80%",
+    "95%",
+    "100%"
+   ],
+   "a": 2,
+   "why": "At 95% of the market-wide position limit."
+  },
+  {
+   "id": "nismder-q45",
+   "q": "Index futures at expiry are:",
+   "o": [
+    "Physically settled",
+    "Cash settled",
+    "Rolled automatically",
+    "Cancelled"
+   ],
+   "a": 1,
+   "why": "Index derivatives are cash settled."
+  }
+ ],
+ "card_ids": [
+  "nismder-c15"
+ ],
+ "words": 216
+}

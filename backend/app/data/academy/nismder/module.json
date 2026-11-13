@@ -12,7 +12,7 @@
    ],
    [
     "Duration",
-    "About 100 minutes of lessons, then cards, checkpoints and the final quiz"
+    "About 128 minutes of lessons, then cards, checkpoints and the final quiz"
    ],
    [
     "Prerequisite",
@@ -20,7 +20,7 @@
    ],
    [
     "Format",
-    "15 short lessons in 6 stages, each ending with three exam-style checks"
+    "20 short lessons in 6 stages, each ending with three exam-style checks"
    ]
   ],
   "outcomes": [
@@ -36,6 +36,88 @@
   "SEBI circulars on derivatives segment: contract specifications, margins, position limits, risk disclosure",
   "NSE and BSE derivatives contract specifications (lot sizes and expiries change: always check the current circulars)",
   "Practice exam only: confirm the current NISM exam format before booking"
+ ],
+ "syllabus": [
+  {
+   "topic": "Derivatives: concept, forwards and futures",
+   "lessons": [
+    "nismder-01",
+    "nismder-02"
+   ]
+  },
+  {
+   "topic": "Futures pricing, hedging and arbitrage",
+   "lessons": [
+    "nismder-03",
+    "nismder-04",
+    "nismder-05"
+   ]
+  },
+  {
+   "topic": "Open interest and market indicators",
+   "lessons": [
+    "nismder-06"
+   ]
+  },
+  {
+   "topic": "Options: calls, puts, payoffs and premium",
+   "lessons": [
+    "nismder-07",
+    "nismder-08"
+   ]
+  },
+  {
+   "topic": "Option pricing, parity and the Greeks",
+   "lessons": [
+    "nismder-09",
+    "nismder-10"
+   ]
+  },
+  {
+   "topic": "Implied volatility, VIX and the option chain",
+   "lessons": [
+    "nismder-11"
+   ]
+  },
+  {
+   "topic": "Option strategies",
+   "lessons": [
+    "nismder-12",
+    "nismder-13",
+    "nismder-14"
+   ]
+  },
+  {
+   "topic": "Trading, clearing and settlement; stock derivatives",
+   "lessons": [
+    "nismder-15",
+    "nismder-16"
+   ]
+  },
+  {
+   "topic": "Margining and risk management",
+   "lessons": [
+    "nismder-17"
+   ]
+  },
+  {
+   "topic": "Regulation, taxation and ethics",
+   "lessons": [
+    "nismder-18"
+   ]
+  },
+  {
+   "topic": "Position limits, investor protection and grievance",
+   "lessons": [
+    "nismder-19"
+   ]
+  },
+  {
+   "topic": "Numerical practice",
+   "lessons": [
+    "nismder-20"
+   ]
+  }
  ],
  "lessons": [
   {
@@ -68,76 +150,111 @@
   },
   {
    "id": "nismder-05",
-   "title": "Open interest, rollover and market indicators",
+   "title": "Arbitrage and beta hedging with index futures",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Futures"
   },
   {
    "id": "nismder-06",
+   "title": "Open interest, rollover and market indicators",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Futures"
+  },
+  {
+   "id": "nismder-07",
    "title": "Options: calls, puts and payoffs",
    "minutes": 7,
    "level": "beginner",
    "stage": "Options"
   },
   {
-   "id": "nismder-07",
+   "id": "nismder-08",
    "title": "Option premium: intrinsic value, time value and moneyness",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Options"
   },
   {
-   "id": "nismder-08",
+   "id": "nismder-09",
    "title": "Option pricing models and put-call parity",
    "minutes": 6,
    "level": "advanced",
    "stage": "Options"
   },
   {
-   "id": "nismder-09",
+   "id": "nismder-10",
    "title": "The Greeks",
    "minutes": 7,
    "level": "advanced",
    "stage": "Options"
   },
   {
-   "id": "nismder-10",
+   "id": "nismder-11",
+   "title": "Implied volatility, India VIX and reading the option chain",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Options"
+  },
+  {
+   "id": "nismder-12",
    "title": "Option strategies I: directional and income",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Strategies"
   },
   {
-   "id": "nismder-11",
+   "id": "nismder-13",
    "title": "Option strategies II: volatility plays",
    "minutes": 6,
    "level": "advanced",
    "stage": "Strategies"
   },
   {
-   "id": "nismder-12",
+   "id": "nismder-14",
+   "title": "Option strategies III: covered call, protective put, collar, butterfly and condor",
+   "minutes": 7,
+   "level": "advanced",
+   "stage": "Strategies"
+  },
+  {
+   "id": "nismder-15",
+   "title": "Stock derivatives, contract specifications and physical settlement",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Market operations"
+  },
+  {
+   "id": "nismder-16",
    "title": "Trading system, clearing and settlement",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Market operations"
   },
   {
-   "id": "nismder-13",
+   "id": "nismder-17",
    "title": "Margining and risk management",
    "minutes": 7,
    "level": "advanced",
    "stage": "Market operations"
   },
   {
-   "id": "nismder-14",
+   "id": "nismder-18",
    "title": "Regulation, taxation and ethics in derivatives",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Regulation and risk"
   },
   {
-   "id": "nismder-15",
+   "id": "nismder-19",
+   "title": "Position limits, investor protection and grievance redressal",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Regulation and risk"
+  },
+  {
+   "id": "nismder-20",
    "title": "Worked cases and exam-style problems",
    "minutes": 7,
    "level": "advanced",
@@ -183,6 +300,15 @@
   },
   {
    "id": "nismder-c5",
+   "q": "Hedging maths?",
+   "a": [
+    "N = β × V ÷ (F × lot).",
+    "Futures rich: cash-and-carry.",
+    "Basis risk remains."
+   ]
+  },
+  {
+   "id": "nismder-c6",
    "q": "Price and OI reading?",
    "a": [
     "Up, up: fresh longs.",
@@ -191,7 +317,7 @@
    ]
   },
   {
-   "id": "nismder-c6",
+   "id": "nismder-c7",
    "q": "Call/put payoffs?",
    "a": [
     "Call buyer: unlimited gain.",
@@ -200,7 +326,7 @@
    ]
   },
   {
-   "id": "nismder-c7",
+   "id": "nismder-c8",
    "q": "Premium formula?",
    "a": [
     "Intrinsic + time value.",
@@ -209,7 +335,7 @@
    ]
   },
   {
-   "id": "nismder-c8",
+   "id": "nismder-c9",
    "q": "Black-Scholes inputs?",
    "a": [
     "Spot, strike, time.",
@@ -218,7 +344,7 @@
    ]
   },
   {
-   "id": "nismder-c9",
+   "id": "nismder-c10",
    "q": "Greeks in one line each?",
    "a": [
     "Delta: price.",
@@ -227,7 +353,16 @@
    ]
   },
   {
-   "id": "nismder-c10",
+   "id": "nismder-c11",
+   "q": "IV and VIX?",
+   "a": [
+    "IV is market-implied.",
+    "VIX = expected 30-day Nifty volatility.",
+    "PCR = put OI ÷ call OI."
+   ]
+  },
+  {
+   "id": "nismder-c12",
    "q": "Directional strategies?",
    "a": [
     "Protective put: insurance.",
@@ -236,7 +371,7 @@
    ]
   },
   {
-   "id": "nismder-c11",
+   "id": "nismder-c13",
    "q": "Volatility strategies?",
    "a": [
     "Long straddle: big move.",
@@ -245,7 +380,25 @@
    ]
   },
   {
-   "id": "nismder-c12",
+   "id": "nismder-c14",
+   "q": "Strategy numbers?",
+   "a": [
+    "Covered call BE = price − premium.",
+    "Protective put BE = price + premium.",
+    "Butterfly: max profit at middle strike."
+   ]
+  },
+  {
+   "id": "nismder-c15",
+   "q": "Stock F&O?",
+   "a": [
+    "Physical delivery.",
+    "Ban at 95% MWPL.",
+    "Check lot size and expiry notices."
+   ]
+  },
+  {
+   "id": "nismder-c16",
    "q": "Clearing flow?",
    "a": [
     "Order, match.",
@@ -254,7 +407,7 @@
    ]
   },
   {
-   "id": "nismder-c13",
+   "id": "nismder-c17",
    "q": "Margin parts?",
    "a": [
     "SPAN plus exposure.",
@@ -263,7 +416,7 @@
    ]
   },
   {
-   "id": "nismder-c14",
+   "id": "nismder-c18",
    "q": "Compliance basics?",
    "a": [
     "Risk disclosure and KYC.",
@@ -272,7 +425,16 @@
    ]
   },
   {
-   "id": "nismder-c15",
+   "id": "nismder-c19",
+   "q": "Safeguards?",
+   "a": [
+    "Clearing corp guarantee.",
+    "SGF and IPF backstops.",
+    "SCORES, ODR, arbitration."
+   ]
+  },
+  {
+   "id": "nismder-c20",
    "q": "Problem checklist?",
    "a": [
     "Instrument and direction.",
@@ -392,6 +554,32 @@
    },
    {
     "id": "nismder-q13",
+    "q": "When futures trade above fair value the arbitrage is:",
+    "o": [
+     "Reverse cash-and-carry",
+     "Cash-and-carry",
+     "Straddle",
+     "Collar"
+    ],
+    "a": 1,
+    "why": "Buy spot, sell the expensive futures.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q14",
+    "q": "V ₹5 crore, β 1.2, futures 24,000, lot 75. Lots needed to fully hedge are about:",
+    "o": [
+     "10",
+     "33",
+     "100",
+     "3"
+    ],
+    "a": 1,
+    "why": "6 crore ÷ 18 lakh = 33.3.",
+    "sec": "Futures"
+   },
+   {
+    "id": "nismder-q16",
     "q": "Price up and OI up suggests:",
     "o": [
      "Short covering",
@@ -404,7 +592,7 @@
     "sec": "Futures"
    },
    {
-    "id": "nismder-q14",
+    "id": "nismder-q17",
     "q": "PCR is computed as:",
     "o": [
      "Call OI ÷ put OI",
@@ -417,7 +605,7 @@
     "sec": "Futures"
    },
    {
-    "id": "nismder-q16",
+    "id": "nismder-q19",
     "q": "Long call, K = 100, premium 5, spot 112 at expiry. Profit per unit is:",
     "o": [
      "12",
@@ -430,7 +618,7 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q17",
+    "id": "nismder-q20",
     "q": "Maximum loss for a call buyer is:",
     "o": [
      "Unlimited",
@@ -443,7 +631,7 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q19",
+    "id": "nismder-q22",
     "q": "Call K = 100, spot 108, premium 11. Time value is:",
     "o": [
      "8",
@@ -456,7 +644,7 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q20",
+    "id": "nismder-q23",
     "q": "A call is ITM when:",
     "o": [
      "S > K",
@@ -469,7 +657,7 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q22",
+    "id": "nismder-q25",
     "q": "Put-call parity (European, no dividends) is:",
     "o": [
      "C − P = S − PV(K)",
@@ -482,7 +670,7 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q23",
+    "id": "nismder-q26",
     "q": "Which Black-Scholes input is not directly observed?",
     "o": [
      "Spot",
@@ -495,7 +683,7 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q25",
+    "id": "nismder-q28",
     "q": "A long call's delta lies between:",
     "o": [
      "−1 and 0",
@@ -508,7 +696,7 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q26",
+    "id": "nismder-q29",
     "q": "Time decay is measured by:",
     "o": [
      "Delta",
@@ -521,7 +709,33 @@
     "sec": "Options"
    },
    {
-    "id": "nismder-q28",
+    "id": "nismder-q31",
+    "q": "India VIX is based on:",
+    "o": [
+     "Past price moves",
+     "Nifty option prices",
+     "Bond yields",
+     "Gold"
+    ],
+    "a": 1,
+    "why": "It is derived from Nifty option prices.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q32",
+    "q": "A VIX of 15 implies a rough monthly 1-SD move of:",
+    "o": [
+     "15%",
+     "4.3%",
+     "1.25%",
+     "0.5%"
+    ],
+    "a": 1,
+    "why": "15 ÷ √12 ≈ 4.3%.",
+    "sec": "Options"
+   },
+   {
+    "id": "nismder-q34",
     "q": "Bull call spread: buy 100 call @8, sell 110 call @3. Maximum loss is:",
     "o": [
      "5",
@@ -534,7 +748,7 @@
     "sec": "Strategies"
    },
    {
-    "id": "nismder-q29",
+    "id": "nismder-q35",
     "q": "A protective put is:",
     "o": [
      "Own stock and buy a put",
@@ -547,7 +761,7 @@
     "sec": "Strategies"
    },
    {
-    "id": "nismder-q31",
+    "id": "nismder-q37",
     "q": "Long straddle K = 100, total premium 11. Upper breakeven is:",
     "o": [
      "100",
@@ -560,7 +774,72 @@
     "sec": "Strategies"
    },
    {
-    "id": "nismder-q34",
+    "id": "nismder-q38",
+    "q": "A short straddle profits when:",
+    "o": [
+     "The price moves a lot",
+     "The price stays near the strike",
+     "Volatility rises",
+     "Rates fall"
+    ],
+    "a": 1,
+    "why": "Short straddles gain from a quiet market.",
+    "sec": "Strategies"
+   },
+   {
+    "id": "nismder-q40",
+    "q": "Covered call: stock 500, 520 call sold at 8. Maximum profit per share is:",
+    "o": [
+     "8",
+     "20",
+     "28",
+     "Unlimited"
+    ],
+    "a": 2,
+    "why": "20 from the stock plus 8 premium.",
+    "sec": "Strategies"
+   },
+   {
+    "id": "nismder-q41",
+    "q": "Protective put: stock 500, 480 put bought at 10. Maximum loss is:",
+    "o": [
+     "10",
+     "20",
+     "30",
+     "500"
+    ],
+    "a": 2,
+    "why": "20 below the strike plus 10 premium.",
+    "sec": "Strategies"
+   },
+   {
+    "id": "nismder-q43",
+    "q": "Stock options in India settle by:",
+    "o": [
+     "Cash",
+     "Physical delivery",
+     "Gold",
+     "Bond"
+    ],
+    "a": 1,
+    "why": "Stock derivatives are physically settled.",
+    "sec": "Market operations"
+   },
+   {
+    "id": "nismder-q44",
+    "q": "A stock enters the F&O ban when open interest crosses what share of MWPL?",
+    "o": [
+     "50%",
+     "80%",
+     "95%",
+     "100%"
+    ],
+    "a": 2,
+    "why": "At 95% of the market-wide position limit.",
+    "sec": "Market operations"
+   },
+   {
+    "id": "nismder-q46",
     "q": "Novation means the clearing corporation:",
     "o": [
      "Becomes counterparty to both sides",
@@ -573,7 +852,7 @@
     "sec": "Market operations"
    },
    {
-    "id": "nismder-q37",
+    "id": "nismder-q49",
     "q": "SPAN margin estimates:",
     "o": [
      "Largest likely one-day loss",
@@ -586,7 +865,7 @@
     "sec": "Market operations"
    },
    {
-    "id": "nismder-q40",
+    "id": "nismder-q52",
     "q": "F&O income is generally taxed as:",
     "o": [
      "Capital gains only",
@@ -599,7 +878,20 @@
     "sec": "Regulation and risk"
    },
    {
-    "id": "nismder-q43",
+    "id": "nismder-q55",
+    "q": "Who becomes the counterparty to every trade at clearing?",
+    "o": [
+     "The broker",
+     "The clearing corporation",
+     "The AMC",
+     "The depository"
+    ],
+    "a": 1,
+    "why": "The clearing corporation guarantees settlement.",
+    "sec": "Regulation and risk"
+   },
+   {
+    "id": "nismder-q58",
     "q": "Buy 2 lots (lot 50) at 400, close 410. Profit is:",
     "o": [
      "₹500",

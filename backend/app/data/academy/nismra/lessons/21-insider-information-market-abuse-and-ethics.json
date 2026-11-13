@@ -1,0 +1,69 @@
+{
+ "id": "nismra-21",
+ "title": "Insider information, market abuse and ethics",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Report and conduct",
+ "objectives": [
+  "Define UPSI and market manipulation.",
+  "Handle selective disclosure and leaks safely."
+ ],
+ "body_md": "Research sits close to sensitive information, so ethics is part of the job.\n\n## Insider trading\n\n**UPSI** is information that is not public and can materially move a price (results, mergers, large orders). Trading on it, or sharing it, breaches the **SEBI (Prohibition of Insider Trading) Regulations, 2015**.\n\n## Market manipulation (PFUTP)\n\n- Creating a **false market**, **pump and dump**, circular trades.\n- Spreading false or misleading information.\n- **Front running** a client or published report.\n\n## Handling sensitive information\n\n| Situation | Right step |\n|---|---|\n| Management gives private guidance in a call | Do not trade; use only public information in the report |\n| You overhear a result before release | Stay silent, tell compliance |\n| Client wants advance tips | Decline; same information to all clients at once |\n\n## Culture\n\n- Pre-clear personal trades with compliance.\n- Keep a **restricted list** and a **watch list**.\n- Report suspicious activity.\n\n> **Exam tip:** Penalties can include fines, disgorgement and bans; know the principle, not the numbers.",
+ "key_terms": [
+  "UPSI",
+  "PFUTP",
+  "pump and dump",
+  "restricted list"
+ ],
+ "example": "An analyst learns in a private call that a merger is about to be announced. Publishing a 'buy' or buying personally would breach the insider trading rules. She tells compliance and waits for public disclosure.",
+ "say": [
+  "We only use public information in our reports.",
+  "Please wait for the official announcement, like everyone else."
+ ],
+ "never": [
+  "I heard results are strong; buy before the release.",
+  "Let us tell our favourite clients first."
+ ],
+ "check": [
+  {
+   "id": "nismra-q61",
+   "q": "UPSI stands for:",
+   "o": [
+    "Unpublished price sensitive information",
+    "Unlimited public stock index",
+    "Unified price standard indicator",
+    "Unverified public statement"
+   ],
+   "a": 0,
+   "why": "UPSI is non-public information that could move a price."
+  },
+  {
+   "id": "nismra-q62",
+   "q": "Spreading false news to move a price is:",
+   "o": [
+    "Allowed with a disclaimer",
+    "Market manipulation",
+    "Research",
+    "Hedging"
+   ],
+   "a": 1,
+   "why": "It falls under the PFUTP regulations."
+  },
+  {
+   "id": "nismra-q63",
+   "q": "If you hear a result before release, you should:",
+   "o": [
+    "Trade quickly",
+    "Tell compliance and refrain from trading",
+    "Post it online",
+    "Tell friends"
+   ],
+   "a": 1,
+   "why": "Escalate to compliance and do not trade."
+  }
+ ],
+ "card_ids": [
+  "nismra-c21"
+ ],
+ "words": 172
+}

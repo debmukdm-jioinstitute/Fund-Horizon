@@ -1,0 +1,70 @@
+{
+ "id": "nismra-19",
+ "title": "Derivatives and fixed income for analysts",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Technicals and instruments",
+ "objectives": [
+  "Explain futures and options payoffs and the bond price-yield link.",
+  "Use derivatives data as a research input."
+ ],
+ "body_md": "Analysts meet derivatives and bonds even in an equity role.\n\n## Futures and options\n\n- A **future** is an obligation to buy or sell at a set price on a date.\n- An **option** is a right, not an obligation. A **call** gives the right to buy; a **put** the right to sell. The buyer's maximum loss is the **premium**.\n- **Open interest** and the **put-call ratio** hint at positioning.\n- **Options Greeks:** delta (price sensitivity), theta (time decay), vega (volatility).\n- Single-stock derivatives in India are physically settled; index derivatives are cash settled (verify current rules).\n\n## Bonds\n\n| Concept | Rule |\n|---|---|\n| Price and yield | Move in **opposite** directions |\n| Duration | Measures sensitivity to rate changes; longer duration, bigger swings |\n| Credit spread | Extra yield for default risk |\n| Yield curve | Yields across maturities; inversion can signal slowdown |\n\n> **Exam tip:** Remember that the option buyer's loss is capped at the premium, while the seller's can be large.",
+ "key_terms": [
+  "futures",
+  "call option",
+  "put option",
+  "open interest",
+  "duration"
+ ],
+ "example": "A bond yielding 7% rises in price when market yields fall to 6.5%. A bond fund with long duration gains more than one with short duration.",
+ "say": [
+  "Options data is one input among several, not a forecast.",
+  "Bond prices fall when yields rise."
+ ],
+ "never": [
+  "Option buyers can lose more than the premium.",
+  "Duration does not matter for rates."
+ ],
+ "check": [
+  {
+   "id": "nismra-q55",
+   "q": "The maximum loss for an option buyer is:",
+   "o": [
+    "Unlimited",
+    "The premium paid",
+    "The strike price",
+    "Zero"
+   ],
+   "a": 1,
+   "why": "A buyer can lose only the premium."
+  },
+  {
+   "id": "nismra-q56",
+   "q": "When market yields rise, existing bond prices:",
+   "o": [
+    "Rise",
+    "Fall",
+    "Stay constant",
+    "Double"
+   ],
+   "a": 1,
+   "why": "Price and yield move in opposite directions."
+  },
+  {
+   "id": "nismra-q57",
+   "q": "Which Greek measures time decay?",
+   "o": [
+    "Delta",
+    "Theta",
+    "Vega",
+    "Gamma"
+   ],
+   "a": 1,
+   "why": "Theta measures how an option loses value as time passes."
+  }
+ ],
+ "card_ids": [
+  "nismra-c19"
+ ],
+ "words": 170
+}

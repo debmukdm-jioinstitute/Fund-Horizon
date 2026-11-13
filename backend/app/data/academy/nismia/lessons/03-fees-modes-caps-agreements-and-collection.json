@@ -1,0 +1,70 @@
+{
+ "id": "nismia-03",
+ "title": "Fees: modes, caps, agreements and collection",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Regulation",
+ "objectives": [
+  "Compare the two fee modes and compute a fee.",
+  "State the agreement, advance-fee and refund rules."
+ ],
+ "body_md": "## Two fee modes\n\n| Mode | How it works |\n|---|---|\n| **Assets under advice (AUA)** | Fee as a % of the assets the adviser advises on, up to a **cap of 2.5% a year** per client |\n| **Fixed fee** | A flat amount, capped at about **₹1,51,000 a year per family** for individual and HUF clients |\n\nThe caps apply to individual and HUF clients; accredited investors and non-individuals have different treatment. **Verify the current cap before quoting it.**\n\n## Rules around the fee\n\n- A **written agreement** fixes the services, the fee, the mode and the termination terms.\n- Fees are collected through **banking channels**, and no more than **one quarter in advance**.\n- On early exit, refund the unused portion on a pro-rata basis.\n- Fees must be **reasonable and disclosed**; no commission, rebate or kickback from products.\n- The adviser cannot take fees in a way that depends on the performance unless the rules allow it (they generally do not for IAs).\n\n## Worked fee\n\nClient advised on ₹40 lakh at 1.5% AUA: ₹60,000 a year, collected as ₹15,000 a quarter.\n\n## Compare modes\n\nFixed fee suits clients with large assets; AUA suits small and growing portfolios, but check the cap does not exceed the client's benefit.\n\n> **Exam tip:** Advance fee: at most one quarter. Fee-only: no product commission.",
+ "key_terms": [
+  "AUA",
+  "fixed fee",
+  "advisory agreement",
+  "fee cap",
+  "refund"
+ ],
+ "example": "AUA ₹40 lakh at 1.5% gives ₹60,000 a year. The client pays ₹15,000 each quarter and may leave with a pro-rata refund.",
+ "say": [
+  "My fee is fixed in a written agreement and I take no commission.",
+  "If you leave early, the unused fee is refunded."
+ ],
+ "never": [
+  "I will take a year's fee in advance.",
+  "The fee depends on how much you gain."
+ ],
+ "check": [
+  {
+   "id": "nismia-q7",
+   "q": "An investment adviser may collect fees in advance for at most:",
+   "o": [
+    "One month",
+    "One quarter",
+    "One year",
+    "Five years"
+   ],
+   "a": 1,
+   "why": "At most one quarter in advance."
+  },
+  {
+   "id": "nismia-q8",
+   "q": "AUA fee of 1.5% on ₹40 lakh gives, per year:",
+   "o": [
+    "₹6,000",
+    "₹60,000",
+    "₹6 lakh",
+    "₹15,000"
+   ],
+   "a": 1,
+   "why": "0.015 × 40,00,000 = ₹60,000."
+  },
+  {
+   "id": "nismia-q9",
+   "q": "Can an IA accept product commission from the fund?",
+   "o": [
+    "Yes, always",
+    "No, fee-only",
+    "Only on Fridays",
+    "Only from banks"
+   ],
+   "a": 1,
+   "why": "IAs are fee-only."
+  }
+ ],
+ "card_ids": [
+  "nismia-c3"
+ ],
+ "words": 227
+}

@@ -1,0 +1,69 @@
+{
+ "id": "nismra-04",
+ "title": "SEBI (Research Analysts) Regulations, 2014: registration and eligibility",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "Regulation",
+ "objectives": [
+  "List the registration conditions for an individual and a firm.",
+  "State the role of NISM certification and continuing duties."
+ ],
+ "body_md": "The regulations set who can be an RA and what they must keep doing.\n\n## Individual RA\n\n- Meets the prescribed **educational qualification** and holds a valid **NISM-Series-XV certificate** (or an equivalent recognised qualification).\n- Is a fit and proper person, with no disqualifying record.\n- Has a place of business and the infrastructure to keep records.\n\n## Firm (research entity)\n\n- Needs the same qualification at the level of its principal officers and analysts.\n- Names a **compliance officer** and has written policies on conflicts and trading.\n- Registers each analyst as a person responsible for research.\n\n## Continuing duties\n\n| Duty | What it means |\n|---|---|\n| Pay prescribed fees | On time, to stay registered |\n| Keep records | Reports, rationale, client communications, for at least five years |\n| Keep certification current | Re-certify before the NISM certificate lapses |\n| Cooperate with SEBI | Provide information and accept inspection |\n\n> **Exam tip:** Remember the pairing: qualification plus NISM certification plus fit and proper.",
+ "key_terms": [
+  "NISM-Series-XV",
+  "fit and proper",
+  "compliance officer",
+  "records"
+ ],
+ "example": "A firm hires an analyst whose NISM certificate lapsed last month. Until it is renewed, the analyst should not be responsible for publishing research.",
+ "say": [
+  "My certification is valid until the date on the certificate.",
+  "All research and its rationale are kept for at least five years."
+ ],
+ "never": [
+  "The certificate is a one-time paper; it never expires.",
+  "We delete old drafts to save space."
+ ],
+ "check": [
+  {
+   "id": "nismra-q10",
+   "q": "Which certification is expected of a research analyst?",
+   "o": [
+    "NISM-Series-V-A",
+    "NISM-Series-XV",
+    "NISM-Series-VIII",
+    "Any CA exam"
+   ],
+   "a": 1,
+   "why": "NISM-Series-XV is the research analyst certification."
+  },
+  {
+   "id": "nismra-q11",
+   "q": "Records of research and rationale should be kept for at least:",
+   "o": [
+    "6 months",
+    "1 year",
+    "Five years",
+    "Never required"
+   ],
+   "a": 2,
+   "why": "The regulations require a minimum five-year record."
+  },
+  {
+   "id": "nismra-q12",
+   "q": "A research entity should appoint:",
+   "o": [
+    "A compliance officer",
+    "An unrelated celebrity",
+    "No one",
+    "A client as supervisor"
+   ],
+   "a": 0,
+   "why": "A compliance officer oversees conflicts, trading and disclosures."
+  }
+ ],
+ "card_ids": [
+  "nismra-c4"
+ ],
+ "words": 171
+}

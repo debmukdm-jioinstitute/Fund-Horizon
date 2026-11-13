@@ -1,0 +1,70 @@
+{
+ "id": "nismder-14",
+ "title": "Option strategies III: covered call, protective put, collar, butterfly and condor",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Strategies",
+ "objectives": [
+  "Compute maximum profit, loss and breakevens for covered call, protective put and butterfly.",
+  "Choose between income, protection and range-bound strategies."
+ ],
+ "body_md": "## Stock-plus-option strategies\n\n| Strategy | Build | Aim |\n|---|---|---|\n| **Covered call** | Own stock, sell a call | Income; caps the upside |\n| **Protective put** | Own stock, buy a put | Insurance against a fall |\n| **Collar** | Own stock, buy a put, sell a call | Cheap protection, capped upside |\n\nCovered call: stock 500, sell 520 call at 8. Max profit = (520 − 500) + 8 = **28**. Breakeven = 500 − 8 = **492**.\n\nProtective put: stock 500, buy 480 put at 10. Max loss = (500 − 480) + 10 = **30**. Breakeven = 500 + 10 = **510**.\n\n## Range-bound strategies\n\n**Long call butterfly:** buy 100 call at 12, sell two 110 calls at 7, buy 120 call at 4. Net debit = 12 + 4 − 14 = **2**.\nMax profit = (110 − 100) − 2 = **8** at 110. Max loss = 2. Breakevens: **102** and **118**.\n\n**Iron condor:** sell an out-of-the-money call and put, buy further wings for protection. Collects net premium if the index stays inside a range; loss is capped by the wings.\n\n**Ratio spread:** unequal numbers of long and short options; can carry unlimited risk on one side.\n\n## Choosing\n\nBullish and income: covered call. Worried about a fall: protective put or collar. Expect low movement: butterfly or condor.\n\n> **Exam tip:** Covered call breakeven is stock price minus premium received.",
+ "key_terms": [
+  "covered call",
+  "protective put",
+  "collar",
+  "butterfly",
+  "iron condor"
+ ],
+ "example": "Own a stock at 500 and sell a 520 call for 8: if the stock closes at 540 the gain is 20 + 8 = 28, not 48.",
+ "say": [
+  "A covered call earns income but gives up gains above the strike.",
+  "A protective put is insurance, so it has a cost."
+ ],
+ "never": [
+  "A covered call has no downside.",
+  "A condor can never lose money."
+ ],
+ "check": [
+  {
+   "id": "nismder-q40",
+   "q": "Covered call: stock 500, 520 call sold at 8. Maximum profit per share is:",
+   "o": [
+    "8",
+    "20",
+    "28",
+    "Unlimited"
+   ],
+   "a": 2,
+   "why": "20 from the stock plus 8 premium."
+  },
+  {
+   "id": "nismder-q41",
+   "q": "Protective put: stock 500, 480 put bought at 10. Maximum loss is:",
+   "o": [
+    "10",
+    "20",
+    "30",
+    "500"
+   ],
+   "a": 2,
+   "why": "20 below the strike plus 10 premium."
+  },
+  {
+   "id": "nismder-q42",
+   "q": "A long call butterfly profits most when the price at expiry is:",
+   "o": [
+    "Far above the wings",
+    "At the middle strike",
+    "Far below the wings",
+    "Never"
+   ],
+   "a": 1,
+   "why": "Maximum profit is at the short strike."
+  }
+ ],
+ "card_ids": [
+  "nismder-c14"
+ ],
+ "words": 240
+}

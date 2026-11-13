@@ -1,0 +1,70 @@
+{
+ "id": "nismva-20",
+ "title": "Distribution channels, commissions and disclosures",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Planning and conduct",
+ "objectives": [
+  "Explain how distributors are paid and why Direct and Regular plans differ.",
+  "State the disclosure duties around commission."
+ ],
+ "body_md": "## How the distributor is paid\n\n- **Trail commission** from the scheme's **TER**, paid for as long as the client stays invested. It is reflected in the **Regular plan** NAV.\n- **Upfront commission has been banned**; distributors must not pay or receive it from investor money.\n- **Direct plans** carry no distributor commission, and the NAV is higher by the cost difference.\n- Additional TER for inflows from beyond the top cities existed in the past; check the current expense circular.\n\n## Channels\n\n| Channel | Examples |\n|---|---|\n| **Independent distributors (IFAs)** | ARN holders advising individuals |\n| **Banks and national distributors** | Large networks |\n| **Online platforms** | Direct and Regular options, execution only |\n| **Registered investment advisers** | Fee-only, paid by the client |\n\n## Disclosures\n\n- Quote your **ARN** and **EUIN** on forms.\n- Give the client the **commission information** on request and in line with AMFI guidance.\n- Tell the investor that Direct plans exist.\n- Disclose any conflict, such as higher commission on one scheme.\n\n## Conduct\n\nRecommend on **client need**, not on commission. Never rebate commission in cash or by gifts outside the allowed norms.\n\n> **Exam tip:** Trail commission comes from the TER; upfront commission is banned.",
+ "key_terms": [
+  "trail commission",
+  "ARN",
+  "EUIN",
+  "Direct plan",
+  "conflict of interest"
+ ],
+ "example": "A Regular plan charges 1.6% and the Direct plan 0.7%: the 0.9% gap funds the distributor's service. On ₹10 lakh that is ₹9,000 a year.",
+ "say": [
+  "You can buy Direct as well; here is what my service for the difference includes.",
+  "My commission is disclosed on your statement."
+ ],
+ "never": [
+  "I get nothing from this fund.",
+  "I will pay you part of my commission in cash."
+ ],
+ "check": [
+  {
+   "id": "nismva-q58",
+   "q": "Trail commission is paid out of:",
+   "o": [
+    "The investor's pocket separately",
+    "The scheme's TER",
+    "The exchange",
+    "SEBI"
+   ],
+   "a": 1,
+   "why": "Trail comes from the scheme's expense ratio."
+  },
+  {
+   "id": "nismva-q59",
+   "q": "Which identifies the person who advised the investor on the form?",
+   "o": [
+    "EUIN",
+    "PAN",
+    "ISIN",
+    "CIN"
+   ],
+   "a": 0,
+   "why": "EUIN identifies the employee or relationship manager."
+  },
+  {
+   "id": "nismva-q60",
+   "q": "A Direct plan differs from a Regular plan because it has:",
+   "o": [
+    "Higher TER",
+    "No distributor commission",
+    "A lock-in",
+    "No NAV"
+   ],
+   "a": 1,
+   "why": "No commission, so a lower TER."
+  }
+ ],
+ "card_ids": [
+  "nismva-c20"
+ ],
+ "words": 208
+}

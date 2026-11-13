@@ -1,0 +1,227 @@
+{
+ "tracks": [
+  {
+   "id": "distributor",
+   "title": "Distributor essentials",
+   "blurb": "Start here: run mutual fund, PMS and AIF conversations from discovery to review.",
+   "modules": [
+    "mf",
+    "pms",
+    "compare"
+   ]
+  },
+  {
+   "id": "foundations",
+   "title": "Investor foundations",
+   "blurb": "The terms, debt, income options and behaviour every adviser must explain well.",
+   "modules": [
+    "terms",
+    "bonds",
+    "idcw",
+    "psych"
+   ]
+  },
+  {
+   "id": "planning",
+   "title": "Plan and invest",
+   "blurb": "Goals, timing, SIPs and asset allocation: turning a client's life into a plan.",
+   "modules": [
+    "goals",
+    "timing",
+    "sip",
+    "alloc",
+    "stepup"
+   ]
+  },
+  {
+   "id": "review",
+   "title": "Review and retain",
+   "blurb": "Rebalance, remove overlap and plan withdrawals so the plan stays on track.",
+   "modules": [
+    "rebal",
+    "overlap",
+    "withdraw"
+   ]
+  },
+  {
+   "id": "nism",
+   "title": "NISM exam prep",
+   "blurb": "Syllabus-mapped preparation for the NISM certifications staff most often need. Not part of the Academy certificate.",
+   "modules": [
+    "nismva",
+    "nismra",
+    "nismia",
+    "nismder"
+   ]
+  }
+ ],
+ "modules": {
+  "mf": {
+   "prereq": [],
+   "related": [
+    "terms",
+    "pms",
+    "nismva"
+   ]
+  },
+  "pms": {
+   "prereq": [
+    "mf"
+   ],
+   "related": [
+    "compare",
+    "goals"
+   ]
+  },
+  "compare": {
+   "prereq": [
+    "mf",
+    "pms"
+   ],
+   "related": [
+    "overlap",
+    "alloc"
+   ]
+  },
+  "terms": {
+   "prereq": [],
+   "related": [
+    "mf",
+    "nismva"
+   ]
+  },
+  "bonds": {
+   "prereq": [
+    "terms"
+   ],
+   "related": [
+    "idcw",
+    "nismva"
+   ]
+  },
+  "idcw": {
+   "prereq": [
+    "terms"
+   ],
+   "related": [
+    "withdraw",
+    "bonds"
+   ]
+  },
+  "psych": {
+   "prereq": [],
+   "related": [
+    "timing",
+    "rebal"
+   ]
+  },
+  "goals": {
+   "prereq": [
+    "terms"
+   ],
+   "related": [
+    "sip",
+    "alloc",
+    "nismia"
+   ]
+  },
+  "timing": {
+   "prereq": [
+    "psych"
+   ],
+   "related": [
+    "sip",
+    "rebal"
+   ]
+  },
+  "sip": {
+   "prereq": [
+    "goals"
+   ],
+   "related": [
+    "stepup",
+    "timing"
+   ]
+  },
+  "alloc": {
+   "prereq": [
+    "goals"
+   ],
+   "related": [
+    "rebal",
+    "nismia"
+   ]
+  },
+  "stepup": {
+   "prereq": [
+    "sip"
+   ],
+   "related": [
+    "goals",
+    "withdraw"
+   ]
+  },
+  "rebal": {
+   "prereq": [
+    "alloc"
+   ],
+   "related": [
+    "overlap",
+    "psych"
+   ]
+  },
+  "overlap": {
+   "prereq": [
+    "mf"
+   ],
+   "related": [
+    "rebal",
+    "compare"
+   ]
+  },
+  "withdraw": {
+   "prereq": [
+    "idcw",
+    "alloc"
+   ],
+   "related": [
+    "sip",
+    "goals"
+   ]
+  },
+  "nismva": {
+   "prereq": [
+    "mf",
+    "terms"
+   ],
+   "related": [
+    "bonds",
+    "idcw"
+   ]
+  },
+  "nismra": {
+   "prereq": [],
+   "related": [
+    "nismder",
+    "nismia"
+   ]
+  },
+  "nismia": {
+   "prereq": [
+    "goals",
+    "alloc"
+   ],
+   "related": [
+    "nismva",
+    "nismra"
+   ]
+  },
+  "nismder": {
+   "prereq": [],
+   "related": [
+    "nismra",
+    "nismia"
+   ]
+  }
+ }
+}

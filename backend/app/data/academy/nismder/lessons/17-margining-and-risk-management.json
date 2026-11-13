@@ -1,0 +1,70 @@
+{
+ "id": "nismder-17",
+ "title": "Margining and risk management",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Market operations",
+ "objectives": [
+  "Describe SPAN, exposure and extreme loss margins.",
+  "Apply position and exposure limits."
+ ],
+ "body_md": "## Margin components\n\n| Component | Purpose |\n|---|---|\n| **SPAN margin** | Largest likely one-day loss across a risk-scenario grid |\n| **Exposure margin** | Extra buffer over SPAN |\n| **Extreme loss margin** | Covers unusual moves |\n| **Premium margin** | Buyers pay the premium upfront; no margin on long options |\n| **MTM** | Daily settlement of losses |\n\n## Margins for sellers\n\nOption sellers pay SPAN plus exposure margin. Calendar and hedged positions earn **margin benefit**.\n\n## Limits\n\n- **Position limits** per client, member and market-wide.\n- **Market-wide position limit (MWPL)** for stocks: if open interest nears the limit, new positions are restricted (ban period).\n- **Intraday and peak margin** rules cut leverage; margins must be collected upfront.\n\n## Client risk\n\n- Risk disclosure and **suitability** for derivatives clients.\n- Educate clients that **leverage can multiply losses**.\n- Use **stop-loss** discipline; avoid selling uncovered options without capacity.\n\n> **Exam tip:** SPAN approximates a worst one-day loss.",
+ "key_terms": [
+  "SPAN",
+  "exposure margin",
+  "MWPL",
+  "position limit",
+  "peak margin"
+ ],
+ "example": "A stock reaches 95% of its MWPL and enters the ban period: only positions that reduce open interest are allowed.",
+ "say": [
+  "Margins are collected upfront; losses are settled every day.",
+  "In a ban period, you can only reduce positions."
+ ],
+ "never": [
+  "Margins are optional for experienced clients.",
+  "Option buyers pay margin like sellers."
+ ],
+ "check": [
+  {
+   "id": "nismder-q49",
+   "q": "SPAN margin estimates:",
+   "o": [
+    "Largest likely one-day loss",
+    "Brokerage",
+    "Tax",
+    "Premium"
+   ],
+   "a": 0,
+   "why": "SPAN simulates risk scenarios to find the worst one-day loss."
+  },
+  {
+   "id": "nismder-q50",
+   "q": "MWPL is the:",
+   "o": [
+    "Market-wide position limit",
+    "Minimum weekly price level",
+    "Maximum wealth per lot",
+    "Member wage per lot"
+   ],
+   "a": 0,
+   "why": "It caps open interest in a stock."
+  },
+  {
+   "id": "nismder-q51",
+   "q": "An option buyer pays:",
+   "o": [
+    "SPAN margin",
+    "The full premium upfront",
+    "No cost",
+    "Only brokerage"
+   ],
+   "a": 1,
+   "why": "Buyers pay the premium; there is no margin on long options."
+  }
+ ],
+ "card_ids": [
+  "nismder-c17"
+ ],
+ "words": 161
+}

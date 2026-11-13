@@ -1,0 +1,68 @@
+{
+ "id": "nismra-22",
+ "title": "Compliance lab: spot the violation",
+ "minutes": 6,
+ "level": "advanced",
+ "stage": "Report and conduct",
+ "objectives": [
+  "Apply the rules to realistic scenarios.",
+  "Choose the compliant action under time pressure."
+ ],
+ "body_md": "Use the rules you have learnt on short cases. For each, ask: **is it a recommendation, is there a conflict, is information public, and is the claim fair?**\n\n## Case 1: the friendly forward\n\nAn analyst forwards a client the draft report one day early. *Problem:* selective disclosure and a possible front-running risk. **Fix:** release to all at the same time.\n\n## Case 2: the sponsored note\n\nA company pays the firm and asks for a 'Buy'. *Problem:* compensation influences the rating. **Fix:** decline or disclose and keep independence; no pre-agreed rating.\n\n## Case 3: the personal trade\n\nAn analyst buys the stock three days before publishing a Buy. *Problem:* trading in the restriction window and front running. **Fix:** pre-clear, wait out the window.\n\n## Case 4: the WhatsApp tip\n\nA staff member posts 'Buy XYZ, target 500' in a public group. *Problem:* unregistered, unrecorded recommendation. **Fix:** use approved channels only.\n\n## Case 5: the old target\n\nA report from six months ago is still circulating with the old target after a profit warning. *Problem:* stale, misleading. **Fix:** update or withdraw.\n\n> **Exam tip:** Most scenario questions test one clear principle; find it first.",
+ "key_terms": [
+  "selective disclosure",
+  "restriction window",
+  "approved channel"
+ ],
+ "example": "A firm sells a 'preview' of next week's report to premium clients. That is selective disclosure; every client should get the report at the same time.",
+ "say": [
+  "All clients receive reports at the same time.",
+  "Our research is independent of any fees from the companies we cover."
+ ],
+ "never": [
+  "Send the draft to our best clients first.",
+  "The company paid us, so the rating is Buy."
+ ],
+ "check": [
+  {
+   "id": "nismra-q64",
+   "q": "Giving a preview of a report only to some clients is:",
+   "o": [
+    "Good service",
+    "Selective disclosure",
+    "Hedging",
+    "Required"
+   ],
+   "a": 1,
+   "why": "All clients should receive research at the same time."
+  },
+  {
+   "id": "nismra-q65",
+   "q": "A sponsored 'Buy' agreed before analysis is:",
+   "o": [
+    "Allowed",
+    "A conflict that breaches independence",
+    "Required",
+    "A disclosure only"
+   ],
+   "a": 1,
+   "why": "Ratings must follow analysis, not payments."
+  },
+  {
+   "id": "nismra-q66",
+   "q": "A stale report with an outdated target should be:",
+   "o": [
+    "Left as is",
+    "Updated or withdrawn",
+    "Hidden from SEBI",
+    "Sold again"
+   ],
+   "a": 1,
+   "why": "Misleading, outdated research should be corrected."
+  }
+ ],
+ "card_ids": [
+  "nismra-c22"
+ ],
+ "words": 194
+}

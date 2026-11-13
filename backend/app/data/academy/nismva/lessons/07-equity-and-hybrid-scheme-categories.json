@@ -1,0 +1,70 @@
+{
+ "id": "nismva-07",
+ "title": "Equity and hybrid scheme categories",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Schemes",
+ "objectives": [
+  "Match equity category names to their rules.",
+  "Describe hybrid categories by equity share."
+ ],
+ "body_md": "## Equity categories (examples)\n\n| Category | Key rule |\n|---|---|\n| **Large cap** | At least 80% in the top 100 companies by market cap |\n| **Mid cap** | At least 65% in companies ranked 101 to 250 |\n| **Small cap** | At least 65% in companies ranked 251 and below |\n| **Large and mid cap** | At least 35% each in large and mid caps |\n| **Multi cap** | At least 25% each in large, mid and small caps; 75% in equity |\n| **Flexi cap** | At least 65% in equity, no cap-size rules |\n| **Focused** | Maximum 30 stocks |\n| **ELSS** | 3-year lock-in; tax deduction under the old regime (Section 80C) |\n| **Sectoral / thematic** | At least 80% in the chosen sector or theme |\n\n## Hybrid categories\n\n| Category | Equity share |\n|---|---|\n| Conservative hybrid | 10% to 25% equity, 75% to 90% debt |\n| Balanced hybrid | 40% to 60% equity |\n| Aggressive hybrid | 65% to 80% equity |\n| Equity savings | Equity, debt and arbitrage |\n| Arbitrage | At least 65% in equity, hedged |\n| Multi asset | At least three asset classes, each at least 10% |\n\n> **Exam tip:** Learn the numbers 80, 65, 25, 30. They appear often.",
+ "key_terms": [
+  "large cap",
+  "mid cap",
+  "multi cap",
+  "ELSS",
+  "aggressive hybrid"
+ ],
+ "example": "A focused fund can hold at most 30 stocks. A multi cap fund must hold at least 25% each in large, mid and small caps.",
+ "say": [
+  "Check the category: a small-cap fund is more volatile than a large-cap fund.",
+  "ELSS has a three-year lock-in, shorter than most tax-saving options."
+ ],
+ "never": [
+  "All equity funds carry the same risk.",
+  "ELSS can be redeemed in a year."
+ ],
+ "check": [
+  {
+   "id": "nismva-q19",
+   "q": "A large-cap fund must invest at least what share in large caps?",
+   "o": [
+    "50%",
+    "65%",
+    "80%",
+    "100%"
+   ],
+   "a": 2,
+   "why": "At least 80% of assets go to the top 100 companies."
+  },
+  {
+   "id": "nismva-q20",
+   "q": "A focused fund may hold at most:",
+   "o": [
+    "10 stocks",
+    "30 stocks",
+    "50 stocks",
+    "100 stocks"
+   ],
+   "a": 1,
+   "why": "SEBI caps focused funds at 30 stocks."
+  },
+  {
+   "id": "nismva-q21",
+   "q": "The lock-in period of an ELSS is:",
+   "o": [
+    "1 year",
+    "3 years",
+    "5 years",
+    "10 years"
+   ],
+   "a": 1,
+   "why": "ELSS units are locked in for three years."
+  }
+ ],
+ "card_ids": [
+  "nismva-c7"
+ ],
+ "words": 225
+}

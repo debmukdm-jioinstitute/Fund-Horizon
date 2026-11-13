@@ -1,0 +1,70 @@
+{
+ "id": "nismia-14",
+ "title": "Financial statements and equity valuation for advisers",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Products and portfolio",
+ "objectives": [
+  "Use P/E, P/B, ROE and dividend yield to explain a stock to a client.",
+  "Recognise the limits of ratio-based advice."
+ ],
+ "body_md": "## Ratios an adviser should explain simply\n\n| Ratio | Formula | Reading |\n|---|---|---|\n| **EPS** | Profit after tax ÷ shares | Profit per share |\n| **P/E** | Price ÷ EPS | Years of earnings paid for |\n| **P/B** | Price ÷ book value per share | Useful for banks |\n| **ROE** | PAT ÷ shareholders' equity | Quality of profit on owners' money |\n| **Dividend yield** | Dividend ÷ price | Cash return |\n| **PEG** | P/E ÷ growth rate | Growth-adjusted P/E |\n\n## Using them\n\n- Compare with **peers and history**, not with a single number.\n- A low P/E can signal a **value trap**; a high P/E needs high growth to justify it.\n- Prefer companies with **steady ROE, modest debt and cash backing profits**.\n\n## Worked example\n\nPrice ₹300, EPS ₹15: **P/E = 20**. Dividend ₹6: yield 2%. ROE 18% with falling debt supports a premium over a 12% ROE peer.\n\n## For mutual fund clients\n\nUse a fund's **portfolio P/E and P/B** to describe whether it leans to value or growth.\n\n## Limits\n\nRatios use past data. They guide a conversation; they are not a recommendation on their own.\n\n> **Exam tip:** P/E = price ÷ EPS. Use banks' P/B with ROE.",
+ "key_terms": [
+  "EPS",
+  "P/E",
+  "P/B",
+  "ROE",
+  "dividend yield"
+ ],
+ "example": "Price ₹300 and EPS ₹15 give a P/E of 20. A peer at P/E 14 with the same growth looks cheaper, so ask why before concluding.",
+ "say": [
+  "Compared with its peers, this stock is priced richer; here is why that may be fair.",
+  "Past ratios do not predict future results."
+ ],
+ "never": [
+  "A low P/E always means a bargain.",
+  "Ratios guarantee future returns."
+ ],
+ "check": [
+  {
+   "id": "nismia-q40",
+   "q": "Price 300, EPS 15. P/E is:",
+   "o": [
+    "15",
+    "20",
+    "45",
+    "5"
+   ],
+   "a": 1,
+   "why": "300 ÷ 15 = 20."
+  },
+  {
+   "id": "nismia-q41",
+   "q": "Dividend ₹6 on price ₹300 gives a yield of:",
+   "o": [
+    "0.2%",
+    "2%",
+    "20%",
+    "6%"
+   ],
+   "a": 1,
+   "why": "6 ÷ 300 = 2%."
+  },
+  {
+   "id": "nismia-q42",
+   "q": "ROE compares profit with:",
+   "o": [
+    "Total debt",
+    "Shareholders' equity",
+    "Sales",
+    "Market price"
+   ],
+   "a": 1,
+   "why": "ROE = PAT ÷ equity."
+  }
+ ],
+ "card_ids": [
+  "nismia-c14"
+ ],
+ "words": 215
+}

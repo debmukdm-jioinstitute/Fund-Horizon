@@ -12,7 +12,7 @@
    ],
    [
     "Duration",
-    "About 100 minutes of lessons, then cards, checkpoints and the final quiz"
+    "About 134 minutes of lessons, then cards, checkpoints and the final quiz"
    ],
    [
     "Prerequisite",
@@ -20,7 +20,7 @@
    ],
    [
     "Format",
-    "16 short lessons in 4 stages, each ending with three exam-style checks"
+    "21 short lessons in 4 stages, each ending with three exam-style checks"
    ]
   ],
   "outcomes": [
@@ -37,6 +37,104 @@
   "Income-tax Act provisions: rates and limits change, verify before advising",
   "IRDAI rules for insurance products",
   "Practice exam only: confirm the current NISM exam format and eligibility before booking"
+ ],
+ "syllabus": [
+  {
+   "topic": "Who is an investment adviser and who must register",
+   "lessons": [
+    "nismia-01"
+   ]
+  },
+  {
+   "topic": "SEBI IA regulations: registration, qualification, fees",
+   "lessons": [
+    "nismia-02",
+    "nismia-03"
+   ]
+  },
+  {
+   "topic": "Segregation, conflicts of interest and disclosures",
+   "lessons": [
+    "nismia-04"
+   ]
+  },
+  {
+   "topic": "Client onboarding, risk profiling and suitability",
+   "lessons": [
+    "nismia-05"
+   ]
+  },
+  {
+   "topic": "Personal financial statements and cash flow",
+   "lessons": [
+    "nismia-06"
+   ]
+  },
+  {
+   "topic": "Time value of money and financial maths",
+   "lessons": [
+    "nismia-07"
+   ]
+  },
+  {
+   "topic": "Insurance planning",
+   "lessons": [
+    "nismia-08"
+   ]
+  },
+  {
+   "topic": "Tax planning",
+   "lessons": [
+    "nismia-09"
+   ]
+  },
+  {
+   "topic": "Retirement, estate and government schemes",
+   "lessons": [
+    "nismia-10",
+    "nismia-11"
+   ]
+  },
+  {
+   "topic": "Asset allocation and portfolio construction",
+   "lessons": [
+    "nismia-12"
+   ]
+  },
+  {
+   "topic": "Equity, mutual funds and equity valuation",
+   "lessons": [
+    "nismia-13",
+    "nismia-14"
+   ]
+  },
+  {
+   "topic": "Debt, bonds and fixed income",
+   "lessons": [
+    "nismia-15"
+   ]
+  },
+  {
+   "topic": "PMS, AIF, REIT, InvIT, derivatives, commodities and gold",
+   "lessons": [
+    "nismia-16",
+    "nismia-17"
+   ]
+  },
+  {
+   "topic": "Portfolio monitoring, behaviour and ethics",
+   "lessons": [
+    "nismia-18",
+    "nismia-19",
+    "nismia-20"
+   ]
+  },
+  {
+   "topic": "Case lab: building and defending a plan",
+   "lessons": [
+    "nismia-21"
+   ]
+  }
  ],
  "lessons": [
   {
@@ -55,97 +153,132 @@
   },
   {
    "id": "nismia-03",
-   "title": "Segregation, conflicts and disclosures",
+   "title": "Fees: modes, caps, agreements and collection",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Regulation"
   },
   {
    "id": "nismia-04",
+   "title": "Segregation, conflicts and disclosures",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Regulation"
+  },
+  {
+   "id": "nismia-05",
    "title": "Client onboarding, risk profiling and suitability",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Advice process"
   },
   {
-   "id": "nismia-05",
+   "id": "nismia-06",
+   "title": "Personal financial statements, budgeting and emergency funds",
+   "minutes": 6,
+   "level": "beginner",
+   "stage": "Advice process"
+  },
+  {
+   "id": "nismia-07",
    "title": "Time value of money and financial maths",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Advice process"
   },
   {
-   "id": "nismia-06",
+   "id": "nismia-08",
    "title": "Insurance planning",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Advice process"
   },
   {
-   "id": "nismia-07",
+   "id": "nismia-09",
    "title": "Tax planning basics",
    "minutes": 7,
    "level": "advanced",
    "stage": "Advice process"
   },
   {
-   "id": "nismia-08",
+   "id": "nismia-10",
    "title": "Retirement and estate planning",
    "minutes": 7,
    "level": "advanced",
    "stage": "Advice process"
   },
   {
-   "id": "nismia-09",
+   "id": "nismia-11",
+   "title": "Government and retirement schemes: EPF, PPF, NPS, SCSS and SSY",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Advice process"
+  },
+  {
+   "id": "nismia-12",
    "title": "Asset allocation and portfolio construction",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Products and portfolio"
   },
   {
-   "id": "nismia-10",
+   "id": "nismia-13",
    "title": "Equity and mutual fund advice",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Products and portfolio"
   },
   {
-   "id": "nismia-11",
+   "id": "nismia-14",
+   "title": "Financial statements and equity valuation for advisers",
+   "minutes": 7,
+   "level": "intermediate",
+   "stage": "Products and portfolio"
+  },
+  {
+   "id": "nismia-15",
    "title": "Debt, bonds and fixed-income advice",
    "minutes": 7,
    "level": "intermediate",
    "stage": "Products and portfolio"
   },
   {
-   "id": "nismia-12",
+   "id": "nismia-16",
    "title": "PMS, AIF, REIT, InvIT and other products",
    "minutes": 7,
    "level": "advanced",
    "stage": "Products and portfolio"
   },
   {
-   "id": "nismia-13",
+   "id": "nismia-17",
    "title": "Derivatives, commodities and gold for advisers",
    "minutes": 6,
    "level": "advanced",
    "stage": "Products and portfolio"
   },
   {
-   "id": "nismia-14",
+   "id": "nismia-18",
+   "title": "Portfolio monitoring, rebalancing and performance reporting",
+   "minutes": 6,
+   "level": "intermediate",
+   "stage": "Ethics and review"
+  },
+  {
+   "id": "nismia-19",
    "title": "Behavioural finance and client management",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Ethics and review"
   },
   {
-   "id": "nismia-15",
+   "id": "nismia-20",
    "title": "Ethics, record keeping and grievance",
    "minutes": 6,
    "level": "intermediate",
    "stage": "Ethics and review"
   },
   {
-   "id": "nismia-16",
+   "id": "nismia-21",
    "title": "Case lab: building and defending a plan",
    "minutes": 7,
    "level": "advanced",
@@ -173,6 +306,15 @@
   },
   {
    "id": "nismia-c3",
+   "q": "IA fees?",
+   "a": [
+    "AUA up to 2.5% or fixed cap.",
+    "Written agreement.",
+    "Advance max one quarter."
+   ]
+  },
+  {
+   "id": "nismia-c4",
    "q": "Segregation rule?",
    "a": [
     "No distribution to advisory clients.",
@@ -181,7 +323,7 @@
    ]
   },
   {
-   "id": "nismia-c4",
+   "id": "nismia-c5",
    "q": "Three risk questions?",
    "a": [
     "Capacity: can bear.",
@@ -190,7 +332,16 @@
    ]
   },
   {
-   "id": "nismia-c5",
+   "id": "nismia-c6",
+   "q": "Personal ratios?",
+   "a": [
+    "Savings 20%+.",
+    "EMI below 40%.",
+    "6 months liquid cover."
+   ]
+  },
+  {
+   "id": "nismia-c7",
    "q": "Goal maths steps?",
    "a": [
     "Inflate the goal.",
@@ -199,7 +350,7 @@
    ]
   },
   {
-   "id": "nismia-c6",
+   "id": "nismia-c8",
    "q": "Insurance first?",
    "a": [
     "Term for life.",
@@ -208,7 +359,7 @@
    ]
   },
   {
-   "id": "nismia-c7",
+   "id": "nismia-c9",
    "q": "Tax advice rules?",
    "a": [
     "Goal first, tax second.",
@@ -217,7 +368,7 @@
    ]
   },
   {
-   "id": "nismia-c8",
+   "id": "nismia-c10",
    "q": "Retirement steps?",
    "a": [
     "Expense at retirement.",
@@ -226,7 +377,16 @@
    ]
   },
   {
-   "id": "nismia-c9",
+   "id": "nismia-c11",
+   "q": "Govt schemes?",
+   "a": [
+    "PPF 15 yrs.",
+    "SCSS 60+.",
+    "SSY girl child, NPS pension."
+   ]
+  },
+  {
+   "id": "nismia-c12",
    "q": "Rebalance how?",
    "a": [
     "Calendar or threshold.",
@@ -235,7 +395,7 @@
    ]
   },
   {
-   "id": "nismia-c10",
+   "id": "nismia-c13",
    "q": "Fund checks?",
    "a": [
     "Category fit.",
@@ -244,7 +404,16 @@
    ]
   },
   {
-   "id": "nismia-c11",
+   "id": "nismia-c14",
+   "q": "Equity ratios?",
+   "a": [
+    "P/E = price ÷ EPS.",
+    "ROE = PAT ÷ equity.",
+    "Compare with peers."
+   ]
+  },
+  {
+   "id": "nismia-c15",
    "q": "Debt checks?",
    "a": [
     "Rating before yield.",
@@ -253,7 +422,7 @@
    ]
   },
   {
-   "id": "nismia-c12",
+   "id": "nismia-c16",
    "q": "Pooled products?",
    "a": [
     "PMS: segregated portfolio.",
@@ -262,7 +431,7 @@
    ]
   },
   {
-   "id": "nismia-c13",
+   "id": "nismia-c17",
    "q": "High-risk guardrails?",
    "a": [
     "Check profile and experience.",
@@ -271,7 +440,16 @@
    ]
   },
   {
-   "id": "nismia-c14",
+   "id": "nismia-c18",
+   "q": "Review rules?",
+   "a": [
+    "Review yearly.",
+    "Rebalance by band.",
+    "Report XIRR vs TRI."
+   ]
+  },
+  {
+   "id": "nismia-c19",
    "q": "Common biases?",
    "a": [
     "Loss aversion.",
@@ -280,7 +458,7 @@
    ]
   },
   {
-   "id": "nismia-c15",
+   "id": "nismia-c20",
    "q": "Ethics checks?",
    "a": [
     "No assured returns.",
@@ -289,7 +467,7 @@
    ]
   },
   {
-   "id": "nismia-c16",
+   "id": "nismia-c21",
    "q": "Plan order?",
    "a": [
     "Onboard, protect.",
@@ -357,6 +535,32 @@
    },
    {
     "id": "nismia-q7",
+    "q": "An investment adviser may collect fees in advance for at most:",
+    "o": [
+     "One month",
+     "One quarter",
+     "One year",
+     "Five years"
+    ],
+    "a": 1,
+    "why": "At most one quarter in advance.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q8",
+    "q": "AUA fee of 1.5% on ₹40 lakh gives, per year:",
+    "o": [
+     "₹6,000",
+     "₹60,000",
+     "₹6 lakh",
+     "₹15,000"
+    ],
+    "a": 1,
+    "why": "0.015 × 40,00,000 = ₹60,000.",
+    "sec": "Regulation"
+   },
+   {
+    "id": "nismia-q10",
     "q": "An individual IA offering distribution to advisory clients is:",
     "o": [
      "Permitted",
@@ -369,7 +573,7 @@
     "sec": "Regulation"
    },
    {
-    "id": "nismia-q8",
+    "id": "nismia-q11",
     "q": "When advising on mutual funds, an IA should prefer:",
     "o": [
      "Regular plans",
@@ -382,7 +586,7 @@
     "sec": "Regulation"
    },
    {
-    "id": "nismia-q10",
+    "id": "nismia-q13",
     "q": "Risk capacity is:",
     "o": [
      "Willingness to take risk",
@@ -395,7 +599,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q11",
+    "id": "nismia-q14",
     "q": "When capacity is lower than tolerance, advice should follow:",
     "o": [
      "Tolerance",
@@ -408,7 +612,33 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q13",
+    "id": "nismia-q16",
+    "q": "A common emergency fund target is:",
+    "o": [
+     "1 week of expenses",
+     "3 to 6 months of expenses",
+     "10 years of expenses",
+     "None"
+    ],
+    "a": 1,
+    "why": "Three to six months of expenses.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q17",
+    "q": "Income ₹1 lakh, EMIs ₹45,000. The debt-service ratio is:",
+    "o": [
+     "4.5%",
+     "45%",
+     "55%",
+     "22%"
+    ],
+    "a": 1,
+    "why": "45,000 ÷ 1,00,000 = 45%.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q19",
     "q": "₹1 lakh at 10% for 3 years becomes:",
     "o": [
      "₹1.30 lakh",
@@ -421,7 +651,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q14",
+    "id": "nismia-q20",
     "q": "Real return when nominal is 10% and inflation 6% is about:",
     "o": [
      "16%",
@@ -434,7 +664,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q16",
+    "id": "nismia-q22",
     "q": "The most cost-efficient life cover for income replacement is:",
     "o": [
      "Endowment",
@@ -447,7 +677,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q17",
+    "id": "nismia-q23",
     "q": "Human life value is based on:",
     "o": [
      "Present value of future income",
@@ -460,7 +690,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q19",
+    "id": "nismia-q25",
     "q": "Under the old regime, deductions include:",
     "o": [
      "Section 80C and 80D",
@@ -473,7 +703,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q20",
+    "id": "nismia-q26",
     "q": "Tax-saving investments should be chosen:",
     "o": [
      "Only for the deduction",
@@ -486,7 +716,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q22",
+    "id": "nismia-q28",
     "q": "A 4% withdrawal rate on ₹8 lakh annual need gives a corpus of:",
     "o": [
      "₹32 lakh",
@@ -499,7 +729,7 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q23",
+    "id": "nismia-q29",
     "q": "Sequence risk is:",
     "o": [
      "Poor returns early in retirement withdrawals",
@@ -512,7 +742,33 @@
     "sec": "Advice process"
    },
    {
-    "id": "nismia-q25",
+    "id": "nismia-q31",
+    "q": "The PPF term is:",
+    "o": [
+     "5 years",
+     "10 years",
+     "15 years",
+     "25 years"
+    ],
+    "a": 2,
+    "why": "PPF has a 15-year term.",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q32",
+    "q": "SCSS is open to:",
+    "o": [
+     "Anyone",
+     "Women only",
+     "Senior citizens aged 60 and above",
+     "Minors"
+    ],
+    "a": 2,
+    "why": "Age 60 and above (with limited exceptions).",
+    "sec": "Advice process"
+   },
+   {
+    "id": "nismia-q34",
     "q": "A long-term target mix is:",
     "o": [
      "Tactical allocation",
@@ -525,7 +781,7 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q26",
+    "id": "nismia-q35",
     "q": "Diversification mainly reduces:",
     "o": [
      "Systematic risk",
@@ -538,7 +794,7 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q28",
+    "id": "nismia-q37",
     "q": "Overlap between funds means:",
     "o": [
      "Shared holdings",
@@ -551,7 +807,7 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q29",
+    "id": "nismia-q38",
     "q": "A low tracking error is preferred for:",
     "o": [
      "Active funds",
@@ -564,7 +820,33 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q31",
+    "id": "nismia-q40",
+    "q": "Price 300, EPS 15. P/E is:",
+    "o": [
+     "15",
+     "20",
+     "45",
+     "5"
+    ],
+    "a": 1,
+    "why": "300 ÷ 15 = 20.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q41",
+    "q": "Dividend ₹6 on price ₹300 gives a yield of:",
+    "o": [
+     "0.2%",
+     "2%",
+     "20%",
+     "6%"
+    ],
+    "a": 1,
+    "why": "6 ÷ 300 = 2%.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q43",
     "q": "When yields rise, bond prices:",
     "o": [
      "Rise",
@@ -577,7 +859,7 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q32",
+    "id": "nismia-q44",
     "q": "A credit rating measures:",
     "o": [
      "Interest rate risk",
@@ -590,7 +872,7 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q34",
+    "id": "nismia-q46",
     "q": "The PMS minimum investment (per current rules) is:",
     "o": [
      "₹5 lakh",
@@ -603,7 +885,20 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q37",
+    "id": "nismia-q47",
+    "q": "A venture capital AIF belongs to:",
+    "o": [
+     "Category I",
+     "Category II",
+     "Category III",
+     "None"
+    ],
+    "a": 0,
+    "why": "Venture capital funds are Category I.",
+    "sec": "Products and portfolio"
+   },
+   {
+    "id": "nismia-q49",
     "q": "Using options to protect a portfolio is:",
     "o": [
      "Speculation",
@@ -616,7 +911,20 @@
     "sec": "Products and portfolio"
    },
    {
-    "id": "nismia-q40",
+    "id": "nismia-q52",
+    "q": "The best return measure for monthly SIP cash flows is:",
+    "o": [
+     "Absolute return",
+     "XIRR",
+     "Dividend yield",
+     "P/E"
+    ],
+    "a": 1,
+    "why": "XIRR handles irregular dated cash flows.",
+    "sec": "Ethics and review"
+   },
+   {
+    "id": "nismia-q55",
     "q": "Selling in a panic after a fall is linked to:",
     "o": [
      "Loss aversion",
@@ -629,7 +937,7 @@
     "sec": "Ethics and review"
    },
    {
-    "id": "nismia-q43",
+    "id": "nismia-q58",
     "q": "Which is prohibited in an IA's advertising?",
     "o": [
      "Risk statements",
@@ -642,7 +950,7 @@
     "sec": "Ethics and review"
    },
    {
-    "id": "nismia-q46",
+    "id": "nismia-q61",
     "q": "Which comes first in a plan?",
     "o": [
      "Product selection",

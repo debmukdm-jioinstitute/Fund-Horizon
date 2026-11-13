@@ -1,0 +1,70 @@
+{
+ "id": "nismia-11",
+ "title": "Government and retirement schemes: EPF, PPF, NPS, SCSS and SSY",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Advice process",
+ "objectives": [
+  "Describe the main government-backed savings and pension schemes.",
+  "Match each scheme to a client need."
+ ],
+ "body_md": "## Schemes at a glance (rates and limits change: verify)\n\n| Scheme | Key features |\n|---|---|\n| **EPF** | Employee and employer contribute (12% each of basic wage); interest declared yearly; tax-free on qualifying withdrawal |\n| **PPF** | **15-year** term, up to ₹1.5 lakh a year, rate set quarterly, **EEE** status under the old regime |\n| **NPS** | Market-linked pension; tier I (restricted) and tier II; extra deduction under **80CCD(1B)**; part of the corpus must buy an **annuity** at exit |\n| **SCSS** | Age **60 and above**, 5-year term, quarterly interest, ceiling of ₹30 lakh |\n| **SSY** | For a **girl child**, deposits for 15 years, matures at 21 years, ceiling ₹1.5 lakh a year |\n| **POMIS** | Monthly income scheme through the post office, 5 years |\n\n## Matching\n\n- Long-term tax-efficient debt: **PPF**, **EPF**.\n- Retirement corpus with equity exposure: **NPS**.\n- Safe income after 60: **SCSS**, annuities.\n- Daughter's education or marriage: **SSY**.\n\n## Cautions\n\n- PPF and SCSS have **contribution limits** and **lock-ins**.\n- NPS withdrawal and annuity rules have changed; check current PFRDA rules.\n- Tax benefits depend on the **tax regime** the client chooses.\n\n> **Exam tip:** PPF 15 years, SCSS age 60+, SSY girl child up to 21 years.",
+ "key_terms": [
+  "EPF",
+  "PPF",
+  "NPS",
+  "SCSS",
+  "SSY"
+ ],
+ "example": "A 62-year-old retiree with ₹25 lakh wanting safe quarterly income can put it in SCSS, within the ₹30 lakh ceiling.",
+ "say": [
+  "This scheme has a lock-in, so keep a separate emergency fund.",
+  "Rates change, so I will check the current rate before you commit."
+ ],
+ "never": [
+  "PPF returns are fixed for the full 15 years.",
+  "NPS has no rules on withdrawal."
+ ],
+ "check": [
+  {
+   "id": "nismia-q31",
+   "q": "The PPF term is:",
+   "o": [
+    "5 years",
+    "10 years",
+    "15 years",
+    "25 years"
+   ],
+   "a": 2,
+   "why": "PPF has a 15-year term."
+  },
+  {
+   "id": "nismia-q32",
+   "q": "SCSS is open to:",
+   "o": [
+    "Anyone",
+    "Women only",
+    "Senior citizens aged 60 and above",
+    "Minors"
+   ],
+   "a": 2,
+   "why": "Age 60 and above (with limited exceptions)."
+  },
+  {
+   "id": "nismia-q33",
+   "q": "SSY is meant for:",
+   "o": [
+    "A girl child",
+    "Any adult",
+    "Companies",
+    "NRIs only"
+   ],
+   "a": 0,
+   "why": "Sukanya Samriddhi is for a girl child."
+  }
+ ],
+ "card_ids": [
+  "nismia-c11"
+ ],
+ "words": 212
+}

@@ -1,0 +1,69 @@
+{
+ "id": "nismra-13",
+ "title": "Cash flow statement and free cash flow",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Company analysis",
+ "objectives": [
+  "Read the three sections of a cash flow statement.",
+  "Compute free cash flow and test earnings against cash."
+ ],
+ "body_md": "## Three sections\n\n| Section | Examples |\n|---|---|\n| **Operating (CFO)** | Cash from customers less operating payments, after working-capital changes and tax |\n| **Investing (CFI)** | Capex, acquisitions, sale of investments |\n| **Financing (CFF)** | Borrowings and repayments, share issues, buybacks, dividends |\n\n## From profit to cash (indirect method)\n\nCFO = PAT + non-cash charges (depreciation) ± change in working capital ± other items.\n\nRising receivables and inventory **absorb cash** even when profit is strong.\n\n## Free cash flow\n\n**FCF = CFO − capex.** It is the cash left for lenders, owners and growth. **FCFF** adds back after-tax interest if CFO is after interest; **FCFE** is what remains for shareholders after debt flows.\n\n## Tests that matter\n\n- **Cash conversion** = CFO ÷ EBITDA (or PAT). Persistently below about 70–80% needs an explanation.\n- Compare **cumulative CFO with cumulative PAT** over 3 to 5 years.\n- Capex far above depreciation signals growth or an underinvesting past.\n\n## Link to valuation\n\nDCF discounts **free cash flows**, not accounting profit.\n\n> **Exam tip:** Profit can be managed; cash is harder to fake. Growing profit with shrinking CFO is a red flag.",
+ "key_terms": [
+  "CFO",
+  "free cash flow",
+  "cash conversion",
+  "working capital"
+ ],
+ "example": "PAT ₹100, depreciation ₹30, working capital build-up ₹40: CFO is ₹90. Capex ₹50 leaves FCF of ₹40.",
+ "say": [
+  "Profit is rising; I want to see the cash behind it.",
+  "Free cash flow is operating cash less capex."
+ ],
+ "never": [
+  "Profit and cash flow are the same thing.",
+  "Depreciation is a cash outflow."
+ ],
+ "check": [
+  {
+   "id": "nismra-q37",
+   "q": "PAT 100, depreciation 30, working capital build-up 40. CFO is:",
+   "o": [
+    "70",
+    "90",
+    "130",
+    "170"
+   ],
+   "a": 1,
+   "why": "100 + 30 − 40 = 90."
+  },
+  {
+   "id": "nismra-q38",
+   "q": "Purchase of machinery is reported under:",
+   "o": [
+    "Operating",
+    "Investing",
+    "Financing",
+    "Equity"
+   ],
+   "a": 1,
+   "why": "Capex is an investing outflow."
+  },
+  {
+   "id": "nismra-q39",
+   "q": "Free cash flow is usually:",
+   "o": [
+    "CFO minus capex",
+    "PAT plus tax",
+    "Sales minus cost",
+    "EBITDA plus interest"
+   ],
+   "a": 0,
+   "why": "FCF = CFO − capex."
+  }
+ ],
+ "card_ids": [
+  "nismra-c13"
+ ],
+ "words": 194
+}

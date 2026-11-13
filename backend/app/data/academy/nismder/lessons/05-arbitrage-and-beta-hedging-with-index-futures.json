@@ -1,0 +1,70 @@
+{
+ "id": "nismder-05",
+ "title": "Arbitrage and beta hedging with index futures",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Futures",
+ "objectives": [
+  "Explain cash-and-carry and reverse cash-and-carry arbitrage.",
+  "Compute the number of index futures needed to hedge or change beta."
+ ],
+ "body_md": "## Arbitrage\n\nIf the futures price differs from fair value, a riskless profit exists.\n\n- **Futures above fair value:** *cash-and-carry*. Buy spot, sell futures, hold to expiry, deliver. Profit = futures price − (spot + cost of carry).\n- **Futures below fair value:** *reverse cash-and-carry*. Sell spot (already held), buy futures, then restore the holding.\n\nCosts, margin, taxes and short-selling limits erode small gaps.\n\n## Beta hedging a portfolio\n\n**Contracts = (target β change) × portfolio value ÷ (futures price × lot size)**\n\nFull hedge (beta to zero): N = β × V ÷ (F × lot).\n\nExample: V = ₹5 crore, β = 1.2, Nifty futures 24,000, lot 75 (assumed; check the current lot).\nN = 1.2 × 5,00,00,000 ÷ (24,000 × 75) = 6,00,00,000 ÷ 18,00,000 ≈ **33 lots short**.\n\n**Partial hedge or adjusting beta:** N = (β_portfolio − β_target) × V ÷ (F × lot). Taking β from 1.2 to 0.6 needs about half the contracts.\n\n## Remaining risks\n\n- **Basis risk** if the portfolio does not track the index.\n- **Beta is an estimate** and moves over time.\n- Rollover costs when the hedge outlives the contract.\n\n> **Exam tip:** Short index futures to hedge a long portfolio; the number of lots scales with beta.",
+ "key_terms": [
+  "cash-and-carry",
+  "arbitrage",
+  "beta hedge",
+  "basis risk",
+  "lot size"
+ ],
+ "example": "Holding ₹5 crore of stocks with beta 1.2 and fearing a fall, an investor sells about 33 lots of Nifty futures (lot 75 assumed) instead of selling the shares.",
+ "say": [
+  "Selling futures hedges market risk but leaves stock-specific risk.",
+  "The hedge is only as good as the beta estimate."
+ ],
+ "never": [
+  "A hedge removes all risk.",
+  "Arbitrage is riskless at any price gap."
+ ],
+ "check": [
+  {
+   "id": "nismder-q13",
+   "q": "When futures trade above fair value the arbitrage is:",
+   "o": [
+    "Reverse cash-and-carry",
+    "Cash-and-carry",
+    "Straddle",
+    "Collar"
+   ],
+   "a": 1,
+   "why": "Buy spot, sell the expensive futures."
+  },
+  {
+   "id": "nismder-q14",
+   "q": "V ₹5 crore, β 1.2, futures 24,000, lot 75. Lots needed to fully hedge are about:",
+   "o": [
+    "10",
+    "33",
+    "100",
+    "3"
+   ],
+   "a": 1,
+   "why": "6 crore ÷ 18 lakh = 33.3."
+  },
+  {
+   "id": "nismder-q15",
+   "q": "A hedger with a long portfolio hedges by:",
+   "o": [
+    "Buying futures",
+    "Selling index futures",
+    "Selling puts",
+    "Buying calls"
+   ],
+   "a": 1,
+   "why": "Short futures offsets a fall."
+  }
+ ],
+ "card_ids": [
+  "nismder-c5"
+ ],
+ "words": 209
+}

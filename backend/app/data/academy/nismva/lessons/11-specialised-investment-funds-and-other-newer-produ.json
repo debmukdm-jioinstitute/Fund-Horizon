@@ -1,0 +1,70 @@
+{
+ "id": "nismva-11",
+ "title": "Specialised Investment Funds and other newer products",
+ "minutes": 5,
+ "level": "intermediate",
+ "stage": "Schemes",
+ "objectives": [
+  "Describe the Specialised Investment Fund and its entry rules.",
+  "Explain solution-oriented schemes, FMPs and segregated portfolios."
+ ],
+ "body_md": "## Specialised Investment Funds (SIF)\n\nA **SIF** sits between a mutual fund and a PMS: it can use strategies such as **long-short** within limits, with a higher minimum ticket (**₹10 lakh per investor across SIF strategies**, verify) and separate investment-strategy names. Distributors must follow the current SEBI conditions for selling it.\n\n## Other scheme types\n\n| Scheme | Key point |\n|---|---|\n| **Solution-oriented** (retirement, children) | Lock-in of about **5 years** or until retirement age or age 18 |\n| **Fixed maturity plan (FMP)** | Closed-ended debt scheme; exit only at maturity or on the exchange |\n| **Interval fund** | Opens for transactions only at set intervals |\n| **ELSS** | Equity scheme with a **3-year lock-in** for the old tax regime deduction |\n| **Segregated portfolio** | A side pocket for a defaulted or downgraded paper so other investors can exit at a clean NAV |\n\n## Newer conduct points\n\n- Match the product to the client, and do not sell a complex product to a client who cannot explain it back.\n- Disclose lock-in, exit load and risk class each time.\n- A new category does not mean better returns.\n\n## Before recommending\n\nRead the **SID** for the investment strategy, risk and exit terms.\n\n> **Exam tip:** Retirement and children's schemes carry a lock-in of about five years; FMPs are closed-ended.",
+ "key_terms": [
+  "SIF",
+  "solution-oriented",
+  "FMP",
+  "segregated portfolio",
+  "lock-in"
+ ],
+ "example": "A segregated portfolio holds a downgraded bond. Investors keep units in it, while the main scheme runs on with the rest of the assets.",
+ "say": [
+  "This product has a lock-in, so I want to be sure you will not need the money.",
+  "Let us read the SID together."
+ ],
+ "never": [
+  "A new fund type is better than the old ones.",
+  "You can exit an FMP any day at NAV."
+ ],
+ "check": [
+  {
+   "id": "nismva-q31",
+   "q": "An FMP is generally:",
+   "o": [
+    "Open-ended with no exit rules",
+    "Closed-ended debt scheme",
+    "An equity scheme",
+    "A gold ETF"
+   ],
+   "a": 1,
+   "why": "FMPs are closed-ended."
+  },
+  {
+   "id": "nismva-q32",
+   "q": "A segregated portfolio is used to:",
+   "o": [
+    "Raise the TER",
+    "Isolate a defaulted or downgraded security",
+    "Hide the NAV",
+    "Merge funds"
+   ],
+   "a": 1,
+   "why": "It side-pockets stressed paper."
+  },
+  {
+   "id": "nismva-q33",
+   "q": "The lock-in of a typical retirement solution-oriented scheme is about:",
+   "o": [
+    "None",
+    "30 days",
+    "5 years",
+    "20 years"
+   ],
+   "a": 2,
+   "why": "About five years, or until retirement age."
+  }
+ ],
+ "card_ids": [
+  "nismva-c11"
+ ],
+ "words": 225
+}

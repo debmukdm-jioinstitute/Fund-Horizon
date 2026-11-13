@@ -1,0 +1,69 @@
+{
+ "id": "nismra-14",
+ "title": "Quality of earnings and red flags",
+ "minutes": 5,
+ "level": "advanced",
+ "stage": "Company analysis",
+ "objectives": [
+  "Spot signs of aggressive accounting.",
+  "Use cash flow, auditor and governance signals."
+ ],
+ "body_md": "Good analysis asks not only *how much* profit, but *how reliable*.\n\n## Warning signs\n\n- **CFO persistently below PAT:** profits not turning into cash.\n- **Receivables or inventory growing faster than sales.**\n- **Frequent exceptional items** or changes in accounting policy.\n- **Related-party transactions** that are large or unclear.\n- **Auditor resignation**, qualified opinions or delayed results.\n- **Promoter pledging** of shares at a high level.\n- **Capitalising** costs that peers expense.\n- **High contingent liabilities** or litigation.\n\n## Governance checks\n\n| Area | Question |\n|---|---|\n| Board | Independent directors, tenure, attendance |\n| Management | Track record, pay versus performance |\n| Disclosure | Timely, clear, consistent |\n| Shareholders | Fair treatment of minority holders |\n\n## What to do\n\nAdjust valuation for risk, widen the discount rate, or avoid the stock. Document the concern in the report.\n\n> **Exam tip:** When cash flow and profit diverge for years, assume a problem until proven otherwise.",
+ "key_terms": [
+  "quality of earnings",
+  "related-party transaction",
+  "promoter pledge",
+  "contingent liability"
+ ],
+ "example": "Sales rose 10% but receivables rose 45%. The company may be stretching credit terms or booking revenue early. The analyst flags it and lowers the earnings quality score.",
+ "say": [
+  "We found the following red flags and reflect them in our discount rate.",
+  "Cash flow does not support the reported profit, so we are cautious."
+ ],
+ "never": [
+  "The auditor resigned, but results are great, so ignore it.",
+  "Governance does not affect valuation."
+ ],
+ "check": [
+  {
+   "id": "nismra-q40",
+   "q": "CFO persistently far below PAT suggests:",
+   "o": [
+    "Strong earnings quality",
+    "Possible weak earnings quality",
+    "Lower tax",
+    "Higher dividends"
+   ],
+   "a": 1,
+   "why": "Profit not converting to cash is a classic warning sign."
+  },
+  {
+   "id": "nismra-q41",
+   "q": "Receivables growing much faster than sales may indicate:",
+   "o": [
+    "Efficient collection",
+    "Aggressive revenue recognition",
+    "Lower leverage",
+    "Higher margins"
+   ],
+   "a": 1,
+   "why": "It can signal stretched credit terms or early revenue booking."
+  },
+  {
+   "id": "nismra-q42",
+   "q": "A high level of promoter share pledging is:",
+   "o": [
+    "A positive sign",
+    "A governance and risk concern",
+    "Irrelevant",
+    "A dividend signal"
+   ],
+   "a": 1,
+   "why": "Pledged shares can be sold by lenders, creating risk."
+  }
+ ],
+ "card_ids": [
+  "nismra-c14"
+ ],
+ "words": 159
+}

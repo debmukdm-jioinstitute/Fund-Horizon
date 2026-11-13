@@ -21,6 +21,13 @@
     "Format",
     "Each L.E.A.R.N. stage has: what to know, how to do it, a talk-track, and the investor takeaway"
    ]
+  ],
+  "outcomes": [
+   "Define the core fund terms: NAV, AUM, plans, options, folio and benchmark.",
+   "Explain risk profile, volatility, beta, Sharpe and drawdown in plain words.",
+   "Describe SIP, STP, SWP, switch, cut-off, exit load and TER correctly.",
+   "Calculate returns with CAGR, XIRR, trailing and rolling measures.",
+   "Use debt and market terms correctly and avoid commonly confused pairs."
   ]
  },
  "sources": [

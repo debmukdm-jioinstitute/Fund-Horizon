@@ -1,0 +1,70 @@
+{
+ "id": "nismia-06",
+ "title": "Personal financial statements, budgeting and emergency funds",
+ "minutes": 6,
+ "level": "beginner",
+ "stage": "Advice process",
+ "objectives": [
+  "Prepare a net worth and cash-flow statement.",
+  "Apply the savings, debt-service and liquidity ratios."
+ ],
+ "body_md": "## Two statements\n\n**Balance sheet (net worth):** assets (cash, investments, property) minus liabilities (loans, cards).\n\n**Cash-flow statement:** income minus expenses and EMIs gives the **surplus** available to invest.\n\n## Key ratios\n\n| Ratio | Formula | Rule of thumb |\n|---|---|---|\n| **Savings rate** | Savings ÷ income | 20% or more |\n| **Debt-service ratio** | EMIs ÷ income | Below about 40% |\n| **Liquidity ratio** | Liquid assets ÷ monthly expenses | At least 6 months |\n| **Solvency ratio** | Net worth ÷ total assets | Higher is safer |\n\n## Emergency fund\n\nHold **3 to 6 months of expenses** (more for variable income) in liquid, safe options before taking risk. Insurance and an emergency fund come **before** equity SIPs.\n\n## Steps\n\n1. Gather income, expenses, assets and liabilities from documents.\n2. Separate **needs, wants and goals**.\n3. Compute the ratios, flag problems (high EMIs, no cover).\n4. Set the surplus aside for goals by priority.\n\n## Why it matters\n\nAdvice built on a wrong or incomplete picture is unsuitable even if the products are good.\n\n> **Exam tip:** Emergency fund first; EMIs above about 40% of income signal stress.",
+ "key_terms": [
+  "net worth",
+  "cash flow",
+  "emergency fund",
+  "debt-service ratio",
+  "liquidity ratio"
+ ],
+ "example": "Income ₹1 lakh a month, EMIs ₹45,000: the debt-service ratio is 45%, above the 40% comfort level, so reduce debt before adding new investments.",
+ "say": [
+  "Before investing, let us build a six-month cash buffer.",
+  "Your EMIs take almost half your income, so we should address that first."
+ ],
+ "never": [
+  "Put the whole emergency fund into equity for growth.",
+  "Ratios do not matter if returns are high."
+ ],
+ "check": [
+  {
+   "id": "nismia-q16",
+   "q": "A common emergency fund target is:",
+   "o": [
+    "1 week of expenses",
+    "3 to 6 months of expenses",
+    "10 years of expenses",
+    "None"
+   ],
+   "a": 1,
+   "why": "Three to six months of expenses."
+  },
+  {
+   "id": "nismia-q17",
+   "q": "Income ₹1 lakh, EMIs ₹45,000. The debt-service ratio is:",
+   "o": [
+    "4.5%",
+    "45%",
+    "55%",
+    "22%"
+   ],
+   "a": 1,
+   "why": "45,000 ÷ 1,00,000 = 45%."
+  },
+  {
+   "id": "nismia-q18",
+   "q": "Net worth equals:",
+   "o": [
+    "Income minus tax",
+    "Assets minus liabilities",
+    "Savings plus loans",
+    "Expenses minus income"
+   ],
+   "a": 1,
+   "why": "Net worth = assets − liabilities."
+  }
+ ],
+ "card_ids": [
+  "nismia-c6"
+ ],
+ "words": 194
+}

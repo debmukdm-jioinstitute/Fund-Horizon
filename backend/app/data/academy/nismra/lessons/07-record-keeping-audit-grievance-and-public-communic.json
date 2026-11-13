@@ -1,0 +1,70 @@
+{
+ "id": "nismra-07",
+ "title": "Record keeping, audit, grievance and public communication",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Regulation",
+ "objectives": [
+  "List the records, audit and grievance duties of a research analyst.",
+  "Apply the rules on public appearances and social media."
+ ],
+ "body_md": "## Duties beyond the report\n\n| Duty | Rule in outline (verify current text) |\n|---|---|\n| **Records** | Keep research reports, recommendations, client agreements, fee receipts and communications for **5 years** |\n| **Annual audit** | Compliance audit of the registration conditions by a qualified professional |\n| **Compliance officer** | Designated person for filings and complaints |\n| **Grievances** | Handle complaints promptly; escalate via **SEBI SCORES** and the **SMART ODR** portal |\n| **Disclosures** | Registration number, holdings, compensation, conflicts and the market-risk caution in every report |\n\n## Public appearances and social media\n\n- Disclose holdings and conflicts at the time of the appearance, in the same format as in reports.\n- Advertisements must be fair, must not promise returns and must carry registration details and the standard caution.\n- Do not claim SEBI **approval**: SEBI registers, it does not endorse.\n- Messages sent to many people (channels, groups) are **publications** and need the same disclosures.\n\n## Fees\n\nFee limits for individual and HUF clients and the rules on fee collection come from the regulations and circulars; check the current cap before quoting any figure.\n\n## Practical routine\n\nMaintain a **disclosure checklist**, a **log of client communication**, and a **calendar** for the audit and renewal.\n\n> **Exam tip:** Retain records for five years and never describe registration as SEBI approval.",
+ "key_terms": [
+  "records",
+  "audit",
+  "SCORES",
+  "compliance officer",
+  "disclosure"
+ ],
+ "example": "An analyst posts a stock target on social media. Without holdings and registration disclosures this breaches the code, even if the target is sound.",
+ "say": [
+  "Here are my registration number and my holdings in this stock.",
+  "SEBI registers analysts; it does not endorse their views."
+ ],
+ "never": [
+  "I am SEBI approved, so my calls are safe.",
+  "A group post is not a recommendation."
+ ],
+ "check": [
+  {
+   "id": "nismra-q19",
+   "q": "Research analyst records must generally be kept for:",
+   "o": [
+    "1 year",
+    "3 years",
+    "5 years",
+    "10 years"
+   ],
+   "a": 2,
+   "why": "The regulations require a five-year retention period (verify current text)."
+  },
+  {
+   "id": "nismra-q20",
+   "q": "Which statement about SEBI registration is correct?",
+   "o": [
+    "It guarantees returns",
+    "It means SEBI endorses the analyst",
+    "It does not imply endorsement",
+    "It allows unlimited fees"
+   ],
+   "a": 2,
+   "why": "Registration is not an endorsement."
+  },
+  {
+   "id": "nismra-q21",
+   "q": "Where can an investor escalate an unresolved complaint?",
+   "o": [
+    "Only the analyst",
+    "SEBI SCORES / SMART ODR",
+    "The stock exchange canteen",
+    "No forum exists"
+   ],
+   "a": 1,
+   "why": "SCORES and SMART ODR are the official routes."
+  }
+ ],
+ "card_ids": [
+  "nismra-c7"
+ ],
+ "words": 224
+}

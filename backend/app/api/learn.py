@@ -84,6 +84,19 @@ def _content() -> dict[str, Any]:
             questions[q["id"]] = q
         for c in mod["cards"]:
             cards[c["id"]] = {**c, "module": mod["id"]}
+    idx: dict[str, set[str]] = {}
+    for les in lessons.values():
+        for t in les["key_terms"]:
+            idx.setdefault(t.lower(), set()).add(les["id"])
+    for les in lessons.values():  # "see also": lessons in OTHER modules that share rare key terms (rarer term = stronger link)
+        score: dict[str, float] = {}
+        for t in les["key_terms"]:
+            ids = idx[t.lower()]
+            if 2 <= len(ids) <= 5:
+                for o in ids:
+                    if lessons[o]["module"] != les["module"]:
+                        score[o] = score.get(o, 0) + 1 / len(ids)
+        les["see_also"] = [dict(id=o, module=lessons[o]["module"], title=lessons[o]["title"]) for o in sorted(score, key=lambda o: (-score[o], o))[:3]]
     q_lesson: dict[str, str] = {}
     for les in lessons.values():
         for q in les["check"]:
@@ -94,7 +107,7 @@ def _content() -> dict[str, Any]:
                 stage = STAGE_OF_SECTION.get(q["sec"].split(":")[0].split(" ")[0], "Niche")
                 q_lesson[q["id"]] = next((les["id"] for les in mod["_lessons"] if les["stage"] == stage), mod["_lessons"][0]["id"])
     return dict(mods=mods, lessons=lessons, questions=questions, cards=cards, q_lesson=q_lesson,
-                glossary=json.loads((DATA / "glossary.json").read_text()), badges=json.loads((DATA / "badges.json").read_text()))
+                glossary=json.loads((DATA / "glossary.json").read_text()), catalog=json.loads((DATA / "catalog.json").read_text()), badges=json.loads((DATA / "badges.json").read_text()))
 
 
 def _quiz_spec(quiz_id: str) -> dict[str, Any]:
@@ -309,7 +322,7 @@ def _profile(sid: str, name: str | None) -> dict[str, Any]:
         progress = {}
         for mid, m in c["mods"].items():
             left = [les for les in m["_lessons"] if les["id"] not in done]
-            progress[mid] = dict(code=m["code"], title=m["title"], blurb=m["blurb"],
+            progress[mid] = dict(code=m["code"], title=m["title"], blurb=m["blurb"], track=m.get("track"),
                                  done=len(m["_lessons"]) - len(left), total=len(m["_lessons"]), minutes_left=sum(les["minutes"] for les in left),
                                  next=dict(lesson_id=left[0]["id"], title=left[0]["title"], minutes=left[0]["minutes"]) if left else None)
         nxt = next(((m["id"], les) for m in c["mods"].values() for les in m["_lessons"] if les["id"] not in done), None)
@@ -322,7 +335,7 @@ def _profile(sid: str, name: str | None) -> dict[str, Any]:
         return dict(
             xp=xp, level=lvl, level_name=level_name(lvl), level_floor_xp=level_xp(lvl) if lvl > 1 else 0, next_level_xp=level_xp(lvl + 1),
             streak=streak, freezes=freezes, week_xp=week, week_rank=rank, due_count=len(_due_ids(s, sid)),
-            badges=[dict(id=k, earned_at=v) for k, v in badges.items()], badge_defs=c["badges"],
+            badges=[dict(id=k, earned_at=v) for k, v in badges.items()], badge_defs=c["badges"], tracks=c["catalog"]["tracks"], nav=c["catalog"]["modules"],
             completed_lessons=sorted(done), progress=progress, quiz_best=best, certificate=cert if all(m in cert for m in core_mods) else None,
             next_lesson=dict(module=nxt[0], lesson_id=nxt[1]["id"], title=nxt[1]["title"], minutes=nxt[1]["minutes"]) if nxt else None,
             new_here=not done and xp == 0, leaderboard_optout=bool(prefs and prefs.leaderboard_optout), migrated=bool(prefs and prefs.migrated_at),
@@ -353,7 +366,7 @@ def content(module: str, staff: Staff):
         raise HTTPException(404, "Unknown module.")
     head = {k: v for k, v in mod.items() if k not in ("_lessons", "final", "cards")}
     checkpoints = [dict(id=f"{module}-cp{k}", after=mod["_lessons"][3 * k - 1]["id"]) for k in range(1, len(mod["_lessons"]) // 3 + 1)]
-    return dict(module={**head, "checkpoints": checkpoints, "final": dict(id=f"{module}-final", title=mod["final"]["title"], questions=len(mod["final"]["questions"]), pass_pct=mod["final"]["pass_pct"]),
+    return dict(module={**head, "nav": c["catalog"]["modules"].get(module, {}), "checkpoints": checkpoints, "final": dict(id=f"{module}-final", title=mod["final"]["title"], questions=len(mod["final"]["questions"]), pass_pct=mod["final"]["pass_pct"]),
                          "mock": dict(id=f"{module}-mock", questions=min(MOCK_SIZE, len(_quiz_spec(f"{module}-mock")["ids"])), minutes=MOCK_SECONDS // 60, pass_pct=MOCK_PASS)},
                 lessons=[_strip(les) for les in mod["_lessons"]], cards=mod["cards"], glossary=c["glossary"])
 

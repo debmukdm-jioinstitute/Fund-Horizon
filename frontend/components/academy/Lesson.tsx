@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAcademy } from "./AcademyContext";
 import { academy, type AnswerResult, type Lesson as LessonT, type ModuleContent, type QuizStart } from "./api";
 import { Markdown } from "./Markdown";
+import { stageLabel } from "./ModulePath";
 import { LEVEL_LABEL, accent, btnGhost, btnPrimary, card, muted } from "./ui";
 
 function useReadingProgress(ref: React.RefObject<HTMLElement>) {
@@ -86,6 +87,7 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
   const idx = content.lessons.findIndex((l) => l.id === lessonId);
   const lesson = content.lessons[idx];
   const [busy, setBusy] = useState(false);
+  const track = me?.tracks?.find((t) => t.modules.includes(content.module.id));
   const done = !!me?.completed_lessons.includes(lessonId);
   if (!lesson) return <p className={muted}>Lesson not found. <button className="underline" onClick={() => go({ m: content.module.id })}>Back to the path</button></p>;
   const prev = content.lessons[idx - 1];
@@ -101,7 +103,12 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
         <div className="h-full bg-[#0176D3] dark:bg-[#1B96FF]" style={{ width: `${progress * 100}%` }} />
       </div>
       <header className="space-y-2">
-        <button className={`text-[15px] ${accent} underline`} onClick={() => go({ m: content.module.id })}>← {content.module.title} path</button>
+        <nav aria-label="Breadcrumb" className="text-[15px]">
+          <button className={`${accent} underline`} onClick={() => go({})}>Academy</button>
+          {track && <> <span className={muted}>›</span> <button className={`${accent} underline`} onClick={() => go({ t: track.id })}>{track.title}</button></>}
+          {" "}<span className={muted}>›</span> <button className={`${accent} underline`} onClick={() => go({ m: content.module.id })}>{content.module.title}</button>
+          {" "}<span className={muted}>›</span> <span>{stageLabel(lesson.stage)}</span>
+        </nav>
         <p className={`text-sm ${muted}`}>Lesson {idx + 1} of {content.lessons.length} · 🕒 {lesson.minutes} min · {LEVEL_LABEL[lesson.level] ?? lesson.level}</p>
         <h2 className="text-2xl font-semibold leading-tight">{lesson.title}</h2>
         <button className={btnGhost} onClick={() => openGlossary()}>📖 Glossary</button>
@@ -137,6 +144,24 @@ export function Lesson({ content, lessonId }: { content: ModuleContent; lessonId
         {done ? <span className={`text-[15px] font-medium ${accent}`}>✓ Lesson complete</span> : <button className={btnPrimary} disabled={busy} onClick={complete}>Complete lesson (+10 XP)</button>}
         <button className={btnGhost} disabled={!next} onClick={() => next && go({ m: content.module.id, l: next.id, v: "read" })}>Next →</button>
       </div>
+      {!!lesson.see_also?.length && (
+        <section aria-label="Related lessons" className={`${card} p-4 space-y-2`}>
+          <h3 className="text-[15px] font-semibold">Related lessons in other modules</h3>
+          <ul className="space-y-1 text-[15px]">
+            {lesson.see_also.map((x) => (
+              <li key={x.id}><button className={`${accent} underline text-left`} onClick={() => go({ m: x.module, l: x.id, v: "read" })}>{x.title}</button> <span className={muted}>· {me?.progress[x.module]?.title ?? x.module}</span></li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {!next && (content.module.nav?.related?.length ?? 0) > 0 && (
+        <section aria-label="Where next" className={`${card} p-4 space-y-2`}>
+          <h3 className="text-[15px] font-semibold">Where next</h3>
+          <div className="flex flex-wrap gap-2">
+            {content.module.nav!.related.map((x) => <button key={x} className={btnGhost} onClick={() => go({ m: x })}>{me?.progress[x]?.title ?? x} →</button>)}
+          </div>
+        </section>
+      )}
       {lesson.card_ids.length > 0 && (
         <p className="text-[15px]"><button className={`${accent} underline`} onClick={() => go({ m: content.module.id, l: lesson.id, v: "cards", deck: "lesson" })}>Practise this lesson’s {lesson.card_ids.length} flashcards →</button></p>
       )}

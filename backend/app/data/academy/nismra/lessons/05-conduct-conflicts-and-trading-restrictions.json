@@ -1,0 +1,69 @@
+{
+ "id": "nismra-05",
+ "title": "Conduct, conflicts and trading restrictions",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Regulation",
+ "objectives": [
+  "Apply the code of conduct to conflicts of interest.",
+  "State the disclosure items and the trading restriction window."
+ ],
+ "body_md": "The RA's first duty is **objectivity**. A recommendation must be driven by the analysis, not by who pays or who holds the stock.\n\n## Core conduct rules\n\n- Act with honesty, diligence and independence; keep **Chinese walls** from sales, trading and investment banking.\n- Never promise or imply **assured returns**.\n- Never **front run**: trade ahead of a published recommendation.\n- Do not use **unpublished price sensitive information (UPSI)**; see the insider trading rules.\n- Do not take compensation from a subject company for a favourable rating.\n\n## What a report must disclose\n\n1. Analyst or relatives holding **1% or more** (or any financial interest) in the subject company.\n2. Compensation received from the subject company in the **previous 12 months**.\n3. Whether the entity or analyst has acted as a director, officer or market maker for the company.\n4. Whether the subject company is a client of the entity.\n\n## Trading restrictions\n\nAnalysts do not trade in a stock for a set window before and after publishing about it (per the regulations: 30 days before and 5 days after; verify the current text) and do not trade against their own call.\n\n> **Exam tip:** Disclosure is the cure for conflict. If it cannot be managed, avoid the report.",
+ "key_terms": [
+  "conflict of interest",
+  "front running",
+  "UPSI",
+  "Chinese wall"
+ ],
+ "example": "An analyst holds 2% of a small company. She must disclose it in the report. If she plans to sell after publishing a buy call, that is front running in spirit and a breach of her code.",
+ "say": [
+  "I hold shares in this company; the disclosure is on page one.",
+  "This is our rating, not a guarantee of any return."
+ ],
+ "never": [
+  "Buy now, this will double for sure.",
+  "I bought first so that your order lifts the price."
+ ],
+ "check": [
+  {
+   "id": "nismra-q13",
+   "q": "Trading ahead of a published recommendation is called:",
+   "o": [
+    "Hedging",
+    "Front running",
+    "Arbitrage",
+    "Averaging"
+   ],
+   "a": 1,
+   "why": "Front running exploits knowledge of an upcoming recommendation."
+  },
+  {
+   "id": "nismra-q14",
+   "q": "A report must disclose analyst or relatives' holdings of at least:",
+   "o": [
+    "25%",
+    "10%",
+    "1%",
+    "50%"
+   ],
+   "a": 2,
+   "why": "A holding of 1% or more must be disclosed."
+  },
+  {
+   "id": "nismra-q15",
+   "q": "An RA promising 'assured returns' is:",
+   "o": [
+    "Permitted with a disclaimer",
+    "Prohibited",
+    "Allowed for AAA firms",
+    "Allowed to institutional clients"
+   ],
+   "a": 1,
+   "why": "Assured returns are prohibited regardless of disclaimers."
+  }
+ ],
+ "card_ids": [
+  "nismra-c5"
+ ],
+ "words": 209
+}

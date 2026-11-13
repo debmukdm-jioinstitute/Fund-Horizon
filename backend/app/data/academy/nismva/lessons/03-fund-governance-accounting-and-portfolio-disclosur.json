@@ -1,0 +1,70 @@
+{
+ "id": "nismva-03",
+ "title": "Fund governance, accounting and portfolio disclosures",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Foundations",
+ "objectives": [
+  "Explain the oversight roles of trustees and the AMC.",
+  "Describe NAV accounting and the regular disclosures."
+ ],
+ "body_md": "## Checks and balances\n\n| Constituent | Role |\n|---|---|\n| **Sponsor** | Sets up the fund |\n| **Trustees** | Hold the assets for unitholders, supervise the AMC; the board needs a majority of independent trustees |\n| **AMC** | Manages the schemes; its board also has independent directors |\n| **Custodian** | Safekeeps securities, separate from the AMC |\n| **RTA** | Registrar and transfer agent for unit records |\n| **Auditor** | Audits the schemes' accounts |\n\n## NAV accounting\n\n**NAV = (market value of investments + other assets − liabilities and expenses) ÷ units outstanding.**\n\n- Investments are **marked to market** daily using approved valuation agencies for debt.\n- Expenses accrue daily, so the NAV is already **net of the TER**.\n- Income is booked on an accrual basis.\n\n## Regular disclosures\n\n- NAV published **every business day**.\n- **Portfolio** disclosed monthly and half-yearly; the **riskometer** reviewed monthly.\n- Half-yearly financial results and an **annual report** are available to every unitholder.\n- Liquidity **stress tests** for open-ended debt schemes, and swing pricing rules where applicable (verify the current circulars).\n\n## Why it protects investors\n\nThe assets sit with the **trustees and custodian**, not with the AMC, so an AMC failure does not remove the scheme assets.\n\n> **Exam tip:** NAV is net of expenses; the custodian holds the securities.",
+ "key_terms": [
+  "trustee",
+  "custodian",
+  "RTA",
+  "mark to market",
+  "NAV"
+ ],
+ "example": "Assets worth ₹1,050 crore, liabilities ₹10 crore, 100 crore units: NAV = 1,040 ÷ 100 = ₹10.40.",
+ "say": [
+  "The scheme assets are held by the custodian under the trustees.",
+  "The NAV already reflects the day's expenses."
+ ],
+ "never": [
+  "The AMC owns the investors' securities.",
+  "Expenses are charged separately on top of NAV."
+ ],
+ "check": [
+  {
+   "id": "nismva-q7",
+   "q": "Who safekeeps the scheme's securities?",
+   "o": [
+    "The AMC",
+    "The custodian",
+    "The sponsor",
+    "The distributor"
+   ],
+   "a": 1,
+   "why": "The custodian holds the securities."
+  },
+  {
+   "id": "nismva-q8",
+   "q": "Assets 1,050, liabilities 10, units 100 crore. NAV is:",
+   "o": [
+    "10.50",
+    "10.40",
+    "10.00",
+    "11.40"
+   ],
+   "a": 1,
+   "why": "(1,050 − 10) ÷ 100 = 10.40."
+  },
+  {
+   "id": "nismva-q9",
+   "q": "How often is a scheme's NAV published?",
+   "o": [
+    "Weekly",
+    "Monthly",
+    "Every business day",
+    "Yearly"
+   ],
+   "a": 2,
+   "why": "NAV is published daily."
+  }
+ ],
+ "card_ids": [
+  "nismva-c3"
+ ],
+ "words": 223
+}

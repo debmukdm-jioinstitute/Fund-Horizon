@@ -1,0 +1,70 @@
+{
+ "id": "nismia-10",
+ "title": "Retirement and estate planning",
+ "minutes": 7,
+ "level": "advanced",
+ "stage": "Advice process",
+ "objectives": [
+  "Estimate a retirement corpus.",
+  "Cover nomination, wills and succession basics."
+ ],
+ "body_md": "## Retirement corpus\n\n1. Estimate **annual expenses at retirement** (today's expenses × inflation to that date, with a factor for changes).\n2. Decide the **retirement duration** (to age 85 or 90).\n3. Compute the **corpus** that funds those expenses using a post-retirement return net of inflation.\n\nA rough check: corpus ≈ annual expense ÷ safe withdrawal rate (often 3% to 4%).\n\n## Sources of income\n\n| Source | Note |\n|---|---|\n| EPF / PPF / NPS | Long-term accumulation; NPS has annuity rules |\n| Annuities | Lifetime income, usually low returns |\n| **SWP** from funds | Flexible; sequence-of-returns risk |\n| Rent, pensions | Other streams |\n\n## Risks\n\nLongevity, inflation, healthcare costs, market falls near retirement (sequence risk).\n\n## Estate planning\n\n- **Nominations** on every account: a nominee is a trustee for legal heirs.\n- A **will** states how assets are distributed; register or witness it properly.\n- Keep an **inventory** of accounts and tell family where it is.\n\n> **Exam tip:** Nominee is not always the final owner; a will decides for heirs.",
+ "key_terms": [
+  "corpus",
+  "safe withdrawal rate",
+  "sequence risk",
+  "nominee",
+  "will"
+ ],
+ "example": "Expenses at retirement ₹8 lakh a year; at a 4% withdrawal rate the corpus is 8 ÷ 0.04 = ₹2 crore.",
+ "say": [
+  "Let us plan for 30 years of retirement, not 15.",
+  "Please keep your nominations and will up to date."
+ ],
+ "never": [
+  "Retirement needs no plan, the pension is enough.",
+  "A nominee always becomes the sole owner."
+ ],
+ "check": [
+  {
+   "id": "nismia-q28",
+   "q": "A 4% withdrawal rate on ₹8 lakh annual need gives a corpus of:",
+   "o": [
+    "₹32 lakh",
+    "₹2 crore",
+    "₹20 lakh",
+    "₹80 lakh"
+   ],
+   "a": 1,
+   "why": "8 ÷ 0.04 = 200 lakh = ₹2 crore."
+  },
+  {
+   "id": "nismia-q29",
+   "q": "Sequence risk is:",
+   "o": [
+    "Poor returns early in retirement withdrawals",
+    "A tax",
+    "A KYC error",
+    "A fee"
+   ],
+   "a": 0,
+   "why": "Early losses while withdrawing hurt more."
+  },
+  {
+   "id": "nismia-q30",
+   "q": "A nominee is generally:",
+   "o": [
+    "Always the final owner",
+    "A trustee for legal heirs",
+    "The adviser",
+    "The AMC"
+   ],
+   "a": 1,
+   "why": "The will or succession law decides ownership."
+  }
+ ],
+ "card_ids": [
+  "nismia-c10"
+ ],
+ "words": 178
+}

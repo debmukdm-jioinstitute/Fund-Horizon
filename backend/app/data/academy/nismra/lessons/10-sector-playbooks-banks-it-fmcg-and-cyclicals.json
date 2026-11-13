@@ -1,0 +1,70 @@
+{
+ "id": "nismra-10",
+ "title": "Sector playbooks: banks, IT, FMCG and cyclicals",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Economy and industry",
+ "objectives": [
+  "Choose the key metrics for banks, IT services, FMCG and cyclical industries.",
+  "Explain why cyclical valuations mislead at the peak."
+ ],
+ "body_md": "## What to look at, sector by sector\n\n| Sector | Key drivers and metrics |\n|---|---|\n| **Banks and NBFCs** | NIM, CASA ratio, loan growth, **GNPA / NNPA**, provision coverage (PCR), credit cost, capital adequacy, ROA, ROE, **P/B** |\n| **IT services** | Constant-currency revenue growth, deal wins, utilisation, attrition, EBIT margin, rupee and dollar sensitivity |\n| **FMCG** | **Volume growth**, price/mix, gross margin, input costs (palm oil, crude derivatives), rural vs urban demand, distribution reach |\n| **Autos** | Volumes, average selling price, inventory days, commodity costs, EV transition capex |\n| **Cyclicals (metals, cement, chemicals)** | Capacity utilisation, spreads, commodity price, debt, **EV/EBITDA** and P/B through the cycle |\n\n## Banks are different\n\nDebt is the raw material for a bank, so **EV-based multiples and free cash flow do not work**. Value banks on P/B against ROE and asset quality.\n\n## Cyclicals trap\n\nEarnings peak when the cycle peaks, so P/E looks **lowest at the top**. Use mid-cycle earnings or asset-based measures.\n\n## Common sense checks\n\nCompare each company with **peers on the same metric**, and with its own history. A metric without a peer is only a number.\n\n> **Exam tip:** Banks: NIM, GNPA, CASA, P/B. Cyclicals: do not buy on a low P/E at peak earnings.",
+ "key_terms": [
+  "NIM",
+  "GNPA",
+  "CASA",
+  "cyclical",
+  "EV/EBITDA"
+ ],
+ "example": "A steel company shows a P/E of 4 at record profits. An analyst using mid-cycle earnings gets a P/E near 12. The cheap look came from peak earnings.",
+ "say": [
+  "For a bank I will check asset quality and P/B against ROE.",
+  "At the top of a cycle a low P/E is a warning, not a bargain."
+ ],
+ "never": [
+  "Use EV/EBITDA for every sector.",
+  "A low P/E always means undervalued."
+ ],
+ "check": [
+  {
+   "id": "nismra-q28",
+   "q": "Which metric is most specific to a bank's asset quality?",
+   "o": [
+    "Inventory days",
+    "GNPA ratio",
+    "Utilisation",
+    "Volume growth"
+   ],
+   "a": 1,
+   "why": "Gross NPA measures stressed loans."
+  },
+  {
+   "id": "nismra-q29",
+   "q": "Why can a cyclical stock look cheap on P/E at the peak?",
+   "o": [
+    "Prices always fall",
+    "Earnings are at their highest",
+    "Debt is zero",
+    "Volumes are tiny"
+   ],
+   "a": 1,
+   "why": "Peak earnings depress the P/E."
+  },
+  {
+   "id": "nismra-q30",
+   "q": "Which valuation anchor suits banks best?",
+   "o": [
+    "EV/Sales",
+    "Price to book with ROE",
+    "EV/EBITDA",
+    "Dividend only"
+   ],
+   "a": 1,
+   "why": "Banks are valued on P/B against ROE."
+  }
+ ],
+ "card_ids": [
+  "nismra-c10"
+ ],
+ "words": 213
+}

@@ -1,0 +1,70 @@
+{
+ "id": "nismva-09",
+ "title": "ETFs, index funds, fund of funds and international funds",
+ "minutes": 7,
+ "level": "intermediate",
+ "stage": "Schemes",
+ "objectives": [
+  "Differentiate ETFs, index funds and funds of funds.",
+  "Explain tracking error, tracking difference and international fund limits."
+ ],
+ "body_md": "## Passive and fund-of-funds\n\n| Product | How it works |\n|---|---|\n| **Index fund** | Open-ended, copies an index, bought at NAV |\n| **ETF** | Units trade on an **exchange** at market price through a demat account; AMC deals in **creation units** with authorised participants |\n| **Fund of funds (FoF)** | Invests in other schemes: the investor bears **two layers of cost** (check the FoF expense limit) |\n| **Gold fund / gold ETF** | Tracks the domestic gold price |\n| **International fund** | Invests in overseas securities, directly or through a FoF |\n\n## Passive measures\n\n- **Tracking error:** standard deviation of the difference between fund and index returns.\n- **Tracking difference:** the actual return gap over a period, mostly the cost.\n- ETF price can trade at a small premium or discount to its **iNAV**; use limit orders on liquid ETFs.\n\n## International funds\n\nOverseas investment by funds is capped under **industry-wide and per-AMC limits**, so schemes may pause fresh subscriptions when a limit is reached. Currency moves add to the return and the risk. Tax follows the equity-oriented test: check the taxation lesson for the current rule.\n\n## Fit\n\nPassive funds suit low-cost core holdings; active funds are justified only when the extra cost buys something.\n\n> **Exam tip:** ETFs trade on an exchange; index funds do not. FoFs add a second layer of expense.",
+ "key_terms": [
+  "ETF",
+  "index fund",
+  "tracking error",
+  "fund of funds",
+  "iNAV"
+ ],
+ "example": "An index fund returns 11.6% while its index returns 11.9%: the tracking difference is 0.3 percentage points, close to its expense ratio.",
+ "say": [
+  "An ETF needs a demat account and trades through the day.",
+  "A fund of funds carries costs at two levels."
+ ],
+ "never": [
+  "Index funds beat the index.",
+  "ETFs always trade exactly at NAV."
+ ],
+ "check": [
+  {
+   "id": "nismva-q25",
+   "q": "Which product is bought and sold on a stock exchange?",
+   "o": [
+    "Index fund",
+    "ETF",
+    "Debt fund",
+    "ELSS"
+   ],
+   "a": 1,
+   "why": "ETFs trade on the exchange."
+  },
+  {
+   "id": "nismva-q26",
+   "q": "Tracking error measures:",
+   "o": [
+    "Fund expense only",
+    "Volatility of the gap between fund and index returns",
+    "The dividend",
+    "The NAV"
+   ],
+   "a": 1,
+   "why": "It is the standard deviation of the return difference."
+  },
+  {
+   "id": "nismva-q27",
+   "q": "A fund of funds is expensive mainly because:",
+   "o": [
+    "It has no NAV",
+    "Costs sit at two levels",
+    "It cannot hold debt",
+    "It is closed-ended"
+   ],
+   "a": 1,
+   "why": "Underlying and FoF costs both apply."
+  }
+ ],
+ "card_ids": [
+  "nismva-c9"
+ ],
+ "words": 232
+}

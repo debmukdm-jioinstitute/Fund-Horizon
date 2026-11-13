@@ -3,9 +3,8 @@
 import React from "react";
 import { useAcademy } from "./AcademyContext";
 import { Certificate } from "./Certificate";
-import { Bar, Ring, Spinner, accent, btnGhost, btnPrimary, card, muted } from "./ui";
-
-const PATH = ["Beginner", "Intermediate", "Expert"];
+import { ModuleCard, TrackSection } from "./Tracks";
+import { Bar, Spinner, accent, btnGhost, btnPrimary, card, muted } from "./ui";
 
 export function Home() {
   const { me, go } = useAcademy();
@@ -68,38 +67,18 @@ export function Home() {
         </button>
       </section>
 
-      <section aria-label="Modules" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {mods.map(([mid, p]) => {
-          const frac = p.total ? p.done / p.total : 0;
-          const stage = frac < 1 / 3 ? 0 : frac < 2 / 3 ? 1 : 2;
-          return (
-            <div key={mid} className={`${card} p-6 space-y-4`}>
-              <div className="flex items-center gap-4">
-                <Ring value={frac} size={64} label={`${p.title} progress`} />
-                <div>
-                  <p className={`text-xs font-bold uppercase tracking-wider ${muted}`}>{p.code}</p>
-                  <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className={`text-[15px] ${muted}`}>{p.done}/{p.total} lessons{p.minutes_left ? ` · about ${p.minutes_left} min left` : ""}</p>
-                </div>
-              </div>
-              <p className={`text-[15px] ${muted}`}>{p.blurb}</p>
-              <ol className="flex items-center gap-2 text-sm" aria-label="Path">
-                {PATH.map((s, i) => (
-                  <li key={s} aria-current={i === stage ? "step" : undefined} className={`flex items-center gap-2 ${i === stage ? `${accent} font-semibold` : muted}`}>
-                    {i > 0 && <span aria-hidden="true">→</span>}{s}
-                  </li>
-                ))}
-              </ol>
-              {p.next && <p className="text-[15px]"><span className={muted}>Next: </span>{p.next.title} <span className={muted}>({p.next.minutes} min)</span></p>}
-              <div className="flex flex-wrap gap-2">
-                <button className={btnPrimary} onClick={() => go({ m: mid })}>{p.done ? "Open path" : "Start path"}</button>
-                <button className={btnGhost} onClick={() => go({ m: mid, v: "cards" })}>Flashcards</button>
-                <button className={btnGhost} onClick={() => go({ m: mid, v: "quiz" })}>Quizzes</button>
-              </div>
-            </div>
-          );
-        })}
-      </section>
+      {me.tracks?.length > 0 ? (
+        <>
+          <nav aria-label="Tracks" className="flex flex-wrap gap-2">
+            {me.tracks.map((t) => <a key={t.id} href={`#track-${t.id}`} className={`${btnGhost} min-h-8`}>{t.title}</a>)}
+          </nav>
+          {me.tracks.map((t) => <TrackSection key={t.id} track={t} />)}
+        </>
+      ) : (
+        <section aria-label="Modules" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {mods.map(([mid, p]) => <ModuleCard key={mid} mid={mid} p={p} />)}
+        </section>
+      )}
 
       {me.certificate && <Certificate />}
 

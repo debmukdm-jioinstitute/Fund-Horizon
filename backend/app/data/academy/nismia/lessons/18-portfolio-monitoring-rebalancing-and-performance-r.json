@@ -1,0 +1,70 @@
+{
+ "id": "nismia-18",
+ "title": "Portfolio monitoring, rebalancing and performance reporting",
+ "minutes": 6,
+ "level": "intermediate",
+ "stage": "Ethics and review",
+ "objectives": [
+  "Set a review cycle and rebalancing rule.",
+  "Report performance with XIRR against a fair benchmark."
+ ],
+ "body_md": "## Review routine\n\n| Item | Practice |\n|---|---|\n| **Frequency** | At least yearly, plus on a life or market event |\n| **Checks** | Goal progress, allocation drift, fund performance vs benchmark and peers, cost, risk profile change |\n| **Output** | A written review with decisions and reasons |\n\n## Rebalancing\n\n- **Calendar:** reset to the target at a fixed date.\n- **Band:** act when an asset class drifts beyond a limit (for example 5 percentage points).\n- Prefer using **new money and redemptions** before selling, to limit tax and cost.\n\nExample: target 60:40 equity:debt drifts to 70:30 after a rally. Redirect new investments to debt, or sell part of equity if the band is breached.\n\n## Reporting performance\n\n- Use **XIRR** for cash-flow-driven portfolios, **CAGR** for a single lump sum.\n- Compare with the **right benchmark** (TRI, matching the mandate).\n- Show returns **net of fees and costs**, over several periods.\n- Report risk too: volatility and drawdown.\n\n## Behaviour\n\nFrequent reviews should not turn into frequent changes. Change the plan when the **goal or circumstances change**, not because last quarter was poor.\n\n> **Exam tip:** Use XIRR for periodic investments; rebalance by rule, not by mood.",
+ "key_terms": [
+  "rebalancing",
+  "XIRR",
+  "drift",
+  "benchmark",
+  "review"
+ ],
+ "example": "A 60:40 plan drifts to 70:30. At a 5-point band the adviser redirects new money to debt and records the reason.",
+ "say": [
+  "We review once a year against your goals, not against last month.",
+  "I rebalance by rule, so emotion does not decide."
+ ],
+ "never": [
+  "Switch funds whenever a competitor tops the table.",
+  "Compare an equity fund with a fixed deposit rate only."
+ ],
+ "check": [
+  {
+   "id": "nismia-q52",
+   "q": "The best return measure for monthly SIP cash flows is:",
+   "o": [
+    "Absolute return",
+    "XIRR",
+    "Dividend yield",
+    "P/E"
+   ],
+   "a": 1,
+   "why": "XIRR handles irregular dated cash flows."
+  },
+  {
+   "id": "nismia-q53",
+   "q": "Rebalancing by band means:",
+   "o": [
+    "Act at set drift limits",
+    "Never act",
+    "Act every day",
+    "Act only on tips"
+   ],
+   "a": 0,
+   "why": "A band triggers action when drift exceeds a limit."
+  },
+  {
+   "id": "nismia-q54",
+   "q": "A fair equity benchmark is usually the:",
+   "o": [
+    "Savings rate",
+    "Total return index of the mandate",
+    "Gold price",
+    "Inflation"
+   ],
+   "a": 1,
+   "why": "Use a TRI that matches the mandate."
+  }
+ ],
+ "card_ids": [
+  "nismia-c18"
+ ],
+ "words": 201
+}

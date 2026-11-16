@@ -315,6 +315,11 @@
  ],
  "unifi": [
   {
+   "period": "2026-10",
+   "title": "Unifi Mutual Fund factsheet 2026-10",
+   "url": "https://unifimf.com/wp-content/uploads/fund-sheets/UnifiMF_Factsheet_October2026.pdf"
+  },
+  {
    "period": "2026-09",
    "title": "Unifi Mutual Fund factsheet 2026-09",
    "url": "https://unifimf.com/wp-content/uploads/fund-sheets/Unifi-MF-Factsheet-Sep-2026.pdf"
@@ -7417,6 +7422,11 @@
   }
  ],
  "abakkus": [
+  {
+   "period": "2026-10",
+   "title": "Abakkus Mutual Fund factsheet 2026-10",
+   "url": "https://www.abakkusmf.com/uploads/Abakkus_Mutual_Fund_Factsheet_October_2026_33449ca79d.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Abakkus Mutual Fund factsheet 2026-09",

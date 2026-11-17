@@ -685,7 +685,8 @@ export interface EquityQuote {
 export const searchEquities = async (q: string, signal?: AbortSignal): Promise<EquitySuggestion[]> =>
   arr((await boFetch<Json>(`/api/backoffice/equities/search?q=${encodeURIComponent(q)}`, { signal })).data) as unknown as EquitySuggestion[];
 
-export interface EquityBasket { id: string; name: string; symbols: string[] }
+export interface EquityHolding { qty: number | null; buy_price: number | null }
+export interface EquityBasket { id: string; name: string; symbols: string[]; holdings: Record<string, EquityHolding> }
 const EQ = "/api/backoffice/equities/baskets";
 export const getEquityBaskets = async (): Promise<EquityBasket[]> =>
   arr((await boFetch<Json>(EQ)).data) as unknown as EquityBasket[];
@@ -693,6 +694,9 @@ export const createEquityBasket = (name: string, symbols: string[] = []) =>
   boFetch<EquityBasket>(EQ, { method: "POST", body: JSON.stringify({ name, symbols }) });
 export const saveEquityBasket = async (id: string, symbols: string[]): Promise<void> => {
   await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify({ symbols }) });
+};
+export const saveEquityHolding = async (id: string, symbol: string, h: EquityHolding): Promise<void> => {
+  await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}/holdings/${encodeURIComponent(symbol)}`, { method: "PUT", body: JSON.stringify(h) });
 };
 export const deleteEquityBasket = async (id: string): Promise<void> => {
   await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}`, { method: "DELETE" });

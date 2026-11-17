@@ -120,8 +120,32 @@ class BasketSymbols(BaseModel):
     symbols: list[str] = Field(..., max_length=50)
 
 
+# One-off backfill (buy price, qty) from the user's smallcase screenshot; applied once to the staff member's "Abhijit*" basket.
+_ABHIJIT_SEED = [
+    ("TECHNOE", 22, 975.0), ("NETWEB", 6, 4124.0), ("WAAREEENER", 13, 2585.5), ("GVT&D", 9, 4399.5),
+    ("POLYCAB", 5, 8139.0), ("BEL", 106, 404.5), ("PERSISTENT", 8, 6062.5), ("DIXON", 4, 12940.0),
+]
+
+
+class HoldingBody(BaseModel):
+    qty: float | None = Field(None, ge=0, le=1e9)
+    buy_price: float | None = Field(None, ge=0, le=1e9)
+
+
+@router.put("/baskets/{basket_id}/holdings/{symbol}")
+def set_holding(basket_id: str, symbol: str, body: HoldingBody, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    sym = symbol.strip().upper()
+    if not SYMBOL.match(sym):
+        raise HTTPException(422, "invalid NSE symbol")
+    if not _REPO.set_equity_holding(staff["id"], basket_id, sym, body.qty, body.buy_price):
+        raise HTTPException(404, "basket or symbol not found")
+    return {"success": True}
+
+
 @router.get("/baskets")
 def list_baskets(staff: Annotated[dict, Depends(require_staff)]):
+    _REPO.seed_equity_basket_once(staff["id"], "abhijit", _ABHIJIT_SEED)
     return {"data": _REPO.list_equity_baskets(staff["id"])}
 
 

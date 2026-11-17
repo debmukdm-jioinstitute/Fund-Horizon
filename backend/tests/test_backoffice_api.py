@@ -519,10 +519,27 @@ def test_equity_baskets_crud_and_isolation(client):
     assert client.post("/api/backoffice/equities/baskets", json={"name": "Banks"}).status_code == 409
     assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["bad!"]}).status_code == 422
     assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["M&M"]}).status_code == 200
-    assert client.get("/api/backoffice/equities/baskets").json()["data"] == [{"id": bid, "name": "Banks", "symbols": ["M&M"]}]
+    assert client.get("/api/backoffice/equities/baskets").json()["data"] == [{"id": bid, "name": "Banks", "symbols": ["M&M"], "holdings": {}}]
     _login_staff(client, b)  # another staff member sees/touches nothing
     assert client.get("/api/backoffice/equities/baskets").json()["data"] == []
     assert client.delete(f"/api/backoffice/equities/baskets/{bid}").status_code == 404
     _login_staff(client, a)
     assert client.delete(f"/api/backoffice/equities/baskets/{bid}").status_code == 200
     assert client.get("/api/backoffice/equities/baskets").json()["data"] == []
+
+
+def test_equity_holdings_and_abhijit_seed(client):
+    _login_staff(client, _create_staff("analyst"))
+    bid = client.post("/api/backoffice/equities/baskets", json={"name": "Abhijit Portfolio"}).json()["id"]
+    other = client.post("/api/backoffice/equities/baskets", json={"name": "Other"}).json()["id"]
+    d = {b["id"]: b for b in client.get("/api/backoffice/equities/baskets").json()["data"]}
+    assert d[bid]["holdings"]["DIXON"] == {"qty": 4, "buy_price": 12940.0} and len(d[bid]["symbols"]) == 8
+    assert d[other]["holdings"] == {}
+    # seed is once-only: removing a symbol sticks
+    client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["BEL"]})
+    d = client.get("/api/backoffice/equities/baskets").json()["data"][0]
+    assert d["symbols"] == ["BEL"] and list(d["holdings"]) == ["BEL"]
+    assert client.put(f"/api/backoffice/equities/baskets/{bid}/holdings/BEL", json={"qty": 10, "buy_price": 400}).status_code == 200
+    assert client.put(f"/api/backoffice/equities/baskets/{bid}/holdings/TCS", json={"qty": 1}).status_code == 404
+    assert client.put(f"/api/backoffice/equities/baskets/{bid}/holdings/BEL", json={"qty": -1}).status_code == 422
+    assert client.get("/api/backoffice/equities/baskets").json()["data"][0]["holdings"]["BEL"] == {"qty": 10, "buy_price": 400}

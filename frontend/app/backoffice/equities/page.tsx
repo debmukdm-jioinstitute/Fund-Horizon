@@ -2,8 +2,8 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  EquityBasket, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
-  getEquityBaskets, getEquityQuotes, saveEquityBasket, searchEquities,
+  EquityBasket, EquityHolding, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
+  getEquityBaskets, getEquityQuotes, saveEquityBasket, saveEquityHolding, searchEquities,
 } from "@/lib/backoffice";
 import { formatNumber } from "@/lib/terminal-format";
 
@@ -11,6 +11,21 @@ const LEGACY_KEY = "fh.equities.baskets.v1"; // pre-server storage; imported onc
 const REFRESH_MS = 20_000;
 
 const inr = (v?: number) => (v === undefined || v === null ? "—" : formatNumber(v, 2, { prefix: "₹" }));
+
+function NumInput({ value, onSave, label }: { value: number | null; onSave: (v: number | null) => void; label: string }) {
+  const [t, setT] = useState(value === null ? "" : String(value));
+  useEffect(() => setT(value === null ? "" : String(value)), [value]);
+  const commit = () => {
+    const v = t.trim() === "" ? null : Number(t);
+    if (v !== null && (!Number.isFinite(v) || v < 0)) return setT(value === null ? "" : String(value));
+    if (v !== value) onSave(v);
+  };
+  return (
+    <input inputMode="decimal" aria-label={label} value={t} onChange={(e) => setT(e.target.value)} onBlur={commit}
+      onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+      className="w-24 rounded border border-slate-300 px-2 py-1 text-right text-sm text-slate-900" />
+  );
+}
 
 export default function EquitiesPage() {
   const [baskets, setBaskets] = useState<EquityBasket[]>([]);
@@ -113,7 +128,28 @@ export default function EquitiesPage() {
     setSymbols([...symbols, s.symbol]);
     setQ(""); setSugg([]); setOpen(false);
   };
+  const setHolding = async (sym: string, patch: Partial<EquityHolding>) => {
+    if (!basket) return;
+    const cur = basket.holdings[sym] ?? { qty: null, buy_price: null };
+    const next = { ...cur, ...patch };
+    const prev = baskets;
+    setBaskets(baskets.map((b) => (b.id === basket.id ? { ...b, holdings: { ...b.holdings, [sym]: next } } : b)));
+    try { await saveEquityHolding(basket.id, sym, next); setErr(null); }
+    catch (e) { setBaskets(prev); fail(e); }
+  };
   const remove = (sym: string) => setSymbols(symbols.filter((x) => x !== sym));
+
+  const rows = symbols.map((s) => {
+    const h = basket?.holdings[s], px = quotes[s]?.price;
+    const invested = h?.qty != null && h.buy_price != null ? h.qty * h.buy_price : undefined;
+    const value = h?.qty != null && px != null ? h.qty * px : undefined;
+    return { s, h, invested, value, pnl: invested !== undefined && value !== undefined ? value - invested : undefined };
+  });
+  const sum = (k: "invested" | "value" | "pnl") => rows.reduce((a, r) => a + (r[k] ?? 0), 0);
+  const totInv = sum("invested"), totVal = sum("value"), totPnl = rows.reduce((a, r) => a + (r.invested !== undefined && r.value !== undefined ? r.pnl ?? 0 : 0), 0);
+  const costBasisOfPriced = rows.reduce((a, r) => a + (r.pnl !== undefined ? r.invested ?? 0 : 0), 0);
+  const tone = (v?: number) => (v === undefined ? "" : v >= 0 ? "text-emerald-600" : "text-red-600");
+  const sgn = (v: number) => `${v >= 0 ? "+" : ""}${formatNumber(v, 2)}`;
 
   const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 w-full";
   const btn = "rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40";
@@ -169,36 +205,51 @@ export default function EquitiesPage() {
             <p className="text-sm text-slate-500">Basket is empty. Search above to add stocks.</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px] text-sm">
+              <table className="w-full min-w-[980px] text-sm">
                 <thead>
                   <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
-                    <th className="py-2 pr-2">Stock</th><th className="pr-2 text-right">Price</th><th className="pr-2 text-right">Change</th>
-                    <th className="pr-2 text-right">Day range</th><th className="pr-2 text-right">52w range</th><th />
+                    <th className="py-2 pr-2">Stock</th><th className="pr-2 text-right">Qty</th><th className="pr-2 text-right">Buy price</th>
+                    <th className="pr-2 text-right">Invested</th><th className="pr-2 text-right">LTP</th><th className="pr-2 text-right">Day chg</th>
+                    <th className="pr-2 text-right">Value</th><th className="pr-2 text-right">P&amp;L</th><th className="pr-2 text-right">Weight</th><th />
                   </tr>
                 </thead>
                 <tbody>
-                  {symbols.map((s) => {
+                  {rows.map(({ s, h, invested, value, pnl }) => {
                     const r = quotes[s];
-                    const up = (r?.change ?? 0) >= 0;
                     return (
                       <tr key={s} className="border-b border-slate-100">
                         <td className="py-2 pr-2">
                           <div className="font-semibold text-slate-900">{s}</div>
-                          <div className="max-w-[220px] truncate text-xs text-slate-500">{r?.name ?? names.current[s] ?? ""}</div>
+                          <div className="max-w-[200px] truncate text-xs text-slate-500">{r?.name ?? names.current[s] ?? ""}</div>
                         </td>
-                        {r?.error ? <td colSpan={4} className="text-right text-slate-400">price unavailable</td> : (<>
-                          <td className="pr-2 text-right font-semibold">{inr(r?.price)}</td>
-                          <td className={`pr-2 text-right ${r ? (up ? "text-emerald-600" : "text-red-600") : ""}`}>
-                            {r?.change === undefined || r?.change === null ? "—" : `${up ? "+" : ""}${formatNumber(r.change, 2)} (${up ? "+" : ""}${formatNumber(r.change_pct ?? 0, 2)}%)`}
-                          </td>
-                          <td className="pr-2 text-right text-slate-600">{inr(r?.day_low)} – {inr(r?.day_high)}</td>
-                          <td className="pr-2 text-right text-slate-600">{inr(r?.low_52w)} – {inr(r?.high_52w)}</td>
-                        </>)}
+                        <td className="pr-2 text-right"><NumInput label={`${s} quantity`} value={h?.qty ?? null} onSave={(v) => setHolding(s, { qty: v })} /></td>
+                        <td className="pr-2 text-right"><NumInput label={`${s} buy price`} value={h?.buy_price ?? null} onSave={(v) => setHolding(s, { buy_price: v })} /></td>
+                        <td className="pr-2 text-right">{inr(invested)}</td>
+                        <td className="pr-2 text-right font-semibold">{r?.error ? <span className="text-slate-400">n/a</span> : inr(r?.price)}</td>
+                        <td className={`pr-2 text-right ${tone(r?.change ?? undefined)}`}>
+                          {r?.change == null ? "—" : `${sgn(r.change)} (${sgn(r.change_pct ?? 0)}%)`}
+                        </td>
+                        <td className="pr-2 text-right">{inr(value)}</td>
+                        <td className={`pr-2 text-right ${tone(pnl)}`}>
+                          {pnl === undefined ? "—" : `${sgn(pnl)} (${sgn((pnl / (invested || 1)) * 100)}%)`}
+                        </td>
+                        <td className="pr-2 text-right text-slate-600">{invested !== undefined && totInv > 0 ? `${formatNumber((invested / totInv) * 100, 2)}%` : "—"}</td>
                         <td className="text-right"><button onClick={() => remove(s)} aria-label={`Remove ${s}`} className="px-2 text-slate-400 hover:text-red-600">✕</button></td>
                       </tr>
                     );
                   })}
                 </tbody>
+                <tfoot>
+                  <tr className="font-semibold text-slate-900">
+                    <td className="pt-3" colSpan={3}>Total</td>
+                    <td className="pt-3 pr-2 text-right">{inr(totInv)}</td><td /><td />
+                    <td className="pt-3 pr-2 text-right">{inr(totVal)}</td>
+                    <td className={`pt-3 pr-2 text-right ${tone(totPnl)}`}>
+                      {costBasisOfPriced > 0 ? `${sgn(totPnl)} (${sgn((totPnl / costBasisOfPriced) * 100)}%)` : "—"}
+                    </td>
+                    <td /><td />
+                  </tr>
+                </tfoot>
               </table>
             </div>
           )}

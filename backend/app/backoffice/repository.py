@@ -221,6 +221,14 @@ CREATE TABLE IF NOT EXISTS equity_baskets (
     updated_at TEXT NOT NULL,
     UNIQUE (staff_id, name)
 );
+CREATE TABLE IF NOT EXISTS equity_holdings (
+    basket_id TEXT NOT NULL REFERENCES equity_baskets(id) ON DELETE CASCADE,
+    symbol TEXT NOT NULL,
+    qty REAL,
+    buy_price REAL,
+    PRIMARY KEY (basket_id, symbol)
+);
+CREATE TABLE IF NOT EXISTS equity_seed_done (basket_id TEXT PRIMARY KEY);
 """
 _LIVE_TABLES_READY: set[str] = set()
 
@@ -1652,7 +1660,12 @@ class BackofficeRepository:
         try:
             rows = conn.execute("SELECT id, name, symbols FROM equity_baskets WHERE staff_id = ? ORDER BY created_at",
                                 (staff_id,)).fetchall()
-            return [{"id": r["id"], "name": r["name"], "symbols": json.loads(r["symbols"] or "[]")} for r in rows]
+            out = []
+            for r in rows:
+                hold = {h["symbol"]: {"qty": h["qty"], "buy_price": h["buy_price"]} for h in conn.execute(
+                    "SELECT symbol, qty, buy_price FROM equity_holdings WHERE basket_id = ?", (r["id"],)).fetchall()}
+                out.append({"id": r["id"], "name": r["name"], "symbols": json.loads(r["symbols"] or "[]"), "holdings": hold})
+            return out
         finally:
             conn.close()
 
@@ -1664,7 +1677,7 @@ class BackofficeRepository:
             with conn:
                 conn.execute("INSERT INTO equity_baskets (id, staff_id, name, symbols, created_at, updated_at)"
                              " VALUES (?, ?, ?, ?, ?, ?)", (bid, staff_id, name, json.dumps(symbols), now, now))
-            return {"id": bid, "name": name, "symbols": symbols}
+            return {"id": bid, "name": name, "symbols": symbols, "holdings": {}}
         except sqlite3.IntegrityError:
             return None
         finally:
@@ -1674,8 +1687,46 @@ class BackofficeRepository:
         conn = self._conn()
         try:
             with conn:
-                return conn.execute("UPDATE equity_baskets SET symbols = ?, updated_at = ? WHERE id = ? AND staff_id = ?",
-                                    (json.dumps(symbols), _utcnow(), basket_id, staff_id)).rowcount > 0
+                ok = conn.execute("UPDATE equity_baskets SET symbols = ?, updated_at = ? WHERE id = ? AND staff_id = ?",
+                                  (json.dumps(symbols), _utcnow(), basket_id, staff_id)).rowcount > 0
+                if ok:  # drop holdings of removed symbols
+                    keep = ",".join("?" * len(symbols))
+                    conn.execute(f"DELETE FROM equity_holdings WHERE basket_id = ? AND symbol NOT IN ({keep})", (basket_id, *symbols))
+                return ok
+        finally:
+            conn.close()
+
+    def set_equity_holding(self, staff_id: str, basket_id: str, symbol: str, qty: float | None, buy_price: float | None) -> bool:
+        """False when the basket is not this staff member's or does not contain the symbol."""
+        conn = self._conn()
+        try:
+            with conn:
+                row = conn.execute("SELECT symbols FROM equity_baskets WHERE id = ? AND staff_id = ?", (basket_id, staff_id)).fetchone()
+                if not row or symbol not in json.loads(row["symbols"] or "[]"):
+                    return False
+                conn.execute("INSERT INTO equity_holdings (basket_id, symbol, qty, buy_price) VALUES (?, ?, ?, ?) "
+                             "ON CONFLICT(basket_id, symbol) DO UPDATE SET qty = excluded.qty, buy_price = excluded.buy_price",
+                             (basket_id, symbol, qty, buy_price))
+            return True
+        finally:
+            conn.close()
+
+    def seed_equity_basket_once(self, staff_id: str, name_prefix: str, holdings: list[tuple[str, float, float]]) -> None:
+        """One-off backfill: fill the staff member's basket named <prefix>* with these holdings, once per basket."""
+        conn = self._conn()
+        try:
+            with conn:
+                for b in conn.execute("SELECT id, symbols FROM equity_baskets WHERE staff_id = ? AND lower(name) LIKE ?",
+                                      (staff_id, name_prefix.lower() + "%")).fetchall():
+                    if conn.execute("SELECT 1 FROM equity_seed_done WHERE basket_id = ?", (b["id"],)).fetchone():
+                        continue
+                    syms = json.loads(b["symbols"] or "[]")
+                    syms += [h[0] for h in holdings if h[0] not in syms]
+                    conn.execute("UPDATE equity_baskets SET symbols = ?, updated_at = ? WHERE id = ?", (json.dumps(syms), _utcnow(), b["id"]))
+                    for sym, qty, px in holdings:
+                        conn.execute("INSERT OR REPLACE INTO equity_holdings (basket_id, symbol, qty, buy_price) VALUES (?, ?, ?, ?)",
+                                     (b["id"], sym, qty, px))
+                    conn.execute("INSERT INTO equity_seed_done (basket_id) VALUES (?)", (b["id"],))
         finally:
             conn.close()
 

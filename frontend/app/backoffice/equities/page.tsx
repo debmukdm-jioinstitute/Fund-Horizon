@@ -273,7 +273,7 @@ export default function EquitiesPage() {
         const movers = Array.from(new Set(baskets.flatMap((b) => b.symbols))).map((x) => quotes[x]).filter((r) => r?.change_pct != null).sort((a, b) => (b.change_pct ?? 0) - (a.change_pct ?? 0));
         const Mover = ({ r }: { r: EquityQuote }) => (
           <li className="flex items-center justify-between border-b border-[#E8EBED] py-2 text-sm">
-            <span className="min-w-0 truncate pr-2">{r.name ?? r.symbol} <span className="text-xs text-[#81878C]">{r.symbol}</span></span>
+            <span className="min-w-0 truncate pr-2"><a href={`https://www.screener.in/company/${encodeURIComponent(r.symbol)}/`} target="_blank" rel="noopener noreferrer" className="text-[#1F7AE0] hover:underline">{r.name ?? r.symbol}</a> <span className="text-xs text-[#81878C]">{r.symbol}</span></span>
             <span className={tone(r.change_pct ?? undefined)}>{sgn(r.change_pct ?? 0)}%</span>
           </li>
         );
@@ -388,7 +388,7 @@ export default function EquitiesPage() {
                   <thead>
                     <tr className="border-b border-[#E8EBED]">
                       <th className="pb-3 pr-3 text-left text-[13px] font-normal text-[#81878C]">Stock</th>
-                      <th className={th}>Price (₹)</th><th className={th}>Shares</th><th className={th}>Buy price (₹)</th>
+                      <th className={th}>CMP (₹)</th><th className={th}>Shares</th><th className={th}>Buy price (₹)</th>
                       <th className={th}>Invested</th><th className={th}>Value</th><th className={th}>P&amp;L</th><th className={th}>Weight</th><th className="w-8" />
                     </tr>
                   </thead>
@@ -398,11 +398,11 @@ export default function EquitiesPage() {
                       return (
                         <tr key={s} className="border-b border-[#E8EBED]">
                           <td className="py-3 pr-3">
-                            <div className="text-[15px] font-medium text-[#1F7AE0]">{r?.name ?? names.current[s] ?? s}</div>
+                            <div><a href={`https://www.screener.in/company/${encodeURIComponent(s)}/`} target="_blank" rel="noopener noreferrer" title="Open on Screener.in" className="text-[15px] font-medium text-[#1F7AE0] hover:underline">{r?.name ?? names.current[s] ?? s}</a></div>
                             <div className="text-xs text-[#81878C]">{s}</div>
                           </td>
                           <td className="pr-3 text-right">
-                            {r?.error ? <span className="text-[#81878C]">n/a</span> : (<>
+                            {r?.error ? <button className="text-xs text-[#1F7AE0]" onClick={() => refresh()}>retry</button> : (<>
                               <div className="font-medium">{r?.price != null ? formatNumber(r.price, 2) : "—"}</div>
                               <div className={`text-xs ${tone(r?.change ?? undefined)}`}>{r?.change == null ? "" : `${sgn(r.change)} (${sgn(r.change_pct ?? 0)}%)`}</div>
                             </>)}

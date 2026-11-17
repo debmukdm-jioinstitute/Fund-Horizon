@@ -36,6 +36,8 @@ def _cached(key: str, fn):
     if hit and time.monotonic() - hit[0] < TTL:
         return hit[1]
     val = fn()
+    if isinstance(val, dict) and val.get("error"):
+        return val  # never cache a failed quote: retry on the next poll
     if len(_cache) > 2000:
         _cache.clear()
     _cache[key] = (time.monotonic(), val)
@@ -62,10 +64,15 @@ def _search(q: str) -> list[dict]:
 
 
 def _quote(sym: str, suffix: str = ".NS") -> dict:
-    url = f"https://query2.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(sym)}{suffix}?range=1d&interval=1d"
-    try:
-        m = _get(url)["chart"]["result"][0]["meta"]
-    except Exception:
+    path = f"/v8/finance/chart/{urllib.parse.quote(sym)}{suffix}?range=1d&interval=1d"
+    m = None
+    for host in ("query2", "query1", "query2"):  # fall back to the other host, then one retry
+        try:
+            m = _get(f"https://{host}.finance.yahoo.com{path}")["chart"]["result"][0]["meta"]
+            break
+        except Exception:
+            time.sleep(0.3)
+    if m is None:
         return {"symbol": sym, "error": "unavailable"}
     price, prev = m.get("regularMarketPrice"), m.get("chartPreviousClose") or m.get("previousClose")
     chg = price - prev if price is not None and prev else None

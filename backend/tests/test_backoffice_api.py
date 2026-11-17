@@ -566,3 +566,13 @@ def test_equities_indices(client, monkeypatch):
     _login_staff(client, _create_staff("analyst"))
     d = client.get("/api/backoffice/equities/indices").json()["data"]
     assert [x["name"] for x in d] == ["NIFTY 50", "BANK NIFTY", "SENSEX"] and d[0]["symbol"] == "^NSEI"
+
+
+def test_failed_quotes_are_not_cached():
+    from app.api import equities
+
+    equities._cache.clear()
+    calls = []
+    fn = lambda: calls.append(1) or {"symbol": "X", "error": "unavailable"}
+    equities._cached("q:X", fn); equities._cached("q:X", fn)
+    assert len(calls) == 2

@@ -109,7 +109,7 @@ export const NAV_ITEMS: NavItem[] = [
     description: "NSE stocks with live prices and named portfolio baskets",
     icon: (p) => (
       <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 17l6-6 4 4 8-8M15 7h6v6" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 20h16M7 20v-6m5 6V9m5 11V4" />
       </svg>
     ),
   },

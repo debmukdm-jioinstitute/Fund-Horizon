@@ -37,13 +37,6 @@ class Default(WorkerEntrypoint):
             set_worker_files(self.env.FILES)
 
         try:
-            from app.backoffice.collectors import build_daily_briefing
-
-            build_daily_briefing()
-        except Exception:
-            logger.exception("Scheduled briefing build failed")
-
-        try:
             from app.backup import backup_sqlite
 
             backup_sqlite()

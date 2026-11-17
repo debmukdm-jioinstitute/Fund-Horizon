@@ -44,8 +44,6 @@ PAGE_API: dict[str, tuple[str, ...]] = {
     "/backoffice/equities": (_B + "equities",),
     "/backoffice/finance-desk": (),  # embeds a separate app; no backoffice API needed
     "/backoffice/trade": (_B + "trade",),
-    "/backoffice/flows": (_B + "flows",),
-    "/backoffice/research": (_B + "research-notes", _B + "briefing"),
     "/backoffice/data-health": (_B + "data-health",),
     "/backoffice/crm": ("/api/crm", "/api/rm", "/api/staff/chats"),
     "/backoffice/operations": (_B + "operations", "/api/staff/download", _B + "client-report", _B + "monthly-report"),
@@ -172,11 +170,13 @@ def _normalize_mobile(raw: str) -> str:
 
 
 _LEGACY_PAGES = {"/backoffice/macro", "/backoffice/derivatives"}  # removed; replaced by Equities
+_REMOVED_PAGES = {"/backoffice/flows", "/backoffice/research"}  # removed outright
 
 
 def migrate_pages(pages: list[str]) -> list[str]:
-    """Map removed pages to Equities (never to empty: an empty list means unrestricted)."""
-    return list(dict.fromkeys("/backoffice/equities" if p in _LEGACY_PAGES else p for p in pages))
+    """Map removed pages away. Never return empty for a restricted login: an empty list means unrestricted."""
+    out = list(dict.fromkeys("/backoffice/equities" if p in _LEGACY_PAGES else p for p in pages if p not in _REMOVED_PAGES))
+    return out or (["/backoffice"] if pages else [])
 
 
 def _public_customer(row: dict) -> dict:

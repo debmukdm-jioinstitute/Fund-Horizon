@@ -137,26 +137,6 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/backoffice/flows",
-    label: "Institutional flows",
-    description: "Daily FII and DII net equity and debt transactions in crores",
-    icon: (p) => (
-      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-      </svg>
-    ),
-  },
-  {
-    href: "/backoffice/research?tab=briefing",
-    label: "Briefings",
-    description: "Institutional research notes, policy summaries, and market briefings",
-    icon: (p) => (
-      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-  },
-  {
     href: "/backoffice/crm",
     label: "CRM",
     description: "Households, leads, pipelines, tasks and deadlines",

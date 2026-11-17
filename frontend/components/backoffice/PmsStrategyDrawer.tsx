@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRecommended } from "@/lib/recommended";
-import Link from "next/link";
 import { getPmsStrategyDetail, PmsStrategyDetail, PmsStrategyItem } from "@/lib/backoffice";
 import SignedValue from "@/components/terminal/SignedValue";
 import FactsheetList from "@/components/backoffice/FactsheetList";
@@ -547,12 +546,6 @@ export default function PmsStrategyDrawer({ strategy, onClose, onSelectSibling, 
             </button>
 
             <div className="flex items-center gap-2">
-              <Link
-                href={`/backoffice/research?target_type=strategy&target_id=${encodeURIComponent(strategy.strategy_name)}`}
-                className="terminal-btn text-[12px] py-1.5 px-3"
-              >
-                Research Note →
-              </Link>
               <a
                 href={detail?.source_url ?? "https://www.apmiindia.org"}
                 target="_blank"

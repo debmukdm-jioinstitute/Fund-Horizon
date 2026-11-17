@@ -118,16 +118,10 @@ def crm(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
 @provider("news", "News & notes")
 def news(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
     out = [
-        _hit("news", "news", r[0], r[1], f"{r[2] or 'News'} · {(r[3] or '')[:10]}".strip(" ·"), r[4] or "/backoffice/research?tab=briefing", external=bool(r[4]))
+        _hit("news", "news", r[0], r[1], f"{r[2] or 'News'} · {(r[3] or '')[:10]}".strip(" ·"), r[4] or "/backoffice", external=bool(r[4]))
         for r in _rows(
             "SELECT id, title, source_name, published_at, link FROM news_items WHERE LOWER(title) LIKE ? ESCAPE '\\' "
             "ORDER BY published_at DESC LIMIT ?", (_like(q), limit))
-    ]
-    out += [
-        _hit("news", "note", r[0], r[1], "Research note", "/backoffice/research?tab=notes")
-        for r in _rows(
-            "SELECT id, title FROM research_notes WHERE LOWER(title) LIKE ? ESCAPE '\\' OR LOWER(content) LIKE ? ESCAPE '\\' "
-            "ORDER BY updated_at DESC LIMIT ?", (_like(q), _like(q), limit))
     ]
     return out[:limit]
 

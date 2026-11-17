@@ -83,64 +83,12 @@ export interface MarketOverviewData {
   generated_at?: string;
 }
 
-export interface FlowsData {
-  daily: Array<{
-    id?: string;
-    report_date: string;
-    category: string;
-    segment: string;
-    buy_crore?: number;
-    sell_crore?: number;
-    net_crore?: number;
-    provisional: boolean;
-  }>;
-  fii_net_crore?: number;
-  dii_net_crore?: number;
-  cumulative_7d_net_crore?: number;
-  sessions?: number;
-  as_of?: string;
-  fetched_at?: string;
-  is_stale?: boolean;
-  age_days?: number;
-  last_trading_day?: string;
-  error?: string;
-  availability?: string;
-}
-
-export interface BriefingItem {
-  text?: string;
-  value?: string;
-  change?: string;
-  change_pct?: number | null;
-  direction?: "up" | "down" | "flat";
-  so_what?: string;
-  as_of?: string;
-  source?: string;
-  source_url?: string;
-  link?: string;
-  stale?: boolean;
-}
-
-export interface BriefingSection {
-  key: string;
-  title: string;
-  items: BriefingItem[];
-  note?: string;
-}
 
 export interface BriefingFreshness {
   source?: string;
   last_ok?: string;
   age_hours?: number | null;
   stale?: boolean;
-}
-
-export interface BriefingPayload {
-  brief_date: string;
-  generated_at: string;
-  version: number;
-  sections: BriefingSection[];
-  freshness: BriefingFreshness[];
 }
 
 export interface SourceItem {
@@ -551,15 +499,6 @@ export interface WatchlistItem {
   scope?: string;
 }
 
-export interface ResearchNoteItem {
-  id: string;
-  target_type: string;
-  target_id: string;
-  title: string;
-  content: string;
-  author_name?: string;
-  created_at: string;
-}
 
 export interface ImportJobData {
   import_type: string;
@@ -714,41 +653,6 @@ export const getEquityQuotes = async (symbols: string[], signal?: AbortSignal): 
 export const getEquityIndices = async (signal?: AbortSignal): Promise<EquityQuote[]> =>
   arr((await boFetch<Json>("/api/backoffice/equities/indices", { signal })).data) as unknown as EquityQuote[];
 
-export const getFlows = async (start?: string, end?: string): Promise<BackofficeEnvelope<FlowsData>> => {
-  const q = new URLSearchParams();
-  if (start) q.set("from", start);
-  if (end) q.set("to", end);
-  const qs = q.toString();
-  const raw = await boFetch<Json>(`/api/backoffice/flows${qs ? `?${qs}` : ""}`);
-  const rows = Array.isArray(raw.data) ? arr(raw.data) : arr(obj(raw.data).daily);
-  const daily: FlowsData["daily"] = rows.map((r) => ({
-    id: str(r.id),
-    report_date: str(r.report_date) ?? "—",
-    category: str(r.category) ?? "—",
-    segment: str(r.segment) ?? "—",
-    buy_crore: num(r.gross_buy),
-    sell_crore: num(r.gross_sell),
-    net_crore: num(r.net),
-    provisional: r.status !== "final",
-  }));
-  // Rows arrive newest first. "Latest session" = most recent date reported per category.
-  const latestOf = (cat: string) => daily.find((r) => r.category.toUpperCase() === cat)?.net_crore;
-  const dates = Array.from(new Set(daily.map((r) => r.report_date)));
-  const data: FlowsData = {
-    daily,
-    fii_net_crore: latestOf("FII"),
-    dii_net_crore: latestOf("DII"),
-    sessions: dates.length,
-    as_of: str(raw.as_of) || daily[0]?.report_date,
-    fetched_at: str(raw.fetched_at),
-    is_stale: Boolean(raw.is_stale) || raw.freshness === "stale",
-    age_days: num(raw.age_days),
-    last_trading_day: str(raw.last_trading_day),
-    error: str(raw.error),
-    availability: str(raw.availability),
-  };
-  return envelope(raw, data, "unavailable");
-};
 
 export interface PmsBenchmarkData {
   id: string;
@@ -1265,56 +1169,6 @@ export const getBackofficeCompare = async (type: "mf" | "pms", ids: string[]): P
   };
 };
 
-const briefingDirection = (v: unknown): BriefingItem["direction"] => {
-  const d = str(v);
-  return d === "up" || d === "down" || d === "flat" ? d : undefined;
-};
-
-const parseBriefingSection = (s: Json): BriefingSection => ({
-  key: str(s.key) ?? "",
-  title: str(s.title) ?? "",
-  note: str(s.note),
-  items: arr(s.items).map((it) => ({
-    text: str(it.text),
-    value: str(it.value),
-    change: str(it.change),
-    change_pct: num(it.change_pct) ?? null,
-    direction: briefingDirection(it.direction),
-    so_what: str(it.so_what),
-    as_of: str(it.as_of),
-    source: str(it.source),
-    source_url: str(it.source_url),
-    link: str(it.link),
-    stale: it.stale === true ? true : undefined,
-  })),
-});
-
-export const getBriefing = async (date?: string): Promise<BriefingPayload> => {
-  const raw = await boFetch<Json>(`/api/backoffice/briefing${date ? `?date=${encodeURIComponent(date)}` : ""}`);
-  return {
-    brief_date: str(raw.brief_date) ?? "",
-    generated_at: str(raw.generated_at) ?? "",
-    version: num(raw.version) ?? 1,
-    sections: arr(raw.sections).map(parseBriefingSection),
-    freshness: arr(raw.freshness).map((f) => ({
-      source: str(f.source),
-      last_ok: str(f.last_ok),
-      age_hours: num(f.age_hours) ?? null,
-      stale: typeof f.stale === "boolean" ? f.stale : undefined,
-    })),
-  };
-};
-
-export const getBriefingDates = async (): Promise<string[]> => {
-  const raw = await boFetch<Json>("/api/backoffice/briefing/dates");
-  const dates: unknown = raw.dates;
-  return (Array.isArray(dates) ? dates : []).filter((d): d is string => typeof d === "string");
-};
-
-export const rebuildBriefing = async (): Promise<{ ok: boolean; brief_date: string }> => {
-  const raw = await boFetch<Json>("/api/backoffice/briefing/rebuild", { method: "POST" });
-  return { ok: raw.ok === true, brief_date: str(raw.brief_date) ?? "" };
-};
 
 export const getWatchlists = async (): Promise<WatchlistItem[]> => {
   const raw = await boFetch<Json>("/api/backoffice/watchlists");
@@ -1332,42 +1186,6 @@ export const createWatchlist = (body: { name: string; item_type: string; item_id
 export const deleteWatchlist = (id: string) =>
   boFetch<{ success: boolean }>(`/api/backoffice/watchlists/${id}`, { method: "DELETE" });
 
-const toNote = (n: Json): ResearchNoteItem => ({
-  id: String(n.id ?? ""),
-  target_type: str(n.entity_type) ?? "—",
-  target_id: str(n.entity_id) ?? "—",
-  title: str(n.title) ?? "Untitled",
-  content: str(n.content) ?? "",
-  author_name: str(n.author_name),
-  created_at: str(n.created_at) ?? "",
-});
-
-export const getResearchNotes = async (targetType?: string, targetId?: string): Promise<ResearchNoteItem[]> => {
-  const q = new URLSearchParams();
-  if (targetType) q.set("entity_type", targetType);
-  if (targetId) q.set("entity_id", targetId);
-  const qs = q.toString();
-  const raw = await boFetch<Json>(`/api/backoffice/research-notes${qs ? `?${qs}` : ""}`);
-  return arr(raw.data).map(toNote);
-};
-
-export const createResearchNote = async (body: {
-  target_type: string;
-  target_id: string;
-  title: string;
-  content: string;
-}): Promise<ResearchNoteItem> => {
-  const raw = await boFetch<Json>("/api/backoffice/research-notes", {
-    method: "POST",
-    body: JSON.stringify({
-      entity_type: body.target_type,
-      entity_id: body.target_id,
-      title: body.title,
-      content: body.content,
-    }),
-  });
-  return toNote(raw);
-};
 
 export const getDataHealth = async (): Promise<SourceHealthData> => {
   const raw = await boFetch<Json>("/api/backoffice/data-health");

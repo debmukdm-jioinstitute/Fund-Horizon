@@ -753,12 +753,6 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
               )}
               <AddToWatchlist code={scheme.scheme_code} className="terminal-btn text-[12px] py-1.5 px-3" />
               {shortlistMsg && <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{shortlistMsg}</span>}
-              <Link
-                href={`/backoffice/research?target_type=mutual_fund&target_id=${encodeURIComponent(scheme.scheme_code)}`}
-                className="terminal-btn text-[12px] py-1.5 px-3"
-              >
-                Research Note →
-              </Link>
               {perf?.publicPage && (
               <a
                 href={`/funds/${scheme.scheme_code}`}

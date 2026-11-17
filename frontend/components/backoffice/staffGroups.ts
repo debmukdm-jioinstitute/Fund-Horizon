@@ -47,8 +47,6 @@ export const PAGE_GROUPS: PageGroup[] = [
       { href: "/backoffice/equities", label: "Equities" },
       { href: "/backoffice/finance-desk", label: "Finance Desk" },
       { href: "/backoffice/trade", label: "Trade" },
-      { href: "/backoffice/flows", label: "Institutional flows" },
-      { href: "/backoffice/research", label: "Briefings" },
     ],
   },
   {

@@ -61,53 +61,6 @@ def test_backoffice_series_api(client):
     assert client.get("/api/backoffice/series/MF:12345").status_code == 404
 
 
-def test_backoffice_briefing_api(client):
-    sid = _create_staff("analyst")
-    _login_staff(client, sid)
-
-    # No briefing stored yet: 404, not 500.
-    r = client.get("/api/backoffice/briefing")
-    assert r.status_code == 404
-
-    # Seed a stored briefing through the builder (read-only API path afterwards).
-    from app.backoffice.analytics.briefing_builder import build_daily_briefing
-    from app.backoffice.repository import BackofficeRepository
-
-    repo = BackofficeRepository()
-    build_daily_briefing(repo, "2026-10-14")
-
-    r = client.get("/api/backoffice/briefing")
-    assert r.status_code == 200
-    body = r.json()
-    assert body["brief_date"] == "2026-10-14"
-    assert body["version"] == 1
-    assert "generated_at" in body
-    assert [s["key"] for s in body["sections"]] == [
-        "market_pulse", "fund_movers", "screening_changes", "cost_manager_changes",
-        "regulatory_news", "pms", "client_actions", "data_freshness",
-    ]
-    for section in body["sections"]:
-        assert isinstance(section["items"], list) and "note" in section
-    assert isinstance(body["freshness"], list)
-
-    # Explicit date + archive dates.
-    r = client.get("/api/backoffice/briefing?date=2026-10-14")
-    assert r.status_code == 200 and r.json()["brief_date"] == "2026-10-14"
-    assert client.get("/api/backoffice/briefing?date=2020-01-01").status_code == 404
-    assert client.get("/api/backoffice/briefing?date=not-a-date").status_code == 404
-    r = client.get("/api/backoffice/briefing/dates")
-    assert r.status_code == 200 and r.json()["dates"] == ["2026-10-14"]
-
-    # Rebuild is admin-only.
-    r = client.post("/api/backoffice/briefing/rebuild", headers={"sec-fetch-site": "same-origin"})
-    assert r.status_code == 403
-    admin_sid = _create_staff("admin")
-    _login_staff(client, admin_sid)
-    r = client.post("/api/backoffice/briefing/rebuild", headers={"sec-fetch-site": "same-origin"})
-    assert r.status_code == 202
-    assert r.json()["ok"] is True and "brief_date" in r.json()
-
-
 def test_backoffice_watchlists_crud(client):
     sid = _create_staff("analyst")
     _login_staff(client, sid)
@@ -130,30 +83,6 @@ def test_backoffice_watchlists_crud(client):
     # Delete watchlist
     del_r = client.delete(f"/api/backoffice/watchlists/{item_id}", headers={"sec-fetch-site": "same-origin"})
     assert del_r.status_code == 200
-
-
-def test_backoffice_research_notes_crud(client):
-    sid = _create_staff("analyst")
-    _login_staff(client, sid)
-
-    note_r = client.post(
-        "/api/backoffice/research-notes",
-        json={
-            "entity_type": "pms",
-            "entity_id": "ASK_Growth",
-            "title": "Q2 Performance Analysis",
-            "content": "Strong momentum in large caps with controlled drawdown.",
-            "tags": "pms,growth,q2",
-        },
-        headers={"sec-fetch-site": "same-origin"},
-    )
-    assert note_r.status_code == 201
-    assert note_r.json()["title"] == "Q2 Performance Analysis"
-
-    # List
-    list_r = client.get("/api/backoffice/research-notes?entity_type=pms")
-    assert list_r.status_code == 200
-    assert len(list_r.json()["data"]) >= 1
 
 
 def test_backoffice_manual_import_lifecycle(client):
@@ -576,3 +505,11 @@ def test_failed_quotes_are_not_cached():
     fn = lambda: calls.append(1) or {"symbol": "X", "error": "unavailable"}
     equities._cached("q:X", fn); equities._cached("q:X", fn)
     assert len(calls) == 2
+
+
+def test_removed_pages_map_away_without_going_unrestricted():
+    from app.api.auth import migrate_pages
+
+    assert migrate_pages(["/backoffice/flows", "/backoffice/research"]) == ["/backoffice"]  # not [] (= unrestricted)
+    assert migrate_pages(["/backoffice/pms", "/backoffice/flows"]) == ["/backoffice/pms"]
+    assert migrate_pages([]) == []

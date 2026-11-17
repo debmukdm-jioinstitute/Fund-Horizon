@@ -54,7 +54,6 @@ from app.backoffice.repository import BackofficeRepository
 from app.backoffice.schemas import (
     ImportCommitRequest,
     ImportPreviewRequest,
-    ResearchNoteCreateRequest,
     ScreeningPresetCreateRequest,
     ScreeningRunRequest,
     StaffMemberCreateRequest,
@@ -204,77 +203,6 @@ NSE_HOLIDAYS_SET = {
     "2027-01-26", "2027-03-22", "2027-03-26", "2027-04-14", "2027-05-01", "2027-08-15",
     "2027-10-02", "2027-11-01", "2027-12-25",
 }
-
-
-def get_last_nse_trading_day(reference_dt: datetime | None = None) -> str:
-    """Return the most recent NSE trading session date (YYYY-MM-DD) in IST."""
-    now_ist = reference_dt or datetime.now(ZoneInfo("Asia/Kolkata"))
-    d = now_ist.date()
-    if now_ist.weekday() < 5 and (now_ist.hour, now_ist.minute) < (17, 30):
-        d -= timedelta(days=1)
-    elif now_ist.weekday() >= 5:
-        d -= timedelta(days=1)
-
-    while True:
-        iso = d.isoformat()
-        if d.weekday() < 5 and iso not in NSE_HOLIDAYS_SET:
-            return iso
-        d -= timedelta(days=1)
-
-
-@router.get("/flows")
-def backoffice_flows(
-    staff: Annotated[dict, Depends(require_staff)],
-    start_date: str | None = Query(None),
-    end_date: str | None = Query(None),
-    from_date: str | None = Query(None, alias="from"),
-    to_date: str | None = Query(None, alias="to"),
-):
-    """Daily reported and provisional FII/DII gross buy, sell, and net flows."""
-    s_date = from_date or start_date
-    e_date = to_date or end_date
-    flows = _REPO.list_flows(start_date=s_date, end_date=e_date, limit=2000)
-
-    source = _REPO.get_source("SRC_NSE_FNO") or {}
-    source_health = source.get("health_status", "ready")
-    error_message = source.get("error_message")
-
-    latest_report_date = flows[0].get("report_date") if flows else None
-    latest_created_at = max((f.get("created_at") for f in flows if f.get("created_at")), default=None)
-
-    last_trading_day = get_last_nse_trading_day()
-    is_stale = bool(latest_report_date and latest_report_date < last_trading_day)
-
-    if not flows:
-        availability = "source_blocked" if source_health == "blocked" else "no_data"
-        freshness = "stale"
-    else:
-        availability = "source_blocked" if source_health == "blocked" else "ready"
-        freshness = "stale" if is_stale else "current"
-
-    age_days: int | None = None
-    if latest_report_date:
-        try:
-            rep_d = datetime.strptime(latest_report_date, "%Y-%m-%d").date()
-            today_d = datetime.now(ZoneInfo("Asia/Kolkata")).date()
-            age_days = max(0, (today_d - rep_d).days)
-        except Exception:
-            pass
-
-    res = {
-        "data": flows,
-        "count": len(flows),
-        "unit": "inr_crore",
-        "availability": availability,
-        "freshness": freshness,
-        "is_stale": is_stale,
-        "age_days": age_days,
-        "last_trading_day": last_trading_day,
-        "as_of": latest_report_date,
-        "fetched_at": latest_created_at,
-        "error": error_message if (availability != "ready" or is_stale) else None,
-    }
-    return with_meta(res, "nse", latest_report_date)
 
 
 # ---------------------------------------------------------------------------
@@ -2166,51 +2094,6 @@ def backoffice_mf_nav_pair_check(
     return {"data": pairs, "count": len(pairs), "availability": "ready"}
 
 
-@router.get("/briefing")
-def backoffice_briefing(
-    staff: Annotated[dict, Depends(require_staff)],
-    date: str | None = Query(default=None, description="IST date YYYY-MM-DD; default latest"),
-):
-    """Stored daily briefing (read-only). No live provider or NSE fetch in the request path.
-
-    Empty sections are included with ``items: []`` and a ``note`` explaining why
-    (the frontend collapses them).
-    """
-    if date is not None:
-        try:
-            datetime.strptime(date, "%Y-%m-%d")
-        except ValueError:
-            raise HTTPException(
-                status_code=404, detail=f"No briefing stored for date '{date}' (expected YYYY-MM-DD)."
-            ) from None
-        row = _REPO.get_briefing_by_date(date)
-        if row is None:
-            raise HTTPException(status_code=404, detail=f"No briefing stored for {date} yet.")
-    else:
-        row = _REPO.get_latest_briefing()
-        if row is None:
-            raise HTTPException(status_code=404, detail="No briefing has been built yet.")
-    payload = dict(row["payload"])
-    payload.pop("_history", None)  # internal change-computation state, not part of the API contract
-    return payload
-
-
-@router.get("/briefing/dates")
-def backoffice_briefing_dates(staff: Annotated[dict, Depends(require_staff)]):
-    """Last 30 briefing dates (IST, newest first) for the archive picker."""
-    return {"dates": _REPO.list_briefing_dates(30)}
-
-
-@router.post("/briefing/rebuild", status_code=202)
-def backoffice_briefing_rebuild(admin: Annotated[dict, Depends(require_role("admin"))]):
-    """Manually trigger the daily briefing build (idempotent). Admin only."""
-    from app.backoffice.collectors import build_daily_briefing
-
-    res = build_daily_briefing()
-    _REPO.log_audit(admin["id"], "briefing_rebuild", "briefing", res["brief_date"], {"brief_date": res["brief_date"]})
-    return {"ok": True, "brief_date": res["brief_date"]}
-
-
 # ---------------------------------------------------------------------------
 # Watchlists & Research Notes
 # ---------------------------------------------------------------------------
@@ -2241,32 +2124,6 @@ def delete_watchlist(
     if not ok:
         raise HTTPException(404, "Watchlist item not found")
     return {"success": True}
-
-
-@router.get("/research-notes")
-def list_research_notes(
-    staff: Annotated[dict, Depends(require_staff)],
-    entity_type: str | None = Query(None),
-    entity_id: str | None = Query(None),
-):
-    return {"data": _REPO.list_research_notes(entity_type, entity_id)}
-
-
-@router.post("/research-notes", status_code=201)
-def add_research_note(
-    body: ResearchNoteCreateRequest,
-    request: Request,
-    staff: Annotated[dict, Depends(require_staff)],
-):
-    verify_csrf(request)
-    return _REPO.add_research_note(
-        staff_id=staff["id"],
-        entity_type=body.entity_type,
-        entity_id=body.entity_id,
-        title=body.title,
-        content=body.content,
-        tags=body.tags,
-    )
 
 
 # ---------------------------------------------------------------------------
@@ -2427,7 +2284,7 @@ def provision_staff_member(
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 BACKOFFICE_PAGES = (
     "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/equities", "/backoffice/finance-desk",
-    "/backoffice/trade", "/backoffice/flows", "/backoffice/research",
+    "/backoffice/trade",
     "/backoffice/data-health", "/backoffice/crm", "/backoffice/operations",
     "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/hrms", "/backoffice/settings",
 )

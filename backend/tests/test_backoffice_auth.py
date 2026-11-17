@@ -50,12 +50,10 @@ def test_anonymous_access_denied_on_backoffice(client):
     endpoints = [
         "/api/backoffice/overview",
         "/api/backoffice/trade",
-        "/api/backoffice/flows",
         "/api/backoffice/pms/strategies",
         "/api/backoffice/pms/accounts",
         "/api/backoffice/mutual-funds/tracker",
         "/api/backoffice/data-health",
-        "/api/backoffice/briefing",
     ]
     for ep in endpoints:
         r = client.get(ep)

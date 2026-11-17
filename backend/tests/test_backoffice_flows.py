@@ -8,7 +8,6 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from app.api.backoffice import get_last_nse_trading_day
 from app.backoffice.collectors import should_fetch_flows
 from app.backoffice.repository import BackofficeRepository
 from app.backoffice.service import BackofficeService
@@ -168,46 +167,6 @@ def test_flows_import_rejections():
         assert res["success"] is False
     except ValueError:
         pass
-
-
-def test_flows_api_as_of_and_freshness(client):
-    sid = _create_staff("analyst")
-    _login_staff(client, sid)
-
-    repo = BackofficeRepository()
-    repo.upsert_flows([
-        {
-            "report_date": "2026-10-13",
-            "category": "FII",
-            "segment": "equity_cash",
-            "gross_buy": 1500.0,
-            "gross_sell": 1200.0,
-            "net": 300.0,
-            "unit": "inr_crore",
-            "status": "provisional",
-        },
-        {
-            "report_date": "2026-10-13",
-            "category": "DII",
-            "segment": "equity_cash",
-            "gross_buy": 1100.0,
-            "gross_sell": 900.0,
-            "net": 200.0,
-            "unit": "inr_crore",
-            "status": "provisional",
-        },
-    ])
-
-    resp = client.get("/api/backoffice/flows?from=2026-10-13&to=2026-10-13")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert "as_of" in data
-    assert data["as_of"] == "2026-10-13"
-    assert "fetched_at" in data
-    assert "freshness" in data
-    assert "availability" in data
-    assert data["unit"] == "inr_crore"
-    assert len(data["data"]) == 2
 
 
 def test_collector_should_fetch_flows():

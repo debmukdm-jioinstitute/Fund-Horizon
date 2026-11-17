@@ -34,20 +34,6 @@ class WatchlistCreateRequest(BaseModel):
     item_id: str
 
 
-class ResearchNoteCreateRequest(BaseModel):
-    entity_type: str  # pms, mf, macro, instrument, strategy
-    entity_id: str
-    title: str
-    content: str
-    tags: str | None = None
-
-
-class ResearchNoteUpdateRequest(BaseModel):
-    title: str | None = None
-    content: str | None = None
-    tags: str | None = None
-
-
 class ImportPreviewRequest(BaseModel):
     import_type: str
     filename: str

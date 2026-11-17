@@ -83,8 +83,6 @@ TOOLS: list[dict[str, Any]] = [
        path="/api/backoffice/overview"),
     _t("data_health", "Freshness and status of every data source (AMFI, APMI, Advisorkhoj, NAV, TER...). Call this to state how current the data is.",
        path="/api/backoffice/data-health"),
-    _t("daily_briefing", "The daily market briefing for an IST date (latest if omitted).", {"date": {**S, "description": "YYYY-MM-DD"}},
-       path="/api/backoffice/briefing", query=("date",)),
     _t("recommended_lists", "Fund Horizon recommended mutual funds (scheme code -> name) and PMS strategies (ia_id -> name).",
        path="/api/backoffice/recommended"),
     # ---- mutual funds

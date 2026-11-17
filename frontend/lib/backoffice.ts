@@ -83,41 +83,6 @@ export interface MarketOverviewData {
   generated_at?: string;
 }
 
-export interface YieldsBoardData {
-  india_message?: string;
-  curves: Record<string, Record<string, { value: number; observed_at: string; source: string }>>;
-  spreads: {
-    in_us_10y_bps?: number;
-    us_10y_2y_bps?: number;
-    in_10y_2y_bps?: number;
-  };
-  as_of?: string;
-}
-
-export interface DerivativesData {
-  live_status?: "live" | "stale" | "unavailable";
-  notice?: string;
-  underlying: string;
-  underlying_price?: number;
-  expiry_date?: string;
-  snapshot_timestamp?: string;
-  pcr_oi?: number;
-  pcr_oi_reason?: string;
-  pcr_volume?: number;
-  max_pain_strike?: number;
-  total_call_oi: number;
-  total_put_oi: number;
-  contracts: Array<{
-    strike_price: number;
-    option_type: "CE" | "PE";
-    oi: number;
-    oi_change?: number;
-    volume: number;
-    implied_volatility?: number;
-    expiry_date: string;
-  }>;
-}
-
 export interface FlowsData {
   daily: Array<{
     id?: string;
@@ -711,70 +676,19 @@ export const getObservationSeries = async (instrumentId: string): Promise<Series
   });
 };
 
-export const getYieldsBoard = async (): Promise<BackofficeEnvelope<YieldsBoardData>> => {
-  const raw = await boFetch<Json>("/api/backoffice/yields");
-  const d = obj(raw.data);
-  const asOf = str(d.as_of) ?? str(raw.as_of);
-  const toCurve = (rows: unknown, source: string) => {
-    const curve: Record<string, { value: number; observed_at: string; source: string }> = {};
-    for (const r of arr(rows)) {
-      const tenor = str(r.tenor);
-      const value = num(r.yield_pct);
-      if (tenor && value !== undefined) {
-        curve[tenor] = { value, observed_at: str(r.observed_at) ?? asOf ?? "—", source: str(r.source) ?? source };
-      }
-    }
-    return curve;
-  };
-  const inSummary = obj(d.india_summary);
-  const usSummary = obj(d.us_summary);
-  const cross = obj(d.india_us_10y_spread);
-  const data: YieldsBoardData = {
-    curves: { IN: toCurve(d.india_curve, "India G-Sec"), US: toCurve(d.us_curve, "US Treasury") },
-    spreads: {
-      in_us_10y_bps: num(cross.spread_bps),
-      us_10y_2y_bps: num(usSummary.slope_10y_2y_bps),
-      in_10y_2y_bps: num(inSummary.slope_10y_2y_bps),
-    },
-    india_message: str(d.india_message),
-    as_of: asOf,
-  };
-  return envelope(raw, data, "unavailable");
-};
+export interface EquitySuggestion { symbol: string; name: string }
+export interface EquityQuote {
+  symbol: string; name?: string; price?: number; prev_close?: number; change?: number; change_pct?: number;
+  day_high?: number; day_low?: number; high_52w?: number; low_52w?: number; volume?: number; error?: string;
+}
 
-export const getDerivatives = async (underlying = "NIFTY", expiry?: string, signal?: AbortSignal): Promise<BackofficeEnvelope<DerivativesData>> => {
-  const q = new URLSearchParams({ underlying });
-  if (expiry) q.set("expiry", expiry);
-  const raw = await boFetch<Json>(`/api/backoffice/derivatives?${q.toString()}`, { signal });
-  const d = obj(raw.data);
-  const pcr = obj(d.pcr);
-  const selectedExpiry = str(d.selected_expiry);
-  const contracts = arr(d.contracts).map((c) => ({
-    strike_price: num(c.strike_price) ?? 0,
-    option_type: (c.option_type === "PE" ? "PE" : "CE") as "CE" | "PE",
-    oi: num(c.oi) ?? 0,
-    oi_change: num(c.oi_change),
-    volume: num(c.volume) ?? 0,
-    implied_volatility: num(c.implied_vol) ?? num(c.implied_volatility),
-    expiry_date: str(c.expiry_date) ?? "",
-  }));
-  const data: DerivativesData = {
-    underlying: str(d.underlying) ?? underlying,
-    underlying_price: num(d.underlying_price),
-    expiry_date: selectedExpiry,
-    snapshot_timestamp: str(d.snapshot_timestamp),
-    pcr_oi: num(pcr.pcr_oi),
-    pcr_oi_reason: str(pcr.pcr_oi_reason),
-    live_status: (str(d.live_status) as DerivativesData["live_status"]) ?? undefined,
-    notice: str(d.message),
-    pcr_volume: num(pcr.pcr_volume),
-    max_pain_strike: num(d.max_pain),
-    total_call_oi: num(pcr.total_call_oi) ?? 0,
-    total_put_oi: num(pcr.total_put_oi) ?? 0,
-    contracts,
-  };
-  return envelope(raw, data, "unavailable");
-};
+export const searchEquities = async (q: string, signal?: AbortSignal): Promise<EquitySuggestion[]> =>
+  arr((await boFetch<Json>(`/api/backoffice/equities/search?q=${encodeURIComponent(q)}`, { signal })).data) as unknown as EquitySuggestion[];
+
+export const getEquityQuotes = async (symbols: string[], signal?: AbortSignal): Promise<EquityQuote[]> =>
+  symbols.length
+    ? (arr((await boFetch<Json>(`/api/backoffice/equities/quotes?symbols=${encodeURIComponent(symbols.join(","))}`, { signal })).data) as unknown as EquityQuote[])
+    : [];
 
 export const getFlows = async (start?: string, end?: string): Promise<BackofficeEnvelope<FlowsData>> => {
   const q = new URLSearchParams();

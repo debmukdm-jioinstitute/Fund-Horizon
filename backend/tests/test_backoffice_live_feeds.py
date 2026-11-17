@@ -107,11 +107,3 @@ def test_option_chain_rejects_non_nse_underlying():
     with pytest.raises(NseError):
         _StubNse({}).fetch_option_chain("SENSEX")
 
-
-def test_yields_board_has_no_invented_india_curve(client):
-    from tests.test_backoffice_api import _create_staff, _login_staff
-
-    _login_staff(client, _create_staff("analyst"))
-    body = client.get("/api/backoffice/yields").json()
-    assert body["data"]["india_curve"] == []
-    assert body["data"]["india_status"] == "unavailable"

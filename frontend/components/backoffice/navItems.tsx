@@ -104,22 +104,12 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/backoffice/macro",
-    label: "Macro & yields",
-    description: "RBI policy rates, G-Sec sovereign yield curve, global central bank benchmarks",
+    href: "/backoffice/equities",
+    label: "Equities",
+    description: "NSE stocks with live prices and named portfolio baskets",
     icon: (p) => (
       <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
-      </svg>
-    ),
-  },
-  {
-    href: "/backoffice/derivatives",
-    label: "Derivatives & PCR",
-    description: "NIFTY/BANKNIFTY open interest, put-call ratio, strikes, and max pain",
-    icon: (p) => (
-      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 17l6-6 4 4 8-8M15 7h6v6" />
       </svg>
     ),
   },

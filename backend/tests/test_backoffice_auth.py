@@ -49,8 +49,6 @@ def test_anonymous_access_denied_on_backoffice(client):
     client.cookies.clear()
     endpoints = [
         "/api/backoffice/overview",
-        "/api/backoffice/yields",
-        "/api/backoffice/derivatives",
         "/api/backoffice/trade",
         "/api/backoffice/flows",
         "/api/backoffice/pms/strategies",
@@ -70,8 +68,6 @@ def test_customer_role_denied_staff_access(client):
 
     endpoints = [
         "/api/backoffice/overview",
-        "/api/backoffice/yields",
-        "/api/backoffice/derivatives",
         "/api/backoffice/pms/strategies",
     ]
     for ep in endpoints:

@@ -164,44 +164,6 @@ def backoffice_series(
 
 
 # ---------------------------------------------------------------------------
-# Sovereign Yields & Spreads Board
-# ---------------------------------------------------------------------------
-
-@router.get("/yields")
-def backoffice_yields(staff: Annotated[dict, Depends(require_staff)]):
-    """Sovereign tenor curves and cross-country spreads, from live-collected observations."""
-    board = _SERVICE.get_yields_board()
-    res = {
-        "data": board,
-        "as_of": board.get("as_of"),
-        "availability": board.get("status", "unavailable"),
-        "freshness": "current",
-    }
-    return with_meta(res, "fbil", board.get("as_of"))
-
-
-# ---------------------------------------------------------------------------
-# Derivatives & PCR Board
-# ---------------------------------------------------------------------------
-
-@router.get("/derivatives")
-def backoffice_derivatives(
-    staff: Annotated[dict, Depends(require_staff)],
-    underlying: str = Query("NIFTY"),
-    expiry: str | None = Query(None),
-):
-    """Option chain, Put-Call Ratio (OI & Volume), and Max Pain."""
-    board = _SERVICE.get_derivatives_board(underlying=underlying, expiry=expiry)
-    res = {
-        "data": board,
-        "as_of": board.get("snapshot_timestamp"),
-        "availability": board.get("status", "ready"),
-        "freshness": "current" if board.get("live_status") == "live" else "stale",
-    }
-    return with_meta(res, "nse", board.get("snapshot_timestamp"), stale=board.get("live_status") != "live")
-
-
-# ---------------------------------------------------------------------------
 # Live News (open RSS feeds)
 # ---------------------------------------------------------------------------
 
@@ -2463,8 +2425,8 @@ def provision_staff_member(
 
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 BACKOFFICE_PAGES = (
-    "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/macro",
-    "/backoffice/derivatives", "/backoffice/trade", "/backoffice/flows", "/backoffice/research",
+    "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/equities",
+    "/backoffice/trade", "/backoffice/flows", "/backoffice/research",
     "/backoffice/data-health", "/backoffice/crm", "/backoffice/operations",
     "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/hrms", "/backoffice/settings",
 )

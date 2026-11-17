@@ -61,30 +61,6 @@ def test_backoffice_series_api(client):
     assert client.get("/api/backoffice/series/MF:12345").status_code == 404
 
 
-def test_backoffice_yields_api(client):
-    sid = _create_staff("analyst")
-    _login_staff(client, sid)
-    r = client.get("/api/backoffice/yields")
-    assert r.status_code == 200
-    body = r.json()["data"]
-    assert "india_curve" in body
-    assert "us_curve" in body
-    assert "india_us_10y_spread" in body
-    # No fabricated values: the spread only exists once both 10Y yields have been collected live.
-    assert "spread_bps" in body["india_us_10y_spread"]
-
-
-def test_backoffice_derivatives_api(client):
-    sid = _create_staff("analyst")
-    _login_staff(client, sid)
-    r = client.get("/api/backoffice/derivatives?underlying=NIFTY")
-    assert r.status_code == 200
-    body = r.json()["data"]
-    assert body["underlying"] == "NIFTY"
-
-
-
-
 def test_backoffice_briefing_api(client):
     sid = _create_staff("analyst")
     _login_staff(client, sid)
@@ -409,14 +385,6 @@ def test_provenance_meta_attached(client):
     assert enriched["meta"]["_default"]["source"] == "fbil"
     assert enriched["meta"]["_default"]["source_url"] == "https://www.fbil.org.in"
 
-    sid = _create_staff("analyst")
-    _login_staff(client, sid)
-    r = client.get("/api/backoffice/yields")
-    assert r.status_code == 200
-    meta = r.json().get("meta")
-    assert meta and "_default" in meta
-    assert meta["_default"]["source"] == "fbil"
-
 
 def test_backoffice_risk_profiling_endpoints(client):
     sid = _create_staff("analyst")
@@ -510,3 +478,16 @@ def test_risk_profiling_report_validation_errors(client):
     )
     assert res.status_code == 200
     assert res.content.startswith(b"%PDF")
+
+
+def test_equities_api(client, monkeypatch):
+    from app.api import equities
+
+    monkeypatch.setattr(equities, "_search", lambda q: [{"symbol": "RELIANCE", "name": "Reliance"}])
+    monkeypatch.setattr(equities, "_quote", lambda s: {"symbol": s, "price": 100.0})
+    equities._cache.clear()
+    assert client.get("/api/backoffice/equities/search?q=rel").status_code == 401
+    _login_staff(client, _create_staff("analyst"))
+    assert client.get("/api/backoffice/equities/search?q=rel").json()["data"][0]["symbol"] == "RELIANCE"
+    assert client.get("/api/backoffice/equities/quotes?symbols=TCS,INFY").json()["data"][1]["symbol"] == "INFY"
+    assert client.get("/api/backoffice/equities/quotes?symbols=bad!").status_code == 422

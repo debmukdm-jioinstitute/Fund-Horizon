@@ -40,6 +40,9 @@ def _cached(key: str, fn):
 
 
 def _search(q: str) -> list[dict]:
+    q = re.sub(r"[^\w&.\- ]", "", q).strip()  # Yahoo 400s on emoji/odd chars
+    if not q:
+        return []
     url = "https://query2.finance.yahoo.com/v1/finance/search?" + urllib.parse.urlencode(
         {"q": q, "quotesCount": 15, "newsCount": 0, "listsCount": 0}
     )
@@ -48,6 +51,10 @@ def _search(q: str) -> list[dict]:
         sym = str(r.get("symbol", ""))
         if r.get("quoteType") == "EQUITY" and sym.endswith(".NS"):
             out.append({"symbol": sym[:-3], "name": r.get("longname") or r.get("shortname") or sym[:-3]})
+    if not out and SYMBOL.match(q.upper()):  # Yahoo name search misses tickers like M&M
+        hit = _quote(q.upper())
+        if hit.get("price") is not None:
+            out.append({"symbol": hit["symbol"], "name": hit["name"]})
     return out
 
 

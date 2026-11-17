@@ -491,3 +491,20 @@ def test_equities_api(client, monkeypatch):
     assert client.get("/api/backoffice/equities/search?q=rel").json()["data"][0]["symbol"] == "RELIANCE"
     assert client.get("/api/backoffice/equities/quotes?symbols=TCS,INFY").json()["data"][1]["symbol"] == "INFY"
     assert client.get("/api/backoffice/equities/quotes?symbols=bad!").status_code == 422
+
+
+def test_equities_search_sanitizes_and_probes_ticker(monkeypatch):
+    from app.api import equities
+
+    calls = []
+    monkeypatch.setattr(equities, "_get", lambda url: calls.append(url) or {"quotes": []})
+    assert equities._search("😀") == [] and not calls
+    monkeypatch.setattr(equities, "_quote", lambda s: {"symbol": s, "name": s, "price": 1.0})
+    assert equities._search("m&m") == [{"symbol": "M&M", "name": "M&M"}]
+
+
+def test_legacy_pages_migrate_to_equities():
+    from app.api.auth import migrate_pages
+
+    assert migrate_pages(["/backoffice/macro", "/backoffice/derivatives", "/backoffice/pms"]) == ["/backoffice/equities", "/backoffice/pms"]
+    assert migrate_pages(["/backoffice/macro"]) == ["/backoffice/equities"]  # never empty => never unrestricted

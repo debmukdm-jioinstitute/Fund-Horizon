@@ -170,11 +170,19 @@ def _normalize_mobile(raw: str) -> str:
     return digits
 
 
+_LEGACY_PAGES = {"/backoffice/macro", "/backoffice/derivatives"}  # removed; replaced by Equities
+
+
+def migrate_pages(pages: list[str]) -> list[str]:
+    """Map removed pages to Equities (never to empty: an empty list means unrestricted)."""
+    return list(dict.fromkeys("/backoffice/equities" if p in _LEGACY_PAGES else p for p in pages))
+
+
 def _public_customer(row: dict) -> dict:
     out = {k: v for k, v in row.items() if k != "password_hash"}
     try:
-        out["pages"] = json.loads(out.get("pages") or "[]")
-    except ValueError:
+        out["pages"] = migrate_pages(json.loads(out.get("pages") or "[]"))
+    except (ValueError, TypeError):
         out["pages"] = []
     return out
 

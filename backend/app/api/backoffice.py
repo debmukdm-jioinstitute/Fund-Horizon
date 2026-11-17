@@ -27,6 +27,7 @@ from app.api.serialize import clean
 from pydantic import BaseModel, Field
 
 from app.api.auth import (
+    migrate_pages,
     _hash_password,
     require_backoffice_role,
     require_role,
@@ -2433,7 +2434,8 @@ BACKOFFICE_PAGES = (
 
 
 def _pages_json(pages: list[str] | None) -> str | None:
-    bad = [p for p in pages or [] if p not in BACKOFFICE_PAGES]
+    pages = migrate_pages(pages or [])
+    bad = [p for p in pages if p not in BACKOFFICE_PAGES]
     if bad:
         raise HTTPException(422, f"unknown pages: {', '.join(bad)}")
     return json.dumps(sorted(set(pages))) if pages else None

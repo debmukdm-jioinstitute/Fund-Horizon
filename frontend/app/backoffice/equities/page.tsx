@@ -26,7 +26,10 @@ export default function EquitiesPage() {
   // Baskets live in this browser (per staff device); no server table needed.
   useEffect(() => {
     try {
-      const b = JSON.parse(localStorage.getItem(KEY) || "{}") as Baskets;
+      const raw = JSON.parse(localStorage.getItem(KEY) || "{}");
+      const b: Baskets = {};
+      if (raw && typeof raw === "object" && !Array.isArray(raw))
+        for (const [k, v] of Object.entries(raw)) if (Array.isArray(v)) b[k] = v.filter((x): x is string => typeof x === "string").slice(0, 50);
       setBaskets(b);
       setActive(Object.keys(b)[0] ?? "");
     } catch {}
@@ -48,7 +51,7 @@ export default function EquitiesPage() {
     return () => { clearTimeout(t); ac.abort(); };
   }, [q]);
 
-  const symbols = useMemo(() => baskets[active] ?? [], [baskets, active]);
+  const symbols = useMemo(() => (Object.hasOwn(baskets, active) ? baskets[active] : []), [baskets, active]);
   const symKey = symbols.join(",");
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
@@ -72,7 +75,7 @@ export default function EquitiesPage() {
 
   const createBasket = () => {
     const n = newName.trim();
-    if (!n || baskets[n]) return;
+    if (!n || Object.hasOwn(baskets, n)) return;
     setBaskets({ ...baskets, [n]: [] });
     setActive(n); setNewName("");
   };
@@ -83,7 +86,7 @@ export default function EquitiesPage() {
     setBaskets(rest); setActive(Object.keys(rest)[0] ?? "");
   };
   const add = (s: EquitySuggestion) => {
-    if (!active || symbols.includes(s.symbol)) return;
+    if (!active || symbols.includes(s.symbol) || symbols.length >= 50) return;
     setBaskets({ ...baskets, [active]: [...symbols, s.symbol] });
     setQ(""); setSugg([]); setOpen(false);
   };
@@ -120,7 +123,7 @@ export default function EquitiesPage() {
 
       {active ? (
         <section className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-          <div className="relative">
+          <div className="relative" onBlur={() => setTimeout(() => setOpen(false), 150)}>
             <input className={field} placeholder={`Add NSE stock to "${active}" — type name or symbol`} value={q}
               onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} />
             {open && sugg.length > 0 && (

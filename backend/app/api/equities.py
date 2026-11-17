@@ -10,12 +10,15 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from pydantic import BaseModel, Field
 
-from app.api.auth import require_staff
+from app.api.auth import require_staff, verify_csrf
+from app.backoffice.repository import BackofficeRepository
 
 router = APIRouter(prefix="/api/backoffice/equities", tags=["equities"])
 
+_REPO = BackofficeRepository()
 UA = "Mozilla/5.0 (compatible; FundHorizon/1.0)"
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9&-]{0,20}$")
 TTL = 15.0
@@ -98,3 +101,50 @@ def equities_quotes(staff: Annotated[dict, Depends(require_staff)], symbols: Ann
     with ThreadPoolExecutor(max_workers=8) as ex:
         data = list(ex.map(lambda s: _cached("q:" + s, lambda: _quote(s)), syms))
     return {"data": data, "source": "Yahoo Finance", "as_of": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+
+
+# --- Baskets: staff-private, stored in the server database (survives devices/browsers) ---
+def _clean(symbols: list[str]) -> list[str]:
+    out = list(dict.fromkeys(s.strip().upper() for s in symbols))
+    if len(out) > 50 or any(not SYMBOL.match(s) for s in out):
+        raise HTTPException(422, "max 50 valid NSE symbols per basket")
+    return out
+
+
+class BasketCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=60)
+    symbols: list[str] = Field(default_factory=list, max_length=50)
+
+
+class BasketSymbols(BaseModel):
+    symbols: list[str] = Field(..., max_length=50)
+
+
+@router.get("/baskets")
+def list_baskets(staff: Annotated[dict, Depends(require_staff)]):
+    return {"data": _REPO.list_equity_baskets(staff["id"])}
+
+
+@router.post("/baskets", status_code=201)
+def create_basket(body: BasketCreate, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    b = _REPO.create_equity_basket(staff["id"], body.name.strip(), _clean(body.symbols))
+    if not b:
+        raise HTTPException(409, "You already have a basket with this name")
+    return b
+
+
+@router.put("/baskets/{basket_id}")
+def set_basket_symbols(basket_id: str, body: BasketSymbols, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    if not _REPO.set_equity_basket_symbols(staff["id"], basket_id, _clean(body.symbols)):
+        raise HTTPException(404, "basket not found")
+    return {"success": True}
+
+
+@router.delete("/baskets/{basket_id}")
+def delete_basket(basket_id: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    if not _REPO.delete_equity_basket(staff["id"], basket_id):
+        raise HTTPException(404, "basket not found")
+    return {"success": True}

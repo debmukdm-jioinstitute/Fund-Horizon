@@ -508,3 +508,21 @@ def test_legacy_pages_migrate_to_equities():
 
     assert migrate_pages(["/backoffice/macro", "/backoffice/derivatives", "/backoffice/pms"]) == ["/backoffice/equities", "/backoffice/pms"]
     assert migrate_pages(["/backoffice/macro"]) == ["/backoffice/equities"]  # never empty => never unrestricted
+
+
+def test_equity_baskets_crud_and_isolation(client):
+    a, b = _create_staff("analyst"), _create_staff("analyst")
+    _login_staff(client, a)
+    r = client.post("/api/backoffice/equities/baskets", json={"name": " Banks ", "symbols": ["sbin", "SBIN", "HDFCBANK"]})
+    assert r.status_code == 201 and r.json()["symbols"] == ["SBIN", "HDFCBANK"] and r.json()["name"] == "Banks"
+    bid = r.json()["id"]
+    assert client.post("/api/backoffice/equities/baskets", json={"name": "Banks"}).status_code == 409
+    assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["bad!"]}).status_code == 422
+    assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["M&M"]}).status_code == 200
+    assert client.get("/api/backoffice/equities/baskets").json()["data"] == [{"id": bid, "name": "Banks", "symbols": ["M&M"]}]
+    _login_staff(client, b)  # another staff member sees/touches nothing
+    assert client.get("/api/backoffice/equities/baskets").json()["data"] == []
+    assert client.delete(f"/api/backoffice/equities/baskets/{bid}").status_code == 404
+    _login_staff(client, a)
+    assert client.delete(f"/api/backoffice/equities/baskets/{bid}").status_code == 200
+    assert client.get("/api/backoffice/equities/baskets").json()["data"] == []

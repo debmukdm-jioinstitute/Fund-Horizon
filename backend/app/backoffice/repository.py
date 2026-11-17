@@ -212,6 +212,15 @@ CREATE TABLE IF NOT EXISTS mf_research_watchlist_items (
     created_at TEXT NOT NULL,
     PRIMARY KEY (watchlist_id, scheme_code)
 );
+CREATE TABLE IF NOT EXISTS equity_baskets (
+    id TEXT PRIMARY KEY,
+    staff_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    symbols TEXT NOT NULL DEFAULT '[]',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE (staff_id, name)
+);
 """
 _LIVE_TABLES_READY: set[str] = set()
 
@@ -1634,6 +1643,48 @@ class BackofficeRepository:
                     (_utcnow(), staff_id, scheme_code),
                 )
                 return cur.rowcount > 0
+        finally:
+            conn.close()
+
+    # --- Equity baskets (staff-private named lists of NSE symbols) ---
+    def list_equity_baskets(self, staff_id: str) -> list[dict[str, Any]]:
+        conn = self._conn()
+        try:
+            rows = conn.execute("SELECT id, name, symbols FROM equity_baskets WHERE staff_id = ? ORDER BY created_at",
+                                (staff_id,)).fetchall()
+            return [{"id": r["id"], "name": r["name"], "symbols": json.loads(r["symbols"] or "[]")} for r in rows]
+        finally:
+            conn.close()
+
+    def create_equity_basket(self, staff_id: str, name: str, symbols: list[str]) -> dict[str, Any] | None:
+        """None when the staff member already has a basket with this name."""
+        conn = self._conn()
+        bid, now = _new_id(), _utcnow()
+        try:
+            with conn:
+                conn.execute("INSERT INTO equity_baskets (id, staff_id, name, symbols, created_at, updated_at)"
+                             " VALUES (?, ?, ?, ?, ?, ?)", (bid, staff_id, name, json.dumps(symbols), now, now))
+            return {"id": bid, "name": name, "symbols": symbols}
+        except sqlite3.IntegrityError:
+            return None
+        finally:
+            conn.close()
+
+    def set_equity_basket_symbols(self, staff_id: str, basket_id: str, symbols: list[str]) -> bool:
+        conn = self._conn()
+        try:
+            with conn:
+                return conn.execute("UPDATE equity_baskets SET symbols = ?, updated_at = ? WHERE id = ? AND staff_id = ?",
+                                    (json.dumps(symbols), _utcnow(), basket_id, staff_id)).rowcount > 0
+        finally:
+            conn.close()
+
+    def delete_equity_basket(self, staff_id: str, basket_id: str) -> bool:
+        conn = self._conn()
+        try:
+            with conn:
+                return conn.execute("DELETE FROM equity_baskets WHERE id = ? AND staff_id = ?",
+                                    (basket_id, staff_id)).rowcount > 0
         finally:
             conn.close()
 

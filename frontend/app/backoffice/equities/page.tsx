@@ -1,18 +1,20 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { EquityQuote, EquitySuggestion, getEquityQuotes, searchEquities } from "@/lib/backoffice";
+import {
+  EquityBasket, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
+  getEquityBaskets, getEquityQuotes, saveEquityBasket, searchEquities,
+} from "@/lib/backoffice";
 import { formatNumber } from "@/lib/terminal-format";
 
-type Baskets = Record<string, string[]>;
-const KEY = "fh.equities.baskets.v1";
+const LEGACY_KEY = "fh.equities.baskets.v1"; // pre-server storage; imported once then removed
 const REFRESH_MS = 20_000;
 
 const inr = (v?: number) => (v === undefined || v === null ? "—" : formatNumber(v, 2, { prefix: "₹" }));
 
 export default function EquitiesPage() {
-  const [baskets, setBaskets] = useState<Baskets>({});
-  const [active, setActive] = useState("");
+  const [baskets, setBaskets] = useState<EquityBasket[]>([]);
+  const [activeId, setActiveId] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [newName, setNewName] = useState("");
   const [q, setQ] = useState("");
@@ -23,22 +25,30 @@ export default function EquitiesPage() {
   const [updated, setUpdated] = useState<Date | null>(null);
   const names = useRef<Record<string, string>>({});
 
-  // Baskets live in this browser (per staff device); no server table needed.
+  const fail = (e: unknown) => setErr(e instanceof Error ? e.message : "Request failed");
+
+  // Baskets live in the server database. Any browser-only baskets from the old version are imported once.
   useEffect(() => {
-    try {
-      const raw = JSON.parse(localStorage.getItem(KEY) || "{}");
-      const b: Baskets = {};
-      if (raw && typeof raw === "object" && !Array.isArray(raw))
-        for (const [k, v] of Object.entries(raw)) if (Array.isArray(v)) b[k] = v.filter((x): x is string => typeof x === "string").slice(0, 50);
-      setBaskets(b);
-      setActive(Object.keys(b)[0] ?? "");
-    } catch {}
-    setLoaded(true);
+    (async () => {
+      try {
+        let list = await getEquityBaskets();
+        try {
+          const raw = JSON.parse(localStorage.getItem(LEGACY_KEY) || "{}");
+          if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+            for (const [name, v] of Object.entries(raw)) {
+              if (!Array.isArray(v) || list.some((b) => b.name === name)) continue;
+              const syms = v.filter((x): x is string => typeof x === "string").slice(0, 50);
+              list = [...list, await createEquityBasket(name, syms)];
+            }
+          }
+          localStorage.removeItem(LEGACY_KEY);
+        } catch {}
+        setBaskets(list);
+        setActiveId(list[0]?.id ?? "");
+      } catch (e) { fail(e); }
+      setLoaded(true);
+    })();
   }, []);
-  useEffect(() => {
-    if (!loaded) return;
-    try { localStorage.setItem(KEY, JSON.stringify(baskets)); } catch {}
-  }, [baskets, loaded]);
 
   // Typeahead (debounced).
   useEffect(() => {
@@ -51,7 +61,9 @@ export default function EquitiesPage() {
     return () => { clearTimeout(t); ac.abort(); };
   }, [q]);
 
-  const symbols = useMemo(() => (Object.hasOwn(baskets, active) ? baskets[active] : []), [baskets, active]);
+  const basket = baskets.find((b) => b.id === activeId);
+  const active = basket?.name ?? "";
+  const symbols = useMemo(() => basket?.symbols ?? [], [basket]);
   const symKey = symbols.join(",");
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
@@ -73,24 +85,35 @@ export default function EquitiesPage() {
     return () => { ac.abort(); clearInterval(id); };
   }, [refresh]);
 
-  const createBasket = () => {
+  const createBasket = async () => {
     const n = newName.trim();
-    if (!n || Object.hasOwn(baskets, n)) return;
-    setBaskets({ ...baskets, [n]: [] });
-    setActive(n); setNewName("");
+    if (!n) return;
+    try {
+      const b = await createEquityBasket(n);
+      setBaskets((p) => [...p, b]); setActiveId(b.id); setNewName(""); setErr(null);
+    } catch (e) { fail(e); }
   };
-  const deleteBasket = () => {
-    if (!active || !confirm(`Delete basket "${active}"?`)) return;
-    const rest = { ...baskets };
-    delete rest[active];
-    setBaskets(rest); setActive(Object.keys(rest)[0] ?? "");
+  const deleteBasket = async () => {
+    if (!basket || !confirm(`Delete basket "${basket.name}"?`)) return;
+    try {
+      await deleteEquityBasket(basket.id);
+      const rest = baskets.filter((b) => b.id !== basket.id);
+      setBaskets(rest); setActiveId(rest[0]?.id ?? ""); setErr(null);
+    } catch (e) { fail(e); }
+  };
+  const setSymbols = async (next: string[]) => {
+    if (!basket) return;
+    const prev = baskets;
+    setBaskets(baskets.map((b) => (b.id === basket.id ? { ...b, symbols: next } : b)));
+    try { await saveEquityBasket(basket.id, next); setErr(null); }
+    catch (e) { setBaskets(prev); fail(e); }
   };
   const add = (s: EquitySuggestion) => {
-    if (!active || symbols.includes(s.symbol) || symbols.length >= 50) return;
-    setBaskets({ ...baskets, [active]: [...symbols, s.symbol] });
+    if (!basket || symbols.includes(s.symbol) || symbols.length >= 50) return;
+    setSymbols([...symbols, s.symbol]);
     setQ(""); setSugg([]); setOpen(false);
   };
-  const remove = (sym: string) => setBaskets({ ...baskets, [active]: symbols.filter((x) => x !== sym) });
+  const remove = (sym: string) => setSymbols(symbols.filter((x) => x !== sym));
 
   const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 w-full";
   const btn = "rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40";
@@ -101,6 +124,7 @@ export default function EquitiesPage() {
         <h1 className="text-2xl font-bold text-slate-900">Equities</h1>
         <p className="text-sm text-slate-600">NSE stocks with live prices from Yahoo Finance. Build named baskets and track them.</p>
       </header>
+      {err && !basket && <p className="text-sm text-red-600">{err}</p>}
 
       <section className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
         <div className="flex flex-col gap-2 sm:flex-row">
@@ -108,12 +132,12 @@ export default function EquitiesPage() {
             onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && createBasket()} maxLength={60} />
           <button className={btn} onClick={createBasket} disabled={!newName.trim()}>Create basket</button>
         </div>
-        {Object.keys(baskets).length > 0 && (
+        {baskets.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
-            {Object.keys(baskets).map((n) => (
-              <button key={n} onClick={() => setActive(n)}
-                className={`rounded-full border px-3 py-1 text-sm ${n === active ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 text-slate-700"}`}>
-                {n} <span className="opacity-70">({baskets[n].length})</span>
+            {baskets.map((b) => (
+              <button key={b.id} onClick={() => setActiveId(b.id)}
+                className={`rounded-full border px-3 py-1 text-sm ${b.id === activeId ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 text-slate-700"}`}>
+                {b.name} <span className="opacity-70">({b.symbols.length})</span>
               </button>
             ))}
             <button onClick={deleteBasket} className="ml-auto text-sm text-red-600">Delete basket</button>
@@ -121,7 +145,7 @@ export default function EquitiesPage() {
         )}
       </section>
 
-      {active ? (
+      {basket ? (
         <section className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
           <div className="relative" onBlur={() => setTimeout(() => setOpen(false), 150)}>
             <input className={field} placeholder={`Add NSE stock to "${active}" — type name or symbol`} value={q}

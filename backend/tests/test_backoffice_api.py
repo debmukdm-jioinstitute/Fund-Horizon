@@ -556,3 +556,13 @@ def test_equity_changes_are_audited(client):
     acts = [r["action"] for r in conn.execute("SELECT action FROM audit_events WHERE target_id = ? ORDER BY created_at", (bid,)).fetchall()]
     conn.close()
     assert set(acts) >= {"equity_basket_created", "equity_holding_set", "equity_basket_deleted"}
+
+
+def test_equities_indices(client, monkeypatch):
+    from app.api import equities
+
+    monkeypatch.setattr(equities, "_quote", lambda s, suffix=".NS": {"symbol": s, "price": 1.0})
+    equities._cache.clear()
+    _login_staff(client, _create_staff("analyst"))
+    d = client.get("/api/backoffice/equities/indices").json()["data"]
+    assert [x["name"] for x in d] == ["NIFTY 50", "BANK NIFTY", "SENSEX"] and d[0]["symbol"] == "^NSEI"

@@ -61,8 +61,8 @@ def _search(q: str) -> list[dict]:
     return out
 
 
-def _quote(sym: str) -> dict:
-    url = f"https://query2.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(sym)}.NS?range=1d&interval=1d"
+def _quote(sym: str, suffix: str = ".NS") -> dict:
+    url = f"https://query2.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(sym)}{suffix}?range=1d&interval=1d"
     try:
         m = _get(url)["chart"]["result"][0]["meta"]
     except Exception:
@@ -91,6 +91,16 @@ def equities_search(staff: Annotated[dict, Depends(require_staff)], q: Annotated
         return {"data": _cached("s:" + q.lower(), lambda: _search(q))}
     except Exception:
         raise HTTPException(502, "Yahoo Finance search unavailable")
+
+
+INDICES = (("^NSEI", "NIFTY 50"), ("^NSEBANK", "BANK NIFTY"), ("^BSESN", "SENSEX"))
+
+
+@router.get("/indices")
+def equities_indices(staff: Annotated[dict, Depends(require_staff)]):
+    with ThreadPoolExecutor(max_workers=3) as ex:
+        rows = list(ex.map(lambda i: _cached("q:" + i[0], lambda: _quote(i[0], "")), INDICES))
+    return {"data": [{**r, "symbol": sym, "name": label} for (sym, label), r in zip(INDICES, rows)]}
 
 
 @router.get("/quotes")

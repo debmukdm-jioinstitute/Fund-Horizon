@@ -3,12 +3,30 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   EquityBasket, EquityHolding, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
-  getEquityBaskets, getEquityQuotes, saveEquityBasket, saveEquityHolding, searchEquities,
+  getEquityBaskets, getEquityIndices, getEquityQuotes, saveEquityBasket, saveEquityHolding, searchEquities,
 } from "@/lib/backoffice";
 import { formatNumber } from "@/lib/terminal-format";
 
 const LEGACY_KEY = "fh.equities.baskets.v1"; // pre-server storage; imported once then removed
 const REFRESH_MS = 20_000;
+
+const HOME = "home";
+
+function stats(b: EquityBasket, quotes: Record<string, EquityQuote>) {
+  let invested = 0, value = 0, pnl = 0, cost = 0, today = 0, priced = false;
+  for (const sym of b.symbols) {
+    const h = b.holdings[sym], r = quotes[sym];
+    if (h?.qty == null) continue;
+    const inv = h.buy_price != null ? h.qty * h.buy_price : 0;
+    invested += inv;
+    if (r?.price != null) {
+      const v = h.qty * r.price;
+      value += v; priced = true; today += h.qty * (r.change ?? 0);
+      if (h.buy_price != null) { pnl += v - inv; cost += inv; }
+    }
+  }
+  return { invested, value, pnl, cost, today, priced };
+}
 
 const inr = (v?: number) => (v === undefined || v === null ? "—" : formatNumber(v, 2, { prefix: "₹" }));
 
@@ -41,7 +59,7 @@ function Stepper({ value, onSave, label }: { value: number | null; onSave: (v: n
 
 export default function EquitiesPage() {
   const [baskets, setBaskets] = useState<EquityBasket[]>([]);
-  const [activeId, setActiveId] = useState("");
+  const [activeId, setActiveId] = useState(HOME);
   const [loaded, setLoaded] = useState(false);
   const [newName, setNewName] = useState("");
   const [q, setQ] = useState("");
@@ -74,7 +92,6 @@ export default function EquitiesPage() {
           localStorage.removeItem(LEGACY_KEY);
         } catch {}
         setBaskets(list);
-        setActiveId(list[0]?.id ?? "");
       } catch (e) { fail(e); }
       setLoaded(true);
     })();
@@ -104,11 +121,14 @@ export default function EquitiesPage() {
     window.addEventListener("beforeunload", h);
     return () => window.removeEventListener("beforeunload", h);
   }, [dirty]);
-  const symKey = symbols.join(",");
+  const isHome = activeId === HOME;
+  const [indices, setIndices] = useState<EquityQuote[]>([]);
+  const symKey = (isHome ? Array.from(new Set(baskets.flatMap((b) => b.symbols))) : symbols).join(",");
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
-    if (!symKey) return;
     try {
+      if (isHome) setIndices(await getEquityIndices(signal));
+      if (!symKey) return;
       const rows = await getEquityQuotes(symKey.split(","), signal);
       setQuotes((p) => ({ ...p, ...Object.fromEntries(rows.map((r) => [r.symbol, r])) }));
       setUpdated(new Date());
@@ -116,7 +136,7 @@ export default function EquitiesPage() {
     } catch (e) {
       if (!signal?.aborted) setErr(e instanceof Error ? e.message : "Quote fetch failed");
     }
-  }, [symKey]);
+  }, [symKey, isHome]);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -146,7 +166,7 @@ export default function EquitiesPage() {
     try {
       await deleteEquityBasket(basket.id);
       const rest = baskets.filter((b) => b.id !== basket.id);
-      setBaskets(rest); setActiveId(rest[0]?.id ?? ""); setDraft(null); setErr(null);
+      setBaskets(rest); setActiveId(HOME); setDraft(null); setErr(null);
     } catch (e) { fail(e); }
   };
 
@@ -227,6 +247,8 @@ export default function EquitiesPage() {
 
       {/* Basket tabs */}
       <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-[#E8EBED]">
+        <button onClick={() => selectBasket(HOME)}
+          className={`-mb-px border-b-2 pb-3 text-[15px] ${isHome ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>Home</button>
         {baskets.map((b) => (
           <button key={b.id} onClick={() => selectBasket(b.id)}
             className={`-mb-px border-b-2 pb-3 text-[15px] ${b.id === activeId ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>
@@ -245,7 +267,66 @@ export default function EquitiesPage() {
         )}
       </div>
 
-      {basket ? (
+      {isHome ? (() => {
+        const all = baskets.map((b) => ({ b, st: stats(b, quotes) }));
+        const tot = all.reduce((a, { st }) => ({ invested: a.invested + st.invested, value: a.value + st.value, pnl: a.pnl + st.pnl, cost: a.cost + st.cost, today: a.today + st.today }), { invested: 0, value: 0, pnl: 0, cost: 0, today: 0 });
+        const movers = Array.from(new Set(baskets.flatMap((b) => b.symbols))).map((x) => quotes[x]).filter((r) => r?.change_pct != null).sort((a, b) => (b.change_pct ?? 0) - (a.change_pct ?? 0));
+        const Mover = ({ r }: { r: EquityQuote }) => (
+          <li className="flex items-center justify-between border-b border-[#E8EBED] py-2 text-sm">
+            <span className="min-w-0 truncate pr-2">{r.name ?? r.symbol} <span className="text-xs text-[#81878C]">{r.symbol}</span></span>
+            <span className={tone(r.change_pct ?? undefined)}>{sgn(r.change_pct ?? 0)}%</span>
+          </li>
+        );
+        return (
+          <div className="mt-6 space-y-8">
+            <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {(indices.length ? indices : [{ symbol: "NIFTY 50" }, { symbol: "BANK NIFTY" }, { symbol: "SENSEX" }] as EquityQuote[]).map((i) => (
+                <div key={i.symbol} className="rounded border border-[#E8EBED] bg-white p-4">
+                  <div className="text-sm text-[#81878C]">{i.name ?? i.symbol}</div>
+                  <div className="mt-1 text-xl font-medium">{i.price != null ? formatNumber(i.price, 2) : "—"}</div>
+                  <div className={`text-sm ${tone(i.change ?? undefined)}`}>{i.change != null ? `${sgn(i.change)} (${sgn(i.change_pct ?? 0)}%)` : ""}</div>
+                </div>
+              ))}
+            </section>
+
+            <section>
+              <div className="text-sm text-[#81878C]">Total invested across baskets</div>
+              <div className="mt-1 text-[28px] font-medium leading-none">{inr(tot.invested)}</div>
+              <dl className="mt-4 grid max-w-xl grid-cols-3 gap-4 text-sm">
+                <div><dt className="text-[#81878C]">Current value</dt><dd className="mt-0.5 text-base font-medium">{tot.value > 0 ? inr(tot.value) : "—"}</dd></div>
+                <div><dt className="text-[#81878C]">Returns</dt><dd className={`mt-0.5 text-base font-medium ${tone(tot.cost > 0 ? tot.pnl : undefined)}`}>{tot.cost > 0 ? `${sgn(tot.pnl)} (${sgn((tot.pnl / tot.cost) * 100)}%)` : "—"}</dd></div>
+                <div><dt className="text-[#81878C]">Today</dt><dd className={`mt-0.5 text-base font-medium ${tone(tot.value > 0 ? tot.today : undefined)}`}>{tot.value > 0 ? sgn(tot.today) : "—"}</dd></div>
+              </dl>
+            </section>
+
+            <section>
+              <div className="mb-2 text-sm text-[#81878C]">Your baskets</div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {all.map(({ b, st }) => (
+                  <button key={b.id} onClick={() => selectBasket(b.id)} className="rounded border border-[#E8EBED] bg-white p-4 text-left hover:border-[#1F7AE0]">
+                    <div className="text-[15px] font-medium text-[#1F7AE0]">{b.name}</div>
+                    <div className="text-xs text-[#81878C]">{b.symbols.length} stocks</div>
+                    <div className="mt-3 flex justify-between text-sm"><span className="text-[#81878C]">Invested</span><span>{inr(st.invested)}</span></div>
+                    <div className="flex justify-between text-sm"><span className="text-[#81878C]">Value</span><span>{st.priced ? inr(st.value) : "—"}</span></div>
+                    <div className="flex justify-between text-sm"><span className="text-[#81878C]">Returns</span>
+                      <span className={tone(st.cost > 0 ? st.pnl : undefined)}>{st.cost > 0 ? `${sgn(st.pnl)} (${sgn((st.pnl / st.cost) * 100)}%)` : "—"}</span></div>
+                  </button>
+                ))}
+                <button onClick={() => setShowNew(true)} className="flex min-h-[120px] items-center justify-center rounded border border-dashed border-[#1F7AE0] text-sm font-medium text-[#1F7AE0] hover:bg-[#F2F7FD]">+ New basket</button>
+              </div>
+              {loaded && baskets.length === 0 && <p className="mt-3 text-sm text-[#81878C]">No baskets yet. Create one to start adding stocks.</p>}
+            </section>
+
+            {movers.length > 0 && (
+              <section className="grid gap-8 sm:grid-cols-2">
+                <div><div className="mb-1 text-sm text-[#81878C]">Top gainers today</div><ul>{movers.slice(0, 3).filter((r) => (r.change_pct ?? 0) > 0).map((r) => <Mover key={r.symbol} r={r} />)}</ul></div>
+                <div><div className="mb-1 text-sm text-[#81878C]">Top losers today</div><ul>{movers.slice(-3).reverse().filter((r) => (r.change_pct ?? 0) < 0).map((r) => <Mover key={r.symbol} r={r} />)}</ul></div>
+              </section>
+            )}
+            <p className="text-xs text-[#81878C]">Yahoo Finance (unofficial, may lag ~15 min). Auto-refresh {REFRESH_MS / 1000}s{updated ? ` · ${updated.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST` : ""}. Research data, not advice.</p>
+          </div>
+        );
+      })() : basket ? (
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           {/* Summary panel (first on mobile, right column on desktop) */}
           <aside className="lg:col-start-2 lg:row-start-1">
@@ -357,7 +438,7 @@ export default function EquitiesPage() {
             )}
           </section>
         </div>
-      ) : loaded && <p className="mt-8 text-sm text-[#81878C]">Create a basket to start adding stocks.</p>}
+      ) : null}
     </div>
   );
 }

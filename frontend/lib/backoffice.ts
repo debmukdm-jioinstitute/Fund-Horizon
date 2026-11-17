@@ -702,10 +702,17 @@ export const deleteEquityBasket = async (id: string): Promise<void> => {
   await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}`, { method: "DELETE" });
 };
 
-export const getEquityQuotes = async (symbols: string[], signal?: AbortSignal): Promise<EquityQuote[]> =>
-  symbols.length
-    ? (arr((await boFetch<Json>(`/api/backoffice/equities/quotes?symbols=${encodeURIComponent(symbols.join(","))}`, { signal })).data) as unknown as EquityQuote[])
-    : [];
+export const getEquityQuotes = async (symbols: string[], signal?: AbortSignal): Promise<EquityQuote[]> => {
+  const out: EquityQuote[] = [];
+  for (let i = 0; i < symbols.length; i += 50) { // server caps 50 per call
+    const chunk = symbols.slice(i, i + 50);
+    out.push(...(arr((await boFetch<Json>(`/api/backoffice/equities/quotes?symbols=${encodeURIComponent(chunk.join(","))}`, { signal })).data) as unknown as EquityQuote[]));
+  }
+  return out;
+};
+
+export const getEquityIndices = async (signal?: AbortSignal): Promise<EquityQuote[]> =>
+  arr((await boFetch<Json>("/api/backoffice/equities/indices", { signal })).data) as unknown as EquityQuote[];
 
 export const getFlows = async (start?: string, end?: string): Promise<BackofficeEnvelope<FlowsData>> => {
   const q = new URLSearchParams();

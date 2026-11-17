@@ -12,7 +12,7 @@ const REFRESH_MS = 20_000;
 
 const inr = (v?: number) => (v === undefined || v === null ? "—" : formatNumber(v, 2, { prefix: "₹" }));
 
-function NumInput({ value, onSave, label }: { value: number | null; onSave: (v: number | null) => void; label: string }) {
+function NumInput({ value, onSave, label, className = "" }: { value: number | null; onSave: (v: number | null) => void; label: string; className?: string }) {
   const [t, setT] = useState(value === null ? "" : String(value));
   useEffect(() => setT(value === null ? "" : String(value)), [value]);
   const commit = () => {
@@ -22,8 +22,20 @@ function NumInput({ value, onSave, label }: { value: number | null; onSave: (v: 
   };
   return (
     <input inputMode="decimal" aria-label={label} value={t} onChange={(e) => setT(e.target.value)} onBlur={commit}
-      onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-      className="w-24 rounded border border-slate-300 px-2 py-1 text-right text-sm text-slate-900" />
+      onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()} className={`text-[#2F363F] outline-none focus:ring-1 focus:ring-[#1F7AE0] ${className}`} />
+  );
+}
+
+// smallcase-style "− 22 +" share stepper
+function Stepper({ value, onSave, label }: { value: number | null; onSave: (v: number | null) => void; label: string }) {
+  const n = value ?? 0;
+  const b = "flex h-9 w-8 items-center justify-center text-lg font-semibold text-[#1F7AE0] hover:bg-[#F2F7FD] disabled:text-[#C5CAD0]";
+  return (
+    <div className="inline-flex items-center rounded border border-[#D5D9DD] bg-white">
+      <button type="button" aria-label={`Decrease ${label}`} className={b} disabled={n <= 0} onClick={() => onSave(Math.max(0, n - 1))}>−</button>
+      <NumInput label={`${label} shares`} value={value} onSave={onSave} className="h-9 w-14 border-x border-[#D5D9DD] text-center text-[15px] font-medium" />
+      <button type="button" aria-label={`Increase ${label}`} className={b} onClick={() => onSave(n + 1)}>+</button>
+    </div>
   );
 }
 
@@ -39,6 +51,9 @@ export default function EquitiesPage() {
   const [err, setErr] = useState<string | null>(null);
   const [updated, setUpdated] = useState<Date | null>(null);
   const names = useRef<Record<string, string>>({});
+  const [showNew, setShowNew] = useState(false);
+  const [hideTip, setHideTip] = useState(true); // true until we know (avoids flash)
+  useEffect(() => { try { setHideTip(localStorage.getItem("fh.equities.tip") === "1"); } catch { setHideTip(false); } }, []);
 
   const fail = (e: unknown) => setErr(e instanceof Error ? e.message : "Request failed");
 
@@ -77,7 +92,6 @@ export default function EquitiesPage() {
   }, [q]);
 
   const basket = baskets.find((b) => b.id === activeId);
-  const active = basket?.name ?? "";
   const symbols = useMemo(() => basket?.symbols ?? [], [basket]);
   const symKey = symbols.join(",");
 
@@ -105,7 +119,7 @@ export default function EquitiesPage() {
     if (!n) return;
     try {
       const b = await createEquityBasket(n);
-      setBaskets((p) => [...p, b]); setActiveId(b.id); setNewName(""); setErr(null);
+      setBaskets((p) => [...p, b]); setActiveId(b.id); setNewName(""); setShowNew(false); setErr(null);
     } catch (e) { fail(e); }
   };
   const deleteBasket = async () => {
@@ -140,125 +154,162 @@ export default function EquitiesPage() {
   const remove = (sym: string) => setSymbols(symbols.filter((x) => x !== sym));
 
   const rows = symbols.map((s) => {
-    const h = basket?.holdings[s], px = quotes[s]?.price;
+    const h = basket?.holdings[s], r = quotes[s], px = r?.price;
     const invested = h?.qty != null && h.buy_price != null ? h.qty * h.buy_price : undefined;
     const value = h?.qty != null && px != null ? h.qty * px : undefined;
-    return { s, h, invested, value, pnl: invested !== undefined && value !== undefined ? value - invested : undefined };
+    const today = h?.qty != null && r?.change != null ? h.qty * r.change : undefined;
+    return { s, h, invested, value, today, pnl: invested !== undefined && value !== undefined ? value - invested : undefined };
   });
-  const sum = (k: "invested" | "value" | "pnl") => rows.reduce((a, r) => a + (r[k] ?? 0), 0);
-  const totInv = sum("invested"), totVal = sum("value"), totPnl = rows.reduce((a, r) => a + (r.invested !== undefined && r.value !== undefined ? r.pnl ?? 0 : 0), 0);
-  const costBasisOfPriced = rows.reduce((a, r) => a + (r.pnl !== undefined ? r.invested ?? 0 : 0), 0);
-  const tone = (v?: number) => (v === undefined ? "" : v >= 0 ? "text-emerald-600" : "text-red-600");
+  const totInv = rows.reduce((a, r) => a + (r.invested ?? 0), 0);
+  const totVal = rows.reduce((a, r) => a + (r.value ?? 0), 0);
+  const priced = rows.filter((r) => r.pnl !== undefined);
+  const totPnl = priced.reduce((a, r) => a + (r.pnl ?? 0), 0);
+  const pricedCost = priced.reduce((a, r) => a + (r.invested ?? 0), 0);
+  const totToday = rows.reduce((a, r) => a + (r.today ?? 0), 0);
+  const tone = (v?: number) => (v === undefined ? "text-[#81878C]" : v >= 0 ? "text-[#1EA672]" : "text-[#E5484D]");
   const sgn = (v: number) => `${v >= 0 ? "+" : ""}${formatNumber(v, 2)}`;
+  const pct = (a: number, b: number) => (b > 0 ? ` (${sgn((a / b) * 100)}%)` : "");
 
-  const field = "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 w-full";
-  const btn = "rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40";
+  const th = "pb-3 pr-3 text-right text-[13px] font-normal text-[#81878C]";
+  const outlineBtn = "rounded border border-[#1F7AE0] bg-white px-4 py-2 text-sm font-medium text-[#1F7AE0] hover:bg-[#F2F7FD]";
+  const primaryBtn = "w-full rounded bg-[#17408B] px-4 py-3 text-base font-semibold text-white hover:bg-[#12336f]";
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 p-4 sm:p-6">
-      <header>
-        <h1 className="text-2xl font-bold text-slate-900">Equities</h1>
-        <p className="text-sm text-slate-600">NSE stocks with live prices from Yahoo Finance. Build named baskets and track them.</p>
-      </header>
-      {err && !basket && <p className="text-sm text-red-600">{err}</p>}
+    <div className="mx-auto max-w-[1200px] p-4 text-[#2F363F] sm:p-6">
+      <h1 className="text-[28px] font-medium leading-tight">{basket ? basket.name : "Equities"}</h1>
+      <p className="mt-1 text-[13px] text-[#81878C]">Build baskets of NSE stocks, record your shares and buy prices, and track live returns.</p>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <input className={field} placeholder="New basket name (e.g. Banking leaders)" value={newName}
-            onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && createBasket()} maxLength={60} />
-          <button className={btn} onClick={createBasket} disabled={!newName.trim()}>Create basket</button>
+      {!hideTip && (
+        <div className="mt-5 flex items-center gap-3 rounded border border-[#E8EBED] bg-white px-4 py-3 text-sm">
+          <span aria-hidden className="text-[#1F7AE0]">◆</span>
+          <span className="flex-1"><b className="font-medium">Track your ideas</b> <span className="text-[#81878C]">— add stocks, set shares and buy prices; invested amount, value and P&amp;L update live.</span></span>
+          <button className="text-sm font-medium text-[#81878C]" onClick={() => { setHideTip(true); try { localStorage.setItem("fh.equities.tip", "1"); } catch {} }}>Got it</button>
         </div>
-        {baskets.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            {baskets.map((b) => (
-              <button key={b.id} onClick={() => setActiveId(b.id)}
-                className={`rounded-full border px-3 py-1 text-sm ${b.id === activeId ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300 text-slate-700"}`}>
-                {b.name} <span className="opacity-70">({b.symbols.length})</span>
-              </button>
-            ))}
-            <button onClick={deleteBasket} className="ml-auto text-sm text-red-600">Delete basket</button>
+      )}
+      {err && <p className="mt-3 text-sm text-[#E5484D]">{err}</p>}
+
+      {/* Basket tabs */}
+      <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-[#E8EBED]">
+        {baskets.map((b) => (
+          <button key={b.id} onClick={() => setActiveId(b.id)}
+            className={`-mb-px border-b-2 pb-3 text-[15px] ${b.id === activeId ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>
+            {b.name} <span className="text-[#81878C]">{b.symbols.length}</span>
+          </button>
+        ))}
+        {showNew ? (
+          <div className="mb-2 flex items-center gap-2">
+            <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} maxLength={60} placeholder="Basket name"
+              onKeyDown={(e) => { if (e.key === "Enter") createBasket(); if (e.key === "Escape") setShowNew(false); }}
+              className="rounded border border-[#D5D9DD] px-3 py-1.5 text-sm outline-none focus:border-[#1F7AE0]" />
+            <button className={outlineBtn} onClick={createBasket} disabled={!newName.trim()}>Create</button>
           </div>
+        ) : (
+          <button className={`${outlineBtn} mb-2 py-1.5`} onClick={() => setShowNew(true)}>+ New basket</button>
         )}
-      </section>
+      </div>
 
       {basket ? (
-        <section className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
-          <div className="relative" onBlur={() => setTimeout(() => setOpen(false), 150)}>
-            <input className={field} placeholder={`Add NSE stock to "${active}" — type name or symbol`} value={q}
-              onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} />
-            {open && sugg.length > 0 && (
-              <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg">
-                {sugg.map((s) => (
-                  <li key={s.symbol}>
-                    <button className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-slate-50" onClick={() => add(s)}>
-                      <span className="font-semibold text-slate-900">{s.symbol}</span>
-                      <span className="truncate text-slate-600">{s.name}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {err && <p className="text-sm text-red-600">{err}</p>}
-          {symbols.length === 0 ? (
-            <p className="text-sm text-slate-500">Basket is empty. Search above to add stocks.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[980px] text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
-                    <th className="py-2 pr-2">Stock</th><th className="pr-2 text-right">Qty</th><th className="pr-2 text-right">Buy price</th>
-                    <th className="pr-2 text-right">Invested</th><th className="pr-2 text-right">LTP</th><th className="pr-2 text-right">Day chg</th>
-                    <th className="pr-2 text-right">Value</th><th className="pr-2 text-right">P&amp;L</th><th className="pr-2 text-right">Weight</th><th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map(({ s, h, invested, value, pnl }) => {
-                    const r = quotes[s];
-                    return (
-                      <tr key={s} className="border-b border-slate-100">
-                        <td className="py-2 pr-2">
-                          <div className="font-semibold text-slate-900">{s}</div>
-                          <div className="max-w-[200px] truncate text-xs text-slate-500">{r?.name ?? names.current[s] ?? ""}</div>
-                        </td>
-                        <td className="pr-2 text-right"><NumInput label={`${s} quantity`} value={h?.qty ?? null} onSave={(v) => setHolding(s, { qty: v })} /></td>
-                        <td className="pr-2 text-right"><NumInput label={`${s} buy price`} value={h?.buy_price ?? null} onSave={(v) => setHolding(s, { buy_price: v })} /></td>
-                        <td className="pr-2 text-right">{inr(invested)}</td>
-                        <td className="pr-2 text-right font-semibold">{r?.error ? <span className="text-slate-400">n/a</span> : inr(r?.price)}</td>
-                        <td className={`pr-2 text-right ${tone(r?.change ?? undefined)}`}>
-                          {r?.change == null ? "—" : `${sgn(r.change)} (${sgn(r.change_pct ?? 0)}%)`}
-                        </td>
-                        <td className="pr-2 text-right">{inr(value)}</td>
-                        <td className={`pr-2 text-right ${tone(pnl)}`}>
-                          {pnl === undefined ? "—" : `${sgn(pnl)} (${sgn((pnl / (invested || 1)) * 100)}%)`}
-                        </td>
-                        <td className="pr-2 text-right text-slate-600">{invested !== undefined && totInv > 0 ? `${formatNumber((invested / totInv) * 100, 2)}%` : "—"}</td>
-                        <td className="text-right"><button onClick={() => remove(s)} aria-label={`Remove ${s}`} className="px-2 text-slate-400 hover:text-red-600">✕</button></td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-                <tfoot>
-                  <tr className="font-semibold text-slate-900">
-                    <td className="pt-3" colSpan={3}>Total</td>
-                    <td className="pt-3 pr-2 text-right">{inr(totInv)}</td><td /><td />
-                    <td className="pt-3 pr-2 text-right">{inr(totVal)}</td>
-                    <td className={`pt-3 pr-2 text-right ${tone(totPnl)}`}>
-                      {costBasisOfPriced > 0 ? `${sgn(totPnl)} (${sgn((totPnl / costBasisOfPriced) * 100)}%)` : "—"}
-                    </td>
-                    <td /><td />
-                  </tr>
-                </tfoot>
-              </table>
+        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+          {/* Summary panel (first on mobile, right column on desktop) */}
+          <aside className="lg:col-start-2 lg:row-start-1">
+            <div className="space-y-4 lg:sticky lg:top-4">
+              <div>
+                <div className="text-sm text-[#81878C]">Invested amount</div>
+                <div className="mt-1 text-[28px] font-medium leading-none">{inr(totInv)}</div>
+              </div>
+              <dl className="grid grid-cols-2 gap-4 text-sm">
+                <div><dt className="text-[#81878C]">Current value</dt><dd className="mt-0.5 text-base font-medium">{inr(totVal)}</dd></div>
+                <div><dt className="text-[#81878C]">Returns</dt>
+                  <dd className={`mt-0.5 text-base font-medium ${tone(pricedCost > 0 ? totPnl : undefined)}`}>{pricedCost > 0 ? `${sgn(totPnl)}${pct(totPnl, pricedCost)}` : "—"}</dd></div>
+                <div><dt className="text-[#81878C]">Today</dt>
+                  <dd className={`mt-0.5 text-base font-medium ${tone(totVal > 0 ? totToday : undefined)}`}>{totVal > 0 ? sgn(totToday) : "—"}</dd></div>
+                <div><dt className="text-[#81878C]">Stocks</dt><dd className="mt-0.5 text-base font-medium">{symbols.length}</dd></div>
+              </dl>
+              <button className={primaryBtn} onClick={() => refresh()}>Refresh prices</button>
+              <button className="w-full rounded border border-[#E8EBED] bg-white px-4 py-3 text-base font-medium text-[#E5484D] hover:bg-[#FFF5F5]" onClick={deleteBasket}>Delete basket</button>
+              <p className="text-xs text-[#81878C]">
+                Yahoo Finance (unofficial, may lag ~15 min). Auto-refresh {REFRESH_MS / 1000}s
+                {updated ? ` · ${updated.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST` : ""}. Research data, not advice.
+              </p>
             </div>
-          )}
-          <p className="text-xs text-slate-500">
-            Source: Yahoo Finance (unofficial, may lag ~15 min). Auto-refreshes every {REFRESH_MS / 1000}s
-            {updated ? ` · updated ${updated.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST` : ""}. Research data, not advice.
-          </p>
-        </section>
-      ) : loaded && <p className="text-sm text-slate-500">Create a basket to start adding stocks.</p>}
+          </aside>
+
+          {/* Stocks */}
+          <section className="min-w-0 lg:col-start-1 lg:row-start-1">
+            <div className="mb-1 text-sm text-[#81878C]">Add &amp; organize stocks</div>
+            <div className="relative mb-4" onBlur={() => setTimeout(() => setOpen(false), 150)}>
+              <svg aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#81878C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+              <input value={q} onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)}
+                placeholder="Search by name or ticker" className="w-full rounded border border-[#D5D9DD] bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#1F7AE0]" />
+              {open && sugg.length > 0 && (
+                <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded border border-[#E8EBED] bg-white shadow-lg">
+                  {sugg.map((x) => (
+                    <li key={x.symbol}>
+                      <button className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-sm hover:bg-[#F2F7FD]" onClick={() => add(x)}>
+                        <span className="truncate text-[#1F7AE0]">{x.name}</span>
+                        <span className="text-xs text-[#81878C]">{x.symbol}{symbols.includes(x.symbol) ? " · added" : ""}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {symbols.length === 0 ? (
+              <p className="rounded border border-dashed border-[#D5D9DD] p-8 text-center text-sm text-[#81878C]">No stocks yet. Search above to add your first pick.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[900px] border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-[#E8EBED]">
+                      <th className="pb-3 pr-3 text-left text-[13px] font-normal text-[#81878C]">Stock</th>
+                      <th className={th}>Price (₹)</th><th className={th}>Shares</th><th className={th}>Buy price (₹)</th>
+                      <th className={th}>Invested</th><th className={th}>Value</th><th className={th}>P&amp;L</th><th className={th}>Weight</th><th className="w-8" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map(({ s, h, invested, value, pnl }) => {
+                      const r = quotes[s];
+                      return (
+                        <tr key={s} className="border-b border-[#E8EBED]">
+                          <td className="py-3 pr-3">
+                            <div className="text-[15px] font-medium text-[#1F7AE0]">{r?.name ?? names.current[s] ?? s}</div>
+                            <div className="text-xs text-[#81878C]">{s}</div>
+                          </td>
+                          <td className="pr-3 text-right">
+                            {r?.error ? <span className="text-[#81878C]">n/a</span> : (<>
+                              <div className="font-medium">{r?.price != null ? formatNumber(r.price, 2) : "—"}</div>
+                              <div className={`text-xs ${tone(r?.change ?? undefined)}`}>{r?.change == null ? "" : `${sgn(r.change)} (${sgn(r.change_pct ?? 0)}%)`}</div>
+                            </>)}
+                          </td>
+                          <td className="pr-3 text-right"><Stepper label={s} value={h?.qty ?? null} onSave={(v) => setHolding(s, { qty: v })} /></td>
+                          <td className="pr-3 text-right"><NumInput label={`${s} buy price`} value={h?.buy_price ?? null} onSave={(v) => setHolding(s, { buy_price: v })} className="w-24 rounded border border-[#D5D9DD] px-2 py-2 text-right" /></td>
+                          <td className="pr-3 text-right">{inr(invested)}</td>
+                          <td className="pr-3 text-right">{inr(value)}</td>
+                          <td className={`pr-3 text-right ${tone(pnl)}`}>
+                            {pnl === undefined ? "—" : <><div>{sgn(pnl)}</div><div className="text-xs">{`${sgn((pnl / (invested || 1)) * 100)}%`}</div></>}
+                          </td>
+                          <td className="pr-3 text-right text-[#535B62]">{invested !== undefined && totInv > 0 ? `${formatNumber((invested / totInv) * 100, 2)}%` : "—"}</td>
+                          <td className="text-right"><button onClick={() => remove(s)} aria-label={`Remove ${s}`} className="px-2 text-lg leading-none text-[#81878C] hover:text-[#E5484D]">×</button></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                  <tfoot>
+                    <tr className="font-medium">
+                      <td className="pt-4" colSpan={4}>Total</td>
+                      <td className="pt-4 pr-3 text-right">{inr(totInv)}</td>
+                      <td className="pt-4 pr-3 text-right">{inr(totVal)}</td>
+                      <td className={`pt-4 pr-3 text-right ${tone(pricedCost > 0 ? totPnl : undefined)}`}>{pricedCost > 0 ? sgn(totPnl) : "—"}</td>
+                      <td colSpan={2} />
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            )}
+          </section>
+        </div>
+      ) : loaded && <p className="mt-8 text-sm text-[#81878C]">Create a basket to start adding stocks.</p>}
     </div>
   );
 }

@@ -140,6 +140,7 @@ def set_holding(basket_id: str, symbol: str, body: HoldingBody, request: Request
         raise HTTPException(422, "invalid NSE symbol")
     if not _REPO.set_equity_holding(staff["id"], basket_id, sym, body.qty, body.buy_price):
         raise HTTPException(404, "basket or symbol not found")
+    _REPO.log_audit(staff["id"], "equity_holding_set", "equity_basket", basket_id, {"symbol": sym, "qty": body.qty, "buy_price": body.buy_price})
     return {"success": True}
 
 
@@ -155,14 +156,17 @@ def create_basket(body: BasketCreate, request: Request, staff: Annotated[dict, D
     b = _REPO.create_equity_basket(staff["id"], body.name.strip(), _clean(body.symbols))
     if not b:
         raise HTTPException(409, "You already have a basket with this name")
+    _REPO.log_audit(staff["id"], "equity_basket_created", "equity_basket", b["id"], {"name": b["name"], "symbols": b["symbols"]})
     return b
 
 
 @router.put("/baskets/{basket_id}")
 def set_basket_symbols(basket_id: str, body: BasketSymbols, request: Request, staff: Annotated[dict, Depends(require_staff)]):
     verify_csrf(request)
-    if not _REPO.set_equity_basket_symbols(staff["id"], basket_id, _clean(body.symbols)):
+    syms = _clean(body.symbols)
+    if not _REPO.set_equity_basket_symbols(staff["id"], basket_id, syms):
         raise HTTPException(404, "basket not found")
+    _REPO.log_audit(staff["id"], "equity_basket_symbols_set", "equity_basket", basket_id, {"symbols": syms})
     return {"success": True}
 
 
@@ -171,4 +175,5 @@ def delete_basket(basket_id: str, request: Request, staff: Annotated[dict, Depen
     verify_csrf(request)
     if not _REPO.delete_equity_basket(staff["id"], basket_id):
         raise HTTPException(404, "basket not found")
+    _REPO.log_audit(staff["id"], "equity_basket_deleted", "equity_basket", basket_id)
     return {"success": True}

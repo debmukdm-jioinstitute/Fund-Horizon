@@ -543,3 +543,16 @@ def test_equity_holdings_and_abhijit_seed(client):
     assert client.put(f"/api/backoffice/equities/baskets/{bid}/holdings/TCS", json={"qty": 1}).status_code == 404
     assert client.put(f"/api/backoffice/equities/baskets/{bid}/holdings/BEL", json={"qty": -1}).status_code == 422
     assert client.get("/api/backoffice/equities/baskets").json()["data"][0]["holdings"]["BEL"] == {"qty": 10, "buy_price": 400}
+
+
+def test_equity_changes_are_audited(client):
+    from app.api import equities
+
+    _login_staff(client, _create_staff("analyst"))
+    bid = client.post("/api/backoffice/equities/baskets", json={"name": "Aud", "symbols": ["BEL"]}).json()["id"]
+    client.put(f"/api/backoffice/equities/baskets/{bid}/holdings/BEL", json={"qty": 5, "buy_price": 400})
+    client.delete(f"/api/backoffice/equities/baskets/{bid}")
+    conn = equities._REPO._conn()
+    acts = [r["action"] for r in conn.execute("SELECT action FROM audit_events WHERE target_id = ? ORDER BY created_at", (bid,)).fetchall()]
+    conn.close()
+    assert set(acts) >= {"equity_basket_created", "equity_holding_set", "equity_basket_deleted"}

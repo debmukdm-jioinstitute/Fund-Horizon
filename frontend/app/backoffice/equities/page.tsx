@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   EquityBasket, EquityHolding, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
   getEquityBaskets, getEquityQuotes, saveEquityBasket, saveEquityHolding, searchEquities,
@@ -92,7 +92,18 @@ export default function EquitiesPage() {
   }, [q]);
 
   const basket = baskets.find((b) => b.id === activeId);
-  const symbols = useMemo(() => basket?.symbols ?? [], [basket]);
+  // Locked by default. Edits go to a local draft and only persist on an explicit, confirmed Save.
+  const [draft, setDraft] = useState<{ symbols: string[]; holdings: Record<string, EquityHolding> } | null>(null);
+  const editing = draft !== null;
+  const cur = draft ?? { symbols: basket?.symbols ?? [], holdings: basket?.holdings ?? {} };
+  const symbols = cur.symbols;
+  const dirty = !!basket && !!draft && JSON.stringify(draft) !== JSON.stringify({ symbols: basket.symbols, holdings: basket.holdings });
+  useEffect(() => {
+    if (!dirty) return;
+    const h = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", h);
+    return () => window.removeEventListener("beforeunload", h);
+  }, [dirty]);
   const symKey = symbols.join(",");
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
@@ -122,39 +133,65 @@ export default function EquitiesPage() {
       setBaskets((p) => [...p, b]); setActiveId(b.id); setNewName(""); setShowNew(false); setErr(null);
     } catch (e) { fail(e); }
   };
+  const guardDiscard = () => !dirty || confirm("You have unsaved changes. Discard them?");
+  const selectBasket = (id: string) => { if (id === activeId || !guardDiscard()) return; setDraft(null); setActiveId(id); };
+  const startEdit = () => basket && setDraft({ symbols: [...basket.symbols], holdings: structuredClone(basket.holdings) });
+  const cancelEdit = () => { if (guardDiscard()) setDraft(null); };
+
   const deleteBasket = async () => {
-    if (!basket || !confirm(`Delete basket "${basket.name}"?`)) return;
+    if (!basket) return;
+    const typed = prompt(`This permanently deletes "${basket.name}" and all its quantities and buy prices.\nType the basket name to confirm:`);
+    if (typed === null) return;
+    if (typed.trim() !== basket.name) { setErr("Name did not match — basket not deleted."); return; }
     try {
       await deleteEquityBasket(basket.id);
       const rest = baskets.filter((b) => b.id !== basket.id);
-      setBaskets(rest); setActiveId(rest[0]?.id ?? ""); setErr(null);
+      setBaskets(rest); setActiveId(rest[0]?.id ?? ""); setDraft(null); setErr(null);
     } catch (e) { fail(e); }
   };
-  const setSymbols = async (next: string[]) => {
-    if (!basket) return;
-    const prev = baskets;
-    setBaskets(baskets.map((b) => (b.id === basket.id ? { ...b, symbols: next } : b)));
-    try { await saveEquityBasket(basket.id, next); setErr(null); }
-    catch (e) { setBaskets(prev); fail(e); }
-  };
-  const add = (s: EquitySuggestion) => {
-    if (!basket || symbols.includes(s.symbol) || symbols.length >= 50) return;
-    setSymbols([...symbols, s.symbol]);
+
+  const add = (x: EquitySuggestion) => {
+    if (!draft || symbols.includes(x.symbol) || symbols.length >= 50) return;
+    setDraft({ ...draft, symbols: [...symbols, x.symbol] });
     setQ(""); setSugg([]); setOpen(false);
   };
-  const setHolding = async (sym: string, patch: Partial<EquityHolding>) => {
-    if (!basket) return;
-    const cur = basket.holdings[sym] ?? { qty: null, buy_price: null };
-    const next = { ...cur, ...patch };
-    const prev = baskets;
-    setBaskets(baskets.map((b) => (b.id === basket.id ? { ...b, holdings: { ...b.holdings, [sym]: next } } : b)));
-    try { await saveEquityHolding(basket.id, sym, next); setErr(null); }
-    catch (e) { setBaskets(prev); fail(e); }
+  const setHolding = (sym: string, patch: Partial<EquityHolding>) => {
+    if (!draft) return;
+    const c = draft.holdings[sym] ?? { qty: null, buy_price: null };
+    setDraft({ ...draft, holdings: { ...draft.holdings, [sym]: { ...c, ...patch } } });
   };
-  const remove = (sym: string) => setSymbols(symbols.filter((x) => x !== sym));
+  const remove = (sym: string) => {
+    if (!draft) return;
+    const rest = { ...draft.holdings };
+    delete rest[sym];
+    setDraft({ symbols: symbols.filter((x) => x !== sym), holdings: rest });
+  };
+
+  const saveChanges = async () => {
+    if (!basket || !draft || !dirty) return;
+    const lines: string[] = [];
+    const old = basket.holdings;
+    for (const s of basket.symbols) if (!draft.symbols.includes(s)) lines.push(`− remove ${s}`);
+    for (const s of draft.symbols) {
+      const o = old[s], n = draft.holdings[s];
+      if (!basket.symbols.includes(s)) lines.push(`+ add ${s}${n?.qty != null ? `: ${n.qty} @ ${n.buy_price ?? "?"}` : ""}`);
+      else if (o?.qty !== n?.qty || o?.buy_price !== n?.buy_price)
+        lines.push(`${s}: qty ${o?.qty ?? "—"} → ${n?.qty ?? "—"}, buy ${o?.buy_price ?? "—"} → ${n?.buy_price ?? "—"}`);
+    }
+    if (!confirm(`Save ${lines.length} change${lines.length === 1 ? "" : "s"} to "${basket.name}"?\n\n${lines.join("\n")}`)) return;
+    try {
+      if (JSON.stringify(draft.symbols) !== JSON.stringify(basket.symbols)) await saveEquityBasket(basket.id, draft.symbols);
+      for (const s of draft.symbols) {
+        const o = old[s], n = draft.holdings[s];
+        if (n && (o?.qty !== n.qty || o?.buy_price !== n.buy_price)) await saveEquityHolding(basket.id, s, n);
+      }
+      setBaskets(baskets.map((b) => (b.id === basket.id ? { ...b, symbols: draft.symbols, holdings: draft.holdings } : b)));
+      setDraft(null); setErr(null);
+    } catch (e) { fail(e); }  // draft is kept so nothing typed is lost
+  };
 
   const rows = symbols.map((s) => {
-    const h = basket?.holdings[s], r = quotes[s], px = r?.price;
+    const h = cur.holdings[s], r = quotes[s], px = r?.price;
     const invested = h?.qty != null && h.buy_price != null ? h.qty * h.buy_price : undefined;
     const value = h?.qty != null && px != null ? h.qty * px : undefined;
     const today = h?.qty != null && r?.change != null ? h.qty * r.change : undefined;
@@ -191,7 +228,7 @@ export default function EquitiesPage() {
       {/* Basket tabs */}
       <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-[#E8EBED]">
         {baskets.map((b) => (
-          <button key={b.id} onClick={() => setActiveId(b.id)}
+          <button key={b.id} onClick={() => selectBasket(b.id)}
             className={`-mb-px border-b-2 pb-3 text-[15px] ${b.id === activeId ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>
             {b.name} <span className="text-[#81878C]">{b.symbols.length}</span>
           </button>
@@ -204,7 +241,7 @@ export default function EquitiesPage() {
             <button className={outlineBtn} onClick={createBasket} disabled={!newName.trim()}>Create</button>
           </div>
         ) : (
-          <button className={`${outlineBtn} mb-2 py-1.5`} onClick={() => setShowNew(true)}>+ New basket</button>
+          <button className={`${outlineBtn} mb-2 py-1.5`} disabled={editing} onClick={() => setShowNew(true)}>+ New basket</button>
         )}
       </div>
 
@@ -225,8 +262,15 @@ export default function EquitiesPage() {
                   <dd className={`mt-0.5 text-base font-medium ${tone(totVal > 0 ? totToday : undefined)}`}>{totVal > 0 ? sgn(totToday) : "—"}</dd></div>
                 <div><dt className="text-[#81878C]">Stocks</dt><dd className="mt-0.5 text-base font-medium">{symbols.length}</dd></div>
               </dl>
-              <button className={primaryBtn} onClick={() => refresh()}>Refresh prices</button>
-              <button className="w-full rounded border border-[#E8EBED] bg-white px-4 py-3 text-base font-medium text-[#E5484D] hover:bg-[#FFF5F5]" onClick={deleteBasket}>Delete basket</button>
+              {editing ? (<>
+                <p className="rounded border border-[#F5D58A] bg-[#FFF9E6] px-3 py-2 text-xs text-[#7A5B00]">Editing — nothing is saved until you press Save changes.</p>
+                <button className={`${primaryBtn} disabled:opacity-40`} disabled={!dirty} onClick={saveChanges}>Save changes</button>
+                <button className={`${outlineBtn} w-full py-3`} onClick={cancelEdit}>Cancel</button>
+                <button className="w-full text-sm font-medium text-[#E5484D]" onClick={deleteBasket}>Delete basket…</button>
+              </>) : (<>
+                <button className={primaryBtn} onClick={startEdit}>Edit holdings</button>
+                <button className={`${outlineBtn} w-full py-3`} onClick={() => refresh()}>Refresh prices</button>
+              </>)}
               <p className="text-xs text-[#81878C]">
                 Yahoo Finance (unofficial, may lag ~15 min). Auto-refresh {REFRESH_MS / 1000}s
                 {updated ? ` · ${updated.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST` : ""}. Research data, not advice.
@@ -236,8 +280,8 @@ export default function EquitiesPage() {
 
           {/* Stocks */}
           <section className="min-w-0 lg:col-start-1 lg:row-start-1">
-            <div className="mb-1 text-sm text-[#81878C]">Add &amp; organize stocks</div>
-            <div className="relative mb-4" onBlur={() => setTimeout(() => setOpen(false), 150)}>
+            {editing && <div className="mb-1 text-sm text-[#81878C]">Add &amp; organize stocks</div>}
+            <div className={`relative mb-4 ${editing ? "" : "hidden"}`} onBlur={() => setTimeout(() => setOpen(false), 150)}>
               <svg aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#81878C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
               <input value={q} onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)}
                 placeholder="Search by name or ticker" className="w-full rounded border border-[#D5D9DD] bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#1F7AE0]" />
@@ -256,7 +300,7 @@ export default function EquitiesPage() {
             </div>
 
             {symbols.length === 0 ? (
-              <p className="rounded border border-dashed border-[#D5D9DD] p-8 text-center text-sm text-[#81878C]">No stocks yet. Search above to add your first pick.</p>
+              <p className="rounded border border-dashed border-[#D5D9DD] p-8 text-center text-sm text-[#81878C]">No stocks yet. Press Edit holdings to add your first pick.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[900px] border-collapse text-sm">
@@ -282,15 +326,19 @@ export default function EquitiesPage() {
                               <div className={`text-xs ${tone(r?.change ?? undefined)}`}>{r?.change == null ? "" : `${sgn(r.change)} (${sgn(r.change_pct ?? 0)}%)`}</div>
                             </>)}
                           </td>
-                          <td className="pr-3 text-right"><Stepper label={s} value={h?.qty ?? null} onSave={(v) => setHolding(s, { qty: v })} /></td>
-                          <td className="pr-3 text-right"><NumInput label={`${s} buy price`} value={h?.buy_price ?? null} onSave={(v) => setHolding(s, { buy_price: v })} className="w-24 rounded border border-[#D5D9DD] px-2 py-2 text-right" /></td>
+                          <td className="pr-3 text-right">
+                            {editing ? <Stepper label={s} value={h?.qty ?? null} onSave={(v) => setHolding(s, { qty: v })} /> : <span className="text-[15px] font-medium">{h?.qty ?? "—"}</span>}
+                          </td>
+                          <td className="pr-3 text-right">
+                            {editing ? <NumInput label={`${s} buy price`} value={h?.buy_price ?? null} onSave={(v) => setHolding(s, { buy_price: v })} className="w-24 rounded border border-[#D5D9DD] px-2 py-2 text-right" /> : (h?.buy_price != null ? formatNumber(h.buy_price, 2) : "—")}
+                          </td>
                           <td className="pr-3 text-right">{inr(invested)}</td>
                           <td className="pr-3 text-right">{inr(value)}</td>
                           <td className={`pr-3 text-right ${tone(pnl)}`}>
                             {pnl === undefined ? "—" : <><div>{sgn(pnl)}</div><div className="text-xs">{`${sgn((pnl / (invested || 1)) * 100)}%`}</div></>}
                           </td>
                           <td className="pr-3 text-right text-[#535B62]">{invested !== undefined && totInv > 0 ? `${formatNumber((invested / totInv) * 100, 2)}%` : "—"}</td>
-                          <td className="text-right"><button onClick={() => remove(s)} aria-label={`Remove ${s}`} className="px-2 text-lg leading-none text-[#81878C] hover:text-[#E5484D]">×</button></td>
+                          <td className="text-right">{editing && <button onClick={() => remove(s)} aria-label={`Remove ${s}`} className="px-2 text-lg leading-none text-[#81878C] hover:text-[#E5484D]">×</button>}</td>
                         </tr>
                       );
                     })}

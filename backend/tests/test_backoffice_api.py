@@ -449,7 +449,13 @@ def test_equity_baskets_crud_and_isolation(client):
     assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["bad!"]}).status_code == 422
     assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["M&M"]}).status_code == 200
     assert client.get("/api/backoffice/equities/baskets").json()["data"] == [{"id": bid, "name": "Banks", "symbols": ["M&M"], "holdings": {}}]
+    other = client.post("/api/backoffice/equities/baskets", json={"name": "Tech"}).json()["id"]
+    assert client.patch(f"/api/backoffice/equities/baskets/{other}", json={"name": "Banks"}).status_code == 409
+    assert client.patch(f"/api/backoffice/equities/baskets/{other}", json={"name": " IT "}).status_code == 200
+    assert client.patch(f"/api/backoffice/equities/baskets/{other}", json={"name": "  "}).status_code == 422
+    assert client.delete(f"/api/backoffice/equities/baskets/{other}").status_code == 200
     _login_staff(client, b)  # another staff member sees/touches nothing
+    assert client.patch(f"/api/backoffice/equities/baskets/{bid}", json={"name": "X"}).status_code == 404
     assert client.get("/api/backoffice/equities/baskets").json()["data"] == []
     assert client.delete(f"/api/backoffice/equities/baskets/{bid}").status_code == 404
     _login_staff(client, a)

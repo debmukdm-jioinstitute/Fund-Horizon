@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   EquityBasket, EquityHolding, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
-  getEquityBaskets, getEquityIndices, getEquityQuotes, saveEquityBasket, saveEquityHolding, searchEquities,
+  getEquityBaskets, getEquityIndices, getEquityQuotes, renameEquityBasket, saveEquityBasket, saveEquityHolding, searchEquities,
 } from "@/lib/backoffice";
 import { formatNumber } from "@/lib/terminal-format";
 
@@ -157,6 +157,16 @@ export default function EquitiesPage() {
   const selectBasket = (id: string) => { if (id === activeId || !guardDiscard()) return; setDraft(null); setActiveId(id); };
   const startEdit = () => basket && setDraft({ symbols: [...basket.symbols], holdings: structuredClone(basket.holdings) });
   const cancelEdit = () => { if (guardDiscard()) setDraft(null); };
+
+  const renameBasket = async () => {
+    if (!basket) return;
+    const n = prompt("Rename basket", basket.name)?.trim();
+    if (!n || n === basket.name) return;
+    try {
+      await renameEquityBasket(basket.id, n);
+      setBaskets(baskets.map((b) => (b.id === basket.id ? { ...b, name: n } : b))); setErr(null);
+    } catch (e) { fail(e); }
+  };
 
   const deleteBasket = async () => {
     if (!basket) return;
@@ -347,11 +357,14 @@ export default function EquitiesPage() {
                 <p className="rounded border border-[#F5D58A] bg-[#FFF9E6] px-3 py-2 text-xs text-[#7A5B00]">Editing — nothing is saved until you press Save changes.</p>
                 <button className={`${primaryBtn} disabled:opacity-40`} disabled={!dirty} onClick={saveChanges}>Save changes</button>
                 <button className={`${outlineBtn} w-full py-3`} onClick={cancelEdit}>Cancel</button>
-                <button className="w-full text-sm font-medium text-[#E5484D]" onClick={deleteBasket}>Delete basket…</button>
               </>) : (<>
                 <button className={primaryBtn} onClick={startEdit}>Edit holdings</button>
                 <button className={`${outlineBtn} w-full py-3`} onClick={() => refresh()}>Refresh prices</button>
               </>)}
+              <div className="flex justify-between text-sm font-medium">
+                <button className="text-[#1F7AE0]" onClick={renameBasket}>Rename basket</button>
+                <button className="text-[#E5484D]" onClick={deleteBasket}>Delete basket…</button>
+              </div>
               <p className="text-xs text-[#81878C]">
                 Yahoo Finance (unofficial, may lag ~15 min). Auto-refresh {REFRESH_MS / 1000}s
                 {updated ? ` · ${updated.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST` : ""}. Research data, not advice.

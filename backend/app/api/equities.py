@@ -187,6 +187,25 @@ def set_basket_symbols(basket_id: str, body: BasketSymbols, request: Request, st
     return {"success": True}
 
 
+class BasketRename(BaseModel):
+    name: str = Field(..., min_length=1, max_length=60)
+
+
+@router.patch("/baskets/{basket_id}")
+def rename_basket(basket_id: str, body: BasketRename, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    name = body.name.strip()
+    if not name:
+        raise HTTPException(422, "name required")
+    res = _REPO.rename_equity_basket(staff["id"], basket_id, name)
+    if res == "missing":
+        raise HTTPException(404, "basket not found")
+    if res == "dup":
+        raise HTTPException(409, "You already have a basket with this name")
+    _REPO.log_audit(staff["id"], "equity_basket_renamed", "equity_basket", basket_id, {"name": name})
+    return {"success": True}
+
+
 @router.delete("/baskets/{basket_id}")
 def delete_basket(basket_id: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
     verify_csrf(request)

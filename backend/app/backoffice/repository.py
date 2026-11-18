@@ -1683,6 +1683,19 @@ class BackofficeRepository:
         finally:
             conn.close()
 
+    def rename_equity_basket(self, staff_id: str, basket_id: str, name: str) -> str:
+        """'ok', 'missing' (not this staff member's) or 'dup' (name already used)."""
+        conn = self._conn()
+        try:
+            with conn:
+                n = conn.execute("UPDATE equity_baskets SET name = ?, updated_at = ? WHERE id = ? AND staff_id = ?",
+                                 (name, _utcnow(), basket_id, staff_id)).rowcount
+            return "ok" if n else "missing"
+        except sqlite3.IntegrityError:
+            return "dup"
+        finally:
+            conn.close()
+
     def set_equity_basket_symbols(self, staff_id: str, basket_id: str, symbols: list[str]) -> bool:
         conn = self._conn()
         try:

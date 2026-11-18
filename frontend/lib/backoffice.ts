@@ -637,7 +637,10 @@ export const saveEquityBasket = async (id: string, symbols: string[]): Promise<v
 export const saveEquityHolding = async (id: string, symbol: string, h: EquityHolding): Promise<void> => {
   await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}/holdings/${encodeURIComponent(symbol)}`, { method: "PUT", body: JSON.stringify(h) });
 };
-export const deleteEquityBasket = async (id: string): Promise<void> => {
+export const renameEquityBasket = async (id: string, name: string): Promise<void> => {
+  await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ name }) });
+};
+export const deleteEquityBasket =async (id: string): Promise<void> => {
   await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}`, { method: "DELETE" });
 };
 

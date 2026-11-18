@@ -362,3 +362,25 @@ def test_unknown_templates_are_read_by_figures_not_headers(name, data, names):
     holdings, _ = portfolio_screen.parse_portfolio_pdf_bytes(data, filename=name)
     assert [h["raw_name"] for h in holdings] == names  # totals / notes / disclaimers are not holdings
     assert all(h["statement_value"] and h["statement_value"] > 0 for h in holdings)
+
+
+_WRAPPED = """Folio Wise Valuation as on 06/11/2026
+Hybrid
+WOC Multi Asset Allocation
+Fund-Reg(G) 1000878074 28/02/2025 150000 0 0 0 11606.632 12.92 149993 16.0550 186344 35.14 24.24 13.46
+Total 150000 0 0 0 149993 186344 24.24 13.46
+Others
+Edelweiss US Technology Equity
+FOF-Reg(G) 91016771996 08/06/2026 15000 0 0 0 388.889 38.57 15000 32.0500 12464 0.18 -16.91
+360 ONE Focused Fund-Reg(G) 340715/41 06/03/2023 305000 0 0 0 8315.153 36.68 304984 50.9821 423924 6.15 39.00 11.97
+"""
+
+
+def test_layout_text_wrapped_names_invested_and_current_value():
+    hs, _ = portfolio_screen.extract_from_layout_text(_WRAPPED)
+    got = [(h["raw_name"], h["folio"], h["statement_invested"], h["statement_value"]) for h in hs]
+    assert got == [
+        ("WOC Multi Asset Allocation Fund-Reg(G)", "1000878074", 150000.0, 186344.0),
+        ("Edelweiss US Technology Equity FOF-Reg(G)", "91016771996", 15000.0, 12464.0),  # current value, not cost value
+        ("360 ONE Focused Fund-Reg(G)", "340715/41", 305000.0, 423924.0),  # leading "360" is the name, not an S.No
+    ]

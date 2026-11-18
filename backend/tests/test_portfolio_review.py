@@ -267,3 +267,10 @@ def test_parallel_benchmark_dates_and_implied_date_derivation(monkeypatch):
 
 
 
+
+
+def test_overlong_names_are_clipped_not_rejected():
+    from app.api.portfolio_review import Holding
+
+    h = Holding(code="123456", invested=1, value=1, name="X " * 400, typ="T" * 90)
+    assert len(h.name) <= 200 and len(h.typ) <= 60

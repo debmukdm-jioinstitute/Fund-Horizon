@@ -11,8 +11,9 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from app.api._clip import ClipModel as BaseModel
 from app.api.crm_core import Me, _optouts, _visible_customer
 from app.db import sqlite
 from app.mailer import MailerError, send_email

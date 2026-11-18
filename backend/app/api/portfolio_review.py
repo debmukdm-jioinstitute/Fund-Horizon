@@ -14,8 +14,9 @@ from typing import Annotated, Any
 import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from app.api._clip import ClipModel as BaseModel
 from app.api.crm_core import Me, _optouts, _visible_customer
 from app.backoffice import portfolio_screen
 from app.backoffice.valuation import bundle, layouts
@@ -1038,6 +1039,16 @@ def _extract_table_rows(rows: list[list[Any]]) -> tuple[list[dict[str, Any]], st
     return holdings, client_name, st_date
 
 
+def _layout_holding(x: dict[str, Any]) -> dict[str, Any]:
+    """Layout-text row -> holding. A statement that prints invested + purchase date also gives its dated flow (XIRR)."""
+    d = ing.parse_date(x["start_date"]) if x.get("start_date") else ""
+    inv = x.get("statement_invested")
+    return {"raw_name": x["raw_name"], "isin": x.get("isin"), "amfi_code": x.get("amfi_code"), "folio": x.get("folio"),
+            "units": x.get("units"), "nav": x.get("statement_nav"), "invested": inv, "value": x.get("statement_value") or 0.0,
+            "from": d[:7] if d else "", "to": "", "inst": "", "ret": None, "flag": "",
+            "flows": [(d, inv)] if d and inv else []}
+
+
 def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any]:
     """Extract holdings, flows, client metadata and optional explicit compare JSON from one uploaded file."""
     if not data:
@@ -1061,9 +1072,7 @@ def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any
                 h, cn, sd = _extract_table_rows(rows)
                 if not h:
                     l_h, l_sd = portfolio_screen.extract_from_layout_text("\n".join("   ".join(str(c) for c in r if c is not None and str(c).strip()) for r in rows))
-                    h = [{"raw_name": x["raw_name"], "isin": x.get("isin"), "amfi_code": x.get("amfi_code"), "folio": x.get("folio"),
-                          "units": x.get("units"), "nav": x.get("statement_nav"), "invested": None, "value": x.get("statement_value") or 0.0,
-                          "from": "", "to": "", "inst": "", "ret": None, "flag": "", "flows": []} for x in l_h]
+                    h = [_layout_holding(x) for x in l_h]
                     sd = sd or (ing.parse_date(l_sd) if l_sd else "")
                 all_h.extend(h)
                 c_name = c_name or cn
@@ -1102,9 +1111,7 @@ def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any
             if eh:
                 return {
                     "client_name": "", "val_date": ing.parse_date(esd) or "", "portfolio_xirr": None, "kind": "text", "warnings": [],
-                    "holdings": [{"raw_name": x["raw_name"], "isin": x.get("isin"), "amfi_code": x.get("amfi_code"), "folio": x.get("folio"),
-                                  "units": x.get("units"), "nav": x.get("statement_nav"), "invested": None, "value": x.get("statement_value") or 0.0,
-                                  "from": "", "to": "", "inst": "", "ret": None, "flag": "", "flows": []} for x in eh],
+                    "holdings": [_layout_holding(x) for x in eh],
                 }
         raise ValueError(f"{name}: no mutual fund holdings found in this file.")
 
@@ -1218,9 +1225,7 @@ def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any
             if eh:
                 return {
                     "client_name": "", "val_date": ing.parse_date(esd) or "", "portfolio_xirr": None, "kind": "text_pdf", "warnings": [],
-                    "holdings": [{"raw_name": x["raw_name"], "isin": x.get("isin"), "amfi_code": x.get("amfi_code"), "folio": x.get("folio"),
-                                  "units": x.get("units"), "nav": x.get("statement_nav"), "invested": None, "value": x.get("statement_value") or 0.0,
-                                  "from": "", "to": "", "inst": "", "ret": None, "flag": "", "flows": []} for x in eh],
+                    "holdings": [_layout_holding(x) for x in eh],
                 }
     if len((full_layout + full_pdfium).strip()) < 100 or re.search(r"funds[il1]ndia", (full_layout + full_pdfium).lower()):
         try:

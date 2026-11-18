@@ -232,17 +232,19 @@ def _val(tok: str) -> float | None:
 def _units_nav_value(nums: list[float]) -> tuple[float, float, float] | None:
     """Find (units, nav, value) with units * nav ~= value. Header-free and order-free, so it identifies the columns of any
     statement layout, and a line that has no such triple (disclaimer, total, address) is not a holding."""
-    best = None
+    hits = []
     for i, u in enumerate(nums):
         for j, n in enumerate(nums):
             if i == j or u <= 0 or n <= 0:
                 continue
             for k, v in enumerate(nums):
-                if k in (i, j) or v <= 0 or v < n * 0.99:
-                    continue
-                if abs(u * n - v) <= max(1.0, 0.005 * v) and (best is None or v > best[2]):
-                    best = (u, n, v)
-    return best
+                if k not in (i, j) and v > 0 and v >= n * 0.99 and abs(u * n - v) <= max(1.0, 0.005 * v):
+                    hits.append((k, (u, n, v)))
+    if not hits:
+        return None
+    top = max(h[1][2] for h in hits)
+    # current value is the rightmost match (it follows cost value = units x avg NAV); ignore coincidental small matches
+    return max((h for h in hits if h[1][2] >= 0.5 * top), key=lambda h: h[0])[1]
 
 
 def extract_from_layout_text(text: str) -> tuple[list[dict[str, Any]], str | None]:
@@ -257,6 +259,10 @@ def extract_from_layout_text(text: str) -> tuple[list[dict[str, Any]], str | Non
     st_date = (date_m.group(1) if date_m and date_m.groups() else date_m.group(0)) if date_m else None
     holdings: list[dict[str, Any]] = []
     last_was_row = False
+    pending = ""  # text-only line just above a row: the wrapped first half of its fund name
+    # "360 ONE Focused Fund" starts with digits: strip a leading S.No only when most figure rows carry one
+    fig = [ln.split() for ln in lines if len(ln.split()) > 4 and _TOK_NUM.match(ln.split()[-1])]
+    has_sno = bool(fig) and sum(t[0].isdigit() for t in fig) * 10 >= len(fig) * 6
     for ln in lines:
         toks = ln.split()
         end = len(toks)
@@ -278,9 +284,16 @@ def extract_from_layout_text(text: str) -> tuple[list[dict[str, Any]], str | Non
                 holdings[-1]["raw_name"] += " " + ln
                 continue
             last_was_row = False
+            pending = ln if len(toks) >= 2 and len(ln) < 70 and not any(_TOK_NUM.match(t) for t in toks) and not _NOISE_NAME.search(ln) else ""
             continue
-        if prefix and prefix[0].isdigit() and len(prefix) > 2:
+        if has_sno and prefix and prefix[0].isdigit() and len(prefix) > 2:
             prefix = prefix[1:]  # S.No
+        if pending and len([t for t in prefix if not _FOLIO.match(t)]) <= 2:
+            prefix = pending.split() + prefix  # "WOC Multi Asset Allocation" / "Fund-Reg(G) 1000878074 ..."
+        pending = ""
+        start = None
+        if prefix and re.fullmatch(r"\d{1,2}[/-]\d{1,2}[/-]\d{4}", prefix[-1]):
+            start, prefix = prefix[-1], prefix[:-1]  # purchase date, not part of the name or folio
         folio = None
         if len(prefix) > 2 and _FOLIO.match(prefix[-1]):
             folio = prefix[-1]
@@ -291,8 +304,12 @@ def extract_from_layout_text(text: str) -> tuple[list[dict[str, Any]], str | Non
             last_was_row = False
             continue
         units, nav, value = triple
+        vals = [_val(t) for t in run if not t.endswith("%")]
+        # "[invested, 0, 0, 0, units, avg NAV, ...]": the figures before units start with the amount invested
+        inv = vals[0] if start and vals.index(units) == 4 and vals[0] > 0 else None
         holdings.append({"raw_name": name, "folio": folio, "isin": isin_m.group(0) if isin_m else None, "amfi_code": None,
-                         "units": units, "statement_nav": nav, "statement_value": value, "valuation_date": st_date})
+                         "units": units, "statement_nav": nav, "statement_value": value, "valuation_date": st_date,
+                         "statement_invested": inv, "start_date": start})
         last_was_row = True
     return holdings, st_date
 

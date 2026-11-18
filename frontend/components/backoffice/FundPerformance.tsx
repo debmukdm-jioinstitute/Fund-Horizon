@@ -14,7 +14,7 @@ interface Pick { code: string; name: string }
 
 const TABS = [["trailing", "Trailing returns"], ["mcap", "Trailing returns with market cap"], ["annual", "Annual returns"], ["compare", "Returns comparison"], ["lumpsum", "Lumpsum returns"],
   ["lumpsum-multi", "Lumpsum returns, multiple funds"], ["consistent", "Consistent performers"], ["assets", "Comparison with asset classes"], ["monthly", "Monthly / quarterly returns"],
-  ["best", "Best performing fund"], ["p2p", "Point to point returns"]] as const;
+  ["best", "Top performing fund"], ["p2p", "Point to point returns"]] as const;
 const LUMP_YEARS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20];
 type Tab = (typeof TABS)[number][0];
 const PERIODS = [["ytd", "YTD"], ["1w", "1 Week"], ["1m", "1 Month"], ["3m", "3 Months"], ["6m", "6 Months"], ["1y", "1 Year"], ["3y", "3 Years"], ["5y", "5 Years"], ["10y", "10 Years"], ["si", "Since launch"]];

@@ -209,5 +209,14 @@ TABLE_COVERAGE: dict[str, str] = {
         "val_batches", "val_source_files", "val_accounts", "val_holdings", "val_cashflows", "val_reconciliation", "val_snapshots",
         "val_report_versions", "val_audit_log")},
     "email_optouts": _SYSTEM,
+    **{t: _SYSTEM for t in (
+        "equity_seed_done", "fh_ai_config", "mcp_audit", "mcp_oauth_clients", "mcp_oauth_codes", "mcp_oauth_fails",
+        "mcp_oauth_refresh", "mcp_tokens", "fin_reminder_log")},
+    **{t: "listed on its own page (Equities / FH history / HRMS / My money / MF research watchlists / Trade desk)" for t in (
+        "equity_baskets", "equity_holdings", "fh_reco_episode", "fh_reco_event", "fh_snapshot", "fh_thesis_note",
+        "fin_entries", "fin_prefs", "fin_snapshots", "hrms_attendance", "hrms_employees", "hrms_id_cards", "hrms_leaves",
+        "hrms_letters", "hrms_payroll_runs", "hrms_payslips", "mf_research_watchlist_items", "mf_research_watchlists",
+        "trade_desk")},
+    "portfolio_reviews": _CRM_CHILD,
 }
 

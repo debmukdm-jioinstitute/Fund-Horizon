@@ -3,7 +3,10 @@
 Separate file from the screener/quartile unit tests because these need a TestClient,
 staff sessions and a seeded managers table, not just the data frame.
 """
+
 from __future__ import annotations
+
+from datetime import date
 
 from app.backoffice.repository import BackofficeRepository
 from tests.test_backoffice_compare import _create_staff, _login_staff
@@ -35,7 +38,8 @@ def test_managers_directory_dedup_and_filters(client):
     # Regular + Direct rows of one fund: 2 schemes, 1 portfolio, AUM counted once.
     assert mgr["schemes"] == 2 and mgr["portfolios"] == 1
     assert mgr["aum_incomplete"] is False
-    assert 6.7 < mgr["longest_tenure_years"] < 6.8
+    expected = (date.today() - date(2020, 1, 15)).days / 365.25  # seeded start; tenure grows with the calendar
+    assert abs(mgr["longest_tenure_years"] - expected) < 0.05
     assert mgr["avg_tenure_years"] == mgr["longest_tenure_years"]
     assert mgr["needs_data"] is False
     unknown = by_name[None]

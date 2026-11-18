@@ -155,7 +155,7 @@ def test_cross_checks_between_tools(api):
     assert q1 and q4 and max(q1) <= min(q4)
     # top quartile average beats the category average
     tq = {x["scheme"]: x for x in run("top-quartile", category="Equity: Large Cap", plan="Regular").json()["rows"]}
-    assert tq["Average of top-quartile funds"]["3y"] > tq["Category average"]["3y"] and tq["Best fund"]["3y"] >= tq["Average of top-quartile funds"]["3y"]
+    assert tq["Average of top-quartile funds"]["3y"] > tq["Category average"]["3y"] and tq["Top fund"]["3y"] >= tq["Average of top-quartile funds"]["3y"]
     # overlap of a fund with itself is the whole portfolio equity weight
     o = run("overlap", codes="100471,100471")
     assert o.status_code == 200 or o.status_code == 422

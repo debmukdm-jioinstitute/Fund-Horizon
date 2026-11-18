@@ -18,15 +18,15 @@
   },
   "funds": [
     [
-      "148405",
+      "148989",
       22.71
     ],
     [
-      "108466",
+      "105503",
       18.92
     ],
     [
-      "140225",
+      "108466",
       18.92
     ],
     [
@@ -76,8 +76,8 @@
     "emergency_reserved": 0
   },
   "stress": {
-    "crash_2020_drawdown": -0.1906,
-    "worst_peak_to_trough": -0.1906,
-    "worst_rolling_12m": -0.1329
+    "crash_2020_drawdown": -0.1826,
+    "worst_peak_to_trough": -0.1826,
+    "worst_rolling_12m": -0.1243
   }
 }

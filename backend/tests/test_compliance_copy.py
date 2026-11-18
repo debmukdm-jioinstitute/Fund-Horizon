@@ -58,7 +58,9 @@ def test_banned_list_catches_advice_tone():
 
 def _benign(lit: str) -> bool:
     """Not advice copy: the internal config key "recommend", a negated disclaimer, and the report's legal declaration."""
-    return lit == "recommend" or "not guaranteed" in lit or "to the best of our knowledge" in lit
+    return (lit == "recommend" or "not guaranteed" in lit or "to the best of our knowledge" in lit
+            or re.search(r"\b(?:not|no)\b[^.]*\badvice\b", lit, re.I)  # negated disclaimer: "not investment advice"
+            or lit.startswith("/") or lit == "Wealth Advisory")  # route path; HRMS department name
 
 
 def test_no_banned_words_in_user_facing_strings():

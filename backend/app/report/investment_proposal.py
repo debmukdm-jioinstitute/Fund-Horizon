@@ -129,7 +129,7 @@ def build_pdf(r: dict, client: str, risk: str, purpose: str, cover: bool = True)
                      + ([inr(x["amount"])] if lump else []) + ([inr(x["sip"])] if sip else []) + [f"{x['alloc_pct']:.2f}"] for x in r["schemes"]]
     rows.append(["Grand Total", "", "", "", "", f"{r['expected_return']:.2f}"] + ([inr(r["amount"])] if lump else []) + ([inr(r["sip"])] if sip else []) + ["100.00"])
     extra = 26 * mm * (lump + sip)
-    s += [CondPageBreak(60 * mm), sec("Suggested Portfolio Allocation", _tbl(rows, [W - 139 * mm - extra, 38 * mm] + [19 * mm] * 3 + [24 * mm] + [26 * mm] * (lump + sip) + [20 * mm], 2),
+    s += [CondPageBreak(60 * mm), sec("Proposed Portfolio Allocation", _tbl(rows, [W - 139 * mm - extra, 38 * mm] + [19 * mm] * 3 + [24 * mm] + [26 * mm] * (lump + sip) + [20 * mm], 2),
           Spacer(1, 1.5 * mm), Paragraph(xml_escape(f"Expected value after {r['years']:g} years at {r['expected_return']:.2f}% p.a.: Rs. {inr(r['future_value'])}. "
                                                     "Expected returns are the category assumptions (mean 10-year rolling returns per AMFI circular 135/BP/109/2023-24) unless changed by the adviser."), BODY))]
     labels = {"stp": ("Value of STP portfolio", "Amount in source fund"), "swp": ("Corpus remaining", "Starting corpus")}.get(r.get("mode"), (f"Projected value @ {r['expected_return']:.2f}% p.a.", "Amount invested"))

@@ -343,7 +343,7 @@ def test_api_portfolio_coverage_sector_filter_detail_and_overlap(client):
     assert cov.status_code == 200
     cov_data = cov.json()["data"]
     assert cov_data["schemes_covered"] > 0
-    assert cov_data["as_of"] == "2026-09-30"
+    assert cov_data["as_of"] >= "2026-09-30"  # latest complete month grows with each data refresh
     assert "Motilal Oswal Mutual Fund" in cov_data["amcs"]
     assert "Banks" in cov_data["sectors"]
 
@@ -373,7 +373,7 @@ def test_api_portfolio_coverage_sector_filter_detail_and_overlap(client):
     assert d.status_code == 200
     portfolio = d.json()["data"]["portfolio"]
     assert portfolio["available"] is True
-    assert portfolio["as_of"] == "2026-09-30"
+    assert portfolio["as_of"] >= "2026-09-30"
     assert portfolio["sectors"] and portfolio["total_weight_pct"] == 100.0
     assert portfolio["summary"]["cash_pct"] is not None
     # Vs-index stays null with the honest reason: no TRI series is stored.

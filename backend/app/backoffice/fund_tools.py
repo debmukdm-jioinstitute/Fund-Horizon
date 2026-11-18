@@ -227,7 +227,7 @@ def swp_top(frame, category, lumpsum, invest_date, amount, frequency, start, end
         rows.append({"scheme": _short(r["name"]), "code": r["code"], "launch": dmy(_launch_dates().get(r["code"])), "invested": _r(lumpsum, 0), "period": frequency, "n": x["n"], "taken": _r(x["taken"], 0), "value": _r(x["value"], 0), "xirr": _r(x["xirr"])})
     rows.sort(key=lambda x: (x["xirr"] is None, -(x["xirr"] or 0)))
     cols = [("scheme", "Scheme Name"), ("launch", "Launch Date"), ("invested", "Lumpsum Amount"), ("period", "Withdrawal Period"), ("n", "No of Installments"), ("taken", "Total Withdrawal Amount"), ("value", "Current Value"), ("xirr", "Return XIRR %", None, "ret")]
-    return _table("Best SWP funds", cols, rows, "Funds launched after the investment date are left out. " + NOTE)
+    return _table("Top SWP funds", cols, rows, "Funds launched after the investment date are left out. " + NOTE)
 
 
 def swp_multi(frame, code1, amount1, code2, amount2, invest_date, withdrawal, frequency, start, end):
@@ -645,7 +645,7 @@ def rank_volatility(frame, category, plan):
 
 
 def rank_risk_adjusted(frame, category, plan):
-    return _rank_table(frame, category, plan, [("sharpe", "sharpe_3y", "Sharpe Ratio (3Y)", True), ("alpha", "alpha_3y", "Alpha (3Y)", True)], "Mutual fund risk adjusted returns ranking", "Quartile 1 = best quarter of the category. " + NOTE)
+    return _rank_table(frame, category, plan, [("sharpe", "sharpe_3y", "Sharpe Ratio (3Y)", True), ("alpha", "alpha_3y", "Alpha (3Y)", True)], "Mutual fund risk adjusted returns ranking", "Quartile 1 = top quarter of the category. " + NOTE)
 
 
 def _calendar_quartiles(f: pd.DataFrame, labels: list[tuple[str, Callable]], title: str, details: str) -> dict[str, Any]:
@@ -697,7 +697,7 @@ def quartile_quarterly(frame, category, plan):
 def top_quartile(frame, category, plan):
     f = fp._scope(frame, category, plan)
     spec = [("1y", "ret_1y", "1 Year"), ("2y", "ret_2y", "2 Year"), ("3y", "cagr_3y", "3 Year"), ("5y", "cagr_5y", "5 Year"), ("10y", "cagr_10y", "10 Year")]
-    rows = [{"scheme": "Average of top-quartile funds"}, {"scheme": "Category average"}, {"scheme": "Best fund"}, {"scheme": "Funds with data"}]
+    rows = [{"scheme": "Average of top-quartile funds"}, {"scheme": "Category average"}, {"scheme": "Top fund"}, {"scheme": "Funds with data"}]
     for k, c, _ in spec:
         v = pd.to_numeric(f[c], errors="coerce").dropna()
         if len(v) < 4:
@@ -758,7 +758,7 @@ TOOLS: list[dict[str, Any]] = [
         _f("code", "Fund", "fund"), _f("lumpsum", "Lumpsum (Rs.)", "number", default=1000000), _f("invest_date", "Investment date", "date", **_START(10)), _f("amount", "Withdrawal (Rs.)", "number", default=5000),
         _f("frequency", "Frequency", "select", **_FREQ), _f("start", "Withdrawals start", "date", **_START(10)), _f("end", "End date", "date", default="today"),
         _f("increase", "Yearly increase (%)", "select", options=["5", "10", "15", "20", "25"], default="10", cast="float")]},
-    {"id": "swp-top", "group": "SIP / STP / SWP", "title": "Best SWP funds", "blurb": "The same SWP run on every fund of a category.", "fn": swp_top, "fields": [
+    {"id": "swp-top", "group": "SIP / STP / SWP", "title": "Top SWP funds", "blurb": "The same SWP run on every fund of a category.", "fn": swp_top, "fields": [
         _f("category", "Category", "category"), _f("lumpsum", "Lumpsum (Rs.)", "number", default=1000000), _f("invest_date", "Investment date", "date", **_START(10)), _f("amount", "Withdrawal (Rs.)", "number", default=5000),
         _f("frequency", "Frequency", "select", **_FREQ), _f("start", "Withdrawals start", "date", **_START(10)), _f("end", "End date", "date", default="today"), _f("plan", "Plan", "plan")]},
     {"id": "swp-multi", "group": "SIP / STP / SWP", "title": "SWP with multiple schemes", "blurb": "One withdrawal drawn from two schemes in proportion to their value.", "fn": swp_multi, "fields": [

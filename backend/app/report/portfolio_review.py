@@ -472,7 +472,7 @@ def build_portfolio_review(d: dict, live: dict[str, dict]) -> bytes:
     a.add_patch(FancyBboxPatch((820, 332), 453, 338, boxstyle="round,pad=0,rounding_size=14", fc=LIGHT, ec="none"))
     a.text(845, 368, "In short", fontsize=17, fontweight="bold", color=NAVY, va="center")
     best, worst = max(hold, key=lambda h: h["ret"]), min(hold, key=lambda h: h["ret"])
-    a.text(845, 396, wrap(f"Largest holding: {max(hold, key=lambda h: h['value'])['name']}.\n\nBest return: {best['name']} ({pc(best['ret'])}).\n\nWeakest return: {worst['name']} ({pc(worst['ret'])}).", 44), fontsize=12, va="top", linespacing=1.42, color=INK)
+    a.text(845, 396, wrap(f"Largest holding: {max(hold, key=lambda h: h['value'])['name']}.\n\nHighest return: {best['name']} ({pc(best['ret'])}).\n\nWeakest return: {worst['name']} ({pc(worst['ret'])}).", 44), fontsize=12, va="top", linespacing=1.42, color=INK)
     dk.save(f)
 
     # Slide 3+: 4-Nifty-indices matrix slide (when matrix_rows present)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 """Fund performance reports (reverse-engineered from the advisor tool's Fund Performance tabs): trailing returns, annual returns,
-returns comparison, lumpsum returns, consistent performers, comparison with asset classes, monthly/quarterly returns, best performing
+returns comparison, lumpsum returns, consistent performers, comparison with asset classes, monthly/quarterly returns, top performing
 fund and point-to-point returns. Every report returns one generic table: columns (with optional group), rows, note.
 
 Differences from the original: dates work on month-end NAV (the dataset has no daily NAV), categories are Fund Horizon's own, the
@@ -358,7 +358,7 @@ def best(frame: pd.DataFrame, amcs: list[str], category: str, period: str = "1y"
     for x in rows:
         x.pop("_p")
     cols = [("scheme", "Scheme Name"), ("amc", "Fund House"), ("category", "Category"), ("launch", "Launch Date"), ("aum", "AUM (Crore)"), ("ter", "TER (%)")] + [(k, f"{l} Ret (%)", None, "ret") for k, l in (("1y", "1-Year"), ("3y", "3-Yrs"), ("5y", "5-Yrs"), ("10y", "10-Yrs"), ("si", "Since Launch"))]
-    return _table("Best performing fund", cols, rows, f"Best fund of each selected fund house in the category by {period.upper()} return; 5/10/15 largest fund houses are ranked by total AUM. " + TAB_NOTE)
+    return _table("Top performing fund", cols, rows, f"Top fund of each selected fund house in the category by {period.upper()} return; 5/10/15 largest fund houses are ranked by total AUM. " + TAB_NOTE)
 
 
 def p2p(frame: pd.DataFrame, category: str, ranges: list[tuple[str, str]], plan: str = "Regular") -> dict[str, Any]:

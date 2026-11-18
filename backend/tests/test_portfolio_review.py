@@ -274,3 +274,11 @@ def test_overlong_names_are_clipped_not_rejected():
 
     h = Holding(code="123456", invested=1, value=1, name="X " * 400, typ="T" * 90)
     assert len(h.name) <= 200 and len(h.typ) <= 60
+
+
+def test_total_check_flags_missing_fund():
+    from app.api.portfolio_review import _total_check
+
+    txt = "Grand Total 450000 0 0 0 449977 530263 17.84 10.03"
+    assert _total_check(txt, [{"statement_value": 530263.0}]) == []
+    assert "530,263" in _total_check(txt, [{"statement_value": 186344.0}])[0]

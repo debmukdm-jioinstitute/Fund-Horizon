@@ -1049,6 +1049,20 @@ def _layout_holding(x: dict[str, Any]) -> dict[str, Any]:
             "flows": [(d, inv)] if d and inv else []}
 
 
+def _total_check(text: str, rows: list[dict[str, Any]]) -> list[str]:
+    """Funds read must add up to the statement's own "Grand Total" rows (current value is the 6th figure); else say so."""
+    tot = 0.0
+    for ln in text.splitlines():
+        if re.match(r"\s*Grand\s+Total\b", ln, re.I):
+            n = re.findall(r"-?\d[\d,]*(?:\.\d+)?", ln)
+            if len(n) >= 6:
+                tot += float(n[5].replace(",", ""))
+    got = sum(x.get("statement_value") or 0.0 for x in rows)
+    if tot and abs(got - tot) > max(5.0, 0.001 * tot):
+        return [f"Funds read add up to ₹{got:,.0f} but the statement's Grand Total says ₹{tot:,.0f}; check for a missing or wrong row."]
+    return []
+
+
 def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any]:
     """Extract holdings, flows, client metadata and optional explicit compare JSON from one uploaded file."""
     if not data:
@@ -1224,7 +1238,8 @@ def _extract_single_file(name: str, data: bytes, password: str) -> dict[str, Any
             eh, esd = ext(txt)
             if eh:
                 return {
-                    "client_name": "", "val_date": ing.parse_date(esd) or "", "portfolio_xirr": None, "kind": "text_pdf", "warnings": [],
+                    "client_name": "", "val_date": ing.parse_date(esd) or "", "portfolio_xirr": None, "kind": "text_pdf",
+                    "warnings": _total_check(txt, eh),
                     "holdings": [_layout_holding(x) for x in eh],
                 }
     if len((full_layout + full_pdfium).strip()) < 100 or re.search(r"funds[il1]ndia", (full_layout + full_pdfium).lower()):

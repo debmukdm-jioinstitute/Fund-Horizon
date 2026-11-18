@@ -3572,7 +3572,7 @@
   {
    "period": "2026-10",
    "title": "LIC Mutual Fund factsheet 2026-10",
-   "url": "https://www.licmf.com/assets/downloads/monthly_fact_sheet/2026-2027/11/lic-mf-factsheet-31st-October-2026.pdf"
+   "url": "https://www.licmf.com/assets/downloads/monthly_fact_sheet/2026-2027/11/lic-mf-factsheet-31st-october-2026-546137254.pdf"
   },
   {
    "period": "2026-09",
@@ -5961,6 +5961,11 @@
  ],
  "absl": [
   {
+   "period": "2026-11",
+   "title": "Aditya Birla Sun Life Mutual Fund factsheet 2026-11",
+   "url": "https://mutualfund.adityabirlacapital.com/-/media/bsl/files/resources/factsheets/2026/absl-sebi-factsheet_november-2026.pdf"
+  },
+  {
    "period": "2026-10",
    "title": "Aditya Birla Sun Life Mutual Fund factsheet 2026-10",
    "url": "https://mutualfund.adityabirlacapital.com/-/media/bsl/files/resources/factsheets/2026/empower-for-the-month-of-october-2026.pdf"
@@ -6114,6 +6119,11 @@
   }
  ],
  "bandhan": [
+  {
+   "period": "2026-10",
+   "title": "Bandhan Mutual Fund factsheet",
+   "url": "https://storage.googleapis.com/nonprod-static-assets-121to59kaawfgfi7bol/2026/11/55ccd367-bandhan-sebi-factsheet-oct-2026.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Bandhan Mutual Fund factsheet",
@@ -6923,6 +6933,11 @@
   }
  ],
  "zerodha": [
+  {
+   "period": "2026-10",
+   "title": "Zerodha Mutual Fund factsheet 2026-10",
+   "url": "https://assets.zerodhafundhouse.com/offer-documents/factsheet/Factsheet%20-%20Oct%2026.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Zerodha Mutual Fund factsheet 2026-09",
@@ -7770,6 +7785,11 @@
   }
  ],
  "groww": [
+  {
+   "period": "2026-10",
+   "title": "Groww Mutual Fund factsheet 2026-10",
+   "url": "https://assets-netstorage.growwmf.in/compliance_docs/Downloads/Fact%20Sheet/2026%20-%202027/GMF%20Factsheet%20October%20-%202026.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Groww Mutual Fund factsheet 2026-09",

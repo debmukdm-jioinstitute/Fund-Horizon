@@ -5476,6 +5476,11 @@
  ],
  "axis": [
   {
+   "period": "2026-10",
+   "title": "Axis Mutual Fund factsheet 2026-10",
+   "url": "https://www.axismf.com/1/5/1423/1484/1487/2872/4691/Axis_Fund_Factsheet_October_2026_ea97678ad4.pdf"
+  },
+  {
    "period": "2026-09",
    "title": "Axis Mutual Fund factsheet 2026-09",
    "url": "https://www.axismf.com/1/5/1423/1484/1487/2872/4655/Axis_Fund_Factsheet_September_2026_3d19621fa7.pdf"
@@ -7116,6 +7121,11 @@
  ],
  "pgim": [
   {
+   "period": "2026-10",
+   "title": "PGIM India Mutual Fund factsheet 2026-10",
+   "url": "https://www.pgimindia.com/api/v1/brochure/about-us/image/Factsheet-October2026.pdf"
+  },
+  {
    "period": "2026-08",
    "title": "PGIM India Mutual Fund factsheet 2026-08",
    "url": "https://www.pgimindia.com/api/v1/brochure/about-us/image/Factsheet-August2026.pdf"
@@ -8002,7 +8012,33 @@
   }
  ],
  "iti": [],
- "jioblackrock": [],
+ "jioblackrock": [
+  {
+   "period": "2026-09",
+   "title": "Jio BlackRock Mutual Fund factsheet 2026-09",
+   "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/jioblackro-mvewhrqd-084963.pdf"
+  },
+  {
+   "period": "2026-07",
+   "title": "Jio BlackRock Mutual Fund factsheet 2026-07",
+   "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/factsheetj-msr48uoz-461483.pdf"
+  },
+  {
+   "period": "2026-06",
+   "title": "Jio BlackRock Mutual Fund factsheet 2026-06",
+   "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/jioblackro-mresxzqo-901085.pdf"
+  },
+  {
+   "period": "2026-05",
+   "title": "Jio BlackRock Mutual Fund factsheet 2026-05",
+   "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/jioblackro-mr1rujj9-13b64c.pdf"
+  },
+  {
+   "period": "2026-04",
+   "title": "Jio BlackRock Mutual Fund factsheet 2026-04",
+   "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/factsheeta-mr3gc4i8-8962ab.pdf"
+  }
+ ],
  "mahindra": [],
  "navi": [],
  "sundaram": [],

@@ -3684,6 +3684,11 @@
  ],
  "invesco": [
   {
+   "period": "2026-10",
+   "title": "Invesco Mutual Fund factsheet 2026-10",
+   "url": "https://www.invescomutualfund.com/docs/default-source/fact-sheet/invesco-mf-factsheet-october-2026.pdf?sfvrsn=cf9a10cd_1"
+  },
+  {
    "period": "2026-09",
    "title": "Invesco Mutual Fund factsheet 2026-09",
    "url": "https://www.invescomutualfund.com/docs/default-source/factsheet/invesco-mf-factsheet-september-2026.pdf?sfvrsn=729e28cd_1"
@@ -4412,6 +4417,11 @@
   }
  ],
  "motilal": [
+  {
+   "period": "2026-10",
+   "title": "Motilal Oswal Mutual Fund factsheet 2026-10",
+   "url": "https://www.motilaloswalmf.com/content/dam/motilal-mf/downloads/mf/factsheet/2026/nov/Factsheet%20October%202026%20Active.pdf"
+  },
   {
    "period": "2026-09",
    "title": "Motilal Oswal Mutual Fund factsheet 2026-09",
@@ -6144,7 +6154,7 @@
   {
    "period": "2026-10",
    "title": "PPFAS Mutual Fund factsheet 2026-10",
-   "url": "https://amc.ppfas.com/downloads/factsheet/2026/ppfas-mf-factsheet-for-October-2026.pdf?09112026"
+   "url": "https://amc.ppfas.com/downloads/factsheet/2026/ppfas-mf-factsheet-for-October-2026.pdf?20112026"
   },
   {
    "period": "2026-09",

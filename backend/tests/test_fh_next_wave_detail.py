@@ -75,3 +75,9 @@ def test_detail_endpoint(client):
     assert client.get("/api/backoffice/mutual-funds/next-wave/detail?code=0&input=ter").status_code == 404
     client.cookies.clear()
     assert client.get(f"/api/backoffice/mutual-funds/next-wave/detail?code={base}&input=ter").status_code in (401, 403)
+
+
+def test_quartile_detail_lists_every_period():
+    out = d.history("q_level", _row(quartile_1y=1, ret_1y=12.0, ret_1y_cat=9.0, quartile_5y=3, nw_peers=40), *_series())
+    text = " ".join(out["insights"])
+    assert "Over 1 year the fund ranks in quartile 1 (12.00% against 9.00%" in text and "Over 5 years the fund ranks in quartile 3." in text and "40 funds" in text

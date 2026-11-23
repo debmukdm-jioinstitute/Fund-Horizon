@@ -28,6 +28,9 @@ const PARTS: { key: string; name: string; short: string; weight: number; what: s
 const num = (v: unknown): number | null => (typeof v === "number" && Number.isFinite(v) ? v : null);
 const f = (v: number | null, d = 1) => (v == null ? "not available" : v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const MUTED = "text-[#5B6B85] dark:text-[#A8B4C4]";
+// quartile 1 = top quarter of the category and plan
+const QCHIP: Record<number, string> = { 1: "bg-[#E6F4EA] text-[#137333] dark:bg-[#0F2A1B] dark:text-[#7EE2A0]", 2: "bg-[#E8F1FD] text-[#0B5CAB] dark:bg-[#10243A] dark:text-[#7FB2FF]",
+  3: "bg-[#FEF7E0] text-[#B06000] dark:bg-[#2D2006] dark:text-[#FDB022]", 4: "bg-[#FCE8E6] text-[#B3261E] dark:bg-[#2D1210] dark:text-[#FDA29B]" };
 // rounded-3xl makes the global rise-in animation apply (it respects reduced motion); hover lifts the card a little.
 const CARD = "rounded-3xl border border-white/70 bg-white/75 p-5 shadow-[0_10px_30px_-14px_rgba(26,115,232,0.28)] backdrop-blur transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-14px_rgba(26,115,232,0.38)] motion-reduce:transition-none dark:border-white/10 dark:bg-white/5 sm:p-6";
 const tone = (ratio: number) => (ratio >= 0.75 ? { bar: "bg-[#2E844A]", chip: "bg-[#E6F4EA] text-[#137333] dark:bg-[#0F2A1B] dark:text-[#7EE2A0]", word: "Strong" }
@@ -65,6 +68,7 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
   const [detail, setDetail] = useState<{ input: string; label: string; unit: string; kind: "history" | "peers" } | null>(null);
   useEffect(() => { const t = setTimeout(() => setOn(true), 80); return () => clearTimeout(t); }, []);
   const score = num(r.nw_score), raw = num(r.nw_raw), conf = num(r.nw_conf), avail = num(r.nw_wt_avail), years = num(r.history_years), peers = num(r.nw_peers);
+  const year = Number(/\d{4}/.exec(String(r.nav_date ?? ""))?.[0]) || new Date().getFullYear();
   const reason = typeof r.nw_reason === "string" ? r.nw_reason : "";
   const accel = num(r.cagr_3y) != null && num(r.cagr_5y) != null ? (num(r.cagr_3y) as number) - (num(r.cagr_5y) as number) : null;
   const value = (k: string) => (k === "accel_3y_5y" ? accel : num(r[k]));
@@ -163,7 +167,11 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
                 className={`${CARD} scroll-mt-28 ${active === p.key ? "ring-2 ring-[#0176D3]/70" : ""} ${p.key === "cost" ? "md:col-span-2" : ""} ${p.pts == null ? "opacity-80" : ""}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h4 className="text-[18px] font-medium">{p.name}</h4>
+                    {p.key === "quartile"
+                      ? <button type="button" onClick={() => setDetail({ input: "q_level", label: "Quartile: all details", unit: " of 1", kind: "history" })} title="See every quartile detail for this fund"
+                          className="group -mx-1.5 rounded-lg px-1.5 text-left text-[18px] font-medium outline-none transition-colors hover:bg-[#EAF5FE] focus-visible:ring-2 focus-visible:ring-[#0176D3] dark:hover:bg-[#10243A]">
+                          <span className="underline decoration-dotted decoration-[#0176D3]/60 underline-offset-4">{p.name}</span><span aria-hidden className="ml-1 inline-block text-[#0176D3] transition-transform group-hover:translate-x-0.5">›</span></button>
+                      : <h4 className="text-[18px] font-medium">{p.name}</h4>}
                     <p className={`text-[13px] ${MUTED}`}>Worth up to {p.weight} points</p>
                   </div>
                   <div className="shrink-0 text-right">
@@ -172,6 +180,18 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
                   </div>
                 </div>
                 <p className={`mt-2 text-[14px] ${MUTED}`}>{p.what}</p>
+                {p.key === "quartile" && (
+                  <div className="mt-3 flex flex-wrap gap-2" aria-label="Current quartile ranking">
+                    {([[`${year} so far`, "cal_q_ytd"], [`${year - 1}`, "cal_q_py1"], [`${year - 2}`, "cal_q_py2"], ["Last 1 year", "quartile_1y"], ["Last 3 years", "quartile_3y"], ["Last 5 years", "quartile_5y"]] as [string, string][]).map(([l, k]) => {
+                      const q = num(r[k]);
+                      return (
+                        <span key={k} className={`rounded-2xl px-3 py-1.5 text-[13px] ${q != null ? QCHIP[q] ?? "" : "bg-[#EEF2F8] text-[#5B6B85] dark:bg-white/10 dark:text-[#A8B4C4]"}`}>
+                          {l}: <strong className="tabular-nums">{q != null ? `Quartile ${q}` : "n/a"}</strong>
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
                 <ul className="mt-4 space-y-3.5">
                   {p.inputs.map((i, j) => {
                     const pc = num(r[`nw_pct_${i.pct}`]);

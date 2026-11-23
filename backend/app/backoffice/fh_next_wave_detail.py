@@ -318,6 +318,14 @@ def quartile_level_detail(m, d, row) -> dict:
     insights = [f"Quartile level {lv:.2f} of 1 (peer weighting {sum(w for *_, w in ps):.0%} of periods present)." if lv is not None else "Quartile level is not available.",
                 "Quartiles: " + ", ".join(f"{lab} Q{int(q)}" for lab, q, _ in ps) + ".",
                 "Q2 and Q3 funds score highest because they have room to climb; Q1 funds still score well; Q4 funds score low."]
+    for lab, qk, rk, ck in (("1 year", "quartile_1y", "ret_1y", "ret_1y_cat"), ("2 years", "quartile_2y", "ret_2y", "ret_2y_cat"),
+                            ("3 years", "quartile_3y", "cagr_3y", "cagr_3y_cat"), ("5 years", "quartile_5y", "cagr_5y", "cagr_5y_cat")):
+        q, r, c = _num(row, qk), _num(row, rk), _num(row, ck)
+        if q is not None:
+            insights.append(f"Over {lab} the fund ranks in quartile {int(q)}" + (f" ({r:.2f}% against {c:.2f}% for the average fund in its category and plan)." if r is not None and c is not None else "."))
+    n = _num(row, "nw_peers")
+    if n is not None:
+        insights.append(f"Quartiles compare the fund with {int(n)} funds in its category and plan.")
     tiles = [(lab, f"Q{int(q)}", f"{QUARTILE_POINTS[int(q)]} points") for lab, q, _ in ps] + [("Quartile level", f"{lv:.2f}" if lv is not None else "n/a", "0 to 1")]
     table = {"columns": ["Period", "Quartile", "Points", "Weight"], "rows": [[lab, f"Q{int(q)}", f"{QUARTILE_POINTS[int(q)]}", f"{w:.1%}"] for lab, q, w in ps]}
     return _out("q_level", "Quartile level", basis, tiles[:4], insights, None, table)

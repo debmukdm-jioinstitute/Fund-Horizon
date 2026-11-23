@@ -99,7 +99,7 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
     return createPortal(
       <div className="fixed inset-0 z-[9999] overflow-y-auto bg-gradient-to-br from-[#DCE9FF] via-[#EEF4FF] to-[#D5E6FF] dark:from-[#0B1626] dark:via-[#0E1B2E] dark:to-[#0A1422]" role="dialog" aria-label="FH Next Wave score">
         <header className="sticky top-0 z-10 border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-[#0E1B2E]/60 backdrop-blur-xl">
-          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-4 sm:px-8">
+          <div className="mx-auto flex max-w-[110rem] items-center justify-between gap-4 px-4 py-4 sm:px-8 lg:px-12">
             <div className="flex min-w-0 items-center gap-3">
               {row.amc && <AmcLogo amc={String(row.amc)} className="h-10 min-w-10 max-w-[4.5rem] shrink-0 rounded-xl bg-white/80 shadow-sm" />}
               <div className="min-w-0">
@@ -110,7 +110,7 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
             <button type="button" aria-label="Close" onClick={onClose} className="shrink-0 rounded-full border border-white/70 dark:border-white/10 bg-white/70 dark:bg-white/10 px-4 py-2 text-[13px] shadow-sm hover:bg-white">Close ✕</button>
           </div>
         </header>
-        <main className="mx-auto max-w-4xl px-4 py-6 sm:px-8">
+        <main className="mx-auto max-w-[110rem] px-4 py-6 sm:px-8 lg:px-12 lg:py-8">
           <PanelBoundary><NextWavePanel row={row} /></PanelBoundary>
         </main>
       </div>,

@@ -1620,6 +1620,9 @@ export interface MfScreenerRow {
   nav_date?: string | null;
   isin?: string | null;
   is_fh_recommended: boolean;
+  /** FH Next Wave score 0-100 (null when not scorable) and whether the fund passes the screen. */
+  nw_score?: number | null;
+  nw_pass?: boolean;
   perf_label: string;
   risk_label: string;
   ops_label: string;
@@ -1726,6 +1729,8 @@ export interface MfScreenerQuery {
   order: "asc" | "desc";
   ranges: Record<string, { min?: string; max?: string }>;
   recommended?: boolean;
+  /** FH Next Wave: forward-looking screen layered on the FH score (never changes it). */
+  nextWave?: boolean;
   /** Custom FH score: manager tenure of 3 years or more earns full credit, below that scales by tenure/3. */
   custom?: boolean;
   limit?: number;
@@ -1751,6 +1756,7 @@ export function mfScreenerParams(o: MfScreenerQuery): URLSearchParams {
   if (o.search) q.set("search", o.search);
   if (o.recommended) q.set("recommended", "true");
   if (o.custom) q.set("custom", "true");
+  if (o.nextWave) q.set("next_wave", "true");
   (o.amc ?? []).forEach((a) => q.append("amc", a));
   if (o.sector) q.set("sector", o.sector);
   if (o.watchlist) q.set("watchlist", o.watchlist);

@@ -165,6 +165,7 @@ function MutualFunds() {
   const [search, setSearch] = useState((params.get("q") ?? "").trim());
   const [recommended, setRecommended] = useState(params.get("rec") === "1");
   const [custom, setCustom] = useState(params.get("custom") === "1");
+  const [nextWave, setNextWave] = useState(params.get("nw") === "1");
   const [ranges, setRanges] = useState<Record<string, { min?: string; max?: string }>>({});
   const [draft, setDraft] = useState<Record<string, { min?: string; max?: string }>>({});
   const [showFilter, setShowFilter] = useState(false);
@@ -194,7 +195,7 @@ function MutualFunds() {
   const [error, setError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
 
-  const q: MfScreenerQuery = { category, plan, search, sort, order, ranges, recommended, custom };
+  const q: MfScreenerQuery = { category, plan, search, sort, order, ranges, recommended, custom, nextWave };
   const qKey = JSON.stringify(q);
 
   useEffect(() => {
@@ -268,6 +269,7 @@ function MutualFunds() {
     p.set("full", "1");
     if (search) p.set("q", search);
     if (recommended) p.set("rec", "1");
+    if (nextWave) p.set("nw", "1");
     return `/backoffice/mutual-funds?${p.toString()}`;
   };
 
@@ -496,6 +498,20 @@ function MutualFunds() {
         </button>
         <button
           type="button"
+          aria-pressed={nextWave}
+          onClick={() => {
+            setNextWave((v) => !v);
+            setSort(nextWave ? "fh_score" : "nw_score");
+            setOrder("desc");
+            setOffset(0);
+          }}
+          title="FH Next Wave: funds whose leadership is recent, widening and steady (momentum, acceleration, rolling consistency, risk skill, cost), ranked within category and plan. Needs 3+ years of history, no 5-year gate. A screen, not a forecast. The FH score and FH Recommended are unchanged."
+          className={`${nextWave ? "terminal-btn-accent" : "terminal-btn"} text-[13px] py-2 px-3`}
+        >
+          ◈ FH Next Wave
+        </button>
+        <button
+          type="button"
           aria-pressed={custom}
           onClick={() => setCustom((v) => !v)}
           title="Custom FH score: a fund manager with 3 or more years gets full credit on the manager filter; below 3 years it scales by tenure/3. Fund age is not scored. All other filters are unchanged."
@@ -513,6 +529,7 @@ function MutualFunds() {
             setQuery("");
             setRecommended(false);
             setCustom(false);
+            setNextWave(false);
             setRanges({});
             setDraft({});
             setSort("fh_score");
@@ -727,6 +744,7 @@ function MutualFunds() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="font-medium text-[13px] text-[#0176D3] dark:text-[#1B96FF] leading-snug">{shortDisplayName(r.name)}</div>
                   {(r.is_fh_recommended || rec.isMfRecommended(r.code)) && <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0176D3] text-white shrink-0">★ FH</span>}
+                  {r.nw_pass && <span title={`FH Next Wave score ${r.nw_score}`} className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#2E844A] text-white shrink-0">◈ NW {r.nw_score}</span>}
                 </div>
                 <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] flex items-center gap-1.5">
                   {r.amc ? <AmcLogo amc={r.amc} className="h-5 min-w-5 max-w-[4rem] text-[8px]" /> : null}

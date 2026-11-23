@@ -1086,6 +1086,7 @@ def backoffice_mf_screener(
     order: str = Query("desc", pattern="^(asc|desc)$"),
     f: list[str] | None = Query(None, description="Range filters as key:min:max (percent units)"),
     recommended: bool = Query(False),
+    next_wave: bool = Query(False, description="FH Next Wave: forward-looking screen layered on the FH score"),
     format: str = Query("json", pattern="^(json|csv)$"),
     limit: int = Query(25, ge=1, le=200),
     offset: int = Query(0, ge=0),
@@ -1132,6 +1133,8 @@ def backoffice_mf_screener(
     df = df.assign(is_fh_recommended=df["code"].isin(FH_RECOMMENDED_MF_CODES), fh_status=_fh_status(df))
     if recommended:
         df = df[df["is_fh_recommended"]]
+    if next_wave:
+        df = df[df["nw_pass"]]
     if watchlist:
         wl_codes = _REPO.mf_watchlist_codes(staff["id"], watchlist)
         if wl_codes is None:

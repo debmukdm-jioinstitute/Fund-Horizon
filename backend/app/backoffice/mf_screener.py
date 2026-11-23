@@ -103,7 +103,7 @@ _NEW_NUMERIC_KEYS = (
     + [f"pct_{m}" for m in ("sharpe_3y", "sortino_3y", "alpha_3y", "vol_3y", "max_dd_3y", "ret_1y", "cagr_3y", "cagr_5y")]
     + _V2_NUMERIC_KEYS
 )
-FH_NUMERIC_KEYS = ["fh_score", "fh_rating", "fh_coverage", "fh_base", "fh_penalties", "fh_adj"]
+FH_NUMERIC_KEYS = ["fh_score", "fh_rating", "fh_coverage", "fh_base", "fh_penalties", "fh_adj", "nw_score", "nw_conf"]
 NUMERIC_KEYS = (
     ["out_1y", "out_3y", "out_5y", "score", "perf", "port", "ops", "risk", "stars", "aum_cr", "nav", "ter", "history_years", "hi52", "lo52"]
     + list(_PCT.values())
@@ -352,7 +352,9 @@ def _scored(
             (((consistency_map or {}).get(str(c)) or {}).get("cal_quartiles") or {}).get(key) or computed.get(str(c), {}).get(key)
             for c in df["code"]
         ]
-    return fh_score.score_frame(df, cfg=cfg, ref=nav_as_of if pd.notna(nav_as_of) else None)
+    from app.backoffice import fh_next_wave  # layered on the scored frame; FH score columns are not touched
+
+    return fh_next_wave.add(fh_score.score_frame(df, cfg=cfg, ref=nav_as_of if pd.notna(nav_as_of) else None))
 
 
 def screen(

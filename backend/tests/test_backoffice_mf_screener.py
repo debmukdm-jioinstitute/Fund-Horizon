@@ -244,3 +244,15 @@ def test_custom_score_screener_and_explain(client):
     ex = client.get(f"/api/backoffice/mutual-funds/screener/explain?code={code}&metric=fh_score&custom=true").json()
     hist = next(f for f in ex["fh"]["filters"] if f["key"] == "history")
     assert len(hist["components"]) == 1  # fund age is not a component of the custom score
+
+
+def test_screener_next_wave_filter_is_additive(client):
+    _login_staff(client, _create_staff())
+    base = client.get("/api/backoffice/mutual-funds/screener?category=flexi_cap&plan=Regular&limit=200").json()
+    nw = client.get("/api/backoffice/mutual-funds/screener?category=flexi_cap&plan=Regular&next_wave=true&sort=nw_score&limit=200").json()
+    assert nw["total"] <= base["total"]
+    assert all(x["nw_pass"] and x["nw_score"] >= 70 for x in nw["data"])
+    scores = [x["nw_score"] for x in nw["data"]]
+    assert scores == sorted(scores, reverse=True)
+    by_code = {x["code"]: x for x in base["data"]}
+    assert all(by_code[x["code"]]["fh_score"] == x["fh_score"] for x in nw["data"])  # FH score untouched

@@ -1797,7 +1797,7 @@ export interface MfExplainPart {
 export interface MfExplain {
   metric: string; code: string; name: string; plan: string; category: string; peers: number; nav_date: string | null;
   value: number | string | null; bands: { top: number; mid: number; max: number }; parts: MfExplainPart[];
-  rule?: string; points?: number | null; label?: string; provisional?: boolean; category_avg?: number | null;
+  rule?: string; points?: number | null; label?: string; provisional?: boolean; category_avg?: number | null; benchmark?: string | null;
   fh?: FhExplain;
 }
 

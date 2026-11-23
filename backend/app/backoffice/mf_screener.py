@@ -534,6 +534,7 @@ def explain(df: pd.DataFrame, code: str, metric: str, cfg: dict | None = None) -
     else:
         hb = None if metric.startswith(NO_RANK) else not metric.startswith(LOWER_BETTER)
         out["parts"] = [_part(grp, code, metric, hb, metric)] if metric != "cat_label" else []
-        cat_avg = r.get(f"{metric}_cat")
-        out["category_avg"] = _num(cat_avg)
+        # Live peer mean for every numeric metric (not just the precomputed *_cat columns).
+        out["category_avg"] = _num(pd.to_numeric(grp[metric], errors="coerce").mean()) if metric != "cat_label" else None
+        out["benchmark"] = r.get("benchmark")
     return out

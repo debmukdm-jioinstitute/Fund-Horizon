@@ -994,7 +994,7 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
   if (col.kind === "score" && summary) {
     return (
       <td {...click} title={fhTitle(row)} className={cls + "text-right whitespace-nowrap"}>
-        <span className="font-medium tabular-nums">{typeof v === "number" ? v.toFixed(1) : "-"}</span>
+        <span className="font-medium tabular-nums">{typeof v === "number" ? v.toFixed(1) : "Not rated"}</span>
         <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]"> / 100</span>
         {FH_STATUS[String(row.fh_status)] && (
           <span className={`ml-1.5 align-middle rounded px-1 py-0.5 text-[9px] uppercase ${FH_STATUS[String(row.fh_status)][1]}`}>{FH_STATUS[String(row.fh_status)][0]}</span>
@@ -1010,7 +1010,7 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
     return (
       <td {...click} title="Click to see why" className={cls + "text-right whitespace-nowrap"}>
         {label && <span className="mr-2 text-[10px] uppercase text-[#706E6B] dark:text-[#A8B4C4]">{label}</span>}
-        <span className="font-medium tabular-nums">{typeof v === "number" ? v : "-"}</span>
+        <span className="font-medium tabular-nums">{typeof v === "number" ? v : "Not rated"}</span>
         <div className="mt-1 ml-auto h-1 w-20 rounded bg-[#E5E5E5] dark:bg-[#2B3644]" aria-hidden>
           <div className="h-1 rounded bg-[#0176D3] dark:bg-[#1B96FF]" style={{ width: `${w}%` }} />
         </div>

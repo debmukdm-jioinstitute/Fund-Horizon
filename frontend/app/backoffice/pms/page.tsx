@@ -66,7 +66,7 @@ function ReturnCell({
             {badge}
           </span>
         ) : (
-          "—"
+          <span className="text-[10px] px-1 rounded bg-[#F0F3F6] dark:bg-[#202936] border border-[#E5E5E5] dark:border-[#2B3644]">Not reported</span>
         )}
       </span>
     );
@@ -876,7 +876,7 @@ function PmsTracker() {
                                     {s.min_investment || "₹50,00,000"}
                                   </td>
                                   <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                                    <span title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>{s.inception_date || "—"}</span>
+                                    <span title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>{s.inception_date || "Not in APMI filing"}</span>
                                   </td>
                                   <td className="text-[12px]">
                                     {s.principal_officer ? (
@@ -973,7 +973,7 @@ function PmsTracker() {
                                       {formatISTDate(s.inception_date)}
                                       <span className="block text-[11px] tabular-nums">{pmsInceptionYears(s.inception_date)!.toFixed(1)} yrs</span>
                                     </>
-                                  ) : "—"}
+                                  ) : "Not in APMI filing"}
                                 </td>
                                 <td
                                   className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"

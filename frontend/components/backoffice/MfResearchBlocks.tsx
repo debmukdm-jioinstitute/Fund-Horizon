@@ -23,7 +23,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                   ] as const).map(([label, v, unit]) => (
                     <div key={label}>
                       <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
-                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? `${v.toFixed(2)}${unit}` : "—"}</div>
+                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? `${v.toFixed(2)}${unit}` : "Not reported"}</div>
                     </div>
                   ))}
                 </div>
@@ -48,7 +48,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                   ] as const).map(([label, v]) => (
                     <div key={label}>
                       <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
-                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? `Better than ${v.toFixed(0)}% of category + plan peers` : "—"}</div>
+                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? `Better than ${v.toFixed(0)}% of category + plan peers` : "Not reported"}</div>
                     </div>
                   ))}
                 </div>
@@ -71,7 +71,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                     ["5Y", researchDetail.quartile_5y],
                   ] as const).map(([label, v]) => (
                     <span key={label} className="rounded border border-[#E5E5E5] dark:border-[#2B3644] px-2 py-1">
-                      {label}: <span className="font-mono font-medium">{typeof v === "number" ? `Q${v} (computed)` : "—"}</span>
+                      {label}: <span className="font-mono font-medium">{typeof v === "number" ? `Q${v} (computed)` : "Not reported"}</span>
                     </span>
                   ))}
                 </div>
@@ -93,7 +93,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                   )}
                   {researchDetail.co_managers.managers.map((m) => (
                     <div key={m.manager_id ?? m.name ?? "unknown"}>
-                      <span className="font-medium">{m.name ?? "—"}</span>
+                      <span className="font-medium">{m.name ?? "Not reported"}</span>
                       {m.designation ? <span className="text-[#706E6B] dark:text-[#A8B4C4]"> · {m.designation}</span> : null}
                       {m.role_as_stated ? <span className="text-[#706E6B] dark:text-[#A8B4C4]"> · {m.role_as_stated}</span> : null}
                       {m.start_date ? <span className="text-[#706E6B] dark:text-[#A8B4C4]"> · since {m.start_date}</span> : null}
@@ -108,7 +108,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                       <div className="font-medium mt-1">Manager changes on file</div>
                       {researchDetail.manager_changes.map((c, i) => (
                         <div key={i} className="text-[#706E6B] dark:text-[#A8B4C4]">
-                          {c.effective_date ?? "—"}: {c.old_manager ?? "—"} → {c.new_manager ?? "—"}
+                          {c.effective_date ?? "Not reported"}: {c.old_manager ?? "Not reported"} → {c.new_manager ?? "Not reported"}
                           {c.notice_url ? <> · <a href={c.notice_url} target="_blank" rel="noreferrer" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline">AMC notice</a></> : null}
                         </div>
                       ))}
@@ -145,7 +145,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                   ] as const).map(([label, v]) => (
                     <div key={label}>
                       <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
-                      <div className="font-mono font-medium text-[13px]">{v ?? "—"}</div>
+                      <div className="font-mono font-medium text-[13px]">{v ?? "Not reported"}</div>
                     </div>
                   ))}
                 </div>
@@ -171,7 +171,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                     ] as const).map(([label, v]) => (
                       <div key={label}>
                         <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
-                        <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? v.toFixed(2) : "—"}</div>
+                        <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? v.toFixed(2) : "Not reported"}</div>
                       </div>
                     ))}
                   </div>
@@ -181,7 +181,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                       {researchDetail.portfolio.sectors.map((s, i) => (
                         <div key={i} className="flex justify-between text-[#706E6B] dark:text-[#A8B4C4]">
                           <span>{s.sector ?? "Unclassified"}</span>
-                          <span className="font-mono">{typeof s.weight_pct === "number" ? s.weight_pct.toFixed(2) : "—"}</span>
+                          <span className="font-mono">{typeof s.weight_pct === "number" ? s.weight_pct.toFixed(2) : "Not reported"}</span>
                         </div>
                       ))}
                       {typeof researchDetail.portfolio.unclassified_pct === "number" && researchDetail.portfolio.unclassified_pct !== 0 && (
@@ -197,14 +197,14 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                       <div className="font-medium mb-1">Largest holdings (top 10 of {researchDetail.portfolio.holdings.length})</div>
                       {researchDetail.portfolio.holdings.slice(0, 10).map((h, i) => (
                         <div key={i} className="flex justify-between gap-2 text-[#706E6B] dark:text-[#A8B4C4]">
-                          <span className="truncate">{h.name ?? "—"}{h.sector ? ` · ${h.sector}` : ""}</span>
-                          <span className="font-mono shrink-0">{typeof h.weight_pct === "number" ? h.weight_pct.toFixed(2) : "—"}</span>
+                          <span className="truncate">{h.name ?? "Not reported"}{h.sector ? ` · ${h.sector}` : ""}</span>
+                          <span className="font-mono shrink-0">{typeof h.weight_pct === "number" ? h.weight_pct.toFixed(2) : "Not reported"}</span>
                         </div>
                       ))}
                     </div>
                   )}
                   <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                    As of {researchDetail.portfolio.as_of ?? "—"} · {researchDetail.portfolio.amc ?? ""} monthly portfolio disclosure.
+                    As of {researchDetail.portfolio.as_of ?? "Not reported"} · {researchDetail.portfolio.amc ?? ""} monthly portfolio disclosure.
                     {researchDetail.portfolio.coverage_pct != null && ` Partial: these holdings cover ${researchDetail.portfolio.coverage_pct}% of the fund (listed equity only).`}
                     {researchDetail.portfolio.note ? ` ${researchDetail.portfolio.note}` : ""}
                     {" "}Market-cap mix, turnover and style are not in the monthly disclosure, so they stay unavailable. Past performance is not a guide to future returns.
@@ -235,7 +235,7 @@ export default function MfResearchBlocks({ researchDetail }: { researchDetail: M
                   ] as const).map(([label, v]) => (
                     <div key={label}>
                       <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
-                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? v.toFixed(2) : (v ?? "—")}</div>
+                      <div className="font-mono font-medium text-[13px]">{typeof v === "number" ? v.toFixed(2) : (v ?? "Not reported")}</div>
                     </div>
                   ))}
                 </div>

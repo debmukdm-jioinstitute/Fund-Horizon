@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { getMfExplain, type MfExplain, type MfExplainPart, type MfScreenerRow } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
+import { getMfMissingReason } from "@/lib/backoffice-display";
 import FhScorePanel from "./FhScorePanel";
 import { PanelBoundary } from "./FhHistoryPanel";
 import { AmcLogo } from "@/components/BrandLogo";
@@ -165,7 +166,28 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
                 </ul>
               </section>
             )}
-            {data.category_avg != null && <p>Category-plan average: <strong>{n(data.category_avg)}</strong>.</p>}
+            {data.metric !== "cat_label" && (() => {
+              const u = /^(ret_|cagr_|out_|alpha|vol|treynor|max_dd|cap_up|cap_down|roll1y_pos|ter$|day_chg|week_chg)/.test(data.metric) ? "%" : "";
+              const mine = typeof data.value === "number" ? data.value : null;
+              const avg = typeof data.category_avg === "number" ? data.category_avg : null;
+              const part = data.parts.find((p) => p.key === data.metric);
+              const why = getMfMissingReason(data.metric, typeof row.history_years === "number" ? row.history_years : null);
+              return (
+                <section>
+                  <h3 className="font-semibold">Fund vs category</h3>
+                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                    Category: <strong>{data.category}</strong> · {data.plan} plan · {part ? `${part.peers_with_data} of ${data.peers} funds have this figure` : `${data.peers} funds`}{data.benchmark ? ` · Benchmark: ${data.benchmark}` : ""}
+                  </p>
+                  <table className="mt-1 w-full border border-[#E5E5E5] dark:border-[#2B3644] text-right tabular-nums">
+                    <tbody>
+                      <tr><th className="text-left font-normal px-2 py-1">This fund</th><td className="px-2 py-1">{mine != null ? `${n(mine)}${u}` : <span title={why.tooltip}>{why.short} ({why.tooltip})</span>}</td></tr>
+                      <tr><th className="text-left font-normal px-2 py-1">Category average</th><td className="px-2 py-1">{avg != null ? `${n(avg)}${u}` : "n/a (no fund in this category and plan has this figure)"}</td></tr>
+                      <tr><th className="text-left font-normal px-2 py-1">Difference</th><td className="px-2 py-1">{mine != null && avg != null ? `${mine - avg >= 0 ? "+" : ""}${n(mine - avg)}${u ? " pp" : ""}` : "n/a (needs both figures)"}</td></tr>
+                    </tbody>
+                  </table>
+                </section>
+              );
+            })()}
             {typeof data.value === "string" && <p>{data.value}</p>}
           </>
         )}

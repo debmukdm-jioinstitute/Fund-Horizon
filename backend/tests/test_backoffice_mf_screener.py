@@ -56,6 +56,14 @@ def test_screener_aum_stars_and_risk_columns(client):
     assert all(0 <= x["score"] <= 100 for x in rows if x["score"] is not None)
 
 
+def test_screener_returns_category_averages_for_every_period(client):
+    _login_staff(client, _create_staff())
+    rows = client.get("/api/backoffice/mutual-funds/screener?category=small_cap&plan=Direct&limit=200").json()["data"]
+    for k in ("ret_6m", "cagr_7y", "cagr_si"):
+        assert f"{k}_cat" in rows[0]
+        assert any(x[k] is not None and x[f"{k}_cat"] is not None for x in rows)
+
+
 # --- MF Research V1 frame columns (unit-level, no HTTP) ---
 
 

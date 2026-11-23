@@ -79,14 +79,14 @@ const COLUMNS: Record<Section, Col[]> = {
   Returns: [
     pct("ret_1m", "Returns 1M %", "ret_1m_cat"),
     pct("ret_3m", "Returns 3M %", "ret_3m_cat"),
-    pct("ret_6m", "Returns 6M %"),
+    pct("ret_6m", "Returns 6M %", "ret_6m_cat"),
     pct("ret_1y", "Returns 1Yr %", "ret_1y_cat"),
     pct("ret_2y", "2Yr CAGR %", "ret_2y_cat"),
     pct("cagr_3y", "3Yr CAGR %", "cagr_3y_cat"),
     pct("cagr_5y", "5Yr CAGR %", "cagr_5y_cat"),
-    pct("cagr_7y", "7Yr CAGR %"),
+    pct("cagr_7y", "7Yr CAGR %", "cagr_7y_cat"),
     pct("cagr_10y", "10Yr CAGR %", "cagr_10y_cat"),
-    pct("cagr_si", "Since inception CAGR %"),
+    pct("cagr_si", "Since inception CAGR %", "cagr_si_cat"),
     { key: "hi52", label: "NAV 52W High", kind: "num", digits: 2, date: "hi52_date" },
     { key: "lo52", label: "NAV 52W Low", kind: "num", digits: 2, date: "lo52_date" },
   ],
@@ -978,7 +978,7 @@ function Missing({ col, row }: { col: Col; row: MfScreenerRow }) {
   const r = getMfMissingReason(col.key, typeof row.history_years === "number" ? row.history_years : null);
   return (
     <span title={r.tooltip} className="cursor-help text-[#706E6B] dark:text-[#A8B4C4]">
-      {r.short === "—" ? "—" : <span className="text-[10px] px-1 rounded bg-[#F0F3F6] dark:bg-[#202936] border border-[#E5E5E5] dark:border-[#2B3644]">{r.short}</span>}
+      <span className="text-[10px] px-1 rounded bg-[#F0F3F6] dark:bg-[#202936] border border-[#E5E5E5] dark:border-[#2B3644]">{r.short}</span>
     </span>
   );
 }
@@ -1082,7 +1082,7 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
       {col.kind === "pct" && typeof v === "number" ? "%" : ""}
       {typeof when === "string" && when && <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(when)}</div>}
       {col.avg && (
-        <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">cat. {typeof avg === "number" ? `${fmt(avg)}%` : "-"}</div>
+        <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">cat. {typeof avg === "number" ? `${fmt(avg)}%` : <span title="No peer in this category and plan has this metric, so no average exists." className="cursor-help">n/a</span>}</div>
       )}
     </td>
   );

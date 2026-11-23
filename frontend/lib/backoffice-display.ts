@@ -328,6 +328,17 @@ export function getMfMissingReason(
     }
   }
 
+  // 7-year metrics
+  if (metricKey.includes("7y") && age !== null && age < 7) {
+    return { short: "< 7Y record", tooltip: `Requires at least 7 years of performance history${ageText}.` };
+  }
+
+  // Since-inception CAGR needs a full year of NAVs
+  if (metricKey === "cagr_si") {
+    if (age === null) return { short: "No inception", tooltip: "Launch/inception NAV date not available in AMFI feed." };
+    if (age < 1) return { short: "< 1Y record", tooltip: `CAGR since inception needs at least 1 year of NAV history${ageText}.` };
+  }
+
   // 10-year metrics
   if (metricKey.includes("10y")) {
     if (age !== null && age < 10) {
@@ -342,10 +353,10 @@ export function getMfMissingReason(
   if (months && age !== null && age < Number(months) / 12) {
     return { short: `< ${months}M record`, tooltip: `Fund is only ${age.toFixed(1)} years old; needs ${months} months of NAV history.` };
   }
-  if (metricKey === "ter") return { short: "—", tooltip: "Expense ratio not published by the AMC in the AMFI TER file for this scheme and date." };
-  if (age !== null) return { short: "—", tooltip: `Fund is old enough${ageText}, but the AMFI NAV history or category/benchmark data needed for this metric is missing.` };
+  if (metricKey === "ter") return { short: "TER n/a", tooltip: "Expense ratio not published by the AMC in the AMFI TER file for this scheme and date." };
+  if (age !== null) return { short: "No NAV data", tooltip: `Fund is old enough${ageText}, but the AMFI NAV history or category/benchmark data needed for this metric is missing.` };
   return {
-    short: "—",
+    short: "No data",
     tooltip: "Data not available in AMFI feed.",
   };
 }

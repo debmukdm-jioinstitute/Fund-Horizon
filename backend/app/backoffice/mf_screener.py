@@ -85,7 +85,7 @@ _PCT = {
 _RAW = ["sharpe_{}y", "sortino_{}y", "beta_{}y"]
 # AdvisorKhoj market capture ratios (equity categories only), written by scripts/build_capture_ratio.py: up %, down %, up/down.
 _CAPTURE = ("cap_up", "cap_down", "cap_ratio")
-_AVG_COLS = ["ret_1m", "ret_3m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_10y"]
+_AVG_COLS = ["ret_1m", "ret_3m", "ret_6m", "ret_1y", "ret_2y", "cagr_3y", "cagr_5y", "cagr_7y", "cagr_10y", "cagr_si"]
 _QUARTILE_RET = {"1y": "ret_1y", "2y": "ret_2y", "3y": "cagr_3y", "5y": "cagr_5y"}
 # MF Research V2 columns: precomputed consistency (from the nightly
 # screening refresh via consistency_map) and vs-index metrics (from
@@ -196,7 +196,7 @@ def _base_frame() -> pd.DataFrame:
         for i, k in enumerate(_CAPTURE):
             df[f"{k}_{y}y"] = [(cap.get(c, {}).get(f"{y}y") or [None] * 3)[i] for c in df["code"]]
     key = df["cat"] + "|" + df["plan"]
-    for col in _AVG_COLS + ["ret_2y"]:
+    for col in _AVG_COLS:
         df[f"{col}_cat"] = df.groupby(key)[col].transform("mean")
     return df.reset_index(drop=True)
 

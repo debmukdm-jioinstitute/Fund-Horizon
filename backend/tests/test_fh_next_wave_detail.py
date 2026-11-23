@@ -18,7 +18,8 @@ def _series(n: int = 96, drift: float = 0.01, seed: int = 1):
 
 def _row(**kw):
     base = {"ret_1y": 12.0, "ret_1y_cat": 9.0, "cagr_3y": 14.0, "cagr_3y_cat": 11.0, "cagr_5y": 12.0, "alpha_3y": 2.0, "beta_3y": 0.95, "sortino_3y": 1.1, "downside_dev_3y": 8.0,
-            "max_dd_3y": -15.0, "ter": 1.2, "ter_gap_pp": -0.3, "cal_topq_years": 2.0, "nw_pct_ret_1y": 80.0, "nw_pct_cagr_3y": 85.0}
+            "max_dd_3y": -15.0, "ter": 1.2, "ter_gap_pp": -0.3, "cal_topq_years": 2.0, "nw_pct_ret_1y": 80.0, "nw_pct_cagr_3y": 85.0,
+            "cat": "mid_cap", "aum_cr": 8000.0, "aum_fit": 1.0, "q_level": 0.9, "q_trend": 0.67, "cal_q_py2": 3, "cal_q_py1": 3, "cal_q_ytd": 2}
     base.update(kw)
     return pd.Series(base)
 
@@ -65,7 +66,7 @@ def test_peer_table_ranks_and_marks_this_fund():
 def test_detail_endpoint(client):
     _login_staff(client, _create_staff())
     base = client.get("/api/backoffice/mutual-funds/screener?category=flexi_cap&plan=Regular&limit=5").json()["data"][0]["code"]
-    for inp in ("roll_win_pct", "ter", "max_dd_3y"):
+    for inp in ("roll_win_pct", "ter", "max_dd_3y", "q_level", "q_trend", "aum_fit"):
         h = client.get(f"/api/backoffice/mutual-funds/next-wave/detail?code={base}&input={inp}")
         assert h.status_code == 200 and h.json()["input"] == inp
         p = client.get(f"/api/backoffice/mutual-funds/next-wave/detail?code={base}&input={inp}&kind=peers")

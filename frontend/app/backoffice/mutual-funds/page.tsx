@@ -506,7 +506,7 @@ function MutualFunds() {
             setOrder("desc");
             setOffset(0);
           }}
-          title="FH Next Wave: funds whose leadership is recent, widening and steady (momentum, acceleration, rolling consistency, risk skill, cost), ranked within category and plan. Needs 3+ years of history, no 5-year gate. A screen, not a forecast. The FH score and FH Recommended are unchanged."
+          title="FH Next Wave: funds whose leadership is recent, widening and steady (quartile level and trend, acceleration, consistency, momentum, risk skill, fund size, cost), ranked within category and plan. Needs 3+ years of history, no 5-year gate. A screen, not a forecast. The FH score and FH Recommended are unchanged."
           className={`${nextWave ? "terminal-btn-accent" : "terminal-btn"} text-[13px] py-2 px-3`}
         >
           ◈ FH Next Wave

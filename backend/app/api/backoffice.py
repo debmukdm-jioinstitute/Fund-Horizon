@@ -1092,6 +1092,8 @@ def backoffice_next_wave_detail(
     if kind == "peers":
         return fh_next_wave_detail.peer_table(frame, code, input)
     row = hit.iloc[0]
+    if input in fh_next_wave_detail.ROW_ONLY:
+        return fh_next_wave_detail.history(input, row, None, None)
     try:
         monthly, median = fh_next_wave_detail.nightly_basis(code, str(row["cat"]))
     except (FileNotFoundError, OSError, ValueError, KeyError):

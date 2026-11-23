@@ -4,19 +4,24 @@ import React, { useEffect, useState } from "react";
 import type { MfScreenerRow } from "@/lib/backoffice";
 import { CountUp } from "@/components/operations/CalcCharts";
 import NextWaveDetail from "./NextWaveDetail";
+import NextWaveMethod from "./NextWaveMethod";
 
 /** Weights and labels mirror COMPONENTS in backend/app/backoffice/fh_next_wave.py. Every number shown comes from the row. */
 const PARTS: { key: string; name: string; short: string; weight: number; what: string; inputs: { pct: string; label: string; value: string; unit: string }[] }[] = [
-  { key: "momentum", name: "Momentum", short: "Mom.", weight: 30, what: "Is the fund ahead of its peers right now?", inputs: [
+  { key: "quartile", name: "Quartile", short: "Quart.", weight: 35, what: "Is the fund in a quartile that can climb (2 or 3), and is it moving up? Scores run from 0 to 1.", inputs: [
+    { pct: "q_level", label: "Quartile level", value: "q_level", unit: " of 1" }, { pct: "q_trend", label: "Quartile trend (0.5 means no move)", value: "q_trend", unit: " of 1" }] },
+  { key: "momentum", name: "Momentum", short: "Mom.", weight: 10, what: "Is the fund ahead of its peers right now? Kept small so last year's winners do not dominate.", inputs: [
     { pct: "ret_1y", label: "1 year return", value: "ret_1y", unit: "%" }, { pct: "cagr_3y", label: "3 year yearly return", value: "cagr_3y", unit: "%" }] },
   { key: "acceleration", name: "Acceleration", short: "Accel.", weight: 15, what: "Is the fund getting better? The 3 year yearly return minus the 5 year yearly return.", inputs: [
     { pct: "accel_3y_5y", label: "3 year minus 5 year yearly return", value: "accel_3y_5y", unit: " points" }] },
-  { key: "consistency", name: "Consistency", short: "Consist.", weight: 25, what: "Does the fund keep winning, not just once?", inputs: [
+  { key: "consistency", name: "Consistency", short: "Consist.", weight: 15, what: "Does the fund keep winning, not just once?", inputs: [
     { pct: "roll_win_pct", label: "Rolling windows won", value: "roll_win_pct", unit: "%" }, { pct: "cal_win_pct", label: "Calendar years won", value: "cal_win_pct", unit: "%" }] },
-  { key: "risk", name: "Risk skill", short: "Risk", weight: 20, what: "Did the fund earn its returns without taking wild risks?", inputs: [
+  { key: "risk", name: "Risk skill", short: "Risk", weight: 10, what: "Did the fund earn its returns without taking wild risks?", inputs: [
     { pct: "alpha_3y", label: "3 year alpha", value: "alpha_3y", unit: "%" }, { pct: "sortino_3y", label: "3 year Sortino ratio", value: "sortino_3y", unit: "" },
     { pct: "max_dd_3y", label: "3 year worst fall (smaller is better)", value: "max_dd_3y", unit: "%" }] },
-  { key: "cost", name: "Cost", short: "Cost", weight: 10, what: "How much of your return does the fund keep for itself? Lower is better.", inputs: [
+  { key: "size", name: "Fund size", short: "Size", weight: 10, what: "Is the fund neither too small nor too large for its category? Scores run from 0.2 to 1.", inputs: [
+    { pct: "aum_fit", label: "Size fit", value: "aum_fit", unit: " of 1" }] },
+  { key: "cost", name: "Cost", short: "Cost", weight: 5, what: "How much of your return does the fund keep for itself? Lower is better.", inputs: [
     { pct: "ter", label: "Expense ratio", value: "ter", unit: "%" }] },
 ];
 
@@ -56,6 +61,7 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
   const r = row as unknown as Record<string, unknown>;
   const [on, setOn] = useState(false);
   const [active, setActive] = useState<string | null>(null);
+  const [method, setMethod] = useState(false);
   const [detail, setDetail] = useState<{ input: string; label: string; unit: string; kind: "history" | "peers" } | null>(null);
   useEffect(() => { const t = setTimeout(() => setOn(true), 80); return () => clearTimeout(t); }, []);
   const score = num(r.nw_score), raw = num(r.nw_raw), conf = num(r.nw_conf), avail = num(r.nw_wt_avail), years = num(r.history_years), peers = num(r.nw_peers);
@@ -96,6 +102,8 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
               {pass ? "◈ Passes the Next Wave screen" : score != null ? "Below the pass mark of 70" : "Not scored"}
             </span>
             <span className={`text-[13px] ${MUTED}`}>Pass mark: 70 or more</span>
+            <button type="button" onClick={() => setMethod(true)} aria-label="How this score works, with examples" title="How this score works, with examples"
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#0176D3] text-[14px] font-medium italic text-[#0176D3] outline-none transition-colors hover:bg-[#0176D3] hover:text-white focus-visible:ring-2 focus-visible:ring-[#0176D3] dark:border-[#1B96FF] dark:text-[#7FB2FF]">i</button>
           </div>
           <ul className="space-y-1.5">
             {nudges.map((t) => (
@@ -243,6 +251,7 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
           </section>
         </div>
       </div>
+      {method && <NextWaveMethod onClose={() => setMethod(false)} />}
       {detail && <NextWaveDetail code={String(row.code)} input={detail.input} label={detail.label} unit={detail.unit} fundName={String(row.name)} initialKind={detail.kind} onClose={() => setDetail(null)} />}
     </div>
   );

@@ -16,8 +16,10 @@ ROLLING_YEARS = 5
 PEER_INPUTS: dict[str, tuple[bool, str]] = {
     "ret_1y": (True, "%"), "cagr_3y": (True, "%"), "accel_3y_5y": (True, " points"), "roll_win_pct": (True, "%"), "cal_win_pct": (True, "%"),
     "alpha_3y": (True, "%"), "sortino_3y": (True, ""), "max_dd_3y": (True, "%"), "ter": (False, "%"),
+    "q_level": (True, " of 1"), "q_trend": (True, " of 1"), "aum_fit": (True, " of 1"),
 }
-_PARTS = ("momentum", "acceleration", "consistency", "risk", "cost")
+_PARTS = ("quartile", "momentum", "acceleration", "consistency", "risk", "size", "cost")
+ROW_ONLY = ("q_level", "q_trend", "aum_fit")  # explained from the fund's own row, no NAV history needed
 POS, NEG = "pos", "neg"
 
 
@@ -300,8 +302,59 @@ def cost_detail(m, d, row) -> dict:
                 {"columns": ["After", "1,00,000 rupees at this fund's fee", "At the median fee", "Difference"], "rows": rows})
 
 
+def _periods(row):
+    """(label, quartile or None) from oldest to latest calendar period."""
+    return [("Two years ago", _num(row, "cal_q_py2")), ("Last calendar year", _num(row, "cal_q_py1")), ("This year so far", _num(row, "cal_q_ytd"))]
+
+
+def quartile_level_detail(m, d, row) -> dict:
+    from app.backoffice.fh_next_wave import QUARTILE_PERIOD_WEIGHTS, QUARTILE_POINTS
+
+    basis = "Each calendar period gives points by the quartile the fund finished in within its category and plan (Q1 is the top quarter): Q2 = 1.0, Q3 = 0.9, Q1 = 0.75, Q4 = 0.2. Q2 and Q3 score highest because those funds can still climb. Periods are weighted 37.5%, 37.5% and 25%."
+    ps = [(lab, q, w) for (lab, q), w in zip(_periods(row), (QUARTILE_PERIOD_WEIGHTS["cal_q_py2"], QUARTILE_PERIOD_WEIGHTS["cal_q_py1"], QUARTILE_PERIOD_WEIGHTS["cal_q_ytd"])) if q is not None]
+    if not ps:
+        return _out("q_level", "Quartile level", basis, [], [], reason="No calendar year quartile is available for this fund.")
+    lv = _num(row, "q_level")
+    insights = [f"Quartile level {lv:.2f} of 1 (peer weighting {sum(w for *_, w in ps):.0%} of periods present)." if lv is not None else "Quartile level is not available.",
+                "Quartiles: " + ", ".join(f"{lab} Q{int(q)}" for lab, q, _ in ps) + ".",
+                "Q2 and Q3 funds score highest because they have room to climb; Q1 funds still score well; Q4 funds score low."]
+    tiles = [(lab, f"Q{int(q)}", f"{QUARTILE_POINTS[int(q)]} points") for lab, q, _ in ps] + [("Quartile level", f"{lv:.2f}" if lv is not None else "n/a", "0 to 1")]
+    table = {"columns": ["Period", "Quartile", "Points", "Weight"], "rows": [[lab, f"Q{int(q)}", f"{QUARTILE_POINTS[int(q)]}", f"{w:.1%}"] for lab, q, w in ps]}
+    return _out("q_level", "Quartile level", basis, tiles[:4], insights, None, table)
+
+
+def quartile_trend_detail(m, d, row) -> dict:
+    basis = "Trend is how many quartiles the fund moved up between its oldest and latest period: Q4 to Q1 = 1, no move = 0.5, Q1 to Q4 = 0. It needs at least two periods. A fund already in Q1 cannot move up, so it sits at 0.5 here and earns its credit in the level."
+    ps = [(lab, q) for lab, q in _periods(row) if q is not None]
+    tr = _num(row, "q_trend")
+    if tr is None:
+        return _out("q_trend", "Quartile trend", basis, [], [], reason="Needs quartiles for at least two calendar periods.")
+    moved = int(round((tr - 0.5) * 6))
+    word = f"climbed {moved} quartile{'s' if moved != 1 else ''}" if moved > 0 else f"slipped {-moved} quartile{'s' if moved != -1 else ''}" if moved < 0 else "stayed in the same quartile"
+    insights = [f"From {ps[0][0].lower()} (Q{int(ps[0][1])}) to {ps[-1][0].lower()} (Q{int(ps[-1][1])}) the fund {word}.", f"Trend score {tr:.2f} of 1."]
+    tiles = [(lab, f"Q{int(q)}", None) for lab, q in ps] + [("Trend score", f"{tr:.2f}", "0.5 = no move")]
+    table = {"columns": ["Period", "Quartile"], "rows": [[lab, f"Q{int(q)}"] for lab, q in ps]}
+    return _out("q_trend", "Quartile trend", basis, tiles[:4], insights, None, table)
+
+
+def aum_detail(m, d, row) -> dict:
+    from app.backoffice.fh_next_wave import AUM_BANDS, AUM_DEFAULT
+
+    lo, hi = AUM_BANDS.get(str(row.get("cat")), AUM_DEFAULT)
+    basis = f"Fund size should be considerable, not too small and not too large for the category. For this category the sweet spot is Rs {lo:,} to {hi:,} crore. Inside it the score is 1; smaller funds fade linearly, larger ones lose 0.4 for every doubling (floor 0.2)."
+    a, fit = _num(row, "aum_cr"), _num(row, "aum_fit")
+    if a is None or fit is None:
+        return _out("aum_fit", "Fund size fit", basis, [], [], reason="Fund size (AUM) is not available for this fund, so this part is dropped.")
+    where = "inside" if lo <= a <= hi else "below" if a < lo else "above"
+    insights = [f"The fund manages Rs {a:,.0f} crore, {where} the sweet spot of Rs {lo:,} to {hi:,} crore for its category.",
+                {"inside": "Full score.", "below": "Small funds can be volatile in flows and carry higher costs, so the score is reduced.", "above": "Large funds find it harder to add value in this category, so the score is reduced."}[where]]
+    tiles = [("Fund size", f"Rs {a:,.0f} crore", None), ("Sweet spot", f"{lo:,} to {hi:,} crore", None), ("Size fit", f"{fit:.2f}", "0.2 to 1")]
+    return _out("aum_fit", "Fund size fit", basis, tiles, insights, None, None)
+
+
 BUILDERS = {"roll_win_pct": rolling_detail, "cal_win_pct": calendar_detail, "ret_1y": return_1y_detail, "cagr_3y": cagr_3y_detail, "accel_3y_5y": acceleration_detail,
-            "alpha_3y": alpha_detail, "sortino_3y": sortino_detail, "max_dd_3y": drawdown_detail, "ter": cost_detail}
+            "alpha_3y": alpha_detail, "sortino_3y": sortino_detail, "max_dd_3y": drawdown_detail, "ter": cost_detail,
+            "q_level": quartile_level_detail, "q_trend": quartile_trend_detail, "aum_fit": aum_detail}
 
 
 @lru_cache(maxsize=64)
@@ -347,6 +400,8 @@ def history(inp: str, row, monthly: pd.Series, median_monthly_returns: pd.Series
     if inp in _NEEDS_NIGHTLY and _num(row, inp) is None:
         # The table has no figure for this fund, so showing one here would disagree with it.
         return _out(inp, inp, "", [], [], reason=f"The nightly refresh has no {_NEEDS_NIGHTLY[inp]} figure for this fund (it covers Regular Growth plans with enough history), so this part is dropped.")
+    if inp in ROW_ONLY:
+        return fn(None, None, row)
     return fn(monthly.sort_index(), median_monthly_returns.dropna(), row)
 
 

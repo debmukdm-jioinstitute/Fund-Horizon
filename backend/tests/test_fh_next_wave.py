@@ -12,7 +12,7 @@ def _frame(n: int = 10) -> pd.DataFrame:
         g = n - i
         rows.append({"cat": "flexi_cap", "plan": "Regular", "history_years": 8.0, "ret_1y": g, "cagr_3y": g * 2, "cagr_5y": g,
                      "roll_win_pct": g * 10, "cal_win_pct": g * 10, "alpha_3y": g, "sortino_3y": g, "max_dd_3y": -(20 - g),
-                     "ter": 2.5 - g * 0.1})
+                     "ter": 2.5 - g * 0.1, "aum_cr": 5000.0, "cal_q_ytd": 2, "cal_q_py1": 2, "cal_q_py2": 2})
     return pd.DataFrame(rows)
 
 
@@ -55,3 +55,23 @@ def test_unscored_fund_says_why():
     df = _frame()
     df.loc[0, "history_years"] = 2.0
     assert fh_next_wave.add(df).loc[0, "nw_reason"] == "Needs 3 years of history"
+
+
+def test_q2_q3_climber_beats_q1_and_q4_faller():
+    s = pd.DataFrame({"cal_q_py2": [3, 1, 4, 2], "cal_q_py1": [2, 1, 4, 2], "cal_q_ytd": [2, 1, 4, 3]})
+    level, trend = fh_next_wave.quartile_scores(s)
+    assert level[0] > level[1] > level[2] and level[3] > level[1]  # Q2/Q3 beat Q1, Q1 beats Q4
+    assert trend[0] > trend[1] == trend[2] == 0.5 > trend[3]  # Q3->Q2 climbs, no move is neutral, Q2->Q3 slips
+    only_one = fh_next_wave.quartile_scores(pd.DataFrame({"cal_q_ytd": [2], "cal_q_py1": [None], "cal_q_py2": [None]}))
+    assert only_one[0][0] == 1.0 and np.isnan(only_one[1][0])  # level from one period, no trend
+
+
+def test_aum_band_per_category():
+    aum, cat = pd.Series([100.0, 5000.0, 20000.0, 80000.0, None]), pd.Series(["small_cap"] * 3 + ["large_cap", "large_cap"])
+    fit = fh_next_wave.aum_fit(aum, cat)
+    assert fit[0] < 0.5 and fit[1] == 1.0 and 0.2 <= fit[2] < 0.7 and 0.2 <= fit[3] < 1.0 and np.isnan(fit[4])  # tiny, in band, too big, large cap still ok-ish, unknown dropped
+
+
+def test_returns_are_a_small_part_and_quartile_the_biggest():
+    w = {k: v[0] for k, v in fh_next_wave.COMPONENTS.items()}
+    assert sum(w.values()) == 100 and w["momentum"] <= 10 and w["quartile"] == max(w.values())

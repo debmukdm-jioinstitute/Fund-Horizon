@@ -8,7 +8,7 @@ const MUTED = "text-[#5B6B85] dark:text-[#A8B4C4]";
 const CARD = "rounded-3xl border border-white/70 bg-white/80 p-5 shadow-[0_10px_30px_-14px_rgba(26,115,232,0.28)] backdrop-blur dark:border-white/10 dark:bg-white/5 sm:p-6";
 const POS = "text-[#137333] dark:text-[#7EE2A0]";
 const NEG = "text-[#B3261E] dark:text-[#FDA29B]";
-const PART_NAMES: [string, string][] = [["momentum", "Momentum"], ["acceleration", "Acceleration"], ["consistency", "Consistency"], ["risk", "Risk skill"], ["cost", "Cost"]];
+const PART_NAMES: [string, string][] = [["quartile", "Quartile"], ["momentum", "Momentum"], ["acceleration", "Acceleration"], ["consistency", "Consistency"], ["risk", "Risk skill"], ["size", "Fund size"], ["cost", "Cost"]];
 const n1 = (v: number | null | undefined, d = 1) => (typeof v === "number" ? v.toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d }) : "n/a");
 
 function Tiles({ items }: { items: { label: string; value: string; hint?: string | null }[] }) {

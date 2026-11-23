@@ -23,9 +23,9 @@ QUARTILE_POINTS = {1: 0.75, 2: 1.0, 3: 0.9, 4: 0.2}
 QUARTILE_PERIOD_WEIGHTS = {"cal_q_ytd": 0.25, "cal_q_py1": 0.375, "cal_q_py2": 0.375}  # as in the FH score
 # Fund size sweet spot in Rs crore, (low, high): inside it a fund scores 1. Small caps lose their edge when big (thin stocks), and any
 # fund is a risk when tiny (closure, concentrated redemptions, high costs). Large caps can run much bigger. Others use the default.
-AUM_BANDS = {"small_cap": (500, 10000), "mid_cap": (1000, 25000), "large_cap": (1000, 50000), "large_mid_cap": (1000, 30000),
-             "sectoral_thematic": (300, 8000), "focused": (500, 20000), "elss": (500, 20000)}
-AUM_DEFAULT = (500, 30000)
+AUM_BANDS = {"small_cap": (500, 10000), "mid_cap": (1000, 30000), "large_cap": (1000, 100000), "large_mid_cap": (1000, 50000),
+             "flexi_cap": (1000, 100000), "multi_cap": (1000, 60000), "sectoral_thematic": (300, 8000), "focused": (500, 40000), "elss": (500, 40000)}
+AUM_DEFAULT = (500, 100000)
 AUM_FLOOR = 0.2
 
 # component -> (weight, [(column, higher_is_better or None when the column is already a 0-1 score)]); each component is the mean of its inputs

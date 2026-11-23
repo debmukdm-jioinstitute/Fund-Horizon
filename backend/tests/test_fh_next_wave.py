@@ -67,9 +67,9 @@ def test_q2_q3_climber_beats_q1_and_q4_faller():
 
 
 def test_aum_band_per_category():
-    aum, cat = pd.Series([100.0, 5000.0, 20000.0, 80000.0, None]), pd.Series(["small_cap"] * 3 + ["large_cap", "large_cap"])
+    aum, cat = pd.Series([100.0, 5000.0, 20000.0, 200000.0, None]), pd.Series(["small_cap"] * 3 + ["large_cap", "large_cap"])
     fit = fh_next_wave.aum_fit(aum, cat)
-    assert fit[0] < 0.5 and fit[1] == 1.0 and 0.2 <= fit[2] < 0.7 and 0.2 <= fit[3] < 1.0 and np.isnan(fit[4])  # tiny, in band, too big, large cap still ok-ish, unknown dropped
+    assert fit[0] < 0.5 and fit[1] == 1.0 and 0.2 <= fit[2] < 0.7 and abs(fit[3] - 0.6) < 1e-9 and np.isnan(fit[4])  # tiny, in band, too big, large cap at twice its top (0.6), unknown dropped
 
 
 def test_returns_are_a_small_part_and_quartile_the_biggest():

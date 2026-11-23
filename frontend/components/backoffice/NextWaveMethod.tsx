@@ -25,8 +25,8 @@ const QUARTILES: [string, string, string][] = [
   ["Quartile 4", "0.20", "Bottom quarter. Lowest credit."],
 ];
 const BANDS: [string, string][] = [
-  ["Small Cap", "500 to 10,000"], ["Mid Cap", "1,000 to 25,000"], ["Large Cap", "1,000 to 50,000"], ["Large & Mid Cap", "1,000 to 30,000"],
-  ["Sectoral/Thematic", "300 to 8,000"], ["Focused, ELSS", "500 to 20,000"], ["All other categories", "500 to 30,000"],
+  ["Small Cap", "500 to 10,000"], ["Mid Cap", "1,000 to 30,000"], ["Large Cap, Flexi Cap", "1,000 to 1,00,000"], ["Large & Mid Cap", "1,000 to 50,000"],
+  ["Multi Cap", "1,000 to 60,000"], ["Focused, ELSS", "500 to 40,000"], ["Sectoral/Thematic", "300 to 8,000"], ["All other categories", "500 to 1,00,000"],
 ];
 const EXAMPLE: [string, string, string][] = [
   ["Quartile", "Level 0.93 (Q3, Q3, Q2 weighted 37.5%, 37.5%, 25%) and trend 0.67 (climbed one quartile). Average 0.80 × 35", "27.9"],

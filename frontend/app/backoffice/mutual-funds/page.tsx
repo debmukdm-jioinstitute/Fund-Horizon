@@ -77,18 +77,18 @@ const COLUMNS: Record<Section, Col[]> = {
     { key: "risk", label: "Risk vs Reward / 25", kind: "score" },
   ],
   Returns: [
-    pct("ret_1m", "Returns 1M %", "ret_1m_cat"),
-    pct("ret_3m", "Returns 3M %", "ret_3m_cat"),
-    pct("ret_6m", "Returns 6M %", "ret_6m_cat"),
-    pct("ret_1y", "Returns 1Yr %", "ret_1y_cat"),
-    pct("ret_2y", "2Yr CAGR %", "ret_2y_cat"),
-    pct("cagr_3y", "3Yr CAGR %", "cagr_3y_cat"),
-    pct("cagr_5y", "5Yr CAGR %", "cagr_5y_cat"),
-    pct("cagr_7y", "7Yr CAGR %", "cagr_7y_cat"),
-    pct("cagr_10y", "10Yr CAGR %", "cagr_10y_cat"),
+    pct("ret_1m", "Returns 1 Month %", "ret_1m_cat"),
+    pct("ret_3m", "Returns 3 Months %", "ret_3m_cat"),
+    pct("ret_6m", "Returns 6 Months %", "ret_6m_cat"),
+    pct("ret_1y", "Returns 1 Year %", "ret_1y_cat"),
+    pct("ret_2y", "2 Year CAGR %", "ret_2y_cat"),
+    pct("cagr_3y", "3 Year CAGR %", "cagr_3y_cat"),
+    pct("cagr_5y", "5 Year CAGR %", "cagr_5y_cat"),
+    pct("cagr_7y", "7 Year CAGR %", "cagr_7y_cat"),
+    pct("cagr_10y", "10 Year CAGR %", "cagr_10y_cat"),
     pct("cagr_si", "Since inception CAGR %", "cagr_si_cat"),
-    { key: "hi52", label: "NAV 52W High", kind: "num", digits: 2, date: "hi52_date" },
-    { key: "lo52", label: "NAV 52W Low", kind: "num", digits: 2, date: "lo52_date" },
+    { key: "hi52", label: "NAV 52-Week High", kind: "num", digits: 2, date: "hi52_date" },
+    { key: "lo52", label: "NAV 52-Week Low", kind: "num", digits: 2, date: "lo52_date" },
   ],
   "Capture Ratio": [
     ...perYear("cap_up", "Up Capture", "pct", true),
@@ -115,8 +115,8 @@ const FILTERABLE: { key: string; label: string }[] = [
   { key: "alpha_3y", label: "Alpha 3Yr %" },
   { key: "ter", label: "Net Expense Ratio %" },
   { key: "ret_1y", label: "1Yr return %" },
-  { key: "cagr_3y", label: "3Yr CAGR %" },
-  { key: "cagr_5y", label: "5Yr CAGR %" },
+  { key: "cagr_3y", label: "3 Year CAGR %" },
+  { key: "cagr_5y", label: "5 Year CAGR %" },
   { key: "sharpe_3y", label: "Sharpe 3Yr" },
   { key: "vol_3y", label: "Std Dev 3Yr %" },
   { key: "history_years", label: "Fund age (years)" },
@@ -1082,7 +1082,7 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
       {col.kind === "pct" && typeof v === "number" ? "%" : ""}
       {typeof when === "string" && when && <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">{formatISTDate(when)}</div>}
       {col.avg && (
-        <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">cat. {typeof avg === "number" ? `${fmt(avg)}%` : <span title="No peer in this category and plan has this metric, so no average exists." className="cursor-help">n/a</span>}</div>
+        <div className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Category average {typeof avg === "number" ? `${fmt(avg)}%` : <span title="No peer in this category and plan has this metric, so no average exists." className="cursor-help">n/a</span>}</div>
       )}
     </td>
   );

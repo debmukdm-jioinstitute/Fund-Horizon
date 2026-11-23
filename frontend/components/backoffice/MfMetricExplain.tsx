@@ -97,6 +97,7 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
   const g = GLOSSARY[baseKey(metric.key)];
   const period = PERIOD(metric.key);
   const pillar = data?.points != null;
+  const compact = !!data && !data.rule && data.metric !== "cat_label" && data.parts.length === 1 && data.parts[0].key === data.metric;
 
   if (data?.fh) {
     // The FH score gets the whole screen: a tinted glass sheet with soft light blobs behind it for depth.
@@ -155,40 +156,48 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
                 <p>{typeof data.value === "number" && data.value ? `${data.value} of 5 stars${data.provisional ? " (provisional: under 3 years of history)" : ""}.` : "Not rated: too little history or too few peers."}</p>
               </section>
             )}
-            {g && <section><h3 className="font-semibold">What it is</h3><p>{g.what}</p><p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">{g.read}</p></section>}
-            {data.rule && <section><h3 className="font-semibold">How this score is worked out</h3><p>{data.rule}</p></section>}
-            {data.parts.length > 0 && (
-              <section>
-                <h3 className="font-semibold">Why this fund got this value</h3>
-                <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Compared with {data.peers} {data.category} funds in the {data.plan} plan.</p>
-                <ul className="mt-1 divide-y divide-[#E5E5E5] dark:divide-[#2B3644] border border-[#E5E5E5] dark:border-[#2B3644] rounded">
-                  {data.parts.map((p) => <PartRow key={p.key} p={p} />)}
-                </ul>
-              </section>
-            )}
-            {data.metric !== "cat_label" && (() => {
+            {compact ? (() => {
               const u = /^(ret_|cagr_|out_|alpha|vol|treynor|max_dd|cap_up|cap_down|roll1y_pos|ter$|day_chg|week_chg)/.test(data.metric) ? "%" : "";
+              const part = data.parts[0];
               const mine = typeof data.value === "number" ? data.value : null;
               const avg = typeof data.category_avg === "number" ? data.category_avg : null;
-              const part = data.parts.find((p) => p.key === data.metric);
+              const diff = mine != null && avg != null ? mine - avg : null;
               const why = getMfMissingReason(data.metric, typeof row.history_years === "number" ? row.history_years : null);
+              const tile = (label: string, body: React.ReactNode, cls = "") => (
+                <div className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] px-2 py-2.5">
+                  <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{label}</div>
+                  <div className={`mt-0.5 text-[17px] font-semibold tabular-nums ${cls}`}>{body}</div>
+                </div>
+              );
               return (
-                <section>
-                  <h3 className="font-semibold">Fund vs category</h3>
-                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                    Category: <strong>{data.category}</strong> · {data.plan} plan · {part ? `${part.peers_with_data} of ${data.peers} funds have this figure` : `${data.peers} funds`}{data.benchmark ? ` · Benchmark: ${data.benchmark}` : ""}
-                  </p>
-                  <table className="mt-1 w-full border border-[#E5E5E5] dark:border-[#2B3644] text-right tabular-nums">
-                    <tbody>
-                      <tr><th className="text-left font-normal px-2 py-1">This fund</th><td className="px-2 py-1">{mine != null ? `${n(mine)}${u}` : <span title={why.tooltip}>{why.short} ({why.tooltip})</span>}</td></tr>
-                      <tr><th className="text-left font-normal px-2 py-1">Category average</th><td className="px-2 py-1">{avg != null ? `${n(avg)}${u}` : "n/a (no fund in this category and plan has this figure)"}</td></tr>
-                      <tr><th className="text-left font-normal px-2 py-1">Difference</th><td className="px-2 py-1">{mine != null && avg != null ? `${mine - avg >= 0 ? "+" : ""}${n(mine - avg)}${u ? " pp" : ""}` : "n/a (needs both figures)"}</td></tr>
-                    </tbody>
-                  </table>
+                <section className="space-y-2">
+                  <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{data.category} · {data.plan} plan · {part.peers_with_data} funds with data</p>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    {tile("This fund", mine != null ? `${n(mine)}${u}` : <span className="text-[13px]" title={why.tooltip}>{why.short}</span>)}
+                    {tile("Category average", avg != null ? `${n(avg)}${u}` : <span className="text-[13px]">n/a</span>)}
+                    {tile("Difference", diff != null ? `${diff >= 0 ? "+" : ""}${n(diff)}${u ? " percentage points" : ""}` : <span className="text-[13px]">n/a</span>, diff == null ? "" : diff >= 0 ? "text-[#0B7A4B] dark:text-[#5FD3A2]" : "text-[#B42332] dark:text-[#FF7D86]")}
+                  </div>
+                  {mine == null && <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">{why.tooltip}</p>}
+                  {part.percentile != null && <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Rank {part.rank} of {part.peers_with_data} · better than {n(part.percentile, 0)}% of peers · best {n(part.best)}</p>}
+                  {g && <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] pt-1 border-t border-[#E5E5E5] dark:border-[#2B3644]">{g.what}</p>}
                 </section>
               );
-            })()}
-            {typeof data.value === "string" && <p>{data.value}</p>}
+            })() : (
+              <>
+                {g && <section><h3 className="font-semibold">What it is</h3><p>{g.what}</p></section>}
+                {data.rule && <section><h3 className="font-semibold">How this score is worked out</h3><p>{data.rule}</p></section>}
+                {data.parts.length > 0 && (
+                  <section>
+                    <h3 className="font-semibold">Why this fund got this value</h3>
+                    <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Compared with {data.peers} {data.category} funds in the {data.plan} plan.</p>
+                    <ul className="mt-1 divide-y divide-[#E5E5E5] dark:divide-[#2B3644] border border-[#E5E5E5] dark:border-[#2B3644] rounded">
+                      {data.parts.map((p) => <PartRow key={p.key} p={p} />)}
+                    </ul>
+                  </section>
+                )}
+                {typeof data.value === "string" && <p>{data.value}</p>}
+              </>
+            )}
           </>
         )}
         <p className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">

@@ -42,3 +42,16 @@ def test_input_frame_untouched():
     cols = list(df.columns)
     fh_next_wave.add(df)
     assert list(df.columns) == cols
+
+
+def test_breakdown_columns_add_up():
+    out = fh_next_wave.add(_frame()).loc[0]
+    pts = sum(out[f"nw_pts_{c}"] for c in fh_next_wave.COMPONENTS)
+    assert abs(pts / out["nw_wt_avail"] * 100 - out["nw_raw"]) < 0.2  # points earned, re-scaled to the weight present, equal the raw score
+    assert out["nw_reason"] == "" and out["nw_wt_avail"] == 100
+
+
+def test_unscored_fund_says_why():
+    df = _frame()
+    df.loc[0, "history_years"] = 2.0
+    assert fh_next_wave.add(df).loc[0, "nw_reason"] == "Needs 3 years of history"

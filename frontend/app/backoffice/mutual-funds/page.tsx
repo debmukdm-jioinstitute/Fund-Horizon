@@ -34,7 +34,7 @@ const PAGE_SIZES = [5, 8, 10, 20, 25, 50, 100];
 const DEFAULT_CATEGORIES = ["flexi_cap", "multi_cap"];
 const PLANS = ["Regular", "Direct"];
 
-type Kind = "pct" | "num" | "score" | "stars" | "aum" | "text" | "signal";
+type Kind = "pct" | "num" | "score" | "stars" | "aum" | "text" | "signal" | "nw";
 interface Col {
   key: string;
   label: string;
@@ -66,6 +66,7 @@ const COLUMNS: Record<Section, Col[]> = {
     { key: "fh_score", label: "FH score / 100", kind: "score" },
     { key: "fh_rating", label: "FH rating / 5★", kind: "stars" },
     { key: "fh_signal", label: "FH signal", kind: "signal", tip: "Internal Buy/Hold/Sell screening signal derived from score and star rating." },
+    { key: "nw_score", label: "FH Next Wave / 100", kind: "nw", tip: "Forward looking screen: recent, widening and steady leadership. Click for the points by part." },
     { key: "aum_cr", label: "AUM (\u20B9 Cr)", kind: "aum" },
     num("ter", "Expense (%)"),
   ],
@@ -1009,6 +1010,16 @@ function Cell({ col, row, summary, onExplain }: { col: Col; row: MfScreenerRow; 
     onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onExplain(); } },
   };
   const cls = "cursor-pointer hover:bg-[#EAF5FE] dark:hover:bg-[#10243A] ";
+  if (col.kind === "nw") {
+    const pass = row.nw_pass === true;
+    return (
+      <td {...click} title={typeof v === "number" ? "Click to see the points by part" : String(row.nw_reason || "Not scored")} className={cls + "text-right whitespace-nowrap"}>
+        <span className="font-medium tabular-nums">{typeof v === "number" ? v.toFixed(1) : <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Not scored</span>}</span>
+        {typeof v === "number" && <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]"> / 100</span>}
+        {pass && <span className="ml-1.5 align-middle rounded px-1 py-0.5 text-[9px] uppercase bg-[#2E844A] text-white">◈ NW</span>}
+      </td>
+    );
+  }
   if (col.kind === "score" && summary) {
     return (
       <td {...click} title={fhTitle(row)} className={cls + "text-right whitespace-nowrap"}>

@@ -256,3 +256,4 @@ def test_screener_next_wave_filter_is_additive(client):
     assert scores == sorted(scores, reverse=True)
     by_code = {x["code"]: x for x in base["data"]}
     assert all(by_code[x["code"]]["fh_score"] == x["fh_score"] for x in nw["data"])  # FH score untouched
+    assert all({"nw_pts_momentum", "nw_pct_ret_1y", "nw_raw", "nw_wt_avail", "nw_reason", "nw_peers"} <= x.keys() for x in nw["data"])  # breakdown for the click-through

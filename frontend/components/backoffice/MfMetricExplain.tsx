@@ -6,6 +6,7 @@ import { getMfExplain, type MfExplain, type MfExplainPart, type MfScreenerRow } 
 import { formatISTDate } from "@/lib/terminal-format";
 import { getMfMissingReason } from "@/lib/backoffice-display";
 import FhScorePanel from "./FhScorePanel";
+import NextWavePanel from "./NextWavePanel";
 import { PanelBoundary } from "./FhHistoryPanel";
 import { AmcLogo } from "@/components/BrandLogo";
 
@@ -86,7 +87,7 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
   }, [onClose]);
 
   useEffect(() => {
-    if (!key || !code) return;
+    if (!key || !code || key === "nw_score") return; // Next Wave is read straight from the row, no extra request
     const ac = new AbortController();
     setData(null); setErr("");
     getMfExplain(code, key, ac.signal, custom).then(setData).catch((e) => { if (!ac.signal.aborted) setErr(e instanceof Error && e.message !== "Not Found" ? e.message : "The live breakdown is not available right now (the server may be updating). Close this and try again in a few minutes."); });
@@ -94,6 +95,28 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
   }, [key, code, custom]);
 
   if (!mounted || !metric || !row) return null;
+  if (metric.key === "nw_score") {
+    return createPortal(
+      <div className="fixed inset-0 z-[9999] overflow-y-auto bg-gradient-to-br from-[#DCE9FF] via-[#EEF4FF] to-[#D5E6FF] dark:from-[#0B1626] dark:via-[#0E1B2E] dark:to-[#0A1422]" role="dialog" aria-label="FH Next Wave score">
+        <header className="sticky top-0 z-10 border-b border-white/60 dark:border-white/10 bg-white/50 dark:bg-[#0E1B2E]/60 backdrop-blur-xl">
+          <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-4 sm:px-8">
+            <div className="flex min-w-0 items-center gap-3">
+              {row.amc && <AmcLogo amc={String(row.amc)} className="h-10 min-w-10 max-w-[4.5rem] shrink-0 rounded-xl bg-white/80 shadow-sm" />}
+              <div className="min-w-0">
+                <h2 className="truncate text-[18px] font-medium text-[#1B2B45] dark:text-[#EDF2F7]">{row.name}</h2>
+                <p className="text-[13px] text-[#5B6B85] dark:text-[#A8B4C4]">FH Next Wave · {row.amc ? `${row.amc} · ` : ""}{row.plan} plan</p>
+              </div>
+            </div>
+            <button type="button" aria-label="Close" onClick={onClose} className="shrink-0 rounded-full border border-white/70 dark:border-white/10 bg-white/70 dark:bg-white/10 px-4 py-2 text-[13px] shadow-sm hover:bg-white">Close ✕</button>
+          </div>
+        </header>
+        <main className="mx-auto max-w-4xl px-4 py-6 sm:px-8">
+          <PanelBoundary><NextWavePanel row={row} /></PanelBoundary>
+        </main>
+      </div>,
+      document.body
+    );
+  }
   const g = GLOSSARY[baseKey(metric.key)];
   const period = PERIOD(metric.key);
   const pillar = data?.points != null;

@@ -80,7 +80,7 @@ export default function MfMetricExplain({ metric, row, onClose, custom = false }
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && !document.querySelector("[data-nw-sheet]")) onClose(); // a drill-down sheet on top closes first
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);

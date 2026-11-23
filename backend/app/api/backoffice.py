@@ -61,7 +61,7 @@ from app.backoffice.schemas import (
     WatchlistCreateRequest,
 )
 from app.backoffice import index_tri as index_tri_module
-from app.backoffice import fh_history, fh_recommended, fh_score, mf_holdings, mf_reference, mf_screener, portfolio_screen
+from app.backoffice import fh_history, fh_next_wave_detail, fh_recommended, fh_score, mf_holdings, mf_reference, mf_screener, portfolio_screen
 from app.backoffice import mf_research_v2 as mf_v2
 from app.backoffice.screening.quartiles import compute_category_quartiles
 from app.backoffice.screening.service import ScreeningService
@@ -1073,6 +1073,32 @@ def backoffice_mf_explain(
     if res is None:
         raise HTTPException(404, "Unknown fund or metric.")
     return res
+
+
+@router.get("/mutual-funds/next-wave/detail")
+def backoffice_next_wave_detail(
+    staff: Annotated[dict, Depends(require_staff)],
+    code: str = Query(..., max_length=32),
+    input: str = Query(..., max_length=32, description="A Next Wave input, e.g. roll_win_pct, ret_1y, ter"),
+    kind: str = Query("history", pattern="^(history|peers)$"),
+):
+    """Drill-down behind one Next Wave input: its history (windows, years, months) or the peer ranking."""
+    frame = _fh_frame()
+    hit = frame[frame["code"] == code]
+    if hit.empty:
+        raise HTTPException(404, "Fund not found.")
+    if input not in fh_next_wave_detail.PEER_INPUTS:
+        raise HTTPException(422, "Unknown Next Wave input.")
+    if kind == "peers":
+        return fh_next_wave_detail.peer_table(frame, code, input)
+    row = hit.iloc[0]
+    try:
+        monthly, median = fh_next_wave_detail.nightly_basis(code, str(row["cat"]))
+    except (FileNotFoundError, OSError, ValueError, KeyError):
+        raise HTTPException(404, "History is not available for this fund.") from None
+    if len(monthly) < 14 or median is None or median.dropna().empty:
+        return {"input": input, "title": input, "available": False, "reason": "Not enough month-end history or category data for this fund.", "basis": ""}
+    return fh_next_wave_detail.history(input, row, monthly, median)
 
 
 @router.get("/mutual-funds/screener")

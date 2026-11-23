@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import type { MfScreenerRow } from "@/lib/backoffice";
 import { CountUp } from "@/components/operations/CalcCharts";
+import NextWaveDetail from "./NextWaveDetail";
 
 /** Weights and labels mirror COMPONENTS in backend/app/backoffice/fh_next_wave.py. Every number shown comes from the row. */
 const PARTS: { key: string; name: string; short: string; weight: number; what: string; inputs: { pct: string; label: string; value: string; unit: string }[] }[] = [
@@ -55,6 +56,7 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
   const r = row as unknown as Record<string, unknown>;
   const [on, setOn] = useState(false);
   const [active, setActive] = useState<string | null>(null);
+  const [detail, setDetail] = useState<{ input: string; label: string; unit: string; kind: "history" | "peers" } | null>(null);
   useEffect(() => { const t = setTimeout(() => setOn(true), 80); return () => clearTimeout(t); }, []);
   const score = num(r.nw_score), raw = num(r.nw_raw), conf = num(r.nw_conf), avail = num(r.nw_wt_avail), years = num(r.history_years), peers = num(r.nw_peers);
   const reason = typeof r.nw_reason === "string" ? r.nw_reason : "";
@@ -141,6 +143,7 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
         </div>
       </section>
 
+      <p className={`flex items-center gap-2 px-1 text-[14px] ${MUTED}`}><span aria-hidden className="rounded-full bg-[#0176D3] px-2 py-0.5 text-[11px] font-medium text-white">Tip</span>Tap any value for the history behind it, or the rank to see how every peer compares.</p>
       <div className="grid gap-5 sm:gap-6 xl:grid-cols-12">
         {/* Parts */}
         <div className="grid gap-5 sm:gap-6 md:grid-cols-2 xl:col-span-8">
@@ -167,9 +170,17 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
                     const v = value(i.value);
                     return (
                       <li key={i.pct}>
-                        <div className="flex flex-wrap items-baseline justify-between gap-x-3 text-[14px]">
-                          <span>{i.label}: <span className="font-medium tabular-nums">{v != null ? `${f(v, 2)}${i.unit}` : "not available"}</span></span>
-                          <span className={`tabular-nums ${MUTED}`}>{pc != null ? `better than ${f(pc, 0)}% of peers` : "no rank"}</span>
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[14px]">
+                          <button type="button" onClick={() => setDetail({ input: i.pct, label: i.label, unit: i.unit, kind: "history" })} title="See the history behind this number"
+                            className="group -mx-1.5 rounded-lg px-1.5 py-0.5 text-left outline-none transition-colors hover:bg-[#EAF5FE] focus-visible:ring-2 focus-visible:ring-[#0176D3] dark:hover:bg-[#10243A]">
+                            {i.label}: <span className="font-medium tabular-nums underline decoration-dotted decoration-[#0176D3]/60 underline-offset-4">{v != null ? `${f(v, 2)}${i.unit}` : "not available"}</span>
+                            <span aria-hidden className="ml-1 inline-block text-[#0176D3] transition-transform group-hover:translate-x-0.5">›</span>
+                          </button>
+                          <button type="button" onClick={() => setDetail({ input: i.pct, label: i.label, unit: i.unit, kind: "peers" })} title="See the peer ranking for this input"
+                            className={`group -mx-1.5 rounded-lg px-1.5 py-0.5 tabular-nums outline-none transition-colors hover:bg-[#EAF5FE] focus-visible:ring-2 focus-visible:ring-[#0176D3] dark:hover:bg-[#10243A] ${MUTED}`}>
+                            {pc != null ? `better than ${f(pc, 0)}% of peers` : "no rank"}
+                            <span aria-hidden className="ml-1 inline-block text-[#0176D3] transition-transform group-hover:translate-x-0.5">›</span>
+                          </button>
                         </div>
                         <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#DCE6F5] dark:bg-[#2B3644]" aria-hidden>
                           <div className={`h-full rounded-full ${t ? t.bar : "bg-[#0176D3]"} transition-[width] duration-[900ms] ease-out motion-reduce:transition-none`} style={{ width: `${on ? pc ?? 0 : 0}%`, transitionDelay: `${150 + idx * 70 + j * 90}ms` }} />
@@ -232,6 +243,7 @@ export default function NextWavePanel({ row }: { row: MfScreenerRow }) {
           </section>
         </div>
       </div>
+      {detail && <NextWaveDetail code={String(row.code)} input={detail.input} label={detail.label} unit={detail.unit} fundName={String(row.name)} initialKind={detail.kind} onClose={() => setDetail(null)} />}
     </div>
   );
 }

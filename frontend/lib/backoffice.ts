@@ -1828,6 +1828,22 @@ export interface FhMethodology {
 export const getFhMethodology = () => boFetch<FhMethodology>("/api/backoffice/mutual-funds/fh-score/methodology");
 
 /** Live per-fund breakdown of one screener value, computed by the backend from the same frame as the table. */
+/** FH Next Wave drill-down: the history behind one input, or the peer ranking on it. */
+export interface NwHistory {
+  input: string; title: string; available: boolean; reason?: string; basis: string;
+  tiles?: { label: string; value: string; hint?: string | null }[];
+  insights?: string[];
+  chart?: { kind: "bars" | "lines"; title: string; unit: string; x: string[]; series: { name: string; values: number[] }[] } | null;
+  table?: { columns: string[]; rows: (string | [string, "pos" | "neg"])[][] } | null;
+}
+export interface NwPeerRow { rank: number; code: string; name: string; amc?: string | null; value: number; this: boolean; nw_score: number | null; nw_pass: boolean; history_years: number | null; parts: Record<string, number | null> }
+export interface NwPeers {
+  input: string; unit: string; higher_is_better: boolean; category: string; plan: string; peers_with_data: number; peers_total: number;
+  this_rank: number | null; this_value: number | null; percentile: number | null; median: number | null; best: number | null; worst: number | null; rows: NwPeerRow[];
+}
+export const getNextWaveDetail = <T extends NwHistory | NwPeers>(code: string, input: string, kind: "history" | "peers", signal?: AbortSignal) =>
+  boFetch<T>(`/api/backoffice/mutual-funds/next-wave/detail?${new URLSearchParams({ code, input, kind }).toString()}`, { signal });
+
 export const getMfExplain = (code: string, metric: string, signal?: AbortSignal, custom = false) =>
   boFetch<MfExplain>(`/api/backoffice/mutual-funds/screener/explain?${new URLSearchParams({ code, metric, ...(custom ? { custom: "true" } : {}) }).toString()}`, { signal });
 

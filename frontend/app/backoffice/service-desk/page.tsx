@@ -19,7 +19,7 @@ const LINKS = [
 ] as const;
 
 // Browser speech recognition (Chrome, Edge, Safari). Absent elsewhere: typing keeps working.
-type Rec = { lang: string; interimResults: boolean; continuous: boolean; onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void; onend: () => void; onerror: () => void; start: () => void; stop: () => void };
+type Rec = { lang: string; interimResults: boolean; continuous: boolean; onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void; onend: () => void; onerror: (e: { error?: string }) => void; start: () => void; stop: () => void };
 const speechCtor = (): (new () => Rec) | undefined =>
   typeof window === "undefined" ? undefined : (window as unknown as { SpeechRecognition?: new () => Rec; webkitSpeechRecognition?: new () => Rec }).SpeechRecognition ?? (window as unknown as { webkitSpeechRecognition?: new () => Rec }).webkitSpeechRecognition;
 
@@ -54,7 +54,13 @@ export default function ServiceDeskPage() {
     r.lang = "en-IN"; r.interimResults = false; r.continuous = true;
     r.onresult = (e) => { const t = Array.from(e.results).map((x) => x[0].transcript).join(" ").trim(); if (t) { setDetails((d) => `${d}${d ? " " : ""}${t}`); setViaVoice(true); } };
     r.onend = () => setListening(false);
-    r.onerror = () => { setListening(false); setError("Microphone unavailable. You can type instead."); };
+    r.onerror = (e) => {
+      setListening(false);
+      if (e.error === "no-speech" || e.error === "aborted") return;
+      setError(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Microphone blocked. Allow it from the lock icon in the address bar, then try again. You can type instead."
+        : e.error === "audio-capture" ? "No microphone found. You can type instead."
+        : "Voice dictation needs an internet connection. You can type instead.");
+    };
     rec.current = r; setListening(true); r.start();
   };
 

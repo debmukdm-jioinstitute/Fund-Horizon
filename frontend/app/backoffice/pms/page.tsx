@@ -389,7 +389,7 @@ function PmsTracker() {
 
       {tab === "strategies" ? (
         <div className="space-y-3">
-          <div className="terminal-panel p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div className="terminal-panel relative z-50 p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="flex flex-wrap items-center gap-2 flex-1">
               <input
                 type="text"

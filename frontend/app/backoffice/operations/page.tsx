@@ -412,8 +412,8 @@ export default function OperationsPage() {
   useEffect(() => {
     const sync = () => {
       const h = window.location.hash.slice(1);
-      if (h === "forms" || h === "tasks") {
-        setInitialTab(h === "tasks" ? "tasks" : "updates");
+      if (h === "forms" || h === "tasks" || h === "report" || h === "review") {
+        setInitialTab(h === "forms" ? "updates" : h);
         setView("forms");
       } else if (h === "download") {
         setView("download");

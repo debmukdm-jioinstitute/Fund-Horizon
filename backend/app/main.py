@@ -273,6 +273,7 @@ def create_app() -> FastAPI:
     from app.api.backoffice import router as backoffice_router
     from app.api.client_report import router as client_report_router
     from app.api.monthly_report import router as monthly_report_router
+    from app.api.service_desk import router as service_desk_router
     from app.api.portfolio_review import router as portfolio_review_router
     from app.api.investment_proposal import router as investment_proposal_router
     from app.api.category_returns import router as category_returns_router
@@ -315,6 +316,7 @@ def create_app() -> FastAPI:
     app.include_router(backoffice_router)
     app.include_router(client_report_router)
     app.include_router(monthly_report_router)
+    app.include_router(service_desk_router)
     app.include_router(portfolio_review_router)
     app.include_router(investment_proposal_router)
     app.include_router(category_returns_router)

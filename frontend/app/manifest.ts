@@ -10,6 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#FFFFFF",
     theme_color: BRAND.navy,
+    shortcuts: [{ name: "Service desk", url: "/backoffice/service-desk" }],
     icons: [{ src: BRAND.emblem, sizes: "any", type: "image/png" }],
   };
 }

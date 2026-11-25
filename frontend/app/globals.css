@@ -392,6 +392,26 @@ html.dark [class~="absolute"][class~="dark:bg-[#171E2A]"],
 html.dark [class~="absolute"].terminal-panel,
 html.dark [role="menu"], html.dark [role="listbox"] { background-color: #12233A; }
 
+/* Modals/drawers: the scrim hazes and blurs the page, and the panel is near-opaque frosted glass, so nothing behind
+   shows through. Covers every `fixed inset-0` scrim and every role=dialog / aria-modal panel site-wide (a dialog role on the scrim itself is left to the scrim rule). */
+[class~="fixed"][class~="inset-0"][class*="bg-black/"],
+[class~="fixed"][class~="inset-0"][class*="bg-[#181818]/"],
+[class~="fixed"][class~="inset-0"][class*="bg-navy-950/"] {
+  background-color: rgba(20, 32, 56, 0.5) !important;
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+html:not(.dark) :is([role="dialog"], [aria-modal="true"]):not([class~="inset-0"]) {
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+html.dark :is([role="dialog"], [aria-modal="true"]):not([class~="inset-0"]) {
+  background-color: rgba(16, 21, 28, 0.97) !important;
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
 /* The ✕ row at the top of every dropdown (components/DropdownClose.tsx). */
 .dropdown-close-row { position: sticky; top: 0; z-index: 2; display: flex; justify-content: flex-end; padding: 6px 6px 2px; background: inherit; list-style: none; }
 .dropdown-close {

@@ -144,8 +144,6 @@ export default function SettingsPage() {
     }
   }
 
-  const activeCls = "bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF] font-medium";
-  const inactiveCls = "text-[#706E6B] dark:text-[#A8B4C4] hover:bg-[#F3F3F3] dark:hover:bg-[#171E27]";
 
   return (
     <div className="space-y-4">
@@ -161,67 +159,26 @@ export default function SettingsPage() {
       {/* Layout: sidebar + content */}
       <div className="flex gap-6 items-start">
         {/* Sidebar */}
-        <nav className="w-40 shrink-0 flex flex-col gap-1">
-          <button
-            type="button"
-            onClick={() => setActiveTab("lead")}
-            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "lead" ? activeCls : inactiveCls}`}
-          >
-            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
-            <span>Lead generation</span>
-          </button>
-          {isAdmin && (
-          <button
-            type="button"
-            onClick={() => setActiveTab("staff")}
-            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "staff" ? activeCls : inactiveCls}`}
-          >
-            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 13c0-3 2-5 6-5s6 2 6 5"/></svg>
-            <span>Staff &amp; permissions</span>
-          </button>
-          )}
-          <button
-            type="button"
-            onClick={() => setActiveTab("recommended")}
-            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "recommended" ? activeCls : inactiveCls}`}
-          >
-            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="2" rx="1"/><rect x="2" y="6" width="8" height="2" rx="1"/><rect x="2" y="10" width="10" height="2" rx="1"/></svg>
-            <div>
-              <div>FH Recommended</div>
-              <div className="text-[10px] opacity-70">{Object.keys(rec.mfMap).length} MF · {Object.keys(rec.pmsMap).length} PMS</div>
-            </div>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("watchlists")}
-            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "watchlists" ? activeCls : inactiveCls}`}
-          >
-            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10a1 1 0 011 1v11l-5-3-5 3V3a1 1 0 011-1z"/></svg>
-            <div>
-              <div>Watchlists</div>
-              <div className="text-[10px] opacity-70">{watchlists.length}</div>
-            </div>
-          </button>
-          {isAdmin && (
-          <button
-            type="button"
-            onClick={() => setActiveTab("ai")}
-            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "ai" ? activeCls : inactiveCls}`}
-          >
-            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.6 4.4L14 7l-4.4 1.6L8 13l-1.6-4.4L2 7l4.4-1.6z"/></svg>
-            <span>AI control centre</span>
-          </button>
-          )}
-          {canHealth && (
-          <button
-            type="button"
-            onClick={() => setActiveTab("health")}
-            className={`w-full text-left px-3 py-2 rounded-full text-[13px] flex items-start gap-2 transition ${activeTab === "health" ? activeCls : inactiveCls}`}
-          >
-            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l6 2v4c0 4-3 7-6 8-3-1-6-4-6-8V3z"/></svg>
-            <span>Data health</span>
-          </button>
-          )}
+        <nav className="w-36 shrink-0 flex flex-col gap-1">
+          {([
+            ["lead", "Lead generation", "", true, "M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1z"],
+            ["staff", "Staff & permissions", "", isAdmin, "M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-4.13a4 4 0 100-8 4 4 0 000 8zm6 0a3 3 0 100-6M3 10a3 3 0 106 0"],
+            ["recommended", "FH Recommended", `${Object.keys(rec.mfMap).length} MF · ${Object.keys(rec.pmsMap).length} PMS`, true, "M11.48 3.5a.56.56 0 011.04 0l2.13 5.11a.56.56 0 00.48.35l5.52.44c.5.04.7.66.32.99l-4.2 3.6a.56.56 0 00-.18.56l1.28 5.39a.56.56 0 01-.84.61l-4.73-2.89a.56.56 0 00-.58 0l-4.73 2.89a.56.56 0 01-.84-.61l1.28-5.39a.56.56 0 00-.18-.56l-4.2-3.6a.56.56 0 01.32-.99l5.52-.44a.56.56 0 00.48-.35z"],
+            ["watchlists", "Watchlists", String(watchlists.length), true, "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21z"],
+            ["ai", "AI control centre", "", isAdmin, "M9.8 3l1.6 4.4L16 9l-4.6 1.6L9.8 15 8.2 10.6 3.6 9l4.6-1.6zM18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"],
+            ["health", "Data health", "", canHealth, "M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6zM9 12l2 2 4-4"],
+          ] as const).filter((t) => t[3]).map(([key, label, sub, , d]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setActiveTab(key)}
+              className={`w-full rounded-lg px-2 py-2.5 flex flex-col items-center gap-1 text-center text-[13px] font-medium transition ${activeTab === key ? "bg-gradient-to-b from-[#1B96FF] to-[#0176D3] text-white shadow-[0_3px_0_#00A1E0]" : "text-[#032D60] dark:text-[#CFE6FC] hover:bg-[#EAF5FE] dark:hover:bg-[#11304F]"}`}
+            >
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d={d} /></svg>
+              <span>{label}</span>
+              {sub && <span className="text-[10px] font-normal opacity-70">{sub}</span>}
+            </button>
+          ))}
         </nav>
 
         {/* Main content */}

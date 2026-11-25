@@ -6,7 +6,7 @@ import { useRecommended } from "@/lib/recommended";
 import { useAuth } from "@/components/AuthContext";
 import { CountUp } from "@/components/operations/CalcCharts";
 import { formatISTDate } from "@/lib/terminal-format";
-import { BOX, MUTED, arrow, Comparison, History, RiskMeasures, StatusChips, Title, useModeExplain } from "./FhHistoryPanel";
+import { BOX, MUTED, arrow, Comparison, RiskMeasures, StatusChips, Title, useModeExplain } from "./FhHistoryPanel";
 
 const f = (v: number | null | undefined, d = 1) => (typeof v === "number" && Number.isFinite(v) ? v.toFixed(d) : "n/a");
 const sign = (v: number | null | undefined) => (typeof v === "number" && v > 0 ? `+${v.toFixed(1)}` : f(v));
@@ -170,7 +170,6 @@ export default function FhScorePanel({ fh, row }: { fh: FhExplain; row: MfScreen
         </section>
       )}
 
-      <div className="xl:col-span-12"><History code={row.code} /></div>
 
       <details className={`${BOX} xl:col-span-12`}>
         <summary className="cursor-pointer text-[16px] font-medium">How this is calculated, and where the data comes from</summary>

@@ -92,9 +92,6 @@ function Form() {
         <div className="flex flex-col items-center text-center space-y-3">
           <Logo size="lg" showSubtitle href="/" />
           <h1 className="text-2xl font-semibold">Your Risk Profile</h1>
-          <p className="text-sm text-[#536176] dark:text-[#A8B4C4]">
-            Answer a few questions about your finances and comfort with risk. Your PDF report downloads when you finish, and a Fund Horizon account is created for you.
-          </p>
         </div>
         {done ? (
           <div className="bg-white dark:bg-[#171E27] border border-[#E4E9EF] dark:border-[#2B3644] rounded-2xl p-8 text-center space-y-3">

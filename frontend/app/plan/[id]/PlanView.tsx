@@ -68,7 +68,6 @@ export default function PlanView({ initialPlan, id }: { initialPlan: Plan; id: s
             Financial Blueprint
           </div>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-navy-950">Your illustrative plan</h1>
-          <p className="mt-1 text-sm text-slate-600">Fund data as of {plan.data_asof}. SIPs are sized at assumed planning returns, not as a forecast.</p>
         </div>
         <div className="relative z-10 flex flex-wrap items-center gap-3">
           <ExplainModal

@@ -97,7 +97,6 @@ function FormFilling({ initialTab = "updates" }: { initialTab?: Tab }) {
       <div className={`${card} overflow-hidden`}>
         <div className="px-5 pt-4">
           <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Operations</h1>
-          <p className={`mt-1 max-w-xl text-[14px] ${muted}`}>Start from the client and the job — the right form, pre-filled, in two clicks.</p>
         </div>
         <div className="mx-5 mt-4 flex flex-wrap items-center gap-3 rounded-t-xl border border-b-0 border-[#E4E9EF] dark:border-[#2B3644] bg-[#E6F2F0] dark:bg-[#0C2B28] px-3.5 py-3">
           <label htmlFor="clientSel" className={`text-[12px] font-bold uppercase tracking-wider ${teal}`}>Client / Household</label>
@@ -465,9 +464,6 @@ export default function OperationsPage() {
           <h1 className="text-[32px] sm:text-[36px] font-bold tracking-tight text-[#172033] dark:text-[#EDF1F6] leading-tight">
             Operations
           </h1>
-          <p className="mt-1 text-[15px] text-[#667085] dark:text-[#9AA6B8]">
-            Choose a task to get started.
-          </p>
         </div>
         <button
           type="button"

@@ -32,7 +32,6 @@ export default function ValuationDashboard() {
         <div>
           <Link href="/backoffice/operations" className={`text-[12px] ${muted} hover:underline`}>← Operations</Link>
           <h1 className="text-xl font-bold">Monthly valuation</h1>
-          <p className={`text-[13px] ${muted}`}>Consolidate FundsIndia, ProAffluence and Stallion statements into one reconciled client report.</p>
         </div>
         <Link href="/backoffice/operations/valuation/new" className={btnPrimary}>New valuation</Link>
       </div>

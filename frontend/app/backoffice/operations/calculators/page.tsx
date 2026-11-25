@@ -15,7 +15,6 @@ export default function CalculatorsLanding() {
       <div className={`${card} px-5 py-4`}>
         <Link href="/backoffice/operations" className={`text-[12.5px] font-semibold ${teal} hover:underline`}>← Operations</Link>
         <h1 className={`mt-1 text-2xl font-bold tracking-tight ${ink}`}>Calculators</h1>
-        <p className={`mt-1 max-w-2xl text-[14px] ${muted}`}>{CALCULATORS.length} planning tools for client conversations. Pick one to open it in a new tab. Results are estimates from the assumptions you enter, not guaranteed returns or advice.</p>
       </div>
       {CATEGORIES.map((cat) => {
         const list = CALCULATORS.filter((c) => c.category === cat);

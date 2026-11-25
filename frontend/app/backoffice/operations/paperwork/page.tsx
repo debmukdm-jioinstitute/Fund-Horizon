@@ -13,7 +13,6 @@ export default function PaperworkPage() {
       <div className={`${card} px-5 py-4`}>
         <Link href="/backoffice/operations" className="text-[12.5px] font-semibold text-[#006F64] dark:text-[#75E1CE] hover:underline">← Operations</Link>
         <h1 className={`mt-1 text-2xl font-bold tracking-tight ${ink}`}>Paperwork Processing</h1>
-        <p className={`mt-1 text-[14px] ${muted}`}>Build a client&apos;s monthly report from PMS factsheets and portfolio files, then download it, save it to the client CRM record, and email it.</p>
       </div>
       <PaperworkReport />
     </div>

@@ -151,9 +151,6 @@ export default function SettingsPage() {
       <div className="pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mb-1">Backoffice / Settings</div>
         <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">Settings</h1>
-        <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-          Manage lead capture, staff access and your research lists.
-        </p>
       </div>
 
       {/* Layout: sidebar + content */}

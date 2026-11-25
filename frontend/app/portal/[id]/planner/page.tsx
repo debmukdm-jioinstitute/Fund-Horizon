@@ -102,10 +102,6 @@ export default function PlannerPage({ params }: { params: { id: string } }) {
         &larr; Back to portal
       </Link>
       <h1 className="mt-2 font-display text-2xl font-bold text-navy-900">Financial Planner</h1>
-      <p className="mt-1 text-sm text-navy-600">
-        Three quick calculators for goal planning. Everything here runs in your browser — no data leaves this page —
-        and every result is illustrative, not financial guidance.
-      </p>
 
       {/* (a) Required SIP */}
       <section className="card mt-6" aria-labelledby="calc-sip">

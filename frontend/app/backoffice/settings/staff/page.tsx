@@ -207,7 +207,6 @@ export default function StaffPermissionsPage() {
             {" / "}Staff &amp; permissions
           </div>
           <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">Staff &amp; permissions</h1>
-          <p className={`text-[12px] ${mutedCls} mt-0.5`}>Manage your team and their access.</p>
         </div>
         <p className="terminal-panel p-4 text-[13px] text-[#181818] dark:text-[#EDF2F7]">
           This page is for administrators. Ask an admin to change team access.
@@ -225,7 +224,6 @@ export default function StaffPermissionsPage() {
             {" / "}Staff &amp; permissions
           </div>
           <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">Staff &amp; permissions</h1>
-          <p className={`text-[12px] ${mutedCls} mt-0.5`}>Manage your team and their access.</p>
         </div>
         <button type="button" onClick={() => setDrawer({ mode: "create" })} className="terminal-btn-accent">
           + Add staff

@@ -152,10 +152,6 @@ export default function PortalGoalsPage() {
       </Link>
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-navy-950">My Goals</h1>
-        <p className="mt-1 text-sm text-navy-600">
-          Adjust a goal&apos;s target or horizon and the plan rebuilds around it. Figures are illustrative —
-          chance and SIP numbers use a constant mix and ignore tax.
-        </p>
       </div>
 
       {goals.length === 0 && (

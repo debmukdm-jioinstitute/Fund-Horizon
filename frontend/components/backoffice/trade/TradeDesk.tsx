@@ -115,9 +115,6 @@ export default function TradeDesk() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-[#032D60] dark:text-white">Trade</h1>
-          <p className="mt-0.5 text-sm text-[#44546A] dark:text-[#AEAEB2]">
-            NSE cash day desk — scanner through paper tickets. Asia/Kolkata session 09:15–15:30.
-          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="rounded border border-[#0176D3]/40 px-2 py-1 text-[#0176D3] dark:text-[#1B96FF]">

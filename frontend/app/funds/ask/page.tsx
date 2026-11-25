@@ -16,10 +16,6 @@ export default function FundAskPage() {
 
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-navy-950">Mutual Fund Scheme Knowledge Base</h1>
-        <p className="text-navy-700">
-          Ask questions or look up historical data across 3,600+ schemes. Answers are synthesized directly from
-          AMFI scheme metrics and monthly NAV records with cited sources.
-        </p>
       </div>
 
       <FundRagSearch />

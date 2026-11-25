@@ -82,7 +82,6 @@ export default function ServiceDeskPage() {
     <div className="space-y-4 pb-12">
       <div className={`${card} px-4 py-4 sm:px-5`}>
         <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Service desk</h1>
-        <p className={`mt-1 text-[14px] ${muted}`}>Log incoming service queries, track them to completion, and keep the monthly reports on schedule.</p>
       </div>
       {error && <p role="alert" className="text-[13px] text-[#B42318] dark:text-[#FF7D86]">{error}</p>}
 

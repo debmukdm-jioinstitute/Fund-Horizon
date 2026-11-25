@@ -117,9 +117,6 @@ export default function PortfolioPage({ params }: { params: { id: string } }) {
         &larr; Back to portal
       </Link>
       <h1 className="mt-2 font-display text-2xl font-bold text-navy-900">My Portfolio</h1>
-      <p className="mt-1 text-sm text-navy-600">
-        The fund mix built for your plan — the same allocation your goals are planned against.
-      </p>
 
       {loading ? (
         <div className="card mt-6 animate-pulse space-y-3">

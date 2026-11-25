@@ -16,10 +16,6 @@ export default function CasPage() {
 
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-navy-950">Consolidated Account Statement (CAS) Analysis</h1>
-        <p className="text-navy-700">
-          Upload your NSDL, CDSL, CAMS, or KFintech CAS PDF statement. The document is parsed strictly in volatile memory
-          to calculate portfolio XIRR, compare your asset mix against standard target profiles, and inspect plan types.
-        </p>
       </div>
 
       <CasUpload />

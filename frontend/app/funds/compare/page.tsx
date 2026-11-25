@@ -69,9 +69,6 @@ export default async function ComparePage({ searchParams }: PageProps) {
         <h1 className="text-2xl font-bold tracking-tight text-navy-950 sm:text-3xl">
           Side-by-Side Scheme Comparison
         </h1>
-        <p className="mt-1 text-sm text-navy-700">
-          Analyze historical returns, volatility, and return correlation overlap across regular mutual fund schemes.
-        </p>
       </div>
 
       <CompareView initialData={data} />

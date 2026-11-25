@@ -62,9 +62,6 @@ function VerifyEmployeeContent() {
           <h1 className="mt-4 text-xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-2xl">
             Official Employee Credential Verification
           </h1>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Instant tamper-proof verification of Fund Horizon employee identification badges.
-          </p>
         </div>
 
         {/* Verification Search Bar (if code changed or scanned manual) */}

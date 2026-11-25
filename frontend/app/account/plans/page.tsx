@@ -58,9 +58,6 @@ export default function MyPlansPage() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-navy-950">My plans</h1>
-          <p className="mt-1 text-sm text-navy-600">
-            Every plan you have created, in one place.
-          </p>
         </div>
         <Link
           href="/plan/new"

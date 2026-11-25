@@ -16,7 +16,6 @@ export default function KnowledgeBase() {
   return (
     <div className="mx-auto max-w-[900px] px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-bold text-[#181818] dark:text-[#EDF2F7]">Knowledge base</h1>
-      <p className="mt-1 text-[14px] text-[#536176] dark:text-[#A8B4C4]">How to get the most out of Fund Horizon, in plain steps.</p>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {ARTICLES.map((a) => (
           <Link key={a.href} href={a.href} className="rounded-lg border border-[#E5E5E5] bg-white p-4 transition hover:border-[#006F64] dark:border-[#2B3644] dark:bg-[#10151C]">

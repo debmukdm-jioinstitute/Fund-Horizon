@@ -107,9 +107,6 @@ export default function PublicLeadCapturePage() {
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#172033] dark:text-[#EDF2F7]">
             Connect with Fund Horizon
           </h1>
-          <p className="text-xs sm:text-sm text-[#536176] dark:text-[#A8B4C4] max-w-md">
-            Please share your contact details. A dedicated wealth manager will evaluate your investment objectives and connect with tailored recommendations.
-          </p>
         </div>
 
         {/* Form Container */}

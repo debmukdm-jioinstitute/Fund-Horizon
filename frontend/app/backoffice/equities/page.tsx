@@ -244,7 +244,6 @@ export default function EquitiesPage() {
   return (
     <div className="mx-auto max-w-[1200px] p-4 text-[#2F363F] sm:p-6">
       <h1 className="text-[28px] font-medium leading-tight">{basket ? basket.name : "Equities"}</h1>
-      <p className="mt-1 text-[13px] text-[#81878C]">Build baskets of NSE stocks, record your shares and buy prices, and track live returns.</p>
 
       {!hideTip && (
         <div className="mt-5 flex items-center gap-3 rounded border border-[#E8EBED] bg-white px-4 py-3 text-sm">

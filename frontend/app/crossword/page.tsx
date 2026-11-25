@@ -166,9 +166,6 @@ export default function CrosswordPage() {
             <div className="text-center space-y-1">
               <div className="text-3xl">🧩</div>
               <h1 className="text-xl font-semibold">Fund Horizon Word Hunt</h1>
-              <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">
-                Find hidden basic financial words in 2 minutes and win a token. Enter your details to begin.
-              </p>
             </div>
             {error && <div className="p-3 text-xs rounded-lg bg-[#FBE7EA] dark:bg-[#43181F] text-[#9B1C2E] dark:text-[#FFA9B5]">{error}</div>}
             <input aria-label="Full name" className={INPUT_CLS} value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" autoComplete="name" />

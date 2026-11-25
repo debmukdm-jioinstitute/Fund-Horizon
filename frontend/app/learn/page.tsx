@@ -39,10 +39,6 @@ export default function LearnPage() {
     <div className="space-y-6">
       <header>
         <h1 className="text-3xl font-extrabold tracking-tight text-navy-950">Savings and tax-saving options, explained</h1>
-        <p className="mt-1 max-w-3xl text-slate-600">
-          What each option is, who it suits, how long money stays locked, and how it is taxed in FY {data?.fy ?? "2026-27"}. Plain
-          English, no product pitch.
-        </p>
       </header>
 
       {data?.disclosure && (

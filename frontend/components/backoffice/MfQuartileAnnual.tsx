@@ -179,7 +179,6 @@ export default function MfQuartileAnnual({ labels, enabled, keep, recommendedPen
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[24px] font-bold tracking-tight text-[#181818] dark:text-[#EDF2F7]">Quartile rankings</h1>
-          <p className="text-[13px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">Compare each fund&apos;s position within its category, year by year.</p>
         </div>
         <button type="button" className="rounded-lg border border-[#E5E5E5] dark:border-[#2B3644] bg-white dark:bg-[#171E27] px-3 py-1.5 text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7] hover:bg-[#F3F3F3] dark:hover:bg-[#1D2733] disabled:opacity-50" disabled={plan !== "Regular" || !idx.length} onClick={downloadXls}>
           ⬇ Download Excel

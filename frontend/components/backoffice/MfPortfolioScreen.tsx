@@ -179,9 +179,6 @@ export default function MfPortfolioScreen({ onBackToScreener }: Props) {
           <h1 className="text-[26px] font-bold text-[#181818] dark:text-[#EDF2F7] tracking-tight">
             Portfolio Screening
           </h1>
-          <p className="text-[14px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-            Upload client statement (CAS, broker or distributor report: PDF, Excel, CSV, Word, image) for instant FH scores, stars, Buy/Hold/Sell signals &amp; reasons.
-          </p>
         </div>
         {data && (
           <button

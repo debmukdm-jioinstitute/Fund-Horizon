@@ -54,7 +54,6 @@ export default function CalculatorPage() {
         <Link href="/backoffice/operations/calculators" className={`text-[12.5px] font-semibold ${teal} hover:underline`}>← All calculators</Link>
         <div className={`mt-1 text-[11.5px] font-bold uppercase tracking-wider ${muted}`}>{calc.category}</div>
         <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>{calc.title}</h1>
-        <p className={`mt-1 max-w-2xl text-[14px] ${muted}`}>{calc.blurb} Results are estimates from the assumptions you enter, not guaranteed returns or advice.</p>
       </div>
       <ClientPicker client={client} onChange={setClient} />
       {client && saved.some((s) => s.calc === calc.id) && (

@@ -48,9 +48,6 @@ export default function McpSettingsPage() {
     <div className="mx-auto max-w-[760px] space-y-5 p-4">
       <div>
         <h1 className="text-2xl font-bold text-[#181818] dark:text-[#EDF2F7]">Use Fund Horizon inside Claude</h1>
-        <p className={`mt-1 text-[15px] ${muted}`}>
-          Ask Claude to screen funds, research PMS, build valuation reports and fill forms. Everything in Fund Horizon{tools ? ` (${tools} tools)` : ""} and anything we add later works automatically. No setup, no passwords to type.
-        </p>
       </div>
 
       {msg && <p role={msg.ok ? "status" : "alert"} className={`rounded-lg border p-3 text-[15px] ${msg.ok ? "border-[#2E844A] text-[#1B5E20] dark:text-[#A5D6A7]" : "border-[#B42332] text-[#B42332] dark:text-[#FF7D86]"}`}>{msg.text}</p>}

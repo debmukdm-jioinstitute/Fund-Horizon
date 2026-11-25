@@ -656,6 +656,140 @@ export const getEquityQuotes = async (symbols: string[], signal?: AbortSignal): 
 export const getEquityIndices = async (signal?: AbortSignal): Promise<EquityQuote[]> =>
   arr((await boFetch<Json>("/api/backoffice/equities/indices", { signal })).data) as unknown as EquityQuote[];
 
+export interface EquityOfficer {
+  name: string;
+  title?: string;
+  age?: number;
+}
+
+export interface EquityYearlyEarnings {
+  year: number | string;
+  revenue?: number | null;
+  earnings?: number | null;
+}
+
+export interface EquityQuarterlyEarnings {
+  date: string;
+  revenue?: number | null;
+  earnings?: number | null;
+}
+
+export interface EquityScripDetail {
+  symbol: string;
+  name: string;
+  currency: string;
+  price?: number | null;
+  prev_close?: number | null;
+  change?: number | null;
+  change_pct?: number | null;
+  day_high?: number | null;
+  day_low?: number | null;
+  high_52w?: number | null;
+  low_52w?: number | null;
+  volume?: number | null;
+  avg_volume?: number | null;
+  market_cap?: number | null;
+  market_cap_fmt?: string;
+  pe_trailing?: number | null;
+  pe_forward?: number | null;
+  pb_ratio?: number | null;
+  ps_ratio?: number | null;
+  peg_ratio?: number | null;
+  ev?: number | null;
+  ev_fmt?: string;
+  ev_to_ebitda?: number | null;
+  beta?: number | null;
+  roe?: number | null;
+  roa?: number | null;
+  operating_margin?: number | null;
+  profit_margin?: number | null;
+  gross_margin?: number | null;
+  debt_to_equity?: number | null;
+  total_debt?: number | null;
+  total_debt_fmt?: string;
+  total_cash?: number | null;
+  total_cash_fmt?: string;
+  free_cashflow?: number | null;
+  free_cashflow_fmt?: string;
+  revenue?: number | null;
+  revenue_fmt?: string;
+  revenue_growth?: number | null;
+  earnings_growth?: number | null;
+  ebitda?: number | null;
+  ebitda_fmt?: string;
+  eps_trailing?: number | null;
+  eps_forward?: number | null;
+  book_value?: number | null;
+  dividend_yield?: number | null;
+  dividend_rate?: number | null;
+  ex_dividend_date?: number | string | null;
+  shareholding: {
+    promoter_pct?: number | null;
+    institutions_pct?: number | null;
+    float_pct?: number | null;
+  };
+  analyst: {
+    recommendation?: string | null;
+    target_mean?: number | null;
+    target_high?: number | null;
+    target_low?: number | null;
+    opinions_count?: number | null;
+    upside_pct?: number | null;
+  };
+  profile: {
+    sector?: string | null;
+    industry?: string | null;
+    website?: string | null;
+    city?: string | null;
+    country?: string | null;
+    employees?: number | null;
+    summary?: string | null;
+    officers: EquityOfficer[];
+  };
+  earnings_history: EquityYearlyEarnings[];
+  quarterly_earnings: EquityQuarterlyEarnings[];
+  external_links: {
+    screener: string;
+    tradingview: string;
+    nse: string;
+    google: string;
+    yahoo: string;
+  };
+  as_of?: string;
+  error?: string;
+}
+
+export interface EquityCandle {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export interface EquityChartData {
+  symbol: string;
+  name: string;
+  range: string;
+  interval: string;
+  currency: string;
+  prev_close?: number | null;
+  current_price?: number | null;
+  period_change: number;
+  period_change_pct: number;
+  period_high?: number | null;
+  period_low?: number | null;
+  candles: EquityCandle[];
+  error?: string;
+}
+
+export const getEquityDetail = async (symbol: string, signal?: AbortSignal): Promise<EquityScripDetail> =>
+  (await boFetch<{ data: EquityScripDetail }>(`/api/backoffice/equities/detail?symbol=${encodeURIComponent(symbol)}`, { signal })).data;
+
+export const getEquityChart = async (symbol: string, range: string = "1y", signal?: AbortSignal): Promise<EquityChartData> =>
+  (await boFetch<{ data: EquityChartData }>(`/api/backoffice/equities/chart?symbol=${encodeURIComponent(symbol)}&range=${encodeURIComponent(range)}`, { signal })).data;
+
 
 export interface PmsBenchmarkData {
   id: string;

@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import http.cookiejar
 import json
 import re
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -19,10 +21,71 @@ from app.backoffice.repository import BackofficeRepository
 router = APIRouter(prefix="/api/backoffice/equities", tags=["equities"])
 
 _REPO = BackofficeRepository()
-UA = "Mozilla/5.0 (compatible; FundHorizon/1.0)"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9&-]{0,20}$")
 TTL = 15.0
-_cache: dict[str, tuple[float, Any]] = {}
+_cache: dict[str, tuple[float, float, Any]] = {}
+
+
+def _raw(v: Any, default=None):
+    if v is None:
+        return default
+    if isinstance(v, dict):
+        return v.get("raw", default)
+    return v
+
+
+def _fmt_inr_short(val: float | None) -> str:
+    if val is None or not isinstance(val, (int, float)):
+        return "—"
+    if val >= 1e12:
+        return f"₹{val / 1e12:.2f}T"
+    if val >= 1e7:
+        return f"₹{val / 1e7:,.2f} Cr"
+    if val >= 1e5:
+        return f"₹{val / 1e5:.2f} Lakh"
+    return f"₹{val:,.2f}"
+
+
+class YahooSession:
+    """Manages Yahoo Finance cookie & crumb acquisition for quoteSummary."""
+
+    def __init__(self):
+        self.cj = http.cookiejar.CookieJar()
+        self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cj))
+        self.crumb: str | None = None
+        self.crumb_time: float = 0
+        self.lock = threading.Lock()
+
+    def get_crumb(self, force: bool = False) -> str | None:
+        with self.lock:
+            now = time.monotonic()
+            if self.crumb and not force and (now - self.crumb_time < 3600):
+                return self.crumb
+            try:
+                self.opener.open(urllib.request.Request("https://fc.yahoo.com", headers={"User-Agent": UA}))
+            except Exception:
+                pass
+            for host in ("query2", "query1"):
+                try:
+                    req = urllib.request.Request(f"https://{host}.finance.yahoo.com/v1/test/getcrumb", headers={"User-Agent": UA})
+                    with self.opener.open(req, timeout=8) as r:
+                        c = r.read().decode("utf-8").strip()
+                        if c and "error" not in c.lower() and "<" not in c:
+                            self.crumb = c
+                            self.crumb_time = now
+                            return self.crumb
+                except Exception:
+                    pass
+            return self.crumb
+
+    def get_json(self, url: str) -> dict:
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
+        with self.opener.open(req, timeout=12) as r:
+            return json.loads(r.read().decode("utf-8", "replace"))
+
+
+_YS = YahooSession()
 
 
 def _get(url: str) -> dict:
@@ -31,16 +94,16 @@ def _get(url: str) -> dict:
         return json.loads(r.read().decode("utf-8", "replace"))
 
 
-def _cached(key: str, fn):
+def _cached(key: str, fn, ttl: float = TTL):
     hit = _cache.get(key)
-    if hit and time.monotonic() - hit[0] < TTL:
-        return hit[1]
+    if hit and time.monotonic() - hit[0] < hit[1]:
+        return hit[2]
     val = fn()
     if isinstance(val, dict) and val.get("error"):
-        return val  # never cache a failed quote: retry on the next poll
-    if len(_cache) > 2000:
+        return val  # never cache a failed quote/detail: retry on next request
+    if len(_cache) > 3000:
         _cache.clear()
-    _cache[key] = (time.monotonic(), val)
+    _cache[key] = (time.monotonic(), ttl, val)
     return val
 
 
@@ -92,12 +155,275 @@ def _quote(sym: str, suffix: str = ".NS") -> dict:
     }
 
 
+VALID_RANGES = ("1d", "5d", "1mo", "6mo", "1y", "5y", "max")
+INTERVAL_MAP = {
+    "1d": "5m",
+    "5d": "15m",
+    "1mo": "1d",
+    "6mo": "1d",
+    "1y": "1d",
+    "5y": "1wk",
+    "max": "1mo",
+}
+
+
+def _chart(sym: str, range_str: str = "1y", suffix: str = ".NS") -> dict:
+    sym = sym.strip().upper()
+    if sym.endswith(".NS"):
+        sym = sym[:-3]
+    if not SYMBOL.match(sym):
+        return {"symbol": sym, "error": "invalid symbol"}
+    if range_str not in VALID_RANGES:
+        range_str = "1y"
+
+    interval = INTERVAL_MAP.get(range_str, "1d")
+    path = f"/v8/finance/chart/{urllib.parse.quote(sym)}{suffix}?range={range_str}&interval={interval}"
+    d = None
+    for host in ("query2", "query1", "query2"):
+        try:
+            d = _get(f"https://{host}.finance.yahoo.com{path}")["chart"]["result"][0]
+            break
+        except Exception:
+            time.sleep(0.2)
+
+    if d is None:
+        return {"symbol": sym, "error": "chart unavailable"}
+
+    meta = d.get("meta", {})
+    timestamps = d.get("timestamp", [])
+    q = d.get("indicators", {}).get("quote", [{}])[0]
+    closes = q.get("close", [])
+    opens = q.get("open", [])
+    highs = q.get("high", [])
+    lows = q.get("low", [])
+    volumes = q.get("volume", [])
+
+    points = []
+    for i in range(len(timestamps)):
+        c = closes[i] if i < len(closes) else None
+        if c is not None and not (isinstance(c, float) and (c != c or c <= 0)):
+            points.append({
+                "time": timestamps[i],
+                "close": round(c, 2),
+                "open": round(opens[i], 2) if i < len(opens) and opens[i] is not None else round(c, 2),
+                "high": round(highs[i], 2) if i < len(highs) and highs[i] is not None else round(c, 2),
+                "low": round(lows[i], 2) if i < len(lows) and lows[i] is not None else round(c, 2),
+                "volume": volumes[i] if i < len(volumes) and volumes[i] is not None else 0,
+            })
+
+    first_px = points[0]["close"] if points else None
+    last_px = points[-1]["close"] if points else None
+    chg = (last_px - first_px) if first_px and last_px else 0
+    chg_pct = (chg / first_px * 100) if first_px and first_px > 0 else 0
+    p_high = max((p["high"] for p in points), default=None)
+    p_low = min((p["low"] for p in points), default=None)
+
+    return {
+        "symbol": sym,
+        "name": meta.get("longName") or meta.get("shortName") or sym,
+        "range": range_str,
+        "interval": interval,
+        "currency": meta.get("currency") or "INR",
+        "prev_close": meta.get("chartPreviousClose") or meta.get("previousClose"),
+        "current_price": meta.get("regularMarketPrice") or last_px,
+        "period_change": round(chg, 2),
+        "period_change_pct": round(chg_pct, 2),
+        "period_high": round(p_high, 2) if p_high is not None else None,
+        "period_low": round(p_low, 2) if p_low is not None else None,
+        "candles": points,
+    }
+
+
+def _detail(sym: str) -> dict:
+    sym = sym.strip().upper()
+    if sym.endswith(".NS"):
+        sym = sym[:-3]
+    if not SYMBOL.match(sym):
+        return {"symbol": sym, "error": "invalid symbol"}
+
+    base = _quote(sym)
+    modules = "assetProfile,summaryDetail,defaultKeyStatistics,financialData,earnings,majorHoldersBreakdown"
+    summary_res = None
+
+    crumb = _YS.get_crumb()
+    if crumb:
+        for _ in range(2):
+            try:
+                url = f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{urllib.parse.quote(sym)}.NS?crumb={crumb}&modules={modules}"
+                summary_res = _YS.get_json(url)["quoteSummary"]["result"][0]
+                break
+            except Exception:
+                crumb = _YS.get_crumb(force=True)
+
+    ap = (summary_res or {}).get("assetProfile", {})
+    sd = (summary_res or {}).get("summaryDetail", {})
+    ks = (summary_res or {}).get("defaultKeyStatistics", {})
+    fd = (summary_res or {}).get("financialData", {})
+    ea = (summary_res or {}).get("earnings", {})
+    mh = (summary_res or {}).get("majorHoldersBreakdown", {})
+
+    cmp_price = base.get("price") or _raw(fd.get("currentPrice"))
+    prev_close = base.get("prev_close") or _raw(sd.get("previousClose"))
+    chg = (cmp_price - prev_close) if (cmp_price is not None and prev_close is not None) else None
+    chg_pct = (chg / prev_close * 100) if (chg is not None and prev_close) else None
+
+    day_high = base.get("day_high") or _raw(sd.get("dayHigh"))
+    day_low = base.get("day_low") or _raw(sd.get("dayLow"))
+    high_52w = base.get("high_52w") or _raw(sd.get("fiftyTwoWeekHigh"))
+    low_52w = base.get("low_52w") or _raw(sd.get("fiftyTwoWeekLow"))
+    volume = base.get("volume") or _raw(sd.get("volume"))
+    avg_volume = _raw(sd.get("averageVolume"))
+    mcap = _raw(sd.get("marketCap"))
+
+    pe_trailing = _raw(sd.get("trailingPE"))
+    pe_forward = _raw(sd.get("forwardPE"))
+    pb_ratio = _raw(ks.get("priceToBook"))
+    ps_ratio = _raw(sd.get("priceToSalesTrailing12Months"))
+    peg_ratio = _raw(ks.get("pegRatio"))
+    ev = _raw(ks.get("enterpriseValue"))
+    ev_to_ebitda = _raw(ks.get("enterpriseToEbitda"))
+
+    roe = _raw(fd.get("returnOnEquity"))
+    roa = _raw(fd.get("returnOnAssets"))
+    op_margin = _raw(fd.get("operatingMargins"))
+    net_margin = _raw(ks.get("profitMargins"))
+    gross_margin = _raw(fd.get("grossMargins"))
+    debt_to_equity = _raw(fd.get("debtToEquity"))
+    total_debt = _raw(fd.get("totalDebt"))
+    total_cash = _raw(fd.get("totalCash"))
+    free_cashflow = _raw(fd.get("freeCashflow"))
+    revenue = _raw(fd.get("totalRevenue"))
+    revenue_growth = _raw(fd.get("revenueGrowth"))
+    earnings_growth = _raw(fd.get("earningsGrowth"))
+    ebitda = _raw(fd.get("ebitda"))
+
+    eps_trailing = _raw(ks.get("trailingEps"))
+    eps_forward = _raw(ks.get("forwardEps"))
+    book_value = _raw(ks.get("bookValue"))
+
+    div_yield = _raw(sd.get("dividendYield"))
+    div_rate = _raw(sd.get("dividendRate"))
+    ex_div = _raw(sd.get("exDividendDate"))
+
+    insiders_pct = _raw(mh.get("insidersPercentHeld"))
+    institutions_pct = _raw(mh.get("institutionsPercentHeld"))
+    institutions_float_pct = _raw(mh.get("institutionsFloatPercentHeld"))
+
+    target_mean = _raw(fd.get("targetMeanPrice"))
+    target_high = _raw(fd.get("targetHighPrice"))
+    target_low = _raw(fd.get("targetLowPrice"))
+    rec_key = fd.get("recommendationKey")
+    rec_opinions = _raw(fd.get("numberOfAnalystOpinions"))
+
+    fc = ea.get("financialsChart", {})
+    yearly_earnings = [
+        {"year": y.get("date"), "revenue": _raw(y.get("revenue")), "earnings": _raw(y.get("earnings"))}
+        for y in fc.get("yearly", [])
+    ]
+    quarterly_earnings = [
+        {"date": q.get("date"), "revenue": _raw(q.get("revenue")), "earnings": _raw(q.get("earnings"))}
+        for q in fc.get("quarterly", [])
+    ]
+
+    officers = [
+        {"name": o.get("name"), "title": o.get("title"), "age": o.get("age")}
+        for o in ap.get("companyOfficers", [])[:6]
+        if o.get("name")
+    ]
+
+    ext_links = {
+        "screener": f"https://www.screener.in/company/{urllib.parse.quote(sym)}/consolidated/",
+        "tradingview": f"https://www.tradingview.com/symbols/NSE-{sym}/",
+        "nse": f"https://www.nseindia.com/get-quotes/equity?symbol={urllib.parse.quote(sym)}",
+        "google": f"https://www.google.com/finance/quote/{sym}:NSE",
+        "yahoo": f"https://finance.yahoo.com/quote/{sym}.NS",
+    }
+
+    return {
+        "symbol": sym,
+        "name": base.get("name") or ap.get("longBusinessSummary", "")[:30] or sym,
+        "currency": base.get("currency") or "INR",
+        "price": cmp_price,
+        "prev_close": prev_close,
+        "change": chg,
+        "change_pct": chg_pct,
+        "day_high": day_high,
+        "day_low": day_low,
+        "high_52w": high_52w,
+        "low_52w": low_52w,
+        "volume": volume,
+        "avg_volume": avg_volume,
+        "market_cap": mcap,
+        "market_cap_fmt": _fmt_inr_short(mcap),
+        "pe_trailing": pe_trailing,
+        "pe_forward": pe_forward,
+        "pb_ratio": pb_ratio,
+        "ps_ratio": ps_ratio,
+        "peg_ratio": peg_ratio,
+        "ev": ev,
+        "ev_fmt": _fmt_inr_short(ev),
+        "ev_to_ebitda": ev_to_ebitda,
+        "beta": _raw(sd.get("beta")),
+        "roe": roe,
+        "roa": roa,
+        "operating_margin": op_margin,
+        "profit_margin": net_margin,
+        "gross_margin": gross_margin,
+        "debt_to_equity": debt_to_equity,
+        "total_debt": total_debt,
+        "total_debt_fmt": _fmt_inr_short(total_debt),
+        "total_cash": total_cash,
+        "total_cash_fmt": _fmt_inr_short(total_cash),
+        "free_cashflow": free_cashflow,
+        "free_cashflow_fmt": _fmt_inr_short(free_cashflow),
+        "revenue": revenue,
+        "revenue_fmt": _fmt_inr_short(revenue),
+        "revenue_growth": revenue_growth,
+        "earnings_growth": earnings_growth,
+        "ebitda": ebitda,
+        "ebitda_fmt": _fmt_inr_short(ebitda),
+        "eps_trailing": eps_trailing,
+        "eps_forward": eps_forward,
+        "book_value": book_value,
+        "dividend_yield": div_yield,
+        "dividend_rate": div_rate,
+        "ex_dividend_date": ex_div,
+        "shareholding": {
+            "promoter_pct": round(insiders_pct * 100, 2) if insiders_pct is not None else None,
+            "institutions_pct": round(institutions_pct * 100, 2) if institutions_pct is not None else None,
+            "float_pct": round(institutions_float_pct * 100, 2) if institutions_float_pct is not None else None,
+        },
+        "analyst": {
+            "recommendation": rec_key.replace("_", " ").title() if rec_key else None,
+            "target_mean": target_mean,
+            "target_high": target_high,
+            "target_low": target_low,
+            "opinions_count": rec_opinions,
+            "upside_pct": round(((target_mean - cmp_price) / cmp_price) * 100, 2) if (target_mean and cmp_price and cmp_price > 0) else None,
+        },
+        "profile": {
+            "sector": ap.get("sector"),
+            "industry": ap.get("industry"),
+            "website": ap.get("website"),
+            "city": ap.get("city"),
+            "country": ap.get("country"),
+            "employees": ap.get("fullTimeEmployees"),
+            "summary": ap.get("longBusinessSummary"),
+            "officers": officers,
+        },
+        "earnings_history": yearly_earnings,
+        "quarterly_earnings": quarterly_earnings,
+        "external_links": ext_links,
+        "as_of": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+    }
+
+
 @router.get("/search")
 def equities_search(staff: Annotated[dict, Depends(require_staff)], q: Annotated[str, Query(min_length=1, max_length=40)]):
     try:
         return {"data": _cached("s:" + q.lower(), lambda: _search(q))}
-    except Exception:
-        raise HTTPException(502, "Yahoo Finance search unavailable")
+    except Exception as e:
+        raise HTTPException(502, "Yahoo Finance search unavailable") from e
 
 
 INDICES = (("^NSEI", "NIFTY 50"), ("^NSEBANK", "BANK NIFTY"), ("^BSESN", "SENSEX"))
@@ -118,6 +444,45 @@ def equities_quotes(staff: Annotated[dict, Depends(require_staff)], symbols: Ann
     with ThreadPoolExecutor(max_workers=8) as ex:
         data = list(ex.map(lambda s: _cached("q:" + s, lambda: _quote(s)), syms))
     return {"data": data, "source": "Yahoo Finance", "as_of": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+
+
+@router.get("/detail")
+def equities_detail(
+    staff: Annotated[dict, Depends(require_staff)],
+    symbol: Annotated[str, Query(min_length=1, max_length=20)],
+):
+    sym = symbol.strip().upper()
+    if sym.endswith(".NS"):
+        sym = sym[:-3]
+    if not SYMBOL.match(sym):
+        raise HTTPException(422, "invalid NSE symbol")
+    try:
+        res = _cached("d:" + sym, lambda: _detail(sym), ttl=300.0)
+        return {"data": res, "source": "Yahoo Finance"}
+    except Exception as e:
+        raise HTTPException(502, f"Scrip detail fetch failed: {e}") from e
+
+
+@router.get("/chart")
+def equities_chart(
+    staff: Annotated[dict, Depends(require_staff)],
+    symbol: Annotated[str, Query(min_length=1, max_length=20)],
+    range: Annotated[str, Query()] = "1y",
+):
+    sym = symbol.strip().upper()
+    if sym.endswith(".NS"):
+        sym = sym[:-3]
+    if not SYMBOL.match(sym):
+        raise HTTPException(422, "invalid NSE symbol")
+    rng = range.lower()
+    if rng not in VALID_RANGES:
+        rng = "1y"
+    ttl = 60.0 if rng in ("1d", "5d") else 3600.0
+    try:
+        res = _cached(f"c:{sym}:{rng}", lambda: _chart(sym, rng), ttl=ttl)
+        return {"data": res, "source": "Yahoo Finance"}
+    except Exception as e:
+        raise HTTPException(502, f"Chart data fetch failed: {e}") from e
 
 
 # --- Baskets: staff-private, stored in the server database (survives devices/browsers) ---

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import EquityDetailView from "@/components/backoffice/EquityDetailView";
 import {
   EquityBasket, EquityHolding, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
   getEquityBaskets, getEquityIndices, getEquityQuotes, renameEquityBasket, saveEquityBasket, saveEquityHolding, searchEquities,
@@ -60,11 +61,15 @@ function Stepper({ value, onSave, label }: { value: number | null; onSave: (v: n
 export default function EquitiesPage() {
   const [baskets, setBaskets] = useState<EquityBasket[]>([]);
   const [activeId, setActiveId] = useState(HOME);
+  const [selectedStock, setSelectedStock] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [newName, setNewName] = useState("");
   const [q, setQ] = useState("");
   const [sugg, setSugg] = useState<EquitySuggestion[]>([]);
   const [open, setOpen] = useState(false);
+  const [homeQ, setHomeQ] = useState("");
+  const [homeSugg, setHomeSugg] = useState<EquitySuggestion[]>([]);
+  const [homeOpen, setHomeOpen] = useState(false);
   const [quotes, setQuotes] = useState<Record<string, EquityQuote>>({});
   const [err, setErr] = useState<string | null>(null);
   const [updated, setUpdated] = useState<Date | null>(null);
@@ -97,7 +102,7 @@ export default function EquitiesPage() {
     })();
   }, []);
 
-  // Typeahead (debounced).
+  // Typeahead inside basket (debounced).
   useEffect(() => {
     const term = q.trim();
     if (term.length < 2) { setSugg([]); return; }
@@ -107,6 +112,17 @@ export default function EquitiesPage() {
     }, 250);
     return () => { clearTimeout(t); ac.abort(); };
   }, [q]);
+
+  // Typeahead on Home tab (debounced).
+  useEffect(() => {
+    const term = homeQ.trim();
+    if (term.length < 2) { setHomeSugg([]); return; }
+    const ac = new AbortController();
+    const t = setTimeout(() => {
+      searchEquities(term, ac.signal).then((r) => { r.forEach((s) => (names.current[s.symbol] = s.name)); setHomeSugg(r); }).catch(() => {});
+    }, 250);
+    return () => { clearTimeout(t); ac.abort(); };
+  }, [homeQ]);
 
   const basket = baskets.find((b) => b.id === activeId);
   // Locked by default. Edits go to a local draft and only persist on an explicit, confirmed Save.
@@ -150,13 +166,23 @@ export default function EquitiesPage() {
     if (!n) return;
     try {
       const b = await createEquityBasket(n);
-      setBaskets((p) => [...p, b]); setActiveId(b.id); setNewName(""); setShowNew(false); setErr(null);
+      setBaskets((p) => [...p, b]); setActiveId(b.id); setSelectedStock(null); setNewName(""); setShowNew(false); setErr(null);
     } catch (e) { fail(e); }
   };
   const guardDiscard = () => !dirty || confirm("You have unsaved changes. Discard them?");
-  const selectBasket = (id: string) => { if (id === activeId || !guardDiscard()) return; setDraft(null); setActiveId(id); };
+  const selectBasket = (id: string) => { if (id === activeId || !guardDiscard()) return; setSelectedStock(null); setDraft(null); setActiveId(id); };
   const startEdit = () => basket && setDraft({ symbols: [...basket.symbols], holdings: structuredClone(basket.holdings) });
   const cancelEdit = () => { if (guardDiscard()) setDraft(null); };
+
+  const handleAddStockToBasket = async (basketId: string, sym: string) => {
+    const b = baskets.find((x) => x.id === basketId);
+    if (!b || b.symbols.includes(sym) || b.symbols.length >= 50) return;
+    const nextSyms = [...b.symbols, sym];
+    try {
+      await saveEquityBasket(basketId, nextSyms);
+      setBaskets(baskets.map((x) => (x.id === basketId ? { ...x, symbols: nextSyms } : x)));
+    } catch (e) { fail(e); }
+  };
 
   const renameBasket = async () => {
     if (!basket) return;
@@ -243,12 +269,14 @@ export default function EquitiesPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] p-4 text-[#2F363F] sm:p-6">
-      <h1 className="text-[28px] font-medium leading-tight">{basket ? basket.name : "Equities"}</h1>
+      <h1 className="text-[28px] font-medium leading-tight">
+        {selectedStock ? `Research: ${selectedStock}` : basket ? basket.name : "Equities"}
+      </h1>
 
-      {!hideTip && (
+      {!hideTip && !selectedStock && (
         <div className="mt-5 flex items-center gap-3 rounded border border-[#E8EBED] bg-white px-4 py-3 text-sm">
           <span aria-hidden className="text-[#1F7AE0]">◆</span>
-          <span className="flex-1"><b className="font-medium">Track your ideas</b> <span className="text-[#81878C]">— add stocks, set shares and buy prices; invested amount, value and P&amp;L update live.</span></span>
+          <span className="flex-1"><b className="font-medium">Track &amp; Research Ideas</b> <span className="text-[#81878C]">— click any stock to view detailed financials, valuation, and charts, or build custom baskets with share steppers.</span></span>
           <button className="text-sm font-medium text-[#81878C]" onClick={() => { setHideTip(true); try { localStorage.setItem("fh.equities.tip", "1"); } catch {} }}>Got it</button>
         </div>
       )}
@@ -257,13 +285,25 @@ export default function EquitiesPage() {
       {/* Basket tabs */}
       <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-[#E8EBED]">
         <button onClick={() => selectBasket(HOME)}
-          className={`-mb-px border-b-2 pb-3 text-[15px] ${isHome ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>Home</button>
+          className={`-mb-px border-b-2 pb-3 text-[15px] ${isHome && !selectedStock ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>Home</button>
         {baskets.map((b) => (
           <button key={b.id} onClick={() => selectBasket(b.id)}
-            className={`-mb-px border-b-2 pb-3 text-[15px] ${b.id === activeId ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>
+            className={`-mb-px border-b-2 pb-3 text-[15px] ${b.id === activeId && !selectedStock ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>
             {b.name} <span className="text-[#81878C]">{b.symbols.length}</span>
           </button>
         ))}
+        {selectedStock && (
+          <div className="-mb-px flex items-center gap-1.5 border-b-2 border-[#1F7AE0] pb-3 text-[15px] font-medium text-[#1F7AE0]">
+            <span>Research: {selectedStock}</span>
+            <button
+              onClick={() => setSelectedStock(null)}
+              className="ml-1 rounded px-1 text-xs text-[#81878C] hover:bg-[#F2F7FD] hover:text-[#E5484D]"
+              title="Close stock research"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {showNew ? (
           <div className="mb-2 flex items-center gap-2">
             <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} maxLength={60} placeholder="Basket name"
@@ -276,13 +316,41 @@ export default function EquitiesPage() {
         )}
       </div>
 
-      {isHome ? (() => {
+      {selectedStock ? (
+        <div className="mt-6">
+          <EquityDetailView
+            symbol={selectedStock}
+            onClose={() => setSelectedStock(null)}
+            baskets={baskets}
+            activeBasketId={activeId !== HOME ? activeId : undefined}
+            onAddStockToBasket={handleAddStockToBasket}
+          />
+        </div>
+      ) : isHome ? (() => {
         const all = baskets.map((b) => ({ b, st: stats(b, quotes) }));
         const tot = all.reduce((a, { st }) => ({ invested: a.invested + st.invested, value: a.value + st.value, pnl: a.pnl + st.pnl, cost: a.cost + st.cost, today: a.today + st.today }), { invested: 0, value: 0, pnl: 0, cost: 0, today: 0 });
         const movers = Array.from(new Set(baskets.flatMap((b) => b.symbols))).map((x) => quotes[x]).filter((r) => r?.change_pct != null).sort((a, b) => (b.change_pct ?? 0) - (a.change_pct ?? 0));
         const Mover = ({ r }: { r: EquityQuote }) => (
           <li className="flex items-center justify-between border-b border-[#E8EBED] py-2 text-sm">
-            <span className="min-w-0 truncate pr-2"><a href={`https://www.screener.in/company/${encodeURIComponent(r.symbol)}/`} target="_blank" rel="noopener noreferrer" className="text-[#1F7AE0] hover:underline">{r.name ?? r.symbol}</a> <span className="text-xs text-[#81878C]">{r.symbol}</span></span>
+            <span className="min-w-0 truncate pr-2">
+              <button
+                type="button"
+                onClick={() => setSelectedStock(r.symbol)}
+                className="text-left font-medium text-[#1F7AE0] hover:underline"
+              >
+                {r.name ?? r.symbol}
+              </button>{" "}
+              <span className="text-xs text-[#81878C]">{r.symbol}</span>
+              <a
+                href={`https://www.screener.in/company/${encodeURIComponent(r.symbol)}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open on Screener.in"
+                className="ml-1 text-xs text-[#81878C] hover:text-[#1F7AE0]"
+              >
+                ↗
+              </a>
+            </span>
             <span className={tone(r.change_pct ?? undefined)}>{sgn(r.change_pct ?? 0)}%</span>
           </li>
         );
@@ -296,6 +364,43 @@ export default function EquitiesPage() {
                   <div className={`text-sm ${tone(i.change ?? undefined)}`}>{i.change != null ? `${sgn(i.change)} (${sgn(i.change_pct ?? 0)}%)` : ""}</div>
                 </div>
               ))}
+            </section>
+
+            {/* Direct stock research lookup bar on Home */}
+            <section className="relative max-w-xl" onBlur={() => setTimeout(() => setHomeOpen(false), 150)}>
+              <label htmlFor="home-stock-search" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#81878C]">
+                Research any stock (NSE)
+              </label>
+              <div className="relative">
+                <svg aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#81878C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+                <input
+                  id="home-stock-search"
+                  value={homeQ}
+                  onChange={(e) => { setHomeQ(e.target.value); setHomeOpen(true); }}
+                  onFocus={() => setHomeOpen(true)}
+                  placeholder="Search by company name or ticker (e.g. Reliance, TCS, Waaree...)"
+                  className="w-full rounded border border-[#D5D9DD] bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#1F7AE0]"
+                />
+              </div>
+              {homeOpen && homeSugg.length > 0 && (
+                <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded border border-[#E8EBED] bg-white shadow-lg">
+                  {homeSugg.map((x) => (
+                    <li key={x.symbol}>
+                      <button
+                        className="flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left text-sm hover:bg-[#F2F7FD]"
+                        onClick={() => {
+                          setSelectedStock(x.symbol);
+                          setHomeQ("");
+                          setHomeOpen(false);
+                        }}
+                      >
+                        <span className="truncate font-medium text-[#1F7AE0]">{x.name}</span>
+                        <span className="text-xs text-[#81878C]">{x.symbol} · view details ↗</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
 
             <section>
@@ -382,10 +487,18 @@ export default function EquitiesPage() {
                 <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded border border-[#E8EBED] bg-white shadow-lg">
                   {sugg.map((x) => (
                     <li key={x.symbol}>
-                      <button className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-sm hover:bg-[#F2F7FD]" onClick={() => add(x)}>
-                        <span className="truncate text-[#1F7AE0]">{x.name}</span>
-                        <span className="text-xs text-[#81878C]">{x.symbol}{symbols.includes(x.symbol) ? " · added" : ""}</span>
-                      </button>
+                      <div className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-[#F2F7FD]">
+                        <button type="button" className="flex-1 truncate text-left font-medium text-[#1F7AE0] hover:underline" onClick={() => add(x)}>
+                          {x.name} <span className="text-xs text-[#81878C]">({x.symbol}){symbols.includes(x.symbol) ? " · added" : " · + add to basket"}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setSelectedStock(x.symbol); setOpen(false); }}
+                          className="rounded border border-[#D5D9DD] bg-white px-2 py-0.5 text-xs text-[#535B62] hover:bg-[#F2F7FD]"
+                        >
+                          Research ↗
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -410,8 +523,35 @@ export default function EquitiesPage() {
                       return (
                         <tr key={s} className="border-b border-[#E8EBED]">
                           <td className="py-3 pr-3">
-                            <div><a href={`https://www.screener.in/company/${encodeURIComponent(s)}/`} target="_blank" rel="noopener noreferrer" title="Open on Screener.in" className="text-[15px] font-medium text-[#1F7AE0] hover:underline">{r?.name ?? names.current[s] ?? s}</a></div>
-                            <div className="text-xs text-[#81878C]">{s}</div>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedStock(s)}
+                                className="text-left text-[15px] font-medium text-[#1F7AE0] hover:underline"
+                              >
+                                {r?.name ?? names.current[s] ?? s}
+                              </button>
+                              <a
+                                href={`https://www.screener.in/company/${encodeURIComponent(s)}/`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Open on Screener.in"
+                                className="text-xs text-[#81878C] hover:text-[#1F7AE0]"
+                              >
+                                ↗
+                              </a>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-[#81878C]">
+                              <span>{s}</span>
+                              <span>·</span>
+                              <button
+                                type="button"
+                                onClick={() => setSelectedStock(s)}
+                                className="text-[#1F7AE0] hover:underline"
+                              >
+                                details
+                              </button>
+                            </div>
                           </td>
                           <td className="pr-3 text-right">
                             {r?.error ? <button className="text-xs text-[#1F7AE0]" onClick={() => refresh()}>retry</button> : (<>

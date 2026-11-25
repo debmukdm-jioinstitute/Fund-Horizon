@@ -72,7 +72,7 @@ def _compute(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
         fl = [(str(d), float(a)) for d, a in (r.get("flows") or []) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(d)) and str(d) <= val_iso]
         lots = _lots(r, nav)
         start = min([d for d, _ in fl] + ([str(r["from_date"])[:10]] if re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(r.get("from_date") or "")[:10]) else []), default=None)
-        pos.append({"cls": _cls(r), "bkt": _bucket(r), "fl": fl, "lots": lots, "nav": nav, "val": float(r.get("value") or 0), "start": start,
+        pos.append({"name": str(r.get("name") or "holding"), "cls": _cls(r), "bkt": _bucket(r), "fl": fl, "lots": lots, "nav": nav, "val": float(r.get("value") or 0), "start": start,
                     "fyv": {str(d)[:10]: float(v) for d, v in (r.get("fy_values") or {}).items() if v is not None}})
     starts = [p["start"] for p in pos if p["start"]]
     if not pos or not starts:
@@ -126,7 +126,15 @@ def _compute(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
             tot = {b: agg(pos, end, lambda p, b=b: p["bkt"] == b) for b in ("DEBT", "EQUITY", "OTHER")}
             if all(t is not None for t in tot.values()):
                 alloc = {b: round(t / v * 100, 2) for b, t in tot.items()}
-        years.append({"fy": f"FY {y}-{str(y + 1)[2:]}", "end": end, "value": None if v is None else round(v), "new": None if new is None else round(new), "xirr": x_by, "alloc": alloc})
+        gaps = []  # why a cell is empty: surfaced in the PDF for investigation, never filled in
+        names = lambda ps: ", ".join(sorted({p["name"][:40] for p in ps})[:4]) + ("…" if len({p["name"] for p in ps}) > 4 else "")  # noqa: E731
+        if v is None:
+            gaps.append(f"value at 31 Mar: no NAV history, lots or provider value for {names([p for p in pos if value_at(p, end) is None])}")
+        if not ok:
+            gaps.append(f"new investments / XIRR: no dated transactions for {names([p for p in pos if not (p['fl'] or (p['start'] and p['start'] > end))])}")
+        elif x_by["PORTFOLIO"] is None and not first and agg(pos, beg) is None:
+            gaps.append(f"XIRR: no value at the previous 31 Mar for {names([p for p in pos if value_at(p, beg) is None])}")
+        years.append({"fy": f"FY {y}-{str(y + 1)[2:]}", "end": end, "value": None if v is None else round(v), "new": None if new is None else round(new), "xirr": x_by, "alloc": alloc, "gaps": gaps})
     return {
         "inception": inc, "from": inc, "to": val_iso, "years": years, "exact": exact,
         "since": {"PORTFOLIO": data.get("xirr"), **{g: xirr(ps, None, val_iso) if ps and covered(ps, val_iso) else None for g, ps in groups.items() if g != "PORTFOLIO"}},
@@ -174,7 +182,8 @@ def fy_matrix(data: dict[str, Any], nav_loader) -> dict[str, Any] | None:
             val = d["value"]; rep.append("value")
         if new is None and d.get("new") is not None:
             new = d["new"]; rep.append("new")
-        years.append({"fy": f"FY {k}", "end": end, "value": val, "new": new, "xirr": xr, "alloc": al, "rep": rep})
+        gaps = [g for g in (c or {}).get("gaps", []) if not (("value at" in g and val is not None) or ("XIRR" in g and xr.get("PORTFOLIO") is not None))]  # a provider-reported cell closes its gap
+        years.append({"fy": f"FY {k}", "end": end, "value": val, "new": new, "xirr": xr, "alloc": al, "rep": rep, "gaps": gaps})
     since_d = dash.get("since") or {}
     since = {"PORTFOLIO": data.get("xirr") if data.get("xirr") is not None else since_d.get("portfolio")}
     srep = []

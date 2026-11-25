@@ -204,9 +204,21 @@ _PMS_VAL = r"(?:Net\s+)?(?:Portfolio|Closing|Current|Market)\s+Value"
 _PCT_ROW = re.compile(r"(?m)^[ \t]*([A-Za-z][^%\n]*?)[ \t]+((?:-?\d+(?:\.\d+)?%[ \t]*){3,})")
 
 
+def _stacked_summary(t: str) -> str:
+    """Stallion / WealthSpectrum print the Portfolio Summary labels in one block and their amounts in the next
+    (Contribution, Withdrawal, Profit/Loss, Portfolio Value(date), then 4 numbers). Re-pair them onto one line each."""
+    m = re.search(r"(?is)Contribution\s+Withdrawal\s+Profit\s*/?\s*Loss\s+(Portfolio\s+Value\s*(?:\([\d/.-]+\))?)\s+"
+                  r"(-?[\d,]+(?:\.\d+)?)\s+(-?[\d,]+(?:\.\d+)?)\s+(-?[\d,]+(?:\.\d+)?)\s+(-?[\d,]+(?:\.\d+)?)", t)
+    if not m:
+        return t
+    pairs = f"\nContribution {m[2]}\nWithdrawal {m[3]}\nProfit/Loss {m[4]}\n{m[1]} {m[5]}\n"
+    return t[:m.start()] + pairs + t[m.end():]
+
+
 def parse_pms(text: str) -> dict[str, Any] | None:
     """Portfolio Summary (contribution, withdrawal, profit, value) + Performance(IRR) rows. None if not a PMS factsheet."""
     t = re.sub(r"[ \t]+", " ", text)
+    t = _stacked_summary(t)
     inv = re.search(rf"(?im)^\s*{_PMS_IN}\s*{_NUMBER}", t)
     val = re.search(rf"(?im)^\s*{_PMS_VAL}\s*(?:\(([\d/.-]+)\))?\s*{_NUMBER}", t)
     if not (inv and val):

@@ -1467,11 +1467,11 @@ def _extract_universal_file(name: str, data: bytes, password: str = "", from_bun
         res["client"]["date"] = _fmt_date(pms_st.get("as_on"))
         res["client"]["inception"] = _fmt_date(p.get("inception"))
         res["xirr"] = pms_st["grand_total"].get("xirr")
-        net_inv = float(p["contribution"]) - float(p.get("withdrawal") or 0.0)
-        res["rows"].append(_make_row(
+        as_on = _iso_date(pms_st.get("as_on"))
+        row = _make_row(
             name=f"{pms_st['provider']} - {p.get('strategy') or 'PMS'}".strip(" -"),
             folio=p.get("account") or "PMS",
-            invested=net_inv if net_inv > 0 else float(p["contribution"]),
+            invested=float(p["contribution"]),  # contribution = invested; the withdrawal is shown apart, never netted off
             investments=float(p["contribution"]),
             div_payout=float(p.get("withdrawal") or 0.0),
             units=1.0,
@@ -1481,7 +1481,14 @@ def _extract_universal_file(name: str, data: bytes, password: str = "", from_bun
             asset_class="PMS",
             category="PMS Strategy",
             from_date=_iso_date(p.get("inception")),
-        ))
+            to_date=as_on,  # portfolio value is dated to the statement's as-on date
+        )
+        row["provider"] = pms_st["provider"]
+        if as_on:
+            row["fy_values"] = {as_on: float(p["value"])}
+        res["rows"].append(row)
+        if p.get("withdrawal"):
+            res["warnings"].append("PMS statement gives no dates for contributions or withdrawals: its XIRR is the provider's own figure, not recomputed.")
         res["factsheets"].append(statements.pms_factsheet(pms_st))
         res["warnings"].extend(pms_st.get("warnings") or [])
         res["kind"] = "pms"
@@ -1763,13 +1770,17 @@ def _annex_jpegs(fid: str, name: str, data: bytes, pw: str) -> tuple:
     return tuple(out)
 
 
+SECTION_KEYS = ("kpi", "summary", "pms", "holdings", "fy", "charts", "alloc", "heatmap", "cashflow", "benchmark", "risk", "stress", "transactions", "factsheets", "notes", "annex")
+DEFAULT_SECTIONS = tuple(k for k in SECTION_KEYS if k != "transactions")  # the transaction report is long: opt-in
+
+
 def build_client_report(data: dict[str, Any]) -> bytes:
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.units import mm
     from reportlab.platypus import Image as RLImage
-    from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    from reportlab.platypus import CondPageBreak, KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
     if "matrices" not in data:
         enrich_and_compute_matrices(data)
@@ -1907,18 +1918,124 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         ("LEFTPADDING", (0, 0), (-1, -1), 2.5), ("RIGHTPADDING", (0, 0), (-1, -1), 2.5),
     ]))
 
-    # data["sections"] (None = all) picks the sections kept; cut() closes the previous one, dropping it if unticked.
-    on = lambda k: data.get("sections") is None or k in data["sections"]  # noqa: E731
+    # data["sections"] = the keys to print, in print order (None = DEFAULT_SECTIONS). cut() files what was built since the
+    # last cut under its key; the story is assembled from those chunks at the end, so order and selection are the caller's.
+    order = [k for k in dict.fromkeys(data["sections"] if data.get("sections") is not None else DEFAULT_SECTIONS) if k in SECTION_KEYS]
+    on = lambda k: k in order  # noqa: E731
     cur: list[Any] = ["", 0]
+    chunks: dict[str, list[Any]] = {}
 
     def cut(nxt: str) -> None:
-        if cur[0] and not on(cur[0]):
+        if cur[0]:
+            chunks[cur[0]] = story[cur[1]:]
             del story[cur[1]:]
         cur[:] = [nxt, len(story)]
 
-    story: list[Any] = [top, Spacer(1, 6)]
+
+    def summary_block() -> list[Any]:
+        """Asset-class summary (MF / PMS / Stock): invested, withdrawn, value, gain and since-inception XIRR, plus the data gaps."""
+        from app.report.fy_matrix import _cls
+
+        fy_ = mat.get("fy") or {}
+        grp: dict[str, dict[str, float]] = {}
+        for r in data["rows"]:
+            g = grp.setdefault(_cls(r), {"n": 0, "inv": 0.0, "wd": 0.0, "val": 0.0})
+            g["n"] += 1; g["inv"] += float(r.get("invested") or 0); g["wd"] += float(r.get("div_payout") or 0); g["val"] += float(r.get("value") or 0)  # noqa: E702
+        hdr = ["Asset class", "Holdings", "Invested (₹)", "Withdrawn (₹)", "Current value (₹)", "Gain / (loss) (₹)", "Absolute return", "XIRR since inception"]
+        out = [[P(h, head_l if i == 0 else head) for i, h in enumerate(hdr)]]
+        lbl = {"MF": "Mutual funds", "PMS": "PMS", "STOCK": "Direct equity"}
+        for k, g in grp.items():
+            gain = g["val"] + g["wd"] - g["inv"]  # a withdrawal is returned money, so it counts as gain, not as a smaller investment
+            x = (fy_.get("since") or {}).get(k)
+            out.append([P(lbl[k], bold), P(str(int(g["n"])), center), P(ind(g["inv"], 0), right), P(ind(g["wd"], 0), right), P(ind(g["val"], 0), right),
+                        P(ind(gain, 0), right), P(f"{gain / g['inv'] * 100:.2f}%" if g["inv"] else "-", right), P("-" if x is None else f"{x:.2f}%", right_b)])
+        out.append([P("Total", bold), P(str(len(data["rows"])), center), P(ind(t["invested"], 0), right_b), P(ind(sum(g["wd"] for g in grp.values()), 0), right_b), P(ind(t["value"], 0), right_b),
+                    P(ind(t["gain"], 0), right_b), P(f"{t['abs_ret']:.2f}%", right_b), P("-" if data.get("xirr") is None else f"{data['xirr']:.2f}%", right_b)])
+        tb = Table(out, colWidths=[w * mm for w in (50, 20, 34, 30, 38, 34, 32, 39)], repeatRows=1)
+        tb.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.35, grey), ("BACKGROUND", (0, 0), (-1, 0), navy), ("BACKGROUND", (0, -1), (-1, -1), blue),
+                                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
+        by_reason: dict[str, list[str]] = {}
+        for y in fy_.get("years", []):
+            for g in y.get("gaps", []):
+                by_reason.setdefault(g, []).append(y["fy"])
+        items = [KeepTogether([P("Portfolio Summary", sec_h), tb])]
+        if by_reason:
+            yr = lambda ys: ys[0] if len(ys) == 1 else f"{ys[0]} to {ys[-1]} ({len(ys)} years)"  # noqa: E731
+            items.append(P("Data gaps for investigation (nothing was estimated): " + " • ".join(f"{yr(ys)}: {g}" for g, ys in by_reason.items()), small))
+        return items
+
+    def pms_block() -> list[Any]:
+        """One line per PMS account: provider as printed in the statement, contribution, withdrawal, value as on its date."""
+        pr = [r for r in data["rows"] if r.get("asset_class") == "PMS"]
+        if not pr:
+            return []
+        hdr = ["Provider", "Strategy / account", "Inception", "Contribution (₹)", "Withdrawal (₹)", "Portfolio value (₹)", "Value as on", "Profit / (loss) (₹)", "Provider IRR"]
+        dmy = lambda iso: f"{iso[8:10]}-{iso[5:7]}-{iso[:4]}" if re.fullmatch(r"\d{4}-\d{2}-\d{2}", iso or "") else (iso or "-")  # noqa: E731
+        out = [[P(h, head_l if i < 2 else head) for i, h in enumerate(hdr)]]
+        for r in pr:
+            inv, wd, val = float(r.get("invested") or 0), float(r.get("div_payout") or 0), float(r.get("value") or 0)
+            prov = r.get("provider") or (r["name"].split(" - ")[0] if " - " in r["name"] else "-")
+            out.append([P(prov, bold), P(f"{r['name'].split(' - ', 1)[-1]} · {r.get('folio') or '-'}"), P(dmy(r.get("from_date")), center), P(ind(inv, 0), right), P(ind(wd, 0), right),
+                        P(ind(val, 0), right_b), P(dmy(r.get("to_date")), center), P(ind(val + wd - inv, 0), right), P(f"{float(r.get('ann_ret') or 0):.2f}%", right_b)])
+        tb = Table(out, colWidths=[w * mm for w in (50, 55, 20, 30, 24, 32, 20, 28, 18)], repeatRows=1)
+        tb.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.35, grey), ("BACKGROUND", (0, 0), (-1, 0), navy), ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, soft]),
+                                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
+        return [KeepTogether([P("PMS Accounts", sec_h), tb, P("Contribution is the invested amount; withdrawals are shown apart and counted as money returned, so profit = value + withdrawal - contribution. "
+                                                              "Value is as on the date shown. IRR is the provider's own figure.", small)])]
+
+    def transactions_block() -> list[Any]:
+        """Dated transactions per folio for the chosen financial years only. Totals outside the choice are stated, not hidden,
+        and each folio is reconciled to the statement's invested amount; a difference is shown, never smoothed."""
+        from app.report.fy_matrix import _fy_key, fy_of
+
+        iso = lambda d: bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(d)))  # noqa: E731
+        dmy = lambda d: f"{d[8:10]}-{d[5:7]}-{d[:4]}"  # noqa: E731
+        key = lambda d: _fy_key(fy_of(d))  # noqa: E731
+        sel = data.get("txn_years")
+        allfl = sorted((str(d)[:10], float(a)) for r in data["rows"] for d, a in (r.get("flows") or []) if iso(str(d)[:10]))
+        yrs = sorted({key(d) for d, _ in allfl})
+        shown = [y for y in yrs if sel is None or y in sel]
+        title = f"Transaction Report — {'all years' if sel is None else 'FY ' + ', '.join(shown) if shown else 'no year selected'}" + (f" (statement history: FY {yrs[0]} to {yrs[-1]})" if yrs else "")
+        out: list[Any] = [CondPageBreak(35 * mm), P(title, ParagraphStyle("tft", parent=sec_h, keepWithNext=0))]
+        none = []
+        for r in data["rows"]:
+            fl = sorted((str(d)[:10], float(a)) for d, a in (r.get("flows") or []) if iso(str(d)[:10]))
+            if not fl:
+                none.append(r["name"])
+                continue
+            inc = [(d, a) for d, a in fl if sel is None or key(d) in sel]
+            rest = [(d, a) for d, a in fl if (d, a) not in inc]
+            buys, net = sum(a for _, a in fl if a > 0), sum(a for _, a in fl)
+            inv = float(r.get("invested") or 0)
+            sells = buys - net
+            ok = abs(inv - buys) <= 1 or abs(inv - net) <= 1
+            if sells > 1:  # with redemptions the statement's invested is the cost of units still held: not derivable from amounts alone
+                ok, rec = True, (f"Includes redemptions of ₹{ind(sells, 0)}: the statement's invested ₹{ind(inv, 0)} is the cost of units still held, so it is not tied to the "
+                                 f"₹{ind(buys, 0)} purchased here; verify against the source statement")
+            else:
+                rec = "Reconciles to the statement's invested amount" if ok else (
+                    f"DOES NOT RECONCILE: statement invested ₹{ind(inv, 0)} vs transactions ₹{ind(buys, 0)} purchased (difference ₹{ind(inv - buys, 0)}); check the source")
+            rows_ = [[P("Date", head_l), P("Type", head_l), P("Amount (₹)", head)]] + [
+                [P(dmy(d)), P("Purchase" if a > 0 else "Redemption / withdrawal"), P(ind(a, 0), right)] for d, a in inc]
+            rows_.append([P("Total shown", bold), P(f"{len(inc)} transactions", bold), P(ind(sum(a for _, a in inc), 0), right_b)])
+            tb = Table(rows_, colWidths=[30 * mm, 60 * mm, 40 * mm], repeatRows=1, hAlign="LEFT")
+            tb.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.35, grey), ("BACKGROUND", (0, 0), (-1, 0), navy), ("BACKGROUND", (0, -1), (-1, -1), blue),
+                                    ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
+            ctx = f"Not shown (outside the selected years): {len(rest)} transactions, net ₹{ind(sum(a for _, a in rest), 0)}. " if rest else ""
+            head_p = ParagraphStyle("tfh", parent=bold, fontSize=8.2, spaceBefore=6)
+            out += [CondPageBreak(35 * mm), P(f"{r['name']} · folio {r.get('folio') or '-'}", head_p), P(ctx + rec, ParagraphStyle("tfr", parent=small, textColor=colors.HexColor("#147A3D" if ok else "#B42318"))), tb]
+        if none:
+            out.append(P("No dated transactions in the uploaded statements for: " + "; ".join(none[:12]) + ("…" if len(none) > 12 else ""), ParagraphStyle("tfn", parent=small, spaceBefore=6)))
+        return out
+
+    story: list[Any] = [top]
     cut("kpi")
-    story += [kpi, Spacer(1, 8)]
+    kpi.spaceBefore = kpi.spaceAfter = 6  # spacing as flowable space, not Spacers: ReportLab drops space at a page top, a Spacer there can strand a blank page
+    story += [kpi]
+    cut("summary")
+    story += summary_block()
+    cut("pms")
+    story += pms_block()
     cut("holdings")
     story += [P("1. Consolidated Portfolio Valuation — Folio & Holding Wise", sec_h), table]
     cut("fy")
@@ -1926,7 +2043,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     if fy:
         taupe, peach, line = colors.HexColor("#ECE9E0"), colors.HexColor("#FCE9D9"), colors.HexColor("#B7B7B7")
         dmy = lambda iso: f"{iso[8:10]}-{iso[5:7]}-{iso[:4]}"  # noqa: E731
-        num = lambda v, f="{:d}": "-" if v is None else f.format(v)  # noqa: E731
+        num = lambda v: "-" if v is None else ind(v, 0)  # noqa: E731
         pct = lambda v: "-" if v is None else f"{v:.2f}"  # noqa: E731
         yrs = fy["years"]
         base = [("GRID", (0, 0), (-1, -1), 0.5, line), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
@@ -1942,7 +2059,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                 st.append(("BACKGROUND", (0, len(cells) - 1), (-1, len(cells) - 1), taupe))
             t_ = Table(cells, colWidths=[w * mm for w in widths], repeatRows=1, hAlign="LEFT")
             t_.setStyle(TableStyle(st))
-            return [P(title, ParagraphStyle("fyt", parent=sec_h, fontSize=9.5, spaceBefore=8)), t_]
+            return [P(title, ParagraphStyle("fyt", parent=sec_h, fontSize=9.5, spaceBefore=8, keepWithNext=0)), t_]
 
         fh = fy.get("header") or {}
         dm = lambda iso: dmy(iso) if iso else "-"  # noqa: E731
@@ -1967,7 +2084,11 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                 + ("Units are taken lot-by-lot from the uploaded statement. " if fy["exact"] else "Where a statement gives no lot units, units are rebuilt from dated transactions and NAV. ")
                 + '"-" = history for that holding is not in the uploaded statements; nothing is estimated. XIRR for the first and last (part) years is annualised.'
                 + (" † = as reported in the uploaded provider FY dashboard (PMS / stock history); figures without † are calculated from the statements." if fy.get("reported") else ""))
-        story += [Spacer(1, 8), KeepTogether([P("Financial-Year Summary", sec_h), hbox]), KeepTogether(sm_blk), KeepTogether(xr_blk), KeepTogether([*al_blk, Spacer(1, 4), P(note, small)])]
+        # tables may split across pages (header row repeats); CondPageBreak only starts a new page when a title would be stranded
+        story += [CondPageBreak(50 * mm), P("Financial-Year Summary", sec_h), hbox, CondPageBreak(45 * mm), *sm_blk, CondPageBreak(45 * mm), *xr_blk,
+                  CondPageBreak(45 * mm), *al_blk, P(note, ParagraphStyle("fyn", parent=small, spaceBefore=4))]
+        if any(y.get("gaps") for y in yrs):
+            story.append(P("Data gaps for investigation: see the Portfolio Summary section; empty cells above are not estimated.", small))
 
     cut("charts")
     # Section 1B: Visual Portfolio Analytics & Graphs (2x2 Grid of Matplotlib Charts)
@@ -2007,7 +2128,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                 ("TOPPADDING", (0, 0), (-1, -1), 4),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
             ]))
-            story += [Spacer(1, 8), KeepTogether([P("1B. Visual Portfolio Analytics & Performance Graphs", sec_h), c_grid])]
+            story += [KeepTogether([P("1B. Visual Portfolio Analytics & Performance Graphs", sec_h), c_grid])]
 
     cut("alloc")
     # Section 2: Asset Class & Category Allocation Matrices (side-by-side)
@@ -2039,7 +2160,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         t_cat = _alloc_tbl("Category Breakdown", alloc_cat, 136 * mm) if alloc_cat else P("")
         side = Table([[t_asset, P(""), t_cat]], colWidths=[136 * mm, 5 * mm, 136 * mm])
         side.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
-        story += [Spacer(1, 8), KeepTogether([P("2. Asset Allocation & Category Matrix", sec_h), side])]
+        story += [KeepTogether([P("2. Asset Allocation & Category Matrix", sec_h), side])]
 
     cut("heatmap")
     # Section 2: ValueMetrics-Style Category-Wise Flows & AUM Heatmap Matrix (Image 1 style)
@@ -2145,7 +2266,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         cf_widths = [9, 58, 26, 17, 26, 17, 28, 17, 18, 26, 20]
         cf_tbl = Table(cf_rows, colWidths=[w * mm for w in cf_widths], repeatRows=2)
         cf_tbl.setStyle(TableStyle(cf_styles))
-        story += [Spacer(1, 8), P("2B. Category-Wise Flows, Net Gains & Valuation Matrix (Heatmap)", sec_h), cf_tbl]
+        story += [P("2B. Category-Wise Flows, Net Gains & Valuation Matrix (Heatmap)", sec_h), cf_tbl]
 
     cut("cashflow")
     # Section 3B: Monthly / Period Cash-Flow & Registration Trend + Category x Month Heatmap (Images 2 & 3 style)
@@ -2199,7 +2320,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         mt_widths = [22, 23, 25, 23, 23, 36, 35, 28, 28, 34]
         mt_tbl = Table(mt_rows, colWidths=[w * mm for w in mt_widths], repeatRows=2)
         mt_tbl.setStyle(TableStyle(mt_styles))
-        story += [Spacer(1, 8), P("2C. Period Investment & SIP Cash-Flow Trend Matrix", sec_h), mt_tbl]
+        story += [P("2C. Period Investment & SIP Cash-Flow Trend Matrix", sec_h), mt_tbl]
 
     hm_mat = mat.get("category_monthly_heatmap") or {}
     hm_months = hm_mat.get("months") or []
@@ -2230,7 +2351,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         hm_widths = [8.0, 48.0] + [m_w] * len(hm_months) + [25.0]
         hm_tbl = Table(hm_tbl_rows, colWidths=[w * mm for w in hm_widths], repeatRows=1)
         hm_tbl.setStyle(TableStyle(hm_styles))
-        story += [Spacer(1, 8), P("2D. Monthly Category-Wise Gross Inflow Trend (Heatmap)", sec_h), hm_tbl]
+        story += [P("2D. Monthly Category-Wise Gross Inflow Trend (Heatmap)", sec_h), hm_tbl]
 
     cut("benchmark")
     # Section 3: 4-Index Nifty Benchmark Comparison Matrix (Same-Instalment XIRR)
@@ -2301,7 +2422,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
             ("LEFTPADDING", (0, 0), (-1, -1), 2.5), ("RIGHTPADDING", (0, 0), (-1, -1), 2.5),
         ]))
-        story += [Spacer(1, 8), KeepTogether([
+        story += [KeepTogether([
             P(f"3. Benchmark & 4-Index Nifty Comparison Matrix — Portfolio beat {cmp_.get('indices_beaten', 0)} of 4 Nifty Indices", sec_h),
             bt,
             Spacer(1, 2),
@@ -2344,7 +2465,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
             ("LEFTPADDING", (0, 0), (-1, -1), 2.5), ("RIGHTPADDING", (0, 0), (-1, -1), 2.5),
         ]))
-        story += [Spacer(1, 8), P("4. Fund Horizon Quality, Risk, Capture Ratios & Drawdown Matrix", sec_h), rt]
+        story += [P("4. Fund Horizon Quality, Risk, Capture Ratios & Drawdown Matrix", sec_h), rt]
 
     cut("stress")
     # Section 5: Stress Test Matrix & Portfolio Observations
@@ -2366,18 +2487,18 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             rec_box.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), soft), ("BOX", (0, 0), (-1, -1), 0.35, grey), ("TOPPADDING", (0, 0), (-1, -1), 3), ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("LEFTPADDING", (0, 0), (-1, -1), 5), ("RIGHTPADDING", (0, 0), (-1, -1), 5)]))
         s5 = Table([[st_tbl, P(""), rec_box]], colWidths=[136 * mm, 5 * mm, 136 * mm])
         s5.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
-        story += [Spacer(1, 8), P("5. Stress Test Matrix & Portfolio Observations", sec_h), s5]
+        story += [P("5. Stress Test Matrix & Portfolio Observations", sec_h), s5]
 
     cut("factsheets")
     # Factsheets (PMS / AMC)
     for fs in data.get("factsheets") or []:
         ft = Table([[P(fs["source"], head_l), P("", head)]] + [[P(it["label"], bold), P(it["value"])] for it in fs["items"]], colWidths=[75 * mm, 202 * mm])
         ft.setStyle(TableStyle([("SPAN", (0, 0), (-1, 0)), ("BACKGROUND", (0, 0), (-1, 0), navy), ("GRID", (0, 0), (-1, -1), 0.35, grey), ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, soft]), ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]))
-        story += [Spacer(1, 8), P("Factsheet & Strategy Highlights", sec_h), ft]
+        story += [P("Factsheet & Strategy Highlights", sec_h), ft]
 
     cut("notes")
     # Notes & Regulatory Disclosures
-    story += [Spacer(1, 6), P("Notes & Regulatory Disclosures:", bold)]
+    story += [P("Notes & Regulatory Disclosures:", ParagraphStyle("nt", parent=bold, spaceBefore=6))]
     story += [P(f"{i}. {n}", small) for i, n in enumerate(NOTES, 1)]
     for d_line in DISCLOSURE_LINES[:3]:
         story.append(P(f"• {d_line}", small))
@@ -2399,7 +2520,6 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             sf_name, sf_bytes, sf_pw = loaded
             annex_idx += 1
             story += [
-                Spacer(1, 10),
                 P(f"Annexure S{annex_idx} — Attached Source Statement Copy: {sf_name}", sec_h),
                 P(f"Original uploaded file ({round(len(sf_bytes) / 1024, 1)} KB) · SHA-256: {fid}… · Verified & consolidated into this report.", small),
                 Spacer(1, 4),
@@ -2472,7 +2592,12 @@ def build_client_report(data: dict[str, Any]) -> bytes:
                         ]))
                         story.append(st_copy)
 
+    cut("transactions")
+    if on("transactions"):
+        story += transactions_block()
     cut("")
+    for k in order:
+        story += chunks.get(k, [])
 
     def decorate_page(cv, doc):
         cv.saveState()

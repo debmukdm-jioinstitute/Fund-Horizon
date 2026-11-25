@@ -50,9 +50,10 @@ class Row(BaseModel):
     inst: str = Field(default="", max_length=20)
     period: str = Field(default="", max_length=60)
     flag: str = Field(default="", max_length=5)
-    flows: list[list[Any]] = Field(default_factory=list, max_length=1200)
+    flows: list[list[Any]] = Field(default_factory=list, max_length=5000)  # 30 years of weekly SIPs; a lower cap would reject old history
     source_file: str = Field(default="", max_length=200)
-    lots: list[list[Any]] = Field(default_factory=list, max_length=1200)
+    provider: str = Field(default="", max_length=120)  # PMS provider as printed in the statement
+    lots: list[list[Any]] = Field(default_factory=list, max_length=5000)
     fy_values: dict[str, float] = Field(default_factory=dict, max_length=60)  # dated values (31 Mar) for holdings without NAV history
 
 
@@ -92,7 +93,8 @@ class Report(BaseModel):
     matrices: dict[str, Any] | None = None
     source_files: list[SourceFileRef] = Field(default_factory=list, max_length=40)
     attach_statements: bool = True
-    sections: list[str] | None = None  # None = every section; else only these keys (see build_client_report cut())
+    sections: list[str] | None = None  # None = default sections; else only these keys, rendered in this order (see build_client_report)
+    txn_years: list[str] | None = Field(default=None, max_length=80)  # FY labels ("2024-25") shown in the transaction report; None = all years
     dashboard: dict[str, Any] | None = None  # provider FY dashboard read from an upload (PMS / stock / whole-portfolio history)
 
 

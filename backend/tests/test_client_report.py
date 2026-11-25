@@ -210,7 +210,7 @@ def test_fy_summary_from_transaction_wise_statement_is_exact(monkeypatch):
     assert fy["years"][2]["alloc"] == {"DEBT": 0.0, "EQUITY": 100.0, "OTHER": 0.0} and fy["exact"] is True
     from pypdf import PdfReader
     txt = "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)
-    for s in ("Group Head Name", "Family Member Name", "SUMMARY :", "Value As on 31/03", "Net Investment:", "XIRR :", "Asset Allocation Movement :", "FY 2025-26", "194600", "10-06-2024"):
+    for s in ("Group Head Name", "Family Member Name", "SUMMARY :", "Value As on 31/03", "Net Investment:", "XIRR :", "Asset Allocation Movement :", "FY 2025-26", "1,94,600", "10-06-2024"):
         assert s in txt, s
 
 
@@ -316,7 +316,7 @@ def test_dashboard_upload_fills_pms_and_stock_history_and_never_overrides_comput
     assert y["FY 2019-20"]["alloc"] == {"DEBT": 54.87, "EQUITY": 45.13, "OTHER": 0.0} or y["FY 2019-20"]["alloc"]["DEBT"] == 0.0
     assert fy["since"]["PMS"] == 15.03 and fy["since"]["STOCK"] == 17.77 and "PMS" in fy["since_rep"] and fy["reported"]
     txt = "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)
-    assert "†" in txt and "provider FY dashboard" in txt and "42855418" in txt
+    assert "†" in txt and "provider FY dashboard" in txt and "4,28,55,418" in txt
 
 
 def test_pms_and_stock_rows_with_dated_history_are_computed_not_reported():
@@ -423,3 +423,138 @@ def test_no_forced_page_breaks_and_repeat_builds_are_fast(monkeypatch):
     for _ in range(20):
         build_client_report(dict(d))
     assert (time.perf_counter() - t) / 20 < 0.5  # warm rebuild: well under half a second
+
+
+# ---------- sections order / years / PMS provider / withdrawals / gaps / blank pages ----------
+
+STALLION = """Stallion Asset Private Limited
+As of 11/10/2026
+Strategy: STALLION CORE FUND
+Account: 100537 - BATUL ABBAS DALAL - SACF573
+Inception Date: 09/11/2021
+Portfolio Summary
+Since 09/11/2021 Amount(INR)
+Contribution
+Withdrawal
+Profit/Loss
+Portfolio Value(11/10/2026)
+11,033,696
+2,353
+11,240,392
+22,271,735
+Performance(IRR)
+1m 3m 1y Since
+09/11/21
+Portfolio -2.38% 7.25% 15.74% 27.14%
+BSE 500 TRI -4.41% -6.10% -7.11% 7.77%
+"""
+
+
+def _pdf_text(pdf: bytes) -> list[str]:
+    from pypdf import PdfReader
+
+    return [p.extract_text() or "" for p in PdfReader(io.BytesIO(pdf)).pages]
+
+
+def _pms_report(monkeypatch, text=STALLION):
+    _mock_fh(monkeypatch)
+    monkeypatch.setattr("app.report.client_report.extract_text", lambda n, b: text)
+    return parse_files([("pms.pdf", b"")])
+
+
+def test_stacked_pms_pdf_maps_contribution_withdrawal_value_and_provider_from_input(monkeypatch):
+    d = _pms_report(monkeypatch)
+    r = d["rows"][0]
+    assert (r["invested"], r["div_payout"], r["value"], r["to_date"], r["from_date"]) == (11033696.0, 2353.0, 22271735.0, "2026-10-11", "2021-11-09")
+    assert r["provider"] == "Stallion Asset Private Limited" and r["fy_values"] == {"2026-10-11": 22271735.0} and r["ann_ret"] == 27.14
+    txt = "\n".join(_pdf_text(build_client_report({**d, "sections": ["pms"]})))
+    assert "Stallion Asset Private Limited" in txt and "1,10,33,696" in txt and "2,22,71,735" in txt and "11-10-2026" in txt
+    other = _pms_report(monkeypatch, STALLION.replace("Stallion Asset Private Limited", "Boiant Capital Pvt Ltd"))
+    t2 = "\n".join(_pdf_text(build_client_report({**other, "sections": ["pms"]})))
+    assert "Boiant Capital Pvt Ltd" in t2 and "Stallion" not in t2
+
+
+def test_sections_render_in_the_chosen_order_and_only_those(monkeypatch):
+    d = _pms_report(monkeypatch)
+    pos = lambda secs, s: "\n".join(_pdf_text(build_client_report({**d, "sections": secs}))).find(s)  # noqa: E731
+    a = "\n".join(_pdf_text(build_client_report({**d, "sections": ["notes", "holdings", "summary"]})))
+    assert 0 <= a.find("Portfolio Summary") and a.find("Notes & Regulatory") < a.find("1. Consolidated") < a.find("Portfolio Summary")
+    assert pos(["holdings"], "Notes & Regulatory") == -1 and pos(["holdings"], "Portfolio Summary") == -1 and pos(["summary"], "1. Consolidated") == -1
+    assert pos(["holdings"], "PMS Accounts") == -1
+
+
+def test_transaction_report_shows_only_chosen_years_with_context_and_keeps_1994(monkeypatch):
+    _mock_fh(monkeypatch)
+    fl = [["1994-06-10", 50000.0], ["2021-04-05", 10000.0], ["2025-05-05", 20000.0], ["2026-05-05", -5000.0]]
+    row = {"name": "Old Fund", "folio": "9", "asset_class": "Mutual Fund", "category": "Flexi Cap", "code": "122640", "invested": 80000.0, "value": 150000.0,
+           "units": 10.0, "nav": 15000.0, "flows": fl}
+    d = {"client": {"name": "T", "date": "11 Nov 2026", "arn": "345439"}, "xirr": None, "rows": [row], "factsheets": []}
+    from app.api.client_report import Report
+
+    assert Report(**d).model_dump()["rows"][0]["flows"][0] == ["1994-06-10", 50000.0]  # old history survives the API model
+    big = {**row, "flows": [["1994-01-10", 1.0]] * 3000}
+    assert len(Report(**{**d, "rows": [big]}).rows[0].flows) == 3000  # not rejected by the old 1200 cap
+    d = Report(**d).model_dump()
+    enrich_and_compute_matrices(d)
+    assert d["matrices"]["fy"]["years"][0]["fy"] == "FY 1994-95"
+    txt = "\n".join(_pdf_text(build_client_report({**d, "sections": ["transactions"], "txn_years": ["2025-26"]})))
+    assert "FY 2025-26" in txt and "05-05-2025" in txt and "10-06-1994" not in txt and "05-05-2026" not in txt
+    assert "Not shown (outside the selected years): 3 transactions" in txt and "FY 1994-95 to 2026-27" in txt
+    allv = "\n".join(_pdf_text(build_client_report({**d, "sections": ["transactions"]})))
+    assert "10-06-1994" in allv and "all years" in allv
+    assert "cost of units still held" in allv and "DOES NOT RECONCILE" not in allv
+
+
+def test_transaction_report_flags_a_folio_that_does_not_reconcile(monkeypatch):
+    _mock_fh(monkeypatch)
+    row = {"name": "F", "folio": "1", "asset_class": "Mutual Fund", "invested": 99999.0, "value": 1.0, "flows": [["2024-01-10", 1000.0]]}
+    from app.api.client_report import Report
+
+    d = Report(client={"name": "T", "date": "11 Nov 2026"}, rows=[row]).model_dump()
+    enrich_and_compute_matrices(d)
+    assert "DOES NOT RECONCILE" in "\n".join(_pdf_text(build_client_report({**d, "sections": ["transactions"]})))
+
+
+def test_withdrawals_are_in_row_xirr(monkeypatch):
+    _mock_fh(monkeypatch)
+    row = {"name": "W", "folio": "1", "asset_class": "Mutual Fund", "invested": 100.0, "value": 80.0, "flows": [["2020-01-01", 100.0], ["2022-01-01", -50.0]]}
+    d = {"client": {"name": "T", "date": "01 Jan 2024"}, "rows": [row]}
+    enrich_and_compute_matrices(d)
+    cfs = [(date(2020, 1, 1), -100.0), (date(2022, 1, 1), 50.0), (date(2024, 1, 1), 80.0)]
+    f = lambda r: sum(a / (1 + r) ** ((dt - cfs[0][0]).days / 365) for dt, a in cfs)  # noqa: E731
+    lo, hi = -0.9, 1.0
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if f(mid) > 0 else (lo, mid)
+    assert abs(d["rows"][0]["ann_ret"] - mid * 100) < 0.05
+
+
+def test_missing_fy_cells_are_listed_as_gaps_not_filled(monkeypatch):
+    from app.report.fy_matrix import fy_matrix
+
+    nav, _ = _nav_series()
+    mf = {"name": "MF One", "asset_class": "Mutual Fund", "code": "1", "value": 120.0, "invested": 100.0, "units": 1.0, "flows": [["2023-06-10", 100.0]]}
+    pms = {"name": "Boiant PMS", "asset_class": "PMS", "value": 500.0, "invested": 400.0, "from_date": "2022-04-05", "flows": []}
+    fy = fy_matrix({"client": {"date": "11 Nov 2026"}, "xirr": 9.0, "rows": [mf, pms]}, lambda c: nav)
+    g = [x for y in fy["years"] for x in y["gaps"]]
+    assert any("Boiant PMS" in x and "no dated transactions" in x for x in g) and any("no NAV history" in x for x in g)
+    from app.api.client_report import Report
+
+    rep = Report(client={"name": "T", "date": "11 Nov 2026"}, xirr=9.0, rows=[mf, pms]).model_dump()
+    enrich_and_compute_matrices(rep)
+    txt = "\n".join(_pdf_text(build_client_report({**rep, "sections": ["summary"]})))
+    assert "Data gaps for investigation" in txt
+
+
+def test_no_blank_page_for_any_section_or_order(monkeypatch):
+    from app.report.client_report import SECTION_KEYS
+
+    d = _pms_report(monkeypatch)
+    d["rows"][0]["flows"] = [["2021-11-09", 5000000.0], ["2024-03-05", 6033696.0]]
+    combos = [None, list(SECTION_KEYS), list(SECTION_KEYS)[::-1], *([k] for k in SECTION_KEYS), ["notes", "kpi", "summary", "pms", "fy", "transactions"]]
+    from pypdf import PdfReader
+
+    for secs in combos:
+        for i, p in enumerate(PdfReader(io.BytesIO(build_client_report({**d, "sections": secs}))).pages, 1):
+            body = [ln for ln in (p.extract_text() or "").splitlines() if "Confidential Consolidated Client Report" not in ln and "| Page " not in ln]
+            assert "".join(body).strip() or len(p.images), f"blank page {i} for sections {secs}"

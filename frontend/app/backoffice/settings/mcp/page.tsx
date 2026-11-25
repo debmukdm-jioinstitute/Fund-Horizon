@@ -22,11 +22,10 @@ function Step({ n, children }: { n: number; children: React.ReactNode }) {
 
 export default function McpSettingsPage() {
   const [tokens, setTokens] = useState<McpToken[]>([]);
-  const [tools, setTools] = useState(0);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState("");
 
-  const load = useCallback(() => listMcpTokens().then((r) => { setTokens(r.data); setTools(r.tools); }).catch(() => undefined), []);
+  const load = useCallback(() => listMcpTokens().then((r) => { setTokens(r.data); }).catch(() => undefined), []);
   useEffect(() => { load(); }, [load]);
 
   const run = async (what: string, fn: () => Promise<string | void>) => {

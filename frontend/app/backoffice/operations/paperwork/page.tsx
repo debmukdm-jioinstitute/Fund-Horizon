@@ -4,7 +4,6 @@ import Link from "next/link";
 import PaperworkReport from "@/components/operations/PaperworkReport";
 
 const card = "rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A]";
-const muted = "text-[#667085] dark:text-[#9AA6B8]";
 const ink = "text-[#172033] dark:text-[#EDF1F6]";
 
 export default function PaperworkPage() {

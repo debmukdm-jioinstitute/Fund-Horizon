@@ -88,6 +88,11 @@ class DatabaseRepository(ABC):
         ...
 
     @abstractmethod
+    def delete_customer(self, customer_id: str) -> bool:
+        """Permanently delete a customer row and its login sessions. Returns True if a row was removed."""
+        ...
+
+    @abstractmethod
     def create_auth_session(self, customer_id: str, token_sha256: str, expires_at: str) -> None:
         """Persist a login session keyed by the SHA-256 of the bearer token."""
         ...

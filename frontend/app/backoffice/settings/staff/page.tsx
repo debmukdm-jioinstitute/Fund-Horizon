@@ -12,6 +12,7 @@ import {
   roleLabel,
 } from "@/components/backoffice/staffGroups";
 import {
+  deleteStaffMember,
   listStaffMembers,
   updateStaffMember,
   type StaffMemberItem,
@@ -194,6 +195,23 @@ export default function StaffPermissionsPage() {
     }
   }
 
+  async function remove(member: StaffMemberItem) {
+    if (!window.confirm(`Permanently delete ${member.name} (${member.email})? This removes the whole record and cannot be undone. Deactivate instead to keep it.`)) return;
+    setBusyId(member.id);
+    setActionError(null);
+    try {
+      await deleteStaffMember(member.id);
+      setNotice(`${member.name} deleted.`);
+      setDetail(null);
+      await load();
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : "Delete failed.");
+    } finally {
+      setBusyId(null);
+      setOpenMenu(null);
+    }
+  }
+
   if (loading) {
     return <p className={`p-4 text-[13px] ${mutedCls}`}>Loading…</p>;
   }
@@ -354,6 +372,15 @@ export default function StaffPermissionsPage() {
                               className="block w-full rounded px-3 py-2 text-left text-[13px] hover:bg-[#F3F3F3] dark:hover:bg-[#10151C] disabled:opacity-50"
                             >
                               Reset password
+                            </button>
+                            <button
+                              type="button"
+                              role="menuitem"
+                              disabled={busyId === m.id || m.id === customer?.id}
+                              onClick={() => remove(m)}
+                              className="block w-full rounded px-3 py-2 text-left text-[13px] text-rose-700 dark:text-rose-300 hover:bg-[#F3F3F3] dark:hover:bg-[#10151C] disabled:opacity-50"
+                            >
+                              Delete record
                             </button>
                           </div>
                         )}

@@ -326,6 +326,12 @@ class PostgresRepository(DatabaseRepository):
                 session.flush()
                 return _orm_customer_public(c)
 
+    def delete_customer(self, customer_id: str) -> bool:
+        with self.get_session() as session:
+            with session.begin():
+                session.execute(delete(AuthSessionModel).where(AuthSessionModel.customer_id == customer_id))
+                return session.execute(delete(CustomerModel).where(CustomerModel.id == customer_id)).rowcount > 0
+
     def create_auth_session(self, customer_id: str, token_sha256: str, expires_at: str) -> None:
         now = datetime.now(UTC).isoformat()
         with self.get_session() as session:

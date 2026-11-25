@@ -178,6 +178,17 @@ def test_admin_staff_update_deactivate_and_reset(client):
     assert client.patch(f"/api/backoffice/staff/{other}", json={"role": "bogus"}, headers=h).status_code == 422
     assert client.patch(f"/api/backoffice/staff/{admin_id}", json={"status": "inactive"}, headers=h).status_code == 422
 
+def test_admin_staff_delete(client):
+    admin_id = _create_staff("admin")
+    _login_staff(client, admin_id)
+    h = {"sec-fetch-site": "same-origin"}
+    other = _create_staff("analyst")
+
+    assert client.delete(f"/api/backoffice/staff/{admin_id}", headers=h).status_code == 422
+    assert client.delete(f"/api/backoffice/staff/{other}", headers=h).status_code == 200
+    assert client.delete(f"/api/backoffice/staff/{other}", headers=h).status_code == 404
+
+
 def test_admin_staff_update_pages_guard(client):
     admin_id = _create_staff("admin")
     _login_staff(client, admin_id)

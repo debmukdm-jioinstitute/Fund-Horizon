@@ -1290,6 +1290,9 @@ export const createStaffMember = async (body: {
 export const updateStaffMember = (id: string, body: { role?: string; status?: "active" | "inactive"; reset_password?: boolean; pages?: string[] }) =>
   boFetch<{ temporary_password: string | null }>(`/api/backoffice/staff/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(body) });
 
+export const deleteStaffMember = (id: string) =>
+  boFetch<{ success: boolean }>(`/api/backoffice/staff/${encodeURIComponent(id)}`, { method: "DELETE" });
+
 export interface Filing {
   id: string;
   created_at: string;

@@ -386,6 +386,12 @@ class D1Repository(SQLiteRepository):
             self._run(f"UPDATE customers SET {set_clause} WHERE id = ?", (*updates.values(), customer_id))
         return self.get_customer_by_id(customer_id)
 
+    def delete_customer(self, customer_id: str) -> bool:
+        self._run("DELETE FROM sessions WHERE customer_id = ?", (customer_id,))
+        meta = self._run("DELETE FROM customers WHERE id = ?", (customer_id,))
+        changes = meta.get("changes", 0) if isinstance(meta, dict) else getattr(meta, "changes", 0)
+        return bool(changes and changes > 0)
+
     # -----------------------------------------------------------------------
     # Sessions
     # -----------------------------------------------------------------------

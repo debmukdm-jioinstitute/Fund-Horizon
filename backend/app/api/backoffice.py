@@ -2369,6 +2369,25 @@ def update_staff_member(
     return {"success": True, "staff_member": updated, "temporary_password": temporary_password}
 
 
+@router.delete("/staff/{staff_id}")
+def delete_staff_member(
+    staff_id: str,
+    request: Request,
+    admin: Annotated[dict, Depends(require_role("admin"))],
+):
+    """Admin: permanently delete a staff record (irreversible; use deactivate to keep history)."""
+    verify_csrf(request)
+    repo = get_repository()
+    target = repo.get_customer_by_id(staff_id)
+    if not target or not target.get("is_staff"):
+        raise HTTPException(404, "Staff member not found")
+    if staff_id == admin["id"]:
+        raise HTTPException(422, "You cannot delete your own account.")
+    repo.delete_customer(staff_id)
+    _REPO.log_audit(admin["id"], "staff_deleted", "staff", staff_id, {"email": target.get("email"), "role": target.get("role")})
+    return {"success": True}
+
+
 # ---------------------------------------------------------------------------
 # Fund Screening Funnel & Presets
 # ---------------------------------------------------------------------------

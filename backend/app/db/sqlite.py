@@ -545,6 +545,15 @@ class SQLiteRepository(DatabaseRepository):
         finally:
             conn.close()
 
+    def delete_customer(self, customer_id: str) -> bool:
+        conn = self._get_connection()
+        try:
+            with conn:
+                conn.execute("DELETE FROM sessions WHERE customer_id = ?", (customer_id,))
+                return conn.execute("DELETE FROM customers WHERE id = ?", (customer_id,)).rowcount > 0
+        finally:
+            conn.close()
+
     def create_auth_session(self, customer_id: str, token_sha256: str, expires_at: str) -> None:
         now = datetime.now(UTC).isoformat()
         conn = self._get_connection()
@@ -1012,6 +1021,12 @@ def update_customer(customer_id: str, fields: dict[str, Any]) -> dict | None:
     from app.db import get_repository
 
     return get_repository().update_customer(customer_id, fields)
+
+
+def delete_customer(customer_id: str) -> bool:
+    from app.db import get_repository
+
+    return get_repository().delete_customer(customer_id)
 
 
 def create_auth_session(customer_id: str, token_sha256: str, expires_at: str) -> None:

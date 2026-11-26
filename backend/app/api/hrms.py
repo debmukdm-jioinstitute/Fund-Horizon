@@ -1196,6 +1196,16 @@ def dispatch_id_card(card_id: str, req: IdCardDispatchRequest, user: Annotated[d
         return dict(updated)
 
 
+@router.delete("/id-cards/{card_id}")
+def delete_id_card(card_id: str, user: Annotated[dict, Depends(require_staff)]):
+    init_hrms_tables()
+    with get_db() as conn:
+        cur = conn.execute("DELETE FROM hrms_id_cards WHERE id = ?", (card_id,))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="ID card not found")
+        return {"status": "ok", "deleted_id": card_id}
+
+
 @router.post("/id-cards/bulk-dispatch")
 def bulk_dispatch_id_cards(req: IdCardBulkDispatchRequest, user: Annotated[dict, Depends(require_staff)]):
     """Bulk dispatch multiple ID cards."""

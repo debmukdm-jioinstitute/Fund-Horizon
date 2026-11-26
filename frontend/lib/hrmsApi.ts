@@ -453,6 +453,10 @@ export async function dispatchIdCard(
   });
 }
 
+export async function deleteIdCard(cardId: string): Promise<{ status: string }> {
+  return hrmsRequest<{ status: string }>(`/id-cards/${cardId}`, { method: "DELETE" });
+}
+
 export async function bulkDispatchIdCards(
   cardIds: string[],
   notes?: string

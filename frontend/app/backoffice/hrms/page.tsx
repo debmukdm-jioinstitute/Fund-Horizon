@@ -16,6 +16,7 @@ import {
   createEmployee,
   updateEmployee,
   deleteEmployee,
+  deleteIdCard,
   fetchLetterTemplates,
   fetchLetters,
   generateLetter,
@@ -426,6 +427,18 @@ export default function HrmsPage() {
       showToast(`Bulk ID cards issued: ${res.issued_count} new cards generated!`);
       const updatedCards = await fetchIdCards();
       setIdCards(updatedCards);
+      loadData();
+    } catch (err: unknown) {
+      showToast(getErrMsg(err), true);
+    }
+  };
+
+  const handleDeleteIdCard = async (card: IdCardRecord) => {
+    if (!window.confirm(`Delete ID card ${card.card_number}? This cannot be undone.`)) return;
+    try {
+      await deleteIdCard(card.id);
+      showToast(`ID Card ${card.card_number} deleted`);
+      setIdCards(await fetchIdCards());
       loadData();
     } catch (err: unknown) {
       showToast(getErrMsg(err), true);
@@ -1593,6 +1606,12 @@ export default function HrmsPage() {
                               Dispatch
                             </button>
                           )}
+                          <button
+                            onClick={() => handleDeleteIdCard(card)}
+                            className="font-medium text-red-600 hover:underline"
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}

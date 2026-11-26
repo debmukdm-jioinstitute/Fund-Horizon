@@ -8,7 +8,7 @@ import {
   getEquityChart,
   getEquityDetail,
 } from "@/lib/backoffice";
-import { formatNumber } from "@/lib/terminal-format";
+import { formatNumber, inrWords } from "@/lib/terminal-format";
 
 interface Props {
   symbol: string;
@@ -30,6 +30,17 @@ const RANGES = [
 
 const inr = (v?: number | null, decimals = 2) =>
   v === undefined || v === null ? "—" : formatNumber(v, decimals, { prefix: "₹" });
+
+/** Big amount: full figure plus words, e.g. ₹5,42,40,52,00,000.00 (5.42 lakh crore). */
+const money = (v?: number | null) => {
+  const w = inrWords(v);
+  return (
+    <>
+      {inr(v)}
+      {w && <span className="block text-xs font-normal text-[#81878C]">{w}</span>}
+    </>
+  );
+};
 
 const pct = (v?: number | null) =>
   v === undefined || v === null ? "—" : `${v >= 0 ? "+" : ""}${formatNumber(v, 2)}%`;
@@ -520,7 +531,7 @@ export default function EquityDetailView({
                 <dl className="mt-4 divide-y divide-[#E8EBED] text-sm">
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">Market Capitalization</dt>
-                    <dd className="font-medium text-[#2F363F]">{detail.market_cap_fmt || inr(detail.market_cap)}</dd>
+                    <dd className="font-medium text-[#2F363F]">{money(detail.market_cap)}</dd>
                   </div>
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">P/E Ratio (Trailing TTM)</dt>
@@ -544,7 +555,7 @@ export default function EquityDetailView({
                   </div>
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">Enterprise Value (EV)</dt>
-                    <dd className="font-medium text-[#2F363F]">{detail.ev_fmt || inr(detail.ev)}</dd>
+                    <dd className="font-medium text-[#2F363F]">{money(detail.ev)}</dd>
                   </div>
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">EV / EBITDA</dt>
@@ -583,15 +594,15 @@ export default function EquityDetailView({
                   </div>
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">Total Debt</dt>
-                    <dd className="font-medium text-[#2F363F]">{detail.total_debt_fmt || inr(detail.total_debt)}</dd>
+                    <dd className="font-medium text-[#2F363F]">{money(detail.total_debt)}</dd>
                   </div>
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">Total Cash &amp; Equiv.</dt>
-                    <dd className="font-medium text-[#2F363F]">{detail.total_cash_fmt || inr(detail.total_cash)}</dd>
+                    <dd className="font-medium text-[#2F363F]">{money(detail.total_cash)}</dd>
                   </div>
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">Free Cash Flow</dt>
-                    <dd className="font-medium text-[#2F363F]">{detail.free_cashflow_fmt || inr(detail.free_cashflow)}</dd>
+                    <dd className="font-medium text-[#2F363F]">{money(detail.free_cashflow)}</dd>
                   </div>
                   <div className="flex justify-between py-2.5">
                     <dt className="text-[#81878C]">Dividend Yield</dt>
@@ -625,8 +636,8 @@ export default function EquityDetailView({
                           return (
                             <tr key={String(y.year)}>
                               <td className="py-3 pr-4 font-medium text-[#2F363F]">FY {y.year}</td>
-                              <td className="py-3 pr-4 text-right">{inr(y.revenue)}</td>
-                              <td className="py-3 pr-4 text-right font-medium">{inr(y.earnings)}</td>
+                              <td className="py-3 pr-4 text-right">{money(y.revenue)}</td>
+                              <td className="py-3 pr-4 text-right font-medium">{money(y.earnings)}</td>
                               <td className="py-3 text-right text-[#535B62]">{margin != null ? `${formatNumber(margin, 2)}%` : "—"}</td>
                             </tr>
                           );
@@ -656,8 +667,8 @@ export default function EquityDetailView({
                         {detail.quarterly_earnings.map((q) => (
                           <tr key={q.date}>
                             <td className="py-3 pr-4 font-medium text-[#2F363F]">{q.date}</td>
-                            <td className="py-3 pr-4 text-right">{inr(q.revenue)}</td>
-                            <td className="py-3 text-right font-medium">{inr(q.earnings)}</td>
+                            <td className="py-3 pr-4 text-right">{money(q.revenue)}</td>
+                            <td className="py-3 text-right font-medium">{money(q.earnings)}</td>
                           </tr>
                         ))}
                       </tbody>

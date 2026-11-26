@@ -96,3 +96,13 @@ export function formatBps(
   const absVal = Math.abs(bps);
   return `${sign}${absVal.toFixed(decimals)} bps`;
 }
+
+/** 54240520000 -> "5,424,..." in words: "54.24 crore", "5.42 lakh crore", "2.67 lakh". */
+export function inrWords(v?: number | null): string {
+  if (v === null || v === undefined || isNaN(v)) return "";
+  const a = Math.abs(v);
+  const sign = v < 0 ? "-" : "";
+  const units: [number, string][] = [[1e12, "lakh crore"], [1e7, "crore"], [1e5, "lakh"]];
+  for (const [d, u] of units) if (a >= d) return `${sign}${Number((a / d).toFixed(2))} ${u}`;
+  return "";
+}

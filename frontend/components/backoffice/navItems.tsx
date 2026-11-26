@@ -124,16 +124,6 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/backoffice/finance-desk",
-    label: "Finance Desk",
-    description: "Hosted paper-portfolio desk: bench, fills and signals, live from the original site",
-    icon: (p) => (
-      <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5-2V5a1 1 0 011-1h6a1 1 0 011 1v1M3 13h18" />
-      </svg>
-    ),
-  },
-  {
     href: "/backoffice/crm",
     label: "CRM",
     description: "Households, leads, pipelines, tasks and deadlines",

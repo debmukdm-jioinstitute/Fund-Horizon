@@ -42,7 +42,6 @@ PAGE_API: dict[str, tuple[str, ...]] = {
     "/backoffice/mutual-funds": tuple(_B + p for p in ("mutual-fund", "mf-reference", "factsheets", "compare", "screening")),
     "/backoffice/micro": (_B + "micro",),
     "/backoffice/equities": (_B + "equities",),
-    "/backoffice/finance-desk": (),  # embeds a separate app; no backoffice API needed
     "/backoffice/data-health": (_B + "data-health",),
     "/backoffice/crm": ("/api/crm", "/api/rm", "/api/staff/chats"),
     "/backoffice/service-desk": ("/api/service-desk",),

@@ -48,7 +48,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/((?!finance-desk-app).*)", // finance-desk-app sets its own (framable) headers
+        source: "/(.*)",
         headers: securityHeaders,
       },
     ];

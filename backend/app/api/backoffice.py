@@ -2314,7 +2314,7 @@ def provision_staff_member(
 
 STAFF_ROLES = ("admin", "analyst", "rm", "operations", "read_only", "compliance")
 BACKOFFICE_PAGES = (
-    "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/equities", "/backoffice/finance-desk",
+    "/backoffice", "/backoffice/pms", "/backoffice/mutual-funds", "/backoffice/equities",
     "/backoffice/data-health", "/backoffice/crm", "/backoffice/service-desk", "/backoffice/operations",
     "/backoffice/risk-profiling", "/backoffice/learn", "/backoffice/hrms", "/backoffice/settings",
 )

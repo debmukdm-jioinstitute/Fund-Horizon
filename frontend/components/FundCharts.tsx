@@ -19,8 +19,9 @@ import type { DrawdownEpisode, FundNavPoint, RollingStats } from "@/lib/types";
 import { pct } from "@/lib/format";
 import InfoTip, { InfoTipMeta } from "@/components/InfoTip";
 
+import { useUrlState } from "@/lib/useUrlState";
 export function NavChart({ navs }: { navs: FundNavPoint[] }) {
-  const [range, setRange] = useState<"1y" | "3y" | "5y" | "all">("3y");
+  const [range, setRange] = useUrlState<"1y" | "3y" | "5y" | "all">("range", "3y");
   const [chartView, setChartView] = useState<"nav" | "drawdown">("nav");
 
   // Pre-calculate running peak and drawdown for each point in the full series

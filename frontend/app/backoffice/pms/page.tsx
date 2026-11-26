@@ -2,7 +2,7 @@
 
 import React, { Suspense, useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useUrlId, useUrlState } from "@/lib/useUrlState";
+import { useUrlFlag, useUrlId, useUrlState } from "@/lib/useUrlState";
 import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
 import { PmsLogo } from "@/components/BrandLogo";
 import Link from "next/link";
@@ -161,8 +161,8 @@ function PmsTracker() {
   const [sortKey, setSortKey] = useUrlState<SortKey>("sort", "aum");
   const [sortDir, setSortDir] = useUrlState<"asc" | "desc">("dir", "desc", { allowed: ["asc", "desc"] });
   const [page, setPage] = useState(0);
-  const [docModalOpen, setDocModalOpen] = useState(false);
-  const [matrixModalOpen, setMatrixModalOpen] = useState(false);
+  const [docModalOpen, setDocModalOpen] = useUrlFlag("doc");
+  const [matrixModalOpen, setMatrixModalOpen] = useUrlFlag("matrix");
   const [selectedBenchmark, setSelectedBenchmark] = useState(params.get("bench") ?? "BSE 500 TRI");
   const [methodologyModalOpen, setMethodologyModalOpen] = useState(false);
   const [methodologyStrategy, setMethodologyStrategy] = useState<PmsStrategyItem | null>(null);

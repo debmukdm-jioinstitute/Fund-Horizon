@@ -5,9 +5,10 @@ import { useAcademy } from "./AcademyContext";
 import { academy, type AdminUser, type Board } from "./api";
 import { Spinner, accent, card, chip, muted } from "./ui";
 
+import { useUrlState } from "@/lib/useUrlState";
 export function Leaderboard() {
   const { refresh } = useAcademy();
-  const [period, setPeriod] = useState<"week" | "all">("week");
+  const [period, setPeriod] = useUrlState<"week" | "all">("period", "week");
   const [board, setBoard] = useState<Board | null>(null);
   const [err, setErr] = useState("");
   const [detail, setDetail] = useState<AdminUser | null>(null);

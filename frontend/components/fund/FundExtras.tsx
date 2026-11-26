@@ -7,6 +7,7 @@ import { pct } from "@/lib/format";
 import { AmcLogo } from "@/components/BrandLogo";
 import { getHoldingStockDetail, type StockDetail } from "@/lib/api";
 
+import { useUrlState } from "@/lib/useUrlState";
 const ACCENT = "#0176D3";
 const PALETTE = ["#0176D3", "#1B96FF", "#00A1A0", "#7F8DE1", "#E8A33D", "#C2548A", "#5C9C4A", "#8A6FD6", "#D9663F", "#4E7FA8", "#9AA7B8", "#3DB8A5"];
 const GLASS = "rounded-2xl border border-[var(--glass-border)] bg-[var(--glass)] p-5 shadow-[var(--glass-shadow)]";
@@ -55,7 +56,7 @@ const inr = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
 /** SIP / lumpsum what-if using the fund's own trailing CAGR. Illustrative, not a forecast. */
 export function ReturnsCalculator({ cagr }: { cagr: { "3Y": number | null; "5Y": number | null } }) {
-  const [mode, setMode] = useState<"sip" | "lump">("sip");
+  const [mode, setMode] = useUrlState<"sip" | "lump">("calc", "sip");
   const [amount, setAmount] = useState(10000);
   const [years, setYears] = useState(5);
   const [basis, setBasis] = useState<"3Y" | "5Y">(cagr["5Y"] != null ? "5Y" : "3Y");

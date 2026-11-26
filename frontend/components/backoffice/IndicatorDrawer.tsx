@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { getObservationSeries, SeriesPoint } from "@/lib/backoffice";
 
+import { useUrlState } from "@/lib/useUrlState";
 export interface IndicatorSpec {
   title: string;
   /** Series to show; a second id turns the view into (a - b) * scale, e.g. a yield spread in bps. */
@@ -35,7 +36,7 @@ function bucket(points: SeriesPoint[], view: View): SeriesPoint[] {
 export default function IndicatorDrawer({ spec, onClose }: { spec: IndicatorSpec | null; onClose: () => void }) {
   const [points, setPoints] = useState<SeriesPoint[] | null>(null);
   const [error, setError] = useState(false);
-  const [view, setView] = useState<View>("daily");
+  const [view, setView] = useUrlState<View>("iview", "daily");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import { API_URL, compareFunds, resolveApiUrl } from "@/lib/api";
 import type { CompareResponse } from "@/lib/types";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
 
+import { useUrlState } from "@/lib/useUrlState";
 const CATEGORIES = Object.keys(CATEGORY_LABELS);
 const MAX_COMPARE = 4;
 
@@ -41,8 +42,8 @@ function ExploreTab({ id, selected, toggleSelect }: {
   selected: string[];
   toggleSelect: (code: string) => void;
 }) {
-  const [category, setCategory] = useState(CATEGORIES[0]);
-  const [query, setQuery] = useState("");
+  const [category, setCategory] = useUrlState<string>("cat", CATEGORIES[0]);
+  const [query, setQuery] = useUrlState<string>("q", "");
   const [data, setData] = useState<RankingResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

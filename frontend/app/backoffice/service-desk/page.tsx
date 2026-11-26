@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchHouseholds } from "@/lib/crmApi";
-import { useUrlState } from "@/lib/useUrlState";
+import { useUrlFlag, useUrlState } from "@/lib/useUrlState";
 import {
   CATEGORIES,
   PRIORITIES,
@@ -73,7 +73,7 @@ export default function ServiceDeskPage() {
   const [categoryFilter, setCategoryFilter] = useUrlState<string>("category", "");
 
   // Create Form State
-  const [formOpen, setFormOpen] = useState(false);
+  const [formOpen, setFormOpen] = useUrlFlag("new");
   const [name, setName] = useState("");
   const [category, setCategory] = useState<Category | "">("");
   const [priority, setPriority] = useState<Priority>("medium");
@@ -294,7 +294,7 @@ export default function ServiceDeskPage() {
             </svg>
             Export Log
           </button>
-          <button type="button" onClick={() => setFormOpen((v) => !v)} className={btnPrimary}>
+          <button type="button" onClick={() => setFormOpen(!formOpen)} className={btnPrimary}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>

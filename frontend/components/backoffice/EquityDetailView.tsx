@@ -10,6 +10,7 @@ import {
 } from "@/lib/backoffice";
 import { formatNumber, inrWords } from "@/lib/terminal-format";
 
+import { useUrlState } from "@/lib/useUrlState";
 interface Props {
   symbol: string;
   onClose: () => void;
@@ -214,11 +215,11 @@ export default function EquityDetailView({
 }: Props) {
   const [detail, setDetail] = useState<EquityScripDetail | null>(null);
   const [chartData, setChartData] = useState<EquityChartData | null>(null);
-  const [range, setRange] = useState("1y");
+  const [range, setRange] = useUrlState<string>("range", "1y");
   const [loading, setLoading] = useState(true);
   const [chartLoading, setChartLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [tab, setTab] = useState<"overview" | "financials" | "ownership" | "profile">("overview");
+  const [tab, setTab] = useUrlState<"overview" | "financials" | "ownership" | "profile">("tab", "overview", { push: true });
   const [expandSummary, setExpandSummary] = useState(false);
   const [targetBasketId, setTargetBasketId] = useState(activeBasketId || (baskets[0]?.id ?? ""));
   const [addMsg, setAddMsg] = useState<string | null>(null);

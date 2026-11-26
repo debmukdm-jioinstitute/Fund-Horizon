@@ -14,6 +14,7 @@ import { VARSITY_NOTES } from "@/lib/varsityNotes";
 import { VARSITY_ILLUSTRATIONS } from "./VarsityIllustrations";
 import { VarsityConceptMap, VarsityMindmap, type ConceptTopic } from "./VarsityMindmap";
 
+import { useUrlState } from "@/lib/useUrlState";
 export const VARSITY_ATTRIBUTION =
   "Content by Zerodha Varsity — read on zerodha.com, not hosted by Fund Horizon. Only chapter titles and links are listed here; no Zerodha chapter text is stored on this site.";
 const NO_XP = "Reading Varsity chapters tracks progress but does not earn XP.";
@@ -107,9 +108,9 @@ function ChapterLink({ m, chapterUrl }: { m: VarsityModule; chapterUrl: string |
 export function VarsityHub() {
   const { go } = useAcademy();
   const { read, syncNote, loaded, retry } = useVarsityProgress();
-  const [view, setView] = useState<"mindmap" | "list">("mindmap");
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"all" | "read" | "unread">("all");
+  const [view, setView] = useUrlState<"mindmap" | "list">("view", "mindmap", { push: true });
+  const [query, setQuery] = useUrlState<string>("q", "");
+  const [filter, setFilter] = useUrlState<"all" | "read" | "unread">("filter", "all");
   const [laterOpen, setLaterOpen] = useState(false);
 
   const storedTotal = useMemo(() => VARSITY_MODULES.reduce((s, m) => s + (m.chapters?.length ?? 0), 0), []);

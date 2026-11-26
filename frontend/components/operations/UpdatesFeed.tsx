@@ -9,6 +9,7 @@ import { fetchActivities, fetchHouseholds, fetchLeads } from "@/lib/crmApi";
 import { fetchPage } from "@/lib/crmListApi";
 import { fetchSips, type Sip } from "@/lib/crmPhase3Api";
 
+import { useUrlState } from "@/lib/useUrlState";
 type Kind = "Record" | "Form" | "Risk profile" | "Calculation";
 interface Item { id: string; kind: Kind; at: string; title: string; detail: string; href?: string }
 interface Due { id: string; date: Date; name: string; scheme: string; amount: number }
@@ -39,7 +40,7 @@ export function nextDebit(s: Pick<Sip, "day" | "start_date" | "end_date">, today
 export default function UpdatesFeed() {
   const [items, setItems] = useState<Item[]>([]);
   const [dues, setDues] = useState<Due[]>([]);
-  const [filter, setFilter] = useState<Kind | "All">("All");
+  const [filter, setFilter] = useUrlState<Kind | "All">("kind", "All");
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState<string[]>([]);
 

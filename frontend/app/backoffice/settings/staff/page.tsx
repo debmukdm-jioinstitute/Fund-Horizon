@@ -18,6 +18,7 @@ import {
 } from "@/lib/backoffice";
 import DropdownClose from "@/components/DropdownClose";
 
+import { useUrlState } from "@/lib/useUrlState";
 const mutedCls = "text-[#706E6B] dark:text-[#A8B4C4]";
 
 function Avatar({ name }: { name: string }) {
@@ -114,7 +115,7 @@ export default function StaffPermissionsPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useUrlState<string>("q", "");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [drawer, setDrawer] = useState<{ mode: "create" | "edit"; member?: StaffMemberItem } | null>(null);

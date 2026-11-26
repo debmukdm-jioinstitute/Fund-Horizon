@@ -5,8 +5,9 @@ import Link from "next/link";
 import { type Batch, type HistoryRow, PROVIDER_LABEL, getHistory, listBatches, reportDownloadUrl } from "@/lib/valuationApi";
 import { Badge, Notice, Tabs, btnPrimary, btn, card, dateFmt, input, money, monthFmt, muted, td, th } from "@/components/valuation/ui";
 
+import { useUrlState } from "@/lib/useUrlState";
 export default function ValuationDashboard() {
-  const [tab, setTab] = useState<"batches" | "history">("batches");
+  const [tab, setTab] = useUrlState<"batches" | "history">("tab", "batches", { push: true });
   const [rows, setRows] = useState<Batch[] | null>(null);
   const [month, setMonth] = useState("");
   const [err, setErr] = useState<string | null>(null);

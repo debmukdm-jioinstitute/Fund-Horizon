@@ -128,7 +128,7 @@ export function Result({ t }: { t: Table }) {
 }
 
 export default function FundPerformance() {
-  const [tab, setTab] = useUrlState<Tab>("tab", "trailing", { push: true });
+  const [tab, setTab] = useUrlState<Tab>("tab", "trailing", { push: true, allowed: TABS.map((t) => t[0]) });
   const [meta, setMeta] = useState<Meta | null>(null);
   const [category, setCategory] = useUrlState<string>("category", "Equity: Large Cap");
   const [plan, setPlan] = useUrlState<string>("plan", "Regular");
@@ -142,7 +142,7 @@ export default function FundPerformance() {
   const [perFund, setPerFund] = useState(false); // one date range per fund instead of one for all
   const [fundRanges, setFundRanges] = useState<Record<string, [string, string]>>({});
   const [lumpYears, setLumpYears] = useState("5");
-  const [mode, setMode] = useState("Monthly");
+  const [mode, setMode] = useUrlState<string>("mode", "Monthly");
   const [years, setYears] = useState<number[]>([new Date().getFullYear() - 1]);
   const [amcs, setAmcs] = useState<string[]>(["5 Largest Fund Houses"]);
   const [bestPeriod, setBestPeriod] = useState("1y");
@@ -154,10 +154,8 @@ export default function FundPerformance() {
 
   useEffect(() => {
     apiGet<Meta>("/api/backoffice/mutual-funds/performance/meta").then(setMeta).catch((e) => setErr(e instanceof Error ? e.message : "Could not load the options."));
-    const t = new URLSearchParams(window.location.search).get("tab");
-    if (TABS.some(([k]) => k === t)) setTab(t as Tab);
   }, []);
-  const choose = (t: Tab) => { setTab(t); setTable(null); setErr(""); window.history.replaceState(null, "", `?tab=${t}`); };
+  const choose = (t: Tab) => { setTab(t); setTable(null); setErr(""); };
   const thisYear = new Date().getFullYear();
   const amt = Number(amount.replace(/,/g, ""));
 

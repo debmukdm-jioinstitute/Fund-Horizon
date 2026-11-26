@@ -20,13 +20,14 @@ import ImportTab from "@/components/crm/ImportTab";
 import { MeUser, fetchMe } from "@/components/admin/account-api";
 import { AdminStats, AdminPlanSummary, fetchAdminStats, saveAdminKey } from "@/lib/admin-api";
 
+import { useUrlState } from "@/lib/useUrlState";
 const CRM_TABS: AdminTab[] = ["crm-home", "households", "leads", "pipelines", "activities", "import"];
 function isCrmTab(tab: AdminTab): boolean {
   return CRM_TABS.includes(tab);
 }
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
+  const [activeTab, setActiveTab] = useUrlState<AdminTab>("tab", "overview", { push: true });
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

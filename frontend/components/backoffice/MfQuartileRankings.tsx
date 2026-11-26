@@ -5,6 +5,7 @@ import { getMfQuartileRanking, getMfScreener, MfQuartileData } from "@/lib/backo
 import MfQuartileAnnual from "./MfQuartileAnnual";
 import { formatISTDate } from "@/lib/terminal-format";
 
+import { useUrlState } from "@/lib/useUrlState";
 const PERIODS = ["1y", "2y", "3y", "4y", "5y", "10y"];
 const QUARTILE_TONE: Record<string, string> = {
   "Top Quartile": "text-[#2E844A] dark:text-[#45C65A]",
@@ -76,8 +77,8 @@ export const nameKey = (n: string) => n.toLowerCase().replace(/\b(direct|regular
 
 export default function MfQuartileRankings({ screenerCategories = [], plans = [], query = "", recommended = false }: { screenerCategories?: { key: string; label: string }[]; plans?: string[]; query?: string; recommended?: boolean }) {
   const [recKeys, setRecKeys] = useState<Set<string> | null>(null);
-  const [period, setPeriod] = useState("1y");
-  const [view, setView] = useState<"calendar" | "trailing">("calendar");
+  const [period, setPeriod] = useUrlState<string>("qr_period", "1y");
+  const [view, setView] = useUrlState<"calendar" | "trailing">("qr_view", "calendar", { push: true });
   const [data, setData] = useState<MfQuartileData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

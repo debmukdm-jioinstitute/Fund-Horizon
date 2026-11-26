@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { getNextWaveDetail, type NwHistory, type NwPeerRow, type NwPeers } from "@/lib/backoffice";
 
+import { useUrlState } from "@/lib/useUrlState";
 const MUTED = "text-[#5B6B85] dark:text-[#A8B4C4]";
 const CARD = "rounded-3xl border border-white/70 bg-white/80 p-5 shadow-[0_10px_30px_-14px_rgba(26,115,232,0.28)] backdrop-blur dark:border-white/10 dark:bg-white/5 sm:p-6";
 const POS = "text-[#137333] dark:text-[#7EE2A0]";
@@ -128,7 +129,7 @@ function History({ d }: { d: NwHistory }) {
 }
 
 function Peers({ d, unit }: { d: NwPeers; unit: string }) {
-  const [view, setView] = useState<"all" | "top" | "near">("all");
+  const [view, setView] = useUrlState<"all" | "top" | "near">("nwview", "all");
   const meRef = useRef<HTMLTableRowElement | null>(null);
   const rows = useMemo(() => {
     if (view === "top") return d.rows.slice(0, 10);

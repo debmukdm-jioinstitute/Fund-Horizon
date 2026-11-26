@@ -7,6 +7,7 @@ import { AdminPlanSummary, fetchAdminPlans, deleteAdminPlan } from "@/lib/admin-
 import { inr, shortInr } from "@/lib/format";
 import { reportUrl } from "@/lib/api";
 
+import { useUrlState } from "@/lib/useUrlState";
 interface AdminPlansTabProps {
   onInspectPlan: (plan: AdminPlanSummary) => void;
 }
@@ -17,8 +18,8 @@ export default function AdminPlansTab({ onInspectPlan }: AdminPlansTabProps) {
   const [plans, setPlans] = useState<AdminPlanSummary[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [selectedBand, setSelectedBand] = useState("All");
+  const [search, setSearch] = useUrlState<string>("q", "");
+  const [selectedBand, setSelectedBand] = useUrlState<string>("band", "All");
   const [page, setPage] = useState(0);
   const limit = 20;
 

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AdminSchemeRecord, fetchAdminSchemes } from "@/lib/admin-api";
 import { pct } from "@/lib/format";
 
+import { useUrlState } from "@/lib/useUrlState";
 export default function AdminFundsTab() {
   const [schemes, setSchemes] = useState<AdminSchemeRecord[]>([]);
   const [amcs, setAmcs] = useState<string[]>([]);
@@ -14,11 +15,11 @@ export default function AdminFundsTab() {
   const [loading, setLoading] = useState(true);
 
   // Filters
-  const [search, setSearch] = useState("");
-  const [selectedAmc, setSelectedAmc] = useState("");
-  const [selectedCat, setSelectedCat] = useState("");
-  const [selectedPlan, setSelectedPlan] = useState("");
-  const [sortBy, setSortBy] = useState("scheme_name");
+  const [search, setSearch] = useUrlState<string>("q", "");
+  const [selectedAmc, setSelectedAmc] = useUrlState<string>("amc", "");
+  const [selectedCat, setSelectedCat] = useUrlState<string>("cat", "");
+  const [selectedPlan, setSelectedPlan] = useUrlState<string>("plan", "");
+  const [sortBy, setSortBy] = useUrlState<string>("sort", "scheme_name");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
   const limit = 25;

@@ -15,6 +15,7 @@ import { ComparePayload, getBackofficeCompare, getMfFundOverlap, type MfFundOver
 import InfoTip from "@/components/InfoTip";
 import { FundQuartiles, getFundQuartiles } from "@/lib/api";
 
+import { useUrlState } from "@/lib/useUrlState";
 const CHART_COLORS = ["#0176D3", "#2170E4", "#D97706", "#7C3AED"];
 
 type Period = "1Y" | "3Y" | "5Y" | "Max";
@@ -135,7 +136,7 @@ interface CompareViewProps {
 }
 
 export default function CompareView({ open, type, ids, onClose, onRemoveId, resolveLabel }: CompareViewProps) {
-  const [period, setPeriod] = useState<Period>("3Y");
+  const [period, setPeriod] = useUrlState<Period>("period", "3Y");
   const [payload, setPayload] = useState<ComparePayload | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

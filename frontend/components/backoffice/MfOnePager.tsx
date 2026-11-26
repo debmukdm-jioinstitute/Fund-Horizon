@@ -28,6 +28,7 @@ import { AmcLogo } from "@/components/BrandLogo";
 import Logo from "@/components/Logo";
 import { formatISTDate } from "@/lib/terminal-format";
 
+import { useUrlState } from "@/lib/useUrlState";
 const BLUE = "#0176D3";
 const CAT = "#9CA3AF";
 const UP = "#0B7A4B";
@@ -79,7 +80,7 @@ const axis = { fontSize: 10, fill: "#706E6B" };
 
 export default function MfOnePager({ row, onClose }: { row: MfScreenerRow | null; onClose: () => void }) {
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined);
-  const [range, setRange] = useState<(typeof RANGES)[number]["k"]>("5Y");
+  const [range, setRange] = useUrlState<(typeof RANGES)[number]["k"]>("op_range", "5Y");
   const [printing, setPrinting] = useState(false);
   const code = row?.code;
 

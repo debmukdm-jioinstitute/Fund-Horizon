@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { getNews, NewsItem } from "@/lib/backoffice";
 import { usePolling } from "./usePolling";
 
+import { useUrlState } from "@/lib/useUrlState";
 const CATEGORIES = [
   { id: "", label: "All" },
   { id: "markets", label: "Markets" },
@@ -21,7 +22,7 @@ function ago(iso?: string): string {
 }
 
 export function NewsFeed({ limit = 25, compact = false, showFilters = true }: { limit?: number; compact?: boolean; showFilters?: boolean }) {
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useUrlState<string>("cat", "");
   const [items, setItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

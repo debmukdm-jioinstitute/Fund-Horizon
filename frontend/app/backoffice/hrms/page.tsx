@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useUrlState } from "@/lib/useUrlState";
+import { useUrlFlag, useUrlState } from "@/lib/useUrlState";
 import {
   type Employee,
   type HrmsStats,
@@ -71,13 +71,13 @@ export default function HrmsPage() {
   // Filter & modal states
   const [empSearch, setEmpSearch] = useState("");
   const [empDeptFilter, setEmpDeptFilter] = useState("all");
-  const [empModalOpen, setEmpModalOpen] = useState(false);
+  const [empModalOpen, setEmpModalOpen] = useUrlFlag("newemp");
   const [editingEmp, setEditingEmp] = useState<Partial<Employee> | null>(null);
 
   // ID Cards state
   const [idCardFilter, setIdCardFilter] = useState<string>("all");
   const [idCardSearch, setIdCardSearch] = useState<string>("");
-  const [issueCardModalOpen, setIssueCardModalOpen] = useState(false);
+  const [issueCardModalOpen, setIssueCardModalOpen] = useUrlFlag("issuecard");
   const [issuingEmpId, setIssuingEmpId] = useState<string>("");
   const [cardBloodGroup, setCardBloodGroup] = useState<string>("O+");
   const [cardEmergencyContact, setCardEmergencyContact] = useState<string>("");

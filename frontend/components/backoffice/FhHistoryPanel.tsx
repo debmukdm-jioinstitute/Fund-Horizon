@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getFhBreakdown, getFhComparison, type FhBreakdownRow, type FhComparison, type FhExplain } from "@/lib/backoffice";
 import { CountUp } from "@/components/operations/CalcCharts";
 
+import { useUrlState } from "@/lib/useUrlState";
 export const MUTED = "text-[#5B6B85] dark:text-[#A8B4C4]";
 // Tinted glass card: frosted blue-white fill, bright top edge, soft blue shadow, small lift on hover. Avoids splitting across printed pages.
 export const BOX = "break-inside-avoid rounded-3xl border border-white/70 dark:border-white/10 bg-white/55 dark:bg-[#12233A]/55 backdrop-blur-xl p-7 sm:p-9 shadow-[0_18px_50px_-18px_rgba(26,115,232,0.35),inset_0_1px_0_rgba(255,255,255,0.95)] transition-transform duration-200 hover:-translate-y-0.5";
@@ -112,7 +113,7 @@ const METRIC: Record<string, [string, string]> = {
 };
 
 export function RiskMeasures({ rows }: { rows: FhBreakdownRow[] }) {
-  const [period, setPeriod] = useState("3Y");
+  const [period, setPeriod] = useUrlState<string>("fhperiod", "3Y");
   const shown = rows.filter((r) => r.period === period);
   return (
     <section className={BOX}>

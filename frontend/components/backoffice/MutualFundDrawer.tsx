@@ -14,6 +14,7 @@ import FundQuartile from "./FundQuartile";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 
+import { useUrlState } from "@/lib/useUrlState";
 interface MutualFundDrawerProps {
   scheme: MutualFundItem | null;
   onClose: () => void;
@@ -27,7 +28,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
     setMounted(true);
   }, []);
   const [perf, setPerf] = useState<MfPerformance | null | undefined>(undefined); // undefined = loading, null = no data
-  const [view, setView] = useState<"monthly" | "quarterly" | "yearly">("monthly");
+  const [view, setView] = useUrlState<"monthly" | "quarterly" | "yearly">("dview", "monthly");
   const [navPairSiblings, setNavPairSiblings] = useState<string[]>([]);
   const [manager, setManager] = useState<MfManagerInfo | null>(null);
   const [managerOpen, setManagerOpen] = useState(false);

@@ -11,6 +11,7 @@ import {
 } from "@/lib/valuationApi";
 import { Badge, Notice, Stat, Tabs, btn, btnPrimary, card, dateFmt, input, money, monthFmt, muted, num, pct, td, th } from "@/components/valuation/ui";
 
+import { useUrlState } from "@/lib/useUrlState";
 type Tab = "statements" | "reconciliation" | "portfolio" | "report";
 const ASSET: Record<string, string> = { mutual_fund: "Mutual funds", equity: "Equity", debt: "Debt", cash: "Cash", other: "Unclassified" };
 const TOTAL_LABELS: [string, string][] = [["total_value", "Provider total value"], ["table_total_value", "Printed holdings total"], ["cash_balance", "Cash balance"], ["total_invested", "Invested (reported)"], ["opening_value", "Opening value"]];
@@ -20,7 +21,7 @@ export default function BatchWorkspace() {
   const router = useRouter();
   const { customer } = useAuth();
   const isAdmin = customer?.role === "admin";
-  const [tab, setTab] = useState<Tab>("statements");
+  const [tab, setTab] = useUrlState<Tab>("tab", "statements", { push: true });
   const [pv, setPv] = useState<Preview | null>(null);
   const [rec, setRec] = useState<Recon | null>(null);
   const [port, setPort] = useState<Payload | null>(null);

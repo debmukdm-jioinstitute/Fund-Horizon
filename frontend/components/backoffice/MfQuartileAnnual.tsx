@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { getMfQuartileAnnual, MfQuartileData } from "@/lib/backoffice";
 import { formatISTDate } from "@/lib/terminal-format";
 
+import { useUrlState } from "@/lib/useUrlState";
 const YEARS = 5;
 
 type Pill = { label: string; cls: string };
@@ -69,9 +70,9 @@ export default function MfQuartileAnnual({ labels, enabled, keep, recommendedPen
   const [loading, setLoading] = useState(true);
   const [retry, setRetry] = useState(0);
   const [plan, setPlan] = useState<"Regular" | "Direct">(() => (enabled ? "Regular" : "Direct"));
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
-  const [range, setRange] = useState<"all" | "last3">("all");
+  const [search, setSearch] = useUrlState<string>("qa_q", "");
+  const [category, setCategory] = useUrlState<string>("qa_cat", "All");
+  const [range, setRange] = useUrlState<"all" | "last3">("qa_range", "all");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const labelKey = labels.join("|");
 

@@ -171,10 +171,34 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
     : null;
   const f = (v?: number) => (v === undefined ? "not available" : `${v.toFixed(1)}%`);
   const faqs: [string, string][] = [
-    [`What are the returns of ${shortDisplayName(scheme.scheme_name)}?`, `1 year ${f(mv("ret_1y"))}, 3 year CAGR ${f(mv("cagr_3y"))}, 5 year CAGR ${f(mv("cagr_5y"))}${perf ? `, as of ${formatISTDate(perf.as_of)}` : ""}. Past performance is not a guide to future returns.`],
-    ["How risky is this fund?", `3 year volatility ${f(mv("vol_3y"))}; largest fall from a peak over all history ${f(mv("max_drawdown_all"))}.`],
-    ["What is the expense ratio?", scheme.ter_pct ? `${Number(scheme.ter_pct).toFixed(2)}% a year for the ${classified.plan || "listed"} plan.` : "Not on file for this plan."],
-    ["What does it hold?", portfolio ? `${portfolio.summary.holdings_count} holdings as of ${portfolio.as_of ?? "the latest disclosure"}; see Holdings and Sector Allocation above.` : "Its monthly portfolio file is not ingested yet, so holdings are shown as unavailable, never estimated."],
+    [
+      `What returns has ${shortDisplayName(scheme.scheme_name)} delivered?`,
+      `Over the last 1 year: ${f(mv("ret_1y"))}. Annual average (CAGR): 3 years at ${f(mv("cagr_3y"))}, and 5 years at ${f(mv("cagr_5y"))}${perf ? ` (as of ${formatISTDate(perf.as_of)})` : ""}. Returns compound over time, but past results do not guarantee future performance.`,
+    ],
+    [
+      "How risky is this fund, and what does it mean for me?",
+      `3-year volatility is ${f(mv("vol_3y"))} (lower means smoother day-to-day value). In its worst historical market crash, it dropped ${f(mv("max_drawdown_all"))} from peak to bottom before recovering. Suitable for investors who can stay invested through market ups and downs.`,
+    ],
+    [
+      "What is the expense ratio (annual fee)?",
+      scheme.ter_pct
+        ? `${Number(scheme.ter_pct).toFixed(2)}% per year for the ${classified.plan || "Regular"} plan. This fee is automatically deducted from the fund's daily NAV—you never pay an out-of-pocket invoice.`
+        : "Fee details are not currently on file for this plan.",
+    ],
+    [
+      "What does this fund invest in?",
+      portfolio
+        ? `A diversified basket of ${portfolio.summary.holdings_count} companies/holdings as of ${portfolio.as_of ?? "the latest disclosure"}. Check the Holdings & Sector Allocation breakdown above to see exactly where your money goes.`
+        : "Monthly portfolio disclosure is currently updating; holdings are shown only from verified AMC files.",
+    ],
+    [
+      "How long should I stay invested in this fund?",
+      scheme.category?.toLowerCase().includes("liquid") || scheme.category?.toLowerCase().includes("overnight")
+        ? "Suitable for short-term parking (days to a few months)."
+        : scheme.category?.toLowerCase().includes("debt")
+        ? "Recommended holding horizon is 1 to 3 years."
+        : "Equity and hybrid funds work best over a 3 to 5+ year horizon so compounding can smooth out short-term market dips.",
+    ],
   ];
 
   const copy = async () => {

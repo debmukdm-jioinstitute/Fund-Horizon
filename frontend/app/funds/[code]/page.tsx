@@ -231,10 +231,24 @@ export default async function FundDetailPage({ params }: PageProps) {
 
   const f = (v: number | null) => (v !== null ? pct(v) : "not available");
   const faqs: [string, string][] = [
-    [`What are the returns of ${detail.scheme_name}?`, `1Y ${f(ret.cagr_1y)}, 3Y CAGR ${f(ret.cagr_3y)}, 5Y CAGR ${f(ret.cagr_5y)}, computed from published NAV to ${analytics.last_nav_date}. Past performance is not a guide to future returns.`],
-    ["How risky is this fund?", `3Y annualised volatility ${f(risk.annualized_volatility_3y)}, maximum historical drawdown ${f(risk.max_drawdown)}.`],
-    ["What does it hold?", portfolio ? `${portfolio.summary.holdings_count} holdings as of ${portfolio.as_of ?? "the latest disclosure"}; see Holdings and Sector Allocation above.` : "Its monthly portfolio file is not ingested yet, so holdings are shown as unavailable rather than estimated."],
-    ["How do I invest?", "Fund Horizon distributes Regular plans as an AMFI-registered Mutual Fund Distributor (ARN 345439). Contact us to start a SIP or lumpsum."],
+    [
+      `What returns has ${detail.scheme_name} delivered?`,
+      `Over 1 year: ${f(ret.cagr_1y)}. Annual average (CAGR): 3 years at ${f(ret.cagr_3y)}, and 5 years at ${f(ret.cagr_5y)} (based on published NAV as of ${analytics.last_nav_date}). Past returns do not guarantee future results.`,
+    ],
+    [
+      "How risky is this fund, and what does it mean?",
+      `3-year volatility is ${f(risk.annualized_volatility_3y)} (lower numbers mean smaller everyday swings). In its worst historical market drop, it dipped ${f(risk.max_drawdown)} from peak to trough before recovering. Best suited for investors with a multi-year horizon.`,
+    ],
+    [
+      "What does this fund invest in?",
+      portfolio
+        ? `A diversified basket of ${portfolio.summary.holdings_count} companies as of ${portfolio.as_of ?? "the latest disclosure"}. See the Holdings and Sector breakdown above for the exact allocation.`
+        : "Latest monthly portfolio filing is updating; data is shown only from official disclosures.",
+    ],
+    [
+      "How do I invest, and what is the fee?",
+      "Fund Horizon is an AMFI-registered Mutual Fund Distributor (ARN 345439). Annual expense fees are built into daily NAV so you never receive an out-of-pocket bill. Reach out to start a SIP or lumpsum investment.",
+    ],
   ];
 
   return (

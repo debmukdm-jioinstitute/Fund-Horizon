@@ -16,7 +16,43 @@ _WORDS = re.compile(r"\b(direct|regular|reg|dir|plan|growth|gr|option|fund|schem
 
 def name_key(n: str) -> str:
     """Advisorkhoj ("X Fund Reg Gr") and AMFI ("X Fund - Regular Plan - Growth") names agree once plan words are dropped."""
-    return re.sub(r"[^a-z0-9]", "", _WORDS.sub("", n.lower()))
+    # Strip parentheticals like (erstwhile Bluechip Fund)
+    n = re.sub(r"\(.*?\)", "", n)
+    n = re.sub(r"\b(direct|regular|reg|dir|plan|growth|gr|option|fund|scheme|erstwhile|mutual)\b", "", n, flags=re.I)
+    n = re.sub(r"\bprudential\b", "pru", n, flags=re.I)
+    return re.sub(r"[^a-z0-9]", "", n.lower())
+
+
+def _tokens(n: str) -> set[str]:
+    n = re.sub(r"\(.*?\)", "", n)
+    n = re.sub(r"\b(direct|regular|reg|dir|plan|growth|gr|option|fund|scheme|erstwhile|mutual)\b", "", n, flags=re.I)
+    n = re.sub(r"\bprudential\b", "pru", n, flags=re.I)
+    return set(re.findall(r"[a-z0-9]+", n.lower()))
+
+
+def _find_best_row(name: str, rows: list) -> list | None:
+    key = name_key(name)
+    # Exact key match first
+    for r in rows:
+        if name_key(r[0]) == key:
+            return r
+    # Fallback to token overlap
+    t_amfi = _tokens(name)
+    best = None
+    best_score = 0.0
+    for r in rows:
+        t_ak = _tokens(r[0])
+        if not t_ak:
+            continue
+        inter = len(t_amfi & t_ak)
+        if inter == len(t_ak):
+            score = 100.0 + inter
+        else:
+            score = inter / max(len(t_ak), 1)
+        if score > best_score and score >= 0.65:
+            best_score = score
+            best = r
+    return best
 
 
 def fund_quartiles(name: str, cat: str, client=None) -> dict | None:
@@ -24,10 +60,9 @@ def fund_quartiles(name: str, cat: str, client=None) -> dict | None:
     label = EQUITY.get(cat)
     if not label:
         return None
-    key = name_key(name)
 
     def row(d: dict):
-        return next((r for r in d["rows"] if name_key(r[0]) == key), None), d["columns"]
+        return _find_best_row(name, d["rows"]), d["columns"]
 
     trailing = {}
     for p in ("1y", "3y", "5y"):

@@ -15,7 +15,7 @@ const TONES = {
   },
 };
 
-export default function Breadcrumb({ items, tone = "green" }: { items: Crumb[]; tone?: keyof typeof TONES }) {
+export default function Breadcrumb({ items, tone = "blue" }: { items: Crumb[]; tone?: keyof typeof TONES }) {
   const t = TONES[tone];
   const last = items.length - 1;
   return (

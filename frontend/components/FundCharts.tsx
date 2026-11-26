@@ -50,7 +50,7 @@ export function NavChart({ navs }: { navs: FundNavPoint[] }) {
   }, [enrichedNavs, range]);
 
   if (!filtered.length) {
-    return <p className="text-sm text-navy-700">No NAV history available.</p>;
+    return <p className="text-sm text-slate-600 dark:text-slate-400">No NAV history available.</p>;
   }
 
   const minNav = Math.min(...filtered.map((p) => p.nav));
@@ -68,14 +68,14 @@ export function NavChart({ navs }: { navs: FundNavPoint[] }) {
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div className="flex gap-1 rounded bg-navy-100 p-0.5 text-xs font-medium" role="tablist" aria-label="Chart mode">
+          <div className="flex gap-1 rounded-lg bg-blue-50/60 dark:bg-slate-800 p-0.5 text-xs font-medium border border-blue-100 dark:border-slate-700" role="tablist" aria-label="Chart mode">
             <button
               type="button"
               role="tab"
               aria-selected={chartView === "nav"}
               onClick={() => setChartView("nav")}
-              className={`rounded px-2.5 py-1 ${
-                chartView === "nav" ? "bg-white text-navy-900 shadow-sm font-semibold" : "text-navy-700 hover:text-navy-900"
+              className={`rounded-md px-2.5 py-1 transition-colors ${
+                chartView === "nav" ? "bg-white dark:bg-slate-900 text-[#0176D3] dark:text-[#8AB8FF] shadow-sm font-semibold" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               NAV Trend
@@ -85,8 +85,8 @@ export function NavChart({ navs }: { navs: FundNavPoint[] }) {
               role="tab"
               aria-selected={chartView === "drawdown"}
               onClick={() => setChartView("drawdown")}
-              className={`rounded px-2.5 py-1 ${
-                chartView === "drawdown" ? "bg-white text-rose-700 shadow-sm font-semibold" : "text-navy-700 hover:text-navy-900"
+              className={`rounded-md px-2.5 py-1 transition-colors ${
+                chartView === "drawdown" ? "bg-white dark:bg-slate-900 text-rose-700 dark:text-rose-400 shadow-sm font-semibold" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               Underwater (Drawdown %)
@@ -94,14 +94,14 @@ export function NavChart({ navs }: { navs: FundNavPoint[] }) {
           </div>
         </div>
 
-        <div className="flex gap-1 rounded bg-navy-100 p-0.5 text-xs font-medium" role="group" aria-label="Time horizon">
+        <div className="flex gap-1 rounded-lg bg-blue-50/60 dark:bg-slate-800 p-0.5 text-xs font-medium border border-blue-100 dark:border-slate-700" role="group" aria-label="Time horizon">
           {(["1y", "3y", "5y", "all"] as const).map((r) => (
             <button
               key={r}
               type="button"
               onClick={() => setRange(r)}
-              className={`rounded px-2.5 py-1 uppercase ${
-                range === r ? "bg-white text-navy-900 shadow-sm font-semibold" : "text-navy-700 hover:text-navy-900"
+              className={`rounded-md px-2.5 py-1 uppercase transition-colors ${
+                range === r ? "bg-white dark:bg-slate-900 text-[#0176D3] dark:text-[#8AB8FF] shadow-sm font-semibold" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               {r}
@@ -180,9 +180,9 @@ export function DrawdownEpisodesTable({
   if (!episodes || !episodes.length) return null;
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-navy-100 bg-white">
+    <div className="overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40">
       <table className="min-w-full text-left text-xs">
-        <thead className="border-b border-navy-100 bg-navy-50 font-semibold text-navy-800">
+        <thead className="border-b border-slate-200/80 dark:border-slate-800 bg-blue-50/40 dark:bg-slate-900/60 font-semibold text-slate-800 dark:text-slate-200">
           <tr>
             <th className="px-3 py-2">Rank</th>
             <th className="px-3 py-2">Max Drawdown</th>
@@ -193,34 +193,34 @@ export function DrawdownEpisodesTable({
             <th className="px-3 py-2">Status</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-navy-50">
+        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
           {episodes.map((ep, idx) => (
-            <tr key={`${ep.peak_date}-${ep.trough_date}`} className="hover:bg-navy-50/50">
-              <td className="px-3 py-2 font-medium text-navy-900">#{idx + 1}</td>
-              <td className="px-3 py-2 font-bold text-rose-700">{pct(ep.max_drop)}</td>
-              <td className="px-3 py-2 text-navy-800">
-                {ep.peak_date} <span className="text-navy-500 font-mono">(₹{ep.peak_nav.toFixed(2)})</span>
+            <tr key={`${ep.peak_date}-${ep.trough_date}`} className="hover:bg-blue-50/20 dark:hover:bg-slate-800/30">
+              <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">#{idx + 1}</td>
+              <td className="px-3 py-2 font-bold text-rose-700 dark:text-rose-400">{pct(ep.max_drop)}</td>
+              <td className="px-3 py-2 text-slate-700 dark:text-slate-300">
+                {ep.peak_date} <span className="text-slate-400 font-mono">(₹{ep.peak_nav.toFixed(2)})</span>
               </td>
-              <td className="px-3 py-2 text-rose-700 font-medium">
-                {ep.trough_date} <span className="text-navy-500 font-mono">(₹{ep.trough_nav.toFixed(2)})</span>
+              <td className="px-3 py-2 text-rose-700 dark:text-rose-400 font-medium">
+                {ep.trough_date} <span className="text-slate-400 font-mono">(₹{ep.trough_nav.toFixed(2)})</span>
               </td>
-              <td className="px-3 py-2 text-teal-800 font-medium">
+              <td className="px-3 py-2 text-[#0176D3] dark:text-[#8AB8FF] font-medium">
                 {ep.recovery_date ? (
                   <>
-                    {ep.recovery_date} <span className="text-navy-500 font-mono">(₹{ep.recovery_nav?.toFixed(2)})</span>
+                    {ep.recovery_date} <span className="text-slate-400 font-mono">(₹{ep.recovery_nav?.toFixed(2)})</span>
                   </>
                 ) : (
-                  <span className="text-amber-700">Not yet recovered</span>
+                  <span className="text-amber-700 dark:text-amber-400">Not yet recovered</span>
                 )}
               </td>
-              <td className="px-3 py-2 font-semibold text-navy-900">{ep.months} months</td>
+              <td className="px-3 py-2 font-semibold text-slate-900 dark:text-slate-100">{ep.months} months</td>
               <td className="px-3 py-2">
                 {ep.recovered ? (
-                  <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-medium text-teal-700">
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60 px-2 py-0.5 text-[10px] font-medium">
                     Recovered
                   </span>
                 ) : (
-                  <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                  <span className="inline-flex items-center rounded-full bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60 px-2 py-0.5 text-[10px] font-medium">
                     Ongoing
                   </span>
                 )}
@@ -249,30 +249,30 @@ export function RollingDistributionCard({
   }
 
   return (
-    <div className="rounded-lg border border-navy-100 bg-white p-3 text-sm">
+    <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 p-3 text-sm">
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-navy-900 inline-flex items-center gap-1">
+        <span className="font-semibold text-slate-900 dark:text-slate-100 inline-flex items-center gap-1">
           <span>{title}</span>
           {metric && <InfoTip metric={metric} meta={meta} />}
         </span>
         {stats.pct_positive !== null && (
-          <span className="rounded bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-800">
+          <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-[#0176D3] border border-blue-200/60 dark:bg-blue-950/50 dark:text-[#8AB8FF] dark:border-blue-800/50">
             {pct(stats.pct_positive, 0)} positive
           </span>
         )}
       </div>
       <dl className="mt-2 grid grid-cols-3 gap-2 text-center text-xs">
-        <div className="rounded bg-navy-50 p-1.5">
-          <dt className="text-navy-700">Min</dt>
-          <dd className="font-bold text-rose-700">{pct(stats.min)}</dd>
+        <div className="rounded-lg bg-blue-50/30 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/60 p-1.5">
+          <dt className="text-slate-500 dark:text-slate-400">Min</dt>
+          <dd className="font-bold text-rose-700 dark:text-rose-400">{pct(stats.min)}</dd>
         </div>
-        <div className="rounded bg-teal-50 p-1.5">
-          <dt className="text-teal-900">Median</dt>
-          <dd className="font-bold text-teal-800">{pct(stats.median)}</dd>
+        <div className="rounded-lg bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-900/40 p-1.5">
+          <dt className="text-slate-600 dark:text-slate-400">Median</dt>
+          <dd className="font-bold text-[#0176D3] dark:text-[#8AB8FF]">{pct(stats.median)}</dd>
         </div>
-        <div className="rounded bg-navy-50 p-1.5">
-          <dt className="text-navy-700">Max</dt>
-          <dd className="font-bold text-teal-700">{pct(stats.max)}</dd>
+        <div className="rounded-lg bg-blue-50/30 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/60 p-1.5">
+          <dt className="text-slate-500 dark:text-slate-400">Max</dt>
+          <dd className="font-bold text-[#0176D3] dark:text-[#8AB8FF]">{pct(stats.max)}</dd>
         </div>
       </dl>
     </div>
@@ -287,7 +287,7 @@ export function CaptureRatioBarChart({
   downCapture: number | null;
 }) {
   if (upCapture === null && downCapture === null) {
-    return <p className="text-sm text-navy-700">Capture ratio data is unavailable.</p>;
+    return <p className="text-sm text-slate-600 dark:text-slate-400">Capture ratio data is unavailable.</p>;
   }
 
   // API capture_ratios are already in percent (100 = in line with the category median).
@@ -296,7 +296,7 @@ export function CaptureRatioBarChart({
       metric: "Up-Market Capture",
       value: upCapture !== null ? Number(upCapture.toFixed(1)) : 0,
       description: "Higher is better (participates in category gains)",
-      color: "#0E7C74",
+      color: "#0176D3",
     },
     {
       metric: "Down-Market Capture",
@@ -329,7 +329,7 @@ export function CaptureRatioBarChart({
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <p className="text-xs text-navy-700">
+      <p className="text-xs text-slate-600 dark:text-slate-400">
         Benchmark is the category median NAV. An up-market capture &gt; 100% means the scheme outperformed the median in rising months. A down-market capture &lt; 100% means it lost less than the median in falling months.
       </p>
     </div>

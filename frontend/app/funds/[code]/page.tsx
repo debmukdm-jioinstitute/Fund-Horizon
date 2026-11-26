@@ -18,6 +18,7 @@ import { computeDrawdownEpisodes } from "@/lib/drawdown";
 import InfoTip from "@/components/InfoTip";
 import FundTabs from "@/components/fund/FundTabs";
 import { AssetAllocation, HoldingsTable, PeerTable, ReturnsCalculator, SectorAllocation } from "@/components/fund/FundExtras";
+import QuartileRankings from "@/components/fund/QuartileRankings";
 
 /* ---- AMFI/SEBI reference detail (everything the reference snapshot holds for a scheme) ---- */
 const REF_ACRONYMS: Record<string, string> = {
@@ -41,7 +42,7 @@ function RefValue({ v }: { v: string }) {
     return (
       <span className="flex flex-col gap-0.5">
         {parts.map((u) => (
-          <a key={u} href={u} target="_blank" rel="noreferrer" className="text-teal-700 hover:underline break-all">
+          <a key={u} href={u} target="_blank" rel="noreferrer" className="text-[#0176D3] dark:text-[#8AB8FF] hover:underline break-all">
             {u}
           </a>
         ))}
@@ -50,7 +51,7 @@ function RefValue({ v }: { v: string }) {
   }
   if (isRefUrl(v))
     return (
-      <a href={v} target="_blank" rel="noreferrer" className="text-teal-700 hover:underline break-all">
+      <a href={v} target="_blank" rel="noreferrer" className="text-[#0176D3] dark:text-[#8AB8FF] hover:underline break-all">
         {v}
       </a>
     );
@@ -65,9 +66,9 @@ function RefFields({ row }: { row: MfRefRow }) {
     <>
       <dl className="grid grid-cols-1 gap-x-6 gap-y-1.5 sm:grid-cols-2">
         {main.map(([k, v]) => (
-          <div key={k} className="border-b border-navy-100 pb-1.5">
-            <dt className="text-[11px] uppercase tracking-wide text-navy-600">{refLabel(k)}</dt>
-            <dd className="text-sm text-navy-950" data-testid={`ref-${k}`}>
+          <div key={k} className="border-b border-slate-200/70 dark:border-slate-800 pb-1.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">{refLabel(k)}</dt>
+            <dd className="text-sm text-slate-900 dark:text-slate-100" data-testid={`ref-${k}`}>
               <RefValue v={v as string} />
             </dd>
           </div>
@@ -75,12 +76,12 @@ function RefFields({ row }: { row: MfRefRow }) {
       </dl>
       {meta.length > 0 && (
         <details className="mt-2 text-xs">
-          <summary className="cursor-pointer select-none text-navy-600">Source &amp; notes</summary>
+          <summary className="cursor-pointer select-none text-slate-500 dark:text-slate-400">Source &amp; notes</summary>
           <dl className="mt-1.5 grid grid-cols-1 gap-x-6 gap-y-1.5 sm:grid-cols-2">
             {meta.map(([k, v]) => (
-              <div key={k} className="border-b border-navy-100 pb-1.5">
-                <dt className="text-[11px] uppercase tracking-wide text-navy-600">{refLabel(k)}</dt>
-                <dd className="text-sm text-navy-950">
+              <div key={k} className="border-b border-slate-200/70 dark:border-slate-800 pb-1.5">
+                <dt className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">{refLabel(k)}</dt>
+                <dd className="text-sm text-slate-900 dark:text-slate-100">
                   <RefValue v={v as string} />
                 </dd>
               </div>
@@ -94,8 +95,8 @@ function RefFields({ row }: { row: MfRefRow }) {
 
 function RefSection({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="border-t border-navy-100 pt-3 first:border-0 first:pt-0">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-teal-800">{title}</h3>
+    <section className="border-t border-slate-200/70 dark:border-slate-800 pt-3 first:border-0 first:pt-0">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#8AB8FF]">{title}</h3>
       <div className="mt-2 space-y-3">{children}</div>
     </section>
   );
@@ -106,8 +107,8 @@ function ReferenceDetails({ reference }: { reference: FundReference }) {
   return (
     <section className="card space-y-4" data-testid="fund-reference">
       <div>
-        <h2 className="text-lg font-bold text-navy-950">Scheme & Fund Manager Details</h2>
-        <p className="text-xs text-navy-700 mt-1">
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Scheme & Fund Manager Details</h2>
+        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
           AMFI / SEBI static reference snapshot (15 Oct 2026). Blank means unverified, never estimated.
         </p>
       </div>
@@ -122,8 +123,8 @@ function ReferenceDetails({ reference }: { reference: FundReference }) {
       {reference.managers.length > 0 && (
         <RefSection title={`Fund managers (${reference.managers.length})`}>
           {reference.managers.map((m, i) => (
-            <div key={i} className="rounded-lg bg-navy-50 p-3">
-              <p className="text-sm font-semibold text-navy-950">{m.full_name ?? m.manager_id ?? "—"}</p>
+            <div key={i} className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-blue-50/30 dark:bg-slate-900/40 p-3">
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{m.full_name ?? m.manager_id ?? "—"}</p>
               <div className="mt-1.5">
                 <RefFields
                   row={{
@@ -152,7 +153,7 @@ function ReferenceDetails({ reference }: { reference: FundReference }) {
       {reference.manager_changes.length > 0 && (
         <RefSection title="Manager changes">
           {reference.manager_changes.map((c, i) => (
-            <div key={i} className="rounded-lg border border-navy-100 p-3">
+            <div key={i} className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 p-3">
               <RefFields row={c} />
             </div>
           ))}
@@ -161,7 +162,7 @@ function ReferenceDetails({ reference }: { reference: FundReference }) {
       {reference.provenance.length > 0 && (
         <RefSection title="Field provenance">
           {reference.provenance.map((p, i) => (
-            <div key={i} className="rounded-lg border border-navy-100 p-3">
+            <div key={i} className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 p-3">
               <RefFields row={p} />
             </div>
           ))}
@@ -259,18 +260,18 @@ export default async function FundDetailPage({ params }: PageProps) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded bg-teal-100 px-2.5 py-0.5 text-xs font-semibold text-teal-800">
+              <span className="rounded-md bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-[#0176D3] border border-blue-200/70 dark:bg-blue-950/60 dark:text-[#8AB8FF] dark:border-blue-800/60">
                 {CATEGORY_LABELS[detail.cat] ?? detail.category}
               </span>
-              <span className="rounded bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-800">
+              <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
                 Regular Plan · Growth
               </span>
-              <span className="text-xs text-navy-700">Code: {detail.scheme_code}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Code: {detail.scheme_code}</span>
             </div>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-navy-950 sm:text-3xl">
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
               {detail.scheme_name}
             </h1>
-            <div className="mt-1 text-sm text-navy-700">
+            <div className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               AMC: <AmcName amc={detail.amc} className="h-10 min-w-10" /> · Data as of{" "}
               {analytics.last_nav_date}
             </div>
@@ -278,7 +279,7 @@ export default async function FundDetailPage({ params }: PageProps) {
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/funds/compare?codes=${detail.scheme_code}`}
-              className="rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-navy-800 transition-colors"
+              className="rounded-lg bg-[#0176D3] hover:bg-[#015fb0] dark:bg-[#1B96FF] px-3.5 py-2 text-xs font-semibold text-white transition-colors"
             >
               Compare Scheme →
             </Link>
@@ -286,40 +287,40 @@ export default async function FundDetailPage({ params }: PageProps) {
         </div>
 
         {/* Quick Returns Grid */}
-        <div className="grid grid-cols-2 gap-3 border-t border-navy-100 pt-3 sm:grid-cols-4">
-          <div className="rounded-lg bg-navy-50 p-2.5">
+        <div className="grid grid-cols-2 gap-3 border-t border-slate-200/70 dark:border-slate-800 pt-3 sm:grid-cols-4">
+          <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-blue-50/30 dark:bg-slate-900/40 p-2.5">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-navy-700">1Y Return</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">1Y Return</p>
               <InfoTip metric="ret_1y" meta={mfMeta} />
             </div>
-            <p className="text-lg font-bold text-navy-950 mt-1" data-testid="analytics-cagr-1y">
+            <p className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1" data-testid="analytics-cagr-1y">
               {ret.cagr_1y !== null ? pct(ret.cagr_1y) : "—"}
             </p>
           </div>
-          <div className="rounded-lg bg-navy-50 p-2.5">
+          <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-blue-50/30 dark:bg-slate-900/40 p-2.5">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-navy-700">3Y CAGR</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">3Y CAGR</p>
               <InfoTip metric="cagr_3y" meta={mfMeta} />
             </div>
-            <p className="text-lg font-bold text-navy-950 mt-1" data-testid="analytics-cagr-3y">
+            <p className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1" data-testid="analytics-cagr-3y">
               {ret.cagr_3y !== null ? pct(ret.cagr_3y) : "—"}
             </p>
           </div>
-          <div className="rounded-lg bg-navy-50 p-2.5">
+          <div className="rounded-xl border border-slate-200/70 dark:border-slate-800/70 bg-blue-50/30 dark:bg-slate-900/40 p-2.5">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-navy-700">5Y CAGR</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">5Y CAGR</p>
               <InfoTip metric="cagr_5y" meta={mfMeta} />
             </div>
-            <p className="text-lg font-bold text-navy-950 mt-1" data-testid="analytics-cagr-5y">
+            <p className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1" data-testid="analytics-cagr-5y">
               {ret.cagr_5y !== null ? pct(ret.cagr_5y) : "—"}
             </p>
           </div>
-          <div className="rounded-lg bg-teal-50 p-2.5">
+          <div className="rounded-xl border border-blue-200/60 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/30 p-2.5">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-teal-800">SIP XIRR</p>
+              <p className="text-xs text-[#0176D3] dark:text-[#8AB8FF]">SIP XIRR</p>
               <InfoTip metric="sip_xirr" meta={mfMeta} />
             </div>
-            <p className="text-lg font-bold text-teal-900 mt-1" data-testid="analytics-sip-xirr">
+            <p className="text-lg font-bold text-[#015fb0] dark:text-[#A8C7FA] mt-1" data-testid="analytics-sip-xirr">
               {ret.sip_xirr !== null ? pct(ret.sip_xirr) : "—"}
             </p>
           </div>
@@ -331,7 +332,7 @@ export default async function FundDetailPage({ params }: PageProps) {
       {/* NAV History Chart */}
       <section id="fund-price" className="card scroll-mt-28 space-y-4">
         <div className="flex items-center gap-1.5">
-          <h2 className="text-lg font-bold text-navy-950">NAV History</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">NAV History</h2>
           <InfoTip metric="nav" meta={mfMeta} />
         </div>
         <NavChart navs={detail.nav_monthly} />
@@ -342,10 +343,10 @@ export default async function FundDetailPage({ params }: PageProps) {
       <section className="card space-y-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h2 className="text-lg font-bold text-navy-950">Rolling Returns Consistency</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Rolling Returns Consistency</h2>
             <InfoTip metric="rolling_returns" meta={mfMeta} />
           </div>
-          <p className="text-xs text-navy-700 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
             Rolling returns evaluate real holding period performance across all historical entry dates, avoiding point-to-point end-date bias.
           </p>
         </div>
@@ -359,65 +360,65 @@ export default async function FundDetailPage({ params }: PageProps) {
       {/* Risk & Drawdown Profile */}
       <div className="grid gap-6 md:grid-cols-2">
         <section className="card space-y-3">
-          <h2 className="text-lg font-bold text-navy-950">Risk & Volatility Profile</h2>
-          <p className="text-xs text-navy-700">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Risk & Volatility Profile</h2>
+          <p className="text-xs text-slate-600 dark:text-slate-400">
             Computed over 3-year trailing monthly observations with risk-free rate of 6.5%.
           </p>
           <dl className="space-y-2 text-sm">
-            <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700 inline-flex items-center gap-1">
+            <div className="flex justify-between border-b border-slate-200/70 dark:border-slate-800 py-1.5">
+              <dt className="text-slate-600 dark:text-slate-400 inline-flex items-center gap-1">
                 <span>Annualized Volatility (3Y)</span>
                 <InfoTip metric="vol_3y" meta={mfMeta} />
               </dt>
-              <dd className="font-semibold text-navy-950" data-testid="analytics-vol-3y">
+              <dd className="font-semibold text-slate-900 dark:text-slate-100" data-testid="analytics-vol-3y">
                 {risk.annualized_volatility_3y !== null ? pct(risk.annualized_volatility_3y) : "—"}
               </dd>
             </div>
-            <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700 inline-flex items-center gap-1">
+            <div className="flex justify-between border-b border-slate-200/70 dark:border-slate-800 py-1.5">
+              <dt className="text-slate-600 dark:text-slate-400 inline-flex items-center gap-1">
                 <span>Sharpe Ratio (3Y)</span>
                 <InfoTip metric="sharpe_3y" meta={mfMeta} />
               </dt>
-              <dd className="font-semibold text-navy-950">
+              <dd className="font-semibold text-slate-900 dark:text-slate-100">
                 {risk.sharpe_3y !== null ? risk.sharpe_3y.toFixed(2) : "—"}
               </dd>
             </div>
-            <div className="flex justify-between border-b border-navy-100 py-1.5">
-              <dt className="text-navy-700 inline-flex items-center gap-1">
+            <div className="flex justify-between border-b border-slate-200/70 dark:border-slate-800 py-1.5">
+              <dt className="text-slate-600 dark:text-slate-400 inline-flex items-center gap-1">
                 <span>Sortino Ratio (3Y)</span>
                 <InfoTip metric="sortino_3y" meta={mfMeta} />
               </dt>
-              <dd className="font-semibold text-navy-950">
+              <dd className="font-semibold text-slate-900 dark:text-slate-100">
                 {risk.sortino_3y !== null ? risk.sortino_3y.toFixed(2) : "—"}
               </dd>
             </div>
-            <div className="border-b border-navy-100 py-2">
+            <div className="border-b border-slate-200/70 dark:border-slate-800 py-2">
               <div className="flex justify-between items-center">
-                <dt className="text-navy-700 inline-flex items-center gap-1">
+                <dt className="text-slate-600 dark:text-slate-400 inline-flex items-center gap-1">
                   <span>Max Historical Drawdown</span>
                   <InfoTip metric="max_drawdown" meta={mfMeta} />
                 </dt>
-                <dd className="font-semibold text-rose-700">
+                <dd className="font-semibold text-rose-700 dark:text-rose-400">
                   {risk.max_drawdown !== null ? pct(risk.max_drawdown) : "—"}
                 </dd>
               </div>
               {maxDdEp && (
-                <div className="mt-1.5 rounded border border-rose-100 bg-rose-50/50 p-2 text-xs space-y-0.5">
+                <div className="mt-1.5 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 p-2 text-xs space-y-0.5">
                   <div className="flex justify-between">
-                    <span className="text-navy-600">Peak Date:</span>
-                    <span className="font-medium text-navy-900">{maxDdEp.peak_date} <span className="font-mono text-navy-500">(₹{maxDdEp.peak_nav.toFixed(2)})</span></span>
+                    <span className="text-slate-500 dark:text-slate-400">Peak Date:</span>
+                    <span className="font-medium text-slate-900 dark:text-slate-100">{maxDdEp.peak_date} <span className="font-mono text-slate-400">(₹{maxDdEp.peak_nav.toFixed(2)})</span></span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-navy-600">Trough Date:</span>
-                    <span className="font-medium text-rose-700">{maxDdEp.trough_date} <span className="font-mono text-rose-500">(₹{maxDdEp.trough_nav.toFixed(2)})</span></span>
+                    <span className="text-slate-500 dark:text-slate-400">Trough Date:</span>
+                    <span className="font-medium text-rose-700 dark:text-rose-400">{maxDdEp.trough_date} <span className="font-mono text-rose-500">(₹{maxDdEp.trough_nav.toFixed(2)})</span></span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-navy-600">Full Recovery:</span>
-                    <span className="font-medium text-teal-800">
+                    <span className="text-slate-500 dark:text-slate-400">Full Recovery:</span>
+                    <span className="font-medium text-[#0176D3] dark:text-[#8AB8FF]">
                       {maxDdEp.recovery_date ? (
-                        <>{maxDdEp.recovery_date} <span className="font-mono text-navy-500">(₹{maxDdEp.recovery_nav?.toFixed(2)})</span></>
+                        <>{maxDdEp.recovery_date} <span className="font-mono text-slate-400">(₹{maxDdEp.recovery_nav?.toFixed(2)})</span></>
                       ) : (
-                        <span className="text-amber-700">Not yet recovered</span>
+                        <span className="text-amber-700 dark:text-amber-400">Not yet recovered</span>
                       )}
                     </span>
                   </div>
@@ -427,31 +428,31 @@ export default async function FundDetailPage({ params }: PageProps) {
             {dd && (
               <div className="py-2">
                 <div className="flex justify-between items-center">
-                  <dt className="text-navy-700 inline-flex items-center gap-1">
+                  <dt className="text-slate-600 dark:text-slate-400 inline-flex items-center gap-1">
                     <span>Longest underwater period</span>
                     <InfoTip metric="underwater_period" meta={mfMeta} />
                   </dt>
-                  <dd className="font-medium text-navy-900" data-testid="analytics-underwater">
+                  <dd className="font-medium text-slate-900 dark:text-slate-100" data-testid="analytics-underwater">
                     {dd.longest_underwater_months} months
                   </dd>
                 </div>
                 {longestEp && (
-                  <div className="mt-1.5 rounded border border-navy-100 bg-navy-50/70 p-2 text-xs space-y-0.5">
+                  <div className="mt-1.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-blue-50/30 dark:bg-slate-900/40 p-2 text-xs space-y-0.5">
                     <div className="flex justify-between">
-                      <span className="text-navy-600">Peak prior to drop:</span>
-                      <span className="font-medium text-navy-900">{longestEp.peak_date} <span className="font-mono text-navy-500">(₹{longestEp.peak_nav.toFixed(2)})</span></span>
+                      <span className="text-slate-500 dark:text-slate-400">Peak prior to drop:</span>
+                      <span className="font-medium text-slate-900 dark:text-slate-100">{longestEp.peak_date} <span className="font-mono text-slate-400">(₹{longestEp.peak_nav.toFixed(2)})</span></span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-navy-600">Deepest Trough:</span>
-                      <span className="font-medium text-navy-900">{longestEp.trough_date} <span className="font-mono text-rose-600">({pct(longestEp.max_drop)})</span></span>
+                      <span className="text-slate-500 dark:text-slate-400">Deepest Trough:</span>
+                      <span className="font-medium text-slate-900 dark:text-slate-100">{longestEp.trough_date} <span className="font-mono text-rose-600">({pct(longestEp.max_drop)})</span></span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-navy-600">Full Recovery:</span>
-                      <span className="font-medium text-teal-800">
+                      <span className="text-slate-500 dark:text-slate-400">Full Recovery:</span>
+                      <span className="font-medium text-[#0176D3] dark:text-[#8AB8FF]">
                         {longestEp.recovery_date ? (
-                          <>{longestEp.recovery_date} <span className="font-mono text-navy-500">(₹{longestEp.recovery_nav?.toFixed(2)})</span></>
+                          <>{longestEp.recovery_date} <span className="font-mono text-slate-400">(₹{longestEp.recovery_nav?.toFixed(2)})</span></>
                         ) : (
-                          <span className="text-amber-700">Ongoing</span>
+                          <span className="text-amber-700 dark:text-amber-400">Ongoing</span>
                         )}
                       </span>
                     </div>
@@ -465,10 +466,10 @@ export default async function FundDetailPage({ params }: PageProps) {
         {/* Capture Ratios */}
         <section className="card space-y-3">
           <div className="flex items-center gap-1.5">
-            <h2 className="text-lg font-bold text-navy-950">Market Capture vs Category</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Market Capture vs Category</h2>
             <InfoTip metric="up_capture" meta={mfMeta} />
           </div>
-          <p className="text-xs text-navy-700">
+          <p className="text-xs text-slate-600 dark:text-slate-400">
             Measures participation in up vs down months relative to the category median.
           </p>
           <CaptureRatioBarChart
@@ -483,116 +484,91 @@ export default async function FundDetailPage({ params }: PageProps) {
         <section className="card space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
-              <h2 className="text-lg font-bold text-navy-950">Historical Drawdown & Underwater Episodes</h2>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Historical Drawdown & Underwater Episodes</h2>
               <InfoTip metric="underwater_period" meta={mfMeta} />
             </div>
-            <span className="rounded bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-700">
+            <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-[#0176D3] border border-blue-200/60 dark:bg-blue-950/50 dark:text-[#8AB8FF] dark:border-blue-800/50">
               {episodesByDrop.length} episodes recorded
             </span>
           </div>
-          <p className="text-xs text-navy-700">
+          <p className="text-xs text-slate-600 dark:text-slate-400">
             Chronological audit of peak-to-trough drawdowns and recovery periods computed directly from published NAV history.
           </p>
           <DrawdownEpisodesTable episodes={episodesByDrop.slice(0, 5)} />
         </section>
       )}
 
-      {quartiles && (
-        <section className="card space-y-3" data-testid="fund-quartiles">
-          <h2 className="text-lg font-bold text-navy-950">Quartile Rankings</h2>
-          <p className="text-xs text-navy-700">
-            Rank within {quartiles.category.replace("Equity: ", "")} (Regular plan): Top = best 25% of the category. Source: Advisorkhoj. Past performance is not a guide to future returns.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            {Object.entries(quartiles.trailing).map(([k, v]) => (
-              <div key={k} className="text-center">
-                <div className="text-[11px] text-navy-700">{k} (current quarter)</div>
-                <div className="text-sm font-semibold text-navy-950">{v.replace(" Quartile", "")}</div>
-              </div>
-            ))}
-          </div>
-          {quartiles.years.length > 0 && (
-            <div className="flex flex-wrap gap-4">
-              {quartiles.years.map(([y, v]) => (
-                <div key={y} className="text-center">
-                  <div className="text-[11px] text-navy-700">{y}</div>
-                  <div className="text-sm font-semibold text-navy-950">{v}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
+      {quartiles && <QuartileRankings data={quartiles} />}
 
       </div>
 
       <section id="peers" className="card scroll-mt-28 space-y-3">
-        <h2 className="text-lg font-bold text-navy-950">Peer Comparison</h2>
-        {peers && peers.peers.length > 0 ? <PeerTable data={peers} code={detail.scheme_code} /> : <p className="text-sm text-navy-700">Peer data is not available for this category.</p>}
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Peer Comparison</h2>
+        {peers && peers.peers.length > 0 ? <PeerTable data={peers} code={detail.scheme_code} /> : <p className="text-sm text-slate-600 dark:text-slate-400">Peer data is not available for this category.</p>}
       </section>
 
       <section id="calculator" className="card scroll-mt-28 space-y-3">
-        <h2 className="text-lg font-bold text-navy-950">Returns Calculator</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Returns Calculator</h2>
         <ReturnsCalculator cagr={{ "3Y": ret.cagr_3y, "5Y": ret.cagr_5y }} />
       </section>
 
       <section id="asset-allocation" className="card scroll-mt-28 space-y-3">
-        <h2 className="text-lg font-bold text-navy-950">Asset Allocation</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Asset Allocation</h2>
         <AssetAllocation p={portfolio} />
       </section>
 
       <section id="sector-allocation" className="card scroll-mt-28 space-y-3">
-        <h2 className="text-lg font-bold text-navy-950">Sector Allocation</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Sector Allocation</h2>
         <SectorAllocation p={portfolio} />
       </section>
 
       <section id="holdings" className="card scroll-mt-28 space-y-3">
-        <h2 className="text-lg font-bold text-navy-950">Holdings</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Holdings</h2>
         <HoldingsTable p={portfolio} />
       </section>
 
       <div id="fund-overview" className="scroll-mt-28">
-        {reference ? <ReferenceDetails reference={reference} /> : <section className="card"><h2 className="text-lg font-bold text-navy-950">Overview</h2><p className="mt-1 text-sm text-navy-700">No AMFI/SEBI reference record on file for this scheme.</p></section>}
+        {reference ? <ReferenceDetails reference={reference} /> : <section className="card"><h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Overview</h2><p className="mt-1 text-sm text-slate-600 dark:text-slate-400">No AMFI/SEBI reference record on file for this scheme.</p></section>}
       </div>
 
       <section id="about" className="card scroll-mt-28 space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-navy-950">About {detail.scheme_name}</h2>
-          <p className="mt-1 text-sm leading-relaxed text-navy-800">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">About {detail.scheme_name}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
             <strong>{detail.scheme_name}</strong> is an open-ended <strong>{CATEGORY_LABELS[detail.cat] ?? detail.category}</strong> mutual fund scheme managed by <strong>{detail.amc}</strong>, distributed as a Regular Plan ({detail.option}). It pools capital to provide individual investors with institutional portfolio management, diversification, and liquidity.
           </p>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">Fund House</span>
-            <p className="mt-1 text-sm font-bold text-navy-950 truncate">{detail.amc}</p>
-            <span className="text-[11px] text-navy-600">SEBI Registered</span>
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-blue-50/30 dark:bg-slate-900/40 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Fund House</span>
+            <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{detail.amc}</p>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">SEBI Registered</span>
           </div>
 
-          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">Category</span>
-            <p className="mt-1 text-sm font-bold text-navy-950 truncate">{CATEGORY_LABELS[detail.cat] ?? detail.category}</p>
-            <span className="text-[11px] text-navy-600">Regular · {detail.option}</span>
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-blue-50/30 dark:bg-slate-900/40 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Category</span>
+            <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{CATEGORY_LABELS[detail.cat] ?? detail.category}</p>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">Regular · {detail.option}</span>
           </div>
 
-          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">History</span>
-            <p className="mt-1 text-sm font-bold text-navy-950">{(detail.nav_monthly.length / 12).toFixed(1)} Years</p>
-            <span className="text-[11px] text-navy-600">{detail.nav_monthly.length} months published</span>
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-blue-50/30 dark:bg-slate-900/40 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">History</span>
+            <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">{(detail.nav_monthly.length / 12).toFixed(1)} Years</p>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">{detail.nav_monthly.length} months published</span>
           </div>
 
-          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">Latest NAV</span>
-            <p className="mt-1 text-sm font-bold text-teal-700">₹{detail.nav_monthly?.[detail.nav_monthly.length - 1]?.nav ? Number(detail.nav_monthly[detail.nav_monthly.length - 1].nav).toFixed(2) : "—"}</p>
-            <span className="text-[11px] text-navy-600">As of {analytics.last_nav_date}</span>
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-blue-50/30 dark:bg-slate-900/40 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Latest NAV</span>
+            <p className="mt-1 text-sm font-bold text-[#0176D3] dark:text-[#8AB8FF]">₹{detail.nav_monthly?.[detail.nav_monthly.length - 1]?.nav ? Number(detail.nav_monthly[detail.nav_monthly.length - 1].nav).toFixed(2) : "—"}</p>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">As of {analytics.last_nav_date}</span>
           </div>
         </div>
 
-        <div className="rounded-xl border border-teal-200 bg-teal-50/60 p-3.5 text-xs text-teal-900 flex items-start gap-2.5">
+        <div className="rounded-xl border border-blue-200/80 bg-blue-50/40 dark:border-blue-900/50 dark:bg-blue-950/20 p-3.5 text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2.5">
           <span className="text-base leading-none">💡</span>
           <div>
-            <span className="font-bold text-teal-950">Investment guidance: </span>
+            <span className="font-bold text-slate-900 dark:text-slate-100">Investment guidance: </span>
             Mutual funds allow investors to access a professionally chosen basket of securities. Staying invested through regular monthly SIPs helps smooth out market volatility through rupee-cost averaging.
           </div>
         </div>
@@ -600,25 +576,25 @@ export default async function FundDetailPage({ params }: PageProps) {
 
       <section id="compare" className="card scroll-mt-28 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-navy-950">Compare Funds</h2>
-          <p className="text-sm text-navy-700">Put this fund side by side with others on returns, risk and rolling consistency.</p>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Compare Funds</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Put this fund side by side with others on returns, risk and rolling consistency.</p>
         </div>
-        <Link href={`/funds/compare?codes=${detail.scheme_code}`} className="rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-800">Compare →</Link>
+        <Link href={`/funds/compare?codes=${detail.scheme_code}`} className="rounded-lg bg-[#0176D3] hover:bg-[#015fb0] dark:bg-[#1B96FF] px-3.5 py-2 text-xs font-semibold text-white transition-colors">Compare →</Link>
       </section>
 
       <section id="faqs" className="card scroll-mt-28 space-y-2">
-        <h2 className="text-lg font-bold text-navy-950">Frequently Asked Questions</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Frequently Asked Questions</h2>
         {faqs.map(([q, a]) => (
-          <details key={q} className="group border-b border-navy-100 py-2">
-            <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-navy-950">{q}<span className="ml-2 text-navy-600 transition-transform group-open:rotate-45">+</span></summary>
-            <p className="mt-1.5 text-sm text-navy-800">{a}</p>
+          <details key={q} className="group border-b border-slate-200/70 dark:border-slate-800 py-2">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-slate-900 dark:text-slate-100">{q}<span className="ml-2 text-slate-500 dark:text-slate-400 transition-transform group-open:rotate-45">+</span></summary>
+            <p className="mt-1.5 text-sm text-slate-700 dark:text-slate-300">{a}</p>
           </details>
         ))}
       </section>
 
       {/* Statutory Disclaimers */}
-      <footer className="card bg-navy-50 text-xs text-navy-700 space-y-2">
-        <p className="font-semibold text-navy-900">Compliance & Regulatory Disclosures</p>
+      <footer className="card bg-blue-50/30 dark:bg-slate-900/40 text-xs text-slate-600 dark:text-slate-400 space-y-2 border border-slate-200/70 dark:border-slate-800">
+        <p className="font-semibold text-slate-900 dark:text-slate-100">Compliance & Regulatory Disclosures</p>
         <p>{analytics.disclaimer}</p>
         <p>
           Fund Horizon operates as an AMFI-registered Mutual Fund Distributor under ARN 345439. All analytics and metrics are computed deterministically from historical published NAV data and do not represent a guarantee of future outcomes.

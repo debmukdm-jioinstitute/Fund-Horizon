@@ -78,9 +78,9 @@ export default function ExplainModal({
       <button
         type="button"
         onClick={handleOpen}
-        className={`inline-flex items-center gap-1.5 rounded-lg border border-teal-500 bg-teal-50/60 px-3 py-1.5 text-xs font-semibold text-teal-900 hover:bg-teal-100 transition-colors ${className}`}
+        className={`inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50/70 dark:bg-blue-950/40 px-3 py-1.5 text-xs font-semibold text-[#0176D3] dark:text-[#8AB8FF] hover:bg-blue-100/80 transition-colors ${className}`}
       >
-        <svg className="h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="h-4 w-4 text-[#0176D3] dark:text-[#8AB8FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -92,24 +92,24 @@ export default function ExplainModal({
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy-950/60 p-4 backdrop-blur-sm">
-          <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-2xl space-y-4">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-navy-100 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200/70 dark:border-slate-800 pb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-navy-950">Educational Explanation</h3>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Educational Explanation</h3>
                   {data?.ai_generated ? (
-                    <span className="rounded bg-teal-100 px-2 py-0.5 text-xs font-semibold text-teal-800">
+                    <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs font-semibold text-[#0176D3] border border-blue-200 dark:bg-blue-950/60 dark:text-[#8AB8FF] dark:border-blue-800/60">
                       AI-Assisted
                     </span>
                   ) : (
-                    <span className="rounded bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-800">
+                    <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                       Rule-Based Summary
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-navy-600">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Descriptive narrative verified against computed engine numbers.
                 </p>
               </div>

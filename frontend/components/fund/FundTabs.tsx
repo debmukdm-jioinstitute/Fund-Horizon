@@ -8,7 +8,7 @@ const BAR = 52; // height of this bar
 
 /** Sticky section tabs: click smooth-scrolls to the section, scrolling highlights the section in view. */
 /** The bar sticks under the page's own sticky <header> (public GlobalHeader 52px, backoffice shell ~128px); its height is measured live. */
-export default function FundTabs({ tabs, barCls = "bg-[var(--terminal-bg)]", activeCls = "border-teal-600 font-semibold text-teal-700 dark:text-[#1B96FF]", idleCls = "border-transparent opacity-70 hover:opacity-100" }: { tabs: FundTab[]; barCls?: string; activeCls?: string; idleCls?: string }) {
+export default function FundTabs({ tabs, barCls = "bg-[var(--terminal-bg)]", activeCls = "border-[#0176D3] font-semibold text-[#0176D3] dark:border-[#1B96FF] dark:text-[#1B96FF]", idleCls = "border-transparent opacity-70 hover:opacity-100 text-slate-600 dark:text-slate-400" }: { tabs: FundTab[]; barCls?: string; activeCls?: string; idleCls?: string }) {
   const [top, setTop] = useState(0);
   const OFFSET = top + BAR;
   useEffect(() => {

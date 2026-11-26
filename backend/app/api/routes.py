@@ -289,6 +289,50 @@ def fund_portfolio(scheme_code: str):
     }})
 
 
+@router.get("/api/funds/holdings/stock-detail")
+def holding_stock_detail(name: str = Query(...), symbol: str | None = Query(None)):
+    """Fetch live quote, company profile and fundamental metrics for a holding stock."""
+    from app.api.equities import _search, _quote, _detail, _cached
+
+    sym = symbol
+    if not sym:
+        hits = _search(name)
+        if hits:
+            sym = hits[0].get("symbol")
+    if not sym:
+        return {"data": None, "error": "Symbol not found for company"}
+
+    q = _cached(f"q:{sym}", lambda: _quote(sym))
+    d = _cached(f"d:{sym}", lambda: _detail(sym))
+
+    return clean({
+        "data": {
+            "symbol": sym,
+            "name": d.get("name") or q.get("name") or name,
+            "price": q.get("price"),
+            "prev_close": q.get("prev_close"),
+            "change": q.get("change"),
+            "change_pct": q.get("change_pct"),
+            "high_52w": d.get("high_52w") or q.get("high_52w"),
+            "low_52w": d.get("low_52w") or q.get("low_52w"),
+            "day_high": q.get("day_high"),
+            "day_low": q.get("day_low"),
+            "volume": q.get("volume"),
+            "market_cap_fmt": d.get("market_cap_fmt"),
+            "pe_trailing": d.get("pe_trailing"),
+            "pb_ratio": d.get("pb_ratio"),
+            "dividend_yield": d.get("dividend_yield"),
+            "roe": d.get("roe"),
+            "profit_margin": d.get("profit_margin"),
+            "debt_to_equity": d.get("debt_to_equity"),
+            "beta": d.get("beta"),
+            "profile": d.get("profile"),
+            "analyst": d.get("analyst"),
+            "as_of": q.get("as_of") or d.get("as_of"),
+        }
+    })
+
+
 @router.get("/api/funds/{scheme_code}/peers")
 def fund_peers(scheme_code: str, request: Request, limit: int = Query(8, ge=1, le=20)):
     """Same-category eligible funds ranked by 3Y CAGR, with this fund's own rank (public)."""

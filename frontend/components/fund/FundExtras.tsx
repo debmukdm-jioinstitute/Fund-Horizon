@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { FundPeers, FundPortfolio } from "@/lib/types";
 import { pct } from "@/lib/format";
+import { AmcLogo } from "@/components/BrandLogo";
+import { getHoldingStockDetail, type StockDetail } from "@/lib/api";
 
 const ACCENT = "#0176D3";
 const PALETTE = ["#0176D3", "#1B96FF", "#00A1A0", "#7F8DE1", "#E8A33D", "#C2548A", "#5C9C4A", "#8A6FD6", "#D9663F", "#4E7FA8", "#9AA7B8", "#3DB8A5"];
-const GLASS = "rounded-2xl border border-[var(--glass-border)] bg-[var(--glass)] p-4 shadow-[var(--glass-shadow)]";
+const GLASS = "rounded-2xl border border-[var(--glass-border)] bg-[var(--glass)] p-5 shadow-[var(--glass-shadow)]";
 const CHIP = "rounded-full border px-3 py-1 text-xs font-medium transition-all active:scale-95";
 const chipCls = (on: boolean) => `${CHIP} ${on ? "border-[#0176D3] bg-[#0176D3] text-white shadow-md" : "border-[var(--glass-line)] hover:bg-[var(--glass-hover)]"}`;
 
@@ -139,42 +141,116 @@ export function PeerTable({ data, code, hrefBase = "/funds" }: { data: FundPeers
   const max = Math.max(...rows.map((p) => Math.abs(val(p) ?? 0)), 1e-9);
   const fmt = (v: number | null | undefined) => (v == null ? "—" : metric === "sharpe_3y" ? v.toFixed(2) : pct(v));
   const label = METRICS.find(([k]) => k === metric)![1];
+
   return (
-    <div className={`${GLASS} space-y-3`}>
-      {data.rank && <p className="text-sm opacity-80">Ranks <b className="text-[#0176D3] dark:text-[#1B96FF]">#{data.rank}</b> of {data.count} funds in its category by 3Y CAGR.</p>}
+    <div className={`${GLASS} space-y-4`}>
+      {data.rank && (
+        <p className="text-sm opacity-80">
+          Ranks <b className="text-[#0176D3] dark:text-[#1B96FF]">#{data.rank}</b> of {data.count} funds in its category by 3Y CAGR.
+        </p>
+      )}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Rank peers by">
-        {METRICS.map(([k, l]) => <button key={k} type="button" onClick={() => setMetric(k)} aria-pressed={metric === k} className={chipCls(metric === k)}>{l}</button>)}
+        {METRICS.map(([k, l]) => (
+          <button key={k} type="button" onClick={() => setMetric(k)} aria-pressed={metric === k} className={chipCls(metric === k)}>
+            {l}
+          </button>
+        ))}
       </div>
-      <ol className="space-y-1.5">
+      <ol className="space-y-2">
         {rows.map((p, i) => {
-          const me = p.scheme_code === code, v = val(p);
+          const me = p.scheme_code === code;
+          const v = val(p);
           return (
-            <li key={p.scheme_code} className={`group rounded-xl border px-3 py-2 transition-all hover:-translate-y-px hover:bg-[var(--glass-hover)] ${me ? "border-[#0176D3] bg-[var(--glass-tint)] shadow" : "border-transparent"}`}>
+            <li
+              key={p.scheme_code}
+              className={`group rounded-xl border p-3 transition-all hover:-translate-y-px hover:bg-[var(--glass-hover)] ${
+                me
+                  ? "border-[#0176D3] bg-[var(--glass-tint)] shadow-sm"
+                  : "border-slate-200/60 dark:border-slate-800/60 bg-white/40 dark:bg-slate-900/40"
+              }`}
+            >
               <div className="flex items-center gap-3 text-sm">
-                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${i === 0 ? "bg-amber-400 text-white" : "bg-[var(--glass-line)]"}`}>{i + 1}</span>
-                <Link href={`${hrefBase}/${p.scheme_code}`} className="min-w-0 flex-1 truncate hover:underline">{p.scheme_name}{me && <span className="ml-2 rounded-full bg-[#0176D3] px-2 py-0.5 text-[10px] font-semibold text-white">This fund</span>}</Link>
-                <b className="shrink-0 tabular-nums">{fmt(v)}</b>
+                <span
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                    i === 0
+                      ? "bg-amber-400 text-white"
+                      : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+
+                {/* AMC Brand Logo Tile */}
+                <AmcLogo
+                  amc={p.amc || ""}
+                  className="h-8 w-8 min-w-8 rounded-lg shrink-0 shadow-sm border border-slate-200/70 dark:border-slate-800 bg-white"
+                />
+
+                <div className="min-w-0 flex-1 truncate">
+                  <Link
+                    href={`${hrefBase}/${p.scheme_code}`}
+                    className="truncate font-semibold text-slate-900 dark:text-slate-100 hover:text-[#0176D3] dark:hover:text-[#1B96FF] hover:underline"
+                  >
+                    {p.scheme_name}
+                  </Link>
+                  {me && (
+                    <span className="ml-2 inline-block rounded-full bg-[#0176D3] px-2 py-0.5 text-[10px] font-semibold text-white">
+                      This fund
+                    </span>
+                  )}
+                  {p.amc && (
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                      {p.amc}
+                    </div>
+                  )}
+                </div>
+
+                <b className="shrink-0 tabular-nums text-slate-900 dark:text-slate-100 font-bold text-sm">
+                  {fmt(v)}
+                </b>
               </div>
-              <div className="mt-1.5 pl-9"><Bar value={Math.abs(v ?? 0)} max={max} color={v != null && v < 0 ? "#E5484D" : me ? ACCENT : "#7F8DE1"} h={6} /></div>
-              <p className="mt-1 hidden pl-9 text-[11px] opacity-70 group-hover:block group-focus-within:block">1Y {fmt2(p.ret_1y)} · 3Y {fmt2(p.cagr_3y)} · 5Y {fmt2(p.cagr_5y)} · Sharpe {p.sharpe_3y != null ? p.sharpe_3y.toFixed(2) : "—"}</p>
+
+              <div className="mt-2 pl-9">
+                <Bar
+                  value={Math.abs(v ?? 0)}
+                  max={max}
+                  color={v != null && v < 0 ? "#E5484D" : me ? ACCENT : "#7F8DE1"}
+                  h={6}
+                />
+              </div>
+
+              <p className="mt-1 pl-9 text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap gap-x-3">
+                <span>1Y: <b>{fmt2(p.ret_1y)}</b></span>
+                <span>3Y: <b>{fmt2(p.cagr_3y)}</b></span>
+                <span>5Y: <b>{fmt2(p.cagr_5y)}</b></span>
+                <span>Sharpe: <b>{p.sharpe_3y != null ? p.sharpe_3y.toFixed(2) : "—"}</b></span>
+              </p>
             </li>
           );
         })}
       </ol>
-      <p className="text-[11px] opacity-60">Ranked by {label}. Missing values sink to the bottom and are never estimated.</p>
+      <p className="text-[11px] opacity-60">
+        Ranked by {label}. Missing values sink to the bottom and are never estimated.
+      </p>
     </div>
   );
 }
+
 const fmt2 = (v: number | null | undefined) => (v == null ? "—" : pct(v));
 
 const Unavailable = ({ what }: { what: string }) => (
-  <p className="text-sm opacity-70">{what} is not available for this fund yet: its monthly portfolio file is not ingested. Shown as unavailable, never estimated.</p>
+  <p className="text-sm opacity-70">
+    {what} is not available for this fund yet: its monthly portfolio file is not ingested. Shown as unavailable, never estimated.
+  </p>
 );
 
 const Meta = ({ p }: { p: FundPortfolio }) => (
   <p className="text-[11px] opacity-70">
-    As of {p.as_of ?? "—"}{p.amc ? ` · ${p.amc} monthly disclosure` : ""}
-    {p.coverage_pct != null && p.coverage_pct < 99 ? ` · covers ${p.coverage_pct.toFixed(0)}% of the portfolio (equity only)` : ""}
+    As of {p.as_of ?? "—"}
+    {p.amc ? ` · ${p.amc} monthly disclosure` : ""}
+    {p.coverage_pct != null && p.coverage_pct < 99
+      ? ` · covers ${p.coverage_pct.toFixed(0)}% of the portfolio (equity only)`
+      : ""}
   </p>
 );
 
@@ -236,8 +312,230 @@ export function SectorAllocation({ p }: { p: FundPortfolio | null }) {
   );
 }
 
+/** Interactive Stock Holding Detail Modal */
+function HoldingDetailModal({
+  holding,
+  rank,
+  onClose,
+}: {
+  holding: FundPortfolio["holdings"][number];
+  rank: number;
+  onClose: () => void;
+}) {
+  const [data, setData] = useState<StockDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancel = false;
+    if (!holding.name) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    getHoldingStockDetail(holding.name)
+      .then((res) => {
+        if (!cancel) {
+          setData(res);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancel) setLoading(false);
+      });
+    return () => {
+      cancel = true;
+    };
+  }, [holding.name]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-sm p-4 overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-xl rounded-2xl border border-white/80 dark:border-slate-800 bg-white/95 dark:bg-[#10151C]/95 p-6 shadow-2xl space-y-5 text-slate-900 dark:text-slate-100 backdrop-blur-md"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-slate-800">
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-[#0176D3] dark:bg-blue-950/60 dark:text-[#8AB8FF] border border-blue-200 dark:border-blue-800/60">
+                Holding #{rank}
+              </span>
+              <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                {holding.instrument_type?.toUpperCase() || "EQUITY"}
+              </span>
+              {holding.sector && (
+                <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  {holding.sector}
+                </span>
+              )}
+            </div>
+            <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              {holding.name}
+            </h3>
+            {data?.symbol && (
+              <div className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                NSE: <b className="text-slate-900 dark:text-slate-100">{data.symbol}</b>
+                {holding.isin && <span className="ml-2">· ISIN: {holding.isin}</span>}
+              </div>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            aria-label="Close modal"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Portfolio Stats Highlight */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-xl border border-blue-100 dark:border-blue-950/60 bg-blue-50/40 dark:bg-blue-950/20">
+          <div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Portfolio Weight</div>
+            <div className="text-lg font-bold text-[#0176D3] dark:text-[#1B96FF]">
+              {(holding.weight_pct ?? 0).toFixed(2)}%
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Live Price</div>
+            <div className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              {data?.price != null ? `₹${data.price.toFixed(2)}` : "—"}
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Day Change</div>
+            <div
+              className={`text-lg font-bold ${
+                (data?.change_pct ?? 0) >= 0
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-rose-600 dark:text-rose-400"
+              }`}
+            >
+              {data?.change_pct != null
+                ? `${data.change_pct >= 0 ? "+" : ""}${data.change_pct.toFixed(2)}%`
+                : "—"}
+            </div>
+          </div>
+          <div>
+            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Market Cap</div>
+            <div className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              {data?.market_cap_fmt || "—"}
+            </div>
+          </div>
+        </div>
+
+        {/* Fundamental Metrics & Valuation */}
+        {loading ? (
+          <div className="py-8 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
+            <svg className="animate-spin h-4 w-4 text-[#0176D3]" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            Loading stock analysis &amp; live fundamentals…
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                Key Valuation &amp; Financial Metrics
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+                <div className="p-2.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Trailing P/E</span>
+                  <b className="text-sm text-slate-900 dark:text-slate-100">{data?.pe_trailing?.toFixed(2) ?? "—"}</b>
+                </div>
+                <div className="p-2.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Price-to-Book (P/B)</span>
+                  <b className="text-sm text-slate-900 dark:text-slate-100">{data?.pb_ratio?.toFixed(2) ?? "—"}</b>
+                </div>
+                <div className="p-2.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[11px]">52-Week Range</span>
+                  <b className="text-xs text-slate-900 dark:text-slate-100">
+                    {data?.low_52w != null && data?.high_52w != null
+                      ? `₹${data.low_52w} – ₹${data.high_52w}`
+                      : "—"}
+                  </b>
+                </div>
+                <div className="p-2.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[11px]">ROE</span>
+                  <b className="text-sm text-slate-900 dark:text-slate-100">{data?.roe != null ? pct(data.roe) : "—"}</b>
+                </div>
+                <div className="p-2.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Dividend Yield</span>
+                  <b className="text-sm text-slate-900 dark:text-slate-100">
+                    {data?.dividend_yield != null ? pct(data.dividend_yield) : "—"}
+                  </b>
+                </div>
+                <div className="p-2.5 rounded-lg border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Beta (Volatility)</span>
+                  <b className="text-sm text-slate-900 dark:text-slate-100">{data?.beta?.toFixed(2) ?? "—"}</b>
+                </div>
+              </div>
+            </div>
+
+            {/* Profile summary */}
+            {data?.profile?.summary && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  Business Overview
+                </h4>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-h-36 overflow-y-auto pr-1">
+                  {data.profile.summary}
+                </p>
+              </div>
+            )}
+
+            {/* Analyst view */}
+            {data?.analyst && (data.analyst.target_mean != null || data.analyst.recommendation != null) && (
+              <div className="p-3 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/30 flex items-center justify-between text-xs">
+                <div>
+                  <span className="text-slate-500 dark:text-slate-400">Analyst Consensus: </span>
+                  <b className="text-slate-900 dark:text-slate-100 capitalize">{data.analyst.recommendation || "Neutral"}</b>
+                </div>
+                {data.analyst.target_mean != null && (
+                  <div>
+                    <span className="text-slate-500 dark:text-slate-400">Mean Target: </span>
+                    <b className="text-[#0176D3] dark:text-[#1B96FF]">₹{data.analyst.target_mean.toFixed(2)}</b>
+                    {data.analyst.upside_pct != null && (
+                      <span className={`ml-1 font-semibold ${data.analyst.upside_pct >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                        ({data.analyst.upside_pct >= 0 ? "+" : ""}{data.analyst.upside_pct}%)
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Footer actions */}
+        <div className="flex items-center justify-between pt-3 border-t border-slate-200/80 dark:border-slate-800 text-xs">
+          <div className="text-slate-400 text-[11px]">
+            Data via official fund disclosure &amp; exchange telemetry
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-1.5 rounded-lg bg-[#0176D3] text-white hover:bg-[#015fb0] dark:bg-[#1B96FF] font-medium transition"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function HoldingsTable({ p }: { p: FundPortfolio | null }) {
   const [all, setAll] = useState(false);
+  const [selectedHolding, setSelectedHolding] = useState<{ holding: FundPortfolio["holdings"][number]; rank: number } | null>(null);
+
   if (!p || p.holdings.length === 0) return <Unavailable what="Holdings" />;
   const rows = [...p.holdings].sort((a, b) => (b.weight_pct ?? 0) - (a.weight_pct ?? 0));
   const shown = all ? rows : rows.slice(0, 10);
@@ -245,29 +543,97 @@ export function HoldingsTable({ p }: { p: FundPortfolio | null }) {
   const w = (n: number) => rows.slice(0, n).reduce((a, h) => a + (h.weight_pct ?? 0), 0);
   const t1 = w(1), t5 = w(5), t10 = w(10), rest = Math.max(0, p.total_weight_pct - t10);
   const seg: [string, number, string][] = [["Top 1", t1, "#0176D3"], ["Next 4", t5 - t1, "#1B96FF"], ["Next 5", t10 - t5, "#7F8DE1"], ["Rest", rest, "#9AA7B8"]];
+
   return (
     <div className={`${GLASS} space-y-3`}>
-      <p className="text-sm opacity-80">{p.summary.holdings_count} holdings · top 10 are <b className="text-[#0176D3] dark:text-[#1B96FF]">{p.summary.top10_concentration_pct?.toFixed(1)}%</b> of the portfolio.</p>
-      <div>
-        <div className="flex h-3 overflow-hidden rounded-full" aria-hidden>{seg.map(([l, v, c]) => <div key={l} title={`${l}: ${v.toFixed(1)}%`} style={{ width: `${v}%`, background: c }} className="transition-all duration-500" />)}</div>
-        <div className="mt-1 flex flex-wrap gap-x-4 text-[11px] opacity-70">{seg.map(([l, v, c]) => <span key={l} className="flex items-center gap-1"><i className="inline-block h-2 w-2 rounded-full" style={{ background: c }} />{l} {v.toFixed(1)}%</span>)}</div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <p className="text-sm opacity-80">
+          {p.summary.holdings_count} holdings · top 10 are <b className="text-[#0176D3] dark:text-[#1B96FF]">{p.summary.top10_concentration_pct?.toFixed(1)}%</b> of the portfolio.
+        </p>
+        <span className="text-xs text-[#0176D3] dark:text-[#1B96FF] font-medium">
+          💡 Click any holding to view full stock metrics &amp; analysis
+        </span>
       </div>
+
+      <div>
+        <div className="flex h-3 overflow-hidden rounded-full" aria-hidden>
+          {seg.map(([l, v, c]) => (
+            <div key={l} title={`${l}: ${v.toFixed(1)}%`} style={{ width: `${v}%`, background: c }} className="transition-all duration-500" />
+          ))}
+        </div>
+        <div className="mt-1 flex flex-wrap gap-x-4 text-[11px] opacity-70">
+          {seg.map(([l, v, c]) => (
+            <span key={l} className="flex items-center gap-1">
+              <i className="inline-block h-2 w-2 rounded-full" style={{ background: c }} />
+              {l} {v.toFixed(1)}%
+            </span>
+          ))}
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full min-w-[480px] text-sm">
-          <thead><tr className="border-b border-[var(--glass-line)] text-left text-xs opacity-70"><th className="py-1.5 pr-2">Company</th><th className="px-2">Sector</th><th className="w-44 px-2 text-right">Weight</th></tr></thead>
+          <thead>
+            <tr className="border-b border-[var(--glass-line)] text-left text-xs opacity-70">
+              <th className="py-2 pr-2">Company</th>
+              <th className="px-2">Sector</th>
+              <th className="w-44 px-2 text-right">Weight</th>
+              <th className="w-24 px-2 text-right">Action</th>
+            </tr>
+          </thead>
           <tbody>
             {shown.map((h, i) => (
-              <tr key={`${h.isin ?? h.name}-${i}`} className="border-b border-[var(--glass-line)] transition-colors hover:bg-[var(--glass-hover)]">
-                <td className="py-1.5 pr-2"><span className="mr-2 text-xs opacity-50">{i + 1}</span>{h.name}</td>
-                <td className="px-2 opacity-70">{h.sector ?? "—"}</td>
-                <td className="px-2"><div className="flex items-center gap-2"><div className="flex-1"><Bar value={h.weight_pct ?? 0} max={max} color={PALETTE[i % PALETTE.length]} h={6} /></div><span className="w-14 text-right tabular-nums">{(h.weight_pct ?? 0).toFixed(2)}%</span></div></td>
+              <tr
+                key={`${h.isin ?? h.name}-${i}`}
+                onClick={() => setSelectedHolding({ holding: h, rank: i + 1 })}
+                className="border-b border-[var(--glass-line)] transition-colors hover:bg-[var(--glass-hover)] cursor-pointer group"
+              >
+                <td className="py-2.5 pr-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs opacity-50 w-5">{i + 1}</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-[#0176D3] dark:group-hover:text-[#1B96FF] transition-colors">
+                      {h.name}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-2 opacity-70 text-xs">{h.sector ?? "—"}</td>
+                <td className="px-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <Bar value={h.weight_pct ?? 0} max={max} color={PALETTE[i % PALETTE.length]} h={6} />
+                    </div>
+                    <span className="w-14 text-right tabular-nums font-semibold">
+                      {(h.weight_pct ?? 0).toFixed(2)}%
+                    </span>
+                  </div>
+                </td>
+                <td className="px-2 text-right">
+                  <span className="text-xs text-[#0176D3] dark:text-[#1B96FF] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+                    Analysis →
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      {rows.length > 10 && <button type="button" onClick={() => setAll(!all)} className={chipCls(false)}>{all ? "Show top 10" : `Show all ${rows.length}`}</button>}
-      <Meta p={p} />
+
+      <div className="flex items-center justify-between pt-1">
+        {rows.length > 10 && (
+          <button type="button" onClick={() => setAll(!all)} className={chipCls(false)}>
+            {all ? "Show top 10" : `Show all ${rows.length}`}
+          </button>
+        )}
+        <Meta p={p} />
+      </div>
+
+      {selectedHolding && (
+        <HoldingDetailModal
+          holding={selectedHolding.holding}
+          rank={selectedHolding.rank}
+          onClose={() => setSelectedHolding(null)}
+        />
+      )}
     </div>
   );
 }

@@ -186,8 +186,59 @@ export async function getFundPortfolio(code: string): Promise<FundPortfolio | nu
 /** Same-category funds ranked by 3Y CAGR (null on any failure). */
 export async function getFundPeers(code: string): Promise<FundPeers | null> {
   try {
-    const res = await fetch(`${SERVER_API_URL}/api/funds/${code}/peers`, { cache: "no-store" });
+    const path = `/api/funds/${code}/peers`;
+    const res = await fetch(typeof window === "undefined" ? SERVER_API_URL + path : resolveApiUrl(API_URL + path), { cache: "no-store" });
     return res.ok ? ((await res.json()) as FundPeers) : null;
+  } catch {
+    return null;
+  }
+}
+
+export interface StockDetail {
+  symbol: string;
+  name: string;
+  price: number | null;
+  prev_close: number | null;
+  change: number | null;
+  change_pct: number | null;
+  high_52w: number | null;
+  low_52w: number | null;
+  day_high: number | null;
+  day_low: number | null;
+  volume: number | null;
+  market_cap_fmt: string | null;
+  pe_trailing: number | null;
+  pb_ratio: number | null;
+  dividend_yield: number | null;
+  roe: number | null;
+  profit_margin: number | null;
+  debt_to_equity: number | null;
+  beta: number | null;
+  profile?: {
+    sector?: string | null;
+    industry?: string | null;
+    summary?: string | null;
+    website?: string | null;
+    city?: string | null;
+    country?: string | null;
+  } | null;
+  analyst?: {
+    recommendation?: string | null;
+    target_mean?: number | null;
+    upside_pct?: number | null;
+  } | null;
+  as_of?: string | null;
+}
+
+/** Live quote, company profile and fundamental metrics for a stock holding. */
+export async function getHoldingStockDetail(name: string, symbol?: string): Promise<StockDetail | null> {
+  try {
+    const q = new URLSearchParams({ name });
+    if (symbol) q.set("symbol", symbol);
+    const path = `/api/funds/holdings/stock-detail?${q.toString()}`;
+    const url = typeof window === "undefined" ? SERVER_API_URL + path : resolveApiUrl(API_URL + path);
+    const res = await fetch(url, { cache: "no-store" });
+    return res.ok ? (((await res.json()) as { data: StockDetail | null }).data ?? null) : null;
   } catch {
     return null;
   }

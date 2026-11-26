@@ -322,9 +322,6 @@ function PmsTracker() {
               APMI Standard
             </span>
           </div>
-          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 leading-normal">
-            Portfolio Management Services strategy registry, APMI benchmarked returns, and manager research
-          </p>
         </div>
 
         <div className={`flex items-center gap-1.5 self-start sm:self-auto ${home ? "hidden" : ""}`}>
@@ -346,610 +343,455 @@ function PmsTracker() {
           </div>
         )}
         <div className="terminal-panel relative z-50 p-3 space-y-3">
-            {/* Top row: Primary Search, Categorization & Provenance */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2.5 border-b border-[#E5E5E5]/70 dark:border-[#2B3644]/70">
-              <div className="flex flex-wrap items-center gap-2 flex-1">
-                <div className="relative flex-1 min-w-[220px] max-w-xs">
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search PMS provider, strategy or manager…"
-                    className="terminal-input w-full text-[12px] py-1.5 pl-3 pr-7"
-                  />
-                  {search && (
-                    <button
-                      type="button"
-                      onClick={() => setSearch("")}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] text-[#706E6B] hover:text-[#181818] dark:hover:text-[#EDF2F7] cursor-pointer"
-                      title="Clear search"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="terminal-input text-[12px] py-1.5 px-2.5 font-medium"
-                >
-                  <option value="all">All Approaches</option>
-                  <option value="fh-recommended">★ FH Recommended ({fhRecCount})</option>
-                  {approachOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-
-                <button
-                  type="button"
-                  onClick={() => setCategoryFilter(categoryFilter === "fh-recommended" ? "all" : "fh-recommended")}
-                  className={`text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer rounded-lg ${
-                    categoryFilter === "fh-recommended" ? "terminal-btn-accent shadow-sm" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
-                  }`}
-                >
-                  <span className="text-[12px]">★</span>
-                  <span>FH Recommended ({fhRecCount})</span>
-                </button>
-
-                {filtersActive && (
+          {/* Top row: Primary Search, Categorization & Provenance */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2.5 border-b border-[#E5E5E5]/70 dark:border-[#2B3644]/70">
+            <div className="flex flex-wrap items-center gap-2 flex-1">
+              <div className="relative flex-1 min-w-[220px] max-w-xs">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search PMS provider, strategy or manager…"
+                  className="terminal-input w-full text-[12px] py-1.5 pl-3 pr-7"
+                />
+                {search && (
                   <button
                     type="button"
-                    onClick={clearFilters}
-                    className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#B42332] dark:hover:text-[#FF7D86] underline py-1 px-2 cursor-pointer transition"
+                    onClick={() => setSearch("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] text-[#706E6B] hover:text-[#181818] dark:hover:text-[#EDF2F7] cursor-pointer"
+                    title="Clear search"
                   >
-                    Clear filters
+                    ✕
                   </button>
                 )}
               </div>
 
-              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono shrink-0 text-left md:text-right flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 md:gap-0.5">
-                <div>{asOf ? `As of ${formatISTDate(asOf)}` : "As-of date not in this APMI snapshot"}</div>
-                <div>
-                  Source:{" "}
-                  <a
-                    href="https://www.apmiindia.org"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline hover:text-[#181818] dark:hover:text-[#EDF2F7]"
-                  >
-                    APMI Disclosures ↗
-                  </a>
-                </div>
-              </div>
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="terminal-input text-[12px] py-1.5 px-2.5 font-medium"
+              >
+                <option value="all">All Approaches</option>
+                <option value="fh-recommended">★ FH Recommended ({fhRecCount})</option>
+                {approachOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                onClick={() => setCategoryFilter(categoryFilter === "fh-recommended" ? "all" : "fh-recommended")}
+                className={`text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer rounded-lg ${categoryFilter === "fh-recommended" ? "terminal-btn-accent shadow-sm" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
+                  }`}
+              >
+                <span className="text-[12px]">★</span>
+                <span>FH Recommended ({fhRecCount})</span>
+              </button>
+
+              {filtersActive && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#B42332] dark:hover:text-[#FF7D86] underline py-1 px-2 cursor-pointer transition"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
 
-            {/* Bottom row: Benchmark & Scoring controls on left, Tools & Actions on right */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-              {/* Group 1: Benchmarking & Scoring Framework */}
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1.5 bg-[#F0F3F6] dark:bg-[#1A2332] px-2.5 py-1.5 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644]">
-                  <span className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4] uppercase tracking-wider">Benchmark:</span>
-                  <select
-                    value={selectedBenchmark}
-                    onChange={(e) => setSelectedBenchmark(e.target.value)}
-                    className="bg-transparent text-[11.5px] font-bold text-[#0176D3] dark:text-[#1B96FF] focus:outline-none cursor-pointer pr-1"
-                    title="Change comparison benchmark for real-time dynamic score recalculation"
-                  >
-                    {Object.keys(PMS_BENCHMARKS).map((b) => (
-                      <option key={b} value={b} className="bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7]">
-                        {b}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="button"
-                  aria-pressed={customScore}
-                  onClick={() => setCustomScore((v) => !v)}
-                  title="Custom score: a strategy with 3 or more years of track record keeps its full standard score (100% weight); below 3 years the score scales down by tenure/3 on a 20% manager weight. Track record = inception date when disclosed, else the longest reported return horizon (APMI gives no manager start date)."
-                  className={`text-[12px] py-1.5 px-3 font-medium cursor-pointer rounded-lg border transition ${
-                    customScore ? "terminal-btn-accent shadow-sm" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
-                  }`}
+            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono shrink-0 text-left md:text-right flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 md:gap-0.5">
+              <div>{asOf ? `As of ${formatISTDate(asOf)}` : "As-of date not in this APMI snapshot"}</div>
+              <div>
+                Source:{" "}
+                <a
+                  href="https://www.apmiindia.org"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline hover:text-[#181818] dark:hover:text-[#EDF2F7]"
                 >
-                  Custom: Manager 3y+ = 100%
-                </button>
-              </div>
-
-              {/* Group 2: Tools, Strategy Settings & Document Upload */}
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMethodologyStrategy(null);
-                    setMethodologyModalOpen(true);
-                  }}
-                  className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
-                  title="Inspect step-by-step mathematical calculations and methodology formulas"
-                >
-                  <span>📐 Live Formulas</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setMatrixModalOpen(true)}
-                  className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
-                  title="View data availability & screening matrix for the 9 curated PMS strategies"
-                >
-                  <span>📊 9 Strategies Matrix</span>
-                </button>
-
-                <div className="relative">
-                  <button
-                    type="button"
-                    aria-haspopup="true"
-                    aria-expanded={pmsRecDropdownOpen}
-                    onClick={() => setPmsRecDropdownOpen((v) => !v)}
-                    className="terminal-btn text-[12px] py-1.5 px-2.5 flex items-center gap-1.5 cursor-pointer"
-                    title="Settings & manage FH Recommended PMS strategies"
-                  >
-                    <span>⚙ Settings</span>
-                    <span className="text-[10px] font-mono">▾</span>
-                  </button>
-                  {pmsRecDropdownOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setPmsRecDropdownOpen(false)} />
-                      <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
-                        <DropdownClose onClose={() => setPmsRecDropdownOpen(false)} />
-                        <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
-                          <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
-                            ★ FH Recommended PMS Strategies ({Object.keys(rec.pmsMap).length})
-                          </span>
-                          <button type="button" onClick={() => setPmsRecDropdownOpen(false)} className="text-[#706E6B] dark:text-[#A8B4C4] text-xs">
-                            ✕
-                          </button>
-                        </div>
-                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                          Add APMI Strategy ID to mark as recommended, or click Remove.
-                        </div>
-                        <div className="flex gap-1.5">
-                          <input
-                            type="text"
-                            placeholder="APMI ID (e.g. 174)"
-                            value={newPmsId}
-                            onChange={(e) => setNewPmsId(e.target.value)}
-                            className="terminal-input text-[11px] py-1 px-2 font-mono w-28 shrink-0"
-                          />
-                          <input
-                            type="text"
-                            placeholder="Strategy name (optional)"
-                            value={newPmsName}
-                            onChange={(e) => setNewPmsName(e.target.value)}
-                            className="terminal-input text-[11px] py-1 px-2 flex-1"
-                          />
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              if (!newPmsId.trim()) return;
-                              await rec.addPms(newPmsId.trim(), newPmsName.trim() || undefined);
-                              setNewPmsId("");
-                              setNewPmsName("");
-                            }}
-                            className="terminal-btn-accent text-[11px] py-1 px-3 shrink-0"
-                          >
-                            + Add
-                          </button>
-                        </div>
-                        <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E5E5E5]/40 dark:divide-[#2B3644]/40">
-                          {Object.entries(rec.pmsMap).map(([id, name]) => (
-                            <div key={id} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
-                              <div className="truncate">
-                                <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-medium mr-1.5">#{id}</span>
-                                <span className="text-[#181818] dark:text-[#EDF2F7] truncate">{name}</span>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => rec.removePms(id)}
-                                className="text-[10px] text-[#B42332] dark:text-[#FF7D86] hover:underline shrink-0 cursor-pointer"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
-                          <Link href="/backoffice/settings" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
-                            All Settings →
-                          </Link>
-                          <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Saves live across terminal</span>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setDocModalOpen(true)}
-                  className="rounded-lg bg-[#0176D3] text-white px-3.5 py-1.5 text-[12px] font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-sm transition"
-                  title="Upload client portfolio report, factsheet or WealthSpectrum PDF"
-                >
-                  <span>Upload PMS Document</span>
-                </button>
+                  APMI Disclosures ↗
+                </a>
               </div>
             </div>
           </div>
 
-          {home && <SectionLauncher title="Choose a view" items={LAUNCH} />}
-
-          {!home && isRecommended && (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-              <div className="flex items-center gap-1 bg-[#F0F3F6] dark:bg-[#202936] p-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644]">
-                <button
-                  type="button"
-                  onClick={() => setFhSubTab("returns")}
-                  className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${
-                    fhSubTab === "returns"
-                      ? "bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7] shadow-sm"
-                      : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
-                  }`}
+          {/* Bottom row: Benchmark & Scoring controls on left, Tools & Actions on right */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+            {/* Group 1: Benchmarking & Scoring Framework */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1.5 bg-[#F0F3F6] dark:bg-[#1A2332] px-2.5 py-1.5 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644]">
+                <span className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4] uppercase tracking-wider">Benchmark:</span>
+                <select
+                  value={selectedBenchmark}
+                  onChange={(e) => setSelectedBenchmark(e.target.value)}
+                  className="bg-transparent text-[11.5px] font-bold text-[#0176D3] dark:text-[#1B96FF] focus:outline-none cursor-pointer pr-1"
+                  title="Change comparison benchmark for real-time dynamic score recalculation"
                 >
-                  Returns Comparison vs Benchmark
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFhSubTab("details")}
-                  className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${
-                    fhSubTab === "details"
-                      ? "bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7] shadow-sm"
-                      : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
-                  }`}
-                >
-                  Fund Details &amp; Structure
-                </button>
+                  {Object.keys(PMS_BENCHMARKS).map((b) => (
+                    <option key={b} value={b} className="bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7]">
+                      {b}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">
-                Click any fund to inspect complete factsheet &amp; history
-              </span>
-            </div>
-          )}
 
-          <div className={`terminal-panel overflow-hidden ${home ? "hidden" : ""}`}>
-            <div className="px-3 py-2 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono flex flex-wrap items-center justify-between gap-2">
+              <button
+                type="button"
+                aria-pressed={customScore}
+                onClick={() => setCustomScore((v) => !v)}
+                title="Custom score: a strategy with 3 or more years of track record keeps its full standard score (100% weight); below 3 years the score scales down by tenure/3 on a 20% manager weight. Track record = inception date when disclosed, else the longest reported return horizon (APMI gives no manager start date)."
+                className={`text-[12px] py-1.5 px-3 font-medium cursor-pointer rounded-lg border transition ${customScore ? "terminal-btn-accent shadow-sm" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
+                  }`}
+              >
+                Custom: Manager 3y+ = 100%
+              </button>
+            </div>
+
+            {/* Group 2: Tools, Strategy Settings & Document Upload */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setMethodologyStrategy(null);
+                  setMethodologyModalOpen(true);
+                }}
+                className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                title="Inspect step-by-step mathematical calculations and methodology formulas"
+              >
+                <span>📐 Live Formulas</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMatrixModalOpen(true)}
+                className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                title="View data availability & screening matrix for the 9 curated PMS strategies"
+              >
+                <span>📊 9 Strategies Matrix</span>
+              </button>
+
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-haspopup="true"
+                  aria-expanded={pmsRecDropdownOpen}
+                  onClick={() => setPmsRecDropdownOpen((v) => !v)}
+                  className="terminal-btn text-[12px] py-1.5 px-2.5 flex items-center gap-1.5 cursor-pointer"
+                  title="Settings & manage FH Recommended PMS strategies"
+                >
+                  <span>⚙ Settings</span>
+                  <span className="text-[10px] font-mono">▾</span>
+                </button>
+                {pmsRecDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setPmsRecDropdownOpen(false)} />
+                    <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                      <DropdownClose onClose={() => setPmsRecDropdownOpen(false)} />
+                      <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
+                        <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
+                          ★ FH Recommended PMS Strategies ({Object.keys(rec.pmsMap).length})
+                        </span>
+                        <button type="button" onClick={() => setPmsRecDropdownOpen(false)} className="text-[#706E6B] dark:text-[#A8B4C4] text-xs">
+                          ✕
+                        </button>
+                      </div>
+                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                        Add APMI Strategy ID to mark as recommended, or click Remove.
+                      </div>
+                      <div className="flex gap-1.5">
+                        <input
+                          type="text"
+                          placeholder="APMI ID (e.g. 174)"
+                          value={newPmsId}
+                          onChange={(e) => setNewPmsId(e.target.value)}
+                          className="terminal-input text-[11px] py-1 px-2 font-mono w-28 shrink-0"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Strategy name (optional)"
+                          value={newPmsName}
+                          onChange={(e) => setNewPmsName(e.target.value)}
+                          className="terminal-input text-[11px] py-1 px-2 flex-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (!newPmsId.trim()) return;
+                            await rec.addPms(newPmsId.trim(), newPmsName.trim() || undefined);
+                            setNewPmsId("");
+                            setNewPmsName("");
+                          }}
+                          className="terminal-btn-accent text-[11px] py-1 px-3 shrink-0"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E5E5E5]/40 dark:divide-[#2B3644]/40">
+                        {Object.entries(rec.pmsMap).map(([id, name]) => (
+                          <div key={id} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
+                            <div className="truncate">
+                              <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-medium mr-1.5">#{id}</span>
+                              <span className="text-[#181818] dark:text-[#EDF2F7] truncate">{name}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => rec.removePms(id)}
+                              className="text-[10px] text-[#B42332] dark:text-[#FF7D86] hover:underline shrink-0 cursor-pointer"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
+                        <Link href="/backoffice/settings" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
+                          All Settings →
+                        </Link>
+                        <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Saves live across terminal</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setDocModalOpen(true)}
+                className="rounded-lg bg-[#0176D3] text-white px-3.5 py-1.5 text-[12px] font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-sm transition"
+                title="Upload client portfolio report, factsheet or WealthSpectrum PDF"
+              >
+                <span>Upload PMS Document</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {home && <SectionLauncher title="Choose a view" items={LAUNCH} />}
+
+        {!home && isRecommended && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+            <div className="flex items-center gap-1 bg-[#F0F3F6] dark:bg-[#202936] p-0.5 rounded border border-[#E5E5E5] dark:border-[#2B3644]">
+              <button
+                type="button"
+                onClick={() => setFhSubTab("returns")}
+                className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${fhSubTab === "returns"
+                  ? "bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7] shadow-sm"
+                  : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
+                  }`}
+              >
+                Returns Comparison vs Benchmark
+              </button>
+              <button
+                type="button"
+                onClick={() => setFhSubTab("details")}
+                className={`text-[11px] font-medium py-1 px-2.5 rounded transition cursor-pointer ${fhSubTab === "details"
+                  ? "bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7] shadow-sm"
+                  : "text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#181818] dark:hover:text-[#EDF2F7]"
+                  }`}
+              >
+                Fund Details &amp; Structure
+              </button>
+            </div>
+            <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">
+              Click any fund to inspect complete factsheet &amp; history
+            </span>
+          </div>
+        )}
+
+        <div className={`terminal-panel overflow-hidden ${home ? "hidden" : ""}`}>
+          <div className="px-3 py-2 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono flex flex-wrap items-center justify-between gap-2">
+            <span>
+              {filteredStrategies.length === 0
+                ? "No strategies match the current filters"
+                : `Showing ${from}–${to} of ${filteredStrategies.length.toLocaleString("en-IN")}`}
+              {filteredStrategies.length !== strategies.length ? ` matching · ${strategies.length.toLocaleString("en-IN")} total` : filteredStrategies.length === 0 ? "" : " strategies"}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                className="terminal-btn text-[11px] py-0.5 px-2"
+                disabled={safePage <= 0}
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+              >
+                Previous
+              </button>
               <span>
-                {filteredStrategies.length === 0
-                  ? "No strategies match the current filters"
-                  : `Showing ${from}–${to} of ${filteredStrategies.length.toLocaleString("en-IN")}`}
-                {filteredStrategies.length !== strategies.length ? ` matching · ${strategies.length.toLocaleString("en-IN")} total` : filteredStrategies.length === 0 ? "" : " strategies"}
+                Page {safePage + 1} / {pageCount}
               </span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  className="terminal-btn text-[11px] py-0.5 px-2"
-                  disabled={safePage <= 0}
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                >
-                  Previous
-                </button>
-                <span>
-                  Page {safePage + 1} / {pageCount}
-                </span>
-                <button
-                  type="button"
-                  className="terminal-btn text-[11px] py-0.5 px-2"
-                  disabled={safePage >= pageCount - 1}
-                  onClick={() => setPage((p) => p + 1)}
-                >
-                  Next
-                </button>
-              </div>
+              <button
+                type="button"
+                className="terminal-btn text-[11px] py-0.5 px-2"
+                disabled={safePage >= pageCount - 1}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next
+              </button>
             </div>
-            <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px]">
-              <table className="terminal-table">
-                <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
-                  {isRecommended ? (
-                    fhSubTab === "returns" ? (
-                      <tr>
-                        <th className="w-[40px]" aria-label="Compare" />
-                        <th className="w-[5%] text-center">SR</th>
-                        <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-                        <SortHeader label="1M" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
-                        <th className="text-right">
-                          <div className="inline-flex items-center justify-end">
-                            <span>3M</span>
-                            <InfoTip metric="ret_3m" meta={meta?.ret_3m ?? meta?._default} />
-                          </div>
-                        </th>
-                        <th className="text-right">
-                          <div className="inline-flex items-center justify-end">
-                            <span>6M</span>
-                            <InfoTip metric="ret_6m" meta={meta?.ret_6m ?? meta?._default} />
-                          </div>
-                        </th>
-                        <SortHeader label="1Y" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
-                        <SortHeader label="3Y" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
-                        <th className="text-right">
-                          <div className="inline-flex items-center justify-end">
-                            <span>Since Inception</span>
-                            <InfoTip metric="ret_si" meta={meta?.ret_si ?? meta?._default} />
-                          </div>
-                        </th>
-                        <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                        <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
-                        <th>FH Signal</th>
-                        <th>Benchmark</th>
-                      </tr>
-                    ) : (
-                      <tr>
-                        <th className="w-[40px]" aria-label="Compare" />
-                        <th className="w-[5%] text-center">SR</th>
-                        <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-                        <th>Type</th>
-                        <SortHeader label="AUM" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="aum" meta={meta?.aum ?? meta?._default} />
-                        <th className="text-right">Min Investment</th>
-                        <th>Inception</th>
-                        <th>Principal Officer</th>
-                        <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
-                        <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
-                        <th>FH Signal</th>
-                        <th>Benchmark</th>
-                      </tr>
-                    )
-                  ) : (
+          </div>
+          <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[420px]">
+            <table className="terminal-table">
+              <thead className="sticky top-0 z-10 bg-[#F3F3F3] dark:bg-[#171E27]">
+                {isRecommended ? (
+                  fhSubTab === "returns" ? (
                     <tr>
                       <th className="w-[40px]" aria-label="Compare" />
-                      <SortHeader label="Provider / Strategy" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-                      <th>Approach</th>
-                      <SortHeader label="AUM (₹ Cr)" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="aum" meta={meta?.aum ?? meta?._default} />
-                      <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
-                      <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
-                      <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
-                      <SortHeader label="Since Inception" column="return_si" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_si" meta={meta?.ret_si ?? meta?._default} />
-                      <SortHeader label="Inception · Track" column="track" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                      <th className="w-[5%] text-center">SR</th>
+                      <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                      <SortHeader label="1M" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
+                      <th className="text-right">
+                        <div className="inline-flex items-center justify-end">
+                          <span>3M</span>
+                          <InfoTip metric="ret_3m" meta={meta?.ret_3m ?? meta?._default} />
+                        </div>
+                      </th>
+                      <th className="text-right">
+                        <div className="inline-flex items-center justify-end">
+                          <span>6M</span>
+                          <InfoTip metric="ret_6m" meta={meta?.ret_6m ?? meta?._default} />
+                        </div>
+                      </th>
+                      <SortHeader label="1Y" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
+                      <SortHeader label="3Y" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
+                      <th className="text-right">
+                        <div className="inline-flex items-center justify-end">
+                          <span>Since Inception</span>
+                          <InfoTip metric="ret_si" meta={meta?.ret_si ?? meta?._default} />
+                        </div>
+                      </th>
                       <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
                       <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
                       <th>FH Signal</th>
                       <th>Benchmark</th>
                     </tr>
-                  )}
-                </thead>
-                <tbody>
-                  {strategiesLoading ? (
-                    <tr>
-                      <td colSpan={colSpan} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
-                        Loading PMS strategies…
-                      </td>
-                    </tr>
-                  ) : filteredStrategies.length === 0 ? (
-                    <tr>
-                      <td colSpan={colSpan} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
-                        No PMS strategies found matching query.
-                      </td>
-                    </tr>
                   ) : (
-                    <>
-                      {pageRows.map((s, idx) => {
-                        const warning = pmsReturnWarning(s);
-                        const approach = normalizeApproach(s.investment_approach || s.strategy_type) || "—";
-                        const rowKey = `${s.ia_id || s.strategy_name}-${s.provider_name}-${s.service_type || ""}-${idx}`;
-                        const cid = pmsCompareId(s);
-                        const checked = compare.selectedIds.includes(cid);
-                        const capped = !checked && compare.maxSelected;
-                        return (
-                          <tr
-                            key={rowKey}
-                            className="cursor-pointer"
-                            onClick={() => setSelectedStrategy(s)}
-                          >
-                            <td className="w-[40px] text-center align-middle" onClick={(e) => e.stopPropagation()}>
-                              <input
-                                type="checkbox"
-                                checked={checked}
-                                disabled={capped}
-                                title={capped ? "Max 4 to compare" : undefined}
-                                aria-label={`Compare ${s.strategy_name}`}
-                                className="h-4 w-4 accent-[#0176D3]"
-                                onChange={() => compare.toggle(cid, s.strategy_name)}
-                              />
+                    <tr>
+                      <th className="w-[40px]" aria-label="Compare" />
+                      <th className="w-[5%] text-center">SR</th>
+                      <SortHeader label="PMS" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                      <th>Type</th>
+                      <SortHeader label="AUM" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="aum" meta={meta?.aum ?? meta?._default} />
+                      <th className="text-right">Min Investment</th>
+                      <th>Inception</th>
+                      <th>Principal Officer</th>
+                      <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                      <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
+                      <th>FH Signal</th>
+                      <th>Benchmark</th>
+                    </tr>
+                  )
+                ) : (
+                  <tr>
+                    <th className="w-[40px]" aria-label="Compare" />
+                    <SortHeader label="Provider / Strategy" column="name" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                    <th>Approach</th>
+                    <SortHeader label="AUM (₹ Cr)" column="aum" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="aum" meta={meta?.aum ?? meta?._default} />
+                    <SortHeader label="1M Return" column="return_1m" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1m" meta={meta?.ret_1m ?? meta?._default} />
+                    <SortHeader label="1Y Return" column="return_1y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_1y" meta={meta?.ret_1y ?? meta?._default} />
+                    <SortHeader label="3Y CAGR" column="return_3y" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="cagr_3y" meta={meta?.cagr_3y ?? meta?._default} />
+                    <SortHeader label="Since Inception" column="return_si" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" metric="ret_si" meta={meta?.ret_si ?? meta?._default} />
+                    <SortHeader label="Inception · Track" column="track" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+                    <SortHeader label="FH Score" column="score" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" />
+                    <th className="text-center cursor-pointer hover:underline" onClick={() => { setMethodologyStrategy(null); setMethodologyModalOpen(true); }} title="Click to view methodology">FH Rating</th>
+                    <th>FH Signal</th>
+                    <th>Benchmark</th>
+                  </tr>
+                )}
+              </thead>
+              <tbody>
+                {strategiesLoading ? (
+                  <tr>
+                    <td colSpan={colSpan} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
+                      Loading PMS strategies…
+                    </td>
+                  </tr>
+                ) : filteredStrategies.length === 0 ? (
+                  <tr>
+                    <td colSpan={colSpan} className="py-8 text-center text-[#706E6B] dark:text-[#A8B4C4]">
+                      No PMS strategies found matching query.
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {pageRows.map((s, idx) => {
+                      const warning = pmsReturnWarning(s);
+                      const approach = normalizeApproach(s.investment_approach || s.strategy_type) || "—";
+                      const rowKey = `${s.ia_id || s.strategy_name}-${s.provider_name}-${s.service_type || ""}-${idx}`;
+                      const cid = pmsCompareId(s);
+                      const checked = compare.selectedIds.includes(cid);
+                      const capped = !checked && compare.maxSelected;
+                      return (
+                        <tr
+                          key={rowKey}
+                          className="cursor-pointer"
+                          onClick={() => setSelectedStrategy(s)}
+                        >
+                          <td className="w-[40px] text-center align-middle" onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              disabled={capped}
+                              title={capped ? "Max 4 to compare" : undefined}
+                              aria-label={`Compare ${s.strategy_name}`}
+                              className="h-4 w-4 accent-[#0176D3]"
+                              onChange={() => compare.toggle(cid, s.strategy_name)}
+                            />
+                          </td>
+                          {isRecommended && (
+                            <td className="text-center font-mono text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                              {safePage * PAGE_SIZE + idx + 1}
                             </td>
-                            {isRecommended && (
-                              <td className="text-center font-mono text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                                {safePage * PAGE_SIZE + idx + 1}
-                              </td>
-                            )}
+                          )}
 
-                            <td>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedStrategy(s);
-                                }}
-                                className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
-                              >
-                                <span className="group-hover:opacity-90">{s.strategy_name}</span>
-                              </button>
-                              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
-                                <span className="inline-flex items-center gap-1.5">
-                                  <PmsLogo firm={s.provider_name} className="h-5 min-w-5 max-w-[4rem] text-[8px]" />
-                                  {normalizeProviderName(s.provider_name) || s.provider_name}
+                          <td>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedStrategy(s);
+                              }}
+                              className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline focus:outline-none transition group cursor-pointer block leading-snug"
+                            >
+                              <span className="group-hover:opacity-90">{s.strategy_name}</span>
+                            </button>
+                            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5 flex items-center gap-1.5 flex-wrap">
+                              <span className="inline-flex items-center gap-1.5">
+                                <PmsLogo firm={s.provider_name} className="h-5 min-w-5 max-w-[4rem] text-[8px]" />
+                                {normalizeProviderName(s.provider_name) || s.provider_name}
+                              </span>
+                              {isStrategyRecommended(s) && !isRecommended && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (s.ia_id) rec.togglePms(s.ia_id, s.strategy_name);
+                                  }}
+                                  title="Click to toggle FH Recommended status"
+                                  className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] font-medium hover:opacity-80 cursor-pointer"
+                                >
+                                  ★ FH Rec
+                                </button>
+                              )}
+                              {warning && (
+                                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#B45309]/10 text-[#B45309] dark:text-[#FBBF24] border border-[#B45309]/20" title={warning}>
+                                  Outlier
                                 </span>
-                                {isStrategyRecommended(s) && !isRecommended && (
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      if (s.ia_id) rec.togglePms(s.ia_id, s.strategy_name);
-                                    }}
-                                    title="Click to toggle FH Recommended status"
-                                    className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#0176D3] text-white dark:bg-[#1B96FF] dark:text-[#10151C] font-medium hover:opacity-80 cursor-pointer"
-                                  >
-                                    ★ FH Rec
-                                  </button>
-                                )}
-                                {warning && (
-                                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#B45309]/10 text-[#B45309] dark:text-[#FBBF24] border border-[#B45309]/20" title={warning}>
-                                    Outlier
-                                  </span>
-                                )}
-                              </div>
-                            </td>
+                              )}
+                            </div>
+                          </td>
 
-                            {isRecommended ? (
-                              fhSubTab === "returns" ? (
-                                <>
-                                  <td className="text-right">
-                                    <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} horizon="1m" strategy={s} />
-                                  </td>
-                                  <td className="text-right">
-                                    <ReturnCell value={s.return_3m_pct} warning={pmsCellReturnWarning("3m", s.return_3m_pct)} horizon="3m" strategy={s} />
-                                  </td>
-                                  <td className="text-right">
-                                    <ReturnCell value={s.return_6m_pct} warning={pmsCellReturnWarning("6m", s.return_6m_pct)} horizon="6m" strategy={s} />
-                                  </td>
-                                  <td className="text-right">
-                                    <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} horizon="1y" strategy={s} />
-                                  </td>
-                                  <td className="text-right">
-                                    <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} horizon="3y" strategy={s} />
-                                  </td>
-                                  <td className="text-right font-medium">
-                                    <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} horizon="si" strategy={s} />
-                                  </td>
-                                  <td
-                                    className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
-                                    onClick={() => {
-                                      setMethodologyStrategy(s);
-                                      setMethodologyModalOpen(true);
-                                    }}
-                                    title="Click to view step-by-step formula and live calculations"
-                                  >
-                                    {s.fh_score != null ? (
-                                      <span className="text-[#181818] dark:text-[#EDF2F7]">
-                                        {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
-                                      </span>
-                                    ) : (
-                                      <span className="text-[#98A2B3]">—</span>
-                                    )}
-                                  </td>
-                                  <td
-                                    className="text-center font-bold text-[#D97706] text-[12px] cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
-                                    onClick={() => {
-                                      setMethodologyStrategy(s);
-                                      setMethodologyModalOpen(true);
-                                    }}
-                                    title="Click to view ranking methodology & formula breakdown"
-                                  >
-                                    <span title={s.fh_rating != null ? undefined : "Not rated: too little disclosed data (returns, AUM or track record) to compute the FH score."}>{s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}</span>
-                                  </td>
-                                  <td className="whitespace-nowrap">
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setMethodologyStrategy(s);
-                                        setMethodologyModalOpen(true);
-                                      }}
-                                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${
-                                        s.fh_signal === "Buy"
-                                          ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
-                                          : s.fh_signal === "Hold"
-                                          ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
-                                          : s.fh_signal === "Sell"
-                                          ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
-                                          : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
-                                      }`}
-                                      title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
-                                    >
-                                      <span className="h-1 w-1 rounded-full bg-current" />
-                                      {s.fh_signal || "Needs review"}
-                                    </button>
-                                  </td>
-                                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
-                                </>
-                              ) : (
-                                <>
-                                  <td className="text-[#706E6B] dark:text-[#A8B4C4]">{approach}</td>
-                                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7] font-mono">
-                                    {formatCrore(s.aum_crore)}
-                                  </td>
-                                  <td className="text-right text-[#706E6B] dark:text-[#A8B4C4] font-mono">
-                                    {s.min_investment || "₹50,00,000"}
-                                  </td>
-                                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                                    <span title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>{s.inception_date || "Not in APMI filing"}</span>
-                                  </td>
-                                  <td className="text-[12px]">
-                                    {s.principal_officer ? (
-                                      <button
-                                        type="button"
-                                        onClick={() => { setManagerProvider(s.provider_name); setSelectedManager(s.principal_officer as string); }}
-                                        className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline focus:outline-none transition cursor-pointer"
-                                        title="Open manager profile"
-                                      >
-                                        {s.principal_officer}
-                                      </button>
-                                    ) : (
-                                      <span className="text-[#181818] dark:text-[#EDF2F7]">—</span>
-                                    )}
-                                  </td>
-                                  <td
-                                    className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
-                                    onClick={() => {
-                                      setMethodologyStrategy(s);
-                                      setMethodologyModalOpen(true);
-                                    }}
-                                    title="Click to view step-by-step formula and live calculations"
-                                  >
-                                    {s.fh_score != null ? (
-                                      <span className="text-[#181818] dark:text-[#EDF2F7]">
-                                        {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
-                                      </span>
-                                    ) : (
-                                      <span className="text-[#98A2B3]">—</span>
-                                    )}
-                                  </td>
-                                  <td
-                                    className="text-center font-bold text-[#D97706] text-[12px] cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
-                                    onClick={() => {
-                                      setMethodologyStrategy(s);
-                                      setMethodologyModalOpen(true);
-                                    }}
-                                    title="Click to view ranking methodology & formula breakdown"
-                                  >
-                                    <span title={s.fh_rating != null ? undefined : "Not rated: too little disclosed data (returns, AUM or track record) to compute the FH score."}>{s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}</span>
-                                  </td>
-                                  <td className="whitespace-nowrap">
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setMethodologyStrategy(s);
-                                        setMethodologyModalOpen(true);
-                                      }}
-                                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${
-                                        s.fh_signal === "Buy"
-                                          ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
-                                          : s.fh_signal === "Hold"
-                                          ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
-                                          : s.fh_signal === "Sell"
-                                          ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
-                                          : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
-                                      }`}
-                                      title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
-                                    >
-                                      <span className="h-1 w-1 rounded-full bg-current" />
-                                      {s.fh_signal || "Needs review"}
-                                    </button>
-                                  </td>
-                                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
-                                </>
-                              )
-                            ) : (
+                          {isRecommended ? (
+                            fhSubTab === "returns" ? (
                               <>
-                                <td className="text-[#706E6B] dark:text-[#A8B4C4]">{approach}</td>
-                                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7] font-mono">
-                                  {s.aum_crore != null && s.aum_crore > 0 ? (
-                                    formatCrore(s.aum_crore)
-                                  ) : (
-                                    <span className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px] font-normal cursor-help" title="AUM not disclosed by manager in APMI filing">
-                                      Not disclosed
-                                    </span>
-                                  )}
-                                </td>
                                 <td className="text-right">
                                   <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} horizon="1m" strategy={s} />
+                                </td>
+                                <td className="text-right">
+                                  <ReturnCell value={s.return_3m_pct} warning={pmsCellReturnWarning("3m", s.return_3m_pct)} horizon="3m" strategy={s} />
+                                </td>
+                                <td className="text-right">
+                                  <ReturnCell value={s.return_6m_pct} warning={pmsCellReturnWarning("6m", s.return_6m_pct)} horizon="6m" strategy={s} />
                                 </td>
                                 <td className="text-right">
                                   <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} horizon="1y" strategy={s} />
@@ -957,16 +799,8 @@ function PmsTracker() {
                                 <td className="text-right">
                                   <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} horizon="3y" strategy={s} />
                                 </td>
-                                <td className="text-right">
+                                <td className="text-right font-medium">
                                   <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} horizon="si" strategy={s} />
-                                </td>
-                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] whitespace-nowrap" title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>
-                                  {pmsInceptionYears(s.inception_date) !== null ? (
-                                    <>
-                                      {formatISTDate(s.inception_date)}
-                                      <span className="block text-[11px] tabular-nums">{pmsInceptionYears(s.inception_date)!.toFixed(1)} yrs</span>
-                                    </>
-                                  ) : "Not in APMI filing"}
                                 </td>
                                 <td
                                   className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
@@ -974,16 +808,14 @@ function PmsTracker() {
                                     setMethodologyStrategy(s);
                                     setMethodologyModalOpen(true);
                                   }}
-                                  title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Click to view step-by-step formula and live calculations"}
+                                  title="Click to view step-by-step formula and live calculations"
                                 >
                                   {s.fh_score != null ? (
                                     <span className="text-[#181818] dark:text-[#EDF2F7]">
                                       {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
                                     </span>
                                   ) : (
-                                    <span className="text-[#98A2B3] text-[11px] font-normal cursor-help" title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Requires 3Y performance history to compute quantitative score"}>
-                                      —
-                                    </span>
+                                    <span className="text-[#98A2B3]">—</span>
                                   )}
                                 </td>
                                 <td
@@ -992,13 +824,9 @@ function PmsTracker() {
                                     setMethodologyStrategy(s);
                                     setMethodologyModalOpen(true);
                                   }}
-                                  title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Click to view ranking methodology & formula breakdown"}
+                                  title="Click to view ranking methodology & formula breakdown"
                                 >
-                                  {s.fh_rating != null ? `★ ${s.fh_rating}/5` : (
-                                    <span className="text-[#98A2B3] text-[11px] font-normal cursor-help" title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Requires 3Y performance history to compute rating"}>
-                                      —
-                                    </span>
-                                  )}
+                                  <span title={s.fh_rating != null ? undefined : "Not rated: too little disclosed data (returns, AUM or track record) to compute the FH score."}>{s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}</span>
                                 </td>
                                 <td className="whitespace-nowrap">
                                   <button
@@ -1007,15 +835,14 @@ function PmsTracker() {
                                       setMethodologyStrategy(s);
                                       setMethodologyModalOpen(true);
                                     }}
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${
-                                      s.fh_signal === "Buy"
-                                        ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
-                                        : s.fh_signal === "Hold"
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${s.fh_signal === "Buy"
+                                      ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                                      : s.fh_signal === "Hold"
                                         ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
                                         : s.fh_signal === "Sell"
-                                        ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
-                                        : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
-                                    }`}
+                                          ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                                          : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+                                      }`}
                                     title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
                                   >
                                     <span className="h-1 w-1 rounded-full bg-current" />
@@ -1024,18 +851,181 @@ function PmsTracker() {
                                 </td>
                                 <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
                               </>
-                            )}
-                          </tr>
-                        );
-                      })}
+                            ) : (
+                              <>
+                                <td className="text-[#706E6B] dark:text-[#A8B4C4]">{approach}</td>
+                                <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7] font-mono">
+                                  {formatCrore(s.aum_crore)}
+                                </td>
+                                <td className="text-right text-[#706E6B] dark:text-[#A8B4C4] font-mono">
+                                  {s.min_investment || "₹50,00,000"}
+                                </td>
+                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
+                                  <span title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>{s.inception_date || "Not in APMI filing"}</span>
+                                </td>
+                                <td className="text-[12px]">
+                                  {s.principal_officer ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => { setManagerProvider(s.provider_name); setSelectedManager(s.principal_officer as string); }}
+                                      className="text-left font-medium text-[#0176D3] dark:text-[#1B96FF] hover:underline focus:outline-none transition cursor-pointer"
+                                      title="Open manager profile"
+                                    >
+                                      {s.principal_officer}
+                                    </button>
+                                  ) : (
+                                    <span className="text-[#181818] dark:text-[#EDF2F7]">—</span>
+                                  )}
+                                </td>
+                                <td
+                                  className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                  onClick={() => {
+                                    setMethodologyStrategy(s);
+                                    setMethodologyModalOpen(true);
+                                  }}
+                                  title="Click to view step-by-step formula and live calculations"
+                                >
+                                  {s.fh_score != null ? (
+                                    <span className="text-[#181818] dark:text-[#EDF2F7]">
+                                      {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
+                                    </span>
+                                  ) : (
+                                    <span className="text-[#98A2B3]">—</span>
+                                  )}
+                                </td>
+                                <td
+                                  className="text-center font-bold text-[#D97706] text-[12px] cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                  onClick={() => {
+                                    setMethodologyStrategy(s);
+                                    setMethodologyModalOpen(true);
+                                  }}
+                                  title="Click to view ranking methodology & formula breakdown"
+                                >
+                                  <span title={s.fh_rating != null ? undefined : "Not rated: too little disclosed data (returns, AUM or track record) to compute the FH score."}>{s.fh_rating != null ? `★ ${s.fh_rating}/5` : "—"}</span>
+                                </td>
+                                <td className="whitespace-nowrap">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setMethodologyStrategy(s);
+                                      setMethodologyModalOpen(true);
+                                    }}
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${s.fh_signal === "Buy"
+                                      ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                                      : s.fh_signal === "Hold"
+                                        ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
+                                        : s.fh_signal === "Sell"
+                                          ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                                          : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+                                      }`}
+                                    title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
+                                  >
+                                    <span className="h-1 w-1 rounded-full bg-current" />
+                                    {s.fh_signal || "Needs review"}
+                                  </button>
+                                </td>
+                                <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
+                              </>
+                            )
+                          ) : (
+                            <>
+                              <td className="text-[#706E6B] dark:text-[#A8B4C4]">{approach}</td>
+                              <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7] font-mono">
+                                {s.aum_crore != null && s.aum_crore > 0 ? (
+                                  formatCrore(s.aum_crore)
+                                ) : (
+                                  <span className="text-[#706E6B] dark:text-[#A8B4C4] text-[11px] font-normal cursor-help" title="AUM not disclosed by manager in APMI filing">
+                                    Not disclosed
+                                  </span>
+                                )}
+                              </td>
+                              <td className="text-right">
+                                <ReturnCell value={s.return_1m_pct} warning={pmsCellReturnWarning("1m", s.return_1m_pct)} horizon="1m" strategy={s} />
+                              </td>
+                              <td className="text-right">
+                                <ReturnCell value={s.return_1y_pct} warning={pmsCellReturnWarning("1y", s.return_1y_pct)} horizon="1y" strategy={s} />
+                              </td>
+                              <td className="text-right">
+                                <ReturnCell value={s.return_3y_cagr_pct} warning={pmsCellReturnWarning("3y", s.return_3y_cagr_pct) ?? warning} horizon="3y" strategy={s} />
+                              </td>
+                              <td className="text-right">
+                                <ReturnCell value={s.return_since_inception_pct} warning={pmsCellReturnWarning("si", s.return_since_inception_pct)} horizon="si" strategy={s} />
+                              </td>
+                              <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] whitespace-nowrap" title={s.inception_date ? undefined : "Inception date not given in the APMI monthly filing."}>
+                                {pmsInceptionYears(s.inception_date) !== null ? (
+                                  <>
+                                    {formatISTDate(s.inception_date)}
+                                    <span className="block text-[11px] tabular-nums">{pmsInceptionYears(s.inception_date)!.toFixed(1)} yrs</span>
+                                  </>
+                                ) : "Not in APMI filing"}
+                              </td>
+                              <td
+                                className="text-center font-bold tabular-nums cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                onClick={() => {
+                                  setMethodologyStrategy(s);
+                                  setMethodologyModalOpen(true);
+                                }}
+                                title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Click to view step-by-step formula and live calculations"}
+                              >
+                                {s.fh_score != null ? (
+                                  <span className="text-[#181818] dark:text-[#EDF2F7]">
+                                    {s.fh_score} <span className="text-[10px] font-normal text-[#706E6B] dark:text-[#A8B4C4]">/ 100</span>
+                                  </span>
+                                ) : (
+                                  <span className="text-[#98A2B3] text-[11px] font-normal cursor-help" title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Requires 3Y performance history to compute quantitative score"}>
+                                    —
+                                  </span>
+                                )}
+                              </td>
+                              <td
+                                className="text-center font-bold text-[#D97706] text-[12px] cursor-pointer hover:bg-[#F2F4F7] dark:hover:bg-[#202936] transition"
+                                onClick={() => {
+                                  setMethodologyStrategy(s);
+                                  setMethodologyModalOpen(true);
+                                }}
+                                title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Click to view ranking methodology & formula breakdown"}
+                              >
+                                {s.fh_rating != null ? `★ ${s.fh_rating}/5` : (
+                                  <span className="text-[#98A2B3] text-[11px] font-normal cursor-help" title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : "Requires 3Y performance history to compute rating"}>
+                                    —
+                                  </span>
+                                )}
+                              </td>
+                              <td className="whitespace-nowrap">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setMethodologyStrategy(s);
+                                    setMethodologyModalOpen(true);
+                                  }}
+                                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition hover:opacity-85 ${s.fh_signal === "Buy"
+                                    ? "bg-[#ECFDF3] text-[#027A48] dark:bg-[#0C2B28] dark:text-[#75E1CE] border border-[#A6F4C5] dark:border-[#124B3F]"
+                                    : s.fh_signal === "Hold"
+                                      ? "bg-[#FFFAEB] text-[#B54708] dark:bg-[#2D2006] dark:text-[#FDB022] border border-[#FEDF89] dark:border-[#4E370B]"
+                                      : s.fh_signal === "Sell"
+                                        ? "bg-[#FEF3F2] text-[#B42318] dark:bg-[#331114] dark:text-[#FDA29B] border border-[#FECDCA] dark:border-[#7A271A]"
+                                        : "bg-[#F2F4F7] text-[#475467] dark:bg-[#1D2939] dark:text-[#98A2B3] border border-[#D0D5DD] dark:border-[#344054]"
+                                    }`}
+                                  title={s.fh_signal_reasons && s.fh_signal_reasons.length > 0 ? s.fh_signal_reasons.join(" • ") : undefined}
+                                >
+                                  <span className="h-1 w-1 rounded-full bg-current" />
+                                  {s.fh_signal || "Needs review"}
+                                </button>
+                              </td>
+                              <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-medium">{selectedBenchmark}</td>
+                            </>
+                          )}
+                        </tr>
+                      );
+                    })}
 
-                    </>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  </>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
 
       <CompareTray
         labels={compare.selectedIds.map((id) => ({ id, name: compare.resolveLabel(id) }))}
@@ -1080,7 +1070,7 @@ function PmsTracker() {
       {docModalOpen && (
         <PmsDocumentModal
           onClose={() => setDocModalOpen(false)}
-          onUploaded={() => {}}
+          onUploaded={() => { }}
         />
       )}
 

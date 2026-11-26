@@ -75,8 +75,6 @@ export default function EquitiesPage() {
   const [updated, setUpdated] = useState<Date | null>(null);
   const names = useRef<Record<string, string>>({});
   const [showNew, setShowNew] = useState(false);
-  const [hideTip, setHideTip] = useState(true); // true until we know (avoids flash)
-  useEffect(() => { try { setHideTip(localStorage.getItem("fh.equities.tip") === "1"); } catch { setHideTip(false); } }, []);
 
   const fail = (e: unknown) => setErr(e instanceof Error ? e.message : "Request failed");
 
@@ -273,13 +271,6 @@ export default function EquitiesPage() {
         {selectedStock ? `Research: ${selectedStock}` : basket ? basket.name : "Equities"}
       </h1>
 
-      {!hideTip && !selectedStock && (
-        <div className="mt-5 flex items-center gap-3 rounded border border-[#E8EBED] bg-white px-4 py-3 text-sm">
-          <span aria-hidden className="text-[#1F7AE0]">◆</span>
-          <span className="flex-1"><b className="font-medium">Track &amp; Research Ideas</b> <span className="text-[#81878C]">— click any stock to view detailed financials, valuation, and charts, or build custom baskets with share steppers.</span></span>
-          <button className="text-sm font-medium text-[#81878C]" onClick={() => { setHideTip(true); try { localStorage.setItem("fh.equities.tip", "1"); } catch {} }}>Got it</button>
-        </div>
-      )}
       {err && <p className="mt-3 text-sm text-[#E5484D]">{err}</p>}
 
       {/* Basket tabs */}

@@ -547,15 +547,9 @@ export default function HrmsPage() {
       {/* Header */}
       <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <div className="flex items-center gap-2.5">
+          <div>
             <h1 className={`text-2xl font-bold tracking-tight ${INK_CLS}`}>Human Resources & Payroll</h1>
-            <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-              Automated HRMS
-            </span>
           </div>
-          <p className={`mt-1 text-sm ${MUTED_CLS}`}>
-            Official letters with dynamic placeholders, Indian payroll & CTC breakdown, one-click payslip dispatch, and attendance.
-          </p>
         </div>
 
         {/* Quick action buttons */}
@@ -959,9 +953,6 @@ export default function HrmsPage() {
             <div className={`lg:col-span-5 ${CARD_CLS} p-5 space-y-4`}>
               <div>
                 <h3 className={`text-base font-semibold ${INK_CLS}`}>Official Letter Generator</h3>
-                <p className={`text-xs ${MUTED_CLS}`}>
-                  Creates official branded PDF letters with ARN 345439, letterhead, Annexure A salary breakdown, and authorized signature.
-                </p>
               </div>
 
               {/* Template selector */}
@@ -1147,9 +1138,6 @@ export default function HrmsPage() {
           <div className={`${CARD_CLS} p-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between`}>
             <div>
               <h3 className={`text-base font-semibold ${INK_CLS}`}>Monthly Payroll Runs</h3>
-              <p className={`text-xs ${MUTED_CLS}`}>
-                Calculates monthly earnings, statutory EPF (12%), Professional Tax (₹200), TDS, and generates individual payslips.
-              </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -1449,9 +1437,6 @@ export default function HrmsPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className={`text-lg font-bold ${INK_CLS}`}>Employee ID Cards & Verification QR</h2>
-              <p className={`text-xs ${MUTED_CLS}`}>
-                CR80 vertical PVC badges with authorized signatory Mr. Manohar Hemdev and tamper-proof QR credentials.
-              </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button onClick={handleBulkIssueCards} className={SEC_BTN}>
@@ -2035,9 +2020,6 @@ export default function HrmsPage() {
             <div className="flex items-center justify-between border-b border-[#E4E9EF] dark:border-[#2B3644] pb-3 mb-4">
               <div>
                 <h3 className={`text-base font-bold ${INK_CLS}`}>Issue Official ID Card</h3>
-                <p className={`text-[11px] ${MUTED_CLS}`}>
-                  Generates tamper-proof QR code & vertical CR80 badge
-                </p>
               </div>
               <button
                 onClick={() => setIssueCardModalOpen(false)}

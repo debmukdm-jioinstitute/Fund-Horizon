@@ -284,15 +284,7 @@ export default function ServiceDeskPage() {
       {/* Header & Controls */}
       <div className={`${card} px-5 py-4 sm:flex sm:items-center sm:justify-between gap-4`}>
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Service desk</h1>
-            <span className="rounded-full bg-[#EAF2FE] dark:bg-[#162A4A] px-2.5 py-0.5 text-[11px] font-semibold text-[#1D5BD8] dark:text-[#60A5FA]">
-              Active Desk
-            </span>
-          </div>
-          <p className={`mt-0.5 text-[13px] ${muted}`}>
-            Central registry for client service requests, ticket workflow progression, and monthly reporting SLAs.
-          </p>
+          <h1 className={`text-2xl font-bold tracking-tight ${ink}`}>Service desk</h1>
         </div>
         <div className="mt-3 sm:mt-0 flex flex-wrap gap-2">
           <button type="button" onClick={exportCsv} className={btn} title="Export daily query log to CSV">

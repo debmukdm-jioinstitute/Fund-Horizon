@@ -11,15 +11,12 @@ import CompareView from "@/components/compare/CompareView";
 import { pmsCompareId, useCompareSelection } from "@/lib/compare-selection";
 import {
   getPmsStrategies,
-  getPmsAccountTracker,
   PmsStrategyItem,
-  PmsAccountTrackerData,
   evaluatePmsScreening,
   pmsInceptionYears,
   PMS_BENCHMARKS,
 } from "@/lib/backoffice";
-import { ApiError } from "@/lib/api";
-import { formatCurrencyPaiseToINR, formatCrore, formatISTDate } from "@/lib/terminal-format";
+import { formatCrore, formatISTDate } from "@/lib/terminal-format";
 import SignedValue from "@/components/terminal/SignedValue";
 import PmsStrategyDrawer from "@/components/backoffice/PmsStrategyDrawer";
 import PmsManagerDrawer from "@/components/backoffice/PmsManagerDrawer";
@@ -146,18 +143,13 @@ function PmsTracker() {
   const [pmsRecDropdownOpen, setPmsRecDropdownOpen] = useState(false);
   const [newPmsId, setNewPmsId] = useState("");
   const [newPmsName, setNewPmsName] = useState("");
-  const [tab, setTab] = useState<"strategies" | "accounts">(section === "accounts" ? "accounts" : "strategies");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
   const [asOf, setAsOf] = useState<string | undefined>();
   const [selectedStrategy, setSelectedStrategy] = useState<PmsStrategyItem | null>(null);
   const [selectedManager, setSelectedManager] = useState<string | null>(null);
   const [managerProvider, setManagerProvider] = useState<string | null>(null);
-  const [selectedAccountId, setSelectedAccountId] = useState<string>("");
-  const [accountTracker, setAccountTracker] = useState<PmsAccountTrackerData | null>(null);
   const [strategiesLoading, setStrategiesLoading] = useState(true);
-  const [accountLoading, setAccountLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [accountHint, setAccountHint] = useState<string | null>(null);
   const [meta, setMeta] = useState<Record<string, InfoTipMeta> | undefined>();
 
   const [categoryFilter, setCategoryFilter] = useState(params.get("approach") ?? (section?.startsWith("fh-") ? "fh-recommended" : "all"));
@@ -189,29 +181,6 @@ function PmsTracker() {
     }
     load();
   }, []);
-
-  async function handleLoadAccount(accId: string) {
-    if (!accId.trim()) return;
-    try {
-      setAccountLoading(true);
-      setError(null);
-      setAccountHint(null);
-      const res = await getPmsAccountTracker(accId.trim());
-      setAccountTracker(res.data);
-    } catch (err: unknown) {
-      setAccountTracker(null);
-      if (err instanceof ApiError && err.status === 404) {
-        setAccountHint(
-          "No PMS account was found for that id. Check the spelling, or confirm the account exists in the client ledger."
-        );
-        setError(null);
-      } else {
-        setError(err instanceof Error ? err.message : "Failed to load account tracker");
-      }
-    } finally {
-      setAccountLoading(false);
-    }
-  }
 
   const isRecommended = categoryFilter === "fh-recommended";
   // useRecommended() returns a new object every render, so key on the IDs themselves or the filter+sort below reruns on every render
@@ -328,11 +297,10 @@ function PmsTracker() {
     { key: "all", icon: "📊", title: "All strategies", text: "Every PMS strategy with returns, AUM, FH rating and signal, sortable and searchable." },
     { key: "fh-returns", icon: "⭐", title: "FH Recommended: returns", text: "Our recommended strategies against the chosen benchmark, period by period." },
     { key: "fh-details", icon: "🧾", title: "FH Recommended: details", text: "Structure, fees, manager and inception for each recommended strategy." },
-    { key: "accounts", icon: "👥", title: "Client accounts", text: "Client PMS accounts with XIRR, cash flows and high-water mark fee checks." },
   ].map((i) => ({ ...i, href: sectionHref(i.key) }));
 
   const colSpan = 12;
-  const trayVisible = tab === "strategies" && compare.selectedIds.length > 0;
+  const trayVisible = compare.selectedIds.length > 0;
 
   return (
     <div className={`space-y-4 ${trayVisible ? "pb-[88px]" : ""}`}>
@@ -348,48 +316,36 @@ function PmsTracker() {
           )}
           <div className="flex items-center gap-2">
             <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight leading-snug">
-              PMS Performance & Account Tracker
+              PMS Performance &amp; Strategy Tracker
             </h1>
             <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
               APMI Standard
             </span>
           </div>
           <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-1 leading-normal">
-            Portfolio Management Services strategy registry, XIRR returns, and high-water mark fee auditing
+            Portfolio Management Services strategy registry, APMI benchmarked returns, and manager research
           </p>
         </div>
 
         <div className={`flex items-center gap-1.5 self-start sm:self-auto ${home ? "hidden" : ""}`}>
-          {tab === "strategies" && (
-            <button
-              type="button"
-              disabled={compare.selectedIds.length < 2}
-              onClick={compare.openCompare}
-              className="terminal-btn-accent text-[12px] py-1 px-3 disabled:opacity-40"
-            >
-              Compare{compare.selectedIds.length ? ` (${compare.selectedIds.length})` : ""}
-            </button>
-          )}
           <button
             type="button"
-            onClick={() => setTab("strategies")}
-            className={tab === "strategies" ? "terminal-btn-accent text-[12px] py-1 px-3" : "terminal-btn text-[12px] py-1 px-3"}
+            disabled={compare.selectedIds.length < 2}
+            onClick={compare.openCompare}
+            className="terminal-btn-accent text-[12px] py-1 px-3 disabled:opacity-40"
           >
-            Strategy Research ({strategies.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("accounts")}
-            className={tab === "accounts" ? "terminal-btn-accent text-[12px] py-1 px-3" : "terminal-btn text-[12px] py-1 px-3"}
-          >
-            Client Accounts
+            Compare{compare.selectedIds.length ? ` (${compare.selectedIds.length})` : ""}
           </button>
         </div>
       </div>
 
-      {tab === "strategies" ? (
-        <div className="space-y-3">
-          <div className="terminal-panel relative z-50 p-3 space-y-3">
+      <div className="space-y-3">
+        {error && (
+          <div className="terminal-panel p-3 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px]">
+            {error}
+          </div>
+        )}
+        <div className="terminal-panel relative z-50 p-3 space-y-3">
             {/* Top row: Primary Search, Categorization & Provenance */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2.5 border-b border-[#E5E5E5]/70 dark:border-[#2B3644]/70">
               <div className="flex flex-wrap items-center gap-2 flex-1">
@@ -1080,187 +1036,21 @@ function PmsTracker() {
             </div>
           </div>
         </div>
-      ) : (
-        <div className="space-y-3">
-          <div className="terminal-panel p-2.5 space-y-2">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <input
-                type="text"
-                value={selectedAccountId}
-                onChange={(e) => setSelectedAccountId(e.target.value)}
-                placeholder="e.g. acc_pms_01"
-                className="terminal-input flex-1 text-[12px] py-1 px-2.5 font-mono"
-                aria-describedby="pms-account-id-hint"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleLoadAccount(selectedAccountId);
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => handleLoadAccount(selectedAccountId)}
-                disabled={accountLoading || !selectedAccountId.trim()}
-                className="terminal-btn-accent text-[12px] py-1 px-3"
-              >
-                {accountLoading ? "Loading…" : "Track Account"}
-              </button>
-            </div>
-            <p id="pms-account-id-hint" className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-              Use the internal account id from the client ledger (for example <span className="font-mono">acc_pms_01</span>). Matching is exact and case-sensitive.
-            </p>
-          </div>
 
-          {error && (
-            <div className="terminal-panel p-3 border border-[#B42332]/30 bg-[#B42332]/5 text-[#B42332] dark:text-[#FF7D86] text-[12px]">
-              {error}
-            </div>
-          )}
-
-          {accountHint && (
-            <div className="terminal-panel p-3 text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-              {accountHint}
-            </div>
-          )}
-
-          {accountTracker && (
-            <div className="space-y-3">
-              <div className="terminal-panel overflow-hidden">
-                <table className="terminal-table">
-                  <thead>
-                    <tr>
-                      <th>Account Metric</th>
-                      <th className="text-right">Valuation / Return</th>
-                      <th className="text-right">Benchmark / HWM</th>
-                      <th>Methodology</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="font-medium">
-                        <span className="inline-flex items-center gap-1">
-                          Portfolio Current Valuation
-                          <InfoTip metric="aum" />
-                        </span>
-                      </td>
-                      <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
-                        {accountTracker.current_valuation_paise
-                          ? formatCurrencyPaiseToINR(accountTracker.current_valuation_paise)
-                          : "—"}
-                      </td>
-                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
-                        Fee: {accountTracker.hwm_fee?.estimated_fee_paise ? formatCurrencyPaiseToINR(accountTracker.hwm_fee.estimated_fee_paise) : "₹0"}
-                      </td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Latest Closing Valuation</td>
-                      <td className="text-[12px] text-[#087744] dark:text-[#58D6A0]">Audited</td>
-                    </tr>
-                    <tr>
-                      <td className="font-medium">
-                        <span className="inline-flex items-center gap-1">
-                          Annualized XIRR Return
-                          <InfoTip metric="xirr" />
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <SignedValue value={accountTracker.xirr?.xirr_pct} unit="%" />
-                      </td>
-                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
-                        Status: {accountTracker.xirr?.status || "Computed"}
-                      </td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">SEBI Cashflow IRR Standard</td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Audited</td>
-                    </tr>
-                    <tr>
-                      <td className="font-medium">
-                        <span className="inline-flex items-center gap-1">
-                          Modified Dietz Return (CY)
-                          <InfoTip metric="dietz_return" />
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <SignedValue value={accountTracker.modified_dietz?.return_pct} unit="%" />
-                      </td>
-                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">—</td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Time-Weighted Cashflows</td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Daily-weighted</td>
-                    </tr>
-                    <tr>
-                      <td className="font-medium">
-                        <span className="inline-flex items-center gap-1">
-                          High Water Mark (HWM) Status
-                          <InfoTip metric="hwm" />
-                        </span>
-                      </td>
-                      <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">
-                        {accountTracker.hwm_fee?.hwm_exceeded ? "Above HWM (Fee Triggered)" : "Below HWM (No Performance Fee)"}
-                      </td>
-                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
-                        {accountTracker.hwm_fee?.estimated_fee_paise
-                          ? `Est. Fee: ${formatCurrencyPaiseToINR(accountTracker.hwm_fee.estimated_fee_paise)}`
-                          : "No Fee Due"}
-                      </td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">SEBI Performance Fee Rule</td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Compliant</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {accountTracker.positions && accountTracker.positions.length > 0 && (
-                <div className="terminal-panel overflow-hidden">
-                  <div className="p-2 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
-                    Portfolio Holdings & Weight Breakdown
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="terminal-table">
-                      <thead>
-                        <tr>
-                          <th>Asset Name</th>
-                          <th>Symbol / Class</th>
-                          <th className="text-right">Quantity</th>
-                          <th className="text-right">Market Value</th>
-                          <th className="text-right">Valuation Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {accountTracker.positions.map((pos, pIdx) => (
-                          <tr key={pIdx}>
-                            <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">{pos.asset_name || pos.symbol || "Asset"}</td>
-                            <td className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4]">{pos.symbol || pos.asset_class || "—"}</td>
-                            <td className="text-right font-mono">{pos.quantity !== undefined ? pos.quantity.toLocaleString("en-IN") : "—"}</td>
-                            <td className="text-right font-medium font-mono">
-                              {formatCurrencyPaiseToINR(pos.market_value_paise)}
-                            </td>
-                            <td className="text-right text-[12px] text-[#706E6B] dark:text-[#A8B4C4] font-mono">{pos.valuation_date}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {tab === "strategies" && (
-        <>
-          <CompareTray
-            labels={compare.selectedIds.map((id) => ({ id, name: compare.resolveLabel(id) }))}
-            onRemove={compare.remove}
-            onClear={compare.clear}
-            onCompare={compare.openCompare}
-          />
-          <CompareView
-            open={compare.compareOpen}
-            type="pms"
-            ids={compare.selectedIds}
-            onClose={compare.closeCompare}
-            onRemoveId={compare.remove}
-            resolveLabel={compare.resolveLabel}
-          />
-        </>
-      )}
+      <CompareTray
+        labels={compare.selectedIds.map((id) => ({ id, name: compare.resolveLabel(id) }))}
+        onRemove={compare.remove}
+        onClear={compare.clear}
+        onCompare={compare.openCompare}
+      />
+      <CompareView
+        open={compare.compareOpen}
+        type="pms"
+        ids={compare.selectedIds}
+        onClose={compare.closeCompare}
+        onRemoveId={compare.remove}
+        resolveLabel={compare.resolveLabel}
+      />
 
       <PmsStrategyDrawer
         strategy={selectedStrategy}

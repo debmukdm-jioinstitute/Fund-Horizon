@@ -161,7 +161,6 @@ function PmsTracker() {
   const [docModalOpen, setDocModalOpen] = useState(false);
   const [matrixModalOpen, setMatrixModalOpen] = useState(false);
   const [selectedBenchmark, setSelectedBenchmark] = useState(params.get("bench") ?? "BSE 500 TRI");
-  const [customScore, setCustomScore] = useState(params.get("custom") === "1");
   const [methodologyModalOpen, setMethodologyModalOpen] = useState(false);
   const [methodologyStrategy, setMethodologyStrategy] = useState<PmsStrategyItem | null>(null);
 
@@ -203,7 +202,7 @@ function PmsTracker() {
 
   const evaluatedStrategies = useMemo(() => {
     return strategies.map((s) => {
-      const evalRes = evaluatePmsScreening(s, selectedBenchmark, customScore);
+      const evalRes = evaluatePmsScreening(s, selectedBenchmark);
       return {
         ...s,
         benchmark_name: selectedBenchmark,
@@ -213,7 +212,7 @@ function PmsTracker() {
         fh_signal_reasons: evalRes.reasons,
       };
     });
-  }, [strategies, selectedBenchmark, customScore]);
+  }, [strategies, selectedBenchmark]);
 
   const filteredStrategies = useMemo(() => {
     const q = deferredSearch.trim().toLowerCase();
@@ -436,17 +435,6 @@ function PmsTracker() {
                   ))}
                 </select>
               </div>
-
-              <button
-                type="button"
-                aria-pressed={customScore}
-                onClick={() => setCustomScore((v) => !v)}
-                title="Custom score: a strategy with 3 or more years of track record keeps its full standard score (100% weight); below 3 years the score scales down by tenure/3 on a 20% manager weight. Track record = inception date when disclosed, else the longest reported return horizon (APMI gives no manager start date)."
-                className={`text-[12px] py-1.5 px-3 font-medium cursor-pointer rounded-lg border transition ${customScore ? "terminal-btn-accent shadow-sm" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
-                  }`}
-              >
-                Custom: Manager 3y+ = 100%
-              </button>
             </div>
 
             {/* Group 2: Tools, Strategy Settings & Document Upload */}

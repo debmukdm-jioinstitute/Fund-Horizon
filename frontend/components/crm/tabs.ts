@@ -8,7 +8,6 @@ export const CRM_TABS = [
   ["opportunities", "Opportunities"],
   ["activities", "Tasks"],
   ["deadlines", "Deadlines"],
-  ["import", "Import"],
 ] as const;
 
 export type CrmTabId = (typeof CRM_TABS)[number][0];

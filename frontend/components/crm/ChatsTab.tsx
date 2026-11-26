@@ -2,22 +2,34 @@
 
 import { useCallback, useEffect, useState } from "react";
 import ChatThread from "@/components/ChatThread";
-import { getStaffChats, getStaffThread, sendStaffReply, type ChatThread as Thread } from "@/lib/api";
+import { deleteStaffChat, getStaffChats, getStaffThread, sendStaffReply, type ChatThread as Thread } from "@/lib/api";
+import DeleteConfirmDialog from "./DeleteConfirmDialog";
 
 /** Customer chats, shown as the CRM Chats tab. */
 export default function ChatsTab() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [sel, setSel] = useState<Thread | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const loadThreads = useCallback(() => {
+    getStaffChats().then((r) => setThreads(r.threads)).catch(() => {});
+  }, []);
 
   useEffect(() => {
-    const load = () => getStaffChats().then((r) => setThreads(r.threads)).catch(() => {});
-    load();
-    const t = setInterval(load, 10000);
+    loadThreads();
+    const t = setInterval(loadThreads, 10000);
     return () => clearInterval(t);
-  }, []);
+  }, [loadThreads]);
 
   const load = useCallback(() => getStaffThread(sel!.customer_id), [sel]);
   const send = useCallback((b: string) => sendStaffReply(sel!.customer_id, b), [sel]);
+
+  const handleDelete = async () => {
+    if (!sel) return;
+    await deleteStaffChat(sel.customer_id);
+    setSel(null);
+    loadThreads();
+  };
 
   return (
     <div className="grid gap-4 md:grid-cols-[280px_1fr]">
@@ -32,9 +44,39 @@ export default function ChatsTab() {
           </li>
         ))}
       </ul>
-      <div>
-        {sel ? <ChatThread key={sel.customer_id} load={load} send={send} mine={1} /> : <p className="text-[13px] text-[#536176]">Select a conversation.</p>}
+      <div className="space-y-3">
+        {sel ? (
+          <>
+            <div className="flex items-center justify-between pb-2 border-b border-[#E4E9EF] dark:border-[#2B3644]">
+              <div>
+                <h3 className="text-sm font-bold text-[#181818] dark:text-[#EDF2F7]">{sel.name}</h3>
+                <p className="text-xs text-[#536176] dark:text-[#A8B4C4]">{sel.email}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="rounded-lg border border-rose-300 dark:border-rose-800/60 bg-rose-50 dark:bg-rose-950/40 px-3 py-1.5 text-xs font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition"
+              >
+                Delete conversation
+              </button>
+            </div>
+            <ChatThread key={sel.customer_id} load={load} send={send} mine={1} />
+          </>
+        ) : (
+          <p className="text-[13px] text-[#536176]">Select a conversation.</p>
+        )}
       </div>
+
+      {confirmDelete && sel && (
+        <DeleteConfirmDialog
+          title={`Delete conversation with ${sel.name}?`}
+          description="This permanently deletes all messages in this conversation thread."
+          onConfirm={async () => {
+            await handleDelete();
+          }}
+          onClose={() => setConfirmDelete(false)}
+        />
+      )}
     </div>
   );
 }

@@ -125,3 +125,10 @@ def staff_reply(customer_id: str, body: MessageIn, staff: Annotated[dict, Depend
     if not repo._first("SELECT 1 FROM customers WHERE id = ?", (customer_id,)):
         raise HTTPException(404, "Customer not found")
     return _post(customer_id, staff["id"], 1, body.body)
+
+
+@router.delete("/api/staff/chats/{customer_id}")
+def staff_delete_thread(customer_id: str, _: Annotated[dict, Depends(staff_only)]):
+    repo = get_repository()
+    repo._run("DELETE FROM chat_messages WHERE customer_id = ?", (customer_id,))
+    return {"deleted": True, "customer_id": customer_id}

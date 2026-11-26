@@ -32,5 +32,7 @@ def test_chat_and_crm_scoping(client):
         threads = sc.get("/api/staff/chats").json()["threads"]
         assert threads[0]["customer_id"] == a and threads[0]["unread"] == 1
         assert sc.post(f"/api/staff/chats/{a}", json={"body": "Hi, how can we help?"}).status_code == 201
+        assert sc.delete(f"/api/staff/chats/{a}").status_code == 200
+        assert sc.get("/api/staff/chats").json()["threads"] == []
     msgs = client.get("/api/me/messages").json()["messages"]
-    assert [m["from_staff"] for m in msgs] == [0, 1]
+    assert msgs == []

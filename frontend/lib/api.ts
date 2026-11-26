@@ -364,6 +364,8 @@ export const getStaffThread = (id: string) =>
   authedRequest<{ messages: ChatMessage[] }>(`${API_URL}/api/staff/chats/${id}`);
 export const sendStaffReply = (id: string, body: string) =>
   authedRequest<ChatMessage>(`${API_URL}/api/staff/chats/${id}`, { method: "POST", body: JSON.stringify({ body }) });
+export const deleteStaffChat = (id: string) =>
+  authedRequest<{ deleted: boolean; customer_id: string }>(`${API_URL}/api/staff/chats/${id}`, { method: "DELETE" });
 
 export type DownloadResult =
   | { status: "tunnel" | "redirect"; filename: string; file: string }

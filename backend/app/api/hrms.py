@@ -563,6 +563,15 @@ def generate_letter(req: LetterGenerateRequest, user: Annotated[dict, Depends(re
         return data
 
 
+@router.delete("/letters/{letter_id}")
+def delete_letter(letter_id: str, user: Annotated[dict, Depends(require_staff)]):
+    init_hrms_tables()
+    with get_db() as conn:
+        if conn.execute("DELETE FROM hrms_letters WHERE id = ?", (letter_id,)).rowcount == 0:
+            raise HTTPException(status_code=404, detail="Letter not found")
+        return {"status": "ok", "deleted_id": letter_id}
+
+
 @router.get("/letters/{letter_id}/pdf")
 def download_letter_pdf(letter_id: str, user: Annotated[dict, Depends(require_staff)]):
     """Generate and return official letter PDF with company letterhead and signature stamp."""
@@ -998,6 +1007,15 @@ def apply_leave(req: LeaveRequestCreate, user: Annotated[dict, Depends(require_s
         )
         row = conn.execute("SELECT * FROM hrms_leaves WHERE id = ?", (leave_id,)).fetchone()
         return dict(row)
+
+
+@router.delete("/leaves/{leave_id}")
+def delete_leave(leave_id: str, user: Annotated[dict, Depends(require_staff)]):
+    init_hrms_tables()
+    with get_db() as conn:
+        if conn.execute("DELETE FROM hrms_leaves WHERE id = ?", (leave_id,)).rowcount == 0:
+            raise HTTPException(status_code=404, detail="Leave request not found")
+        return {"status": "ok", "deleted_id": leave_id}
 
 
 @router.patch("/leaves/{leave_id}/status")

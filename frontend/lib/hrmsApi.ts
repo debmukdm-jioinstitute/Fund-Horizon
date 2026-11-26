@@ -290,6 +290,14 @@ export async function generateLetter(payload: {
   });
 }
 
+export async function deleteLetter(id: string): Promise<{ status: string }> {
+  return hrmsRequest<{ status: string }>(`/letters/${id}`, { method: "DELETE" });
+}
+
+export async function deleteLeave(id: string): Promise<{ status: string }> {
+  return hrmsRequest<{ status: string }>(`/leaves/${id}`, { method: "DELETE" });
+}
+
 export function getLetterPdfUrl(letterId: string): string {
   return resolveApiUrl(`/api/hrms/letters/${letterId}/pdf`);
 }

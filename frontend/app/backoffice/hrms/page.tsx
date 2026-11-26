@@ -17,6 +17,8 @@ import {
   updateEmployee,
   deleteEmployee,
   deleteIdCard,
+  deleteLetter,
+  deleteLeave,
   fetchLetterTemplates,
   fetchLetters,
   generateLetter,
@@ -427,6 +429,29 @@ export default function HrmsPage() {
       showToast(`Bulk ID cards issued: ${res.issued_count} new cards generated!`);
       const updatedCards = await fetchIdCards();
       setIdCards(updatedCards);
+      loadData();
+    } catch (err: unknown) {
+      showToast(getErrMsg(err), true);
+    }
+  };
+
+  const handleDeleteLetter = async (id: string, title: string) => {
+    if (!window.confirm(`Delete letter "${title}"? This cannot be undone.`)) return;
+    try {
+      await deleteLetter(id);
+      showToast("Letter deleted");
+      setLetters(await fetchLetters());
+    } catch (err: unknown) {
+      showToast(getErrMsg(err), true);
+    }
+  };
+
+  const handleDeleteLeave = async (id: string) => {
+    if (!window.confirm("Delete this leave request? This cannot be undone.")) return;
+    try {
+      await deleteLeave(id);
+      showToast("Leave request deleted");
+      setLeaves(await fetchLeaves());
       loadData();
     } catch (err: unknown) {
       showToast(getErrMsg(err), true);
@@ -1096,6 +1121,12 @@ export default function HrmsPage() {
                             </svg>
                             Download PDF
                           </a>
+                          <button
+                            onClick={() => handleDeleteLetter(letRec.id, letRec.title)}
+                            className="ml-3 font-semibold text-red-600 hover:underline"
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -1376,8 +1407,9 @@ export default function HrmsPage() {
                       </div>
                       <p className={`mt-2 text-xs italic ${INK_CLS}`}>&ldquo;{l.reason}&rdquo;</p>
 
-                      {l.status === "pending" && (
-                        <div className="mt-3 flex items-center justify-end gap-2 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-2">
+                      <div className="mt-3 flex items-center justify-end gap-2 border-t border-[#E4E9EF] dark:border-[#2B3644] pt-2">
+                        {l.status === "pending" && (
+                          <>
                           <button
                             onClick={() => handleReviewLeave(l.id, "approved")}
                             className="rounded px-2.5 py-1 text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700"
@@ -1390,8 +1422,15 @@ export default function HrmsPage() {
                           >
                             Reject
                           </button>
-                        </div>
-                      )}
+                          </>
+                        )}
+                        <button
+                          onClick={() => handleDeleteLeave(l.id)}
+                          className="rounded px-2.5 py-1 text-xs font-semibold border border-red-600 text-red-600 hover:bg-red-50"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>

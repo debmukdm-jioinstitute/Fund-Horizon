@@ -889,13 +889,6 @@ export function pmsInceptionYears(inception?: string, now = Date.now()): number 
   return Number.isNaN(t) || t > now ? null : (now - t) / 31557600000;
 }
 
-/** Years of strategy track record, standing in for manager tenure (APMI gives no manager start date): the inception date when disclosed, else the longest reported return horizon (a lower bound). */
-export function pmsTrackYears(item: { inception_date?: string; return_1y_pct?: number; return_3y_cagr_pct?: number }, now = Date.now()): number {
-  const t = item.inception_date ? Date.parse(item.inception_date) : NaN;
-  const fromDate = Number.isNaN(t) ? 0 : Math.max(0, (now - t) / 31557600000);
-  return Math.max(fromDate, item.return_3y_cagr_pct !== undefined ? 3 : item.return_1y_pct !== undefined ? 1 : 0);
-}
-
 export function evaluatePmsScreening(
   item: {
     inception_date?: string;
@@ -906,9 +899,7 @@ export function evaluatePmsScreening(
     return_3y_cagr_pct?: number;
     aum_crore?: number;
   },
-  selectedBenchmark = "BSE 500 TRI",
-  /** Custom score: the standard score is kept whole when the track record is 3 years or more (100% weight) and scaled by 0.8 + 0.2 x years/3 below that. */
-  custom = false
+  selectedBenchmark = "BSE 500 TRI"
 ): PmsScreeningBreakdown {
   const bench = PMS_BENCHMARKS[selectedBenchmark] || PMS_BENCHMARKS["BSE 500 TRI"];
   const b1m = bench.return_1m;
@@ -1015,8 +1006,7 @@ export function evaluatePmsScreening(
   }
   const totalDownsidePoints = downsideResiliencePoints + aumScalePoints;
 
-  const standardScore = Math.min(100, Math.max(0, totalBenchPoints + totalConsistencyPoints + totalDownsidePoints));
-  const rawScore = custom ? standardScore * (0.8 + 0.2 * Math.min(1, pmsTrackYears(item) / 3)) : standardScore;
+  const rawScore = Math.min(100, Math.max(0, totalBenchPoints + totalConsistencyPoints + totalDownsidePoints));
   const score = Math.round(rawScore * 10) / 10;
   let rating = 1;
   let signal: "Buy" | "Hold" | "Sell" = "Sell";

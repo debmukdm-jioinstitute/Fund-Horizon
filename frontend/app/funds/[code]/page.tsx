@@ -8,7 +8,6 @@ import { notFound } from "next/navigation";
 import { getFundAnalyticsServer, getFundDetailServer, getFundPeers, getFundPortfolio, getFundQuartiles, getFundReferenceServer } from "@/lib/api";
 import type { FundReference, MfRefRow } from "@/lib/types";
 import { CATEGORY_LABELS, pct } from "@/lib/format";
-import ExplainModal from "@/components/ExplainModal";
 import {
   CaptureRatioBarChart,
   DrawdownEpisodesTable,
@@ -277,11 +276,6 @@ export default async function FundDetailPage({ params }: PageProps) {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <ExplainModal
-              buttonLabel="Explain Metrics"
-              kind="fund"
-              schemeCode={detail.scheme_code}
-            />
             <Link
               href={`/funds/compare?codes=${detail.scheme_code}`}
               className="rounded-lg bg-navy-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-navy-800 transition-colors"

@@ -30,7 +30,12 @@ export default function ValuationDashboard() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/backoffice/operations" className={`text-[12px] ${muted} hover:underline`}>← Operations</Link>
+          <div className="flex items-center gap-2">
+            <Link href="/backoffice/operations" className={`text-[12px] ${muted} hover:underline`}>← Operations</Link>
+            <span className="rounded bg-amber-100 dark:bg-amber-950/80 px-2 py-0.5 text-[11px] font-semibold text-amber-800 dark:text-amber-300 uppercase tracking-wide">
+              Archived
+            </span>
+          </div>
           <h1 className="text-xl font-bold">Monthly valuation</h1>
         </div>
         <Link href="/backoffice/operations/valuation/new" className={btnPrimary}>New valuation</Link>

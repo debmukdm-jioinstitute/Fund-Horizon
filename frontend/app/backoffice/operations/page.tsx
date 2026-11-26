@@ -407,6 +407,7 @@ function RegisterTab({ filings, error, onMove }: { filings: Filing[]; error: str
 export default function OperationsPage() {
   const [view, setView] = useState<"home" | "forms" | "download">("home");
   const [initialTab, setInitialTab] = useState<Tab>("updates");
+  const [showArchives, setShowArchives] = useState(false);
 
   useEffect(() => {
     const sync = () => {
@@ -508,56 +509,6 @@ export default function OperationsPage() {
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-
-            <Link
-              href="/backoffice/operations/valuation"
-              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 3v18h18" />
-                  <path d="M7 15l4-4 3 3 5-6" />
-                </svg>
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
-                  Monthly valuation
-                </span>
-                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
-                  FundsIndia, ProAffluence and Stallion statements · Reconciliation · Consolidated PDF
-                </span>
-              </span>
-              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </Link>
-
-            <Link
-              href="/backoffice/operations/paperwork"
-              className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FE] dark:bg-[#162A4A] text-[#1D5BD8] dark:text-[#60A5FA]">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6" />
-                  <path d="M14 2v6h6" />
-                  <path d="M8 12h5" />
-                  <path d="M8 16h3" />
-                  <circle cx="17.5" cy="17.5" r="4.5" fill="currentColor" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8" />
-                  <path d="M15.5 17.5l1.5 1.5 3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[16.5px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
-                  Paperwork processing
-                </span>
-                <span className="block text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
-                  Build monthly reports · Review numbers · Download · Save to CRM · Email
-                </span>
-              </span>
-              <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </Link>
           </div>
         </div>
 
@@ -665,6 +616,108 @@ export default function OperationsPage() {
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </Link>
+          </div>
+        </div>
+
+        <div className="border-b border-dotted border-[#D4DCE5] dark:border-[#2B3644]" />
+
+        {/* Section 5: Archives */}
+        <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8">
+          <div className="w-48 shrink-0 pt-3 text-[11.5px] font-bold uppercase tracking-wider text-[#667085] dark:text-[#9AA6B8]">
+            ARCHIVES
+          </div>
+          <div className="flex-1 space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[13.5px] text-[#667085] dark:text-[#9AA6B8]">
+                Discontinued or legacy operational tools kept for historical reference.
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowArchives((v) => !v)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] px-3 py-1.5 text-[12.5px] font-semibold text-[#172033] dark:text-[#EDF1F6] hover:border-[#0052CC] hover:text-[#0052CC] transition-colors"
+                aria-expanded={showArchives}
+              >
+                {showArchives ? (
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                    Hide archived tools
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    Show archived tools (2)
+                  </>
+                )}
+              </button>
+            </div>
+
+            {showArchives && (
+              <div className="space-y-2 pt-1 animate-in fade-in duration-200">
+                <Link
+                  href="/backoffice/operations/valuation"
+                  className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50 border border-dashed border-[#E4E9EF] dark:border-[#2B3644]"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 3v18h18" />
+                      <path d="M7 15l4-4 3 3 5-6" />
+                    </svg>
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-2">
+                      <span className="text-[16px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                        Monthly valuation
+                      </span>
+                      <span className="rounded bg-amber-100 dark:bg-amber-950/80 px-2 py-0.5 text-[11px] font-semibold text-amber-800 dark:text-amber-300 uppercase tracking-wide">
+                        Archived
+                      </span>
+                    </span>
+                    <span className="block text-[13px] text-[#667085] dark:text-[#9AA6B8]">
+                      FundsIndia, ProAffluence and Stallion statements · Reconciliation · Consolidated PDF
+                    </span>
+                  </span>
+                  <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
+
+                <Link
+                  href="/backoffice/operations/paperwork"
+                  className="group flex w-full items-center gap-4 rounded-xl p-3 text-left transition hover:bg-[#F4F7FA] dark:hover:bg-[#1E293B]/50 border border-dashed border-[#E4E9EF] dark:border-[#2B3644]"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6" />
+                      <path d="M14 2v6h6" />
+                      <path d="M8 12h5" />
+                      <path d="M8 16h3" />
+                      <circle cx="17.5" cy="17.5" r="4.5" fill="currentColor" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8" />
+                      <path d="M15.5 17.5l1.5 1.5 3-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-2">
+                      <span className="text-[16px] font-bold text-[#172033] dark:text-[#EDF1F6] group-hover:text-[#0052CC] dark:group-hover:text-[#60A5FA] transition-colors">
+                        Paperwork processing
+                      </span>
+                      <span className="rounded bg-amber-100 dark:bg-amber-950/80 px-2 py-0.5 text-[11px] font-semibold text-amber-800 dark:text-amber-300 uppercase tracking-wide">
+                        Archived
+                      </span>
+                    </span>
+                    <span className="block text-[13px] text-[#667085] dark:text-[#9AA6B8]">
+                      Build monthly reports · Review numbers · Download · Save to CRM · Email
+                    </span>
+                  </span>
+                  <svg className="h-4 w-4 text-[#9AA6B8] group-hover:text-[#172033] dark:group-hover:text-[#EDF1F6] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

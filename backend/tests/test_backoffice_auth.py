@@ -49,7 +49,6 @@ def test_anonymous_access_denied_on_backoffice(client):
     client.cookies.clear()
     endpoints = [
         "/api/backoffice/overview",
-        "/api/backoffice/trade",
         "/api/backoffice/pms/strategies",
         "/api/backoffice/pms/accounts",
         "/api/backoffice/mutual-funds/tracker",

@@ -46,7 +46,6 @@ export const PAGE_GROUPS: PageGroup[] = [
       { href: "/backoffice/mutual-funds", label: "Mutual funds" },
       { href: "/backoffice/equities", label: "Equities" },
       { href: "/backoffice/finance-desk", label: "Finance Desk" },
-      { href: "/backoffice/trade", label: "Trade" },
     ],
   },
   {

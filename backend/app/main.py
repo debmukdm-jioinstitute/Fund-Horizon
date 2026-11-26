@@ -295,7 +295,6 @@ def create_app() -> FastAPI:
     from app.api.rm import rm_router
     from app.backoffice.mf_reference import router as mf_reference_router
     from app.api.hrms import router as hrms_router
-    from app.api.trade import router as trade_router
     from app.api.equities import router as equities_router
 
     app.include_router(router)
@@ -327,7 +326,6 @@ def create_app() -> FastAPI:
     app.include_router(mcp_oauth_router)
     app.include_router(mf_reference_router)
     app.include_router(hrms_router)
-    app.include_router(trade_router)
     app.include_router(equities_router)
 
     @app.get("/health/core")

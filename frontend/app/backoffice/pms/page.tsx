@@ -389,193 +389,230 @@ function PmsTracker() {
 
       {tab === "strategies" ? (
         <div className="space-y-3">
-          <div className="terminal-panel relative z-50 p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-            <div className="flex flex-wrap items-center gap-2 flex-1">
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search PMS provider, strategy or manager…"
-                className="terminal-input w-full max-w-xs text-[12px] py-1 px-2.5"
-              />
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="terminal-input text-[12px] py-1 px-2.5 font-medium"
-              >
-                <option value="all">All Approaches</option>
-                <option value="fh-recommended">★ FH Recommended ({fhRecCount})</option>
-                {approachOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+          <div className="terminal-panel relative z-50 p-3 space-y-3">
+            {/* Top row: Primary Search, Categorization & Provenance */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2.5 border-b border-[#E5E5E5]/70 dark:border-[#2B3644]/70">
+              <div className="flex flex-wrap items-center gap-2 flex-1">
+                <div className="relative flex-1 min-w-[220px] max-w-xs">
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search PMS provider, strategy or manager…"
+                    className="terminal-input w-full text-[12px] py-1.5 pl-3 pr-7"
+                  />
+                  {search && (
+                    <button
+                      type="button"
+                      onClick={() => setSearch("")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] text-[#706E6B] hover:text-[#181818] dark:hover:text-[#EDF2F7] cursor-pointer"
+                      title="Clear search"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
 
-              <button
-                type="button"
-                onClick={() => setCategoryFilter(categoryFilter === "fh-recommended" ? "all" : "fh-recommended")}
-                className={`text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer ${
-                  categoryFilter === "fh-recommended" ? "terminal-btn-accent" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
-                }`}
-              >
-                <span className="text-[12px]">★</span>
-                <span>FH Recommended ({fhRecCount})</span>
-              </button>
-
-              <button
-                type="button"
-                aria-pressed={customScore}
-                onClick={() => setCustomScore((v) => !v)}
-                title="Custom score: a strategy with 3 or more years of track record keeps its full standard score (100% weight); below 3 years the score scales down by tenure/3 on a 20% manager weight. Track record = inception date when disclosed, else the longest reported return horizon (APMI gives no manager start date)."
-                className={`text-[12px] py-1 px-3 font-medium cursor-pointer ${customScore ? "terminal-btn-accent" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"}`}
-              >
-                Custom: Manager 3y+ = 100%
-              </button>
-
-              <div className="flex items-center gap-1.5 bg-[#F0F3F6] dark:bg-[#1A2332] px-2.5 py-1 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644]">
-                <span className="text-[11px] font-bold text-[#706E6B] dark:text-[#A8B4C4]">Benchmark:</span>
                 <select
-                  value={selectedBenchmark}
-                  onChange={(e) => setSelectedBenchmark(e.target.value)}
-                  className="bg-transparent text-[11.5px] font-bold text-[#0176D3] dark:text-[#1B96FF] focus:outline-none cursor-pointer"
-                  title="Change comparison benchmark for real-time dynamic score recalculation"
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="terminal-input text-[12px] py-1.5 px-2.5 font-medium"
                 >
-                  {Object.keys(PMS_BENCHMARKS).map((b) => (
-                    <option key={b} value={b} className="bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7]">
-                      {b}
+                  <option value="all">All Approaches</option>
+                  <option value="fh-recommended">★ FH Recommended ({fhRecCount})</option>
+                  {approachOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
                     </option>
                   ))}
                 </select>
-              </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setMethodologyStrategy(null);
-                  setMethodologyModalOpen(true);
-                }}
-                className="terminal-btn text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
-                title="Inspect step-by-step mathematical calculations and methodology formulas"
-              >
-                <span>📐 Methodology &amp; Live Formulas</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMatrixModalOpen(true)}
-                className="terminal-btn text-[12px] py-1 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
-                title="View data availability & screening matrix for the 9 curated PMS strategies"
-              >
-                <span>📊 9 Strategies Matrix</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setDocModalOpen(true)}
-                className="rounded-lg bg-[#0176D3] text-white px-3 py-1 text-[12px] font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-sm"
-                title="Upload client portfolio report, factsheet or WealthSpectrum PDF"
-              >
-                <span>Upload PMS Document</span>
-              </button>
-
-              <div className="relative">
                 <button
                   type="button"
-                  aria-haspopup="true"
-                  aria-expanded={pmsRecDropdownOpen}
-                  onClick={() => setPmsRecDropdownOpen((v) => !v)}
-                  className="terminal-btn text-[12px] py-1 px-2.5 flex items-center gap-1.5 cursor-pointer"
-                  title="Settings & manage FH Recommended PMS strategies"
+                  onClick={() => setCategoryFilter(categoryFilter === "fh-recommended" ? "all" : "fh-recommended")}
+                  className={`text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium transition cursor-pointer rounded-lg ${
+                    categoryFilter === "fh-recommended" ? "terminal-btn-accent shadow-sm" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
+                  }`}
                 >
-                  <span>⚙ Settings</span>
-                  <span className="text-[10px] font-mono">▾</span>
+                  <span className="text-[12px]">★</span>
+                  <span>FH Recommended ({fhRecCount})</span>
                 </button>
-                {pmsRecDropdownOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setPmsRecDropdownOpen(false)} />
-                    <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
-                      <DropdownClose onClose={() => setPmsRecDropdownOpen(false)} />
-                      <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
-                        <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
-                          ★ FH Recommended PMS Strategies ({Object.keys(rec.pmsMap).length})
-                        </span>
-                        <button type="button" onClick={() => setPmsRecDropdownOpen(false)} className="text-[#706E6B] dark:text-[#A8B4C4] text-xs">
-                          ✕
-                        </button>
-                      </div>
-                      <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                        Add APMI Strategy ID to mark as recommended, or click Remove.
-                      </div>
-                      <div className="flex gap-1.5">
-                        <input
-                          type="text"
-                          placeholder="APMI ID (e.g. 174)"
-                          value={newPmsId}
-                          onChange={(e) => setNewPmsId(e.target.value)}
-                          className="terminal-input text-[11px] py-1 px-2 font-mono w-28 shrink-0"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Strategy name (optional)"
-                          value={newPmsName}
-                          onChange={(e) => setNewPmsName(e.target.value)}
-                          className="terminal-input text-[11px] py-1 px-2 flex-1"
-                        />
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            if (!newPmsId.trim()) return;
-                            await rec.addPms(newPmsId.trim(), newPmsName.trim() || undefined);
-                            setNewPmsId("");
-                            setNewPmsName("");
-                          }}
-                          className="terminal-btn-accent text-[11px] py-1 px-3 shrink-0"
-                        >
-                          + Add
-                        </button>
-                      </div>
-                      <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E5E5E5]/40 dark:divide-[#2B3644]/40">
-                        {Object.entries(rec.pmsMap).map(([id, name]) => (
-                          <div key={id} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
-                            <div className="truncate">
-                              <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-medium mr-1.5">#{id}</span>
-                              <span className="text-[#181818] dark:text-[#EDF2F7] truncate">{name}</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => rec.removePms(id)}
-                              className="text-[10px] text-[#B42332] dark:text-[#FF7D86] hover:underline shrink-0 cursor-pointer"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
-                        <Link href="/backoffice/settings" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
-                          All Settings →
-                        </Link>
-                        <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Saves live across terminal</span>
-                      </div>
-                    </div>
-                  </>
+
+                {filtersActive && (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] hover:text-[#B42332] dark:hover:text-[#FF7D86] underline py-1 px-2 cursor-pointer transition"
+                  >
+                    Clear filters
+                  </button>
                 )}
               </div>
 
-              {filtersActive && (
-                <button type="button" onClick={clearFilters} className="terminal-btn text-[12px] py-1 px-3">
-                  Clear filters
-                </button>
-              )}
+              <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono shrink-0 text-left md:text-right flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 md:gap-0.5">
+                <div>{asOf ? `As of ${formatISTDate(asOf)}` : "As-of date not in this APMI snapshot"}</div>
+                <div>
+                  Source:{" "}
+                  <a
+                    href="https://www.apmiindia.org"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline hover:text-[#181818] dark:hover:text-[#EDF2F7]"
+                  >
+                    APMI Disclosures ↗
+                  </a>
+                </div>
+              </div>
             </div>
-            <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] font-mono shrink-0 text-right">
-              {asOf ? <div>As of {formatISTDate(asOf)}</div> : <div>As-of date not in this APMI snapshot</div>}
-              <div>
-                Source:{" "}
-                <a href="https://www.apmiindia.org" target="_blank" rel="noreferrer" className="underline hover:text-[#181818] dark:hover:text-[#EDF2F7]">
-                  APMI Disclosures
-                </a>
+
+            {/* Bottom row: Benchmark & Scoring controls on left, Tools & Actions on right */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+              {/* Group 1: Benchmarking & Scoring Framework */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-1.5 bg-[#F0F3F6] dark:bg-[#1A2332] px-2.5 py-1.5 rounded-lg border border-[#E5E5E5] dark:border-[#2B3644]">
+                  <span className="text-[11px] font-semibold text-[#706E6B] dark:text-[#A8B4C4] uppercase tracking-wider">Benchmark:</span>
+                  <select
+                    value={selectedBenchmark}
+                    onChange={(e) => setSelectedBenchmark(e.target.value)}
+                    className="bg-transparent text-[11.5px] font-bold text-[#0176D3] dark:text-[#1B96FF] focus:outline-none cursor-pointer pr-1"
+                    title="Change comparison benchmark for real-time dynamic score recalculation"
+                  >
+                    {Object.keys(PMS_BENCHMARKS).map((b) => (
+                      <option key={b} value={b} className="bg-white dark:bg-[#10151C] text-[#181818] dark:text-[#EDF2F7]">
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  aria-pressed={customScore}
+                  onClick={() => setCustomScore((v) => !v)}
+                  title="Custom score: a strategy with 3 or more years of track record keeps its full standard score (100% weight); below 3 years the score scales down by tenure/3 on a 20% manager weight. Track record = inception date when disclosed, else the longest reported return horizon (APMI gives no manager start date)."
+                  className={`text-[12px] py-1.5 px-3 font-medium cursor-pointer rounded-lg border transition ${
+                    customScore ? "terminal-btn-accent shadow-sm" : "terminal-btn text-[#0176D3] dark:text-[#1B96FF]"
+                  }`}
+                >
+                  Custom: Manager 3y+ = 100%
+                </button>
+              </div>
+
+              {/* Group 2: Tools, Strategy Settings & Document Upload */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMethodologyStrategy(null);
+                    setMethodologyModalOpen(true);
+                  }}
+                  className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                  title="Inspect step-by-step mathematical calculations and methodology formulas"
+                >
+                  <span>📐 Live Formulas</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMatrixModalOpen(true)}
+                  className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                  title="View data availability & screening matrix for the 9 curated PMS strategies"
+                >
+                  <span>📊 9 Strategies Matrix</span>
+                </button>
+
+                <div className="relative">
+                  <button
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded={pmsRecDropdownOpen}
+                    onClick={() => setPmsRecDropdownOpen((v) => !v)}
+                    className="terminal-btn text-[12px] py-1.5 px-2.5 flex items-center gap-1.5 cursor-pointer"
+                    title="Settings & manage FH Recommended PMS strategies"
+                  >
+                    <span>⚙ Settings</span>
+                    <span className="text-[10px] font-mono">▾</span>
+                  </button>
+                  {pmsRecDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setPmsRecDropdownOpen(false)} />
+                      <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-1.5 w-80 sm:w-96 rounded-xl bg-white dark:bg-[#10151C] border border-[#E5E5E5] dark:border-[#2B3644] p-3.5 shadow-2xl z-50 space-y-3 text-left">
+                        <DropdownClose onClose={() => setPmsRecDropdownOpen(false)} />
+                        <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-[#2B3644] pb-2">
+                          <span className="text-[12px] font-semibold text-[#181818] dark:text-[#EDF2F7]">
+                            ★ FH Recommended PMS Strategies ({Object.keys(rec.pmsMap).length})
+                          </span>
+                          <button type="button" onClick={() => setPmsRecDropdownOpen(false)} className="text-[#706E6B] dark:text-[#A8B4C4] text-xs">
+                            ✕
+                          </button>
+                        </div>
+                        <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
+                          Add APMI Strategy ID to mark as recommended, or click Remove.
+                        </div>
+                        <div className="flex gap-1.5">
+                          <input
+                            type="text"
+                            placeholder="APMI ID (e.g. 174)"
+                            value={newPmsId}
+                            onChange={(e) => setNewPmsId(e.target.value)}
+                            className="terminal-input text-[11px] py-1 px-2 font-mono w-28 shrink-0"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Strategy name (optional)"
+                            value={newPmsName}
+                            onChange={(e) => setNewPmsName(e.target.value)}
+                            className="terminal-input text-[11px] py-1 px-2 flex-1"
+                          />
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              if (!newPmsId.trim()) return;
+                              await rec.addPms(newPmsId.trim(), newPmsName.trim() || undefined);
+                              setNewPmsId("");
+                              setNewPmsName("");
+                            }}
+                            className="terminal-btn-accent text-[11px] py-1 px-3 shrink-0"
+                          >
+                            + Add
+                          </button>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto space-y-1 divide-y divide-[#E5E5E5]/40 dark:divide-[#2B3644]/40">
+                          {Object.entries(rec.pmsMap).map(([id, name]) => (
+                            <div key={id} className="pt-1.5 flex items-center justify-between gap-2 text-[11px]">
+                              <div className="truncate">
+                                <span className="font-mono text-[#0176D3] dark:text-[#1B96FF] font-medium mr-1.5">#{id}</span>
+                                <span className="text-[#181818] dark:text-[#EDF2F7] truncate">{name}</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => rec.removePms(id)}
+                                className="text-[10px] text-[#B42332] dark:text-[#FF7D86] hover:underline shrink-0 cursor-pointer"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
+                          <Link href="/backoffice/settings" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
+                            All Settings →
+                          </Link>
+                          <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Saves live across terminal</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setDocModalOpen(true)}
+                  className="rounded-lg bg-[#0176D3] text-white px-3.5 py-1.5 text-[12px] font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-sm transition"
+                  title="Upload client portfolio report, factsheet or WealthSpectrum PDF"
+                >
+                  <span>Upload PMS Document</span>
+                </button>
               </div>
             </div>
           </div>

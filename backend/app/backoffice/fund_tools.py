@@ -20,8 +20,8 @@ from app.backoffice import fund_performance as fp
 from app.backoffice.fund_performance import PerfError, _at, _date, _launch_dates, _nav, _r, _short, _table, dmy, labelled
 
 NOTE = "Month-end NAV is used for every date (the dataset has no daily NAV). Past performance may not be sustained."
-BENCH = {"NIFTY 100 (index fund proxy)": "147666", "NIFTY 500 (index fund proxy)": "147625", "NIFTY Midcap 150 (index fund proxy)": "147622", "NIFTY Smallcap 250 (index fund proxy)": "147623",
-         "NIFTY LargeMidcap 250 (index fund proxy)": "152156", "NIFTY 500 Multicap 50:25:25 (index fund proxy)": "152751"}
+BENCH = {"NIFTY 100 (index fund proxy)": "147665", "NIFTY 500 (index fund proxy)": "147626", "NIFTY Midcap 150 (index fund proxy)": "147621", "NIFTY Smallcap 250 (index fund proxy)": "147624",
+         "NIFTY LargeMidcap 250 (index fund proxy)": "152890", "NIFTY 500 Multicap 50:25:25 (index fund proxy)": "152750"}
 FREQ = {"Monthly": 1, "Quarterly": 3, "Yearly": 12}
 BUCKETS = (-np.inf, 0, 8, 12, 15, 20, np.inf)
 BNAMES = ["negative", "0-8", "8-12", "12-15", "15-20", ">20"]

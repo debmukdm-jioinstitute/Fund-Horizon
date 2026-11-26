@@ -155,7 +155,7 @@ function initialFilters(params: URLSearchParams): ResearchFilters {
   const q = params.getAll("quartile").map((x) => Number(x)).filter((n) => [1, 2, 3, 4].includes(n));
   return {
     category: params.getAll("category"),
-    plan: params.has("plan") ? params.getAll("plan") : [...PLANS],
+    plan: params.has("plan") ? params.getAll("plan") : ["Regular"],
     amc: params.getAll("amc"),
     sector: params.get("sector") ?? "",
     search: params.get("search") ?? "",
@@ -480,7 +480,7 @@ function MfResearch() {
   const activeGroup = groups.find((g) => g.group === universeGroup) ?? groups[0];
   const clearAge = () => setFilters((f) => { const rest = { ...f.ranges }; delete rest.history_years; return { ...f, ranges: rest }; });
   const resetUniverse = () => {
-    setFilters((f) => { const rest = { ...f.ranges }; delete rest.history_years; return { ...f, category: [], plan: [...PLANS], amc: [], search: "", ranges: rest }; });
+    setFilters((f) => { const rest = { ...f.ranges }; delete rest.history_years; return { ...f, category: [], plan: ["Regular"], amc: [], search: "", ranges: rest }; });
     setQuery("");
     setUniversePanel(null);
   };
@@ -916,7 +916,7 @@ function MfResearch() {
               <button type="button" className="terminal-btn text-[12px] py-1 px-3"
                 onClick={() => {
                   setFilters((f) => ({
-                    ...f, category: [], plan: [...PLANS], amc: [], search: "", ranges: {}, quartile: [],
+                    ...f, category: [], plan: ["Regular"], amc: [], search: "", ranges: {}, quartile: [],
                     manager: "", minTenure: "", includeUnknown: true, includeUnavailable: true,
                   }));
                   setQuery("");

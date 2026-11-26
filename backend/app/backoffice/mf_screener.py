@@ -63,13 +63,13 @@ BENCHMARKS: dict[str, str] = {
     "solution_children": _AGG, "solution_retirement": _AGG,
     "gold": "Domestic price of physical gold", "international": "Global index (varies by fund)",
 }
-# Passive index fund (Direct, Growth) that tracks each benchmark, used only to draw a benchmark line: the dataset has no raw index series.
-# shortcut: fund NAV is net of ~0.2% TER and TRI index itself is not available, so this lags the true TRI slightly; upgrade by ingesting NSE TRI history.
-_N500_FUND, _N100_FUND = "147625", "147666"
+# Passive index fund (Regular, Growth) that tracks each benchmark, used only to draw a benchmark line: the dataset has no raw index series.
+# shortcut: fund NAV is net of TER and TRI index itself is not available, so this lags the true TRI slightly; upgrade by ingesting NSE TRI history.
+_N500_FUND, _N100_FUND = "147626", "147665"
 BENCHMARK_PROXY: dict[str, str] = {
     **{c: _N500_FUND for c in ("contra", "dividend_yield", "elss", "flexi_cap", "focused", "value")},
-    "large_cap": _N100_FUND, "mid_cap": "147622", "small_cap": "147623",
-    "large_mid_cap": "152156", "multi_cap": "152751",
+    "large_cap": _N100_FUND, "mid_cap": "147621", "small_cap": "147624",
+    "large_mid_cap": "152890", "multi_cap": "152750",
 }
 _LABELS = {k: lbl for items in CATEGORY_GROUPS.values() for k, lbl in items}
 _YEARS = (1, 3, 5, 10)

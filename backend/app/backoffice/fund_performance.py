@@ -389,7 +389,7 @@ def p2p(frame: pd.DataFrame, category: str, ranges: list[tuple[str, str]], plan:
     return _table("Point to point returns", cols, rows)
 
 
-_ASSETS = [("Equity: NIFTY 100 (index fund proxy)", "147666"), ("Equity: NIFTY 500 (index fund proxy)", "147625"), ("Equity: NIFTY Midcap 150 (index fund proxy)", "147622")]
+_ASSETS = [("Equity: NIFTY 100 (index fund proxy)", "147665"), ("Equity: NIFTY 500 (index fund proxy)", "147626"), ("Equity: NIFTY Midcap 150 (index fund proxy)", "147621")]
 
 
 def _category_avg_series(frame: pd.DataFrame, cat: str) -> pd.Series | None:
@@ -438,7 +438,7 @@ def _mcap_sets(as_of: str) -> dict[str, tuple[frozenset[str], frozenset[str]]]:
     from app.backoffice.mf_holdings import normalize_holding_name
     snap = _holdings_snapshot()
     out = {}
-    for cls, code in (("large", "147666"), ("mid", "147622"), ("small", "147623")):
+    for cls, code in (("large", "147665"), ("mid", "147621"), ("small", "147624")):
         eq = [h for h in ((snap.get("schemes") or {}).get(code) or {}).get("holdings", []) if h.get("instrument_type") == "equity"]
         out[cls] = (frozenset(h["isin"] for h in eq if h.get("isin")), frozenset(normalize_holding_name(h.get("name")) for h in eq))
     return out

@@ -152,7 +152,7 @@ function MutualFunds() {
   const [viewMode, setViewMode] = useState<"screener" | "portfolio">(params.get("view") === "portfolio" ? "portfolio" : "screener");
 
   const category = useMemo(() => (params.has("category") ? params.getAll("category") : params.has("q") || params.has("section") ? [] : DEFAULT_CATEGORIES), [params]);
-  const plan = useMemo(() => (params.has("plan") || params.has("section") ? params.getAll("plan") : PLANS), [params]);
+  const plan = useMemo(() => (params.has("plan") || params.has("section") ? params.getAll("plan") : ["Regular"]), [params]);
   const section = (SECTIONS.find((s) => s === params.get("section")) ?? "Summary") as Section;
   // No section in the URL = the screener home: filters plus one card per view. A card opens that view in a new tab, full screen.
   const home = !params.has("section") && !params.has("q");  // a search link (?q=) goes straight to results
@@ -536,7 +536,7 @@ function MutualFunds() {
             setSort("fh_score");
             setOrder("desc");
             setShowFilter(false);
-            setUrl({ plan: PLANS });
+            setUrl({ plan: ["Regular"] });
           }}
         >
           Reset

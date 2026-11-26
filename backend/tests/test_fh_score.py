@@ -6,7 +6,7 @@ from app.backoffice import fh_recommended, fh_score
 
 CFG_OK = fh_score.load_config()
 CFG_OK["history"]["confirmed"] = True
-PROXY = "147666"  # BENCHMARK_PROXY["large_cap"]
+PROXY = "147665"  # BENCHMARK_PROXY["large_cap"]
 
 
 def _row(code, **kw):

@@ -10,6 +10,7 @@ import { Leaderboard } from "@/components/academy/Leaderboard";
 import { Lesson } from "@/components/academy/Lesson";
 import { migrateLegacyProgress } from "@/components/academy/migrate";
 import { ModulePath } from "@/components/academy/ModulePath";
+import { ProcessNote } from "@/components/academy/ProcessNote";
 import { Quiz } from "@/components/academy/Quiz";
 import { Spinner, accent, btnGhost, muted } from "@/components/academy/ui";
 import { VarsityDetail, VarsityHub } from "@/components/academy/Varsity";
@@ -33,6 +34,7 @@ function Shell() {
   const sp = useSearchParams();
   const { me, loadModule, openGlossary, go, updated } = useAcademy();
   const m = sp.get("m");
+  const guide = sp.get("guide");
   const varsity = sp.get("varsity");
   const vm = sp.get("vm");
   const tax = sp.get("tax");
@@ -58,10 +60,11 @@ function Shell() {
 
   const lessonId = l ?? content?.lessons.find((x) => !me?.completed_lessons.includes(x.id))?.id ?? content?.lessons[0]?.id ?? "";
   const board = v === "board";
-  const varsityView = Boolean(varsity) && !m;
-  const taxView = Boolean(tax) && !m && !varsityView;
-  const trackView = Boolean(t) && !m && !board && !varsityView && !taxView;
-  const home = !m && !board && !varsityView && !taxView && !trackView;
+  const guideView = Boolean(guide) && !m && !varsity;
+  const varsityView = Boolean(varsity) && !m && !guide;
+  const taxView = Boolean(tax) && !m && !varsityView && !guideView;
+  const trackView = Boolean(t) && !m && !board && !varsityView && !taxView && !guideView;
+  const home = !m && !board && !varsityView && !taxView && !trackView && !guideView;
   const show = (k: string) => seen.includes(k) || v === k;
   const lesson = useSticky(lessonId, v === "read");
   const cardsP = useSticky({ deck: sp.get("deck") ?? (l ? "lesson" : "due"), l: l ?? undefined }, v === "cards");
@@ -76,6 +79,7 @@ function Shell() {
         </div>
         <nav aria-label="Academy" className="flex flex-wrap items-center gap-2">
           <button className={btnGhost} aria-current={home ? "page" : undefined} onClick={() => go({})}>Home</button>
+          <button className={btnGhost} aria-current={guideView ? "page" : undefined} onClick={() => go({ guide: "1" })}>📋 Process Note</button>
           <button className={btnGhost} aria-current={varsityView ? "page" : undefined} onClick={() => go({ varsity: "1" })}>Varsity</button>
           <button className={btnGhost} aria-current={taxView ? "page" : undefined} onClick={() => go({ tax: "1" })}>Taxation</button>
           <button className={btnGhost} aria-current={board ? "page" : undefined} onClick={() => go({ v: "board" })}>Leaderboard</button>
@@ -85,6 +89,7 @@ function Shell() {
       </header>
 
       {home && <Home />}
+      {guideView && <ProcessNote />}
       {trackView && <TrackPage id={t!} />}
       {board && <Leaderboard />}
       {varsityView && !vm && <VarsityHub />}

@@ -38,9 +38,122 @@ export function Home() {
             </>
           )}
         </div>
-        <button className={btnPrimary} onClick={() => go({ m: heroMid, l: heroLesson, v: "read" })}>
-          {me.new_here ? "Start Lesson 1" : nl ? "Continue lesson" : `Open ${firstP?.title ?? "Module 1"}`}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button className={btnGhost} onClick={() => go({ guide: "1" })}>
+            📋 Process Note
+          </button>
+          <button className={btnPrimary} onClick={() => go({ m: heroMid, l: heroLesson, v: "read" })}>
+            {me.new_here ? "Start Lesson 1" : nl ? "Continue lesson" : `Open ${firstP?.title ?? "Module 1"}`}
+          </button>
+        </div>
+      </section>
+
+      {/* Intent-based Navigator: "Choose your path" */}
+      <section aria-label="Learning Pathways by Need" className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-[#172033] dark:text-[#EDF2F7]">Choose your learning path</h2>
+            <p className={`text-sm ${muted}`}>Jump directly into what you need based on your role and daily goals.</p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Path 1: New Joiner & Operations SOP */}
+          <div className={`${card} p-5 flex flex-col justify-between space-y-3 border-l-4 border-l-[#0176D3] dark:border-l-[#1B96FF] hover:shadow-md transition`}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl" aria-hidden="true">📋</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-[#0176D3] dark:text-[#1B96FF] border border-[#0176D3]/20">
+                  SOP &amp; Process
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[#172033] dark:text-[#EDF2F7]">New Joiner Guide</h3>
+              <p className={`text-[13px] ${muted} leading-relaxed`}>
+                Process handover, recurring daily/monthly task deadlines, official forms, valuation, CRM, and 5-day roadmap.
+              </p>
+            </div>
+            <button
+              type="button"
+              className={`${btnPrimary} w-full text-xs py-2`}
+              onClick={() => go({ guide: "1" })}
+            >
+              Open Process Note →
+            </button>
+          </div>
+
+          {/* Path 2: NISM Certification & Lessons */}
+          <div className={`${card} p-5 flex flex-col justify-between space-y-3 border-l-4 border-l-emerald-600 hover:shadow-md transition`}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl" aria-hidden="true">🎓</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-600/20">
+                  NISM &amp; Skills
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[#172033] dark:text-[#EDF2F7]">Modules &amp; Certification</h3>
+              <p className={`text-[13px] ${muted} leading-relaxed`}>
+                Interactive study paths for NISM V-A distributor certification, flashcards, chapter quizzes, and streak XP.
+              </p>
+            </div>
+            <a
+              href="#tracks-section"
+              className={`${btnGhost} w-full text-xs py-2 text-center`}
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById("tracks-section");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              Explore Modules ({mods.length}) ↓
+            </a>
+          </div>
+
+          {/* Path 3: Taxation Reference */}
+          <div className={`${card} p-5 flex flex-col justify-between space-y-3 border-l-4 border-l-amber-600 hover:shadow-md transition`}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl" aria-hidden="true">🧾</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-600/20">
+                  FY 2026-27 Rates
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[#172033] dark:text-[#EDF2F7]">Taxation Reference</h3>
+              <p className={`text-[13px] ${muted} leading-relaxed`}>
+                Plain-English client guides for PMS, Mutual Funds, Equity, and F&amp;O taxation with worked capital gains examples.
+              </p>
+            </div>
+            <button
+              type="button"
+              className={`${btnGhost} w-full text-xs py-2`}
+              onClick={() => go({ tax: "1" })}
+            >
+              Open Taxation Guide →
+            </button>
+          </div>
+
+          {/* Path 4: Zerodha Varsity Library */}
+          <div className={`${card} p-5 flex flex-col justify-between space-y-3 border-l-4 border-l-purple-600 hover:shadow-md transition`}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl" aria-hidden="true">📚</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-600/20">
+                  External Reading
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[#172033] dark:text-[#EDF2F7]">Zerodha Varsity</h3>
+              <p className={`text-[13px] ${muted} leading-relaxed`}>
+                Curated foundational reading on technical analysis, options, futures, currency, and macro economics.
+              </p>
+            </div>
+            <button
+              type="button"
+              className={`${btnGhost} w-full text-xs py-2`}
+              onClick={() => go({ varsity: "1" })}
+            >
+              Open Varsity Library →
+            </button>
+          </div>
+        </div>
       </section>
 
       <Collapse id="home-stats" title="Your stats" meta={`${me.streak}-day streak · ${me.xp} XP`}>
@@ -69,18 +182,20 @@ export function Home() {
       </section>
       </Collapse>
 
-      {me.tracks?.length > 0 ? (
-        <>
-          <nav aria-label="Tracks" className="flex flex-wrap gap-2">
-            {me.tracks.map((t) => <a key={t.id} href={`#track-${t.id}`} className={`${btnGhost} min-h-8`}>{t.title}</a>)}
-          </nav>
-          {me.tracks.map((t) => <TrackSection key={t.id} track={t} />)}
-        </>
-      ) : (
-        <section aria-label="Modules" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {mods.map(([mid, p]) => <ModuleCard key={mid} mid={mid} p={p} />)}
-        </section>
-      )}
+      <div id="tracks-section" className="space-y-4">
+        {me.tracks?.length > 0 ? (
+          <>
+            <nav aria-label="Tracks" className="flex flex-wrap gap-2">
+              {me.tracks.map((t) => <a key={t.id} href={`#track-${t.id}`} className={`${btnGhost} min-h-8`}>{t.title}</a>)}
+            </nav>
+            {me.tracks.map((t) => <TrackSection key={t.id} track={t} />)}
+          </>
+        ) : (
+          <section aria-label="Modules" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {mods.map(([mid, p]) => <ModuleCard key={mid} mid={mid} p={p} />)}
+          </section>
+        )}
+      </div>
 
       {me.certificate && <Certificate />}
 

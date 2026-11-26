@@ -12,7 +12,15 @@ export default function ChatsTab() {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const loadThreads = useCallback(() => {
-    getStaffChats().then((r) => setThreads(r.threads)).catch(() => {});
+    getStaffChats()
+      .then((r) => {
+        if (r && Array.isArray(r.threads)) {
+          setThreads(r.threads);
+        } else {
+          setThreads([]);
+        }
+      })
+      .catch(() => setThreads([]));
   }, []);
 
   useEffect(() => {
@@ -21,21 +29,34 @@ export default function ChatsTab() {
     return () => clearInterval(t);
   }, [loadThreads]);
 
-  const load = useCallback(() => getStaffThread(sel!.customer_id), [sel]);
-  const send = useCallback((b: string) => sendStaffReply(sel!.customer_id, b), [sel]);
+  const load = useCallback(() => {
+    if (!sel?.customer_id) return Promise.resolve({ messages: [] });
+    return getStaffThread(sel.customer_id).catch(() => ({ messages: [] }));
+  }, [sel]);
+
+  const send = useCallback((b: string) => {
+    if (!sel?.customer_id) return Promise.resolve(null);
+    return sendStaffReply(sel.customer_id, b);
+  }, [sel]);
 
   const handleDelete = async () => {
     if (!sel) return;
-    await deleteStaffChat(sel.customer_id);
+    try {
+      await deleteStaffChat(sel.customer_id);
+    } catch {
+      /* ignore */
+    }
     setSel(null);
     loadThreads();
   };
 
+  const threadList = Array.isArray(threads) ? threads : [];
+
   return (
     <div className="grid gap-4 md:grid-cols-[280px_1fr]">
       <ul className="terminal-panel divide-y divide-[#E4E9EF] dark:divide-[#2B3644] max-h-[70vh] overflow-y-auto">
-        {threads.length === 0 && <li className="p-3 text-[13px] text-[#536176]">No customer messages yet.</li>}
-        {threads.map((t) => (
+        {threadList.length === 0 && <li className="p-3 text-[13px] text-[#536176]">No customer messages yet.</li>}
+        {threadList.map((t) => (
           <li key={t.customer_id}>
             <button type="button" onClick={() => setSel(t)} className={`w-full text-left p-3 ${sel?.customer_id === t.customer_id ? "bg-[#E7F5F2] dark:bg-[#1A3034]" : ""}`}>
               <div className="flex justify-between text-[13px] font-medium"><span>{t.name}</span>{t.unread > 0 && <span className="text-[11px] bg-[#B42332] text-white rounded px-1.5">{t.unread}</span>}</div>

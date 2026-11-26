@@ -122,6 +122,35 @@ def load_snapshot(data_dir: Path | None = None) -> dict[str, Any]:
         for h in sc["holdings"]:
             if h.get("sector"):
                 h["sector"] = canon[h["sector"]]
+
+    # Build company catalog to resolve missing sector & isin across incomplete provider disclosures (e.g. Advisorkhoj)
+    import re
+    def _norm_co(n: str | None) -> str:
+        if not n:
+            return ""
+        s = n.lower().replace("&", " and ")
+        s = re.sub(r"\b(limited|ltd|private|pvt|corp|corporation|inc)\b", "", s)
+        return "".join(ch for ch in s if ch.isalnum())
+
+    co_catalog: dict[str, tuple[str | None, str]] = {}
+    for sc in schemes.values():
+        for h in sc["holdings"]:
+            sec = h.get("sector")
+            if sec and sec not in ("-", "N.A.", "Unclassified"):
+                isin = h.get("isin")
+                k = _norm_co(h.get("name"))
+                if k and (k not in co_catalog or (not co_catalog[k][0] and isin)):
+                    co_catalog[k] = (isin, sec)
+
+    for sc in schemes.values():
+        for h in sc["holdings"]:
+            if not h.get("sector") or h["sector"] in ("-", "N.A.", "Unclassified"):
+                k = _norm_co(h.get("name"))
+                if k in co_catalog:
+                    cat_isin, cat_sec = co_catalog[k]
+                    h["sector"] = cat_sec
+                    if not h.get("isin") and cat_isin:
+                        h["isin"] = cat_isin
     sectors: set[str] = set()
     amcs: set[str] = set()
     as_of_values: set[str] = set()

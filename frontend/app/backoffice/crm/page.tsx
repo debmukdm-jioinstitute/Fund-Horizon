@@ -1,20 +1,68 @@
 "use client";
 
 import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import CrmHome from "@/components/crm/CrmHome";
-import HouseholdsTab from "@/components/crm/HouseholdsTab";
-import LeadsTab from "@/components/crm/LeadsTab";
-import PipelinesTab from "@/components/crm/PipelinesTab";
-import ActivitiesTab from "@/components/crm/ActivitiesTab";
-import DeadlinesTab from "@/components/crm/DeadlinesTab";
-import ChatsTab from "@/components/crm/ChatsTab";
 import { ContactsList, LeadsList, OpportunitiesList, TasksList } from "@/components/crm/EntityLists";
 import NewContactForm from "@/components/crm/NewContactForm";
 import NewOpportunityForm from "@/components/crm/NewOpportunityForm";
 import { useCanWrite } from "@/components/crm/useCanWrite";
 import CrmTabBar from "@/components/crm/CrmTabBar";
 import { resolveTab } from "@/components/crm/tabs";
+
+function TabLoading() {
+  return (
+    <div className="flex h-36 items-center justify-center text-xs text-[#706E6B] dark:text-[#A8B4C4]">
+      <svg className="mr-2 h-4 w-4 animate-spin text-[#0176D3]" viewBox="0 0 24 24" fill="none">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+      </svg>
+      Loading CRM section…
+    </div>
+  );
+}
+
+const CrmHome = dynamic(() => import("@/components/crm/CrmHome"), { ssr: false, loading: () => <TabLoading /> });
+const HouseholdsTab = dynamic(() => import("@/components/crm/HouseholdsTab"), { ssr: false, loading: () => <TabLoading /> });
+const LeadsTab = dynamic(() => import("@/components/crm/LeadsTab"), { ssr: false, loading: () => <TabLoading /> });
+const PipelinesTab = dynamic(() => import("@/components/crm/PipelinesTab"), { ssr: false, loading: () => <TabLoading /> });
+const ActivitiesTab = dynamic(() => import("@/components/crm/ActivitiesTab"), { ssr: false, loading: () => <TabLoading /> });
+const DeadlinesTab = dynamic(() => import("@/components/crm/DeadlinesTab"), { ssr: false, loading: () => <TabLoading /> });
+const ChatsTab = dynamic(() => import("@/components/crm/ChatsTab"), { ssr: false, loading: () => <TabLoading /> });
+
+class TabErrorBoundary extends React.Component<
+  { children: React.ReactNode; tabName: string },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode; tabName: string }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("CRM Tab Render Error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-xs text-rose-800 space-y-3 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300">
+          <div className="font-bold text-sm">Failed to render {this.props.tabName}</div>
+          <div className="font-mono break-words">{this.state.error?.message || "Unexpected rendering error"}</div>
+          <button
+            type="button"
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="rounded-lg bg-rose-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-rose-800 transition"
+          >
+            Try again
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 /** Tabs that offer a table (Salesforce-style list view) next to the original board/agenda/create screen. */
 function TableOrBoard({ table, board, boardLabel, defaultView, newLabel }: { table: React.ReactNode; board: React.ReactNode; boardLabel: string; defaultView: "table" | "board"; newLabel?: string }) {
@@ -98,14 +146,16 @@ function CrmTabs() {
   return (
     <div className="space-y-4">
       <CrmTabBar tab={tab} />
-      {tab === "home" && <CrmHome />}
-      {tab === "households" && <HouseholdsTab />}
-      {tab === "contacts" && <ContactsTab />}
-      {tab === "chats" && <ChatsTab />}
-      {tab === "leads" && <TableOrBoard defaultView="table" boardLabel="Board & new lead" newLabel="New lead" table={<LeadsList />} board={<LeadsTab />} />}
-      {tab === "opportunities" && <OpportunitiesTab />}
-      {tab === "activities" && <TableOrBoard defaultView="table" boardLabel="Agenda & new task" newLabel="New task" table={<TasksList />} board={<ActivitiesTab />} />}
-      {tab === "deadlines" && <DeadlinesTab />}
+      <TabErrorBoundary key={tab} tabName={tab}>
+        {tab === "home" && <CrmHome />}
+        {tab === "households" && <HouseholdsTab />}
+        {tab === "contacts" && <ContactsTab />}
+        {tab === "chats" && <ChatsTab />}
+        {tab === "leads" && <TableOrBoard defaultView="table" boardLabel="Board & new lead" newLabel="New lead" table={<LeadsList />} board={<LeadsTab />} />}
+        {tab === "opportunities" && <OpportunitiesTab />}
+        {tab === "activities" && <TableOrBoard defaultView="table" boardLabel="Agenda & new task" newLabel="New task" table={<TasksList />} board={<ActivitiesTab />} />}
+        {tab === "deadlines" && <DeadlinesTab />}
+      </TabErrorBoundary>
     </div>
   );
 }

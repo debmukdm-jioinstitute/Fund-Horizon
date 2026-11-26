@@ -143,7 +143,10 @@ export function VarsityHub() {
   return (
     <div className="space-y-6">
       <section className={`${card} border-dashed p-6 space-y-3`} aria-label="Varsity external learning">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#B45309]">External learning · Not FH training</p>
+        <div className="flex items-center gap-2">
+          <span className="rounded bg-amber-50 dark:bg-amber-950/60 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 border border-amber-600/20">Curated Library</span>
+          <span className="text-xs text-[#536176] dark:text-[#A8B4C4]">· Market Fundamentals</span>
+        </div>
         <h2 className="text-xl font-semibold">Zerodha Varsity library — focus set</h2>
         <p className={`text-[15px] ${muted}`}>
           Eight focus modules are listed in full below, with their chapters linked to the original pages on Zerodha. Seven more modules are coming later and are
@@ -348,7 +351,10 @@ export function VarsityDetail({ slug, ch }: { slug: string; ch: string | null })
 
       <section className={`${card} border-dashed p-6 space-y-3`} aria-label={`${m.title} overview`}>
         {VARSITY_ILLUSTRATIONS[m.slug]}
-        <p className="text-xs font-bold uppercase tracking-wider text-[#B45309]">External learning · Not FH training</p>
+        <div className="flex items-center gap-2">
+          <span className="rounded bg-amber-50 dark:bg-amber-950/60 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 border border-amber-600/20">Curated Library</span>
+          <span className="text-xs text-[#536176] dark:text-[#A8B4C4]">· Market Fundamentals</span>
+        </div>
         <h2 className="text-xl font-semibold">{m.title}</h2>
         {note && <p className={`text-[15px] ${muted}`}>{note.blurb}</p>}
         {note?.relates && <p className="text-sm"><span className={muted}>FH link: </span>{note.relates}</p>}
@@ -372,7 +378,7 @@ export function VarsityDetail({ slug, ch }: { slug: string; ch: string | null })
       <section className="space-y-3" aria-label={`${m.title} concept map`}>
         <h3 className="text-lg font-semibold">Key topics in this module</h3>
         <p className={`text-[15px] ${muted}`}>
-          Tap a topic to open its chapter on Zerodha where a direct chapter link is known; otherwise it jumps to the chapter list below. Topics are Fund Horizon summaries, not Zerodha text.
+          Tap a topic to open its chapter on Zerodha where a direct chapter link is known; otherwise it jumps to the chapter list below. Topics are curated summaries for quick reference.
         </p>
         <VarsityConceptMap moduleTitle={m.title} topics={topics} />
       </section>

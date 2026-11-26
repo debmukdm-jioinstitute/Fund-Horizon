@@ -1,4 +1,4 @@
-// FH Academy Taxation section — Fund Horizon material, NOT Zerodha content.
+// FH Academy Taxation Reference & Client Advisory Guide
 // Read-only guide: it tracks nothing and earns no XP. Every rate below is
 // stated for FY 2026-27 and was checked against the sources listed on each
 // page on 28 October 2026. Where a rule could not be verified cleanly, the
@@ -11,6 +11,25 @@ import { useAcademy } from "./AcademyContext";
 import { btnGhost, btnPrimary, card, muted } from "./ui";
 import { VARSITY_MODULES_INDEX } from "@/lib/varsityCatalogue";
 import { FO_BACKGROUND } from "@/lib/varsityFoBackground";
+
+const PRODUCT_TRIVIA: Record<string, { fact: string; nuance: string }> = {
+  pms: {
+    fact: "In a PMS, every single stock sale executed by your portfolio manager is a taxable event in your PAN, unlike mutual funds where turnover inside the fund is 100% tax-free.",
+    nuance: "SEBI PMS regulations mandate a ₹50 Lakh minimum ticket size, and performance fees can only be charged if the portfolio exceeds the contractual High-Water Mark.",
+  },
+  mf: {
+    fact: "Under Section 112A, Long-Term Capital Gains up to ₹1.25 Lakh per financial year across all equity mutual funds and listed shares are completely tax-exempt.",
+    nuance: "When a fund manager rebalances holdings inside the scheme, no capital gains tax is paid by the investor. Tax occurs only when you redeem or switch units.",
+  },
+  equity: {
+    fact: "Bonus shares have a cost of acquisition of ₹0 under Section 55(2). Their holding period is counted from the date of bonus allotment, not the original purchase date.",
+    nuance: "Securities Transaction Tax (STT) paid on share delivery cannot be claimed as an expense or added to the acquisition cost for capital gains calculations.",
+  },
+  fo: {
+    fact: "Turnover in F&O is NOT the contract value! It is the sum of positive differences + negative differences on all squared-off trades, plus option premiums received.",
+    nuance: "F&O is legally non-speculative business income under Section 43(5). You can offset F&O business losses against any income other than salary!",
+  },
+};
 
 export const TAX_FY = "FY 2026-27";
 export const TAX_CHECKED = "28 October 2026";
@@ -283,7 +302,10 @@ export function TaxationHub() {
     <div className="space-y-6">
       <section className={`${card} p-6 space-y-3`} aria-label="Taxation guide overview">
         <TaxIllustration />
-        <p className="text-xs font-bold uppercase tracking-wider text-[#0176D3]">Fund Horizon material · Not Zerodha content</p>
+        <div className="flex items-center gap-2">
+          <span className="rounded bg-[#EAF5FE] dark:bg-[#11304F] px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">Taxation Reference</span>
+          <span className="text-xs text-[#536176] dark:text-[#A8B4C4]">· FY 2026–27 Rules</span>
+        </div>
         <h2 className="text-xl font-semibold">Taxation guide — PMS, mutual funds, equity and F&O</h2>
         <p className={`text-[15px] ${muted}`}>
           Four plain-English guides: how each product is taxed, the holding-period split, the rates, turnover where it matters, loss rules, the return form
@@ -341,7 +363,10 @@ export function TaxationPage({ productId }: { productId: string }) {
     <div className="space-y-6">
       <button className={btnGhost} onClick={() => go({ tax: "1" })}>← Back to taxation guides</button>
       <section className={`${card} p-6 space-y-3`} aria-label={`${p.title} overview`}>
-        <p className="text-xs font-bold uppercase tracking-wider text-[#0176D3]">Fund Horizon material · Not Zerodha content</p>
+        <div className="flex items-center gap-2">
+          <span className="rounded bg-[#EAF5FE] dark:bg-[#11304F] px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">Taxation Reference</span>
+          <span className="text-xs text-[#536176] dark:text-[#A8B4C4]">· FY 2026–27 Rules</span>
+        </div>
         <h2 className="text-xl font-semibold">{p.title}</h2>
         <p className={`text-[15px] ${muted}`}>{p.short}</p>
         <p className={`text-[15px] ${muted}`}>This guide is reading material only — it tracks nothing and earns no XP.</p>
@@ -359,6 +384,17 @@ export function TaxationPage({ productId }: { productId: string }) {
           </ul>
         </section>
       ))}
+
+      {PRODUCT_TRIVIA[p.id] && (
+        <section className="rounded-xl border border-[#B9E1FE] bg-[#F1F8FE] p-5 dark:border-[#1E4976] dark:bg-[#0D233A] space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="rounded bg-[#0176D3] px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-white">Did You Know?</span>
+            <span className="text-xs font-semibold text-[#0B5CAD] dark:text-[#6BB7FF]">Advisory Nuance</span>
+          </div>
+          <p className="text-[14px] font-medium text-[#181C22] dark:text-[#F0F4F8]">{PRODUCT_TRIVIA[p.id].fact}</p>
+          <p className="text-xs text-[#536176] dark:text-[#A8B4C4] leading-relaxed">💡 <span className="font-semibold text-[#181C22] dark:text-[#E2E8F0]">Client takeaway:</span> {PRODUCT_TRIVIA[p.id].nuance}</p>
+        </section>
+      )}
 
       <section className={`${card} p-5 space-y-2`} aria-label="Worked example">
         <h3 className="text-lg font-semibold">{p.exampleTitle}</h3>

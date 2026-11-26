@@ -391,10 +391,49 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
       </div>
 
       <Section id="about" title={`About ${shortDisplayName(scheme.scheme_name)}`}>
-        <p className="text-[14px]">
-          {shortDisplayName(scheme.scheme_name)} is a {scheme.category || "mutual fund"} scheme from {scheme.amc_name || "its fund house"} ({[classified.plan, classified.option].filter(Boolean).join(" · ") || "plan not classified"}).
-          {perf ? ` ${m.history_years ?? "—"} years of NAV history, last published ${formatISTDate(scheme.nav_date)}.` : ""}
-        </p>
+        <div className="space-y-4">
+          <p className="text-[14px] leading-relaxed text-[#181C22] dark:text-[#EDF2F7]">
+            <strong>{shortDisplayName(scheme.scheme_name)}</strong> is an open-ended <strong>{scheme.category || "equity"}</strong> mutual fund scheme managed by <strong>{scheme.amc_name || "its fund house"}</strong> ({[classified.plan, classified.option].filter(Boolean).join(" · ") || "Regular Plan · Growth"}). It pools investor capital to build a disciplined, diversified portfolio aligned with SEBI mutual fund guidelines.
+          </p>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 pt-1">
+            <div className="rounded-xl border border-[#E5E5E5] bg-[#F8FAFC] p-3.5 dark:border-[#2B3644] dark:bg-[#151D28]">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">Fund House</span>
+              <p className="mt-1 text-sm font-bold text-[#181C22] dark:text-white truncate">{scheme.amc_name || "—"}</p>
+              <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">Registered AMC</span>
+            </div>
+
+            <div className="rounded-xl border border-[#E5E5E5] bg-[#F8FAFC] p-3.5 dark:border-[#2B3644] dark:bg-[#151D28]">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">Category &amp; Style</span>
+              <p className="mt-1 text-sm font-bold text-[#181C22] dark:text-white truncate">{scheme.category || "Equity"}</p>
+              <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">{classified.plan || "Regular Plan"}</span>
+            </div>
+
+            <div className="rounded-xl border border-[#E5E5E5] bg-[#F8FAFC] p-3.5 dark:border-[#2B3644] dark:bg-[#151D28]">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">Track Record</span>
+              <p className="mt-1 text-sm font-bold text-[#181C22] dark:text-white">{m.history_years ? `${m.history_years} Years` : "—"}</p>
+              <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">NAV history on record</span>
+            </div>
+
+            <div className="rounded-xl border border-[#E5E5E5] bg-[#F8FAFC] p-3.5 dark:border-[#2B3644] dark:bg-[#151D28]">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">Latest NAV</span>
+              <p className="mt-1 text-sm font-bold text-[#0176D3] dark:text-[#1B96FF]">{nav}</p>
+              <span className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">As of {formatISTDate(scheme.nav_date)}</span>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-[#C5DDF7] bg-[#F0F7FD] p-3.5 dark:border-[#1E4976] dark:bg-[#0B2138] text-xs text-[#204066] dark:text-[#CBE4FC] flex items-start gap-2.5">
+            <span className="text-base leading-none">💡</span>
+            <div>
+              <span className="font-semibold text-[#0B3A6E] dark:text-white">Investor takeaway: </span>
+              {scheme.category?.toLowerCase().includes("flexi")
+                ? "Flexi-cap strategies have the statutory mandate to dynamically invest across large-cap, mid-cap, and small-cap stocks without market-cap caps, giving fund managers flexibility across economic cycles."
+                : scheme.category?.toLowerCase().includes("large")
+                ? "Large-cap strategies focus predominantly on the top 100 established market leaders, providing stability and steady compounding."
+                : "Diversified portfolio allocation spreads single-stock company risk across multiple sectors and industry leaders."}
+            </div>
+          </div>
+        </div>
       </Section>
 
       <Section id="compare" title="Compare funds">

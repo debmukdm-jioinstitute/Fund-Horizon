@@ -561,11 +561,47 @@ export default async function FundDetailPage({ params }: PageProps) {
         {reference ? <ReferenceDetails reference={reference} /> : <section className="card"><h2 className="text-lg font-bold text-navy-950">Overview</h2><p className="mt-1 text-sm text-navy-700">No AMFI/SEBI reference record on file for this scheme.</p></section>}
       </div>
 
-      <section id="about" className="card scroll-mt-28 space-y-2">
-        <h2 className="text-lg font-bold text-navy-950">About {detail.scheme_name}</h2>
-        <p className="text-sm text-navy-800">
-          {detail.scheme_name} is an open-ended {CATEGORY_LABELS[detail.cat] ?? detail.category} scheme from {detail.amc}, offered here as the Regular plan ({detail.option}). NAV history runs {detail.nav_monthly.length} months, last published {analytics.last_nav_date}.
-        </p>
+      <section id="about" className="card scroll-mt-28 space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-navy-950">About {detail.scheme_name}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-navy-800">
+            <strong>{detail.scheme_name}</strong> is an open-ended <strong>{CATEGORY_LABELS[detail.cat] ?? detail.category}</strong> mutual fund scheme managed by <strong>{detail.amc}</strong>, distributed as a Regular Plan ({detail.option}). It pools capital to provide individual investors with institutional portfolio management, diversification, and liquidity.
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">Fund House</span>
+            <p className="mt-1 text-sm font-bold text-navy-950 truncate">{detail.amc}</p>
+            <span className="text-[11px] text-navy-600">SEBI Registered</span>
+          </div>
+
+          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">Category</span>
+            <p className="mt-1 text-sm font-bold text-navy-950 truncate">{CATEGORY_LABELS[detail.cat] ?? detail.category}</p>
+            <span className="text-[11px] text-navy-600">Regular · {detail.option}</span>
+          </div>
+
+          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">History</span>
+            <p className="mt-1 text-sm font-bold text-navy-950">{(detail.nav_monthly.length / 12).toFixed(1)} Years</p>
+            <span className="text-[11px] text-navy-600">{detail.nav_monthly.length} months published</span>
+          </div>
+
+          <div className="rounded-xl border border-navy-100 bg-navy-50/50 p-3.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-600">Latest NAV</span>
+            <p className="mt-1 text-sm font-bold text-teal-700">₹{detail.nav_monthly?.[detail.nav_monthly.length - 1]?.nav ? Number(detail.nav_monthly[detail.nav_monthly.length - 1].nav).toFixed(2) : "—"}</p>
+            <span className="text-[11px] text-navy-600">As of {analytics.last_nav_date}</span>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-teal-200 bg-teal-50/60 p-3.5 text-xs text-teal-900 flex items-start gap-2.5">
+          <span className="text-base leading-none">💡</span>
+          <div>
+            <span className="font-bold text-teal-950">Investment guidance: </span>
+            Mutual funds allow investors to access a professionally chosen basket of securities. Staying invested through regular monthly SIPs helps smooth out market volatility through rupee-cost averaging.
+          </div>
+        </div>
       </section>
 
       <section id="compare" className="card scroll-mt-28 flex flex-wrap items-center justify-between gap-3">

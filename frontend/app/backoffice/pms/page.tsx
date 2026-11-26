@@ -445,7 +445,7 @@ function PmsTracker() {
                   setMethodologyStrategy(null);
                   setMethodologyModalOpen(true);
                 }}
-                className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                className="!hidden terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
                 title="Inspect step-by-step mathematical calculations and methodology formulas"
               >
                 <span>📐 Live Formulas</span>
@@ -454,7 +454,7 @@ function PmsTracker() {
               <button
                 type="button"
                 onClick={() => setMatrixModalOpen(true)}
-                className="terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
+                className="!hidden terminal-btn text-[12px] py-1.5 px-3 flex items-center gap-1.5 font-medium cursor-pointer"
                 title="View data availability & screening matrix for the 9 curated PMS strategies"
               >
                 <span>📊 9 Strategies Matrix</span>
@@ -547,7 +547,7 @@ function PmsTracker() {
               <button
                 type="button"
                 onClick={() => setDocModalOpen(true)}
-                className="rounded-lg bg-[#0176D3] text-white px-3.5 py-1.5 text-[12px] font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-sm transition"
+                className="!hidden rounded-lg bg-[#0176D3] text-white px-3.5 py-1.5 text-[12px] font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-sm transition"
                 title="Upload client portfolio report, factsheet or WealthSpectrum PDF"
               >
                 <span>Upload PMS Document</span>

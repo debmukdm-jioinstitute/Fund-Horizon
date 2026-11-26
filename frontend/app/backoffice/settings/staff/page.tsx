@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 import StaffDrawer, { accessSummary } from "@/components/backoffice/StaffDrawer";
 import {
@@ -219,12 +218,11 @@ export default function StaffPermissionsPage() {
   if (!isAdmin) {
     return (
       <div className="space-y-4">
-        <div className="pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
-          <div className={`text-[11px] ${mutedCls} mb-1`}>
-            <Link href="/backoffice/settings" className="hover:underline">Settings</Link>
-            {" / "}Staff &amp; permissions
+        <div className="flex items-center justify-between pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+          <div>
+            <h2 className="text-[18px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Staff &amp; permissions</h2>
+            <p className={`text-[12px] ${mutedCls}`}>Manage your team and their access.</p>
           </div>
-          <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">Staff &amp; permissions</h1>
         </div>
         <p className="terminal-panel p-4 text-[13px] text-[#181818] dark:text-[#EDF2F7]">
           This page is for administrators. Ask an admin to change team access.
@@ -235,13 +233,10 @@ export default function StaffPermissionsPage() {
 
   return (
     <div className="space-y-4 pb-12">
-      <div className="flex flex-wrap items-start justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+      <div className="flex flex-wrap items-start justify-between gap-3 pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
         <div>
-          <div className={`text-[11px] ${mutedCls} mb-1`}>
-            <Link href="/backoffice/settings" className="hover:underline">Settings</Link>
-            {" / "}Staff &amp; permissions
-          </div>
-          <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">Staff &amp; permissions</h1>
+          <h2 className="text-[18px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Staff &amp; permissions</h2>
+          <p className={`text-[12px] ${mutedCls}`}>Manage your team and their access.</p>
         </div>
         <button type="button" onClick={() => setDrawer({ mode: "create" })} className="terminal-btn-accent">
           + Add staff

@@ -179,12 +179,12 @@ export const NAV_ITEMS: NavItem[] = [
     description: "Staff provisioning, RBAC roles, terminal preferences, and watchlists",
     children: [
       {
-        href: "/backoffice/settings/mcp",
-        label: "Claude connection (MCP)",
-        description: "Create a personal token to use Fund Horizon inside Claude.",
+        href: "/backoffice/settings/lead",
+        label: "Lead generation",
+        description: "Client intake QR and crossword game lead capture.",
         icon: (p) => (
           <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1z" />
           </svg>
         ),
       },
@@ -195,6 +195,56 @@ export const NAV_ITEMS: NavItem[] = [
         icon: (p) => (
           <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-4.13a4 4 0 100-8 4 4 0 000 8zm6 0a3 3 0 100-6M3 10a3 3 0 106 0" />
+          </svg>
+        ),
+      },
+      {
+        href: "/backoffice/settings/ai",
+        label: "AI control centre",
+        description: "Model selection, provider registry, fallbacks, and runtime parameters.",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9.8 3l1.6 4.4L16 9l-4.6 1.6L9.8 15 8.2 10.6 3.6 9l4.6-1.6zM18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z" />
+          </svg>
+        ),
+      },
+      {
+        href: "/backoffice/settings/recommended",
+        label: "FH Recommended",
+        description: "Curated shortlist of mutual funds and PMS strategies.",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11.48 3.5a.56.56 0 011.04 0l2.13 5.11a.56.56 0 00.48.35l5.52.44c.5.04.7.66.32.99l-4.2 3.6a.56.56 0 00-.18.56l1.28 5.39a.56.56 0 01-.84.61l-4.73-2.89a.56.56 0 00-.58 0l-4.73 2.89a.56.56 0 01-.84-.61l1.28-5.39a.56.56 0 00-.18-.56l-4.2-3.6a.56.56 0 01.32-.99l5.52-.44a.56.56 0 00.48-.35z" />
+          </svg>
+        ),
+      },
+      {
+        href: "/backoffice/settings/watchlists",
+        label: "Watchlists",
+        description: "Monitored mutual funds, issuers, and PMS strategies.",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21z" />
+          </svg>
+        ),
+      },
+      {
+        href: "/backoffice/settings/mcp",
+        label: "Claude connection (MCP)",
+        description: "Create a personal token to use Fund Horizon inside Claude.",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        ),
+      },
+      {
+        href: "/backoffice/data-health",
+        label: "Data health",
+        description: "Upstream source registry, API freshness, and diagnostics.",
+        icon: (p) => (
+          <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6zM9 12l2 2 4-4" />
           </svg>
         ),
       },

@@ -659,8 +659,8 @@ function MutualFunds() {
                     ))}
                   </div>
                   <div className="pt-2 border-t border-[#E5E5E5] dark:border-[#2B3644] text-[11px] flex justify-between items-center">
-                    <Link href="/backoffice/settings" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
-                      All Settings →
+                    <Link href="/backoffice/settings/recommended" className="text-[#0176D3] dark:text-[#1B96FF] hover:underline font-medium">
+                      Manage Recommendations →
                     </Link>
                     <span className="text-[10px] text-[#706E6B] dark:text-[#A8B4C4]">Saves live across terminal</span>
                   </div>

@@ -44,9 +44,10 @@ export default function McpSettingsPage() {
   const copyUrl = () => run("url", async () => { await navigator.clipboard.writeText(MCP_URL); return "Address copied."; });
 
   return (
-    <div className="mx-auto max-w-[760px] space-y-5 p-4">
-      <div>
-        <h1 className="text-2xl font-bold text-[#181818] dark:text-[#EDF2F7]">Use Fund Horizon inside Claude</h1>
+    <div className="space-y-5">
+      <div className="pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
+        <h2 className="text-[18px] font-semibold text-[#181818] dark:text-[#EDF2F7]">Claude connection (MCP)</h2>
+        <p className={`text-[12px] ${muted} mt-0.5`}>Create a personal token to use Fund Horizon inside Claude.</p>
       </div>
 
       {msg && <p role={msg.ok ? "status" : "alert"} className={`rounded-lg border p-3 text-[15px] ${msg.ok ? "border-[#2E844A] text-[#1B5E20] dark:text-[#A5D6A7]" : "border-[#B42332] text-[#B42332] dark:text-[#FF7D86]"}`}>{msg.text}</p>}

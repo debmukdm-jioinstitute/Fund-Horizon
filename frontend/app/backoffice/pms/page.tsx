@@ -2,6 +2,7 @@
 
 import React, { Suspense, useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useUrlId, useUrlState } from "@/lib/useUrlState";
 import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
 import { PmsLogo } from "@/components/BrandLogo";
 import Link from "next/link";
@@ -145,18 +146,20 @@ function PmsTracker() {
   const [newPmsName, setNewPmsName] = useState("");
   const [strategies, setStrategies] = useState<PmsStrategyItem[]>([]);
   const [asOf, setAsOf] = useState<string | undefined>();
-  const [selectedStrategy, setSelectedStrategy] = useState<PmsStrategyItem | null>(null);
-  const [selectedManager, setSelectedManager] = useState<string | null>(null);
-  const [managerProvider, setManagerProvider] = useState<string | null>(null);
+  const [strategyKey, setStrategyKey] = useUrlId("strategy", { push: true });
+  const selectedStrategy = strategyKey ? strategies.find((s) => (s.ia_id ?? s.id) === strategyKey) ?? null : null;
+  const setSelectedStrategy = (s: PmsStrategyItem | null) => setStrategyKey(s ? (s.ia_id ?? s.id ?? null) : null);
+  const [selectedManager, setSelectedManager] = useUrlId("manager", { push: true });
+  const [managerProvider, setManagerProvider] = useUrlId("provider", { push: true });
   const [strategiesLoading, setStrategiesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [meta, setMeta] = useState<Record<string, InfoTipMeta> | undefined>();
 
   const [categoryFilter, setCategoryFilter] = useState(params.get("approach") ?? (section?.startsWith("fh-") ? "fh-recommended" : "all"));
-  const [fhSubTab, setFhSubTab] = useState<"returns" | "details">(section === "fh-details" ? "details" : "returns");
+  const [fhSubTab, setFhSubTab] = useUrlState<"returns" | "details">("fhtab", section === "fh-details" ? "details" : "returns", { allowed: ["returns", "details"] });
   const [search, setSearch] = useState(urlQuery);
-  const [sortKey, setSortKey] = useState<SortKey>("aum");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useUrlState<SortKey>("sort", "aum");
+  const [sortDir, setSortDir] = useUrlState<"asc" | "desc">("dir", "desc", { allowed: ["asc", "desc"] });
   const [page, setPage] = useState(0);
   const [docModalOpen, setDocModalOpen] = useState(false);
   const [matrixModalOpen, setMatrixModalOpen] = useState(false);
@@ -270,7 +273,7 @@ function PmsTracker() {
   const to = Math.min(filteredStrategies.length, (safePage + 1) * PAGE_SIZE);
 
   function handleSort(key: SortKey) {
-    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    if (sortKey === key) setSortDir(sortDir === "asc" ? "desc" : "asc");
     else {
       setSortKey(key);
       setSortDir(key === "name" ? "asc" : "desc");

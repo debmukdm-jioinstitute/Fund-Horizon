@@ -15,6 +15,7 @@ import type { OfficialForm } from "@/lib/officialForms";
 import { startDownload, type DownloadResult } from "@/lib/api";
 import { domain, isReference, JOBS, type Job, jobForms } from "@/lib/operations";
 
+import { useUrlState } from "@/lib/useUrlState";
 type Tab = "updates" | "tasks" | "library" | "register" | "report" | "review";
 interface Filling { source: PdfSource; prefill?: Partial<ClientDetails>; context?: FillContext }
 interface Filters { q: string; sources: Set<string>; amc: string; cat: string; amcQ: string }
@@ -36,7 +37,7 @@ const emptyFilters = (): Filters => ({ q: "", sources: new Set(["CAMS", "KFintec
 function FormFilling({ initialTab = "updates" }: { initialTab?: Tab }) {
   const [forms, setForms] = useState<OfficialForm[]>([]);
   const [loadError, setLoadError] = useState(false);
-  const [tab, setTab] = useState<Tab>(initialTab);
+  const [tab, setTab] = useUrlState<Tab>("tab", initialTab, { push: true });
   const [filling, setFilling] = useState<Filling | null>(null);
   const [filings, setFilings] = useState<Filing[]>([]);
   const [registerError, setRegisterError] = useState<string | null>(null);

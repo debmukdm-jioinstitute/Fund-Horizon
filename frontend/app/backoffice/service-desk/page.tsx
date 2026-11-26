@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchHouseholds } from "@/lib/crmApi";
+import { useUrlState } from "@/lib/useUrlState";
 import {
   CATEGORIES,
   PRIORITIES,
@@ -66,10 +67,10 @@ export default function ServiceDeskPage() {
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Filters & Search
-  const [searchQ, setSearchQ] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [priorityFilter, setPriorityFilter] = useState<string>("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [searchQ, setSearchQ] = useUrlState<string>("q", "");
+  const [statusFilter, setStatusFilter] = useUrlState<string>("status", "all", { push: true });
+  const [priorityFilter, setPriorityFilter] = useUrlState<string>("priority", "");
+  const [categoryFilter, setCategoryFilter] = useUrlState<string>("category", "");
 
   // Create Form State
   const [formOpen, setFormOpen] = useState(false);

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useUrlState } from "@/lib/useUrlState";
 import {
   type Employee,
   type HrmsStats,
@@ -55,7 +56,7 @@ const SEC_BTN = "inline-flex items-center gap-1.5 rounded-lg border border-[#E4E
 const getErrMsg = (err: unknown): string => (err instanceof Error ? err.message : String(err));
 
 export default function HrmsPage() {
-  const [tab, setTab] = useState<HrmsTab>("overview");
+  const [tab, setTab] = useUrlState<HrmsTab>("tab", "overview", { push: true });
   const [stats, setStats] = useState<HrmsStats | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [letters, setLetters] = useState<LetterRecord[]>([]);

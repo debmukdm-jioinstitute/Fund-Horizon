@@ -9,6 +9,7 @@ import {
   getEquityBaskets, getEquityIndices, getEquityQuotes, moveEquityBasket, renameEquityBasket, saveEquityBasket, saveEquityHolding,
 } from "@/lib/backoffice";
 import { formatNumber } from "@/lib/terminal-format";
+import { useUrlId, useUrlState } from "@/lib/useUrlState";
 
 const LEGACY_KEY = "fh.equities.baskets.v1"; // pre-server storage; imported once then removed
 const REFRESH_MS = 20_000;
@@ -62,8 +63,8 @@ function Stepper({ value, onSave, label }: { value: number | null; onSave: (v: n
 
 export default function EquitiesPage() {
   const [baskets, setBaskets] = useState<EquityBasket[]>([]);
-  const [activeId, setActiveId] = useState(HOME);
-  const [selectedStock, setSelectedStock] = useState<string | null>(null);
+  const [activeId, setActiveId] = useUrlState<string>("basket", HOME, { push: true });
+  const [selectedStock, setSelectedStock] = useUrlId("stock", { push: true });
   const [loaded, setLoaded] = useState(false);
   const [quotes, setQuotes] = useState<Record<string, EquityQuote>>({});
   const [err, setErr] = useState<string | null>(null);

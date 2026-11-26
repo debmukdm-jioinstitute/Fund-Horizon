@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
@@ -216,7 +216,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       )}
 
       <main className="flex-1 p-3 sm:p-4 md:p-5">
-        <div className="w-full">{allowed ? children : null}</div>
+        <div className="w-full">{allowed ? <Suspense fallback={null}>{children}</Suspense> : null}</div>
       </main>
 
       <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={flatNavItems} />

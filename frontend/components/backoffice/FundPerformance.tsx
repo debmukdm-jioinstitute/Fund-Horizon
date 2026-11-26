@@ -6,6 +6,7 @@ import FundSearch from "@/components/backoffice/FundSearch";
 import { apiBlob, apiGet } from "@/lib/apiGet";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 
+import { useUrlState } from "@/lib/useUrlState";
 interface Col { key: string; label: string; group: string | null; kind: string | null }
 type Cell = string | number | null;
 interface Table { title: string; columns: Col[]; rows: Record<string, Cell>[]; note: string; as_of: string }
@@ -127,11 +128,11 @@ export function Result({ t }: { t: Table }) {
 }
 
 export default function FundPerformance() {
-  const [tab, setTab] = useState<Tab>("trailing");
+  const [tab, setTab] = useUrlState<Tab>("tab", "trailing", { push: true });
   const [meta, setMeta] = useState<Meta | null>(null);
-  const [category, setCategory] = useState("Equity: Large Cap");
-  const [plan, setPlan] = useState("Regular");
-  const [period, setPeriod] = useState("gt1y");
+  const [category, setCategory] = useUrlState<string>("category", "Equity: Large Cap");
+  const [plan, setPlan] = useUrlState<string>("plan", "Regular");
+  const [period, setPeriod] = useUrlState<string>("period", "gt1y");
   const [rank, setRank] = useState("true");
   const [picks, setPicks] = useState<Pick[]>([]);
   const [amount, setAmount] = useState("100000");

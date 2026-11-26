@@ -615,7 +615,10 @@ export const getObservationSeries = async (instrumentId: string): Promise<Series
   });
 };
 
-export interface EquitySuggestion { symbol: string; name: string }
+export interface EquitySuggestion {
+  symbol: string; name: string; sector?: string | null; industry?: string | null;
+  price?: number | null; change_pct?: number | null; high_52w?: number | null; low_52w?: number | null;
+}
 export interface EquityQuote {
   symbol: string; name?: string; price?: number; prev_close?: number; change?: number; change_pct?: number;
   day_high?: number; day_low?: number; high_52w?: number; low_52w?: number; volume?: number; error?: string;
@@ -625,12 +628,15 @@ export const searchEquities = async (q: string, signal?: AbortSignal): Promise<E
   arr((await boFetch<Json>(`/api/backoffice/equities/search?q=${encodeURIComponent(q)}`, { signal })).data) as unknown as EquitySuggestion[];
 
 export interface EquityHolding { qty: number | null; buy_price: number | null }
-export interface EquityBasket { id: string; name: string; symbols: string[]; holdings: Record<string, EquityHolding> }
+export interface EquityBasket { id: string; name: string; symbols: string[]; holdings: Record<string, EquityHolding>; parent_id?: string | null; kind?: "basket" | "folder" }
 const EQ = "/api/backoffice/equities/baskets";
 export const getEquityBaskets = async (): Promise<EquityBasket[]> =>
   arr((await boFetch<Json>(EQ)).data) as unknown as EquityBasket[];
-export const createEquityBasket = (name: string, symbols: string[] = []) =>
-  boFetch<EquityBasket>(EQ, { method: "POST", body: JSON.stringify({ name, symbols }) });
+export const createEquityBasket = (name: string, symbols: string[] = [], parent_id: string | null = null, kind: "basket" | "folder" = "basket") =>
+  boFetch<EquityBasket>(EQ, { method: "POST", body: JSON.stringify({ name, symbols, parent_id, kind }) });
+export const moveEquityBasket = async (id: string, parent_id: string | null): Promise<void> => {
+  await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}/parent`, { method: "PUT", body: JSON.stringify({ parent_id }) });
+};
 export const saveEquityBasket = async (id: string, symbols: string[]): Promise<void> => {
   await boFetch<Json>(`${EQ}/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify({ symbols }) });
 };

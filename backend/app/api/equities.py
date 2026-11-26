@@ -10,7 +10,7 @@ import time
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
@@ -107,22 +107,45 @@ def _cached(key: str, fn, ttl: float = TTL):
     return val
 
 
+def _rank(q: str, sym: str, name: str) -> int:
+    """Lower is better: exact ticker, ticker prefix, name prefix, any word prefix, substring."""
+    q, s, n = q.lower(), sym.lower(), name.lower()
+    if s == q:
+        return 0
+    if s.startswith(q):
+        return 1
+    if n.startswith(q):
+        return 2
+    if any(w.startswith(q) for w in re.split(r"[\s&.\-]+", n)):
+        return 3
+    return 4 if q in s or q in n else 5
+
+
 def _search(q: str) -> list[dict]:
     q = re.sub(r"[^\w&.\- ]", "", q).strip()  # Yahoo 400s on emoji/odd chars
     if not q:
         return []
-    url = "https://query2.finance.yahoo.com/v1/finance/search?" + urllib.parse.urlencode(
-        {"q": q, "quotesCount": 15, "newsCount": 0, "listsCount": 0}
-    )
-    out = []
-    for r in _get(url).get("quotes", []):
-        sym = str(r.get("symbol", ""))
-        if r.get("quoteType") == "EQUITY" and sym.endswith(".NS"):
-            out.append({"symbol": sym[:-3], "name": r.get("longname") or r.get("shortname") or sym[:-3]})
-    if not out and SYMBOL.match(q.upper()):  # Yahoo name search misses tickers like M&M
-        hit = _quote(q.upper())
+    seen: dict[str, dict] = {}
+    for term in dict.fromkeys([q, q.split()[0]]):  # full text, then first word when the full text finds little
+        url = "https://query2.finance.yahoo.com/v1/finance/search?" + urllib.parse.urlencode(
+            {"q": term, "quotesCount": 25, "newsCount": 0, "listsCount": 0}
+        )
+        for r in _get(url).get("quotes", []):
+            sym = str(r.get("symbol", ""))
+            if r.get("quoteType") == "EQUITY" and sym.endswith(".NS") and sym[:-3] not in seen:
+                seen[sym[:-3]] = {"symbol": sym[:-3], "name": r.get("longname") or r.get("shortname") or sym[:-3],
+                                  "sector": r.get("sector"), "industry": r.get("industry")}
+        if len(seen) >= 5:
+            break
+    if SYMBOL.match(q.upper()) and q.upper() not in seen:  # Yahoo name search misses tickers like M&M
+        hit = _cached("q:" + q.upper(), lambda: _quote(q.upper()), 60)
         if hit.get("price") is not None:
-            out.append({"symbol": hit["symbol"], "name": hit["name"]})
+            seen[hit["symbol"]] = {"symbol": hit["symbol"], "name": hit["name"], "sector": None, "industry": None}
+    out = sorted(seen.values(), key=lambda x: _rank(q, x["symbol"], x["name"]))[:10]
+    with ThreadPoolExecutor(max_workers=6) as ex:  # price + day change so a client sees the detail without opening each stock
+        for item, qt in zip(out, ex.map(lambda x: _cached("q:" + x["symbol"], lambda: _quote(x["symbol"]), 60), out)):
+            item["price"], item["change_pct"] = qt.get("price"), qt.get("change_pct")
+            item["high_52w"], item["low_52w"] = qt.get("high_52w"), qt.get("low_52w")
     return out
 
 
@@ -421,7 +444,7 @@ def _detail(sym: str) -> dict:
 @router.get("/search")
 def equities_search(staff: Annotated[dict, Depends(require_staff)], q: Annotated[str, Query(min_length=1, max_length=40)]):
     try:
-        return {"data": _cached("s:" + q.lower(), lambda: _search(q))}
+        return {"data": _cached("s:" + q.lower(), lambda: _search(q), 60)}
     except Exception as e:
         raise HTTPException(502, "Yahoo Finance search unavailable") from e
 
@@ -496,6 +519,12 @@ def _clean(symbols: list[str]) -> list[str]:
 class BasketCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=60)
     symbols: list[str] = Field(default_factory=list, max_length=50)
+    parent_id: str | None = Field(None, max_length=64)
+    kind: Literal["basket", "folder"] = "basket"
+
+
+class BasketMove(BaseModel):
+    parent_id: str | None = Field(None, max_length=64)
 
 
 class BasketSymbols(BaseModel):
@@ -535,9 +564,13 @@ def list_baskets(staff: Annotated[dict, Depends(require_staff)]):
 @router.post("/baskets", status_code=201)
 def create_basket(body: BasketCreate, request: Request, staff: Annotated[dict, Depends(require_staff)]):
     verify_csrf(request)
-    b = _REPO.create_equity_basket(staff["id"], body.name.strip(), _clean(body.symbols))
+    try:
+        b = _REPO.create_equity_basket(staff["id"], body.name.strip(), [] if body.kind == "folder" else _clean(body.symbols),
+                                       body.parent_id, body.kind)
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from e
     if not b:
-        raise HTTPException(409, "You already have a basket with this name")
+        raise HTTPException(409, "You already have a basket or folder with this name")
     _REPO.log_audit(staff["id"], "equity_basket_created", "equity_basket", b["id"], {"name": b["name"], "symbols": b["symbols"]})
     return b
 
@@ -566,15 +599,30 @@ def rename_basket(basket_id: str, body: BasketRename, request: Request, staff: A
     if res == "missing":
         raise HTTPException(404, "basket not found")
     if res == "dup":
-        raise HTTPException(409, "You already have a basket with this name")
+        raise HTTPException(409, "You already have a basket or folder with this name")
     _REPO.log_audit(staff["id"], "equity_basket_renamed", "equity_basket", basket_id, {"name": name})
+    return {"success": True}
+
+
+@router.put("/baskets/{basket_id}/parent")
+def move_basket(basket_id: str, body: BasketMove, request: Request, staff: Annotated[dict, Depends(require_staff)]):
+    verify_csrf(request)
+    res = _REPO.move_equity_item(staff["id"], basket_id, body.parent_id)
+    if res == "missing":
+        raise HTTPException(404, "basket not found")
+    if res == "invalid":
+        raise HTTPException(422, "can only move into one of your folders, never into itself")
+    _REPO.log_audit(staff["id"], "equity_basket_moved", "equity_basket", basket_id, {"parent_id": body.parent_id})
     return {"success": True}
 
 
 @router.delete("/baskets/{basket_id}")
 def delete_basket(basket_id: str, request: Request, staff: Annotated[dict, Depends(require_staff)]):
     verify_csrf(request)
-    if not _REPO.delete_equity_basket(staff["id"], basket_id):
+    res = _REPO.delete_equity_basket(staff["id"], basket_id)
+    if res == "missing":
         raise HTTPException(404, "basket not found")
+    if res == "notempty":
+        raise HTTPException(409, "folder is not empty: move or delete what is inside first")
     _REPO.log_audit(staff["id"], "equity_basket_deleted", "equity_basket", basket_id)
     return {"success": True}

@@ -271,6 +271,11 @@ class BackofficeRepository:
                         conn.execute("ALTER TABLE mf_schemes ADD COLUMN scheme_option TEXT")
                     if "isin_reinvest" not in cols:
                         conn.execute("ALTER TABLE mf_schemes ADD COLUMN isin_reinvest TEXT")
+                    ecols = {r["name"] for r in conn.execute("PRAGMA table_info(equity_baskets)").fetchall()}
+                    if "parent_id" not in ecols:  # equity folders: a folder is a row with kind='folder'; baskets/folders point at it
+                        conn.execute("ALTER TABLE equity_baskets ADD COLUMN parent_id TEXT")
+                    if "kind" not in ecols:
+                        conn.execute("ALTER TABLE equity_baskets ADD COLUMN kind TEXT NOT NULL DEFAULT 'basket'")
                 _LIVE_TABLES_READY.add(key)
             except sqlite3.OperationalError as e:
                 logger.error("Failed to init live backoffice tables (disk full or DB error): %s", e)
@@ -1658,26 +1663,34 @@ class BackofficeRepository:
     def list_equity_baskets(self, staff_id: str) -> list[dict[str, Any]]:
         conn = self._conn()
         try:
-            rows = conn.execute("SELECT id, name, symbols FROM equity_baskets WHERE staff_id = ? ORDER BY created_at",
+            rows = conn.execute("SELECT id, name, symbols, parent_id, kind FROM equity_baskets WHERE staff_id = ? ORDER BY created_at",
                                 (staff_id,)).fetchall()
             out = []
             for r in rows:
                 hold = {h["symbol"]: {"qty": h["qty"], "buy_price": h["buy_price"]} for h in conn.execute(
                     "SELECT symbol, qty, buy_price FROM equity_holdings WHERE basket_id = ?", (r["id"],)).fetchall()}
-                out.append({"id": r["id"], "name": r["name"], "symbols": json.loads(r["symbols"] or "[]"), "holdings": hold})
+                out.append({"id": r["id"], "name": r["name"], "symbols": json.loads(r["symbols"] or "[]"), "holdings": hold,
+                            "parent_id": r["parent_id"], "kind": r["kind"]})
             return out
         finally:
             conn.close()
 
-    def create_equity_basket(self, staff_id: str, name: str, symbols: list[str]) -> dict[str, Any] | None:
-        """None when the staff member already has a basket with this name."""
+    def _is_folder(self, conn, staff_id: str, folder_id: str) -> bool:
+        return conn.execute("SELECT 1 FROM equity_baskets WHERE id = ? AND staff_id = ? AND kind = 'folder'",
+                            (folder_id, staff_id)).fetchone() is not None
+
+    def create_equity_basket(self, staff_id: str, name: str, symbols: list[str], parent_id: str | None = None,
+                             kind: str = "basket") -> dict[str, Any] | None:
+        """None when the staff member already has an item with this name. ValueError for a bad parent."""
         conn = self._conn()
         bid, now = _new_id(), _utcnow()
         try:
+            if parent_id and not self._is_folder(conn, staff_id, parent_id):
+                raise ValueError("parent must be one of your folders")
             with conn:
-                conn.execute("INSERT INTO equity_baskets (id, staff_id, name, symbols, created_at, updated_at)"
-                             " VALUES (?, ?, ?, ?, ?, ?)", (bid, staff_id, name, json.dumps(symbols), now, now))
-            return {"id": bid, "name": name, "symbols": symbols, "holdings": {}}
+                conn.execute("INSERT INTO equity_baskets (id, staff_id, name, symbols, created_at, updated_at, parent_id, kind)"
+                             " VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (bid, staff_id, name, json.dumps(symbols), now, now, parent_id, kind))
+            return {"id": bid, "name": name, "symbols": symbols, "holdings": {}, "parent_id": parent_id, "kind": kind}
         except sqlite3.IntegrityError:
             return None
         finally:
@@ -1700,7 +1713,7 @@ class BackofficeRepository:
         conn = self._conn()
         try:
             with conn:
-                ok = conn.execute("UPDATE equity_baskets SET symbols = ?, updated_at = ? WHERE id = ? AND staff_id = ?",
+                ok = conn.execute("UPDATE equity_baskets SET symbols = ?, updated_at = ? WHERE id = ? AND staff_id = ? AND kind = 'basket'",
                                   (json.dumps(symbols), _utcnow(), basket_id, staff_id)).rowcount > 0
                 if ok:  # drop holdings of removed symbols
                     keep = ",".join("?" * len(symbols))
@@ -1743,12 +1756,37 @@ class BackofficeRepository:
         finally:
             conn.close()
 
-    def delete_equity_basket(self, staff_id: str, basket_id: str) -> bool:
+    def move_equity_item(self, staff_id: str, item_id: str, parent_id: str | None) -> str:
+        """'ok', 'missing', or 'invalid' (target is not a folder, or the move would put a folder inside itself)."""
         conn = self._conn()
         try:
             with conn:
-                return conn.execute("DELETE FROM equity_baskets WHERE id = ? AND staff_id = ?",
-                                    (basket_id, staff_id)).rowcount > 0
+                if not conn.execute("SELECT 1 FROM equity_baskets WHERE id = ? AND staff_id = ?", (item_id, staff_id)).fetchone():
+                    return "missing"
+                if parent_id:
+                    if not self._is_folder(conn, staff_id, parent_id):
+                        return "invalid"
+                    cur, hops = parent_id, 0
+                    while cur and hops < 100:  # walk up from the target: meeting item_id means a cycle
+                        if cur == item_id:
+                            return "invalid"
+                        row = conn.execute("SELECT parent_id FROM equity_baskets WHERE id = ?", (cur,)).fetchone()
+                        cur, hops = (row["parent_id"] if row else None), hops + 1
+                conn.execute("UPDATE equity_baskets SET parent_id = ?, updated_at = ? WHERE id = ? AND staff_id = ?",
+                             (parent_id, _utcnow(), item_id, staff_id))
+            return "ok"
+        finally:
+            conn.close()
+
+    def delete_equity_basket(self, staff_id: str, basket_id: str) -> str:
+        """'ok', 'missing', or 'notempty' (a folder that still has items: delete never cascades through a folder)."""
+        conn = self._conn()
+        try:
+            with conn:
+                if conn.execute("SELECT 1 FROM equity_baskets WHERE parent_id = ? AND staff_id = ?", (basket_id, staff_id)).fetchone():
+                    return "notempty"
+                return "ok" if conn.execute("DELETE FROM equity_baskets WHERE id = ? AND staff_id = ?",
+                                    (basket_id, staff_id)).rowcount > 0 else "missing"
         finally:
             conn.close()
 

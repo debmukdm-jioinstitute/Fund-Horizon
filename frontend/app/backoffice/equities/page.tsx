@@ -2,9 +2,11 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import EquityDetailView from "@/components/backoffice/EquityDetailView";
+import EquitySearch from "@/components/backoffice/EquitySearch";
+import EquityTree from "@/components/backoffice/EquityTree";
 import {
   EquityBasket, EquityHolding, EquityQuote, EquitySuggestion, createEquityBasket, deleteEquityBasket,
-  getEquityBaskets, getEquityIndices, getEquityQuotes, renameEquityBasket, saveEquityBasket, saveEquityHolding, searchEquities,
+  getEquityBaskets, getEquityIndices, getEquityQuotes, moveEquityBasket, renameEquityBasket, saveEquityBasket, saveEquityHolding,
 } from "@/lib/backoffice";
 import { formatNumber } from "@/lib/terminal-format";
 
@@ -63,18 +65,10 @@ export default function EquitiesPage() {
   const [activeId, setActiveId] = useState(HOME);
   const [selectedStock, setSelectedStock] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [q, setQ] = useState("");
-  const [sugg, setSugg] = useState<EquitySuggestion[]>([]);
-  const [open, setOpen] = useState(false);
-  const [homeQ, setHomeQ] = useState("");
-  const [homeSugg, setHomeSugg] = useState<EquitySuggestion[]>([]);
-  const [homeOpen, setHomeOpen] = useState(false);
   const [quotes, setQuotes] = useState<Record<string, EquityQuote>>({});
   const [err, setErr] = useState<string | null>(null);
   const [updated, setUpdated] = useState<Date | null>(null);
   const names = useRef<Record<string, string>>({});
-  const [showNew, setShowNew] = useState(false);
 
   const fail = (e: unknown) => setErr(e instanceof Error ? e.message : "Request failed");
 
@@ -100,27 +94,6 @@ export default function EquitiesPage() {
     })();
   }, []);
 
-  // Typeahead inside basket (debounced).
-  useEffect(() => {
-    const term = q.trim();
-    if (term.length < 2) { setSugg([]); return; }
-    const ac = new AbortController();
-    const t = setTimeout(() => {
-      searchEquities(term, ac.signal).then((r) => { r.forEach((s) => (names.current[s.symbol] = s.name)); setSugg(r); }).catch(() => {});
-    }, 250);
-    return () => { clearTimeout(t); ac.abort(); };
-  }, [q]);
-
-  // Typeahead on Home tab (debounced).
-  useEffect(() => {
-    const term = homeQ.trim();
-    if (term.length < 2) { setHomeSugg([]); return; }
-    const ac = new AbortController();
-    const t = setTimeout(() => {
-      searchEquities(term, ac.signal).then((r) => { r.forEach((s) => (names.current[s.symbol] = s.name)); setHomeSugg(r); }).catch(() => {});
-    }, 250);
-    return () => { clearTimeout(t); ac.abort(); };
-  }, [homeQ]);
 
   const basket = baskets.find((b) => b.id === activeId);
   // Locked by default. Edits go to a local draft and only persist on an explicit, confirmed Save.
@@ -159,12 +132,34 @@ export default function EquitiesPage() {
     return () => { ac.abort(); clearInterval(id); };
   }, [refresh]);
 
-  const createBasket = async () => {
-    const n = newName.trim();
-    if (!n) return;
+  const createItem = async (kind: "basket" | "folder", parentId: string | null, name: string) => {
     try {
-      const b = await createEquityBasket(n);
-      setBaskets((p) => [...p, b]); setActiveId(b.id); setSelectedStock(null); setNewName(""); setShowNew(false); setErr(null);
+      const b = await createEquityBasket(name, [], parentId, kind);
+      setBaskets((p) => [...p, b]); setErr(null);
+      if (kind === "basket") { setActiveId(b.id); setSelectedStock(null); setDraft(null); }
+      return true;
+    } catch (e) { fail(e); return false; }
+  };
+  const renameItem = async (id: string, name: string) => {
+    const cur = baskets.find((b) => b.id === id);
+    if (!name || !cur || name === cur.name) return;
+    try { await renameEquityBasket(id, name); setBaskets((p) => p.map((b) => (b.id === id ? { ...b, name } : b))); setErr(null); } catch (e) { fail(e); }
+  };
+  const moveItem = async (id: string, parentId: string | null) => {
+    try { await moveEquityBasket(id, parentId); setBaskets((p) => p.map((b) => (b.id === id ? { ...b, parent_id: parentId } : b))); setErr(null); } catch (e) { fail(e); }
+  };
+  const deleteItem = async (id: string) => {
+    const it = baskets.find((b) => b.id === id);
+    if (!it) return;
+    const what = it.kind === "folder" ? `folder "${it.name}" (it must be empty)` : `basket "${it.name}" and all its quantities and buy prices`;
+    const typed = prompt(`This permanently deletes ${what}.\nType the name to confirm:`);
+    if (typed === null) return;
+    if (typed.trim() !== it.name) { setErr("Name did not match — nothing deleted."); return; }
+    try {
+      await deleteEquityBasket(id);
+      setBaskets((p) => p.filter((b) => b.id !== id));
+      if (id === activeId) { setActiveId(HOME); setDraft(null); }
+      setErr(null);
     } catch (e) { fail(e); }
   };
   const guardDiscard = () => !dirty || confirm("You have unsaved changes. Discard them?");
@@ -182,32 +177,17 @@ export default function EquitiesPage() {
     } catch (e) { fail(e); }
   };
 
-  const renameBasket = async () => {
+  const renameBasket = () => {
     if (!basket) return;
     const n = prompt("Rename basket", basket.name)?.trim();
-    if (!n || n === basket.name) return;
-    try {
-      await renameEquityBasket(basket.id, n);
-      setBaskets(baskets.map((b) => (b.id === basket.id ? { ...b, name: n } : b))); setErr(null);
-    } catch (e) { fail(e); }
+    if (n) renameItem(basket.id, n);
   };
-
-  const deleteBasket = async () => {
-    if (!basket) return;
-    const typed = prompt(`This permanently deletes "${basket.name}" and all its quantities and buy prices.\nType the basket name to confirm:`);
-    if (typed === null) return;
-    if (typed.trim() !== basket.name) { setErr("Name did not match — basket not deleted."); return; }
-    try {
-      await deleteEquityBasket(basket.id);
-      const rest = baskets.filter((b) => b.id !== basket.id);
-      setBaskets(rest); setActiveId(HOME); setDraft(null); setErr(null);
-    } catch (e) { fail(e); }
-  };
+  const deleteBasket = () => basket && deleteItem(basket.id);
 
   const add = (x: EquitySuggestion) => {
     if (!draft || symbols.includes(x.symbol) || symbols.length >= 50) return;
     setDraft({ ...draft, symbols: [...symbols, x.symbol] });
-    setQ(""); setSugg([]); setOpen(false);
+    names.current[x.symbol] = x.name;
   };
   const setHolding = (sym: string, patch: Partial<EquityHolding>) => {
     if (!draft) return;
@@ -273,52 +253,29 @@ export default function EquitiesPage() {
 
       {err && <p className="mt-3 text-sm text-[#E5484D]">{err}</p>}
 
-      {/* Basket tabs */}
-      <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-[#E8EBED]">
-        <button onClick={() => selectBasket(HOME)}
-          className={`-mb-px border-b-2 pb-3 text-[15px] ${isHome && !selectedStock ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>Home</button>
-        {baskets.map((b) => (
-          <button key={b.id} onClick={() => selectBasket(b.id)}
-            className={`-mb-px border-b-2 pb-3 text-[15px] ${b.id === activeId && !selectedStock ? "border-[#1F7AE0] font-medium text-[#1F7AE0]" : "border-transparent text-[#535B62]"}`}>
-            {b.name} <span className="text-[#81878C]">{b.symbols.length}</span>
-          </button>
-        ))}
-        {selectedStock && (
-          <div className="-mb-px flex items-center gap-1.5 border-b-2 border-[#1F7AE0] pb-3 text-[15px] font-medium text-[#1F7AE0]">
-            <span>Research: {selectedStock}</span>
-            <button
-              onClick={() => setSelectedStock(null)}
-              className="ml-1 rounded px-1 text-xs text-[#81878C] hover:bg-[#F2F7FD] hover:text-[#E5484D]"
-              title="Close stock research"
-            >
-              ✕
-            </button>
-          </div>
-        )}
-        {showNew ? (
-          <div className="mb-2 flex items-center gap-2">
-            <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} maxLength={60} placeholder="Basket name"
-              onKeyDown={(e) => { if (e.key === "Enter") createBasket(); if (e.key === "Escape") setShowNew(false); }}
-              className="rounded border border-[#D5D9DD] px-3 py-1.5 text-sm outline-none focus:border-[#1F7AE0]" />
-            <button className={outlineBtn} onClick={createBasket} disabled={!newName.trim()}>Create</button>
-          </div>
-        ) : (
-          <button className={`${outlineBtn} mb-2 py-1.5`} disabled={editing} onClick={() => setShowNew(true)}>+ New basket</button>
-        )}
-      </div>
+      <div className="mt-6 grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+      <EquityTree items={baskets} activeId={isHome ? HOME : activeId} locked={editing}
+        onSelect={(id) => selectBasket(id)} onCreate={createItem} onRename={renameItem} onMove={moveItem} onDelete={deleteItem} />
+      <div className="min-w-0">
+      {selectedStock && (
+        <div className="flex items-center gap-1.5 text-[15px] font-medium text-[#1F7AE0]">
+          <span>Research: {selectedStock}</span>
+          <button onClick={() => setSelectedStock(null)} className="ml-1 rounded px-1 text-xs text-[#81878C] hover:bg-[#F2F7FD] hover:text-[#E5484D]" title="Close stock research">✕</button>
+        </div>
+      )}
 
       {selectedStock ? (
         <div className="mt-6">
           <EquityDetailView
             symbol={selectedStock}
             onClose={() => setSelectedStock(null)}
-            baskets={baskets}
+            baskets={baskets.filter((b) => b.kind !== "folder")}
             activeBasketId={activeId !== HOME ? activeId : undefined}
             onAddStockToBasket={handleAddStockToBasket}
           />
         </div>
       ) : isHome ? (() => {
-        const all = baskets.map((b) => ({ b, st: stats(b, quotes) }));
+        const all = baskets.filter((b) => b.kind !== "folder").map((b) => ({ b, st: stats(b, quotes) }));
         const tot = all.reduce((a, { st }) => ({ invested: a.invested + st.invested, value: a.value + st.value, pnl: a.pnl + st.pnl, cost: a.cost + st.cost, today: a.today + st.today }), { invested: 0, value: 0, pnl: 0, cost: 0, today: 0 });
         const movers = Array.from(new Set(baskets.flatMap((b) => b.symbols))).map((x) => quotes[x]).filter((r) => r?.change_pct != null).sort((a, b) => (b.change_pct ?? 0) - (a.change_pct ?? 0));
         const Mover = ({ r }: { r: EquityQuote }) => (
@@ -358,40 +315,11 @@ export default function EquitiesPage() {
             </section>
 
             {/* Direct stock research lookup bar on Home */}
-            <section className="relative max-w-xl" onBlur={() => setTimeout(() => setHomeOpen(false), 150)}>
+            <section className="relative max-w-xl">
               <label htmlFor="home-stock-search" className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#81878C]">
                 Research any stock (NSE)
               </label>
-              <div className="relative">
-                <svg aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#81878C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-                <input
-                  id="home-stock-search"
-                  value={homeQ}
-                  onChange={(e) => { setHomeQ(e.target.value); setHomeOpen(true); }}
-                  onFocus={() => setHomeOpen(true)}
-                  placeholder="Search by company name or ticker (e.g. Reliance, TCS, Waaree...)"
-                  className="w-full rounded border border-[#D5D9DD] bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#1F7AE0]"
-                />
-              </div>
-              {homeOpen && homeSugg.length > 0 && (
-                <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded border border-[#E8EBED] bg-white shadow-lg">
-                  {homeSugg.map((x) => (
-                    <li key={x.symbol}>
-                      <button
-                        className="flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left text-sm hover:bg-[#F2F7FD]"
-                        onClick={() => {
-                          setSelectedStock(x.symbol);
-                          setHomeQ("");
-                          setHomeOpen(false);
-                        }}
-                      >
-                        <span className="truncate font-medium text-[#1F7AE0]">{x.name}</span>
-                        <span className="text-xs text-[#81878C]">{x.symbol} · view details ↗</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <EquitySearch id="home-stock-search" pickLabel="Research ↗" onPick={(x) => { names.current[x.symbol] = x.name; setSelectedStock(x.symbol); }} />
             </section>
 
             <section>
@@ -417,9 +345,9 @@ export default function EquitiesPage() {
                       <span className={tone(st.cost > 0 ? st.pnl : undefined)}>{st.cost > 0 ? `${sgn(st.pnl)} (${sgn((st.pnl / st.cost) * 100)}%)` : "—"}</span></div>
                   </button>
                 ))}
-                <button onClick={() => setShowNew(true)} className="flex min-h-[120px] items-center justify-center rounded border border-dashed border-[#1F7AE0] text-sm font-medium text-[#1F7AE0] hover:bg-[#F2F7FD]">+ New basket</button>
+                <button onClick={() => { const n = prompt("New basket name")?.trim(); if (n) createItem("basket", null, n); }} className="flex min-h-[120px] items-center justify-center rounded border border-dashed border-[#1F7AE0] text-sm font-medium text-[#1F7AE0] hover:bg-[#F2F7FD]">+ New basket</button>
               </div>
-              {loaded && baskets.length === 0 && <p className="mt-3 text-sm text-[#81878C]">No baskets yet. Create one to start adding stocks.</p>}
+              {loaded && baskets.length === 0 && <p className="mt-3 text-sm text-[#81878C]">No baskets yet. Use “+ Basket” in the left panel to start adding stocks.</p>}
             </section>
 
             {movers.length > 0 && (
@@ -470,30 +398,9 @@ export default function EquitiesPage() {
           {/* Stocks */}
           <section className="min-w-0 lg:col-start-1 lg:row-start-1">
             {editing && <div className="mb-1 text-sm text-[#81878C]">Add &amp; organize stocks</div>}
-            <div className={`relative mb-4 ${editing ? "" : "hidden"}`} onBlur={() => setTimeout(() => setOpen(false), 150)}>
-              <svg aria-hidden className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#81878C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-              <input value={q} onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)}
-                placeholder="Search by name or ticker" className="w-full rounded border border-[#D5D9DD] bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#1F7AE0]" />
-              {open && sugg.length > 0 && (
-                <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded border border-[#E8EBED] bg-white shadow-lg">
-                  {sugg.map((x) => (
-                    <li key={x.symbol}>
-                      <div className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-[#F2F7FD]">
-                        <button type="button" className="flex-1 truncate text-left font-medium text-[#1F7AE0] hover:underline" onClick={() => add(x)}>
-                          {x.name} <span className="text-xs text-[#81878C]">({x.symbol}){symbols.includes(x.symbol) ? " · added" : " · + add to basket"}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { setSelectedStock(x.symbol); setOpen(false); }}
-                          className="rounded border border-[#D5D9DD] bg-white px-2 py-0.5 text-xs text-[#535B62] hover:bg-[#F2F7FD]"
-                        >
-                          Research ↗
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+            <div className={`mb-4 ${editing ? "" : "hidden"}`}>
+              <EquitySearch id="basket-stock-search" pickLabel="+ Add" isAdded={(sym) => symbols.includes(sym)} onPick={add}
+                onResearch={(x) => { names.current[x.symbol] = x.name; setSelectedStock(x.symbol); }} />
             </div>
 
             {symbols.length === 0 ? (
@@ -582,6 +489,8 @@ export default function EquitiesPage() {
           </section>
         </div>
       ) : null}
+      </div>
+      </div>
     </div>
   );
 }

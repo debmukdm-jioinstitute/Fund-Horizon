@@ -440,7 +440,9 @@ def test_equities_search_sanitizes_and_probes_ticker(monkeypatch):
     monkeypatch.setattr(equities, "_get", lambda url: calls.append(url) or {"quotes": []})
     assert equities._search("😀") == [] and not calls
     monkeypatch.setattr(equities, "_quote", lambda s: {"symbol": s, "name": s, "price": 1.0})
-    assert equities._search("m&m") == [{"symbol": "M&M", "name": "M&M"}]
+    equities._cache.clear()
+    hit = equities._search("m&m")
+    assert [(x["symbol"], x["name"], x["price"]) for x in hit] == [("M&M", "M&M", 1.0)]
 
 
 def test_legacy_pages_migrate_to_equities():
@@ -459,7 +461,7 @@ def test_equity_baskets_crud_and_isolation(client):
     assert client.post("/api/backoffice/equities/baskets", json={"name": "Banks"}).status_code == 409
     assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["bad!"]}).status_code == 422
     assert client.put(f"/api/backoffice/equities/baskets/{bid}", json={"symbols": ["M&M"]}).status_code == 200
-    assert client.get("/api/backoffice/equities/baskets").json()["data"] == [{"id": bid, "name": "Banks", "symbols": ["M&M"], "holdings": {}}]
+    assert client.get("/api/backoffice/equities/baskets").json()["data"] == [{"id": bid, "name": "Banks", "symbols": ["M&M"], "holdings": {}, "parent_id": None, "kind": "basket"}]
     other = client.post("/api/backoffice/equities/baskets", json={"name": "Tech"}).json()["id"]
     assert client.patch(f"/api/backoffice/equities/baskets/{other}", json={"name": "Banks"}).status_code == 409
     assert client.patch(f"/api/backoffice/equities/baskets/{other}", json={"name": " IT "}).status_code == 200
@@ -530,3 +532,40 @@ def test_removed_pages_map_away_without_going_unrestricted():
     assert migrate_pages(["/backoffice/flows", "/backoffice/research"]) == ["/backoffice"]  # not [] (= unrestricted)
     assert migrate_pages(["/backoffice/pms", "/backoffice/flows"]) == ["/backoffice/pms"]
     assert migrate_pages([]) == []
+
+
+def test_equity_folders_parent_child(client):
+    a, b = _create_staff("analyst"), _create_staff("analyst")
+    _login_staff(client, a)
+    u = "/api/backoffice/equities/baskets"
+    f1 = client.post(u, json={"name": "Clients", "kind": "folder", "symbols": ["TCS"]}).json()
+    assert f1["kind"] == "folder" and f1["symbols"] == []  # folders hold no stocks
+    f2 = client.post(u, json={"name": "Abhijit", "kind": "folder", "parent_id": f1["id"]}).json()
+    bk = client.post(u, json={"name": "Core", "symbols": ["TCS"], "parent_id": f2["id"]}).json()
+    assert bk["parent_id"] == f2["id"]
+    assert client.put(f"{u}/{f1['id']}", json={"symbols": ["TCS"]}).status_code == 404  # stocks only go in baskets
+    assert client.post(u, json={"name": "Bad", "parent_id": bk["id"]}).status_code == 422  # parent must be a folder
+    assert client.put(f"{u}/{f1['id']}/parent", json={"parent_id": f2["id"]}).status_code == 422  # no cycles
+    assert client.put(f"{u}/{f1['id']}/parent", json={"parent_id": f1["id"]}).status_code == 422
+    assert client.delete(f"{u}/{f1['id']}").status_code == 409  # never cascades
+    assert client.put(f"{u}/{bk['id']}/parent", json={"parent_id": None}).status_code == 200
+    got = {x["id"]: x["parent_id"] for x in client.get(u).json()["data"]}
+    assert got[bk["id"]] is None and got[f2["id"]] == f1["id"]
+    _login_staff(client, b)  # another staff member cannot parent into or move these
+    assert client.post(u, json={"name": "X", "parent_id": f1["id"]}).status_code == 422
+    assert client.put(f"{u}/{bk['id']}/parent", json={"parent_id": None}).status_code == 404
+
+
+def test_equity_search_ranks_and_enriches(monkeypatch):
+    from app.api import equities as eq
+
+    monkeypatch.setattr(eq, "_get", lambda url: {"quotes": [
+        {"symbol": "WAAREERTL.NS", "quoteType": "EQUITY", "shortname": "Waaree Renewable", "sector": "Industrials"},
+        {"symbol": "WAAREEENER.NS", "quoteType": "EQUITY", "longname": "Waaree Energies Limited", "sector": "Technology"},
+        {"symbol": "WAAREEENER.BO", "quoteType": "EQUITY", "shortname": "dup"}, {"symbol": "RS", "quoteType": "EQUITY"}]})
+    monkeypatch.setattr(eq, "_quote", lambda sym, suffix=".NS": {"symbol": sym, "price": 100.0, "change_pct": 1.5})
+    eq._cache.clear()
+    out = eq._search("waaree e")
+    assert [x["symbol"] for x in out] == ["WAAREEENER", "WAAREERTL"]  # NSE only, deduped, best match first
+    assert out[0]["sector"] == "Technology" and out[0]["price"] == 100.0 and out[0]["change_pct"] == 1.5
+    assert eq._rank("tata", "TATASTEEL", "Tata Steel") < eq._rank("steel", "TATASTEEL", "Tata Steel")

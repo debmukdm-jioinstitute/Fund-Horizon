@@ -277,7 +277,7 @@ export default function FundDetailPage({ scheme }: { scheme: MutualFundItem & { 
   );
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6 px-4 py-4 sm:px-6">
+    <div className="w-full space-y-6 px-4 py-4 sm:px-6">
       <nav className={`text-[13px] ${MUTED}`}><Link href="/backoffice/mutual-funds" className="hover:underline">Mutual funds</Link> / <span className="text-[#181818] dark:text-[#EDF2F7]">{shortDisplayName(scheme.scheme_name)}</span></nav>
 
       <header className="space-y-3">

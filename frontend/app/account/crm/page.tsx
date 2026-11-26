@@ -31,11 +31,11 @@ export default function MyCrmPage() {
   }, [authLoading, customer]);
 
   if (authLoading || (!customer && !err)) {
-    return <main className="max-w-4xl mx-auto px-4 py-6 text-[13px]">Loading…</main>;
+    return <main className="w-full px-4 py-6 text-[13px]">Loading…</main>;
   }
 
-  if (err) return <main className="max-w-4xl mx-auto px-4 py-6 text-[13px] text-[#B42332]">{err}</main>;
-  if (!d) return <main className="max-w-4xl mx-auto px-4 py-6 text-[13px]">Loading…</main>;
+  if (err) return <main className="w-full px-4 py-6 text-[13px] text-[#B42332]">{err}</main>;
+  if (!d) return <main className="w-full px-4 py-6 text-[13px]">Loading…</main>;
 
   const households = Array.isArray(d?.households) ? d.households : [];
   const holdings = Array.isArray(d?.holdings) ? d.holdings : [];
@@ -43,7 +43,7 @@ export default function MyCrmPage() {
   const cases = Array.isArray(d?.cases) ? d.cases : [];
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+    <main className="w-full px-4 py-6 space-y-4">
       <h1 className="text-[18px] font-medium text-[#172033] dark:text-[#EDF2F7]">My records</h1>
       <Section title="Household and relationship manager" empty={households.length === 0}>
         {households.map((h) => (

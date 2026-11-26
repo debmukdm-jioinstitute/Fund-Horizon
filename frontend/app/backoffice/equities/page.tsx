@@ -266,7 +266,7 @@ export default function EquitiesPage() {
   const primaryBtn = "w-full rounded bg-[#17408B] px-4 py-3 text-base font-semibold text-white hover:bg-[#12336f]";
 
   return (
-    <div className="mx-auto max-w-[1200px] p-4 text-[#2F363F] sm:p-6">
+    <div className="w-full p-4 text-[#2F363F] sm:p-6">
       <h1 className="text-[28px] font-medium leading-tight">
         {selectedStock ? `Research: ${selectedStock}` : basket ? basket.name : "Equities"}
       </h1>

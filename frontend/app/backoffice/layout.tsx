@@ -216,7 +216,7 @@ export default function BackofficeLayout({ children }: { children: React.ReactNo
       )}
 
       <main className="flex-1 p-3 sm:p-4 md:p-5">
-        <div className="max-w-[1600px] mx-auto">{allowed ? children : null}</div>
+        <div className="w-full">{allowed ? children : null}</div>
       </main>
 
       <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} modules={flatNavItems} />

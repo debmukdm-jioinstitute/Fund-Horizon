@@ -98,7 +98,7 @@ export default function FinancePage() {
   );
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+    <main className="w-full px-4 py-6 space-y-4">
       <h1 className="text-[18px] font-medium text-[#172033] dark:text-[#EDF2F7]">My money</h1>
       <p className={muted}>You enter the numbers or upload a statement; nothing is linked to your bank. Education only, not investment advice.</p>
       {err && <p role="alert" className="text-[13px] text-[#B42318]">{err}</p>}

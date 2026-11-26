@@ -70,7 +70,7 @@ export default function NewValuation() {
   });
 
   return (
-    <div className="mx-auto max-w-[1000px] space-y-4">
+    <div className="w-full space-y-4">
       <Link href="/backoffice/operations/valuation" className={`text-[12px] ${muted} hover:underline`}>← Monthly valuation</Link>
       <h1 className="text-xl font-bold">New valuation</h1>
       {err && <Notice tone="bad">{err}</Notice>}

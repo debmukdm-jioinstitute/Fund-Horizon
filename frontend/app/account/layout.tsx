@@ -33,7 +33,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   return (
     <div className="min-h-screen bg-[#F7F9FB] dark:bg-[#10151C]">
       <header className="border-b border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E27]">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
+        <div className="w-full px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
           <Logo size="sm" showSubtitle={false} href="/" />
           <nav className="flex items-center gap-1 text-[13px]" aria-label="Account">
             {TABS.map((t) => (

@@ -455,7 +455,7 @@ export default function OperationsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl py-2 pb-14 space-y-7">
+    <div className="w-full py-2 pb-14 space-y-7">
       {/* Top Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

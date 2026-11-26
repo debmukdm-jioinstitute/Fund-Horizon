@@ -1,32 +1,111 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   getDataHealth,
   refreshSource,
-  previewImport,
-  commitImport,
-  importTemplateUrl,
   SourceHealthData,
-  ImportJobData,
+  SourceItem,
 } from "@/lib/backoffice";
-import { formatISTDateTime } from "@/lib/terminal-format";
-import InfoTip from "@/components/InfoTip";
+
+function formatLastSuccess(dateStr?: string) {
+  if (!dateStr) return "—";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return "—";
+    const day = d.toLocaleDateString("en-GB", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" });
+    const time = d.toLocaleTimeString("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false });
+    return `${day}, ${time}`;
+  } catch {
+    return "—";
+  }
+}
+
+function getAdapterIcon(source: SourceItem) {
+  const id = (source.id || "").toLowerCase();
+  const name = (source.name || "").toLowerCase();
+
+  if (name.includes("nav") || id.includes("nav")) {
+    return (
+      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M4 19h4V9H4v10zm6 0h4V5h-4v14zm6 0h4v-7h-4v7z" />
+      </svg>
+    );
+  }
+  if (name.includes("expense") || name.includes("ter") || id.includes("ter")) {
+    return (
+      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 16H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z" />
+      </svg>
+    );
+  }
+  if (name.includes("volatility") || name.includes("cboe") || id.includes("cboe")) {
+    return (
+      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8.99L21.99 11C21.47 5.92 17.08 2 12 2zm0 11.01V22c5.08 0 9.47-3.92 9.99-9h-8.99z" />
+      </svg>
+    );
+  }
+  if (name.includes("fx") || name.includes("ecb") || id.includes("fx")) {
+    return (
+      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 9h-2v1h2c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1h-1v1h-2v-1H9v-2h3v-1H9c-.55 0-1-.45-1-1V9c0-.55.45-1 1-1h1V7h2v1h1c.55 0 1 .45 1 1v1c0 .55-.45 1-1 1z" />
+      </svg>
+    );
+  }
+  if (name.includes("reserve") || name.includes("fred") || name.includes("economic")) {
+    return (
+      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2L1 7l11 5 11-5-11-5zM1 12l11 5 11-5-1.5-0.68L12 15.68 2.5 11.32 1 12zm0 5l11 5 11-5-1.5-0.68L12 20.68 2.5 16.32 1 17z" />
+    </svg>
+  );
+}
+
+function renderStatusPill(status: string) {
+  switch (status) {
+    case "ready":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#ECFDF3] text-[#027A48] border border-[#A6F4C5] dark:bg-[#0E3824] dark:text-[#6CE9A6] dark:border-[#1E5D3A]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#12B76A]" />
+          Ready
+        </span>
+      );
+    case "needs_key":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#EFF8FF] text-[#175CD3] border border-[#B2DDFF] dark:bg-[#102A4C] dark:text-[#84CAFF] dark:border-[#1E4775]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#2E90FA]" />
+          Needs Key
+        </span>
+      );
+    case "manual_only":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#F8F9FA] text-[#475467] border border-[#E4E7EC] dark:bg-[#1E242F] dark:text-[#98A2B3] dark:border-[#344054]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#98A2B3]" />
+          Manual Only
+        </span>
+      );
+    default:
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#F8F9FA] text-[#475467] border border-[#E4E7EC] dark:bg-[#1E242F] dark:text-[#98A2B3]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#98A2B3]" />
+          {status.replace(/_/g, " ")}
+        </span>
+      );
+  }
+}
 
 export default function DataHealthPage() {
   const [health, setHealth] = useState<SourceHealthData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshingId, setRefreshingId] = useState<string | null>(null);
-
-  // Import state
-  const [importType, setImportType] = useState("pms_strategies");
-  const [fileContent, setFileContent] = useState("");
-  const [fileName, setFileName] = useState("upload.csv");
-  const [previewJob, setPreviewJob] = useState<ImportJobData | null>(null);
-  const [previewing, setPreviewing] = useState(false);
-  const [committing, setCommitting] = useState(false);
-  const [commitMessage, setCommitMessage] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadHealth();
@@ -56,64 +135,26 @@ export default function DataHealthPage() {
     }
   }
 
-  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setFileName(file.name);
-    const text = await file.text();
-    setFileContent(text);
-  }
-
-  async function handlePreview() {
-    if (!fileContent.trim()) return;
-    setPreviewing(true);
-    setCommitMessage(null);
-    try {
-      const job = await previewImport({
-        import_type: importType,
-        file_content: fileContent,
-        file_name: fileName,
-      });
-      setPreviewJob(job);
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Preview failed");
-    } finally {
-      setPreviewing(false);
-    }
-  }
-
-  async function handleCommit() {
-    if (!previewJob) return;
-    setCommitting(true);
-    try {
-      const res = await commitImport(previewJob);
-      setCommitMessage(`Successfully committed ${res.committed_rows} rows inside an atomic transaction.`);
-      setPreviewJob(null);
-      setFileContent("");
-      await loadHealth();
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Commit failed");
-    } finally {
-      setCommitting(false);
-    }
-  }
+  const filteredSources = useMemo(() => {
+    if (!health?.sources) return [];
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return health.sources;
+    return health.sources.filter(
+      (s) => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q)
+    );
+  }, [health?.sources, searchQuery]);
 
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E5E5E5] dark:border-[#2B3644]">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
-              Data Health &amp; Upstream Source Registry
-            </h1>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
-              Diagnostics
-            </span>
-          </div>
-          <p className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4] mt-0.5">
-            Upstream provider quotas, verified reachability latency, and atomic CSV import hub
-          </p>
+        <div className="flex items-center gap-2">
+          <h1 className="text-[20px] font-medium text-[#181818] dark:text-[#EDF2F7] tracking-tight">
+            Data Health &amp; Upstream Source Registry
+          </h1>
+          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-[#F3F3F3] dark:bg-[#171E27] border border-[#E5E5E5] dark:border-[#2B3644] text-[#706E6B] dark:text-[#A8B4C4]">
+            Diagnostics
+          </span>
         </div>
 
         <button
@@ -142,206 +183,103 @@ export default function DataHealthPage() {
         </div>
       ) : health ? (
         <div className="space-y-4">
-          {/* Telemetry Summary Flat Table */}
-          <div className="terminal-panel overflow-hidden">
-            <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#0176D3] dark:text-[#1B96FF]">
-              Upstream Adapters Health Telemetry
-            </div>
-            <table className="terminal-table">
-              <thead>
-                <tr>
-                  <th className="w-[25%]">Adapter Status Category</th>
-                  <th className="w-[20%] text-right">Count</th>
-                  <th className="w-[55%]">System Condition</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="font-medium text-[#087744] dark:text-[#58D6A0]">Ready Adapters</td>
-                  <td className="text-right font-medium text-[#087744] dark:text-[#58D6A0]">{health.summary.ready}</td>
-                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">At least one successful live pull recorded</td>
-                </tr>
-                <tr>
-                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Awaiting First Run</td>
-                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{health.summary.pending}</td>
-                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Registered but no successful pull recorded yet</td>
-                </tr>
-                <tr>
-                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Needs API Key</td>
-                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{health.summary.needs_key}</td>
-                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Free registration key pending in environment (e.g. FRED_API_KEY)</td>
-                </tr>
-                <tr>
-                  <td className="font-medium text-[#706E6B] dark:text-[#A8B4C4]">Manual Import Only</td>
-                  <td className="text-right font-medium text-[#706E6B] dark:text-[#A8B4C4]">{health.summary.manual_only}</td>
-                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Manual CSV / XLSX ingest due to zero-scraping licensing constraint</td>
-                </tr>
-                <tr>
-                  <td className="font-medium text-[#181818] dark:text-[#EDF2F7]">Total Registered Adapters</td>
-                  <td className="text-right font-medium text-[#181818] dark:text-[#EDF2F7]">{health.summary.total}</td>
-                  <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">Complete backoffice data adapter catalog</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Source Adapters Registry Table */}
-          <div className="terminal-panel overflow-hidden">
-            <div className="p-2.5 border-b border-[#E5E5E5] dark:border-[#2B3644] text-[11px] font-semibold uppercase tracking-wider text-[#706E6B] dark:text-[#A8B4C4]">
-              Source Adapters Registry
-            </div>
-            <div className="overflow-x-auto">
-              <table className="terminal-table">
-                <thead>
-                  <tr>
-                    <th className="w-[22%]">Source / Adapter</th>
-                    <th className="w-[12%]">
-                      <div className="inline-flex items-center gap-1">
-                        <span>Status</span>
-                        <InfoTip metric="source_health" />
-                      </div>
-                    </th>
-                    <th className="w-[10%]">Frequency</th>
-                    <th className="w-[12%] text-right">Rate Budget</th>
-                    <th className="w-[16%]">
-                      <div className="inline-flex items-center gap-1">
-                        <span>Last Success</span>
-                        <InfoTip metric="freshness_latency" />
-                      </div>
-                    </th>
-                    <th className="w-[18%]">Attribution Notes</th>
-                    <th className="w-[10%] text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {health.sources.map((s) => (
-                    <tr key={s.id}>
-                      <td>
-                        <div className="font-medium text-[#181818] dark:text-[#EDF2F7]">{s.name}</div>
-                        <div className="text-[11px] font-mono text-[#706E6B] dark:text-[#A8B4C4]">
-                          {s.id} • v{s.adapter_version}
-                        </div>
-                      </td>
-                      <td>
-                        <span className={`text-[10px] font-mono uppercase px-1.5 py-0.5 rounded ${
-                          s.health_status === "ready"
-                            ? "bg-[#EAF5FE] dark:bg-[#11304F] text-[#0176D3] dark:text-[#1B96FF]"
-                            : "bg-[#F3F3F3] dark:bg-[#171E27] text-[#706E6B] dark:text-[#A8B4C4] border border-[#E5E5E5] dark:border-[#2B3644]"
-                        }`}>
-                          {s.health_status.replace("_", " ")}
-                        </span>
-                      </td>
-                      <td className="text-[11px] font-mono uppercase text-[#706E6B] dark:text-[#A8B4C4]">
-                        {s.supported_frequency}
-                      </td>
-                      <td className="text-right text-[#706E6B] dark:text-[#A8B4C4]">
-                        {s.rate_budget}/hr
-                      </td>
-                      <td className="text-[12px] text-[#706E6B] dark:text-[#A8B4C4]">
-                        {s.last_success_at ? formatISTDateTime(s.last_success_at) : "Never"}
-                      </td>
-                      <td className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4] truncate max-w-xs" title={s.terms_notes}>
-                        {s.terms_notes}
-                      </td>
-                      <td className="text-right">
-                        {s.health_status !== "manual_only" && (
-                          <button
-                            onClick={() => handleRefresh(s.id)}
-                            disabled={refreshingId === s.id}
-                            className="terminal-btn text-[11px] py-0.5 px-2 text-[#0176D3] dark:text-[#1B96FF]"
-                          >
-                            {refreshingId === s.id ? "Syncing…" : "Sync"}
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Validated CSV Import Hub */}
-          <div className="terminal-panel p-3.5 space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E5E5E5] dark:border-[#2B3644]">
-              <div>
-                <div className="text-[13px] font-medium text-[#181818] dark:text-[#EDF2F7]">
-                  Validated CSV / XLSX Ingestion Hub
+          {/* Source Adapters Registry Card matching screenshot strictly */}
+          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#121824] shadow-sm overflow-hidden">
+            {/* Card Header with Icon + Title & Search input */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 border-b border-slate-100 dark:border-slate-800/80">
+              <div className="flex items-center gap-2.5">
+                <div className="text-[#1A73E8]">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L1 7l11 5 11-5-11-5zM1 12l11 5 11-5-1.5-0.68L12 15.68 2.5 11.32 1 12zm0 5l11 5 11-5-1.5-0.68L12 20.68 2.5 16.32 1 17z" />
+                  </svg>
                 </div>
-                <div className="text-[11px] text-[#706E6B] dark:text-[#A8B4C4]">
-                  Two-stage safe import: Preview row-level validation → Atomic Commit with formula sanitization
-                </div>
-              </div>
-              <a
-                href={importTemplateUrl(importType)}
-                download={`${importType}_template.csv`}
-                className="terminal-btn text-[11px] py-1 px-2.5 self-start sm:self-auto"
-              >
-                Download CSV Template
-              </a>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
-                  Import Dataset
-                </label>
-                <select
-                  value={importType}
-                  onChange={(e) => setImportType(e.target.value)}
-                  className="terminal-input w-full text-[12px] py-1 px-2"
-                >
-                  <option value="pms_strategies">PMS Strategy Performance</option>
-                  <option value="macro_yields">Macro Sovereign Yield Series</option>
-                  <option value="derivative_reports">Derivatives EOD Bhavcopy</option>
-                </select>
+                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                  Source Adapters Registry
+                </h2>
               </div>
 
-              <div className="sm:col-span-2">
-                <label className="text-[11px] font-medium text-[#706E6B] dark:text-[#A8B4C4] block mb-1">
-                  Select CSV File ({fileName})
-                </label>
+              <div className="relative w-full sm:w-64">
+                <svg className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 <input
-                  type="file"
-                  accept=".csv,.txt"
-                  onChange={handleFileSelect}
-                  className="terminal-input w-full text-[12px] py-1 px-2"
+                  type="text"
+                  placeholder="Search adapters..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handlePreview}
-                disabled={previewing || !fileContent.trim()}
-                className="terminal-btn text-[12px] py-1 px-3 bg-[#0176D3] text-white border-[#0176D3] dark:bg-[#1B96FF] dark:text-[#10151C] dark:border-[#1B96FF] font-medium"
-              >
-                {previewing ? "Validating Rows…" : "Preview & Validate Ingest"}
-              </button>
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-100 dark:border-slate-800/80 text-[11.5px] font-semibold text-slate-500 dark:text-slate-400">
+                    <th className="py-3 px-5">Adapter</th>
+                    <th className="py-3 px-5">Status</th>
+                    <th className="py-3 px-5">Frequency</th>
+                    <th className="py-3 px-5">Last Success</th>
+                    <th className="py-3 px-5 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                  {filteredSources.map((s) => {
+                    const formattedDate = formatLastSuccess(s.last_success_at);
+                    return (
+                      <tr key={s.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors">
+                        <td className="py-3.5 px-5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-[#1A73E8] dark:text-[#8AB8FF] flex items-center justify-center shrink-0">
+                              {getAdapterIcon(s)}
+                            </div>
+                            <span className="font-semibold text-slate-900 dark:text-slate-100">
+                              {s.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-5">
+                          {renderStatusPill(s.health_status)}
+                        </td>
+                        <td className="py-3.5 px-5 text-slate-600 dark:text-slate-400 font-medium">
+                          {s.supported_frequency ? s.supported_frequency.charAt(0).toUpperCase() + s.supported_frequency.slice(1).toLowerCase() : "Daily"}
+                        </td>
+                        <td className="py-3.5 px-5 text-slate-600 dark:text-slate-400 font-medium">
+                          {formattedDate !== "—" ? (
+                            <span className="inline-flex items-center gap-1.5">
+                              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {formattedDate}
+                            </span>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td className="py-3.5 px-5 text-right">
+                          <button
+                            type="button"
+                            onClick={() => handleRefresh(s.id)}
+                            disabled={refreshingId === s.id}
+                            className="rounded-full px-3.5 py-1 text-xs font-medium text-[#1A73E8] bg-[#EFF8FF] hover:bg-[#D1E9FF] border border-[#B2DDFF] dark:bg-[#102A4C] dark:text-[#84CAFF] dark:border-[#1E4775] transition-colors disabled:opacity-50"
+                          >
+                            {refreshingId === s.id ? "Syncing…" : "Sync"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {filteredSources.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-slate-400">
+                        No adapters found matching &ldquo;{searchQuery}&rdquo;
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
-
-            {commitMessage && (
-              <div className="terminal-panel p-2.5 border border-[#087744]/30 bg-[#087744]/5 text-[#087744] dark:text-[#58D6A0] text-[12px]">
-                {commitMessage}
-              </div>
-            )}
-
-            {previewJob && (
-              <div className="terminal-panel p-3 border border-[#E5E5E5] dark:border-[#2B3644] space-y-2.5">
-                <div className="flex items-center justify-between text-[12px]">
-                  <span className="font-medium text-[#181818] dark:text-[#EDF2F7]">
-                    Preview Summary: {previewJob.valid_rows_count + previewJob.error_rows_count} total rows ({previewJob.valid_rows_count} valid, {previewJob.error_rows_count} errors)
-                  </span>
-                  <button
-                    onClick={handleCommit}
-                    disabled={committing || previewJob.valid_rows_count === 0}
-                    className="terminal-btn text-[12px] py-1 px-3 bg-[#087744] text-white border-[#087744] dark:bg-[#58D6A0] dark:text-[#10151C] dark:border-[#58D6A0] font-medium"
-                  >
-                    {committing ? "Committing Transaction…" : `Commit ${previewJob.valid_rows_count} Rows Atomically`}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       ) : null}

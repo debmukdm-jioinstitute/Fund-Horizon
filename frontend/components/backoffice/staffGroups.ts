@@ -53,6 +53,7 @@ export const PAGE_GROUPS: PageGroup[] = [
     label: "Client management",
     pages: [
       { href: "/backoffice/crm", label: "CRM" },
+      { href: "/backoffice/service-desk", label: "Service desk" },
       { href: "/backoffice/risk-profiling", label: "Risk profiling" },
     ],
   },

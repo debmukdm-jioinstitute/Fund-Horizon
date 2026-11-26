@@ -45,6 +45,7 @@ PAGE_API: dict[str, tuple[str, ...]] = {
     "/backoffice/finance-desk": (),  # embeds a separate app; no backoffice API needed
     "/backoffice/data-health": (_B + "data-health",),
     "/backoffice/crm": ("/api/crm", "/api/rm", "/api/staff/chats"),
+    "/backoffice/service-desk": ("/api/service-desk",),
     "/backoffice/operations": (_B + "operations", "/api/staff/download", _B + "client-report", _B + "monthly-report"),
     "/backoffice/risk-profiling": (_B + "risk-profiling",),
     "/backoffice/learn": ("/api/learn",),

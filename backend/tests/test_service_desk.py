@@ -75,3 +75,28 @@ def test_tracker_counts_unsent():
     t = sd.report_tracker(ADMIN)
     # cycle_start may be next month when today is past the 7th, so only assert shape then
     assert set(t) >= {"generated", "emailed", "unsent", "send_by"}
+
+
+def test_modify_delete_and_search():
+    res = sd.create_query(q(client_name="Rajesh Sharma", priority="urgent", details="Urgent redemption"), ADMIN)
+    qid = res["id"]
+    assert res["ticket_code"] == f"SR-{qid[:6].upper()}"
+
+    # Search by ticket code or client name
+    found = sd.list_queries(ADMIN, q=res["ticket_code"])
+    assert found["total"] == 1
+    assert found["rows"][0]["ticket_code"] == res["ticket_code"]
+    assert found["rows"][0]["priority"] == "urgent"
+
+    # Modify query
+    sd.update_query(qid, sd.QueryUpdateIn(client_name="Rajesh S. Sharma", priority="high", resolution_note="Drafted form"), ADMIN)
+    upd = sd.list_queries(ADMIN, q="Rajesh S")
+    assert upd["total"] == 1
+    assert upd["rows"][0]["client_name"] == "Rajesh S. Sharma"
+    assert upd["rows"][0]["priority"] == "high"
+    assert upd["rows"][0]["resolution_note"] == "Drafted form"
+
+    # Delete query
+    sd.delete_query(qid, ADMIN)
+    assert sd.list_queries(ADMIN, q="Rajesh S")["total"] == 0
+

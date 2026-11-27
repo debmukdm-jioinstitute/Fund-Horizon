@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from typing import Annotated, Any
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 from pydantic import Field
 
@@ -135,7 +136,7 @@ async def parse(me: Me, files: Annotated[list[UploadFile], File()], password: An
         if len(b) > MAX_BYTES:
             raise HTTPException(422, f"{f.filename}: larger than 15 MB.")
         blobs.append((f.filename or "file.pdf", b))
-    data = parse_files(blobs, password=password)
+    data = await run_in_threadpool(parse_files, blobs, password=password)  # CPU-bound: keep the event loop free for other requests
     return {**data, "summary": summarize(data)}
 
 

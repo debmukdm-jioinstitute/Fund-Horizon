@@ -166,3 +166,14 @@ def test_mf_transaction_report_gives_holding_and_dated_flows():
     h, _, w, _, flows, complete = ingestion.mf_txn_report([page])
     assert [(x.account_no, x.quantity, x.invested_amount, x.market_value) for x in h] == [("70414596465", 517.817, 84011.17, 84450.96)]
     assert [(f.flow_date, f.kind, f.amount) for f in flows] == [("2019-01-08", "deposit", 3000.0), ("2026-01-19", "withdrawal", 349171.0)] and not w and complete
+
+
+def test_pdf_page_text_is_cached_per_file_and_mode(monkeypatch):
+    import pypdf
+    data, calls, real = fx.proaffluence_pdf(), [], pypdf.PdfReader
+    monkeypatch.setattr(pypdf, "PdfReader", lambda *a, **k: calls.append(1) or real(*a, **k))
+    first = ingestion.read_pdf_pages(data, "", "plain")
+    again = ingestion.read_pdf_pages(data, "", "plain")
+    assert again == first and again is not first and len(calls) <= 1   # same text, own list, parsed at most once
+    ingestion.read_pdf_pages(data, "", "layout")
+    assert len(calls) <= 2                                               # another mode is its own read

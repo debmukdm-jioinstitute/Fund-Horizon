@@ -10,6 +10,7 @@ import csv
 import hashlib
 import io
 import re
+import threading
 from datetime import date, datetime
 from typing import Any
 
@@ -36,15 +37,27 @@ def kind_of(name: str, data: bytes) -> str:
     raise ExtractionError("unsupported_file", f"{name}: unsupported file type (PDF, XLSX, XLS or CSV expected).")
 
 
+_PAGES_CACHE: dict[tuple[str, str, str], tuple[str, ...]] = {}  # shortcut: per-process FIFO of 16 PDFs; one upload is read ~5 times by detection, bundle split and parsers
+_PAGES_LOCK = threading.Lock()
+
+
 def read_pdf_pages(data: bytes, password: str = "", mode: str = "layout") -> list[str]:
     from pypdf import PdfReader
     from pypdf.errors import PdfReadError
 
+    key = (sha256(data), password or "", mode)
+    if (hit := _PAGES_CACHE.get(key)) is not None:
+        return list(hit)
     try:
         rd = PdfReader(io.BytesIO(data))
         if rd.is_encrypted and not rd.decrypt(password or ""):
             raise ExtractionError("password_required", "The PDF is password-protected; supply the correct password.")
-        return [(p.extract_text(extraction_mode=mode) or "") for p in rd.pages]
+        pages = [(p.extract_text(extraction_mode=mode) or "") for p in rd.pages]
+        with _PAGES_LOCK:
+            _PAGES_CACHE[key] = tuple(pages)
+            while len(_PAGES_CACHE) > 16:
+                _PAGES_CACHE.pop(next(iter(_PAGES_CACHE)))
+        return pages
     except ExtractionError:
         raise
     except (PdfReadError, ValueError, KeyError, OSError) as e:

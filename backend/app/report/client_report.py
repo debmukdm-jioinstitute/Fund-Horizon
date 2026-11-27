@@ -299,15 +299,15 @@ def extract_text(name: str, data: bytes) -> str:
                     raise ValueError(f"{name}: old .xls could not be read ({e}); save it as .xlsx and retry.") from e
             raise ValueError(f"{name}: old Word/PowerPoint format; save it as .docx/.pptx or PDF and retry.")
         return _decode(name, data)
-    from pypdf import PdfReader
+    from app.backoffice.valuation import ingestion as ing
+    from app.backoffice.valuation.canonical import ExtractionError
 
     try:
-        reader = PdfReader(io.BytesIO(data))
-        if reader.is_encrypted and not reader.decrypt(""):
-            raise ValueError(f"{name}: the PDF is password-protected; remove the password and retry.")
-        pages = [p.extract_text(extraction_mode="layout") or "" for p in reader.pages]
-    except ValueError:
-        raise
+        pages = ing.read_pdf_pages(data, "", "layout")  # cached: the parsers read the same upload again
+    except ExtractionError as e:
+        if e.code == "password_required":
+            raise ValueError(f"{name}: the PDF is password-protected; remove the password and retry.") from e
+        raise ValueError(f"{name}: not a readable PDF ({e}).") from e
     except Exception as e:
         raise ValueError(f"{name}: not a readable PDF ({type(e).__name__}: {e}).") from e
     if len("".join(pages).strip()) >= 80:

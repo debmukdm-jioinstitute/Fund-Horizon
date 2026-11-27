@@ -125,6 +125,33 @@ function postParse(fd: FormData, onUp: (loaded: number, total: number) => void, 
     x.send(fd);
   });
 }
+const TRIVIA = [
+  "India's first mutual fund, Unit Trust of India, was set up in 1963 by an Act of Parliament.",
+  "The world's first mutual fund is traced to the Netherlands in 1774, when Abraham van Ketwich pooled investors' money.",
+  "The Bombay Stock Exchange, founded in 1875, is Asia's oldest stock exchange.",
+  "The Sensex has a base value of 100, set for the year 1978-79.",
+  "The Nifty 50 started from a base value of 1,000 on 3 November 1995.",
+  "Rule of 72: divide 72 by the yearly return to estimate the years needed to double your money. At 12 percent, about 6 years.",
+  "XIRR is the single yearly rate that makes the present value of every dated investment and redemption add up to zero.",
+  "Direct plans, with no distributor commission, have been offered by every fund house since 1 January 2013.",
+  "Equity Linked Savings Schemes carry a 3 year lock-in, the shortest among the Section 80C tax-saving options.",
+  "A monthly SIP of ₹10,000 growing at 12 percent a year for 20 years comes close to ₹1 crore.",
+  "John Bogle launched the first index fund for ordinary investors in 1976.",
+  "Private fund houses were allowed into Indian mutual funds in 1993; Kothari Pioneer was the first.",
+  "India moved to T+1 settlement for all listed shares in January 2023, among the first large markets to do so.",
+  "SEBI's riskometer grades every scheme on six levels, from Low to Very High.",
+  "A Consolidated Account Statement gathers every folio under your PAN across all fund houses in one document.",
+  "AMFI publishes the NAV of every mutual fund scheme on every business day.",
+];
+function Trivia({ t0, now }: { t0: number; now: number }) {
+  const [start] = useState(() => Math.floor(Math.random() * TRIVIA.length));
+  const i = (start + Math.floor((now - t0) / 7000)) % TRIVIA.length;
+  return (
+    <p className="mt-2 rounded-lg bg-[#F2F7F6] px-3 py-2 text-[12.5px] text-[#344054] dark:bg-[#1B2733] dark:text-[#C9D1DC]">
+      <span className="font-semibold text-[#006F64] dark:text-[#5FC7BB]">Did you know? </span>{TRIVIA[i]}
+    </p>
+  );
+}
 function ProgressBar({ p }: { p: Prog }) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 250); return () => clearInterval(t); }, []);
@@ -134,14 +161,17 @@ function ProgressBar({ p }: { p: Prog }) {
   const left = p.phase === "upload" ? Math.max(1, Math.round((el / Math.max(up, 0.02)) * (1 - up) + est)) : Math.max(0, Math.round(est - el));
   const what = p.phase === "upload" ? `Uploading ${(p.loaded / 1048576).toFixed(1)} of ${mb.toFixed(1)} MB` : p.phase === "read" ? "Reading the statements and pulling every holding, transaction and NAV" : "Computing XIRR, allocation, benchmarks and risk matrices";
   return (
-    <div className="mt-3" role="status" aria-live="polite">
-      <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 text-[12.5px]">
-        <span className="font-semibold">{what} · {p.files} file{p.files > 1 ? "s" : ""}</span>
-        <span className="tabular-nums text-[#667085] dark:text-[#9AA3B2]">{pct}% · {left > 1 || p.phase === "upload" ? `about ${left} s left (estimate)` : "almost done"} · {Math.round(el)} s elapsed</span>
+    <div className="mt-3">
+      <div role="status" aria-live="polite">
+        <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 text-[12.5px]">
+          <span className="font-semibold">{what} · {p.files} file{p.files > 1 ? "s" : ""}</span>
+          <span className="tabular-nums text-[#667085] dark:text-[#9AA3B2]">{pct}% · {left > 1 || p.phase === "upload" ? `about ${left} s left (estimate)` : "almost done"} · {Math.round(el)} s elapsed</span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-[#E4E9EF] dark:bg-[#2B3644]" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
+          <div className="h-full rounded-full bg-[#006F64] transition-[width] duration-300" style={{ width: `${pct}%` }} />
+        </div>
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-[#E4E9EF] dark:bg-[#2B3644]" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
-        <div className="h-full rounded-full bg-[#006F64] transition-[width] duration-300" style={{ width: `${pct}%` }} />
-      </div>
+      <Trivia t0={p.t0} now={now} />
     </div>
   );
 }

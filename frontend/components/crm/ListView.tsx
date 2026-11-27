@@ -29,6 +29,7 @@ import {
 import OwnerAvatar, { useOwners } from "./OwnerAvatar";
 import DropdownClose from "@/components/DropdownClose";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
+import { useUrlPage } from "@/lib/useUrlState";
 
 export interface ListColumn<T> {
   id: string;
@@ -102,7 +103,10 @@ export default function ListView<T extends { id: string }>({
   const [q, setQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
   const [sort, setSort] = useState<string | undefined>();
-  const [pageIndex, setPageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useUrlPage();
+  // ?pg= from a shared link survives until saved views and the first list have loaded
+  const hold = useRef(true);
+  const resetPage = useCallback(() => { if (!hold.current) setPageIndex(0); }, [setPageIndex]);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   // Dashboard widgets deep-link here (?stage=…&open=true): URL filters seed the list and beat the default saved view.
   const urlParams = useSearchParams();
@@ -147,7 +151,7 @@ export default function ListView<T extends { id: string }>({
     (v: SavedView | null) => {
       setActiveViewId(v?.id ?? "");
       setFilterValues(v?.filters ?? {});
-      setPageIndex(0);
+      resetPage();
       setSelection({});
       setVisibility(
         v && v.columns.length
@@ -155,7 +159,7 @@ export default function ListView<T extends { id: string }>({
           : Object.fromEntries(columns.filter((c) => c.hiddenByDefault).map((c) => [c.id, false])),
       );
     },
-    [columns],
+    [columns, resetPage],
   );
 
   const loadViews = useCallback(async () => {
@@ -169,6 +173,8 @@ export default function ListView<T extends { id: string }>({
       }
     } catch {
       /* views are optional: the list still works */
+    } finally {
+      hold.current = false;
     }
   }, [entity, applyView]);
 
@@ -198,7 +204,7 @@ export default function ListView<T extends { id: string }>({
     load();
   }, [load, reloadKey]);
 
-  useEffect(() => setPageIndex(0), [debouncedQ, sort, pageSize]);
+  useEffect(() => resetPage(), [debouncedQ, sort, pageSize, resetPage]);
 
   const tableColumns = useMemo<ColumnDef<T>[]>(() => {
     const defs: ColumnDef<T>[] = columns.map((c) => ({
@@ -411,7 +417,7 @@ export default function ListView<T extends { id: string }>({
               else delete next[f.key];
               return next;
             });
-            setPageIndex(0);
+            resetPage();
           };
           if (f.type === "daterange") {
             const [fromKey, toKey] = [`${f.key}_from`, `${f.key}_to`];
@@ -422,7 +428,7 @@ export default function ListView<T extends { id: string }>({
                 else delete next[k];
                 return next;
               });
-              setPageIndex(0);
+              resetPage();
             };
             return (
               <span key={f.key} className={`inline-flex items-center gap-1.5 text-xs ${muted}`}>

@@ -5,6 +5,7 @@ Google Sans only (see CLAUDE.md)."""
 from __future__ import annotations
 
 import base64
+import calendar
 import hashlib
 import html
 import io
@@ -521,6 +522,22 @@ def _iso_date(s: str | None) -> str:
     return ing.parse_date(s) or ""
 
 
+def _dur(a: date, b: date, short: bool = False) -> str:
+    """Calendar duration a -> b as years, months, days (16 Nov 1998 -> 27 Nov 2026 = 28 years, 0 months, 11 days)."""
+    def add(n: int) -> date:  # a + n months, day clamped to the month end (31 Jan + 1 month = 29 Feb in a leap year)
+        t = a.year * 12 + a.month - 1 + n
+        return date(t // 12, t % 12 + 1, min(a.day, calendar.monthrange(t // 12, t % 12 + 1)[1]))
+
+    n = (b.year - a.year) * 12 + b.month - a.month
+    while n > 0 and add(n) > b:
+        n -= 1
+    y, m, d = n // 12, n % 12, (b - add(n)).days
+    if short:
+        return f"{y}y {m}m {d}d"
+    u = lambda n, w: f"{n} {w}{'' if n == 1 else 's'}"  # noqa: E731
+    return f"{u(y, 'year')}, {u(m, 'month')}, {u(d, 'day')}"
+
+
 def _period_label(from_d: str, to_d: str, days: int | None = None, inst: str = "") -> str:
     f_iso = _iso_date(from_d) or (from_d if re.fullmatch(r"\d{4}-\d{2}", from_d or "") else "")
     t_iso = _iso_date(to_d) or (to_d if re.fullmatch(r"\d{4}-\d{2}", to_d or "") else "")
@@ -540,7 +557,8 @@ def _period_label(from_d: str, to_d: str, days: int | None = None, inst: str = "
     elif f_iso:
         base = f"Since {ym(f_iso)}"
     if days and days > 0:
-        yrs = f"{days / 365.25:.1f} yrs" if days >= 365 else f"{days}d"
+        f_full = re.fullmatch(r"\d{4}-\d{2}-\d{2}", f_iso or "")
+        yrs = _dur(date.fromisoformat(f_iso), date.fromisoformat(f_iso) + timedelta(days=days), True) if f_full else (f"{days / 365.25:.1f} yrs" if days >= 365 else f"{days}d")
         base = f"{base} · {yrs}" if base else yrs
     return base
 
@@ -1057,7 +1075,7 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
     timeframe_days = (val_d - date.fromisoformat(earliest_date)).days if earliest_date and re.fullmatch(r"\d{4}-\d{2}-\d{2}", earliest_date) else None
     timeframe_str = ""
     if earliest_date:
-        yrs_s = f"{timeframe_days / 365.25:.1f} years ({timeframe_days} days)" if timeframe_days and timeframe_days >= 365 else (f"{timeframe_days} days" if timeframe_days else "")
+        yrs_s = f"{_dur(date.fromisoformat(earliest_date), val_d)} ({timeframe_days:,} days)" if timeframe_days else ""
         timeframe_str = f"{_fmt_date(earliest_date)} to {_fmt_date(latest_date)}" + (f" · {yrs_s}" if yrs_s else "")
     elif client.get("inception"):
         timeframe_str = f"{client['inception']} to {client.get('date') or _fmt_date(latest_date)}"
@@ -1224,6 +1242,7 @@ def enrich_and_compute_matrices(data: dict[str, Any]) -> dict[str, Any]:
             "valuation_date": client.get("date") or _fmt_date(latest_date),
             "generated_at": datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%d %b %Y, %H:%M IST"),
             "span_days": timeframe_days,
+            "span_short": _dur(date.fromisoformat(earliest_date), val_d, True) if timeframe_days else "",
             "summary": client.get("timeframe") or "",
             "live_nav_date": (fh_analysis or {}).get("nav_date"),
         },
@@ -1861,15 +1880,15 @@ def build_client_report(data: dict[str, Any]) -> bytes:
     meta_parts = [f"Valuation Date: {val_date_str}"]
     if inc_str:
         meta_parts.append(f"Inception: {inc_str}")
-    if tf_summary and tf_summary not in meta_parts[0]:
-        meta_parts.append(f"Timeframe: {tf_summary}")
     if c.get("pan"):
         meta_parts.append(f"PAN: {c['pan']}")
+    tf_line = f"Timeframe: {tf_summary}" if tf_summary and tf_summary not in meta_parts[0] else ""
 
     left_title = [
         P("Portfolio Valuation Report - Consolidated & Folio Wise", ParagraphStyle("t", parent=bold, fontSize=14.5, leading=18, textColor=navy)),
         P(c.get("name") or "Valued Client", ParagraphStyle("n", parent=bold, fontSize=11, leading=14, textColor=ink)),
         P("  |  ".join(meta_parts), ParagraphStyle("d", parent=body, fontSize=8.0, leading=10.5, textColor=muted)),
+        *([P(tf_line, ParagraphStyle("d2", parent=body, fontSize=8.0, leading=10.5, textColor=muted))] if tf_line else []),
     ]
     if logo is not None:
         left_block = Table([[logo, left_title]], colWidths=[36 * mm, 140 * mm])
@@ -1895,7 +1914,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
         ("UNREALISED GAIN / (LOSS)", ("+" if gain_v >= 0 else "") + "₹" + ind(gain_v)),
         ("ABSOLUTE RETURN", f"{ind(t['abs_ret'])}%"),
         ("ANNUALISED RETURN (XIRR)", "-" if data.get("xirr") is None else f"{ind(data['xirr'])}% p.a."),
-        ("HOLDINGS & TIMEFRAME", f"{len(data.get('rows') or [])} schemes" + (f" · {tf['span_days']}d" if tf.get("span_days") else "")),
+        ("HOLDINGS & TIMEFRAME", f"{len(data.get('rows') or [])} schemes" + (f" · {tf['span_short']}" if tf.get("span_short") else "")),
     ]
     kpi = Table([[[P(k, ParagraphStyle("kl", parent=bold, fontSize=6.2, textColor=muted)), P(v, ParagraphStyle("kv", parent=bold, fontSize=11.5, leading=15, textColor=navy))] for k, v in kp]],
                 colWidths=[46.1 * mm] * 6)
@@ -1928,7 +1947,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             P(f"{r.get('ann_ret', 0.0):.2f}%", right_b),
         ])
     rows.append([
-        P(""), P("Grand Total", bold), P(""), P(tf_summary[:28] if tf_summary else "-", center_b),
+        P(""), P("Grand Total", bold), P(""), P(tf.get("span_short") or tf_summary[:28] or "-", center_b),
         P(ind(t["invested"]), right_b), P(ind(t["investments"]), right_b), P(ind(t["div_reinv"]), right_b), P(ind(t["div_payout"]), right_b),
         P(""), P(""), P(ind(t["value"]), right_b), P("100.00%", right_b), P(f"{t['abs_ret']:.2f}%", right_b),
         P("-" if data.get("xirr") is None else f"{data['xirr']:.2f}%", right_b),
@@ -2418,7 +2437,7 @@ def build_client_report(data: dict[str, Any]) -> bytes:
             b_rows.append(row_cells)
 
         # Total portfolio row
-        tot_cells = [P("Total Portfolio (Same Instalments)", bold), P(tf_summary[:26] if tf_summary else "-", center_b), P(f"{cmp_.get('portfolio_xirr') or data.get('xirr') or 0.0:.2f}%", right_b)]
+        tot_cells = [P("Total Portfolio (Same Instalments)", bold), P(tf.get("span_short") or tf_summary[:26] or "-", center_b), P(f"{cmp_.get('portfolio_xirr') or data.get('xirr') or 0.0:.2f}%", right_b)]
         for ik in ("n50", "n500", "mid150", "small250"):
             tc = idx_tots.get(ik)
             if tc and tc.get("idx") is not None:

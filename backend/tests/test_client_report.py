@@ -613,3 +613,13 @@ def test_pms_row_gets_class_irr_and_fy_cells(monkeypatch):
     from pypdf import PdfReader
 
     assert "Stallion" in "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(build_client_report(d))).pages)
+
+
+def test_duration_is_calendar_years_months_days():
+    from app.report.client_report import _dur
+
+    d = date
+    assert _dur(d(1998, 11, 16), d(2026, 11, 27)) == "28 years, 0 months, 11 days"
+    assert _dur(d(2020, 1, 31), d(2020, 3, 1), True) == "0y 1m 1d"  # 31 Jan -> 1 Mar: one month and one day
+    assert _dur(d(2023, 12, 31), d(2024, 1, 15), True) == "0y 0m 15d" and _dur(d(2024, 3, 5), d(2024, 3, 5), True) == "0y 0m 0d"
+    assert _dur(d(2025, 1, 15), d(2026, 1, 14), True) == "0y 11m 30d" and _dur(d(2024, 2, 29), d(2025, 2, 28), True) == "1y 0m 0d"

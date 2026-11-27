@@ -70,7 +70,7 @@ def mutual_funds(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
         out.append(_hit(
             "mutual_funds", "fund", r["scheme_code"], r["scheme_name"],
             f"{r.get('amc') or ''} · {r.get('plan') or ''} · {r.get('category') or ''}".strip(" ·"),
-            f"/backoffice/mutual-funds?q={quote(str(r['scheme_code']))}", amc=r.get("amc"),
+            f"/backoffice/mutual-funds/{quote(str(r['scheme_code']), safe='')}", amc=r.get("amc"),  # opens the fund detail page
         ))
     return out
 
@@ -82,7 +82,7 @@ def fund_managers(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
         "WHERE LOWER(manager_name) LIKE ? ESCAPE '\\' GROUP BY manager_name ORDER BY n DESC LIMIT ?",
         (_like(q), limit),
     )
-    return [_hit("fund_managers", "manager", r[0], r[0], f"Manages {r[1]} fund{'s' if r[1] != 1 else ''}", f"/backoffice/mutual-funds?q={quote(str(r[2]))}") for r in rows]
+    return [_hit("fund_managers", "manager", r[0], r[0], f"Manages {r[1]} fund{'s' if r[1] != 1 else ''}", f"/backoffice/mutual-funds/{quote(str(r[2]), safe='')}?mgrinfo=1") for r in rows]  # fund page with the manager panel open
 
 
 @provider("pms", "PMS funds")
@@ -93,7 +93,7 @@ def pms(q: str, limit: int, viewer: list[str] | None) -> list[Hit]:
         "GROUP BY COALESCE(ia_id, strategy_name) ORDER BY strategy_name LIMIT ?",  # table holds one row per period
         (_like(q), _like(q), limit),
     )
-    return [_hit("pms", "pms", r[0] or r[1], r[1], " · ".join(x for x in (r[2], r[3]) if x), f"/backoffice/pms?q={quote(str(r[1]))}", pms=r[2]) for r in rows]
+    return [_hit("pms", "pms", r[0] or r[1], r[1], " · ".join(x for x in (r[2], r[3]) if x), f"/backoffice/pms?strategy={quote(str(r[0] or r[1]), safe='')}", pms=r[2]) for r in rows]
 
 
 @provider("amcs", "AMCs")

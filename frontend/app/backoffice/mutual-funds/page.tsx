@@ -27,6 +27,7 @@ import DropdownClose from "@/components/DropdownClose";
 import SectionLauncher, { useFullScreen } from "@/components/backoffice/SectionLauncher";
 import { getMfMissingReason } from "@/lib/backoffice-display";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
+import { useUrlPage } from "@/lib/useUrlState";
 
 const SECTIONS = ["Summary", "Checklist", "Returns", "Risk Vs Reward", "Capture Ratio", "One-Pager", "Quartile Rankings"] as const;
 type Section = (typeof SECTIONS)[number];
@@ -161,7 +162,10 @@ function MutualFunds() {
   const [sort, setSort] = useState("fh_score");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-  const [offset, setOffset] = useState(0);
+  const [pg, setPg] = useUrlPage();
+  const offset = pg * pageSize; // 'pg' in the URL keeps the page on refresh and share
+  const setOffset = (o: number) => setPg(Math.floor(o / pageSize));
+  const offsetInit = React.useRef(true);
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [search, setSearch] = useState((params.get("q") ?? "").trim());
   const [recommended, setRecommended] = useState(params.get("rec") === "1");
@@ -214,7 +218,10 @@ function MutualFunds() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  useEffect(() => setOffset(0), [qKey, pageSize]);
+  useEffect(() => {
+    if (offsetInit.current) { offsetInit.current = false; return; } // keep ?pg= on first load
+    setPg(0);
+  }, [qKey, pageSize, setPg]);
 
   useEffect(() => {
     try {

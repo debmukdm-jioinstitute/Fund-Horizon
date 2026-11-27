@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { API_URL, ApiError, resolveApiUrl } from "@/lib/api";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
+import { useUrlPage } from "@/lib/useUrlState";
 
 interface Stat { count: number; avg: number | null; max: number | null; min: number | null; median: number | null }
 interface Row { category: string; funds: number; [period: string]: Stat | string | number }
@@ -46,16 +47,17 @@ export default function CategoryReturns() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [size, setSize] = useState(DEFAULT_PAGE_SIZE);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useUrlPage();
+  const firstLoad = React.useRef(true);
   const [sort, setSort] = useState<{ col: string; dir: 1 | -1 }>({ col: "category", dir: 1 });
 
   const load = useCallback((a: { fundType: string; periods: string[]; plan: string }) => {
     setLoading(true); setErr("");
     get<Data>(`/api/backoffice/mutual-funds/category-returns?${new URLSearchParams({ fund_type: a.fundType, period: a.periods.join(","), plan: a.plan })}`)
-      .then((d) => { setData(d); setPage(0); })
+      .then((d) => { setData(d); if (firstLoad.current) firstLoad.current = false; else setPage(0); })
       .catch((e) => setErr(e instanceof Error ? e.message : "Something went wrong."))
       .finally(() => setLoading(false));
-  }, []);
+  }, [setPage]);
 
   useEffect(() => { // a shared link carries ?etf=…&period=…, as on the original tool
     const p = new URLSearchParams(window.location.search);

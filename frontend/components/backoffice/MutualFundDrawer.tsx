@@ -14,7 +14,7 @@ import FundQuartile from "./FundQuartile";
 import { formatISTDate, formatNumber } from "@/lib/terminal-format";
 import { blankDash, classifyPlanOption, isNavStale } from "@/lib/backoffice-display";
 
-import { useUrlState } from "@/lib/useUrlState";
+import { useUrlFlag, useUrlState } from "@/lib/useUrlState";
 interface MutualFundDrawerProps {
   scheme: MutualFundItem | null;
   onClose: () => void;
@@ -31,7 +31,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
   const [view, setView] = useUrlState<"monthly" | "quarterly" | "yearly">("dview", "monthly");
   const [navPairSiblings, setNavPairSiblings] = useState<string[]>([]);
   const [manager, setManager] = useState<MfManagerInfo | null>(null);
-  const [managerOpen, setManagerOpen] = useState(false);
+  const [managerOpen, setManagerOpen] = useUrlFlag("mgrinfo");
+  const prevCode = React.useRef<string | undefined>(undefined);
   const [researchDetail, setResearchDetail] = useState<MfResearchDetail | null>(null);
   const [shortlistMsg, setShortlistMsg] = useState("");
   // In-page reason form, never window.prompt (auto-dismissed by automated
@@ -45,7 +46,8 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
     setPerf(undefined);
     setNavPairSiblings([]);
     setManager(null);
-    setManagerOpen(false);
+    if (prevCode.current !== undefined && prevCode.current !== code) setManagerOpen(false); // keep a shared link's open panel
+    prevCode.current = code;
     setResearchDetail(null);
     setShortlistMsg("");
     setShortlistForm(false);
@@ -73,7 +75,7 @@ export default function MutualFundDrawer({ scheme, onClose }: MutualFundDrawerPr
     return () => {
       cancelled = true;
     };
-  }, [code]);
+  }, [code, setManagerOpen]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchHouseholds } from "@/lib/crmApi";
-import { useUrlFlag, useUrlState } from "@/lib/useUrlState";
+import { useUrlFlag, useUrlId, useUrlState } from "@/lib/useUrlState";
 import {
   CATEGORIES,
   PRIORITIES,
@@ -85,7 +85,9 @@ export default function ServiceDeskPage() {
   const [busy, setBusy] = useState(false);
 
   // Edit Modal State
-  const [editing, setEditing] = useState<ServiceQuery | null>(null);
+  const [editing, setDraft] = useState<ServiceQuery | null>(null);
+  const [editId, setEditId] = useUrlId("edit", { push: true });
+  const setEditing = (q: ServiceQuery | null) => { setDraft(q); if ((q?.id ?? null) !== editId) setEditId(q?.id ?? null); };
   const [resolvingId, setResolvingId] = useState<string | null>(null);
   const [resolutionText, setResolutionText] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -270,6 +272,12 @@ export default function ServiceDeskPage() {
   };
 
   const rows = data?.rows ?? [];
+  // opening ?edit=<id> from a link: load the record once the list arrives
+  useEffect(() => {
+    if (!editId) { setDraft(null); return; }
+    const r = data?.rows.find((x) => x.id === editId);
+    if (r) setDraft((d) => (d?.id === editId ? d : r));
+  }, [editId, data]);
   const counts = useMemo(() => data?.counts ?? {}, [data?.counts]);
   const totalCount = useMemo(() => Object.values(counts).reduce((a, b) => a + b, 0), [counts]);
 

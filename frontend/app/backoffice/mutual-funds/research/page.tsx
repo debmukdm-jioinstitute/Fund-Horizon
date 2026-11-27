@@ -23,6 +23,7 @@ import { shortDisplayName, normalizeDisplayName } from "@/components/backoffice/
 import MfMetricExplain from "@/components/backoffice/MfMetricExplain";
 import { getMfMissingReason } from "@/lib/backoffice-display";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
+import { useUrlPage } from "@/lib/useUrlState";
 
 const PAGE_SIZES = [5, 10, 20, 25, 50, 100];
 const PLANS = ["Regular", "Direct"];
@@ -194,7 +195,10 @@ function MfResearch() {
   const [sort, setSort] = useState("score");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-  const [offset, setOffset] = useState(0);
+  const [pg, setPg] = useUrlPage();
+  const offset = pg * pageSize;
+  const setOffset = (o: number) => setPg(Math.floor(o / pageSize));
+  const offInit = useRef(true);
 
   const [rows, setRows] = useState<MfScreenerRow[]>([]);
   const [total, setTotal] = useState(0);
@@ -228,7 +232,10 @@ function MfResearch() {
   const [mgrSort, setMgrSort] = useState("schemes");
   const [mgrOrder, setMgrOrder] = useState<"asc" | "desc">("desc");
   const [mgrPageSize, setMgrPageSize] = useState(25);
-  const [mgrOffset, setMgrOffset] = useState(0);
+  const [mpg, setMpg] = useUrlPage("mpg");
+  const mgrOffset = mpg * mgrPageSize;
+  const setMgrOffset = (o: number) => setMpg(Math.floor(o / mgrPageSize));
+  const mgrInit = useRef(true);
   const [mgrRows, setMgrRows] = useState<MfManagerDirectoryRow[]>([]);
   const [mgrTotal, setMgrTotal] = useState(0);
   const [mgrLoading, setMgrLoading] = useState(false);
@@ -254,12 +261,12 @@ function MfResearch() {
     const t = setTimeout(() => setFilters((f) => (f.search === query.trim() ? f : { ...f, search: query.trim() })), 300);
     return () => clearTimeout(t);
   }, [query]);
-  useEffect(() => { setOffset(0); }, [fKey, pageSize]);
+  useEffect(() => { if (offInit.current) { offInit.current = false; return; } setPg(0); }, [fKey, pageSize, setPg]);
   useEffect(() => {
     const t = setTimeout(() => setMgrSearch(mgrQuery.trim()), 300);
     return () => clearTimeout(t);
   }, [mgrQuery]);
-  useEffect(() => { setMgrOffset(0); }, [mgrSearch, mgrMinTenure, mgrPageSize]);
+  useEffect(() => { if (mgrInit.current) { mgrInit.current = false; return; } setMpg(0); }, [mgrSearch, mgrMinTenure, mgrPageSize, setMpg]);
 
   // Shareable URL: reload reproduces the table.
   useEffect(() => {

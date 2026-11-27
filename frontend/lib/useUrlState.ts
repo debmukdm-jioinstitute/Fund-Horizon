@@ -63,7 +63,8 @@ export function useUrlId(key: string, opts: { push?: boolean } = {}): [string | 
 /** Boolean variant for open/closed dialogs: ?key=1 when open. */
 export function useUrlFlag(key: string, opts: { push?: boolean } = { push: true }): [boolean, (v: boolean) => void] {
   const [v, set] = useUrlState<string>(key, "", opts);
-  return [v === "1", (b) => set(b ? "1" : "")];
+  const setFlag = useCallback((b: boolean) => set(b ? "1" : ""), [set]);
+  return [v === "1", setFlag];
 }
 
 /** Zero-based page index kept as ?key=N (1-based in the URL); accepts a number or an updater like useState. */

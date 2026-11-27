@@ -59,7 +59,8 @@ function Page({ doc, n, width, onTip }: { doc: PDFDocumentProxy; n: number; widt
   );
 }
 
-export default function ExplainViewer({ url }: { url: string }) {
+// Takes the PDF Blob itself: fetch() on a blob: URL is refused by the site's connect-src policy ("Failed to fetch").
+export default function ExplainViewer({ blob, id }: { blob: Blob; id: string }) {
   const box = useRef<HTMLDivElement>(null);
   const [doc, setDoc] = useState<PDFDocumentProxy | null>(null);
   const [width, setWidth] = useState(0);
@@ -80,12 +81,12 @@ export default function ExplainViewer({ url }: { url: string }) {
       try {
         const pdfjs = await import("pdfjs-dist");
         pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs"; // copied into public/ by scripts/copy-pdf-worker.mjs
-        d = await pdfjs.getDocument({ data: new Uint8Array(await (await fetch(url)).arrayBuffer()) }).promise;
+        d = await pdfjs.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
         if (!dead) setDoc(d); else void d.destroy();
       } catch (e) { if (!dead) setErr(e instanceof Error ? e.message : "Could not open the PDF."); }
     })();
     return () => { dead = true; void d?.destroy(); };
-  }, [url]);
+  }, [blob]);
 
   const W = 340;
   const left = tip ? Math.max(8, Math.min(tip.x + 14, window.innerWidth - W - 8)) : 0;
@@ -94,7 +95,7 @@ export default function ExplainViewer({ url }: { url: string }) {
   return (
     <div ref={box} className="h-[78vh] w-full overflow-auto rounded-[10px] border border-[#E4E9EF] dark:border-[#2B3644] bg-[#EEF1F5] dark:bg-[#0F151F] p-2">
       {err && <p role="alert" className="text-[12.5px] text-[#B42318]">{err}</p>}
-      {doc && width > 0 && Array.from({ length: doc.numPages }, (_, i) => <Page key={`${url}-${i}`} doc={doc} n={i + 1} width={width} onTip={setTip} />)}
+      {doc && width > 0 && Array.from({ length: doc.numPages }, (_, i) => <Page key={`${id}-${i}`} doc={doc} n={i + 1} width={width} onTip={setTip} />)}
       {!doc && !err && <p className="text-[13px]">Opening the report…</p>}
       {tip && (
         <div role="tooltip" className="pointer-events-none fixed z-50 rounded-lg border border-[#E4E9EF] dark:border-[#2B3644] bg-white dark:bg-[#171E2A] p-3 text-[12.5px] leading-snug shadow-xl" style={{ left, top, width: W }}>
